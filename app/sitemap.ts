@@ -51,7 +51,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       for (const locale of LOCALES) {
         entries.push({
           url:             `${APP_URL}/${locale}/salon/${salon.slug}`,
-          lastModified:    new Date(salon.updated_at),
+          // updated_at is nullable; ?? 0 replicates new Date(null)'s actual runtime behavior
+          // (null coerces to 0 → epoch), just satisfying the Date constructor's stricter type.
+          lastModified:    new Date(salon.updated_at ?? 0),
           changeFrequency: "daily",
           priority:        0.9,
         });
@@ -86,7 +88,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       for (const locale of LOCALES) {
         entries.push({
           url:             `${APP_URL}/${locale}/inspo/${item.id}`,
-          lastModified:    new Date(item.updated_at),
+          // Same null-coerces-to-epoch replication as the salons loop above.
+          lastModified:    new Date(item.updated_at ?? 0),
           changeFrequency: "weekly",
           priority:        0.6,
         });

@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import type { Database } from "@/lib/database.types";
 
 // POST /api/services/import — CSV import for services
 export async function POST(req: NextRequest) {
@@ -50,7 +51,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "CSV must have a 'Name' or 'Behandlung' or 'Service Name' column" }, { status: 400 });
   }
 
-  const servicesToInsert: Record<string, unknown>[] = [];
+  const servicesToInsert: Database["public"]["Tables"]["services"]["Insert"][] = [];
   const errors: string[] = [];
   const defaultCategory = salon.categories?.[0] ?? "coiffeur";
 
@@ -70,7 +71,9 @@ export async function POST(req: NextRequest) {
     servicesToInsert.push({
       salon_id: salonId,
       name_de: name,
-      name_en: null,
+      // name_en is NOT NULL on the live services table (a CSV import has no EN name), so the
+      // fallback is "" not null.
+      name_en: "",
       category,
       duration_minutes: duration,
       price: price || 0,

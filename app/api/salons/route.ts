@@ -13,7 +13,7 @@ import { CURRENT_TOS_VERSION } from "@/lib/tos-version";
 import { isOpenNow, type OpeningHours } from "@/lib/salon-hours";
 import { generateEmbedding } from "@/lib/search/embeddings";
 import { SALON_PUBLIC_COLS } from "@/lib/salons/public-columns";
-import type { Json } from "@/lib/database.types";
+import type { Database, Json } from "@/lib/database.types";
 
 // Ring 5b: CDN response caching for this anon browse endpoint. This GET handler never
 // reads a cookie or calls auth.getUser() anywhere (confirmed by ring5b-kill-test.ts
@@ -751,7 +751,9 @@ export async function POST(request: NextRequest) {
 
     const salonId = salon.id;
 
-    // Insert services
+    // Insert services (select id back: availability_slots.service_id is NOT NULL, see below;
+    // same fix pattern as app/api/admin/seed-test-salons/route.ts).
+    let primaryServiceId: string | undefined;
     if (services?.length) {
       const serviceRows = services.map((s) => ({
         salon_id: salonId,
@@ -766,7 +768,8 @@ export async function POST(request: NextRequest) {
         description_de: s.description_de || null,
         is_active: true,
       }));
-      await admin.from("services").insert(serviceRows);
+      const { data: insertedServices } = await admin.from("services").insert(serviceRows).select("id");
+      primaryServiceId = insertedServices?.[0]?.id;
     }
 
     // Insert staff
@@ -785,9 +788,12 @@ export async function POST(request: NextRequest) {
       await admin.from("staff_members").insert(staffRows);
     }
 
-    // Generate availability slots for 14 days, excluding breaks
-    if (availability_template) {
-      const slots: Record<string, unknown>[] = [];
+    // Generate availability slots for 14 days, excluding breaks. Attached to the salon's
+    // first created service: availability_slots.service_id is NOT NULL, previously unset
+    // here, so this insert silently failed on every call (a genuinely missing required
+    // field, not a phantom column; same fix as app/api/admin/seed-test-salons/route.ts).
+    if (availability_template && primaryServiceId) {
+      const slots: Database["public"]["Tables"]["availability_slots"]["Insert"][] = [];
       const now = new Date();
 
       for (let dayOffset = 0; dayOffset < 14; dayOffset++) {
@@ -820,6 +826,7 @@ export async function POST(request: NextRequest) {
 
           slots.push({
             salon_id: salonId,
+            service_id: primaryServiceId,
             starts_at: `${dateStr}T${minutesToTime(m)}:00`,
             ends_at: `${dateStr}T${minutesToTime(slotEnd)}:00`,
             status: "available",

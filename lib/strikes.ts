@@ -57,7 +57,9 @@ export async function evaluateBookingPenalties(
     } catch (err) { console.error("[strikes] audit_log insert failed:", err); }
   }
   
-  if (status === "no_show") {
+  // bookings.user_id is nullable (guest bookings have no account to track strikes
+  // against); narrow it here rather than passing null into .eq() below.
+  if (status === "no_show" && booking.user_id) {
     // Check client no-shows in last 6 months
     const sixMonthsAgo = new Date();
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);

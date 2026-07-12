@@ -114,7 +114,9 @@ export async function POST(req: NextRequest) {
   // Platform commission (Connect).
   const { data: commissionSetting } = await admin
     .from("platform_settings").select("value").eq("key", "commission").single();
-  const commissionRate = (commissionSetting?.value?.rate_percent ?? DEFAULT_COMMISSION_RATE_PERCENT) / 100;
+  // value is Json; narrow to the known shape, same pattern as app/api/stripe/create-payment-intent/route.ts.
+  const commissionSettingValue = commissionSetting?.value as { rate_percent?: number } | null;
+  const commissionRate = (commissionSettingValue?.rate_percent ?? DEFAULT_COMMISSION_RATE_PERCENT) / 100;
   const platformFeeRappen = Math.round(amountRappen * commissionRate);
 
   const intentParams: Parameters<typeof stripe.paymentIntents.create>[0] = {

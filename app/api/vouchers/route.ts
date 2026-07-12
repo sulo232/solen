@@ -56,10 +56,12 @@ export async function POST(req: NextRequest) {
   const { salon_id, amount, recipient_email, recipient_name, message } = parsed.data;
 
   try {
-    // Verify salon exists and get name
+    // Verify salon exists and get name. Phantom-column fix: salons has a single "name"
+    // column, never "name_de"/"name_en" (that split only exists on services); this select
+    // was erroring on every call before this fix.
     const { data: salon, error: salonError } = await supabase
       .from("salons")
-      .select("id, name_de, name_en")
+      .select("id, name")
       .eq("id", salon_id)
       .single();
 
@@ -72,7 +74,7 @@ export async function POST(req: NextRequest) {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amountInCents,
       currency: "chf",
-      description: `Gift voucher for ${salon.name_de} ${recipient_name}`,
+      description: `Gift voucher for ${salon.name} ${recipient_name}`,
       metadata: {
         type: "voucher",
         salon_id,
@@ -107,7 +109,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       voucher_id: voucher.id,
       client_secret: paymentIntent.client_secret,
-      salon_name: salon.name_de,
+      salon_name: salon.name,
       amount,
     });
   } catch (error) {

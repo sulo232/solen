@@ -36,7 +36,9 @@ export async function GET(request: NextRequest) {
   const { data: ranked, error } = await supabase.rpc("search_salons_ranked", {
     p_q: q,
     p_limit: 30,
-    p_query_embedding: pQueryEmbedding,
+    // RPC arg is optional (SQL default null); undefined omits the key from the JSON body,
+    // which PostgREST resolves to the same SQL-side default as an explicit null.
+    p_query_embedding: pQueryEmbedding ?? undefined,
   });
   if (error) {
     console.error("[salons/search] search_salons_ranked failed:", error.message);
