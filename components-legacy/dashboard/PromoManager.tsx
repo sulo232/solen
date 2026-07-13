@@ -136,7 +136,7 @@ export default function PromoManager() {
                 onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
                 placeholder="SOMMER2026"
                 required
-                className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink focus:border-s-accent-bright focus:ring-2 focus:ring-s-accent-bright/20 outline-none"
+                className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink focus-visible:border-s-border focus:ring-2 focus:ring-s-accent-bright/20 outline-none"
               />
             </div>
             <div>
