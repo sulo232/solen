@@ -23,19 +23,38 @@ import { Switch } from "@/app/[locale]/_components/primitives";
  * dashboard, not a standalone island. Optimistic toggle with revert-on-error, matching the
  * Switch primitive's controlled-checked contract.
  *
- * NOT_WIRED_KEYS below is a static list, not a live check. It documents which flags no code
- * path currently reads (a silent no-op audit done at build time, 2026-07-12 by grepping every
- * checkFeatureEnabled() call site and every .from("feature_flags") read in the repo). Toggling
- * one of these rows changes the DB row but has zero runtime effect until a gate is wired. If a
- * flag here later gets wired up (or an existing gate is removed), update this list, it is not
- * derived automatically.
+ * HIDDEN_DEAD_KEYS below is a static list, not a live check (silent-no-op audit done by
+ * grepping every checkFeatureEnabled() call site and every .from("feature_flags") read in
+ * the repo, first pass 2026-07-12, re-verified 2026-07-13 after wiring `referral` below).
+ * Each of these keys has NOTHING behind it: no gate reads it, and toggling it in the DB
+ * changes a row nobody consults, so showing it as a working switch would be a lie (owner
+ * call 2026-07-13: "make the switches actually work, kill the fake ones"). The row itself
+ * is NOT deleted from `feature_flags`, only hidden from THIS toggle list:
+ *   - credits        not a valid FeatureKey in lib/feature-flags.ts at all (never wired).
+ *                     The live user_credits balance (referral payouts, checkout redemption)
+ *                     is unconditional and not gated by this row.
+ *   - messaging       DMs are fully off product-wide; no send path exists left to gate.
+ *   - twint           TWINT is off pending Stripe capability review; checkout's payment
+ *                     methods are not flag-driven yet.
+ *   - last_minute     the "Last Minute" feature is driven entirely by the per-salon
+ *                     last_minute_discount_percent COLUMN (search sort/filter/badges), not
+ *                     a global switch. No checkFeatureEnabled("last_minute") call exists
+ *                     anywhere despite the key sitting in the FeatureKey union.
+ *   - salon_of_month  a KV row abused by the admin salon-of-month picker
+ *                     (app/api/admin/salon-of-month/route.ts upserts it with `enabled`
+ *                     forced to true on every pick), not a boolean feature switch. Nothing
+ *                     displays it anywhere.
+ * `referral` was in this set until 2026-07-13: it is now wired into
+ * lib/referral/complete-referral.ts (the single referral-completion chokepoint) and shows
+ * as a normal working switch below.
+ * If a flag here later gets wired up (or an existing gate is removed), update this list,
+ * it is not derived automatically.
  */
 
-const NOT_WIRED_KEYS = new Set([
+const HIDDEN_DEAD_KEYS = new Set([
   "credits",
   "last_minute",
   "messaging",
-  "referral",
   "salon_of_month",
   "twint",
 ]);
@@ -116,21 +135,19 @@ export default function FeatureFlagsAdminPage() {
         </div>
       ) : (
         <div className="max-w-md overflow-hidden rounded-[14px] border border-s-border bg-white px-4 shadow-warm-md">
-          {flags.map((flag) => (
-            <Switch
-              key={flag.key}
-              id={`flag-${flag.key}`}
-              checked={flag.enabled}
-              disabled={pendingKey === flag.key}
-              onCheckedChange={(next) => handleToggle(flag, next)}
-              label={humanizeKey(flag.key)}
-              subLabel={
-                NOT_WIRED_KEYS.has(flag.key)
-                  ? `${flag.description ?? flag.key} , ${t("notWiredHint")}`
-                  : flag.description ?? flag.key
-              }
-            />
-          ))}
+          {flags
+            .filter((flag) => !HIDDEN_DEAD_KEYS.has(flag.key))
+            .map((flag) => (
+              <Switch
+                key={flag.key}
+                id={`flag-${flag.key}`}
+                checked={flag.enabled}
+                disabled={pendingKey === flag.key}
+                onCheckedChange={(next) => handleToggle(flag, next)}
+                label={humanizeKey(flag.key)}
+                subLabel={flag.description ?? flag.key}
+              />
+            ))}
         </div>
       )}
 

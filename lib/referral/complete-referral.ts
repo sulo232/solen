@@ -17,6 +17,7 @@
 // webhook retry that loses the race gets 0 rows back and returns before crediting.
 // The two user_credits INSERTs only ever run once per referral.
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { checkFeatureEnabled } from "@/lib/feature-flags";
 
 export interface CompleteReferralResult {
   completed: boolean;
@@ -31,6 +32,15 @@ export async function completeReferralForFirstBooking(
   if (!userId || !referralCode) return { completed: false };
 
   try {
+    // Feature-flag gate: this is THE single chokepoint every referral-completion caller
+    // (booking-create, the booking confirm route, the Stripe webhook) funnels through, so
+    // gating it here is enough to disable referral completion platform-wide. When the
+    // "referral" flag is off, checkFeatureEnabled returns a non-null response and we bail
+    // BEFORE any of the bookings/referrals/user_credits reads below run, no crediting, no
+    // referral row mutation, no rate-limit-worthy DB work at all.
+    const referralDisabled = await checkFeatureEnabled("referral");
+    if (referralDisabled) return { completed: false };
+
     // Only reward a user's FIRST confirmed booking. The caller only invokes this once
     // the triggering booking has already reached status='confirmed', so a count of 1
     // here means the just-confirmed booking is the user's only one.
