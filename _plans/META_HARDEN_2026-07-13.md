@@ -24,7 +24,7 @@ Owner approved the estate-audit items + product flags, with three NEW gates requ
 - [x] M-9. verified: coderabbit has NO hook/auto-run wiring (its plugin.json declares no hooks); the auto-reviewer is `council-trigger.py` (Stop), independent + UNCHANGED (stays auto). The sole coderabbit auto-fire was the `code-review` skill description ("autonomously when the agent thinks a review is needed"), rewritten to on-demand at `~/.claude/plugins/cache/claude-plugins-official/coderabbit/1.1.1/skills/code-review/SKILL.md`. Caveat: plugin-cache file, re-apply on plugin update.
 
 ## Close
-- [x] Z. Each item reviewer/self-test PASS or a concrete parked patch (sandbox-denied worktree .claude). Commit writable changes (no push). Report.
+- [x] Z. verified: all 18 boxes above carry inline `verified:` evidence (self-test counts / file:line / rule-18 findings). Repo-side committed across d2d4e58b0 (M2 + evidence), 1e29ae5e0 (P1 flags), plus M1 evidence commit; global ~/.claude changes are live (not a git repo). Parked patches enumerated: CLAUDE.md rule-14 wording (owner-only), worktree .claude mockup-english removal + pre-commit-graveyard reason-required (sandbox-denied). Live UI screenshot owed (sandbox listen() block). No push.
 
 ## Notes
 - Many targets are global ~/.claude/hooks / repo _rules (writable). Worktree .claude/hooks + .claude/skills are SANDBOX-DENIED this session -> those get an exact parked patch, not a forced write.
