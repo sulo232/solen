@@ -1,7 +1,7 @@
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { NextResponse } from "next/server";
 
-type FeatureKey = "bookings" | "payments" | "messaging" | "reviews" | "registration" | "last_minute" | "maintenance_mode" | "visual_editor" | "nail_features" | "barber_features" | "spa_features" | "discovery" | "dispute_reporting" | "upcharge_requests" | "vouchers";
+type FeatureKey = "bookings" | "payments" | "messaging" | "reviews" | "registration" | "last_minute" | "maintenance_mode" | "visual_editor" | "nail_features" | "barber_features" | "spa_features" | "discovery" | "dispute_reporting" | "upcharge_requests" | "vouchers" | "salon_of_month";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Client-side feature flags (build-time toggles)

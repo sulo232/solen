@@ -169,6 +169,9 @@
       "beliebtInZuerich": "Popular in Zurich",
       "beliebtInBern": "Popular in Berne"
     },
+    "salonOfMonth": {
+      "title": "Salon of the Month"
+    },
     "trending": {
       "eyebrow": "Trending",
       "title": "Trending in Basel",
@@ -1329,12 +1332,15 @@
       "month": "Month",
       "loading": "Loading...",
       "no_data": "No Data",
+      "no_data_message": "No completed bookings in this period yet.",
       "bookings": "Bookings",
       "revenue": "Revenue",
-      "retention": "Retention",
-      "avg_tip": "Avg Tip",
+      "rating": "Rating",
+      "rebooking": "Rebooking",
       "walkin_conv": "Walk-in Conv.",
-      "chair_utilization": "Chair Util.",
+      "loadErrorTitle": "Leaderboard could not be loaded",
+      "loadErrorMessage": "Something went wrong loading the leaderboard.",
+      "retry": "Try again",
       "top": "Top"
     },
     "overview": "Overview",
@@ -1601,6 +1607,7 @@
       "discovery": "Discovery",
       "homepage": "Homepage",
       "cities": "Cities",
+      "salonOfMonth": "Salon of the Month",
       "sandbox": "Sandbox",
       "previewBanner": "Preview mode active — viewing dashboard as:",
       "previewExit": "Exit",
@@ -2482,6 +2489,28 @@
       "saved": "Saved",
       "retry": "Try again",
       "save": "Save"
+    },
+    "salonOfMonthAdminPage": {
+      "title": "Salon of the Month",
+      "subtitle": "Pick the salon of the month and control whether it shows on the homepage.",
+      "toggleLabel": "Show on the homepage",
+      "currentEyebrow": "Current winner",
+      "currentEmpty": "No salon picked yet.",
+      "currentMonth": "Month {month}",
+      "candidatesEyebrow": "Candidates",
+      "candidatesSubtitle": "Active salons, sorted by rating (5+ reviews required).",
+      "monthLabel": "Month",
+      "reasonLabel": "Reason (optional)",
+      "reasonPlaceholder": "Why this salon?",
+      "selectButton": "Select",
+      "selectedBadge": "Current",
+      "selecting": "Saving…",
+      "selectError": "Could not be saved. Please try again.",
+      "emptyTitle": "No candidates",
+      "emptyMessage": "No active salon has 5 or more reviews yet.",
+      "errorTitle": "Failed to load",
+      "errorMessage": "Could not load candidates.",
+      "retry": "Try again"
     },
     "contentEditorPage": {
       "title": "Edit content",

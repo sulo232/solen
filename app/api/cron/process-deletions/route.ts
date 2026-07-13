@@ -4,6 +4,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
 import { withCronRun } from "@/lib/cron-run";
+import { purgeClientPhotoStorage } from "@/lib/gdpr/purge-client-photo-storage";
+import { purgeReviewPhotoStorage } from "@/lib/gdpr/purge-review-photo-storage";
 
 export async function GET(request: NextRequest) {
   const cronSecret = getServerEnv().CRON_SECRET;
@@ -45,8 +47,9 @@ export async function GET(request: NextRequest) {
 
     // Tables the registered-user deletion path anonymizes/clears. The auth-user
     // delete cascades to public.profiles, which fires the BEFORE DELETE trigger
-    // (migration 20260602083300) that anonymizes these dependent rows in place
-    // (keeps money, strips identity). Recorded verbatim in the audit row below.
+    // (migration 20260602083300, extended 20260713150000) that anonymizes these
+    // dependent rows in place (keeps money, strips identity). Recorded verbatim
+    // in the audit row below.
     const TABLES_CLEARED = [
       "profiles",
       "bookings",
@@ -69,6 +72,37 @@ export async function GET(request: NextRequest) {
       "salon_documents",
       "salons",
       "site_content",
+      // GDPR deletion-completeness sweep (migration 20260713150000): tables
+      // whose customer_id/user_id had no FK at all, so they were previously
+      // never touched by anything on account deletion.
+      "barber_walkin_queue",
+      "barber_cut_history",
+      "reviews",
+      "client_formulas",
+      "intake_form_responses",
+      "client_photos",
+      "nail_design_history",
+      "nail_client_preferences",
+      "package_purchases",
+      "gift_cards",
+      "group_bookings",
+      "tips",
+      "staff_members",
+      "salon_clients",
+      // review_photos: hard-deleted (DB row + storage bytes) at the
+      // application layer, see lib/gdpr/purge-review-photo-storage.ts,
+      // the review row itself survives (user_id SET NULL), only the photo
+      // rows/bytes are removed.
+      "review_photos",
+      // user_salon_affinity: composite-PK behavioral scoring rows, no
+      // tracked FK on user_id, hard-deleted by the trigger (migration
+      // 20260713150000). (user_style_affinity is NOT listed here: it
+      // already has a real `ON DELETE CASCADE` FK to auth.users, confirmed
+      // in 20260623124500_user_style_affinity.sql, so it needs no help.)
+      "user_salon_affinity",
+      // spa_treatment_outcomes: client_id has no tracked FK, anonymized in
+      // place by the trigger (migration 20260713150000).
+      "spa_treatment_outcomes",
     ];
 
     // RING 3a: the ~19 pre-delete cleanup ops used to run per-user, sequentially
@@ -86,6 +120,22 @@ export async function GET(request: NextRequest) {
     // the ring report).
     const userIds = dueUsers.map((u) => u.id);
     const batchErrors: string[] = [];
+
+    // GDPR deletion completeness, storage half: a Postgres trigger cannot call
+    // the Storage API, so the client_photos bytes must be removed from the
+    // private client-photos bucket HERE, before deleteUser() below cascades
+    // and the trigger nulls the DB pointer (see lib/gdpr/purge-client-photo-storage.ts
+    // for why the order matters).
+    const photoPurge = await purgeClientPhotoStorage(admin, userIds);
+    if (photoPurge.errors.length) batchErrors.push(...photoPurge.errors.map((e) => `client-photos storage: ${e}`));
+
+    // GDPR deletion completeness, review-photos half: reviews.user_id is
+    // SET NULL (the review row survives for aggregates) so nothing ever
+    // cascades to review_photos. Hard-delete the rows + storage bytes here,
+    // before deleteUser() below, same reasoning as purgeClientPhotoStorage
+    // (see lib/gdpr/purge-review-photo-storage.ts).
+    const reviewPhotoPurge = await purgeReviewPhotoStorage(admin, userIds);
+    if (reviewPhotoPurge.errors.length) batchErrors.push(...reviewPhotoPurge.errors.map((e) => `review-photos storage: ${e}`));
 
     const { error: credErr } = await admin.from("credit_redemptions").delete().in("user_id", userIds);
     if (credErr) batchErrors.push(`credit_redemptions: ${credErr.message}`);

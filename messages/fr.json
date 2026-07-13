@@ -169,6 +169,9 @@
       "beliebtInZuerich": "Populaire à Zurich",
       "beliebtInBern": "Populaire à Berne"
     },
+    "salonOfMonth": {
+      "title": "Salon du mois"
+    },
     "trending": {
       "eyebrow": "Tendance",
       "title": "Tendance à Bâle",
@@ -1573,6 +1576,7 @@
       "discovery": "Découverte",
       "homepage": "Page d'accueil",
       "cities": "Villes",
+      "salonOfMonth": "Salon du mois",
       "sandbox": "Sandbox",
       "previewBanner": "Mode aperçu actif — affichage du tableau de bord en tant que :",
       "previewExit": "Quitter",
@@ -1691,10 +1695,9 @@
       "title": "Classement Barber",
       "bookings": "Réservations",
       "revenue": "Revenus",
-      "retention": "Rétention",
-      "avg_tip": "Pourboire moy",
+      "rating": "Note",
+      "rebooking": "Reréservation",
       "walkin_conv": "Conv. Walk-in",
-      "chair_utilization": "Util. Fauteuil",
       "view_chart": "Voir graphique",
       "view_table": "Voir tableau",
       "show_names": "Afficher noms",
@@ -1703,6 +1706,10 @@
       "month": "Mois",
       "loading": "Chargement...",
       "no_data": "Aucune donnée",
+      "no_data_message": "Aucune réservation terminée sur cette période.",
+      "loadErrorTitle": "Le classement n'a pas pu être chargé",
+      "loadErrorMessage": "Une erreur s'est produite lors du chargement du classement.",
+      "retry": "Réessayer",
       "value": "Valeur",
       "barber": "Barbier",
       "top": "Top"
@@ -2474,6 +2481,28 @@
       "saved": "Enregistré",
       "retry": "Réessayer",
       "save": "Enregistrer"
+    },
+    "salonOfMonthAdminPage": {
+      "title": "Salon du mois",
+      "subtitle": "Choisis le salon du mois et gère son affichage sur la page d'accueil.",
+      "toggleLabel": "Afficher sur la page d'accueil",
+      "currentEyebrow": "Gagnant actuel",
+      "currentEmpty": "Aucun salon choisi pour l'instant.",
+      "currentMonth": "Mois {month}",
+      "candidatesEyebrow": "Candidats",
+      "candidatesSubtitle": "Salons actifs, triés par note (5 avis minimum).",
+      "monthLabel": "Mois",
+      "reasonLabel": "Raison (optionnel)",
+      "reasonPlaceholder": "Pourquoi ce salon ?",
+      "selectButton": "Choisir",
+      "selectedBadge": "Actuel",
+      "selecting": "Enregistrement…",
+      "selectError": "Échec de l'enregistrement. Veuillez réessayer.",
+      "emptyTitle": "Aucun candidat",
+      "emptyMessage": "Aucun salon actif n'a encore 5 avis ou plus.",
+      "errorTitle": "Échec du chargement",
+      "errorMessage": "Impossible de charger les candidats.",
+      "retry": "Réessayer"
     },
     "contentEditorPage": {
       "title": "Modifier le contenu",

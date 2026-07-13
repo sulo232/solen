@@ -169,6 +169,9 @@
       "beliebtInZuerich": "Beliebt in Zürich",
       "beliebtInBern": "Beliebt in Bern"
     },
+    "salonOfMonth": {
+      "title": "Salon des Monats"
+    },
     "trending": {
       "eyebrow": "Trending",
       "title": "Trending in Basel",
@@ -1339,12 +1342,15 @@
       "month": "Monat",
       "loading": "Laden...",
       "no_data": "Keine Daten",
+      "no_data_message": "In diesem Zeitraum noch keine abgeschlossenen Buchungen.",
       "bookings": "Buchungen",
       "revenue": "Umsatz",
-      "retention": "Retention",
-      "avg_tip": "Ø Trinkgeld",
+      "rating": "Bewertung",
+      "rebooking": "Wiederbuchung",
       "walkin_conv": "Walk-in Conv.",
-      "chair_utilization": "Stuhl-Ausl.",
+      "loadErrorTitle": "Leaderboard konnte nicht geladen werden",
+      "loadErrorMessage": "Beim Laden der Rangliste ist etwas schiefgelaufen.",
+      "retry": "Erneut versuchen",
       "top": "Top"
     },
     "overview": "Übersicht",
@@ -1611,6 +1617,7 @@
       "discovery": "Discovery",
       "homepage": "Homepage",
       "cities": "Städte",
+      "salonOfMonth": "Salon des Monats",
       "sandbox": "Sandbox",
       "previewBanner": "Vorschau-Modus aktiv — du siehst das Dashboard als:",
       "previewExit": "Beenden",
@@ -2492,6 +2499,28 @@
       "saved": "Gespeichert",
       "retry": "Erneut versuchen",
       "save": "Speichern"
+    },
+    "salonOfMonthAdminPage": {
+      "title": "Salon des Monats",
+      "subtitle": "Wähle den Salon des Monats und steuere, ob er auf der Startseite erscheint.",
+      "toggleLabel": "Auf der Startseite anzeigen",
+      "currentEyebrow": "Aktueller Gewinner",
+      "currentEmpty": "Noch kein Salon ausgewählt.",
+      "currentMonth": "Monat {month}",
+      "candidatesEyebrow": "Vorschläge",
+      "candidatesSubtitle": "Aktive Salons, sortiert nach Bewertung (mind. 5 Bewertungen).",
+      "monthLabel": "Monat",
+      "reasonLabel": "Begründung (optional)",
+      "reasonPlaceholder": "Warum dieser Salon?",
+      "selectButton": "Auswählen",
+      "selectedBadge": "Aktuell",
+      "selecting": "Wird gespeichert…",
+      "selectError": "Konnte nicht gespeichert werden. Bitte erneut versuchen.",
+      "emptyTitle": "Keine Kandidaten",
+      "emptyMessage": "Kein aktiver Salon hat mindestens 5 Bewertungen.",
+      "errorTitle": "Laden fehlgeschlagen",
+      "errorMessage": "Kandidaten konnten nicht geladen werden.",
+      "retry": "Erneut versuchen"
     },
     "contentEditorPage": {
       "title": "Inhalte bearbeiten",

@@ -12,7 +12,7 @@ import {
   ShieldCheck, Store, UsersRound, DollarSign, BarChart3, Award, FileEdit,
   MessageSquareWarning, Star, PieChart, Paintbrush, Compass, Camera,
   UserCheck, Megaphone, Image as ImageIcon, Sparkles, LayoutGrid, FlaskConical,
-  Scale, RotateCcw, TrendingUp, Percent, ArrowLeft, Package, MapPin,
+  Scale, RotateCcw, TrendingUp, Percent, ArrowLeft, Package, MapPin, Crown,
 } from "lucide-react";
 
 import { Skeleton } from "@/app/[locale]/_components/primitives";
@@ -50,6 +50,7 @@ const ADMIN_NAV = [
   { key: "discovery",           href: "/dashboard/discovery-admin",    icon: Compass },
   { key: "homepage",            href: "/dashboard/homepage-admin",     icon: LayoutGrid },
   { key: "cities",              href: "/dashboard/cities-admin",       icon: MapPin },
+  { key: "salonOfMonth",        href: "/dashboard/salon-of-month-admin", icon: Crown },
   { key: "sandbox",             href: "/dashboard/admin-sandbox",      icon: FlaskConical },
 ] as const;
 
