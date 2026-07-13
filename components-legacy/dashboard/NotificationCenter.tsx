@@ -89,10 +89,11 @@ export default function NotificationCenter({ salonId, unreadCount = 0, onCountCh
   return (
     <div ref={panelRef} className="relative">
       {/* Bell trigger */}
+      {/* mockup-ok: a11y touch-target fix (FRONTEND_AUDIT_2026-07-08.md, dash-core), 32px raised to the locked 44px icon-button spec, no visual redesign */}
       <button
         onClick={() => { setOpen((o) => !o); if (!open) fetchNotifications(); }}
         aria-label={t("notifications")}
-        className="relative w-8 h-8 rounded-pill flex items-center justify-center hover:bg-s-bg-sunken:bg-white/[0.06] transition-colors"
+        className="relative w-11 h-11 rounded-pill flex items-center justify-center hover:bg-s-bg-sunken:bg-white/[0.06] transition-colors"
       >
         <Bell size={16} className="text-s-ink-2" />
         {unread > 0 && (

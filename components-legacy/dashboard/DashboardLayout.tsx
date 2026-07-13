@@ -286,7 +286,7 @@ export default function DashboardLayout({
             const active = isActive(href);
             return (
               <Link key={key} href={`/${locale}${href}`} aria-current={active ? "page" : undefined}
-                className={`group relative w-10 h-10 rounded-xl grid place-items-center transition-colors ${active ? "bg-s-accent-bright text-white" : "text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"}`}>
+                className={`group relative w-11 h-11 rounded-xl grid place-items-center transition-colors ${active ? "bg-s-accent-bright text-white" : "text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"}`}>
                 <Icon size={20} strokeWidth={1.9} />
                 {/* messaging unread badge removed — feature off (owner 2026-06-13) */}
                 <span className="pointer-events-none absolute left-[52px] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-s-ink px-2 py-1 text-[12px] font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity z-50">{label}</span>
@@ -300,7 +300,7 @@ export default function DashboardLayout({
                 const active = isActive(href);
                 return (
                   <Link key={key} href={`/${locale}${href}`} aria-current={active ? "page" : undefined}
-                    className={`group relative w-10 h-10 rounded-xl grid place-items-center transition-colors ${active ? "bg-s-accent-bright text-white" : "text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"}`}>
+                    className={`group relative w-11 h-11 rounded-xl grid place-items-center transition-colors ${active ? "bg-s-accent-bright text-white" : "text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"}`}>
                     <Icon size={19} strokeWidth={1.9} />
                     <span className="pointer-events-none absolute left-[52px] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-s-ink px-2 py-1 text-[12px] font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity z-50">{t(key)}</span>
                   </Link>
@@ -309,7 +309,7 @@ export default function DashboardLayout({
             </>
           )}
         </nav>
-        <Link href={`/${locale}`} className="group relative w-10 h-10 rounded-xl grid place-items-center text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink transition-colors mb-1.5">
+        <Link href={`/${locale}`} className="group relative w-11 h-11 rounded-xl grid place-items-center text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink transition-colors mb-1.5">
           <span aria-hidden className="text-[17px] leading-none">←</span>
           <span className="pointer-events-none absolute left-[52px] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-s-ink px-2 py-1 text-[12px] font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity z-50">{t("backToSite")}</span>
         </Link>
@@ -428,18 +428,21 @@ export default function DashboardLayout({
             <SalonSwitcher variant="bar" fallbackName={salonName ?? fetchedSalonName ?? undefined} />
           </div>
           <div className="flex-1" />
-          <button onClick={() => setPaletteOpen(true)} aria-label="Suche öffnen (Ctrl+K)" className="w-[38px] h-[38px] rounded-full grid place-items-center text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink transition-colors">
+          {/* mockup-ok: a11y touch-target fix (FRONTEND_AUDIT_2026-07-08.md, dash-core), 38px raised to the locked 44px icon-button spec, no visual redesign */}
+          <button onClick={() => setPaletteOpen(true)} aria-label="Suche öffnen (Ctrl+K)" className="w-11 h-11 rounded-full grid place-items-center text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink transition-colors">
             <Search size={19} strokeWidth={1.9} />
           </button>
           <NotificationCenter salonId={undefined} />
         </div>
         {/* Mobile top bar */}
         <div className="md:hidden sticky top-0 z-20 bg-white border-b border-s-ink/[0.06] px-4 py-3 flex items-center gap-3">
-          <button onClick={() => setMobileSidebarOpen(true)} className="p-1.5 -ml-1.5 text-s-ink-2" aria-label="Menu öffnen">
+          {/* mockup-ok: a11y touch-target fix (FRONTEND_AUDIT_2026-07-08.md, dash-core), ~32px raised to the locked 44px icon-button spec, no visual redesign */}
+          <button onClick={() => setMobileSidebarOpen(true)} className="grid place-items-center h-11 w-11 -ml-1.5 text-s-ink-2" aria-label="Menu öffnen">
             <Menu size={20} />
           </button>
           <div className="flex-1 min-w-0"><SalonSwitcher variant="bar" fallbackName={salonName ?? fetchedSalonName ?? undefined} /></div>
-          <button onClick={() => setPaletteOpen(true)} aria-label="Suche öffnen (Ctrl+K)" className="p-1.5 text-s-ink/40 hover:text-s-ink/70 transition-colors">
+          {/* mockup-ok: a11y touch-target fix (FRONTEND_AUDIT_2026-07-08.md, dash-core), ~28px raised to the locked 44px icon-button spec, no visual redesign */}
+          <button onClick={() => setPaletteOpen(true)} aria-label="Suche öffnen (Ctrl+K)" className="grid place-items-center h-11 w-11 text-s-ink/40 hover:text-s-ink/70 transition-colors">
             <Search size={16} />
           </button>
           <NotificationCenter salonId={undefined} />

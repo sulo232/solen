@@ -368,10 +368,11 @@ export default function AdminSandboxPage() {
                   </div>
 
                   {/* Reset */}
+                  {/* mockup-ok: a11y touch-target fix (FRONTEND_AUDIT_2026-07-08.md, dash-admin), 32px raised to the locked 44px icon-button spec, no visual redesign */}
                   <button
                     onClick={() => resetSalon(salon.id)}
                     disabled={resettingId === salon.id}
-                    className="w-8 h-8 rounded-[8px] flex items-center justify-center bg-s-bg-sunken text-s-ink/40 hover:bg-s-amber/10 hover:text-s-star transition-colors duration-150"
+                    className="w-11 h-11 rounded-[8px] flex items-center justify-center bg-s-bg-sunken text-s-ink/40 hover:bg-s-amber/10 hover:text-s-star transition-colors duration-150"
                     aria-label={t("reset")}
                     title={t("reset")}
                   >
@@ -381,10 +382,11 @@ export default function AdminSandboxPage() {
                   </button>
 
                   {/* Delete */}
+                  {/* mockup-ok: a11y touch-target fix (FRONTEND_AUDIT_2026-07-08.md, dash-admin), 32px raised to the locked 44px icon-button spec, no visual redesign */}
                   <button
                     onClick={() => deleteSalon(salon.id)}
                     disabled={deletingId === salon.id}
-                    className="w-8 h-8 rounded-[8px] flex items-center justify-center bg-s-bg-sunken text-s-ink/40 hover:bg-red-50 hover:text-red-500 transition-colors duration-150"
+                    className="w-11 h-11 rounded-[8px] flex items-center justify-center bg-s-bg-sunken text-s-ink/40 hover:bg-red-50 hover:text-red-500 transition-colors duration-150"
                     aria-label={t("delete")}
                     title={t("delete")}
                   >
@@ -394,9 +396,10 @@ export default function AdminSandboxPage() {
                   </button>
 
                   {/* Expand toggle */}
+                  {/* mockup-ok: a11y touch-target fix (FRONTEND_AUDIT_2026-07-08.md, dash-admin), 32px raised to the locked 44px icon-button spec, no visual redesign */}
                   <button
                     onClick={() => setExpandedId(isExpanded ? null : salon.id)}
-                    className="w-8 h-8 rounded-[8px] flex items-center justify-center bg-s-bg-sunken text-s-ink/40 hover:bg-s-bg-sunken transition-colors duration-150"
+                    className="w-11 h-11 rounded-[8px] flex items-center justify-center bg-s-bg-sunken text-s-ink/40 hover:bg-s-bg-sunken transition-colors duration-150"
                     aria-label={isExpanded ? t("collapse") : t("expand")}
                   >
                     {isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
