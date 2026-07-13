@@ -26,6 +26,11 @@ Owner approved the estate-audit items + product flags, with three NEW gates requ
 ## Close
 - [x] Z. verified: all 18 boxes above carry inline `verified:` evidence (self-test counts / file:line / rule-18 findings). Repo-side committed across d2d4e58b0 (M2 + evidence), 1e29ae5e0 (P1 flags), plus M1 evidence commit; global ~/.claude changes are live (not a git repo). Parked patches enumerated: CLAUDE.md rule-14 wording (owner-only), worktree .claude mockup-english removal + pre-commit-graveyard reason-required (sandbox-denied). Live UI screenshot owed (sandbox listen() block). No push.
 
+## Owner dispositions on the 3 parked items (2026-07-13)
+- CLAUDE.md rule-14 Fable5 wording: owner "1 allowed" -> APPLIED to ~/.claude/CLAUDE.md:391-393 ("orchestrator model is chosen per session per MODEL_ROUTING.md, not pinned to Fable 5").
+- Worktree .claude patches (mockup-english removal + pre-commit-graveyard reason-required): owner "2 dont touch" -> DROPPED, not pending.
+- Live feature-flags screenshot: owner "3 meh" -> SKIPPED.
+
 ## Notes
 - Many targets are global ~/.claude/hooks / repo _rules (writable). Worktree .claude/hooks + .claude/skills are SANDBOX-DENIED this session -> those get an exact parked patch, not a forced write.
 - "improve-existing-first" (owner principle) binds every M-*b new-gate: search for an existing gate that already does it BEFORE creating a file.
