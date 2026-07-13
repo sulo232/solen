@@ -22,12 +22,10 @@ const MAX_ROWS = 2; // don't flood the feed — top 2 picks get a "Weil du X mag
 function ForYouRow({
   category,
   locale,
-  wantsDeals,
   wantsTopRated,
 }: {
   category: ForYouCategory;
   locale: string;
-  wantsDeals: boolean;
   wantsTopRated: boolean;
 }) {
   const scrollRef = React.useRef<HTMLDivElement>(null);
@@ -55,8 +53,6 @@ function ForYouRow({
               category={s.category}
               photoUrl={s.photoUrl}
               variant="service"
-              priceFromCHF={s.priceFromCHF}
-              address={s.address}
               city="Basel"
               curation={wantsTopRated && i === 0 ? "top-bewertet" : null}
             />
@@ -81,7 +77,6 @@ export function ForYouSalonRowsView({
     .slice(0, MAX_ROWS);
   if (picks.length === 0) return null;
 
-  const wantsDeals = prefs.interests.includes("deals");
   const wantsTopRated = prefs.interests.includes("top_rated");
 
   return (
@@ -91,7 +86,6 @@ export function ForYouSalonRowsView({
           key={cat}
           category={cat}
           locale={locale}
-          wantsDeals={wantsDeals}
           wantsTopRated={wantsTopRated}
         />
       ))}

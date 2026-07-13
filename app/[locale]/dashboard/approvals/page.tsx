@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { ShieldCheck, Check, X, MapPin, Mail, Calendar } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import Spinner from "@/components-legacy/ui/Spinner";
+import { toast } from "@/app/[locale]/_components/primitives/Toast";
 
 interface PendingSalon {
   id: string;
@@ -36,23 +37,37 @@ export default function ApprovalsPage() {
 
   async function approve(id: string) {
     setActionLoading(id);
-    await fetch(`/api/admin/salons/${id}/approve`, { method: "PATCH" });
-    setSalons((prev) => prev.filter((s) => s.id !== id));
-    setActionLoading(null);
+    try {
+      const res = await fetch(`/api/admin/salons/${id}/approve`, { method: "PATCH" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      setSalons((prev) => prev.filter((s) => s.id !== id));
+    } catch (err) {
+      console.error("[DashboardApprovals] failed to approve salon:", err);
+      toast.error(t("approveError"));
+    } finally {
+      setActionLoading(null);
+    }
   }
 
   async function reject() {
     if (!rejectModal || !rejectReason.trim()) return;
     setActionLoading(rejectModal.id);
-    await fetch(`/api/admin/salons/${rejectModal.id}/reject`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ reason: rejectReason }),
-    });
-    setSalons((prev) => prev.filter((s) => s.id !== rejectModal.id));
-    setRejectModal(null);
-    setRejectReason("");
-    setActionLoading(null);
+    try {
+      const res = await fetch(`/api/admin/salons/${rejectModal.id}/reject`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reason: rejectReason }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      setSalons((prev) => prev.filter((s) => s.id !== rejectModal.id));
+      setRejectModal(null);
+      setRejectReason("");
+    } catch (err) {
+      console.error("[DashboardApprovals] failed to reject salon:", err);
+      toast.error(t("rejectError"));
+    } finally {
+      setActionLoading(null);
+    }
   }
 
   return (

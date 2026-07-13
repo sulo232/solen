@@ -22,9 +22,9 @@ import { cn, slugify } from "@/lib/utils";
  * to /salon/[slug]/reviews until /api/reviews/featured ships), salon
  * link jumps to /salon/[slug].
  *
- * BACKEND CONTRACT (Phase 2 — `/api/reviews/featured?limit=10`):
- *   Returns reviews shaped EXACTLY like the demo data below:
- *     { stars, text, initials, name, salonName, salonSlug, meta }
+ * BACKEND CONTRACT (`/api/reviews/featured?limit=10`, already live):
+ *   Returns reviews shaped as { stars, text, initials, name, salonName,
+ *   salonSlug, meta }. No fallback data: renders nothing until real reviews load.
  */
 
 interface Review {
@@ -37,90 +37,17 @@ interface Review {
   salonSlug: string;
 }
 
-// 2026-06-05: salonSlug/salonName point at REAL seeded salons (Basel) so the
-// salon-link + the card-body "open review" target both resolve to a live PDP
-// instead of a 404. Inline salon-name mentions in the quote text were updated
-// to match. The reviewer/quote content is otherwise unchanged demo copy.
-const REVIEWS: Review[] = [
-  {
-    stars: 5,
-    text: "Termin in 30 Sekunden, keine Anrufe, keine Vorab-Zahlung. Muse Beauty Studio war wie immer top, aber die Buchung über Solen war diesmal einfach besser.",
-    initials: "LK",
-    name: "Lara K.",
-    meta: "Basel vor 2 Wochen",
-    salonName: "Muse Beauty Studio",
-    salonSlug: "muse-beauty-studio",
-  },
-  {
-    stars: 5,
-    text: "Spontan ohne Termin zu Old Town Barbers: Nummer auf dem Handy gezogen, kurz Kaffee geholt und der beste Fade meines Lebens. Die Warteschlangen-Anzeige ist Gold wert.",
-    initials: "MH",
-    name: "Marc H.",
-    meta: "Basel vor 5 Tagen",
-    salonName: "Old Town Barbers",
-    salonSlug: "old-town-barbers",
-  },
-  {
-    stars: 5,
-    text: "Habe einen Look auf Inspo gespeichert und konnte direkt buchen, same-day. Die Stylistin hatte das Foto schon offen als ich ankam. Magic.",
-    initials: "SR",
-    name: "Sara R.",
-    meta: "Basel vor 1 Woche",
-    salonName: "Nail Studio Bliss",
-    salonSlug: "nail-studio-bliss",
-  },
-  {
-    stars: 5,
-    text: "Endlich kein Telefonieren mehr. Drei Optionen verglichen, eine gebucht, fertig in unter zwei Minuten. So sollte das überall funktionieren.",
-    initials: "AM",
-    name: "Anna M.",
-    meta: "Basel vor 3 Tagen",
-    salonName: "Smooth Skin Studio",
-    salonSlug: "smooth-skin-studio",
-  },
-  {
-    stars: 4,
-    text: "Buchung war easy, Salon top. Einziger Kritikpunkt: Wegbeschreibung zeigt nicht alle Eingänge. Aber das ist Detail. Komme wieder.",
-    initials: "TW",
-    name: "Tobias W.",
-    meta: "Basel vor 1 Woche",
-    salonName: "Glow Lab Basel",
-    salonSlug: "glow-lab-basel",
-  },
-  {
-    stars: 5,
-    text: "Mein Geburtstagsgeschenk war eigentlich der Salonbesuch, aber dass ich es online buchen konnte, ohne fünfmal anzurufen, war fast besser.",
-    initials: "ES",
-    name: "Eva S.",
-    meta: "Basel vor 4 Tagen",
-    salonName: "Nail Studio Bliss",
-    salonSlug: "nail-studio-bliss",
-  },
-  {
-    stars: 5,
-    text: "Habe den Salon zufällig über die Karte gefunden, 200 m von zu Hause. Wie konnte ich den nicht kennen? Bewertungen waren spot-on.",
-    initials: "NB",
-    name: "Niklas B.",
-    meta: "Basel vor 6 Tagen",
-    salonName: "The Fade Factory",
-    salonSlug: "the-fade-factory",
-  },
-  {
-    stars: 5,
-    text: "Premium ohne Premium-Preise. Spa-Atmosphäre wie in einem 5-Sterne-Hotel, aber ich habe normal mit Solen gebucht: gleicher Preis, sofortige Bestätigung.",
-    initials: "SL",
-    name: "Sophie L.",
-    meta: "Basel vor 10 Tagen",
-    salonName: "Smooth Skin Studio",
-    salonSlug: "smooth-skin-studio",
-  },
-];
+// Frontend audit 2026-07-08 (FRONTEND_AUDIT_2026-07-08.md, home bucket): the
+// hardcoded fallback testimonials here were invented (fake names/quotes on real
+// salon slugs) and stayed live indefinitely whenever /api/reviews/featured
+// returned empty or errored. Removed; the section now waits for real data and
+// renders nothing (see the null-guard below) until reviews actually exist.
 
 export default function Reviews() {
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const router = useRouter();
   const locale = useLocale();
-  const [reviews, setReviews] = React.useState<Review[]>(REVIEWS);
+  const [reviews, setReviews] = React.useState<Review[]>([]);
 
   React.useEffect(() => {
     let cancelled = false;
@@ -129,7 +56,7 @@ export default function Reviews() {
       .then((data) => {
         if (cancelled) return;
         const items: any[] = Array.isArray(data?.items) ? data.items : [];
-        if (items.length === 0) return; // keep fallback
+        if (items.length === 0) return; // stay empty, no fabricated fallback
         const mapped: Review[] = items.map((item) => {
           const name: string = item.reviewer_name ?? "Anonym";
           // Derive initials from the reviewer name (up to 2 chars).
@@ -164,7 +91,7 @@ export default function Reviews() {
       })
       .catch((err) => {
         console.error("[Reviews] featured fetch failed:", err);
-        // keep hardcoded fallback
+        // stay empty, no fabricated fallback
       });
     return () => { cancelled = true; };
   }, []);
@@ -172,6 +99,8 @@ export default function Reviews() {
   const openReview = (slug: string) => {
     router.push(`/${locale}/salon/${slug}/reviews`);
   };
+
+  if (reviews.length === 0) return null;
 
   return (
     <Section>

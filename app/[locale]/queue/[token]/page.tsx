@@ -350,7 +350,7 @@ export default function QueueTrackingPage() {
         <Link
           href={`/${locale}`}
           aria-label={l.home}
-          className="absolute left-3.5 top-3.5 flex h-10 w-10 items-center justify-center rounded-full border border-white/60 bg-white/85 text-s-ink shadow-[0_2px_8px_rgba(10,10,10,.12)] backdrop-blur-md active:scale-95"
+          className="absolute left-3.5 top-3.5 flex h-11 w-11 items-center justify-center rounded-full border border-white/60 bg-white/85 text-s-ink shadow-[0_2px_8px_rgba(10,10,10,.12)] backdrop-blur-md active:scale-95"
         >
           <ArrowLeft size={20} />
         </Link>
@@ -359,7 +359,7 @@ export default function QueueTrackingPage() {
           <Link
             href={`/${locale}/salon/${data.salonSlug}`}
             aria-label={l.helpTitle}
-            className="absolute right-3.5 top-3.5 flex h-10 w-10 items-center justify-center rounded-full border border-white/60 bg-white/85 text-s-ink shadow-[0_2px_8px_rgba(10,10,10,.12)] backdrop-blur-md active:scale-95"
+            className="absolute right-3.5 top-3.5 flex h-11 w-11 items-center justify-center rounded-full border border-white/60 bg-white/85 text-s-ink shadow-[0_2px_8px_rgba(10,10,10,.12)] backdrop-blur-md active:scale-95"
           >
             <HelpCircle size={20} />
           </Link>

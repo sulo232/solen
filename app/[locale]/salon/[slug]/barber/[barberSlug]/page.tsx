@@ -22,7 +22,7 @@ interface BarberProfile {
   salon_name: string;
   salon_slug: string;
   salon_id: string;
-  cut_count: number;
+  totalCuts: number;
 }
 
 interface PortfolioImage {
@@ -117,13 +117,13 @@ export default function BarberProfilePage() {
         <div className="absolute top-4 left-4 right-4 flex justify-between">
           <Link
             href={`/${locale}/salon/${salonSlug}`}
-            className="p-2 rounded-full bg-white/80 backdrop-blur text-s-ink"
+            className="grid h-11 w-11 place-items-center rounded-full bg-white/80 backdrop-blur text-s-ink"
           >
             <ArrowLeft size={18} />
           </Link>
           <button
             onClick={handleShare}
-            className="p-2 rounded-full bg-white/80 backdrop-blur text-s-ink"
+            className="grid h-11 w-11 place-items-center rounded-full bg-white/80 backdrop-blur text-s-ink"
           >
             <Share2 size={18} />
           </button>
@@ -162,7 +162,7 @@ export default function BarberProfilePage() {
           {/* V3-D337 (T5): Scissors icon decorative accent → ink-3 per §1.5 forbidden. */}
           <div className="flex items-center gap-1.5 text-sm text-s-ink-2">
             <Scissors size={14} className="text-s-ink-3" />
-            <span className="font-medium">{barber.cut_count}</span> Schnitte
+            <span className="font-medium">{barber.totalCuts}</span> Schnitte
           </div>
           {barber.specialties?.length > 0 && (
             <div className="flex items-center gap-1.5 text-sm text-s-ink-2">

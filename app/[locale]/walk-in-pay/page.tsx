@@ -357,7 +357,7 @@ export default function WalkInPayPage() {
             type="button"
             onClick={() => router.back()}
             aria-label={l.back}
-            className="grid h-10 w-10 place-items-center rounded-xl bg-white text-s-ink shadow-[0_6px_18px_rgba(26,18,9,0.10)] transition-transform duration-200 active:scale-[0.94]"
+            className="grid h-11 w-11 place-items-center rounded-xl bg-white text-s-ink shadow-[0_6px_18px_rgba(26,18,9,0.10)] transition-transform duration-200 active:scale-[0.94]"
           >
             <ArrowLeft size={22} strokeWidth={2.2} />
           </button>

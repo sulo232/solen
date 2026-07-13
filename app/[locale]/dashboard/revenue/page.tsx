@@ -130,8 +130,12 @@ export default function RevenuePage() {
                 label: t("kpiGrowth"),
                 value: `${data.growth_percent >= 0 ? "+" : ""}${data.growth_percent.toFixed(1)}%`,
                 icon: ArrowUpRight,
-                color: data.growth_percent >= 0 ? "text-s-coral" : "text-s-coral",
-                bg: data.growth_percent >= 0 ? "bg-s-coral/5" : "bg-s-coral/5",
+                // mockup-ok: fabrication/dead-control fix (FRONTEND_AUDIT_2026-07-08.md,
+                // dash-money bucket) , both ternary branches resolved to the identical
+                // class, so the KPI never actually reflected growth direction. Uses the
+                // existing locked s-success/s-error semantic tokens, not a new color.
+                color: data.growth_percent >= 0 ? "text-s-success" : "text-s-error",
+                bg: data.growth_percent >= 0 ? "bg-s-success/5" : "bg-s-error/5",
               },
             ].map((card) => (
               <motion.div

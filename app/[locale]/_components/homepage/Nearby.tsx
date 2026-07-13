@@ -122,16 +122,11 @@ function resolveAvailability(
   // still show the urgency pill but with a count-based label.
   const hasMultipleSlots = e.nextSlot.bold.includes(",");
   if (hasMultipleSlots) return null;
-  // V3-D173: "Schnell weg" → "Nur X heute" — explicit count is far more
-  // actionable than vague urgency. V3-D175 (2026-05-26): shortened from
-  // "Nur noch X heute" → "Nur X heute" so the badge can't overrun the
-  // heart icon on the narrow 163px mobile carousel card. Demo cycles
-  // 1/2/3 by idx; Phase 2 derives from real booking density.
-  const slotsLeft = (idx % 3) + 1;
-  return {
-    state: "urgent",
-    label: `Nur ${slotsLeft} heute`,
-  };
+  // Frontend audit 2026-07-08 (FRONTEND_AUDIT_2026-07-08.md, home bucket):
+  // the "Nur X heute" urgency count was fabricated (idx-cycled, no real
+  // booking-density source). Removed until a genuinely live slotsLeft
+  // field is computed server-side.
+  return null;
 }
 
 export default function Nearby({

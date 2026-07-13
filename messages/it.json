@@ -2374,7 +2374,8 @@
       "suspendMessage": "Bloccare l'utente \"{name}\"? L'utente non potrà più accedere.",
       "unsuspendMessage": "Sbloccare di nuovo l'utente \"{name}\"?",
       "cancel": "Annulla",
-      "registeredOn": "Registrato il: {date}"
+      "registeredOn": "Registrato il: {date}",
+      "roleChangeError": "Impossibile cambiare il ruolo. Riprova."
     },
     "approvalsPage": {
       "title": "Approvazioni",
@@ -2387,7 +2388,9 @@
       "modalBody": "Motivo per <strong>{name}</strong> (inviato via e-mail):",
       "rejectReasonPlaceholder": "es. Dati incompleti, nessun legame con Basilea...",
       "cancel": "Annulla",
-      "rejectAndSendEmail": "Rifiuta e invia e-mail"
+      "rejectAndSendEmail": "Rifiuta e invia e-mail",
+      "approveError": "Approvazione non riuscita. Riprova.",
+      "rejectError": "Rifiuto non riuscito. Riprova."
     },
     "badgeManagerPage": {
       "pageTitle": "Gestione badge",
@@ -2459,6 +2462,8 @@
       "savedTitle": "Commissione aggiornata",
       "savedDescription": "Le nuove prenotazioni usano ora il {rate}%.",
       "errorMessage": "Salvataggio non riuscito. Riprova.",
+      "loadErrorTitle": "Impossibile caricare il tasso di commissione",
+      "loadErrorMessage": "Riprova prima di apportare modifiche.",
       "saving": "Salvataggio…",
       "saved": "Salvato",
       "retry": "Riprova",

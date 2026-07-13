@@ -581,7 +581,7 @@ export default function Header({ locale }: { locale: string }) {
               // rounded-SQUARE tile. V3-D421L (2026-06-06, council 3/3): FLAT — no shadow
               // (CONTROL_ELEVATION rule 3: zero box-shadow on white chrome; the bar itself
               // lifts on scroll, not the buttons).
-              "grid h-10 w-10 shrink-0 place-items-center rounded-[13px] border",
+              "grid h-11 w-11 shrink-0 place-items-center rounded-[13px] border",
               "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.94]",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
@@ -603,7 +603,7 @@ export default function Header({ locale }: { locale: string }) {
             }}
             aria-label="Zurück"
             className={cn(
-              "grid h-10 w-10 shrink-0 place-items-center rounded-[13px] border",
+              "grid h-11 w-11 shrink-0 place-items-center rounded-[13px] border",
               "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.94]",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
@@ -775,7 +775,7 @@ export default function Header({ locale }: { locale: string }) {
               // V3-D421k (2026-06-06): rounded-SQUARE tile matching the home button.
               // V3-D421L (council 3/3): FLAT — no shadow (CONTROL_ELEVATION rule 3). Tap
               // target 40px; folds with the header on category-route scroll.
-              "md:hidden relative grid h-10 w-10 place-items-center rounded-[13px] border transition-[transform,background-color,border-color] duration-200 ease-glide active:scale-[0.94] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+              "md:hidden relative grid h-11 w-11 place-items-center rounded-[13px] border transition-[transform,background-color,border-color] duration-200 ease-glide active:scale-[0.94] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               isDark ? "border-white/30 bg-white/10 text-white" : "border-s-border bg-white text-s-ink",
             )}
           >

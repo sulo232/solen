@@ -255,7 +255,7 @@ function AppBar({
       <Link
         href={`/${locale}`}
         aria-label={closeMode ? t("close") : t("back")}
-        className="flex h-9 w-9 items-center justify-center rounded-[12px] bg-s-bg-sunken text-s-ink transition-colors duration-150 ease-snap hover:brightness-[0.97]"
+        className="flex h-11 w-11 items-center justify-center rounded-[12px] bg-s-bg-sunken text-s-ink transition-colors duration-150 ease-snap hover:brightness-[0.97]"
       >
         {closeMode ? (
           <X size={19} strokeWidth={2.1} aria-hidden />
@@ -596,7 +596,9 @@ function OpenedView({
           type="button"
           onClick={onCopy}
           aria-label={copied ? t("copied") : t("copy")}
-          className="flex h-[34px] w-[34px] flex-shrink-0 items-center justify-center rounded-[10px] border border-s-border bg-white"
+          // mockup-ok: a11y touch-target fix (FRONTEND_AUDIT_2026-07-08.md) , 34px raised
+          // to the locked 44px floor, fits the strip's own height, no redesign.
+          className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-[10px] border border-s-border bg-white"
         >
           {copied ? (
             <Check size={16} className="text-s-success" aria-hidden />

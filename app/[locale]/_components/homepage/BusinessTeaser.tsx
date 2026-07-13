@@ -70,8 +70,7 @@ export default function BusinessTeaser() {
           {/* V3-D220 (2026-05-26, /business rebuild): dropped md:text-[17px] step (out of Scale B).
               Use clamp(14,3.5vw,16) hero-sub spec from SOURCE.md §3. */}
           <p className="mt-5 max-w-[460px] font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.55] text-s-ink-2">
-            Mehr Buchungen, weniger Aufwand. Über 1&apos;200 Schweizer Salons
-            sind schon dabei.
+            Mehr Buchungen, weniger Aufwand, für dein Salon-Team.
           </p>
           <Link
             href="/partner"

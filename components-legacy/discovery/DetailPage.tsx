@@ -252,7 +252,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
             onClick={() => router.push(`/${locale}/inspo`)}
             aria-label={t.back}
             style={FROST_GLASS}
-            className="grid h-9 w-9 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95"
+            className="grid h-11 w-11 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95"
           >
             <ArrowLeft size={18} />
           </button>
@@ -262,7 +262,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
             aria-label={heroSaved ? t.saved : t.save}
             aria-pressed={heroSaved}
             style={FROST_GLASS}
-            className="grid h-9 w-9 place-items-center rounded-full transition-transform duration-150 active:scale-95"
+            className="grid h-11 w-11 place-items-center rounded-full transition-transform duration-150 active:scale-95"
           >
             <Heart
               key={String(heroSaved)}
@@ -282,7 +282,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
         <div className="fixed inset-0 z-[60] flex items-end" role="dialog" aria-modal="true" aria-label={item.style_name || "TikTok"}>
           <div className="absolute inset-0 bg-s-ink/60 backdrop-blur-[6px] animate-in fade-in duration-200" onClick={closePlayer} />
           <div className="relative w-full overflow-hidden rounded-t-[22px] bg-black shadow-elevation-3 animate-in slide-in-from-bottom duration-300">
-            <button type="button" onClick={closePlayer} aria-label={t.back} style={FROST_GLASS} className="absolute right-3 top-3 z-10 grid h-9 w-9 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95">
+            <button type="button" onClick={closePlayer} aria-label={t.back} style={FROST_GLASS} className="absolute right-3 top-3 z-10 grid h-11 w-11 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95">
               <X size={18} />
             </button>
             <div className="relative w-full" style={{ aspectRatio: videoAspect ?? "9 / 16", maxHeight: "82vh" }}>
