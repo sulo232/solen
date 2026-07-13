@@ -53,8 +53,9 @@ export async function GET(request: NextRequest) {
   // shipped all ~98 salon columns to anonymous clients, including owner/payment
   // internals. Never select search_doc, score_details, stripe_account_id, owner_id
   // here. This endpoint is queued for deletion by _plans/SEARCH_BACKEND.md phase 4
-  // once its 3 consumers (SearchResults, SplitView, badge-manager) are repointed;
-  // until then it must not leak.
+  // (verified 2026-07-13: SearchResults.tsx deleted, SplitView.tsx no longer exists;
+  // the ONE remaining live consumer is dashboard/badge-manager/page.tsx:267 salon-
+  // search assignment) once that consumer is repointed; until then it must not leak.
   const { data: rows, error: hydErr } = await supabase
     .from("salons")
     .select(
