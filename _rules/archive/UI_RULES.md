@@ -476,6 +476,8 @@ grep -rn "Record<string, string>" components/ --include="*.tsx" | awk -F: '{prin
 
 ### Rule 25: NEVER USE `getUser()` IN API ROUTES OR MIDDLEWARE
 
+> **REVERSED 2026-07-10, DO NOT FOLLOW THIS RULE.** This guidance is backwards and dangerous. `getSession()` reads the client-supplied cookie WITHOUT verifying the JWT signature, so a forged cookie can set any `user.id`. Server-side identity/authz now MUST use `getUser()` (verifies the JWT against the Supabase Auth server, fails closed with `user: null`). The whole backend was migrated to `getUser()` on 2026-07-10 (commit `9783e5711`) and the `.claude/hooks/no-getsession-authz-gate.py` gate BLOCKS new server-side `getSession()`. The edge-timeout premise below was real on the old Vercel Edge network; this app is on Netlify Node functions now, so the round-trip is safe. Current law: `_rules/SECURITY_RULES.md` Rule S1 + `_rules/CODE_SAFETY.md` Rule 25. The rest of this rule is retained only as history.
+
 > **CONTEXT**: This bug has been fixed TWICE (2026-03-18 and 2026-03-19). `supabase.auth.getUser()` makes a **network call** from Vercel Edge → Supabase to validate the JWT. This call **times out** on Vercel's edge network, returning `user: null` even when the session cookie is valid. This kills ALL session persistence — users log in successfully but get bounced to the login page on every subsequent navigation.
 
 **ALWAYS use `getSession()`** — it reads the JWT directly from cookies with **zero network calls**.
