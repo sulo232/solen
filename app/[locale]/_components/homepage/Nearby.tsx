@@ -6,6 +6,10 @@ import { useLocale } from "next-intl";
 import { Section, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
 import { SalonCard, type SalonCardProps } from "./SalonCard";
 import { useCustomerPrefs, sortByCategoryPicks, type CustomerPrefs } from "./useCustomerPrefs";
+// 2026-07-13: real rating/address/price data, batch-fetched server-side in
+// page.tsx (type-only import, the Supabase fetch code never reaches this
+// client bundle).
+import type { SalonCardDataMap } from "./salonCardData";
 
 /**
  * In der Nähe — V3 (LIVE_TRUTH §Q51.2 + V2-D34 cards).
@@ -83,18 +87,10 @@ const DEMO: NearbyEntry[] = [
     photoUrl: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=450&fit=crop&q=80" },
 ];
 
-// V2-D60-cards-7: default price per category for demo (real API will provide).
-const CATEGORY_DEFAULT_PRICE: Record<NearbyEntry["category"], number> = {
-  coiffeur: 80, barbershop: 50, nails: 45, spa: 95,
-};
-
-// V2-D60-cards-8: Basel street addresses for Row 2 meta.
-const NEARBY_ADDRESSES = [
-  "Steinenvorstadt 18", "Spalenberg 5", "Rheingasse 14", "Marktplatz 9",
-  "Bahnhofstrasse 33", "Aeschenvorstadt 22", "Margarethenstrasse 12", "Freie Strasse 67",
-  "Pfeffingerstrasse 8", "Gerbergasse 28", "Petersgraben 19", "Kornhausgasse 14",
-  "St. Alban-Vorstadt 25", "Klosterberg 6", "Bundesgasse 41",
-];
+// 2026-07-13: CATEGORY_DEFAULT_PRICE + NEARBY_ADDRESSES (fabricated per-category
+// price / rotating street address fallbacks) removed. Row 3 now renders the
+// REAL per-salon min active price + postal code/city from salonCardData.ts,
+// omitting the field rather than showing an invented value when it's missing.
 
 // V2-D60-cards-7: convert legacy nextSlot {prefix, bold, suffix} into a clean
 // single label. Strips "Nächster " prefix; keeps the bold date/time chunk.
@@ -113,9 +109,12 @@ function formatNextSlot(e: NearbyEntry): string {
 
 export default function Nearby({
   prefsOverride,
+  salonData = {},
 }: {
-  /** Test seam — bypasses the live fetch when provided (dev previews). */
+  /** Test seam, bypasses the live fetch when provided (dev previews). */
   prefsOverride?: CustomerPrefs | null;
+  /** Real rating/address/price per salon id, batch-fetched server-side in page.tsx. */
+  salonData?: SalonCardDataMap;
 } = {}) {
   const locale = useLocale();
   const fetched = useCustomerPrefs();
@@ -162,23 +161,28 @@ export default function Nearby({
           </span>
         </a>
         <ScrollRow ref={scrollRef}>
-        {entries.map((e, idx) => (
-          <SalonCard
-            key={`${e.slug}-${idx}`}
-            slug={e.slug}
-            salonId={e.id}
-            name={e.name}
-            rating={e.rating}
-            category={e.category}
-            photoUrl={e.photoUrl}
-            isSaved={e.isSaved}
-            variant="availability"
-            priceFromCHF={CATEGORY_DEFAULT_PRICE[e.category]}
-            nextSlotLabel={formatNextSlot(e)}
-            address={NEARBY_ADDRESSES[idx % NEARBY_ADDRESSES.length]}
-            city="Basel"
-          />
-        ))}
+        {entries.map((e, idx) => {
+          const real = salonData[e.id];
+          return (
+            <SalonCard
+              key={`${e.slug}-${idx}`}
+              slug={e.slug}
+              salonId={e.id}
+              name={e.name}
+              rating={real?.rating ?? null}
+              reviewCount={real?.reviewCount ?? null}
+              category={e.category}
+              photoUrl={e.photoUrl}
+              isSaved={e.isSaved}
+              variant="availability"
+              nextSlotLabel={formatNextSlot(e)}
+              citySelected={false}
+              postalCode={real?.postalCode ?? undefined}
+              city={real?.city ?? undefined}
+              priceFromCHF={real?.priceFromCHF ?? null}
+            />
+          );
+        })}
         </ScrollRow>
       </SectionFrame>
     </Section>

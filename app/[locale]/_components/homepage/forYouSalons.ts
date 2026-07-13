@@ -64,3 +64,10 @@ export const FORYOU_SALONS: Record<ForYouCategory, ForYouSalon[]> = {
 // Frontend audit 2026-07-08 (FRONTEND_AUDIT_2026-07-08.md, home bucket, ForYouSalonRows.tsx:25):
 // DealSalon/FORYOU_DEALS and the wantsDeals prop were dead code (never imported, never
 // referenced), removed rather than wired since no real "deals" data source exists yet.
+
+// 2026-07-13: flat id list for the server-side real-data batch fetch
+// (page.tsx -> salonCardData.ts). Derived from FORYOU_SALONS so it can never
+// drift out of sync with the card entries above.
+export const FORYOU_SALON_IDS: string[] = Object.values(FORYOU_SALONS).flatMap((list) =>
+  list.map((s) => s.id),
+);

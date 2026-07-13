@@ -123,7 +123,7 @@ export function MapSalonDetail({
         <ChevronLeft size={15} strokeWidth={2.2} aria-hidden /> {backLabel}
       </button>
 
-      <div className="relative aspect-[3/2] w-full overflow-hidden rounded-2xl bg-s-bg-sunken"> {/* mockup-ok */}
+      <div className="relative aspect-[5/4] w-full overflow-hidden rounded-2xl bg-s-bg-sunken"> {/* mockup-ok: CARD_REDESIGN_2026-07-13 C1, matches SalonCard/SalonResultCard aspect-[5/4] */}
         {salon.cover_photo_url ? (
           <Image
             src={salon.cover_photo_url}

@@ -5,6 +5,10 @@ import { Section, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader"
 import { SalonCard, type SalonCardProps } from "./SalonCard";
 import { useCustomerPrefs, sortByCategoryPicks, type CustomerPrefs } from "./useCustomerPrefs";
 import { useLocale } from "next-intl";
+// 2026-07-13: real rating/address/price data for the DEMO_SALONS ids, batch-
+// fetched server-side in page.tsx (type-only import, the Supabase fetch code
+// never reaches this client bundle). Same pattern as Nearby.tsx.
+import type { SalonCardDataMap } from "./salonCardData";
 
 /**
  * Recently Viewed — V3 (LIVE_TRUTH §Q51.0 + V2-D34 cards).
@@ -93,13 +97,12 @@ function pickOneSlot(row?: string): string {
   return r;
 }
 
-const CAT_PRICE: Record<SalonCardProps["category"], number> = {
-  coiffeur: 80, barbershop: 50, nails: 45, spa: 95,
-};
-
-// V2-D60-cards-8: addresses for Row 2 meta.
-const RV_ADDRESSES = ["Aeschenvorstadt 55", "Klybeckstrasse 12", "Spalenberg 23", "Bahnhofstrasse 14"];
-const RV_CITIES    = ["Basel",              "Basel",             "Basel",         "Zürich"];
+// 2026-07-13: CAT_PRICE (fabricated per-category price) + RV_ADDRESSES/
+// RV_CITIES (rotating fake street address fallbacks) removed. Row 3 now
+// renders the REAL per-salon min active price + postal code/city from
+// salonCardData.ts for DEMO_SALONS entries, omitting the field rather than
+// showing an invented value for real localStorage entries the server can't
+// pre-fetch (their salon ids aren't known until client hydration).
 
 // V2-D67-fu13 (2026-05-16): added schema-shape filter. Older versions of the
 // app wrote `solen.recently-viewed` entries with different fields (e.g. no
@@ -134,9 +137,14 @@ function readStorage(): RecentEntry[] {
 
 export default function RecentlyViewed({
   prefsOverride,
+  salonData = {},
 }: {
-  /** Test seam — bypasses the live fetch when provided (dev previews). */
+  /** Test seam, bypasses the live fetch when provided (dev previews). */
   prefsOverride?: CustomerPrefs | null;
+  /** Real rating/address/price for DEMO_SALONS ids, batch-fetched server-side
+   *  in page.tsx. Real localStorage entries (unknown id at server render time)
+   *  find no match here, so their price/address are simply omitted. */
+  salonData?: SalonCardDataMap;
 } = {}) {
   const fetched = useCustomerPrefs();
   const prefs = prefsOverride !== undefined ? prefsOverride : fetched;
@@ -179,22 +187,26 @@ export default function RecentlyViewed({
           scrollRef={scrollRef}
         />
         <ScrollRow ref={scrollRef}>
-          {list.map((s, idx) => (
-            <SalonCard
-              key={s.slug}
-              slug={s.slug}
-              salonId={s.id}
-              name={s.name}
-              rating={s.rating}
-              category={s.category}
-              photoUrl={s.photoUrl}
-              variant="availability"
-              priceFromCHF={CAT_PRICE[s.category]}
-              nextSlotLabel={pickOneSlot(s.availabilityRow)}
-              address={RV_ADDRESSES[idx % RV_ADDRESSES.length]}
-              city={RV_CITIES[idx % RV_CITIES.length]}
-            />
-          ))}
+          {list.map((s) => {
+            const real = s.id ? salonData[s.id] : undefined;
+            return (
+              <SalonCard
+                key={s.slug}
+                slug={s.slug}
+                salonId={s.id}
+                name={s.name}
+                rating={s.rating}
+                category={s.category}
+                photoUrl={s.photoUrl}
+                variant="availability"
+                priceFromCHF={real?.priceFromCHF ?? null}
+                nextSlotLabel={pickOneSlot(s.availabilityRow)}
+                citySelected={false}
+                postalCode={real?.postalCode ?? undefined}
+                city={real?.city ?? undefined}
+              />
+            );
+          })}
         </ScrollRow>
       </SectionFrame>
     </Section>
