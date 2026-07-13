@@ -16,43 +16,43 @@ import { ChevronRight } from "lucide-react";
 
 const DECISIONS = [
   {
-    name: "Zurück-Button: Kreisgrösse",
+    name: "Back button: circle size",
     href: "mock-backbutton",
     variants: [
-      { v: "40", label: "Variante A: 40px" },
-      { v: "44", label: "Variante B: 44px" },
+      { v: "40", label: "Variant A: 40px" },
+      { v: "44", label: "Variant B: 44px" },
     ],
   },
   {
-    name: "Deaktiviert-Zustand: Deckkraft",
+    name: "Disabled state: opacity",
     href: "mock-disabled",
     variants: [
-      { v: "40", label: "Variante A: opacity-40" },
-      { v: "50", label: "Variante B: opacity-50" },
+      { v: "40", label: "Variant A: opacity-40" },
+      { v: "50", label: "Variant B: opacity-50" },
     ],
   },
   {
-    name: "Benachrichtigungs-Badge: Farbe",
+    name: "Notification badge: color",
     href: "mock-badge",
     variants: [
-      { v: "rot", label: "Variante A: Rot" },
-      { v: "ink", label: "Variante B: Ink" },
+      { v: "rot", label: "Variant A: Red" },
+      { v: "ink", label: "Variant B: Ink" },
     ],
   },
   {
-    name: "Ergebnis-Karte: Foto-Radius",
+    name: "Result card: photo radius",
     href: "mock-radius",
     variants: [
-      { v: "18", label: "Variante A: 18px" },
-      { v: "22", label: "Variante B: 22px" },
+      { v: "18", label: "Variant A: 18px" },
+      { v: "22", label: "Variant B: 22px" },
     ],
   },
   {
-    name: "PDP-Sektionskarte: Schatten",
+    name: "PDP section card: shadow",
     href: "mock-shadow",
     variants: [
-      { v: "aktuell", label: "Variante A: shadow-whisper" },
-      { v: "gesetz", label: "Variante B: Hover elevation-2" },
+      { v: "aktuell", label: "Variant A: shadow-whisper" },
+      { v: "gesetz", label: "Variant B: hover elevation-2" },
     ],
   },
 ];
@@ -64,11 +64,11 @@ export default function MocksEntscheidungenIndexPage() {
     <div className="mx-auto min-h-screen w-full max-w-[560px] bg-white">
       <div className="border-b border-s-border px-4 pb-4 pt-6">
         <h1 className="font-display text-[18px] font-semibold tracking-[-0.01em] text-s-ink">
-          Entscheidungs-Mockups
+          Decision mockups
         </h1>
         <p className="mt-1 text-[13px] leading-[1.4] text-s-ink-2">
-          5 Entscheidungen, je 2 Varianten. Jeder Link öffnet die ganze reale Seite mit
-          der jeweiligen Variante.
+          5 decisions, 2 variants each. Every link opens the whole real page with that
+          variant applied.
         </p>
       </div>
       <div>

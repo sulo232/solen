@@ -62,7 +62,7 @@ export default async function MockRadiusPage({
         ]}
         hero={{
           title: `${categoryName} in ${cityName}`,
-          subtitle: `Entdecke die besten ${categoryName} in ${cityName}. Vergleiche Bewertungen, Preise und Verfügbarkeit.`,
+          subtitle: `Discover the best ${categoryName} in ${cityName}. Compare reviews, prices and availability.`,
         }}
       />
       <VariantSwitcher

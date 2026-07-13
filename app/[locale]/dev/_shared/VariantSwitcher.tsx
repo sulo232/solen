@@ -15,7 +15,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 /**
  * VariantSwitcher, the one shared floating control for all 5 whole-page decision
  * mockups (mock-backbutton, mock-disabled, mock-badge, mock-radius, mock-shadow).
- * Fixed bottom-center pill, German option labels, links swap `?v=` on the CURRENT
+ * Fixed bottom-center pill, English option labels (owner 2026-07-13 correction), links swap `?v=` on the CURRENT
  * path (server component re-renders with the new variant). Selected state follows
  * the LOCKED design-contract "selected/active" row (CLAUDE.md): calm gray
  * `bg-s-bg-sunken` fill + `text-s-ink` + semibold over a white unselected option,

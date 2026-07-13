@@ -55,7 +55,7 @@ export default async function MockBadgePage({
     <div className="relative overflow-hidden bg-white">
       <div className="mx-auto flex max-w-[1280px] items-center justify-end gap-2 px-4 pt-3">
         <span className="text-[12px] text-s-ink-2">
-          Badge-Vorschau (Beispiel, Zähler {EXAMPLE_COUNT}, kein Live-Wert):
+          Badge preview (example, count {EXAMPLE_COUNT}, not a live value):
         </span>
         <span aria-hidden className="relative grid h-10 w-10 place-items-center text-s-ink">
           <Bell size={21} strokeWidth={2} aria-hidden />
@@ -70,7 +70,7 @@ export default async function MockBadgePage({
       </FeedZone>
       <VariantSwitcher
         options={[
-          { value: "rot", label: "Rot" },
+          { value: "rot", label: "Red" },
           { value: "ink", label: "Ink" },
         ]}
       />

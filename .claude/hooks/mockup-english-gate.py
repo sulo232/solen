@@ -1,39 +1,38 @@
 #!/usr/bin/env python3
-"""mockup-format gate , PreToolUse Write/Edit. (File keeps its historical name because it is
-wired twice in settings.json, which this sandbox cannot edit; the LAW inside is current.)
+"""mockup-format gate , PreToolUse Write/Edit.
 
-TWO owner rules, dictated 2026-07-13 after rejecting the decision A/B panel mockups
-("those mockup makes no sence and there should be a hook abt saying maiking the mockup a
-preview of the whole page and also always in german"):
+TWO rules, current as of the owner's 2026-07-13 CORRECTION message ("i told you mockups
+always always in english... fix the gates too"):
 
-1. GERMAN, ALWAYS: mockup copy is German. This SUPERSEDES the 2026-07-01 English-mockup rule
-   this file previously enforced (owner then: "mockup is always english"; owner now: "always
-   in german" , latest dated instruction wins, per the precedence chain). Blocks a mockup
-   file whose visible copy is English (>=2 distinct unambiguous English UI words).
-2. WHOLE-PAGE PREVIEW: a mockup is a preview of the WHOLE real page with only the treatment
-   applied , never an isolated component panel / A-B swatch board. Blocks a NEW mockup file
-   that does not declare `Mockup-scope: whole-page` AND import at least one real component
-   from the app tree (the declaration line is the agent's explicit compliance claim; the
-   import requirement keeps it a copy of the real page, matching the no-invented-ui gate).
+1. ENGLISH, ALWAYS (2026-07-01 rule REAFFIRMED 2026-07-13): hardcoded mockup copy is ENGLISH.
+   History, so this never flip-flops again: the 2026-07-01 owner rule said English; on
+   2026-07-13 a dictated message read "and also always in german" and this gate was briefly
+   inverted to German; the owner corrected the same day ("always always in english"), so the
+   mis-dictation is void and ENGLISH stands. Note the standing exemption: REAL shipped
+   components render German via i18n/t() at /de/ , that is correct and invisible to this gate
+   (it only sees hardcoded strings in the mockup FILE). Review links for mockups composing
+   real components should use the /en/ locale so the page reads English.
+2. WHOLE-PAGE PREVIEW (owner 2026-07-13, first message , NOT retracted by the correction):
+   a mockup is a preview of the WHOLE real page with only the treatment applied, never an
+   isolated component panel / A-B swatch board. New mockup files must carry the literal line
+   `Mockup-scope: whole-page` AND import at least one real component from the app tree.
 
 Scope: Write/Edit to files whose path contains /dev/ or /_mockups/ (code/markup extensions).
-Fail-open on any error. Escapes: `german-ok` in-file for a genuinely-required English string
-(brand names etc. never trigger; the wordlist is UI copy only); `panel-ok: <reason>` in-file
-for the rare sanctioned non-page mockup (needs the reason inline); or
+Fail-open on any error. Escapes: `english-ok` in-file for a genuinely-required German string;
+`panel-ok: <reason>` in-file for a sanctioned non-page mockup; or
 touch .claude/mockup-format-skip.flag (30-min TTL).
 """
 import json, os, re, sys, time
 
-# Unambiguous ENGLISH UI-copy words (not German homographs, not code identifiers by usage:
-# matched only inside JSX text or quoted UI strings, see UI_TEXT_RE below).
-ENGLISH = re.compile(
-    r"\b(search|book now|choose|select one|continue|cancel|close|open now|read more|"
-    r"see all|view all|show more|load more|back to|next step|your (booking|appointment)|"
-    r"welcome|sign in|log in|please|loading|no results|try again|learn more)\b",
+# Unambiguously-German UI words (not English homographs); literal umlauts on purpose.
+# (Wordlist from the original 2026-07-01 gate, kept verbatim.)
+GERMAN = re.compile(
+    r"\b(keine?|suchen|anzeigen|nichts|vorschl\w*|zurücksetzen|treffer|geöffnet|"
+    r"probier\w*|schweiz\w*|wählen|stadt|städte|und|oder|für|nicht|weiter|ganzen?|"
+    r"aktuell|ruhig|wärmere|erhöht\w*|klarer|buchen|entscheidung\w*|beispiel|zähler|"
+    r"deckkraft|kreisgrösse|glocke|schatten|ansehen)\b",
     re.I,
 )
-# JSX text nodes (>text<) and common UI-string props/labels.
-UI_TEXT_RE = re.compile(r">([^<>{}]{3,120})<|(?:label|title|placeholder|aria-label)\s*[:=]\s*[\"']([^\"']{3,120})[\"']")
 
 
 def main():
@@ -60,17 +59,18 @@ def main():
 
     problems = []
 
-    # Rule 1 , German always (English copy blocked).
-    if "german-ok" not in content:
-        ui_text = " ".join(a or b for a, b in UI_TEXT_RE.findall(content))
-        hits = sorted({m.group(0).lower() for m in ENGLISH.finditer(ui_text)})
+    # Rule 1 , ENGLISH always (hardcoded German copy blocked).
+    if "english-ok" not in content:
+        hits = sorted({m.group(0).lower() for m in GERMAN.finditer(content)})
         if len(hits) >= 2:
             problems.append(
-                "ENGLISH COPY (" + ", ".join(hits[:6]) + "): mockups are ALWAYS German "
-                "(owner 2026-07-13, supersedes the 2026-07-01 English rule). Rewrite the "
-                "visible copy in German, or mark a genuinely-required string `german-ok`.")
+                "GERMAN COPY (" + ", ".join(hits[:6]) + "): hardcoded mockup copy is ALWAYS "
+                "ENGLISH (owner 2026-07-01, REAFFIRMED 2026-07-13 correction; the same-day "
+                "'always in german' message was a mis-dictation, void). Real components "
+                "rendering German via i18n are exempt , link such mockups at /en/. Rewrite "
+                "hardcoded copy in English, or mark a genuinely-required string `english-ok`.")
 
-    # Rule 2 , whole-page preview (new mockup page files only).
+    # Rule 2 , whole-page preview (new mockup page files only; NOT retracted).
     is_new_file = bool(ti.get("content")) and not os.path.exists(fp)
     if is_new_file and fp.endswith((".tsx", ".jsx")) and "panel-ok" not in content:
         declares = "Mockup-scope: whole-page" in content
@@ -78,13 +78,12 @@ def main():
         if not (declares and imports_real):
             problems.append(
                 "NOT A WHOLE-PAGE PREVIEW: a mockup is the WHOLE real page with only the "
-                "treatment applied (owner 2026-07-13: 'a preview of the whole page'), never an "
-                "isolated component panel. Required: the literal line `Mockup-scope: whole-page` "
-                "+ >=1 import from the real app tree (_components/ or components-legacy/). "
-                "Rare sanctioned exception: add `panel-ok: <reason>` inline.")
+                "treatment applied (owner 2026-07-13), never an isolated component panel. "
+                "Required: the literal line `Mockup-scope: whole-page` + >=1 import from the "
+                "real app tree. Rare sanctioned exception: `panel-ok: <reason>` inline.")
 
     if problems:
-        sys.stderr.write("MOCKUP-FORMAT GATE (owner 2026-07-13):\n- " + "\n- ".join(problems)
+        sys.stderr.write("MOCKUP-FORMAT GATE:\n- " + "\n- ".join(problems)
                          + "\nSkip (genuine false positive): touch .claude/mockup-format-skip.flag (30m)\n")
         sys.exit(2)
     sys.exit(0)

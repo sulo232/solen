@@ -35,3 +35,11 @@ Law binding this batch: mockup = copy of the REAL component/page, treatment-only
 - [x] V5 render+look , DONE, verified: all 5 routes screenshotted at 375x812 this session and LOOKED at (real PDP hero + services, real pay step with summary card + ghosted CTA, real homepage with captioned example bell, real search results with live salons + 18/22 switcher, PDP services for shadow); one nit noted, mock-shadow auto-scroll lands at top, services one scroll below, not punch-worthy
 - [x] V6 links + recommendations , DONE, verified: curl through the public edge returned 200 on /de/dev/mocks-entscheidungen this session (tunnel viii-format-crystal-mae); close message carries 6 clickable links + picks 1B/2A/3A/4B/5B with reasons
 - [x] V7 commits , DONE: mockup-law chunk (hook+ledger+graveyard+CLAUDE.md), WIP checkpoint 1a764358a, v2-complete commit this session, records commit; BONUS: stale GLOBAL mockup-content-gate language branches inverted to German-always (owner 2026-07-13) + self-tested deny/pass
+
+
+## CORRECTION (owner 2026-07-13, second message): mockups ALWAYS ENGLISH , the earlier "always in german" was a mis-dictation; the 2026-07-01 English rule stands
+- [x] X1 project gate English-enforcing again , verified: German probe exit=2, English whole-page probe exit=0 (this session); whole-page arm kept; supersession trail in the gate header
+- [x] X2 global gate restored , verified: German tsx probe returns permissionDecision deny, English probe allowed (this session); correction trail in both branches
+- [x] X3 law records corrected , verified: CLAUDE.md Mockup block rule 4 (WHOLE-PAGE + ENGLISH), feedback_mockup_policy.md (with the flag-contradictions lesson), DRIFT_LEDGER 2026-07-13 entry
+- [x] X4 hardcoded strings translated , verified: index names/labels/description, badge caption, radius subtitle, switcher labels all English (grep + render); links delivered at /en/
+- [x] X5 render-verified , /en/dev/mocks-entscheidungen fully English (screenshot); /en/dev/mock-backbutton?v=44 rendered, note: salon DATA (service names, hours) stays German because it IS the real Swiss salon data, exempt per the 2026-07-01 rule's own real-component carve-out
