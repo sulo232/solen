@@ -31,7 +31,7 @@ Law binding this batch: mockup = copy of the REAL component/page, treatment-only
 - [x] V1 rejection recorded , verified: DRIFT_LEDGER.md 2026-07-13 entry + REMOVED.md graveyard line (npm run removed output this turn)
 - [x] V2 hook built + self-tested , verified: .claude/hooks/mockup-english-gate.py rewritten to the mockup-format gate (German always, supersedes 2026-07-01 English rule; whole-page declaration + real import); self-test T1/T2 block exit=2, T3/T4 pass exit=0 (this session)
 - [x] V3 law recorded , verified: CLAUDE.md Mockup-FIRST block rule 4 added; memory feedback_mockup_policy.md amended
-- [ ] V4 rebuild the 5 decisions as WHOLE-PAGE previews (?v= switch on the real pages, German): backbutton on the real PDP, disabled on the real booking form step, badge on the real homepage header, radius on the real search results, shadow on the real PDP services section
-- [ ] V5 render each whole-page mockup at 375px, LOOK, punch-fix
-- [ ] V6 deliver tunnel links + per-decision recommendation (again)
-- [ ] V7 commits per chunk
+- [ ] V4 rebuild as WHOLE-PAGE previews , BLOCKED-ON: resumed coder agent mid-write (verified on disk this turn: mock-backbutton, mock-badge, mock-shadow + 3 _shared helpers written; mock-disabled, mock-radius, index outstanding); completion notification is the wake signal
+- [ ] V5 render+look at 375px , BLOCKED-ON: V4 (cannot render routes that are not on disk yet)
+- [ ] V6 links + recommendations , BLOCKED-ON: V5 (links only after looking; tunnel alive, verified 200 this session)
+- [ ] V7 commits , IN PROGRESS: WIP snapshot of the coder's partial routes committed this turn (checkpoint gate); final chunk commits on V4/V5 close
