@@ -99,6 +99,7 @@ Before applying, building, or committing ANY visual / design change: **show the 
 1. The mockup MUST be a **copy of the REAL page/component** with ONLY the proposed change applied — capture the real route (Playwright), modify the real DOM/component uncommitted, show before/after. NEVER a from-scratch HTML redraw (they diverge → "this doesn't look like the homepage").
 2. **Treatment-only:** change ONLY the proposed thing (shadow / bg / radius / spacing). Never touch structure, layout, copy, icons, or content in a design mockup. Structure stays; only the treatment changes.
 3. Approve → THEN edit the real component + commit. Memory: `feedback_mockup_first_always`.
+4. **WHOLE-PAGE + GERMAN (owner 2026-07-13, hook-enforced):** a mockup is a preview of the WHOLE real page (full route chrome, variant-switchable), never an isolated component panel or A/B swatch board; mockup copy is ALWAYS German (supersedes the 2026-07-01 English-mockup rule). Gate: `.claude/hooks/mockup-english-gate.py` (rewritten to the format gate; requires `Mockup-scope: whole-page` + a real app-tree import in new mockup files).
 
 ---
 

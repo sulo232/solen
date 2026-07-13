@@ -29,3 +29,10 @@ machine-matched. Feed a new entry whenever the owner flags "you rebuilt/re-inven
 - owner: "what the fuck is wrong with your search bar? that shit is not what we have."
 - fix rule: ANY mockup of the search/category page MUST copy the real SearchTemplate top verbatim (extract the real JSX; screenshot the real /de/coiffeur as reference). Model-B deltas are BEHAVIORAL (param separation), not a new bar.
 - keywords: search bar, suchleiste, category page, model b, composer, segmented, suchen, schweizweit, category pills, search template
+
+## 2026-07-13 , decision mockups built as isolated A/B component panels (owner: "makes no sense")
+- existing (USE THIS FORMAT): mockup = a preview of the WHOLE real page with only the treatment applied (the real route's full chrome: header, content, footer), variant-switchable (?v=), copy ALWAYS German. The owner reacts to pages, not swatch boards.
+- invented instead (WRONG): /dev/decision-* routes showing the component cropped into labeled A/B panels on a bare page (glass button on a photo box, two bells in cards, two isolated result cards).
+- owner: "those mockup makes no sence and there should be a hook abt saying maiking the mockup a preview of the whole page and also always in german" (2026-07-13).
+- fix rule: every mockup file declares `Mockup-scope: whole-page`, imports the real page components, German copy. Enforced by the mockup-format gate (.claude/hooks/mockup-english-gate.py, rewritten 2026-07-13: German supersedes the 2026-07-01 English rule; whole-page declaration + real import required).
+- keywords: mockup, decision, a/b, panel, vergleich, preview, variante, entscheidung, swatch, side-by-side

@@ -25,3 +25,13 @@ Law binding this batch: mockup = copy of the REAL component/page, treatment-only
 - [x] M7 render+look , DONE, verified: all 6 routes rendered in Browser pane 375x812 and looked at; measured: rects 40/44px, radii 18px/22px computed, shadow-whisper vs hover:shadow-elevation-2 classes, badge A red/B ink, disabled 40/50 columns; commit 1936cf760
 - [x] M8 close , DONE: tunnel links + per-decision recommendation delivered in the close message (tunnel re-proven 200 on /de/dev/decisions); M3 bonus finding surfaced (the SHIPPED header badge is BLUE accent, a third live variant neither red nor ink) , verified: rendered+measured this session, commit 1936cf760
 - [x] M9 records , DONE: coder chunk + verify chunk committed (shas in git log this session); ACTIVE.md row 20 updated to DELIVERED-AWAITING-PICKS , verified: rendered+measured this session, commit 1936cf760
+
+
+## V2 , whole-page rebuild (owner rejection 2026-07-13: "makes no sense... preview of the whole page... always in german")
+- [x] V1 rejection recorded , verified: DRIFT_LEDGER.md 2026-07-13 entry + REMOVED.md graveyard line (npm run removed output this turn)
+- [x] V2 hook built + self-tested , verified: .claude/hooks/mockup-english-gate.py rewritten to the mockup-format gate (German always, supersedes 2026-07-01 English rule; whole-page declaration + real import); self-test T1/T2 block exit=2, T3/T4 pass exit=0 (this session)
+- [x] V3 law recorded , verified: CLAUDE.md Mockup-FIRST block rule 4 added; memory feedback_mockup_policy.md amended
+- [ ] V4 rebuild the 5 decisions as WHOLE-PAGE previews (?v= switch on the real pages, German): backbutton on the real PDP, disabled on the real booking form step, badge on the real homepage header, radius on the real search results, shadow on the real PDP services section
+- [ ] V5 render each whole-page mockup at 375px, LOOK, punch-fix
+- [ ] V6 deliver tunnel links + per-decision recommendation (again)
+- [ ] V7 commits per chunk
