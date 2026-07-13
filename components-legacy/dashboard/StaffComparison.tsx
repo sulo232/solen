@@ -44,11 +44,11 @@ export default function StaffComparison({ salonId }: StaffComparisonProps) {
         <h3 className="font-heading text-sm text-s-ink">{t("title")}</h3>
         <div className="flex rounded-btn border border-s-border overflow-hidden">
           <button onClick={() => setViewMode("table")} aria-pressed={viewMode === "table"}
-            className={`px-2 py-1 text-xs transition-colors duration-150 ${viewMode === "table" ? "bg-s-accent-bright/10 text-s-accent-bright" : "text-s-ink-2"}`}>
+            className={`px-2 py-1 text-xs transition-colors duration-150 ${viewMode === "table" ? "bg-s-bg-sunken text-s-ink" : "text-s-ink-2"}`}>
             <Table2 size={12} />
           </button>
           <button onClick={() => setViewMode("chart")} aria-pressed={viewMode === "chart"}
-            className={`px-2 py-1 text-xs transition-colors duration-150 ${viewMode === "chart" ? "bg-s-accent-bright/10 text-s-accent-bright" : "text-s-ink-2"}`}>
+            className={`px-2 py-1 text-xs transition-colors duration-150 ${viewMode === "chart" ? "bg-s-bg-sunken text-s-ink" : "text-s-ink-2"}`}>
             <BarChart2 size={12} />
           </button>
         </div>

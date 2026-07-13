@@ -123,7 +123,7 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
                 onClick={() => setPeriod(p)}
                 className={`px-3 py-1 text-xs font-medium transition-colors duration-150 ${
                   period === p
-                    ? "bg-s-accent-bright/10 text-s-accent-bright"
+                    ? "bg-s-bg-sunken text-s-ink"
                     : "text-s-ink-2 hover:bg-s-bg-sunken"
                 }`}
               >
@@ -175,7 +175,7 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
                 onClick={() => setSortBy(col.key)}
                 className={`px-2 py-1 rounded-btn text-xs whitespace-nowrap transition-colors duration-150 ${
                   sortBy === col.key
-                    ? "bg-s-accent-bright/10 text-s-accent-bright font-medium"
+                    ? "bg-s-bg-sunken text-s-ink font-medium"
                     : "text-s-ink-2 hover:text-s-ink"
                 }`}
               >

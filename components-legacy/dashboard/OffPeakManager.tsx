@@ -165,7 +165,7 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
                 onClick={() => setAddDay(di)}
                 className={[
                   "flex-1 text-center font-heading font-semibold text-xs rounded-[10px] py-2 border transition-colors",
-                  addDay === di ? "bg-s-accent-bright/10 text-s-accent-bright border-s-accent-bright/10" : "border-s-border text-s-ink-2",
+                  addDay === di ? "bg-s-bg-sunken text-s-ink border-s-border" : "border-s-border text-s-ink-2",
                 ].join(" ")}
               >
                 {DAYS[di]}
