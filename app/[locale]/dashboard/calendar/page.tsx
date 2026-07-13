@@ -445,8 +445,13 @@ export default function CalendarPage() {
   useEffect(() => {
     if (!salonId) return;
     const supabase = createBrowserSupabaseClient();
+    // Per-mount-UNIQUE topic: realtime-js channel() dedupes by topic and removeChannel() clears it
+    // only after an async unsubscribe, so React Strict Mode's synchronous mount->cleanup->remount
+    // hands a fixed topic back its still-subscribed channel, and .on(...) then throws "cannot add
+    // postgres_changes callbacks ... after subscribe()". (The old "salon-slots" topic was also
+    // salon-agnostic, so two tabs/salons collided too.) The salon_id filter carries the real scope.
     const channel = supabase
-      .channel("salon-slots")
+      .channel(`salon-slots-${salonId}-${Math.random().toString(36).slice(2)}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "availability_slots", filter: `salon_id=eq.${salonId}` },
         () => loadSlots())
       .subscribe();
