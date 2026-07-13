@@ -105,29 +105,11 @@ function formatNextSlot(e: NearbyEntry): string {
   return firstChunk; // e.g. "14:30", "Mi. 14:00", "21. Mai 14:00"
 }
 
-// V2-D66 (2026-05-16, Hayden move #16): pick the right directional state.
-// Cards with freeToday + "In N Min" copy → "limited" (time-pressure ⚡).
-// Cards with freeToday + multiple times → "urgent" (filling fast ↘).
-// Cards with freeToday + single time → "now" (available ↗).
-// Cards without freeToday → no pill (date in row 2 carries the info).
-// TODO: Phase 2 derives state from real booking density / time-to-fill,
-// not heuristics on demo copy.
-function resolveAvailability(
-  e: NearbyEntry,
-  idx: number,
-): { state: "now" | "urgent" | "limited"; label: string } | null {
-  if (!e.freeToday) return null;
-  // V3-D173 (2026-05-26): "Heute frei" badge retired per user — the
-  // multi-slot branch now returns null (no pill). Single-slot cards
-  // still show the urgency pill but with a count-based label.
-  const hasMultipleSlots = e.nextSlot.bold.includes(",");
-  if (hasMultipleSlots) return null;
-  // Frontend audit 2026-07-08 (FRONTEND_AUDIT_2026-07-08.md, home bucket):
-  // the "Nur X heute" urgency count was fabricated (idx-cycled, no real
-  // booking-density source). Removed until a genuinely live slotsLeft
-  // field is computed server-side.
-  return null;
-}
+// CARD_REDESIGN_2026-07-13 (C2, mockup-ok, approved card-redesign.html #c11):
+// resolveAvailability() removed. It always returned null (the "Heute frei"
+// badge was retired at V3-D173 and the urgency-count branch was already dead
+// per the 2026-07-08 frontend audit), and SalonCard's `availability` prop is
+// gone too, see _design-system/REMOVED.md for the graveyard line.
 
 export default function Nearby({
   prefsOverride,
@@ -190,7 +172,6 @@ export default function Nearby({
             category={e.category}
             photoUrl={e.photoUrl}
             isSaved={e.isSaved}
-            availability={resolveAvailability(e, idx)}
             variant="availability"
             priceFromCHF={CATEGORY_DEFAULT_PRICE[e.category]}
             nextSlotLabel={formatNextSlot(e)}

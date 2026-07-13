@@ -85,11 +85,15 @@ function Rail({
   salons,
   cat,
   locale,
+  citySelected,
 }: {
   title: string;
   salons: RailSalon[];
   cat: SalonCardProps["category"];
   locale: string;
+  /** CARD_REDESIGN_2026-07-13 (C6/C11): true on a city-scoped route
+   *  (`/{city}/{category}`), so Row 3 shows the street address. */
+  citySelected: boolean;
 }) {
   const ref = React.useRef<HTMLDivElement>(null);
   if (salons.length < 2) return null;
@@ -113,6 +117,7 @@ function Rail({
               nextSlotLabel={nextAvailableSlotLabel(s.services, locale) ?? undefined}
               address={s.address}
               city={(s.quartier ? cap(s.quartier) : undefined) || s.city}
+              citySelected={citySelected}
             />
           ))}
         </ScrollRow>
@@ -125,10 +130,15 @@ export function CategoryBrowseRails({
   salons,
   locale,
   category,
+  citySelected = false,
 }: {
   salons: RailSalon[];
   locale: string;
   category: string;
+  /** CARD_REDESIGN_2026-07-13 (C6/C11): true on a city-scoped route
+   *  (`/{city}/{category}`), threaded from SearchTemplate's `activeCity`,
+   *  so the cards' Row 3 shows the street address, not postal + city. */
+  citySelected?: boolean;
 }) {
   const cat = category as SalonCardProps["category"];
 
@@ -187,12 +197,12 @@ export function CategoryBrowseRails({
 
   return (
     <div className="mt-2">
-      <Rail title={pick(TITLES.top, locale)} salons={top} cat={cat} locale={locale} />
-      <Rail title={pick(TITLES.deals, locale)} salons={deals} cat={cat} locale={locale} />
-      <Rail title={pick(TITLES.nearby, locale)} salons={nearby} cat={cat} locale={locale} />
-      <Rail title={pick(TITLES.soon, locale)} salons={soon} cat={cat} locale={locale} />
-      <Rail title={pick(TITLES.men, locale)} salons={men} cat={cat} locale={locale} />
-      <Rail title={pick(TITLES.color, locale)} salons={color} cat={cat} locale={locale} />
+      <Rail title={pick(TITLES.top, locale)} salons={top} cat={cat} locale={locale} citySelected={citySelected} />
+      <Rail title={pick(TITLES.deals, locale)} salons={deals} cat={cat} locale={locale} citySelected={citySelected} />
+      <Rail title={pick(TITLES.nearby, locale)} salons={nearby} cat={cat} locale={locale} citySelected={citySelected} />
+      <Rail title={pick(TITLES.soon, locale)} salons={soon} cat={cat} locale={locale} citySelected={citySelected} />
+      <Rail title={pick(TITLES.men, locale)} salons={men} cat={cat} locale={locale} citySelected={citySelected} />
+      <Rail title={pick(TITLES.color, locale)} salons={color} cat={cat} locale={locale} citySelected={citySelected} />
     </div>
   );
 }
