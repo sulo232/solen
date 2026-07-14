@@ -124,24 +124,33 @@ Assets: _assets/mapbox-gl.js + mapbox-gl.css (self-hosted from node_modules); sa
       { id: "water", type: "fill", source: "mb", "source-layer": "water",
         paint: { "fill-color": "#AAD3E8" } },
       { id: "roads", type: "line", source: "mb", "source-layer": "road",
-        filter: ["match", ["get","class"], ["motorway","motorway_link","trunk","trunk_link"], false, true],
+        filter: ["match", ["get","class"], ["primary","secondary","tertiary"], true, false],
         layout: { "line-cap": "round", "line-join": "round" },
-        paint: { "line-color": "#C7CBD1", "line-width": ["interpolate",["linear"],["zoom"],11,0.5,14,2.2] } },
+        paint: { "line-color": "#D3D6DB", "line-width": ["interpolate",["linear"],["zoom"],11,0.5,14,1.6] } },
       { id: "labels", type: "symbol", source: "mb", "source-layer": "place_label",
-        filter: ["match", ["get","type"], ["city","town","neighbourhood","suburb","quarter","village"], true, false],
+        filter: ["match", ["get","type"], ["city","town"], true, false],
         layout: { "text-field": ["get","name"], "text-font": ["Arial Unicode MS Regular"],
-          "text-size": ["interpolate",["linear"],["zoom"],10,10,14,13], "text-letter-spacing": 0.01 },
-        paint: { "text-color": "#9AA0A8", "text-halo-color": "#FFFFFF", "text-halo-width": 1.4 } }
+          "text-size": ["interpolate",["linear"],["zoom"],10,10,14,12.5], "text-letter-spacing": 0.01 },
+        paint: { "text-color": "#AEB3BA", "text-halo-color": "#FFFFFF", "text-halo-width": 1.4 } }
     ]
   };
   var map = new mapboxgl.Map({
-    container: "nmap", style: STYLE, center: [7.5895, 47.5565], zoom: 12.2,
+    container: "nmap", style: STYLE, center: [7.5895, 47.5565], zoom: 12.0,
     interactive: false, attributionControl: false
   });
   map.on("load", function () {
-    COORDS.forEach(function (c) {
-      var el = document.createElement("div"); el.className = "dot";
-      new mapboxgl.Marker({ element: el }).setLngLat(c).addTo(map);
-    });
+    // Cluster nearby salons (the Uber/Lime declutter): overlapping dots merge into a
+    // blue count badge; lone salons stay single blue dots. Counts derive from real points.
+    map.addSource("salons", { type: "geojson", cluster: true, clusterRadius: 40, clusterMaxZoom: 16,
+      data: { type: "FeatureCollection", features: COORDS.map(function (c) {
+        return { type: "Feature", geometry: { type: "Point", coordinates: c } }; }) } });
+    map.addLayer({ id: "clusters", type: "circle", source: "salons", filter: ["has", "point_count"],
+      paint: { "circle-color": "#276EF1", "circle-stroke-color": "#fff", "circle-stroke-width": 2,
+        "circle-radius": ["step", ["get", "point_count"], 13, 4, 16, 8, 19] } });
+    map.addLayer({ id: "cluster-count", type: "symbol", source: "salons", filter: ["has", "point_count"],
+      layout: { "text-field": ["get", "point_count_abbreviated"], "text-font": ["Arial Unicode MS Regular"], "text-size": 12 },
+      paint: { "text-color": "#fff" } });
+    map.addLayer({ id: "point", type: "circle", source: "salons", filter: ["!", ["has", "point_count"]],
+      paint: { "circle-color": "#276EF1", "circle-radius": 6, "circle-stroke-color": "#fff", "circle-stroke-width": 2 } });
   });
 </script>
