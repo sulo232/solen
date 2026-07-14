@@ -109,11 +109,6 @@ The re-verification targeted the 141-campaign scope. The completeness critic nam
 ## FIX PASS applied 2026-07-14 (owner: "fix em") , see commit
 Fixed + tsc-clean + reviewed: F1 pre-charge webhook downgrade, F2 account.updated OFF path, F3 retail stock-fail alert+auto-refund (+break), F4 no-show re-assert guard, F5 sms-reminders claim-before-send, F6 quick-action cancel CAS + result-gate, F7 nail/ai-history ownership guard, F8 wired the getSession gate, F9 corrected OPS_RUNBOOK:49. Owner-approved behavior changes: P1 go-live now requires admin approval (`approved_at`), P2 staff-availability now requires auth (and the resurrected zombie barber page that consumed it was re-deleted, REMOVED.md).
 
-### ⚠️ REQUIRED DEPLOY COMPANION for the go-live gate (P1)
-The live DB shows **20 of 20 active salons have `approved_at IS NULL`** (they self-activated before this gate existed; only 2 salons have `approved_at` set). If the P1 gate deploys without a backfill, all 20 existing live salons are **locked out of re-activating**. Before/with deploying this branch, grandfather them (idempotent, additive, owner-gated prod write , NOT auto-run):
-```sql
-UPDATE public.salons
-SET approved_at = COALESCE(approved_at, now())
-WHERE is_active = true AND approved_at IS NULL;
-```
-This records the already-live salons as approved so only genuinely-new/deactivated salons hit the admin gate. Run it (or have me run it on your go-ahead) at deploy, not before (the branch is not live yet).
+### Go-live gate , DONE + HARDENED AT THE DB (owner: "do it, harden the gate", 2026-07-14)
+- **Backfill APPLIED live:** `UPDATE public.salons SET approved_at = now() WHERE is_active AND approved_at IS NULL` , grandfathered the 20 live salons (root cause: all 20 had `approved_at NULL` because they self-activated before this gate existed). Verified: live-unapproved 20 -> 0.
+- **Gate hardened at the DB (not just app code):** trigger `trg_guard_salon_activation` + `guard_salon_activation()` (migration `20260714144715`) blocks a non-service-role writer from setting `is_active=true` when `approved_at IS NULL` (INSERT or false->true transition). Mirrors `guard_profile_privilege_columns`; admin approve/seed (service_role) exempt. So even if the app-level check in go-live is bypassed, the DB rejects it. Verified live (rolled-back discriminate test): authenticated activation BLOCKED, service_role ALLOWED. The app check stays as defense-in-depth (better error message).
