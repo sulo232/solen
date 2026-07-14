@@ -2,31 +2,31 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-07-09T20:52:58 (trigger: manual)
-- branch: main
+- taken: 2026-07-14T08:59:49 (trigger: manual)
+- branch: claude/animation-reference-recognition-11f0c3
 
 ## git
 ```
-6ede73e67 plan: tick delivered boxes WITH evidence; commit concurrent-session booking work
-9adde8232 fix the dropped service-step items + dial down the step swap
-e4ba06c20 fix(backend): batch 7 — slot ends_at, timezone split, slot-delete, cron availability (audit HIGH+M/L)
-683030958 security(backend): batch 6 — dashboard/reviews/loyalty/onboarding/cron MEDIUM/LOW
-f71822263 core root of 'you keep forgetting': checkboxes self-certified without evidence
+ef0581470 checkpoint(auto): 12 uncommitted file(s) at turn end
+e6a0b7d2b checkpoint(auto): 10 uncommitted file(s) at turn end
+81f72ebb4 checkpoint(auto): 3 uncommitted file(s) at turn end
+5da554d5f plans: close FINISH-ALL push (all 4 agents committed, tsc 0 new errors)
+ed345d3f7 frontend-audit(#13 tail): 12 safe dashboard/admin touch-targets to 44px
 ```
 ```
-M _plans/BACKEND_FIX_TRACKER.md
- M _plans/BOOKING_POLISH.md
- M _plans/DB_FIX_MIGRATIONS.md
- M app/[locale]/salon/[slug]/booking/page.tsx
- M components-legacy/booking/ServicesStaffStep.tsx
- M components-legacy/booking/StaffStep.tsx
- M components-legacy/booking/ToggleCircle.tsx
-?? components-legacy/booking/StaffProfileSheet.tsx
+?? _plans/CARD_REDESIGN_2026-07-13.md
+?? app/[locale]/_components/homepage/nearbySalonIds.ts
+?? app/[locale]/_components/homepage/recentlyViewedIds.ts
+?? app/[locale]/_components/homepage/salonCardData.ts
+?? public/_mockups/card-redesign.html
+?? public/_mockups/foryou-real-price.html
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
-7 | Admin Cities toggle | **ACTIVE**
+7 | Admin Cities toggle | **DONE** (gap closed by the 2026-07-04 city-rollout; re-verified 2026-07-13)
 13 | Full-estate frontend audit (psychology + design-system + consistency) + mockups | **ACTIVE** (2026-07-08)
+23 | Card redesign (5:4 ratio + remove availability + fix overlap + rebalance) + from-price Q | **ACTIVE** (2026-07-13)
+19 | Reference-lock (brand/aspect reference recognition: capture-not-guess + persistence) | **DONE** (2026-07-11, loop-reviewer PASS 11/11)
 
 ## SEARCH_MAP_OVERHAUL.md
 Open boxes:
