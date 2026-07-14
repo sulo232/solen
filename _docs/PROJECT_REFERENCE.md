@@ -28,8 +28,8 @@ Two sides:
 | Rate limit | Upstash Redis (`@upstash/ratelimit`) |
 | Validation | Zod (`lib/validations.ts`) |
 | Icons | `lucide-react` |
-| Fonts | Anton (display) + Figtree (body) — Google Fonts. *(See SOLEN_DESIGN.md §20 for the lock — earlier values Bebas Neue / Syne / DM Sans are retired.)* |
-| Deploy | Vercel |
+| Fonts | Inter Tight (display / headings) + Inter (body) + Inter Tight tabular (codes). Locked in `_design-system/LOCKFILE.md`; never Geist. |
+| Deploy | Netlify (auto-deploys from `main`). Cron via GitHub Actions (`.github/workflows/cron-jobs.yml`). |
 | PWA | `manifest.json` + `sw.js` |
 | AI | Gemini (`@google/generative-ai`), fal.ai (`@fal-ai/client`) |
 | Search | pgvector (Supabase) |
@@ -81,7 +81,7 @@ solen/
 │   ├── LOST_DECISIONS.md              # What was tried and abandoned
 │   └── STRUCTURE_AUDIT.md             # Folder/file hygiene audit
 ├── app/                               # Next.js App Router
-│   └── api/                           # 325+ API routes (untouched during design port)
+│   └── api/                           # 351 API routes across ~48 groups (see _docs/BACKEND.md)
 ├── components/                        # React components (being ported to new design)
 ├── lib/                               # Utilities, validations, auth helpers
 ├── hooks/                             # Custom React hooks (useCityDetection, etc.)
@@ -114,15 +114,11 @@ npm run lint         # Lint
 
 ## 5. Deployment
 
-- **Platform:** Vercel (auto-deploys from `main`)
-- **Dev server:** port 3000
-- **Instrumentation:** `@vercel/otel` registers the OpenTelemetry service `solen` (see `instrumentation.ts`).
-
-**After every `git push`:**
-1. Confirm latest commit SHA matches what you pushed
-2. Status "Ready" (not Error / stuck Building)
-3. Build error → read log, fix, push again
-4. Wrong deployment in production → promote correct via three-dot menu
+- **Platform:** Netlify (auto-deploys from `main`). Cron jobs run via GitHub Actions (`.github/workflows/cron-jobs.yml`), not on Netlify.
+- **Dev server:** port 3000 (`npm run dev`).
+- **Instrumentation:** `instrumentation.ts` registers OpenTelemetry (service `solen`).
+- **Pushing is the owner's job:** Claude never runs `git push`. The owner pushes and syncs; the live site can lag local `main` until they do (see `_plans/OPS_RUNBOOK.md`).
+- **Backend deep reference:** how every backend system works lives in `_docs/BACKEND.md`.
 
 ---
 
@@ -147,6 +143,7 @@ This rule is operational and is also restated in CLAUDE.md.
 
 | Topic | File |
 |---|---|
+| Backend architecture (how every system actually works) | `_docs/BACKEND.md` |
 | Database schema | `_rules/DB_SCHEMA.md` |
 | Security (Rate limit, RLS, feature flags, audit, Zod) | `_rules/SECURITY_RULES.md` |
 | Code safety (verify imports/routes before calling, commit per sub-phase, build before commit) | `_rules/CODE_SAFETY.md` |
