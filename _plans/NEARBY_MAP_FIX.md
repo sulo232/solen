@@ -3,14 +3,15 @@
 The homepage "In der Nähe" teaser is a FAKE map (CSS grid + 3 hardcoded pins + hardcoded "14"). Owner wants it real + modern + minimalist. Layout A (map between two card rows) approved earlier; iterating on the MAP look + pin now.
 
 ## Owner asks (2026-07-14, dictation round 4)
-- [ ] N1. Still not modern -> make the map more modern.
-- [ ] N2. Pin = INK DOT (owner "prrly ink dot"). Drop the teardrop.
-- [ ] N3. "blur" , AMBIGUOUS. Interpreting as: keep the frosted-glass (blur) count chip. FLAG for confirm if they meant blur on the map/dots.
-- [ ] N4. REMOVE the "Karte öffnen" CTA from the map teaser.
-- [ ] N5. Modern = MINIMALISTIC.
-- [ ] N6. Tiles = normal/COLORED, NOT white/beige (reject the light/beige base).
-- [ ] N7. KEEP the green (parks) + the river (Rhine blue).
-- [ ] N8. REMOVE the highways / road clutter ("remove the highway n sh").
+All delivered in commit 4c130f697 (public/_mockups/nearby-map-minimal.html), Playwright-verified render (20 markers, 0 errors; scratchpad/nmap.png = white tiles + roads + labels + blue Rhine + green parks + ink dots + no Karte). Preview pane throttles WebGL so verified via headless Chromium.
+- [x] N1. More modern , minimal live map, custom recoloured style (verified: commit 4c130f697).
+- [x] N2. Pin = INK DOT , mapboxgl.Marker custom dot element, teardrop dropped (verified: nearby-map-minimal.html .dot marker + Playwright 20 markers).
+- [~] N3. "blur" , INTERPRETED as the frosted-glass (blur) count chip, which is kept. FLAG: confirm this is what "blur" meant (vs a blur on the map/dots).
+- [x] N4. "Karte öffnen" CTA REMOVED , only the frosted count chip remains (verified: no .cta in nearby-map-minimal.html).
+- [x] N5. Minimalistic , land + water + parks + thin roads + labels only (verified: inline STYLE has 5 layers, no POI/building clutter).
+- [x] N6. CORRECTED per owner "normal tiles white": white/light land (#ECEEF1), NOT the abstract colour-block. (The round-4 "not white" was reversed by the latest ask.) (verified: STYLE land background #ECEEF1.)
+- [x] N7. Green parks + blue Rhine KEPT , water recoloured #AAD3E8, parks #C9E3BE (verified: STYLE water/park fills + Playwright shows blue river + green).
+- [x] N8. Loud highway removed, normal streets KEPT , road layer excludes motorway/trunk (verified: STYLE roads filter excludes motorway/motorway_link/trunk/trunk_link).
 
 ## Net of N5-N8 = a CUSTOM minimal Mapbox style
 Colored land + water (blue) + parks (green), NO roads/highways/labels. Not a Mapbox default. Two build paths:
