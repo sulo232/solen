@@ -2,12 +2,15 @@ export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
-import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
+import { applyRateLimit, generalLimiter, aiDailyLimiter, getClientIp } from "@/lib/ratelimit";
 import { generateEmbedding } from "@/lib/search/embeddings";
 
 export async function GET(request: NextRequest) {
   const rateLimited = await applyRateLimit(generalLimiter, { ip: getClientIp(request) });
   if (rateLimited) return rateLimited;
+
+  const dailyLimited = await applyRateLimit(aiDailyLimiter, { ip: getClientIp(request) });
+  if (dailyLimited) return dailyLimited;
 
   const { searchParams } = new URL(request.url);
   const q = searchParams.get("q")?.trim();

@@ -4,7 +4,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
+import { applyRateLimit, generalLimiter, aiDailyLimiter, getClientIp } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { validateBody } from "@/lib/validations";
 import { extractSignalsFromHeaders } from "@/lib/ai/recommendations";
@@ -51,6 +51,11 @@ export async function GET(req: NextRequest) {
     const banned = await checkUserBanned(user.id);
     if (banned) return banned;
   }
+
+  const dailyLimited = user
+    ? await applyRateLimit(aiDailyLimiter, { userId: user.id })
+    : await applyRateLimit(aiDailyLimiter, { ip: getClientIp(req) });
+  if (dailyLimited) return dailyLimited;
 
   // Check if Gemini is configured
   const apiKey = getServerEnv().GEMINI_API_KEY;

@@ -3,7 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
-import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
+import { applyRateLimit, adminLimiter, aiDailyLimiter } from "@/lib/ratelimit";
 import { buildNailPrompt, type NailShotType } from "@/lib/nail/ai-prompts";
 import { checkBudget, recordGeneration, getBudgetStatus } from "@/lib/nail/ai-budget";
 import { validateBody, adminNailGenerateSchema } from "@/lib/validations";
@@ -41,6 +41,9 @@ export async function POST(req: NextRequest) {
   // 6. Rate limit
   const rateLimited = await applyRateLimit(adminLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
+
+  const dailyLimited = await applyRateLimit(aiDailyLimiter, { userId: user.id });
+  if (dailyLimited) return dailyLimited;
 
   // 7. Budget check (admin bypasses block but warnings are logged)
   const budgetError = await checkBudget(true);

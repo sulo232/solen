@@ -6,7 +6,8 @@ import { getStripe } from "@/lib/stripe";
 import { getServerEnv } from "@/lib/env";
 import { withCronRun } from "@/lib/cron-run";
 
-// Cron: Release (capture) payments 24h after booking completion. Every hour.
+// Cron: Release (capture) payments 24h after booking completion. Every 6 hours
+// (.github/workflows/cron-jobs.yml, the "0 */6 * * *" job shared with release-deposits).
 export async function GET(req: NextRequest) {
   const cronSecret = getServerEnv().CRON_SECRET;
   if (!cronSecret) return NextResponse.json({ error: "Cron not configured" }, { status: 503 });

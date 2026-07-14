@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs"; // Gemini SDK crashes on Edge
 
 import { NextRequest, NextResponse } from "next/server";
-import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
+import { applyRateLimit, generalLimiter, aiDailyLimiter, getClientIp } from "@/lib/ratelimit";
 import { generateEmbedding } from "@/lib/search/embeddings";
 import { detectCategory } from "@/lib/search/category-detect";
 import { createAdminSupabaseClient } from "@/lib/supabase";
@@ -11,6 +11,9 @@ export async function GET(req: NextRequest) {
   // IP-based rate limit (public route, aggressive — embeddings cost money)
   const rateLimited = await applyRateLimit(generalLimiter, { ip: getClientIp(req) });
   if (rateLimited) return rateLimited;
+
+  const dailyLimited = await applyRateLimit(aiDailyLimiter, { ip: getClientIp(req) });
+  if (dailyLimited) return dailyLimited;
 
   const q = req.nextUrl.searchParams.get("q")?.trim();
   if (!q || q.length < 2 || q.length > 200) {

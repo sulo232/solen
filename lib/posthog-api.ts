@@ -57,3 +57,74 @@ export async function fetchPostHogProfileViews(salonId: string, days: number = 3
     return 0; // Silent fail
   }
 }
+
+/**
+ * Delete a person (and enqueue an async deletion of their captured events)
+ * from PostHog by `distinct_id`. Used by the GDPR erasure pipeline
+ * (`app/api/cron/process-deletions`) so a user's PII does not persist
+ * forever in this third-party processor after their Supabase account is
+ * anonymized/deleted.
+ *
+ * PostHog has no "delete by distinct_id" endpoint: distinct_id must first
+ * be resolved to PostHog's internal person id via a lookup, then that
+ * person is deleted with `delete_events=true` to also purge their events.
+ *
+ * Best-effort: returns `{ ok: false, error }` instead of throwing on any
+ * HTTP/network failure, so a PostHog outage never blocks the rest of the
+ * erasure run. Caller is responsible for logging/alerting on failure.
+ */
+export async function deletePostHogPerson(distinctId: string): Promise<{ ok: boolean; error?: string }> {
+  const env = getServerEnv();
+  const apiKey = env.POSTHOG_PERSONAL_API_KEY;
+  const projectId = env.POSTHOG_PROJECT_ID;
+
+  if (!apiKey || !projectId) {
+    return { ok: false, error: "POSTHOG_PERSONAL_API_KEY / POSTHOG_PROJECT_ID not configured" };
+  }
+
+  try {
+    // Resolve distinct_id -> PostHog's internal person id (deletion is by id).
+    const lookupUrl = `https://eu.posthog.com/api/projects/${projectId}/persons/?distinct_id=${encodeURIComponent(distinctId)}`;
+    const lookupRes = await fetch(lookupUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!lookupRes.ok) {
+      const detail = `${lookupRes.status} ${await lookupRes.text().catch(() => "")}`;
+      console.error("[posthog-api] deletePostHogPerson lookup failed:", detail);
+      return { ok: false, error: `PostHog person lookup failed: ${detail}` };
+    }
+
+    const lookupData = await lookupRes.json();
+    const personId = lookupData?.results?.[0]?.id;
+
+    if (!personId) {
+      // No PostHog person exists for this distinct_id (never tracked, or
+      // already purged). Nothing to delete, this is not a failure.
+      return { ok: true };
+    }
+
+    const deleteUrl = `https://eu.posthog.com/api/projects/${projectId}/persons/${personId}/?delete_events=true`;
+    const deleteRes = await fetch(deleteUrl, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+      },
+    });
+
+    if (!deleteRes.ok && deleteRes.status !== 404) {
+      const detail = `${deleteRes.status} ${await deleteRes.text().catch(() => "")}`;
+      console.error("[posthog-api] deletePostHogPerson delete failed:", detail);
+      return { ok: false, error: `PostHog person delete failed: ${detail}` };
+    }
+
+    return { ok: true };
+  } catch (error) {
+    console.error("[posthog-api] deletePostHogPerson error:", error);
+    return { ok: false, error: error instanceof Error ? error.message : String(error) };
+  }
+}

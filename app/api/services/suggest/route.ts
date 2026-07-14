@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
+import { applyRateLimit, generalLimiter, aiDailyLimiter } from "@/lib/ratelimit";
 
 export const runtime = "edge";
 
@@ -12,6 +13,12 @@ export async function GET(request: NextRequest) {
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+    if (rateLimited) return rateLimited;
+
+    const dailyLimited = await applyRateLimit(aiDailyLimiter, { userId: user.id });
+    if (dailyLimited) return dailyLimited;
 
     const { searchParams } = new URL(request.url);
     const categories = searchParams.get("categories") || "hair";

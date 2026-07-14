@@ -19,6 +19,18 @@ export const generalLimiter = new Ratelimit({
   prefix: "rl:general",
 });
 
+// Per-user DAILY ceiling on Gemini/fal AI-calling routes. The per-minute limiters below
+// (generalLimiter, adminLimiter) only cap burst rate; a user sitting at the per-minute cap
+// all day can still run up an unbounded bill (e.g. ~30/min x generalLimiter sustained for
+// hours). Apply THIS IN ADDITION to, never instead of, the existing per-minute limiter on
+// every route that actually calls out to Gemini or fal.ai.
+export const aiDailyLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(60, "1 d"),
+  analytics: true,
+  prefix: "rl:ai:daily",
+});
+
 export const bookingLimiter = new Ratelimit({
   redis,
   limiter: Ratelimit.slidingWindow(5, "1 h"),
@@ -104,13 +116,15 @@ export const offPeakNotifyLimiter = new Ratelimit({ redis, limiter: Ratelimit.sl
 // Limiters guarding abuse-prone surfaces: credential stuffing (auth, which also covers
 // every OTP/verify-phone route, they all key off authLimiter), payment attempts, booking
 // spam, the three enumeration/brute-force oracles (guest reference_code lookup, referral
-// code validation, resend-access), and the authenticated referral money-crediting path
+// code validation, resend-access), the authenticated referral money-crediting path
 // (userId-keyed, farmable for CHF credit rather than an enumeration target, but still
-// abuse-prone). If Upstash is unconfigured on a REAL production boot these must fail
-// CLOSED, failing open here would silently drop the exact protection they exist for.
-// Every other limiter (general browsing, discovery, admin, messaging, etc.) keeps
-// today's fail-open behavior since blocking those would break the product, not just
-// slow an attacker.
+// abuse-prone), and the daily AI cost ceiling (aiDailyLimiter) since a cost cap that
+// fails open on a misconfigured Upstash defeats the whole point of having one. If
+// Upstash is unconfigured on a REAL production boot these must fail CLOSED, failing
+// open here would silently drop the exact protection they exist for. Every other
+// limiter (general browsing, discovery, admin, messaging, etc.) keeps today's
+// fail-open behavior since blocking those would break the product, not just slow
+// an attacker.
 const ABUSE_PRONE_LIMITERS = new Set<Ratelimit>([
   authLimiter,
   paymentLimiter,
@@ -119,6 +133,7 @@ const ABUSE_PRONE_LIMITERS = new Set<Ratelimit>([
   referralLimiter,
   referralValidateLimiter,
   resendAccessLimiter,
+  aiDailyLimiter,
 ]);
 
 const RATE_LIMITED_BODY = { error: "Too many requests. Please try again later.", code: "RATE_LIMITED" } as const;
@@ -140,9 +155,9 @@ function alertMisconfiguredRedisOnce(): void {
     "Rate limiting is fail-open in production",
     "UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN are unset on a production boot " +
       "(CONTEXT=production). Abuse-prone limiters (auth, payment, booking, guest lookup, " +
-      "referral validate, resend-access, referral complete) are failing closed, but every " +
-      "other rate limiter is disabled and requests to those routes are passing through " +
-      "unthrottled."
+      "referral validate, resend-access, referral complete, AI daily cost cap) are failing " +
+      "closed, but every other rate limiter is disabled and requests to those routes are " +
+      "passing through unthrottled."
   );
 }
 

@@ -3,7 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
+import { applyRateLimit, generalLimiter, aiDailyLimiter, getClientIp } from "@/lib/ratelimit";
 import { z } from "zod";
 import { validateBody } from "@/lib/validations";
 import { getServerEnv } from "@/lib/env";
@@ -20,6 +20,9 @@ export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const dailyLimited = await applyRateLimit(aiDailyLimiter, { userId: user.id });
+  if (dailyLimited) return dailyLimited;
 
   const body = await req.json();
   const { data: validated, error: valError } = validateBody(suggestSchema, body);

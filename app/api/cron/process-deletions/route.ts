@@ -4,6 +4,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
 import { withCronRun } from "@/lib/cron-run";
+import { deletePostHogPerson } from "@/lib/posthog-api";
+import { alertAdmin } from "@/lib/alert-admin";
 
 export async function GET(request: NextRequest) {
   const cronSecret = getServerEnv().CRON_SECRET;
@@ -133,6 +135,32 @@ export async function GET(request: NextRequest) {
       }
       results.push({ id: user.id, success: true });
       deletedUsers.push(user);
+    }
+
+    // GDPR/revDSG erasure gap fix: the account-erasure pipeline above
+    // anonymizes/clears our own tables, but a user's PII (email, distinct_id
+    // linked events) also persists in PostHog, a third-party processor, until
+    // explicitly deleted there. Purge each successfully-erased user's PostHog
+    // person (same distinct_id convention as identifyServerUser: the
+    // Supabase auth user id). No bulk-delete API, so one lookup+delete per
+    // user, run concurrently. Fail soft: PostHog being down/misconfigured
+    // must never block or roll back the Supabase-side erasure that already
+    // completed above; failures are logged and surfaced to admin instead.
+    if (deletedUsers.length > 0) {
+      const posthogResults = await Promise.all(
+        deletedUsers.map((user) => deletePostHogPerson(user.id))
+      );
+      const posthogFailures = posthogResults
+        .map((result, i) => ({ id: deletedUsers[i].id, error: result.error }))
+        .filter((f): f is { id: string; error: string } => !!f.error);
+
+      if (posthogFailures.length > 0) {
+        console.error("[api/cron/process-deletions] PostHog person deletion failed:", posthogFailures);
+        void alertAdmin("GDPR erasure: PostHog person deletion failed", {
+          failures: posthogFailures,
+          totalErased: deletedUsers.length,
+        });
+      }
     }
 
     // Accountability trail (revDSG Art. 25 / GDPR Art. 5(2)): one log row per

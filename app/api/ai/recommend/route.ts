@@ -3,7 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { applyRateLimit, generalLimiter, aiDailyLimiter } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { validateBody } from "@/lib/validations";
 import { getServerEnv } from "@/lib/env";
@@ -28,6 +28,9 @@ export async function POST(req: NextRequest) {
 
   const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
+
+  const dailyLimited = await applyRateLimit(aiDailyLimiter, { userId: user.id });
+  if (dailyLimited) return dailyLimited;
 
   const apiKey = getServerEnv().GEMINI_API_KEY;
   if (!apiKey) return NextResponse.json({ error: "AI not configured" }, { status: 503 });

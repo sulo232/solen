@@ -112,3 +112,25 @@ Fixed + tsc-clean + reviewed: F1 pre-charge webhook downgrade, F2 account.update
 ### Go-live gate , DONE + HARDENED AT THE DB (owner: "do it, harden the gate", 2026-07-14)
 - **Backfill APPLIED live:** `UPDATE public.salons SET approved_at = now() WHERE is_active AND approved_at IS NULL` , grandfathered the 20 live salons (root cause: all 20 had `approved_at NULL` because they self-activated before this gate existed). Verified: live-unapproved 20 -> 0.
 - **Gate hardened at the DB (not just app code):** trigger `trg_guard_salon_activation` + `guard_salon_activation()` (migration `20260714144715`) blocks a non-service-role writer from setting `is_active=true` when `approved_at IS NULL` (INSERT or false->true transition). Mirrors `guard_profile_privilege_columns`; admin approve/seed (service_role) exempt. So even if the app-level check in go-live is bypassed, the DB rejects it. Verified live (rolled-back discriminate test): authenticated activation BLOCKED, service_role ALLOWED. The app check stays as defense-in-depth (better error message).
+
+---
+
+## FOLLOW-UP AUDIT + FIX , Part D deep-dive (2026-07-14, owner: "take on the Part D audit")
+Report-only audit of the areas the first pass excluded (money paths + AI/PII risk classes), adversarially verified, then fixed. **12 confirmed bugs**; fixed the clearly-fixable, flagged the genuine forks.
+
+### FIXED (verified, tsc=0, reviewed over 3 rounds)
+- **CRITICAL , release-deposits kept the customer's deposit:** the cron cancelled the booking + freed the slot but never voided/refunded the held Stripe deposit. Now voids (or refunds if captured) the PI BEFORE cancel+free, with a status re-assert + row-count guard + `.limit(50)`. `app/api/cron/release-deposits/route.ts`.
+- **HIGH , credit + voucher double-debit race:** the idempotency check ran before the lock, so a double-submit could debit stored value twice while the ledger showed one row (permanent silent loss). Added a per-booking `pg_advisory_xact_lock` to `redeem_user_credits` + `redeem_voucher` (migration `20260714160410`, applied live).
+- **HIGH , tip double-charge race:** two concurrent tip requests could each create a Stripe PI. Reordered to claim-insert-first + reuse-on-conflict, backed by partial unique indexes `tips_one_pending_per_{booking,walkin}` (migration `20260714160517`, applied live). Applied to both `/api/tips` and `/api/walkin/tip`; attach-failure now cancels the PI + releases the claim.
+- **HIGH , AI prompt-injection:** customer intake text + translate input were spliced raw into Gemini prompts. Now delimited + instructed as untrusted data. `app/api/ai/intake-recommendation`, `app/api/translate`.
+- **HIGH , GDPR erasure never reached PostHog:** a deleted user's email/events lived forever in PostHog. Added `deletePostHogPerson` to `process-deletions` (`lib/posthog-api.ts`).
+- **MEDIUM , unbounded Gemini bill:** only per-minute limits existed. Added `aiDailyLimiter` (60/day, fail-closed) across the user-facing Gemini/fal routes (intake, translate, recommend, suggest-service, services/suggest, recommendations, salons/ai-info, salons/search, search/smart, salons GET embedding path, admin/nail/generate).
+- **MEDIUM , removed-review photos stayed world-readable:** moderation remove + hard delete now purge the review's objects from the public review-photos bucket. `app/api/admin/reviews/[id]`.
+- **LOW , stale cron comment** corrected (release-payments cadence).
+
+### FLAGGED for owner (genuine decisions, NOT auto-fixed)
+1. **PostHog server-side capture bypasses cookie-consent** (`lib/posthog-server.ts`) , gating it needs a server-side consent signal that does not exist yet. Design decision: add a consent flag to the capture path, or accept it under legitimate-interest.
+2. **Visual-editor DOM text feeds a prompt that drives code changes** (admin-only tool) , admin-trust reduces risk, but the input->code path is a real injection surface. Decide whether to sandbox/guard it.
+3. **Leaked-password protection is OFF** , Supabase Auth dashboard toggle, only you can flip it (~10s).
+4. **Tips: no Stripe webhook handler for tip PI `payment_failed`/`canceled`** , a tip whose PI dies Stripe-side stays `pending` and (with the new unique index) can block future tips for that booking. The common attach-failure case now self-heals; this Stripe-side-death case needs a small webhook handler or a TTL sweep. Bounded, low-frequency.
+5. **AI daily cap = 60/day** , picked as a sane default; tune if legitimate admin bulk nail-generation needs more.

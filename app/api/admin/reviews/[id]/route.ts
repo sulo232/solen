@@ -52,6 +52,23 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const { error } = await admin.from("reviews").update(updates).eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
+  // Review just moved out of public view: clean up its photo objects so
+  // removed content doesn't stay world-readable by direct storage URL.
+  if (updates.is_hidden === true) {
+    const { data: files, error: listErr } = await admin.storage.from("review-photos").list(id);
+    if (listErr) {
+      console.error("[admin/reviews] failed to list review photos for cleanup:", listErr);
+    } else {
+      const paths = (files ?? []).filter((f) => f.id !== null).map((f) => `${id}/${f.name}`);
+      if (paths.length > 0) {
+        const { error: removeErr } = await admin.storage.from("review-photos").remove(paths);
+        if (removeErr) {
+          console.error("[admin/reviews] failed to delete review photos:", removeErr);
+        }
+      }
+    }
+  }
+
   return NextResponse.json({ ok: true });
 }
 
@@ -76,6 +93,21 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   const admin = createAdminSupabaseClient();
   const { error } = await admin.from("reviews").delete().eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  // Review row is gone: clean up its photo objects so they don't stay
+  // world-readable by direct storage URL in the public bucket.
+  const { data: files, error: listErr } = await admin.storage.from("review-photos").list(id);
+  if (listErr) {
+    console.error("[admin/reviews] failed to list review photos for cleanup:", listErr);
+  } else {
+    const paths = (files ?? []).filter((f) => f.id !== null).map((f) => `${id}/${f.name}`);
+    if (paths.length > 0) {
+      const { error: removeErr } = await admin.storage.from("review-photos").remove(paths);
+      if (removeErr) {
+        console.error("[admin/reviews] failed to delete review photos:", removeErr);
+      }
+    }
+  }
 
   return NextResponse.json({ ok: true });
 }

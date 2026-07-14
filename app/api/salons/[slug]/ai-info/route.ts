@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
-import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { applyRateLimit, generalLimiter, aiDailyLimiter } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { getServerEnv } from "@/lib/env";
 
@@ -25,6 +25,9 @@ export async function POST(
 
   const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
+
+  const dailyLimited = await applyRateLimit(aiDailyLimiter, { userId: user.id });
+  if (dailyLimited) return dailyLimited;
 
   const admin = createAdminSupabaseClient();
 
