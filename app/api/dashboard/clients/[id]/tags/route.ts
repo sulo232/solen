@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { clientBelongsToSalon } from "@/lib/verify-salon-client";
+import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { z } from "zod";
 
 const tagSchema = z.object({
@@ -47,6 +48,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   try {
     const body = await req.json();
@@ -99,8 +103,11 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
+
   const admin = createAdminSupabaseClient();
-  
+
   // Verify ownership
   const { data: salon } = await admin.from("salons").select("owner_id").eq("id", salonId).single();
   if (salon?.owner_id !== user.id) {

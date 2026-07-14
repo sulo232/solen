@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { validateBody, updateProfileSchema } from "@/lib/validations";
 import { getActiveSalon } from "@/lib/active-salon";
+import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import type { Json } from "@/lib/database.types";
 
 const PREVIEW_COOKIE = "solen_admin_preview";
@@ -55,6 +56,9 @@ export async function PATCH(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
+
+  const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   const body = await request.json();
   const { data: validated, error: valError } = validateBody(updateProfileSchema, body);

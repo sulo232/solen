@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { validateBody, staffServicesSchema } from "@/lib/validations";
+import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import type { Database } from "@/lib/database.types";
 
 // GET /api/staff/services — Get staff-service assignments for a salon
@@ -74,6 +75,9 @@ export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   const body = await req.json();
   const { data: validated, error: validationError } = validateBody(staffServicesSchema, body);

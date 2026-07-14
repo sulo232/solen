@@ -2,12 +2,16 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 
 // POST /api/staff/schedule/auto-apply — Auto-create staff schedules from salon opening hours
 export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   const { salon_id } = await req.json();
   if (!salon_id) return NextResponse.json({ error: "salon_id required" }, { status: 400 });

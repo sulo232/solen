@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 import type { Database } from "@/lib/database.types";
 
 // PATCH /api/admin/badges/[id] — admin only, update badge
@@ -14,6 +15,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const { data: profile } = await supabase
     .from("profiles").select("role").eq("id", user.id).single();
   if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const rateLimited = await applyRateLimit(adminLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   const body = await req.json();
   const updates: Database["public"]["Tables"]["salon_badges"]["Update"] = {};
@@ -42,6 +46,9 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   const { data: profile } = await supabase
     .from("profiles").select("role").eq("id", user.id).single();
   if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const rateLimited = await applyRateLimit(adminLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   const admin = createAdminSupabaseClient();
 

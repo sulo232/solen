@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled } from "@/lib/feature-flags";
+import { applyRateLimit, discoveryLikeLimiter } from "@/lib/ratelimit";
 
 /**
  * Save / unsave a look into a collection (V3-D414, Phase 2).
@@ -29,6 +30,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const userId = await requireUser();
     if (!userId) return NextResponse.json({ error: "auth required" }, { status: 401 });
 
+    const rateLimited = await applyRateLimit(discoveryLikeLimiter, { userId });
+    if (rateLimited) return rateLimited;
+
     const body = await req.json().catch(() => ({}));
     const itemId = (body?.item_id ?? "").toString();
     if (!itemId) return NextResponse.json({ error: "item_id required" }, { status: 400 });
@@ -52,6 +56,9 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   try {
     const userId = await requireUser();
     if (!userId) return NextResponse.json({ error: "auth required" }, { status: 401 });
+
+    const rateLimited = await applyRateLimit(discoveryLikeLimiter, { userId });
+    if (rateLimited) return rateLimited;
 
     const itemId = req.nextUrl.searchParams.get("item_id");
     if (!itemId) return NextResponse.json({ error: "item_id required" }, { status: 400 });

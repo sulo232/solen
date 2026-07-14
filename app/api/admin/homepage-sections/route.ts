@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 
 const DEFAULT_SECTIONS: Record<string, boolean> = {
   quartier: false,
@@ -53,6 +54,9 @@ export async function PUT(req: NextRequest) {
   const admin = createAdminSupabaseClient();
   const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
   if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const rateLimited = await applyRateLimit(adminLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   const body = await req.json();
   const sections = body.sections;

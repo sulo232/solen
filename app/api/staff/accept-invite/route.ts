@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { validateBody, staffAcceptInviteSchema } from "@/lib/validations";
+import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 
 // POST /api/staff/accept-invite — Accept staff invite via token
 export async function POST(req: NextRequest) {
@@ -21,6 +22,9 @@ export async function POST(req: NextRequest) {
       redirect: `/de/auth/login?invite_token=${token}&redirect=/de/staff/accept?token=${token}`,
     }, { status: 401 });
   }
+
+  const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   // Find the invite via admin client. The `invites_by_token` public RLS
   // policy was dropped on 2026-05-16 (it let anon enumerate every token);

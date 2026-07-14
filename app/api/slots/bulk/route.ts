@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { validateBody, bulkCreateSlotsSchema, blockDaySchema } from "@/lib/validations";
 import { zurichWallClockToUtc } from "@/lib/time/zurich";
+import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 
 // POST /api/slots/bulk — TWO shapes hit this one endpoint (matching the dashboard calendar):
 //
@@ -37,6 +38,9 @@ export async function POST(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
+
+  const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   let body: Record<string, unknown>;
   try {

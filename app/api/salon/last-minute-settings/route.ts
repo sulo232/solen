@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 
 /**
  * GET /api/salon/last-minute-settings?salon_id=...
@@ -98,6 +99,9 @@ export async function POST(req: NextRequest) {
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+    if (rateLimited) return rateLimited;
 
     // Verify ownership (owner_id is the live column, see GET above)
     const { data: salon } = await supabase

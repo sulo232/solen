@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { logAuditEvent } from "@/lib/audit";
+import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,6 +11,9 @@ export async function POST(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+
+    const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+    if (rateLimited) return rateLimited;
 
     const { tos_version } = await req.json();
 

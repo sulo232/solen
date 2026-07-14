@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { getActiveSalon } from "@/lib/active-salon";
 import { stripe } from "@/lib/stripe";
+import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 
 // A bare non-null stripe_account_id only means the salon clicked "Connect", not that
 // Stripe onboarding (KYC/bank/TOS) actually completed. Mirrors the live check already
@@ -54,6 +55,9 @@ export async function POST(_req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   // Verify ownership and requirements
   const salon = await getActiveSalon<{ id: string; stripe_account_id: string | null; cover_photo_url: string | null; approved_at: string | null }>(supabase, user.id, "id, stripe_account_id, cover_photo_url, approved_at");

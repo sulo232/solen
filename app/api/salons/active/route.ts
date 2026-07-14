@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { ACTIVE_SALON_COOKIE } from "@/lib/active-salon";
+import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 
 // POST /api/salons/active { salon_id } — set the owner's active salon.
 // Ownership-checked; persists the choice in the `solen_active_salon` cookie that
@@ -11,6 +12,9 @@ export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   const { salon_id } = await req.json().catch(() => ({}));
   if (!salon_id || typeof salon_id !== "string") {

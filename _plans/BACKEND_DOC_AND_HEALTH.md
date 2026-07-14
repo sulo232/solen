@@ -58,8 +58,8 @@ Escalated from report-only to fixing. Scope stated to owner: fix the real bugs +
 - [x] P1. go-live requires admin approval , owner chose "require admin approval". `verified:` `app/api/salon/go-live/route.ts:60-66` gates on `salon.approved_at`; punch fix `app/api/admin/salons/[id]/reject/route.ts:38-44` now sets `approved_at: null` on deactivate so a deactivated salon needs re-approval (closed the review BLOCKER: stale approved_at bypass). ⚠️ DEPLOY COMPANION REQUIRED: 20/20 live salons have approved_at NULL , backfill SQL in the audit report; owner-gated, not auto-run, branch not live yet.
 - [x] P2. staff-availability requires auth , owner chose "require auth". `verified:` `app/api/staff/[id]/availability/route.ts:10` `requireAuth()`; the resurrected zombie barber page (its only anon caller) re-deleted (REMOVED.md) so no fabricated 'closed all week' regression ships.
 
-### STILL PARKED , flagged, narrowed (not silently dropped)
-- P3. Rate-limit sweep: ~48 admin routes + ~57 authenticated customer-write routes lack `applyRateLimit`. All auth-gated (lower risk). Its own focused pass with the right limiter per route. NOT done here (would break things if blanket-applied unsupervised).
+### P3. Rate-limit sweep , DONE
+- [x] `verified:` applyRateLimit added to 51 routes (13 admin -> adminLimiter; 38 authed-write -> generalLimiter, messageLimiter for conversations), keyed on userId after the auth check, via a 4-batch coder sweep + council-correctness review (verdict PASS) + tsc=0. `loyalty/award` correctly skipped (CRON_SECRET-only, no authenticated user). Reference pattern: app/api/bookings/route.ts + admin/salons/[id]/reject.
 
 ### PARKED , narrowed scope (flagged, not silently dropped)
 - P3. Rate-limit sweep: ~48 admin routes + ~57 authenticated customer-write routes lack `applyRateLimit`. All are auth-gated (lower risk). Blanket-adding to 100+ routes is a large mechanical change with breakage risk; deserves its own focused pass with the right limiter per route. NOT done here.

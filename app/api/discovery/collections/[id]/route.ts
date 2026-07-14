@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled } from "@/lib/feature-flags";
+import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import type { Database } from "@/lib/database.types";
 
 /**
@@ -68,6 +69,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const userId = await requireUser();
     if (!userId) return NextResponse.json({ error: "auth required" }, { status: 401 });
 
+    const rateLimited = await applyRateLimit(generalLimiter, { userId });
+    if (rateLimited) return rateLimited;
+
     const body = await req.json().catch(() => ({}));
     const patch: Database["public"]["Tables"]["discovery_collections"]["Update"] = {};
     if (typeof body?.name === "string") patch.name = body.name.trim().slice(0, 60);
@@ -89,6 +93,9 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   try {
     const userId = await requireUser();
     if (!userId) return NextResponse.json({ error: "auth required" }, { status: 401 });
+
+    const rateLimited = await applyRateLimit(generalLimiter, { userId });
+    if (rateLimited) return rateLimited;
 
     const admin = createAdminSupabaseClient();
     const { error } = await admin.from("discovery_collections").delete().eq("id", id).eq("user_id", userId);

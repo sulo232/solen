@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { getActiveSalon } from "@/lib/active-salon";
+import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 
 export async function DELETE(
   request: NextRequest,
@@ -12,6 +13,9 @@ export async function DELETE(
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+    if (rateLimited) return rateLimited;
 
     // Verify the closure belongs to the authenticated owner's salon
     const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");

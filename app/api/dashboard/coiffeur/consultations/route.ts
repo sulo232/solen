@@ -5,6 +5,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { consultationNoteSchema } from "@/lib/validations";
 import { getActiveSalon } from "@/lib/active-salon";
 import { clientBelongsToSalon } from "@/lib/verify-salon-client";
+import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 
 // GET /api/dashboard/coiffeur/consultations?client_id=xxx
 export async function GET(req: NextRequest) {
@@ -34,6 +35,9 @@ export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   const body = await req.json();
   const parsed = consultationNoteSchema.safeParse(body);

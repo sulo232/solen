@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient, createServerSupabaseClient } from "@/lib/supabase";
+import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 import type { Database } from "@/lib/database.types";
 
 type AvailabilitySlotInsert = Database["public"]["Tables"]["availability_slots"]["Insert"];
@@ -115,6 +116,9 @@ export async function POST(req: NextRequest) {
   const auth = await requireAdmin();
   if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { admin, userId } = auth;
+
+  const rateLimited = await applyRateLimit(adminLimiter, { userId });
+  if (rateLimited) return rateLimited;
 
   const body = await req.json().catch(() => ({}));
   const selectedCities: string[] = body.cities ?? ["basel", "zuerich", "bern"];
@@ -265,7 +269,10 @@ export async function POST(req: NextRequest) {
 export async function DELETE() {
   const auth = await requireAdmin();
   if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const { admin } = auth;
+  const { admin, userId } = auth;
+
+  const rateLimited = await applyRateLimit(adminLimiter, { userId });
+  if (rateLimited) return rateLimited;
 
   const { error } = await admin
     .from("salons")

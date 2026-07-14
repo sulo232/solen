@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { checkUserBanned } from "@/lib/feature-flags";
+import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 
 // POST /api/services/[id]/photos — Upload service photos to service-photos bucket
 export async function POST(
@@ -13,6 +14,9 @@ export async function POST(
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   // Verify service belongs to user's salon
   const { data: service } = await supabase

@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 
 /**
  * POST /api/favorites/toggle
@@ -33,6 +34,9 @@ export async function POST(request: NextRequest) {
   if (!user) {
     return NextResponse.json({ message: "Anmeldung erforderlich", code: "UNAUTHENTICATED" }, { status: 401 });
   }
+
+  const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   let body: { salon_id?: string };
   try {

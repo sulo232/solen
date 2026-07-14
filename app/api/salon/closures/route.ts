@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { validateBody, closureSchema } from "@/lib/validations";
 import { getActiveSalon } from "@/lib/active-salon";
+import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 
 // GET /api/salon/closures — Get closures for the salon owner's salon
 export async function GET(req: NextRequest) {
@@ -30,6 +31,9 @@ export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   const body = await req.json();
   const { data: validated, error: valError } = validateBody(closureSchema, body);
@@ -59,6 +63,9 @@ export async function DELETE(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   const closureId = new URL(req.url).searchParams.get("id");
   if (!closureId) return NextResponse.json({ error: "id required" }, { status: 400 });

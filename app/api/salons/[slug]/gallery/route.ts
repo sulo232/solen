@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import { getServerEnv, getPublicEnv } from "@/lib/env";
 import { checkUserBanned } from "@/lib/feature-flags";
+import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 
 const getSupabase = () => createClient(
   getPublicEnv().NEXT_PUBLIC_SUPABASE_URL,
@@ -41,6 +42,9 @@ export async function POST(
 
     const banned = await checkUserBanned(user.id);
     if (banned) return banned;
+
+    const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+    if (rateLimited) return rateLimited;
 
     if (!file) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
@@ -148,6 +152,9 @@ export async function DELETE(
     const banned = await checkUserBanned(user.id);
     if (banned) return banned;
 
+    const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+    if (rateLimited) return rateLimited;
+
     if (!url) {
       return NextResponse.json({ error: "No URL provided" }, { status: 400 });
     }
@@ -234,6 +241,9 @@ export async function PATCH(
 
     const banned = await checkUserBanned(user.id);
     if (banned) return banned;
+
+    const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+    if (rateLimited) return rateLimited;
 
     if (!Array.isArray(urls)) {
       return NextResponse.json({ error: "Invalid URLs array" }, { status: 400 });

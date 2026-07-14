@@ -3,12 +3,16 @@ export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { validateBody, waitlistSchema } from "@/lib/validations";
+import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 
-// POST /api/waitlist — Customer joins waitlist
+// POST /api/waitlist - Customer joins waitlist
 export async function POST(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   const body = await request.json();
   const { data: validated, error: validationError } = validateBody(waitlistSchema, body);

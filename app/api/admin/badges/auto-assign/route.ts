@@ -3,6 +3,7 @@ export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
+import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 
 // POST /api/admin/badges/auto-assign — Auto-assign system badges based on auto_rules
 // Can be called by cron or admin manually
@@ -22,6 +23,9 @@ export async function POST(req: NextRequest) {
     const { data: profile } = await supabase
       .from("profiles").select("role").eq("id", user.id).single();
     if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+    const rateLimited = await applyRateLimit(adminLimiter, { userId: user.id });
+    if (rateLimited) return rateLimited;
   }
 
   const admin = createAdminSupabaseClient();

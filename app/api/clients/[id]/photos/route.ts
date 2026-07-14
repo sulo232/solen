@@ -5,6 +5,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { getActiveSalon } from "@/lib/active-salon";
 import { checkUserBanned } from "@/lib/feature-flags";
 import { clientBelongsToSalon } from "@/lib/verify-salon-client";
+import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 
 // GET /api/clients/[id]/photos — Get client photos (salon owner only)
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -42,6 +43,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const banned = await checkUserBanned(user.id);
   if (banned) return banned;
+
+  const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   const admin = createAdminSupabaseClient();
   const belongs = await clientBelongsToSalon(admin, salon.id, customerId);

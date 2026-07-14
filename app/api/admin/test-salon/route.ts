@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 
 const TEST_PREFIX = "[TEST]";
 
@@ -71,6 +72,9 @@ export async function POST(request: NextRequest) {
   const { data: profile } = await adminClient.from("profiles").select("role").eq("id", user.id).single();
   if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
+  const rateLimited = await applyRateLimit(adminLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
+
   const body = await request.json().catch(() => ({}));
   const categories: string[] = body.categories ?? rand(CATEGORIES_OPTIONS);
   const baseName = body.name ?? rand(FAKE_NAMES);
@@ -132,6 +136,9 @@ export async function DELETE(request: NextRequest) {
   const adminClient = createAdminSupabaseClient();
   const { data: profile } = await adminClient.from("profiles").select("role").eq("id", user.id).single();
   if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const rateLimited = await applyRateLimit(adminLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   // Confirm it's a test salon owned by this admin
   const { data: salon } = await adminClient.from("salons").select("owner_id, name").eq("id", salonId).single();

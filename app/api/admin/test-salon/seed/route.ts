@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 
 const TEST_PREFIX = "[TEST]";
 
@@ -33,6 +34,9 @@ export async function POST(request: NextRequest) {
   const admin = createAdminSupabaseClient();
   const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
   if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const rateLimited = await applyRateLimit(adminLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   const { salon_id, feature } = await request.json();
   if (!salon_id || !feature) return NextResponse.json({ error: "salon_id and feature required" }, { status: 400 });

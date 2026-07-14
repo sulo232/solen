@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient, createServerSupabaseClient } from "@/lib/supabase";
 import { validateBody, adminSalonOfMonthSchema } from "@/lib/validations";
+import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 
 /**
  * GET: Auto-suggest salon of the month (highest rating + most bookings)
@@ -53,6 +54,9 @@ export async function POST(req: NextRequest) {
   if (profile?.role !== "admin") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
+
+  const rateLimited = await applyRateLimit(adminLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   const body = await req.json();
   const { data: validated, error: validationError } = validateBody(adminSalonOfMonthSchema, body);

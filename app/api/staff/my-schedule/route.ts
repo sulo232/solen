@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { validateBody, scheduleSchema } from "@/lib/validations";
+import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 
 // GET /api/staff/my-schedule — Staff views their own schedule
 export async function GET(req: NextRequest) {
@@ -57,6 +58,9 @@ export async function PUT(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   const { data: staff } = await supabase
     .from("staff_members")

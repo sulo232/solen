@@ -3,6 +3,7 @@ export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
+import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 
 /**
  * POST /api/admin/solen-score/recalculate
@@ -29,6 +30,9 @@ export async function POST(req: NextRequest) {
     if (profile?.role !== "admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
+
+    const rateLimited = await applyRateLimit(adminLimiter, { userId: user.id });
+    if (rateLimited) return rateLimited;
   }
 
   const admin = createAdminSupabaseClient();

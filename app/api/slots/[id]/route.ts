@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, bookingCancellation, bookingReschedule } from "@/lib/email";
 import { zurichWallClockToUtc } from "@/lib/time/zurich";
+import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import type { Database } from "@/lib/database.types";
 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -11,6 +12,9 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
+
+  const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   const { data: slot } = await supabase.from("availability_slots").select("*, salons(owner_id, name), bookings(id, user_id, starts_at), services(name_de)").eq("id", id).single();
   if (!slot) return NextResponse.json({ message: "Not found", code: "NOT_FOUND" }, { status: 404 });
@@ -43,6 +47,9 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
+
+  const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   const { data: slot } = await supabase.from("availability_slots").select("*, salons(owner_id, name), services(duration_minutes, name_de)").eq("id", id).single();
   if (!slot) return NextResponse.json({ message: "Not found", code: "NOT_FOUND" }, { status: 404 });

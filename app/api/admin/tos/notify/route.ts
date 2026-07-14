@@ -4,6 +4,7 @@ import { adminTosNotifySchema, validateBody } from "@/lib/validations";
 import { sendEmail, tosUpdateNotification } from "@/lib/email";
 import { CURRENT_TOS_VERSION, TOS_EFFECTIVE_DATE } from "@/lib/tos-version";
 import { getAppUrl } from "@/lib/env";
+import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 
 export async function POST(req: NextRequest) {
   try {
@@ -23,6 +24,9 @@ export async function POST(req: NextRequest) {
     if (profile?.role !== "admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
+
+    const rateLimited = await applyRateLimit(adminLimiter, { userId: user.id });
+    if (rateLimited) return rateLimited;
 
     const admin = createAdminSupabaseClient();
 
