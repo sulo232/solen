@@ -39,5 +39,30 @@ Backend is in good shape. ALL ~22 campaign CRITICALs verified fixed (code + live
 - Separate next audit (report Part D): value-store/deposit-capture/tips money paths; AI/LLM injection + PII egress + value-stacking + supply-chain risk classes.
 - Doc fix: correct `_plans/OPS_RUNBOOK.md:49` (credits/voucher seam is wired, not "wired to NOTHING").
 
+## FIX PASS (owner: "fix em", 2026-07-14)
+Escalated from report-only to fixing. Scope stated to owner: fix the real bugs + discrepancies; PARK 2 policy calls; FLAG the large rate-limit sweep.
+
+### FIX NOW , ALL DONE (coder loop + security/correctness review + my punch fixes; tsc=0)
+- [x] F1. webhook pre-charge downgrade , `verified:` `app/api/stripe/webhook/route.ts:211` else-branch now `} else if (pi.metadata?.type !== "pre_charge") {`, so a captured pre_charge PI keeps payment_status='paid'.
+- [x] F2. account.updated OFF path , `verified:` `app/api/stripe/webhook/route.ts:774` added `else { accepts_online_payment=false }` when !charges_enabled.
+- [x] F3. retail stock-fail , `verified:` `app/api/stripe/webhook/purchase-handler.ts:150-190` on !decremented: alertAdmin + issuePurchaseRefund (once, guarded) + `break` (punch fix, so remaining SKUs are not decremented after a full refund).
+- [x] F4. no-show race , `verified:` `app/api/cron/no-show/route.ts:45` UPDATE now chains `.eq('status','confirmed').select('id')` + skips (continue) on 0 rows.
+- [x] F5. sms-reminders double-send , `verified:` `app/api/cron/sms-reminders/route.ts:71-84/127-140` claim-before-send CAS on both 24h + 1h; only sends if the flag-flip matched a row.
+- [x] F6. quick-action cancel CAS , `verified:` `app/api/bookings/[id]/quick-action/route.ts:83-92` `.eq('status', booking.status!)` (typecheck punch fix) + `.select('id')` + 409 no-op guard so a lost race does NOT free the slot or refund (correctness punch fix).
+- [x] F7. nail/ai-history ownership , `verified:` `app/api/dashboard/nail/ai-history/route.ts:38-66` owner/admin guard added (route targets a genuinely phantom table per live snapshot, so it stays a dead-but-now-guarded route; noted).
+- [x] F8. getSession gate wired , `verified:` `.claude/settings.json` has 3 `no-getsession-authz-gate.py` entries (Edit/Write/MultiEdit); gate self-test 5/5 (block real getSession in app/lib, pass comment/use-client/non-app).
+- [x] F9. OPS_RUNBOOK doc , `verified:` `_plans/OPS_RUNBOOK.md:49` corrected (credit spend RPCs wired 57f9f11ff; gift-voucher UI still pending).
+- [x] F-verify. `verified:` tsc `--noEmit` = 0 errors; security+correctness review punch list all resolved (F6 typecheck BLOCKER + result-gate MAJOR, F3 break, P1 approved_at gap); money diffs read by hand.
+
+### OWNER-DECIDED behavior changes , DONE (AskUserQuestion 2026-07-14)
+- [x] P1. go-live requires admin approval , owner chose "require admin approval". `verified:` `app/api/salon/go-live/route.ts:60-66` gates on `salon.approved_at`; punch fix `app/api/admin/salons/[id]/reject/route.ts:38-44` now sets `approved_at: null` on deactivate so a deactivated salon needs re-approval (closed the review BLOCKER: stale approved_at bypass). ⚠️ DEPLOY COMPANION REQUIRED: 20/20 live salons have approved_at NULL , backfill SQL in the audit report; owner-gated, not auto-run, branch not live yet.
+- [x] P2. staff-availability requires auth , owner chose "require auth". `verified:` `app/api/staff/[id]/availability/route.ts:10` `requireAuth()`; the resurrected zombie barber page (its only anon caller) re-deleted (REMOVED.md) so no fabricated 'closed all week' regression ships.
+
+### STILL PARKED , flagged, narrowed (not silently dropped)
+- P3. Rate-limit sweep: ~48 admin routes + ~57 authenticated customer-write routes lack `applyRateLimit`. All auth-gated (lower risk). Its own focused pass with the right limiter per route. NOT done here (would break things if blanket-applied unsupervised).
+
+### PARKED , narrowed scope (flagged, not silently dropped)
+- P3. Rate-limit sweep: ~48 admin routes + ~57 authenticated customer-write routes lack `applyRateLimit`. All are auth-gated (lower risk). Blanket-adding to 100+ routes is a large mechanical change with breakage risk; deserves its own focused pass with the right limiter per route. NOT done here.
+
 ## Progress log
 - 2026-07-14: investigated docs (fossil found); owner picked new-consolidated + report-only; 2 research workflows (50 agents, 0 errors) -> 15-section `_docs/BACKEND.md`; ran all live-DB checks (all criticals fixed live); wrote report; retired fossil; fixed PROJECT_REFERENCE; built+tested+wired the hook; chunk1 `1994e3721` + chunk2. DONE.

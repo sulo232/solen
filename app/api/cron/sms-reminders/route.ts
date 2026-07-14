@@ -68,6 +68,21 @@ export async function GET(req: NextRequest) {
     if (!phone) continue;
     if (!salon?.sms_reminder_24h) continue; // honor the per-salon 24h-reminder toggle
 
+    // Claim before send: flip the flag with a conditional update so a second concurrent
+    // cron run (still on the `sms_sent_24h: false` select above) can't also send this
+    // booking. If 0 rows come back, another run already claimed it, so skip.
+    const { data: claimed24h, error: claim24hErr } = await supabase
+      .from("bookings")
+      .update({ sms_sent_24h: true })
+      .eq("id", booking.id)
+      .eq("sms_sent_24h", false)
+      .select("id");
+    if (claim24hErr) {
+      console.error(`[sms-reminders] booking ${booking.id}: 24h claim update failed:`, claim24hErr);
+      continue;
+    }
+    if (!claimed24h || claimed24h.length === 0) continue; // already claimed by another run
+
     const time = new Date(booking.starts_at).toLocaleTimeString("de-CH", {
       hour: "2-digit",
       minute: "2-digit",
@@ -79,16 +94,12 @@ export async function GET(req: NextRequest) {
     );
 
     if (ok) {
-      await supabase
-        .from("bookings")
-        .update({ sms_sent_24h: true })
-        .eq("id", booking.id);
       sent24h++;
     } else {
-      // Still mark as sent to avoid retry loops when phone is invalid
+      // Revert the claim so a later run retries this booking.
       await supabase
         .from("bookings")
-        .update({ sms_sent_24h: true })
+        .update({ sms_sent_24h: false })
         .eq("id", booking.id);
       errorMsgs.push(`booking ${booking.id}: 24h SMS send failed (invalid phone or provider error)`);
     }
@@ -113,6 +124,21 @@ export async function GET(req: NextRequest) {
     if (!phone) continue;
     if (!salon?.sms_reminder_1h) continue; // honor the per-salon 1h-reminder toggle
 
+    // Claim before send: flip the flag with a conditional update so a second concurrent
+    // cron run (still on the `sms_sent_1h: false` select above) can't also send this
+    // booking. If 0 rows come back, another run already claimed it, so skip.
+    const { data: claimed1h, error: claim1hErr } = await supabase
+      .from("bookings")
+      .update({ sms_sent_1h: true })
+      .eq("id", booking.id)
+      .eq("sms_sent_1h", false)
+      .select("id");
+    if (claim1hErr) {
+      console.error(`[sms-reminders] booking ${booking.id}: 1h claim update failed:`, claim1hErr);
+      continue;
+    }
+    if (!claimed1h || claimed1h.length === 0) continue; // already claimed by another run
+
     const time = new Date(booking.starts_at).toLocaleTimeString("de-CH", {
       hour: "2-digit",
       minute: "2-digit",
@@ -124,15 +150,12 @@ export async function GET(req: NextRequest) {
     );
 
     if (ok) {
-      await supabase
-        .from("bookings")
-        .update({ sms_sent_1h: true })
-        .eq("id", booking.id);
       sent1h++;
     } else {
+      // Revert the claim so a later run retries this booking.
       await supabase
         .from("bookings")
-        .update({ sms_sent_1h: true })
+        .update({ sms_sent_1h: false })
         .eq("id", booking.id);
       errorMsgs.push(`booking ${booking.id}: 1h SMS send failed (invalid phone or provider error)`);
     }

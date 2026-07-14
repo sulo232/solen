@@ -208,7 +208,14 @@ export async function POST(req: NextRequest) {
               console.error("[StripeWebhook] promo_counted_at claim threw:", promoClaimCatchErr);
             }
           }
-        } else {
+        } else if (pi.metadata?.type !== "pre_charge") {
+          // A pre_charge PI (app/api/cron/pre-charge/route.ts) is CAPTURED IN FULL,
+          // not a deposit hold, and the cron already set payment_status='paid'
+          // synchronously when it captured. Without this guard, this async
+          // success delivery (which only knows type !== 'booking') would
+          // overwrite payment_status back to 'deposit_held', corrupting an
+          // already fully-paid booking. Genuine deposit-hold PIs (no type or
+          // any other non-'booking' type) still take the downgrade below.
           await admin.from("bookings").update({
             payment_status: "deposit_held",
           }).eq("payment_intent_id", pi.id);
@@ -763,6 +770,14 @@ export async function POST(req: NextRequest) {
       if (account.charges_enabled) {
         await admin.from("salons").update({
           accepts_online_payment: true,
+        }).eq("stripe_account_id", account.id);
+      } else {
+        // Stripe RESTRICTED the account (charges_enabled flipped false, e.g. an
+        // overdue verification requirement). Without this branch, a salon stayed
+        // routed for online payment forever once turned on, so a since-restricted
+        // account would keep receiving bookings that Stripe then declines to charge.
+        await admin.from("salons").update({
+          accepts_online_payment: false,
         }).eq("stripe_account_id", account.id);
       }
       break;

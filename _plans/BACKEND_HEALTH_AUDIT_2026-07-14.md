@@ -103,3 +103,17 @@ The re-verification targeted the 141-campaign scope. The completeness critic nam
 4. **P3 (policy decisions, yours):** Part-C #5 go-live admin gate (intended or not?); #4 payouts_enabled / turn-off path; #10 staff-availability public-by-design sign-off.
 5. **P3 (hardening):** rate limits on admin + the 57 auth'd write routes; the known advisor queue (definer view, leaked-password toggle, public-bucket listing).
 6. **Separate audit:** Part D , the value-store/deposit/tips money paths + the AI/privacy/value-stacking risk classes.
+
+---
+
+## FIX PASS applied 2026-07-14 (owner: "fix em") , see commit
+Fixed + tsc-clean + reviewed: F1 pre-charge webhook downgrade, F2 account.updated OFF path, F3 retail stock-fail alert+auto-refund (+break), F4 no-show re-assert guard, F5 sms-reminders claim-before-send, F6 quick-action cancel CAS + result-gate, F7 nail/ai-history ownership guard, F8 wired the getSession gate, F9 corrected OPS_RUNBOOK:49. Owner-approved behavior changes: P1 go-live now requires admin approval (`approved_at`), P2 staff-availability now requires auth (and the resurrected zombie barber page that consumed it was re-deleted, REMOVED.md).
+
+### ⚠️ REQUIRED DEPLOY COMPANION for the go-live gate (P1)
+The live DB shows **20 of 20 active salons have `approved_at IS NULL`** (they self-activated before this gate existed; only 2 salons have `approved_at` set). If the P1 gate deploys without a backfill, all 20 existing live salons are **locked out of re-activating**. Before/with deploying this branch, grandfather them (idempotent, additive, owner-gated prod write , NOT auto-run):
+```sql
+UPDATE public.salons
+SET approved_at = COALESCE(approved_at, now())
+WHERE is_active = true AND approved_at IS NULL;
+```
+This records the already-live salons as approved so only genuinely-new/deactivated salons hit the admin gate. Run it (or have me run it on your go-ahead) at deploy, not before (the branch is not live yet).

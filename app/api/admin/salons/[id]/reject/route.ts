@@ -37,6 +37,11 @@ export async function PATCH(
   const { error } = await admin.from("salons").update({
     is_active: false,
     rejection_reason: reason,
+    // Clear the admin-approval marker so a deactivated salon must be RE-approved before
+    // its owner can self-activate again via POST /api/salon/go-live (which gates on
+    // approved_at). Without this, a once-approved salon keeps a stale approved_at and can
+    // silently re-activate itself after an admin deactivation.
+    approved_at: null,
   }).eq("id", id);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

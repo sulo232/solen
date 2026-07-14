@@ -41,8 +41,22 @@ export async function PATCH(request: NextRequest) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await request.json();
-  const { id } = body as { id: string; is_saved: boolean };
+  const { id, salon_id: salonId } = body as { id: string; salon_id: string; is_saved: boolean };
   if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
+  if (!salonId) return NextResponse.json({ error: "salon_id required" }, { status: 400 });
+
+  // Ownership guard (defense-in-depth, BACKEND_HEALTH_AUDIT_2026-07-14 #7): the
+  // caller-supplied `id` alone never proved the row belongs to them. This check is
+  // added even though the lookup below is currently dead (see NOTE), so that if a
+  // real table is ever wired up here, ownership is already enforced and this can't
+  // regress into an IDOR the moment the phantom table becomes real. Same check as
+  // GET above.
+  const admin = createAdminSupabaseClient();
+  const { data: salon } = await admin.from("salons").select("owner_id").eq("id", salonId).single();
+  const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
+  if (salon?.owner_id !== user.id && profile?.role !== "admin") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
 
   // NOTE (blocker, same finding as GET above): `nail_ai_staging` is not a real table,
   // so the row lookup this handler depends on has always failed (42P01 undefined table)

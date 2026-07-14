@@ -41,11 +41,21 @@ export async function GET(req: NextRequest) {
   let charged = 0;
 
   for (const booking of overdues ?? []) {
-    // 1. Mark as no_show.
-    await admin
+    // 1. Mark as no_show. Re-assert status=confirmed (the state the SELECT above
+    // filtered on) so a booking legitimately cancelled/changed between the SELECT
+    // and this UPDATE does not get force-flipped to no_show. Confirm the update
+    // actually matched a row; if not, the booking moved under us, skip it.
+    const { data: updatedRows } = await admin
       .from("bookings")
       .update({ status: "no_show", cancelled_at: now.toISOString() })
-      .eq("id", booking.id);
+      .eq("id", booking.id)
+      .eq("status", "confirmed")
+      .select("id");
+
+    if (!updatedRows || updatedRows.length === 0) {
+      console.error(`[no-show] booking ${booking.id} no longer confirmed (changed between select and update), skipping`);
+      continue;
+    }
 
     // 2. No-show fee = OFF-SESSION charge of the saved card per policy (SP-AC §B3),
     //    replacing the old auth-and-hold `requires_capture`/capture model (D11 is

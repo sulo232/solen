@@ -20,6 +20,8 @@
 
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
+import { alertAdmin } from "@/lib/alert-admin";
+import { issuePurchaseRefund, PurchaseRefundError } from "@/lib/purchases/issue-purchase-refund";
 
 /**
  * Resolve the platform commission percent the same way the booking branch does.
@@ -118,15 +120,18 @@ export async function handlePurchasePaid(pi: any): Promise<boolean> {
         })
         .eq("stripe_payment_intent_id", pi.id)
         .eq("status", "pending")
-        .select("product_ids");
+        .select("id, product_ids");
 
       // A-5 stock: decrement each purchased SKU by 1 ONLY when this call performed the
       // pending->paid transition. Atomic + guarded in the DB (decrement_retail_stock:
       // SET stock_count = stock_count - 1 WHERE id=? AND stock_count IS NOT NULL AND
-      // stock_count >= 1). An out-of-stock / untracked SKU returns no row , log it, but
-      // NEVER fail the settle (payment already succeeded; stock is best-effort).
-      const settledRow = settled?.[0] as { product_ids: string[] | null } | undefined;
+      // stock_count >= 1). An out-of-stock / untracked SKU returns no row , log it, alert,
+      // and automatically refund the purchase so the customer is not charged for stock
+      // that no longer exists (money paths in this file must never silently keep the
+      // charge). The settle itself is still NEVER failed (payment already succeeded).
+      const settledRow = settled?.[0] as { id: string; product_ids: string[] | null } | undefined;
       if (settledRow?.product_ids?.length) {
+        let stockRefundIssued = false; // one full refund per purchase, even if several SKUs are out of stock.
         for (const productId of settledRow.product_ids) {
           const { data: decremented, error: decErr } = await admin.rpc(
             "decrement_retail_stock",
@@ -142,6 +147,47 @@ export async function handlePurchasePaid(pi: any): Promise<boolean> {
               pi: pi.id,
               product_id: productId,
             });
+            void alertAdmin("Retail purchase stock unavailable after payment succeeded", {
+              pi: pi.id,
+              retail_purchase_id: settledRow.id,
+              product_id: productId,
+              paid_amount: paidAmount,
+            });
+            if (!stockRefundIssued) {
+              stockRefundIssued = true;
+              try {
+                await issuePurchaseRefund({
+                  db: admin,
+                  source: "retail",
+                  id: settledRow.id,
+                  amountCents: paidAmount,
+                  actor: "system",
+                  reason: `stock unavailable for product ${productId} after payment succeeded`,
+                });
+              } catch (refundErr) {
+                if (refundErr instanceof PurchaseRefundError) {
+                  console.error(
+                    `[purchase-handler] automatic stock-failure refund failed for retail purchase ${settledRow.id} (${refundErr.code}):`,
+                    refundErr.message,
+                  );
+                } else {
+                  console.error(
+                    `[purchase-handler] automatic stock-failure refund threw for retail purchase ${settledRow.id}:`,
+                    refundErr,
+                  );
+                }
+                void alertAdmin("Automatic purchase refund after stock failure failed", {
+                  pi: pi.id,
+                  retail_purchase_id: settledRow.id,
+                  product_id: productId,
+                  error: refundErr instanceof Error ? refundErr.message : String(refundErr),
+                });
+              }
+            }
+            // The whole purchase has been (or was already) refunded for this out-of-stock
+            // event; stop decrementing the remaining SKUs so we do not reduce stock for
+            // items the now-refunded customer will not receive.
+            break;
           }
         }
       }

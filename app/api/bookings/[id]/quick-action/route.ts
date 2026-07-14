@@ -77,7 +77,20 @@ export async function GET(
   // Array.prototype.includes requires a string arg; booking.status is string | null here.
   // ?? "" is behaviorally inert (the array never contains ""), type-only cast, no new branch.
   if (action === "cancel" && ["confirmed", "pending"].includes(booking.status ?? "")) {
-    await admin.from("bookings").update({ status: "cancelled", cancelled_at: new Date().toISOString() }).eq("id", bookingId);
+    // CAS: re-assert the status read above (mirrors app/api/bookings/[id]/cancel's guard) so
+    // a concurrent state change (e.g. the salon already cancelled it) cannot double-process
+    // this booking. booking.status is non-null inside this branch (guaranteed by the includes
+    // guard above). We check the row count: if the race is lost, DO NOT free the slot or refund.
+    const { data: cancelledRows } = await admin
+      .from("bookings")
+      .update({ status: "cancelled", cancelled_at: new Date().toISOString() })
+      .eq("id", bookingId)
+      .eq("status", booking.status!)
+      .select("id");
+    if (!cancelledRows || cancelledRows.length === 0) {
+      // The booking's status changed under us between the read and this write; do nothing else.
+      return NextResponse.json({ result: "noop", booking_id: bookingId }, { status: 409 });
+    }
     // Free slot
     await admin.from("availability_slots").update({ status: "available", booked_by: null, booking_id: null }).eq("booking_id", bookingId);
 

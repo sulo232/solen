@@ -56,9 +56,15 @@ export async function POST(_req: NextRequest) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   // Verify ownership and requirements
-  const salon = await getActiveSalon<{ id: string; stripe_account_id: string | null; cover_photo_url: string | null }>(supabase, user.id, "id, stripe_account_id, cover_photo_url");
+  const salon = await getActiveSalon<{ id: string; stripe_account_id: string | null; cover_photo_url: string | null; approved_at: string | null }>(supabase, user.id, "id, stripe_account_id, cover_photo_url, approved_at");
 
   if (!salon) return NextResponse.json({ error: "No salon found" }, { status: 403 });
+  // Admin review gate: an owner may only self-activate a salon that an admin has
+  // already approved (salons.approved_at set by PATCH /api/admin/salons/[id]/approve).
+  // Without this, an owner could set is_active=true directly with no admin review.
+  if (!salon.approved_at) {
+    return NextResponse.json({ error: "Der Salon wartet noch auf die Freigabe durch einen Administrator." }, { status: 403 });
+  }
   if (!(await isStripeReady(salon.stripe_account_id))) {
     return NextResponse.json({ error: "Stripe Connect muss zuerst vollständig eingerichtet werden (KYC, Bankkonto)." }, { status: 400 });
   }
