@@ -176,7 +176,7 @@ async function main() {
     const { data: booking, error: bookingErr } = await admin
       .from("bookings")
       .insert({
-        salon_id: salonId, service_id: serviceId, slot_id: slotId, user_id: userId,
+        salon_id: salonId, service_id: serviceId, slot_id: slotId!, user_id: userId,
         starts_at: "2099-01-01T10:00:00Z", ends_at: "2099-01-01T11:00:00Z",
         price_paid: 1000, paid_amount: 1000, status: "cancelled",
         guest_name: null, guest_email: null, guest_phone: null,
@@ -481,7 +481,7 @@ async function main() {
       check("tips: user_id nulled, amount RETAINED", tipAfter?.user_id === null && tipAfter?.amount === 500, { tipAfter });
     }
     {
-      const { data: favAfter } = await admin.from("favorites").select("id").eq("id", favoriteId).maybeSingle();
+      const { data: favAfter } = await admin.from("favorites").select("id").eq("id", favoriteId ?? "").maybeSingle();
       check("favorites: row cascade-deleted (FK CASCADE, pre-existing behavior)", !favAfter, { favAfter });
     }
     if (clientPhotoId) {
@@ -556,7 +556,7 @@ async function main() {
     // rows forever in normal production use.
     async function cleanup(table: string, id: string | null) {
       if (!id) return;
-      const { error } = await admin.from(table).delete().eq("id", id);
+      const { error } = await admin.from(table as any).delete().eq("id", id);
       if (error) console.error(`[gdpr-deletion-completeness-check] cleanup ${table} failed:`, error.message);
     }
     await cleanup("package_purchases", packagePurchaseId);

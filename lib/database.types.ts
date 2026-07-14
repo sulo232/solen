@@ -5990,6 +5990,51 @@ export type Database = {
         }
         Relationships: []
       }
+      salon_of_month_winners: {
+        Row: {
+          id: string
+          is_current: boolean
+          month: string
+          reason: string | null
+          salon_id: string
+          selected_at: string
+          selected_by: string | null
+        }
+        Insert: {
+          id?: string
+          is_current?: boolean
+          month: string
+          reason?: string | null
+          salon_id: string
+          selected_at?: string
+          selected_by?: string | null
+        }
+        Update: {
+          id?: string
+          is_current?: boolean
+          month?: string
+          reason?: string | null
+          salon_id?: string
+          selected_at?: string
+          selected_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "salon_of_month_winners_salon_id_fkey"
+            columns: ["salon_id"]
+            isOneToOne: false
+            referencedRelation: "salons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "salon_of_month_winners_selected_by_fkey"
+            columns: ["selected_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       salons: {
         Row: {
           about_text_de: string | null
