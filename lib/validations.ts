@@ -21,6 +21,13 @@ export const tosAcceptSchema = z.object({
   version: z.string().min(1).max(100),
 });
 
+// POST /api/me/consent: mirrors the "necessary, analytics, marketing" shape CookieConsent.tsx
+// already collects client-side, but only `analytics` has a server-side mirror (profiles.
+// analytics_consent) since that is the only category lib/posthog-server.ts gates on.
+export const meConsentSchema = z.object({
+  analytics: z.boolean(),
+});
+
 // G1 (V3-D421, 2026-06-01): accept EITHER an explicit `slot_id` (legacy / dashboard path)
 // OR `salon_id` + `starts_at` (the consumer pay-confirm flow, which never had a slot id to
 // send). The route resolves (salon + service + staff + starts_at) -> an available slot

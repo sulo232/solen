@@ -63,8 +63,8 @@ export async function POST(request: NextRequest) {
   }
 
   if (data.user && (!data.user.identities || data.user.identities.length > 0)) {
-    identifyServerUser(data.user.id, { email });
-    trackServerEvent(data.user.id, "customer_signup", { method: "email" });
+    await identifyServerUser(data.user.id, { email });
+    await trackServerEvent(data.user.id, "customer_signup", { method: "email" });
   }
 
   // SECURITY: Supabase returns user with identities=[] if the email already has a

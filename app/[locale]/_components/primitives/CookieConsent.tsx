@@ -28,6 +28,28 @@ import { cn } from "@/lib/utils";
  */
 
 const STORAGE_KEY = "solen-cookie-consent";
+
+/**
+ * Mirror the analytics choice to the server so SERVER-side PostHog capture
+ * (lib/posthog-server.ts) can honour it: the banner's localStorage record is unreadable
+ * from the server. Fire-and-forget, never blocks or throws into the banner UI.
+ * A 401 is EXPECTED for an anonymous visitor (no profile row) and is not logged;
+ * anything else is a real failure of the consent mirror and IS logged.
+ */
+async function mirrorConsentToServer(analytics: boolean): Promise<void> {
+  try {
+    const res = await fetch("/api/me/consent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ analytics }),
+    });
+    if (!res.ok && res.status !== 401) {
+      console.error("[CookieConsent] server consent mirror rejected:", res.status);
+    }
+  } catch (err) {
+    console.error("[CookieConsent] server consent mirror request failed:", err);
+  }
+}
 const CONSENT_VALID_MS = 365 * 24 * 60 * 60 * 1000; // 12 months
 
 export type CookieCategory = "necessary" | "analytics" | "marketing";
@@ -103,8 +125,14 @@ export function CookieConsentProvider({ children }: { children: React.ReactNode 
       // Notify same-tab listeners (PostHogProvider opts analytics in/out immediately on this).
       window.dispatchEvent(new Event("solen-consent-changed"));
     } catch {
-      // localStorage may fail in private browsing — accept silently, consent state still in memory
+      // localStorage may fail in private browsing, accept silently: consent state stays in memory
     }
+    // Mirror the analytics choice to the server (profiles.analytics_consent) so SERVER-side
+    // PostHog capture (lib/posthog-server.ts) can honour it too: localStorage is unreadable from
+    // the server. This lives in persist(), NOT only in savePreferences, so the primary banner
+    // buttons (acceptAll / acceptNecessary) sync too. Most visitors never open the settings
+    // modal, so wiring it only there would leave analytics_consent NULL and the server gate inert.
+    void mirrorConsentToServer(next.analytics);
   }, []);
 
   const acceptAll = React.useCallback(() => {
@@ -134,6 +162,8 @@ export function CookieConsentProvider({ children }: { children: React.ReactNode 
         timestamp: new Date().toISOString(),
       });
       setSettingsOpen(false);
+      // The server mirror runs inside persist() above, so every path (acceptAll,
+      // acceptNecessary, and this one) syncs consent to the server.
     },
     [persist],
   );
@@ -142,9 +172,14 @@ export function CookieConsentProvider({ children }: { children: React.ReactNode 
     setConsent(null);
     try {
       localStorage.removeItem(STORAGE_KEY);
+      // PostHogProvider listens for this and opts the browser SDK back out immediately.
+      window.dispatchEvent(new Event("solen-consent-changed"));
     } catch {
       // ignore
     }
+    // A withdrawal must reach the server too, otherwise server-side capture would keep
+    // running on a stale analytics_consent=true for this user.
+    void mirrorConsentToServer(false);
   }, []);
 
   const openSettings = React.useCallback(() => setSettingsOpen(true), []);

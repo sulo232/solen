@@ -278,12 +278,12 @@ export async function POST(req: NextRequest) {
         // The auth.admin.getUserById / trackServerEvent calls below all require a
         // real user_id, so guarding on it keeps the webhook from throwing on guests.
         if (booking?.user_id) {
-          trackServerEvent(booking.user_id, "payment_succeeded", {
+          await trackServerEvent(booking.user_id, "payment_succeeded", {
             booking_id: bookingId,
             salon_id: pi.metadata?.salon_id,
             amount: (pi.amount ?? 0) / 100,
           });
-          trackServerEvent(booking.user_id, "booking_completed", {
+          await trackServerEvent(booking.user_id, "booking_completed", {
             booking_id: bookingId,
             salon_id: pi.metadata?.salon_id,
           });
@@ -535,7 +535,7 @@ export async function POST(req: NextRequest) {
         // Guest bookings skip the user-keyed failure notification (owner's later
         // piece); the slot/booking release above already ran for them.
         if (booking?.user_id) {
-          trackServerEvent(booking.user_id, "payment_failed", {
+          await trackServerEvent(booking.user_id, "payment_failed", {
             booking_id: bookingId,
             salon_id: pi.metadata?.salon_id,
             amount: (pi.amount ?? 0) / 100,

@@ -117,7 +117,7 @@ export async function POST(request: NextRequest) {
   }).catch((err) => console.error("[ReviewsRoute] failed to send review-posted notification:", err));
 
   if (data) {
-    trackServerEvent(user.id, "review_submitted", {
+    await trackServerEvent(user.id, "review_submitted", {
       salon_id: booking.salon_id,
       rating: rating,
       review_id: data.id,
