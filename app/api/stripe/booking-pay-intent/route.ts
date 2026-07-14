@@ -217,6 +217,7 @@ export async function POST(req: NextRequest) {
   //     application_fee; salon payout unchanged). Order: promo first (it defines the gross and the
   //     fee base), then the member waiver on the resulting commission.
   let promoDiscountRappen = 0;
+  let promoFullDiscountRappen = 0; // full intended discount off the FULL price (deposit path: NOT clamped to the deposit)
   let promoCodeApplied: string | null = null;
   let reserved = false; // lifted out of the promo block so the post-PI reconciliation (below) can read it
   if (booking.promo_code) {
@@ -284,6 +285,7 @@ export async function POST(req: NextRequest) {
           reserved = reservedResult === true;
           if (reserved) {
             promoCodeApplied = promo.code;
+            promoFullDiscountRappen = discountRappen; // customer gets the FULL discount off their total, even when it exceeds the deposit charged now
           } else {
             promoDiscountRappen = 0;
             promoCodeApplied = null;
@@ -296,6 +298,7 @@ export async function POST(req: NextRequest) {
       // Never let a promo lookup error block or under-charge: fail to NO discount (full charge).
       console.error("[booking-pay-intent] promo re-validation failed; charging without discount:", err);
       promoDiscountRappen = 0;
+      promoFullDiscountRappen = 0;
       promoCodeApplied = null;
     }
   }
@@ -453,6 +456,7 @@ export async function POST(req: NextRequest) {
       // (idempotently). Empty string when no valid promo applied (so the webhook no-ops).
       promo_code: promoCodeApplied ?? "",
       promo_discount_rappen: promoDiscountRappen ? String(promoDiscountRappen) : "",
+      promo_full_discount_rappen: promoFullDiscountRappen ? String(promoFullDiscountRappen) : "",
     },
     description: `Buchung: ${service.name_de ?? "Service"} @ ${salon.name ?? "Salon"}`,
   };
@@ -549,7 +553,13 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // Clamped = the discount actually taken off the ONLINE charge (>= Stripe 0.50 floor).
   const actualPromoDiscountRappen = Number(paymentIntent.metadata?.promo_discount_rappen ?? 0) || 0;
+  // Deposit-path fix: the AT-SALON remainder (and the "you saved" figure on the deposit path) use the
+  // FULL intended discount off the full price, NOT the deposit-clamped charge discount, so a promo bigger
+  // than the deposit is not silently lost (the customer would otherwise overpay the leftover at the salon).
+  // Falls back to the clamped value for PaymentIntents created before this field existed (Stripe replay).
+  const actualPromoFullDiscountRappen = Number(paymentIntent.metadata?.promo_full_discount_rappen ?? paymentIntent.metadata?.promo_discount_rappen ?? 0) || 0;
 
   // 9b. CREDITS + VOUCHER SPEND (owner-approved 2026-07-11), applied AFTER promo + member
   //     discount, and AFTER the PaymentIntent itself exists. Unlike promo/member-discount
@@ -712,13 +722,16 @@ export async function POST(req: NextRequest) {
     member_discount: actualDiscountRappen ? actualDiscountRappen / 100 : 0, // CHF off via Solen Plus (commission waiver)
     applied_tier: actualTier,                            // tier that funded the member discount (null when none)
     promo_code: actualPromoCode,                         // the validated promo code applied (null when none)
-    promo_discount: actualPromoDiscountRappen ? actualPromoDiscountRappen / 100 : 0, // CHF off via the promo code
+    promo_discount: (paymentMode === "deposit" ? actualPromoFullDiscountRappen : actualPromoDiscountRappen) / 100, // CHF off via the promo code (deposit shows the full saving spread across deposit+at-salon; prepay shows what was actually charged)
     credit_applied: creditAppliedChf,                    // CHF off via the customer's referral credit balance
     voucher_code: voucherCodeApplied,                    // the redeemed voucher code (null when none / not applied)
     voucher_applied: voucherAppliedChf,                  // CHF off via the voucher
     payment_mode: paymentMode,                           // deposit | prepay
     deposit_percent: paymentMode === "deposit" ? depositPct : null,
-    remaining_at_salon: paymentMode === "deposit" ? Math.round(((priceChf - (actualPromoDiscountRappen ? actualPromoDiscountRappen / 100 : 0) - creditAppliedChf - voucherAppliedChf) - piChargeChf) * 100) / 100 : 0,
+    // Uses the FULL discount so the at-salon remainder absorbs any discount beyond the deposit. Floored
+    // at 0: on a ~100%-off promo the online charge cannot go below Stripe's 0.50 minimum, so up to CHF 0.50
+    // can remain uncredited , that residual is Stripe-mandated, not the discount-clamp bug (down from up to CHF 15.50).
+    remaining_at_salon: paymentMode === "deposit" ? Math.max(0, Math.round(((priceChf - (actualPromoFullDiscountRappen ? actualPromoFullDiscountRappen / 100 : 0) - creditAppliedChf - voucherAppliedChf) - piChargeChf) * 100) / 100) : 0,
     service_name: service.name_de,
   });
 }
