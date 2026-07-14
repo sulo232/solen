@@ -88,12 +88,12 @@ Every API route MUST include ALL 6 layers in order:
 6. Input validation: validateBody() with zod schema
 
 ## Design System Tokens (NEVER deviate)
-- Primary: coral #E8735A (class: s-coral)
-- Accent: amber #D4870A (s-amber), blue #6BA3C8 (s-blue)
-- Text: ink #1A1209 (s-ink), dark mode: #F5EEE4 (s-dm-text)
-- Backgrounds: cream #FAF6EF (s-bg-base), white (cards), dark #151009 (s-dm-bg)
-- Fonts: Bebas Neue (display ≥40px), Syne (headings), DM Sans (body)
-- Radii: rounded-card (12px), rounded-pill (9999px), rounded-btn (8px)
+- Ink: #0A0A0A (s-ink), primary text + the ONE commit CTA (bg-s-ink)
+- Accent: blue #276EF1 (s-accent), SPARSE: text links + small clickable bits only, never big CTAs
+- Semantic: success #16A34A, error #DC2626, star #FFC32B, saved-heart #FF3366
+- Surfaces: white + cool sunken #F4F4F5 (s-bg-sunken); hairline #E4E4E7 (s-border). No warm cream.
+- Fonts: Inter Tight (display + headings) + Inter (body). Never Geist, Bebas Neue, Syne, DM Sans.
+- Radii: rounded-card (16px), rounded-pill (9999px), input (16px)
 - Icons: lucide-react ONLY. No emoji in UI.
 
 ## Banned Tokens (NEVER use in any .tsx file)

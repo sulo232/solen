@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
-import { applyRateLimit, generalLimiter, aiDailyLimiter } from "@/lib/ratelimit";
+import { applyRateLimit, generalLimiter, getAiDailyLimiter } from "@/lib/ratelimit";
 import { checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, intakeRecommendationSchema } from "@/lib/validations";
 import { getServerEnv } from "@/lib/env";
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
   const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
 
-  const dailyLimited = await applyRateLimit(aiDailyLimiter, { userId: user.id });
+  const dailyLimited = await applyRateLimit(await getAiDailyLimiter(), { userId: user.id });
   if (dailyLimited) return dailyLimited;
 
   const body = await req.json();
@@ -58,10 +58,9 @@ export async function POST(req: NextRequest) {
 
   const prompt = `Du bist ein erfahrener Friseur-Berater. Basierend auf den folgenden Kundenantworten aus einem Aufnahmebogen, gib eine professionelle Empfehlung auf Deutsch (max 200 Wörter):
 
-Salon: ${salon.name}
 Kategorie: ${intake.template_key}
 
-${wrapUntrustedInput("Kundenantworten", responsesText)}
+${wrapUntrustedInput("Salonname und Kundenantworten", `Salon: ${salon.name}\n${responsesText}`)}
 
 Gib eine konkrete, hilfreiche Empfehlung für den Stylisten, inklusive empfohlener Produkte und Techniken.`;
 

@@ -2,9 +2,10 @@ export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
-import { applyRateLimit, generalLimiter, aiDailyLimiter } from "@/lib/ratelimit";
+import { applyRateLimit, generalLimiter, getAiDailyLimiter } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { getServerEnv } from "@/lib/env";
+import { wrapUntrustedInput } from "@/lib/ai/untrusted";
 
 // POST /api/salons/[slug]/ai-info
 // Generate AI suggestions for salon description, atmosphere, expertise.
@@ -26,7 +27,7 @@ export async function POST(
   const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
 
-  const dailyLimited = await applyRateLimit(aiDailyLimiter, { userId: user.id });
+  const dailyLimited = await applyRateLimit(await getAiDailyLimiter(), { userId: user.id });
   if (dailyLimited) return dailyLimited;
 
   const admin = createAdminSupabaseClient();
@@ -57,9 +58,9 @@ export async function POST(
   const field = body.field ?? "description";
 
   const prompts: Record<string, string> = {
-    description: `Schreibe eine kurze, einladende Beschreibung (max 200 Wörter, Deutsch) für den Salon "${salon.name}" in Basel (${salon.quartier}). Kategorien: ${salon.categories.join(", ")}. Services: ${serviceList || "noch keine"}.`,
-    atmosphere: `Beschreibe die Atmosphäre des Salons "${salon.name}" in 1-2 Sätzen (Deutsch). Kategorien: ${salon.categories.join(", ")}.`,
-    expertise: `Beschreibe die Expertise des Salons "${salon.name}" in 1-2 Sätzen (Deutsch). Services: ${serviceList || "noch keine"}.`,
+    description: `Schreibe eine kurze, einladende Beschreibung (max 200 Wörter, Deutsch) für den Salon ${wrapUntrustedInput("Salonname", salon.name)} in Basel (${wrapUntrustedInput("Quartier", salon.quartier)}). Kategorien: ${wrapUntrustedInput("Kategorien", salon.categories.join(", "))}. Services: ${wrapUntrustedInput("Services", serviceList || "noch keine")}.`,
+    atmosphere: `Beschreibe die Atmosphäre des Salons ${wrapUntrustedInput("Salonname", salon.name)} in 1-2 Sätzen (Deutsch). Kategorien: ${wrapUntrustedInput("Kategorien", salon.categories.join(", "))}.`,
+    expertise: `Beschreibe die Expertise des Salons ${wrapUntrustedInput("Salonname", salon.name)} in 1-2 Sätzen (Deutsch). Services: ${wrapUntrustedInput("Services", serviceList || "noch keine")}.`,
   };
 
   const prompt = prompts[field] ?? prompts.description;

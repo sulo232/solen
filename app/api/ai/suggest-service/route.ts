@@ -3,10 +3,11 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { applyRateLimit, generalLimiter, aiDailyLimiter, getClientIp } from "@/lib/ratelimit";
+import { applyRateLimit, generalLimiter, getAiDailyLimiter, getClientIp } from "@/lib/ratelimit";
 import { z } from "zod";
 import { validateBody } from "@/lib/validations";
 import { getServerEnv } from "@/lib/env";
+import { wrapUntrustedInput } from "@/lib/ai/untrusted";
 
 const suggestSchema = z.object({
   category: z.string().min(1).max(50),
@@ -21,7 +22,7 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const dailyLimited = await applyRateLimit(aiDailyLimiter, { userId: user.id });
+  const dailyLimited = await applyRateLimit(await getAiDailyLimiter(), { userId: user.id });
   if (dailyLimited) return dailyLimited;
 
   const body = await req.json();
@@ -46,7 +47,7 @@ export async function POST(req: NextRequest) {
 
     const result = await model.generateContent(
       `Du bist ein Experte für Beauty-Salons in der Schweiz (Raum Basel). ` +
-      `Für die Kategorie "${validated.category}" schlage EINEN einzelnen populären Service-Namen auf Deutsch vor. ` +
+      `Für die Kategorie ${wrapUntrustedInput("Kategorie", validated.category)} schlage EINEN einzelnen populären Service-Namen auf Deutsch vor. ` +
       `Nur der Name, keine Beschreibung, kein Preis. Beispiel: "Waschen, Schneiden, Föhnen". ` +
       `Antworte NUR mit dem Service-Namen, nichts anderes.`
     );

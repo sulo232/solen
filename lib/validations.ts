@@ -691,6 +691,10 @@ export const adminCommissionSchema = z.object({
   rate: z.number().min(0).max(100),
 });
 
+export const adminAiLimitSchema = z.object({
+  cap: z.number().int().min(1).max(100000),
+});
+
 export const adminFeatureFlagSchema = z.object({
   key: z.string().min(1).max(100),
   enabled: z.boolean(),

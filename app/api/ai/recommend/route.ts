@@ -3,10 +3,11 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { applyRateLimit, generalLimiter, aiDailyLimiter } from "@/lib/ratelimit";
+import { applyRateLimit, generalLimiter, getAiDailyLimiter } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { validateBody } from "@/lib/validations";
 import { getServerEnv } from "@/lib/env";
+import { wrapUntrustedInput } from "@/lib/ai/untrusted";
 import { z } from "zod";
 
 const recommendSchema = z.object({
@@ -29,7 +30,7 @@ export async function POST(req: NextRequest) {
   const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
 
-  const dailyLimited = await applyRateLimit(aiDailyLimiter, { userId: user.id });
+  const dailyLimited = await applyRateLimit(await getAiDailyLimiter(), { userId: user.id });
   if (dailyLimited) return dailyLimited;
 
   const apiKey = getServerEnv().GEMINI_API_KEY;
@@ -48,7 +49,7 @@ export async function POST(req: NextRequest) {
     const prompt = `Du bist ein erfahrener Beauty-Berater. Basierend auf dem folgenden Fragebogen (${template_key.replace("_", " ")}), gib eine personalisierte Empfehlung auf Deutsch. Sei konkret und professionell. Max 200 Wörter.
 
 Kundenfragebogen:
-${intake_summary}
+${wrapUntrustedInput("Kundenfragebogen", intake_summary)}
 
 Empfehlung:`;
 

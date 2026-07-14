@@ -3,6 +3,7 @@ import { Redis } from "@upstash/redis";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerEnv } from "@/lib/env";
 import { alertAdmin } from "@/lib/alert-admin";
+import { createAdminSupabaseClient } from "@/lib/supabase";
 
 const env = getServerEnv();
 const redis = (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN)
@@ -19,17 +20,20 @@ export const generalLimiter = new Ratelimit({
   prefix: "rl:general",
 });
 
-// Per-user DAILY ceiling on Gemini/fal AI-calling routes. The per-minute limiters below
-// (generalLimiter, adminLimiter) only cap burst rate; a user sitting at the per-minute cap
-// all day can still run up an unbounded bill (e.g. ~30/min x generalLimiter sustained for
+// Per-user DAILY ceiling on Gemini/fal AI-GENERATION routes only (translate, recommend,
+// suggest-service, intake-recommendation, ai-info, nail/generate). The per-minute limiters
+// below (generalLimiter, adminLimiter) only cap burst rate; a user sitting at the per-minute
+// cap all day can still run up an unbounded bill (e.g. ~30/min x generalLimiter sustained for
 // hours). Apply THIS IN ADDITION to, never instead of, the existing per-minute limiter on
-// every route that actually calls out to Gemini or fal.ai.
-export const aiDailyLimiter = new Ratelimit({
-  redis,
-  limiter: Ratelimit.slidingWindow(60, "1 d"),
-  analytics: true,
-  prefix: "rl:ai:daily",
-});
+// every route that actually calls out to Gemini or fal.ai for GENERATION. Cheap embedding/
+// search routes (salons, salons/search, search/smart) do NOT carry this cap, embeddings are
+// near-free and stay under the per-minute generalLimiter only.
+//
+// The cap is DB-backed (platform_settings.key='ai_daily_cap', value.cap) and editable via
+// /api/admin/ai-limits, same key/value/jsonb pattern as the commission rate
+// (app/api/admin/commission/route.ts). Use getAiDailyLimiter() below, never a static
+// instance, so a live cap edit takes effect without a redeploy.
+export const DEFAULT_AI_DAILY_CAP = 100;
 
 export const bookingLimiter = new Ratelimit({
   redis,
@@ -118,13 +122,14 @@ export const offPeakNotifyLimiter = new Ratelimit({ redis, limiter: Ratelimit.sl
 // spam, the three enumeration/brute-force oracles (guest reference_code lookup, referral
 // code validation, resend-access), the authenticated referral money-crediting path
 // (userId-keyed, farmable for CHF credit rather than an enumeration target, but still
-// abuse-prone), and the daily AI cost ceiling (aiDailyLimiter) since a cost cap that
-// fails open on a misconfigured Upstash defeats the whole point of having one. If
-// Upstash is unconfigured on a REAL production boot these must fail CLOSED, failing
-// open here would silently drop the exact protection they exist for. Every other
-// limiter (general browsing, discovery, admin, messaging, etc.) keeps today's
-// fail-open behavior since blocking those would break the product, not just slow
-// an attacker.
+// abuse-prone), and the daily AI cost ceiling (getAiDailyLimiter() below, which self-
+// registers every distinct-cap Ratelimit instance it builds into this Set, see below)
+// since a cost cap that fails open on a misconfigured Upstash defeats the whole point of
+// having one. If Upstash is unconfigured on a REAL production boot these must fail
+// CLOSED, failing open here would silently drop the exact protection they exist for.
+// Every other limiter (general browsing, discovery, admin, messaging, etc.) keeps
+// today's fail-open behavior since blocking those would break the product, not just
+// slow an attacker.
 const ABUSE_PRONE_LIMITERS = new Set<Ratelimit>([
   authLimiter,
   paymentLimiter,
@@ -133,10 +138,87 @@ const ABUSE_PRONE_LIMITERS = new Set<Ratelimit>([
   referralLimiter,
   referralValidateLimiter,
   resendAccessLimiter,
-  aiDailyLimiter,
 ]);
 
 const RATE_LIMITED_BODY = { error: "Too many requests. Please try again later.", code: "RATE_LIMITED" } as const;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Configurable AI daily cap (platform_settings.key='ai_daily_cap', value.cap),
+// editable via /api/admin/ai-limits. In-memory TTL cache, same style as the
+// feature-flag cache in lib/feature-flags.ts: 60s TTL, only a clean read (no
+// query error, a real integer cap) is cached, so a transient DB error re-checks
+// on the very next call instead of trusting the failure for the rest of the
+// window.
+// ─────────────────────────────────────────────────────────────────────────────
+type AiDailyCapCacheEntry = { cap: number; expiresAt: number };
+const AI_DAILY_CAP_TTL_MS = 60 * 1000;
+let aiDailyCapCache: AiDailyCapCacheEntry | null = null;
+
+async function resolveAiDailyCap(): Promise<number> {
+  const now = Date.now();
+  if (aiDailyCapCache && aiDailyCapCache.expiresAt > now) {
+    return aiDailyCapCache.cap;
+  }
+  try {
+    const admin = createAdminSupabaseClient();
+    const { data: setting, error } = await admin
+      .from("platform_settings")
+      .select("value")
+      .eq("key", "ai_daily_cap")
+      .single();
+
+    // Missing row / query error: fall back to the default, do NOT cache the
+    // failure, so the next call re-checks the DB instead of trusting a
+    // transient blip for the rest of the TTL window.
+    if (error) return DEFAULT_AI_DAILY_CAP;
+
+    const value = setting?.value;
+    const rawCap =
+      value && typeof value === "object" && !Array.isArray(value)
+        ? (value as { cap?: unknown }).cap
+        : undefined;
+    const cap =
+      typeof rawCap === "number" && Number.isInteger(rawCap) && rawCap > 0
+        ? rawCap
+        : DEFAULT_AI_DAILY_CAP;
+
+    aiDailyCapCache = { cap, expiresAt: now + AI_DAILY_CAP_TTL_MS };
+    return cap;
+  } catch (err) {
+    console.error("[ratelimit] failed to read ai_daily_cap, falling back to default:", err);
+    return DEFAULT_AI_DAILY_CAP;
+  }
+}
+
+// One Ratelimit instance per distinct cap value, built lazily and reused
+// across requests, rather than reconstructing one on every call. The cap
+// only changes when an admin edits it (rare), so this map stays effectively
+// O(1) in practice.
+const aiDailyLimiterInstances = new Map<number, Ratelimit>();
+
+/**
+ * Returns the current daily AI-generation Ratelimit instance, built from the
+ * DB-backed cap (platform_settings.key='ai_daily_cap', TTL-cached above, falls
+ * back to DEFAULT_AI_DAILY_CAP if unset/misconfigured). Every instance this
+ * builds is registered into ABUSE_PRONE_LIMITERS so applyRateLimit keeps
+ * failing CLOSED on it when Upstash is unconfigured in production, same as
+ * the old static aiDailyLimiter did.
+ */
+export async function getAiDailyLimiter(): Promise<Ratelimit> {
+  const cap = await resolveAiDailyCap();
+  let limiter = aiDailyLimiterInstances.get(cap);
+  if (!limiter) {
+    limiter = new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(cap, "1 d"),
+      analytics: true,
+      prefix: "rl:ai:daily",
+    });
+    aiDailyLimiterInstances.set(cap, limiter);
+    ABUSE_PRONE_LIMITERS.add(limiter);
+  }
+  return limiter;
+}
 
 // Set at most once per process. The underlying misconfiguration (Upstash unset in
 // prod) doesn't change between requests, so re-alerting on every request would just

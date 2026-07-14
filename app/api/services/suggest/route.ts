@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
-import { applyRateLimit, generalLimiter, aiDailyLimiter } from "@/lib/ratelimit";
+import { applyRateLimit, generalLimiter, getAiDailyLimiter } from "@/lib/ratelimit";
+import { wrapUntrustedInput } from "@/lib/ai/untrusted";
 
 export const runtime = "edge";
 
@@ -17,7 +18,7 @@ export async function GET(request: NextRequest) {
     const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
     if (rateLimited) return rateLimited;
 
-    const dailyLimited = await applyRateLimit(aiDailyLimiter, { userId: user.id });
+    const dailyLimited = await applyRateLimit(await getAiDailyLimiter(), { userId: user.id });
     if (dailyLimited) return dailyLimited;
 
     const { searchParams } = new URL(request.url);
@@ -31,7 +32,7 @@ export async function GET(request: NextRequest) {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
-    const prompt = `You are a salon expert in Switzerland. Generate exactly 5 standard, popular services for a salon with the following categories: ${categories}.
+    const prompt = `You are a salon expert in Switzerland. Generate exactly 5 standard, popular services for a salon with the following categories: ${wrapUntrustedInput("categories", categories)}.
     
     CRITICAL RULES:
     1. Output ONLY a valid JSON array of objects. No markdown, no backticks, no text.

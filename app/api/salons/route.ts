@@ -3,7 +3,7 @@ export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { SALON_CATEGORY_SLUGS } from "@/lib/validations";
-import { generalLimiter, authLimiter, aiDailyLimiter, applyRateLimit, getClientIp } from "@/lib/ratelimit";
+import { generalLimiter, authLimiter, applyRateLimit, getClientIp } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, createSalonSchema } from "@/lib/validations";
 import { sendEmail } from "@/lib/email";
@@ -132,16 +132,14 @@ export async function GET(request: NextRequest) {
     let rankIndex: Map<string, number> | null = null;
     if (q && q.length >= 2) {
       let emb: string | null = null;
-      // Cap billed Gemini embedding calls per IP per day; over the cap, skip the embedding and
-      // fall back to lexical ranking (search_salons_ranked accepts a null embedding) instead of
-      // blocking search.
-      const aiCapped = await applyRateLimit(aiDailyLimiter, { ip: getClientIp(request) });
       try {
-        // Race the embedding call against a short timeout so a slow Gemini round-trip
-        // never blocks the whole search request. On timeout, fall back to null and let
-        // search_salons_ranked rank lexically (p_query_embedding accepts null).
+        // Embeddings are near-free and stay under the per-minute generalLimiter above only
+        // (no daily AI cap here, that's reserved for the expensive generation routes, see
+        // lib/ratelimit.ts). Race the embedding call against a short timeout so a slow
+        // Gemini round-trip never blocks the whole search request. On timeout, fall back
+        // to null and let search_salons_ranked rank lexically (p_query_embedding accepts null).
         const EMBED_TIMEOUT_MS = 500;
-        const vec = aiCapped ? null : await Promise.race([
+        const vec = await Promise.race([
           generateEmbedding(q).catch(() => null),
           new Promise<null>((resolve) => setTimeout(() => resolve(null), EMBED_TIMEOUT_MS)),
         ]);
