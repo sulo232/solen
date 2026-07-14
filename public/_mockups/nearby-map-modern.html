@@ -1,0 +1,120 @@
+<!--
+Grounded-in: app/[locale]/_components/homepage/Nearby.tsx (the map teaser), app/[locale]/_components/salon/SalonLocation.tsx (Mapbox), lib/frost-glass.ts (frosted over-photo control pattern).
+Exists-check: `npm run exists nearby` ran this turn. Owner rejected the earlier map styles + the default Mapbox teardrop pin ("none of em, like more modern, and also the pin is not okay"). This mockup: muted map base + CUSTOM modern markers (dots / circular photo pins) instead of the teardrop.
+Net-new: custom marker treatment (dot + photo-circle) + muted map + frosted chip. Production path = mapbox-gl (already a dep) with custom HTML markers, not the static teardrop image.
+Owner-scope: confirmed: owner said "none of em like more modern and also the pin is not okay" (2026-07-14).
+german-ok: only real product copy is German (count chip, map CTA).
+lucide-ok: inline svgs carry class="lucide lucide-<name>".
+psych-ok: "20 Salons in Basel" is the real live count (20 active Basel salons, Supabase-verified). Pin positions are the REAL projected lat/lng of the 20 salons (Web Mercator), not random. Static mockup, count literal inherent.
+Assets: nbg-streets.png = real pinless Basel Mapbox tile; salon-*.jpg = real salon photos; all self-hosted.
+-->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600;700&display=swap');
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--sunken:#F4F4F5;--border:#E4E4E7;--accent:#276EF1;--red:#DC2626;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:#EDEDEF;}
+  .wrap{max-width:1180px;margin:0 auto;padding:26px 20px 60px;}
+  h1{font-family:'Inter Tight';font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:4px;}
+  .lead{color:var(--ink2);font-size:14px;line-height:1.5;margin-bottom:22px;max-width:820px;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:22px;}
+  .card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:16px;}
+  .card.rec{border-color:var(--ink);box-shadow:0 1px 0 var(--ink);}
+  .cap{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+  .tag{font-family:'Inter Tight';font-size:12.5px;font-weight:600;padding:3px 10px;border-radius:999px;}
+  .tag.rec{background:var(--ink);color:#fff;}
+  .tag.alt{background:var(--sunken);color:var(--ink);}
+  .capnote{font-size:12px;color:var(--ink2);}
+
+  .mapwrap{position:relative;height:154px;border-radius:18px;overflow:hidden;border:1px solid var(--border);background:var(--sunken);display:block;}
+  .mapwrap .base{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.72) brightness(1.02);}
+  .dot{position:absolute;width:13px;height:13px;border-radius:50%;background:var(--ink);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4);transform:translate(-50%,-50%);}
+  .dot.sm{width:10px;height:10px;border-width:1.5px;}
+  .dot.blue{background:var(--accent);}
+  .ppin{position:absolute;width:36px;height:36px;border-radius:50%;background-size:cover;background-position:center;border:2.5px solid #fff;box-shadow:0 3px 8px rgba(0,0,0,.32);transform:translate(-50%,-50%);}
+  .chip{position:absolute;bottom:11px;left:11px;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:999px;padding:6px 11px;font-size:12.5px;font-weight:600;color:var(--ink);box-shadow:0 2px 10px rgba(0,0,0,.14);}
+  .chip svg{width:13px;height:13px;}
+  .cta{position:absolute;bottom:11px;right:11px;display:inline-flex;align-items:center;gap:2px;background:rgba(255,255,255,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:999px;padding:6px 10px;font-size:12px;font-weight:600;color:var(--accent);box-shadow:0 2px 10px rgba(0,0,0,.14);}
+  .cta svg{width:13px;height:13px;}
+  .note{font-size:12px;color:var(--ink2);margin-top:12px;line-height:1.5;}
+  .note b{color:var(--ink);font-weight:600;}
+
+  .study{background:#fff;border:1px solid var(--border);border-radius:20px;padding:18px 16px;margin-top:22px;}
+  .study h2{font-family:'Inter Tight';font-size:15px;font-weight:600;margin-bottom:14px;}
+  .pinrow{display:flex;gap:26px;flex-wrap:wrap;}
+  .pinspec{display:flex;flex-direction:column;align-items:center;gap:8px;width:110px;text-align:center;}
+  .swatch{width:100%;height:74px;border-radius:14px;background:#EDEEF0;display:grid;place-items:center;position:relative;overflow:hidden;}
+  .swatch .old{color:var(--ink);}
+  .swatch .old svg{width:30px;height:30px;}
+  .bigdot{width:18px;height:18px;border-radius:50%;background:var(--ink);border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.4);}
+  .bigdot.blue{background:var(--accent);}
+  .bigphoto{width:46px;height:46px;border-radius:50%;border:3px solid #fff;box-shadow:0 3px 8px rgba(0,0,0,.3);background-size:cover;background-position:center;}
+  .plabel{font-size:12px;font-weight:600;}
+  .psub{font-size:11px;color:var(--ink2);}
+  .rejected .swatch{outline:1.5px solid var(--red);outline-offset:-1.5px;}
+  .legend{font-size:11px;color:var(--ink2);margin-top:20px;text-align:center;line-height:1.5;}
+</style>
+<div class="wrap">
+  <h1>Nearby map , modern take + a real pin</h1>
+  <p class="lead">Dropped the loud styles and the dated teardrop pin. Base is a quieter, desaturated map; the salons are marked with clean custom dots (and, as an option, small circular photos) with a frosted count chip. Every marker sits at the real projected location of the 20 Basel salons, not a random spot.</p>
+
+  <div class="grid">
+
+    <div class="card rec">
+      <div class="cap"><span class="tag rec">A , Recommended</span><span class="capnote">muted map, minimal dots</span></div>
+      <a class="mapwrap" href="#">
+        <img class="base" src="_assets/nbg-streets.png" alt="Basel map">
+        <span class="chip"><svg class="lucide lucide-map-pin" viewBox="0 0 24 24" fill="currentColor"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3" fill="#fff"/></svg><span german-ok>20 Salons in Basel</span><!-- psych-ok: real live count --></span>
+        <span class="cta" german-ok>Karte öffnen <svg class="lucide lucide-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+        <span class="dot" style="left:49.7%;top:45.4%"></span><span class="dot" style="left:52.9%;top:53.4%"></span><span class="dot" style="left:52.2%;top:55.3%"></span><span class="dot" style="left:55.5%;top:49.6%"></span><span class="dot" style="left:58.2%;top:73.5%"></span><span class="dot" style="left:62.2%;top:32.9%"></span><span class="dot" style="left:50.6%;top:43.9%"></span><span class="dot" style="left:36.1%;top:61%"></span><span class="dot" style="left:49.8%;top:29.9%"></span><span class="dot" style="left:41%;top:39%"></span><span class="dot" style="left:43.8%;top:84.9%"></span><span class="dot" style="left:54.1%;top:49.2%"></span><span class="dot" style="left:51.7%;top:56.8%"></span><span class="dot" style="left:38.4%;top:61.8%"></span><span class="dot" style="left:53.2%;top:7.9%"></span><span class="dot" style="left:46.1%;top:83.4%"></span><span class="dot" style="left:46.2%;top:48.9%"></span><span class="dot" style="left:50.3%;top:84.2%"></span><span class="dot" style="left:64.6%;top:16.6%"></span>
+      </a>
+      <p class="note"><b>Clean dots.</b> Small ink circles with a white ring , the standard modern-map marker. Quiet, legible at 20 pins, no teardrop. The map is desaturated so it feels premium, not loud.</p>
+    </div>
+
+    <div class="card">
+      <div class="cap"><span class="tag alt">B , photo pins</span><span class="capnote">featured salons as circles</span></div>
+      <a class="mapwrap" href="#">
+        <img class="base" src="_assets/nbg-streets.png" alt="Basel map">
+        <span class="chip"><svg class="lucide lucide-map-pin" viewBox="0 0 24 24" fill="currentColor"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3" fill="#fff"/></svg><span german-ok>20 Salons in Basel</span><!-- psych-ok: real live count --></span>
+        <span class="cta" german-ok>Karte öffnen <svg class="lucide lucide-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+        <span class="ppin" style="left:49.7%;top:45.4%;background-image:url(_assets/salon-muse.jpg)"></span><span class="dot sm" style="left:52.9%;top:53.4%"></span><span class="ppin" style="left:52.2%;top:55.3%;background-image:url(_assets/salon-nail.jpg)"></span><span class="ppin" style="left:55.5%;top:49.6%;background-image:url(_assets/salon-oldtown.jpg)"></span><span class="ppin" style="left:58.2%;top:73.5%;background-image:url(_assets/salon-smooth.jpg)"></span><span class="dot sm" style="left:62.2%;top:32.9%"></span><span class="dot sm" style="left:50.6%;top:43.9%"></span><span class="dot sm" style="left:36.1%;top:61%"></span><span class="dot sm" style="left:49.8%;top:29.9%"></span><span class="dot sm" style="left:41%;top:39%"></span><span class="dot sm" style="left:43.8%;top:84.9%"></span><span class="dot sm" style="left:54.1%;top:49.2%"></span><span class="dot sm" style="left:51.7%;top:56.8%"></span><span class="dot sm" style="left:38.4%;top:61.8%"></span><span class="dot sm" style="left:53.2%;top:7.9%"></span><span class="dot sm" style="left:46.1%;top:83.4%"></span><span class="dot sm" style="left:46.2%;top:48.9%"></span><span class="dot sm" style="left:50.3%;top:84.2%"></span><span class="dot sm" style="left:64.6%;top:16.6%"></span>
+      </a>
+      <p class="note"><b>Photo pins.</b> A few salons show as small circular photos, the rest stay dots. Premium and very on-brand for a photo-forward app, but busier , best if we cap it at 3 to 4 featured.</p>
+    </div>
+
+    <div class="card">
+      <div class="cap"><span class="tag alt">C , blue dots</span><span class="capnote">muted map, accent-blue dots</span></div>
+      <a class="mapwrap" href="#">
+        <img class="base" src="_assets/nbg-streets.png" alt="Basel map">
+        <span class="chip"><svg class="lucide lucide-map-pin" viewBox="0 0 24 24" fill="currentColor"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4  10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3" fill="#fff"/></svg><span german-ok>20 Salons in Basel</span><!-- psych-ok: real live count --></span>
+        <span class="cta" german-ok>Karte öffnen <svg class="lucide lucide-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+        <span class="dot blue" style="left:49.7%;top:45.4%"></span><span class="dot blue" style="left:52.9%;top:53.4%"></span><span class="dot blue" style="left:52.2%;top:55.3%"></span><span class="dot blue" style="left:55.5%;top:49.6%"></span><span class="dot blue" style="left:58.2%;top:73.5%"></span><span class="dot blue" style="left:62.2%;top:32.9%"></span><span class="dot blue" style="left:50.6%;top:43.9%"></span><span class="dot blue" style="left:36.1%;top:61%"></span><span class="dot blue" style="left:49.8%;top:29.9%"></span><span class="dot blue" style="left:41%;top:39%"></span><span class="dot blue" style="left:43.8%;top:84.9%"></span><span class="dot blue" style="left:54.1%;top:49.2%"></span><span class="dot blue" style="left:51.7%;top:56.8%"></span><span class="dot blue" style="left:38.4%;top:61.8%"></span><span class="dot blue" style="left:53.2%;top:7.9%"></span><span class="dot blue" style="left:46.1%;top:83.4%"></span><span class="dot blue" style="left:46.2%;top:48.9%"></span><span class="dot blue" style="left:50.3%;top:84.2%"></span><span class="dot blue" style="left:64.6%;top:16.6%"></span>
+      </a>
+      <p class="note"><b>Blue dots.</b> Same dots in the brand blue. A touch more colour and ties to the accent, but blue is meant to stay a rare clickable accent, so 20 of them may be too much.</p>
+    </div>
+
+  </div>
+
+  <div class="study">
+    <h2>The pin, up close</h2>
+    <div class="pinrow">
+      <div class="pinspec rejected">
+        <div class="swatch"><span class="old"><svg class="lucide lucide-map-pin" viewBox="0 0 24 24" fill="currentColor" stroke="#fff" stroke-width="1.5"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3" fill="#fff"/></svg></span></div>
+        <span class="plabel">Old teardrop</span><span class="psub">the one you rejected</span>
+      </div>
+      <div class="pinspec">
+        <div class="swatch"><span class="bigdot"></span></div>
+        <span class="plabel">Ink dot</span><span class="psub">recommended</span>
+      </div>
+      <div class="pinspec">
+        <div class="swatch"><span class="bigphoto" style="background-image:url(_assets/salon-muse.jpg)"></span></div>
+        <span class="plabel">Photo circle</span><span class="psub">premium, featured only</span>
+      </div>
+      <div class="pinspec">
+        <div class="swatch"><span class="bigdot blue"></span></div>
+        <span class="plabel">Blue dot</span><span class="psub">accent variant</span>
+      </div>
+    </div>
+  </div>
+
+  <p class="legend">Base = real pinless api.mapbox.com Basel tile, desaturated in CSS. Markers = custom HTML at the real projected coordinates of the 20 salons. Production would use mapbox-gl (already a dependency) with these custom markers instead of the static teardrop. Self-hosted, no CDN.</p>
+</div>
