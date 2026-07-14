@@ -29,6 +29,13 @@ I MISREAD round 4 and built an abstract no-road blob. The correct read:
 Fix built: base = light-v11 (white tiles + roads + labels), recolour water->blue + parks->green on load, dim motorway, ink dots, no Karte öffnen. light-v11 alone = "monochrome" (grey river, invisible parks); the recolour is what makes it white-with-roads AND green+river.
 Repeating pattern: misreading a multi-constraint taste dictation and building before confirming. Not cleanly gate-able (judgment); mitigation = when a dictation contradicts an earlier one, show the LITERAL normal-case first, not an invented interpretation.
 
+## CORRECTION 2 (2026-07-14, owner "i told u to make road gray and the tiles white and what abt blue dott why do u keep forgetting")
+Three explicit values I DROPPED / MISREAD:
+- N9. Roads = GRAY (I made them white). 
+- N10. Tiles = WHITE (I made #ECEEF1 light-grey; they want white).
+- N11. Dots = BLUE (the earlier "prrly ink dot blur" , "blur" was "BLUE". I built ink dots. Owner wanted blue dots.)
+Pattern = dropping/misreading explicit design values in a dictation. HARDEN: dropped-directive-gate.py (Stop) , on recurrence language extracts (noun+colour) directives from the owner msg and BLOCKS the close unless each is addressed in the reply.
+
 ## Status
 - Real data: 20 active Basel salons with lat/lng (Supabase). Real count = 20 (the "14" was fabricated).
 - Approved: layout A (map between Top-auf-Solen and nearby cards). Pin leaning ink dot.
