@@ -146,7 +146,7 @@ Assets: _assets/mapbox-gl.js + mapbox-gl.css (self-hosted from node_modules); sa
         return { type: "Feature", geometry: { type: "Point", coordinates: c } }; }) } });
     map.addLayer({ id: "clusters", type: "circle", source: "salons", filter: ["has", "point_count"],
       paint: { "circle-color": "#276EF1", "circle-stroke-color": "#fff", "circle-stroke-width": 2,
-        "circle-radius": ["step", ["get", "point_count"], 13, 4, 16, 8, 19] } });
+        "circle-radius": ["step", ["get", "point_count"], 9, 4, 11, 8, 13] } });
     map.addLayer({ id: "cluster-count", type: "symbol", source: "salons", filter: ["has", "point_count"],
       layout: { "text-field": ["get", "point_count_abbreviated"], "text-font": ["Arial Unicode MS Regular"], "text-size": 12 },
       paint: { "text-color": "#fff" } });
