@@ -49,7 +49,8 @@ Owner ask (dictation, 2026-07-08): "audit ALL the frontend, all of it. Find inco
 - [x] 5a. `_design-system/research/FRONTEND_AUDIT_2026-07-08.md` , 995 lines. Every surface, sectioned by aspect, each finding with severity + rule + file:line + problem + fix + [code]/[mockup]. Plus a cross-cutting-patterns table (fix the pattern, not the file). Committed `85031fab6`.
 
 ### 6. Mockups for every [mockup]-class fix
-- [~] 6a. Mockup pass , IN PROGRESS. **1 of 9 built.**
+> STALE-MODEL CORRECTION (2026-07-14): the per-finding before/after mockup model below (M1 at `/dev/audit-fixes/fabrication`, and the `/dev/audit-fixes` index in section 7) was OWNER-REJECTED 2026-07-08 (REMOVED.md:56) the SAME day this pass was scoped, and `/dev/audit-fixes` was deleted. Replacement vehicle (FLOW_HARNESS.md): flows -> the `/dev/flows` harness (drives REAL components, walkable, login-free); a single-surface treatment -> a copy-of-real-page mockup. So M2-M9 as "before/after panels" are the WRONG model. The real next gate = owner sign-off on the `/dev/flows` booking pattern (FLOW_HARNESS ask H), which unblocks wiring the other 11 flows; then re-derive any genuinely single-surface [mockup] items as copy-of-real-page. ALL of it needs a session that can run the dev server , this one CANNOT (verified 2026-07-14: `listen()` -> PermissionError Errno 1 Operation not permitted; curl localhost:3000 -> HTTP 000). This is a render/environment + owner-decision block, NOT the git block (commits work fine this session).
+- [~] 6a. Mockup pass , SUPERSEDED MODEL. **1 of 9 built (M1, on the now-scrapped `/dev/audit-fixes` route).**
     - Queue re-derived from the patterns, not the files (the agents over-tagged: 7 of the 21 WAVE-1 `[mockup]` items were "swap bare Spinner for Skeleton", which the locked contract already specifies, so they are `[code]`).
     - **Removed from the queue entirely:** the selected-state sweep (62 call-sites, the single largest block). Owner already approved the gray TabPill treatment by voice 2026-06-29 and `public/_mockups/selected-states-redesign.html` already exists. It is a `[code]` sweep, not a taste question. See the phantom-gate section of the report.
     - [x] M1 fabricated data , `/de/dev/audit-fixes/fabrication`. 5 before/after pairs. Built by `coder`, graded by `loop-reviewer`, 1 punch item confirmed + fixed, 1 punch item refuted (see below). Verified 200 through the tunnel with content proof.
@@ -64,7 +65,7 @@ Owner ask (dictation, 2026-07-08): "audit ALL the frontend, all of it. Find inco
 
 
 ### 7. List every mockup at the end
-- [~] 7a. Mockup index , `/de/dev/audit-fixes` is live and is the single stable entry point (extends the existing `/dev/mockups` index rather than duplicating it). It gains a row per mockup as each lands. Tunnel link delivered in-chat each turn.
+- [ ] 7a. Mockup index , STALE: `/dev/audit-fixes` was DELETED 2026-07-08 (owner-rejected, REMOVED.md:56). The live vehicle is the `/dev/flows` harness. A per-mockup before/after index is moot under the flow-harness model; re-derive at re-plan.
 
 
 ### 8. Heavy subagent fan-out + loop
