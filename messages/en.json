@@ -4693,7 +4693,9 @@
       "reportProblem": "Report a problem",
       "shareTitle": "My Solen booking",
       "shareText": "Order {code} at {salon}",
-      "calendarDescription": "Booked via solen.ch"
+      "calendarDescription": "Booked via solen.ch",
+      "paidOnlineNow": "Paid online now",
+      "restAtSalon": "Rest at the salon"
     },
     "guestBookingForm": {
       "title": "Guest booking",

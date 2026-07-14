@@ -714,6 +714,13 @@ export async function POST(req: NextRequest) {
   const piChargeChf = finalChargeRappen / 100;
   const creditAppliedChf = creditAppliedRappen ? creditAppliedRappen / 100 : 0;
   const voucherAppliedChf = voucherAppliedRappen ? voucherAppliedRappen / 100 : 0;
+  const remainingAtSalonChf = paymentMode === "deposit"
+    ? Math.max(0, Math.round(((priceChf - (actualPromoFullDiscountRappen ? actualPromoFullDiscountRappen / 100 : 0) - creditAppliedChf - voucherAppliedChf) - piChargeChf) * 100) / 100)
+    : 0;
+  // Persist the discount-aware at-salon remainder so the confirmation screen can display it (deposit only).
+  if (paymentMode === "deposit") {
+    await admin.from("bookings").update({ remaining_at_salon: remainingAtSalonChf }).eq("id", booking.id);
+  }
   return NextResponse.json({
     client_secret: paymentIntent.client_secret,
     payment_intent_id: paymentIntent.id,
@@ -731,7 +738,7 @@ export async function POST(req: NextRequest) {
     // Uses the FULL discount so the at-salon remainder absorbs any discount beyond the deposit. Floored
     // at 0: on a ~100%-off promo the online charge cannot go below Stripe's 0.50 minimum, so up to CHF 0.50
     // can remain uncredited , that residual is Stripe-mandated, not the discount-clamp bug (down from up to CHF 15.50).
-    remaining_at_salon: paymentMode === "deposit" ? Math.max(0, Math.round(((priceChf - (actualPromoFullDiscountRappen ? actualPromoFullDiscountRappen / 100 : 0) - creditAppliedChf - voucherAppliedChf) - piChargeChf) * 100) / 100) : 0,
+    remaining_at_salon: remainingAtSalonChf,
     service_name: service.name_de,
   });
 }

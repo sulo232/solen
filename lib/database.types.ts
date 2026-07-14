@@ -936,6 +936,7 @@ export type Database = {
           outlook_event_id: string | null
           paid_amount: number | null
           paid_via: string | null
+          remaining_at_salon: number | null
           payment_intent_id: string | null
           payment_status: string | null
           platform_fee: number | null
@@ -1018,6 +1019,7 @@ export type Database = {
           outlook_event_id?: string | null
           paid_amount?: number | null
           paid_via?: string | null
+          remaining_at_salon?: number | null
           payment_intent_id?: string | null
           payment_status?: string | null
           platform_fee?: number | null
@@ -1100,6 +1102,7 @@ export type Database = {
           outlook_event_id?: string | null
           paid_amount?: number | null
           paid_via?: string | null
+          remaining_at_salon?: number | null
           payment_intent_id?: string | null
           payment_status?: string | null
           platform_fee?: number | null

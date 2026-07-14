@@ -4666,7 +4666,9 @@
       "reportProblem": "Segnala un problema",
       "shareTitle": "La mia prenotazione Solen",
       "shareText": "Ordine {code} da {salon}",
-      "calendarDescription": "Prenotato tramite solen.ch"
+      "calendarDescription": "Prenotato tramite solen.ch",
+      "paidOnlineNow": "Pagato online",
+      "restAtSalon": "Resto al salone"
     },
     "guestBookingForm": {
       "title": "Prenotazione ospite",

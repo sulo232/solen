@@ -45,6 +45,8 @@ export interface BookingConfirmationProps {
   pricePaid: number;
   priceLabel: string; // pre-formatted currency (server-side, avoids locale drift)
   paidVia: string | null; // 'stripe' | 'package' | 'gift_card' | 'walk_in'
+  paidNowLabel?: string | null; // deposit: pre-formatted amount charged online now
+  remainingAtSalonLabel?: string | null; // deposit: pre-formatted rest paid at the salon (discount-aware); null hides the breakdown
   /**
    * Booking lifecycle + payment truth (read off the row). The payment-state copy is gated on
    * these — never shown as "paid in full" unconditionally:
@@ -226,25 +228,50 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
               </div>
             )}
           </div>
-          {/* paid + price */}
-          <div className="flex items-center justify-between gap-3 bg-s-bg-sunken px-4 py-3.5">
-            <div className="min-w-0">
-              <div className="text-[13px] text-s-ink-2">{showVat ? t("totalInclVat") : t("total")}</div>
-              {isPaid ? (
-                <span className="mt-1 inline-flex items-center gap-1.5 rounded-pill bg-s-success-bg px-2.5 py-[3px] text-[13px] font-semibold text-s-success">
-                  <Check size={13} strokeWidth={2.6} aria-hidden />
-                  {t("paidShort")}
+          {/* paid + price , deposit shows paid-now + rest-at-salon (discount-aware); else one total */}
+          {props.remainingAtSalonLabel && isPaid ? (
+            <div className="bg-s-bg-sunken px-4 py-3.5">
+              <div className="flex items-center justify-between gap-3">
+                <span className="inline-flex items-center gap-1.5 text-[13px] text-s-ink-2">
+                  {t("paidOnlineNow")}
+                  {isPaid && (
+                    <span className="inline-flex items-center gap-1 rounded-pill bg-s-success-bg px-2 py-[2px] text-[12px] font-semibold text-s-success">
+                      <Check size={12} strokeWidth={2.6} aria-hidden />
+                      {t("paidShort")}
+                    </span>
+                  )}
                 </span>
-              ) : isConfirming ? (
-                <span className="mt-1 block text-[13px] text-s-ink-2">{t("paymentConfirming")}</span>
-              ) : (
-                <span className="mt-1 block text-[13px] text-s-ink-2">{t("paidInPerson")}</span>
-              )}
+                <span className="shrink-0 font-display text-[15px] font-semibold tracking-[-0.01em] text-s-ink tabular-nums">
+                  {props.paidNowLabel}
+                </span>
+              </div>
+              <div className="mt-2.5 flex items-center justify-between gap-3 border-t border-s-border pt-2.5">
+                <span className="text-[13px] font-medium text-s-ink">{t("restAtSalon")}</span>
+                <span className="shrink-0 font-display text-[19px] font-semibold tracking-[-0.01em] text-s-ink tabular-nums">
+                  {props.remainingAtSalonLabel}
+                </span>
+              </div>
             </div>
-            <span className="shrink-0 font-display text-[19px] font-semibold tracking-[-0.01em] text-s-ink tabular-nums">
-              {props.priceLabel}
-            </span>
-          </div>
+          ) : (
+            <div className="flex items-center justify-between gap-3 bg-s-bg-sunken px-4 py-3.5">
+              <div className="min-w-0">
+                <div className="text-[13px] text-s-ink-2">{showVat ? t("totalInclVat") : t("total")}</div>
+                {isPaid ? (
+                  <span className="mt-1 inline-flex items-center gap-1.5 rounded-pill bg-s-success-bg px-2.5 py-[3px] text-[13px] font-semibold text-s-success">
+                    <Check size={13} strokeWidth={2.6} aria-hidden />
+                    {t("paidShort")}
+                  </span>
+                ) : isConfirming ? (
+                  <span className="mt-1 block text-[13px] text-s-ink-2">{t("paymentConfirming")}</span>
+                ) : (
+                  <span className="mt-1 block text-[13px] text-s-ink-2">{t("paidInPerson")}</span>
+                )}
+              </div>
+              <span className="shrink-0 font-display text-[19px] font-semibold tracking-[-0.01em] text-s-ink tabular-nums">
+                {props.priceLabel}
+              </span>
+            </div>
+          )}
         </section>
 
         {/* ── one primary action (ink) + one secondary (flat) ── */}

@@ -4703,7 +4703,9 @@
       "reportProblem": "Problem melden",
       "shareTitle": "Meine Solen-Buchung",
       "shareText": "Bestellung {code} bei {salon}",
-      "calendarDescription": "Gebucht über solen.ch"
+      "calendarDescription": "Gebucht über solen.ch",
+      "paidOnlineNow": "Jetzt online bezahlt",
+      "restAtSalon": "Rest im Salon"
     },
     "guestBookingForm": {
       "title": "Gastbuchung",
