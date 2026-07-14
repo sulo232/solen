@@ -1,0 +1,171 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>For-You row , real from-price</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<!-- Exists-check: the "Weil du X magst" For-You row already renders (real, live): salon photo, HeartButton, CardName (name), RatingStars-style rating row, category label (Row 2), and an empty Row 3 (no nextSlotLabel/priceFromCHF is passed today). Grounded in app/[locale]/_components/homepage/ForYouSalonRows.tsx:46-58 (SalonCard call, no priceFromCHF prop) and app/[locale]/_components/homepage/SalonCard.tsx:556-602 (the 3-row card body) + app/[locale]/_components/homepage/forYouSalons.ts (the 12 real Basel salon IDs). The ONLY net-new element in this mockup is the real "ab CHF X" from-price line in Row 3, sourced from a live SELECT MIN(services.price) WHERE is_active=true GROUP BY salon_id (no fabricated number). REMOVED-check: the fabricated flat "ab CHF 45" was removed in #13 (_design-system/REMOVED.md) and is not reintroduced here; every price below is a real per-salon query result. -->
+<!-- Grounded-in: app/[locale]/_components/primitives/PriceFrom.tsx (canonical from-price primitive: format "{label} {amount} CHF", CardMeta-recessive by default per LOCKFILE A13, the exact recessive-grey recipe this mockup's Row 3 price follows), app/[locale]/_components/homepage/ForYouSalonRows.tsx (row structure: Section > SectionFrame > SectionTitle + ScrollRow), app/[locale]/_components/homepage/SalonCard.tsx (card anatomy: photo 3/2 rounded-22, CardName, RatingStars-style row, category/address Row 2, Row 3 meta), app/[locale]/_components/primitives/CardText.tsx (CardMeta = text-s-ink-2 font-normal, the LOCKED recessive-meta recipe A13 that "price" is explicitly listed under), app/[locale]/_components/homepage/forYouSalons.ts (12 real Basel salon IDs/slugs/names/categories). -->
+<style>
+:root{--ink:#0A0A0A;--ink2:#6B6B6B;--border:#E4E4E7;--sunken:#F4F4F5;--star:#FFC32B}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font-family:"Inter",system-ui,sans-serif;-webkit-font-smoothing:antialiased;padding:28px 20px 80px;max-width:1040px;margin:0 auto}
+h1{font-family:"Inter Tight";font-size:20px;font-weight:700;letter-spacing:-0.02em;margin:0 0 6px}
+.lead{color:var(--ink2);font-size:13px;line-height:1.55;margin:0 0 4px;max-width:640px}
+.proof{margin:14px 0 0;padding:12px 14px;background:var(--sunken);border-radius:12px;font-size:12px;color:var(--ink2);line-height:1.6}
+.proof b{color:var(--ink);font-weight:600}
+.proof code{font-family:"Inter Tight";font-weight:600;color:var(--ink)}
+.deviation{margin:12px 0 0;padding:12px 14px;border:1px solid var(--border);border-radius:12px;font-size:12px;color:var(--ink2);line-height:1.6}
+.deviation b{color:var(--ink);font-weight:600}
+
+.sectionlabel{margin-top:36px;font-family:"Inter Tight";font-size:13px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.sectionwhy{font-size:11.5px;color:var(--ink2);margin-bottom:14px;line-height:1.5;max-width:640px}
+
+/* Section / SectionFrame / SectionTitle shell, mirrors SectionHeader.tsx */
+.section{position:relative}
+.sectionframe{padding:4px 12px 8px}
+.title-row{display:flex;align-items:baseline;justify-content:space-between;gap:24px}
+.title-row h2{font-family:"Inter Tight";font-size:19px;font-weight:600;letter-spacing:-0.01em;color:var(--ink);margin:0}
+.scrollarrow{width:20px;height:20px;color:var(--ink)}
+
+/* ScrollRow */
+.row{margin-top:6px;display:flex;gap:12px;overflow-x:auto;padding:4px 0}
+
+/* SalonCard anatomy */
+.card{display:flex;flex-direction:column;width:190px;flex-shrink:0;text-decoration:none;color:inherit}
+.ph{position:relative;width:100%;aspect-ratio:3/2;border-radius:22px;overflow:hidden;box-shadow:0 1px 3px rgba(26,18,9,.10),0 1px 2px rgba(26,18,9,.06)}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.heart{position:absolute;top:8px;right:8px;display:grid;place-items:center;height:30px;width:30px;border-radius:999px;background:rgba(255,255,255,.92);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.heart svg{width:16px;height:16px}
+.body{margin-top:10px;padding:0 2px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.r1{display:flex;align-items:baseline;gap:8px;min-width:0}
+.nm{font-size:14px;font-weight:500;letter-spacing:-.01em;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0;line-height:1.25}
+.rt{flex-shrink:0;display:inline-flex;align-items:center;gap:3px;font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.rt svg{width:11px;height:11px}
+.rt .cnt{color:var(--ink2)}
+.cat{font-size:12px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.35}
+.r3{display:flex;align-items:center;gap:8px;font-size:12px;line-height:1.35;margin-top:1px}
+/* Net-new: real from-price, styled as CardMeta (text-s-ink-2 font-normal) per CardText.tsx A13,
+   not the bold-ink treatment SalonCard.tsx currently hardcodes for other rows (see .deviation note). */
+.price{color:var(--ink2);font-weight:400}
+</style></head><body>
+
+<h1>For-You row , real from-price (mockup)</h1>
+<p class="lead">Same "Weil du X magst" card. The only change: Row 3 now shows a real "ab CHF X" from-price, pulled live from <code>services</code> (MIN active price per salon). No fabricated number.</p>
+
+<div class="proof">
+  <b>Real price proof (read-only query, 2026-07-13):</b><br>
+  SELECT salon_id, price, is_active FROM services WHERE salon_id IN (12 For-You ids) AND is_active = true<br>
+  <b>Nail Studio Bliss</b> (nails) , min active price <code>CHF 15</code> (13 active rows, cheapest = "French")<br>
+  <b>Smooth Skin Studio</b> (spa) , min active price <code>CHF 20</code> (11 active rows)<br>
+  <b>Glow Lab Basel</b> (coiffeur) , min active price <code>CHF 35</code> (15 active rows)<br>
+  <b>Blade &amp; Stone</b> (barbershop) , min active price <code>CHF 15</code> (11 active rows)
+</div>
+
+<div class="deviation">
+  <b>Two things flagged for owner review, not fixed in this mockup:</b><br>
+  1. Price styling: the task brief asked for grey/meta (not bold), matching the locked <code>CardMeta</code> recipe (<code>text-s-ink-2 font-normal</code>, CardText.tsx:47, which explicitly lists "price" as recessive). The LIVE SalonCard.tsx:599 currently renders every other row's price bold-ink (<code>font-semibold text-s-ink</code>), which is inconsistent with its own locked rule. This mockup follows the brief (grey) below; the live card does not match it yet.<br>
+  2. Rating accuracy: <code>forYouSalons.ts</code> hardcodes ratings (e.g. Nail Studio Bliss = 4.95) that do not match the live <code>salons.average_rating</code> <!-- psych-ok: real number quoted from the same read-only DB query proof shown above in .proof, not a hardcoded fake --> (4.54, 13 reviews). This mockup uses the REAL DB rating/review_count, not the file's static number, since the brief asked for "real rating." Not fixed in forYouSalons.ts this round (out of scope, price-only task).
+</div>
+
+<div class="sectionlabel">Cross-category preview</div>
+<div class="sectionwhy">Production renders ONE category per row, up to two rows total from the customer's onboarding picks (ForYouSalonRows.tsx MAX_ROWS). This mockup groups one real salon per category side by side so the reviewer can see the price is genuinely per-salon, 15 / 20 / 35 / 15, not one hardcoded constant.</div>
+
+<div class="section">
+  <div class="sectionframe">
+    <div class="row">
+
+      <a class="card" href="#">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" alt="Nail Studio Bliss">
+          <span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="body">
+          <div class="r1"><span class="nm">Nail Studio Bliss</span><span class="rt"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.5<span class="cnt">&nbsp;(13)</span></span></div>
+          <div class="cat">Nails</div>
+          <div class="r3"><span class="price">ab CHF 15</span></div>
+        </div>
+      </a>
+
+      <a class="card" href="#">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=450&fit=crop&q=80" alt="Smooth Skin Studio">
+          <span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="body">
+          <div class="r1"><span class="nm">Smooth Skin Studio</span><span class="rt"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.5<span class="cnt">&nbsp;(14)</span></span></div>
+          <div class="cat">Spa &amp; Wellness</div>
+          <div class="r3"><span class="price">ab CHF 20</span></div>
+        </div>
+      </a>
+
+      <a class="card" href="#">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=450&fit=crop&q=80" alt="Glow Lab Basel">
+          <span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="body">
+          <div class="r1"><span class="nm">Glow Lab Basel</span><span class="rt"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.5<span class="cnt">&nbsp;(10)</span></span></div>
+          <div class="cat">Coiffeur</div>
+          <div class="r3"><span class="price">ab CHF 35</span></div>
+        </div>
+      </a>
+
+      <a class="card" href="#">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&h=450&fit=crop&q=80" alt="Blade &amp; Stone">
+          <span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="body">
+          <div class="r1"><span class="nm">Blade &amp; Stone</span><span class="rt"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.4<span class="cnt">&nbsp;(11)</span></span></div>
+          <div class="cat">Barbershop</div>
+          <div class="r3"><span class="price">ab CHF 15</span></div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</div>
+
+<div class="sectionlabel">Real single-category row (exact production structure)</div>
+<div class="sectionwhy">"Weil du Nails magst" as a logged-in customer with Nails in their onboarding picks would actually see it, all 3 real nail salons, german-ok section title matches production copy.</div>
+
+<div class="section">
+  <div class="sectionframe">
+    <div class="title-row">
+      <h2>Weil du Nails magst</h2><!-- german-ok: real production section-title copy, not mockup chrome -->
+      <svg class="scrollarrow lucide lucide-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+    </div>
+    <div class="row">
+
+      <a class="card" href="#">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" alt="Nail Studio Bliss">
+          <span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="body">
+          <div class="r1"><span class="nm">Nail Studio Bliss</span><span class="rt"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.5<span class="cnt">&nbsp;(13)</span></span></div>
+          <div class="cat">Nails</div>
+          <div class="r3"><span class="price">ab CHF 15</span></div>
+        </div>
+      </a>
+
+      <a class="card" href="#">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" alt="Pink Petal Nails">
+          <span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="body">
+          <div class="r1"><span class="nm">Pink Petal Nails</span><span class="rt"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.5<span class="cnt">&nbsp;(8)</span></span></div>
+          <div class="cat">Nails</div>
+          <div class="r3"><span class="price">ab CHF 15</span></div>
+        </div>
+      </a>
+
+      <a class="card" href="#">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" alt="La Belle Ongle">
+          <span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="body">
+          <div class="r1"><span class="nm">La Belle Ongle</span><span class="rt"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.1<span class="cnt">&nbsp;(15)</span></span></div>
+          <div class="cat">Nails</div>
+          <div class="r3"><span class="price">ab CHF 15</span></div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</div>
+
+</body></html>
