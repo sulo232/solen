@@ -33,6 +33,13 @@ export const generalLimiter = new Ratelimit({
 // /api/admin/ai-limits, same key/value/jsonb pattern as the commission rate
 // (app/api/admin/commission/route.ts). Use getAiDailyLimiter() below, never a static
 // instance, so a live cap edit takes effect without a redeploy.
+// Default per-user daily ceiling for EXPENSIVE AI generation (Gemini text drafting + fal image
+// gen). 100/day sits well above normal use (a heavy user drafts a handful of things a day) while
+// stopping a runaway client loop or scripted abuse from running up an unbounded generation bill.
+// Editable live by an admin (platform_settings.ai_daily_cap, /dashboard/ai-limits-admin).
+// NOTE (owner decision 2026-07-14): the CHEAP embedding/search routes (salons, salons/search,
+// search/smart) deliberately do NOT carry this daily cap. Embeddings are near-free per call and
+// those routes are used a lot, so they keep the per-minute generalLimiter only.
 export const DEFAULT_AI_DAILY_CAP = 100;
 
 export const bookingLimiter = new Ratelimit({
@@ -151,6 +158,8 @@ const RATE_LIMITED_BODY = { error: "Too many requests. Please try again later.",
 // window.
 // ─────────────────────────────────────────────────────────────────────────────
 type AiDailyCapCacheEntry = { cap: number; expiresAt: number };
+// 60s cache: a live admin edit to the cap takes effect within a minute, without a DB round-trip
+// on every AI request.
 const AI_DAILY_CAP_TTL_MS = 60 * 1000;
 let aiDailyCapCache: AiDailyCapCacheEntry | null = null;
 

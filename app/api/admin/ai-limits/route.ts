@@ -34,16 +34,27 @@ export async function GET(req: NextRequest) {
   if (rateLimited) return rateLimited;
 
   const admin = createAdminSupabaseClient();
-  const { data: setting } = await admin
+  const { data: setting, error: readErr } = await admin
     .from("platform_settings")
     .select("value, updated_at")
     .eq("key", "ai_daily_cap")
     .single();
+  // .single() returns PGRST116 ("no rows") when the cap has never been saved , that is expected
+  // (fall back to the default). Log any OTHER read error rather than swallowing it.
+  if (readErr && readErr.code !== "PGRST116") {
+    console.error("[admin/ai-limits] failed to read ai_daily_cap:", readErr.message);
+  }
 
   const settingValue = setting?.value;
-  const cap =
+  const rawCap =
     settingValue && typeof settingValue === "object" && !Array.isArray(settingValue)
-      ? settingValue.cap ?? DEFAULT_AI_DAILY_CAP
+      ? (settingValue as { cap?: unknown }).cap
+      : undefined;
+  // Validate exactly like the enforcement path (resolveAiDailyCap in lib/ratelimit.ts) so the
+  // admin UI never shows a value that differs from what is actually enforced.
+  const cap =
+    typeof rawCap === "number" && Number.isInteger(rawCap) && rawCap > 0
+      ? rawCap
       : DEFAULT_AI_DAILY_CAP;
 
   return NextResponse.json({

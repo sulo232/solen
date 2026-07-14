@@ -114,7 +114,9 @@ export default function AiLimitsAdminPage() {
                 step={1}
                 value={cap}
                 onChange={(e) => {
-                  setCap(Math.min(10000, Math.max(1, Number(e.target.value))));
+                  // Round so a fractional entry (e.g. 50.5) never reaches the server's int-only
+                  // schema; clamp 1..10000 (a sane admin ceiling; the server allows more).
+                  setCap(Math.min(10000, Math.max(1, Math.round(Number(e.target.value) || 0))));
                   if (state !== "idle") setState("idle");
                 }}
                 className="w-full flex-1 bg-transparent font-heading text-[30px] font-bold tabular-nums tracking-[-0.02em] text-s-ink outline-none"
