@@ -15,8 +15,9 @@ export const runtime = "nodejs";
 // Webhook URL to add in Stripe Dashboard:
 //   https://solen.ch/api/stripe/webhook
 // Events to enable: payment_intent.succeeded, payment_intent.payment_failed,
-//                   payment_intent.amount_capturable_updated (walk-in ticket backstop),
-//                   charge.dispute.created, charge.dispute.closed, account.updated
+//                   payment_intent.canceled, payment_intent.amount_capturable_updated
+//                   (walk-in ticket backstop), charge.dispute.created,
+//                   charge.dispute.closed, account.updated
 export async function POST(req: NextRequest) {
   const body = await req.text();
   const sig = req.headers.get("stripe-signature");
@@ -459,6 +460,21 @@ export async function POST(req: NextRequest) {
 
     case "payment_intent.payment_failed": {
       const pi = event.data.object;
+
+      // Tips (booking or walk-in): a tip PI can carry booking_id in metadata, so it
+      // MUST be handled here first, before the booking-cancellation logic below
+      // (which reads pi.metadata?.booking_id) misreads a failed tip as a failed
+      // booking payment and cancels/frees the booking's slot. Flip to 'failed' so
+      // the tips_one_pending_per_booking / tips_one_pending_per_walkin partial
+      // unique indexes don't permanently block a retry tip. Idempotent (a repeat
+      // delivery just re-sets 'failed'). Mirrors the succeeded-case tip branch above.
+      if (pi.metadata?.type === "tip") {
+        const { error: tipErr } = await admin
+          .from("tips").update({ status: "failed" }).eq("stripe_payment_intent_id", pi.id).neq("status", "paid");
+        if (tipErr) console.error("[StripeWebhook] tip status update (failed) failed:", tipErr.message);
+        break;
+      }
+
       const bookingId = pi.metadata?.booking_id;
       if (bookingId) {
         // Release the booking slot.
@@ -541,6 +557,27 @@ export async function POST(req: NextRequest) {
           }
         }
       }
+      break;
+    }
+
+    case "payment_intent.canceled": {
+      const pi = event.data.object;
+
+      // Tips (booking or walk-in): same guard as payment_intent.payment_failed
+      // above, flip to 'failed' so a canceled tip PI doesn't stay 'pending' forever
+      // and permanently block a future tip via the tips_one_pending_per_booking /
+      // tips_one_pending_per_walkin partial unique indexes. Idempotent (a repeat
+      // delivery just re-sets 'failed').
+      if (pi.metadata?.type === "tip") {
+        const { error: tipErr } = await admin
+          .from("tips").update({ status: "failed" }).eq("stripe_payment_intent_id", pi.id).neq("status", "paid");
+        if (tipErr) console.error("[StripeWebhook] tip status update (canceled) failed:", tipErr.message);
+        break;
+      }
+
+      // Non-tip canceled PIs: no existing booking-cancellation handling wired to
+      // this event type (payment_intent.payment_failed above owns that logic), so
+      // this is a safe no-op rather than guessing at cancellation semantics here.
       break;
     }
 
