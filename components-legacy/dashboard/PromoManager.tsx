@@ -13,6 +13,7 @@ interface PromoCode {
   discount_value: number;
   min_booking_amount: number;
   max_uses: number | null;
+  per_user_limit?: number | null;
   current_uses: number;
   valid_from: string;
   valid_until: string | null;
@@ -37,6 +38,7 @@ export default function PromoManager() {
     discount_value: 10,
     min_booking_amount: 0,
     max_uses: "",
+    per_user_limit: "1",
     valid_until: "",
   });
 
@@ -72,6 +74,7 @@ export default function PromoManager() {
           discount_value: form.discount_value,
           min_booking_amount: form.min_booking_amount,
           max_uses: form.max_uses ? parseInt(form.max_uses) : null,
+          per_user_limit: form.per_user_limit ? parseInt(form.per_user_limit) : 1,
           valid_until: form.valid_until || null,
         }),
       });
@@ -82,7 +85,7 @@ export default function PromoManager() {
       }
 
       setShowForm(false);
-      setForm({ code: "", discount_type: "percent", discount_value: 10, min_booking_amount: 0, max_uses: "", valid_until: "" });
+      setForm({ code: "", discount_type: "percent", discount_value: 10, min_booking_amount: 0, max_uses: "", per_user_limit: "1", valid_until: "" });
       fetchCodes();
     } catch (e) {
       setError(e instanceof Error ? e.message : t("createError"));
@@ -171,6 +174,16 @@ export default function PromoManager() {
                 value={form.max_uses}
                 onChange={(e) => setForm({ ...form, max_uses: e.target.value })}
                 placeholder={t("unlimited")}
+                min={1}
+                className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink outline-none"
+              />
+            </div>
+            <div>
+              <label className="text-xs font-medium text-s-ink-2 mb-1 block">{t("perUserLimit")}</label>
+              <input
+                type="number"
+                value={form.per_user_limit}
+                onChange={(e) => setForm({ ...form, per_user_limit: e.target.value })}
                 min={1}
                 className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink outline-none"
               />

@@ -2277,7 +2277,8 @@
       "until": "until",
       "active": "Active",
       "inactive": "Inactive",
-      "copyAriaLabel": "Copy code {code}"
+      "copyAriaLabel": "Copy code {code}",
+      "perUserLimit": "Max per customer"
     },
     "notificationCenter": {
       "notifications": "Notifications",

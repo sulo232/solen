@@ -4564,6 +4564,7 @@ export type Database = {
           max_uses: number | null
           min_booking_amount: number | null
           min_tier: string | null
+          per_user_limit: number | null
           salon_id: string | null
           stripe_coupon_id: string | null
           stripe_promotion_code_id: string | null
@@ -4583,6 +4584,7 @@ export type Database = {
           max_uses?: number | null
           min_booking_amount?: number | null
           min_tier?: string | null
+          per_user_limit?: number | null
           salon_id?: string | null
           stripe_coupon_id?: string | null
           stripe_promotion_code_id?: string | null
@@ -4602,6 +4604,7 @@ export type Database = {
           max_uses?: number | null
           min_booking_amount?: number | null
           min_tier?: string | null
+          per_user_limit?: number | null
           salon_id?: string | null
           stripe_coupon_id?: string | null
           stripe_promotion_code_id?: string | null
@@ -4614,6 +4617,38 @@ export type Database = {
             columns: ["salon_id"]
             isOneToOne: false
             referencedRelation: "salons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      promo_redemptions: {
+        Row: {
+          booking_id: string
+          code: string
+          id: string
+          redeemed_at: string
+          redeemer_key: string
+        }
+        Insert: {
+          booking_id: string
+          code: string
+          id?: string
+          redeemed_at?: string
+          redeemer_key: string
+        }
+        Update: {
+          booking_id?: string
+          code?: string
+          id?: string
+          redeemed_at?: string
+          redeemer_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "promo_redemptions_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: true
+            referencedRelation: "bookings"
             referencedColumns: ["id"]
           },
         ]

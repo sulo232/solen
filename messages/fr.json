@@ -2269,7 +2269,8 @@
       "until": "jusqu'au",
       "active": "Actif",
       "inactive": "Inactif",
-      "copyAriaLabel": "Copier le code {code}"
+      "copyAriaLabel": "Copier le code {code}",
+      "perUserLimit": "Max. par client"
     },
     "notificationCenter": {
       "notifications": "Notifications",

@@ -186,7 +186,15 @@ export const createPromoSchema = z.object({
   valid_until: z.string().datetime().optional().nullable(),
   // Solen Plus members-only deal gate (LOYALTY_STRUCTURE.md §12.4): null = everyone.
   min_tier: z.enum(["gold", "platinum"]).optional().nullable(),
-});
+  // Per-customer cap: how many times ONE customer may redeem this code. 1 = one per customer
+  // (default, closes the reuse gap); null = unlimited per customer. The global cap is still max_uses.
+  per_user_limit: z.number().int().positive().nullable().optional().default(1),
+})
+  // A percent discount can never exceed 100 (you can't discount more than the price).
+  .refine(
+    (d) => d.discount_type !== "percent" || d.discount_value <= 100,
+    { message: "discount_value must be <= 100 when discount_type is percent", path: ["discount_value"] },
+  );
 
 export const completeReferralSchema = z.object({
   referral_code: z.string().min(1).max(30).transform((v) => v.toUpperCase().trim()),
