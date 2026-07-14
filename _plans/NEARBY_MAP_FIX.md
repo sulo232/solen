@@ -31,9 +31,10 @@ Repeating pattern: misreading a multi-constraint taste dictation and building be
 
 ## CORRECTION 2 (2026-07-14, owner "i told u to make road gray and the tiles white and what abt blue dott why do u keep forgetting")
 Three explicit values I DROPPED / MISREAD:
-- N9. Roads = GRAY (I made them white). 
-- N10. Tiles = WHITE (I made #ECEEF1 light-grey; they want white).
-- N11. Dots = BLUE (the earlier "prrly ink dot blur" , "blur" was "BLUE". I built ink dots. Owner wanted blue dots.)
+- [x] N9. Roads = GRAY , road line-color #C7CBD1 (was #FFFFFF white). verified: Playwright render nmap2.png shows gray streets on white.
+- [x] N10. Tiles = WHITE , land background #FFFFFF (was #ECEEF1 light-grey). verified: Playwright render.
+- [x] N11. Dots = BLUE , .dot marker background #276EF1 (was ink; the "blur" was "blue"). verified: Playwright computed dotColor rgb(39,110,241).
+COMMIT OWED: git-dir writes sandbox-revoked mid-turn (index.lock Operation not permitted, corroborated by touch); file on disk + Playwright-verified. Commit + tunnel when the env clears.
 Pattern = dropping/misreading explicit design values in a dictation. HARDEN: dropped-directive-gate.py (Stop) , on recurrence language extracts (noun+colour) directives from the owner msg and BLOCKS the close unless each is addressed in the reply.
 
 ## Status
