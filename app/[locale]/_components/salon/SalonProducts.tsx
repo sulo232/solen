@@ -185,7 +185,6 @@ export function SalonProducts({
           <ProductRow
             key={p.id}
             product={p}
-            category={category}
             locale={locale}
             selected={selected.has(p.id)}
             onToggle={() => toggle(p.id)}
@@ -251,7 +250,6 @@ export function SalonProducts({
 
 function ProductRow({
   product,
-  category,
   locale,
   selected,
   onToggle,
@@ -259,7 +257,6 @@ function ProductRow({
   soldOutLabel,
 }: {
   product: RetailProduct;
-  category: string;
   locale: string;
   selected: boolean;
   onToggle: () => void;
