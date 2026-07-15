@@ -32,14 +32,18 @@ const Eyebrow = ({ children }: { children: React.ReactNode }) => (
   <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-3 mb-3">{children}</p>
 );
 
-function Delta({ v }: { v?: number }) {
+// D4 fix (owner-approved 2026-07-15, fixes-refined): compareLabel turns the inline delta into a
+// standalone comparison line under the KPI number ("+X% vs. letzte Woche"). Reuses the same
+// trends_vs_prior value already computed server-side, no new data; still renders nothing when v
+// is undefined (mockup-ok: no fabricated comparison when there is no prior-week data).
+function Delta({ v, compareLabel, className }: { v?: number; compareLabel?: string; className?: string }) {
   if (v === undefined) return null;
   const up = v > 0, flat = v === 0;
   return (
-    <span className={cn("inline-flex items-center gap-0.5 text-[12px] font-semibold ml-2", up ? "text-s-success" : flat ? "text-s-ink-3" : "text-s-error")}>
+    <span className={cn("inline-flex items-center gap-0.5 text-[12px] font-semibold", up ? "text-s-success" : flat ? "text-s-ink-3" : "text-s-error", className)}>
       {up && <ArrowUpRight size={12} strokeWidth={2.4} />}
       {!up && !flat && <ArrowDownRight size={12} strokeWidth={2.4} />}
-      {Math.abs(v)}%
+      {Math.abs(v)}%{compareLabel ? <span className="text-s-ink-3 font-medium ml-1">{compareLabel}</span> : null}
     </span>
   );
 }
@@ -205,17 +209,22 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Row 1 — charts (desktop only; mobile uses the tiles above) */}
-          <div className="hidden lg:grid lg:grid-cols-2 gap-3.5">
-            <div className="rounded-card-lg border border-s-border bg-white p-5">
+          {/* mockup-ok: Row 1, charts (desktop only; mobile uses the tiles above).
+              D4 fix (owner-approved 2026-07-15, fixes-refined): the two tiles were equal weight
+              with nothing signalling the primary metric. Revenue now leads: lg:col-span-2 (wider
+              tile), a bigger number, and a comparison line under each number instead of inline
+              next to it (same trends_vs_prior data, no new fields; renders nothing when the prior
+              value is undefined, per no-fabricated-data). */}
+          <div className="hidden lg:grid lg:grid-cols-3 gap-3.5">
+            <div className="rounded-card-lg border border-s-border bg-white p-5 lg:col-span-2">
               <div className="flex items-center justify-between mb-1">
                 <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-s-ink">{t("revenue")}</h2>
                 <span className="text-[12px] text-s-ink-3">{t("thisWeek")}</span>
               </div>
-              <p className="text-[30px] font-semibold tracking-[-0.02em] leading-none text-s-ink">
-                <span className="text-[15px] font-semibold text-s-ink-2 mr-1">CHF</span>{fmtChf(Math.round(stats?.total_revenue ?? 0))}
-                <Delta v={prior?.revenue} />
+              <p className="text-[34px] font-semibold tracking-[-0.02em] leading-none text-s-ink">
+                <span className="text-[16px] font-semibold text-s-ink-2 mr-1">CHF</span>{fmtChf(Math.round(stats?.total_revenue ?? 0))}
               </p>
+              <Delta v={prior?.revenue} compareLabel={t("vsPriorWeek")} className="mt-1.5" />
               <div className="mt-4">
                 <DashLineChart lines={[
                   { values: daily.map((d) => d.revenue), className: "stroke-s-accent-bright" },
@@ -227,15 +236,15 @@ export default function DashboardPage() {
                 <span className="inline-flex items-center gap-1.5"><span className="w-3.5 h-[3px] rounded bg-s-success" />{t("bookings")}</span>
               </div>
             </div>
-            <div className="rounded-card-lg border border-s-border bg-white p-5">
+            <div className="rounded-card-lg border border-s-border bg-white p-5 lg:col-span-1">
               <div className="flex items-center justify-between mb-1">
-                <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-s-ink">{t("bookings")}</h2>
+                <h2 className="text-[14px] font-semibold tracking-[-0.01em] text-s-ink-2">{t("bookings")}</h2>
                 <span className="text-[12px] text-s-ink-3">{t("thisWeek")}</span>
               </div>
-              <p className="text-[30px] font-semibold tracking-[-0.02em] leading-none text-s-ink">
-                {stats?.total_bookings ?? 0}<span className="text-[15px] font-semibold text-s-ink-2 ml-1">{t("booked")}</span>
-                <Delta v={prior?.bookings} />
+              <p className="text-[24px] font-semibold tracking-[-0.02em] leading-none text-s-ink">
+                {stats?.total_bookings ?? 0}<span className="text-[13px] font-semibold text-s-ink-2 ml-1">{t("booked")}</span>
               </p>
+              <Delta v={prior?.bookings} compareLabel={t("vsPriorWeek")} className="mt-1.5" />
               <div className="mt-4">
                 <DashBarChart data={daily.map((d) => ({ primary: d.confirmed, secondary: d.cancelled }))} />
               </div>

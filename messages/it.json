@@ -2639,6 +2639,7 @@
       "last7Days": "Ultimi 7 giorni",
       "priorWeek": "Settimana precedente",
       "thisWeek": "Questa settimana",
+      "vsPriorWeek": "vs settimana precedente",
       "booked": "prenotati",
       "statusConfirmed": "Confermato",
       "statusPending": "In sospeso",

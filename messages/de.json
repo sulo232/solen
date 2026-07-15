@@ -2675,6 +2675,7 @@
       "last7Days": "Letzte 7 Tage",
       "priorWeek": "Vorwoche",
       "thisWeek": "Diese Woche",
+      "vsPriorWeek": "vs. letzte Woche",
       "booked": "gebucht",
       "statusConfirmed": "Bestätigt",
       "statusPending": "Ausstehend",
