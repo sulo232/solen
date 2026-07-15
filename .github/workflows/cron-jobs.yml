@@ -20,12 +20,38 @@ on:
     - cron: '0 4 1 * *'
     - cron: '0 5 * * 1'
     - cron: '15 5 * * *'
+  # A manual run must pick exactly ONE job. Every job below is gated on
+  # github.event.schedule, which is empty on a manual run, so without this picker the
+  # Run-workflow button silently did nothing. One-at-a-time on purpose: a blanket manual
+  # run would also fire release-deposits / release-payments / pre-charge.
   workflow_dispatch:
+    inputs:
+      job:
+        description: 'Which job to run now (schedules still run on their own)'
+        required: true
+        default: generate-slots
+        type: choice
+        options:
+          - auto-complete-sweep
+          - late-cancel-reminders-noshow
+          - review-prompt-and-pre-charge
+          - release-deposits-and-payments
+          - discovery-ai-backfill
+          - generate-slots
+          - nightly-maintenance
+          - db-backup
+          - barber-smart-reminders
+          - salon-onboarding-and-birthdays
+          - welcome-series-and-nail-infill
+          - rebooking-nudge
+          - loyalty-recompute
+          - discovery-deadcheck
+          - daily-digest
 
 jobs:
 
   every-15-min:
-    if: github.event.schedule == '*/15 * * * *'
+    if: github.event.schedule == '*/15 * * * *' || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'auto-complete-sweep')
     name: Every 15 min · auto-complete, pending-timeout, abandon-sweep
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -51,7 +77,7 @@ jobs:
           secret: ${{ secrets.CRON_SECRET }}
 
   every-30-min:
-    if: github.event.schedule == '*/30 * * * *'
+    if: github.event.schedule == '*/30 * * * *' || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'late-cancel-reminders-noshow')
     name: Every 30 min · late-cancel, sms-reminders, no-show
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -65,7 +91,7 @@ jobs:
           secret: ${{ secrets.CRON_SECRET }}
 
   hourly:
-    if: github.event.schedule == '0 * * * *'
+    if: github.event.schedule == '0 * * * *' || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'review-prompt-and-pre-charge')
     name: Hourly · review-prompt, pre-charge
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -81,7 +107,7 @@ jobs:
           secret: ${{ secrets.CRON_SECRET }}
 
   every-6-hours:
-    if: github.event.schedule == '0 */6 * * *'
+    if: github.event.schedule == '0 */6 * * *' || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'release-deposits-and-payments')
     name: Every 6h · release-deposits, release-payments
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -95,7 +121,7 @@ jobs:
           secret: ${{ secrets.CRON_SECRET }}
 
   every-30-min-ai-backfill:
-    if: github.event.schedule == '*/30 * * * *'
+    if: github.event.schedule == '*/30 * * * *' || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'discovery-ai-backfill')
     name: Every 30 min · discovery-ai-backfill (auto-spec un-described looks)
     runs-on: ubuntu-latest
     timeout-minutes: 6
@@ -109,7 +135,7 @@ jobs:
           secret: ${{ secrets.CRON_SECRET }}
 
   daily-02-utc:
-    if: github.event.schedule == '0 2 * * *'
+    if: github.event.schedule == '0 2 * * *' || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'generate-slots')
     name: Daily 02:00 UTC · generate-slots
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -123,7 +149,7 @@ jobs:
           secret: ${{ secrets.CRON_SECRET }}
 
   daily-03-utc:
-    if: github.event.schedule == '0 3 * * *'
+    if: github.event.schedule == '0 3 * * *' || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'nightly-maintenance')
     name: Daily 03:00 UTC · solen-score recalc (POST), process-deletions (GET), reconcile (GET)
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -154,7 +180,7 @@ jobs:
           secret: ${{ secrets.CRON_SECRET }}
 
   daily-03-45-utc:
-    if: github.event.schedule == '45 3 * * *'
+    if: github.event.schedule == '45 3 * * *' || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'db-backup')
     name: Daily 03:45 UTC · db-backup (nightly data safety net)
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -168,7 +194,7 @@ jobs:
           secret: ${{ secrets.CRON_SECRET }}
 
   daily-08-utc:
-    if: github.event.schedule == '0 8 * * *'
+    if: github.event.schedule == '0 8 * * *' || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'barber-smart-reminders')
     name: Daily 08:00 UTC · barber-smart-reminders
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -182,7 +208,7 @@ jobs:
           secret: ${{ secrets.CRON_SECRET }}
 
   daily-09-utc:
-    if: github.event.schedule == '0 9 * * *'
+    if: github.event.schedule == '0 9 * * *' || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'salon-onboarding-and-birthdays')
     name: Daily 09:00 UTC · salon-onboarding, birthday-messages
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -196,7 +222,7 @@ jobs:
           secret: ${{ secrets.CRON_SECRET }}
 
   daily-10-utc:
-    if: github.event.schedule == '0 10 * * *'
+    if: github.event.schedule == '0 10 * * *' || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'welcome-series-and-nail-infill')
     name: Daily 10:00 UTC · welcome-series, nail-infill-reminders
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -210,7 +236,7 @@ jobs:
           secret: ${{ secrets.CRON_SECRET }}
 
   daily-11-utc:
-    if: github.event.schedule == '0 11 * * *'
+    if: github.event.schedule == '0 11 * * *' || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'rebooking-nudge')
     name: Daily 11:00 UTC · rebooking-nudge
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -224,7 +250,7 @@ jobs:
           secret: ${{ secrets.CRON_SECRET }}
 
   monthly-1st-04-utc:
-    if: github.event.schedule == '0 4 1 * *'
+    if: github.event.schedule == '0 4 1 * *' || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'loyalty-recompute')
     name: Monthly (1st) 04:00 UTC · loyalty-recompute (Solen Status ranks)
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -238,7 +264,7 @@ jobs:
           secret: ${{ secrets.CRON_SECRET }}
 
   weekly-mon-05-utc:
-    if: github.event.schedule == '0 5 * * 1'
+    if: github.event.schedule == '0 5 * * 1' || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'discovery-deadcheck')
     name: Weekly (Mon) 05:00 UTC · discovery-deadcheck (hide deleted/private TikToks)
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -252,7 +278,7 @@ jobs:
           secret: ${{ secrets.CRON_SECRET }}
 
   daily-05-15-utc:
-    if: github.event.schedule == '15 5 * * *'
+    if: github.event.schedule == '15 5 * * *' || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'daily-digest')
     name: Daily 05:15 UTC · daily-digest (founder ops email)
     runs-on: ubuntu-latest
     timeout-minutes: 5
