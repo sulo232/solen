@@ -30,6 +30,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      # The ping step below uses a LOCAL composite action, which only exists
+      # on the runner after checkout. Without this the job fails in ~6s.
+      - uses: actions/checkout@v4
       # Uptime monitor (R1, 2026-07-11): piggybacked on this job so it costs zero
       # extra Actions minutes (a separate scheduled job bills a rounded-up minute
       # per run). Fails the run red on a down/erroring live site; GitHub then
@@ -53,6 +56,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      # The ping step below uses a LOCAL composite action, which only exists
+      # on the runner after checkout. Without this the job fails in ~6s.
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/ping-cron
         with:
           paths: /api/cron/late-cancel,/api/cron/sms-reminders,/api/cron/no-show
@@ -64,6 +70,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      # The ping step below uses a LOCAL composite action, which only exists
+      # on the runner after checkout. Without this the job fails in ~6s.
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/ping-cron
         with:
           # /api/cron/reminders removed 2026-06-03 — deprecated no-op; SMS reminders now run solely
@@ -77,6 +86,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      # The ping step below uses a LOCAL composite action, which only exists
+      # on the runner after checkout. Without this the job fails in ~6s.
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/ping-cron
         with:
           paths: /api/cron/release-deposits,/api/cron/release-payments
@@ -88,6 +100,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 6
     steps:
+      # The ping step below uses a LOCAL composite action, which only exists
+      # on the runner after checkout. Without this the job fails in ~6s.
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/ping-cron
         with:
           paths: /api/cron/discovery-ai-backfill
@@ -99,6 +114,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      # The ping step below uses a LOCAL composite action, which only exists
+      # on the runner after checkout. Without this the job fails in ~6s.
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/ping-cron
         with:
           paths: /api/cron/generate-slots
@@ -110,6 +128,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      # The ping step below uses a LOCAL composite action, which only exists
+      # on the runner after checkout. Without this the job fails in ~6s.
+      - uses: actions/checkout@v4
       - name: solen-score recalculate (POST)
         uses: ./.github/actions/ping-cron
         with:
@@ -138,6 +159,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      # The ping step below uses a LOCAL composite action, which only exists
+      # on the runner after checkout. Without this the job fails in ~6s.
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/ping-cron
         with:
           paths: /api/cron/db-backup
@@ -149,6 +173,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      # The ping step below uses a LOCAL composite action, which only exists
+      # on the runner after checkout. Without this the job fails in ~6s.
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/ping-cron
         with:
           paths: /api/cron/barber-smart-reminders
@@ -160,6 +187,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      # The ping step below uses a LOCAL composite action, which only exists
+      # on the runner after checkout. Without this the job fails in ~6s.
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/ping-cron
         with:
           paths: /api/cron/salon-onboarding,/api/cron/birthday-messages
@@ -171,6 +201,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      # The ping step below uses a LOCAL composite action, which only exists
+      # on the runner after checkout. Without this the job fails in ~6s.
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/ping-cron
         with:
           paths: /api/cron/welcome-series,/api/cron/nail-infill-reminders
@@ -182,6 +215,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      # The ping step below uses a LOCAL composite action, which only exists
+      # on the runner after checkout. Without this the job fails in ~6s.
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/ping-cron
         with:
           paths: /api/cron/rebooking-nudge
@@ -193,6 +229,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      # The ping step below uses a LOCAL composite action, which only exists
+      # on the runner after checkout. Without this the job fails in ~6s.
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/ping-cron
         with:
           paths: /api/cron/loyalty-recompute
@@ -204,6 +243,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      # The ping step below uses a LOCAL composite action, which only exists
+      # on the runner after checkout. Without this the job fails in ~6s.
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/ping-cron
         with:
           paths: /api/cron/discovery-deadcheck
@@ -215,6 +257,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      # The ping step below uses a LOCAL composite action, which only exists
+      # on the runner after checkout. Without this the job fails in ~6s.
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/ping-cron
         with:
           paths: /api/cron/daily-digest
