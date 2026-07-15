@@ -45,7 +45,8 @@ export default function SetupBanner() {
 
   return (
     <div className="rounded-[12px] border border-s-ink/[0.06] p-4 mb-6 bg-white">
-      <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-star mb-1">{t("eyebrow")}</p>
+      {/* mockup-ok: D2 fix, sentence case 13px semibold (approved public/_mockups/fixes-refined) */}
+      <p className="text-[13px] font-heading font-semibold text-s-star mb-1">{t("eyebrow")}</p>
       <p className="font-heading text-sm text-s-ink mb-3">
         {t("salonSetup")} — {data.completed}/{data.total} {t("done")}
       </p>
@@ -62,8 +63,9 @@ export default function SetupBanner() {
           <p className="text-xs font-heading text-s-ink flex-1">
             {tSteps(step.key as Parameters<typeof tSteps>[0])}
           </p>
+          {/* mockup-ok: D2 fix, sentence case 13px semibold (approved public/_mockups/fixes-refined) */}
           <Link href={`/${locale}/dashboard/setup`}
-            className="text-[12px] font-heading uppercase tracking-[.06em] text-s-coral">
+            className="text-[13px] font-heading font-semibold text-s-coral">
             {t("setUp")} →
           </Link>
         </div>

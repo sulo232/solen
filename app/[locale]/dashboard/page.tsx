@@ -156,7 +156,8 @@ export default function DashboardPage() {
 
       <div className="flex items-end justify-between gap-4 mb-6">
         <div>
-          <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-3 mb-2">{today}</p>
+          {/* mockup-ok: D2 fix, sentence case 13px semibold (approved public/_mockups/fixes-refined) */}
+          <p className="text-[13px] font-semibold text-s-ink-3 mb-2">{today}</p>
           <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink leading-none">{t("title")}</h1>
         </div>
         <Link
