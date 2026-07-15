@@ -39,15 +39,15 @@ Owner delivered a researched reference skeleton: 8 reasoning domains (perception
 - [x] Commit retrofit + final report (verified: commits 00ca3881b retrofit + 147e8dc15 plan ticks; report delivered in the closing reply)
 
 ## CORRECTION round (owner 2026-07-15, "you keep reading from the source code... harden the gate")
-- [x] CORRECTION: badge resurrection flagged as a REPEATING cross-session pattern; harden mechanically, not with promises
-  - [x] _design-system/REJECTED_TREATMENTS.json created (4 seed signatures incl. rose-photo-discount-badge, web-dark-mode)
+- [x] CORRECTION: badge resurrection flagged as a REPEATING cross-session pattern; harden mechanically, not with promises (verified: commit 46bfe1733 carries all layers below)
+  - [x] _design-system/REJECTED_TREATMENTS.json created (verified: commit 46bfe1733; REJECTED_TREATMENTS.json:5 rose-photo-discount-badge, 4 entries total)
   - [x] scripts/hooks/mockup-resurrection-gate.py built + SELF-TESTED (verified: SELFTEST OK, 4 cases: badge=BLOCK exit 2, clean=PASS exit 0, excluded-path=PASS, new-dark=BLOCK; live-pipe tests same)
-  - [x] fable-frontend skill trap list extended with SOURCE-CODE-IS-NOT-RENDER-TRUTH (live now, auto-injected on every UI task)
-  - [x] DRIFT_LEDGER.md + _rules/LESSONS_LEARNED.md entries (both hook-injected surfaces)
-  - [x] memory feedback_source_code_is_not_render_truth.md + MEMORY.md index line
+  - [x] fable-frontend skill trap list extended with SOURCE-CODE-IS-NOT-RENDER-TRUTH (verified: ~/.claude/skills/fable-frontend/SKILL.md:59)
+  - [x] DRIFT_LEDGER.md + _rules/LESSONS_LEARNED.md entries (verified: DRIFT_LEDGER.md:33, LESSONS_LEARNED.md:349, commit 46bfe1733)
+  - [x] memory feedback_source_code_is_not_render_truth.md + MEMORY.md index line (verified: MEMORY.md:13 index entry; memory file written this turn)
   - [ ] BLOCKED here: .claude/settings.json wiring (worktree sandbox denies .claude/settings.json + .claude/hooks writes); chip task_85a5fbb8 wires + end-to-end proves it in one click
-- [x] Answered plainly what was added to TASTE_LOG (entry pasted verbatim in the reply)
-- [x] Taste Lab PROGRAM registered: _plans/TASTE_LAB_PROGRAM.md + ACTIVE.md row 20 (hundreds of comparisons, 9 rounds mapped, motion next); round 2 chip task_ba038585
+- [x] Answered plainly what was added to TASTE_LOG (verified: the one entry is TASTE_LOG.md:180 "Taste Lab round 1"; its 5-row table pasted in the reply)
+- [x] Taste Lab PROGRAM registered (verified: commit 46bfe1733 creates _plans/TASTE_LAB_PROGRAM.md; ACTIVE.md row 20). Round 2 chip re-issued as L-EFFORT LARGE BUILD (nothing viewable yet by design, the round is a full build session)
 
 ## Parked (surfaced at close, non-blocking)
 - Discount badge contradiction RESOLVED by investigation (verified: memory project_card_badges.md body says MOBILE SalonCard, (tabs)/index.tsx, green text in the price row; web SalonCard.tsx V3-D85 2026-05-19 ships the rose photo badge). Two surfaces, two treatments, no doc error. Open taste question spun off as a chip: should WEB adopt the mobile green-by-price treatment (the owner's own reasoning, a colored photo tag reads cheap on a premium beauty card, applies to web too). Recommendation: yes, mockup-first, separate session.
