@@ -37,6 +37,14 @@ Owner's goal, plain: when they say "this is bad" (payment screen, dashboards, be
 - [x] CORRECTION: owner deliverables = visuals + plain English (verified: taste-book built + memory hardened, sub-boxes below)
   - [x] Visual taste book built (verified: public/_mockups/taste-book/index.html, 28466 bytes, 12 Wrong/Right pairs, coder greps 0 dashes / 0 text-transform / 0 gated hexes)
   - [x] All 5 sections present (verified: DOM measure this session: 5 sections at offsets 144/1369/2396/3070/3744, doc 4461px, no layout holes; squint button toggles computed blur(3px) on both panels)
-  - [x] Render verified (top-of-page screenshot: bento pair + card-in-card pair render correctly) + tunnel 200 (link in the reply)
+  - [x] Render verified (verified: top-of-page browser screenshot this session showed the 1a bento pair + 1b card-in-card pair rendering correctly; squint toggle = computed blur(3px) via getComputedStyle; curl through the tunnel returned HTTP 200)
   - [x] Harden (verified: memory feedback_visual_plain_english_deliverables.md written; MEMORY.md index line pending next line)
-  - [x] Commit (this turn, sha in git log)
+  - [x] Commit (verified: commit 91f2eb610 creates public/_mockups/taste-book/index.html)
+
+
+## CORRECTION 3 (owner, 2026-07-15 latest): "you didn't even make a hook or a gate... do we have a gate that [enforces hardening] once I flag a recurring pattern?"
+- [x] Honest answer given: NO, until now the recurrence flag only injected advice at prompt time; nothing blocked a promise-only turn. Fixed this turn:
+- [x] scripts/hooks/visual-deliverable-gate.py built (verified: SELFTEST OK: no-link close = BLOCK, link close = PASS, declared-large-build close = PASS) , blocks ending a turn that wrote owner-facing design docs without a viewable link
+- [x] scripts/hooks/recurrence-harden-gate.py built (verified: SELFTEST OK, 4 cases: flagged+no-gate = BLOCK, flagged+gate-built = PASS, no-flag = PASS, declared-unhookable = PASS) , blocks ending a recurrence-flagged turn without an enforcement-surface change; memory files explicitly do NOT count
+- [x] Both WIRED into project Stop hooks via the sanctioned desktop-commander path (verified: .claude/settings.json Stop array now carries browser-verify + visual-deliverable + recurrence-harden; JSON validated)
+- [x] Commit (sha in git log this turn)
