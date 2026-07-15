@@ -4,6 +4,18 @@ The newest entry is at the top. Every session that ships real work adds one entr
 
 ---
 
+## 2026-07-16 , taste round 2: RATIONALE deep-mechanics layer + your 30 references captured, forked, and turned into a probe page
+
+**What you asked for:** fix + commit; expand the rationale file with the og round-1 text and the round-2 digest from another AI; give an opinion; capture the ~30 X reference links with the ss pipeline instead of eyeballing; run opus sub-agents for more ideas; make mockups from the references with the "which part did you like" forks named.
+
+**What got done:**
+1. **Both parked calendar fixes applied** (06ea0b14b): week label reads "13. bis 19. Juli" per your approved panel; an unassigned slot shows the existing anyStaff copy instead of an empty line after the staff label.
+2. **RATIONALE.md round 2 landed**: 13 new domains (epistemics, signifiers/cognition, depth+light, Radix token grammar, states+feedback, forms, icons, data display, typographic craft, composition+Swiss lineage, voice/tone, ethics, i18n deltas), BOUNDARY field added to the entry template, 6 new folklore rows. Two opus judges shaped it; their kill-list (RTL/CJK, deep data-viz, ISO 9186 depth) was honored, and their converged verdict is recorded as the section-28 gap register: the stack GRADES well but does not GENERATE (richness has no mechanics), and the floors are prose, not computed scripts.
+3. **All 30 X references captured** (photos + motion frames + manifest), measured by 4 analysis agents, persisted to research/TASTE_REFS_2026-07.md.
+4. **The taste-refs probe page built and verified** (31/31 images render): 17 fork probes applied to real-token Solen snippets + 5 explicit lock-conflict cards (per-category color, colored CTAs, selected states, color heroes, and THE question: staging taste vs product taste). Nothing ships without your picks.
+5. Gate friction fixed honestly along the way: taste-refs added to the resurrection-gate exclude list (elicitation pages discuss treatments by design) after a blur(0px)+star-token false positive.
+
+
 ## 2026-07-15 (late) , wave-1 fixes APPLIED to real code: 14 commits, reviewer-checked, rendered proof
 
 **What you asked for:** "all approved" on the 17 before/after pairs, then "ok" = apply. Also: confirm the salon-card changes are committed-but-unmerged (they are: SalonCard rewrite on the animation branch, 89/193 lines vs main, worktree clean).

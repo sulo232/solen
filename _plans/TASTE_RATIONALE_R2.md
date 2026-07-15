@@ -6,31 +6,31 @@ Owner message (dictated): fix + commit; expand RATIONALE.md with the og round-1 
 
 - [x] Fix the parked calendar range copy ("13. bis 19. Juli" per approved panel) , verified: commit 06ea0b14b, line 857
 - [x] Fix the empty staff-name fallback after "Mitarbeiter:" , verified: commit 06ea0b14b, existing calendarPage.anyStaff key reused, all 4 locales confirmed present
-- [ ] Download all 30 X references (fxtwitter API, media + manifest, failures logged)
-  - [ ] verify count fetched vs 30, log every failure by name
-- [ ] Run the spec-extraction (pixel-spec-auto extract.py) over the captured stills
-- [ ] Analysis agents read every reference (waves of 4 max, structured output: what it shows, candidate liked-aspects as FORKS, Solen surface it could apply to)
-- [ ] Opus sub-agents (judgment-class, 2 judges) on "what else belongs in the rationale/taste layer" on top of round 1 + round 2 + the references
-- [ ] My own opinion on the round-2 digest delivered to the owner (with at least one concrete failure mode, no yes-manning)
-- [ ] Expand RATIONALE.md with round-2 material, no duplication:
-  - [ ] Domain 0: epistemic stance (Polanyi lossy externalization, Hume true-judge, repertory grid as the Taste Lab mechanism; COMPACT, not an essay)
-  - [ ] Domain: cognition + signifiers (Norman signifiers, gulfs, cognitive load, information scent, progressive disclosure, memory effects with replication flags, ego depletion DEAD)
-  - [ ] Domain: depth/light/materiality (light-from-above prior, key+ambient two-layer mapping to our elevation stacks, positive-polarity advantage T1, flat-design signifier cost NN/g 22/25 numbers, translucency legibility caveat)
-  - [ ] Domain 2 extension: token architecture (3-tier, Radix 12-step job map, semantic naming, i18n hue boundary note)
-  - [ ] Domain: states + feedback mechanics (focus-visible distinction, disabled-button argument vs our opacity-50 lock = TENSION for probe, validation timing, skeleton nuance flag, progress-bar perception Harrison 2010, labor illusion cross-ref to PSYCHOLOGY.md)
-  - [ ] Domain: forms (top-aligned labels + Penzo caveat + Das null replication, single column, autocomplete/inputmode, placeholder-as-label ban mechanics)
-  - [ ] Domain: icons (24/20 grid + keylines, optical volume, icon+label NN/g, ISO 9186 flag)
-  - [ ] Domain: data display (Cleveland-McGill ranking + Heer-Bostock replication, bars-start-at-zero / line-truncation rule, data-ink, table alignment mechanics, zebra-striping marginal flag)
-  - [ ] Domain 4 extension: typographic craft (punctuation incl. the DELIBERATE em-dash-ban departure, widows/text-wrap, font-display/CLS, variable-font opsz/GRAD, system-stack tradeoff)
-  - [ ] Domain: composition vocabulary + Swiss style heritage (rule-of-thirds folklore flag)
-  - [ ] Domain: voice/tone mechanics (NN/g 4 dimensions, voice-constant-tone-variable, no-dead-ends, Aaker; cross-ref LOCKFILE brand voice)
-  - [ ] Domain: ethics as taste (Brignull taxonomy, DSA Art. 25, CPRA; cross-ref PSYCHOLOGY.md hard lines, no duplication)
-  - [ ] Domain 9 extension: sourced expansion buckets (W3C/IBM by string length), Swiss 1'000 grouping mechanic (locale-native via de-CH), RTL/CJK boundary notes
-  - [ ] Folklore table additions: 10,000-hour rule, 3-click rule, 8-second attention span, rule of thirds, ego depletion, Doherty dramatization already present
-  - [ ] Entry template: add the BOUNDARY/reversal-condition field (round-2's four-part test)
-- [ ] Build the reference mockup page (public/_mockups/taste-refs/) , per-theme probes: reference still + named fork branches (A/B what you might have liked) + the treatment applied to a COPY of the real Solen surface; resurrection-gate signatures respected
-- [ ] TASTE_LOG + WORKLOG entries, plan boxes ticked, commits per verified chunk
-- [ ] Close with clickable tunnel links (mockup page + anything else visual)
+- [x] Download all 30 X references , verified: 30/30 in manifest.json after curl retry pass (6 urllib IncompleteReads retried OK), 19 videos got 3 ffmpeg frames each
+  - [x] count verified 30/30, the 6 transient failures were named in the run log and all recovered
+- [x] Spec-extraction ran over all primary stills , verified: 31 outdirs; tier-1 card detection failed on every borderless portfolio render (expected per the trigger table), tier-2 inline PIL sampling by the analysis agents took over
+- [x] Analysis agents read every reference , verified: 4 sonnet agents (one wave of 4), 30/30 refs with SHOWS/MEASURED/FORKS/SOLEN-MAP blocks + syntheses, persisted to research/TASTE_REFS_2026-07.md
+- [x] Opus judges ran (2, generative lens + diagnostic lens) , verified: converged verdicts (stack is analytic-not-generative; floors are prose-not-computed), 9+10 ranked gaps recorded as RATIONALE.md section 28, kill-lists honored in the integration
+- [x] Opinion delivered in the closing message (kept: systems layers; cut: RTL/CJK, deep data-viz, ISO 9186; named failure mode: doc bloat, countered by the gates-over-prose build order)
+- [x] Expand RATIONALE.md with round-2 material, no duplication , verified: commit with sections 16-28, all sub-items below in that diff:
+  - [x] Domain 0: epistemic stance (Polanyi lossy externalization, Hume true-judge, repertory grid as the Taste Lab mechanism; COMPACT, not an essay)
+  - [x] Domain: cognition + signifiers (Norman signifiers, gulfs, cognitive load, information scent, progressive disclosure, memory effects with replication flags, ego depletion DEAD)
+  - [x] Domain: depth/light/materiality (light-from-above prior, key+ambient two-layer mapping to our elevation stacks, positive-polarity advantage T1, flat-design signifier cost NN/g 22/25 numbers, translucency legibility caveat)
+  - [x] Domain 2 extension: token architecture (3-tier, Radix 12-step job map, semantic naming, i18n hue boundary note)
+  - [x] Domain: states + feedback mechanics (focus-visible distinction, disabled-button argument vs our opacity-50 lock = TENSION for probe, validation timing, skeleton nuance flag, progress-bar perception Harrison 2010, labor illusion cross-ref to PSYCHOLOGY.md)
+  - [x] Domain: forms (top-aligned labels + Penzo caveat + Das null replication, single column, autocomplete/inputmode, placeholder-as-label ban mechanics)
+  - [x] Domain: icons (24/20 grid + keylines, optical volume, icon+label NN/g, ISO 9186 flag)
+  - [x] Domain: data display (Cleveland-McGill ranking + Heer-Bostock replication, bars-start-at-zero / line-truncation rule, data-ink, table alignment mechanics, zebra-striping marginal flag)
+  - [x] Domain 4 extension: typographic craft (punctuation incl. the DELIBERATE em-dash-ban departure, widows/text-wrap, font-display/CLS, variable-font opsz/GRAD, system-stack tradeoff)
+  - [x] Domain: composition vocabulary + Swiss style heritage (rule-of-thirds folklore flag)
+  - [x] Domain: voice/tone mechanics (NN/g 4 dimensions, voice-constant-tone-variable, no-dead-ends, Aaker; cross-ref LOCKFILE brand voice)
+  - [x] Domain: ethics as taste (Brignull taxonomy, DSA Art. 25, CPRA; cross-ref PSYCHOLOGY.md hard lines, no duplication)
+  - [x] Domain 9 extension: sourced expansion buckets (W3C/IBM by string length), Swiss 1'000 grouping mechanic (locale-native via de-CH), RTL/CJK boundary notes
+  - [x] Folklore table additions: 10,000-hour rule, 3-click rule, 8-second attention span, rule of thirds, ego depletion, Doherty dramatization already present
+  - [x] Entry template: add the BOUNDARY/reversal-condition field (round-2's four-part test)
+- [x] Build the reference mockup page , verified: public/_mockups/taste-refs/index.html committed, rendered proof 31/31 images + 17 probes + 5 conflict cards (public/_mockups/taste-refs/) , per-theme probes: reference still + named fork branches (A/B what you might have liked) + the treatment applied to a COPY of the real Solen surface; resurrection-gate signatures respected
+- [x] WORKLOG entry + plan boxes ticked + per-chunk commits (TASTE_LOG waits for the owner's picks, elicitation is open, no settled decision to log yet)
+- [x] Closed with clickable tunnel links (probe page + rationale summary in the final message)
 
 ## Parked / boundaries
 - Web dark mode stays graveyarded (exists-check hit); positive-polarity mechanics recorded for MOBILE dark mode only.
