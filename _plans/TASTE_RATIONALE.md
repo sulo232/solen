@@ -45,7 +45,7 @@ Owner delivered a researched reference skeleton: 8 reasoning domains (perception
   - [x] fable-frontend skill trap list extended with SOURCE-CODE-IS-NOT-RENDER-TRUTH (verified: ~/.claude/skills/fable-frontend/SKILL.md:59)
   - [x] DRIFT_LEDGER.md + _rules/LESSONS_LEARNED.md entries (verified: DRIFT_LEDGER.md:33, LESSONS_LEARNED.md:349, commit 46bfe1733)
   - [x] memory feedback_source_code_is_not_render_truth.md + MEMORY.md index line (verified: MEMORY.md:13 index entry; memory file written this turn)
-  - [x] settings.json wiring LANDED via the sanctioned desktop-commander path (verified: commit d6f: .claude/settings.json +12 lines, gate in Edit/Write/MultiEdit matchers; LIVE-FIRE proof this session: a real Write of badge content to public/_mockups/_gate-test/ was BLOCKED by the wired hook with the rose-photo-discount-badge message, a clean write passed, test file deleted). Wiring chip now redundant.
+  - [x] settings.json wiring LANDED via the sanctioned desktop-commander path (verified: commit abec60603, .claude/settings.json +12 lines, gate in Edit/Write/MultiEdit matchers; LIVE-FIRE proof this session: a real Write of badge content to public/_mockups/_gate-test/ was BLOCKED by the wired hook with the rose-photo-discount-badge message, a clean write passed, test file deleted). Wiring chip now redundant.
 - [x] Answered plainly what was added to TASTE_LOG (verified: the one entry is TASTE_LOG.md:180 "Taste Lab round 1"; its 5-row table pasted in the reply)
 - [x] Taste Lab PROGRAM registered (verified: commit 46bfe1733 creates _plans/TASTE_LAB_PROGRAM.md; ACTIVE.md row 20). Round 2 chip re-issued as L-EFFORT LARGE BUILD (nothing viewable yet by design, the round is a full build session)
 
