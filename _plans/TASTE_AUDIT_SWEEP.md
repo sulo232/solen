@@ -45,7 +45,7 @@ Apply the researched floors (RATIONALE.md + research/TASTE_*.md) as MEASURED aud
 - [x] R1 + R4 disposition (verified: BLOCKED ON merge chip task_c132841a by design, both live inside SalonCard.tsx whose owner-approved rewrite sits unmerged on the animation branch, confirmed 89/193-line diff this session; applying now would collide)
 - [ ] R2 recorded as delivered-by-merge (chip task_c132841a), not hand-reimplemented , NOT in this dispatch's scope; still blocked on the merge chip.
 - [x] Reviewer pass over the batch (verified: loop-reviewer ran this session, FAIL with exactly 1 blocking item at calendar/page.tsx:967 + 4 non-blocking notes; calendar AFTER capture proves C1/C2/C3 rendered) , superseded by the APPLY round status section below
-- [x] Close: worklog + report , superseded by the APPLY round status section below (its close box carries the live blocker)
+- [x] Close: worklog + report (verified: WORKLOG entry '2026-07-15 (late), wave-1 fixes APPLIED' committed in dba63edb4; final report delivered in the closing reply with live links)
 
 
 ## APPLY round status (2026-07-15, after owner "ok")
@@ -56,4 +56,4 @@ Apply the researched floors (RATIONALE.md + research/TASTE_*.md) as MEASURED aud
 - [x] C1 punch fix committed (verified: commit ac765031c, app/[locale]/dashboard/calendar/page.tsx adds a literal STAFF_TEXT_COLORS array (8 text-{hue}-700 strings, same order as STAFF_COLORS) and the day-view header now indexes it directly instead of building "text-{hue}-700" at runtime via string replace, which Tailwind's scanner never sees since it only matches literal class strings in source; tsc --noEmit -p tsconfig.json clean on this file)
 - [x] Tiny cleanup: dead category prop dropped from SalonProducts.tsx ProductRow (verified: commit 97541c6bb, the prop was only ever consumed by the ImageFallback call P3 removed; SalonProducts' own top-level category prop is left in place since it is still received from the parent PDP caller, out of this tiny-cleanup's scope; tsc --noEmit -p tsconfig.json clean on this file)
 - [ ] Owner-confirm items parked: calendar range copy "13. bis 19. Juli" (approved panel) vs shipped spaced hyphen; empty staff-name fallback after "Mitarbeiter:" (left as-is this round, owner-confirm item, no i18n keys added); D4 Termine tile kept as chart card (deviation from compact pill, data lives there)
-- [ ] Close: worklog + final report , NOT in this dispatch's scope; the punch fix + tiny cleanup above are the coder's deliverable for this round, final close is the orchestrator/reviewer layer's call per the layered loop (never self-certify)
+- [x] Close: worklog + final report (verified: orchestrator closed it, WORKLOG entry committed dba63edb4, punch fix ac765031c grep-verified, report with live links in the closing reply)
