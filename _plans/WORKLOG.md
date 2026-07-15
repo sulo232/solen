@@ -4,6 +4,17 @@ The newest entry is at the top. Every session that ships real work adds one entr
 
 ---
 
+## 2026-07-15 (late) , wave-1 fixes APPLIED to real code: 14 commits, reviewer-checked, rendered proof
+
+**What you asked for:** "all approved" on the 17 before/after pairs, then "ok" = apply. Also: confirm the salon-card changes are committed-but-unmerged (they are: SalonCard rewrite on the animation branch, 89/193 lines vs main, worktree clean).
+
+**What got done:**
+1. **12 safe fixes applied, one commit each** (R3 Live ink+dot 156ed1258, R5 footer case e273a965d, C3 calendar dashes b6dce7d73, C2 gray segments 0dcf5c2cd, D2 dashboard caps bafeaa87a, D3 setup dash 2e208ec74, C1 staff swatches 9418b43e6, S1 FAQ grouped card 31865b262, S3 44px targets 578e3900d, P1 price bold b00dbae68, P2 pill convergence a0b4559b7, P3 product placeholder f852377d7, D4 KPI ranking bba7ac173). S2 = not-a-bug (input already bordered).
+2. **Loop-reviewer graded the batch**: 1 real catch (dynamic Tailwind classes in the new C1 header would silently never compile) fixed in ac765031c with grep proof; 4 non-blocking notes parked (range copy "bis" vs hyphen, empty staff fallback, D4 tile deviation, stale outer prop).
+3. **Rendered proof**: calendar AFTER capture shows hyphen date range, non-blue Woche, solid initialed swatches.
+4. **Deferred by design**: R1/R2/R4 live inside SalonCard.tsx whose owner-approved rewrite (CARD_REDESIGN_2026-07-13) sits unmerged; they apply after the merge chip (task_c132841a). Payment-step capture stays with its chip.
+
+
 ## 2026-07-15 (later) , taste diagnosis layer: real-source research, diagnosis skill, resurrection gate wired live
 
 **What you asked for (dictated):** "it really doesn't grasp what's bad when I say this is bad"; research hierarchy/typography/grouping from REAL sites (Wikipedia/UI-UX sources) instead of hallucinating; fix the bento-box grouping confusion; more measured catches like the grey/blue one; kill the source-code residue; don't duplicate.
