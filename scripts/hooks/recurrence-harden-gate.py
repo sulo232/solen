@@ -30,6 +30,12 @@ import time
 RECUR_PAT = re.compile(
     r"(re[- ]?(cc?urr?ing|occurr?ing)\s+pattern|keep (doing|making|forgetting|reading|adding)|"
     r"again and again|every ?time|over and over|told (you|u) (multiple|many|\d+) times)", re.I)
+# Harness/hook feedback is stored as user-role lines; it quotes recurrence phrases and must NEVER
+# count as the owner flagging a pattern (first live firing 2026-07-15 was exactly this false positive:
+# the checkbox gate's own text "you keep forgetting" re-triggered this gate).
+HARNESS_PAT = re.compile(
+    r"(Stop hook|hook feedback|hook additional context|hook success|hook error|system-reminder|"
+    r"CHECKBOX WITHOUT EVIDENCE|UNFINISHED-BATCH|GATE v?\d|[a-z-]+-gate\.py|task-notification)", re.I)
 NOT_HOOKABLE_PAT = re.compile(r"not mechanically hookable because", re.I)
 
 def project_dir():
@@ -64,7 +70,7 @@ def scan_transcript(path):
                     text = content
                 elif isinstance(content, list):
                     text = " ".join(c.get("text", "") for c in content if isinstance(c, dict) and c.get("type") == "text")
-                if role == "user" and text and RECUR_PAT.search(text) and "recurrence-harden-gate" not in text:
+                if role == "user" and text and RECUR_PAT.search(text) and not HARNESS_PAT.search(text):
                     ts = j.get("timestamp")
                     if ts:
                         recur_ts = ts
@@ -172,13 +178,16 @@ def selftest():
     hooks_dir = os.path.join(empty, "scripts", "hooks"); os.makedirs(hooks_dir, exist_ok=True)
     time.sleep(0.05); open(os.path.join(hooks_dir, "new-gate.py"), "w").write("# gate")
     c2 = run("this is a reccuring pattern, you keep doing it", "gate built and wired", extra_env=empty)
+    # Case 2b SHOULD PASS: harness feedback quoting recurrence language is NOT an owner flag
+    empty3 = tempfile.mkdtemp()
+    c2b = run("Stop hook feedback: CHECKBOX WITHOUT EVIDENCE, this is the mechanism behind you keep forgetting", "boxes fixed", extra_env=empty3)
     # Case 3 SHOULD PASS: no recurrence language at all
     c3 = run("looks good, continue with the next item", "done", extra_env=empty)
     # Case 4 SHOULD PASS: recurrence + explicit not-hookable declaration
     empty2 = tempfile.mkdtemp()
     c4 = run("you keep forgetting this, recurring pattern", "this one is not mechanically hookable because it is a judgment call; reinforced via the reviewer checklist instead", extra_env=empty2)
-    print(f"flagged+no-gate: {'BLOCK' if c1 == 2 else 'MISS'} | flagged+gate-built: {'PASS' if c2 == 0 else 'FALSE-POSITIVE'} | no-flag: {'PASS' if c3 == 0 else 'FALSE-POSITIVE'} | declared-unhookable: {'PASS' if c4 == 0 else 'FALSE-POSITIVE'}")
-    good = c1 == 2 and c2 == 0 and c3 == 0 and c4 == 0
+    print(f"flagged+no-gate: {'BLOCK' if c1 == 2 else 'MISS'} | flagged+gate-built: {'PASS' if c2 == 0 else 'FALSE-POSITIVE'} | harness-feedback: {'PASS' if c2b == 0 else 'FALSE-POSITIVE'} | no-flag: {'PASS' if c3 == 0 else 'FALSE-POSITIVE'} | declared-unhookable: {'PASS' if c4 == 0 else 'FALSE-POSITIVE'}")
+    good = c1 == 2 and c2 == 0 and c2b == 0 and c3 == 0 and c4 == 0
     print("SELFTEST", "OK" if good else "FAILED")
     return 0 if good else 1
 
