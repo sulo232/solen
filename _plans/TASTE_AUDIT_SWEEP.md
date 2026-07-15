@@ -9,11 +9,11 @@ Apply the researched floors (RATIONALE.md + research/TASTE_*.md) as MEASURED aud
 - [ ] Capture: booking payment step , BLOCKED here: needs interactive flow-harness clicks (playwright CLI cannot drive steps); stays with chip task_400fe4c2 as wave 1b, stated in the reply
 - [x] Capture: dashboard home (verified: dash-home-1440.png, retaken with 8s wait past the skeleton; dev-login redirect worked through the tunnel)
 - [x] Capture: dashboard calendar (verified: _audits/screenshots/taste-w1/dash-calendar-1440.png 52KB, real /dashboard/calendar week view via dev-login; the deferral was wrong, the route is directly navigable; 5th auditor agent running on it; visible pre-finding: en dash in the date-range header)
-- [ ] Analyze: workflow wf_25a31850 RUNNING (4 agents: home/search/pdp/dashboard), findings JSON per surface
-- [ ] Build: visual findings page public/_mockups/taste-audit-w1/ , BLOCKED ON: audit agents (wf_25a31850 + calendar agent) returning findings
-  - [ ] copy the 5 screenshots into the page dir so they serve
-  - [ ] per surface: screenshot embed + severity-ranked findings (number, floor, smallest fix)
-  - [ ] Taste Book visual language (Wrong/Right chips style, plain English)
+- [x] Analyze: workflow wf_25a31850 (4 agents: home/search/pdp/dashboard) + calendar agent, findings JSON per surface (all 5 findings-*.json read complete, 35 findings total: 9 home, 5 search, 7 pdp, 7 dash-home, 7 dash-calendar)
+- [x] Build: visual findings page public/_mockups/taste-audit-w1/index.html (37270 bytes, 579 lines)
+  - [x] copy the 5 screenshots into the page dir so they serve (public/_mockups/taste-audit-w1/shots/*.png, confirmed staged)
+  - [x] per surface: screenshot embed (bordered frame, click-to-open) + severity-ranked findings (id, plain-English violation, what-we-measured, fix, per-row severity pill)
+  - [x] Taste Book visual language (same :root tokens, 16px panels/radius, hairlines, pastel severity pills copied from taste-book's Wrong/Right chip pattern)
 - [ ] Verify render (screenshot of the built page) , BLOCKED ON: the build box above
 - [ ] Tunnel link in the closing reply , BLOCKED ON: the build box above
 - [ ] Log: findings file _design-system/research/AUDIT_WAVE1_2026-07.md; ACTIVE row; commit
