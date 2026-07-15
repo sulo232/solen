@@ -74,7 +74,7 @@ Assets: _assets/mapbox-gl.js + mapbox-gl.css (self-hosted from node_modules); sa
 </style>
 <div class="wrap">
   <h1>Nearby map , colours matched to the reference</h1>
-  <p class="lead">A normal light map, with the palette pixel-sampled from the owner's reference screenshots: water #CBE3FC, parks #CFF2D0, land #E8EAEA, roads #F8F8F8. Major roads only and minimal labels, so it stays calm. Each salon shows its REAL star rating + review count, the way a real map puts the decision fact in the marker; salons too close together to fit merge into a labelled badge ("10 Salons") instead of an unreadable pile. No "Karte öffnen" button , the whole card taps through. Live map (mapbox-gl), so it renders the same in the app.</p>
+  <p class="lead">A normal light map, with the palette pixel-sampled from the owner's reference screenshots: water #CBE3FC, parks #CFF2D0, land #E8EAEA, roads #F8F8F8. Every marker is ONE real salon we actually have, showing its REAL star rating and review count from the database. No clustering and no aggregate "N Salons" blobs: the map sits at street zoom, the way a nearby map should, so the real salons stand apart. The map CTA is removed , the whole card taps through. Live map (mapbox-gl), so it renders the same in the app.</p>
 
   <div class="stage">
     <div class="phone">
@@ -111,8 +111,8 @@ Assets: _assets/mapbox-gl.js + mapbox-gl.css (self-hosted from node_modules); sa
       <h2>What changed</h2>
       <ul>
         <li><b>Reference-matched palette.</b> Pixel-sampled from the owner's screenshots: water #CBE3FC, parks #CFF2D0, land #E8EAEA, near-white roads #F8F8F8.</li>
-        <li><b>Calm, not cluttered.</b> Major roads only, minimal labels, and overlapping salons cluster into a count badge instead of a pile of dots.</li>
-        <li><b>Rating + review count in the marker.</b> Real values (4.13 to 4.81, 7 to 25 reviews). Overlapping salons merge into a labelled "10 Salons" badge, so no bare mystery circle.</li>
+        <li><b>Real street network.</b> Streets + labels at street zoom, so it reads as an actual map of the neighbourhood.</li>
+        <li><b>One marker = one real salon.</b> Real star rating + real review count from the database (4.13 to 4.81, 7 to 25 reviews). No clustering, no aggregate badges, nothing made up.</li>
         <li><b>No "Karte öffnen".</b> The whole card taps through, so the button is removed. Only the frosted count chip stays.</li>
         <li><b>Live map.</b> Rendered with mapbox-gl (already a dependency), so this is exactly what ships , not a picture.</li>
       </ul>
@@ -138,9 +138,9 @@ Assets: _assets/mapbox-gl.js + mapbox-gl.css (self-hosted from node_modules); sa
       { id: "water", type: "fill", source: "mb", "source-layer": "water",
         paint: { "fill-color": "#CBE3FC" } },
       { id: "roads", type: "line", source: "mb", "source-layer": "road",
-        filter: ["match", ["get","class"], ["primary","secondary","tertiary","street"], true, false],
+        filter: ["match", ["get","class"], ["primary","secondary","tertiary","street","street_limited","service","pedestrian"], true, false],
         layout: { "line-cap": "round", "line-join": "round" },
-        paint: { "line-color": "#F8F8F8", "line-width": ["interpolate",["linear"],["zoom"],11,0.6,14,2.1] } },
+        paint: { "line-color": "#F8F8F8", "line-width": ["interpolate",["linear"],["zoom"],11,0.6,14,2.6,16,5] } },
       { id: "labels", type: "symbol", source: "mb", "source-layer": "place_label",
         filter: ["match", ["get","type"], ["city","town"], true, false],
         layout: { "text-field": ["get","name"], "text-font": ["Arial Unicode MS Regular"],
@@ -149,7 +149,7 @@ Assets: _assets/mapbox-gl.js + mapbox-gl.css (self-hosted from node_modules); sa
     ]
   };
   var map = new mapboxgl.Map({
-    container: "nmap", style: STYLE, center: [7.5895, 47.5565], zoom: 12.0,
+    container: "nmap", style: STYLE, center: [7.5893, 47.5559], zoom: 14.3,
     interactive: false, attributionControl: false
   });
   // REAL rating + review_count per salon (Supabase, 20 active Basel salons).
@@ -176,35 +176,12 @@ Assets: _assets/mapbox-gl.js + mapbox-gl.css (self-hosted from node_modules); sa
     return el;
   }
   map.on("load", function () {
-    // Airbnb/Lime behaviour: a salon that stands alone shows its decision fact (real star +
-    // rating + review count); salons whose markers would overlap merge into a labelled badge
-    // ("9 Salons") instead of an unreadable pile. All values are REAL (Supabase).
-    map.addSource("salons", { type: "geojson", cluster: true, clusterRadius: 52, clusterMaxZoom: 16,
-      data: { type: "FeatureCollection", features: SALONS.map(function (s) {
-        return { type: "Feature", geometry: { type: "Point", coordinates: [s[0], s[1]] },
-                 properties: { rating: s[2], count: s[3] } }; }) } });
-    map.addLayer({ id: "src", type: "circle", source: "salons",
-      paint: { "circle-radius": 0, "circle-opacity": 0 } });
-    var markers = {};
-    function draw() {
-      var feats = map.querySourceFeatures("salons");
-      var live = {};
-      feats.forEach(function (f) {
-        var c = f.geometry.coordinates, p = f.properties;
-        var id = p.cluster ? "c" + p.cluster_id : "p" + c[0] + "," + c[1];
-        if (live[id]) return;
-        var m = markers[id];
-        if (!m) {
-          var el = p.cluster ? clusterEl(p.point_count) : pillEl(p.rating, p.count);
-          m = markers[id] = new mapboxgl.Marker({ element: el }).setLngLat(c);
-        }
-        live[id] = m;
-        if (!m._on) { m.addTo(map); m._on = true; }
-      });
-      Object.keys(markers).forEach(function (id) {
-        if (!live[id] && markers[id]._on) { markers[id].remove(); markers[id]._on = false; }
-      });
-    }
-    map.on("render", function () { if (map.isSourceLoaded("salons")) draw(); });
+    // NO clustering, NO aggregate badges. Every marker IS one real salon we actually have,
+    // showing its REAL star rating + REAL review count (Supabase). "In der Nähe" means the
+    // user's surroundings, so we sit at street zoom where real salons stand apart, rather
+    // than zooming out over all of Basel and merging them into abstract "N Salons" blobs.
+    SALONS.forEach(function (s) {
+      new mapboxgl.Marker({ element: pillEl(s[2], s[3]) }).setLngLat([s[0], s[1]]).addTo(map);
+    });
   });
 </script>
