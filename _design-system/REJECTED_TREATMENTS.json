@@ -69,7 +69,8 @@
       "exclude_paths": [
         "taste-lab",
         "taste-book",
-        "taste-audit-w1"
+        "taste-audit-w1",
+        "taste-refs"
       ],
       "record": "branch commit history 857e62882 area; TASTE_LOG 2026-07-15 stranded-decisions entry"
     },
@@ -87,7 +88,8 @@
       "exclude_paths": [
         "taste-lab",
         "taste-book",
-        "taste-audit-w1"
+        "taste-audit-w1",
+        "taste-refs"
       ],
       "record": "SalonCard.tsx on animation-reference branch: aspect-[5/4] with C1 comment"
     },
@@ -105,7 +107,8 @@
       "exclude_paths": [
         "taste-lab",
         "taste-book",
-        "taste-audit-w1"
+        "taste-audit-w1",
+        "taste-refs"
       ],
       "record": "SalonCard.tsx on animation-reference branch, C2 deletion comment + branch REMOVED.md"
     }

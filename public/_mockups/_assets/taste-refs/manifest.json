@@ -1,0 +1,652 @@
+{
+ "fetched": 30,
+ "failed": [],
+ "refs": [
+  {
+   "n": 1,
+   "key": "01-barlydesign",
+   "handle": "barlydesign",
+   "id": "2077219199097896965",
+   "url": "https://x.com/barlydesign/status/2077219199097896965",
+   "text": "Autumn - CRM Dashboard - Insight 📊",
+   "media": [
+    {
+     "type": "video",
+     "thumb": "01-barlydesign-v1-thumb.jpg",
+     "frames": [
+      "01-barlydesign-v1-f1.jpg",
+      "01-barlydesign-v1-f2.jpg",
+      "01-barlydesign-v1-f3.jpg"
+     ],
+     "duration": 19.5
+    }
+   ]
+  },
+  {
+   "n": 2,
+   "key": "02-derafusion",
+   "handle": "derafusion",
+   "id": "2077015253892710643",
+   "url": "https://x.com/derafusion/status/2077015253892710643",
+   "text": "Good design reduces friction where it matters most.\n\nI designed these rent and utility payment flows to make transactions faster for tenants while improving efficiency as well\n\nI'm Chidera Nwachukwu, available for UI/UX projects across SaaS, fintech, PropTech, web, and mobile.",
+   "media": [
+    {
+     "type": "photo",
+     "file": "02-derafusion-p1.jpg",
+     "w": 3600,
+     "h": 3600
+    }
+   ]
+  },
+  {
+   "n": 3,
+   "key": "03-creativestefan",
+   "handle": "creativestefan",
+   "id": "2076977207289807200",
+   "url": "https://x.com/creativestefan/status/2076977207289807200",
+   "text": "Home screen for telehealth",
+   "media": [
+    {
+     "type": "photo",
+     "file": "03-creativestefan-p1.jpg",
+     "w": 2048,
+     "h": 1536
+    }
+   ]
+  },
+  {
+   "n": 4,
+   "key": "04-mnowakdesign",
+   "handle": "mnowakdesign",
+   "id": "2077045715688419720",
+   "url": "https://x.com/mnowakdesign/status/2077045715688419720",
+   "text": "friendly daily planner app",
+   "media": [
+    {
+     "type": "photo",
+     "file": "04-mnowakdesign-p1.jpg",
+     "w": 1600,
+     "h": 1600
+    },
+    {
+     "type": "photo",
+     "file": "04-mnowakdesign-p2.jpg",
+     "w": 1600,
+     "h": 1600
+    }
+   ]
+  },
+  {
+   "n": 5,
+   "key": "05-akwaabaaa",
+   "handle": "akwaabaaa",
+   "id": "2077038941404905626",
+   "url": "https://x.com/akwaabaaa/status/2077038941404905626",
+   "text": "Same app, different iterations. Can't wait to share the revamped version🔄😊",
+   "media": [
+    {
+     "type": "photo",
+     "file": "05-akwaabaaa-p1.jpg",
+     "w": 1650,
+     "h": 2048
+    },
+    {
+     "type": "photo",
+     "file": "05-akwaabaaa-p2.jpg",
+     "w": 1650,
+     "h": 2048
+    }
+   ]
+  },
+  {
+   "n": 6,
+   "key": "06-_heyfaisal",
+   "handle": "_heyfaisal",
+   "id": "2076685020773883959",
+   "url": "https://x.com/_heyfaisal/status/2076685020773883959",
+   "text": "Background AI Agents Are the Next Big UX Shift",
+   "media": [
+    {
+     "type": "video",
+     "thumb": "06-_heyfaisal-v1-thumb.jpg",
+     "frames": [
+      "06-_heyfaisal-v1-f1.jpg",
+      "06-_heyfaisal-v1-f2.jpg",
+      "06-_heyfaisal-v1-f3.jpg"
+     ],
+     "duration": 33.103
+    }
+   ]
+  },
+  {
+   "n": 7,
+   "key": "07-_heyrico",
+   "handle": "_heyrico",
+   "id": "2076705474498699683",
+   "url": "https://x.com/_heyrico/status/2076705474498699683",
+   "text": "Micro illustrations to make product design look crispy 🤌",
+   "media": [
+    {
+     "type": "photo",
+     "file": "07-_heyrico-p1.jpg",
+     "w": 4000,
+     "h": 2664
+    }
+   ]
+  },
+  {
+   "n": 8,
+   "key": "08-nitishkmrk",
+   "handle": "nitishkmrk",
+   "id": "2076150606709031423",
+   "url": "https://x.com/nitishkmrk/status/2076150606709031423",
+   "text": "messing with SwiftUI keyframe interactions ⎯⟡°",
+   "media": [
+    {
+     "type": "video",
+     "thumb": "08-nitishkmrk-v1-thumb.jpg",
+     "frames": [
+      "08-nitishkmrk-v1-f1.jpg",
+      "08-nitishkmrk-v1-f2.jpg",
+      "08-nitishkmrk-v1-f3.jpg"
+     ],
+     "duration": 19.853
+    }
+   ]
+  },
+  {
+   "n": 9,
+   "key": "09-iconlypro",
+   "handle": "iconlypro",
+   "id": "2075588352666136641",
+   "url": "https://x.com/iconlypro/status/2075588352666136641",
+   "text": "Profile Page! ✨",
+   "media": [
+    {
+     "type": "photo",
+     "file": "09-iconlypro-p1.jpg",
+     "w": 2028,
+     "h": 1404
+    },
+    {
+     "type": "photo",
+     "file": "09-iconlypro-p2.jpg",
+     "w": 2028,
+     "h": 1404
+    },
+    {
+     "type": "photo",
+     "file": "09-iconlypro-p3.jpg",
+     "w": 2028,
+     "h": 1404
+    },
+    {
+     "type": "photo",
+     "file": "09-iconlypro-p4.jpg",
+     "w": 2028,
+     "h": 1404
+    }
+   ]
+  },
+  {
+   "n": 10,
+   "key": "10-mnowakdesign",
+   "handle": "mnowakdesign",
+   "id": "2075549864054989017",
+   "url": "https://x.com/mnowakdesign/status/2075549864054989017",
+   "text": "If you notice the little things, this is for you... 🤏🏻",
+   "media": [
+    {
+     "type": "photo",
+     "file": "10-mnowakdesign-p1.jpg",
+     "w": 1600,
+     "h": 1600
+    },
+    {
+     "type": "photo",
+     "file": "10-mnowakdesign-p2.jpg",
+     "w": 1600,
+     "h": 1600
+    },
+    {
+     "type": "photo",
+     "file": "10-mnowakdesign-p3.jpg",
+     "w": 1600,
+     "h": 1600
+    },
+    {
+     "type": "photo",
+     "file": "10-mnowakdesign-p4.jpg",
+     "w": 1600,
+     "h": 1600
+    }
+   ]
+  },
+  {
+   "n": 11,
+   "key": "11-_heyfaisal",
+   "handle": "_heyfaisal",
+   "id": "2075572561258369483",
+   "url": "https://x.com/_heyfaisal/status/2075572561258369483",
+   "text": "",
+   "media": [
+    {
+     "type": "video",
+     "thumb": "11-_heyfaisal-v1-thumb.jpg",
+     "frames": [
+      "11-_heyfaisal-v1-f1.jpg",
+      "11-_heyfaisal-v1-f2.jpg",
+      "11-_heyfaisal-v1-f3.jpg"
+     ],
+     "duration": 23.25
+    }
+   ]
+  },
+  {
+   "n": 12,
+   "key": "12-mona_biasia",
+   "handle": "mona_biasia",
+   "id": "2075176599407018468",
+   "url": "https://x.com/mona_biasia/status/2075176599407018468",
+   "text": "first pass of global search, now with the new loading spinner",
+   "media": [
+    {
+     "type": "video",
+     "thumb": "12-mona_biasia-v1-thumb.jpg",
+     "frames": [
+      "12-mona_biasia-v1-f1.jpg",
+      "12-mona_biasia-v1-f2.jpg",
+      "12-mona_biasia-v1-f3.jpg"
+     ],
+     "duration": 10.333
+    }
+   ]
+  },
+  {
+   "n": 13,
+   "key": "13-zaydensaasgtfs",
+   "handle": "zaydensaasgtfs",
+   "id": "2075149756071088366",
+   "url": "https://x.com/zaydensaasgtfs/status/2075149756071088366",
+   "text": "",
+   "media": [
+    {
+     "type": "video",
+     "thumb": "13-zaydensaasgtfs-v1-thumb.jpg",
+     "frames": [
+      "13-zaydensaasgtfs-v1-f1.jpg",
+      "13-zaydensaasgtfs-v1-f2.jpg",
+      "13-zaydensaasgtfs-v1-f3.jpg"
+     ],
+     "duration": 3.016
+    }
+   ]
+  },
+  {
+   "n": 14,
+   "key": "14-proskuaaa",
+   "handle": "proskuaaa",
+   "id": "2074501098350563557",
+   "url": "https://x.com/proskuaaa/status/2074501098350563557",
+   "text": "find a vibe spot in Barcelona / interaction",
+   "media": [
+    {
+     "type": "video",
+     "thumb": "14-proskuaaa-v1-thumb.jpg",
+     "frames": [
+      "14-proskuaaa-v1-f1.jpg",
+      "14-proskuaaa-v1-f2.jpg",
+      "14-proskuaaa-v1-f3.jpg"
+     ],
+     "duration": 8.083
+    }
+   ]
+  },
+  {
+   "n": 15,
+   "key": "15-aligrids",
+   "handle": "aligrids",
+   "id": "2074702452452970572",
+   "url": "https://x.com/aligrids/status/2074702452452970572",
+   "text": "Percentage selection never looked this good\n\nv/ @dana_daniellaa",
+   "media": [
+    {
+     "type": "video",
+     "thumb": "15-aligrids-v1-thumb.jpg",
+     "frames": [
+      "15-aligrids-v1-f1.jpg",
+      "15-aligrids-v1-f2.jpg",
+      "15-aligrids-v1-f3.jpg"
+     ],
+     "duration": 6
+    }
+   ]
+  },
+  {
+   "n": 16,
+   "key": "16-aligrids",
+   "handle": "aligrids",
+   "id": "2074712358652358832",
+   "url": "https://x.com/aligrids/status/2074712358652358832",
+   "text": "Blur + scale + opacity = buttery button transitions.\n\nv/ @jakubkrehel",
+   "media": [
+    {
+     "type": "video",
+     "thumb": "16-aligrids-v1-thumb.jpg",
+     "frames": [
+      "16-aligrids-v1-f1.jpg",
+      "16-aligrids-v1-f2.jpg",
+      "16-aligrids-v1-f3.jpg"
+     ],
+     "duration": 7.496
+    }
+   ]
+  },
+  {
+   "n": 17,
+   "key": "17-aligrids",
+   "handle": "aligrids",
+   "id": "2074699842895372769",
+   "url": "https://x.com/aligrids/status/2074699842895372769",
+   "text": "The smoothest finance UI I’ve seen\n\n v/ @vaunblu",
+   "media": [
+    {
+     "type": "video",
+     "thumb": "17-aligrids-v1-thumb.jpg",
+     "frames": [
+      "17-aligrids-v1-f1.jpg",
+      "17-aligrids-v1-f2.jpg",
+      "17-aligrids-v1-f3.jpg"
+     ],
+     "duration": 14.326
+    }
+   ]
+  },
+  {
+   "n": 18,
+   "key": "18-nitishkmrk",
+   "handle": "nitishkmrk",
+   "id": "2074744289524068661",
+   "url": "https://x.com/nitishkmrk/status/2074744289524068661",
+   "text": "morphing action feedback interaction ⎯⟡°",
+   "media": [
+    {
+     "type": "video",
+     "thumb": "18-nitishkmrk-v1-thumb.jpg",
+     "frames": [
+      "18-nitishkmrk-v1-f1.jpg",
+      "18-nitishkmrk-v1-f2.jpg",
+      "18-nitishkmrk-v1-f3.jpg"
+     ],
+     "duration": 8.9
+    }
+   ]
+  },
+  {
+   "n": 19,
+   "key": "19-aligrids",
+   "handle": "aligrids",
+   "id": "2074060384193953803",
+   "url": "https://x.com/aligrids/status/2074060384193953803",
+   "text": "Perfectly executed timer animation @diip3sh",
+   "media": [
+    {
+     "type": "video",
+     "thumb": "19-aligrids-v1-thumb.jpg",
+     "frames": [
+      "19-aligrids-v1-f1.jpg",
+      "19-aligrids-v1-f2.jpg",
+      "19-aligrids-v1-f3.jpg"
+     ],
+     "duration": 14.916
+    }
+   ]
+  },
+  {
+   "n": 20,
+   "key": "20-privetavdey",
+   "handle": "privetavdey",
+   "id": "2074089681181167873",
+   "url": "https://x.com/privetavdey/status/2074089681181167873",
+   "text": "One of my all time favourite interaction that I've made",
+   "media": [
+    {
+     "type": "video",
+     "thumb": "20-privetavdey-v1-thumb.jpg",
+     "frames": [
+      "20-privetavdey-v1-f1.jpg",
+      "20-privetavdey-v1-f2.jpg",
+      "20-privetavdey-v1-f3.jpg"
+     ],
+     "duration": 2.983
+    }
+   ]
+  },
+  {
+   "n": 21,
+   "key": "21-danellisona",
+   "handle": "danellisona",
+   "id": "2073708464254455875",
+   "url": "https://x.com/danellisona/status/2073708464254455875",
+   "text": "Is this level of animation possible with Figma Motion alone?",
+   "media": [
+    {
+     "type": "video",
+     "thumb": "21-danellisona-v1-thumb.jpg",
+     "frames": [
+      "21-danellisona-v1-f1.jpg",
+      "21-danellisona-v1-f2.jpg",
+      "21-danellisona-v1-f3.jpg"
+     ],
+     "duration": 8.085
+    }
+   ]
+  },
+  {
+   "n": 22,
+   "key": "22-tanjim38",
+   "handle": "tanjim38",
+   "id": "2073459778785816844",
+   "url": "https://x.com/tanjim38/status/2073459778785816844",
+   "text": "Calendar webapp product design in motion",
+   "media": [
+    {
+     "type": "video",
+     "thumb": "22-tanjim38-v1-thumb.jpg",
+     "frames": [
+      "22-tanjim38-v1-f1.jpg",
+      "22-tanjim38-v1-f2.jpg",
+      "22-tanjim38-v1-f3.jpg"
+     ],
+     "duration": 7
+    }
+   ]
+  },
+  {
+   "n": 23,
+   "key": "23-mnowakdesign",
+   "handle": "mnowakdesign",
+   "id": "2073059705191297442",
+   "url": "https://x.com/mnowakdesign/status/2073059705191297442",
+   "text": "if you notice the little things, this is for you🤏🏻",
+   "media": [
+    {
+     "type": "photo",
+     "file": "23-mnowakdesign-p1.jpg",
+     "w": 1600,
+     "h": 1600
+    },
+    {
+     "type": "photo",
+     "file": "23-mnowakdesign-p2.jpg",
+     "w": 1600,
+     "h": 1600
+    },
+    {
+     "type": "photo",
+     "file": "23-mnowakdesign-p3.jpg",
+     "w": 1600,
+     "h": 1600
+    },
+    {
+     "type": "photo",
+     "file": "23-mnowakdesign-p4.jpg",
+     "w": 1600,
+     "h": 1600
+    }
+   ]
+  },
+  {
+   "n": 24,
+   "key": "24-xchylerdrenth",
+   "handle": "xchylerdrenth",
+   "id": "2072203766523363623",
+   "url": "https://x.com/xchylerdrenth/status/2072203766523363623",
+   "text": "Thinking states - w/ Figma motion",
+   "media": [
+    {
+     "type": "video",
+     "thumb": "24-xchylerdrenth-v1-thumb.jpg",
+     "frames": [
+      "24-xchylerdrenth-v1-f1.jpg",
+      "24-xchylerdrenth-v1-f2.jpg",
+      "24-xchylerdrenth-v1-f3.jpg"
+     ],
+     "duration": 6.033
+    }
+   ]
+  },
+  {
+   "n": 25,
+   "key": "25-alyx_so",
+   "handle": "alyx_so",
+   "id": "2071657203887636725",
+   "url": "https://x.com/alyx_so/status/2071657203887636725",
+   "text": "Design Engineering 101:\n\nMake your number steppers feel awesome.\nA number stepper that only bumps once per click makes you click twenty times. Reward the hold. Animate it nicely with rolling digits, blur on transitions and gradient masks to avoid abrupt cuts.",
+   "media": [
+    {
+     "type": "video",
+     "thumb": "25-alyx_so-v1-thumb.jpg",
+     "frames": [
+      "25-alyx_so-v1-f1.jpg",
+      "25-alyx_so-v1-f2.jpg",
+      "25-alyx_so-v1-f3.jpg"
+     ],
+     "duration": 13.6
+    }
+   ]
+  },
+  {
+   "n": 26,
+   "key": "26-danellisona",
+   "handle": "danellisona",
+   "id": "2071503946120847664",
+   "url": "https://x.com/danellisona/status/2071503946120847664",
+   "text": "When AI Isn't Enough.\n\nBy: @disarto_max",
+   "media": [
+    {
+     "type": "photo",
+     "file": "26-danellisona-p1.jpg",
+     "w": 2880,
+     "h": 2160
+    },
+    {
+     "type": "photo",
+     "file": "26-danellisona-p2.jpg",
+     "w": 2880,
+     "h": 2160
+    },
+    {
+     "type": "photo",
+     "file": "26-danellisona-p3.jpg",
+     "w": 2880,
+     "h": 2160
+    },
+    {
+     "type": "photo",
+     "file": "26-danellisona-p4.jpg",
+     "w": 2880,
+     "h": 2160
+    }
+   ]
+  },
+  {
+   "n": 27,
+   "key": "27-aether_uiux",
+   "handle": "aether_uiux",
+   "id": "2070721297454342538",
+   "url": "https://x.com/aether_uiux/status/2070721297454342538",
+   "text": "Left or Right 🤔\n\n@tranmautritam",
+   "media": [
+    {
+     "type": "photo",
+     "file": "27-aether_uiux-p1.jpg",
+     "w": 3929,
+     "h": 2913
+    }
+   ]
+  },
+  {
+   "n": 28,
+   "key": "28-nitishkmrk",
+   "handle": "nitishkmrk",
+   "id": "2070894537967616326",
+   "url": "https://x.com/nitishkmrk/status/2070894537967616326",
+   "text": "visual stepper interaction ⎯⟡°",
+   "media": [
+    {
+     "type": "video",
+     "thumb": "28-nitishkmrk-v1-thumb.jpg",
+     "frames": [
+      "28-nitishkmrk-v1-f1.jpg",
+      "28-nitishkmrk-v1-f2.jpg",
+      "28-nitishkmrk-v1-f3.jpg"
+     ],
+     "duration": 7.507
+    }
+   ]
+  },
+  {
+   "n": 29,
+   "key": "29-chancegraham",
+   "handle": "chancegraham",
+   "id": "2070560465676009941",
+   "url": "https://x.com/chancegraham/status/2070560465676009941",
+   "text": "attempting to animate some xo icons with @figma motion",
+   "media": [
+    {
+     "type": "video",
+     "thumb": "29-chancegraham-v1-thumb.jpg",
+     "frames": [
+      "29-chancegraham-v1-f1.jpg",
+      "29-chancegraham-v1-f2.jpg",
+      "29-chancegraham-v1-f3.jpg"
+     ],
+     "duration": 2.433
+    }
+   ]
+  },
+  {
+   "n": 30,
+   "key": "30-piyushsphere",
+   "handle": "piyushsphere",
+   "id": "2070771265791754674",
+   "url": "https://x.com/piyushsphere/status/2070771265791754674",
+   "text": "Some cool bentos",
+   "media": [
+    {
+     "type": "photo",
+     "file": "30-piyushsphere-p1.jpg",
+     "w": 4096,
+     "h": 3453
+    },
+    {
+     "type": "photo",
+     "file": "30-piyushsphere-p2.jpg",
+     "w": 4096,
+     "h": 2822
+    }
+   ]
+  }
+ ]
+}
