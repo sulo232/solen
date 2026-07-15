@@ -17,12 +17,20 @@
 //   C. Doc paths alive , every _plans/_design-system/_tasks/_rules/_inventory/*.md path
 //      referenced in CLAUDE.md or _plans/ACTIVE.md must exist relative to the project
 //      root (FAIL each dead path).
+//   D. Workflows actually run , for every .github/workflows/*.yml: any job using a LOCAL
+//      action (uses: ./...) must run actions/checkout BEFORE it (FAIL), and a workflow
+//      declaring workflow_dispatch must leave at least one job reachable by a manual run
+//      (FAIL). Born 2026-07-15: all 15 cron jobs pinged ./.github/actions/ping-cron with no
+//      checkout and died in ~6s on every run for weeks, so generate-slots never fired,
+//      availability_slots ran dry, and booking broke at 27/28 salons. actionlint does NOT
+//      catch either class (verified: it exits 0 on the broken shape).
 //
 // Exits 1 if any invariant FAILs, 0 otherwise. Prints PASS/FAIL per invariant.
 
 import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
 import os from "node:os";
+import yaml from "js-yaml";
 
 const REPO_ONLY = process.argv.includes("--repo-only");
 const PROJECT_ROOT = resolve(process.env.CLAUDE_PROJECT_DIR || process.cwd());
@@ -222,11 +230,82 @@ function checkDocPathsAlive() {
 }
 
 // ---------------------------------------------------------------------------
+// Invariant D: workflows actually run
+// ---------------------------------------------------------------------------
+function checkWorkflowsActuallyRun() {
+  const dir = join(PROJECT_ROOT, ".github", "workflows");
+  const lines = [];
+  let pass = true;
+
+  if (!existsSync(dir)) {
+    report("D. Workflows actually run", true, ["SKIP: no .github/workflows directory"]);
+    return;
+  }
+
+  const files = readdirSync(dir).filter((f) => f.endsWith(".yml") || f.endsWith(".yaml"));
+  let jobsChecked = 0;
+
+  for (const file of files.sort()) {
+    let doc;
+    try {
+      doc = yaml.load(readFileSync(join(dir, file), "utf8"));
+    } catch (err) {
+      pass = false;
+      lines.push("FAIL: " + file + " is not parseable YAML: " + err.message);
+      continue;
+    }
+    if (!doc || typeof doc !== "object" || !doc.jobs) continue;
+
+    // `on:` parses as the boolean true under YAML 1.1, hence the two lookups.
+    const on = doc.on ?? doc[true] ?? {};
+    const hasDispatch = Object.prototype.hasOwnProperty.call(on, "workflow_dispatch");
+    let dispatchReachable = !hasDispatch;
+
+    for (const [jobName, job] of Object.entries(doc.jobs)) {
+      if (!job || typeof job !== "object") continue;
+      jobsChecked++;
+      const steps = Array.isArray(job.steps) ? job.steps : [];
+      const uses = steps.map((s) => (s && typeof s.uses === "string" ? s.uses : ""));
+      const localIdx = uses.findIndex((u) => u.startsWith("./"));
+      const checkoutIdx = uses.findIndex((u) => u.startsWith("actions/checkout"));
+
+      if (localIdx !== -1 && (checkoutIdx === -1 || checkoutIdx > localIdx)) {
+        pass = false;
+        lines.push(
+          "FAIL: " + file + " job '" + jobName + "' uses the local action '" + uses[localIdx] +
+          "' with no actions/checkout before it , it cannot exist on the runner, the job dies in seconds",
+        );
+      }
+
+      // A workflow_dispatch button that fires nothing is worse than no button.
+      const cond = typeof job.if === "string" ? job.if : "";
+      if (hasDispatch && (!cond || !cond.includes("github.event.schedule") || cond.includes("workflow_dispatch"))) {
+        dispatchReachable = true;
+      }
+    }
+
+    if (hasDispatch && !dispatchReachable) {
+      pass = false;
+      lines.push(
+        "FAIL: " + file + " declares workflow_dispatch but every job is gated on " +
+        "github.event.schedule, which is empty on a manual run , the Run-workflow button runs nothing",
+      );
+    }
+  }
+
+  if (lines.length === 0) {
+    lines.push("all " + jobsChecked + " jobs across " + files.length + " workflow file(s) can actually run");
+  }
+  report("D. Workflows actually run", pass, lines);
+}
+
+// ---------------------------------------------------------------------------
 if (!REPO_ONLY) {
   checkHooksWiredVsDisk();
   checkMemoryIndex();
 }
 checkDocPathsAlive();
+checkWorkflowsActuallyRun();
 
 console.log("");
 for (const r of results) {
