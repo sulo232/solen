@@ -581,7 +581,8 @@ export default function Header({ locale }: { locale: string }) {
               // rounded-SQUARE tile. V3-D421L (2026-06-06, council 3/3): FLAT — no shadow
               // (CONTROL_ELEVATION rule 3: zero box-shadow on white chrome; the bar itself
               // lifts on scroll, not the buttons).
-              "grid h-10 w-10 shrink-0 place-items-center rounded-[13px] border",
+              // mockup-ok: S3 fix, 40px -> 44px floor, icon glyph size unchanged (approved fixes-refined)
+              "grid h-11 w-11 shrink-0 place-items-center rounded-[13px] border",
               "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.94]",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
@@ -603,7 +604,8 @@ export default function Header({ locale }: { locale: string }) {
             }}
             aria-label="Zurück"
             className={cn(
-              "grid h-10 w-10 shrink-0 place-items-center rounded-[13px] border",
+              // mockup-ok: S3 fix, 40px -> 44px floor, icon glyph size unchanged (approved fixes-refined)
+              "grid h-11 w-11 shrink-0 place-items-center rounded-[13px] border",
               "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.94]",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",

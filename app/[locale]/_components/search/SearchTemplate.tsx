@@ -1302,7 +1302,7 @@ export default function SearchTemplate({
                 // tap = a STUCK ink ring). Locked V3-D450 bans it -> sink the bg instead. Also drop the dead
                 // focus-ring utility (globals.css base already kills the outline; it was invisible anyway).
                 "text-s-ink transition-all duration-300 ease-glide hover:bg-s-bg-sunken",
-                "h-9 w-9", // V3-D421d: map icon stays full size when pinned
+                "h-11 w-11", // mockup-ok: S3 fix, 36px -> 44px floor (approved fixes-refined); was V3-D421d "map icon stays full size when pinned"
               )}
             >
               <MapIcon size={16} strokeWidth={2} aria-hidden />
