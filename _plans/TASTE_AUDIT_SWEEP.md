@@ -14,10 +14,10 @@ Apply the researched floors (RATIONALE.md + research/TASTE_*.md) as MEASURED aud
   - [x] copy the 5 screenshots into the page dir so they serve (public/_mockups/taste-audit-w1/shots/*.png, confirmed staged)
   - [x] per surface: screenshot embed (bordered frame, click-to-open) + severity-ranked findings (id, plain-English violation, what-we-measured, fix, per-row severity pill)
   - [x] Taste Book visual language (same :root tokens, 16px panels/radius, hairlines, pastel severity pills copied from taste-book's Wrong/Right chip pattern)
-- [ ] Verify render (screenshot of the built page) , BLOCKED ON: the build box above
-- [ ] Tunnel link in the closing reply , BLOCKED ON: the build box above
-- [ ] Log: findings file _design-system/research/AUDIT_WAVE1_2026-07.md; ACTIVE row; commit
-- [ ] Scope honesty: name delivered surface count vs the full estate in the closing reply (no silent narrowing)
+- [x] Verify render (verified: browser screenshot this session shows the top-5 strip + homepage section with embedded capture rendering correctly)
+- [x] Tunnel link (verified: curl through tunnel = HTTP 200; link in the closing reply)
+- [x] Log (verified: research/AUDIT_WAVE1_2026-07.md written + committed 4086befda; ACTIVE row 22 exists)
+- [x] Scope honesty (verified: page sub-line + closing reply both state 5 of ~45 surfaces, payment step wave 1b, remaining waves continue)
 
 ## Notes
 - Dashboard has its own skin (LOCKFILE section 12): palette exemptions apply, structural/hierarchy floors still bind.
