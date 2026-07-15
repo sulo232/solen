@@ -118,7 +118,10 @@ export function SalonTeam({
         </h2>
         <Link
           href={`/${locale}/salon/${slug}/booking`}
-          className="font-body text-[14px] font-medium text-s-ink transition-opacity hover:opacity-80 md:text-[15px]"
+          // mockup-ok: P2 fix, SAME "Alle ansehen" pill instance (identical size/radius/weight/color)
+          // as SalonServices/SalonReviews on this page, twin-control drift fix; was a bare text link
+          // with no visible affordance (approved fixes-refined)
+          className="font-body inline-flex items-center rounded-full bg-s-bg-sunken px-8 py-3 text-[14px] font-semibold text-s-ink transition-colors hover:bg-s-border md:px-10 md:py-3.5 md:text-[15px]"
         >
           Alle ansehen
         </Link>
