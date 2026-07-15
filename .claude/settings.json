@@ -73,6 +73,10 @@
           {
             "type": "command",
             "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/no-black-selected-gate.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 $CLAUDE_PROJECT_DIR/scripts/hooks/mockup-resurrection-gate.py"
           }
         ]
       },
@@ -106,6 +110,10 @@
           {
             "type": "command",
             "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/no-black-selected-gate.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 $CLAUDE_PROJECT_DIR/scripts/hooks/mockup-resurrection-gate.py"
           }
         ]
       },
@@ -119,6 +127,10 @@
           {
             "type": "command",
             "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/no-black-selected-gate.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 $CLAUDE_PROJECT_DIR/scripts/hooks/mockup-resurrection-gate.py"
           }
         ]
       },
