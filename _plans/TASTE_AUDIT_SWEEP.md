@@ -8,10 +8,14 @@ Apply the researched floors (RATIONALE.md + research/TASTE_*.md) as MEASURED aud
 - [x] Capture: PDP muse-beauty-studio (verified: _audits/screenshots/taste-w1/pdp-1440.png 1.3MB)
 - [ ] Capture: booking payment step , BLOCKED here: needs interactive flow-harness clicks (playwright CLI cannot drive steps); stays with chip task_400fe4c2 as wave 1b, stated in the reply
 - [x] Capture: dashboard home (verified: dash-home-1440.png, retaken with 8s wait past the skeleton; dev-login redirect worked through the tunnel)
-- [ ] Capture: dashboard calendar/bookings , DEFERRED to wave 1b with payment (same interactive-capture constraint), stated in the reply
+- [x] Capture: dashboard calendar (verified: _audits/screenshots/taste-w1/dash-calendar-1440.png 52KB, real /dashboard/calendar week view via dev-login; the deferral was wrong, the route is directly navigable; 5th auditor agent running on it; visible pre-finding: en dash in the date-range header)
 - [ ] Analyze: workflow wf_25a31850 RUNNING (4 agents: home/search/pdp/dashboard), findings JSON per surface
-- [ ] Build: visual findings page public/_mockups/taste-audit-w1/ (per surface: screenshot + top findings, each with the number, the floor, the smallest fix; severity-ranked)
-- [ ] Verify render + tunnel link in reply
+- [ ] Build: visual findings page public/_mockups/taste-audit-w1/ , BLOCKED ON: audit agents (wf_25a31850 + calendar agent) returning findings
+  - [ ] copy the 5 screenshots into the page dir so they serve
+  - [ ] per surface: screenshot embed + severity-ranked findings (number, floor, smallest fix)
+  - [ ] Taste Book visual language (Wrong/Right chips style, plain English)
+- [ ] Verify render (screenshot of the built page) , BLOCKED ON: the build box above
+- [ ] Tunnel link in the closing reply , BLOCKED ON: the build box above
 - [ ] Log: findings file _design-system/research/AUDIT_WAVE1_2026-07.md; ACTIVE row; commit
 - [ ] Scope honesty: name delivered surface count vs the full estate in the closing reply (no silent narrowing)
 
