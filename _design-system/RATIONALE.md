@@ -2,7 +2,7 @@
 
 <!-- exists-check: net-new vs CANON/SOURCE/LOCKFILE/TASTE_LOG/PSYCHOLOGY/RESTRAINT_TEST because none holds the perceptual/mathematical MECHANICS layer: 2026-07-15 inventory found LOCKFILE rationale is 51 percent BARE and 4 percent mechanics-class, SOURCE has zero named perception/aesthetics citations, PSYCHOLOGY.md covers behavioral (conversion/retention) laws not visual-perception mechanics. This file EXTENDS that stack (backlinks throughout) and duplicates none of it; npm run exists rationale = 0 hits. -->
 
-**Status: v1 OWNER-CONFIRMED (2026-07-15). Location: this file (rules link in, locked docs unchanged). Retrofit scope: ALL bare rules (~47), owner picked full sweep over top-12. Template: hybrid (full 6-field block for LOCKFILE retrofits and big calls, lean one-liner for everyday TASTE_LOG entries). Added domains: i18n typography, touch ergonomics, enforcement. Imagery domain: owner DECLINED 2026-07-15, do not add without a new yes. Probe picks settled 2026-07-15 (TASTE_LOG entry); still open: the 3B contrast-retune implementation sweep + the folklore gate build.**
+**Status: v2 (2026-07-16). v1 OWNER-CONFIRMED 2026-07-15 (location = this file; retrofit = FULL sweep, done in section 14; template = hybrid; added domains i18n/touch/enforcement; imagery DECLINED). Round 2 added 2026-07-16 from the owner's second research digest + two judgment-agent passes: sections 16-28 (epistemics, cognition/signifiers, depth/light, token architecture, states/feedback, forms, icons, data display, typographic craft, composition/Swiss lineage, voice/tone, ethics, gap register), BOUNDARY field in the entry template, folklore table extended. Kill-list honored (judges 2026-07-16): RTL/CJK compressed to one boundary line, data display kept compact, ISO 9186 noted-not-adopted, dark-mode polarity recorded as a mobile-canon pointer only (web dark mode stays graveyarded).**
 
 **What this is.** The WHY layer: the perceptual, mathematical, and empirical mechanics that ground the decisions locked elsewhere. LOCKFILE/CANON hold the WHAT (frozen literals), TASTE_LOG holds the WHEN/WHO (dated owner calls), PSYCHOLOGY.md holds the behavioral laws. This file holds the MECHANISMS (formulas, thresholds, named studies) those decisions can cite, so a rule can be defended instead of asserted.
 
@@ -35,9 +35,12 @@ DECISION: <the rule, one line, with its locked literal>
 FORCES: <the competing pressures this resolves, 2-4 bullets>
 OPTIMIZES FOR: <what wins>
 SACRIFICES: <what loses, named honestly>
+BOUNDARY: <when the rule flips; the reversal condition (round-2 addition, 2026-07-16)>
 MECHANIC: <formula / threshold / study + tier, or "owner taste, dated" if none>
 SOURCE: <owner date / measured ref / RATIONALE.md section>
 ```
+
+The BOUNDARY field (added 2026-07-16 from the round-2 digest's four-part entry test) is what separates a rule from a slogan: "body text is positive polarity" is complete only with "except code blocks and immersive media." Existing retrofit blocks in section 14 predate the field; add BOUNDARY lines opportunistically when a block is next touched, do not sweep-rewrite them.
 
 **The reversibility test:** a principle is only actionable if a competent team could defensibly choose its opposite. "Make it usable" is a value, not a principle. "Restraint: one ink anchor per card, at the cost of scannability of secondary values" is a principle. Entries that fail the test get demoted to values (section 8 keeps a short values list so they have somewhere honest to live).
 
@@ -194,7 +197,11 @@ The measure/typography mechanics of domain 4 break first in German, and Solen sh
 
 **Compound words (T1 linguistic fact, no hyphenation dictionary in CSS by default):** German compounds do not wrap without `hyphens: auto` + `lang="de"`; a 24-glyph compound inside a narrow column overflows or forces ugly breaks. Mechanic: measure caps (domain 5's 45-75ch) need MORE slack in DE columns; enable hyphenation only deliberately (it changes the premium read).
 
-**Numerics across locales (CONV, Swiss convention):** tabular-nums for anything that aligns or updates (prices, times, codes: already the Inter Tight tabular lock); CHF formats per SOURCE section 17; never let locale switching reflow number columns.
+**Numerics across locales (CONV, Swiss convention):** tabular-nums for anything that aligns or updates (prices, times, codes: already the Inter Tight tabular lock); CHF formats per SOURCE section 17; never let locale switching reflow number columns. Swiss thousands grouping (the apostrophe form, 1'000'000) comes free from locale-native formatting: lib/format.ts already routes through toLocaleString("de-CH"), which is the correct mechanism; never hand-format number strings.
+
+**Expansion is length-dependent, not flat (round-2 delta, W3C "Text size in translation" restating IBM globalization data):** the shorter the source string, the larger the percentage expansion. Planning buckets: under 10 chars can expand 200-300 percent, 11-20 chars roughly 80-100, 21-70 chars roughly 40, 71+ roughly 30. This supersedes the flat 20-35 percent range for LABEL-scale strings: chips, tabs, buttons are the highest-expansion class, which is why the 3-word CTA lock earns its keep.
+
+**RTL and CJK: out of scope by locale set (boundary line, judges' kill-list 2026-07-16).** Solen ships de/en/fr/it, all LTR Latin; RTL mirroring and CJK line-breaking mechanics enter this file only if an Arabic/Hebrew/CJK locale is ever planned.
 
 ---
 
@@ -237,6 +244,12 @@ The house lesson (PSYCHOLOGY.md section "Enforcement", owner 2026-07-07): docs g
 | "German text expands exactly 30 percent" | Unsourced flat number (SOURCE.md:1075) | Treat as a 20-35 percent planning range, or measure our own strings |
 | "reads warm by physiological convention" (SOURCE.md:232) | Unsourced perception claim | Keep the rule, drop the physiology, label CONV |
 | ">=75 percent of expected traffic is mobile" (SOURCE.md:63) | Internal number with no source/date | Attach the analytics source + date, or soften to "majority mobile" |
+| 10,000-hour rule | Gladwell misreading; Ericsson rejected it ("nothing special or magical about ten thousand hours"); Macnamara 2014 meta-analysis: deliberate practice explains 26/21/18/4/<1 percent of variance by domain | Practice matters and is not sufficient; never cite 10k hours (round 2, 2026-07-16) |
+| 3-click rule | No empirical support (Porter/UIE 2003: satisfaction and success do not drop at click 3) | Information scent per click matters, not click count (round 2) |
+| "8-second attention span, shorter than a goldfish" | Fabricated attribution chain, no primary source exists | Cite task-specific engagement data or nothing (round 2) |
+| Rule of thirds as perceptual law | Composition convention, weak perceptual evidence (same class as the golden ratio) | Use as a CONV heuristic, never as a justification (round 2) |
+| Ego depletion / willpower as a depletable UX resource | Effectively dead: 2016 Registered Replication (23 labs, N=2141) d = 0.04, CI spans zero | Never build UX rationale on willpower depletion (round 2) |
+| "Skeleton screens always beat spinners" | Contested: NN/g and controlled tests find skeletons can feel equal or slower; benefit depends on shape fidelity and duration | Our lock (Skeleton matching the final layout) is the variant that tests well; keep the lock AND the flag (round 2) |
 
 House rule (global rule 15 applied to design): a recalled number is memory wearing a number. Attach a named checkable source, soften to qualitative, or cut.
 
@@ -647,3 +660,180 @@ Still open:
 1. The 3B contrast retune IMPLEMENTATION sweep (decision settled, code not yet changed; sitewide audit of ink-2/accent text on sunken surfaces).
 2. Folklore-citation gate build (section 11 item 1): needs a main-repo session (/harden), hooks dir is write-protected from worktree sessions.
 3. Web discount badge alignment to the mobile green-by-price treatment (owner re-rejected the rose photo tag on sight 2026-07-15; mockup-first task queued).
+
+---
+
+# ROUND 2 (2026-07-16): the deep-mechanics layer
+
+Source: the owner's second research digest (epistemology, Norman, depth/light, tokens, states, forms, icons, data viz, typographic craft, composition, voice, ethics, i18n) + two judgment-agent gap passes (generative lens, diagnostic lens) run 2026-07-16. Same rules as v1: tiers on every claim, no lock reopened, digest figures the digest itself flagged as unverified stay flagged.
+
+## 16. Domain 12: the epistemic stance (why to trust this file, and how much)
+
+**Polanyi's tacit knowledge (T2 as philosophy of expertise): "we know more than we can tell."** Externalization is LOSSY and partial (Gourlay 2006's critique of the SECI model: some tacit knowledge is inherently tacit, much is merely un-articulated). Consequence: this file never fully captures the owner's taste and is iterative BY DESIGN. A PASS against this file is necessary, never sufficient; the owner's live eye stays the last gate, which is the epistemic reading of the mockup-first law.
+
+**Hume's true judges (1757): delicacy, practice, comparison, freedom from prejudice, good sense.** The standard of taste is the joint verdict of qualified judges. This legitimizes the owner-as-standard (years of comparing thousands of screens IS the practice + comparison warrant) and sets the bar for any AI verdict: it must come from measurement and comparison, never from recall or vibes.
+
+**Kant's four moments (1790):** aesthetic judgments are disinterested, claim universal assent WITHOUT a stateable concept, and feel necessary. That is why "this is bad" arrives without a named rule and still demands agreement; it is the structure of aesthetic judgment, not a communication failure. The diagnosis skill exists to bridge exactly that gap: find the mechanic under the felt judgment.
+
+**Bourdieu's counterweight (T2, sociology): taste classifies the classifier.** Part of what reads as "good taste" is class signaling (habitus, cultural capital). House discipline: when a principle's only defense is "it reads premium," label it CONV brand positioning, never perception.
+
+**Repertory grid (Kelly 1955, T2 as method): the operational payload of this domain.** Triadic comparison over real screens ("which two of these three are alike, and how does the third differ") surfaces the owner's UNNAMED taste axes in their own words; elicitation order = salience. This is the Taste Lab formalized, and the method for future rounds that hunt unknown axes rather than settle named ones. Pair with staircase/adaptive probes on continuous axes (radius, shadow depth, blue saturation, motion duration) to convert recurring vague complaints ("too heavy," "too small") into measured thresholds. Queued as gap-register item D5.
+
+## 17. Domain 13: cognition and signifiers
+
+**Affordance vs signifier (Norman 1988; the 2008/2013 correction): you design SIGNIFIERS.** The affordance can exist and be useless if nothing perceivable communicates it. The flat-design cost is measured (T2, NN/g 2017 eyetracking, 71 users, 9 page pairs): weak-signifier pages took 22 percent more looking time and 25 percent more fixations on findability tasks. Grounds: clickability is signalled by AFFORDANCE (chevron, underline-on-hover, weight, icon), never by color alone (taste rule 3's mechanic), and the earned-elevation tree (CONTROL_ELEVATION) is a signifier budget, not decoration policy.
+
+**Gulfs of execution and evaluation (Norman):** every interaction owes a bridge in (what can I do here = signifiers, constraints, mappings) and a bridge out (what just happened = feedback within the domain-6 thresholds). The state matrix (domain 16) is the enumerated answer to the evaluation gulf.
+
+**Cognitive load (Sweller 1988, T2): intrinsic, extraneous, germane.** Design's enemy is extraneous load only. BOUNDARY on minimalism: hiding needed context RAISES load; copy economy deletes words the context already says, never words carrying decision information.
+
+**Jakob's law + Tesler's law (CONV, named vocabulary):** users spend most time on other products, so category conventions are free usability (the STRUCTURE = Fresha axis is applied Jakob); irreducible complexity must land somewhere, and it lands on our side (the booking flow absorbs slot/staff/payment complexity so the customer does not).
+
+**Information scent (T2, Pirolli and Card 1999, information foraging):** labels, links, icons, and snippets are proximal cues predicting distal value; vague labels have weak scent and raise abandonment of the trail. Bounds the icon-verbosity ladder (icon-only is allowed exactly where the adjacent object supplies the scent) and CTA copy (verb + object beats "Mehr erfahren" when the destination is not obvious).
+
+**Progressive disclosure (T2, NN/g):** common options first, advanced on demand, with a discoverable disclosure signifier. Already practiced (filter sheets, "Mehr lesen" clamps); recorded as mechanics.
+
+**Memory and attention effects, replication-flagged:**
+| Effect | Tier | Solen use |
+|---|---|---|
+| Von Restorff isolation | T1 | the one-accent pop-out math (domain 1) |
+| Serial position (primacy/recency) | T1 | first/last list slots are premium inventory |
+| Goal gradient + endowed progress | T1-T2 | PSYCHOLOGY.md law (cross-ref, no duplication) |
+| Peak-end | in PSYCHOLOGY.md as law 1 | magnitude contested; keep scope as recorded there |
+| Zeigarnik (open tasks remembered) | T3, weak/inconsistent | do not build on it |
+| Ego depletion | MYTH (section 12) | never |
+
+## 18. Domain 14: depth, light, and materiality
+
+**Light-from-above prior (T2, Ramachandran 1988; explicitly WEAK and overridable, Morgenstern 2011):** shading consistent with top light reads raised; inverted reads inset. The mechanic under two locks: shadows offset DOWNWARD (every elevation token is positive-y), and pressed states go INSET (the LOCKFILE pressed stack).
+
+**Two-light model (CONV, Material's elevation system):** believable depth = a key light (directional, blurred, offset cast shadow) + ambient occlusion (tight contact shadow). Our elevation-1/2/3 tokens are each a two-layer stack (one wide blur + one tight shadow): that IS the key+ambient model, now recorded as the mechanic for the section-14 shadow block, upgrading it from bare CONV.
+
+**Positive polarity advantage (T1, Buchner 2007; Piepenbrock 2013/2014):** dark-on-light reads faster and more accurately for normal vision, both young and old, and the advantage GROWS as type shrinks (mechanism: brighter background constricts the pupil, sharper retinal image). BOUNDARY: on web this only confirms the default (web dark mode is graveyarded, owner 2026-07-15, and stays so). It BINDS the mobile dark canon (solen-mobile THEMING.md): elevation by lightness not shadow, desaturated hues, charcoal not pure black (halation is worst for astigmatism, pooled adult prevalence roughly 40 percent, Hashemi 2018). Pointer only; the mobile file is the canon.
+
+**Translucency discipline (CONV + market case):** frost (FROST_GLASS) is locked for over-photo controls; its mechanic is figure/ground preservation, its risk is contrast that varies with the content underneath, which is why the recipe carries blur + tint as a worst-case floor. Apple's Liquid Glass (2025) shipped into immediate legibility criticism and later opacity concessions (single-source detail, flagged): the market case for keeping translucency paired with a solid fallback and a contrast floor.
+
+## 19. Domain 15: color-token architecture
+
+**Three tiers (CONV, industry standard; the W3C DTCG 2025.10 spec formalizes the exchange FORMAT, explicitly not the strategy):** primitive (raw value) > semantic (meaning: s-error) > component. The semantic layer is why a retheme is one mapping change and why a reviewer reads intent ("danger") instead of a hex. Solen's tailwind layer is already semantic (s-ink, s-bg-sunken, s-accent, s-error); the standing discipline: components cite semantic names, never raw primitives (the drift gate's hex rule is this, mechanized).
+
+**Radix's 12-step job map (CONV, the best-documented ramp grammar):** steps 1-2 app/subtle backgrounds, 3-5 component backgrounds (normal/hover/pressed), 6-8 borders (subtle/interactive/hover), 9-10 solids, 11-12 text (low/high contrast); engineered so the same step across hues is interchangeable, which is the OKLCH + APCA payoff from domains 2-3. Solen's neutral mapping, recorded for EXTENSION, not migration: white = 1, sunken #F4F4F5 = 2-3, border #E4E4E7 = 6, disabled/ink-3 = 8-9 region, ink-2 #6B6B6B = 11, ink #0A0A0A = 12. When a new neutral is needed, place it by JOB on this map instead of inventing a hex; this closes the "no formula to extend from" gap the section-14 blocks kept admitting, for neutrals.
+
+**Semantic hues are market conventions (boundary note):** red = error / green = success is Western; East Asian financial contexts invert red/green. Zero current impact for a de/en/fr/it Swiss product; the free discipline Solen already follows: tokens are named by MEANING (s-success, s-error), never by hue, so a market inversion would be one mapping change.
+
+## 20. Domain 16: states and feedback
+
+**The state matrix (enumeration; values already locked at LOCKFILE:526-549):** default, hover (pointer-only, never the sole signifier), focus-visible, active/pressed, disabled, loading, error, empty, success, read-only, selected, indeterminate. Every interactive component owes a designed answer per applicable state; Skeleton/EmptyState/ErrorState are the locked answers for three of them.
+
+**:focus vs :focus-visible (T2, the mechanic behind a house departure):** :focus fires on mouse clicks too, which is historically why designers deleted outlines and broke keyboard navigation; :focus-visible fires only when the browser judges an indicator is needed. Solen's recorded departure (no ring on buttons/links, section 4) stays owner law; this entry exists so the tradeoff is visible and so inputs (which DO keep the ink edge + halo) are understood as the conforming half.
+
+**The disabled-button argument (T2, strong practitioner consensus: GOV.UK, Adam Silver, Axess Lab):** WCAG 1.4.3 EXEMPTS disabled controls from contrast floors, which is precisely why dead grey buttons are illegible; and a mute disabled button explains nothing. The researched pattern: keep it enabled or aria-disabled, let the tap surface a SPECIFIC reason ("Wähle zuerst einen Termin"). TENSION, flagged not applied: our locked disabled treatment is opacity-50 cursor-not-allowed on the commit button. The lock stands; the probe-worthy question (gap register, QUESTIONS.md) is whether the booking commit should explain itself on tap instead of sitting mute.
+
+**Validation timing (T2, forms research):** validate on blur or submit, never per keystroke; confirm success early, deliver errors late. FormFieldError is the component; this is its missing WHEN.
+
+**Perceived performance (each claim flagged):**
+- Skeletons: contested (section 12 folklore row); our lock (skeleton must MATCH the final layout) is the variant that tests well. Keep lock + flag.
+- Progress bars (T2, Harrison 2010, CHI): bar animation changes perceived duration by roughly 10 percent; decelerating-backward ribbing reads fastest. Relevant only where a real determinate wait exists.
+- Labor illusion / operational transparency (T2, Buell and Norton 2011): showing the system working ("Verfügbarkeit wird geprüft...") makes waits accepted and sometimes PREFERRED to instant, via perceived effort. Candidate: availability/search waits over ~1s name the step instead of a bare skeleton. Probe-able.
+- Optimistic UI (CONV, tradeoff): render success, reconcile, roll back. Saves/hearts: safely optimistic (current HeartButton behavior). Payments and bookings: NEVER optimistic (correctness risk is the sacrifice, and here it is unacceptable).
+
+## 21. Domain 17: forms and input
+
+**Label placement (T2 with honest caveats):** top-aligned labels read in one fixation (Penzo 2006 eyetracking); the caveats are real (trivial 4-field study; Das 2008 found no completion difference; Jarrett: answer-time dominates saccade-time on real forms). Default: top-aligned, which is ALSO the i18n-safe choice (German labels do not fit left columns, domain 9). Left-aligned only as a deliberate brake on unfamiliar data entry. Placeholder-as-label is banned by MECHANIC, not taste: it vanishes on input (recall load), reads as a filled value (skip errors), and fails low-vision users.
+
+**Single column (T2, Baymard/CXL):** multi-column forms create ambiguous reading paths and mis-tabbing; group only tight semantic pairs (PLZ/Ort). Baymard's checkout benchmark (their 50-study aggregate, re-check numbers at baymard.com before citing precisely): average checkouts carry roughly twice the form elements needed, and trimming measurably lifts completion.
+
+**Input mechanics (T1, standards):** autocomplete tokens are WCAG 1.3.5, inputmode/type summon the right mobile keyboard, paste is never blocked. Error layer: WCAG 3.3.1/3.3.2/3.3.3 + Nielsen heuristic 9 (plain language, precise, constructive; inline at the field, summary linking down on long forms).
+
+## 22. Domain 18: iconography
+
+**Optical grid (CONV, Material's system):** 24px canvas, 20px live area, keyline shapes (circle 20, square 18, rects 20x16) so different silhouettes read the same visual size; stroke weight, terminals, and corner treatment consistency matter more than equal bounding boxes. Lucide's 24-grid/2px default conforms; the house 1.9-vs-2 stroke inconsistency stays flagged (section 13 item 8).
+
+**Optical volume:** domain 5's optics applied to glyphs: a circle must slightly exceed a square's box to read equal; icon-in-disc centering is verified by eye at zoom, not by flexbox faith.
+
+**Icon + label (T2, NN/g "universal icons are rare"):** ambiguity is the norm outside a tiny set (search, close, home). The house copy-economy ladder (icon-only beside an unambiguous object; icon+label when rarer; label-only for commitments) is the operational form; its mechanic is information scent (domain 13). ISO 9186 comprehension testing exists (a 67-percent-class threshold, edition-dependent); noted, not adopted: heavyweight process for a Lucide-based system.
+
+## 23. Domain 19: data display (compact by design; judges' kill-list honored, dashboard floors live in research/TASTE_DASHBOARDS.md)
+
+**Cleveland and McGill 1984 (T1; replicated by Heer and Bostock 2010):** decoding accuracy ranks position-on-common-scale > position-non-aligned > length/direction/angle > area > volume/curvature > shading/saturation. Operational: bars or dots over pies/donuts for any comparison; never encode magnitude in shading alone; direct-label over legend where space allows.
+
+**Truncated y-axis (T2, Correll/Bertini/Franconeri 2020):** truncation exaggerates effect size and the exaggeration SURVIVES explicit disclosure cues. Rule: bar charts start at zero, always; line charts may truncate for analytic intent, honestly framed.
+
+**Tufte (values, named):** data-ink ratio, chartjunk, lie factor near 1.0, small multiples. Judgment aids, not formulas.
+
+**Tables:** numbers right-aligned in tabular figures so place value stacks (the mechanic under the Inter Tight tabular lock); text left-aligned; zebra striping is marginal (T3, only wide dense grids), prefer row spacing + one subtle divider, which is current practice.
+
+**BOUNDARY:** customer surfaces carry no data viz; this domain binds the owner dashboard only.
+
+## 24. Domain 20: typographic craft
+
+**Punctuation:** smart quotes and apostrophes, the real ellipsis character. DOCUMENTED DEPARTURE, recorded so no one relitigates it from Bringhurst: classical typography assigns the en dash to ranges and the em dash to breaks; the house BANS both glyphs everywhere (owner law, hook-enforced). Ranges use "bis" or a spaced hyphen, breaks use period/comma/colon/parens. The departure trades typographic classicism for a hard, greppable rule; it is absolute.
+
+**Widows and rag:** text-wrap: balance for 2-6 line headings; text-wrap: pretty for body last lines (Chromium shipped; verify Safari/Firefox support at first use). Justified text without hyphenation makes rivers: UI text is never justified (flush-left ragged-right is also the Swiss-style value, domain 21).
+
+**Font loading (T2, web-perf mechanics):** FOIT vs FOUT is a design decision; font-display plus metric overrides (size-adjust, ascent/descent-override) eliminate swap layout shift. Solen loads type via next/font self-hosting, which applies metric-adjusted fallbacks automatically (framework-verified); the mechanic is recorded for anything ever loaded outside next/font.
+
+**Variable axes (available, not yet exploited):** opsz (optical sizing, auto via font-optical-sizing) is the variable-font form of domain 4's optical-cut mechanics; GRAD changes apparent weight WITHOUT changing metrics, the correct tool if emphasis must never reflow a line. Inter v4 carries both.
+
+**System stack vs webfont (CONV tradeoff):** system stacks cost zero network and read native; webfonts carry brand voice at a loading cost. Solen pays the cost deliberately: Inter Tight IS half the brand's voice.
+
+## 25. Domain 21: composition vocabulary and the Swiss lineage
+
+**Named axes for what the squint test finds (CONV vocabulary):** balance (symmetric/asymmetric/radial), visual weight, tension, rhythm and repetition, dominance/focal point, movement (the eye's path), unity vs variety, scale contrast, negative space treated as SHAPE. The diagnosis skill reports in these words so a felt "unbalanced" maps to a named axis; the computable form (visual-weight centroid) is gap-register item D1.
+
+**Rule of thirds:** folklore tier (section 12). A usable CONV crop heuristic, never a justification.
+
+**Swiss/International Typographic Style (adopted VALUES, the honest label for the house lineage):** objective clarity, mathematical grid, sans-serif, flush-left ragged-right, photography over illustration (Muller-Brockmann, Grid Systems, 1981). A Swiss product running Swiss-style values is brand coherence, chosen and reversible, and this is the true ancestry of several "premium/calm" instincts the file previously left unattributed. Neo-brutalism, bento grids, and the translucency revival are 2024-2026 TRENDS: cite as trend, never as principle.
+
+**Art-direction statement (generative aid, CONV; gap-register G3 companion):** one or two sentences naming the intended feeling and reference vocabulary BEFORE composing a new surface (the personality-zone table is the per-zone version). Cheap, and it converges first mockups instead of gambling them.
+
+## 26. Domain 22: voice and tone mechanics
+
+**Four tone dimensions (T2, NN/g 2016):** funny/serious, formal/casual, respectful/irreverent, enthusiastic/matter-of-fact. The LOCKFILE register lock (du-form, no exclamation marks, no hype) pins Solen at: casual side of center, matter-of-fact, always respectful, serious-leaning with warmth allowed at confirmation moments. Recorded as axis positions so new-surface copy has a target rather than a vibe.
+
+**Voice constant, tone varies by state (CONV, Mailchimp framing):** celebratory at success (PSYCHOLOGY.md law 1's confirmation warmth), calm and plain at errors (domain 17 error rules), matter-of-fact in forms and settings.
+
+**No dead ends (Yifrah, microcopy):** every empty, error, and zero-results state offers a next action; EmptyState's action slot is the enforcement. Buttons name the action they perform (verb CTAs, already law).
+
+**Aaker's brand-personality five (T2; cross-cultural generalizability contested):** sincerity, excitement, competence, sophistication, ruggedness. A naming vocabulary: Solen reads competence + sincerity with sophistication accents. Vocabulary, not law.
+
+**Sentence case (house law; mechanics note):** sentence case reads faster and more humane, Title Case reads branded/formal; German capitalizes nouns anyway, so the rule bites in EN/FR/IT strings.
+
+## 27. Domain 23: ethics as taste (names and anchors; the refusals themselves live in PSYCHOLOGY.md)
+
+**Brignull's taxonomy (deceptive.design; term coined 2010):** sneaking, nagging, obstruction (roach motel / hard to cancel), forced action, confirmshaming, comparison prevention, disguised ads, fake scarcity, fake social proof, fake urgency, hidden costs, hidden subscription, preselection, trick wording, visual interference. Gray et al. 2018 compress to five: nagging, obstruction, sneaking, interface interference, forced action. This section exists so reviews can cite refusals by their industry names.
+
+**Regulatory anchors:** EU DSA Article 25 prohibits interfaces that deceive, manipulate, or materially distort user decisions (recital 67 names dark patterns); California CPRA: consent obtained through dark patterns is not valid consent. BOUNDARY, stated honestly: Solen is Swiss; the DSA binds services offered INTO the EU, and whether that covers Solen is a legal question this file does not settle. The design stance does not depend on the answer: the PSYCHOLOGY.md hard lines (no fake scarcity/urgency/social proof, no confirmshaming, symmetric opt-outs) already refuse the taxonomy, regulation or not.
+
+## 28. Gap register (judge-flagged 2026-07-16; open queue, owner-gated where marked)
+
+Two judgment passes ran over the whole stack. Their converged verdict, recorded verbatim in spirit: **the stack is analytic, not generative** (it can grade a mockup twelve ways and cite a study for each, but holds few priors that produce a RIGHT first mockup), and **its floors are prose, not computed** (only static-code drift is mechanized; every perceptual floor is eyeballed under task focus, the exact condition the house ledger says degrades advice into noise).
+
+**Generative gaps (lens A):**
+| # | Gap | Route |
+|---|---|---|
+| G1 | Richness calibration: "rich not bland" has zero mechanics; needs a probe-calibrated band (photos per screen, fields per card, above-fold count) | Taste Lab probe: 3 richness levels of one real surface. HIGHEST |
+| G2 | Layout-pattern selector: list vs grid vs carousel vs table vs bento, given content shape (NN/g carousel + Baymard list-vs-grid as anchors) | Probe: same content 3 ways |
+| G3 | Page-level rhythm for NEW pages: section order, dense/breathe cadence, CTA placement grammar | Elicit + art-direction statement (domain 25) |
+| G4 | Empty-state + illustration language (bridge from the personality-zone table; NN/g blank-slate: teach value, one action) | Probe-able |
+| G5 | Responsive reflow grammar: named transform per surface class (Frost's responsive-pattern taxonomy as vocabulary) | Probe: mobile+desktop of one screen |
+| G6 | Imagery/art direction: OWNER-DECLINED 2026-07-15; listed as a known gap, needs a NEW yes | Owner-gated |
+| G7 | Flow-level motion choreography (spatial continuity across booking steps; Material shared-axis) | Needs video prototype, weak as static probe |
+| G8 | Token extension grammar: neutrals now closed by domain 19's job map; semantic/status extension still CONV | Doc follow-up |
+| G9 | Density defaults per CUSTOMER surface (extend TASTE_DASHBOARDS floors to cards/grids) | Probe-able |
+
+**Diagnostic gaps (lens B; "mechanizable" = a script can compute it):**
+| # | Gap | Mechanizable |
+|---|---|---|
+| D1 | Visual-weight/balance centroid metric (answers "unbalanced" with a number: per-element bbox area x darkness x saturation, centroid offset) | YES |
+| D2 | Blue-coverage percent + accent-hue count per rendered screen (the most-relitigated rule, measurable as pixels) | YES |
+| D3 | Alignment/off-grid conformance (near-miss edges 1-4px apart, off-4pt values) | YES |
+| D4 | Pre-delivery self-walk: run the diagnosis skill on MY OWN mockups BEFORE showing (candidate Stop-gate; the reactive loop is the weakest link) | Gate |
+| D5 | Repertory-grid triads + staircase probes as Taste Lab rounds (extract UNNAMED axes; thresholds for "too heavy") | Procedure |
+| D6 | Tap-target + slip-adjacency sweep (44px floor, 8px consequential separation, computed per screen) | YES |
+| D7 | Cross-surface consistency diff (price strings, stroke widths, twin components across call-sites) | YES |
+| D8 | Spacing-rhythm audit (all sibling gaps vs the 32/12/16 whitelist) | YES |
+| D9 | Multi-locale overflow audit (render de/en/fr/it, flag clipped/wrapped CTAs and chips) | YES |
+| D10 | Severity matrix: contract breach (gate-enforced literal) = blocking regardless of visual size; within-budget taste = cosmetic | Skill edit |
+
+Build order recommendation (not started, owner can reprioritize): D4 (the gate that makes everything else fire) > D2 + D1 (the two most-complained axes) > G1 probe (the most-cited generative direction) > the rest as audit-script sprints.
