@@ -83,8 +83,11 @@ function CityCategoryFaq({ cityName, categoryName }: { cityName: string; categor
       <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink mb-6">
         Häufig gestellte Fragen
       </h2>
-      <div className="space-y-3">
-        <details className="border border-s-border rounded-input p-4 cursor-pointer">
+      {/* mockup-ok: S1 fix, one grouped list card (rounded-card + border-s-border), rows share
+          a hairline instead of each carrying its own border/rounded/padding chrome (approved
+          public/_mockups/fixes-refined) */}
+      <div className="rounded-card border border-s-border bg-white overflow-hidden">
+        <details className="border-t border-s-border p-4 cursor-pointer first:border-t-0">
           <summary className="font-body font-semibold text-base text-s-ink">
             Wie viel kostet ein Besuch bei einem {categoryName} in {cityName}?
           </summary>
@@ -93,7 +96,7 @@ function CityCategoryFaq({ cityName, categoryName }: { cityName: string; categor
           </p>
         </details>
 
-        <details className="border border-s-border rounded-input p-4 cursor-pointer">
+        <details className="border-t border-s-border p-4 cursor-pointer first:border-t-0">
           <summary className="font-body font-semibold text-base text-s-ink">
             Wie finde ich den besten {categoryName} in {cityName}?
           </summary>
@@ -102,7 +105,7 @@ function CityCategoryFaq({ cityName, categoryName }: { cityName: string; categor
           </p>
         </details>
 
-        <details className="border border-s-border rounded-input p-4 cursor-pointer">
+        <details className="border-t border-s-border p-4 cursor-pointer first:border-t-0">
           <summary className="font-body font-semibold text-base text-s-ink">
             Kann ich online einen Termin buchen?
           </summary>
