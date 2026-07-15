@@ -80,7 +80,8 @@ export default function WalkInBand() {
               </p>
               {/* B "live board" (owner pick 2026-06-29): wait/queue are real-time (GET
                   /api/walkin/nearby), so a "Live" marker is honest signal, not decoration. */}
-              <span className="mt-1 inline-flex items-center gap-1.5 font-body text-[12px] font-bold text-s-success">
+              {/* mockup-ok: R3 fix, ink label + green dot carries color (approved public/_mockups/home-refined) */}
+              <span className="mt-1 inline-flex items-center gap-1.5 font-body text-[12px] font-bold text-s-ink">
                 <span className="h-[7px] w-[7px] rounded-full bg-s-success" aria-hidden />
                 Live
               </span>
