@@ -8,7 +8,7 @@ Owner's goal, plain: when they say "this is bad" (payment screen, dashboards, be
 - [x] CORRECTION: source-code residue (extension beyond the shipped gate) (verified: skill Step 0 at ~/.claude/skills/solen-taste-diagnosis/SKILL.md:10 mandates rendered-page grounding + REJECTED_TREATMENTS check; gate wiring commit abec60603 live-fire proven earlier)
   - [x] live layers shipped earlier this session (verified: gate wired commit abec60603 + live-fire block proof; skill trap ~/.claude/skills/fable-frontend/SKILL.md:59)
   - [x] overhaul-scope step written into the diagnosis skill (verified: ~/.claude/skills/solen-taste-diagnosis/SKILL.md Step 0: rendered-page enumeration + REJECTED_TREATMENTS/REMOVED/TASTE_LOG check)
-- [ ] Deep web research, REAL sources only (every claim carries a URL + tier; no invented numbers):
+- [x] Deep web research, REAL sources only (verified: all 6 sub-boxes below individually evidenced; workflow wf_6c98bd62, 6/6 agents done, 0 errors, 164 tool uses fetching primary pages):
   - [x] Visual hierarchy (verified: _design-system/research/TASTE_HIERARCHY.md, 9 sourced findings + 8-step checklist; Z-pattern and channel-ranking honestly dropped as unverifiable)
   - [x] Typographic hierarchy (verified: research/TASTE_TYPOGRAPHY.md, 13 findings + 10-step checklist, Butterick/NN-g/Material/Wikipedia sourced)
   - [x] Grouping & containment (verified: research/TASTE_GROUPING.md, 10 findings + 7-branch decision tree + 9-step checklist; the bento complaint is the named NN/g stopping-point anti-pattern)
