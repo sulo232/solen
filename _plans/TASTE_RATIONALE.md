@@ -38,6 +38,17 @@ Owner delivered a researched reference skeleton: 8 reasoning domains (perception
 - [x] Reviewer pass: round 1 FAIL on 2 literal drifts (search/btn 99px misgrouped as 9999px; "14-role" vs 19 actual type roles), both fixed + grep-verified (verified: RATIONALE.md:305 "19-role", :331 "search/btn 99px, pill/rounded-full 9999px", in commit 00ca3881b); checks 1/3/4/5 all PASS per loop-reviewer output
 - [x] Commit retrofit + final report (verified: commits 00ca3881b retrofit + 147e8dc15 plan ticks; report delivered in the closing reply)
 
+## CORRECTION round (owner 2026-07-15, "you keep reading from the source code... harden the gate")
+- [x] CORRECTION: badge resurrection flagged as a REPEATING cross-session pattern; harden mechanically, not with promises
+  - [x] _design-system/REJECTED_TREATMENTS.json created (4 seed signatures incl. rose-photo-discount-badge, web-dark-mode)
+  - [x] scripts/hooks/mockup-resurrection-gate.py built + SELF-TESTED (verified: SELFTEST OK, 4 cases: badge=BLOCK exit 2, clean=PASS exit 0, excluded-path=PASS, new-dark=BLOCK; live-pipe tests same)
+  - [x] fable-frontend skill trap list extended with SOURCE-CODE-IS-NOT-RENDER-TRUTH (live now, auto-injected on every UI task)
+  - [x] DRIFT_LEDGER.md + _rules/LESSONS_LEARNED.md entries (both hook-injected surfaces)
+  - [x] memory feedback_source_code_is_not_render_truth.md + MEMORY.md index line
+  - [ ] BLOCKED here: .claude/settings.json wiring (worktree sandbox denies .claude/settings.json + .claude/hooks writes); chip task_85a5fbb8 wires + end-to-end proves it in one click
+- [x] Answered plainly what was added to TASTE_LOG (entry pasted verbatim in the reply)
+- [x] Taste Lab PROGRAM registered: _plans/TASTE_LAB_PROGRAM.md + ACTIVE.md row 20 (hundreds of comparisons, 9 rounds mapped, motion next); round 2 chip task_ba038585
+
 ## Parked (surfaced at close, non-blocking)
 - Discount badge contradiction RESOLVED by investigation (verified: memory project_card_badges.md body says MOBILE SalonCard, (tabs)/index.tsx, green text in the price row; web SalonCard.tsx V3-D85 2026-05-19 ships the rose photo badge). Two surfaces, two treatments, no doc error. Open taste question spun off as a chip: should WEB adopt the mobile green-by-price treatment (the owner's own reasoning, a colored photo tag reads cheap on a premium beauty card, applies to web too). Recommendation: yes, mockup-first, separate session.
 - The 5 probe picks: ANSWERED 2026-07-15 ("1a 2 your pick 3b 4 b 5 no dark mode") and logged (verified: TASTE_LOG.md "Taste Lab round 1" entry; REMOVED.md dark-mode graveyard line; RATIONALE.md section 15 updated). 3B implementation queued as chip task_96e228cb; web-badge alignment chip task_5ed357d4 re-validated by the owner rejecting the rose tag on sight ("doesnt match at all"); lab badges removed (7 instances) and re-rendered clean.

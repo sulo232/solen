@@ -29,3 +29,8 @@ machine-matched. Feed a new entry whenever the owner flags "you rebuilt/re-inven
 - owner: "what the fuck is wrong with your search bar? that shit is not what we have."
 - fix rule: ANY mockup of the search/category page MUST copy the real SearchTemplate top verbatim (extract the real JSX; screenshot the real /de/coiffeur as reference). Model-B deltas are BEHAVIORAL (param separation), not a new bar.
 - keywords: search bar, suchleiste, category page, model b, composer, segmented, suchen, schweizweit, category pills, search template
+
+## 2026-07-15 , resurrected a REJECTED treatment by copying dormant source code into a mockup
+- what happened: the taste-lab mockup replicated the web DiscountBadge (rose photo tag, SalonCard.tsx V3-D85) straight from source. That badge NEVER renders live (no data feeds it) and the owner had already rejected rose/red photo tags in the mobile decision (memory project_card_badges). Owner rejected it again on sight ("the 15 percent off thing it doesnt match at all") and flagged the PATTERN: "you keep reading from the source code... you keep making it in over and over again", across sessions.
+- the rule: SOURCE CODE IS NOT RENDER TRUTH. Ground every mockup element in what the live page RENDERS (screenshot/DOM of the real route). A dormant branch is a graveyard candidate, not a spec.
+- enforcement: _design-system/REJECTED_TREATMENTS.json (signature list, extend on every rejection, same turn) + scripts/hooks/mockup-resurrection-gate.py (PreToolUse on _mockups writes; self-tested 2026-07-15: badge=BLOCK, clean=PASS). Also in the fable-frontend skill trap list.
