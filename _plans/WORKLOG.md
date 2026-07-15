@@ -4,6 +4,20 @@ The newest entry is at the top. Every session that ships real work adds one entr
 
 ---
 
+## 2026-07-15 (later) , taste diagnosis layer: real-source research, diagnosis skill, resurrection gate wired live
+
+**What you asked for (dictated):** "it really doesn't grasp what's bad when I say this is bad"; research hierarchy/typography/grouping from REAL sites (Wikipedia/UI-UX sources) instead of hallucinating; fix the bento-box grouping confusion; more measured catches like the grey/blue one; kill the source-code residue; don't duplicate.
+
+**What got done:**
+1. **Resurrection gate WIRED + live-fire proven** (commit abec60603): a real Write of the rose-badge content was blocked by the running hook; clean writes pass. REJECTED_TREATMENTS.json is the extend-on-every-rejection signature file.
+2. **6 web-research reports** (all URL-sourced: NN/g, Wikipedia, Butterick, Material, Baymard, W3C, Carbon/Nord) persisted to _design-system/research/TASTE_*.md. Honest drops recorded: Z-pattern is unverifiable folklore; no channel-strength ranking exists.
+3. **RATIONALE.md extended** (domains 1/4/5 + folklore table): scanning patterns (F = failure mode, layer-cake = target, squint test), typography floors (max 3 sizes, 30-50 percent dominance jumps, space-above > below, max 2 stacked treatments), the grouping/bento decision tree (peers vs facets; stopping-point + cards-in-cards anti-patterns).
+4. **solen-taste-diagnosis skill** built + registered live: "this is bad" now triggers a measured walk producing named violations with numbers + sources + severity. Wired: CLAUDE.md binary-trigger row, fable-frontend step 1.5, memory.
+5. **First applications chipped:** dashboard audit (task_d48f79d5) + payment audit (task_400fe4c2), report-only, one click each.
+
+**Also this session (earlier):** RATIONALE.md v1 + 45-block retrofit; Taste Lab round 1 (5 axes settled, owner picks logged); Taste Lab program registered (9 rounds); mockup badges removed after the owner rejected the resurrected rose tag.
+
+
 ## 2026-07-15 , taste rationale layer: research grounded, RATIONALE.md draft v1, taste-lab mockup, owner questions
 
 **What you asked for:** you delivered an 8-domain design-decision research digest (perception, color, contrast, typography, spacing/shape, motion, aesthetic theory, rationale articulation) and asked to redefine the taste system's rationale layer on top of it, plus my opinion on what to add beyond it, plus questions and mockups to define more.

@@ -67,6 +67,8 @@ SOURCE: <owner date / measured ref / RATIONALE.md section>
 
 **Memory span: cite Cowan (~4 chunks, 2001), never Miller's 7+/-2.** Recognition (scanning a visible list) is not span-limited at all; the limit binds recall. No Solen rule should ever justify "7 items max" from Miller.
 
+**Scanning patterns, researched 2026-07-15 (T1, NN/g eyetracking; full sourced delta in research/TASTE_HIERARCHY.md):** scanning is TASK-optimized, so hierarchy is judged against the screen's task, never in the abstract. The F-pattern is a FAILURE MODE of unformatted content ("good design can prevent F-shape scanning"), the layer-cake (distinct, descriptive headings that get fixated while body is skipped) is the target state. The squint/blur test is the named method for focal-hierarchy checks. Ceilings for a screen: ~3 type sizes, max 2 elements at the top prominence tier, max 2 stacked emphasis treatments per text run. Z-pattern: unverified folk convention, added to the folklore table. Diagnosis procedure: the solen-taste-diagnosis skill.
+
 ---
 
 ## 3. Domain 2: Color (the space you reason in matters)
@@ -124,6 +126,8 @@ Two of those are policy questions for the owner (probe 3 in the taste lab): tune
 
 **x-height and optical cuts (T2, type-design practice).** Point size measures the em body, not the letters; apparent size tracks x-height. Inter Tight (display) + Inter (body) is one family in two optical cuts: harmony by construction, the same mechanism as a superfamily pairing, and the actual reason the pairing cannot clash. That is the first-principles version of "the way Uber does it" (SOURCE.md:319), which should be relabeled from imitation to mechanism.
 
+**Hierarchy floors, researched 2026-07-15 (sourced delta in research/TASTE_TYPOGRAPHY.md):** 2-3 heading/type levels per screen (Butterick: "two is better"); a dominance jump is 30-50 percent larger, never a 1-2px nudge (NN/g); heading space-above > space-below, always (Butterick); ALL-CAPS only for single glanceable labels, never sentences (NN/g glanceable-fonts, T1); bold OR italic never both, and sans-serif UI skips italic; underline reads as hyperlink, never emphasis; centered text never beyond 1-2 short lines; max two visual indent levels regardless of logical depth.
+
 **WCAG 1.4.12 text spacing (T1, robustness constraint, not a default):** content must survive user overrides of line-height 1.5x, paragraph spacing 2x, letter spacing 0.12em, word spacing 0.16em. At 14px body: 21px line-height, 28px paragraph gap. This binds our clamps and truncation (line-clamp blocks must not clip at forced spacing); add to the a11y checklist in SOURCE section 16.
 
 ---
@@ -140,6 +144,8 @@ Two of those are policy questions for the owner (probe 3 in the taste lab): tune
 - Nested radius: LOCKED (inner = outer minus gap, min 4px, DS-4, LOCKFILE:428-433). Mechanic: concentric corners stay parallel; same-radius-inside-same-radius bulges. Matches the research formula (inner = outer minus padding). Nothing to relitigate.
 - Curvature CHARACTER (probe 1, unsettled): a straight edge meeting a circular arc has a G1 curvature jump the eye reads as a faint kink; superellipse/squircle profiles (|x/a|^n + |y/b|^n = 1, circle n=2, squircle n~4-5, Apple's continuous corners) remove it. Cost: CSS corner-shape is not broadly shipped in 2026, so squircles today mean clip-path/mask plumbing on every rounded element, plus drift risk against the locked radius tokens. Forces: perceived refinement vs implementation surface.
 - Rounded reads friendly (T2, Bar and Neta 2006/2007: preference for curved contours; sharp contours raise amygdala response; replicated cross-culturally, moderated by expertise): the mechanic under our pill buttons and 16px cards.
+
+**Grouping and containment, researched 2026-07-15 (the bento mechanics; full decision tree + sources in research/TASTE_GROUPING.md):** peers-of-a-collection (independently actionable items) vs facets-of-one-record is the semantic test that picks the structure. Homogeneous peers = plain list rows, never per-row cards; heterogeneous peers = separate cards, never wrapped in an outer card too (cards-within-cards is a named ban); facets already differing in weight/color = whitespace only (the existing contrast IS the separator, taste rule 2's researched grounding); uniform anchorless facets = ONE card with inset dividers. Named anti-patterns: the full-width tinted "stopping point" block (readers stop scrolling at it, NN/g common-region, the owner's bento complaint), dividers added where whitespace/contrast already separates ("borders are often added in an abundance of caution"), dividers under subheaders in grids. Dashboard density and checkout floors: research/TASTE_DASHBOARDS.md + research/TASTE_CHECKOUT.md, operationalized in the solen-taste-diagnosis skill.
 
 **Target sizes (T1, standards): WCAG 2.5.8 AA (2.2) 24x24 CSS px minimum; WCAG 2.5.5 AAA 44x44; Apple HIG 44pt; Material 48dp with 8dp spacing.** Solen's 44px floor (design contract) is the AAA/HIG line, deliberately above the legal AA minimum. All of it is Fitts in standards clothing.
 
@@ -226,6 +232,8 @@ The house lesson (PSYCHOLOGY.md section "Enforcement", owner 2026-07-07): docs g
 | "Color X causes emotion Y" universals | Culture-bound conventions | Semantic conventions of our market, labeled CONV |
 | Harmony schemes as laws | Scaffolds (Itten tradition), weak direct evidence | Use as starting constraints |
 | "Doherty 400ms makes UIs addictive" | Dramatized (Halt and Catch Fire lore on a real 1982 finding) | Faster feedback raises throughput; operationalize as INP <= 200ms |
+| Z-pattern scanning as an eyetracking fact | Unverified folk convention (no primary eyetracking source; NN/g's own zigzag research is critical of diagonal layouts) | Cite F-pattern (failure mode) and layer-cake (target), research/TASTE_HIERARCHY.md |
+| A fixed strength ranking of hierarchy channels ("color beats size") | No validated ordering exists in any primary source | "Highest contrast to surroundings wins" (relative, Wikipedia/NN-g synthesis) |
 | "German text expands exactly 30 percent" | Unsourced flat number (SOURCE.md:1075) | Treat as a 20-35 percent planning range, or measure our own strings |
 | "reads warm by physiological convention" (SOURCE.md:232) | Unsourced perception claim | Keep the rule, drop the physiology, label CONV |
 | ">=75 percent of expected traffic is mobile" (SOURCE.md:63) | Internal number with no source/date | Attach the analytics source + date, or soften to "majority mobile" |
