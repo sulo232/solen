@@ -60,8 +60,8 @@ Assets: _assets/mapbox-gl.js + mapbox-gl.css (self-hosted from node_modules); sa
   .side b{color:var(--ink);font-weight:600;}
 </style>
 <div class="wrap">
-  <h1>Nearby map , white tiles, gray roads, blue dots</h1>
-  <p class="lead">A normal light map: pure white tiles with gray streets + labels. The water is blue and the parks green, and only the loud motorway is removed (normal roads stay). Salons are blue dots at their real spots. No "Karte öffnen" button , the whole card taps through. Live map (mapbox-gl), so it renders the same in the app.</p>
+  <h1>Nearby map , colours matched to the reference</h1>
+  <p class="lead">A normal light map, with the palette pixel-sampled from the owner's reference screenshots: water #CBE3FC, parks #CFF2D0, land #E8EAEA, roads #F8F8F8. Major roads only and minimal labels, so it stays calm. Salons are blue markers at their real spots, and overlapping ones cluster into a count. No "Karte öffnen" button , the whole card taps through. Live map (mapbox-gl), so it renders the same in the app.</p>
 
   <div class="stage">
     <div class="phone">
@@ -97,8 +97,9 @@ Assets: _assets/mapbox-gl.js + mapbox-gl.css (self-hosted from node_modules); sa
     <div class="side">
       <h2>What changed</h2>
       <ul>
-        <li><b>White tiles, gray roads.</b> Pure white land, gray streets + labels. Water blue, parks green, only the loud motorway removed.</li>
-        <li><b>Blue dot pins.</b> The teardrop is dropped for small blue dots at the real salon locations.</li>
+        <li><b>Reference-matched palette.</b> Pixel-sampled from the owner's screenshots: water #CBE3FC, parks #CFF2D0, land #E8EAEA, near-white roads #F8F8F8.</li>
+        <li><b>Calm, not cluttered.</b> Major roads only, minimal labels, and overlapping salons cluster into a count badge instead of a pile of dots.</li>
+        <li><b>Blue markers.</b> The teardrop is dropped for blue dots at the real salon locations.</li>
         <li><b>No "Karte öffnen".</b> The whole card taps through, so the button is removed. Only the frosted count chip stays.</li>
         <li><b>Live map.</b> Rendered with mapbox-gl (already a dependency), so this is exactly what ships , not a picture.</li>
       </ul>
