@@ -276,7 +276,7 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
   const [newTime, setNewTime] = useState(new Date(slot.starts_at).toTimeString().slice(0, 5));
   const [loading, setLoading] = useState(false);
 
-  const staffName = staff.find((s) => s.id === slot.staff_member_id)?.name ?? ""; // unknown staff
+  const staffName = staff.find((s) => s.id === slot.staff_member_id)?.name || t("anyStaff");
   const startTime = new Date(slot.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
   const endTime = new Date(slot.ends_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
 
@@ -854,7 +854,7 @@ export default function CalendarPage() {
               ? currentDate.toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
               : viewMode === "month"
               ? currentDate.toLocaleDateString("de-CH", { month: "long", year: "numeric" })
-              : `${weekStart.toLocaleDateString("de-CH", { day: "numeric", month: "long" })} - ${addDays(weekStart, 6).toLocaleDateString("de-CH", { day: "numeric", month: "long", year: "numeric" })}`
+              : `${weekStart.toLocaleDateString("de-CH", { day: "numeric", month: "long" })} bis ${addDays(weekStart, 6).toLocaleDateString("de-CH", { day: "numeric", month: "long", year: "numeric" })}`
             }
           </span>
         </div>
