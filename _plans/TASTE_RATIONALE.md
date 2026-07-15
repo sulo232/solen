@@ -33,13 +33,13 @@ Owner delivered a researched reference skeleton: 8 reasoning domains (perception
 - Location: RATIONALE.md as drafted. Retrofit: EVERYTHING (~47 bare rules, full sweep). Domains added: i18n typography + touch ergonomics + enforcement; imagery DECLINED. Template: hybrid.
 
 ## Follow-up work from the answers (same session)
-- [x] RATIONALE.md status updated to owner-confirmed; sections 9-11 added (i18n type, touch ergonomics, enforcement); open-items section rewritten
-- [x] Full retrofit sweep: 45 FORCES/MECHANIC blocks (8 color/type + 14 space/motion + 11 primitives/layout + 12 icons/cards/sheets) merged into RATIONALE.md section 14 (two agents returned summary-only, blocks mined from their transcripts; all 4 ranges covered)
-- [x] Reviewer pass: round 1 FAIL on 2 literal drifts (search/btn 99px misgrouped as 9999px; "14-role" vs 19 actual type roles), both fixed + grep-verified; checks 1/3/4/5 (structure, no value changes, no invented evidence, no dashes/myths) all PASS
-- [x] Commit retrofit + final report (commit landed; report in the closing reply)
+- [x] RATIONALE.md status updated to owner-confirmed; sections 9-11 added (i18n type, touch ergonomics, enforcement); open-items section rewritten (verified: commit 47dc3dc7f; _design-system/RATIONALE.md:5 status line, :180/:195/:208 the three new sections)
+- [x] Full retrofit sweep: 45 FORCES/MECHANIC blocks (8 color/type + 14 space/motion + 11 primitives/layout + 12 icons/cards/sheets) merged into RATIONALE.md section 14 (verified: commit 00ca3881b, +378 lines; grep '^### ' RATIONALE.md = 45 blocks; two agents returned summary-only, blocks mined from their transcripts, all 4 ranges covered)
+- [x] Reviewer pass: round 1 FAIL on 2 literal drifts (search/btn 99px misgrouped as 9999px; "14-role" vs 19 actual type roles), both fixed + grep-verified (verified: RATIONALE.md:305 "19-role", :331 "search/btn 99px, pill/rounded-full 9999px", in commit 00ca3881b); checks 1/3/4/5 all PASS per loop-reviewer output
+- [x] Commit retrofit + final report (verified: commits 00ca3881b retrofit + 147e8dc15 plan ticks; report delivered in the closing reply)
 
 ## Parked (surfaced at close, non-blocking)
-- Discount badge contradiction: memory project_card_badges says "pale-green -X% pill", live SalonCard.tsx (V3-D85-semantic 2026-05-19) ships s-love-deep on s-love-soft (rose). Mockup follows live code. Owner to say which is current; if the pale-green memory reflects a later decision, the live card is drifted.
+- Discount badge contradiction RESOLVED by investigation (verified: memory project_card_badges.md body says MOBILE SalonCard, (tabs)/index.tsx, green text in the price row; web SalonCard.tsx V3-D85 2026-05-19 ships the rose photo badge). Two surfaces, two treatments, no doc error. Open taste question spun off as a chip: should WEB adopt the mobile green-by-price treatment (the owner's own reasoning, a colored photo tag reads cheap on a premium beauty card, applies to web too). Recommendation: yes, mockup-first, separate session.
 - The 5 probe picks themselves: owner answers pending; each answer becomes a TASTE_LOG entry in the new FORCES format + RATIONALE.md cross-link.
 - QUESTIONS.md candidates found during audit: spring double-definition (bezier vs physics), icon stroke-width 1.9 vs 2 inconsistency, SalonCard residual focus-visible outline vs the global no-ring override.
 
