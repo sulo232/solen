@@ -29,6 +29,15 @@ Owner delivered a researched reference skeleton: 8 reasoning domains (perception
 - [x] Commit _plans + draft + mockup (ea5e73fdf docs, + mockup commit)
 - [x] Close: re-read original message, tick boxes, WORKLOG entry
 
+## Owner answers (2026-07-15, via AskUserQuestion)
+- Location: RATIONALE.md as drafted. Retrofit: EVERYTHING (~47 bare rules, full sweep). Domains added: i18n typography + touch ergonomics + enforcement; imagery DECLINED. Template: hybrid.
+
+## Follow-up work from the answers (same session)
+- [x] RATIONALE.md status updated to owner-confirmed; sections 9-11 added (i18n type, touch ergonomics, enforcement); open-items section rewritten
+- [ ] Full retrofit sweep: FORCES/MECHANIC blocks for ALL bare LOCKFILE rules (workflow wf_a51fb04a, 4 agents) merged into RATIONALE.md section 15
+- [ ] Reviewer pass on merged retrofit blocks (values verbatim, no dash chars, no myth citations)
+- [ ] Commit retrofit + final report
+
 ## Parked (surfaced at close, non-blocking)
 - Discount badge contradiction: memory project_card_badges says "pale-green -X% pill", live SalonCard.tsx (V3-D85-semantic 2026-05-19) ships s-love-deep on s-love-soft (rose). Mockup follows live code. Owner to say which is current; if the pale-green memory reflects a later decision, the live card is drifted.
 - The 5 probe picks themselves: owner answers pending; each answer becomes a TASTE_LOG entry in the new FORCES format + RATIONALE.md cross-link.

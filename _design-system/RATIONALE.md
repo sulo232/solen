@@ -2,7 +2,7 @@
 
 <!-- exists-check: net-new vs CANON/SOURCE/LOCKFILE/TASTE_LOG/PSYCHOLOGY/RESTRAINT_TEST because none holds the perceptual/mathematical MECHANICS layer: 2026-07-15 inventory found LOCKFILE rationale is 51 percent BARE and 4 percent mechanics-class, SOURCE has zero named perception/aesthetics citations, PSYCHOLOGY.md covers behavioral (conversion/retention) laws not visual-perception mechanics. This file EXTENDS that stack (backlinks throughout) and duplicates none of it; npm run exists rationale = 0 hits. -->
 
-**Status: DRAFT v1 (2026-07-15), pending owner answers on location, retrofit scope, and template weight.**
+**Status: v1 OWNER-CONFIRMED (2026-07-15). Location: this file (rules link in, locked docs unchanged). Retrofit scope: ALL bare rules (~47), owner picked full sweep over top-12. Template: hybrid (full 6-field block for LOCKFILE retrofits and big calls, lean one-liner for everyday TASTE_LOG entries). Added domains: i18n typography, touch ergonomics, enforcement. Imagery domain: owner DECLINED 2026-07-15, do not add without a new yes. Still open: contrast policy (probe 3) and the five taste-lab probe picks.**
 
 **What this is.** The WHY layer: the perceptual, mathematical, and empirical mechanics that ground the decisions locked elsewhere. LOCKFILE/CANON hold the WHAT (frozen literals), TASTE_LOG holds the WHEN/WHO (dated owner calls), PSYCHOLOGY.md holds the behavioral laws. This file holds the MECHANISMS (formulas, thresholds, named studies) those decisions can cite, so a rule can be defended instead of asserted.
 
@@ -177,7 +177,45 @@ Two of those are policy questions for the owner (probe 3 in the taste lab): tune
 
 ---
 
-## 9. Design folklore table (never cite; companion to PSYCHOLOGY.md's myth table)
+## 9. Domain 9 (Solen-specific): i18n typography (owner-added 2026-07-15)
+
+The measure/typography mechanics of domain 4 break first in German, and Solen ships de/en/fr/it. SOURCE.md section 17 holds the RULES (string files, plurals, Swiss formats); this section holds the mechanics under them.
+
+**Text expansion (CONV, industry localization heuristic, treat as a range):** DE and FR run roughly 20-35 percent longer than EN at sentence scale, worse at label scale (short EN labels can double). Consequences with mechanics:
+- Button labels: the <=3 word lock (LOCKFILE:765) is what keeps CTAs from wrapping in DE; the mechanic is expansion-at-label-scale, not copy taste alone.
+- Any fixed-width slot (chips, badges, tab pills) is sized against the LONGEST locale render, not the EN draft. Test strings: "Terminbestätigung", "Haarverlängerung", "Wegbeschreibung", FR "Renseignements complémentaires".
+- Truncation robustness: truncate/line-clamp blocks must still carry meaning with 35 percent more glyphs; pair every truncation with a full-value affordance (title attr, detail row, Mehr lesen).
+
+**Compound words (T1 linguistic fact, no hyphenation dictionary in CSS by default):** German compounds do not wrap without `hyphens: auto` + `lang="de"`; a 24-glyph compound inside a narrow column overflows or forces ugly breaks. Mechanic: measure caps (domain 5's 45-75ch) need MORE slack in DE columns; enable hyphenation only deliberately (it changes the premium read).
+
+**Numerics across locales (CONV, Swiss convention):** tabular-nums for anything that aligns or updates (prices, times, codes: already the Inter Tight tabular lock); CHF formats per SOURCE section 17; never let locale switching reflow number columns.
+
+---
+
+## 10. Domain 10 (Solen-specific): touch ergonomics (owner-added 2026-07-15)
+
+Extends domain 1's Fitts mechanics from SIZE to PLACEMENT. The D term (distance) is the half of Fitts's law the 44px floor does not cover.
+
+**Thumb reach (T3, Hoober's observational research on one-handed phone grips):** on large phones the bottom-center third of the screen is the cheap zone; top corners are the expensive zone (regrip or second hand). Numbers vary by study and grip; treat magnitude as directional, the ORDERING (bottom-center cheap, top corners dear) is stable.
+- Grounds: the sticky bottom commit CTA in booking (already shipped): the highest-value tap sits in the cheapest zone.
+- Grounds: bottom sheets as the primary mobile pattern (grabber + drag): interaction stays in-zone.
+- Candidate retrofits: destructive/rare actions belong in the expensive zone (top), never adjacent to the commit CTA (slip cost, Fitts W + error recovery); global Header back button is top-left, acceptable because back is a deliberate, low-frequency action.
+
+**Slip adjacency (T2, touch-accuracy practice):** two targets whose consequences differ wildly (Bezahlen vs Abbrechen) need more than 8px separation or a size/prominence asymmetry; the mechanic is touch landing scatter (~7-9mm typical fingertip contact), which is also why 44px ~ 9mm is the floor.
+
+---
+
+## 11. Domain 11 (Solen-specific): enforcement (owner-added 2026-07-15)
+
+The house lesson (PSYCHOLOGY.md section "Enforcement", owner 2026-07-07): docs get forgotten as context fills; only mechanical enforcement survives. The rationale layer gets the same treatment:
+
+1. **Folklore-citation gate (to build via /harden in a main-repo session; this worktree session cannot write .claude/hooks):** a PreToolUse gate over _design-system/**.md and _plans/**.md edits that blocks the MYTH-table claims entering docs: golden ratio as law, Miller 7+/-2, "Lin 2004" whitespace, 60-30-10 as truth, plus a warn tier for new unsourced "N percent" claims (the existing stat-source-gate.py covers persuasion stats in replies; this extends the idea to design docs). Self-test per rule 12.5: one should-block input (a doc edit citing "golden ratio dictates our card proportions") and one should-pass ("1.618 is one available ratio, CONV").
+2. **Reversibility audit (fold into the weekly estate self-audit, workstream 17):** for each principle added since the last run, check it names what it optimizes AND sacrifices; a principle whose opposite no competent team would choose gets demoted to the values list.
+3. **Retrofit drift check:** when a LOCKFILE value changes, its rationale block here must change in the same commit (the block cites the literal; a stale literal in this file is drift). Candidate drift-checker rule once the retrofit lands.
+
+---
+
+## 12. Design folklore table (never cite; companion to PSYCHOLOGY.md's myth table)
 
 | Claim | Status | What to do instead |
 |---|---|---|
@@ -196,9 +234,9 @@ House rule (global rule 15 applied to design): a recalled number is memory weari
 
 ---
 
-## 10. Retrofit queue: the 12 load-bearing BARE rules (from the 2026-07-15 LOCKFILE audit)
+## 13. Retrofit queue: the 12 load-bearing BARE rules (from the 2026-07-15 LOCKFILE audit)
 
-Rules every component inherits that carry zero recorded why at their definition site. Retrofit = add a FORCES/MECHANIC block per section 1, values unchanged.
+Rules every component inherits that carry zero recorded why at their definition site. Retrofit = add a FORCES/MECHANIC block per section 1, values unchanged. Owner picked FULL scope (all ~47 bare rules); the full blocks live in section 15, this table stays as the priority index.
 
 | # | Rule (file:line) | Grounding mechanic (tier) |
 |---|---|---|
@@ -217,10 +255,10 @@ Rules every component inherits that carry zero recorded why at their definition 
 
 ---
 
-## 11. Pending owner decisions (this draft freezes nothing)
+## 14. Open items (post owner answers 2026-07-15)
 
-1. WHERE this layer lives (this file vs inline LOCKFILE blocks vs TASTE_LOG format only).
-2. Retrofit SCOPE (the 12 above + new decisions, vs everything, vs new-only).
-3. Template WEIGHT (full 6-field block vs lean Decision/Because/Tradeoff line).
-4. Contrast POLICY (adopt APCA as supplementary + fix the two failing pairs, vs WCAG-only + documented deviations).
-5. The five probe axes in the taste lab (corner curvature, optical corrections, contrast tuning, measure cap, web dark mode): each unsettled, each elicited visually before any rule is written.
+Answered 2026-07-15: location = this file; retrofit = FULL sweep; template = hybrid; added domains = i18n typography + touch ergonomics + enforcement (imagery DECLINED).
+Still open:
+1. Contrast POLICY (taste-lab probe 3): adopt APCA as supplementary + retune the two failing on-sunken pairs, vs WCAG-only + documented deviation.
+2. The five taste-lab probe picks (corner curvature, optical corrections, contrast tuning, measure cap, web dark mode). Each answer becomes a TASTE_LOG entry in the lean format + a backlink here.
+3. Folklore-citation gate build (section 11 item 1): needs a main-repo session (/harden), hooks dir is write-protected from worktree sessions.
