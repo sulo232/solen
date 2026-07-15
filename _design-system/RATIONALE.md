@@ -2,7 +2,7 @@
 
 <!-- exists-check: net-new vs CANON/SOURCE/LOCKFILE/TASTE_LOG/PSYCHOLOGY/RESTRAINT_TEST because none holds the perceptual/mathematical MECHANICS layer: 2026-07-15 inventory found LOCKFILE rationale is 51 percent BARE and 4 percent mechanics-class, SOURCE has zero named perception/aesthetics citations, PSYCHOLOGY.md covers behavioral (conversion/retention) laws not visual-perception mechanics. This file EXTENDS that stack (backlinks throughout) and duplicates none of it; npm run exists rationale = 0 hits. -->
 
-**Status: v1 OWNER-CONFIRMED (2026-07-15). Location: this file (rules link in, locked docs unchanged). Retrofit scope: ALL bare rules (~47), owner picked full sweep over top-12. Template: hybrid (full 6-field block for LOCKFILE retrofits and big calls, lean one-liner for everyday TASTE_LOG entries). Added domains: i18n typography, touch ergonomics, enforcement. Imagery domain: owner DECLINED 2026-07-15, do not add without a new yes. Still open: contrast policy (probe 3) and the five taste-lab probe picks.**
+**Status: v1 OWNER-CONFIRMED (2026-07-15). Location: this file (rules link in, locked docs unchanged). Retrofit scope: ALL bare rules (~47), owner picked full sweep over top-12. Template: hybrid (full 6-field block for LOCKFILE retrofits and big calls, lean one-liner for everyday TASTE_LOG entries). Added domains: i18n typography, touch ergonomics, enforcement. Imagery domain: owner DECLINED 2026-07-15, do not add without a new yes. Probe picks settled 2026-07-15 (TASTE_LOG entry); still open: the 3B contrast-retune implementation sweep + the folklore gate build.**
 
 **What this is.** The WHY layer: the perceptual, mathematical, and empirical mechanics that ground the decisions locked elsewhere. LOCKFILE/CANON hold the WHAT (frozen literals), TASTE_LOG holds the WHEN/WHO (dated owner calls), PSYCHOLOGY.md holds the behavioral laws. This file holds the MECHANISMS (formulas, thresholds, named studies) those decisions can cite, so a rule can be defended instead of asserted.
 
@@ -634,7 +634,8 @@ SOURCE: LOCKFILE:1413-1420; RATIONALE.md section 7
 ## 15. Open items (post owner answers 2026-07-15)
 
 Answered 2026-07-15: location = this file; retrofit = FULL sweep; template = hybrid; added domains = i18n typography + touch ergonomics + enforcement (imagery DECLINED).
+Probe picks answered 2026-07-15 (owner verbatim "1a 2 your pick 3b 4 b 5 no dark mode", full entries in TASTE_LOG.md 2026-07-15): corners stay circular; optical corrections adopted as a rule; contrast policy = WCAG 2.2 AA floor + APCA supplement with on-sunken retune (meta grey #575757 on #F4F4F5, blue metadata renders ink on sunken; implementation queued as its own sweep); 68ch measure cap adopted; web dark mode DECLINED and graveyarded (REMOVED.md 2026-07-15).
 Still open:
-1. Contrast POLICY (taste-lab probe 3): adopt APCA as supplementary + retune the two failing on-sunken pairs, vs WCAG-only + documented deviation.
-2. The five taste-lab probe picks (corner curvature, optical corrections, contrast tuning, measure cap, web dark mode). Each answer becomes a TASTE_LOG entry in the lean format + a backlink here.
-3. Folklore-citation gate build (section 11 item 1): needs a main-repo session (/harden), hooks dir is write-protected from worktree sessions.
+1. The 3B contrast retune IMPLEMENTATION sweep (decision settled, code not yet changed; sitewide audit of ink-2/accent text on sunken surfaces).
+2. Folklore-citation gate build (section 11 item 1): needs a main-repo session (/harden), hooks dir is write-protected from worktree sessions.
+3. Web discount badge alignment to the mobile green-by-price treatment (owner re-rejected the rose photo tag on sight 2026-07-15; mockup-first task queued).

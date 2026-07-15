@@ -40,7 +40,7 @@ Owner delivered a researched reference skeleton: 8 reasoning domains (perception
 
 ## Parked (surfaced at close, non-blocking)
 - Discount badge contradiction RESOLVED by investigation (verified: memory project_card_badges.md body says MOBILE SalonCard, (tabs)/index.tsx, green text in the price row; web SalonCard.tsx V3-D85 2026-05-19 ships the rose photo badge). Two surfaces, two treatments, no doc error. Open taste question spun off as a chip: should WEB adopt the mobile green-by-price treatment (the owner's own reasoning, a colored photo tag reads cheap on a premium beauty card, applies to web too). Recommendation: yes, mockup-first, separate session.
-- The 5 probe picks themselves: owner answers pending; each answer becomes a TASTE_LOG entry in the new FORCES format + RATIONALE.md cross-link.
+- The 5 probe picks: ANSWERED 2026-07-15 ("1a 2 your pick 3b 4 b 5 no dark mode") and logged (verified: TASTE_LOG.md "Taste Lab round 1" entry; REMOVED.md dark-mode graveyard line; RATIONALE.md section 15 updated). 3B implementation queued as chip task_96e228cb; web-badge alignment chip task_5ed357d4 re-validated by the owner rejecting the rose tag on sight ("doesnt match at all"); lab badges removed (7 instances) and re-rendered clean.
 - QUESTIONS.md candidates found during audit: spring double-definition (bezier vs physics), icon stroke-width 1.9 vs 2 inconsistency, SalonCard residual focus-visible outline vs the global no-ring override.
 
 ## Settled axes confirmed off-limits for probes (do not re-litigate)
