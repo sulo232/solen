@@ -5502,10 +5502,20 @@
     "noRefundFee": "Questo annullamento comporta una penale pari all’importo pagato, quindi non c’è rimborso.",
     "confirmCancelBtn": "Sì, annulla",
     "keepBtn": "Mantieni",
-    "rescheduleHint": "Per riprogrammare, apri la pagina del salone e scegli un nuovo orario.",
+    "rescheduleHint": "Questo appuntamento non puo essere spostato qui. Contatta il salone.",
     "rebookNoSlot": "Nessun orario disponibile per riprenotare.",
     "rebookedToast": "Riprenotato. Controlla le tue prossime prenotazioni.",
-    "rebookError": "Impossibile riprenotare. Riprova."
+    "rebookError": "Impossibile riprenotare. Riprova.",
+    "rescheduleTitle": "Sposta l’appuntamento",
+    "rescheduleCloseAria": "Chiudi",
+    "rescheduleLead": "Spostamento gratuito fino a 24 ore prima dell’appuntamento.",
+    "rescheduleLeadPaid": "Spostamento gratuito fino a 24 ore prima dell’appuntamento. L’importo di {amount} già pagato resta sulla prenotazione.",
+    "rescheduleWindowPassed": "Questo appuntamento è tra meno di 24 ore e non può più essere spostato. Contatta direttamente il salone.",
+    "rescheduleWindowPassedCta": "Spostamento non più possibile",
+    "reschedulePickPrompt": "Scegli data e ora",
+    "rescheduleCta": "Sposta al {date}, {time}",
+    "rescheduleError": "Impossibile spostare l’appuntamento. Riprova.",
+    "rescheduledToast": "Appuntamento spostato"
   },
   "reviewPrompt": {
     "title": "Come ti è piaciuta la tua visita?",

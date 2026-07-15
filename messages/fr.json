@@ -5513,10 +5513,20 @@
     "noRefundFee": "Cette annulation entraîne des frais égaux au montant payé, il n’y a donc aucun remboursement.",
     "confirmCancelBtn": "Oui, annuler",
     "keepBtn": "Conserver",
-    "rescheduleHint": "Pour reprogrammer, ouvrez la page du salon et choisissez un nouvel horaire.",
+    "rescheduleHint": "Ce rendez-vous ne peut pas etre deplace ici. Merci de contacter le salon.",
     "rebookNoSlot": "Aucun créneau disponible pour reprendre rendez-vous.",
     "rebookedToast": "Nouvelle réservation effectuée. Consultez vos prochaines réservations.",
-    "rebookError": "Impossible de reprendre rendez-vous. Veuillez réessayer."
+    "rebookError": "Impossible de reprendre rendez-vous. Veuillez réessayer.",
+    "rescheduleTitle": "Déplacer le rendez-vous",
+    "rescheduleCloseAria": "Fermer",
+    "rescheduleLead": "Déplacement gratuit jusqu’à 24 h avant le rendez-vous.",
+    "rescheduleLeadPaid": "Déplacement gratuit jusqu’à 24 h avant le rendez-vous. Le montant de {amount} déjà payé reste sur la réservation.",
+    "rescheduleWindowPassed": "Ce rendez-vous a lieu dans moins de 24 h et ne peut plus être déplacé. Merci de contacter directement le salon.",
+    "rescheduleWindowPassedCta": "Déplacement impossible",
+    "reschedulePickPrompt": "Choisir une date et une heure",
+    "rescheduleCta": "Déplacer au {date}, {time}",
+    "rescheduleError": "Impossible de déplacer le rendez-vous. Veuillez réessayer.",
+    "rescheduledToast": "Rendez-vous déplacé"
   },
   "reviewPrompt": {
     "title": "Comment s'est passée ta visite ?",

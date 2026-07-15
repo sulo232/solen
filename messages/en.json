@@ -5521,10 +5521,20 @@
     "noRefundFee": "This cancellation incurs a fee equal to the amount paid, so there's no refund.",
     "confirmCancelBtn": "Yes, cancel",
     "keepBtn": "Keep",
-    "rescheduleHint": "To reschedule, open the salon page and pick a new time.",
+    "rescheduleHint": "This booking can't be moved here. Please contact the salon.",
     "rebookNoSlot": "No available slot found to rebook.",
     "rebookedToast": "Rebooked. Check your upcoming bookings.",
-    "rebookError": "Could not rebook. Please try again."
+    "rebookError": "Could not rebook. Please try again.",
+    "rescheduleTitle": "Move your appointment",
+    "rescheduleCloseAria": "Close",
+    "rescheduleLead": "Free to move up to 24h before your appointment.",
+    "rescheduleLeadPaid": "Free to move up to 24h before your appointment. Your {amount} paid stays on the booking.",
+    "rescheduleWindowPassed": "This appointment is less than 24h away and can no longer be moved. Please contact the salon directly.",
+    "rescheduleWindowPassedCta": "Can no longer be moved",
+    "reschedulePickPrompt": "Pick a date and time",
+    "rescheduleCta": "Move to {date}, {time}",
+    "rescheduleError": "Could not reschedule. Please try again.",
+    "rescheduledToast": "Appointment moved"
   },
   "reviewPrompt": {
     "title": "How was your visit?",

@@ -5531,10 +5531,20 @@
     "noRefundFee": "Für diese Stornierung fällt eine Gebühr in Höhe des bezahlten Betrags an. Es gibt keine Rückerstattung.",
     "confirmCancelBtn": "Ja, stornieren",
     "keepBtn": "Behalten",
-    "rescheduleHint": "Zum Verschieben öffne die Salon-Seite und wähle eine neue Zeit.",
+    "rescheduleHint": "Dieser Termin kann hier nicht verschoben werden. Bitte kontaktiere den Salon.",
     "rebookNoSlot": "Kein freier Termin zum erneuten Buchen gefunden.",
     "rebookedToast": "Erneut gebucht. Schau bei deinen anstehenden Buchungen.",
-    "rebookError": "Erneutes Buchen fehlgeschlagen. Bitte versuche es erneut."
+    "rebookError": "Erneutes Buchen fehlgeschlagen. Bitte versuche es erneut.",
+    "rescheduleTitle": "Termin verschieben",
+    "rescheduleCloseAria": "Schliessen",
+    "rescheduleLead": "Kostenlos verschiebbar bis 24 Std. vor dem Termin.",
+    "rescheduleLeadPaid": "Kostenlos verschiebbar bis 24 Std. vor dem Termin. Dein bezahlter Betrag von {amount} bleibt auf der Buchung.",
+    "rescheduleWindowPassed": "Dieser Termin liegt weniger als 24 Std. entfernt und kann nicht mehr verschoben werden. Bitte kontaktiere den Salon direkt.",
+    "rescheduleWindowPassedCta": "Verschieben nicht mehr möglich",
+    "reschedulePickPrompt": "Datum und Zeit wählen",
+    "rescheduleCta": "Auf {date}, {time} verschieben",
+    "rescheduleError": "Verschieben fehlgeschlagen. Bitte versuche es erneut.",
+    "rescheduledToast": "Termin verschoben"
   },
   "reviewPrompt": {
     "title": "Wie war dein Besuch?",
