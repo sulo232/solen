@@ -1,0 +1,401 @@
+<!doctype html>
+<!-- german-ok
+  Exists-check: `npm run exists home-refined` = 0 hits (run 2026-07-15). Net-new approval mockup
+  implementing audit findings H1 (partial), H3, H4, H5, and H9 from
+  _design-system/research/AUDIT_WAVE1_2026-07.md against the real homepage. german-ok
+  Owner-scope: confirmed: owner 2026-07-15, "make a mock up of the refined page for approval, not
+  approved" (their dictation, verbatim). This page shows the wave-1 audit fixes applied as
+  treatment-only before/after pairs so the owner can approve or reject each one by number; nothing
+  here touches real code.
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx (real SalonCard grammar: name 14px
+  font-medium text-s-ink truncate via CardName, rating 13px text-s-ink-2 via CardMeta rendering
+  either RatingStars compact mode or the pre-existing no-rating placeholder glyph, meta row 12px
+  font-normal text-s-ink-2/3, NextSlotText 12px grey label plus 600 ink HH:MM, price "CHF {n}" 600
+  semibold ink).
+  Grounded-in: app/[locale]/_components/primitives/RatingStars.tsx (compact-mode markup: 11px star
+  fill-s-star, value, review count in text-s-accent).
+  Grounded-in: app/[locale]/_components/primitives/CardText.tsx (CardName/CardMeta weight recipe,
+  one ink anchor per card).
+  Grounded-in: app/[locale]/_components/homepage/WalkInBand.tsx lines 75-86 (Walk-in h2 18px bold
+  ink, 7px green dot, text-s-success "Live" text, the R3 source of the H3 bug).
+  Grounded-in: app/[locale]/_components/primitives/PriceFrom.tsx ("{label} {amount} CHF" Swiss
+  price format used in R4's text-size demo).
+  Grounded-in: app/[locale]/_components/layout/Footer.tsx lines 154-157 (legal bar copyright line
+  "© {year} Solen.ch Schweiz", the R5 source; the live bug there is a CSS capitalization rule
+  (text-transform), which this mockup avoids per the hard constraints below, so the Now panel
+  depicts the same visible bug with literal capital letters in the HTML text instead of that CSS
+  property).
+  Grounded-in: public/_mockups/taste-book/index.html (:root tokens s-ink #0A0A0A, s-ink-2 #6B6B6B,
+  s-border #E4E4E7, s-bg-sunken #F4F4F5, s-accent #276EF1, s-star #FFC32B, s-success #16A34A / bg
+  #E8F5E9, reused exactly, and its Wrong/Right panel plus chip pattern, reused here as Now/Refined).
+  Grounded-in: public/_mockups/taste-audit-w1/index.html lines 211-290 (H1, H3, H4, H5, H9
+  violation / measured / fix text, copied verbatim).
+  Measured this session: public/_mockups/taste-audit-w1/shots/home-1440.png, the real homepage
+  capture, PIL edge-detection on the "Top auf Solen" row at 1440 viewport found card width 196px
+  with a 10px gap between cards; a pixel crop of that same row visually confirms both the H5 dash
+  bug ("Muse Beauty Studio", then a lone dash) and the H4 bug (the "14:30" time and "CHF 80" price
+  render in the same bold black weight). Deviation note: the task brief specified 236px demo cards;
+  the live measured width is 196px at 1440. This file keeps 236px per the literal brief and flags
+  the 196px live number here for the reviewer, it did not silently substitute one for the other.
+  Icon path data copied verbatim from node_modules/lucide-react/dist/esm/icons/{star,calendar}.js
+  (v0.577.0), same source as taste-book / taste-lab / taste-audit-w1.
+  Contrast note: the R3 Refined ink-on-white figure (about 19.8:1) is computed this session with
+  the WCAG relative-luminance formula on ink #0A0A0A over white, not an external stat; the 3.3:1
+  green-on-white figure on the Now side is copied from AUDIT_WAVE1_2026-07.md finding H3.
+  Dash note: the R1 Now panel's rating slot has no literal dash character in this file. The em
+  dash is rendered by a CSS ::before content property (content:"\2014") on an empty span, per the
+  task's own escape hatch for the gate-banned character; an HTML comment next to it says why.
+  Content-language note: page chrome (h1, sub, rule titles, Now/Refined chips, sentences, footer)
+  is English per the mockup-English policy. The salon-card, Walk-in, and footer demo COPY is
+  German on purpose: this file replicates the real German-locale homepage, the surface the owner
+  is approving fixes against. german-ok lang-ok english-ok
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Homepage, refined</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400..900&family=Inter:wght@400..700&display=swap">
+<style>
+  :root {
+    --ink: #0A0A0A;
+    --ink2: #6B6B6B;
+    --border: #E4E4E7;
+    --sunken: #F4F4F5;
+    --accent: #276EF1;
+    --star: #FFC32B;
+    --success: #16A34A;
+    --success-bg: #E8F5E9;
+    --white: #FFFFFF;
+    --elev2: 0 2px 8px rgba(50,47,44,.09);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; background: var(--white); overflow-x: hidden; }
+
+  body {
+    color: var(--ink);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, .font-heading {
+    font-family: 'Inter Tight', system-ui, -apple-system, sans-serif;
+    letter-spacing: -0.025em;
+    margin: 0;
+  }
+
+  p { margin: 0; }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 20px 64px; }
+
+  /* Header */
+  .page-header h1 { font-size: 24px; font-weight: 700; }
+  .page-header .sub { margin-top: 8px; font-size: 14px; color: var(--ink2); line-height: 1.5; max-width: 640px; }
+
+  /* Fix blocks */
+  .fix-block { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border); }
+  .fix-block:first-of-type { margin-top: 32px; padding-top: 0; border-top: none; }
+  .rule-title { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 12px; }
+
+  .pair { display: flex; flex-wrap: wrap; gap: 16px; }
+  .panel {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    flex: 1 1 260px;
+    max-width: 340px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  @media (max-width: 640px) { .panel { max-width: 100%; } }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 3px 10px;
+    margin-bottom: 12px;
+  }
+  .chip--now { background: var(--sunken); color: var(--ink2); }
+  .chip--refined { background: var(--success-bg); color: var(--success); }
+
+  .sentence { margin-top: 12px; font-size: 13px; color: var(--ink); line-height: 1.5; max-width: 640px; }
+
+  .measure-note { margin-top: 10px; font-size: 11px; color: var(--ink2); line-height: 1.5; }
+
+  /* SalonCard-grammar demo (R1, R2) */
+  .demo-card { width: 236px; max-width: 100%; }
+  .demo-card-photo {
+    position: relative;
+    aspect-ratio: 3 / 2;
+    width: 100%;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: var(--elev2);
+    background: linear-gradient(135deg, #E4E4E7 0%, #F4F4F5 55%, #FFFFFF 100%);
+  }
+  .demo-card-body { margin-top: 10px; padding: 0 2px; display: flex; flex-direction: column; gap: 2px; }
+  .demo-card-row1 { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+  .demo-card-name {
+    font-size: 14px; font-weight: 500; color: var(--ink);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 1 1 auto;
+  }
+  .demo-card-rating {
+    flex-shrink: 0; font-size: 13px; color: var(--ink2);
+    display: inline-flex; align-items: center; gap: 3px; font-variant-numeric: tabular-nums;
+  }
+  .demo-card-rating .count { color: var(--accent); }
+  .demo-card-meta { font-size: 12px; color: var(--ink2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .demo-card-row3 { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--ink2); }
+  .demo-card-slot { display: inline-flex; align-items: center; gap: 4px; min-width: 0; }
+  .demo-card-slot .lucide { flex-shrink: 0; color: var(--ink2); }
+  .slot-label { color: var(--ink2); }
+  .slot-value { color: var(--ink); font-weight: 600; }
+  .demo-card-price { flex-shrink: 0; font-weight: 600; color: var(--ink); }
+
+  /* R1: dash-glyph, rendered via CSS content, never a literal character in this file */
+  .dash-glyph { color: var(--ink2); font-size: 13px; flex-shrink: 0; }
+  .dash-glyph::before { content: "\2014"; }
+
+  /* R2: the bug being fixed, everything renders in one bold ink weight */
+  .demo-card--bold-bug .demo-card-name { font-weight: 700; }
+  .demo-card--bold-bug .slot-label,
+  .demo-card--bold-bug .slot-value,
+  .demo-card--bold-bug .demo-card-price { color: var(--ink); font-weight: 700; }
+
+  /* R3: Walk-in module header */
+  .wib-header { display: flex; align-items: center; gap: 12px; }
+  .wib-icon {
+    display: inline-grid; place-items: center; flex-shrink: 0;
+    width: 40px; height: 40px; border-radius: 12px; background: var(--sunken);
+    font-family: 'Inter Tight', sans-serif; font-weight: 800; font-size: 16px; color: var(--ink);
+  }
+  .wib-title { font-family: 'Inter Tight', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: -0.01em; color: var(--ink); }
+  .wib-live { margin-top: 3px; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; }
+  .wib-live--now { color: var(--success); }
+  .wib-live--refined { color: var(--ink); }
+  .live-dot { width: 7px; height: 7px; border-radius: 999px; background: var(--success); flex-shrink: 0; }
+
+  /* R4: meta text-size zoo */
+  .r4-col { display: flex; flex-direction: column; gap: 10px; }
+  .r4-line { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+  .size-tag {
+    flex-shrink: 0; font-family: 'Inter Tight', sans-serif; font-size: 10px; font-weight: 600;
+    color: var(--ink2); background: var(--sunken); border-radius: 6px; padding: 2px 6px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* R5: footer line */
+  .r5-footer-bar { border-top: 1px solid var(--border); padding-top: 16px; font-size: 12px; font-weight: 600; color: var(--ink2); }
+  .r5-footer-bar--now { letter-spacing: 0.1em; }
+  .r5-footer-bar--refined { letter-spacing: normal; }
+
+  /* Footer */
+  .page-footer { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--border); }
+  .page-footer p { font-size: 12px; color: var(--ink2); line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="page-header">
+    <h1>Homepage, refined</h1>
+    <p class="sub">The audit fixes, shown before and after. Approve or reject each one by number. Nothing is applied yet.</p>
+  </header>
+
+  <!-- R1 (audit H5) -->
+  <div class="fix-block" id="r1">
+    <div class="rule-title">R1. The stray dash (audit H5)</div>
+    <div class="pair">
+      <div class="panel">
+        <span class="chip chip--now">Now</span>
+        <!-- this depicts the live H5 bug: the rating slot shows a lone em dash when the star
+             and review count never render. The dash is emitted by a CSS ::before content
+             property below, this file's raw text contains no literal dash character. -->
+        <div class="demo-card">
+          <div class="demo-card-photo"></div>
+          <div class="demo-card-body">
+            <div class="demo-card-row1">
+              <span class="demo-card-name">Muse Beauty Studio</span>
+              <span class="demo-card-rating dash-glyph" aria-hidden="true"></span>
+            </div>
+            <div class="demo-card-meta">Coiffeur</div>
+            <div class="demo-card-row3">
+              <span class="demo-card-slot">
+                <svg class="lucide" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+                <span class="slot-label">Heute&nbsp;</span><strong class="slot-value">14:30</strong> <!-- german-ok -->
+              </span>
+              <span class="demo-card-price">CHF 85</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <span class="chip chip--refined">Refined</span>
+        <div class="demo-card">
+          <div class="demo-card-photo"></div>
+          <div class="demo-card-body">
+            <div class="demo-card-row1">
+              <span class="demo-card-name">Muse Beauty Studio</span>
+              <span class="demo-card-rating">
+                <svg class="lucide" width="11" height="11" viewBox="0 0 24 24" fill="var(--star)" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                4.8<span class="count">(54)</span>
+              </span>
+            </div>
+            <div class="demo-card-meta">Coiffeur</div>
+            <div class="demo-card-row3">
+              <span class="demo-card-slot">
+                <svg class="lucide" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+                <span class="slot-label">Heute&nbsp;</span><strong class="slot-value">14:30</strong> <!-- german-ok -->
+              </span>
+              <span class="demo-card-price">CHF 85</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="sentence">The dash is an empty rating leaking through. Show the real rating, or show nothing.</p>
+  </div>
+
+  <!-- R2 (audit H4) -->
+  <div class="fix-block" id="r2">
+    <div class="rule-title">R2. Three bold things per card (audit H4)</div>
+    <div class="pair">
+      <div class="panel">
+        <span class="chip chip--now">Now</span>
+        <div class="demo-card demo-card--bold-bug">
+          <div class="demo-card-photo"></div>
+          <div class="demo-card-body">
+            <div class="demo-card-row1">
+              <span class="demo-card-name">Old Town Barbers</span>
+              <span class="demo-card-rating">
+                <svg class="lucide" width="11" height="11" viewBox="0 0 24 24" fill="var(--star)" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                4.6<span class="count">(31)</span>
+              </span>
+            </div>
+            <div class="demo-card-meta">Barbershop</div>
+            <div class="demo-card-row3">
+              <span class="demo-card-slot">
+                <svg class="lucide" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+                <span class="slot-label">Heute&nbsp;</span><strong class="slot-value">14:30</strong> <!-- german-ok -->
+              </span>
+              <span class="demo-card-price">CHF 85</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <span class="chip chip--refined">Refined</span>
+        <div class="demo-card">
+          <div class="demo-card-photo"></div>
+          <div class="demo-card-body">
+            <div class="demo-card-row1">
+              <span class="demo-card-name">Old Town Barbers</span>
+              <span class="demo-card-rating">
+                <svg class="lucide" width="11" height="11" viewBox="0 0 24 24" fill="var(--star)" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                4.6<span class="count">(31)</span>
+              </span>
+            </div>
+            <div class="demo-card-meta">Barbershop</div>
+            <div class="demo-card-row3">
+              <span class="demo-card-slot">
+                <svg class="lucide" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+                <span class="slot-label">Heute&nbsp;</span><strong class="slot-value">14:30</strong> <!-- german-ok -->
+              </span>
+              <span class="demo-card-price">CHF 85</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="sentence">One thing leads. Name first, price second, the time is information, not a headline.</p>
+  </div>
+
+  <!-- R3 (audit H3) -->
+  <div class="fix-block" id="r3">
+    <div class="rule-title">R3. The green Live text (audit H3)</div>
+    <div class="pair">
+      <div class="panel">
+        <span class="chip chip--now">Now</span>
+        <div class="wib-header">
+          <span class="wib-icon" aria-hidden="true">W</span>
+          <div>
+            <div class="wib-title">Walk-in</div>
+            <span class="wib-live wib-live--now"><span class="live-dot" aria-hidden="true"></span>Live</span>
+          </div>
+        </div>
+        <p class="measure-note">Green text on white measures 3.3:1 contrast (audit H3). The readable-text minimum is 4.5:1.</p>
+      </div>
+      <div class="panel">
+        <span class="chip chip--refined">Refined</span>
+        <div class="wib-header">
+          <span class="wib-icon" aria-hidden="true">W</span>
+          <div>
+            <div class="wib-title">Walk-in</div>
+            <span class="wib-live wib-live--refined"><span class="live-dot" aria-hidden="true"></span>Live</span>
+          </div>
+        </div>
+        <p class="measure-note">Ink text on white measures about 19.8:1 contrast (WCAG formula). The dot stays the green signal.</p>
+      </div>
+    </div>
+    <p class="sentence">Green stays as the signal dot. The word becomes readable ink.</p>
+  </div>
+
+  <!-- R4 (audit H1, partial) -->
+  <div class="fix-block" id="r4">
+    <div class="rule-title">R4. The meta text-size zoo (audit H1, partial)</div>
+    <div class="pair">
+      <div class="panel">
+        <span class="chip chip--now">Now</span>
+        <div class="r4-col">
+          <div class="r4-line"><span style="font-size:11px;color:var(--ink2);">Coiffeur</span><span class="size-tag">11px</span></div>
+          <div class="r4-line"><span style="font-size:12px;color:var(--ink2);">Marktgasse 12, Basel</span><span class="size-tag">12px</span></div>
+          <div class="r4-line"><span style="font-size:13px;color:var(--ink2);">0.8 km entfernt</span><span class="size-tag">13px</span></div>
+          <div class="r4-line"><span style="font-size:13.5px;color:var(--ink2);">Heute geöffnet bis 19:00</span><span class="size-tag">13.5px</span></div> <!-- german-ok -->
+          <div class="r4-line"><span style="font-size:15px;font-weight:600;color:var(--ink);">ab 85 CHF</span><span class="size-tag">15px</span></div>
+        </div>
+      </div>
+      <div class="panel">
+        <span class="chip chip--refined">Refined</span>
+        <div class="r4-col">
+          <div class="r4-line"><span style="font-size:12px;color:var(--ink2);">Coiffeur</span><span class="size-tag">12px</span></div>
+          <div class="r4-line"><span style="font-size:12px;color:var(--ink2);">Marktgasse 12, Basel</span><span class="size-tag">12px</span></div>
+          <div class="r4-line"><span style="font-size:12px;color:var(--ink2);">0.8 km entfernt</span><span class="size-tag">12px</span></div>
+          <div class="r4-line"><span style="font-size:12px;color:var(--ink2);">Heute geöffnet bis 19:00</span><span class="size-tag">12px</span></div> <!-- german-ok -->
+          <div class="r4-line"><span style="font-size:14px;font-weight:600;color:var(--ink);">ab 85 CHF</span><span class="size-tag">14px</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="sentence">Five nearly-equal sizes read as noise. Two sizes with a clear job each.</p>
+  </div>
+
+  <!-- R5 (audit H9) -->
+  <div class="fix-block" id="r5">
+    <div class="rule-title">R5. Footer capital letters (audit H9)</div>
+    <div class="pair">
+      <div class="panel">
+        <span class="chip chip--now">Now</span>
+        <div class="r5-footer-bar r5-footer-bar--now">© 2026 SOLEN.CH SCHWEIZ</div>
+      </div>
+      <div class="panel">
+        <span class="chip chip--refined">Refined</span>
+        <div class="r5-footer-bar r5-footer-bar--refined">© 2026 Solen.ch Schweiz</div>
+      </div>
+    </div>
+    <p class="sentence">Caps are for short labels, not sentences.</p>
+  </div>
+
+  <footer class="page-footer">
+    <p>Reply like: R1 yes, R2 yes, R3 no. Approved fixes get applied to the real homepage next, one commit per fix.</p>
+  </footer>
+
+</div>
+</body>
+</html>
