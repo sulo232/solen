@@ -51,6 +51,19 @@ Assets: _assets/mapbox-gl.js + mapbox-gl.css (self-hosted from node_modules); sa
   .teaser .chip svg{width:13px;height:13px;}
   .mapboxgl-ctrl-logo,.mapboxgl-ctrl-attrib{opacity:.35;}
   .dot{width:13px;height:13px;border-radius:50%;background:var(--accent);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);cursor:pointer;}
+  /* map marker = the decision fact, like a real map (Airbnb price, Zomato rating): real star + rating + review count */
+  .pill{display:inline-flex;align-items:center;gap:3px;background:#fff;border-radius:999px;padding:3px 7px;
+        font-family:'Inter',system-ui,sans-serif;font-size:11px;line-height:1;color:var(--ink);white-space:nowrap;
+        box-shadow:0 1px 5px rgba(0,0,0,.3);cursor:pointer;}
+  .pill svg{width:10px;height:10px;color:var(--star);flex:none;}
+  .pill b{font-weight:600;}
+  .pill span{color:var(--ink2);}
+  /* overlapping salons merge into a labelled badge instead of an unreadable pile */
+  .cbadge{display:inline-flex;align-items:center;gap:3px;background:var(--accent);color:#fff;border-radius:999px;
+          padding:3px 8px;font-family:'Inter',system-ui,sans-serif;font-size:11px;line-height:1;white-space:nowrap;
+          box-shadow:0 1px 5px rgba(0,0,0,.3);cursor:pointer;}
+  .cbadge b{font-weight:700;}
+  .cbadge span{opacity:.85;}
 
   .side{max-width:300px;}
   .side h2{font-family:'Inter Tight';font-size:16px;font-weight:600;margin-bottom:10px;}
@@ -61,7 +74,7 @@ Assets: _assets/mapbox-gl.js + mapbox-gl.css (self-hosted from node_modules); sa
 </style>
 <div class="wrap">
   <h1>Nearby map , colours matched to the reference</h1>
-  <p class="lead">A normal light map, with the palette pixel-sampled from the owner's reference screenshots: water #CBE3FC, parks #CFF2D0, land #E8EAEA, roads #F8F8F8. Major roads only and minimal labels, so it stays calm. Salons are blue markers at their real spots, and overlapping ones cluster into a count. No "Karte öffnen" button , the whole card taps through. Live map (mapbox-gl), so it renders the same in the app.</p>
+  <p class="lead">A normal light map, with the palette pixel-sampled from the owner's reference screenshots: water #CBE3FC, parks #CFF2D0, land #E8EAEA, roads #F8F8F8. Major roads only and minimal labels, so it stays calm. Each salon shows its REAL star rating + review count, the way a real map puts the decision fact in the marker; salons too close together to fit merge into a labelled badge ("10 Salons") instead of an unreadable pile. No "Karte öffnen" button , the whole card taps through. Live map (mapbox-gl), so it renders the same in the app.</p>
 
   <div class="stage">
     <div class="phone">
@@ -99,7 +112,7 @@ Assets: _assets/mapbox-gl.js + mapbox-gl.css (self-hosted from node_modules); sa
       <ul>
         <li><b>Reference-matched palette.</b> Pixel-sampled from the owner's screenshots: water #CBE3FC, parks #CFF2D0, land #E8EAEA, near-white roads #F8F8F8.</li>
         <li><b>Calm, not cluttered.</b> Major roads only, minimal labels, and overlapping salons cluster into a count badge instead of a pile of dots.</li>
-        <li><b>Blue markers.</b> The teardrop is dropped for blue dots at the real salon locations.</li>
+        <li><b>Rating + review count in the marker.</b> Real values (4.13 to 4.81, 7 to 25 reviews). Overlapping salons merge into a labelled "10 Salons" badge, so no bare mystery circle.</li>
         <li><b>No "Karte öffnen".</b> The whole card taps through, so the button is removed. Only the frosted count chip stays.</li>
         <li><b>Live map.</b> Rendered with mapbox-gl (already a dependency), so this is exactly what ships , not a picture.</li>
       </ul>
@@ -139,19 +152,59 @@ Assets: _assets/mapbox-gl.js + mapbox-gl.css (self-hosted from node_modules); sa
     container: "nmap", style: STYLE, center: [7.5895, 47.5565], zoom: 12.0,
     interactive: false, attributionControl: false
   });
+  // REAL rating + review_count per salon (Supabase, 20 active Basel salons).
+  // [lng, lat, rating, reviewCount]
+  var SALONS = [
+    [7.5886,47.5576,4.56,25],[7.5791,47.5589,4.81,16],[7.5897,47.5542,4.75,16],
+    [7.5921,47.5562,4.13,15],[7.5842,47.5563,4.40,15],[7.5841,47.5472,4.20,15],
+    [7.5961,47.5498,4.50,14],[7.5902,47.5546,4.54,13],[7.5819,47.5468,4.46,13],
+    [7.5934,47.5561,4.25,12],[7.6001,47.5605,4.27,11],[7.6042,47.5681,4.45,11],
+    [7.5877,47.5572,4.18,11],[7.5878,47.5613,4.36,11],[7.5765,47.5529,4.50,10],
+    [7.5883,47.5470,4.20,10],[7.5909,47.5551,4.50,10],[7.5743,47.5531,4.25,8],
+    [7.5912,47.5671,4.50,8],[7.6024,47.5648,4.57,7]
+  ];
+  var STAR = '<svg class="lucide lucide-star" viewBox="0 0 24 24" fill="currentColor">' +
+    '<path d="M11.5 2.3a.5.5 0 0 1 .95 0l2.3 4.68 5.17.75a.53.53 0 0 1 .3.9l-3.74 3.64.88 5.14a.53.53 0 0 1-.77.56L12 15.9l-4.62 2.43a.53.53 0 0 1-.77-.56l.88-5.14L3.75 8.99a.53.53 0 0 1 .3-.9l5.16-.76z"/></svg>';
+  function pillEl(rating, count) {
+    var el = document.createElement("div"); el.className = "pill";
+    el.innerHTML = STAR + '<b>' + Number(rating).toFixed(1) + '</b><span>(' + count + ')</span>';
+    return el;
+  }
+  function clusterEl(n) {
+    var el = document.createElement("div"); el.className = "cbadge";
+    el.innerHTML = '<b>' + n + '</b><span>Salons</span>';
+    return el;
+  }
   map.on("load", function () {
-    // Cluster nearby salons (the Uber/Lime declutter): overlapping dots merge into a
-    // blue count badge; lone salons stay single blue dots. Counts derive from real points.
-    map.addSource("salons", { type: "geojson", cluster: true, clusterRadius: 40, clusterMaxZoom: 16,
-      data: { type: "FeatureCollection", features: COORDS.map(function (c) {
-        return { type: "Feature", geometry: { type: "Point", coordinates: c } }; }) } });
-    map.addLayer({ id: "clusters", type: "circle", source: "salons", filter: ["has", "point_count"],
-      paint: { "circle-color": "#276EF1", "circle-stroke-color": "#fff", "circle-stroke-width": 2,
-        "circle-radius": ["step", ["get", "point_count"], 9, 4, 11, 8, 13] } });
-    map.addLayer({ id: "cluster-count", type: "symbol", source: "salons", filter: ["has", "point_count"],
-      layout: { "text-field": ["get", "point_count_abbreviated"], "text-font": ["Arial Unicode MS Regular"], "text-size": 12 },
-      paint: { "text-color": "#fff" } });
-    map.addLayer({ id: "point", type: "circle", source: "salons", filter: ["!", ["has", "point_count"]],
-      paint: { "circle-color": "#276EF1", "circle-radius": 6, "circle-stroke-color": "#fff", "circle-stroke-width": 2 } });
+    // Airbnb/Lime behaviour: a salon that stands alone shows its decision fact (real star +
+    // rating + review count); salons whose markers would overlap merge into a labelled badge
+    // ("9 Salons") instead of an unreadable pile. All values are REAL (Supabase).
+    map.addSource("salons", { type: "geojson", cluster: true, clusterRadius: 52, clusterMaxZoom: 16,
+      data: { type: "FeatureCollection", features: SALONS.map(function (s) {
+        return { type: "Feature", geometry: { type: "Point", coordinates: [s[0], s[1]] },
+                 properties: { rating: s[2], count: s[3] } }; }) } });
+    map.addLayer({ id: "src", type: "circle", source: "salons",
+      paint: { "circle-radius": 0, "circle-opacity": 0 } });
+    var markers = {};
+    function draw() {
+      var feats = map.querySourceFeatures("salons");
+      var live = {};
+      feats.forEach(function (f) {
+        var c = f.geometry.coordinates, p = f.properties;
+        var id = p.cluster ? "c" + p.cluster_id : "p" + c[0] + "," + c[1];
+        if (live[id]) return;
+        var m = markers[id];
+        if (!m) {
+          var el = p.cluster ? clusterEl(p.point_count) : pillEl(p.rating, p.count);
+          m = markers[id] = new mapboxgl.Marker({ element: el }).setLngLat(c);
+        }
+        live[id] = m;
+        if (!m._on) { m.addTo(map); m._on = true; }
+      });
+      Object.keys(markers).forEach(function (id) {
+        if (!live[id] && markers[id]._on) { markers[id].remove(); markers[id]._on = false; }
+      });
+    }
+    map.on("render", function () { if (map.isSourceLoaded("salons")) draw(); });
   });
 </script>
