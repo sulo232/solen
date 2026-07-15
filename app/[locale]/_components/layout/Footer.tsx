@@ -151,7 +151,7 @@ export default function Footer({ locale }: { locale: string }) {
         </div>
 
         {/* ───────────── Legal bar + language row ───────────── */}
-        <div className="mx-auto mt-12 flex max-w-[1280px] flex-col gap-3 border-t border-s-border pt-6 font-body text-[12px] font-bold uppercase tracking-[0.14em] text-s-ink-3 md:flex-row md:items-center md:justify-between md:gap-8">
+        <div className="mx-auto mt-12 flex max-w-[1280px] flex-col gap-3 border-t border-s-border pt-6 font-body text-[12px] font-bold text-s-ink-3 md:flex-row md:items-center md:justify-between md:gap-8">
           <span className="inline-flex items-center gap-1.5">
             © {new Date().getFullYear()} Solen.ch Schweiz <SwissFlag />
           </span>
