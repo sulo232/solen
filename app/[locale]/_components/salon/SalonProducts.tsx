@@ -15,7 +15,9 @@
  *     + CHF price (14/600 tabular-nums) + neutral-outline pill "Add"
  *   - pick-up-at-visit note = Store icon + s-ink-2 12px caption
  * Deviations from the mockup (grounded in production reality, NOT invented):
- *   - photo square uses the real ImageFallback primitive when image_url is null (mockup used a CSS gradient placeholder)
+ *   - mockup-ok: photo square uses a neutral bg-s-bg-sunken + Package icon placeholder when image_url is
+ *     null (P3 fix, owner-approved 2026-07-15 fixes-refined: ImageFallback is locked for full
+ *     salon-card covers, not a 44px inline row icon; mockup used a CSS gradient placeholder)
  *   - the mockup's static "Add" becomes a real in-section cart + total + commit button (task T1: v1 minimal cart)
  *   - "Ausverkauft" (sold-out) state when stock_count === 0 , Add disabled (task T1 empty-stock rule)
  * Payment is the existing built Stripe path: POST /api/salon/retail/purchase returns a
@@ -28,10 +30,9 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Store, Plus, Check } from "lucide-react";
+import { Store, Plus, Check, Package } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { formatCurrency } from "@/lib/format-currency";
-import ImageFallback from "@/components-legacy/ui/ImageFallback";
 import WalkInPaymentForm from "@/components-legacy/barber/WalkInPaymentForm";
 
 // Live shape from GET /api/salon/retail (nail_retail_products row). price = INTEGER RAPPEN.
@@ -273,7 +274,13 @@ function ProductRow({
           {product.image_url ? (
             <Image src={product.image_url} alt="" fill sizes="44px" className="object-cover" />
           ) : (
-            <ImageFallback category={category} className="absolute inset-0" />
+            // mockup-ok: P3 fix, neutral placeholder replaces the mis-borrowed salon-card-cover
+            // ImageFallback (that component is locked for full salon-card covers, not a 44px
+            // inline row icon, and its saturated category color carries no product meaning
+            // here) (approved fixes-refined)
+            <div className="absolute inset-0 flex items-center justify-center bg-s-bg-sunken">
+              <Package size={18} strokeWidth={1.8} className="text-s-ink-2" aria-hidden />
+            </div>
           )}
         </div>
         <div className="min-w-0">
