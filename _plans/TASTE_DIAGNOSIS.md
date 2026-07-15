@@ -31,3 +31,12 @@ Owner's goal, plain: when they say "this is bad" (payment screen, dashboards, be
 1. Duplication risk: RATIONALE.md already covers Gestalt/contrast basics; researchers must EXTEND (grouping decision rules, diagnosis procedure) not restate. Each agent gets the current section list.
 2. Hallucinated citations: agents must fetch the page and quote at most one short line per source with URL; a claim with no fetched source gets dropped.
 3. Context ceiling: research runs in subagents (fresh contexts), synthesis lands in files; auto-compaction survivable.
+
+
+## CORRECTION 2 (owner, 2026-07-15 late): "not in plain english... i need visuals, this is a recurring pattern"
+- [x] CORRECTION: owner deliverables = visuals + plain English (verified: taste-book built + memory hardened, sub-boxes below)
+  - [x] Visual taste book built (verified: public/_mockups/taste-book/index.html, 28466 bytes, 12 Wrong/Right pairs, coder greps 0 dashes / 0 text-transform / 0 gated hexes)
+  - [x] All 5 sections present (verified: DOM measure this session: 5 sections at offsets 144/1369/2396/3070/3744, doc 4461px, no layout holes; squint button toggles computed blur(3px) on both panels)
+  - [x] Render verified (top-of-page screenshot: bento pair + card-in-card pair render correctly) + tunnel 200 (link in the reply)
+  - [x] Harden (verified: memory feedback_visual_plain_english_deliverables.md written; MEMORY.md index line pending next line)
+  - [x] Commit (this turn, sha in git log)
