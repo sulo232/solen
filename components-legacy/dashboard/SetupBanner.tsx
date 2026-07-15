@@ -48,7 +48,7 @@ export default function SetupBanner() {
       {/* mockup-ok: D2 fix, sentence case 13px semibold (approved public/_mockups/fixes-refined) */}
       <p className="text-[13px] font-heading font-semibold text-s-star mb-1">{t("eyebrow")}</p>
       <p className="font-heading text-sm text-s-ink mb-3">
-        {t("salonSetup")} — {data.completed}/{data.total} {t("done")}
+        {t("salonSetup")}: {data.completed}/{data.total} {t("done")}
       </p>
       {/* Progress bar */}
       <div className="h-1.5 rounded-full bg-s-bg-sunken mb-4 overflow-hidden">
