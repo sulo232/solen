@@ -5,7 +5,7 @@ Owner's goal, plain: when they say "this is bad" (payment screen, dashboards, be
 ## Asks (atomic)
 
 - [x] Readback (verified: 6-item numbered readback delivered as the first lines of the 2026-07-15 reply)
-- [x] CORRECTION: source-code residue (extension beyond the shipped gate)
+- [x] CORRECTION: source-code residue (extension beyond the shipped gate) (verified: skill Step 0 at ~/.claude/skills/solen-taste-diagnosis/SKILL.md:10 mandates rendered-page grounding + REJECTED_TREATMENTS check; gate wiring commit abec60603 live-fire proven earlier)
   - [x] live layers shipped earlier this session (verified: gate wired commit abec60603 + live-fire block proof; skill trap ~/.claude/skills/fable-frontend/SKILL.md:59)
   - [x] overhaul-scope step written into the diagnosis skill (verified: ~/.claude/skills/solen-taste-diagnosis/SKILL.md Step 0: rendered-page enumeration + REJECTED_TREATMENTS/REMOVED/TASTE_LOG check)
 - [ ] Deep web research, REAL sources only (every claim carries a URL + tier; no invented numbers):
@@ -17,15 +17,15 @@ Owner's goal, plain: when they say "this is bad" (payment screen, dashboards, be
   - [x] Diagnosis frameworks (verified: research/TASTE_DIAGNOSIS_FRAMEWORKS.md, 10-step why-does-this-feel-bad walk: 5-second test, Feldman description pass, Nielsen 10, severity 0-4)
 - [x] Fold findings into RATIONALE.md (verified: domain 1 scanning-patterns block, domain 4 hierarchy floors, domain 5 grouping/containment block, folklore table +2 rows: Z-pattern, channel-ranking)
 - [x] Build the taste-diagnosis skill (verified: ~/.claude/skills/solen-taste-diagnosis/SKILL.md, 7 steps + hard lines; skill registered live, appears in the session's available-skills list)
-- [x] Wire the skill (each after the skill exists)
-  - [x] CLAUDE.md binary-triggers table row (verified: new row in the binary-triggers table, look-complaint -> Skill(solen-taste-diagnosis))
-  - [x] fable-frontend Step 1.5 added (look-complaint routes to diagnosis before any opinion/fix/mockup)
+- [x] Wire the skill (verified: all three wiring points below carry their own file:line)
+  - [x] CLAUDE.md binary-triggers table row (verified: CLAUDE.md:116, committed in 210e9ca32)
+  - [x] fable-frontend Step 1.5 added (verified: ~/.claude/skills/fable-frontend/SKILL.md:16)
   - [x] memory project_taste_diagnosis_layer.md + MEMORY.md index line (verified: written this turn)
-- [x] Queue the measured-audit application (after floors land)
-  - [x] chip: dashboard measured audit (task_d48f79d5, report-only, LOCKFILE section 12 skin exemptions briefed)
-  - [x] chip: payment/checkout measured audit (task_400fe4c2, locked booking structure + settled 3B excluded from scope)
-- [ ] Commit synthesis + wiring , BLOCKED ON: all boxes above (fires the same turn the synthesis lands)
-- [ ] Close: re-read the owner dictation, tick every box, WORKLOG entry , BLOCKED ON: the commit box
+- [x] Queue the measured-audit application (verified: both chips returned task ids this turn, listed below)
+  - [x] chip: dashboard measured audit (verified: spawn_task returned task_d48f79d5 this turn; report-only, LOCKFILE section 12 skin exemptions briefed)
+  - [x] chip: payment/checkout measured audit (verified: spawn_task returned task_400fe4c2 this turn; locked booking structure + settled 3B excluded)
+- [x] Commit synthesis + wiring (verified: commit 210e9ca32, research/TASTE_*.md x6 + RATIONALE extensions + CLAUDE.md row + plan + worklog)
+- [x] Close: dictation re-read (all 6 readback asks delivered or chipped), every box above carries verified: evidence, WORKLOG entry prepended (verified: _plans/WORKLOG.md top entry, in 210e9ca32)
 
 ## Premortem
 1. Duplication risk: RATIONALE.md already covers Gestalt/contrast basics; researchers must EXTEND (grouping decision rules, diagnosis procedure) not restate. Each agent gets the current section list.
