@@ -4,6 +4,19 @@ The newest entry is at the top. Every session that ships real work adds one entr
 
 ---
 
+## 2026-07-15 , taste rationale layer: research grounded, RATIONALE.md draft v1, taste-lab mockup, owner questions
+
+**What you asked for:** you delivered an 8-domain design-decision research digest (perception, color, contrast, typography, spacing/shape, motion, aesthetic theory, rationale articulation) and asked to redefine the taste system's rationale layer on top of it, plus my opinion on what to add beyond it, plus questions and mockups to define more.
+
+**What got done:**
+1. **Stack inventory (6 read agents):** LOCKFILE's ~93 locked rules classified: 51 percent BARE (no recorded why), 4 percent mechanics-class; the 12 most load-bearing BARE rules listed. SOURCE.md mapped against the 8 domains (perception/aesthetics/articulation uncovered; contrast covered WCAG-only). All 6 candidate probe axes verified UNSETTLED against TASTE_LOG/QUESTIONS/REMOVED.
+2. **_design-system/RATIONALE.md DRAFT v1:** the mechanics layer. Evidence tiers reuse PSYCHOLOGY.md's T1/T2/T3 + CONV + MYTH. FORCES/SACRIFICES entry template, 8 domain sections each backlinked to the LOCKFILE rules they ground, measured WCAG+APCA table for live tokens (found: blue on sunken 4.17:1 FAILS AA; green status text 3.30:1), design folklore table (golden ratio, Miller 7+/-2, fabricated Lin 2004, 60-30-10, plus in-house unsourced numbers flagged), 12-rule retrofit queue, documented-departures record (420ms enter, no-focus-ring override).
+3. **Taste-lab mockup** (public/_mockups/taste-lab/index.html, tunnel-served): 5 probes with side-by-side variants on real SalonCard replicas + live tokens: corner curvature (squircle via superellipse clip-path), optical corrections, contrast retune vs document, 68ch measure cap, web-dark teaser with the shipped mobile darkColors. Coder built, loop-reviewer graded (round 1: one hex-token finding, fixed, re-verified rendered).
+4. **Owner questions asked:** rationale location, retrofit scope, extra domains, template weight; probe picks via the lab page.
+
+**Parked:** discount-badge memory-vs-code contradiction (pale-green memory vs live rose); spring double-definition; icon stroke inconsistency. All in _plans/TASTE_RATIONALE.md.
+
+
 ## 2026-07-11 , weekly estate self-audit: estate healthy, 3 dead-law gates + 5 drift-gate divergences found
 
 **What you asked for:** the standing weekly self-audit (owner-sanctioned 2026-07-10): health-check, skip-flag ledger, hook injection sizes, mistake themes, lessons-ledger parse test, design-suggest gather, doc-vs-gate reconciliation, then report + commit _plans.

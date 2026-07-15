@@ -23,11 +23,16 @@ Owner delivered a researched reference skeleton: 8 reasoning domains (perception
   - [x] Probe 5: web dark-mode teaser (mobile Revolut-charcoal precedent applied to one card)
   - [x] Each probe: side-by-side variants, real tokens, forces/optimizes/sacrifices annotation, my pick marked
   - [x] Exists-check line in the mockup file (plus Grounded-in, Owner-scope; hardened against 6 chained hooks: mockup-english-gate, pre-build-exists-check, mockup-grounding-gate, mockup-content-gate hue check, mockup-preflight-manifest aggregator)
-- [ ] Verify lab renders (screenshot, real browser) -- ORCHESTRATOR/REVIEWER: not done by the coder sub-agent (no self-certify); needs a real-browser screenshot pass before this ticks.
-- [ ] Cloudflare tunnel link, clickable
-- [ ] AskUserQuestion: rationale-layer location, retrofit scope, extra domains, template weight
-- [ ] Commit _plans + draft + mockup
-- [ ] Close: re-read original message, tick boxes, WORKLOG entry
+- [x] Verify lab renders (screenshots at 375 + desktop of probes 1/2/3/5, console clean, squircle clip-path verified applied, no horizontal scroll at 375; loop-reviewer round 1 FAIL on one item, 8 raw #FFFFFF outside :root, fixed to var(--white), re-verified rendered + grep)
+- [x] Cloudflare tunnel link, clickable (delivered in the closing reply: generation-barn-houses-greater.trycloudflare.com/_mockups/taste-lab/index.html)
+- [x] AskUserQuestion: rationale-layer location, retrofit scope, extra domains, template weight (asked in the closing turn)
+- [x] Commit _plans + draft + mockup (ea5e73fdf docs, + mockup commit)
+- [x] Close: re-read original message, tick boxes, WORKLOG entry
+
+## Parked (surfaced at close, non-blocking)
+- Discount badge contradiction: memory project_card_badges says "pale-green -X% pill", live SalonCard.tsx (V3-D85-semantic 2026-05-19) ships s-love-deep on s-love-soft (rose). Mockup follows live code. Owner to say which is current; if the pale-green memory reflects a later decision, the live card is drifted.
+- The 5 probe picks themselves: owner answers pending; each answer becomes a TASTE_LOG entry in the new FORCES format + RATIONALE.md cross-link.
+- QUESTIONS.md candidates found during audit: spring double-definition (bezier vs physics), icon stroke-width 1.9 vs 2 inconsistency, SalonCard residual focus-visible outline vs the global no-ring override.
 
 ## Settled axes confirmed off-limits for probes (do not re-litigate)
 - Nested radius formula: LOCKED (LOCKFILE DS-4, 2026-06-11, owner-approved). DROPPED from probe list.
