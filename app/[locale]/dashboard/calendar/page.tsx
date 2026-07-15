@@ -214,8 +214,8 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
                 return (
                   <div key={key} className="flex items-center gap-3">
                     <button type="button" onClick={() => toggleDay(key)}
-                      className={["w-9 text-center text-xs font-medium py-1.5 rounded-btn transition-colors",
-                        slot ? "bg-s-accent-bright text-white" : "bg-s-bg-sunken text-s-ink/40"].join(" ")}>
+                      className={["w-9 text-center text-xs font-medium py-1.5 rounded-btn transition-colors", // mockup-ok: C2 fix, locked TabPill treatment (approved public/_mockups/fixes-refined)
+                        slot ? "bg-s-bg-sunken text-s-ink font-semibold" : "bg-s-bg-sunken text-s-ink/40"].join(" ")}>
                       {DAY_LABELS[i]}
                     </button>
                     {slot ? (
@@ -237,8 +237,8 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
             <div className="flex gap-2">
               {([1, 2, 4] as const).map((w) => (
                 <button key={w} type="button" onClick={() => setWeeks(w)}
-                  className={["flex-1 py-2 rounded-btn border text-sm font-medium transition-colors",
-                    weeks === w ? "bg-s-accent-bright text-white border-s-accent-bright" : "border-s-border text-s-ink-2"].join(" ")}>
+                  className={["flex-1 py-2 rounded-btn border text-sm font-medium transition-colors", // mockup-ok: C2 fix, locked TabPill treatment (approved public/_mockups/fixes-refined)
+                    weeks === w ? "bg-s-bg-sunken text-s-ink font-semibold border-s-border" : "border-s-border text-s-ink-2"].join(" ")}>
                   {w} {w === 1 ? t("weekSingular") : t("weekPlural")}
                 </button>
               ))}
@@ -840,8 +840,8 @@ export default function CalendarPage() {
           {/* View toggle */}
           <div className="flex rounded-btn border border-s-border overflow-hidden">
             {(["day", "week", "month"] as ViewMode[]).map((mode) => (
-              <button key={mode} onClick={() => setViewMode(mode)}
-                className={`px-3 py-1.5 text-xs font-medium transition-colors ${viewMode === mode ? "bg-s-accent-bright text-white" : "text-s-ink-2 hover:bg-s-coral/5"}`}>
+              <button key={mode} onClick={() => setViewMode(mode)} // mockup-ok: C2 fix, locked TabPill treatment (approved public/_mockups/fixes-refined)
+                className={`px-3 py-1.5 text-xs font-medium transition-colors ${viewMode === mode ? "bg-s-bg-sunken text-s-ink font-semibold" : "text-s-ink-2 hover:bg-s-coral/5"}`}>
                 {mode === "day" ? t("viewDay") : mode === "week" ? t("viewWeek") : t("viewMonth")}
               </button>
             ))}
