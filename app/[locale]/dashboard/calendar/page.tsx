@@ -367,6 +367,22 @@ const STAFF_COLORS = [
   "bg-cyan-700 border-cyan-800 text-white", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, staff-identity hue
 ];
 
+// C1 punch fix: parallel LITERAL text-color array, same order/hues as STAFF_COLORS above, for the
+// day-view staff header (text-on-white, not the solid swatch fill). Tailwind's scanner only
+// generates CSS for class strings that appear verbatim in source; deriving "text-{hue}-700" at
+// runtime via string replace never matches a literal, so the header rendered unstyled. Indexed
+// directly instead.
+const STAFF_TEXT_COLORS = [
+  "text-rose-700", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, staff-identity hue
+  "text-blue-700", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, staff-identity hue
+  "text-violet-700", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, staff-identity hue
+  "text-amber-700", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, staff-identity hue
+  "text-pink-700", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, mockup literal #BE185D
+  "text-emerald-700", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, mockup literal #047857
+  "text-orange-700", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, mockup literal #C2410C
+  "text-cyan-700", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, staff-identity hue
+];
+
 // ─────────────────────────────────────────
 // Main Calendar
 // ─────────────────────────────────────────
@@ -963,8 +979,8 @@ export default function CalendarPage() {
             <div className="py-3 px-2 text-xs text-s-ink/30" />
             {staff.length > 0 ? staff.map((s, i) => (
               <div key={s.id} className="py-3 px-2 text-center border-l border-s-ink/5">
-                {/* mockup-ok: C1 fix, staff-hue text color derived from the swatch bg (was token[2], now solid-fill text-white per C1) */}
-                <p className={`text-xs font-medium ${STAFF_COLORS[i % STAFF_COLORS.length].split(" ")[0].replace("bg-", "text-")}`}>{s.name}</p>
+                {/* mockup-ok: C1 punch fix, literal STAFF_TEXT_COLORS index (was a runtime-built "bg-".replace("text-") string that Tailwind's scanner never sees, so it compiled to nothing) */}
+                <p className={`text-xs font-medium ${STAFF_TEXT_COLORS[i % STAFF_TEXT_COLORS.length]}`}>{s.name}</p>
               </div>
             )) : (
               <div className="py-3 px-2 text-center border-l border-s-ink/5">
