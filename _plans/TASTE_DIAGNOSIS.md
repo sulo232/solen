@@ -43,8 +43,8 @@ Owner's goal, plain: when they say "this is bad" (payment screen, dashboards, be
 
 
 ## CORRECTION 3 (owner, 2026-07-15 latest): "you didn't even make a hook or a gate... do we have a gate that [enforces hardening] once I flag a recurring pattern?"
-- [x] Honest answer given: NO, until now the recurrence flag only injected advice at prompt time; nothing blocked a promise-only turn. Fixed this turn:
+- [x] Honest answer given: NO, until now the recurrence flag only injected advice at prompt time; nothing blocked a promise-only turn (verified: the only recurrence mechanism was the UserPromptSubmit injection shown in this session's hook context; no Stop-side enforcement existed in .claude/settings.json before commit b6f0a7b80). Fixed this turn:
 - [x] scripts/hooks/visual-deliverable-gate.py built (verified: SELFTEST OK: no-link close = BLOCK, link close = PASS, declared-large-build close = PASS) , blocks ending a turn that wrote owner-facing design docs without a viewable link
 - [x] scripts/hooks/recurrence-harden-gate.py built (verified: SELFTEST OK, 4 cases: flagged+no-gate = BLOCK, flagged+gate-built = PASS, no-flag = PASS, declared-unhookable = PASS) , blocks ending a recurrence-flagged turn without an enforcement-surface change; memory files explicitly do NOT count
 - [x] Both WIRED into project Stop hooks via the sanctioned desktop-commander path (verified: .claude/settings.json Stop array now carries browser-verify + visual-deliverable + recurrence-harden; JSON validated)
-- [x] Commit (sha in git log this turn)
+- [x] Commit (verified: commit b6f0a7b80 creates scripts/hooks/visual-deliverable-gate.py + scripts/hooks/recurrence-harden-gate.py and wires both into .claude/settings.json Stop)
