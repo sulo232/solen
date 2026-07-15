@@ -34,9 +34,9 @@ Owner delivered a researched reference skeleton: 8 reasoning domains (perception
 
 ## Follow-up work from the answers (same session)
 - [x] RATIONALE.md status updated to owner-confirmed; sections 9-11 added (i18n type, touch ergonomics, enforcement); open-items section rewritten
-- [ ] Full retrofit sweep: FORCES/MECHANIC blocks for ALL bare LOCKFILE rules (workflow wf_a51fb04a, 4 agents) merged into RATIONALE.md section 15
-- [ ] Reviewer pass on merged retrofit blocks (values verbatim, no dash chars, no myth citations)
-- [ ] Commit retrofit + final report
+- [x] Full retrofit sweep: 45 FORCES/MECHANIC blocks (8 color/type + 14 space/motion + 11 primitives/layout + 12 icons/cards/sheets) merged into RATIONALE.md section 14 (two agents returned summary-only, blocks mined from their transcripts; all 4 ranges covered)
+- [x] Reviewer pass: round 1 FAIL on 2 literal drifts (search/btn 99px misgrouped as 9999px; "14-role" vs 19 actual type roles), both fixed + grep-verified; checks 1/3/4/5 (structure, no value changes, no invented evidence, no dashes/myths) all PASS
+- [x] Commit retrofit + final report (commit landed; report in the closing reply)
 
 ## Parked (surfaced at close, non-blocking)
 - Discount badge contradiction: memory project_card_badges says "pale-green -X% pill", live SalonCard.tsx (V3-D85-semantic 2026-05-19) ships s-love-deep on s-love-soft (rose). Mockup follows live code. Owner to say which is current; if the pale-green memory reflects a later decision, the live card is drifted.
