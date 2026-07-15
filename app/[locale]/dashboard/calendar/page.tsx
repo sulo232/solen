@@ -222,7 +222,7 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
                       <>
                         <input type="time" value={slot.start} onChange={(e) => setTemplate((p) => ({ ...p, [key]: { ...slot, start: e.target.value } }))}
                           className="px-2 py-1 rounded-btn border border-s-border text-xs focus:outline-none focus:border-s-accent" />
-                        <span className="text-xs text-s-ink/30">–</span>
+                        <span className="text-xs text-s-ink/30">-</span>
                         <input type="time" value={slot.end} onChange={(e) => setTemplate((p) => ({ ...p, [key]: { ...slot, end: e.target.value } }))}
                           className="px-2 py-1 rounded-btn border border-s-border text-xs focus:outline-none focus:border-s-accent" />
                       </>
@@ -276,7 +276,7 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
   const [newTime, setNewTime] = useState(new Date(slot.starts_at).toTimeString().slice(0, 5));
   const [loading, setLoading] = useState(false);
 
-  const staffName = staff.find((s) => s.id === slot.staff_member_id)?.name ?? "—";
+  const staffName = staff.find((s) => s.id === slot.staff_member_id)?.name ?? ""; // unknown staff
   const startTime = new Date(slot.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
   const endTime = new Date(slot.ends_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
 
@@ -326,7 +326,7 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
           <>
             <div className="space-y-2 mb-5 text-sm text-s-ink/70">
               <p><span className="text-s-ink/40">{t("statusLabel")}</span> <span className="font-medium">{slot.status === "booked" ? t("statusBooked") : slot.status === "blocked" ? t("statusBlocked") : t("statusFree")}</span></p>
-              <p><span className="text-s-ink/40">{t("timeLabel")}</span> {startTime} – {endTime}</p>
+              <p><span className="text-s-ink/40">{t("timeLabel")}</span> {startTime} - {endTime}</p>
               <p><span className="text-s-ink/40">{t("dateLabel")}</span> {new Date(slot.starts_at).toLocaleDateString("de-CH")}</p>
               <p><span className="text-s-ink/40">{t("staffDetailLabel")}</span> {staffName}</p>
             </div>
@@ -832,7 +832,7 @@ export default function CalendarPage() {
               ? currentDate.toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
               : viewMode === "month"
               ? currentDate.toLocaleDateString("de-CH", { month: "long", year: "numeric" })
-              : `${weekStart.toLocaleDateString("de-CH", { day: "numeric", month: "long" })} – ${addDays(weekStart, 6).toLocaleDateString("de-CH", { day: "numeric", month: "long", year: "numeric" })}`
+              : `${weekStart.toLocaleDateString("de-CH", { day: "numeric", month: "long" })} - ${addDays(weekStart, 6).toLocaleDateString("de-CH", { day: "numeric", month: "long", year: "numeric" })}`
             }
           </span>
         </div>
