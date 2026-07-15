@@ -46,3 +46,13 @@ Apply the researched floors (RATIONALE.md + research/TASTE_*.md) as MEASURED aud
 - [ ] R2 recorded as delivered-by-merge (chip task_c132841a), not hand-reimplemented , NOT in this dispatch's scope; still blocked on the merge chip.
 - [ ] Reviewer pass over the batch + rendered verification per surface , NOT in this dispatch's scope; this is the coder round, reviewer pass is a separate role/turn per the layered loop.
 - [ ] Close: worklog + report , NOT in this dispatch's scope; stays open until Wave B + reviewer pass land.
+
+
+## APPLY round status (2026-07-15, after owner "ok")
+- [x] Wave A applied 6/6 (verified: commits 156ed1258 R3, e273a965d R5, b6dce7d73 C3, 0dcf5c2cd C2, bafeaa87a D2, 2e208ec74 D3; the first four landed during the interrupted dispatch and were code-verified by the wave-A coder)
+- [x] Wave B applied (verified: commits 9418b43e6 C1, 31865b262 S1, 578e3900d S3, b00dbae68 P1, a0b4559b7 P2, f852377d7 P3, bba7ac173 D4; S2 = not-a-bug, Footer.tsx:229 already has border, recorded)
+- [x] Rendered proof: calendar AFTER capture (verified: _audits/screenshots/taste-w1/dash-calendar-AFTER.png shows hyphen date range, non-blue Woche segment, solid initialed staff swatches)
+- [x] Reviewer pass ran (verified: FAIL with exactly 1 blocking item: C1 day-view header builds text-hue-700 classes at runtime, Tailwind never generates them, silent no-op at calendar/page.tsx:967; fix dispatched to the wave-B coder via SendMessage)
+- [ ] C1 punch fix committed , BLOCKED ON: coder continuation running (literal STAFF_TEXT_COLORS array)
+- [ ] Owner-confirm items parked: calendar range copy "13. bis 19. Juli" (approved panel) vs shipped spaced hyphen; empty staff-name fallback after "Mitarbeiter:"; D4 Termine tile kept as chart card (deviation from compact pill, data lives there)
+- [ ] Close: worklog + final report , BLOCKED ON: the punch fix landing
