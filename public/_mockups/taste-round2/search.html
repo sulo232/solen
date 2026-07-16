@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Round 2 integrated: the real search overlay, tappable</title>
+<!-- Base: capture base-search-real.png -->
+<!-- Exists-check: npm run exists search-overlay ran 2026-07-16: SearchOverlay.tsx EXISTS and is exactly what the base capture shows; this file REUSES it as the rendered base, treatments overlaid only. REBUILT after the owner rejected the redrawn version on sight. -->
+<!-- Grounded-in: ../_assets/taste-round2/base-search-real.png (the real overlay captured live 2026-07-16; PIL-pinned: input pill 7.8-13.4 percent, Beliebte Stores header 16.4 percent) -->
+<!-- Grounded-in: app/[locale]/_components/search/SearchOverlay.tsx (the component in the capture) -->
+<!-- Owner-scope: all-variants: P13 forks a/b + P15 stay as chips; owner 2026-07-16: "each one in acc pages... integrated and tappable" -->
+<!-- Backend-check: suggest/search path EXISTS (SearchOverlay + useSearchSuggest, live in the capture); grouped-results + highlight + loader + named-wait are presentation on that path. Salon names in the demo rows are the REAL ones from the capture; slot counts are sample values. -->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#C5C8C4;--border:#E4E4E7;--sunken:#F4F4F5;--white:#FFFFFF;--accent:#276EF1;--match:#FDF6D8/*drift-ok probe candidate*/}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,-apple-system,"Segoe UI",sans-serif;background:var(--sunken);color:var(--ink);font-size:14px;line-height:1.5}
+  .bar{position:sticky;top:0;z-index:50;background:var(--white);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .bar b{font-family:"Inter Tight",Inter,sans-serif;font-size:15px}
+  .chip{border:1px solid var(--border);border-radius:999px;padding:5px 12px;font-size:12.5px;background:var(--white)}
+  .bar a{color:var(--accent);text-decoration:none;font-size:12.5px;margin-left:auto}
+  .phone{width:390px;margin:24px auto 80px;border:1px solid var(--border);border-radius:28px;overflow:hidden;box-shadow:0 8px 28px rgba(50,47,44,.12);position:relative;background:var(--white)}
+  .phone>img{width:100%;display:block}
+  .hot{position:absolute;cursor:pointer;border-radius:999px;border:1.5px dashed var(--ink3)}
+  .hot:hover{border-color:var(--ink)}
+  .hot .tag{position:absolute;top:-11px;left:-6px;background:var(--ink);color:var(--white);font-family:"Inter Tight",Inter,sans-serif;font-weight:700;font-size:11px;border-radius:7px;padding:1px 7px}
+  svg.lucide{width:15px;height:15px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px}
+
+  /* the typed query sits IN the real input pill (patch covers the placeholder text only; pill measured 7.8-13.4 percent) */
+  .typed{position:absolute;left:16%;top:8.6%;height:4%;display:none;align-items:center;background:var(--white);width:74%;font-size:16px;color:var(--ink)}
+  .typed.on{display:flex}
+  .typed .dots{margin-left:auto}
+  .dots i{width:4px;height:4px;border-radius:99px;background:var(--ink2);display:inline-block;margin-right:3px;animation:dot 1.2s ease infinite}
+  .dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+  @keyframes dot{0%,60%,100%{opacity:.25;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+
+  /* results patch replaces the suggestion region under the real pill (header measured at 16.4 percent); rows copy the capture's anatomy */
+  .patch{position:absolute;left:0;right:0;top:14.4%;bottom:0;background:var(--white);display:none;padding:6px 16px}
+  .patch.on{display:block}
+  .sec{font-size:14px;font-weight:700;margin:12px 0 4px}
+  .row{display:flex;gap:14px;align-items:center;padding:9px 0;cursor:pointer;border-radius:12px}
+  .row:hover{background:var(--sunken)}
+  .row .tile{width:46px;height:46px;border-radius:12px;background:var(--sunken);display:flex;align-items:center;justify-content:center;flex:none;color:var(--ink)}
+  .row .t{font-size:16px;font-weight:600}
+  .row .d{font-size:14px;color:var(--ink2)}
+  mark{background:var(--match);color:var(--ink);border-radius:3px;padding:0 1px}
+  .wait{display:none;align-items:center;gap:10px;padding:12px 2px}
+  .wait.on{display:flex}
+  .wait .t{font-weight:600;font-size:13.5px}
+  .wait .d{font-size:12.5px;color:var(--ink2)}
+  .slotline{display:none;padding:10px 2px;font-size:13.5px}
+  .slotline.on{display:block}
+  .lbl{font-size:11.5px;color:var(--ink2);padding:12px 2px;border-top:1px solid var(--border);margin-top:10px}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <b>The real search overlay, integrated probes</b>
+  <span class="chip">P13 tap the input</span>
+  <span class="chip">P15 tap a result</span>
+  <a href="index.html">all pages</a>
+</div>
+
+<div class="phone">
+  <img src="../_assets/taste-round2/base-search-real.png" alt="the real search overlay, captured live">
+  <div class="hot" style="left:4%;top:7.4%;width:92%;height:6.4%" id="openSearch"><span class="tag">P13</span></div>
+  <div class="typed" id="typed"><span>bar</span><span class="dots" id="loader"><i></i><i></i><i></i></span></div>
+
+  <div class="patch" id="patch">
+    <div class="sec">Salons</div>
+    <div class="row" id="pickResult">
+      <span class="tile"><svg class="lucide lucide-store" viewBox="0 0 24 24"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2Z"/></svg></span>
+      <div><div class="t"><mark>Bar</mark>bershop Central</div><div class="d">Klybeckstrasse 12, Basel</div></div>
+    </div>
+    <div class="row">
+      <span class="tile"><svg class="lucide lucide-store" viewBox="0 0 24 24"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2Z"/></svg></span>
+      <div><div class="t">Old Town <mark>Bar</mark>bers</div><div class="d">Steinenvorstadt 67, Basel</div></div>
+    </div>
+    <div class="sec">Services</div>
+    <div class="row">
+      <span class="tile"><svg class="lucide lucide-scissors" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/></svg></span>
+      <div><div class="t"><mark>Bar</mark>ber cut</div><div class="d">from CHF 25</div></div>
+    </div>
+    <div class="wait" id="wait">
+      <span class="dots"><i></i><i></i><i></i></span>
+      <div><div class="t">Checking availability</div><div class="d">Barbershop Central, this week</div></div>
+    </div>
+    <div class="slotline" id="slotline">2 free times this week. <span style="color:var(--accent);font-weight:600">Open the salon</span></div>
+    <div class="lbl">P13: grouped sections, matched letters highlighted, an honest loader; row anatomy copied from the real overlay behind this patch. P15: the wait names its step. Tap the input again to reset. Slot counts are sample values.</div>
+  </div>
+</div>
+
+<script>
+  const typed = document.getElementById('typed');
+  const loader = document.getElementById('loader');
+  const patch = document.getElementById('patch');
+  let open = false;
+  document.getElementById('openSearch').addEventListener('click', () => {
+    open = !open;
+    if (!open) { typed.classList.remove('on'); patch.classList.remove('on'); resetWait(); return; }
+    typed.classList.add('on');
+    loader.style.display = 'inline-block';
+    patch.classList.remove('on');
+    setTimeout(() => { loader.style.display = 'none'; patch.classList.add('on'); }, 900);
+  });
+  function resetWait(){
+    document.getElementById('wait').classList.remove('on');
+    document.getElementById('slotline').classList.remove('on');
+  }
+  document.getElementById('pickResult').addEventListener('click', () => {
+    resetWait();
+    document.getElementById('wait').classList.add('on');
+    setTimeout(() => { document.getElementById('wait').classList.remove('on'); document.getElementById('slotline').classList.add('on'); }, 1400);
+  });
+</script>
+</body>
+</html>

@@ -46,9 +46,15 @@
     <div class="probes"><span class="pid">P1</span><span class="pid">P3</span><span class="pid">P7</span><span class="pid">P12</span><span class="pid">P14</span></div>
   </a>
 
+  <a class="page" href="search.html">
+    <div class="t">Search, on the REAL overlay</div>
+    <div class="d">Rebuilt the right way: the live search overlay captured from the app is the base; the typed state, grouped results, match highlight and named wait sit on top as overlays only.</div>
+    <div class="probes"><span class="pid">P13</span><span class="pid">P15</span></div>
+  </a>
+
   <div class="note">
     <h2>Pulled 2026-07-16</h2>
-    <p style="color:var(--ink2);font-size:13px;margin-bottom:10px">The bookings, payment, search and richness pages were redrawn approximations of surfaces you designed, and you rejected them on sight. They are deleted (graveyarded in REMOVED.md). The rebuild will use REAL captures only: one real booking through the test salon, the real pay step, the real search overlay. Only the dashboard page above stands, because its base is the live capture.</p>
+    <p style="color:var(--ink2);font-size:13px;margin-bottom:10px">The redrawn bookings, payment, search and richness pages were rejected on sight and deleted (graveyarded in REMOVED.md). Search is rebuilt above on the REAL captured overlay. Still blocked, named honestly: the pay step needs the wizard walk to reach it (a day with free times never loaded on the test salon during the automated walk; the live-capture chip stays open), the bookings page needs one real booking on the test account before its capture, and the richness probe waits for the converged card to render live so it uses real cards, not hand-rolled ones. The real wizard steps 1-3 are captured and saved for that rebuild.</p>
     <h2 style="margin-top:14px">Probes that stay on the side-by-side page, with the honest reason</h2>
     <ul>
       <li>P5 and P6 (loyalty tick-bar and marker): the customer loyalty page is live as "coming soon", there is no rendered meter to integrate into yet.</li>

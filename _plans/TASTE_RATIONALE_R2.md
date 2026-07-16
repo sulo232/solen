@@ -42,7 +42,10 @@ Owner message (dictated): fix + commit; expand RATIONALE.md with the og round-1 
 - [x] Search integrated page (P13 grouped+highlight+loader, P15 named wait) on the live home capture , verified: search.html, JS-verified full sequence
 - [x] Richness + layout generative probes (G1 triptych, G2 list/grid/carousel toggle) with real photos + converged card recipe , verified: richness.html, 14/14 images, toggle works
 - [x] Hub with honest not-integrated list (P5/P6 loyalty coming-soon, P8 token needed, P11/P17 no surface yet, P2/P10 decision carried by refs page) , verified: index.html
-- [ ] BLOCKED: payment-step LIVE capture stays chip task_400fe4c2 (the integrated page is a 1:1 component rebuild, honest note on the page)
+- [x] OWNER REJECTED the four rebuilt pages on sight 2026-07-16 ('so ass... replacing what i spent hours') , verified: deleted + graveyarded (REMOVED.md line, revert commit), hub rewritten to dashboard-only; hardened same turn: ~/.claude/hooks/mockup-real-base-gate.py (Base: declaration + rendered-capture check, SELFTEST OK 5/5, wired into settings.json); rebuild on REAL captures in progress (live search overlay + booking wizard walk)
+
+- [x] Rebuild on REAL captures , verified: search.html rebuilt on the live-captured overlay (base-search-real.png, PIL-pinned pill 7.8-13.4 percent), rendered proof: typed state + grouped results over the real pill; real wizard steps 1-3 captured (base-book-1/2/3) for the pay-step rebuild
+- [ ] BLOCKED, named: pay-step capture (no day with free times loaded during the automated wizard walk on Muse Beauty Studio; chip task_400fe4c2); bookings-page capture (needs one real booking on the test account first); richness probe (waits for the converged card to render live post-merge)
 
 ## Parked / boundaries
 - Web dark mode stays graveyarded (exists-check hit); positive-polarity mechanics recorded for MOBILE dark mode only.
