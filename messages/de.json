@@ -355,6 +355,9 @@
     "testimonials": {
       "title": "Was unsere Nutzer sagen",
       "eyebrow": "Echte Bewertungen"
+    },
+    "salonOfMonth": {
+      "title": "Salon des Monats"
     }
   },
   "breadcrumb": {
@@ -1345,7 +1348,13 @@
       "avg_tip": "Ø Trinkgeld",
       "walkin_conv": "Walk-in Conv.",
       "chair_utilization": "Stuhl-Ausl.",
-      "top": "Top"
+      "top": "Top",
+      "no_data_message": "In diesem Zeitraum noch keine abgeschlossenen Buchungen.",
+      "rating": "Bewertung",
+      "rebooking": "Wiederbuchung",
+      "loadErrorTitle": "Leaderboard konnte nicht geladen werden",
+      "loadErrorMessage": "Beim Laden der Rangliste ist etwas schiefgelaufen.",
+      "retry": "Erneut versuchen"
     },
     "overview": "Übersicht",
     "bookings": "Buchungen",
@@ -1628,7 +1637,8 @@
       "makeup_tools": "Makeup-Tools",
       "makeup_admin": "Makeup Studio",
       "waxing_tools": "Waxing-Tools",
-      "waxing_admin": "Waxing Studio"
+      "waxing_admin": "Waxing Studio",
+      "salonOfMonth": "Salon des Monats"
     },
     "schedule": {
       "monday": "Montag",
@@ -2281,7 +2291,8 @@
       "until": "bis",
       "active": "Aktiv",
       "inactive": "Inaktiv",
-      "copyAriaLabel": "Code {code} kopieren"
+      "copyAriaLabel": "Code {code} kopieren",
+      "perUserLimit": "Max. pro Kunde"
     },
     "notificationCenter": {
       "notifications": "Benachrichtigungen",
@@ -2738,6 +2749,28 @@
       "moreServices": "... und {count} weitere Dienste",
       "saveButton": "Speichern",
       "saving": "Speichert..."
+    },
+    "salonOfMonthAdminPage": {
+      "title": "Salon des Monats",
+      "subtitle": "Wähle den Salon des Monats und steuere, ob er auf der Startseite erscheint.",
+      "toggleLabel": "Auf der Startseite anzeigen",
+      "currentEyebrow": "Aktueller Gewinner",
+      "currentEmpty": "Noch kein Salon ausgewählt.",
+      "currentMonth": "Monat {month}",
+      "candidatesEyebrow": "Vorschläge",
+      "candidatesSubtitle": "Aktive Salons, sortiert nach Bewertung (mind. 5 Bewertungen).",
+      "monthLabel": "Monat",
+      "reasonLabel": "Begründung (optional)",
+      "reasonPlaceholder": "Warum dieser Salon?",
+      "selectButton": "Auswählen",
+      "selectedBadge": "Aktuell",
+      "selecting": "Wird gespeichert…",
+      "selectError": "Konnte nicht gespeichert werden. Bitte erneut versuchen.",
+      "emptyTitle": "Keine Kandidaten",
+      "emptyMessage": "Kein aktiver Salon hat mindestens 5 Bewertungen.",
+      "errorTitle": "Laden fehlgeschlagen",
+      "errorMessage": "Kandidaten konnten nicht geladen werden.",
+      "retry": "Erneut versuchen"
     }
   },
   "salonAboutEditor": {
@@ -4689,7 +4722,9 @@
       "reportProblem": "Problem melden",
       "shareTitle": "Meine Solen-Buchung",
       "shareText": "Bestellung {code} bei {salon}",
-      "calendarDescription": "Gebucht über solen.ch"
+      "calendarDescription": "Gebucht über solen.ch",
+      "paidOnlineNow": "Jetzt online bezahlt",
+      "restAtSalon": "Rest im Salon"
     },
     "guestBookingForm": {
       "title": "Gastbuchung",
@@ -5515,10 +5550,20 @@
     "noRefundFee": "Für diese Stornierung fällt eine Gebühr in Höhe des bezahlten Betrags an. Es gibt keine Rückerstattung.",
     "confirmCancelBtn": "Ja, stornieren",
     "keepBtn": "Behalten",
-    "rescheduleHint": "Zum Verschieben öffne die Salon-Seite und wähle eine neue Zeit.",
+    "rescheduleHint": "Dieser Termin kann hier nicht verschoben werden. Bitte kontaktiere den Salon.",
     "rebookNoSlot": "Kein freier Termin zum erneuten Buchen gefunden.",
     "rebookedToast": "Erneut gebucht. Schau bei deinen anstehenden Buchungen.",
-    "rebookError": "Erneutes Buchen fehlgeschlagen. Bitte versuche es erneut."
+    "rebookError": "Erneutes Buchen fehlgeschlagen. Bitte versuche es erneut.",
+    "rescheduleTitle": "Termin verschieben",
+    "rescheduleCloseAria": "Schliessen",
+    "rescheduleLead": "Kostenlos verschiebbar bis 24 Std. vor dem Termin.",
+    "rescheduleLeadPaid": "Kostenlos verschiebbar bis 24 Std. vor dem Termin. Dein bezahlter Betrag von {amount} bleibt auf der Buchung.",
+    "rescheduleWindowPassed": "Dieser Termin liegt weniger als 24 Std. entfernt und kann nicht mehr verschoben werden. Bitte kontaktiere den Salon direkt.",
+    "rescheduleWindowPassedCta": "Verschieben nicht mehr möglich",
+    "reschedulePickPrompt": "Datum und Zeit wählen",
+    "rescheduleCta": "Auf {date}, {time} verschieben",
+    "rescheduleError": "Verschieben fehlgeschlagen. Bitte versuche es erneut.",
+    "rescheduledToast": "Termin verschoben"
   },
   "reviewPrompt": {
     "title": "Wie war dein Besuch?",

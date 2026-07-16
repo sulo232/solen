@@ -347,7 +347,10 @@ export default function CheckoutPage() {
   }
 
   const chargeAmount = Math.max(0, baseChargeAmount - discountAmount);
-  const remainder = intent.estimated_price - baseChargeAmount;
+  // Rest paid at the salon = full price minus the promo/voucher discount minus what's charged online now,
+  // so a discount bigger than the deposit reduces the at-salon rest instead of being lost (matches the
+  // discount-aware backend remaining_at_salon). Floored at 0.
+  const remainder = Math.max(0, Math.round((intent.estimated_price - discountAmount - chargeAmount) * 100) / 100);
 
   // P9 — At-salon confirmed success
   if (atSalonConfirmed) {

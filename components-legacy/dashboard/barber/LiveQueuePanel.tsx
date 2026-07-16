@@ -29,9 +29,11 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
   useEffect(() => {
     fetchQueue();
 
-    // DIFFERENT channel name than customer WalkinQueue
+    // DIFFERENT channel name than customer WalkinQueue. Per-mount-UNIQUE suffix so realtime-js
+    // channel() can't hand back a still-subscribed stale channel on a React Strict Mode remount
+    // (fixed topic + async removeChannel => "cannot add postgres_changes callbacks after subscribe()").
     const channel = supabase
-      .channel(`dashboard-walkin-${salonId}`)
+      .channel(`dashboard-walkin-${salonId}-${Math.random().toString(36).slice(2)}`)
       .on(
         "postgres_changes",
         {

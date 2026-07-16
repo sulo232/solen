@@ -142,7 +142,15 @@ export default function SettingsForm({
     if (confirmText.trim() !== CONFIRM) return;
     setDeleting(true);
     try {
-      const res = await fetch("/api/profile/delete", { method: "DELETE" });
+      // The canonical full deletion flow (app/api/profile/request-deletion):
+      // same 30-day-arm behavior for a registered user as the legacy
+      // /api/profile/delete, plus rate limiting. Kept as the single UI entry
+      // point so this and the guest-erasure path share one endpoint.
+      const res = await fetch("/api/profile/request-deletion", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         console.error("[Settings] delete failed:", err?.message ?? res.status);

@@ -355,6 +355,9 @@
     "testimonials": {
       "title": "Ce que disent nos utilisateurs",
       "eyebrow": "Vrais avis"
+    },
+    "salonOfMonth": {
+      "title": "Salon du mois"
     }
   },
   "breadcrumb": {
@@ -1590,7 +1593,8 @@
       "makeup_tools": "Outils maquillage",
       "makeup_admin": "Studio maquillage",
       "waxing_tools": "Outils épilation",
-      "waxing_admin": "Studio épilation"
+      "waxing_admin": "Studio épilation",
+      "salonOfMonth": "Salon du mois"
     },
     "schedule": {
       "monday": "Lundi",
@@ -1706,7 +1710,13 @@
       "no_data": "Aucune donnée",
       "value": "Valeur",
       "barber": "Barbier",
-      "top": "Top"
+      "top": "Top",
+      "rating": "Note",
+      "rebooking": "Reréservation",
+      "no_data_message": "Aucune réservation terminée sur cette période.",
+      "loadErrorTitle": "Le classement n'a pas pu être chargé",
+      "loadErrorMessage": "Une erreur s'est produite lors du chargement du classement.",
+      "retry": "Réessayer"
     },
     "break_manager": {
       "title": "Pauses",
@@ -2263,7 +2273,8 @@
       "until": "jusqu'au",
       "active": "Actif",
       "inactive": "Inactif",
-      "copyAriaLabel": "Copier le code {code}"
+      "copyAriaLabel": "Copier le code {code}",
+      "perUserLimit": "Max. par client"
     },
     "notificationCenter": {
       "notifications": "Notifications",
@@ -2720,6 +2731,28 @@
       "moreServices": "... et {count} autres services",
       "saveButton": "Enregistrer",
       "saving": "Enregistrement..."
+    },
+    "salonOfMonthAdminPage": {
+      "title": "Salon du mois",
+      "subtitle": "Choisis le salon du mois et gère son affichage sur la page d'accueil.",
+      "toggleLabel": "Afficher sur la page d'accueil",
+      "currentEyebrow": "Gagnant actuel",
+      "currentEmpty": "Aucun salon choisi pour l'instant.",
+      "currentMonth": "Mois {month}",
+      "candidatesEyebrow": "Candidats",
+      "candidatesSubtitle": "Salons actifs, triés par note (5 avis minimum).",
+      "monthLabel": "Mois",
+      "reasonLabel": "Raison (optionnel)",
+      "reasonPlaceholder": "Pourquoi ce salon ?",
+      "selectButton": "Choisir",
+      "selectedBadge": "Actuel",
+      "selecting": "Enregistrement…",
+      "selectError": "Échec de l'enregistrement. Veuillez réessayer.",
+      "emptyTitle": "Aucun candidat",
+      "emptyMessage": "Aucun salon actif n'a encore 5 avis ou plus.",
+      "errorTitle": "Échec du chargement",
+      "errorMessage": "Impossible de charger les candidats.",
+      "retry": "Réessayer"
     }
   },
   "salonAboutEditor": {
@@ -4671,7 +4704,9 @@
       "reportProblem": "Signaler un problème",
       "shareTitle": "Ma réservation Solen",
       "shareText": "Commande {code} chez {salon}",
-      "calendarDescription": "Réservé via solen.ch"
+      "calendarDescription": "Réservé via solen.ch",
+      "paidOnlineNow": "Payé en ligne",
+      "restAtSalon": "Reste au salon"
     },
     "guestBookingForm": {
       "title": "Réservation invité",
@@ -5497,10 +5532,20 @@
     "noRefundFee": "Cette annulation entraîne des frais égaux au montant payé, il n’y a donc aucun remboursement.",
     "confirmCancelBtn": "Oui, annuler",
     "keepBtn": "Conserver",
-    "rescheduleHint": "Pour reprogrammer, ouvrez la page du salon et choisissez un nouvel horaire.",
+    "rescheduleHint": "Ce rendez-vous ne peut pas etre deplace ici. Merci de contacter le salon.",
     "rebookNoSlot": "Aucun créneau disponible pour reprendre rendez-vous.",
     "rebookedToast": "Nouvelle réservation effectuée. Consultez vos prochaines réservations.",
-    "rebookError": "Impossible de reprendre rendez-vous. Veuillez réessayer."
+    "rebookError": "Impossible de reprendre rendez-vous. Veuillez réessayer.",
+    "rescheduleTitle": "Déplacer le rendez-vous",
+    "rescheduleCloseAria": "Fermer",
+    "rescheduleLead": "Déplacement gratuit jusqu’à 24 h avant le rendez-vous.",
+    "rescheduleLeadPaid": "Déplacement gratuit jusqu’à 24 h avant le rendez-vous. Le montant de {amount} déjà payé reste sur la réservation.",
+    "rescheduleWindowPassed": "Ce rendez-vous a lieu dans moins de 24 h et ne peut plus être déplacé. Merci de contacter directement le salon.",
+    "rescheduleWindowPassedCta": "Déplacement impossible",
+    "reschedulePickPrompt": "Choisir une date et une heure",
+    "rescheduleCta": "Déplacer au {date}, {time}",
+    "rescheduleError": "Impossible de déplacer le rendez-vous. Veuillez réessayer.",
+    "rescheduledToast": "Rendez-vous déplacé"
   },
   "reviewPrompt": {
     "title": "Comment s'est passée ta visite ?",

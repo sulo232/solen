@@ -12,7 +12,7 @@ import {
   ShieldCheck, Store, UsersRound, DollarSign, BarChart3, Award, FileEdit,
   MessageSquareWarning, Star, PieChart, Paintbrush, Compass, Camera,
   UserCheck, Megaphone, Image as ImageIcon, Sparkles, LayoutGrid, FlaskConical,
-  Scale, RotateCcw, TrendingUp, Percent, ArrowLeft, Package, MapPin, Gauge,
+  Scale, RotateCcw, TrendingUp, Percent, ArrowLeft, Package, MapPin, Gauge, Crown,
 } from "lucide-react";
 
 import { Skeleton } from "@/app/[locale]/_components/primitives";
@@ -51,6 +51,7 @@ const ADMIN_NAV = [
   { key: "discovery",           href: "/dashboard/discovery-admin",    icon: Compass },
   { key: "homepage",            href: "/dashboard/homepage-admin",     icon: LayoutGrid },
   { key: "cities",              href: "/dashboard/cities-admin",       icon: MapPin },
+  { key: "salonOfMonth",        href: "/dashboard/salon-of-month-admin", icon: Crown },
   { key: "sandbox",             href: "/dashboard/admin-sandbox",      icon: FlaskConical },
 ] as const;
 
@@ -286,7 +287,7 @@ export default function DashboardLayout({
             const active = isActive(href);
             return (
               <Link key={key} href={`/${locale}${href}`} aria-current={active ? "page" : undefined}
-                className={`group relative w-10 h-10 rounded-xl grid place-items-center transition-colors ${active ? "bg-s-accent-bright text-white" : "text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"}`}>
+                className={`group relative w-10 h-10 rounded-xl grid place-items-center transition-colors ${active ? "bg-s-border text-s-ink" : "text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"}`}>
                 <Icon size={20} strokeWidth={1.9} />
                 {/* messaging unread badge removed — feature off (owner 2026-06-13) */}
                 <span className="pointer-events-none absolute left-[52px] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-s-ink px-2 py-1 text-[12px] font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity z-50">{label}</span>
@@ -300,7 +301,7 @@ export default function DashboardLayout({
                 const active = isActive(href);
                 return (
                   <Link key={key} href={`/${locale}${href}`} aria-current={active ? "page" : undefined}
-                    className={`group relative w-10 h-10 rounded-xl grid place-items-center transition-colors ${active ? "bg-s-accent-bright text-white" : "text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"}`}>
+                    className={`group relative w-10 h-10 rounded-xl grid place-items-center transition-colors ${active ? "bg-s-border text-s-ink" : "text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"}`}>
                     <Icon size={19} strokeWidth={1.9} />
                     <span className="pointer-events-none absolute left-[52px] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-s-ink px-2 py-1 text-[12px] font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity z-50">{t(key)}</span>
                   </Link>
@@ -353,8 +354,8 @@ export default function DashboardLayout({
                     const active = isActive(href);
                     return (
                       <Link key={href} href={`/${locale}${href}`} onClick={() => setMobileSidebarOpen(false)} aria-current={active ? "page" : undefined}
-                        className={`flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium transition-colors ${active ? "bg-s-accent/[0.08] text-s-accent" : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"}`}>
-                        <Icon size={20} strokeWidth={1.9} className={active ? "text-s-accent" : "text-s-ink-3"} />
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium transition-colors ${active ? "bg-s-bg-sunken text-s-ink font-semibold" : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"}`}>
+                        <Icon size={20} strokeWidth={1.9} className={active ? "text-s-ink" : "text-s-ink-3"} />
                         <span className="flex-1">{t(key)}</span>
                       </Link>
                     );
@@ -376,8 +377,8 @@ export default function DashboardLayout({
                             const active = isActive(href);
                             return (
                               <Link key={key} href={`/${locale}${href}`} onClick={() => setMobileSidebarOpen(false)} aria-current={active ? "page" : undefined}
-                                className={`flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium transition-colors ${active ? "bg-s-accent/[0.08] text-s-accent" : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"}`}>
-                                <Icon size={20} strokeWidth={1.9} className={active ? "text-s-accent" : "text-s-ink-3"} />
+                                className={`flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium transition-colors ${active ? "bg-s-bg-sunken text-s-ink font-semibold" : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"}`}>
+                                <Icon size={20} strokeWidth={1.9} className={active ? "text-s-ink" : "text-s-ink-3"} />
                                 <span className="flex-1">{label}</span>
                                 {/* messaging unread badge removed — feature off (owner 2026-06-13) */}
                               </Link>
@@ -395,8 +396,8 @@ export default function DashboardLayout({
                           const active = isActive(href);
                           return (
                             <Link key={href} href={`/${locale}${href}`} onClick={() => setMobileSidebarOpen(false)} aria-current={active ? "page" : undefined}
-                              className={`flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium transition-colors ${active ? "bg-s-accent/[0.08] text-s-accent" : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"}`}>
-                              <Icon size={20} strokeWidth={1.9} className={active ? "text-s-accent" : "text-s-ink-3"} />
+                              className={`flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium transition-colors ${active ? "bg-s-bg-sunken text-s-ink font-semibold" : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"}`}>
+                              <Icon size={20} strokeWidth={1.9} className={active ? "text-s-ink" : "text-s-ink-3"} />
                               <span className="flex-1">{t(key)}</span>
                             </Link>
                           );

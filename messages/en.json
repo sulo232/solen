@@ -355,6 +355,9 @@
     "testimonials": {
       "title": "What our users say",
       "eyebrow": "Real Reviews"
+    },
+    "salonOfMonth": {
+      "title": "Salon of the Month"
     }
   },
   "breadcrumb": {
@@ -1335,7 +1338,13 @@
       "avg_tip": "Avg Tip",
       "walkin_conv": "Walk-in Conv.",
       "chair_utilization": "Chair Util.",
-      "top": "Top"
+      "top": "Top",
+      "no_data_message": "No completed bookings in this period yet.",
+      "rating": "Rating",
+      "rebooking": "Rebooking",
+      "loadErrorTitle": "Leaderboard could not be loaded",
+      "loadErrorMessage": "Something went wrong loading the leaderboard.",
+      "retry": "Try again"
     },
     "overview": "Overview",
     "bookings": "Bookings",
@@ -1618,7 +1627,8 @@
       "makeup_tools": "Makeup Tools",
       "makeup_admin": "Makeup Studio",
       "waxing_tools": "Waxing Tools",
-      "waxing_admin": "Waxing Studio"
+      "waxing_admin": "Waxing Studio",
+      "salonOfMonth": "Salon of the Month"
     },
     "schedule": {
       "monday": "Monday",
@@ -2271,7 +2281,8 @@
       "until": "until",
       "active": "Active",
       "inactive": "Inactive",
-      "copyAriaLabel": "Copy code {code}"
+      "copyAriaLabel": "Copy code {code}",
+      "perUserLimit": "Max per customer"
     },
     "notificationCenter": {
       "notifications": "Notifications",
@@ -2728,6 +2739,28 @@
       "moreServices": "... and {count} more services",
       "saveButton": "Save",
       "saving": "Saving..."
+    },
+    "salonOfMonthAdminPage": {
+      "title": "Salon of the Month",
+      "subtitle": "Pick the salon of the month and control whether it shows on the homepage.",
+      "toggleLabel": "Show on the homepage",
+      "currentEyebrow": "Current winner",
+      "currentEmpty": "No salon picked yet.",
+      "currentMonth": "Month {month}",
+      "candidatesEyebrow": "Candidates",
+      "candidatesSubtitle": "Active salons, sorted by rating (5+ reviews required).",
+      "monthLabel": "Month",
+      "reasonLabel": "Reason (optional)",
+      "reasonPlaceholder": "Why this salon?",
+      "selectButton": "Select",
+      "selectedBadge": "Current",
+      "selecting": "Saving…",
+      "selectError": "Could not be saved. Please try again.",
+      "emptyTitle": "No candidates",
+      "emptyMessage": "No active salon has 5 or more reviews yet.",
+      "errorTitle": "Failed to load",
+      "errorMessage": "Could not load candidates.",
+      "retry": "Try again"
     }
   },
   "salonAboutEditor": {
@@ -4679,7 +4712,9 @@
       "reportProblem": "Report a problem",
       "shareTitle": "My Solen booking",
       "shareText": "Order {code} at {salon}",
-      "calendarDescription": "Booked via solen.ch"
+      "calendarDescription": "Booked via solen.ch",
+      "paidOnlineNow": "Paid online now",
+      "restAtSalon": "Rest at the salon"
     },
     "guestBookingForm": {
       "title": "Guest booking",
@@ -5505,10 +5540,20 @@
     "noRefundFee": "This cancellation incurs a fee equal to the amount paid, so there's no refund.",
     "confirmCancelBtn": "Yes, cancel",
     "keepBtn": "Keep",
-    "rescheduleHint": "To reschedule, open the salon page and pick a new time.",
+    "rescheduleHint": "This booking can't be moved here. Please contact the salon.",
     "rebookNoSlot": "No available slot found to rebook.",
     "rebookedToast": "Rebooked. Check your upcoming bookings.",
-    "rebookError": "Could not rebook. Please try again."
+    "rebookError": "Could not rebook. Please try again.",
+    "rescheduleTitle": "Move your appointment",
+    "rescheduleCloseAria": "Close",
+    "rescheduleLead": "Free to move up to 24h before your appointment.",
+    "rescheduleLeadPaid": "Free to move up to 24h before your appointment. Your {amount} paid stays on the booking.",
+    "rescheduleWindowPassed": "This appointment is less than 24h away and can no longer be moved. Please contact the salon directly.",
+    "rescheduleWindowPassedCta": "Can no longer be moved",
+    "reschedulePickPrompt": "Pick a date and time",
+    "rescheduleCta": "Move to {date}, {time}",
+    "rescheduleError": "Could not reschedule. Please try again.",
+    "rescheduledToast": "Appointment moved"
   },
   "reviewPrompt": {
     "title": "How was your visit?",

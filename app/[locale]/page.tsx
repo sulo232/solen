@@ -25,6 +25,13 @@ import MobileCategoriesRow from "./_components/homepage/MobileCategoriesRow";
 // V3-D348: client-side curation — "Weil du X magst" salon rows for the
 // categories the user picked during onboarding (renders null when logged-out).
 import ForYouSalonRows from "./_components/homepage/ForYouSalonRows";
+// Salon of the Month (2026-07-13): real editorial pick from the admin picker
+// (dashboard/salon-of-month-admin -> salon_of_month_winners table), gated on
+// the salon_of_month feature_flags toggle. Server component, renders null
+// when the toggle is off / no winner picked yet, so it's a silent no-op for
+// everyone until an admin turns it on. Not the same feature as the removed
+// ArtistOfTheMonth (invented demo stylists, no backend) referenced below.
+import SalonOfMonth from "./_components/homepage/SalonOfMonth";
 // V3-D124 (2026-05-24): FeatureBento was added then scrapped per user.
 // Component file kept at ./_components/homepage/FeatureBento.tsx and
 // illustrations at public/illustrations/features/ for easy revive — just
@@ -146,7 +153,12 @@ export async function generateMetadata({
  */
 export const revalidate = 300;
 
-export default async function Page() {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
   return (
     <div className="relative overflow-hidden bg-white">
       {/* V3-D137 sunset halo SCRAPPED 2026-05-25 — user ditched, reverted
@@ -164,6 +176,7 @@ export default async function Page() {
             redundant with the hero's "Hallo, {name}" — two name-greetings on
             one page. Hero greeting is the single greeting now. */}
         <MobileCategoriesRow />
+        <SalonOfMonth locale={locale} />
         <ForYouSalonRows />
         <RecentlyViewed />
         <Nearby />

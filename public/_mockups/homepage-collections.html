@@ -1,0 +1,304 @@
+<!doctype html>
+<!--
+  Exists-check: `npm run exists homepage-collections` = 0. Extends the homepage
+  editorial layer (app/[locale]/page.tsx). Net-new component = the PROMO BANNER
+  (swipeable, text-panel + image); the COLLECTION ROWS reuse the existing
+  ScrollRow + SalonCard (ForYouSalonRows/Nearby already do this). Salon-of-Month
+  is OUT of the strip (owner decided, HOMEPAGE_COLLECTIONS.md).
+
+  Reference-checked: /Users/sulo/solen/screenshots/IMG_6455.PNG..IMG_6460.PNG (owner's real Uber Eats captures, read this session: promo banner = text-panel LEFT + illustration RIGHT never overlaid ~2.2:1; collection rows = title + circular see-all arrow + cards with photo-on-top and name/rating BELOW, 1 full + peek; "Top 10" is TITLE-ONLY with no rank numbers on cards; opened view IMG_6460 = full-width cards stacked vertically).
+  Owner-scope: confirmed: HOMEPAGE_COLLECTIONS.md 3-component model , "A. Promo banner (swipeable, promotions/coupons/bookings) + B. Collection rows (Top 10 / Angebote / Hair-DNA, title + see-all, reuse SalonCard) + C. Opened collection page (full-screen vertical list)". Decided: collections = Top 10, Hair DNA, Angebote; Salon-of-Month left OUT of the strip; 3-4 collections.
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx (card grammar) + app/[locale]/page.tsx (section order) + tailwind.config.js (tokens) + messages/de.json.
+   - Tokens: s-ink #0A0A0A, s-ink-2 #6B6B6B, s-ink-3 #9A9A9A, s-border #E4E4E7,
+     s-bg-sunken #F4F4F5, s-star #FFC32B, s-accent #276EF1, s-success #16A34A, s-success-bg #E8F5E9.
+   - Live measurement this session (getBoundingClientRect on localhost:3000/de):
+     homepage SalonCard image 232x201px, radius 24px, ratio 1.15 @767vw.
+   - Card grammar: photo aspect-[3/2] rounded-[22px], Solen-Favorit ink-glass badge,
+     heart top-right, Row1 name+star+count, Row2 address+city, Row3 calendar+time+CHF.
+   - See-all arrows are INK (not blue) per the design contract. Sample data is
+     illustrative; live component computes counts (psych-ok). Shipped copy is
+     localized de/en/fr/it; this mockup is English for review.
+  hue-ok: saturated hexes are locked tokens only; tinted images are decorative
+  photo placeholders (photos palette-exempt, taste rule 3), muted duotones.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Homepage Collections , promo banner + collection rows + opened page</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --ink3:#9A9A9A;
+    --border:#E4E4E7; --sunken:#F4F4F5; --white:#fff;
+    --star:#FFC32B; --accent:#276EF1; --success:#16A34A; --success-bg:#E8F5E9;
+    --radius-card:22px; --radius-16:16px;
+    --font-head:"Inter Tight","Inter",-apple-system,system-ui,sans-serif;
+    --font-body:"Inter",-apple-system,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font-body);background:#ECECEE;color:var(--ink);-webkit-font-smoothing:antialiased;padding:28px 16px 64px;line-height:1.4}
+  .intro{max-width:840px;margin:0 auto 26px;color:#2b2b2b}
+  .intro h1{font-family:var(--font-head);font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:8px}
+  .intro p{font-size:14px;color:#4a4a4a;margin-bottom:6px}
+  .intro b{color:var(--ink)}
+  .stage{display:flex;gap:26px;justify-content:center;align-items:flex-start;flex-wrap:wrap;max-width:900px;margin:0 auto}
+  .frame-wrap{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .frame-label{font-family:var(--font-head);font-size:13px;font-weight:600;color:#3a3a3a}
+  .frame-label span{color:var(--ink3);font-weight:500}
+  .phone{width:390px;background:var(--white);border-radius:34px;box-shadow:0 20px 50px rgba(0,0,0,.16),0 2px 8px rgba(0,0,0,.08);overflow:hidden;border:1px solid var(--border)}
+  .status{display:flex;justify-content:space-between;align-items:center;padding:10px 22px 4px;font-size:13px;font-weight:600}
+  .status .glyphs{display:flex;gap:6px;align-items:center}
+  .lucide{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;display:block}
+
+  .home-head{padding:6px 18px 2px}
+  .home-head .greet{font-family:var(--font-head);font-size:24px;font-weight:700;letter-spacing:-.02em}
+  .home-head .sub{font-size:13px;color:var(--ink2);margin-top:2px}
+
+  /* ---- A. PROMO BANNER (swipeable, text-panel + image) ---- */
+  .promo-wrap{padding:16px 0 6px}
+  .promo-strip{display:flex;gap:12px;overflow-x:auto;padding:0 18px;scroll-snap-type:x mandatory}
+  .promo-strip::-webkit-scrollbar{display:none}
+  .promo{position:relative;flex:0 0 330px;height:150px;border-radius:var(--radius-card);overflow:hidden;scroll-snap-align:start;display:flex;box-shadow:0 1px 3px rgba(0,0,0,.10);cursor:pointer}
+  .promo .txt{width:60%;background:var(--ink);color:#fff;padding:16px 16px 14px;display:flex;flex-direction:column;justify-content:center}
+  .promo .txt .ey{font-size:11px;font-weight:600;color:rgba(255,255,255,.62);margin-bottom:5px}
+  .promo .txt h3{font-family:var(--font-head);font-size:19px;font-weight:700;letter-spacing:-.01em;line-height:1.08}
+  .promo .txt p{font-size:12.5px;color:rgba(255,255,255,.78);margin-top:4px;line-height:1.3}
+  .promo .txt .cta{align-self:flex-start;margin-top:10px;background:#fff;color:var(--ink);font-size:12.5px;font-weight:600;padding:7px 13px;border-radius:999px}
+  .promo .pic{width:40%;position:relative}
+  .promo .pic.p1{background:linear-gradient(135deg,#5b4a3c,#9a8770 60%,#c3b39c)}
+  .promo .pic.p2{background:linear-gradient(135deg,#33424e,#647d8c 60%,#9db0bb)}
+  .dots{display:flex;gap:6px;justify-content:center;padding:10px 0 2px}
+  .dots i{width:6px;height:6px;border-radius:999px;background:var(--border)}
+  .dots i.on{background:var(--ink);width:16px}
+
+  /* ---- B. COLLECTION ROW ---- */
+  .sec-title{font-family:var(--font-head);font-size:19px;font-weight:700;letter-spacing:-.01em;padding:18px 18px 12px;display:flex;align-items:center;justify-content:space-between}
+  .seeall{width:30px;height:30px;border-radius:999px;background:var(--sunken);display:grid;place-items:center;color:var(--ink)}
+  .row-cards{display:flex;gap:12px;overflow-x:auto;padding:0 18px 4px;scroll-snap-type:x mandatory}
+  .row-cards::-webkit-scrollbar{display:none}
+  .scard{flex:0 0 218px;scroll-snap-align:start}
+  .scard .ph{position:relative;height:145px;border-radius:var(--radius-card);overflow:hidden}
+  .ph.f1{background:linear-gradient(150deg,#e6e4e2,#cbc7c3)}
+  .ph.f2{background:linear-gradient(150deg,#e3e5e6,#c6cccf)}
+  .ph.f3{background:linear-gradient(150deg,#e7e3e5,#ccc4c9)}
+  .scard .fav{position:absolute;top:8px;left:8px;display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:10px;font-size:12px;font-weight:600;color:#fff;background:rgba(30,26,22,.62);backdrop-filter:blur(14px)}
+  .scard .disc{position:absolute;top:8px;left:8px;padding:5px 9px;border-radius:10px;font-size:12px;font-weight:700;color:var(--success);background:var(--success-bg)}
+  .scard .heart{position:absolute;top:6px;right:6px;width:34px;height:34px;border-radius:999px;background:rgba(255,255,255,.92);display:grid;place-items:center;color:var(--ink)}
+  .scard .r1{display:flex;align-items:baseline;gap:8px;margin-top:10px}
+  .scard .r1 .nm{font-size:14px;font-weight:600;letter-spacing:-.01em;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .scard .r1 .rt{font-size:13px;color:var(--ink2);display:inline-flex;align-items:center;gap:3px;flex-shrink:0}
+  .scard .r1 .rt .st{width:12px;height:12px;fill:var(--star);stroke:none}
+  .scard .r2{font-size:12px;color:var(--ink3);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .scard .r3{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--ink2);margin-top:3px}
+  .scard .r3 .slot{display:inline-flex;align-items:center;gap:5px}
+  .scard .r3 b{color:var(--ink);font-weight:600}
+
+  /* ---- C. OPENED COLLECTION (full-width vertical cards) ---- */
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border)}
+  .topbar .btn{width:38px;height:38px;border-radius:999px;border:1px solid var(--border);background:#fff;display:grid;place-items:center;color:var(--ink)}
+  .topbar .ttl{font-family:var(--font-head);font-size:15px;font-weight:700}
+  .ohead{padding:14px 18px 4px}
+  .ohead h2{font-family:var(--font-head);font-size:22px;font-weight:700;letter-spacing:-.02em}
+  .ohead p{font-size:13px;color:var(--ink2);margin-top:2px}
+  .olist{padding:12px 16px 22px;display:flex;flex-direction:column;gap:18px}
+  .ocard .ph{position:relative;height:172px;border-radius:var(--radius-card);overflow:hidden}
+  .ocard .fav{position:absolute;top:10px;left:10px;display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:10px;font-size:12px;font-weight:600;color:#fff;background:rgba(30,26,22,.62);backdrop-filter:blur(14px)}
+  .ocard .heart{position:absolute;top:8px;right:8px;width:36px;height:36px;border-radius:999px;background:rgba(255,255,255,.92);display:grid;place-items:center;color:var(--ink)}
+  .ocard .r1{display:flex;align-items:baseline;gap:8px;margin-top:11px}
+  .ocard .r1 .nm{font-family:var(--font-head);font-size:16px;font-weight:700;letter-spacing:-.01em;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ocard .r1 .rt{font-size:13px;color:var(--ink2);display:inline-flex;align-items:center;gap:4px;flex-shrink:0}
+  .ocard .r1 .rt .st{width:13px;height:13px;fill:var(--star);stroke:none}
+  .ocard .r2{font-size:13px;color:var(--ink3);margin-top:2px}
+  .ocard .r3{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--ink2);margin-top:5px}
+  .ocard .r3 .slot{display:inline-flex;align-items:center;gap:5px}
+  .ocard .r3 b{color:var(--ink);font-weight:600}
+
+  .note{max-width:840px;margin:26px auto 0;font-size:13px;color:#555}
+  .note b{color:var(--ink)}
+  .qs{max-width:840px;margin:18px auto 0;background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px 20px}
+  .qs h3{font-family:var(--font-head);font-size:15px;font-weight:700;margin-bottom:10px}
+  .qs ol{margin-left:18px;font-size:13.5px;color:#333}
+  .qs li{margin-bottom:7px}
+  .qs li b{color:var(--ink)}
+</style>
+</head>
+<body>
+  <div class="intro">
+    <h1>Homepage Collections , the real 3-part model</h1>
+    <p><b>This time built from your Uber screenshots + the plan.</b> Three separate pieces, not one: <b>A</b> a swipeable promo banner (text left, image right), <b>B</b> collection rows that reuse the normal salon card (title + see-all arrow), <b>C</b> the full-screen page you land on when you tap see-all. Salon of the Month is OUT of the strip, as you decided.</p>
+    <p>Left frame = the home feed (promo banner + 3 collection rows). Right frame = the opened "Top 10" page.</p>
+  </div>
+
+  <div class="stage">
+    <!-- ============ SCREEN A , HOME FEED ============ -->
+    <div class="frame-wrap">
+      <div class="frame-label">Home feed <span>, promo banner (A) + collection rows (B)</span></div>
+      <div class="phone">
+        <div class="status">
+          <span>9:41</span>
+          <span class="glyphs">
+            <svg class="lucide" viewBox="0 0 24 24"><path d="M2 20h.01M7 20v-4M12 20v-8M17 20V8M22 4v16"/></svg>
+            <svg class="lucide" viewBox="0 0 24 24"><path d="M5 13a10 10 0 0 1 14 0"/><path d="M8.5 16.5a5 5 0 0 1 7 0"/><path d="M2 8.82a15 15 0 0 1 20 0"/></svg>
+            <svg class="lucide" viewBox="0 0 24 24"><rect x="2" y="7" width="18" height="10" rx="2"/><line x1="22" y1="11" x2="22" y2="13"/></svg>
+          </span>
+        </div>
+
+        <div class="home-head">
+          <div class="greet">Hi Lena</div>
+          <div class="sub">Time for fresh hair?</div>
+        </div>
+
+        <!-- A. PROMO BANNER , swipeable, text panel + image -->
+        <div class="promo-wrap">
+          <div class="promo-strip">
+            <div class="promo">
+              <div class="txt">
+                <span class="ey">Offer</span>
+                <h3>Bring a friend, save CHF 10</h3>
+                <p>On your next booking together</p>
+                <span class="cta">Book now</span>
+              </div>
+              <div class="pic p1"></div>
+            </div>
+            <div class="promo">
+              <div class="txt">
+                <span class="ey">This week</span>
+                <h3>20% off new salons</h3>
+                <p>First-visit deals near you</p>
+                <span class="cta">Explore</span>
+              </div>
+              <div class="pic p2"></div>
+            </div>
+          </div>
+          <div class="dots"><i class="on"></i><i></i><i></i></div>
+        </div>
+
+        <!-- B. COLLECTION ROW , Top 10 (title-only, no rank numbers, like Uber) -->
+        <div class="sec-title"><span>Top 10 in Zurich</span><span class="seeall"><svg class="lucide" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></div>
+        <div class="row-cards">
+          <div class="scard">
+            <div class="ph f1">
+              <span class="fav">Solen Favorit</span>
+              <span class="heart"><svg class="lucide" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></span>
+            </div>
+            <div class="r1"><span class="nm">Studio Lumiere</span><span class="rt"><svg class="lucide st" viewBox="0 0 24 24"><path d="m12 2 3 6.9 7.6.6-5.8 5 1.8 7.4L12 18l-6.4 3.9 1.8-7.4-5.8-5 7.6-.6z"/></svg>4.9 (128)</span></div>
+            <div class="r2">Josefstrasse 20 Zurich</div>
+            <div class="r3"><span class="slot"><svg class="lucide" viewBox="0 0 24 24" style="width:12px;height:12px"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Today <b>15:00</b></span><b>CHF 65</b></div>
+          </div>
+          <div class="scard">
+            <div class="ph f2">
+              <span class="heart"><svg class="lucide" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></span>
+            </div>
+            <div class="r1"><span class="nm">Maison de Coiffure</span><span class="rt"><svg class="lucide st" viewBox="0 0 24 24"><path d="m12 2 3 6.9 7.6.6-5.8 5 1.8 7.4L12 18l-6.4 3.9 1.8-7.4-5.8-5 7.6-.6z"/></svg>4.8 (203)</span></div>
+            <div class="r2">Ankerstrasse 3 Zurich</div>
+            <div class="r3"><span class="slot"><svg class="lucide" viewBox="0 0 24 24" style="width:12px;height:12px"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Tomorrow <b>10:30</b></span><b>CHF 80</b></div>
+          </div>
+        </div>
+
+        <!-- B. COLLECTION ROW , Deals (discount pills) -->
+        <div class="sec-title"><span>Deals this week</span><span class="seeall"><svg class="lucide" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></div>
+        <div class="row-cards">
+          <div class="scard">
+            <div class="ph f3">
+              <span class="disc">-20%</span>
+              <span class="heart"><svg class="lucide" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></span>
+            </div>
+            <div class="r1"><span class="nm">Nagelstudio Bloom</span><span class="rt"><svg class="lucide st" viewBox="0 0 24 24"><path d="m12 2 3 6.9 7.6.6-5.8 5 1.8 7.4L12 18l-6.4 3.9 1.8-7.4-5.8-5 7.6-.6z"/></svg>4.7 (61)</span></div>
+            <div class="r2">Europaallee 8 Zurich</div>
+            <div class="r3"><span class="slot"><svg class="lucide" viewBox="0 0 24 24" style="width:12px;height:12px"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Today <b>16:00</b></span><b>CHF 56</b></div>
+          </div>
+          <div class="scard">
+            <div class="ph f1">
+              <span class="disc">-15%</span>
+              <span class="heart"><svg class="lucide" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></span>
+            </div>
+            <div class="r1"><span class="nm">Barber Kreis 4</span><span class="rt"><svg class="lucide st" viewBox="0 0 24 24"><path d="m12 2 3 6.9 7.6.6-5.8 5 1.8 7.4L12 18l-6.4 3.9 1.8-7.4-5.8-5 7.6-.6z"/></svg>4.8 (94)</span></div>
+            <div class="r2">Langstrasse 12 Zurich</div>
+            <div class="r3"><span class="slot"><svg class="lucide" viewBox="0 0 24 24" style="width:12px;height:12px"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Today <b>18:30</b></span><b>CHF 38</b></div>
+          </div>
+        </div>
+
+        <!-- B. COLLECTION ROW , Hair DNA -->
+        <div class="sec-title"><span>For your hair</span><span class="seeall"><svg class="lucide" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></div>
+        <div class="row-cards">
+          <div class="scard">
+            <div class="ph f2">
+              <span class="heart"><svg class="lucide" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></span>
+            </div>
+            <div class="r1"><span class="nm">Curl Studio Zurich</span><span class="rt"><svg class="lucide st" viewBox="0 0 24 24"><path d="m12 2 3 6.9 7.6.6-5.8 5 1.8 7.4L12 18l-6.4 3.9 1.8-7.4-5.8-5 7.6-.6z"/></svg>4.9 (77)</span></div>
+            <div class="r2">Zweierstrasse 15 Zurich</div>
+            <div class="r3"><span class="slot"><svg class="lucide" viewBox="0 0 24 24" style="width:12px;height:12px"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Tomorrow <b>11:00</b></span><b>CHF 90</b></div>
+          </div>
+          <div class="scard">
+            <div class="ph f3">
+              <span class="heart"><svg class="lucide" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></span>
+            </div>
+            <div class="r1"><span class="nm">Kopf &amp; Kragen</span><span class="rt"><svg class="lucide st" viewBox="0 0 24 24"><path d="m12 2 3 6.9 7.6.6-5.8 5 1.8 7.4L12 18l-6.4 3.9 1.8-7.4-5.8-5 7.6-.6z"/></svg>4.7 (140)</span></div>
+            <div class="r2">Badenerstrasse 5 Zurich</div>
+            <div class="r3"><span class="slot"><svg class="lucide" viewBox="0 0 24 24" style="width:12px;height:12px"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Today <b>13:45</b></span><b>CHF 72</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ SCREEN B , OPENED COLLECTION PAGE ============ -->
+    <div class="frame-wrap">
+      <div class="frame-label">Opened page <span>, tap see-all on Top 10 (C)</span></div>
+      <div class="phone">
+        <div class="status">
+          <span>9:41</span>
+          <span class="glyphs">
+            <svg class="lucide" viewBox="0 0 24 24"><path d="M2 20h.01M7 20v-4M12 20v-8M17 20V8M22 4v16"/></svg>
+            <svg class="lucide" viewBox="0 0 24 24"><path d="M5 13a10 10 0 0 1 14 0"/><path d="M8.5 16.5a5 5 0 0 1 7 0"/><path d="M2 8.82a15 15 0 0 1 20 0"/></svg>
+            <svg class="lucide" viewBox="0 0 24 24"><rect x="2" y="7" width="18" height="10" rx="2"/><line x1="22" y1="11" x2="22" y2="13"/></svg>
+          </span>
+        </div>
+
+        <div class="topbar">
+          <span class="btn"><svg class="lucide" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></span>
+          <span class="ttl">Top 10 in Zurich</span>
+          <span class="btn"><svg class="lucide" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></span>
+        </div>
+
+        <div class="ohead">
+          <h2>Top 10 in Zurich</h2>
+          <p>The highest-rated salons near you</p>
+        </div>
+
+        <div class="olist">
+          <div class="ocard">
+            <div class="ph f1">
+              <span class="fav">Solen Favorit</span>
+              <span class="heart"><svg class="lucide" viewBox="0 0 24 24" style="width:18px;height:18px"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></span>
+            </div>
+            <div class="r1"><span class="nm">Studio Lumiere</span><span class="rt"><svg class="lucide st" viewBox="0 0 24 24"><path d="m12 2 3 6.9 7.6.6-5.8 5 1.8 7.4L12 18l-6.4 3.9 1.8-7.4-5.8-5 7.6-.6z"/></svg>4.9 (128)</span></div>
+            <div class="r2">Josefstrasse 20 Zurich</div>
+            <div class="r3"><span class="slot"><svg class="lucide" viewBox="0 0 24 24" style="width:13px;height:13px"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Today <b>15:00</b></span><b>CHF 65</b></div>
+          </div>
+          <div class="ocard">
+            <div class="ph f2">
+              <span class="heart"><svg class="lucide" viewBox="0 0 24 24" style="width:18px;height:18px"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></span>
+            </div>
+            <div class="r1"><span class="nm">Maison de Coiffure</span><span class="rt"><svg class="lucide st" viewBox="0 0 24 24"><path d="m12 2 3 6.9 7.6.6-5.8 5 1.8 7.4L12 18l-6.4 3.9 1.8-7.4-5.8-5 7.6-.6z"/></svg>4.8 (203)</span></div>
+            <div class="r2">Ankerstrasse 3 Zurich</div>
+            <div class="r3"><span class="slot"><svg class="lucide" viewBox="0 0 24 24" style="width:13px;height:13px"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Tomorrow <b>10:30</b></span><b>CHF 80</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <p><b>Where the data comes from (no new backend):</b> promo banner = a small admin-managed promotions table; Top 10 = existing ratings; Deals = existing discounts; For your hair = the existing hair-profile affinity. Collection rows reuse SalonCard + ScrollRow (Nearby/For-you already do). The one net-new component is the promo banner. Sample salons and photos are illustrative.</p>
+  </div>
+
+  <div class="qs">
+    <h3>3 questions for you</h3>
+    <ol>
+      <li><b>Promo banner look:</b> I used an ink text panel (left) + photo (right), swipeable with dots. Uber uses a colored panel. Keep ink (on-brand), or a photo-background banner with the headline over a dark scrim?</li>
+      <li><b>Which 3 collection rows first?</b> Top 10, Deals, For your hair. Swap one for "Book again" or "New in Zurich"?</li>
+      <li><b>Top 10 numbering:</b> Uber shows no rank numbers (title-only, like here). Want it that way, or actual 1..10 badges on each card?</li>
+    </ol>
+  </div>
+</body>
+</html>

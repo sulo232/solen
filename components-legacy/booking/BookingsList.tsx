@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useCallback, useEffect, useState } from 'react';
-import { useTranslations, useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { Calendar } from 'lucide-react';
 import BookingCard, { type Booking } from './BookingCard';
 import CancelBookingSheet from './CancelBookingSheet';
+import RescheduleSheet from './RescheduleSheet';
 import Spinner from '@/components-legacy/ui/Spinner';
 import EmptyState from '@/components-legacy/ui/EmptyState';
 import { toast } from '@/app/[locale]/_components/primitives/Toast';
@@ -18,7 +19,6 @@ interface BookingsListProps {
 export default function BookingsList({ userId }: BookingsListProps) {
   const t = useTranslations('bookingsList');
   const tUi = useTranslations('bookingsListUi');
-  const locale = useLocale();
   const [tab, setTab] = useState<BookingTab>('upcoming');
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
@@ -26,6 +26,9 @@ export default function BookingsList({ userId }: BookingsListProps) {
   // Cancel-confirm sheet (audit #7) — the booking pending cancellation + in-flight state.
   const [cancelTarget, setCancelTarget] = useState<Booking | null>(null);
   const [cancelling, setCancelling] = useState(false);
+  // Reschedule sheet (in-place, replaces the old PDP redirect). RescheduleSheet owns the
+  // picker + the POST /api/bookings/[id]/reschedule call itself; this only tracks the target.
+  const [rescheduleTarget, setRescheduleTarget] = useState<Booking | null>(null);
 
   const fetchBookings = useCallback(async () => {
     setLoading(true);
@@ -78,19 +81,17 @@ export default function BookingsList({ userId }: BookingsListProps) {
     }
   };
 
-  // Reschedule needs a new slot picked on the salon calendar; this list has no picker.
-  // The booking carries salon.slug, so route to the salon page where the user picks a
-  // new time (true in-place reschedule via POST /api/bookings/<id>/reschedule is a
-  // separate flow). Routing to the PDP — not straight into /booking — avoids silently
-  // creating a SECOND paid booking while the original still stands. Fallback to the hint
-  // only when the slug is somehow missing. (2026-06-14 audit: was a no-op hint toast.)
+  // Reschedule: open RescheduleSheet, a real in-place reschedule via
+  // POST /api/bookings/<id>/reschedule (claims the new slot before freeing the old one,
+  // so it can never create a SECOND paid booking). Previously this redirected to the salon
+  // PDP (2026-06-14 audit), which risked exactly that double-booking. The hint toast is now
+  // only a fallback for the rare case the booking is missing the salon/service id it needs.
   const handleReschedule = (booking: Booking) => {
-    const slug = booking.salon?.slug;
-    if (slug) {
-      window.location.href = `/${locale}/salon/${slug}`;
-    } else {
+    if (!booking.salon_id || !booking.service_id) {
       toast.info(t('rescheduleHint'));
+      return;
     }
+    setRescheduleTarget(booking);
   };
 
   // Rebook: reuse the express-rebook API (works from the booking id) to find the next
@@ -219,6 +220,17 @@ export default function BookingsList({ userId }: BookingsListProps) {
         onOpenChange={(open) => { if (!open && !cancelling) setCancelTarget(null); }}
         onConfirm={confirmCancel}
         cancelling={cancelling}
+      />
+
+      <RescheduleSheet
+        booking={rescheduleTarget}
+        isOpen={rescheduleTarget !== null}
+        onOpenChange={(open) => { if (!open) setRescheduleTarget(null); }}
+        onRescheduled={async () => {
+          setRescheduleTarget(null);
+          toast.success(t('rescheduledToast'));
+          await fetchBookings();
+        }}
       />
     </div>
   );

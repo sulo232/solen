@@ -355,6 +355,9 @@
     "testimonials": {
       "title": "Cosa dicono i nostri utenti",
       "eyebrow": "Recensioni vere"
+    },
+    "salonOfMonth": {
+      "title": "Salone del mese"
     }
   },
   "common": {
@@ -1310,7 +1313,13 @@
       "avg_tip": "Mancia med",
       "walkin_conv": "Conv. Walk-in",
       "chair_utilization": "Util. Poltrona",
-      "top": "Top"
+      "top": "Top",
+      "no_data_message": "Nessuna prenotazione completata in questo periodo.",
+      "rating": "Valutazione",
+      "rebooking": "Riprenotazione",
+      "loadErrorTitle": "Impossibile caricare la classifica",
+      "loadErrorMessage": "Si è verificato un errore durante il caricamento della classifica.",
+      "retry": "Riprova"
     },
     "overview": "Panoramica",
     "bookings": "Prenotazioni",
@@ -1592,7 +1601,8 @@
       "makeup_tools": "Strumenti trucco",
       "makeup_admin": "Studio trucco",
       "waxing_tools": "Strumenti ceretta",
-      "waxing_admin": "Studio ceretta"
+      "waxing_admin": "Studio ceretta",
+      "salonOfMonth": "Salone del mese"
     },
     "schedule": {
       "monday": "Lunedì",
@@ -2245,7 +2255,8 @@
       "until": "fino al",
       "active": "Attivo",
       "inactive": "Inattivo",
-      "copyAriaLabel": "Copia codice {code}"
+      "copyAriaLabel": "Copia codice {code}",
+      "perUserLimit": "Max. per cliente"
     },
     "notificationCenter": {
       "notifications": "Notifiche",
@@ -2702,6 +2713,28 @@
       "moreServices": "... e altri {count} servizi",
       "saveButton": "Salva",
       "saving": "Salvataggio..."
+    },
+    "salonOfMonthAdminPage": {
+      "title": "Salone del mese",
+      "subtitle": "Scegli il salone del mese e decidi se mostrarlo in homepage.",
+      "toggleLabel": "Mostra in homepage",
+      "currentEyebrow": "Vincitore attuale",
+      "currentEmpty": "Nessun salone scelto ancora.",
+      "currentMonth": "Mese {month}",
+      "candidatesEyebrow": "Candidati",
+      "candidatesSubtitle": "Saloni attivi, ordinati per valutazione (almeno 5 recensioni).",
+      "monthLabel": "Mese",
+      "reasonLabel": "Motivo (facoltativo)",
+      "reasonPlaceholder": "Perché questo salone?",
+      "selectButton": "Seleziona",
+      "selectedBadge": "Attuale",
+      "selecting": "Salvataggio…",
+      "selectError": "Salvataggio non riuscito. Riprova.",
+      "emptyTitle": "Nessun candidato",
+      "emptyMessage": "Nessun salone attivo ha ancora 5 o più recensioni.",
+      "errorTitle": "Caricamento non riuscito",
+      "errorMessage": "Impossibile caricare i candidati.",
+      "retry": "Riprova"
     }
   },
   "salonAboutEditor": {
@@ -4652,7 +4685,9 @@
       "reportProblem": "Segnala un problema",
       "shareTitle": "La mia prenotazione Solen",
       "shareText": "Ordine {code} da {salon}",
-      "calendarDescription": "Prenotato tramite solen.ch"
+      "calendarDescription": "Prenotato tramite solen.ch",
+      "paidOnlineNow": "Pagato online",
+      "restAtSalon": "Resto al salone"
     },
     "guestBookingForm": {
       "title": "Prenotazione ospite",
@@ -5486,10 +5521,20 @@
     "noRefundFee": "Questo annullamento comporta una penale pari all’importo pagato, quindi non c’è rimborso.",
     "confirmCancelBtn": "Sì, annulla",
     "keepBtn": "Mantieni",
-    "rescheduleHint": "Per riprogrammare, apri la pagina del salone e scegli un nuovo orario.",
+    "rescheduleHint": "Questo appuntamento non puo essere spostato qui. Contatta il salone.",
     "rebookNoSlot": "Nessun orario disponibile per riprenotare.",
     "rebookedToast": "Riprenotato. Controlla le tue prossime prenotazioni.",
-    "rebookError": "Impossibile riprenotare. Riprova."
+    "rebookError": "Impossibile riprenotare. Riprova.",
+    "rescheduleTitle": "Sposta l’appuntamento",
+    "rescheduleCloseAria": "Chiudi",
+    "rescheduleLead": "Spostamento gratuito fino a 24 ore prima dell’appuntamento.",
+    "rescheduleLeadPaid": "Spostamento gratuito fino a 24 ore prima dell’appuntamento. L’importo di {amount} già pagato resta sulla prenotazione.",
+    "rescheduleWindowPassed": "Questo appuntamento è tra meno di 24 ore e non può più essere spostato. Contatta direttamente il salone.",
+    "rescheduleWindowPassedCta": "Spostamento non più possibile",
+    "reschedulePickPrompt": "Scegli data e ora",
+    "rescheduleCta": "Sposta al {date}, {time}",
+    "rescheduleError": "Impossibile spostare l’appuntamento. Riprova.",
+    "rescheduledToast": "Appuntamento spostato"
   },
   "reviewPrompt": {
     "title": "Come ti è piaciuta la tua visita?",

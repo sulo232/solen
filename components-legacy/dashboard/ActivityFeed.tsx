@@ -63,8 +63,14 @@ export default function ActivityFeed({ salonId }: ActivityFeedProps) {
     loadFeed();
 
     const supabase = createBrowserSupabaseClient();
+    // Per-mount-UNIQUE topic. realtime-js channel() dedupes by topic (returns an existing channel
+    // for the same topic), and removeChannel() only drops it from the client list AFTER an async
+    // unsubscribe. React Strict Mode (Next dev) runs mount -> cleanup -> remount synchronously, so a
+    // fixed `activity-feed-<salonId>` topic gets handed back its still-subscribed prior channel and
+    // the .on(...) calls below throw "cannot add postgres_changes callbacks ... after subscribe()".
+    // A unique suffix sidesteps the dedupe; the topic name is cosmetic (the salon_id filter carries scope).
     const channel = supabase
-      .channel(`activity-feed-${salonId}`)
+      .channel(`activity-feed-${salonId}-${Math.random().toString(36).slice(2)}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "bookings", filter: `salon_id=eq.${salonId}` }, () => loadFeed())
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "reviews", filter: `salon_id=eq.${salonId}` }, () => loadFeed())
       .on("postgres_changes", { event: "*", schema: "public", table: "conversations", filter: `salon_id=eq.${salonId}` }, () => loadFeed())

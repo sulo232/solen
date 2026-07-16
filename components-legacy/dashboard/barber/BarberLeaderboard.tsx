@@ -1,28 +1,32 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Trophy, Eye, EyeOff, BarChart2, Table2 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
 import { useTranslations } from "next-intl";
+import { RatingStars } from "@/app/[locale]/_components/primitives/RatingStars";
+import EmptyState from "@/components-legacy/ui/EmptyState";
+import ErrorState from "@/components-legacy/ui/ErrorState";
+import Skeleton from "@/components-legacy/ui/Skeleton";
 
 interface BarberStats {
   staff_id: string;
   staff_name: string;
   bookings_count: number;
   revenue: number;
-  retention_pct: number;
-  avg_tip: number;
+  avg_rating: number;
+  review_count: number;
+  rebooking_pct: number;
   walkin_conversion_pct: number;
-  chair_utilization_pct: number;
 }
 
 interface BarberLeaderboardProps {
   salonId: string;
 }
 
-type SortKey = keyof Omit<BarberStats, "staff_id" | "staff_name">;
+type SortKey = keyof Omit<BarberStats, "staff_id" | "staff_name" | "review_count">;
 type Period = "week" | "month";
 type ViewMode = "table" | "chart";
 
@@ -32,37 +36,39 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
   const t = useTranslations("dashboard.barber_leaderboard") as any;
   const [stats, setStats] = useState<BarberStats[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [sortBy, setSortBy] = useState<SortKey>("bookings_count");
   const [period, setPeriod] = useState<Period>("week");
   const [anonymized, setAnonymized] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("table");
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch(`/api/dashboard/barber-leaderboard?salon_id=${salonId}&period=${period}`);
-        if (res.ok) {
-          const data = await res.json();
-          setStats(data.stats ?? []);
-        }
-      } catch {
-        // Error loading
-      }
-      setLoading(false);
-    };
-    fetchStats();
+  const fetchStats = useCallback(async () => {
+    setLoading(true);
+    setError(false);
+    try {
+      const res = await fetch(`/api/dashboard/barber-leaderboard?salon_id=${salonId}&period=${period}`);
+      if (!res.ok) throw new Error(`Failed to load leaderboard (${res.status})`);
+      const data = await res.json();
+      setStats(data.stats ?? []);
+    } catch (err) {
+      console.error("[BarberLeaderboard] failed to load stats:", err);
+      setError(true);
+    }
+    setLoading(false);
   }, [salonId, period]);
+
+  useEffect(() => {
+    fetchStats();
+  }, [fetchStats]);
 
   const sorted = [...stats].sort((a, b) => (b[sortBy] as number) - (a[sortBy] as number));
 
   const columns: { key: SortKey; label: string; format: (v: number) => string }[] = [
     { key: "bookings_count", label: t("bookings"), format: (v) => `${v}` },
     { key: "revenue", label: t("revenue"), format: (v) => `CHF ${v.toFixed(0)}` },
-    { key: "retention_pct", label: t("retention"), format: (v) => `${v}%` },
-    { key: "avg_tip", label: t("avg_tip"), format: (v) => `CHF ${v.toFixed(1)}` },
+    { key: "avg_rating", label: t("rating"), format: (v) => v.toFixed(1) },
+    { key: "rebooking_pct", label: t("rebooking"), format: (v) => `${v}%` },
     { key: "walkin_conversion_pct", label: t("walkin_conv"), format: (v) => `${v}%` },
-    { key: "chair_utilization_pct", label: t("chair_utilization"), format: (v) => `${v}%` },
   ];
 
   const getRankIcon = (rank: number) => {
@@ -117,7 +123,7 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
                 onClick={() => setPeriod(p)}
                 className={`px-3 py-1 text-xs font-medium transition-colors duration-150 ${
                   period === p
-                    ? "bg-s-accent-bright/10 text-s-accent-bright"
+                    ? "bg-s-bg-sunken text-s-ink"
                     : "text-s-ink-2 hover:bg-s-bg-sunken"
                 }`}
               >
@@ -129,9 +135,35 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
       </div>
 
       {loading ? (
-        <div className="py-8 text-center text-sm text-s-ink/40">{t("loading")}</div>
+        /* Skeleton shaped like the ranked-cards view below, not a bare spinner/text.
+           Same rounded-[16px]/border-s-border/p-3.5 shape as the real card below (mockup-ok, reuse of the existing locked card token, no new visual decision). */
+        <div className="space-y-2.5" aria-label={t("loading")}>
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="rounded-[16px] border border-s-border p-3.5"> {/* mockup-ok */}
+              <div className="flex items-center gap-3 mb-3">
+                <Skeleton variant="text" className="h-4 w-5" />
+                <Skeleton variant="text" className="h-4 w-28" />
+              </div>
+              <div className="grid grid-cols-3 gap-2.5">
+                {columns.map((col) => (
+                  <div key={col.key} className="space-y-1">
+                    <Skeleton variant="text" className="h-3 w-12" />
+                    <Skeleton variant="text" className="h-4 w-14" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : error ? (
+        <ErrorState
+          title={t("loadErrorTitle")}
+          message={t("loadErrorMessage")}
+          retryLabel={t("retry")}
+          onRetry={fetchStats}
+        />
       ) : stats.length === 0 ? (
-        <div className="py-8 text-center text-sm text-s-ink/40">{t("no_data")}</div>
+        <EmptyState icon={Trophy} title={t("no_data")} message={t("no_data_message")} />
       ) : viewMode === "chart" ? (
         /* ═══ CHART VIEW ═══ */
         <div>
@@ -143,7 +175,7 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
                 onClick={() => setSortBy(col.key)}
                 className={`px-2 py-1 rounded-btn text-xs whitespace-nowrap transition-colors duration-150 ${
                   sortBy === col.key
-                    ? "bg-s-accent-bright/10 text-s-accent-bright font-medium"
+                    ? "bg-s-bg-sunken text-s-ink font-medium"
                     : "text-s-ink-2 hover:text-s-ink"
                 }`}
               >
@@ -189,9 +221,19 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
                 {columns.map((col) => (
                   <div key={col.key}>
                     <p className="text-[12px] text-s-ink-2">{col.label}</p>
-                    <p className="font-heading font-bold text-[14.5px] text-s-ink mt-0.5 tabular-nums">
-                      {col.format(barber[col.key] as number)}
-                    </p>
+                    {col.key === "avg_rating" ? (
+                      barber.review_count > 0 ? (
+                        <div className="mt-0.5">
+                          <RatingStars value={barber.avg_rating} count={barber.review_count} size="sm" />
+                        </div>
+                      ) : (
+                        <p className="font-heading font-bold text-[14.5px] text-s-ink-2 mt-0.5">-</p>
+                      )
+                    ) : (
+                      <p className="font-heading font-bold text-[14.5px] text-s-ink mt-0.5 tabular-nums">
+                        {col.format(barber[col.key] as number)}
+                      </p>
+                    )}
                   </div>
                 ))}
               </div>

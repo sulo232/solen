@@ -97,6 +97,22 @@ const nextConfig = {
       },
     ],
   },
+  // Pin the referrer policy (2026-07-15, owner asked whether the guest receipt link is safe).
+  // Guest booking receipts carry a 256-bit access token IN THE URL (/confirmation?access_token=...).
+  // Modern browsers already default to strict-origin-when-cross-origin (origin only, no query is
+  // sent cross-origin), so the token does not leak to e.g. the Maps link the receipt points at ,
+  // but that default was never pinned here, so a browser/default change would silently start
+  // leaking it. Pinning it makes the guarantee ours instead of the browser's.
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+        ],
+      },
+    ];
+  },
 };
 
 export default withNextIntl(nextConfig);

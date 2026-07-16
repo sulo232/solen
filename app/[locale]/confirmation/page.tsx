@@ -18,7 +18,7 @@ interface ConfirmationPageProps {
 // The fields the confirmation screen reads, selected identically on both the RLS (cookie)
 // and the service-role (guest) path.
 const BOOKING_SELECT = `id, salon_id, service_id, staff_member_id, starts_at, ends_at,
-  price_paid, status, payment_status, payment_intent_id, reference_code, paid_via, user_id, access_token_hash, access_token_expires_at, vat_rate,
+  price_paid, remaining_at_salon, paid_amount, status, payment_status, payment_intent_id, reference_code, paid_via, user_id, access_token_hash, access_token_expires_at, vat_rate,
   salons(id, name, slug, address, phone, cover_photo_url, vat_number),
   services(id, name_de, name_en, duration_minutes),
   staff_members(name)`;
@@ -147,6 +147,8 @@ export default async function ConfirmationPage({
       paidVia={booking.paid_via ?? null}
       status={booking.status ?? null}
       paymentStatus={booking.payment_status ?? null}
+      paidNowLabel={formatCurrency(Number((booking as { paid_amount?: number | null }).paid_amount ?? 0) / 100, localeCode)}
+      remainingAtSalonLabel={(booking as { remaining_at_salon?: number | null }).remaining_at_salon != null ? formatCurrency(Number((booking as { remaining_at_salon?: number | null }).remaining_at_salon), localeCode) : null}
       hasOnlinePayment={Boolean((booking as { payment_intent_id?: string | null }).payment_intent_id)}
       isGuest={isGuest}
       accessLink={accessLink}

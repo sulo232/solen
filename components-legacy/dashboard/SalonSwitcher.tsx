@@ -163,12 +163,12 @@ export default function SalonSwitcher({
                       onClick={() => pick(s.id)}
                       disabled={!!switching}
                       className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-colors ${
-                        isActive ? "bg-s-accent/[0.08]" : "hover:bg-s-bg-sunken"
+                        isActive ? "bg-s-bg-sunken" : "hover:bg-s-bg-sunken"
                       }`}
                     >
                       <div
                         className={`w-9 h-9 rounded-[10px] grid place-items-center text-[13px] font-semibold shrink-0 ${
-                          isActive ? "bg-s-accent text-white" : "bg-s-ink text-white"
+                          "bg-s-ink text-white"
                         }`}
                       >
                         {s.name.trim()[0]?.toUpperCase() ?? "S"}
@@ -184,7 +184,7 @@ export default function SalonSwitcher({
                       {switching === s.id ? (
                         <span className="text-[12px] text-s-ink-3 shrink-0">…</span>
                       ) : isActive ? (
-                        <Check size={18} className="text-s-accent shrink-0" />
+                        <Check size={18} className="text-s-ink shrink-0" />
                       ) : null}
                     </button>
                   );
