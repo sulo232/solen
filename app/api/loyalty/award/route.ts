@@ -4,9 +4,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { validateBody, loyaltyAwardSchema } from "@/lib/validations";
 import { getServerEnv } from "@/lib/env";
+import { sendEmail } from "@/lib/email";
 
 /**
- * POST /api/loyalty/award — Award a loyalty stamp after booking completion.
+ * POST /api/loyalty/award: award a loyalty stamp after booking completion.
  * Called internally (e.g., from webhook or cron) with admin-level access.
  * Body: { booking_id: string, salon_id: string, customer_id: string }
  *
@@ -103,17 +104,11 @@ async function sendAlmostThereEmail(
   const displayName = profile?.display_name ?? "";
 
   try {
-    await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${resendApiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: "Solen <noreply@solen.ch>",
-        to: email,
-        subject: `⭐ Noch 1 Besuch bis zu deiner Belohnung bei ${salonName}!`,
-        html: `
+    await sendEmail({
+      from: "Solen <noreply@solen.ch>",
+      to: email,
+      subject: `⭐ Noch 1 Besuch bis zu deiner Belohnung bei ${salonName}!`,
+      html: `
           <div style="font-family: 'DM Sans', sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
             <h2 style="font-family: Syne, sans-serif; color: #1A1209;">Fast geschafft!</h2>
             <p style="color: #666;">Hallo ${displayName},</p>
@@ -123,10 +118,9 @@ async function sendAlmostThereEmail(
               style="display: inline-block; background: #C05038; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 16px;">
               Jetzt Termin buchen
             </a>
-            <p style="color: #999; font-size: 12px; margin-top: 24px;">— Dein Solen Team</p>
+            <p style="color: #999; font-size: 12px; margin-top: 24px;">Dein Solen Team</p>
           </div>
         `,
-      }),
     });
   } catch (err) {
     console.error("[loyalty/award] Failed to send almost-there email:", err);

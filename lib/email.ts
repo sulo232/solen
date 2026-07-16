@@ -16,9 +16,16 @@ function escapeHtml(s: string): string {
 }
 
 export interface EmailPayload {
-  to: string;
+  to: string | string[];
   subject: string;
   html: string;
+  /**
+   * Optional From override. Defaults to "solen.ch <noreply@solen.ch>" (below) when omitted, so
+   * every existing caller that doesn't set this keeps sending from the same default address.
+   * Needed by the 8 collapsed hand-rolled sites (2026-07-17), which use "support@solen.ch" or
+   * "Solen <noreply@solen.ch>" and must keep their existing sender identity byte-identical.
+   */
+  from?: string;
 }
 
 /**
@@ -76,7 +83,7 @@ export async function sendEmail(payload: EmailPayload, requestId?: string): Prom
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "solen.ch <noreply@solen.ch>",
+        from: payload.from ?? "solen.ch <noreply@solen.ch>",
         to: payload.to,
         subject: payload.subject,
         html: payload.html,

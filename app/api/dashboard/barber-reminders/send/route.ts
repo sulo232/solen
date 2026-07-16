@@ -6,8 +6,9 @@ import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { validateBody, barberReminderSendSchema } from "@/lib/validations";
 import { getServerEnv } from "@/lib/env";
+import { sendEmail } from "@/lib/email";
 
-// POST /api/dashboard/barber-reminders/send — Send reminder to client
+// POST /api/dashboard/barber-reminders/send: send a reminder to a client
 export async function POST(req: NextRequest) {
   const disabled = await checkFeatureEnabled("barber_features");
   if (disabled) return disabled;
@@ -61,17 +62,11 @@ export async function POST(req: NextRequest) {
   if (!resendApiKey) return NextResponse.json({ error: "Email not configured" }, { status: 500 });
 
   try {
-    await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${resendApiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: "Solen <noreply@solen.ch>",
-        to: email,
-        subject: `Zeit für einen neuen Schnitt bei ${salon.name}!`,
-        html: `
+    await sendEmail({
+      from: "Solen <noreply@solen.ch>",
+      to: email,
+      subject: `Zeit für einen neuen Schnitt bei ${salon.name}!`,
+      html: `
           <div style="font-family: 'DM Sans', sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
             <h2 style="font-family: Syne, sans-serif; color: #1A1209;">Hey ${profile?.display_name ?? ""}!</h2>
             <p style="color: #666;">Es ist wieder Zeit für einen frischen Schnitt bei <strong>${salon.name}</strong>.</p>
@@ -79,10 +74,9 @@ export async function POST(req: NextRequest) {
               style="display: inline-block; background: #C05038; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 16px;">
               Jetzt Termin buchen
             </a>
-            <p style="color: #999; font-size: 12px; margin-top: 24px;">— Dein Solen Team</p>
+            <p style="color: #999; font-size: 12px; margin-top: 24px;">Dein Solen Team</p>
           </div>
         `,
-      }),
     });
   } catch (err) {
     console.error("[barber-reminders/send] Failed:", err);

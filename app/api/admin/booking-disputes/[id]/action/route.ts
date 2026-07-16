@@ -10,6 +10,7 @@ import { notifyRefundProcessed } from "@/lib/bookings/notify-refund";
 import { writeCaseEvent } from "@/lib/bookings/dispute-engine";
 import { getServerEnv } from "@/lib/env";
 import { reportError } from "@/lib/error-report";
+import { sendEmail } from "@/lib/email";
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id: disputeId } = await params;
@@ -121,17 +122,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       if (parties && parties.length > 0 && resendApiKey) {
         const emails = parties.map(p => p.email).filter(Boolean) as string[];
         if (emails.length > 0) {
-          await fetch('https://api.resend.com/emails', {
-            method: 'POST',
-            headers: { 'Authorization': `Bearer ${resendApiKey}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              from: 'support@solen.ch',
-              to: emails,
-              subject: 'Mediation für Buchungsbeschwerde gestartet (30-Tage-Frist) | Mediation Started',
-              html: `<p>Your dispute has entered the 30-day mediation period (T&S §13.2).</p>
+          await sendEmail({
+            from: 'support@solen.ch',
+            to: emails,
+            subject: 'Mediation für Buchungsbeschwerde gestartet (30-Tage-Frist) | Mediation Started',
+            html: `<p>Your dispute has entered the 30-day mediation period (T&S §13.2).</p>
                      <p>If unresolved by ${mediationDeadline.toLocaleDateString()}, either party may proceed to court in Basel-Stadt.</p>
                      <p>Contact: support@solen.ch</p>`,
-            }),
           });
         }
       }

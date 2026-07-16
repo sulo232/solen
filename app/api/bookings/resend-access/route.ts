@@ -8,6 +8,7 @@ import { validateBody, resendAccessSchema } from "@/lib/validations";
 import { normalizeReferenceCode } from "@/lib/bookings/reference";
 import { issueAccessToken } from "@/lib/bookings/guest-access";
 import { getServerEnv, getPublicEnv } from "@/lib/env";
+import { sendEmail } from "@/lib/email";
 
 /**
  * POST /api/bookings/resend-access   body: { code, email? | phone? }
@@ -103,17 +104,13 @@ export async function POST(req: NextRequest) {
       }
       const link = `${appUrl ?? ""}/booking/lookup?code=${encodeURIComponent(norm)}&t=${encodeURIComponent(raw)}`;
       try {
-        await fetch("https://api.resend.com/emails", {
-          method: "POST",
-          headers: { Authorization: `Bearer ${resendApiKey}`, "Content-Type": "application/json" },
-          body: JSON.stringify({
-            from: "support@solen.ch",
-            to: email,
-            subject: "Ihr Zugangslink zur Buchung",
-            html: `<p>Hier ist Ihr neuer Zugangslink für Buchung ${norm}.</p>
+        await sendEmail({
+          from: "support@solen.ch",
+          to: email,
+          subject: "Ihr Zugangslink zur Buchung",
+          html: `<p>Hier ist Ihr neuer Zugangslink für Buchung ${norm}.</p>
                    <p><a href="${link}">Buchung öffnen</a></p>
                    <p>Dieser Link ist 30 Tage gültig. Teilen Sie ihn nicht.</p>`,
-          }),
         });
       } catch (e) {
         // Log without the token. Still return the opaque 200.
