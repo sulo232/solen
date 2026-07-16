@@ -80,6 +80,13 @@ Owner message (dictated): fix + commit; expand RATIONALE.md with the og round-1 
 ### The overhaul-readiness order (from the readiness judge, wf_9a56928a-35e)
 1. [merge] the converged-card branch (chip task_c132841a), 2. [probe] full-bleed placement (page live), 3. [probe] page-level rhythm G3, 4. [probe] gray-extent question, 5. [owner-call] imagery direction G6 fresh yes, 6. [owner-call] C3 + C5, 7. [script] 3B contrast sweep, 8. [script] measured floors D1/D2/D4/D8, 9. [probe] trailing gaps G4/G5/G7/G9.
 
+## CORRECTION: full-bleed as ACTUAL FULL PAGES (owner 2026-07-16 night: "make acc pages instead... i need to acc visualize stop maiking mockups like ths ts a reccuring pattern")
+
+- [x] HARDENED , verified: Scale arm live in ~/.claude/hooks/mockup-real-base-gate.py, selftest 8/8 (no-scale blocks, fragment-page-surface blocks, full-page passes), wired since the Base arm
+- [x] Real full-page captures , verified: base-pdp-full (390x4990), base-barbershop-full (390x2211), base-fuersalons-full (390x7651), clean home recapture (390x4065, consent seeded), commit 9b3fa5650
+- [x] fullbleed.html rebuilt as FULL pages , verified: commit 9b3fa5650, 7 moments in scrollable 390px phone frames, composites seam at PIL-measured cuts (home 500, PDP 335, for-salons 660)
+- [x] Verified , verified: 19/19 images, 8 scrollable frames, FB1 seam eyeballed clean after the recapture (screenshot in session), committed 9b3fa5650; gemini ran on the prior iteration of this page, its diffs (gradient fade, frost fallback) carried over unchanged
+
 ## Parked / boundaries
 - Web dark mode stays graveyarded (exists-check hit); positive-polarity mechanics recorded for MOBILE dark mode only.
 - Merge chip task_c132841a, payment capture chip task_400fe4c2, R1/R2/R4 post-merge: unchanged, owner-gated.
