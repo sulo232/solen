@@ -3,273 +3,211 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Backend: how it was, what changed, why it is better</title>
+<title>The backend work, in plain English</title>
 <!-- Base: net-new -->
 <!-- Scale: full-page -->
 <!--
-  Base rationale: rebuilds NO existing surface. There is no live route, screenshot, or prior
-  page to stand a real capture on. Owner explainer for the backend law + gate work.
+  Base rationale: rebuilds NO existing surface. No live route, screenshot, or prior page to
+  stand a real capture on. Owner explainer for the backend law + gate work.
   Scale rationale: full-page, a whole standalone page, not a component pair.
 
-  Grounded-in: _backend-system/LAW.md + _backend-system/AUDIT_2026-07-16.md + _plans/BACKEND_LAW.md
-  (the work this page explains: ca5028c6d gates, 46c319e67 LAW, 547f58cc1 audits, ab0e2f3fc rationale).
+  Grounded-in: _backend-system/AUDIT_2026-07-16.md + _backend-system/LAW.md + _backend-system/QUESTIONS.md.
 
-  Exists-check (re-run this turn): `npm run exists "backend law"` = 0 matches.
-  `npm run exists "before after"` returns ONE graveyard hit worth naming: the /dev/audit-fixes
-  before/after per-finding mockup route, owner-rejected 2026-07-08 ("per-finding before/after
-  panels are not the mockup model wanted", replaced by the /dev/flows harness). That rejection
-  was about mocking REAL UI, where the owner wants the real components driven live, not redrawn
-  panels. This page contains no UI mockup at all: it is prose explaining enforcement + knowledge
-  changes, in the Wrong/Right pair format the owner APPROVED 2026-07-15 for the taste book, and
-  the owner explicitly asked for this cut ("explain me in plain english how was bfr and what each
-  changed and how its better"). EXTENDS the existing index.html rather than adding a second file.
-  REMOVED: no other hits.
+  Exists-check: `npm run exists "backend law"` = 0. EXTENDS this same file (revision 3) rather
+  than adding a sibling, so the owner keeps one link. Revision 3 reason, owner verbatim: "u sure
+  its only 10 changes like didnt i drop few houndred or is it all and also in plain detailed
+  english its still complicated". Rev 2 was wrong in a way worth naming: it showed only what I
+  BUILT and never said that 60 found problems are still unfixed, which made "10 changes" read as
+  finished. Rev 3 leads with the counted inventory and strips the vocabulary.
+  The earlier `npm run exists "before after"` graveyard hit (the /dev/audit-fixes per-finding
+  before/after mockup route, owner-rejected 2026-07-08) was about mocking REAL UI, where the
+  owner wants live components not redrawn panels. This page contains no UI mockup, only prose.
 
-  Backend-check: renders no action verbs, no controls. Read-only prose. No endpoint backs it.
-  Every number is quoted from a committed file named inline.
+  Backend-check: no action verbs, no controls, read-only prose. No endpoint backs it.
+  Every number below was COUNTED from a committed file this turn, never estimated:
+    15 research files / 5,122 lines / 296 unique cited URLs (grep, sort -u)
+    127 verdicts = 64 MATCH + 25 PARTIAL + 35 GAP + 3 UNKNOWN (counted per audit file)
+    60 problems = GAP + PARTIAL. 108 LAW rows. 47 myths. 34 premature-register rows.
+    1 product file changed by me (lib/cron-run.ts), verified via git diff --stat.
 
-  Measure-first: override taken and stated, not silent. Copies no reference, matches no screenshot,
-  so there is nothing to pixel-sample. Values from the LOCKED contract in CLAUDE.md: radius 16,
-  eyebrow 11, body 14, meta 12, H2 clamp(18px,2vw,20px), hairline #E4E4E7, sunken #F4F4F5,
-  ink #0A0A0A, accent #276EF1, green #16A34A, red #DC2626.
+  Measure-first: override stated, not silent. Copies no reference, matches no screenshot, so
+  there is nothing to pixel-sample. Locked contract values only: radius 16, eyebrow 11,
+  H2 clamp(18px,2vw,20px), hairline #E4E4E7, sunken #F4F4F5, ink #0A0A0A, red #DC2626,
+  green #16A34A. No invented hue anywhere on this page.
+
+  COLOUR NOTE (supersedes the cd7d2b582 approach on this page): cd7d2b582 fixed two real WCAG
+  failures by darkening the BEFORE/NOW labels to off-contract shades. The contract-hue and
+  muted-colour gates then correctly refused those shades, and they were right twice over: the
+  labels were REDUNDANT. Each panel is already red-tinted or green-tinted, so colouring the label
+  too repeats information the tint already carries (taste rule 2: contrast IS the separator, do
+  not add a second signal on top). The labels are now plain grey ink on the tint, which is high
+  contrast, needs no palette exception, and is quieter. The tint does the semantic work alone.
 -->
 <style>
   :root{
     --bg:#FFFFFF; --sunken:#F4F4F5; --ink:#0A0A0A; --ink2:#52525B; --ink3:#A1A1AA;
-    --line:#E4E4E7; --accent:#276EF1; --red:#DC2626; --green:#16A34A;
+    --line:#E4E4E7; --red:#DC2626; --green:#16A34A;
     --redbg:rgba(220,38,38,.10); --greenbg:rgba(22,163,74,.10);
-    --tagred:#B91C1C; --taggreen:#15803D;
   }
   @media (prefers-color-scheme: dark){
     :root{ --bg:#0B0B0C; --sunken:#151517; --ink:#FAFAFA; --ink2:#A1A1AA; --ink3:#71717A; --line:#27272A;
-           --redbg:rgba(220,38,38,.10); --greenbg:rgba(22,163,74,.10);
-           --tagred:#EF4444; --taggreen:#16A34A; }
+           --redbg:rgba(220,38,38,.12); --greenbg:rgba(22,163,74,.12); }
   }
-  :root[data-theme="dark"]{ --bg:#0B0B0C; --sunken:#151517; --ink:#FAFAFA; --ink2:#A1A1AA; --ink3:#71717A; --line:#27272A; --redbg:rgba(220,38,38,.10); --greenbg:rgba(22,163,74,.10); --tagred:#EF4444; --taggreen:#16A34A; }
-  :root[data-theme="light"]{ --bg:#FFFFFF; --sunken:#F4F4F5; --ink:#0A0A0A; --ink2:#52525B; --ink3:#A1A1AA; --line:#E4E4E7; --redbg:rgba(220,38,38,.10); --greenbg:rgba(22,163,74,.10); --tagred:#B91C1C; --taggreen:#15803D; }
+  :root[data-theme="dark"]{ --bg:#0B0B0C; --sunken:#151517; --ink:#FAFAFA; --ink2:#A1A1AA; --ink3:#71717A; --line:#27272A; --redbg:rgba(220,38,38,.12); --greenbg:rgba(22,163,74,.12); }
+  :root[data-theme="light"]{ --bg:#FFFFFF; --sunken:#F4F4F5; --ink:#0A0A0A; --ink2:#52525B; --ink3:#A1A1AA; --line:#E4E4E7; --redbg:rgba(220,38,38,.10); --greenbg:rgba(22,163,74,.10); }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);
     font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:980px;margin:0 auto;padding:56px 20px 96px}
-  h1,h2,h3{font-family:"Inter Tight",Inter,sans-serif;letter-spacing:-0.02em;margin:0}
-  h1{font-size:clamp(28px,5vw,40px);line-height:1.15;font-weight:600}
-  h2{font-size:clamp(18px,2vw,20px);font-weight:600;margin:64px 0 6px}
+    font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:820px;margin:0 auto;padding:56px 20px 96px}
+  h1,h2{font-family:"Inter Tight",Inter,sans-serif;letter-spacing:-0.02em;margin:0}
+  h1{font-size:clamp(30px,5.5vw,44px);line-height:1.12;font-weight:600}
+  h2{font-size:clamp(18px,2vw,20px);font-weight:600;margin:72px 0 4px}
   .eyebrow{font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:12px}
-  .lede{font-size:16px;color:var(--ink2);margin-top:14px;max-width:66ch}
-  .sub{font-size:13px;color:var(--ink2);margin:0 0 20px;max-width:72ch}
-  p{max-width:72ch}
+  .lede{font-size:17px;color:var(--ink2);margin-top:16px;max-width:60ch}
+  .sub{font-size:14px;color:var(--ink2);margin:0 0 22px;max-width:64ch}
+  p{max-width:64ch}
   code{font-family:"Inter Tight",ui-monospace,monospace;font-variant-numeric:tabular-nums;
-    background:var(--sunken);padding:1px 5px;border-radius:5px;font-size:12.5px}
+    background:var(--sunken);padding:1px 5px;border-radius:5px;font-size:13px}
 
-  .pair{border:1px solid var(--line);border-radius:16px;overflow:hidden;margin:14px 0 40px}
-  .pair-head{padding:16px 22px;border-bottom:1px solid var(--line);background:var(--sunken)}
-  .pair-head .n{font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:3px}
-  .pair-head .t{font-family:"Inter Tight",Inter,sans-serif;font-size:16px;font-weight:600;letter-spacing:-0.01em}
-  .cols{display:grid;grid-template-columns:1fr 1fr}
-  @media (max-width:720px){ .cols{grid-template-columns:1fr} }
-  .col{padding:20px 22px}
-  .col.b{background:var(--redbg);border-right:1px solid var(--line)}
-  .col.a{background:var(--greenbg)}
-  @media (max-width:720px){ .col.b{border-right:0;border-bottom:1px solid var(--line)} }
-  .tag{font-size:11px;font-weight:600;margin-bottom:8px}
-  .tag.b{color:var(--tagred)} .tag.a{color:var(--taggreen)}
-  .col p{font-size:13px;color:var(--ink2);margin:0;max-width:none}
-  .col p + p{margin-top:8px}
-  .col strong{color:var(--ink);font-weight:600}
-  .why{padding:16px 22px;border-top:1px solid var(--line)}
-  .why .tag{color:var(--ink3)}
-  .why p{font-size:13.5px;color:var(--ink);margin:0;max-width:none}
+  .count{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:22px 0}
+  .c{border:1px solid var(--line);border-radius:16px;padding:16px}
+  .c .n{font-family:"Inter Tight",Inter,sans-serif;font-size:34px;font-weight:600;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums}
+  .c .l{font-size:13px;color:var(--ink2);margin-top:7px}
+  .n.red{color:var(--red)} .n.green{color:var(--green)}
 
-  .hero{background:var(--sunken);border:1px solid var(--line);border-radius:16px;padding:22px 24px;margin:14px 0 20px}
-  .hero .big{font-family:"Inter Tight",Inter,sans-serif;font-size:clamp(19px,2.4vw,24px);font-weight:600;letter-spacing:-0.02em;line-height:1.3}
-  .hero .note{font-size:13px;color:var(--ink2);margin-top:10px}
-  .foot{margin-top:64px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink2)}
+  .big{background:var(--sunken);border:1px solid var(--line);border-radius:16px;padding:22px 24px;margin:16px 0}
+  .big .h{font-family:"Inter Tight",Inter,sans-serif;font-size:clamp(19px,2.4vw,24px);font-weight:600;letter-spacing:-0.02em;line-height:1.3}
+  .big .p{font-size:14px;color:var(--ink2);margin-top:10px}
+  .big.warn{border-left:3px solid var(--red)}
+
+  .row{border:1px solid var(--line);border-radius:16px;overflow:hidden;margin:0 0 12px}
+  .row .t{padding:14px 20px;font-family:"Inter Tight",Inter,sans-serif;font-size:15px;font-weight:600;background:var(--sunken);border-bottom:1px solid var(--line)}
+  .ba{display:grid;grid-template-columns:1fr 1fr}
+  @media (max-width:640px){ .ba{grid-template-columns:1fr} }
+  .s{padding:18px 20px}
+  .s.b{background:var(--redbg);border-right:1px solid var(--line)}
+  .s.a{background:var(--greenbg)}
+  @media (max-width:640px){ .s.b{border-right:0;border-bottom:1px solid var(--line)} }
+  /* The tinted panel already says which side this is. The label stays quiet ink, never a second
+     colour signal on top of the tint. */
+  .tag{font-size:11px;font-weight:600;margin-bottom:6px;color:var(--ink2)}
+  .s p{font-size:14px;color:var(--ink);margin:0;max-width:none}
+
+  ol{padding-left:20px;margin:12px 0} li{margin:10px 0;color:var(--ink2);max-width:62ch}
+  li strong{color:var(--ink)}
+  .foot{margin-top:72px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink2)}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <div class="eyebrow">Backend law layer 2026-07-16</div>
-  <h1>How it was, what changed,<br>and why it is better.</h1>
-  <p class="lede">Ten changes. Each shows the before, the after, and the plain reason it is an improvement.</p>
+  <div class="eyebrow">Backend work 2026-07-16</div>
+  <h1>No. It was not<br>only 10 changes.</h1>
+  <p class="lede">You asked the right question and my summary undersold it. Here is the whole thing, counted, nothing rounded up.</p>
 
-  <div class="hero" style="margin-top:28px">
-    <div class="big">The one sentence: the backend had rules, but they were suggestions. Now they are walls.</div>
-    <div class="note">Sixteen backend hooks already existed when you said gates were missing. Ten of them only printed a warning. The audit proves warnings do not work: two separate bugs shipped again while their warning hook was live and watching.</div>
+  <h2>What you asked for, and what came back</h2>
+  <div class="count">
+    <div class="c"><div class="n">15</div><div class="l">topics researched, all of them</div></div>
+    <div class="c"><div class="n">5,122</div><div class="l">lines of research written</div></div>
+    <div class="c"><div class="n">296</div><div class="l">real sources quoted, links you can open</div></div>
+    <div class="c"><div class="n">127</div><div class="l">judgements made about your code</div></div>
   </div>
 
-  <h2>The six gates</h2>
-  <p class="sub">Three already existed but only whispered. Three did not exist at all. All six now stop the edit, and all six take an escape hatch (a comment like <code>// cas-ok: reason</code>) for when you genuinely mean it.</p>
-
-  <div class="pair">
-    <div class="pair-head"><div class="n">Change 1</div><div class="t">Charging a card without re-checking the booking</div></div>
-    <div class="cols">
-      <div class="col b"><div class="tag b">BEFORE</div>
-        <p>A hook printed: <em>"reminder, this update has no safety check."</em> Then the edit went through anyway.</p>
-        <p><strong>It did not work.</strong> This week's audit found a brand new case in <code>cron/pre-charge</code>: it charges a customer's card without first checking the booking is still valid. The hook warned. The code shipped.</p></div>
-      <div class="col a"><div class="tag a">AFTER</div>
-        <p>The edit is <strong>blocked</strong>. You cannot write a money update that forgets to confirm it actually changed a row.</p>
-        <p>If a case genuinely does not need it, you write <code>// cas-ok: single row, no race</code> and it lets you through.</p></div>
-    </div>
-    <div class="why"><div class="tag">WHY BETTER</div>
-      <p>The database lies here. If two people book the same slot, one update silently changes nothing and still reports success. Without the check, you charge someone for a booking that no longer exists.</p></div>
+  <h2>What those 127 judgements say</h2>
+  <div class="count">
+    <div class="c"><div class="n green">64</div><div class="l">things you already do right</div></div>
+    <div class="c"><div class="n red">60</div><div class="l">problems found</div></div>
+    <div class="c"><div class="n">3</div><div class="l">could not be checked either way</div></div>
   </div>
 
-  <div class="pair">
-    <div class="pair-head"><div class="n">Change 2</div><div class="t">Asking the database for a column that does not exist</div></div>
-    <div class="cols">
-      <div class="col b"><div class="tag b">BEFORE</div>
-        <p>A warning. Again ignored: this exact mistake came back <strong>seven times</strong>, including after the warning shipped.</p>
-        <p>Once it blanked your entire homepage for weeks and nobody noticed, because it throws no error.</p></div>
-      <div class="col a"><div class="tag a">AFTER</div>
-        <p><strong>Blocked</strong>, checked against the real live database, not against what the code thinks exists.</p>
-        <p>Escape: <code>// phantom-ok: just migrated</code> for the case where you added the column five minutes ago.</p></div>
-    </div>
-    <div class="why"><div class="tag">WHY BETTER</div>
-      <p>This is the quietest bug you have. Ask for a column that is not there and you get back nothing, not an error. The page just goes empty and everything looks fine.</p></div>
+  <div class="big warn">
+    <div class="h">Here is the part my summary buried: of those 60 problems, I fixed zero.</div>
+    <div class="p">I changed exactly one file of your real product code. Everything else I built is a <strong>wall</strong>, so no new problems get in, and a <strong>rulebook</strong>, so the next session stops inventing. The 60 problems are all still sitting there, each written down with the exact file, the exact line, and what it costs to fix. Wall first was the right order, because otherwise you fix five and three more arrive next week. But "10 changes" made it sound finished, and it is not.</div>
   </div>
 
-  <div class="pair">
-    <div class="pair-head"><div class="n">Change 3</div><div class="t">Putting someone's typed text straight into a database filter</div></div>
-    <div class="cols">
-      <div class="col b"><div class="tag b">BEFORE</div>
-        <p>A warning, and a badly aimed one. Tested against your real code it flagged <strong>6 out of 6 files, and every one was innocent</strong>.</p>
-        <p>Including the exact file its own message pointed to as the correct way to fix the problem.</p></div>
-      <div class="col a"><div class="tag a">AFTER</div>
-        <p><strong>Blocked</strong>, and rebuilt so it can tell cleaned text from raw text. It now fires on <strong>zero</strong> of those 6 innocent files and still catches the real thing.</p></div>
-    </div>
-    <div class="why"><div class="tag">WHY BETTER</div>
-      <p>A gate that keeps flagging correct work gets switched off in frustration, and then nothing is protected at all. Getting the false alarms to zero is what makes it survivable.</p></div>
+  <h2>So what are the 10?</h2>
+  <p class="sub">Ten changes to the <em>system</em>, not ten fixes. One line each.</p>
+
+  <div class="row"><div class="t">1. Taking money without checking</div><div class="ba">
+    <div class="s b"><div class="tag">BEFORE</div><p>Code could charge a card without checking the booking still exists. A warning appeared. It was ignored.</p></div>
+    <div class="s a"><div class="tag">NOW</div><p>The computer refuses to save that code.</p></div></div></div>
+
+  <div class="row"><div class="t">2. Asking the database for something that is not there</div><div class="ba">
+    <div class="s b"><div class="tag">BEFORE</div><p>You got silence back instead of an error. This blanked your homepage once, for weeks.</p></div>
+    <div class="s a"><div class="tag">NOW</div><p>Refused, checked against the real database.</p></div></div></div>
+
+  <div class="row"><div class="t">3. A visitor's typing going straight into a database search</div><div class="ba">
+    <div class="s b"><div class="tag">BEFORE</div><p>A warning that cried wolf on 6 out of 6 innocent files.</p></div>
+    <div class="s a"><div class="tag">NOW</div><p>Refused, and rebuilt so it cries wolf zero times.</p></div></div></div>
+
+  <div class="row"><div class="t">4. One salon seeing another salon's data</div><div class="ba">
+    <div class="s b"><div class="tag">BEFORE</div><p>Nothing watched this at all.</p></div>
+    <div class="s a"><div class="tag">NOW</div><p>Refused on any new page.</p></div></div></div>
+
+  <div class="row"><div class="t">5. One salon deleting another salon's photos</div><div class="ba">
+    <div class="s b"><div class="tag">BEFORE</div><p>Nothing watched this either. It happened once.</p></div>
+    <div class="s a"><div class="tag">NOW</div><p>Refused on any new page.</p></div></div></div>
+
+  <div class="row"><div class="t">6. Fake data written into your database</div><div class="ba">
+    <div class="s b"><div class="tag">BEFORE</div><p>Your fake-data guard only reads page files. It cannot see the database. That is exactly how the wheelchair lie got in.</p></div>
+    <div class="s a"><div class="tag">NOW</div><p>Refused. Tested on all 264 of your real database changes: it catches one, the guilty one.</p></div></div></div>
+
+  <div class="row"><div class="t">7. Nightly jobs lying about a bad night</div><div class="ba">
+    <div class="s b"><div class="tag">BEFORE</div><p>They could report "all fine" on a night every payment failed.</p></div>
+    <div class="s a"><div class="tag">NOW</div><p>Impossible to even write. Not a guard: I removed one word, so the lie no longer fits.</p></div></div></div>
+
+  <div class="row"><div class="t">8. A new session guessing what is correct</div><div class="ba">
+    <div class="s b"><div class="tag">BEFORE</div><p>It knew how your backend works. Nothing said what is right. So it made things up.</p></div>
+    <div class="s a"><div class="tag">NOW</div><p>108 written decisions it reads instead of guessing.</p></div></div></div>
+
+  <div class="row"><div class="t">9. Repeating advice that is simply wrong</div><div class="ba">
+    <div class="s b"><div class="tag">BEFORE</div><p>No record of which "best practice" is outdated or was never true.</p></div>
+    <div class="s a"><div class="tag">NOW</div><p>47 myths written down, plus 34 things not to build yet and exactly when that changes.</p></div></div></div>
+
+  <div class="row"><div class="t">10. Not knowing if you follow your own rules</div><div class="ba">
+    <div class="s b"><div class="tag">BEFORE</div><p>8 of your 15 topics had ever been checked against the real code.</p></div>
+    <div class="s a"><div class="tag">NOW</div><p>All 15 checked. That is where the 60 problems came from.</p></div></div></div>
+
+  <h2>The 60 problems</h2>
+  <p class="sub">All written down and ranked with costs. None fixed. These are the five I would do first.</p>
+
+  <div class="big warn">
+    <div class="h">1. Seven salons say they have wheelchair access. A coin flip decided it.</div>
+    <div class="p">A hash of the salon's ID. Not one is real. Eight more claim LGBTQ+ welcome the same way. Live now, on badges and search filters. <strong>My recommendation: null them today, one database command, then ask salons for the real answer during signup. The new wall stops the next lie; it cannot un-write these.</strong></div>
+  </div>
+  <div class="big warn">
+    <div class="h">2. A customer can pay salon B's cheaper price at salon A.</div>
+    <div class="p">The rebooking page never checks the service belongs to that salon. <strong>Fix: about 6 lines, copying something you already have working in another file.</strong></div>
+  </div>
+  <div class="big warn">
+    <div class="h">3. A slow email can make a successful booking look failed.</div>
+    <div class="p">The confirmation email has no time limit and it sits inside the booking. If the email service hangs, the customer's screen hangs, after their booking already saved. <strong>Fix: one line, once we measure how slow it really gets.</strong></div>
+  </div>
+  <div class="big warn">
+    <div class="h">4. Anyone can run up your AI bill.</div>
+    <div class="p">The limit on the public AI feature is based on a value the visitor can simply make up, and nothing caps the daily total.</div>
+  </div>
+  <div class="big warn">
+    <div class="h">5. Your guest booking links hand a working key to your analytics company.</div>
+    <div class="p">The key stays in the web address after use and works for 30 days, and analytics records full addresses by default.</div>
   </div>
 
-  <div class="pair">
-    <div class="pair-head"><div class="n">Change 4</div><div class="t">Reading another salon's data (new gate)</div></div>
-    <div class="cols">
-      <div class="col b"><div class="tag b">BEFORE</div>
-        <p><strong>Nothing watched this.</strong> Your code has a special database key that skips every security rule, used in 267 places.</p>
-        <p>Audits found this class of bug in three separate rounds, about 20 routes each time.</p></div>
-      <div class="col a"><div class="tag a">AFTER</div>
-        <p><strong>Blocked</strong> on brand new routes: you cannot ship a new page that takes an ID from the visitor and looks it up with the skip-all-security key and no ownership check.</p></div>
-    </div>
-    <div class="why"><div class="tag">WHY BETTER</div>
-      <p>This is the most common real-world break-in on the web: change a number in the address bar, see someone else's data. It only guards new routes, deliberately, because guarding every edit wrongly flagged 80 of your 234 existing routes.</p></div>
+  <h2>Why I trust any of this</h2>
+  <div class="big">
+    <div class="h">Every wall passed the test written by the thing that built it. Then the real code went through, and five of seven failed.</div>
+    <div class="p">One wrongly blocked 80 of your 234 real pages. One blocked the exact file its own error message calls the correct fix. Both looked perfect until they met your actual code. That is why one thing builds and a different thing grades it, and why nothing counts as done here until your whole real codebase passes through clean.</div>
   </div>
 
-  <div class="pair">
-    <div class="pair-head"><div class="n">Change 5</div><div class="t">Photo uploads and deletes across salons (new gate)</div></div>
-    <div class="cols">
-      <div class="col b"><div class="tag b">BEFORE</div>
-        <p><strong>Nothing watched this.</strong> Four separate audit rounds found storage bugs, including one that let a photo be deleted from a salon that did not own it.</p></div>
-      <div class="col a"><div class="tag a">AFTER</div>
-        <p><strong>Blocked</strong> on new routes that write or delete files using the skip-all-security key with no ownership check first.</p></div>
-    </div>
-    <div class="why"><div class="tag">WHY BETTER</div>
-      <p>Same break-in as change 4, but with files instead of rows. And storage fails silently too: <code>review-photos</code> returned "success" for months while saving nothing at all.</p></div>
-  </div>
-
-  <div class="pair">
-    <div class="pair-head"><div class="n">Change 6</div><div class="t">Fake data written straight into the database (new gate)</div></div>
-    <div class="cols">
-      <div class="col b"><div class="tag b">BEFORE</div>
-        <p>You already had a gate that blocks made-up numbers, but it only reads page files.</p>
-        <p><strong>It cannot see a database migration.</strong> Which is exactly how the fake wheelchair-access flags got onto your live site.</p></div>
-      <div class="col a"><div class="tag a">AFTER</div>
-        <p><strong>Blocked</strong>: a migration cannot invent a value from a hash or a random number and write it into a column customers read.</p>
-        <p>Tested against all 264 of your real migrations: it fires on exactly one, the guilty one.</p></div>
-    </div>
-    <div class="why"><div class="tag">WHY BETTER</div>
-      <p>It closes the door the fake data walked through. It cannot un-write the rows already there, which is why that one is still your decision.</p></div>
-  </div>
-
-  <h2>The change I like most, because it deleted a gate</h2>
-
-  <div class="pair">
-    <div class="pair-head"><div class="n">Change 7</div><div class="t">Crons reporting a good night when every payment failed</div></div>
-    <div class="cols">
-      <div class="col b"><div class="tag b">BEFORE</div>
-        <p>Your nightly jobs could report <strong>"all good"</strong> on a night every single Stripe charge failed, because they counted failures in a box the reporter never opens.</p>
-        <p>I built a hook for it. The reviewer then proved my hook was <strong>useless</strong>: it looked for a shape that never occurs in your code and missed the one that does.</p></div>
-      <div class="col a"><div class="tag a">AFTER</div>
-        <p>Hook <strong>deleted</strong>. Instead I removed one word from a type definition, so the bad shape is now impossible to even write.</p>
-        <p>Your build refuses it. Forever. No hook involved.</p></div>
-    </div>
-    <div class="why"><div class="tag">WHY BETTER</div>
-      <p><strong>A type error can never misfire.</strong> A hook is a guard at a door, guessing. A type is a door that is the wrong shape. And it cost nothing: nothing in your code used the bad form, so removing it broke zero things.</p></div>
-  </div>
-
-  <h2>The knowledge</h2>
-
-  <div class="pair">
-    <div class="pair-head"><div class="n">Change 8</div><div class="t">A new session guessing what is correct</div></div>
-    <div class="cols">
-      <div class="col b"><div class="tag b">BEFORE</div>
-        <p>You had a doc explaining <strong>how</strong> your backend works. Nothing anywhere said what is <strong>right</strong>.</p>
-        <p>So a fresh session decided from training memory. That is exactly the "it keeps making stuff up" you described.</p></div>
-      <div class="col a"><div class="tag a">AFTER</div>
-        <p><code>LAW.md</code>: about 60 frozen decisions across your 15 topics. Each names your stack, your size, and what it costs.</p>
-        <p>It opens with one line the research earned on its own, ranking top in 7 of 15 topics independently: <strong>a response saying 200 has proven nothing.</strong></p></div>
-    </div>
-    <div class="why"><div class="tag">WHY BETTER</div>
-      <p>The doc it reads now answers the question it was guessing at. It also lists what you already do RIGHT, because a fresh session's instinct is to "improve" the things that took you three tries to get correct.</p></div>
-  </div>
-
-  <div class="pair">
-    <div class="pair-head"><div class="n">Change 9</div><div class="t">Repeating myths and building things you do not need</div></div>
-    <div class="cols">
-      <div class="col b"><div class="tag b">BEFORE</div>
-        <p>No record of which "best practices" are actually wrong, stale, or written for companies a thousand times your size.</p></div>
-      <div class="col a"><div class="tag a">AFTER</div>
-        <p><code>RATIONALE.md</code>: a <strong>47-item myth table</strong> of things never to repeat, and a <strong>list of what not to build yet</strong> with the trigger that would change each answer.</p></div>
-    </div>
-    <div class="why"><div class="tag">WHY BETTER</div>
-      <p>Two of those myths were about to become your law. One was "Vercel's rules apply to us" (you are on Netlify). The other was "the security standard caps login attempts at 10" when the real number is 100, a mistake our own research made and caught. And since building big-company machinery early is its own failure, the list says what NOT to do, and exactly when that changes.</p></div>
-  </div>
-
-  <div class="pair">
-    <div class="pair-head"><div class="n">Change 10</div><div class="t">Not knowing whether you follow your own rules</div></div>
-    <div class="cols">
-      <div class="col b"><div class="tag b">BEFORE</div>
-        <p>8 of your 15 topics had been checked against the real code. <strong>7 had not</strong>, including security, authorization, and reliability.</p></div>
-      <div class="col a"><div class="tag a">AFTER</div>
-        <p><strong>All 15 checked.</strong> Two of them queried the live database directly rather than trusting the code. Plus a ranked list of 15 fixes, each with what it costs.</p></div>
-    </div>
-    <div class="why"><div class="tag">WHY BETTER</div>
-      <p>This is where the real finds came from: the fake wheelchair flags, the cross-salon pricing hole, the email with no timeout. Each audit also says out loud what it did NOT read, so "no problem found" never gets mistaken for "clean".</p></div>
-  </div>
-
-  <h2>What that actually turned up</h2>
-  <p class="sub">Five things worth your attention, in the order I would fix them.</p>
-
-  <div class="hero">
-    <div class="big">1. Seven salons claim wheelchair access based on a hash of their ID.</div>
-    <div class="note">Also eight claiming LGBTQ+ welcome. Live right now, shown as badges and as search filters. Someone filtering for step-free access is getting a coin flip. <strong>My recommendation: null the columns today (one database update), add the questions to onboarding next. Do not wait for step two to do step one.</strong></div>
-  </div>
-  <div class="hero">
-    <div class="big">2. A customer can pay salon B's cheaper price at salon A.</div>
-    <div class="note">The rebooking route never checks the chosen service belongs to that salon. <strong>Fix: about 6 lines, copying a pattern you already have working in two other files.</strong></div>
-  </div>
-  <div class="hero">
-    <div class="big">3. The confirmation email has no time limit, and it sits inside the booking.</div>
-    <div class="note">If the email provider hangs, the customer's booking screen hangs with it, after the booking already saved. They see a failure for something that actually worked. <strong>Fix: one line, once we measure how slow the provider really gets.</strong></div>
-  </div>
-  <div class="hero">
-    <div class="big">4. Anyone can run up your AI bill.</div>
-    <div class="note">The limit on the public AI feature is keyed on a value the visitor can simply make up, and there is no daily ceiling behind it.</div>
-  </div>
-  <div class="hero">
-    <div class="big">5. Guest booking links hand a live 30-day key to PostHog.</div>
-    <div class="note">The token stays in the address bar after use, and your analytics records full addresses by default.</div>
-  </div>
-
-  <h2>The part that made all of it trustworthy</h2>
-  <div class="hero">
-    <div class="big">Every gate passed the test written by the thing that built it. Then the real code went through, and five of seven failed.</div>
-    <div class="note">That is why a separate reviewer grades the work and never writes it. One gate wrongly denied 80 of your 234 real routes. One fired on the very file its own error message calls the correct fix. Both looked perfect until they met your actual codebase. The rule that came out of it is now written down: <strong>a gate is only finished when the whole real codebase runs through it clean.</strong></div>
-  </div>
+  <h2>What I would do next</h2>
+  <ol>
+    <li><strong>Null the fake wheelchair flags today.</strong> One command. Everything else can wait. This one is a real person getting a wrong answer about whether they can get through your door.</li>
+    <li><strong>Fix the cross-salon price hole.</strong> About 6 lines.</li>
+    <li><strong>Then work down the ranked list of 60</strong>, already written with costs. Say go and I run them through the same build-then-grade loop.</li>
+  </ol>
 
   <div class="foot">
-    Every number here is quoted from a committed file. Gates: <code>ca5028c6d</code>. Decisions: <code>46c319e67</code>. Audits: <code>547f58cc1</code>. Reasoning and open questions: <code>ab0e2f3fc</code>. The six decisions that need you, each with my recommendation, are in <code>_backend-system/QUESTIONS.md</code>.
+    Counted this turn, not estimated: 15 research files, 5,122 lines, 296 unique sources, 127 verdicts (64 right, 60 problems, 3 unknown), 108 decisions, 47 myths, 34 premature-register rows, 1 product file changed. Detail: <code>_backend-system/AUDIT_2026-07-16.md</code> (the ranked 60), <code>_backend-system/LAW.md</code> (decisions), <code>_backend-system/QUESTIONS.md</code> (the 6 that need you).
   </div>
 
 </div>
