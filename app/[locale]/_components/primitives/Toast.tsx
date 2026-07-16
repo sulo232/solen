@@ -369,7 +369,6 @@ function ToastItem({ toast: t }: { toast: InternalToast }) {
             "flex-shrink-0 self-center whitespace-nowrap",
             "font-body font-semibold text-[14px] text-s-accent",
             "bg-transparent border-0 cursor-pointer px-1 py-0.5 rounded-sm",
-            "focus-visible:outline-2 focus-visible:outline-s-accent focus-visible:outline-offset-2",
           )}
         >
           {t.action.label}

@@ -171,7 +171,7 @@ function SmartSearchTab() {
             onChange={(e) => setDescription(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             placeholder={t("descriptionPlaceholder")}
-            className="flex-1 px-3 py-2 text-sm rounded-[16px] border border-s-border bg-white text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:ring-2 focus:ring-s-accent/30"
+            className="flex-1 px-3 py-2 text-sm rounded-[16px] border border-s-border bg-white text-s-ink placeholder:text-s-ink/30"
           />
           <select
             value={category}
@@ -313,7 +313,7 @@ function TikTokImportTab() {
           onChange={(e) => setUrls(e.target.value)}
           placeholder={"https://www.tiktok.com/@user/video/123456\nhttps://www.tiktok.com/@user/video/789012"}
           rows={4}
-          className="w-full px-3 py-2 text-sm rounded-[16px] border border-s-border bg-white text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:ring-2 focus:ring-s-accent/30 resize-none font-mono"
+          className="w-full px-3 py-2 text-sm rounded-[16px] border border-s-border bg-white text-s-ink placeholder:text-s-ink/30 resize-none font-mono"
         />
       </div>
 

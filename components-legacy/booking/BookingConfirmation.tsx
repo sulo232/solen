@@ -496,7 +496,7 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
         <button
           type="button"
           onClick={handleCalendar}
-          className="celebrate-rise mt-5 flex h-[52px] w-full items-center justify-center gap-2 rounded-btn bg-s-ink font-body text-[15px] font-semibold text-white transition-[filter,transform] duration-150 hover:brightness-[0.94] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
+          className="celebrate-rise mt-5 flex h-[52px] w-full items-center justify-center gap-2 rounded-btn bg-s-ink font-body text-[15px] font-semibold text-white transition-[filter,transform] duration-150 hover:brightness-[0.94] active:scale-[0.98]"
           style={{ animationDelay: "0.68s" }}
         >
           <Calendar size={17} aria-hidden />
@@ -506,7 +506,7 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
           href={directionsHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-2.5 flex h-[50px] w-full items-center justify-center gap-2 rounded-btn border border-s-border bg-s-bg-surface font-body text-[15px] font-semibold text-s-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
+          className="mt-2.5 flex h-[50px] w-full items-center justify-center gap-2 rounded-btn border border-s-border bg-s-bg-surface font-body text-[15px] font-semibold text-s-ink"
         >
           <MapPin size={17} aria-hidden />
           {t("directions")}
@@ -542,7 +542,6 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
                 title={copiedLink ? t("copied") : t("copyLink")}
                 className={[
                   "grid h-[36px] w-[36px] shrink-0 place-items-center rounded-[9px] border border-s-border bg-s-bg-surface transition-colors duration-150",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-1",
                   copiedLink ? "text-s-success" : "text-s-ink",
                 ].join(" ")}
               >

@@ -181,7 +181,7 @@ export default function EditorPage() {
             value={urlPath}
             onChange={(e) => setUrlPath(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleNavigate()}
-            className="flex-1 bg-s-bg-sunken rounded-btn border border-s-border px-3 py-1.5 text-xs font-mono text-s-ink focus:outline-none focus:ring-2 focus:ring-s-accent/30"
+            className="flex-1 bg-s-bg-sunken rounded-btn border border-s-border px-3 py-1.5 text-xs font-mono text-s-ink"
             placeholder="/de/..."
           />
         </div>

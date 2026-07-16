@@ -177,7 +177,7 @@ export default function SignIn() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t("email_placeholder")}
             required
-            className="w-full px-4 py-3.5 rounded-input border border-s-border bg-[--raised] text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors"
+            className="w-full px-4 py-3.5 rounded-input border border-s-border bg-[--raised] text-sm font-body text-s-ink placeholder:text-s-ink/30 transition-colors"
           />
           <button
             type="submit"
@@ -206,7 +206,7 @@ export default function SignIn() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("email_placeholder")}
           required
-          className="w-full h-14 px-5 rounded-2xl bg-s-bg-sunken text-[15px] text-s-ink placeholder:text-s-ink-2 border border-transparent focus:outline-none focus:bg-white focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors"
+          className="w-full h-14 px-5 rounded-2xl bg-s-bg-sunken text-[15px] text-s-ink placeholder:text-s-ink-2 border border-transparent focus:outline-none focus:bg-white transition-colors"
         />
         <div className="relative">
           <input
@@ -215,7 +215,7 @@ export default function SignIn() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Passwort"
             required
-            className="w-full h-14 px-5 pr-12 rounded-2xl bg-s-bg-sunken text-[15px] text-s-ink placeholder:text-s-ink-2 border border-transparent focus:outline-none focus:bg-white focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors"
+            className="w-full h-14 px-5 pr-12 rounded-2xl bg-s-bg-sunken text-[15px] text-s-ink placeholder:text-s-ink-2 border border-transparent focus:outline-none focus:bg-white transition-colors"
           />
           <button
             type="button"

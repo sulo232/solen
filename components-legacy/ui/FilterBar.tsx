@@ -94,7 +94,6 @@ export default function FilterBar({
               className={[
                 'snap-start flex items-center gap-1.5 px-3.5 py-1.5 rounded-pill text-[12px] font-heading whitespace-nowrap shrink-0 cursor-pointer',
                 'transition-colors duration-150 active:scale-[0.97]',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2',
                 motionClass,
                 hoverLift,
                 active
@@ -144,7 +143,7 @@ export default function FilterBar({
               value={activeSortFilter?.subId ?? ''}
               onChange={(e) => handleSortChange(e.target.value)}
               aria-label={sortPill.label}
-              className="text-[13px] font-body font-medium text-s-ink-2 bg-transparent border border-s-border rounded-pill px-3 py-1.5 focus:outline-none focus:border-s-accent/40 cursor-pointer appearance-none"
+              className="text-[13px] font-body font-medium text-s-ink-2 bg-transparent border border-s-border rounded-pill px-3 py-1.5 cursor-pointer appearance-none"
             >
               <option value="">{sortPill.label} ▾</option>
               {sortPill.subFilters?.map((sf) => (

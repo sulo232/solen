@@ -232,7 +232,7 @@ export default function GuestLookupPage() {
 /* ===================================================================== */
 
 const inputBase =
-  "w-full h-[52px] rounded-input border border-s-border bg-white px-[15px] font-body text-[15px] text-s-ink placeholder:text-s-ink-disabled transition-[border-color,box-shadow] duration-150 ease-snap appearance-none focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent-pale";
+  "w-full h-[52px] rounded-input border border-s-border bg-white px-[15px] font-body text-[15px] text-s-ink placeholder:text-s-ink-disabled transition-[border-color,box-shadow] duration-150 ease-snap appearance-none";
 const inputErr = "border-s-closed focus:border-s-closed focus:ring-0";
 const labelCls = "block text-[12px] font-medium text-s-ink-2 mb-[7px]";
 const hintCls = "mt-2 text-[12px] leading-[1.5] text-s-ink-2";

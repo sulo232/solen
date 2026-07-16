@@ -90,7 +90,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             placeholder={t("profile.namePlaceholder")}
-            className="w-full px-4 py-3 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 transition-colors"
+            className="w-full px-4 py-3 rounded-input border border-s-border bg-white text-sm text-s-ink transition-colors"
           />
         </div>
 
@@ -104,7 +104,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
             rows={3}
             maxLength={500}
             placeholder={t("profile.descPlaceholder")}
-            className="w-full px-4 py-3 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 resize-none transition-colors"
+            className="w-full px-4 py-3 rounded-input border border-s-border bg-white text-sm text-s-ink resize-none transition-colors"
           />
           <p className="text-[12px] text-s-ink/30 mt-0.5 text-right">{form.description_de.length}/500</p>
         </div>
@@ -149,7 +149,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
             value={form.phone}
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
             placeholder="+41 61 ..."
-            className="w-full px-4 py-3 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 transition-colors"
+            className="w-full px-4 py-3 rounded-input border border-s-border bg-white text-sm text-s-ink transition-colors"
           />
         </div>
 

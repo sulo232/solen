@@ -382,7 +382,6 @@ function VisualAnalyticsTabbed() {
                   isActive
                     ? "border-s-ink bg-s-ink text-white"
                     : "border-s-border text-s-ink-3 hover:border-s-ink/30",
-                  "focus-visible:outline-2 focus-visible:outline-s-accent focus-visible:outline-offset-2",
                 )}
               >
                 {p.label.charAt(0)}

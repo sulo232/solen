@@ -274,7 +274,7 @@ export default function QueueTrackingPage() {
                 <div className="mt-1 text-[13px] leading-[1.4] text-s-ink-2">{l.lowSub}</div>
                 <textarea
                   value={feedback} onChange={(e) => setFeedback(e.target.value)} placeholder={l.fbPlaceholder}
-                  className="mt-3 min-h-[74px] w-full resize-none rounded-[14px] border border-s-border bg-s-bg-sunken p-3 text-[13.5px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus:ring-2 focus:ring-s-accent/30"
+                  className="mt-3 min-h-[74px] w-full resize-none rounded-[14px] border border-s-border bg-s-bg-sunken p-3 text-[13.5px] text-s-ink placeholder:text-s-ink-3"
                 />
                 {data.salonSlug && (
                   <Link href={`/${locale}/salon/${data.salonSlug}`} className="mt-3 flex items-center gap-3 rounded-[14px] border border-s-border p-3 transition-transform active:scale-[0.98]">

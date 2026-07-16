@@ -164,7 +164,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
         required
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors"
+        className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 transition-colors"
       />
       <input
         type="password"
@@ -172,7 +172,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
         required
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors"
+        className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 transition-colors"
       />
       
       {/* mockup-ok: ig1, owner-approved TASTE_LOG.md 2026-07-16 "IG-principles round 1". Strength bar reuses ImageUpload.tsx:265-273 geometry (slim pill, ink fill). */}
@@ -202,7 +202,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
             placeholder={t("salonNamePlaceholder")}
             value={salonName}
             onChange={(e) => setSalonName(e.target.value)}
-            className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors"
+            className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 transition-colors"
           />
         </div>
       ) : (
@@ -215,7 +215,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
             required
             value={birthday}
             onChange={(e) => setBirthday(e.target.value)}
-            className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors"
+            className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 transition-colors"
           />
         </div>
       )}

@@ -182,7 +182,7 @@ export default function HandChart({ customerId }: HandChartProps) {
             </div>
             <textarea
               autoFocus
-              className="w-full text-sm rounded-input border border-s-border p-3 bg-s-bg-sunken focus:outline-none focus:border-s-accent focus:ring-1 focus:ring-s-accent resize-none"
+              className="w-full text-sm rounded-input border border-s-border p-3 bg-s-bg-sunken resize-none"
               rows={2}
               placeholder={t("hand_chart_placeholder")}
               value={notes[selectedFinger] || ""}

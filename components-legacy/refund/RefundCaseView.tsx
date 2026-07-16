@@ -778,7 +778,7 @@ function ActionZone({
           value={escNote}
           onChange={(e) => setEscNote(e.target.value.slice(0, ESC_NOTE_MAX))}
           placeholder={t("escFormNotePlaceholder")}
-          className="mt-2 w-full resize-none rounded-[14px] border border-s-border bg-white p-3 font-body text-[13.5px] text-s-ink placeholder:text-s-ink-3 focus:border-s-accent focus:outline-none focus:ring-2 focus:ring-s-accent-pale"
+          className="mt-2 w-full resize-none rounded-[14px] border border-s-border bg-white p-3 font-body text-[13.5px] text-s-ink placeholder:text-s-ink-3"
         />
         <div className="mt-[-2px] text-right text-[12px] text-s-ink-3">
           {t("charCount", { count: escNote.length, max: ESC_NOTE_MAX })}

@@ -290,7 +290,7 @@ export default function EditPanel({
             onChange={(e) => setDescription(e.target.value)}
             placeholder={selectedElements.length > 0 ? "Describe the change you want for these elements..." : "Describe what you want changed on this page..."}
             rows={4}
-            className="w-full bg-s-bg-sunken rounded-btn border border-s-border p-3 text-sm text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:ring-2 focus:ring-s-accent/30 resize-none"
+            className="w-full bg-s-bg-sunken rounded-btn border border-s-border p-3 text-sm text-s-ink placeholder:text-s-ink/30 resize-none"
           />
         </div>
 
@@ -400,7 +400,7 @@ export default function EditPanel({
                       type="checkbox"
                       checked={selectedRequestIds.has(r.id)}
                       onChange={() => toggleRequestSelection(r.id)}
-                      className="rounded border-s-border text-s-accent focus:ring-s-accent/30 w-3.5 h-3.5"
+                      className="rounded border-s-border text-s-accent w-3.5 h-3.5"
                     />
                     <span className={`text-[12px] px-1.5 py-0.5 rounded-pill font-medium ${
                       r.status === "done" ? "bg-s-success-bg text-s-success" :

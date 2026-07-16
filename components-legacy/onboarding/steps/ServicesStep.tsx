@@ -135,7 +135,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
                   value={newService.name_de}
                   onChange={(e) => setNewService({ ...newService, name_de: e.target.value })}
                   placeholder={t("services.namePlaceholder")}
-                  className="w-full px-4 py-2.5 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 transition-colors"
+                  className="w-full px-4 py-2.5 rounded-input border border-s-border bg-white text-sm text-s-ink transition-colors"
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -145,7 +145,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
                     type="number" min={15} step={15}
                     value={newService.duration_minutes}
                     onChange={(e) => setNewService({ ...newService, duration_minutes: +e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 transition-colors"
+                    className="w-full px-4 py-2.5 rounded-input border border-s-border bg-white text-sm text-s-ink transition-colors"
                   />
                 </div>
                 <div>
@@ -154,7 +154,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
                     type="number" min={0}
                     value={newService.price}
                     onChange={(e) => setNewService({ ...newService, price: +e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 transition-colors"
+                    className="w-full px-4 py-2.5 rounded-input border border-s-border bg-white text-sm text-s-ink transition-colors"
                   />
                 </div>
               </div>

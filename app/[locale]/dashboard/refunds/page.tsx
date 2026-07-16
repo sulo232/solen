@@ -225,7 +225,7 @@ export default function SalonRefundsPage() {
                     <p className="mt-2 pt-3 border-t border-s-border text-[13px] text-s-pop font-medium">{t("escalatedNote")}</p>
                   ) : isOpen ? (
                     <div className="mt-4 pt-3 border-t border-s-border">
-                      <textarea value={note[c.id] || ""} onChange={(e) => setNote((p) => ({ ...p, [c.id]: e.target.value }))} placeholder={t("notePlaceholder")} rows={2} className="w-full px-3 py-2 mb-1 rounded-[10px] border border-s-border text-[12.5px] resize-none focus:outline-none focus:border-s-accent" />
+                      <textarea value={note[c.id] || ""} onChange={(e) => setNote((p) => ({ ...p, [c.id]: e.target.value }))} placeholder={t("notePlaceholder")} rows={2} className="w-full px-3 py-2 mb-1 rounded-[10px] border border-s-border text-[12.5px] resize-none" />
                       <p className="text-[12px] text-s-ink/40 mb-2.5">{noteOk ? " " : t("noteRequired")}</p>
                       <div className="flex flex-col gap-2">
                         <button
@@ -237,7 +237,7 @@ export default function SalonRefundsPage() {
                           {armed === `${c.id}:approve` ? t("confirmShort") : t("approveFull")}
                         </button>
                         <div className="flex items-center gap-2">
-                          <input type="number" value={amt[c.id] || ""} onChange={(e) => setAmt((p) => ({ ...p, [c.id]: e.target.value }))} placeholder={t("partialPlaceholder")} className="flex-1 min-h-[44px] px-3 rounded-[10px] border border-s-border text-[13.5px] tabular-nums focus:outline-none focus:border-s-accent" />
+                          <input type="number" value={amt[c.id] || ""} onChange={(e) => setAmt((p) => ({ ...p, [c.id]: e.target.value }))} placeholder={t("partialPlaceholder")} className="flex-1 min-h-[44px] px-3 rounded-[10px] border border-s-border text-[13.5px] tabular-nums" />
                           <button
                             onClick={() => armOrRun(`${c.id}:partial`, () => review(c, "approve", true))}
                             disabled={acting === c.id || !noteOk || !amt[c.id]}

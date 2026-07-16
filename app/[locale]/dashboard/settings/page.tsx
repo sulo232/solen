@@ -117,7 +117,7 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
       <div>
         <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("salonNameLabel")}</label>
         <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-          className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
+          className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm" />
       </div>
 
       {/* ── Category selector ── */}
@@ -156,50 +156,50 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
       <div>
         <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("coverPhotoLabel")}</label>
         <input value={form.cover_photo_url} onChange={(e) => setForm({ ...form, cover_photo_url: e.target.value })}
-          className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
+          className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm" />
       </div>
       <div>
         <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("descriptionDeLabel")}</label>
         <textarea value={form.description_de} onChange={(e) => setForm({ ...form, description_de: e.target.value })}
           rows={3} maxLength={500}
-          className="w-full px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright resize-none" />
+          className="w-full px-3 py-2 rounded-btn border border-s-border text-sm resize-none" />
       </div>
       <div>
         <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("descriptionEnLabel")}</label>
         <textarea value={form.description_en} onChange={(e) => setForm({ ...form, description_en: e.target.value })}
           rows={2} maxLength={500}
-          className="w-full px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright resize-none" />
+          className="w-full px-3 py-2 rounded-btn border border-s-border text-sm resize-none" />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("phoneLabel")}</label>
           <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            className="w-full px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
+            className="w-full px-3 py-2 rounded-btn border border-s-border text-sm" />
         </div>
         <div>
           <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("instagramLabel")}</label>
           <input value={form.instagram_url} onChange={(e) => setForm({ ...form, instagram_url: e.target.value })}
             placeholder="https://instagram.com/..."
-            className="w-full px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
+            className="w-full px-3 py-2 rounded-btn border border-s-border text-sm" />
         </div>
         <div>
           <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("facebookLabel")}</label>
           <input value={form.facebook_url} onChange={(e) => setForm({ ...form, facebook_url: e.target.value })}
             placeholder="https://facebook.com/..."
-            className="w-full px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
+            className="w-full px-3 py-2 rounded-btn border border-s-border text-sm" />
         </div>
         <div>
           <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("tiktokLabel")}</label>
           <input value={form.tiktok_url} onChange={(e) => setForm({ ...form, tiktok_url: e.target.value })}
             placeholder="https://tiktok.com/@..."
-            className="w-full px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
+            className="w-full px-3 py-2 rounded-btn border border-s-border text-sm" />
         </div>
       </div>
       <div>
         <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("websiteLabel")}</label>
         <input value={form.website_url} onChange={(e) => setForm({ ...form, website_url: e.target.value })}
           placeholder="https://..."
-          className="w-full px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
+          className="w-full px-3 py-2 rounded-btn border border-s-border text-sm" />
       </div>
       <div>
         <label className="block text-xs font-medium text-s-ink-2 mb-2">{t("openingHoursLabel")}</label>
@@ -485,7 +485,7 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
             step={feeType === "percentage" ? 5 : 1}
             value={feeValue}
             onChange={(e) => setFeeValue(Math.max(0, Number(e.target.value)))}
-            className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm data-text focus:outline-none focus:border-s-accent-bright"
+            className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm data-text"
           />
         </div>
       )}
@@ -496,7 +496,7 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
         <select
           value={freeHours}
           onChange={(e) => setFreeHours(Number(e.target.value))}
-          className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright"
+          className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm"
         >
           {CANCEL_HOURS_OPTIONS.map((h) => (
             <option key={h} value={h}>{t("hoursBeforeAppointment", { hours: h })}</option>
@@ -1178,7 +1178,7 @@ function SchedulingTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
             {limitEnabled && (
               <input type="number" min={1} max={50} value={limit}
                 onChange={(e) => setLimit(+e.target.value)}
-                className="w-14 px-2 py-1 rounded-btn border border-s-border text-sm data-text text-right focus:outline-none focus:border-s-accent-bright" />
+                className="w-14 px-2 py-1 rounded-btn border border-s-border text-sm data-text text-right" />
             )}
             <button type="button" role="switch" aria-checked={limitEnabled} aria-label={t("dailyLimitToggleAria")}
               onClick={() => setLimitEnabled(!limitEnabled)}

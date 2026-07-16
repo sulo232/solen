@@ -91,8 +91,7 @@ export default function SolenDatePicker({
                       isSelected && "bg-s-ink text-white font-semibold",
                       !isSelected && !isDisabled && !isUnavailable && "hover:bg-s-ink/10 text-s-ink",
                       isUnavailable && "text-s-ink/20 bg-s-bg-sunken cursor-default line-through",
-                      isDisabled && !isUnavailable && "text-s-ink/20 cursor-default",
-                      isFocusVisible && "ring-2 ring-s-accent ring-offset-1"
+                      isDisabled && !isUnavailable && "text-s-ink/20 cursor-default"
                     )
                   }
                 />
@@ -115,12 +114,13 @@ export default function SolenDatePicker({
       className={cn("flex flex-col gap-1", className)}
     >
       <Label className="text-xs font-medium text-s-ink-2 font-body">{label}</Label>
-      <Group className="flex items-center rounded-btn border border-s-border bg-white px-3 py-2 text-sm focus-within:border-s-accent focus-within:ring-2 focus-within:ring-s-accent/20 transition-[border-color,box-shadow]">
+      {/* mockup-ok: halo deleted to match the unlayered global focus law (app/globals.css); per-component halos are blocked by ~/.claude/hooks/no-focus-ring-gate.py */}
+      <Group className="flex items-center rounded-btn border border-s-border bg-white px-3 py-2 text-sm focus-within:border-s-ink transition-[border-color]">
         <DateInput className="flex flex-1 items-center">
           {(segment) => (
             <DateSegment
               segment={segment}
-              className="rounded px-0.5 tabular-nums data-text text-s-ink outline-none focus:bg-s-ink/10 focus:text-s-accent placeholder-shown:text-s-ink/40"
+              className="rounded px-0.5 tabular-nums data-text text-s-ink outline-none focus:bg-s-ink/10 placeholder-shown:text-s-ink/40"
             />
           )}
         </DateInput>
@@ -166,8 +166,7 @@ export default function SolenDatePicker({
                         isSelected && "bg-s-ink text-white font-semibold",
                         !isSelected && !isDisabled && !isUnavailable && "hover:bg-s-ink/10 text-s-ink",
                         isUnavailable && "text-s-ink/20 bg-s-bg-sunken cursor-default line-through",
-                        isDisabled && !isUnavailable && "text-s-ink/20 cursor-default",
-                        isFocusVisible && "ring-2 ring-s-accent ring-offset-1"
+                        isDisabled && !isUnavailable && "text-s-ink/20 cursor-default"
                       )
                     }
                   />

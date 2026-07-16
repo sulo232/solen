@@ -84,7 +84,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
           <input
             value={data.name}
             onChange={(e) => onChange({ ...data, name: e.target.value })}
-            className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink bg-white focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/10 transition-[border-color,box-shadow] shadow-warm-sm ${errors.name ? "border-s-accent" : "border-s-border"}`}
+            className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink bg-white transition-[border-color,box-shadow] shadow-warm-sm ${errors.name ? "border-s-accent" : "border-s-border"}`}
             placeholder={t("step1.namePlaceholder")}
           />
           {errors.name && <p className="text-xs text-s-error mt-0.5">{errors.name}</p>}
@@ -96,7 +96,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
             type="email"
             value={data.email}
             onChange={(e) => onChange({ ...data, email: e.target.value })}
-            className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink bg-white focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/10 transition-[border-color,box-shadow] shadow-warm-sm ${errors.email ? "border-s-accent" : "border-s-border"}`}
+            className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink bg-white transition-[border-color,box-shadow] shadow-warm-sm ${errors.email ? "border-s-accent" : "border-s-border"}`}
             placeholder={t("step1.emailPlaceholder")}
           />
           {errors.email && <p className="text-xs text-s-error mt-0.5">{errors.email}</p>}
@@ -130,7 +130,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
             <select
               value={data.city}
               onChange={(e) => onChange({ ...data, city: e.target.value })}
-              className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/10 bg-white shadow-warm-sm transition-[border-color,box-shadow] ${errors.city ? "border-s-accent" : "border-s-ink/5"}`}
+              className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink bg-white shadow-warm-sm transition-[border-color,box-shadow] ${errors.city ? "border-s-accent" : "border-s-ink/5"}`}
             >
               <option value="">Stadt wählen</option>
               <option value="zuerich">Zürich</option>
@@ -233,7 +233,7 @@ function Step3({ data, onChange, category, t }: {
             <input
               value={data.service_name}
               onChange={(e) => onChange({ ...data, service_name: e.target.value })}
-              className="w-full px-4 py-3 rounded-input border border-s-border text-sm text-s-ink bg-white focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/10 transition-[border-color,box-shadow] shadow-warm-sm"
+              className="w-full px-4 py-3 rounded-input border border-s-border text-sm text-s-ink bg-white transition-[border-color,box-shadow] shadow-warm-sm"
               placeholder="z. B. Waschen, Schneiden, Föhnen"
             />
             {suggesting && (
@@ -260,7 +260,7 @@ function Step3({ data, onChange, category, t }: {
             <select
               value={data.service_duration}
               onChange={(e) => onChange({ ...data, service_duration: +e.target.value })}
-              className="w-full px-4 py-3 rounded-input border border-s-ink/5 text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/10 bg-white shadow-warm-sm transition-[border-color,box-shadow]"
+              className="w-full px-4 py-3 rounded-input border border-s-ink/5 text-sm text-s-ink bg-white shadow-warm-sm transition-[border-color,box-shadow]"
             >
               {[15, 30, 45, 60, 75, 90, 120].map((d) => (
                 <option key={d} value={d}>{d} min</option>
@@ -276,7 +276,7 @@ function Step3({ data, onChange, category, t }: {
               min={0}
               value={data.service_price}
               onChange={(e) => onChange({ ...data, service_price: +e.target.value })}
-              className="w-full px-4 py-3 rounded-input border border-s-ink/5 text-sm text-s-ink bg-white focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/10 transition-all shadow-warm-sm"
+              className="w-full px-4 py-3 rounded-input border border-s-ink/5 text-sm text-s-ink bg-white transition-all shadow-warm-sm"
               placeholder="CHF"
             />
           </div>

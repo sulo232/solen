@@ -155,7 +155,7 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
               onChange={(e) => setNewTag(e.target.value)}
               placeholder={t("customPlaceholder")}
               maxLength={50}
-              className="flex-1 px-2.5 py-1.5 rounded-btn border border-s-border text-xs focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 bg-white"
+              className="flex-1 px-2.5 py-1.5 rounded-btn border border-s-border text-xs bg-white"
             />
             <select
               value={newColor}

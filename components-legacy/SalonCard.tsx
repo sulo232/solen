@@ -100,7 +100,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
     return (
       <Link
         href={href}
-        className="flex items-center gap-3 p-3 rounded-card bg-white border border-s-border group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
+        className="flex items-center gap-3 p-3 rounded-card bg-white border border-s-border group"
       >
         {/* A3 LOCKED 2026-05-03: photos killed pre-launch — solid category color + Anton name only */}
         <div className="relative w-16 h-16 rounded-input overflow-hidden shrink-0">
@@ -148,7 +148,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
         </span>
       )}
 
-      <Link href={href} className="block w-full h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2 rounded-[16px]">
+      <Link href={href} className="block w-full h-full">
         {/* Cover — A3 LOCKED 2026-05-03: photos killed pre-launch. Always render
             solid category color + Anton uppercase salon name (locked card pattern,
             ref public/solen-coral.html:225-245, 847-865). Photo carousel state
@@ -236,7 +236,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               onClick={(e) => { e.preventDefault(); e.stopPropagation();
                 scrollContainerRef.current?.scrollTo({ left: (photoIndex - 1) * (scrollContainerRef.current.clientWidth || 0), behavior: 'smooth' });
               }}
-              className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 focus-visible:opacity-100 transition-[opacity,transform,background-color] duration-150 z-[2] hover:bg-white active:scale-[0.92] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 focus-visible:opacity-100 transition-[opacity,transform,background-color] duration-150 z-[2] hover:bg-white active:scale-[0.92]"
               aria-label="Previous photo"
             >
               <ChevronLeft size={18} />
@@ -248,7 +248,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               onClick={(e) => { e.preventDefault(); e.stopPropagation();
                 scrollContainerRef.current?.scrollTo({ left: (photoIndex + 1) * (scrollContainerRef.current.clientWidth || 0), behavior: 'smooth' });
               }}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 focus-visible:opacity-100 transition-[opacity,transform,background-color] duration-150 z-[2] hover:bg-white active:scale-[0.92] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 focus-visible:opacity-100 transition-[opacity,transform,background-color] duration-150 z-[2] hover:bg-white active:scale-[0.92]"
               aria-label="Next photo"
             >
               <ChevronRight size={18} />

@@ -60,7 +60,7 @@ export default function SectionCarousel({
         {fullSeeAllHref && (
           <Link
             href={fullSeeAllHref}
-            className="shrink-0 inline-flex items-center gap-1 font-body text-[12px] font-semibold text-s-accent hover:text-s-accent transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2 rounded-md"
+            className="shrink-0 inline-flex items-center gap-1 font-body text-[12px] font-semibold text-s-accent hover:text-s-accent transition-colors duration-150"
           >
             Alle
             <ArrowRight size={14} aria-hidden />

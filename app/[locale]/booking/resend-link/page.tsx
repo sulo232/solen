@@ -228,7 +228,7 @@ export default function ResendAccessLinkPage() {
 /* ===================================================================== */
 
 const inputBase =
-  "w-full h-[50px] rounded-input border border-s-border bg-white px-[15px] font-body text-[14px] text-s-ink placeholder:text-s-ink-disabled transition-[border-color,box-shadow] duration-150 ease-snap appearance-none focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent-pale";
+  "w-full h-[50px] rounded-input border border-s-border bg-white px-[15px] font-body text-[14px] text-s-ink placeholder:text-s-ink-disabled transition-[border-color,box-shadow] duration-150 ease-snap appearance-none";
 const inputErr = "border-s-closed focus:border-s-closed focus:ring-0";
 const labelCls = "block text-[12.5px] font-medium text-s-ink mb-[7px]";
 const hintCls = "mt-1.5 text-[12px] leading-[1.4] text-s-ink-2";

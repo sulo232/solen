@@ -101,7 +101,7 @@ export default function SaveToBoardSheet({ itemId, open, onClose, onSaved }: Pro
                 onChange={(e) => setNewName(e.target.value)}
                 maxLength={60}
                 placeholder="z. B. Mein Schnitt"
-                className="mt-1.5 w-full rounded-xl border border-s-border bg-s-bg-sunken px-3.5 py-3 font-body text-s-ink placeholder:text-s-ink/40 focus:border-s-accent focus:outline-none focus:ring-2 focus:ring-s-accent-pale"
+                className="mt-1.5 w-full rounded-xl border border-s-border bg-s-bg-sunken px-3.5 py-3 font-body text-s-ink placeholder:text-s-ink/40"
               />
               <div className="mt-3.5 flex gap-2.5">
                 <button onClick={() => setCreating(false)} className="h-12 flex-1 rounded-pill bg-s-bg-sunken font-heading text-[14px] font-semibold text-s-ink">Zurück</button>

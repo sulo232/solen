@@ -46,7 +46,7 @@ export default function AddressAutocomplete({ value, onChange, onPlaceSelect, pl
     onPlaceSelect({ formatted, lat, lng, placeId });
   }, [onChange, onPlaceSelect]);
 
-  const inputClasses = `w-full px-3 py-2.5 rounded-btn border text-sm text-s-ink bg-white focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 ${hasError ? "border-s-error" : "border-s-border"}`;
+  const inputClasses = `w-full px-3 py-2.5 rounded-btn border text-sm text-s-ink bg-white ${hasError ? "border-s-error" : "border-s-border"}`;
 
   // Fallback to plain input if API key is missing or not yet loaded
   if (!apiKey || !isLoaded) {

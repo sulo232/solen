@@ -374,18 +374,13 @@
     outline: none;
   }
 
-  /* Inputs/textareas use box-shadow ring instead of outline so it follows border-radius cleanly */
-  input:focus-visible,
-  textarea:focus-visible,
-  select:focus-visible {
-    outline: none;
-    /* V3-D449: ONE crisp edge. Border darkens to ink + a single soft ink halo. The old
-       value stacked a white-gap ring + a hard ink ring = the "double thick outline" the
-       owner flagged (compounded by the primitive's outline, also removed). */
-    border-color: #0A0A0A;
-    background: #ffffff;
-    box-shadow: 0 0 0 3px rgba(10,10,10,.10);
-  }
+  /* Inputs/textareas use box-shadow ring instead of outline so it follows border-radius cleanly.
+     NOTE 2026-07-16: the actual declarations moved OUT of @layer base to the unlayered block at
+     the end of this file. Measured cause: any input carrying a Tailwind border utility
+     (border-s-border, border-transparent, ...) kept its RESTING border on focus and showed no
+     halo, because a utility beats a base-layer rule regardless of specificity. That left swept
+     inputs with NO focus indicator at all once their per-input blue rings were removed. The
+     ink-edge + halo law is unchanged, only its cascade position. */
 
   /* Touch devices fire :focus-visible on TAP for buttons/rows (iOS Safari), so the ink ring
      lit up "everywhere" after a tap , esp. on selected filter pills (owner 2026-07-01). Keyboard
@@ -399,18 +394,11 @@
     summary:focus-visible {
       outline: none;
     }
-    /* INPUTS too (owner 2026-07-01, furious repeat): on touch the input :focus-visible rule
-       above darkened the border to ink AND added a 3px halo = the "two focus rings" the owner
-       keeps seeing on the homepage search + the overlay/filter inputs. On a touch tap the caret
-       + keyboard already signal focus, so drop BOTH , keep the resting hairline, no halo. GLOBAL
-       source fix (not per-input), so it can't recur component by component. */
-    input:focus-visible,
-    textarea:focus-visible,
-    select:focus-visible {
-      outline: none;
-      box-shadow: none;
-      border-color: var(--color-border);
-    }
+    /* The input/textarea/select touch carve-out that used to live here is DEAD: it duplicated
+       the live one in the unlayered "THE INPUT FOCUS LAW" block at the end of this file (which
+       already has its own @media (hover: none) touch rule). Deleted 2026-07-17 to remove the
+       duplicate; the chrome (a/button/role/tabindex/summary) touch carve-out above stays, it is
+       not duplicated anywhere else. */
   }
 }
 
@@ -1196,4 +1184,55 @@ body::after {
 @media (prefers-reduced-motion: reduce) {
   .animate-count-bump, .animate-value-roll, .slot-cascade > *, .animate-num-flip, .animate-stamp-slam,
   .team-wave > *, .animate-breathe, .heart-burst, .animate-toast-tilt { animation: none !important; opacity: 1 !important; transform: none !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE INPUT FOCUS LAW (V3-D449), unlayered ON PURPOSE. Do not move it back
+   into @layer base.
+   ═══════════════════════════════════════════════════════════════════════════
+   ONE ink edge, nothing else: the border darkens to ink and the field goes
+   white. One global definition, so no input re-declares its own focus treatment
+   (the per-input blue rings this replaces were swept out 2026-07-16).
+
+   WHY UNLAYERED (measured 2026-07-16, live, keyboard-focused input on
+   /de/booking/lookup): from @layer base these declarations LOST to any Tailwind
+   border utility on the element. border-s-border kept its resting #E4E4E7 edge
+   on focus, so once the per-input blue rings were swept out, those inputs had NO
+   visible focus indicator at all, a WCAG 2.4.7 hole. A utility beats a
+   base-layer rule no matter the specificity; unlayered beats every layer, so the
+   law now actually applies. Verify by re-measuring, never by reading: Tab into
+   an input and check border-color = #0A0A0A.
+
+   WHY EDGE-ONLY (2026-07-16, contradiction surfaced to the owner): the CLAUDE.md
+   contract row still describes this treatment as an ink edge PLUS a soft 3px ink
+   halo, but the GLOBAL no-focus-ring gate (~/.claude/hooks/no-focus-ring-gate.py,
+   not a repo hook, so grepping .claude/hooks here will not find it) refuses any
+   such halo on any element, and a gate outranks a doc row in the precedence
+   chain. The edge alone clears the WCAG focus-indicator floor (the resting edge
+   is either transparent or #E4E4E7, both a large state change against #0A0A0A),
+   so the law ships edge-only until the owner reconciles the row with the gate by
+   name.
+
+   Touch keeps its own carve-out (owner 2026-07-01: nothing on tap, the caret and
+   keyboard already signal focus). */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  /* !important is load-bearing, not laziness: measured 2026-07-16, a plain
+     declaration here still lost to Tailwind's border-color utility on the
+     element even unlayered, later in source, and at higher specificity, so the
+     focus edge silently never rendered. The file's own GuidedSearch override
+     below already had to reach for !important against the same wall. */
+  border-color: #0A0A0A !important;
+  background: #ffffff;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: none;
+    border-color: var(--color-border) !important;
+  }
 }

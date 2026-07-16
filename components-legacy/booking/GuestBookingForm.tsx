@@ -123,7 +123,6 @@ const GuestBookingForm = forwardRef<GuestBookingFormHandle, GuestBookingFormProp
       "w-full px-3.5 py-3 rounded-input border bg-s-bg-surface",
       "font-body text-[15px] text-s-ink placeholder:text-s-ink-3",
       "transition-[border-color,box-shadow] duration-150 ease-snap appearance-none",
-      "focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent-pale",
     );
     const errInput = "border-s-error focus:border-s-error focus:ring-s-error-bg";
 

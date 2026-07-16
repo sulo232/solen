@@ -184,7 +184,7 @@ export default function RequestList({
                     type="checkbox"
                     checked={selectedIds.has(r.id)}
                     onChange={() => toggleSelection(r.id)}
-                    className="mt-1 rounded border-s-border text-s-accent focus:ring-s-accent/30 w-3.5 h-3.5 flex-shrink-0"
+                    className="mt-1 rounded border-s-border text-s-accent w-3.5 h-3.5 flex-shrink-0"
                   />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-mono text-s-ink-2 truncate">

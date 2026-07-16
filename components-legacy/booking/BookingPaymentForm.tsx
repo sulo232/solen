@@ -182,7 +182,7 @@ function PayInner({
         type="button"
         onClick={handlePay}
         disabled={!stripe || !elements}
-        className="flex h-[52px] w-full items-center justify-center gap-2 rounded-full bg-s-ink font-body text-[14.5px] font-semibold text-white transition-[transform,filter] duration-150 hover:brightness-[1.06] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
+        className="flex h-[52px] w-full items-center justify-center gap-2 rounded-full bg-s-ink font-body text-[14.5px] font-semibold text-white transition-[transform,filter] duration-150 hover:brightness-[1.06] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
       >
         <Lock size={16} strokeWidth={2.2} aria-hidden />
         {payCta}
@@ -192,7 +192,7 @@ function PayInner({
         <button
           type="button"
           onClick={onUseOtherMethod}
-          className="h-[44px] w-full rounded-full border border-s-border bg-transparent font-body text-[13.5px] font-semibold text-s-ink-2 transition-colors duration-150 hover:bg-s-bg-sunken focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
+          className="h-[44px] w-full rounded-full border border-s-border bg-transparent font-body text-[13.5px] font-semibold text-s-ink-2 transition-colors duration-150 hover:bg-s-bg-sunken"
         >
           {locale === "en"
             ? "Other payment method"

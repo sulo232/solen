@@ -117,14 +117,14 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
                       type="time"
                       value={h.open}
                       onChange={(e) => update(key, "open", e.target.value)}
-                      className="px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 w-24 transition-colors"
+                      className="px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink w-24 transition-colors"
                     />
                     <span className="text-s-ink/20">–</span>
                     <input
                       type="time"
                       value={h.close}
                       onChange={(e) => update(key, "close", e.target.value)}
-                      className="px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 w-24 transition-colors"
+                      className="px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink w-24 transition-colors"
                     />
                     {!h.break_start && (
                       <button onClick={() => toggleBreak(key)} className="ml-2 text-xs font-medium text-s-accent hover:text-s-accent/80">
@@ -139,14 +139,14 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
                         type="time"
                         value={h.break_start}
                         onChange={(e) => update(key, "break_start", e.target.value)}
-                        className="px-3 py-2 rounded-input border border-s-border bg-s-bg-surface text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 w-24 transition-colors"
+                        className="px-3 py-2 rounded-input border border-s-border bg-s-bg-surface text-sm text-s-ink w-24 transition-colors"
                       />
                       <span className="text-s-ink/20">–</span>
                       <input
                         type="time"
                         value={h.break_end}
                         onChange={(e) => update(key, "break_end", e.target.value)}
-                        className="px-3 py-2 rounded-input border border-s-border bg-s-bg-surface text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 w-24 transition-colors"
+                        className="px-3 py-2 rounded-input border border-s-border bg-s-bg-surface text-sm text-s-ink w-24 transition-colors"
                       />
                       <button onClick={() => toggleBreak(key)} className="ml-2 text-xs text-s-ink/30 hover:text-s-accent">
                         {t("hours.removeBreak")}

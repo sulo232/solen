@@ -76,7 +76,7 @@ function ReviewCard({
       <div className="mt-3 flex items-center justify-between gap-2">
         <Link
           href={`/${locale}/salon/${review.salon_slug}/reviews`}
-          className="inline-flex items-center gap-1.5 min-w-0 text-[13px] font-medium text-s-ink-2 transition-colors duration-150 hover:text-s-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2 rounded-md"
+          className="inline-flex items-center gap-1.5 min-w-0 text-[13px] font-medium text-s-ink-2 transition-colors duration-150 hover:text-s-accent"
         >
           <Store size={13} strokeWidth={2.25} aria-hidden />
           <span className="truncate">{review.salon_name}</span>

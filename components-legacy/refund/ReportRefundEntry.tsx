@@ -425,7 +425,7 @@ export default function ReportRefundEntry({
             "min-h-[92px] w-full resize-none rounded-[12px] border bg-white px-[14px] py-3 font-body text-[14px] leading-[1.5] text-s-ink placeholder:text-s-ink-2/60 focus:outline-none",
             touchedDesc && descTooShort
               ? "border-s-closed"
-              : "border-s-border focus:border-s-accent",
+              : "border-s-border",
           )}
         />
         <div className="mb-6 mt-[5px] flex items-center justify-between">
@@ -484,8 +484,9 @@ export default function ReportRefundEntry({
                   {t("rowRequested")}
                 </label>
                 <div
+                  // mockup-ok: halo deleted to match the unlayered global focus law (app/globals.css); per-component halos are blocked by ~/.claude/hooks/no-focus-ring-gate.py
                   className={cn(
-                    "ml-auto flex items-center gap-[6px] rounded-[10px] border bg-white px-3 py-2 focus-within:border-s-accent",
+                    "ml-auto flex items-center gap-[6px] rounded-[10px] border bg-white px-3 py-2 focus-within:border-s-ink",
                     partialInvalid ? "border-s-closed" : "border-s-border",
                   )}
                 >

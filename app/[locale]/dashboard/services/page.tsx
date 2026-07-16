@@ -93,19 +93,19 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
             <div>
               <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('nameDeLabel')}</label>
               <input value={form.name_de} onChange={(e) => setForm({ ...form, name_de: e.target.value })}
-                className="w-full px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
+                className="w-full px-3 py-2 rounded-btn border border-s-border text-sm" />
             </div>
             <div>
               <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('nameEnLabel')}</label>
               <input value={form.name_en} onChange={(e) => setForm({ ...form, name_en: e.target.value })}
-                className="w-full px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
+                className="w-full px-3 py-2 rounded-btn border border-s-border text-sm" />
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('categoryLabel')}</label>
               <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value as SalonCategory })}
-                className="w-full px-2 py-2 rounded-btn border border-s-border text-sm bg-white focus:outline-none focus:border-s-accent-bright">
+                className="w-full px-2 py-2 rounded-btn border border-s-border text-sm bg-white">
                 {salonCategories.map((c) => <option key={c} value={c}>{CATEGORY_LABELS[c]}</option>)}
               </select>
             </div>
@@ -113,19 +113,19 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
               <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('durationLabel')}</label>
               <input type="number" min={15} step={15} value={form.duration_minutes}
                 onChange={(e) => setForm({ ...form, duration_minutes: +e.target.value })}
-                className="w-full px-2 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
+                className="w-full px-2 py-2 rounded-btn border border-s-border text-sm" />
             </div>
             <div>
               <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('priceLabel')}</label>
               <input type="number" min={0} value={form.price}
                 onChange={(e) => setForm({ ...form, price: +e.target.value })}
-                className="w-full px-2 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
+                className="w-full px-2 py-2 rounded-btn border border-s-border text-sm" />
             </div>
           </div>
           <div>
             <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('descriptionLabel')}</label>
             <textarea value={form.description_de} onChange={(e) => setForm({ ...form, description_de: e.target.value })}
-              rows={2} className="w-full px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright resize-none" />
+              rows={2} className="w-full px-3 py-2 rounded-btn border border-s-border text-sm resize-none" />
           </div>
           {/* Time breakdown fields */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -133,19 +133,19 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
               <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('bufferLabel')}</label>
               <input type="number" min={0} step={5} value={form.buffer_minutes}
                 onChange={(e) => setForm({ ...form, buffer_minutes: +e.target.value })}
-                className="w-full px-2 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
+                className="w-full px-2 py-2 rounded-btn border border-s-border text-sm" />
             </div>
             <div>
               <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('processingLabel')}</label>
               <input type="number" min={0} step={5} value={form.processing_minutes}
                 onChange={(e) => setForm({ ...form, processing_minutes: +e.target.value })}
-                className="w-full px-2 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
+                className="w-full px-2 py-2 rounded-btn border border-s-border text-sm" />
             </div>
             <div>
               <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('finishingLabel')}</label>
               <input type="number" min={0} step={5} value={form.finishing_minutes}
                 onChange={(e) => setForm({ ...form, finishing_minutes: +e.target.value })}
-                className="w-full px-2 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
+                className="w-full px-2 py-2 rounded-btn border border-s-border text-sm" />
             </div>
           </div>
           {/* Service photos */}
