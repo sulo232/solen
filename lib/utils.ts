@@ -38,6 +38,28 @@ export function formatPrice(amount: number, locale = "de-CH"): string {
 }
 
 /**
+ * Split text on the first case-insensitive occurrence of a query substring, for the P13
+ * search-overlay match highlight (owner-approved 2026-07-16, TASTE_LOG.md "reference-probe
+ * picks round 1"). Plain data (no JSX here, this file stays framework-agnostic) , each
+ * caller renders its own <mark> so the highlight styling stays local to its surface.
+ * No match found -> a single non-matched segment (never a fabricated highlight).
+ */
+export function splitHighlight(text: string, query: string): { text: string; match: boolean }[] {
+  const q = query.trim();
+  if (!q) return [{ text, match: false }];
+  const idx = text.toLowerCase().indexOf(q.toLowerCase());
+  if (idx === -1) return [{ text, match: false }];
+  const before = text.slice(0, idx);
+  const hit = text.slice(idx, idx + q.length);
+  const after = text.slice(idx + q.length);
+  return [
+    ...(before ? [{ text: before, match: false }] : []),
+    { text: hit, match: true },
+    ...(after ? [{ text: after, match: false }] : []),
+  ];
+}
+
+/**
  * Format a duration in minutes to human-readable.
  * Example: formatDuration(90) → "1h 30min"
  */

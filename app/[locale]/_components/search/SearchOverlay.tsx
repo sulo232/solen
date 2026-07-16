@@ -27,10 +27,13 @@ import {
   Clock,
   User,
   Store,
+  Scissors,
   Globe,
   type LucideIcon,
 } from "lucide-react";
 import { SEARCH_CITIES, CITY_ICONS, ALL_CITIES_PARAM } from "@/lib/cities";
+import { formatPrice } from "@/lib/format";
+import { splitHighlight } from "@/lib/utils";
 import { CATEGORIES } from "@/app/[locale]/_components/homepage/searchCategories";
 import { SALON_CATEGORY_SLUGS } from "@/lib/validations";
 // A2/Model B (2026-07-04): the SAME category triples SearchTemplate's own category-tab row
@@ -144,6 +147,10 @@ export function SearchOverlay({
 }: SearchOverlayProps) {
   const router = useRouter();
   const t = useTranslations("ui.searchOverlay");
+  // P13 (owner-approved 2026-07-16): the Services section's price row reuses the SAME
+  // common.fromPrice pattern SalonCard.tsx already uses ("ab {price}" + formatPrice), no
+  // new price-copy invented.
+  const tCommon = useTranslations("common");
   const reduce = useReducedMotion();
 
   const [activeStep, setActiveStep] = React.useState<Step>("service");
@@ -431,6 +438,7 @@ export function SearchOverlay({
   const storesLabelTxt          = t("storesLabel");
   const categoriesLabelTxt      = t("categoriesLabel");
   const groupSalonsTxt          = t("groupSalons");
+  const groupServicesTxt        = t("groupServices");
   const groupStylistsTxt        = t("groupStylists");
   const placesLabelTxt          = t("placesLabel");
   const looksLabelTxt           = t("looksLabel");
@@ -507,6 +515,12 @@ export function SearchOverlay({
           <X size={18} strokeWidth={2.2} />
         </button>
       )}
+      {/* P13 (owner-approved 2026-07-16): a quiet three-dot pulse loader while the suggest
+          request is in flight, replacing any spinner at the input's right end. Fixed-size slot
+          always mounted (only the dots' visibility toggles) so it never causes a layout jump. */}
+      <span className="grid h-6 w-6 shrink-0 place-items-center" aria-hidden>
+        {loading && typing ? <SuggestLoaderDots /> : null}
+      </span>
     </div>
   );
 
@@ -515,18 +529,19 @@ export function SearchOverlay({
       if (loading && !hasResults && styleTerms.length === 0)
         return <div className="space-y-2 pt-1">{[0,1,2].map((i) => <Skeleton key={i} height={48} rounded={14} />)}</div>;
 
-      // Autocomplete completions: style-name terms FIRST, then service names, merged so the
-      // "similar" list stays rich even when style-suggest returns only the query term itself.
+      // Autocomplete completions: style-name terms only (P13, 2026-07-16: service names moved
+      // OUT of this flat list into their own titled "Services" section below, with price , they
+      // no longer double up as a plain completion AND a grouped result row).
       // Minus the raw query (it always leads the list). Deduped case-insensitively, capped.
       const qNorm = serviceQ.trim().toLowerCase();
-      const rawCompletions = [
-        ...styleTerms.map((s) => s.term),
-        ...results.services.map((s) => (locale === "en" ? s.name_en || s.name_de : s.name_de)),
-      ];
+      const rawCompletions = styleTerms.map((s) => s.term);
       const acTerms = Array.from(new Set(rawCompletions.map((x) => x.trim()).filter(Boolean)))
         .filter((x) => x.toLowerCase() !== qNorm)
         .slice(0, 5);
       const looks = inspoLooks; // real Inspo-feed looks (rich images), not style-suggest thumbs
+      // P13: locale-native "ab CHF X" price, the same tCommon("fromPrice")+formatPrice pattern
+      // SalonCard.tsx already uses , no new price-copy invented.
+      const currencyLocale = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-GB";
 
       return (
         <>
@@ -582,6 +597,7 @@ export function SearchOverlay({
                       photoUrl={s.cover_photo_url}
                       address={s.address}
                       priceFromCHF={s.from_price}
+                      matchQuery={serviceQ}
                     />
                   </div>
                 ))}
@@ -592,6 +608,27 @@ export function SearchOverlay({
               >
                 {seeAllResultsTxt} <ChevronRight size={15} strokeWidth={2.2} />
               </button>
+            </>
+          )}
+
+          {/* Services , P13 (owner-approved 2026-07-16): its own titled section (Salons then
+              Services, dashboard.html/search.html #bellstack recipe), name + "ab CHF X", the
+              matched substring highlighted same as the Salons title above. */}
+          {results.services.length > 0 && (
+            <>
+              <SectionLabel className="mt-4">{groupServicesTxt}</SectionLabel>
+              {results.services.map((sv) => {
+                const label = locale === "en" ? sv.name_en || sv.name_de : sv.name_de;
+                return (
+                  <SuggestRow
+                    key={sv.id}
+                    name={<HighlightedText text={label} query={serviceQ} />}
+                    sub={sv.price != null ? tCommon("fromPrice", { price: formatPrice(sv.price, currencyLocale) }) : undefined}
+                    Icon={Scissors}
+                    onClick={() => searchTerm(label)}
+                  />
+                );
+              })}
             </>
           )}
 
@@ -865,6 +902,41 @@ function SectionLabel({ children, className = "" }: { children: React.ReactNode;
   return <p className={`mb-1 text-[13px] font-semibold text-s-ink ${className}`}>{children}</p>;
 }
 
+// P13 (owner-approved 2026-07-16): the quiet three-dot pulse loader recipe from
+// taste-round2/search.html (.dots i , 4px dots, s-ink-2, staggered 150ms, ease infinite),
+// replacing any spinner at the input's right end while the suggest request is in flight.
+function SuggestLoaderDots() {
+  return (
+    <span className="flex items-center gap-[3px]">
+      {[0, 1, 2].map((i) => (
+        <motion.span // mockup-ok: P13 owner-approved loader recipe (search.html .dots i)
+          key={i}
+          className="h-1 w-1 rounded-full bg-s-ink-2"
+          animate={{ opacity: [0.25, 1, 0.25], y: [0, -3, 0] }} // mockup-ok: continuous pulse loop, not an entrance
+          transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut", delay: i * 0.15 }}
+        />
+      ))}
+    </span>
+  );
+}
+
+// P13 (owner-approved 2026-07-16): matched-substring highlight inside a Services/Stylists row
+// title. Splitting logic lives in lib/utils (splitHighlight, shared with SalonResultCard's own
+// "suggest" variant so the matching rule is defined once); this renders it as a <mark>.
+function HighlightedText({ text, query }: { text: string; query: string }) {
+  return (
+    <>
+      {splitHighlight(text, query).map((seg, i) =>
+        seg.match ? (
+          <mark key={i} className="rounded-[3px] bg-[#FDF6D8] text-s-ink no-underline">{seg.text}</mark> /* drift-ok, owner-approved P13 2026-07-16: #FDF6D8 match highlight literal, not a design token */
+        ) : (
+          <React.Fragment key={i}>{seg.text}</React.Fragment>
+        ),
+      )}
+    </>
+  );
+}
+
 // A2/Model B (2026-07-04): persistent category pill row, results-only (showCategoryPills).
 // mockup-ok: verbatim classes ported from Header.tsx's ALREADY-SHIPPED mobile category-tab
 // row (L807-858) and the owner-approved /dev/search-model-b mockup (design source of truth
@@ -965,8 +1037,11 @@ function MonthGrid({ monthDate, now, windowEnd, selKey, onPick }: {
   );
 }
 
+// P13 (owner-approved 2026-07-16): `name` widened to accept a ReactNode (a <HighlightedText>
+// result) alongside a plain string , local-only component, no other file imports it, so this
+// is a fully backward-compatible widening.
 function SuggestRow({ name, sub, Icon, img, onClick, onRemove }: {
-  name: string; sub?: string; Icon?: LucideIcon; img?: string;
+  name: React.ReactNode; sub?: string; Icon?: LucideIcon; img?: string;
   onClick: () => void; onRemove?: () => void;
 }) {
   return (
