@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Loader2, Check, Save, AlertTriangle } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import { Switch } from "@/app/[locale]/_components/primitives";
 
 /**
  * Admin: AI daily-generation cap editor. The per-user-per-day ceiling on expensive
@@ -32,6 +33,14 @@ import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
  * Lives in ADMIN_NAV (DashboardLayout) as "AI-Limit", integrated into the admin
  * dashboard, not a standalone island. German copy to match its sibling admin pages
  * (commission-admin etc.).
+ *
+ * Also carries two settings that used to be code-only, extended in 2026-07-16 per
+ * _backend-system/QUESTIONS.md Q2 (owner: "no and let admin choose in pannel"):
+ * - globalCap: the house-wide daily generation ceiling (lib/ratelimit.ts
+ *   getAiGlobalDailyLimiter()), previously exposed by the API but read by no UI.
+ * - blocksAdmin: whether the separate CHF/month nail AI budget (lib/nail/ai-budget.ts)
+ *   still blocks an admin once exhausted. Default off (do not block), the admin can turn
+ *   it on here. All three fields share ONE save button and ONE PUT call.
  */
 
 type SaveState = "idle" | "saving" | "saved" | "error";
@@ -42,6 +51,13 @@ export default function AiLimitsAdminPage() {
   // misleadingly-low cap as if it were the enforced value.
   const [cap, setCap] = useState<number>(100);
   const [loadedCap, setLoadedCap] = useState<number>(100);
+  // Default matches lib/ratelimit.ts DEFAULT_AI_GLOBAL_DAILY_CAP, same reasoning as cap above.
+  const [globalCap, setGlobalCap] = useState<number>(2000);
+  const [loadedGlobalCap, setLoadedGlobalCap] = useState<number>(2000);
+  // Default matches lib/nail/ai-budget.ts DEFAULT_NAIL_AI_BUDGET_BLOCKS_ADMIN (false, do not
+  // block), same reasoning.
+  const [blocksAdmin, setBlocksAdmin] = useState<boolean>(false);
+  const [loadedBlocksAdmin, setLoadedBlocksAdmin] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
   const [state, setState] = useState<SaveState>("idle");
 
@@ -55,12 +71,18 @@ export default function AiLimitsAdminPage() {
         const c = Number(data.daily_cap ?? 100);
         setCap(c);
         setLoadedCap(c);
+        const gc = Number(data.global_daily_cap ?? 2000);
+        setGlobalCap(gc);
+        setLoadedGlobalCap(gc);
+        const ba = Boolean(data.blocks_admin ?? false);
+        setBlocksAdmin(ba);
+        setLoadedBlocksAdmin(ba);
       })
       .catch((err) => console.error("[AiLimitsAdmin] failed to fetch AI daily cap:", err))
       .finally(() => setLoading(false));
   }, []);
 
-  const dirty = cap !== loadedCap;
+  const dirty = cap !== loadedCap || globalCap !== loadedGlobalCap || blocksAdmin !== loadedBlocksAdmin;
 
   const handleSave = async () => {
     setState("saving");
@@ -68,11 +90,13 @@ export default function AiLimitsAdminPage() {
       const res = await fetch("/api/admin/ai-limits", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cap }),
+        body: JSON.stringify({ cap, globalCap, blocksAdmin }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       setLoadedCap(Number(data.daily_cap ?? cap));
+      setLoadedGlobalCap(Number(data.global_daily_cap ?? globalCap));
+      setLoadedBlocksAdmin(Boolean(data.blocks_admin ?? blocksAdmin));
       setState("saved");
       setTimeout(() => setState("idle"), 3000);
     } catch (err) {
@@ -128,6 +152,56 @@ export default function AiLimitsAdminPage() {
           {/* Explainer */}
           <div className="mt-4 rounded-[13px] border border-s-border bg-s-bg-sunken px-4 py-3">
             <p className="text-[12px] leading-[1.5] text-s-ink-2">{t("explainer")}</p>
+          </div>
+
+          {/* Global (house-wide) daily cap, summed across every user, the real cost ceiling */}
+          <div className="mt-6 border-t border-s-border pt-4">
+            <div className="text-[12px] font-semibold text-s-ink/40">
+              {t("globalCapEyebrow")}
+            </div>
+            <div className="mt-4">
+              <label htmlFor="ai-global-daily-cap" className="mb-2 block text-xs font-medium text-s-ink-2">
+                {t("globalCapLabel")}
+              </label>
+              <div className="flex h-[62px] items-center rounded-[13px] border-[1.5px] border-s-ink px-4">
+                <input
+                  id="ai-global-daily-cap"
+                  type="number"
+                  min={1}
+                  max={100000}
+                  step={1}
+                  value={globalCap}
+                  onChange={(e) => {
+                    setGlobalCap(Math.min(100000, Math.max(1, Math.round(Number(e.target.value) || 0))));
+                    if (state !== "idle") setState("idle");
+                  }}
+                  className="w-full flex-1 bg-transparent font-heading text-[30px] font-bold tabular-nums tracking-[-0.02em] text-s-ink outline-none"
+                />
+                <span className="font-heading text-[20px] font-semibold text-s-ink-2">{t("capUnit")}</span>
+              </div>
+            </div>
+            <div className="mt-4 rounded-[13px] border border-s-border bg-s-bg-sunken px-4 py-3">
+              <p className="text-[12px] leading-[1.5] text-s-ink-2">{t("globalExplainer")}</p>
+            </div>
+          </div>
+
+          {/* Nail AI monthly CHF budget: whether it also blocks an admin once exhausted */}
+          <div className="mt-6 border-t border-s-border pt-4">
+            <div className="text-[12px] font-semibold text-s-ink/40">
+              {t("blocksAdminEyebrow")}
+            </div>
+            <div className="mt-2">
+              <Switch
+                id="nail-budget-blocks-admin"
+                checked={blocksAdmin}
+                onCheckedChange={(next) => {
+                  setBlocksAdmin(next);
+                  if (state !== "idle") setState("idle");
+                }}
+                label={t("blocksAdminLabel")}
+                subLabel={t("blocksAdminSubLabel")}
+              />
+            </div>
           </div>
 
           {/* Saved banner */}

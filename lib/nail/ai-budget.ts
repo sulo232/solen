@@ -6,10 +6,64 @@
 
 import { Redis } from "@upstash/redis";
 import { getServerEnv } from "@/lib/env";
+import { createAdminSupabaseClient } from "@/lib/supabase";
 
 const MONTHLY_BUDGET_CHF = 50; // CHF 50/month default cap
 const COST_PER_GENERATION_CHF = 0.05; // ~$0.05 per fal.ai image
 const WARN_THRESHOLD = 0.8; // 80%
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Whether an exhausted budget blocks an admin is a stored, admin-editable setting
+// (platform_settings.key='nail_ai_budget_blocks_admin', value.blocks_admin), edited via
+// /api/admin/ai-limits + /dashboard/ai-limits-admin, same jsonb key/value shape and TTL-cache
+// style as resolveAiDailyCap/resolveDailyCap in lib/ratelimit.ts: 60s TTL, only a clean read
+// (no query error, a real boolean) is cached, a transient DB error re-checks on the very next
+// call instead of trusting the failure for the rest of the window.
+//
+// Owner decision 2026-07-16 (_backend-system/QUESTIONS.md Q2, verbatim: "no and let admin
+// choose in pannel"): default is false, do NOT block an admin. The previous code always
+// bypassed the block for admins via a hardcoded `checkBudget(true)` call, this setting makes
+// that bypass an explicit, visible, admin-editable choice instead of an implicit constant.
+// ─────────────────────────────────────────────────────────────────────────────
+export const NAIL_AI_BUDGET_BLOCKS_ADMIN_KEY = "nail_ai_budget_blocks_admin";
+export const DEFAULT_NAIL_AI_BUDGET_BLOCKS_ADMIN = false;
+
+type BlocksAdminCacheEntry = { blocksAdmin: boolean; expiresAt: number };
+const BLOCKS_ADMIN_TTL_MS = 60 * 1000;
+let blocksAdminCache: BlocksAdminCacheEntry | null = null;
+
+async function resolveBlocksAdminSetting(): Promise<boolean> {
+  const now = Date.now();
+  if (blocksAdminCache && blocksAdminCache.expiresAt > now) {
+    return blocksAdminCache.blocksAdmin;
+  }
+  try {
+    const admin = createAdminSupabaseClient();
+    const { data: setting, error } = await admin
+      .from("platform_settings")
+      .select("value")
+      .eq("key", NAIL_AI_BUDGET_BLOCKS_ADMIN_KEY)
+      .single();
+
+    // Missing row / query error: fall back to the default, do NOT cache the failure, so
+    // the next call re-checks the DB instead of trusting a transient blip for the rest of
+    // the TTL window.
+    if (error) return DEFAULT_NAIL_AI_BUDGET_BLOCKS_ADMIN;
+
+    const value = setting?.value;
+    const raw =
+      value && typeof value === "object" && !Array.isArray(value)
+        ? (value as { blocks_admin?: unknown }).blocks_admin
+        : undefined;
+    const blocksAdmin = typeof raw === "boolean" ? raw : DEFAULT_NAIL_AI_BUDGET_BLOCKS_ADMIN;
+
+    blocksAdminCache = { blocksAdmin, expiresAt: now + BLOCKS_ADMIN_TTL_MS };
+    return blocksAdmin;
+  } catch (err) {
+    console.error("[nail-budget] failed to read nail_ai_budget_blocks_admin, falling back to default:", err);
+    return DEFAULT_NAIL_AI_BUDGET_BLOCKS_ADMIN;
+  }
+}
 
 let redis: Redis | null = null;
 
@@ -60,17 +114,27 @@ export async function getBudgetStatus(): Promise<BudgetStatus> {
 
 /**
  * Check if generation is allowed. Returns null if OK, or an error message if blocked.
- * isAdmin bypasses the budget cap (admins can always generate).
+ *
+ * No `isAdmin` parameter: the only caller (app/api/admin/nail/generate/route.ts) is already
+ * gated to admin-only before it reaches this call, so a caller-supplied boolean could never
+ * be anything but a hardcoded `true`, it was not a real branch, just a constant bypass in
+ * disguise. Whether an exhausted budget still blocks that admin is instead read from the
+ * stored, admin-editable setting resolved by resolveBlocksAdminSetting() above (default:
+ * false, do not block), same as every other admin-tunable cap in this codebase
+ * (resolveAiDailyCap in lib/ratelimit.ts).
  */
-export async function checkBudget(isAdmin: boolean): Promise<string | null> {
+export async function checkBudget(): Promise<string | null> {
   const status = await getBudgetStatus();
 
   if (status.percentUsed >= WARN_THRESHOLD && status.percentUsed < 1) {
-    console.warn(`[nail-budget] ${Math.round(status.percentUsed * 100)}% threshold reached — CHF ${status.spent}/${status.budget}`);
+    console.warn(`[nail-budget] ${Math.round(status.percentUsed * 100)}% threshold reached, CHF ${status.spent}/${status.budget}`);
   }
 
-  if (status.blocked && !isAdmin) {
-    return `Monatliches AI-Budget erschöpft (CHF ${status.spent}/${status.budget}). Kontaktiere den Admin.`;
+  if (status.blocked) {
+    const blocksAdmin = await resolveBlocksAdminSetting();
+    if (blocksAdmin) {
+      return `Monatliches AI-Budget erschöpft (CHF ${status.spent}/${status.budget}). Kontaktiere den Admin.`;
+    }
   }
 
   return null;

@@ -712,6 +712,10 @@ export const adminAiLimitSchema = z.object({
   // getAiGlobalDailyLimiter(). Optional so existing callers that only send `cap` (the per-user
   // limit) keep working unchanged.
   globalCap: z.number().int().min(1).max(1000000).optional(),
+  // Optional: whether the exhausted CHF/month nail AI budget also blocks an admin, see
+  // lib/nail/ai-budget.ts NAIL_AI_BUDGET_BLOCKS_ADMIN_KEY. Optional so existing callers that
+  // only send `cap`/`globalCap` keep working unchanged.
+  blocksAdmin: z.boolean().optional(),
 });
 
 export const adminFeatureFlagSchema = z.object({

@@ -45,9 +45,9 @@ export async function POST(req: NextRequest) {
   // Global budget checked BEFORE the per-user cap, admin included: this route calls fal.ai for
   // a real per-image charge, and the whole point of a house-wide cost ceiling is that it bounds
   // TOTAL spend regardless of who is spending it. Unlike the separate CHF/month budget below
-  // (checkBudget, which deliberately bypasses admins, see lib/nail/ai-budget.ts and
-  // _backend-system/QUESTIONS.md Q2, still an open owner question) this count-based global cap
-  // does NOT bypass admin, exempting the only caller of an admin-gated route would make the
+  // (checkBudget, whose admin-block behavior is now a stored, admin-editable setting, default
+  // off, see lib/nail/ai-budget.ts and _backend-system/QUESTIONS.md Q2) this count-based global
+  // cap does NOT bypass admin, exempting the only caller of an admin-gated route would make the
   // cap unenforceable for this route entirely.
   const globalLimited = await applyRateLimit(await getAiGlobalDailyLimiter(), { userId: AI_GLOBAL_BUDGET_KEY }, AI_GLOBAL_BUDGET_EXCEEDED_BODY);
   if (globalLimited) return globalLimited;
@@ -55,8 +55,10 @@ export async function POST(req: NextRequest) {
   const dailyLimited = await applyRateLimit(await getAiDailyLimiter(), { userId: user.id });
   if (dailyLimited) return dailyLimited;
 
-  // 7. Budget check (admin bypasses block but warnings are logged)
-  const budgetError = await checkBudget(true);
+  // 7. Budget check. Whether this blocks (this route is admin-only, checked in step 5 above)
+  // is read from the stored nail_ai_budget_blocks_admin setting inside checkBudget(), not
+  // passed in here, see lib/nail/ai-budget.ts.
+  const budgetError = await checkBudget();
   if (budgetError) {
     return NextResponse.json({ error: budgetError }, { status: 429 });
   }

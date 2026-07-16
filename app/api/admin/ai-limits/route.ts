@@ -13,6 +13,7 @@ import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter, DEFAULT_AI_DAILY_CAP, DEFAULT_AI_GLOBAL_DAILY_CAP } from "@/lib/ratelimit";
 import { logAuditEvent } from "@/lib/audit";
 import { validateBody, adminAiLimitSchema } from "@/lib/validations";
+import { NAIL_AI_BUDGET_BLOCKS_ADMIN_KEY, DEFAULT_NAIL_AI_BUDGET_BLOCKS_ADMIN } from "@/lib/nail/ai-budget";
 
 // GET /api/admin/ai-limits: fetch the current AI daily generation cap
 export async function GET(req: NextRequest) {
@@ -79,6 +80,25 @@ export async function GET(req: NextRequest) {
       ? rawGlobalCap
       : DEFAULT_AI_GLOBAL_DAILY_CAP;
 
+  // Same read again, for the nail AI CHF/month budget's admin-block setting, see
+  // lib/nail/ai-budget.ts. Boolean, not a numeric cap, so the shape differs slightly
+  // (value.blocks_admin, not value.cap) but the fallback-to-default-on-error convention is
+  // the same as above.
+  const { data: blocksAdminSetting, error: blocksAdminReadErr } = await admin
+    .from("platform_settings")
+    .select("value, updated_at")
+    .eq("key", NAIL_AI_BUDGET_BLOCKS_ADMIN_KEY)
+    .single();
+  if (blocksAdminReadErr && blocksAdminReadErr.code !== "PGRST116") {
+    console.error("[admin/ai-limits] failed to read nail_ai_budget_blocks_admin:", blocksAdminReadErr.message);
+  }
+  const blocksAdminValue = blocksAdminSetting?.value;
+  const rawBlocksAdmin =
+    blocksAdminValue && typeof blocksAdminValue === "object" && !Array.isArray(blocksAdminValue)
+      ? (blocksAdminValue as { blocks_admin?: unknown }).blocks_admin
+      : undefined;
+  const blocksAdmin = typeof rawBlocksAdmin === "boolean" ? rawBlocksAdmin : DEFAULT_NAIL_AI_BUDGET_BLOCKS_ADMIN;
+
   return NextResponse.json({
     cap,
     // daily_cap is an alias for the same value: app/[locale]/dashboard/ai-limits-admin/page.tsx
@@ -88,6 +108,8 @@ export async function GET(req: NextRequest) {
     global_cap: globalCap,
     global_daily_cap: globalCap,
     global_updated_at: globalSetting?.updated_at ?? null,
+    blocks_admin: blocksAdmin,
+    blocks_admin_updated_at: blocksAdminSetting?.updated_at ?? null,
   });
 }
 
@@ -163,6 +185,33 @@ export async function PUT(req: NextRequest) {
     );
   }
 
+  // blocksAdmin is OPTIONAL (see adminAiLimitSchema): only write nail_ai_budget_blocks_admin
+  // when the caller actually sent one, same reasoning as globalCap above, an existing caller
+  // that only sends `cap` must never flip the nail-budget admin-block setting by accident.
+  let blocksAdmin: boolean | undefined;
+  if (validated.blocksAdmin !== undefined) {
+    blocksAdmin = validated.blocksAdmin;
+    const { error: blocksAdminError } = await admin
+      .from("platform_settings")
+      .upsert({
+        key: NAIL_AI_BUDGET_BLOCKS_ADMIN_KEY,
+        value: { blocks_admin: blocksAdmin },
+        updated_at: new Date().toISOString(),
+        updated_by: user.id,
+      });
+
+    if (blocksAdminError) return NextResponse.json({ error: blocksAdminError.message }, { status: 500 });
+
+    await logAuditEvent(
+      req,
+      user.id,
+      "feature_flag.toggle", // using closest available action type
+      "platform_settings",
+      NAIL_AI_BUDGET_BLOCKS_ADMIN_KEY,
+      { blocks_admin: blocksAdmin }
+    );
+  }
+
   // daily_cap is an alias for the same value: app/[locale]/dashboard/ai-limits-admin/page.tsx
   // (already built, reads data.daily_cap) is the live consumer of this route.
   return NextResponse.json({
@@ -170,5 +219,6 @@ export async function PUT(req: NextRequest) {
     cap,
     daily_cap: cap,
     ...(globalCap !== undefined ? { global_cap: globalCap, global_daily_cap: globalCap } : {}),
+    ...(blocksAdmin !== undefined ? { blocks_admin: blocksAdmin } : {}),
   });
 }
