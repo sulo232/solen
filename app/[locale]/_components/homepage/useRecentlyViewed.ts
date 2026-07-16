@@ -17,17 +17,21 @@ export type RecentlyViewedSalon = {
   slug: string;
   name: string;
   category: string;
-  address?: string;
-  rating?: number;
   photoUrl?: string;
 };
 
 const STORAGE_KEY = "solen.recently-viewed";
 
+// live-data-ok: id/slug/name/category/photoUrl are the identity fields this
+// dev-only (NODE_ENV-gated) resting-state fallback needs. `address`/`rating`
+// were dropped 2026-07-16: they were stale/wrong hardcoded literals, and
+// unused by both consumers (RecentlyViewedClient.tsx only reads `.slug` off
+// these raw items, then re-fetches real name/rating/address/photo from
+// /api/salons/by-slugs; SearchOverlay's `_recentlyViewed` binding is unused).
 const DEMO: RecentlyViewedSalon[] = [
-  { id: "0ed041f9-149b-4241-a09e-d41351be7097", slug: "muse-beauty-studio", name: "Muse Beauty Studio", category: "coiffeur", address: "Spalenberg 12", rating: 4.9, photoUrl: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=160&h=160&fit=crop&q=80" },
-  { id: "599bb853-c713-4dae-a3c4-96c6216139c4", slug: "old-town-barbers", name: "Old Town Barbers", category: "barbershop", address: "Hammerstr. 65", rating: 4.8, photoUrl: "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=160&h=160&fit=crop&q=80" },
-  { id: "ca037638-362a-491b-ada2-238e20d9d4a9", slug: "nail-studio-bliss", name: "Nail Studio Bliss", category: "nails", address: "Steinenvorstadt 21", rating: 4.95, photoUrl: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=160&h=160&fit=crop&q=80" },
+  { id: "0ed041f9-149b-4241-a09e-d41351be7097", slug: "muse-beauty-studio", name: "Muse Beauty Studio", category: "coiffeur", photoUrl: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=160&h=160&fit=crop&q=80" },
+  { id: "599bb853-c713-4dae-a3c4-96c6216139c4", slug: "old-town-barbers", name: "Old Town Barbers", category: "barbershop", photoUrl: "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=160&h=160&fit=crop&q=80" },
+  { id: "ca037638-362a-491b-ada2-238e20d9d4a9", slug: "nail-studio-bliss", name: "Nail Studio Bliss", category: "nails", photoUrl: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=160&h=160&fit=crop&q=80" },
 ];
 
 function isValid(e: unknown): e is RecentlyViewedSalon {

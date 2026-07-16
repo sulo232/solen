@@ -295,7 +295,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
                     {room.name}
                   </p>
                   <span className="text-[12px] text-s-ink/40">
-                    {t(`room_type.${room.room_type}` as any)} &middot; {t("capacity_value", { count: room.capacity })}
+                    {t(`room_type.${room.room_type}` as any)}, {t("capacity_value", { count: room.capacity })}
                   </span>
                 </div>
 
