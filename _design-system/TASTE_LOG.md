@@ -234,3 +234,22 @@ P3 graveyarded (REMOVED.md). Undecided probes from the refs page stay open: P2, 
 | Icon rule wording | "almost always" is too vague, the exemption set must be DEFINED | "what do you mean almost? Is it already defined?" |
 | Gray backgrounds | Owner dislikes frequent gray boxes/backgrounds in my presentation pages; product-side gray locks (sunken tray, gray selected fill) stay LAW until reopened by name | "I don't really understand why you use gray background often. I don't like that." |
 | Full-bleed | WANTED, a lot, on the right moments (per ref 05 family), placement to be probed | "I like full bleed stuff... I want it a lot. So make mock ups of that." |
+
+## 2026-07-16, full-bleed picks + the dead-chevron rule (owner dictated, night)
+
+Owner verbatim: "ok all of it no disban the full bleed thing one thing to add it smtimes make chevron that has no real destination"
+
+| Item | Decision |
+|---|---|
+| FB1 home photo hero (straddling search) | APPROVED |
+| FB2 PDP tall gallery hero | APPROVED |
+| FB3 category/city landing hero tier | APPROVED |
+| FB4a onboarding photo montage | APPROVED |
+| FB4b gradient finish | NOT adopted (followed the stated recommendation inside "ok all of it"; one word reopens) |
+| FB5 tier-up full-ink takeover | APPROVED |
+| FB6 dark marketing bands with real product | APPROVED |
+| FB7 green queue flood | NOT adopted (same recommendation basis) |
+| Full-bleed as a direction | STANDING, not disbanded ("no disban the full bleed thing") |
+| NEW RULE, dead chevrons | A chevron/arrow affordance may NEVER render without a real wired destination. A dead chevron is a fabricated affordance, the same class as fabricated data. Mockups mark inert controls as inert; product code never ships an unwired chevron. |
+
+Interpretation note: "ok all of it" read as endorsing the recommendation set printed on the page and in chat (a on photo moments, yes FB5, no FB7, no gradient). If "all of it" meant literally every fork including FB7 and the gradient, say so and both flip to approved.

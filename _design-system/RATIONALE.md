@@ -691,6 +691,8 @@ Source: the owner's second research digest (epistemology, Norman, depth/light, t
 
 **Information scent (T2, Pirolli and Card 1999, information foraging):** labels, links, icons, and snippets are proximal cues predicting distal value; vague labels have weak scent and raise abandonment of the trail. Bounds the icon-verbosity ladder (icon-only is allowed exactly where the adjacent object supplies the scent) and CTA copy (verb + object beats "Mehr erfahren" when the destination is not obvious).
 
+**Dead affordances are fabrications (owner rule, 2026-07-16: "it sometimes makes a chevron that has no real destination").** A chevron, arrow, or any tap affordance PROMISES a destination; rendering one with nothing wired behind it lies to the user exactly like a fabricated number does (taste rule 1's interaction twin). Law: no chevron/arrow ships without a real route or handler; a mockup showing an inert control labels it inert; when a row has no destination yet, it carries NO chevron rather than a dead one. Checked by the loop-reviewer's standing lens on every UI diff.
+
 **Progressive disclosure (T2, NN/g):** common options first, advanced on demand, with a discoverable disclosure signifier. Already practiced (filter sheets, "Mehr lesen" clamps); recorded as mechanics.
 
 **Memory and attention effects, replication-flagged:**

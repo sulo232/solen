@@ -87,6 +87,13 @@ Owner message (dictated): fix + commit; expand RATIONALE.md with the og round-1 
 - [x] fullbleed.html rebuilt as FULL pages , verified: commit 9b3fa5650, 7 moments in scrollable 390px phone frames, composites seam at PIL-measured cuts (home 500, PDP 335, for-salons 660)
 - [x] Verified , verified: 19/19 images, 8 scrollable frames, FB1 seam eyeballed clean after the recapture (screenshot in session), committed 9b3fa5650; gemini ran on the prior iteration of this page, its diffs (gradient fade, frost fallback) carried over unchanged
 
+## Full-bleed picks + the dead-chevron rule (owner 2026-07-16, "ok all of it no disban the full bleed thing one thing to add it smtimes make chevron that has no real destination")
+
+- [x] FB picks logged , verified: TASTE_LOG.md "full-bleed picks + the dead-chevron rule" table with the verbatim + interpretation note
+- [x] Dead-chevron rule live , verified: TASTE_LOG row + RATIONALE.md domain 13 "Dead affordances are fabrications" + a FAIL line in ~/.claude/agents/loop-reviewer.md standing lens (survives context, graded on every UI diff)
+- [x] Audit chipped , verified: task_4f8747c1 (sweep + wire-or-remove, per-component commits)
+- [x] Implementation queue registered , verified: the six approved moments listed here in build order (FB1 home hero, FB3 category tier, FB2 PDP hero, FB6 marketing bands, FB4a onboarding, FB5 tier-up trigger+UI), gated behind the merge chip task_c132841a per the readiness order; not launched off this message (no-overstep rule)
+
 ## Parked / boundaries
 - Web dark mode stays graveyarded (exists-check hit); positive-polarity mechanics recorded for MOBILE dark mode only.
 - Merge chip task_c132841a, payment capture chip task_400fe4c2, R1/R2/R4 post-merge: unchanged, owner-gated.
