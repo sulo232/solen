@@ -28,6 +28,34 @@
     X-DNS-Prefetch-Control = "on"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(self), payment=(self)"
     Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    # CSP, audit #12 / SEC-05. REPORT-ONLY on purpose, and that is the whole point of this
+    # step: a Report-Only header NEVER blocks anything. It only reports what WOULD have been
+    # blocked. So this cannot break the site today, and it buys the one thing we do not have:
+    # evidence of what the enforcing policy would actually need. Enforcing a guessed CSP is
+    # how you take a working checkout offline.
+    #
+    # The origin list is MEASURED, not a vendor list from memory. Loaded /de, a city/category
+    # page and a real salon PDP through a headless browser and recorded every external origin
+    # the app actually requested (2026-07-17):
+    #   js.stripe.com, m.stripe.com, m.stripe.network, r.stripe.com  (Stripe.js + its telemetry)
+    #   api.mapbox.com          (static map images)
+    #   images.unsplash.com     (imagery)
+    # Plus the origins that only fire on authed/interactive paths a cold page load never hits,
+    # taken from config rather than guessed: the Supabase project host (REST/realtime/storage)
+    # and PostHog EU. Wildcarded to *.supabase.co / *.stripe.com / *.stripe.network so a
+    # project-ref or Stripe subdomain change does not silently start reporting.
+    #
+    # 'unsafe-inline' + 'unsafe-eval' on script-src are deliberate for NOW: Next's inline
+    # bootstrap runtime needs them, and removing them requires the nonce pipeline that
+    # _backend-system/LAW.md section 8 explicitly calls premature ("start with a domain
+    # allowlist"). This header is that allowlist. Tightening to a nonce is the NEXT step, not
+    # this one.
+    #
+    # WHAT HAS TO HAPPEN BEFORE THIS ENFORCES (do not skip): ship it, watch real reports for a
+    # normal traffic week including a real checkout and a real image upload, fix whatever the
+    # reports name, THEN rename the header to Content-Security-Policy. Flipping it to enforcing
+    # without that week is the exact mistake this report-only step exists to prevent.
+    Content-Security-Policy-Report-Only = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://*.stripe.com https://*.stripe.network https://eu.i.posthog.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https://*.supabase.co https://api.mapbox.com https://images.unsplash.com https://*.stripe.com; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.stripe.com https://*.stripe.network https://eu.i.posthog.com https://api.mapbox.com; frame-src https://js.stripe.com https://*.stripe.com https://*.stripe.network; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
 
 [[headers]]
   for = "/api/*"
