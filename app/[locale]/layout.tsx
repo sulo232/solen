@@ -11,7 +11,7 @@ import { PostHogProvider } from "@/components-legacy/PostHogProvider";
 import { Toaster } from "./_components/primitives/Toast";
 import WelcomeToast from "./_components/primitives/WelcomeToast";
 import Header from "./_components/layout/Header";
-import Footer from "./_components/layout/Footer";
+import FooterGate from "./_components/layout/FooterGate";
 import HideInBooking from "./_components/layout/HideInBooking";
 import OfflineBanner from "./_components/layout/OfflineBanner";
 // V3-D348 (tweak #3): CityTopBar retired — city control moved into the Header
@@ -117,7 +117,7 @@ export default async function LocaleLayout({
               legacy components-legacy/layout/Footer.tsx which was never
               mounted in the V3 rebuild. */}
           <HideInBooking hideOnFeed hideOnDashboard hideOnAccount>
-            <Footer locale={locale} />
+            <FooterGate locale={locale} />
           </HideInBooking>
           {/* BottomTabBar removed from web rendering 2026-05-03 per Q58
               ("No bottom nav (web-only decision); bottom-nav components

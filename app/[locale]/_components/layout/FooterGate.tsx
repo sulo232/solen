@@ -1,19 +1,26 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import Footer from "./Footer";
 
 /**
- * FooterGate — hides the site marketing footer inside the focused booking flow
- * (`/salon/[slug]/booking`), mirroring how BottomTabBar drops out there.
+ * FooterGate: hides the site marketing footer on focused/terminal flows, mirroring
+ * Breadcrumb.tsx's own EXCLUDED-list pattern (client component, usePathname, exact-prefix match).
  *
- * Fresha-style booking is a self-contained flow with a sticky action bar; a
- * marketing footer below it (a) is off-pattern and (b) used to scroll past /
- * cover the fixed action bar at the bottom. Server-rendered <Footer> is passed
- * as children so this only gates visibility, nothing else.
+ * Was previously a bare children-wrapper that only dropped `/booking` (never actually mounted
+ * anywhere, HideInBooking already covers `/booking` unconditionally at layout.tsx). Repurposed
+ * (not duplicated, see CLAUDE.md's exists-check protocol) to own the Footer render itself, so it
+ * can gate on `locale` + pathname the same way Breadcrumb does, and to add `/confirmation`: that
+ * screen is terminal (a receipt, not a browsing surface, see BookingConfirmation.tsx's own
+ * docstring) and the marketing footer stacking below its sticky CTAs is off-pattern, same
+ * rationale as the booking flow. `/booking` stays listed too (redundant with HideInBooking, but
+ * Breadcrumb's own EXCLUDED array keeps that same redundant entry, so this matches precedent).
  */
-export default function FooterGate({ children }: { children: ReactNode }) {
+const EXCLUDED = ["/booking", "/confirmation"];
+
+export default function FooterGate({ locale }: { locale: string }) {
   const pathname = usePathname() ?? "/";
-  if (pathname && /\/booking\/?$/.test(pathname)) return null;
-  return <>{children}</>;
+  const withoutLocale = pathname.replace(`/${locale}`, "") || "/";
+  if (EXCLUDED.some((prefix) => withoutLocale.startsWith(prefix))) return null;
+  return <Footer locale={locale} />;
 }

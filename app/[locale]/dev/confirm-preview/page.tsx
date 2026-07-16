@@ -33,6 +33,11 @@ export default function ConfirmPreview() {
       netLabel="CHF 78.63"
       vatLabel="CHF 6.37"
       salonVatNumber="CHE-123.456.789 MWST"
+      bookingId="00000000-0000-0000-0000-000000000001"
+      salonId="00000000-0000-0000-0000-000000000002"
+      serviceId="00000000-0000-0000-0000-000000000003"
+      staffId="00000000-0000-0000-0000-000000000004"
+      endsAt="2026-06-14T14:30:00.000Z"
     />
   );
 }

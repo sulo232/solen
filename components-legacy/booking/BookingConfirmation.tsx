@@ -1,28 +1,62 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
-import { Check, Copy, Calendar, MapPin, KeyRound, ChevronRight } from "lucide-react";
-import { SuccessMark } from "@/app/[locale]/_components/primitives/SuccessMark";
+import {
+  Check,
+  Copy,
+  Calendar,
+  MapPin,
+  KeyRound,
+  ChevronRight,
+  ChevronLeft,
+  HelpCircle,
+  Scissors,
+} from "lucide-react";
+import { FROST_GLASS } from "@/lib/frost-glass";
+import { Avatar } from "@/app/[locale]/_components/primitives/Avatar";
+import { toast } from "@/app/[locale]/_components/primitives/Toast";
+import RescheduleSheet from "./RescheduleSheet";
+import CancelBookingSheet from "./CancelBookingSheet";
+import type { Booking } from "./BookingCard";
 
 /**
  * BookingConfirmation: the screen a customer lands on right after paying (or reserving).
  *
- * SENIOR REBUILD 2026-06-09 (SENIOR_SCORECARD.md, 5/5; approved mockup
- * public/solen-confirm-senior.html). The prior screen made the reference code the visual hero,
- * stacked 3-4 cards, and ran 4 explainer paragraphs + ~11 font sizes — it failed every scorecard
- * dimension. This version:
- *   - EMPHASIS: the DATE is the focal (what the customer actually came for). The reference code
- *     drops to a 13px footer line (it's a support-lookup key, not a hero).
- *   - COPY: headline only, no subtitle; no explainer paragraphs.
- *   - COLOR: green carries the "paid/confirmed" beat (check + paid pill); never dead-grey, never rainbow.
- *   - TYPE: 4 sizes (24/19/15/13), 2 weights (600/400). Mono only for the code.
- *   - STRUCTURE: ONE essentials card + one ink primary (Add to calendar) + one flat secondary.
+ * RECEIPT REBUILD (owner-approved mockup `public/_mockups/confirmation-v2.html` + the portable
+ * handoff spec `public/_mockups/confirmation-spec.html`; both live on branch
+ * `claude/backend-analysis-improvements-77f02b`, not in this worktree's history). This receipt
+ * layout is ONE consistent structure for every payment state (confirmed, confirming, and
+ * pay-at-salon alike), replacing the SENIOR REBUILD 2026-06-09 centered-celebration layout
+ * (SuccessMark disc + centered h1 + one card, 344 lines) everywhere, not just for a paid booking.
+ * The big SuccessMark disc is an owner-killed pattern and does not come back for any state. What
+ * IS unchanged from before this rebuild: the payment-status DERIVATION (isPaid / isConfirming
+ * booleans below) and the translation KEYS the confirming / pay-at-salon states already used
+ * (`t("title")`, `t("paymentConfirming")`, `t("paidInPerson")`); only their visual container
+ * changed, from the old centered card to this receipt. The new receipt:
+ *   - Full-bleed 240px salon cover photo at the top (image flush(0), no side margins), with
+ *     frosted back/help circles floating on it (FROST_GLASS, lib/frost-glass.ts). No photo:
+ *     the hero is omitted, back/help render flat (frost is earned by the photo, CLAUDE.md taste
+ *     rule 7) in a plain header row instead.
+ *   - Salon name + address BELOW the photo (never overlaid, REMOVED.md 2026-07-02 killed
+ *     photo-overlay text), chevron to the salon page.
+ *   - Headline: same receipt position and 24/700 type scale for every state. Only the colour and
+ *     copy branch on payment_status: green "confirmed" text when it is actually 'paid' (isPaid
+ *     below), otherwise the original ink `title` copy (confirming / pay-at-salon). No check disc
+ *     next to it (the word already says it, taste rule 2) and no date sub-line (the date lives
+ *     in the details card, copy economy).
+ *   - Details card + money card: elevation-2, radius 16, white (never the sunken selected-state
+ *     grey the SENIOR REBUILD used as a decorative panel).
+ *   - NEW: the date row opens RescheduleSheet (real in-place reschedule) when the booking is
+ *     over 24h out and still confirmed/pending; a quiet red "cancel appointment" text row opens
+ *     CancelBookingSheet when the booking is upcoming and confirmed (mirrors BookingCard.tsx's
+ *     own gate). Both are hidden for a GUEST, see the `canManage` comment below for why.
  *
- * AESTHETIC: Solen B&W chrome, Inter Tight + Inter + JetBrains Mono (font-mono-code), ink primary
- *   CTA, s-accent functional-only (focus ring), success-green Layer-3, no raw hex.
+ * AESTHETIC: Solen B&W chrome, Inter Tight + Inter (font-mono-code for the reference code), ink
+ *   primary CTA, s-accent functional-only, success-green / error-red semantic (never monochromed).
  *
  * Payment truth is gated on the row (never an unconditional "paid"): the green paid pill shows ONLY
  * when payment_status === 'paid'; 'none'/'processing' → "confirming"; anything else → pay-at-salon.
@@ -76,11 +110,30 @@ export interface BookingConfirmationProps {
   netLabel: string;
   vatLabel: string;
   salonVatNumber: string | null;
+  /**
+   * The five raw ids/timestamps below exist ONLY so this screen can hand a booking to
+   * RescheduleSheet / CancelBookingSheet (built for BookingsList's `Booking` shape, BookingCard.tsx).
+   * referenceCode is a public display code, never the row id the reschedule/cancel routes key on.
+   */
+  bookingId: string;
+  salonId: string;
+  serviceId: string;
+  staffId: string | null;
+  endsAt: string; // ISO
 }
 
 export default function BookingConfirmation(props: BookingConfirmationProps) {
   const t = useTranslations("ui.successPage") as any;
+  const tCommon = useTranslations("common");
+  const tBookings = useTranslations("bookingsList");
+  // Reused, not new (CLAUDE.md exists-check protocol): bookingCard.status.confirmed is the SAME
+  // one-word "Confirmed" status label already live on BookingsList's cards; payConfirm.yourStylist
+  // is the same "your stylist" caption PayConfirmStep already shows one step earlier in this exact
+  // flow. Both keys exist in all 4 locale files already.
+  const tBookingCard = useTranslations("bookingCard");
+  const tPayConfirm = useTranslations("payConfirm");
   const locale = useLocale();
+  const router = useRouter();
 
   const localeCode =
     locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-CH";
@@ -92,16 +145,6 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
     month: "long",
   });
   const timeStr = start.toLocaleTimeString(localeCode, { hour: "2-digit", minute: "2-digit" });
-  const displayEnd = props.durationMinutes
-    ? new Date(start.getTime() + props.durationMinutes * 60 * 1000).toLocaleTimeString(localeCode, {
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-    : null;
-  // Separator is a thin vertical line, not a middle-dot (owner 2026-06-09: "stop using dots, use a line").
-  const timeline = `${timeStr}${displayEnd ? ` – ${displayEnd}` : ""}${
-    props.durationMinutes ? ` ${props.durationMinutes} min` : ""
-  }`;
   const code = props.referenceCode ?? "";
 
   // Payment truth, gated on the row (never an unconditional "paid in full").
@@ -119,6 +162,105 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
 
   // Guest "manage" + the access link point at the same re-entry; logged-in goes to the lookup route.
   const manageHref = props.isGuest && props.accessLink ? props.accessLink : `/${locale}/booking/lookup`;
+
+  // ── reschedule / cancel affordances (checklist item 9) ──────────────────────────────────
+  // Both RescheduleSheet's POST and CancelBookingSheet's GET/POST need a real requester identity.
+  // Reschedule authorizes through resolveBookingActor (lib/bookings/authorize.ts), whose guest
+  // branch reads the httpOnly `solen_guest_access` cookie (lib/bookings/guest-access.ts). That
+  // cookie is only ever written by setGuestCookie, called from ONE place: GET
+  // /api/bookings/guest-lookup (app/api/bookings/guest-lookup/route.ts:65). This confirmation
+  // page's guest read (app/[locale]/confirmation/page.tsx) verifies the access_token itself
+  // against the admin client and never calls that route, so a guest lands here with NO cookie set
+  // and a reschedule attempt would 401/403. Cancel is even more direct: app/api/bookings/[id]/cancel
+  // (both GET and POST) gate on `createServerSupabaseClient().auth.getUser()` alone, no guest path
+  // exists there at all (no resolveBookingActor, no cookie, no token check). So for either reason a
+  // guest can never complete these actions today, hide both affordances rather than show a control
+  // that always fails.
+  const canManage = !props.isGuest;
+
+  const isUpcoming = start.getTime() > Date.now();
+  const hoursUntilBooking = (start.getTime() - Date.now()) / (1000 * 60 * 60);
+  // A cancel that just succeeded on THIS page reads the same "cancelled" branch as a booking that
+  // was already cancelled server-side (a stale confirmation link reopened later), so the headline
+  // is never wrong either way (checklist item 7).
+  const [cancelledNow, setCancelledNow] = useState(false);
+  const isCancelledNow = cancelledNow || props.status === "cancelled";
+  // Mirrors RescheduleSheet's own RESCHEDULE_MIN_LEAD_HOURS gate so the chevron never opens onto
+  // an already-passed sheet.
+  const canReschedule =
+    canManage &&
+    !isCancelledNow &&
+    hoursUntilBooking > 24 &&
+    (props.status === "confirmed" || props.status === "pending");
+  // Mirrors BookingCard.tsx's own cancel gate (`booking.status === 'confirmed' && isUpcoming`).
+  const canCancel = canManage && !isCancelledNow && props.status === "confirmed" && isUpcoming;
+
+  const [rescheduleOpen, setRescheduleOpen] = useState(false);
+  const [cancelSheetOpen, setCancelSheetOpen] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
+
+  // Adapter: RescheduleSheet + CancelBookingSheet were both built for BookingsList's `Booking`
+  // shape (BookingCard.tsx), not this screen's flatter prop list. Fields neither sheet ever reads
+  // (user_id, slot_id, salon.average_rating/review_count, service.price) get inert placeholders,
+  // confirmed by reading both sheet files line by line, so this never displays fabricated data.
+  const sheetBooking: Booking | null = canManage
+    ? {
+        id: props.bookingId,
+        user_id: "",
+        slot_id: "",
+        salon_id: props.salonId,
+        service_id: props.serviceId,
+        starts_at: props.startsAt,
+        ends_at: props.endsAt,
+        price_paid: props.pricePaid,
+        status: (props.status as Booking["status"]) ?? "confirmed",
+        salon: {
+          id: props.salonId,
+          slug: props.salonSlug,
+          name: props.salonName,
+          address: props.salonAddress,
+          average_rating: 0,
+          review_count: 0,
+          cover_photo_url: props.salonCoverUrl,
+        },
+        service: {
+          id: props.serviceId,
+          name_de: props.serviceName,
+          name_en: props.serviceName,
+          duration_minutes: props.durationMinutes ?? 0,
+          price: props.pricePaid,
+        },
+        staff:
+          props.staffId && props.staffName
+            ? { id: props.staffId, name: props.staffName, avatar_url: null }
+            : undefined,
+      }
+    : null;
+
+  // Mirrors BookingsList's confirmCancel (BookingsList.tsx): same endpoint, same error handling.
+  const confirmCancel = useCallback(async () => {
+    setCancelling(true);
+    try {
+      const response = await fetch(`/api/bookings/${props.bookingId}/cancel`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.message || data.error || `Cancel failed: ${response.statusText}`);
+      }
+      toast.success(tBookings("cancelledToast"));
+      setCancelledNow(true);
+      setCancelSheetOpen(false);
+      router.refresh();
+    } catch (err) {
+      console.error("[BookingConfirmation] Failed to cancel booking:", err);
+      toast.error(err instanceof Error ? err.message : tBookings("cancelError"));
+    } finally {
+      setCancelling(false);
+    }
+  }, [props.bookingId, tBookings, router]);
 
   const [copiedLink, setCopiedLink] = useState(false);
   const copyText = useCallback(async (text: string, mark: (v: boolean) => void) => {
@@ -160,119 +302,191 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
     `${props.salonName} ${props.salonAddress}`.trim(),
   )}`;
 
+  const hasPhoto = Boolean(props.salonCoverUrl); // mockup-ok
+  // Back: deterministic destination (not history.back(), which can land mid-flow or off-site) ,
+  // logged-in customer returns to their bookings list, a guest returns home (no bookings list to
+  // show them). Help: the real /{locale}/help route.
+  const backHref = props.isGuest ? `/${locale}` : `/${locale}/profile/bookings`;
+  const helpHref = `/${locale}/help`;
+  const iconBtnClass = hasPhoto // mockup-ok
+    ? "grid h-11 w-11 place-items-center rounded-full text-s-ink transition active:scale-95"
+    : "grid h-11 w-11 place-items-center rounded-full border border-s-border bg-white text-s-ink transition active:scale-95";
+
   return (
     <div className="min-h-[100dvh] bg-s-bg-surface text-s-ink">
-      <main className="mx-auto w-full max-w-[440px] px-5 pb-16 pt-9">
-        {/* ── celebratory header: SuccessMark + headline only (the card carries the rest) ── */}
-        <div className="flex flex-col items-center text-center">
-          <SuccessMark size={58} className="mb-4" />
-          <h1
-            className="celebrate-rise font-display text-[24px] font-semibold leading-[1.15] tracking-[-0.02em]"
-            style={{ animationDelay: "0.46s" }}
-          >
-            {t("title")}
-          </h1>
-        </div>
+      <main className="mx-auto w-full max-w-[440px] pb-16">
+        {/* ── hero: full-bleed 240px cover photo, frosted back/help float on it (rule 7). No
+            photo -> the hero is omitted entirely, back/help render flat instead (no fabricated
+            placeholder image). ── */}
+        {hasPhoto ? (
+          <div className="relative h-[240px] w-full overflow-hidden"> {/* mockup-ok */}
+            <Image
+              src={props.salonCoverUrl as string}
+              alt=""
+              fill
+              sizes="(max-width: 440px) 100vw, 440px"
+              className="object-cover"
+              priority
+              aria-hidden
+            />
+            <div className="absolute inset-x-4 top-4 flex items-center justify-between">
+              <Link href={backHref} aria-label={tCommon("back")} className={iconBtnClass} style={FROST_GLASS}>
+                <ChevronLeft size={20} aria-hidden />
+              </Link>
+              <Link href={helpHref} aria-label={t("helpAria")} className={iconBtnClass} style={FROST_GLASS}>
+                <HelpCircle size={20} aria-hidden />
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between px-4 pt-4"> {/* mockup-ok */}
+            <Link href={backHref} aria-label={tCommon("back")} className={iconBtnClass}>
+              <ChevronLeft size={20} aria-hidden />
+            </Link>
+            <Link href={helpHref} aria-label={t("helpAria")} className={iconBtnClass}>
+              <HelpCircle size={20} aria-hidden />
+            </Link>
+          </div>
+        )}
 
-        {/* ── ONE essentials card: salon · date (focal) · service · paid ── */}
-        <section
-          className="celebrate-rise mt-7 overflow-hidden rounded-card border border-s-border bg-s-bg-surface shadow-float"
-          style={{ animationDelay: "0.58s" }}
-        >
-          {/* the whole store identity row is tappable → the salon page (owner 2026-06-09) */}
+        <div className="px-5"> {/* mockup-ok */}
+          {/* ── salon name + address BELOW the photo (never overlaid), chevron to the salon page ── */}
           <Link
             href={`/${locale}/salon/${props.salonSlug}`}
-            className="flex items-center gap-3 p-4 transition-colors duration-150 hover:bg-s-bg-sunken focus-visible:bg-s-bg-sunken focus-visible:outline-none"
+            className="mt-4 flex items-center gap-2 py-1 focus-visible:bg-s-bg-sunken focus-visible:outline-none" // mockup-ok
           >
-            {props.salonCoverUrl ? (
-              <Image
-                src={props.salonCoverUrl}
-                alt=""
-                width={44}
-                height={44}
-                className="h-[44px] w-[44px] shrink-0 rounded-[11px] object-cover"
-                aria-hidden
-              />
-            ) : (
-              <div className="h-[44px] w-[44px] shrink-0 rounded-[11px] bg-s-bg-sunken" aria-hidden />
-            )}
             <div className="min-w-0 flex-1">
-              <div className="truncate font-display text-[15px] font-semibold tracking-[-0.01em] text-s-ink">
+              <div className="truncate font-display text-[17px] font-bold tracking-[-0.01em] text-s-ink">
                 {props.salonName}
               </div>
               {props.salonAddress && (
-                <div className="mt-0.5 flex items-center gap-1.5 text-[13px] text-s-ink-2">
-                  <MapPin size={13} className="shrink-0 text-s-ink-2" aria-hidden />
+                <div className="mt-0.5 flex items-center gap-1 text-[12.5px] text-s-ink-2">
+                  <MapPin size={12} className="shrink-0 text-s-ink-2" aria-hidden />
                   <span className="truncate">{props.salonAddress}</span>
                 </div>
               )}
             </div>
-            <ChevronRight size={18} className="shrink-0 text-s-ink-2" aria-hidden />
+            <ChevronRight size={17} className="shrink-0 text-s-ink-2" aria-hidden />
           </Link>
-          <hr className="border-s-border" />
-          {/* date = the focal */}
-          <div className="px-4 pb-1 pt-4">
-            <div className="font-display text-[19px] font-semibold leading-[1.2] tracking-[-0.01em] text-s-ink">
-              {dateStr}
-            </div>
-            <div className="mt-0.5 text-[13px] text-s-ink-2">{timeline}</div>
-          </div>
-          {/* service + stylist */}
-          <div className="px-4 pb-4 pt-3">
-            <div className="font-display text-[15px] font-semibold tracking-[-0.01em] text-s-ink">
-              {props.serviceName}
-            </div>
-            {props.staffName && (
-              <div className="mt-0.5 text-[13px] text-s-ink-2">
-                {t("withStylist", { name: props.staffName })}
+
+          {/* ── headline: one receipt position/size for every state, only colour + copy branch ,
+              green "confirmed" text when payment_status is actually 'paid', ink + the original
+              `title` copy for confirming / pay-at-salon (same derivation + keys as before this
+              rebuild, new container), red + appointmentCancelled when cancelled. ── */}
+          <h1
+            className={`celebrate-rise mt-6 font-display text-[24px] font-bold leading-[1.15] tracking-[-0.02em] ${
+              isCancelledNow ? "text-s-error" : isPaid ? "text-s-success" : "text-s-ink"
+            }`}
+            style={{ animationDelay: "0.2s" }}
+          >
+            {isCancelledNow ? tCommon("appointmentCancelled") : isPaid ? tBookingCard("status.confirmed") : t("title")}
+          </h1>
+
+          {/* ── details card: date (reschedule when >24h out + confirmed/pending), service, stylist ── */}
+          <section className="celebrate-rise mt-5 overflow-hidden rounded-card border border-s-border bg-white shadow-elevation-2"> {/* mockup-ok */}
+            {canReschedule ? (
+              <button
+                type="button"
+                onClick={() => setRescheduleOpen(true)}
+                aria-label={tBookings("rescheduleTitle")}
+                className="flex w-full items-center gap-3 p-4 text-left focus-visible:bg-s-bg-sunken focus-visible:outline-none" // mockup-ok
+              >
+                <Calendar size={18} className="shrink-0 text-s-ink-2" aria-hidden />
+                <div className="min-w-0 flex-1">
+                  <div className="font-display text-[14.5px] font-semibold tracking-[-0.01em] text-s-ink">
+                    {dateStr}
+                  </div>
+                  <div className="mt-0.5 flex items-center gap-2.5 text-[12.5px] text-s-ink-2">
+                    <span>{timeStr}</span>
+                    {props.durationMinutes ? <span>{props.durationMinutes} min</span> : null}
+                  </div>
+                </div>
+                <ChevronRight size={17} className="shrink-0 text-s-ink-3" aria-hidden />
+              </button>
+            ) : (
+              <div className="flex items-center gap-3 p-4">
+                <Calendar size={18} className="shrink-0 text-s-ink-2" aria-hidden />
+                <div className="min-w-0 flex-1">
+                  <div className="font-display text-[14.5px] font-semibold tracking-[-0.01em] text-s-ink">
+                    {dateStr}
+                  </div>
+                  <div className="mt-0.5 flex items-center gap-2.5 text-[12.5px] text-s-ink-2">
+                    <span>{timeStr}</span>
+                    {props.durationMinutes ? <span>{props.durationMinutes} min</span> : null}
+                  </div>
+                </div>
               </div>
             )}
-          </div>
-          {/* paid + price , deposit shows paid-now + rest-at-salon (discount-aware); else one total */}
-          {props.remainingAtSalonLabel && isPaid ? (
-            <div className="bg-s-bg-sunken px-4 py-3.5">
-              <div className="flex items-center justify-between gap-3">
-                <span className="inline-flex items-center gap-1.5 text-[13px] text-s-ink-2">
-                  {t("paidOnlineNow")}
-                  {isPaid && (
-                    <span className="inline-flex items-center gap-1 rounded-pill bg-s-success-bg px-2 py-[2px] text-[12px] font-semibold text-s-success">
-                      <Check size={12} strokeWidth={2.6} aria-hidden />
+            <hr className="border-s-border" />
+            {/* service row , no chevron, no edit backend (dead-click contract) */}
+            <div className="flex items-center gap-3 p-4">
+              <Scissors size={18} className="shrink-0 text-s-ink-2" aria-hidden />
+              <div className="min-w-0 flex-1">
+                <div className="truncate font-display text-[14.5px] font-semibold tracking-[-0.01em] text-s-ink">
+                  {props.serviceName}
+                </div>
+                <div className="mt-0.5 text-[12.5px] text-s-ink-2">{props.priceLabel}</div>
+              </div>
+            </div>
+            {props.staffName && (
+              <>
+                <hr className="border-s-border" />
+                {/* stylist row , no chevron. Avatar primitive = the canonical photo-or-initials
+                    circle (SalonTeam.tsx's own staff row uses it); no avatar_url is fetched for
+                    this screen, so it falls to initials-on-B&W, never a bare unexplained fill. */}
+                <div className="flex items-center gap-3 p-4">
+                  <Avatar src={null} name={props.staffName} size="xs" />
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate font-display text-[14.5px] font-semibold tracking-[-0.01em] text-s-ink">
+                      {props.staffName}
+                    </div>
+                    <div className="mt-0.5 text-[12.5px] text-s-ink-2">{tPayConfirm("yourStylist")}</div>
+                  </div>
+                </div>
+              </>
+            )}
+          </section>
+
+          {/* ── money card: white, never the sunken selected-state token , owed is the hero number ── */}
+          <section className="celebrate-rise mt-4 rounded-card border border-s-border bg-white p-4 shadow-elevation-2"> {/* mockup-ok */}
+            {props.remainingAtSalonLabel && isPaid ? (
+              <>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="inline-flex items-center gap-1.5 text-[13px] text-s-ink-3">
+                    {t("paidOnlineNow")}
+                  </span>
+                  <span className="shrink-0 text-[13px] text-s-ink-3 tabular-nums">{props.paidNowLabel}</span>
+                </div>
+                <div className="mt-3 flex items-end justify-between gap-3 border-t border-s-border pt-3">
+                  <span className="font-display text-[14.5px] font-semibold tracking-[-0.01em] text-s-ink">
+                    {t("restAtSalon")}
+                  </span>
+                  <span className="shrink-0 font-display text-[29px] font-bold leading-none tracking-[-0.02em] tabular-nums text-s-ink">
+                    {props.remainingAtSalonLabel}
+                  </span>
+                </div>
+              </>
+            ) : (
+              <div className="flex items-end justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="text-[13px] text-s-ink-2">{showVat ? t("totalInclVat") : t("total")}</div>
+                  {isPaid ? (
+                    <span className="mt-1 inline-flex items-center gap-1.5 rounded-pill bg-s-success-bg px-2.5 py-[3px] text-[13px] font-semibold text-s-success">
+                      <Check size={13} strokeWidth={2.6} aria-hidden />
                       {t("paidShort")}
                     </span>
+                  ) : isConfirming ? (
+                    <span className="mt-1 block text-[13px] text-s-ink-2">{t("paymentConfirming")}</span>
+                  ) : (
+                    <span className="mt-1 block text-[13px] text-s-ink-2">{t("paidInPerson")}</span>
                   )}
-                </span>
-                <span className="shrink-0 font-display text-[15px] font-semibold tracking-[-0.01em] text-s-ink tabular-nums">
-                  {props.paidNowLabel}
-                </span>
-              </div>
-              <div className="mt-2.5 flex items-center justify-between gap-3 border-t border-s-border pt-2.5">
-                <span className="text-[13px] font-medium text-s-ink">{t("restAtSalon")}</span>
-                <span className="shrink-0 font-display text-[19px] font-semibold tracking-[-0.01em] text-s-ink tabular-nums">
-                  {props.remainingAtSalonLabel}
+                </div>
+                <span className="shrink-0 font-display text-[29px] font-bold leading-none tracking-[-0.02em] tabular-nums text-s-ink">
+                  {props.priceLabel}
                 </span>
               </div>
-            </div>
-          ) : (
-            <div className="flex items-center justify-between gap-3 bg-s-bg-sunken px-4 py-3.5">
-              <div className="min-w-0">
-                <div className="text-[13px] text-s-ink-2">{showVat ? t("totalInclVat") : t("total")}</div>
-                {isPaid ? (
-                  <span className="mt-1 inline-flex items-center gap-1.5 rounded-pill bg-s-success-bg px-2.5 py-[3px] text-[13px] font-semibold text-s-success">
-                    <Check size={13} strokeWidth={2.6} aria-hidden />
-                    {t("paidShort")}
-                  </span>
-                ) : isConfirming ? (
-                  <span className="mt-1 block text-[13px] text-s-ink-2">{t("paymentConfirming")}</span>
-                ) : (
-                  <span className="mt-1 block text-[13px] text-s-ink-2">{t("paidInPerson")}</span>
-                )}
-              </div>
-              <span className="shrink-0 font-display text-[19px] font-semibold tracking-[-0.01em] text-s-ink tabular-nums">
-                {props.priceLabel}
-              </span>
-            </div>
-          )}
-        </section>
+            )}
+          </section>
 
         {/* ── one primary action (ink) + one secondary (flat) ── */}
         <button
@@ -288,13 +502,25 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
           href={directionsHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-2.5 flex h-[50px] w-full items-center justify-center gap-2 rounded-btn border border-s-border bg-s-bg-surface font-body text-[15px] font-semibold text-s-ink transition-[background-color] duration-150 hover:bg-s-bg-sunken focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
+          className="mt-2.5 flex h-[50px] w-full items-center justify-center gap-2 rounded-btn border border-s-border bg-s-bg-surface font-body text-[15px] font-semibold text-s-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
         >
           <MapPin size={17} aria-hidden />
           {t("directions")}
         </a>
 
-        {/* ── guest only: compact access-link (their only way back — kept, de-emphasized) ── */}
+        {/* ── quiet destructive tertiary: red TEXT, no fill, no border , opens CancelBookingSheet.
+            Only rendered when cancellation is actually possible (mirrors BookingCard.tsx's own gate). ── */}
+        {canCancel && (
+          <button
+            type="button"
+            onClick={() => setCancelSheetOpen(true)}
+            className="mt-1 flex h-11 w-full items-center justify-center text-[15px] font-semibold text-s-error transition-opacity duration-150 hover:opacity-80"
+          >
+            {t("cancelAppointment")}
+          </button>
+        )}
+
+        {/* ── guest only: compact access-link (their only way back , kept, de-emphasized) ── */}
         {props.isGuest && props.accessLink && (
           <div className="mt-4 rounded-card border border-s-border bg-s-bg-surface p-3.5 shadow-float">
             <div className="flex items-center gap-2 text-[13px] text-s-ink-2">
@@ -338,7 +564,30 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
             {t("vatNumberLabel", { nr: props.salonVatNumber })}
           </p>
         )}
+        </div>
       </main>
+
+      {/* ── reschedule / cancel sheets (checklist item 9: canManage = false for a guest, so
+          sheetBooking is null and neither sheet's affordance was ever shown to open them) ── */}
+      <RescheduleSheet
+        booking={sheetBooking}
+        isOpen={rescheduleOpen}
+        onOpenChange={(open) => setRescheduleOpen(open)}
+        onRescheduled={() => {
+          setRescheduleOpen(false);
+          toast.success(tBookings("rescheduledToast"));
+          router.refresh();
+        }}
+      />
+      <CancelBookingSheet
+        booking={sheetBooking}
+        isOpen={cancelSheetOpen}
+        onOpenChange={(open) => {
+          if (!open && !cancelling) setCancelSheetOpen(false);
+        }}
+        onConfirm={confirmCancel}
+        cancelling={cancelling}
+      />
     </div>
   );
 }

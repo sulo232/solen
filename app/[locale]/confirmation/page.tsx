@@ -157,6 +157,11 @@ export default async function ConfirmationPage({
       netLabel={formatCurrency(vat.netRappen / 100, localeCode)}
       vatLabel={formatCurrency(vat.vatRappen / 100, localeCode)}
       salonVatNumber={salon?.vat_number ?? null}
+      bookingId={booking.id}
+      salonId={booking.salon_id ?? salon?.id ?? ''}
+      serviceId={booking.service_id ?? ''}
+      staffId={booking.staff_member_id ?? null}
+      endsAt={booking.ends_at}
     />
   );
 }

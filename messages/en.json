@@ -4716,7 +4716,9 @@
       "shareText": "Order {code} at {salon}",
       "calendarDescription": "Booked via solen.ch",
       "paidOnlineNow": "Paid online now",
-      "restAtSalon": "Rest at the salon"
+      "restAtSalon": "Rest at the salon",
+      "helpAria": "Help",
+      "cancelAppointment": "Cancel appointment"
     },
     "guestBookingForm": {
       "title": "Guest booking",

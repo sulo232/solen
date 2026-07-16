@@ -4708,7 +4708,9 @@
       "shareText": "Commande {code} chez {salon}",
       "calendarDescription": "Réservé via solen.ch",
       "paidOnlineNow": "Payé en ligne",
-      "restAtSalon": "Reste au salon"
+      "restAtSalon": "Reste au salon",
+      "helpAria": "Aide",
+      "cancelAppointment": "Annuler le rendez-vous"
     },
     "guestBookingForm": {
       "title": "Réservation invité",
