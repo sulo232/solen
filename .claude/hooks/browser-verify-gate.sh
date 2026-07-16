@@ -22,7 +22,12 @@
 #
 # A verification signal is ANY of:
 #   • an mcp__claude-in-chrome__*  tool call (the agent browser)
-#   • an mcp__Claude_Preview__*    tool call (preview_snapshot/click/screenshot/…)
+#   • an mcp__Claude_Browser__*    tool call (the in-app browser: navigate / computer /
+#     read_page / javascript_tool — added 2026-07-16 after the gate REPEAT-BLOCKED a turn
+#     that HAD driven the browser: the tool server was renamed and this list still named
+#     only the retired mcp__Claude_Preview__ prefix, so real verification scored zero.
+#     The health check had already flagged this exact phantom string.)
+#   • an mcp__Claude_Preview__*    tool call (retired prefix, kept so old transcripts score)
 #   • an mcp__playwright__*        tool call
 #   • a Task call with subagent_type "design-verifier"
 #   • a Bash curl/wget of localhost / 127.0.0.1 on ANY port  (or a `playwright` run)
@@ -76,10 +81,11 @@ TOKENS=$(tail -n 1200 "$TRANSCRIPT" | jq -R -r '
            | (.name) as $n | (.input // {}) as $i
            | if (($n=="Edit" or $n=="Write" or $n=="MultiEdit")
                   and (($i.file_path // "") | test("\\.(tsx|jsx|css|scss)$"))
-                  and (($i.file_path // "") | test("/(app|src|components)/"))
+                  and (($i.file_path // "") | test("/(app|src|components|components-legacy)/"))
                   and ((($i.file_path // "") | test("_mockups|node_modules|\\.test\\.|\\.spec\\.|\\.stories\\.|/\\.claude/")) | not))
                then "E"
              elif (($n | startswith("mcp__claude-in-chrome__"))
+                    or ($n | startswith("mcp__Claude_Browser__"))
                     or ($n | startswith("mcp__Claude_Preview__"))
                     or ($n | startswith("mcp__playwright__")))
                then "V"
