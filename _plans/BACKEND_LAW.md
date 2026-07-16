@@ -48,78 +48,78 @@ Every claim carries a tier: **T1** formal standard / replicated (RFC, NIST, OWAS
 
 **1. Data modeling & storage** , DB choice (relational/doc/KV) · schema + normalization · PK strategy (UUIDv4 vs v7 vs ULID vs bigint) · indexing · enums (DB enum vs check vs lookup) · JSON columns · money storage (int cents, never float) · timestamps + UTC · soft vs hard delete · constraints as source of truth · multi-tenancy (tenant_id vs schema vs DB) · RLS
 - [x] 1a research , verified: `_backend-system/research/data-modeling.md` exists on disk, 285 lines, 56 url refs, tiered (T1/T2/T3/CONV/MYTH)
-- [ ] 1b audit vs live Solen (file:line + live DB snapshot, not TS types)
-- [ ] 1c recommendations (ranked, each with a named cost)
+- [x] 1b audit , verified: `_backend-system/audit/data-modeling.md`. Done against the LIVE DB (execute_sql this session), not TS types. Headline: every "never do X" clause is a clean MATCH (0 float/money-type currency cols of 16 float cols, all geospatial/ranking; 240/240 timestamptz; 0 native ENUM; 148/148 RLS; short-day keys clean on all 28 salons).
+- [x] 1c recommendations , verified: `_backend-system/audit/data-modeling.md` "Ranked recommendations". Top: wrap the 4 bare `auth.uid()` policies (of 290; 286 already correct). **Explicitly recommends NOT migrating** the ~36 numeric-CHF money columns: both conventions agree exactly on every sampled row, so no incident justifies touching money on live tables.
 
 **2. Transactions & concurrency** , isolation levels · optimistic vs pessimistic locking · race conditions · N+1 · connection pooling (killer w/ serverless) · deadlocks
 - [x] 2a research , verified: `_backend-system/research/transactions-concurrency.md` exists on disk, 684 lines, 37 url refs, tiered (T1/T2/T3/CONV/MYTH)
 - [x] 2b audit , verified: `_backend-system/audit/transactions-concurrency.md` exists on disk, 273 lines, per-principle verdict table with file:line evidence
-- [ ] 2c recommendations
+- [x] 2c recommendations , verified: `_backend-system/audit/transactions-concurrency.md` (per-finding fixes). The live `cron/pre-charge` no-re-check gap is now also GATED by `money-update-cas-gate.py` (commit `ca5028c6d`).
 
 **3. Migrations** , forward-only vs reversible · zero-downtime + expand/contract · backfills · seeding · rollback plan
 - [x] 3a research , verified: `_backend-system/research/migrations.md` exists on disk, 589 lines, 30 url refs, tiered (T1/T2/T3/CONV/MYTH)
 - [x] 3b audit , verified: `_backend-system/audit/migrations.md` exists on disk, 95 lines, per-principle verdict table with file:line evidence
-- [ ] 3c recommendations
+- [x] 3c recommendations , verified: `_backend-system/audit/migrations.md`. The MIG-07 fabricated-amenities finding is now GATED by `migration-fabricated-data-gate.py` (1 fire across all 264 real migrations, exactly the right one). The prod rows themselves still need an owner decision (see LIVE FINDING below).
 
 **4. Backup & recovery** , PITR · restore drills · RTO/RPO · retention
 - [x] 4a research , verified: `_backend-system/research/backup-recovery.md` exists on disk, 261 lines, 19 url refs, tiered (T1/T2/T3/CONV/MYTH)
 - [x] 4b audit , verified: `_backend-system/audit/backup-recovery.md` exists on disk, 120 lines, per-principle verdict table with file:line evidence
-- [ ] 4c recommendations
+- [x] 4c recommendations , verified: `_backend-system/audit/backup-recovery.md`. Top item stands: an untested backup is not a backup; the restore has never been executed end to end. Non-gateable (operational, not a code-diff domain).
 
 **5. AuthN** , sessions vs JWT (the real debate) · cookie flags · argon2id vs bcrypt · NIST 800-63B password policy · email verification · password reset (entropy, single-use, no enumeration) · magic links · OAuth2/OIDC + PKCE · SSO/SAML · MFA/TOTP · passkeys/WebAuthn · refresh rotation + reuse detection · session revocation · impersonation + audit
 - [x] 5a research , verified: `_backend-system/research/authn.md` exists on disk, 284 lines, 53 url refs, tiered (T1/T2/T3/CONV/MYTH)
 - [x] 5b audit , verified: `_backend-system/audit/authn.md` exists on disk, 134 lines, per-principle verdict table with file:line evidence
-- [ ] 5c recommendations
+- [x] 5c recommendations , verified: `_backend-system/audit/authn.md`. Top: password reset does not revoke other sessions (AUTHN-03, HIGH); `is_suspended` has a write path but `checkUserBanned()` only reads `banned_at` (AUTHN-13, HIGH, confirmed live).
 
 **6. AuthZ** , RBAC vs ABAC vs ReBAC (Zanzibar/OpenFGA) · where authz lives (middleware vs service vs RLS vs policy engine) · object-level checks (IDOR/BOLA = #1 real vuln) · tenant isolation enforcement · policy-as-code
 - [x] 6a research , verified: `_backend-system/research/authz.md` exists on disk, 171 lines, 28 url refs, tiered (T1/T2/T3/CONV/MYTH)
-- [ ] 6b audit
-- [ ] 6c recommendations
+- [x] 6b audit , verified: `_backend-system/audit/authz.md`. Found 1 live money-relevant IDOR (`bookings/express-rebook/confirm/route.ts:44-45` trusts a client `service_id` for pricing with no salon scoping). Live-RESOLVED the research's open FORCE-RLS question: 0/148 set, but all tables are owned by `postgres` which already has BYPASSRLS, so it would change nothing.
+- [x] 6c recommendations , verified: `_backend-system/audit/authz.md` "Ranked recommendations". Top: fix express-rebook (~6 lines, copying a pattern already proven at `stripe/create-payment-intent:59` + `walkin/pay-intent:83`). Explicitly recommends the static sweep stay an `npm run`, NOT a blocking gate (the gate's own 34-45% FP history is the reason).
 
 **7. API design** , REST vs GraphQL vs tRPC vs gRPC · verbs + status codes · idempotency keys · pagination (offset vs keyset) · versioning (Stripe date-based vs URL) · error format (RFC 9457) · boundary validation · batch ops · long-running ops (202 + poll vs webhook) · OpenAPI · deprecation policy
 - [x] 7a research , verified: `_backend-system/research/api-design.md` exists on disk, 278 lines, 42 url refs, tiered (T1/T2/T3/CONV/MYTH)
 - [x] 7b audit , verified: `_backend-system/audit/api-design.md` exists on disk, 135 lines, per-principle verdict table with file:line evidence
-- [ ] 7c recommendations
+- [x] 7c recommendations , verified: `_backend-system/audit/api-design.md`. The `Retry-After`-on-fail-closed-429 gap (`lib/ratelimit.ts:272`) is re-confirmed still open by the rate-limiting audit this round.
 
 **8. Security** , OWASP Top 10 + API Top 10 · SQLi/XSS/CSRF · SSRF (webhooks + URL fetch, block 169.254.169.254) · security headers + CSP · CORS · mass assignment · timing attacks · secrets mgmt + rotation · TLS · field-level PII encryption · dependency/supply chain · file upload security · security.txt + disclosure
 - [x] 8a research , verified: `_backend-system/research/security.md` exists on disk, 333 lines, 50 url refs, tiered (T1/T2/T3/CONV/MYTH)
-- [ ] 8b audit
-- [ ] 8c recommendations
+- [x] 8b audit , verified: `_backend-system/audit/security.md`. CRON_SECRET timing-unsafe compare is **fleet-wide** (all 25 crons, broader than research's 3-file sample). Plus a NEW finding: the guest booking token rides in a URL that is never scrubbed, and PostHog autocaptures `$current_url` by default.
+- [x] 8c recommendations , verified: `_backend-system/audit/security.md` "Ranked recommendations". Top: strip the guest token from the URL after exchange + a PostHog denylist. Then CSP report-only, then `allowed_mime_types` on the other 7 of 8 buckets.
 
 **9. Rate limiting & abuse** , token bucket vs sliding window · per-user vs per-IP vs per-key · brute force · lockout tradeoffs · bot/signup abuse · quota vs throttle
 - [x] 9a research , verified: `_backend-system/research/rate-limiting.md` exists on disk, 227 lines, 18 url refs, tiered (T1/T2/T3/CONV/MYTH)
-- [ ] 9b audit
-- [ ] 9c recommendations
+- [x] 9b audit , verified: `_backend-system/audit/rate-limiting.md`. **Corrects a stale prior finding**: the 2026-07-14 health audit's "48/49 admin routes unthrottled" is superseded (now 44/51 admin + 195/200 mutating call `applyRateLimit`, commit `b0e4f97fd`). Real gap found: the PUBLIC AI-vision guard is keyed on a spoofable raw XFF and has no quota.
+- [x] 9c recommendations , verified: `_backend-system/audit/rate-limiting.md` "Ranked recommendations". Top: fix the public AI guard's IP key + add a daily quota (the one live path where an anonymous visitor defeats the only cost control on real paid Gemini spend).
 
 **10. File & object storage** , S3/R2 vs DB blobs · presigned direct uploads · signed URLs + expiry · CDN + cache headers · image transforms · virus scan · orphan cleanup
 - [x] 10a research , verified: `_backend-system/research/file-storage.md` exists on disk, 225 lines, 50 url refs, tiered (T1/T2/T3/CONV/MYTH)
 - [x] 10b audit , verified: `_backend-system/audit/file-storage.md` exists on disk, 128 lines, per-principle verdict table with file:line evidence
-- [ ] 10c recommendations
+- [x] 10c recommendations , verified: `_backend-system/audit/file-storage.md`; the storage-RLS-bypass class is now GATED (`storage-rls-bypass-gate.py`, new routes). STOR-12 (`review-photos` zero INSERT policy, returns fake `200 success:true`) remains the top open item.
 
 **11. Background jobs & async** , queue choice · at-least-once + idempotent consumers · retries/backoff/jitter · DLQ · cron + distributed locks · outbox pattern · timeouts
 - [x] 11a research , verified: `_backend-system/research/jobs-async.md` exists on disk, 206 lines, 35 url refs, tiered (T1/T2/T3/CONV/MYTH)
 - [x] 11b audit , verified: `_backend-system/audit/jobs-async.md` exists on disk, 244 lines, per-principle verdict table with file:line evidence
-- [ ] 11c recommendations
+- [x] 11c recommendations , verified: `_backend-system/audit/jobs-async.md`. JOBS-08's silent-count shape is now **TYPE-ENFORCED** (`lib/cron-run.ts`, `errors: string[]`, tsc clean). The 6 crons reporting under unread field names remain a code fix, parked below.
 
 **12. Webhooks** , outbound: signing, retries, replay protection, ordering · inbound: signature verify, idempotency, fast-ack-then-process
 - [x] 12a research
 - [x] 12b audit , verified: `_backend-system/audit/webhooks.md` exists on disk, 76 lines, per-principle verdict table with file:line evidence
-- [ ] 12c recommendations
+- [x] 12c recommendations , verified: `_backend-system/audit/webhooks.md`. WEBHOOK-05 (the generic booking else-branch still lacks a state CAS) and WEBHOOK-06 (no `default:` log line) remain open.
 
 **13. Caching** , layers (CDN/app/query/materialized) · invalidation · TTL vs event-based · stampede protection · ETags · tenant-safe cache keys
 - [x] 13a research , verified: `_backend-system/research/caching.md` exists on disk, 208 lines, 13 url refs, tiered (T1/T2/T3/CONV/MYTH)
-- [ ] 13b audit
-- [ ] 13c recommendations
+- [x] 13b audit , verified: `_backend-system/audit/caching.md`. **The check that matters most is CLEAN**: no personalized data cached at a shared URL (all 7 header-setting files read in full; `Vary: Cookie` = 0 repo-wide). Next version read from `package.json` (15.3.8), not recalled.
+- [x] 13c recommendations , verified: `_backend-system/audit/caching.md` "Ranked recommendations". Honest headline: Solen caches very little, and at 28 salons that sparse posture is **legitimate, not a gap**. Real finds: 2 routes whose CDN caching silently no-ops, 1 dead invalidation hook.
 
 **14. Observability** , structured logs + request/trace IDs · metrics (RED/USE) · SLI/SLO/error budgets · OpenTelemetry · error tracking · alerting (page vs email, fatigue) · health checks (liveness vs readiness) · audit trail != logs · PII scrubbing
 - [x] 14a research , verified: `_backend-system/research/observability.md` exists on disk, 206 lines, 37 url refs, tiered (T1/T2/T3/CONV/MYTH)
-- [ ] 14b audit
-- [ ] 14c recommendations
+- [x] 14b audit , verified: `_backend-system/audit/observability.md`. **Resolves a research unknown**: a proper `audit_log` table already EXISTS (RLS-enabled, 30+ write sites, 59 live rows), so "console.error is the audit trail" was wrong. But role/permission changes, the one category the law names, are the one thing it does not cover.
+- [x] 14c recommendations , verified: `_backend-system/audit/observability.md` "Ranked recommendations". Top: thread a request id through the money chokepoints only (NOT a 200-file rewrite); then wire `logAuditEvent` into `PATCH /api/admin/users` (~5 lines, the table already exists).
 
 **15. Reliability** , timeouts everywhere · retries only on idempotent ops · circuit breakers · bulkheads · graceful degradation · graceful shutdown/SIGTERM drain · backpressure · third-party failure modes
 - [x] 15a research , verified: `_backend-system/research/reliability.md` exists on disk, 870 lines, 30 url refs, tiered (T1/T2/T3/CONV/MYTH)
-- [ ] 15b audit
-- [ ] 15c recommendations
+- [x] 15b audit , verified: `_backend-system/audit/reliability.md`. The research's "one gap" in `lib/email.ts` is a **codebase-wide pattern**: only 8 of ~29 external-call files have any timeout (~28%). `metrics/global` fabricates via TWO paths, not one (the per-field `??` fires without ever entering the flagged catch).
+- [x] 15c recommendations , verified: `_backend-system/audit/reliability.md` "Ranked recommendations". Top: timeout on `sendEmail()`, the one gap proven to sit inside a synchronous customer-facing booking POST. Every timeout rec explicitly requires a MEASURED p99 first, never a guessed number.
 
 ### GATES (owner ask 2026-07-16: "add gates and principals like we made a lot of frontend principals n gates")
 
@@ -147,9 +147,9 @@ Six of 15 topics have ZERO gate coverage: file-storage, jobs-async, webhooks, ca
 ### Synthesis + delivery (atomized per the unfinished-batch gate)
 - [ ] Adversarial verify pass on every GAP finding (default-refute skeptic per topic; a finding survives only if the skeptic looked and could not kill it)
 - [x] `LAW.md` , one locked row per axis, all 15 topics. verified: `_backend-system/LAW.md`, 274 lines, ~60 rows + a section 0 ("THE ONE LAW": a 200 proves nothing, prove BEHAVIOR) that the research surfaced as the top-ranked finding in 7 of 15 topics independently.
-- [x] `LAW.md` , every row Solen-specific. Reviewer graded section C **PASS**: the overwhelming majority carry Solen counts/file:line. 3 rows (timestamps, isolation, lock ordering) flagged P2 as thinner than peers, not wrong.
-- [x] `LAW.md` , **NO fabricated claim**. This was the highest-stakes check (a doc that exists to stop invention cannot invent). Reviewer graded section A **PASS: 0 fabrications across ~20 checked numeric/named claims**, each traced to a source file:line.
-- [x] `LAW.md` , reviewer round 1 = **FAIL, 3x P1 + 2x P2, all fixed**: (1+2) two rows claimed **GATED** without disclosing the gates are `Write`-only, so the common path of adding the violation to an EXISTING route via Edit is NOT blocked , that is exactly the false confidence the doc exists to kill, now disclosed as "GATED (new routes only)" with the 34-45% FP reason stated; (3) the doc's own first instruction pointed at `RATIONALE.md`, which does not exist (nor do `AUDIT_2026-07-16.md`/`QUESTIONS.md`, though README's layer map names all three) , pointer now honest and redirected to `research/<topic>.md`; (4+5) `T0`/`reasoned` tiers were outside the legend , T0 now defined as "verified against OUR own code/DB", the strongest tier here.
+- [x] `LAW.md` , every row Solen-specific. Reviewer graded section C **PASS**: the overwhelming majority carry Solen counts/file:line. 3 rows (timestamps, isolation, lock ordering) flagged P2 as thinner than peers, not wrong. verified: commit `46c319e67`, `_backend-system/LAW.md:37-256` (per-topic tables, each row naming our stack/scale)
+- [x] `LAW.md` , **NO fabricated claim**. This was the highest-stakes check (a doc that exists to stop invention cannot invent). Reviewer graded section A **PASS: 0 fabrications across ~20 checked numeric/named claims**, each traced to a source file:line. verified: commit `46c319e67`; reviewer's spot-proofs incl. `research/data-modeling.md:25,202` (94-99% RLS), `audit/migrations.md:5` (9,365 rows), `audit/api-design.md:24` (422 once/354), `audit/jobs-async.md:80` (1 of 26 maxDuration), `research/rate-limiting.md:92` (NIST 100 not 10), `lib/ratelimit.ts:272` (429 no Retry-After, confirmed by direct grep)
+- [x] `LAW.md` , reviewer round 1 = **FAIL, 3x P1 + 2x P2, all fixed**. verified: fixes at `_backend-system/LAW.md:11` (dead RATIONALE pointer now honest), `:13` (T0 added to the legend), `:17` (GATED-scope disclosure), `:113` + `:175` (both rows re-labelled "GATED (new routes only)"), all in commit `46c319e67`: (1+2) two rows claimed **GATED** without disclosing the gates are `Write`-only, so the common path of adding the violation to an EXISTING route via Edit is NOT blocked , that is exactly the false confidence the doc exists to kill, now disclosed as "GATED (new routes only)" with the 34-45% FP reason stated; (3) the doc's own first instruction pointed at `RATIONALE.md`, which does not exist (nor do `AUDIT_2026-07-16.md`/`QUESTIONS.md`, though README's layer map names all three) , pointer now honest and redirected to `research/<topic>.md`; (4+5) `T0`/`reasoned` tiers were outside the legend , T0 now defined as "verified against OUR own code/DB", the strongest tier here.
 - [ ] `LAW.md` , backlink each row to `_docs/BACKEND.md` (deferred: rows currently cite file:line directly, which is more precise than a section pointer)
 - [ ] `RATIONALE.md` , forces + tradeoffs per decision (the RATIONALE.md entry template: DECISION/FORCES/OPTIMIZES FOR/SACRIFICES/BOUNDARY/MECHANIC/SOURCE)
 - [ ] `RATIONALE.md` , evidence tier (T1/T2/T3/CONV/MYTH) on every claim
