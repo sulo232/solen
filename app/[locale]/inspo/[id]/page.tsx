@@ -6,7 +6,7 @@ import type { Metadata, Viewport } from "next";
 import type { DiscoveryItem } from "@/lib/types";
 import DetailPage, { type SalonLite } from "@/components-legacy/discovery/DetailPage";
 import { analyzeDiscoveryImage, analyzeDiscoveryTikTok } from "@/lib/ai-vision";
-import { discoveryAiLimiter, checkRateLimit } from "@/lib/ratelimit";
+import { discoveryAiLimiter, checkRateLimit, getAiDailyLimiter, getClientIp } from "@/lib/ratelimit";
 import { getServerEnv } from "@/lib/env";
 import { DISCOVERY_TO_MARKETPLACE_CATEGORY } from "@/lib/discovery-categories";
 
@@ -43,11 +43,21 @@ async function ensureAIData(item: DiscoveryItem): Promise<DiscoveryItem> {
 
   // ABUSE GUARD: this fires a paid, multi-second Gemini call from a PUBLIC page view. Cap it per-IP so a scraper
   // can't fan out across unanalyzed items and run up the bill. Over the cap → render the item as-is (no analysis),
-  // never error. (Admin import paths have their own auth + rate limits.)
+  // never error. (Admin import paths have their own auth + rate limits.) getClientIp trusts Netlify's
+  // x-nf-client-connection-ip / x-real-ip first, so this key can't be defeated by rotating x-forwarded-for.
   const hdrs = await headers();
-  const ip = hdrs.get("x-forwarded-for")?.split(",")[0]?.trim() || hdrs.get("x-real-ip") || "unknown";
+  const ip = getClientIp(hdrs);
   if (!(await checkRateLimit(discoveryAiLimiter, `ai:${ip}`))) {
     console.warn("[discover/[id]] on-demand AI rate-limited, serving item as-is for ip:", ip);
+    return item;
+  }
+
+  // A per-IP throttle alone doesn't bound TOTAL spend (many IPs, or a slow drip, still cost money).
+  // Same DB-backed daily ceiling every other Gemini/fal generation route pairs with its per-minute
+  // limiter (e.g. app/api/recommendations/route.ts), keyed the same way it keys anonymous callers: IP.
+  const aiDailyLimiter = await getAiDailyLimiter();
+  if (!(await checkRateLimit(aiDailyLimiter, ip))) {
+    console.warn("[discover/[id]] on-demand AI daily cap reached, serving item as-is");
     return item;
   }
 

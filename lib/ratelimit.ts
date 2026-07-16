@@ -319,7 +319,13 @@ export async function checkRateLimit(limiter: Ratelimit, key: string): Promise<b
   }
 }
 
-export function getClientIp(req: NextRequest): string {
+// Minimal shape so getClientIp also accepts a bare Headers / ReadonlyHeaders (server
+// components calling next/headers' `headers()`, which has no `.headers` wrapper), not
+// only a NextRequest (API routes). Same trusted-header precedence either way.
+type ClientIpHeaders = { get(name: string): string | null };
+
+export function getClientIp(req: NextRequest | ClientIpHeaders): string {
+  const hdrs: ClientIpHeaders = "headers" in req ? req.headers : req;
   return (
     // Platform-trusted headers first: x-forwarded-for's leftmost entry is attacker-supplied
     // (an attacker can prepend any value), so every auth/OTP limiter keyed on it alone is
@@ -327,9 +333,9 @@ export function getClientIp(req: NextRequest): string {
     // x-nf-client-connection-ip with the real connecting IP, so it can't be spoofed by the
     // client; x-real-ip is the common trusted-proxy equivalent. Only fall back to the
     // spoofable XFF parse when neither trusted header is present (local/dev).
-    req.headers.get("x-nf-client-connection-ip")?.trim() ||
-    req.headers.get("x-real-ip")?.trim() ||
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    hdrs.get("x-nf-client-connection-ip")?.trim() ||
+    hdrs.get("x-real-ip")?.trim() ||
+    hdrs.get("x-forwarded-for")?.split(",")[0]?.trim() ||
     "unknown"
   );
 }

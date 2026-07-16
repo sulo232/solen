@@ -3,7 +3,7 @@ export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
-import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 
 /**
  * GET /api/recommendations/chips
@@ -57,8 +57,10 @@ export async function GET(req: NextRequest) {
     console.error("[recommendations/chips] session lookup failed:", err);
   }
 
-  // Rate limit (matches /api/recommendations): keyed by user id, else client IP.
-  const identifier = userId || req.headers.get("x-forwarded-for") || "anonymous";
+  // Rate limit (matches /api/recommendations): keyed by user id, else client IP. getClientIp
+  // trusts Netlify's x-nf-client-connection-ip / x-real-ip first (raw XFF is attacker-supplied
+  // and rotating it defeated this key entirely, same bug as app/[locale]/inspo/[id]/page.tsx).
+  const identifier = userId || getClientIp(req) || "anonymous";
   const rateLimited = await applyRateLimit(generalLimiter, { userId: identifier });
   if (rateLimited) return rateLimited;
 
