@@ -113,6 +113,7 @@ Before applying, building, or committing ANY visual / design change: **show the 
 | Measurement-complaint words: "overlap", "clipped", "off", "not like the ss/picture", "unbalanced", "different heights", "not 1:1", "compare", "still wrong" | Measure live UI (`preview_eval` rects) AND the reference (PIL) BEFORE editing. Confirmation-bias warning: do NOT pattern-match to recently-changed elements. |
 | Brand-named structure rebuild ("like Fresha('s) X") | `fresha-section-capture` (live URL) or pixel-measure the provided screenshots. STRUCTURE=Fresha / AESTHETIC=Uber-LOCKFILE (§ dual-axis above). |
 | Any visual just changed (screenshot taken / mockup ported) | `gemini-visual-check` (image vs reference) before claiming a match. |
+| Owner criticizes a look WITHOUT naming the cause ("this is bad", "looks bad", "ugly", "off", "busy", "unbalanced", "doesnt look right", "sieht schlecht aus") | `Skill(solen-taste-diagnosis)` FIRST: measured walk (squint, hierarchy counts, typography floors, grouping tree, contrast math) against RATIONALE.md + research/TASTE_*.md floors; report NAMED violations with numbers, THEN propose the fix. Never guess-and-apply on a look complaint. |
 
 **Detection = fire.** No interpreting first, no "let me look at the code first", no rationalizing that the case is different. The asymmetry: measuring costs ~30s; eyeballing wrong costs 3-5 correction turns and trust.
 

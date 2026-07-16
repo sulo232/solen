@@ -1,8 +1,8 @@
-import { memo } from "react";
+import { Fragment, memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Calendar, Store, MapPin, ArrowRight } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, splitHighlight } from "@/lib/utils";
 import { FROST_GLASS } from "@/lib/frost-glass";
 import { CardName, CardMeta, RatingStars, PriceFrom } from "../primitives";
 import { HeartButton } from "../homepage/HeartButton";
@@ -74,6 +74,10 @@ export interface SalonResultCardProps {
    *  right-hand rating + "from CHF X" column. Same card family - only the shape changes
    *  (doctrine V3-D355/D356). */
   variant?: "grid" | "list" | "card" | "suggest" | "feed";
+  /** P13 (owner-approved 2026-07-16): "suggest" variant only, the typed search query so the
+   *  matched substring inside the name highlights (#FDF6D8 mark). Optional, additive , every
+   *  other variant/caller ignores it, no behavior change when absent. */
+  matchQuery?: string;
   /** "feed" variant only, real photo count (gallery_urls.length) so the carousel
    *  dots reflect an actual gallery, never a fabricated multi-photo affordance on a
    *  salon with a single cover photo. Dots render only when greater than 1. */ // mockup-ok
@@ -190,7 +194,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
   const {
     slug, name, locale, rating, reviewCount, photoUrl, category,
     city, address, distanceMeters, priceFromCHF, isSaved, salonId,
-    nextSlot, services, variant = "grid",
+    nextSlot, services, variant = "grid", matchQuery,
     galleryCount, hasServiceQuery, matchChip,
     walkInWaitMin, walkInQueue,
     onSelect,
@@ -278,7 +282,15 @@ function SalonResultCardInner(props: SalonResultCardProps) {
         </div>
         <div className="flex min-w-0 flex-1 flex-col justify-center">
           <CardName as="h3" className="truncate text-[15px] leading-[1.25] tracking-[-0.01em]">
-            {name}
+            {matchQuery
+              ? splitHighlight(name, matchQuery).map((seg, i) =>
+                  seg.match ? (
+                    <mark key={i} className="rounded-[3px] bg-[#FDF6D8] text-s-ink no-underline">{seg.text}</mark> /* drift-ok, owner-approved P13 2026-07-16: #FDF6D8 match highlight literal, not a design token */
+                  ) : (
+                    <Fragment key={i}>{seg.text}</Fragment>
+                  ),
+                )
+              : name}
           </CardName>
           <CardMeta as="div" className="mt-0.5 flex items-center gap-2 text-[12px] leading-[1.35]">
             {rating != null && <RatingStars value={rating} count={reviewCount ?? undefined} size="sm" />}

@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Round 2 integrated: the dashboard page, tappable</title>
+<!-- Exists-check: npm run exists round2 = 0, exists integrated = 0, exists dashboard = existing surfaces reused as the BASE (2026-07-16). Base is the LIVE dashboard capture; probes P1/P7/P12/P14 from the taste-refs elicitation (P3 removed, owner rejected 2026-07-16) get integrated in place, tappable. Nothing ships without a pick. -->
+<!-- Grounded-in: ../_assets/taste-round2/base-dashboard.png (real /dashboard capture via dev login, 2026-07-16; regions PIL-measured: CHF number bbox 112,452-160,500; activity card 92-796) -->
+<!-- Grounded-in: app/[locale]/dashboard/page.tsx (the real dashboard page under the overlays) -->
+<!-- Grounded-in: components-legacy/dashboard/SetupBanner.tsx (P7 target region) -->
+<!-- Owner-scope: all-variants: every integrated probe is tappable and carries its taste-refs fork id; owner 2026-07-16: "i want to see each one in acc pages... integrated and tappable" -->
+<!-- Backend-check: approve/decline row (P3) -> booking requests EXIST (bookings.status pending -> confirmed; activity surface components-legacy/dashboard/ActivityFeed.tsx); notifications (P12) -> activity data EXISTS (ActivityFeed), in-place stack is presentation only; tips panel (P14) -> NONE, needs backend (exists insight = 0; panel is dash-outlined as proposed); KPI roll (P1) -> live revenue data EXISTS on the page (demo value overlaid because the test salon reads CHF 0). -->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#C5C8C4;--border:#E4E4E7;--sunken:#F4F4F5;--white:#FFFFFF;--accent:#276EF1;--success:#16A34A;--error:#DC2626}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,-apple-system,"Segoe UI",sans-serif;background:var(--white);color:var(--ink);font-size:14px;line-height:1.5}
+  .bar{position:sticky;top:0;z-index:50;background:var(--white);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .bar b{font-family:"Inter Tight",Inter,sans-serif;font-size:15px;margin-right:6px}
+  .chip{border:1px solid var(--border);border-radius:999px;padding:5px 12px;font-size:12.5px;background:var(--white)}
+  .bar .hint{font-size:12px;color:var(--ink2);margin-left:auto}
+  .bar a{color:var(--accent);text-decoration:none;font-size:12.5px;margin-left:10px}
+  .frame{max-width:1240px;margin:24px auto 80px;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--white);box-shadow:0 8px 28px rgba(50,47,44,.12)}
+  .stage{position:relative}
+  .stage>img{width:100%;display:block}
+  .hot{position:absolute;cursor:pointer;border-radius:12px;border:1.5px dashed var(--ink3)}
+  .hot:hover{border-color:var(--ink)}
+  .hot .tag{position:absolute;top:-11px;left:-6px;background:var(--ink);color:var(--white);font-family:"Inter Tight",Inter,sans-serif;font-weight:700;font-size:11px;border-radius:7px;padding:1px 7px}
+  .ov{position:absolute;background:var(--white);border:1px solid var(--border);border-radius:14px;box-shadow:0 8px 28px rgba(50,47,44,.14);padding:14px;display:none;z-index:20}
+  .ov.on{display:block}
+  .ov .ttl{font-weight:600;font-size:13px;margin-bottom:8px}
+  .ov .note{font-size:11.5px;color:var(--ink2);margin-top:10px}
+  svg.lucide{width:15px;height:15px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px}
+
+  /* P1 rolling KPI patch */
+  .kpiPatch{position:absolute;background:var(--white);display:flex;align-items:flex-end;line-height:34px;font-family:"Inter Tight",Inter,sans-serif;font-weight:700;font-size:29px;font-variant-numeric:tabular-nums;color:var(--ink);cursor:pointer}
+  .kpiPatch .chf{font-size:14px;color:var(--ink2);font-weight:600;margin-right:6px;line-height:34px}
+  .reelbox{display:inline-block;height:34px;overflow:hidden;position:relative;width:18px}
+  .reelbox .reel{position:absolute;left:0;top:0;transition:transform .5s cubic-bezier(.16,1,.3,1),filter .25s}
+  .reelbox span{display:block;height:34px;line-height:34px}
+  .rolling .reel{transform:translateY(-34px)}
+  .midroll .reel{filter:blur(0px)}
+
+  /* P7 checklist */
+  .cr{display:flex;gap:10px;align-items:center;padding:6px 0;font-size:13px}
+  .cr .disc{width:21px;height:21px;border-radius:999px;flex:none;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:600}
+  .cr.done .disc{background:var(--success);color:var(--white)}
+  .cr.now .disc{background:var(--ink);color:var(--white)}
+  .cr.next .disc{border:1.5px solid var(--ink3);color:var(--ink2)}
+  .cr.done .t{color:var(--ink2);text-decoration:line-through}
+  .cr.now .t{font-weight:600}
+  .cr.next .t{color:var(--ink2)}
+
+  /* P12 stack */
+  .n{border:1px solid var(--border);border-radius:12px;padding:9px 12px;font-size:12.5px;background:var(--white);margin-top:8px;opacity:0;transform:translateY(-6px);transition:all .25s ease}
+  .ov.on .n{opacity:1;transform:translateY(0)}
+  .ov.on .n:nth-child(3){transition-delay:.08s}
+  .ov.on .n:nth-child(4){transition-delay:.16s}
+  .n .t{font-weight:600}
+  .n .m{color:var(--ink2);font-size:11.5px}
+  .n.all{text-align:center;color:var(--accent);font-weight:600}
+
+  /* P3 approve row */
+  .req{position:absolute;background:var(--white);border:1px solid var(--border);border-radius:14px;padding:12px 14px;z-index:15}
+  .req .who{font-weight:600;font-size:13px}
+  .req .meta{color:var(--ink2);font-size:12px;margin-bottom:10px}
+  .apprv{display:flex;gap:8px;align-items:center}
+  .apprv .opt{height:38px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;overflow:hidden;white-space:nowrap;transition:all .45s cubic-bezier(.16,1,.3,1)}
+  .apprv .decline{border:1px solid var(--border);color:var(--ink2);background:var(--white);flex:1}
+  .apprv .accept{background:var(--white);color:var(--success);border:1px solid var(--success);flex:1;cursor:pointer}
+  .apprv .undo{width:0;height:38px;border-radius:999px;border:0 solid var(--border);background:var(--white);color:var(--ink);display:flex;align-items:center;justify-content:center;flex:none;overflow:hidden;transition:all .45s cubic-bezier(.16,1,.3,1);cursor:pointer}
+  .apprv.done .decline{flex:.0001;opacity:0;border-width:0}
+  .apprv.done .accept{flex:3;background:var(--success);color:var(--white)}
+  .apprv.done .undo{width:38px;border-width:1px}
+
+  /* P14 tips: dashed border = proposed, does not exist yet */
+  .tips{border:1.5px dashed var(--ink3)}
+  .insight{display:flex;gap:10px}
+  .insight .ii{width:34px;height:34px;border-radius:10px;background:var(--sunken);display:flex;align-items:center;justify-content:center;flex:none}
+  .insight .t{font-weight:600;font-size:13px}
+  .insight .d{color:var(--ink2);font-size:12px}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <b>Dashboard, integrated probes</b>
+  <span class="chip">P1 tap the revenue number</span>
+  <span class="chip">P7 tap the setup banner</span>
+  <span class="chip">P12 tap the bell</span>
+  <span class="chip">P14 the dashed tips panel</span>
+  <span class="hint">the page under the overlays is the real dashboard, captured live</span>
+  <a href="index.html">all pages</a>
+</div>
+
+<div class="frame">
+<div class="stage" id="stage">
+  <img src="../_assets/taste-round2/base-dashboard.png" alt="real dashboard capture">
+
+  <!-- P1: rolling KPI patch over the real revenue number only (PIL bands: title 450-460, number 477-500; demo value, the test salon reads CHF 0) -->
+  <div class="kpiPatch" id="kpi" style="left:7.5%;top:29.5%;width:14%;height:2.2%;font-size:24px;line-height:30px" title="P1: tap to update">
+    <span class="chf" style="line-height:30px">CHF</span>2'4<span class="reelbox" style="height:30px"><span class="reel"><span>7</span><span>8</span></span></span>0
+  </div>
+  <div class="hot" style="left:6.9%;top:29.2%;width:16%;height:2.9%" data-ov="kpiTap"><span class="tag">P1</span></div>
+
+  <!-- P7: setup banner expands the full checklist -->
+  <div class="hot" style="left:6.25%;top:5.6%;width:92%;height:14.4%" data-ov="checklist"><span class="tag">P7</span></div>
+  <div class="ov" id="checklist" style="left:6.25%;top:20.4%;width:40%">
+    <div class="ttl">Setup: 4/7, the whole plan visible</div>
+    <div class="cr done"><span class="disc"><svg class="lucide lucide-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="t">Salon profile</span></div>
+    <div class="cr done"><span class="disc"><svg class="lucide lucide-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="t">Services</span></div>
+    <div class="cr done"><span class="disc"><svg class="lucide lucide-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="t">Opening hours</span></div>
+    <div class="cr done"><span class="disc"><svg class="lucide lucide-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="t">Team</span></div>
+    <div class="cr now"><span class="disc">5</span><span class="t">Working hours per staff member</span></div>
+    <div class="cr next"><span class="disc">6</span><span class="t">Photos</span></div>
+    <div class="cr next"><span class="disc">7</span><span class="t">Payouts</span></div>
+    <div class="note">P7: done = green check, current = filled, upcoming = outline circle, all steps visible up front. Tap the banner again to close.</div>
+  </div>
+
+  <!-- P12: bell stack -->
+  <div class="hot" style="left:95.8%;top:0.9%;width:2.8%;height:2.8%" data-ov="bellstack"><span class="tag" style="top:auto;bottom:-13px">P12</span></div>
+  <div class="ov" id="bellstack" style="right:2%;top:4.2%;width:24%">
+    <div class="ttl">Notifications, in place</div>
+    <div class="n"><div class="t">New booking request</div><div class="m">Haircut, Sat 18 July, 14:30</div></div>
+    <div class="n"><div class="t">Payment received</div><div class="m">CHF 65, yesterday</div></div>
+    <div class="n all">View all</div>
+    <div class="note">P12: the count expands a compact stack right here, the label folds into "View all". No page navigation.</div>
+  </div>
+
+  <!-- P14: proposed tips panel (dashed = does not exist yet, shape probe only) -->
+  <div class="ov on tips" style="left:6.25%;top:75%;width:40%">
+    <div class="ttl">Tips for your salon <span style="font-weight:400;color:var(--ink2)">(P14, proposed panel, no backend yet)</span></div>
+    <div class="insight">
+      <span class="ii"><svg class="lucide lucide-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+      <div><div class="t">Friday is your strongest day</div><div class="d">Open more slots on Friday afternoons.</div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+  document.querySelectorAll('.hot').forEach(h => {
+    h.addEventListener('click', () => {
+      const id = h.dataset.ov;
+      if (id === 'kpiTap') { rollKpi(); return; }
+      const ov = document.getElementById(id);
+      if (ov) ov.classList.toggle('on');
+    });
+  });
+  let rolled = false;
+  function rollKpi(){
+    const k = document.getElementById('kpi');
+    k.classList.add('midroll');
+    setTimeout(() => { k.classList.toggle('rolling', !rolled); rolled = !rolled; }, 120);
+    setTimeout(() => k.classList.remove('midroll'), 520);
+  }
+  document.getElementById('kpi').addEventListener('click', rollKpi);
+</script>
+</body>
+</html>

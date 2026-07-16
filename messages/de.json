@@ -2303,7 +2303,8 @@
       "justNow": "Gerade eben",
       "minutesAgo": "Vor {count} Min.",
       "hoursAgo": "Vor {count} Std.",
-      "daysAgo": "Vor {count} Tagen"
+      "daysAgo": "Vor {count} Tagen",
+      "viewAll": "Alle ansehen"
     },
     "referralDashboard": {
       "heading": "Empfehlungs-Programm",
@@ -2672,6 +2673,7 @@
       "last7Days": "Letzte 7 Tage",
       "priorWeek": "Vorwoche",
       "thisWeek": "Diese Woche",
+      "vsPriorWeek": "vs. letzte Woche",
       "booked": "gebucht",
       "statusConfirmed": "Bestätigt",
       "statusPending": "Ausstehend",

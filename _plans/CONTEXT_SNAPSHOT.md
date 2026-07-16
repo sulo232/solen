@@ -2,29 +2,29 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-07-11T22:29:28 (trigger: auto)
-- branch: claude/backend-audit-plan-955ece
+- taken: 2026-07-16T15:04:36 (trigger: auto)
+- branch: claude/taste-rationale-frameworks-37390c
 
 ## git
 ```
-16db07c0a micro(owner-approved): dashboard/batch revenue_month -> booking_revenue_sum DB RPC (parity proven on live rows, service_role-only + explicit grant, response shape identical)
-1b2784e5d loop(backend): tick the HTTP-semantics parent (both children verified done)
-1d3b826e3 loop(backend): final box dispositions , envelope/404/select-longtail/unused-exports closed with 5c/5d evidence; soak parent moved to waiting room
-4dce40ae8 loop(backend): plan bookkeeping , email-sweep + playwright-CI + purge-decision + PITR boxes closed with evidence; perpetual owner/time waits moved to WAITING ROOM entries; ignore supabase/.temp
-c569a6f01 recs(R1+R4+R5+R6+R7a+R7c): uptime health-check piggybacked on the 15-min Actions job (zero extra minutes) + PostHog web-vitals RUM (consent-gated, option proven vs installed types) + staging steps/Sentry blocker/Actions-minutes math/adoption park in OPS_RUNBOOK + all R boxes ticked with evidence
+454b12b44 docs(plans): propagation questions answered
+a409bacc9 docs(plans): correction boxes evidenced (2bfdd0741)
+2bfdd0741 revert(taste): full-bleed DENIED, the misread reversed and hardened
+243c2d84b docs(taste): dead-chevron rule visualized as a Wrong/Right pair on the rules page
+34b65e853 docs(taste): full-bleed picks locked (all approved per the recommendation set, full-bleed standing) + the dead-chevron rule
 ```
 ```
-M _plans/ACTIVE.md
- M lib/supabase-browser.ts
- M lib/supabase.ts
-?? _plans/TYPES_SPRINT.md
-?? scripts/_probe-types.ts
+M _plans/TASTE_RATIONALE_R2.md
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
 7 | Admin Cities toggle | **ACTIVE**
 13 | Full-estate frontend audit (psychology + design-system + consistency) + mockups | **ACTIVE** (2026-07-08)
-17 | Typed-database adoption sprint (Database generics on all Supabase clients) | **ACTIVE** (2026-07-11 PM, owner: "make a big plan and execute, dont ask jst go, its a loop")
+16 | getSession -> getUser identity-verification migration (JWT-forgery CRITICAL) | **ACTIVE** (2026-07-10)
+18 | Estate audit (hooks/skills/rules/systems/memory , improvement proposal) | **ACTIVE** (2026-07-11)
+22 | Taste audit sweep (measured floors across dashboard + customer side) | **ACTIVE** (2026-07-15)
+20 | Taste Lab program (hundreds of A/B comparisons; owner ask 2026-07-15) | **ACTIVE** (2026-07-15)
+23 | Taste rationale ROUND 2 (refs + research expansion) | **ACTIVE** (2026-07-16)
 
 ## SEARCH_MAP_OVERHAUL.md
 Open boxes:
@@ -56,9 +56,3 @@ Open boxes:
     - [ ] M7 photo-first SalonCard on /behandlungen + /brand
     - [ ] M8 SeeAllButton unification (3 dialects -> 1)
     - [ ] M9 window.confirm -> Modal on the paid walk-in cancel
-
-## TYPES_SPRINT.md
-Open boxes:
-- [ ] P0 probe: type the 3 client factories (lib/supabase.ts x2 + browser, lib/supabase-browser.ts), dump the full tsc error list to a file, bucket by directory, size the waves
-- [ ] Wave fixes (boxes added after the probe, one per bucket)
-- [ ] Final: tsc=0, vitest, smoke, e2e all green; NOTE comment in lib/supabase.ts updated; plan + ACTIVE closed

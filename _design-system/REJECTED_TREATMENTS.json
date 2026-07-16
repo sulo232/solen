@@ -1,0 +1,139 @@
+{
+ "_doc": "Machine-readable owner-REJECTED visual treatments. Read by scripts/hooks/mockup-resurrection-gate.py (PreToolUse on Write/Edit under public/_mockups/). Source code containing a treatment is NOT proof it is current: dormant branches resurrect rejected taste (the 2026-07-15 rose-badge incident, owner: 'you keep reading from the source code... you keep making it in over and over again'). When the owner rejects a treatment, ADD AN ENTRY HERE the same turn (the visual twin of REMOVED.md). Matching: block if every regex in all_of matches the incoming file content (case-insensitive), and, when present, at least one regex in any_of also matches; exclude_paths substrings exempt specific files.",
+ "entries": [
+  {
+   "id": "rose-photo-discount-badge",
+   "added": "2026-07-15",
+   "why": "Owner rejected rose/red photo tags for discounts twice: the mobile decision (memory project_card_badges: 'isn't it weird', rejected red/rose/ink/glass, discount = pale-green by the price) and again on sight in the taste lab ('doesnt match at all'). The web DiscountBadge (SalonCard.tsx V3-D85) is dormant code that never renders live; do not copy it into mockups or new UI.",
+   "all_of": [
+    "(FAD2DA|love-soft)",
+    "badge"
+   ],
+   "any_of": [
+    "[-\\u2212]\\s?\\d{1,2}\\s?%",
+    "percentOff",
+    "rabatt"
+   ],
+   "exclude_paths": [],
+   "record": "TASTE_LOG.md 2026-07-15 Taste Lab round 1; memory project_card_badges"
+  },
+  {
+   "id": "web-dark-mode",
+   "added": "2026-07-15",
+   "why": "Owner declined web dark mode ('no dark mode', Taste Lab round 1). Mobile Revolut-charcoal stays the only dark surface. Do not build dark web mockups without a new owner yes.",
+   "all_of": [
+    "(#0B0B0D|#1A1B1F)"
+   ],
+   "any_of": [
+    "dark"
+   ],
+   "exclude_paths": [
+    "taste-lab"
+   ],
+   "record": "REMOVED.md 2026-07-15 dark-mode line; TASTE_LOG.md 2026-07-15"
+  },
+  {
+   "id": "tracked-uppercase-eyebrow",
+   "added": "2026-07-15",
+   "why": "Tracked-uppercase labels/eyebrows are on the mockup banned list (owner-rejected repeatedly; CLAUDE.md copy-economy rule 5). Normal-case 13px semibold instead.",
+   "all_of": [
+    "text-transform:\\s*uppercase",
+    "letter-spacing"
+   ],
+   "any_of": [],
+   "exclude_paths": [],
+   "record": "CLAUDE.md copy-economy mockup banned list"
+  },
+  {
+   "id": "status-bar-placeholder-dots",
+   "added": "2026-07-15",
+   "why": "Placeholder junk in mockup status bars (three filled dots) is owner-rejected; use the kit's signal/wifi/battery glyphs.",
+   "all_of": [
+    "\\u25CF\\s?\\u25CF\\s?\\u25CF"
+   ],
+   "any_of": [],
+   "exclude_paths": [],
+   "record": "CLAUDE.md copy-economy mockup banned list"
+  },
+  {
+   "id": "card-blue-review-count",
+   "added": "2026-07-15",
+   "why": "CARD_REDESIGN_2026-07-13 C11 (owner-approved converged card, branch claude/animation-reference-recognition-11f0c3, card-redesign.html #c11) drops the review count from card Row 1: rating = star + value only. A blue '(54)' count on a salon card resurrects the superseded treatment.",
+   "all_of": [
+    "(RatingStars|rating|star)",
+    "(\\(\\d{1,4}\\))"
+   ],
+   "any_of": [
+    "card"
+   ],
+   "exclude_paths": [
+    "taste-lab",
+    "taste-book",
+    "taste-audit-w1",
+    "taste-refs",
+    "taste-round2"
+   ],
+   "record": "branch commit history 857e62882 area; TASTE_LOG 2026-07-15 stranded-decisions entry"
+  },
+  {
+   "id": "card-landscape-photo-3-2",
+   "added": "2026-07-15",
+   "why": "CARD_REDESIGN_2026-07-13 C1: card photo ratio is 5/4, supersedes the 3/2 landscape approval of 2026-07-02. New card mockups must not use aspect 3/2.",
+   "all_of": [
+    "aspect-\\[3/2\\]"
+   ],
+   "any_of": [
+    "card",
+    "salon"
+   ],
+   "exclude_paths": [
+    "taste-lab",
+    "taste-book",
+    "taste-audit-w1",
+    "taste-refs",
+    "taste-round2"
+   ],
+   "record": "SalonCard.tsx on animation-reference branch: aspect-[5/4] with C1 comment"
+  },
+  {
+   "id": "card-next-slot-row",
+   "added": "2026-07-15",
+   "why": "CARD_REDESIGN_2026-07-13 C2: availability badge and next-slot text (calendar icon + 'Heute 14:30') are fully deleted from the card. Do not re-add in mockups or UI.",
+   "all_of": [
+    "(Heute|Morgen)\\s*<strong>?\\s*\\d{1,2}:\\d{2}"
+   ],
+   "any_of": [
+    "card",
+    "salon"
+   ],
+   "exclude_paths": [
+    "taste-lab",
+    "taste-book",
+    "taste-audit-w1",
+    "taste-refs",
+    "taste-round2"
+   ],
+   "record": "SalonCard.tsx on animation-reference branch, C2 deletion comment + branch REMOVED.md"
+  },
+  {
+   "id": "fullbleed-direction",
+   "added": "2026-07-16",
+   "why": "Owner denied the whole full-bleed direction on sight of the exploration page ('fym i told you full bleed is not okay i want it gone the mockup is denied bro'), superseding the same-day 'I want it a lot'. No full-bleed heroes, takeovers, floods or montages in any mockup or UI without a new owner yes by name.",
+   "all_of": [
+    "full[- ]?bleed"
+   ],
+   "any_of": [
+    "hero",
+    "takeover",
+    "montage",
+    "flood",
+    "edge[- ]to[- ]edge"
+   ],
+   "exclude_paths": [
+    "round2-rules",
+    "round2-explained"
+   ],
+   "record": "TASTE_LOG.md 2026-07-16 CORRECTION entry; REMOVED.md same date"
+  }
+ ]
+}

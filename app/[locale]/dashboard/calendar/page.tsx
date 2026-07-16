@@ -214,15 +214,15 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
                 return (
                   <div key={key} className="flex items-center gap-3">
                     <button type="button" onClick={() => toggleDay(key)}
-                      className={["w-9 text-center text-xs font-medium py-1.5 rounded-btn transition-colors",
-                        slot ? "bg-s-accent-bright text-white" : "bg-s-bg-sunken text-s-ink/40"].join(" ")}>
+                      className={["w-9 text-center text-xs font-medium py-1.5 rounded-btn transition-colors", // mockup-ok: C2 fix, locked TabPill treatment (approved public/_mockups/fixes-refined)
+                        slot ? "bg-s-bg-sunken text-s-ink font-semibold" : "bg-s-bg-sunken text-s-ink/40"].join(" ")}>
                       {DAY_LABELS[i]}
                     </button>
                     {slot ? (
                       <>
                         <input type="time" value={slot.start} onChange={(e) => setTemplate((p) => ({ ...p, [key]: { ...slot, start: e.target.value } }))}
                           className="px-2 py-1 rounded-btn border border-s-border text-xs focus:outline-none focus:border-s-accent" />
-                        <span className="text-xs text-s-ink/30">–</span>
+                        <span className="text-xs text-s-ink/30">-</span>
                         <input type="time" value={slot.end} onChange={(e) => setTemplate((p) => ({ ...p, [key]: { ...slot, end: e.target.value } }))}
                           className="px-2 py-1 rounded-btn border border-s-border text-xs focus:outline-none focus:border-s-accent" />
                       </>
@@ -237,8 +237,8 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
             <div className="flex gap-2">
               {([1, 2, 4] as const).map((w) => (
                 <button key={w} type="button" onClick={() => setWeeks(w)}
-                  className={["flex-1 py-2 rounded-btn border text-sm font-medium transition-colors",
-                    weeks === w ? "bg-s-accent-bright text-white border-s-accent-bright" : "border-s-border text-s-ink-2"].join(" ")}>
+                  className={["flex-1 py-2 rounded-btn border text-sm font-medium transition-colors", // mockup-ok: C2 fix, locked TabPill treatment (approved public/_mockups/fixes-refined)
+                    weeks === w ? "bg-s-bg-sunken text-s-ink font-semibold border-s-border" : "border-s-border text-s-ink-2"].join(" ")}>
                   {w} {w === 1 ? t("weekSingular") : t("weekPlural")}
                 </button>
               ))}
@@ -276,7 +276,7 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
   const [newTime, setNewTime] = useState(new Date(slot.starts_at).toTimeString().slice(0, 5));
   const [loading, setLoading] = useState(false);
 
-  const staffName = staff.find((s) => s.id === slot.staff_member_id)?.name ?? "—";
+  const staffName = staff.find((s) => s.id === slot.staff_member_id)?.name || t("anyStaff");
   const startTime = new Date(slot.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
   const endTime = new Date(slot.ends_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
 
@@ -326,7 +326,7 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
           <>
             <div className="space-y-2 mb-5 text-sm text-s-ink/70">
               <p><span className="text-s-ink/40">{t("statusLabel")}</span> <span className="font-medium">{slot.status === "booked" ? t("statusBooked") : slot.status === "blocked" ? t("statusBlocked") : t("statusFree")}</span></p>
-              <p><span className="text-s-ink/40">{t("timeLabel")}</span> {startTime} – {endTime}</p>
+              <p><span className="text-s-ink/40">{t("timeLabel")}</span> {startTime} - {endTime}</p>
               <p><span className="text-s-ink/40">{t("dateLabel")}</span> {new Date(slot.starts_at).toLocaleDateString("de-CH")}</p>
               <p><span className="text-s-ink/40">{t("staffDetailLabel")}</span> {staffName}</p>
             </div>
@@ -349,16 +349,38 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
   );
 }
 
-// Staff color palette
+// Staff color palette. Solid fills (mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15
+// fixes-refined). The old low-opacity tints measured 1.13-1.9:1 against #F4F4F5,
+// near-invisible in the legend swatch, and two entries ("coral"/"plum") were B&W
+// aliases (V3-D332) so no opacity bump could ever fix them. Every entry below clears
+// 3:1 (measured 4.57-6.46:1 vs #F4F4F5, 5.02-7.10:1 vs #FFFFFF). Raw Tailwind hues are
+// intentional here: an 8-way staff-identity palette, not a semantic status/brand color,
+// so s-error/s-success/s-warning/s-accent/s-ink do not have enough distinct hues for 8 staff.
 const STAFF_COLORS = [
-  "bg-s-coral/15 border-s-accent-bright/30 text-s-coral",
-  "bg-blue-100 border-blue-300 text-blue-700",
-  "bg-s-plum/10 border-s-plum/30 text-s-plum",
-  "bg-s-amber-subtle border-s-amber/30 text-s-star-text",
-  "bg-pink-100 border-pink-300 text-pink-700",
-  "bg-emerald-100 border-emerald-300 text-emerald-700",
-  "bg-orange-100 border-orange-300 text-orange-700",
-  "bg-cyan-100 border-cyan-300 text-cyan-700",
+  "bg-rose-700 border-rose-800 text-white", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, staff-identity hue
+  "bg-blue-700 border-blue-800 text-white", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, staff-identity hue
+  "bg-violet-700 border-violet-800 text-white", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, staff-identity hue
+  "bg-amber-700 border-amber-800 text-white", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, staff-identity hue
+  "bg-pink-700 border-pink-800 text-white", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, mockup literal #BE185D
+  "bg-emerald-700 border-emerald-800 text-white", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, mockup literal #047857
+  "bg-orange-700 border-orange-800 text-white", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, mockup literal #C2410C
+  "bg-cyan-700 border-cyan-800 text-white", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, staff-identity hue
+];
+
+// C1 punch fix: parallel LITERAL text-color array, same order/hues as STAFF_COLORS above, for the
+// day-view staff header (text-on-white, not the solid swatch fill). Tailwind's scanner only
+// generates CSS for class strings that appear verbatim in source; deriving "text-{hue}-700" at
+// runtime via string replace never matches a literal, so the header rendered unstyled. Indexed
+// directly instead.
+const STAFF_TEXT_COLORS = [
+  "text-rose-700", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, staff-identity hue
+  "text-blue-700", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, staff-identity hue
+  "text-violet-700", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, staff-identity hue
+  "text-amber-700", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, staff-identity hue
+  "text-pink-700", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, mockup literal #BE185D
+  "text-emerald-700", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, mockup literal #047857
+  "text-orange-700", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, mockup literal #C2410C
+  "text-cyan-700", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, staff-identity hue
 ];
 
 // ─────────────────────────────────────────
@@ -832,7 +854,7 @@ export default function CalendarPage() {
               ? currentDate.toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
               : viewMode === "month"
               ? currentDate.toLocaleDateString("de-CH", { month: "long", year: "numeric" })
-              : `${weekStart.toLocaleDateString("de-CH", { day: "numeric", month: "long" })} – ${addDays(weekStart, 6).toLocaleDateString("de-CH", { day: "numeric", month: "long", year: "numeric" })}`
+              : `${weekStart.toLocaleDateString("de-CH", { day: "numeric", month: "long" })} bis ${addDays(weekStart, 6).toLocaleDateString("de-CH", { day: "numeric", month: "long", year: "numeric" })}`
             }
           </span>
         </div>
@@ -840,8 +862,8 @@ export default function CalendarPage() {
           {/* View toggle */}
           <div className="flex rounded-btn border border-s-border overflow-hidden">
             {(["day", "week", "month"] as ViewMode[]).map((mode) => (
-              <button key={mode} onClick={() => setViewMode(mode)}
-                className={`px-3 py-1.5 text-xs font-medium transition-colors ${viewMode === mode ? "bg-s-accent-bright text-white" : "text-s-ink-2 hover:bg-s-coral/5"}`}>
+              <button key={mode} onClick={() => setViewMode(mode)} // mockup-ok: C2 fix, locked TabPill treatment (approved public/_mockups/fixes-refined)
+                className={`px-3 py-1.5 text-xs font-medium transition-colors ${viewMode === mode ? "bg-s-bg-sunken text-s-ink font-semibold" : "text-s-ink-2 hover:bg-s-coral/5"}`}>
                 {mode === "day" ? t("viewDay") : mode === "week" ? t("viewWeek") : t("viewMonth")}
               </button>
             ))}
@@ -957,7 +979,8 @@ export default function CalendarPage() {
             <div className="py-3 px-2 text-xs text-s-ink/30" />
             {staff.length > 0 ? staff.map((s, i) => (
               <div key={s.id} className="py-3 px-2 text-center border-l border-s-ink/5">
-                <p className={`text-xs font-medium ${STAFF_COLORS[i % STAFF_COLORS.length].split(" ")[2]}`}>{s.name}</p>
+                {/* mockup-ok: C1 punch fix, literal STAFF_TEXT_COLORS index (was a runtime-built "bg-".replace("text-") string that Tailwind's scanner never sees, so it compiled to nothing) */}
+                <p className={`text-xs font-medium ${STAFF_TEXT_COLORS[i % STAFF_TEXT_COLORS.length]}`}>{s.name}</p>
               </div>
             )) : (
               <div className="py-3 px-2 text-center border-l border-s-ink/5">
@@ -1114,7 +1137,10 @@ export default function CalendarPage() {
             <span className="w-px h-4 bg-s-sand" />
             {staff.map((s, i) => (
               <span key={s.id} className="flex items-center gap-1.5">
-                <span className={`w-3 h-3 rounded border ${STAFF_COLORS[i % STAFF_COLORS.length].split(" ").slice(0, 2).join(" ")}`} />
+                {/* mockup-ok: C1 fix, solid fill + initial letter so color is not the sole carrier (WCAG 1.4.1) */}
+                <span className={`w-4 h-4 rounded flex items-center justify-center text-[9px] font-bold leading-none ${STAFF_COLORS[i % STAFF_COLORS.length]}`} title={s.name}> {/* drift-ok: single decorative glyph in a 16px identity swatch, matches owner-approved fixes-refined mockup literal */}
+                  {s.name.charAt(0).toUpperCase()}
+                </span>
                 {s.name.split(" ")[0]}
               </span>
             ))}

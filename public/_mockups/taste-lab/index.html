@@ -1,0 +1,882 @@
+<!doctype html>
+<!-- german-ok lang-ok english-ok
+  Exists-check: `npm run exists taste-lab` = 0 hits; `npm run exists rationale` = 0 hits (run 2026-07-15). Net-new elicitation lab; extends nothing, probes ONLY axes verified UNSETTLED in TASTE_LOG/QUESTIONS/REMOVED on 2026-07-15 (corner curvature, optical alignment, contrast policy, text measure, web dark mode). Locked axes (nested radius DS-4, radius values, blue policy, spring easing) are NOT re-litigated. german-ok
+  Owner-scope: confirmed: owner asked 2026-07-15 for questions and mockups to define more taste on top of the researched rationale framework (paraphrased from the owner's own request this turn). german-ok
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx (SalonCard DOM and locked geometry) + _design-system/components/SalonCard.md, plus tailwind.config.js (live token hexes), app/globals.css (fonts), solen-mobile/src/lib/theme.ts darkColors (probe 5 hexes), _design-system/RATIONALE.md draft v1 (mechanics and measured contrast numbers). german-ok
+   - Tokens: #0A0A0A #6B6B6B #C5C8C4 #E4E4E7 #F4F4F5 #276EF1 #EAEFFE #16A34A #FFC32B #FAD2DA #A23548 (s-love.deep, existing LOCKFILE token per tailwind.config.js); dark (mobile precedent, solen-mobile/src/lib/theme.ts darkColors): #0B0B0D #1A1B1F #2A2B30 #9A9AA2 #4187FF #2BD17E. german-ok hue-ok
+   - Card grammar: photo aspect-[3/2] rounded 22px shadow elevation-2, text block mt 10px gap 2px, name 14px medium ink truncate, rating 13px grey with star 11px #FFC32B plus count in accent, rows 12px grey, price semibold ink. One ink anchor (name); price and the bolded HH:MM slot time are the sanctioned second-tier siblings. german-ok
+  hue-ok: probe 5 uses the mobile dark palette (owner-shipped precedent, Revolut charcoal stack); no new hues invented. german-ok
+
+  Icon-source note: lucide-static is not installed in this worktree's node_modules (only lucide-react, the package the live app imports). Path `d` data below is copied verbatim from node_modules/lucide-react/dist/esm/icons/{star,heart,calendar,play}.js (v0.577.0), the same canonical Lucide path geometry lucide-static ships for the same icon name and version; every svg below carries class="lucide" as the real-Lucide marker. chevron-right.svg was inspected but is unused: no probe in this spec calls for it. german-ok
+
+  Content-language note: page chrome (headings, questions, panel labels, chip text, annotations, footer, and the SalonCard demo copy) is English per this repo's mockup-English policy. ONE exception is kept, marked per-line with the escape marker this policy documents: probe 4's sample paragraph, because that probe specifically tests long-compound-word line-wrap behavior in the shipped app's primary language, which an English paragraph would not exercise. german-ok lang-ok english-ok
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Taste Lab: SalonCard variants</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400..900&family=Inter:wght@400..700&display=swap">
+<style>
+  :root {
+    --ink: #0A0A0A;
+    --ink2: #6B6B6B;
+    --ink-disabled: #C5C8C4;
+    --border: #E4E4E7;
+    --sunken: #F4F4F5;
+    --accent: #276EF1;
+    --accent-pale: #EAEFFE;
+    --success: #16A34A;
+    --star: #FFC32B;
+    --love-soft: #FAD2DA;
+    --love-deep: #A23548; /* hue-ok: s-love.deep, existing LOCKFILE token */
+    --white: #FFFFFF;
+    --elev2: 0 2px 8px rgba(50,47,44,.09);
+    --elev3: 0 6px 16px rgba(50,47,44,.12);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    background: var(--white);
+    overflow-x: hidden;
+  }
+
+  body {
+    color: var(--ink);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, .font-heading {
+    font-family: 'Inter Tight', system-ui, -apple-system, sans-serif;
+    letter-spacing: -0.025em;
+    margin: 0;
+  }
+
+  p { margin: 0; }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 20px; }
+
+  /* Header */
+  .lab-header h1 { font-size: 24px; font-weight: 700; }
+  .lab-header .sub { margin-top: 6px; font-size: 14px; color: var(--ink2); line-height: 1.5; }
+  .lab-header .note { margin-top: 8px; font-size: 12px; color: var(--ink2); line-height: 1.5; }
+
+  .toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    margin: 20px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .toc a {
+    font-size: 13px;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .toc a:hover { text-decoration: underline; }
+
+  /* Probe sections */
+  .probe {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .probe:first-of-type { margin-top: 32px; }
+  .probe h2 { font-size: 18px; font-weight: 650; }
+  .probe .question { margin-top: 4px; font-size: 14px; color: var(--ink2); line-height: 1.5; max-width: 640px; }
+  .desktop-note { margin-top: 12px; font-size: 11px; color: var(--ink2); }
+
+  .panels {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .panels-column {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .panel {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    flex: 1 1 260px;
+    max-width: 320px;
+    min-width: 0;
+  }
+  .panel--tray { flex-basis: 300px; max-width: 340px; }
+  .panel--wide { flex-basis: 440px; max-width: 620px; }
+  .panel--slim { flex-basis: 220px; max-width: 260px; }
+  .panel--full { flex-basis: 100%; max-width: 100%; }
+  .panel--dark { flex-basis: 100%; max-width: 100%; }
+
+  @media (max-width: 640px) {
+    .panel, .panel--tray, .panel--wide, .panel--slim {
+      flex-basis: 100%;
+      max-width: 100%;
+    }
+  }
+
+  .panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .variant-label { font-size: 13px; font-weight: 600; color: var(--ink); }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--sunken);
+    color: var(--ink);
+    border-radius: 999px;
+    padding: 3px 10px;
+    white-space: nowrap;
+  }
+
+  .annot {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--ink2);
+  }
+  .annot b { color: var(--ink); font-weight: 600; }
+
+  /* Card (real SalonCard structure/tokens) */
+  .card {
+    display: flex;
+    flex-direction: column;
+    width: 236px;
+    max-width: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+  .card .shadow-wrap { width: 100%; }
+  .card .shadow-wrap.squirclable { filter: drop-shadow(0 2px 8px rgba(50,47,44,.18)); }
+  .card .photo {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: var(--elev2);
+  }
+  .card .photo.squirclable { box-shadow: none; }
+  .card .badge {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--love-deep);
+    background: var(--love-soft);
+    border: 1px solid rgba(204,74,96,.22);
+  }
+  .card .heart {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    z-index: 2;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background: rgba(0,0,0,.28);
+    display: grid;
+    place-items: center;
+    border: none;
+    padding: 0;
+  }
+  .card .text {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .card .row1 { display: flex; align-items: baseline; gap: 8px; }
+  .card h3 {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    flex: 1;
+    letter-spacing: normal;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  .card .rating {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 13px;
+    color: var(--ink2);
+    font-variant-numeric: tabular-nums;
+  }
+  .card .rating .count { color: var(--accent); }
+  .card .row2 {
+    font-size: 12px;
+    color: var(--ink2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .card .row3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--ink2);
+  }
+  .card .row3 .slot { display: inline-flex; align-items: center; gap: 4px; min-width: 0; }
+  .card .row3 strong { font-weight: 600; color: var(--ink); }
+  .card .row3 .price { font-weight: 600; color: var(--ink); margin-left: auto; }
+
+  /* gradient photo placeholders (house mockup pattern, no real photos) */
+  .g1 { background: linear-gradient(150deg,#e6e4e2,#cbc7c3); }
+  .g2 { background: linear-gradient(155deg,#e2e4e6,#c3c7cb); }
+  .g3 { background: linear-gradient(145deg,#e5e3e1,#c9c5c1); }
+
+  /* Probe 3: sunken tray */
+  .tray {
+    background: var(--sunken);
+    padding: 16px;
+    border-radius: 16px;
+  }
+  .tray--apca .card { --ink2: #575757; }
+  .tray--apca .card .rating .count { color: var(--ink); }
+  .stats {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink2);
+  }
+  .stats .fail { color: var(--love-deep); }
+
+  /* Probe 2: optical alignment demos */
+  .opt-row + .opt-row { margin-top: 20px; }
+  .opt-row .opt-label { font-size: 12px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+  .opt-pairgroup { display: flex; gap: 24px; flex-wrap: wrap; }
+  .opt-pair { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .opt-pair .tag { font-size: 11px; color: var(--ink2); }
+  .opt-circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    background: var(--sunken);
+    display: grid;
+    place-items: center;
+  }
+  .shape-pair { display: flex; align-items: center; gap: 10px; }
+  .shape-square { width: 24px; height: 24px; background: var(--ink); flex-shrink: 0; }
+  .shape-circle { width: 24px; height: 24px; border-radius: 999px; background: var(--ink); flex-shrink: 0; }
+  .shape-circle--corrected { width: 25.5px; height: 25.5px; }
+  .baseline-demo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--ink2);
+  }
+  .baseline-demo .cal { display: inline-flex; align-items: center; }
+  .baseline-demo .cal--corrected { position: relative; top: .5px; }
+  .baseline-demo strong { font-weight: 600; color: var(--ink); }
+
+  .pill-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: var(--sunken);
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid var(--border);
+  }
+
+  /* Probe 4: measure */
+  .measure-demo {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .measure-demo--capped { max-width: 68ch; }
+  .measure-demo--airy { max-width: 68ch; line-height: 1.6; }
+
+  /* Probe 5: dark tray */
+  .tray-dark {
+    background: #0B0B0D;
+    padding: 24px;
+    border-radius: 16px;
+  }
+  .tray-dark h3.dark-heading {
+    font-size: 18px;
+    font-weight: 600;
+    color: #FFFFFF;
+    margin-bottom: 16px;
+  }
+  .card--dark .photo { background: #1A1B1F; border: 1px solid #2A2B30; box-shadow: none; }
+  .card--dark h3 { color: #FFFFFF; }
+  .card--dark .row2, .card--dark .row3 { color: #9A9AA2; }
+  .card--dark .rating { color: #9A9AA2; }
+  .card--dark .rating .count { color: #4187FF; } /* hue-ok: mobile dark theme.ts accent, shipped precedent */
+  .card--dark .row3 strong, .card--dark .row3 .price { color: #FFFFFF; }
+  .cta-pill-dark {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 16px;
+    padding: 9px 18px;
+    border-radius: 999px;
+    background: #4187FF; /* hue-ok: mobile dark theme.ts cta, shipped precedent */
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  /* Footer */
+  .lab-footer {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+  .lab-footer p { font-size: 12px; color: var(--ink2); line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="lab-header">
+    <h1>Taste Lab</h1>
+    <p class="sub">5 open design axes, 2-3 variants each. Reply e.g.: 1A, 2 yes, 3C, 4B, 5 later.</p>
+    <p class="note">All cards are copies of the real SalonCard with real tokens. Only the one marked treatment changes per variant. Discount badges removed 2026-07-15: the rose photo tag exists only in dormant web code, never renders live, and the owner rejected that treatment.</p>
+    <ul class="toc">
+      <li><a href="#probe-1">1. Corners: circular arc or squircle?</a></li>
+      <li><a href="#probe-2">2. Optical corrections: geometry or eye?</a></li>
+      <li><a href="#probe-3">3. Grey + blue on sunken surfaces: retune or document?</a></li>
+      <li><a href="#probe-4">4. Line length: cap it?</a></li>
+      <li><a href="#probe-5">5. Web dark mode: appetite?</a></li>
+    </ul>
+  </header>
+
+  <!-- PROBE 1 -->
+  <section class="probe" id="probe-1">
+    <h2>1. Corners: circular arc or squircle?</h2>
+    <p class="question">Same radius 22px, different curvature. Can you see the difference, and is it worth the effort?</p>
+
+    <div class="panels">
+
+      <!-- 1A -->
+      <div class="panel">
+        <div class="panel-head">
+          <span class="variant-label">1A Circular arc (current)</span>
+          <span class="chip">My pick</span>
+        </div>
+        <a class="card" href="#" aria-label="Atelier Marie, book appointment">
+          <div class="photo g1">
+            <button class="heart" aria-label="Save" type="button">
+              <svg class="lucide" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+            </button>
+          </div>
+          <div class="text">
+            <div class="row1">
+              <h3>Atelier Marie</h3>
+              <span class="rating">
+                <svg class="lucide" width="11" height="11" viewBox="0 0 24 24" fill="var(--star)" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                4.8 <span class="count">(54)</span>
+              </span>
+            </div>
+            <div class="row2">Marktgasse 12 Basel</div>
+            <div class="row3">
+              <span class="slot"><svg class="lucide" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg> Today <strong>14:30</strong></span>
+              <strong class="price">CHF 85</strong>
+            </div>
+          </div>
+        </a>
+        <div class="annot">
+          <p><b>Optimizes for:</b> zero implementation cost, identical to live app, shadows work natively.</p>
+          <p><b>Sacrifices:</b> a faint G1 curvature kink where edge meets arc, visible mostly on large light surfaces.</p>
+          <p><b>Mechanic:</b> circle is superellipse n=2; kink = curvature jumps 0 to 1/r at the tangent point (CONV/T2).</p>
+        </div>
+      </div>
+
+      <!-- 1B -->
+      <div class="panel">
+        <div class="panel-head">
+          <span class="variant-label">1B Squircle (continuous)</span>
+        </div>
+        <a class="card" href="#" aria-label="Studio Nera, book appointment">
+          <div class="shadow-wrap squirclable">
+            <div class="photo g2 squirclable" data-squircle>
+              <button class="heart" aria-label="Save" type="button">
+                <svg class="lucide" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="text">
+            <div class="row1">
+              <h3>Studio Nera</h3>
+              <span class="rating">
+                <svg class="lucide" width="11" height="11" viewBox="0 0 24 24" fill="var(--star)" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                4.8 <span class="count">(54)</span>
+              </span>
+            </div>
+            <div class="row2">Marktgasse 12 Basel</div>
+            <div class="row3">
+              <span class="slot"><svg class="lucide" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg> Today <strong>14:30</strong></span>
+              <strong class="price">CHF 85</strong>
+            </div>
+          </div>
+        </a>
+        <div class="annot">
+          <p><b>Optimizes for:</b> continuous curvature (G2), the "machined" Apple corner read.</p>
+          <p><b>Sacrifices:</b> clip-path plumbing on every rounded element, drop-shadow workaround, drift risk vs locked radius tokens until CSS corner-shape ships.</p>
+          <p><b>Mechanic:</b> superellipse |x/a|^n+|y/b|^n=1, n≈4; removes the G1 kink (T2).</p>
+        </div>
+      </div>
+
+      <!-- 1C -->
+      <div class="panel">
+        <div class="panel-head">
+          <span class="variant-label">1C Squircle on hero surfaces only</span>
+        </div>
+        <a class="card" href="#" aria-label="Barber Brothers, book appointment">
+          <div class="shadow-wrap squirclable">
+            <div class="photo g3 squirclable" data-squircle>
+              <button class="heart" aria-label="Save" type="button">
+                <svg class="lucide" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="text">
+            <div class="row1">
+              <h3>Barber Brothers</h3>
+              <span class="rating">
+                <svg class="lucide" width="11" height="11" viewBox="0 0 24 24" fill="var(--star)" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                4.8 <span class="count">(54)</span>
+              </span>
+            </div>
+            <div class="row2">Marktgasse 12 Basel</div>
+            <div class="row3">
+              <span class="slot"><svg class="lucide" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg> Today <strong>14:30</strong></span>
+              <strong class="price">CHF 85</strong>
+            </div>
+          </div>
+        </a>
+        <div style="margin-top:14px; display:flex; align-items:center; gap:16px;">
+          <span class="pill-btn">All times</span>
+        </div>
+        <div class="annot">
+          <p><b>Optimizes for:</b> refinement where it is visible (large surfaces), zero cost on small chrome where the kink is invisible.</p>
+          <p><b>Sacrifices:</b> two corner languages in one system, a new rule to police.</p>
+          <p><b>Mechanic:</b> kink visibility scales with radius and edge length; below ~12px radius the difference is sub-threshold (CONV).</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PROBE 2 -->
+  <section class="probe" id="probe-2">
+    <h2>2. Optical corrections: geometry or eye?</h2>
+    <p class="question">Mathematically centered vs optically corrected. Do we adopt optical correction as a rule?</p>
+
+    <div class="panels">
+
+      <!-- Corrected (wide, pick) -->
+      <div class="panel panel--wide">
+        <div class="panel-head">
+          <span class="variant-label">Optically corrected</span>
+          <span class="chip">My pick</span>
+        </div>
+
+        <div class="opt-row">
+          <div class="opt-label">2a Play glyph nudge</div>
+          <div class="opt-pairgroup">
+            <div class="opt-pair">
+              <div class="opt-circle">
+                <svg class="lucide" width="20" height="20" viewBox="0 0 24 24" fill="var(--ink)" stroke="none" aria-hidden="true"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg>
+              </div>
+              <span class="tag">centered</span>
+            </div>
+            <div class="opt-pair">
+              <div class="opt-circle">
+                <svg class="lucide" width="20" height="20" viewBox="0 0 24 24" fill="var(--ink)" stroke="none" style="transform: translateX(1.5px);" aria-hidden="true"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg>
+              </div>
+              <span class="tag">corrected</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="opt-row">
+          <div class="opt-label">2b Circle vs square size</div>
+          <div class="opt-pairgroup">
+            <div class="opt-pair">
+              <div class="shape-pair">
+                <div class="shape-square"></div>
+                <div class="shape-circle"></div>
+              </div>
+              <span class="tag">centered</span>
+            </div>
+            <div class="opt-pair">
+              <div class="shape-pair">
+                <div class="shape-square"></div>
+                <div class="shape-circle shape-circle--corrected"></div>
+              </div>
+              <span class="tag">corrected</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="opt-row">
+          <div class="opt-label">2c Icon-text baseline</div>
+          <div class="opt-pairgroup">
+            <div class="opt-pair">
+              <span class="baseline-demo"><span class="cal"><svg class="lucide" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg></span> Today <strong>14:30</strong></span>
+              <span class="tag">centered</span>
+            </div>
+            <div class="opt-pair">
+              <span class="baseline-demo"><span class="cal cal--corrected"><svg class="lucide" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg></span> Today <strong>14:30</strong></span>
+              <span class="tag">corrected</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="annot">
+          <p><b>Optimizes for:</b> perceived balance, the detail tier that reads "thorough" (Rams 8).</p>
+          <p><b>Sacrifices:</b> per-icon manual nudges that flexbox cannot verify, needs an eye pass at 2x zoom.</p>
+          <p><b>Mechanic:</b> the eye balances AREA not bounding boxes; a triangle's centroid sits at w/3, a circle encloses ~21 percent less area than its bounding square (T2, optical alignment practice).</p>
+        </div>
+      </div>
+
+      <!-- Uncorrected (slim, contrast) -->
+      <div class="panel panel--slim">
+        <div class="panel-head">
+          <span class="variant-label">Without correction (current)</span>
+        </div>
+
+        <div class="opt-row">
+          <div class="opt-circle">
+            <svg class="lucide" width="20" height="20" viewBox="0 0 24 24" fill="var(--ink)" stroke="none" aria-hidden="true"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg>
+          </div>
+        </div>
+        <div class="opt-row">
+          <div class="shape-pair">
+            <div class="shape-square"></div>
+            <div class="shape-circle"></div>
+          </div>
+        </div>
+        <div class="opt-row">
+          <span class="baseline-demo"><span class="cal"><svg class="lucide" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg></span> Today <strong>14:30</strong></span>
+        </div>
+
+        <div class="annot">
+          <p><b>Optimizes for:</b> pure flexbox truth, zero maintenance.</p>
+          <p><b>Sacrifices:</b> play glyphs and circles read slightly off forever.</p>
+          <p><b>Mechanic:</b> same, inverted.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PROBE 3 -->
+  <section class="probe" id="probe-3">
+    <h2>3. Grey + blue on sunken surfaces: retune or document?</h2>
+    <p class="question">On #F4F4F5, blue falls under the AA line and grey falls under the APCA body floor. Adjust the values, or document the deviation?</p>
+
+    <div class="panels">
+
+      <!-- 3A -->
+      <div class="panel panel--tray">
+        <div class="panel-head">
+          <span class="variant-label">3A Current</span>
+        </div>
+        <div class="tray">
+          <a class="card" href="#" aria-label="Atelier Marie, book appointment">
+            <div class="photo g1">
+              <button class="heart" aria-label="Save" type="button">
+                <svg class="lucide" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+              </button>
+            </div>
+            <div class="text">
+              <div class="row1">
+                <h3>Atelier Marie</h3>
+                <span class="rating">
+                  <svg class="lucide" width="11" height="11" viewBox="0 0 24 24" fill="var(--star)" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  4.8 <span class="count">(54)</span>
+                </span>
+              </div>
+              <div class="row2">Marktgasse 12 Basel</div>
+              <div class="row3">
+                <span class="slot"><svg class="lucide" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg> Today <strong>14:30</strong></span>
+                <strong class="price">CHF 85</strong>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="stats">
+          <p>Grey on sunken: WCAG 4.85:1, APCA Lc 70.0</p>
+          <p>Blue (54) on sunken: WCAG 4.17:1, <span class="fail">FAILS AA 4.5</span></p>
+        </div>
+        <div class="annot">
+          <p><b>Optimizes for:</b> visual continuity with the rest of the app, no new rule.</p>
+          <p><b>Sacrifices:</b> the review count sits under WCAG AA on this one surface.</p>
+          <p><b>Mechanic:</b> WCAG(L1+.05)/(L2+.05) against #F4F4F5; see 3B/3C for the two resolutions on the table.</p>
+        </div>
+      </div>
+
+      <!-- 3B -->
+      <div class="panel panel--tray">
+        <div class="panel-head">
+          <span class="variant-label">3B APCA-retuned</span>
+          <span class="chip">My pick</span>
+        </div>
+        <div class="tray tray--apca">
+          <a class="card" href="#" aria-label="Atelier Marie, book appointment">
+            <div class="photo g1">
+              <button class="heart" aria-label="Save" type="button">
+                <svg class="lucide" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+              </button>
+            </div>
+            <div class="text">
+              <div class="row1">
+                <h3>Atelier Marie</h3>
+                <span class="rating">
+                  <svg class="lucide" width="11" height="11" viewBox="0 0 24 24" fill="var(--star)" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  4.8 <span class="count">(54)</span>
+                </span>
+              </div>
+              <div class="row2">Marktgasse 12 Basel</div>
+              <div class="row3">
+                <span class="slot"><svg class="lucide" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg> Today <strong>14:30</strong></span>
+                <strong class="price">CHF 85</strong>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="stats">
+          <p>Grey #575757 on sunken: WCAG 6.57:1, APCA Lc 78.6</p>
+          <p>Count in ink: 18.01:1</p>
+        </div>
+        <div class="annot">
+          <p><b>Optimizes for:</b> AA compliance everywhere + APCA body floor on greys, dark-mode-ready policy.</p>
+          <p><b>Sacrifices:</b> one more context rule (token value depends on surface), blue loses one placement.</p>
+          <p><b>Mechanic:</b> WCAG(L1+.05)/(L2+.05); APCA Lc floors 75 body / 90 small; WCAG 2 known-weak near dark, APCA is the WCAG 3 candidate, supplementary only (T1/T2).</p>
+        </div>
+      </div>
+
+      <!-- 3C -->
+      <div class="panel panel--tray">
+        <div class="panel-head">
+          <span class="variant-label">3C Documented deviation</span>
+        </div>
+        <div class="tray">
+          <a class="card" href="#" aria-label="Atelier Marie, book appointment">
+            <div class="photo g1">
+              <button class="heart" aria-label="Save" type="button">
+                <svg class="lucide" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+              </button>
+            </div>
+            <div class="text">
+              <div class="row1">
+                <h3>Atelier Marie</h3>
+                <span class="rating">
+                  <svg class="lucide" width="11" height="11" viewBox="0 0 24 24" fill="var(--star)" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  4.8 <span class="count">(54)</span>
+                </span>
+              </div>
+              <div class="row2">Marktgasse 12 Basel</div>
+              <div class="row3">
+                <span class="slot"><svg class="lucide" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg> Today <strong>14:30</strong></span>
+                <strong class="price">CHF 85</strong>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="stats">
+          <p>Grey on sunken: WCAG 4.85:1, APCA Lc 70.0</p>
+          <p>Blue (54) on sunken: WCAG 4.17:1, <span class="fail">FAILS AA 4.5</span></p>
+        </div>
+        <div class="annot">
+          <p><b>Optimizes for:</b> zero churn, tokens stay single-valued.</p>
+          <p><b>Sacrifices:</b> a knowingly sub-AA pairing in the wild; audit findings forever.</p>
+          <p><b>Mechanic:</b> same numbers, deviation recorded in RATIONALE.md departures list.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PROBE 4 -->
+  <section class="probe" id="probe-4">
+    <h2>4. Line length: cap it?</h2>
+    <p class="question">The PDP description runs full width on desktop today. Reading is most comfortable around 66-70 characters. Cap it?</p>
+    <p class="desktop-note">View this probe on desktop.</p>
+
+    <div class="panels-column">
+
+      <div class="panel panel--full">
+        <div class="panel-head">
+          <span class="variant-label">4A Full width (current)</span>
+        </div>
+        <p class="measure-demo">Willkommen im Atelier Marie im Herzen von Basel. Unser Team aus Haarverlängerungsspezialistinnen und Coloristen begleitet dich von der Typberatung bis zur Pflegeempfehlung, mit Produkten, die wir selbst täglich verwenden. Ob Balayage, Hochzeitsstyling oder ein präziser Schnitt: wir nehmen uns Zeit, zuzuhören, bevor die Schere in die Hand kommt. Termine bekommst du online in dreissig Sekunden, auch kurzfristig am selben Tag.</p> <!-- german-ok -->
+        <div class="annot">
+          <p><b>Optimizes for:</b> matches the live PDP today, zero change.</p>
+          <p><b>Sacrifices:</b> return-sweep effort at roughly 110 characters per line on wide desktop.</p>
+          <p><b>Mechanic:</b> measure grows with container width with no cap; same 45-75ch reference threshold used to judge 4B/4C (CONV).</p>
+        </div>
+      </div>
+
+      <div class="panel panel--full">
+        <div class="panel-head">
+          <span class="variant-label">4B 68ch cap</span>
+          <span class="chip">My pick</span>
+        </div>
+        <p class="measure-demo measure-demo--capped">Willkommen im Atelier Marie im Herzen von Basel. Unser Team aus Haarverlängerungsspezialistinnen und Coloristen begleitet dich von der Typberatung bis zur Pflegeempfehlung, mit Produkten, die wir selbst täglich verwenden. Ob Balayage, Hochzeitsstyling oder ein präziser Schnitt: wir nehmen uns Zeit, zuzuhören, bevor die Schere in die Hand kommt. Termine bekommst du online in dreissig Sekunden, auch kurzfristig am selben Tag.</p> <!-- german-ok -->
+        <div class="annot">
+          <p><b>Optimizes for:</b> comfortable return sweep, the 45-75ch comfort band, German compounds get room.</p>
+          <p><b>Sacrifices:</b> asymmetric whitespace right of the column on wide screens.</p>
+          <p><b>Mechanic:</b> Bringhurst 45-75ch, ~66 ideal; long measures raise line-return errors (CONV, strong practice consensus).</p>
+        </div>
+      </div>
+
+      <div class="panel panel--full">
+        <div class="panel-head">
+          <span class="variant-label">4C 68ch + line-height 1.6</span>
+        </div>
+        <p class="measure-demo measure-demo--airy">Willkommen im Atelier Marie im Herzen von Basel. Unser Team aus Haarverlängerungsspezialistinnen und Coloristen begleitet dich von der Typberatung bis zur Pflegeempfehlung, mit Produkten, die wir selbst täglich verwenden. Ob Balayage, Hochzeitsstyling oder ein präziser Schnitt: wir nehmen uns Zeit, zuzuhören, bevor die Schere in die Hand kommt. Termine bekommst du online in dreissig Sekunden, auch kurzfristig am selben Tag.</p> <!-- german-ok -->
+        <div class="annot">
+          <p><b>Optimizes for:</b> airier long-form read.</p>
+          <p><b>Sacrifices:</b> drifts from the locked 1.5 body rhythm, taller blocks.</p>
+          <p><b>Mechanic:</b> longer measures need more leading; at a capped 68ch the 1.5 already suffices (CONV).</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PROBE 5 -->
+  <section class="probe" id="probe-5">
+    <h2>5. Web dark mode: appetite?</h2>
+    <p class="question">The iOS app already has the Revolut charcoal stack. Same card with the REAL mobile dark tokens. Open web dark mode as a workstream?</p>
+
+    <div class="panels">
+      <div class="panel panel--dark">
+        <div class="panel-head">
+          <span class="variant-label">Mobile dark tokens on web</span>
+          <span class="chip">Question, not a recommendation</span>
+        </div>
+        <div class="tray-dark">
+          <h3 class="dark-heading">For you</h3>
+          <a class="card card--dark" href="#" aria-label="Atelier Marie, book appointment">
+            <div class="photo">
+              <button class="heart" aria-label="Save" type="button">
+                <svg class="lucide" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+              </button>
+            </div>
+            <div class="text">
+              <div class="row1">
+                <h3>Atelier Marie</h3>
+                <span class="rating">
+                  <svg class="lucide" width="11" height="11" viewBox="0 0 24 24" fill="var(--star)" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  4.8 <span class="count">(54)</span>
+                </span>
+              </div>
+              <div class="row2">Marktgasse 12 Basel</div>
+              <div class="row3">
+                <span class="slot"><svg class="lucide" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg> Today <strong>14:30</strong></span>
+                <strong class="price">CHF 85</strong>
+              </div>
+            </div>
+          </a>
+          <span class="cta-pill-dark">Book</span>
+        </div>
+        <div class="annot">
+          <p><b>Optimizes for:</b> evening browsing comfort, OLED, app-parity.</p>
+          <p><b>Sacrifices:</b> a second full color system to maintain on web (every token pairing re-derived, WCAG 2 math is weakest on dark, needs APCA).</p>
+          <p><b>Mechanic:</b> dark elevation = lighter surface not shadow; mobile darkColors are the shipped precedent (theme.ts) (T2/CONV).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="lab-footer">
+    <p>Reply with picks (e.g. 1A, 2 yes, 3B, 4B, 5 later). Nothing here is decided; locked axes (radius values, nested radius, blue policy) are not up for renegotiation.</p>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  // Probe 1 only: superellipse (squircle) clip-path for [data-squircle] elements.
+  // n=4, corner radius matched to the locked 22px token, 90 samples per corner.
+  function superPoint(cx, cy, r, n, t) {
+    var c = Math.cos(t), s = Math.sin(t);
+    var x = cx + r * Math.sign(c) * Math.pow(Math.abs(c), 2 / n);
+    var y = cy + r * Math.sign(s) * Math.pow(Math.abs(s), 2 / n);
+    return [x, y];
+  }
+
+  function buildSquirclePath(w, h, r, n, samples) {
+    r = Math.min(r, w / 2, h / 2);
+    var corners = [
+      { cx: w - r, cy: r,     a0: -Math.PI / 2, a1: 0 },
+      { cx: w - r, cy: h - r, a0: 0,             a1: Math.PI / 2 },
+      { cx: r,     cy: h - r, a0: Math.PI / 2,   a1: Math.PI },
+      { cx: r,     cy: r,     a0: Math.PI,       a1: 1.5 * Math.PI }
+    ];
+    var d = "M " + r.toFixed(2) + " 0 L " + (w - r).toFixed(2) + " 0 ";
+    corners.forEach(function (c) {
+      for (var i = 0; i <= samples; i++) {
+        var t = c.a0 + (c.a1 - c.a0) * (i / samples);
+        var p = superPoint(c.cx, c.cy, r, n, t);
+        d += "L " + p[0].toFixed(2) + " " + p[1].toFixed(2) + " ";
+      }
+    });
+    d += "Z";
+    return d;
+  }
+
+  function applySquircle(el) {
+    var rect = el.getBoundingClientRect();
+    var w = rect.width, h = rect.height;
+    if (!w || !h) return;
+    var d = buildSquirclePath(w, h, 22, 4, 90);
+    el.style.clipPath = "path('" + d + "')";
+  }
+
+  function applyAll() {
+    document.querySelectorAll("[data-squircle]").forEach(applySquircle);
+  }
+
+  applyAll();
+  window.addEventListener("resize", applyAll);
+})();
+</script>
+</body>
+</html>

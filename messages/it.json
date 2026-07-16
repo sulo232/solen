@@ -2267,7 +2267,8 @@
       "justNow": "Proprio ora",
       "minutesAgo": "{count} min fa",
       "hoursAgo": "{count} ore fa",
-      "daysAgo": "{count} giorni fa"
+      "daysAgo": "{count} giorni fa",
+      "viewAll": "Vedi tutti"
     },
     "referralDashboard": {
       "heading": "Programma di referral",
@@ -2636,6 +2637,7 @@
       "last7Days": "Ultimi 7 giorni",
       "priorWeek": "Settimana precedente",
       "thisWeek": "Questa settimana",
+      "vsPriorWeek": "vs settimana precedente",
       "booked": "prenotati",
       "statusConfirmed": "Confermato",
       "statusPending": "In sospeso",

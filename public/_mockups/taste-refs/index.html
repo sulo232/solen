@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Taste refs: the 30 references, applied to Solen</title>
+<!-- Exists-check: npm run exists taste-refs = 0 matches (2026-07-16); npm run exists rationale ran same turn (graveyard hit: web dark mode, honored: no dark probes). Target surfaces already render KPI tiles, loyalty bar, setup banner, booking commit, calendar rows; REMOVED hits: web dark mode only. Net-new here: the reference-derived treatment probes themselves (fork elicitation), nothing ships without a pick. -->
+<!-- Grounded-in: _design-system/research/TASTE_REFS_2026-07.md (per-ref measured analysis) -->
+<!-- Grounded-in: public/_mockups/_assets/taste-refs/manifest.json (captured reference media) -->
+<!-- Grounded-in: app/[locale]/dashboard/page.tsx (KPI + tips surfaces probed) -->
+<!-- Grounded-in: app/[locale]/dashboard/calendar/page.tsx (booking-request + calendar rows probed) -->
+<!-- Grounded-in: components-legacy/dashboard/SetupBanner.tsx (setup checklist probed in P7) -->
+<!-- Owner-scope: all-variants: every probe names its candidate liked-aspects as fork chips a/b/c and every lock conflict is a keep-or-reopen card; owner 2026-07-16: "mockup cz u might grasp the wrong part of the refference" -->
+<!-- Backend-check: tips-panel (P14) -> NONE, needs backend (npm run exists tips = gratuity TipSheet/tipSchema only, unrelated concept; npm run exists insight = 0 matches); the probe elicits the card SHAPE only, nothing ships without a wired data source. notifications stack (P12) -> dashboard activity data EXISTS (components-legacy/dashboard/ActivityFeed.tsx), the in-place stack is presentation only. directions CTA (P16) -> existing PDP Wegbeschreibung maps-link pattern. All other probes are treatment/motion changes on already-wired surfaces, no new endpoints. -->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --ink3:#C5C8C4;
+    --border:#E4E4E7; --sunken:#F4F4F5; --white:#FFFFFF;
+    --accent:#276EF1; --success:#16A34A; --star:#FFC32B; --error:#DC2626;
+    --match:#FDF6D8; /* drift-ok: probe candidate (P13 search-match highlight), not a token */
+  }
+  @property --ring{syntax:'<percentage>';inherits:false;initial-value:100%}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,-apple-system,"Segoe UI",sans-serif;background:var(--white);color:var(--ink);font-size:14px;line-height:1.5;padding-bottom:120px}
+  h1,h2,h3{font-family:"Inter Tight",Inter,-apple-system,sans-serif}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+  header.page{background:var(--white);border-bottom:1px solid var(--border);padding:36px 0 28px;margin-bottom:28px}
+  header.page h1{font-size:clamp(22px,3vw,30px);font-weight:700;letter-spacing:-0.01em}
+  header.page p{color:var(--ink2);max-width:68ch;margin-top:8px}
+  .howto{margin-top:14px;background:var(--sunken);border:1px solid var(--border);border-radius:12px;padding:12px 16px;font-size:13px;max-width:640px}
+  .howto b{font-weight:600}
+  .theme{margin:36px 0 12px}
+  .theme h2{font-size:clamp(18px,2vw,20px);font-weight:600}
+  .theme p{color:var(--ink2);font-size:13px;margin-top:2px;max-width:70ch}
+  .probe{background:var(--white);border:1px solid var(--border);border-radius:16px;margin:16px 0;overflow:hidden}
+  .probe-head{display:flex;align-items:baseline;gap:10px;padding:16px 20px 0}
+  .pid{font-family:"Inter Tight",Inter,sans-serif;font-weight:700;font-size:15px;background:var(--ink);color:var(--white);border-radius:8px;padding:2px 9px;flex:none}
+  .probe-head h3{font-size:15px;font-weight:600}
+  .probe-head .src{color:var(--ink2);font-size:12px;margin-left:auto;flex:none}
+  .probe-body{display:grid;grid-template-columns:minmax(220px,340px) 1fr;gap:20px;padding:16px 20px 20px}
+  @media(max-width:760px){.probe-body{grid-template-columns:1fr}}
+  .refbox{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:10px}
+  .refbox img{width:100%;border-radius:8px;display:block}
+  .refbox .cap{font-size:12px;color:var(--ink2);margin-top:8px}
+  .refbox .thumbs{display:flex;gap:8px}
+  .refbox .thumbs img{width:calc(50% - 4px)}
+  .apply .lead{font-size:13px;color:var(--ink2);margin-bottom:12px;max-width:62ch}
+  .apply .lead b{color:var(--ink);font-weight:600}
+  .demo{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:12px}
+  .demo .dlabel{font-size:12px;font-weight:600;color:var(--ink2);margin-bottom:10px}
+  .forks{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+  .fork{border:1px solid var(--border);border-radius:999px;padding:6px 14px;font-size:13px;background:var(--white)}
+  .fork b{font-weight:700;margin-right:4px}
+  .fork.no{color:var(--ink2)}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:560px){.split{grid-template-columns:1fr}}
+  .conflict{background:var(--white);border:1px solid var(--border);border-left:4px solid var(--error);border-radius:16px;margin:16px 0;padding:16px 20px}
+  .conflict h3{font-size:15px;font-weight:600;display:flex;gap:10px;align-items:baseline}
+  .conflict .cid{font-family:"Inter Tight",Inter,sans-serif;font-weight:700;font-size:15px;background:var(--error);color:var(--white);border-radius:8px;padding:2px 9px}
+  .conflict p{font-size:13px;color:var(--ink2);margin-top:8px;max-width:75ch}
+  .conflict p b{color:var(--ink);font-weight:600}
+  .conflict .imgs{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+  .conflict .imgs img{width:150px;border-radius:8px;border:1px solid var(--border)}
+  .validates{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:16px 20px;margin:16px 0}
+  .validates h3{font-size:15px;font-weight:600;color:var(--success)}
+  .validates ul{margin:8px 0 0 18px;color:var(--ink2);font-size:13px}
+  .validates li{margin:3px 0}
+  svg.lucide{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px}
+
+  /* real-surface snippets */
+  .kpi-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:16px;max-width:250px}
+  .kpi-card .klabel{font-size:12px;color:var(--ink2)}
+  .kpi-num{font-family:"Inter Tight",Inter,sans-serif;font-weight:700;font-size:26px;font-variant-numeric:tabular-nums;display:flex;align-items:flex-end;line-height:30px;gap:2px;margin-top:2px}
+  .digitwin{display:inline-block;height:30px;overflow:hidden;position:relative;width:16px}
+  .digitwin .reel{position:absolute;left:0;top:0;animation:reel 4s cubic-bezier(.16,1,.3,1) infinite}
+  @keyframes reel{0%,35%{transform:translateY(0);filter:blur(0px)}45%{filter:blur(0px)}50%,85%{transform:translateY(-30px);filter:blur(0px)}92%{filter:blur(0px)}100%{transform:translateY(0)}}
+  .digitwin span{display:block;height:30px;line-height:30px}
+
+  .iconbtn{width:44px;height:44px;border-radius:999px;border:1px solid var(--border);background:var(--white);display:inline-flex;align-items:center;justify-content:center;position:relative}
+  .iconbtn .ic{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+  .iconbtn .ic.a{animation:icA 3.2s ease infinite}
+  .iconbtn .ic.b{animation:icB 3.2s ease infinite;color:var(--success)}
+  @keyframes icA{0%,40%{opacity:1;transform:scale(1);filter:blur(0px)}50%,90%{opacity:0;transform:scale(.7);filter:blur(0px)}100%{opacity:1;transform:scale(1);filter:blur(0px)}}
+  @keyframes icB{0%,40%{opacity:0;transform:scale(.7);filter:blur(0px)}50%,90%{opacity:1;transform:scale(1);filter:blur(0px)}100%{opacity:0;transform:scale(.7);filter:blur(0px)}}
+
+  .apprv{display:flex;gap:10px;align-items:center;max-width:360px}
+  .apprv .opt{height:44px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;overflow:hidden;white-space:nowrap}
+  .apprv .decline{border:1px solid var(--border);color:var(--ink2);background:var(--white);flex:1;animation:declShrink 5s ease infinite}
+  .apprv .accept{background:var(--success);color:var(--white);flex:1;animation:accGrow 5s ease infinite}
+  .apprv .undo{width:0;height:44px;border-radius:999px;border:0 solid var(--border);background:var(--white);color:var(--ink);display:flex;align-items:center;justify-content:center;flex:none;overflow:hidden;animation:undoIn 5s ease infinite}
+  @keyframes declShrink{0%,30%{flex:1;opacity:1}45%,90%{flex:.0001;opacity:0}100%{flex:1;opacity:1}}
+  @keyframes accGrow{0%,30%{flex:1}45%,90%{flex:3}100%{flex:1}}
+  @keyframes undoIn{0%,32%{width:0;border-width:0;opacity:0}48%,88%{width:44px;border-width:1px;opacity:1}100%{width:0;border-width:0;opacity:0}}
+
+  .cascade .row{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin:8px 0;display:flex;justify-content:space-between;align-items:center;opacity:0;animation:rowIn 4.5s ease infinite}
+  .cascade .row:nth-child(2){animation-delay:.15s}
+  .cascade .row:nth-child(3){animation-delay:.3s}
+  .cascade .row .t{font-weight:600;font-size:13px}
+  .cascade .row .m{color:var(--ink2);font-size:12px}
+  @keyframes rowIn{0%{opacity:0;transform:translateY(8px)}10%,85%{opacity:1;transform:translateY(0)}95%,100%{opacity:0;transform:translateY(8px)}}
+
+  .lbar{height:8px;border-radius:999px;background:var(--border);position:relative;max-width:320px}
+  .lbar .fill{height:8px;border-radius:999px;background:var(--ink);width:64%}
+  .ticks{display:flex;gap:3px;max-width:320px}
+  .ticks i{height:8px;flex:1;border-radius:2px;background:var(--border)}
+  .ticks i.on{background:var(--ink)}
+  .marker{position:absolute;left:64%;top:-26px;transform:translateX(-50%);background:var(--ink);color:var(--white);font-size:11px;font-weight:600;border-radius:999px;padding:2px 8px;white-space:nowrap}
+  .marker:after{content:"";position:absolute;left:50%;bottom:-4px;transform:translateX(-50%);border:4px solid transparent;border-top-color:var(--ink);border-bottom:0}
+
+  .check-rows .cr{display:flex;gap:10px;align-items:center;padding:7px 0;font-size:13px}
+  .cr .disc{width:22px;height:22px;border-radius:999px;flex:none;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600}
+  .cr.done .disc{background:var(--success);color:var(--white)}
+  .cr.now .disc{background:var(--ink);color:var(--white)}
+  .cr.next .disc{border:1.5px solid var(--ink3);color:var(--ink2)}
+  .cr.done .t{color:var(--ink2);text-decoration:line-through}
+  .cr.now .t{font-weight:600}
+  .cr.next .t{color:var(--ink2)}
+
+  .qcapsule{background:var(--ink);color:var(--white);border-radius:999px;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 8px 0 20px;max-width:320px;position:relative}
+  .qcapsule .num{font-family:"Inter Tight",Inter,sans-serif;font-weight:700;font-size:20px;font-variant-numeric:tabular-nums}
+  .qcapsule .sub{font-size:11px;opacity:.7}
+  .cssring{width:40px;height:40px;border-radius:999px;flex:none;background:conic-gradient(var(--white) var(--ring),rgba(255,255,255,.25) 0);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4.5px),black calc(100% - 3.5px));mask:radial-gradient(farthest-side,transparent calc(100% - 4.5px),black calc(100% - 3.5px));animation:ringDown 6s linear infinite}
+  @keyframes ringDown{from{--ring:100%}to{--ring:0%}}
+
+  .commit{background:var(--ink);color:var(--white);border-radius:999px;height:48px;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px;max-width:320px}
+  .receipt{max-width:320px;font-size:13px;margin-bottom:12px}
+  .receipt .li{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)}
+  .receipt .li:last-child{border-bottom:0;font-weight:700}
+  .receipt .li .n{color:var(--ink2)}
+  .receipt .li:last-child .n{color:var(--ink)}
+
+  .daychips{display:flex;gap:6px}
+  .daychips b{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--ink2)}
+  .daychips b.on{background:var(--sunken);color:var(--ink)}
+
+  .stack{position:relative;max-width:320px}
+  .stack .n1,.stack .n2,.stack .n3{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:10px 14px;font-size:13px}
+  .stack .n2,.stack .n3{margin-top:8px}
+  .stack .t{font-weight:600}
+  .stack .m{color:var(--ink2);font-size:12px}
+
+  .srch{background:var(--white);border:1px solid var(--border);border-radius:12px;max-width:360px;overflow:hidden}
+  .srch .inp{padding:12px 14px;border-bottom:1px solid var(--border);color:var(--ink);font-size:14px;display:flex;gap:8px;align-items:center}
+  .srch .sec{font-size:11px;font-weight:600;color:var(--ink2);padding:10px 14px 4px}
+  .srch .res{padding:8px 14px;font-size:13px;display:flex;justify-content:space-between}
+  .srch .res:hover{background:var(--sunken)}
+  .srch mark{background:var(--match);color:var(--ink);border-radius:3px;padding:0 1px}
+  .dots i{width:4px;height:4px;border-radius:99px;background:var(--ink2);display:inline-block;margin-right:3px;animation:dot 1.2s ease infinite}
+  .dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+  @keyframes dot{0%,60%,100%{opacity:.25;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+
+  .insight{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;gap:12px;max-width:360px}
+  .insight .ii{width:36px;height:36px;border-radius:10px;background:var(--sunken);display:flex;align-items:center;justify-content:center;flex:none}
+  .insight .t{font-weight:600;font-size:13px}
+  .insight .d{color:var(--ink2);font-size:12px;margin-top:2px}
+
+  .hero-row{border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;background:var(--white)}
+  .hero-row.feat{border-color:var(--ink);box-shadow:0 4px 12px rgba(50,47,44,.08)}
+  .hero-row .t{font-weight:600;font-size:13px}
+  .hero-row .m{color:var(--ink2);font-size:12px}
+  .hero-row .cta{margin-top:8px;display:inline-flex;align-items:center;gap:6px;background:var(--ink);color:var(--white);font-size:12px;font-weight:600;border-radius:999px;padding:6px 14px}
+</style>
+</head>
+<body>
+
+<header class="page">
+  <div class="wrap">
+    <h1>Your 30 references, read and applied</h1>
+    <p>I captured every X post you sent (30 of 30, stills plus motion frames), measured them, and pulled out what each one demonstrates. Below: each idea applied to a real Solen surface with your tokens. Because I might grasp the wrong part of a reference, every probe names the possible "parts you liked" as options. Mockup copy is in English per the review convention; shipped UI stays localized.</p>
+    <div class="howto" style="margin-bottom:10px"><b>Missing demos completed:</b> P17, the C-cards rendered A/B, G1/G2 and every round-2 rule now live on <a href="../taste-round2/round2-rules.html" style="color:var(--accent);text-decoration:none">the Wrong and Right page</a>.</div>
+    <div class="howto"><b>How to answer:</b> reply in one line, like "P1 a, P2 b, P3 no, P5 b, C1 keep, C5 staging". "no" kills a probe. Anything you skip stays undecided, nothing ships from this page without your pick.</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="theme">
+    <h2>Theme 1: state changes that morph instead of cut</h2>
+    <p>The strongest recurring signal across your refs: numbers roll, icons cross-fade, buttons collapse into their result. Our motion vocabulary has press, collapse and burst, but no state-transition morphs yet. All demos below loop automatically.</p>
+  </div>
+
+  <div class="probe">
+    <div class="probe-head"><span class="pid">P1</span><h3>Rolling digits when a number updates</h3><span class="src">refs 17 + 25</span></div>
+    <div class="probe-body">
+      <div class="refbox"><img src="../_assets/taste-refs/17-aligrids-v1-f1.jpg" alt="reference"><div class="cap">The balance rolls digit-by-digit with a soft blur instead of snapping.</div></div>
+      <div class="apply">
+        <div class="lead">Applied to a <b>dashboard KPI</b>: when revenue or booking count updates, the changed digit rolls with a blur instead of hard-swapping.</div>
+        <div class="demo"><div class="dlabel">Live demo (loops)</div>
+          <div class="kpi-card"><div class="klabel">Revenue this week</div>
+            <div class="kpi-num">CHF&nbsp;2'4<span class="digitwin"><span class="reel"><span>7</span><span>8</span></span></span>0</div>
+          </div>
+        </div>
+        <div class="forks">
+          <span class="fork"><b>a</b> yes, for live-updating dashboard numbers</span>
+          <span class="fork"><b>b</b> yes, and also checkout totals when a voucher applies</span>
+          <span class="fork no"><b>no</b> numbers should just update instantly</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="probe">
+    <div class="probe-head"><span class="pid">P2</span><h3>Icon morphs into its confirmation</h3><span class="src">refs 16 + 29</span></div>
+    <div class="probe-body">
+      <div class="refbox"><img src="../_assets/taste-refs/29-chancegraham-v1-f2.jpg" alt="reference"><div class="cap">Icons transform between states (blur + scale cross-fade), never a hard swap.</div></div>
+      <div class="apply">
+        <div class="lead">Applied to the <b>copy-booking-code button</b>: copy icon cross-fades to a green check on success, then back. Same recipe would fit the filter chip when a filter becomes active.</div>
+        <div class="demo"><div class="dlabel">Live demo (loops)</div>
+          <button class="iconbtn" aria-label="Copy">
+            <span class="ic a"><svg class="lucide lucide-copy" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></span>
+            <span class="ic b"><svg class="lucide lucide-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
+          </button>
+        </div>
+        <div class="forks">
+          <span class="fork"><b>a</b> yes, for copy / save / apply-filter icon buttons</span>
+          <span class="fork no"><b>no</b> keep instant swaps</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="probe">
+    <div class="probe-head"><span class="pid" style="background:var(--error)">P3</span><h3 style="text-decoration:line-through">Approve or decline collapses into the result, with undo</h3><span style="color:var(--error);font-size:12px;font-weight:600">rejected 2026-07-16</span><span class="src">ref 18</span></div>
+    <div class="probe-body">
+      <div class="refbox"><img src="../_assets/taste-refs/18-nitishkmrk-v1-f1.jpg" alt="reference"><div class="cap">The chosen option expands to a full-width committed pill; a small undo appears.</div></div>
+      <div class="apply">
+        <div class="lead">Applied to the <b>owner dashboard booking request</b> (Sat 18 July, 14:30, haircut): tapping Confirm collapses both buttons into one full green pill plus a short undo window.</div>
+        <div class="demo"><div class="dlabel">Live demo (loops)</div>
+          <div class="apprv">
+            <span class="opt decline">Decline</span>
+            <span class="opt accept">Confirmed</span>
+            <span class="undo"><svg class="lucide lucide-undo-2" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"/></svg></span>
+          </div>
+        </div>
+        <div class="forks">
+          <span class="fork"><b>a</b> yes, with the undo window</span>
+          <span class="fork"><b>b</b> collapse yes, undo not needed</span>
+          <span class="fork no"><b>no</b> keep two static buttons</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="probe">
+    <div class="probe-head"><span class="pid">P4</span><h3>Lists populate with a soft cascade</h3><span class="src">refs 17 + 22</span></div>
+    <div class="probe-body">
+      <div class="refbox"><img src="../_assets/taste-refs/22-tanjim38-v1-f2.jpg" alt="reference"><div class="cap">The calendar fills ghost-first, then rows resolve one after another.</div></div>
+      <div class="apply">
+        <div class="lead">Applied to <b>booking lists</b> after the skeleton: rows fade-and-rise in a quick stagger instead of appearing all at once. Skeleton stays the loading state; this is only the hand-off moment.</div>
+        <div class="demo"><div class="dlabel">Live demo (loops)</div>
+          <div class="cascade">
+            <div class="row"><span class="t">Haircut</span><span class="m">Sat 18 July</span></div>
+            <div class="row"><span class="t">Beard trim</span><span class="m">Tue 21 July</span></div>
+            <div class="row"><span class="t">Coloring</span><span class="m">Fri 24 July</span></div>
+          </div>
+        </div>
+        <div class="forks">
+          <span class="fork"><b>a</b> yes, subtle stagger after loading</span>
+          <span class="fork no"><b>no</b> everything appears at once</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme">
+    <h2>Theme 2: progress you can count</h2>
+    <p>Three of your refs independently show progress as discrete, countable marks instead of a smooth fill. That matches the house's precise, restrained direction, so these are strong candidates.</p>
+  </div>
+
+  <div class="probe">
+    <div class="probe-head"><span class="pid">P5</span><h3>Segmented tick-bar instead of a smooth fill</h3><span class="src">ref 26</span></div>
+    <div class="probe-body">
+      <div class="refbox"><img src="../_assets/taste-refs/26-danellisona-p4.jpg" alt="reference"><div class="cap">Usage shown as discrete ticks fading from filled to empty.</div></div>
+      <div class="apply">
+        <div class="lead">Applied to the <b>Solen Status loyalty meter</b> (6 visits to Gold): left is today's smooth bar, right the tick version. Ticks make "how many left" countable at a glance.</div>
+        <div class="demo"><div class="dlabel">A: smooth (today) vs B: ticks</div>
+          <div class="split">
+            <div><div class="lbar"><div class="fill" style="width:66%"></div></div><div style="font-size:12px;color:var(--ink2);margin-top:8px">4 of 6 visits</div></div>
+            <div><div class="ticks"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></div><div style="font-size:12px;color:var(--ink2);margin-top:8px">4 of 6 visits</div></div>
+          </div>
+        </div>
+        <div class="forks">
+          <span class="fork"><b>a</b> keep smooth</span>
+          <span class="fork"><b>b</b> switch to ticks where units are countable (visits, setup steps)</span>
+          <span class="fork"><b>c</b> ticks everywhere, also percent-type progress</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="probe">
+    <div class="probe-head"><span class="pid">P6</span><h3>A marker riding the progress bar at the live value</h3><span class="src">ref 03</span></div>
+    <div class="probe-body">
+      <div class="refbox"><img src="../_assets/taste-refs/03-creativestefan-p1.jpg" alt="reference"><div class="cap">A pill flag floats on the bar exactly at the current value.</div></div>
+      <div class="apply">
+        <div class="lead">Applied to the same <b>loyalty meter</b>: the current standing rides the bar as a small ink flag instead of a static label at the end.</div>
+        <div class="demo" style="padding-top:40px"><div class="dlabel">Demo</div>
+          <div class="lbar"><div class="fill" style="width:64%"></div><span class="marker">Gold in 2</span></div>
+        </div>
+        <div class="forks">
+          <span class="fork"><b>a</b> yes, marker on the bar</span>
+          <span class="fork no"><b>no</b> label stays beside the bar</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="probe">
+    <div class="probe-head"><span class="pid">P7</span><h3>One checklist language: done, current, upcoming</h3><span class="src">refs 26 + 13 + 06</span></div>
+    <div class="probe-body">
+      <div class="refbox"><img src="../_assets/taste-refs/26-danellisona-p1.jpg" alt="reference"><div class="cap">Green check = done, filled = current, outline = future; future steps visible up front.</div></div>
+      <div class="apply">
+        <div class="lead">Applied to the <b>salon setup banner</b> (today it says "Setup: 4/7" without showing the steps): expanding reveals the whole plan, current step bold, future steps pre-listed in grey.</div>
+        <div class="demo"><div class="dlabel">Demo</div>
+          <div class="check-rows" style="max-width:320px">
+            <div class="cr done"><span class="disc"><svg class="lucide lucide-check" style="width:12px;height:12px" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="t">Add opening hours</span></div>
+            <div class="cr now"><span class="disc">5</span><span class="t">Invite your team</span></div>
+            <div class="cr next"><span class="disc">6</span><span class="t">Upload photos</span></div>
+            <div class="cr next"><span class="disc">7</span><span class="t">Connect payouts</span></div>
+          </div>
+        </div>
+        <div class="forks">
+          <span class="fork"><b>a</b> yes, this becomes the canonical checklist recipe</span>
+          <span class="fork"><b>b</b> yes, but only in the dashboard, not customer flows</span>
+          <span class="fork no"><b>no</b></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="probe">
+    <div class="probe-head"><span class="pid">P8</span><h3>Countdown ring around the control itself</h3><span class="src">ref 19</span></div>
+    <div class="probe-body">
+      <div class="refbox"><img src="../_assets/taste-refs/19-aligrids-v1-f2.jpg" alt="reference"><div class="cap">The timer traces its remaining time as a ring around its own capsule.</div></div>
+      <div class="apply">
+        <div class="lead">Applied to the <b>walk-in queue tracker</b>: your queue position in an ink capsule, the refresh window traced as a ring. Only real data, no invented wait times.</div>
+        <div class="demo"><div class="dlabel">Live demo (loops)</div>
+          <div class="qcapsule">
+            <div><div class="num">No. 4</div><div class="sub">ahead of you: 3</div></div>
+            <div class="cssring"></div>
+          </div>
+        </div>
+        <div class="forks">
+          <span class="fork"><b>a</b> yes, for the queue tracker</span>
+          <span class="fork"><b>b</b> also for a reserved-slot hold at checkout, if we ever show one</span>
+          <span class="fork no"><b>no</b></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme">
+    <h2>Theme 3: copy carrying the weight</h2>
+  </div>
+
+  <div class="probe">
+    <div class="probe-head"><span class="pid">P9</span><h3>The commit button carries the exact amount</h3><span class="src">ref 02</span></div>
+    <div class="probe-body">
+      <div class="refbox"><img src="../_assets/taste-refs/02-derafusion-p1.jpg" alt="reference"><div class="cap">Itemized lines above, and the CTA label folds in the exact total.</div></div>
+      <div class="apply">
+        <div class="lead">Applied to the <b>booking payment step</b>: line items with the total bold, and the ink CTA reads the amount itself, so the price is not repeated twice on screen.</div>
+        <div class="demo"><div class="dlabel">Demo</div>
+          <div class="receipt">
+            <div class="li"><span class="n">Haircut, 45 min</span><span>CHF 65</span></div>
+            <div class="li"><span class="n">Voucher SUMMER</span><span style="color:var(--success)">- CHF 10</span></div>
+            <div class="li"><span class="n">Total</span><span>CHF 55</span></div>
+          </div>
+          <div class="commit">Pay CHF 55</div>
+        </div>
+        <div class="forks">
+          <span class="fork"><b>a</b> yes, amount in the CTA label</span>
+          <span class="fork"><b>b</b> keep price separate, CTA stays a plain verb</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="probe">
+    <div class="probe-head"><span class="pid">P10</span><h3>Notices as flowing text with bold spans, not a bordered card</h3><span class="src">ref 05</span></div>
+    <div class="probe-body">
+      <div class="refbox"><div class="thumbs"><img src="../_assets/taste-refs/05-akwaabaaa-p1.jpg" alt="reference iteration 1"><img src="../_assets/taste-refs/05-akwaabaaa-p2.jpg" alt="reference iteration 2"></div><div class="cap">Two iterations of one screen; the tip is delivered as a sentence with inline bold keywords.</div></div>
+      <div class="apply">
+        <div class="lead">Applied to <b>reminders and salon notes</b>: A is today's boxed info card, B is plain copy with bold key phrases.</div>
+        <div class="demo"><div class="dlabel">A: boxed vs B: inline</div>
+          <div class="split">
+            <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:12px;font-size:13px">Your appointment is tomorrow at 14:30. Please arrive 10 minutes early.</div>
+            <div style="font-size:13px;padding:12px 0">Your appointment is <b>tomorrow at 14:30</b>. Please arrive <b>10 minutes early</b>.</div>
+          </div>
+        </div>
+        <div class="forks">
+          <span class="fork"><b>a</b> keep boxed cards</span>
+          <span class="fork"><b>b</b> inline bold for one-sentence notices, boxes only for warnings</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme">
+    <h2>Theme 4: structures your refs suggest for surfaces we have or plan</h2>
+  </div>
+
+  <div class="probe">
+    <div class="probe-head"><span class="pid">P11</span><h3>7-day chip row for recurring hours</h3><span class="src">ref 13</span></div>
+    <div class="probe-body">
+      <div class="refbox"><img src="../_assets/taste-refs/13-zaydensaasgtfs-v1-f1.jpg" alt="reference"><div class="cap">Weekly recurrence picked via a 7-chip day row.</div></div>
+      <div class="apply">
+        <div class="lead">Applied to <b>staff working hours</b> in the dashboard (no such component exists today). Selected days use our gray-fill selected state, not the ref's dark fill (that conflict is C3 below).</div>
+        <div class="demo"><div class="dlabel">Demo</div>
+          <div class="daychips"><b class="on">Mon</b><b class="on">Tue</b><b class="on">Wed</b><b>Thu</b><b class="on">Fri</b><b class="on">Sat</b><b>Sun</b></div>
+        </div>
+        <div class="forks">
+          <span class="fork"><b>a</b> yes, build it like this when working-hours UI comes up</span>
+          <span class="fork no"><b>no</b></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="probe">
+    <div class="probe-head"><span class="pid">P12</span><h3>Notifications expand in place as a small stack</h3><span class="src">ref 20</span></div>
+    <div class="probe-body">
+      <div class="refbox"><img src="../_assets/taste-refs/20-privetavdey-v1-f2.jpg" alt="reference"><div class="cap">A count row fans open into a card stack; the label folds into "View all".</div></div>
+      <div class="apply">
+        <div class="lead">Applied to the <b>dashboard bell</b>: instead of navigating away, the count expands a compact stack in place, and the row label becomes "View all".</div>
+        <div class="demo"><div class="dlabel">Demo (expanded state)</div>
+          <div class="stack">
+            <div class="n1"><span class="t">New booking</span><div class="m">Haircut, Sat 18 July</div></div>
+            <div class="n2"><span class="t">Payment received</span><div class="m">CHF 65, yesterday</div></div>
+            <div class="n3" style="text-align:center;color:var(--accent);font-weight:600;font-size:13px">View all</div>
+          </div>
+        </div>
+        <div class="forks">
+          <span class="fork"><b>a</b> yes, in-place stack</span>
+          <span class="fork"><b>b</b> keep a full notifications page only</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="probe">
+    <div class="probe-head"><span class="pid">P13</span><h3>Search: grouped sections, highlighted match, honest loader</h3><span class="src">ref 12</span></div>
+    <div class="probe-body">
+      <div class="refbox"><img src="../_assets/taste-refs/12-mona_biasia-v1-f3.jpg" alt="reference"><div class="cap">Results grouped under section labels, matched substring highlighted.</div></div>
+      <div class="apply">
+        <div class="lead">Applied to <b>salon and service search</b>: sections per result type, the matched part of the name highlighted, and a quiet three-dot loader while it works.</div>
+        <div class="demo"><div class="dlabel">Demo</div>
+          <div class="srch">
+            <div class="inp">bar <span class="dots" style="margin-left:auto"><i></i><i></i><i></i></span></div>
+            <div class="sec">Salons</div>
+            <div class="res"><span><mark>Bar</mark>bershop Central</span><span style="color:var(--ink2)">Zurich</span></div>
+            <div class="sec">Services</div>
+            <div class="res"><span><mark>Bar</mark>ber cut</span><span style="color:var(--ink2)">from CHF 25</span></div>
+          </div>
+        </div>
+        <div class="forks">
+          <span class="fork"><b>a</b> all three (sections + highlight + dot loader)</span>
+          <span class="fork"><b>b</b> only the match highlight</span>
+          <span class="fork no"><b>no</b></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="probe">
+    <div class="probe-head"><span class="pid">P14</span><h3>A tips panel built from one InsightCard shape</h3><span class="src">ref 10</span></div>
+    <div class="probe-body">
+      <div class="refbox"><img src="../_assets/taste-refs/10-mnowakdesign-p1.jpg" alt="reference"><div class="cap">Suggestion cards: icon, bold one-liner, grey detail.</div></div>
+      <div class="apply">
+        <div class="lead">Applied to the <b>dashboard</b>: a "Tips for your salon" panel where every tip is the same card shape. Honest flag: <b>no backend for this exists today</b>, this probe only settles the shape; it ships nothing until a real, wired insight source is built.</div>
+        <div class="demo"><div class="dlabel">Demo (shape only)</div>
+          <div class="insight">
+            <span class="ii"><svg class="lucide lucide-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+            <div><div class="t">Friday is your strongest day</div><div class="d">Open more slots on Friday afternoons.</div></div>
+          </div>
+        </div>
+        <div class="forks">
+          <span class="fork"><b>a</b> yes, one InsightCard shape for all tips</span>
+          <span class="fork no"><b>no</b> no tips panel</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="probe">
+    <div class="probe-head"><span class="pid">P15</span><h3>Waits that say what they are doing</h3><span class="src">ref 24 + research</span></div>
+    <div class="probe-body">
+      <div class="refbox"><img src="../_assets/taste-refs/24-xchylerdrenth-v1-f2.jpg" alt="reference"><div class="cap">Wait states as one quiet animated glyph plus a two-line label.</div></div>
+      <div class="apply">
+        <div class="lead">Applied to <b>availability checks</b>: waits longer than a second name the step ("Checking availability") instead of a bare skeleton. Research backs this: naming the work makes waits accepted (the labor-illusion studies).</div>
+        <div class="demo"><div class="dlabel">Demo</div>
+          <div style="display:flex;gap:12px;align-items:center">
+            <span class="dots"><i></i><i></i><i></i></span>
+            <div><div style="font-weight:600;font-size:13px">Checking availability</div><div style="font-size:12px;color:var(--ink2)">Sat 18 July, 2 appointments</div></div>
+          </div>
+        </div>
+        <div class="forks">
+          <span class="fork"><b>a</b> yes, name the step on waits over ~1s</span>
+          <span class="fork no"><b>no</b> skeletons everywhere, no text</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="probe">
+    <div class="probe-head"><span class="pid">P16</span><h3>The next appointment gets a hero treatment</h3><span class="src">ref 04</span></div>
+    <div class="probe-body">
+      <div class="refbox"><img src="../_assets/taste-refs/04-mnowakdesign-p1.jpg" alt="reference"><div class="cap">One featured "next up" row is visibly elevated above the plain rows.</div></div>
+      <div class="apply">
+        <div class="lead">Applied to <b>the customer appointments list</b>: the upcoming appointment gets an ink border + shadow + inline action (the existing maps-link pattern); past ones stay plain. Restrained version of the ref's glow.</div>
+        <div class="demo"><div class="dlabel">Demo</div>
+          <div style="max-width:340px">
+            <div class="hero-row feat"><div class="t">Haircut, Barbershop Central</div><div class="m">Sat 18 July, 14:30</div><span class="cta">Directions <svg class="lucide lucide-chevron-right" style="width:12px;height:12px" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="hero-row"><div class="t">Beard trim</div><div class="m">3 weeks ago</div></div>
+          </div>
+        </div>
+        <div class="forks">
+          <span class="fork"><b>a</b> yes, featured next-appointment row</span>
+          <span class="fork no"><b>no</b> all rows equal</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="probe">
+    <div class="probe-head"><span class="pid">P17</span><h3>Long-running actions minimize to a pill</h3><span class="src">ref 06</span></div>
+    <div class="probe-body">
+      <div class="refbox"><img src="../_assets/taste-refs/06-_heyfaisal-v1-f1.jpg" alt="reference"><div class="cap">A background job shows its whole plan, current step live, and can minimize without cancelling.</div></div>
+      <div class="apply">
+        <div class="lead">Applied to <b>dashboard bulk actions</b> (export, calendar sync): the job lists all steps up front (current bold, future grey, same language as P7) and can collapse to a small pill while you keep working. Shape-only probe; adopted per-feature as those jobs get built.</div>
+        <div class="forks">
+          <span class="fork"><b>a</b> yes, adopt for long-running dashboard actions</span>
+          <span class="fork no"><b>no</b> a simple blocking spinner is fine</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme">
+    <h2>Theme 5: where your refs collide with your own locked rules</h2>
+    <p>These I will not build silently. Each names the locked rule and the refs pulling against it. Default answer is "keep": the lock stays law until you reopen it by name.</p>
+  </div>
+
+  <div class="conflict">
+    <h3><span class="cid">C1</span>Color per category vs your neutral-tags lock</h3>
+    <p>Refs 04, 22 and 23 color-code by category or time of day (pastel badges, colored calendar events). Your locked rule says <b>category tags are neutral, no per-category color</b>. Liking these refs might mean you want per-category color back, or it might just be what those designers do. <b>keep</b> or <b>reopen</b>?</p>
+    <div class="imgs"><img src="../_assets/taste-refs/23-mnowakdesign-p1.jpg" alt="ref 23"><img src="../_assets/taste-refs/22-tanjim38-v1-f3.jpg" alt="ref 22"><img src="../_assets/taste-refs/04-mnowakdesign-p2.jpg" alt="ref 04"></div>
+  </div>
+
+  <div class="conflict">
+    <h3><span class="cid">C2</span>Colored primary buttons vs your ink-commit lock</h3>
+    <p>Ref 14 commits with a blue pill, ref 23 with a green circle. Your locked rule: <b>the one primary commit button stays ink</b>, blue is only for small clickable bits. <b>keep</b> or <b>reopen</b>?</p>
+    <div class="imgs"><img src="../_assets/taste-refs/14-proskuaaa-v1-f1.jpg" alt="ref 14"><img src="../_assets/taste-refs/23-mnowakdesign-p2.jpg" alt="ref 23"></div>
+  </div>
+
+  <div class="conflict">
+    <h3><span class="cid">C3</span>Selected states vs your gray-fill lock</h3>
+    <p>Ref 08 marks selection with a white pill and a dark ring, ref 13 with a dark fill, ref 09 with a grey capsule. Your locked selected state is the <b>calm gray sunken fill with semibold ink text</b>, and it explicitly rules out dark fills. Three refs pulling three different ways suggests this axis keeps attracting you; if the gray fill ever feels wrong, say so and we probe it properly instead of drifting. <b>keep</b> or <b>probe it</b>?</p>
+    <div class="imgs"><img src="../_assets/taste-refs/08-nitishkmrk-v1-f3.jpg" alt="ref 08"><img src="../_assets/taste-refs/13-zaydensaasgtfs-v1-f1.jpg" alt="ref 13"><img src="../_assets/taste-refs/09-iconlypro-p1.jpg" alt="ref 09"></div>
+  </div>
+
+  <div class="conflict">
+    <h3><span class="cid">C4</span>Full-bleed color heroes vs your 80/17 restraint</h3>
+    <p>Ref 05's second iteration fills the top of the screen with saturated blue and renders the score directly on it. That is the opposite of your 80/17 neutral-surfaces budget. If you like it, the honest scope would be a one-off celebratory surface (a confirmation, an onboarding end), never daily screens. <b>keep restraint</b> or <b>scope one exception</b>?</p>
+    <div class="imgs"><img src="../_assets/taste-refs/05-akwaabaaa-p1.jpg" alt="ref 05 iteration 1"><img src="../_assets/taste-refs/05-akwaabaaa-p2.jpg" alt="ref 05 iteration 2"></div>
+  </div>
+
+  <div class="conflict">
+    <h3><span class="cid">C5</span>The big question: staging taste or product taste?</h3>
+    <p>Seven of your refs (01, 03, 05, 07, 21, 27, 30) share one trait that has nothing to do with their UI ideas: <b>colorful ambient backdrops behind white UI</b> (wallpapers, gradients, blurred photos). Two readings: <b>staging</b> = you like how designers PRESENT work, and we should adopt it for our own mockup and case-study pages; <b>product</b> = you want more color in Solen itself, which would be a big, deliberate break from the black-and-white pivot. Which is it? Answer "C5 staging", "C5 product" or "C5 both".</p>
+    <div class="imgs"><img src="../_assets/taste-refs/07-_heyrico-p1.jpg" alt="ref 07"><img src="../_assets/taste-refs/01-barlydesign-v1-f1.jpg" alt="ref 01"><img src="../_assets/taste-refs/27-aether_uiux-p1.jpg" alt="ref 27"></div>
+  </div>
+
+  <div class="validates">
+    <h3>Already law: what your refs simply confirm</h3>
+    <ul>
+      <li>Cool sunken grey as the base surface: refs 17, 20, 22 and 26 sample within a hair of your #F4F4F5 token. The 80/17 base is exactly what these designers use.</li>
+      <li>Tabular numerals for data (ref 26 uses mono for every number): your Inter Tight tabular lock, worth extending from codes to KPI numbers and timestamps.</li>
+      <li>Pastel chip + saturated icon for status (ref 18's idle pills): your locked inline-status recipe.</li>
+      <li>The CTA stating its result ("Contribute 1.5%", ref 15): your commit buttons already do this.</li>
+      <li>Real product UI inside marketing tiles (refs 28, 30): noted for any future landing page, it beats icons and stock art.</li>
+    </ul>
+  </div>
+
+</div>
+</body>
+</html>

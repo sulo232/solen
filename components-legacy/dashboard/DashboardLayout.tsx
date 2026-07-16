@@ -165,6 +165,9 @@ export default function DashboardLayout({
   const [isPreviewing, setIsPreviewing] = useState(false);
   const [previewSalonName, setPreviewSalonName] = useState<string | null>(null);
   const [fetchedSalonName, setFetchedSalonName] = useState<string | null>(null);
+  // P12 (2026-07-16): the topbar bell needs a real salon id to load its activity stack , the
+  // profile fetch below already returns salon_id/staff_salon_id, just wasn't kept anywhere.
+  const [fetchedSalonId, setFetchedSalonId] = useState<string | null>(null);
   const [exitingPreview, setExitingPreview] = useState(false);
 
   // Global Ctrl+K / Cmd+K shortcut to open command palette
@@ -237,6 +240,7 @@ export default function DashboardLayout({
           // already fetches the profile here — reuse it so the topbar/sidebar show the real
           // salon name instead of "Dein Salon").
           setFetchedSalonName((p as any).salon_name ?? null);
+          setFetchedSalonId((p as any).salon_id ?? (p as any).staff_salon_id ?? null);
           setIsStaff(!!(p as any).staff_salon_id && p.role !== "salon_owner" && p.role !== "admin");
           if ((p as any).is_previewing) {
             setIsPreviewing(true);
@@ -432,7 +436,7 @@ export default function DashboardLayout({
           <button onClick={() => setPaletteOpen(true)} aria-label="Suche öffnen (Ctrl+K)" className="w-[38px] h-[38px] rounded-full grid place-items-center text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink transition-colors">
             <Search size={19} strokeWidth={1.9} />
           </button>
-          <NotificationCenter salonId={undefined} />
+          <NotificationCenter salonId={fetchedSalonId ?? undefined} />
         </div>
         {/* Mobile top bar */}
         <div className="md:hidden sticky top-0 z-20 bg-white border-b border-s-ink/[0.06] px-4 py-3 flex items-center gap-3">
@@ -443,7 +447,7 @@ export default function DashboardLayout({
           <button onClick={() => setPaletteOpen(true)} aria-label="Suche öffnen (Ctrl+K)" className="p-1.5 text-s-ink/40 hover:text-s-ink/70 transition-colors">
             <Search size={16} />
           </button>
-          <NotificationCenter salonId={undefined} />
+          <NotificationCenter salonId={fetchedSalonId ?? undefined} />
         </div>
 
         {/* Admin preview banner */}

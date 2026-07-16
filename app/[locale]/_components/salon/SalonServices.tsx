@@ -197,6 +197,10 @@ function ServiceRow({
   //     (previously mobile was a bare list with no border — off-spec)
   // V3-D346 (2026-05-28): name 600->500 + price bold->grey-normal per LOCKFILE §2.5
   // card-hierarchy rule A13 — exactly one ink anchor (the service name); duration + price recede.
+  // P1 fix (owner-approved 2026-07-15, fixes-refined): SUPERSEDED per CLAUDE.md taste rule 5 /
+  // V3-D442 (a card may carry TWO ink elements, name + price, when the name stays visibly
+  // larger): price goes back to bold ink, matching SalonBundles/SalonProducts on this page,
+  // duration alone recedes to grey.
   const inner = (
     <div className="flex items-center justify-between gap-4">
       <div className="min-w-0 flex-1">
@@ -206,7 +210,8 @@ function ServiceRow({
         <div className="font-body mt-1 text-[13px] text-s-ink-3 md:text-[14px]">
           {formatDurationDE(service.duration_minutes)}
         </div>
-        <div className="font-body mt-3 text-[14px] font-normal text-s-ink-2 md:text-[15px]">
+        {/* mockup-ok: P1 fix, price is the one bold-ink anchor per row (matches SalonBundles/SalonProducts on this same page, approved fixes-refined) */}
+        <div className="font-body mt-3 text-[14px] font-bold text-s-ink md:text-[15px]">
           <PriceFrom amount={service.price} label="ab" />
         </div>
       </div>

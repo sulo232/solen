@@ -1,0 +1,606 @@
+<!doctype html>
+<!--
+  Exists-check: `npm run exists taste-book` = 0 hits (run 2026-07-15). Net-new visual companion of
+  _design-system/research/TASTE_GROUPING.md, TASTE_TYPOGRAPHY.md, TASTE_HIERARCHY.md,
+  TASTE_CHECKOUT.md, TASTE_DASHBOARDS.md, and RATIONALE.md. No existing surface renders these
+  rule pairs as good/bad demos, only as markdown prose.
+  Owner-scope: confirmed: owner 2026-07-15, "i dont understand its not in plain english and i told
+  u i need visuals" (verbatim, CORRECTION 2 in _plans/TASTE_DIAGNOSIS.md). This page is the
+  rendered, plain English version of the research files, built for a non-coder to read.
+  Grounded-in: _design-system/research/TASTE_GROUPING.md (findings 1, 6, 8), TASTE_TYPOGRAPHY.md
+  (findings 1, 3, 5, 6), TASTE_HIERARCHY.md (finding 7, squint/blur test), TASTE_CHECKOUT.md
+  (findings 3, 4), TASTE_DASHBOARDS.md (findings 8, 17), plus tailwind.config.js live token hexes
+  (s-ink #0A0A0A, s-ink-2 #6B6B6B, s-border #E4E4E7, s-bg.sunken #F4F4F5, s-blue #276EF1,
+  s-star #FFC32B, s-success #16A34A / bg #E8F5E9). Icon path data copied verbatim from
+  node_modules/lucide-react/dist/esm/icons/{lock,star}.js.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Taste Book</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400..900&family=Inter:wght@400..700&display=swap">
+<style>
+  :root {
+    --ink: #0A0A0A;
+    --ink2: #6B6B6B;
+    --border: #E4E4E7;
+    --sunken: #F4F4F5;
+    --accent: #276EF1;
+    --accent-pale: #EAEFFE;
+    --star: #FFC32B;
+    --success: #16A34A;
+    --success-bg: #E8F5E9;
+    --white: #FFFFFF;
+    --elev2: 0 2px 8px rgba(50,47,44,.09);
+    --wrong: #DC2626;
+    --wrong-bg: #FEE2E2;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; background: var(--white); overflow-x: hidden; }
+
+  body {
+    color: var(--ink);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, .font-heading {
+    font-family: 'Inter Tight', system-ui, -apple-system, sans-serif;
+    letter-spacing: -0.025em;
+    margin: 0;
+  }
+
+  p { margin: 0; }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 20px 64px; }
+
+  /* Header */
+  .book-header h1 { font-size: 24px; font-weight: 700; }
+  .book-header .sub { margin-top: 8px; font-size: 14px; color: var(--ink2); line-height: 1.5; max-width: 640px; }
+
+  /* Sections */
+  .section { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); }
+  .section:first-of-type { margin-top: 32px; }
+  .section h2 { font-size: 18px; font-weight: 650; }
+
+  /* Rules */
+  .rule { margin-top: 32px; }
+  .section h2 + .rule { margin-top: 20px; }
+  .rule-title { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 12px; }
+
+  .pair { display: flex; flex-wrap: wrap; gap: 16px; }
+  .panel {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    flex: 1 1 260px;
+    max-width: 340px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  @media (max-width: 640px) { .panel { max-width: 100%; } }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 3px 10px;
+    margin-bottom: 12px;
+  }
+  .chip--wrong { background: var(--wrong-bg); color: var(--wrong); }
+  .chip--right { background: var(--success-bg); color: var(--success); }
+
+  .sentence { margin-top: 12px; font-size: 13px; color: var(--ink); line-height: 1.5; max-width: 640px; }
+
+  /* Shared demo primitives */
+  .mini-card { background: var(--white); border-radius: 12px; padding: 10px 12px; box-shadow: var(--elev2); }
+  .mini-box { background: var(--sunken); border-radius: 16px; padding: 4px 12px; }
+  .mini-row { padding: 10px 0; }
+  .mini-row + .mini-row { border-top: 1px solid var(--border); }
+  .mini-name { font-size: 13px; font-weight: 600; color: var(--ink); }
+  .mini-meta { font-size: 11px; color: var(--ink2); margin-top: 2px; display: inline-flex; align-items: center; gap: 4px; }
+  .demo-stack { display: flex; flex-direction: column; gap: 10px; }
+
+  .nested-card { border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--elev2); padding: 10px 12px; margin-top: 8px; background: var(--white); }
+  .hairline-block { border-top: 1px solid var(--border); margin-top: 8px; padding-top: 8px; }
+
+  .hr-thin { border-top: 1px solid var(--border); margin: 6px 0; }
+  .bold-ink { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .grey-text { font-size: 12px; color: var(--ink2); }
+  .gap2 { display: flex; flex-direction: column; gap: 2px; }
+
+  .kv-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 13px; }
+  .kv-row + .kv-row { border-top: 1px solid var(--border); }
+  .kv-row .k { color: var(--ink2); }
+  .kv-row .v { color: var(--ink); font-weight: 600; }
+
+  .demo-grid-2x2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .mini-card.small { padding: 8px 10px; }
+
+  .stack-gap { display: flex; flex-direction: column; gap: 6px; }
+
+  .pb-block { display: flex; flex-direction: column; }
+
+  .space-demo { display: flex; flex-direction: column; }
+  .heading-sm { font-family: 'Inter Tight', system-ui, sans-serif; letter-spacing: -0.01em; font-size: 15px; font-weight: 650; color: var(--ink); }
+  .measure-note { margin-top: 8px; font-size: 11px; color: var(--ink2); }
+
+  .squint-btn {
+    display: inline-flex;
+    align-items: center;
+    margin: 0 0 16px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: var(--sunken);
+    border: 1px solid var(--border);
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+  }
+  .squint-btn:hover { background: var(--border); }
+  .squint-target { transition: filter .2s ease; }
+  .pair.is-squinting .squint-target { filter: blur(3px); }
+
+  .s3-row { padding: 2px 0; }
+  .s3-loud { font-size: 14px; font-weight: 700; color: var(--ink); }
+  .s3-name { font-size: 14px; font-weight: 500; color: var(--ink); }
+  .s3-price { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .s3-grey { font-size: 13px; color: var(--ink2); }
+
+  .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stat-chip { border-radius: 12px; padding: 10px; }
+  .stat-num { font-size: 14px; font-weight: 700; color: var(--ink); }
+  .stat-num.calm { font-weight: 500; color: var(--ink2); }
+  .stat-label { font-size: 11px; color: var(--ink2); margin-top: 2px; }
+
+  .fake-input {
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    margin-top: 8px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--white);
+    font-family: 'Inter', sans-serif;
+  }
+  .fake-input:first-child { margin-top: 0; }
+  .payment-box { margin-top: 8px; background: var(--sunken); border: 1px solid var(--border); border-radius: 16px; padding: 12px; }
+  .payment-box-label { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--ink); }
+  .payment-box .fake-input { margin-top: 10px; }
+  .payment-box .fake-input:first-of-type { margin-top: 10px; }
+
+  .ink-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 12px;
+    padding: 12px 20px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--white);
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .kpi-tile { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 10px; }
+  .kpi-label { font-size: 11px; color: var(--ink2); }
+  .kpi-num { font-weight: 700; color: var(--ink); margin-top: 2px; }
+  .kpi-delta { font-size: 12px; color: var(--ink2); margin-top: 4px; }
+  .kpi-grid-equal { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .kpi-grid-hero { display: flex; flex-direction: column; gap: 8px; }
+  .kpi-row-small { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+  /* Footer */
+  .book-footer { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--border); }
+  .book-footer p { font-size: 12px; color: var(--ink2); line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="book-header">
+    <h1>The Taste Book</h1>
+    <p class="sub">Your design rules, shown instead of explained. Every pair: left is wrong, right is right. One sentence why.</p>
+  </header>
+
+  <!-- SECTION 1 -->
+  <section class="section" id="section-1">
+    <h2>1. Boxes and grouping</h2>
+
+    <div class="rule" id="rule-1a">
+      <div class="rule-title">1a. Separate things get separate boxes</div>
+      <div class="pair">
+        <div class="panel">
+          <span class="chip chip--wrong">Wrong</span>
+          <div class="mini-box">
+            <div class="mini-row">
+              <div class="mini-name">Atelier Marie</div>
+              <div class="mini-meta">Basel<svg class="lucide" width="10" height="10" viewBox="0 0 24 24" fill="var(--star)" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</div>
+            </div>
+            <div class="mini-row">
+              <div class="mini-name">Studio Nera</div>
+              <div class="mini-meta">Zurich<svg class="lucide" width="10" height="10" viewBox="0 0 24 24" fill="var(--star)" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.6</div>
+            </div>
+            <div class="mini-row">
+              <div class="mini-name">Barber Brothers</div>
+              <div class="mini-meta">Bern<svg class="lucide" width="10" height="10" viewBox="0 0 24 24" fill="var(--star)" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <span class="chip chip--right">Right</span>
+          <div class="demo-stack">
+            <div class="mini-card"><div class="mini-name">Atelier Marie</div><div class="mini-meta">Basel<svg class="lucide" width="10" height="10" viewBox="0 0 24 24" fill="var(--star)" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</div></div>
+            <div class="mini-card"><div class="mini-name">Studio Nera</div><div class="mini-meta">Zurich<svg class="lucide" width="10" height="10" viewBox="0 0 24 24" fill="var(--star)" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.6</div></div>
+            <div class="mini-card"><div class="mini-name">Barber Brothers</div><div class="mini-meta">Bern<svg class="lucide" width="10" height="10" viewBox="0 0 24 24" fill="var(--star)" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</div></div>
+          </div>
+        </div>
+      </div>
+      <p class="sentence">If each item is its own thing you can tap, it gets its own card. One big box makes the eye stop and treat it all as one blob.</p>
+    </div>
+
+    <div class="rule" id="rule-1b">
+      <div class="rule-title">1b. No box inside a box</div>
+      <div class="pair">
+        <div class="panel">
+          <span class="chip chip--wrong">Wrong</span>
+          <div class="mini-card">
+            <div class="mini-name">Cancellation policy</div>
+            <div class="nested-card">
+              <div class="grey-text">Free cancellation up to 24h before your appointment.</div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <span class="chip chip--right">Right</span>
+          <div class="mini-card">
+            <div class="mini-name">Cancellation policy</div>
+            <div class="hairline-block">
+              <div class="grey-text">Free cancellation up to 24h before your appointment.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="sentence">Never put a card inside a card. Inside a card, use a thin line or just space.</p>
+    </div>
+
+    <div class="rule" id="rule-1c">
+      <div class="rule-title">1c. If it already looks different, no line needed</div>
+      <div class="pair">
+        <div class="panel">
+          <span class="chip chip--wrong">Wrong</span>
+          <div class="mini-card">
+            <div class="bold-ink">Atelier Marie</div>
+            <div class="hr-thin"></div>
+            <div class="grey-text">Marktgasse 12</div>
+          </div>
+        </div>
+        <div class="panel">
+          <span class="chip chip--right">Right</span>
+          <div class="mini-card">
+            <div class="gap2">
+              <span class="bold-ink">Atelier Marie</span>
+              <span class="grey-text">Marktgasse 12</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="sentence">Bold name next to grey text already reads as two things. A line between them is noise.</p>
+    </div>
+
+    <div class="rule" id="rule-1d">
+      <div class="rule-title">1d. Details of ONE thing share ONE box</div>
+      <div class="pair">
+        <div class="panel">
+          <span class="chip chip--wrong">Wrong</span>
+          <div class="demo-grid-2x2">
+            <div class="mini-card small"><div class="grey-text">Date</div><div class="bold-ink">Sat, 18 July</div></div>
+            <div class="mini-card small"><div class="grey-text">Time</div><div class="bold-ink">14:30</div></div>
+            <div class="mini-card small"><div class="grey-text">Staff</div><div class="bold-ink">Marie</div></div>
+            <div class="mini-card small"><div class="grey-text">Price</div><div class="bold-ink">CHF 85</div></div>
+          </div>
+        </div>
+        <div class="panel">
+          <span class="chip chip--right">Right</span>
+          <div class="mini-card">
+            <div class="kv-row"><span class="k">Date</span><span class="v">Sat, 18 July</span></div>
+            <div class="kv-row"><span class="k">Time</span><span class="v">14:30</span></div>
+            <div class="kv-row"><span class="k">Staff</span><span class="v">Marie</span></div>
+            <div class="kv-row"><span class="k">Price</span><span class="v">CHF 85</span></div>
+          </div>
+        </div>
+      </div>
+      <p class="sentence">Facts about one booking belong in one box. Splitting them makes four things out of one.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 2 -->
+  <section class="section" id="section-2">
+    <h2>2. Text sizes</h2>
+
+    <div class="rule" id="rule-2a">
+      <div class="rule-title">2a. Three sizes max</div>
+      <div class="pair">
+        <div class="panel">
+          <span class="chip chip--wrong">Wrong</span>
+          <div class="stack-gap">
+            <div style="font-size:22px;font-weight:600;color:var(--ink);">Atelier Marie</div>
+            <div style="font-size:19px;font-weight:600;color:var(--ink);">Haircut &amp; Style</div>
+            <div style="font-size:17px;font-weight:600;color:var(--ink);">Available today</div>
+            <div style="font-size:15px;font-weight:600;color:var(--ink);">4.8 rating</div>
+            <div style="font-size:13px;font-weight:600;color:var(--ink);">Basel, Switzerland</div>
+            <div style="font-size:11px;font-weight:600;color:var(--ink);">Open until 19:00</div>
+          </div>
+        </div>
+        <div class="panel">
+          <span class="chip chip--right">Right</span>
+          <div class="stack-gap">
+            <div style="font-size:18px;font-weight:650;color:var(--ink);">Atelier Marie</div>
+            <div style="font-size:14px;font-weight:500;color:var(--ink);">Haircut &amp; Style</div>
+            <div style="font-size:14px;font-weight:500;color:var(--ink);">Available today</div>
+            <div style="font-size:14px;font-weight:500;color:var(--ink);">4.8 rating</div>
+            <div style="font-size:12px;color:var(--ink2);">Basel, Switzerland</div>
+            <div style="font-size:12px;color:var(--ink2);">Open until 19:00</div>
+          </div>
+        </div>
+      </div>
+      <p class="sentence">A screen needs big, medium, small. More sizes means the eye cannot rank anything.</p>
+    </div>
+
+    <div class="rule" id="rule-2b">
+      <div class="rule-title">2b. Make the important thing clearly bigger</div>
+      <div class="pair">
+        <div class="panel">
+          <span class="chip chip--wrong">Wrong</span>
+          <div class="pb-block">
+            <div style="font-size:15px;font-weight:600;color:var(--ink);">Booking confirmed</div>
+            <div style="font-size:14px;color:var(--ink2);margin-top:4px;">Your appointment is set for today at 14:30.</div>
+          </div>
+        </div>
+        <div class="panel">
+          <span class="chip chip--right">Right</span>
+          <div class="pb-block">
+            <div style="font-size:20px;font-weight:700;color:var(--ink);">Booking confirmed</div>
+            <div style="font-size:14px;color:var(--ink2);margin-top:6px;">Your appointment is set for today at 14:30.</div>
+          </div>
+        </div>
+      </div>
+      <p class="sentence">If something should lead, make it 30 to 50 percent bigger. A 1px difference just looks like a mistake.</p>
+    </div>
+
+    <div class="rule" id="rule-2c">
+      <div class="rule-title">2c. Headings stick to what they introduce</div>
+      <div class="pair">
+        <div class="panel">
+          <span class="chip chip--wrong">Wrong</span>
+          <div class="space-demo">
+            <div class="grey-text">Salon details</div>
+            <div class="heading-sm" style="margin-top:16px;margin-bottom:16px;">Payment</div>
+            <div class="grey-text">Visa, Mastercard, TWINT accepted.</div>
+          </div>
+          <div class="measure-note">16px above, 16px below</div>
+        </div>
+        <div class="panel">
+          <span class="chip chip--right">Right</span>
+          <div class="space-demo">
+            <div class="grey-text">Salon details</div>
+            <div class="heading-sm" style="margin-top:24px;margin-bottom:8px;">Payment</div>
+            <div class="grey-text">Visa, Mastercard, TWINT accepted.</div>
+          </div>
+          <div class="measure-note">24px above, 8px below</div>
+        </div>
+      </div>
+      <p class="sentence">More space above a heading, less below. Then it visibly owns the text under it.</p>
+    </div>
+
+    <div class="rule" id="rule-2d">
+      <div class="rule-title">2d. One kind of emphasis at a time</div>
+      <div class="pair">
+        <div class="panel">
+          <span class="chip chip--wrong">Wrong</span>
+          <span style="font-size:16px;font-weight:700;color:var(--accent);text-decoration:underline;">Book now</span>
+        </div>
+        <div class="panel">
+          <span class="chip chip--right">Right</span>
+          <span style="font-size:14px;font-weight:700;color:var(--ink);">Book now</span>
+        </div>
+      </div>
+      <p class="sentence">Pick one way to emphasize. Stacking bold plus color plus size plus underline reads as shouting.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 3 -->
+  <section class="section" id="section-3">
+    <h2>3. What the eye sees first</h2>
+
+    <div class="rule" id="rule-3a">
+      <div class="rule-title">3a. One thing must win</div>
+      <button type="button" class="squint-btn" id="squintBtn">Squint (blur)</button>
+      <div class="pair" id="pair3a">
+        <div class="panel">
+          <span class="chip chip--wrong">Wrong</span>
+          <div class="mini-card squint-target">
+            <div class="s3-row"><span class="s3-loud">Atelier Marie</span></div>
+            <div class="s3-row"><span class="s3-loud">CHF 85</span></div>
+            <div class="s3-row"><span class="s3-loud">Today 14:30</span></div>
+            <div class="s3-row"><span class="s3-loud">1.2 km</span></div>
+          </div>
+        </div>
+        <div class="panel">
+          <span class="chip chip--right">Right</span>
+          <div class="mini-card squint-target">
+            <div class="s3-row"><span class="s3-name">Atelier Marie</span></div>
+            <div class="s3-row"><span class="s3-price">CHF 85</span></div>
+            <div class="s3-row"><span class="s3-grey">Today 14:30</span></div>
+            <div class="s3-row"><span class="s3-grey">1.2 km</span></div>
+          </div>
+        </div>
+      </div>
+      <p class="sentence">Press Squint. On the right you still see what matters. On the left, mush.</p>
+    </div>
+
+    <div class="rule" id="rule-3b">
+      <div class="rule-title">3b. Bold everything = bold nothing</div>
+      <div class="pair">
+        <div class="panel">
+          <span class="chip chip--wrong">Wrong</span>
+          <div class="stat-row">
+            <div class="stat-chip" style="background:var(--accent-pale);"><div class="stat-num">CHF 4,120</div><div class="stat-label">Revenue</div></div>
+            <div class="stat-chip" style="background:var(--success-bg);"><div class="stat-num">38</div><div class="stat-label">Bookings</div></div>
+            <div class="stat-chip" style="background:var(--accent-pale);"><div class="stat-num">212</div><div class="stat-label">Visitors</div></div>
+            <div class="stat-chip" style="background:var(--success-bg);"><div class="stat-num">4.8</div><div class="stat-label">Rating</div></div>
+          </div>
+        </div>
+        <div class="panel">
+          <span class="chip chip--right">Right</span>
+          <div class="stat-row">
+            <div class="stat-chip" style="background:var(--sunken);"><div class="stat-num">CHF 4,120</div><div class="stat-label">Revenue</div></div>
+            <div class="stat-chip" style="background:var(--sunken);"><div class="stat-num calm">38</div><div class="stat-label">Bookings</div></div>
+            <div class="stat-chip" style="background:var(--sunken);"><div class="stat-num calm">212</div><div class="stat-label">Visitors</div></div>
+            <div class="stat-chip" style="background:var(--sunken);"><div class="stat-num calm">4.8</div><div class="stat-label">Rating</div></div>
+          </div>
+        </div>
+      </div>
+      <p class="sentence">When everything screams, nothing gets heard. One loud thing per screen area.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 4 -->
+  <section class="section" id="section-4">
+    <h2>4. The payment screen</h2>
+
+    <div class="rule" id="rule-4a">
+      <div class="rule-title">4a. The card fields live in their own visible box</div>
+      <div class="pair">
+        <div class="panel">
+          <span class="chip chip--wrong">Wrong</span>
+          <div>
+            <input class="fake-input" placeholder="Full name">
+            <input class="fake-input" placeholder="Card number">
+            <input class="fake-input" placeholder="Expiry">
+            <input class="fake-input" placeholder="CVC">
+          </div>
+        </div>
+        <div class="panel">
+          <span class="chip chip--right">Right</span>
+          <div>
+            <input class="fake-input" placeholder="Full name">
+            <div class="payment-box">
+              <div class="payment-box-label">
+                <svg class="lucide" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                Payment details
+              </div>
+              <input class="fake-input" placeholder="Card number">
+              <input class="fake-input" placeholder="Expiry">
+              <input class="fake-input" placeholder="CVC">
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="sentence">People trust the payment part when it visibly looks like a safe box, separate from the rest of the form.</p>
+    </div>
+
+    <div class="rule" id="rule-4b">
+      <div class="rule-title">4b. The button says what it does</div>
+      <div class="pair">
+        <div class="panel">
+          <span class="chip chip--wrong">Wrong</span>
+          <button type="button" class="ink-btn" style="margin-top:0;">Continue</button>
+        </div>
+        <div class="panel">
+          <span class="chip chip--right">Right</span>
+          <button type="button" class="ink-btn" style="margin-top:0;">Pay CHF 85</button>
+        </div>
+      </div>
+      <p class="sentence">On the money step the button says exactly what happens next, with the amount.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 5 -->
+  <section class="section" id="section-5">
+    <h2>5. The dashboard</h2>
+
+    <div class="rule" id="rule-5a">
+      <div class="rule-title">5a. Not all numbers are equal</div>
+      <div class="pair">
+        <div class="panel">
+          <span class="chip chip--wrong">Wrong</span>
+          <div class="kpi-grid-equal">
+            <div class="kpi-tile"><div class="kpi-label">Revenue</div><div class="kpi-num" style="font-size:16px;">CHF 4,120</div></div>
+            <div class="kpi-tile"><div class="kpi-label">Bookings</div><div class="kpi-num" style="font-size:16px;">38</div></div>
+            <div class="kpi-tile"><div class="kpi-label">Visitors</div><div class="kpi-num" style="font-size:16px;">212</div></div>
+            <div class="kpi-tile"><div class="kpi-label">Rating</div><div class="kpi-num" style="font-size:16px;">4.8</div></div>
+          </div>
+        </div>
+        <div class="panel">
+          <span class="chip chip--right">Right</span>
+          <div class="kpi-grid-hero">
+            <div class="kpi-tile"><div class="kpi-label">Revenue</div><div class="kpi-num" style="font-size:24px;">CHF 4,120</div></div>
+            <div class="kpi-row-small">
+              <div class="kpi-tile"><div class="kpi-label">Bookings</div><div class="kpi-num" style="font-size:16px;">38</div></div>
+              <div class="kpi-tile"><div class="kpi-label">Visitors</div><div class="kpi-num" style="font-size:16px;">212</div></div>
+              <div class="kpi-tile"><div class="kpi-label">Rating</div><div class="kpi-num" style="font-size:16px;">4.8</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="sentence">The number you check every morning gets the big tile. Four equal tiles means no ranking.</p>
+    </div>
+
+    <div class="rule" id="rule-5b">
+      <div class="rule-title">5b. A number needs its yesterday</div>
+      <div class="pair">
+        <div class="panel">
+          <span class="chip chip--wrong">Wrong</span>
+          <div class="kpi-tile" style="max-width:200px;">
+            <div class="kpi-label">Today's revenue</div>
+            <div class="kpi-num" style="font-size:24px;">CHF 1,240</div>
+          </div>
+        </div>
+        <div class="panel">
+          <span class="chip chip--right">Right</span>
+          <div class="kpi-tile" style="max-width:200px;">
+            <div class="kpi-label">Today's revenue</div>
+            <div class="kpi-num" style="font-size:24px;">CHF 1,240</div>
+            <div class="kpi-delta">+12% vs last week</div>
+          </div>
+        </div>
+      </div>
+      <p class="sentence">A number alone means nothing. Show what it was before, right under it.</p>
+    </div>
+  </section>
+
+  <footer class="book-footer">
+    <p>Every pair comes from published research (the sources live in _design-system/research/). Reply with a rule number if you disagree with one, it becomes a Taste Lab probe.</p>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  var btn = document.getElementById('squintBtn');
+  var pair = document.getElementById('pair3a');
+  if (!btn || !pair) return;
+  btn.addEventListener('click', function () {
+    pair.classList.toggle('is-squinting');
+    btn.textContent = pair.classList.contains('is-squinting') ? 'Unsquint' : 'Squint (blur)';
+  });
+})();
+</script>
+</body>
+</html>

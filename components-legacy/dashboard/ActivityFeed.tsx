@@ -102,7 +102,8 @@ export default function ActivityFeed({ salonId }: ActivityFeedProps) {
   if (!events.length) {
     return (
       <div className="py-8 text-center">
-        <p className="text-[12px] font-heading text-s-ink/30 uppercase tracking-[.10em]">
+        {/* mockup-ok: D2 fix, sentence case 13px semibold at the standard s-ink-2 token (approved public/_mockups/fixes-refined) */}
+        <p className="text-[13px] font-heading font-semibold text-s-ink-2">
           {t("noRecentActivity")}
         </p>
       </div>

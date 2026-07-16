@@ -1,0 +1,49 @@
+# Grouping and Containment: card vs divider vs whitespace (delta findings)
+
+Confirmed via WebSearch + WebFetch of primary pages only. Existing RATIONALE.md already covers Gestalt basics (proximity/similarity/common region definitions, "existing contrast IS the separator"); everything below is the operational delta it does not have: decision rules, nesting limits, and the named diagnosis for the owner's "one big bento box" complaint.
+
+## Findings (ordered by usefulness)
+
+1. **Cards are for heterogeneous conceptual units; homogeneous peers get a plain list, not cards.** NN/g: a card is "a linked, short representation of a conceptual unit," best for heterogeneous collections; for similar items NN/g recommends a standard vertical list "instead of cards to support scannability and also comparisons among items." [source: https://www.nngroup.com/articles/cards-component/] T2
+
+2. **A container is a stronger cue than whitespace and must be earned, not defaulted to.** NN/g's own test before drawing a boundary: ask whether the grouping can be read from spacing alone; their finding is that "Borders are often added in an abundance of caution," producing visual clutter where whitespace already did the job. [source: https://www.nngroup.com/articles/common-region/] T1/T2
+
+3. **The exact "big bento box" failure is a named anti-pattern.** NN/g documents that full-width bordered/tinted sections can act as a false floor: readers stop scrolling because "a new color creates a stopping point." This is the direct diagnosis for content that reads as one inert block instead of a scannable collection. [source: https://www.nngroup.com/articles/common-region/] T2
+
+4. **Material's actual trigger for adding a divider is the absence of another anchor.** The original Material spec: dividers earn their place only "when lists don't have an anchoring element such as an avatar or icon" and spacing alone isn't enough; grid/subheader layouts don't need dividers because whitespace plus subheaders already separate content. [source: https://download.huihoo.com/google/gdgdevkit/DVD1/www.google.com/design/spec/components/dividers.html] CONV
+
+5. **Material 3 keeps the same restraint and adds a divider-weight rule.** Full-width dividers separate unrelated sections; inset dividers separate related content sharing an anchor (e.g., items with icons). Current guidance still warns that "too many divider lines will make an interface look cluttered." [source: https://m3.material.io/components/divider/guidelines] CONV
+
+6. **Nesting a container inside a container is an explicitly named anti-pattern, not a style choice.** Nord Design System: "Don't place cards within cards," directing designers to a divider instead. This sets the practical nesting-depth limit at one boundary: one outer container, internal structure via dividers/whitespace/typography only. [source: https://nordhealth.design/components/card/] CONV
+
+7. **Mixed content splits by schema, not by available screen space.** Carbon Design System: cards hold "related blocks of content and information into a single unit" for peer items sharing a schema; when a card needs to hold a sub-collection, that sub-collection is a distinct "contained list" sub-component with its own header, never absorbed into the outer card's own dividers. [source: https://carbondesignsystem.com/components/list/usage/] CONV
+
+8. **Differentiating facets inside one record should be typographic before it is structural.** Baymard's usability testing on product list items found that undifferentiated run-in text fails scanning ("users will need to carefully read all of the info") while bullet/weight/color differentiation of attributes fixes it, with no bordered sub-box required per attribute. [source: https://baymard.com/blog/list-item-design-ecommerce] T2
+
+9. **Proximity and similarity can dominate each other depending on the actual arrangement, not a fixed pecking order.** Wikipedia's Principles of Grouping, drawing on Wertheimer/Palmer/Rock: in a grid, row similarity can read before column proximity, "either principle can dominate the other" — meaning "which cue wins" is answerable by inspecting the layout, not assumed from a rule of thumb. [source: https://en.wikipedia.org/wiki/Principles_of_grouping] T1
+
+10. **Peers-of-a-collection vs facets-of-one-thing has a semantic test, not just a visual one.** WAI-ARIA's structural roles separate `list` (independently meaningful `listitem` peers) from `group` (a generic container for one thing's related sub-parts, including a subgroup nested inside a list). If the honest markup for N pieces would be separately-actionable list items, they are peers; if it would be one record's field group, they are facets. [source: https://www.w3.org/WAI/ARIA/apg/practices/structural-roles/] CONV
+
+## Decision tree: N pieces of content -> whitespace / divider / one card / multiple cards
+
+1. Are the N pieces independently identifiable, each with its own click target (peers), or fields describing ONE record (facets)? Peers -> step 2. Facets -> step 4. [ARIA structural roles, finding 10]
+2. Peers, same schema (homogeneous, meant to be scanned/compared) -> separate rows in a plain list, boundary by whitespace/hairline only, never per-row card chrome. Add an inset divider between rows only if there is no anchoring icon/avatar and whitespace alone reads ambiguous. [findings 1, 4]
+3. Peers, variable schema (heterogeneous fields/media per item) -> separate cards, one common-region boundary per item. Never wrap the whole set in an outer card too. [findings 1, 6]
+4. Facets, adjacent ones already differ in weight/color/size (bold name vs grey price) -> whitespace only, no divider; the existing contrast already encodes the boundary. [finding 2; matches this repo's existing taste rule 2]
+5. Facets, visually uniform with no anchor element -> ONE card, inset dividers between the facet rows to create rhythm; still one outer boundary only. [finding 4]
+6. A record's card needs to embed a sub-list (line items, a mini table) -> give the sub-list its own header row inside the card and keep it a plain list; do not add a second bordered card. [findings 6, 7]
+7. A screen mixes peers and facets (a collection of cards, each with an internal facts row) -> resolve the outer grouping (step 2/3) and the inner grouping (step 4/5) independently; never let one full-width bordered wrapper try to hold both, that is the "stopping point" failure. [finding 3]
+
+## Diagnostic checklist
+
+1. Symptom: "everything reads as one big box no matter what's inside." Check: are the items inside actually independently clickable peers forced into one shared container with divider rows. Violation: peers-of-a-collection rendered as if they were facets-of-one-thing. [source: https://www.nngroup.com/articles/cards-component/]
+2. Symptom: a divider sits between two rows that already look different (weight/color/size). Check: hide the divider mentally, does contrast alone still show the boundary. Violation: divider added out of caution where whitespace already communicated the grouping. [source: https://www.nngroup.com/articles/common-region/]
+3. Symptom: a full-width bordered/tinted block visually stops the page, users don't scroll past it. Check: does the container span full width with a background/border distinct from the page. Violation: the "stopping point" anti-pattern, the exact bento-box complaint. [source: https://www.nngroup.com/articles/common-region/]
+4. Symptom: shadow-inside-shadow or radius-inside-radius, a card visibly sitting inside another card's padding. Check: count container elevation depth. Violation: cards-within-cards, explicitly named as banned. [source: https://nordhealth.design/components/card/]
+5. Symptom: rows with no icon/avatar, separated only by a few px of whitespace, read as touching. Check: is there an anchoring visual element at the row start. Fix (not default): add an inset divider only in this no-anchor case. [source: https://m3.material.io/components/divider/guidelines]
+6. Symptom: can't tell if a number belongs to the row above or below. Check: compare the whitespace gap above the field to the gap inside its own item; if equal or larger, proximity is grouping the wrong things. [source: https://en.wikipedia.org/wiki/Principles_of_grouping]
+7. Symptom: unsure whether N fields are one card's facets or N separate rows. Check: would the honest structure be a list of independently actionable items, or a group of one record's fields. [source: https://www.w3.org/WAI/ARIA/apg/practices/structural-roles/]
+8. Symptom: a card embeds a mini-list of line items with no separation from the card's own top-level content. Check: does the embedded list have its own header row. Violation: missing the contained-list sub-pattern, collapsing two grouping levels into one stack. [source: https://carbondesignsystem.com/components/list/usage/]
+9. Symptom: a grid of subheaded sections still carries a divider under every subheader. Check: does the grid/column layout plus subheader typography already separate sections without the line. Violation: redundant divider where whitespace and subheaders already separate content. [source: https://download.huihoo.com/google/gdgdevkit/DVD1/www.google.com/design/spec/components/dividers.html]
+
+Sources fetched directly (not just search snippets): nngroup.com/articles/cards-component, nngroup.com/articles/common-region, nngroup.com/articles/gestalt-proximity, m3.material.io/components/divider/guidelines (title only, corroborated via search), download.huihoo.com mirror of the original Material dividers spec, en.wikipedia.org/wiki/Principles_of_grouping, nordhealth.design/components/card, baymard.com/blog/list-item-design-ecommerce, carbondesignsystem.com/components/list/usage. Apple HIG lists-and-tables page returned no fetchable body text (JS-rendered) and is omitted rather than guessed.

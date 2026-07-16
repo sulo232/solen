@@ -1,0 +1,580 @@
+<!doctype html>
+<!--
+  Exists-check: `npm run exists taste-audit` = 0 hits (run 2026-07-15). Net-new visual report,
+  companion of _design-system/research/AUDIT_WAVE1_2026-07.md.
+  Owner-scope: owner 2026-07-15, "we need evrth dashboard is one but also customer side too"
+  (verbatim) plus findings delivered visually per the approved Taste Book format.
+  Grounded-in: _design-system/research/AUDIT_WAVE1_2026-07.md (the underlying Wave 1 audit this
+  page renders visually), app/[locale]/page.tsx (home), app/[locale]/[city]/[category]/page.tsx
+  and components/Footer.tsx (search), app/[locale]/salon/[slug]/page.tsx plus
+  app/[locale]/_components/salon/SalonServices.tsx, SalonReviews.tsx, SalonTeam.tsx,
+  SalonProducts.tsx, SalonBundles.tsx (salon page), app/[locale]/dashboard/page.tsx (dashboard
+  home), app/[locale]/dashboard/calendar/page.tsx (dashboard calendar). Findings JSONs from 5
+  fresh-context auditors over real rendered captures in shots/; RATIONALE.md and
+  research/TASTE_*.md floors cited per finding. This session, re-verified finding C1 with a fresh
+  PIL pixel-sample of shots/dash-calendar-1440.png: background (244,244,245) and a (209,209,209)
+  swatch both matched the JSON's cited values. Tokens copied from
+  public/_mockups/taste-book/index.html :root (s-ink #0A0A0A, s-ink-2 #6B6B6B, s-border #E4E4E7,
+  s-bg.sunken #F4F4F5, s-blue #276EF1, s-success #16A34A, wrong #DC2626 / #FEE2E2).
+  hue-ok muted-ok: the S3 pill text uses #B45309 instead of the locked amber token F1AE27,
+  computed this session (WCAG relative-luminance formula): F1AE27 on white = 1.94:1 contrast,
+  fails the 4.5:1 AA text floor this document exists to flag (finding H3 flags green text failing
+  at 3.3:1); B45309 on white = 5.02:1, passes. B45309 is used as small non-focal PILL TEXT (same
+  role as the already-approved --wrong #DC2626 on #FEE2E2), never a focal fill.
+  Icon path data copied verbatim from node_modules/lucide-react/dist/esm/icons/triangle-alert.js.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Taste Audit, Wave 1</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400..900&family=Inter:wght@400..700&display=swap">
+<style>
+  :root {
+    --ink: #0A0A0A;
+    --ink2: #6B6B6B;
+    --border: #E4E4E7;
+    --sunken: #F4F4F5;
+    --accent: #276EF1;
+    --white: #FFFFFF;
+    --elev2: 0 2px 8px rgba(50,47,44,.09);
+    --wrong: #DC2626;
+    --wrong-bg: #FEE2E2;
+    --amber: #B45309; /* hue-ok muted-ok: see file header, F1AE27 fails 4.5:1 AA text contrast (1.94:1), B45309 passes (5.02:1); small non-focal pill text only */
+    --amber-bg: #FDF6E7;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; background: var(--white); overflow-x: hidden; }
+
+  body {
+    color: var(--ink);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, .font-heading {
+    font-family: 'Inter Tight', system-ui, -apple-system, sans-serif;
+    letter-spacing: -0.025em;
+    margin: 0;
+  }
+
+  p { margin: 0; }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 20px 64px; }
+
+  /* Header */
+  .book-header h1 { font-size: 24px; font-weight: 700; }
+  .book-header .sub { margin-top: 8px; font-size: 14px; color: var(--ink2); line-height: 1.5; max-width: 720px; }
+  .book-header .sub + .sub { margin-top: 6px; }
+
+  /* Sections */
+  .section { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); }
+  .section:first-of-type { margin-top: 32px; }
+  .section h2 { font-size: 18px; font-weight: 650; }
+  .section .section-sub { margin-top: 6px; font-size: 12px; color: var(--ink2); }
+
+  /* Severity pill */
+  .sev-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 999px;
+    padding: 3px 10px;
+    white-space: nowrap;
+  }
+  .sev-4 { background: var(--wrong-bg); color: var(--wrong); }
+  .sev-3 { background: var(--amber-bg); color: var(--amber); }
+  .sev-lo { background: var(--sunken); color: var(--ink2); }
+
+  /* Top 5 strip */
+  .top5-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .top5-card {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    background: var(--white);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .top5-sentence { font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.4; }
+  .top5-surface { font-size: 12px; color: var(--ink2); }
+
+  /* Screenshot frame */
+  .shot-frame {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--sunken);
+  }
+  .shot-frame img { display: block; width: 100%; height: 420px; object-fit: cover; object-position: top; }
+  .shot-note { margin-top: 8px; font-size: 12px; color: var(--ink2); }
+
+  /* Findings list (one grouped card per surface) */
+  .findings-card {
+    margin-top: 20px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--white);
+    padding: 4px 20px;
+  }
+  .finding-row {
+    display: flex;
+    gap: 14px;
+    padding: 16px 0;
+    align-items: flex-start;
+  }
+  .finding-row + .finding-row { border-top: 1px solid var(--border); }
+  .finding-pill-wrap { flex: 0 0 auto; padding-top: 1px; }
+  .finding-body { flex: 1 1 auto; min-width: 0; }
+  .finding-violation { font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.4; }
+  .finding-line { margin-top: 6px; font-size: 12px; color: var(--ink2); line-height: 1.5; }
+  .finding-line b { color: var(--ink2); font-weight: 600; }
+
+  @media (max-width: 480px) {
+    .finding-row { gap: 10px; }
+    .shot-frame img { height: 260px; }
+  }
+
+  /* Footer */
+  .book-footer { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--border); }
+  .book-footer p { font-size: 12px; color: var(--ink2); line-height: 1.6; }
+  .book-footer p + p { margin-top: 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="book-header">
+    <h1>Taste Audit, Wave 1</h1>
+    <p class="sub">5 screens measured against the researched rules. 35 findings, worst first. Severity 4 means fix first, 0 means cosmetic.</p>
+    <p class="sub">Covered: homepage, search, salon page, dashboard home, dashboard calendar. Not yet: payment step (needs click-through capture) and the remaining 40 or so screens, next waves.</p>
+    <p class="sub">See the fix, not just the finding: <a href="../home-refined/index.html">homepage refined</a> (R1-R5) and <a href="../fixes-refined/index.html">search / salon page / dashboard refined</a> (S1-S3, P1-P3, D2-D4, C1-C3) show before/after pairs for the findings below.</p>
+  </header>
+
+  <!-- TOP 5 -->
+  <section class="section" id="top5">
+    <h2>The 5 to fix first</h2>
+    <p class="section-sub">Pulled from all 5 screens, worst first.</p>
+
+    <div class="top5-grid">
+      <div class="top5-card">
+        <span class="sev-pill sev-4"><svg class="lucide" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>S4</span>
+        <p class="top5-sentence">The colored squares that tell staff apart on the calendar are nearly invisible, contrast as low as 1.13:1 against the background.</p>
+        <p class="top5-surface">Dashboard calendar (C1)</p>
+      </div>
+
+      <div class="top5-card">
+        <span class="sev-pill sev-4"><svg class="lucide" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>S4</span>
+        <p class="top5-sentence">The selected Week tab is a solid blue block. The site's own rule says selected tabs get a calm grey fill, not blue.</p>
+        <p class="top5-surface">Dashboard calendar (C2)</p>
+      </div>
+
+      <div class="top5-card">
+        <span class="sev-pill sev-4"><svg class="lucide" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>S4</span>
+        <p class="top5-sentence">The homepage uses 14 different text sizes on one screen. The rule allows 4.</p>
+        <p class="top5-surface">Homepage (H1)</p>
+      </div>
+
+      <div class="top5-card">
+        <span class="sev-pill sev-3">S3</span>
+        <p class="top5-sentence">A stray dash prints after every salon name on the homepage, with nothing after it.</p>
+        <p class="top5-surface">Homepage (H5)</p>
+      </div>
+
+      <div class="top5-card">
+        <span class="sev-pill sev-3">S3</span>
+        <p class="top5-sentence">The green Live text on the homepage is too faint to read, 3.3:1 contrast where 4.5:1 is the minimum.</p>
+        <p class="top5-surface">Homepage (H3)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOMEPAGE -->
+  <section class="section" id="home">
+    <h2>Homepage</h2>
+    <a class="shot-frame" href="shots/home-1440.png" target="_blank">
+      <img src="shots/home-1440.png" alt="Homepage screenshot, desktop 1440px">
+    </a>
+    <p class="shot-note">Full page, top shown. Click to open.</p>
+
+    <div class="findings-card">
+      <div class="finding-row" id="H1">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-4"><svg class="lucide" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>H1</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">14 different text sizes on one screen. The rule allows 4.</p>
+          <p class="finding-line"><b>What we measured:</b> Sizes found: 11, 12, 13, 13.5, 14, 15, 16, 17, 18, 20, 22, 28, 40, 44px. Five of them (13.5, 17, 22, 28, 44) are not on the approved size list at all.</p>
+          <p class="finding-line"><b>Fix:</b> Snap every text run to one of the 7 approved sizes. Start with the 5 sizes that are not on the list.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="H2">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-3">H2</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">Several nav links and the city picker are too small to tap comfortably.</p>
+          <p class="finding-line"><b>What we measured:</b> The Login button measures 108 by 39px, the city picker 100 by 36px, the Services link 99 by 37px, and the About link 60 by 21px. The minimum is 44 by 44px, and the About link is under half that.</p>
+          <p class="finding-line"><b>Fix:</b> Add padding around each link so the tappable area reaches 44 by 44px, without making the visible text bigger.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="H3">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-3">H3</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">The green Live text under Walk-in is too light to read comfortably.</p>
+          <p class="finding-line"><b>What we measured:</b> Green text on white measures 3.3:1 contrast. The minimum for readable text is 4.5:1.</p>
+          <p class="finding-line"><b>Fix:</b> Keep the word Live in normal dark text and put the green color on a small dot next to it instead.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="H4">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-3">H4</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">Every salon card has three bold black elements competing for attention.</p>
+          <p class="finding-line"><b>What we measured:</b> On every card, the name, the time, and the price all render in the same bold black weight. Only the address is grey.</p>
+          <p class="finding-line"><b>Fix:</b> Make the time grey, matching the address, so only the name and price stay bold black.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="H5">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-3">H5</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">A stray dash character prints after every salon name, with nothing after it.</p>
+          <p class="finding-line"><b>What we measured:</b> Cards read "Muse Beauty Studio, dash", "Old Town Barbers, dash", "Glow Lab Basel, dash" on all 10 visible cards. It looks like a rating that never loaded.</p>
+          <p class="finding-line"><b>Fix:</b> Show the real star rating there, or remove the dash entirely when there is no rating yet.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="H6">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-lo">H6</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">The cookie banner covers photos in the Near You row.</p>
+          <p class="finding-line"><b>What we measured:</b> A translucent cookie banner sits over six salon photo thumbnails partway down the page, becoming the most visible thing on screen at that scroll position.</p>
+          <p class="finding-line"><b>Fix:</b> Check on a live page load first, this may be a screenshot timing artifact. If it really overlaps, pin the banner to a fixed screen edge.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="H7">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-lo">H7</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">Six blank black boxes are the heaviest thing on the homepage.</p>
+          <p class="finding-line"><b>What we measured:</b> All six Inspo cards render as solid near-black rectangles, about 300 by 520px each, with no photo loaded inside any of them.</p>
+          <p class="finding-line"><b>Fix:</b> Find out why the thumbnails are not loading, then show a designed empty state instead of a plain black box.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="H8">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-lo">H8</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">The Walk-in cards never finish loading, they show loading bars forever.</p>
+          <p class="finding-line"><b>What we measured:</b> Both Walk-in slot cards show only grey loading bars, no salon name, wait time, or price anywhere.</p>
+          <p class="finding-line"><b>Fix:</b> Check whether the Walk-in data ever arrives. If the request is silently failing, fix that instead of leaving the loading state on screen.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="H9">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-lo">H9</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">The footer copyright line is written in all capital letters.</p>
+          <p class="finding-line"><b>What we measured:</b> The bottom bar renders the copyright line and the country name fully capitalized.</p>
+          <p class="finding-line"><b>Fix:</b> Use normal sentence case for the copyright line. Keep only short codes like DE or EN capitalized.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEARCH -->
+  <section class="section" id="search">
+    <h2>Search results</h2>
+    <a class="shot-frame" href="shots/search-1440.png" target="_blank">
+      <img src="shots/search-1440.png" alt="Search results screenshot, desktop 1440px">
+    </a>
+    <p class="shot-note">Full page, top shown. Click to open.</p>
+
+    <div class="findings-card">
+      <div class="finding-row" id="S1">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-3">S1</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">The 3 FAQ questions each sit in their own separate bordered box instead of one shared list.</p>
+          <p class="finding-line"><b>What we measured:</b> Each of the 3 questions renders as its own rounded, bordered card with gaps between them, even though they are the same kind of thing.</p>
+          <p class="finding-line"><b>Fix:</b> Put all 3 questions inside one shared box, with a thin line between each question instead of separate boxes.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="S2">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-3">S2</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">The newsletter email box in the footer is invisible, it has no border or background.</p>
+          <p class="finding-line"><b>What we measured:</b> The email placeholder text floats directly on the grey footer background with no visible border or white fill around it, even though the code says it should have both. May be a page load timing artifact, worth a recheck on a fully loaded page.</p>
+          <p class="finding-line"><b>Fix:</b> Reload and recheck after full page load. If the border is still missing, something is silently dropping the input's styling in production.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="S3">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-lo">S3</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">Two icon buttons on this page are smaller than the tap-target minimum.</p>
+          <p class="finding-line"><b>What we measured:</b> The home icon button measures about 39px and the map toggle button measures about 36px. The minimum is 44px.</p>
+          <p class="finding-line"><b>Fix:</b> Grow both buttons to 44 by 44px. Keep the icon the same visible size, just widen the tappable area.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="S4">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-lo">S4</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">The FAQ arrows use the browser's default triangle instead of the site's usual arrow icon.</p>
+          <p class="finding-line"><b>What we measured:</b> Every other dropdown on this page (the Services menu, the For Business menu, the city picker) uses the same down arrow icon. The FAQ section uses the browser's plain default triangle, which reads as a play button, not an expand arrow.</p>
+          <p class="finding-line"><b>Fix:</b> Hide the browser's default triangle and use the same down arrow icon as the rest of the page.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="S5">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-lo">S5</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">The page title text for search results has a dash in it that should not be there.</p>
+          <p class="finding-line"><b>What we measured:</b> The browser tab title reads, in translation, "Best hairdresser in Basel, dash, Book now, Solen" across all 4 languages.</p>
+          <p class="finding-line"><b>Fix:</b> Replace the dash with a colon or comma in all 4 language versions of the title.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PDP -->
+  <section class="section" id="pdp">
+    <h2>Salon page</h2>
+    <a class="shot-frame" href="shots/pdp-1440.png" target="_blank">
+      <img src="shots/pdp-1440.png" alt="Salon page screenshot, desktop 1440px">
+    </a>
+    <p class="shot-note">Full page, top shown. Click to open.</p>
+
+    <div class="findings-card">
+      <div class="finding-row" id="P1">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-4"><svg class="lucide" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>P1</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">The price on every service does not stand out, it looks the same as the small grey duration text next to it.</p>
+          <p class="finding-line"><b>What we measured:</b> In every service row, the duration ("20 min") and the price ("starting at CHF 35") are the exact same grey color and weight. Two other price spots on this page (the Packages and Products sections) correctly show the price bold and black.</p>
+          <p class="finding-line"><b>Fix:</b> Make the service price bold and black, matching how price already looks in the Packages and Products sections just below.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="P2">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-4"><svg class="lucide" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>P2</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">The same "see all" button looks like three different buttons on one page.</p>
+          <p class="finding-line"><b>What we measured:</b> "See all" appears as a solid grey pill button under Services, a bordered white pill button under Reviews, and plain black text with no button shape at all under Team.</p>
+          <p class="finding-line"><b>Fix:</b> Pick one style, the pill button already used under Services and Reviews, and use it everywhere on the page, including Team.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="P3">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-3">P3</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">Products with no photo show an orange square that means nothing.</p>
+          <p class="finding-line"><b>What we measured:</b> Both retail products (Repair Shampoo, Styling Cream) show a plain saturated orange square with no photo and no label, because the code reuses a component built for full salon cards, not small product thumbnails.</p>
+          <p class="finding-line"><b>Fix:</b> Give products their own simple placeholder, a light grey square with a small box icon, instead of reusing the salon card's placeholder.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="P4">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-3">P4</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">The star icon, which should only mean rating, is reused for a women-led badge, confusing it with the real ratings nearby.</p>
+          <p class="finding-line"><b>What we measured:</b> The women-led badge uses an outline star icon a short scroll away from two real yellow filled star ratings on the same page.</p>
+          <p class="finding-line"><b>Fix:</b> Swap the icon on the women-led badge for a non-star icon, so star only ever means rating.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="P5">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-lo">P5</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">A colored dot next to every opening hours row repeats information the text already shows.</p>
+          <p class="finding-line"><b>What we measured:</b> Every day in the Opening Hours list has a green or grey dot before it, but the open days already show a time range and the closed day already says Closed.</p>
+          <p class="finding-line"><b>Fix:</b> Remove the dot. The text and today's bold weight already carry the information.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="P6">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-lo">P6</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">A divider line is used where empty space already separates the content.</p>
+          <p class="finding-line"><b>What we measured:</b> In the Reviews card, a full line sits between the star summary and the caption below it, even though a clear gap already exists. The card is otherwise nearly empty.</p>
+          <p class="finding-line"><b>Fix:</b> Remove the line and let the existing space do the separating.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="P7">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-lo">P7</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">The Portfolio count next to the heading looks different from every other count on the page.</p>
+          <p class="finding-line"><b>What we measured:</b> "Portfolio 3" shows a plain grey number with no parentheses, while the same page shows counts elsewhere as "(11)" in blue.</p>
+          <p class="finding-line"><b>Fix:</b> Match the Portfolio count to the format used elsewhere on the page, parentheses and all.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DASH HOME -->
+  <section class="section" id="dash-home">
+    <h2>Dashboard home</h2>
+    <a class="shot-frame" href="shots/dash-home-1440.png" target="_blank">
+      <img src="shots/dash-home-1440.png" alt="Dashboard home screenshot, desktop 1440px">
+    </a>
+    <p class="shot-note">Full page, top shown. Click to open.</p>
+
+    <div class="findings-card">
+      <div class="finding-row" id="D1">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-4"><svg class="lucide" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>D1</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">The Top Staff card shows named staff rankings even though the salon has zero bookings this week.</p>
+          <p class="finding-line"><b>What we measured:</b> Revenue and bookings both read 0 this week, and Today says "No appointments today". The Top Services card correctly shows "No data yet" for the same zero-activity situation, but Top Staff still lists two staff members as if ranked.</p>
+          <p class="finding-line"><b>Fix:</b> Show the same "no data yet" message on Top Staff whenever there has not been a single completed booking, instead of listing staff with nothing behind the ranking.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="D2">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-3">D2</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">Two full phrases are written in all caps, and one of them is too light to read.</p>
+          <p class="finding-line"><b>What we measured:</b> The date header ("Wednesday, July 15") and the empty-activity message ("No recent activity") both render in caps. The second measures about 2:1 contrast against white, well under the 4.5:1 minimum.</p>
+          <p class="finding-line"><b>Fix:</b> Use normal sentence case for both phrases, and darken the Activity text to the same grey already used correctly on the Top Services empty message.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="D3">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-3">D3</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">The Revenue and Appointments charts are mostly empty white space with nothing in them.</p>
+          <p class="finding-line"><b>What we measured:</b> Both cards are about 260px tall with roughly 250px of blank space between the number and the bottom legend. Nothing marks which of the two numbers matters more.</p>
+          <p class="finding-line"><b>Fix:</b> Fill the empty chart area with a flat zero line or the standard empty state, and give Revenue more visual weight than Appointments since it is the primary number.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="D4">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-3">D4</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">A dash appears in the Salon Setup progress line where it should not.</p>
+          <p class="finding-line"><b>What we measured:</b> The line reads "Salon Setup, dash, 4 of 7 done".</p>
+          <p class="finding-line"><b>Fix:</b> Replace the dash with a colon: "Salon Setup: 4 of 7 done".</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="D5">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-lo">D5</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">A blue dot marks Confirmed status, but blue does not mean confirmed anywhere else on the site.</p>
+          <p class="finding-line"><b>What we measured:</b> The Appointments legend shows Confirmed as a blue dot, while the Revenue chart right next to it uses green for its own label. Green is the site's actual success color.</p>
+          <p class="finding-line"><b>Fix:</b> Change the Confirmed dot from blue to the same green used for success everywhere else on the site.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="D6">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-lo">D6</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">Three cards on this screen all show "no data yet" but each looks different.</p>
+          <p class="finding-line"><b>What we measured:</b> Activity shows an all-caps message with no icon, Today shows a calendar icon with a normal sentence, Top Services shows a plain sentence with no icon. Three different looks for the same message.</p>
+          <p class="finding-line"><b>Fix:</b> Use one shared empty-state style across all three cards: same case, same icon rule, same grey color.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="D7">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-lo">D7</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">This screen likely uses more text sizes than the 4-size limit allows.</p>
+          <p class="finding-line"><b>What we measured:</b> At least 6 visibly different text sizes are on screen at once, from a tiny 9px tag up to a 24px number.</p>
+          <p class="finding-line"><b>Fix:</b> Collapse the smallest tag text onto the same size as the eyebrow labels, and confirm the big number and page title are meant to share one size.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DASH CALENDAR -->
+  <section class="section" id="dash-calendar">
+    <h2>Dashboard calendar</h2>
+    <a class="shot-frame" href="shots/dash-calendar-1440.png" target="_blank">
+      <img src="shots/dash-calendar-1440.png" alt="Dashboard calendar screenshot, desktop 1440px">
+    </a>
+    <p class="shot-note">Full page, top shown. Click to open.</p>
+
+    <div class="findings-card">
+      <div class="finding-row" id="C1">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-4"><svg class="lucide" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>C1</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">The colored squares that tell staff apart on the calendar are almost impossible to tell apart, or from the background.</p>
+          <p class="finding-line"><b>What we measured:</b> One staff swatch measures 1.13:1 contrast against the page background, another measures 1.94:1. The minimum for a swatch like this is 3:1. Color is the only thing telling staff apart here.</p>
+          <p class="finding-line"><b>Fix:</b> Make the staff color swatches darker and stronger so they clear 3:1 contrast, and add a letter or pattern too, so color is not the only signal.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="C2">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-4"><svg class="lucide" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>C2</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">The selected Week tab is a solid blue block, but the site's rule is that selected tabs should be plain grey.</p>
+          <p class="finding-line"><b>What we measured:</b> The Week button renders solid blue with white text, as strong or stronger than the black Add Slot button next to it. The same mistake happens in two other spots in the same file.</p>
+          <p class="finding-line"><b>Fix:</b> Change the selected tab style to grey fill with black text, matching every other selected tab on the site.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="C3">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-3">C3</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">Dash characters show up in several places in the calendar's date and time text.</p>
+          <p class="finding-line"><b>What we measured:</b> The header reads "July 13, dash, July 19, 2026" using a dash instead of a hyphen. The same character shows up in the weekly template times, the slot detail time range, and as a fallback for a missing staff name.</p>
+          <p class="finding-line"><b>Fix:</b> Replace every dash with a spaced hyphen, and replace the missing-name dash with a plain word like "unknown".</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="C4">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-3">C4</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">A tiny lock icon under each day has no explanation anywhere on screen.</p>
+          <p class="finding-line"><b>What we measured:</b> The lock button measures about 16 by 16px, well under the 44px minimum, and has no entry in the legend below. Its only explanation is a small popup on hover, invisible on first glance and unreachable on touch.</p>
+          <p class="finding-line"><b>Fix:</b> Make the lock button at least 44px to tap, and add it to the legend or give it a visible label.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="C5">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-lo">C5</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">A week with no bookings shows a totally blank grid instead of a message.</p>
+          <p class="finding-line"><b>What we measured:</b> 13 empty hour rows render with nothing written on them, even though the codebase already has a built error and empty state, it just is not used here.</p>
+          <p class="finding-line"><b>Fix:</b> Show the existing "no bookings yet" message whenever a week has zero slots, instead of a blank grid.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="C6">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-lo">C6</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">The previous and next week buttons are smaller than the tap-target minimum.</p>
+          <p class="finding-line"><b>What we measured:</b> Both buttons measure about 32px across. The minimum is 44px.</p>
+          <p class="finding-line"><b>Fix:</b> Grow both buttons to 44 by 44px.</p>
+        </div>
+      </div>
+
+      <div class="finding-row" id="C7">
+        <div class="finding-pill-wrap"><span class="sev-pill sev-lo">C7</span></div>
+        <div class="finding-body">
+          <p class="finding-violation">The legend line mixes three unrelated things with no labels telling them apart.</p>
+          <p class="finding-line"><b>What we measured:</b> Booking status (Available, Booked), service category (Hair, Nails, Spa), and staff names all sit on one line separated only by a thin vertical line, with no heading for any of the three groups.</p>
+          <p class="finding-line"><b>Fix:</b> Add a small grey label before each group, like "Status", "Category", "Team", or put each group on its own line.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="book-footer">
+    <p>Every finding cites its research source in _design-system/research/AUDIT_WAVE1_2026-07.md.</p>
+    <p>Reply with finding numbers to fix first (e.g. H1, C2), or "fix all S4".</p>
+  </footer>
+
+</div>
+</body>
+</html>

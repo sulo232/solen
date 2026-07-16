@@ -1,0 +1,679 @@
+<!doctype html>
+<!-- german-ok
+  Exists-check: `npm run exists fixes-refined` = 0 hits (run 2026-07-15, re-run immediately before
+  this write). Net-new visual companion of _design-system/research/AUDIT_WAVE1_2026-07.md,
+  covering the four non-home surfaces (search, salon page, dashboard home, dashboard calendar).
+  Homepage pairs already live in public/_mockups/home-refined/index.html (R1-R5), not repeated here.
+  Owner-scope: owner 2026-07-15, "u lit jst listed whats wrong n no acc visuaoizing change"
+  (their dictation, verbatim). This page turns the audit's worst findings on these four surfaces
+  into treatment-only before/after pairs so the owner can approve or reject each one by number.
+  Nothing here touches real code.
+  Pair ids continue the SAME per-surface ids already assigned in
+  public/_mockups/taste-audit-w1/index.html (id="S1".."S5", "P1".."P7", "D1".."D7", "C1".."C7",
+  severity-sorted worst first), so a reply like "S1 yes" stays unambiguous across both pages. Of
+  those, this file builds the top 3 VISUALIZABLE findings per surface: S1/S2/S3 (search), P1/P2/P3
+  (salon page), D2/D3/D4 (dashboard home, D1's fabricated-ranking finding is a data-gating fix, not
+  a visual treatment, and stays out of scope here per the owner's literal D-pair list), C1/C2/C3
+  (dashboard calendar).
+  Grounded-in: _design-system/research/AUDIT_WAVE1_2026-07.md (search, PDP, dashboard home,
+  dashboard calendar sections, findings S1-S5/P1-P7/D1-D7/C1-C7).
+  Grounded-in: public/_mockups/home-refined/index.html (:root tokens, .panel/.chip/.pair/.sentence
+  pattern, the CSS ::before dash-glyph trick, reused verbatim here for the new em-dash/en-dash
+  demos).
+  Grounded-in: app/[locale]/[city]/[category]/page.tsx:87-112 (real FAQ copy for S1, the 3
+  details boxes each carrying border border-s-border rounded-input p-4 with space-y-3 gaps). german-ok
+  Grounded-in: app/[locale]/_components/layout/Footer.tsx:228-229 (S2 newsletter input, real
+  placeholder text and its coded border-s-border/bg-white classes). german-ok
+  Grounded-in: app/[locale]/_components/layout/Header.tsx:584,606 (S3 home icon-button, coded
+  h-10 w-10 rounded-[13px], real Home/House Lucide icon) and
+  app/[locale]/_components/search/SearchTemplate.tsx:1305,1336 (S3 map toggle, coded h-9 w-9
+  rounded-full).
+  Grounded-in: app/[locale]/_components/salon/SalonServices.tsx:192-209 (P1, the "ab {N} CHF"
+  price format and the font-normal text-s-ink-2 bug on the price span) and
+  SalonBundles.tsx:169 / SalonProducts.tsx:292 (the correctly-bolded price treatment P1's fix
+  copies).
+  Grounded-in: app/[locale]/_components/salon/SalonServices.tsx:164, SalonReviews.tsx:149,
+  SalonTeam.tsx:119-124 (P2, the three real "see all" class lists: sunken pill / bordered
+  pill / bare text link). german-ok
+  Grounded-in: app/[locale]/_components/salon/SalonProducts.tsx:271-292 and
+  components-legacy/ui/ImageFallback.tsx:6-24,94 (P3, the real 44x44 product thumbnail slot). The
+  measured live fallback color is rgb(212,135,10) hex D4870A, cited in the audit finding. hue-ok muted-ok
+  Reused here as the Now swatch fill since it is a measured value, not an invented one, and
+  re-verified this session with a fresh PIL pixel-sample of shots/pdp-1440.png at
+  x190-205/y2160-2250: exact match on that same rgb triple.
+  Grounded-in: components-legacy/dashboard/SetupBanner.tsx:48,50,67 (D2 eyebrow and per-step
+  link both rendered via a live CSS class that force-capitalizes text; D4's exact source line, a
+  literal em dash between the label and the fraction) and german-ok
+  components-legacy/dashboard/ActivityFeed.tsx:105-106 (D2's empty-activity line,
+  rendered at 30% ink opacity plus the same force-capitalize class, the low-contrast half of the
+  finding) and messages/de.json lines 570-571, 1804, 2262-2264 (source strings for the setup
+  eyebrow, the progress line, the step link, and the empty-activity sentence). german-ok
+  Grounded-in: app/[locale]/dashboard/calendar/page.tsx:353-362 (C1's real STAFF_COLORS array,
+  hue families already coded there at a low-opacity tint; the Refined swatches below raise the
+  SAME hue families to a solid strength, not a new invented palette, hex BE185D 047857 C2410C). hue-ok muted-ok
+  Computed this session with the WCAG relative-luminance formula against both #FFFFFF and
+  the page-background #F4F4F5: all three clear 4.7:1, well over the 3:1 non-text floor the finding
+  cites, and :816,827,835,844 (C2's selected-tab class using the sparse accent color as a big
+  fill, C3's date-range template literal using an en dash). german-ok
+  Grounded-in: _design-system/TASTE_LOG.md 2026-07-15 "STRANDED DECISIONS" entry
+  (CARD_REDESIGN_2026-07-13: photo 5/4, rating = star + value with no count, no availability
+  badge/next-slot row). None of the 12 pairs below render a salon card, so this does not change
+  anything in this file, noted per the task brief's current-truth law.
+  Dash note: every em dash / en dash rendered in a "Now" panel below (D4, C3) is emitted by a CSS
+  ::before content property on an empty span (content:"\2014" / content:"\2013"), per the task's
+  own escape hatch for the gate-banned character. This file's raw text contains no literal dash
+  character. Caps note: D2's "Now" caps strings are literal capital letters in the HTML, per the
+  hard constraint against depicting the bug with a CSS force-capitalize property.
+  Icon path data copied verbatim from node_modules/lucide-react/dist/esm/icons/
+  house.js, map.js, package.js, chevron-right.js, chevron-down.js (v0.577.0), same source as
+  home-refined / taste-audit-w1.
+  Content-language note: page chrome (h1, sub, section headers, Now/Refined chips, sentences,
+  footer) is English. Demo copy that reproduces real product strings (FAQ questions, newsletter
+  placeholder, service names, setup-banner labels, calendar legend names) is German on purpose,
+  it replicates the real German-locale surfaces the owner is approving fixes against. german-ok
+  lang-ok english-ok
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixes, refined</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400..900&family=Inter:wght@400..700&display=swap">
+<style>
+  :root {
+    --ink: #0A0A0A;
+    --ink2: #6B6B6B;
+    --border: #E4E4E7;
+    --sunken: #F4F4F5;
+    --accent: #276EF1;
+    --star: #FFC32B;
+    --success: #16A34A;
+    --success-bg: #E8F5E9;
+    --white: #FFFFFF;
+    --elev2: 0 2px 8px rgba(50,47,44,.09);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; background: var(--white); overflow-x: hidden; }
+
+  body {
+    color: var(--ink);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, .font-heading {
+    font-family: 'Inter Tight', system-ui, -apple-system, sans-serif;
+    letter-spacing: -0.025em;
+    margin: 0;
+  }
+
+  p { margin: 0; }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 20px 64px; }
+
+  /* Header */
+  .page-header h1 { font-size: 24px; font-weight: 700; }
+  .page-header .sub { margin-top: 8px; font-size: 14px; color: var(--ink2); line-height: 1.5; max-width: 680px; }
+  .page-header .sub + .sub { margin-top: 6px; }
+
+  /* Surface sections (Search / PDP / Dashboard home / Dashboard calendar) */
+  .surface-section { margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--ink); }
+  .surface-section:first-of-type { margin-top: 40px; }
+  .surface-section h2 { font-size: 18px; font-weight: 650; }
+  .surface-section .surface-sub { margin-top: 6px; font-size: 12px; color: var(--ink2); }
+
+  /* Fix blocks (Now/Refined pairs), reused from home-refined */
+  .fix-block { margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border); }
+  .fix-block:first-of-type { margin-top: 24px; padding-top: 0; border-top: none; }
+  .rule-title { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 12px; }
+
+  .pair { display: flex; flex-wrap: wrap; gap: 16px; }
+  .panel {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    flex: 1 1 260px;
+    max-width: 340px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  @media (max-width: 640px) { .panel { max-width: 100%; } }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 3px 10px;
+    margin-bottom: 12px;
+  }
+  .chip--now { background: var(--sunken); color: var(--ink2); }
+  .chip--refined { background: var(--success-bg); color: var(--success); }
+
+  .sentence { margin-top: 12px; font-size: 13px; color: var(--ink); line-height: 1.5; max-width: 640px; }
+  .measure-note { margin-top: 10px; font-size: 11px; color: var(--ink2); line-height: 1.5; }
+
+  .lucide { flex-shrink: 0; }
+
+  /* ---------- S1: FAQ grouped list card ---------- */
+  .s1-faq-now { display: flex; flex-direction: column; gap: 12px; }
+  .s1-faq-box--now { border: 1px solid var(--border); border-radius: 16px; padding: 14px; }
+  .s1-faq-q { font-size: 13px; font-weight: 600; color: var(--ink); display: flex; align-items: center; justify-content: space-between; gap: 8px; line-height: 1.4; }
+  .s1-faq-q .lucide { color: var(--ink2); }
+  .s1-faq-group--refined { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; background: var(--white); }
+  .s1-faq-row--refined { padding: 14px; border-top: 1px solid var(--border); }
+  .s1-faq-row--refined:first-child { border-top: none; }
+
+  /* ---------- S2: newsletter input ---------- */
+  .s2-band { background: var(--sunken); border-radius: 12px; padding: 16px; }
+  .s2-label { font-size: 11px; color: var(--ink2); margin-bottom: 8px; }
+  .s2-input--now { font-size: 13px; color: var(--ink2); padding: 12px 14px; }
+  .s2-input--refined { font-size: 13px; color: var(--ink2); padding: 12px 14px; background: var(--white); border: 1px solid var(--border); border-radius: 12px; }
+
+  /* ---------- S3: icon-button touch targets ---------- */
+  .s3-row { display: flex; gap: 20px; align-items: flex-end; }
+  .s3-btn-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .s3-icon-btn { display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); color: var(--ink); flex-shrink: 0; }
+  .size-tag {
+    flex-shrink: 0; font-family: 'Inter Tight', sans-serif; font-size: 10px; font-weight: 600;
+    color: var(--ink2); background: var(--sunken); border-radius: 6px; padding: 2px 6px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- P1: price bold anchor ---------- */
+  .p1-row { display: flex; flex-direction: column; gap: 4px; }
+  .p1-name { font-size: 15px; font-weight: 600; color: var(--ink); }
+  .p1-duration { font-size: 13px; color: var(--ink2); margin-top: 2px; }
+  .p1-price { font-size: 14px; margin-top: 10px; }
+  .p1-price--now { font-weight: 400; color: var(--ink2); }
+  .p1-price--refined { font-weight: 700; color: var(--ink); }
+
+  /* ---------- P2: twin-control drift ---------- */
+  .p2-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .p2-row:last-child { border-bottom: none; }
+  .p2-section-name { font-size: 13px; font-weight: 600; color: var(--ink); }
+  .p2-btn { font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .p2-btn--sunken-pill { background: var(--sunken); color: var(--ink); border-radius: 999px; padding: 5px 12px; }
+  .p2-btn--outline-pill { background: var(--white); border: 1px solid var(--ink); color: var(--ink); border-radius: 999px; padding: 5px 12px; }
+  .p2-btn--bare { color: var(--ink); padding: 5px 0; }
+
+  /* ---------- P3: product placeholder ---------- */
+  .p3-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
+  .p3-thumb { width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  /* audit-measured live fallback color, not an invented hex, see file header */
+  .p3-thumb--now { background: #D4870A; } /* hue-ok muted-ok */
+  .p3-thumb--refined { background: var(--sunken); color: var(--ink2); }
+  .p3-name { font-size: 13px; font-weight: 600; color: var(--ink); }
+  .p3-price { font-size: 12px; color: var(--ink2); margin-left: auto; }
+
+  /* ---------- D2: caps labels ---------- */
+  .d2-col { display: flex; flex-direction: column; gap: 14px; }
+  .d2-eyebrow--now { font-size: 12px; font-weight: 600; color: var(--ink2); letter-spacing: 0.18em; }
+  .d2-eyebrow--refined { font-size: 13px; font-weight: 600; color: var(--ink2); letter-spacing: normal; }
+  .d2-step-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .d2-step-name { font-size: 13px; color: var(--ink); }
+  .d2-step-link--now { font-size: 12px; font-weight: 600; color: var(--ink); letter-spacing: 0.06em; display: inline-flex; align-items: center; gap: 4px; }
+  .d2-step-link--refined { font-size: 13px; font-weight: 600; color: var(--ink); letter-spacing: normal; display: inline-flex; align-items: center; gap: 4px; }
+  .d2-activity--now { font-size: 12px; font-weight: 600; color: rgb(181,181,181); letter-spacing: 0.10em; }
+  .d2-activity--refined { font-size: 13px; font-weight: 600; color: var(--ink2); letter-spacing: normal; }
+
+  /* ---------- D3: KPI tiles ---------- */
+  .d3-tiles { display: flex; gap: 10px; }
+  .d3-tile { flex: 1; background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; height: 128px; }
+  .d3-tile-label { font-size: 12px; color: var(--ink2); }
+  .d3-tile-value { font-size: 22px; font-weight: 700; color: var(--ink); margin-top: 8px; font-family: 'Inter Tight', sans-serif; }
+  .d3-tile-delta { font-size: 10px; color: var(--ink2); background: var(--sunken); border-radius: 6px; padding: 2px 6px; align-self: flex-start; margin-top: auto; }
+  .d3-dominant { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 10px; }
+  .d3-dominant-label { font-size: 12px; color: var(--ink2); }
+  .d3-dominant-value { font-size: 28px; font-weight: 800; color: var(--ink); margin-top: 6px; font-family: 'Inter Tight', sans-serif; }
+  .d3-dominant-compare { font-size: 12px; color: var(--ink2); margin-top: 4px; }
+  .d3-secondary-row { display: flex; align-items: baseline; justify-content: space-between; padding: 10px 14px; background: var(--sunken); border-radius: 12px; }
+  .d3-secondary-label { font-size: 12px; color: var(--ink2); }
+  .d3-secondary-value { font-size: 14px; font-weight: 600; color: var(--ink); }
+
+  /* ---------- D4: em-dash progress line ---------- */
+  /* rendered via CSS ::before content, this file's raw text has no literal dash character */
+  .em-dash-inline { color: inherit; }
+  .em-dash-inline::before { content: "\2014"; }
+
+  /* ---------- C1: staff legend swatches ---------- */
+  .c1-legend { background: rgb(244,244,245); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+  .c1-row { display: flex; align-items: center; gap: 8px; }
+  .c1-swatch { width: 16px; height: 16px; border-radius: 4px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: var(--white); }
+  .c1-name { font-size: 12px; color: var(--ink2); }
+
+  /* ---------- C2: Woche selected tab ---------- */
+  .c2-seg { display: inline-flex; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .c2-seg button { padding: 6px 14px; font-size: 12px; font-weight: 500; color: var(--ink2); background: var(--white); border: none; font-family: inherit; }
+  .c2-seg .c2-selected--now { background: var(--accent); color: var(--white); font-weight: 600; }
+  .c2-seg .c2-selected--refined { background: var(--sunken); color: var(--ink); font-weight: 600; }
+
+  /* ---------- C3: en-dash date range ---------- */
+  /* rendered via CSS ::before content, this file's raw text has no literal dash character */
+  .en-dash-inline { color: inherit; }
+  .en-dash-inline::before { content: "\2013"; }
+  .c3-date { font-size: 14px; font-weight: 500; color: var(--ink); }
+
+  /* Footer */
+  .page-footer { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--border); }
+  .page-footer p { font-size: 12px; color: var(--ink2); line-height: 1.6; }
+  .page-footer a { color: var(--accent); }
+
+  @media (max-width: 480px) {
+    .s3-row { gap: 12px; }
+    .d3-tiles { flex-direction: column; }
+    .d3-tile { height: auto; padding: 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="page-header">
+    <h1>Fixes, refined</h1>
+    <p class="sub">Before and after for the search, salon page, and dashboard findings. Approve by number, like the homepage version. Nothing applied yet.</p>
+    <p class="sub">Pair ids match <a href="../taste-audit-w1/index.html">the audit page</a> exactly (S1, P1, D2, C1, and so on), so a reply stays unambiguous. Homepage pairs (R1-R5) live in <a href="../home-refined/index.html">home-refined</a>.</p>
+  </header>
+
+  <!-- ============================= SEARCH ============================= -->
+  <section class="surface-section" id="search">
+    <h2>Search results</h2>
+    <p class="surface-sub">/de/basel/coiffeur. Top 3 findings by severity: S1, S2, S3.</p>
+
+    <!-- S1 -->
+    <div class="fix-block" id="S1">
+      <div class="rule-title">S1. Three FAQ boxes instead of one grouped list</div>
+      <div class="pair">
+        <div class="panel">
+          <span class="chip chip--now">Now</span>
+          <div class="s1-faq-now">
+            <div class="s1-faq-box--now">
+              <p class="s1-faq-q">Wie viel kostet ein Besuch bei einem Coiffeur in Basel?<svg class="lucide" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></p> <!-- german-ok -->
+            </div>
+            <div class="s1-faq-box--now">
+              <p class="s1-faq-q">Wie finde ich den besten Coiffeur in Basel?<svg class="lucide" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></p> <!-- german-ok -->
+            </div>
+            <div class="s1-faq-box--now">
+              <p class="s1-faq-q">Kann ich online einen Termin buchen?<svg class="lucide" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></p> <!-- german-ok -->
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <span class="chip chip--refined">Refined</span>
+          <div class="s1-faq-group--refined">
+            <div class="s1-faq-row--refined">
+              <p class="s1-faq-q">Wie viel kostet ein Besuch bei einem Coiffeur in Basel?<svg class="lucide" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></p> <!-- german-ok -->
+            </div>
+            <div class="s1-faq-row--refined">
+              <p class="s1-faq-q">Wie finde ich den besten Coiffeur in Basel?<svg class="lucide" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></p> <!-- german-ok -->
+            </div>
+            <div class="s1-faq-row--refined">
+              <p class="s1-faq-q">Kann ich online einen Termin buchen?<svg class="lucide" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></p> <!-- german-ok -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="sentence">Same-kind rows share one card with a hairline between them, not three separate bordered boxes.</p>
+    </div>
+
+    <!-- S2 -->
+    <div class="fix-block" id="S2">
+      <div class="rule-title">S2. Newsletter input has no visible border or fill</div>
+      <div class="pair">
+        <div class="panel">
+          <span class="chip chip--now">Now</span>
+          <div class="s2-band">
+            <p class="s2-label">Newsletter</p>
+            <div class="s2-input--now">deine@email.ch</div> <!-- german-ok -->
+          </div>
+          <p class="measure-note">Pixel-sampled: only background-grey and text-grey pixels present, no border or white fill visible (AUDIT_WAVE1_2026-07.md, search finding S2). May be a pre-hydration capture artifact, needs a fresh fully-loaded screenshot to confirm as a code fix.</p>
+        </div>
+        <div class="panel">
+          <span class="chip chip--refined">Refined</span>
+          <div class="s2-band">
+            <p class="s2-label">Newsletter</p>
+            <div class="s2-input--refined">deine@email.ch</div> <!-- german-ok -->
+          </div>
+          <p class="measure-note">White fill and a hairline border separate the field from the sunken section behind it.</p>
+        </div>
+      </div>
+      <p class="sentence">A field needs visible contrast from its background, or there is nothing to tell you where to type.</p>
+    </div>
+
+    <!-- S3 -->
+    <div class="fix-block" id="S3">
+      <div class="rule-title">S3. Two icon buttons under the 44px floor</div>
+      <div class="pair">
+        <div class="panel">
+          <span class="chip chip--now">Now</span>
+          <div class="s3-row">
+            <div class="s3-btn-wrap">
+              <div class="s3-icon-btn" style="width:40px;height:40px;border-radius:13px;">
+                <svg class="lucide" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+              </div>
+              <span class="size-tag">40x40</span>
+            </div>
+            <div class="s3-btn-wrap">
+              <div class="s3-icon-btn" style="width:36px;height:36px;border-radius:999px;">
+                <svg class="lucide" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg>
+              </div>
+              <span class="size-tag">36x36</span>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <span class="chip chip--refined">Refined</span>
+          <div class="s3-row">
+            <div class="s3-btn-wrap">
+              <div class="s3-icon-btn" style="width:44px;height:44px;border-radius:13px;">
+                <svg class="lucide" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+              </div>
+              <span class="size-tag">44x44</span>
+            </div>
+            <div class="s3-btn-wrap">
+              <div class="s3-icon-btn" style="width:44px;height:44px;border-radius:999px;">
+                <svg class="lucide" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg>
+              </div>
+              <span class="size-tag">44x44</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="sentence">Padding grows the tappable area to the 44px floor. The icon itself stays the same visible size.</p>
+    </div>
+  </section>
+
+  <!-- ============================= PDP ============================= -->
+  <section class="surface-section" id="pdp">
+    <h2>Salon page</h2>
+    <p class="surface-sub">/de/salon/muse-beauty-studio. Top 3 findings by severity: P1, P2, P3.</p>
+
+    <!-- P1 -->
+    <div class="fix-block" id="P1">
+      <div class="rule-title">P1. Service price has no bold anchor</div>
+      <div class="pair">
+        <div class="panel">
+          <span class="chip chip--now">Now</span>
+          <div class="p1-row">
+            <span class="p1-name">Kopfhaut-Massage</span> <!-- german-ok -->
+            <span class="p1-duration">20 Min.</span> <!-- german-ok -->
+            <span class="p1-price p1-price--now">ab 35 CHF</span> <!-- german-ok -->
+          </div>
+        </div>
+        <div class="panel">
+          <span class="chip chip--refined">Refined</span>
+          <div class="p1-row">
+            <span class="p1-name">Kopfhaut-Massage</span> <!-- german-ok -->
+            <span class="p1-duration">20 Min.</span> <!-- german-ok -->
+            <span class="p1-price p1-price--refined">ab 35 CHF</span> <!-- german-ok -->
+          </div>
+        </div>
+      </div>
+      <p class="sentence">Duration and price were the same grey weight. Price goes bold ink, matching the Pakete and Produkte prices two sections down on the same page.</p>
+    </div>
+
+    <!-- P2 -->
+    <div class="fix-block" id="P2">
+      <div class="rule-title">P2. Three different "see all" buttons on one page</div>
+      <div class="pair">
+        <div class="panel">
+          <span class="chip chip--now">Now</span>
+          <div class="p2-row">
+            <span class="p2-section-name">Services</span>
+            <span class="p2-btn p2-btn--sunken-pill">Alle ansehen</span> <!-- german-ok -->
+          </div>
+          <div class="p2-row">
+            <span class="p2-section-name">Bewertungen</span> <!-- german-ok -->
+            <span class="p2-btn p2-btn--outline-pill">Alle ansehen</span> <!-- german-ok -->
+          </div>
+          <div class="p2-row">
+            <span class="p2-section-name">Team</span>
+            <span class="p2-btn p2-btn--bare">Alle ansehen</span> <!-- german-ok -->
+          </div>
+        </div>
+        <div class="panel">
+          <span class="chip chip--refined">Refined</span>
+          <div class="p2-row">
+            <span class="p2-section-name">Services</span>
+            <span class="p2-btn p2-btn--sunken-pill">Alle ansehen</span> <!-- german-ok -->
+          </div>
+          <div class="p2-row">
+            <span class="p2-section-name">Bewertungen</span> <!-- german-ok -->
+            <span class="p2-btn p2-btn--sunken-pill">Alle ansehen</span> <!-- german-ok -->
+          </div>
+          <div class="p2-row">
+            <span class="p2-section-name">Team</span>
+            <span class="p2-btn p2-btn--sunken-pill">Alle ansehen</span> <!-- german-ok -->
+          </div>
+        </div>
+      </div>
+      <p class="sentence">One control, one purpose, one look. The Team link becomes the same pill button already used under Services.</p>
+    </div>
+
+    <!-- P3 -->
+    <div class="fix-block" id="P3">
+      <div class="rule-title">P3. Products with no photo show a meaningless orange square</div>
+      <div class="pair">
+        <div class="panel">
+          <span class="chip chip--now">Now</span>
+          <div class="p3-row">
+            <div class="p3-thumb p3-thumb--now"></div>
+            <span class="p3-name">Repair Shampoo 250ml</span>
+            <span class="p3-price">CHF 24</span>
+          </div>
+          <div class="p3-row">
+            <div class="p3-thumb p3-thumb--now"></div>
+            <span class="p3-name">Styling Cream 150ml</span>
+            <span class="p3-price">CHF 19</span>
+          </div>
+        </div>
+        <div class="panel">
+          <span class="chip chip--refined">Refined</span>
+          <div class="p3-row">
+            <div class="p3-thumb p3-thumb--refined"><svg class="lucide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><polyline points="3.29 7 12 12 20.71 7"/><path d="m7.5 4.27 9 5.15"/></svg></div>
+            <span class="p3-name">Repair Shampoo 250ml</span>
+            <span class="p3-price">CHF 24</span>
+          </div>
+          <div class="p3-row">
+            <div class="p3-thumb p3-thumb--refined"><svg class="lucide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><polyline points="3.29 7 12 12 20.71 7"/><path d="m7.5 4.27 9 5.15"/></svg></div>
+            <span class="p3-name">Styling Cream 150ml</span>
+            <span class="p3-price">CHF 19</span>
+          </div>
+        </div>
+      </div>
+      <p class="sentence">The saturated square is a mis-borrowed salon-card cover. A neutral square with a box icon carries no false information.</p>
+    </div>
+  </section>
+
+  <!-- ============================= DASHBOARD HOME ============================= -->
+  <section class="surface-section" id="dash-home">
+    <h2>Dashboard home</h2>
+    <p class="surface-sub">Owner-scoped 3 findings: D2, D3, D4 (D1's fabricated Top-Mitarbeiter ranking is a data-gating fix, out of scope here). german-ok</p>
+
+    <!-- D2 -->
+    <div class="fix-block" id="D2">
+      <div class="rule-title">D2. All-caps on phrases meant to be read, one at failing contrast</div>
+      <div class="pair">
+        <div class="panel">
+          <span class="chip chip--now">Now</span>
+          <div class="d2-col">
+            <span class="d2-eyebrow--now">EINRICHTUNG</span> <!-- german-ok -->
+            <div class="d2-step-row">
+              <span class="d2-step-name">Zahlungen</span> <!-- german-ok -->
+              <span class="d2-step-link--now">EINRICHTEN<svg class="lucide" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span> <!-- german-ok -->
+            </div>
+            <span class="d2-activity--now">KEINE AKTUELLEN AKTIVITÄTEN</span> <!-- german-ok -->
+          </div>
+          <p class="measure-note">Pixel-sampled: the activity string's darkest pixel is rgb(181,181,181), about 2:1 contrast against white (AUDIT_WAVE1_2026-07.md, dashboard home finding D2). The 4.5:1 AA floor applies.</p>
+        </div>
+        <div class="panel">
+          <span class="chip chip--refined">Refined</span>
+          <div class="d2-col">
+            <span class="d2-eyebrow--refined">Einrichtung</span> <!-- german-ok -->
+            <div class="d2-step-row">
+              <span class="d2-step-name">Zahlungen</span> <!-- german-ok -->
+              <span class="d2-step-link--refined">Einrichten<svg class="lucide" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span> <!-- german-ok -->
+            </div>
+            <span class="d2-activity--refined">Keine aktuellen Aktivitäten</span> <!-- german-ok -->
+          </div>
+          <p class="measure-note">Sentence case at the standard s-ink-2 token (#6B6B6B), already used correctly on the Top Services empty state two cards over.</p>
+        </div>
+      </div>
+      <p class="sentence">Caps are for a single glanceable label, never a sentence meant to be read.</p>
+    </div>
+
+    <!-- D3 -->
+    <div class="fix-block" id="D3">
+      <div class="rule-title">D3. Two equal-weight zero tiles, nothing signals which number leads</div>
+      <div class="pair">
+        <div class="panel">
+          <span class="chip chip--now">Now</span>
+          <div class="d3-tiles">
+            <div class="d3-tile">
+              <span class="d3-tile-label">Umsatz</span> <!-- german-ok -->
+              <span class="d3-tile-value">CHF 0</span>
+              <span class="d3-tile-delta">0%</span>
+            </div>
+            <div class="d3-tile">
+              <span class="d3-tile-label">Termine</span> <!-- german-ok -->
+              <span class="d3-tile-value">0</span>
+              <span class="d3-tile-delta">0%</span>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <span class="chip chip--refined">Refined</span>
+          <div class="d3-dominant">
+            <span class="d3-dominant-label">Umsatz</span> <!-- german-ok -->
+            <span class="d3-dominant-value">CHF 0</span>
+            <span class="d3-dominant-compare">vs letzte Woche</span> <!-- german-ok -->
+          </div>
+          <div class="d3-secondary-row">
+            <span class="d3-secondary-label">Termine</span> <!-- german-ok -->
+            <span class="d3-secondary-value">0</span>
+          </div>
+        </div>
+      </div>
+      <p class="sentence">Same size, same weight, roughly 250px of blank space, nothing says which metric is primary. Revenue leads by size, bookings recedes to a secondary row.</p>
+    </div>
+
+    <!-- D4 -->
+    <div class="fix-block" id="D4">
+      <div class="rule-title">D4. Em-dash in the Salon-Setup progress line</div>
+      <div class="pair">
+        <div class="panel">
+          <span class="chip chip--now">Now</span>
+          <p class="sentence" style="margin-top:0;">Salon-Setup<span class="em-dash-inline" aria-hidden="true"></span> 4/7 erledigt</p> <!-- german-ok -->
+        </div>
+        <div class="panel">
+          <span class="chip chip--refined">Refined</span>
+          <p class="sentence" style="margin-top:0;">Salon-Setup: 4/7 erledigt</p> <!-- german-ok -->
+        </div>
+      </div>
+      <p class="sentence">A colon reads the same and is not a banned character.</p>
+    </div>
+  </section>
+
+  <!-- ============================= DASHBOARD CALENDAR ============================= -->
+  <section class="surface-section" id="dash-calendar">
+    <h2>Dashboard calendar</h2>
+    <p class="surface-sub">Week view. Top 3 findings by severity: C1, C2, C3.</p>
+
+    <!-- C1 -->
+    <div class="fix-block" id="C1">
+      <div class="rule-title">C1. Staff legend swatches are barely visible, color is the only signal</div>
+      <div class="pair">
+        <div class="panel">
+          <span class="chip chip--now">Now</span>
+          <div class="c1-legend">
+            <div class="c1-row">
+              <span class="c1-swatch" style="background:rgb(209,209,209);border:1px solid rgb(157,178,219);"></span>
+              <span class="c1-name">Emma</span>
+            </div>
+            <div class="c1-row">
+              <span class="c1-swatch" style="background:rgb(230,230,231);border:1px solid rgb(192,192,193);"></span>
+              <span class="c1-name">Marco</span>
+            </div>
+            <div class="c1-row">
+              <span class="c1-swatch" style="background:rgb(219,234,254);"></span>
+              <span class="c1-name">Luca</span>
+            </div>
+          </div>
+          <p class="measure-note">Pixel-sampled against page background rgb(244,244,245): Marco's fill measures 1.13:1, Emma's border measures 1.94:1 (AUDIT_WAVE1_2026-07.md, dashboard calendar finding C1). The non-text floor is 3:1.</p>
+        </div>
+        <div class="panel">
+          <span class="chip chip--refined">Refined</span>
+          <div class="c1-legend">
+            <div class="c1-row">
+              <span class="c1-swatch" style="background:#BE185D;">E</span> <!-- hue-ok muted-ok -->
+              <span class="c1-name">Emma</span>
+            </div>
+            <div class="c1-row">
+              <span class="c1-swatch" style="background:#047857;">M</span> <!-- hue-ok muted-ok -->
+              <span class="c1-name">Marco</span>
+            </div>
+            <div class="c1-row">
+              <span class="c1-swatch" style="background:#C2410C;">L</span> <!-- hue-ok muted-ok -->
+              <span class="c1-name">Luca</span>
+            </div>
+          </div>
+          <p class="measure-note">Same coded hue families (pink / emerald / orange), raised to solid strength: 4.7:1 to 5.5:1 against both white and the sunken background. The initial inside each swatch means color is no longer the only carrier.</p>
+        </div>
+      </div>
+      <p class="sentence">About 1 in 12 men have some color vision deficiency. A near-invisible swatch with no second signal fails them outright.</p>
+    </div>
+
+    <!-- C2 -->
+    <div class="fix-block" id="C2">
+      <div class="rule-title">C2. Selected "Woche" tab is a solid blue block</div>
+      <div class="pair">
+        <div class="panel">
+          <span class="chip chip--now">Now</span>
+          <div class="c2-seg">
+            <button>Tag</button> <!-- german-ok -->
+            <button class="c2-selected--now">Woche</button> <!-- german-ok -->
+            <button>Monat</button> <!-- german-ok -->
+          </div>
+        </div>
+        <div class="panel">
+          <span class="chip chip--refined">Refined</span>
+          <div class="c2-seg">
+            <button>Tag</button> <!-- german-ok -->
+            <button class="c2-selected--refined">Woche</button> <!-- german-ok -->
+            <button>Monat</button> <!-- german-ok -->
+          </div>
+        </div>
+      </div>
+      <p class="sentence">Selected tabs get a calm grey fill everywhere else on the site. Blue is reserved for small clickable accents, not a big filled segment.</p>
+    </div>
+
+    <!-- C3 -->
+    <div class="fix-block" id="C3">
+      <div class="rule-title">C3. En-dash in the week's date range</div>
+      <div class="pair">
+        <div class="panel">
+          <span class="chip chip--now">Now</span>
+          <p class="c3-date">13. Juli<span class="en-dash-inline" aria-hidden="true"></span> 19. Juli 2026</p> <!-- german-ok -->
+        </div>
+        <div class="panel">
+          <span class="chip chip--refined">Refined</span>
+          <p class="c3-date">13. bis 19. Juli 2026</p> <!-- german-ok -->
+        </div>
+      </div>
+      <p class="sentence">The same character shows up in the weekly template times and the slot-detail time range too, same fix applies there.</p>
+    </div>
+  </section>
+
+  <footer class="page-footer">
+    <p>Reply like: C1 yes, D2 no. Approved fixes get applied for real, one commit per fix. Homepage pairs live in <a href="../home-refined/index.html">home-refined</a>.</p>
+  </footer>
+
+</div>
+</body>
+</html>

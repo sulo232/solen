@@ -144,7 +144,8 @@ export function SalonReviews({
               {salonSlug && locale ? (
                 <a
                   href={`/${locale}/salon/${salonSlug}/reviews`}
-                  className="font-body inline-flex items-center rounded-full border border-s-ink bg-white px-8 py-3 text-[14px] font-semibold text-s-ink transition-colors hover:bg-s-ink hover:text-white md:px-10 md:py-3.5 md:text-[15px]"
+                  // mockup-ok: P2 fix, same "Alle ansehen" pill instance as SalonServices/SalonTeam on this page, twin-control drift (approved fixes-refined)
+                  className="font-body inline-flex items-center rounded-full bg-s-bg-sunken px-8 py-3 text-[14px] font-semibold text-s-ink transition-colors hover:bg-s-border md:px-10 md:py-3.5 md:text-[15px]"
                 >
                   Alle ansehen
                 </a>
@@ -152,7 +153,8 @@ export function SalonReviews({
                 <button
                   type="button"
                   onClick={() => setExpanded(true)}
-                  className="font-body inline-flex items-center rounded-full border border-s-ink bg-white px-8 py-3 text-[14px] font-semibold text-s-ink transition-colors hover:bg-s-ink hover:text-white md:px-10 md:py-3.5 md:text-[15px]"
+                  // mockup-ok: P2 fix, same "Alle ansehen" pill instance as SalonServices/SalonTeam on this page, twin-control drift (approved fixes-refined)
+                  className="font-body inline-flex items-center rounded-full bg-s-bg-sunken px-8 py-3 text-[14px] font-semibold text-s-ink transition-colors hover:bg-s-border md:px-10 md:py-3.5 md:text-[15px]"
                 >
                   Alle ansehen
                 </button>
