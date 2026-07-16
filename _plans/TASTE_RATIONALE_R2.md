@@ -68,6 +68,15 @@ Owner message (dictated): fix + commit; expand RATIONALE.md with the og round-1 
 - [x] G1 (3 densities) + G2 (3 layouts, toggle) as elicitation variants , verified: converged recipe, real photos, toggle works
 - [x] Linked from hub + refs header , verified: commit ae5a852ec (index.html round2-rules card + taste-refs howto pointer), render checked in browser same turn, gemini spacing diff applied in that commit
 
+## Picks round 2 + the full-bleed exploration (owner 2026-07-16 evening, dictated)
+
+- [ ] Log picks: C1 keep, C2 keep, C4 keep (calm confirmation stays), C3 undecided ("I don't know, bro", stays open), C5 unanswered (stays open), G1 keep current density, G2 grid = search pages + carousel = home rows
+- [ ] Define the icon-rule boundary explicitly (owner: "what do you mean almost? is it already defined?"): name the exact icon-only exemption set in RATIONALE + the rules page
+- [ ] Gray-background complaint: investigate the source (probe-page chrome vs product), lighten the elicitation-page chrome, log the taste signal, name the locked product rules it would touch if extended
+- [ ] Full-bleed exploration: re-check ref 05 (and related refs), build an elicitation page of full-bleed treatments on candidate MOMENTS (not the confirmation, owner rejected that placement), color vs photo forks
+- [ ] Honest answer to "is this enough to overhaul the whole website": what is settled, what is missing, the path
+- [ ] Ultracode analysis pass (workflow, judgment agents): rank full-bleed candidate surfaces + mine the still-unprobed general taste dimensions
+
 ## Parked / boundaries
 - Web dark mode stays graveyarded (exists-check hit); positive-polarity mechanics recorded for MOBILE dark mode only.
 - Merge chip task_c132841a, payment capture chip task_400fe4c2, R1/R2/R4 post-merge: unchanged, owner-gated.

@@ -219,3 +219,18 @@ Also this round: the rose photo DiscountBadge (web SalonCard.tsx V3-D85) was sho
 | P13 search: grouped sections + match highlight + honest loader | APPROVED | "p thirteen, that's approved" |
 
 P3 graveyarded (REMOVED.md). Undecided probes from the refs page stay open: P2, P4, P5, P6, P8, P9, P10, P11, P15, P16, P17, C1-C5, G1, G2.
+
+## 2026-07-16, picks round 2 (owner dictated, evening)
+
+| Item | Decision | Owner verbatim |
+|---|---|---|
+| C1 category chips | KEEP the neutral lock | "implement all of the c's" |
+| C2 commit button | KEEP the ink lock | same |
+| C4 celebration screens | KEEP the calm confirmation; full-bleed is wanted but NOT there | "that's okay, but we can maybe improve... I like full bleed stuff... not for that, not how you did it with c four" |
+| C3 selected states | UNDECIDED, stays open | "c three. I don't know, bro" |
+| C5 staging vs product color | unanswered, stays open | none given |
+| G1 richness | KEEP current density (option b) | "for g one, keep the current" |
+| G2 layouts | GRID for search/results pages, CAROUSEL for home rows | "grid is for when you search up, and Curacao is for home page" |
+| Icon rule wording | "almost always" is too vague, the exemption set must be DEFINED | "what do you mean almost? Is it already defined?" |
+| Gray backgrounds | Owner dislikes frequent gray boxes/backgrounds in my presentation pages; product-side gray locks (sunken tray, gray selected fill) stay LAW until reopened by name | "I don't really understand why you use gray background often. I don't like that." |
+| Full-bleed | WANTED, a lot, on the right moments (per ref 05 family), placement to be probed | "I like full bleed stuff... I want it a lot. So make mock ups of that." |
