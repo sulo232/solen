@@ -137,27 +137,32 @@ export async function GET(req: NextRequest) {
         // answer was no. Counted, but never pushed to `errors` on its own.
         console.error(`[pre-charge] Card declined for booking ${booking.id}:`, err.message);
         declined++;
+        // Only a genuine decline earns the "update your payment method" email. This used to
+        // sit OUTSIDE the if/else and fired for BOTH branches, so a Stripe outage on OUR side
+        // told the customer to fix THEIR card. That is a false accusation about their money:
+        // they go check a card that was never the problem, and the one real signal (our
+        // system is down) arrives dressed up as their mistake. Same no-fabrication principle
+        // as any invented number on a page, just aimed at a person.
+        const { data: userAuth } = booking.user_id
+          ? await admin.auth.admin.getUserById(booking.user_id)
+          : { data: null };
+        if (userAuth?.user?.email) {
+          try {
+            await sendEmail({
+              to: userAuth.user.email,
+              subject: `Zahlung fehlgeschlagen: ${(booking.salons as any)?.name ?? "Salon"}`,
+              html: `<p>Die Vorab-Belastung für deinen Termin am ${new Date(booking.starts_at).toLocaleDateString("de-CH")} konnte nicht durchgeführt werden.</p><p>Bitte aktualisiere deine Zahlungsmethode oder kontaktiere den Salon.</p>`,
+            });
+          } catch (err) { console.error("[cron/pre-charge] decline notification email failed:", err); }
+        }
       } else {
-        // Anything else (a non-decline Stripe error, or an unclassified exception,
-        // which fails CLOSED to system-side by default): the charge machinery itself
-        // did not do its job.
+        // Anything else (a non-decline Stripe error, or an unclassified exception, which
+        // fails CLOSED to system-side by default): the charge machinery itself did not do
+        // its job. NO customer email: it is not their card, it is us. The run goes red
+        // instead (errors below), which is where this belongs, and the next sweep retries.
         console.error(`[pre-charge] System error charging booking ${booking.id}:`, err.message);
         failed++;
         errors.push(`booking ${booking.id}: ${err.message}`);
-      }
-
-      // Notify customer about card decline
-      const { data: userAuth } = booking.user_id
-        ? await admin.auth.admin.getUserById(booking.user_id)
-        : { data: null };
-      if (userAuth?.user?.email) {
-        try {
-          await sendEmail({
-            to: userAuth.user.email,
-            subject: `Zahlung fehlgeschlagen — ${(booking.salons as any)?.name ?? "Salon"}`,
-            html: `<p>Die Vorab-Belastung für deinen Termin am ${new Date(booking.starts_at).toLocaleDateString("de-CH")} konnte nicht durchgeführt werden.</p><p>Bitte aktualisiere deine Zahlungsmethode oder kontaktiere den Salon.</p>`,
-          });
-        } catch (err) { console.error("[cron/pre-charge] decline notification email failed:", err); }
       }
     }
   }

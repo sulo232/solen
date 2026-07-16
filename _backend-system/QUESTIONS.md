@@ -76,10 +76,26 @@ The new `migration-fabricated-data-gate.py` blocks the NEXT one. **It cannot un-
 
 ---
 
-## Q6. The 6 crons that under-report failures
+## Q6. The 6 crons that under-report failures , RESOLVED 2026-07-16 (owner: "fix it the 2")
+
+> **DONE, do not re-ask. commit `383317bd5`.** All 6 fixed. And the fix was not what this
+> question assumed: populating `errors[]` per failed item (the "mechanical, not a decision"
+> plan below) would have made things WORSE. `ok = errors.length === 0`, and
+> `.github/actions/ping-cron/action.yml:54` does `jq -e '.ok == true'` then `exit 1` at :70, so
+> ONE customer's expired card would have paged the owner every time. That is LAW.md section
+> 14's named alert-fatigue trap: the alert gets muted, and then the genuinely dead night goes
+> unnoticed. So it was NOT mechanical, it was a real design call, and this question underrated
+> it. Shipped instead: customer-declined = DATA (green), system-failed = RED, everyone-declined
+> above a floor of 5 = the SYMPTOM (red). Discriminator reused from the existing convention at
+> `off-session-charge.ts:107`, centralized as `isStripeCardDecline()` in `lib/stripe.ts`.
+
+<details><summary>Original question, kept for the record</summary>
+
 
 **The fact.** The type now makes `errors: <number>` impossible forever (`lib/cron-run.ts`, tsc clean). But six live crons (`release-payments`, `pre-charge`, `no-show`, `reconcile`, `discovery-ai-backfill`, `process-deletions`) report failures under names the wrapper never reads (`failed`, `declined`, `mismatches`, `results`), and `discovery-ai-backfill/route.ts:74` hardcodes `ok: true` regardless of failure count. So a night where every Stripe charge fails can still log a green run.
 
 **My recommendation: fix all 6 in one scoped pass.** This is mechanical, not a decision, and it is the difference between finding out about a bad night at 08:00 and finding out from a customer. I parked it only because it is a code change to six files rather than an enforcement question, and I did not want to widen a gate on a guess (the reviewer proved the gate for this was inert). Cost: ~6 small edits, each populating `errors: string[]`.
 
 Say go and I will run it through the loop.
+
+</details>
