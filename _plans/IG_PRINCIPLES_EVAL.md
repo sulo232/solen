@@ -20,5 +20,5 @@ Sources (another session's worktree, read-only):
 
 ## Same-message side asks
 - [x] Font law vs code contradiction , RESOLVED 2026-07-16: live render = Inter Tight (display) + Inter (body) via globals.css:9 Google import + tailwind fontFamily; app/layout.tsx's Hanken/JetBrains next/font load is DEAD (vars unreferenced) and its 2026-05-30 "Inter Tight REMOVED" comment is a fossil superseded by V3-D410 (2026-05-31) + V3-D190 + rule 8 + V3-D470. Law = Inter Tight + Inter. Follow-up box below.
-- [ ] Font follow-up fix: self-host Inter Tight + Inter via next/font in app/layout.tsx, delete the dead Hanken + JetBrains loading + fossil comment + the runtime Google import (the comment itself warns runtime fetch falls back to system font on phones)
+- [x] Font follow-up fix DONE (commit above this line's registration; live proof 72 self-hosted @font-face, zero googleapis refs, tsc 0): self-host Inter Tight + Inter via next/font in app/layout.tsx, delete the dead Hanken + JetBrains loading + fossil comment + the runtime Google import (the comment itself warns runtime fetch falls back to system font on phones)
 - [x] Broken hook money-update-cas-warn.py , RESOLVED: the live global settings no longer reference it (only an old backup ~/.claude/settings.json.bak2 does); nothing in main or any worktree wires it; already fixed before this turn, no action needed
