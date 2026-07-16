@@ -348,3 +348,60 @@
 
 ## 2026-07-15 , dormant source code resurrected an owner-rejected treatment in a mockup
 Copying UI from a component file into a mockup reproduced a discount badge that never renders in the product and that the owner had explicitly rejected. Lesson: before including any element in a mockup or rebuild, prove it RENDERS live (real route, real data) and check REJECTED_TREATMENTS.json / REMOVED.md / TASTE_LOG.md. Dead code is where rejected taste hides. Gate: scripts/hooks/mockup-resurrection-gate.py.
+---
+
+## Auth / RLS
+
+### `getSession()` trusts an unverified cookie; server code must use `getUser()`
+- **Date**: 2026-07-10
+- **File(s)**: `app/api/bookings/route.ts`, `lib/supabase/server.ts`
+- **What happened**: `getSession()` reads the session straight out of the cookie without contacting Supabase Auth, so a forged/stale cookie is trusted as-is. 256 files + 14 `app/[locale]` server components across the backend used it for identity checks, a forged-cookie authz hole that shipped and typechecked fine.
+- **Why it happened**: `getSession()` and `getUser()` look interchangeable (`session.user` vs `user` are the same shape) and both compile; nothing failed a type check or a happy-path test.
+- **Fix / What to do instead**: Server-side identity checks (route handlers, server components, middleware) MUST call `getUser()` (round-trips to Supabase Auth to verify the JWT), never `getSession()`. `no-getsession-authz-gate.py` now blocks server-side `getSession()` reintroduction, commit `c01310364` — if the gate fires, use `getUser()`, don't bypass it.
+
+### A customer's session client silently no-ops on owner-only RLS writes
+- **Date**: 2026-07-07
+- **File(s)**: `app/api/bookings/route.ts:CAS`, `app/api/bookings/[id]/reschedule/route.ts`, `app/api/bookings/express-rebook/confirm/route.ts`
+- **What happened**: `availability_slots` UPDATE/DELETE is owner-only under RLS and `bookings` has no DELETE policy. A CAS slot-claim fix run through the logged-in customer's session client matched 0 rows on every write (not an error, just 0 affected rows), so the fix returned a false 409 on 100% of real bookings and left orphaned rows on rollback. The logic was correct, the client was wrong.
+- **Why it happened**: RLS denials on `.update()`/`.delete()` are silent no-ops (0 rows), not thrown errors, so a typecheck + logic review sees nothing wrong; only a live non-owner run exposes it.
+- **Fix / What to do instead**: Any customer-initiated write to `availability_slots` (claim/free/reschedule) or a `bookings` row delete MUST go through the service-role/admin client, never the session client. Plain `bookings` UPDATEs can stay on the session client (`bookings_update_own` permits the owner). Booking-critical fixes must be LIVE-VERIFIED as a real non-owner customer (`GET /api/dev/login?to=<path>` mints one), not just typechecked.
+
+---
+
+## Cron / Background Jobs
+
+### An unchecked `.select()` error looks identical to "zero matching rows"
+- **Date**: 2026-07-07
+- **File(s)**: `app/api/cron/release-deposits/route.ts`, `app/api/cron/birthday-messages/route.ts`
+- **What happened**: Both crons selected a column that had drifted from the live schema. The `.select()` error was never checked, so the cron logged "0 rows processed" every run, indistinguishable from a genuinely empty batch, and stayed broken silently for weeks.
+- **Why it happened**: A phantom-column select doesn't throw in Supabase, it returns `{ data: null, error: {...} }`; ignoring `error` and only checking `data` (or `data?.length`) hides the failure behind an innocuous "nothing to do today."
+- **Fix / What to do instead**: Every cron/batch `.select()` must check `error` explicitly and fail loud (`console.error("[CronName] select failed:", error)` + non-zero exit or alert), never fall through to "processed 0 rows." Verify a cron's SELECT columns against the live snapshot (`npm run exists <column>`), not the TS type.
+
+---
+
+## Payments / Stripe
+
+### A webhook retry must be idempotent even after the underlying row already flipped state
+- **Date**: 2026-07-11
+- **File(s)**: `app/api/stripe/webhook/route.ts`
+- **What happened**: `charge.dispute.closed` decremented the salon's payout balance on every delivery. Stripe redelivers webhooks (retries, at-least-once delivery), so a redelivered `dispute.closed` event double-decremented the same dispute, a real money bug in prod.
+- **Why it happened**: The handler treated the event as a one-time transition instead of guarding against replay; nothing marked "this dispute's payout impact was already applied."
+- **Fix / What to do instead**: Added an atomic CAS marker (`salon_payouts.lost_dispute_id`, migration `20260711160000`) so a retry/redelivery matches 0 rows and no-ops instead of decrementing twice. Any webhook handler that mutates money must be provably idempotent against redelivery, not just correct on the first delivery, kill-tested with the old-buggy-shape case included (`scripts/ring8b-kill-test.ts`).
+
+---
+
+## Agent Workflow
+
+### Audit findings must be re-verified against live data before acting on them
+- **Date**: 2026-07-07
+- **File(s)**: `_plans/SCALABILITY_AUDIT_P2.md`
+- **What happened**: A scalability audit claimed "137k dead availability_slots rows" and "thumb proxy down, every Inspo card renders a gradient." Live re-measurement found ~1,983 actually-dead rows and 433 cached thumbs covering 87% of items, both audit claims were false or badly overstated.
+- **Why it happened**: The audit reasoned from migration files / a projected future scale (1000 salons) instead of the live DB (28 salons, one table over 10k rows), so several "criticals" didn't reflect production reality.
+- **Fix / What to do instead**: Before acting on an audit/report finding (fixing it, or deprioritizing it as premature), re-measure against the LIVE database (`execute_sql` / `get_advisors` on the real tables), not the migration files or the audit's stated numbers. Also verify RLS policies against live `pg_policies`, migration files can be stale vs what's actually applied.
+
+### A workflow's custom agent type has no ToolSearch/MCP access
+- **Date**: 2026-07-11
+- **File(s)**: `_plans/BACKEND_IMPROVEMENT.md`
+- **What happened**: DB-touching bulk work dispatched to the `coder`/`loop-reviewer` custom workflow agent types silently couldn't reach ToolSearch-gated tools or MCP servers, work that needed direct DB access stalled without an obvious error pointing at the cause.
+- **Why it happened**: Custom `agentType`s in a workflow inherit a narrower tool surface than the default agent type; nothing in the workflow definition flags the gap up front.
+- **Fix / What to do instead**: Any workflow step that needs to touch the DB or another MCP server directly must run on the DEFAULT workflow agent type (or have the orchestrator do the MCP call itself), not a custom `coder`/`loop-reviewer` type.
