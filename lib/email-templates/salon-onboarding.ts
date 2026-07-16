@@ -65,8 +65,8 @@ export function onboardingAddPhoto(to: string, vars: OnboardingVars, locale: Ema
   const bodies: Record<EmailLocale, string> = {
     de: `<p>Ein ansprechendes Titelbild macht deinen Salon für Kunden sichtbarer. Lade jetzt ein Foto hoch!</p><p><a href="https://solen.ch/de/dashboard/settings">Foto hochladen →</a></p>`,
     en: `<p>An attractive cover photo makes your salon more visible to customers. Upload one now!</p><p><a href="https://solen.ch/en/dashboard/settings">Upload photo →</a></p>`,
-    fr: `<p>Une belle photo de couverture rend votre salon plus visible pour les clients. Telechargez-en une maintenant !</p><p><a href="https://solen.ch/fr/dashboard/settings">Telecharger une photo →</a></p>`,
-    it: `<p>Una foto di copertina attraente rende il tuo salone piu visibile ai clienti. Carica la tua ora!</p><p><a href="https://solen.ch/it/dashboard/settings">Carica foto →</a></p>`,
+    fr: `<p>Une belle photo de couverture rend votre salon plus visible pour les clients. Téléchargez-en une maintenant !</p><p><a href="https://solen.ch/fr/dashboard/settings">Télécharger une photo →</a></p>`,
+    it: `<p>Una foto di copertina attraente rende il tuo salone più visibile ai clienti. Carica la tua ora!</p><p><a href="https://solen.ch/it/dashboard/settings">Carica foto →</a></p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }

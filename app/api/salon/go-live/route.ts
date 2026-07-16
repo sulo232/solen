@@ -3,21 +3,8 @@ export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { getActiveSalon } from "@/lib/active-salon";
-import { stripe } from "@/lib/stripe";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
-
-// A bare non-null stripe_account_id only means the salon clicked "Connect", not that
-// Stripe onboarding (KYC/bank/TOS) actually completed. Mirrors the live check already
-// done correctly in /api/stripe/connect/status.
-async function isStripeReady(accountId: string | null): Promise<boolean> {
-  if (!accountId) return false;
-  try {
-    const account = await stripe.accounts.retrieve(accountId);
-    return !!(account.charges_enabled && account.payouts_enabled);
-  } catch {
-    return false;
-  }
-}
+import { isStripeReady } from "@/lib/salon/stripe-ready";
 
 // GET /api/salon/go-live: returns salon readiness state for the Go Live gate
 export async function GET(_req: NextRequest) {

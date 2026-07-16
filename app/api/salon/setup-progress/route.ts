@@ -3,6 +3,7 @@ export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { getActiveSalon } from "@/lib/active-salon";
+import { isStripeReady } from "@/lib/salon/stripe-ready";
 
 // GET /api/salon/setup-progress — Returns onboarding completion status
 export async function GET(req: NextRequest) {
@@ -20,7 +21,8 @@ export async function GET(req: NextRequest) {
     opening_hours: Record<string, unknown> | null;
     stripe_account_id: string | null;
     cancellation_fee_type: string | null;
-  }>(supabase, user.id, "id, name, description_de, phone, cover_photo_url, opening_hours, stripe_account_id, cancellation_fee_type");
+    approved_at: string | null;
+  }>(supabase, user.id, "id, name, description_de, phone, cover_photo_url, opening_hours, stripe_account_id, cancellation_fee_type, approved_at");
 
   if (!salon) return NextResponse.json({ error: "No salon found" }, { status: 403 });
 
@@ -46,6 +48,12 @@ export async function GET(req: NextRequest) {
 
   const hours = salon.opening_hours as Record<string, unknown> | null;
   const hasHours = hours && Object.values(hours).some((v) => v !== null);
+
+  // Real Stripe readiness (charges_enabled && payouts_enabled), same shared check the
+  // go-live POST gate uses, not just a bare stripe_account_id presence. isStripeReady
+  // fails closed (false) and console.errors on any Stripe API error, so a Stripe outage
+  // never throws this route, it just leaves go_live incomplete until the API recovers.
+  const hasStripeReady = await isStripeReady(salon.stripe_account_id);
 
   const steps = [
     {
@@ -74,8 +82,11 @@ export async function GET(req: NextRequest) {
     },
     {
       key: "go_live",
-      // Complete when requirements match the go-live POST gate: stripe + cover photo + at least 1 service
-      complete: !!(salon.stripe_account_id && salon.cover_photo_url && (serviceCount ?? 0) >= 1),
+      // Mirrors the go-live POST gate EXACTLY (app/api/salon/go-live/route.ts), all 4
+      // requirements, not an approximation: admin approval (approved_at set), real Stripe
+      // readiness (shared isStripeReady, not a bare stripe_account_id presence), a cover
+      // photo, and at least 1 active service.
+      complete: !!(salon.approved_at && hasStripeReady && salon.cover_photo_url && (serviceCount ?? 0) >= 1),
     },
   ];
 
