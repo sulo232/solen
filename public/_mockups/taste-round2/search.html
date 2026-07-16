@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Round 2 integrated: search on the home page, tappable</title>
+<!-- Exists-check: npm run exists round2 = 0, exists integrated = 0 (2026-07-16). Base surface: the LIVE mobile homepage (real capture below); tapping the real search card opens the probe overlay: P13 grouped results with match highlight and an honest loader, P15 the named availability wait. Nothing ships without a pick. -->
+<!-- Grounded-in: app/[locale]/_components/search/SearchOverlay.tsx (the real search overlay this probe re-skins) -->
+<!-- Grounded-in: app/[locale]/_components/homepage/useSearchSuggest.ts (the real suggest path under the grouped sections) -->
+<!-- Grounded-in: ../_assets/taste-round2/base-home-mobile.png (real /de mobile home capture, 2026-07-16) -->
+<!-- Owner-scope: all-variants: probes tappable with their fork ids; owner 2026-07-16: "i want to see each one in acc pages... integrated and tappable" -->
+<!-- Backend-check: search -> /api/salons + suggest path EXIST (SearchOverlay + useSearchSuggest); the grouped-sections + highlight + loader treatments are presentation on that existing path; availability check (P15) -> the slot availability engine EXISTS, the named-step line is presentation only. Result names are real salons from the live page; slot counts are sample values. -->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#C5C8C4;--border:#E4E4E7;--sunken:#F4F4F5;--white:#FFFFFF;--accent:#276EF1;--success:#16A34A;--match:#FDF6D8/*drift-ok probe candidate*/}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,-apple-system,"Segoe UI",sans-serif;background:var(--sunken);color:var(--ink);font-size:14px;line-height:1.5}
+  .bar{position:sticky;top:0;z-index:50;background:var(--white);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .bar b{font-family:"Inter Tight",Inter,sans-serif;font-size:15px}
+  .chip{border:1px solid var(--border);border-radius:999px;padding:5px 12px;font-size:12.5px;background:var(--white)}
+  .bar a{color:var(--accent);text-decoration:none;font-size:12.5px;margin-left:auto}
+  .phone{width:390px;margin:24px auto 80px;border:1px solid var(--border);border-radius:28px;overflow:hidden;box-shadow:0 8px 28px rgba(50,47,44,.12);position:relative;background:var(--white)}
+  .phone>img{width:100%;display:block}
+  .hot{position:absolute;cursor:pointer;border-radius:16px;border:1.5px dashed var(--ink3)}
+  .hot:hover{border-color:var(--ink)}
+  .hot .tag{position:absolute;top:-11px;left:-6px;background:var(--ink);color:var(--white);font-family:"Inter Tight",Inter,sans-serif;font-weight:700;font-size:11px;border-radius:7px;padding:1px 7px}
+  svg.lucide{width:15px;height:15px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px}
+
+  .sheet{position:absolute;inset:0;background:rgba(10,10,10,.35);display:none;z-index:20}
+  .sheet.on{display:block}
+  .panel{position:absolute;left:10px;right:10px;top:12px;background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 8px 28px rgba(50,47,44,.2)}
+  .inp{padding:13px 14px;border-bottom:1px solid var(--border);font-size:14px;display:flex;gap:8px;align-items:center}
+  .inp .x{margin-left:auto;width:24px;height:24px;border-radius:999px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .dots i{width:4px;height:4px;border-radius:99px;background:var(--ink2);display:inline-block;margin-right:3px;animation:dot 1.2s ease infinite}
+  .dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+  @keyframes dot{0%,60%,100%{opacity:.25;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+  .sec{font-size:11px;font-weight:600;color:var(--ink2);padding:10px 14px 4px}
+  .res{padding:9px 14px;font-size:13.5px;display:flex;justify-content:space-between;cursor:pointer}
+  .res:hover{background:var(--sunken)}
+  .res .r{color:var(--ink2)}
+  mark{background:var(--match);color:var(--ink);border-radius:3px;padding:0 1px}
+  .wait{display:none;align-items:center;gap:10px;padding:12px 14px;border-top:1px solid var(--border)}
+  .wait.on{display:flex}
+  .wait .t{font-weight:600;font-size:13px}
+  .wait .d{font-size:12px;color:var(--ink2)}
+  .slotline{display:none;padding:10px 14px;border-top:1px solid var(--border);font-size:13px}
+  .slotline.on{display:block}
+  .lbl{padding:10px 14px;font-size:11.5px;color:var(--ink2);border-top:1px solid var(--border)}
+  #results{display:none}
+  #results.on{display:block}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <b>Search on the home page, integrated probes</b>
+  <span class="chip">P13 tap the search card</span>
+  <span class="chip">P15 tap a result, the wait names its step</span>
+  <a href="index.html">all pages</a>
+</div>
+
+<div class="phone">
+  <img src="../_assets/taste-round2/base-home-mobile.png" alt="real mobile home capture">
+  <div class="hot" style="left:5%;top:25.2%;width:90%;height:29.6%" id="openSearch"><span class="tag">P13</span></div>
+
+  <div class="sheet" id="sheet">
+    <div class="panel">
+      <div class="inp">
+        <svg class="lucide lucide-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <span>bar</span>
+        <span class="dots" id="loader"><i></i><i></i><i></i></span>
+        <span class="x" id="closeSearch"><svg class="lucide lucide-x" style="width:12px;height:12px" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span>
+      </div>
+      <div id="results">
+        <div class="sec">Salons</div>
+        <div class="res" id="pickResult"><span><mark>Bar</mark>bershop Central</span><span class="r">Zurich</span></div>
+        <div class="res"><span>Old Town <mark>Bar</mark>bers</span><span class="r">Basel</span></div>
+        <div class="sec">Services</div>
+        <div class="res"><span><mark>Bar</mark>ber cut</span><span class="r">from CHF 25</span></div>
+        <div class="wait" id="wait">
+          <span class="dots"><i></i><i></i><i></i></span>
+          <div><div class="t">Checking availability</div><div class="d">Barbershop Central, this week</div></div>
+        </div>
+        <div class="slotline" id="slotline">2 free times this week. <span style="color:var(--accent);font-weight:600">Open the salon</span></div>
+      </div>
+      <div class="lbl">P13: grouped sections, the matched letters highlighted, a quiet honest loader. P15: the wait says what it is doing instead of a bare spinner. Sample values; the search path underneath is the real one.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const sheet = document.getElementById('sheet');
+  const loader = document.getElementById('loader');
+  const results = document.getElementById('results');
+  document.getElementById('openSearch').addEventListener('click', () => {
+    sheet.classList.add('on');
+    loader.style.display = 'inline-block';
+    results.classList.remove('on');
+    setTimeout(() => { loader.style.display = 'none'; results.classList.add('on'); }, 900);
+  });
+  document.getElementById('closeSearch').addEventListener('click', (e) => {
+    e.stopPropagation();
+    sheet.classList.remove('on');
+    document.getElementById('wait').classList.remove('on');
+    document.getElementById('slotline').classList.remove('on');
+  });
+  document.getElementById('pickResult').addEventListener('click', () => {
+    const w = document.getElementById('wait');
+    const s = document.getElementById('slotline');
+    s.classList.remove('on');
+    w.classList.add('on');
+    setTimeout(() => { w.classList.remove('on'); s.classList.add('on'); }, 1400);
+  });
+</script>
+</body>
+</html>

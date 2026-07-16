@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Round 2 generative probes: richness and layout for the salon cards</title>
+<!-- Exists-check: npm run exists round2 = 0, exists integrated = 0 (2026-07-16). Base: the home salon-card section rendered with the CONVERGED card recipe (owner-approved 2026-07-13, unmerged branch: photo 5/4, name leads, star + value with no count, no time row). Probes G1 (richness band) and G2 (layout selector) from the RATIONALE gap register, judges' top generative gaps. Photos are real crops from the live homepage capture. -->
+<!-- Grounded-in: app/[locale]/_components/search/SalonResultCard.tsx (the real salon card family this section renders) -->
+<!-- Grounded-in: ../_assets/taste-round2/base-home-full.png (real /de capture the photos are cropped from, 2026-07-16) -->
+<!-- Owner-scope: all-variants: G1 shows all three density levels side by side, G2 shows all three layouts, nothing collapses to one option; owner 2026-07-16: "i want to see each one in acc pages... integrated and tappable" -->
+<!-- Backend-check: salons, ratings, services all EXIST (live home section under /de renders them); the density and layout variants are presentation only. Salon names and photos are real; rating and service-count values are sample placeholders pending live wiring. -->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#C5C8C4;--border:#E4E4E7;--sunken:#F4F4F5;--white:#FFFFFF;--accent:#276EF1;--star:#FFC32B;--heart:#FF3366}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,-apple-system,"Segoe UI",sans-serif;background:var(--sunken);color:var(--ink);font-size:14px;line-height:1.5;padding-bottom:80px}
+  .bar{position:sticky;top:0;z-index:50;background:var(--white);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .bar b{font-family:"Inter Tight",Inter,sans-serif;font-size:15px}
+  .chip{border:1px solid var(--border);border-radius:999px;padding:5px 12px;font-size:12.5px;background:var(--white)}
+  .bar a{color:var(--accent);text-decoration:none;font-size:12.5px;margin-left:auto}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 20px}
+  .theme{margin:30px 0 12px}
+  .theme h2{font-family:"Inter Tight",Inter,sans-serif;font-size:19px;font-weight:600}
+  .theme p{color:var(--ink2);font-size:13px;max-width:72ch}
+  .lbl{font-size:11.5px;color:var(--ink2);margin:8px 0 0}
+  svg.lucide{width:13px;height:13px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;vertical-align:-2px}
+  .tri{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:900px){.tri{grid-template-columns:1fr}}
+  .ph{background:var(--white);border:1px solid var(--border);border-radius:24px;padding:16px;box-shadow:0 4px 12px rgba(50,47,44,.08)}
+  .ph h3{font-family:"Inter Tight",Inter,sans-serif;font-size:14px;font-weight:700;margin-bottom:2px}
+  .ph .sub{font-size:12px;color:var(--ink2);margin-bottom:12px}
+  .secttl{font-family:"Inter Tight",Inter,sans-serif;font-size:17px;font-weight:600;margin-bottom:10px}
+
+  /* the converged card recipe: photo 5/4 r16, name 14 leads, star + value, greys, ink price */
+  .card{margin-bottom:16px}
+  .card .photo{position:relative;aspect-ratio:5/4;border-radius:16px;overflow:hidden;background:var(--sunken)}
+  .card .photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .card .heart{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:999px;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;color:var(--heart)}
+  .card .r1{display:flex;justify-content:space-between;align-items:baseline;margin-top:8px}
+  .card .name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .card .rate{font-size:12px;font-weight:600;white-space:nowrap;color:var(--ink)}
+  .card .rate .st{color:var(--star)}
+  .card .meta{font-size:12px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .card .price{font-size:12.5px;font-weight:600;margin-top:2px}
+  .card .extra{font-size:12px;color:var(--ink2);margin-top:2px}
+
+  /* G2 layouts */
+  .seg{display:inline-flex;gap:4px;border:1px solid var(--border);border-radius:999px;padding:3px;background:var(--white);margin-bottom:14px}
+  .seg span{border-radius:999px;padding:6px 14px;font-size:13px;color:var(--ink2);cursor:pointer}
+  .seg span.on{background:var(--sunken);color:var(--ink);font-weight:600}
+  .lay{display:none}
+  .lay.on{display:block}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .lrow{display:flex;gap:12px;background:var(--white);border:1px solid var(--border);border-radius:16px;padding:10px;margin-bottom:10px}
+  .lrow .photo{flex:none;width:96px;aspect-ratio:5/4;border-radius:12px;overflow:hidden;background:var(--sunken)}
+  .lrow .photo img{width:100%;height:100%;object-fit:cover}
+  .caro{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px}
+  .caro .card{flex:none;width:200px;margin-bottom:0}
+  .g2wrap{max-width:430px;background:var(--white);border:1px solid var(--border);border-radius:24px;padding:16px}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <b>Richness and layout, the two generative probes</b>
+  <span class="chip">G1 pick a density level</span>
+  <span class="chip">G2 tap through the three layouts</span>
+  <a href="index.html">all pages</a>
+</div>
+
+<div class="wrap">
+
+  <div class="theme">
+    <h2>G1: how rich should a customer section be?</h2>
+    <p>Your most-used direction is "rich not bland" and it has no defined level. Same section, same converged card (photo 5/4, star with no count, no time row), three densities. Answer like "G1 b" or "G1 between b and c".</p>
+  </div>
+
+  <div class="tri">
+    <div class="ph">
+      <h3>a, sparse</h3>
+      <div class="sub">photo, name, price. Nothing else.</div>
+      <div class="secttl">Popular in Basel</div>
+      <div class="card">
+        <div class="photo"><img src="../_assets/taste-round2/photo-a.jpg" alt="salon photo"></div>
+        <div class="r1"><span class="name">Muse Beauty Studio</span></div>
+        <div class="price">from CHF 80</div>
+      </div>
+      <div class="card">
+        <div class="photo"><img src="../_assets/taste-round2/photo-b.jpg" alt="salon photo"></div>
+        <div class="r1"><span class="name">Glow Lab Basel</span></div>
+        <div class="price">from CHF 80</div>
+      </div>
+    </div>
+
+    <div class="ph">
+      <h3>b, current law</h3>
+      <div class="sub">adds the rating and the grey meta line.</div>
+      <div class="secttl">Popular in Basel</div>
+      <div class="card">
+        <div class="photo"><img src="../_assets/taste-round2/photo-a.jpg" alt="salon photo"></div>
+        <div class="r1"><span class="name">Muse Beauty Studio</span><span class="rate"><span class="st">&#9733;</span> 4.8</span></div>
+        <div class="meta">Coiffeur, Basel</div>
+        <div class="price">from CHF 80</div>
+      </div>
+      <div class="card">
+        <div class="photo"><img src="../_assets/taste-round2/photo-b.jpg" alt="salon photo"></div>
+        <div class="r1"><span class="name">Glow Lab Basel</span><span class="rate"><span class="st">&#9733;</span> 4.6</span></div>
+        <div class="meta">Coiffeur, Basel</div>
+        <div class="price">from CHF 80</div>
+      </div>
+    </div>
+
+    <div class="ph">
+      <h3>c, rich</h3>
+      <div class="sub">adds the save heart, the address and the services line.</div>
+      <div class="secttl">Popular in Basel</div>
+      <div class="card">
+        <div class="photo"><img src="../_assets/taste-round2/photo-a.jpg" alt="salon photo"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span></div>
+        <div class="r1"><span class="name">Muse Beauty Studio</span><span class="rate"><span class="st">&#9733;</span> 4.8</span></div>
+        <div class="meta">Coiffeur, Aeschenvorstadt 55, Basel</div>
+        <div class="extra">12 services from CHF 35</div>
+        <div class="price">from CHF 80</div>
+      </div>
+      <div class="card">
+        <div class="photo"><img src="../_assets/taste-round2/photo-b.jpg" alt="salon photo"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span></div>
+        <div class="r1"><span class="name">Glow Lab Basel</span><span class="rate"><span class="st">&#9733;</span> 4.6</span></div>
+        <div class="meta">Coiffeur, Spalenberg 5, Basel</div>
+        <div class="extra">9 services from CHF 40</div>
+        <div class="price">from CHF 80</div>
+      </div>
+    </div>
+  </div>
+  <div class="lbl">Rating, service counts and prices are sample values for the density comparison; names and photos are real.</div>
+
+  <div class="theme">
+    <h2>G2: which layout for which content?</h2>
+    <p>The second judge-flagged gap: when the same salons should be a list, a grid or a carousel. Tap through all three and say which belongs where (for example "G2 grid for city pages, carousel for home rows").</p>
+  </div>
+
+  <div class="g2wrap">
+    <div class="seg" id="seg">
+      <span class="on" data-l="list">List</span><span data-l="grid">Grid</span><span data-l="caro">Carousel</span>
+    </div>
+
+    <div class="lay on" id="lay-list">
+      <div class="lrow"><div class="photo"><img src="../_assets/taste-round2/photo-a.jpg" alt="salon photo"></div><div><div class="name" style="font-size:14px;font-weight:600">Muse Beauty Studio</div><div class="meta">Coiffeur, Basel</div><div class="rate" style="font-size:12px;font-weight:600"><span class="st" style="color:var(--star)">&#9733;</span> 4.8</div><div class="price" style="font-size:12.5px;font-weight:600">from CHF 80</div></div></div>
+      <div class="lrow"><div class="photo"><img src="../_assets/taste-round2/photo-b.jpg" alt="salon photo"></div><div><div class="name" style="font-size:14px;font-weight:600">Glow Lab Basel</div><div class="meta">Coiffeur, Basel</div><div class="rate" style="font-size:12px;font-weight:600"><span class="st" style="color:var(--star)">&#9733;</span> 4.6</div><div class="price" style="font-size:12.5px;font-weight:600">from CHF 80</div></div></div>
+      <div class="lrow"><div class="photo"><img src="../_assets/taste-round2/photo-c.jpg" alt="salon photo"></div><div><div class="name" style="font-size:14px;font-weight:600">Old Town Barbers</div><div class="meta">Barbershop, Basel</div><div class="rate" style="font-size:12px;font-weight:600"><span class="st" style="color:var(--star)">&#9733;</span> 4.7</div><div class="price" style="font-size:12.5px;font-weight:600">from CHF 50</div></div></div>
+    </div>
+
+    <div class="lay" id="lay-grid">
+      <div class="grid2">
+        <div class="card"><div class="photo"><img src="../_assets/taste-round2/photo-a.jpg" alt="salon photo"></div><div class="r1"><span class="name">Muse Beauty Studio</span><span class="rate"><span class="st">&#9733;</span> 4.8</span></div><div class="meta">Coiffeur, Basel</div><div class="price">from CHF 80</div></div>
+        <div class="card"><div class="photo"><img src="../_assets/taste-round2/photo-b.jpg" alt="salon photo"></div><div class="r1"><span class="name">Glow Lab Basel</span><span class="rate"><span class="st">&#9733;</span> 4.6</span></div><div class="meta">Coiffeur, Basel</div><div class="price">from CHF 80</div></div>
+      </div>
+    </div>
+
+    <div class="lay" id="lay-caro">
+      <div class="caro">
+        <div class="card"><div class="photo"><img src="../_assets/taste-round2/photo-a.jpg" alt="salon photo"></div><div class="r1"><span class="name">Muse Beauty Studio</span><span class="rate"><span class="st">&#9733;</span> 4.8</span></div><div class="meta">Coiffeur, Basel</div><div class="price">from CHF 80</div></div>
+        <div class="card"><div class="photo"><img src="../_assets/taste-round2/photo-b.jpg" alt="salon photo"></div><div class="r1"><span class="name">Glow Lab Basel</span><span class="rate"><span class="st">&#9733;</span> 4.6</span></div><div class="meta">Coiffeur, Basel</div><div class="price">from CHF 80</div></div>
+        <div class="card"><div class="photo"><img src="../_assets/taste-round2/photo-c.jpg" alt="salon photo"></div><div class="r1"><span class="name">Old Town Barbers</span><span class="rate"><span class="st">&#9733;</span> 4.7</span></div><div class="meta">Barbershop, Basel</div><div class="price">from CHF 50</div></div>
+      </div>
+    </div>
+    <div class="lbl">Selected segment uses the locked gray-fill state. The research anchors: grids for visual browsing, lists for spec comparison, carousels lose everything past slide one.</div>
+  </div>
+
+</div>
+
+<script>
+  document.querySelectorAll('#seg span').forEach(s => {
+    s.addEventListener('click', () => {
+      document.querySelectorAll('#seg span').forEach(x => x.classList.remove('on'));
+      s.classList.add('on');
+      document.querySelectorAll('.lay').forEach(l => l.classList.remove('on'));
+      document.getElementById('lay-' + s.dataset.l).classList.add('on');
+    });
+  });
+</script>
+</body>
+</html>

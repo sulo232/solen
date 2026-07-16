@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>taste-round2: the integrated, tappable probe pages</title>
+<!-- Exists-check: npm run exists round2 = 0, exists integrated = 0 (2026-07-16). This hub links the per-page integrated probes; the isolated side-by-side versions stay at ../taste-refs/. -->
+<!-- Grounded-in: public/_mockups/taste-round2/dashboard.html (the integrated pages this hub indexes) -->
+<!-- Grounded-in: public/_mockups/taste-refs/index.html (the isolated probe versions these pages integrate) -->
+<!-- Owner-scope: all-variants: the hub only indexes; every fork lives on its page; owner 2026-07-16: "i want to see each one in acc pages... integrated and tappable" -->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#C5C8C4;--border:#E4E4E7;--sunken:#F4F4F5;--white:#FFFFFF;--accent:#276EF1}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,-apple-system,"Segoe UI",sans-serif;background:var(--sunken);color:var(--ink);font-size:14px;line-height:1.5;padding-bottom:80px}
+  .wrap{max-width:860px;margin:0 auto;padding:0 20px}
+  header{background:var(--white);border-bottom:1px solid var(--border);padding:32px 0 24px;margin-bottom:24px}
+  h1{font-family:"Inter Tight",Inter,sans-serif;font-size:clamp(22px,3vw,28px);font-weight:700}
+  header p{color:var(--ink2);max-width:68ch;margin-top:6px}
+  .page{display:block;background:var(--white);border:1px solid var(--border);border-radius:16px;padding:18px 20px;margin-bottom:12px;text-decoration:none;color:var(--ink);transition:transform .15s,box-shadow .15s}
+  .page:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(50,47,44,.08)}
+  .page .t{font-family:"Inter Tight",Inter,sans-serif;font-size:16px;font-weight:600}
+  .page .d{color:var(--ink2);font-size:13px;margin-top:2px}
+  .page .probes{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}
+  .page .pid{background:var(--ink);color:var(--white);font-family:"Inter Tight",Inter,sans-serif;font-weight:700;font-size:11px;border-radius:7px;padding:1px 7px}
+  .note{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:16px 20px;margin-top:24px}
+  .note h2{font-family:"Inter Tight",Inter,sans-serif;font-size:15px;font-weight:600;margin-bottom:8px}
+  .note ul{margin-left:18px;color:var(--ink2);font-size:13px}
+  .note li{margin:4px 0}
+  a.plain{color:var(--accent);text-decoration:none}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>The probes, integrated into actual pages</h1>
+    <p>Each link below is a page-level mockup: the real Solen page (live capture or 1:1 component copy) with the round-1 and round-2 probes sitting IN it, tappable. The isolated side-by-side versions stay on the <a class="plain" href="../taste-refs/index.html">taste-refs page</a>. Answer with the same ids as before, for example "P1 a, P9 a, G1 b, R2-1 yes".</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <a class="page" href="dashboard.html">
+    <div class="t">Dashboard</div>
+    <div class="d">The live dashboard capture with the rolling revenue number, the expanding setup checklist, the in-place notification stack, the approve-collapse request row and the proposed tips panel.</div>
+    <div class="probes"><span class="pid">P1</span><span class="pid">P3</span><span class="pid">P7</span><span class="pid">P12</span><span class="pid">P14</span></div>
+  </a>
+
+  <a class="page" href="bookings.html">
+    <div class="t">Appointments</div>
+    <div class="d">The bookings list built 1:1 from the real BookingCard (the live test account is empty, so the rows are rebuilt, not screenshotted): hero treatment on the next appointment, cascade on load.</div>
+    <div class="probes"><span class="pid">P16</span><span class="pid">P4</span></div>
+  </a>
+
+  <a class="page" href="payment.html">
+    <div class="t">Booking payment step</div>
+    <div class="d">The pay step with the real commit-button recipe: the CTA carries the amount, the voucher rolls the total, the mute disabled button explains itself, the email field validates on leave.</div>
+    <div class="probes"><span class="pid">P9</span><span class="pid">P1b</span><span class="pid">R2-1</span><span class="pid">R2-2</span></div>
+  </a>
+
+  <a class="page" href="search.html">
+    <div class="t">Search on the home page</div>
+    <div class="d">The live mobile homepage; tapping the real search card opens the probe overlay: grouped sections, highlighted match, honest loader, and the wait that names its step.</div>
+    <div class="probes"><span class="pid">P13</span><span class="pid">P15</span></div>
+  </a>
+
+  <a class="page" href="richness.html">
+    <div class="t">Richness and layout, the generative probes</div>
+    <div class="d">The two judge-flagged round-2 gaps: three density levels of one salon section side by side, and the same salons as list, grid and carousel.</div>
+    <div class="probes"><span class="pid">G1</span><span class="pid">G2</span></div>
+  </a>
+
+  <div class="note">
+    <h2>Probes that stay on the side-by-side page, with the honest reason</h2>
+    <ul>
+      <li>P5 and P6 (loyalty tick-bar and marker): the customer loyalty page is live as "coming soon", there is no rendered meter to integrate into yet.</li>
+      <li>P8 (queue countdown ring): the tracker route queue/[token] is real but needs a live walk-in token to capture; the capsule demo stays on the refs page.</li>
+      <li>P11 (7-day chip row): no working-hours UI exists yet, there is no page to put it in.</li>
+      <li>P17 (minimize-to-pill jobs): no long-running dashboard action exists yet.</li>
+      <li>P2 (icon morph): its real home is the confirmation screen's copy button; the morph demo on the refs page carries the decision.</li>
+      <li>P10 (inline-bold notices): decision is copy-level, the A/B on the refs page carries it.</li>
+    </ul>
+  </div>
+
+</div>
+</body>
+</html>

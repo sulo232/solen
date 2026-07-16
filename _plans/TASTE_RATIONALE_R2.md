@@ -32,6 +32,18 @@ Owner message (dictated): fix + commit; expand RATIONALE.md with the og round-1 
 - [x] WORKLOG entry + plan boxes ticked + per-chunk commits (TASTE_LOG waits for the owner's picks, elicitation is open, no settled decision to log yet)
 - [x] Closed with clickable tunnel links (probe page + rationale summary in the final message)
 
+
+## Round 2b: integrated tappable pages (owner 2026-07-16: "mockups for the round 2" + "each one in acc pages... integrated and tappable")
+
+- [x] Base captures of the real pages , verified: public/_mockups/_assets/taste-round2/ base-dashboard.png (dev-login, PIL-measured), base-termine.png (consent-seeded rerun), base-home-mobile.png, base-home-full.png, base-loyalty.png (shows loyalty = coming soon), 3 real card-photo crops
+- [x] Dashboard integrated page (P1 roll, P3 collapse+undo, P7 checklist, P12 stack, P14 tips) , verified: dashboard.html, JS-verified toggles all true, gemini diffs (P1 patch over title, P12 tag clip) fixed and re-measured live (patch 515-546 clears title 505, covers number 520-539, hot clears the percent line 552)
+- [x] Bookings integrated page (P16 hero, P4 cascade) , verified: bookings.html, real BookingCard recipe 1:1, rendered screenshot checked
+- [x] Payment step integrated page (P9 CTA amount, P1b voucher roll, R2-1 disabled-explains, R2-2 blur validation) , verified: payment.html, JS-verified: why-line on disabled tap, total rolls 65 to 55, CTA arms "Pay CHF 55", email err fires on blur only
+- [x] Search integrated page (P13 grouped+highlight+loader, P15 named wait) on the live home capture , verified: search.html, JS-verified full sequence
+- [x] Richness + layout generative probes (G1 triptych, G2 list/grid/carousel toggle) with real photos + converged card recipe , verified: richness.html, 14/14 images, toggle works
+- [x] Hub with honest not-integrated list (P5/P6 loyalty coming-soon, P8 token needed, P11/P17 no surface yet, P2/P10 decision carried by refs page) , verified: index.html
+- [ ] BLOCKED: payment-step LIVE capture stays chip task_400fe4c2 (the integrated page is a 1:1 component rebuild, honest note on the page)
+
 ## Parked / boundaries
 - Web dark mode stays graveyarded (exists-check hit); positive-polarity mechanics recorded for MOBILE dark mode only.
 - Merge chip task_c132841a, payment capture chip task_400fe4c2, R1/R2/R4 post-merge: unchanged, owner-gated.
