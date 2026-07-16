@@ -8,6 +8,8 @@ import { chargeOffSession } from "@/lib/bookings/off-session-charge";
 import { getServerEnv } from "@/lib/env";
 import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
 import { withCronRun, ALL_DECLINED_SYMPTOM_FLOOR } from "@/lib/cron-run";
+import { preChargeDeclinedNotification } from "@/lib/email-templates/booking-notifications";
+import type { EmailLocale } from "@/lib/email";
 
 // Cron: Pre-charge saved cards 5 days before appointment. Daily.
 export async function GET(req: NextRequest) {
@@ -147,12 +149,28 @@ export async function GET(req: NextRequest) {
           ? await admin.auth.admin.getUserById(booking.user_id)
           : { data: null };
         if (userAuth?.user?.email) {
+          // Locale via profiles.locale, same pattern as notify-upcharge.ts. Defaults to
+          // "de" when the profile has none set (or user_id is somehow absent here).
+          let locale: EmailLocale = "de";
+          if (booking.user_id) {
+            const { data: profile } = await admin
+              .from("profiles")
+              .select("locale")
+              .eq("id", booking.user_id)
+              .single();
+            locale = (profile?.locale as EmailLocale) ?? "de";
+          }
           try {
-            await sendEmail({
-              to: userAuth.user.email,
-              subject: `Zahlung fehlgeschlagen: ${(booking.salons as any)?.name ?? "Salon"}`,
-              html: `<p>Die Vorab-Belastung für deinen Termin am ${new Date(booking.starts_at).toLocaleDateString("de-CH")} konnte nicht durchgeführt werden.</p><p>Bitte aktualisiere deine Zahlungsmethode oder kontaktiere den Salon.</p>`,
-            });
+            await sendEmail(
+              preChargeDeclinedNotification(
+                userAuth.user.email,
+                {
+                  salon: (booking.salons as any)?.name ?? "Salon",
+                  date: new Date(booking.starts_at).toLocaleDateString("de-CH"),
+                },
+                locale,
+              ),
+            );
           } catch (err) { console.error("[cron/pre-charge] decline notification email failed:", err); }
         }
       } else {
