@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Round 2 explained: what it added, where its mockups are, and what it actually guarantees</title>
+<!-- Base: elicitation -->
+<!-- Exists-check: npm run exists round2 ran this session (0 code hits); this is the plain-English explainer the owner asked for ("you didn't even explain in English what you're even adding"), knowledge only, no surface rebuilt. -->
+<!-- Grounded-in: public/_mockups/taste-round2/index.html (the probe hub this explains) -->
+<!-- Grounded-in: _design-system/RATIONALE.md (the file round 2 extended) -->
+<!-- Owner-scope: all-variants: explainer only, no design fork inside. -->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#C5C8C4;--border:#E4E4E7;--sunken:#F4F4F5;--white:#FFFFFF;--accent:#276EF1;--success:#16A34A;--error:#DC2626}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,-apple-system,"Segoe UI",sans-serif;background:var(--sunken);color:var(--ink);font-size:14.5px;line-height:1.6;padding-bottom:100px}
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px}
+  header{background:var(--white);border-bottom:1px solid var(--border);padding:32px 0 24px;margin-bottom:24px}
+  h1{font-family:"Inter Tight",Inter,sans-serif;font-size:clamp(22px,3vw,27px);font-weight:700;line-height:1.25}
+  header p{color:var(--ink2);margin-top:8px;max-width:64ch}
+  .card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:20px 22px;margin-bottom:16px}
+  .card h2{font-family:"Inter Tight",Inter,sans-serif;font-size:17px;font-weight:600;margin-bottom:10px}
+  .card p{color:var(--ink);margin-bottom:10px;max-width:66ch}
+  .card p.g{color:var(--ink2)}
+  .rule{display:flex;gap:12px;padding:9px 0;border-top:1px solid var(--border)}
+  .rule:first-of-type{border-top:0}
+  .rule .what{flex:1}
+  .rule .what b{font-weight:600}
+  .rule .what span{display:block;color:var(--ink2);font-size:13px}
+  .tagy{flex:none;font-size:11.5px;font-weight:600;border-radius:999px;padding:3px 10px;height:fit-content}
+  .t-now{background:var(--sunken);color:var(--ink)}
+  .t-probe{background:rgba(39,110,241,.08);color:var(--accent)}
+  .t-later{background:var(--white);border:1px solid var(--border);color:var(--ink2)}
+  a{color:var(--accent);text-decoration:none}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>Round 2, in plain words</h1>
+    <p>You asked three things: what did round 2 actually add, where are its mockups, and will any of this actually make the work better. Straight answers below.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="card">
+    <h2>1. What round 2 added</h2>
+    <p>Round 2 was the second research text you sent. It shipped no product change. It rewrote the RULES I design and judge by, in the taste system's "why" file. The ones that will actually touch your product, in your words:</p>
+    <div class="rule"><div class="what"><b>A switched-off button must say why when tapped</b><span>instead of sitting mute until you guess what is missing</span></div><span class="tagy t-later">needs the real pay step</span></div>
+    <div class="rule"><div class="what"><b>Forms only turn red after you LEAVE a field</b><span>never while you are still typing</span></div><span class="tagy t-later">needs the real pay step</span></div>
+    <div class="rule"><div class="what"><b>Waits say what they are doing</b><span>"Checking availability" instead of a bare spinner; research shows named waits feel acceptable</span></div><span class="tagy t-probe">P15, on the refs page</span></div>
+    <div class="rule"><div class="what"><b>The pay button carries the exact amount</b><span>"Pay CHF 55", so the price is not repeated twice on the screen</span></div><span class="tagy t-later">needs the real pay step</span></div>
+    <div class="rule"><div class="what"><b>Digits that align, everywhere numbers matter</b><span>your tabular-numbers rule extended from codes to revenue, timers, tables</span></div><span class="tagy t-now">rule, live</span></div>
+    <div class="rule"><div class="what"><b>Chart bars always start at zero</b><span>a cut-off bar exaggerates and stays misleading even with a footnote; proven in studies</span></div><span class="tagy t-now">rule, live</span></div>
+    <div class="rule"><div class="what"><b>New greys get picked by JOB, not invented</b><span>a written map says which grey is background, border, or text, so shades stop multiplying</span></div><span class="tagy t-now">rule, live</span></div>
+    <div class="rule"><div class="what"><b>Labels above fields, forms in one column</b><span>the eye-tracking research, with its honest limits noted</span></div><span class="tagy t-now">rule, live</span></div>
+    <div class="rule"><div class="what"><b>Icons almost always get a word next to them</b><span>your existing ladder, now backed by the research on how often icons get misread</span></div><span class="tagy t-now">rule, live</span></div>
+    <div class="rule"><div class="what"><b>A named list of dirty tricks we never use</b><span>fake urgency, fake scarcity, guilt-wording, hidden costs, with the industry names and the EU rule that bans them</span></div><span class="tagy t-now">rule, live</span></div>
+    <div class="rule"><div class="what"><b>Six more famous design "rules" marked as myths</b><span>the 10,000-hour rule, the 3-click rule, the goldfish attention span and friends; I can never cite them again</span></div><span class="tagy t-now">rule, live</span></div>
+    <p class="g" style="margin-top:12px">Round 2 also ran two judge agents over the whole taste system. Their verdict, kept verbatim in the file: the system got good at GRADING screens but still cannot GENERATE a right first screen, because your biggest direction ("rich not bland") has no defined level yet. That produced a ranked to-build list, with the richness dial at the top.</p>
+  </div>
+
+  <div class="card">
+    <h2>2. Where its mockups are</h2>
+    <p>Honest answer: most round-2 probes were built into the payment page that you rightly killed in the redraw purge, so they died with it. What is alive today: the named-wait probe (P15) and the tick-bar probe (P5) on the <a href="../taste-refs/index.html">refs page</a>.</p>
+    <p class="g">The three payment ones (button explains itself, red-after-leave, amount in the button) come back as overlays on the REAL pay step once it is captured; the automated walk got a service and stylist selected but no free day loaded on the test salon, so that capture is its own open task. The richness dial waits for your converged card to render live, so it uses your real cards.</p>
+  </div>
+
+  <div class="card">
+    <h2>3. Will this actually make it better?</h2>
+    <p>Rules alone: no. Rules get forgotten under pressure, this session proved it again. What actually holds:</p>
+    <div class="rule"><div class="what"><b>Gates, not promises</b><span>four new blockers now physically stop repeat mistakes: no rebuilt pages without a real capture, rejected treatments cannot re-enter mockups, no "done" tick without proof, no design knowledge without a viewable page</span></div><span class="tagy t-now">live, self-tested</span></div>
+    <div class="rule"><div class="what"><b>Your picks become dated law</b><span>today's answers (P7, P12, P13, P14 yes; P1 without the blur; P3 never) are logged and enforced the same way</span></div><span class="tagy t-now">logged</span></div>
+    <div class="rule"><div class="what"><b>Next: measuring instead of eyeballing</b><span>the judges' list turns the floors into scripts: blue-coverage per screen, balance as a number, spacing against the 32/12/16 scale</span></div><span class="tagy t-later">to build</span></div>
+    <p class="g">The honest limit: none of this guarantees beauty. It narrows what I can get wrong and stops the same mistake twice. The taste calls stay yours, which is what the probe pages are for.</p>
+  </div>
+
+</div>
+</body>
+</html>

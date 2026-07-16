@@ -47,6 +47,14 @@ Owner message (dictated): fix + commit; expand RATIONALE.md with the og round-1 
 - [x] Rebuild on REAL captures , verified: search.html rebuilt on the live-captured overlay (base-search-real.png, PIL-pinned pill 7.8-13.4 percent), rendered proof: typed state + grouped results over the real pill; real wizard steps 1-3 captured (base-book-1/2/3) for the pay-step rebuild
 - [ ] BLOCKED, named: pay-step capture (no day with free times loaded during the automated wizard walk on Muse Beauty Studio; chip task_400fe4c2); bookings-page capture (needs one real booking on the test account first); richness probe (waits for the converged card to render live post-merge)
 
+## Owner picks 2026-07-16 (dictated)
+
+- [x] Record the picks in TASTE_LOG , P7 approved (checklist language), P12 approved (in-place stack + label folds), P13 approved (grouped sections + highlight + honest loader), P14 approved (InsightCard shape; backend still missing), P1 approved WITHOUT the blur ("that blurting is not okay", clean roll only), P3 REJECTED ("I don't want that")
+- [x] Graveyard P3 (approve-collapse-with-undo) via REMOVED.md
+- [x] De-blur the P1 demos on both live probe pages so they match the approved direction
+- [ ] CORRECTION: the round-2 research has no visible mockups (its probes lived in the deleted payment/richness pages) and was never explained in plain English , deliver a plain-English visual explainer THIS turn + name when each round-2 probe returns
+- [ ] Apply round dispatched to the coder loop: P7 (SetupBanner full checklist), P12 (dashboard bell in-place stack), P13 (search overlay: grouped sections + match highlight + honest loader), P1 (clean digit roll, NO blur, dashboard KPI). P14 blocked on backend (no insights source).
+
 ## Parked / boundaries
 - Web dark mode stays graveyarded (exists-check hit); positive-polarity mechanics recorded for MOBILE dark mode only.
 - Merge chip task_c132841a, payment capture chip task_400fe4c2, R1/R2/R4 post-merge: unchanged, owner-gated.

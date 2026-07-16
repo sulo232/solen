@@ -206,3 +206,16 @@ Also this round: the rose photo DiscountBadge (web SalonCard.tsx V3-D85) was sho
 - Scope: home-refined R1-R5 + fixes-refined S1-S3 / P1-P3 / D2-D4 / C1-C3 (17 pairs). Each Refined panel is now the approved treatment; apply to real code one commit per fix.
 - R2 (card three-bolds) is DELIVERED BY the converged card (CARD_REDESIGN_2026-07-13) when the merge lands, not re-implemented by hand here.
 - C1 note: the solid staff-swatch fills + initials proposal is hereby approved (was flagged as needing sign-off).
+
+## 2026-07-16, reference-probe picks round 1 (owner dictated)
+
+| Probe | Decision | Owner verbatim |
+|---|---|---|
+| P7 checklist language (done=green check / current=filled / upcoming=outline, all steps visible) | APPROVED | "RIP seven is approved" |
+| P12 notifications expand in place + label folds to "View all" | APPROVED | "and p twelve two" |
+| P1 rolling digits on updating numbers | APPROVED, WITHOUT the blur; refine the roll | "that blurting is not okay. But if it's better to improve it, that's good" |
+| P14 InsightCard tips shape (backend still missing) | APPROVED (shape only) | "P fourteen is approved too" |
+| P3 approve/decline collapses to committed pill + undo | REJECTED | "The p three, no. P three, I don't want that" |
+| P13 search: grouped sections + match highlight + honest loader | APPROVED | "p thirteen, that's approved" |
+
+P3 graveyarded (REMOVED.md). Undecided probes from the refs page stay open: P2, P4, P5, P6, P8, P9, P10, P11, P15, P16, P17, C1-C5, G1, G2.

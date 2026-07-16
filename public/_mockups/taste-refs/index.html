@@ -73,15 +73,15 @@
   .kpi-num{font-family:"Inter Tight",Inter,sans-serif;font-weight:700;font-size:26px;font-variant-numeric:tabular-nums;display:flex;align-items:flex-end;line-height:30px;gap:2px;margin-top:2px}
   .digitwin{display:inline-block;height:30px;overflow:hidden;position:relative;width:16px}
   .digitwin .reel{position:absolute;left:0;top:0;animation:reel 4s cubic-bezier(.16,1,.3,1) infinite}
-  @keyframes reel{0%,35%{transform:translateY(0);filter:blur(0px)}45%{filter:blur(3px)}50%,85%{transform:translateY(-30px);filter:blur(0px)}92%{filter:blur(3px)}100%{transform:translateY(0)}}
+  @keyframes reel{0%,35%{transform:translateY(0);filter:blur(0px)}45%{filter:blur(0px)}50%,85%{transform:translateY(-30px);filter:blur(0px)}92%{filter:blur(0px)}100%{transform:translateY(0)}}
   .digitwin span{display:block;height:30px;line-height:30px}
 
   .iconbtn{width:44px;height:44px;border-radius:999px;border:1px solid var(--border);background:var(--white);display:inline-flex;align-items:center;justify-content:center;position:relative}
   .iconbtn .ic{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
   .iconbtn .ic.a{animation:icA 3.2s ease infinite}
   .iconbtn .ic.b{animation:icB 3.2s ease infinite;color:var(--success)}
-  @keyframes icA{0%,40%{opacity:1;transform:scale(1);filter:blur(0px)}50%,90%{opacity:0;transform:scale(.7);filter:blur(2px)}100%{opacity:1;transform:scale(1);filter:blur(0px)}}
-  @keyframes icB{0%,40%{opacity:0;transform:scale(.7);filter:blur(2px)}50%,90%{opacity:1;transform:scale(1);filter:blur(0px)}100%{opacity:0;transform:scale(.7);filter:blur(2px)}}
+  @keyframes icA{0%,40%{opacity:1;transform:scale(1);filter:blur(0px)}50%,90%{opacity:0;transform:scale(.7);filter:blur(0px)}100%{opacity:1;transform:scale(1);filter:blur(0px)}}
+  @keyframes icB{0%,40%{opacity:0;transform:scale(.7);filter:blur(0px)}50%,90%{opacity:1;transform:scale(1);filter:blur(0px)}100%{opacity:0;transform:scale(.7);filter:blur(0px)}}
 
   .apprv{display:flex;gap:10px;align-items:center;max-width:360px}
   .apprv .opt{height:44px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;overflow:hidden;white-space:nowrap}
@@ -219,7 +219,7 @@
   </div>
 
   <div class="probe">
-    <div class="probe-head"><span class="pid">P3</span><h3>Approve or decline collapses into the result, with undo</h3><span class="src">ref 18</span></div>
+    <div class="probe-head"><span class="pid" style="background:var(--error)">P3</span><h3 style="text-decoration:line-through">Approve or decline collapses into the result, with undo</h3><span style="color:var(--error);font-size:12px;font-weight:600">rejected 2026-07-16</span><span class="src">ref 18</span></div>
     <div class="probe-body">
       <div class="refbox"><img src="../_assets/taste-refs/18-nitishkmrk-v1-f1.jpg" alt="reference"><div class="cap">The chosen option expands to a full-width committed pill; a small undo appears.</div></div>
       <div class="apply">
