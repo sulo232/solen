@@ -1,0 +1,5 @@
+# harvested media + models are large + reproducible; keep the pipeline, not the payload
+data/
+.venv/
+*.mp4
+*.jpg

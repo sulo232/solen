@@ -2,15 +2,17 @@
 
 Owner: watch EVERY video of given Instagram profiles, extract the design principle(s) each teaches, compile ONE detailed principles document. More profiles will follow (loopable pipeline). First profile: https://www.instagram.com/designparser (user id 78062220233, 116 posts, all videos, public).
 
-## THE BLOCKER (concrete, owner-owned): logged-in cookies
-The cookies the owner pasted (csrftoken, datr, ig_did, mid) are PRE-LOGIN cookies.
-They lack `sessionid` + `ds_user_id`. Empirically re-tested this turn: video
-download still returns Instagram's "empty media response" error (verified: yt-dlp
-run with `--cookies instagram-cookies.txt` on reel DavIo74DaTK, same failure as
-anonymous). Need a re-export done WHILE SIGNED IN to instagram.com.
-Nothing downstream (enumerate 116 / download / frames / transcribe / analyze /
-compile / deliver) can run until that file has `sessionid`. This is a credential
-only the owner can provide => a legitimate hard stop, not a checkpoint.
+## NO LOGIN NEEDED (owner said "I dont wanna log in", 2026-07-16) - CORRECTED
+Earlier "download blocked" was true ONLY for yt-dlp's extraction path. The direct
+private feed API (`/api/v1/feed/user/{id}/`) answers ANONYMOUSLY with a bootstrapped
+csrftoken + app-id, returning items WITH video_versions whose CDN urls also download
+anonymously. verified 2026-07-16:
+  - anon video download OK: reel DavIo74DaTK -> valid 28.67s MP4, 667KB (ffprobe).
+  - anon pagination OK: feed API page 1+2 returned items + next_max_id + more=True.
+Owner needs to do NOTHING. Only catch: Instagram RATE-LIMITS anonymous feed calls by
+IP (401 after a burst; web_profile_info stays 200). So the harvest is PATIENT +
+checkpointed (escalating 30->300s cooldowns, per-page checkpoint, resumable) and runs
+in the BACKGROUND across rate windows. This is a transient wait, not an owner blocker.
 
 ## Feasibility findings (2026-07-16, verified this session)
 - verified: profile is public, 116 posts all videos, full captions readable anon
@@ -33,18 +35,27 @@ only the owner can provide => a legitimate hard stop, not a checkpoint.
 - [x] Loopify: rerunnable per-profile pipeline `verified: scripts/ig-harvest/harvest.sh:1 (./harvest.sh <username>), README.md, idempotent resumable stages`
 - [x] Self-test the sessionid guard (build-then-integrate law) `verified: ran harvest.sh w/ pre-login cookies -> exit 2, clean reject, no crash`
 
-### BLOCKED on the cookie file above (concrete named blocker, cannot proceed)
-- [ ] Enumerate all 116 posts into manifest.json  BLOCKED: needs sessionid (enumerate.py:load_cookies aborts without it)
-- [ ] Download all videos throttled  BLOCKED: needs sessionid (media response empty otherwise, verified)
-- [ ] Extract frames per video  BLOCKED: depends on downloaded videos
-- [ ] Transcribe audio (install mlx-whisper in ~/.venvs/ig-harvest, then run)  BLOCKED: depends on downloaded videos
-- [ ] Per-video principle extraction (frames + transcript + caption) via Workflow subagents (sonnet, delegate-media-read law)  BLOCKED: depends on frames+transcripts
-- [ ] Compile the single detailed principles document (dedupe, group by theme, per-video source links)  BLOCKED: depends on extraction
-- [ ] Deliver as served visual page (Wrong/Right + plain English) with tunnel link  BLOCKED: depends on compiled doc
-- [ ] Deliver the doc file alongside  BLOCKED: depends on compiled doc
+### Pipeline rebuilt for ANONYMOUS operation (no login) + whisper ready
+- [x] Rewire enumerate to anonymous (bootstrap csrf + app-id, no cookie needed) `verified: scripts/ig-harvest/enumerate.py:20 IG client, resolve_user_id anon`
+- [x] Make it throttle-resilient (wait out IP rate-limit, don't give up) `verified: enumerate.py:56 get_json deadline 90min, unlimited 401 retries, session refresh`
+- [x] Checkpoint enumeration (resume across rate windows) `verified: enumerate.py:96 _enum_ckpt.json per-page save + resume`
+- [x] Download re-resolves expired CDN urls via media-info endpoint `verified: harvest.sh:35 fresh_url(pk) fallback`
+- [x] Install transcriber (faster-whisper, project-local venv, sandbox-writable) `verified: ./.venv/bin/python -> faster_whisper 1.2.1 OK; transcribe.py:1`
+- [x] Wire stage 4 to the project venv `verified: harvest.sh:75 $ROOT/.venv/bin/python transcribe.py`
+- [x] Build the analysis-input assembler (caption+transcript+frame paths per video) `verified: build_analysis_input.py:1`
+
+### IN PROGRESS via tracked background harvest b8mf3xzyp (NOT owner-blocked; a transient rate-limit wait)
+- [ ] Enumerate all 116 posts into manifest.json  RUNNING: b8mf3xzyp, patiently waiting out IP throttle (got count=116; feed API 401 cooling down, resumes on window reset)
+- [ ] Download all videos throttled  QUEUED: harvest.sh stage 2 after enumerate
+- [ ] Extract frames per video  QUEUED: harvest.sh stage 3 (ffmpeg scene+interval)
+- [ ] Transcribe audio  QUEUED: harvest.sh stage 4 (whisper ready)
+- [ ] Per-video principle extraction (frames+transcript+caption) via Workflow subagents (sonnet, delegate-media-read law)  QUEUED: run on resume once media lands, args from build_analysis_input.py
+- [ ] Compile the single detailed principles document (dedupe, group by theme, per-video source links)  QUEUED: synthesis stage of the analysis workflow
+- [ ] Deliver as served visual page (Wrong/Right + plain English) with tunnel link  QUEUED: after doc compiled
+- [ ] Deliver the doc file alongside  QUEUED: after doc compiled
 
 ## Parked / notes
-- Owner will send more profiles after this one; harvest.sh is profile-agnostic (one arg).
+- Owner said "I dont wanna log in" -> pipeline is fully anonymous now; owner does nothing.
+- Cost of anonymous: IG rate-limits by IP, so the harvest is slow (patient cooldowns). My own feasibility testing burned the budget, so it starts hot; resumes as the window clears. Runs in background, resumable, no data lost on interruption.
+- Owner will send more profiles; harvest.sh is profile-agnostic (`./harvest.sh <username>`).
 - Honest scope flag given to owner: 116 videos != 116 distinct principles; expect ~40-70 deduped principles with multiple video sources each (owner can override to strict 1-per-video).
-- Account-safety pacing built into stage 2; stop on any rate-limit/checkpoint, stages resume.
-- Whisper venv install failed once this turn (exit 127); deferred, not on the critical path (captions+frames carry most principles). Re-do per README when stage 4 runs.
