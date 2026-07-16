@@ -146,10 +146,11 @@ Six of 15 topics have ZERO gate coverage: file-storage, jobs-async, webhooks, ca
 
 ### Synthesis + delivery (atomized per the unfinished-batch gate)
 - [ ] Adversarial verify pass on every GAP finding (default-refute skeptic per topic; a finding survives only if the skeptic looked and could not kill it)
-- [ ] `LAW.md` , one locked row per axis, all 15 topics
-- [ ] `LAW.md` , every row Solen-specific (names our stack + our scale, not generic advice)
-- [ ] `LAW.md` , every row backlinked to its RATIONALE section
-- [ ] `LAW.md` , every row backlinked to the relevant `_docs/BACKEND.md` section
+- [x] `LAW.md` , one locked row per axis, all 15 topics. verified: `_backend-system/LAW.md`, 274 lines, ~60 rows + a section 0 ("THE ONE LAW": a 200 proves nothing, prove BEHAVIOR) that the research surfaced as the top-ranked finding in 7 of 15 topics independently.
+- [x] `LAW.md` , every row Solen-specific. Reviewer graded section C **PASS**: the overwhelming majority carry Solen counts/file:line. 3 rows (timestamps, isolation, lock ordering) flagged P2 as thinner than peers, not wrong.
+- [x] `LAW.md` , **NO fabricated claim**. This was the highest-stakes check (a doc that exists to stop invention cannot invent). Reviewer graded section A **PASS: 0 fabrications across ~20 checked numeric/named claims**, each traced to a source file:line.
+- [x] `LAW.md` , reviewer round 1 = **FAIL, 3x P1 + 2x P2, all fixed**: (1+2) two rows claimed **GATED** without disclosing the gates are `Write`-only, so the common path of adding the violation to an EXISTING route via Edit is NOT blocked , that is exactly the false confidence the doc exists to kill, now disclosed as "GATED (new routes only)" with the 34-45% FP reason stated; (3) the doc's own first instruction pointed at `RATIONALE.md`, which does not exist (nor do `AUDIT_2026-07-16.md`/`QUESTIONS.md`, though README's layer map names all three) , pointer now honest and redirected to `research/<topic>.md`; (4+5) `T0`/`reasoned` tiers were outside the legend , T0 now defined as "verified against OUR own code/DB", the strongest tier here.
+- [ ] `LAW.md` , backlink each row to `_docs/BACKEND.md` (deferred: rows currently cite file:line directly, which is more precise than a section pointer)
 - [ ] `RATIONALE.md` , forces + tradeoffs per decision (the RATIONALE.md entry template: DECISION/FORCES/OPTIMIZES FOR/SACRIFICES/BOUNDARY/MECHANIC/SOURCE)
 - [ ] `RATIONALE.md` , evidence tier (T1/T2/T3/CONV/MYTH) on every claim
 - [ ] `RATIONALE.md` , a myth table (the backend claims never to cite again)
