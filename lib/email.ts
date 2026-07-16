@@ -51,11 +51,16 @@ const RESEND_TIMEOUT_MS = 5000;
  *
  * Throws on failure, including timeout. Every caller must keep its try/catch: an email is never
  * worth failing a booking that already committed.
+ *
+ * @param requestId optional (OBS-01): the caller's request id, logged alongside this
+ *   function's own console.error/warn lines so a failed send can be traced back to the
+ *   booking-create or webhook request that triggered it. Optional so every EXISTING caller
+ *   (there are several) keeps compiling unchanged.
  */
-export async function sendEmail(payload: EmailPayload): Promise<void> {
+export async function sendEmail(payload: EmailPayload, requestId?: string): Promise<void> {
   const apiKey = getServerEnv().RESEND_API_KEY;
   if (!apiKey || apiKey === "PASTE_RESEND_KEY_HERE") {
-    console.warn("[email] RESEND_API_KEY not configured, skipping email send");
+    console.warn("[email] RESEND_API_KEY not configured, skipping email send", { requestId });
     return;
   }
 
@@ -82,7 +87,7 @@ export async function sendEmail(payload: EmailPayload): Promise<void> {
     // Name the timeout explicitly rather than letting it surface as a bare "AbortError", so the
     // log says WHY. Do not swallow it: the caller decides, and every caller already try/catches.
     if (err instanceof Error && err.name === "AbortError") {
-      console.error(`[email] Resend timed out after ${RESEND_TIMEOUT_MS}ms:`, payload.subject);
+      console.error(`[email] Resend timed out after ${RESEND_TIMEOUT_MS}ms:`, payload.subject, { requestId });
       throw new Error(`Resend timeout after ${RESEND_TIMEOUT_MS}ms`);
     }
     throw err;

@@ -8,6 +8,7 @@ import { trackServerEvent } from "@/lib/posthog-server";
 import { getServerEnv } from "@/lib/env";
 import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
 import { reportError } from "@/lib/error-report";
+import { getRequestId } from "@/lib/request-id";
 
 export const runtime = "nodejs";
 
@@ -18,7 +19,33 @@ export const runtime = "nodejs";
 //                   payment_intent.canceled, payment_intent.amount_capturable_updated
 //                   (walk-in ticket backstop), charge.dispute.created,
 //                   charge.dispute.closed, account.updated
-export async function POST(req: NextRequest) {
+// OBS-01: thin wrapper so x-request-id lands on EVERY response this route returns, without
+// touching each individual `return NextResponse.json(...)` inside the handler. handleWebhook is
+// the original handler body, unchanged in control flow, with requestId threaded into its
+// console.error/warn + sendEmail/reportError calls so one Stripe event delivery's log lines can
+// be traced end to end (a real inbound x-request-id, e.g. a future proxy, is reused; Stripe
+// itself sends none, so this normally mints a fresh id per delivery).
+export async function POST(req: NextRequest): Promise<NextResponse> {
+  const requestId = getRequestId(req);
+  try {
+    const response = await handleWebhook(req, requestId);
+    response.headers.set("x-request-id", requestId);
+    return response;
+  } catch (err) {
+    // Same throw-path hole as bookings/route.ts: without this, an exception skips the
+    // headers.set() above and the id is lost on exactly the requests worth tracing.
+    // A 500 here is also correct for Stripe specifically: it makes Stripe RETRY the event,
+    // which is what we want when our handler crashed, and the idempotency claim in
+    // processed_webhook_events is released on throw so the retry can re-run cleanly.
+    console.error("[stripe/webhook] POST threw:", { requestId, error: err instanceof Error ? err.message : String(err) });
+    return NextResponse.json(
+      { error: "Internal error", requestId },
+      { status: 500, headers: { "x-request-id": requestId } },
+    );
+  }
+}
+
+async function handleWebhook(req: NextRequest, requestId: string): Promise<NextResponse> {
   const body = await req.text();
   const sig = req.headers.get("stripe-signature");
   const env = getServerEnv();
@@ -32,7 +59,7 @@ export async function POST(req: NextRequest) {
   try {
     event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
   } catch (err) {
-    console.error("[stripe/webhook] Signature verification failed:", err);
+    console.error("[stripe/webhook] Signature verification failed:", err, { requestId });
     return NextResponse.json({ error: "Webhook signature invalid" }, { status: 400 });
   }
 
@@ -58,7 +85,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ received: true });
     }
     // Other DB error (e.g. connection blip). Return 5xx so Stripe retries.
-    console.error("[stripe/webhook] failed to claim event:", claimError, { event_id: event.id, type: event.type });
+    console.error("[stripe/webhook] failed to claim event:", claimError, { event_id: event.id, type: event.type, requestId });
     return NextResponse.json({ error: "Claim failed" }, { status: 500 });
   }
 
@@ -80,7 +107,7 @@ export async function POST(req: NextRequest) {
       if (pi.metadata?.type === "tip") {
         const { error: tipErr } = await admin
           .from("tips").update({ status: "paid" }).eq("stripe_payment_intent_id", pi.id);
-        if (tipErr) console.error("[StripeWebhook] tip status update failed:", tipErr.message);
+        if (tipErr) console.error("[StripeWebhook] tip status update failed:", tipErr.message, { requestId });
         break;
       }
 
@@ -204,9 +231,9 @@ export async function POST(req: NextRequest) {
                 .update({ promo_counted_at: new Date().toISOString() })
                 .eq("id", confirmedRow.id)
                 .is("promo_counted_at", null);
-              if (promoClaimErr) console.error("[StripeWebhook] promo_counted_at claim failed:", promoClaimErr.message);
+              if (promoClaimErr) console.error("[StripeWebhook] promo_counted_at claim failed:", promoClaimErr.message, { requestId });
             } catch (promoClaimCatchErr) {
-              console.error("[StripeWebhook] promo_counted_at claim threw:", promoClaimCatchErr);
+              console.error("[StripeWebhook] promo_counted_at claim threw:", promoClaimCatchErr, { requestId });
             }
           }
         } else if (pi.metadata?.type !== "pre_charge") {
@@ -330,7 +357,7 @@ export async function POST(req: NextRequest) {
                 locale,
                 vars: { service: serviceName, salon: salonName, date: dateStr, time: timeStr, ...priceVars }
               }
-            }).catch((err) => console.error("[StripeWebhook] failed to send booking confirmation notification:", err));
+            }).catch((err) => console.error("[StripeWebhook] failed to send booking confirmation notification:", err, { requestId }));
           }
         }
       }
@@ -386,7 +413,7 @@ export async function POST(req: NextRequest) {
           } else {
             console.error(
               "[stripe/webhook] off-session charge missing salon_id/amount, skipping payout row:",
-              { event_id: event.id, pi: pi.id, type: offSessionType, booking_id: chargeBookingId },
+              { event_id: event.id, pi: pi.id, type: offSessionType, booking_id: chargeBookingId, requestId },
             );
           }
 
@@ -410,6 +437,7 @@ export async function POST(req: NextRequest) {
                 console.error(
                   `[stripe/webhook] upcharge dispute CAS failed for dispute ${disputeId}:`,
                   casDisputeErr.message,
+                  { requestId },
                 );
               } else if (casDispute) {
                 // Winning CAS only (the synchronous path lost the race or never ran).
@@ -432,7 +460,7 @@ export async function POST(req: NextRequest) {
           console.error(
             "[stripe/webhook] off-session charge ledger/finalize failed:",
             chargeLedgerErr,
-            { event_id: event.id, pi: pi.id, type: offSessionType },
+            { event_id: event.id, pi: pi.id, type: offSessionType, requestId },
           );
         }
       }
@@ -471,7 +499,7 @@ export async function POST(req: NextRequest) {
       if (pi.metadata?.type === "tip") {
         const { error: tipErr } = await admin
           .from("tips").update({ status: "failed" }).eq("stripe_payment_intent_id", pi.id).neq("status", "paid");
-        if (tipErr) console.error("[StripeWebhook] tip status update (failed) failed:", tipErr.message);
+        if (tipErr) console.error("[StripeWebhook] tip status update (failed) failed:", tipErr.message, { requestId });
         break;
       }
 
@@ -502,9 +530,9 @@ export async function POST(req: NextRequest) {
           // Idempotent + never throws on a booking that never reserved.
           try {
             const { error: releasePromoErr } = await admin.rpc("release_promo_use", { p_booking: bookingId });
-            if (releasePromoErr) console.error("[StripeWebhook] release_promo_use failed:", releasePromoErr.message);
+            if (releasePromoErr) console.error("[StripeWebhook] release_promo_use failed:", releasePromoErr.message, { requestId });
           } catch (releasePromoCatchErr) {
-            console.error("[StripeWebhook] release_promo_use threw:", releasePromoCatchErr);
+            console.error("[StripeWebhook] release_promo_use threw:", releasePromoCatchErr, { requestId });
           }
 
           // Credits + voucher spend (owner-approved 2026-07-11): booking-pay-intent may have
@@ -513,15 +541,15 @@ export async function POST(req: NextRequest) {
           // idempotent (loop over matching ledger rows, no-op when there are none).
           try {
             const { error: restoreCreditsErr } = await admin.rpc("restore_user_credits", { p_pi: pi.id });
-            if (restoreCreditsErr) console.error("[StripeWebhook] restore_user_credits failed:", restoreCreditsErr.message);
+            if (restoreCreditsErr) console.error("[StripeWebhook] restore_user_credits failed:", restoreCreditsErr.message, { requestId });
           } catch (restoreCreditsCatchErr) {
-            console.error("[StripeWebhook] restore_user_credits threw:", restoreCreditsCatchErr);
+            console.error("[StripeWebhook] restore_user_credits threw:", restoreCreditsCatchErr, { requestId });
           }
           try {
             const { error: restoreVoucherErr } = await admin.rpc("restore_voucher", { p_pi: pi.id });
-            if (restoreVoucherErr) console.error("[StripeWebhook] restore_voucher failed:", restoreVoucherErr.message);
+            if (restoreVoucherErr) console.error("[StripeWebhook] restore_voucher failed:", restoreVoucherErr.message, { requestId });
           } catch (restoreVoucherCatchErr) {
-            console.error("[StripeWebhook] restore_voucher threw:", restoreVoucherCatchErr);
+            console.error("[StripeWebhook] restore_voucher threw:", restoreVoucherCatchErr, { requestId });
           }
         }
 
@@ -553,7 +581,7 @@ export async function POST(req: NextRequest) {
             const dateStr = new Date(booking.starts_at).toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long" });
             const serviceName = (booking.services as any)?.name_de ?? "Service";
             const salonName = (booking.salons as any)?.name ?? "Salon";
-            await sendEmail(paymentFailedNotification(email, { service: serviceName, salon: salonName, date: dateStr }, locale)).catch((err) => console.error("[StripeWebhook] failed to send payment failure notification:", err));
+            await sendEmail(paymentFailedNotification(email, { service: serviceName, salon: salonName, date: dateStr }, locale), requestId).catch((err) => console.error("[StripeWebhook] failed to send payment failure notification:", err, { requestId }));
           }
         }
       }
@@ -571,7 +599,7 @@ export async function POST(req: NextRequest) {
       if (pi.metadata?.type === "tip") {
         const { error: tipErr } = await admin
           .from("tips").update({ status: "failed" }).eq("stripe_payment_intent_id", pi.id).neq("status", "paid");
-        if (tipErr) console.error("[StripeWebhook] tip status update (canceled) failed:", tipErr.message);
+        if (tipErr) console.error("[StripeWebhook] tip status update (canceled) failed:", tipErr.message, { requestId });
         break;
       }
 
@@ -583,15 +611,15 @@ export async function POST(req: NextRequest) {
 
     case "charge.dispute.created": {
       const dispute = event.data.object;
-      console.warn("[stripe/webhook] Dispute created:", dispute.id, dispute.amount / 100, "CHF");
+      console.warn("[stripe/webhook] Dispute created:", dispute.id, dispute.amount / 100, "CHF", { requestId });
       if (env.ADMIN_EMAIL) {
         await sendEmail({
           to: env.ADMIN_EMAIL,
           subject: `[solen.ch] Stripe Dispute: CHF ${(dispute.amount / 100).toFixed(2)}`,
           html: `<p>A new Stripe dispute has been opened.</p><ul><li><strong>Dispute ID:</strong> ${dispute.id}</li><li><strong>Amount:</strong> CHF ${(dispute.amount / 100).toFixed(2)}</li><li><strong>Reason:</strong> ${dispute.reason}</li><li><strong>Status:</strong> ${dispute.status}</li></ul><p><a href="https://dashboard.stripe.com/disputes/${dispute.id}">View in Stripe →</a></p>`,
-        }).catch((err) => console.error("[StripeWebhook] failed to send dispute admin notification:", err));
+        }, requestId).catch((err) => console.error("[StripeWebhook] failed to send dispute admin notification:", err, { requestId }));
       } else {
-        console.warn("[stripe/webhook] ADMIN_EMAIL not set — skipping dispute notification");
+        console.warn("[stripe/webhook] ADMIN_EMAIL not set, skipping dispute notification", { requestId });
       }
 
       // Link the chargeback to its booking + write an audit row. A card-network
@@ -636,7 +664,7 @@ export async function POST(req: NextRequest) {
         console.error(
           "[stripe/webhook] chargeback created link/audit failed:",
           chargebackAuditErr,
-          { event_id: event.id, dispute: dispute.id },
+          { event_id: event.id, dispute: dispute.id, requestId },
         );
       }
       break;
@@ -663,7 +691,7 @@ export async function POST(req: NextRequest) {
       // only logged (no ledger touch), there is nothing to restore, leave the
       // ledger as-is. Either way, write an audit row with the outcome.
       const dispute = event.data.object;
-      console.warn("[stripe/webhook] Dispute closed:", dispute.id, dispute.status, dispute.amount / 100, "CHF");
+      console.warn("[stripe/webhook] Dispute closed:", dispute.id, dispute.status, dispute.amount / 100, "CHF", { requestId });
       const disputePiId =
         typeof dispute.payment_intent === "string"
           ? dispute.payment_intent
@@ -719,7 +747,7 @@ export async function POST(req: NextRequest) {
               console.error(
                 "[stripe/webhook] dispute lost ledger CAS failed:",
                 claimErr.message,
-                { event_id: event.id, dispute: dispute.id, payout_id: payout.id },
+                { event_id: event.id, dispute: dispute.id, payout_id: payout.id, requestId },
               );
             } else {
               // claimedRow is null when an earlier delivery already set
@@ -759,7 +787,7 @@ export async function POST(req: NextRequest) {
         console.error(
           "[stripe/webhook] chargeback closed audit failed:",
           chargebackAuditErr,
-          { event_id: event.id, dispute: dispute.id, status: dispute.status },
+          { event_id: event.id, dispute: dispute.id, status: dispute.status, requestId },
         );
       }
       break;
@@ -786,7 +814,7 @@ export async function POST(req: NextRequest) {
 
     case "account.application.deauthorized": {
       const account = event.data.object as any;
-      console.warn("[stripe/webhook] Account deauthorized:", account.id);
+      console.warn("[stripe/webhook] Account deauthorized:", account.id, { requestId });
       await admin.from("salons").update({
         accepts_online_payment: false,
       }).eq("stripe_account_id", account.id);
@@ -795,9 +823,9 @@ export async function POST(req: NextRequest) {
           to: env.ADMIN_EMAIL,
           subject: `[solen.ch] Stripe Connect: Account deauthorized`,
           html: `<p>A salon has disconnected their Stripe account.</p><p><strong>Account ID:</strong> ${account.id}</p>`,
-        }).catch((err) => console.error("[StripeWebhook] failed to send account deauthorized admin notification:", err));
+        }, requestId).catch((err) => console.error("[StripeWebhook] failed to send account deauthorized admin notification:", err, { requestId }));
       } else {
-        console.warn("[stripe/webhook] ADMIN_EMAIL not set — skipping deauthorization notification");
+        console.warn("[stripe/webhook] ADMIN_EMAIL not set, skipping deauthorization notification", { requestId });
       }
       break;
     }
@@ -874,7 +902,7 @@ export async function POST(req: NextRequest) {
 
     case "payout.failed": {
       const payout = event.data.object as any;
-      console.warn(`[stripe/webhook] Payout failed. Reason: ${payout.failure_reason}`);
+      console.warn(`[stripe/webhook] Payout failed. Reason: ${payout.failure_reason}`, { requestId });
       const accountId = event.account;
       if (accountId) {
         const { data: salon } = await admin.from("salons").select("name, owner_id").eq("stripe_account_id", accountId).single();
@@ -902,8 +930,8 @@ export async function POST(req: NextRequest) {
     // Release the claim so Stripe's retry can re-run the event with a fresh
     // transactional context. Without this, the event_id stays "claimed" and
     // Stripe gives up after its retry schedule — partial state is permanent.
-    console.error("[stripe/webhook] handler failed, releasing claim:", handlerErr, { event_id: event.id, type: event.type });
-    await reportError("stripe-webhook", handlerErr, { eventType: event.type });
+    console.error("[stripe/webhook] handler failed, releasing claim:", handlerErr, { event_id: event.id, type: event.type, requestId });
+    await reportError("stripe-webhook", handlerErr, { eventType: event.type, requestId });
     await admin.from("processed_webhook_events").delete().eq("event_id", event.id);
     return NextResponse.json({ error: "Handler failed" }, { status: 500 });
   }

@@ -13,6 +13,7 @@ import { pickSlotForAnyStaff, countStaffBookingsOnDay } from "@/lib/bookings/aut
 import { loadPricedBundle } from "@/lib/pricing/bundle";
 import { completeReferralForFirstBooking } from "@/lib/referral/complete-referral";
 import { reportError } from "@/lib/error-report";
+import { getRequestId } from "@/lib/request-id";
 import type { Database } from "@/lib/database.types";
 
 export async function GET(request: NextRequest) {
@@ -113,7 +114,31 @@ export async function GET(request: NextRequest) {
   return NextResponse.json({ items: data, total: count ?? 0, page, limit });
 }
 
-export async function POST(request: NextRequest) {
+// OBS-01: thin wrapper so x-request-id lands on EVERY response this route returns (success or
+// any of the early-return error branches below), without touching each individual
+// `return NextResponse.json(...)`. createBooking is the original handler body, unchanged in
+// control flow, with requestId threaded into its console.error/warn + sendEmail/reportError calls.
+export async function POST(request: NextRequest): Promise<NextResponse> {
+  const requestId = getRequestId(request);
+  try {
+    const response = await createBooking(request, requestId);
+    response.headers.set("x-request-id", requestId);
+    return response;
+  } catch (err) {
+    // The throw path is the ENTIRE point of this fix, so it cannot be the one path that
+    // loses the id. Without this catch, an exception skips the headers.set() above and Next
+    // returns a bare 500: a harmless 400 would carry the id while a real crash, the thing
+    // support actually needs to trace, would not. Caught live by curling the route with no
+    // body (req.json() throws): 400 had the header, 500 did not.
+    console.error("[bookings] POST threw:", { requestId, error: err instanceof Error ? err.message : String(err) });
+    return NextResponse.json(
+      { error: "Internal error", requestId },
+      { status: 500, headers: { "x-request-id": requestId } },
+    );
+  }
+}
+
+async function createBooking(request: NextRequest, requestId: string): Promise<NextResponse> {
   const disabled = await checkFeatureEnabled("bookings");
   if (disabled) return disabled;
 
@@ -153,7 +178,7 @@ export async function POST(request: NextRequest) {
   // owner-HIDDEN (2026-06-14, in favour of the Solen-wide loyalty card), and no booking-charge
   // gift-card redemption exists. Log it for visibility and drop it (no silent strip).
   if (gift_card_code) {
-    console.warn("[bookings] gift_card_code received but gift-card redemption is not wired (gift cards hidden 2026-06-14); ignoring:", gift_card_code);
+    console.warn("[bookings] gift_card_code received but gift-card redemption is not wired (gift cards hidden 2026-06-14); ignoring:", gift_card_code, { requestId });
   }
 
   // Zod cannot see the session, so it keeps guest fields optional. The route enforces them:
@@ -512,7 +537,7 @@ export async function POST(request: NextRequest) {
     const admin = isGuest ? (db as ReturnType<typeof createAdminSupabaseClient>) : createAdminSupabaseClient();
     referenceCode = await assignReferenceCode(admin, booking.id);
   } catch (err) {
-    console.error("[bookings] reference_code assignment failed:", err);
+    console.error("[bookings] reference_code assignment failed:", err, { requestId });
   }
 
   // 6. Mark slot as booked. `booked_by` is the user id or NULL for a guest (column is
@@ -545,7 +570,7 @@ export async function POST(request: NextRequest) {
     // the route fall through to a 201 with the booking created but the slot never marked booked
     // (re-bookable by anyone). Fail safe: roll back the just-inserted booking on ANY slot-flip
     // error, mirroring the 23P01 branch above.
-    console.error("[bookings] slot booking update failed:", slotUpdateError);
+    console.error("[bookings] slot booking update failed:", slotUpdateError, { requestId });
     await db.from("bookings").delete().eq("id", booking.id);
     return NextResponse.json({ message: "Slot not available", code: "SLOT_TAKEN" }, { status: 409 });
   } else if (!slotUpdateRows?.length) {
@@ -591,10 +616,10 @@ export async function POST(request: NextRequest) {
         },
         locale
       );
-      await sendEmail(emailData);
+      await sendEmail(emailData, requestId);
     } catch (err) {
-      console.error("[bookings] customer confirmation email failed:", err);
-      await reportError("booking-confirmation-email", err, { bookingId: booking.id });
+      console.error("[bookings] customer confirmation email failed:", err, { requestId });
+      await reportError("booking-confirmation-email", err, { bookingId: booking.id, requestId });
     }
   }
 
@@ -625,10 +650,10 @@ export async function POST(request: NextRequest) {
           },
           "de" // salon owners use DE by default; profile locale not fetched here
         );
-        await sendEmail(ownerEmailData);
+        await sendEmail(ownerEmailData, requestId);
       }
     }
-  } catch (err) { console.error("[bookings] owner notification email failed:", err); }
+  } catch (err) { console.error("[bookings] owner notification email failed:", err, { requestId }); }
 
   // 9. Complete referral on a CONFIRMED first booking, instant / in-person only.
   //    SP-1: referrals reward `referred_user_id = user.id`; a guest has no user id, so this is a
@@ -646,7 +671,7 @@ export async function POST(request: NextRequest) {
       const admin = createAdminSupabaseClient();
       await completeReferralForFirstBooking(admin, user.id, referral_code);
     } catch (err) {
-      console.error("[bookings] referral completion failed:", err);
+      console.error("[bookings] referral completion failed:", err, { requestId });
     }
   }
 
