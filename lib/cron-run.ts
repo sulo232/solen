@@ -17,15 +17,21 @@ import { reportError } from "@/lib/error-report";
 
 /**
  * Shape a cron handler may return. Any extra fields pass through untouched.
- * `errors` accepts the standardized string[] fail-list, but several existing
- * crons already return an `errors` field as a per-item failure COUNT (a
- * number). Both are accepted so those routes don't need renaming; only the
- * array form is treated as an ok:false signal (see withCronRun below).
+ * `errors` is a string[] of failed items, one string each (e.g.
+ * `errors: failures.map(f => f.message)`); a non-empty array is the
+ * ok:false signal (see withCronRun below). NEVER a bare count/number: that
+ * used to be permitted here (`string[] | number`) and a cron returning the
+ * number form was silently coerced to an empty array downstream, so `ok`
+ * stayed true on a night every item failed. This shipped 3 separate times.
+ * The `| number` branch is removed so a cron trying to hand back a count
+ * instead of a list is a TYPE ERROR at build time, not a silent runtime
+ * drop (2026-07-16, replacing the since-removed cron-error-contract-gate.py
+ * runtime gate, which never actually caught this shape, see git history).
  */
 export interface CronRunResult {
   ok?: boolean;
   processed?: number;
-  errors?: string[] | number;
+  errors?: string[];
   [key: string]: unknown;
 }
 
