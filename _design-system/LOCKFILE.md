@@ -837,6 +837,19 @@ sm: 640px / md: 768px / lg: 1024px / xl: 1280px / 2xl: 1536px
 
 Mobile = below md (768). Desktop = md and up. Most components mobile-first.
 
+### Grid TYPE classification (owner-approved 2026-07-16, "all approves", IG round 1 ig10)
+
+Before laying out ANY new section, name its grid type in one line, in the design note or the plan box, BEFORE the first markup. A grid is structure, not decoration: it must match the shape of the content, and the recorded failure this closes is a modular equal-weight card grid applied to content that was actually hierarchical (the 2026-07-15 dashboard-home clutter complaint, TASTE_LOG Round D1).
+
+| type | content shape it fits | Solen example |
+|---|---|---|
+| manuscript | one continuous block of reading | legal/static pages, the salon description (capped at the 68ch measure) |
+| column | repeated peers scanned in one axis | search results, service rows, review lists |
+| modular | many EQUAL-weight units, no anchor | category tiles, the photo gallery grid |
+| hierarchical | one dominant thing plus minor facts | the operator dashboard home, a PDP hero, any KPI-plus-detail panel |
+
+Rule: if you cannot name the type, you do not know the content shape yet, go look at the real data first. If the type is hierarchical, an equal-weight modular grid is a violation regardless of how tidy it looks. The type is a STRUCTURE decision (§10 dual-axis), so a Fresha capture can settle it; the aesthetic of the resulting cells still comes from this file.
+
 ### Grid patterns
 
 - Salon-card horizontal carousel: `grid-flow-col` with `gap-3` (12px) mobile, `gap-5` (20px) desktop

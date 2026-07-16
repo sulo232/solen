@@ -815,7 +815,7 @@ Two judgment passes ran over the whole stack. Their converged verdict, recorded 
 | # | Gap | Route |
 |---|---|---|
 | G1 | Richness calibration: "rich not bland" has zero mechanics; needs a probe-calibrated band (photos per screen, fields per card, above-fold count) | Taste Lab probe: 3 richness levels of one real surface. HIGHEST |
-| G2 | Layout-pattern selector: list vs grid vs carousel vs table vs bento, given content shape (NN/g carousel + Baymard list-vs-grid as anchors) | Probe: same content 3 ways |
+| G2 | Layout-pattern selector: list vs grid vs carousel vs table vs bento, given content shape (NN/g carousel + Baymard list-vs-grid as anchors) | Probe: same content 3 ways. HALF-CLOSED 2026-07-16 (owner "all approves", IG round 1 ig10): the grid-TYPE classification step below is now law; the remaining open half is the list-vs-carousel-vs-table selector, which G2's probe still owns (G2's own carousel/grid answer is already settled per owner 2026-07-16: grid for search, carousel for home) |
 | G3 | Page-level rhythm for NEW pages: section order, dense/breathe cadence, CTA placement grammar | Elicit + art-direction statement (domain 25) |
 | G4 | Empty-state + illustration language (bridge from the personality-zone table; NN/g blank-slate: teach value, one action) | Probe-able |
 | G5 | Responsive reflow grammar: named transform per surface class (Frost's responsive-pattern taxonomy as vocabulary) | Probe: mobile+desktop of one screen |
