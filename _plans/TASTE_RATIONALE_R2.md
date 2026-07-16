@@ -49,11 +49,16 @@ Owner message (dictated): fix + commit; expand RATIONALE.md with the og round-1 
 
 ## Owner picks 2026-07-16 (dictated)
 
-- [x] Record the picks in TASTE_LOG , P7 approved (checklist language), P12 approved (in-place stack + label folds), P13 approved (grouped sections + highlight + honest loader), P14 approved (InsightCard shape; backend still missing), P1 approved WITHOUT the blur ("that blurting is not okay", clean roll only), P3 REJECTED ("I don't want that")
-- [x] Graveyard P3 (approve-collapse-with-undo) via REMOVED.md
-- [x] De-blur the P1 demos on both live probe pages so they match the approved direction
-- [ ] CORRECTION: the round-2 research has no visible mockups (its probes lived in the deleted payment/richness pages) and was never explained in plain English , deliver a plain-English visual explainer THIS turn + name when each round-2 probe returns
-- [ ] Apply round dispatched to the coder loop: P7 (SetupBanner full checklist), P12 (dashboard bell in-place stack), P13 (search overlay: grouped sections + match highlight + honest loader), P1 (clean digit roll, NO blur, dashboard KPI). P14 blocked on backend (no insights source).
+- [x] Record the picks in TASTE_LOG , verified: commit 75b2c2b52, TASTE_LOG.md section '2026-07-16, reference-probe picks round 1' (P7/P12/P13/P14 approved, P1 no-blur, P3 rejected)
+- [x] Graveyard P3 (approve-collapse-with-undo) , verified: REMOVED.md line added by npm run removed (commit 75b2c2b52)
+- [x] De-blur the P1 demos , verified: 5 blur smears zeroed in taste-refs/index.html + 1 in taste-round2/dashboard.html (regex sweep output 5/1, commit 75b2c2b52)
+- [x] CORRECTION: round-2 explained in plain English , verified: public/_mockups/taste-round2/round2-explained.html (commit 75b2c2b52), 3 cards rendered (browser check), every round-2 probe tagged live/probe/waiting with its named blocker
+- Apply round, in flight with the coder agent (dispatched 2026-07-16, orchestrator commits after loop-review):
+  - [ ] P7 SetupBanner full checklist (components-legacy/dashboard/SetupBanner.tsx) , with coder now
+  - [ ] P12 dashboard bell in-place stack (reuse ActivityFeed source) , with coder now
+  - [ ] P13 search overlay: grouped sections + match highlight + honest loader (SearchOverlay.tsx) , with coder now
+  - [ ] P1 clean digit roll, NO blur, dashboard KPI (only if a real change trigger exists) , with coder now
+  - [ ] P14 tips panel , BLOCKED: no insights backend exists (exists insight = 0), shape approved only
 
 ## Parked / boundaries
 - Web dark mode stays graveyarded (exists-check hit); positive-polarity mechanics recorded for MOBILE dark mode only.
