@@ -4,27 +4,111 @@
     {
       "name": "Next.js dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "autoPort": true
     },
     {
       "name": "Design preview (static)",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["--yes", "serve", "public", "--no-clipboard", "--listen", "3000"],
+      "runtimeArgs": [
+        "--yes",
+        "serve",
+        "public",
+        "--no-clipboard",
+        "--listen",
+        "3000"
+      ],
       "port": 3000,
       "autoPort": false
     },
     {
       "name": "Supabase local stack",
       "runtimeExecutable": "supabase",
-      "runtimeArgs": ["start"],
+      "runtimeArgs": [
+        "start"
+      ],
       "port": 54321
     },
     {
       "name": "Supabase Edge Functions",
       "runtimeExecutable": "supabase",
-      "runtimeArgs": ["functions", "serve"],
+      "runtimeArgs": [
+        "functions",
+        "serve"
+      ],
       "port": 54321
+    },
+    {
+      "name": "Expo web (solen-mobile)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "cd /Users/sulo/Documents/solen-mobile && CI=1 npx expo start --web --port 8081 --clear"
+      ],
+      "port": 8081,
+      "autoPort": false
+    },
+    {
+      "name": "Mockup delivery (mobile captures)",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--yes",
+        "serve",
+        "/Users/sulo/Documents/solen-mobile/_design-system/captures",
+        "--no-clipboard",
+        "--listen",
+        "3210"
+      ],
+      "port": 3210,
+      "autoPort": false
+    },
+    {
+      "name": "Tunnel (mockup delivery 3210)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:3210 --metrics localhost:20242"
+      ],
+      "port": 20242,
+      "autoPort": false
+    },
+    {
+      "name": "Tunnel (live Expo app 8081)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:8081 --metrics localhost:20243"
+      ],
+      "port": 20243,
+      "autoPort": false
+    },
+    {
+      "name": "Expo static build (dist)",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--yes",
+        "serve",
+        "/Users/sulo/Documents/solen-mobile/dist",
+        "--no-clipboard",
+        "--single",
+        "--listen",
+        "3211"
+      ],
+      "port": 3211,
+      "autoPort": false
+    },
+    {
+      "name": "Tunnel (Expo static 3211)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:3211 --metrics localhost:20244"
+      ],
+      "port": 20244,
+      "autoPort": false
     }
   ]
 }

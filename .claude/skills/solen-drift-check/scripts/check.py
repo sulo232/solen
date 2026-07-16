@@ -46,8 +46,8 @@ ALLOWED_HEX = {
     "#FAD2DA",  # discount badge bg (V3-D85-semantic warm-collapse)
     "#FFF1E6",  # urgent badge bg (V3-D173 warm-amber)
     "#D1F0DC",  # availability mint bg (V3-D126 saturation bump)
-    "#9A3412",  # urgent badge text (V3-D173 burnt-sienna)
-    "#15803D",  # availability badge text (V3-D126 deep green)
+    # "#9A3412" removed 2026-07-12: urgency is s-urgency #C2410C since V3-D424; no live raw usage (grep-verified) — the gate now flags any resurrection.
+    # "#15803D" removed 2026-07-12: deep green REVERTED 2026-06-10 (success = #16A34A); only lives as tokenized s-brand.mid, no raw usage (grep-verified).
     "#16A34A",  # s-brand DEFAULT — should be tokenized but appears in some inline glassStyle
     "#0A0A0A",  # s-ink — same caveat
     # NOTE: SaveHeart category-color identity tokens (FeaturedStylists line 75-80)
@@ -65,7 +65,7 @@ ALLOWED_HEX = {
     # structures where a Tailwind class can't reach. A2 (now INFO) still nudges the class-context
     # form (bg-[#0A0A0A]) toward the token. Non-token hex stays HARD.
     "#6B6B6B",  # s-ink-2 / s-ink-3
-    "#E7E5E4",  # empty-star fill + avatar palette step (was s-border before V3-D447)
+    "#E7E5E4",  # avatar initial-palette step (Avatar.tsx:16) + legacy dashboard recharts grid — NOT the hairline token (s-border = #E4E4E7); comment corrected 2026-07-12
     "#F4F4F5",  # s-bg-sunken / s-bg-active (was transposed #F5F5F4; fixed 2026-07-11 , real value per LOCKFILE/CLAUDE.md)
     "#276EF1",  # s-accent (royal blue)
     "#D6D3D1",  # stone-300 (avatar initial palette step)
@@ -101,7 +101,7 @@ RETIRED_EASINGS = {
 
 # A3: Canonical durations — Tailwind classes (`duration-{n}`) or arbitrary
 # values (`duration-[Nms]`). Anything else is drift.
-CANONICAL_DURATIONS_MS = {80, 100, 150, 200, 250, 300, 500}  # V3-D450: +100 (standard short transition)
+CANONICAL_DURATIONS_MS = {80, 100, 150, 200, 250, 300, 500}  # matches LOCKFILE §4 (100ms registered there 2026-07-12, code-derived: Switch/Sheet press + reduced-motion; the old "V3-D450" citation here was wrong — no such duration decision exists)
 
 # A5: Retired-but-defined color tokens — defined in tailwind.config.js
 # for back-compat with un-rebuilt routes, but new code using them = drift.
@@ -286,7 +286,11 @@ ACCENT_ALLOWED_HINTS = (
     "outline-s-accent",   # outline ring
     "ring-s-accent",      # focus ring
     "border-s-accent",    # input focus border / blue-ghost secondary button
-    # v2 interactivity markers — blue on these is CORRECT, not drift:
+    # v2-era interactivity markers, kept as FP-suppressors for this INFO rule (NOT law):
+    # under LOCKFILE §1.5 v3 blue on a tab/selected/tappable thing is only correct if it
+    # reads as a hyperlink (or is the locked booking date/slot exception). The BLOCKING
+    # enforcement for blue selected-states lives in no-black-selected-gate; tightening
+    # this list needs a live FP count first (parked, design-governance audit 2026-07-10).
     "href",               # a link
     "<a ",
     "<Link",
@@ -889,7 +893,7 @@ def scan_text(text: str, rel: str, respect_inline_skip: bool = False) -> list[Fi
             findings.append(Finding(
                 file=rel, line=ln_no, rule="A17: opacity hairline (use border-s-border)",
                 snippet=line,
-                recommendation="Chrome hairlines use `border-s-border` (#E7E5E4). `border-s-ink/{op}` is the most-duplicated drift; reserve it ONLY for a border over a photo / ink surface (CONSISTENCY_AUDIT V3-D443). If this IS over a photo, add `drift-ok`.",
+                recommendation="Chrome hairlines use `border-s-border` (#E4E4E7 — recommendation hex corrected 2026-07-12, was stale #E7E5E4). `border-s-ink/{op}` is the most-duplicated drift; reserve it ONLY for a border over a photo / ink surface (CONSISTENCY_AUDIT V3-D443). If this IS over a photo, add `drift-ok`.",
             ))
 
         # A18 — flip-flop guard: re-added green availability pill (HARD; net-new). V3-D443.
@@ -971,17 +975,19 @@ def scan_text(text: str, rel: str, respect_inline_skip: bool = False) -> list[Fi
                 ))
 
         # A9 — text-s-accent / bg-s-accent outside allowed contexts.
-        # Allowed (v2 rule 1): any interactivity marker in ACCENT_ALLOWED_HINTS (links / see-all / active tabs /
-        # ghost buttons / tappable rows / inline action labels / icon-tap-targets) + focus ring / Spinner / input-focus.
-        # Flag only blue on non-interactive text + a blue-filled primary.
+        # LAW = LOCKFILE §1.5 v3 (2026-06-11, supersedes v2 "generous" + the folded CANON §0):
+        # blue is the HYPERLINK color, not the clickability color. Allowed: hyperlink-reading text
+        # (review counts, inline body links, Mehr lesen, Passwort vergessen, Ändern jump-links)
+        # + system states (focus ring / Spinner / input focus / §13.2 stepper discs).
+        # See-all / active tabs / secondary+ghost buttons / icon tints = INK with affordance.
         # Heuristic: line contains text-s-accent OR bg-s-accent-pale,
         # but does NOT contain any ACCENT_ALLOWED_HINTS substring.
         if ACCENT_TEXT_RE.search(line) or ACCENT_BG_RE.search(line):
             if not any(hint in line for hint in ACCENT_ALLOWED_HINTS):
                 findings.append(Finding(
-                    file=rel, line=ln_no, rule="INFO A9: blue on possibly-non-interactive text (v2)",
+                    file=rel, line=ln_no, rule="INFO A9: blue outside the hyperlink scope (v3)",
                     snippet=line,
-                    recommendation="Design Language v2 (CANON §0): blue `s-accent` = INTERACTIVITY — CORRECT on links / see-all / active tabs / secondary & ghost buttons / tappable rows / inline action labels (those are whitelisted). WRONG only on NON-interactive text — eyebrows, body, prices, headings (→ ink/grey) — or as a FILLED primary CTA (→ bg-s-ink). If this line is a real tappable affordance, it's fine; if it's static text, swap to ink.",
+                    recommendation="LOCKFILE §1.5 v3 (2026-06-11): blue `s-accent` is the HYPERLINK color — CORRECT only on text that reads as an <a href> inside prose (review counts \"(12)\", inline body links, Mehr lesen, the one Passwort vergessen, checkout Ändern jump-links) plus locked system states (focus ring / Spinner / input focus / §13.2 stepper discs). WRONG on see-all / active tabs / secondary & ghost buttons / icon tints (→ INK + affordance: chevron / weight / position), on NON-interactive text — eyebrows, body, prices, headings (→ ink/grey) — and as a FILLED primary CTA (→ bg-s-ink). Squint test: ~3 blue strings max per viewport, 0-1 on forms.",
                 ))
 
         # A10 — rounded radius on <img> tags.

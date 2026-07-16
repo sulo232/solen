@@ -267,3 +267,47 @@ The earlier "ok all of it no disban the full bleed thing" meant REJECTION and I 
 | FB1-FB7, all of them | REJECTED |
 | Dead-chevron rule | STANDS (the owner did not retract it) |
 | Earlier same-day "I like full bleed stuff... I want it a lot" | SUPERSEDED by this rejection; latest dated call wins |
+## Dashboard coverage
+- [x] Round D1: Operator dashboard home (2026-07-14/15, 7 mockup rounds)
+
+
+## Round D1: Operator dashboard home (2026-07-14/15) , the redesign rounds
+
+Source: 7 live mockup rounds (`public/_mockups/dashboard-overhaul/`, final draft `traced.html`),
+owner reactions verbatim, plus an LLM-council diagnosis the owner commissioned ("its still so
+cluttered what is the core cause"). These are DATED OWNER DECISIONS for `/dashboard/*`; read this
+block before ANY operator-dashboard design work.
+
+| Dimension | Decision | Why (owner voice) |
+|---|---|---|
+| Structure | From scratch. NOT the 64px icon rail, NOT the vertical white-card stack | "u built this mockup on top of the current dashboard, thats the whole recurring problem... acc make from new" |
+| Navigation | ONE nav only: slim labeled sidebar (Focus/Linear style, expanded, workspace switcher + search + labeled items) | "the sidebar thats good... i love this a lot, it looks clean" |
+| Second nav | NEVER a bottom action dock or any second nav-shaped bar | "what does this bottom navigation do? now we have two navigation... just clutter" |
+| Home hero | People IN THE CHAIR now, several at once; the single dominant object | "put the person in chair, many person... make that main" |
+| Revenue | A quiet small stat (with Appointments, Free chairs) top-left under the greeting; never the hero, no gradient hero, no chart on home | "not on board with this revenue today thing, we don't even need that as the main information" |
+| Repetition | A person/event appears in EXACTLY ONE place; no right-rail to-dos/live stream restating the page | "a lot of to dos or same information all over and over again" |
+| Today list | Small: count + See all + ~2 preview rows, never the full day | "make it a little bit small and maybe theres a see all" |
+| Payments | Mark people paid/unpaid inline (bookings.payment_status), green Paid / amber Unpaid chip + Mark paid | "for the two payments to collect, mark in the people if they pay or not" |
+| Card accents | NO colored left/right edge bars on cards, ever (occupied vs free = pill + timer text only) | "i hate that... this left side green thingy. never do this ever" |
+| Fabrication | Only surfaces traced to real code ship in a mockup (Depicts manifest, mockup-depicts-gate); the generic waiting-queue was rejected as invented | "this waiting thingy, what is this? we don't even have that feature" |
+| Open/closed | Workable clock-in/out treatment: green Open pill + closes-time when open; grey + green "Open now" when closed | "i like alot the workable one" |
+| Card economy | ONE carded hero per screen; secondary info is BARE TEXT on the canvas (no card/box/pill costume) | "we need breathing space not just everywhere cards or boxes or pill"; council: flat equal-weight blocks = the clutter root cause |
+| Pills | One pill spec per context: same height (36) + same font (13.5); no pill-inside-pill wrappers; no divider next to a color contrast | "why are these two different pill sizes and why is there a divider" |
+| Rhythm | Binary 16/32 gaps only (16 inside a group, 32 between sections) | "what about the balance... the gaps and space between the bento boxes" |
+
+### Root-cause note (council, 2026-07-15)
+"Cluttered" was never element count: it was EQUAL VISUAL WEIGHT , every block wearing the same
+card costume with no dominant focal object. Deleting elements can never fix that. The law that
+falls out: one hero in a card, everything else quiet bare text, and the hero is the thing the
+owner must act on (the live chairs), not a vanity metric.
+
+### LOCKFILE §12 conflict , OWNER DECISION NEEDED
+LOCKFILE §12.1 locks the OLD structure (Fresha icon rail, KPI-chart home) and §12.2 locks a blue
+primary CTA; this round's approved direction (labeled sidebar, chairs hero, ink CTA) contradicts
+both. Per the frozen-row rule nobody re-opens LOCKFILE rows without the owner saying so by name:
+**§12.1 structure + §12.2 CTA color need an explicit owner supersede** before the real build.
+Until then this TASTE_LOG block is the newer dated owner decision and wins by precedence.
+
+### Applied in code?
+- Mockups only (`traced.html` is current). Real `/dashboard` untouched; build starts after the
+  owner approves the final mockup + rules on the §12 supersede.
