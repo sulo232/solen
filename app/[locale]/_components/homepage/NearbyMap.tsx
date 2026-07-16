@@ -171,22 +171,43 @@ export default function NearbyMap({
     // high and Mapbox then renders a degenerate viewport: one tile, nothing but the land
     // colour, markers pushed outside the clip (measured: holder 396x0). Re-fit AFTER a
     // resize, and keep resizing while the element settles.
+    // Most-reviewed salon gets first claim on a spot, so when two pills collide the
+    // one with more reviews is the one that stays readable.
+    const ordered = [...salons].sort((a, b) => (b.reviewCount ?? 0) - (a.reviewCount ?? 0));
+    const markers = ordered.map((s) => ({
+      s,
+      m: new mapboxgl.Marker({ element: markerEl(s) }).setLngLat([s.longitude, s.latitude]).addTo(map),
+    }));
+
+    // Some salons sit ~50m apart, so at any zoom that shows the neighbourhood their
+    // pills touch. Rather than let them overlap into mush (or invent a cluster blob),
+    // hide the pill that loses the collision: the real map behaviour. Recomputed on
+    // every resize because the projection depends on the rendered size.
+    const PILL_W = 76;
+    const PILL_H = 24;
+    const decollide = () => {
+      const kept: { x: number; y: number }[] = [];
+      markers.forEach(({ s, m }) => {
+        const p = map.project([s.longitude, s.latitude]);
+        const hit = kept.some((k) => Math.abs(k.x - p.x) < PILL_W && Math.abs(k.y - p.y) < PILL_H);
+        m.getElement().style.display = hit ? "none" : "";
+        if (!hit) kept.push(p);
+      });
+    };
+
     const fit = () => {
       map.resize();
       map.setCenter(centre);
       map.setZoom(STREET_ZOOM);
+      decollide();
     };
     map.on("load", fit);
     const ro = new ResizeObserver(fit);
     ro.observe(holder.current);
 
-    const markers = salons.map((s) =>
-      new mapboxgl.Marker({ element: markerEl(s) }).setLngLat([s.longitude, s.latitude]).addTo(map),
-    );
-
     return () => {
       ro.disconnect();
-      markers.forEach((m) => m.remove());
+      markers.forEach(({ m }) => m.remove());
       map.remove();
     };
   }, [salons]);
