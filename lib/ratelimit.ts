@@ -29,6 +29,13 @@ export const generalLimiter = new Ratelimit({
 // search routes (salons, salons/search, search/smart) do NOT carry this cap, embeddings are
 // near-free and stay under the per-minute generalLimiter only.
 //
+// IMPORTANT: this per-user cap only bounds ONE caller's usage (fairness). It does NOT bound
+// TOTAL spend across every caller, N distinct users/IPs each get their own fresh 100/day
+// bucket, so it is a coincidence, not a ceiling, once the user count grows (owner finding,
+// 2026-07-16, _plans/BACKEND_LAW.md "Fix the AI cost ceiling for real"). getAiGlobalDailyLimiter()
+// below is the actual house-wide budget, checked with a CONSTANT key (AI_GLOBAL_BUDGET_KEY) IN
+// ADDITION to this one on every route, never instead of it.
+//
 // The cap is DB-backed (platform_settings.key='ai_daily_cap', value.cap) and editable via
 // /api/admin/ai-limits, same key/value/jsonb pattern as the commission rate
 // (app/api/admin/commission/route.ts). Use getAiDailyLimiter() below, never a static
@@ -41,6 +48,30 @@ export const generalLimiter = new Ratelimit({
 // search/smart) deliberately do NOT carry this daily cap. Embeddings are near-free per call and
 // those routes are used a lot, so they keep the per-minute generalLimiter only.
 export const DEFAULT_AI_DAILY_CAP = 100;
+
+// GLOBAL (house-wide) DAILY ceiling on the same AI-GENERATION routes, summed across every
+// user/IP. This is the real cost brake: DEFAULT_AI_DAILY_CAP above only stops one caller from
+// hogging, it does nothing to total spend once there is more than one active user. Checked
+// with the CONSTANT key AI_GLOBAL_BUDGET_KEY (never a per-caller identifier) so every request,
+// regardless of who made it, draws from the SAME bucket.
+//
+// 2000/day is a reasoned estimate grounded in Solen's real current scale, not a formal cost
+// model (flagged so, per the reality-check rule): 28 live salons + 49 total registered profiles
+// today (_inventory/_db-snapshot.json), most of them inactive on any given day. At the existing
+// DEFAULT_AI_DAILY_CAP=100/user, 2000 is only ~20 fully-maxed-out personal caps' worth, i.e. well
+// under half of all profiles that have EVER existed hitting their individual ceiling on the same
+// day, while realistic combined usage today (a few salon owners drafting copy, a handful of
+// customers hitting /api/recommendations, occasional intake recommendations) is almost certainly
+// under 100-200 calls/day total. That leaves meaningful headroom above real traffic while still
+// being a real fraction, not a multiple, of "every registered user maxes out their own cap at
+// once". Editable live the same way as ai_daily_cap (platform_settings.ai_global_daily_cap), so
+// the owner can tighten or loosen it without a redeploy once real volume is observed.
+export const DEFAULT_AI_GLOBAL_DAILY_CAP = 2000;
+
+// Constant key for the GLOBAL daily AI budget (see getAiGlobalDailyLimiter below). Every call
+// site passes this SAME literal, never a per-user/per-IP value, that is what makes the bucket
+// sum usage across everyone instead of bucketing per caller like every other limiter here.
+export const AI_GLOBAL_BUDGET_KEY = "global";
 
 export const bookingLimiter = new Ratelimit({
   redis,
@@ -129,11 +160,12 @@ export const offPeakNotifyLimiter = new Ratelimit({ redis, limiter: Ratelimit.sl
 // spam, the three enumeration/brute-force oracles (guest reference_code lookup, referral
 // code validation, resend-access), the authenticated referral money-crediting path
 // (userId-keyed, farmable for CHF credit rather than an enumeration target, but still
-// abuse-prone), and the daily AI cost ceiling (getAiDailyLimiter() below, which self-
-// registers every distinct-cap Ratelimit instance it builds into this Set, see below)
-// since a cost cap that fails open on a misconfigured Upstash defeats the whole point of
-// having one. If Upstash is unconfigured on a REAL production boot these must fail
-// CLOSED, failing open here would silently drop the exact protection they exist for.
+// abuse-prone), and BOTH the per-user AND the global daily AI cost ceilings
+// (getAiDailyLimiter() / getAiGlobalDailyLimiter() below, which self-register every
+// distinct-cap Ratelimit instance they build into this Set, see below) since a cost cap
+// that fails open on a misconfigured Upstash defeats the whole point of having one. If
+// Upstash is unconfigured on a REAL production boot these must fail CLOSED, failing open
+// here would silently drop the exact protection they exist for.
 // Every other limiter (general browsing, discovery, admin, messaging, etc.) keeps
 // today's fail-open behavior since blocking those would break the product, not just
 // slow an attacker.
@@ -148,38 +180,50 @@ const ABUSE_PRONE_LIMITERS = new Set<Ratelimit>([
 ]);
 
 const RATE_LIMITED_BODY = { error: "Too many requests. Please try again later.", code: "RATE_LIMITED" } as const;
+// Distinct body for the GLOBAL AI budget (see AI_GLOBAL_BUDGET_KEY / getAiGlobalDailyLimiter
+// above/below). A house-wide cap tripping is NOT the same event as a per-user/per-IP limit
+// tripping, the caller did not personally do anything wrong, so the message must not read like
+// they did. Kept as its own exported const (not just a string literal) so applyRateLimit can
+// recognize it by identity and log the distinction, see below.
+export const AI_GLOBAL_BUDGET_EXCEEDED_BODY = {
+  error: "Solen has reached its total AI usage budget for today. This is a house-wide limit, not something caused by your account, please try again tomorrow.",
+  code: "AI_GLOBAL_BUDGET_EXCEEDED",
+} as const;
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Configurable AI daily cap (platform_settings.key='ai_daily_cap', value.cap),
-// editable via /api/admin/ai-limits. In-memory TTL cache, same style as the
-// feature-flag cache in lib/feature-flags.ts: 60s TTL, only a clean read (no
-// query error, a real integer cap) is cached, so a transient DB error re-checks
-// on the very next call instead of trusting the failure for the rest of the
-// window.
+// Configurable AI daily caps (platform_settings.key='ai_daily_cap' per-user,
+// 'ai_global_daily_cap' house-wide, both value.cap), the per-user one editable via
+// /api/admin/ai-limits. In-memory TTL cache, same style as the feature-flag cache in
+// lib/feature-flags.ts: 60s TTL, only a clean read (no query error, a real integer cap)
+// is cached, so a transient DB error re-checks on the very next call instead of trusting
+// the failure for the rest of the window. The two caps are near-identical except for
+// which settings key and default they read, so they share ONE resolver below rather than
+// two copy-pasted functions.
 // ─────────────────────────────────────────────────────────────────────────────
-type AiDailyCapCacheEntry = { cap: number; expiresAt: number };
-// 60s cache: a live admin edit to the cap takes effect within a minute, without a DB round-trip
+type DailyCapCacheEntry = { cap: number; expiresAt: number };
+// 60s cache: a live admin edit to a cap takes effect within a minute, without a DB round-trip
 // on every AI request.
-const AI_DAILY_CAP_TTL_MS = 60 * 1000;
-let aiDailyCapCache: AiDailyCapCacheEntry | null = null;
+const DAILY_CAP_TTL_MS = 60 * 1000;
+const dailyCapCache = new Map<string, DailyCapCacheEntry>();
 
-async function resolveAiDailyCap(): Promise<number> {
+async function resolveDailyCap(settingKey: string, defaultCap: number): Promise<number> {
   const now = Date.now();
-  if (aiDailyCapCache && aiDailyCapCache.expiresAt > now) {
-    return aiDailyCapCache.cap;
+  const cached = dailyCapCache.get(settingKey);
+  if (cached && cached.expiresAt > now) {
+    return cached.cap;
   }
   try {
     const admin = createAdminSupabaseClient();
     const { data: setting, error } = await admin
       .from("platform_settings")
       .select("value")
-      .eq("key", "ai_daily_cap")
+      .eq("key", settingKey)
       .single();
 
     // Missing row / query error: fall back to the default, do NOT cache the
     // failure, so the next call re-checks the DB instead of trusting a
     // transient blip for the rest of the TTL window.
-    if (error) return DEFAULT_AI_DAILY_CAP;
+    if (error) return defaultCap;
 
     const value = setting?.value;
     const rawCap =
@@ -189,14 +233,22 @@ async function resolveAiDailyCap(): Promise<number> {
     const cap =
       typeof rawCap === "number" && Number.isInteger(rawCap) && rawCap > 0
         ? rawCap
-        : DEFAULT_AI_DAILY_CAP;
+        : defaultCap;
 
-    aiDailyCapCache = { cap, expiresAt: now + AI_DAILY_CAP_TTL_MS };
+    dailyCapCache.set(settingKey, { cap, expiresAt: now + DAILY_CAP_TTL_MS });
     return cap;
   } catch (err) {
-    console.error("[ratelimit] failed to read ai_daily_cap, falling back to default:", err);
-    return DEFAULT_AI_DAILY_CAP;
+    console.error(`[ratelimit] failed to read ${settingKey}, falling back to default:`, err);
+    return defaultCap;
   }
+}
+
+async function resolveAiDailyCap(): Promise<number> {
+  return resolveDailyCap("ai_daily_cap", DEFAULT_AI_DAILY_CAP);
+}
+
+async function resolveAiGlobalDailyCap(): Promise<number> {
+  return resolveDailyCap("ai_global_daily_cap", DEFAULT_AI_GLOBAL_DAILY_CAP);
 }
 
 // One Ratelimit instance per distinct cap value, built lazily and reused
@@ -204,6 +256,11 @@ async function resolveAiDailyCap(): Promise<number> {
 // only changes when an admin edits it (rare), so this map stays effectively
 // O(1) in practice.
 const aiDailyLimiterInstances = new Map<number, Ratelimit>();
+// Same shape as aiDailyLimiterInstances, kept as its own Map (not shared) so a
+// per-user cap value and a global cap value that happen to be numerically equal
+// never collide on the same Ratelimit instance, they are DIFFERENT limiters
+// (different prefix, different key space) that just happen to share a number.
+const aiGlobalDailyLimiterInstances = new Map<number, Ratelimit>();
 
 /**
  * Returns the current daily AI-generation Ratelimit instance, built from the
@@ -212,6 +269,9 @@ const aiDailyLimiterInstances = new Map<number, Ratelimit>();
  * builds is registered into ABUSE_PRONE_LIMITERS so applyRateLimit keeps
  * failing CLOSED on it when Upstash is unconfigured in production, same as
  * the old static aiDailyLimiter did.
+ *
+ * PER-USER/PER-IP fairness cap only. Callers must ALSO check
+ * getAiGlobalDailyLimiter() below for the actual total-spend ceiling.
  */
 export async function getAiDailyLimiter(): Promise<Ratelimit> {
   const cap = await resolveAiDailyCap();
@@ -224,6 +284,35 @@ export async function getAiDailyLimiter(): Promise<Ratelimit> {
       prefix: "rl:ai:daily",
     });
     aiDailyLimiterInstances.set(cap, limiter);
+    ABUSE_PRONE_LIMITERS.add(limiter);
+  }
+  return limiter;
+}
+
+/**
+ * Returns the current GLOBAL (house-wide) daily AI-generation Ratelimit instance, built
+ * from the DB-backed cap (platform_settings.key='ai_global_daily_cap', TTL-cached above,
+ * falls back to DEFAULT_AI_GLOBAL_DAILY_CAP if unset/misconfigured). Distinct Redis prefix
+ * (rl:ai:global) so this can never collide with the per-user rl:ai:daily buckets. Every
+ * instance this builds is registered into ABUSE_PRONE_LIMITERS so applyRateLimit fails
+ * CLOSED on it when Upstash is unconfigured in production, a cost cap that fails open
+ * defeats its own purpose.
+ *
+ * MUST be checked with the constant AI_GLOBAL_BUDGET_KEY ("global"), never a per-caller
+ * identifier, that constant key is what sums usage across every user/IP into one bucket
+ * instead of bucketing per caller like getAiDailyLimiter() above.
+ */
+export async function getAiGlobalDailyLimiter(): Promise<Ratelimit> {
+  const cap = await resolveAiGlobalDailyCap();
+  let limiter = aiGlobalDailyLimiterInstances.get(cap);
+  if (!limiter) {
+    limiter = new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(cap, "1 d"),
+      analytics: true,
+      prefix: "rl:ai:global",
+    });
+    aiGlobalDailyLimiterInstances.set(cap, limiter);
     ABUSE_PRONE_LIMITERS.add(limiter);
   }
   return limiter;
@@ -256,8 +345,13 @@ type RateLimitIdentifier = { ip: string } | { userId: string };
 
 export async function applyRateLimit(
   limiter: Ratelimit,
-  identifier: RateLimitIdentifier
+  identifier: RateLimitIdentifier,
+  // Optional override so a caller can make a rejection HONEST for what actually tripped
+  // (e.g. AI_GLOBAL_BUDGET_EXCEEDED_BODY, a house-wide cap, not "you personally did too
+  // much"). Defaults to the generic per-caller message every other limiter uses.
+  rejectionBody: { error: string; code: string } = RATE_LIMITED_BODY
 ): Promise<NextResponse | null> {
+  const isGlobalBudget = rejectionBody.code === AI_GLOBAL_BUDGET_EXCEEDED_BODY.code;
   // Skip rate limiting if Upstash Redis is not configured
   if (!env.UPSTASH_REDIS_REST_URL || !env.UPSTASH_REDIS_REST_TOKEN) {
     // Same double-check lib/env.ts's assertProdRequiredEnv uses: CONTEXT alone is
@@ -265,11 +359,14 @@ export async function applyRateLimit(
     // is the defense-in-depth line that narrows this to a REAL production boot.
     if (process.env.CONTEXT === "production" && process.env.NODE_ENV === "production") {
       if (ABUSE_PRONE_LIMITERS.has(limiter)) {
+        if (isGlobalBudget) {
+          console.error("[ratelimit] GLOBAL AI daily budget failing CLOSED, Upstash unconfigured in production");
+        }
         // Fail CLOSED: no Redis to ask, so this is the same 429 a real limit hit
         // returns, minus the X-RateLimit-* headers (we have no real limit/remaining/
         // reset numbers to report without a Redis call, and fabricating them would
         // be worse than omitting them).
-        return NextResponse.json(RATE_LIMITED_BODY, { status: 429 });
+        return NextResponse.json(rejectionBody, { status: 429 });
       }
       alertMisconfiguredRedisOnce();
     }
@@ -279,7 +376,12 @@ export async function applyRateLimit(
     const key = "ip" in identifier ? identifier.ip : identifier.userId;
     const { success, limit, reset, remaining } = await limiter.limit(key);
     if (!success) {
-      return NextResponse.json(RATE_LIMITED_BODY, {
+      if (isGlobalBudget) {
+        // Distinct from a per-user/per-IP hit: this is the house-wide cost ceiling
+        // tripping, log it as its own event so it is not lost among ordinary 429s.
+        console.warn("[ratelimit] GLOBAL AI daily budget exceeded, house-wide cap tripped:", { limit, remaining, reset });
+      }
+      return NextResponse.json(rejectionBody, {
         status: 429,
         headers: {
           "X-RateLimit-Limit": String(limit),

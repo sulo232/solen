@@ -3,7 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
-import { applyRateLimit, adminLimiter, getAiDailyLimiter } from "@/lib/ratelimit";
+import { applyRateLimit, adminLimiter, getAiDailyLimiter, getAiGlobalDailyLimiter, AI_GLOBAL_BUDGET_KEY, AI_GLOBAL_BUDGET_EXCEEDED_BODY } from "@/lib/ratelimit";
 import { buildNailPrompt, type NailShotType } from "@/lib/nail/ai-prompts";
 import { checkBudget, recordGeneration, getBudgetStatus } from "@/lib/nail/ai-budget";
 import { validateBody, adminNailGenerateSchema } from "@/lib/validations";
@@ -41,6 +41,16 @@ export async function POST(req: NextRequest) {
   // 6. Rate limit
   const rateLimited = await applyRateLimit(adminLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
+
+  // Global budget checked BEFORE the per-user cap, admin included: this route calls fal.ai for
+  // a real per-image charge, and the whole point of a house-wide cost ceiling is that it bounds
+  // TOTAL spend regardless of who is spending it. Unlike the separate CHF/month budget below
+  // (checkBudget, which deliberately bypasses admins, see lib/nail/ai-budget.ts and
+  // _backend-system/QUESTIONS.md Q2, still an open owner question) this count-based global cap
+  // does NOT bypass admin, exempting the only caller of an admin-gated route would make the
+  // cap unenforceable for this route entirely.
+  const globalLimited = await applyRateLimit(await getAiGlobalDailyLimiter(), { userId: AI_GLOBAL_BUDGET_KEY }, AI_GLOBAL_BUDGET_EXCEEDED_BODY);
+  if (globalLimited) return globalLimited;
 
   const dailyLimited = await applyRateLimit(await getAiDailyLimiter(), { userId: user.id });
   if (dailyLimited) return dailyLimited;

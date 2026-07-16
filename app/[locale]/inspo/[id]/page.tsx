@@ -6,7 +6,7 @@ import type { Metadata, Viewport } from "next";
 import type { DiscoveryItem } from "@/lib/types";
 import DetailPage, { type SalonLite } from "@/components-legacy/discovery/DetailPage";
 import { analyzeDiscoveryImage, analyzeDiscoveryTikTok } from "@/lib/ai-vision";
-import { discoveryAiLimiter, checkRateLimit, getAiDailyLimiter, getClientIp } from "@/lib/ratelimit";
+import { discoveryAiLimiter, checkRateLimit, getAiDailyLimiter, getClientIp, getAiGlobalDailyLimiter, AI_GLOBAL_BUDGET_KEY } from "@/lib/ratelimit";
 import { getServerEnv } from "@/lib/env";
 import { DISCOVERY_TO_MARKETPLACE_CATEGORY } from "@/lib/discovery-categories";
 
@@ -58,6 +58,15 @@ async function ensureAIData(item: DiscoveryItem): Promise<DiscoveryItem> {
   const aiDailyLimiter = await getAiDailyLimiter();
   if (!(await checkRateLimit(aiDailyLimiter, ip))) {
     console.warn("[discover/[id]] on-demand AI daily cap reached, serving item as-is");
+    return item;
+  }
+
+  // GLOBAL house-wide budget, checked with the CONSTANT key AI_GLOBAL_BUDGET_KEY (not the IP
+  // above), so it sums usage across every visitor instead of bucketing per-IP like the check
+  // above. Same "never error, just skip the analysis" contract as the per-IP guard.
+  const aiGlobalDailyLimiter = await getAiGlobalDailyLimiter();
+  if (!(await checkRateLimit(aiGlobalDailyLimiter, AI_GLOBAL_BUDGET_KEY))) {
+    console.warn("[discover/[id]] GLOBAL AI daily budget reached (house-wide, not per-visitor), serving item as-is");
     return item;
   }
 

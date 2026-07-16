@@ -708,6 +708,10 @@ export const adminCommissionSchema = z.object({
 
 export const adminAiLimitSchema = z.object({
   cap: z.number().int().min(1).max(100000),
+  // Optional: the GLOBAL (house-wide) daily AI budget, see lib/ratelimit.ts
+  // getAiGlobalDailyLimiter(). Optional so existing callers that only send `cap` (the per-user
+  // limit) keep working unchanged.
+  globalCap: z.number().int().min(1).max(1000000).optional(),
 });
 
 export const adminFeatureFlagSchema = z.object({

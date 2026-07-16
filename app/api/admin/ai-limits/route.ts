@@ -10,7 +10,7 @@ export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
-import { applyRateLimit, generalLimiter, DEFAULT_AI_DAILY_CAP } from "@/lib/ratelimit";
+import { applyRateLimit, generalLimiter, DEFAULT_AI_DAILY_CAP, DEFAULT_AI_GLOBAL_DAILY_CAP } from "@/lib/ratelimit";
 import { logAuditEvent } from "@/lib/audit";
 import { validateBody, adminAiLimitSchema } from "@/lib/validations";
 
@@ -57,12 +57,37 @@ export async function GET(req: NextRequest) {
       ? rawCap
       : DEFAULT_AI_DAILY_CAP;
 
+  // Same read, for the GLOBAL (house-wide) daily budget, see lib/ratelimit.ts
+  // getAiGlobalDailyLimiter(). No UI consumes this yet (see globalCap comment on
+  // adminAiLimitSchema); exposed here so the value is readable/editable without a direct DB
+  // edit, same jsonb pattern as ai_daily_cap above.
+  const { data: globalSetting, error: globalReadErr } = await admin
+    .from("platform_settings")
+    .select("value, updated_at")
+    .eq("key", "ai_global_daily_cap")
+    .single();
+  if (globalReadErr && globalReadErr.code !== "PGRST116") {
+    console.error("[admin/ai-limits] failed to read ai_global_daily_cap:", globalReadErr.message);
+  }
+  const globalSettingValue = globalSetting?.value;
+  const rawGlobalCap =
+    globalSettingValue && typeof globalSettingValue === "object" && !Array.isArray(globalSettingValue)
+      ? (globalSettingValue as { cap?: unknown }).cap
+      : undefined;
+  const globalCap =
+    typeof rawGlobalCap === "number" && Number.isInteger(rawGlobalCap) && rawGlobalCap > 0
+      ? rawGlobalCap
+      : DEFAULT_AI_GLOBAL_DAILY_CAP;
+
   return NextResponse.json({
     cap,
     // daily_cap is an alias for the same value: app/[locale]/dashboard/ai-limits-admin/page.tsx
     // (already built, reads data.daily_cap) is the live consumer of this route.
     daily_cap: cap,
     updated_at: setting?.updated_at ?? null,
+    global_cap: globalCap,
+    global_daily_cap: globalCap,
+    global_updated_at: globalSetting?.updated_at ?? null,
   });
 }
 
@@ -111,7 +136,39 @@ export async function PUT(req: NextRequest) {
     { cap }
   );
 
+  // globalCap is OPTIONAL (see adminAiLimitSchema): only write ai_global_daily_cap when the
+  // caller actually sent one, so an existing caller that only sends `cap` never touches the
+  // global budget by accident.
+  let globalCap: number | undefined;
+  if (validated.globalCap !== undefined) {
+    globalCap = validated.globalCap;
+    const { error: globalError } = await admin
+      .from("platform_settings")
+      .upsert({
+        key: "ai_global_daily_cap",
+        value: { cap: globalCap },
+        updated_at: new Date().toISOString(),
+        updated_by: user.id,
+      });
+
+    if (globalError) return NextResponse.json({ error: globalError.message }, { status: 500 });
+
+    await logAuditEvent(
+      req,
+      user.id,
+      "feature_flag.toggle", // using closest available action type
+      "platform_settings",
+      "ai_global_daily_cap",
+      { cap: globalCap }
+    );
+  }
+
   // daily_cap is an alias for the same value: app/[locale]/dashboard/ai-limits-admin/page.tsx
   // (already built, reads data.daily_cap) is the live consumer of this route.
-  return NextResponse.json({ success: true, cap, daily_cap: cap });
+  return NextResponse.json({
+    success: true,
+    cap,
+    daily_cap: cap,
+    ...(globalCap !== undefined ? { global_cap: globalCap, global_daily_cap: globalCap } : {}),
+  });
 }

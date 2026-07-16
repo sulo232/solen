@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
-import { applyRateLimit, generalLimiter, getAiDailyLimiter } from "@/lib/ratelimit";
+import { applyRateLimit, generalLimiter, getAiDailyLimiter, getAiGlobalDailyLimiter, AI_GLOBAL_BUDGET_KEY, AI_GLOBAL_BUDGET_EXCEEDED_BODY } from "@/lib/ratelimit";
 import { wrapUntrustedInput } from "@/lib/ai/untrusted";
 
 export const runtime = "edge";
@@ -17,6 +17,11 @@ export async function GET(request: NextRequest) {
 
     const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
     if (rateLimited) return rateLimited;
+
+    // Global budget checked BEFORE the per-user cap: a house-wide cost ceiling on top of the
+    // per-user fairness limiter, see lib/ratelimit.ts:132.
+    const globalLimited = await applyRateLimit(await getAiGlobalDailyLimiter(), { userId: AI_GLOBAL_BUDGET_KEY }, AI_GLOBAL_BUDGET_EXCEEDED_BODY);
+    if (globalLimited) return globalLimited;
 
     const dailyLimited = await applyRateLimit(await getAiDailyLimiter(), { userId: user.id });
     if (dailyLimited) return dailyLimited;

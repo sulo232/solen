@@ -4,7 +4,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { applyRateLimit, generalLimiter, getAiDailyLimiter, getClientIp } from "@/lib/ratelimit";
+import { applyRateLimit, generalLimiter, getAiDailyLimiter, getClientIp, getAiGlobalDailyLimiter, AI_GLOBAL_BUDGET_KEY, AI_GLOBAL_BUDGET_EXCEEDED_BODY } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { validateBody } from "@/lib/validations";
 import { extractSignalsFromHeaders } from "@/lib/ai/recommendations";
@@ -51,6 +51,11 @@ export async function GET(req: NextRequest) {
     const banned = await checkUserBanned(user.id);
     if (banned) return banned;
   }
+
+  // Global budget checked BEFORE the per-user/per-IP cap: a house-wide cost ceiling on top of
+  // the per-caller fairness limiter, see lib/ratelimit.ts:132.
+  const globalLimited = await applyRateLimit(await getAiGlobalDailyLimiter(), { userId: AI_GLOBAL_BUDGET_KEY }, AI_GLOBAL_BUDGET_EXCEEDED_BODY);
+  if (globalLimited) return globalLimited;
 
   const aiDailyLimiter = await getAiDailyLimiter();
   const dailyLimited = user
