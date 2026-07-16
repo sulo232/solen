@@ -101,6 +101,10 @@
           {
             "type": "command",
             "command": "python3 $CLAUDE_PROJECT_DIR/scripts/hooks/mockup-resurrection-gate.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 $CLAUDE_PROJECT_DIR/scripts/hooks/fabricated-value-gate.py"
           }
         ]
       },
@@ -150,6 +154,10 @@
           {
             "type": "command",
             "command": "python3 $CLAUDE_PROJECT_DIR/scripts/hooks/mockup-resurrection-gate.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 $CLAUDE_PROJECT_DIR/scripts/hooks/fabricated-value-gate.py"
           }
         ]
       },
@@ -191,6 +199,10 @@
           {
             "type": "command",
             "command": "python3 $CLAUDE_PROJECT_DIR/scripts/hooks/mockup-resurrection-gate.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 $CLAUDE_PROJECT_DIR/scripts/hooks/fabricated-value-gate.py"
           }
         ]
       },
