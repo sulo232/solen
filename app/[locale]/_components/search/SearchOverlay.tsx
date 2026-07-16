@@ -689,7 +689,7 @@ export function SearchOverlay({
         {/* A2/Model B (2026-07-04): this idle-state category shortcut no longer clears the typed
             query , it only sets `service` (feeds ?category=/?service= via buildParams,
             unchanged), same as picking the pill row never clears `serviceQ`. */}
-        {CATEGORIES.map((c) => <SuggestRow key={c.label} name={c.label} sub={c.count} Icon={c.icon} onClick={() => { setService(c.label); advance("service"); }} />)}
+        {CATEGORIES.map((c) => <SuggestRow key={c.label} name={c.label} Icon={c.icon} onClick={() => { setService(c.label); advance("service"); }} />)}
         {/* Für dich , replaces the old Trending chips with DNA-personalized looks (popular for
             logged-out). Tapping a look opens it in Inspo. */}
         {forYouLooks.length > 0 && (

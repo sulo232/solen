@@ -186,7 +186,7 @@ export default function SearchMorphPreviewPage() {
         <SectionLabel className="mt-3">Kategorien</SectionLabel>
         <SuggestRow name="In der Nähe" sub="Aktueller Standort" Icon={Navigation} tint onClick={() => { setService("In der Nähe"); advance("service"); }} />
         {CATEGORIES.map((c) => (
-          <SuggestRow key={c.label} name={c.label} sub={c.count} Icon={c.icon} onClick={() => { setService(c.label); setServiceQ(""); advance("service"); }} />
+          <SuggestRow key={c.label} name={c.label} Icon={c.icon} onClick={() => { setService(c.label); setServiceQ(""); advance("service"); }} />
         ))}
         <SectionLabel className="mt-3">Im Trend</SectionLabel>
         <div className="flex flex-wrap gap-2 pb-2 pt-1">
