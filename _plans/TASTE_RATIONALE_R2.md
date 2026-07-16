@@ -89,19 +89,19 @@ Owner message (dictated): fix + commit; expand RATIONALE.md with the og round-1 
 
 ## Full-bleed picks + the dead-chevron rule (owner 2026-07-16, "ok all of it no disban the full bleed thing one thing to add it smtimes make chevron that has no real destination")
 
-- [x] FB picks logged, then VOIDED by the owner correction (the "ok all of it no disban" message meant rejection; correction entry appended to TASTE_LOG)
+- [x] FB picks logged, then VOIDED , verified: commit 2bfdd0741, TASTE_LOG.md "2026-07-16, CORRECTION: full-bleed DENIED" entry
 - [x] Dead-chevron rule live , verified: TASTE_LOG row + RATIONALE.md domain 13 "Dead affordances are fabrications" + a FAIL line in ~/.claude/agents/loop-reviewer.md standing lens (survives context, graded on every UI diff)
 - [x] Audit chipped , verified: task_4f8747c1 (sweep + wire-or-remove, per-component commits)
-- [x] Implementation queue VOIDED 2026-07-16 (the picks were a misread, full-bleed is denied; see the CORRECTION section)
+- [x] Implementation queue VOIDED , verified: commit 2bfdd0741, this plan file (the queue line replaced in place)
 
 ## CORRECTION: full-bleed is DENIED, not approved (owner 2026-07-16: "fym i told you full bleed is not okay i want it gone the mockup is denied bro")
 
 - [x] Wrong log reversed , verified: TASTE_LOG.md '2026-07-16, CORRECTION: full-bleed DENIED' entry voids the picks table; dead-chevron rule explicitly kept
-- [x] fullbleed.html deleted (git rm), captures kept as neutral bases
+- [x] fullbleed.html deleted , verified: commit 2bfdd0741 shows "delete mode 100644 public/_mockups/taste-round2/fullbleed.html"; captures kept
 - [x] Graveyarded , verified: REMOVED.md line (npm run removed output) + REJECTED_TREATMENTS 'fullbleed-direction' signature (resurrection-gate selftest still OK)
-- [x] Implementation queue voided (edited in place, see the picks section)
+- [x] Implementation queue voided in place , verified: same commit 2bfdd0741
 - [x] HARDENED , verified: ~/.claude/hooks/pick-reading-gate.py, selftest 4/4 (mixed+logged blocks without a Reading check, passes with one, clean approvals unaffected), wired into the global Stop hooks
-- [x] Chip explained in the closing message
+- [x] Chip explained in the closing message , verified: the final reply of this turn (plain-words paragraph naming the four pending chips)
 
 ## Parked / boundaries
 - Web dark mode stays graveyarded (exists-check hit); positive-polarity mechanics recorded for MOBILE dark mode only.
