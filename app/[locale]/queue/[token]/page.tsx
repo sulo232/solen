@@ -11,6 +11,7 @@ import {
 import Spinner from "@/components-legacy/ui/Spinner";
 import TipFlow from "@/app/[locale]/_components/tips/TipFlow";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "@/app/[locale]/_components/primitives/Modal";
 import { strokeForSize } from "@/lib/icon-stroke";
 
 // Mirrors the public GET /api/walkin/queue/status?token= response.
@@ -44,10 +45,10 @@ interface QueueStatus {
 
 type Copy = Record<string, string>;
 const COPY: Record<string, Copy> = {
-  de: { live: "Live", minLeft: "Noch", min: "Min", soon: "Gleich bist du dran", aheadLine: "vor dir in der Schlange", youreUp: "Du bist dran!", goToChair: "Geh zum Stuhl", whileYouWait: "Während du wartest", inspoTitle: "Brauchst du Inspiration?", inspoSub: "Stöber durch die Arbeiten und zeig deinen Lieblingslook direkt am Stuhl.", seeLooks: "Looks ansehen", yourBarber: "Dein Barber", directions: "Wegbeschreibung", ticketNr: "Ticket Nr", st_paid: "Bezahlt", st_queue: "In der Schlange", st_almost: "Fast dran", st_chair: "Dran", done: "Fertig!", doneSub: "Wir hoffen, der Schnitt sitzt. Schon bezahlt, alles erledigt.", noTip: "Kein Trinkgeld, danke", cancelled: "Storniert", cancelledSub: "Dieses Ticket ist nicht mehr aktiv", noShow: "Nummer verpasst", noShowSub: "Diese Nummer wurde aufgerufen, aber niemand war da", notFound: "Ticket nicht gefunden", notFoundSub: "Dieses Walk-in-Ticket ist abgelaufen oder wurde bereits eingelöst. Prüfe den Link oder sichere dir einen neuen Platz.", autoUpdate: "Aktualisiert sich automatisch", home: "Zur Startseite", help: "Hilfe", cancel: "Stornieren", cancelConfirm: "Stornieren und Erstattung erhalten?", tip: "Trinkgeld geben", ask: "Wie war dein Schnitt?", r1: "Schlecht", r2: "Nicht so gut", r3: "Okay", r4: "Gut", r5: "Ausgezeichnet!", lowTitle: "Das tut uns leid.", lowSub: "Was lief schief? Dein Feedback geht direkt an den Salon.", fbPlaceholder: "Erzähl uns mehr (optional)", helpTitle: "Brauchst du Hilfe?", helpSub: "Salon kontaktieren", fbSend: "Feedback senden", skip2: "Überspringen" },
-  en: { live: "Live", minLeft: "About", min: "min", soon: "You're up soon", aheadLine: "ahead of you in line", youreUp: "You're up!", goToChair: "Head to the chair", whileYouWait: "While you wait", inspoTitle: "Need some inspiration?", inspoSub: "Browse the work and show your favourite look right at the chair.", seeLooks: "See looks", yourBarber: "Your barber", directions: "Directions", ticketNr: "Ticket No", st_paid: "Paid", st_queue: "In queue", st_almost: "Almost up", st_chair: "Your turn", done: "All done!", doneSub: "Hope the cut's perfect. Already paid, all sorted.", noTip: "No tip, thanks", cancelled: "Cancelled", cancelledSub: "This ticket is no longer active", noShow: "Number missed", noShowSub: "This number was called but no one was there", notFound: "Ticket not found", notFoundSub: "This walk-in ticket has expired or was already redeemed. Check the link or grab a new spot.", autoUpdate: "Updates automatically", home: "Go home", help: "Help", cancel: "Cancel", cancelConfirm: "Cancel and get a refund?", tip: "Leave a tip", ask: "How was your cut?", r1: "Poor", r2: "Not great", r3: "Okay", r4: "Good", r5: "Excellent!", lowTitle: "We're sorry.", lowSub: "What went wrong? Your feedback goes straight to the salon.", fbPlaceholder: "Tell us more (optional)", helpTitle: "Need help?", helpSub: "Contact the salon", fbSend: "Send feedback", skip2: "Skip" },
-  fr: { live: "Live", minLeft: "Encore", min: "min", soon: "Bientôt à vous", aheadLine: "devant vous dans la file", youreUp: "À vous !", goToChair: "Rendez-vous au fauteuil", whileYouWait: "En attendant", inspoTitle: "Besoin d'inspiration ?", inspoSub: "Parcourez les réalisations et montrez votre look préféré au fauteuil.", seeLooks: "Voir les looks", yourBarber: "Votre coiffeur", directions: "Itinéraire", ticketNr: "N° de ticket", st_paid: "Payé", st_queue: "Dans la file", st_almost: "Bientôt", st_chair: "À vous", done: "Terminé !", doneSub: "On espère que la coupe est parfaite. Déjà payé, tout est réglé.", noTip: "Pas de pourboire, merci", cancelled: "Annulé", cancelledSub: "Ce ticket n'est plus actif", noShow: "Numéro manqué", noShowSub: "Ce numéro a été appelé mais personne n'était là", notFound: "Ticket introuvable", notFoundSub: "Ce ticket walk-in a expiré ou a déjà été utilisé. Vérifie le lien ou réserve une nouvelle place.", autoUpdate: "Mise à jour automatique", home: "Accueil", help: "Aide", cancel: "Annuler", cancelConfirm: "Annuler et être remboursé ?", tip: "Laisser un pourboire", ask: "Comment était ta coupe ?", r1: "Mauvais", r2: "Moyen", r3: "Correct", r4: "Bien", r5: "Excellent !", lowTitle: "Nous sommes désolés.", lowSub: "Qu'est-ce qui n'a pas été ? Ton retour va directement au salon.", fbPlaceholder: "Dis-nous en plus (facultatif)", helpTitle: "Besoin d'aide ?", helpSub: "Contacter le salon", fbSend: "Envoyer", skip2: "Passer" },
-  it: { live: "Live", minLeft: "Ancora", min: "min", soon: "Presto tocca a te", aheadLine: "prima di te in coda", youreUp: "Tocca a te!", goToChair: "Vai alla poltrona", whileYouWait: "Mentre aspetti", inspoTitle: "Cerchi ispirazione?", inspoSub: "Sfoglia i lavori e mostra il tuo look preferito direttamente in poltrona.", seeLooks: "Vedi i look", yourBarber: "Il tuo barbiere", directions: "Indicazioni", ticketNr: "N. ticket", st_paid: "Pagato", st_queue: "In coda", st_almost: "Quasi", st_chair: "Tocca a te", done: "Fatto!", doneSub: "Speriamo che il taglio sia perfetto. Già pagato, tutto a posto.", noTip: "Nessuna mancia, grazie", cancelled: "Annullato", cancelledSub: "Questo ticket non è più attivo", noShow: "Numero saltato", noShowSub: "Questo numero è stato chiamato ma non c'era nessuno", notFound: "Ticket non trovato", notFoundSub: "Questo ticket walk-in è scaduto o è già stato usato. Controlla il link o prenota un nuovo posto.", autoUpdate: "Si aggiorna automaticamente", home: "Home", help: "Aiuto", cancel: "Annulla", cancelConfirm: "Annullare e ricevere il rimborso?", tip: "Lascia una mancia", ask: "Com'è andato il taglio?", r1: "Scarso", r2: "Così così", r3: "Okay", r4: "Bene", r5: "Eccellente!", lowTitle: "Ci dispiace.", lowSub: "Cosa non è andato? Il tuo feedback va dritto al salone.", fbPlaceholder: "Dicci di più (facoltativo)", helpTitle: "Serve aiuto?", helpSub: "Contatta il salone", fbSend: "Invia feedback", skip2: "Salta" },
+  de: { live: "Live", minLeft: "Noch", min: "Min", soon: "Gleich bist du dran", aheadLine: "vor dir in der Schlange", youreUp: "Du bist dran!", goToChair: "Geh zum Stuhl", whileYouWait: "Während du wartest", inspoTitle: "Brauchst du Inspiration?", inspoSub: "Stöber durch die Arbeiten und zeig deinen Lieblingslook direkt am Stuhl.", seeLooks: "Looks ansehen", yourBarber: "Dein Barber", directions: "Wegbeschreibung", ticketNr: "Ticket Nr", st_paid: "Bezahlt", st_queue: "In der Schlange", st_almost: "Fast dran", st_chair: "Dran", done: "Fertig!", doneSub: "Wir hoffen, der Schnitt sitzt. Schon bezahlt, alles erledigt.", noTip: "Kein Trinkgeld, danke", cancelled: "Storniert", cancelledSub: "Dieses Ticket ist nicht mehr aktiv", noShow: "Nummer verpasst", noShowSub: "Diese Nummer wurde aufgerufen, aber niemand war da", notFound: "Ticket nicht gefunden", notFoundSub: "Dieses Walk-in-Ticket ist abgelaufen oder wurde bereits eingelöst. Prüfe den Link oder sichere dir einen neuen Platz.", autoUpdate: "Aktualisiert sich automatisch", home: "Zur Startseite", help: "Hilfe", cancel: "Stornieren", cancelConfirm: "Stornieren und Erstattung erhalten?", keepTicket: "Ticket behalten", tip: "Trinkgeld geben", ask: "Wie war dein Schnitt?", r1: "Schlecht", r2: "Nicht so gut", r3: "Okay", r4: "Gut", r5: "Ausgezeichnet!", lowTitle: "Das tut uns leid.", lowSub: "Was lief schief? Dein Feedback geht direkt an den Salon.", fbPlaceholder: "Erzähl uns mehr (optional)", helpTitle: "Brauchst du Hilfe?", helpSub: "Salon kontaktieren", fbSend: "Feedback senden", skip2: "Überspringen" },
+  en: { live: "Live", minLeft: "About", min: "min", soon: "You're up soon", aheadLine: "ahead of you in line", youreUp: "You're up!", goToChair: "Head to the chair", whileYouWait: "While you wait", inspoTitle: "Need some inspiration?", inspoSub: "Browse the work and show your favourite look right at the chair.", seeLooks: "See looks", yourBarber: "Your barber", directions: "Directions", ticketNr: "Ticket No", st_paid: "Paid", st_queue: "In queue", st_almost: "Almost up", st_chair: "Your turn", done: "All done!", doneSub: "Hope the cut's perfect. Already paid, all sorted.", noTip: "No tip, thanks", cancelled: "Cancelled", cancelledSub: "This ticket is no longer active", noShow: "Number missed", noShowSub: "This number was called but no one was there", notFound: "Ticket not found", notFoundSub: "This walk-in ticket has expired or was already redeemed. Check the link or grab a new spot.", autoUpdate: "Updates automatically", home: "Go home", help: "Help", cancel: "Cancel", cancelConfirm: "Cancel and get a refund?", keepTicket: "Keep ticket", tip: "Leave a tip", ask: "How was your cut?", r1: "Poor", r2: "Not great", r3: "Okay", r4: "Good", r5: "Excellent!", lowTitle: "We're sorry.", lowSub: "What went wrong? Your feedback goes straight to the salon.", fbPlaceholder: "Tell us more (optional)", helpTitle: "Need help?", helpSub: "Contact the salon", fbSend: "Send feedback", skip2: "Skip" },
+  fr: { live: "Live", minLeft: "Encore", min: "min", soon: "Bientôt à vous", aheadLine: "devant vous dans la file", youreUp: "À vous !", goToChair: "Rendez-vous au fauteuil", whileYouWait: "En attendant", inspoTitle: "Besoin d'inspiration ?", inspoSub: "Parcourez les réalisations et montrez votre look préféré au fauteuil.", seeLooks: "Voir les looks", yourBarber: "Votre coiffeur", directions: "Itinéraire", ticketNr: "N° de ticket", st_paid: "Payé", st_queue: "Dans la file", st_almost: "Bientôt", st_chair: "À vous", done: "Terminé !", doneSub: "On espère que la coupe est parfaite. Déjà payé, tout est réglé.", noTip: "Pas de pourboire, merci", cancelled: "Annulé", cancelledSub: "Ce ticket n'est plus actif", noShow: "Numéro manqué", noShowSub: "Ce numéro a été appelé mais personne n'était là", notFound: "Ticket introuvable", notFoundSub: "Ce ticket walk-in a expiré ou a déjà été utilisé. Vérifie le lien ou réserve une nouvelle place.", autoUpdate: "Mise à jour automatique", home: "Accueil", help: "Aide", cancel: "Annuler", cancelConfirm: "Annuler et être remboursé ?", keepTicket: "Garder le ticket", tip: "Laisser un pourboire", ask: "Comment était ta coupe ?", r1: "Mauvais", r2: "Moyen", r3: "Correct", r4: "Bien", r5: "Excellent !", lowTitle: "Nous sommes désolés.", lowSub: "Qu'est-ce qui n'a pas été ? Ton retour va directement au salon.", fbPlaceholder: "Dis-nous en plus (facultatif)", helpTitle: "Besoin d'aide ?", helpSub: "Contacter le salon", fbSend: "Envoyer", skip2: "Passer" },
+  it: { live: "Live", minLeft: "Ancora", min: "min", soon: "Presto tocca a te", aheadLine: "prima di te in coda", youreUp: "Tocca a te!", goToChair: "Vai alla poltrona", whileYouWait: "Mentre aspetti", inspoTitle: "Cerchi ispirazione?", inspoSub: "Sfoglia i lavori e mostra il tuo look preferito direttamente in poltrona.", seeLooks: "Vedi i look", yourBarber: "Il tuo barbiere", directions: "Indicazioni", ticketNr: "N. ticket", st_paid: "Pagato", st_queue: "In coda", st_almost: "Quasi", st_chair: "Tocca a te", done: "Fatto!", doneSub: "Speriamo che il taglio sia perfetto. Già pagato, tutto a posto.", noTip: "Nessuna mancia, grazie", cancelled: "Annullato", cancelledSub: "Questo ticket non è più attivo", noShow: "Numero saltato", noShowSub: "Questo numero è stato chiamato ma non c'era nessuno", notFound: "Ticket non trovato", notFoundSub: "Questo ticket walk-in è scaduto o è già stato usato. Controlla il link o prenota un nuovo posto.", autoUpdate: "Si aggiorna automaticamente", home: "Home", help: "Aiuto", cancel: "Annulla", cancelConfirm: "Annullare e ricevere il rimborso?", keepTicket: "Mantieni il ticket", tip: "Lascia una mancia", ask: "Com'è andato il taglio?", r1: "Scarso", r2: "Così così", r3: "Okay", r4: "Bene", r5: "Eccellente!", lowTitle: "Ci dispiace.", lowSub: "Cosa non è andato? Il tuo feedback va dritto al salone.", fbPlaceholder: "Dicci di più (facoltativo)", helpTitle: "Serve aiuto?", helpSub: "Contatta il salone", fbSend: "Invia feedback", skip2: "Salta" },
 };
 
 type NodeState = "done" | "current" | "future";
@@ -66,6 +67,7 @@ export default function QueueTrackingPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [photoIdx, setPhotoIdx] = useState(0);
   const [cancelling, setCancelling] = useState(false);
+  const [cancelConfirmOpen, setCancelConfirmOpen] = useState(false);
   const dataRef = useRef<QueueStatus | null>(null);
   useEffect(() => { dataRef.current = data; }, [data]);
 
@@ -136,9 +138,17 @@ export default function QueueTrackingPage() {
     };
   }, [fetchStatus]);
 
+  // Modal primitive replaces window.confirm() for this destructive refund/hold-release
+  // action (design contract: states are componentised, don't hand-roll native browser UI).
+  // requestCancel opens the modal; handleCancel runs the actual DELETE.
+  const requestCancel = () => {
+    if (!data || !token || cancelling) return;
+    setCancelConfirmOpen(true);
+  };
+
   const handleCancel = async () => {
     if (!data || !token || cancelling) return;
-    if (!window.confirm(l.cancelConfirm)) return;
+    setCancelConfirmOpen(false);
     setCancelling(true);
     try {
       const res = await fetch(`/api/walkin/queue/${data.id}?token=${encodeURIComponent(token)}`, { method: "DELETE" });
@@ -382,8 +392,8 @@ export default function QueueTrackingPage() {
       </div>
 
       <div className="relative z-10 -mt-5 flex-1 rounded-t-[20px] bg-white px-5 pt-5">
-        {/* LIVE badge */}
-        <span className="inline-flex items-center gap-[7px] rounded-full bg-s-accent-pale py-[5px] pl-2.5 pr-[11px] text-[10.5px] font-bold uppercase tracking-[0.1em] text-s-accent">
+        {/* mockup-ok: LIVE badge sentence case per copy rule 5, no uppercase/tracking */}
+        <span className="inline-flex items-center gap-[7px] rounded-full bg-s-accent-pale py-[5px] pl-2.5 pr-[11px] text-[12px] font-semibold text-s-accent">
           <span className="relative flex h-[7px] w-[7px]">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-s-accent opacity-60" />
             <span className="relative inline-flex h-[7px] w-[7px] rounded-full bg-s-accent" />
@@ -542,7 +552,7 @@ export default function QueueTrackingPage() {
           </Link>
         )}
         {isWaiting ? (
-          <button onClick={handleCancel} disabled={cancelling} aria-label={l.cancel} className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-full bg-s-error text-white transition active:scale-[0.98] disabled:opacity-50">
+          <button onClick={requestCancel} disabled={cancelling} aria-label={l.cancel} className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-full bg-s-error text-white transition active:scale-[0.98] disabled:opacity-50">
             <X size={22} strokeWidth={3} />
           </button>
         ) : (
@@ -551,6 +561,32 @@ export default function QueueTrackingPage() {
           </button>
         )}
       </div>
+
+      {/* mockup-ok: destructive-cancel confirmation, replaces window.confirm() */}
+      <Modal isOpen={cancelConfirmOpen} onOpenChange={setCancelConfirmOpen} size="sm" keyboardDismissDisabled={cancelling} isDismissable={!cancelling}>
+        <ModalHeader title={l.cancel} closeButton={!cancelling} />
+        <ModalBody>
+          <p>{l.cancelConfirm}</p>
+        </ModalBody>
+        <ModalFooter>
+          <button
+            type="button"
+            onClick={() => setCancelConfirmOpen(false)}
+            disabled={cancelling}
+            className="rounded-full border border-s-border bg-white px-5 py-2.5 text-[14px] font-semibold text-s-ink transition-colors hover:bg-s-bg-sunken disabled:opacity-50"
+          >
+            {l.keepTicket}
+          </button>
+          <button
+            type="button"
+            onClick={() => { void handleCancel(); }}
+            disabled={cancelling}
+            className="rounded-full bg-s-error px-5 py-2.5 text-[14px] font-semibold text-white transition-colors hover:brightness-[1.06] disabled:opacity-50"
+          >
+            {cancelling ? <Spinner size="sm" invert /> : l.cancel}
+          </button>
+        </ModalFooter>
+      </Modal>
     </div>
   );
 }

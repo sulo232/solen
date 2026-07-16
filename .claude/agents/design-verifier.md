@@ -24,6 +24,7 @@ If any input is missing, ask the dispatching agent for it before proceeding. Don
 2. `_design-system/SOURCE.md` — the canonical 22-section design system (tokens, motion, spacing, components, voice, a11y, patterns). Use for the WHY behind a token + the three-layer color model + the §14.0 color decision tree.
 3. `public/solen-styleguide.html` — visual rulebook. Use for visual diff + per-section line-range checks. NOT the source of truth for token values (that's #1).
 4. `_rules/SOLEN_UI.md` — universal UI principles (one primary action, blue restraint, effect restraint, icon discipline, state coverage). These are orthogonal to tokens and stay in force regardless of which token a surface uses.
+5. `_design-system/SENIOR_SCORECARD.md` + `_design-system/WORK_TYPES.md`, the ship gate. **A customer-facing screen ships only at SENIOR_SCORECARD 5/5 Pass** (copy, emphasis, color, type, structure); score it explicitly and cite it in your verdict. Use `WORK_TYPES.md` to judge whether the verification depth matches the work-type (a surgical fix doesn't need the full scorecard; a ground-up rebuild does).
 
 The project CLAUDE.md "Design contract — LOCKED" table is the fast index of these same values; LOCKFILE wins on any literal.
 

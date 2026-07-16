@@ -15,7 +15,7 @@ INPUT=$(cat)
 TOOL=$(echo "$INPUT" | jq -r '.tool_name // empty')
 CMD=$(echo "$INPUT" | jq -r '.tool_input.command // empty')
 [[ "$TOOL" == "Bash" ]] || exit 0
-echo "$CMD" | grep -qE '(^|[;&|[:space:]])git[[:space:]].*commit' || exit 0
+echo "$CMD" | grep -qE '(^|[;&|[:space:]])git[[:space:]]+(-[^[:space:]]+[[:space:]]+)*commit([[:space:]]|$)' || exit 0
 
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 cd "$PROJECT_DIR" 2>/dev/null || exit 0
@@ -28,7 +28,7 @@ fi
 
 # Staged DELETIONS of product surfaces (-M so renames don't count as deletions).
 DELETED=$(git diff --cached --name-status -M 2>/dev/null | awk '$1=="D"{print $2}' \
-  | grep -E '^app/.*(page|route)\.tsx?$|^components-legacy/.*\.tsx$|^app/\[locale\]/_components/.*\.tsx$' || true)
+  | grep -E '^app/.*(page|route)\.tsx?$|^components-legacy/.*\.tsx$|^components/.*\.tsx$|^app/\[locale\]/_components/.*\.tsx$|.*/_components/.*\.tsx$' || true)
 [[ -z "$DELETED" ]] && exit 0
 
 # Graveyard staged in the same commit → growth happened, allow.

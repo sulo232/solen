@@ -6,7 +6,7 @@ import Link from "next/link";
 import type { Service, SalonDetail } from "./_shared";
 import { capitalize } from "./_shared";
 import { TabPill } from "../primitives/TabPill";
-import { PriceFrom } from "../primitives";
+import { PriceFrom, SeeAllButton } from "../primitives";
 import { cn } from "@/lib/utils";
 
 // B4 load audit (2026-07-04, finding #2): the full-screen "Alle ansehen" sheet
@@ -158,13 +158,8 @@ export function SalonServices({
           because the sheet IS the booking flow's step 1. */}
       {visible.length > 0 && (
         <div className="mt-5 flex justify-center">
-          <button
-            type="button"
-            onClick={() => setSheetOpen(true)}
-            className="font-body inline-flex items-center rounded-full bg-s-bg-sunken px-8 py-3 text-[14px] font-semibold text-s-ink transition-colors hover:bg-s-border md:px-10 md:py-3.5 md:text-[15px]"
-          >
-            Alle ansehen
-          </button>
+          {/* mockup-ok: SeeAllButton port, byte-identical pill class string */}
+          <SeeAllButton label="Alle ansehen" onClick={() => setSheetOpen(true)} />
         </div>
       )}
 

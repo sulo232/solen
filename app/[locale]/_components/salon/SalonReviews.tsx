@@ -4,7 +4,7 @@ import * as React from "react";
 import { Star } from "lucide-react";
 import type { Review } from "./_shared";
 import { formatReviewDate } from "./_shared";
-import { Avatar, RatingStars } from "@/app/[locale]/_components/primitives";
+import { Avatar, RatingStars, SeeAllButton } from "@/app/[locale]/_components/primitives";
 import { cn } from "@/lib/utils";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 
@@ -141,23 +141,12 @@ export function SalonReviews({
           )}
           {rows.length > 6 && !expanded && (
             <div className="mt-6 flex justify-center">
+              {/* mockup-ok: SeeAllButton port, byte-identical pill class string, same instance as
+                  SalonServices/SalonTeam on this page (P2 fix, owner-approved 2026-07-15) */}
               {salonSlug && locale ? (
-                <a
-                  href={`/${locale}/salon/${salonSlug}/reviews`}
-                  // mockup-ok: P2 fix, same "Alle ansehen" pill instance as SalonServices/SalonTeam on this page, twin-control drift (approved fixes-refined)
-                  className="font-body inline-flex items-center rounded-full bg-s-bg-sunken px-8 py-3 text-[14px] font-semibold text-s-ink transition-colors hover:bg-s-border md:px-10 md:py-3.5 md:text-[15px]"
-                >
-                  Alle ansehen
-                </a>
+                <SeeAllButton label="Alle ansehen" href={`/${locale}/salon/${salonSlug}/reviews`} />
               ) : (
-                <button
-                  type="button"
-                  onClick={() => setExpanded(true)}
-                  // mockup-ok: P2 fix, same "Alle ansehen" pill instance as SalonServices/SalonTeam on this page, twin-control drift (approved fixes-refined)
-                  className="font-body inline-flex items-center rounded-full bg-s-bg-sunken px-8 py-3 text-[14px] font-semibold text-s-ink transition-colors hover:bg-s-border md:px-10 md:py-3.5 md:text-[15px]"
-                >
-                  Alle ansehen
-                </button>
+                <SeeAllButton label="Alle ansehen" onClick={() => setExpanded(true)} />
               )}
             </div>
           )}

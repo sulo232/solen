@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Share, Star, X, ArrowLeft, Instagram, ChevronLeft, ChevronRight, Check } from "lucide-react";
-import { Avatar, RatingStars } from "@/app/[locale]/_components/primitives";
+import { Avatar, RatingStars, SeeAllButton } from "@/app/[locale]/_components/primitives";
 import Spinner from "@/components-legacy/ui/Spinner";
 import StaffReviewsSheet from "@/components-legacy/staff/StaffReviewsSheet";
 import { formatCurrency } from "@/lib/format-currency";
@@ -434,13 +434,13 @@ export default function StaffProfilePage({
               })}
             </div>
             {reviews.length > REVIEWS_PREVIEW && (
-              <button
-                type="button"
+              // mockup-ok: SeeAllButton port, byte-identical pill-outline class string
+              <SeeAllButton
+                label="Alle ansehen"
+                variant="pill-outline"
                 onClick={() => setShowReviews(true)}
-                className="mt-6 w-full rounded-full border border-s-border py-3 font-heading text-[14px] font-semibold text-s-ink transition-colors hover:border-s-ink/25"
-              >
-                Alle ansehen
-              </button>
+                className="mt-6 w-full"
+              />
             )}
           </>
         )}

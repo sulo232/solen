@@ -194,17 +194,76 @@ def offenders(text):
     return out
 
 
+# ---- ported from the stranded claude/context-compact-architecture-5d1ace branch (commit
+# 5904c18ec): a selection token co-occurring with a banned fill OUTSIDE a ternary (a helper
+# function's return value, a multi-expression className) and a CSS selected-state rule in a
+# mockup .html file. INK_TERNARY/SEL_CONST above never see either shape. ----
+
+FILL = r"bg-s-ink|border-s-ink|bg-s-accent|border-s-accent"
+# (?!:) on the bare `active`/`checked` tokens: Tailwind's `active:`/`checked:` pseudo-class
+# variant prefix (e.g. `active:scale-[0.98]` on an ordinary button) is not a selection-state
+# signal and must not co-occurrence-match a nearby bg-s-ink/bg-s-accent CTA fill (false
+# positive found spot-checking this port against app/[locale]/queue/[token]/page.tsx).
+SEL_TOKEN = r"isSelected|isActive|aria-pressed|\bselected\b|\bactive\b(?!:)|\bpicked\b|isPicked|isOn|\bchecked\b(?!:)|isChecked|\bcurrent\b"
+
+# A selection token co-occurring with a banned fill within ~80 chars, EITHER order , not
+# confined to a ternary, so a helper function or a multi-expression className is also caught.
+SEL_NONTERNARY = re.compile(
+    r"(" + SEL_TOKEN + r")[^\n;{}]{0,80}(" + FILL + r")\b"
+    r"|(" + FILL + r")\b[^\n;{}]{0,80}(" + SEL_TOKEN + r")",
+    re.IGNORECASE,
+)
+
+# CSS (mockup .html scope): a `.selected`/`.active`/`[aria-selected]` rule whose body paints a
+# black/ink OR blue/accent background.
+SEL_CSS = re.compile(
+    r"(\.(on|selected|active|sel|is-active|is-selected)\b|\[aria-selected|\[data-[a-z-]*active)"
+    r"[^{}:]{0,40}\{[^{}]{0,200}background[^;{}]{0,40}:(?:[^;{}]{0,30})"
+    r"(var\(--ink\)|var\(--accent\)|#0a0a0a\b|#000000\b|#000\b|\bblack\b|#276ef1\b|#1e54b7\b)",
+    re.IGNORECASE,
+)
+
+# Window exclusion for the non-ternary/CSS checks: commit-button context, plus the same
+# booking date/slot/calendar/time exception (generalized to a surrounding-text window since
+# these matches are not confined to a single ternary condition).
+WINDOW_EXCLUDE = re.compile(
+    r"\bcommit\b|\bsubmit\b|\bpay\b|\bpayment\b|\bbezahlen\b|\bbuchen\b|\bcheckout\b|\bconfirm\b|"
+    r"\bprimary\b|\bcta\b|\bweiter\b|\bcontinue\b|\bnext-step\b|\bplace.?order\b|\.submit\b|"
+    r"\bbutton\b|\bbtn\b|role=[\"']button[\"']|"
+    r"\bdate\b|\bslot\b|\bcalendar\b|\btime\b",
+    re.IGNORECASE,
+)
+
+
+def window_offenders(text):
+    out = []
+    for rx in (SEL_NONTERNARY, SEL_CSS):
+        for m in rx.finditer(text):
+            lo = max(0, m.start() - 80)
+            hi = min(len(text), m.end() + 80)
+            window = text[lo:hi]
+            if WINDOW_EXCLUDE.search(window):
+                continue
+            out.append(m)
+    return out
+
+
 # net-new only: if the replaced/old text already had the same class of violation,
 # an unrelated edit to that region must not block.
-if offenders(old):
+if offenders(old) or window_offenders(old):
     allow()
 
 hits = [m for m in offenders(new) if not line_has_ok(new, m.start())]
-if not hits:
+nonternary_hits = [m for m in window_offenders(new) if not line_has_ok(new, m.start())]
+if not hits and not nonternary_hits:
     allow()
 
-m = hits[0]
-found = m.group(0).strip()[:120]
+if hits:
+    m = hits[0]
+    found = m.group(0).strip()[:120]
+else:
+    m = nonternary_hits[0]
+    found = m.group(0).strip()[:120]
 
 msg = [
     "\U0001F6D1 no-black/blue-selected gate (design contract, owner voice 2026-06-29 + 2026-07-02):", "",

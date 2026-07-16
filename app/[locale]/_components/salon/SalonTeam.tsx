@@ -1,9 +1,8 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
 import type { StaffMember } from "./_shared";
-import { Avatar } from "@/app/[locale]/_components/primitives";
+import { Avatar, SeeAllButton } from "@/app/[locale]/_components/primitives";
 import { Sheet, SheetBody } from "@/app/[locale]/_components/primitives/Sheet";
 import dynamic from "next/dynamic";
 
@@ -116,15 +115,9 @@ export function SalonTeam({
         <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
           Team
         </h2>
-        <Link
-          href={`/${locale}/salon/${slug}/booking`}
-          // mockup-ok: P2 fix, SAME "Alle ansehen" pill instance (identical size/radius/weight/color)
-          // as SalonServices/SalonReviews on this page, twin-control drift fix; was a bare text link
-          // with no visible affordance (approved fixes-refined)
-          className="font-body inline-flex items-center rounded-full bg-s-bg-sunken px-8 py-3 text-[14px] font-semibold text-s-ink transition-colors hover:bg-s-border md:px-10 md:py-3.5 md:text-[15px]"
-        >
-          Alle ansehen
-        </Link>
+        {/* mockup-ok: SeeAllButton port, byte-identical pill class string (P2 fix,
+            owner-approved 2026-07-15), same instance as SalonServices/SalonReviews */}
+        <SeeAllButton label="Alle ansehen" href={`/${locale}/salon/${slug}/booking`} />
       </div>
 
       {/* Horizontal carousel — tapping a stylist opens their individual profile
