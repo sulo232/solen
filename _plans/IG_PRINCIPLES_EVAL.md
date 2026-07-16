@@ -36,7 +36,7 @@ Sources (another session's worktree, read-only):
 - [ ] ig7 68ch measure on SalonAbout, promoted to a shared utility
 - [ ] ig8 CategoryHeroCarousel white title 700 to 600
 - [ ] ig9 calibrated icon-stroke table applied to FilterSheet chip / ProgressStepper / header menu
-- [ ] ig10 grid-type classification step into the law (dashboard demo stays with the parked operator-home decision)
-- [ ] ig11 balance collapse-test step into solen-taste-diagnosis
+- [x] ig10 grid-type classification step into the law , verified: LOCKFILE 'Grid TYPE classification' block + RATIONALE G2 half-closed + fable-frontend step 2.5 (commit 0586d1d4d); dashboard demo stays with the parked operator-home decision (dashboard demo stays with the parked operator-home decision)
+- [x] ig11 balance collapse-test step into solen-taste-diagnosis , verified: SKILL.md step 3.5 (collapse test, weighted centroid, negative-space shapes, BentoBusiness calibration case), commit 0586d1d4d
 - [ ] ig12 activity signal on the live determinate progress bar (discovery import)
 - [ ] Each batch: coder + loop-reviewer to PASS, tsc 0, committed
