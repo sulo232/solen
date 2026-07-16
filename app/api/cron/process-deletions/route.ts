@@ -169,6 +169,18 @@ export async function GET(request: NextRequest) {
     });
     if (batchErrors.length) {
       console.error("[api/cron/process-deletions] batch cleanup errors:", batchErrors);
+      // A failed PII-byte purge is the exact compliance gap this pipeline exists to close, so it
+      // must page someone, not just land in a log line. (Previously only the PostHog step alerted,
+      // which made a third-party sync failure louder than a failure to erase real photo bytes.)
+      const purgeErrors = batchErrors.filter(
+        (e) => e.startsWith("client-photos storage:") || e.startsWith("review-photos storage:"),
+      );
+      if (purgeErrors.length) {
+        void alertAdmin("GDPR erasure: photo-storage purge failed", {
+          errors: purgeErrors,
+          dueUsers: userIds.length,
+        });
+      }
     }
 
     // Per-user auth delete: the Admin API has no bulk delete, so this stays

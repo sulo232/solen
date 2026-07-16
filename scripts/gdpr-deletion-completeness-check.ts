@@ -260,9 +260,16 @@ async function main() {
     check("throwaway file uploaded to client-photos storage", !uploadErr, { error: uploadErr?.message, photoPath });
     if (!uploadErr) clientPhotoStoragePath = photoPath;
 
+    // Seed photo_url with the REAL production shape: the full public URL from getPublicUrl(),
+    // exactly what app/api/clients/[id]/photos/route.ts:85-94 writes (mirrors how the
+    // review_photos case below already seeds publicUrlData.publicUrl). Seeding a raw path here
+    // made this gate pass against a shape production never produces, which is precisely why it
+    // never caught purgeClientPhotoStorage passing a full URL to storage.remove() (a silent
+    // no-op that deleted nothing).
+    const { data: clientPhotoUrlData } = admin.storage.from("client-photos").getPublicUrl(photoPath);
     const { data: clientPhoto, error: photoRowErr } = await admin
       .from("client_photos")
-      .insert({ salon_id: salonId, customer_id: userId, photo_url: photoPath, photo_type: "progress" })
+      .insert({ salon_id: salonId, customer_id: userId, photo_url: clientPhotoUrlData.publicUrl, photo_type: "progress" })
       .select("id")
       .single();
     clientPhotoId = clientPhoto?.id ?? null;

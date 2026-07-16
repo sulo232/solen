@@ -32,6 +32,21 @@ export type PurgeClientPhotoStorageResult = {
 
 const BUCKET = "client-photos";
 
+/**
+ * client_photos.photo_url holds the full public URL from getPublicUrl(); storage.remove() needs a
+ * bucket-relative path. Mirrors pathFromPublicUrl in purge-review-photo-storage.ts. Falls back to
+ * treating the value as an already-relative path when the marker is absent.
+ */
+function pathFromPublicUrl(url: string): string | null {
+  const marker = `/object/public/${BUCKET}/`;
+  const idx = url.indexOf(marker);
+  if (idx === -1) {
+    // No marker: either an already-relative path (accept) or something unusable (reject).
+    return url.startsWith("http") ? null : url;
+  }
+  return decodeURIComponent(url.slice(idx + marker.length));
+}
+
 export async function purgeClientPhotoStorage(
   admin: SupabaseClient,
   userIds: string[],
@@ -50,9 +65,25 @@ export async function purgeClientPhotoStorage(
     return { pathsFound: 0, removed: 0, errors };
   }
 
-  const paths = (photos ?? [])
+  // client_photos.photo_url stores the FULL public URL (app/api/clients/[id]/photos/route.ts:85-94
+  // writes `urlData.publicUrl`), but storage.remove() needs a BUCKET-RELATIVE path. Passing the URL
+  // verbatim matched no object and removed nothing while returning no error: a silent no-op that
+  // left erased customers' before/after photos in the bucket forever. Strip the marker the same way
+  // the sibling purge-review-photo-storage.ts does. A raw path (no marker) is still accepted, so
+  // older/hand-written rows keep working.
+  const rawUrls = (photos ?? [])
     .map((p: { photo_url: string | null }) => p.photo_url)
     .filter((p: string | null): p is string => !!p);
+
+  const paths = rawUrls
+    .map((u) => pathFromPublicUrl(u))
+    .filter((p: string | null): p is string => !!p);
+
+  // Anything we could not turn into a real path would be a silent miss: surface it.
+  const unparseable = rawUrls.length - paths.length;
+  if (unparseable > 0) {
+    errors.push(`client-photos: ${unparseable} photo_url value(s) could not be mapped to a storage path`);
+  }
 
   if (paths.length === 0) return { pathsFound: 0, removed: 0, errors };
 
