@@ -86,18 +86,10 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
 
     // LOCKFILE 14.4 (2026-06-11): errors name the exact cause BEFORE the server
     // gets a chance to answer generically. Mirrors the placeholder's stated policy.
-    if (password.length < 8) {
+    // NIST SP 800-63-4 (July 2025): length only, no composition rules. The
+    // breach-list check happens server-side (app/api/auth/signup/route.ts).
+    if (password.length < 12) {
       toast.error(t("errorPasswordMin"));
-      setSaving(false);
-      return;
-    }
-    if (!/\d/.test(password)) {
-      toast.error(t("errorPasswordDigit"));
-      setSaving(false);
-      return;
-    }
-    if (!/[A-ZÄÖÜ]/.test(password)) {
-      toast.error(t("errorPasswordUpper"));
       setSaving(false);
       return;
     }
@@ -120,7 +112,9 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
         return;
       }
       if (!res.ok) {
-        toast.error(data.message || tc("errorProcessing"));
+        // password_breached gets its own locale-aware copy (distinct from
+        // "too short"); every other server error falls back to its raw message.
+        toast.error(data.code === "password_breached" ? t("errorPasswordBreached") : (data.message || tc("errorProcessing")));
         setSaving(false);
         return;
       }

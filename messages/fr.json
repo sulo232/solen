@@ -5960,7 +5960,7 @@
     "roleSalonDesc": "Enregistrer et gérer mon salon",
     "createAccount": "Créer un compte",
     "emailPlaceholder": "E-mail",
-    "passwordPlaceholder": "Mot de passe (min. 8 caractères, 1 chiffre, 1 majuscule)",
+    "passwordPlaceholder": "Mot de passe (min. 12 caractères)",
     "salonNameLabel": "Nom du salon",
     "salonNamePlaceholder": "ex. Studio 54",
     "birthdayLabel": "Date de naissance",
@@ -5974,9 +5974,8 @@
     "continue": "Continuer",
     "errorMinAge": "Tu dois avoir au moins 16 ans.",
     "errorAccountExists": "Tu as déjà un compte. Connecte-toi.",
-    "errorPasswordMin": "Le mot de passe doit contenir au moins 8 caractères.",
-    "errorPasswordDigit": "Le mot de passe doit contenir au moins un chiffre.",
-    "errorPasswordUpper": "Le mot de passe doit contenir au moins une majuscule."
+    "errorPasswordMin": "Le mot de passe doit contenir au moins 12 caractères.",
+    "errorPasswordBreached": "Ce mot de passe a été trouvé dans une fuite de données. Merci d'en choisir un autre."
   },
   "payConfirm": {
     "fillRequiredFields": "Veuillez remplir tous les champs obligatoires",

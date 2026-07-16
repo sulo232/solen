@@ -666,7 +666,9 @@ export const loginSchema = z.object({
 
 export const signupSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(8).max(200),
+  // NIST SP 800-63-4 (July 2025): 12-char minimum, no composition rules.
+  // Keep this in sync with the real signup gate: app/api/auth/signup/route.ts.
+  password: z.string().min(12).max(200),
   display_name: z.string().min(1).max(100).optional(),
 });
 

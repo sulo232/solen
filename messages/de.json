@@ -5978,7 +5978,7 @@
     "roleSalonDesc": "Meinen Salon registrieren und verwalten",
     "createAccount": "Konto erstellen",
     "emailPlaceholder": "E-Mail",
-    "passwordPlaceholder": "Passwort (min. 8 Zeichen, 1 Zahl, 1 Grossbuchstabe)",
+    "passwordPlaceholder": "Passwort (mind. 12 Zeichen)",
     "salonNameLabel": "Name des Salons",
     "salonNamePlaceholder": "z.B. Studio 54",
     "birthdayLabel": "Geburtsdatum",
@@ -5992,9 +5992,8 @@
     "continue": "Weiter",
     "errorMinAge": "Du musst mindestens 16 Jahre alt sein.",
     "errorAccountExists": "Du hast bereits ein Konto. Bitte logge dich ein.",
-    "errorPasswordMin": "Das Passwort braucht mindestens 8 Zeichen.",
-    "errorPasswordDigit": "Das Passwort braucht mindestens eine Zahl.",
-    "errorPasswordUpper": "Das Passwort braucht mindestens einen Grossbuchstaben."
+    "errorPasswordMin": "Das Passwort braucht mindestens 12 Zeichen.",
+    "errorPasswordBreached": "Dieses Passwort wurde in einem Datenleck gefunden. Bitte wähle ein anderes."
   },
   "payConfirm": {
     "fillRequiredFields": "Bitte fülle alle erforderlichen Felder aus",

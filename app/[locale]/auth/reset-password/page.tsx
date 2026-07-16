@@ -50,7 +50,8 @@ export default function ResetPasswordPage() {
     return () => { cancelled = true; };
   }, []);  // eslint-disable-line react-hooks/exhaustive-deps
 
-  const passwordValid = password.length >= 8 && /[A-Z]/.test(password) && /[0-9]/.test(password);
+  // NIST SP 800-63-4 (July 2025): length only, no composition rules.
+  const passwordValid = password.length >= 12;
   const passwordsMatch = password === confirm && confirm.length > 0;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -179,9 +180,7 @@ export default function ResetPasswordPage() {
               {/* Password requirements */}
               {password.length > 0 && (
                 <div className="flex flex-col gap-1 text-xs font-body">
-                  <Requirement met={password.length >= 8} text="Mindestens 8 Zeichen" />
-                  <Requirement met={/[A-Z]/.test(password)} text="Mindestens ein Grossbuchstabe" />
-                  <Requirement met={/[0-9]/.test(password)} text="Mindestens eine Zahl" />
+                  <Requirement met={password.length >= 12} text="Mindestens 12 Zeichen" />
                 </div>
               )}
 

@@ -5,6 +5,7 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, authLimiter, getClientIp } from "@/lib/ratelimit";
 import { z } from "zod";
 import { trackServerEvent, identifyServerUser } from "@/lib/posthog-server";
+import { isPasswordBreached } from "@/lib/auth/breached-password";
 
 const calcAge = (dateStr: string) => {
   const b = new Date(dateStr);
@@ -15,11 +16,11 @@ const calcAge = (dateStr: string) => {
 
 const signupSchema = z.object({
   email: z.string().email("Ungültige E-Mail-Adresse"),
-  password: z
-    .string()
-    .min(8, "Mindestens 8 Zeichen")
-    .regex(/[A-Z]/, "Mindestens ein Grossbuchstabe")
-    .regex(/[0-9]/, "Mindestens eine Zahl"),
+  // NIST SP 800-63-4 (July 2025): no composition rules (they push users toward
+  // "Password1!"-shaped passwords that are in every cracking dictionary).
+  // Length is what resists cracking. Breach-list check happens after parsing,
+  // below, since it needs a network call the schema itself can't make.
+  password: z.string().min(12, "Mindestens 12 Zeichen"),
   birthday: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Format: YYYY-MM-DD").optional(),
   salon_name: z.string().min(2, "Name muss mindestens 2 Zeichen haben").optional(),
 }).refine(data => data.birthday || data.salon_name, {
@@ -43,6 +44,24 @@ export async function POST(request: NextRequest) {
   }
 
   const { email, password, birthday, salon_name } = parsed.data;
+
+  // NIST SP 800-63-4: reject passwords found in known breach corpora. Runs
+  // AFTER the length check (cheap check first) and fails open on any HIBP
+  // failure, see lib/auth/breached-password.ts.
+  if (await isPasswordBreached(password)) {
+    // `code` lets the client show a locale-aware message distinct from the
+    // "too short" case (messages/*.json authRegister.errorPasswordBreached);
+    // `message` is the hardcoded-German fallback every other error in this
+    // route already returns, for any caller that only reads `message`.
+    return NextResponse.json(
+      {
+        code: "password_breached",
+        message: "Dieses Passwort wurde in einem Datenleck gefunden. Bitte wähle ein anderes.",
+      },
+      { status: 400 },
+    );
+  }
+
   const supabase = await createServerSupabaseClient();
   const origin = new URL(request.url).origin;
 

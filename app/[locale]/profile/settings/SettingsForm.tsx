@@ -87,7 +87,8 @@ export default function SettingsForm({
   const [pwBusy, setPwBusy] = React.useState(false);
 
   const emailValid = /\S+@\S+\.\S+/.test(newEmail.trim()) && newEmail.trim() !== email;
-  const pwValid = newPassword.length >= 8;
+  // NIST SP 800-63-4 (July 2025): length only, no composition rules.
+  const pwValid = newPassword.length >= 12;
 
   const updateEmail = async () => {
     if (!emailValid) return;

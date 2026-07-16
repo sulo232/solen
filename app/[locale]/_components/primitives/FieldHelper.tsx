@@ -31,7 +31,7 @@ interface FieldHelperProps {
  * surfaces that explicitly want a confirmation line.
  *
  * @example
- * <FieldHelper>Mindestens 8 Zeichen.</FieldHelper>
+ * <FieldHelper>Mindestens 12 Zeichen.</FieldHelper>
  * <FieldHelper tone="error">Diese E-Mail-Adresse ist nicht gültig.</FieldHelper>
  */
 export function FieldHelper({
