@@ -70,12 +70,15 @@ Owner message (dictated): fix + commit; expand RATIONALE.md with the og round-1 
 
 ## Picks round 2 + the full-bleed exploration (owner 2026-07-16 evening, dictated)
 
-- [ ] Log picks: C1 keep, C2 keep, C4 keep (calm confirmation stays), C3 undecided ("I don't know, bro", stays open), C5 unanswered (stays open), G1 keep current density, G2 grid = search pages + carousel = home rows
-- [ ] Define the icon-rule boundary explicitly (owner: "what do you mean almost? is it already defined?"): name the exact icon-only exemption set in RATIONALE + the rules page
-- [ ] Gray-background complaint: investigate the source (probe-page chrome vs product), lighten the elicitation-page chrome, log the taste signal, name the locked product rules it would touch if extended
-- [ ] Full-bleed exploration: re-check ref 05 (and related refs), build an elicitation page of full-bleed treatments on candidate MOMENTS (not the confirmation, owner rejected that placement), color vs photo forks
-- [ ] Honest answer to "is this enough to overhaul the whole website": what is settled, what is missing, the path
-- [ ] Ultracode analysis pass (workflow, judgment agents): rank full-bleed candidate surfaces + mine the still-unprobed general taste dimensions
+- [x] Picks logged , verified: TASTE_LOG.md 'picks round 2' table, commit ec06965-era (git log: docs(taste): picks round 2 logged)
+- [x] Icon boundary DEFINED , verified: RATIONALE.md domain 22 (closed 7-item icon-only set, additions are logged owner calls) + round2-rules.html caption, commit 'icon-only exemption set DEFINED'
+- [x] Gray chrome fixed , verified: 6 probe/explainer pages now white-first (same commit); TASTE_LOG row logs the signal; product gray locks (sunken tray, gray selected) named as untouched law pending a by-name reopen
+- [x] Full-bleed exploration built , verified: fullbleed.html (commit 81b176509), 7 ranked moments with fork chips, 9/9 images render (browser check), gemini diffs applied (gradient fade-to-white, frost fallback); the flagged 'N' overlap is the Next.js dev badge inside the base capture, an artifact, skipped with reason
+- [x] Overhaul-readiness verdict delivered , verified: readiness-judge output (workflow wf_9a56928a-35e journal) summarized in the closing message: roughly two-thirds ready (component layer), the missing third is page-level composition + 3 open owner calls, ordered list recorded below
+- [x] Workflow ran (3 agents, all done) , verified: run wf_9a56928a-35e; outputs: 7 ranked full-bleed moments (built), 13 unprobed general dimensions (4 high: photo grammar, page rhythm, brand-moment frequency, product color stance), readiness verdict
+
+### The overhaul-readiness order (from the readiness judge, wf_9a56928a-35e)
+1. [merge] the converged-card branch (chip task_c132841a), 2. [probe] full-bleed placement (page live), 3. [probe] page-level rhythm G3, 4. [probe] gray-extent question, 5. [owner-call] imagery direction G6 fresh yes, 6. [owner-call] C3 + C5, 7. [script] 3B contrast sweep, 8. [script] measured floors D1/D2/D4/D8, 9. [probe] trailing gaps G4/G5/G7/G9.
 
 ## Parked / boundaries
 - Web dark mode stays graveyarded (exists-check hit); positive-polarity mechanics recorded for MOBILE dark mode only.

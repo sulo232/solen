@@ -4,6 +4,13 @@ The newest entry is at the top. Every session that ships real work adds one entr
 
 ---
 
+## 2026-07-16 (night) , picks round 2 applied + the full-bleed exploration + the honest overhaul verdict
+
+**What you asked for:** close the C's (C3 undecided), G1 current, G2 grid-for-search carousel-for-home; define the icon rule's "almost"; you dislike the gray backgrounds; you want full-bleed a lot (not on the confirmation); and is this enough to overhaul the site?
+
+**What got done:** picks logged as dated law; the icon-only exemption set is now a CLOSED 7-item list (no more "almost"); all six probe/explainer pages run white-first chrome (the gray you disliked was my presentation chrome, the product's gray locks stay law until you reopen them by name); a 3-agent workflow ranked where full-bleed earns its place, and fullbleed.html shows the seven moments with fork chips (photo full-bleed is free under your own 80/17 law because photography carries the color; the gradient and green-flood variants are flagged as lock conflicts needing your named yes). The readiness judge's verdict: roughly two-thirds of an overhaul's decisions are settled (the whole component layer); the missing third is page-level composition (rhythm, imagery direction, full-bleed placement) plus C3/C5 and two script sprints; the ordered list is in the plan file. Tunnel restarted (old one died): besides-refer-motels-academy.trycloudflare.com.
+
+
 ## 2026-07-16 (evening) , approved picks APPLIED to real code + the Wrong/Right completion page
 
 **What you asked for:** "okay make it and also make mockups for all of em also for refs page u havent made mockup for all".
