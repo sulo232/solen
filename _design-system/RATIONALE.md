@@ -751,7 +751,7 @@ Source: the owner's second research digest (epistemology, Norman, depth/light, t
 
 **Optical volume:** domain 5's optics applied to glyphs: a circle must slightly exceed a square's box to read equal; icon-in-disc centering is verified by eye at zoom, not by flexbox faith.
 
-**Icon + label (T2, NN/g "universal icons are rare"):** ambiguity is the norm outside a tiny set (search, close, home). The house copy-economy ladder (icon-only beside an unambiguous object; icon+label when rarer; label-only for commitments) is the operational form; its mechanic is information scent (domain 13). ISO 9186 comprehension testing exists (a 67-percent-class threshold, edition-dependent); noted, not adopted: heavyweight process for a Lucide-based system.
+**Icon + label (T2, NN/g "universal icons are rare"):** ambiguity is the norm outside a tiny set. DEFINED boundary (owner demanded the "almost" be pinned, 2026-07-16): icon-only is permitted for EXACTLY this closed set, each with a mandatory aria-label: close X (the 38px circled recipe), back arrow (global header), search magnifier, hamburger menu, save heart, copy (only directly beside the code it copies), share (only inside an action row beside its object). EVERYTHING else carries a visible word; commitments (Buchen, Bezahlen) are words only. Adding to the set is an owner call logged in TASTE_LOG, never ad hoc. The mechanic is information scent (domain 13). ISO 9186 comprehension testing exists (a 67-percent-class threshold, edition-dependent); noted, not adopted: heavyweight process for a Lucide-based system.
 
 ## 23. Domain 19: data display (compact by design; judges' kill-list honored, dashboard floors live in research/TASTE_DASHBOARDS.md)
 
