@@ -45,6 +45,11 @@ export async function POST(
   if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
     return NextResponse.json({ error: "Only JPEG, PNG, or WebP images are allowed" }, { status: 400 });
   }
+  // Size cap, matching the sibling photo routes (gallery, reviews): one upload must not be able
+  // to burn the project's Storage quota (Free tier is 1 GB across every bucket).
+  if (file.size > 5 * 1024 * 1024) {
+    return NextResponse.json({ error: "Image must be 5 MB or smaller" }, { status: 400 });
+  }
 
   // Append to service photo_urls array
   const currentUrls = (service.photo_urls as string[]) ?? [];

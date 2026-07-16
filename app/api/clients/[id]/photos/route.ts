@@ -57,6 +57,17 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const bookingId = formData.get("booking_id") as string | null;
 
   if (!file) return NextResponse.json({ error: "File required" }, { status: 400 });
+  // MIME allowlist, same shape as app/api/services/[id]/photos and app/api/reviews/[id]/photos.
+  // Without this, `file.type` is client-controlled and is passed straight through as the
+  // upload's Content-Type, so arbitrary HTML/SVG could be hosted from a trusted domain.
+  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+    return NextResponse.json({ error: "Only JPEG, PNG, or WebP images are allowed" }, { status: 400 });
+  }
+  // Size cap, matching the sibling photo routes: one client-photo upload must not be able to
+  // burn the project's Storage quota (Free tier is 1 GB across every bucket).
+  if (file.size > 5 * 1024 * 1024) {
+    return NextResponse.json({ error: "Image must be 5 MB or smaller" }, { status: 400 });
+  }
   if (!["before", "after", "progress"].includes(photoType)) {
     return NextResponse.json({ error: "photo_type must be before, after, or progress" }, { status: 400 });
   }
