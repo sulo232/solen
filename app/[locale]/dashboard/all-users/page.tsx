@@ -9,6 +9,7 @@ import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI";
 import Spinner from "@/components-legacy/ui/Spinner";
 import EmptyState from "@/components-legacy/ui/EmptyState";
+import { toast } from "@/app/[locale]/_components/primitives/Toast";
 import { containerVariants, itemVariants } from "@/lib/animations";
 import type { UserRole } from "@/lib/types";
 
@@ -106,12 +107,18 @@ export default function AllUsersPage() {
   }, [fetchUsers]);
 
   const handleRoleChange = async (userId: string, newRole: UserRole) => {
-    await fetch("/api/admin/users", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user_id: userId, role: newRole }),
-    });
-    setUsers((prev) => prev.map((u) => u.id === userId ? { ...u, role: newRole } : u));
+    try {
+      const res = await fetch("/api/admin/users", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: userId, role: newRole }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      setUsers((prev) => prev.map((u) => u.id === userId ? { ...u, role: newRole } : u));
+    } catch (err) {
+      console.error("[DashboardAllUsers] failed to change role:", err);
+      toast.error(t("roleChangeError"));
+    }
   };
 
   const handleSuspendToggle = async () => {

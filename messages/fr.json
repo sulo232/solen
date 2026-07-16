@@ -2404,7 +2404,8 @@
       "suspendMessage": "Bloquer l'utilisateur « {name} » ? L'utilisateur ne pourra plus se connecter.",
       "unsuspendMessage": "Débloquer l'utilisateur « {name} » ?",
       "cancel": "Annuler",
-      "registeredOn": "Inscrit le : {date}"
+      "registeredOn": "Inscrit le : {date}",
+      "roleChangeError": "Impossible de changer le rôle. Veuillez réessayer."
     },
     "approvalsPage": {
       "title": "Validations",
@@ -2417,7 +2418,9 @@
       "modalBody": "Motif pour <strong>{name}</strong> (envoyé par e-mail) :",
       "rejectReasonPlaceholder": "p. ex. Informations incomplètes, aucun lien avec Bâle...",
       "cancel": "Annuler",
-      "rejectAndSendEmail": "Refuser et envoyer l'e-mail"
+      "rejectAndSendEmail": "Refuser et envoyer l'e-mail",
+      "approveError": "Échec de la validation. Veuillez réessayer.",
+      "rejectError": "Échec du refus. Veuillez réessayer."
     },
     "badgeManagerPage": {
       "pageTitle": "Gestion des badges",
@@ -2483,6 +2486,8 @@
       "savedTitle": "Commission mise à jour",
       "savedDescription": "Les nouvelles réservations utilisent désormais {rate}%.",
       "errorMessage": "Échec de l'enregistrement. Veuillez réessayer.",
+      "loadErrorTitle": "Impossible de charger le taux de commission",
+      "loadErrorMessage": "Veuillez réessayer avant de faire une modification.",
       "saving": "Enregistrement…",
       "saved": "Enregistré",
       "retry": "Réessayer",

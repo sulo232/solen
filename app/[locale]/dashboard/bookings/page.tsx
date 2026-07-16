@@ -88,7 +88,8 @@ function SalonCancelModal({
       <div className="bg-white rounded-2xl shadow-warm-xl w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-4">
           <h3 className="text-[18px] font-semibold tracking-[-0.01em] text-s-ink">{t("cancelModalTitle")}</h3>
-          <button onClick={onClose}><X size={18} className="text-s-ink-2" /></button>
+          {/* mockup-ok: a11y touch-target fix (FRONTEND_AUDIT_2026-07-08.md, dash-ops), 18px raised to the locked 44px icon-button spec via a padded hit-area, no visual redesign */}
+          <button onClick={onClose} className="grid place-items-center h-11 w-11 -m-2.5 rounded-full hover:bg-s-bg-sunken transition-colors"><X size={18} className="text-s-ink-2" /></button>
         </div>
         <p className="text-sm text-s-ink-2 mb-4">{t("cancelModalDescription")}</p>
         <div className="space-y-2 mb-5">

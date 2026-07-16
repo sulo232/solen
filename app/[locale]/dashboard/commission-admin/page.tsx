@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Loader2, Check, Save, AlertTriangle } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import ErrorState from "@/components-legacy/ui/ErrorState";
 import { formatCurrency } from "@/lib/format-currency";
 
 /**
@@ -32,9 +33,12 @@ export default function CommissionAdminPage() {
   const [rate, setRate] = useState<number>(15);
   const [loadedRate, setLoadedRate] = useState<number>(15);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [state, setState] = useState<SaveState>("idle");
 
-  useEffect(() => {
+  const fetchRate = () => {
+    setLoading(true);
+    setLoadError(false);
     fetch("/api/admin/commission")
       .then((r) => {
         if (!r.ok) throw new Error("Unauthorized");
@@ -45,8 +49,18 @@ export default function CommissionAdminPage() {
         setRate(r);
         setLoadedRate(r);
       })
-      .catch((err) => console.error("[CommissionAdmin] failed to fetch commission rate:", err))
+      .catch((err) => {
+        console.error("[CommissionAdmin] failed to fetch commission rate:", err);
+        // Frontend audit 2026-07-08 (FRONTEND_AUDIT_2026-07-08.md, dash-money bucket):
+        // this used to silently keep the 15% default with no error UI, so an admin
+        // could edit and PUT a new platform-wide rate off a false, unloaded baseline.
+        setLoadError(true);
+      })
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchRate();
   }, []);
 
   const dirty = rate !== loadedRate;
@@ -86,6 +100,13 @@ export default function CommissionAdminPage() {
         <div className="flex justify-center py-16">
           <Loader2 size={24} className="animate-spin text-s-ink/40" />
         </div>
+      ) : loadError ? (
+        <ErrorState
+          title={t("loadErrorTitle")}
+          message={t("loadErrorMessage")}
+          onRetry={fetchRate}
+          retryLabel={t("retry")}
+        />
       ) : (
         <div className="max-w-md rounded-[14px] border border-s-border bg-white p-6 shadow-warm-md">
           <div className="text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink/40">

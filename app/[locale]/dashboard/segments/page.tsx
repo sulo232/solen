@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { motion } from "motion/react";
 import {
   Zap, DollarSign, AlertTriangle, UserPlus, Heart, Users,
-  ChevronDown, ChevronUp, Mail,
+  ChevronDown, ChevronUp,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
@@ -124,10 +124,8 @@ export default function SegmentsPage() {
                     {isExpanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
                     {isExpanded ? t("hide") : t("members")}
                   </button>
-                  <button className="ml-auto inline-flex items-center gap-1 px-2.5 py-1 rounded-btn border border-s-border text-xs text-s-ink-2 hover:border-s-coral hover:text-s-coral transition-colors">
-                    <Mail size={11} />
-                    {t("sendEmail")}
-                  </button>
+                  {/* mockup-ok: dead-click removal (FRONTEND_AUDIT_2026-07-08.md, dash-growth
+                      bucket) , sendEmail had no onClick and no real feature exists yet. */}
                 </div>
 
                 {/* Expanded members */}

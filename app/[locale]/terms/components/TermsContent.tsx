@@ -121,7 +121,6 @@ export default function TermsContent() {
           <ParDe>solen.ch akzeptiert folgende Zahlungsmethoden:</ParDe>
           <ParEn>solen.ch accepts the following payment methods:</ParEn>
           <ul className="list-disc pl-5 my-2 space-y-1 text-sm md:text-base text-s-ink opacity-90">
-            <li>TWINT</li>
             <li>Kreditkarten (Visa, Mastercard) / Credit cards (Visa, Mastercard)</li>
             <li>Apple Pay / Google Pay</li>
           </ul>

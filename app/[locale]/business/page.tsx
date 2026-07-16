@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Check, Star } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import { buildAlternates } from "@/lib/seo";
 import BentoBusiness, { JoinUsCard } from "../_components/homepage/BentoBusiness";
 import { Step } from "../_components/business/Step";
@@ -229,18 +229,12 @@ export default async function BusinessPage() {
         className="mx-auto max-w-[1280px] px-4 py-8 md:px-8 md:py-12"
       >
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-center font-body text-[13px] font-medium text-s-ink-2 md:gap-x-10 md:text-[14px]">
-          <span>
-            <strong className="font-semibold text-s-ink">1&apos;200+</strong>{" "}
-            Schweizer Salons
-          </span>
+          {/* mockup-ok: fabrication fix (FRONTEND_AUDIT_2026-07-08.md), text-only removal of an unwired count, no visual redesign */}
+          <span>Schweizer Salons</span>
           <span aria-hidden className="h-1 w-1 rounded-full bg-s-ink-3" />
           <span>Basel · Zürich · Bern · Lugano</span>
-          <span aria-hidden className="h-1 w-1 rounded-full bg-s-ink-3" />
-          <span className="inline-flex items-center gap-1.5">
-            <Star size={12} fill="#FFC32B" stroke="none" aria-hidden />
-            <strong className="font-semibold text-s-ink">4.9</strong>
-            <span>· 1&apos;200+ Partner</span>
-          </span>
+          {/* mockup-ok: fabrication fix (FRONTEND_AUDIT_2026-07-08.md), removed the unwired
+              4.9 / 1'200+ Partner rating (no live aggregate), no visual redesign */}
         </div>
       </section>
 

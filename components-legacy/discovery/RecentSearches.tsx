@@ -141,7 +141,7 @@ export default function RecentSearches({ onSelect }: RecentSearchesProps) {
               aria-label={`„${term}" entfernen`}
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => remove(term)}
-              className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-s-ink-3 transition-colors duration-150 hover:text-s-ink"
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-s-ink-3 transition-colors duration-150 hover:text-s-ink"
             >
               <X size={18} />
             </button>

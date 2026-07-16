@@ -2412,7 +2412,8 @@
       "suspendMessage": "Suspend user \"{name}\"? The user will no longer be able to sign in.",
       "unsuspendMessage": "Unsuspend user \"{name}\"?",
       "cancel": "Cancel",
-      "registeredOn": "Registered: {date}"
+      "registeredOn": "Registered: {date}",
+      "roleChangeError": "Could not change role. Please try again."
     },
     "approvalsPage": {
       "title": "Approvals",
@@ -2425,7 +2426,9 @@
       "modalBody": "Reason for <strong>{name}</strong> (sent by email):",
       "rejectReasonPlaceholder": "e.g. Incomplete details, no Basel connection...",
       "cancel": "Cancel",
-      "rejectAndSendEmail": "Reject & send email"
+      "rejectAndSendEmail": "Reject & send email",
+      "approveError": "Approval failed. Please try again.",
+      "rejectError": "Rejection failed. Please try again."
     },
     "badgeManagerPage": {
       "pageTitle": "Badge management",
@@ -2491,6 +2494,8 @@
       "savedTitle": "Commission updated",
       "savedDescription": "New bookings now use {rate}%.",
       "errorMessage": "Could not be saved. Please try again.",
+      "loadErrorTitle": "Could not load the commission rate",
+      "loadErrorMessage": "Please try again before making any changes.",
       "saving": "Saving…",
       "saved": "Saved",
       "retry": "Try again",

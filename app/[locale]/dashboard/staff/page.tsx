@@ -151,7 +151,8 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
       <div className="bg-white rounded-2xl shadow-warm-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading text-base text-s-ink">{initial ? t("editTitle") : t("addTitle")}</h3>
-          <button onClick={onClose} aria-label={t("close")}><X size={18} className="text-s-ink/30" /></button>
+          {/* mockup-ok: a11y touch-target fix (FRONTEND_AUDIT_2026-07-08.md, dash-ops), 18px raised to the locked 44px icon-button spec via a padded hit-area, no visual redesign */}
+          <button onClick={onClose} aria-label={t("close")} className="grid place-items-center h-11 w-11 -m-2.5 rounded-full hover:bg-s-bg-sunken transition-colors"><X size={18} className="text-s-ink/30" /></button>
         </div>
         <div className="space-y-3 mb-5">
           <div>
@@ -296,7 +297,8 @@ function InviteModal({ salonId, onClose, onSent }: { salonId: string; onClose: (
             <Mail size={16} className="text-s-ink" />
             <h3 className="font-heading text-base text-s-ink">{t("inviteTitle")}</h3>
           </div>
-          <button onClick={onClose} aria-label={t("close")}><X size={18} className="text-s-ink/30" /></button>
+          {/* mockup-ok: a11y touch-target fix (FRONTEND_AUDIT_2026-07-08.md, dash-ops), 18px raised to the locked 44px icon-button spec via a padded hit-area, no visual redesign */}
+          <button onClick={onClose} aria-label={t("close")} className="grid place-items-center h-11 w-11 -m-2.5 rounded-full hover:bg-s-bg-sunken transition-colors"><X size={18} className="text-s-ink/30" /></button>
         </div>
         <div className="space-y-3 mb-4">
           <div>
@@ -557,17 +559,18 @@ export default function StaffPage() {
                   </p>
                 )}
               </div>
+              {/* mockup-ok: a11y touch-target fix (FRONTEND_AUDIT_2026-07-08.md, dash-ops), 40px raised to the locked 44px icon-button spec (matches the 44px avatar already in this row), no visual redesign */}
               <div className="flex items-center gap-0.5 shrink-0 -mr-1.5">
                 <button onClick={() => toggleActive(s.id, s.is_active)} aria-label={s.is_active ? t("deactivate") : t("activate")}
-                  className={`grid place-items-center w-10 h-10 rounded-full transition-colors ${s.is_active ? "text-s-ink" : "text-s-ink/20"} hover:bg-s-bg-sunken`}>
+                  className={`grid place-items-center w-11 h-11 rounded-full transition-colors ${s.is_active ? "text-s-ink" : "text-s-ink/20"} hover:bg-s-bg-sunken`}>
                   {s.is_active ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
                 </button>
                 <button onClick={() => setEditTarget(s)} aria-label={t("edit")}
-                  className="grid place-items-center w-10 h-10 rounded-full text-s-ink/30 hover:text-s-ink hover:bg-s-bg-sunken transition-colors">
+                  className="grid place-items-center w-11 h-11 rounded-full text-s-ink/30 hover:text-s-ink hover:bg-s-bg-sunken transition-colors">
                   <Pencil size={14} />
                 </button>
                 <button onClick={() => setDeleteTarget(s)} aria-label={t("delete")}
-                  className="grid place-items-center w-10 h-10 rounded-full text-s-ink/30 hover:text-s-error hover:bg-s-bg-sunken transition-colors">
+                  className="grid place-items-center w-11 h-11 rounded-full text-s-ink/30 hover:text-s-error hover:bg-s-bg-sunken transition-colors">
                   <Trash2 size={14} />
                 </button>
               </div>

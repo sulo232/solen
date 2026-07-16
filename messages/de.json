@@ -2422,7 +2422,8 @@
       "suspendMessage": "Benutzer \"{name}\" sperren? Der Benutzer kann sich nicht mehr anmelden.",
       "unsuspendMessage": "Benutzer \"{name}\" wieder freigeben?",
       "cancel": "Abbrechen",
-      "registeredOn": "Registriert: {date}"
+      "registeredOn": "Registriert: {date}",
+      "roleChangeError": "Rolle konnte nicht geändert werden. Bitte erneut versuchen."
     },
     "approvalsPage": {
       "title": "Genehmigungen",
@@ -2435,7 +2436,9 @@
       "modalBody": "Begründung für <strong>{name}</strong> (wird per E-Mail gesendet):",
       "rejectReasonPlaceholder": "z.B. Unvollständige Angaben, kein Basel-Bezug...",
       "cancel": "Abbrechen",
-      "rejectAndSendEmail": "Ablehnen & E-Mail senden"
+      "rejectAndSendEmail": "Ablehnen & E-Mail senden",
+      "approveError": "Genehmigung fehlgeschlagen. Bitte erneut versuchen.",
+      "rejectError": "Ablehnung fehlgeschlagen. Bitte erneut versuchen."
     },
     "badgeManagerPage": {
       "pageTitle": "Badge-Verwaltung",
@@ -2501,6 +2504,8 @@
       "savedTitle": "Provision aktualisiert",
       "savedDescription": "Neue Buchungen verwenden jetzt {rate}%.",
       "errorMessage": "Konnte nicht gespeichert werden. Bitte erneut versuchen.",
+      "loadErrorTitle": "Provisionssatz konnte nicht geladen werden",
+      "loadErrorMessage": "Bitte erneut versuchen, bevor du etwas änderst.",
       "saving": "Wird gespeichert…",
       "saved": "Gespeichert",
       "retry": "Erneut versuchen",

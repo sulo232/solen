@@ -40,7 +40,7 @@ export default function BookingExitButton({ slug }: { slug: string }) {
         type="button"
         onClick={handleX}
         aria-label={t('exit')}
-        className="grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors hover:bg-s-bg-sunken"
+        className="grid h-11 w-11 shrink-0 place-items-center rounded-full transition-colors hover:bg-s-bg-sunken"
       >
         <X size={20} className="text-s-ink" />
       </button>
@@ -65,7 +65,7 @@ export default function BookingExitButton({ slug }: { slug: string }) {
                 type="button"
                 onClick={() => setConfirming(false)}
                 aria-label={t('cancel')}
-                className="grid h-9 w-9 place-items-center rounded-full transition-colors hover:bg-s-bg-sunken"
+                className="grid h-11 w-11 place-items-center rounded-full transition-colors hover:bg-s-bg-sunken"
               >
                 <X size={20} className="text-s-ink" />
               </button>

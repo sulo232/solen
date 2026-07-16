@@ -254,7 +254,7 @@ export default function BadgeManagerPage() {
     fetch("/api/admin/badges")
       .then((r) => r.json())
       .then((d) => setBadges(d.badges ?? []))
-      .catch(() => setBadges([]))
+      .catch((err) => { console.error("[BadgeManager] failed to fetch badges:", err); setBadges([]); })
       .finally(() => setLoading(false));
   }, []);
 
@@ -267,7 +267,7 @@ export default function BadgeManagerPage() {
       fetch(`/api/salons/search?q=${encodeURIComponent(salonSearch)}&limit=5`)
         .then((r) => r.json())
         .then((d) => setSalonResults(d.salons ?? []))
-        .catch(() => setSalonResults([]));
+        .catch((err) => { console.error("[BadgeManager] failed to search salons:", err); setSalonResults([]); });
     }, 300);
     return () => clearTimeout(timer);
   }, [salonSearch]);
@@ -278,7 +278,7 @@ export default function BadgeManagerPage() {
     fetch(`/api/salons/${selectedSalon.slug}/badges`)
       .then((r) => r.json())
       .then((d) => setSalonBadges(d.badges ?? []))
-      .catch(() => setSalonBadges([]));
+      .catch((err) => { console.error("[BadgeManager] failed to fetch salon badges:", err); setSalonBadges([]); });
   }, [selectedSalon]);
 
   const handleSave = async (data: { name_de: string; name_en: string; icon: string; color: string; bg_color: string }) => {
