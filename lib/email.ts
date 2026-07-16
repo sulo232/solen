@@ -22,29 +22,74 @@ export interface EmailPayload {
 }
 
 /**
+ * How long we are willing to wait for Resend before giving up.
+ *
+ * Why a timeout exists at all: this call is awaited INSIDE synchronous, customer-facing
+ * requests (app/api/bookings/route.ts:594 and :628, inside the booking POST). Callers already
+ * try/catch it, so a Resend ERROR is handled and the booking survives. A Resend HANG was not:
+ * with no timeout, the await blocked until the platform killed the whole function, so the
+ * customer watched their booking screen die AFTER the booking row had already been committed,
+ * and saw a failure for something that actually worked.
+ *
+ * Why 5000ms specifically, measured not guessed (2026-07-16): 10 timed calls to
+ * api.resend.com/emails returned in 0.21s to 0.34s. 5s is roughly 15x the observed worst case,
+ * so it cannot fire on a normal slow day, and it sits well under the serverless function's own
+ * wall-clock ceiling, so WE give up before the platform kills the request and we keep the
+ * ability to log it.
+ *
+ * Honest limit of that measurement: it was taken from a dev machine against the validation
+ * path (an intentionally invalid payload, no mail sent), NOT from a cold Netlify eu-west
+ * invocation doing a real send. So this is a sane bound, not a true p99. If Resend ever gets
+ * genuinely slower, this fires and logs, which is the point: a logged timeout beats a silent
+ * hang. Re-measure from production before tightening it.
+ */
+const RESEND_TIMEOUT_MS = 5000;
+
+/**
  * Send a transactional email via Resend.
  * Requires RESEND_API_KEY in environment.
+ *
+ * Throws on failure, including timeout. Every caller must keep its try/catch: an email is never
+ * worth failing a booking that already committed.
  */
 export async function sendEmail(payload: EmailPayload): Promise<void> {
   const apiKey = getServerEnv().RESEND_API_KEY;
   if (!apiKey || apiKey === "PASTE_RESEND_KEY_HERE") {
-    console.warn("[email] RESEND_API_KEY not configured — skipping email send");
+    console.warn("[email] RESEND_API_KEY not configured, skipping email send");
     return;
   }
 
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from: "solen.ch <noreply@solen.ch>",
-      to: payload.to,
-      subject: payload.subject,
-      html: payload.html,
-    }),
-  });
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), RESEND_TIMEOUT_MS);
+
+  let res: Response;
+  try {
+    res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: "solen.ch <noreply@solen.ch>",
+        to: payload.to,
+        subject: payload.subject,
+        html: payload.html,
+      }),
+      signal: controller.signal,
+    });
+  } catch (err) {
+    // Name the timeout explicitly rather than letting it surface as a bare "AbortError", so the
+    // log says WHY. Do not swallow it: the caller decides, and every caller already try/catches.
+    if (err instanceof Error && err.name === "AbortError") {
+      console.error(`[email] Resend timed out after ${RESEND_TIMEOUT_MS}ms:`, payload.subject);
+      throw new Error(`Resend timeout after ${RESEND_TIMEOUT_MS}ms`);
+    }
+    throw err;
+  } finally {
+    // Always clear, including the success path, or the pending timer holds the function alive.
+    clearTimeout(timer);
+  }
 
   if (!res.ok) {
     const error = await res.text();
