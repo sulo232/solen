@@ -6,9 +6,11 @@
 
 A fresh session can learn *how* our plumbing works from `_docs/BACKEND.md`. Nothing told it what to **decide**. So it decided from training memory: an invented error shape, a re-litigated primary-key choice, a "best practice" that was current three years ago. This file is the answer.
 
-**How to use it:** read this file. It is short on purpose. Need the reasoning, or want to argue with a row? **`research/<topic>.md`** , the full primary-sourced file behind it, one per topic. Need to know whether we actually FOLLOW a row today? `audit/<topic>.md` (8 of 15 exist, see "Honest coverage" at the bottom). Need to know how the system is wired? `_docs/BACKEND.md`.
-
-> `RATIONALE.md` (the distilled forces/tradeoffs layer, mirroring `_design-system/RATIONALE.md`) is **not written yet**, and neither are `AUDIT_2026-07-16.md` or `QUESTIONS.md`, though `README.md`'s layer map names all three. Until they exist, `research/<topic>.md` IS the reasoning layer. Do not chase those filenames.
+**How to use it:** read this file. It is short on purpose.
+- Want the reasoning, or want to argue with a row? **`RATIONALE.md`** (forces/tradeoffs, the **myth table** of claims never to cite, and the **premature register** with a trigger per item), then `research/<topic>.md` for the full primary sources.
+- Want to know whether we actually FOLLOW a row today? **`AUDIT_2026-07-16.md`** (the cross-topic roll-up and the ranked fix list) or `audit/<topic>.md` (**all 15 exist**).
+- Want the open forks? **`QUESTIONS.md`** (each carries a recommendation, not a bare choice).
+- Want to know how the system is wired? `_docs/BACKEND.md`. That doc says what IS; this folder says what SHOULD BE.
 
 **Do not reopen a row without the owner saying so by name.** Where a row and an old `_rules/*` line disagree, this file wins and the `_rules` line is history.
 
@@ -269,6 +271,13 @@ A fresh session's instinct is to improve things. These are correct, hard-won, an
 
 ## Honest coverage
 
-7 of 15 topics are researched but **NOT yet audited** against live code: authz, security, rate-limiting, caching, observability, reliability, data-modeling. Their rows above are law; their live-compliance verdict is unknown. Treat "no gap found" in an unaudited topic as **"not yet checked"**, never a clean bill of health.
+**All 15 topics are now audited** against live code (`audit/<topic>.md`, 15 files; roll-up + ranked fix list in `AUDIT_2026-07-16.md`). Two of them (`data-modeling`, `authz`) were checked against the LIVE DB via read-only `execute_sql`, not TS types.
 
-Even the 8 audited topics are grep-exhaustive but deep-read a MINORITY sample (roughly 15-25 files per topic out of ~354 routes + 264 migrations + 26 crons). `transactions-concurrency` names ~165 unopened loop sites as a possible unswept N+1 source; `jobs-async` names 9 of 26 crons unverified for the very bug it found in the other 17.
+But every audit is grep-exhaustive for its search patterns while deep-reading a **MINORITY sample**: roughly 15-25 files per topic out of ~354 routes + 264 migrations + 26 crons. **Treat "no gap found" in an unread corner as "not yet checked", never a clean bill of health.**
+
+Each audit names its own blind spot; the sharpest ones:
+- `authz`: 25 of 32 statically-flagged routes and ~322 unflagged routes NOT read.
+- `transactions-concurrency`: ~165 unopened loop sites, a possible unswept N+1 source.
+- `jobs-async`: 9 of 26 crons unverified for the very bug found in the other 17.
+- `rate-limiting`: **whether Upstash is actually configured on the live prod deploy is UNKNOWN.** If it is not, every non-abuse-prone limiter is silently off in production right now.
+- `reliability`: every timeout recommendation still needs a real measured p99 first; none was available.
