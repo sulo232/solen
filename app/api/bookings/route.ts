@@ -13,7 +13,7 @@ import { pickSlotForAnyStaff, countStaffBookingsOnDay } from "@/lib/bookings/aut
 import { loadPricedBundle } from "@/lib/pricing/bundle";
 import { completeReferralForFirstBooking } from "@/lib/referral/complete-referral";
 import { reportError } from "@/lib/error-report";
-import { getRequestId } from "@/lib/request-id";
+import { withRequestId } from "@/lib/request-id";
 import type { Database } from "@/lib/database.types";
 
 export async function GET(request: NextRequest) {
@@ -114,29 +114,12 @@ export async function GET(request: NextRequest) {
   return NextResponse.json({ items: data, total: count ?? 0, page, limit });
 }
 
-// OBS-01: thin wrapper so x-request-id lands on EVERY response this route returns (success or
-// any of the early-return error branches below), without touching each individual
-// `return NextResponse.json(...)`. createBooking is the original handler body, unchanged in
-// control flow, with requestId threaded into its console.error/warn + sendEmail/reportError calls.
-export async function POST(request: NextRequest): Promise<NextResponse> {
-  const requestId = getRequestId(request);
-  try {
-    const response = await createBooking(request, requestId);
-    response.headers.set("x-request-id", requestId);
-    return response;
-  } catch (err) {
-    // The throw path is the ENTIRE point of this fix, so it cannot be the one path that
-    // loses the id. Without this catch, an exception skips the headers.set() above and Next
-    // returns a bare 500: a harmless 400 would carry the id while a real crash, the thing
-    // support actually needs to trace, would not. Caught live by curling the route with no
-    // body (req.json() throws): 400 had the header, 500 did not.
-    console.error("[bookings] POST threw:", { requestId, error: err instanceof Error ? err.message : String(err) });
-    return NextResponse.json(
-      { error: "Internal error", requestId },
-      { status: 500, headers: { "x-request-id": requestId } },
-    );
-  }
-}
+// OBS-01: shared withRequestId (lib/request-id.ts, #8c) puts x-request-id on EVERY response
+// this route returns (success or any of the early-return error branches below), without
+// touching each individual `return NextResponse.json(...)`. createBooking is the original
+// handler body, unchanged in control flow, with requestId threaded into its console.error/warn
+// + sendEmail/reportError calls.
+export const POST = withRequestId("bookings", createBooking);
 
 async function createBooking(request: NextRequest, requestId: string): Promise<NextResponse> {
   const disabled = await checkFeatureEnabled("bookings");

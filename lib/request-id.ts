@@ -13,7 +13,7 @@
 // for the same reason (usable from a Route Handler's NextRequest AND from a bare Headers /
 // ReadonlyHeaders object, e.g. next/headers' `headers()` in a server component).
 
-import type { NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
 type RequestIdHeaders = { get(name: string): string | null };
 
@@ -43,4 +43,41 @@ export function getRequestId(req: NextRequest | RequestIdHeaders): string {
   const hdrs: RequestIdHeaders = "headers" in req ? req.headers : req;
   const inbound = hdrs.get("x-request-id")?.trim();
   return inbound && SAFE_REQUEST_ID.test(inbound) ? inbound : crypto.randomUUID();
+}
+
+// #8c (council, 2026-07-16): bookings/route.ts and stripe/webhook/route.ts each hand-rolled the
+// identical getRequestId + try/catch + headers.set() wrapper below. Extracted once here so a
+// third money route doesn't copy-paste it a third time. Mirrors withCronRun's shape
+// (lib/cron-run.ts): the route's own business logic stays a plain function, this wrapper owns
+// only the request-id plumbing around it.
+//
+// `logPrefix` becomes the `[prefix]` tag on THIS wrapper's own "POST threw" log line (e.g.
+// "bookings", "stripe/webhook"), every log line INSIDE a caller's handler keeps its own prefix
+// unchanged, so sharing this helper never flattens two routes' logs into one indistinguishable
+// line.
+//
+// CONTRACT, unchanged from the two hand-rolled copies this replaces: the try/catch is load-
+// bearing. Without it, a THROWN error skips the `headers.set()` below and Next returns a bare
+// 500 with no x-request-id, a harmless 400 would carry the id while a real crash, the thing
+// worth tracing, would not. Confirmed live by curling both routes with no body (which makes the
+// handler throw): before this catch existed, the 400 branch carried the header and the
+// uncaught-500 branch did not.
+export function withRequestId(
+  logPrefix: string,
+  handler: (req: NextRequest, requestId: string) => Promise<NextResponse>,
+): (req: NextRequest) => Promise<NextResponse> {
+  return async function requestIdWrappedPOST(req: NextRequest): Promise<NextResponse> {
+    const requestId = getRequestId(req);
+    try {
+      const response = await handler(req, requestId);
+      response.headers.set("x-request-id", requestId);
+      return response;
+    } catch (err) {
+      console.error(`[${logPrefix}] POST threw:`, { requestId, error: err instanceof Error ? err.message : String(err) });
+      return NextResponse.json(
+        { error: "Internal error", requestId },
+        { status: 500, headers: { "x-request-id": requestId } },
+      );
+    }
+  };
 }

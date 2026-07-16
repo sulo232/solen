@@ -8,7 +8,7 @@ import { trackServerEvent } from "@/lib/posthog-server";
 import { getServerEnv } from "@/lib/env";
 import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
 import { reportError } from "@/lib/error-report";
-import { getRequestId } from "@/lib/request-id";
+import { withRequestId } from "@/lib/request-id";
 
 export const runtime = "nodejs";
 
@@ -19,31 +19,19 @@ export const runtime = "nodejs";
 //                   payment_intent.canceled, payment_intent.amount_capturable_updated
 //                   (walk-in ticket backstop), charge.dispute.created,
 //                   charge.dispute.closed, account.updated
-// OBS-01: thin wrapper so x-request-id lands on EVERY response this route returns, without
-// touching each individual `return NextResponse.json(...)` inside the handler. handleWebhook is
-// the original handler body, unchanged in control flow, with requestId threaded into its
-// console.error/warn + sendEmail/reportError calls so one Stripe event delivery's log lines can
-// be traced end to end (a real inbound x-request-id, e.g. a future proxy, is reused; Stripe
-// itself sends none, so this normally mints a fresh id per delivery).
-export async function POST(req: NextRequest): Promise<NextResponse> {
-  const requestId = getRequestId(req);
-  try {
-    const response = await handleWebhook(req, requestId);
-    response.headers.set("x-request-id", requestId);
-    return response;
-  } catch (err) {
-    // Same throw-path hole as bookings/route.ts: without this, an exception skips the
-    // headers.set() above and the id is lost on exactly the requests worth tracing.
-    // A 500 here is also correct for Stripe specifically: it makes Stripe RETRY the event,
-    // which is what we want when our handler crashed, and the idempotency claim in
-    // processed_webhook_events is released on throw so the retry can re-run cleanly.
-    console.error("[stripe/webhook] POST threw:", { requestId, error: err instanceof Error ? err.message : String(err) });
-    return NextResponse.json(
-      { error: "Internal error", requestId },
-      { status: 500, headers: { "x-request-id": requestId } },
-    );
-  }
-}
+// OBS-01: shared withRequestId (lib/request-id.ts, #8c) puts x-request-id on EVERY response
+// this route returns, without touching each individual `return NextResponse.json(...)` inside
+// the handler. handleWebhook is the original handler body, unchanged in control flow, with
+// requestId threaded into its console.error/warn + sendEmail/reportError calls so one Stripe
+// event delivery's log lines can be traced end to end (a real inbound x-request-id, e.g. a
+// future proxy, is reused; Stripe itself sends none, so this normally mints a fresh id per
+// delivery).
+//
+// A 500 on throw (the wrapper's own catch path) is also correct for Stripe specifically: it
+// makes Stripe RETRY the event, which is what we want when our handler crashed, and the
+// idempotency claim in processed_webhook_events is released on throw so the retry can re-run
+// cleanly.
+export const POST = withRequestId("stripe/webhook", handleWebhook);
 
 async function handleWebhook(req: NextRequest, requestId: string): Promise<NextResponse> {
   const body = await req.text();
