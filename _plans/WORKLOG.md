@@ -4,6 +4,13 @@ The newest entry is at the top. Every session that ships real work adds one entr
 
 ---
 
+## 2026-07-16 (later) , the probes moved INTO actual pages: hub + 5 integrated tappable mockups
+
+**What you asked for:** "what abt mockups for the round 2" + "i want to see each one in acc pages like mockup that preview... integrated and tappable".
+
+**What got done:** public/_mockups/taste-round2/ with a hub and five page-level mockups on REAL bases: the live dashboard capture with tappable overlays (rolling revenue, expanding setup checklist, in-place notification stack, approve-collapse with undo, dashed proposed tips panel), the bookings list rebuilt 1:1 from the real BookingCard (hero next-appointment + cascade), the pay step from the real commit-button recipe (CTA carries the amount, voucher rolls the total, the mute disabled button explains itself, email validates on blur), search opening over the live home capture (grouped results, match highlight, named availability wait), and the two judge-flagged generative probes (three richness levels side by side, list/grid/carousel toggle) using real salon names and real photo crops. Probes with no live surface to sit in are listed on the hub with the honest reason (loyalty page is coming-soon, no working-hours UI, no long-running jobs). Every interaction JS-verified; gemini alignment catches fixed and re-measured.
+
+
 ## 2026-07-16 , taste round 2: RATIONALE deep-mechanics layer + your 30 references captured, forked, and turned into a probe page
 
 **What you asked for:** fix + commit; expand the rationale file with the og round-1 text and the round-2 digest from another AI; give an opinion; capture the ~30 X reference links with the ss pipeline instead of eyeballing; run opus sub-agents for more ideas; make mockups from the references with the "which part did you like" forks named.
