@@ -103,6 +103,12 @@ Owner message (dictated): fix + commit; expand RATIONALE.md with the og round-1 
 - [x] HARDENED , verified: ~/.claude/hooks/pick-reading-gate.py, selftest 4/4 (mixed+logged blocks without a Reading check, passes with one, clean approvals unaffected), wired into the global Stop hooks
 - [x] Chip explained in the closing message , verified: the final reply of this turn (plain-words paragraph naming the four pending chips)
 
+## Owner questions 2026-07-16 (propagation + readiness)
+
+- [x] "is evrth wrote down and gated, ready for real work" , answered in the closing message (yes for component-level work; page-level still needs the merge + rhythm probe per the readiness order recorded above)
+- [x] "is ths available in all sessions / do i have to merge" , answered in the closing message (two layers: global gates = automatic; design law + code = this branch, needs the local merge to main)
+- [x] "what abt other worktrees/sessions opened before" , answered in the closing message (they follow their own branch's law until they take main after the merge)
+
 ## Parked / boundaries
 - Web dark mode stays graveyarded (exists-check hit); positive-polarity mechanics recorded for MOBILE dark mode only.
 - Merge chip task_c132841a, payment capture chip task_400fe4c2, R1/R2/R4 post-merge: unchanged, owner-gated.
