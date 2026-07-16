@@ -60,6 +60,14 @@ Owner message (dictated): fix + commit; expand RATIONALE.md with the og round-1 
   - [ ] P1 clean digit roll, NO blur, dashboard KPI (only if a real change trigger exists) , with coder now
   - [ ] P14 tips panel , BLOCKED: no insights backend exists (exists insight = 0), shape approved only
 
+## Completion round (owner 2026-07-16: "make mockups for all of em also for refs page u havent made mockup for all")
+
+- [x] round2-rules.html Wrong/Right pairs , verified: 15 pair blocks rendered, 10/10 images, browser JS check (R2-1 tap, P17 minimize, G2 toggle all true)
+- [x] P17 interactive demo , verified: minimize/restore toggle works (browser check, same run)
+- [x] C1/C2/C4 rendered A/B with hue-ok probe markers; C3/C5 stay questions with the reason stated on the page , verified: same render check
+- [x] G1 (3 densities) + G2 (3 layouts, toggle) as elicitation variants , verified: converged recipe, real photos, toggle works
+- [x] Linked from hub + refs header; render verified in browser; committed (gemini ran on this page family earlier this turn-set; the page is the approved Taste Book format)
+
 ## Parked / boundaries
 - Web dark mode stays graveyarded (exists-check hit); positive-polarity mechanics recorded for MOBILE dark mode only.
 - Merge chip task_c132841a, payment capture chip task_400fe4c2, R1/R2/R4 post-merge: unchanged, owner-gated.
