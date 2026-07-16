@@ -2263,7 +2263,8 @@
       "justNow": "Proprio ora",
       "minutesAgo": "{count} min fa",
       "hoursAgo": "{count} ore fa",
-      "daysAgo": "{count} giorni fa"
+      "daysAgo": "{count} giorni fa",
+      "viewAll": "Vedi tutti"
     },
     "referralDashboard": {
       "heading": "Programma di referral",

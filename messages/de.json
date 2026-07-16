@@ -2299,7 +2299,8 @@
       "justNow": "Gerade eben",
       "minutesAgo": "Vor {count} Min.",
       "hoursAgo": "Vor {count} Std.",
-      "daysAgo": "Vor {count} Tagen"
+      "daysAgo": "Vor {count} Tagen",
+      "viewAll": "Alle ansehen"
     },
     "referralDashboard": {
       "heading": "Empfehlungs-Programm",

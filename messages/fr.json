@@ -2281,7 +2281,8 @@
       "justNow": "À l'instant",
       "minutesAgo": "Il y a {count} min",
       "hoursAgo": "Il y a {count} h",
-      "daysAgo": "Il y a {count} jours"
+      "daysAgo": "Il y a {count} jours",
+      "viewAll": "Tout voir"
     },
     "referralDashboard": {
       "heading": "Programme de parrainage",
