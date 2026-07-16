@@ -61,8 +61,9 @@ export default function NailAdminPage() {
             onClick={() => setActiveTab(id)}
             aria-label={t(labelKey)}
             className={`flex items-center gap-1.5 px-4 py-2 rounded-pill text-xs font-heading whitespace-nowrap transition-colors duration-150 shrink-0 ${
+              // selected-ok: dashboard vibrant skin (LOCKFILE §12.2/§12.4), s-coral retired, s-accent is the locked active-tab fill
               activeTab === id
-                ? "bg-s-coral text-white shadow-elevation-2"
+                ? "bg-s-accent text-white shadow-elevation-2"
                 : "bg-s-bg-sunken text-s-ink-2 hover:bg-s-bg-sunken"
             }`}
           >

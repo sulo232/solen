@@ -102,7 +102,7 @@ export default function StationManager({ salonId }: { salonId: string }) {
             <div key={i} className="flex items-center gap-2">
               <span className="text-[12px] text-s-ink/40 w-8 shrink-0">#{i + 1}</span>
               <div className="flex-1 h-3 rounded-pill bg-s-ink/10 overflow-hidden flex">
-                <div className="h-full bg-s-coral transition-[width] duration-[250ms]" style={{ width: isBooked ? "100%" : "0%" }} />
+                <div className="h-full bg-s-accent transition-[width] duration-[250ms]" style={{ width: isBooked ? "100%" : "0%" }} />
                 {/* Buffer portion calculation skipped for simple boolean state */}
               </div>
               <span className="text-[12px] data-text text-s-ink/30 w-8 text-right">
@@ -113,7 +113,7 @@ export default function StationManager({ salonId }: { salonId: string }) {
         })}
         {/* Legend */}
         <div className="flex items-center gap-3 mt-1">
-          <div className="flex items-center gap-1"><div className="w-3 h-2 rounded-sm bg-s-coral" /><span className="text-[12px] text-s-ink/40">{t("stations_booked")}</span></div>
+          <div className="flex items-center gap-1"><div className="w-3 h-2 rounded-sm bg-s-accent" /><span className="text-[12px] text-s-ink/40">{t("stations_booked")}</span></div>
           <div className="flex items-center gap-1"><div className="w-3 h-2 rounded-sm bg-s-sand-subtle" /><span className="text-[12px] text-s-ink/40">{t("stations_available")}</span></div>
           <div className="flex items-center gap-1"><div className="w-3 h-2 rounded-sm bg-s-ink/10" /><span className="text-[12px] text-s-ink/40">{t("stations_buffer")}</span></div>
         </div>
@@ -123,7 +123,7 @@ export default function StationManager({ salonId }: { salonId: string }) {
         onClick={handleSave}
         disabled={saving}
         aria-label={t("save")}
-        className="flex items-center gap-2 px-4 py-2 min-h-12 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-elevation-2"
+        className="flex items-center gap-2 px-4 py-2 min-h-12 rounded-pill active:scale-[0.97] bg-s-accent text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-elevation-2"
       >
         <Save size={14} />
         {saving ? t("saving") : t("save")}

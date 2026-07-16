@@ -48,8 +48,9 @@ function HoursEditor({ hours, onChange }: {
         return (
           <div key={key} className="flex items-center gap-3">
             <button type="button" onClick={() => toggle(key)}
+              // selected-ok: dashboard vibrant skin (LOCKFILE §12.2/§12.4), s-coral retired, s-accent is the locked selected-day fill
               className={["w-9 text-center text-xs font-medium py-1.5 rounded-btn transition-colors",
-                h ? "bg-s-coral text-white" : "bg-s-bg-sunken text-s-ink/40"].join(" ")}>
+                h ? "bg-s-accent text-white" : "bg-s-bg-sunken text-s-ink/40"].join(" ")}>
               {DAYS_LABEL[i]}
             </button>
             {h ? (
@@ -253,7 +254,7 @@ function LastMinuteTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
           <p className="text-xs text-s-ink/40 mt-0.5">{t("offersEnableDesc")}</p>
         </div>
         <button onClick={() => setEnabled(!enabled)}
-          className={["w-11 h-6 rounded-full transition-colors relative", enabled ? "bg-s-coral" : "bg-s-sand"].join(" ")}>
+          className={["w-11 h-6 rounded-full transition-colors relative", enabled ? "bg-s-accent" : "bg-s-sand"].join(" ")}>
           <span className={["absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-elevation-1 transition-transform",
             enabled ? "translate-x-5.5" : "translate-x-0.5"].join(" ")} />
         </button>
@@ -279,7 +280,7 @@ function LastMinuteTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
         </>
       )}
       <button onClick={handleSave} disabled={saving}
-        className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
+        className="px-5 py-2.5 rounded-btn bg-s-accent text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
         {saving && <Spinner size="sm" invert />}{t("save")}
       </button>
     </div>
@@ -333,7 +334,7 @@ function QuickRepliesTab() {
         <input value={newValue} onChange={(e) => setNewValue(e.target.value)} placeholder={t("newTemplatePlaceholder")}
           className="flex-1 px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-coral" />
         <button onClick={() => { if (newValue.trim()) { save([...replies, newValue.trim()]); setNewValue(""); } }}
-          className="px-3 py-2 rounded-btn bg-s-coral text-white text-sm"><Plus size={14} /></button>
+          className="px-3 py-2 rounded-btn bg-s-accent text-white text-sm"><Plus size={14} /></button>
       </div>
     </div>
   );
@@ -385,7 +386,7 @@ function SmsRemindersTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
 
       <div className="pt-2">
         <button onClick={handleSave} disabled={saving}
-          className="px-4 py-2 bg-s-coral text-white text-sm font-medium rounded-btn hover:brightness-[1.06] transition-colors disabled:opacity-50">
+          className="px-4 py-2 bg-s-accent text-white text-sm font-medium rounded-btn hover:brightness-[1.06] transition-colors disabled:opacity-50">
           {saving ? t("saving") : saved ? t("saved") : t("save")}
         </button>
       </div>
@@ -606,7 +607,7 @@ function VatRegistrationTab({ salon, onSave }: { salon: Salon; onSave: (d: Parti
       {/* Save */}
       <div className="flex items-center gap-3">
         <button onClick={handleSave} disabled={saving}
-          className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
+          className="px-5 py-2.5 rounded-btn bg-s-accent text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
           {saving && <Spinner size="sm" invert />}{t("save")}
         </button>
         {saved && <span className="text-sm text-s-coral">{t("saved")}</span>}
@@ -640,7 +641,7 @@ function VerificationTab({ salon }: { salon: Salon }) {
           <div>
             <p className="text-sm font-medium text-s-ink">{t("salonWarnings", { count: warnings })}</p>
             <button onClick={handleVerify} disabled={confirming}
-              className="mt-2 px-3 py-1.5 rounded-btn bg-s-coral text-white text-xs font-medium flex items-center gap-2">
+              className="mt-2 px-3 py-1.5 rounded-btn bg-s-accent text-white text-xs font-medium flex items-center gap-2">
               {confirming && <Spinner size="sm" invert />}{t("confirmNow")}
             </button>
           </div>
@@ -731,7 +732,7 @@ function VacationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
 
       <div className="flex items-center gap-3">
         <button onClick={handleSave} disabled={saving}
-          className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
+          className="px-5 py-2.5 rounded-btn bg-s-accent text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
           {saving && <Spinner size="sm" invert />}{t("save")}
         </button>
         {(start || end) && (
@@ -1052,7 +1053,7 @@ function ClosuresTab({ salon }: { salon: Salon }) {
         <input value={reason} onChange={(e) => setReason(e.target.value)} placeholder={t("reasonPlaceholder")}
           className="flex-1 px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-coral" />
         <button onClick={addClosure} disabled={!date}
-          className="px-3 py-2 rounded-btn bg-s-coral text-white text-sm disabled:opacity-50">
+          className="px-3 py-2 rounded-btn bg-s-accent text-white text-sm disabled:opacity-50">
           <Plus size={14} />
         </button>
       </div>
@@ -1463,7 +1464,7 @@ export default function SettingsPage() {
       )}
 
       {toast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-s-coral text-white px-4 py-2.5 rounded-pill shadow-elevation-3 text-sm font-medium">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-s-accent text-white px-4 py-2.5 rounded-pill shadow-elevation-3 text-sm font-medium">
           {toast}
         </div>
       )}

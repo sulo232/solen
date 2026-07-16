@@ -67,7 +67,7 @@ export default function NailClientTab({ client, salonId }: NailClientTabProps) {
               {activeTab === key && (
                 <motion.div
                   layoutId="nail-client-tab-indicator"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-s-coral"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-s-accent"
                   transition={{ type: "spring", stiffness: 350, damping: 30 }}
                 />
               )}
@@ -154,7 +154,7 @@ function ClientNotes({ customerId, salonId }: { customerId: string; salonId?: st
           className="flex-1 bg-s-bg-sunken px-3 py-2 border border-s-border rounded-btn text-sm text-s-ink"
           onKeyDown={(e) => { if (e.key === "Enter") addNote(); }}
         />
-        <button onClick={addNote} className="bg-s-coral text-white px-4 py-2 rounded-pill font-medium hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150 text-sm">
+        <button onClick={addNote} className="bg-s-accent text-white px-4 py-2 rounded-pill font-medium hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150 text-sm">
           {t("add")}
         </button>
       </div>
@@ -246,7 +246,7 @@ function ClientTags({ customerId, salonId }: { customerId: string; salonId?: str
             className="flex-1 bg-white px-3 py-2 border border-s-border rounded-btn text-sm text-s-ink"
             onKeyDown={(e) => { if (e.key === "Enter") addTag(); }}
           />
-          <button onClick={addTag} className="bg-s-coral text-white px-4 py-2 rounded-pill font-medium hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150 text-sm">
+          <button onClick={addTag} className="bg-s-accent text-white px-4 py-2 rounded-pill font-medium hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150 text-sm">
             {t("add")}
           </button>
         </div>

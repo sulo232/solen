@@ -78,7 +78,8 @@ function ContentField({
               key={l}
               onClick={() => setLocale(l)}
               className={`px-2.5 py-1 text-[12px] font-medium transition-colors ${
-                locale === l ? "bg-s-coral text-white" : "text-s-ink/40"
+                // selected-ok: dashboard vibrant skin (LOCKFILE §12.2/§12.4) uses s-accent as active/selected fill, exempt from the customer-facing gray-selected rule; s-coral is a RETIRED token per §12.4, swapping to the locked replacement
+                locale === l ? "bg-s-accent text-white" : "text-s-ink/40"
               }`}
             >
               {l.toUpperCase()}
@@ -114,7 +115,7 @@ function ContentField({
         <button
           onClick={handleSave}
           disabled={saving}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-btn bg-s-coral text-white text-xs font-medium disabled:opacity-50 hover:brightness-[1.06] transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-btn bg-s-accent text-white text-xs font-medium disabled:opacity-50 hover:brightness-[1.06] transition-colors"
         >
           {saving ? <Spinner size="sm" invert /> : saved ? <Check size={12} /> : <Save size={12} />}
           {saved ? t("saved") : t("save")}
@@ -167,8 +168,9 @@ export default function ContentEditorPage() {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${
+              // selected-ok: dashboard vibrant skin (LOCKFILE §12.2/§12.4), s-coral retired, s-accent is the locked active-tab fill
               activeTab === tab.id
-                ? "bg-s-coral text-white"
+                ? "bg-s-accent text-white"
                 : "bg-white border border-s-border text-s-ink-2 hover:border-s-coral"
             }`}
           >

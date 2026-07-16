@@ -100,8 +100,9 @@ export default function AiArtGallery({ salonId }: AiArtGalleryProps) {
                 <button
                   onClick={() => toggleSave(entry.id, entry.is_saved)}
                   className={`flex-1 py-1 rounded-[6px] text-[12px] font-heading transition-colors duration-150 ${
+                    // selected-ok: dashboard vibrant skin (LOCKFILE §12.2/§12.4), s-coral retired, s-accent is the locked selected fill
                     entry.is_saved
-                      ? "bg-s-coral text-white"
+                      ? "bg-s-accent text-white"
                       : "bg-white/20 text-white hover:bg-white/30"
                   }`}
                   aria-label={entry.is_saved ? t("gallery_unsave") : t("gallery_save")}
@@ -112,7 +113,7 @@ export default function AiArtGallery({ salonId }: AiArtGalleryProps) {
             </div>
 
             {entry.is_saved && (
-              <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-s-coral flex items-center justify-center">
+              <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-s-accent flex items-center justify-center">
                 <Sparkles size={8} className="text-white" />
               </div>
             )}

@@ -183,7 +183,7 @@ function BadgeModal({
               setSaving(false);
             }}
             disabled={saving || !nameDe || !nameEn}
-            className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-btn bg-s-accent text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {saving && <Spinner size="sm" invert />}
             {t("save")}
@@ -221,7 +221,7 @@ function DeleteModal({
           <button
             onClick={onConfirm}
             disabled={loading}
-            className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-btn bg-s-accent text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {loading && <Spinner size="sm" invert />}
             {t("delete")}
@@ -365,7 +365,7 @@ export default function BadgeManagerPage() {
         </div>
         <button
           onClick={() => setModalBadge("new")}
-          className="inline-flex items-center gap-1.5 bg-s-coral text-white rounded-btn px-4 py-2 text-sm font-medium hover:brightness-[1.06] transition-colors shrink-0"
+          className="inline-flex items-center gap-1.5 bg-s-accent text-white rounded-btn px-4 py-2 text-sm font-medium hover:brightness-[1.06] transition-colors shrink-0"
         >
           <Plus size={15} />
           {t("newBadge")}
@@ -518,7 +518,7 @@ export default function BadgeManagerPage() {
                     <button
                       onClick={handleAssign}
                       disabled={!assignBadgeId}
-                      className="px-3 py-2 rounded-btn bg-s-coral text-white text-xs font-medium disabled:opacity-50"
+                      className="px-3 py-2 rounded-btn bg-s-accent text-white text-xs font-medium disabled:opacity-50"
                     >
                       {t("assign")}
                     </button>

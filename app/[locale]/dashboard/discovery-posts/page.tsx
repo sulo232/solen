@@ -143,10 +143,11 @@ export default function DiscoveryPostsPage() {
 
             {/* Mode toggle */}
             <div className="flex gap-2">
-              <button onClick={() => setMode("photo")} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-btn text-sm font-medium transition-colors ${mode === "photo" ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink-2"}`}>
+              {/* selected-ok: dashboard vibrant skin (LOCKFILE §12.2/§12.4), s-coral retired, s-accent is the locked active fill */}
+              <button onClick={() => setMode("photo")} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-btn text-sm font-medium transition-colors ${mode === "photo" ? "bg-s-accent text-white" : "bg-s-ink/5 text-s-ink-2"}`}>
                 <Upload size={14} /> {t("modePhoto")}
               </button>
-              <button onClick={() => setMode("tiktok")} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-btn text-sm font-medium transition-colors ${mode === "tiktok" ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink-2"}`}>
+              <button onClick={() => setMode("tiktok")} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-btn text-sm font-medium transition-colors ${mode === "tiktok" ? "bg-s-accent text-white" : "bg-s-ink/5 text-s-ink-2"}`}>
                 <LinkIcon size={14} /> TikTok
               </button>
             </div>
@@ -159,7 +160,7 @@ export default function DiscoveryPostsPage() {
               <label className="text-xs font-medium text-s-ink-2 mb-1.5 block">{t("labelCategory")}</label>
               <div className="flex flex-wrap gap-1.5">
                 {CATEGORY_KEYS.map((key) => (
-                  <button key={key} onClick={() => setCategory(key)} className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${category === key ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink-2"}`}>{categoryLabels[key]}</button>
+                  <button key={key} onClick={() => setCategory(key)} className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${category === key ? "bg-s-accent text-white" : "bg-s-ink/5 text-s-ink-2"}`}>{categoryLabels[key]}</button>
                 ))}
               </div>
             </div>
@@ -168,7 +169,7 @@ export default function DiscoveryPostsPage() {
               <label className="text-xs font-medium text-s-ink-2 mb-1.5 block">{t("labelGender")}</label>
               <div className="flex gap-1.5">
                 {GENDER_KEYS.map((key) => (
-                  <button key={key} onClick={() => setGender(key)} className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${gender === key ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink-2"}`}>{genderLabels[key]}</button>
+                  <button key={key} onClick={() => setGender(key)} className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${gender === key ? "bg-s-accent text-white" : "bg-s-ink/5 text-s-ink-2"}`}>{genderLabels[key]}</button>
                 ))}
               </div>
             </div>
@@ -180,7 +181,7 @@ export default function DiscoveryPostsPage() {
             <ToSCheckbox checked={tosAccepted} onChange={setTosAccepted} />
             {error && <p className="text-xs text-s-error">{error}</p>}
 
-            <button onClick={handlePost} disabled={posting || !tosAccepted} className="w-full py-3 rounded-btn bg-s-coral hover:brightness-[1.06] text-white font-medium text-sm disabled:opacity-40 transition-[transform,filter] flex items-center justify-center gap-2">
+            <button onClick={handlePost} disabled={posting || !tosAccepted} className="w-full py-3 rounded-btn bg-s-accent hover:brightness-[1.06] text-white font-medium text-sm disabled:opacity-40 transition-[transform,filter] flex items-center justify-center gap-2">
               {posting && <Loader2 size={14} className="animate-spin" />}
               {t("publish")}
             </button>

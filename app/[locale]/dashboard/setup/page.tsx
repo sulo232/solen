@@ -71,7 +71,7 @@ export default function SetupPage() {
           </p>
           <button
             onClick={() => router.push(`/${locale}/dashboard`)}
-            className="px-6 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium"
+            className="px-6 py-2.5 rounded-btn bg-s-accent text-white text-sm font-medium"
           >
             {t("goToDashboard")}
           </button>

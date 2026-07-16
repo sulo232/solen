@@ -145,7 +145,8 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
                   {[{ val: true, label: t("yes") }, { val: false, label: t("no") }].map(({ val, label }) => {
                     return (
                       <button key={label} onClick={() => setResponses((p) => ({ ...p, [q.question_key]: val }))}
-                        className={`px-3 py-1.5 rounded-btn text-[12px] font-heading uppercase tracking-[.06em] transition-colors ${responses[q.question_key] === val ? "bg-s-coral text-white" : "border border-s-border text-s-ink-2"}`}>
+                        // selected-ok: dashboard vibrant skin (LOCKFILE §12.2/§12.4), s-coral retired, s-accent is the locked selected fill
+                        className={`px-3 py-1.5 rounded-btn text-[12px] font-heading uppercase tracking-[.06em] transition-colors ${responses[q.question_key] === val ? "bg-s-accent text-white" : "border border-s-border text-s-ink-2"}`}>
                         {label}
                       </button>
                     );
@@ -181,7 +182,7 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
             <button onClick={() => { setShowForm(false); setAiRec(null); }}
               className="px-3 py-1.5 rounded-pill border border-s-border text-xs text-s-ink-2">{t("cancel")}</button>
             <button onClick={handleSave} disabled={saving}
-              className="px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[12px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 shadow-elevation-2 transition-[transform,filter] duration-150">
+              className="px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-accent text-white text-[12px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 shadow-elevation-2 transition-[transform,filter] duration-150">
               {saving && <Spinner size="sm" invert />} {t("save")}
             </button>
           </div>

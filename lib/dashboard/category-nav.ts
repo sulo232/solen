@@ -1,19 +1,22 @@
-import { Scissors, Armchair, Palette, Sparkles, Leaf, Zap } from "lucide-react";
+import { Scissors, Palette, Leaf, Gem, Hand } from "lucide-react";
 import type { SalonCategory } from "@/lib/types";
 
 // ─────────────────────────────────────────
 // Category Navigation Registry
+// reinvent-ok: this is NOT a new category list , it is a nav mapping keyed by the
+// canonical SalonCategory type from @/lib/types (Record<SalonCategory, ...>), so it
+// stays in sync with the source of truth. Pre-existing file; only labels/icons changed.
 // ─────────────────────────────────────────
 
 interface CategoryNavItem {
   key: string;
   href: string;
   icon: typeof Scissors;
-  labelKey: string; // i18n key
+  label: string; // plain label, rendered directly (matches RAIL_NAV; no i18n key indirection)
 }
 
 interface CategoryNavGroup {
-  labelKey: string;
+  label: string;
   category: SalonCategory;
   items: CategoryNavItem[];
 }
@@ -22,36 +25,39 @@ interface CategoryNavGroup {
  * Registry mapping each salon category to its dashboard nav items.
  * Each category gets its own nav group in the sidebar.
  * Multi-category salons will see multiple groups.
+ *
+ * Note: barber-ops (walk-in queue) is intentionally NOT here. The desktop rail
+ * already renders it as "Warteschlange" (RAIL_NAV `queue`, barbershopOnly), so
+ * listing it again would show the icon twice for barbershop owners.
  */
 const CATEGORY_NAV_REGISTRY: Record<SalonCategory, CategoryNavGroup> = {
   barbershop: {
-    labelKey: "dashboard.nav.barber_tools",
+    label: "Barbershop",
     category: "barbershop",
     items: [
-      { key: "barber-ops", href: "/dashboard/barber-ops", icon: Armchair, labelKey: "dashboard.nav.barber_ops" },
-      { key: "barber-clients", href: "/dashboard/barber-clients", icon: Scissors, labelKey: "dashboard.nav.barber_clients" },
+      { key: "barber-clients", href: "/dashboard/barber-clients", icon: Scissors, label: "Stammgäste" },
     ],
   },
   nails: {
-    labelKey: "dashboard.nav.nail_tools",
+    label: "Nails",
     category: "nails",
     items: [
-      { key: "nail-admin", href: "/dashboard/nail-admin", icon: Sparkles, labelKey: "dashboard.nav.nail_admin" },
-      { key: "nail-clients", href: "/dashboard/nail-clients", icon: Sparkles, labelKey: "dashboard.nav.nail_clients" },
+      { key: "nail-admin", href: "/dashboard/nail-admin", icon: Gem, label: "Nagelstudio" },
+      { key: "nail-clients", href: "/dashboard/nail-clients", icon: Hand, label: "Nagel-Kund:innen" },
     ],
   },
   coiffeur: {
-    labelKey: "dashboard.nav.coiffeur_tools",
+    label: "Coiffeur",
     category: "coiffeur",
     items: [
-      { key: "coiffeur-crm", href: "/dashboard/coiffeur-crm", icon: Palette, labelKey: "dashboard.nav.coiffeur_crm" },
+      { key: "coiffeur-crm", href: "/dashboard/coiffeur-crm", icon: Palette, label: "Coiffeur-CRM" },
     ],
   },
   spa: {
-    labelKey: "dashboard.nav.spa_tools",
+    label: "Spa",
     category: "spa",
     items: [
-      { key: "spa-admin", href: "/dashboard/spa-admin", icon: Leaf, labelKey: "dashboard.nav.spa_admin" },
+      { key: "spa-admin", href: "/dashboard/spa-admin", icon: Leaf, label: "Spa-Studio" },
     ],
   },
 };

@@ -75,7 +75,7 @@ export default function AiArtGenerator() {
           </div>
           <div className="h-2 rounded-pill bg-s-sand-subtle">
             <div
-              className={`h-full rounded-pill transition-[width] duration-[250ms] ${budget.percentUsed > 0.8 ? "bg-s-error" : "bg-s-coral"}`}
+              className={`h-full rounded-pill transition-[width] duration-[250ms] ${budget.percentUsed > 0.8 ? "bg-s-error" : "bg-s-accent"}`}
               style={{ width: `${Math.min(100, budget.percentUsed * 100)}%` }}
             />
           </div>
@@ -124,7 +124,7 @@ export default function AiArtGenerator() {
           {(["hero", "detail", "lifestyle"] as const).map((tType) => (
             <button key={tType} aria-pressed={shotType === tType} onClick={() => setShotType(tType)}
               className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors duration-150 ${
-                shotType === tType ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink-2"
+                shotType === tType ? "bg-s-accent text-white" : "bg-s-ink/5 text-s-ink-2"
               }`}>
               {tType === "hero" ? t("shot_hero") : tType === "detail" ? t("shot_macro") : t("shot_lifestyle")}
             </button>
@@ -134,7 +134,7 @@ export default function AiArtGenerator() {
 
       {/* Generate button */}
       <button onClick={handleGenerate} disabled={generating}
-        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter] duration-150 disabled:opacity-50">
+        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-pill active:scale-[0.97] bg-s-accent text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter] duration-150 disabled:opacity-50">
         <Wand2 size={16} />
         {generating ? t("generating") : t("generate")}
       </button>

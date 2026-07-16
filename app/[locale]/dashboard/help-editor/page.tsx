@@ -124,7 +124,7 @@ export default function HelpEditorPage() {
           </div>
           <button
             onClick={openNew}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-btn bg-s-coral text-white text-sm font-body font-medium hover:brightness-[1.06] transition-colors"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-btn bg-s-accent text-white text-sm font-body font-medium hover:brightness-[1.06] transition-colors"
           >
             <Plus size={16} />
             {t("newArticle")}
@@ -189,7 +189,7 @@ export default function HelpEditorPage() {
               <button
                 onClick={handleSave}
                 disabled={saving || !form.slug || !form.title || !form.content}
-                className="px-5 py-2 rounded-btn bg-s-coral text-white text-sm font-body font-medium hover:brightness-[1.06] transition-colors disabled:opacity-50"
+                className="px-5 py-2 rounded-btn bg-s-accent text-white text-sm font-body font-medium hover:brightness-[1.06] transition-colors disabled:opacity-50"
               >
                 {saving ? t("saving") : editing ? t("update") : t("create")}
               </button>

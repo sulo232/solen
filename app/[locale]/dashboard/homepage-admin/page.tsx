@@ -107,8 +107,9 @@ export default function HomepageAdminPage() {
                 onClick={() => handleToggle(key)}
                 className={[
                   "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-pill border-2 border-transparent transition-colors duration-200",
+                  // selected-ok: dashboard vibrant skin (LOCKFILE §12.2/§12.4), s-coral retired, s-accent is the locked toggle-on fill
                   sections[key]
-                    ? "bg-s-coral"
+                    ? "bg-s-accent"
                     : "bg-s-ink/10",
                 ].join(" ")}
               >
@@ -126,7 +127,7 @@ export default function HomepageAdminPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-colors disabled:opacity-50 flex items-center gap-2"
+              className="px-5 py-2.5 rounded-btn bg-s-accent text-white text-sm font-medium hover:brightness-[1.06] transition-colors disabled:opacity-50 flex items-center gap-2"
             >
               {saving && <Loader2 size={14} className="animate-spin" />}
               {t("save")}

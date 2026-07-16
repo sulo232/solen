@@ -1585,6 +1585,7 @@
       "discovery": "Scoperta",
       "homepage": "Homepage",
       "cities": "Città",
+      "featureFlags": "Feature Flags",
       "sandbox": "Sandbox",
       "previewBanner": "Modalità anteprima attiva — visualizzando la dashboard come:",
       "previewExit": "Esci",
@@ -2454,6 +2455,12 @@
       "activeLabel": "Attivo",
       "inactiveLabel": "Inattivo",
       "displayOrder": "Ordine {order}",
+      "errorMessage": "Salvataggio non riuscito. Riprova."
+    },
+    "featureFlagsAdminPage": {
+      "title": "Feature Flags",
+      "subtitle": "Attiva o disattiva gli interruttori globali. Ogni interruttore agisce subito sulla piattaforma.",
+      "notWiredHint": "non ancora collegato a nessuna funzione",
       "errorMessage": "Salvataggio non riuscito. Riprova."
     },
     "commissionAdminPage": {

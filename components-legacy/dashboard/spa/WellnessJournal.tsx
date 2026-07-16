@@ -194,8 +194,9 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
                   aria-label={t(`tension_area.${area}` as any)}
                   aria-pressed={form.tension_areas.includes(area)}
                   className={`px-2.5 py-1 rounded-[8px] text-[12px] font-heading uppercase tracking-[.06em] transition-colors duration-150 ${
+                    // selected-ok: dashboard vibrant skin (LOCKFILE §12.2/§12.4), s-coral retired, s-accent is the locked selected fill
                     form.tension_areas.includes(area)
-                      ? "bg-s-coral text-white"
+                      ? "bg-s-accent text-white"
                       : "bg-s-bg-sunken text-s-ink-2 hover:bg-s-bg-sunken"
                   }`}
                 >
@@ -312,7 +313,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
               onClick={handleSave}
               disabled={saving}
               aria-label={t("save")}
-              className="flex items-center gap-1.5 px-4 py-1.5 rounded-pill bg-s-coral text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-elevation-2"
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-pill bg-s-accent text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-elevation-2"
             >
               <Save size={12} />
               {saving ? t("saving") : t("save")}
@@ -352,7 +353,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
                 </span>
                 <div className="flex-1 h-2 rounded-full bg-s-bg-sunken overflow-hidden">
                   <div
-                    className="h-full bg-s-coral rounded-full"
+                    className="h-full bg-s-accent rounded-full"
                     style={{ width: `${((e.pain_level ?? 0) / 10) * 100}%` }}
                   />
                 </div>

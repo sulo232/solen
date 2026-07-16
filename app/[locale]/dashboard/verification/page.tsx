@@ -123,7 +123,7 @@ export default function VerificationPage() {
               <button 
                 onClick={handleUpload} 
                 disabled={!file || uploading}
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-btn bg-s-coral text-white font-medium text-sm disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-btn bg-s-accent text-white font-medium text-sm disabled:opacity-50"
               >
                 {uploading ? <Spinner size="sm" invert /> : <Upload size={16} />}
                 {t('upload')}

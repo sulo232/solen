@@ -1621,6 +1621,7 @@
       "discovery": "Discovery",
       "homepage": "Homepage",
       "cities": "Städte",
+      "featureFlags": "Feature Flags",
       "sandbox": "Sandbox",
       "previewBanner": "Vorschau-Modus aktiv — du siehst das Dashboard als:",
       "previewExit": "Beenden",
@@ -2490,6 +2491,12 @@
       "activeLabel": "Aktiv",
       "inactiveLabel": "Inaktiv",
       "displayOrder": "Reihenfolge {order}",
+      "errorMessage": "Konnte nicht gespeichert werden. Bitte erneut versuchen."
+    },
+    "featureFlagsAdminPage": {
+      "title": "Feature Flags",
+      "subtitle": "Globale Feature-Schalter aktivieren oder deaktivieren. Jeder Schalter wirkt sofort auf die Plattform.",
+      "notWiredHint": "noch mit keiner Funktion verknüpft",
       "errorMessage": "Konnte nicht gespeichert werden. Bitte erneut versuchen."
     },
     "commissionAdminPage": {

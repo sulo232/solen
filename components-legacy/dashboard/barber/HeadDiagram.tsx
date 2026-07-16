@@ -116,8 +116,9 @@ export default function HeadDiagram({ zoneGuards, onZoneGuardChange }: HeadDiagr
                   setActiveZone(null);
                 }}
                 className={`px-2 py-1 text-[12px] rounded-[8px] transition-colors duration-150 ${
+                  // selected-ok: dashboard vibrant skin (LOCKFILE §12.2/§12.4), s-coral retired, s-accent is the locked selected fill
                   zoneGuards[activeZone] === opt.value
-                    ? "bg-s-coral text-white"
+                    ? "bg-s-accent text-white"
                     : "bg-s-bg-sunken text-s-ink-2 hover:bg-s-bg-sunken"
                 }`}
                 aria-label={opt.label}

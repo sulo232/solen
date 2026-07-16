@@ -266,7 +266,7 @@ export default function AdminSandboxPage() {
           </div>
           <button
             onClick={() => setShowCreateForm(!showCreateForm)}
-            className="flex items-center gap-1.5 px-4 py-2 min-h-[44px] rounded-[8px] bg-s-coral text-white text-xs font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
+            className="flex items-center gap-1.5 px-4 py-2 min-h-[44px] rounded-[8px] bg-s-accent text-white text-xs font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
             aria-label={t("createNew")}
           >
             <Plus size={13} />
@@ -291,7 +291,7 @@ export default function AdminSandboxPage() {
                 onClick={() => setNewCategory(cat)}
                 className={`px-3 py-1.5 rounded-pill text-xs font-heading transition-[transform,filter,border-color,background-color] duration-150 ${
                   newCategory === cat
-                    ? "bg-s-coral text-white shadow-elevation-2"
+                    ? "bg-s-accent text-white shadow-elevation-2"
                     : "bg-s-bg-sunken text-s-ink-2 hover:bg-s-bg-sunken"
                 }`}
                 aria-label={cat}
@@ -304,7 +304,7 @@ export default function AdminSandboxPage() {
             <button
               onClick={createSalon}
               disabled={creating}
-              className="flex items-center gap-1.5 px-4 py-2 min-h-[44px] rounded-[8px] bg-s-coral text-white text-xs font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-40"
+              className="flex items-center gap-1.5 px-4 py-2 min-h-[44px] rounded-[8px] bg-s-accent text-white text-xs font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-40"
               aria-label={creating ? t("creating") : t("confirmCreate")}
             >
               {creating ? <Loader2 size={12} className="animate-spin" /> : <FlaskConical size={12} />}

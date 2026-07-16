@@ -68,7 +68,7 @@ export default function RevenuePage() {
               onClick={() => setPeriod(p)}
               className={[
                 "px-3 py-1.5 text-xs font-medium transition-colors",
-                period === p ? "bg-s-coral text-white" : "text-s-ink-2 hover:text-s-ink",
+                period === p ? "bg-s-accent text-white" : "text-s-ink-2 hover:text-s-ink",
               ].join(" ")}
             >
               {p === "week" ? t("periodWeek") : p === "month" ? t("periodMonth") : t("periodYear")}

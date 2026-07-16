@@ -50,8 +50,9 @@ export default function DiscoveryAdminPage() {
               onClick={() => setActiveTab(tab)}
               className={[
                 "px-4 py-2 rounded-btn text-sm font-medium whitespace-nowrap transition-colors",
+                // selected-ok: dashboard vibrant skin (LOCKFILE §12.2/§12.4), s-coral retired, s-accent is the locked active-tab fill
                 activeTab === tab
-                  ? "bg-s-coral text-white"
+                  ? "bg-s-accent text-white"
                   : "bg-s-ink/5 text-s-ink-2 hover:bg-s-ink/10:bg-white/10",
               ].join(" ")}
             >
@@ -179,7 +180,7 @@ function StockImportTab() {
         >
           {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
-        <button onClick={handleSearch} disabled={loading} className="px-4 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium flex items-center gap-2 disabled:opacity-50">
+        <button onClick={handleSearch} disabled={loading} className="px-4 py-2.5 rounded-btn bg-s-accent text-white text-sm font-medium flex items-center gap-2 disabled:opacity-50">
           {loading ? <Spinner size="sm" /> : <Search size={16} />} {t("searchBtn")}
         </button>
         <button onClick={handleBulkImport} disabled={bulkImporting} className="px-4 py-2.5 rounded-btn bg-s-amber text-white text-sm font-medium flex items-center gap-2 disabled:opacity-50">
@@ -199,7 +200,7 @@ function StockImportTab() {
       )}
 
       {selected.size > 0 && (
-        <button onClick={handleImportSelected} disabled={importing} className="px-4 py-2 rounded-btn bg-s-coral text-white text-sm font-medium">
+        <button onClick={handleImportSelected} disabled={importing} className="px-4 py-2 rounded-btn bg-s-accent text-white text-sm font-medium">
           {t("importSelected", { n: selected.size })}
         </button>
       )}
@@ -220,7 +221,7 @@ function StockImportTab() {
           >
             <Image src={photo.thumbnail} alt={photo.alt_text || ""} fill className="object-cover" sizes="200px" />
             {selected.has(photo.id) && (
-              <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-s-coral flex items-center justify-center">
+              <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-s-accent flex items-center justify-center">
                 <CheckCircle size={14} className="text-white" />
               </div>
             )}
@@ -310,7 +311,7 @@ function TikTokImportTab() {
       {loading && (
         <AIProcessingIndicator text={progress ? `${t("tiktokProcessing")} ${progress.done}/${progress.total}` : t("tiktokProcessing")} />
       )}
-      <button onClick={handleImport} disabled={loading} className="px-4 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium flex items-center gap-2 disabled:opacity-50">
+      <button onClick={handleImport} disabled={loading} className="px-4 py-2.5 rounded-btn bg-s-accent text-white text-sm font-medium flex items-center gap-2 disabled:opacity-50">
         {loading ? <Spinner size="sm" /> : <Video size={16} />} {t("importTikToksBtn")}
       </button>
       {result && (
@@ -506,7 +507,7 @@ function StagingTab() {
                 </div>
               )}
               {selected.has(item.id) && (
-                <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-s-coral flex items-center justify-center">
+                <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-s-accent flex items-center justify-center">
                   <CheckCircle size={14} className="text-white" />
                 </div>
               )}

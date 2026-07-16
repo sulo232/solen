@@ -140,7 +140,7 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
           <button
             onClick={() => setProgram({ ...program, is_active: !program.is_active })}
             className={`w-10 h-6 rounded-full transition-colors ${
-              program.is_active ? "bg-s-coral" : "bg-s-ink/20"
+              program.is_active ? "bg-s-accent" : "bg-s-ink/20"
             }`}
           >
             <div className={`w-4 h-4 rounded-full bg-white transition-transform mx-1 ${
@@ -171,7 +171,7 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
       <button
         onClick={handleSave}
         disabled={saving}
-        className="mt-4 w-full flex items-center justify-center gap-2 rounded-pill active:scale-[0.97] bg-s-coral text-white font-medium py-2 text-sm hover:brightness-[1.06] disabled:opacity-50 shadow-elevation-2 transition-[transform,filter] duration-150"
+        className="mt-4 w-full flex items-center justify-center gap-2 rounded-pill active:scale-[0.97] bg-s-accent text-white font-medium py-2 text-sm hover:brightness-[1.06] disabled:opacity-50 shadow-elevation-2 transition-[transform,filter] duration-150"
       >
         <Save size={14} />
         {saving ? tc("saving") : saved ? tc("saved") : tc("save")}

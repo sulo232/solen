@@ -124,7 +124,7 @@ export default function RetailSalesDashboard({ salonId }: RetailSalesDashboardPr
                   </p>
                 </div>
                 <div
-                  className="h-1.5 bg-s-coral rounded-pill"
+                  className="h-1.5 bg-s-accent rounded-pill"
                   style={{ width: `${Math.round((p.units / (topProducts[0]?.units || 1)) * 80)}px` }}
                 />
               </div>
