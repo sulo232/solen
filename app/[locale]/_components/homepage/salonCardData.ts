@@ -39,6 +39,10 @@ export interface SalonCardData {
   address: string | null;
   /** Cheapest ACTIVE service price for the salon, null if it has none. */
   priceFromCHF: number | null;
+  /** Real coordinates (salons.latitude/longitude). Null when the salon has none,
+   *  in which case it simply gets no marker on the Nearby map (never a fake one). */
+  latitude: number | null;
+  longitude: number | null;
 }
 
 export type SalonCardDataMap = Record<string, SalonCardData>;
@@ -58,7 +62,7 @@ export async function getSalonCardDataMap(salonIds: string[]): Promise<SalonCard
     await Promise.all([
       supabase
         .from("salons")
-        .select("id, average_rating, review_count, postal_code, address")
+        .select("id, average_rating, review_count, postal_code, address, latitude, longitude")
         .in("id", uniqueIds),
       supabase
         .from("services")
@@ -90,6 +94,8 @@ export async function getSalonCardDataMap(salonIds: string[]): Promise<SalonCard
       city: postalCode ? postalToCity(postalCode) : null,
       address: (salon.address as string | null) ?? null,
       priceFromCHF: minPriceBySalon.get(salon.id as string) ?? null,
+      latitude: (salon.latitude as number | null) ?? null,
+      longitude: (salon.longitude as number | null) ?? null,
     };
   }
   return map;

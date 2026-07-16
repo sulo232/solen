@@ -1,9 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { MapPin } from "lucide-react";
 import { useLocale } from "next-intl";
 import { Section, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
+import NearbyMap, { type NearbyMapSalon } from "./NearbyMap";
 import { SalonCard, type SalonCardProps } from "./SalonCard";
 import { useCustomerPrefs, sortByCategoryPicks, type CustomerPrefs } from "./useCustomerPrefs";
 // 2026-07-13: real rating/address/price data, batch-fetched server-side in
@@ -124,6 +124,35 @@ export default function Nearby({
   const entries = sortByCategoryPicks(DEMO, prefs?.categories ?? []);
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
+  // Map markers: ONLY salons that have real coordinates in the DB. A salon without
+  // lat/lng simply gets no marker rather than an invented position, and if none of
+  // them resolve the map hides itself (NearbyMap returns null) instead of rendering
+  // an empty tile. The count chip counts the markers we actually plot, so the number
+  // can never drift from what is on screen (the old hardcoded "14" said 14 while the
+  // real number was 20).
+  const mapSalons: NearbyMapSalon[] = React.useMemo(
+    () =>
+      entries.flatMap((e) => {
+        const real = salonData[e.id];
+        if (real?.latitude == null || real?.longitude == null) return [];
+        return [{
+          id: e.id,
+          latitude: real.latitude,
+          longitude: real.longitude,
+          rating: real.rating,
+          reviewCount: real.reviewCount,
+        }];
+      }),
+    [entries, salonData],
+  );
+  const mapCity = React.useMemo(
+    () => mapSalons.map((s) => salonData[s.id]?.city).find(Boolean) ?? null,
+    [mapSalons, salonData],
+  );
+  const mapCountLabel = mapCity
+    ? `${mapSalons.length} Salons in ${mapCity}`
+    : `${mapSalons.length} Salons in der Nähe`;
+
   return (
     // V3-D120 (2026-05-24): section bg tint REMOVED per user "remove these
     // color dividing things." Future-state homepage = all-white substrate,
@@ -135,31 +164,20 @@ export default function Nearby({
           link={{ label: "Alle in deiner Nähe →", href: `/${locale}/search?nearby=true` }}
           scrollRef={scrollRef}
         />
-        {/* V3-D348 (tweak #2): map teaser — gives "In der Nähe" a location-led
-            identity distinct from the editorial "Top auf Solen" carousel above.
-            The salon cards below are UNCHANGED (name+star / street / time·price).
-            Tap → nearby results. */}
-        <a
+        {/* Map teaser: gives "In der Nähe" a location-led identity distinct from the
+            editorial "Top auf Solen" carousel above. Tap goes to the map results.
+            NEARBY_MAP_FIX (owner-approved 2026-07-15, mockup
+            public/_mockups/nearby-map-minimal.html): the fabricated version of this block
+            (a CSS-grid "map" + 3 MapPins at fixed % positions + a hardcoded count) is GONE,
+            replaced by a real Mapbox map of the real salon coordinates. Every marker is one
+            real salon with its real rating + review count; the count chip is derived from
+            the data, never hardcoded. See _design-system/REMOVED.md. */}
+        <NearbyMap
+          salons={mapSalons}
           href={`/${locale}/search?view=map`}
-          aria-label="Salons in der Nähe auf der Karte ansehen"
-          className="relative mt-1 block h-[120px] overflow-hidden rounded-card border border-s-border bg-s-bg-sunken transition-transform duration-200 ease-glide active:scale-[0.97]"
-        >
-          <span
-            aria-hidden
-            className="absolute inset-0"
-            style={{
-              backgroundImage:
-                "linear-gradient(rgba(10,10,10,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(10,10,10,0.05) 1px, transparent 1px)",
-              backgroundSize: "26px 26px",
-            }}
-          />
-          <MapPin className="absolute left-[26%] top-[28%] text-s-ink" size={20} strokeWidth={2.5} fill="currentColor" aria-hidden />
-          <MapPin className="absolute left-[56%] top-[42%] text-s-ink" size={22} strokeWidth={2.5} fill="currentColor" aria-hidden />
-          <MapPin className="absolute left-[40%] top-[62%] text-s-ink" size={18} strokeWidth={2.5} fill="currentColor" aria-hidden />
-          <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-pill bg-white px-3 py-1.5 text-[13px] font-medium text-s-ink shadow-[0_2px_8px_rgba(0,0,0,0.12)]">
-            <MapPin size={13} className="text-s-ink" aria-hidden /> 14 Salons in der Nähe Karte öffnen
-          </span>
-        </a>
+          ariaLabel="Salons in der Nähe auf der Karte ansehen"
+          countLabel={mapCountLabel}
+        />
         <ScrollRow ref={scrollRef}>
         {entries.map((e, idx) => {
           const real = salonData[e.id];
