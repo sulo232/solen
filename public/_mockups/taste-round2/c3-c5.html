@@ -1,0 +1,126 @@
+<!doctype html>
+<!-- Base: elicitation -->
+<!-- Scale: full-page -->
+<!-- Exists-check: npm run exists "selected state" run this turn; hits = the locked gray TabPill selected treatment (design contract row "selected / active", TASTE_LOG 2026-06-29) and dev bundle pages using it; graveyard hit = none for these two questions. Net-new here: nothing ships, this page only renders the two OPEN picks (C3, C5) side by side so the owner can answer. -->
+<!-- Grounded-in: app/[locale]/_components/search/FilterSheet.tsx (the real filter-pill surface whose selected state C3 decides), _design-system/TASTE_LOG.md (C3 UNDECIDED + C5 unanswered rows, 2026-07-16), _design-system/LOCKFILE.md (selected/active lock, big-CTA ink lock), public/_mockups/_assets/taste-round2/base-home-full.png (real capture, PIL-measured this session: CTA rect x34-355 y396-452 of 390x4065, sunken tile band near y1120) -->
+<!-- Owner-scope: all-variants: both open picks render every variant side by side; nothing is preselected. -->
+<!-- Backend-check: none needed, presentation-only comparison of two open taste picks; no action affordances beyond scrolling frames. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C3 selected filter pills + C5 staging color, the two open picks</title>
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--border:#E4E4E7;--sunken:#F4F4F5;--white:#FFFFFF;--accent:#276EF1}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,-apple-system,"Segoe UI",sans-serif;background:var(--white);color:var(--ink);font-size:14px;line-height:1.5;padding-bottom:120px}
+  h1,h2,h3{font-family:"Inter Tight",Inter,sans-serif}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+  header.page{border-bottom:1px solid var(--border);padding:30px 0 22px;margin-bottom:26px}
+  header.page h1{font-size:clamp(22px,3vw,28px);font-weight:700}
+  header.page p{color:var(--ink2);max-width:70ch;margin-top:8px}
+  .q{background:var(--white);border:1px solid var(--border);border-radius:16px;margin:18px 0;padding:22px 24px}
+  .q .head{display:flex;gap:10px;align-items:baseline;margin-bottom:6px}
+  .pid{font-size:12px;font-weight:600;color:var(--ink2);border:1px solid var(--border);border-radius:999px;padding:2px 10px}
+  .q h3{font-size:17px;font-weight:600}
+  .q>p{color:var(--ink2);font-size:13px;max-width:78ch;margin:6px 0 16px}
+  .duo{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+  .side{border:1px solid var(--border);border-radius:12px;padding:16px}
+  .cap{font-size:12px;font-weight:600;margin-bottom:12px}
+  .cap small{display:block;font-weight:400;color:var(--ink2);margin-top:2px}
+  .ctx{font-size:11px;color:var(--ink2);margin:14px 0 6px}
+  .pillrow{display:flex;gap:8px;flex-wrap:wrap}
+  .pill{height:36px;display:inline-flex;align-items:center;padding:0 14px;border-radius:999px;border:1px solid var(--border);background:var(--white);font-size:13px;color:var(--ink)}
+  .pill.on-gray{background:var(--sunken);border-color:var(--sunken);font-weight:600}
+  .pill.on-dark{background:var(--ink);border-color:var(--ink);color:var(--white);font-weight:600}
+  .days{display:flex;gap:6px}
+  .day{width:38px;height:38px;border-radius:999px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;background:var(--white)}
+  .day.on-gray{background:var(--sunken);border-color:var(--sunken);font-weight:600}
+  .day.on-dark{background:var(--ink);border-color:var(--ink);color:var(--white);font-weight:600}
+  .opt{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-top:6px;font-size:13px}
+  .opt.on-gray{background:var(--sunken);border-color:var(--sunken);font-weight:600}
+  .opt.on-dark{background:var(--ink);border-color:var(--ink);color:var(--white);font-weight:600}
+  .check{font-weight:700}
+  .tri{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+  .phone{position:relative;border:1px solid var(--border);border-radius:18px;overflow:auto;height:560px;background:var(--white)}
+  .phone .canvas{position:relative;width:100%}
+  .phone img{display:block;width:100%;height:auto}
+  /* hue-ok: accent token #276EF1; screen-blend patch over the real ink button so its own label stays visible; elicitation demo of what "C5 product" would reopen, not shipped UI */
+  .patch{position:absolute;border-radius:999px;mix-blend-mode:screen;background:var(--accent)}
+  .patch.cta{left:8.7%;width:82.3%;top:9.74%;height:1.38%}
+  /* hue-ok muted-ok: pastel wash demo over the category tile band, elicitation only */
+  .patch.tiles{left:0;width:100%;top:26.6%;height:2.6%;border-radius:0;mix-blend-mode:multiply;background:linear-gradient(90deg,rgba(250,242,229,.8),rgba(212,235,217,.8),rgba(212,221,200,.8))}
+  .stage{border-radius:12px;padding:26px 22px;background:linear-gradient(135deg,#DDE9FF,#EFE5FF 55%,#FFE9E0)}/* hue-ok: staging-wrapper demo, the whole point of C5 staging is color OUTSIDE the product */
+  .stage .phone{height:508px;box-shadow:0 18px 40px rgba(10,10,10,.18);border:none;border-radius:14px}
+  .stage .slab{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:12px}
+  .answer{position:fixed;left:0;right:0;bottom:0;background:var(--white);border-top:1px solid var(--border);padding:12px 20px;font-size:13px}
+  .answer b{font-weight:600}
+  .answer div{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="page">
+    <h1>The two picks still open: C3 and C5</h1>
+    <p>Everything else from round 2 is decided and shipped. These two only need your eyes. Reply in one line, for example "C3 keep, C5 staging".</p>
+  </header>
+
+  <div class="q">
+    <div class="head"><span class="pid">C3</span><h3>Selected state: your gray lock vs the reference's dark fill</h3></div>
+    <p>Your current law: a selected pill fills calm gray, text turns semibold ink. The references you liked fill selected things dark with white text. Same three real contexts, both ways. Left is what the app does today.</p>
+    <div class="duo">
+      <div class="side">
+        <div class="cap">a, keep: calm gray fill (current lock)<small>quiet, selection reads by fill and weight</small></div>
+        <div class="ctx">Search filters</div>
+        <div class="pillrow"><span class="pill on-gray">Women</span><span class="pill">Men</span><span class="pill">Deals</span></div>
+        <div class="ctx">Working hours (the reference case)</div>
+        <div class="days"><span class="day on-gray">Mon</span><span class="day on-gray">Tue</span><span class="day on-gray">Wed</span><span class="day">Thu</span><span class="day on-gray">Fri</span><span class="day">Sat</span><span class="day">Sun</span></div>
+        <div class="ctx">Options list</div>
+        <div class="opt on-gray"><span>Most popular first</span><span class="check">&#10003;</span></div>
+        <div class="opt"><span>Best rated</span></div>
+      </div>
+      <div class="side">
+        <div class="cap">b, the reference: dark fill<small>louder, selection reads instantly, costs calm; your gate currently bans this in real code</small></div>
+        <div class="ctx">Search filters</div>
+        <div class="pillrow"><span class="pill on-dark">Women</span><span class="pill">Men</span><span class="pill">Deals</span></div>
+        <div class="ctx">Working hours (the reference case)</div>
+        <div class="days"><span class="day on-dark">Mon</span><span class="day on-dark">Tue</span><span class="day on-dark">Wed</span><span class="day">Thu</span><span class="day on-dark">Fri</span><span class="day">Sat</span><span class="day">Sun</span></div>
+        <div class="ctx">Options list</div>
+        <div class="opt on-dark"><span>Most popular first</span><span class="check">&#10003;</span></div>
+        <div class="opt"><span>Best rated</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="head"><span class="pid">C5</span><h3>Where does color live: around the product, or inside it?</h3></div>
+    <p>Your references had colorful presentation pages. Two different readings. "Staging" means color lives on presentation and case-study pages while the product stays black and white. "Product" means color enters the app itself, which reopens your black-and-white pivot and the ink-CTA lock. All three panels use the real captured page; scroll inside each frame.</p>
+    <div class="tri">
+      <div class="side">
+        <div class="cap">a, today<small>the product as captured, no color</small></div>
+        <div class="phone"><div class="canvas"><img src="../_assets/taste-round2/base-home-full.png" alt="The real page as captured today"></div></div>
+      </div>
+      <div class="side">
+        <div class="cap">b, C5 product: color inside the app<small>demo patches at measured positions; the blue main button breaks your ink-CTA lock, that is exactly what this pick would reopen</small></div>
+        <div class="phone"><div class="canvas">
+          <img src="../_assets/taste-round2/base-home-full.png" alt="The same capture with color demo patches">
+          <div class="patch cta"></div>
+          <div class="patch tiles"></div>
+        </div></div>
+      </div>
+      <div class="side">
+        <div class="cap">c, C5 staging: color around the product<small>presentation pages get the color, the app stays black and white</small></div>
+        <div class="stage">
+          <div class="slab">Case study: booking in three taps</div>
+          <div class="phone"><div class="canvas"><img src="../_assets/taste-round2/base-home-full.png" alt="The unchanged product inside a colorful presentation frame"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="answer">
+  <b>How to answer, one line is enough:</b>
+  <div>C3: "C3 keep" or "C3 dark". C5: "C5 staging", "C5 product", "C5 both" or "C5 none". Anything you skip stays open.</div>
+</div>
+</body>
+</html>
