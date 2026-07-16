@@ -18,6 +18,7 @@ export default function ConfirmPreview() {
       salonAddress="Bahnhofstrasse 21, 8001 Zürich"
       salonCoverUrl={null}
       serviceName="Damenhaarschnitt & Föhnen"
+      servicePrice={85}
       staffName="Lena Brunner"
       startsAt="2026-06-14T13:30:00.000Z"
       durationMinutes={60}

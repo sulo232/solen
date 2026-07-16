@@ -12,11 +12,11 @@ import {
   MapPin,
   KeyRound,
   ChevronRight,
-  ChevronLeft,
   HelpCircle,
   Scissors,
 } from "lucide-react";
 import { FROST_GLASS } from "@/lib/frost-glass";
+import { formatCurrency } from "@/lib/format-currency";
 import { Avatar } from "@/app/[locale]/_components/primitives/Avatar";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
 import RescheduleSheet from "./RescheduleSheet";
@@ -73,6 +73,10 @@ export interface BookingConfirmationProps {
   salonAddress: string;
   salonCoverUrl: string | null;
   serviceName: string;
+  /** services.price (CHF), the SERVICE price shown on the service row. Distinct from
+   *  pricePaid/paid_amount (money-card figures); null omits the price on that row entirely,
+   *  never substitutes another amount. */
+  servicePrice?: number | null;
   staffName: string | null;
   startsAt: string; // ISO
   durationMinutes: number | null;
@@ -303,10 +307,10 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
   )}`;
 
   const hasPhoto = Boolean(props.salonCoverUrl); // mockup-ok
-  // Back: deterministic destination (not history.back(), which can land mid-flow or off-site) ,
-  // logged-in customer returns to their bookings list, a guest returns home (no bookings list to
-  // show them). Help: the real /{locale}/help route.
-  const backHref = props.isGuest ? `/${locale}` : `/${locale}/profile/bookings`;
+  // Help: the real /{locale}/help route. No back button here (V3-D461, "one up-affordance,
+  // never both"): the global Header already renders its own back arrow on this deep page
+  // (app/[locale]/_components/layout/Header.tsx:355-368), so a second frosted back circle on
+  // the photo duplicated it, render-verified 2026-07-16.
   const helpHref = `/${locale}/help`;
   const iconBtnClass = hasPhoto // mockup-ok
     ? "grid h-11 w-11 place-items-center rounded-full text-s-ink transition active:scale-95"
@@ -329,20 +333,14 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
               priority
               aria-hidden
             />
-            <div className="absolute inset-x-4 top-4 flex items-center justify-between">
-              <Link href={backHref} aria-label={tCommon("back")} className={iconBtnClass} style={FROST_GLASS}>
-                <ChevronLeft size={20} aria-hidden />
-              </Link>
+            <div className="absolute inset-x-4 top-4 flex items-center justify-end">
               <Link href={helpHref} aria-label={t("helpAria")} className={iconBtnClass} style={FROST_GLASS}>
                 <HelpCircle size={20} aria-hidden />
               </Link>
             </div>
           </div>
         ) : (
-          <div className="flex items-center justify-between px-4 pt-4"> {/* mockup-ok */}
-            <Link href={backHref} aria-label={tCommon("back")} className={iconBtnClass}>
-              <ChevronLeft size={20} aria-hidden />
-            </Link>
+          <div className="flex items-center justify-end px-4 pt-4"> {/* mockup-ok */}
             <Link href={helpHref} aria-label={t("helpAria")} className={iconBtnClass}>
               <HelpCircle size={20} aria-hidden />
             </Link>
@@ -425,7 +423,13 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
                 <div className="truncate font-display text-[14.5px] font-semibold tracking-[-0.01em] text-s-ink">
                   {props.serviceName}
                 </div>
-                <div className="mt-0.5 text-[12.5px] text-s-ink-2">{props.priceLabel}</div>
+                {/* SERVICE price (services.price), never priceLabel/paid_amount , those are the
+                    money card's figures, a different number in this slot is a mislabel. */}
+                {props.servicePrice != null && (
+                  <div className="mt-0.5 text-[12.5px] text-s-ink-2">
+                    {formatCurrency(props.servicePrice, locale)}
+                  </div>
+                )}
               </div>
             </div>
             {props.staffName && (
