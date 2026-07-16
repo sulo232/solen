@@ -8,7 +8,7 @@ import { calculateNoShowFee } from "@/lib/cancellation-policy";
 import { chargeFee, FeeError } from "@/lib/bookings/charge-fee";
 import { notifyNoShowFee } from "@/lib/bookings/notify-no-show-fee";
 import { logAuditEvent } from "@/lib/audit";
-import { withCronRun } from "@/lib/cron-run";
+import { withCronRun, ALL_DECLINED_SYMPTOM_FLOOR } from "@/lib/cron-run";
 
 export async function GET(req: NextRequest) {
   const cronSecret = getServerEnv().CRON_SECRET;
@@ -39,6 +39,16 @@ export async function GET(req: NextRequest) {
 
   let processed = 0;
   let charged = 0;
+  // Customer-side: a genuine Stripe card decline on the no-show fee attempt. Data,
+  // not a failure, never pushed to `errors` on its own (see the all-declined
+  // symptom check at the end of the loop for the aggregate exception).
+  let declined = 0;
+  // System-side: the fee-charge machinery itself did not do its job (claim write
+  // failure, a concurrent claim race, a non-decline Stripe error, or the FeeError /
+  // exception paths below, which the guard on the call site makes anomalous rather
+  // than routine, see the report for why they stay here instead of a 3rd bucket).
+  let failed = 0;
+  const errors: string[] = [];
 
   for (const booking of overdues ?? []) {
     // 1. Mark as no_show. Re-assert status=confirmed (the state the SELECT above
@@ -89,7 +99,21 @@ export async function GET(req: NextRequest) {
           actor: "system",
           reason: "salon-marked no-show",
         });
-        if (result.status === "charged") charged++;
+        if (result.status === "charged") {
+          charged++;
+        } else if (result.status === "failed") {
+          if (result.declined) {
+            // A genuine card decline (see off-session-charge.ts's isStripeCardDecline):
+            // the system worked, the fee attempt just came back no. Counted, never
+            // pushed to `errors` on its own.
+            declined++;
+          } else {
+            // A claim-write DB failure, a concurrent claim race, or a non-decline
+            // Stripe error: the fee-charge machinery itself did not do its job.
+            failed++;
+            errors.push(`booking ${booking.id}: no-show fee charge failed${result.error ? `: ${result.error}` : ""}`);
+          }
+        }
         await logAuditEvent(req, "system", "no_show_fee_charged", "booking", booking.id, {
           kind: "no_show",
           fee_cents: feeCents,
@@ -118,11 +142,15 @@ export async function GET(req: NextRequest) {
           }).catch((err) => console.error(`[no-show] fee notification failed for booking ${booking.id}:`, err));
         }
       } catch (e) {
-        // NO_SAVED_CARD / INVALID_AMOUNT etc. — log, continue the loop (never crash the cron).
+        // NO_SAVED_CARD / INVALID_AMOUNT etc: log, continue the loop (never crash the cron),
+        // but the fee still went uncollected, so it must count as a failure, not vanish.
+        failed++;
         if (e instanceof FeeError) {
           console.error(`[no-show] chargeFee skipped for booking ${booking.id} (${e.code}):`, e.message);
+          errors.push(`booking ${booking.id}: ${e.code}: ${e.message}`);
         } else {
           console.error(`[no-show] chargeFee threw for booking ${booking.id}:`, e);
+          errors.push(`booking ${booking.id}: ${e instanceof Error ? e.message : String(e)}`);
         }
       }
     }
@@ -144,6 +172,18 @@ export async function GET(req: NextRequest) {
     processed++;
   }
 
-  return { processed, charged };
+  // Symptom, not per-item: every fee attempt this run declined and NOTHING else
+  // went wrong. That is not N unlucky customers, it is a broken Stripe/account
+  // config wearing a customer-shaped costume (BACKEND_LAW.md #14). A run with any
+  // real charge or any system-side failure already reddens on its own, this only
+  // fires for the case that would otherwise stay silently green: a pure decline
+  // sweep at or above ALL_DECLINED_SYMPTOM_FLOOR (see lib/cron-run.ts).
+  if (charged === 0 && failed === 0 && declined >= ALL_DECLINED_SYMPTOM_FLOOR) {
+    errors.push(
+      `every one of ${declined} no-show fee attempts this run declined (0 charged, 0 system errors): likely a broken Stripe/account config, not ${declined} unrelated bad cards`,
+    );
+  }
+
+  return { processed, charged, declined, failed, errors };
   });
 }

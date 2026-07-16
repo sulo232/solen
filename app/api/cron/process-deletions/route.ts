@@ -243,7 +243,17 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    return { message: `Processed ${dueUsers.length} users`, results, processed: dueUsers.length };
+    // Both currently-tracked-but-never-surfaced failure sources feed the contract:
+    // batchErrors (pre-delete cleanup ops across tables, see comment above) and a
+    // per-user results[].error (the deleteUser call itself). Neither reached the
+    // response before, so a night where every deleteUser call failed still read
+    // "processed: N users" with nothing to say a single one actually erased.
+    const userErrors = results
+      .filter((r) => !r.success)
+      .map((r) => `user ${r.id}: ${r.error ?? "deleteUser failed"}`);
+    const errors = [...batchErrors, ...userErrors];
+
+    return { message: `Processed ${dueUsers.length} users`, results, processed: dueUsers.length, errors };
   } catch (err) {
     console.error("[api/cron/process-deletions] error:", err);
     return { error: "Internal error", errors: ["Internal error"] };

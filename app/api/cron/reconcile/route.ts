@@ -96,6 +96,13 @@ export async function GET(req: NextRequest) {
   const skipped = { walk_in: 0, voucher: 0, non_booking: 0 };
   let checked = 0;
   let checkedPurchases = 0;
+  // Distinct from `mismatches`: a mismatch is this diagnostic's FOUND OUTPUT (a
+  // real drift between Stripe and the DB, expected some nights, reported via the
+  // admin digest email below), not a failure of the cron itself. `errors` is only
+  // for an EXCEPTION while checking (Stripe API down, an unexpected throw), which
+  // means the reconciliation didn't actually run to completion this night, that
+  // must go red so it gets noticed instead of silently passing as "0 mismatches".
+  const errors: string[] = [];
 
   // ---- 1. Charges from the last 48h ----------------------------------------
   try {
@@ -317,6 +324,7 @@ export async function GET(req: NextRequest) {
     }
   } catch (err) {
     console.error("[cron/reconcile] charges.list / compare failed:", err);
+    errors.push(`charges.list/compare failed: ${err instanceof Error ? err.message : String(err)}`);
   }
 
   // ---- 2. Refunds from the last 48h ----------------------------------------
@@ -376,6 +384,7 @@ export async function GET(req: NextRequest) {
     }
   } catch (err) {
     console.error("[cron/reconcile] refunds.list / compare failed:", err);
+    errors.push(`refunds.list/compare failed: ${err instanceof Error ? err.message : String(err)}`);
   }
 
   // ---- 3. Report -----------------------------------------------------------
@@ -427,6 +436,7 @@ export async function GET(req: NextRequest) {
     skipped,
     mismatches,
     processed: checked + checkedPurchases,
+    errors,
   };
   });
 }

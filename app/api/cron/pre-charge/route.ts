@@ -7,7 +7,7 @@ import { toRappen } from "@/lib/stripe";
 import { chargeOffSession } from "@/lib/bookings/off-session-charge";
 import { getServerEnv } from "@/lib/env";
 import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
-import { withCronRun } from "@/lib/cron-run";
+import { withCronRun, ALL_DECLINED_SYMPTOM_FLOOR } from "@/lib/cron-run";
 
 // Cron: Pre-charge saved cards 5 days before appointment. Daily.
 export async function GET(req: NextRequest) {
@@ -36,7 +36,14 @@ export async function GET(req: NextRequest) {
     .limit(50);
 
   let charged = 0;
+  // Customer-side: a genuine Stripe card decline (or a stalled SCA re-auth). Data,
+  // not a failure, never pushed to `errors` on its own (see the all-declined
+  // symptom check at the end of the loop for the aggregate exception).
   let declined = 0;
+  // System-side: the charge machinery itself did not do its job (a non-decline
+  // Stripe error, or Stripe charged the money but the DB write no longer matched).
+  let failed = 0;
+  const errors: string[] = [];
 
   for (const booking of bookings ?? []) {
     // The query above already filters .not("stripe_customer_id"/"stripe_payment_method_id",
@@ -80,16 +87,26 @@ export async function GET(req: NextRequest) {
 
       if (result.status !== "charged") {
         // Decline / restricted account / SCA authentication_required. chargeOffSession
-        // never throws; route the non-success path through the same decline handling
-        // (notify customer) as a thrown Stripe error below.
-        throw new Error(
-          result.status === "requires_action"
-            ? "authentication_required (off-session SCA)"
-            : result.error,
-        );
+        // never throws; route the non-success path through the same handling (notify
+        // customer) as a thrown Stripe error below. Tag the thrown Error with
+        // `declined` so the catch block can classify it without re-deriving the
+        // Stripe error type: a real card decline (result.declined) OR a stalled SCA
+        // re-auth are both customer-side outcomes, everything else (a non-decline
+        // Stripe error) is system-side.
+        const message = result.status === "requires_action"
+          ? "authentication_required (off-session SCA)"
+          : result.error;
+        const thrown = new Error(message) as Error & { declined: boolean };
+        thrown.declined = result.status === "requires_action" ? true : result.declined;
+        throw thrown;
       }
 
-      await admin
+      // CAS: re-assert the exact precondition the SELECT above filtered on, so a
+      // booking that changed state concurrently (e.g. cancelled between select and
+      // this write) does not get force-flipped to paid. A 0-row match means Stripe
+      // already charged the money but the DB no longer agrees, that drift must
+      // surface as a failure, not silently pass as "charged".
+      const { data: updatedRow } = await admin
         .from("bookings")
         .update({
           payment_status: "paid",
@@ -97,12 +114,37 @@ export async function GET(req: NextRequest) {
           paid_amount: amountRappen,
           platform_fee: platformFee,
         })
-        .eq("id", booking.id);
+        .eq("id", booking.id)
+        .eq("status", "confirmed")
+        .eq("payment_status", "card_saved")
+        .select("id")
+        .maybeSingle();
+
+      if (!updatedRow) {
+        // Stripe already has the money; the DB no longer agrees. That is a system-side
+        // drift, not a customer outcome, so it goes to `failed` (reddens), not `declined`.
+        console.error(`[pre-charge] booking ${booking.id} charged at Stripe but DB update matched 0 rows (status changed concurrently)`);
+        errors.push(`booking ${booking.id}: charged at Stripe but bookings row no longer matched card_saved/confirmed (concurrent status change)`);
+        failed++;
+        continue;
+      }
 
       charged++;
     } catch (err: any) {
-      console.error(`[pre-charge] Card declined for booking ${booking.id}:`, err.message);
-      declined++;
+      const isDecline = err?.declined === true;
+      if (isDecline) {
+        // A genuine card decline (or a stalled SCA re-auth): the system worked, the
+        // answer was no. Counted, but never pushed to `errors` on its own.
+        console.error(`[pre-charge] Card declined for booking ${booking.id}:`, err.message);
+        declined++;
+      } else {
+        // Anything else (a non-decline Stripe error, or an unclassified exception,
+        // which fails CLOSED to system-side by default): the charge machinery itself
+        // did not do its job.
+        console.error(`[pre-charge] System error charging booking ${booking.id}:`, err.message);
+        failed++;
+        errors.push(`booking ${booking.id}: ${err.message}`);
+      }
 
       // Notify customer about card decline
       const { data: userAuth } = booking.user_id
@@ -120,6 +162,18 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return { charged, declined, processed: charged + declined };
+  // Symptom, not per-item: every attempt this run declined and NOTHING else went
+  // wrong. That is not N unlucky customers, it is a broken Stripe/account config
+  // wearing a customer-shaped costume (BACKEND_LAW.md #14). A run with any real
+  // charge or any system-side failure already reddens on its own, this only fires
+  // for the case that would otherwise stay silently green: a pure decline sweep
+  // at or above ALL_DECLINED_SYMPTOM_FLOOR (see lib/cron-run.ts for the reasoning).
+  if (charged === 0 && failed === 0 && declined >= ALL_DECLINED_SYMPTOM_FLOOR) {
+    errors.push(
+      `every one of ${declined} pre-charge attempts this run declined (0 charged, 0 system errors): likely a broken Stripe/account config, not ${declined} unrelated bad cards`,
+    );
+  }
+
+  return { charged, declined, failed, processed: charged + declined + failed, errors };
   });
 }

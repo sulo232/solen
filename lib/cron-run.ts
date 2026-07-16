@@ -36,6 +36,34 @@ export interface CronRunResult {
 }
 
 /**
+ * Floor for the "every attempt this run declined" symptom check (pre-charge,
+ * no-show, release-payments). A pure customer-side card decline is DATA, not
+ * a failure (BACKEND_LAW.md #14: alert on symptoms, never causes), but a run
+ * where EVERY attempt declined and NONE succeeded is not N unlucky
+ * customers, it is a broken Stripe/account config wearing a customer-shaped
+ * costume, and that IS a symptom worth reddening the run for.
+ *
+ * 5 is picked from the fleet's REAL measured scale (queried live 2026-07-16
+ * against the prod DB): cron_runs has never logged a single row in prod yet,
+ * the qualifying row count for all three crons is 0 right now, and total
+ * bookings created in the last 30 days is 9 (only 1 booking has ever reached
+ * card_saved). At this size real batches are usually 0-2 attempts; a floor
+ * much above 5 would mean the check almost never fires for a long time, and
+ * a floor of 1-2 cannot structurally tell a system outage apart from
+ * ordinary bad luck (one or two genuinely bad cards on the same night is
+ * unremarkable, see the 1-of-1 example above). 5 is the smallest count where
+ * "every single attempt declined" stops being explainable by chance even
+ * under a deliberately pessimistic hypothetical, NOT a claimed real decline
+ * rate: even assuming a generous 50% chance any given attempt declines
+ * purely at random, the odds all 5 decline by chance alone is 1-in-32
+ * (about 3%), and that 50% assumption is already far above what a saved,
+ * previously-verified off-session card should realistically decline at.
+ * A judgment call, not a measured constant, retune live if the fleet's real
+ * batch sizes change.
+ */
+export const ALL_DECLINED_SYMPTOM_FLOOR = 5;
+
+/**
  * Wrap a cron route's business logic. `name` is the cron_runs.name value
  * (use the route's folder name, e.g. "auto-complete"). `handler` is the
  * existing handler body, returning a plain result object (NOT a
