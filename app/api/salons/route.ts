@@ -10,6 +10,7 @@ import { sendEmail } from "@/lib/email";
 import { onboardingWelcome } from "@/lib/email-templates/salon-onboarding";
 import { autoTranslateDescription } from "@/lib/ai/translate";
 import { CURRENT_TOS_VERSION } from "@/lib/tos-version";
+import { ANON_CACHE_HEADERS } from "@/lib/salons/cache-headers";
 // The single source of truth for whether the 9 salon amenity facts are real yet. Kept in one
 // place so the UI and this filter can never disagree (a visible filter over unknown data, or a
 // filter silently applied with no visible chip, are both bugs). _shared.ts is a pure module: no
@@ -43,10 +44,6 @@ import type { Database, Json } from "@/lib/database.types";
 // normalization/canonicalization), so ?category=coiffeur and
 // ?category=coiffeur&page=2 cache independently, which is exactly what this endpoint's
 // per-filter-combination responses need.
-export const ANON_CACHE_HEADERS = {
-  "Netlify-CDN-Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
-  "Cache-Control": "public, max-age=0, must-revalidate",
-};
 
 // Time-of-day windows (local hour ranges) for the `period` availability filter.
 const PERIOD_HOURS: Record<string, [number, number]> = {
