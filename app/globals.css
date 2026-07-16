@@ -1,12 +1,14 @@
-/* Solen Design System — globals.css */
+/* Solen Design System - globals.css */
 /* Type system (V3-D410 2026-05-31 + V3-D470 2026-06-10): Inter Tight (display/headings
-   + codes-as-tabular) + Inter (body). Body Hanken Grotesk → Inter — mirrors Uber's
-   one-family display+text structure (Uber Move / Uber Move Text) and reads solid where
-   Hanken's 400 read thin. JetBrains Mono RETIRED 2026-06-10 (owner: "the W-047 font is
-   different") — codes use .font-mono-code = Inter Tight tabular. WEIGHT SCALE
-   (Uber-derived): 400 body · 500 nav/labels/prices/buttons · 700 headings. No font below
-   500 for those roles. Do NOT reintroduce Geist or any monospace. */
-@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400..900&family=Inter:wght@400..700&display=swap');
+   + codes-as-tabular) + Inter (body), per CLAUDE.md rule 8. Mirrors Uber's one-family
+   display+text structure (Uber Move / Uber Move Text). JetBrains Mono RETIRED
+   2026-06-10 (owner: "the W-047 font is different") - codes use .font-mono-code =
+   Inter Tight tabular. WEIGHT SCALE (Uber-derived): 400 body, 500 nav/labels/prices/
+   buttons, 700 headings. No font below 500 for those roles. Do NOT reintroduce Geist
+   or any monospace. Both fonts are self-hosted via next/font/google in app/layout.tsx
+   (no runtime @import here anymore - that fetch could silently fall back to the
+   system font on phone/LAN; --font-inter-tight / --font-inter are the CSS variables
+   next/font generates, consumed below and in tailwind.config.js). */
 
 @tailwind base;
 @tailwind components;
@@ -116,15 +118,15 @@
   }
 
   body {
-    /* 2026-05-31 (V3-D410): Inter body (was Hanken) — Inter 400 reads solid where Hanken 400 read thin. */
-    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    /* 2026-05-31 (V3-D410): Inter body (was Hanken), reads solid where Hanken 400 read thin. */
+    font-family: var(--font-inter), "Inter", system-ui, -apple-system, sans-serif;
     background-color: var(--base);
     color: var(--color-body);
   }
 
   h1, h2, h3, h4, h5, h6 {
-    /* 2026-05-30: Inter Tight display — Geist (V3-D317) reverted per user. */
-    font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
+    /* 2026-05-30: Inter Tight display, Geist (V3-D317) reverted per user. */
+    font-family: var(--font-inter-tight), "Inter Tight", system-ui, -apple-system, sans-serif;
     color: var(--color-heading);
     letter-spacing: -0.025em;
   }
@@ -184,31 +186,31 @@
     color: #1e54b7;
   }
 
-  /* 2026-05-31 (V3-D410): .font-heading / .font-display → Inter Tight,
-     .font-body → Inter (was Hanken Grotesk). Uber-style one-family display+text. */
+  /* 2026-05-31 (V3-D410): .font-heading / .font-display use Inter Tight,
+     .font-body uses Inter (was Hanken Grotesk). Uber-style one-family display+text. */
   .font-heading {
-    font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
+    font-family: var(--font-inter-tight), "Inter Tight", system-ui, -apple-system, sans-serif;
   }
   .font-body {
-    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    font-family: var(--font-inter), "Inter", system-ui, -apple-system, sans-serif;
   }
   .font-display {
-    font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
+    font-family: var(--font-inter-tight), "Inter Tight", system-ui, -apple-system, sans-serif;
   }
   /* V3-D470 (2026-06-10): codes are NOT mono. JetBrains Mono retired (owner: "the
-     W-047 font is different"); font-mono-code now renders Inter Tight tabular — same
+     W-047 font is different"); font-mono-code now renders Inter Tight tabular, same
      family as the rest of the UI, aligned digits via tabular-nums, no foreign mono
      texture. Class name kept so all ~20 call sites (gift/voucher/ticket/ref codes)
      update from this one definition. See LOCKFILE §13.4. Weight 600 + slight tracking
      give the "code" feel without a monospace. */
   .font-mono-code {
-    font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
+    font-family: var(--font-inter-tight), "Inter Tight", system-ui, -apple-system, sans-serif;
     font-variant-numeric: tabular-nums;
     font-weight: 600;
     letter-spacing: -0.01em;
   }
   .data-text {
-    font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
+    font-family: var(--font-inter-tight), "Inter Tight", system-ui, -apple-system, sans-serif;
     font-variant-numeric: tabular-nums;
     font-weight: 500;
   }
@@ -319,7 +321,7 @@
     padding-right: 1rem;
     font-size: 1rem;       /* 16px — prevents iOS zoom-on-focus */
     /* 2026-05-31 (V3-D410): inputs use Inter (body). */
-    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    font-family: var(--font-inter), "Inter", system-ui, -apple-system, sans-serif;
     color: var(--color-body);
     background: #F4F4F5;
     transition: border-color 200ms ease, background-color 200ms ease, box-shadow 200ms ease;
@@ -825,13 +827,13 @@ html {
   border: 1px solid rgba(26, 18, 9, 0.08) !important;
   border-radius: 20px !important;
   box-shadow: 0 8px 32px rgba(26,18,9,0.08), 0 24px 72px rgba(26,18,9,0.12) !important;
-  font-family: "Inter", system-ui, -apple-system, sans-serif !important;
+  font-family: var(--font-inter), "Inter", system-ui, -apple-system, sans-serif !important;
   padding: 24px !important;
   color: #1A1209 !important;
 }
 
 .solen-tour-popover .driver-popover-title {
-  font-family: "Inter Tight", system-ui, -apple-system, sans-serif !important;
+  font-family: var(--font-inter-tight), "Inter Tight", system-ui, -apple-system, sans-serif !important;
   font-size: 1.25rem !important;
   font-weight: 700 !important;
   margin-bottom: 8px !important;

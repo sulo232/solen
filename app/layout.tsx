@@ -1,16 +1,17 @@
 import type { Metadata, Viewport } from "next";
 import { ViewTransitions } from "next-view-transitions";
-import { Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Inter_Tight, Inter } from "next/font/google";
 import "@/app/globals.css";
 
-// Self-hosted via next/font — Next downloads these at build time and serves the
-// woff2 from our own origin (/_next/static/media), so they always load (no runtime
-// fetch to fonts.gstatic.com that defaulted to the system font on phone/LAN).
-// 2026-05-30: Inter Tight REMOVED per user. Hanken Grotesk is now the ONE app font
-// (headings + body); JetBrains Mono stays for codes/receipts. Do NOT reintroduce
-// Inter Tight or Geist. Hanken loads up to 800 so bold headings render properly.
-const hanken = Hanken_Grotesk({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700", "800"], variable: "--font-hanken", display: "swap" });
-const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-jetbrains", display: "swap" });
+// Self-hosted via next/font (Next downloads these at build time and serves the
+// woff2 from our own origin, /_next/static/media), so they always load with no
+// runtime fetch to fonts.gstatic.com that could fall back to the system font on
+// phone/LAN (the exact failure the old globals.css @import was exposed to).
+// Inter Tight (display/headings) + Inter (body) per V3-D410/V3-D190/rule 8. Inter
+// Tight loads up to 900 so bold headings render at full weight (V3-D190). JetBrains
+// Mono is RETIRED (V3-D470): codes render Inter Tight tabular via .font-mono-code.
+const interTight = Inter_Tight({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800", "900"], variable: "--font-inter-tight", display: "swap" });
+const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-inter", display: "swap" });
 
 export const metadata: Metadata = {
   title: "solen.ch — Salons in Basel",
@@ -35,7 +36,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de" className={`${hanken.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
+    <html lang="de" className={`${interTight.variable} ${inter.variable}`} suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="preload" href="/logo.svg" as="image" type="image/svg+xml" />

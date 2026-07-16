@@ -224,20 +224,24 @@ module.exports = {
         "s-accent":   { DEFAULT: "#276EF1", deep: "#1E54B7", bright: "#276EF1", pale: "#EAEFFE" },
       },
       fontFamily: {
-        // V3-D190 (2026-05-26): Inter Tight (display) — supersedes V3-D75
-        // Bricolage Grotesque. Inter Tight at weight 900 reads as modern-
+        // V3-D190 (2026-05-26): Inter Tight (display), supersedes V3-D75
+        // Bricolage Grotesque. Inter Tight at weight 900 reads as modern
         // confident (Tap2/Linear/Vercel pattern) where Bricolage read as
-        // 2026-05-31 (V3-D410): body font Hanken Grotesk → Inter. Mirrors Uber's
-        // one-family display+text structure (Inter Tight + Inter ≈ Uber Move + Uber
-        // Move Text); Inter 400 reads solid where Hanken 400 read thin. No Geist.
-        display: ["'Inter Tight'", "system-ui", "-apple-system", "sans-serif"],
-        heading: ["'Inter Tight'", "system-ui", "-apple-system", "sans-serif"],
-        body:    ["'Inter'", "system-ui", "-apple-system", "sans-serif"],
+        // 2026-05-31 (V3-D410): body font Hanken Grotesk to Inter. Mirrors Uber's
+        // one-family display+text structure (Inter Tight + Inter matches Uber Move +
+        // Uber Move Text); Inter 400 reads solid where Hanken 400 read thin. No Geist.
+        // Font-loading fossil fix: both fonts are self-hosted via next/font/google in
+        // app/layout.tsx (--font-inter-tight, --font-inter CSS variables), replacing
+        // the old runtime Google-Fonts @import. Consume the variable first so the
+        // real self-hosted family resolves; the quoted name is a fallback only.
+        display: ["var(--font-inter-tight)", "'Inter Tight'", "system-ui", "-apple-system", "sans-serif"],
+        heading: ["var(--font-inter-tight)", "'Inter Tight'", "system-ui", "-apple-system", "sans-serif"],
+        body:    ["var(--font-inter)", "'Inter'", "system-ui", "-apple-system", "sans-serif"],
         // V3-D470 (2026-06-10): JetBrains Mono RETIRED (owner: "the W-047 font is
         // different"). Codes render Inter Tight tabular via .font-mono-code (globals.css).
         // `mono` key kept pointing at Inter Tight so any stray font-mono resolves in-family,
         // never browser-default monospace. See LOCKFILE §13.4.
-        mono:    ["'Inter Tight'", "system-ui", "-apple-system", "sans-serif"],
+        mono:    ["var(--font-inter-tight)", "'Inter Tight'", "system-ui", "-apple-system", "sans-serif"],
       },
       borderRadius: {
         // Legacy Tailwind vars (keep for shadcn compat)
