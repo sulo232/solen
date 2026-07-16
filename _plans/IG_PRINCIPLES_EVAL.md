@@ -27,16 +27,16 @@ Sources (another session's worktree, read-only):
 
 ## Build round (owner "all approves", 2026-07-16), atomic boxes
 
-- [ ] ig1 password strength bar (register + reset-password), 8-char floor kept, no new dependency
-- [ ] ig2 caret preservation in the Swiss phone formatter (PayConfirmStep + GuestBookingForm)
-- [ ] ig3 keyset cursor pagination for the discovery feed (route + RPC + /inspo client)
-- [ ] ig4 gallery framing hint + center-top object-position on the square grid
-- [ ] ig5 one ink S symbol: favicon + PWA icon set + manifest colors
-- [ ] ig6 DateTimePicker range variant + VacationTab wiring
-- [ ] ig7 68ch measure on SalonAbout, promoted to a shared utility
-- [ ] ig8 CategoryHeroCarousel white title 700 to 600
-- [ ] ig9 calibrated icon-stroke table applied to FilterSheet chip / ProgressStepper / header menu
+- [x] ig1 password strength bar , verified: commit 1b9a6cf99, reviewer PASS 7/7, lib/password-strength.ts local scorer (no new dep), both auth pages gate on length>=8 + score, /de/auth/register 200
+- [x] ig2 caret preservation , verified: commit 21f686383, one shared helper in lib/format-phone.ts used by both call sites (reviewer OK), paste + deletion handled
+- [x] ig3 keyset cursor pagination , verified: commit 21f686383 + migration APPLIED live (discovery_feed_keyset_cursor); chained pages returned 0 duplicate ids through SQL AND through /api/discovery/feed; plain first page 200 total=1070; /de/inspo 200
+- [x] ig4 gallery framing hint , verified: commit 1e24b4678, hint line + 4 locales, square grid object-top (reviewer OK)
+- [x] ig5 one ink S symbol , verified: commit be0ba874f, favicon.svg + 8 PWA sizes regenerated (sampled 85% white / 14% ink, zero maroon-cream), manifest ink-on-white, both assets serve 200. NOTE: no independent reviewer round (the workflow was killed mid-batch); orchestrator-verified by pixel sample + HTTP
+- [x] ig6 DateTimePicker range variant , verified: commit 1b9a6cf99, reviewer PASS (two months, shaded span, result pill, VacationTab save contract unchanged), doc updated
+- [x] ig7 68ch measure , verified: commit 1e24b4678, .prose-measure in globals.css used by SalonAbout (reviewer OK)
+- [x] ig8 CategoryHeroCarousel white title , verified: commit 1e24b4678, single-hunk 700->600 on the white h3 only (reviewer OK)
+- [x] ig9 calibrated icon-stroke table , verified: commit 1e24b4678, lib/icon-stroke.ts monotonic 1.6@14 to 2.4@24 at exactly 3 call sites (reviewer OK after round-2 punch fixed an inverted table)
 - [x] ig10 grid-type classification step into the law , verified: LOCKFILE 'Grid TYPE classification' block + RATIONALE G2 half-closed + fable-frontend step 2.5 (commit 0586d1d4d); dashboard demo stays with the parked operator-home decision (dashboard demo stays with the parked operator-home decision)
 - [x] ig11 balance collapse-test step into solen-taste-diagnosis , verified: SKILL.md step 3.5 (collapse test, weighted centroid, negative-space shapes, BentoBusiness calibration case), commit 0586d1d4d
-- [ ] ig12 activity signal on the live determinate progress bar (discovery import)
-- [ ] Each batch: coder + loop-reviewer to PASS, tsc 0, committed
+- [x] ig12 activity signal , verified: commit 1b9a6cf99, shimmer gated on advancing progress, stops on stall, prefers-reduced-motion honored (reviewer OK)
+- [x] Each batch: coder + loop-reviewer , verified: batch1 round-2 clean, batch2 PASS 7/7, batch3 caret OK + ig3 blocker (unapplied migration) closed by the orchestrator with live proof, batch4 (ig5) had no reviewer round (workflow killed by the session limit), orchestrator-verified instead; tsc 0 at HEAD; /de, /de/auth/register, /de/inspo, /de/salon/old-town-barbers all 200
