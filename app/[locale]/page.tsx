@@ -25,6 +25,13 @@ import MobileCategoriesRow from "./_components/homepage/MobileCategoriesRow";
 // V3-D348: client-side curation — "Weil du X magst" salon rows for the
 // categories the user picked during onboarding (renders null when logged-out).
 import ForYouSalonRows from "./_components/homepage/ForYouSalonRows";
+// 2026-07-13: real-data wiring for the converged SalonCard's Row 3 (address
+// and price) and Row 1 (rating). The demo id lists feed ONE server batch
+// query, no per-salon round-trips, no client-side fetch waterfall.
+import { FORYOU_SALONS } from "./_components/homepage/forYouSalons";
+import { NEARBY_SALON_IDS } from "./_components/homepage/nearbySalonIds";
+import { RECENTLY_VIEWED_DEMO_IDS } from "./_components/homepage/recentlyViewedIds";
+import { getSalonCardDataMap } from "./_components/homepage/salonCardData";
 // Salon of the Month (2026-07-13): real editorial pick from the admin picker
 // (dashboard/salon-of-month-admin -> salon_of_month_winners table), gated on
 // the salon_of_month feature_flags toggle. Server component, renders null
@@ -159,6 +166,14 @@ export default async function Page({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  // 2026-07-13: one combined batch fetch (2 bulk Supabase queries inside
+  // getSalonCardDataMap, not one per salon) for every real salon id the
+  // For-You + Nearby + Recently-Viewed homepage rows reference, deduped internally.
+  const salonCardData = await getSalonCardDataMap([
+    ...Object.values(FORYOU_SALONS).flatMap((list) => list.map((s) => s.id)),
+    ...NEARBY_SALON_IDS,
+    ...RECENTLY_VIEWED_DEMO_IDS,
+  ]);
   return (
     <div className="relative overflow-hidden bg-white">
       {/* V3-D137 sunset halo SCRAPPED 2026-05-25 — user ditched, reverted
@@ -177,9 +192,9 @@ export default async function Page({
             one page. Hero greeting is the single greeting now. */}
         <MobileCategoriesRow />
         <SalonOfMonth locale={locale} />
-        <ForYouSalonRows />
-        <RecentlyViewed />
-        <Nearby />
+        <ForYouSalonRows salonData={salonCardData} />
+        <RecentlyViewed salonData={salonCardData} />
+        <Nearby salonData={salonCardData} />
         <WalkInBand />
         {/* FeaturedStylists pulled (V3-D436) — its cards linked to a
             non-existent /stylist/[slug] route and its demo data has no salon

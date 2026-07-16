@@ -6,6 +6,10 @@ import { useLocale } from "next-intl";
 import { Section, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
 import { SalonCard, type SalonCardProps } from "./SalonCard";
 import { useCustomerPrefs, sortByCategoryPicks, type CustomerPrefs } from "./useCustomerPrefs";
+// 2026-07-13: real rating/address/price data, batch-fetched server-side in
+// page.tsx (type-only import, the Supabase fetch code never reaches this
+// client bundle).
+import type { SalonCardDataMap } from "./salonCardData";
 
 /**
  * In der Nähe — V3 (LIVE_TRUTH §Q51.2 + V2-D34 cards).
@@ -29,7 +33,6 @@ interface NearbyEntry {
   id: string;
   slug: string;
   name: string;
-  rating: number;
   category: SalonCardProps["category"];
   /** Distance string e.g. "200 m" or "1.2 km" — bold in row 2. */
   distance: string;
@@ -49,52 +52,45 @@ interface NearbyEntry {
 const DEMO: NearbyEntry[] = [
   // V3-D128 (2026-05-24): "15 Min" → "Heute 15:30" per user "we book by
   // TIME not by Min". Solen's data model is TIME-slot based, not duration.
-  { id: "0ed041f9-149b-4241-a09e-d41351be7097", slug: "muse-beauty-studio", name: "Muse Beauty Studio", rating: 4.93, category: "coiffeur", distance: "200 m", nextSlot: { prefix: "Heute ", bold: "15:30" }, freeToday: true, isSaved: true,
+  { id: "0ed041f9-149b-4241-a09e-d41351be7097", slug: "muse-beauty-studio", name: "Muse Beauty Studio", category: "coiffeur", distance: "200 m", nextSlot: { prefix: "Heute ", bold: "15:30" }, freeToday: true, isSaved: true,
     photoUrl: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=450&fit=crop&q=80" },
-  { id: "e34402f4-2986-4f63-8487-b09645395c65", slug: "glow-lab-basel", name: "Glow Lab Basel", rating: 4.87, category: "coiffeur", distance: "450 m", nextSlot: { bold: "14:30, 16:00" }, freeToday: true,
+  { id: "e34402f4-2986-4f63-8487-b09645395c65", slug: "glow-lab-basel", name: "Glow Lab Basel", category: "coiffeur", distance: "450 m", nextSlot: { bold: "14:30, 16:00" }, freeToday: true,
     photoUrl: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=450&fit=crop&q=80" },
-  { id: "ca037638-362a-491b-ada2-238e20d9d4a9", slug: "nail-studio-bliss", name: "Nail Studio Bliss", rating: 4.95, category: "nails", distance: "800 m", nextSlot: { prefix: "Nächster ", bold: "Mo. 09:00" },
+  { id: "ca037638-362a-491b-ada2-238e20d9d4a9", slug: "nail-studio-bliss", name: "Nail Studio Bliss", category: "nails", distance: "800 m", nextSlot: { prefix: "Nächster ", bold: "Mo. 09:00" },
     photoUrl: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" },
-  { id: "40c96be2-198c-471e-82d8-3ada6f7de0de", slug: "smooth-skin-studio", name: "Smooth Skin Studio", rating: 4.90, category: "spa", distance: "1.2 km", nextSlot: { prefix: "Nächster ", bold: "Do. 11:00" },
+  { id: "40c96be2-198c-471e-82d8-3ada6f7de0de", slug: "smooth-skin-studio", name: "Smooth Skin Studio", category: "spa", distance: "1.2 km", nextSlot: { prefix: "Nächster ", bold: "Do. 11:00" },
     photoUrl: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=450&fit=crop&q=80" },
   // V3-D128 (2026-05-24): "30 Min" → "Heute 17:15" — same fix as above.
-  { id: "599bb853-c713-4dae-a3c4-96c6216139c4", slug: "old-town-barbers", name: "Old Town Barbers", rating: 4.91, category: "barbershop", distance: "1.5 km", nextSlot: { prefix: "Heute ", bold: "17:15" }, freeToday: true,
+  { id: "599bb853-c713-4dae-a3c4-96c6216139c4", slug: "old-town-barbers", name: "Old Town Barbers", category: "barbershop", distance: "1.5 km", nextSlot: { prefix: "Heute ", bold: "17:15" }, freeToday: true,
     photoUrl: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&h=450&fit=crop&q=80" },
-  { id: "9f078a3f-071d-4797-a0cf-e5ab6f3c1d2f", slug: "the-fade-factory", name: "The Fade Factory", rating: 4.86, category: "barbershop", distance: "1.8 km", nextSlot: { prefix: "Heute ", bold: "18:00" }, freeToday: true,
+  { id: "9f078a3f-071d-4797-a0cf-e5ab6f3c1d2f", slug: "the-fade-factory", name: "The Fade Factory", category: "barbershop", distance: "1.8 km", nextSlot: { prefix: "Heute ", bold: "18:00" }, freeToday: true,
     photoUrl: "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&h=450&fit=crop&q=80" },
   // V2-D60.1: expanded 6 → 15 cards per LIVE_TRUTH §17.4 update.
-  { id: "d46e4ae5-8410-4fc9-a2da-43c978bc9477", slug: "salon-lumiere", name: "Salon Lumière", rating: 4.85, category: "coiffeur", distance: "2.0 km", nextSlot: { prefix: "Heute ", bold: "16:30" }, freeToday: true,
+  { id: "d46e4ae5-8410-4fc9-a2da-43c978bc9477", slug: "salon-lumiere", name: "Salon Lumière", category: "coiffeur", distance: "2.0 km", nextSlot: { prefix: "Heute ", bold: "16:30" }, freeToday: true,
     photoUrl: "https://images.unsplash.com/photo-1559599101-f09722fb4948?w=600&h=450&fit=crop&q=80" },
-  { id: "08760993-cdfd-4cc7-ac69-6a2bf8aed383", slug: "pink-petal-nails", name: "Pink Petal Nails", rating: 4.88, category: "nails", distance: "2.2 km", nextSlot: { prefix: "Heute ", bold: "17:30" }, freeToday: true,
+  { id: "08760993-cdfd-4cc7-ac69-6a2bf8aed383", slug: "pink-petal-nails", name: "Pink Petal Nails", category: "nails", distance: "2.2 km", nextSlot: { prefix: "Heute ", bold: "17:30" }, freeToday: true,
     photoUrl: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" },
-  { id: "1c217cdc-f342-4790-91ec-c87709468666", slug: "velvet-face", name: "Velvet Face", rating: 4.81, category: "coiffeur", distance: "2.4 km", nextSlot: { bold: "Morgen 09:00" },
+  { id: "1c217cdc-f342-4790-91ec-c87709468666", slug: "velvet-face", name: "Velvet Face", category: "coiffeur", distance: "2.4 km", nextSlot: { bold: "Morgen 09:00" },
     photoUrl: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=450&fit=crop&q=80" },
-  { id: "f4f9bdc6-96e9-4bbb-819d-3a2931897e57", slug: "haarsalon-margot", name: "Haarsalon Margot", rating: 4.78, category: "coiffeur", distance: "2.6 km", nextSlot: { prefix: "Nächster ", bold: "Mi. 14:00" },
+  { id: "f4f9bdc6-96e9-4bbb-819d-3a2931897e57", slug: "haarsalon-margot", name: "Haarsalon Margot", category: "coiffeur", distance: "2.6 km", nextSlot: { prefix: "Nächster ", bold: "Mi. 14:00" },
     photoUrl: "https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=600&h=450&fit=crop&q=80" },
-  { id: "6aedd8a4-30fd-4390-949c-4d1fa06e1ff1", slug: "wax-and-glow-basel", name: "Wax & Glow Basel", rating: 4.83, category: "spa", distance: "3.0 km", nextSlot: { prefix: "Nächster ", bold: "Fr. 10:00" },
+  { id: "6aedd8a4-30fd-4390-949c-4d1fa06e1ff1", slug: "wax-and-glow-basel", name: "Wax & Glow Basel", category: "spa", distance: "3.0 km", nextSlot: { prefix: "Nächster ", bold: "Fr. 10:00" },
     photoUrl: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=450&fit=crop&q=80" },
-  { id: "9956212b-166f-4a51-a880-6e99e329267a", slug: "rouge-studio", name: "Rouge Studio", rating: 4.74, category: "coiffeur", distance: "3.2 km", nextSlot: { bold: "Heute 17:00" }, freeToday: true,
+  { id: "9956212b-166f-4a51-a880-6e99e329267a", slug: "rouge-studio", name: "Rouge Studio", category: "coiffeur", distance: "3.2 km", nextSlot: { bold: "Heute 17:00" }, freeToday: true,
     photoUrl: "https://images.unsplash.com/photo-1600948836101-f9ffda59d250?w=600&h=450&fit=crop&q=80" },
-  { id: "ff2abacd-661a-4e7a-9c00-2dda7ce29133", slug: "studio-schnittkunst", name: "Studio Schnittkunst", rating: 4.71, category: "coiffeur", distance: "3.5 km", nextSlot: { prefix: "Nächster ", bold: "Sa. 11:30" },
+  { id: "ff2abacd-661a-4e7a-9c00-2dda7ce29133", slug: "studio-schnittkunst", name: "Studio Schnittkunst", category: "coiffeur", distance: "3.5 km", nextSlot: { prefix: "Nächster ", bold: "Sa. 11:30" },
     photoUrl: "https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=600&h=450&fit=crop&q=80" },
-  { id: "63e581dd-2b0e-4910-b4a5-543bc1e157f6", slug: "blade-and-stone", name: "Blade & Stone", rating: 4.79, category: "barbershop", distance: "3.8 km", nextSlot: { prefix: "Heute ", bold: "19:00" }, freeToday: true,
+  { id: "63e581dd-2b0e-4910-b4a5-543bc1e157f6", slug: "blade-and-stone", name: "Blade & Stone", category: "barbershop", distance: "3.8 km", nextSlot: { prefix: "Heute ", bold: "19:00" }, freeToday: true,
     photoUrl: "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=600&h=450&fit=crop&q=80" },
-  { id: "dd4a3e35-8b9c-4ee6-a52e-1fb71ce04f89", slug: "atelier-haarwerk", name: "Atelier Haarwerk", rating: 4.64, category: "coiffeur", distance: "4.1 km", nextSlot: { prefix: "Nächster ", bold: "Di. 13:00" },
+  { id: "dd4a3e35-8b9c-4ee6-a52e-1fb71ce04f89", slug: "atelier-haarwerk", name: "Atelier Haarwerk", category: "coiffeur", distance: "4.1 km", nextSlot: { prefix: "Nächster ", bold: "Di. 13:00" },
     photoUrl: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=450&fit=crop&q=80" },
 ];
 
-// V2-D60-cards-7: default price per category for demo (real API will provide).
-const CATEGORY_DEFAULT_PRICE: Record<NearbyEntry["category"], number> = {
-  coiffeur: 80, barbershop: 50, nails: 45, spa: 95,
-};
-
-// V2-D60-cards-8: Basel street addresses for Row 2 meta.
-const NEARBY_ADDRESSES = [
-  "Steinenvorstadt 18", "Spalenberg 5", "Rheingasse 14", "Marktplatz 9",
-  "Bahnhofstrasse 33", "Aeschenvorstadt 22", "Margarethenstrasse 12", "Freie Strasse 67",
-  "Pfeffingerstrasse 8", "Gerbergasse 28", "Petersgraben 19", "Kornhausgasse 14",
-  "St. Alban-Vorstadt 25", "Klosterberg 6", "Bundesgasse 41",
-];
+// 2026-07-13: CATEGORY_DEFAULT_PRICE (fabricated per-category price) +
+// NEARBY_ADDRESSES (rotating fake street address fallbacks) removed. Row 1
+// rating and Row 3 now render the REAL per-salon rating + min active price +
+// postal code/city from salonCardData.ts, omitting the field rather than
+// showing an invented value when it's missing.
 
 // V2-D60-cards-7: convert legacy nextSlot {prefix, bold, suffix} into a clean
 // single label. Strips "Nächster " prefix; keeps the bold date/time chunk.
@@ -136,9 +132,12 @@ function resolveAvailability(
 
 export default function Nearby({
   prefsOverride,
+  salonData = {},
 }: {
-  /** Test seam — bypasses the live fetch when provided (dev previews). */
+  /** Test seam. Bypasses the live fetch when provided (dev previews). */
   prefsOverride?: CustomerPrefs | null;
+  /** Real rating/address/price per salon id, batch-fetched server-side in page.tsx. */
+  salonData?: SalonCardDataMap;
 } = {}) {
   const locale = useLocale();
   const fetched = useCustomerPrefs();
@@ -185,23 +184,28 @@ export default function Nearby({
           </span>
         </a>
         <ScrollRow ref={scrollRef}>
-        {entries.map((e, idx) => (
-          <SalonCard
-            key={`${e.slug}-${idx}`}
-            slug={e.slug}
-            salonId={e.id}
-            name={e.name}
-            rating={e.rating}
-            category={e.category}
-            photoUrl={e.photoUrl}
-            isSaved={e.isSaved}
-            variant="availability"
-            priceFromCHF={CATEGORY_DEFAULT_PRICE[e.category]}
-            nextSlotLabel={formatNextSlot(e)}
-            address={NEARBY_ADDRESSES[idx % NEARBY_ADDRESSES.length]}
-            city="Basel"
-          />
-        ))}
+        {entries.map((e, idx) => {
+          const real = salonData[e.id];
+          return (
+            <SalonCard
+              key={`${e.slug}-${idx}`}
+              slug={e.slug}
+              salonId={e.id}
+              name={e.name}
+              rating={real?.rating ?? null}
+              reviewCount={real?.reviewCount ?? null}
+              category={e.category}
+              photoUrl={e.photoUrl}
+              isSaved={e.isSaved}
+              variant="availability"
+              nextSlotLabel={formatNextSlot(e)}
+              citySelected={false}
+              postalCode={real?.postalCode ?? undefined}
+              city={real?.city ?? undefined}
+              priceFromCHF={real?.priceFromCHF ?? null}
+            />
+          );
+        })}
         </ScrollRow>
       </SectionFrame>
     </Section>

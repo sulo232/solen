@@ -5,6 +5,10 @@ import { Section, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader"
 import { SalonCard, type SalonCardProps } from "./SalonCard";
 import { useCustomerPrefs, sortByCategoryPicks, type CustomerPrefs } from "./useCustomerPrefs";
 import { useLocale } from "next-intl";
+// 2026-07-13: real rating/address/price data for the DEMO_SALONS ids, batch-
+// fetched server-side in page.tsx (type-only import, the Supabase fetch code
+// never reaches this client bundle). Same pattern as Nearby.tsx.
+import type { SalonCardDataMap } from "./salonCardData";
 
 /**
  * Recently Viewed — V3 (LIVE_TRUTH §Q51.0 + V2-D34 cards).
@@ -49,14 +53,14 @@ const STORAGE_KEY = "solen.recently-viewed";
 // localStorage "recently viewed" path may omit `id` (older writes) — those
 // cards just keep a local-only heart, which is fine.
 const DEMO_SALONS: RecentEntry[] = [
-  { id: "0ed041f9-149b-4241-a09e-d41351be7097", slug: "muse-beauty-studio", name: "Muse Beauty Studio", rating: 4.93, category: "coiffeur", availabilityRow: "14:30, 15:00, 16:30",
+  { id: "0ed041f9-149b-4241-a09e-d41351be7097", slug: "muse-beauty-studio", name: "Muse Beauty Studio", category: "coiffeur", availabilityRow: "14:30, 15:00, 16:30",
     photoUrl: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=450&fit=crop&q=80" },
   // V3-D128 (2026-05-24): "In 25 Min frei" → "Heute 16:00" per user — Solen books by TIME.
-  { id: "599bb853-c713-4dae-a3c4-96c6216139c4", slug: "old-town-barbers", name: "Old Town Barbers", rating: 4.91, category: "barbershop", availabilityRow: "Heute 16:00",
+  { id: "599bb853-c713-4dae-a3c4-96c6216139c4", slug: "old-town-barbers", name: "Old Town Barbers", category: "barbershop", availabilityRow: "Heute 16:00",
     photoUrl: "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&h=450&fit=crop&q=80" },
-  { id: "ca037638-362a-491b-ada2-238e20d9d4a9", slug: "nail-studio-bliss", name: "Nail Studio Bliss", rating: 4.95, category: "nails", availabilityRow: "Heute 17:00, 18:30",
+  { id: "ca037638-362a-491b-ada2-238e20d9d4a9", slug: "nail-studio-bliss", name: "Nail Studio Bliss", category: "nails", availabilityRow: "Heute 17:00, 18:30",
     photoUrl: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" },
-  { id: "40c96be2-198c-471e-82d8-3ada6f7de0de", slug: "smooth-skin-studio", name: "Smooth Skin Studio", rating: 4.90, category: "spa", availabilityRow: "Nächster Termin Mo. 09:00",
+  { id: "40c96be2-198c-471e-82d8-3ada6f7de0de", slug: "smooth-skin-studio", name: "Smooth Skin Studio", category: "spa", availabilityRow: "Nächster Termin Mo. 09:00",
     photoUrl: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=600&h=450&fit=crop&q=80" },
 ];
 
@@ -66,7 +70,6 @@ interface RecentEntry {
   id?: string;
   slug: string;
   name: string;
-  rating: number | null;
   category: SalonCardProps["category"];
   photoUrl?: string;
   /** Cached availability string at time of write — refreshed on next salon visit. */
@@ -93,13 +96,13 @@ function pickOneSlot(row?: string): string {
   return r;
 }
 
-const CAT_PRICE: Record<SalonCardProps["category"], number> = {
-  coiffeur: 80, barbershop: 50, nails: 45, spa: 95,
-};
-
-// V2-D60-cards-8: addresses for Row 2 meta.
-const RV_ADDRESSES = ["Aeschenvorstadt 55", "Klybeckstrasse 12", "Spalenberg 23", "Bahnhofstrasse 14"];
-const RV_CITIES    = ["Basel",              "Basel",             "Basel",         "Zürich"];
+// 2026-07-13: CAT_PRICE (fabricated per-category price) + RV_ADDRESSES/
+// RV_CITIES (rotating fake street address fallbacks) removed. Row 1 rating
+// and Row 3 now render the REAL per-salon rating + min active price +
+// postal code/city from salonCardData.ts for DEMO_SALONS entries, omitting
+// the field rather than showing an invented value for real localStorage
+// entries the server can't pre-fetch (their salon ids aren't known until
+// client hydration).
 
 // V2-D67-fu13 (2026-05-16): added schema-shape filter. Older versions of the
 // app wrote `solen.recently-viewed` entries with different fields (e.g. no
@@ -134,9 +137,14 @@ function readStorage(): RecentEntry[] {
 
 export default function RecentlyViewed({
   prefsOverride,
+  salonData = {},
 }: {
-  /** Test seam — bypasses the live fetch when provided (dev previews). */
+  /** Test seam. Bypasses the live fetch when provided (dev previews). */
   prefsOverride?: CustomerPrefs | null;
+  /** Real rating/address/price for DEMO_SALONS ids, batch-fetched server-side
+   *  in page.tsx. Real localStorage entries (unknown id at server render time)
+   *  find no match here, so their rating/price/address are simply omitted. */
+  salonData?: SalonCardDataMap;
 } = {}) {
   const fetched = useCustomerPrefs();
   const prefs = prefsOverride !== undefined ? prefsOverride : fetched;
@@ -179,22 +187,26 @@ export default function RecentlyViewed({
           scrollRef={scrollRef}
         />
         <ScrollRow ref={scrollRef}>
-          {list.map((s, idx) => (
-            <SalonCard
-              key={s.slug}
-              slug={s.slug}
-              salonId={s.id}
-              name={s.name}
-              rating={s.rating}
-              category={s.category}
-              photoUrl={s.photoUrl}
-              variant="availability"
-              priceFromCHF={CAT_PRICE[s.category]}
-              nextSlotLabel={pickOneSlot(s.availabilityRow)}
-              address={RV_ADDRESSES[idx % RV_ADDRESSES.length]}
-              city={RV_CITIES[idx % RV_CITIES.length]}
-            />
-          ))}
+          {list.map((s) => {
+            const real = s.id ? salonData[s.id] : undefined;
+            return (
+              <SalonCard
+                key={s.slug}
+                slug={s.slug}
+                salonId={s.id}
+                name={s.name}
+                rating={real?.rating ?? null}
+                category={s.category}
+                photoUrl={s.photoUrl}
+                variant="availability"
+                priceFromCHF={real?.priceFromCHF ?? null}
+                nextSlotLabel={pickOneSlot(s.availabilityRow)}
+                citySelected={false}
+                postalCode={real?.postalCode ?? undefined}
+                city={real?.city ?? undefined}
+              />
+            );
+          })}
         </ScrollRow>
       </SectionFrame>
     </Section>
