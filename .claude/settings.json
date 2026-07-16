@@ -31,6 +31,10 @@
      {
       "type": "command",
       "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/user-prompt-binary-triggers.sh"
+     },
+     {
+      "type": "command",
+      "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/backend-doc-pointer.py"
      }
     ]
    }
@@ -73,6 +77,18 @@
      {
       "type": "command",
       "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/no-black-selected-gate.py"
+     },
+     {
+      "type": "command",
+      "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/backend-doc-pointer.py"
+     },
+     {
+      "type": "command",
+      "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/no-getsession-authz-gate.py"
+     },
+     {
+      "type": "command",
+      "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/ai-prompt-untrusted-guard.py"
      }
     ]
    },
@@ -106,6 +122,18 @@
      {
       "type": "command",
       "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/no-black-selected-gate.py"
+     },
+     {
+      "type": "command",
+      "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/backend-doc-pointer.py"
+     },
+     {
+      "type": "command",
+      "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/no-getsession-authz-gate.py"
+     },
+     {
+      "type": "command",
+      "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/ai-prompt-untrusted-guard.py"
      }
     ]
    },
@@ -119,6 +147,30 @@
      {
       "type": "command",
       "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/no-black-selected-gate.py"
+     },
+     {
+      "type": "command",
+      "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/backend-doc-pointer.py"
+     },
+     {
+      "type": "command",
+      "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/no-getsession-authz-gate.py"
+     },
+     {
+      "type": "command",
+      "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/ai-prompt-untrusted-guard.py"
+     },
+     {
+      "type": "command",
+      "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/pre-edit-removed-check.sh"
+     },
+     {
+      "type": "command",
+      "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/pre-component-edit-pixel-spec.sh"
+     },
+     {
+      "type": "command",
+      "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/pre-edit-drift-gate.sh"
      }
     ]
    },
@@ -132,68 +184,5 @@
     ]
    }
   ]
- },
- "UserPromptSubmit": [
-  {
-   "hooks": [
-    {
-     "type": "command",
-     "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/backend-doc-pointer.py"
-    }
-   ]
-  }
- ],
- "PreToolUse": [
-  {
-   "matcher": "Edit",
-   "hooks": [
-    {
-     "type": "command",
-     "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/backend-doc-pointer.py"
-    },
-    {
-     "type": "command",
-     "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/no-getsession-authz-gate.py"
-    },
-    {
-     "type": "command",
-     "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/ai-prompt-untrusted-guard.py"
-    }
-   ]
-  },
-  {
-   "matcher": "Write",
-   "hooks": [
-    {
-     "type": "command",
-     "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/backend-doc-pointer.py"
-    },
-    {
-     "type": "command",
-     "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/no-getsession-authz-gate.py"
-    },
-    {
-     "type": "command",
-     "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/ai-prompt-untrusted-guard.py"
-    }
-   ]
-  },
-  {
-   "matcher": "MultiEdit",
-   "hooks": [
-    {
-     "type": "command",
-     "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/backend-doc-pointer.py"
-    },
-    {
-     "type": "command",
-     "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/no-getsession-authz-gate.py"
-    },
-    {
-     "type": "command",
-     "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/ai-prompt-untrusted-guard.py"
-    }
-   ]
-  }
- ]
+ }
 }
