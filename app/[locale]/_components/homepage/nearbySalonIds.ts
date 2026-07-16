@@ -1,16 +1,16 @@
 // exists-check: net-new vs supabase/migrations/077_geospatial_search.sql's
 // get_nearby_salon_ids() RPC (that's a real PostGIS proximity query, unrelated
-// here) and vs Nearby.tsx's own DEMO array (that stays "use client" and keeps
-// its full entries incl. distance/next-slot/photo). This file holds ONLY the
-// id list, extracted so page.tsx (a Server Component) can batch-fetch real
-// card fields for them without crossing the RSC client boundary: Nearby.tsx
-// has "use client" at the top, so a Server Component can't import a plain
-// value out of it (only pass props into it).
+// here). This file holds the curated id list for the homepage "In der Nähe"
+// row: a plain value module (no server-only imports) so BOTH page.tsx (a
+// Server Component, for the batch salonCardData fetch) and Nearby.tsx
+// ("use client") can import it directly.
 //
 // live-data-ok: consumed by salonCardData.ts to fetch real rating/address/
 // price for these salons, no fabricated data added by this file itself.
 //
-// Keep this list in sync with the `id` fields of Nearby.tsx's DEMO array.
+// 2026-07-16: this list is now the SOURCE OF TRUTH for which salons the
+// Nearby row shows (Nearby.tsx maps it through live salonData, no more demo
+// array to keep it in sync with). Add/remove a salon here to change the row.
 export const NEARBY_SALON_IDS: string[] = [
   "0ed041f9-149b-4241-a09e-d41351be7097",
   "e34402f4-2986-4f63-8487-b09645395c65",

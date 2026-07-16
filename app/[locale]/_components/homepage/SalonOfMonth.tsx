@@ -5,9 +5,9 @@
 // no backend), not reused here, this section is real-data-only.
 import { getTranslations } from "next-intl/server";
 import { getCurrentSalonOfMonth } from "@/lib/salon-of-month";
-import { SALON_CATEGORY_SLUGS } from "@/lib/validations";
 import { Section, SectionFrame, SectionTitle, ScrollRow } from "./SectionHeader";
-import { SalonCard, type SalonCardProps } from "./SalonCard";
+import { SalonCard } from "./SalonCard";
+import { safeCategory } from "../salon/_shared";
 
 /**
  * Salon of the Month , server component, real data only.
@@ -23,15 +23,9 @@ import { SalonCard, type SalonCardProps } from "./SalonCard";
  *
  * Single card, same ScrollRow + SalonCard grammar as every other homepage
  * feed (Nearby, ForYouSalonRows) , no bespoke sizing, SalonCard already
- * owns its own responsive width per §16.2.
+ * owns its own responsive width per §16.2. The categories->card-category
+ * bridge (safeCategory) is shared with salonCardData.ts, see ../salon/_shared.ts.
  */
-function safeCategory(categories: string[]): SalonCardProps["category"] {
-  const first = categories[0]?.toLowerCase();
-  return (SALON_CATEGORY_SLUGS.includes(first ?? "")
-    ? first
-    : "coiffeur") as SalonCardProps["category"];
-}
-
 export default async function SalonOfMonth({ locale }: { locale: string }) {
   const winner = await getCurrentSalonOfMonth();
   if (!winner) return null;

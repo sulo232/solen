@@ -26,12 +26,12 @@ import MobileCategoriesRow from "./_components/homepage/MobileCategoriesRow";
 // categories the user picked during onboarding (renders null when logged-out).
 import ForYouSalonRows from "./_components/homepage/ForYouSalonRows";
 // 2026-07-13: real-data wiring for the converged SalonCard's Row 3 (address
-// and price) and Row 1 (rating). The demo id lists feed ONE server batch
-// query, no per-salon round-trips, no client-side fetch waterfall.
+// and price) and Row 1 (rating). The curated id lists (FORYOU_SALONS,
+// NEARBY_SALON_IDS) plus the live top-rated ids (getTopSalonIds) feed ONE
+// server batch query, no per-salon round-trips, no client-side fetch waterfall.
 import { FORYOU_SALONS } from "./_components/homepage/forYouSalons";
 import { NEARBY_SALON_IDS } from "./_components/homepage/nearbySalonIds";
-import { RECENTLY_VIEWED_DEMO_IDS } from "./_components/homepage/recentlyViewedIds";
-import { getSalonCardDataMap } from "./_components/homepage/salonCardData";
+import { getSalonCardDataMap, getTopSalonIds, getNearbyTeaserCount } from "./_components/homepage/salonCardData";
 // Salon of the Month (2026-07-13): real editorial pick from the admin picker
 // (dashboard/salon-of-month-admin -> salon_of_month_winners table), gated on
 // the salon_of_month feature_flags toggle. Server component, renders null
@@ -166,13 +166,20 @@ export default async function Page({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  // 2026-07-13: one combined batch fetch (2 bulk Supabase queries inside
+  // topSalonIds (RecentlyViewed's "Top auf Solen" fallback) and nearbyCount
+  // (the Nearby map-teaser count) are independent live fetches, run in
+  // parallel before the id union below needs topSalonIds.
+  const [topSalonIds, nearbyCount] = await Promise.all([
+    getTopSalonIds(4),
+    getNearbyTeaserCount(),
+  ]);
+  // One combined batch fetch (2 bulk Supabase queries inside
   // getSalonCardDataMap, not one per salon) for every real salon id the
   // For-You + Nearby + Recently-Viewed homepage rows reference, deduped internally.
   const salonCardData = await getSalonCardDataMap([
     ...Object.values(FORYOU_SALONS).flatMap((list) => list.map((s) => s.id)),
     ...NEARBY_SALON_IDS,
-    ...RECENTLY_VIEWED_DEMO_IDS,
+    ...topSalonIds,
   ]);
   return (
     <div className="relative overflow-hidden bg-white">
@@ -193,8 +200,8 @@ export default async function Page({
         <MobileCategoriesRow />
         <SalonOfMonth locale={locale} />
         <ForYouSalonRows salonData={salonCardData} />
-        <RecentlyViewed salonData={salonCardData} />
-        <Nearby salonData={salonCardData} />
+        <RecentlyViewed salonData={salonCardData} topSalonIds={topSalonIds} />
+        <Nearby salonData={salonCardData} nearbyCount={nearbyCount} />
         <WalkInBand />
         {/* FeaturedStylists pulled (V3-D436) — its cards linked to a
             non-existent /stylist/[slug] route and its demo data has no salon

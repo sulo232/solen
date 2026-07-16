@@ -6,6 +6,8 @@
  * orchestrator becoming a re-export bottleneck.
  */
 
+import { SALON_CATEGORY_SLUGS } from "@/lib/validations";
+
 export interface Service {
   id: string;
   name_de: string;
@@ -163,6 +165,24 @@ export function postalToCity(postalCode: string | null | undefined): string {
   if (!postalCode) return "der Schweiz";
   const first = postalCode.charAt(0);
   return CH_POSTAL_CITY_PREFIX[first] ?? "der Schweiz";
+}
+
+export type SalonCardCategory = "coiffeur" | "barbershop" | "nails" | "spa";
+
+/**
+ * Bridges a salon's multi-value `categories` DB column to the single
+ * category SalonCard needs for its colorway/label. Falls back to "coiffeur"
+ * when the first entry is missing or outside the 4 card categories (e.g. a
+ * legacy/off-taxonomy value) rather than surfacing an unsupported category
+ * to the card. Single shared implementation (moved out of SalonOfMonth.tsx,
+ * 2026-07-16) so every caller that renders SalonCard from a live
+ * `categories` column bridges it the same way.
+ */
+export function safeCategory(categories: string[] | null | undefined): SalonCardCategory {
+  const first = categories?.[0]?.toLowerCase();
+  return (SALON_CATEGORY_SLUGS.includes(first ?? "")
+    ? first
+    : "coiffeur") as SalonCardCategory;
 }
 
 /**

@@ -1,14 +1,16 @@
 "use client";
 
-// ForYouSalonRows (V3-D348) — the payoff of homepage curation. For each category
+// ForYouSalonRows (V3-D348) - the payoff of homepage curation. For each category
 // the user picked during onboarding, render a "Weil du <X> magst" row of salon
 // cards. Client-side (reads prefs after hydration) so the homepage stays static.
+// Every card field beyond identity (id/slug/name/category) comes live from
+// salonData (getSalonCardDataMap in page.tsx) - a salon missing from that map
+// renders with those fields simply omitted, never an invented fallback.
 //
-// Interest signals shape the row:
-//   - "top_rated" → sort by rating desc + a "Top bewertet" badge on the lead card
-//   - "deals"     → a −% discount badge on one card (urgency/deal surface)
+// Interest signal "top_rated" sorts by the REAL fetched rating desc (missing
+// rating sorts last) and adds a "Top bewertet" badge on the lead card.
 //
-// Renders nothing for logged-out / no-picks users → homepage is unchanged for them.
+// Renders nothing for logged-out / no-picks users, homepage is unchanged for them.
 
 import * as React from "react";
 import { useLocale } from "next-intl";
@@ -26,25 +28,28 @@ const MAX_ROWS = 2; // don't flood the feed — top 2 picks get a "Weil du X mag
 function ForYouRow({
   category,
   locale,
-  wantsDeals,
   wantsTopRated,
   salonData,
 }: {
   category: ForYouCategory;
   locale: string;
-  wantsDeals: boolean;
   wantsTopRated: boolean;
   salonData: SalonCardDataMap;
 }) {
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const salons = [...FORYOU_SALONS[category]];
-  // Sort by the REAL fetched rating when known (falls back to the demo rating
-  // only as a defensive tiebreak, e.g. if the fetch failed for that salon) so
-  // the "Top bewertet" badge below lands on the actually-top-rated card.
+  // Sort by the REAL fetched rating only, missing rating sorts last, so the
+  // "Top bewertet" badge below always lands on the actually-top-rated card
+  // (never an invented tiebreak value).
   if (wantsTopRated) {
-    salons.sort(
-      (a, b) => (salonData[b.id]?.rating ?? b.rating) - (salonData[a.id]?.rating ?? a.rating),
-    );
+    salons.sort((a, b) => {
+      const ra = salonData[a.id]?.rating;
+      const rb = salonData[b.id]?.rating;
+      if (ra == null && rb == null) return 0;
+      if (ra == null) return 1;
+      if (rb == null) return -1;
+      return rb - ra;
+    });
   }
   if (salons.length === 0) return null;
 
@@ -69,11 +74,12 @@ function ForYouRow({
                 rating={real?.rating ?? null}
                 reviewCount={real?.reviewCount ?? null}
                 category={s.category}
-                photoUrl={s.photoUrl}
+                photoUrl={real?.photoUrl ?? undefined}
                 variant="service"
-                priceFromCHF={s.priceFromCHF}
-                address={s.address}
-                city="Basel"
+                priceFromCHF={real?.priceFromCHF ?? null}
+                citySelected={false}
+                postalCode={real?.postalCode ?? undefined}
+                city={real?.city ?? undefined}
                 curation={wantsTopRated && i === 0 ? "top-bewertet" : null}
               />
             );
@@ -102,7 +108,6 @@ export function ForYouSalonRowsView({
     .slice(0, MAX_ROWS);
   if (picks.length === 0) return null;
 
-  const wantsDeals = prefs.interests.includes("deals");
   const wantsTopRated = prefs.interests.includes("top_rated");
 
   return (
@@ -112,7 +117,6 @@ export function ForYouSalonRowsView({
           key={cat}
           category={cat}
           locale={locale}
-          wantsDeals={wantsDeals}
           wantsTopRated={wantsTopRated}
           salonData={salonData}
         />

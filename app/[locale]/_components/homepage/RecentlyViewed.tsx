@@ -5,104 +5,46 @@ import { Section, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader"
 import { SalonCard, type SalonCardProps } from "./SalonCard";
 import { useCustomerPrefs, sortByCategoryPicks, type CustomerPrefs } from "./useCustomerPrefs";
 import { useLocale } from "next-intl";
-// 2026-07-13: real rating/address/price data for the DEMO_SALONS ids, batch-
-// fetched server-side in page.tsx (type-only import, the Supabase fetch code
-// never reaches this client bundle). Same pattern as Nearby.tsx.
+// 2026-07-13: real rating/address/price data batch-fetched server-side in
+// page.tsx (type-only import, the Supabase fetch code never reaches this
+// client bundle). Same pattern as Nearby.tsx.
 import type { SalonCardDataMap } from "./salonCardData";
 
 /**
- * Recently Viewed — V3 (LIVE_TRUTH §Q51.0 + V2-D34 cards).
+ * Recently Viewed - V3 (LIVE_TRUTH §Q51.0 + V2-D34 cards).
  *
- * Conditional section — only renders for returning users with ≥ 1 entry in
+ * Conditional section - only renders for returning users with >= 1 entry in
  * localStorage. localStorage key: `solen.recently-viewed`. Capped at last 5.
+ * The write happens at `/salon/[slug]` page mount.
  *
- * Each entry is the minimal SalonCard data needed to render:
- *   { slug, name, rating, photoUrl, category, ...availability }
+ * Each entry is the minimal SalonCard data needed to render (slug, name,
+ * category, photoUrl); rating/review count/price/postal code/city are looked
+ * up live from `salonData` (batch-fetched server-side in page.tsx) when the
+ * entry's id matches.
  *
- * Persistence rules (the `recently-viewed` localStorage write happens at
- * `/salon/[slug]` page mount — Phase 2 work; for now, this section reads
- * what's there OR shows demo data in dev to validate the visual.):
- *   - Push to front on visit
- *   - Dedupe by slug
- *   - Cap at 5 most recent
- *   - Older entries fall off
- *
- * No backend dep — pure client state. Section hides itself when list is empty
- * (returns null pre-mount + post-mount when storage is empty).
+ * No history yet (first-time visitors) falls back to "Top auf Solen": real
+ * top-rated salons (`topSalonIds` prop, getTopSalonIds() in
+ * salonCardData.ts), mapped through the same salonData map. An id with no
+ * matching (or incomplete) salonData entry is skipped, never shown with an
+ * invented name/photo. Section hides entirely when there's no history AND
+ * the fallback fetch also came back empty.
  *
  * NOT in this commit:
- *   - Real `/salon/[slug]` route doesn't exist yet (Phase 2)
  *   - "Im Profil ansehen" link target `/profile/recently-viewed` doesn't exist
- *     yet (Phase 3) — link is rendered but routes 404 for now
+ *     yet (Phase 3) - link is rendered but routes 404 for now
  */
 
 const STORAGE_KEY = "solen.recently-viewed";
 
-/**
- * Demo data for development — only shows if localStorage is empty AND the
- * env is NOT production. Lets the section render visually during the homepage
- * port without requiring real visit history. Removed once /salon/[slug] writes
- * real entries.
- */
-// Inline type so demo entries match RecentEntry exactly (string availabilityRow,
-// the only kind that round-trips through localStorage).
-// V2-D60-photos: Unsplash imagery; same slug reuses same photo URL across sections.
-// 2026-06-05: the "Top auf Solen" fallback now points at REAL seeded salons
-// (Basel) so every card resolves to a live PDP instead of a 404. Curated
-// availability/photo styling kept; identity (id+slug+name) is real. The real
-// localStorage "recently viewed" path may omit `id` (older writes) — those
-// cards just keep a local-only heart, which is fine.
-const DEMO_SALONS: RecentEntry[] = [
-  { id: "0ed041f9-149b-4241-a09e-d41351be7097", slug: "muse-beauty-studio", name: "Muse Beauty Studio", category: "coiffeur", availabilityRow: "14:30, 15:00, 16:30",
-    photoUrl: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=450&fit=crop&q=80" },
-  // V3-D128 (2026-05-24): "In 25 Min frei" → "Heute 16:00" per user — Solen books by TIME.
-  { id: "599bb853-c713-4dae-a3c4-96c6216139c4", slug: "old-town-barbers", name: "Old Town Barbers", category: "barbershop", availabilityRow: "Heute 16:00",
-    photoUrl: "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&h=450&fit=crop&q=80" },
-  { id: "ca037638-362a-491b-ada2-238e20d9d4a9", slug: "nail-studio-bliss", name: "Nail Studio Bliss", category: "nails", availabilityRow: "Heute 17:00, 18:30",
-    photoUrl: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" },
-  { id: "40c96be2-198c-471e-82d8-3ada6f7de0de", slug: "smooth-skin-studio", name: "Smooth Skin Studio", category: "spa", availabilityRow: "Nächster Termin Mo. 09:00",
-    photoUrl: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=600&h=450&fit=crop&q=80" },
-];
-
 interface RecentEntry {
-  /** Real salon UUID — threaded to SalonCard → HeartButton so the save persists.
+  /** Real salon UUID, threaded to SalonCard -> HeartButton so the save persists.
    *  Optional: older localStorage entries predate this field (heart stays local). */
   id?: string;
   slug: string;
   name: string;
   category: SalonCardProps["category"];
   photoUrl?: string;
-  /** Cached availability string at time of write — refreshed on next salon visit. */
-  availabilityRow?: string;
 }
-
-// V2-D60-cards-7: extract ONE time from a comma list / phrase per "only one time" rule.
-// V2-D60-cards-9: strip "Heute" prefix from today entries (green pill carries that signal).
-// "14:30, 15:00, 16:30" → "14:30"  ·  "Heute 17:00, 18:30" → "17:00"
-// "Nächster Termin Mo. 09:00" → "Mo. 09:00"  ·  "In 25 Min frei" → kept as-is
-function pickOneSlot(row?: string): string {
-  if (!row) return "—";
-  const r = row.trim();
-  // 1. "In N Min frei" → keep as today indicator (no clean number alternative)
-  if (/^In\s+\d+\s+Min/i.test(r)) return r;
-  // 2. Comma-list of times like "14:30, 15:00, 16:30" → first time only
-  const firstTimeMatch = r.match(/(\d{1,2}:\d{2})/);
-  if (firstTimeMatch && /^\d/.test(r)) return firstTimeMatch[1];
-  // 3. "Heute 17:00, 18:30" → "17:00" (strip Heute)
-  if (r.startsWith("Heute") && firstTimeMatch) return firstTimeMatch[1];
-  // 4. "Nächster Termin Mo. 09:00" → "Mo. 09:00" (keep day prefix for non-today)
-  const dayTimeMatch = r.match(/([A-Z][a-z]{1,3}\.\s+\d{1,2}:\d{2})/);
-  if (dayTimeMatch) return dayTimeMatch[1];
-  return r;
-}
-
-// 2026-07-13: CAT_PRICE (fabricated per-category price) + RV_ADDRESSES/
-// RV_CITIES (rotating fake street address fallbacks) removed. Row 1 rating
-// and Row 3 now render the REAL per-salon rating + min active price +
-// postal code/city from salonCardData.ts for DEMO_SALONS entries, omitting
-// the field rather than showing an invented value for real localStorage
-// entries the server can't pre-fetch (their salon ids aren't known until
-// client hydration).
 
 // V2-D67-fu13 (2026-05-16): added schema-shape filter. Older versions of the
 // app wrote `solen.recently-viewed` entries with different fields (e.g. no
@@ -138,13 +80,18 @@ function readStorage(): RecentEntry[] {
 export default function RecentlyViewed({
   prefsOverride,
   salonData = {},
+  topSalonIds = [],
 }: {
   /** Test seam. Bypasses the live fetch when provided (dev previews). */
   prefsOverride?: CustomerPrefs | null;
-  /** Real rating/address/price for DEMO_SALONS ids, batch-fetched server-side
-   *  in page.tsx. Real localStorage entries (unknown id at server render time)
+  /** Real rating/address/price per salon id, batch-fetched server-side in
+   *  page.tsx. Real localStorage entries (unknown id at server render time)
    *  find no match here, so their rating/price/address are simply omitted. */
   salonData?: SalonCardDataMap;
+  /** Fallback "Top auf Solen" ids for first-time visitors with no view
+   *  history yet, real DB top-rated salons (getTopSalonIds in
+   *  salonCardData.ts), fetched server-side in page.tsx. */
+  topSalonIds?: string[];
 } = {}) {
   const fetched = useCustomerPrefs();
   const prefs = prefsOverride !== undefined ? prefsOverride : fetched;
@@ -161,17 +108,37 @@ export default function RecentlyViewed({
   // to "Top auf Solen" with curated top-rated salons.
   // Pre-mount: render fallback (no flash, no hydration mismatch)
   const hasHistory = entries !== null && entries.length > 0;
+  // Fallback: real top-rated salons, mapped through salonData. An id with no
+  // matching (or incomplete) entry is skipped, never shown with an invented
+  // name/photo.
+  const fallback: RecentEntry[] = topSalonIds
+    .map((id): RecentEntry | null => {
+      const real = salonData[id];
+      if (!real || !real.name || !real.slug || !real.category) return null;
+      return {
+        id,
+        slug: real.slug,
+        name: real.name,
+        category: real.category,
+        photoUrl: real.photoUrl ?? undefined,
+      };
+    })
+    .filter((e): e is RecentEntry => e !== null);
   // V3-D348: bend the curated "Top auf Solen" fallback toward the user's picks.
   // Real view history stays chronological (it's "recently viewed", not "for you").
   const list: RecentEntry[] = hasHistory
     ? entries
-    : sortByCategoryPicks(DEMO_SALONS, prefs?.categories ?? []);
+    : sortByCategoryPicks(fallback, prefs?.categories ?? []);
   const locale = useLocale();
   const title = hasHistory ? "Zuletzt angesehen" : "Top auf Solen";
-  // With real history → the dedicated /recently-viewed page (audit #9). The "Top auf Solen"
+  // With real history -> the dedicated /recently-viewed page (audit #9). The "Top auf Solen"
   // fallback has no history page, so it still points at search. Locale-prefixed (audit #17).
   const linkLabel = "Alle entdecken →";
   const linkHref = hasHistory ? `/${locale}/recently-viewed` : `/${locale}/search`;
+
+  // No history AND the fallback fetch also came back empty (e.g. it failed):
+  // hide the section rather than render an empty scroll row.
+  if (!hasHistory && fallback.length === 0) return null;
 
   return (
     // V3-D112 (2026-05-23): bg-s-peach REMOVED per user "remove ths color like
@@ -196,11 +163,11 @@ export default function RecentlyViewed({
                 salonId={s.id}
                 name={s.name}
                 rating={real?.rating ?? null}
+                reviewCount={real?.reviewCount ?? null}
                 category={s.category}
                 photoUrl={s.photoUrl}
                 variant="availability"
                 priceFromCHF={real?.priceFromCHF ?? null}
-                nextSlotLabel={pickOneSlot(s.availabilityRow)}
                 citySelected={false}
                 postalCode={real?.postalCode ?? undefined}
                 city={real?.city ?? undefined}

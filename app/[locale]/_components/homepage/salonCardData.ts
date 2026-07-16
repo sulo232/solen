@@ -28,9 +28,17 @@
 // the caller must omit that field rather than invent a value.
 
 import { createServerSupabaseClient } from "@/lib/supabase";
-import { postalToCity } from "../salon/_shared";
+import { postalToCity, safeCategory, type SalonCardCategory } from "../salon/_shared";
 
 export interface SalonCardData {
+  /** Salon name. Only null if the salon id wasn't found in the salons table. */
+  name: string | null;
+  /** Salon slug, for routing to /salon/[slug]. Same null contract as `name`. */
+  slug: string | null;
+  /** Bridged from the salons.categories array via safeCategory() (../salon/_shared.ts). */
+  category: SalonCardCategory | null;
+  /** Cover photo. Null when the salon has none, falls back to the category tile. */
+  photoUrl: string | null;
   rating: number | null;
   reviewCount: number | null;
   postalCode: string | null;
@@ -62,7 +70,7 @@ export async function getSalonCardDataMap(salonIds: string[]): Promise<SalonCard
     await Promise.all([
       supabase
         .from("salons")
-        .select("id, average_rating, review_count, postal_code, address, latitude, longitude")
+        .select("id, name, slug, categories, cover_photo_url, average_rating, review_count, postal_code, address, latitude, longitude")
         .in("id", uniqueIds),
       supabase
         .from("services")
@@ -88,6 +96,10 @@ export async function getSalonCardDataMap(salonIds: string[]): Promise<SalonCard
   for (const salon of salons ?? []) {
     const postalCode = (salon.postal_code as string | null) ?? null;
     map[salon.id as string] = {
+      name: (salon.name as string | null) ?? null,
+      slug: (salon.slug as string | null) ?? null,
+      category: safeCategory((salon.categories as string[] | null) ?? null),
+      photoUrl: (salon.cover_photo_url as string | null) ?? null,
       rating: (salon.average_rating as number | null) ?? null,
       reviewCount: (salon.review_count as number | null) ?? null,
       postalCode,
@@ -99,4 +111,51 @@ export async function getSalonCardDataMap(salonIds: string[]): Promise<SalonCard
     };
   }
   return map;
+}
+
+/**
+ * Top-rated salons for RecentlyViewed's "Top auf Solen" fallback (shown to
+ * first-time visitors with no view history yet). Real query: active salons
+ * with at least 8 reviews (a floor so a single 5-star review can't outrank
+ * an established salon), ordered by rating desc. Returns [] on any query
+ * error rather than throwing, so the fallback just renders nothing instead
+ * of crashing the homepage.
+ */
+export async function getTopSalonIds(limit: number): Promise<string[]> {
+  const supabase = await createServerSupabaseClient();
+  const { data, error } = await supabase
+    .from("salons")
+    .select("id")
+    .eq("is_active", true)
+    .gte("review_count", 8)
+    .order("average_rating", { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error("[salonCardData] getTopSalonIds fetch failed:", error);
+    return [];
+  }
+  return (data ?? []).map((row) => row.id as string);
+}
+
+/**
+ * Count of active salons with real coordinates, for the Nearby map-teaser
+ * label ("N Salons in der Nähe"). head/count query, no rows fetched. Null
+ * on error, so the caller renders the count-free "Karte öffnen" label
+ * instead of a fabricated number.
+ */
+export async function getNearbyTeaserCount(): Promise<number | null> {
+  const supabase = await createServerSupabaseClient();
+  const { count, error } = await supabase
+    .from("salons")
+    .select("id", { count: "exact", head: true })
+    .eq("is_active", true)
+    .not("latitude", "is", null)
+    .not("longitude", "is", null);
+
+  if (error) {
+    console.error("[salonCardData] getNearbyTeaserCount fetch failed:", error);
+    return null;
+  }
+  return count ?? null;
 }
