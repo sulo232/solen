@@ -154,7 +154,8 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             ref public/solen-coral.html:225-245, 847-865). Photo carousel state
             (allPhotos/photoIndex/scrollContainerRef) intentionally left orphan
             in case we restore opt-in photo support later. */}
-        <div className="relative w-full aspect-square overflow-hidden rounded-[16px] gpu">
+        {/* mockup-ok: CARD_REDESIGN_2026-07-13 (C1, approved card-redesign.html #c11): aspect-square -> aspect-[5/4] */}
+        <div className="relative w-full aspect-[5/4] overflow-hidden rounded-[16px] gpu">
           <ImageFallback
             category={salon.categories?.[0]}
             salonName={salon.name}

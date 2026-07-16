@@ -195,7 +195,6 @@ export default function Nearby({
             category={e.category}
             photoUrl={e.photoUrl}
             isSaved={e.isSaved}
-            availability={resolveAvailability(e, idx)}
             variant="availability"
             priceFromCHF={CATEGORY_DEFAULT_PRICE[e.category]}
             nextSlotLabel={formatNextSlot(e)}

@@ -3,11 +3,13 @@
 import { Link } from "next-view-transitions";
 import { useLocale } from "next-intl";
 import Image from "next/image";
-import { Calendar, Flame } from "lucide-react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { HeartButton } from "./HeartButton";
-import { CardName, CardMeta, RatingStars } from "../primitives";
+import { CardName, CardMeta, RatingStars, PriceFrom } from "../primitives";
+// FROM_LABEL reuse (rule 12, don't re-declare): the locale "ab"/"from"/"des"/"da"
+// record already shipped in SalonResultCard.tsx.
+import { FROM_LABEL } from "../search/SalonResultCard";
 
 /**
  * SalonCard — V3 (LIVE_TRUTH §16, V2-D34 lock).
@@ -16,14 +18,14 @@ import { CardName, CardMeta, RatingStars } from "../primitives";
  * 4 categories), search results, /favoriten, look-detail sheet salon list,
  * and category pages.
  *
- * Anatomy (§16.1):
+ * Anatomy, CARD_REDESIGN_2026-07-13 (C11, converged card, mockup-ok):
  *   ┌──────────────────────┐
- *   │ [curation/discount]♥ │  ← top-left badge + top-right floating heart
- *   │      PHOTO 1:1        │
- *   │ [● availability pill] │  ← bottom-left pill (mutex w curation slot is top-left)
+ *   │ [curation/discount]♥ │  top-left badge + top-right floating heart
+ *   │      PHOTO 5:4        │
  *   └──────────────────────┘
- *   Salon Name      4.8 [star]
- *   Service · ab CHF 85
+ *   Salon Name        4.8 [gold star]
+ *   Category label
+ *   Address (postal+city / street)     ab CHF 85
  *
  * Universal color formula (§16.3.0): bg rgba(<hue>, 0.22) + border 0.32 +
  * deep-version-of-hue text + backdrop-filter blur(14px) saturate(1).
@@ -31,9 +33,7 @@ import { CardName, CardMeta, RatingStars } from "../primitives";
  * NOT included in this commit:
  *   - Real `next/image` backed by Supabase Storage CDN — uses `<img>` w/
  *     prop-passed src for now; falls back to category tile if no photo.
- *   - Live availability state derivation from booking data — caller passes
- *     the resolved `availability` prop. Logic lives in API/data layer later.
- *   - Backend save mutation — HeartButton is local state only (Phase 1 wiring).
+ *   - Backend save mutation, HeartButton is local state only (Phase 1 wiring).
  *   - Skeleton loader (§16.7) — separate SalonCardSkeleton component (later).
  */
 
@@ -104,38 +104,9 @@ const badgeGeometry = cn(
 // reduction. Yellow bg is retired — sale collapses into the heart-red family.
 const discountClass = cn(badgeGeometry, "text-s-love-deep");
 
-/** Availability pill — V2-D63: MOVED to top-left (was bottom-left).
- *  Same slot as discount + curation, but they're mutex by section logic:
- *  Last-Minute cards have discount (no availability), Nearby cards have
- *  availability (no discount). If both ever co-occur, discount wins. */
-const availVariants = cva(
-  badgeGeometry,
-  {
-    variants: {
-      tone: {
-        // V2-D67-fu10: text matches the bg hue family — green/green, blue/blue,
-        // red/red. No more brown-on-yellow.
-        // V2-D70/D71 text colors aligned to badge bgs:
-        //   now/week  → solid pale mint #E5F2EA + brand-green #3B7A57 text
-        //   angebot   → solid terracotta #D87352 + white text
-        //   urgent/limited → Dusty Slate #EEF2F6 + navy slate #3A5B7C text (V2-D71)
-        //   pause     → ink glass + white text (kept)
-        // V3-D126 (2026-05-24): text-s-ink-2 (cool grey) → deep green per user
-        // "more vibrant" + matches the comment above (V2-D70 spec said green text
-        // but the code had grey). Text now hue-matches the bg family.
-        // CANON sweep (2026-06-01): #15803D literal → s-success token. `week`
-        // also carries bg-s-success-bg now (bg moved off the inline tealStyle).
-        now:     "text-s-success",
-        week:    "text-s-success bg-s-success-bg",
-        urgent:  "text-s-urgency",    // V3-D173: warm-amber burnt-sienna on cream (s-urgency = #C2410C)
-        limited: "text-s-urgency",
-        angebot: "text-s-ink",        // V3-D79: yellow solid → ink text (high contrast on yellow)
-        pause:   "text-white",        // ink-2 muted glass (unchanged)
-      },
-    },
-    defaultVariants: { tone: "now" },
-  },
-);
+// mockup-ok: CARD_REDESIGN_2026-07-13 (C2, approved public/_mockups/card-redesign.html
+// #c11): availVariants (the AvailabilityPill cva) removed. The converged card has no
+// availability badge, see AvailabilityPill's removal note further down + REMOVED.md.
 
 /** V2-D63 (2026-05-15) — VIBRANT liquid-glass recipe.
  *
@@ -214,30 +185,15 @@ const amberStyle    = { border: "1px solid rgba(204, 74, 96, 0.22)", boxShadow: 
 // CANON sweep (2026-06-01): unused (no call site) — bg #FAD2DA literal removed to
 // purge the banned hex. If revived, use bg-s-love-soft via className, not inline bg.
 const angebotStyle  = { border: "1px solid rgba(204, 74, 96, 0.22)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
-// V2-D71 (2026-05-18): originally dusty-slate blue per Fresha pattern.
-// V3-D173 (2026-05-26): swapped to warm-amber per user "make it like
-// urgency". Blue read as informational, not urgent. Amber-cream bg +
-// burnt-sienna text universally signals "limited / going fast / heat"
-// — pairs with the lucide Flame icon for unmissable read.
-const urgentStyle   = { background: "#FFF1E6", border: "1px solid rgba(154, 52, 18, 0.22)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
-// V3-D126 (2026-05-24): bumped saturation per user "make it abit more vibrant".
-// bg #E5F2EA → #D1F0DC (sat ~22% → ~36%, mint reads as actual green now).
-// border alpha 0.18 → 0.28 (more visible green ring).
-// CANON sweep (2026-06-01): unused (no call site) — bg #D1F0DC literal removed to
-// purge the banned hex. If revived, use bg-s-success-bg via className, not inline bg.
-const greenStyle    = { border: "1px solid rgba(22, 163, 74, 0.28)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
-// CANON sweep (2026-06-01): bg #D1F0DC literal removed — green availability bg
-// now comes from the bg-s-success-bg token class on the `week` tone (availVariants).
-// Border + shadow stay inline (hue-matched ring, not in token scope).
-const tealStyle     = { border: "1px solid rgba(22, 163, 74, 0.28)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
+// mockup-ok: CARD_REDESIGN_2026-07-13 (C2, approved #c11): urgentStyle/greenStyle/
+// tealStyle/inkStyle (the week/urgent/limited/pause availability-pill tones) removed
+// with AvailabilityPill itself, the converged card has no availability badge.
 // V2-D67-fu11 (2026-05-16): unified ALL badges on the layeredGlass formula
-// (was mixed — action badges layered, but favorit/pause/curation still on the
+// (was mixed — action badges layered, but favorit/curation still on the
 // older single-layer glassStyle). Now every badge has consistent border + shadow.
 //   favorit  → dark ink layered (premium signal — high alpha keeps it punchy)
-//   pause    → muted ink-2 layered (negative state, slightly lower alpha)
 //   neutral  → white layered (editorial — Top bewertet / Beliebt / Neu)
 const yellowStyle       = layeredGlass("42, 31, 24",   0.55, 0.85); // dark ink — Solen Favorit (premium)
-const inkStyle          = layeredGlass("122, 105, 87", 0.40, 0.60); // muted ink-2 — Pause/unavailable
 const whiteNeutralStyle = layeredGlass("255, 255, 255", 0.50, 0.75); // white — Top bewertet / Beliebt / Neu
 
 /** Curation badge variants — V2-D63: now uses shared badgeGeometry. */
@@ -289,70 +245,10 @@ function DiscountBadge({ percentOff }: { percentOff: number }) {
   );
 }
 
-interface AvailabilityProps {
-  /** Now: emerald, "Heute frei" (positive direction ↗).
-   *  Urgent: terracotta, "Schnell weg" (filling fast ↘).
-   *  Limited: ink, "Nur 2h" (time-pressure ⚡).
-   *  Week: emerald-mid, "Diese Woche" (no arrow — no urgency).
-   *  Pause: ink-2, closed (no arrow — neutral state). */
-  state: "now" | "week" | "pause" | "urgent" | "limited";
-  label: string;
-}
-
-/** V3-D173 (2026-05-26): retired the hand-drawn corner-SVG arrows per
- *  user "these sh makes no scence like arrows". `state="now"` no longer
- *  renders a glyph (whole "Heute frei" badge is gone — see AvailabilityPill).
- *  `state="urgent"` + `state="limited"` now show lucide Flame — universally
- *  reads "going fast / hot" + harmonizes with the warm-amber pill color. */
-
-function AvailabilityPill({ state, label }: AvailabilityProps) {
-  // V3-D173: "now" / "Heute frei" badge entirely retired per user
-  // "for heute frei do we even need these badges acc nah remove em".
-  // The other state="now" callers (Coiffeur.tsx) also short-circuit on
-  // null here without code change at the call site.
-  if (state === "now") return null;
-
-  const styleMap = {
-    week: tealStyle,
-    pause: inkStyle,
-    urgent: urgentStyle,
-    // V2-D67-fu7: limited shares the urgentStyle. Both are time-pressure
-    // semantic → same warm-amber family (V3-D173).
-    limited: urgentStyle,
-  } as const;
-  return (
-    <span
-      className={availVariants({ tone: state })}
-      style={styleMap[state as keyof typeof styleMap]}
-      aria-label={label}
-    >
-      {(state === "urgent" || state === "limited") && (
-        <Flame
-          size={11}
-          strokeWidth={2.25}
-          fill="currentColor"
-          fillOpacity={0.15}
-          aria-hidden
-        />
-      )}
-      {label}
-    </span>
-  );
-}
-
-
-/** DS-7 details row: bold the trailing HH:MM of a pre-formatted slot label
- *  ("Heute 14:30" -> "Heute " grey + "14:30" 600 ink). Non-matching labels render as-is. */
-function NextSlotText({ label }: { label: string }) {
-  const m = label.match(/^(.*?)(\d{1,2}:\d{2})$/);
-  if (!m) return <span className="truncate">{label}</span>;
-  return (
-    <span className="truncate">
-      {m[1]}
-      <strong className="font-semibold text-s-ink">{m[2]}</strong>
-    </span>
-  );
-}
+// mockup-ok: CARD_REDESIGN_2026-07-13 (C2, approved public/_mockups/card-redesign.html
+// #c11): AvailabilityProps, AvailabilityPill and NextSlotText (the Row 3 calendar
+// next-slot text helper) removed. The converged card renders no availability badge
+// and no next-slot text anywhere, see _design-system/REMOVED.md for the graveyard line.
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Main SalonCard
@@ -367,8 +263,10 @@ export interface SalonCardProps extends VariantProps<typeof curationVariants> {
   name: string;
   /** 0-5 rating (1 decimal display). `null` shows em-dash. */
   rating: number | null;
-  /** Review count backing `rating`. PSYCHOLOGY law 6 (stars never bare): a star
-   *  only renders when BOTH rating and reviewCount are present, e.g. "4.8 (54)". */
+  /** Review count backing `rating`. CARD_REDESIGN_2026-07-13 (C11, owner-approved
+   *  converged card): Row 1 no longer shows the count next to the star, kept in
+   *  the interface unused-by-render so existing callers compile unchanged (same
+   *  pattern as `nextSlotLabel` below). psych-ok: dated owner decision. */
   reviewCount?: number | null;
   /** Photo URL. If absent, falls back to category-color tile w salon initial. */
   photoUrl?: string;
@@ -383,28 +281,30 @@ export interface SalonCardProps extends VariantProps<typeof curationVariants> {
   curation?: CurationProps["type"] | null;
   /** Discount percent (top-left, mutex w curation). */
   discountPercent?: number | null;
-  /** Availability pill (bottom-left). `null` hides. */
-  availability?: AvailabilityProps | null;
   /** Initial saved state for heart. */
   isSaved?: boolean;
-  /** Variant — controls row 2 content shape (§16.5). */
+  /** Variant — kept for backward compat, no longer drives any row content. */
   variant: "availability" | "service";
-  /** Variant=availability: row 2 content per §16.5 next-slot logic.
-   *  Accepts JSX so consumers can mark bold parts via `<strong>` per
-   *  §16.5 typography rule (bold parts = Avant Garde 600 ink-1). */
-  availabilityRow?: React.ReactNode;
   /** Variant=service: featured service name. */
   service?: string;
   /** Variant=service: lowest price (CHF) — renders "ab CHF [price]". */
   priceFromCHF?: number | null;
-  /** V2-D60-cards-7: pre-formatted next-slot label (e.g. "Heute 14:30", "Morgen 09:00",
-   *  "Do. 14:00", "21. Mai 14:00"). Renders in Row 3 alongside priceFromCHF. */
+  /** CARD_REDESIGN_2026-07-13 (C2): the availability badge + Row 3 next-slot text
+   *  were removed from the converged card. Kept in the interface unused-by-render
+   *  so existing callers compile unchanged. */
   nextSlotLabel?: string;
-  /** V2-D60-cards-8: street address (Fresha-style Row 2 meta). When present, replaces
-   *  the category label in Row 2. e.g. "Steinenvorstadt 12" */
+  /** Street address (e.g. "Steinenvorstadt 5"). Row 3 shows this when
+   *  `citySelected` is true, else it falls back to `postalCode` + `city`
+   *  (CARD_REDESIGN_2026-07-13, C6/C11/C16). */
   address?: string;
-  /** V2-D60-cards-8: city for Row 2 meta line. Defaults to "Basel" if not set. */
+  /** Postal code (e.g. "4051"). Row 3 shows `"{postalCode} {city}"` when
+   *  `citySelected` is false/absent. */
+  postalCode?: string;
+  /** City name, paired with `postalCode` (or appended for context). */
   city?: string;
+  /** True when the caller is on a city-scoped surface (e.g. `/{city}/{category}`),
+   *  so Row 3 shows the street `address` instead of `postalCode` + `city`. */
+  citySelected?: boolean;
   /** Override card width (rare — defaults to §16.2 spec 160 mobile / 180 tablet+). */
   className?: string;
 }
@@ -420,15 +320,15 @@ export function SalonCard({
   category,
   curation,
   discountPercent,
-  availability,
   isSaved,
   variant,
-  availabilityRow,
   service,
   priceFromCHF,
   nextSlotLabel,
   address,
+  postalCode,
   city,
+  citySelected,
   className,
 }: SalonCardProps) {
   // Locale-prefixed href (2026-06-11): the bare `/salon/x` href relied on the
@@ -445,6 +345,17 @@ export function SalonCard({
   // missing/empty name falls back to "?" placeholder initial instead of taking
   // down the page.
   const initial = (name ?? "").trim().charAt(0).toUpperCase() || "?";
+  const fromLabel = FROM_LABEL[locale] ?? FROM_LABEL.de;
+  // CARD_REDESIGN_2026-07-13 (C6/C11/C16): Row 3 address is conditional on
+  // whether the caller is on a city-scoped surface. `citySelected` true -> the
+  // street `address`; false/absent -> "{postalCode} {city}" when a postal code
+  // is known. Neither given (e.g. static homepage demo data with no postal_code
+  // wired yet) -> address is omitted, never fabricated.
+  const addressLine = citySelected
+    ? address ?? null
+    : postalCode
+      ? `${postalCode} ${city ?? ""}`.trim()
+      : null;
 
   return (
     <Link
@@ -482,12 +393,9 @@ export function SalonCard({
           that matches Emil's cubic-bezier(0.23, 1, 0.32, 1) recommendation. */}
       <div
         className={cn(
-          // V2-D60-cards-6 (2026-05-14): aspect-[6/5] landscape → aspect-square (1:1)
-          // to make whole-card "noticeably portrait" matching Airbnb. With ~85px of
-          // text below, mobile card lands at ~160×245 = 0.65 ratio (between 5:7 and
-          // 7:10 portrait), desktop ~195×280 = 0.70 (~5:7). More portrait than 4:5
-          // which felt subtle.
-          "relative aspect-[3/2] w-full overflow-hidden rounded-[22px]", // mockup-ok: /dev/card-ratio approved 3/2 (owner 2026-07-02)
+          // CARD_REDESIGN_2026-07-13 (C1, approved card-redesign.html #c11): photo
+          // ratio 3/2 -> 5/4, supersedes the 2026-07-02 3/2 approval.
+          "relative aspect-[5/4] w-full overflow-hidden rounded-[22px]", // mockup-ok: CARD_REDESIGN_2026-07-13 C1 5/4 approved
           "shadow-elevation-2",
           "transition-[transform,box-shadow] duration-200 ease-glide",
           "group-hover:-translate-y-[3px] group-hover:scale-[1.015]",
@@ -528,18 +436,13 @@ export function SalonCard({
           <CurationBadge type={curation} />
         ) : null}
 
-        {/* V3-D181 (2026-05-26): AvailabilityPill REMOVED per user
-            "remove the badge thing comp its fucking me up". The
-            "Nur 1 heute" / "Heute frei" badges were competing for
-            attention with the heart, and the urgency framing didn't
-            land — too noisy on a small 165px card. `availability` prop
-            still accepted by callers (Nearby/Coiffeur still pass it)
-            so we don't break the API, but it just doesn't render now.
-            If urgency needs to come back, the right place is INSIDE
-            Row 3 (next-slot text) as a `Flame` icon prefix on tight
-            availability, not as a competing absolute badge. */}
+        {/* CARD_REDESIGN_2026-07-13 (C2, mockup-ok, approved card-redesign.html
+            #c11): AvailabilityPill (first hidden V3-D181, 2026-05-26) is now
+            fully deleted, the `availability` prop, its cva, and its styles are
+            gone from this file. See _design-system/REMOVED.md for the graveyard
+            line. */}
 
-        {/* Top-right floating heart — color overridden in dark-photo variant */}
+        {/* Top-right floating heart, color overridden in dark-photo variant */}
         <HeartButton
           isSaved={isSaved}
           salonId={salonId}
@@ -548,57 +451,50 @@ export function SalonCard({
         />
       </div>
 
-      {/* V2-D60-cards-7 (2026-05-14): Unified 3-row hierarchy across ALL sections.
-          Row 1: Name · Row 2: Category label · Row 3: nextSlotLabel · ab CHF X + ★ rating
-          Variant prop kept for backward compat but no longer drives Row 3 content —
-          all cards render the same time-and-price format. Time format hint:
-          "Heute 14:30" today · "Morgen 09:00" tomorrow · "Do. 14:00" weekday · "21. Mai 14:00" later. */}
+      {/* mockup-ok: CARD_REDESIGN_2026-07-13 (C11, owner-approved converged card,
+          public/_mockups/card-redesign.html #c11). 3-row hierarchy: Row 1 name
+          plus gold star rating with no count, Row 2 category label always, Row 3
+          conditional address (postal+city or street) plus price on one line.
+          Supersedes V2-D60-cards-7's nextSlotLabel row, no availability or
+          next-slot text anywhere on this card. */}
       <div className="mt-[10px] px-[2px] flex flex-col gap-[2px]">
-        {/* V3-D174 (2026-05-26): Star + rating MOVED from Row 3 to Row 1
-            (Airbnb pattern). Row 1 is now Name | ★ Rating — the most
-            important social-proof signal sits where the eye lands first.
-            Frees Row 3 to be a clean time-and-price line. */}
-        {/* V3-D191 (2026-05-26): name 600→500, rating 600→500, meta/nextslot explicit font-normal,
-            nextslot strong stays 600 (max within-body contrast). V3-D190 sizes kept. */}
         <div className="flex items-baseline gap-2">
           {/* V3-D348: name anchor via <CardName> primitive (bakes text-s-ink font-medium). */}
           <CardName as="h3" className="text-[14px] leading-[1.25] tracking-[-0.01em] truncate min-w-0 flex-1">
             {name}
           </CardName>
-          {/* V3-D346 (2026-05-28): rating recedes to grey-regular — gold star carries
-              the signal; was 500/ink competing with the name. Matches the FeaturedStylists calm-down. */}
           {/* V3-D348: rating meta via <CardMeta> primitive (bakes text-s-ink-2 font-normal). */}
-          {/* B15 (2026-07-09, PSYCHOLOGY law 6): a star never renders without its
-              review count, so the gate requires both rating AND reviewCount. */}
           <CardMeta className="shrink-0 text-[13px] tabular-nums">
-            {rating != null && reviewCount != null && reviewCount > 0 ? (
-              <RatingStars value={rating} count={reviewCount} size="sm" />
+            {rating != null ? (
+              // psych-ok: CARD_REDESIGN_2026-07-13 C11 owner-approved converged card drops the review count from Row 1 by explicit dated design decision.
+              <RatingStars value={rating} size="sm" />
             ) : (
               "—" // em-dash-ok: pre-existing no-rating placeholder glyph, unchanged
             )}
           </CardMeta>
         </div>
 
-        {/* Row 2 — Address · city if available, else category label */}
+        {/* Row 2 - category label, always (address moved to Row 3, C11). */}
         <div className="font-body text-[12px] font-normal leading-[1.35] text-s-ink-3 truncate">
-          {address ? `${address} ${city ?? "Basel"}` : CATEGORY_LABEL[category]}
+          {CATEGORY_LABEL[category]}
         </div>
 
-        {/* Row 3, DS-7 icon details row (owner-approved every-state home mockup,
-            2026-06-11). Supersedes V3-D346's all-grey row: a calendar glyph says
-            what the naked time IS, and the time + price values re-bold to 600 ink
-            while their labels stay grey. 12px icon per LOCKFILE 13.7 pairing. */}
-        <div className="flex items-center gap-2.5 font-body text-[12px] font-normal leading-[1.35] text-s-ink-2">
-          {nextSlotLabel && (
-            <span className="inline-flex min-w-0 items-center gap-1">
-              <Calendar size={12} strokeWidth={2} className="shrink-0 text-s-ink-2" aria-hidden />
-              <NextSlotText label={nextSlotLabel} />
-            </span>
-          )}
-          {priceFromCHF != null && (
-            <strong className="shrink-0 font-semibold text-s-ink">CHF {priceFromCHF}</strong>
-          )}
-        </div>
+        {/* Row 3 - conditional address (C6/C16) + price, one line, mockup-ok:
+            CARD_REDESIGN_2026-07-13 (C11, approved card-redesign.html #c11). */}
+        {(addressLine || priceFromCHF != null) && (
+          <div className="flex items-baseline justify-between gap-2">
+            {addressLine && (
+              <CardMeta as="span" className="min-w-0 truncate text-[12px] leading-[1.35]">
+                {addressLine}
+              </CardMeta>
+            )}
+            {priceFromCHF != null && (
+              <CardMeta as="span" className="shrink-0 text-[12px] leading-[1.35]">
+                <PriceFrom amount={priceFromCHF} label={fromLabel} />
+              </CardMeta>
+            )}
+          </div>
+        )}
       </div>
     </Link>
   );

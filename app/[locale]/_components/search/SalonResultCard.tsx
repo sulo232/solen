@@ -388,7 +388,8 @@ function SalonResultCardInner(props: SalonResultCardProps) {
           <HeartButton isSaved={isSaved} salonName={name} salonId={salonId} />
         </div>
         <Link href={cardHref} className="group block">
-          <div className="relative aspect-[3/2] w-full overflow-hidden rounded-[22px] bg-s-bg-sunken shadow-elevation-2 transition-[transform,box-shadow] duration-200 ease-glide group-hover:-translate-y-[3px] group-hover:shadow-elevation-3">
+          {/* mockup-ok: CARD_REDESIGN_2026-07-13 (C1, approved card-redesign.html #c11): aspect-[3/2] -> aspect-[5/4] */}
+          <div className="relative aspect-[5/4] w-full overflow-hidden rounded-[22px] bg-s-bg-sunken shadow-elevation-2 transition-[transform,box-shadow] duration-200 ease-glide group-hover:-translate-y-[3px] group-hover:shadow-elevation-3">
             {photoInner}
           </div>
           {/* V3-D356 polish (per Gemini): looser rhythm below the photo + a bigger
@@ -478,7 +479,8 @@ function SalonResultCardInner(props: SalonResultCardProps) {
     // w-full text-left only NEUTRALIZE native <button> centering so it matches the
     // <Link> block layout exactly, no new appearance. mockup-ok
     const feedPhoto = (
-      <div className="relative aspect-[3/2] w-full overflow-hidden rounded-2xl bg-s-bg-sunken">
+      // mockup-ok: CARD_REDESIGN_2026-07-13 (C1, approved card-redesign.html #c11): aspect-[3/2] -> aspect-[5/4]
+      <div className="relative aspect-[5/4] w-full overflow-hidden rounded-2xl bg-s-bg-sunken">
         {photoInner}
         {!onSelect && (
           <div className="absolute right-3 top-3 z-10">
@@ -620,7 +622,8 @@ function SalonResultCardInner(props: SalonResultCardProps) {
             the rounded-[10px] badge geometry. The 2-col grid + search-only data
             (distance, popularity heuristic) stay. Supersedes the V3-D350 flat
             rounded-card look per user "keep it consistent with the locked homepage". */}
-        <div className="relative aspect-square w-full overflow-hidden rounded-[22px] bg-s-bg-sunken shadow-elevation-2 transition-[transform,box-shadow] duration-200 ease-glide group-hover:-translate-y-[3px] group-hover:scale-[1.015] group-hover:shadow-elevation-3">
+        {/* mockup-ok: CARD_REDESIGN_2026-07-13 (C1, approved card-redesign.html #c11): aspect-square -> aspect-[5/4] */}
+        <div className="relative aspect-[5/4] w-full overflow-hidden rounded-[22px] bg-s-bg-sunken shadow-elevation-2 transition-[transform,box-shadow] duration-200 ease-glide group-hover:-translate-y-[3px] group-hover:scale-[1.015] group-hover:shadow-elevation-3">
           {photoInner}
         </div>
 

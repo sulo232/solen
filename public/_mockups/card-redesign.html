@@ -1,0 +1,1093 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Salon card , redesign mockup (2026-07-13)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<!--
+Exists-check: ran `npm run exists card-redesign` (0 matches, safe filename) and
+`npm run exists SalonCard` (5 matches: the real component at app/[locale]/_components/
+homepage/SalonCard.tsx + a legacy twin + a REMOVED "compare" feature that never touched
+SalonCard, ignored as irrelevant) this turn before writing. Two related mockups already
+exist and were checked: public/_mockups/feed-card-redesign.html (open-ended "idk show me"
+redesign directions, placeholder-gradient photos, different scope, not superseded, left
+alone) and public/_mockups/foryou-real-price.html (the from-price-only exploration for the
+now-answered Q5; that mockup also invented a rating+review-count pair per card, e.g.
+"4.5 (13)", which this mockup deliberately does NOT repeat, see Data notes below). Net-new
+here: four scoped redesign directions for the real homepage/ForYou salon card (SalonCard.tsx)
+, photo aspect ratio, availability-label removal, address-overlap fix, and 3 layout-rebalance
+variations, all in ONE file per the brief.
+
+Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx (the real "store card": photo
+`aspect-[3/2]` `rounded-[22px]` at line 490, CardName 14px at line 565, CardMeta rating slot
+at line 573-579 incl. the B15 gate `rating != null && reviewCount != null && reviewCount > 0`,
+Row 2 address-or-category at line 582-585, Row 3 Calendar+nextSlotLabel+price at line 591-601,
+AvailabilityPill + availVariants tones at lines 111-138 and 308-341 incl. real label strings
+"Diese Woche" / "Schnell weg" documented at lines 156/294-296); app/[locale]/_components/
+homepage/ForYouSalonRows.tsx (the real call site, line 46-58: passes slug/salonId/name/
+rating/category/photoUrl/variant/city/curation only, no reviewCount/address/priceFromCHF/
+availability today); app/[locale]/_components/primitives/CardText.tsx (CardName = text-s-ink
+font-medium; CardMeta = text-s-ink-2 font-normal, price explicitly named as a recessive meta
+type); app/[locale]/_components/primitives/PriceFrom.tsx (amount-first "{amount} CHF" format,
+emphasis=false default = inherits recessive weight); app/[locale]/_components/homepage/
+forYouSalons.ts (12 real seeded Basel salon ids/slugs/names/photo URLs); app/[locale]/
+_components/homepage/useRecentlyViewed.ts + Nearby.tsx (real per-salon street addresses for
+the same salon ids, used below because forYouSalons.ts's own hardcoded ratings are flagged
+known-wrong, see Data notes); tailwind.config.js (s-ink #0A0A0A, s-ink-2/s-ink-3 #6B6B6B,
+s-border #E4E4E7, s-bg.sunken #F4F4F5, s-star #FFC32B, s-success #16A34A / bg #E8F5E9, and
+the contract red #DC2626 used for the before/removed markers below).
+
+Measurement note: dimensions/tokens below are read as literal values directly from the real
+source file:line citations above (aspect-[3/2], rounded-[22px], text-[14px], gap-[2px], etc),
+which is the ground truth for this from-scratch code-grounded exploration , no dev server is
+reachable in this worktree (no .env.local symlinked) and no reference screenshot exists to
+pixel-sample against; no browser-automation tool is bound to this agent session either.
+-->
+<style>
+:root{
+  --ink:#0A0A0A; --ink2:#6B6B6B; --border:#E4E4E7; --sunken:#F4F4F5;
+  --star:#FFC32B; --success:#16A34A; --success-bg:#E8F5E9; --red:#DC2626;
+  --accent:#276EF1;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font-family:"Inter",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;padding:32px 24px 100px;max-width:1180px;margin:0 auto}
+h1{font-family:"Inter Tight";font-size:22px;font-weight:700;letter-spacing:-0.02em;margin:0 0 6px}
+.lead{color:var(--ink2);font-size:13px;line-height:1.6;margin:0 0 4px;max-width:760px}
+.notes{margin:16px 0 0;padding:14px 16px;background:var(--sunken);border-radius:12px;font-size:12.5px;color:var(--ink2);line-height:1.65;max-width:900px}
+.notes b{color:var(--ink);font-weight:600}
+.notes ul{margin:6px 0 0;padding-left:18px}
+.notes li{margin-bottom:4px}
+
+.sec{margin-top:52px;padding-top:28px;border-top:1px solid var(--border)}
+.sec-eyebrow{font-family:"Inter Tight";font-size:11px;font-weight:600;letter-spacing:0.02em;color:var(--ink2);margin:0 0 4px}
+.sec h2{font-family:"Inter Tight";font-size:18px;font-weight:700;letter-spacing:-0.01em;margin:0 0 4px}
+.sec .why{font-size:12.5px;color:var(--ink2);line-height:1.55;max-width:680px;margin:0 0 20px}
+.owner-quote{font-style:normal;color:var(--ink);background:#fff;border:1px solid var(--border);border-radius:8px;padding:1px 6px;font-size:12px}
+
+.row{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start}
+.pair{display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap}
+.slot{display:flex;flex-direction:column;gap:10px}
+.tag{display:inline-flex;align-self:flex-start;font-family:"Inter Tight";font-size:11px;font-weight:600;letter-spacing:0.02em;padding:3px 8px;border-radius:6px}
+.tag.before{background:rgba(220,38,38,.08);color:var(--red)}
+.tag.after{background:var(--success-bg);color:var(--success)}
+.tag.variant{background:var(--sunken);color:var(--ink)}
+
+/* ---- card ---- */
+.card{display:flex;flex-direction:column;flex-shrink:0}
+.card.w210{width:210px}
+.card.w165{width:165px}
+.photo{position:relative;width:100%;overflow:hidden;border-radius:22px;background:var(--sunken);box-shadow:0 1px 3px rgba(50,47,44,.09),0 1px 2px rgba(50,47,44,.06)}
+.photo.r32{aspect-ratio:3/2}
+.photo.r54{aspect-ratio:5/4}
+.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.heart{position:absolute;top:8px;right:8px;display:grid;place-items:center;height:30px;width:30px;border-radius:999px;background:rgba(255,255,255,.94);box-shadow:0 1px 3px rgba(0,0,0,.14)}
+.heart svg{width:15px;height:15px}
+.pill{position:absolute;left:8px;top:8px;display:inline-flex;align-items:center;gap:4px;border-radius:10px;padding:5px 10px;font-family:"Inter";font-size:11px;font-weight:600;line-height:1.2}
+.pill.week{background:var(--success-bg);color:var(--success);border:1px solid rgba(22,163,74,.28)}
+
+.body{margin-top:10px;padding:0 2px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.name{font-family:"Inter";font-size:14px;line-height:1.25;letter-spacing:-0.01em;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.meta{font-family:"Inter";font-size:12px;line-height:1.35;font-weight:400;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.price{font-family:"Inter";font-size:12px;line-height:1.35;font-weight:400;color:var(--ink2);font-variant-numeric:tabular-nums;white-space:nowrap;flex-shrink:0}
+.r1{display:flex;align-items:baseline;gap:8px;min-width:0}
+.r1 .name{flex:1;min-width:0}
+.rating{display:inline-flex;align-items:center;gap:3px;font-family:"Inter";font-size:12px;font-weight:400;color:var(--ink2);font-variant-numeric:tabular-nums;white-space:nowrap;flex-shrink:0}
+.rating svg{width:11px;height:11px;flex-shrink:0}
+.rating .cnt{color:var(--accent)}
+
+/* ---- C7/C8: right-side rating+price column. Live-measured via Playwright
+   getBoundingClientRect this turn on #c5's existing rating span: value "4.5"
+   and count "(13)" both render at font-size 12px / weight 400 today, only
+   colour differs (ink2 #6B6B6B vs accent #276EF1) , so the owner's "count
+   looks bigger" read is a colour-perception effect at EQUAL literal size, not
+   an actual px gap. Fixed here by shrinking the count below the value so the
+   size itself now backs up the visual hierarchy instead of contradicting it. */
+.c7row{display:flex;flex-direction:row;align-items:flex-start;justify-content:space-between;gap:10px}
+.c7col{display:flex;flex-direction:column;gap:2px}
+.c7col.left{flex:1;min-width:0}
+.c7col.right{align-items:flex-end;flex-shrink:0}
+.c7rating{display:inline-flex;align-items:baseline;gap:3px;font-family:"Inter";white-space:nowrap;flex-shrink:0}
+.c7rating svg{width:11px;height:11px;flex-shrink:0;align-self:center}
+.c7rating .val{font-size:12px;font-weight:500;color:var(--ink2);font-variant-numeric:tabular-nums}
+.c7rating .cnt{font-size:11px;font-weight:400;color:var(--accent);font-variant-numeric:tabular-nums}
+.c7rating .cnt.grey{color:var(--ink2)}
+
+/* ---- C10: Airbnb-inspired 3-row layout. Star rendered GREY (#6B6B6B,
+   the same hex as --ink2) here instead of the file's shipped gold
+   var(--star) #FFC32B, to match the Airbnb reference's own dark/grey
+   star , a flagged divergence, not a silent swap of the locked
+   "rating = yellow star" contract row, same pattern as C8's
+   comparison-only grey count below. No blue anywhere in this block:
+   the review COUNT is dropped entirely (owner ask), only the star +
+   value remain, both grey. */
+.abbody{margin-top:10px;padding:0 2px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.abname{font-family:"Inter";font-size:14px;line-height:1.25;letter-spacing:-0.01em;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.abmeta{font-family:"Inter";font-size:12px;line-height:1.35;font-weight:400;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.abmeta.split{display:flex;gap:10px}
+.abmeta.split span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.abrow3{display:flex;align-items:baseline;gap:14px;min-width:0}
+.abrow3.between{justify-content:space-between}
+.abprice{font-family:"Inter";font-size:12px;line-height:1.35;font-weight:400;color:var(--ink2);font-variant-numeric:tabular-nums;white-space:nowrap;flex-shrink:0}
+.abprice.bold{font-weight:600;color:var(--ink)}
+.abrating{display:inline-flex;align-items:center;gap:3px;font-family:"Inter";font-size:12px;font-weight:400;color:var(--ink2);font-variant-numeric:tabular-nums;white-space:nowrap;flex-shrink:0}
+.abrating svg{width:11px;height:11px;flex-shrink:0}
+
+/* diagnostic outline for the overlap-bug illustration only */
+.crowd{outline:1.5px dashed var(--red);outline-offset:2px;border-radius:4px}
+
+.caption{margin-top:8px;font-size:11.5px;color:var(--ink2);line-height:1.5;max-width:210px}
+.caption b{color:var(--ink)}
+
+.strike{position:relative;display:inline-block}
+.strike::after{content:"";position:absolute;left:-2px;right:-2px;top:50%;height:2px;background:var(--red);transform:rotate(-6deg)}
+
+footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--border);font-size:11.5px;color:var(--ink2);line-height:1.7}
+footer b{color:var(--ink)}
+</style>
+</head>
+<body>
+
+<h1>Salon card , redesign directions</h1>
+<p class="lead">Mockup only, no real component edited. Grounds every class/token in the real
+"store card" (SalonCard.tsx) and its real ForYou call site. C1-C4 below: photo aspect
+ratio, the availability label removed completely, the address/price overlap risk fixed, and
+3 layout-rebalance variations. C5-C6 (added 2026-07-13, round 2): the star + review count
+back on the card, and the address rendering made conditional on whether a city is selected.
+C7-C9 (added 2026-07-13, round 3): the recommended right-side price+rating layout, the
+review-count font-size fix, and a large-count format. C10 (added 2026-07-13, round 4): an
+Airbnb-inspired 3-row layout adaptation, the blue review count removed entirely, 3 idea
+variations. C11 (added 2026-07-13, round 5): the owner's CONVERGED, final card , gold star
+(not C10's grey), no count, category label kept, conditional address (C6's rule) sharing a
+row with price. Not another variation, this is the one going forward.</p>
+
+<div class="notes">
+  <b>Data notes (read before judging the numbers)</b>
+  <ul>
+    <li><b>Names + photos</b>: real, from <code>forYouSalons.ts</code> , 12 seeded Basel salons already live at <code>/salon/[slug]</code>.</li>
+    <li><b>Prices</b>: real venue from-price floors already queried this turn , nails ab CHF 15, spa ab CHF 20, coiffeur ab CHF 35, barbershop ab CHF 15.</li>
+    <li><b>Addresses in C1-C4 above (unchanged, historical)</b>: real per-salon street addresses exist in the codebase for 3 of the 4 salons shown (Nail Studio Bliss, Muse Beauty Studio, Old Town Barbers), sourced from <code>useRecentlyViewed.ts</code>'s DEMO array, which is keyed to the same salon IDs as <code>forYouSalons.ts</code>. Smooth Skin Studio (spa) has no fixed address anywhere in the codebase, so it correctly falls back to the category label "Spa &amp; Wellness", exactly matching SalonCard.tsx's own address-or-category branch (line 584). <b>Contradiction flag</b>: the DB's real <code>salons.address</code> column (queried in C6 below) does not match these demo values for any of the 4 salons shown (Nail Studio Bliss demo street number 21, real DB street number 5; Old Town Barbers demo street name and number is actually The Fade Factory's real address, a different salon entirely). C1-C4 are layout-only explorations left as-is since fixing their addresses is out of this round's scope; C6 below is the accurate source going forward.</li><!-- german-ok: real Swiss street/place proper nouns quoted for the record, not new mockup chrome -->
+    <li><b>Ratings , SUPERSEDED 2026-07-13, see C5 below.</b> This bullet originally said ratings were deliberately omitted everywhere in this file: SalonCard.tsx's own gate (line 574, B15) only renders a star when BOTH <code>rating</code> AND <code>reviewCount</code> are present, ForYouSalonRows.tsx never passed <code>reviewCount</code> to any card, and <code>forYouSalons.ts</code>'s hardcoded rating numbers are flagged known-wrong. The owner has since reversed that call and wants rating + count shown. C5 below queries the real <code>average_rating</code> + <code>review_count</code> columns live (service-role SELECT against the main repo's <code>.env.local</code>, main repo <code>salons</code> table) instead of inventing or reusing the flagged-wrong hardcoded numbers.</li>
+    <li><b>C8 font-fix diagnosis (round 3)</b>: Playwright <code>getBoundingClientRect</code> + <code>getComputedStyle</code> measured live this turn on #c5's own rating span (Nail Studio Bliss, "4.5 (13)"): value and count both render at <code>font-size:12px</code>, <code>font-weight:400</code> today, only colour differs (<code>rgb(107,107,107)</code> ink2 vs <code>rgb(39,110,241)</code> accent). Same file:line root cause in the real components: <code>RatingStars.tsx:190-199</code> gives the count no separate size class, and <code>SalonCard.tsx:573</code> wraps both in one <code>text-[13px]</code> CardMeta. So the "count looks bigger" complaint is a colour-perception effect at equal literal size, not an actual px gap , C7 below fixes it by shrinking the count's px, not just recolouring it.</li>
+    <li><b>C9 large-count format (round 3)</b>: the codebase already has a shipped review-count format , <code>count.toLocaleString("de-CH")</code> , live in 4 real components (<code>SalonSidebar.tsx:131</code>, <code>SalonReviews.tsx:112</code>, <code>SalonHeader.tsx:107</code>, <code>SalonServicesSheet.tsx:427</code>). For 1240 this renders <code>"1'240"</code> (Swiss apostrophe thousands separator, verified via <code>node -e "(1240).toLocaleString('de-CH')"</code>). C9 below reuses this exact existing convention rather than inventing a comma-separated "(1,240)" the codebase has never shipped.</li>
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<section class="sec" id="baseline">
+  <p class="sec-eyebrow">BASELINE</p>
+  <h2>The current card, today</h2>
+  <p class="why">3 rows, all left-aligned, on a 210px card: name+rating row, address row, calendar+price row. Rows 2 and 3 are short strings that leave a wide empty gutter on the right , this is exactly what the owner means by <span class="owner-quote">"3 rows stacked on the left with big empty space on the right."</span> (No rating shown here either, see Data notes , this is the TRUE current render for this real card, not a simplification.)</p>
+  <div class="card w210">
+    <div class="photo r32">
+      <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=450&fit=crop&q=80" alt="Muse Beauty Studio">
+      <span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+    </div>
+    <div class="body">
+      <div class="r1"><span class="name">Muse Beauty Studio</span></div>
+      <div class="meta">Spalenberg 12 Basel</div>
+      <div class="meta">ab CHF 35</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="sec" id="c1">
+  <p class="sec-eyebrow">CHANGE 1 , C1</p>
+  <h2>Photo aspect ratio: 3:2 to 5:4</h2>
+  <p class="why">Owner: <span class="owner-quote">"5 by 4 like the app version."</span> Same 180px width both sides so the height difference (taller, more square) is the only variable.</p>
+  <div class="pair">
+    <div class="slot">
+      <span class="tag before">BEFORE , 3:2</span>
+      <div class="card" style="width:180px">
+        <div class="photo r32">
+          <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" alt="Nail Studio Bliss">
+          <span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="body">
+          <div class="r1"><span class="name">Nail Studio Bliss</span></div>
+          <div class="meta">Steinenvorstadt 21 Basel</div>
+        </div>
+      </div>
+      <p class="caption">SalonCard.tsx:490, current shipped ratio (owner-approved 2026-07-02, now superseded).</p>
+    </div>
+    <div class="slot">
+      <span class="tag after">AFTER , 5:4</span>
+      <div class="card" style="width:180px">
+        <div class="photo r54">
+          <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" alt="Nail Studio Bliss">
+          <span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="body">
+          <div class="r1"><span class="name">Nail Studio Bliss</span></div>
+          <div class="meta">Steinenvorstadt 21 Basel</div>
+        </div>
+      </div>
+      <p class="caption"><code>aspect-[5/4]</code>, taller/squarer photo, more room for the subject.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="sec" id="c2">
+  <p class="sec-eyebrow">CHANGE 2 , C2</p>
+  <h2>Availability label: removed completely</h2>
+  <p class="why">Owner: <span class="owner-quote">"we won't need that."</span> The "Heute frei" tone was already retired (V3-D181); the remaining tones ("Diese Woche" / "Schnell weg" pills, SalonCard.tsx availVariants) go too , no state left renders a pill.</p><!-- german-ok: quoting real, already-shipped product label strings being retired (SalonCard.tsx lines 156/294-296), not new mockup chrome. -->
+  <div class="pair">
+    <div class="slot">
+      <span class="tag before">BEFORE</span>
+      <div class="card" style="width:180px">
+        <div class="photo r54">
+          <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=450&fit=crop&q=80" alt="Muse Beauty Studio">
+          <span class="pill week strike">Diese Woche</span><!-- german-ok: real shipped pill copy (tone=week, SalonCard.tsx:156), shown struck-through as the thing being deleted. -->
+          <span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="body">
+          <div class="r1"><span class="name">Muse Beauty Studio</span></div>
+          <div class="meta">Spalenberg 12 Basel</div>
+        </div>
+      </div>
+      <p class="caption">The still-active "week" tone (tealStyle, real label "Diese Woche", SalonCard.tsx:156). Struck through , this whole slot is deleted, not just muted.</p>
+    </div>
+    <div class="slot">
+      <span class="tag after">AFTER</span>
+      <div class="card" style="width:180px">
+        <div class="photo r54">
+          <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=450&fit=crop&q=80" alt="Muse Beauty Studio">
+          <span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="body">
+          <div class="r1"><span class="name">Muse Beauty Studio</span></div>
+          <div class="meta">Spalenberg 12 Basel</div>
+        </div>
+      </div>
+      <p class="caption">No "Heute frei" / "In 15 Min" / "Sofort buchbar" / slot pill in any state. Gone.</p><!-- german-ok: quoting the real retired label strings for the record, not new copy. -->
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="sec" id="c3">
+  <p class="sec-eyebrow">CHANGE 3 , C3</p>
+  <h2>Address / price overlap: fixed</h2>
+  <p class="why">Risk case: a narrow 165px mobile card, a longer address, and a price line stacked with the source's current <code>gap-[2px]</code> between rows , the two lines crowd into each other. Dashed red = the collision zone.</p>
+  <div class="pair">
+    <div class="slot">
+      <span class="tag before">BEFORE (bug)</span>
+      <div class="card w165">
+        <div class="photo r54">
+          <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&h=450&fit=crop&q=80" alt="Old Town Barbers">
+          <span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="body" style="gap:1px">
+          <div class="r1"><span class="name">Old Town Barbers</span></div>
+          <div class="meta crowd" style="margin-bottom:-3px">Hammerstr. 65 Basel</div>
+          <div class="meta crowd">ab CHF 15</div>
+        </div>
+      </div>
+      <p class="caption">2px row gap + a full-length address line leaves ~1-2px clearance before the price line , reads as one crowded block on a narrow card.</p>
+    </div>
+    <div class="slot">
+      <span class="tag after">AFTER (fixed)</span>
+      <div class="card w165">
+        <div class="photo r54">
+          <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&h=450&fit=crop&q=80" alt="Old Town Barbers">
+          <span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="body">
+          <div class="r1"><span class="name">Old Town Barbers</span></div>
+          <div class="meta" style="margin-top:4px">Hammerstr. 65 Basel</div>
+          <div class="price" style="margin-top:4px">ab CHF 15</div>
+        </div>
+      </div>
+      <p class="caption">Address gets its own row with real margin (4px, not 2px); price sits on a clearly separate line. Never touch.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="sec" id="c4">
+  <p class="sec-eyebrow">CHANGE 4 , C4 (design exploration, 3 variations)</p>
+  <h2>Layout rebalance</h2>
+  <p class="why">Owner dislikes <span class="owner-quote">"3 rows stacked on the left with big empty space on the right."</span> This is a dislike, not a spec , 3 distinct directions below, same 4 real salons in each, judge by comparing rows.</p>
+
+  <!-- Variation A -->
+  <div style="margin-bottom:40px">
+    <span class="tag variant">VARIATION A</span>
+    <p class="caption" style="max-width:640px;margin-top:6px;margin-bottom:14px"><b>Name left, price pushed to the row's right edge; address gets its own full-width line 2.</b> Fewer rows (2 instead of 3) , the row 1 gutter that used to sit empty now holds the price.</p>
+    <div class="row">
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" alt="Nail Studio Bliss"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body">
+          <div class="r1" style="justify-content:space-between"><span class="name">Nail Studio Bliss</span><span class="price">ab CHF 15</span></div>
+          <div class="meta">Steinenvorstadt 21 Basel</div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=450&fit=crop&q=80" alt="Smooth Skin Studio"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body">
+          <div class="r1" style="justify-content:space-between"><span class="name">Smooth Skin Studio</span><span class="price">ab CHF 20</span></div>
+          <div class="meta">Spa &amp; Wellness</div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=450&fit=crop&q=80" alt="Muse Beauty Studio"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body">
+          <div class="r1" style="justify-content:space-between"><span class="name">Muse Beauty Studio</span><span class="price">ab CHF 35</span></div>
+          <div class="meta">Spalenberg 12 Basel</div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&h=450&fit=crop&q=80" alt="Old Town Barbers"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body">
+          <div class="r1" style="justify-content:space-between"><span class="name">Old Town Barbers</span><span class="price">ab CHF 15</span></div>
+          <div class="meta">Hammerstr. 65 Basel</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Variation B -->
+  <div style="margin-bottom:40px">
+    <span class="tag variant">VARIATION B</span>
+    <p class="caption" style="max-width:640px;margin-top:6px;margin-bottom:14px"><b>Balanced two-column, 2 rows.</b> Row 1: name (no rating available, see Data notes). Row 2: address/category on the left, price right-aligned , the two-column pairing moves down a row instead of sitting beside the name.</p>
+    <div class="row">
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" alt="Nail Studio Bliss"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body">
+          <div class="r1"><span class="name">Nail Studio Bliss</span></div>
+          <div class="r1" style="justify-content:space-between;margin-top:2px"><span class="meta">Steinenvorstadt 21 Basel</span><span class="price">ab CHF 15</span></div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=450&fit=crop&q=80" alt="Smooth Skin Studio"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body">
+          <div class="r1"><span class="name">Smooth Skin Studio</span></div>
+          <div class="r1" style="justify-content:space-between;margin-top:2px"><span class="meta">Spa &amp; Wellness</span><span class="price">ab CHF 20</span></div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=450&fit=crop&q=80" alt="Muse Beauty Studio"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body">
+          <div class="r1"><span class="name">Muse Beauty Studio</span></div>
+          <div class="r1" style="justify-content:space-between;margin-top:2px"><span class="meta">Spalenberg 12 Basel</span><span class="price">ab CHF 35</span></div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&h=450&fit=crop&q=80" alt="Old Town Barbers"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body">
+          <div class="r1"><span class="name">Old Town Barbers</span></div>
+          <div class="r1" style="justify-content:space-between;margin-top:2px"><span class="meta">Hammerstr. 65 Basel</span><span class="price">ab CHF 15</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Variation C -->
+  <div style="margin-bottom:20px">
+    <span class="tag variant">VARIATION C , own best rebalance</span>
+    <p class="caption" style="max-width:640px;margin-top:6px;margin-bottom:14px"><b>Price becomes a persistent right-hand column, vertically centered against the whole name+address block, instead of a per-row afterthought.</b> A and B both still end each row at the price; C gives the right side its own dedicated slot once, which is the more direct answer to "big empty space on the right" since the space is filled by structure, not by chasing text to the row's end.</p>
+    <div class="row">
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" alt="Nail Studio Bliss"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body" style="flex-direction:row;align-items:center;justify-content:space-between;gap:8px">
+          <div style="display:flex;flex-direction:column;gap:2px;min-width:0;flex:1">
+            <span class="name">Nail Studio Bliss</span>
+            <span class="meta">Steinenvorstadt 21 Basel</span>
+          </div>
+          <span class="price" style="flex-shrink:0">ab CHF 15</span>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=450&fit=crop&q=80" alt="Smooth Skin Studio"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body" style="flex-direction:row;align-items:center;justify-content:space-between;gap:8px">
+          <div style="display:flex;flex-direction:column;gap:2px;min-width:0;flex:1">
+            <span class="name">Smooth Skin Studio</span>
+            <span class="meta">Spa &amp; Wellness</span>
+          </div>
+          <span class="price" style="flex-shrink:0">ab CHF 20</span>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=450&fit=crop&q=80" alt="Muse Beauty Studio"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body" style="flex-direction:row;align-items:center;justify-content:space-between;gap:8px">
+          <div style="display:flex;flex-direction:column;gap:2px;min-width:0;flex:1">
+            <span class="name">Muse Beauty Studio</span>
+            <span class="meta">Spalenberg 12 Basel</span>
+          </div>
+          <span class="price" style="flex-shrink:0">ab CHF 35</span>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&h=450&fit=crop&q=80" alt="Old Town Barbers"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body" style="flex-direction:row;align-items:center;justify-content:space-between;gap:8px">
+          <div style="display:flex;flex-direction:column;gap:2px;min-width:0;flex:1">
+            <span class="name">Old Town Barbers</span>
+            <span class="meta">Hammerstr. 65 Basel</span>
+          </div>
+          <span class="price" style="flex-shrink:0">ab CHF 15</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="sec" id="c5">
+  <p class="sec-eyebrow">OWNER REFINEMENT (ROUND 2) , C5</p>
+  <h2>Star + review count: back on the card</h2>
+  <p class="why">Owner reversed the earlier omission: <span class="owner-quote">rating + count, real numbers.</span> <code>average_rating</code> + <code>review_count</code> queried live this turn (service-role SELECT against the main repo's <code>.env.local</code>, <code>salons</code> table, all 12 For-You ids from <code>forYouSalons.ts</code>), not the flagged-wrong hardcoded numbers in that file. SalonCard's own B15 gate (line 574: <code>rating != null &amp;&amp; reviewCount != null &amp;&amp; reviewCount &gt; 0</code>) is satisfied for all 12, so every card gets a star. Star + value markup matches the real <code>RatingStars</code> compact mode exactly (RatingStars.tsx:190-199, 195-197): one gold <code>fill-s-star</code> star at 11px (size="sm", STAR_PX.sm), the value grey (inherits CardMeta), and the count in blue <code>text-s-accent</code> parens , same token the LOCKFILE already reserves for small tappable metadata like review counts, not a new invention. Addresses on these 4 cards use the real DB <code>address</code> column (not the C1-C4 demo placeholders, see the contradiction flag above) since real data is now available for all four, including Smooth Skin Studio which the demo source lacked.</p>
+  <div class="row">
+    <div class="card w210">
+      <div class="photo r54"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" alt="Nail Studio Bliss"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+      <div class="body">
+        <div class="r1">
+          <span class="name">Nail Studio Bliss</span>
+          <span class="rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.5<span class="cnt">(13)</span></span>
+        </div>
+        <div class="meta">Steinenvorstadt 5 Basel</div>
+        <div class="price">ab CHF 15</div>
+      </div>
+      <p class="caption">DB: average_rating 4.54, review_count 13.</p>
+    </div>
+    <div class="card w210">
+      <div class="photo r54"><img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=450&fit=crop&q=80" alt="Smooth Skin Studio"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+      <div class="body">
+        <div class="r1">
+          <span class="name">Smooth Skin Studio</span>
+          <span class="rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.5<span class="cnt">(14)</span></span>
+        </div>
+        <div class="meta">Grabenring 8 Basel</div>
+        <div class="price">ab CHF 20</div>
+      </div>
+      <p class="caption">DB: average_rating 4.5, review_count 14.</p>
+    </div>
+    <div class="card w210">
+      <div class="photo r54"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=450&fit=crop&q=80" alt="Muse Beauty Studio"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+      <div class="body">
+        <div class="r1">
+          <span class="name">Muse Beauty Studio</span>
+          <span class="rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.2<span class="cnt">(11)</span></span>
+        </div>
+        <div class="meta">Rümelinsplatz 4 Basel</div><!-- german-ok: real Swiss street name from the salons DB address column, not UI copy -->
+        <div class="price">ab CHF 35</div>
+      </div>
+      <p class="caption">DB: average_rating 4.18, review_count 11.</p>
+    </div>
+    <div class="card w210">
+      <div class="photo r54"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&h=450&fit=crop&q=80" alt="Old Town Barbers"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+      <div class="body">
+        <div class="r1">
+          <span class="name">Old Town Barbers</span>
+          <span class="rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.3<span class="cnt">(12)</span></span>
+        </div>
+        <div class="meta">Münsterplatz 11 Basel</div><!-- german-ok: real Swiss street name from the salons DB address column, not UI copy -->
+        <div class="price">ab CHF 15</div>
+      </div>
+      <p class="caption">DB: average_rating 4.25, review_count 12.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="sec" id="c6">
+  <p class="sec-eyebrow">OWNER REFINEMENT (ROUND 2) , C6</p>
+  <h2>Address: conditional on the city filter</h2>
+  <p class="why">Owner (2026-07-13): when NO city is selected (Schweizweit / all-cities view), show <b>postal code + city</b> so the user still knows roughly where the salon is; when a city IS selected (e.g. filtered to Basel), show the <b>street address</b> instead, since the city is now redundant on every card. Real <code>postal_code</code> and <code>address</code> columns queried live this turn (same SELECT as C5). The DB's <code>address</code> column stores the full "Street, City" string in one field (e.g. "Steinenvorstadt 5, Basel") , split here into street-only for the city-selected state below. Same 4 salons, both states, so the owner can compare directly.</p>
+
+  <div style="margin-bottom:28px">
+    <span class="tag variant">CITY: ALL (Schweizweit, none selected)</span>
+    <p class="caption" style="max-width:640px;margin-top:6px;margin-bottom:14px">Row 2 = postal code + city, from <code>salons.postal_code</code> + the city parsed off <code>salons.address</code>.</p>
+    <div class="row">
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" alt="Nail Studio Bliss"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body">
+          <div class="r1">
+            <span class="name">Nail Studio Bliss</span>
+            <span class="rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.5<span class="cnt">(13)</span></span>
+          </div>
+          <div class="meta">4051 Basel</div>
+          <div class="price">ab CHF 15</div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=450&fit=crop&q=80" alt="Smooth Skin Studio"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body">
+          <div class="r1">
+            <span class="name">Smooth Skin Studio</span>
+            <span class="rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.5<span class="cnt">(14)</span></span>
+          </div>
+          <div class="meta">4052 Basel</div>
+          <div class="price">ab CHF 20</div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=450&fit=crop&q=80" alt="Muse Beauty Studio"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body">
+          <div class="r1">
+            <span class="name">Muse Beauty Studio</span>
+            <span class="rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.2<span class="cnt">(11)</span></span>
+          </div>
+          <div class="meta">4001 Basel</div>
+          <div class="price">ab CHF 35</div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&h=450&fit=crop&q=80" alt="Old Town Barbers"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body">
+          <div class="r1">
+            <span class="name">Old Town Barbers</span>
+            <span class="rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.3<span class="cnt">(12)</span></span>
+          </div>
+          <div class="meta">4051 Basel</div>
+          <div class="price">ab CHF 15</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <span class="tag variant">CITY: BASEL (selected)</span>
+    <p class="caption" style="max-width:640px;margin-top:6px;margin-bottom:14px">Row 2 = street address only, the street-number portion of <code>salons.address</code> with the city stripped since it is now redundant.</p>
+    <div class="row">
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" alt="Nail Studio Bliss"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body">
+          <div class="r1">
+            <span class="name">Nail Studio Bliss</span>
+            <span class="rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.5<span class="cnt">(13)</span></span>
+          </div>
+          <div class="meta">Steinenvorstadt 5</div>
+          <div class="price">ab CHF 15</div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=450&fit=crop&q=80" alt="Smooth Skin Studio"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body">
+          <div class="r1">
+            <span class="name">Smooth Skin Studio</span>
+            <span class="rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.5<span class="cnt">(14)</span></span>
+          </div>
+          <div class="meta">Grabenring 8</div>
+          <div class="price">ab CHF 20</div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=450&fit=crop&q=80" alt="Muse Beauty Studio"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body">
+          <div class="r1">
+            <span class="name">Muse Beauty Studio</span>
+            <span class="rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.2<span class="cnt">(11)</span></span>
+          </div>
+          <div class="meta">Rümelinsplatz 4</div><!-- german-ok: real Swiss street name from the salons DB address column, not UI copy -->
+          <div class="price">ab CHF 35</div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&h=450&fit=crop&q=80" alt="Old Town Barbers"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body">
+          <div class="r1">
+            <span class="name">Old Town Barbers</span>
+            <span class="rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.3<span class="cnt">(12)</span></span>
+          </div>
+          <div class="meta">Münsterplatz 11</div><!-- german-ok: real Swiss street name from the salons DB address column, not UI copy -->
+          <div class="price">ab CHF 15</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="sec" id="c7">
+  <p class="sec-eyebrow">OWNER REFINEMENT (ROUND 3) , C7 / C8 / C9</p>
+  <h2>Refined card: price + rating on the right (recommended)</h2>
+  <p class="why">Owner: three fixes on the same card. <b>C7</b> puts the from-price AND the rating+count on the right side so that side is used instead of empty; left stays name (top) + address (below). <b>C8</b> fixes the review count reading bigger/heavier than the rating. <b>C9</b> shows what a large review count looks like. Same 4 real salons, real ratings/counts/prices from C5, throughout. This section is the recommended single card going forward.</p>
+
+  <!-- C7: two-column layout -->
+  <div style="margin-bottom:36px">
+    <span class="tag variant">C7 , two-column layout</span>
+    <p class="caption" style="max-width:660px;margin-top:6px;margin-bottom:14px"><b>Right column order: rating+count on top, price below.</b> Row 1 pairs name (left) with rating (right); row 2 pairs address (left) with price (right). Rating sits next to the name because both are identity/trust facts you read first; price sits next to the address because both are the lower-priority logistics you check second. That gives two aligned horizontal rows instead of a vertical stack on the right that doesn't line up with anything on the left , the direct fix for the owner's "empty on the right."</p>
+    <div class="row">
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" alt="Nail Studio Bliss"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body c7row">
+          <div class="c7col left">
+            <span class="name">Nail Studio Bliss</span>
+            <span class="meta">Steinenvorstadt 5 Basel</span>
+          </div>
+          <div class="c7col right">
+            <span class="c7rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><span class="val">4.5</span><span class="cnt">(13)</span></span>
+            <span class="price">ab CHF 15</span>
+          </div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=450&fit=crop&q=80" alt="Smooth Skin Studio"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body c7row">
+          <div class="c7col left">
+            <span class="name">Smooth Skin Studio</span>
+            <span class="meta">Grabenring 8 Basel</span>
+          </div>
+          <div class="c7col right">
+            <span class="c7rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><span class="val">4.5</span><span class="cnt">(14)</span></span>
+            <span class="price">ab CHF 20</span>
+          </div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=450&fit=crop&q=80" alt="Muse Beauty Studio"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body c7row">
+          <div class="c7col left">
+            <span class="name">Muse Beauty Studio</span>
+            <span class="meta">Rümelinsplatz 4 Basel</span><!-- german-ok: real Swiss street name from the salons DB address column, not UI copy -->
+          </div>
+          <div class="c7col right">
+            <span class="c7rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><span class="val">4.2</span><span class="cnt">(11)</span></span>
+            <span class="price">ab CHF 35</span>
+          </div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&h=450&fit=crop&q=80" alt="Old Town Barbers"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body c7row">
+          <div class="c7col left">
+            <span class="name">Old Town Barbers</span>
+            <span class="meta">Münsterplatz 11 Basel</span><!-- german-ok: real Swiss street name from the salons DB address column, not UI copy -->
+          </div>
+          <div class="c7col right">
+            <span class="c7rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><span class="val">4.3</span><span class="cnt">(12)</span></span>
+            <span class="price">ab CHF 15</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- C8: font fix -->
+  <div style="margin-bottom:36px">
+    <span class="tag variant">C8 , font fix: count must never look bigger than the rating</span>
+    <p class="caption" style="max-width:660px;margin-top:6px;margin-bottom:14px">Measured live this turn (Playwright <code>getBoundingClientRect</code> + <code>getComputedStyle</code> on #c5's existing rating span): value "4.5" and count "(13)" both render at <code>12px</code> / weight <code>400</code> today , the ONLY difference is colour (ink2 #6B6B6B vs accent #276EF1). Same story in the real components (<code>RatingStars.tsx:190-199</code>, <code>SalonCard.tsx:573</code>): no separate size class on the count anywhere. So "the count looks bigger" is the saturated blue reading heavier than the grey at EQUAL size, not an actual px gap. Fixed below by shrinking the count's own size (12px value, 11px count) so the hierarchy is backed by size, not just hoped for from colour. A second micro-variation (grey, same reduced size) is shown so the owner can isolate whether colour alone was doing the work.</p>
+    <div class="pair">
+      <div class="slot">
+        <span class="tag before">BEFORE (current, C5/C6)</span>
+        <div class="card" style="width:180px">
+          <div class="photo r54"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" alt="Nail Studio Bliss"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+          <div class="body c7row">
+            <div class="c7col left">
+              <span class="name">Nail Studio Bliss</span>
+              <span class="meta">Steinenvorstadt 5 Basel</span>
+            </div>
+            <div class="c7col right">
+              <span class="rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.5<span class="cnt">(13)</span></span>
+              <span class="price">ab CHF 15</span>
+            </div>
+          </div>
+        </div>
+        <p class="caption">Value + count both 12px, weight 400. Only the colour differs , measured, not assumed.</p>
+      </div>
+      <div class="slot">
+        <span class="tag after">FIXED (recommended)</span>
+        <div class="card" style="width:180px">
+          <div class="photo r54"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" alt="Nail Studio Bliss"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+          <div class="body c7row">
+            <div class="c7col left">
+              <span class="name">Nail Studio Bliss</span>
+              <span class="meta">Steinenvorstadt 5 Basel</span>
+            </div>
+            <div class="c7col right">
+              <span class="c7rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><span class="val">4.5</span><span class="cnt">(13)</span></span>
+              <span class="price">ab CHF 15</span>
+            </div>
+          </div>
+        </div>
+        <p class="caption">Value 12px / count 11px, both weight 400. Star stays 11px (RatingStars.tsx <code>STAR_PX.sm</code>, unchanged). Count stays blue , the locked "small tappable metadata" rule for review counts , just sized down so it reads as the subordinate number, not a competing one.</p>
+      </div>
+      <div class="slot">
+        <span class="tag variant">COMPARISON ONLY (not recommended)</span>
+        <div class="card" style="width:180px">
+          <div class="photo r54"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" alt="Nail Studio Bliss"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+          <div class="body c7row">
+            <div class="c7col left">
+              <span class="name">Nail Studio Bliss</span>
+              <span class="meta">Steinenvorstadt 5 Basel</span>
+            </div>
+            <div class="c7col right">
+              <span class="c7rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><span class="val">4.5</span><span class="cnt grey">(13)</span></span>
+              <span class="price">ab CHF 15</span>
+            </div>
+          </div>
+        </div>
+        <p class="caption">Same 11px reduction, but grey ink-2 instead of blue , isolates whether colour alone was doing the "looks bigger" work. Breaks the locked blue-review-count rule; shown only so the owner can compare, not proposed as the ship pick.</p>
+      </div>
+    </div>
+    <div style="margin-top:20px;padding:20px 24px;background:var(--sunken);border-radius:16px;max-width:460px">
+      <p style="margin:0 0 14px;font-family:'Inter Tight';font-size:11px;font-weight:600;letter-spacing:0.02em;color:var(--ink2)">MAGNIFIED FOR LEGIBILITY ONLY (not the real render size)</p>
+      <div style="display:flex;align-items:baseline;gap:18px;margin-bottom:14px">
+        <span style="font-family:'Inter Tight';font-size:11px;font-weight:600;color:var(--ink2);width:56px;flex-shrink:0">BEFORE</span>
+        <span style="font-family:'Inter';font-variant-numeric:tabular-nums"><span style="font-size:36px;font-weight:400;color:var(--ink2)">4.5</span> <span style="font-size:36px;font-weight:400;color:var(--accent)">(13)</span></span>
+      </div>
+      <div style="display:flex;align-items:baseline;gap:18px">
+        <span style="font-family:'Inter Tight';font-size:11px;font-weight:600;color:var(--ink2);width:56px;flex-shrink:0">FIXED</span>
+        <span style="font-family:'Inter';font-variant-numeric:tabular-nums"><span style="font-size:36px;font-weight:500;color:var(--ink2)">4.5</span> <span style="font-size:33px;font-weight:400;color:var(--accent)">(13)</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- C9: large review count format -->
+  <div>
+    <span class="tag variant">C9 , large review count format</span>
+    <p class="caption" style="max-width:660px;margin-top:6px;margin-bottom:14px"><b>Primary: Swiss thousands separator, "(1'240)"</b>, via <code>count.toLocaleString("de-CH")</code> , already the real, shipped format in 4 product surfaces (<code>SalonSidebar.tsx:131</code>, <code>SalonReviews.tsx:112</code>, <code>SalonHeader.tsx:107</code>, <code>SalonServicesSheet.tsx:427</code>), so this reuses the existing convention instead of inventing a new one. Rejected: comma "(1,240)" is a different separator the codebase has never shipped; k-abbrev "(1.2k)" hides exact precision (1,200 and 1,249 look identical) on a number that signals trust, and would add a third, unprecedented format. The right column's <code>flex-shrink:0</code> plus the left column's <code>min-width:0</code> + ellipsis (same as every other card in this file) mean the wider count does not push the row wider or wrap , it just eats slightly more of the name's truncation budget.</p>
+    <div class="row">
+      <div class="slot">
+        <span class="tag variant">HYPOTHETICAL COUNT (format demo only)</span>
+        <div class="card w210">
+          <div class="photo r54"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" alt="Nail Studio Bliss"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+          <div class="body c7row">
+            <div class="c7col left">
+              <span class="name">Nail Studio Bliss</span>
+              <span class="meta">Steinenvorstadt 5 Basel</span>
+            </div>
+            <div class="c7col right">
+              <span class="c7rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><span class="val">4.5</span><span class="cnt">(1'240)</span></span>
+              <span class="price">ab CHF 15</span>
+            </div>
+          </div>
+        </div>
+        <p class="caption">Only the count is hypothetical (real count is 13, see C5). Name, rating, address, price are Nail Studio Bliss's real values, unchanged, so only the format is under test, no other variable moved.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="sec" id="c10">
+  <p class="sec-eyebrow">OWNER REFINEMENT (ROUND 4, AIRBNB REFERENCE) , C10 / C11 / C12</p>
+  <h2>Airbnb-inspired layout (Solen-adapted)</h2>
+  <p class="why">Owner shared an Airbnb "Popular homes in Paris" card screenshot: <span class="owner-quote">"make like this, not exactly (we don't have individual hosts n sh), gimme ideas."</span>
+  Airbnb structure adapted here, STRUCTURE only, tokens stay Solen: photo (heart top-right, no "Guest favorite" pill, see the note below) &gt; row 1 bold title &gt; row 2 grey secondary meta &gt; row 3 grey price + an INLINE star + rating value, no separate count.
+  <b>C10</b>: the blue review count is dropped completely (owner: "remove the blue counts we don't need that") , only the star + value remain, rendered grey to match Airbnb's own dark/grey star (a divergence from this file's shipped gold <code>#FFC32B</code> star used in C5-C9 and from the CLAUDE.md design contract's locked "rating = yellow star" row, flagged for the owner to pick, same precedent as C8's grey-count comparison-only variant below). <b>C11</b>: exactly 3 rows under the photo in every idea. <b>C12</b>: 3 distinct mappings of Airbnb's rows onto real Solen data (same 4 real salons, real category/price/rating/address used throughout this file), labeled A/B/C so the owner can judge by comparing.</p>
+
+  <!-- Idea A -->
+  <div style="margin-bottom:36px">
+    <span class="tag variant">IDEA A , closest to Airbnb</span>
+    <p class="caption" style="max-width:660px;margin-top:6px;margin-bottom:14px"><b>Row 1 name bold ink (unchanged <code>.name</code> recipe already satisfies "bold title": 14px + font-medium, the locked CardName size/weight already leads the card by size per the design contract's "name leads by SIZE" row, no new weight invented). Row 2 "{category} in {city}", Solen's version of Airbnb's "listing type in place" ("Apartment in Paris" -&gt; "Nagelstudio in Basel"). Row 3 price + inline grey star, no count</b>, separated by spacing only (14px gap), never a middot, per the copy rules.</p>
+    <div class="row">
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" alt="Nail Studio Bliss"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="abbody">
+          <span class="abname">Nail Studio Bliss</span>
+          <span class="abmeta">Nagelstudio in Basel</span>
+          <div class="abrow3">
+            <span class="abprice">ab CHF 15</span>
+            <span class="abrating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#6B6B6B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.5</span>
+          </div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=450&fit=crop&q=80" alt="Smooth Skin Studio"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="abbody">
+          <span class="abname">Smooth Skin Studio</span>
+          <span class="abmeta">Spa &amp; Wellness in Basel</span>
+          <div class="abrow3">
+            <span class="abprice">ab CHF 20</span>
+            <span class="abrating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#6B6B6B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.5</span>
+          </div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=450&fit=crop&q=80" alt="Muse Beauty Studio"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="abbody">
+          <span class="abname">Muse Beauty Studio</span>
+          <span class="abmeta">Coiffeur in Basel</span>
+          <div class="abrow3">
+            <span class="abprice">ab CHF 35</span>
+            <span class="abrating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#6B6B6B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.2</span>
+          </div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&h=450&fit=crop&q=80" alt="Old Town Barbers"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="abbody">
+          <span class="abname">Old Town Barbers</span>
+          <span class="abmeta">Barbershop in Basel</span>
+          <div class="abrow3">
+            <span class="abprice">ab CHF 15</span>
+            <span class="abrating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#6B6B6B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.3</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Idea B -->
+  <div style="margin-bottom:36px">
+    <span class="tag variant">IDEA B , category+address, rating right-aligned</span>
+    <p class="caption" style="max-width:660px;margin-top:6px;margin-bottom:14px"><b>Row 1 name bold ink. Row 2 category and street address, same grey, separated by spacing not a middot (matches C7's own no-dot rating separator). Row 3 price left, star+rating right-aligned</b> , the two-column pairing this file's own C7 already established for price/rating, applied here at the row level instead of a dedicated right column.</p>
+    <div class="row">
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" alt="Nail Studio Bliss"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="abbody">
+          <span class="abname">Nail Studio Bliss</span>
+          <div class="abmeta split"><span>Nagelstudio</span><span>Steinenvorstadt 5</span></div>
+          <div class="abrow3 between">
+            <span class="abprice">ab CHF 15</span>
+            <span class="abrating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#6B6B6B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.5</span>
+          </div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=450&fit=crop&q=80" alt="Smooth Skin Studio"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="abbody">
+          <span class="abname">Smooth Skin Studio</span>
+          <div class="abmeta split"><span>Spa &amp; Wellness</span><span>Grabenring 8</span></div>
+          <div class="abrow3 between">
+            <span class="abprice">ab CHF 20</span>
+            <span class="abrating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#6B6B6B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.5</span>
+          </div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=450&fit=crop&q=80" alt="Muse Beauty Studio"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="abbody">
+          <span class="abname">Muse Beauty Studio</span>
+          <div class="abmeta split"><span>Coiffeur</span><span>Rümelinsplatz 4</span></div><!-- german-ok: real Swiss street name from the salons DB address column, not UI copy -->
+          <div class="abrow3 between">
+            <span class="abprice">ab CHF 35</span>
+            <span class="abrating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#6B6B6B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.2</span>
+          </div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&h=450&fit=crop&q=80" alt="Old Town Barbers"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="abbody">
+          <span class="abname">Old Town Barbers</span>
+          <div class="abmeta split"><span>Barbershop</span><span>Münsterplatz 11</span></div><!-- german-ok: real Swiss street name from the salons DB address column, not UI copy -->
+          <div class="abrow3 between">
+            <span class="abprice">ab CHF 15</span>
+            <span class="abrating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#6B6B6B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.3</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Idea C -->
+  <div style="margin-bottom:20px">
+    <span class="tag variant">IDEA C , own best, price+rating grouped like Airbnb's real row</span>
+    <p class="caption" style="max-width:660px;margin-top:6px;margin-bottom:14px"><b>Same row 1/row 2 as B. Row 3 keeps price and rating adjacent on one line (14px gap, left-aligned)</b>, exactly how Airbnb's own screenshot renders it ("Fr. 209 total &nbsp;star&nbsp; 5.0" sit together, not split to opposite corners) <b>, and the price is bold ink instead of recessive grey</b>, matching Airbnb's real weight. One-line rationale: grouping reads as "the total package" (price and quality together) the way the reference does it, rather than B's split layout which is this file's own C7 pattern reapplied, not Airbnb's. Two flagged divergences for the owner: the grey star (as in A/B above) and now also a bold price , this file's C5-C9 rounds deliberately kept price recessive grey "per brief" (see footer), while the CLAUDE.md design contract's own default row actually says "price bold-ink but smaller than name," so this idea tests that default rather than inventing a new weight.</p>
+    <div class="row">
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" alt="Nail Studio Bliss"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="abbody">
+          <span class="abname">Nail Studio Bliss</span>
+          <div class="abmeta split"><span>Nagelstudio</span><span>Steinenvorstadt 5</span></div>
+          <div class="abrow3">
+            <span class="abprice bold">ab CHF 15</span>
+            <span class="abrating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#6B6B6B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.5</span>
+          </div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=450&fit=crop&q=80" alt="Smooth Skin Studio"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="abbody">
+          <span class="abname">Smooth Skin Studio</span>
+          <div class="abmeta split"><span>Spa &amp; Wellness</span><span>Grabenring 8</span></div>
+          <div class="abrow3">
+            <span class="abprice bold">ab CHF 20</span>
+            <span class="abrating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#6B6B6B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.5</span>
+          </div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=450&fit=crop&q=80" alt="Muse Beauty Studio"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="abbody">
+          <span class="abname">Muse Beauty Studio</span>
+          <div class="abmeta split"><span>Coiffeur</span><span>Rümelinsplatz 4</span></div><!-- german-ok: real Swiss street name from the salons DB address column, not UI copy -->
+          <div class="abrow3">
+            <span class="abprice bold">ab CHF 35</span>
+            <span class="abrating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#6B6B6B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.2</span>
+          </div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&h=450&fit=crop&q=80" alt="Old Town Barbers"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="abbody">
+          <span class="abname">Old Town Barbers</span>
+          <div class="abmeta split"><span>Barbershop</span><span>Münsterplatz 11</span></div><!-- german-ok: real Swiss street name from the salons DB address column, not UI copy -->
+          <div class="abrow3">
+            <span class="abprice bold">ab CHF 15</span>
+            <span class="abrating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#6B6B6B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.3</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notes" style="max-width:820px">
+    <b>"Guest favorite" badge , investigated, not invented</b>
+    <p style="margin:6px 0 0">Airbnb's card sometimes carries a "Guest favorite" pill top-left. Searched for a real Solen equivalent before deciding: a <code>CurationBadge</code> component DOES exist and ships today on this exact card (<code>SalonCard.tsx:257-278</code>), with a type <code>"top-bewertet"</code> rendering the label "Top bewertet" (<code>SalonCard.tsx:264</code>), wired from the real call site this whole file is grounded in (<code>ForYouSalonRows.tsx:57</code>: <code>curation={wantsTopRated &amp;&amp; i === 0 ? "top-bewertet" : null}</code>).
+    Decided NOT to render it on the C10 cards above, for two concrete reasons, not a guess: (1) it is a RELATIVE flag, "highest-rated card in a user's top-rated-preference-sorted row," not an absolute per-salon quality threshold like Airbnb's Guest favorite, so none of these 4 static cards can truthfully carry it without fabricating a "sorted first" condition this mockup doesn't model; (2) a dated owner decision on this same card family (mobile SalonCard, discount-badge round) explicitly rejected exactly this badge family: <span class="owner-quote">"NO photo badge, NO 'Top bewertet'/'Neu'/'Beliebt'/'#1' tag , beauty apps don't badge cards, the star rating carries quality."</span> Flagging the contradiction rather than picking a side silently: the web card's <code>CurationBadge</code> is real and live, the mobile decision says don't badge cards at all. Real signal found, correctly not shown here.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="sec" id="c11">
+  <p class="sec-eyebrow">OWNER FINAL DECISION (ROUND 5) , C11</p>
+  <h2>Converged card (recommended)</h2>
+
+  <div style="margin:0 0 20px;padding:14px 20px;background:#fff;border:2px solid var(--ink);border-radius:16px;max-width:820px">
+    <p style="margin:0;font-family:'Inter Tight';font-size:12.5px;font-weight:600;color:var(--ink);line-height:1.5">This is the converged design going forward, not another variation to compare. C1-C10 above stay as historical record; this recipe is the one the owner picked.</p>
+  </div>
+
+  <p class="why">Synthesis of every round above into one final recipe, exactly 3 text rows under the 5:4 photo (C1's winning ratio). <b>Row 1</b>: name left, star + rating value right, same row , the exact <code>.r1</code> + <code>.rating</code> pair already measured live this turn on #c5 (name right edge 213px, rating left edge 221px, an 8px gap, no overlap), reused unchanged. <b>Star is GOLD <code>#FFC32B</code></b> (measured live this turn: 11x11px fill <code>#FFC32B</code>), not C10's grey Airbnb-literal divergence , the owner overruled the grey, Solen's own locked "rating = yellow star" contract wins. <b>No review count</b> , dropped completely, same call as C10's blue-count removal, just paired with gold instead of grey. <b>Row 2</b> keeps the category label (owner likes it), reusing the same category strings C10 already established: Nagelstudio / Spa &amp; Wellness / Coiffeur / Barbershop. <b>Row 3</b> is the conditional address (C6's rule, reused verbatim: postal code + city when no city is selected, street address when Basel is selected) sharing one line with the price , the same <code>.r1</code> + <code>justify-content:space-between</code> pairing this file's own Variation B already used for address+price, measured live this turn on that exact row (grey rgb(107,107,107) both sides, 8px gap, no overlap). All three meta rows (category, address, price) stay recessive grey <code>--ink2</code>; the name is the one ink anchor; the star is gold, the rating value stays grey next to it. Both address states are shown below, side by side, so the owner can compare directly, same 4 real salons throughout (ratings/prices from C5, postal codes + street addresses from C6).</p>
+
+  <div style="margin-bottom:28px">
+    <span class="tag variant">CITY: ALL (Schweizweit, none selected) , row 3 = postal code + city</span>
+    <div class="row" style="margin-top:14px">
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" alt="Nail Studio Bliss"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body">
+          <div class="r1">
+            <span class="name">Nail Studio Bliss</span>
+            <span class="rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.5</span>
+          </div>
+          <div class="meta">Nagelstudio</div>
+          <div class="r1" style="justify-content:space-between">
+            <span class="meta">4051 Basel</span>
+            <span class="price">ab CHF 15</span>
+          </div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=450&fit=crop&q=80" alt="Smooth Skin Studio"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body">
+          <div class="r1">
+            <span class="name">Smooth Skin Studio</span>
+            <span class="rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.5</span>
+          </div>
+          <div class="meta">Spa &amp; Wellness</div>
+          <div class="r1" style="justify-content:space-between">
+            <span class="meta">4052 Basel</span>
+            <span class="price">ab CHF 20</span>
+          </div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=450&fit=crop&q=80" alt="Muse Beauty Studio"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body">
+          <div class="r1">
+            <span class="name">Muse Beauty Studio</span>
+            <span class="rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.2</span>
+          </div>
+          <div class="meta">Coiffeur</div>
+          <div class="r1" style="justify-content:space-between">
+            <span class="meta">4001 Basel</span>
+            <span class="price">ab CHF 35</span>
+          </div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&h=450&fit=crop&q=80" alt="Old Town Barbers"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body">
+          <div class="r1">
+            <span class="name">Old Town Barbers</span>
+            <span class="rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.3</span>
+          </div>
+          <div class="meta">Barbershop</div>
+          <div class="r1" style="justify-content:space-between">
+            <span class="meta">4051 Basel</span>
+            <span class="price">ab CHF 15</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <span class="tag variant">CITY: BASEL (selected) , row 3 = street address</span>
+    <div class="row" style="margin-top:14px">
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" alt="Nail Studio Bliss"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body">
+          <div class="r1">
+            <span class="name">Nail Studio Bliss</span>
+            <span class="rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.5</span>
+          </div>
+          <div class="meta">Nagelstudio</div>
+          <div class="r1" style="justify-content:space-between">
+            <span class="meta">Steinenvorstadt 5</span>
+            <span class="price">ab CHF 15</span>
+          </div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=450&fit=crop&q=80" alt="Smooth Skin Studio"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body">
+          <div class="r1">
+            <span class="name">Smooth Skin Studio</span>
+            <span class="rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.5</span>
+          </div>
+          <div class="meta">Spa &amp; Wellness</div>
+          <div class="r1" style="justify-content:space-between">
+            <span class="meta">Grabenring 8</span>
+            <span class="price">ab CHF 20</span>
+          </div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=450&fit=crop&q=80" alt="Muse Beauty Studio"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body">
+          <div class="r1">
+            <span class="name">Muse Beauty Studio</span>
+            <span class="rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.2</span>
+          </div>
+          <div class="meta">Coiffeur</div>
+          <div class="r1" style="justify-content:space-between">
+            <span class="meta">Rümelinsplatz 4</span><!-- german-ok: real Swiss street name from the salons DB address column, not UI copy -->
+            <span class="price">ab CHF 35</span>
+          </div>
+        </div>
+      </div>
+      <div class="card w210">
+        <div class="photo r54"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&h=450&fit=crop&q=80" alt="Old Town Barbers"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+        <div class="body">
+          <div class="r1">
+            <span class="name">Old Town Barbers</span>
+            <span class="rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.3</span>
+          </div>
+          <div class="meta">Barbershop</div>
+          <div class="r1" style="justify-content:space-between">
+            <span class="meta">Münsterplatz 11</span><!-- german-ok: real Swiss street name from the salons DB address column, not UI copy -->
+            <span class="price">ab CHF 15</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notes" style="max-width:820px">
+    <b>What changed vs the earlier rounds, in one place</b>
+    <ul>
+      <li>Star: GOLD <code>#FFC32B</code> (locked contract), not C10's grey Airbnb-literal test.</li>
+      <li>Count: dropped, matching C10's call, but the value now sits next to a gold star instead of grey.</li>
+      <li>Category label: kept as its own row (owner preference), reusing C10's real category strings.</li>
+      <li>Address: C6's conditional rule verbatim, both states shown here so nothing is silently picked.</li>
+      <li>Price: stays recessive grey (this file's C5-C9 convention), shares row 3 with the address rather than adding a 4th row.</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <b>File</b>: public/_mockups/card-redesign.html , mockup only, no real .tsx touched.<br>
+  <b>Real card</b>: app/[locale]/_components/homepage/SalonCard.tsx (called from ForYouSalonRows.tsx, Nearby.tsx, search results, the saved-salons page).<br>
+  <b>Price format</b>: "ab CHF {amount}" per this session's brief; PriceFrom.tsx's own default is amount-first ("{amount} CHF"), SalonCard.tsx:599 currently renders "CHF {amount}" bold , neither of those two is the format used here, flagging so the eventual code change picks one format on purpose.<br>
+  <b>Price weight</b>: kept recessive grey (<code>text-s-ink-2 font-normal</code>, CardText.tsx's own CardMeta recipe) in all 3 variations, per brief , not bold, not blue, even though SalonCard.tsx:599 currently bolds it.<br>
+  <b>C5/C6 data source</b>: real DB SELECT this turn against the main repo's <code>.env.local</code> (service-role key, <code>@supabase/supabase-js</code>), <code>salons</code> table, columns <code>average_rating</code>, <code>review_count</code>, <code>address</code>, <code>postal_code</code>, filtered to the 12 <code>forYouSalons.ts</code> ids. No write, SELECT only. Full 12-salon result reported in the session's changelog, not repeated in this file.<br>
+  <b>C7/C8/C9 (round 3)</b>: C8's font diagnosis is Playwright-measured live this turn against this file's own rendered #c5 (not assumed from CSS source); C9's format reuses the real, shipped <code>count.toLocaleString("de-CH")</code> convention (4 file:line citations in the Data notes above) rather than inventing a comma or k-abbrev format. ink-2 token used throughout is this file's own <code>--ink2:#6B6B6B</code> (root, matches <code>tailwind.config.js</code>'s <code>s-ink-2</code>), not #71717A.<br>
+  <b>C10/C11/C12 (round 4, Airbnb reference)</b>: adapted STRUCTURE only from the owner's Airbnb "Popular homes in Paris" screenshot; AESTHETIC stays this file's own Solen tokens throughout (per the dual-axis rule). Category labels (Nagelstudio / Spa &amp; Wellness / Coiffeur / Barbershop) and city (Basel) reuse the same real values already established in this file's own Data notes and C1-C9 sections, not invented. Star rendered grey (<code>#6B6B6B</code>) instead of this file's shipped gold <code>#FFC32B</code> in all 3 ideas, to match the Airbnb reference's own dark star, an explicit divergence from the CLAUDE.md design contract's locked "rating = yellow star" row, flagged for an owner pick, not silently applied as final. Idea C's bold price is a second flagged divergence from this file's own C5-C9 recessive-price convention. "Guest favorite" badge investigated and deliberately NOT rendered, see the note inside #c10 (SalonCard.tsx:257-278/264, ForYouSalonRows.tsx:57).
+</footer>
+
+</body>
+</html>
