@@ -24,3 +24,19 @@ Sources (another session's worktree, read-only):
 - [x] Broken hook money-update-cas-warn.py , RESOLVED: the live global settings no longer reference it (only an old backup ~/.claude/settings.json.bak2 does); nothing in main or any worktree wires it; already fixed before this turn, no action needed
 
 - Full record: _design-system/research/IG_PRINCIPLES_VERDICTS_2026-07-16.md (54a846862); mockup page 12ccbbc76 (browser-verified).
+
+## Build round (owner "all approves", 2026-07-16), atomic boxes
+
+- [ ] ig1 password strength bar (register + reset-password), 8-char floor kept, no new dependency
+- [ ] ig2 caret preservation in the Swiss phone formatter (PayConfirmStep + GuestBookingForm)
+- [ ] ig3 keyset cursor pagination for the discovery feed (route + RPC + /inspo client)
+- [ ] ig4 gallery framing hint + center-top object-position on the square grid
+- [ ] ig5 one ink S symbol: favicon + PWA icon set + manifest colors
+- [ ] ig6 DateTimePicker range variant + VacationTab wiring
+- [ ] ig7 68ch measure on SalonAbout, promoted to a shared utility
+- [ ] ig8 CategoryHeroCarousel white title 700 to 600
+- [ ] ig9 calibrated icon-stroke table applied to FilterSheet chip / ProgressStepper / header menu
+- [ ] ig10 grid-type classification step into the law (dashboard demo stays with the parked operator-home decision)
+- [ ] ig11 balance collapse-test step into solen-taste-diagnosis
+- [ ] ig12 activity signal on the live determinate progress bar (discovery import)
+- [ ] Each batch: coder + loop-reviewer to PASS, tsc 0, committed

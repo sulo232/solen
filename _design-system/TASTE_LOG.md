@@ -311,3 +311,26 @@ Until then this TASTE_LOG block is the newer dated owner decision and wins by pr
 ### Applied in code?
 - Mockups only (`traced.html` is current). Real `/dashboard` untouched; build starts after the
   owner approves the final mockup + rules on the §12 supersede.
+
+## 2026-07-16, IG-principles round 1: all 12 ADD candidates APPROVED
+
+Owner verbatim: "all approves" (answering the before/after page public/_mockups/ig-principles/index.html, which listed exactly 12 ADD candidates ig1-ig12 out of 217 evaluated principles; the other 205 were ALREADY_EXISTS / CONFLICTS_WITH_LOCK / DONT_ADD, register at public/_mockups/ig-principles/all-verdicts.html).
+
+Reading logged: "all approves" = build all twelve, INCLUDING ig5's candidate symbol (the ink S mark), which the page had flagged as needing a named yes, and including ig8 (the photo-title weight drop) and ig12 (progress-bar activity signal) which I had recommended looking at / skipping. Latest dated owner call wins.
+
+| id | decision | what ships |
+|---|---|---|
+| ig1 dm-length-beats-symbols | APPROVED | register + reset-password: the 3-item composition checklist becomes one computed strength bar + one exact-cause line; 8-char floor stays (matches the server schema) |
+| ig2 dm-preserve-caret-on-autoformat | APPROVED | caret stays put while the Swiss phone formatter reformats (checkout + guest booking) |
+| ig3 dm-cursor-pagination-over-offset | APPROVED | /inspo discovery feed moves from offset to a keyset cursor, no repeated cards mid-scroll |
+| ig4 dp-crop-bone-shaft-not-joint | APPROVED | gallery uploader gets one framing line; square photo grid crops center-top, not blind center |
+| ig5 dp-logo-format-earned-recognition | APPROVED incl. the ink S symbol | one ink-on-white symbol for favicon + PWA icons + manifest colors; the wordmark stays canonical everywhere it fits |
+| ig6 dm-two-months-range-picker | APPROVED | DateTimePicker gains the reserved range variant (two adjacent months, shaded span, result pill), wired into settings VacationTab |
+| ig7 dp-line-length-measure | APPROVED | the already-approved 68ch reading cap finally applied to SalonAbout, promoted to one shared measure utility |
+| ig8 dp-irradiation-illusion | APPROVED | white-on-photo category titles drop 700 to 600 so they read equal to their ink counterparts |
+| ig9 dp-stem-matched-icon-stroke | APPROVED | one calibrated icon-stroke-by-size table replaces the three ad-hoc values (1.9 / 2 / 2.2) |
+| ig10 dp-grid-matches-content | APPROVED | the grid-type classification step (manuscript / column / modular / hierarchical) enters the law as a pre-layout decision; its dashboard demo folds into the parked operator-home decision, not a separate fork |
+| ig11 dp-asymmetric-balance | APPROVED | solen-taste-diagnosis gains a balance collapse-test step |
+| ig12 dp-progress-motion-is-status-signal | APPROVED | the one live determinate bar (discovery import) gains an activity signal so a stall reads as stalled, not as done-ish |
+
+Full per-principle reasoning + citations: _design-system/research/IG_PRINCIPLES_VERDICTS_2026-07-16.md.
