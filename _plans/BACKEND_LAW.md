@@ -146,6 +146,25 @@ Every claim carries a tier: **T1** formal standard / replicated (RFC, NIST, OWAS
 
 - [ ] **CORRECTION (owner, 2026-07-16): "why did you stop and i told you i need a few hour long research".** The research fleet never stopped (it is a background workflow, 12/15 research lanes had already landed when he asked). The real mistake is MINE and it is a reporting mistake: I ended the turn with a status report while the fleet ran, so from the owner's side it looked like I quit after 20 minutes. Correct behavior for a long autonomous run: BLOCK on the in-flight work and continue straight into the next phase in the same turn, do not hand back a progress report as if it were a deliverable. Rule 20 says a transient blocker is a WAIT, not a STOP, and "my own background job has not finished yet" is the most transient blocker there is. Applied this turn: blocking on the workflow, then synthesizing, no interim hand-back.
 
+## LIVE FINDING , needs an owner decision (surfaced 2026-07-16, verified by me on the prod DB)
+
+**Salon amenities are fabricated by a hash function and rendered to real customers today.**
+
+`supabase/migrations/20260530_seed_salon_amenities.sql:11-21` (V3-D387) sets nine amenity booleans on the live `salons` table from `abs(hashtext(id || salt)) % 100 < N`. Its own header says the intent: "seed descriptive salon amenities so the filter facets return varied, meaningful results" because the real columns were "unpopulated (~1 salon each)".
+
+**Verified live on prod (`execute_sql`, read-only, 2026-07-16):** of 20 active salons, `wheelchair_matches_hash = 20` and `lgbtq_matches_hash = 20`. Every single active salon's value still equals the hash output exactly, so not one has ever been corrected by a real owner. 7 of 20 currently claim wheelchair access, 8 claim LGBTQ+ welcome, purely as a function of their UUID.
+
+**Where it renders:** `app/[locale]/_components/salon/SalonAdditionalInfo.tsx:54-62` (badges "Rollstuhlgerecht", "LGBTQ+ willkommen", "Kinderfreundlich", "Frauengeführt", ...) and `app/[locale]/_components/search/SearchTemplate.tsx:230-237` (live search filter facets).
+
+**Why this one is different from the usual no-fabrication hit:** these are accessibility and identity claims. A wheelchair user filtering for "Rollstuhlgerecht" gets a coin flip. That is a real-world harm and plausibly a Swiss legal exposure, not a taste violation.
+
+Not in `_design-system/REMOVED.md`, not in `BACKEND_AUDIT_INDEX.md`, not in `BACKEND_HEALTH_AUDIT_2026-07-14.md` (grepped `hashtext` / `seed_salon_amenities` / `fabricat*` across `_plans/*.md`). Genuinely new.
+
+**Owner fork (NOT actioned, I am not touching code this turn):**
+- (a) null the 9 columns, hide the badges + facets until salons self-report. Cheap, immediate, honest. Loses the varied-facet UX the migration was chasing.
+- (b) add the amenity fields to salon onboarding/dashboard, backfill from real answers. The correct long-term fix, costs an onboarding form addition.
+- (c) restrict the fabricated flags to `is_test = true` salons, null them for the 20 real ones, if it was ever meant to be demo-only.
+
 ## Unplanned additions / parked decisions
 
 - **Parked for workstream 26 (MAKE_IT_REAL), found 2026-07-16 while clearing the tree:** `app/[locale]/_components/homepage/searchCategories.ts:62` still carries a fabricated `count: "14 Salons"` string. Same no-fabrication class as the Nearby map teaser fixed in `82c288691`, different surface (search categories), so it is that workstream's call, not this one's.
