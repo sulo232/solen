@@ -1,6 +1,6 @@
 "use client";
 
-import { formatSwissPhoneInput } from "@/lib/format-phone";
+import { usePhoneCaretInput } from "@/lib/format-phone";
 import {
   useState,
   useImperativeHandle,
@@ -96,6 +96,16 @@ const GuestBookingForm = forwardRef<GuestBookingFormHandle, GuestBookingFormProp
       [compute, onChange],
     );
 
+    // ig2 (2026-07-16): caret-preserving phone input, the shared math lives in
+    // lib/format-phone.ts (usePhoneCaretInput / formatSwissPhoneWithCaret) so
+    // PayConfirmStep's contact-phone field uses the exact same logic, not a copy.
+    const { inputRef: phoneInputRef, onChange: handlePhoneChange } = usePhoneCaretInput(
+      (formatted, raw) => {
+        setPhone(formatted);
+        sync(name, raw, email);
+      },
+    );
+
     useImperativeHandle(
       ref,
       () => ({
@@ -172,14 +182,12 @@ const GuestBookingForm = forwardRef<GuestBookingFormHandle, GuestBookingFormProp
             </span>
             <input
               id="guest-phone"
+              ref={phoneInputRef}
               type="tel"
               inputMode="numeric"
               autoComplete="tel-national"
               value={phone}
-              onChange={(ev) => {
-                setPhone(formatSwissPhoneInput(ev.target.value));
-                sync(name, ev.target.value, email);
-              }}
+              onChange={handlePhoneChange}
               placeholder={t("phonePlaceholder")}
               aria-invalid={!!errors.phone}
               aria-describedby={errors.phone ? "guest-phone-error" : "guest-phone-hint"}

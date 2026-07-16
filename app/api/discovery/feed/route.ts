@@ -11,6 +11,29 @@ import { feedCacheHeaders } from "@/lib/discovery/feed-cache-headers";
 // caching rationale, including why the search branch is always cacheable and the
 // for-you/general branches are no-store whenever a session cookie was present).
 
+// ig3 (2026-07-16): opaque keyset cursor for the general browse branch (discovery_feed_v2,
+// supabase/migrations/20260716120000_discovery_feed_keyset_cursor.sql). Base64url JSON of the
+// last row's boundary on the RPC's own order-by keys (gender rank, sort_order, created_at,
+// id). No meaning outside this route, never parsed by the client.
+type FeedCursor = { r: number; s: number; c: string; i: string };
+function decodeFeedCursor(raw: string): FeedCursor | null {
+  try {
+    const parsed = JSON.parse(Buffer.from(raw, "base64url").toString("utf8"));
+    if (
+      parsed && typeof parsed.r === "number" && typeof parsed.s === "number" &&
+      typeof parsed.c === "string" && typeof parsed.i === "string"
+    ) {
+      return parsed as FeedCursor;
+    }
+  } catch {
+    // fall through to null (invalid cursor)
+  }
+  return null;
+}
+function encodeFeedCursor(cursor: FeedCursor): string {
+  return Buffer.from(JSON.stringify(cursor), "utf8").toString("base64url");
+}
+
 export async function GET(req: NextRequest) {
   try {
     const disabled = await checkFeatureEnabled("discovery");
@@ -129,7 +152,26 @@ export async function GET(req: NextRequest) {
       userGender = (profile?.disc_gender as string | undefined) ?? undefined;
     }
 
-    const { data: rows, error: feedErr } = await admin.rpc("discovery_feed", {
+    // ig3 (2026-07-16): decode the opaque cursor, if any, BEFORE the RPC call so a malformed
+    // one fails fast with a 400 instead of silently falling back to page 1.
+    let cursor: FeedCursor | null = null;
+    if (filters.cursor) {
+      cursor = decodeFeedCursor(filters.cursor);
+      if (!cursor) return NextResponse.json({ error: "invalid cursor" }, { status: 400 });
+    }
+
+    // discovery_feed_v2 (supabase/migrations/20260716120000_discovery_feed_keyset_cursor.sql)
+    // is a strict superset of discovery_feed: p_cursor_id null means identical where/order/limit/
+    // offset to the old 9-arg discovery_feed via p_offset, so a plain page/offset call (no
+    // cursor) behaves exactly as before. p_cursor_id set means p_offset is ignored and rows are
+    // keyset-filtered to strictly after the cursor boundary, so a mid-scroll cron insert can no
+    // longer shift an OFFSET and repeat the last card.
+    //
+    // `as any` on the function name only: lib/database.types.ts is generated FROM the live DB
+    // schema (supabase gen types) and this sub-agent has no DB/MCP access to apply the migration
+    // and regenerate it, so discovery_feed_v2 isn't in the generated RPC name union yet. Narrow,
+    // intentional, and removable in one line once the migration is applied + types regenerate.
+    const { data: rows, error: feedErr } = await admin.rpc("discovery_feed_v2" as any, {
       p_category: filters.category && filters.category !== "all" ? filters.category : undefined,
       p_gender: filters.gender && filters.gender !== "all" ? filters.gender : undefined,
       p_texture: filters.texture || undefined,
@@ -140,17 +182,30 @@ export async function GET(req: NextRequest) {
       p_offset: offset,
       // Progressive drill-down cut tags (di.tags && p_tags_any). 9th arg, live-applied + verified; no-op when null.
       p_tags_any: pTagsAny,
-    });
+      p_cursor_rank: cursor?.r,
+      p_cursor_sort_order: cursor?.s,
+      p_cursor_created_at: cursor?.c,
+      p_cursor_id: cursor?.i,
+    }) as { data: Array<Record<string, any>> | null; error: { message: string } | null };
     if (feedErr) {
-      console.error("[Discover] discovery_feed RPC failed:", feedErr);
+      console.error("[Discover] discovery_feed_v2 RPC failed:", feedErr);
       return NextResponse.json({ error: feedErr.message }, { status: 500 });
     }
     const list = (rows ?? []) as Array<Record<string, any>>;
     const total = list.length > 0 ? Number(list[0].total_count) : 0;
     // Ring 2d: same tiktok_embed_html trim as the search_discovery branch above.
-    const items = list.map(({ total_count, tiktok_embed_html, ...rest }) => rest);
+    const itemsWithCursorKeys = list.map(({ total_count, tiktok_embed_html, ...rest }) => rest);
+    // ig3: the last row's boundary becomes the NEXT cursor. Only meaningful (and only sent)
+    // when there's actually another page, so the client has a clean "stop paginating" signal.
+    const effectiveOffset = cursor ? 0 : offset;
+    const hasMore = total > effectiveOffset + limit;
+    const lastRow = itemsWithCursorKeys[itemsWithCursorKeys.length - 1];
+    const nextCursor = hasMore && lastRow
+      ? encodeFeedCursor({ r: lastRow.rank_key, s: lastRow.sort_order_key, c: lastRow.created_at_key, i: lastRow.id })
+      : null;
+    const items = itemsWithCursorKeys.map(({ rank_key, sort_order_key, created_at_key, ...pub }) => pub);
     return NextResponse.json(
-      { items, total, page: filters.page, limit, has_more: total > offset + limit },
+      { items, total, page: filters.page, limit, has_more: hasMore, next_cursor: nextCursor },
       { headers: feedCacheHeaders({ isSearchBranch: false, userId }) },
     );
   } catch (e: any) {

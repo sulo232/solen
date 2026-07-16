@@ -50,6 +50,10 @@ function DiscoverPageContent() {
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
+  // ig3 (2026-07-16): keyset cursor from the general browse branch's response (discovery_feed_v2).
+  // Branches that don't return one yet (search / logged-in for-you) leave this null and the
+  // observer falls back to the page/offset increment below, unaffected.
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [error, setError] = useState(false);
 
   // Filters
@@ -190,8 +194,13 @@ function DiscoverPageContent() {
 
   // Fetch items — V3-D402 (perf): session cache keyed by the filter signature. Re-tapping a filter combo you've
   // already loaded restores its page-1 results instantly (no network, no grid flash) instead of a ~700ms refetch.
-  const feedCache = useRef<Map<string, { items: DiscoveryItem[]; hasMore: boolean }>>(new Map());
-  const fetchItems = useCallback(async (pageNum: number, append = false) => {
+  const feedCache = useRef<Map<string, { items: DiscoveryItem[]; hasMore: boolean; nextCursor: string | null }>>(new Map());
+  // ig3 (2026-07-16): fetchItems still takes pageNum (unchanged first-load / legacy-branch shape),
+  // plus an optional cursor. When a cursor is passed, the route pages the general browse branch by
+  // KEYSET instead of the page's OFFSET, so a mid-scroll ingest-cron insert can't shift the offset
+  // and repeat the last card. `page` param still rides along for branches without a cursor yet
+  // (search / logged-in for-you); the route ignores it whenever a cursor is present.
+  const fetchItems = useCallback(async (pageNum: number, append = false, cursor: string | null = null) => {
     const sig = JSON.stringify({ category, gender, search, texture, style, cuts });
     // Cache-first for the initial page of a combo → instant repeat taps, no loading flash.
     if (pageNum === 1 && !append) {
@@ -199,6 +208,7 @@ function DiscoverPageContent() {
       if (cached) {
         setItems(cached.items);
         setHasMore(cached.hasMore);
+        setNextCursor(cached.nextCursor);
         setError(false);
         setLoading(false);
         return;
@@ -208,6 +218,7 @@ function DiscoverPageContent() {
     setError(false);
     try {
       const params = new URLSearchParams({ page: String(pageNum), limit: "12" });
+      if (cursor) params.set("cursor", cursor);
       if (category !== "all") params.set("category", category);
       if (gender !== "all") params.set("gender", gender);
       if (search) params.set("search", search);
@@ -231,9 +242,10 @@ function DiscoverPageContent() {
       } else {
         setItems(data.items ?? []);
         // Cache only the initial page of a combo (infinite-scroll pages stay live).
-        feedCache.current.set(sig, { items: data.items ?? [], hasMore: data.has_more ?? false });
+        feedCache.current.set(sig, { items: data.items ?? [], hasMore: data.has_more ?? false, nextCursor: data.next_cursor ?? null });
       }
       setHasMore(data.has_more ?? false);
+      setNextCursor(data.next_cursor ?? null);
     } catch (err) {
       // V3-D343 (W17, 2026-05-28): informative log added per CLAUDE.md error-handling rule.
       console.error("[Discover] feed fetch failed:", err);
@@ -246,10 +258,13 @@ function DiscoverPageContent() {
   // Reset and fetch on filter change
   useEffect(() => {
     setPage(1);
+    setNextCursor(null);
     fetchItems(1);
   }, [fetchItems]);
 
-  // Infinite scroll
+  // Infinite scroll. ig3 (2026-07-16): prefer the keyset cursor from the previous response over
+  // incrementing page (avoids the offset-shift-under-concurrent-insert bug). Branches that don't
+  // hand back a cursor keep the page/offset fallback, unchanged.
   const observerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!hasMore || loading) return;
@@ -258,14 +273,14 @@ function DiscoverPageContent() {
         if (entry.isIntersecting) {
           const nextPage = page + 1;
           setPage(nextPage);
-          fetchItems(nextPage, true);
+          fetchItems(nextPage, true, nextCursor);
         }
       },
       { threshold: 0.1 }
     );
     if (observerRef.current) observer.observe(observerRef.current);
     return () => observer.disconnect();
-  }, [hasMore, loading, page, fetchItems]);
+  }, [hasMore, loading, page, nextCursor, fetchItems]);
 
   const handleItemClick = (item: DiscoveryItem) => {
     // V3-D389: salon-sourced items tap through to the salon page, not a discovery detail.

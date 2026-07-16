@@ -8,7 +8,7 @@ import { motion } from 'motion/react';
 import { ShieldCheck, AlertCircle, Scissors, Calendar, Star, CreditCard, Store, UserRound } from 'lucide-react';
 import { useBooking } from '@/lib/booking-context';
 import { toast } from '@/app/[locale]/_components/primitives/Toast';
-import { formatSwissPhoneInput } from '@/lib/format-phone';
+import { formatSwissPhoneInput, usePhoneCaretInput } from '@/lib/format-phone';
 import { Avatar, useEnterMotion } from '@/app/[locale]/_components/primitives';
 import { formatPrice } from '@/lib/format';
 import Spinner from '@/components-legacy/ui/Spinner';
@@ -74,6 +74,11 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
   const [contactPhone, setContactPhone] = useState('');
   const [contactLoaded, setContactLoaded] = useState(false);
   const [editingContact, setEditingContact] = useState(false);
+  // ig2 (2026-07-16): same caret-preserving helper as GuestBookingForm's phone field,
+  // shared math lives in lib/format-phone.ts (usePhoneCaretInput / formatSwissPhoneWithCaret).
+  const { inputRef: contactPhoneInputRef, onChange: handleContactPhoneChange } = usePhoneCaretInput(
+    (formatted) => setContactPhone(formatted),
+  );
   useEffect(() => {
     if (!isLoggedIn) return;
     let alive = true;
@@ -477,8 +482,9 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
             <input
               type="tel"
               inputMode="tel"
+              ref={contactPhoneInputRef}
               value={contactPhone}
-              onChange={(e) => setContactPhone(formatSwissPhoneInput(e.target.value))}
+              onChange={handleContactPhoneChange}
               placeholder={tp('contactPhone')}
               aria-label={tp('contactPhone')}
               className="mt-3 w-full"
