@@ -1,0 +1,246 @@
+<!doctype html>
+<!-- Base: elicitation -->
+<!-- Scale: component -->
+<!-- Exists-check: npm run exists "password strength" run this turn (0 hits, net-new meter); full per-principle exists evidence lives in the verdict record _design-system/research/IG_PRINCIPLES_VERDICTS_2026-07-16.md on main (143 of 217 principles ALREADY EXIST and are NOT re-proposed here; 35 conflict with locks and are excluded; graveyard checked per verdict). This page renders ONLY the 12 ADD verdicts for owner approval. -->
+<!-- Grounded-in: app/[locale]/auth/register/page.tsx (the register password rules the ig1 pair reproduces) -->
+<!-- Grounded-in: app/[locale]/dashboard/settings/page.tsx (the settings vacation range inputs the ig6 pair reproduces) -->
+<!-- Grounded-in: app/[locale]/_components/salon/SalonAbout.tsx (the salon about paragraph the ig7 pair reproduces) -->
+<!-- Grounded-in: public/_mockups/_assets/taste-round2/photo-a.jpg (real salon photo used by the ig8 pair) -->
+<!-- Owner-scope: all-variants: every ADD renders before/after or an honest text card; nothing ships without a per-item yes. -->
+<!-- Backend-check: password meter -> client-side scoring only, server floor stays 8 chars (auth schema EXISTS); range picker -> DateTimePicker.md already reserves the range variant slot; caret/pagination/progress-motion are behavior fixes on EXISTING endpoints/fields (no new backend); logo -> asset swap only. -->
+<!-- Depicts: password checklist + strength bar -> app/[locale]/auth/register/page.tsx composition list, replacement meter NET-NEW (exists-check 0) -->
+<!-- Depicts: vacation range inputs -> app/[locale]/dashboard/settings/page.tsx VacationTab native date inputs; two-month range calendar NET-NEW variant reserved by _design-system/components/DateTimePicker.md -->
+<!-- Depicts: description paragraph width -> app/[locale]/_components/salon/SalonAbout.tsx max-w-3xl block -->
+<!-- Depicts: photo headline weight -> app/[locale]/_components/search/CategoryHeroCarousel.tsx white-on-photo title -->
+<!-- Depicts: icon stroke pair -> lucide icons as used in FilterSheet/ProgressStepper (real Lucide paths, not hand-drawn) -->
+<!-- Depicts: app icon marks -> public/icons/icon-96.png + public/favicon.svg rendered as the real files -->
+<!-- Depicts: upload drop zone -> components-legacy/dashboard/GalleryManager.tsx drop zone recipe; framing hint line NET-NEW copy -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IG principles on the register, settings and salon surfaces: the 12 ADD candidates (before / after)</title>
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#9CA3AF;--border:#E4E4E7;--sunken:#F4F4F5;--white:#FFFFFF;--accent:#276EF1;--success:#16A34A;--error:#DC2626}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,-apple-system,"Segoe UI",sans-serif;background:var(--white);color:var(--ink);font-size:14px;line-height:1.5;padding-bottom:120px}
+  h1,h2,h3{font-family:"Inter Tight",Inter,sans-serif}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+  header.page{border-bottom:1px solid var(--border);padding:30px 0 22px;margin-bottom:26px}
+  header.page h1{font-size:clamp(22px,3vw,28px);font-weight:700}
+  header.page p{color:var(--ink2);max-width:74ch;margin-top:8px}
+  .q{border:1px solid var(--border);border-radius:16px;margin:18px 0;padding:22px 24px}
+  .q .head{display:flex;gap:10px;align-items:baseline;margin-bottom:6px;flex-wrap:wrap}
+  .pid{font-size:12px;font-weight:600;color:var(--ink2);border:1px solid var(--border);border-radius:999px;padding:2px 10px;white-space:nowrap}
+  .q h3{font-size:17px;font-weight:600}
+  .q>p{color:var(--ink2);font-size:13px;max-width:80ch;margin:6px 0 16px}
+  .duo{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+  .side{border:1px solid var(--border);border-radius:12px;padding:16px;min-width:0}
+  .cap{font-size:12px;font-weight:600;margin-bottom:12px}
+  .cap small{display:block;font-weight:400;color:var(--ink2);margin-top:2px}
+  .field label{display:block;font-size:12px;color:var(--ink2);margin-bottom:6px}
+  .field input{width:100%;height:44px;border:1px solid var(--border);border-radius:16px;padding:0 14px;font-size:14px;color:var(--ink);background:var(--white)}
+  .rules{margin-top:10px;font-size:12px;color:var(--ink2)}
+  .rules div{display:flex;gap:8px;align-items:center;margin-top:4px}
+  .dot{width:14px;height:14px;border-radius:999px;border:1.5px solid var(--ink3);display:inline-block}
+  .dot.ok{background:var(--success);border-color:var(--success)}
+  .meter{margin-top:12px}
+  .meter .bar{height:6px;border-radius:999px;background:var(--sunken);overflow:hidden}
+  .meter .fill{height:100%;width:72%;border-radius:999px;background:var(--success)}
+  .meter .line{font-size:12px;color:var(--ink2);margin-top:6px}
+  .drop{border:1.5px dashed var(--border);border-radius:16px;padding:26px 16px;text-align:center;color:var(--ink2);font-size:13px;background:var(--white)}
+  .hint{font-size:12px;color:var(--ink2);margin-top:8px}
+  .dates{display:flex;gap:10px}
+  .dates input{flex:1;height:44px;border:1px solid var(--border);border-radius:16px;padding:0 12px;font-size:13px;color:var(--ink2)}
+  .cal2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .cal{border:1px solid var(--border);border-radius:12px;padding:10px}
+  .cal .m{font-size:12px;font-weight:600;text-align:center;margin-bottom:6px}
+  .cal table{width:100%;border-collapse:collapse;font-size:11px;text-align:center}
+  .cal td{padding:4px 0;color:var(--ink);border-radius:8px}
+  .cal td.dim{color:var(--ink3)}
+  .cal td.span{background:#E8F0FE}/* hue-ok: booking date/slot selected stays blue per the locked calendar exception */
+  .cal td.end{background:var(--accent);color:#fff;border-radius:999px}
+  .para{font-size:14px;color:var(--ink);line-height:1.65}
+  .para.narrow{max-width:68ch}
+  .photo{position:relative;border-radius:12px;overflow:hidden}
+  .photo img{display:block;width:100%;height:170px;object-fit:cover}
+  .photo .t{position:absolute;left:14px;bottom:12px;color:#fff;font-family:"Inter Tight",Inter,sans-serif;font-size:20px;text-shadow:0 1px 8px rgba(0,0,0,.35)}
+  .t.b700{font-weight:700}
+  .t.b600{font-weight:600}
+  .iconrow{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+  .iconrow .cell{display:flex;gap:8px;align-items:center;font-size:13px}
+  .marks{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+  .marks img{width:48px;height:48px;border-radius:10px;border:1px solid var(--border);background:var(--white)}
+  .marks .word{font-family:"Inter Tight",Inter,sans-serif;font-weight:800;font-size:22px}
+  .beh{border-left:3px solid var(--sunken);padding:10px 14px;margin-top:8px;font-size:13px}
+  .beh b{font-weight:600}
+  .answer{position:fixed;left:0;right:0;bottom:0;background:var(--white);border-top:1px solid var(--border);padding:12px 20px;font-size:13px}
+  .answer b{font-weight:600}
+  .answer div{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="page">
+    <h1>The 12 survivors of 217: before / after for your yes or no</h1>
+    <p>Both IG files were evaluated principle by principle against your law and the real code: 143 already exist here, 35 collide with your locks, 27 are wrong for this product. These 12 are genuine gaps, ranked by value. Seven are visual (pairs below), five are behavior or process (honest text cards, nothing to draw). Full reasoning per principle: the verdict record in the design-system research folder.</p>
+  </header>
+
+  <div class="q">
+    <div class="head"><span class="pid">ig1</span><h3>Password rule is backwards: length beats symbols</h3></div>
+    <p>Today the signup and reset forms demand 8 chars plus a capital letter plus a digit. That rejects long safe passphrases and happily accepts weak ones that tick the boxes; the server only enforces the 8-char floor anyway, so the checklist is pure friction on a conversion-critical screen. After: one entropy-scored bar plus one exact-cause line, floor unchanged.</p>
+    <div class="duo">
+      <div class="side">
+        <div class="cap">before, the live composition checklist</div>
+        <div class="field"><label>Password</label><input type="text" value="correct horse battery staple" readonly></div>
+        <div class="rules">
+          <div><span class="dot ok"></span> At least 8 characters</div>
+          <div><span class="dot"></span> One capital letter</div>
+          <div><span class="dot"></span> One digit</div>
+        </div>
+      </div>
+      <div class="side">
+        <div class="cap">after, one strength bar + one cause line<small>reuses the existing thin progress-bar treatment; floor stays 8 chars</small></div>
+        <div class="field"><label>Password</label><input type="text" value="correct horse battery staple" readonly></div>
+        <div class="meter"><div class="bar"><div class="fill"></div></div><div class="line">Strong. Length does the work.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="head"><span class="pid">ig4</span><h3>Photo uploads: crop guidance so limbs are not cut at the joint</h3></div>
+    <p>Portfolio photos get a blind center crop today. A crop through a wrist or elbow reads as an amputation, and on this marketplace the photo IS the decision input. After: one framing line under the drop zone plus a center-top crop bias on the grid.</p>
+    <div class="duo">
+      <div class="side">
+        <div class="cap">before, the live drop zone</div>
+        <div class="drop">Drag photos here or tap to upload</div>
+      </div>
+      <div class="side">
+        <div class="cap">after, one framing hint added</div>
+        <div class="drop">Drag photos here or tap to upload</div>
+        <div class="hint">Tip: leave room above the head and crop mid-arm, not at wrists or elbows. Squares crop from the top.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="head"><span class="pid">ig5</span><h3>One mark instead of three: your app icons disagree with your brand</h3></div>
+    <p>These are the real files served today: the installed-app icon and the browser favicon are two different old marks, and neither matches the ink wordmark the product uses everywhere. After needs YOUR pick of the one small symbol; the wordmark stays canonical everywhere else.</p>
+    <div class="duo">
+      <div class="side">
+        <div class="cap">before, the real marks live right now</div>
+        <div class="marks">
+          <img src="/icons/icon-96.png" alt="The installed-app icon as served today">
+          <img src="/favicon.svg" alt="The browser favicon as served today">
+          <span class="word">Solen</span>
+        </div>
+      </div>
+      <div class="side">
+        <div class="cap">after, one ink-on-white symbol family<small>the concrete symbol is a brand decision that needs your named yes; candidate: the wordmark S in ink</small></div>
+        <div class="marks">
+          <span class="word" style="width:48px;height:48px;border:1px solid var(--border);border-radius:10px;display:inline-flex;align-items:center;justify-content:center">S</span>
+          <span class="word">Solen</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="head"><span class="pid">ig6</span><h3>Vacation dates: a real range picker instead of two disconnected boxes</h3></div>
+    <p>The one true cross-month range in the product (salon vacation mode in the dashboard settings) is two bare date inputs today. The date-picker component doc already reserves a range variant slot. After: two adjacent months, shaded span, blue endpoints (your locked calendar exception).</p>
+    <div class="duo">
+      <div class="side">
+        <div class="cap">before, the live inputs</div>
+        <div class="dates"><input value="2026-08-03" readonly><input value="2026-09-06" readonly></div>
+      </div>
+      <div class="side">
+        <div class="cap">after, two adjacent months with a shaded span</div>
+        <div class="cal2">
+          <div class="cal"><div class="m">August</div><table>
+            <tr><td class="dim">27</td><td class="dim">28</td><td class="dim">29</td><td class="dim">30</td><td class="dim">31</td><td>1</td><td>2</td></tr>
+            <tr><td class="end">3</td><td class="span">4</td><td class="span">5</td><td class="span">6</td><td class="span">7</td><td class="span">8</td><td class="span">9</td></tr>
+            <tr><td class="span">10</td><td class="span">11</td><td class="span">12</td><td class="span">13</td><td class="span">14</td><td class="span">15</td><td class="span">16</td></tr>
+            <tr><td class="span">17</td><td class="span">18</td><td class="span">19</td><td class="span">20</td><td class="span">21</td><td class="span">22</td><td class="span">23</td></tr>
+            <tr><td class="span">24</td><td class="span">25</td><td class="span">26</td><td class="span">27</td><td class="span">28</td><td class="span">29</td><td class="span">30</td></tr>
+            <tr><td class="span">31</td><td class="dim">1</td><td class="dim">2</td><td class="dim">3</td><td class="dim">4</td><td class="dim">5</td><td class="dim">6</td></tr>
+          </table></div>
+          <div class="cal"><div class="m">September</div><table>
+            <tr><td class="dim">31</td><td class="span">1</td><td class="span">2</td><td class="span">3</td><td class="span">4</td><td class="span">5</td><td class="span">6</td></tr>
+            <tr><td class="span">1</td><td class="span">2</td><td class="span">3</td><td class="span">4</td><td class="span">5</td><td class="end">6</td><td>7</td></tr>
+            <tr><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td></tr>
+            <tr><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td></tr>
+            <tr><td>22</td><td>23</td><td>24</td><td>25</td><td>26</td><td>27</td><td>28</td></tr>
+            <tr><td>29</td><td>30</td><td class="dim">1</td><td class="dim">2</td><td class="dim">3</td><td class="dim">4</td><td class="dim">5</td></tr>
+          </table></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="head"><span class="pid">ig7</span><h3>Paragraph width: cap long text at 68 characters per line</h3></div>
+    <p>Your taste log already approved a 68ch reading cap; it was never applied to the salon about-section paragraphs, which run far wider on desktop. Same text, same size, only the measure changes.</p>
+    <div class="duo">
+      <div class="side">
+        <div class="cap">before, full-width paragraph</div>
+        <div class="para">A calm studio in the old town. The team works quietly and precisely, from classic cuts to modern color work, and every visit starts with a short consultation so the result fits how you actually live. Walk-ins are welcome when a chair is free, and the espresso machine runs all day.</div>
+      </div>
+      <div class="side">
+        <div class="cap">after, the approved 68ch cap</div>
+        <div class="para narrow">A calm studio in the old town. The team works quietly and precisely, from classic cuts to modern color work, and every visit starts with a short consultation so the result fits how you actually live. Walk-ins are welcome when a chair is free, and the espresso machine runs all day.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="head"><span class="pid">ig8</span><h3>White text on photos reads heavier than it is: compensate one weight down</h3></div>
+    <p>Bright shapes on dark ground look thicker (the irradiation illusion). Category-card titles are bold white on photos today and read heavier than the same size elsewhere. After drops one weight step for optical balance, size unchanged.</p>
+    <div class="duo">
+      <div class="side">
+        <div class="cap">before, bold 700 on photo</div>
+        <div class="photo"><img src="../_assets/taste-round2/photo-a.jpg" alt="Real salon photo"><span class="t b700">Balayage and gloss</span></div>
+      </div>
+      <div class="side">
+        <div class="cap">after, semibold 600, optically equal</div>
+        <div class="photo"><img src="../_assets/taste-round2/photo-a.jpg" alt="Real salon photo"><span class="t b600">Balayage and gloss</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="head"><span class="pid">ig9</span><h3>Icon strokes matched to the text weight next to them</h3></div>
+    <p>Lucide icons default to a 2px stroke everywhere. Next to a 12px label that reads chunky; next to a 24px header glyph it reads thin. After matches the stroke to the neighboring text stem so icon and label feel like one voice.</p>
+    <div class="duo">
+      <div class="side">
+        <div class="cap">before, flat 2px stroke at every size</div>
+        <div class="iconrow">
+          <span class="cell"><svg class="lucide lucide-search" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg> Filter label</span>
+          <span class="cell" style="font-size:17px;font-weight:600"><svg class="lucide lucide-search" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg> Section header</span>
+        </div>
+      </div>
+      <div class="side">
+        <div class="cap">after, stem-matched strokes</div>
+        <div class="iconrow">
+          <span class="cell"><svg class="lucide lucide-search" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg> Filter label</span>
+          <span class="cell" style="font-size:17px;font-weight:600"><svg class="lucide lucide-search" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg> Section header</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="head"><span class="pid">ig2 + ig3 + ig10 + ig11 + ig12</span><h3>The five with nothing to draw (behavior and process fixes)</h3></div>
+    <p>These are real gaps but a static picture cannot show them; here is exactly what changes.</p>
+    <div class="beh"><b>ig2, phone field caret.</b> Before: fixing a mistyped digit mid-number throws the cursor to the end on every keystroke (both checkout phone fields). After: the caret stays where you were editing. Pure behavior fix on the money path.</div>
+    <div class="beh"><b>ig3, feed pagination.</b> Before: while you scroll the Inspo feed, a newly published item shifts the pages and the next load repeats a card you already saw. After: cursor-based paging, no repeats. Backend change, no visual change.</div>
+    <div class="beh"><b>ig10, dashboard summary grid.</b> Real gap, but it belongs to the parked operator-home redesign decision (the traced.html candidate you have not reviewed yet); mocking it separately would fork that decision. Recommendation: decide it there, not here.</div>
+    <div class="beh"><b>ig11, balance collapse-test.</b> Adds one measured step to the taste-diagnosis procedure (collapse the layout to gray blocks, check weight distribution). Process addition, no UI.</div>
+    <div class="beh"><b>ig12, progress-bar motion as status.</b> The weakest of the twelve (the evaluation produced no concrete surface brief). Recommendation: skip now, revisit inside the motion round of the Taste Lab.</div>
+  </div>
+</div>
+<div class="answer">
+  <b>How to answer, one line:</b>
+  <div>Example: "ig1 yes, ig4 yes, ig5 yes use the S, ig6 yes, ig7 yes, ig8 no, ig9 idk park, ig2 yes, ig3 yes, ig10 agree, ig11 yes, ig12 skip". Anything you skip stays open.</div>
+</div>
+</body>
+</html>
