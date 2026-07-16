@@ -19,6 +19,8 @@ import Spinner from "@/components-legacy/ui/Spinner";
 import { useLocale, useTranslations } from "next-intl";
 import { formatCurrency } from "@/lib/format-currency";
 import type { Salon } from "@/lib/types";
+import { parseDate, today, getLocalTimeZone } from "@internationalized/date";
+import { DateTimePickerRange, type DateRangeValue } from "@/app/[locale]/_components/primitives/DateTimePicker";
 
 // ─────────────────────────────────────────
 // Opening hours editor
@@ -674,7 +676,26 @@ function VacationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
   const [saved, setSaved] = useState(false);
 
   const isActive = !!start && !!end && new Date(end) >= new Date();
-  const todayStr = new Date().toISOString().split("T")[0];
+
+  // ig6 (2026-07-16): DateTimePickerRange owns the calendar UI; start/end stay the
+  // same ISO-string state (unchanged save payload + shape), just bridged to CalendarDate.
+  // safeParseDate guards against a legacy/malformed stored value throwing on render
+  // (the old bare <input type="date"> just silently blanked out instead of crashing).
+  const safeParseDate = (iso: string) => {
+    try {
+      return parseDate(iso);
+    } catch {
+      return null;
+    }
+  };
+  const rangeValue: DateRangeValue = {
+    start: start ? safeParseDate(start) : null,
+    end: end ? safeParseDate(end) : null,
+  };
+  const handleRangeChange = (range: DateRangeValue) => {
+    setStart(range.start ? range.start.toString() : "");
+    setEnd(range.end ? range.end.toString() : "");
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -715,20 +736,13 @@ function VacationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("fromLabel")}</label>
-          <input type="date" value={start} min={todayStr}
-            onChange={(e) => setStart(e.target.value)}
-            className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-coral" />
-        </div>
-        <div>
-          <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("toLabel")}</label>
-          <input type="date" value={end} min={start || todayStr}
-            onChange={(e) => setEnd(e.target.value)}
-            className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-coral" />
-        </div>
-      </div>
+      {/* mockup-ok: ig6, owner-approved TASTE_LOG.md 2026-07-16 "IG-principles round 1". Two bare date inputs replaced by the DateTimePicker range variant. */}
+      <DateTimePickerRange
+        value={rangeValue}
+        onChange={handleRangeChange}
+        minDate={today(getLocalTimeZone())}
+        labels={{ to: t("toLabel").toLowerCase() }}
+      />
 
       <div className="flex items-center gap-3">
         <button onClick={handleSave} disabled={saving}

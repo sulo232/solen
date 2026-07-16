@@ -1770,6 +1770,7 @@
     "gallery_max_error": "Massimo {max} foto consentite.",
     "gallery_delete_error": "Errore durante l'eliminazione della foto.",
     "gallery_reorder_error": "Errore durante il salvataggio dell'ordine.",
+    "gallery_framing_hint": "Tieni mani, gomiti e ginocchia interamente nell'inquadratura, senza tagliarli ai bordi.",
     "noRecentActivity": "Nessuna attività recente",
     "showLess": "Mostra meno",
     "showMore": "Mostra più",
@@ -5955,7 +5956,7 @@
     "roleSalonDesc": "Registra e gestisci il mio salone",
     "createAccount": "Crea account",
     "emailPlaceholder": "E-mail",
-    "passwordPlaceholder": "Password (min. 8 caratteri, 1 numero, 1 maiuscola)",
+    "passwordPlaceholder": "Password (min. 8 caratteri)",
     "salonNameLabel": "Nome del salone",
     "salonNamePlaceholder": "es. Studio 54",
     "birthdayLabel": "Data di nascita",
@@ -5969,9 +5970,18 @@
     "continue": "Continua",
     "errorMinAge": "Devi avere almeno 16 anni.",
     "errorAccountExists": "Hai già un account. Accedi.",
-    "errorPasswordMin": "La password deve contenere almeno 8 caratteri.",
-    "errorPasswordDigit": "La password deve contenere almeno un numero.",
-    "errorPasswordUpper": "La password deve contenere almeno una lettera maiuscola."
+    "errorPasswordMin": "La password deve contenere almeno 8 caratteri."
+  },
+  "passwordStrength": {
+    "weak": "Debole",
+    "fair": "Sufficiente",
+    "strong": "Forte",
+    "tooShort": "Almeno 8 caratteri",
+    "commonWord": "Troppo comune",
+    "emailMatch": "Contiene il tuo indirizzo e-mail",
+    "repeated": "Caratteri ripetuti",
+    "sequential": "Caratteri consecutivi",
+    "addLength": "Un po' più lunga per maggiore sicurezza"
   },
   "payConfirm": {
     "fillRequiredFields": "Compila tutti i campi obbligatori",

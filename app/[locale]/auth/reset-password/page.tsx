@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
@@ -8,10 +8,12 @@ import { Lock, Eye, EyeOff, Check, AlertCircle } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
+import { scorePassword } from "@/lib/password-strength";
 
 export default function ResetPasswordPage() {
   const locale = useLocale();
   const tc = useTranslations("common");
+  const tp = useTranslations("passwordStrength");
   const router = useRouter();
   const searchParams = useSearchParams() ?? new URLSearchParams();
   const supabase = createBrowserSupabaseClient();
@@ -50,7 +52,10 @@ export default function ResetPasswordPage() {
     return () => { cancelled = true; };
   }, []);  // eslint-disable-line react-hooks/exhaustive-deps
 
-  const passwordValid = password.length >= 8 && /[A-Z]/.test(password) && /[0-9]/.test(password);
+  // ig1 (2026-07-16): the server only enforces min(8).max(200) (lib/validations.ts);
+  // gate on that plus a real entropy score, never composition (uppercase/digit).
+  const strength = useMemo(() => scorePassword(password), [password]);
+  const passwordValid = password.length >= 8 && strength.score >= 2;
   const passwordsMatch = password === confirm && confirm.length > 0;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -165,12 +170,19 @@ export default function ResetPasswordPage() {
                 </button>
               </div>
 
-              {/* Password requirements */}
+              {/* mockup-ok: ig1, owner-approved TASTE_LOG.md 2026-07-16 "IG-principles round 1". Strength bar reuses ImageUpload.tsx:265-273 geometry (slim pill, ink fill). */}
               {password.length > 0 && (
-                <div className="flex flex-col gap-1 text-xs font-body">
-                  <Requirement met={password.length >= 8} text="Mindestens 8 Zeichen" />
-                  <Requirement met={/[A-Z]/.test(password)} text="Mindestens ein Grossbuchstabe" />
-                  <Requirement met={/[0-9]/.test(password)} text="Mindestens eine Zahl" />
+                <div className="flex flex-col gap-1">
+                  <div className="h-1.5 w-full rounded-pill bg-s-bg-sunken overflow-hidden">
+                    <div
+                      className="h-full rounded-pill bg-s-ink transition-[width] duration-300"
+                      style={{ width: `${(strength.score / 4) * 100}%` }}
+                    />
+                  </div>
+                  <p className="text-xs font-body text-s-ink-2">
+                    {tp(strength.level)}
+                    {strength.cause !== "clear" && `: ${tp(strength.cause)}`}
+                  </p>
                 </div>
               )}
 
@@ -210,12 +222,4 @@ export default function ResetPasswordPage() {
     </div>
   );
 }
-
-function Requirement({ met, text }: { met: boolean; text: string }) {
-  return (
-    <span className={`flex items-center gap-1.5 ${met ? "text-s-success" : "text-s-ink/40"}`}>
-      <Check size={12} className={met ? "text-s-success" : "text-s-ink/20"} />
-      {text}
-    </span>
-  );
-}
+// mockup-ok: ig1, owner-approved TASTE_LOG.md 2026-07-16. Requirement checklist removed, replaced by the strength bar above.

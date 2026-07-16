@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
@@ -9,6 +9,7 @@ import { User, Building2, ChevronRight, Mail } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
 import { slideSwitch } from "@/lib/animations";
+import { scorePassword } from "@/lib/password-strength";
 
 // ─────────────────────────────────────────
 // Step 0 — Customer vs Salon choice (NEW)
@@ -60,12 +61,15 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
   const locale = useLocale();
   const tc = useTranslations("common");
   const t = useTranslations("authRegister");
+  const tp = useTranslations("passwordStrength");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [birthday, setBirthday] = useState("");
   const [salonName, setSalonName] = useState("");
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  const strength = useMemo(() => scorePassword(password, { email }), [password, email]);
 
   const calcAge = (dateStr: string) => {
     if (!dateStr) return 0;
@@ -86,18 +90,17 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
 
     // LOCKFILE 14.4 (2026-06-11): errors name the exact cause BEFORE the server
     // gets a chance to answer generically. Mirrors the placeholder's stated policy.
+    // ig1 (2026-07-16): the server (lib/validations.ts signupSchema) only enforces
+    // min(8).max(200); gate on that plus a real entropy score, never composition.
     if (password.length < 8) {
       toast.error(t("errorPasswordMin"));
       setSaving(false);
       return;
     }
-    if (!/\d/.test(password)) {
-      toast.error(t("errorPasswordDigit"));
-      setSaving(false);
-      return;
-    }
-    if (!/[A-ZÄÖÜ]/.test(password)) {
-      toast.error(t("errorPasswordUpper"));
+    if (strength.score < 2) {
+      // strength.cause is never "clear" once score < 2 (see lib/password-strength.ts),
+      // the fallback only satisfies the type since next-intl needs a real message key.
+      toast.error(tp(strength.cause === "clear" ? "addLength" : strength.cause));
       setSaving(false);
       return;
     }
@@ -172,6 +175,22 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
         className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors"
       />
       
+      {/* mockup-ok: ig1, owner-approved TASTE_LOG.md 2026-07-16 "IG-principles round 1". Strength bar reuses ImageUpload.tsx:265-273 geometry (slim pill, ink fill). */}
+      {password.length > 0 && (
+        <div className="flex flex-col gap-1 -mt-1.5">
+          <div className="h-1.5 w-full rounded-pill bg-s-bg-sunken overflow-hidden">
+            <div
+              className="h-full rounded-pill bg-s-ink transition-[width] duration-300"
+              style={{ width: `${(strength.score / 4) * 100}%` }}
+            />
+          </div>
+          <p className="text-[12px] text-s-ink-2">
+            {tp(strength.level)}
+            {strength.cause !== "clear" && `: ${tp(strength.cause)}`}
+          </p>
+        </div>
+      )}
+
       {isSalon ? (
         <div>
           <label className="block text-[13px] font-medium text-s-ink-2 mb-1.5">

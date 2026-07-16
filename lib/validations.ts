@@ -244,6 +244,9 @@ export const discoveryFeedSchema = z.object({
   creator: z.string().uuid().optional(),
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(50).default(20),
+  // ig3 (2026-07-16): opaque keyset cursor for the general browse branch (discovery_feed_v2).
+  // Absent -> the branch behaves exactly like before (page/offset). See app/api/discovery/feed/route.ts.
+  cursor: z.string().max(500).optional(),
 });
 
 export const discoveryPostSchema = z.object({

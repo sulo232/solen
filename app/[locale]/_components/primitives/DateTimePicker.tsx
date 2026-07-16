@@ -3,6 +3,7 @@
 import * as React from "react";
 import {
   Calendar as AriaCalendar,
+  RangeCalendar as AriaRangeCalendar,
   CalendarGrid,
   CalendarGridHeader,
   CalendarGridBody,
@@ -12,6 +13,7 @@ import {
   Button,
   I18nProvider,
   type DateValue,
+  type RangeValue,
 } from "react-aria-components";
 import { today, getLocalTimeZone, parseTime, type CalendarDate } from "@internationalized/date";
 import { ChevronLeft, ChevronRight, Calendar as CalIcon } from "lucide-react";
@@ -35,7 +37,8 @@ import { Sheet, SheetHeader, SheetBody } from "./Sheet";
  *     isDateDisabled={(d) => salonClosedDays.includes(d.toString())}
  *   />
  *
- * v1 ships single-date + date-and-time. Range picker (vacation blocks) defers to v2.
+ * v1 ships single-date + date-and-time. `DateTimePickerRange` (ig6, 2026-07-16) adds the
+ * range variant: two adjacent months, a shaded span, blue endpoints, a result pill.
  */
 
 export type TimeSlot = {
@@ -625,4 +628,193 @@ function groupByPeriod(slots: TimeSlot[], labels: DateTimeLabels): { label: stri
   if (afternoon.length) groups.push({ label: labels.afternoon, slots: afternoon });
   if (evening.length) groups.push({ label: labels.evening, slots: evening });
   return groups;
+}
+
+/* ================================================================================
+   DateTimePickerRange: the range variant reserved by DateTimePicker.md (ig6, 2026-07-16)
+   ================================================================================ */
+
+export type DateRangeValue = {
+  start: CalendarDate | null;
+  end: CalendarDate | null;
+};
+
+export type DateRangeLabels = {
+  /** Connector word in the result pill, e.g. "bis" (de) / "to" (en) / "au" (fr) / "al" (it). */
+  to: string;
+};
+
+const DEFAULT_RANGE_LABELS: DateRangeLabels = { to: "bis" };
+
+// mockup-ok: ig6, owner-approved TASTE_LOG.md 2026-07-16 "IG-principles round 1". Nav buttons
+// reuse SolenCalendar's own chrome (chevrons, hover) unchanged; no focus-visible outline added
+// per the standing no-focus-ring policy (globals.css line 360).
+const RANGE_NAV_BTN = cn(
+  "flex items-center justify-center w-9 h-9",
+  "bg-transparent border-0 text-s-ink-2 cursor-pointer",
+  "rounded-md transition-colors duration-150 ease-snap",
+  "hover:text-s-ink hover:bg-s-bg-sunken",
+  "data-[disabled]:opacity-30 data-[disabled]:cursor-not-allowed",
+);
+
+export interface DateTimePickerRangeProps {
+  /** Controlled value: start + end. Either can be null until a full range is picked. */
+  value: DateRangeValue;
+  onChange: (value: DateRangeValue) => void;
+  /** Earliest selectable date. Default `today()` in caller's local timezone. */
+  minDate?: CalendarDate;
+  /** Latest selectable date. Optional. */
+  maxDate?: CalendarDate;
+  /** Custom disabled-date predicate. */
+  isDateDisabled?: (date: CalendarDate) => boolean;
+  /** Localized copy. Defaults to German, pass your next-intl strings for other locales. */
+  labels?: Partial<DateRangeLabels>;
+  className?: string;
+}
+
+/**
+ * Range picker: two adjacent months (stacked on mobile), the selected span shaded
+ * (`bg-s-accent/10`), endpoints filled in the locked booking-blue (`s-accent`), and a
+ * result pill below reading e.g. "28. Jul bis 5. Aug". Vacation blocks, or any other
+ * start/end date span. Don't fork a second range picker, extend this one.
+ */
+export function DateTimePickerRange({
+  value,
+  onChange,
+  minDate,
+  maxDate,
+  isDateDisabled,
+  labels,
+  className,
+}: DateTimePickerRangeProps) {
+  const locale = useLocale();
+  const tz = getLocalTimeZone();
+  const minDateResolved = minDate ?? today(tz);
+  const L = React.useMemo(() => ({ ...DEFAULT_RANGE_LABELS, ...labels }), [labels]);
+  const dl = locale === "en" ? "en-US" : locale;
+
+  const rangeValue: RangeValue<CalendarDate> | null =
+    value.start && value.end ? { start: value.start, end: value.end } : null;
+
+  // Day + month, no year. Matches the existing repo-wide pattern (RewardsView.tsx,
+  // NotificationsClient.tsx, DetailPage.tsx and others all format the same way).
+  const fmtDay = (d: CalendarDate) => d.toDate(tz).toLocaleDateString(dl, { day: "numeric", month: "short" });
+
+  return (
+    <div className={cn("flex flex-col gap-4", className)}>
+      <I18nProvider locale={locale}>
+        <AriaRangeCalendar
+          value={rangeValue}
+          onChange={(range) =>
+            onChange({
+              start: (range?.start as CalendarDate | undefined) ?? null,
+              end: (range?.end as CalendarDate | undefined) ?? null,
+            })
+          }
+          minValue={minDateResolved}
+          maxValue={maxDate}
+          firstDayOfWeek="mon"
+          visibleDuration={{ months: 2 }}
+          isDateUnavailable={isDateDisabled as ((date: DateValue) => boolean) | undefined}
+          className="bg-s-bg-base border border-s-border rounded-[12px] p-4"
+        >
+          {({ state }) => (
+            <>
+              <header className="flex items-center justify-between mb-3 px-1">
+                <Button slot="previous" aria-label="Voriger Monat" className={RANGE_NAV_BTN}>
+                  <ChevronLeft className="w-[18px] h-[18px]" strokeWidth={2.5} />
+                </Button>
+                <Button slot="next" aria-label="Nächster Monat" className={RANGE_NAV_BTN}>
+                  <ChevronRight className="w-[18px] h-[18px]" strokeWidth={2.5} />
+                </Button>
+              </header>
+              <div className="flex flex-col md:flex-row gap-6 md:gap-4">
+                <RangeMonthGrid monthStart={state.visibleRange.start} monthOffset={0} dl={dl} tz={tz} />
+                <RangeMonthGrid
+                  monthStart={state.visibleRange.start.add({ months: 1 })}
+                  monthOffset={1}
+                  dl={dl}
+                  tz={tz}
+                />
+              </div>
+            </>
+          )}
+        </AriaRangeCalendar>
+      </I18nProvider>
+
+      {value.start && value.end && (
+        <div className="self-start rounded-pill border border-s-border bg-s-bg-sunken px-4 py-2 text-[14px] font-medium text-s-ink tabular-nums">
+          {fmtDay(value.start)} {L.to} {fmtDay(value.end)}
+        </div>
+      )}
+    </div>
+  );
+}
+
+interface RangeMonthGridProps {
+  monthStart: CalendarDate;
+  monthOffset: number;
+  dl: string;
+  tz: string;
+}
+
+function RangeMonthGrid({ monthStart, monthOffset, dl, tz }: RangeMonthGridProps) {
+  const monthLabel = monthStart.toDate(tz).toLocaleDateString(dl, { month: "long", year: "numeric" });
+  return (
+    <div className="flex-1">
+      <div className="mb-2 px-1 font-body font-semibold text-[14px] text-s-ink capitalize">{monthLabel}</div>
+      <CalendarGrid offset={{ months: monthOffset }} weekdayStyle="short" className="w-full border-collapse">
+        <CalendarGridHeader>
+          {(day) => (
+            <CalendarHeaderCell className="text-center font-body font-semibold text-[12px] text-s-ink-3 py-1.5">
+              {typeof day === "string" ? day.replace(/\.$/, "") : day}
+            </CalendarHeaderCell>
+          )}
+        </CalendarGridHeader>
+        <CalendarGridBody>
+          {(date) => (
+            <CalendarCell
+              date={date}
+              className={(renderProps) =>
+                cn(
+                  "p-[1px]",
+                  renderProps.isSelected && "bg-s-accent/10",
+                  renderProps.isSelected && renderProps.isSelectionStart && "rounded-l-full",
+                  renderProps.isSelected && renderProps.isSelectionEnd && "rounded-r-full",
+                )
+              }
+            >
+              {({
+                isOutsideMonth,
+                isSelectionStart,
+                isSelectionEnd,
+                isDisabled,
+                isUnavailable,
+                formattedDate,
+              }) =>
+                isOutsideMonth ? null : (
+                  <span
+                    className={cn(
+                      "mx-auto flex h-10 w-10 items-center justify-center",
+                      "font-body font-normal text-[14px]",
+                      "rounded-full cursor-pointer select-none tabular-nums",
+                      "transition-[background,color] duration-150 ease-snap",
+                      "text-s-ink",
+                      !isDisabled && !isUnavailable && "hover:bg-s-bg-sunken",
+                      (isSelectionStart || isSelectionEnd) &&
+                        "bg-s-accent text-white font-semibold hover:bg-s-accent",
+                      (isDisabled || isUnavailable) &&
+                        "opacity-30 cursor-not-allowed text-s-ink-3 hover:bg-transparent",
+                    )}
+                  >
+                    {formattedDate}
+                  </span>
+                )
+              }
+            </CalendarCell>
+          )}
+        </CalendarGridBody>
+      </CalendarGrid>
+    </div>
+  );
 }

@@ -1796,6 +1796,7 @@
     "gallery_max_error": "Maximum {max} photos allowed.",
     "gallery_delete_error": "Error deleting photo.",
     "gallery_reorder_error": "Error saving new order.",
+    "gallery_framing_hint": "Keep hands, elbows and knees fully in frame, not cropped at the edge.",
     "noRecentActivity": "No recent activity",
     "showLess": "Show less",
     "showMore": "Show more",
@@ -5973,7 +5974,7 @@
     "roleSalonDesc": "Register and manage my salon",
     "createAccount": "Create account",
     "emailPlaceholder": "Email",
-    "passwordPlaceholder": "Password (min. 8 characters, 1 number, 1 capital letter)",
+    "passwordPlaceholder": "Password (min. 8 characters)",
     "salonNameLabel": "Salon name",
     "salonNamePlaceholder": "e.g. Studio 54",
     "birthdayLabel": "Date of birth",
@@ -5987,9 +5988,18 @@
     "continue": "Continue",
     "errorMinAge": "You must be at least 16 years old.",
     "errorAccountExists": "You already have an account. Please sign in.",
-    "errorPasswordMin": "The password needs at least 8 characters.",
-    "errorPasswordDigit": "The password needs at least one number.",
-    "errorPasswordUpper": "The password needs at least one uppercase letter."
+    "errorPasswordMin": "The password needs at least 8 characters."
+  },
+  "passwordStrength": {
+    "weak": "Weak",
+    "fair": "Fair",
+    "strong": "Strong",
+    "tooShort": "At least 8 characters",
+    "commonWord": "Too commonly used",
+    "emailMatch": "Contains your email address",
+    "repeated": "Repeated characters",
+    "sequential": "Sequential characters",
+    "addLength": "A bit longer for more security"
   },
   "payConfirm": {
     "fillRequiredFields": "Please fill in all required fields",

@@ -19,11 +19,20 @@ Built-in states: loading (shimmer), empty (pickDay / noSlots, or `emptySlotConte
 Any date and/or time selection: booking, search "Zeit", B2B closed-day toggles, waitlist preferred-date.
 
 ## Don't reuse for
-Static date *display* (use a formatted string, not this). Range picking (vacation blocks), not yet built; add a `range` variant here when needed, don't fork.
+Static date *display* (use a formatted string, not this).
 
-## Consumers (re-verified 2026-07-12, A3 registry audit)
+## Range variant (ig6, 2026-07-16, owner-approved TASTE_LOG.md "IG-principles round 1")
+`DateTimePickerRange` (same file, separate export, `DateRangeValue = { start, end }`) is the range picker
+reserved above. Two adjacent months side by side (stacked to one column on mobile) via react-aria-components'
+`RangeCalendar` with `visibleDuration={{ months: 2 }}`, the selected span shaded (`bg-s-accent/10`), endpoints
+filled in the locked booking-blue (`s-accent`), and a result pill below reading e.g. "28. Jul bis 5. Aug".
+`labels?: Partial<DateRangeLabels>` (`to`, the connector word, defaults to German "bis"). Don't fork a second
+range picker, extend this one.
+
+## Consumers (re-verified 2026-07-16)
 - `app/[locale]/_components/homepage/SearchBar.tsx:542`: real call-site.
 - `components-legacy/booking/DateTimeStep.tsx:194`: strip, date-and-time, accent, i18n labels + waitlist empty-state.
+- `app/[locale]/dashboard/settings/page.tsx` `VacationTab`: `DateTimePickerRange`, `vacation_start`/`vacation_end`.
 - `app/[locale]/dev/primitives`: live demo of both layouts (dev showcase, not production).
 
 **Correction 2026-07-12:** this list previously named `search/SearchOverlay.tsx` as a
