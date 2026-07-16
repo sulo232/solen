@@ -16,7 +16,7 @@ import {
   Star,
   Wifi,
 } from "lucide-react";
-import type { SalonDetail } from "./_shared";
+import { AMENITIES_SELF_REPORTED, type SalonDetail } from "./_shared";
 
 /**
  * SalonAdditionalInfo — V2-D53.3 (2026-05-11).
@@ -51,15 +51,23 @@ export function SalonAdditionalInfo({ salon }: { salon: SalonDetail }) {
         : "",
       show: (salon.free_cancel_hours ?? 0) > 0,
     },
-    { icon: Dog, label: "Haustiere willkommen", show: Boolean(salon.pet_friendly) },
-    { icon: Baby, label: "Kinderfreundlich", show: Boolean(salon.kid_friendly) },
-    { icon: Wifi, label: "Kostenloses WLAN", show: Boolean(salon.wifi_friendly) },
-    { icon: Accessibility, label: "Rollstuhlgerecht", show: Boolean(salon.wheelchair_accessible) },
-    { icon: Bus, label: "Nähe ÖV", show: Boolean(salon.near_public_transport) },
-    { icon: Heart, label: "LGBTQ+ willkommen", show: Boolean(salon.lgbtq_friendly) },
-    { icon: Star, label: "Frauengeführt", show: Boolean(salon.woman_owned) },
-    { icon: Home, label: "Familiengeführt", show: Boolean(salon.family_owned) },
-    { icon: GraduationCap, label: "Studentenrabatt", show: Boolean(salon.student_discount) },
+    // AMENITIES_SELF_REPORTED (see _shared.ts): these 9 badges are hidden until salons
+    // self-report real answers, since the seeded values were fabricated from a hash of
+    // the salon's id, not a real fact. Nothing renders in place of a hidden badge (null
+    // is unknown, not "no").
+    ...(AMENITIES_SELF_REPORTED
+      ? [
+          { icon: Dog, label: "Haustiere willkommen", show: Boolean(salon.pet_friendly) },
+          { icon: Baby, label: "Kinderfreundlich", show: Boolean(salon.kid_friendly) },
+          { icon: Wifi, label: "Kostenloses WLAN", show: Boolean(salon.wifi_friendly) },
+          { icon: Accessibility, label: "Rollstuhlgerecht", show: Boolean(salon.wheelchair_accessible) },
+          { icon: Bus, label: "Nähe ÖV", show: Boolean(salon.near_public_transport) },
+          { icon: Heart, label: "LGBTQ+ willkommen", show: Boolean(salon.lgbtq_friendly) },
+          { icon: Star, label: "Frauengeführt", show: Boolean(salon.woman_owned) },
+          { icon: Home, label: "Familiengeführt", show: Boolean(salon.family_owned) },
+          { icon: GraduationCap, label: "Studentenrabatt", show: Boolean(salon.student_discount) },
+        ]
+      : []),
   ];
 
   const shown = items.filter((i) => i.show);

@@ -10,6 +10,11 @@ import { sendEmail } from "@/lib/email";
 import { onboardingWelcome } from "@/lib/email-templates/salon-onboarding";
 import { autoTranslateDescription } from "@/lib/ai/translate";
 import { CURRENT_TOS_VERSION } from "@/lib/tos-version";
+// The single source of truth for whether the 9 salon amenity facts are real yet. Kept in one
+// place so the UI and this filter can never disagree (a visible filter over unknown data, or a
+// filter silently applied with no visible chip, are both bugs). _shared.ts is a pure module: no
+// "use client", no React, so a server route can import it safely.
+import { AMENITIES_SELF_REPORTED } from "@/app/[locale]/_components/salon/_shared";
 import { isOpenNow, type OpeningHours } from "@/lib/salon-hours";
 import { generateEmbedding } from "@/lib/search/embeddings";
 import { SALON_PUBLIC_COLS } from "@/lib/salons/public-columns";
@@ -212,20 +217,37 @@ export async function GET(request: NextRequest) {
       query = query.eq("walkin_enabled", true);
     }
 
-    // V3-D387: amenity boolean filters. Each query param maps 1:1 to a salons
-    // boolean column (seeded data). Simple .eq(col, true) when the param is "true".
-    for (const col of [
-      "wheelchair_accessible",
-      "near_public_transport",
-      "kid_friendly",
-      "pet_friendly",
-      "wifi_friendly",
-      "lgbtq_friendly",
-      "woman_owned",
-      "family_owned",
-      "student_discount",
-    ]) {
-      if (searchParams.get(col) === "true") query = query.eq(col, true);
+    // V3-D387 amenity boolean filters, DISABLED 2026-07-16 and deliberately left in place.
+    //
+    // These nine columns were fabricated by supabase/migrations/20260530_seed_salon_amenities.sql
+    // from a hash of each salon's own id, then nulled once that was found (see
+    // 20260716150000_null_fabricated_salon_amenities.sql). Every value is now NULL = "unknown",
+    // so `.eq(col, true)` matches nothing and any of these params silently returns ZERO salons.
+    //
+    // The UI no longer offers these filters (AMENITIES_SELF_REPORTED in
+    // app/[locale]/_components/salon/_shared.ts), but a stale bookmark or shared link can still
+    // carry ?wheelchair_accessible=true. Applying it would be a filter that is set and counted
+    // yet cannot discriminate: this codebase's #1 silent-no-op failure, and the user would land
+    // on an empty result page with no visible chip explaining why. So while the data is unknown
+    // we IGNORE the param instead of applying it: a stale link degrades to "all salons", never
+    // to "none".
+    //
+    // Re-enable together with AMENITIES_SELF_REPORTED, once salons self-report these facts. Do
+    // not re-enable one without the other: the filter is only honest when the data is real.
+    if (AMENITIES_SELF_REPORTED) {
+      for (const col of [
+        "wheelchair_accessible",
+        "near_public_transport",
+        "kid_friendly",
+        "pet_friendly",
+        "wifi_friendly",
+        "lgbtq_friendly",
+        "woman_owned",
+        "family_owned",
+        "student_discount",
+      ]) {
+        if (searchParams.get(col) === "true") query = query.eq(col, true);
+      }
     }
 
     const emptyResult = () => NextResponse.json({ items: [], total: 0, page, limit }, { headers: ANON_CACHE_HEADERS });

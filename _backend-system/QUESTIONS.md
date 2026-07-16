@@ -4,7 +4,24 @@ Each has my **recommendation** and the reasoning. None is a bare "you decide." A
 
 ---
 
-## Q1. The fabricated accessibility flags on prod (URGENT, real-world harm)
+## Q1. The fabricated accessibility flags on prod , RESOLVED 2026-07-16 (owner said "go")
+
+> **DONE, do not re-ask.** Owner approved (a)+(b). Prod data nulled via a SCOPED update: each
+> column only where its value still equalled that column's exact hash expression, so a real human
+> correction would have survived. Verified 20/20 matched beforehand, so nothing real was lost;
+> re-verified after: 0 of 20 salons still claim any amenity. Migration
+> `20260716150000_null_fabricated_salon_amenities.sql` added so a db reset reproduces the corrected
+> state instead of re-running the idempotent seed (old migration untouched, forward-only). Badges +
+> facets hidden behind `AMENITIES_SELF_REPORTED` (`app/[locale]/_components/salon/_shared.ts`), and
+> `app/api/salons/route.ts` now IGNORES a stale `?wheelchair_accessible=true` link instead of
+> applying it (applying it returns 0 of 20, proved with SQL, with no visible chip to clear: the
+> silent-no-op class). Option (c) was moot: there are 0 test salons.
+>
+> **STILL OPEN as separate work:** collect the real answers via onboarding/dashboard, THEN flip the
+> flag. Do not flip it before the data is real. The filter is only honest when the data is real.
+
+<details><summary>Original question, kept for the record</summary>
+
 
 **The fact.** `supabase/migrations/20260530_seed_salon_amenities.sql:11-21` sets nine amenity booleans on the live `salons` table from `abs(hashtext(id || salt)) % 100 < N`. Verified on prod 2026-07-16: **all 20 active salons still exactly equal the hash output**, so not one has ever been corrected by a real owner. **7 claim wheelchair access, 8 claim LGBTQ+ welcome, purely as a function of their UUID.** They render as badges (`SalonAdditionalInfo.tsx:54-62`) and as live search filter facets (`SearchTemplate.tsx:230-237`).
 
@@ -20,6 +37,8 @@ The new `migration-fabricated-data-gate.py` blocks the NEXT one. **It cannot un-
 **Why (a) before (b):** every day the rows stay, a real user can act on a false accessibility claim. (b) takes a form; (a) takes an UPDATE. Do not wait for (b) to fix (a).
 
 ---
+
+</details>
 
 ## Q2. Should the CHF AI budget ever hard-block an admin?
 
