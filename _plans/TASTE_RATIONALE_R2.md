@@ -105,9 +105,9 @@ Owner message (dictated): fix + commit; expand RATIONALE.md with the og round-1 
 
 ## Owner questions 2026-07-16 (propagation + readiness)
 
-- [x] "is evrth wrote down and gated, ready for real work" , answered in the closing message (yes for component-level work; page-level still needs the merge + rhythm probe per the readiness order recorded above)
-- [x] "is ths available in all sessions / do i have to merge" , answered in the closing message (two layers: global gates = automatic; design law + code = this branch, needs the local merge to main)
-- [x] "what abt other worktrees/sessions opened before" , answered in the closing message (they follow their own branch's law until they take main after the merge)
+- [x] "is evrth wrote down and gated, ready for real work" , verified: answered in the closing message of this turn; the readiness order backing it is the "### The overhaul-readiness order" section in this file
+- [x] "is ths available in all sessions / do i have to merge" , verified: answered in the closing message; fact-checked against git worktree list (main at 5ac94f082, this branch a409bacc9-era, law files repo-local; gates in ~/.claude global)
+- [x] "what abt other worktrees/sessions opened before" , verified: answered in the closing message; git worktree list shows 8+ older worktrees on their own branches, each reading its own copy of the law files until they take main
 
 ## Parked / boundaries
 - Web dark mode stays graveyarded (exists-check hit); positive-polarity mechanics recorded for MOBILE dark mode only.

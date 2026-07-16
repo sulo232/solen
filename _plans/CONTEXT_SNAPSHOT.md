@@ -2,16 +2,19 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-07-15T23:55:55 (trigger: manual)
+- taken: 2026-07-16T15:04:36 (trigger: auto)
 - branch: claude/taste-rationale-frameworks-37390c
 
 ## git
 ```
-620f600f2 docs(plans): evidence both close boxes (dba63edb4, ac765031c)
-dba63edb4 docs(plans): wave-1 apply round closed, worklog entry, all boxes evidenced
-97541c6bb chore(pdp): drop dead category prop after P3
-4f5b8eeba docs(plans): fold stale duplicate boxes into the apply-round status
-ac765031c fix(calendar): staff header colors as literal Tailwind classes (C1 punch, dynamic classes never compile)
+454b12b44 docs(plans): propagation questions answered
+a409bacc9 docs(plans): correction boxes evidenced (2bfdd0741)
+2bfdd0741 revert(taste): full-bleed DENIED, the misread reversed and hardened
+243c2d84b docs(taste): dead-chevron rule visualized as a Wrong/Right pair on the rules page
+34b65e853 docs(taste): full-bleed picks locked (all approved per the recommendation set, full-bleed standing) + the dead-chevron rule
+```
+```
+M _plans/TASTE_RATIONALE_R2.md
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
@@ -21,6 +24,7 @@ ac765031c fix(calendar): staff header colors as literal Tailwind classes (C1 pun
 18 | Estate audit (hooks/skills/rules/systems/memory , improvement proposal) | **ACTIVE** (2026-07-11)
 22 | Taste audit sweep (measured floors across dashboard + customer side) | **ACTIVE** (2026-07-15)
 20 | Taste Lab program (hundreds of A/B comparisons; owner ask 2026-07-15) | **ACTIVE** (2026-07-15)
+23 | Taste rationale ROUND 2 (refs + research expansion) | **ACTIVE** (2026-07-16)
 
 ## SEARCH_MAP_OVERHAUL.md
 Open boxes:
