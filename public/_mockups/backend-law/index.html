@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Backend law and gates , what landed</title>
+<!-- Base: net-new -->
+<!-- Scale: full-page -->
+<!--
+  Base rationale (why net-new is the honest declaration, not a dodge): this page
+  rebuilds NO existing surface. There is no live route, screenshot, or prior page it
+  could stand on, and it replaces nothing anyone spent hours on. It is an owner
+  explainer about the backend law layer, in the same deliverable format as the
+  owner-approved public/_mockups/taste-book.
+
+  Scale rationale: full-page. It is a whole standalone page, not a component pair.
+
+  Grounded-in: _backend-system/LAW.md (the law layer this page explains, committed
+  46c319e67) + _plans/BACKEND_LAW.md (the workstream and its open boxes).
+
+  Exists-check: `npm run exists backend` (run this turn) = 18 hits, all graveyard
+  entries + 2 RPCs, zero law-layer hit; `npm run exists "backend law"` = 0 matches.
+  TARGET SURFACE: none. REMOVED: none (grepped hashtext / seed_salon_amenities /
+  backend law). REUSED not duplicated: _docs/BACKEND.md (descriptive layer),
+  _backend-system/research/*.md (15 files), _backend-system/audit/*.md (8 files),
+  the 16 pre-existing backend hooks. NEW: only the finding that 10 of 16 backend
+  hooks merely warned and that warn-tier provably failed, plus the 6 gates that now block.
+
+  Backend-check: this page renders no action verbs and no controls. It is read-only
+  prose and tables. No endpoint or table backs it; every number is quoted from a
+  committed file named inline (ca5028c6d, 46c319e67).
+
+  Measure-first: override taken deliberately and stated, not silent. This page copies
+  no reference surface and matches no screenshot, so there is nothing to pixel-sample;
+  measuring a reference that does not exist would be theatre, not evidence. Every value
+  is quoted from the LOCKED contract in CLAUDE.md: radius 16 (rounded-card), eyebrow 11,
+  body 14, meta 12, H2 clamp(18px,2vw,20px), hairline #E4E4E7, sunken #F4F4F5,
+  ink #0A0A0A, accent #276EF1, green #16A34A.
+-->
+<style>
+  :root{
+    --bg:#FFFFFF; --sunken:#F4F4F5; --ink:#0A0A0A; --ink2:#52525B; --ink3:#A1A1AA;
+    --line:#E4E4E7; --accent:#276EF1; --red:#DC2626; --green:#16A34A; --amber:#EA580C;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0B0B0C; --sunken:#151517; --ink:#FAFAFA; --ink2:#A1A1AA; --ink3:#71717A; --line:#27272A; }
+  }
+  :root[data-theme="dark"]{ --bg:#0B0B0C; --sunken:#151517; --ink:#FAFAFA; --ink2:#A1A1AA; --ink3:#71717A; --line:#27272A; }
+  :root[data-theme="light"]{ --bg:#FFFFFF; --sunken:#F4F4F5; --ink:#0A0A0A; --ink2:#52525B; --ink3:#A1A1AA; --line:#E4E4E7; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:960px;margin:0 auto;padding:56px 20px 96px}
+  h1,h2,h3{font-family:"Inter Tight",Inter,sans-serif;letter-spacing:-0.02em;margin:0}
+  h1{font-size:clamp(28px,5vw,40px);line-height:1.15;font-weight:600}
+  h2{font-size:clamp(18px,2vw,20px);font-weight:600;margin:56px 0 8px}
+  .eyebrow{font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:12px}
+  .lede{font-size:16px;color:var(--ink2);margin-top:14px;max-width:66ch}
+  .sub{font-size:13px;color:var(--ink2);margin:0 0 18px;max-width:70ch}
+  p{max-width:70ch}
+
+  .hero{background:var(--sunken);border:1px solid var(--line);border-radius:16px;padding:22px 24px;margin:28px 0 8px}
+  .hero .big{font-family:"Inter Tight",Inter,sans-serif;font-size:clamp(20px,2.6vw,26px);font-weight:600;letter-spacing:-0.02em;line-height:1.3}
+  .hero .note{font-size:13px;color:var(--ink2);margin-top:10px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:20px 0}
+  .stat{border:1px solid var(--line);border-radius:16px;padding:16px}
+  .stat .n{font-family:"Inter Tight",Inter,sans-serif;font-size:30px;font-weight:600;letter-spacing:-0.03em;line-height:1.1;font-variant-numeric:tabular-nums}
+  .stat .l{font-size:12px;color:var(--ink2);margin-top:6px}
+  .n.red{color:var(--red)} .n.green{color:var(--green)}
+
+  .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:16px 0}
+  table{border-collapse:collapse;width:100%;font-size:13px;min-width:600px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:11px;font-weight:600;color:var(--ink3);white-space:nowrap}
+  td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+  code{font-family:"Inter Tight",ui-monospace,monospace;font-variant-numeric:tabular-nums;
+    background:var(--sunken);padding:1px 5px;border-radius:5px;font-size:12.5px}
+
+  .pill{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;white-space:nowrap}
+  .pill.block{background:rgba(22,163,74,.12);color:var(--green)}
+  .pill.warn{background:rgba(234,88,12,.12);color:var(--amber)}
+  .pill.none{background:rgba(220,38,38,.10);color:var(--red)}
+  .pill.type{background:rgba(39,110,241,.10);color:var(--accent)}
+
+  .card{border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin:12px 0}
+  .card h3{font-size:15px;font-weight:600;margin-bottom:6px}
+  .card p{font-size:13px;color:var(--ink2);margin:0}
+  .card.flag{border-left:3px solid var(--red)}
+  .card.ask{border-left:3px solid var(--accent)}
+
+  ul{padding-left:18px;margin:10px 0;max-width:70ch}
+  li{margin:7px 0;font-size:13.5px;color:var(--ink2)}
+  li strong{color:var(--ink);font-weight:600}
+  .foot{margin-top:64px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">Backend law layer 2026-07-16</div>
+  <h1>Your read was half right.<br>The other half is the interesting one.</h1>
+  <p class="lede">You said the backend was lacking gates. There were already 16. The problem was never the count. It was that 10 of them only whispered.</p>
+
+  <div class="hero">
+    <div class="big">Frontend's sharp gates block. Backend's asked nicely.</div>
+    <div class="note">And the audit data proves asking nicely does not work: both classes below recurred <em>while the warning hook was live</em>.</div>
+  </div>
+
+  <div class="grid">
+    <div class="stat"><div class="n">16</div><div class="l">backend hooks that already existed</div></div>
+    <div class="stat"><div class="n red">10</div><div class="l">of them only warned, never blocked</div></div>
+    <div class="stat"><div class="n red">6</div><div class="l">of 15 topics had zero coverage</div></div>
+    <div class="stat"><div class="n green">6+1</div><div class="l">now block, plus one enforced by a type</div></div>
+  </div>
+
+  <h2>The proof that warnings do not hold</h2>
+  <p class="sub">These are not theoretical. Each gate was live and talking while the bug it warns about shipped again.</p>
+  <div class="card flag">
+    <h3><code>money-update-cas</code> was live. The class recurred anyway.</h3>
+    <p>This week's audit found a fresh instance: <code>app/api/cron/pre-charge/route.ts</code> charges a customer's card without re-checking the booking status first. The hook warned. The code shipped.</p>
+  </div>
+  <div class="card flag">
+    <h3><code>phantom-column</code> was live. The class recurred 7 times.</h3>
+    <p>A query selecting a column that does not exist. PostgREST returns null instead of an error, so it fails silently. It blanked the homepage once for weeks.</p>
+  </div>
+
+  <h2>Coverage, before and after</h2>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Topic</th><th>Before</th><th>Now</th><th>What changed</th></tr></thead>
+    <tbody>
+      <tr><td>transactions</td><td><span class="pill warn">warn</span></td><td><span class="pill block">blocks</span></td><td>money or state update with no compare-and-set</td></tr>
+      <tr><td>data modeling</td><td><span class="pill warn">warn</span></td><td><span class="pill block">blocks</span></td><td>phantom column vs the live snapshot</td></tr>
+      <tr><td>security</td><td><span class="pill warn">warn</span></td><td><span class="pill block">blocks</span></td><td>raw input interpolated into a PostgREST filter</td></tr>
+      <tr><td>authz</td><td><span class="pill none">none</span></td><td><span class="pill block">blocks</span></td><td>service-role route with no ownership check (IDOR)</td></tr>
+      <tr><td>file storage</td><td><span class="pill none">none</span></td><td><span class="pill block">blocks</span></td><td>service-role storage write with no ownership gate</td></tr>
+      <tr><td>migrations</td><td><span class="pill none">none</span></td><td><span class="pill block">blocks</span></td><td>fabricated seed data written into a live column</td></tr>
+      <tr><td>jobs and crons</td><td><span class="pill none">none</span></td><td><span class="pill type">type</span></td><td>cron failure list can no longer be a silent count</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2>The cron fix is the one I like most</h2>
+  <p class="sub">Because it deletes a gate instead of adding one.</p>
+  <p>Six crons could report a green run on a night every Stripe charge failed. I built a hook for it. Then the reviewer proved the hook was useless: it looked for a shape that never occurs in our code, and missed the one that does.</p>
+  <p>The real fix was one line. <code>CronRunResult.errors</code> allowed <code>string[] | number</code>, and the number form was silently dropped. Nothing in the fleet actually used it, so removing <code>| number</code> broke nothing and <code>tsc</code> came back clean. Now it is a build error, forever.</p>
+  <div class="hero" style="margin-top:18px">
+    <div class="big">A type error is a gate that can never misfire.</div>
+  </div>
+
+  <h2>Why the review mattered more than the build</h2>
+  <p class="sub">Every gate passed its own author's test. Then the real corpus was piped through, and five of seven failed.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Gate</th><th class="num">Author's test</th><th class="num">Real corpus, round 1</th><th class="num">After the fix</th></tr></thead>
+    <tbody>
+      <tr><td>service-role ownership</td><td class="num">passed</td><td class="num" style="color:var(--red)">80 of 234 wrongly denied</td><td class="num" style="color:var(--green)">0</td></tr>
+      <tr><td>filter injection</td><td class="num">passed</td><td class="num" style="color:var(--red)">6 of 6 wrongly denied</td><td class="num" style="color:var(--green)">0</td></tr>
+      <tr><td>storage RLS</td><td class="num">passed</td><td class="num" style="color:var(--red)">5 of 11 wrongly denied</td><td class="num" style="color:var(--green)">0</td></tr>
+      <tr><td>migration fabrication</td><td class="num">passed</td><td class="num" style="color:var(--green)">1 of 264, the right one</td><td class="num" style="color:var(--green)">1</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>The filter gate's worst moment: it denied <code>app/api/help/route.ts</code>, the exact file its own error message cites as the correct way to fix the problem. A gate that cries wolf gets switched off, and then nothing is enforced at all. That is why the false-positive number was the close condition, not the feature list.</p>
+  <div class="hero" style="margin-top:18px">
+    <div class="big">A gate's close condition is the real corpus, not a crafted example.</div>
+  </div>
+
+  <h2>The law doc, for the thing you actually complained about</h2>
+  <p class="sub">"It keeps making stuff up when I open a new session."</p>
+  <p>That was a precise diagnosis. A fresh session could read <code>_docs/BACKEND.md</code> and learn how our plumbing works, but nothing told it what to <em>decide</em>. So it decided from training memory. <code>_backend-system/LAW.md</code> is now the answer: about 60 frozen rows across your 15 topics, each naming our stack, our scale, and what it costs.</p>
+  <p>It opens with one line the research earned. It ranked as the top finding in 7 of the 15 topics independently, without me asking for it:</p>
+  <div class="hero" style="margin-top:18px">
+    <div class="big">A control that returns 200 has proven nothing. Prove behaviour, not existence.</div>
+    <div class="note">A zero-row update returns success. A phantom column returns null. A failing cron reports green. <code>review-photos</code> returned <code>200 success:true</code> for months while writing nothing at all.</div>
+  </div>
+  <p style="margin-top:18px">It also carries a section on what Solen already does <strong>right</strong>, because a fresh session's instinct is to "improve" things that took three attempts to get correct: your idempotency keys, the <code>getUser()</code> discipline, the layered booking slot-claim defence, forward-only migrations.</p>
+
+  <h2>Two things that need you, not me</h2>
+  <div class="card flag">
+    <h3>Live on prod right now: fabricated accessibility claims</h3>
+    <p>A migration sets nine salon amenity flags from a hash of the salon's UUID. Verified on prod: all 20 active salons still exactly equal the hash output, so not one has ever been corrected. Seven currently claim wheelchair access and eight claim LGBTQ+ welcome purely as a function of their ID, and both render to customers as badges and as live search filters. A wheelchair user filtering for step-free access gets a coin flip. The new migration gate blocks the next one, but it cannot un-write the rows that are already there. Your call: null the columns and hide the badges, add the fields to onboarding and backfill from real answers, or restrict the flags to test salons.</p>
+  </div>
+  <div class="card ask">
+    <h3>Six crons still under-report failures</h3>
+    <p>The type stops the silent-count shape forever, but six existing crons report failures under names the wrapper never reads (<code>failed</code>, <code>declined</code>, <code>mismatches</code>, <code>results</code>), and one hardcodes <code>ok: true</code> regardless. That is a code fix to six files, not an enforcement question, so I parked it rather than widen a gate on a guess.</p>
+  </div>
+
+  <h2>Honest coverage</h2>
+  <ul>
+    <li><strong>7 of your 15 topics are researched but not yet audited</strong> against live code: authz, security, rate limiting, caching, observability, reliability, data modeling. Their rows are law; whether we follow them today is unknown.</li>
+    <li><strong>The 8 audited topics deep-read a minority sample</strong>, roughly 15 to 25 files each out of about 354 routes. "No gap found" in an unaudited corner means not yet checked, never a clean bill of health.</li>
+    <li><strong>Two gates only fire on new files</strong>, not on edits to existing ones. That is deliberate: wired on edit they wrongly denied 34 to 45% of legitimate routes. The law doc says so out loud rather than letting a future session assume it is covered.</li>
+    <li><strong>I substituted one gate you approved.</strong> You okayed upgrading the discriminate-reminder, but "did you prove this filter discriminates" cannot be decided from a diff, so blocking it would misfire. I upgraded the filter-injection gate instead and left the reminder as a reminder.</li>
+  </ul>
+
+  <div class="foot">
+    Committed: <code>ca5028c6d</code> (gates), <code>46c319e67</code> (LAW.md). Law layer: <code>_backend-system/LAW.md</code>. Research: <code>_backend-system/research/</code>, 15 files. Audits: <code>_backend-system/audit/</code>, 8 of 15. Plan and open boxes: <code>_plans/BACKEND_LAW.md</code>.
+  </div>
+
+</div>
+</body>
+</html>
