@@ -3,191 +3,206 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Full-bleed moments from your refs, placed where they earn it</title>
+<title>Full-bleed moments from your refs, as full actual pages</title>
 <!-- Base: elicitation -->
-<!-- Exists-check: npm run exists fullbleed = 0, exists full-bleed = 0 (2026-07-16). Elicitation variants only, no page rebuild: each block is a moment-scale treatment probe. Owner 2026-07-16: "I like full bleed stuff... I want it a lot... not for the confirmation". Confirmation placement EXCLUDED (rejected today). -->
-<!-- Grounded-in: _design-system/research/TASTE_REFS_2026-07.md (refs 05/03/14/26/30, the full-bleed pulls this page places) -->
-<!-- Grounded-in: ../_assets/taste-round2/base-home-mobile.png (the current home, shown as the before) -->
-<!-- Grounded-in: ../_assets/taste-round2/base-dashboard.png (real product UI used inside the marketing block) -->
-<!-- Owner-scope: all-variants: every moment carries fork chips; the two lock-conflicting variants (gradient finish, green flood) are marked and need a named yes; owner verbatim quoted above. -->
-<!-- Backend-check: all blocks are treatment probes on existing surfaces (home, PDP, category landings, onboarding, loyalty, marketing, queue); no new endpoints; photos are real captures at capture resolution (soft when scaled, noted on the page); tier names and counts are sample values. -->
+<!-- Scale: full-page -->
+<!-- Exists-check: npm run exists fullbleed = 0 ran this session. REBUILT as FULL PAGES after the owner rejected the fragment version ("make acc pages instead... i need to acc visualize", recurring; hardened same turn: the Scale arm of mockup-real-base-gate). Every variant is the WHOLE page: the new region + the real full-page capture continuing below, scrollable. Confirmation placement stays excluded. -->
+<!-- Grounded-in: _design-system/research/TASTE_REFS_2026-07.md (refs 05/03/14/26/30, the full-bleed pulls placed here) -->
+<!-- Grounded-in: ../_assets/taste-round2/base-home-full.png (real full home capture, boundary PIL-measured: Termine finden band 399-444, cut at 500) -->
+<!-- Grounded-in: ../_assets/taste-round2/base-pdp-full.png (real full PDP capture, photo 0-290, name card cut at 335) -->
+<!-- Grounded-in: ../_assets/taste-round2/base-barbershop-full.png + ../_assets/taste-round2/base-fuersalons-full.png (real full captures for FB3/FB6) -->
+<!-- Owner-scope: all-variants: every moment carries fork chips; the gradient finish and the green flood stay flagged lock-conflicts needing a named yes. -->
+<!-- Backend-check: treatment probes on existing pages, no new endpoints; photos are real captures (the home-hero photo is a capture crop, soft at hero scale, noted); tier names and counts are sample values. -->
 <style>
   :root{--ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#C5C8C4;--border:#E4E4E7;--sunken:#F4F4F5;--white:#FFFFFF;--accent:#276EF1;--success:#16A34A;--error:#DC2626}
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:Inter,-apple-system,"Segoe UI",sans-serif;background:var(--white);color:var(--ink);font-size:14px;line-height:1.5;padding-bottom:120px}
   h1,h2,h3{font-family:"Inter Tight",Inter,-apple-system,sans-serif}
-  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 20px}
   header.page{border-bottom:1px solid var(--border);padding:32px 0 24px;margin-bottom:24px}
   header.page h1{font-size:clamp(22px,3vw,28px);font-weight:700}
   header.page p{color:var(--ink2);max-width:68ch;margin-top:8px}
-  .pair{border:1px solid var(--border);border-radius:16px;margin:16px 0;padding:20px 24px}
+  .pair{border:1px solid var(--border);border-radius:16px;margin:18px 0;padding:20px 24px}
   .pair .head{display:flex;gap:10px;align-items:baseline;margin-bottom:14px}
   .pid{font-family:"Inter Tight",Inter,sans-serif;font-weight:700;font-size:14px;background:var(--ink);color:var(--white);border-radius:7px;padding:2px 9px;flex:none}
   .pair .head h3{font-size:15px;font-weight:600}
   .pair .why{font-size:12.5px;color:var(--ink2);margin-left:auto;max-width:42%}
-  .row{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
-  .shot{width:250px}
+  .row{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start}
   .shot .cap{font-size:12px;font-weight:700;margin-bottom:8px}
   .shot .cap.now{color:var(--ink2)}
   .shot .cap.new{color:var(--success)}
   .shot .cap.flag{color:var(--error)}
-  .frame{border:1px solid var(--border);border-radius:22px;overflow:hidden;position:relative;background:var(--white)}
-  .frame img.base{width:100%;display:block}
+  .phone{width:390px;height:760px;border:1px solid var(--border);border-radius:26px;overflow-y:auto;overflow-x:hidden;position:relative;background:var(--white);box-shadow:0 8px 28px rgba(50,47,44,.10)}
+  .phone::-webkit-scrollbar{width:0}
+  .phone img.full{width:390px;display:block}
+  .clip{overflow:hidden;width:390px}
+  .hint{font-size:11.5px;color:var(--ink2);margin-top:6px}
   .forks{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
   .fork{border:1px solid var(--border);border-radius:999px;padding:5px 13px;font-size:13px;background:var(--white)}
   .fork b{font-weight:700;margin-right:4px}
-  .note{font-size:11.5px;color:var(--ink2);margin-top:8px;max-width:80ch}
   svg.lucide{width:15px;height:15px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px}
 
-  /* FB1 home hero */
-  .hero{position:relative;height:300px;overflow:hidden}
+  .hero{position:relative;height:470px;overflow:hidden;background:var(--ink)}
   .hero img{width:100%;height:100%;object-fit:cover;display:block}
-  .hero .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,10,.18),rgba(10,10,10,.55))}
-  .hero .content{position:absolute;left:16px;right:16px;bottom:16px;color:var(--white)}
-  .hero .h{font-family:"Inter Tight",Inter,sans-serif;font-size:24px;font-weight:700;line-height:1.15;letter-spacing:-0.01em}
-  .hero .sub{font-size:12.5px;opacity:.85;margin-top:4px}
-  .frost{margin-top:12px;display:flex;align-items:center;gap:8px;height:46px;border-radius:999px;padding:0 16px;background:rgba(255,255,255,.3);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.35);color:var(--white);font-size:14px}
-  .below{background:var(--white);padding:14px 16px;font-size:12.5px;color:var(--ink2)}
+  .hero .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,10,.2),rgba(10,10,10,.58))}
+  .hero .top{position:absolute;top:14px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:center;color:var(--white)}
+  .hero .brand{font-family:"Inter Tight",Inter,sans-serif;font-size:22px;font-weight:700}
+  .hero .content{position:absolute;left:16px;right:16px;bottom:18px;color:var(--white)}
+  .hero .h{font-family:"Inter Tight",Inter,sans-serif;font-size:26px;font-weight:700;line-height:1.15;letter-spacing:-0.01em}
+  .hero .sub{font-size:13px;opacity:.85;margin-top:4px}
+  .frost{margin-top:14px;display:flex;align-items:center;gap:8px;height:48px;border-radius:999px;padding:0 16px;background:rgba(255,255,255,.3);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.35);color:var(--white);font-size:14px}
+  .fbtn{width:38px;height:38px;border-radius:999px;background:rgba(255,255,255,.3);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;color:var(--white)}
 
-  /* FB3 category hero */
-  .cat{position:relative;height:210px;overflow:hidden}
-  .cat img{width:100%;height:100%;object-fit:cover}
-  .cat .scrim{position:absolute;inset:0;background:linear-gradient(0deg,rgba(10,10,10,.62),rgba(10,10,10,.05) 55%)}
-  .cat .content{position:absolute;left:16px;bottom:14px;color:var(--white)}
-  .cat .eyebrow{font-size:13px;font-weight:600;opacity:.85}
-  .cat .h{font-family:"Inter Tight",Inter,sans-serif;font-size:26px;font-weight:700}
+  .pdphero{position:relative;height:430px;overflow:hidden}
+  .pdphero img{width:100%;height:100%;object-fit:cover;display:block}
+  .pdphero .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,10,.1) 40%,rgba(10,10,10,.62))}
+  .pdphero .content{position:absolute;left:16px;right:16px;bottom:14px;color:var(--white)}
+  .pdphero .h{font-family:"Inter Tight",Inter,sans-serif;font-size:24px;font-weight:700}
+  .pdphero .sub{font-size:12.5px;opacity:.85;margin-top:2px}
 
-  /* FB4 onboarding */
-  .onb{position:relative;height:340px;overflow:hidden;background:var(--ink)}
-  .onb .grid{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;opacity:.85}
+  .cathero{position:relative;height:220px;overflow:hidden}
+  .cathero img{width:100%;height:100%;object-fit:cover}
+  .cathero .scrim{position:absolute;inset:0;background:linear-gradient(0deg,rgba(10,10,10,.62),rgba(10,10,10,.08) 55%)}
+  .cathero .content{position:absolute;left:16px;bottom:14px;color:var(--white)}
+  .cathero .eyebrow{font-size:13px;font-weight:600;opacity:.85}
+  .cathero .h{font-family:"Inter Tight",Inter,sans-serif;font-size:26px;font-weight:700}
+
+  .onb{position:relative;height:760px;background:var(--ink)}
+  .onb .grid{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:2px;opacity:.85}
   .onb .grid img{width:100%;height:100%;object-fit:cover}
-  .onb .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,10,.15),rgba(10,10,10,.7))}
-  .onb .content{position:absolute;left:18px;right:18px;bottom:18px;color:var(--white)}
-  .onb .h{font-family:"Inter Tight",Inter,sans-serif;font-size:24px;font-weight:700;line-height:1.2}
-  .onb .cta{margin-top:12px;display:flex;height:46px;align-items:center;justify-content:center;border-radius:999px;background:var(--white);color:var(--ink);font-size:14px;font-weight:600}
-  .onbg{position:relative;height:340px;overflow:hidden;background:linear-gradient(178deg,#0290FC 0%,#7FBBF8 42%,#F8FCFF 78%,#FFFFFF 100%)}/* drift-ok hue-ok: gradient fork, start AND fade-to-white sampled from ref 05 itself; LOCK CONFLICT flagged on the chip */
-  .onbg .content{position:absolute;left:18px;right:18px;bottom:18px;color:var(--ink)}
-  .onbg .h{font-family:"Inter Tight",Inter,sans-serif;font-size:24px;font-weight:700;color:var(--ink)}
+  .onb .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,10,.12),rgba(10,10,10,.72))}
+  .onb .content{position:absolute;left:18px;right:18px;bottom:24px;color:var(--white)}
+  .onb .h{font-family:"Inter Tight",Inter,sans-serif;font-size:30px;font-weight:700;line-height:1.15}
+  .onb .cta{margin-top:14px;display:flex;height:48px;align-items:center;justify-content:center;border-radius:999px;background:var(--white);color:var(--ink);font-size:14.5px;font-weight:600}
+  .onbg{position:relative;height:760px;background:linear-gradient(178deg,#0290FC 0%,#7FBBF8 40%,#F8FCFF 74%,#FFFFFF 100%)}/* drift-ok hue-ok: gradient fork, start and fade-to-white sampled from ref 05; LOCK CONFLICT flagged on its chip */
+  .onbg .content{position:absolute;left:18px;right:18px;bottom:24px;color:var(--ink)}
+  .onbg .h{font-family:"Inter Tight",Inter,sans-serif;font-size:30px;font-weight:700}
+  .onbg .cta{margin-top:14px;display:flex;height:48px;align-items:center;justify-content:center;border-radius:999px;background:var(--ink);color:var(--white);font-size:14.5px;font-weight:600}
 
-  /* FB5 tier-up */
-  .tier{position:relative;height:340px;background:var(--ink);color:var(--white);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
-  .tier .lbl2{font-size:12.5px;opacity:.7}
-  .tier .h{font-family:"Inter Tight",Inter,sans-serif;font-size:44px;font-weight:700;letter-spacing:-0.02em;margin:6px 0}
-  .tier .n{font-variant-numeric:tabular-nums;font-size:13px;opacity:.8}
-  .tier .x{position:absolute;top:14px;right:14px;width:38px;height:38px;border-radius:999px;border:1px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center}
+  .tier{position:relative;height:760px;background:var(--ink);color:var(--white);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
+  .tier .lbl2{font-size:13px;opacity:.7}
+  .tier .h{font-family:"Inter Tight",Inter,sans-serif;font-size:56px;font-weight:700;letter-spacing:-0.02em;margin:8px 0}
+  .tier .n{font-variant-numeric:tabular-nums;font-size:14px;opacity:.8}
+  .tier .x{position:absolute;top:16px;right:16px;width:38px;height:38px;border-radius:999px;border:1px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center}
 
-  /* FB6 marketing band */
-  .mkt{background:var(--ink);color:var(--white);padding:22px 18px}
-  .mkt .h{font-family:"Inter Tight",Inter,sans-serif;font-size:20px;font-weight:700;line-height:1.25}
-  .mkt .sub{font-size:12.5px;opacity:.75;margin-top:4px}
-  .mkt .mini{margin-top:14px;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.18)}
+  .mkt{background:var(--ink);color:var(--white);padding:26px 18px}
+  .mkt .h{font-family:"Inter Tight",Inter,sans-serif;font-size:22px;font-weight:700;line-height:1.25}
+  .mkt .sub{font-size:13px;opacity:.75;margin-top:5px}
+  .mkt .mini{margin-top:16px;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.18)}
   .mkt .mini img{width:100%;display:block}
 
-  /* FB7 queue flood */
-  .queue{position:relative;height:300px;background:var(--success);color:var(--white);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
-  .queue .s{font-size:13px;opacity:.85}
-  .queue .n{font-family:"Inter Tight",Inter,sans-serif;font-variant-numeric:tabular-nums;font-size:64px;font-weight:700;line-height:1}
+  .queue{position:relative;height:760px;background:var(--success);color:var(--white);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  .queue .s{font-size:14px;opacity:.85}
+  .queue .n{font-family:"Inter Tight",Inter,sans-serif;font-variant-numeric:tabular-nums;font-size:96px;font-weight:700;line-height:1.05}
 </style>
 </head>
 <body>
 
 <header class="page">
   <div class="wrap">
-    <h1>Full-bleed, placed where it earns it</h1>
-    <p>You want full-bleed a lot, just not on the confirmation. The judges ranked where it fits without breaking your own 80/17 law; the key finding: PHOTO full-bleed costs nothing, because photography already carries the color in your system. Photos here are real captures at their captured resolution, so they render a bit soft at this size; the treatment is what you are judging. Answer like "FB1 a, FB3 a, FB4 a, FB5 yes, FB7 no".</p>
+    <h1>Full-bleed, as full actual pages</h1>
+    <p>Every frame below is the WHOLE page and scrolls: the new treatment sits on top, and the real captured page continues underneath it. Today-versions scroll too. The home-hero photo is a capture crop, so it renders soft at hero size; judge the treatment, not the sharpness. Answer like "FB1 a, FB2 a, FB3 a, FB4 a, FB5 yes, FB6 a, FB7 no". My recommendation stays: a on FB1, FB2, FB3, FB4, FB6, yes on FB5, no on FB7 and no on the gradient fork.</p>
   </div>
 </header>
 
 <div class="wrap">
 
   <div class="pair">
-    <div class="head"><span class="pid">FB1</span><h3>Homepage hero: one full-bleed photo behind the search</h3><span class="why">The entry statement. Everything below stays white, which also retires gray bands. Risk: exactly ONE hero, ever; rows below stay carousels per your G2 pick.</span></div>
+    <div class="head"><span class="pid">FB1</span><h3>Homepage: full-bleed photo hero, then your real page continues</h3><span class="why">Scroll both. The new page keeps everything below the hero identical, the categories and carousels are your live page.</span></div>
     <div class="row">
-      <div class="shot"><div class="cap now">Today</div><div class="frame"><img class="base" src="../_assets/taste-round2/base-home-mobile.png" alt="current home"></div></div>
-      <div class="shot"><div class="cap new">Full-bleed photo + frosted search</div>
-        <div class="frame">
+      <div class="shot"><div class="cap now">Today, the real page</div>
+        <div class="phone"><img class="full" src="../_assets/taste-round2/base-home-full.png" alt="the real home page"></div>
+        <div class="hint">scrolls, the full live page</div>
+      </div>
+      <div class="shot"><div class="cap new">Full-bleed hero, same page below</div>
+        <div class="phone">
           <div class="hero">
             <img src="../_assets/taste-round2/photo-a.jpg" alt="salon photo">
             <div class="scrim"></div>
+            <div class="top"><span class="brand">Solen</span><span class="fbtn"><svg class="lucide lucide-menu" viewBox="0 0 24 24"><path d="M4 12h16"/><path d="M4 18h16"/><path d="M4 6h16"/></svg></span></div>
             <div class="content">
               <div class="h">Appointments, instantly confirmed.</div>
               <div class="sub">Beauty and wellness across Switzerland.</div>
               <div class="frost"><svg class="lucide lucide-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg> Service, salon or stylist</div>
             </div>
           </div>
-          <div class="below">Everything below the hero stays white: your categories, then the carousels.</div>
+          <div class="clip"><img class="full" src="../_assets/taste-round2/base-home-full.png" style="margin-top:-500px" alt="the rest of the real page"></div>
         </div>
+        <div class="hint">scrolls, hero replaced, the rest is the real capture from the same scroll point</div>
       </div>
     </div>
     <div class="forks"><span class="fork"><b>a</b> yes, photo hero</span><span class="fork"><b>no</b> keep the white hero</span></div>
   </div>
 
   <div class="pair">
-    <div class="head"><span class="pid">FB2</span><h3>Salon page: the gallery bleeds edge to edge</h3><span class="why">The judges' number one: it is your core conversion page, and the intensity is the salon's own work, not decoration. Controls over the photo stay frosted per your locked recipe.</span></div>
+    <div class="head"><span class="pid">FB2</span><h3>Salon page: the gallery grows into a tall immersive hero</h3><span class="why">The name moves onto the photo; rating, hours and the rest of your real page continue below.</span></div>
     <div class="row">
-      <div class="shot"><div class="cap new">Edge-to-edge PDP hero</div>
-        <div class="frame">
-          <div class="hero" style="height:240px">
-            <img src="../_assets/taste-round2/photo-b.jpg" alt="salon photo">
-            <div class="scrim" style="background:linear-gradient(180deg,rgba(10,10,10,.35),rgba(10,10,10,.05) 40%,rgba(10,10,10,.5))"></div>
-            <div class="content" style="top:12px;bottom:auto;display:flex;justify-content:space-between">
-              <span class="frost" style="margin:0;height:38px;width:38px;padding:0;justify-content:center"><svg class="lucide lucide-arrow-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg></span>
-              <span class="frost" style="margin:0;height:38px;width:38px;padding:0;justify-content:center"><svg class="lucide lucide-heart" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span>
-            </div>
-            <div class="content"><div class="h" style="font-size:20px">Glow Lab Basel</div><div class="sub">Spalenberg 5, Basel</div></div>
+      <div class="shot"><div class="cap now">Today, the real page</div>
+        <div class="phone"><img class="full" src="../_assets/taste-round2/base-pdp-full.png" alt="the real salon page"></div>
+      </div>
+      <div class="shot"><div class="cap new">Tall full-bleed gallery hero</div>
+        <div class="phone">
+          <div class="pdphero">
+            <img src="../_assets/taste-round2/pdp-hero.png" alt="the salon's own gallery photo">
+            <div class="scrim"></div>
+            <div class="content"><div class="h">Muse Beauty Studio</div><div class="sub">Ruemelinsplatz 4, Basel</div></div>
           </div>
-          <div class="below">Below: your existing white PDP body, unchanged. Falls back to the contained layout when a salon's photo is low quality.</div>
+          <div class="clip"><img class="full" src="../_assets/taste-round2/base-pdp-full.png" style="margin-top:-335px" alt="the rest of the real page"></div>
         </div>
+        <div class="hint">the photo is the salon's own, zoomed to hero height; body continues from the rating line</div>
       </div>
     </div>
-    <div class="forks"><span class="fork"><b>a</b> yes, bleed the gallery</span><span class="fork"><b>no</b> keep it contained</span></div>
+    <div class="forks"><span class="fork"><b>a</b> yes, tall gallery hero</span><span class="fork"><b>no</b> keep the current gallery</span></div>
   </div>
 
   <div class="pair">
-    <div class="head"><span class="pid">FB3</span><h3>Category landings: photo carries the category</h3><span class="why">One-off entry pages (Coiffeur, Barber, Nails, Spa, cities). The photo does what color-coding would be tempted to do; your neutral-tags lock stays untouched.</span></div>
+    <div class="head"><span class="pid">FB3</span><h3>Category page: a photo hero above the real results</h3><span class="why">Honest note: /barbershop is your live search template, so this hero would create a landing TIER above the results; the page below stays exactly as it is.</span></div>
     <div class="row">
-      <div class="shot"><div class="cap new">Barber landing hero</div>
-        <div class="frame">
-          <div class="cat">
+      <div class="shot"><div class="cap now">Today, the real page</div>
+        <div class="phone"><img class="full" src="../_assets/taste-round2/base-barbershop-full.png" alt="the real barbershop page"></div>
+      </div>
+      <div class="shot"><div class="cap new">Photo hero on top, real page below</div>
+        <div class="phone">
+          <div class="cathero">
             <img src="../_assets/taste-round2/photo-c.jpg" alt="barber photo">
             <div class="scrim"></div>
             <div class="content"><div class="eyebrow">Basel</div><div class="h">Barbershop</div></div>
           </div>
-          <div class="below">Search results below stay in your grid, no hero on the results tier.</div>
+          <div class="clip"><img class="full" src="../_assets/taste-round2/base-barbershop-full.png" alt="the real page continues"></div>
         </div>
       </div>
     </div>
-    <div class="forks"><span class="fork"><b>a</b> yes, on all category and city landings</span><span class="fork"><b>no</b></span></div>
+    <div class="forks"><span class="fork"><b>a</b> yes, hero tier on category and city pages</span><span class="fork"><b>no</b> results start immediately</span></div>
   </div>
 
   <div class="pair">
-    <div class="head"><span class="pid">FB4</span><h3>Onboarding welcome: the looks montage</h3><span class="why">Seen once per user, costs nothing from the daily budget, and previews Inspo. The gradient finish (fork b) is the ONE place your refs' color pull could live in product, and it conflicts with 80/17: it needs your named yes.</span></div>
+    <div class="head"><span class="pid">FB4</span><h3>Onboarding welcome: the full-screen looks montage</h3><span class="why">A whole screen, seen once per user. The gradient finish (fork b) stays the flagged 80/17 conflict; it fades to white like your ref does.</span></div>
     <div class="row">
-      <div class="shot"><div class="cap new">a, photo montage welcome</div>
-        <div class="frame">
+      <div class="shot"><div class="cap new">a, the photo montage, full screen</div>
+        <div class="phone" style="overflow:hidden">
           <div class="onb">
-            <div class="grid"><img src="../_assets/taste-round2/photo-a.jpg" alt=""><img src="../_assets/taste-round2/photo-b.jpg" alt=""><img src="../_assets/taste-round2/photo-c.jpg" alt=""><img src="../_assets/taste-round2/photo-a.jpg" alt=""></div>
+            <div class="grid"><img src="../_assets/taste-round2/photo-a.jpg" alt=""><img src="../_assets/taste-round2/photo-b.jpg" alt=""><img src="../_assets/taste-round2/photo-c.jpg" alt=""><img src="../_assets/taste-round2/photo-b.jpg" alt=""><img src="../_assets/taste-round2/photo-c.jpg" alt=""><img src="../_assets/taste-round2/photo-a.jpg" alt=""></div>
             <div class="scrim"></div>
             <div class="content"><div class="h">Find your look.</div><div class="cta">Get started</div></div>
           </div>
         </div>
       </div>
-      <div class="shot"><div class="cap flag">b, gradient finish (against 80/17, needs your yes)</div>
-        <div class="frame">
+      <div class="shot"><div class="cap flag">b, gradient finish, full screen (against 80/17, needs your yes)</div>
+        <div class="phone" style="overflow:hidden">
           <div class="onbg">
-            <div class="content"><div class="h">All set.</div><div class="cta" style="margin-top:12px;display:flex;height:46px;align-items:center;justify-content:center;border-radius:999px;background:var(--ink);color:var(--white);font-size:14px;font-weight:600">Go to home</div></div>
+            <div class="content"><div class="h">All set.</div><div class="cta">Go to home</div></div>
           </div>
         </div>
       </div>
     </div>
-    <div class="forks"><span class="fork"><b>a</b> photo welcome</span><span class="fork"><b>b</b> AND the gradient finish (reopens 80/17 for this one screen)</span><span class="fork"><b>no</b></span></div>
+    <div class="forks"><span class="fork"><b>a</b> photo welcome</span><span class="fork"><b>b</b> AND the gradient finish</span><span class="fork"><b>no</b></span></div>
   </div>
 
   <div class="pair">
-    <div class="head"><span class="pid">FB5</span><h3>Loyalty tier-up: full-bleed INK</h3><span class="why">Twice a year at most, and the celebration color is your own strongest one: black-card energy, no new hue. Never interrupts a booking; appears on the rewards or profile visit.</span></div>
+    <div class="head"><span class="pid">FB5</span><h3>Loyalty tier-up: the full-screen ink moment</h3><span class="why">Twice a year at most; your strongest color at full bleed, black-card energy, no new hue. Never interrupts a booking.</span></div>
     <div class="row">
-      <div class="shot"><div class="cap new">The tier-up takeover</div>
-        <div class="frame">
+      <div class="shot"><div class="cap new">The whole screen</div>
+        <div class="phone" style="overflow:hidden">
           <div class="tier">
             <span class="x"><svg class="lucide lucide-x" style="width:14px;height:14px" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span>
             <div class="lbl2">Solen Status</div>
@@ -197,31 +212,35 @@
         </div>
       </div>
     </div>
-    <div class="forks"><span class="fork"><b>yes</b> a tier-up is a different class of moment than the confirmation</span><span class="fork"><b>no</b> keep even tier-ups calm</span></div>
+    <div class="forks"><span class="fork"><b>yes</b> tier-ups earn the takeover</span><span class="fork"><b>no</b> keep them calm</span></div>
   </div>
 
   <div class="pair">
-    <div class="head"><span class="pid">FB6</span><h3>Marketing pages: dark full-width bands with your real product inside</h3><span class="why">One-off persuasion pages (the for-salons family), the zone where product restraint was never meant to bind at full strength. The tiles show the REAL dashboard, never a fake screenshot.</span></div>
+    <div class="head"><span class="pid">FB6</span><h3>For-salons page: a dark full-width band inside the real page</h3><span class="why">Scroll: your real marketing page, with the ink band spliced in after the signup block, your real dashboard inside it.</span></div>
     <div class="row">
-      <div class="shot" style="width:320px"><div class="cap new">Ink band on the for-salons page</div>
-        <div class="frame">
+      <div class="shot"><div class="cap now">Today, the real page</div>
+        <div class="phone"><img class="full" src="../_assets/taste-round2/base-fuersalons-full.png" alt="the real for-salons page"></div>
+      </div>
+      <div class="shot"><div class="cap new">Ink band spliced into the same page</div>
+        <div class="phone">
+          <div class="clip" style="height:660px"><img class="full" src="../_assets/taste-round2/base-fuersalons-full.png" alt="the real page, top"></div>
           <div class="mkt">
             <div class="h">Your salon, fully in hand.</div>
             <div class="sub">Calendar, team and payments in one place.</div>
             <div class="mini"><img src="../_assets/taste-round2/base-dashboard.png" alt="the real dashboard"></div>
           </div>
-          <div class="below">Alternating dark and white sections; the dark stays on marketing, never in the product chrome.</div>
+          <div class="clip"><img class="full" src="../_assets/taste-round2/base-fuersalons-full.png" style="margin-top:-660px" alt="the real page continues"></div>
         </div>
       </div>
     </div>
-    <div class="forks"><span class="fork"><b>a</b> yes, dark marketing bands</span><span class="fork"><b>no</b> marketing stays white too</span></div>
+    <div class="forks"><span class="fork"><b>a</b> yes, dark bands on marketing</span><span class="fork"><b>no</b> marketing stays white</span></div>
   </div>
 
   <div class="pair">
-    <div class="head"><span class="pid">FB7</span><h3>Walk-in "you're up": the green flood</h3><span class="why">The riskiest of the set, flagged honestly: it is function (readable across a barbershop), uses only your locked success green, but it is a cousin of the celebration you declined, and green-as-surface is new grammar.</span></div>
+    <div class="head"><span class="pid">FB7</span><h3>Walk-in "you're up": the full-screen green flood</h3><span class="why">Flagged as the riskiest: function across a barbershop, but a cousin of the celebration you declined, and green-as-surface is new grammar.</span></div>
     <div class="row">
-      <div class="shot"><div class="cap flag">State-change flood (only when your number is called)</div>
-        <div class="frame">
+      <div class="shot"><div class="cap flag">The whole screen, only when called</div>
+        <div class="phone" style="overflow:hidden">
           <div class="queue">
             <div class="s">You're up</div>
             <div class="n">4</div>
@@ -230,7 +249,7 @@
         </div>
       </div>
     </div>
-    <div class="forks"><span class="fork"><b>yes</b> flood on the called state</span><span class="fork"><b>no</b> the tracker stays calm in every state</span></div>
+    <div class="forks"><span class="fork"><b>yes</b> flood the called state</span><span class="fork"><b>no</b> the tracker stays calm</span></div>
   </div>
 
 </div>
