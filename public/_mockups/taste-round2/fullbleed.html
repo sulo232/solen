@@ -51,6 +51,7 @@
   .hero .h{font-family:"Inter Tight",Inter,sans-serif;font-size:26px;font-weight:700;line-height:1.15;letter-spacing:-0.01em}
   .hero .sub{font-size:13px;opacity:.85;margin-top:4px}
   .frost{margin-top:14px;display:flex;align-items:center;gap:8px;height:48px;border-radius:999px;padding:0 16px;background:rgba(255,255,255,.3);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.35);color:var(--white);font-size:14px}
+  .straddle{position:relative;z-index:2;margin:-24px 16px 0;height:48px;border-radius:999px;background:var(--white);box-shadow:0 8px 24px rgba(10,10,10,.14);display:flex;align-items:center;gap:8px;padding:0 16px;color:var(--ink2);font-size:14px}
   .fbtn{width:38px;height:38px;border-radius:999px;background:rgba(255,255,255,.3);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;color:var(--white)}
 
   .pdphero{position:relative;height:430px;overflow:hidden}
@@ -120,13 +121,13 @@
             <img src="../_assets/taste-round2/photo-a.jpg" alt="salon photo">
             <div class="scrim"></div>
             <div class="top"><span class="brand">Solen</span><span class="fbtn"><svg class="lucide lucide-menu" viewBox="0 0 24 24"><path d="M4 12h16"/><path d="M4 18h16"/><path d="M4 6h16"/></svg></span></div>
-            <div class="content">
+            <div class="content" style="bottom:40px">
               <div class="h">Appointments, instantly confirmed.</div>
               <div class="sub">Beauty and wellness across Switzerland.</div>
-              <div class="frost"><svg class="lucide lucide-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg> Service, salon or stylist</div>
             </div>
           </div>
-          <div class="clip"><img class="full" src="../_assets/taste-round2/base-home-full.png" style="margin-top:-500px" alt="the rest of the real page"></div>
+          <div class="straddle"><svg class="lucide lucide-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg> Service, salon or stylist</div>
+          <div class="clip" style="margin-top:-24px"><img class="full" src="../_assets/taste-round2/base-home-full.png" style="margin-top:-500px" alt="the rest of the real page"></div>
         </div>
         <div class="hint">scrolls, hero replaced, the rest is the real capture from the same scroll point</div>
       </div>
