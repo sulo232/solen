@@ -30,7 +30,7 @@ enforcement, not undecided taste.)
 
 | Axis | Canonical | Worst outliers to fix |
 |---|---|---|
-| **Hairlines** | `border-s-border` (#E7E5E4) | ~480 `border-s-ink/{5,10,[0.06],[0.08]...}` callsites running parallel to 201 canonical uses. The single most-duplicated treatment in the app. Plus 4 raw-hex borders (#F0EDE8 / #E0E5DD ghosts in WhySolen). |
+| **Hairlines** | `border-s-border` (#E4E4E7, corrected 2026-07-10 — was stale #E7E5E4, matches SOURCE.md:211's live token) | ~480 `border-s-ink/{5,10,[0.06],[0.08]...}` callsites running parallel to 201 canonical uses. The single most-duplicated treatment in the app. Plus 4 raw-hex borders (#F0EDE8 / #E0E5DD ghosts in WhySolen). |
 | **Star** | `s-star` token | raw `fill="#FFC32B"` in ~28 files (SalonCard:540, SalonResultCard:223/289/367, SalonHeader:84, SalonReviews). Token bypassed almost everywhere. |
 | **Card photo radius** | `rounded-card` (16) | 16 / 18 / 22 mix. `SalonResultCard.tsx` uses ALL THREE (:213=16, :278=18, :356=22); homepage SalonCard:464=22. Kill 18 + 22. |
 | **`rounded-[13px]` phantom** | `rounded-input`(16) / `rounded-btn` | 18 uses in Header:517/687, SearchBar:342/641, SearchOverlay (×9), WalkInBand. Not on the scale at all. |
@@ -49,8 +49,19 @@ enforcement, not undecided taste.)
 
 ## B. Genuine conflicts, NEED A CALL (not guessing these)
 
-### B1. Selected / active-state colour: blue vs ink vs grey  [RESOLVED 2026-06-07: BLUE]
-**DECISION:** selected / active single-choice = **blue `s-accent`** (calendar date, time slot, active tab, radio); **ink only for the one primary commit button.** Owner: "both b".
+### B1. Selected / active-state colour: blue vs ink vs grey  ~~[RESOLVED 2026-06-07: BLUE]~~
+
+> **SUPERSEDED (owner 2026-06-29, gate `no-black-selected`; LOCKFILE §13.1 point 3, line 1215):** every
+> selected state EXCEPT calendar date + time slot (filter pill, chip, active tab, radio, menu/list
+> option, segmented control) moved to calm GRAY fill (`bg-s-bg-sunken` #F4F4F5 + `text-s-ink` + semibold
+> over a white unselected, the TabPill treatment) — NEVER blue-border, NEVER black/ink. Quote: _"EVERY
+> OTHER selected state (filter pill, chip, menu/list option, segmented control) = calm GRAY fill…
+> NEVER black/ink."_ The booking-flow calendar date + time slot are the one still-blue EXCEPTION
+> (design contract, CLAUDE.md "selected/active" row: "booking date/slot stays blue"); the ONE primary
+> commit button stays ink. The 2026-06-07 decision below is now READ NARROWLY: it still governs the
+> date/time-slot exception, not "active tab, radio" generally (those are gray per the 2026-06-29 rule).
+
+**DECISION (historical, 2026-06-07 — narrowed by the 2026-06-29 supersession above):** selected / active single-choice = **blue `s-accent`** (calendar date, time slot, active tab, radio); **ink only for the one primary commit button.** Owner: "both b".
 The biggest one. The code has **5 dialects** of "selected" (ink fill, accent
 fill, blue wash, grey fill, ink-border) and **3 docs disagree** (COMPONENT_REGISTRY
 = grey TabPill, LOCKFILE §1.5 = ink, inline V3-D421k = blue for search filters).

@@ -71,7 +71,7 @@ Every color use on Solen belongs to **one of three layers**:
 | Layer | Budget | What it is | Where it appears |
 |---|---|---|---|
 | **1 · Chrome** | ~97% (80% white surfaces + 17% ink) | Color is NOT the message. Pure B&W: white/sunken bg, ink text, ink hairlines, ink icons | Page bg, cards, modals, h1-h6, body, default buttons, dividers, footer, layout, photos |
-| **2 · Interactive accent (blue)** | no budget cap — sized by how many interactive affordances are on screen | Color says "this is tappable." Single saturated hue `s-accent #276EF1`, used GENEROUSLY on interactive affordances (NOT the one primary CTA) | Text links, see-all/view-all, active tab/segment state, secondary & ghost buttons, tappable row affordances, inline action labels (Buchen/Wegbeschreibung/Verwalten), interactive icon tints. NOT eyebrows or bullets (those stay text-s-ink-3) — blue marks interaction, never emphasis |
+| **2 · Interactive accent (blue)** | no budget cap — sized by how many interactive affordances are on screen | Color says "this is tappable." Single saturated hue `s-accent #276EF1`, ~~used GENEROUSLY on interactive affordances~~ (v2 wording, RETIRED by LOCKFILE §1.5 v3 2026-06-11: hyperlink-scope only) | Text links, see-all/view-all, active tab/segment state, secondary & ghost buttons, tappable row affordances, inline action labels (Buchen/Wegbeschreibung/Verwalten), interactive icon tints. NOT eyebrows or bullets (those stay text-s-ink-3) — blue marks interaction, never emphasis |
 | **3 · Semantic UI** | Variable (each instance is small but unbudgeted) | **Color IS the message.** Universal-convention hues users recognize at-a-glance. | Toast tones, StatusPill, AlertBanner, FormFieldError, ProgressBar step state, urgency badges, rating, save-fill, validation states |
 
 **The 80/17/3 numbers still describe chrome + brand-accent budget.** They're a budget, not a ceiling — semantic UI is unbudgeted because each instance is small and its presence is justified by meaning, not aesthetic.
@@ -88,7 +88,7 @@ Every color use on Solen belongs to **one of three layers**:
 2. Is this surface INTERACTIVE — can the user tap it?
    (text link, see-all/view-all, tab/segment, ghost/secondary button, tappable row, inline action label, interactive icon)
 
-   → YES → Layer 2 interactive accent. Use `s-accent` royal blue #276EF1, GENEROUSLY (no footprint cap, see §2.1). The one primary COMMIT CTA is the exception — stays `bg-s-ink`. NON-interactive text (eyebrow, label, price, bullet) is NOT blue (v2 rule 2).
+   → YES → Layer 2 interactive accent — ONLY if it reads as a hyperlink (LOCKFILE §1.5 v3 2026-06-11; the old "GENEROUSLY, no footprint cap" v2 wording is RETIRED). See-all / tabs / secondary buttons / icon tints = INK with affordance. The one primary COMMIT CTA is the exception — stays `bg-s-ink`. NON-interactive text (eyebrow, label, price, bullet) is NOT blue (v2 rule 2).
    → NO  → continue
 
 3. Default: Layer 1 chrome (B&W, see §2.1 ink table)
@@ -100,17 +100,17 @@ This decision tree is the **canonical onboarding for every new component** (CLAU
 
 Solen uses **the colors humans already recognize** from a lifetime of UI exposure. We do not invent custom semantic colors. If a meaning has a universal hue, we adopt the universal hue and map to our token.
 
-> **HEX SUPERSEDED (2026-06-01, V3-D421), see `CANON.md` §1:** `s-accent` = **#276EF1** (Uber blue) and marks INTERACTIVITY — used generously on links, see-all/view-all, tabs/segments, ghost & secondary buttons, tappable rows, inline action labels, interactive icon tints, plus focus / spinner / input. Stays OFF non-interactive text including eyebrows (eyebrows remain text-s-ink-3). `s-warning` = **#F1AE27** (the accent's amber twin). Closed status = **`s-closed #DC2626`** (red, distinct from `s-error #D32F2F`). Where a hex below conflicts with CANON, CANON wins.
+> **HEX SUPERSEDED (2026-06-01, V3-D421), see LOCKFILE §1 (CANON folded into LOCKFILE 2026-07-10):** `s-accent` = **#276EF1**. The "generously on everything tappable" wording that stood here was the v2 model, RETIRED by LOCKFILE §1.5 v3 (2026-06-11): blue is the HYPERLINK color (review counts, inline body links, Mehr lesen, the sparse hyperlink set) + system states; see-all / tabs / secondary & ghost buttons / icon tints = INK with affordance. `s-warning` = **#F1AE27** (the accent's amber twin). Closed + error share ONE red **`#DC2626`** (V3-D421 consolidated `s-error` onto the locked red; code-verified tailwind.config.js:178). Where a hex below conflicts with LOCKFILE, LOCKFILE wins.
 
 | Universal semantic | Standard hue | Solen token | Hex | Where it shows up |
 |---|---|---|---|---|
 | Success / Go / Open | Green | `s-success` | `#16A34A` | Toast success, StatusPill "Geöffnet", booking confirmed states |
-| Error / Danger / Closed | Red | `s-error` | `#D32F2F` | Toast error, FormFieldError border + text, "Geschlossen", critical alerts |
+| Error / Danger / Closed | Red | `s-error` | `#DC2626` | Toast error, FormFieldError border + text, "Geschlossen", critical alerts |
 | Warning / Caution | Amber | `s-warning` | `#F1AE27` | Toast warning, "Letzte Plätze" notices, validation that's not-blocking |
 | Interactive / Info | Blue | `s-accent` | `#276EF1` | Links, see-all/view-all, active tab/segment, ghost & secondary buttons, tappable rows, inline action labels, interactive icon tints; plus Toast info, focus rings, Spinner, input focus. OFF non-interactive text (eyebrows, body, prices, headings) |
 | Rating | Yellow | `s-star` | `#FFC32B` | Stars only, universal across review surfaces |
 | Save / Love | Hot pink | `--heart-active` | `#FF3366` | Saved-favorite heart fill only |
-| Urgency / Hot | Burnt amber | (inline) | `#9A3412` text on `#FFF1E6` bg | "Nur X heute" Flame badge only |
+| Urgency / Hot | Vermilion | `s-urgency` | `#C2410C` text on `#FFF1E6` bg (V3-D424; was #9A3412) | "Nur X heute" Flame badge only |
 | Disabled / Inactive | Muted grey | `s-ink-3` / `s-ink-disabled` | `#6B6B6B` / `#C5C8C4` | Disabled buttons, inactive tabs, low-importance text |
 
 **Rule:** if a UI element conveys one of the meanings above, use the listed token. Don't invent a "Solen-specific" success green or warning amber. The universal hue is the whole point — users recognize it without thinking.
@@ -134,8 +134,8 @@ When adding a new color token to `tailwind.config.js`, both forms MUST be define
 
 **Already-in-system examples** (use as reference when adding new tokens):
 - `s-success.DEFAULT #16A34A` (HSL 142, 76%, 36%) + `.bg #E8F5E9` (HSL 122, 28%, 93%)
-- `s-error.DEFAULT #D32F2F` (HSL 0, 65%, 51%) + `.bg #FFEBEE` (HSL 354, 100%, 96%)
-- `s-warning.DEFAULT #F1AE27` (HSL 40, 88%, 55%) + `.bg #FDF6E7` (HSL 41, 80%, 95%) — the accent's amber twin (CANON §1)
+- `s-error.DEFAULT #DC2626` + `.bg #FEE2E2` (V3-D421 one-red consolidation; corrected 2026-07-12, was #D32F2F/#FFEBEE)
+- `s-warning.DEFAULT #F1AE27` (HSL 40, 88%, 55%) + `.bg #FDF6E7` (HSL 41, 80%, 95%) — the accent's amber twin (LOCKFILE §1)
 - `s-accent.DEFAULT #276EF1` (HSL 215, 88%, 55%) + `.pale #EAEFFE` (HSL 226, 92%, 96%) — V3-D204
 
 **What WE DON'T do:**
@@ -158,12 +158,12 @@ All tokens come from `tailwind.config.js` `theme.extend.colors`. Always referenc
 
 #### Accent — Royal Blue (V3-D192-fix, 2026-05-26)
 
-The interactivity signal. Used GENEROUSLY on anything tappable — links, see-all/view-all, active tabs/segments, ghost & secondary buttons, tappable rows, inline action labels. **NOT the single primary commit CTA** (that stays `bg-s-ink`, one per screen — v2 rule 3). Blue marks interaction, never emphasis: non-tappable text stays ink/grey.
+~~The interactivity signal, used GENEROUSLY on anything tappable~~ (v2, RETIRED by LOCKFILE §1.5 v3 2026-06-11): blue is the HYPERLINK color — review counts, inline body links, Mehr lesen + system states. See-all / tabs / ghost & secondary buttons / tappable rows / icon tints = INK with affordance. **NOT the single primary commit CTA** (that stays `bg-s-ink`, one per screen — v2 rule 3). Blue marks interaction, never emphasis: non-tappable text stays ink/grey.
 
 | Token | Hex | Tailwind class | Use |
 |---|---|---|---|
 | `s-accent.DEFAULT` | `#276EF1` | `bg-s-accent` / `text-s-accent` / `border-s-accent` | Text links, see-all/view-all, active/selected tab text, ghost & secondary button text+border, tappable row affordances, inline action labels (Buchen/Wegbeschreibung/Verwalten), "NEW" pill bg, interactive icon tints. NOT eyebrows/bullets, NOT data-emphasis (non-interactive text stays ink) |
-| `s-accent.deep` | `#0F2A99` | `bg-s-accent-deep` / `text-s-accent-deep` | Link `:hover`, accent-on-bg `:hover` |
+| `s-accent.deep` | `#1E54B7` | `bg-s-accent-deep` / `text-s-accent-deep` | Link `:hover`, accent-on-bg `:hover` (DS-6 2026-06-11 re-activation; corrected 2026-07-12, was stale #0F2A99) |
 | `s-accent.pale` | `#EAEFFE` | `bg-s-accent-pale` | "Selected" row bg, focus-glow tint, NEW pill bg-light variant |
 
 **Contrast vs white** (`text-s-accent #276EF1` on white) ≈ **3.7 : 1** — passes WCAG AA for LARGE text (≥18px / ≥14px bold) and UI components, but **FAILS AA for normal-size body**. So blue links/labels must be ≥18px or bold, or lean on the link's icon/position affordance; do NOT use #276EF1 for 11px metadata text. (The old #1638C4 was ~9.6:1 / AAA; v2's brighter #276EF1 trades contrast for vibrancy.)
@@ -219,9 +219,9 @@ The interactivity signal. Used GENEROUSLY on anything tappable — links, see-al
 | `s-love.deep` | `#A23548` | Dark warm-red text on `.soft` bg |
 | `s-success` DEFAULT | `#16A34A` | Success state (same hue as brand — distinguish by context) |
 | `s-success.bg` | `#E8F5E9` | Success surface tint |
-| `s-warning` DEFAULT | `#F1AE27` | Warnings (the accent's amber twin, CANON §1) |
+| `s-warning` DEFAULT | `#F1AE27` | Warnings (the accent's amber twin, LOCKFILE §1) |
 | `s-warning.bg` | `#FDF6E7` | Warning surface tint |
-| `s-error` DEFAULT | `#D32F2F` | Errors |
+| `s-error` DEFAULT | `#DC2626` | Errors |
 | `s-error.bg` | `#FFEBEE` | Error surface tint |
 | `s-closed` | `#DC2626` | "Geschlossen" / closure states — distinct from error |
 | **`s-star`** | **`#FFC32B`** | **Rating stars — universal yellow signal. V3-D189 (2026-05-26, Q1 resolved): yellow is the locked color. Supersedes V3-D95 "never yellow." Update tailwind.config.js `s-star: "#FFC32B"`.** |
@@ -229,7 +229,7 @@ The interactivity signal. Used GENEROUSLY on anything tappable — links, see-al
 
 #### Inline urgency (currently only used in one place — Flame badge "Nur X heute")
 
-The "Nur X heute" badge uses inline hex `#9A3412` (burnt sienna text on `#FFF1E6` peach bg with `rgba(154, 52, 18, 0.22)` border). This is the **single sanctioned warm exception** in the locked B&W palette — urgency reads warm by physiological convention. It is an off-budget semantic exception (and v2 retired the old "3% accent" cap entirely — interactive blue is not budgeted).
+The "Nur X heute" badge uses `s-urgency #C2410C` (V3-D424 vermilion text on `#FFF1E6` bg with `rgba(194,65,12,0.22)` border; was inline #9A3412, de-muddied). This is the **single sanctioned warm exception** in the locked B&W palette — urgency reads warm by physiological convention. It is an off-budget semantic exception (and v2 retired the old "3% accent" cap entirely — interactive blue is not budgeted).
 
 ### §2.2 · Retired but still defined (drift-checker target)
 
@@ -241,7 +241,7 @@ These tokens exist in `tailwind.config.js` for backwards compat with un-rebuilt 
 | `s-brand-mid` `s-brand-deep` `s-brand-pale` `s-brand-subtle` | `#15803D` `#14532D` `#DCFCE7` `#F0FDF4` | V3-D189 | Same — brand-green family retired together. |
 | `s-coral` family | `#3B7A57` etc. | V3-D139 | Pre-B&W pivot brand (V2-D70 Aurex era). Token name lies — value is forest emerald, not coral. |
 | `s-cool` | `#89B4CA` | V3-D138 | Dusty blue — pre-B&W. Reserved for future use per memory `project_palette_b_w_pivot.md`. |
-| `s-pop` | `#C03001` | V3-D138 | Vermilion — pre-B&W |
+| `s-pop` | `#C03001` | V3-D138 | Vermilion — pre-B&W. **UN-RETIRED V3-D424 (2026-06-02): live urgency-badge token, see LOCKFILE §1** |
 | `s-wasabi` | `#F6EDE3` | V3-D138 | Cream section tint — pre-B&W |
 | `s-droplet` | `#E8F0F4` | V3-D138 | Pale dusty blue — pre-B&W |
 | `s-cream` | `#E9DFC8` | V3-D138 | Cream substrate — pre-B&W |
@@ -253,7 +253,7 @@ These tokens exist in `tailwind.config.js` for backwards compat with un-rebuilt 
 | `--shadow-warm-*` aliases | various | (warm tint legacy) | Use `elevation-1/2/3` |
 | `--ease-out-strong` `--ease-out-warm` `--ease-in-subtle` `--spring-bounce` `--ease-drawer` | various | V2-D16+ | Use canonical 4: `snap` / `spring` / `glide` / `thud` |
 
-**Active accent (v2, 2026-06-09):** Royal blue `s-accent #276EF1` is the INTERACTIVITY accent — used generously on all tappable affordances (links, tabs, ghost/secondary buttons, tappable rows, inline action labels). No longer "reserved / not introduced." See CANON.md §0 + §2.1 above. (Stale hex #1638C4 → #276EF1.)
+**Active accent (v3, 2026-06-11; v2 "generous" RETIRED):** Royal blue `s-accent #276EF1` is the HYPERLINK accent — hyperlink-reading text (review counts, inline body links, Mehr lesen) + system states only; tabs / ghost & secondary buttons / see-all / icon tints = INK with affordance. See LOCKFILE §1.5 v3 (CANON folded into LOCKFILE 2026-07-10). (Stale hex #1638C4 → #276EF1.)
 
 ### §2.3 · Color anti-patterns
 
@@ -262,7 +262,7 @@ These tokens exist in `tailwind.config.js` for backwards compat with un-rebuilt 
 - ❌ Using `s-brand` ANYWHERE in new code (V3-D189 — still retired). Token kept for back-compat only.
 - ❌ Using `s-accent` (royal blue) on primary CTAs — accent ≠ primary action surface (V3-D192-fix). Primary CTAs stay `bg-s-ink`.
 - ❌ Defaulting to chrome ink for a component whose color carries semantic meaning (V3-D197). If success/error/warning/info/open/closed/active is being communicated, the surface belongs to Layer 3 semantic UI — use the universal-color token. The recurring Agent-D-style mistake.
-- ❌ Inventing custom semantic hues. There's only ONE green for success (`s-success #16A34A`), ONE red for error (`s-error #D32F2F`), ONE amber for warning (`s-warning #F1AE27`). Don't shift them ±10° for "brand feel" — the universal hue IS the brand feel.
+- ❌ Inventing custom semantic hues. There's only ONE green for success (`s-success #16A34A`), ONE red for error (`s-error #DC2626`), ONE amber for warning (`s-warning #F1AE27`). Don't shift them ±10° for "brand feel" — the universal hue IS the brand feel.
 - ❌ Stacking semantics: do not use the brand-accent royal blue to mean "info" in one place and "selected tab" in another in the same module. Pick one role per surface.
 - ❌ Tinted shadows (`rgba(R, G, B, ...)` where RGB matches a retired brand color). Shadows are warm-ink only.
 
@@ -278,7 +278,7 @@ Surfaces that obey **Layer 3 semantic UI** (color IS the meaning). Each entry ma
 | `<Toast tone="info">` | Neutral information, FYI | blue pastel + saturated icon | `bg-s-accent-pale text-s-ink border-s-accent/15` + `<Info text-s-accent>` |
 | `<StatusPill state="open">` | "Geöffnet" (open now) | green / `s-success` | `text-s-success font-semibold` (text-only — color carries it) |
 | `<StatusPill state="closed">` | "Geschlossen" | muted / `s-ink-3` | `text-s-ink-3 font-medium` |
-| `<StatusPill state="urgent">` | "Schnell weg / Nur X heute" | amber / inline | `text-[#9A3412] bg-[#FFF1E6] border-[rgba(154,52,18,0.22)]` + `<Flame>` |
+| `<StatusPill state="urgent">` | "Schnell weg / Nur X heute" | amber / inline | `text-s-urgency bg-[#FFF1E6] border-[rgba(194,65,12,0.22)]` (V3-D424 token; was inline #9A3412) + `<Flame>` |
 | `<FormFieldError>` | Validation failure | red / `s-error` | `border-s-error text-s-error` + helper text |
 | `<FormFieldSuccess>` (rare) | Confirmed valid (e.g. unique email check passed) | green / `s-success` | `border-s-success text-s-success` |
 | `<AlertBanner tone="X">` | Cross-page warnings (cookie banner, maintenance) | per-tone | mirror Toast tones; full-width strip |
@@ -286,7 +286,7 @@ Surfaces that obey **Layer 3 semantic UI** (color IS the meaning). Each entry ma
 | `<ProgressStep state="current">` | Active step | blue / `s-accent` | filled circle bg, white number |
 | `<ProgressStep state="pending">` | Future step | muted / `s-ink-3` | hollow circle, ink-3 border |
 | Rating star (filled) | "This salon scored X" | yellow / `s-star` | `fill="#FFC32B"` (universal star convention) |
-| Rating star (empty) | Score remainder | grey / `s-border` | `fill="#E7E5E4"` |
+| Rating star (empty) | Score remainder | grey / `s-border` | `fill="#E4E4E7"` (corrected 2026-07-10; matches the live `s-border` token at SOURCE.md:211 and `RatingStars.tsx:183`'s `fill-s-border`) |
 | Heart (saved) | "You saved this" | pink / `--heart-active` | `fill="#FF3366"` |
 | Heart (unsaved) | Default | ink-stroke / `s-ink` | `stroke="var(--color-heading)" fill="none"` |
 | "NEW" badge (brand) | Brand identity moment, not semantic | blue / `s-accent` | `bg-s-accent text-white` (Layer 2, NOT Layer 3 — listed here for the decision boundary) |
@@ -303,7 +303,7 @@ Surfaces that obey **Layer 3 semantic UI** (color IS the meaning). Each entry ma
 
 ## §3 · Typography — V3-D191 (2026-05-26)
 
-> **VALUES SUPERSEDED (2026-06-01, V3-D421).** The literal type values in this section predate the V3-D325/D327/D410 sweeps. Single source of truth is now `_design-system/CANON.md` §3 + LOCKFILE §2: body = **Inter 400** (not Hanken 300), display = **Inter Tight** (not Bricolage), headings **600** (Hero **700**, never 800), eyebrow tracking **0.08em**. This section stays for rationale; where a value here conflicts with CANON, CANON wins.
+> **VALUES SUPERSEDED (2026-06-01, V3-D421).** The literal type values in this section predate the V3-D325/D327/D410 sweeps. Single source of truth is now LOCKFILE §2 (CANON folded into LOCKFILE 2026-07-10): body = **Inter 400** (not Hanken 300), display = **Inter Tight** (not Bricolage), headings **600** (Hero **700**, never 800), eyebrow tracking **0.08em**. This section stays for rationale; where a value here conflicts with LOCKFILE, LOCKFILE wins.
 
 ### Fonts (locked)
 
@@ -326,7 +326,7 @@ The canonical roles. Pick a role; use its exact spec. Don't invent new sizes.
 |---|---|---|---|---|---|---|---|
 | Hero H1 | `font-display text-[clamp(36px,9vw,46px)] font-extrabold leading-[1.0] tracking-[-0.03em]` | clamp(36, 9vw, 46) | **800** | -0.03em | 1.0 | sentence | Page hero only (`Termin in 30 Sekunden.`) — V3-D193 weight 900→800 |
 | Page H2 | `font-display text-[clamp(25px,4vw,40px)] font-extrabold leading-[1.0] tracking-[-0.03em]` | clamp(25, 4vw, 40) | **800** | -0.03em | 1.0 | sentence | BusinessTeaser-style h2 — V3-D193 weight 900→800 |
-| Section H2 | `font-display text-[clamp(18px,2vw,23px)] font-bold leading-[1.2] tracking-[-0.03em] text-s-ink` | clamp(18, 2vw, 23) | **700** | -0.03em | 1.2 | sentence | "Top auf Solen", "In der Nähe", "Profis in deiner Nähe", "Finde deine Inspiration.", "Bewertungen" — V3-D193 weight 800→700 |
+| Section H2 | `font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.25] tracking-[-0.01em] text-s-ink` | clamp(18, 2vw, 20) | **600** | -0.01em | 1.25 | sentence | "Top auf Solen", "In der Nähe", "Profis in deiner Nähe", "Finde deine Inspiration.", "Bewertungen" — **corrected 2026-07-10 to match LOCKFILE:227 (the CONSISTENCY_AUDIT.md fix flagged 2026-06-07, never applied); this row previously read clamp→23px/700/-0.03em, which conflicted with LOCKFILE. LOCKFILE wins on the aesthetic axis (dual-axis rule) — 20px/600 is canonical.** |
 | MobileCategoriesRow H2 | `font-display text-[clamp(18px,5vw,20px)] font-bold leading-[1.2] tracking-[-0.03em]` | clamp(18, 5vw, 20) | **700** | -0.03em | 1.2 | sentence | "Für dich" only — V3-D193 weight 800→700 |
 | Logo wordmark | `font-display font-extrabold leading-none tracking-normal` | per size variant | **800** | normal | 1 | sentence | "Solen" header logo — V3-D193 weight 900→800 |
 | Card name (h3) | `font-body text-[14px] font-medium leading-[1.25] tracking-[-0.01em] text-s-ink` | 14 | **500** | -0.01em | 1.25 | sentence | SalonCard name (V3-D191: 600→500) |
@@ -425,7 +425,7 @@ ScrollRow children use **negative-margin bleed**: card carousel children get `-m
 | `rounded-search` | 99px | Search bar outer container (fully rounded pill) |
 | `rounded-pill` | 9999px | Availability pills, tags |
 | `rounded-btn` | 99px | CTA buttons, action pills |
-| `rounded-input` | 16px | Form inputs (stable, NOT pill) |
+| `rounded-input` | 12px | Form inputs (stable, NOT pill). Owner kept shipped 12 over 16, 2026-06-08 (LOCKFILE radius table); corrected here 2026-07-12 |
 | `rounded-sheet` | 28px | Bottom sheets |
 
 Tailwind defaults (`rounded-xl` = 12, `rounded-2xl` = 16, `rounded-3xl` = 24) are also acceptable when they match these values. Prefer `rounded-card` etc. for semantic clarity in new code; `rounded-2xl` is fine in existing code.
@@ -846,7 +846,7 @@ V3-D197 lock. Before picking ANY color class, answer in order:
 2. Is this surface INTERACTIVE — can the user tap it?
    (text link, see-all/view-all, tab/segment, ghost/secondary button, tappable row, inline action label, interactive icon)
 
-   → YES → Layer 2 interactive accent. Use `s-accent` royal blue #276EF1, used GENEROUSLY (no footprint cap).
+   → YES → Layer 2 interactive accent — hyperlink-reading text only (LOCKFILE §1.5 v3 2026-06-11; v2 "GENEROUSLY" RETIRED).
             The single primary COMMIT CTA is the exception — it stays `bg-s-ink` (v2 rule 3).
             NON-interactive text (eyebrow, label, price, heading, bullet) is NOT blue — blue marks interaction, never emphasis (v2 rule 2).
    → NO  → continue
@@ -885,7 +885,7 @@ const badgeVariants = cva(
   {
     variants: {
       tone: {
-        urgent: "bg-[#FFF1E6] text-[#9A3412]",
+        urgent: "bg-[#FFF1E6] text-s-urgency",  <!-- V3-D424; was inline #9A3412 -->
         info: "bg-s-bg-sunken text-s-ink-2",
       },
     },
@@ -1205,10 +1205,10 @@ The running list of "we already decided this, don't re-litigate." If you find yo
 | Decision | Locked at | Where the lock lives |
 |---|---|---|
 | B&W chrome palette, no green/no color in chrome | V3-D138 | This doc §2 + memory project_palette_b_w_pivot |
-| Accent = blue `s-accent` #276EF1, NOT pixel-budgeted (v2 2026-06-09; forest emerald #16A34A retired as accent, survives as success-status hue) | v2 | CANON.md §0 |
-| Inter Tight (display + codes-as-tabular) + Inter (body) — Bricolage + Hanken + JetBrains Mono retired (mono retired 2026-06-10 / V3-D470; codes → Inter Tight tabular per LOCKFILE §13.4) | CANON §3 / V3-D410 / V3-D470 | This doc §3 |
+| Accent = blue `s-accent` #276EF1, sparse HYPERLINK scope (v3 2026-06-11 supersedes v2 "not budgeted"; forest emerald #16A34A retired as accent, survives as success-status hue) | v3 | LOCKFILE §1.5 v3 |
+| Inter Tight (display + codes-as-tabular) + Inter (body) — Bricolage + Hanken + JetBrains Mono retired (mono retired 2026-06-10 / V3-D470; codes → Inter Tight tabular per LOCKFILE §13.4) | LOCKFILE §2 / V3-D410 / V3-D470 | This doc §3 |
 | 80 / 17 surfaces+ink; interactive blue NOT budgeted (the old "3%" accent cap reversed, v2 2026-06-09) | V3-D138 + v2 | This doc §1 |
-| Blue `s-accent` #276EF1 = the interactivity accent — used generously on all tappable affordances (v2, 2026-06-09) | v2 | CANON.md §0 + SOURCE §1/§2.1 |
+| Blue `s-accent` #276EF1 = the HYPERLINK accent, sparse (v3 2026-06-11; the v2 "generous on all tappable" row is RETIRED) | v3 | LOCKFILE §1.5 v3 + SOURCE §1/§2.1 |
 | "Termin in 30 Sekunden" is THE positioning | V3-D86 | This doc §1 |
 | German `du` not `Sie` | (since launch) | This doc §18 |
 | `card` radius = 16px | V4 era | This doc §5 |

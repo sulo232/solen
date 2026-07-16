@@ -1,18 +1,20 @@
 # Design Language v2 — Reconciliation Record (2026-06-09)
 
+> **HISTORICAL RECORD, NOT CURRENT LAW (banner 2026-07-12).** v2's generous-blue model was rejected by the owner 2026-06-10 (RESTRAINT) and narrowed to the hyperlink model by LOCKFILE §1.5 v3 (2026-06-11). Only rules 2-5 and 7 survive in spirit; rule 1 and rule 6 are superseded (see inline banners).
+
 **What this is.** The audit trail for the v2 design-language pivot. The owner approved v2 from the mockup
 `public/_mockups/design-language-v2.html` + verbatim criticism, then asked to **fix every contradiction in the design
 rules + memory BEFORE implementing**, so the drift-checker and future sessions don't revert v2 back to the old "blue-ban."
 This file records the 7 rules, every doc/memory edit made, the decisions taken, and what's deferred to implementation.
 
-**Precedence reminder:** `CANON.md` + actual code > `LOCKFILE.md` > `SOURCE.md` (prose). The v2 spec is installed at
+**Precedence reminder:** ~~`CANON.md` + actual code > `LOCKFILE.md` > `SOURCE.md` (prose)~~ SUPERSEDED — CANON.md was folded into LOCKFILE 2026-07-10; current chain: code reality + `LOCKFILE.md` > `SOURCE.md` (project CLAUDE.md precedence chain, 2026-07-03). The v2 spec is installed at
 `CANON.md §0` (read-first); everything else was reconciled to match.
 
 ---
 
 ## The 7 v2 rules (canonical)
 
-1. **BLUE = INTERACTIVITY.** `s-accent #276EF1` is used GENEROUSLY on anything tappable: text links, see-all/view-all,
+1. ~~**BLUE = INTERACTIVITY.**~~ **⚠️ SUPERSEDED 2026-06-10/11** (owner rejected generous blue live: "too much blue"; LOCKFILE §1.5 v3 = hyperlink-scope only). Original v2 text: `s-accent #276EF1` is used GENEROUSLY on anything tappable: text links, see-all/view-all,
    active tab/segmented states, secondary & ghost buttons, tappable row affordances, inline action labels
    (Buchen / Wegbeschreibung / Verwalten), interactive icon tints (icon IS the tap target), plus the system states it
    always had (focus rings, Spinner, input focus). **No pixel budget.** REVERSES the old "blue only on focus/spinner/form."

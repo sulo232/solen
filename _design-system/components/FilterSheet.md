@@ -1,8 +1,8 @@
 # FilterSheet
 
 **File:** `app/[locale]/_components/search/FilterSheet.tsx`
-**Layer:** 1 (chrome) — B&W. Hosts no semantic color; pure search-result filter UI.
-**Status:** wip (V3-D351, 2026-05-28) — verified via `tsc`; visual sign-off pending.
+**Layer:** 1 (chrome): B&W. Hosts no semantic color; pure search-result filter UI.
+**Status:** wip (V3-D351, 2026-05-28): verified via `tsc`; visual sign-off pending.
 
 ---
 
@@ -13,7 +13,7 @@ chrome (`SearchTemplate`). Holds the filter controls that don't fit the inline
 chip row: a segmented **Sortieren** control, **Verfuegbarkeit** chips, and
 **Bewertung** chips, with a Zuruecksetzen + "{count} Salons anzeigen" footer.
 
-It is a **controlled, stateless view over the URL params** — it owns no filter
+It is a **controlled, stateless view over the URL params**: it owns no filter
 state. Every control writes the SAME `searchParams` keys the inline chip row
 writes, so the two are a single source of truth: tapping "Offen jetzt" in the
 chip row and in the sheet flip the exact same `open_now` param. Open/close state
@@ -22,9 +22,17 @@ lives in `SearchTemplate` (`filterSheetOpen`) and arrives as `isOpen` / `onClose
 ## Layer
 
 Layer 1 chrome (per §14.0 decision tree: it's a structural filter affordance, not
-a semantic-state surface). No pastel, no accent fills. Active chips use the ink
-fill (`bg-s-ink text-white`), inactive use white + `s-border` hairline — same B&W
-contrast model as `TabPill` and the chip row.
+a semantic-state surface). No pastel, no accent fills. **Selected-state law, two
+dated decisions:** (1) the general owner filter-pill law (owner 2026-06-29,
+reconfirmed 2026-07-01, CLAUDE.md design contract, supersedes V3-D450): every
+pill/chip/sort segment/filter button on the site selects to calm GRAY sunken,
+never blue-border, never black; (2) the FilterSheet-specific approval (owner
+2026-07-02, approved mockup `/dev/filter-refine`, `FilterSheet.tsx:375`) that
+applied this law to `SheetChip`. Active chips use the calm GRAY sunken fill
+(`bg-s-bg-sunken text-s-ink font-semibold`, `border-transparent`), inactive use
+white + `s-border` hairline (`FilterSheet.tsx:374-379`): the TabPill treatment,
+matching the design contract's "filter pill" row (never black/ink fill, never a
+blue border on a filter).
 
 ## Public API
 
@@ -61,16 +69,16 @@ and no locale array.
 | Bewertung | chips 4.5+ / 4.0+ / Egal | `min_rating` | yes |
 
 \* `open_now` is shown for parity with the chip row (same param, single source of
-truth) but is **not filtered server-side yet** — the search API ignores it and
+truth) but is **not filtered server-side yet**: the search API ignores it and
 returns the full set until an hours-aware filter lands.
 
 **Omitted on purpose:**
-- **Preis** — `min_price`/`max_price` are read by `/api/salons` but never applied
+- **Preis**: `min_price`/`max_price` are read by `/api/salons` but never applied
   (route.ts: "we skip price filter on the salons level"). No working param → no
   control.
-- **In deiner Naehe** — the API takes `lat`/`lng` (not a `distance` param) and
+- **In deiner Naehe**: the API takes `lat`/`lng` (not a `distance` param) and
   there's no geolocation-capture UI in scope. Omitted.
-- **Haartyp / Ausstattung** — no DB columns. Omitted per spec.
+- **Haartyp / Ausstattung**, no DB columns. Omitted per spec.
 
 ## Visual signature
 
@@ -79,8 +87,12 @@ returns the full set until an hours-aware filter lands.
 - Desktop (≥768px): `Modal` (`size="md"`) via `useResponsiveOverlay()`, same
   groups, `ModalFooter layout="between"` (reset left, apply right).
 - Group title = Section-H2 recipe (16px/600/ink, `tracking-[-0.01em]`).
-- Chips = Secondary-CTA at rest → Primary-CTA ink fill + leading `Check` when on,
-  36px min height, `rounded-pill`.
+- Chips = white + hairline at rest → calm gray sunken fill + `text-s-ink
+  font-semibold` when on (general law: owner 2026-06-29, reconfirmed 2026-07-01,
+  supersedes V3-D450; applied here per the FilterSheet-specific approval, owner
+  2026-07-02, approved mockup `/dev/filter-refine`, `FilterSheet.tsx:375`; the
+  fill alone signals selected, no leading `Check`), 36px min height,
+  `rounded-pill` (`FilterSheet.tsx:351-385`, `SheetChip`).
 - Segmented control = `bg-s-bg-sunken` track, active segment = white pill +
   micro-shadow.
 - Apply button = Primary-CTA (`bg-s-ink text-white`, 15px/500), shows live count.
@@ -94,20 +106,20 @@ opacity-only under `prefers-reduced-motion`. Chip/segment state swaps =
 
 ## Do / Don't
 
-- **Do** keep it a stateless view — all state stays in the URL via the caller's
+- **Do** keep it a stateless view: all state stays in the URL via the caller's
   param writers.
 - **Do** add new groups only when the param is actually applied by the search API.
-- **Don't** add a control whose param the API ignores (Preis, distance) — it
+- **Don't** add a control whose param the API ignores (Preis, distance): it
   silently does nothing and lies to the user.
-- **Don't** introduce sheet-local filter state — it would desync from the chip
+- **Don't** introduce sheet-local filter state: it would desync from the chip
   row.
-- **Don't** add accent color — Layer 1 B&W only.
+- **Don't** add accent color: Layer 1 B&W only.
 
 ## Edge cases
 
 - Reset clears `open_now`, `instant_bookable`, `walk_in`, `deals`, `min_rating`,
   `sort` and drops `page`. The sheet stays open after reset (the count updates).
-- Apply just closes the sheet — params write on every tap, so filtering is already
+- Apply just closes the sheet: params write on every tap, so filtering is already
   live; "apply" is a confirmation affordance, not a commit.
 - `resultCount` reflects the current fetched `total`; while the list is refetching
   it shows the last known total (no flicker to 0).
@@ -118,10 +130,19 @@ opacity-only under `prefers-reduced-motion`. Chip/segment state swaps =
   STRUCTURE from `public/solen-search-filters-variants.html` ("The shared Filter
   sheet"); AESTHETIC from LOCKFILE §1 tokens + §2.5 type roles. Reuses the `Sheet`
   primitive (+ `Modal` on desktop) rather than a bespoke overlay.
+- Owner (2026-06-29, reconfirmed 2026-07-01, CLAUDE.md design contract): the
+  general filter-pill law, every pill/chip/sort segment/filter button selects to
+  calm gray sunken, supersedes V3-D450.
+- Owner (2026-07-02, approved mockup `/dev/filter-refine`, `FilterSheet.tsx:375`):
+  the FilterSheet-specific approval that applied the general law to `SheetChip`,
+  changing its selected-chip fill from ink (`bg-s-ink text-white`) to calm gray
+  sunken (`bg-s-bg-sunken text-s-ink font-semibold`). This doc still described
+  the old ink-fill recipe until 2026-07-12 (A3 registry audit finding 2b) even
+  though the code was already correct.
 
 ## Related
 
-- `Sheet` / `Modal` / `useResponsiveOverlay` (primitives) — the overlay shells.
-- `SearchTemplate` — the sole consumer; owns open state + param writers + the
+- `Sheet` / `Modal` / `useResponsiveOverlay` (primitives): the overlay shells.
+- `SearchTemplate`: the sole consumer; owns open state + param writers + the
   inline chip row that shares the same params.
-- `TabPill` — the same active-ink / inactive-hairline chip grammar.
+- `TabPill`: the same active-gray-sunken / inactive-hairline chip grammar (corrected 2026-07-12; this line previously said "active-ink", which was wrong for both components).

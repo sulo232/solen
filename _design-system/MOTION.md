@@ -1,6 +1,6 @@
 # MOTION + the design-language pass (2026-06-09)
 
-Source: two Tim Gabe videos the owner shared , **"4 levels of UI/UX design (and BIG mistakes to avoid)"** + **"The Secret Behind Weirdly Addictive Apps"** , plus owner calibration ("overmade the depths", "premium feel"). This doc is the durable record so it survives context compaction. Referenced from CLAUDE.md so it loads every session.
+Source: two Tim Gabe videos the owner shared , **"4 levels of UI/UX design (and BIG mistakes to avoid)"** + **"The Secret Behind Weirdly Addictive Apps"** , plus owner calibration ("overmade the depths", "premium feel"). This doc is the durable record so it survives context compaction. **Correction (2026-07-10, was stale "loads every session"):** the ENTER RECIPE (below) is gate-enforced (`~/.claude/hooks/motion-recipe-gate.py`, PreToolUse on Write/Edit/MultiEdit, registered in the global `~/.claude/settings.json`, verified live 2026-07-10) , the rest of this doc is read-on-demand (CLAUDE.md: "read before motion work").
 
 ## The thesis (do NOT lose this)
 
@@ -50,6 +50,7 @@ Legitimate exception (a backdrop/scrim fade, a colour cross-fade): put `motion-o
 ## Motion principles (the "when to use")
 
 - **Easings** (LOCKFILE/SOURCE §4: snap / spring / glide / thud) used purposefully on EVERY interaction , press feedback, transitions, sheet + overlay entrances , consistently, never ad-hoc.
+- **Gesture-driven elements are the ONE exception to fixed easings** (LOCKFILE §16.5, owner-approved 2026-07-10, from Apple's Designing Fluid Interfaces via the emilkowalski apple-design skill): anything a finger drives 1:1 (sheet drag, SearchMorph) releases into a SPRING seeded with the finger's velocity, decides dismiss-vs-return by velocity sign + momentum projection (not a bare position threshold), rubber-bands at hard edges, and stays grabbable mid-settle. Full formulas + house damping/response values live in §16.5, read it before touching any draggable surface. Verify gesture physics with a Playwright pointer script + video, never the Preview tab (it throttles rAF and lies).
 - **Celebratory moments** on emotional peaks → use `<SuccessMark>`. The peak is booking-confirmed (done); also walk-in-joined, review-posted, package/gift bought, payment settled.
 - **Haptics** on mobile where the platform allows (Android `navigator.vibrate`; iOS web is limited , use where real, never fake).
 - **Restraint in motion too** , purposeful + quick (150-300ms), never gratuitous. Motion is the lever; it is not decoration.
@@ -64,8 +65,8 @@ Legitimate exception (a backdrop/scrim fade, a colour cross-fade): put `motion-o
 
 ## DONE since (2026-06-09, the council + rollout run)
 
-- **Council COLOR MODEL** codified (LOCKFILE §1.5.0): warmth + photography first, semantic for meaning, blue system-only + the one bare-manage-link carve-out. **[SUPERSEDED by Design Language v2, 2026-06-09 (later same day): blue is now the GENEROUS interactivity colour — links, secondary/ghost buttons, active tabs, tappable affordances; OFF non-interactive text. AND the warm-neutral shift is REVERSED toward cool white-first surfaces (`s-bg.sunken` → #F4F4F5, `s-border` → #E4E4E7), no warm cream. See public/_mockups/design-language-v2.html + CANON §0.]**
-- **SENIOR_SCORECARD.md** ship-gate (5 dims) + drift rule **A19** (sub-12px, INFO until swept). Scorecard Color dim rewritten to fail BOTH dead-grey AND vibrating-blue (blue on NON-interactive text). **v2 update (2026-06-09): blue ON interactive affordances — links/tabs/ghost buttons — is REQUIRED, not a fail.**
+- **Council COLOR MODEL** codified (LOCKFILE §1.5.0): warmth + photography first, semantic for meaning, blue system-only + the one bare-manage-link carve-out. **[SUPERSEDED twice — chain completed 2026-07-12: v2 generous-blue (2026-06-09) was itself rejected 2026-06-10 (RESTRAINT) and narrowed by LOCKFILE §1.5 v3 (2026-06-11): blue = the HYPERLINK color only; see-all / tabs / secondary+ghost buttons = INK. The cool white-first surface reversal (`s-bg.sunken` #F4F4F5, `s-border` #E4E4E7) DID survive and is current law. Current state: LOCKFILE §1.5, not this note.]**
+- **SENIOR_SCORECARD.md** ship-gate (5 dims) + drift rule **A19** (sub-12px, INFO until swept). Scorecard Color dim rewritten to fail BOTH dead-grey AND vibrating-blue (blue on NON-interactive text). ~~**v2 update (2026-06-09): blue ON interactive affordances — links/tabs/ghost buttons — is REQUIRED, not a fail.**~~ **v3 correction (2026-07-12): LOCKFILE §1.5 v3 (2026-06-11) — blue only on hyperlink-reading text; blue on tabs/ghost buttons is a FAIL again.**
 - **Confirmation** rebuilt to 5/5 (date is focal, code → footer, ink actions + the one blue manage-link, icon-only copy, "Kalender hinzufügen").
 - **Back/Home nav**: one up-affordance (Back on deep pages, Home on top-level; Breadcrumb mobile-back removed). Header icons balanced to 22px.
 - **Salon PDP** links inked (council model — REVERSED by v2: PDP links are now blue `s-accent #276EF1`). **Homepage** type swept (sub-12px floored, 10→7 sizes).
