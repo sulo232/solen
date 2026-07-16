@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { validateBody } from "@/lib/validations";
 import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
+import { logAuditEvent } from "@/lib/audit";
 import { z } from "zod";
 import type { Database } from "@/lib/database.types";
 
@@ -69,8 +70,29 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: "No updates provided" }, { status: 400 });
   }
 
+  // Read the pre-change values so the audit trail below can record old -> new,
+  // not just the new state (_backend-system/LAW.md section 14).
+  const { data: before } = await admin
+    .from("profiles").select("role, is_suspended").eq("id", user_id).single();
+
   const { error } = await admin.from("profiles").update(updates).eq("id", user_id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  // Role changes and suspensions are the two levers an admin has over another
+  // account; both are logged so a promotion/demotion/suspension is always
+  // attributable to an actor, a time, and an old -> new value (audit finding #9).
+  if (role !== undefined) {
+    await logAuditEvent(req, user.id, "user.role_change", "user", user_id, {
+      from: before?.role ?? null,
+      to: role,
+    });
+  }
+  if (is_suspended !== undefined) {
+    await logAuditEvent(req, user.id, is_suspended ? "user.suspend" : "user.unsuspend", "user", user_id, {
+      from: before?.is_suspended ?? null,
+      to: is_suspended,
+    });
+  }
 
   return NextResponse.json({ ok: true });
 }

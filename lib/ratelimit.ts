@@ -179,6 +179,16 @@ const ABUSE_PRONE_LIMITERS = new Set<Ratelimit>([
   resendAccessLimiter,
 ]);
 
+// Retry-After for the fail-CLOSED branch below (Upstash unconfigured on a real production
+// boot). There is no real window to report here, the request never reached Redis, so the
+// limiter's actual window (anywhere from "1 m" to "1 d" depending on which limiter tripped)
+// is unknown at this point. 60s is a defensible fixed value: it matches the shortest, most
+// common per-minute windows (general/admin/auth/roadmap limiters), and this branch only fires
+// while Upstash is misconfigured in production, which alertMisconfiguredRedisOnce() above
+// already pages the admin about, so the outage is expected to be short-lived rather than a
+// real day-long AI-budget wait.
+const FAIL_CLOSED_RETRY_AFTER_SECONDS = 60;
+
 const RATE_LIMITED_BODY = { error: "Too many requests. Please try again later.", code: "RATE_LIMITED" } as const;
 // Distinct body for the GLOBAL AI budget (see AI_GLOBAL_BUDGET_KEY / getAiGlobalDailyLimiter
 // above/below). A house-wide cap tripping is NOT the same event as a per-user/per-IP limit
@@ -365,8 +375,12 @@ export async function applyRateLimit(
         // Fail CLOSED: no Redis to ask, so this is the same 429 a real limit hit
         // returns, minus the X-RateLimit-* headers (we have no real limit/remaining/
         // reset numbers to report without a Redis call, and fabricating them would
-        // be worse than omitting them).
-        return NextResponse.json(rejectionBody, { status: 429 });
+        // be worse than omitting them). Retry-After still gets a real header, see
+        // FAIL_CLOSED_RETRY_AFTER_SECONDS above for why 60s specifically.
+        return NextResponse.json(rejectionBody, {
+          status: 429,
+          headers: { "Retry-After": String(FAIL_CLOSED_RETRY_AFTER_SECONDS) },
+        });
       }
       alertMisconfiguredRedisOnce();
     }

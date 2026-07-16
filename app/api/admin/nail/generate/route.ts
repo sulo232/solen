@@ -60,7 +60,16 @@ export async function POST(req: NextRequest) {
   // passed in here, see lib/nail/ai-budget.ts.
   const budgetError = await checkBudget();
   if (budgetError) {
-    return NextResponse.json({ error: budgetError }, { status: 429 });
+    // Real window: the monthly budget key (lib/nail/ai-budget.ts budgetKey()) is keyed by
+    // calendar month, so it actually resets at the start of next month, not on a fixed
+    // rolling duration. Retry-After reports the real seconds until that reset.
+    const now = new Date();
+    const nextMonthStart = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    const retryAfterSeconds = Math.max(1, Math.ceil((nextMonthStart.getTime() - now.getTime()) / 1000));
+    return NextResponse.json({ error: budgetError }, {
+      status: 429,
+      headers: { "Retry-After": String(retryAfterSeconds) },
+    });
   }
 
   // 8. Parse + validate body

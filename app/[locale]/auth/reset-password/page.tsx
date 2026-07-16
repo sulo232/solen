@@ -59,14 +59,25 @@ export default function ResetPasswordPage() {
 
     setLoading(true);
     const { error } = await supabase.auth.updateUser({ password });
-    setLoading(false);
 
     if (error) {
+      setLoading(false);
       toast.error(error.message || tc("errorResetPassword"));
-    } else {
-      setSuccess(true);
-      setTimeout(() => router.push(`/${locale}/auth/login`), 2500);
+      return;
     }
+
+    // Revoke every OTHER session on this account so a live attacker session does not
+    // survive the password reset (the entire point of resetting it, AUTHN-03). scope:
+    // "others" fires no SIGNED_OUT event on the current tab, the user who just reset
+    // stays signed in here.
+    const { error: signOutError } = await supabase.auth.signOut({ scope: "others" });
+    if (signOutError) {
+      console.error("[reset-password] signOut({ scope: \"others\" }) failed:", signOutError);
+    }
+
+    setLoading(false);
+    setSuccess(true);
+    setTimeout(() => router.push(`/${locale}/auth/login`), 2500);
   };
 
   if (success) {

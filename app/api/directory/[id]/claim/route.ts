@@ -84,7 +84,16 @@ export async function POST(
           claim_verification_code: null,
           claim_verification_expires_at: null,
         }).eq("id", id);
-        return NextResponse.json({ error: "Too many incorrect attempts. Please request a new code." }, { status: 429 });
+        // Real window: attemptsKey carries the 15-min TTL set on the first attempt above.
+        // Read it back so Retry-After reports the actual remaining seconds rather than a
+        // restated constant; fall back to the full 15 min only if the TTL read is somehow
+        // negative (key expired between the incr above and this ttl call).
+        const ttlSeconds = await redis.ttl(attemptsKey);
+        const retryAfterSeconds = ttlSeconds > 0 ? ttlSeconds : 15 * 60;
+        return NextResponse.json(
+          { error: "Too many incorrect attempts. Please request a new code." },
+          { status: 429, headers: { "Retry-After": String(retryAfterSeconds) } }
+        );
       }
     }
 
