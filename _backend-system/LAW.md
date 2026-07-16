@@ -16,7 +16,19 @@ A fresh session can learn *how* our plumbing works from `_docs/BACKEND.md`. Noth
 
 **Evidence tiers:** **T0** verified directly against OUR own code or live DB this session (the strongest tier here: it is a fact about us, not a claim about the world) · **T1** formal standard / replicated (RFC, NIST, OWASP, Postgres/Stripe docs) · **T2** one strong source or converging independents · **T3** directional, verify on our own data · **CONV** a named convention, a coordination device not a truth · **MYTH** debunked, never cite.
 
-**Scale caveat, load-bearing:** Solen runs ~28 salons. Most published backend advice targets companies three orders of magnitude larger. **Adopting big-company machinery early is itself a failure mode, not caution.** Every topic carries a "premature" line naming the trigger that would change that.
+**Scale caveat, load-bearing, and STRICTLY BOUNDED (bound added 2026-07-16 after the owner caught me abusing it):** Solen runs ~28 salons. Most published backend advice targets companies three orders of magnitude larger. **Adopting big-company machinery early is itself a failure mode, not caution.** Every topic carries a "premature" line naming the trigger that would change that.
+
+> ### The bound. Read this before you ever type "at our scale".
+>
+> **SCALE CHANGES WHAT YOU SHOULD BUILD. IT NEVER CHANGES WHETHER A THING WORKS.**
+>
+> "Premature at our scale" is legitimate for exactly ONE move: declining to **BUILD** machinery that does not exist yet (Kafka, PITR, OpenTelemetry, a policy engine, a global rate-limit service). That is a real judgement and this file is full of it.
+>
+> It is **NEVER** a reason to leave a thing that ALREADY EXISTS and does not do what its name says. That is not a scale tradeoff, it is a lie in the code, and it lies exactly as much at 28 salons as at 2,800.
+>
+> **A control that only holds because the user count is small is not a control. It is a coincidence.**
+>
+> This bound exists because I broke it, and the owner had to catch me: I recommended LEAVING a thing called "the daily AI cost ceiling" that did not cap cost (it was keyed per user, so N users = N x the cap), on the grounds that "at 28 salons your real exposure is small". Owner, verbatim: *"why do you keep saying, oh, it's not a problem even though it is?"* Fixed in `bdf1584a1`. The pattern is now **enforced, not advised**: `~/.claude/hooks/scale-excuse-gate.py` (Stop gate) blocks a message pairing a scale claim with a dismissal AND a brokenness marker, and deliberately still allows the legitimate do-not-build-yet call. If that gate fires on you, it is not an obstacle. It is this paragraph.
 
 **GATED** on a row means a hook physically blocks the violation. The marker in brackets is the inline escape hatch when you genuinely mean it: write `// cas-ok: <reason>` and the gate stands down. An escape with no reason is a smell.
 
