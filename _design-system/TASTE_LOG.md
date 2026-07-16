@@ -253,3 +253,17 @@ Owner verbatim: "ok all of it no disban the full bleed thing one thing to add it
 | NEW RULE, dead chevrons | A chevron/arrow affordance may NEVER render without a real wired destination. A dead chevron is a fabricated affordance, the same class as fabricated data. Mockups mark inert controls as inert; product code never ships an unwired chevron. |
 
 Interpretation note: "ok all of it" read as endorsing the recommendation set printed on the page and in chat (a on photo moments, yes FB5, no FB7, no gradient). If "all of it" meant literally every fork including FB7 and the gradient, say so and both flip to approved.
+
+## 2026-07-16, CORRECTION: full-bleed DENIED (owner, same night)
+
+Owner verbatim: "fym i told you full bleed is not okay i want it gone the mockup is denied bro"
+
+The earlier "ok all of it no disban the full bleed thing" meant REJECTION and I misread it as approval: my mistake, logged plainly. The "full-bleed picks" table above is VOID. Standing state:
+
+| Item | Decision |
+|---|---|
+| Full-bleed direction (photo/color heroes, takeovers, floods, montages) | DENIED and disbanded; graveyarded (REMOVED.md + REJECTED_TREATMENTS signature); never re-propose without an explicit owner yes by name |
+| fullbleed.html exploration mockup | DENIED, deleted |
+| FB1-FB7, all of them | REJECTED |
+| Dead-chevron rule | STANDS (the owner did not retract it) |
+| Earlier same-day "I like full bleed stuff... I want it a lot" | SUPERSEDED by this rejection; latest dated call wins |
