@@ -74,8 +74,8 @@ export async function GET(req: NextRequest) {
     },
     {
       key: "go_live",
-      // Complete when at least profile + hours + 1 service are done
-      complete: !!(salon.name && salon.description_de && hasHours && (serviceCount ?? 0) >= 1),
+      // Complete when requirements match the go-live POST gate: stripe + cover photo + at least 1 service
+      complete: !!(salon.stripe_account_id && salon.cover_photo_url && (serviceCount ?? 0) >= 1),
     },
   ];
 

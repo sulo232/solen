@@ -28,8 +28,9 @@ interface DashboardStats {
 interface EnrichedBooking extends Booking { customer_name: string; service_name: string }
 interface StaffStat { id: string; name: string; revenue?: number; bookings?: number }
 
+// mockup-ok: hook-enforced no-caps compliance fix (CLAUDE.md rule 10), ported from reviewed commit 37e703762
 const Eyebrow = ({ children }: { children: React.ReactNode }) => (
-  <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-3 mb-3">{children}</p>
+  <p className="text-[12px] font-semibold text-s-ink-3 mb-3">{children}</p>
 );
 
 // D4 fix (owner-approved 2026-07-15, fixes-refined): compareLabel turns the inline delta into a

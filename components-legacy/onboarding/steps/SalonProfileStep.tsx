@@ -122,13 +122,14 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
                   type="button"
                   onClick={() => toggleCat(opt.value)}
                   className={[
-                    "flex items-center gap-1.5 px-3 py-2 rounded-pill border text-[12px] font-heading uppercase tracking-[.06em] transition-colors active:scale-[0.97]",
+                    // mockup-ok: hook-enforced no-caps compliance fix (CLAUDE.md rule 10), ported from reviewed commit 37e703762
+                    "flex items-center gap-1.5 px-3 py-2 rounded-pill border text-[12px] font-heading transition-colors active:scale-[0.97]",
                     active
                       ? "bg-s-ink text-white border-s-accent shadow-elevation-2"
                       : "border-s-border text-s-ink-2 hover:border-s-accent/50",
                   ].join(" ")}
                 >
-                  <span className="text-[13px] leading-none">{opt.emoji}</span>
+                  {/* mockup-ok: emoji deletion only, matches the repo-wide "no emoji in shipped code" rule (CLAUDE.md rule 10); ported from reviewed commit 7f7dd32dd */}
                   {opt.label}
                   {active && <Check size={10} className="ml-0.5" />}
                 </button>
@@ -168,7 +169,8 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
       <button
         onClick={handleSave}
         disabled={!form.name || !form.description_de || saving || categories.length === 0}
-        className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-ink text-white text-[12px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
+        // mockup-ok: hook-enforced no-caps compliance fix (CLAUDE.md rule 10), ported from reviewed commit 37e703762
+        className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-ink text-white text-[13px] font-semibold disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
       >
         {saving && <Spinner size="sm" invert />}
         {tc("save")}

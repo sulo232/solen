@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
 
   // Parse opening hours if available
   const hours = salon.opening_hours as Record<string, { open?: string; close?: string } | null> | null;
-  const dayMap: Record<string, number> = { monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6, sunday: 0 };
+  const dayMap: Record<string, number> = { mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6, sun: 0 };
 
   const schedules: Array<{
     salon_id: string;
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
           day_of_week: num,
           start_time: "09:00",
           end_time: "18:00",
-          is_working: day !== "sunday",
+          is_working: day !== "sun",
         });
       }
     }

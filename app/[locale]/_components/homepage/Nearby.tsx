@@ -1,11 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { MapPin } from "lucide-react";
 import { useLocale } from "next-intl";
 import { Section, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
 import { SalonCard, type SalonCardProps } from "./SalonCard";
 import { useCustomerPrefs, sortByCategoryPicks, type CustomerPrefs } from "./useCustomerPrefs";
+import NearbyMap, { type NearbyMapSalon } from "./NearbyMap";
 // NEARBY_SALON_IDS is a plain value module (no server-only imports), legal
 // to import directly into this "use client" file. salonCardData.ts stays a
 // type-only import: it's a Server module (next/headers via createServerSupabaseClient),
@@ -43,6 +43,10 @@ interface NearbyRow {
   postalCode: string | null;
   city: string | null;
   priceFromCHF: number | null;
+  /** Real coordinates (salons.latitude/longitude), for the NearbyMap teaser.
+   *  Null when the salon has none, in which case it gets no marker. */
+  latitude: number | null;
+  longitude: number | null;
 }
 
 export default function Nearby({
@@ -79,11 +83,17 @@ export default function Nearby({
       postalCode: real.postalCode,
       city: real.city,
       priceFromCHF: real.priceFromCHF,
+      latitude: real.latitude,
+      longitude: real.longitude,
     };
   }).filter((row): row is NearbyRow => row !== null);
   // V3-D348: bend toward the user's picks, picked-category salons lead, the
   // rest keep their list order. Logged-out (no prefs) = unchanged.
   const entries = sortByCategoryPicks(rows, prefs?.categories ?? []);
+  // Real coordinates only; a salon with no lat/lng gets no marker, never a fake one.
+  const mapSalons: NearbyMapSalon[] = entries
+    .filter((e): e is NearbyRow & { latitude: number; longitude: number } => e.latitude != null && e.longitude != null)
+    .map((e) => ({ id: e.id, latitude: e.latitude, longitude: e.longitude, rating: e.rating, reviewCount: e.reviewCount }));
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
   return (
@@ -97,34 +107,15 @@ export default function Nearby({
           link={{ label: "Alle in deiner Nähe →", href: `/${locale}/search?nearby=true` }}
           scrollRef={scrollRef}
         />
-        {/* V3-D348 (tweak #2): map teaser — gives "In der Nähe" a location-led
-            identity distinct from the editorial "Top auf Solen" carousel above.
-            The salon cards below are UNCHANGED (name+star / street / time·price).
-            Tap → nearby results. */}
-        <a
+        {/* mockup-ok: real Mapbox teaser (NearbyMap.tsx), owner-approved 2026-07-15
+            per that component's header. Replaces the fabricated CSS-grid plus 3
+            fixed MapPins block that shipped before it (V3-D348 tweak #2 origin). */}
+        <NearbyMap
+          salons={mapSalons}
           href={`/${locale}/search?view=map`}
-          aria-label="Salons in der Nähe auf der Karte ansehen"
-          className="relative mt-1 block h-[120px] overflow-hidden rounded-card border border-s-border bg-s-bg-sunken transition-transform duration-200 ease-glide active:scale-[0.97]"
-        >
-          <span
-            aria-hidden
-            className="absolute inset-0"
-            style={{
-              backgroundImage:
-                "linear-gradient(rgba(10,10,10,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(10,10,10,0.05) 1px, transparent 1px)",
-              backgroundSize: "26px 26px",
-            }}
-          />
-          <MapPin className="absolute left-[26%] top-[28%] text-s-ink" size={20} strokeWidth={2.5} fill="currentColor" aria-hidden />
-          <MapPin className="absolute left-[56%] top-[42%] text-s-ink" size={22} strokeWidth={2.5} fill="currentColor" aria-hidden />
-          <MapPin className="absolute left-[40%] top-[62%] text-s-ink" size={18} strokeWidth={2.5} fill="currentColor" aria-hidden />
-          <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-pill bg-white px-3 py-1.5 text-[13px] font-medium text-s-ink shadow-[0_2px_8px_rgba(0,0,0,0.12)]">
-            <MapPin size={13} className="text-s-ink" aria-hidden />
-            {nearbyCount != null
-              ? `${nearbyCount} Salons in der Nähe`
-              : "Karte öffnen"}
-          </span>
-        </a>
+          ariaLabel="Salons in der Nähe auf der Karte ansehen"
+          countLabel={nearbyCount != null ? `${nearbyCount} Salons in der Nähe` : "Karte öffnen"}
+        />
         <ScrollRow ref={scrollRef}>
         {entries.map((e) => (
           <SalonCard

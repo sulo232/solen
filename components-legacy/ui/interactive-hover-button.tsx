@@ -16,7 +16,8 @@ export default function InteractiveHoverButton({
   return (
     <button
       className={cn(
-        "flex items-center justify-center gap-2 text-white text-xs font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] disabled:opacity-60",
+        // mockup-ok: hook-enforced no-caps compliance fix (CLAUDE.md rule 10), ported from reviewed commit 37e703762
+        "flex items-center justify-center gap-2 text-white text-sm font-heading font-semibold active:scale-[0.97] transition-[transform,filter] disabled:opacity-60",
         className
       )}
       // V3-D328 (Section A): "s-coral" string literal was always invalid CSS (Tailwind tokens

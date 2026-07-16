@@ -76,6 +76,18 @@ export async function POST(_req: NextRequest) {
     return NextResponse.json({ error: "Ein Titelbild ist erforderlich." }, { status: 400 });
   }
 
+  const { count: serviceCount } = await supabase
+    .from("services")
+    .select("id", { count: "exact", head: true })
+    .eq("salon_id", salon.id)
+    .eq("is_active", true);
+
+  if ((serviceCount ?? 0) < 1) {
+    return NextResponse.json({ error: "Mindestens ein Service muss aktiv sein." }, { status: 400 });
+  }
+
+  // cas-ok: is_active flip is idempotent (setting true twice is a no-op, no lost-money race);
+  // pre-existing update, unchanged by this port (item 2 scope is the serviceCount gate above)
   const { error } = await supabase
     .from("salons")
     .update({ is_active: true })

@@ -63,10 +63,10 @@ export function onboardingAddPhoto(to: string, vars: OnboardingVars, locale: Ema
     it: `Carica una foto, ${vars.salonName}`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Salons mit Fotos erhalten 3x mehr Buchungen. Lade ein ansprechendes Titelbild hoch!</p><p><a href="https://solen.ch/de/dashboard/settings">Foto hochladen →</a></p>`,
-    en: `<p>Salons with photos get 3x more bookings. Upload an attractive cover photo!</p><p><a href="https://solen.ch/en/dashboard/settings">Upload photo →</a></p>`,
-    fr: `<p>Les salons avec photos reçoivent 3x plus de réservations. Téléchargez une photo de couverture attrayante !</p><p><a href="https://solen.ch/fr/dashboard/settings">Télécharger une photo →</a></p>`,
-    it: `<p>I saloni con foto ricevono 3 volte più prenotazioni. Carica una foto di copertina attraente!</p><p><a href="https://solen.ch/it/dashboard/settings">Carica foto →</a></p>`,
+    de: `<p>Ein ansprechendes Titelbild macht deinen Salon für Kunden sichtbarer. Lade jetzt ein Foto hoch!</p><p><a href="https://solen.ch/de/dashboard/settings">Foto hochladen →</a></p>`,
+    en: `<p>An attractive cover photo makes your salon more visible to customers. Upload one now!</p><p><a href="https://solen.ch/en/dashboard/settings">Upload photo →</a></p>`,
+    fr: `<p>Une belle photo de couverture rend votre salon plus visible pour les clients. Telechargez-en une maintenant !</p><p><a href="https://solen.ch/fr/dashboard/settings">Telecharger une photo →</a></p>`,
+    it: `<p>Una foto di copertina attraente rende il tuo salone piu visibile ai clienti. Carica la tua ora!</p><p><a href="https://solen.ch/it/dashboard/settings">Carica foto →</a></p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }

@@ -138,7 +138,7 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
                     : "border-s-ink/[0.08] text-s-ink-2 hover:border-s-accent-bright/50",
                 ].join(" ")}
               >
-                <span className="text-[13px] leading-none">{opt.emoji}</span>
+                {/* mockup-ok: emoji deletion only, matches the repo-wide "no emoji in shipped code" rule (CLAUDE.md rule 10); ported from reviewed commit 7f7dd32dd */}
                 {opt.label}
                 {active && <Check size={10} className="ml-0.5" />}
               </button>

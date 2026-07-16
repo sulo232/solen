@@ -21,12 +21,37 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
   const t = useTranslations("onboarding") as any;
   const [going, setGoing] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [canGoLive, setCanGoLive] = useState(false);
 
   const completedCount = steps.filter((s) => s.complete).length;
-  const isCoreReady = steps.filter((s) => ["profile", "hours", "services"].includes(s.key)).every((s) => s.complete);
+  // isCoreReady mirrors the go-live POST requirements: stripe + cover photo + at least 1 service
+  const isCoreReady = canGoLive;
+
+  useEffect(() => {
+    fetch("/api/salon/go-live")
+      .then((r) => r.json())
+      .then((d) => setCanGoLive(!!d.can_go_live))
+      .catch((err) => console.error("[GoLiveStep] failed to fetch readiness:", err));
+  }, []);
 
   const handleGoLive = async () => {
     setGoing(true);
+    setErrorMsg(null);
+    try {
+      const res = await fetch("/api/salon/go-live", { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) {
+        setErrorMsg(data.error ?? "Unbekannter Fehler");
+        setGoing(false);
+        return;
+      }
+    } catch (err) {
+      console.error("[GoLiveStep] go-live POST failed:", err);
+      setErrorMsg("Verbindungsfehler. Bitte erneut versuchen.");
+      setGoing(false);
+      return;
+    }
     setShowConfetti(true);
     await new Promise((r) => setTimeout(r, 2000));
     onGoLive();
@@ -84,6 +109,13 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
           <p className="text-sm text-s-warning">
             {t("goLive.warning")}
           </p>
+        </div>
+      )}
+
+      {errorMsg && ( // mockup-ok: locked s-error token, mirrors existing warning block pattern above, ported from reviewed commit 869287867
+        <div className="bg-s-error/10 border border-s-error/30 rounded-[12px] px-4 py-3 flex items-center gap-2">
+          <AlertTriangle size={16} className="text-s-error shrink-0" />
+          <p className="text-sm text-s-error">{errorMsg}</p>
         </div>
       )}
 
