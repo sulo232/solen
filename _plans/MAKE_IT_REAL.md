@@ -23,3 +23,14 @@ DB ground truth (live queries 2026-07-16): all 17 row salon ids are real + activ
 
 ## Extra box (found mid-task)
 - [x] searchCategories.ts fabricated counts (42/18/31/14 Salons vs 20 active total) removed, omit-and-flag arm , verified: df234a21d, sub-line dropped in SearchOverlay + dev/search-morph, real per-category counts parked (needs server thread)
+
+## Round 2 boxes (owner: "isnt ths maiking up fake sh a reccuring pattern" , 12-agent sweep 2026-07-16, 5 confirmed live fabrications)
+
+- [x] salon/[slug]/layout.tsx:48 , const city = "Basel" in generateMetadata: every salon title/description claims Basel; fix = postalToCity(salon.postal_code), the helper already used on the same PDP , verified: 1fe729173; postalToCity wired, omit-arm on null postal, live curl: title 'Old Town Barbers - Barbershop in Basel | Solen' from postal 4051
+- [x] searchFeatured.ts FEATURED_SALONS , 3 hardcoded street addresses render in SearchOverlay's idle "Beliebte Store" rows (DB cross-check: Muse is Ruemelinsplatz 4, code says Spalenberg 12 = WRONG); fix = wire live or drop the address sub-line; also delete the dead average_rating/badge fields on the same array , verified: 1fe729173; identity-only + live /api/salons?ids= fetch (reviewer verified the route .in() discriminates and returned Ruemelinsplatz 4 etc.), sub-line omitted while loading
+- [x] welcome-series emails , "hunderte Salons" (day 0) + "ueber 200 Salons" (day 3) in 4 locales vs 20 real salons, sent by a live scheduled cron; fix = numberless reword (or real count passed from the cron route) , verified: 1fe729173; numberless reword all 4 locales, subjects + cron untouched, grep zero scale claims
+- [x] RoomManager.tsx:286 , utilization = 0 placeholder renders a fake 0% bar to every spa owner; fix = omit the bar + flag for real booking-density wiring , verified: 1fe729173; fake 0% bar removed, comment flags real booking-density wiring
+- [x] searchTrending.ts TRENDING ("127 Buchungen heute", "42%...") , dev-only today (only dev/search-morph imports it) but a landmine; flagged, delete or mark , verified: 1fe729173; fabricated meta field deleted, port-back warning added, dev page compiles
+- [x] fabricated-value-gate.py live (commit 522c71ee1, selftest 15/15) so the class is blocked at edit time going forward , verified: commit 522c71ee1, wired in 3 PreToolUse matcher groups
+
+- Reviewer round 2 (sweep fixes): PASS 8/8 (agent a47f923da0d471b85, live curls). Pre-existing out-of-scope: .next/types ANON_CACHE_HEADERS tsc error (chip task_09435e75); useRecentlyViewed.ts dev-only DEMO (NODE_ENV-gated, stale address, acceptable); RoomManager middot separator (taste rule 2, pre-existing).
