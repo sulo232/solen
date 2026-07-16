@@ -87,7 +87,7 @@ solen/
 ├── hooks/                             # Custom React hooks (useCityDetection, etc.)
 ├── supabase/                          # Migrations + Edge Functions
 ├── messages/                          # i18n (de, en, fr, it)
-├── instrumentation.ts                 # Vercel OTel registration
+├── instrumentation.ts                 # startup env assertion (assertProdRequiredEnv); no OTel
 └── public/
     ├── solen-coral.html               # ⭐ LIVING DESIGN PREVIEW
     └── offline.html                   # PWA offline page
@@ -100,7 +100,7 @@ solen/
 ```bash
 npm install          # Install deps
 npm run dev          # Start dev server (port 3000)
-npm run build        # Production build (Vercel handles on deploy)
+npm run build        # Production build (Netlify runs this on deploy)
 npm run lint         # Lint
 ```
 
@@ -116,7 +116,7 @@ npm run lint         # Lint
 
 - **Platform:** Netlify (auto-deploys from `main`). Cron jobs run via GitHub Actions (`.github/workflows/cron-jobs.yml`), not on Netlify.
 - **Dev server:** port 3000 (`npm run dev`).
-- **Instrumentation:** `instrumentation.ts` registers OpenTelemetry (service `solen`).
+- **Instrumentation:** `instrumentation.ts` asserts the required prod env at startup (`assertProdRequiredEnv`). No OpenTelemetry: `@vercel/otel` was dropped with the Vercel migration.
 - **Pushing is the owner's job:** Claude never runs `git push`. The owner pushes and syncs; the live site can lag local `main` until they do (see `_plans/OPS_RUNBOOK.md`).
 - **Backend deep reference:** how every backend system works lives in `_docs/BACKEND.md`.
 
