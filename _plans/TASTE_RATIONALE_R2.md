@@ -51,13 +51,13 @@ Owner message (dictated): fix + commit; expand RATIONALE.md with the og round-1 
 
 - [x] Record the picks in TASTE_LOG , verified: commit 75b2c2b52, TASTE_LOG.md section '2026-07-16, reference-probe picks round 1' (P7/P12/P13/P14 approved, P1 no-blur, P3 rejected)
 - [x] Graveyard P3 (approve-collapse-with-undo) , verified: REMOVED.md line added by npm run removed (commit 75b2c2b52)
-- [x] De-blur the P1 demos , verified: 5 blur smears zeroed in taste-refs/index.html + 1 in taste-round2/dashboard.html (regex sweep output 5/1, commit 75b2c2b52)
+- [x] De-blur the P1 demos , verified: grep 'blur([123]px)' now returns 0 hits in both taste-refs/index.html and taste-round2/dashboard.html (checked again this turn; commit 75b2c2b52)
 - [x] CORRECTION: round-2 explained in plain English , verified: public/_mockups/taste-round2/round2-explained.html (commit 75b2c2b52), 3 cards rendered (browser check), every round-2 probe tagged live/probe/waiting with its named blocker
 - Apply round, in flight with the coder agent (dispatched 2026-07-16, orchestrator commits after loop-review):
-  - [ ] P7 SetupBanner full checklist (components-legacy/dashboard/SetupBanner.tsx) , with coder now
-  - [ ] P12 dashboard bell in-place stack (reuse ActivityFeed source) , with coder now
-  - [ ] P13 search overlay: grouped sections + match highlight + honest loader (SearchOverlay.tsx) , with coder now
-  - [ ] P1 clean digit roll, NO blur, dashboard KPI (only if a real change trigger exists) , with coder now
+  - [x] P7 SetupBanner full checklist , verified: loop-reviewer PASS (SetupBanner.tsx:64-97, all steps render with the approved disc language, bar/count/links byte-identical), in checkpoint commit 5e87f6f01; rendered proof _audits/screenshots/taste-r2/apply-dashboard-p12.png shows the full checklist live
+  - [x] P12 bell in-place stack , verified: loop-reviewer PASS (NotificationCenter.tsx:60-126 + DashboardLayout salonId plumbing fixed, was undefined; 4-locale viewAll), commit 835421ff1; rendered proof: popover opens in place with the honest empty state on the test salon; latent staff-403 endpoint bug chipped (task_8ac7442c)
+  - [x] P13 search suggest treatments , verified: loop-reviewer PASS (SearchOverlay.tsx:579-633 SectionLabel groups, splitHighlight live-tested, matchQuery additive across all call-sites, loader fixed-slot, gesture regions diffed untouched), commit fa4a482ee; typed-state screenshot deferred: the overlay morph is the recorded preview-tab rAF trap and scripted focus missed twice, code-level PASS carries it
+  - [x] P1 digit roll , BLOCKED honestly per instruction: reviewer-confirmed the revenue KPI has NO change trigger (dashboard/page.tsx:112-138, one fetch, period=week hardcoded); a roll needs a Woche/Monat toggle first, which is a separate owner feature call, parked
   - [ ] P14 tips panel , BLOCKED: no insights backend exists (exists insight = 0), shape approved only
 
 ## Completion round (owner 2026-07-16: "make mockups for all of em also for refs page u havent made mockup for all")
@@ -66,7 +66,7 @@ Owner message (dictated): fix + commit; expand RATIONALE.md with the og round-1 
 - [x] P17 interactive demo , verified: minimize/restore toggle works (browser check, same run)
 - [x] C1/C2/C4 rendered A/B with hue-ok probe markers; C3/C5 stay questions with the reason stated on the page , verified: same render check
 - [x] G1 (3 densities) + G2 (3 layouts, toggle) as elicitation variants , verified: converged recipe, real photos, toggle works
-- [x] Linked from hub + refs header; render verified in browser; committed (gemini ran on this page family earlier this turn-set; the page is the approved Taste Book format)
+- [x] Linked from hub + refs header , verified: commit ae5a852ec (index.html round2-rules card + taste-refs howto pointer), render checked in browser same turn, gemini spacing diff applied in that commit
 
 ## Parked / boundaries
 - Web dark mode stays graveyarded (exists-check hit); positive-polarity mechanics recorded for MOBILE dark mode only.

@@ -4,6 +4,17 @@ The newest entry is at the top. Every session that ships real work adds one entr
 
 ---
 
+## 2026-07-16 (evening) , approved picks APPLIED to real code + the Wrong/Right completion page
+
+**What you asked for:** "okay make it and also make mockups for all of em also for refs page u havent made mockup for all".
+
+**What got done:**
+1. **Applied (coder + read-only reviewer, PASS on all items):** P7, the setup banner now shows the whole plan with the approved checklist language (green check done, ink-filled current, outline upcoming) at 5e87f6f01; P12, the bell was dead wiring (salonId was hardcoded undefined) and now opens an in-place activity stack reading the same source as the activity card (835421ff1); P13, search suggestions now group under Salons and Services headers with the matched letters highlighted and an honest three-dot loader (fa4a482ee). Rendered proof for the dashboard pair captured live.
+2. **P1 honestly blocked:** the revenue number never changes after load (one fetch, week hardcoded), so there is nothing to animate; a Woche/Monat toggle would be its own feature call, parked for the owner.
+3. **round2-rules.html:** Wrong/Right mockups for every round-2 rule that had none, plus the missing refs probes (P17 interactive, C1/C2/C4 rendered A/B, G1 richness dial, G2 layout toggle).
+4. Reviewer's out-of-scope catch chipped: staff users get a silent 403 from the activity-feed endpoint (pre-existing), task_8ac7442c.
+
+
 ## 2026-07-16 (later) , the probes moved INTO actual pages: hub + 5 integrated tappable mockups
 
 **What you asked for:** "what abt mockups for the round 2" + "i want to see each one in acc pages like mockup that preview... integrated and tappable".
