@@ -7,6 +7,8 @@
 > **Last mapped:** 2026-07-14 (from live code + the live DB snapshot). Health + security state: `_plans/BACKEND_HEALTH_AUDIT_2026-07-14.md`. Ops / backups / disaster recovery: `_plans/OPS_RUNBOOK.md`. The security stack every route must include: `_rules/SECURITY_RULES.md`. DB schema: `_rules/DB_SCHEMA.md`.
 >
 > **How this stays alive:** `.claude/hooks/backend-doc-pointer.py` (UserPromptSubmit + PreToolUse) points backend work at this file. Read the relevant section, especially its **Gotchas + invariants**, before changing that system.
+>
+> **This doc is DESCRIPTIVE, not prescriptive , read its sibling before you DECIDE anything (2026-07-16).** This file answers "how does our backend work today". It never answers "what should we do about primary keys / money storage / error shape / pagination / idempotency / rate limits". That law lives in **`_backend-system/`** (`LAW.md` = the frozen decisions, `RATIONALE.md` = why + evidence tiers, `research/*.md` = the primary sources, `AUDIT_2026-07-16.md` = whether we actually follow our own law). The two are complements: this doc says what IS, `_backend-system/` says what SHOULD BE. Deciding a backend question from training memory instead of `LAW.md` is the exact failure that folder exists to stop.
 
 ## Contents
 

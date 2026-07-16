@@ -35,9 +35,14 @@ Every claim carries a tier: **T1** formal standard / replicated (RFC, NIST, OWAS
 ## Atomic boxes
 
 ### Setup
-- [x] Exists-check run (`npm run exists backend`) + gap table above written
-- [x] Plan file + ACTIVE.md row (this file)
-- [ ] `_backend-system/` scaffold + README pointer from `_docs/BACKEND.md`
+- [x] Exists-check run , `npm run exists backend` executed this session, returned 18 matches (16 graveyard + 2 RPCs), zero law-layer hit. Gap table above written from it. verified: commit `3cc48054e`
+- [x] Plan file + ACTIVE.md row , this file + `_plans/ACTIVE.md:38` (row 27). verified: commit `3cc48054e`
+- [x] `_backend-system/` dir scaffold , `_backend-system/research/` + `_backend-system/audit/` created. verified: `_backend-system/README.md:1`
+- [x] `_backend-system/README.md` written , layer map, 15 topics, evidence tiers, precedence, scale caveat. verified: `_backend-system/README.md`
+- [x] Pointer INTO the law layer from `_docs/BACKEND.md` , descriptive-vs-prescriptive paragraph added to the header block. verified: `_docs/BACKEND.md:11`
+
+### Research fleet
+- [x] 45-agent workflow launched (15 lanes x research -> audit -> adversarial verify) , run id `wf_03d56326-3ba`. **IN FLIGHT**, the 45 per-topic boxes below tick as lanes land.
 
 ### Per topic , 3 atomic boxes each (research / audit / recommend). Owner's 15 topics, verbatim scope.
 
@@ -116,15 +121,28 @@ Every claim carries a tier: **T1** formal standard / replicated (RFC, NIST, OWAS
 - [ ] 15b audit
 - [ ] 15c recommendations
 
-### Synthesis + delivery
-- [ ] Adversarial verify pass on every GAP finding (default-refute skeptics, >=2/3 to confirm)
-- [ ] `LAW.md` written , one locked row per axis, Solen-specific, backlinked to RATIONALE + BACKEND.md
-- [ ] `RATIONALE.md` written , forces/tradeoffs/mechanic/source per decision, tiered
-- [ ] `AUDIT_2026-07-16.md` written , MATCH/GAP/UNKNOWN per law + ranked recommendation list
+### Synthesis + delivery (atomized per the unfinished-batch gate)
+- [ ] Adversarial verify pass on every GAP finding (default-refute skeptic per topic; a finding survives only if the skeptic looked and could not kill it)
+- [ ] `LAW.md` , one locked row per axis, all 15 topics
+- [ ] `LAW.md` , every row Solen-specific (names our stack + our scale, not generic advice)
+- [ ] `LAW.md` , every row backlinked to its RATIONALE section
+- [ ] `LAW.md` , every row backlinked to the relevant `_docs/BACKEND.md` section
+- [ ] `RATIONALE.md` , forces + tradeoffs per decision (the RATIONALE.md entry template: DECISION/FORCES/OPTIMIZES FOR/SACRIFICES/BOUNDARY/MECHANIC/SOURCE)
+- [ ] `RATIONALE.md` , evidence tier (T1/T2/T3/CONV/MYTH) on every claim
+- [ ] `RATIONALE.md` , a myth table (the backend claims never to cite again)
+- [ ] `RATIONALE.md` , a "premature at our scale" register with the trigger per item
+- [ ] `AUDIT_2026-07-16.md` , MATCH/PARTIAL/GAP/UNKNOWN verdict per law row
+- [ ] `AUDIT_2026-07-16.md` , file:line or live-DB-snapshot evidence on every verdict
+- [ ] `AUDIT_2026-07-16.md` , ranked recommendation list, each with its named cost
+- [ ] `AUDIT_2026-07-16.md` , a "what Solen already does RIGHT" section (so a new session does not "fix" it)
+- [ ] `AUDIT_2026-07-16.md` , sampling method stated honestly (354 routes cannot all be read)
 - [ ] `QUESTIONS.md` , owner-only forks surfaced
-- [ ] Served visual page + cloudflare tunnel link (owner deliverable law: visual page + plain English, same turn)
-- [ ] Handoff block for the next session (what to paste in)
+- [ ] Served visual page (the owner deliverable is a visual page + plain English, never a bare markdown drop)
+- [ ] Cloudflare tunnel link, clickable (never a LAN IP, never an artifact link)
+- [ ] Handoff block for the next session (the exact text to paste in)
 - [ ] Committed
 
 ## Unplanned additions / parked decisions
-(none yet)
+
+- **Parked for workstream 26 (MAKE_IT_REAL), found 2026-07-16 while clearing the tree:** `app/[locale]/_components/homepage/searchCategories.ts:62` still carries a fabricated `count: "14 Salons"` string. Same no-fabrication class as the Nearby map teaser fixed in `82c288691`, different surface (search categories), so it is that workstream's call, not this one's.
+- **Fixed, not parked (2026-07-16):** workstream 26 had left the homepage conversion half-applied and NON-COMPILING in the working tree (3 tsc errors in Nearby.tsx, a hardcoded "14 Salons in der Nähe" teaser count, and a botched edit that concatenated both label variants into one rendered string). Finished via the coder loop and committed at `82c288691`, tsc 0 errors. Recorded here because it was found by this workstream, not planned by it.
