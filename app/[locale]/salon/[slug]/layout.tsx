@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { cache } from "react";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { buildAlternates, generateBreadcrumbSchema } from "@/lib/seo";
+import { postalToCity } from "@/app/[locale]/_components/salon/_shared";
 
 const CATEGORY_LABELS: Record<string, Record<string, string>> = {
   de: { coiffeur: "Coiffeur", barbershop: "Barbershop", nails: "Nagelstudio", spa: "Spa" },
@@ -21,7 +22,7 @@ const getSalonMeta = cache(async (slug: string) => {
   const supabase = await createServerSupabaseClient();
   const { data } = await supabase
     .from("salons")
-    .select("name, address, cover_photo_url, categories, average_rating, review_count")
+    .select("name, address, postal_code, cover_photo_url, categories, average_rating, review_count")
     .eq("slug", slug)
     .single();
   return data;
@@ -45,27 +46,35 @@ export async function generateMetadata({
     ? salon.categories[0]
     : "salon";
   const catLabel = CATEGORY_LABELS[loc]?.[firstCat] ?? CATEGORY_LABELS.de[firstCat] ?? "Salon";
-  const city = "Basel";
+  // live-data-ok: real city derived from the salon's own postal_code (same
+  // helper SalonDetailV3/SalonBreadcrumb use on this route), null when the
+  // salon has no postal_code so no city gets guessed.
+  const city = salon.postal_code ? postalToCity(salon.postal_code) : null;
+  // Prefers the street address, falls back to the derived city, and is null
+  // when neither is known so the location phrase can be omitted entirely.
+  const location = salon.address ?? city;
 
-  // Title: "[Salon Name] — [Category] in [City] | Solen"
-  const title = `${salon.name} — ${catLabel} in ${city} | Solen`;
+  // Title: "[Salon Name] - [Category] in [City] | Solen" (omits the "in {City}" part when unknown)
+  const title = city
+    ? `${salon.name} - ${catLabel} in ${city} | Solen`
+    : `${salon.name} - ${catLabel} | Solen`;
 
   // Description: "Buche jetzt bei [Name] in [Address]. ★ [Rating] ([Count] Bewertungen). Online buchen, sofort bestätigt."
   let description = "";
   if (loc === "de") {
-    description = `Buche jetzt bei ${salon.name} in ${salon.address ?? city}.`;
+    description = location ? `Buche jetzt bei ${salon.name} in ${location}.` : `Buche jetzt bei ${salon.name}.`;
     if ((salon.review_count ?? 0) > 0) description += ` ★ ${(salon.average_rating ?? 0).toFixed(1)} (${salon.review_count} Bewertungen).`;
     description += ` Online buchen, sofort bestätigt.`;
   } else if (loc === "fr") {
-    description = `Réserve maintenant chez ${salon.name} à ${salon.address ?? city}.`;
+    description = location ? `Réserve maintenant chez ${salon.name} à ${location}.` : `Réserve maintenant chez ${salon.name}.`;
     if ((salon.review_count ?? 0) > 0) description += ` ★ ${(salon.average_rating ?? 0).toFixed(1)} (${salon.review_count} avis).`;
     description += ` Réservation en ligne, confirmation immédiate.`;
   } else if (loc === "it") {
-    description = `Prenota ora da ${salon.name} a ${salon.address ?? city}.`;
+    description = location ? `Prenota ora da ${salon.name} a ${location}.` : `Prenota ora da ${salon.name}.`;
     if ((salon.review_count ?? 0) > 0) description += ` ★ ${(salon.average_rating ?? 0).toFixed(1)} (${salon.review_count} recensioni).`;
     description += ` Prenota online, conferma immediata.`;
   } else {
-    description = `Book now at ${salon.name} in ${salon.address ?? city}.`;
+    description = location ? `Book now at ${salon.name} in ${location}.` : `Book now at ${salon.name}.`;
     if ((salon.review_count ?? 0) > 0) description += ` ★ ${(salon.average_rating ?? 0).toFixed(1)} (${salon.review_count} reviews).`;
     description += ` Book online, instant confirmation.`;
   }

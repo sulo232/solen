@@ -180,8 +180,10 @@ export default function SearchMorphPreviewPage() {
           </>
         )}
         <SectionLabel className="mt-3">Beliebte Stores</SectionLabel>
+        {/* FEATURED_SALONS is identity-only now (searchFeatured.ts); this dev preview has no
+            live fetch wired, so the sub-line is omitted rather than showing a stale address. */}
         {FEATURED_SALONS.map((sl) => (
-          <SuggestRow key={sl.id} name={sl.name} sub={sl.address} Icon={Store} onClick={() => { setService(sl.name); advance("service"); }} />
+          <SuggestRow key={sl.id} name={sl.name} Icon={Store} onClick={() => { setService(sl.name); advance("service"); }} />
         ))}
         <SectionLabel className="mt-3">Kategorien</SectionLabel>
         <SuggestRow name="In der Nähe" sub="Aktueller Standort" Icon={Navigation} tint onClick={() => { setService("In der Nähe"); advance("service"); }} />
@@ -275,7 +277,6 @@ export default function SearchMorphPreviewPage() {
             <div key={s.id}>
               <div className="aspect-[4/3] rounded-[16px]" style={{ background: ["linear-gradient(135deg,#DBEAFE,#BFDBFE)", "linear-gradient(135deg,#FFE4E6,#FED7AA)", "linear-gradient(135deg,#D1FAE5,#CCFBF1)", "linear-gradient(135deg,#EDE9FE,#FAE8FF)"][i % 4] }} />
               <p className="mt-1.5 truncate text-[14px] font-semibold text-s-ink">{s.name}</p>
-              <p className="truncate text-[12px] text-s-ink-3">{s.address}</p>
             </div>
           ))}
         </div>

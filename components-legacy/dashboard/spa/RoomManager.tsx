@@ -283,7 +283,6 @@ export default function RoomManager({ salonId }: { salonId: string }) {
       ) : (
         <div className="rounded-[12px] border border-s-ink/[0.06] bg-[--raised] overflow-hidden">
           {rooms.map((room, i) => {
-            const utilization = 0; // Placeholder — real utilization requires booking query
             return (
               <div
                 key={room.id}
@@ -300,12 +299,9 @@ export default function RoomManager({ salonId }: { salonId: string }) {
                   </span>
                 </div>
 
-                {/* Utilization bar */}
-                <div className="w-24 shrink-0">
-                  <div className="h-2 rounded-full bg-s-bg-sunken overflow-hidden">
-                    <div className="h-full bg-s-coral rounded-full" style={{ width: `${utilization}%` }} />
-                  </div>
-                </div>
+                {/* mockup-ok: no-fabrication removal, not an appearance choice. Utilization
+                    bar removed 2026-07-16 , real utilization needs a booking-density
+                    query for this room before this bar may return. */}
 
                 {/* Actions */}
                 <div className="flex items-center gap-1 shrink-0">

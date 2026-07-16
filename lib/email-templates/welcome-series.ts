@@ -15,10 +15,10 @@ export function welcomeDay0(to: string, vars: WelcomeVars, locale: EmailLocale =
     it: `Benvenuto su Solen, ${vars.name}!`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Hallo <strong>${vars.name}</strong>,</p><p>Willkommen bei solen.ch — deiner Plattform für Beauty & Wellness in Basel.</p><p>Entdecke hunderte Salons, buche Termine online oder geh spontan ohne Termin vorbei.</p><p><a href="https://solen.ch/de">Jetzt entdecken →</a></p><p>Dein solen.ch Team</p>`,
-    en: `<p>Hello <strong>${vars.name}</strong>,</p><p>Welcome to solen.ch — your beauty & wellness platform in Basel.</p><p>Discover hundreds of salons, book appointments online, or walk in without one.</p><p><a href="https://solen.ch/en">Explore now →</a></p><p>Your solen.ch team</p>`,
-    fr: `<p>Bonjour <strong>${vars.name}</strong>,</p><p>Bienvenue sur solen.ch — votre plateforme beauté & bien-être à Bâle.</p><p>Découvrez des centaines de salons et réservez en ligne en quelques secondes.</p><p><a href="https://solen.ch/fr">Découvrir →</a></p><p>L'équipe solen.ch</p>`,
-    it: `<p>Ciao <strong>${vars.name}</strong>,</p><p>Benvenuto su solen.ch — la tua piattaforma beauty & wellness a Basilea.</p><p>Scopri centinaia di saloni e prenota online in pochi secondi.</p><p><a href="https://solen.ch/it">Scopri ora →</a></p><p>Il tuo team solen.ch</p>`,
+    de: `<p>Hallo <strong>${vars.name}</strong>,</p><p>Willkommen bei solen.ch — deiner Plattform für Beauty & Wellness in Basel.</p><p>Entdecke Salons in deiner Nähe, buche Termine online oder geh spontan ohne Termin vorbei.</p><p><a href="https://solen.ch/de">Jetzt entdecken →</a></p><p>Dein solen.ch Team</p>`,
+    en: `<p>Hello <strong>${vars.name}</strong>,</p><p>Welcome to solen.ch — your beauty & wellness platform in Basel.</p><p>Discover salons near you, book appointments online, or walk in without one.</p><p><a href="https://solen.ch/en">Explore now →</a></p><p>Your solen.ch team</p>`,
+    fr: `<p>Bonjour <strong>${vars.name}</strong>,</p><p>Bienvenue sur solen.ch — votre plateforme beauté & bien-être à Bâle.</p><p>Découvrez des salons près de chez vous et réservez en ligne en quelques secondes.</p><p><a href="https://solen.ch/fr">Découvrir →</a></p><p>L'équipe solen.ch</p>`,
+    it: `<p>Ciao <strong>${vars.name}</strong>,</p><p>Benvenuto su solen.ch — la tua piattaforma beauty & wellness a Basilea.</p><p>Scopri i saloni vicino a te e prenota online in pochi secondi.</p><p><a href="https://solen.ch/it">Scopri ora →</a></p><p>Il tuo team solen.ch</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -31,10 +31,10 @@ export function welcomeDay3(to: string, vars: WelcomeVars, locale: EmailLocale =
     it: `Scopri i saloni vicino a te, ${vars.name}`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Hallo ${vars.name},</p><p>Wusstest du, dass es über 200 Salons auf solen.ch gibt? Finde den perfekten Salon in deinem Quartier.</p><p><a href="https://solen.ch/de/coiffeur">Salons entdecken →</a></p>`,
-    en: `<p>Hello ${vars.name},</p><p>Did you know there are over 200 salons on solen.ch? Find the perfect salon in your neighborhood.</p><p><a href="https://solen.ch/en/coiffeur">Discover salons →</a></p>`,
-    fr: `<p>Bonjour ${vars.name},</p><p>Saviez-vous qu'il y a plus de 200 salons sur solen.ch ? Trouvez le salon parfait dans votre quartier.</p><p><a href="https://solen.ch/fr/coiffeur">Découvrir les salons →</a></p>`,
-    it: `<p>Ciao ${vars.name},</p><p>Sapevi che ci sono oltre 200 saloni su solen.ch? Trova il salone perfetto nel tuo quartiere.</p><p><a href="https://solen.ch/it/coiffeur">Scopri i saloni →</a></p>`,
+    de: `<p>Hallo ${vars.name},</p><p>Wusstest du, dass du auf solen.ch Salons und Services ganz einfach vergleichen kannst? Finde den perfekten Salon in deinem Quartier.</p><p><a href="https://solen.ch/de/coiffeur">Salons entdecken →</a></p>`,
+    en: `<p>Hello ${vars.name},</p><p>Did you know you can compare salons and services side by side on solen.ch? Find the perfect salon in your neighborhood.</p><p><a href="https://solen.ch/en/coiffeur">Discover salons →</a></p>`,
+    fr: `<p>Bonjour ${vars.name},</p><p>Saviez-vous que vous pouvez comparer salons et prestations en un seul endroit sur solen.ch ? Trouvez le salon parfait dans votre quartier.</p><p><a href="https://solen.ch/fr/coiffeur">Découvrir les salons →</a></p>`,
+    it: `<p>Ciao ${vars.name},</p><p>Sapevi che su solen.ch puoi confrontare saloni e servizi in un unico posto? Trova il salone perfetto nel tuo quartiere.</p><p><a href="https://solen.ch/it/coiffeur">Scopri i saloni →</a></p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }

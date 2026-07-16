@@ -208,6 +208,32 @@ export function SearchOverlay({
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => setMounted(true), []);
 
+  // Live address for the idle-state "Beliebte Store" rows (FEATURED_SALONS is
+  // identity-only, see searchFeatured.ts). Reuses the existing /api/salons?ids=
+  // listing endpoint (no new API route) rather than the hardcoded, stale
+  // addresses this used to ship with. One fetch per overlay open; null-safe
+  // (SuggestRow only renders `sub` when it is set), so a slow/failed fetch
+  // just shows the name until it resolves rather than a wrong address.
+  const [featuredAddress, setFeaturedAddress] = React.useState<Record<string, string>>({});
+  React.useEffect(() => {
+    if (!open) return;
+    let cancelled = false;
+    const ids = FEATURED_SALONS.map((s) => s.id).join(",");
+    fetch(`/api/salons?ids=${encodeURIComponent(ids)}&limit=${FEATURED_SALONS.length}`)
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error(`status ${res.status}`))))
+      .then((data: { items?: { id: string; address?: string | null }[] }) => {
+        if (cancelled) return;
+        const next: Record<string, string> = {};
+        for (const item of data.items ?? []) if (item.address) next[item.id] = item.address;
+        setFeaturedAddress(next);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        console.error("[SearchOverlay] featured salons address fetch failed:", err);
+      });
+    return () => { cancelled = true; };
+  }, [open]);
+
   // iOS-safe body-scroll lock: overflow:hidden alone doesn't lock iOS or preserve position, so
   // the page scrolled under the overlay (opened mid-page) and lost its spot on close, and the
   // input autofocus scrolled the page. Pin the body at -scrollY while open, restore on close.
@@ -683,7 +709,7 @@ export function SearchOverlay({
         <SectionLabel className="mt-3">{storesLabelTxt}</SectionLabel>
         {/* A Beliebte Store is a specific salon , tapping JUMPS straight to it (marks it selected
             + opens the store page), it does NOT advance to the location step (owner). */}
-        {FEATURED_SALONS.map((sl) => <SuggestRow key={sl.id} name={sl.name} sub={sl.address} Icon={Store}
+        {FEATURED_SALONS.map((sl) => <SuggestRow key={sl.id} name={sl.name} sub={featuredAddress[sl.id]} Icon={Store}
           onClick={() => { setService(sl.name); push({ service: sl.name, city: stadt || undefined }); goSalon(sl.id, sl.slug, sl.name); }} />)}
         <SectionLabel className="mt-3">{categoriesLabelTxt}</SectionLabel>
         {/* A2/Model B (2026-07-04): this idle-state category shortcut no longer clears the typed
