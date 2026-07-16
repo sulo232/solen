@@ -17,6 +17,7 @@ import DesktopCitySelector from "./DesktopCitySelector";
 import { getCityName, type CitySlug } from "@/lib/cities";
 import { getPersistedCity, setPersistedCity } from "@/lib/city-cookie";
 import { useActiveCities } from "@/hooks/useActiveCities";
+import { strokeForSize } from "@/lib/icon-stroke";
 
 /**
  * V3 Header — V2-D46 (2026-05-09).
@@ -788,7 +789,8 @@ export default function Header({ locale }: { locale: string }) {
               )}
               aria-hidden
             >
-              <Menu size={22} strokeWidth={2.2} />
+              {/* ig9 (owner-approved 2026-07-16): calibrated size-to-stroke table, lib/icon-stroke.ts */}
+              <Menu size={22} strokeWidth={strokeForSize(22)} />
             </span>
             <span
               className={cn(
@@ -797,7 +799,8 @@ export default function Header({ locale }: { locale: string }) {
               )}
               aria-hidden
             >
-              <X size={22} strokeWidth={2.2} />
+              {/* ig9 (owner-approved 2026-07-16): calibrated size-to-stroke table, lib/icon-stroke.ts */}
+              <X size={22} strokeWidth={strokeForSize(22)} />
             </span>
           </button>
         </div>

@@ -215,6 +215,15 @@
     font-weight: 500;
   }
 
+  /* ig7 (owner-approved 2026-07-16, IG-principles round 1): shared long-form
+     line-measure. A 68ch cap keeps a paragraph readable (avoids a too-wide line
+     that forces the eye to hunt for the next line start). Use on any hand-rolled
+     prose/description block instead of an arbitrary max-w-* value. Font-size,
+     leading and color are set by the call site; this utility only bounds width. */
+  .prose-measure {
+    max-width: 68ch;
+  }
+
   /* Glass utilities — warm-tinted */
   .glass {
     background: rgba(255, 255, 255, 0.88);

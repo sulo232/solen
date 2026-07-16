@@ -226,13 +226,19 @@ export default function GalleryManager({
         </div>
       )}
 
-      {/* Upload zone — only shown if under limit */}
+      {/* Upload zone, only shown if under limit */}
       {urls.length < maxPhotos && (
-        <ImageUpload
-          onUpload={handleNewUploads}
-          maxFiles={maxPhotos - urls.length}
-          uploadFn={galleryUploadFn}
-        />
+        <>
+          <ImageUpload
+            onUpload={handleNewUploads}
+            maxFiles={maxPhotos - urls.length}
+            uploadFn={galleryUploadFn}
+          />
+          {/* ig4 (owner-approved 2026-07-16, IG-principles round 1): framing hint, keeps
+              hands/elbows/knees in frame instead of cropped at the edge (nail/hair/barber
+              portfolio shots). Text style matches the existing subtitle token above. */}
+          <p className="mt-2 text-xs text-s-ink-2">{t("gallery_framing_hint")}</p> {/* mockup-ok: owner-approved 2026-07-16 IG-principles round 1, ig4 */}
+        </>
       )}
     </div>
   );

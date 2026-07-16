@@ -11,6 +11,7 @@ import {
 import Spinner from "@/components-legacy/ui/Spinner";
 import TipFlow from "@/app/[locale]/_components/tips/TipFlow";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
+import { strokeForSize } from "@/lib/icon-stroke";
 
 // Mirrors the public GET /api/walkin/queue/status?token= response.
 interface QueueStatus {
@@ -436,7 +437,8 @@ export default function QueueTrackingPage() {
                       st === "future" ? "bg-s-bg-sunken text-s-ink-3" : "",
                     ].join(" ")}
                   >
-                    <s.Icon size={18} strokeWidth={s.key === "paid" ? 2.6 : 2} />
+                    {/* ig9 (owner-approved 2026-07-16): calibrated size-to-stroke table, lib/icon-stroke.ts */}
+                    <s.Icon size={18} strokeWidth={strokeForSize(18)} />
                   </div>
                   <span className={`text-center text-[10.5px] font-semibold leading-[1.2] ${st === "future" ? "text-s-ink-3" : "text-s-ink"}`}>{s.label}</span>
                 </div>

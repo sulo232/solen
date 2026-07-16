@@ -142,8 +142,12 @@ export function CategoryHeroCarousel({
                   >
                     {/* text-white is REQUIRED: a global `h3 { color: var(--color-heading) }`
                         rule (globals.css) sets bare headings to ink and overrides the parent's
-                        inherited text-white. The class beats the element rule. */}
-                    <h3 className="font-display text-[24px] font-bold leading-[1.05] tracking-[-0.02em] text-white">
+                        inherited text-white. The class beats the element rule.
+                        ig8 (owner-approved 2026-07-16): font-bold (700) -> font-semibold (600)
+                        so the white-on-photo name matches the 600 ink-on-white name weight
+                        used elsewhere; avoids the irradiation effect of a heavy weight on a
+                        light-on-dark surface reading heavier than the same weight on light. */}
+                    <h3 className="font-display text-[24px] font-semibold leading-[1.05] tracking-[-0.02em] text-white">
                       {s.name}
                     </h3>
                     {s.average_rating != null && s.review_count != null && s.review_count > 0 && (

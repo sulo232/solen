@@ -32,7 +32,9 @@ export function SalonAbout({ salon, locale }: { salon: SalonDetail; locale: stri
       <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
         Über uns
       </h2>
-      <div className="mt-4 max-w-3xl space-y-4 text-[14px] leading-relaxed text-s-ink-2 md:text-[15px]">
+      {/* ig7 (owner-approved 2026-07-16): shared .prose-measure (68ch) replaces the
+          hand-rolled max-w-3xl for a readable line length. */}
+      <div className="prose-measure mt-4 space-y-4 text-[14px] leading-relaxed text-s-ink-2 md:text-[15px]">
         <p className="whitespace-pre-line">{text}</p>
       </div>
     </section>

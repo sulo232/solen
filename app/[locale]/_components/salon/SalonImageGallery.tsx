@@ -170,7 +170,9 @@ export function SalonImageGallery({
                   src={u}
                   alt=""
                   onClick={() => openLb(activePhotos, i)}
-                  className="aspect-square w-full cursor-pointer rounded-xl bg-s-bg-sunken object-cover"
+                  // ig4 (owner-approved 2026-07-16): object-top (was center) on the square
+                  // grid so a portrait crop keeps the face/wrists, not the feet.
+                  className="aspect-square w-full cursor-pointer rounded-xl bg-s-bg-sunken object-cover object-top"
                   loading="lazy"
                 />
               ))}

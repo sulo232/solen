@@ -40,6 +40,7 @@ import * as React from "react";
 import { motion } from "motion/react"; // mockup-ok: owner-approved /dev/filter-menus (R4-1 morph)
 import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { strokeForSize } from "@/lib/icon-stroke";
 import {
   Sheet,
   Modal,
@@ -528,7 +529,8 @@ function FilterSheetContent({
               const Icon = a.icon;
               return (
                 <SheetChip key={a.col} active={amenities.includes(a.col)} onClick={() => onAmenityToggle(a.col)}>
-                  {Icon && <Icon size={14} strokeWidth={2} className="shrink-0" />}
+                  {/* ig9 (owner-approved 2026-07-16): calibrated size-to-stroke table, lib/icon-stroke.ts */}
+                  {Icon && <Icon size={14} strokeWidth={strokeForSize(14)} className="shrink-0" />}
                   {a.label}
                 </SheetChip>
               );
