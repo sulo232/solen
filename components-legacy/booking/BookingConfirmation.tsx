@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
@@ -138,6 +138,21 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
   const tPayConfirm = useTranslations("payConfirm");
   const locale = useLocale();
   const router = useRouter();
+
+  // SEC-09: this screen authorizes a guest straight off `access_token` in the URL (the server
+  // component above verified it against the stored hash before rendering; unlike the lookup
+  // route it does NOT set the httpOnly guest cookie, so the durable re-entry stays the emailed
+  // `booking/lookup?code=&t=` link, untouched by this effect). Strip the token from the address
+  // bar with a history REPLACE (never push, so Back can't resurrect it) so it doesn't sit there
+  // for pageview analytics or a shoulder-surfer. No failure branch to guard here, unlike the
+  // lookup page: an invalid token fails inside the server component itself (`notFound()`), so
+  // this client code never mounts in that case, only the already-authorized success path does.
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (!url.searchParams.has("access_token")) return;
+    url.searchParams.delete("access_token");
+    window.history.replaceState(null, "", url.pathname + url.search + url.hash);
+  }, []);
 
   const localeCode =
     locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-CH";
