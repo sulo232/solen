@@ -1,12 +1,12 @@
 # Geometry check report
 
-Generated: 2026-07-17T02:05:40.227Z
+Generated: 2026-07-17T02:22:03.036Z
 Base URL: https://stylus-infections-boundaries-fragrance.trycloudflare.com  Viewport: mobile (375x812)
 
 Report-only pass (checklist item 1): this script never fails the run. Findings
 below are raw candidates, not confirmed bugs, until triaged for false positives.
 
-Totals: off-grid=1187  broken-axis=156  nested-radius=12  asymmetric-pair=0
+Totals: off-grid=1234  broken-axis=159  nested-radius=2  asymmetric-pair=0
 
 ---
 ## /de
@@ -81,14 +81,10 @@ Elements scanned: 697
 - `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(4) > div.relative:nth-of-type(1) > img.object-cover:nth-of-type(1)` vs `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(4) > div.relative:nth-of-type(1) > span.sr-only:nth-of-type(1)` , top edges differ by 1px
 - ...+117 more (truncated for readability, count above is exact)
 
-### (c) NESTED RADIUS (6)
+### (c) NESTED RADIUS (2)
 
-- `#main-content > div.relative:nth-of-type(1) > section.relative:nth-of-type(1) > div.relative:nth-of-type(1) > div.relative:nth-of-type(2) > div.relative:nth-of-type(1)` inner=22px inside `#main-content > div.relative:nth-of-type(1) > section.relative:nth-of-type(1) > div.relative:nth-of-type(1) > div.relative:nth-of-type(2)` outer=11px, gap=0px, expected inner=11px (off by 11px)
-- `#main-content > div.relative:nth-of-type(1) > div.relative:nth-of-type(1) > section.relative:nth-of-type(1) > div.mx-auto:nth-of-type(1) > div.grid:nth-of-type(1) > a.group:nth-of-type(1) > div.relative:nth-of-type(1)` inner=24px inside `#main-content > div.relative:nth-of-type(1) > div.relative:nth-of-type(1)` outer=28px, gap=24px, expected inner=4px (off by 20px)
-- `#main-content > div.relative:nth-of-type(1) > div.relative:nth-of-type(1) > section.relative:nth-of-type(1) > div.mx-auto:nth-of-type(1) > div.grid:nth-of-type(1) > a.group:nth-of-type(4) > div.relative:nth-of-type(1)` inner=24px inside `#main-content > div.relative:nth-of-type(1) > div.relative:nth-of-type(1)` outer=28px, gap=24px, expected inner=4px (off by 20px)
-- `#main-content > div.relative:nth-of-type(1) > div.relative:nth-of-type(1) > section.relative:nth-of-type(3) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > a.relative:nth-of-type(1)` inner=16px inside `#main-content > div.relative:nth-of-type(1) > div.relative:nth-of-type(1)` outer=28px, gap=16px, expected inner=12px (off by 4px)
-- `#main-content > div.relative:nth-of-type(1) > div.relative:nth-of-type(1) > section.relative:nth-of-type(4) > div.mx-auto:nth-of-type(1) > div.flex:nth-of-type(1) > span.grid:nth-of-type(1)` inner=15px inside `#main-content > div.relative:nth-of-type(1) > div.relative:nth-of-type(1)` outer=28px, gap=16px, expected inner=12px (off by 3px)
-- `#main-content > div.relative:nth-of-type(1) > div.relative:nth-of-type(1) > section.mx-auto:nth-of-type(6) > div.grid:nth-of-type(1) > div.relative:nth-of-type(1)` inner=16px inside `#main-content > div.relative:nth-of-type(1) > div.relative:nth-of-type(1)` outer=28px, gap=16px, expected inner=12px (off by 4px)
+- `#main-content > div.relative:nth-of-type(1) > div.relative:nth-of-type(1) > section.relative:nth-of-type(1) > div.mx-auto:nth-of-type(1) > div.grid:nth-of-type(1) > a.group:nth-of-type(1) > div.relative:nth-of-type(1)` top-left inner=24px inside `#main-content > div.relative:nth-of-type(1) > div.relative:nth-of-type(1)` outer=28px, gap=24px, expected inner=4px (off by 20px)
+- `#main-content > div.relative:nth-of-type(1) > div.relative:nth-of-type(1) > section.relative:nth-of-type(1) > div.mx-auto:nth-of-type(1) > div.grid:nth-of-type(1) > a.group:nth-of-type(3) > div.relative:nth-of-type(1)` top-right inner=24px inside `#main-content > div.relative:nth-of-type(1) > div.relative:nth-of-type(1)` outer=28px, gap=24px, expected inner=4px (off by 20px)
 
 ### (d) ASYMMETRIC PAIR (0)
 
@@ -146,14 +142,63 @@ Elements scanned: 348
 - `body.text-s-ink:nth-of-type(1) > footer.relative:nth-of-type(1) > div.border-b:nth-of-type(1) > div.mx-auto:nth-of-type(1) > form.relative:nth-of-type(1) > label.sr-only:nth-of-type(1)` vs `#footer-newsletter-email` , left edges differ by 1px
 - `body.text-s-ink:nth-of-type(1) > footer.relative:nth-of-type(1) > div.border-b:nth-of-type(1) > div.mx-auto:nth-of-type(1) > form.relative:nth-of-type(1) > label.sr-only:nth-of-type(1)` vs `#footer-newsletter-email` , top edges differ by 1px
 
-### (c) NESTED RADIUS (6)
+### (c) NESTED RADIUS (0)
 
-- `#section-bundles > div.mt-5:nth-of-type(1)` inner=24px inside `#main-content > main.relative:nth-of-type(1) > div.relative:nth-of-type(1) > div.relative:nth-of-type(2)` outer=20px, gap=16px, expected inner=4px (off by 20px)
-- `#section-products > div.mt-5:nth-of-type(1)` inner=24px inside `#main-content > main.relative:nth-of-type(1) > div.relative:nth-of-type(1) > div.relative:nth-of-type(2)` outer=20px, gap=16px, expected inner=4px (off by 20px)
-- `#section-products > div.mt-5:nth-of-type(1) > div.flex:nth-of-type(2) > div.h-11:nth-of-type(1)` inner=10px inside `#section-products > div.mt-5:nth-of-type(1)` outer=24px, gap=17px, expected inner=7px (off by 3px)
-- `#section-team` inner=24px inside `#main-content > main.relative:nth-of-type(1) > div.relative:nth-of-type(1) > div.relative:nth-of-type(2)` outer=20px, gap=16px, expected inner=4px (off by 20px)
-- `#section-reviews` inner=16px inside `#main-content > main.relative:nth-of-type(1) > div.relative:nth-of-type(1) > div.relative:nth-of-type(2)` outer=20px, gap=16px, expected inner=4px (off by 12px)
-- `#section-location > a.group:nth-of-type(1)` inner=16px inside `#main-content > main.relative:nth-of-type(1) > div.relative:nth-of-type(1) > div.relative:nth-of-type(2)` outer=20px, gap=16px, expected inner=4px (off by 12px)
+none found
+
+### (d) ASYMMETRIC PAIR (0)
+
+none found
+
+---
+
+## /de/booking/lookup
+
+Elements scanned: 30
+
+### (a) OFF-GRID (47)
+
+- `body.text-s-ink:nth-of-type(1) > a.sr-only:nth-of-type(1)` marginTop=-1px (nearest 4pt: 0px)
+- `body.text-s-ink:nth-of-type(1) > a.sr-only:nth-of-type(1)` marginRight=-1px (nearest 4pt: 0px)
+- `body.text-s-ink:nth-of-type(1) > a.sr-only:nth-of-type(1)` marginBottom=-1px (nearest 4pt: 0px)
+- `body.text-s-ink:nth-of-type(1) > a.sr-only:nth-of-type(1)` marginLeft=-1px (nearest 4pt: 0px)
+- `#main-content` width=375px (nearest 4pt: 376px)
+- `#main-content > div.min-h-[100dvh]:nth-of-type(1)` width=375px (nearest 4pt: 376px)
+- `#main-content > div.min-h-[100dvh]:nth-of-type(1) > header.flex:nth-of-type(1)` width=375px (nearest 4pt: 376px)
+- `#main-content > div.min-h-[100dvh]:nth-of-type(1) > header.flex:nth-of-type(1)` height=69px (nearest 4pt: 68px)
+- `#main-content > div.min-h-[100dvh]:nth-of-type(1) > header.flex:nth-of-type(1)` paddingTop=15px (nearest 4pt: 16px)
+- `#main-content > div.min-h-[100dvh]:nth-of-type(1) > header.flex:nth-of-type(1)` paddingBottom=10px (nearest 4pt: 12px)
+- `#main-content > div.min-h-[100dvh]:nth-of-type(1) > header.flex:nth-of-type(1) > span.flex:nth-of-type(1)` height=22.5px (nearest 4pt: 24px)
+- `#main-content > div.min-h-[100dvh]:nth-of-type(1) > main.mx-auto:nth-of-type(1)` width=375px (nearest 4pt: 376px)
+- `#main-content > div.min-h-[100dvh]:nth-of-type(1) > main.mx-auto:nth-of-type(1)` height=638.2px (nearest 4pt: 640px)
+- `#main-content > div.min-h-[100dvh]:nth-of-type(1) > main.mx-auto:nth-of-type(1) > section.flex:nth-of-type(1)` width=335px (nearest 4pt: 336px)
+- `#main-content > div.min-h-[100dvh]:nth-of-type(1) > main.mx-auto:nth-of-type(1) > section.flex:nth-of-type(1)` height=566.2px (nearest 4pt: 568px)
+- `#main-content > div.min-h-[100dvh]:nth-of-type(1) > main.mx-auto:nth-of-type(1) > section.flex:nth-of-type(1) > form.flex:nth-of-type(1)` width=335px (nearest 4pt: 336px)
+- `#main-content > div.min-h-[100dvh]:nth-of-type(1) > main.mx-auto:nth-of-type(1) > section.flex:nth-of-type(1) > form.flex:nth-of-type(1)` height=566.2px (nearest 4pt: 568px)
+- `#main-content > div.min-h-[100dvh]:nth-of-type(1) > main.mx-auto:nth-of-type(1) > section.flex:nth-of-type(1) > form.flex:nth-of-type(1) > h1.font-display:nth-of-type(1)` width=335px (nearest 4pt: 336px)
+- `#main-content > div.min-h-[100dvh]:nth-of-type(1) > main.mx-auto:nth-of-type(1) > section.flex:nth-of-type(1) > form.flex:nth-of-type(1) > p.mt-2:nth-of-type(1)` width=335px (nearest 4pt: 336px)
+- `#main-content > div.min-h-[100dvh]:nth-of-type(1) > main.mx-auto:nth-of-type(1) > section.flex:nth-of-type(1) > form.flex:nth-of-type(1) > p.mt-2:nth-of-type(1)` height=62.77px (nearest 4pt: 64px)
+- `#main-content > div.min-h-[100dvh]:nth-of-type(1) > main.mx-auto:nth-of-type(1) > section.flex:nth-of-type(1) > form.flex:nth-of-type(1) > div.mt-[18px]:nth-of-type(1)` width=335px (nearest 4pt: 336px)
+- `#main-content > div.min-h-[100dvh]:nth-of-type(1) > main.mx-auto:nth-of-type(1) > section.flex:nth-of-type(1) > form.flex:nth-of-type(1) > div.mt-[18px]:nth-of-type(1)` height=103px (nearest 4pt: 104px)
+- `#main-content > div.min-h-[100dvh]:nth-of-type(1) > main.mx-auto:nth-of-type(1) > section.flex:nth-of-type(1) > form.flex:nth-of-type(1) > div.mt-[18px]:nth-of-type(1)` marginTop=18px (nearest 4pt: 20px)
+- `#main-content > div.min-h-[100dvh]:nth-of-type(1) > main.mx-auto:nth-of-type(1) > section.flex:nth-of-type(1) > form.flex:nth-of-type(1) > div.mt-[18px]:nth-of-type(1) > label.block:nth-of-type(1)` width=335px (nearest 4pt: 336px)
+- `#main-content > div.min-h-[100dvh]:nth-of-type(1) > main.mx-auto:nth-of-type(1) > section.flex:nth-of-type(1) > form.flex:nth-of-type(1) > div.mt-[18px]:nth-of-type(1) > label.block:nth-of-type(1)` marginBottom=7px (nearest 4pt: 8px)
+- `#main-content > div.min-h-[100dvh]:nth-of-type(1) > main.mx-auto:nth-of-type(1) > section.flex:nth-of-type(1) > form.flex:nth-of-type(1) > div.mt-[18px]:nth-of-type(1) > div.relative:nth-of-type(1)` width=335px (nearest 4pt: 336px)
+- `#lookup-code` width=335px (nearest 4pt: 336px)
+- `#lookup-code` paddingRight=15px (nearest 4pt: 16px)
+- `#lookup-code` paddingLeft=62px (nearest 4pt: 64px)
+- `#lookup-code-hint` width=335px (nearest 4pt: 336px)
+- ...+17 more (truncated for readability, count above is exact)
+
+### (b) BROKEN AXIS (near-miss alignment) (3)
+
+- `body.text-s-ink:nth-of-type(1) > a.sr-only:nth-of-type(1)` vs `#main-content` , left edges differ by 1px
+- `body.text-s-ink:nth-of-type(1) > a.sr-only:nth-of-type(1)` vs `#main-content` , top edges differ by 1px
+- `#main-content > div.min-h-[100dvh]:nth-of-type(1) > main.mx-auto:nth-of-type(1) > section.flex:nth-of-type(1) > form.flex:nth-of-type(1) > div.mt-4:nth-of-type(3) > svg:nth-of-type(1)` vs `#main-content > div.min-h-[100dvh]:nth-of-type(1) > main.mx-auto:nth-of-type(1) > section.flex:nth-of-type(1) > form.flex:nth-of-type(1) > div.mt-4:nth-of-type(3) > p.text-[12px]:nth-of-type(1)` , top edges differ by 1px
+
+### (c) NESTED RADIUS (0)
+
+none found
 
 ### (d) ASYMMETRIC PAIR (0)
 

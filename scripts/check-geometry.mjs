@@ -22,7 +22,15 @@
 //                       the signature of an accident; a deliberate offset is bigger.
 //   c) NESTED RADIUS    LOCKFILE DS-4: inner = outer - gap, min 4px. Off by >1px means
 //                       the corner gap reads ~41% wider than the flat-edge gap
-//                       (gap*sqrt(2) at the corner vs gap on the flat edge).
+//                       (gap*sqrt(2) at the corner vs gap on the flat edge). Tested
+//                       per CORNER (top-left/top-right/bottom-left/bottom-right,
+//                       not a single value), and only against an ancestor that (1)
+//                       actually paints that corner - bg-color, bg-image, overflow
+//                       clip, or a border, never just a rounded-* class with a
+//                       transparent/overflow:visible box - and (2) has the inner
+//                       element close to that SAME corner on BOTH axes at once, not
+//                       just one shared axis. 2026-07-17 sweep, see the (c) block
+//                       below for the full reasoning + commit dea10438f triage.
 //   d) ASYMMETRIC PAIR  sibling pairs (twin controls, DS-4) inside a flex row whose
 //                       combined center sits >2px off the row's own center.
 //
@@ -63,6 +71,13 @@ const RADIUS_TOLERANCE = 1; // px, per checklist item (c)
 // descendant far down the page whose OWN unrelated border-radius happens to
 // still sit inside that wrapper's bounding box - found by inspecting the
 // first-pass report (bogus "gap"s of 51.5px/137px/155.31px/178.77px).
+//
+// 2026-07-17: this used to be applied on its own, as a ceiling on
+// gap = min(gapLeft, gapTop) - a single number standing in for "is this
+// corner-adjacent at all". That's now folded into the per-axis CORNER_WINDOW
+// inside extractGeometry's nested-radius block (window = outerRadius +
+// RADIUS_GAP_CAP, checked against BOTH axes independently, see FIX 2 there).
+// Kept as one constant, not stacked as two separate ceilings.
 const RADIUS_GAP_CAP = 40;
 const ASYMMETRY_TOLERANCE = 2; // px, per checklist item (d)
 const PILL_RADIUS_PX = 999; // Tailwind rounded-full / `pill` token convention
@@ -273,11 +288,74 @@ function extractGeometry(config) {
 
   // ---------------------------------------------------------------------
   // (c) NESTED RADIUS - inner = outer - gap (min 4px), LOCKFILE DS-4
+  //
+  // 2026-07-17 sweep (commit dea10438f triage: 16 hits, only 4 real - all
+  // SearchBar - the other 12 traced to two blind spots in this check, fixed
+  // below as FIX 1/2, plus a third latent bug FIX 3 caught while fixing them):
+  //
+  //   FIX 1 INVISIBLE OUTER - the old code accepted ANY ancestor with a
+  //   nonzero border-radius as "the outer". An ancestor with a rounded-*
+  //   class but a transparent background, no background-image, no clip, and
+  //   no border NEVER DRAWS that curve (e.g. Hero's bare `rounded-[11px]`
+  //   wrapper div around SearchBar - no bg, no border, no overflow-hidden).
+  //   rendersCorner() below requires one real paint signal, read from
+  //   computed style, before an ancestor counts as an outer.
+  //
+  //   FIX 2 DISTANT CORNER - the old code computed gap = min(gapLeft, gapTop),
+  //   so an element sharing just ONE axis with a rounded ancestor (e.g. the
+  //   same left inset as FeedZone's rounded-t-[28px] panel, 1700px further
+  //   down the page) read as "cornered". True arc concentricity needs the
+  //   inner element close to the SAME corner on BOTH axes at once - see
+  //   CORNER_WINDOW below, which reconciles this with the existing
+  //   RADIUS_GAP_CAP ceiling instead of stacking two separate checks.
+  //
+  //   FIX 3 WRONG CORNER - the old code read a single borderTopLeftRadius as
+  //   "the" radius for both inner and outer, so an inner element near an
+  //   outer's BOTTOM corner got tested against a TOP radius that has nothing
+  //   to do with that corner (rounded-t-* rounds only the top two). All four
+  //   corners are now read and tested independently via getCornerRadii().
   // ---------------------------------------------------------------------
   const nestedRadius = [];
-  function cornerRadius(style) {
-    return parseFloat(style.borderTopLeftRadius) || 0;
+
+  function getCornerRadii(style) {
+    return {
+      "top-left": parseFloat(style.borderTopLeftRadius) || 0,
+      "top-right": parseFloat(style.borderTopRightRadius) || 0,
+      "bottom-left": parseFloat(style.borderBottomLeftRadius) || 0,
+      "bottom-right": parseFloat(style.borderBottomRightRadius) || 0,
+    };
   }
+
+  // Alpha channel of a computed color string. getComputedStyle always
+  // resolves to rgb()/rgba() form. rgb() (3 components, no alpha term) is
+  // opaque -> 1. Anything unparsable -> 0 (no signal, never a false "yes").
+  function colorAlpha(colorStr) {
+    if (!colorStr) return 0;
+    const m = colorStr.match(/rgba?\(([^)]+)\)/);
+    if (!m) return 0;
+    const parts = m[1].split(",").map((s) => parseFloat(s.trim()));
+    return parts.length >= 4 ? parts[3] : 1;
+  }
+
+  const EDGE_CAP = { top: "Top", right: "Right", bottom: "Bottom", left: "Left" };
+  function edgeHasBorder(style, edge) {
+    const w = parseFloat(style[`border${EDGE_CAP[edge]}Width`]) || 0;
+    const s = style[`border${EDGE_CAP[edge]}Style`];
+    return w > 0 && s !== "none" && s !== "hidden";
+  }
+
+  // FIX 1: does this element actually paint the corner under test? `edges`
+  // are the two edges that bound that corner (e.g. top-left -> ["top","left"]);
+  // EITHER edge having a real border is enough - the browser still sweeps a
+  // visible arc through a corner where only one adjoining edge has width.
+  function rendersCorner(style, edges) {
+    if (colorAlpha(style.backgroundColor) > 0.05) return true;
+    if (style.backgroundImage && style.backgroundImage !== "none") return true;
+    if (style.overflowX === "hidden" || style.overflowX === "clip") return true;
+    if (style.overflowY === "hidden" || style.overflowY === "clip") return true;
+    return edges.some((edge) => edgeHasBorder(style, edge));
+  }
+
   // A radius is functionally a pill/stadium the instant it reaches half the
   // element's own shorter side - the browser clamps rendering there regardless
   // of the literal declared value (e.g. `99px` on a 44px-tall button renders
@@ -287,58 +365,109 @@ function extractGeometry(config) {
   function isFunctionalPill(radius, rect) {
     return radius >= pillRadiusPx || radius >= Math.min(rect.width, rect.height) / 2 - 0.5;
   }
+
+  // Per corner: the two bounding edges (FIX 1 render check), and how to
+  // compute the gap on each axis between the inner element's corner point
+  // and the outer's matching corner point (FIX 2/3).
+  const CORNERS = [
+    {
+      name: "top-left",
+      edges: ["top", "left"],
+      gapX: (inner, outer) => inner.left - outer.left,
+      gapY: (inner, outer) => inner.top - outer.top,
+    },
+    {
+      name: "top-right",
+      edges: ["top", "right"],
+      gapX: (inner, outer) => outer.right - inner.right,
+      gapY: (inner, outer) => inner.top - outer.top,
+    },
+    {
+      name: "bottom-left",
+      edges: ["bottom", "left"],
+      gapX: (inner, outer) => inner.left - outer.left,
+      gapY: (inner, outer) => outer.bottom - inner.bottom,
+    },
+    {
+      name: "bottom-right",
+      edges: ["bottom", "right"],
+      gapX: (inner, outer) => outer.right - inner.right,
+      gapY: (inner, outer) => outer.bottom - inner.bottom,
+    },
+  ];
+
   for (const { el, rect, style } of visible) {
-    const innerRadius = cornerRadius(style);
-    if (innerRadius <= 0 || isFunctionalPill(innerRadius, rect)) continue;
+    const innerRadii = getCornerRadii(style);
 
-    // Nearest rounded ancestor (not necessarily the immediate parent - an
-    // unrounded wrapper div in between is common).
-    let ancestor = el.parentElement;
-    let depth = 0;
-    let outerEl = null;
-    let outerStyle = null;
-    while (ancestor && depth < 5) {
-      const aStyle = getComputedStyle(ancestor);
-      const aRadius = cornerRadius(aStyle);
-      if (aRadius > 0) {
-        outerEl = ancestor;
-        outerStyle = aStyle;
-        break;
+    for (const corner of CORNERS) {
+      const innerRadius = innerRadii[corner.name];
+      if (innerRadius <= 0 || isFunctionalPill(innerRadius, rect)) continue;
+
+      // Nearest ancestor that rounds THIS SAME corner (FIX 3) and actually
+      // renders it (FIX 1). An ancestor with a nonzero radius there that
+      // fails the render check is skipped, not treated as a dead end - a
+      // further real outer may still sit above it in the tree.
+      let ancestor = el.parentElement;
+      let depth = 0;
+      let outerEl = null;
+      let outerRect = null;
+      let outerRadius = 0;
+      while (ancestor && depth < 5) {
+        const aStyle = getComputedStyle(ancestor);
+        const aRadius = getCornerRadii(aStyle)[corner.name];
+        if (aRadius > 0) {
+          const aRect = ancestor.getBoundingClientRect();
+          if (!isFunctionalPill(aRadius, aRect) && rendersCorner(aStyle, corner.edges)) {
+            outerEl = ancestor;
+            outerRect = aRect;
+            outerRadius = aRadius;
+            break;
+          }
+        }
+        ancestor = ancestor.parentElement;
+        depth++;
       }
-      ancestor = ancestor.parentElement;
-      depth++;
-    }
-    if (!outerEl) continue;
-    const outerRadius = cornerRadius(outerStyle);
-    const outerRect = outerEl.getBoundingClientRect();
-    if (isFunctionalPill(outerRadius, outerRect)) continue; // pill container, exempt (DS-4)
+      if (!outerEl) continue;
 
-    // Containment check: the child must actually sit inside the rounded parent.
-    const eps = 1;
-    const contained =
-      rect.left >= outerRect.left - eps &&
-      rect.right <= outerRect.right + eps &&
-      rect.top >= outerRect.top - eps &&
-      rect.bottom <= outerRect.bottom + eps;
-    if (!contained) continue;
+      // Containment check: the child must actually sit inside the rounded parent.
+      const eps = 1;
+      const contained =
+        rect.left >= outerRect.left - eps &&
+        rect.right <= outerRect.right + eps &&
+        rect.top >= outerRect.top - eps &&
+        rect.bottom <= outerRect.bottom + eps;
+      if (!contained) continue;
 
-    const gapLeft = rect.left - outerRect.left;
-    const gapTop = rect.top - outerRect.top;
-    const gap = Math.min(gapLeft, gapTop);
-    if (gap < 0 || gap > radiusGapCap) continue;
+      const gapX = corner.gapX(rect, outerRect);
+      const gapY = corner.gapY(rect, outerRect);
+      if (gapX < 0 || gapY < 0) continue;
 
-    const expected = Math.max(outerRadius - gap, 4);
-    const off = Math.abs(innerRadius - expected);
-    if (off > radiusTolerance) {
-      nestedRadius.push({
-        selector: selectorFor(el),
-        outerSelector: selectorFor(outerEl),
-        innerRadius: round2(innerRadius),
-        outerRadius: round2(outerRadius),
-        gap: round2(gap),
-        expected: round2(expected),
-        off: round2(off),
-      });
+      // FIX 2: per-axis corner-proximity window. CORNER_WINDOW = outer radius
+      // + RADIUS_GAP_CAP - the arc's own reach plus the largest legit padding
+      // tier this codebase uses (32px Section rhythm + 8px headroom, see
+      // RADIUS_GAP_CAP above). A corner is only tested when the inner element
+      // is within that window of the outer's matching corner on BOTH axes;
+      // past it on EITHER axis, a shared coordinate is coincidence, not
+      // concentricity. This replaces the old single ceiling on
+      // gap = min(gapLeft, gapTop) rather than stacking a second one.
+      const cornerWindow = outerRadius + radiusGapCap;
+      if (gapX > cornerWindow || gapY > cornerWindow) continue;
+
+      const gap = Math.min(gapX, gapY);
+      const expected = Math.max(outerRadius - gap, 4);
+      const off = Math.abs(innerRadius - expected);
+      if (off > radiusTolerance) {
+        nestedRadius.push({
+          selector: selectorFor(el),
+          corner: corner.name,
+          outerSelector: selectorFor(outerEl),
+          innerRadius: round2(innerRadius),
+          outerRadius: round2(outerRadius),
+          gap: round2(gap),
+          expected: round2(expected),
+          off: round2(off),
+        });
+      }
     }
   }
 
@@ -447,7 +576,7 @@ function formatRouteReport(route, result) {
       "(c) NESTED RADIUS",
       result.nestedRadius,
       (i) =>
-        `\`${i.selector}\` inner=${i.innerRadius}px inside \`${i.outerSelector}\` outer=${i.outerRadius}px, gap=${i.gap}px, expected inner=${i.expected}px (off by ${i.off}px)`,
+        `\`${i.selector}\` ${i.corner} inner=${i.innerRadius}px inside \`${i.outerSelector}\` outer=${i.outerRadius}px, gap=${i.gap}px, expected inner=${i.expected}px (off by ${i.off}px)`,
     ),
   );
   lines.push(
@@ -461,9 +590,129 @@ function formatRouteReport(route, result) {
 }
 
 // ----------------------------------------------------------------------------
+// Self-test for the (c) NESTED RADIUS FIX 1/2/3 logic (checklist requirement:
+// prove the improved checker still catches the 4 REAL findings the 2026-07-17
+// triage fixed, not just that it silences the 12 false positives - a checker
+// that stops flagging real bugs while it stops flagging noise is a
+// regression, not a fix). Runs synchronously, no browser/DOM needed.
+//
+// These are pure-math mirrors of the corner logic inside extractGeometry()
+// above. extractGeometry must stay 100% self-contained (no closures over
+// outer-scope variables) because Playwright serializes it via toString() to
+// run inside the browser page - so this self-test can't import it directly.
+// If you change the corner math in extractGeometry's (c) block, mirror the
+// change here.
+// ----------------------------------------------------------------------------
+function selfTestNestedRadiusLogic() {
+  const assertions = [];
+  function assert(name, cond) {
+    assertions.push({ name, pass: !!cond });
+  }
+
+  // --- FIX 3 / regression control: the 4 REAL SearchBar findings the triage
+  // fixed (commit dea10438f) - collapsed rows + submit button, rounded-[13px]
+  // inside SearchBar's 22px-radius morphing card with 16px (p-4) padding on
+  // both axes, sitting at the card's bottom-left corner. DS-4 says
+  // inner = outer - gap = 22 - 16 = 6 (floor 4). Prove the improved logic
+  // would STILL flag this if the fix were reverted back to 13px.
+  {
+    const outerRadius = 22;
+    const gapX = 16;
+    const gapY = 16; // p-4 on both axes -> both-axes-near-corner, not one
+    const cornerWindow = outerRadius + RADIUS_GAP_CAP; // 62
+    const withinWindow = gapX <= cornerWindow && gapY <= cornerWindow;
+    const gap = Math.min(gapX, gapY);
+    const expected = Math.max(outerRadius - gap, 4);
+    const revertedInnerRadius = 13; // pre-fix value
+    const off = Math.abs(revertedInnerRadius - expected);
+    assert("SearchBar real case: bottom-left corner within window (still tested)", withinWindow);
+    assert("SearchBar real case: DS-4 expected radius = 6", expected === 6);
+    assert("SearchBar real case: reverted 13px still flagged (off > tolerance)", off > RADIUS_TOLERANCE);
+    assert("SearchBar real case: the shipped 6px would NOT be flagged", Math.abs(6 - expected) <= RADIUS_TOLERANCE);
+  }
+
+  // --- FIX 2: a corner close on only ONE axis (the FeedZone/distant-tile
+  // false positive: same left inset, ~1700px further down the page) must be
+  // rejected - the old gap = min(gapLeft, gapTop) would have accepted this.
+  {
+    const outerRadius = 28;
+    const gapX = 24;
+    const gapY = 1700;
+    const cornerWindow = outerRadius + RADIUS_GAP_CAP;
+    const withinWindow = gapX <= cornerWindow && gapY <= cornerWindow;
+    assert("FIX 2: one-axis-only proximity is rejected (not a real corner)", !withinWindow);
+  }
+
+  // --- FIX 2 positive control: close on BOTH axes is still accepted (a real
+  // nested corner must not get collateral-damaged by the new window check).
+  {
+    const outerRadius = 28;
+    const gapX = 16;
+    const gapY = 16;
+    const cornerWindow = outerRadius + RADIUS_GAP_CAP;
+    const withinWindow = gapX <= cornerWindow && gapY <= cornerWindow;
+    assert("FIX 2: both-axes-close corner is still accepted", withinWindow);
+  }
+
+  // --- FIX 1: an ancestor with a rounded-* class but no bg/image/clip/border
+  // (Hero's bare `rounded-[11px]` wrapper around SearchBar) must not render.
+  {
+    const bareStyle = {
+      backgroundColor: "rgba(0, 0, 0, 0)",
+      backgroundImage: "none",
+      overflowX: "visible",
+      overflowY: "visible",
+      borderTopWidth: "0px",
+      borderTopStyle: "none",
+      borderLeftWidth: "0px",
+      borderLeftStyle: "none",
+    };
+    const alpha = (() => {
+      const m = bareStyle.backgroundColor.match(/rgba?\(([^)]+)\)/);
+      const parts = m[1].split(",").map((s) => parseFloat(s.trim()));
+      return parts.length >= 4 ? parts[3] : 1;
+    })();
+    const hasBorder =
+      (parseFloat(bareStyle.borderTopWidth) > 0 && bareStyle.borderTopStyle !== "none") ||
+      (parseFloat(bareStyle.borderLeftWidth) > 0 && bareStyle.borderLeftStyle !== "none");
+    const renders = alpha > 0.05 || bareStyle.backgroundImage !== "none" || hasBorder;
+    assert("FIX 1: transparent/borderless rounded div is NOT treated as a real outer", !renders);
+  }
+
+  // --- FIX 1 positive control: an opaque background DOES count as an outer.
+  {
+    const opaqueStyle = { backgroundColor: "rgb(255, 255, 255)" };
+    const m = opaqueStyle.backgroundColor.match(/rgba?\(([^)]+)\)/);
+    const parts = m[1].split(",").map((s) => parseFloat(s.trim()));
+    const alpha = parts.length >= 4 ? parts[3] : 1;
+    assert("FIX 1: opaque background DOES render (real outer)", alpha > 0.05);
+  }
+
+  // --- FIX 3: an outer that only rounds its TOP corners (rounded-t-*, e.g.
+  // FeedZone) must not be matched against an inner element near its BOTTOM
+  // corner - the old code's single borderTopLeftRadius would have applied a
+  // top-corner radius to a bottom-corner test.
+  {
+    const outerRadii = { "top-left": 28, "top-right": 28, "bottom-left": 0, "bottom-right": 0 };
+    assert("FIX 3: rounded-t-* outer has 0 radius at bottom corners (not testable there)", outerRadii["bottom-left"] === 0 && outerRadii["bottom-right"] === 0);
+    assert("FIX 3: rounded-t-* outer still rounds its top corners", outerRadii["top-left"] > 0 && outerRadii["top-right"] > 0);
+  }
+
+  const failed = assertions.filter((a) => !a.pass);
+  if (failed.length > 0) {
+    console.error("[check-geometry] SELF-TEST FAILED - nested-radius FIX 1/2/3 logic is not sound:");
+    for (const f of failed) console.error(`  - ${f.name}`);
+    process.exit(1);
+  }
+  console.log(`[check-geometry] self-test passed (${assertions.length} assertions, nested-radius FIX 1/2/3 logic)`);
+}
+
+// ----------------------------------------------------------------------------
 // main
 // ----------------------------------------------------------------------------
 async function main() {
+  selfTestNestedRadiusLogic();
+
   const { baseUrl, viewport, routes } = parseArgs(process.argv.slice(2));
   const vp = VIEWPORTS[viewport];
 
