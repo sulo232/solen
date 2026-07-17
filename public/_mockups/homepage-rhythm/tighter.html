@@ -1,0 +1,79 @@
+<!doctype html>
+<!-- Base: capture home-tight-32.png -->
+<!-- Scale: full-page -->
+<!-- Exists-check: round 2 of the SAME probe (RATIONALE gap G3, page cadence), re-cut after the owner's 2026-07-17 verdict "breathing room is good but those are too big of a gap". Proposes no new token: every value here is an existing rung of the locked 4pt ladder, and 32 is literally LOCKFILE's own section rhythm. -->
+<!-- Grounded-in: app/[locale]/_components/homepage/SectionHeader.tsx (the homepage Section primitive that owns the gap being varied) -->
+<!-- Grounded-in: app/[locale]/_components/homepage/Hero.tsx (the homepage hero, the one section already on a different gap) -->
+<!-- Owner-scope: confirmed: owner rejected flat-8 and rejected the +56/+72 probes as too big; this round re-cuts the same page at three tighter values, nothing preselected. -->
+<!-- Backend-check: none, spacing-only probe over an already-rendered page. -->
+<!-- Depicts: the whole real homepage -> app/[locale]/page.tsx captured live full-page at 390px three more times, only the between-section margin overridden; every pixel is the live page. PIL-measured this turn: 16 -> 4237px, 24 -> 4301px, 32 -> 4365px CSS height (today = 4221px). -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Homepage rhythm, round 2: tighter gaps on the real homepage (16 vs 24 vs 32)</title>
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--border:#E4E4E7;--sunken:#F4F4F5;--white:#FFFFFF}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,-apple-system,"Segoe UI",sans-serif;background:var(--white);color:var(--ink);font-size:14px;line-height:1.5;padding-bottom:120px}
+  h1,h2,h3{font-family:"Inter Tight",Inter,sans-serif}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 20px}
+  header.page{border-bottom:1px solid var(--border);padding:30px 0 22px;margin-bottom:22px}
+  header.page h1{font-size:clamp(22px,3vw,28px);font-weight:700}
+  header.page p{color:var(--ink2);max-width:72ch;margin-top:8px}
+  .finding{border:1px solid var(--border);border-radius:16px;padding:20px 22px;margin-bottom:22px}
+  .finding h3{font-size:16px;font-weight:600;margin-bottom:8px}
+  .finding p{color:var(--ink2);font-size:13px;max-width:76ch}
+  .finding p + p{margin-top:8px}
+  .tri{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+  .col{border:1px solid var(--border);border-radius:14px;padding:14px;min-width:0}
+  .col.pick{border-color:var(--ink)}
+  .cap{font-size:13px;font-weight:600;margin-bottom:2px}
+  .cap small{display:block;font-weight:400;color:var(--ink2);margin-top:3px;line-height:1.45}
+  .tag{display:inline-block;font-size:11px;font-weight:600;background:var(--sunken);border-radius:999px;padding:2px 9px;margin-left:6px}
+  .phone{margin-top:12px;border:1px solid var(--border);border-radius:16px;overflow:auto;height:620px;background:var(--white)}
+  .phone img{display:block;width:100%}
+  .answer{position:fixed;left:0;right:0;bottom:0;background:var(--white);border-top:1px solid var(--border);padding:12px 20px;font-size:13px}
+  .answer b{font-weight:600}
+  .answer div{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="page">
+    <h1>Rhythm, round 2: the same page, much tighter</h1>
+    <p>You said breathing room is right but those gaps were too big. Round 1 added 56 and 72. This is the same real homepage at 16, 24 and 32. Scroll inside each; the only difference is the space between sections.</p>
+  </header>
+
+  <div class="finding">
+    <h3>The arithmetic worth knowing before you pick</h3>
+    <p>Your lockfile already says the section rhythm is 32. The homepage renders 8. So "breathing room, but tighter" is not a new number to invent, it is almost exactly the law you already wrote and the code quietly ignored. Measured this turn: today the page is 4221px tall, 32 makes it 4365, so the whole cadence costs 144px. Round 1's version cost 400.</p>
+    <p>All three values sit on the 4pt grid, so whichever you pick stays inside the system instead of becoming another bespoke number.</p>
+  </div>
+
+  <div class="tri">
+    <div class="col">
+      <div class="cap">16<span class="tag">4237px, +16</span><small>Barely more than today. Sections separate, but only just; on a fast scroll it still reads as one run.</small></div>
+      <div class="phone"><img src="../_assets/rhythm/home-tight-16.png" alt="The real homepage with a 16px gap between every section"></div>
+    </div>
+    <div class="col">
+      <div class="cap">24<span class="tag">4301px, +80</span><small>The middle. Clearly separated, still dense enough that two sections read as neighbours.</small></div>
+      <div class="phone"><img src="../_assets/rhythm/home-tight-24.png" alt="The real homepage with a 24px gap between every section"></div>
+    </div>
+    <div class="col pick">
+      <div class="cap">32<span class="tag">4365px, +144, your locked value</span><small>The number your own lockfile already calls the section rhythm. Each section reads as its own thought, and the law and the code finally agree.</small></div>
+      <div class="phone"><img src="../_assets/rhythm/home-tight-32.png" alt="The real homepage with a 32px gap between every section, the locked section rhythm"></div>
+    </div>
+  </div>
+
+  <div class="finding" style="margin-top:22px">
+    <h3>What happens after you pick</h3>
+    <p>The number goes into the Section primitive, so every page inherits the same cadence instead of each screen deciding for itself. Then the site sweep has one answer to apply across all 134 screens, which is the thing that was missing.</p>
+  </div>
+</div>
+<div class="answer">
+  <b>How to answer, one line:</b>
+  <div>"rhythm 16", "rhythm 24" or "rhythm 32". Say "still too big" or "still too tight" and I re-cut at the next rung.</div>
+</div>
+</body>
+</html>
