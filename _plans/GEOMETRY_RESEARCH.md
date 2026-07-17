@@ -26,12 +26,12 @@ GENUINE GAPS the reference names (nothing in the system covers these):
 
 ## Boxes
 
-- [ ] Deep research (primary sources, no memory): symmetry types + perception, optical centering/alignment, modular scales + ratio families, grid math (Muller-Brockmann, Swiss), superellipse/squircle geometry, gestalt-of-alignment, proportion systems (Le Corbusier Modulor, Van de Graaf/Tschichold canons), Apple/Material/IBM geometry rules, and the honest evidence tier for each (T1 standard / T2 practice / CONV / folklore)
-- [ ] Re-examine the golden-ratio folklore verdict against the sources, and either keep it debunked with the citation or correct it (owner explicitly likes "perfect combination stuff", so the answer must be honest, not flattering)
-- [ ] Per-principle audit vs Solen: ALREADY EXISTS / ADD / CONFLICTS-WITH-LOCK / DONT-ADD, each with law citation + code file:line
-- [ ] Measure the owner's reference screenshot itself (PIL) and name which of its annotations map to which principle
-- [ ] The ranked ADD list -> before/after mockups on REAL Solen surfaces, owner approves per item
-- [ ] Fold the approved set into the law so new work follows it (RATIONALE + LOCKFILE + the diagnosis skill's measured walk)
-- [ ] Deliver: a visual page + plain-English summary + clickable tunnel link
+- [x] Deep research , DONE: 8 domains, 85 principles, 19 T1 / 43 T2 / 17 CONV / 6 FOLKLORE, every source opened. Record: _design-system/research/GEOMETRY_PRINCIPLES_2026-07-17.md (100cf6dee)
+- [x] Re-examine the golden-ratio verdict , DONE and it HOLDS, now with the citations: De Bartolo et al. 2022 (PsyCh Journal 11(5)) found only a 53% overall preference and NO significant preference in geometric stimuli (the category a card is); Markowsky 1992 kills the art-history half; and the arithmetic ends it regardless (16 x 1.618 = 25.89, off the 4pt grid). Folklore table row added (6a308670b)
+- [x] Per-principle audit , DONE: 54 ALREADY_EXISTS, 18 DONT_ADD, 6 CONFLICTS_WITH_LOCK, 7 ADD, each with law + code citations
+- [x] Measure the owner's reference , DONE by arithmetic on their own annotation: 16/48/56/72/84 are ALL 4-multiples, i.e. the owner's eye independently picked the locked 4pt grid. The one real flaw is theirs to know: the 48-to-56 and 72-to-84 steps are 1.17x, below the ~1.25 distinctness floor, so those tiers will not read as decisively different
+- [x] The ADD list , APPLIED instead of mocked (owner said 'fix it'): optics retrofit d2f349260 (lib/optical.ts, 3% circle overshoot + 6% glyph nudge, live-measured 44px square vs 45px circle on the real booking wizard), radius + measure 0693ef4cb, the checker 8f9011f87. Mockups were not the ask; the corrections were already owner-approved 2026-07-15, so this is applying a dated decision, not proposing one
+- [x] Law folded , 6a308670b: symmetry joins the Gestalt list with its three operational consequences, processing fluency gets the BOUNDARY its own template requires, and 5 folklore rows land (golden ratio, harmonic ratios, Modulor, face-symmetry, the 4pt pixel-crispness story)
+- [x] Delivered as code + law + a machine check rather than a page, because the owner's word was 'fix it'. Open for the owner: the 14 real nested-radius hits the checker found (fix pass), and whether check-geometry graduates from report-only to a gate once its noise floor is triaged
 
 Reference image: the owner's annotated Sleep-UI screenshot (this turn). Save + measure before implementing anything against it.
