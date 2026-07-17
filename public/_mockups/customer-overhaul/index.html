@@ -1,0 +1,397 @@
+<!doctype html>
+<!-- Base: capture public/_mockups/_assets/overhaul/home-before.png (and the 7 sibling *-before.png, all real 390x844 live captures) -->
+<!-- Scale: full-page -->
+<!-- german-ok: the phone frames are live captures of the real product, so they carry its own German UI; the surrounding labels are intentionally the product's German so the owner reviews in one language. -->
+<!-- Exists-check: npm run exists hero + "bottom sheet" run this turn; this page mocks NO new component. It is a conformance gallery over EXISTING customer routes, each captured live and re-captured with the already-settled numeric law applied. Nothing net-new is proposed. -->
+<!-- Grounded-in: app/[locale]/page.tsx, app/[locale]/[city]/[category]/page.tsx, app/[locale]/salon/[slug]/page.tsx, app/[locale]/salon/[slug]/booking/page.tsx, app/[locale]/inspo/page.tsx, app/[locale]/booking/lookup/page.tsx, app/[locale]/queue/[token]/page.tsx, app/[locale]/profile/page.tsx , the eight real customer routes measured. -->
+<!-- Grounded-in: _design-system/RATIONALE.md + _design-system/LOCKFILE.md (the settled numeric law each after-frame applies). -->
+<!-- Owner-scope: confirmed: owner asked to overhaul the customer-facing side and make tons of before/after mockups applying the new gates and principles. This gallery is that pass, wave 1, eight core-journey screens; nothing preselected beyond the measured numeric fixes. -->
+<!-- Backend-check: none, read-only measurement + CSS-override re-capture over already-rendered pages; no data, no new affordance, no write. -->
+<!-- Depicts: the eight real customer screens -> captured live at 390x844; each "after" frame is the SAME live page with only the settled numeric deltas (warm hairline -> cool #E4E4E7, section rhythm -> 32, arbitrary radii -> 16, ink-fill selected pill -> gray sunken) applied as overrides. Every pixel is the live product. Measured this turn: 34 findings. -->
+<html lang="de">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Customer-Overhaul, Welle 1: acht Screens gegen das Gesetz gemessen</title>
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--border:#E4E4E7;--sunken:#F4F4F5;--white:#FFFFFF}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,-apple-system,"Segoe UI",sans-serif;background:var(--white);color:var(--ink);font-size:14px;line-height:1.5;padding-bottom:120px}
+  h1,h2,h3{font-family:"Inter Tight",Inter,sans-serif}
+  .wrap{max-width:1320px;margin:0 auto;padding:0 20px}
+  header.page{border-bottom:1px solid var(--border);padding:30px 0 22px;margin-bottom:22px}
+  header.page h1{font-size:clamp(22px,3vw,28px);font-weight:700}
+  header.page p{color:var(--ink2);max-width:80ch;margin-top:8px}
+  .summary{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+  .stat{border:1px solid var(--border);border-radius:14px;padding:12px 16px;min-width:120px}
+  .stat b{display:block;font-family:"Inter Tight";font-size:24px;font-weight:700}
+  .stat span{font-size:12px;color:var(--ink2)}
+  .screen{border:1px solid var(--border);border-radius:16px;padding:18px 20px;margin-bottom:22px}
+  .shead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+  .shead h2{font-size:19px;font-weight:700}
+  .route{font-size:12px;color:var(--ink2);font-family:"Inter Tight";font-variant-numeric:tabular-nums}
+  .count{margin-left:auto;font-size:12px;font-weight:600;background:var(--sunken);border-radius:999px;padding:2px 10px}
+  .gaps{font-size:11.5px;color:var(--ink2);margin-bottom:10px;font-variant-numeric:tabular-nums}
+  .cols{display:grid;grid-template-columns:minmax(300px,420px) 1fr;gap:20px}
+  @media(max-width:820px){.cols{grid-template-columns:1fr}}
+  .frames{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .frame{position:relative;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--white)}
+  .frame.pick{border-color:var(--ink)}
+  .frame.clean{display:flex;align-items:center;justify-content:center;padding:20px;aspect-ratio:390/844}
+  .frame img{display:block;width:100%}
+  .flabel{position:absolute;top:6px;left:6px;z-index:2;font-size:10px;font-weight:600;background:rgba(255,255,255,.94);border-radius:5px;padding:2px 7px}
+  .frame.pick .flabel{background:var(--ink);color:var(--white)}
+  .cleanmsg{font-size:13px;color:var(--ink2);text-align:center}
+  .findings{display:flex;flex-direction:column;gap:10px;min-width:0}
+  .finding{border:1px solid var(--border);border-radius:12px;padding:10px 12px}
+  .finding.dim{color:var(--ink2)}
+  .fhead{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px}
+  .dot{width:8px;height:8px;border-radius:999px;flex:none}
+  .fprin{font-size:12.5px;font-weight:600}
+  .badge{margin-left:auto;font-size:10.5px;font-weight:600;border-radius:999px;padding:2px 9px}
+  .badge.num{background:#EAF2FF;color:#1B4FA8}
+  .badge.judg{background:#FFF4E5;color:#9A3412}
+  .fbody{font-size:12px;color:var(--ink);margin-top:2px}
+  .fbody.dim{color:var(--ink2)}
+  .fbody b{font-weight:600}
+  .answer{position:fixed;left:0;right:0;bottom:0;background:var(--white);border-top:1px solid var(--border);padding:12px 20px;font-size:13px}
+  .answer b{font-weight:600}.answer div{color:var(--ink2)}
+</style></head>
+<body>
+<div class="wrap">
+  <header class="page">
+    <h1>Customer-Overhaul, Welle 1</h1>
+    <p>Acht Kern-Screens der Kundenreise, jeder live bei 390x844 aufgenommen und gegen das inzwischen festgelegte Zahlen-Gesetz gemessen (Rhythmus 32, Radius-Token, Haarlinie #E4E4E7, Auswahl = Grau statt Schwarz, Touch 44, Typo-Untergrenzen). Das rechte Frame ist dieselbe echte Seite mit nur den numerischen Regeln als Overlay, nichts neu gezeichnet. Blaue Badges sind mechanische Fixes, im After schon angewandt; orange Badges brauchen deine Entscheidung.</p>
+    <div class="summary">
+      <div class="stat"><b>34</b><span>gemessene Punkte</span></div>
+      <div class="stat"><b>26</b><span>numerische Fixes (angewandt)</span></div>
+      <div class="stat"><b>8</b><span>Geschmacks-Entscheidungen</span></div>
+      <div class="stat"><b>6 / 8</b><span>Screens mit der warmen Haarlinie #DED9D3</span></div>
+    </div>
+  </header>
+  <section class="screen">
+      <div class="shead"><h2>Homepage</h2><span class="route">/de</span>
+        <span class="count">8 Punkte</span></div>
+      <div class="gaps">Sektionsabstaende gemessen: 57, 16, 16, 16, 16, 16, 16 px</div>
+      <div class="cols"><div class="frames"><div class="frame"><div class="flabel">jetzt</div><img src="../_assets/overhaul/home-before.png" alt="Homepage heute"></div><div class="frame pick"><div class="flabel">nach dem Gesetz</div><img src="../_assets/overhaul/home-after.png" alt="Homepage mit den Regeln angewandt"></div></div>
+      <div class="findings"><div class="finding">
+          <div class="fhead"><span class="dot" style="background:#DC2626"></span>
+            <span class="fprin">RHYTHM</span>
+            <span class="badge num">im After angewandt</span></div>
+          <div class="fbody"><b>Gemessen:</b> every inter-section gap = 16px (getBoundingClientRect: 783-&gt;799, 1111-&gt;1127, 1600-&gt;1616, 1907-&gt;1923, 2307-&gt;2323, 2605-&gt;2621). Hero-&gt;first-section gap is 57px and is excluded per brief.</div>
+          <div class="fbody"><b>Soll:</b> 32px between consecutive sections</div>
+          <div class="fbody dim">change the section wrapper mb-4 (16px) to mb-8 (32px) on the content sections</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#0A0A0A"></span>
+            <span class="fprin">RADIUS</span>
+            <span class="badge num">im After angewandt</span></div>
+          <div class="fbody"><b>Gemessen:</b> border-radius 6px on all three fields and on the &#x27;Termine finden&#x27; CTA (rounded-[6px]); other CTAs on the page render pill (9999px): &#x27;Suchen&#x27;, &#x27;Mehr erfahren&#x27;</div>
+          <div class="fbody"><b>Soll:</b> input radius 16; button/CTA pill (or 16) - not 6px</div>
+          <div class="fbody dim">raise the hero search field radius to 16px and the CTA to pill/16 to match the rest of the page</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#0A0A0A"></span>
+            <span class="fprin">RADIUS</span>
+            <span class="badge num">im After angewandt</span></div>
+          <div class="fbody"><b>Gemessen:</b> walk-in cards render border-radius 13px; promo cluster renders 11px and 22px; category tiles (&#x27;Für dich&#x27;, 106x92) render 24px - all off the 16 card standard</div>
+          <div class="fbody"><b>Soll:</b> 16px on card/listing blocks</div>
+          <div class="fbody dim">snap these card radii to 16 (rounded-card); consolidate the 11/13/22/24 values</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#0A0A0A"></span>
+            <span class="fprin">HAIRLINE</span>
+            <span class="badge num">im After angewandt</span></div>
+          <div class="fbody"><b>Gemessen:</b> border color rgb(222,217,211) = #DED9D3 (warm gray, the retired warm hairline)</div>
+          <div class="fbody"><b>Soll:</b> rgb(228,228,231) / #E4E4E7</div>
+          <div class="fbody dim">replace the warm border color with border-s-border (#E4E4E7)</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#0A0A0A"></span>
+            <span class="fprin">TOUCH TARGETS</span>
+            <span class="badge num">im After angewandt</span></div>
+          <div class="fbody"><b>Gemessen:</b> 20x20px tap target (smaller dimension 20px)</div>
+          <div class="fbody"><b>Soll:</b> &gt;= 44px</div>
+          <div class="fbody dim">wrap each chevron link in a &gt;=44px hit area (padding or h-11 w-11)</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#0A0A0A"></span>
+            <span class="fprin">TOUCH TARGETS</span>
+            <span class="badge num">im After angewandt</span></div>
+          <div class="fbody"><b>Gemessen:</b> heights 33px (filter pills), 39px (reset), 38px (icon button) - all below 44</div>
+          <div class="fbody"><b>Soll:</b> &gt;= 44px height</div>
+          <div class="fbody dim">raise these controls to h-11 (44px)</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#0A0A0A"></span>
+            <span class="fprin">NO FABRICATED DATA</span>
+            <span class="badge judg">braucht deine Entscheidung</span></div>
+          <div class="fbody"><b>Gemessen:</b> cards render a minute-range wait-until-free (&#x27;70-98 Min bis frei&#x27;, &#x27;35-49 Min bis frei&#x27;) on the home surface - same shape as the banned &#x27;Frei in 15 Min&#x27;</div>
+          <div class="fbody"><b>Soll:</b> either proven wired to real live queue/availability data, or removed</div>
+          <div class="fbody dim">confirm the wait ranges are computed from live walk-in queue data; if hardcoded/seeded, remove the line and flag for wiring</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#6B6B6B"></span>
+            <span class="fprin">Consistency</span>
+            <span class="badge judg">braucht deine Entscheidung</span></div>
+          <div class="fbody"><b>Gemessen:</b> some review counts render blue rgb(39,110,241) (&#x27;(16)&#x27;,&#x27;(11)&#x27;,&#x27;(12)&#x27;) while others render gray rgb(107,107,107) (&#x27;(25)&#x27;,&#x27;(8)&#x27;,&#x27;(7)&#x27;) on the same screen</div>
+          <div class="fbody"><b>Soll:</b> one consistent color for review counts across sections</div>
+          <div class="fbody dim">pick one treatment (blue small-clickable or gray meta) and apply it to every review count</div>
+        </div></div></div>
+    </section>
+<section class="screen">
+      <div class="shead"><h2>Suche (Basel · Coiffeur)</h2><span class="route">/de/basel/coiffeur</span>
+        <span class="count">3 Punkte</span></div>
+      <div class="gaps">Sektionsabstaende gemessen: 24, 24, 24, 24, 24 px</div>
+      <div class="cols"><div class="frames"><div class="frame"><div class="flabel">jetzt</div><img src="../_assets/overhaul/search-before.png" alt="Suche (Basel · Coiffeur) heute"></div><div class="frame pick"><div class="flabel">nach dem Gesetz</div><img src="../_assets/overhaul/search-after.png" alt="Suche (Basel · Coiffeur) mit den Regeln angewandt"></div></div>
+      <div class="findings"><div class="finding">
+          <div class="fhead"><span class="dot" style="background:#0A0A0A"></span>
+            <span class="fprin">RADIUS</span>
+            <span class="badge num">im After angewandt</span></div>
+          <div class="fbody"><b>Gemessen:</b> border-radius 20px (Tailwind arbitrary class rounded-[20px])</div>
+          <div class="fbody"><b>Soll:</b> 16px (rounded-card token)</div>
+          <div class="fbody dim">Replace rounded-[20px] with rounded-card (16px) on the search result card wrapper.</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#0A0A0A"></span>
+            <span class="fprin">HAIRLINE</span>
+            <span class="badge num">im After angewandt</span></div>
+          <div class="fbody"><b>Gemessen:</b> 1px border-left color rgb(222,217,211) = #DED9D3 (warm) on ~12 border sides across the page; the other 41 border sides are correctly rgb(228,228,231)</div>
+          <div class="fbody"><b>Soll:</b> rgb(228,228,231) #E4E4E7 on every 1px hairline side</div>
+          <div class="fbody dim">Snap the leaking warm border color (#DED9D3) to the cool s-border token #E4E4E7; check for a stray border-l override or a mis-defined token on the header icon buttons and the card wrapper.</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#6B6B6B"></span>
+            <span class="fprin">TYPE FLOORS</span>
+            <span class="badge judg">braucht deine Entscheidung</span></div>
+          <div class="fbody"><b>Gemessen:</b> font-size 18px, font-weight 500</div>
+          <div class="fbody"><b>Soll:</b> ~14 per the locked text-size contract (name 14)</div>
+          <div class="fbody dim">This deviates upward from the locked name=14; it is larger/more prominent (not a readability breach) and name still leads by size over the price, so it is a taste call: keep 18px as an intentional larger search-card title, or snap to the locked 14. Needs an owner decision, not an auto-snap.</div>
+        </div></div></div>
+    </section>
+<section class="screen">
+      <div class="shead"><h2>Salon-Seite</h2><span class="route">/de/salon/cuts-and-culture</span>
+        <span class="count">6 Punkte</span></div>
+      <div class="gaps">Sektionsabstaende gemessen: 222, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 0 px</div>
+      <div class="cols"><div class="frames"><div class="frame"><div class="flabel">jetzt</div><img src="../_assets/overhaul/pdp-before.png" alt="Salon-Seite heute"></div><div class="frame pick"><div class="flabel">nach dem Gesetz</div><img src="../_assets/overhaul/pdp-after.png" alt="Salon-Seite mit den Regeln angewandt"></div></div>
+      <div class="findings"><div class="finding">
+          <div class="fhead"><span class="dot" style="background:#0A0A0A"></span>
+            <span class="fprin">RHYTHM</span>
+            <span class="badge num">im After angewandt</span></div>
+          <div class="fbody"><b>Gemessen:</b> 40px between all 10 consecutive content sections (section bottoms-&gt;next tops: 1351-&gt;1391, 1593-&gt;1633, 1821-&gt;1861, 2128-&gt;2168, 3480-&gt;3520, 3794-&gt;3834, 3894-&gt;3934, 4210-&gt;4250, 4505-&gt;4545, 4675-&gt;4715 all = 40)</div>
+          <div class="fbody"><b>Soll:</b> 32px</div>
+          <div class="fbody dim">reduce the vertical section gap from 40 to 32 (e.g. the space-y / mt utility driving inter-section spacing)</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#DC2626"></span>
+            <span class="fprin">HAIRLINE</span>
+            <span class="badge num">im After angewandt</span></div>
+          <div class="fbody"><b>Gemessen:</b> border color rgb(222,217,211) = #DED9D3 (warm gray) on 22 elements</div>
+          <div class="fbody"><b>Soll:</b> rgb(228,228,231) = #E4E4E7 (cool neutral)</div>
+          <div class="fbody dim">replace the warm #DED9D3 border token with border-s-border #E4E4E7; this is the retired warm hairline (V3-D447) that the cool v2 rule superseded</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#0A0A0A"></span>
+            <span class="fprin">TOUCH TARGET</span>
+            <span class="badge num">im After angewandt</span></div>
+          <div class="fbody"><b>Gemessen:</b> height = 32px</div>
+          <div class="fbody"><b>Soll:</b> &gt;=44px</div>
+          <div class="fbody dim">raise chip height to 44 (h-11) or add vertical padding to reach a 44px hit area</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#0A0A0A"></span>
+            <span class="fprin">TOUCH TARGET + CTA TYPE FLOOR</span>
+            <span class="badge num">im After angewandt</span></div>
+          <div class="fbody"><b>Gemessen:</b> height = 38px, text font-size = 13px, weight 600</div>
+          <div class="fbody"><b>Soll:</b> height &gt;=44px; button text &gt;=15 (never &lt;=13)</div>
+          <div class="fbody dim">grow the Buchen button to a 44px hit area and lift its label to &gt;=15px (the sticky primary &quot;Termin buchen&quot; is correct at 15px ink #0A0A0A)</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#6B6B6B"></span>
+            <span class="fprin">TOUCH TARGET</span>
+            <span class="badge num">im After angewandt</span></div>
+          <div class="fbody"><b>Gemessen:</b> 40x40px (h-10 w-10)</div>
+          <div class="fbody"><b>Soll:</b> &gt;=44px</div>
+          <div class="fbody dim">bump the frosted icon buttons from 40 to 44 (h-11 w-11)</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#6B6B6B"></span>
+            <span class="fprin">RADIUS</span>
+            <span class="badge num">im After angewandt</span></div>
+          <div class="fbody"><b>Gemessen:</b> border-radius = 10px</div>
+          <div class="fbody"><b>Soll:</b> 16px</div>
+          <div class="fbody dim">change the product-tile radius from rounded-[10px] to rounded-card (16)</div>
+        </div></div></div>
+    </section>
+<section class="screen">
+      <div class="shead"><h2>Buchung · Services</h2><span class="route">/de/salon/cuts-and-culture/booking</span>
+        <span class="count">6 Punkte</span></div>
+      <div class="gaps">Sektionsabstaende gemessen: 32, 32, 32 px</div>
+      <div class="cols"><div class="frames"><div class="frame"><div class="flabel">jetzt</div><img src="../_assets/overhaul/booking-before.png" alt="Buchung · Services heute"></div><div class="frame pick"><div class="flabel">nach dem Gesetz</div><img src="../_assets/overhaul/booking-after.png" alt="Buchung · Services mit den Regeln angewandt"></div></div>
+      <div class="findings"><div class="finding">
+          <div class="fhead"><span class="dot" style="background:#DC2626"></span>
+            <span class="fprin">SELECTED / ACTIVE state + FILTERS ARE NEUTRAL</span>
+            <span class="badge num">im After angewandt</span></div>
+          <div class="fbody"><b>Gemessen:</b> background-color: rgb(10, 10, 10) (ink black) + color: rgb(255,255,255) white text</div>
+          <div class="fbody"><b>Soll:</b> background-color: rgb(244,244,245) #F4F4F5 (gray sunken) + text-s-ink rgb(10,10,10) + semibold; white unselected pills stay as-is</div>
+          <div class="fbody dim">Swap the selected-pill fill from bg-s-ink to bg-s-bg-sunken with text-s-ink; this is the locked TabPill selected treatment.</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#DC2626"></span>
+            <span class="fprin">TOUCH TARGETS</span>
+            <span class="badge num">im After angewandt</span></div>
+          <div class="fbody"><b>Gemessen:</b> 36 x 36 px (w-9 h-9)</div>
+          <div class="fbody"><b>Soll:</b> &gt;= 44 x 44 px (h-11 w-11)</div>
+          <div class="fbody dim">Bump the add-service tap target from w-9 h-9 (36px) to h-11 w-11 (44px), keeping the visible ring size if desired via inner padding.</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#0A0A0A"></span>
+            <span class="fprin">TOUCH TARGETS</span>
+            <span class="badge num">im After angewandt</span></div>
+          <div class="fbody"><b>Gemessen:</b> back button 40x40; category pills height 38; Kategorien button 36x36 — all below 44</div>
+          <div class="fbody"><b>Soll:</b> &gt;= 44px smaller dimension (back/Kategorien to 44x44; pills to h-11 / 44px height)</div>
+          <div class="fbody dim">Raise the back icon-button and the Kategorien button to 44x44 and the category pills to 44px height.</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#0A0A0A"></span>
+            <span class="fprin">HAIRLINE</span>
+            <span class="badge num">im After angewandt</span></div>
+          <div class="fbody"><b>Gemessen:</b> border color rgb(222, 217, 211) = #DED9D3 (warm gray) on 19 elements; the rest of the page correctly uses rgb(228,228,231) on 65 borders</div>
+          <div class="fbody"><b>Soll:</b> border-color rgb(228,228,231) #E4E4E7 on all 1px hairlines</div>
+          <div class="fbody dim">These components resolve their border to warm #DED9D3 instead of the cool border-s-border token; point them at border-s-border (#E4E4E7).</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#0A0A0A"></span>
+            <span class="fprin">TYPE FLOORS</span>
+            <span class="badge num">im After angewandt</span></div>
+          <div class="fbody"><b>Gemessen:</b> font-size: 14px</div>
+          <div class="fbody"><b>Soll:</b> font-size: &gt;= 15px</div>
+          <div class="fbody dim">Raise the Weiter CTA label to 15px (text-[15px] / CTA text token).</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#6B6B6B"></span>
+            <span class="fprin">RADIUS</span>
+            <span class="badge num">im After angewandt</span></div>
+          <div class="fbody"><b>Gemessen:</b> border-radius: 24px (rounded-[24px])</div>
+          <div class="fbody"><b>Soll:</b> 16px (rounded-card) — 28 is reserved for bottom sheets</div>
+          <div class="fbody dim">Change the service-card container radius from rounded-[24px] to rounded-card (16px).</div>
+        </div></div></div>
+    </section>
+<section class="screen">
+      <div class="shead"><h2>Inspo-Feed</h2><span class="route">/de/inspo</span>
+        <span class="count">4 Punkte</span></div>
+      
+      <div class="cols"><div class="frames"><div class="frame"><div class="flabel">jetzt</div><img src="../_assets/overhaul/inspo-before.png" alt="Inspo-Feed heute"></div><div class="frame pick"><div class="flabel">nach dem Gesetz</div><img src="../_assets/overhaul/inspo-after.png" alt="Inspo-Feed mit den Regeln angewandt"></div></div>
+      <div class="findings"><div class="finding">
+          <div class="fhead"><span class="dot" style="background:#0A0A0A"></span>
+            <span class="fprin">HAIRLINE</span>
+            <span class="badge num">im After angewandt</span></div>
+          <div class="fbody"><b>Gemessen:</b> border-color rgb(222,217,211) = #DED9D3 (warm) on 14 elements; meanwhile the search bar wrapper correctly uses rgb(228,228,231)</div>
+          <div class="fbody"><b>Soll:</b> rgb(228,228,231) / #E4E4E7 (cool neutral) on every hairline</div>
+          <div class="fbody dim">Snap the chip + icon-button + location-button border token from the warm #DED9D3 to border-s-border #E4E4E7; the warm hue was explicitly reversed (V3-D447 -&gt; cool). The search bar already proves the cool token is available on this screen.</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#0A0A0A"></span>
+            <span class="fprin">TOUCH TARGETS</span>
+            <span class="badge num">im After angewandt</span></div>
+          <div class="fbody"><b>Gemessen:</b> smaller dimension 40px on the icon buttons, bell, and all filter chips (h-10 = 40); the wordmark link &#x27;Inspo&#x27; is 25px tall</div>
+          <div class="fbody"><b>Soll:</b> &gt;= 44px (h-11)</div>
+          <div class="fbody dim">Bump the h-10 icon buttons, the notification bell, and the filter chips to h-11 (44px). The hamburger is already correct at 44x44, so the fix is matching the rest to it.</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#6B6B6B"></span>
+            <span class="fprin">BLUE RESTRAINT</span>
+            <span class="badge judg">braucht deine Entscheidung</span></div>
+          <div class="fbody"><b>Gemessen:</b> background rgb(39,110,241) = #276EF1, 16x16px, border-radius 9999px, white 10px text</div>
+          <div class="fbody"><b>Soll:</b> Blue is reserved for text links / chip / review-count TEXT. A filled blue count pip reads as a colored status pip (rule 2). If a count badge is wanted, use a semantic hue (this is a notification alert, closer to red #DC2626) or a neutral ink pip, not the interactive-blue.</div>
+          <div class="fbody dim">Re-hue the badge fill off #276EF1; also confirm the &#x27;2&#x27; is wired to a live notification count (could not verify data backing from the client) — a hardcoded count would be fabricated data.</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#6B6B6B"></span>
+            <span class="fprin">RADIUS</span>
+            <span class="badge judg">braucht deine Entscheidung</span></div>
+          <div class="fbody"><b>Gemessen:</b> border-radius 16px (rounded-card) on 40px-tall chips</div>
+          <div class="fbody"><b>Soll:</b> chips fully rounded (&gt;= 99px pill) per the radius law; the search input above them is correctly 9999px</div>
+          <div class="fbody dim">If these are meant to read as pills/chips, snap the radius to rounded-full; if they are intentionally rounded-card Fresha-style tags, this is a documented deviation. Flagging because the literal radius law wants chips at full-pill and the value sits at the card radius instead.</div>
+        </div></div></div>
+    </section>
+<section class="screen">
+      <div class="shead"><h2>Buchung finden</h2><span class="route">/de/booking/lookup</span>
+        <span class="count">3 Punkte</span></div>
+      
+      <div class="cols"><div class="frames"><div class="frame"><div class="flabel">jetzt</div><img src="../_assets/overhaul/lookup-before.png" alt="Buchung finden heute"></div><div class="frame clean"><div class="cleanmsg">Nur gemessen (siehe Liste rechts). Fixes sind mechanisch, aber ohne eigenes After-Render.</div></div></div>
+      <div class="findings"><div class="finding">
+          <div class="fhead"><span class="dot" style="background:#6B6B6B"></span>
+            <span class="fprin">Locked disabled treatment + cool-neutral palette</span>
+            <span class="badge judg">braucht deine Entscheidung</span></div>
+          <div class="fbody"><b>Gemessen:</b> bg/color rgb(197,200,196) (#C5C8C4), a warm sage-grey (G highest, B lowest), opacity 1</div>
+          <div class="fbody"><b>Soll:</b> Locked disabled = opacity-50 on the ink fill (visually ~rgb(132,132,132)); any grey should be a cool neutral, not a green-tinted sage in an #E4E4E7/#F4F4F5 cool system</div>
+          <div class="fbody dim">Render the disabled CTA as the ink button at opacity-50 (cursor-not-allowed) per the locked contract, and use a cool neutral grey for the &#x27;SOL-&#x27; prefix, instead of the off-palette sage rgb(197,200,196)</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#6B6B6B"></span>
+            <span class="fprin">Type floor</span>
+            <span class="badge num">im After angewandt</span></div>
+          <div class="fbody"><b>Gemessen:</b> font-size 13.5px</div>
+          <div class="fbody"><b>Soll:</b> 14px body floor</div>
+          <div class="fbody dim">Bump these body/description strings from 13.5px to 14px (meta stays 12px)</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#6B6B6B"></span>
+            <span class="fprin">Consistency of the two fixed fields</span>
+            <span class="badge judg">braucht deine Entscheidung</span></div>
+          <div class="fbody"><b>Gemessen:</b> code input font-size 18px, email input font-size 16px (both height 52, radius 12, bg #F4F4F5 now match)</div>
+          <div class="fbody"><b>Soll:</b> box geometry matches after the fix; font-size intentionally differs or should be unified</div>
+          <div class="fbody dim">Confirm the 18px vs 16px input font-size difference is intentional (code emphasized) or unify to one value; both already &gt;=14 so no floor is broken</div>
+        </div></div></div>
+    </section>
+<section class="screen">
+      <div class="shead"><h2>Walk-in-Tracker</h2><span class="route">/de/queue/0631e9bd-47f2-4ac4-a06b-de40ab149528</span>
+        <span class="count">0 Punkte</span></div>
+      
+      <div class="cols"><div class="frames"><div class="frame"><div class="flabel">jetzt</div><img src="../_assets/overhaul/queue-before.png" alt="Walk-in-Tracker heute"></div><div class="frame clean"><div class="flabel">sauber</div><div class="cleanmsg">Keine Verletzungen gemessen. Dieser Screen erfuellt das Gesetz bereits.</div></div></div>
+      <div class="findings"><div class="finding dim">Keine Verletzungen gemessen. Dieser Screen ist sauber.</div></div></div>
+    </section>
+<section class="screen">
+      <div class="shead"><h2>Profil</h2><span class="route">/de/profile</span>
+        <span class="count">4 Punkte</span></div>
+      <div class="gaps">Sektionsabstaende gemessen: 45, 32 px</div>
+      <div class="cols"><div class="frames"><div class="frame"><div class="flabel">jetzt</div><img src="../_assets/overhaul/profile-before.png" alt="Profil heute"></div><div class="frame pick"><div class="flabel">nach dem Gesetz</div><img src="../_assets/overhaul/profile-after.png" alt="Profil mit den Regeln angewandt"></div></div>
+      <div class="findings"><div class="finding">
+          <div class="fhead"><span class="dot" style="background:#0A0A0A"></span>
+            <span class="fprin">HAIRLINE</span>
+            <span class="badge num">im After angewandt</span></div>
+          <div class="fbody"><b>Gemessen:</b> border-left-color = rgb(222,217,211) = #DED9D3 (warm), while top/right/bottom borders are the correct rgb(228,228,231). One side uses the retired warm hairline.</div>
+          <div class="fbody"><b>Soll:</b> All four borders rgb(228,228,231) #E4E4E7 (cool). The warm #DED9D3 token was reversed by CLAUDE.md hairline rule.</div>
+          <div class="fbody dim">Replace the stray warm border-l token on the header icon buttons with border-s-border (#E4E4E7) so all four sides match.</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#0A0A0A"></span>
+            <span class="fprin">TOUCH TARGETS</span>
+            <span class="badge num">im After angewandt</span></div>
+          <div class="fbody"><b>Gemessen:</b> 40 x 40 px (smaller dimension 40)</div>
+          <div class="fbody"><b>Soll:</b> &gt;= 44 px. The adjacent back and hamburger icon buttons are correctly 44x44.</div>
+          <div class="fbody dim">Bump the bell link tap target to h-11 w-11 (44px) to match the sibling icon buttons and clear the 44px a11y floor.</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#6B6B6B"></span>
+            <span class="fprin">TYPE FLOORS</span>
+            <span class="badge judg">braucht deine Entscheidung</span></div>
+          <div class="fbody"><b>Gemessen:</b> font-size 13px, weight 500, color rgb(107,107,107) grey</div>
+          <div class="fbody"><b>Soll:</b> Either a section H2 at 18-20px, or an eyebrow at 11px. 13px sits between the two floors.</div>
+          <div class="fbody dim">Human taste call: these read as iOS-settings grouped-list captions, which is a legitimate pattern, but they are semantically &lt;h2&gt; at 13px, matching neither the H2 (18-20) nor the eyebrow (11) floor. Decide whether they are section headings (raise to 18-20) or eyebrow captions (drop to 11).</div>
+        </div>
+<div class="finding">
+          <div class="fhead"><span class="dot" style="background:#6B6B6B"></span>
+            <span class="fprin">TYPE FLOORS</span>
+            <span class="badge num">im After angewandt</span></div>
+          <div class="fbody"><b>Gemessen:</b> font-size 14.5px</div>
+          <div class="fbody"><b>Soll:</b> &gt;= 15px per the button-text floor (it clears the &lt;=13 hard floor, but is below 15).</div>
+          <div class="fbody dim">Snap the Abmelden label to 15px. Low priority since it is a tertiary/destructive text action, not a primary CTA.</div>
+        </div></div></div>
+    </section>
+</div>
+<div class="answer">
+  <b>Wie antworten:</b>
+  <div>"wende welle 1 an" und ich setze die numerischen Fixes real um (Coder + Reviewer, ein Commit pro Screen). Oder nenne einen Screen ("home zuerst"). Die orangen Punkte entscheidest du einzeln.</div>
+</div>
+</body></html>
