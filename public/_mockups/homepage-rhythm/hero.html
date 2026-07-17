@@ -1,0 +1,110 @@
+<!doctype html>
+<!-- Base: capture a-current.png -->
+<!-- Scale: full-page -->
+<!-- Exists-check: npm run exists hero run this turn. Hits: Hero.tsx (the surface being probed, reused not rebuilt), HeroDuo / HeroHeadline / HeroSpotlight (other homepage hero variants, untouched), SalonHero + CategoryHero (other routes). Nothing new is created: this probe re-cuts the EXISTING Hero live and asks whether its dated V3-D348 density decision ("so the search card rises toward the fold") should be reversed. RATIONALE gap G3. -->
+<!-- Grounded-in: app/[locale]/_components/homepage/Hero.tsx (the hero whose pt-10/pb-2 and V3-D348 density decision this probe re-opens) -->
+<!-- Grounded-in: app/[locale]/_components/homepage/SearchBar.tsx (the search card being centred) -->
+<!-- Owner-scope: confirmed: owner asked for the search box more in the middle and asked what it does to the rhythm; three positions rendered, nothing preselected. -->
+<!-- Backend-check: none, vertical-position probe over the already-rendered page; no data, no new affordance. -->
+<!-- Depicts: the real homepage first screen -> app/[locale]/page.tsx captured live at 390x844 three times, only the hero's vertical centring overridden; every pixel is the live page. Measured this turn: card centre 41% / 61% / 53% of the fold. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Homepage hero: where the search card sits, and what it costs the rhythm</title>
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--border:#E4E4E7;--sunken:#F4F4F5;--white:#FFFFFF}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,-apple-system,"Segoe UI",sans-serif;background:var(--white);color:var(--ink);font-size:14px;line-height:1.5;padding-bottom:120px}
+  h1,h2,h3{font-family:"Inter Tight",Inter,sans-serif}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 20px}
+  header.page{border-bottom:1px solid var(--border);padding:30px 0 22px;margin-bottom:22px}
+  header.page h1{font-size:clamp(22px,3vw,28px);font-weight:700}
+  header.page p{color:var(--ink2);max-width:74ch;margin-top:8px}
+  .finding{border:1px solid var(--border);border-radius:16px;padding:20px 22px;margin-bottom:22px}
+  .finding h3{font-size:16px;font-weight:600;margin-bottom:8px}
+  .finding p{color:var(--ink2);font-size:13px;max-width:78ch}
+  .finding p + p{margin-top:8px}
+  .tri{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px}
+  .col{border:1px solid var(--border);border-radius:14px;padding:14px;min-width:0}
+  .col.pick{border-color:var(--ink)}
+  .cap{font-size:13px;font-weight:600;margin-bottom:2px}
+  .cap small{display:block;font-weight:400;color:var(--ink2);margin-top:3px;line-height:1.45}
+  .tag{display:inline-block;font-size:11px;font-weight:600;background:var(--sunken);border-radius:999px;padding:2px 9px;margin-left:6px}
+  /* the frame IS one phone screen: 390x844, so what you see is exactly the first screen */
+  .screen{position:relative;margin-top:12px;border:1px solid var(--border);border-radius:16px;overflow:hidden;width:100%;aspect-ratio:390/844;background:var(--white)}
+  .screen img{display:block;width:100%}
+  .mid{position:absolute;left:0;right:0;top:50%;border-top:1px dashed rgba(10,10,10,.45)}
+  .midlbl{position:absolute;left:8px;top:calc(50% + 4px);font-size:10px;color:rgba(10,10,10,.55);background:rgba(255,255,255,.9);border-radius:4px;padding:1px 5px}
+  .dot{position:absolute;left:50%;width:9px;height:9px;margin-left:-4.5px;margin-top:-4.5px;border-radius:999px;background:var(--ink)}
+  .scrollnote{margin-top:10px;font-size:12px;color:var(--ink2)}
+  table{border-collapse:collapse;margin-top:12px;font-size:12px;width:100%;max-width:560px}
+  th,td{text-align:left;padding:5px 10px;border-bottom:1px solid var(--border)}
+  th{color:var(--ink2);font-weight:500}
+  td.n{font-variant-numeric:tabular-nums}
+  .answer{position:fixed;left:0;right:0;bottom:0;background:var(--white);border-top:1px solid var(--border);padding:12px 20px;font-size:13px}
+  .answer b{font-weight:600}
+  .answer div{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="page">
+    <h1>Where should the search card sit?</h1>
+    <p>Each frame is exactly one phone screen (390 x 844) of your real homepage. The dashed line is the true middle of the screen; the dot marks the centre of the search card. Nothing is redrawn, only the hero's vertical centring changed.</p>
+  </header>
+
+  <div class="finding">
+    <h3>Measured first: it is at 41 percent today, and that was on purpose</h3>
+    <p>The card's centre sits at 41 percent of the first screen, i.e. above the middle. That is not an accident: a dated decision (V3-D348) cut the hero's top padding specifically "so the search card rises toward the fold", which also lets the next section peek into the first screen at 523px and tell the eye there is more below.</p>
+    <p>So "more in the middle" means reversing that trade on purpose: the card drops toward the centre, the hero takes the whole first screen, and the peek disappears. Both effects are real and measured below.</p>
+  </div>
+
+  <div class="tri">
+    <div class="col">
+      <div class="cap">a, today<span class="tag">card centre 41%</span><small>Card sits high. The next section peeks in at 523px, so the first screen shows there is more below. Page 4253px.</small></div>
+      <div class="screen">
+        <img src="../_assets/hero/a-current.png" alt="The real homepage first screen today, search card sitting above the middle">
+        <div class="mid"></div><div class="midlbl">middle of the screen</div>
+        <div class="dot" style="top:40.5%"></div>
+      </div>
+      <div class="scrollnote">Next section starts at 523px, visible on the first screen.</div>
+    </div>
+    <div class="col pick">
+      <div class="cap">c, optical centre<span class="tag">card centre 53%</span><small>The hero owns the first screen and the card sits at the middle, a touch above true centre so it reads centred rather than low. Page 4622px.</small></div>
+      <div class="screen">
+        <img src="../_assets/hero/c-optical.png" alt="The real homepage first screen with the hero centred so the search card sits at the optical middle">
+        <div class="mid"></div><div class="midlbl">middle of the screen</div>
+        <div class="dot" style="top:53.3%"></div>
+      </div>
+      <div class="scrollnote">Next section starts at 892px, below the fold: no peek.</div>
+    </div>
+    <div class="col">
+      <div class="cap">b, straight centring<span class="tag">card centre 61%</span><small>The whole hero block is centred, so the headline sits mid-screen and the card is pushed BELOW the middle. Same page height as c.</small></div>
+      <div class="screen">
+        <img src="../_assets/hero/b-centered.png" alt="The real homepage first screen with the whole hero block centred, pushing the search card below the middle">
+        <div class="mid"></div><div class="midlbl">middle of the screen</div>
+        <div class="dot" style="top:60.5%"></div>
+      </div>
+      <div class="scrollnote">Next section starts at 892px, below the fold: no peek.</div>
+    </div>
+  </div>
+
+  <div class="finding" style="margin-top:22px">
+    <h3>What it does to the rhythm you just set</h3>
+    <p>Nothing below the hero changes: the 32px cadence still runs section to section. The one gap that changes is the hero's own, and it changes for free, because the hero now ends at the fold instead of at 475px. The cost is height: the page goes 4253 to 4622, and the "there is more below" peek is gone, which is the only real argument for keeping the card high.</p>
+    <table>
+      <tr><th>Option</th><th>Card centre</th><th>Hero height</th><th>Next section starts</th><th>Page height</th></tr>
+      <tr><td>a, today</td><td class="n">41%</td><td class="n">391</td><td class="n">523 (peeks)</td><td class="n">4253</td></tr>
+      <tr><td>c, optical centre</td><td class="n">53%</td><td class="n">760</td><td class="n">892</td><td class="n">4622</td></tr>
+      <tr><td>b, straight centring</td><td class="n">61%</td><td class="n">760</td><td class="n">892</td><td class="n">4622</td></tr>
+    </table>
+    <p>Why c is marked: straight centring centres the whole block (headline + sub + card), so the card lands below the middle at 61 percent, which reads low rather than centred. Nudging the block up to about 40 percent of the free space puts the CARD at the middle, which is what you actually asked for.</p>
+  </div>
+</div>
+<div class="answer">
+  <b>How to answer, one line:</b>
+  <div>"hero c" (card at the middle), "hero b" (block centred), or "hero a" (keep it high). Say "keep the peek" if losing the next-section peek is the dealbreaker.</div>
+</div>
+</body>
+</html>
