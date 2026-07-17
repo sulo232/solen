@@ -459,7 +459,13 @@ export function SalonCard({
           conditional address (postal+city or street) plus price on one line.
           Supersedes V2-D60-cards-7's nextSlotLabel row, no availability or
           next-slot text anywhere on this card. */}
-      <div className="mt-[10px] px-[2px] flex flex-col gap-[2px]">
+      {/* geometry sweep (2026-07-17, _geometry-triage.md #1): mt-[10px] -> mt-2
+          (8, matches the same photo-to-text-block gap on SalonResultCard.tsx:643).
+          px-[2px] and gap-[2px] left AS IS: a 2px inset/row-gap on a
+          CARD_REDESIGN_2026-07-13-approved 3-row info stack is a deliberate
+          micro-relationship (dense info stack, mockup-approved), not a bug;
+          snapping to px-0/gap-1 would visibly loosen it. */}
+      <div className="mt-2 px-[2px] flex flex-col gap-[2px]">
         <div className="flex items-baseline gap-2">
           {/* V3-D348: name anchor via <CardName> primitive (bakes text-s-ink font-medium). */}
           <CardName as="h3" className="text-[14px] leading-[1.25] tracking-[-0.01em] truncate min-w-0 flex-1">

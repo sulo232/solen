@@ -56,8 +56,16 @@ export default function WalkInBand() {
   const single = !loading && salons != null && salons.length === 1;
 
   return (
-    <section aria-label="Walk-in" className="relative z-[1] mb-2 md:mb-4">
-      <div className="mx-auto max-w-[1280px] px-4 md:px-6">
+    // 2026-07-17 rhythm decision (TASTE_LOG.md, shipped as Section's py-2/mb-4
+    // on SectionHeader.tsx): this section had NO top/bottom padding of its own
+    // (only px), so it inherited whatever the neighbor sections left over.
+    // Added pt-2 pb-2 (md:pt-3 pb-3) to match the primitive's inner py, and
+    // mb-2 -> mb-4 mobile (desktop was already mb-4) to match its outer margin.
+    // Arithmetic (mobile): prior Section's py-2(8)+mb-4(16)=24, + this
+    // section's own pt-2(8) = 32 into it; this section's own pb-2(8)+mb-4(16)
+    // =24, + next Section's py-2(8) = 32 out of it.
+    <section aria-label="Walk-in" className="relative z-[1] mb-4 md:mb-4">
+      <div className="mx-auto max-w-[1280px] px-4 pt-2 pb-2 md:px-6 md:pt-3 md:pb-3">
           {/* header */}
           <div className="flex items-center gap-3.5">
             <span className="grid h-[52px] w-[52px] shrink-0 place-items-center rounded-[15px] bg-s-bg-sunken">

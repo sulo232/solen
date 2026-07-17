@@ -334,7 +334,11 @@ export default function Entdecken() {
                     // sits ~24px from card top (button h-11 with h-8
                     // visible glass at top-[2px]). Marquee text height
                     // ~16px → top should be 16 to put center at 24. ✓
-                    className="absolute top-2 left-2 z-[2] inline-flex items-center rounded-full bg-black/55 px-2.5 py-[3px] backdrop-blur-[4px] pointer-events-none"
+                    // geometry sweep (2026-07-17, _geometry-triage.md #4): py-[3px] -> py-1
+                    // (4, unambiguous nearest 4pt rung). px-2.5 (10px) left AS IS: it sits
+                    // exactly between px-2/px-3 with no documented pixel rationale to break
+                    // the tie, a taste call, not a mechanical fix.
+                    className="absolute top-2 left-2 z-[2] inline-flex items-center rounded-full bg-black/55 px-2.5 py-1 backdrop-blur-[4px] pointer-events-none"
                     aria-hidden
                   >
                     <span className="font-body text-[11px] font-semibold leading-none text-white">TikTok</span>

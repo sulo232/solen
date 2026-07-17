@@ -1,19 +1,19 @@
 # Geometry check report
 
-Generated: 2026-07-17T02:22:03.036Z
+Generated: 2026-07-17T08:21:03.558Z
 Base URL: https://stylus-infections-boundaries-fragrance.trycloudflare.com  Viewport: mobile (375x812)
 
 Report-only pass (checklist item 1): this script never fails the run. Findings
 below are raw candidates, not confirmed bugs, until triaged for false positives.
 
-Totals: off-grid=1234  broken-axis=159  nested-radius=2  asymmetric-pair=0
+Totals: off-grid=1201  broken-axis=159  nested-radius=2  asymmetric-pair=0
 
 ---
 ## /de
 
 Elements scanned: 697
 
-### (a) OFF-GRID (802)
+### (a) OFF-GRID (782)
 
 - `body.text-s-ink:nth-of-type(1) > a.sr-only:nth-of-type(1)` marginTop=-1px (nearest 4pt: 0px)
 - `body.text-s-ink:nth-of-type(1) > a.sr-only:nth-of-type(1)` marginRight=-1px (nearest 4pt: 0px)
@@ -30,22 +30,22 @@ Elements scanned: 697
 - `body.text-s-ink:nth-of-type(1) > header.sticky:nth-of-type(1) > div.mx-auto:nth-of-type(1) > div.flex:nth-of-type(2) > button.md:hidden:nth-of-type(1) > span.absolute:nth-of-type(2)` width=41.58px (nearest 4pt: 40px)
 - `body.text-s-ink:nth-of-type(1) > header.sticky:nth-of-type(1) > div.mx-auto:nth-of-type(1) > div.flex:nth-of-type(2) > button.md:hidden:nth-of-type(1) > span.absolute:nth-of-type(2)` height=41.58px (nearest 4pt: 40px)
 - `#main-content` width=375px (nearest 4pt: 376px)
-- `#main-content` height=2860.95px (nearest 4pt: 2860px)
+- `#main-content` height=2912.95px (nearest 4pt: 2912px)
 - `#main-content > div.relative:nth-of-type(1)` width=375px (nearest 4pt: 376px)
-- `#main-content > div.relative:nth-of-type(1)` height=2860.95px (nearest 4pt: 2860px)
+- `#main-content > div.relative:nth-of-type(1)` height=2912.95px (nearest 4pt: 2912px)
 - `#main-content > div.relative:nth-of-type(1) > section.relative:nth-of-type(1)` width=375px (nearest 4pt: 376px)
 - `#main-content > div.relative:nth-of-type(1) > section.relative:nth-of-type(1)` height=389.17px (nearest 4pt: 388px)
 - `#main-content > div.relative:nth-of-type(1) > section.relative:nth-of-type(1) > div.relative:nth-of-type(1)` width=375px (nearest 4pt: 376px)
 - `#main-content > div.relative:nth-of-type(1) > section.relative:nth-of-type(1) > div.relative:nth-of-type(1)` height=389.17px (nearest 4pt: 388px)
-- `#main-content > div.relative:nth-of-type(1) > section.relative:nth-of-type(1) > div.relative:nth-of-type(1)` paddingRight=18px (nearest 4pt: 20px)
-- `#main-content > div.relative:nth-of-type(1) > section.relative:nth-of-type(1) > div.relative:nth-of-type(1)` paddingLeft=18px (nearest 4pt: 20px)
-- `#main-content > div.relative:nth-of-type(1) > section.relative:nth-of-type(1) > div.relative:nth-of-type(1) > div.w-full:nth-of-type(1)` width=339px (nearest 4pt: 340px)
+- `#main-content > div.relative:nth-of-type(1) > section.relative:nth-of-type(1) > div.relative:nth-of-type(1) > div.w-full:nth-of-type(1)` width=343px (nearest 4pt: 344px)
 - `#main-content > div.relative:nth-of-type(1) > section.relative:nth-of-type(1) > div.relative:nth-of-type(1) > div.w-full:nth-of-type(1)` height=67.17px (nearest 4pt: 68px)
-- `#main-content > div.relative:nth-of-type(1) > section.relative:nth-of-type(1) > div.relative:nth-of-type(1) > div.w-full:nth-of-type(1) > h1.mb-3:nth-of-type(1)` width=339px (nearest 4pt: 340px)
-- `#main-content > div.relative:nth-of-type(1) > section.relative:nth-of-type(1) > div.relative:nth-of-type(1) > div.w-full:nth-of-type(1) > p.font-body:nth-of-type(1)` width=339px (nearest 4pt: 340px)
-- `#main-content > div.relative:nth-of-type(1) > section.relative:nth-of-type(1) > div.relative:nth-of-type(1) > div.relative:nth-of-type(2)` width=339px (nearest 4pt: 340px)
+- `#main-content > div.relative:nth-of-type(1) > section.relative:nth-of-type(1) > div.relative:nth-of-type(1) > div.w-full:nth-of-type(1) > h1.mb-3:nth-of-type(1)` width=343px (nearest 4pt: 344px)
+- `#main-content > div.relative:nth-of-type(1) > section.relative:nth-of-type(1) > div.relative:nth-of-type(1) > div.w-full:nth-of-type(1) > p.font-body:nth-of-type(1)` width=343px (nearest 4pt: 344px)
+- `#main-content > div.relative:nth-of-type(1) > section.relative:nth-of-type(1) > div.relative:nth-of-type(1) > div.relative:nth-of-type(2)` width=343px (nearest 4pt: 344px)
 - `#main-content > div.relative:nth-of-type(1) > section.relative:nth-of-type(1) > div.relative:nth-of-type(1) > div.relative:nth-of-type(2)` height=250px (nearest 4pt: 252px)
-- ...+772 more (truncated for readability, count above is exact)
+- `#main-content > div.relative:nth-of-type(1) > section.relative:nth-of-type(1) > div.relative:nth-of-type(1) > div.relative:nth-of-type(2) > div.relative:nth-of-type(1)` width=343px (nearest 4pt: 344px)
+- `#main-content > div.relative:nth-of-type(1) > section.relative:nth-of-type(1) > div.relative:nth-of-type(1) > div.relative:nth-of-type(2) > div.relative:nth-of-type(1)` height=250px (nearest 4pt: 252px)
+- ...+752 more (truncated for readability, count above is exact)
 
 ### (b) BROKEN AXIS (near-miss alignment) (147)
 
@@ -62,19 +62,19 @@ Elements scanned: 697
 - `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(1) > div.relative:nth-of-type(1) > img.object-cover:nth-of-type(1)` vs `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(1) > div.relative:nth-of-type(1) > span.sr-only:nth-of-type(1)` , left edges differ by 1px
 - `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(1) > div.relative:nth-of-type(1) > img.object-cover:nth-of-type(1)` vs `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(1) > div.relative:nth-of-type(1) > span.sr-only:nth-of-type(1)` , top edges differ by 1px
 - `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(1) > div.relative:nth-of-type(1) > button.group:nth-of-type(1)` vs `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(1) > div.relative:nth-of-type(1) > span.sr-only:nth-of-type(1)` , top edges differ by 3px
-- `section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(1) > div.mt-[10px]:nth-of-type(2) > div.flex:nth-of-type(1) > h3.font-body:nth-of-type(1)` vs `section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(1) > div.mt-[10px]:nth-of-type(2) > div.flex:nth-of-type(1) > span.font-body:nth-of-type(1)` , top edges differ by 1.25px
+- `section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(1) > div.mt-2:nth-of-type(2) > div.flex:nth-of-type(1) > h3.font-body:nth-of-type(1)` vs `section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(1) > div.mt-2:nth-of-type(2) > div.flex:nth-of-type(1) > span.font-body:nth-of-type(1)` , top edges differ by 1.25px
 - `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(2) > div.relative:nth-of-type(1) > img.object-cover:nth-of-type(1)` vs `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(2) > div.relative:nth-of-type(1) > button.group:nth-of-type(1)` , right edges differ by 2px
 - `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(2) > div.relative:nth-of-type(1) > img.object-cover:nth-of-type(1)` vs `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(2) > div.relative:nth-of-type(1) > button.group:nth-of-type(1)` , top edges differ by 2px
 - `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(2) > div.relative:nth-of-type(1) > img.object-cover:nth-of-type(1)` vs `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(2) > div.relative:nth-of-type(1) > span.sr-only:nth-of-type(1)` , left edges differ by 1px
 - `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(2) > div.relative:nth-of-type(1) > img.object-cover:nth-of-type(1)` vs `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(2) > div.relative:nth-of-type(1) > span.sr-only:nth-of-type(1)` , top edges differ by 1px
 - `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(2) > div.relative:nth-of-type(1) > button.group:nth-of-type(1)` vs `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(2) > div.relative:nth-of-type(1) > span.sr-only:nth-of-type(1)` , top edges differ by 3px
-- `section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(2) > div.mt-[10px]:nth-of-type(2) > div.flex:nth-of-type(1) > h3.font-body:nth-of-type(1)` vs `section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(2) > div.mt-[10px]:nth-of-type(2) > div.flex:nth-of-type(1) > span.font-body:nth-of-type(1)` , top edges differ by 1.25px
+- `section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(2) > div.mt-2:nth-of-type(2) > div.flex:nth-of-type(1) > h3.font-body:nth-of-type(1)` vs `section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(2) > div.mt-2:nth-of-type(2) > div.flex:nth-of-type(1) > span.font-body:nth-of-type(1)` , top edges differ by 1.25px
 - `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(3) > div.relative:nth-of-type(1) > img.object-cover:nth-of-type(1)` vs `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(3) > div.relative:nth-of-type(1) > button.group:nth-of-type(1)` , right edges differ by 2px
 - `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(3) > div.relative:nth-of-type(1) > img.object-cover:nth-of-type(1)` vs `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(3) > div.relative:nth-of-type(1) > button.group:nth-of-type(1)` , top edges differ by 2px
 - `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(3) > div.relative:nth-of-type(1) > img.object-cover:nth-of-type(1)` vs `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(3) > div.relative:nth-of-type(1) > span.sr-only:nth-of-type(1)` , left edges differ by 1px
 - `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(3) > div.relative:nth-of-type(1) > img.object-cover:nth-of-type(1)` vs `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(3) > div.relative:nth-of-type(1) > span.sr-only:nth-of-type(1)` , top edges differ by 1px
 - `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(3) > div.relative:nth-of-type(1) > button.group:nth-of-type(1)` vs `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(3) > div.relative:nth-of-type(1) > span.sr-only:nth-of-type(1)` , top edges differ by 3px
-- `section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(3) > div.mt-[10px]:nth-of-type(2) > div.flex:nth-of-type(1) > h3.font-body:nth-of-type(1)` vs `section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(3) > div.mt-[10px]:nth-of-type(2) > div.flex:nth-of-type(1) > span.font-body:nth-of-type(1)` , top edges differ by 1.25px
+- `section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(3) > div.mt-2:nth-of-type(2) > div.flex:nth-of-type(1) > h3.font-body:nth-of-type(1)` vs `section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(3) > div.mt-2:nth-of-type(2) > div.flex:nth-of-type(1) > span.font-body:nth-of-type(1)` , top edges differ by 1.25px
 - `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(4) > div.relative:nth-of-type(1) > img.object-cover:nth-of-type(1)` vs `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(4) > div.relative:nth-of-type(1) > button.group:nth-of-type(1)` , right edges differ by 2px
 - `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(4) > div.relative:nth-of-type(1) > img.object-cover:nth-of-type(1)` vs `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(4) > div.relative:nth-of-type(1) > button.group:nth-of-type(1)` , top edges differ by 2px
 - `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(4) > div.relative:nth-of-type(1) > img.object-cover:nth-of-type(1)` vs `div.relative:nth-of-type(1) > section.relative:nth-of-type(2) > div.mx-auto:nth-of-type(1) > div.px-3:nth-of-type(1) > div.mt-1:nth-of-type(2) > a.group:nth-of-type(4) > div.relative:nth-of-type(1) > span.sr-only:nth-of-type(1)` , left edges differ by 1px
@@ -94,9 +94,9 @@ none found
 
 ## /de/salon/old-town-barbers
 
-Elements scanned: 348
+Elements scanned: 347
 
-### (a) OFF-GRID (385)
+### (a) OFF-GRID (374)
 
 - `body.text-s-ink:nth-of-type(1) > a.sr-only:nth-of-type(1)` marginTop=-1px (nearest 4pt: 0px)
 - `body.text-s-ink:nth-of-type(1) > a.sr-only:nth-of-type(1)` marginRight=-1px (nearest 4pt: 0px)
@@ -128,7 +128,7 @@ Elements scanned: 348
 - `#section-photos > div.relative:nth-of-type(1) > div.absolute:nth-of-type(2) > button.group:nth-of-type(1) > span.grid:nth-of-type(1)` width=38px (nearest 4pt: 40px)
 - `#section-photos > div.relative:nth-of-type(1) > div.absolute:nth-of-type(2) > button.group:nth-of-type(1) > span.grid:nth-of-type(1)` height=38px (nearest 4pt: 40px)
 - `#section-photos > div.relative:nth-of-type(1) > div.absolute:nth-of-type(2) > button.group:nth-of-type(2) > span.relative:nth-of-type(1)` width=38px (nearest 4pt: 40px)
-- ...+355 more (truncated for readability, count above is exact)
+- ...+344 more (truncated for readability, count above is exact)
 
 ### (b) BROKEN AXIS (near-miss alignment) (9)
 
@@ -156,7 +156,7 @@ none found
 
 Elements scanned: 30
 
-### (a) OFF-GRID (47)
+### (a) OFF-GRID (45)
 
 - `body.text-s-ink:nth-of-type(1) > a.sr-only:nth-of-type(1)` marginTop=-1px (nearest 4pt: 0px)
 - `body.text-s-ink:nth-of-type(1) > a.sr-only:nth-of-type(1)` marginRight=-1px (nearest 4pt: 0px)
@@ -185,10 +185,10 @@ Elements scanned: 30
 - `#main-content > div.min-h-[100dvh]:nth-of-type(1) > main.mx-auto:nth-of-type(1) > section.flex:nth-of-type(1) > form.flex:nth-of-type(1) > div.mt-[18px]:nth-of-type(1) > label.block:nth-of-type(1)` marginBottom=7px (nearest 4pt: 8px)
 - `#main-content > div.min-h-[100dvh]:nth-of-type(1) > main.mx-auto:nth-of-type(1) > section.flex:nth-of-type(1) > form.flex:nth-of-type(1) > div.mt-[18px]:nth-of-type(1) > div.relative:nth-of-type(1)` width=335px (nearest 4pt: 336px)
 - `#lookup-code` width=335px (nearest 4pt: 336px)
-- `#lookup-code` paddingRight=15px (nearest 4pt: 16px)
-- `#lookup-code` paddingLeft=62px (nearest 4pt: 64px)
 - `#lookup-code-hint` width=335px (nearest 4pt: 336px)
-- ...+17 more (truncated for readability, count above is exact)
+- `#main-content > div.min-h-[100dvh]:nth-of-type(1) > main.mx-auto:nth-of-type(1) > section.flex:nth-of-type(1) > form.flex:nth-of-type(1) > div.mt-[18px]:nth-of-type(2)` width=335px (nearest 4pt: 336px)
+- `#main-content > div.min-h-[100dvh]:nth-of-type(1) > main.mx-auto:nth-of-type(1) > section.flex:nth-of-type(1) > form.flex:nth-of-type(1) > div.mt-[18px]:nth-of-type(2)` height=121px (nearest 4pt: 120px)
+- ...+15 more (truncated for readability, count above is exact)
 
 ### (b) BROKEN AXIS (near-miss alignment) (3)
 

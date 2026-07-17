@@ -68,7 +68,12 @@ export default function MobileCategoriesRow({
   const tiles = pickedTiles.length ? [...pickedTiles, ...rest] : CATEGORIES;
 
   return (
-    <section aria-label="Kategorien" className="relative z-[1] mb-2 md:hidden">
+    // 2026-07-17 rhythm decision (TASTE_LOG.md, shipped as Section's mb-4 on
+    // SectionHeader.tsx): mb-2 -> mb-4 so this section matches the primitive's
+    // cadence. Own inner bottom pad is already py-2 (8), same as Section's, so
+    // only the outer margin needed to move: 8 (own py-2) + 16 (mb-4) + 8 (next
+    // Section's py-2 top) = 32 CSS visible gap on mobile.
+    <section aria-label="Kategorien" className="relative z-[1] mb-4 md:hidden">
       <div className="mx-auto max-w-[1280px] px-6 py-2">
         <h2 className="mb-3 font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.25] tracking-[-0.01em] text-s-ink">
           Für dich

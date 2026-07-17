@@ -662,7 +662,18 @@ export default function BentoBusiness() {
   // the header no longer needs to flip dark over this band.
   return (
     <div className="w-full">
-      <section className="relative z-[1] mx-auto mb-1 max-w-[1280px] px-4 py-12 md:mb-3 md:px-6 md:py-16">
+      {/* 2026-07-17 rhythm decision (TASTE_LOG.md): this section's own py-12/
+          md:py-16 (48/64) already exceeds the 32 CSS mobile cadence target by
+          itself (48 > 32), so hitting 32 exactly would mean touching the
+          internal py-12, which is out of scope (this file's inner padding is
+          genuinely different from the Section primitive, not a bug). The
+          margin-only move available here is LESS, not more: mb-1/md:mb-3
+          only pushed the already-oversized gap further past 32, so both drop
+          to 0. Note: BentoBusiness renders on /business and /fuer-salons, not
+          on the homepage route, where its neighbor sections use their own
+          py-16/py-20 rhythm unrelated to this cadence; this change has no
+          visible effect there (4-12px against 48-64px padding). */}
+      <section className="relative z-[1] mx-auto mb-0 max-w-[1280px] px-4 py-12 md:mb-0 md:px-6 md:py-16">
         {/* ─── Header ───
             V3-D331 (2026-05-28): dropped "Vier Werkzeuge" eyebrow + dot per
             LOCKFILE §2.5 Eyebrow decoration policy. H2 itself ("Eine Plattform,

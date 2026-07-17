@@ -147,7 +147,11 @@ export default async function Hero() {
       {/* V3-D348 (tweak #1 — hero density): pt-16/20 -> pt-10/14 so the search
           card rises toward the fold. Paired with the smaller H1 + tighter
           sub->card gap below. */}
-      <div className="relative z-[1] mx-auto flex w-full max-w-[1280px] flex-col justify-center px-[18px] pt-10 pb-2 md:px-8 md:pt-14 md:pb-16">
+      {/* geometry sweep (2026-07-17, _geometry-triage.md #4, root of the page's
+          largest off-grid cascade): px-[18px] -> px-4 (16), matching the
+          site's standard mobile section inset (WalkInBand, BentoBusiness,
+          business page sections all use px-4). */}
+      <div className="relative z-[1] mx-auto flex w-full max-w-[1280px] flex-col justify-center px-4 pt-10 pb-2 md:px-8 md:pt-14 md:pb-16">
         <div className="w-full">
           {displayName && (
             // V2-D70 (2026-05-18): greeting weight bumped 500 medium → still 500

@@ -221,8 +221,14 @@ function ServiceRow({
 
   // Row inside the grouped card (Atelier mockup .srow): 18x20 padding, hairline
   // divider between rows (border-top, first row none). The card owns the chrome.
+  // geometry sweep (2026-07-17, _geometry-triage.md #5): py-[18px] -> py-4 (16),
+  // the tighter neighbor per the row-list convention (SalonBundles.tsx:148 py-3,
+  // SalonProducts.tsx:105 py-3.5) is closer to 16 than 20. The identical
+  // py-[18px] literal also appears in 7 other files (SalonServicesSheet.tsx:264,
+  // TextInput.tsx:39 FENCED, SalonWalkInPanel.tsx:166+195, ServicesStaffStep.tsx:459,
+  // StaffProfilePage.tsx:345), left untouched, out of this file's scope.
   return (
-    <li className="border-t border-s-border px-5 py-[18px] first:border-t-0 md:px-6">
+    <li className="border-t border-s-border px-5 py-4 first:border-t-0 md:px-6">
       {inner}
     </li>
   );
