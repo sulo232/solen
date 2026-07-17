@@ -1,0 +1,197 @@
+<!doctype html>
+<!--
+  Exists-check: `npm run exists confirmation-redesign` = 0. Redesign of the EXISTING
+  BookingConfirmation (owner critique 2026-07-15), not a new surface.
+  Reference-checked: the real live page (internal), rendered this session via the main-served tunnel.
+  Owner-scope: confirmed: owner's own words , "hard to identify what's already paid and what's not
+  because of the color hierarchy", "why do we still have the bottom footer", "maybe a help icon",
+  "too many text, could be so much shorter", "no personality", "why are the prices together in one
+  card, could be a separate card", "why is it grayed out even though it's not selected at all".
+  Map at top = owner RETRACTED ("Actually, no") -> deliberately NOT here.
+  Grounded-in: components-legacy/booking/BookingConfirmation.tsx:229-258 (the paid+price block that
+  uses bg-s-bg-sunken) + app/[locale]/confirmation/page.tsx + app/[locale]/layout.tsx:120 (global Footer)
+  + tailwind.config.js tokens.
+   - Tokens: s-ink #0A0A0A, s-ink-2 #6B6B6B, s-ink-3 #9A9A9A, s-border #E4E4E7,
+     s-bg-sunken #F4F4F5 (SELECTED-state token , deliberately NOT used as decoration here),
+     s-success #16A34A, s-success-bg #E8F5E9.
+   - Sample booking data illustrative. Shipped copy localized de/en/fr/it; English here for review.
+  hue-ok: saturated hexes are locked tokens only; the salon photo is a muted duotone placeholder
+  (photos are palette-exempt per taste rule 3).
+  No decorative separators: meta bits sit in a flex row with a gap, never a middot.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Confirmation redesign , paid recedes, owed is the hero</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --ink3:#9A9A9A; --border:#E4E4E7; --sunken:#F4F4F5; --white:#fff;
+    --success:#16A34A; --success-bg:#E8F5E9;
+    --font-head:"Inter Tight","Inter",-apple-system,system-ui,sans-serif;
+    --font-body:"Inter",-apple-system,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font-body);background:#ECECEE;color:var(--ink);-webkit-font-smoothing:antialiased;padding:28px 16px 64px;line-height:1.4}
+  .intro{max-width:880px;margin:0 auto 22px;color:#2b2b2b}
+  .intro h1{font-family:var(--font-head);font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:10px}
+  .intro ul{margin:0 0 0 18px;font-size:13.5px;color:#3a3a3a}
+  .intro li{margin-bottom:4px}
+  .intro b{color:var(--ink)}
+  .intro code{background:#e2e2e4;padding:1px 5px;border-radius:4px;font-size:12px}
+  .stage{display:flex;gap:30px;justify-content:center;align-items:flex-start;flex-wrap:wrap;max-width:900px;margin:0 auto}
+  .frame-wrap{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .frame-label{font-family:var(--font-head);font-size:13px;font-weight:600;color:#3a3a3a}
+  .frame-label span{color:var(--ink3);font-weight:500}
+  .phone{width:390px;background:var(--white);border-radius:34px;box-shadow:0 20px 50px rgba(0,0,0,.16),0 2px 8px rgba(0,0,0,.08);overflow:hidden;border:1px solid var(--border)}
+  .lucide{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;display:block}
+  .status{display:flex;justify-content:space-between;align-items:center;padding:10px 20px 2px;font-size:13px;font-weight:600}
+  .status .g{display:flex;gap:6px;align-items:center}
+
+  /* top bar , back + HELP (owner: "maybe a help icon somewhere") */
+  .bar{display:flex;align-items:center;justify-content:space-between;padding:8px 16px 4px}
+  .icbtn{width:38px;height:38px;border-radius:999px;border:1px solid var(--border);background:#fff;display:grid;place-items:center;color:var(--ink)}
+
+  /* PERSONALITY: the salon photo is the anchor, not a stock tick on empty white */
+  .hero{position:relative;margin:6px 16px 0;height:150px;border-radius:22px;overflow:hidden}
+  .hero .img{position:absolute;inset:0;background:linear-gradient(150deg,#4a4038,#8a7d70 58%,#c0b3a4)}
+  .hero .scrim{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,10,.72) 6%,rgba(10,10,10,.15) 55%,transparent 85%)}
+  .hero .who{position:absolute;left:14px;right:14px;bottom:12px;color:#fff}
+  .hero .who .n{font-family:var(--font-head);font-size:19px;font-weight:700;letter-spacing:-.01em}
+  .hero .who .a{font-size:12.5px;color:rgba(255,255,255,.85);display:flex;align-items:center;gap:5px;margin-top:2px}
+  /* Confirmed badge , FROST_GLASS, not a solid fill. Grounded in Solen's OWN canonical over-photo
+     control treatment `lib/frost-glass.ts` (V3-D420; CLAUDE.md rule 7 "a control over a photo -> frosted
+     glass"), which the old solid-green badge violated. Captured Airbnb "Guest favorite" pill for comparison
+     (live getComputedStyle, 2026-07-15): rgba(255,255,255,.8) + blur(32px) + 1px rgba(255,255,255,.5) +
+     14px radius + rgb(34,34,34) text , i.e. the SAME recipe as FROST_GLASS except the blur (ours 4px).
+     Shown here at FROST_GLASS's locked 4px; raising it to Airbnb's 32px is a locked-token decision (2c).
+     Green stays as the SEMANTIC in the tick + label, never as a solid block. */
+  .hero .ok{position:absolute;top:12px;left:12px;display:inline-flex;align-items:center;gap:5px;
+    background:rgba(255,255,255,.80);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+    border:1px solid rgba(255,255,255,.6);
+    box-shadow:0 1px 3px rgba(0,0,0,.10), inset 0 1px 0 rgba(255,255,255,.4);
+    color:var(--ink);font-size:12.5px;font-weight:600;padding:5px 10px 5px 8px;border-radius:999px}
+  .hero .ok .tk{width:14px;height:14px;border-radius:999px;background:var(--success);color:#fff;display:grid;place-items:center;flex-shrink:0}
+  /* side-by-side blur comparison so the owner can SEE 4px vs Airbnb's 32px before deciding 2c */
+  .hero .ok.b32{backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);left:auto;right:12px}
+
+  .h1{font-family:var(--font-head);font-size:24px;font-weight:700;letter-spacing:-.02em;padding:16px 18px 0}
+  .sub{font-size:13px;color:var(--ink2);padding:2px 18px 0}
+
+  /* CARD 1 , the appointment (no money in here) */
+  .card{margin:14px 16px 0;border:1px solid var(--border);border-radius:18px;overflow:hidden}
+  .row{display:flex;align-items:center;gap:11px;padding:13px 14px}
+  .row + .row{border-top:1px solid var(--border)}
+  .row .ic{color:var(--ink2);flex-shrink:0}
+  .row .k{font-family:var(--font-head);font-size:14.5px;font-weight:600;letter-spacing:-.01em}
+  /* meta bits: flex + gap, never a separator dot */
+  .row .v{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--ink2);margin-top:1px}
+  .row .chev{margin-left:auto;color:var(--ink3)}
+  .av{width:26px;height:26px;border-radius:999px;background:linear-gradient(140deg,#d9d4cf,#b9b1a9);flex-shrink:0}
+
+  /* CARD 2 , MONEY, its own card. NO sunken grey (that token means SELECTED).
+     Paid RECEDES; what is still owed is the HERO. */
+  .money{margin:12px 16px 0;border:1px solid var(--border);border-radius:18px;background:#fff;padding:14px}
+  .paid{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .paid .l{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink3)}
+  .paid .tick{width:15px;height:15px;border-radius:999px;background:var(--success-bg);color:var(--success);display:grid;place-items:center}
+  .paid .amt{font-size:13px;color:var(--ink3);font-variant-numeric:tabular-nums}
+  .owe{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+  .owe .l{font-family:var(--font-head);font-size:14.5px;font-weight:700;letter-spacing:-.01em}
+  .owe .l small{display:block;font-family:var(--font-body);font-size:12px;font-weight:400;color:var(--ink2);margin-top:2px}
+  .owe .amt{font-family:var(--font-head);font-size:30px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1}
+
+  .cta{margin:16px 16px 0;height:52px;border-radius:999px;background:var(--ink);color:#fff;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px}
+  .cta2{margin:10px 16px 0;height:50px;border-radius:999px;background:#fff;border:1px solid var(--border);color:var(--ink);font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px}
+  .ref{margin:14px 16px 18px;text-align:center;font-size:12px;color:var(--ink3)}
+  .ref b{font-family:var(--font-head);color:var(--ink2);letter-spacing:.04em}
+  .nofoot{margin:0 16px 18px;padding:9px 12px;border:1px dashed var(--border);border-radius:12px;font-size:11.5px;color:var(--ink3);text-align:center}
+</style>
+</head>
+<body>
+  <div class="intro">
+    <h1>Confirmation redesign , your notes, one screen</h1>
+    <ul>
+      <li><b>Paid vs unpaid:</b> settled money now <b>recedes</b> (grey, small, green tick). What you still <b>owe is the hero</b> , the biggest number on the screen. It's the only thing you have to act on.</li>
+      <li><b>The grey block is gone.</b> You were right: it used <code>bg-s-bg-sunken</code>, which the design contract defines as the <b>selected/active state</b> token. Nothing here is selectable, so it read as "selected". Now white + hairlines.</li>
+      <li><b>Money moved out</b> into its own card, separate from the appointment card.</li>
+      <li><b>No footer.</b> A receipt is a terminal page (rule proposed below the frame).</li>
+      <li><b>Help icon</b> top-right.</li>
+      <li><b>Less text:</b> dropped the "we sent the details to your email" line and the big empty tick block , confirmed is now one compact badge on the photo.</li>
+      <li><b>Personality:</b> the salon photo anchors it, with your stylist, instead of a stock tick on empty white.</li>
+      <li><b>No map</b> , you retracted it mid-sentence, so it's deliberately not here.</li>
+    </ul>
+  </div>
+
+  <div class="stage">
+    <div class="frame-wrap">
+      <div class="frame-label">Proposed <span>, deposit receipt</span></div>
+      <div class="phone">
+        <div class="status">
+          <span>9:41</span>
+          <span class="g">
+            <svg class="lucide" viewBox="0 0 24 24"><path d="M2 20h.01M7 20v-4M12 20v-8M17 20V8M22 4v16"/></svg>
+            <svg class="lucide" viewBox="0 0 24 24"><path d="M5 13a10 10 0 0 1 14 0"/><path d="M8.5 16.5a5 5 0 0 1 7 0"/><path d="M2 8.82a15 15 0 0 1 20 0"/></svg>
+            <svg class="lucide" viewBox="0 0 24 24"><rect x="2" y="7" width="18" height="10" rx="2"/><line x1="22" y1="11" x2="22" y2="13"/></svg>
+          </span>
+        </div>
+
+        <div class="bar">
+          <span class="icbtn"><svg class="lucide" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></span>
+          <span class="icbtn" title="Help"><svg class="lucide" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>
+        </div>
+
+        <div class="hero">
+          <div class="img"></div>
+          <div class="scrim"></div>
+          <span class="ok"><span class="tk"><svg class="lucide" viewBox="0 0 24 24" style="width:9px;height:9px;stroke-width:4"><path d="M20 6 9 17l-5-5"/></svg></span>Confirmed</span>
+          <span class="ok b32"><span class="tk"><svg class="lucide" viewBox="0 0 24 24" style="width:9px;height:9px;stroke-width:4"><path d="M20 6 9 17l-5-5"/></svg></span>blur 32</span>
+          <div class="who">
+            <div class="n">Atelier Haarwerk</div>
+            <div class="a"><svg class="lucide" viewBox="0 0 24 24" style="width:12px;height:12px"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>Freie Strasse 12, Basel</div>
+          </div>
+        </div>
+
+        <div class="h1">See you Thursday.</div>
+        <div class="sub">16 July at 10:30</div>
+
+        <div class="card">
+          <div class="row">
+            <svg class="lucide ic" viewBox="0 0 24 24" style="width:18px;height:18px"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            <div><div class="k">Thursday, 16 July</div><div class="v"><span>10:30</span><span>60 min</span></div></div>
+          </div>
+          <div class="row">
+            <svg class="lucide ic" viewBox="0 0 24 24" style="width:18px;height:18px"><path d="M6 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM20 4 8.12 15.88M14.47 14.48 20 20M8.12 8.12 12 12"/></svg>
+            <div><div class="k">Damen-Haarschnitt</div><div class="v"><span>CHF 85</span></div></div>
+          </div>
+          <div class="row">
+            <span class="av"></span>
+            <div><div class="k">Lena</div><div class="v"><span>Your stylist</span></div></div>
+            <span class="chev"><svg class="lucide" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="m9 18 6-6-6-6"/></svg></span>
+          </div>
+        </div>
+
+        <div class="money">
+          <div class="paid">
+            <span class="l">
+              <span class="tick"><svg class="lucide" viewBox="0 0 24 24" style="width:9px;height:9px;stroke-width:4"><path d="M20 6 9 17l-5-5"/></svg></span>
+              Paid online
+            </span>
+            <span class="amt">CHF 25.50</span>
+          </div>
+          <div class="owe">
+            <span class="l">Pay at the salon<small>after your appointment</small></span>
+            <span class="amt">CHF 42.50</span>
+          </div>
+        </div>
+
+        <div class="cta"><svg class="lucide" viewBox="0 0 24 24" style="width:17px;height:17px"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Add to calendar</div>
+        <div class="cta2"><svg class="lucide" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>Directions</div>
+
+        <div class="ref">Booking <b>ZQ4F-19</b></div>
+        <div class="nofoot">no marketing footer on a receipt , terminal page</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

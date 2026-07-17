@@ -1,0 +1,137 @@
+<!--
+  Exists-check: npm run exists confirmation-spec = 0 hits (new). The SCREEN it specs already exists:
+  BookingConfirmation.tsx (live) + public/_mockups/confirmation-v2.html (approved-in-progress mockup).
+  This file is the OWNER-REQUESTED portable handoff spec ("write me down everything because I'm gonna
+  send it somewhere else", 2026-07-15) , documentation, not a new surface.
+  Grounded-in: components-legacy/booking/BookingConfirmation.tsx (the live confirmation screen this
+  spec documents) + public/_mockups/confirmation-v2.html (the confirmation mockup being iterated) +
+  app/[locale]/_components/primitives/DateTimePicker.tsx (the picker primitive quoted cell-for-cell).
+  Backend-check: change-date -> POST /api/bookings/[id]/reschedule EXISTS (zod bookingRescheduleSchema,
+  resolveBookingActor, claimSlot, rate-limited, RESCHEDULE_MIN_LEAD_HOURS=24); availability ->
+  GET /api/availability/unavailable-dates + /api/availability/time-slots EXIST (both read
+  availability_slots); cancel -> POST /api/bookings/[id]/cancel EXISTS (wired via CancelBookingSheet);
+  edit service/stylist -> NONE, needs backend (no generic edit endpoint) , which is WHY those rows
+  carry no chevron.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen , Booking-confirmation screen: full handoff spec</title>
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#9A9A9A;--border:#E4E4E7;--sunken:#F4F4F5;--success:#16A34A;--accent:#276EF1;--star:#FFC32B;--error:#DC2626;
+    --fh:"Inter Tight","Inter",-apple-system,system-ui,sans-serif;--fb:"Inter",-apple-system,system-ui,sans-serif}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--fb);background:#fff;color:var(--ink);padding:40px 20px 80px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  main{max-width:820px;margin:0 auto}
+  h1{font-family:var(--fh);font-size:26px;letter-spacing:-.02em;margin-bottom:6px}
+  .meta{font-size:13px;color:var(--ink3);margin-bottom:28px}
+  h2{font-family:var(--fh);font-size:19px;letter-spacing:-.01em;margin:34px 0 10px;padding-top:18px;border-top:1px solid var(--border)}
+  h3{font-family:var(--fh);font-size:15px;margin:18px 0 6px}
+  p,li{font-size:14.5px;color:#2b2b2b}
+  ul,ol{margin:6px 0 12px 22px}
+  li{margin-bottom:5px}
+  code{background:var(--sunken);padding:1px 6px;border-radius:5px;font-size:12.5px}
+  table{border-collapse:collapse;width:100%;margin:10px 0 16px;font-size:13.5px}
+  th,td{border:1px solid var(--border);padding:7px 10px;text-align:left;vertical-align:top}
+  th{background:var(--sunken);font-family:var(--fh);font-size:12.5px}
+  .warn{border:1px solid var(--border);border-left:3px solid var(--accent);padding:10px 14px;border-radius:8px;margin:12px 0;font-size:13.5px}
+  .kill{color:var(--error)}
+  .ok{color:var(--success)}
+</style>
+</head>
+<body>
+<main>
+  <h1>Booking-confirmation screen , the complete spec</h1>
+  <div class="meta">Solen.ch, written 2026-07-15. Portable handoff: everything needed to build this screen right, no other context required.</div>
+
+  <h2>1. What this screen is</h2>
+  <p>The post-payment booking receipt a customer sees after booking (route <code>/{locale}/confirmation</code>, component <code>components-legacy/booking/BookingConfirmation.tsx</code>), plus the <b>reschedule sheet</b> ("Move your appointment") it opens from the date row. Reference mockup: <code>public/_mockups/confirmation-v2.html</code>.</p>
+
+  <h2>2. Backend truths (all verified live, 2026-07-15)</h2>
+  <ul>
+    <li>Money split comes from the <code>bookings</code> row: <code>paid_amount</code> (Rappen, already paid online) and the remainder due at the salon. Show BOTH: paid recedes (small, grey), owed is the money hero (biggest number on screen). Never fabricate amounts.</li>
+    <li>Reschedule: <code>POST /api/bookings/[id]/reschedule</code> , exists, zod-validated, authorized (<code>resolveBookingActor</code>), slot-claiming, rate-limited, <b>24h minimum lead</b>. Body: <code>new_starts_at</code> + <code>new_ends_at</code> (ISO); derive <code>new_ends_at</code> from the booking's real duration.</li>
+    <li>Availability for the picker: <code>GET /api/availability/unavailable-dates</code> + <code>GET /api/availability/time-slots</code> (same endpoints the booking flow uses; both read the <code>availability_slots</code> table).</li>
+    <li>Cancel exists and is wired (<code>/api/bookings/[id]/cancel</code> via <code>CancelBookingSheet</code>). There is <b>NO generic edit endpoint</b> (change service / stylist after the fact) , so those rows must NOT pretend to be editable.</li>
+    <li>Guest access link: 256-bit token, only its SHA-256 stored, 30-day TTL, timing-safe compare. Safe by design; never put personal data in URLs beyond it.</li>
+  </ul>
+
+  <h2>3. The binding design laws (from the locked contract + taste rules)</h2>
+  <h3>Tokens (never invent others)</h3>
+  <table>
+    <tr><th>token</th><th>value</th><th>use</th></tr>
+    <tr><td>ink</td><td>#0A0A0A</td><td>text, the ONE commit CTA fill</td></tr>
+    <tr><td>ink-2 / ink-3</td><td>#6B6B6B / #9A9A9A</td><td>secondary / tertiary text</td></tr>
+    <tr><td>hairline</td><td>#E4E4E7</td><td>every divider + card border (one token)</td></tr>
+    <tr><td>sunken</td><td>#F4F4F5</td><td>SELECTED/active fill only , never a decorative panel bg</td></tr>
+    <tr><td>success</td><td>#16A34A</td><td>confirmed/paid semantics (word or disc+white check)</td></tr>
+    <tr><td>accent blue</td><td>#276EF1</td><td>SPARSE: text links, small tappable bits, and the booking date/slot selected fill (locked exception)</td></tr>
+    <tr><td>star</td><td>#FFC32B</td><td>ratings only</td></tr>
+    <tr><td>error red</td><td>#DC2626</td><td>errors / destructive only</td></tr>
+  </table>
+  <h3>Geometry + elevation (locked rows)</h3>
+  <ul>
+    <li>Radius: card/block <b>16</b>, button/chip <b>pill</b>, input 16, sheet <b>28</b>, <b>image flush(0)</b> (photos full-bleed, square corners, edge-to-edge).</li>
+    <li>Shadow: cards carry <code>elevation-2</code> at rest = <code>0 2px 8px rgba(50,47,44,.09)</code> (flat cards read cheap , owner taste log 2026-06-07); controls over a photo = frosted glass (<code>rgba(255,255,255,.80)</code> + blur 4 + 1px rgba(255,255,255,.6) + soft shadow); calm controls on white = flat.</li>
+    <li>Type: Inter Tight headings / Inter body. Receipt headline 24/700; row title 14.5/600; meta 12-13 ink-2; CTA 15/600 (never 13 or below); prices tabular.</li>
+    <li>Spacing: 4-pt scale only (12/16/24/32). Page gutter 16. Touch targets 44px minimum; icon-button 44 (38px circled X allowed for sheet close).</li>
+  </ul>
+  <h3>Behavioral laws</h3>
+  <ul>
+    <li><b>Dead-click contract:</b> an arrow/chevron exists ONLY if tapping does something real today. No affordance without a backed destination.</li>
+    <li><b>Copy economy:</b> delete every word the context already says. One meaning appears ONCE on screen (no date repeated in headline + row; no duplicate edit affordances).</li>
+    <li><b>No fabricated data:</b> every number wired to a live source, or omitted.</li>
+    <li><b>Semantic color is not decoration:</b> confirmed = green word or green disc + white check; never monochromed to ink, never a pale wash on big surfaces.</li>
+    <li>Icons: Lucide only. No em-dashes in copy. One primary ink CTA per screen; secondary = neutral outline. No decorative separator dots; contrast or spacing separates adjacent metadata.</li>
+    <li>Footer: none on focused/terminal flows (confirmation is terminal). Help = circled ? icon top-right over the photo (frost).</li>
+  </ul>
+
+  <h2>4. The receipt , exact composition (top to bottom)</h2>
+  <ol>
+    <li><b>Full-bleed salon cover photo</b>, 240px tall, radius 0, to the very top edge (status bar over it, white). Frosted back (left) + help (right) circles float on the photo. <span class="kill">Nothing else sits on the photo</span> (photo-overlay text/badges were owner-killed 2026-07-02).</li>
+    <li><b>Salon name (17/700) + address (12.5 ink-2)</b> below the photo, chevron right to the salon page (real destination).</li>
+    <li><b>"Confirmed"</b> , the headline, 24/700 in #16A34A. Nothing under it (the date lives in the row below; a "See you Thursday" sub-line is a duplicate, owner-killed 2026-07-15). No Change button (duplicate of the date row, owner-killed 2026-07-15).</li>
+    <li><b>Details card</b> (radius 16, hairline, elevation-2):
+      <ul>
+        <li>Date row: "Thursday, 16 July" title with "10:30" and "60 min" as gap-separated meta spans (no dot between), <b>chevron opens the reschedule sheet</b> (the only edit affordance).</li>
+        <li>Service row: name + price. <span class="kill">No chevron</span> (no edit backend).</li>
+        <li>Stylist row: avatar + name. <span class="kill">No chevron</span>.</li>
+      </ul></li>
+    <li><b>Money card</b> (radius 16, hairline, elevation-2, white , never sunken grey): "Paid online CHF 25.50" small/grey, hairline divider, "Pay at the salon / after your appointment" + <b>CHF 42.50</b> as the largest number (29/700 tabular).</li>
+    <li><b>CTAs:</b> "Add to calendar" = the one ink pill (52px). "Directions" = neutral outline pill. "Cancel appointment" = quiet red TEXT row (44px, #DC2626, no fill , destructive tertiary, same language as BookingsList's "Stornieren"); it opens the existing <code>CancelBookingSheet</code>, which shows the real refund before confirming. No footer.</li>
+  </ol>
+
+  <h2>5. The reschedule sheet ("Move your appointment")</h2>
+  <ul>
+    <li>Bottom sheet, radius 28 top, grab handle, title 19/700 + 38px circled-X close (flat hairline circle , it sits on white, not on a photo).</li>
+    <li>Lead note as plain text (12.5 ink-2, info icon): "Free to move up to 24h before. Your CHF 25.50 stays on the booking." , both facts from the backend (24h rule, paid amount).</li>
+    <li><b>Date strip = the real <code>DateTimePicker</code> primitive cell-for-cell</b> (<code>app/[locale]/_components/primitives/DateTimePicker.tsx</code>): 72px-wide cells, radius 16, weekday 12/500 + day numeral 22/700 tabular + month 12; disabled day keeps its border, only text drops to 30% ink; no scrollbar. NEVER a bespoke date UI (V3-D445).</li>
+    <li><b>Slots</b>: the primitive's bordered panel (radius 12, padding 16) per period group (Morning/Afternoon/Evening label 12.5/600 ink-3), pills rounded-full, 14/600 tabular, 4 columns gap 6; unavailable = 40% opacity, <span class="kill">no strikethrough</span> (invented treatment, removed).</li>
+    <li><b>Selected day + slot fill = accent blue</b> , the locked exception (booking date/slot stays blue; everything else selected in the app is gray sunken).</li>
+    <li>Commit: one ink pill naming the choice ("Move to Thu 16 July, 10:30"), disabled at 50% until a slot is picked. Sends <code>new_starts_at/new_ends_at</code> to the reschedule endpoint; bookings under 24h away never show an enabled commit.</li>
+  </ul>
+  <div class="warn"><b>Open contradiction to resolve (found 2026-07-15):</b> the live booking step (<code>DateTimeStep.tsx:201</code>) currently passes <code>selectedTone="ink"</code>, but the owner's round-3 lock (TASTE_LOG 2026-06-07, audit B1) says selected date/slot = <b>blue</b> everywhere, ink reserved for the commit button. The spec above follows the lock (blue). The live step should be flipped back to <code>accent</code>, or the lock formally re-decided by the owner.</div>
+
+  <h2>6. What was wrong in the last mockup round (owner critique 2026-07-15, all confirmed by measurement)</h2>
+  <table>
+    <tr><th>complaint</th><th>measured fact</th><th>the law it broke</th><th>fix</th></tr>
+    <tr><td>"Change thingy" wrong</td><td>93x34 pill next to the headline, same action as the date-row chevron</td><td>copy economy / one affordance per action</td><td class="ok">deleted; date row is THE edit entry</td></tr>
+    <tr><td>arrows that do nothing</td><td>chevrons on service + stylist rows with no backed destination</td><td>dead-click contract (no generic edit endpoint exists)</td><td class="ok">deleted; kept only date row + salon row</td></tr>
+    <tr><td>unnecessary text</td><td>"See you Thursday, 16 July at 10:30" duplicated the date row 60px below</td><td>copy economy: one meaning, once</td><td class="ok">deleted; headline is just "Confirmed"</td></tr>
+    <tr><td>too flat</td><td>every card measured <code>box-shadow: none</code></td><td>locked shadow row: cards = elevation-2 at rest ("flat reads cheap", taste log 2026-06-07)</td><td class="ok">elevation-2 on details + money cards</td></tr>
+    <tr><td>picker "not good at all"</td><td>bespoke cells (52px r14), 3-col rectangular slots, invented strikethrough, bare labels, 34px close</td><td>V3-D445 (no bespoke date UI) + the primitive's real geometry</td><td class="ok">rebuilt cell-for-cell from DateTimePicker.tsx (section 5)</td></tr>
+  </table>
+
+  <h2>7. Owner-killed patterns (never re-add on this screen)</h2>
+  <ul>
+    <li>Photo-overlay text, badges, or scrims on the cover photo (2026-07-02).</li>
+    <li>Check-disc/icon next to a headline that already says "Confirmed" (redundant, 2026-07-15).</li>
+    <li>Change button beside the headline; date sub-line under the headline; chevrons on non-navigating rows (all 2026-07-15).</li>
+    <li>Strikethrough on taken slots (2026-07-15); "most available dates" style fabricated hints (earlier).</li>
+    <li>Grey <code>sunken</code> panels as decoration on this page (it is the selected-state token).</li>
+    <li>Footer on the confirmation page.</li>
+  </ul>
+</main>
+</body>
+</html>

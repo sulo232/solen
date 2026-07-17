@@ -1,0 +1,292 @@
+<!doctype html>
+<!--
+  Exists-check: `npm run exists slot-picker` = 0 matches (no picker component to reuse), BUT
+  `npm run exists reschedule` HITS: `bookingRescheduleSchema` (lib/validations.ts) + `bookingReschedule`
+  (lib/email.ts) already exist, and `npm run exists DateTimePicker` HITS the primitive
+  app/[locale]/_components/primitives/DateTimePicker.tsx. So this sheet REUSES the DateTimePicker
+  primitive + the existing reschedule schema/route/email , nothing new is invented. This mockup extends
+  the existing confirmation redesign; it is not a new surface.
+  Backend-check: cancel -> POST /api/bookings/[id]/cancel EXISTS and is WIRED today
+    (components-legacy/booking/CancelBookingSheet.tsx fetches the REAL refund read-only before
+    confirming; BookingsList 'Stornieren' opens it) , the receipt's Cancel row opens that same sheet.
+    change-date -> POST /api/bookings/[id]/reschedule EXISTS (zod bookingRescheduleSchema,
+    resolveBookingActor authz, claimSlot, rate-limited, RESCHEDULE_MIN_LEAD_HOURS=24) but NO customer UI
+    calls it today (components-legacy/booking/BookingsList.tsx:87-92 redirects to the PDP) -> THIS mockup is
+    the missing UI. slot-picker -> REUSES app/[locale]/_components/primitives/DateTimePicker.tsx
+    (variant="date-and-time", dateLayout="strip", slots=TimeSlot[]) per V3-D445 "no bespoke date UI";
+    slots feed = existing availability_slots. cancel -> POST /api/bookings/[id]/cancel EXISTS + already
+    wired (CancelBookingSheet.tsx:54). add-note -> bookings.customer_note EXISTS (written
+    app/api/bookings/route.ts:473) but is NEVER shown to the salon (0 dashboard refs) -> not surfaced here;
+    connecting it is a separate owner decision.
+  Reference-checked: Airbnb "Guest favorite" badge captured live via getComputedStyle (rgba(255,255,255,.8)
+    + blur(32px) + 1px rgba(255,255,255,.5) + 14px radius + rgb(34,34,34) text, NO icon disc).
+  Measured this session (browser getComputedStyle on the live v1 mockup, numbers before edits):
+    white-check-on-green-disc = 3.3:1 contrast (WCAG wants 4.5 text / 3.0 graphics) on a 14px disc;
+    green disc vs the frosted badge bg = 3.3:1; badge text vs white = 19.8:1; badge box 104x30,
+    bg rgba(255,255,255,.8), blur(4px); the darkened bottom = scrim
+    linear-gradient(to top, rgba(10,10,10,.72) 6%, rgba(10,10,10,.15) 55%, transparent 85%).
+  Owner-scope: confirmed, owner's words this turn , "blur 32 what the fuck is this" (my debug label, removed),
+    "this checkmark is so unbalanced with contrast and not okay", "why is the bottom part darked out? maybe
+    just put the edges or merge the name below", edit affordance on the date + on the haircut row + on the
+    "see you Thursday" right side, "I don't know about the blur, whatever its best", "make me a mockup for
+    the customer now", "make a fucking slot picker".
+  Grounded-in: components-legacy/booking/BookingConfirmation.tsx + lib/frost-glass.ts (FROST_GLASS) +
+    app/[locale]/_components/primitives/DateTimePicker.tsx + tailwind.config.js.
+   - The 3.3:1 measurement is why the tick is DELETED, not restyled: the badge already SAYS "Confirmed" at
+     19.8:1, so the tick carried no information (taste rule 2). Airbnb's captured badge has no icon disc either.
+   - REMOVED.md:49 (owner 2026-07-02) already KILLED photo-overlay text ("clashes with the borderless feed
+     card style, photo-overlay vs text-below"). The v1 scrim re-introduced it. Name now sits BELOW the photo,
+     no scrim, per that decision.
+   - Blur: owner "whatever its best" -> FROST_GLASS's locked 4px is kept (V3-D420). Not moving a locked
+     token on a shrug; the badge reads clean at 4px now that it is text-only.
+  hue-ok: locked tokens only. Photo placeholders are muted duotones on purpose , photos are palette-exempt
+  (taste rule 3: "ink + greys + hairlines + photos"); they stand in for a real salon cover photo.
+  Sample data illustrative. Shipped copy localized de/en/fr/it; English here for review.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Confirmation v2 + slot picker</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --ink3:#9A9A9A; --border:#E4E4E7; --sunken:#F4F4F5; --white:#fff;
+    --success:#16A34A; --success-bg:#E8F5E9; --accent:#276EF1;
+    --fh:"Inter Tight","Inter",-apple-system,system-ui,sans-serif;
+    --fb:"Inter",-apple-system,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--fb);background:#ECECEE;color:var(--ink);-webkit-font-smoothing:antialiased;padding:26px 16px 60px;line-height:1.4}
+  .intro{max-width:900px;margin:0 auto 20px;color:#2b2b2b}
+  .intro h1{font-family:var(--fh);font-size:21px;font-weight:700;letter-spacing:-.02em;margin-bottom:9px}
+  .intro ul{margin:0 0 0 18px;font-size:13.5px;color:#3a3a3a}
+  .intro li{margin-bottom:4px}
+  .intro b{color:var(--ink)}
+  .intro code{background:#e2e2e4;padding:1px 5px;border-radius:4px;font-size:12px}
+  .stage{display:flex;gap:28px;justify-content:center;align-items:flex-start;flex-wrap:wrap;max-width:900px;margin:0 auto}
+  .fw{display:flex;flex-direction:column;align-items:center;gap:9px}
+  .fl{font-family:var(--fh);font-size:13px;font-weight:600;color:#3a3a3a}
+  .fl span{color:var(--ink3);font-weight:500}
+  .phone{position:relative;width:390px;background:var(--white);border-radius:34px;box-shadow:0 20px 50px rgba(0,0,0,.16);overflow:hidden;border:1px solid var(--border)}
+  .lucide{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;display:block}
+  .status{position:absolute;top:0;left:0;right:0;z-index:4;display:flex;justify-content:space-between;align-items:center;padding:10px 20px 2px;font-size:13px;font-weight:600;color:#fff}
+  .status .g{display:flex;gap:6px;align-items:center}
+  .bar{position:absolute;top:34px;left:0;right:0;z-index:4;display:flex;align-items:center;justify-content:space-between;padding:8px 16px 4px}
+  .icbtn{width:38px;height:38px;border-radius:999px;display:grid;place-items:center;color:var(--ink);
+    background:rgba(255,255,255,.80);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+    border:1px solid rgba(255,255,255,.6);box-shadow:0 1px 3px rgba(0,0,0,.10), inset 0 1px 0 rgba(255,255,255,.4)}
+
+  /* PHOTO: FULL BLEED , the locked radius row says image flush(0), so no inset, no rounding.
+     No overlay text or badge on it (REMOVED.md 2026-07-02 killed photo-overlay elements; the
+     Confirmed state lives in the headline block below). 240px hero (owner 2026-07-15: smaller than the 320 first cut).
+     muted-ok: gradient is a PHOTO stand-in for the salon cover shot, palette-exempt (taste rule 3). */
+  .photo{position:relative;margin:0;height:240px;border-radius:0;overflow:hidden;
+    background:linear-gradient(150deg,#5b5048,#9d9084 58%,#cfc4b7)}
+  .who{display:flex;align-items:center;gap:10px;margin:16px 16px 0}
+  .who .n{font-family:var(--fh);font-size:17px;font-weight:700;letter-spacing:-.01em}
+  .who .a{font-size:12.5px;color:var(--ink2);display:flex;align-items:center;gap:4px;margin-top:1px}
+  .who .go{margin-left:auto;color:var(--ink3)}
+
+  /* headline + an EDIT entry on the right (owner: "something on the right side so you can actually edit") */
+  .head{padding:24px 16px 0}
+  /* Confirmed = the headline ITSELF, in the locked success green (taste rule 4: a semantic element
+     keeps its hue, never monochromed to ink). 24px/700 = WCAG large text, #16A34A on white 3.13:1
+     passes the 3.0 large-text floor. The check disc is DELETED: with the word "Confirmed" as the
+     headline the icon repeated it (taste rule 2, owner 2026-07-15 "do we even need it"). */
+  .head h1{font-family:var(--fh);font-size:24px;font-weight:700;letter-spacing:-.02em;color:var(--success)}
+  .head .sub{font-size:13px;color:var(--ink2);margin-top:2px}
+
+  /* rows are now ACTIONABLE (arrow) , date opens the slot picker, service opens the service sheet */
+  .card{margin:16px 16px 0;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 2px 8px rgba(50,47,44,.09)}
+  .row{display:flex;align-items:center;gap:12px;padding:12px 14px;background:#fff}
+  .row + .row{border-top:1px solid var(--border)}
+  .row .ic{color:var(--ink2);flex-shrink:0}
+  .row .k{font-family:var(--fh);font-size:14.5px;font-weight:600;letter-spacing:-.01em}
+  .row .v{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--ink2);margin-top:1px}
+  .row .go{margin-left:auto;color:var(--ink3);flex-shrink:0}
+  /* muted-ok: avatar stand-in for a real stylist photo (palette-exempt, taste rule 3) */
+  .av{width:26px;height:26px;border-radius:999px;background:linear-gradient(140deg,#d9d4cf,#b9b1a9);flex-shrink:0}
+
+  .money{margin:16px 16px 0;border:1px solid var(--border);border-radius:16px;background:#fff;padding:16px;box-shadow:0 2px 8px rgba(50,47,44,.09)}
+  .paid{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .paid .l{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink3)}
+  .paid .amt{font-size:13px;color:var(--ink3);font-variant-numeric:tabular-nums}
+  .owe{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+  .owe .l{font-family:var(--fh);font-size:14.5px;font-weight:700;letter-spacing:-.01em}
+  .owe .l small{display:block;font-family:var(--fb);font-size:12px;font-weight:400;color:var(--ink2);margin-top:2px}
+  .owe .amt{font-family:var(--fh);font-size:29px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1}
+  .cta{margin:16px 16px 0;height:52px;border-radius:999px;background:var(--ink);color:#fff;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px}
+  .cta2{margin:8px 16px 0;height:50px;border-radius:999px;background:#fff;border:1px solid var(--border);color:var(--ink);font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px}
+
+  /* destructive tertiary = red TEXT row (same language as BookingsList's 'Stornieren'; s-error
+     #DC2626, the ONE locked red). 44px touch target, no fill, no border , calm surface stays flat. */
+  .cta3{margin:4px 16px 12px;height:44px;display:flex;align-items:center;justify-content:center;
+    color:#DC2626;font-size:15px;font-weight:600}
+
+  /* ---- SLOT PICKER SHEET , shape of the EXISTING DateTimePicker primitive (strip + slots) ---- */
+  .sheet{border-radius:28px 28px 34px 34px;background:#fff;border-top:1px solid var(--border);padding:0 0 18px}
+  .grab{width:36px;height:4px;border-radius:99px;background:var(--border);margin:10px auto 0}
+  .sh{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 0}
+  .sh h2{font-family:var(--fh);font-size:19px;font-weight:700;letter-spacing:-.02em}
+  .lead{margin:8px 16px 0;font-size:12.5px;color:var(--ink2);display:flex;gap:7px;align-items:flex-start}
+  .strip{display:flex;gap:8px;overflow-x:auto;padding:12px 16px 2px;scrollbar-width:none}
+  .strip::-webkit-scrollbar{display:none}
+  /* = the REAL DateTimePicker strip cell (DateTimePicker.tsx:310-323): w 72, rounded-2xl 16,
+     py 12, weekday 12 medium / day 22 bold tabular / month 12. Disabled cell keeps its border,
+     only the TEXT drops to 30% ink (:317), no whole-cell fade, no strikethrough. */
+  .day{flex:0 0 auto;width:72px;padding:12px 0;border-radius:16px;border:1px solid var(--border);background:#fff;text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px}
+  .day .dw{font-size:12px;font-weight:500;color:var(--ink)}
+  .day .dm{font-size:12px;color:var(--ink)}
+  .day .dd{font-family:var(--fh);font-size:22px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+  .day.on{background:var(--accent);border-color:var(--accent)}
+  .day.on .dw,.day.on .dd,.day.on .dm{color:#fff}
+  .day.off .dw,.day.off .dd,.day.off .dm{color:rgba(10,10,10,.3)}
+  /* = the REAL slot pills (DateTimePicker.tsx:563-584): grid-cols-4 gap 6, rounded-full,
+     px 14 / py 10, 14px semibold tabular; unavailable = opacity .4 ONLY , the strikethrough
+     I had here was an invented treatment, the primitive never renders one. */
+  /* = the primitive's slot PANEL (DateTimePicker.tsx:555): bordered, rounded-12, p-16, label inside */
+  .sg{margin:14px 16px 0;border:1px solid var(--border);border-radius:12px;padding:16px;background:#fff}
+  .sg + .sg{margin-top:12px}
+  .sg .sgl{font-size:12.5px;font-weight:600;color:var(--ink3);margin-bottom:8px}
+  .slots{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:0}
+  .slot{padding:10px 0;border-radius:999px;border:1px solid var(--border);background:#fff;display:grid;place-items:center;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
+  .slot.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .slot.gone{opacity:.4}
+  .sheetcta{margin:16px 16px 0;height:52px;border-radius:999px;background:var(--ink);color:#fff;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px}
+  .note{max-width:900px;margin:22px auto 0;font-size:13px;color:#555}
+  .note b{color:var(--ink)}
+  .note code{background:#e2e2e4;padding:1px 5px;border-radius:4px;font-size:12px}
+</style>
+</head>
+<body>
+  <div class="intro">
+    <h1>Confirmation v2 + the slot picker</h1>
+    <ul>
+      <li><b>Photo full-bleed.</b> The locked radius row already said <code>image flush(0)</code> , the inset rounded photo was me breaking a lock. Now edge-to-edge, square, 320px (~40% hero per the balance recipe), back + help floating over it as FROST_GLASS circles (rule 7: control over a photo = frost).</li>
+      <li><b>Badge off the photo.</b> You killed photo-overlay elements 2026-07-02 (REMOVED.md). Nothing sits on the photo now.</li>
+      <li><b>The headline IS the confirmation now</b> , <b>"Confirmed"</b> in the locked success green #16A34A (24px bold = WCAG large text, 3.13:1 passes the 3.0 floor), sub "See you Thursday, 16 July at 10:30". The check disc is <b>deleted</b>: next to the word Confirmed it repeated the message (taste rule 2). Photo trimmed 320 -> 240.</li>
+      <li><b>Drift I found while in here (your "what's missing"):</b> card radius was 18 (lock says 16) , fixed on the details card + money card; gaps were off the 4-pt scale (11/13/9px) , now 12/16/24; h1 onto the type scale (24).</li>
+      <li><b>Cancel appointment</b> added as a quiet red text row under Directions , backed by the REAL, already-wired <code>/api/bookings/[id]/cancel</code> (CancelBookingSheet shows the exact refund before confirming). Red = the one locked error/destructive token; text-only, not a filled block.</li>
+      <li><b>Slot picker fixed to the REAL primitive</b> , my first drawing was bespoke (V3-D445 violation): 52px day cells r14 -> the primitive's 72px r16 with month line + 22px day numeral; 3-col rectangular slots r12 -> the primitive's 4-col rounded-full pills, grouped Morning/Afternoon; the strikethrough on taken slots was INVENTED , the primitive fades to 40% only. Blue = the locked booking date/slot exception.</li>
+    </ul>
+  </div>
+
+  <div class="stage">
+    <!-- ======= RECEIPT ======= -->
+    <div class="fw">
+      <div class="fl">Receipt <span>, photo full-bleed 240, green Confirmed headline, rows editable</span></div>
+      <div class="phone">
+        <div class="status"><span>9:41</span><span class="g">
+          <svg class="lucide" viewBox="0 0 24 24"><path d="M2 20h.01M7 20v-4M12 20v-8M17 20V8M22 4v16"/></svg>
+          <svg class="lucide" viewBox="0 0 24 24"><path d="M5 13a10 10 0 0 1 14 0"/><path d="M8.5 16.5a5 5 0 0 1 7 0"/><path d="M2 8.82a15 15 0 0 1 20 0"/></svg>
+          <svg class="lucide" viewBox="0 0 24 24"><rect x="2" y="7" width="18" height="10" rx="2"/><line x1="22" y1="11" x2="22" y2="13"/></svg>
+        </span></div>
+        <div class="bar">
+          <span class="icbtn"><svg class="lucide" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></span>
+          <span class="icbtn"><svg class="lucide" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>
+        </div>
+
+        <div class="photo"></div>
+        <div class="who">
+          <div>
+            <div class="n">Atelier Haarwerk</div>
+            <div class="a"><svg class="lucide" viewBox="0 0 24 24" style="width:12px;height:12px"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>Freie Strasse 12, Basel</div>
+          </div>
+          <span class="go"><svg class="lucide" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="m9 18 6-6-6-6"/></svg></span>
+        </div>
+
+        <div class="head">
+          <h1>Confirmed</h1>
+        </div>
+
+        <div class="card">
+          <div class="row">
+            <svg class="lucide ic" viewBox="0 0 24 24" style="width:18px;height:18px"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            <div><div class="k">Thursday, 16 July</div><div class="v"><span>10:30</span><span>60 min</span></div></div>
+            <span class="go"><svg class="lucide" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="m9 18 6-6-6-6"/></svg></span>
+          </div>
+          <div class="row">
+            <svg class="lucide ic" viewBox="0 0 24 24" style="width:18px;height:18px"><path d="M6 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM20 4 8.12 15.88M14.47 14.48 20 20M8.12 8.12 12 12"/></svg>
+            <div><div class="k">Damen-Haarschnitt</div><div class="v"><span>CHF 85</span></div></div>
+          </div>
+          <div class="row">
+            <span class="av"></span>
+            <div><div class="k">Lena</div><div class="v"><span>Your stylist</span></div></div>
+          </div>
+        </div>
+
+        <div class="money">
+          <div class="paid">
+            <span class="l">Paid online</span>
+            <span class="amt">CHF 25.50</span>
+          </div>
+          <div class="owe">
+            <span class="l">Pay at the salon<small>after your appointment</small></span>
+            <span class="amt">CHF 42.50</span>
+          </div>
+        </div>
+
+        <div class="cta"><svg class="lucide" viewBox="0 0 24 24" style="width:17px;height:17px"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Add to calendar</div>
+        <div class="cta2"><svg class="lucide" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>Directions</div>
+        <div class="cta3">Cancel appointment</div>
+      </div>
+    </div>
+
+    <!-- ======= SLOT PICKER (the missing change-date UI) ======= -->
+    <div class="fw">
+      <div class="fl">Change date <span>, the slot picker, cell-for-cell from the real DateTimePicker</span></div>
+      <div class="phone">
+        <div class="status"><span>9:41</span><span class="g">
+          <svg class="lucide" viewBox="0 0 24 24"><path d="M2 20h.01M7 20v-4M12 20v-8M17 20V8M22 4v16"/></svg>
+          <svg class="lucide" viewBox="0 0 24 24"><path d="M5 13a10 10 0 0 1 14 0"/><path d="M8.5 16.5a5 5 0 0 1 7 0"/><path d="M2 8.82a15 15 0 0 1 20 0"/></svg>
+          <svg class="lucide" viewBox="0 0 24 24"><rect x="2" y="7" width="18" height="10" rx="2"/><line x1="22" y1="11" x2="22" y2="13"/></svg>
+        </span></div>
+        <div style="height:150px;background:#F4F4F5"></div>
+        <div class="sheet">
+          <div class="grab"></div>
+          <style>.sheet .icbtn{background:#fff;border:1px solid var(--border);box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}</style>
+          <div class="sh">
+            <h2>Move your appointment</h2>
+            <span class="icbtn"><svg class="lucide" viewBox="0 0 24 24" style="width:15px;height:15px"><path d="M18 6 6 18M6 6l12 12"/></svg></span>
+          </div>
+          <div class="lead">
+            <svg class="lucide" viewBox="0 0 24 24" style="width:14px;height:14px;flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+            <span>Free to move up to 24h before. Your CHF 25.50 stays on the booking.</span>
+          </div>
+          <div class="strip">
+            <div class="day"><div class="dw">Wed</div><div class="dd">15</div><div class="dm">Jul</div></div>
+            <div class="day on"><div class="dw">Thu</div><div class="dd">16</div><div class="dm">Jul</div></div>
+            <div class="day"><div class="dw">Fri</div><div class="dd">17</div><div class="dm">Jul</div></div>
+            <div class="day off"><div class="dw">Sat</div><div class="dd">18</div><div class="dm">Jul</div></div>
+            <div class="day"><div class="dw">Sun</div><div class="dd">19</div><div class="dm">Jul</div></div>
+            <div class="day"><div class="dw">Mon</div><div class="dd">20</div><div class="dm">Jul</div></div>
+          </div>
+          <div class="sg">
+            <div class="sgl">Morning</div>
+            <div class="slots">
+              <div class="slot gone">09:00</div>
+              <div class="slot">09:30</div>
+              <div class="slot on">10:30</div>
+              <div class="slot">11:30</div>
+            </div>
+          </div>
+          <div class="sg">
+            <div class="sgl">Afternoon</div>
+            <div class="slots">
+              <div class="slot">13:00</div>
+              <div class="slot gone">14:00</div>
+              <div class="slot">15:30</div>
+              <div class="slot">16:30</div>
+            </div>
+          </div>
+          <div class="sheetcta">Move to Thu 16 July, 10:30</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <p><b>Why the picker is real, not a drawing:</b> <code>POST /api/bookings/[id]/reschedule</code> already exists , authorized, slot-claiming, 24h lead rule, and even an email template (<code>bookingReschedule</code> in lib/email.ts). It has simply never had a UI: today "Verschieben" dumps you on the salon page. This sheet is that missing UI, and it reuses the existing <code>DateTimePicker</code> primitive (day strip + slots) rather than a new date control. Sample slots illustrative.</p>
+  </div>
+</body>
+</html>

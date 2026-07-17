@@ -30,6 +30,36 @@ brand, nail-tech, the legal/marketing pages.
 2. Assemble per-journey before/after gallery mockups from the findings.
 3. Owner approves per screen -> apply to real code (coder + loop-reviewer), one commit per screen.
 
+## CORRECTIONS (owner FURIOUS 2026-07-17, wave-1 gallery REJECTED wholesale)
+The first gallery (public/_mockups/customer-overhaul, commit 7a6628d14) was wrong on every axis.
+Deleted + graveyarded. What broke, so the redo does not repeat it:
+- [x] CORRECTION: German chrome. The gate (mockup-english-gate PreToolUse) was bypassed because I
+  GENERATED the HTML with a Python script through the shell, never touching Write/Edit. HARDENED
+  this turn: mockup-lang-stop-gate.py (Stop hook, scans recently-modified mockup files for German
+  chrome regardless of write method; self-tested block/pass; wired in .claude/settings.json).
+- [ ] CORRECTION: the before/after is meaningless. "Before" frames were SKELETON/loading captures
+  (search was a skeleton). "After" frames applied invisible micro-deltas (hairline hex, radius px)
+  so they look identical to before ("I don't see any single change... a scale down screen"). A
+  conformance gallery of invisible diffs is worthless. REDO must show VISIBLE change or not claim
+  before/after.
+- [ ] CORRECTION: the audit MEASURED HEX/PX TRIVIA and MISSED the design-system breaks a human sees
+  instantly. Confirmed live this turn: the category-tab SELECTED state is INCONSISTENT across
+  screens , PDP = gray sunken #F4F4F5 + ink + weight 600 (correct, locked), BOOKING = BLACK INK
+  FILL #0A0A0A + white + weight 400 (forbidden, gate no-black-selected). Same component, two
+  states. The audit measured each screen in ISOLATION, never cross-referenced, so it never caught
+  "these must match." REDO must audit COMPONENT CONSISTENCY across screens, not per-screen pixels.
+- [ ] CORRECTION: booking has a focus ring the owner saw; my quick probe found focusRings:[] on the
+  tab strip, so it is on another control (stepper/input). BLOCKED on the owner's screenshot to
+  pinpoint the exact element (they said "gonna attach it"; not in ~/solen/screenshots yet).
+- [ ] CORRECTION: profile page is "completely wrong, nothing like the design system, and it didn't
+  even flag it." The numeric audit gave profile only 4 minor findings. REDO must judge profile
+  against the whole system, not the pixel checklist.
+- [ ] OPEN FORK for the redo: is the customer overhaul (a) a component-consistency pass (make the
+  same component render identically everywhere, fix the real breaks like booking's black selected
+  state), grounded in the CORRECT existing instance (PDP), or (b) a redesign grounded in owner
+  references? The rejection language says structure may change. NEEDS the owner's direction before
+  rebuilding, since building unprompted was just rejected and they said "Stop".
+
 ## Parked owner picks (from the homepage-rhythm probes this session)
 - Hero search-card position: f (headline 40px, card 52%) marked / e (47%) / d (padding).
 - Bottom-sheet gap: 144 marked (biggest that keeps the category poke) / 120 / 168 / 192.
