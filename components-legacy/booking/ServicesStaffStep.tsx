@@ -364,7 +364,9 @@ export default function ServicesStaffStep({
                   // Matches the SalonServices TabPill: active = soft gray fill (s-bg-sunken) + ink,
                   // NOT pure black. Instant (no layoutId spring — that slide was laggy).
                   // mockup-ok: locked TabPill selected-state treatment (CLAUDE.md design contract, no-black-selected gate); matches the salon page category strip reference
-                  className={`shrink-0 rounded-full border px-4 py-2 text-[13px] font-heading capitalize whitespace-nowrap transition-[color,background-color,border-color,box-shadow] duration-200 ${
+                  // mockup-ok: 44px a11y floor (CLAUDE.md design contract, interactive controls at least 44px / h-11);
+                  // height-only change (py-2 to h-11 plus centered flex), same colors, radius, text.
+                  className={`shrink-0 inline-flex h-11 items-center justify-center rounded-full border px-4 text-[13px] font-heading capitalize whitespace-nowrap transition-[color,background-color,border-color,box-shadow] duration-200 ${
                     isActive
                       ? 'border-s-border bg-s-bg-sunken text-s-ink font-semibold'
                       : 'border-s-border bg-white text-s-ink-2 hover:text-s-ink hover:shadow-[0_2px_10px_-2px_rgba(10,10,10,0.12)]'
@@ -374,12 +376,14 @@ export default function ServicesStaffStep({
                 </button>
               );
             })}
-            {/* Fresha ☰ — opens the categories quick-jump sheet */}
+            {/* Fresha (List icon) opens the categories quick-jump sheet */}
+            {/* mockup-ok: 44px a11y floor (CLAUDE.md design contract, icon-button h-11 w-11);
+                raised alongside the sibling tabs above so the strip's bottom edge stays flush. */}
             <button
               type="button"
               onClick={() => setShowCatSheet(true)}
               aria-label={t('categories')}
-              className="shrink-0 grid h-9 w-9 place-items-center rounded-full border border-s-border text-s-ink transition-colors hover:border-s-ink/25"
+              className="shrink-0 grid h-11 w-11 place-items-center rounded-full border border-s-border text-s-ink transition-colors hover:border-s-ink/25"
             >
               <List size={17} strokeWidth={2} />
             </button>

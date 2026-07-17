@@ -1332,8 +1332,10 @@ export default function SearchTemplate({
             onClick={() => (activeFilterCount > 0 ? router.push(pathname) : openSection(null))}
             aria-haspopup={activeFilterCount > 0 ? undefined : "dialog"}
             aria-label={activeFilterCount > 0 ? t("clearAll") : tFilter("open")}
+            // mockup-ok: 44px a11y floor (CLAUDE.md design contract, icon-button h-11 w-11);
+            // height/width-only change (h-9 w-9 to h-11 w-11), same colors, radius, icon.
             className={cn(
-              "grid h-9 w-9 shrink-0 place-items-center rounded-full border",
+              "grid h-11 w-11 shrink-0 place-items-center rounded-full border",
               "transition-[background-color,border-color,color,transform] duration-150 ease-glide",
               "active:scale-[0.94] active:duration-[80ms]",
               "focus-visible:outline-none",
@@ -1386,8 +1388,10 @@ export default function SearchTemplate({
                   onClick={() => (TOGGLE_PILLS.has(p.key) ? toggleBooleanParam(p.key, p.active) : openSection(p.key))}
                   aria-haspopup={TOGGLE_PILLS.has(p.key) ? undefined : "dialog"}
                   aria-pressed={TOGGLE_PILLS.has(p.key) ? p.active : undefined}
+                  // mockup-ok: 44px a11y floor (CLAUDE.md design contract, interactive controls >= 44px / h-11);
+                  // height-only change (h-9 to h-11), same colors, radius, text.
                   className={cn(
-                    "inline-flex h-9 shrink-0 items-center gap-1 rounded-pill pl-3.5 pr-2.5 font-body text-[13.5px] font-medium leading-none",
+                    "inline-flex h-11 shrink-0 items-center gap-1 rounded-pill pl-3.5 pr-2.5 font-body text-[13.5px] font-medium leading-none",
                     "transition-[background-color,border-color,color,transform] duration-150 ease-glide",
                     "active:scale-[0.97] active:duration-[80ms]",
                     "focus-visible:outline-none",
@@ -1463,7 +1467,9 @@ export default function SearchTemplate({
                 "transition-[border-color,transform] duration-150 ease-glide",
                 "active:scale-[0.97] active:duration-[80ms]",
                 "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
-                "min-h-[36px]",
+                // mockup-ok: 44px a11y floor (CLAUDE.md design contract, interactive controls >= 44px / h-11);
+                // height-only change (min-h-[36px] to min-h-[44px]), same colors, radius, text.
+                "min-h-[44px]",
                 sort !== "rating"
                   ? "border-s-border bg-s-bg-sunken text-s-ink font-semibold hover:bg-s-border"
                   : "border-s-border bg-white text-s-ink hover:bg-s-bg-sunken",

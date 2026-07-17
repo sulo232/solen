@@ -22,8 +22,12 @@ import { cn } from "@/lib/utils";
  *                           itself has chrome.
  *
  * Sizes:
- *   - sm — `h-8` (32px). Inline filter rows.
- *   - md — `h-10` (40px). Sticky/standalone segment controls.
+ *   - sm: `h-11` (44px). Inline filter rows.
+ *   - md: `h-11` (44px). Sticky/standalone segment controls.
+ *
+ * Both raised to 44px (2026-07-17): the locked design-contract row
+ * "interactive controls >= 44px (h-11), the a11y floor" beats the prior
+ * 32/40px convenience heights. Height only, every other treatment intact.
  */
 
 export interface TabPillProps {
@@ -56,8 +60,10 @@ const tabPillVariants = cva(
         inactive: "",
       },
       size: {
-        sm: "h-8 px-3 text-[13px]",
-        md: "h-10 px-4 text-[14px]",
+        // mockup-ok: 44px a11y floor (CLAUDE.md design contract, "interactive
+        // controls >= 44px (h-11)"); height-only change, same colors/radius/text.
+        sm: "h-11 px-3 text-[13px]",
+        md: "h-11 px-4 text-[14px]",
       },
     },
     compoundVariants: [
