@@ -447,11 +447,21 @@ export function Section({
   return (
     <section
       className={cn(
-        // V3-D132 (2026-05-24): mb-4 md:mb-6 → mb-2 md:mb-4 + py-3 md:py-4
-        // → py-2 md:py-3. Measured: Solen section gaps were 49-108 CSS vs
-        // Airbnb 27 CSS. Combined shrink: bottom-of-A (py-2 + mb-2 = 16)
-        // + top-of-B (py-2 = 8) → ~24 CSS visible gap, matching Airbnb.
-        "relative z-[1] mb-2 md:mb-4",
+        // V3-D132 (2026-05-24): mb-4 md:mb-6 -> mb-2 md:mb-4 + py-3 md:py-4
+        // -> py-2 md:py-3. Measured then: Solen section gaps were 49-108 CSS vs
+        // a measured reference at 27 CSS. Combined shrink: bottom-of-A (py-2 +
+        // mb-2 = 16) + top-of-B (py-2 = 8) -> ~24 CSS visible gap.
+        //
+        // 2026-07-17, the rhythm decision (owner: "breathing room is good but
+        // those are too big of a gap", then "u can choose"): mb-2 -> mb-4 on
+        // mobile only. The arithmetic, not a vibe: py-2 (8) + mb-4 (16) +
+        // py-2 (8) = 32 CSS visible, which is exactly the section rhythm
+        // LOCKFILE 442-450 already locks and the page never actually rendered.
+        // Desktop is untouched (md:py-3 + md:mb-4 + md:py-3 = 40, already above
+        // the rung). Probed at 16/24/32 on the real homepage before choosing;
+        // the +56/+72 round the owner rejected as too big lives in the mockup
+        // history at public/_mockups/homepage-rhythm/.
+        "relative z-[1] mb-4 md:mb-4",
         className,
       )}
     >
