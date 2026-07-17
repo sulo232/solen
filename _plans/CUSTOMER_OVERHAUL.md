@@ -72,6 +72,27 @@ inspo/saved, recently-viewed, queue, walk-in-join, walk-in-pay, salon reviews, l
 + marketing landings (agb/impressum/help/business/partner/etc.) are the explicitly-named next set,
 not silently dropped.
 
+## APPLIED to real code (2026-07-17, "bruh jst go fix")
+- [x] Warm hairline killed frontend-wide, ROOT CAUSE: globals.css:19 legacy `--border` HSL was warm
+  `30 15% 85%` (= #DED9D3); changed to `240 6% 90%` (= #E4E4E7). Verified live: salon page 39 warm
+  border sides -> 0 (2852 cool). Commit 2e3c97c06.
+- [x] Black selected pill -> gray sunken (locked no-black-selected), 6 components: BeautyProfileForm
+  (:147,:188), ServicesStaffStep (booking category strip, :366), HaarprofilForm (:30), OnboardingFlow
+  (:171), booking HairStep (:44), StaffProfilePage (:287). Each selected branch -> bg-s-bg-sunken +
+  text-s-ink + font-semibold + hairline, matching the salon-page/TabPill reference. Live-measured
+  rgb(244,244,245)+ink+600 on booking/settings/haarprofil/onboarding/staff (HairStep byte-identical,
+  seed-data blocked live). Commits 2e3c97c06 + 336844637. Locked ink exceptions untouched: date/slot
+  picker, check-badge discs, the one primary commit CTA per screen.
+
+## Remaining audit items , per-component JUDGMENT, not blind sweeps (owner call each)
+- Sub-44 touch targets: mixed. Filter pills (33-38px) -> h-11 is a defensible a11y-floor bump, but
+  the language switcher (16px) and inline chevron links (20px) need real per-control redesign, not a
+  blanket height. Blind-bumping distorts layout (the input-sweep lesson).
+- Arbitrary radii (6/10/11/13/20/22/24px): NOT a blind snap to 16. Some are intentional tokens
+  (card-lg 20, bento 24, sheet 28, pill full, image flush 0). Each needs a per-component check.
+- Small black SECONDARY buttons (Suchen/Karte/Mehr erfahren): a taste call, is each a primary commit
+  (stays ink) or secondary (neutral outline)? Per-screen, not a sweep.
+
 ## Parked owner picks (from the homepage-rhythm probes this session)
 - Hero search-card position: f (headline 40px, card 52%) marked / e (47%) / d (padding).
 - Bottom-sheet gap: 144 marked (biggest that keeps the category poke) / 120 / 168 / 192.
