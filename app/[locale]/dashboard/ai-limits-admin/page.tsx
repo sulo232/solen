@@ -119,7 +119,7 @@ export default function AiLimitsAdminPage() {
                   setCap(Math.min(10000, Math.max(1, Math.round(Number(e.target.value) || 0))));
                   if (state !== "idle") setState("idle");
                 }}
-                className="w-full flex-1 bg-transparent font-heading text-[30px] font-bold tabular-nums tracking-[-0.02em] text-s-ink outline-none"
+                className="w-full flex-1 font-heading text-[30px] font-bold tabular-nums tracking-[-0.02em] text-s-ink outline-none" // mockup-ok: dead-class removal only, type=number already caught before this change (V3-D-input-fill-2026-07-17)
               />
               <span className="font-heading text-[20px] font-semibold text-s-ink-2">{t("capUnit")}</span>
             </div>

@@ -13,13 +13,15 @@ import { cn } from "@/lib/utils";
  * paint the second pixel from the inside. Visually identical to a 2px border, but the
  * box-model layout doesn't shift on state change. Spec compliance is preserved.
  */
-const inputVariants = cva(
+const inputVariants = cva( // mockup-ok: dead-class removal only, base input law already renders this fill/border/radius with higher specificity (V3-D-input-fill-2026-07-17)
   cn(
     // base
     "block w-full font-body font-normal text-s-ink",
-    // Depth system (2026-06-09, LOCKFILE §3.5): filled-gray at rest (Apple pattern),
-    // pops to white + ink border on focus. Replaces the flat white + hairline-border look.
-    "bg-s-bg-sunken border border-transparent rounded-[12px]",
+    // Depth system (2026-06-09, LOCKFILE §3.5): filled-gray at rest (Apple pattern), pops to
+    // white + ink border on focus. The fill/border/radius themselves are now dead classes
+    // here (removed 2026-07-17): globals.css's base input law already renders them with
+    // higher specificity than these plain utilities, so re-declaring them here was a lie.
+    // The `tone` variants below still own their border-color/ring on top of that base.
     "placeholder:text-s-ink-3",
     "selection:bg-s-ink/20",
     "transition-[border-color,background-color,box-shadow,color] duration-150 ease-snap",
@@ -129,7 +131,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
           aria-invalid={tone === "error" || undefined}
           className={cn(
             inputVariants({ size, tone }),
-            hasTrailingSlot && "pr-11",
+            hasTrailingSlot && "!pr-11",
             className,
           )}
           {...props}

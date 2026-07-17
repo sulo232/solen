@@ -139,7 +139,7 @@ export default function PromoManager() {
                 onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
                 placeholder="SOMMER2026"
                 required
-                className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink focus-visible:border-s-border outline-none"
+                className="w-full px-3 py-2 text-sm text-s-ink outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               />
             </div>
             <div>
@@ -147,7 +147,7 @@ export default function PromoManager() {
               <select
                 value={form.discount_type}
                 onChange={(e) => setForm({ ...form, discount_type: e.target.value as "percent" | "fixed" })}
-                className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink outline-none"
+                className="w-full px-3 py-2 text-sm text-s-ink outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               >
                 <option value="percent">{t("percent")}</option>
                 <option value="fixed">{t("fixed")}</option>
@@ -164,7 +164,7 @@ export default function PromoManager() {
                 min={1}
                 max={form.discount_type === "percent" ? 100 : 999}
                 required
-                className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink outline-none"
+                className="w-full px-3 py-2 text-sm text-s-ink outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               />
             </div>
             <div>
@@ -175,7 +175,7 @@ export default function PromoManager() {
                 onChange={(e) => setForm({ ...form, max_uses: e.target.value })}
                 placeholder={t("unlimited")}
                 min={1}
-                className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink outline-none"
+                className="w-full px-3 py-2 text-sm text-s-ink outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               />
             </div>
             <div>
@@ -185,7 +185,7 @@ export default function PromoManager() {
                 value={form.per_user_limit}
                 onChange={(e) => setForm({ ...form, per_user_limit: e.target.value })}
                 min={1}
-                className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink outline-none"
+                className="w-full px-3 py-2 text-sm text-s-ink outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               />
             </div>
             <div>
@@ -195,7 +195,7 @@ export default function PromoManager() {
                 value={form.min_booking_amount}
                 onChange={(e) => setForm({ ...form, min_booking_amount: parseFloat(e.target.value) || 0 })}
                 min={0}
-                className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink outline-none"
+                className="w-full px-3 py-2 text-sm text-s-ink outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               />
             </div>
             <div>
@@ -204,7 +204,7 @@ export default function PromoManager() {
                 type="date"
                 value={form.valid_until}
                 onChange={(e) => setForm({ ...form, valid_until: e.target.value })}
-                className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink outline-none"
+                className="w-full px-3 py-2 text-sm text-s-ink outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               />
             </div>
           </div>

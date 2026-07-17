@@ -528,13 +528,18 @@ export function SearchOverlay({
       {/* A2/Model B (2026-07-04): the input ALWAYS binds to `serviceQ` only (never `service`),
           focused or not , the free-text query and the category (pill row above) are two fully
           independent state slices now, so there's nothing left to swap on focus. */}
+      {/* mockup-ok: !important preserves the existing look, not a new one. This bare `<input>`
+          is deliberately invisible (border-0/bg-transparent) AND compact inside the pill's own
+          chrome; the widened base input law (globals.css, 2026-07-17) now reaches bare inputs
+          and also sets min-height:48px/padding:16px/font-size:16px, not just fill/border/radius,
+          so all of it needs the `!` prefix or the pill balloons (V3-D-input-fill-2026-07-17). */}
       <input ref={(el) => { serviceRef.current = el; if (serviceInputRef) serviceInputRef.current = el; }} value={serviceQ}
         onFocus={() => { setInputFocused(true); grow(1); }}
         onChange={(e) => setServiceQ(e.target.value)}
         onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleSubmit(); } }}
         enterKeyHint="search"
         placeholder={queryPlaceholderTxt} aria-label={queryPlaceholderTxt}
-        className="min-w-0 flex-1 border-0 bg-transparent px-0 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:border-s-border focus-visible:shadow-none focus-visible:outline-none" />
+        className="min-w-0 flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[15px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:outline-none" />
       {serviceQ.length > 0 && (
         <button onClick={() => { setServiceQ(""); serviceRef.current?.focus(); }}
           aria-label="Eingabe loeschen" className="shrink-0 text-s-ink-3">
@@ -817,9 +822,11 @@ export function SearchOverlay({
                     <h2 className="mb-3 shrink-0 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{locationHeadingTxt}</h2>
                     <div className="mb-2 flex h-12 shrink-0 items-center gap-2 rounded-[14px] border border-s-border bg-white px-3.5">
                       <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-3" />
+                      {/* mockup-ok: !important preserves the existing look, not a new one; same
+                          carve-out as the service query input above (V3-D-input-fill-2026-07-17). */}
                       <input ref={cityRef} value={cityQ} onChange={(e) => setCityQ(e.target.value)}
                         placeholder={citySearchPlaceholderTxt} aria-label={citySearchPlaceholderTxt}
-                        className="min-w-0 flex-1 border-0 bg-transparent px-0 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:border-s-border focus-visible:shadow-none focus-visible:outline-none" />
+                        className="min-w-0 flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[15px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:outline-none" />
                       {cityQ.length > 0 && (
                         <button onClick={() => { setCityQ(""); cityRef.current?.focus(); }} aria-label="Eingabe loeschen" className="shrink-0 text-s-ink-3">
                           <X size={18} strokeWidth={2.2} />

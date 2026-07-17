@@ -46,7 +46,10 @@ export default function AddressAutocomplete({ value, onChange, onPlaceSelect, pl
     onPlaceSelect({ formatted, lat, lng, placeId });
   }, [onChange, onPlaceSelect]);
 
-  const inputClasses = `w-full px-3 py-2.5 rounded-btn border text-sm text-s-ink bg-white ${hasError ? "border-s-error" : "border-s-border"}`;
+  // mockup-ok: dead-class removal only, base input law (globals.css) already renders this
+  // fill/border/radius; !border-s-error keeps the error edge visible under the widened base
+  // rule instead of silently losing to the transparent resting border (V3-D-input-fill-2026-07-17)
+  const inputClasses = `w-full px-3 py-2.5 text-sm text-s-ink ${hasError ? "!border-s-error" : ""}`;
 
   // Fallback to plain input if API key is missing or not yet loaded
   if (!apiKey || !isLoaded) {

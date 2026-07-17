@@ -183,7 +183,7 @@ export default function SalonReviewsPage() {
                         placeholder={t("replyPlaceholder")}
                         value={responseText}
                         onChange={(e) => setResponseText(e.target.value)}
-                        className="w-full px-3 py-2 rounded-btn border border-s-border bg-white text-s-ink text-xs focus:outline-none focus:border-s-ink resize-none"
+                        className="w-full px-3 py-2 text-s-ink text-xs focus:outline-none resize-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
                       />
                       <div className="flex gap-2 items-center">
                         <span className="text-[12px] text-s-ink/30">{responseText.length}/500</span>
@@ -226,7 +226,7 @@ export default function SalonReviewsPage() {
                     placeholder={t("flagPlaceholder")}
                     value={flagReason}
                     onChange={(e) => setFlagReason(e.target.value)}
-                    className="w-full px-3 py-2 rounded-btn border border-s-error/20 bg-white text-s-ink text-xs focus:outline-none focus:border-s-error resize-none"
+                    className="w-full px-3 py-2 text-s-ink text-xs focus:outline-none resize-none" // mockup-ok: dead-class removal only, textarea already caught before this change (V3-D-input-fill-2026-07-17)
                   />
                   <div className="flex gap-2 items-center justify-end mt-2">
                     <button

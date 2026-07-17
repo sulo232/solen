@@ -161,23 +161,23 @@ export default function DynamicPricingConfig({ salonId }: { salonId: string }) {
           <div className="grid grid-cols-2 gap-2">
             <select value={newRule.rule_type || "peak_hour"}
               onChange={(e) => setNewRule({ ...newRule, rule_type: e.target.value as DynamicPricingRuleType })}
-              className="px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink">
+              className="px-3 py-2 text-sm text-s-ink"> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
               {ruleTypeOptions.map((rt) => <option key={rt.value} value={rt.value}>{rt.label}</option>)}
             </select>
             <select value={newRule.day_of_week ?? 6}
               onChange={(e) => setNewRule({ ...newRule, day_of_week: parseInt(e.target.value) })}
-              className="px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink">
+              className="px-3 py-2 text-sm text-s-ink"> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
               {DAYS.map((d, i) => <option key={i} value={i}>{d}</option>)}
             </select>
           </div>
           <div className="flex gap-2 items-center">
             <input type="time" value={newRule.start_time || "10:00"}
               onChange={(e) => setNewRule({ ...newRule, start_time: e.target.value })}
-              className="px-3 py-2 rounded-input border border-s-border bg-white text-sm" />
+              className="px-3 py-2 text-sm" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
             <span className="text-xs text-s-ink/40">{t("pricing_to")}</span>
             <input type="time" value={newRule.end_time || "14:00"}
               onChange={(e) => setNewRule({ ...newRule, end_time: e.target.value })}
-              className="px-3 py-2 rounded-input border border-s-border bg-white text-sm" />
+              className="px-3 py-2 text-sm" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
           </div>
           <div>
             <label className="text-xs text-s-ink-2 mb-1 block">

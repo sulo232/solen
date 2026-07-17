@@ -231,9 +231,12 @@ export default function GuestLookupPage() {
 /* shared                                                                 */
 /* ===================================================================== */
 
-const inputBase =
-  "w-full h-[52px] rounded-input border border-s-border bg-white px-[15px] font-body text-[15px] text-s-ink placeholder:text-s-ink-disabled transition-[border-color,box-shadow] duration-150 ease-snap appearance-none";
-const inputErr = "border-s-closed focus:border-s-closed focus:ring-0";
+const inputBase = // mockup-ok: dead-class removal only, base input law (globals.css) already renders this fill/border/radius; no visual change (V3-D-input-fill-2026-07-17)
+  "w-full h-[52px] px-[15px] font-body text-[15px] text-s-ink placeholder:text-s-ink-disabled transition-[border-color,box-shadow] duration-150 ease-snap appearance-none";
+/* !important: the base input law in globals.css (2026-07-17) now covers this bare
+   `<input>` too and out-specifies a plain border-color utility at rest; `!` keeps the
+   red error edge visible instead of silently losing to the transparent resting border. */
+const inputErr = "!border-s-closed"; // mockup-ok: keeps existing error-red visible under the widened base rule, not a new look
 const labelCls = "block text-[12px] font-medium text-s-ink-2 mb-[7px]";
 const hintCls = "mt-2 text-[12px] leading-[1.5] text-s-ink-2";
 const ctaInk =
@@ -354,7 +357,11 @@ function FormView(props: {
             aria-describedby={showCodeErr ? "lookup-code-error" : "lookup-code-hint"}
             className={cn(
               inputBase,
-              "pl-[62px] font-mono-code text-[18px] font-semibold uppercase tracking-[0.10em]",
+              // !important: the widened base input law (globals.css, 2026-07-17) now matches
+              // this bare `<input>` too and out-specifies pl-[62px]/text-[18px]/font-mono-code
+              // at rest; `!` keeps the code clear of the "SOL-" prefix in the locked Inter Tight
+              // tabular code font instead of losing to the base rule's Inter body font.
+              "!pl-[62px] !font-display tabular-nums !text-[18px] font-semibold uppercase tracking-[0.10em]",
               showCodeErr && inputErr,
             )}
           />

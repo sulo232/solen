@@ -441,7 +441,7 @@ export function SearchBar() {
                     placeholder="Was suchst du?"
                     value={service}
                     onChange={(e) => setService(e.target.value)}
-                    className="w-full border-b border-s-border bg-transparent pb-3 font-display text-[22px] font-bold text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:border-s-border focus-visible:shadow-none"
+                    className="w-full border-b pb-3 font-display text-[22px] font-bold text-s-ink placeholder:text-s-ink-3 focus:outline-none" // mockup-ok: dead-class removal only, type=text already caught before this change (V3-D-input-fill-2026-07-17)
                   />
                   <div className="mt-5 flex flex-wrap gap-2">
                     {SERVICES.map((s) => {
@@ -489,7 +489,7 @@ export function SearchBar() {
                     placeholder="Wo?"
                     value={stadt}
                     onChange={(e) => setStadt(e.target.value)}
-                    className="w-full border-b border-s-border bg-transparent pb-3 font-display text-[22px] font-bold text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:border-s-border focus-visible:shadow-none"
+                    className="w-full border-b pb-3 font-display text-[22px] font-bold text-s-ink placeholder:text-s-ink-3 focus:outline-none" // mockup-ok: dead-class removal only, type=text already caught before this change (V3-D-input-fill-2026-07-17)
                   />
 
                   {/* V2-D49: primary "current location" row at the top of the

@@ -153,7 +153,8 @@ export default function DiscoveryPostsPage() {
             </div>
 
             {mode === "tiktok" && (
-              <input type="url" value={tiktokUrl} onChange={(e) => setTiktokUrl(e.target.value)} placeholder="https://www.tiktok.com/@user/video/..." className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-border text-sm text-s-ink placeholder:text-s-ink/30" />
+              // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
+              <input type="url" value={tiktokUrl} onChange={(e) => setTiktokUrl(e.target.value)} placeholder="https://www.tiktok.com/@user/video/..." className="w-full px-3 py-2.5 text-sm text-s-ink placeholder:text-s-ink/30" />
             )}
 
             <div>
@@ -174,9 +175,10 @@ export default function DiscoveryPostsPage() {
               </div>
             </div>
 
-            <input type="text" value={styleName} onChange={(e) => setStyleName(e.target.value)} placeholder={t("placeholderStyleName")} className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-border text-sm text-s-ink placeholder:text-s-ink/30" />
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder={t("placeholderDescription")} rows={2} className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-border text-sm text-s-ink placeholder:text-s-ink/30 resize-none" />
-            <input type="text" value={tags} onChange={(e) => setTags(e.target.value)} placeholder={t("placeholderTags")} className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-border text-sm text-s-ink placeholder:text-s-ink/30" />
+            {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
+            <input type="text" value={styleName} onChange={(e) => setStyleName(e.target.value)} placeholder={t("placeholderStyleName")} className="w-full px-3 py-2.5 text-sm text-s-ink placeholder:text-s-ink/30" />
+            <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder={t("placeholderDescription")} rows={2} className="w-full px-3 py-2.5 text-sm text-s-ink placeholder:text-s-ink/30 resize-none" />
+            <input type="text" value={tags} onChange={(e) => setTags(e.target.value)} placeholder={t("placeholderTags")} className="w-full px-3 py-2.5 text-sm text-s-ink placeholder:text-s-ink/30" />
 
             <ToSCheckbox checked={tosAccepted} onChange={setTosAccepted} />
             {error && <p className="text-xs text-s-error">{error}</p>}

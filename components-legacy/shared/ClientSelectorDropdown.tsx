@@ -78,9 +78,14 @@ export default function ClientSelectorDropdown({ salonId, value, onChange, place
              style={{ boxShadow: "0 4px 20px rgba(26,18,9,.08)" }}>
           <div className="p-2 border-b border-s-border flex items-center gap-2">
             <Search size={12} className="text-s-ink/40" />
-            <input 
+            {/* mockup-ok: !important prevents a look change, not a new one. The wrapper row
+                owns the visible chrome; this input must stay invisible AND compact inside it,
+                or the widened base input law (globals.css, 2026-07-17, also sets
+                min-height:48px/padding:16px/font-size:16px) paints a second box AND balloons
+                the row (V3-D-input-fill-2026-07-17). */}
+            <input
               autoFocus
-              className="w-full text-xs bg-transparent focus:outline-none"
+              className="w-full !border-0 !bg-transparent !min-h-0 !px-0 !text-xs focus:outline-none"
               placeholder="Name oder ID suchen..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}

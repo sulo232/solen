@@ -88,7 +88,7 @@ export default function WalkInModal({ salonId, services, staff, onClose, onCreat
                   <User size={12} /> {t("name")}
                 </label>
                 <input id="walkin-name" value={customerName} onChange={e => setCustomerName(e.target.value)}
-                  className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus-visible:border-s-border" />
+                  className="w-full px-3 py-2 text-sm text-s-ink focus:outline-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
               </div>
               <div>
                 <label htmlFor="walkin-phone" className="flex items-center gap-1.5 text-xs font-medium text-s-ink-2 mb-1">
@@ -96,19 +96,19 @@ export default function WalkInModal({ salonId, services, staff, onClose, onCreat
                 </label>
                 <input id="walkin-phone" type="tel" value={phone} onChange={e => setPhone(e.target.value)}
                   placeholder="+41791234567"
-                  className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus-visible:border-s-border" />
+                  className="w-full px-3 py-2 text-sm text-s-ink focus:outline-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
               </div>
               <div>
                 <label htmlFor="walkin-service" className="block text-xs font-medium text-s-ink-2 mb-1">{t("service")} *</label>
                 <select id="walkin-service" value={serviceId} onChange={e => setServiceId(e.target.value)}
-                  className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus-visible:border-s-border">
+                  className="w-full px-3 py-2 text-sm text-s-ink focus:outline-none"> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
                   {services.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                 </select>
               </div>
               <div>
                 <label htmlFor="walkin-staff" className="block text-xs font-medium text-s-ink-2 mb-1">{t("stylist")}</label>
                 <select id="walkin-staff" value={staffId} onChange={e => setStaffId(e.target.value)}
-                  className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus-visible:border-s-border">
+                  className="w-full px-3 py-2 text-sm text-s-ink focus:outline-none"> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
                   {staff.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                 </select>
               </div>

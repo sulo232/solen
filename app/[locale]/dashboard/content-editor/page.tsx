@@ -93,14 +93,14 @@ function ContentField({
           value={currentValue}
           onChange={(e) => setCurrentValue(e.target.value)}
           rows={3}
-          className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm font-body text-s-ink focus:outline-none focus:border-s-coral resize-y"
+          className="w-full px-3 py-2.5 text-sm font-body text-s-ink focus:outline-none resize-y" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
         />
       ) : (
         <input
           type={row.content_type === "number" ? "number" : "text"}
           value={currentValue}
           onChange={(e) => setCurrentValue(e.target.value)}
-          className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm font-body text-s-ink focus:outline-none focus:border-s-coral"
+          className="w-full px-3 py-2.5 text-sm font-body text-s-ink focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
         />
       )}
 

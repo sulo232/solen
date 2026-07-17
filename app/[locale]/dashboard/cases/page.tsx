@@ -226,13 +226,18 @@ export default function AdminCasesPage() {
           <>
             <div className="relative mb-3">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[17px] h-[17px] text-s-ink/40" />
+              {/* mockup-ok: !important preserves the existing pill search-bar look (own
+                  border/bg/radius, distinct from the standard gray-fill Input primitive)
+                  against the widened base input law (globals.css, 2026-07-17). min-h-0 stops
+                  the law's min-height:48px from overflowing this h-11 (44px) pill; !text
+                  keeps the intended size against the law's font-size:16px (V3-D-input-fill-2026-07-17). */}
               <input
                 value={codeInput}
                 onChange={(e) => setCodeInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && setActiveCode(codeInput.trim())}
                 placeholder={t("searchPlaceholder")}
                 aria-label={t("searchPlaceholder")}
-                className="w-full h-11 !pl-10 !pr-10 rounded-full bg-white border border-s-border text-[13.5px] text-s-ink placeholder:text-s-ink/40"
+                className="w-full h-11 !min-h-0 !pl-10 !pr-10 !rounded-full !bg-white !border !border-s-border !text-[13.5px] text-s-ink placeholder:text-s-ink/40"
               />
               {activeCode && (
                 <button onClick={() => { setCodeInput(""); setActiveCode(""); }} aria-label={t("clear")} className="absolute right-3 top-1/2 -translate-y-1/2 text-s-ink/40 hover:text-s-ink">
@@ -345,14 +350,14 @@ export default function AdminCasesPage() {
                         c.resolution && <p className="text-[13px] text-s-ink-2 mt-2 pt-3 border-t border-s-border">{t("resolution")}: <span className="text-s-ink font-medium">{c.resolution}</span></p>
                       ) : (
                         <div className="mt-4 pt-3 border-t border-s-border">
-                          <input value={note[c.id] || ""} onChange={(e) => setNote((p) => ({ ...p, [c.id]: e.target.value }))} placeholder={t("resolutionNote")} className="w-full h-9 px-3 mb-2.5 rounded-[10px] border border-s-border text-[12.5px]" />
+                          <input value={note[c.id] || ""} onChange={(e) => setNote((p) => ({ ...p, [c.id]: e.target.value }))} placeholder={t("resolutionNote")} className="w-full h-9 px-3 mb-2.5 text-[12.5px]" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
                           <div className="flex items-center gap-2 flex-wrap">
                             {isEsc ? (
                               <>
                                 <ActBtn c={c} action="admin_approve" label={refundAmt[c.id] ? t("approvePartial") : t("approveFull")} className="h-9 px-3.5 rounded-[10px] bg-s-accent-bright text-white text-[12.5px] font-semibold hover:bg-s-accent" />
                                 <ActBtn c={c} action="admin_reject" label={t("reject")} className="h-9 px-3.5 rounded-[10px] border border-s-error/40 text-s-error text-[12.5px] font-semibold hover:bg-s-error-bg" />
                                 <div className="ml-auto flex items-center gap-1.5">
-                                  <input type="number" value={refundAmt[c.id] || ""} onChange={(e) => setRefundAmt((p) => ({ ...p, [c.id]: e.target.value }))} placeholder={t("partialPlaceholder")} className="w-24 h-9 px-3 rounded-[10px] border border-s-border text-[12.5px] tabular-nums" />
+                                  <input type="number" value={refundAmt[c.id] || ""} onChange={(e) => setRefundAmt((p) => ({ ...p, [c.id]: e.target.value }))} placeholder={t("partialPlaceholder")} className="w-24 h-9 px-3 text-[12.5px] tabular-nums" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
                                 </div>
                               </>
                             ) : (
@@ -360,7 +365,7 @@ export default function AdminCasesPage() {
                                 <ActBtn c={c} action="dismiss" label={t("dismiss")} className="h-9 px-3.5 rounded-[10px] bg-s-bg-sunken text-s-ink text-[12.5px] font-semibold hover:bg-s-border" />
                                 <ActBtn c={c} action="escalate" label={t("escalate")} className="h-9 px-3.5 rounded-[10px] border border-s-border text-s-ink-2 text-[12.5px] font-semibold hover:bg-s-bg-sunken" />
                                 <div className="ml-auto flex items-center gap-1.5">
-                                  <input type="number" value={refundAmt[c.id] || ""} onChange={(e) => setRefundAmt((p) => ({ ...p, [c.id]: e.target.value }))} placeholder={t("refundPlaceholder")} className="w-24 h-9 px-3 rounded-[10px] border border-s-border text-[12.5px] tabular-nums" />
+                                  <input type="number" value={refundAmt[c.id] || ""} onChange={(e) => setRefundAmt((p) => ({ ...p, [c.id]: e.target.value }))} placeholder={t("refundPlaceholder")} className="w-24 h-9 px-3 text-[12.5px] tabular-nums" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
                                   <ActBtn c={c} action="refund" label={t("refund")} className="h-9 px-3.5 rounded-[10px] bg-s-accent-bright text-white text-[12.5px] font-semibold hover:bg-s-accent" />
                                 </div>
                               </>

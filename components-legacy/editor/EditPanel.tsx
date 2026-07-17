@@ -290,7 +290,7 @@ export default function EditPanel({
             onChange={(e) => setDescription(e.target.value)}
             placeholder={selectedElements.length > 0 ? "Describe the change you want for these elements..." : "Describe what you want changed on this page..."}
             rows={4}
-            className="w-full bg-s-bg-sunken rounded-btn border border-s-border p-3 text-sm text-s-ink placeholder:text-s-ink/30 resize-none"
+            className="w-full p-3 text-sm text-s-ink placeholder:text-s-ink/30 resize-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
           />
         </div>
 

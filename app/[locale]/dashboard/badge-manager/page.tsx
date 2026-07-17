@@ -106,7 +106,7 @@ function BadgeModal({
             <input
               value={nameDe}
               onChange={(e) => setNameDe(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-coral"
+              className="w-full px-3 py-2.5 text-sm focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               placeholder={t("nameDePlaceholder")}
             />
           </div>
@@ -116,7 +116,7 @@ function BadgeModal({
             <input
               value={nameEn}
               onChange={(e) => setNameEn(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-coral"
+              className="w-full px-3 py-2.5 text-sm focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               placeholder={t("nameEnPlaceholder")}
             />
           </div>
@@ -452,7 +452,7 @@ export default function BadgeManagerPage() {
                   placeholder={t("salonSearchPlaceholder")}
                   value={salonSearch}
                   onChange={(e) => { setSalonSearch(e.target.value); setSelectedSalon(null); }}
-                  className="w-full !pl-9 pr-4 py-2.5 rounded-btn border border-s-border bg-white text-sm text-s-ink placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
+                  className="w-full !pl-9 pr-4 py-2.5 text-sm text-s-ink placeholder-dark/30 focus:outline-none transition-colors" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
                 />
                 {salonResults.length > 0 && !selectedSalon && (
                   <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md z-10 overflow-hidden">
@@ -506,7 +506,7 @@ export default function BadgeManagerPage() {
                     <select
                       value={assignBadgeId}
                       onChange={(e) => setAssignBadgeId(e.target.value)}
-                      className="flex-1 max-w-xs px-3 py-2 rounded-btn border border-s-border text-xs text-s-ink-2 bg-white focus:outline-none focus:border-s-coral"
+                      className="flex-1 max-w-xs px-3 py-2 text-xs text-s-ink-2 focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
                     >
                       <option value="">{t("selectBadgePlaceholder")}</option>
                       {badges

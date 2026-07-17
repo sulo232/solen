@@ -112,7 +112,7 @@ function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated 
           <div>
             <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("serviceRequired")}</label>
             <select value={serviceId} onChange={(e) => setServiceId(e.target.value)}
-              className="w-full px-3 py-2 rounded-btn border border-s-border text-sm bg-white">
+              className="w-full px-3 py-2 text-sm"> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
               <option value="">{t("choosePlaceholder")}</option>
               {services.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
@@ -120,7 +120,7 @@ function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated 
           <div>
             <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("staffLabel")}</label>
             <select value={staffId} onChange={(e) => setStaffId(e.target.value)}
-              className="w-full px-3 py-2 rounded-btn border border-s-border text-sm bg-white">
+              className="w-full px-3 py-2 text-sm"> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
               <option value="">{t("anyStaffAvailable")}</option>
               {staff.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
@@ -193,7 +193,7 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
           <div>
             <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("serviceRequired")}</label>
             <select value={serviceId} onChange={(e) => setServiceId(e.target.value)}
-              className="w-full px-3 py-2 rounded-btn border border-s-border text-sm bg-white">
+              className="w-full px-3 py-2 text-sm"> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
               <option value="">{t("choosePlaceholder")}</option>
               {services.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
@@ -201,7 +201,7 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
           <div>
             <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("staffLabel")}</label>
             <select value={staffId} onChange={(e) => setStaffId(e.target.value)}
-              className="w-full px-3 py-2 rounded-btn border border-s-border text-sm bg-white">
+              className="w-full px-3 py-2 text-sm"> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
               <option value="">{t("anyStaff")}</option>
               {staff.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
@@ -221,10 +221,10 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
                     {slot ? (
                       <>
                         <input type="time" value={slot.start} onChange={(e) => setTemplate((p) => ({ ...p, [key]: { ...slot, start: e.target.value } }))}
-                          className="px-2 py-1 rounded-btn border border-s-border text-xs" />
+                          className="px-2 py-1 text-xs" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
                         <span className="text-xs text-s-ink/30">-</span>
                         <input type="time" value={slot.end} onChange={(e) => setTemplate((p) => ({ ...p, [key]: { ...slot, end: e.target.value } }))}
-                          className="px-2 py-1 rounded-btn border border-s-border text-xs" />
+                          className="px-2 py-1 text-xs" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
                       </>
                     ) : <span className="text-xs text-s-ink/30">{t("notAvailable")}</span>}
                   </div>
@@ -305,12 +305,12 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
             <div>
               <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("newDate")}</label>
               <input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)}
-                className="w-full px-3 py-2 rounded-btn border border-s-border text-sm" />
+                className="w-full px-3 py-2 text-sm" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
             </div>
             <div>
               <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("newTime")}</label>
               <input type="time" value={newTime} onChange={(e) => setNewTime(e.target.value)}
-                className="w-full px-3 py-2 rounded-btn border border-s-border text-sm" />
+                className="w-full px-3 py-2 text-sm" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
             </div>
             <div className="flex gap-2 mt-4">
               <button onClick={() => setRescheduleMode(false)}

@@ -104,7 +104,7 @@ export function DateRangePicker({ value, onChange, className = "" }: DateRangePi
                 value={from}
                 max={to}
                 onChange={(e) => setFrom(e.target.value)}
-                className="w-full px-2.5 py-1.5 rounded-input border border-s-border bg-transparent text-[12px] text-s-ink"
+                className="w-full px-2.5 py-1.5 text-[12px] text-s-ink" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               />
             </div>
             <div>
@@ -114,7 +114,7 @@ export function DateRangePicker({ value, onChange, className = "" }: DateRangePi
                 value={to}
                 min={from}
                 onChange={(e) => setTo(e.target.value)}
-                className="w-full px-2.5 py-1.5 rounded-input border border-s-border bg-transparent text-[12px] text-s-ink"
+                className="w-full px-2.5 py-1.5 text-[12px] text-s-ink" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               />
             </div>
           </div>

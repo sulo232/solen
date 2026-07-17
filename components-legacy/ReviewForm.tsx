@@ -384,7 +384,7 @@ export default function ReviewForm({
                     onChange={(e) => setComment(e.target.value)}
                     rows={3}
                     maxLength={500}
-                    className="w-full resize-none rounded-[16px] border border-s-border bg-white px-[14px] py-[14px] text-[15px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus:border-s-ink transition-colors duration-150"
+                    className="w-full resize-none px-[14px] py-[14px] text-[15px] text-s-ink placeholder:text-s-ink-3 focus:outline-none transition-colors duration-150" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
                     style={{ minHeight: "84px" }}
                   />
 

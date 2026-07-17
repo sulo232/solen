@@ -171,12 +171,12 @@ function SmartSearchTab() {
             onChange={(e) => setDescription(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             placeholder={t("descriptionPlaceholder")}
-            className="flex-1 px-3 py-2 text-sm rounded-[16px] border border-s-border bg-white text-s-ink placeholder:text-s-ink/30"
+            className="flex-1 px-3 py-2 text-sm text-s-ink placeholder:text-s-ink/30" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
           />
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="px-2 py-2 text-xs rounded-[16px] border border-s-border bg-white text-s-ink"
+            className="px-2 py-2 text-xs text-s-ink" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
           >
             {CATEGORIES.map((c) => (
               <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
@@ -313,7 +313,7 @@ function TikTokImportTab() {
           onChange={(e) => setUrls(e.target.value)}
           placeholder={"https://www.tiktok.com/@user/video/123456\nhttps://www.tiktok.com/@user/video/789012"}
           rows={4}
-          className="w-full px-3 py-2 text-sm rounded-[16px] border border-s-border bg-white text-s-ink placeholder:text-s-ink/30 resize-none font-mono"
+          className="w-full px-3 py-2 text-sm text-s-ink placeholder:text-s-ink/30 resize-none font-mono" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
         />
       </div>
 

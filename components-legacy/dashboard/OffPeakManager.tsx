@@ -180,7 +180,7 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
                 type="time"
                 value={addStart}
                 onChange={(e) => { setAddStart(e.target.value); setError(""); }}
-                className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm data-text focus:outline-none focus-visible:border-s-border"
+                className="w-full px-3 py-2.5 text-sm data-text focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               />
             </div>
             <div>
@@ -189,7 +189,7 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
                 type="time"
                 value={addEnd}
                 onChange={(e) => { setAddEnd(e.target.value); setError(""); }}
-                className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm data-text focus:outline-none focus-visible:border-s-border"
+                className="w-full px-3 py-2.5 text-sm data-text focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               />
             </div>
           </div>
@@ -204,7 +204,7 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
                 step={5}
                 value={addDiscount}
                 onChange={(e) => setAddDiscount(Math.min(50, Math.max(5, +e.target.value)))}
-                className="w-20 px-3 py-2.5 rounded-btn border border-s-border text-sm data-text focus:outline-none focus-visible:border-s-border"
+                className="w-20 px-3 py-2.5 text-sm data-text focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               />
               <span className="text-sm text-s-ink-2">%</span>
             </div>

@@ -142,12 +142,12 @@ export default function HelpEditorPage() {
                 value={form.slug}
                 onChange={(e) => setForm({ ...form, slug: e.target.value })}
                 placeholder={t("slugPlaceholder")}
-                className="col-span-2 sm:col-span-1 px-3 py-2 rounded-btn border border-s-border text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+                className="col-span-2 sm:col-span-1 px-3 py-2 text-sm font-body focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               />
               <select
                 value={form.category}
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
-                className="px-3 py-2 rounded-btn border border-s-border text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+                className="px-3 py-2 text-sm font-body focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               >
                 <option value="customers">{t("categoryCustomers")}</option>
                 <option value="salons">{t("categorySalons")}</option>
@@ -158,14 +158,14 @@ export default function HelpEditorPage() {
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
               placeholder={t("titlePlaceholder")}
-              className="w-full px-3 py-2 rounded-btn border border-s-border text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+              className="w-full px-3 py-2 text-sm font-body focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
             />
             <textarea
               value={form.content}
               onChange={(e) => setForm({ ...form, content: e.target.value })}
               placeholder={t("contentPlaceholder")}
               rows={10}
-              className="w-full px-3 py-2 rounded-btn border border-s-border text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30 resize-y"
+              className="w-full px-3 py-2 text-sm font-body focus:outline-none resize-y" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
             />
             <div className="flex items-center gap-4">
               <label className="flex items-center gap-2 text-sm font-body text-s-ink-2">
@@ -181,7 +181,7 @@ export default function HelpEditorPage() {
                 type="number"
                 value={form.sort_order}
                 onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })}
-                className="w-20 px-2 py-1 rounded-btn border border-s-border text-sm font-body"
+                className="w-20 px-2 py-1 text-sm font-body" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
                 placeholder={t("sortOrderPlaceholder")}
               />
             </div>

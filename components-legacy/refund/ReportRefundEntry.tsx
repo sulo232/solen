@@ -491,6 +491,11 @@ export default function ReportRefundEntry({
                   )}
                 >
                   <span className="text-[13px] text-s-ink-2">CHF</span>
+                  {/* mockup-ok: !important prevents a look change, not a new one. The wrapper
+                      row above owns the visible chrome (its own border+bg, incl. the
+                      partialInvalid error color); this input must stay invisible AND compact
+                      inside it, or the widened base input law (globals.css, 2026-07-17) paints
+                      a second box AND balloons the row (V3-D-input-fill-2026-07-17). */}
                   <input
                     id="refund-amt"
                     inputMode="decimal"
@@ -499,7 +504,7 @@ export default function ReportRefundEntry({
                     placeholder={(remaining / 100).toFixed(2)}
                     aria-label={t("rowRequested")}
                     aria-invalid={partialInvalid}
-                    className="w-[64px] bg-transparent text-right font-heading text-[15px] font-semibold tabular-nums text-s-accent outline-none placeholder:text-s-accent/45"
+                    className="w-[64px] !border-0 !bg-transparent !min-h-0 !px-0 text-right font-heading !text-[15px] font-semibold tabular-nums text-s-accent outline-none placeholder:text-s-accent/45"
                   />
                 </div>
               </div>

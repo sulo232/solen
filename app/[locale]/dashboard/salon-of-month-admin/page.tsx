@@ -178,7 +178,7 @@ export default function SalonOfMonthAdminPage() {
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               placeholder={t("reasonPlaceholder")}
-              className="w-full rounded-[12px] border border-s-border px-3.5 py-2.5 font-body text-sm text-s-ink"
+              className="w-full px-3.5 py-2.5 font-body text-sm text-s-ink" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
             />
           </div>
 

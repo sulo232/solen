@@ -106,7 +106,7 @@ export default function LoyaltyDashboardPage() {
                 value={scanToken}
                 onChange={(e) => setScanToken(e.target.value)}
                 placeholder={t("tokenPlaceholder")}
-                className="w-full rounded-btn border border-s-border bg-white px-3 py-2 text-sm text-s-ink font-mono focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+                className="w-full px-3 py-2 text-sm text-s-ink font-mono focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               />
               <button
                 onClick={handleScanSubmit}

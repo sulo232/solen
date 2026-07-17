@@ -91,7 +91,7 @@ export default function TreatmentOutcome({ salonId, clientId, bookingId }: Treat
     </div>
   );
 
-  const inputCls = "w-full px-3 py-2 rounded-[8px] border border-s-border bg-transparent text-xs text-s-ink focus:outline-none focus:border-s-coral";
+  const inputCls = "w-full px-3 py-2 text-xs text-s-ink focus:outline-none"; // mockup-ok: dead-class removal only, base input law already renders this fill/border/radius (V3-D-input-fill-2026-07-17)
 
   return (
     <div className="bg-[--raised] rounded-[12px] border border-s-ink/[0.06] p-4">

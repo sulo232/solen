@@ -70,7 +70,7 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="mitarbeiter@email.ch"
-              className="w-full px-4 py-2.5 rounded-input border border-s-border bg-white text-sm text-s-ink transition-colors"
+              className="w-full px-4 py-2.5 text-sm text-s-ink transition-colors" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
             />
           </div>
           <div>
@@ -82,7 +82,7 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder={t("team.firstName")}
-              className="w-full px-4 py-2.5 rounded-input border border-s-border bg-white text-sm text-s-ink transition-colors"
+              className="w-full px-4 py-2.5 text-sm text-s-ink transition-colors" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
             />
           </div>
         </div>

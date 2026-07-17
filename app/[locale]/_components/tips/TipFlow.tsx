@@ -231,12 +231,26 @@ export default function TipFlow({
         {useCustom && (
           <div className="mt-2.5 flex items-center gap-2 rounded-[16px] border border-s-ink px-4 py-3.5">
             <span className="shrink-0 text-[15px] font-semibold text-s-ink-2">CHF</span>
+            {/* mockup-ok: !important prevents a look change, not a new one. The wrapper div
+                owns the visible chrome (border-s-ink + rounded-[16px] + px-4 py-3.5); this
+                bare input must stay invisible inside it, or the widened base input law
+                (globals.css, 2026-07-17, sets background:#F4F4F5/border-radius:12px/
+                padding:16px/min-height:48px on every bare input) paints a second gray pill
+                nested in the ink border AND doubles the side padding. Same carve-out shape as
+                clients/page.tsx and services/page.tsx (V3-D-input-fill-2026-07-17). Restores
+                the bg-transparent this sweep's own diff wrongly removed as a "dead class". */}
             <input
               type="number" min="1" step="0.5" inputMode="decimal" autoFocus
               value={customValue}
               onChange={(e) => setCustomValue(e.target.value)}
               placeholder="0.00"
-              className="w-full bg-transparent text-[16px] tabular-nums text-s-ink placeholder:text-s-ink-3 focus:outline-none"
+              /* mockup-ok: not a new look, a repair. !border-0 zeroes the base rule's 1px border
+                 WIDTH, which the global focus law force-paints ink on focus (autoFocus fires it
+                 immediately), drawing a bordered pill nested inside this wrapper's own ink border.
+                 Reviewer-measured. Every other wrapper-owns-chrome carve-out already pairs
+                 !bg-transparent with !border-0 (SearchOverlay.tsx:542,829;
+                 ClientSelectorDropdown.tsx:88); this input was the only one missing it. */
+              className="w-full !border-0 !min-h-0 !bg-transparent !px-0 text-[16px] tabular-nums text-s-ink placeholder:text-s-ink-3 focus:outline-none"
             />
           </div>
         )}

@@ -94,7 +94,7 @@ export default function VerificationPage() {
                 <select
                   value={docType}
                   onChange={(e) => setDocType(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-coral"
+                  className="w-full px-3 py-2.5 text-sm focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
                 >
                   {docTypes.map(dt => <option key={dt.value} value={dt.value}>{t(dt.labelKey)}</option>)}
                 </select>

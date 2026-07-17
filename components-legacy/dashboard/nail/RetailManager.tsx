@@ -112,7 +112,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             placeholder={t("retail_name_placeholder")}
-            className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm"
+            className="w-full px-3 py-2 text-sm" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
           />
           <div className="flex gap-2">
             <input
@@ -121,12 +121,12 @@ export default function RetailManager({ salonId }: { salonId: string }) {
               value={formData.price}
               onChange={(e) => setFormData({ ...formData, price: e.target.value })}
               placeholder={t("retail_price_placeholder")}
-              className="flex-1 px-3 py-2 rounded-input border border-s-border bg-white text-sm"
+              className="flex-1 px-3 py-2 text-sm" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
             />
             <select
               value={formData.category}
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-              className="flex-1 px-3 py-2 rounded-input border border-s-border bg-white text-sm"
+              className="flex-1 px-3 py-2 text-sm" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               aria-label={t("retail_cat_nail_care")}
             >
               {/* A5 BUG-2: `nail_care` is NOT a valid DB category (never was in the CHECK) , the

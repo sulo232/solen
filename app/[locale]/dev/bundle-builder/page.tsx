@@ -63,7 +63,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-const inputClass = "w-full rounded-btn border border-s-border px-3 py-2.5 text-[14px] text-s-ink";
+const inputClass = "w-full px-3 py-2.5 text-[14px] text-s-ink"; // mockup-ok: dead-class removal only, base input law already renders this fill/border/radius (V3-D-input-fill-2026-07-17)
 
 export default function BundleBuilderMockup() {
   if (process.env.NODE_ENV === "production") notFound();

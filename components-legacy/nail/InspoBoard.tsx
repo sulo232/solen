@@ -156,7 +156,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
               value={newBoardName}
               onChange={(e) => setNewBoardName(e.target.value)}
               placeholder={t("board_name_placeholder")}
-              className="flex-1 text-sm px-3 py-1.5 rounded-input border border-s-border bg-transparent text-s-ink transition-[border-color,box-shadow] duration-150"
+              className="flex-1 text-sm px-3 py-1.5 text-s-ink transition-[border-color,box-shadow] duration-150" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               onKeyDown={(e) => e.key === "Enter" && handleCreateBoard()}
             />
             <button onClick={handleCreateBoard} className="text-[12px] font-heading uppercase tracking-[.04em] px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-ink text-white hover:brightness-[1.06] transition-[transform,filter] duration-150">

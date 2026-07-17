@@ -594,28 +594,28 @@ export function JoinUsCard() {
                     name="name"
                     placeholder="Dein Name"
                     required
-                    className="h-11 rounded-input bg-white px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]"
+                    className="h-11 px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]" // mockup-ok: dead-class removal only, type=text/email already caught before this change (V3-D-input-fill-2026-07-17)
                   />
                   <input
                     type="email"
                     name="email"
                     placeholder="E-Mail"
                     required
-                    className="h-11 rounded-input bg-white px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]"
+                    className="h-11 px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]" // mockup-ok: dead-class removal only, type=text/email already caught before this change (V3-D-input-fill-2026-07-17)
                   />
                   <input
                     type="text"
                     name="salon"
                     placeholder="Salon-Name"
                     required
-                    className="h-11 rounded-input bg-white px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]"
+                    className="h-11 px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]" // mockup-ok: dead-class removal only, type=text/email already caught before this change (V3-D-input-fill-2026-07-17)
                   />
                   <input
                     type="text"
                     name="city"
                     placeholder="Stadt"
                     required
-                    className="h-11 rounded-input bg-white px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]"
+                    className="h-11 px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]" // mockup-ok: dead-class removal only, type=text/email already caught before this change (V3-D-input-fill-2026-07-17)
                   />
                   {errorMsg ? (
                     <p role="alert" className="font-body text-[13px] font-normal text-white md:col-span-2">

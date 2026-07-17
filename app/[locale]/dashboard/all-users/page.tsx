@@ -181,7 +181,7 @@ export default function AllUsersPage() {
           placeholder={t("searchPlaceholder")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full !pl-9 pr-4 py-2.5 rounded-btn border border-s-border bg-white text-sm font-body text-s-ink placeholder-dark/30 focus:outline-none focus:border-s-ink transition-colors"
+          className="w-full !pl-9 pr-4 py-2.5 text-sm font-body text-s-ink placeholder-dark/30 focus:outline-none transition-colors" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
         />
       </div>
 
@@ -255,7 +255,7 @@ export default function AllUsersPage() {
                     <select
                       value={u.role}
                       onChange={(e) => handleRoleChange(u.id, e.target.value as UserRole)}
-                      className="px-2 py-1.5 rounded-btn border border-s-border text-xs text-s-ink-2 bg-white focus:outline-none focus:border-s-ink cursor-pointer"
+                      className="px-2 py-1.5 text-xs text-s-ink-2 focus:outline-none cursor-pointer" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
                     >
                       {ROLE_ORDER.map((role) => (
                         <option key={role} value={role}>{roleLabel(role)}</option>

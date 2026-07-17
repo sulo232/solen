@@ -75,7 +75,7 @@ export default function HelpPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Suche nach Themen..."
-              className="w-full !pl-10 pr-4 py-2.5 rounded-pill border border-s-border bg-white text-sm font-body text-s-ink transition-colors"
+              className="w-full !pl-10 pr-4 py-2.5 text-sm font-body text-s-ink transition-colors" // mockup-ok: dead-class removal only, type=text already caught before this change (V3-D-input-fill-2026-07-17)
             />
           </div>
         </div>

@@ -158,12 +158,12 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
           <div>
             <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("nameLabel")}</label>
             <input value={name} onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
+              className="w-full px-3 py-2 text-sm text-s-ink focus:outline-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
           </div>
           <div>
             <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("photoUrlLabel")}</label>
             <input value={avatar} onChange={(e) => setAvatar(e.target.value)}
-              className="w-full px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
+              className="w-full px-3 py-2 text-sm text-s-ink focus:outline-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
           </div>
           <div>
             <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("specialtiesLabel")}</label>
@@ -171,7 +171,7 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
               <input value={specInput} onChange={(e) => setSpecInput(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSpec(); } }}
                 placeholder={t("specialtyPlaceholder")}
-                className="flex-1 px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
+                className="flex-1 px-3 py-2 text-sm text-s-ink focus:outline-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
               <button type="button" onClick={addSpec} aria-label={t("addSpecialty")} className="px-2.5 rounded-btn bg-s-bg-sunken text-s-ink-2"><Plus size={14} /></button>
             </div>
             <div className="flex flex-wrap gap-1">
@@ -232,7 +232,7 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
             <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("commissionLabel")}</label>
             <input type="number" min="0" max="100" value={commissionRate}
               onChange={(e) => setCommissionRate(Math.max(0, Math.min(100, parseInt(e.target.value) || 0)))}
-              className="w-full px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
+              className="w-full px-3 py-2 text-sm text-s-ink focus:outline-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
             <p className="text-[12px] text-s-ink/30 mt-1">{t("commissionHint")}</p>
           </div>
 
@@ -304,12 +304,12 @@ function InviteModal({ salonId, onClose, onSent }: { salonId: string; onClose: (
           <div>
             <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("nameLabel")}</label>
             <input value={name} onChange={e => setName(e.target.value)}
-              className="w-full px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
+              className="w-full px-3 py-2 text-sm text-s-ink focus:outline-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
           </div>
           <div>
             <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("emailLabel")}</label>
             <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-              className="w-full px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
+              className="w-full px-3 py-2 text-sm text-s-ink focus:outline-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
           </div>
         </div>
         {error && <p className="text-xs text-s-error mb-3">{error}</p>}

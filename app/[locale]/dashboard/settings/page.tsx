@@ -58,10 +58,10 @@ function HoursEditor({ hours, onChange }: {
             {h ? (
               <>
                 <input type="time" value={h.open} onChange={(e) => update(key, "open", e.target.value)}
-                  className="px-2 py-1 rounded-btn border border-s-border text-xs focus:outline-none focus:border-s-coral" />
+                  className="px-2 py-1 text-xs focus:outline-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
                 <span className="text-xs text-s-ink/30">–</span>
                 <input type="time" value={h.close} onChange={(e) => update(key, "close", e.target.value)}
-                  className="px-2 py-1 rounded-btn border border-s-border text-xs focus:outline-none focus:border-s-coral" />
+                  className="px-2 py-1 text-xs focus:outline-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
               </>
             ) : <span className="text-xs text-s-ink/30">{t("closed")}</span>}
           </div>
@@ -117,7 +117,7 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
       <div>
         <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("salonNameLabel")}</label>
         <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-          className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm" />
+          className="w-full px-3 py-2.5 text-sm" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
       </div>
 
       {/* ── Category selector ── */}
@@ -156,50 +156,50 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
       <div>
         <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("coverPhotoLabel")}</label>
         <input value={form.cover_photo_url} onChange={(e) => setForm({ ...form, cover_photo_url: e.target.value })}
-          className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm" />
+          className="w-full px-3 py-2.5 text-sm" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
       </div>
       <div>
         <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("descriptionDeLabel")}</label>
         <textarea value={form.description_de} onChange={(e) => setForm({ ...form, description_de: e.target.value })}
           rows={3} maxLength={500}
-          className="w-full px-3 py-2 rounded-btn border border-s-border text-sm resize-none" />
+          className="w-full px-3 py-2 text-sm resize-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
       </div>
       <div>
         <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("descriptionEnLabel")}</label>
         <textarea value={form.description_en} onChange={(e) => setForm({ ...form, description_en: e.target.value })}
           rows={2} maxLength={500}
-          className="w-full px-3 py-2 rounded-btn border border-s-border text-sm resize-none" />
+          className="w-full px-3 py-2 text-sm resize-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("phoneLabel")}</label>
           <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            className="w-full px-3 py-2 rounded-btn border border-s-border text-sm" />
+            className="w-full px-3 py-2 text-sm" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
         </div>
         <div>
           <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("instagramLabel")}</label>
           <input value={form.instagram_url} onChange={(e) => setForm({ ...form, instagram_url: e.target.value })}
             placeholder="https://instagram.com/..."
-            className="w-full px-3 py-2 rounded-btn border border-s-border text-sm" />
+            className="w-full px-3 py-2 text-sm" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
         </div>
         <div>
           <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("facebookLabel")}</label>
           <input value={form.facebook_url} onChange={(e) => setForm({ ...form, facebook_url: e.target.value })}
             placeholder="https://facebook.com/..."
-            className="w-full px-3 py-2 rounded-btn border border-s-border text-sm" />
+            className="w-full px-3 py-2 text-sm" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
         </div>
         <div>
           <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("tiktokLabel")}</label>
           <input value={form.tiktok_url} onChange={(e) => setForm({ ...form, tiktok_url: e.target.value })}
             placeholder="https://tiktok.com/@..."
-            className="w-full px-3 py-2 rounded-btn border border-s-border text-sm" />
+            className="w-full px-3 py-2 text-sm" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
         </div>
       </div>
       <div>
         <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("websiteLabel")}</label>
         <input value={form.website_url} onChange={(e) => setForm({ ...form, website_url: e.target.value })}
           placeholder="https://..."
-          className="w-full px-3 py-2 rounded-btn border border-s-border text-sm" />
+          className="w-full px-3 py-2 text-sm" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
       </div>
       <div>
         <label className="block text-xs font-medium text-s-ink-2 mb-2">{t("openingHoursLabel")}</label>
@@ -318,8 +318,16 @@ function QuickRepliesTab() {
         <div key={i} className="flex items-center gap-2 bg-white border border-s-border rounded-[12px] px-3 py-2.5">
           {editing === i ? (
             <>
+              {/* mockup-ok: !important prevents a look change, not a new one. The wrapper div
+                  owns the visible chrome (bg-white border rounded-[12px] px-3 py-2.5); this
+                  input must stay invisible AND compact inside it, or the widened base input
+                  law (globals.css, 2026-07-17, sets min-height:48px/padding:16px/bg #F4F4F5
+                  too, not just fill/border/radius) paints a second box AND balloons the row.
+                  !text-sm (not the wrapper-siblings' 13.5px) so this edit field matches the
+                  <p className="flex-1 text-sm text-s-ink"> below it does not resize the row
+                  when toggling edit mode (V3-D-input-fill-2026-07-17). */}
               <input value={editValue} onChange={(e) => setEditValue(e.target.value)}
-                className="flex-1 text-sm focus:outline-none" autoFocus />
+                className="flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-sm focus:outline-none" autoFocus />
               <button onClick={() => { const a = [...replies]; a[i] = editValue; save(a); setEditing(null); }} aria-label={t("save")} className="text-s-coral"><Check size={14} /></button>
               <button onClick={() => setEditing(null)} aria-label={t("cancel")} className="text-s-ink/30"><X size={14} /></button>
             </>
@@ -334,7 +342,7 @@ function QuickRepliesTab() {
       ))}
       <div className="flex gap-2">
         <input value={newValue} onChange={(e) => setNewValue(e.target.value)} placeholder={t("newTemplatePlaceholder")}
-          className="flex-1 px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-coral" />
+          className="flex-1 px-3 py-2 text-sm focus:outline-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
         <button onClick={() => { if (newValue.trim()) { save([...replies, newValue.trim()]); setNewValue(""); } }}
           className="px-3 py-2 rounded-btn bg-s-accent text-white text-sm"><Plus size={14} /></button>
       </div>
@@ -485,7 +493,7 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
             step={feeType === "percentage" ? 5 : 1}
             value={feeValue}
             onChange={(e) => setFeeValue(Math.max(0, Number(e.target.value)))}
-            className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm data-text"
+            className="w-full px-3 py-2.5 text-sm data-text" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
           />
         </div>
       )}
@@ -496,7 +504,7 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
         <select
           value={freeHours}
           onChange={(e) => setFreeHours(Number(e.target.value))}
-          className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm"
+          className="w-full px-3 py-2.5 text-sm" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
         >
           {CANCEL_HOURS_OPTIONS.map((h) => (
             <option key={h} value={h}>{t("hoursBeforeAppointment", { hours: h })}</option>
@@ -594,7 +602,7 @@ function VatRegistrationTab({ salon, onSave }: { salon: Salon; onSave: (d: Parti
             value={vatNumber}
             onChange={(e) => setVatNumber(e.target.value)}
             placeholder="CHE-123.456.789 MWST"
-            className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm data-text focus:outline-none focus:border-s-coral"
+            className="w-full px-3 py-2.5 text-sm data-text focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
           />
           <p className="text-[12px] text-s-ink/40 mt-1">{t("vatNumberHint")}</p>
         </div>
@@ -978,7 +986,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
                 max={noShowFeeType === "percentage" ? 100 : 500}
                 value={noShowFeeValue}
                 onChange={(e) => setNoShowFeeValue(Math.max(0, Math.min(noShowFeeType === "percentage" ? 100 : 500, Number(e.target.value))))}
-                className="w-20 bg-transparent text-right text-lg font-bold text-s-surcharge data-text focus:outline-none"
+                className="w-20 text-right text-lg font-bold text-s-surcharge data-text focus:outline-none" // mockup-ok: dead-class removal only, type=number already caught by the unmodified base rule before this change too (V3-D-input-fill-2026-07-17)
               />
             </div>
           )}
@@ -1063,9 +1071,9 @@ function ClosuresTab({ salon }: { salon: Salon }) {
       <p className="text-xs text-s-ink-2">{t("closuresIntro")}</p>
       <div className="flex gap-2">
         <input type="date" value={date} onChange={(e) => setDate(e.target.value)}
-          className="flex-1 px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-coral" />
+          className="flex-1 px-3 py-2 text-sm focus:outline-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
         <input value={reason} onChange={(e) => setReason(e.target.value)} placeholder={t("reasonPlaceholder")}
-          className="flex-1 px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-coral" />
+          className="flex-1 px-3 py-2 text-sm focus:outline-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
         <button onClick={addClosure} disabled={!date}
           className="px-3 py-2 rounded-btn bg-s-accent text-white text-sm disabled:opacity-50">
           <Plus size={14} />
@@ -1176,9 +1184,10 @@ function SchedulingTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
           <span className="text-sm text-s-ink">{t("dailyLimitPerStylist")}</span>
           <div className="flex items-center gap-3">
             {limitEnabled && (
+              // mockup-ok: dead-class removal only, type=number already caught before this change (V3-D-input-fill-2026-07-17)
               <input type="number" min={1} max={50} value={limit}
                 onChange={(e) => setLimit(+e.target.value)}
-                className="w-14 px-2 py-1 rounded-btn border border-s-border text-sm data-text text-right" />
+                className="w-14 px-2 py-1 text-sm data-text text-right" />
             )}
             <button type="button" role="switch" aria-checked={limitEnabled} aria-label={t("dailyLimitToggleAria")}
               onClick={() => setLimitEnabled(!limitEnabled)}
@@ -1268,7 +1277,7 @@ function CommissionTab({ salon }: { salon: Salon }) {
                 const v = Math.min(100, Math.max(0, +e.target.value));
                 setStaff((prev) => prev.map((st) => (st.id === s.id ? { ...st, commission_rate: v } : st)));
               }}
-              className="w-16 px-2 py-1.5 rounded-btn border border-s-border text-sm data-text text-right focus:outline-none focus:border-s-coral"
+              className="w-16 px-2 py-1.5 text-sm data-text text-right focus:outline-none" // mockup-ok: dead-class removal only, type=number already caught before this change (V3-D-input-fill-2026-07-17)
             />
             <span className="text-xs text-s-ink/40">%</span>
             <button

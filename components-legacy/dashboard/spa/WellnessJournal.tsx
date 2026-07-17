@@ -215,7 +215,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
               value={form.pressure_preference}
               onChange={(e) => setForm((p) => ({ ...p, pressure_preference: e.target.value }))}
               aria-label={t("pressure_preference")}
-              className="w-full rounded-[8px] border border-s-ink/[0.10] px-3 py-2 text-xs bg-transparent text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+              className="w-full px-3 py-2 text-xs text-s-ink focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
             >
               {PRESSURE_OPTIONS.map((p) => (
                 <option key={p} value={p}>{t(`pressure.${p}` as any)}</option>
@@ -232,7 +232,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
               value={form.skin_condition}
               onChange={(e) => setForm((p) => ({ ...p, skin_condition: e.target.value }))}
               aria-label={t("skin_condition")}
-              className="w-full rounded-[8px] border border-s-ink/[0.10] px-3 py-2 text-xs bg-transparent text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+              className="w-full px-3 py-2 text-xs text-s-ink focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
             />
           </div>
 
@@ -248,7 +248,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
                 onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addProduct())}
                 placeholder={t("product_placeholder")}
                 aria-label={t("products_used")}
-                className="flex-1 rounded-[8px] border border-s-ink/[0.10] px-3 py-2 text-xs bg-transparent text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+                className="flex-1 px-3 py-2 text-xs text-s-ink focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               />
               <button
                 onClick={addProduct}
@@ -282,7 +282,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
               onChange={(e) => setForm((p) => ({ ...p, aftercare_notes: e.target.value }))}
               rows={2}
               aria-label={t("aftercare_notes")}
-              className="w-full rounded-[8px] border border-s-ink/[0.10] px-3 py-2 text-xs bg-transparent text-s-ink resize-none focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+              className="w-full px-3 py-2 text-xs text-s-ink resize-none focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
             />
           </div>
 
@@ -296,7 +296,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
               onChange={(e) => setForm((p) => ({ ...p, notes: e.target.value }))}
               rows={2}
               aria-label={t("notes")}
-              className="w-full rounded-[8px] border border-s-ink/[0.10] px-3 py-2 text-xs bg-transparent text-s-ink resize-none focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+              className="w-full px-3 py-2 text-xs text-s-ink resize-none focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
             />
           </div>
 

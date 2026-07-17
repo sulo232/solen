@@ -145,11 +145,17 @@ export default function ClientsPage() {
       {/* Search */}
       <div className="flex items-center gap-2 border border-s-border rounded-[14px] px-3.5 py-2.5 text-s-ink-3 mb-4">
         <Search size={17} className="shrink-0" />
+        {/* mockup-ok: !important prevents a look change, not a new one. The wrapper div owns
+            the visible chrome (border+radius+padding); this input must stay invisible AND
+            keep its compact size inside it, or the widened base input law (globals.css,
+            2026-07-17, sets min-height:48px/padding:16px/font-size:16px too, not just
+            fill/border/radius) both paints a second box AND balloons the row. Same carve-out
+            as SearchOverlay.tsx (V3-D-input-fill-2026-07-17). */}
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder={t("searchPlaceholder")}
-          className="flex-1 min-w-0 bg-transparent text-[13.5px] text-s-ink placeholder:text-s-ink-3 focus:outline-none"
+          className="flex-1 min-w-0 !border-0 !bg-transparent !min-h-0 !px-0 !text-[13.5px] text-s-ink placeholder:text-s-ink-3 focus:outline-none"
         />
       </div>
 
@@ -395,7 +401,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
         <div>
           <div className="flex gap-2 mb-4">
             <input value={newNote} onChange={(e) => setNewNote(e.target.value)} placeholder={t("notePlaceholder")}
-              className="flex-1 px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink"
+              className="flex-1 px-3 py-2 text-sm text-s-ink focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               onKeyDown={(e) => { if (e.key === "Enter") handleAddNote(); }} />
             <button onClick={handleAddNote} disabled={!newNote.trim() || savingNote}
               className="px-3 py-2 rounded-btn bg-s-ink text-white text-xs font-medium hover:bg-black disabled:opacity-50 transition-colors">
@@ -423,9 +429,9 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
         <div>
           <div className="flex gap-2 mb-4">
             <input value={newTag} onChange={(e) => setNewTag(e.target.value)} placeholder={t("newTagPlaceholder")}
-              className="flex-1 px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
+              className="flex-1 px-3 py-2 text-sm text-s-ink focus:outline-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
             <select value={tagColor_} onChange={(e) => setTagColor_(e.target.value)}
-              className="px-2 py-2 rounded-btn border border-s-border bg-white text-xs text-s-ink focus:outline-none focus:border-s-ink">
+              className="px-2 py-2 text-xs text-s-ink focus:outline-none"> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
               {["gray", "red", "orange", "blue", "purple", "teal"].map((c) => (
                 <option key={c} value={c}>{c}</option>
               ))}

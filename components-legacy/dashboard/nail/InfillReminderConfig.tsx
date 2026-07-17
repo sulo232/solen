@@ -99,7 +99,7 @@ export default function InfillReminderConfig({ salonId }: { salonId: string }) {
                   value={svc.reminder_cycle_days ?? ""}
                   onChange={(e) => updateCycle(svc.id, e.target.value ? parseInt(e.target.value) : null)}
                   placeholder="—"
-                  className="w-16 px-2 py-1 text-sm text-center rounded-input border border-s-border bg-transparent text-s-ink"
+                  className="w-16 px-2 py-1 text-sm text-center text-s-ink" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
                 />
                 <span className="text-xs text-s-ink/40">{t("infill_days")}</span>
               </div>

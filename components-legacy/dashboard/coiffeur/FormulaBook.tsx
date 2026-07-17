@@ -129,7 +129,7 @@ export default function FormulaBook({ clientId, salonId }: FormulaBookProps) {
     );
   }
 
-  const inputClass = "w-full px-2 py-1.5 rounded-[8px] border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20";
+  const inputClass = "w-full px-2 py-1.5 text-sm text-s-ink focus:outline-none"; // mockup-ok: dead-class removal only, base input law already renders this fill/border/radius (V3-D-input-fill-2026-07-17)
 
   return (
     <div className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-white">
@@ -154,7 +154,7 @@ export default function FormulaBook({ clientId, salonId }: FormulaBookProps) {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t("formulaSearch")}
-            className="w-full pl-7 pr-3 py-1.5 rounded-[8px] border border-s-border bg-s-bg-sunken text-xs text-s-ink focus:outline-none focus:border-s-coral"
+            className="w-full !pl-7 pr-3 py-1.5 text-xs text-s-ink focus:outline-none" // mockup-ok: !important on pl-7 only, the icon-inset padding now loses to the widened base input law's padding-left:1rem (16px), sliding the query text under the search icon; height/font-size stay on the base law's touch-target floor + iOS zoom guard, not carved out (V3-D-input-fill-2026-07-17)
             aria-label={t("formulaSearch")}
           />
         </div>

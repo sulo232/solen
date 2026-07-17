@@ -379,7 +379,7 @@ export default function SalonReviews({
                                 onChange={(e) => setFlagReason(e.target.value)}
                                 placeholder={t("flagReasonPlaceholder")}
                                 rows={2}
-                                className="w-full text-xs font-body text-s-ink bg-transparent border border-s-border rounded-[8px] px-2.5 py-2 resize-none outline-none placeholder:text-s-ink/30 transition-colors duration-150"
+                                className="w-full text-xs font-body text-s-ink px-2.5 py-2 resize-none outline-none placeholder:text-s-ink/30 transition-colors duration-150" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
                               />
                               <div className="flex gap-2 mt-2 justify-end">
                                 <button

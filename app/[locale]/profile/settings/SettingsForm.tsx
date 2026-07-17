@@ -185,9 +185,12 @@ export default function SettingsForm({
               value={form.phone_number} onChange={(e) => set("phone_number", e.target.value)} />
           </Field>
           <Field label={tp("bio")} htmlFor="bio" optional>
+            {/* mockup-ok: dead-class removal only, base input law already renders fill/border/radius for
+                textarea; the focus-visible:outline-* classes duplicated the global ink-edge focus law
+                (LOCKFILE V3-D449, no double ring), so both are dead (V3-D-input-fill-2026-07-17). */}
             <textarea id="bio" rows={3} maxLength={500} value={form.bio}
               onChange={(e) => set("bio", e.target.value)}
-              className="block w-full font-body font-normal text-[16px] text-s-ink bg-white border border-s-border rounded-[12px] px-4 py-3 placeholder:text-s-ink-3 focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:border-s-ink transition-colors duration-150" />
+              className="block w-full font-body font-normal text-[16px] text-s-ink px-4 py-3 placeholder:text-s-ink-3 transition-colors duration-150" />
           </Field>
           <div className="space-y-1.5">
             <FieldLabel>{tp("language")}</FieldLabel>

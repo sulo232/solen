@@ -81,10 +81,10 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
       <div className="space-y-4">
         <div>
           <label className="block text-[12px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{t("step1.name")}</label>
-          <input
+          <input // mockup-ok: dead-class removal only, base input law (globals.css) already renders fill/border/radius; !border-s-accent keeps the error edge visible under the widened base rule (V3-D-input-fill-2026-07-17)
             value={data.name}
             onChange={(e) => onChange({ ...data, name: e.target.value })}
-            className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink bg-white transition-[border-color,box-shadow] shadow-warm-sm ${errors.name ? "border-s-accent" : "border-s-border"}`}
+            className={`w-full px-4 py-3 text-sm text-s-ink transition-[border-color,box-shadow] shadow-warm-sm ${errors.name ? "!border-s-accent" : ""}`}
             placeholder={t("step1.namePlaceholder")}
           />
           {errors.name && <p className="text-xs text-s-error mt-0.5">{errors.name}</p>}
@@ -92,11 +92,11 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
 
         <div>
           <label className="block text-[12px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{t("step1.email")}</label>
-          <input
+          <input // mockup-ok: dead-class removal only, base input law already renders fill/border/radius for type=email; !border-s-accent keeps the error edge visible (V3-D-input-fill-2026-07-17)
             type="email"
             value={data.email}
             onChange={(e) => onChange({ ...data, email: e.target.value })}
-            className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink bg-white transition-[border-color,box-shadow] shadow-warm-sm ${errors.email ? "border-s-accent" : "border-s-border"}`}
+            className={`w-full px-4 py-3 text-sm text-s-ink transition-[border-color,box-shadow] shadow-warm-sm ${errors.email ? "!border-s-accent" : ""}`}
             placeholder={t("step1.emailPlaceholder")}
           />
           {errors.email && <p className="text-xs text-s-error mt-0.5">{errors.email}</p>}
@@ -127,10 +127,10 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
         <div className="grid grid-cols-1 gap-4">
           <div>
             <label className="block text-[12px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{/* will add translations later if needed */} Stadt</label>
-            <select
+            <select // mockup-ok: dead-class removal only, base input law already renders fill/border/radius for select; !border-s-accent keeps the error edge visible (V3-D-input-fill-2026-07-17)
               value={data.city}
               onChange={(e) => onChange({ ...data, city: e.target.value })}
-              className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink bg-white shadow-warm-sm transition-[border-color,box-shadow] ${errors.city ? "border-s-accent" : "border-s-ink/5"}`}
+              className={`w-full px-4 py-3 text-sm text-s-ink shadow-warm-sm transition-[border-color,box-shadow] ${errors.city ? "!border-s-accent" : ""}`}
             >
               <option value="">Stadt wählen</option>
               <option value="zuerich">Zürich</option>
@@ -230,10 +230,10 @@ function Step3({ data, onChange, category, t }: {
             {t("step3Quick.serviceName")}
           </label>
           <div className="relative">
-            <input
+            <input // mockup-ok: dead-class removal only, base input law already renders this fill/border/radius (V3-D-input-fill-2026-07-17)
               value={data.service_name}
               onChange={(e) => onChange({ ...data, service_name: e.target.value })}
-              className="w-full px-4 py-3 rounded-input border border-s-border text-sm text-s-ink bg-white transition-[border-color,box-shadow] shadow-warm-sm"
+              className="w-full px-4 py-3 text-sm text-s-ink transition-[border-color,box-shadow] shadow-warm-sm"
               placeholder="z. B. Waschen, Schneiden, Föhnen"
             />
             {suggesting && (
@@ -257,10 +257,10 @@ function Step3({ data, onChange, category, t }: {
             <label className="block text-[12px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">
               {t("step3Quick.duration")}
             </label>
-            <select
+            <select // mockup-ok: dead-class removal only, base input law already renders this fill/border/radius (V3-D-input-fill-2026-07-17)
               value={data.service_duration}
               onChange={(e) => onChange({ ...data, service_duration: +e.target.value })}
-              className="w-full px-4 py-3 rounded-input border border-s-ink/5 text-sm text-s-ink bg-white shadow-warm-sm transition-[border-color,box-shadow]"
+              className="w-full px-4 py-3 text-sm text-s-ink shadow-warm-sm transition-[border-color,box-shadow]"
             >
               {[15, 30, 45, 60, 75, 90, 120].map((d) => (
                 <option key={d} value={d}>{d} min</option>
@@ -271,12 +271,12 @@ function Step3({ data, onChange, category, t }: {
             <label className="block text-[12px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">
               {t("step3Quick.price")}
             </label>
-            <input
+            <input // mockup-ok: dead-class removal only, base input law already renders this fill/border/radius (V3-D-input-fill-2026-07-17)
               type="number"
               min={0}
               value={data.service_price}
               onChange={(e) => onChange({ ...data, service_price: +e.target.value })}
-              className="w-full px-4 py-3 rounded-input border border-s-ink/5 text-sm text-s-ink bg-white transition-all shadow-warm-sm"
+              className="w-full px-4 py-3 text-sm text-s-ink transition-all shadow-warm-sm"
               placeholder="CHF"
             />
           </div>

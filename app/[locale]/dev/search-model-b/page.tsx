@@ -217,18 +217,23 @@ function SearchBar({ line1, value, onChange }: { line1: string; value: string; o
             {" "}Basel
           </span>
         </span>
-        {/* No `type="text"` , matches the real SearchOverlay.tsx input (L449): that
-            attribute triggers globals.css's base `input[type="text"]` rule (min-height
-            48px, 16px font, filled-gray bg, 1rem padding), which out-specifies the
-            Tailwind utilities below and would balloon this compact inline line to the
-            wrong size. Omitting the type keeps the bare `<input>` reset (font-size:100%,
-            padding:0) so the utility classes actually apply. */}
+        {/* No `type="text"` , matches the real SearchOverlay.tsx input (L449). UPDATE
+            2026-07-17: globals.css's base input law now also reaches bare (typeless)
+            `<input>`s, not just typed ones, so omitting the type no longer exempts this
+            field on its own; the `!border-0 !bg-transparent` below is what actually keeps
+            the compact inline reset (font-size:100%, padding:0) and stops the law's
+            min-height/16px-font/filled-gray/1rem-padding from ballooning this line. */}
+        {/* mockup-ok: !important preserves the existing look, matches the real SearchOverlay.tsx
+            carve-out against the widened base input law (globals.css, 2026-07-17, also sets
+            min-height:48px/padding:16px/font-size:16px, exactly the "balloon this compact
+            inline line" risk the comment above already named). english-ok: placeholder text
+            unchanged, pre-existing German copy mirroring the real UI (V3-D-input-fill-2026-07-17). */}
         <input
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="Balayage, Bart, Maniküre..."
           aria-label="Service suchen"
-          className="block w-full truncate border-0 bg-transparent p-0 font-body text-[12.5px] text-s-ink-2 outline-none placeholder:text-s-ink-3 focus:text-s-ink"
+          className="block w-full truncate !border-0 !bg-transparent !min-h-0 !p-0 font-body !text-[12.5px] text-s-ink-2 outline-none placeholder:text-s-ink-3 focus:text-s-ink"
         />
       </span>
       <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-s-border text-s-ink">

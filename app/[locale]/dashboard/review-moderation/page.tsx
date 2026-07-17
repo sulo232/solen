@@ -224,7 +224,7 @@ export default function ReviewModerationPage() {
                     placeholder={t("responsePlaceholder")}
                     value={adminResponses[r.id] ?? ""}
                     onChange={(e) => setAdminResponses((prev) => ({ ...prev, [r.id]: e.target.value }))}
-                    className="flex-1 px-3 py-2 rounded-btn border border-s-border bg-white text-s-ink text-xs focus:outline-none focus:border-s-ink"
+                    className="flex-1 px-3 py-2 text-s-ink text-xs focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
                   />
                   <button
                     onClick={() => handleAdminResponse(r.id)}

@@ -235,7 +235,7 @@ function NewsletterForm() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="deine@email.ch"
-        className="w-full rounded-[12px] border border-s-border bg-white py-[12px] pl-[14px] pr-[48px] font-body text-[14px] text-s-ink outline-none transition-colors placeholder:text-s-ink-3 focus:border-s-ink"
+        className="w-full py-[12px] pl-[14px] !pr-[48px] font-body text-[14px] text-s-ink outline-none transition-colors placeholder:text-s-ink-3" // mockup-ok: !important carve-out, base input rule (globals.css, V3-D-input-fill-2026-07-17) out-specifies plain pr-[48px] and collapses right padding to 16px, letting typed text run under the absolute submit button
       />
       {/* mockup-ok: DS-4 nested-radius formula (LOCKFILE:428-431, locked law). This
           button sits inset right-6/top-6 inside the input (rounded-[12px]); inner =

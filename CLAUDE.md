@@ -56,13 +56,13 @@ Frozen single-values. Do NOT re-open any row without the owner saying so by name
 | text size | name **14** · meta **12** · section-H2 **clamp(18px,2vw,20)** · body **14** · CTA **15** (never ≤13 on a button) · eyebrow **11** |
 | hierarchy | name leads by SIZE; price bold-ink but smaller than name; rating = yellow star; filler (category·city·distance) greys out |
 | availability | **plain ink text — NO green pill** (owner call, do not re-add) |
-| radius | card/block **16** (`rounded-card`) · button/chip pill · input **16** · sheet **28** · image flush(0) |
+| radius | card/block **16** (`rounded-card`) · button/chip pill · input **12** (corrected 2026-07-17, see below) · sheet **28** · image flush(0) |
 | spacing | 4-pt scale only; card pad `p-4`/`p-3`; page `max-w-[1280px]` (PDP 1180) |
 | wrap | name truncate · meta truncate · title wrap · body line-clamp · price/rating nowrap |
 | icon-button | `h-11 w-11` |
 | hairline | `border-s-border` = **`#E4E4E7`** (cool neutral, v2 rule 4; reverses warm V3-D447 #E0DDDB; one token, every divider) |
 | states | loading = `<Skeleton>` (shape matches the final layout, NOT a bare spinner) · empty = `<EmptyState>` · error = `<ErrorState>` (inline) / `ErrorFallback` (route). All exist + locked in COMPONENT_REGISTRY — USE them, don't hand-roll. |
-| focus | inputs: ONE ink edge — `border-s-ink` + a single soft halo `box-shadow:0 0 0 3px rgba(10,10,10,.10)`, set globally in globals.css; primitives add NO extra `outline` (V3-D449 — no double ring). buttons/links: the global 2px ink `outline`. |
+| focus | inputs: ONE ink edge only, `border-s-ink` (#0A0A0A) + white fill, NO halo, set globally in globals.css (`input:focus-visible`, unlayered on purpose); primitives add NO extra `outline` (V3-D449, no double ring). buttons/links: the global 2px ink `outline`. Corrected 2026-07-17 (owner, input-fill decision, verbatim "for input decision both a and b2 was the problem i hated that sh"): the soft `box-shadow` halo this row used to describe is DEAD by name for the third time (owner killed focus rings 2026-07-01 and 2026-07-02 too); the global `no-focus-ring-gate` already refuses it. Input fill itself = filled gray `#F4F4F5` at rest (LOCKFILE §3.5 depth system), radius **12** not 16 (see radius row, LOCKFILE §12.2 line ~422 already had this right, this row had drifted). |
 | disabled | `opacity-50 cursor-not-allowed` (e.g. the commit button before a slot is picked) |
 | touch target | interactive controls ≥ 44px (`h-11`), the a11y floor |
 | filter pill | selected = `bg-s-bg-sunken` + `text-s-ink` + semibold (calm gray, never blue-border, never black); unselected = white + hairline, hover deepens text (owner 2026-06-29, supersedes V3-D450) |

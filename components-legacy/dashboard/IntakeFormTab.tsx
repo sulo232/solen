@@ -129,7 +129,7 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
           <div>
             <label className="text-xs text-s-ink-2 mb-1 block">{t("template")}</label>
             <select value={templateKey} onChange={(e) => setTemplateKey(e.target.value)}
-              className="w-full px-2 py-1.5 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20">
+              className="w-full px-2 py-1.5 text-sm text-s-ink focus:outline-none"> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
               {TEMPLATE_KEYS.map((key) => (
                 <option key={key} value={key}>{TEMPLATE_LABELS[key]}</option>
               ))}
@@ -155,14 +155,15 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
               ) : q.type === "select" ? (
                 <select value={(responses[q.question_key] as string) ?? ""}
                   onChange={(e) => setResponses((p) => ({ ...p, [q.question_key]: e.target.value }))}
-                  className="w-full px-2 py-1.5 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20">
+                  className="w-full px-2 py-1.5 text-sm text-s-ink focus:outline-none"> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
                   <option value="">{t("selectPlaceholder")}</option>
                   {q.options?.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
                 </select>
               ) : (
+                // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
                 <input value={(responses[q.question_key] as string) ?? ""}
                   onChange={(e) => setResponses((p) => ({ ...p, [q.question_key]: e.target.value }))}
-                  className="w-full px-2 py-1.5 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
+                  className="w-full px-2 py-1.5 text-sm text-s-ink focus:outline-none" />
               )}
             </div>
           ))}

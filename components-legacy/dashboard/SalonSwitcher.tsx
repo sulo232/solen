@@ -145,11 +145,17 @@ export default function SalonSwitcher({
                 <div className="px-4 pb-2">
                   <div className="flex items-center gap-2 rounded-xl bg-s-bg-sunken px-3 h-10">
                     <Search size={15} className="text-s-ink-3" />
+                    {/* mockup-ok: !important prevents a look change, not a new one. The row
+                        owns the visible chrome (bg-s-bg-sunken rounded-xl h-10, a FIXED 40px);
+                        this input must stay invisible AND compact inside it, or the widened
+                        base input law (globals.css, 2026-07-17, also sets min-height:48px,
+                        overflowing this 40px row) paints a second box AND overflows
+                        (V3-D-input-fill-2026-07-17). */}
                     <input
                       value={q}
                       onChange={(e) => setQ(e.target.value)}
                       placeholder="Salon suchen…"
-                      className="flex-1 bg-transparent text-[14px] outline-none placeholder:text-s-ink-3"
+                      className="flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[14px] outline-none placeholder:text-s-ink-3"
                     />
                   </div>
                 </div>

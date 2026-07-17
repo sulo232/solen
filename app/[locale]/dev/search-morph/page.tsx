@@ -225,9 +225,12 @@ export default function SearchMorphPreviewPage() {
         ) : (
           <span className="grid h-6 w-6 shrink-0 place-items-center"><Search size={19} strokeWidth={2} className="text-s-ink-3" /></span>
         )}
+        {/* mockup-ok: !important preserves the existing look, matches the real SearchOverlay.tsx
+            carve-out against the widened base input law (globals.css, 2026-07-17, also sets
+            min-height:48px/padding:16px/font-size:16px) (V3-D-input-fill-2026-07-17). */}
         <input ref={ref} value={inputFocused ? q : (isS ? service : city)}
           onFocus={() => { setInputFocused(true); grow(1); }} onChange={(e) => setQ(e.target.value)} placeholder={ph}
-          className="min-w-0 flex-1 border-0 bg-transparent px-0 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:border-s-border focus-visible:shadow-none focus-visible:outline-none" />
+          className="min-w-0 flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[15px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:outline-none" />
         {inputFocused && q.length > 0 && (
           <button onClick={() => { setQ(""); ref.current?.focus(); }} aria-label="Eingabe löschen"
             className="shrink-0 text-s-ink-3"><X size={18} strokeWidth={2.2} /></button>
@@ -347,8 +350,11 @@ export default function SearchMorphPreviewPage() {
                       <h2 className="mb-3 shrink-0 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Wo?</h2>
                       <div className="mb-2 flex h-12 shrink-0 items-center gap-2 rounded-[14px] border border-s-border bg-white px-3.5">
                         <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-3" />
+                        {/* mockup-ok: !important preserves the existing look
+                            (V3-D-input-fill-2026-07-17). english-ok: placeholder text unchanged,
+                            pre-existing German copy mirroring the real German-locale UI. */}
                         <input ref={cityRef} value={cityQ} onChange={(e) => setCityQ(e.target.value)} placeholder="Stadt suchen"
-                          className="min-w-0 flex-1 border-0 bg-transparent px-0 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:border-s-border focus-visible:shadow-none focus-visible:outline-none" />
+                          className="min-w-0 flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[15px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:outline-none" />
                         {cityQ.length > 0 && <button onClick={() => { setCityQ(""); cityRef.current?.focus(); }} aria-label="Eingabe löschen" className="shrink-0 text-s-ink-3"><X size={18} strokeWidth={2.2} /></button>}
                       </div>
                       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">{cityList()}</div>

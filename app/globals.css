@@ -310,14 +310,29 @@
 }
 
 /* ── Phase 5.1: Standardized input styles ─────────────────────────── */
+/* 2026-07-17 (owner, verbatim "for input decision both a and b2 was the problem i hated
+   that sh"): input fill = A, filled gray (#F4F4F5, no hairline, radius 12, white on focus).
+   This is now THE ONE TRUTH for fill/border/radius on every text-entry field.
+
+   Selector widened from an explicit type=text/email/password/tel/number/search/url list to
+   `input:not([the 10 non-text native types])`, because the explicit list missed BARE
+   `<input>` (no `type` attribute at all, e.g. booking/lookup's #lookup-code) and date/time
+   types (date/time/datetime-local/month/week), which rendered whatever the component's own
+   Tailwind classes said instead of the depth-system gray fill (the two-look form this fixes).
+   The :not() chain keeps the native browser chrome (checkbox/radio/range/file/color/submit/
+   button/image/reset/hidden) exempt, those were never in scope and must stay untouched.
+
+   CARVE-OUT: fields where a WRAPPER div (not the input) owns the visible chrome, search
+   boxes with an icon + input nested in a bordered/filled row (SearchOverlay, CommandPalette,
+   SalonSwitcher, dashboard search bars, the refund partial-amount field), deliberately ship
+   `border-0`/`bg-transparent` etc. on the bare input itself so it blends invisibly into the
+   wrapper. Widening this selector to bare inputs would now win on specificity and paint a
+   second box inside the wrapper. Those inputs are protected with Tailwind `!important`
+   prefixes on the specific instance (`!border-0 !bg-transparent`), the same pattern already
+   used for the documented Inspo search carve-out (`input.discovery-searchbar`,
+   _design-system/REMOVED.md around line 34), do not remove those `!` prefixes. */
 @layer base {
-  input[type="text"],
-  input[type="email"],
-  input[type="password"],
-  input[type="tel"],
-  input[type="number"],
-  input[type="search"],
-  input[type="url"],
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="color"]):not([type="submit"]):not([type="button"]):not([type="image"]):not([type="reset"]):not([type="hidden"]),
   textarea,
   select {
     min-height: 48px;
@@ -343,10 +358,12 @@
     resize: vertical;
   }
 
-  input[type="text"].input-error,
-  input[type="email"].input-error,
-  input[type="password"].input-error,
-  textarea.input-error {
+  /* Widened alongside the base rule above (2026-07-17) so `.input-error` reliably beats the
+     resting transparent border on every field type this rule now covers, not just the three
+     that happened to be listed before. */
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="color"]):not([type="submit"]):not([type="button"]):not([type="image"]):not([type="reset"]):not([type="hidden"]).input-error,
+  textarea.input-error,
+  select.input-error {
     border-color: var(--color-error);
   }
 
@@ -1225,7 +1242,16 @@ select:focus-visible {
      focus edge silently never rendered. The file's own GuidedSearch override
      below already had to reach for !important against the same wall. */
   border-color: #0A0A0A !important;
-  background: #ffffff;
+  /* !important added 2026-07-17: the base input law's selector widened from a
+     comma-list of `input[type="x"]` branches (each specificity 0,1,1, tied with
+     this rule so source order settled it in the focus law's favor) to a single
+     `input:not([type=...]):not(...)...` chain (specificity ~0,10,1, no longer a
+     tie). That out-specified this plain `background` on focus, leaving fields
+     stuck gray instead of the owner's locked "goes white on focus" (input-fill
+     decision, V3-D-input-fill-2026-07-17). Measured live on /de/booking/lookup:
+     without !important, #lookup-code stayed rgb(244,244,245) on focus instead
+     of white. */
+  background: #ffffff !important;
 }
 
 @media (hover: none) and (pointer: coarse) {

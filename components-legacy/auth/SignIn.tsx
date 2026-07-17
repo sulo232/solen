@@ -177,7 +177,7 @@ export default function SignIn() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t("email_placeholder")}
             required
-            className="w-full px-4 py-3.5 rounded-input border border-s-border bg-[--raised] text-sm font-body text-s-ink placeholder:text-s-ink/30 transition-colors"
+            className="w-full px-4 py-3.5 bg-[--raised] text-sm font-body text-s-ink placeholder:text-s-ink/30 transition-colors" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
           />
           <button
             type="submit"
@@ -206,7 +206,7 @@ export default function SignIn() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("email_placeholder")}
           required
-          className="w-full h-14 px-5 rounded-2xl bg-s-bg-sunken text-[15px] text-s-ink placeholder:text-s-ink-2 border border-transparent focus:outline-none focus:bg-white transition-colors"
+          className="w-full h-14 px-5 text-[15px] text-s-ink placeholder:text-s-ink-2 focus:outline-none transition-colors" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
         />
         <div className="relative">
           <input
@@ -215,7 +215,7 @@ export default function SignIn() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Passwort"
             required
-            className="w-full h-14 px-5 pr-12 rounded-2xl bg-s-bg-sunken text-[15px] text-s-ink placeholder:text-s-ink-2 border border-transparent focus:outline-none focus:bg-white transition-colors"
+            className="w-full h-14 px-5 !pr-12 text-[15px] text-s-ink placeholder:text-s-ink-2 focus:outline-none transition-colors" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
           />
           <button
             type="button"

@@ -123,7 +123,7 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
           onChange={(e) => setTexts({ ...texts, [activeLang]: e.target.value })}
           maxLength={maxLength}
           placeholder={t("placeholder")}
-          className="w-full h-32 p-4 rounded-input border border-s-border bg-s-bg-surface text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral resize-none transition-[border-color,box-shadow] duration-150 placeholder:text-s-ink/30"
+          className="w-full h-32 p-4 text-sm text-s-ink focus:outline-none resize-none transition-[border-color,box-shadow] duration-150 placeholder:text-s-ink/30" // mockup-ok: bg-s-bg-surface removed, it aliased #FFFFFF and was the one field still painting white instead of the locked #F4F4F5 base rule (V3-D-input-fill-2026-07-17)
         />
         <div className="absolute bottom-3 right-3 text-[12px] font-medium text-s-ink/30">
           {texts[activeLang]?.length || 0} / {maxLength}

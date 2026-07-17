@@ -170,13 +170,13 @@ function StockImportTab() {
           onKeyDown={(e) => e.key === "Enter" && handleSearch()}
           placeholder={t("searchPhotosPlaceholder")}
           aria-label={t("searchStockAria")}
-          className="flex-1 min-w-[200px] px-4 py-2.5 rounded-btn bg-s-bg-sunken border border-s-border text-sm text-s-ink placeholder:text-s-ink/30"
+          className="flex-1 min-w-[200px] px-4 py-2.5 text-sm text-s-ink placeholder:text-s-ink/30" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
         />
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value as DiscoveryCategory)}
           aria-label={t("categoryFilterAria")}
-          className="px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-border text-sm"
+          className="px-3 py-2.5 text-sm" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
         >
           {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
@@ -296,7 +296,7 @@ function TikTokImportTab() {
         value={category}
         onChange={(e) => setCategory(e.target.value as DiscoveryCategory)}
         aria-label={t("tiktokCategoryAria")}
-        className="px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-border text-sm"
+        className="px-3 py-2.5 text-sm" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
       >
         {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
       </select>
@@ -306,7 +306,7 @@ function TikTokImportTab() {
         rows={8}
         aria-label={t("tiktokUrlsAria")}
         placeholder={"https://www.tiktok.com/@user/video/123...\nhttps://www.tiktok.com/@user/video/456..."}
-        className="w-full px-4 py-3 rounded-[12px] bg-s-bg-sunken border border-s-border text-sm text-s-ink placeholder:text-s-ink/30 font-mono"
+        className="w-full px-4 py-3 text-sm text-s-ink placeholder:text-s-ink/30 font-mono" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
       />
       {loading && (
         <AIProcessingIndicator text={progress ? `${t("tiktokProcessing")} ${progress.done}/${progress.total}` : t("tiktokProcessing")} />
@@ -367,7 +367,7 @@ function ManualUploadTab() {
         value={category}
         onChange={(e) => setCategory(e.target.value as DiscoveryCategory)}
         aria-label={t("uploadCategoryAria")}
-        className="px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-border text-sm"
+        className="px-3 py-2.5 text-sm" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
       >
         {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
       </select>
@@ -456,7 +456,7 @@ function StagingTab() {
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           aria-label={t("stagingCategoryAria")}
-          className="px-3 py-2 rounded-btn bg-s-bg-sunken border border-s-border text-sm"
+          className="px-3 py-2 text-sm" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
         >
           <option value="">{t("allCategories")}</option>
           {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
@@ -634,7 +634,7 @@ function PublishedTab() {
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           aria-label={t("publishedCategoryAria")}
-          className="px-3 py-2 rounded-btn bg-s-bg-sunken border border-s-border text-sm"
+          className="px-3 py-2 text-sm" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
         >
           <option value="">{t("allCategories")}</option>
           {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}

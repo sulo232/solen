@@ -181,7 +181,7 @@ export default function EditorPage() {
             value={urlPath}
             onChange={(e) => setUrlPath(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleNavigate()}
-            className="flex-1 bg-s-bg-sunken rounded-btn border border-s-border px-3 py-1.5 text-xs font-mono text-s-ink"
+            className="flex-1 px-3 py-1.5 text-xs font-mono text-s-ink" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
             placeholder="/de/..."
           />
         </div>

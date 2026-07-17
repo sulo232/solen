@@ -87,7 +87,7 @@ export default function AiArtGenerator() {
         <label className="block">
           <span className="text-xs font-medium text-s-ink-2">{t("shape")}</span>
           <select value={shape} onChange={(e) => setShape(e.target.value)}
-            className="mt-1 w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink">
+            className="mt-1 w-full px-3 py-2 text-sm text-s-ink"> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
             {SHAPE_OPTIONS.map((s) => <option key={s.value} value={s.value}>{t(`shapes.${s.value}` as any)}</option>)}
           </select>
         </label>
@@ -95,7 +95,7 @@ export default function AiArtGenerator() {
         <label className="block">
           <span className="text-xs font-medium text-s-ink-2">{t("style")}</span>
           <select value={style} onChange={(e) => setStyle(e.target.value)}
-            className="mt-1 w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink">
+            className="mt-1 w-full px-3 py-2 text-sm text-s-ink"> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
             {STYLE_PRESETS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
         </label>
@@ -103,7 +103,7 @@ export default function AiArtGenerator() {
         <label className="block">
           <span className="text-xs font-medium text-s-ink-2">{t("color")}</span>
           <select value={colors} onChange={(e) => setColors(e.target.value)}
-            className="mt-1 w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink">
+            className="mt-1 w-full px-3 py-2 text-sm text-s-ink"> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
             {COLOR_PRESETS.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
           </select>
         </label>
@@ -111,7 +111,7 @@ export default function AiArtGenerator() {
         <label className="block">
           <span className="text-xs font-medium text-s-ink-2">{t("skin_tone")}</span>
           <select value={skinTone} onChange={(e) => setSkinTone(e.target.value)}
-            className="mt-1 w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink">
+            className="mt-1 w-full px-3 py-2 text-sm text-s-ink"> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
             {SKIN_TONE_PRESETS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
         </label>

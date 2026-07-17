@@ -159,7 +159,7 @@ export default function ApprovalsPage() {
               })}
             </p>
             <textarea
-              className="w-full border border-s-border rounded-btn px-3 py-2 text-sm text-s-ink resize-none focus:outline-none focus:border-s-ink"
+              className="w-full px-3 py-2 text-sm text-s-ink resize-none focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               rows={4}
               placeholder={t("rejectReasonPlaceholder")}
               value={rejectReason}

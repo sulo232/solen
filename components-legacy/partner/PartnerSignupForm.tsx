@@ -56,7 +56,7 @@ export default function PartnerSignupForm() {
           value={salonName}
           onChange={(e) => setSalonName(e.target.value)}
           placeholder={t("form_salon_name_placeholder")}
-          className="w-full px-5 py-3.5 bg-white border border-s-border rounded-[12px] text-sm font-body text-s-ink transition-colors"
+          className="w-full px-5 py-3.5 text-sm font-body text-s-ink transition-colors" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
         />
         <input
           type="email"
@@ -64,7 +64,7 @@ export default function PartnerSignupForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("form_email_placeholder")}
-          className="w-full px-5 py-3.5 bg-white border border-s-border rounded-[12px] text-sm font-body text-s-ink transition-colors"
+          className="w-full px-5 py-3.5 text-sm font-body text-s-ink transition-colors" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
         />
         <button
           type="submit"

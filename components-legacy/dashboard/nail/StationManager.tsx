@@ -61,7 +61,7 @@ export default function StationManager({ salonId }: { salonId: string }) {
             max={20}
             value={config.total_stations}
             onChange={(e) => setConfig({ ...config, total_stations: parseInt(e.target.value) || 1 })}
-            className="mt-1 w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink"
+            className="mt-1 w-full px-3 py-2 text-sm text-s-ink" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
           />
         </label>
 
@@ -73,7 +73,7 @@ export default function StationManager({ salonId }: { salonId: string }) {
             max={20}
             value={config.uv_lamp_count}
             onChange={(e) => setConfig({ ...config, uv_lamp_count: parseInt(e.target.value) || 0 })}
-            className="mt-1 w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink"
+            className="mt-1 w-full px-3 py-2 text-sm text-s-ink" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
           />
         </label>
 
@@ -85,7 +85,7 @@ export default function StationManager({ salonId }: { salonId: string }) {
             max={60}
             value={config.sterilization_buffer_minutes}
             onChange={(e) => setConfig({ ...config, sterilization_buffer_minutes: parseInt(e.target.value) || 0 })}
-            className="mt-1 w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink"
+            className="mt-1 w-full px-3 py-2 text-sm text-s-ink" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
           />
         </label>
       </div>

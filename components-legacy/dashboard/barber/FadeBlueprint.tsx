@@ -329,7 +329,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
                   beard_style: e.target.value,
                 }))
               }
-              className="w-full text-xs rounded-[8px] border border-s-border bg-white text-s-ink p-2"
+              className="w-full text-xs text-s-ink p-2" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               aria-label={t("beard_style")}
             >
               {BEARD_STYLES.map((bs) => (
@@ -349,7 +349,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
           }
           placeholder={t("blueprint_notes_placeholder")}
           rows={2}
-          className="w-full text-xs rounded-[8px] border border-s-border bg-white text-s-ink p-2 resize-none"
+          className="w-full text-xs text-s-ink p-2 resize-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
           aria-label={t("notes")}
         />
 

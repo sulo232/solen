@@ -67,7 +67,7 @@ const PRICING_MODE_KEY: Record<BundlePricingMode, "pricingModeSum" | "pricingMod
   percent: "pricingModePercent",
   custom: "pricingModeCustom",
 };
-const inputClass = "w-full px-3 py-2 rounded-btn border border-s-border text-sm";
+const inputClass = "w-full px-3 py-2 text-sm"; // mockup-ok: dead-class removal only, base input law already renders this fill/border/radius (V3-D-input-fill-2026-07-17)
 
 // ─────────────────────────────────────────
 // Builder form (create or edit)

@@ -96,7 +96,7 @@ export default function ConsultationNotes({ clientId, salonId }: ConsultationNot
     );
   }
 
-  const inputClass = "w-full px-2 py-1.5 rounded-[8px] border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20";
+  const inputClass = "w-full px-2 py-1.5 text-sm text-s-ink focus:outline-none"; // mockup-ok: dead-class removal only, base input law already renders this fill/border/radius (V3-D-input-fill-2026-07-17)
 
   return (
     <div className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-white">

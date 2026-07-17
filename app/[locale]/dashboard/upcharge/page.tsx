@@ -235,7 +235,7 @@ export default function SalonUpchargePage() {
                           type="number"
                           value={newTotal}
                           onChange={(e) => setNewTotal(e.target.value)}
-                          className="w-full h-11 !pl-11 pr-3 rounded-[10px] border border-s-border font-heading text-[15px] font-semibold tabular-nums text-s-ink"
+                          className="w-full h-11 !pl-11 pr-3 font-heading text-[15px] font-semibold tabular-nums text-s-ink" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
                         />
                       </div>
                     </div>
@@ -263,7 +263,7 @@ export default function SalonUpchargePage() {
                     placeholder={t("reasonPlaceholder")}
                     rows={2}
                     maxLength={500}
-                    className="w-full px-3 py-2 mb-4 rounded-[10px] border border-s-border text-[13px] resize-none"
+                    className="w-full px-3 py-2 mb-4 text-[13px] resize-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
                   />
 
                   <button

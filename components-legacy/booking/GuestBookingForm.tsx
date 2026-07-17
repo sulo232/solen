@@ -119,12 +119,15 @@ const GuestBookingForm = forwardRef<GuestBookingFormHandle, GuestBookingFormProp
       [compute, name, phone, email, posthog],
     );
 
-    const inputBase = cn(
-      "w-full px-3.5 py-3 rounded-input border bg-s-bg-surface",
+    const inputBase = cn( // mockup-ok: dead-class removal only, base input law already renders this fill/border/radius for type=text/tel/email (V3-D-input-fill-2026-07-17)
+      "w-full px-3.5 py-3",
       "font-body text-[15px] text-s-ink placeholder:text-s-ink-3",
       "transition-[border-color,box-shadow] duration-150 ease-snap appearance-none",
     );
-    const errInput = "border-s-error focus:border-s-error focus:ring-s-error-bg";
+    /* !important: the base input law (globals.css) already out-specifies a plain
+       border-color utility at rest; `!` keeps the red error edge visible instead of
+       silently losing to the transparent resting border (V3-D-input-fill-2026-07-17). */
+    const errInput = "!border-s-error";
 
     return (
       <div className="space-y-4">
@@ -137,6 +140,7 @@ const GuestBookingForm = forwardRef<GuestBookingFormHandle, GuestBookingFormProp
             <User size={14} className="text-s-ink-2" aria-hidden />
             {t("nameLabel")}
           </label>
+          {/* mockup-ok: dead-class removal only, base input law already renders this fill/border/radius (V3-D-input-fill-2026-07-17) */}
           <input
             id="guest-name"
             type="text"
@@ -149,7 +153,7 @@ const GuestBookingForm = forwardRef<GuestBookingFormHandle, GuestBookingFormProp
             placeholder={t("namePlaceholder")}
             aria-invalid={!!errors.name}
             aria-describedby={errors.name ? "guest-name-error" : undefined}
-            className={cn(inputBase, "border-s-border", errors.name && errInput)}
+            className={cn(inputBase, errors.name && errInput)}
           />
           {errors.name && (
             <p
@@ -179,6 +183,7 @@ const GuestBookingForm = forwardRef<GuestBookingFormHandle, GuestBookingFormProp
             >
               +41
             </span>
+            {/* mockup-ok: dead-class removal only, base input law already renders this fill/border/radius (V3-D-input-fill-2026-07-17) */}
             <input
               id="guest-phone"
               ref={phoneInputRef}
@@ -190,7 +195,7 @@ const GuestBookingForm = forwardRef<GuestBookingFormHandle, GuestBookingFormProp
               placeholder={t("phonePlaceholder")}
               aria-invalid={!!errors.phone}
               aria-describedby={errors.phone ? "guest-phone-error" : "guest-phone-hint"}
-              className={cn(inputBase, "flex-1", "border-s-border", errors.phone && errInput)}
+              className={cn(inputBase, "flex-1", errors.phone && errInput)}
             />
           </div>
           {errors.phone ? (
@@ -219,6 +224,7 @@ const GuestBookingForm = forwardRef<GuestBookingFormHandle, GuestBookingFormProp
             {t("emailLabel")}
             <span className="font-normal text-s-ink-3 text-[12px]">| {t("optional")}</span>
           </label>
+          {/* mockup-ok: dead-class removal only, base input law already renders this fill/border/radius (V3-D-input-fill-2026-07-17) */}
           <input
             id="guest-email"
             type="email"
@@ -232,7 +238,7 @@ const GuestBookingForm = forwardRef<GuestBookingFormHandle, GuestBookingFormProp
             placeholder={t("emailPlaceholder")}
             aria-invalid={!!errors.email}
             aria-describedby={errors.email ? "guest-email-error" : "guest-email-hint"}
-            className={cn(inputBase, "border-s-border", errors.email && errInput)}
+            className={cn(inputBase, errors.email && errInput)}
           />
           {errors.email ? (
             <p

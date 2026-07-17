@@ -107,13 +107,18 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
         {/* Search input */}
         <div className="flex items-center gap-3 px-4 py-3.5 border-b border-s-ink/[0.06]">
           <Search size={15} className="text-s-ink-2 shrink-0" />
+          {/* mockup-ok: !important prevents a look change, not a new one. The dialog row owns
+              the visible chrome + padding; this input must stay invisible AND compact inside
+              it, or the widened base input law (globals.css, 2026-07-17, also sets
+              min-height:48px/padding:16px/font-size:16px) paints a second box AND balloons
+              the row (V3-D-input-fill-2026-07-17). */}
           <input
             ref={inputRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t("cmdPlaceholder")}
             aria-label={t("cmdPlaceholder")}
-            className="flex-1 text-sm text-s-ink bg-transparent outline-none placeholder:text-s-ink/30"
+            className="flex-1 text-s-ink !border-0 !bg-transparent !min-h-0 !px-0 !text-sm outline-none placeholder:text-s-ink/30"
           />
           <button onClick={onClose} aria-label={t("close")} className="p-2 rounded-pill hover:bg-s-ink/5:bg-white/5 transition-colors duration-150">
             <X size={16} className="text-s-ink/40" />

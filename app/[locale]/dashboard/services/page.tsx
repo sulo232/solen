@@ -93,19 +93,19 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
             <div>
               <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('nameDeLabel')}</label>
               <input value={form.name_de} onChange={(e) => setForm({ ...form, name_de: e.target.value })}
-                className="w-full px-3 py-2 rounded-btn border border-s-border text-sm" />
+                className="w-full px-3 py-2 text-sm" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
             </div>
             <div>
               <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('nameEnLabel')}</label>
               <input value={form.name_en} onChange={(e) => setForm({ ...form, name_en: e.target.value })}
-                className="w-full px-3 py-2 rounded-btn border border-s-border text-sm" />
+                className="w-full px-3 py-2 text-sm" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('categoryLabel')}</label>
               <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value as SalonCategory })}
-                className="w-full px-2 py-2 rounded-btn border border-s-border text-sm bg-white">
+                className="w-full px-2 py-2 text-sm"> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
                 {salonCategories.map((c) => <option key={c} value={c}>{CATEGORY_LABELS[c]}</option>)}
               </select>
             </div>
@@ -113,19 +113,19 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
               <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('durationLabel')}</label>
               <input type="number" min={15} step={15} value={form.duration_minutes}
                 onChange={(e) => setForm({ ...form, duration_minutes: +e.target.value })}
-                className="w-full px-2 py-2 rounded-btn border border-s-border text-sm" />
+                className="w-full px-2 py-2 text-sm" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
             </div>
             <div>
               <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('priceLabel')}</label>
               <input type="number" min={0} value={form.price}
                 onChange={(e) => setForm({ ...form, price: +e.target.value })}
-                className="w-full px-2 py-2 rounded-btn border border-s-border text-sm" />
+                className="w-full px-2 py-2 text-sm" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
             </div>
           </div>
           <div>
             <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('descriptionLabel')}</label>
             <textarea value={form.description_de} onChange={(e) => setForm({ ...form, description_de: e.target.value })}
-              rows={2} className="w-full px-3 py-2 rounded-btn border border-s-border text-sm resize-none" />
+              rows={2} className="w-full px-3 py-2 text-sm resize-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
           </div>
           {/* Time breakdown fields */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -133,19 +133,19 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
               <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('bufferLabel')}</label>
               <input type="number" min={0} step={5} value={form.buffer_minutes}
                 onChange={(e) => setForm({ ...form, buffer_minutes: +e.target.value })}
-                className="w-full px-2 py-2 rounded-btn border border-s-border text-sm" />
+                className="w-full px-2 py-2 text-sm" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
             </div>
             <div>
               <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('processingLabel')}</label>
               <input type="number" min={0} step={5} value={form.processing_minutes}
                 onChange={(e) => setForm({ ...form, processing_minutes: +e.target.value })}
-                className="w-full px-2 py-2 rounded-btn border border-s-border text-sm" />
+                className="w-full px-2 py-2 text-sm" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
             </div>
             <div>
               <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('finishingLabel')}</label>
               <input type="number" min={0} step={5} value={form.finishing_minutes}
                 onChange={(e) => setForm({ ...form, finishing_minutes: +e.target.value })}
-                className="w-full px-2 py-2 rounded-btn border border-s-border text-sm" />
+                className="w-full px-2 py-2 text-sm" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
             </div>
           </div>
           {/* Service photos */}
@@ -475,11 +475,16 @@ export default function ServicesPage() {
         <>
           <div className="flex items-center gap-2 border border-s-border rounded-[14px] px-3.5 py-2.5 text-s-ink-3 mb-3.5">
             <Search size={17} className="shrink-0" />
+            {/* mockup-ok: !important prevents a look change, not a new one. The wrapper div
+                owns the visible chrome + padding; this input must stay invisible AND compact
+                inside it, or the widened base input law (globals.css, 2026-07-17, also sets
+                min-height:48px/padding:16px/font-size:16px) paints a second box AND balloons
+                the row (V3-D-input-fill-2026-07-17). */}
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t('searchPlaceholder')}
-              className="flex-1 min-w-0 bg-transparent text-[13.5px] text-s-ink placeholder:text-s-ink-3 focus:outline-none"
+              className="flex-1 min-w-0 !border-0 !bg-transparent !min-h-0 !px-0 !text-[13.5px] text-s-ink placeholder:text-s-ink-3 focus:outline-none"
             />
           </div>
           <div className="flex gap-2 mb-4 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pb-1">

@@ -143,7 +143,7 @@ export default function FilterBar({
               value={activeSortFilter?.subId ?? ''}
               onChange={(e) => handleSortChange(e.target.value)}
               aria-label={sortPill.label}
-              className="text-[13px] font-body font-medium text-s-ink-2 bg-transparent border border-s-border rounded-pill px-3 py-1.5 cursor-pointer appearance-none"
+              className="text-[13px] font-body font-medium text-s-ink-2 px-3 py-1.5 cursor-pointer appearance-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
             >
               <option value="">{sortPill.label} ▾</option>
               {sortPill.subFilters?.map((sf) => (

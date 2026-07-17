@@ -159,7 +159,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
               value={form.name}
               onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
               aria-label={t("room_name")}
-              className="w-full rounded-[8px] border border-s-ink/[0.10] px-3 py-2 text-xs bg-transparent text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+              className="w-full px-3 py-2 text-xs text-s-ink focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
             />
           </div>
 
@@ -173,7 +173,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
                 value={form.room_type}
                 onChange={(e) => setForm((p) => ({ ...p, room_type: e.target.value }))}
                 aria-label={t("room_type_label")}
-                className="w-full rounded-[8px] border border-s-ink/[0.10] px-3 py-2 text-xs bg-transparent text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+                className="w-full px-3 py-2 text-xs text-s-ink focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               >
                 {ROOM_TYPES.map((rt) => (
                   <option key={rt} value={rt}>{t(`room_type.${rt}`)}</option>
@@ -191,7 +191,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
                 value={form.capacity}
                 onChange={(e) => setForm((p) => ({ ...p, capacity: parseInt(e.target.value) || 1 }))}
                 aria-label={t("capacity")}
-                className="w-full rounded-[8px] border border-s-ink/[0.10] px-3 py-2 text-xs bg-transparent text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+                className="w-full px-3 py-2 text-xs text-s-ink focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               />
             </div>
           </div>
@@ -209,7 +209,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
                 value={form.prep_buffer_minutes}
                 onChange={(e) => setForm((p) => ({ ...p, prep_buffer_minutes: parseInt(e.target.value) || 0 }))}
                 aria-label={t("prep_buffer")}
-                className="w-full rounded-[8px] border border-s-ink/[0.10] px-3 py-2 text-xs bg-transparent text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+                className="w-full px-3 py-2 text-xs text-s-ink focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               />
             </div>
             <div>
@@ -223,7 +223,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
                 value={form.cooldown_buffer_minutes}
                 onChange={(e) => setForm((p) => ({ ...p, cooldown_buffer_minutes: parseInt(e.target.value) || 0 }))}
                 aria-label={t("cooldown_buffer")}
-                className="w-full rounded-[8px] border border-s-ink/[0.10] px-3 py-2 text-xs bg-transparent text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+                className="w-full px-3 py-2 text-xs text-s-ink focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               />
             </div>
           </div>

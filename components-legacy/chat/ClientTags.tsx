@@ -155,12 +155,12 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
               onChange={(e) => setNewTag(e.target.value)}
               placeholder={t("customPlaceholder")}
               maxLength={50}
-              className="flex-1 px-2.5 py-1.5 rounded-btn border border-s-border text-xs bg-white"
+              className="flex-1 px-2.5 py-1.5 text-xs" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
             />
             <select
               value={newColor}
               onChange={(e) => setNewColor(e.target.value)}
-              className="px-2 py-1.5 rounded-btn border border-s-border text-xs bg-white"
+              className="px-2 py-1.5 text-xs" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
             >
               <option value="gray">{t("colors.gray")}</option>
               <option value="red">{t("colors.red")}</option>
