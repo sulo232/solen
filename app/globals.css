@@ -16,7 +16,8 @@
 
 @layer base {
   :root {
-    --border: 30 15% 85%;
+    /* Cool s-border #E4E4E7 (reverses the retired warm hue-30 token, CLAUDE.md FIX 1) */
+    --border: 240 6% 90%;
     --input: 30 15% 85%;
     --ring: 10 78% 60%;
     --background: 0 0% 100%;

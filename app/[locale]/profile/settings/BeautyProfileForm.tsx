@@ -142,9 +142,10 @@ export default function BeautyProfileForm({
                     <span className="block text-[15px] font-medium text-s-ink">{o.label}</span>
                     {o.note && <span className="block text-[12px] text-s-ink-2 mt-0.5">{o.note}</span>}
                   </span>
+                  {/* mockup-ok: locked TabPill selected-state treatment (CLAUDE.md design contract, no-black-selected gate); matches the salon page category strip reference */}
                   <span className={cn(
                     "grid place-items-center w-[22px] h-[22px] rounded-full shrink-0",
-                    on ? "bg-s-ink border border-s-ink text-white" : "border-[1.5px] border-s-border",
+                    on ? "bg-s-bg-sunken border border-s-border text-s-ink font-semibold" : "border-[1.5px] border-s-border",
                   )}>
                     {on && <Check size={13} aria-hidden />}
                   </span>
@@ -183,9 +184,10 @@ function ChipGroup({
           const on = value === o.value;
           return (
             <button key={o.value} type="button" aria-pressed={on} onClick={() => onSelect(o.value)}
+              // mockup-ok: locked TabPill selected-state treatment (CLAUDE.md design contract, no-black-selected gate); matches the salon page category strip reference
               className={cn(
                 "h-10 px-4 rounded-btn text-[14px] font-medium transition-colors duration-200",
-                on ? "bg-s-ink text-white" : "border border-s-border text-s-ink hover:bg-s-bg-sunken",
+                on ? "bg-s-bg-sunken border border-s-border text-s-ink font-semibold" : "border border-s-border text-s-ink hover:bg-s-bg-sunken",
               )}>
               {o.label}
             </button>

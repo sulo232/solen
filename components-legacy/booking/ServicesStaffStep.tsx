@@ -363,9 +363,10 @@ export default function ServicesStaffStep({
                   onClick={() => goToCat(cat)}
                   // Matches the SalonServices TabPill: active = soft gray fill (s-bg-sunken) + ink,
                   // NOT pure black. Instant (no layoutId spring — that slide was laggy).
+                  // mockup-ok: locked TabPill selected-state treatment (CLAUDE.md design contract, no-black-selected gate); matches the salon page category strip reference
                   className={`shrink-0 rounded-full border px-4 py-2 text-[13px] font-heading capitalize whitespace-nowrap transition-[color,background-color,border-color,box-shadow] duration-200 ${
                     isActive
-                      ? 'border-s-ink bg-s-ink text-white'
+                      ? 'border-s-border bg-s-bg-sunken text-s-ink font-semibold'
                       : 'border-s-border bg-white text-s-ink-2 hover:text-s-ink hover:shadow-[0_2px_10px_-2px_rgba(10,10,10,0.12)]'
                   }`}
                 >
