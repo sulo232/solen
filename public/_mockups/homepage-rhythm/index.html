@@ -1,0 +1,91 @@
+<!doctype html>
+<!-- Base: capture home-a-current.png -->
+<!-- Scale: full-page -->
+<!-- Exists-check: RATIONALE gap register G3 ("page-level rhythm for NEW pages: section order, dense/breathe cadence, CTA placement grammar") is OPEN and marked elicit-needed; LOCKFILE ships a 32/12/16 section/card/group rhythm but states no PAGE cadence. This page probes exactly that gap and proposes no new token. npm run exists "spacing rhythm" run this session. -->
+<!-- Grounded-in: app/[locale]/_components/homepage/SectionHeader.tsx (the homepage Section/SectionFrame primitive that owns the spacing every frame here varies) -->
+<!-- Grounded-in: app/[locale]/_components/homepage/Hero.tsx (the homepage hero, the one section whose gap already differs) -->
+<!-- Owner-scope: all-variants: three cadences side by side, nothing preselected. -->
+<!-- Backend-check: none, spacing-only probe over an already-rendered page; no data, no new affordance. -->
+<!-- Depicts: the whole real homepage -> app/[locale]/page.tsx captured live full-page at 390px three times, with only a section-margin override injected; every pixel of content is the live page (the frames show the product's own German, the table labels are translated per the English-mockup rule) -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Homepage rhythm: how the real homepage breathes, current vs uniform vs alternating</title>
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--border:#E4E4E7;--sunken:#F4F4F5;--white:#FFFFFF}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,-apple-system,"Segoe UI",sans-serif;background:var(--white);color:var(--ink);font-size:14px;line-height:1.5;padding-bottom:120px}
+  h1,h2,h3{font-family:"Inter Tight",Inter,sans-serif}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 20px}
+  header.page{border-bottom:1px solid var(--border);padding:30px 0 22px;margin-bottom:22px}
+  header.page h1{font-size:clamp(22px,3vw,28px);font-weight:700}
+  header.page p{color:var(--ink2);max-width:70ch;margin-top:8px}
+  .finding{border:1px solid var(--border);border-radius:16px;padding:20px 22px;margin-bottom:22px}
+  .finding h3{font-size:16px;font-weight:600;margin-bottom:8px}
+  .finding p{color:var(--ink2);font-size:13px;max-width:76ch}
+  table{border-collapse:collapse;margin-top:12px;font-size:12px;width:100%;max-width:540px}
+  th,td{text-align:left;padding:5px 10px;border-bottom:1px solid var(--border)}
+  th{color:var(--ink2);font-weight:500}
+  td.n{font-family:"Inter Tight",Inter,sans-serif;font-variant-numeric:tabular-nums}
+  td.flat{font-weight:600}
+  .tri{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+  .col{border:1px solid var(--border);border-radius:14px;padding:14px;min-width:0}
+  .cap{font-size:13px;font-weight:600;margin-bottom:2px}
+  .cap small{display:block;font-weight:400;color:var(--ink2);margin-top:3px;line-height:1.45}
+  .phone{margin-top:12px;border:1px solid var(--border);border-radius:16px;overflow:auto;height:620px;background:var(--white)}
+  .phone img{display:block;width:100%}
+  .answer{position:fixed;left:0;right:0;bottom:0;background:var(--white);border-top:1px solid var(--border);padding:12px 20px;font-size:13px}
+  .answer b{font-weight:600}
+  .answer div{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="page">
+    <h1>How should a page breathe?</h1>
+    <p>All three frames are your real homepage, captured live at phone width. Nothing is redrawn and no content moved: the only difference is the space between sections. Scroll inside each.</p>
+  </header>
+
+  <div class="finding">
+    <h3>Measured first: your homepage has no rhythm at all</h3>
+    <p>Every gap between sections is the same 8px, seven times in a row. Only the hero gets a different one (57px). So the page reads as one continuous run: nothing tells the eye where one thought ends and the next begins, and your locked 32px section rhythm is not what renders here. That is the gap this decision fills.</p>
+    <table>
+      <tr><th>Section, in order down the page</th><th>Height</th><th>Gap above</th></tr>
+      <tr><td>Hero, the booking search</td><td class="n">391</td><td class="n">first</td></tr>
+      <tr><td>For you</td><td class="n">251</td><td class="n">57</td></tr>
+      <tr><td>Top on Solen</td><td class="n">314</td><td class="n flat">8</td></tr>
+      <tr><td>Nearby</td><td class="n">474</td><td class="n flat">8</td></tr>
+      <tr><td>Walk-in</td><td class="n">304</td><td class="n flat">8</td></tr>
+      <tr><td>Inspiration</td><td class="n">408</td><td class="n flat">8</td></tr>
+      <tr><td>Reviews</td><td class="n">283</td><td class="n flat">8</td></tr>
+      <tr><td>For your business</td><td class="n">712</td><td class="n flat">8</td></tr>
+    </table>
+  </div>
+
+  <div class="tri">
+    <div class="col">
+      <div class="cap">a, today<small>The same 8px between every section. Sections blur into each other; page height 4221px.</small></div>
+      <div class="phone"><img src="../_assets/rhythm/home-a-current.png" alt="The real homepage as it renders today, the same flat gap between every section"></div>
+    </div>
+    <div class="col">
+      <div class="cap">b, one breathe value<small>Every section gets the same generous gap. Calm and predictable; each section reads as its own thought. Costs 400px of height.</small></div>
+      <div class="phone"><img src="../_assets/rhythm/home-b-uniform.png" alt="The same homepage with one uniform generous gap between every section"></div>
+    </div>
+    <div class="col">
+      <div class="cap">c, alternating dense and airy<small>Related sections sit close, then a big gap opens before the next group, which creates chapters. Costs 288px and needs a rule for which sections pair.</small></div>
+      <div class="phone"><img src="../_assets/rhythm/home-c-alternating.png" alt="The same homepage with alternating tight and wide gaps, grouping sections into chapters"></div>
+    </div>
+  </div>
+
+  <div class="finding" style="margin-top:22px">
+    <h3>Why this is the last thing blocking a whole-site pass</h3>
+    <p>Every other rule we settled is about a component: a card's radius, an input's focus, a circle next to a square. Rhythm is the only rule that decides what a PAGE feels like, and there is no law for it, so a sweep across 134 screens would answer it 134 times by feel. Pick a cadence here and the sweep has one answer to apply. Whichever you pick becomes a number in the lockfile, not a vibe.</p>
+  </div>
+</div>
+<div class="answer">
+  <b>How to answer, one line:</b>
+  <div>"rhythm a" (keep flat), "rhythm b" (one breathe value), or "rhythm c" (alternating chapters). Add "tighter" or "airier" if the amount is off.</div>
+</div>
+</body>
+</html>
