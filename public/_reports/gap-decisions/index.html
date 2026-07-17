@@ -1,0 +1,1056 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Frontend gaps, 60 decisions</title>
+<style>
+:root{--ink:#0A0A0A;--ink2:#6B6B6B;--border:#E4E4E7;--sunken:#F4F4F5;--white:#FFFFFF}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,-apple-system,"Segoe UI",sans-serif;background:var(--white);color:var(--ink);font-size:14px;line-height:1.5;padding-bottom:60px}
+h1,h2,h3{font-family:"Inter Tight",Inter,sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding:0 20px}
+header.page{border-bottom:1px solid var(--border);padding:28px 0 18px;margin-bottom:18px}
+header.page h1{font-size:clamp(22px,3vw,28px);font-weight:700}
+header.page p{color:var(--ink2);max-width:80ch;margin-top:8px}
+.summary{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.stat{border:1px solid var(--border);border-radius:12px;padding:9px 13px}
+.stat b{display:block;font-family:"Inter Tight";font-size:19px;font-weight:700}
+.stat span{font-size:11.5px;color:var(--ink2)}
+.filters{position:sticky;top:0;background:var(--white);padding:12px 0;border-bottom:1px solid var(--border);margin-bottom:14px;z-index:5;display:flex;gap:8px;flex-wrap:wrap}
+.fbtn{font-size:12px;font-weight:600;border:1px solid var(--border);background:var(--white);border-radius:999px;padding:5px 13px;cursor:pointer}
+.fbtn.on{background:var(--sunken);border-color:var(--ink)}
+.gap{border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+.gap.sev-high{border-left:3px solid #DC2626}
+.ghead{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:8px}
+.num{font-family:"Inter Tight";font-weight:700;font-size:13px;color:var(--ink2)}
+.gtitle{font-size:15px;font-weight:600}
+.flow{font-size:11px;color:var(--ink2);background:var(--sunken);border-radius:999px;padding:2px 8px}
+.sev{margin-left:auto;font-size:10.5px;font-weight:600;color:#fff;border-radius:999px;padding:2px 9px}
+.eff{font-size:10.5px;color:var(--ink2);border:1px solid var(--border);border-radius:999px;padding:2px 8px}
+.what{font-size:13px;color:var(--ink);margin-bottom:10px}
+.opts{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.opt{background:var(--sunken);border-radius:10px;padding:8px 11px}
+.ol{font-size:12.5px;font-weight:600;margin-bottom:3px}
+.pc{display:flex;flex-direction:column;gap:2px;font-size:12px}
+.pro{color:#166534}.con{color:#9A3412}
+.rec{border-top:1px solid var(--border);padding-top:10px;font-size:13px}
+.recbadge{display:inline-block;font-size:11px;font-weight:600;border-radius:999px;padding:2px 9px;margin-right:8px}
+.rec b{font-weight:600}
+.reason{color:var(--ink2);font-size:12.5px;margin-top:4px}
+</style></head><body>
+<div class="wrap">
+<header class="page">
+<h1>Frontend gaps, 60 decisions</h1>
+<p>Every gap found while mapping the customer frontend, each read against the real code and turned into a decision: what it is, your options with pros and cons, my recommendation, and the effort. Sorted by severity. Green "leave" = not worth touching; blue = wire/fix; orange = delete or hide.</p>
+<div class="summary">
+<div class="stat"><b>3</b><span>high</span></div>
+<div class="stat"><b>23</b><span>medium</span></div>
+<div class="stat"><b>20</b><span>low</span></div>
+<div class="stat"><b>14</b><span>not a problem</span></div>
+<div class="stat"><b>20</b><span>I'd delete/hide</span></div>
+<div class="stat"><b>8</b><span>I'd wire/fix</span></div>
+<div class="stat"><b>24</b><span>I'd leave</span></div>
+</div>
+</header>
+<div class="filters">
+<button class="fbtn on" data-f="all">All 60</button>
+<button class="fbtn" data-f="high">High</button>
+<button class="fbtn" data-f="medium">Medium</button>
+<button class="fbtn" data-f="low">Low</button>
+<button class="fbtn" data-f="noted">Not a problem</button>
+</div>
+<div class="gap sev-high" data-sev="high">
+      <div class="ghead">
+        <span class="num">#4</span>
+        <span class="gtitle">Hardcoded fake ratings on homepage rows</span>
+        <span class="flow">Discovery &amp; Search</span>
+        <span class="sev" style="background:#DC2626">High</span>
+        <span class="eff">large</span>
+      </div>
+      <div class="what">The gap&#x27;s premise is wrong. forYouSalons.ts and searchFeatured.ts do NOT render live Supabase content: ForYouSalonRows.tsx:48-62 passes the constant&#x27;s hardcoded rating (4.95), priceFromCHF (45) and address (&#x27;Bahnhofstrasse 28&#x27;) straight into SalonCard. Only id/slug/name resolve to a real PDP; the star rating, from-price and address a customer sees are invented demo literals, which violates Solen rule 1 (no fabricated data).</div>
+      <div class="opts"><div class="opt"><div class="ol">WIRE the rows to real Supabase (fetch rating/price/address by the curated ids)</div>
+          <div class="pc"><span class="pro">+ Turns curated identity + live truth into an honest surface; keeps the editorial row order.</span><span class="con">- Medium/large: needs a server query joining the id list to salons + min-price aggregation, matching /api/salons shape.</span></div></div>
+<div class="opt"><div class="ol">HIDE the rows until they are wired</div>
+          <div class="pc"><span class="pro">+ Immediately stops showing fake 4.95 stars/prices to customers; small change.</span><span class="con">- Removes a discovery surface; homepage loses the &#x27;Weil du X magst&#x27; rows until the query lands.</span></div></div>
+<div class="opt"><div class="ol">LEAVE (treat as pre-launch demo)</div>
+          <div class="pc"><span class="pro">+ No work if the site is not yet public.</span><span class="con">- Any real visitor is shown fabricated ratings/prices, a hard rule-1 violation and a trust/legal risk if live.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#1B4FA8;background:#EAF2FF">My pick: fix / wire</span>
+        <b>WIRE the curated rows to live Supabase values (keep the id list as editorial ordering, fetch rating/price/address); if that cannot happen before real traffic, HIDE the rows in the interim.</b><div class="reason">Confirmed in code that these are static literals rendered directly, not hydrated, so the &#x27;benign, content is live&#x27; framing is incorrect. A fabricated star rating on the customer homepage is exactly what rule 1 forbids. Assumption: these rows render to real users; the same static-demo pattern spans Nearby/Featured, so this is systemic and should be fixed before launch, not per-row.</div></div>
+    </div>
+<div class="gap sev-high" data-sev="high">
+      <div class="ghead">
+        <span class="num">#28</span>
+        <span class="gtitle">Guest cannot cancel or reschedule</span>
+        <span class="flow">Confirmation &amp; post-booking</span>
+        <span class="sev" style="background:#DC2626">High</span>
+        <span class="eff">large</span>
+      </div>
+      <div class="what">canManage = !isGuest (BookingConfirmation.tsx:183), so cancel and reschedule are hidden for guests. Root cause is documented in-code: the confirmation page verifies the access_token itself and never calls guest-lookup, so no solen_guest_access cookie is set; a reschedule would 401/403. The cancel route (bookings/[id]/cancel) is session-only (auth.getUser(), 401 if no user) with no guest/resolveBookingActor branch at all, so even after a guest re-enters via lookup they still cannot self-cancel anywhere.</div>
+      <div class="opts"><div class="opt"><div class="ol">WIRE a guest actor path: set solen_guest_access on the confirmation token verify, and add a guest branch (resolveBookingActor) to the cancel + reschedule routes</div>
+          <div class="pc"><span class="pro">+ Gives guests real self-service cancel/reschedule, the biggest actual user-path breakage in this batch; guests are a first-class booking mode (user_id NULL is fully supported in booking-pay-intent).</span><span class="con">- Touches auth-sensitive routes; needs careful entitlement checks (token -&gt; booking actor) and RLS awareness (reschedule already routes slot writes via admin client for this reason). Not a trivial edit.</span></div></div>
+<div class="opt"><div class="ol">LEAVE guests unable to self-manage; rely on the salon to cancel/reschedule on their behalf</div>
+          <div class="pc"><span class="pro">+ No auth-surface risk now.</span><span class="con">- Guests (a core, deliberately-supported booking mode) cannot change their own appointment, driving support load and no-shows; the affordance is shown-then-hidden, which reads as broken.</span></div></div>
+<div class="opt"><div class="ol">Partial: set the guest cookie on confirmation so reschedule works, defer the cancel-route guest branch</div>
+          <div class="pc"><span class="pro">+ Unblocks reschedule (the more common need) with less surface area.</span><span class="con">- Cancel still has no guest branch, so the experience stays half-broken and inconsistent.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#1B4FA8;background:#EAF2FF">My pick: fix / wire</span>
+        <b>WIRE the guest actor path through both the confirmation cookie set and the cancel + reschedule routes.</b><div class="reason">This is the only high-severity item in the range: it breaks a real, supported user path (guest bookings are explicitly first-class in the payment code) at the highest-intent moment, and the in-code comments show the team already understands the exact fix (guest-access cookie + resolveBookingActor, which reschedule already partially uses via the admin client for RLS). Half-fixing (option 3) leaves an inconsistent cancel gap, so do both routes together. This is auth-sensitive work that belongs in the layered loop with careful entitlement testing, hence medium/large effort. Assumption: guest self-service is desired product behavior; given the codebase&#x27;s heavy guest support, that is near-certain.</div></div>
+    </div>
+<div class="gap sev-high" data-sev="high">
+      <div class="ghead">
+        <span class="num">#29</span>
+        <span class="gtitle">Phone resend is a delivery no-op</span>
+        <span class="flow">Walk-in &amp; Queue (join → pay → number → track → tip)</span>
+        <span class="sev" style="background:#DC2626">High</span>
+        <span class="eff">quick</span>
+      </div>
+      <div class="what">POST /api/bookings/resend-access rotates the access token on a phone match but only the email branch actually dispatches (resend-access/route.ts:94 &#x27;else if (email)&#x27;; comment: &#x27;Phone-only resend has no email channel yet&#x27;). The resend UI offers a phone tab and returns the same opaque &#x27;sent&#x27; success, so a phone-only guest sees a success screen but never receives any link, permanently locking them out of their booking.</div>
+      <div class="opts"><div class="opt"><div class="ol">HIDE the phone tab in the resend-link UI until SMS exists</div>
+          <div class="pc"><span class="pro">+ Stops promising a delivery that never happens; quick, honest, no false success state. Guests are steered to the email channel that works.</span><span class="con">- Phone-only guests (no email on file) have no recovery path at all until SMS ships, though today they silently have none anyway.</span></div></div>
+<div class="opt"><div class="ol">WIRE SMS dispatch for the phone branch</div>
+          <div class="pc"><span class="pro">+ Actually delivers the link; complete recovery for phone-only guests.</span><span class="con">- Requires an SMS provider integration the owner flagged as a later piece; larger, out-of-scope for a quick fix.</span></div></div>
+<div class="opt"><div class="ol">LEAVE it</div>
+          <div class="pc"><span class="pro">+ Zero effort.</span><span class="con">- A guest gets a &#x27;we sent your link&#x27; screen and nothing arrives, the worst kind of silent failure, a fabricated success state that violates the no-false-claims rule.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#9A3412;background:#FFF4E5">My pick: hide</span>
+        <b>HIDE the phone tab (and its &#x27;sent&#x27; messaging) until SMS delivery is built.</b><div class="reason">Showing a success state for a message that is never sent is a fabricated-success UX and effectively traps a phone-only guest out of their booking, which is why this rates high. SMS wiring is the real fix but depends on a provider the owner deferred, so it cannot ship now. Hiding the phone tab is quick, removes the lie, and funnels users to the working email channel. Assumption: most guests have an email on file; the opaque-200 anti-enumeration design stays intact since we simply stop offering the phone option. When SMS lands, restore the tab.</div></div>
+    </div>
+<div class="gap sev-medium" data-sev="medium">
+      <div class="ghead">
+        <span class="num">#1</span>
+        <span class="gtitle">Dead booking deep-link vars</span>
+        <span class="flow">Discovery &amp; Search</span>
+        <span class="sev" style="background:#0A0A0A">Medium</span>
+        <span class="eff">quick</span>
+      </div>
+      <div class="what">SalonResultCard computes featuredName/featuredDur/featuredSlots/hasMoreSlots/allServicesLabel (lines 223-229) and its comment promises per-service booking pills, but grep confirms none of these are referenced anywhere else in the file; only the plain-text nextSlot renders and the card href is just /{locale}/salon/{slug}. The intended search-&gt;booking preselect feature is dead, and the unused vars are code rot.</div>
+      <div class="opts"><div class="opt"><div class="ol">WIRE the feature (render service pills + carry service/slot into booking)</div>
+          <div class="pc"><span class="pro">+ Delivers the promised one-tap-into-booking conversion win the comment describes.</span><span class="con">- Large: needs card UI + a booking flow that accepts service/slot/date preselection, which today it does not (see gap 5). A product feature, not a cleanup.</span></div></div>
+<div class="opt"><div class="ol">DELETE the dead computed vars + stale comment</div>
+          <div class="pc"><span class="pro">+ Removes ~7 lines of dead code and a lying comment in minutes; zero user-facing risk.</span><span class="con">- Abandons a half-built feature; someone must re-derive it if the deep-link is later wanted.</span></div></div>
+<div class="opt"><div class="ol">LEAVE as-is</div>
+          <div class="pc"><span class="pro">+ No work.</span><span class="con">- Dead code keeps misleading readers that the deep-link works.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#9A3412;background:#FFF4E5">My pick: delete</span>
+        <b>DELETE the dead computed vars and the misleading comment now; log the deep-link as a parked product feature.</b><div class="reason">The vars are provably unreferenced, so they are pure rot today. The actual feature depends on booking-flow preselection that does not exist (gap 5), making it a real product build, not a wiring fix. Separate the quick cleanup from the parked feature rather than pretend it is one small task.</div></div>
+    </div>
+<div class="gap sev-medium" data-sev="medium">
+      <div class="ghead">
+        <span class="num">#5</span>
+        <span class="gtitle">Search context dropped at PDP</span>
+        <span class="flow">Discovery &amp; Search</span>
+        <span class="sev" style="background:#0A0A0A">Medium</span>
+        <span class="eff">medium</span>
+      </div>
+      <div class="what">At the results-&gt;PDP boundary only the salon slug transfers (SalonResultCard href = /{locale}/salon/{slug}); the chosen date/period/service is lost, so a customer who filtered &#x27;tomorrow morning&#x27; must re-pick date and time on the PDP and again in booking. Friction and a conversion leak, not a broken path.</div>
+      <div class="opts"><div class="opt"><div class="ol">WIRE context through (append service/date/period query params to the PDP link + prefill the booking wizard)</div>
+          <div class="pc"><span class="pro">+ Removes redundant re-selection, tightening the highest-intent path to checkout.</span><span class="con">- Medium: PDP and booking must read + honor the params; couples to the same preselection work gap 1&#x27;s feature needs.</span></div></div>
+<div class="opt"><div class="ol">LEAVE it</div>
+          <div class="pc"><span class="pro">+ No work; PDP still functions from scratch.</span><span class="con">- Every filtered searcher re-enters date/time they already chose, a measurable drop-off risk.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#1B4FA8;background:#EAF2FF">My pick: fix / wire</span>
+        <b>WIRE the date/service context into the PDP link and prefill the booking date step.</b><div class="reason">This shares a root cause with gap 1 (booking accepts no preselection). Doing them together is the efficient path and directly targets conversion on the most intent-loaded journey. Medium because it is additive query-param plumbing, not a redesign.</div></div>
+    </div>
+<div class="gap sev-medium" data-sev="medium">
+      <div class="ghead">
+        <span class="num">#11</span>
+        <span class="gtitle">Dead booking deep-link on result card</span>
+        <span class="flow">Booking flow</span>
+        <span class="sev" style="background:#0A0A0A">Medium</span>
+        <span class="eff">quick</span>
+      </div>
+      <div class="what">SalonResultCard computes featuredName/featuredDur/featuredSlots/hasMoreSlots/allServicesLabel (lines 223-229) with a comment saying each slot pill &#x27;links into booking with that service preselected&#x27;, but none of those variables are rendered in either card variant. The card only shows a plain nextSlot text label (lines 356, 672), so the search-&gt;booking handoff carries only the salon slug and the intended service/slot preselection never ships.</div>
+      <div class="opts"><div class="opt"><div class="ol">WIRE the featured slot pills into booking deep-links (build the intended preselect UX)</div>
+          <div class="pc"><span class="pro">+ Delivers the friction-cutting handoff the comment promised: a customer who saw an open slot lands in booking with service+slot preselected</span><span class="con">- Real frontend build (new card block + booking must accept preselected slot, which BookingProvider only half-supports); needs mockup-first approval; a persisted slot can be taken by the time they click</span></div></div>
+<div class="opt"><div class="ol">DELETE the five computed-but-unrendered variables (dead code)</div>
+          <div class="pc"><span class="pro">+ Removes actively misleading code whose own comment claims a feature that does not exist; stops future readers assuming the deep-link ships</span><span class="con">- Loses the half-built plumbing from the working tree (git still preserves it); throws away scaffolding if the feature is greenlit soon</span></div></div>
+<div class="opt"><div class="ol">LEAVE as-is</div>
+          <div class="pc"><span class="pro">+ Zero effort</span><span class="con">- Dead vars + a lying comment stay in a hot customer-search file</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#9A3412;background:#FFF4E5">My pick: delete</span>
+        <b>DELETE the dead computed variables now, and log the deep-link preselect as a separate product opportunity (not silent dead code).</b><div class="reason">The variables are computed and never referenced past their own declaration block; the accompanying comment asserts a shipped behavior that grep proves absent, which is the worst kind of dead code (it misleads). Whether to actually build service-preselect handoff is a product/design call that must go through mockup-first, not something to leave half-wired in the tree. Assumption: the preselect deep-link is not a committed near-term launch.</div></div>
+    </div>
+<div class="gap sev-medium" data-sev="medium">
+      <div class="ghead">
+        <span class="num">#14</span>
+        <span class="gtitle">Promo code POSTed but no wizard input</span>
+        <span class="flow">Booking flow</span>
+        <span class="sev" style="background:#0A0A0A">Medium</span>
+        <span class="eff">medium</span>
+      </div>
+      <div class="what">promoCode/giftCardCode/referralCode exist in BookingFormData and promo_code is sent in the booking POST (PayConfirmStep.tsx:243), but no control in the live wizard lets a customer type a promo code: it only applies if pre-seeded from context/URL, otherwise it stays empty. Promo codes are a core Solen feature, so a customer who has a code and no seeding link cannot redeem it at booking.</div>
+      <div class="opts"><div class="opt"><div class="ol">WIRE a promo-code input into PayConfirmStep (validate via the existing promo path)</div>
+          <div class="pc"><span class="pro">+ Lets any customer redeem a code at booking, not only those who arrived via a seeded link; the server-side promo plumbing already exists</span><span class="con">- New UI needs mockup-first approval; adds a validation/error state to the pay step</span></div></div>
+<div class="opt"><div class="ol">LEAVE promo as link-seeded-only</div>
+          <div class="pc"><span class="pro">+ Zero work; keeps the pay step minimal</span><span class="con">- Promo codes shared out-of-band (flyer, DM, word of mouth) are un-redeemable in the flow, undercutting a core feature</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#1B4FA8;background:#EAF2FF">My pick: fix / wire</span>
+        <b>WIRE a promo-code input into PayConfirmStep.</b><div class="reason">The POST already carries promo_code and the server validates it, so the only missing piece is the customer-facing control; leaving redemption reachable only through a pre-seeded link quietly caps a feature the product treats as core. Referral is a separate matter (auto-attribution, and its localStorage code is never read back). Assumption: promo codes are meant to be user-enterable, not exclusively campaign-link-seeded.</div></div>
+    </div>
+<div class="gap sev-medium" data-sev="medium">
+      <div class="ghead">
+        <span class="num">#16</span>
+        <span class="gtitle">Orphaned /checkout page and missing success route</span>
+        <span class="flow">Checkout &amp; Payment</span>
+        <span class="sev" style="background:#0A0A0A">Medium</span>
+        <span class="eff">medium</span>
+      </div>
+      <div class="what">app/[locale]/checkout/page.tsx is unreachable: nothing in the app builds its required booking_intent query param (the only mentions are /dev mockups and a Breadcrumb exclusion string, not a link), and its Stripe return_url targets /{locale}/checkout/success which is not a route (only page.tsx exists under checkout/, no success/ subdir). It also uses the older /api/stripe/create-payment-intent that no live UI calls. It is dead legacy that would dead-end if ever reached.</div>
+      <div class="opts"><div class="opt"><div class="ol">DELETE the /checkout page and the orphaned create-payment-intent route</div>
+          <div class="pc"><span class="pro">+ Removes a confirmed-orphaned surface that duplicates the live pay path, carries stale design (gap 19) and a misleading credit display (gap 18/17), and uses a duplicate Stripe path (a pick-the-wrong-one risk); one delete resolves several downstream gaps</span><span class="con">- Loses a fairly complete checkout UI if a future non-wizard checkout is planned; must confirm /dev/checkout-confirm and mockups only reference it cosmetically</span></div></div>
+<div class="opt"><div class="ol">FIX it into a real checkout (build the success route, wire booking_intent)</div>
+          <div class="pc"><span class="pro">+ Salvages the built UI</span><span class="con">- Reviving a second full payment path alongside booking-pay-intent multiplies confusion and maintenance; large effort for an unclear need</span></div></div>
+<div class="opt"><div class="ol">LEAVE it dormant</div>
+          <div class="pc"><span class="pro">+ Zero effort</span><span class="con">- Dead code keeps accreting gaps and invites someone to wire the wrong Stripe path</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#9A3412;background:#FFF4E5">My pick: delete</span>
+        <b>DELETE the /checkout page and the orphaned create-payment-intent route.</b><div class="reason">Grep confirms nothing builds booking_intent and the return_url points at a non-existent route, so it can only dead-end. It duplicates the live booking-pay-intent flow, and removing it collapses gaps 17, 18, the checkout onSuccess no-op, and the duplicate-Stripe-path confusion into a single cleanup. Assumption: there is no near-term plan to revive a standalone checkout; if there is, keep it but fix the missing success route first.</div></div>
+    </div>
+<div class="gap sev-medium" data-sev="medium">
+      <div class="ghead">
+        <span class="num">#17</span>
+        <span class="gtitle">Referral earned shown as available credit</span>
+        <span class="flow">Checkout &amp; Payment</span>
+        <span class="sev" style="background:#0A0A0A">Medium</span>
+        <span class="eff">none</span>
+      </div>
+      <div class="what">On /checkout, userCredits is set from /api/referral total_earned and displayed as available credit, but the code&#x27;s own comment (lines 191-194) concedes total_earned is lifetime earned, not the real spendable balance, so it can overstate what the user can actually apply. Currently moot because the page is orphaned (gap 16), but it is a live misrepresentation if the page is ever revived.</div>
+      <div class="opts"><div class="opt"><div class="ol">DELETE with the /checkout page (gap 16)</div>
+          <div class="pc"><span class="pro">+ Removes the misrepresentation entirely with no separate work</span><span class="con">- None while orphaned</span></div></div>
+<div class="opt"><div class="ol">FIX to read the real available balance from the credits endpoint</div>
+          <div class="pc"><span class="pro">+ Correct number if the page is ever shown</span><span class="con">- Wasted effort polishing an unreachable page; risks reviving it half-legitimized</span></div></div>
+<div class="opt"><div class="ol">LEAVE (moot)</div>
+          <div class="pc"><span class="pro">+ Zero effort</span><span class="con">- A latent money-misstatement waits to ship if anyone re-links the page</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#9A3412;background:#FFF4E5">My pick: delete</span>
+        <b>DELETE with the /checkout page.</b><div class="reason">Showing lifetime-earned as spendable credit is a real trust/money misrepresentation, but the page that shows it is orphaned, so the honest fix is to remove the surface rather than invest in correcting a page nobody can reach. If /checkout is ever revived, the balance source must be corrected as a precondition.</div></div>
+    </div>
+<div class="gap sev-medium" data-sev="medium">
+      <div class="ghead">
+        <span class="num">#19</span>
+        <span class="gtitle">Voucher spend unwired from booking UI</span>
+        <span class="flow">Checkout &amp; Payment</span>
+        <span class="sev" style="background:#0A0A0A">Medium</span>
+        <span class="eff">medium</span>
+      </div>
+      <div class="what">booking-pay-intent fully implements applying a voucher_code to the charge (re-validated live via redeem_voucher), but PayConfirmStep sends only { booking_id } (line 296) and no live client passes voucher_code, and the route&#x27;s own comment (lines 60-62) states no FE field reaches it. Credits auto-apply server-side and promo arrives via formData.promoCode, but voucher redemption at booking is dormant from the customer side.</div>
+      <div class="opts"><div class="opt"><div class="ol">PARK voucher wiring until vouchers launch as a customer feature</div>
+          <div class="pc"><span class="pro">+ Matches the current deliberate state where all voucher customer routes are redirect-only; avoids exposing a half-finished value surface</span><span class="con">- Vouchers remain unspendable in-flow despite backend readiness</span></div></div>
+<div class="opt"><div class="ol">WIRE a voucher input into PayConfirmStep now (ideally the same control as the gap-14 promo input)</div>
+          <div class="pc"><span class="pro">+ Unlocks the fully-built server redemption path; one combined promo/voucher control is efficient</span><span class="con">- Product intent for customer-facing vouchers is unconfirmed; needs mockup-first; premature if vouchers stay redirect-only</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#0A0A0A;background:#F4F4F5">My pick: decide</span>
+        <b>PARK voucher wiring until vouchers are launched as a customer-facing feature; when they are, wire it into the same PayConfirmStep value-input built for promo (gap 14).</b><div class="reason">The backend path is complete and correct, so this is not a bug: it is a coherent not-yet-launched state, evidenced by every voucher customer route being redirect-only. Wiring a spend control before the product decides vouchers are customer-facing would surface a value feature the rest of the app deliberately hides. Assumption: vouchers are backend-ON but not yet a launched customer surface.</div></div>
+    </div>
+<div class="gap sev-medium" data-sev="medium">
+      <div class="ghead">
+        <span class="num">#21</span>
+        <span class="gtitle">Orphaned /checkout dead-end route</span>
+        <span class="flow">Checkout &amp; Payment</span>
+        <span class="sev" style="background:#0A0A0A">Medium</span>
+        <span class="eff">medium</span>
+      </div>
+      <div class="what">The entire /de/checkout page (~750 lines) is unreachable: nothing in the app builds its required booking_intent query param (only /dev mockups + the Breadcrumb exclusion list mention /checkout), and its Stripe return_url points at /{locale}/checkout/success, which does not exist (checkout/ contains only page.tsx). The live booking flow uses PayConfirmStep + booking-pay-intent instead.</div>
+      <div class="opts"><div class="opt"><div class="ol">DELETE the /checkout route and its create-payment-intent partner</div>
+          <div class="pc"><span class="pro">+ Removes ~750 lines of dead, drift-prone legacy plus a stale second Stripe path; one canonical checkout (PayConfirmStep) remains.</span><span class="con">- Loses a ready-made surface that already renders promo/voucher/credit UI, if the team ever wants a standalone checkout page again.</span></div></div>
+<div class="opt"><div class="ol">WIRE it back in (build a booking_intent producer + success route)</div>
+          <div class="pc"><span class="pro">+ Salvages the only surface with visible voucher input + credit banner.</span><span class="con">- Large effort, duplicates the already-live prepay flow, and would re-introduce the divergent create-payment-intent path (gap 26). Two checkouts is worse than one.</span></div></div>
+<div class="opt"><div class="ol">LEAVE it</div>
+          <div class="pc"><span class="pro">+ Zero effort.</span><span class="con">- Dead code keeps drifting from the design system (gaps 22, 23) and is a trap for future work that might revive the wrong path.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#9A3412;background:#FFF4E5">My pick: delete</span>
+        <b>DELETE the /checkout route and its create-payment-intent partner.</b><div class="reason">grep confirms no booking_intent producer and no success route, so the page cannot be reached or completed by any real user. Keeping it only preserves stale styling (gap 23), a misrepresented credit figure (gap 22), and a duplicate Stripe path (gap 26). The live flow (PayConfirmStep -&gt; booking-pay-intent) fully replaces it. Removing kills four gaps at once. Assumption: there is no roadmap item to resurrect a standalone checkout page; if there is, park instead of delete.</div></div>
+    </div>
+<div class="gap sev-medium" data-sev="medium">
+      <div class="ghead">
+        <span class="num">#24</span>
+        <span class="gtitle">Voucher spend unwired at booking</span>
+        <span class="flow">Confirmation &amp; post-booking</span>
+        <span class="sev" style="background:#0A0A0A">Medium</span>
+        <span class="eff">medium</span>
+      </div>
+      <div class="what">booking-pay-intent fully implements applying a voucher_code to the charge (route.ts:62, redeem path), but PayConfirmStep.tsx:296 posts only { booking_id } with no voucher field, and every customer voucher route is redirect-only. So a customer holding a voucher has no way to spend it in the live booking flow; the plumbing is dormant.</div>
+      <div class="opts"><div class="opt"><div class="ol">WIRE a voucher input into PayConfirmStep -&gt; pass voucher_code</div>
+          <div class="pc"><span class="pro">+ Activates a fully-built, re-validated server redemption path; unlocks real customer value from vouchers.</span><span class="con">- Adds a payment-step control that needs mockup-first design + testing; owner hid gift cards/vouchers deliberately (2026-06-14), so this may be intentionally off.</span></div></div>
+<div class="opt"><div class="ol">LEAVE it dormant</div>
+          <div class="pc"><span class="pro">+ Matches the current owner decision to keep vouchers hidden; zero risk.</span><span class="con">- Vouchers earned/issued anywhere become unspendable, which erodes trust if any voucher is ever handed out.</span></div></div>
+<div class="opt"><div class="ol">DELETE the voucher_code plumbing from booking-pay-intent</div>
+          <div class="pc"><span class="pro">+ Removes an unreachable branch and a confusion risk.</span><span class="con">- Throws away correct, tested server work that would need rebuilding at launch.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#16A34A;background:#EAF6EC">My pick: leave</span>
+        <b>LEAVE it dormant (keep the server plumbing, add no FE control yet).</b><div class="reason">Memory and code both show gift cards/vouchers are owner-hidden as of 2026-06-14, so wiring a customer voucher control now would contradict a product decision, not fix a bug. The server path is correct and re-validates live, so keeping it costs nothing and makes launch a one-component FE add. Deleting it would just force a rebuild later. Assumption: vouchers are a deferred launch, not a killed feature; if killed, delete instead.</div></div>
+    </div>
+<div class="gap sev-medium" data-sev="medium">
+      <div class="ghead">
+        <span class="num">#25</span>
+        <span class="gtitle">No in-app tip path from confirmation</span>
+        <span class="flow">Confirmation &amp; post-booking</span>
+        <span class="sev" style="background:#0A0A0A">Medium</span>
+        <span class="eff">medium</span>
+      </div>
+      <div class="what">Tipping (/tip/[bookingId]) is reachable only via the review-prompt cron email deep-link (cron/review-prompt/route.ts:314). The confirmation screen has no tip link, so a customer who wants to tip right after their appointment has no in-product path and must wait for (or never receive) the email.</div>
+      <div class="opts"><div class="opt"><div class="ol">ADD a &#x27;Trinkgeld geben&#x27; link on the confirmation/post-booking screen</div>
+          <div class="pc"><span class="pro">+ Captures tip intent at the peak moment (right after service); reuses the existing /tip/[id] surface with no backend work.</span><span class="con">- Tips are only meaningful post-service, and confirmation often shows pre-appointment; the link may dead-end at &#x27;tip at the counter&#x27; for salons without Connect/known stylist (the cron already guards for this).</span></div></div>
+<div class="opt"><div class="ol">LEAVE it email-only</div>
+          <div class="pc"><span class="pro">+ Avoids showing a tip prompt before the service has happened; the cron already gates on Connect + known stylist.</span><span class="con">- Depends entirely on email deliverability and the customer opening it; loses in-app tip conversion.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#0A0A0A;background:#F4F4F5">My pick: decide</span>
+        <b>ADD a tip link on the post-booking surface, but gated to the same conditions the cron uses (salon Connect-enabled + known stylist) and shown post-appointment, not on the pre-appointment confirmation.</b><div class="reason">The /tip surface already exists and the cron already computes the exact eligibility guard, so the FE work is small and reuses proven logic. Peak-end timing (fable-psychology) favors offering the tip at the moment of gratitude rather than relying solely on an email that may never be opened. The gating matters: an ungated link dead-ends for non-Connect salons, so mirror the cron&#x27;s checks. Assumption: the confirmation screen can distinguish pre- vs post-appointment; if it cannot, attach the link only to a post-service surface.</div></div>
+    </div>
+<div class="gap sev-medium" data-sev="medium">
+      <div class="ghead">
+        <span class="num">#27</span>
+        <span class="gtitle">Dead receiptHref to /bookings/[id]</span>
+        <span class="flow">Confirmation &amp; post-booking</span>
+        <span class="sev" style="background:#0A0A0A">Medium</span>
+        <span class="eff">quick</span>
+      </div>
+      <div class="what">RefundCaseView and UpchargeApproveView both receive receiptHref = /{locale}/bookings/{id} (refund/page.tsx:43, upcharge/page.tsx:47), but no app/[locale]/bookings/[id]/page.tsx exists (the dir holds only refund/report/upcharge subroutes), so the link falls through to the home shell. The guest-lookup OpenedView already removed its &#x27;View receipt&#x27; button for exactly this missing target; refund/upcharge left the same broken link wired.</div>
+      <div class="opts"><div class="opt"><div class="ol">FIX: repoint receiptHref to a real receipt surface (e.g. the confirmation page with the access token, or /booking/lookup)</div>
+          <div class="pc"><span class="pro">+ Restores a working &#x27;view your booking&#x27; link for customers dealing with a refund or upcharge, a high-stress moment where a dead link erodes trust.</span><span class="con">- Needs deciding which existing surface is the canonical receipt; the confirmation page requires an access token the refund/upcharge context may not carry.</span></div></div>
+<div class="opt"><div class="ol">HIDE the receipt affordance in RefundCaseView/UpchargeApproveView</div>
+          <div class="pc"><span class="pro">+ Matches what OpenedView already did for the same broken target; quick and consistent.</span><span class="con">- Removes a genuinely useful link rather than fixing it; customer still has no in-app receipt from these screens.</span></div></div>
+<div class="opt"><div class="ol">BUILD app/[locale]/bookings/[id]/page.tsx as the real receipt</div>
+          <div class="pc"><span class="pro">+ Makes every receiptHref across refund/upcharge/lookup valid at once; a natural canonical booking-detail page.</span><span class="con">- Larger effort; needs its own guest/owner auth resolution (the same actor problem as gap 28).</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#9A3412;background:#FFF4E5">My pick: hide</span>
+        <b>HIDE the receipt affordance now (match OpenedView), and file the /bookings/[id] receipt page as the proper follow-up.</b><div class="reason">A link that silently lands on the homepage during a refund or upcharge dispute is worse than no link, and the codebase already set the precedent by removing the same button from OpenedView for this exact missing target. Hiding it is quick and immediately stops the misdirection. Building the real /bookings/[id] page is the right end state but couples to the guest-actor gap (28), so it belongs in that larger workstream rather than blocking this cleanup.</div></div>
+    </div>
+<div class="gap sev-medium" data-sev="medium">
+      <div class="ghead">
+        <span class="num">#30</span>
+        <span class="gtitle">Confirmation email has no manage link</span>
+        <span class="flow">Walk-in &amp; Queue (join → pay → number → track → tip)</span>
+        <span class="sev" style="background:#0A0A0A">Medium</span>
+        <span class="eff">medium</span>
+      </div>
+      <div class="what">lib/email.ts bookingConfirmation (sent from bookings/route.ts) carries only service/salon/date/time and an optional price/VAT block, no access or manage link. A guest&#x27;s only durable re-entry is the copyable card on the /confirmation screen; if they leave without saving it, recovery requires the resend-link flow (which is itself broken for phone-only guests, gap 29). The email is not a fallback.</div>
+      <div class="opts"><div class="opt"><div class="ol">ADD an access/manage link (guest access token) to the confirmation email</div>
+          <div class="pc"><span class="pro">+ Gives every guest a durable, in-inbox re-entry point, the natural place people look for a booking; sharply reduces lockouts and support load, and backstops gaps 28/29.</span><span class="con">- Must embed the raw access token in the email link (same pattern the resend flow already uses), so it needs the token available at send time and careful &#x27;do not share&#x27; framing.</span></div></div>
+<div class="opt"><div class="ol">LEAVE the email link-less</div>
+          <div class="pc"><span class="pro">+ No token in email; smallest surface.</span><span class="con">- Guests routinely lose the only re-entry path; combined with the broken phone resend (29) and no guest cancel (28), a guest who closes the tab can be fully locked out.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#0A0A0A;background:#F4F4F5">My pick: decide</span>
+        <b>ADD a guest access/manage link to the confirmation email, reusing the resend flow&#x27;s token-in-link pattern.</b><div class="reason">The confirmation email is where users instinctively return to find a booking, and today it is a dead-end for management. The resend-access route already establishes the exact safe pattern (raw token in a link the lookup route exchanges for an httpOnly cookie, 30-day validity, &#x27;do not share&#x27; note), so this is a low-risk reuse, not new auth design. It also backstops the two higher-severity guest gaps in this batch. Effort is medium because it needs the access token threaded into the send call in bookings/route.ts and the &#x27;do not share&#x27; copy. Assumption: guest bookings mint an access token at creation (they do, per the confirmation page&#x27;s token verify).</div></div>
+    </div>
+<div class="gap sev-medium" data-sev="medium">
+      <div class="ghead">
+        <span class="num">#33</span>
+        <span class="gtitle">Booking cart lost on refresh</span>
+        <span class="flow">Walk-in &amp; Queue (join → pay → number → track → tip)</span>
+        <span class="sev" style="background:#0A0A0A">Medium</span>
+        <span class="eff">medium</span>
+      </div>
+      <div class="what">The booking wizard state lives only in the in-memory reducer (lib/booking-context.tsx); there is no persistence, so an accidental refresh or a deep back-nav past step 1 wipes the whole cart with no recovery. resetForm on success is deliberate, but the unprotected refresh case is a real drop-off risk.</div>
+      <div class="opts"><div class="opt"><div class="ol">LEAVE it (in-memory only)</div>
+          <div class="pc"><span class="pro">+ Simplest; no stale-cart bugs, no cross-tab sync, no privacy of a persisted cart to reason about.</span><span class="con">- A mid-funnel refresh silently drops a committed-intent user back to zero, a measurable conversion leak at the highest-value step.</span></div></div>
+<div class="opt"><div class="ol">PERSIST wizard state to sessionStorage (rehydrate on mount)</div>
+          <div class="pc"><span class="pro">+ Survives accidental refresh within the tab; recovers the most common loss case; sessionStorage scope avoids cross-session staleness.</span><span class="con">- Must guard against rehydrating a stale slot (availability can change), so needs a slot re-validation on restore, medium work.</span></div></div>
+<div class="opt"><div class="ol">PERSIST to localStorage with a short TTL</div>
+          <div class="pc"><span class="pro">+ Also survives tab close/reopen.</span><span class="con">- Higher stale-data risk (prices/slots change), and a persisted cart across sessions is more surprising than helpful.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#0A0A0A;background:#F4F4F5">My pick: decide</span>
+        <b>PERSIST wizard state to sessionStorage with a slot re-validation on rehydrate.</b><div class="reason">This is the booking funnel&#x27;s single highest-value step; the code shows zero recovery from a refresh. sessionStorage scoped to the tab recovers the dominant loss case (accidental reload) without the cross-session staleness of localStorage, and the existing server-side slot resolution already lets you re-validate the restored slot before charging.</div></div>
+    </div>
+<div class="gap sev-medium" data-sev="medium">
+      <div class="ghead">
+        <span class="num">#36</span>
+        <span class="gtitle">Orphaned /checkout page dead-end</span>
+        <span class="flow">Reviews &amp; ratings</span>
+        <span class="sev" style="background:#0A0A0A">Medium</span>
+        <span class="eff">medium</span>
+      </div>
+      <div class="what">app/[locale]/checkout/page.tsx is unreachable: nothing builds its required booking_intent query param (only the page itself reads it; grep found no producer), and its Stripe return_url targets /{locale}/checkout/success, which does not exist as a route (confirmed no success/page.tsx). It also calls the orphaned /api/stripe/create-payment-intent that no live UI uses. It is legacy that duplicates the live booking-pay-intent flow.</div>
+      <div class="opts"><div class="opt"><div class="ol">DELETE the /checkout page (and its dead create-payment-intent path if unused elsewhere)</div>
+          <div class="pc"><span class="pro">+ Removes ~660 lines of unreachable legacy that duplicates the live pay flow, carries a broken return_url, and holds the stale-design and credit-misrepresentation issues (gaps 37-38); one delete clears three findings.</span><span class="con">- Loses the only surface that visibly shows a credit banner + working voucher input, so if the owner wants those in the real flow, that code is a reference worth reading before deleting.</span></div></div>
+<div class="opt"><div class="ol">REVIVE and fix it (build the success route, wire booking_intent producers, swap to booking-pay-intent)</div>
+          <div class="pc"><span class="pro">+ Would give a real checkout surface with credit + voucher UI.</span><span class="con">- Large: needs a success route, a producer of booking_intent, migration off create-payment-intent, and a full B&amp;W/Inter reskin; and it would then compete with the live PayConfirmStep flow, re-introducing the two-path confusion.</span></div></div>
+<div class="opt"><div class="ol">LEAVE it</div>
+          <div class="pc"><span class="pro">+ Zero effort.</span><span class="con">- A large broken page sits in the tree as a trap; anyone finding it could wire the wrong Stripe path or copy its warm-terracotta design.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#9A3412;background:#FFF4E5">My pick: delete</span>
+        <b>DELETE the /checkout page (after capturing its credit-banner + voucher-input UX as a reference), and remove /api/stripe/create-payment-intent if it has no other caller.</b><div class="reason">grep confirms no producer of booking_intent and no checkout/success route, so the page cannot complete a payment; it duplicates the live booking-pay-intent flow and simultaneously carries the credit-misrepresentation and stale-design defects. Deleting it resolves gaps 36-38 together and removes a genuine wrong-path trap. Verify create-payment-intent has no other live caller before removing it.</div></div>
+    </div>
+<div class="gap sev-medium" data-sev="medium">
+      <div class="ghead">
+        <span class="num">#43</span>
+        <span class="gtitle">Booking cart lost on refresh</span>
+        <span class="flow">Profile &amp; account</span>
+        <span class="sev" style="background:#0A0A0A">Medium</span>
+        <span class="eff">medium</span>
+      </div>
+      <div class="what">Booking wizard state lives only in-memory (lib/booking-context + booking-state); an accidental refresh or a deep back-nav past step 1 loses the entire selection with no recovery. On a multi-step booking this is a genuine mid-funnel drop-off risk.</div>
+      <div class="opts"><div class="opt"><div class="ol">WIRE sessionStorage persistence</div>
+          <div class="pc"><span class="pro">+ Survives refresh/back-nav; recovers the cart on reload; low blast radius (hydrate the context from sessionStorage, clear on success)</span><span class="con">- Must scope carefully so resetForm-on-success and salon-switch still clear it, or a stale cart could bleed across salons</span></div></div>
+<div class="opt"><div class="ol">LEAVE it (accepted per design)</div>
+          <div class="pc"><span class="pro">+ Zero effort; resetForm-on-success is deliberate</span><span class="con">- Every refresh is a silent funnel loss with no recovery path</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#1B4FA8;background:#EAF2FF">My pick: fix / wire</span>
+        <b>WIRE sessionStorage persistence keyed by salon slug.</b><div class="reason">This is the one item in this range with a real conversion cost. The wizard is multi-step, and losing the whole cart on an accidental refresh is a classic funnel leak; sessionStorage keyed to the salon is a bounded fix that preserves the deliberate reset-on-success behavior.</div></div>
+    </div>
+<div class="gap sev-medium" data-sev="medium">
+      <div class="ghead">
+        <span class="num">#46</span>
+        <span class="gtitle">Orphaned /checkout page and dead success route</span>
+        <span class="flow">Profile &amp; account</span>
+        <span class="sev" style="background:#0A0A0A">Medium</span>
+        <span class="eff">medium</span>
+      </div>
+      <div class="what">app/[locale]/checkout/page.tsx is unreachable (no live code builds its booking_intent query param) and its Stripe return_url targets /{locale}/checkout/success, which does not exist (confirmed no such directory), so a successful payment would redirect into a missing route. It also drives the orphaned /api/stripe/create-payment-intent path that no live UI calls.</div>
+      <div class="opts"><div class="opt"><div class="ol">DELETE the /checkout page + create-payment-intent route</div>
+          <div class="pc"><span class="pro">+ Removes a dead-end that would break on success, plus a duplicate Stripe path that risks future misuse; live flow is PayConfirmStep + booking-pay-intent</span><span class="con">- Loses the only surface with a built voucher/credit UI (would be re-authored if that UX returns); needs a REMOVED.md line</span></div></div>
+<div class="opt"><div class="ol">REVIVE it (build success route + wire entry)</div>
+          <div class="pc"><span class="pro">+ Recovers a full checkout with promo/voucher/credit UI</span><span class="con">- Duplicates the live booking-pay-intent spend path and its terracotta design contradicts the locked system; large rework</span></div></div>
+<div class="opt"><div class="ol">LEAVE it</div>
+          <div class="pc"><span class="pro">+ Zero effort</span><span class="con">- Keeps a broken, unreachable surface and a confusable second Stripe path</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#9A3412;background:#FFF4E5">My pick: delete</span>
+        <b>DELETE the /checkout page and the orphaned create-payment-intent route.</b><div class="reason">The live payment path is PayConfirmStep to /api/stripe/booking-pay-intent. The /checkout page is unreachable, would dead-end on success (no /checkout/success route), and duplicates Stripe logic. Removing it kills gaps 46, 47, and 48 at once. Log it in REMOVED.md per the graveyard protocol.</div></div>
+    </div>
+<div class="gap sev-medium" data-sev="medium">
+      <div class="ghead">
+        <span class="num">#47</span>
+        <span class="gtitle">Credit misrepresentation on /checkout</span>
+        <span class="flow">Profile &amp; account</span>
+        <span class="sev" style="background:#0A0A0A">Medium</span>
+        <span class="eff">quick</span>
+      </div>
+      <div class="what">On the orphaned /checkout page, userCredits is /api/referral total_earned shown as available credit, and the code&#x27;s own comment (checkout/page.tsx:188-197) concedes this is not the real available balance. It would overstate spendable credit if the page were ever revived.</div>
+      <div class="opts"><div class="opt"><div class="ol">DELETE with the page (per gap 46)</div>
+          <div class="pc"><span class="pro">+ The misrepresentation disappears with the unreachable surface; no user ever sees it</span><span class="con">- If the checkout UX is later rebuilt, the correct available-balance source must be wired then</span></div></div>
+<div class="opt"><div class="ol">FIX the source now (query real available balance)</div>
+          <div class="pc"><span class="pro">+ Makes the number honest in case of revival</span><span class="con">- Wasted effort on an unreachable page; better done at revival time against the live spend model</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#9A3412;background:#FFF4E5">My pick: delete</span>
+        <b>DELETE with the page (fold into gap 46).</b><div class="reason">total_earned as available credit is a real misrepresentation, but it is only reachable on the orphaned /checkout surface. Removing that page per gap 46 resolves it; fixing the number on a dead page is wasted work.</div></div>
+    </div>
+<div class="gap sev-medium" data-sev="medium">
+      <div class="ghead">
+        <span class="num">#49</span>
+        <span class="gtitle">Voucher spend unreachable in booking</span>
+        <span class="flow">Value store (loyalty / vouchers / gift cards / credits / referrals) — how value is earned, stored, and spent across Solen&#x27;s customer surfaces</span>
+        <span class="sev" style="background:#0A0A0A">Medium</span>
+        <span class="eff">none</span>
+      </div>
+      <div class="what">/api/stripe/booking-pay-intent fully implements applying a voucher_code (route.ts:60-62 and the redeem path), but PayConfirmStep:296 sends only { booking_id } and no live client passes voucher_code, so voucher redemption at booking is dormant end-to-end. Credits auto-apply server-side and promo arrives via formData.promoCode, but there is no voucher-code input.</div>
+      <div class="opts"><div class="opt"><div class="ol">LEAVE it dormant</div>
+          <div class="pc"><span class="pro">+ The server plumbing is ready and re-validates any code live; matches the current owner hide of voucher/gift-card customer surfaces</span><span class="con">- A built spend path sits unreachable; users cannot redeem a voucher at booking</span></div></div>
+<div class="opt"><div class="ol">WIRE a voucher input into PayConfirmStep</div>
+          <div class="pc"><span class="pro">+ Activates the existing backend; lets customers redeem vouchers in the real flow</span><span class="con">- Contradicts the current owner decision to keep voucher/gift-card surfaces redirect-only; needs design + copy for the input</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#16A34A;background:#EAF6EC">My pick: leave</span>
+        <b>LEAVE it dormant until vouchers are un-hidden as a customer feature.</b><div class="reason">The backend is intentionally ahead of the UI. Voucher and gift-card customer routes are currently redirect-only by owner call, so exposing a booking-time voucher input now would contradict that. Assumption: vouchers are not a current launch priority; when they are, the FE field is a small add against ready plumbing.</div></div>
+    </div>
+<div class="gap sev-medium" data-sev="medium">
+      <div class="ghead">
+        <span class="num">#51</span>
+        <span class="gtitle">Orphaned /checkout page</span>
+        <span class="flow">Value store (loyalty / vouchers / gift cards / credits / referrals) — how value is earned, stored, and spent across Solen&#x27;s customer surfaces</span>
+        <span class="sev" style="background:#0A0A0A">Medium</span>
+        <span class="eff">medium</span>
+      </div>
+      <div class="what">The ~660-line /[locale]/checkout page is unreachable (grep-confirmed no live builder of its booking_intent param, only /dev mockups), targets a non-existent /checkout/success return route, and uses the older /api/stripe/create-payment-intent instead of the live booking-pay-intent. Ironically it is the ONLY surface with a working voucher input and a &#x27;Guthaben verfügbar&#x27; credit banner, the exact things missing from the real pay flow (gaps 52 and 55 below).</div>
+      <div class="opts"><div class="opt"><div class="ol">Harvest then delete: port the voucher input + credit banner UI into the live PayConfirmStep, then delete the orphan</div>
+          <div class="pc"><span class="pro">+ Recovers the two genuinely useful UI pieces the real flow lacks, removes the divergent Stripe path and dead success-route liability in one move</span><span class="con">- Two work items, and the harvested pieces must be rewired to booking-pay-intent&#x27;s response shape, not the old create-payment-intent</span></div></div>
+<div class="opt"><div class="ol">Delete outright now</div>
+          <div class="pc"><span class="pro">+ Fastest way to kill the confusion/maintenance risk of two parallel Stripe paths</span><span class="con">- Throws away the only built voucher-input + credit-banner UI, so gaps 52/55 start from scratch later</span></div></div>
+<div class="opt"><div class="ol">Leave it</div>
+          <div class="pc"><span class="pro">+ Zero effort</span><span class="con">- Dead 660-line page invites a future dev to pick the wrong (manual-capture) Stripe path; missing success route means it would half-work if ever linked</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#9A3412;background:#FFF4E5">My pick: delete</span>
+        <b>Harvest then delete: lift the voucher input + credit banner into PayConfirmStep (rewired to booking-pay-intent), then delete the orphaned page and log it in REMOVED.md.</b><div class="reason">The page is unreachable and structurally broken (missing success route, orphaned Stripe path), so it must not survive as-is. But deleting blind wastes the one place credit/voucher visibility is already designed. Harvesting solves gaps 52 and 55 at the same time it removes the liability.</div></div>
+    </div>
+<div class="gap sev-medium" data-sev="medium">
+      <div class="ghead">
+        <span class="num">#52</span>
+        <span class="gtitle">Credit applied invisibly at pay</span>
+        <span class="flow">Value store (loyalty / vouchers / gift cards / credits / referrals) — how value is earned, stored, and spent across Solen&#x27;s customer surfaces</span>
+        <span class="sev" style="background:#0A0A0A">Medium</span>
+        <span class="eff">medium</span>
+      </div>
+      <div class="what">booking-pay-intent redeems the user&#x27;s referral credit silently server-side; PayConfirmStep sends only {booking_id} and shows no credit line, so credit_applied only comes back in the API response after the intent is built. A user with credit gets no in-flow signal that (or how much) credit reduced their charge before they pay.</div>
+      <div class="opts"><div class="opt"><div class="ol">Wire a credit preview into the payment summary</div>
+          <div class="pc"><span class="pro">+ Restores price transparency: user sees available credit and the amount applied before committing; matches the price-transparency behavioral law</span><span class="con">- Needs a pre-flight fetch of the available balance (or reorder so the summary reflects credit_applied) before the pay button</span></div></div>
+<div class="opt"><div class="ol">Show credit_applied post-intent only</div>
+          <div class="pc"><span class="pro">+ Cheap: just render the value already returned by the API</span><span class="con">- Still shows nothing until after the intent is built, so the pre-pay moment stays opaque</span></div></div>
+<div class="opt"><div class="ol">Leave silent</div>
+          <div class="pc"><span class="pro">+ No work; the charge is still correct</span><span class="con">- User can&#x27;t reconcile the amount, reads as an unexplained discount or a bug; erodes trust in the total</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#1B4FA8;background:#EAF2FF">My pick: fix / wire</span>
+        <b>Wire a credit preview line into the payment summary so applied credit is shown before the user pays.</b><div class="reason">Silently changing the amount a user is about to pay is a transparency failure; the charge being correct is necessary but not sufficient. The credit figure already exists server-side, so surfacing it is the honest and low-risk fix.</div></div>
+    </div>
+<div class="gap sev-medium" data-sev="medium">
+      <div class="ghead">
+        <span class="num">#53</span>
+        <span class="gtitle">Stamp card promises un-redeemable reward</span>
+        <span class="flow">Value store (loyalty / vouchers / gift cards / credits / referrals) — how value is earned, stored, and spent across Solen&#x27;s customer surfaces</span>
+        <span class="sev" style="background:#0A0A0A">Medium</span>
+        <span class="eff">quick</span>
+      </div>
+      <div class="what">/profile/stamps is live but the hub now routes &#x27;Loyalty&#x27; to /rewards and the code calls stamps &#x27;legacy&#x27;; a completed card shows &#x27;Belohnung verfügbar&#x27; with no wired redeem action because there is no is_redeemed column (pending v2 schema). The UI promises a reward the user cannot claim in-app.</div>
+      <div class="opts"><div class="opt"><div class="ol">Soften the completed-card copy to in-salon redemption</div>
+          <div class="pc"><span class="pro">+ Removes the broken in-app promise honestly; &#x27;zeig deine volle Karte im Salon&#x27; is deliverable today with no schema change</span><span class="con">- Not a real digital redeem loop; defers the satisfying in-app claim</span></div></div>
+<div class="opt"><div class="ol">Build the redeem action now (v2 schema + is_redeemed)</div>
+          <div class="pc"><span class="pro">+ Delivers the full loop the card implies</span><span class="con">- Requires the deferred migration against a drifted table plus a redeem screen; large for a surface the hub already de-emphasizes</span></div></div>
+<div class="opt"><div class="ol">Leave it</div>
+          <div class="pc"><span class="pro">+ No work</span><span class="con">- &#x27;Belohnung verfügbar&#x27; with no path is a dead-end that reads as broken</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#0A0A0A;background:#F4F4F5">My pick: decide</span>
+        <b>Soften the completed-card state to in-salon redemption copy until the v2 schema lands.</b><div class="reason">The redeem schema is deliberately deferred, so promising an in-app reward with no path is the worse failure. In-salon redemption is honest, shippable now, and matches how these stamp cards actually work.</div></div>
+    </div>
+<div class="gap sev-medium" data-sev="medium">
+      <div class="ghead">
+        <span class="num">#55</span>
+        <span class="gtitle">Orphaned Inspo board/saved routes</span>
+        <span class="flow">Inspo / discovery feed</span>
+        <span class="sev" style="background:#0A0A0A">Medium</span>
+        <span class="eff">quick</span>
+      </div>
+      <div class="what">/inspo/board/[id] and /inspo/saved/[id] have live pages and working APIs, but nothing links to them: the named-collections/boards layer was removed 2026-06-23, and the plain heart-save never assigns a collection_id, so no collection is ever populated or linked. They are stranded behind deliberately removed navigation.</div>
+      <div class="opts"><div class="opt"><div class="ol">Delete the two routes + their APIs and log in REMOVED.md</div>
+          <div class="pc"><span class="pro">+ Aligns code with the 2026-06-23 decision to kill collections; removes stranded dead paths and duplicate-source risk</span><span class="con">- If collections is ever revived it is a rebuild (but it would be anyway, since saves carry no collection_id today)</span></div></div>
+<div class="opt"><div class="ol">Leave dormant for a future collections revival</div>
+          <div class="pc"><span class="pro">+ Preserves the scaffolding if the owner reverses course</span><span class="con">- Dead routes+APIs rot, drift from the live save model, and violate the anti-stranded-code posture</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#9A3412;background:#FFF4E5">My pick: delete</span>
+        <b>Delete the orphaned board/[id] and saved/[id] pages and their APIs, and add a REMOVED.md line.</b><div class="reason">Collections was deliberately removed and the save model no longer feeds it, so these routes can never populate. Stranded pages+APIs behind killed nav are exactly the dead-path liability the project&#x27;s exists/graveyard protocol targets.</div></div>
+    </div>
+<div class="gap sev-medium" data-sev="medium">
+      <div class="ghead">
+        <span class="num">#56</span>
+        <span class="gtitle">Feed hearts not hydrated</span>
+        <span class="flow">Inspo / discovery feed</span>
+        <span class="sev" style="background:#0A0A0A">Medium</span>
+        <span class="eff">quick</span>
+      </div>
+      <div class="what">The feed&#x27;s savedIds Set starts empty on every load and is never hydrated from /api/discovery/saves, so a look the user saved on a prior visit shows an empty (unsaved) heart until they interact with it again. It is a genuine state-sync bug between the feed and the saved page, not fabrication.</div>
+      <div class="opts"><div class="opt"><div class="ol">Hydrate savedIds on feed mount</div>
+          <div class="pc"><span class="pro">+ Fixes the visibly-wrong empty heart; one fetch of the user&#x27;s saved ids seeds the Set correctly</span><span class="con">- Adds a fetch on load (cheap, cacheable); needs a lightweight ids-only endpoint or reuse of the saves API</span></div></div>
+<div class="opt"><div class="ol">Leave it</div>
+          <div class="pc"><span class="pro">+ No work</span><span class="con">- An already-saved look showing an empty heart reads as a bug and risks a confusing double-save</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#0A0A0A;background:#F4F4F5">My pick: decide</span>
+        <b>Hydrate savedIds from the user&#x27;s saved ids on feed mount.</b><div class="reason">Showing an unsaved heart on a look the user already saved is a visible correctness error, and the code comment even concedes the Set only reflects this-session actions. A single ids fetch on mount closes the gap.</div></div>
+    </div>
+<div class="gap sev-low" data-sev="low">
+      <div class="ghead">
+        <span class="num">#2</span>
+        <span class="gtitle">Dormant duplicate search island</span>
+        <span class="flow">Discovery &amp; Search</span>
+        <span class="sev" style="background:#6B6B6B">Low</span>
+        <span class="eff">medium</span>
+      </div>
+      <div class="what">SearchBar.tsx keeps a full in-place morphing &#x27;island&#x27; composer plus its own handleSubmit-&gt;/search (lines ~224-621), but every resting row now calls openOverlay() so the island is unreachable; the Path C comment (139-144) says it is kept dormant intentionally. Two search implementations coexist in one file with only SearchOverlay live.</div>
+      <div class="opts"><div class="opt"><div class="ol">DELETE the dead island + handleSubmit</div>
+          <div class="pc"><span class="pro">+ Cuts a few hundred lines of unreachable code and kills the two-implementations confusion hazard.</span><span class="con">- Medium-effort careful extraction; if any resting-row handler still touches island state it must be untangled first.</span></div></div>
+<div class="opt"><div class="ol">LEAVE dormant (as the comment intends)</div>
+          <div class="pc"><span class="pro">+ Zero risk; the safety-net comment says nothing that referenced it breaks.</span><span class="con">- Permanent dead weight; a future editor may wire the wrong search path or duplicate a fix across both.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#9A3412;background:#FFF4E5">My pick: delete</span>
+        <b>DELETE the dead island and its handleSubmit after confirming no resting-row handler reads its state.</b><div class="reason">&#x27;Kept dormant so nothing breaks&#x27; is a migration scaffold, and Path C is described as completed. Once SearchOverlay is the sole surface, the island is unreachable code that only invites divergence. No user impact either way, so this is maintainability hygiene, not urgent.</div></div>
+    </div>
+<div class="gap sev-low" data-sev="low">
+      <div class="ghead">
+        <span class="num">#8</span>
+        <span class="gtitle">Portfolio/Loyalty tabs dropped, section stays</span>
+        <span class="flow">Salon page (PDP) — /de/salon/[slug] — and its handoff into the booking wizard</span>
+        <span class="sev" style="background:#6B6B6B">Low</span>
+        <span class="eff">none</span>
+      </div>
+      <div class="what">The sticky tab nav dropped the portfolio + loyalty tab keys for Fresha 5-tab parity (SalonDetailV3.tsx:133-136), but the Portfolio SECTION still renders below (line 298). So Portfolio is reachable by scrolling but has no tab affordance, a minor nav/section mismatch, intentional.</div>
+      <div class="opts"><div class="opt"><div class="ol">LEAVE (intentional Fresha-parity)</div>
+          <div class="pc"><span class="pro">+ Matches the documented golden-route decision; Portfolio still reachable via scroll and the hero gallery.</span><span class="con">- Slight discoverability loss for the Portfolio section.</span></div></div>
+<div class="opt"><div class="ol">Re-add a Portfolio tab</div>
+          <div class="pc"><span class="pro">+ Restores direct jump to the gallery.</span><span class="con">- Reverts a deliberate parity decision; needs owner sign-off, not a bug fix.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#16A34A;background:#EAF6EC">My pick: leave</span>
+        <b>LEAVE as-is.</b><div class="reason">The mismatch is intentional and documented; Portfolio is not orphaned (it folds into the hero gallery and still renders). Changing tab structure is an owner design call, not a defect to fix.</div></div>
+    </div>
+<div class="gap sev-low" data-sev="low">
+      <div class="ghead">
+        <span class="num">#13</span>
+        <span class="gtitle">In-memory-only booking cart, no recovery</span>
+        <span class="flow">Booking flow</span>
+        <span class="sev" style="background:#6B6B6B">Low</span>
+        <span class="eff">none</span>
+      </div>
+      <div class="what">Booking state lives entirely in a useReducer in lib/booking-context.tsx with no sessionStorage/localStorage persistence, so an accidental refresh or a deep back-nav past step 1 wipes the whole cart. resetForm on success is deliberate; the loss on refresh is an accepted side effect with no recovery.</div>
+      <div class="opts"><div class="opt"><div class="ol">Persist formData to sessionStorage and rehydrate on mount</div>
+          <div class="pc"><span class="pro">+ Survives refresh/back-nav; recovers the cart with no server work</span><span class="con">- Persisting slot_id/selectedTime is dangerous because a saved slot can be booked by someone else, so rehydration needs a re-validation step or it resurfaces a stale/taken slot as valid</span></div></div>
+<div class="opt"><div class="ol">LEAVE the in-memory design</div>
+          <div class="pc"><span class="pro">+ No stale-slot risk; the flow (services-&gt;staff-&gt;time-&gt;pay) is short and fast to rebuild; matches the deliberate reset-on-success intent</span><span class="con">- A mid-flow refresh drops the cart with no message; a real if low-frequency drop-off</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#16A34A;background:#EAF6EC">My pick: leave</span>
+        <b>LEAVE it. The deliberate in-memory design is the safer call.</b><div class="reason">The tempting fix (persist the cart) reintroduces exactly the silent-no-op class this codebase fears: a rehydrated slot_id can point at an already-taken slot, so you would have to re-validate availability on restore anyway. The flow is short, so the cost of rebuilding is low, and the risk of showing a phantom-valid slot outweighs the convenience. Downgraded to low because the failure is uncommon and non-corrupting.</div></div>
+    </div>
+<div class="gap sev-low" data-sev="low">
+      <div class="ghead">
+        <span class="num">#18</span>
+        <span class="gtitle">Stale terracotta/DM Sans on /checkout</span>
+        <span class="flow">Checkout &amp; Payment</span>
+        <span class="sev" style="background:#6B6B6B">Low</span>
+        <span class="eff">none</span>
+      </div>
+      <div class="what">The /checkout Stripe Elements use colorPrimary #C05038 (warm terracotta), colorDanger #A32D2D, and fontFamily DM Sans (lines 705-713), plus warm-brown inline styles, all of which contradict the locked B&amp;W/Inter design system the live BookingPaymentForm follows (#0A0A0A + Inter). Cosmetic and moot while the page is orphaned.</div>
+      <div class="opts"><div class="opt"><div class="ol">DELETE with the /checkout page (gap 16)</div>
+          <div class="pc"><span class="pro">+ Removes the off-brand surface entirely</span><span class="con">- None while orphaned</span></div></div>
+<div class="opt"><div class="ol">RESTYLE to the locked tokens</div>
+          <div class="pc"><span class="pro">+ On-brand if ever shown</span><span class="con">- Restyling an unreachable page is wasted effort</span></div></div>
+<div class="opt"><div class="ol">LEAVE</div>
+          <div class="pc"><span class="pro">+ Zero effort</span><span class="con">- Off-brand styling waits to ship if the page is revived</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#9A3412;background:#FFF4E5">My pick: delete</span>
+        <b>DELETE with the /checkout page.</b><div class="reason">This is the weakest of the /checkout gaps (pure cosmetics on a dead page). It resolves for free under the gap-16 delete; restyling in isolation would be effort spent on a surface no user can reach.</div></div>
+    </div>
+<div class="gap sev-low" data-sev="low">
+      <div class="ghead">
+        <span class="num">#20</span>
+        <span class="gtitle">No tip link from confirmation screen</span>
+        <span class="flow">Checkout &amp; Payment</span>
+        <span class="sev" style="background:#6B6B6B">Low</span>
+        <span class="eff">none</span>
+      </div>
+      <div class="what">Tipping for a seated booking is reachable only via the review-prompt cron email deep-link to /tip/[id] (cron/review-prompt/route.ts:314); BookingConfirmation.tsx has no tip affordance, so a customer on the confirmation screen has no in-app path to tip. Walk-in tipping is separately handled by /walk-in-tip/[token] and /queue/[token].</div>
+      <div class="opts"><div class="opt"><div class="ol">LEAVE tipping as post-service, email-timed only</div>
+          <div class="pc"><span class="pro">+ Tipping belongs after service is received; the confirmation screen is pre-service, so a tip prompt there is premature and semantically odd; the cron email fires at the right moment</span><span class="con">- A customer who wants to tip immediately (rare for a not-yet-happened appointment) has no path</span></div></div>
+<div class="opt"><div class="ol">ADD a &#x27;Trinkgeld geben&#x27; link on /confirmation</div>
+          <div class="pc"><span class="pro">+ Removes the perceived dead-end; captures eager tippers</span><span class="con">- Prompts a tip for a service not yet delivered, which is off; better handled at/after the appointment where the email and walk-in flows already live</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#16A34A;background:#EAF6EC">My pick: leave</span>
+        <b>LEAVE it. Tipping is correctly timed to post-service via the review-prompt email.</b><div class="reason">The confirmation screen fires before the appointment happens; tipping is for service received, so the email-timed deep-link is the right moment, not a defect. Walk-in customers who are served immediately already have the queue/walk-in-tip flows. This is a defensible product-timing choice, so it is a low-severity noted item rather than a broken path.</div></div>
+    </div>
+<div class="gap sev-low" data-sev="low">
+      <div class="ghead">
+        <span class="num">#22</span>
+        <span class="gtitle">Credit figure misrepresented on /checkout</span>
+        <span class="flow">Checkout &amp; Payment</span>
+        <span class="sev" style="background:#6B6B6B">Low</span>
+        <span class="eff">none</span>
+      </div>
+      <div class="what">On /checkout, userCredits is populated from /api/referral total_earned and displayed as &#x27;Guthaben verfügbar&#x27; (available credit), but the code&#x27;s own comment (lines 192-194) concedes total_earned is lifetime earned, not the real spendable balance. It would overstate what a user can actually redeem.</div>
+      <div class="opts"><div class="opt"><div class="ol">Fold into the gap-21 DELETE</div>
+          <div class="pc"><span class="pro">+ The misrepresentation vanishes with the page; no separate work.</span><span class="con">- None if /checkout is deleted.</span></div></div>
+<div class="opt"><div class="ol">FIX to read the real available balance (getAvailableCreditRappen)</div>
+          <div class="pc"><span class="pro">+ Honest number if the page is ever revived.</span><span class="con">- Wasted effort on an orphaned surface that shouldn&#x27;t render at all.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#0A0A0A;background:#F4F4F5">My pick: decide</span>
+        <b>Fold into the gap-21 DELETE.</b><div class="reason">The banner only renders on the orphaned /checkout, so it misleads nobody today, and the correct fix for the containing page is deletion. Fixing the balance calc in isolation polishes code that should not exist. If gap 21 is parked rather than deleted, then FIX this before any revival because it is a real money-figure misrepresentation.</div></div>
+    </div>
+<div class="gap sev-low" data-sev="low">
+      <div class="ghead">
+        <span class="num">#23</span>
+        <span class="gtitle">Stale warm-brown styling on /checkout</span>
+        <span class="flow">Confirmation &amp; post-booking</span>
+        <span class="sev" style="background:#6B6B6B">Low</span>
+        <span class="eff">none</span>
+      </div>
+      <div class="what">The /checkout Stripe Elements use colorPrimary #C05038 (warm terracotta) + DM Sans font (lines 710-713), plus rgba warm-brown inline styles and s-accent-as-green throughout, all contradicting the locked B&amp;W / Inter / #0A0A0A system the live BookingPaymentForm uses. It is pre-pivot legacy styling.</div>
+      <div class="opts"><div class="opt"><div class="ol">Fold into the gap-21 DELETE</div>
+          <div class="pc"><span class="pro">+ All the stale styling disappears with the page.</span><span class="con">- None if deleted.</span></div></div>
+<div class="opt"><div class="ol">RESTYLE to the locked B&amp;W/Inter tokens</div>
+          <div class="pc"><span class="pro">+ On-brand if revived.</span><span class="con">- Restyling an unreachable page is pure waste; the live checkout is already correct.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#0A0A0A;background:#F4F4F5">My pick: decide</span>
+        <b>Fold into the gap-21 DELETE.</b><div class="reason">This is cosmetic drift on a page no user can reach. It is a symptom of the orphaned surface, not an independent problem; deleting the page (gap 21) resolves it. Never worth a standalone restyle pass.</div></div>
+    </div>
+<div class="gap sev-low" data-sev="low">
+      <div class="ghead">
+        <span class="num">#26</span>
+        <span class="gtitle">Two parallel Stripe intent paths</span>
+        <span class="flow">Confirmation &amp; post-booking</span>
+        <span class="sev" style="background:#6B6B6B">Low</span>
+        <span class="eff">quick</span>
+      </div>
+      <div class="what">Two payment-intent endpoints coexist: booking-pay-intent (live, automatic-capture full-prepay/deposit destination charge, called by PayConfirmStep) and create-payment-intent (older manual-capture deposit-hold, called ONLY by the orphaned /checkout page). Future work could wire the wrong one.</div>
+      <div class="opts"><div class="opt"><div class="ol">DELETE create-payment-intent alongside /checkout</div>
+          <div class="pc"><span class="pro">+ Leaves exactly one canonical Stripe intent path; removes the wrong-path trap.</span><span class="con">- If any non-obvious internal tool calls it, that breaks (grep shows only /checkout calls it).</span></div></div>
+<div class="opt"><div class="ol">LEAVE both</div>
+          <div class="pc"><span class="pro">+ Zero effort.</span><span class="con">- Two similarly-named intent endpoints with different capture semantics is a standing footgun for the next payments task.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#9A3412;background:#FFF4E5">My pick: delete</span>
+        <b>DELETE create-payment-intent alongside /checkout (gap 21).</b><div class="reason">grep confirms create-payment-intent has exactly one caller, the orphaned /checkout page. Once that page is deleted, this endpoint has zero callers and only survives as a mis-selection risk with different (manual-capture) semantics than the live path. Removing both together collapses the duplication cleanly. This is the same root as gaps 21-23, so it should ship in one cleanup.</div></div>
+    </div>
+<div class="gap sev-low" data-sev="low">
+      <div class="ghead">
+        <span class="num">#31</span>
+        <span class="gtitle">Dead react-aria date-picker file</span>
+        <span class="flow">Walk-in &amp; Queue (join → pay → number → track → tip)</span>
+        <span class="sev" style="background:#6B6B6B">Low</span>
+        <span class="eff">quick</span>
+      </div>
+      <div class="what">components-legacy/ui/date-picker.tsx (a react-aria DatePicker) has zero importers anywhere in app/components-legacy/lib; the live date/time UI is the DateTimePicker primitive. It is confirmed dead code, and the original brief pointed reviewers at this wrong file.</div>
+      <div class="opts"><div class="opt"><div class="ol">DELETE the file</div>
+          <div class="pc"><span class="pro">+ Removes a dead react-aria component that mis-directs anyone auditing the booking date UI; shrinks the surface.</span><span class="con">- Loses a pre-built react-aria picker if someone ever wanted to revive it (unlikely; DateTimePicker is locked).</span></div></div>
+<div class="opt"><div class="ol">LEAVE it</div>
+          <div class="pc"><span class="pro">+ Zero effort; harmless at runtime (never bundled since nothing imports it).</span><span class="con">- Keeps a decoy that wastes future reviewers&#x27; time and invites accidental re-import of a non-design-system picker.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#9A3412;background:#FFF4E5">My pick: delete</span>
+        <b>DELETE the file.</b><div class="reason">grep across app/components-legacy/lib returned no importers, and the date/time UI is the locked DateTimePicker primitive. An unused component that duplicates a locked one is exactly the drift the design system forbids; deleting it is a safe, mechanical cleanup with no runtime effect.</div></div>
+    </div>
+<div class="gap sev-low" data-sev="low">
+      <div class="ghead">
+        <span class="num">#34</span>
+        <span class="gtitle">Promo/referral fields never surfaced</span>
+        <span class="flow">Walk-in &amp; Queue (join → pay → number → track → tip)</span>
+        <span class="sev" style="background:#6B6B6B">Low</span>
+        <span class="eff">medium</span>
+      </div>
+      <div class="what">promoCode/giftCardCode/referralCode exist in BookingFormData and PayConfirmStep POSTs promo_code + gift_card_code to /api/bookings (lines 243-244), but the wizard renders no input to set them, so they stay empty (or arrive pre-seeded). The promo redemption path is present in the schema but has no customer-facing control in this flow.</div>
+      <div class="opts"><div class="opt"><div class="ol">LEAVE it (fields dormant, no UI)</div>
+          <div class="pc"><span class="pro">+ Matches the current no-promo-entry booking design; avoids exposing a discount surface before the owner wants it.</span><span class="con">- The promo backend (reserve_promo_use in booking-pay-intent) is fully built yet unreachable, so a shipped capability earns nothing.</span></div></div>
+<div class="opt"><div class="ol">WIRE a promo-code input into PayConfirmStep</div>
+          <div class="pc"><span class="pro">+ Activates an already-built discount/redemption path; standard checkout affordance.</span><span class="con">- Promo application is actually enforced in booking-pay-intent (which only receives {booking_id}), not /api/bookings, so wiring must target the pay-intent step, not just set formData, or the code will be POSTed to a route that ignores it, non-trivial.</span></div></div>
+<div class="opt"><div class="ol">REMOVE the unused fields from the POST</div>
+          <div class="pc"><span class="pro">+ Stops sending values no UI can populate; clarifies the contract.</span><span class="con">- Discards deliberately-staged plumbing the owner may activate.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#16A34A;background:#EAF6EC">My pick: leave</span>
+        <b>LEAVE it dormant for now, but treat the promo input as a deliberate product decision (owner call), not a bug.</b><div class="reason">The fields are POSTed to /api/bookings, but promo enforcement actually lives in booking-pay-intent which receives only {booking_id}, so even wiring a naive input would not apply a discount. Whether to expose promo entry is a product/monetization decision, not a defect; the honest state is dormant plumbing, and activating it requires targeting the pay-intent step, which the owner should decide to open.</div></div>
+    </div>
+<div class="gap sev-low" data-sev="low">
+      <div class="ghead">
+        <span class="num">#37</span>
+        <span class="gtitle">Credits misrepresented on /checkout</span>
+        <span class="flow">Reviews &amp; ratings</span>
+        <span class="sev" style="background:#6B6B6B">Low</span>
+        <span class="eff">quick</span>
+      </div>
+      <div class="what">On /checkout, userCredits is populated from /api/referral&#x27;s total_earned (checkout/page.tsx:188-197) and displayed as available credit, but the code&#x27;s own comment concedes total_earned is not the real available balance. It would overstate spendable credit. It is moot today because the page is orphaned (gap 36), but a data-misrepresentation if the page is ever revived.</div>
+      <div class="opts"><div class="opt"><div class="ol">FIX the source to the real available balance</div>
+          <div class="pc"><span class="pro">+ Shows true spendable credit; removes a misrepresentation.</span><span class="con">- Pointless work while the page is unreachable; the real fix is deleting the page.</span></div></div>
+<div class="opt"><div class="ol">DELETE with the page (recommended via gap 36)</div>
+          <div class="pc"><span class="pro">+ Removes the misrepresentation at the root along with the orphaned surface.</span><span class="con">- None, if the page is being deleted anyway.</span></div></div>
+<div class="opt"><div class="ol">LEAVE it</div>
+          <div class="pc"><span class="pro">+ No effort.</span><span class="con">- If the page is ever revived without noticing this comment, users see an inflated credit figure.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#9A3412;background:#FFF4E5">My pick: delete</span>
+        <b>DELETE with the page (folds into the gap 36 deletion); if the owner instead revives /checkout, the credit source MUST be switched to the real available balance first.</b><div class="reason">The defect is real (earned != available) but entirely contained in the orphaned page, so it should not be fixed in isolation; it disappears with the gap 36 deletion. The only scenario where it matters is a revival, in which case the correct-balance source is a hard prerequisite, not optional.</div></div>
+    </div>
+<div class="gap sev-low" data-sev="low">
+      <div class="ghead">
+        <span class="num">#38</span>
+        <span class="gtitle">Off-brand terracotta /checkout styling</span>
+        <span class="flow">Reviews &amp; ratings</span>
+        <span class="sev" style="background:#6B6B6B">Low</span>
+        <span class="eff">quick</span>
+      </div>
+      <div class="what">The /checkout Stripe Elements use colorPrimary #C05038 (warm terracotta) and DM Sans (checkout/page.tsx:708-715), plus warm-brown inline styles throughout, contradicting the locked B&amp;W/Inter system that the live BookingPaymentForm uses (#0A0A0A + Inter). It is stale pre-pivot design on an orphaned page.</div>
+      <div class="opts"><div class="opt"><div class="ol">DELETE with the page (via gap 36)</div>
+          <div class="pc"><span class="pro">+ Removes the off-brand surface entirely; nothing to reskin.</span><span class="con">- None if deleting anyway.</span></div></div>
+<div class="opt"><div class="ol">RESKIN to the B&amp;W/Inter tokens</div>
+          <div class="pc"><span class="pro">+ Brings it into design compliance.</span><span class="con">- Wasted effort on an unreachable page; only justified if the page is being revived.</span></div></div>
+<div class="opt"><div class="ol">LEAVE it</div>
+          <div class="pc"><span class="pro">+ No effort.</span><span class="con">- Keeps a pre-pivot terracotta/DM Sans design in the tree as a bad reference someone could copy.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#9A3412;background:#FFF4E5">My pick: delete</span>
+        <b>DELETE with the page (folds into gap 36); if revived instead, reskin to #0A0A0A + Inter to match BookingPaymentForm.</b><div class="reason">This is cosmetic drift confined to the orphaned /checkout surface, so it rides along with the gap 36 deletion. Reskinning is only warranted in the revival branch, where matching the locked B&amp;W/Inter system is mandatory.</div></div>
+    </div>
+<div class="gap sev-low" data-sev="low">
+      <div class="ghead">
+        <span class="num">#39</span>
+        <span class="gtitle">Voucher spend dormant in booking</span>
+        <span class="flow">Reviews &amp; ratings</span>
+        <span class="sev" style="background:#6B6B6B">Low</span>
+        <span class="eff">medium</span>
+      </div>
+      <div class="what">booking-pay-intent reads voucher_code from the request body and fully implements redeem_voucher, but PayConfirmStep sends only { booking_id } (line 296), so no voucher-code field reaches it. There is no voucher input in the booking wizard, so customer-side voucher redemption at booking is effectively dormant (credits auto-apply server-side; promo arrives via formData.promoCode).</div>
+      <div class="opts"><div class="opt"><div class="ol">LEAVE it dormant</div>
+          <div class="pc"><span class="pro">+ Matches the owner&#x27;s voucher/gift-card hide posture; avoids exposing a spend surface prematurely.</span><span class="con">- A fully-built, owner-approved (2026-07-11) redeem_voucher path earns nothing while unreachable.</span></div></div>
+<div class="opt"><div class="ol">WIRE a voucher-code input into PayConfirmStep that passes voucher_code to booking-pay-intent</div>
+          <div class="pc"><span class="pro">+ Activates an already-built and validated spend path (RPC re-validates against the live vouchers row under a row lock).</span><span class="con">- Product decision: vouchers/gift cards are currently owner-hidden, so surfacing this needs an explicit owner go-ahead; also needs an in-flow display of the applied discount.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#16A34A;background:#EAF6EC">My pick: leave</span>
+        <b>LEAVE it dormant pending an owner decision to surface vouchers; the backend is ready, so this is a product-timing call, not an engineering gap.</b><div class="reason">The schema comment (validations.ts:168-174) states this is deliberately backend-only support staged ahead of frontend wiring, and vouchers/gift cards are currently owner-hidden. The plumbing is correct and safe (server-side re-validation); whether to open the customer-facing input is the owner&#x27;s monetization call.</div></div>
+    </div>
+<div class="gap sev-low" data-sev="low">
+      <div class="ghead">
+        <span class="num">#40</span>
+        <span class="gtitle">No tip path from confirmation</span>
+        <span class="flow">Reviews &amp; ratings</span>
+        <span class="sev" style="background:#6B6B6B">Low</span>
+        <span class="eff">none</span>
+      </div>
+      <div class="what">There is no in-app link from /confirmation to the tip flow; tipping is reachable only via the review-prompt cron email deep-link (cron/review-prompt/route.ts:314). A customer who wants to tip right after confirming has no path from the confirmation screen.</div>
+      <div class="opts"><div class="opt"><div class="ol">LEAVE it (tip only via post-service email)</div>
+          <div class="pc"><span class="pro">+ The email fires after the appointment, which is the natural moment to tip, so a confirmation-screen tip (before the service happens) would be mistimed.</span><span class="con">- A motivated customer who wants to pre-tip at confirmation is blocked; edge case.</span></div></div>
+<div class="opt"><div class="ol">ADD a &#x27;Trinkgeld geben&#x27; link on the confirmation screen</div>
+          <div class="pc"><span class="pro">+ Gives an immediate tip affordance for eager customers.</span><span class="con">- Tipping before the service is rendered is unusual and can feel wrong; risks normalizing pre-service tipping and muddying the post-service email moment.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#16A34A;background:#EAF6EC">My pick: leave</span>
+        <b>LEAVE it.</b><div class="reason">Tipping is a post-service act, and the cron review-prompt email deep-link fires at exactly that moment, which is the psychologically correct peak-end window. A confirmation-screen tip link would invite tipping before the service occurs, which is the wrong moment; the current routing is a defensible design choice, not a dead-end that costs real journeys.</div></div>
+    </div>
+<div class="gap sev-low" data-sev="low">
+      <div class="ghead">
+        <span class="num">#41</span>
+        <span class="gtitle">Dead react-aria date-picker file</span>
+        <span class="flow">Reviews &amp; ratings</span>
+        <span class="sev" style="background:#6B6B6B">Low</span>
+        <span class="eff">quick</span>
+      </div>
+      <div class="what">components-legacy/ui/date-picker.tsx has zero code importers anywhere in the repo (grep across app/components-legacy/lib returns only docs and roadmap mentions); the live date/time UI is app/[locale]/_components/primitives/DateTimePicker.tsx. It is orphaned legacy code, invisible to users.</div>
+      <div class="opts"><div class="opt"><div class="ol">DELETE the file</div>
+          <div class="pc"><span class="pro">+ Removes a confusing second date picker so future work can&#x27;t wire the wrong one; the brief itself was misled by it</span><span class="con">- Tiny risk it is referenced by an un-grepped dynamic import (none found)</span></div></div>
+<div class="opt"><div class="ol">LEAVE it</div>
+          <div class="pc"><span class="pro">+ Zero effort; harmless since it never renders</span><span class="con">- Keeps a maintenance/confusion hazard that already caused a mistargeted brief</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#9A3412;background:#FFF4E5">My pick: delete</span>
+        <b>DELETE the file.</b><div class="reason">Confirmed zero importers (only _tmp-gaps.json, roadmaps, and inventory docs name it). Dead code that actively misdirected the task author is worth removing; the canonical picker is DateTimePicker.tsx.</div></div>
+    </div>
+<div class="gap sev-low" data-sev="low">
+      <div class="ghead">
+        <span class="num">#44</span>
+        <span class="gtitle">Promo/gift/referral fields never surfaced in wizard</span>
+        <span class="flow">Profile &amp; account</span>
+        <span class="sev" style="background:#6B6B6B">Low</span>
+        <span class="eff">none</span>
+      </div>
+      <div class="what">promoCode / giftCardCode / referralCode default to &#x27;&#x27; in lib/booking-context.tsx:21-23 and are POSTed by PayConfirmStep:243-244, but no wizard control ever sets them, so they always send null unless pre-seeded. The discount-entry UI simply does not exist in the booking flow.</div>
+      <div class="opts"><div class="opt"><div class="ol">LEAVE it (dormant plumbing)</div>
+          <div class="pc"><span class="pro">+ The POST already tolerates the fields; credits auto-apply server-side; gift cards are owner-hidden so no input is wanted now</span><span class="con">- Fields that always send empty read as half-built</span></div></div>
+<div class="opt"><div class="ol">WIRE a promo input</div>
+          <div class="pc"><span class="pro">+ Lets users redeem promo codes in-flow</span><span class="con">- Duplicates the /checkout promo UX; may be out of scope while the value-store surfaces are being consolidated</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#16A34A;background:#EAF6EC">My pick: leave</span>
+        <b>LEAVE it.</b><div class="reason">These are the same dormant value-store fields flagged in gaps 48-49; gift cards are hidden and credits apply server-side, so the empty fields are intentional plumbing, not a broken control. Surfacing a promo input is a product decision, not a bug fix.</div></div>
+    </div>
+<div class="gap sev-low" data-sev="low">
+      <div class="ghead">
+        <span class="num">#48</span>
+        <span class="gtitle">Stale terracotta design on /checkout</span>
+        <span class="flow">Profile &amp; account</span>
+        <span class="sev" style="background:#6B6B6B">Low</span>
+        <span class="eff">quick</span>
+      </div>
+      <div class="what">The /checkout Stripe Elements use colorPrimary #C05038 (warm terracotta) and DM Sans (checkout/page.tsx:710-713) plus warm-brown inline styles, contradicting the locked B&amp;W / Inter system the live BookingPaymentForm uses (#0A0A0A + Inter). Cosmetic and only on the unreachable page.</div>
+      <div class="opts"><div class="opt"><div class="ol">DELETE with the page (per gap 46)</div>
+          <div class="pc"><span class="pro">+ Removes the off-brand styling entirely; no user sees it</span><span class="con">- None if the page is being deleted anyway</span></div></div>
+<div class="opt"><div class="ol">RE-SKIN to the locked tokens</div>
+          <div class="pc"><span class="pro">+ On-brand if revived</span><span class="con">- Effort spent styling a dead page</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#9A3412;background:#FFF4E5">My pick: delete</span>
+        <b>DELETE with the page (fold into gap 46).</b><div class="reason">Purely cosmetic drift on an orphaned surface. It dies with the /checkout deletion; re-skinning a page nobody can reach is not worth the effort.</div></div>
+    </div>
+<div class="gap sev-low" data-sev="low">
+      <div class="ghead">
+        <span class="num">#50</span>
+        <span class="gtitle">No tip link on confirmation screen</span>
+        <span class="flow">Value store (loyalty / vouchers / gift cards / credits / referrals) — how value is earned, stored, and spent across Solen&#x27;s customer surfaces</span>
+        <span class="sev" style="background:#6B6B6B">Low</span>
+        <span class="eff">none</span>
+      </div>
+      <div class="what">BookingConfirmation.tsx has no tip affordance; tipping for appointments is reachable only via the review-prompt cron email deep-link (/tip/[bookingId]). A customer on the confirmation screen has no in-app path to tip. But the confirmation screen shows right after booking a FUTURE appointment, before the service happens.</div>
+      <div class="opts"><div class="opt"><div class="ol">LEAVE it (tip belongs post-service)</div>
+          <div class="pc"><span class="pro">+ Tipping before the appointment even occurs is premature; the cron email fires after the service, which is the correct peak-end moment; matches how tips actually work</span><span class="con">- A customer with an immediate impulse to tip has no button then (rare, and arguably wrong timing anyway)</span></div></div>
+<div class="opt"><div class="ol">ADD a tip CTA on confirmation</div>
+          <div class="pc"><span class="pro">+ Covers the impulse-to-tip case</span><span class="con">- Encourages tipping before service is rendered, which is conceptually wrong for appointments and could confuse the peak-end flow</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#16A34A;background:#EAF6EC">My pick: leave</span>
+        <b>LEAVE it.</b><div class="reason">The /confirmation screen is post-booking, not post-service, the appointment is still in the future, so tipping there is premature. The cron review-prompt email deep-links to tip after the service, which is the correct moment. This gap misframes correct timing as a missing link; the walk-in path (queue/[token]) already offers a post-service tip where it makes sense.</div></div>
+    </div>
+<div class="gap sev-low" data-sev="low">
+      <div class="ghead">
+        <span class="num">#57</span>
+        <span class="gtitle">Stale boards-blend comment</span>
+        <span class="flow">Inspo / discovery feed</span>
+        <span class="sev" style="background:#6B6B6B">Low</span>
+        <span class="eff">quick</span>
+      </div>
+      <div class="what">A feed comment claims &#x27;Alle = the blended For You default (boards + personalized + all looks)&#x27;, but the shipped render contains no boards row or ForYouSection; the saves route still carries a ForYouSection peek default of 3 for a component the feed no longer mounts. Purely a stale comment plus a now-dead default param, no user-facing effect.</div>
+      <div class="opts"><div class="opt"><div class="ol">Fix the comment to match shipped UI and drop the dead peek default</div>
+          <div class="pc"><span class="pro">+ Stops the comment misleading maintainers into thinking a boards row exists; removes an unused param</span><span class="con">- Confirm nothing else consumes the peek default before removing it</span></div></div>
+<div class="opt"><div class="ol">Leave it</div>
+          <div class="pc"><span class="pro">+ No work</span><span class="con">- Doc drift compounds; next maintainer wastes time hunting for a boards row that was never shipped</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#1B4FA8;background:#EAF2FF">My pick: fix / wire</span>
+        <b>Fix the comment to describe the actual shipped feed and remove the dead ForYouSection peek default.</b><div class="reason">This is doc/dead-code hygiene with no runtime impact, but the comment actively misdescribes the UI, which is the kind of stale reference that sends future work down the wrong path. Cheap to correct.</div></div>
+    </div>
+<div class="gap sev-low" data-sev="low">
+      <div class="ghead">
+        <span class="num">#58</span>
+        <span class="gtitle">AI description fills on next visit</span>
+        <span class="flow">Inspo / discovery feed</span>
+        <span class="sev" style="background:#6B6B6B">Low</span>
+        <span class="eff">none</span>
+      </div>
+      <div class="what">A freshly imported look with no description_en renders title/tags/image immediately, but the description is generated via an after() Gemini call that persists only after the request completes, so the description appears on the NEXT visit. The first-open detail page can look sparse. This is expected by design, not a data bug.</div>
+      <div class="opts"><div class="opt"><div class="ol">Leave the async enrichment as-is</div>
+          <div class="pc"><span class="pro">+ Keeps first-open fast; the user never waits on a Gemini round-trip for a description that can arrive later</span><span class="con">- First open of a brand-new look shows no description</span></div></div>
+<div class="opt"><div class="ol">Add a soft &#x27;Beschreibung wird erstellt&#x27; placeholder on first open</div>
+          <div class="pc"><span class="pro">+ Explains the empty state instead of looking broken/sparse</span><span class="con">- Tiny extra copy + conditional; still no actual description on first open</span></div></div>
+<div class="opt"><div class="ol">Await Gemini inline on first open</div>
+          <div class="pc"><span class="pro">+ Description present immediately</span><span class="con">- Blocks render on an LLM call for every first-open, a real latency hit the user shouldn&#x27;t pay</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#16A34A;background:#EAF6EC">My pick: leave</span>
+        <b>Leave the async model, optionally add a soft placeholder for the missing-description first-open state.</b><div class="reason">Awaiting Gemini inline would tax every first-open with LLM latency, so the after() approach is the correct tradeoff. The only cheap polish is a placeholder so the sparse first view reads as intentional rather than broken.</div></div>
+    </div>
+<div class="gap sev-noted" data-sev="noted">
+      <div class="ghead">
+        <span class="num">#3</span>
+        <span class="gtitle">Stale FilterSheet price comment</span>
+        <span class="flow">Discovery &amp; Search</span>
+        <span class="sev" style="background:#16A34A">Not a problem</span>
+        <span class="eff">quick</span>
+      </div>
+      <div class="what">FilterSheet.tsx:33 header comment says &#x27;Preis (min_price/max_price read but not applied, route.ts L133-134)&#x27;. Verified false: /api/salons buildPriceTask (route.ts:294-300) applies .gte(&#x27;price&#x27;, min_price)/.lte(&#x27;price&#x27;, max_price), and SearchTemplate forwards the params. The filter works end to end; only the comment is outdated.</div>
+      <div class="opts"><div class="opt"><div class="ol">UPDATE the comment to reflect the wired price filter</div>
+          <div class="pc"><span class="pro">+ Removes a misleading note that could make a future dev &#x27;re-fix&#x27; an already-working filter.</span><span class="con">- None of consequence.</span></div></div>
+<div class="opt"><div class="ol">LEAVE it</div>
+          <div class="pc"><span class="pro">+ No work.</span><span class="con">- Comment actively contradicts the code.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#1B4FA8;background:#EAF2FF">My pick: update doc</span>
+        <b>UPDATE the comment (move Preis from the OMITTED list to supported, cite buildPriceTask).</b><div class="reason">The code disproves the comment; a one-line doc edit prevents wasted investigation. No behavior change needed.</div></div>
+    </div>
+<div class="gap sev-noted" data-sev="noted">
+      <div class="ghead">
+        <span class="num">#6</span>
+        <span class="gtitle">Gift card / SalonBuy hidden</span>
+        <span class="flow">Salon page (PDP) — /de/salon/[slug] — and its handoff into the booking wizard</span>
+        <span class="sev" style="background:#16A34A">Not a problem</span>
+        <span class="eff">none</span>
+      </div>
+      <div class="what">SalonBuy is fully hidden: SalonSidebar hasGiftCards=false (line 101) gates the desktop card, and the mobile SalonBuy JSX is commented out (SalonDetailV3.tsx:300-305), both citing the owner&#x27;s 2026-06-14 decision to favor a Solen-wide loyalty card. Dead-but-preserved code with an explicit restore recipe.</div>
+      <div class="opts"><div class="opt"><div class="ol">LEAVE (intentional owner hide, restore path documented)</div>
+          <div class="pc"><span class="pro">+ Matches the owner&#x27;s dated decision; the un-comment + flag-flip restore note keeps it cheap to revive.</span><span class="con">- Commented JSX is minor clutter, but the comment justifies it.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#16A34A;background:#EAF6EC">My pick: leave</span>
+        <b>LEAVE as-is.</b><div class="reason">This is a documented, dated owner decision with a clear restore path, not a defect. Gift cards are recorded as owner-hidden in project memory; re-surfacing needs an explicit owner yes.</div></div>
+    </div>
+<div class="gap sev-noted" data-sev="noted">
+      <div class="ghead">
+        <span class="num">#7</span>
+        <span class="gtitle">SalonLoyalty section removed</span>
+        <span class="flow">Salon page (PDP) — /de/salon/[slug] — and its handoff into the booking wizard</span>
+        <span class="sev" style="background:#16A34A">Not a problem</span>
+        <span class="eff">none</span>
+      </div>
+      <div class="what">SalonLoyalty is not rendered (SalonDetailV3.tsx:322-323) because it showed identical static copy on every salon with no data behind it. It was correctly deleted rather than left as a fabricated/static surface, with a comment to re-enable when a real per-salon loyalty system exists.</div>
+      <div class="opts"><div class="opt"><div class="ol">LEAVE (correctly removed fabricated surface)</div>
+          <div class="pc"><span class="pro">+ Removing a data-less static section is exactly right per rule 1; the comment preserves intent.</span><span class="con">- None.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#16A34A;background:#EAF6EC">My pick: leave</span>
+        <b>LEAVE as-is.</b><div class="reason">This is the correct handling of a would-be fabrication: the section is gone, not faked. Nothing to fix.</div></div>
+    </div>
+<div class="gap sev-noted" data-sev="noted">
+      <div class="ghead">
+        <span class="num">#9</span>
+        <span class="gtitle">Retail + walk-in are separate flows</span>
+        <span class="flow">Salon page (PDP) — /de/salon/[slug] — and its handoff into the booking wizard</span>
+        <span class="sev" style="background:#16A34A">Not a problem</span>
+        <span class="eff">none</span>
+      </div>
+      <div class="what">Retail product purchase (SalonProducts -&gt; /api/salon/retail/purchase, its own Stripe checkout) and the walk-in queue (SalonWalkInPanel, SalonDetailV3.tsx:258) share the PDP surface but never hit /booking. Confirmed they are genuinely independent flows; the only risk is a reader mistaking them for part of the booking handoff.</div>
+      <div class="opts"><div class="opt"><div class="ol">LEAVE (correct separation)</div>
+          <div class="pc"><span class="pro">+ The flows are correctly independent; retail has its own purchase endpoint and walk-in its own pay-gated queue.</span><span class="con">- Potential reader confusion, mitigated by the in-code comments.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#16A34A;background:#EAF6EC">My pick: leave</span>
+        <b>LEAVE as-is.</b><div class="reason">Verified as a design fact, not a bug: retail checkout and walk-in queue are separate by intent and never touch the booking wizard. No user-facing problem.</div></div>
+    </div>
+<div class="gap sev-noted" data-sev="noted">
+      <div class="ghead">
+        <span class="num">#10</span>
+        <span class="gtitle">No fabricated data on PDP</span>
+        <span class="flow">Salon page (PDP) — /de/salon/[slug] — and its handoff into the booking wizard</span>
+        <span class="sev" style="background:#16A34A">Not a problem</span>
+        <span class="eff">none</span>
+      </div>
+      <div class="what">The main PDP render path shows no fabricated data: ratings, review counts, reviewer names, services, staff, bundles and products are all wired to real tables/APIs. This is a clean finding, the opposite of a defect.</div>
+      <div class="opts"><div class="opt"><div class="ol">LEAVE (verified clean)</div>
+          <div class="pc"><span class="pro">+ Confirms the PDP honors rule 1; nothing to change.</span><span class="con">- None.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#16A34A;background:#EAF6EC">My pick: leave</span>
+        <b>LEAVE as-is.</b><div class="reason">Verified during the PDP read that the render path is backed by real data. Note the contrast with gap 4: the homepage curation rows are NOT clean, so &#x27;no fabrication&#x27; is a PDP-specific verdict, not site-wide.</div></div>
+    </div>
+<div class="gap sev-noted" data-sev="noted">
+      <div class="ghead">
+        <span class="num">#12</span>
+        <span class="gtitle">Dormant gift_card_code booking plumbing</span>
+        <span class="flow">Booking flow</span>
+        <span class="sev" style="background:#16A34A">Not a problem</span>
+        <span class="eff">none</span>
+      </div>
+      <div class="what">gift_card_code is accepted by createBookingSchema and read in the booking POST, but redemption is intentionally not wired: the route logs a console.warn and drops it (route.ts:151-158) because gift cards were owner-hidden 2026-06-14 in favor of the Solen-wide loyalty card. No wizard UI renders a gift-card input, so it is dormant plumbing, not a user-facing dead control.</div>
+      <div class="opts"><div class="opt"><div class="ol">LEAVE the accept-and-drop plumbing in place</div>
+          <div class="pc"><span class="pro">+ Honest and self-documented; keeps the field a non-400 if a gift-card link ever seeds it; trivial to revive if gift cards return</span><span class="con">- A dormant field lingers in the schema and POST body</span></div></div>
+<div class="opt"><div class="ol">DELETE gift_card_code from schema + route</div>
+          <div class="pc"><span class="pro">+ Smaller surface, one fewer dormant path</span><span class="con">- Throws away working plumbing for a feature that may un-hide; re-adding later costs more than the warn line saves</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#16A34A;background:#EAF6EC">My pick: leave</span>
+        <b>LEAVE it. It is documented, harmless, and cheap.</b><div class="reason">The code explicitly logs rather than silently strips (no silent no-op), the hide is a dated owner decision, and gift cards are hidden-not-killed. Removing plumbing that a future un-hide would need is churn with no user benefit.</div></div>
+    </div>
+<div class="gap sev-noted" data-sev="noted">
+      <div class="ghead">
+        <span class="num">#15</span>
+        <span class="gtitle">No per-staff soonest-slot (honest omission)</span>
+        <span class="flow">Booking flow</span>
+        <span class="sev" style="background:#16A34A">Not a problem</span>
+        <span class="eff">none</span>
+      </div>
+      <div class="what">StaffStep deliberately omits a &#x27;soonest slot&#x27; line per its own comment (lines 49-51) because there is no live per-staff next-availability endpoint to source one from, and inventing a time would be fabricated data. This is a known data gap handled correctly, not a bug or a fabrication.</div>
+      <div class="opts"><div class="opt"><div class="ol">LEAVE the honest omission</div>
+          <div class="pc"><span class="pro">+ Upholds the no-fabricated-data rule; no misleading time shown</span><span class="con">- The staff step is slightly less informative (no at-a-glance availability)</span></div></div>
+<div class="opt"><div class="ol">BUILD a per-staff next-availability endpoint and show a real soonest slot</div>
+          <div class="pc"><span class="pro">+ Adds genuine decision-useful info to staff selection</span><span class="con">- Real backend work (availability query per staff, computed-filter discipline, caching); a feature request, not a defect fix</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#16A34A;background:#EAF6EC">My pick: leave</span>
+        <b>LEAVE it. The omission is the correct call.</b><div class="reason">The code refuses to invent a value it cannot source, which is exactly the discipline this codebase enforces. Building the endpoint is a legitimate future feature but nothing here is broken or misleading, so it stays a noted, correctly-handled gap.</div></div>
+    </div>
+<div class="gap sev-noted" data-sev="noted">
+      <div class="ghead">
+        <span class="num">#32</span>
+        <span class="gtitle">Dormant gift_card_code booking plumbing</span>
+        <span class="flow">Walk-in &amp; Queue (join → pay → number → track → tip)</span>
+        <span class="sev" style="background:#16A34A">Not a problem</span>
+        <span class="eff">none</span>
+      </div>
+      <div class="what">gift_card_code is accepted by createBookingSchema and, if present, logged via console.warn and dropped at app/api/bookings/route.ts:151-158 because gift-card redemption is intentionally unwired (gift cards owner-hidden 2026-06-14). No wizard UI ever sends it, so it is dormant backend plumbing, not a user-facing dead control.</div>
+      <div class="opts"><div class="opt"><div class="ol">LEAVE it (accept the schema field + warn)</div>
+          <div class="pc"><span class="pro">+ Keeps the schema from 400-ing if a field ever arrives, documents intent in-code, matches the owner&#x27;s deliberate hide.</span><span class="con">- A future dev could mistake the plumbing for a live feature and wire a UI against a redemption path that does not exist.</span></div></div>
+<div class="opt"><div class="ol">REMOVE gift_card_code from schema + route</div>
+          <div class="pc"><span class="pro">+ Removes any illusion the path is live; smaller schema.</span><span class="con">- Throws away deliberately-preserved plumbing the owner may revive; re-adding later costs more than the current harmless warn.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#16A34A;background:#EAF6EC">My pick: leave</span>
+        <b>LEAVE it.</b><div class="reason">The code already handles it correctly and honestly: it does not silently strip, it logs a clear warn tied to the 2026-06-14 hide decision, and no UI surfaces it, so no user can trigger a dead control. This is intentional preserved plumbing, not a defect.</div></div>
+    </div>
+<div class="gap sev-noted" data-sev="noted">
+      <div class="ghead">
+        <span class="num">#35</span>
+        <span class="gtitle">StaffStep honestly omits soonest slot</span>
+        <span class="flow">Walk-in &amp; Queue (join → pay → number → track → tip)</span>
+        <span class="sev" style="background:#16A34A">Not a problem</span>
+        <span class="eff">none</span>
+      </div>
+      <div class="what">StaffStep deliberately shows no per-staff &#x27;soonest slot&#x27; line because there is no live per-staff next-availability endpoint to source one from; the in-code comment (StaffStep.tsx:49-52) explicitly calls inventing a time fabricated data. This is a known data gap handled honestly, not a fabrication.</div>
+      <div class="opts"><div class="opt"><div class="ol">LEAVE it (no soonest-slot line)</div>
+          <div class="pc"><span class="pro">+ Refuses to fabricate a time, which is exactly the no-fabricated-data rule; the step still functions for selection.</span><span class="con">- Users get no at-a-glance signal of which stylist is available sooner, a mild convenience loss.</span></div></div>
+<div class="opt"><div class="ol">BUILD a real per-staff next-availability endpoint and show it</div>
+          <div class="pc"><span class="pro">+ Adds a genuinely useful decision signal sourced from live data.</span><span class="con">- Real backend work (availability aggregation per staff), and a caching/perf concern; only worth it if staff-choice-by-availability is a product priority.</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#16A34A;background:#EAF6EC">My pick: leave</span>
+        <b>LEAVE it.</b><div class="reason">The code makes the correct call: with no live next-availability source, showing a soonest-slot line would be invented data, which the design law bans outright. The honest omission is the right behavior; a real endpoint is a future feature, not a fix.</div></div>
+    </div>
+<div class="gap sev-noted" data-sev="noted">
+      <div class="ghead">
+        <span class="num">#42</span>
+        <span class="gtitle">Dormant gift_card_code booking plumbing</span>
+        <span class="flow">Reviews &amp; ratings</span>
+        <span class="sev" style="background:#16A34A">Not a problem</span>
+        <span class="eff">none</span>
+      </div>
+      <div class="what">gift_card_code is accepted by createBookingSchema and read in app/api/bookings/route.ts:150-158, but redemption is intentionally unwired (gift cards owner-hidden 2026-06-14); the server logs a console.warn and drops it, and no wizard UI ever sends it. It is dormant plumbing, not a user-facing dead control.</div>
+      <div class="opts"><div class="opt"><div class="ol">LEAVE it (documented dormant)</div>
+          <div class="pc"><span class="pro">+ Schema tolerance means a future gift-card FE field won&#x27;t 400; the console.warn gives visibility; matches the owner hide decision</span><span class="con">- Dead field lingers in the schema until gift cards are revived or killed</span></div></div>
+<div class="opt"><div class="ol">REMOVE from schema</div>
+          <div class="pc"><span class="pro">+ Smaller surface</span><span class="con">- Would need re-adding when gift cards return; loses the deliberate no-silent-strip logging</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#16A34A;background:#EAF6EC">My pick: leave</span>
+        <b>LEAVE it.</b><div class="reason">The code comment documents this as intentional (gift cards hidden 2026-06-14), it drops the value loudly rather than silently, and no user control exposes it. Nothing to fix.</div></div>
+    </div>
+<div class="gap sev-noted" data-sev="noted">
+      <div class="ghead">
+        <span class="num">#45</span>
+        <span class="gtitle">No per-staff soonest-slot line</span>
+        <span class="flow">Profile &amp; account</span>
+        <span class="sev" style="background:#16A34A">Not a problem</span>
+        <span class="eff">none</span>
+      </div>
+      <div class="what">StaffStep deliberately omits a &#x27;soonest slot&#x27; line for each stylist because there is no live per-staff next-availability endpoint to source one from; the code comment (StaffStep.tsx:49-53) states inventing a time would be fabricated data. This is a known data gap handled honestly.</div>
+      <div class="opts"><div class="opt"><div class="ol">LEAVE it</div>
+          <div class="pc"><span class="pro">+ Correctly refuses to fabricate an availability time; matches the no-fabricated-data rule</span><span class="con">- Users don&#x27;t see per-staff soonest availability (a nice-to-have, not a defect)</span></div></div>
+<div class="opt"><div class="ol">BUILD a per-staff availability endpoint</div>
+          <div class="pc"><span class="pro">+ Could show a real soonest-slot per stylist</span><span class="con">- Net-new backend work; out of scope for a gap-remediation pass</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#16A34A;background:#EAF6EC">My pick: leave</span>
+        <b>LEAVE it.</b><div class="reason">The omission is the correct call under the no-fabrication rule and is self-documented. Not a problem; adding real per-staff availability is a feature, not a fix.</div></div>
+    </div>
+<div class="gap sev-noted" data-sev="noted">
+      <div class="ghead">
+        <span class="num">#54</span>
+        <span class="gtitle">Solen Status recompute-on-read placeholder</span>
+        <span class="flow">Value store (loyalty / vouchers / gift cards / credits / referrals) — how value is earned, stored, and spent across Solen&#x27;s customer surfaces</span>
+        <span class="sev" style="background:#16A34A">Not a problem</span>
+        <span class="eff">none</span>
+      </div>
+      <div class="what">Solen Status has no stored loyalty_status table or monthly cron yet; the tier is recomputed from bookings on every read, and gold=3 / platinum=6 are explicitly PLACEHOLDER thresholds flagged for recalibration before launch. This is a self-documented phase-2 deferral, not a defect: the feature works and reads correctly.</div>
+      <div class="opts"><div class="opt"><div class="ol">Leave as-is; recalibrate thresholds pre-launch per spec §8</div>
+          <div class="pc"><span class="pro">+ Recompute-on-read is correct and fine at current volume; avoids a risky migration against the drifted schema before there is launch data to calibrate against</span><span class="con">- Recomputes each read (negligible now); thresholds must not be forgotten before launch</span></div></div>
+<div class="opt"><div class="ol">Build the stored table + monthly cron now</div>
+          <div class="pc"><span class="pro">+ Removes per-read recompute; matches the eventual phase-2 design</span><span class="con">- Premature optimization against a drifted schema with no calibration data yet</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#16A34A;background:#EAF6EC">My pick: leave</span>
+        <b>Leave it; treat threshold recalibration as a named pre-launch checklist item.</b><div class="reason">The feature is functional and the deferral is intentional and documented. Building the cron before launch data exists would be premature. Assumption: gold/platinum thresholds get recalibrated before public launch as the code itself states.</div></div>
+    </div>
+<div class="gap sev-noted" data-sev="noted">
+      <div class="ghead">
+        <span class="num">#59</span>
+        <span class="gtitle">No fabricated data in Inspo render</span>
+        <span class="flow">Inspo / discovery feed</span>
+        <span class="sev" style="background:#16A34A">Not a problem</span>
+        <span class="eff">none</span>
+      </div>
+      <div class="what">Verification item, not a defect: booking signals, ratings, prices, and availability on the Inspo feed and detail pages are all backend-gated, and the only &#x27;invented&#x27; content is AI-generated look descriptions that are persisted to discovery_items rather than fabricated per render. Nothing to fix.</div>
+      <div class="opts"><div class="opt"><div class="ol">Leave it</div>
+          <div class="pc"><span class="pro">+ The render path is clean; no fake counts, ratings, or availability are shown</span><span class="con">- None</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#16A34A;background:#EAF6EC">My pick: leave</span>
+        <b>Leave it; the Inspo render path is clean of fabricated data.</b><div class="reason">Confirmed in code: CardSignals and DetailPage gate their signals on backend data, and AI descriptions are persisted content, not per-render fakes. This is a clean-bill finding, no action warranted.</div></div>
+    </div>
+<div class="gap sev-noted" data-sev="noted">
+      <div class="ghead">
+        <span class="num">#60</span>
+        <span class="gtitle">Discovery no-ops already fixed</span>
+        <span class="flow">Inspo / discovery feed</span>
+        <span class="sev" style="background:#16A34A">Not a problem</span>
+        <span class="eff">none</span>
+      </div>
+      <div class="what">Historical silent no-ops that are now fixed and well-commented: the increment_discovery_view RPC was a phantom that never existed, and discovery_interactions inserts hit an RLS wall plus a phantom &#x27;interaction_type&#x27; column. Both are patched to use the admin client and the correct &#x27;action&#x27; column (interactions/route.ts:36; detail page.tsx comments).</div>
+      <div class="opts"><div class="opt"><div class="ol">Leave it; optionally confirm no live increment_discovery_view .rpc call remains</div>
+          <div class="pc"><span class="pro">+ The fixes are in place and documented; interactions now insert via admin client on the correct column</span><span class="con">- Worth a 10-second grep to ensure the phantom RPC is only referenced in comments, not still called</span></div></div></div>
+      <div class="rec"><span class="recbadge" style="color:#16A34A;background:#EAF6EC">My pick: leave</span>
+        <b>Leave it; the no-ops are fixed. Do one quick grep to confirm no live .rpc(&#x27;increment_discovery_view&#x27;) call survives.</b><div class="reason">Grep shows the increment_discovery_view reference at page.tsx:151 is an explanatory comment and the interactions insert uses the correct &#x27;action&#x27; column via the admin client, so the documented fixes hold. Only a trivial confirmation is left.</div></div>
+    </div>
+</div>
+<script>
+const btns=[...document.querySelectorAll('.fbtn')], gaps=[...document.querySelectorAll('.gap')];
+btns.forEach(b=>b.onclick=()=>{btns.forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  const f=b.dataset.f; gaps.forEach(g=>g.style.display=(f==='all'||g.dataset.sev===f)?'':'none');});
+</script>
+</body></html>
