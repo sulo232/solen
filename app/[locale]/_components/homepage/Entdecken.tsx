@@ -7,6 +7,7 @@ import { useLocale } from "next-intl";
 import { Section, SectionFrame, SectionTitle } from "./SectionHeader";
 import { HeartButton } from "./HeartButton";
 import { cn } from "@/lib/utils";
+import { opticalGlyphNudge } from "@/lib/optical";
 
 /**
  * Entdecken preview — V2-D62 (2026-05-15) — TikTok-only homepage variant.
@@ -262,7 +263,10 @@ export default function Entdecken() {
                           WebkitBackdropFilter: "blur(4px)",
                         }}
                       >
-                        <Play size={15} className="text-white" fill="currentColor" />
+                        {/* mockup-ok: owner-approved 2026-07-15 optical nudge (RATIONALE.md:144, lib/optical.ts).
+                            Play is asymmetric (a triangle, visual mass toward the point), so flexbox's
+                            bounding-box centering reads it off-center. */}
+                        <Play size={15} style={{ marginLeft: opticalGlyphNudge(15) }} className="text-white" fill="currentColor" />
                       </div>
                     </>
                   )}

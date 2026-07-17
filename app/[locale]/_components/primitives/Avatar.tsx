@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { opticalCircleSize } from "@/lib/optical";
 
 /**
  * Avatar — photo-or-initials circle (CONTRADICTIONS.md §4).
@@ -50,11 +51,17 @@ export interface AvatarProps {
   size?: AvatarSize | number;
   /** Staff variant: floating star-rating badge at the bottom edge. */
   badge?: { rating: number };
+  /** This circle sits directly next to a same-box SQUARE element (e.g. PayConfirmStep's
+   *  salon photo tile above the stylist Avatar row). Applies the owner-approved 2026-07-15
+   *  circle-next-to-square overshoot (lib/optical.ts, RATIONALE.md:144) so the two read as
+   *  the same size. Opt-in: most avatars have no adjacent square and must stay exact. */
+  opticalOvershoot?: boolean;
   className?: string;
 }
 
-export function Avatar({ src, name, size = "md", badge, className }: AvatarProps) {
-  const px = typeof size === "number" ? size : SIZE_PX[size];
+export function Avatar({ src, name, size = "md", badge, opticalOvershoot, className }: AvatarProps) {
+  const rawPx = typeof size === "number" ? size : SIZE_PX[size];
+  const px = opticalOvershoot ? opticalCircleSize(rawPx) : rawPx;
   const { bg, fg } = avatarColor(name);
 
   return (

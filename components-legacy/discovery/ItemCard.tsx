@@ -7,6 +7,7 @@ import type { DiscoveryItem } from "@/lib/types";
 import LikeButton from "./LikeButton";
 import { formatStyleTag, formatCreator } from "./format";
 import CardSignals from "./CardSignals";
+import { opticalGlyphNudge } from "@/lib/optical";
 
 interface ItemCardProps {
   item: DiscoveryItem;
@@ -70,17 +71,20 @@ export default memo(function ItemCard({
           />
         ) : null}
 
-        {/* Light play affordance for video — big center button in the feed; minimal drops it for a small corner glyph. */}
+        {/* mockup-ok: unchanged box, big center button in the feed; minimal drops it for a small corner glyph.
+            Play is asymmetric (a triangle, visual mass toward the point), so flexbox's bounding-box centering
+            reads it off-center; nudged per the owner-approved 2026-07-15 rule (RATIONALE.md:144, lib/optical.ts),
+            replacing the old hand-picked ml-0.5/ml-px with the shared formula. */}
         {isTikTok && !minimal && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
             <div className="grid h-10 w-10 place-items-center rounded-full bg-white/85 shadow-elevation-2 backdrop-blur-[2px]">
-              <Play size={15} className="ml-0.5 text-s-ink" fill="currentColor" />
+              <Play size={15} style={{ marginLeft: opticalGlyphNudge(15) }} className="text-s-ink" fill="currentColor" />
             </div>
           </div>
         )}
         {isTikTok && minimal && (
           <span className="pointer-events-none absolute bottom-1.5 left-1.5 grid h-6 w-6 place-items-center rounded-full bg-black/40 backdrop-blur-[2px]">
-            <Play size={11} className="ml-px text-white" fill="currentColor" />
+            <Play size={11} style={{ marginLeft: opticalGlyphNudge(11) }} className="text-white" fill="currentColor" />
           </span>
         )}
 

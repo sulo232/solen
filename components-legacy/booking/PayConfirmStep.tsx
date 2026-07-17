@@ -365,7 +365,11 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
         {/* Stylist */}
         {staff && (
           <div className="mt-3 flex items-center gap-3 border-t border-s-ink/[0.06] pt-3">
-            <Avatar src={staff.avatar_url} name={staff.name} size={44} />
+            {/* Sits directly under the salon row's 44px SQUARE tile above (h-11 w-11
+                rounded-[12px]) at the same left-column position, so this circle gets the
+                owner-approved 2026-07-15 overshoot (RATIONALE.md:144, lib/optical.ts) to
+                read as the same size as that square. */}
+            <Avatar src={staff.avatar_url} name={staff.name} size={44} opticalOvershoot />
             <div className="min-w-0 flex-1">
               <p className="truncate font-heading text-[15px] font-semibold text-s-ink">{staff.name}</p>
               <p className="text-[13px] text-s-ink-2">{tp('yourStylist')}</p>

@@ -4,6 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { ArrowRight, Pause, Play } from "lucide-react";
 import { Section, SectionFrame } from "./SectionHeader";
+import { opticalGlyphNudge } from "@/lib/optical";
 
 /**
  * SolenStory — V3-D105 (2026-05-23).
@@ -121,7 +122,10 @@ export default function SolenStory() {
                 className="absolute bottom-4 right-4 z-20 grid h-9 w-9 place-items-center rounded-full border border-white/30 bg-black/40 text-white backdrop-blur-md transition-colors hover:bg-black/60 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
               >
                 {isPaused ? (
-                  <Play size={14} strokeWidth={2} fill="white" />
+                  // mockup-ok: owner-approved 2026-07-15 optical nudge (RATIONALE.md:144, lib/optical.ts).
+                  // Play is asymmetric (a triangle), nudged. Pause (two bars) is symmetric and stays
+                  // un-nudged, flexbox already centers it correctly.
+                  <Play size={14} strokeWidth={2} fill="white" style={{ marginLeft: opticalGlyphNudge(14) }} />
                 ) : (
                   <Pause size={14} strokeWidth={2} fill="white" />
                 )}
