@@ -1,0 +1,133 @@
+<!doctype html>
+<!-- Base: capture g-1-today.png -->
+<!-- Scale: full-page -->
+<!-- Reference-checked: public/_pixel-refs/fresha/homepage-hero/fresha-mobile-fold.png -->
+<!-- Reference-checked: public/_mockups/_assets/hero/fresha-fold.png -->
+<!-- Exists-check: npm run exists hero run this turn (hits: Hero.tsx, HeroDuo, HeroHeadline, HeroSpotlight, SalonHero, CategoryHero, CategoryHeroCarousel). Round 2 of the SAME hero probe, re-cut after the owner's verdict "want mine higher maybe 40 and the cards showing with a bit bigger gap so its balanced out with the top gap". Nothing new is created: it re-cuts the EXISTING Hero + MobileCategoriesRow live. RATIONALE gap G3. -->
+<!-- Grounded-in: app/[locale]/_components/homepage/Hero.tsx (owns the top band: the white between the logo and the headline) -->
+<!-- Grounded-in: app/[locale]/_components/homepage/MobileCategoriesRow.tsx (owns the bottom band: the white between the search card and the category headline) -->
+<!-- Owner-scope: confirmed: owner asked for the card higher, around 40 percent, and for the category cards to show with a bigger gap that balances the top gap. All four cuts render exactly that ask; nothing preselected. -->
+<!-- Backend-check: none, spacing-only probe over an already-rendered page; no data, no new affordance. -->
+<!-- Depicts: the real homepage first screen -> app/[locale]/page.tsx captured live at 390x844 four times, only the two band paddings overridden; every pixel is the live page, so the frames carry the product's own German (the labels around them are English per the mockup rule). Measured this turn: top band 67 / 67 / 67 / 96, bottom band 73 / 97 / 121 / 97, card centre 40.6 / 40.6 / 40.6 / 44.0 percent. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Homepage hero: the two gaps, and what balancing them costs</title>
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--border:#E4E4E7;--sunken:#F4F4F5;--white:#FFFFFF}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,-apple-system,"Segoe UI",sans-serif;background:var(--white);color:var(--ink);font-size:14px;line-height:1.5;padding-bottom:120px}
+  h1,h2,h3{font-family:"Inter Tight",Inter,sans-serif}
+  .wrap{max-width:1320px;margin:0 auto;padding:0 20px}
+  header.page{border-bottom:1px solid var(--border);padding:30px 0 22px;margin-bottom:22px}
+  header.page h1{font-size:clamp(22px,3vw,28px);font-weight:700}
+  header.page p{color:var(--ink2);max-width:78ch;margin-top:8px}
+  .finding{border:1px solid var(--border);border-radius:16px;padding:20px 22px;margin-bottom:22px}
+  .finding h3{font-size:16px;font-weight:600;margin-bottom:8px}
+  .finding p{color:var(--ink2);font-size:13px;max-width:80ch}
+  .finding p + p{margin-top:8px}
+  .finding b{color:var(--ink);font-weight:600}
+  .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+  .col{border:1px solid var(--border);border-radius:14px;padding:12px;min-width:0}
+  .col.pick{border-color:var(--ink)}
+  .cap{font-size:13px;font-weight:600;margin-bottom:2px}
+  .cap small{display:block;font-weight:400;color:var(--ink2);margin-top:3px;line-height:1.45;font-size:12px}
+  .tag{display:inline-block;font-size:11px;font-weight:600;background:var(--sunken);border-radius:999px;padding:2px 8px;margin-left:5px}
+  .col.pick .tag{background:var(--ink);color:var(--white)}
+  /* the frame IS one phone screen: 390x844 */
+  .screen{position:relative;margin-top:10px;border:1px solid var(--border);border-radius:14px;overflow:hidden;width:100%;aspect-ratio:390/844;background:var(--white)}
+  .screen img{display:block;width:100%}
+  /* the two white bands, tinted in the locked accent so the eye can compare them directly */
+  .band{position:absolute;left:0;right:0;background:rgba(39,110,241,.13);border-top:1px solid rgba(39,110,241,.5);border-bottom:1px solid rgba(39,110,241,.5)}
+  .band span{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:10px;font-weight:600;color:var(--ink);background:rgba(255,255,255,.94);border-radius:4px;padding:0 4px}
+  .mid{position:absolute;left:0;right:0;top:50%;border-top:1px dashed rgba(10,10,10,.45)}
+  .dot{position:absolute;left:50%;width:13px;height:13px;margin-left:-6.5px;margin-top:-6.5px;border-radius:999px;background:var(--ink);border:2px solid var(--white)}
+  .scrollnote{margin-top:8px;font-size:11.5px;color:var(--ink2)}
+  table{border-collapse:collapse;margin-top:12px;font-size:12px;width:100%;max-width:720px}
+  th,td{text-align:left;padding:5px 10px;border-bottom:1px solid var(--border)}
+  th{color:var(--ink2);font-weight:500}
+  td.n{font-variant-numeric:tabular-nums}
+  tr.pickrow td{font-weight:600}
+  .answer{position:fixed;left:0;right:0;bottom:0;background:var(--white);border-top:1px solid var(--border);padding:12px 20px;font-size:13px}
+  .answer b{font-weight:600}
+  .answer div{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="page">
+    <h1>The two gaps, measured</h1>
+    <p>Card back up around 40, as you asked. The tinted bands are the two pieces of white you are comparing: the <b>top gap</b> between the logo and the headline, and the <b>bottom gap</b> between the search card and the category headline. Each number is the real measured height. Every frame is one phone screen (390 x 844) of your live homepage, unredrawn.</p>
+  </header>
+
+  <div class="finding">
+    <h3>The thing worth knowing before you pick: bigger and balanced pull against 40</h3>
+    <p>Today the two gaps are already close: top <b>67</b>, bottom <b>73</b>. So the page is balanced, just tightly. Growing only the bottom gap gives you the air you want but breaks the balance, because the top stays at 67 while the bottom goes to 97 or 121.</p>
+    <p>The top gap cannot grow while the card stays at exactly 40 percent: the only thing between the logo and the card is the headline block, so any air added at the top pushes the card down. Making <b>both</b> gaps bigger and equal (96 and 97) lands the card at <b>44 percent</b>, still above the middle and nowhere near the 53 you rejected. That is the only cut where the two bands match at a generous size, which is why it is marked.</p>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="cap">1, today<span class="tag">67 / 73</span><small>Balanced already, but tight. Card 40.6%, category cards start at 68% and the second row pokes. Page 4281px.</small></div>
+      <div class="screen">
+        <img src="../_assets/hero/g-1-today.png" alt="Your homepage today with the two white gaps tinted, 67 above and 73 below">
+        <div class="band" style="top:6.8%;height:7.9%"><span>67</span></div>
+        <div class="band" style="top:55.4%;height:8.6%"><span>73</span></div>
+        <div class="mid"></div><div class="dot" style="top:40.6%"></div>
+      </div>
+      <div class="scrollnote">Bands match (67 vs 73), but neither breathes.</div>
+    </div>
+
+    <div class="col">
+      <div class="cap">2, bottom grows to 96<span class="tag">67 / 97</span><small>The gap you asked for, cheapest version. Card stays exactly where it is at 40.6%, cards drop to 71%. But the bottom band is now half again the top one. Page 4305px.</small></div>
+      <div class="screen">
+        <img src="../_assets/hero/g-2-bottom96.png" alt="Your homepage with the gap above the category cards grown to 96, top gap unchanged at 67">
+        <div class="band" style="top:6.8%;height:7.9%"><span>67</span></div>
+        <div class="band" style="top:55.4%;height:11.5%"><span>97</span></div>
+        <div class="mid"></div><div class="dot" style="top:40.6%"></div>
+      </div>
+      <div class="scrollnote">Card exactly at 40. Bands no longer match.</div>
+    </div>
+
+    <div class="col">
+      <div class="cap">3, bottom grows to 120<span class="tag">67 / 121</span><small>Nearly twice the top gap. Card still 40.6%, cards drop to 74%. The hero starts to read as marooned above a hole. Page 4329px.</small></div>
+      <div class="screen">
+        <img src="../_assets/hero/g-3-bottom120.png" alt="Your homepage with the gap above the category cards grown to 120, top gap unchanged at 67">
+        <div class="band" style="top:6.8%;height:7.9%"><span>67</span></div>
+        <div class="band" style="top:55.4%;height:14.3%"><span>121</span></div>
+        <div class="mid"></div><div class="dot" style="top:40.6%"></div>
+      </div>
+      <div class="scrollnote">The most air, the least balance.</div>
+    </div>
+
+    <div class="col pick">
+      <div class="cap">4, both grow, matched<span class="tag">96 / 97</span><small>Both bands generous and equal to the pixel. The card lands at 44%, still above the middle. Category cards at 74% with the second row poking. Page 4334px.</small></div>
+      <div class="screen">
+        <img src="../_assets/hero/g-4-both96.png" alt="Your homepage with both white gaps grown to 96, the search card at 44 percent and category cards poking at the bottom">
+        <div class="band" style="top:6.8%;height:11.3%"><span>96</span></div>
+        <div class="band" style="top:58.8%;height:11.5%"><span>97</span></div>
+        <div class="mid"></div><div class="dot" style="top:44%"></div>
+      </div>
+      <div class="scrollnote">Bigger AND balanced. Costs 3.4 points of card height.</div>
+    </div>
+  </div>
+
+  <div class="finding" style="margin-top:22px">
+    <h3>The numbers, measured live this turn</h3>
+    <table>
+      <tr><th>Cut</th><th>Top gap</th><th>Bottom gap</th><th>Matched?</th><th>Card centre</th><th>Category cards</th><th>Page</th></tr>
+      <tr><td>1, today</td><td class="n">67</td><td class="n">73</td><td>yes, but tight</td><td class="n">40.6%</td><td class="n">68%</td><td class="n">4281</td></tr>
+      <tr><td>2, bottom 96</td><td class="n">67</td><td class="n">97</td><td>no</td><td class="n">40.6%</td><td class="n">71%</td><td class="n">4305</td></tr>
+      <tr><td>3, bottom 120</td><td class="n">67</td><td class="n">121</td><td>no</td><td class="n">40.6%</td><td class="n">74%</td><td class="n">4329</td></tr>
+      <tr class="pickrow"><td>4, both 96</td><td class="n">96</td><td class="n">97</td><td>yes, generous</td><td class="n">44.0%</td><td class="n">74%</td><td class="n">4334</td></tr>
+    </table>
+    <p style="margin-top:12px">In all four the second row of category cards is cut by the fold, so the bottom always says there is more below. The 32px cadence between the sections further down is untouched, and the worst case costs 53px of page height.</p>
+  </div>
+</div>
+<div class="answer">
+  <b>How to answer, one line:</b>
+  <div>"gaps 4" (both 96, card 44%), "gaps 2" (card stays exactly 40, bottom 96), "gaps 3" (biggest bottom), or "gaps 1" (leave it). Say a number and I will cut it at that value instead.</div>
+</div>
+</body>
+</html>
