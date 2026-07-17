@@ -59,7 +59,7 @@ Owner message (dictated): fix + commit; expand RATIONALE.md with the og round-1 
   - [x] P12 bell in-place stack , verified: loop-reviewer PASS (NotificationCenter.tsx:60-126 + DashboardLayout salonId plumbing fixed, was undefined; 4-locale viewAll), commit 835421ff1; rendered proof: popover opens in place with the honest empty state on the test salon; latent staff-403 endpoint bug chipped (task_8ac7442c)
   - [x] P13 search suggest treatments , verified: loop-reviewer PASS (SearchOverlay.tsx:579-633 SectionLabel groups, splitHighlight live-tested, matchQuery additive across all call-sites, loader fixed-slot, gesture regions diffed untouched), commit fa4a482ee; typed-state screenshot deferred: the overlay morph is the recorded preview-tab rAF trap and scripted focus missed twice, code-level PASS carries it
   - [x] P1 digit roll , BLOCKED honestly per instruction: reviewer-confirmed the revenue KPI has NO change trigger (dashboard/page.tsx:112-138, one fetch, period=week hardcoded); a roll needs a Woche/Monat toggle first, which is a separate owner feature call, parked
-  - [ ] P14 tips panel , BLOCKED: no insights backend exists (exists insight = 0), shape approved only
+  - [x] P14 tips panel , BLOCKED honestly, re-verified 2026-07-17: `npm run exists insight` returns 0 matches, and the one `tips`-named surface (app/api/tips/route.ts) is the customer Stripe TIP-PAYMENT endpoint, not advice/insights, so there is nothing to render. The panel's SHAPE is approved; it needs an insights source to exist first, which is a separate owner feature call. Parked, surfaced in the closing report.
 
 ## Completion round (owner 2026-07-16: "make mockups for all of em also for refs page u havent made mockup for all")
 
