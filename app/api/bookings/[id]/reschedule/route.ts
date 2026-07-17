@@ -131,16 +131,25 @@ export async function POST(
     );
   }
 
-  // Step 2: Move the booking onto the new slot (session client; bookings_update_own allows the
-  // owner). If this fails, release the new slot we just claimed; the OLD slot was never freed,
-  // so the booking still validly holds it and no double-booking is possible.
+  // Step 2: Move the booking onto the new slot. ADMIN client, not the session client: the SP-1
+  // guest RLS rewrite (supabase/migrations/20260601_sp1_bookings_guest_rls.sql) scopes
+  // `bookings_update_own` to `user_id IS NOT NULL AND auth.uid() = user_id` (or the salon
+  // owner), so a guest row (user_id IS NULL) is EXCLUDED from that policy on purpose (the
+  // migration's own comment: "guest-initiated mutations ... go through SP-2/SP-3 service-role
+  // routes after resolveBookingActor() verifies the token"). The session client has no
+  // auth.uid() at all for a token-verified guest, so this write would silently match 0 rows
+  // under RLS and this handler would return a false 409 for every guest reschedule.
+  // resolveBookingActor already proved entitlement above (customer OR token-verified guest),
+  // so the write is safe on admin here. If this fails, release the new slot we just claimed,
+  // the OLD slot was never freed, so the booking still validly holds it and no double-booking
+  // is possible.
   // CAS: re-assert the slot_id/status we read for THIS booking at the top of the handler.
   // Without this, a concurrent second reschedule (which claims a DIFFERENT new slot via its
   // own claimSlot CAS) or a concurrent cancel can both "win" here, last-write-wins clobbers
   // the booking row, and the losing request's newly-claimed slot is left orphaned 'booked'
   // with nothing pointing at it. .maybeSingle() (not .single()) so a lost race (0 rows) comes
   // back as data=null instead of a PGRST116 error, distinguishable from a real DB error below.
-  const { data: updatedBooking, error: updateError } = await supabase
+  const { data: updatedBooking, error: updateError } = await admin
     .from("bookings")
     .update({
       slot_id: newSlot.id,

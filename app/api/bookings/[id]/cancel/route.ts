@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, bookingCancellation } from "@/lib/email";
 import { calculateCancellationFee } from "@/lib/cancellation-policy";
 import { validateBody, bookingCancelSchema } from "@/lib/validations";
@@ -9,7 +9,8 @@ import { toRappen } from "@/lib/stripe";
 import { issueRefund, RefundError } from "@/lib/bookings/issue-refund";
 import { applyCustomerCancelMoney } from "@/lib/bookings/customer-cancel-money";
 import { logAuditEvent } from "@/lib/audit";
-import { applyRateLimit, bookingLimiter } from "@/lib/ratelimit";
+import { applyRateLimit, bookingLimiter, getClientIp } from "@/lib/ratelimit";
+import { resolveBookingActor } from "@/lib/bookings/authorize";
 
 // Read-only refund preview for the cancel-confirm sheet (audit #7). Runs the SAME
 // policy math as POST (calculateCancellationFee) but mutates nothing — so the sheet can
@@ -20,22 +21,31 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
 
-  const { data: booking, error } = await supabase
-    .from("bookings")
-    .select("user_id, starts_at, status, paid_amount, price_paid, payment_intent_id, refunded_amount, salons(owner_id, cancellation_fee_type, cancellation_fee_value, free_cancel_hours)")
-    .eq("id", id)
-    .single();
-  if (error || !booking) return NextResponse.json({ message: "Booking not found", code: "NOT_FOUND" }, { status: 404 });
+  // resolveBookingActor (lib/bookings/authorize.ts): logged-in customer/salon via session,
+  // OR a token-verified guest via the httpOnly solen_guest_access cookie
+  // (lib/bookings/guest-access.ts). Was a hard `auth.getUser()` gate with no guest branch
+  // at all, so a guest could never preview their own refund (checklist #28). null actor
+  // maps to a uniform 404, matching resolveBookingActor's own anti-enumeration contract and
+  // every other route already on this resolver (reschedule, dispute/upcharge).
+  const { actor, booking } = await resolveBookingActor(request, id);
+  if (!booking) return NextResponse.json({ message: "Booking not found", code: "NOT_FOUND" }, { status: 404 });
+  if (actor !== "customer" && actor !== "guest" && actor !== "salon") {
+    return actor === null
+      ? NextResponse.json({ message: "Booking not found", code: "NOT_FOUND" }, { status: 404 })
+      : NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 403 });
+  }
 
-  const isCustomer = booking.user_id === user.id;
-  const isSalonOwner = (booking.salons as any)?.owner_id === user.id;
-  if (!isCustomer && !isSalonOwner) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 403 });
+  // resolveBookingActor's own select("*") doesn't carry the salon relation this preview
+  // needs, so a single follow-up admin read fills it in (entitlement already proven above).
+  const admin = createAdminSupabaseClient();
+  const { data: salon } = await admin
+    .from("salons")
+    .select("owner_id, cancellation_fee_type, cancellation_fee_value, free_cancel_hours")
+    .eq("id", booking.salon_id)
+    .maybeSingle();
 
-  const salon = booking.salons as any;
+  const isCustomer = actor === "customer" || actor === "guest";
   const baseCents = (booking.paid_amount as number | null) ?? toRappen(Number(booking.price_paid ?? 0));
   const freeCancelHours = salon?.free_cancel_hours ?? 24;
 
@@ -75,22 +85,44 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
 
-  const rateLimited = await applyRateLimit(bookingLimiter, { userId: user.id });
+  // resolveBookingActor (lib/bookings/authorize.ts): logged-in customer/salon via session,
+  // OR a token-verified guest via the httpOnly solen_guest_access cookie
+  // (lib/bookings/guest-access.ts). Was a hard `auth.getUser()` gate with NO guest branch
+  // at all (no resolveBookingActor, no cookie, no token check anywhere in this route), so a
+  // guest cancel always 401'd (checklist #28). null actor maps to a uniform 404, matching
+  // resolveBookingActor's own anti-enumeration contract and the other two routes already on
+  // this resolver (reschedule, dispute/upcharge, the latter of which already lets a
+  // token-verified guest trigger a REAL off-session Stripe charge, same trust boundary).
+  const { actor, booking: actorBooking, userId } = await resolveBookingActor(request, id);
+  if (!actorBooking) {
+    return NextResponse.json({ message: "Booking not found", code: "NOT_FOUND" }, { status: 404 });
+  }
+  if (actor !== "customer" && actor !== "guest" && actor !== "salon") {
+    return actor === null
+      ? NextResponse.json({ message: "Booking not found", code: "NOT_FOUND" }, { status: 404 })
+      : NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 403 });
+  }
+
+  // userId is set for a logged-in customer/salon owner, null for a token-verified guest
+  // (resolveBookingActor's contract, mirrors reschedule's own rate-limit fallback).
+  const rateLimited = await applyRateLimit(bookingLimiter, userId ? { userId } : { ip: getClientIp(request) });
   if (rateLimited) return rateLimited;
 
   const body = await request.json().catch(() => ({}));
   const { data: validated } = validateBody(bookingCancelSchema, body);
   const reason = validated?.reason;
 
-  // Fetch booking with relations. Policy read switched to the CANONICAL live columns
-  // (SP-AC §B2): cancellation_fee_type / cancellation_fee_value / free_cancel_hours.
-  // The old cancellation_fee_percent / cancellation_window_hours reads are dropped —
-  // those columns are ABSENT live, so the legacy `?? 30` silently masked the drift.
-  const { data: booking, error } = await supabase
+  // Fetch booking with relations. ADMIN client, not a session client: resolveBookingActor's
+  // own select("*") doesn't carry the salons/services joins this route needs, and a guest
+  // has no RLS-passing session to read through anyway (bookings_select_own excludes
+  // user_id IS NULL rows, supabase/migrations/20260601_sp1_bookings_guest_rls.sql).
+  // Entitlement is already proven by resolveBookingActor above. Policy read stays on the
+  // CANONICAL live columns (SP-AC §B2): cancellation_fee_type / cancellation_fee_value /
+  // free_cancel_hours. The old cancellation_fee_percent / cancellation_window_hours reads
+  // are dropped, those columns are ABSENT live, so the legacy `?? 30` silently masked the drift.
+  const admin = createAdminSupabaseClient();
+  const { data: booking, error } = await admin
     .from("bookings")
     .select("*, salons(*, owner_id, cancellation_fee_type, cancellation_fee_value, free_cancel_hours), services(*)")
     .eq("id", id)
@@ -100,12 +132,8 @@ export async function POST(
     return NextResponse.json({ message: "Booking not found", code: "NOT_FOUND" }, { status: 404 });
   }
 
-  const isCustomer = booking.user_id === user.id;
-  const isSalonOwner = (booking.salons as any)?.owner_id === user.id;
-
-  if (!isCustomer && !isSalonOwner) {
-    return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 403 });
-  }
+  const isCustomer = actor === "customer" || actor === "guest";
+  const isSalonOwner = actor === "salon";
 
   if (booking.status !== "confirmed") {
     return NextResponse.json({ message: "Booking cannot be cancelled", code: "INVALID_STATUS" }, { status: 400 });
@@ -164,7 +192,11 @@ export async function POST(
   // slot as permanently 'booked'. Guarding slot_id too makes that race lose here (0 rows, 409)
   // instead of silently freeing the wrong slot. .maybeSingle() so a lost race (0 rows) comes
   // back as data=null instead of a PGRST116 error, distinguishable from a real DB error.
-  const { data: updatedBooking, error: updateError } = await supabase
+  // ADMIN client, not a session one: bookings_update_own (RLS) excludes a guest row
+  // (user_id IS NULL) on purpose, and a guest actor has no session at all here, so the old
+  // session-client write would silently match 0 rows for a guest. resolveBookingActor
+  // already proved entitlement above for customer/guest/salon alike.
+  const { data: updatedBooking, error: updateError } = await admin
     .from("bookings")
     .update({
       status: "cancelled",
@@ -213,7 +245,7 @@ export async function POST(
         stripe_payment_method_id: booking.stripe_payment_method_id,
       },
       salon,
-      reason ?? "customer cancelled the booking",
+      reason ?? (actor === "guest" ? "guest cancelled the booking" : "customer cancelled the booking"),
     );
     feeCents = money.feeCents;
     isWithinWindow = money.isWithinWindow;
@@ -222,9 +254,14 @@ export async function POST(
     if (money.refundAmount > 0) {
       refundResult = { refundAmount: money.refundAmount, feeAmount: money.feeCents, isWithinWindow: money.isWithinWindow };
     }
-    if (money.feeChargeStatus !== "none") {
-      // Lane A audit -> audit_log (NOT case_events; no dispute parent). Caller owns this.
-      await logAuditEvent(request, user.id, "cancellation_fee_charged", "booking", id, {
+    // Lane A audit -> audit_log (NOT case_events; no dispute parent). Caller owns this.
+    // audit_log.actor_id is a uuid FK to profiles (ON DELETE SET NULL), and a token-verified
+    // guest has no profiles row, so only log when userId is set. (The upcharge PATCH route
+    // logs `userId ?? "guest"` for a guest actor, which throws a uuid-cast error against
+    // this same FK and is silently swallowed by logAuditEvent's own catch, a pre-existing
+    // gap in that route, not repeated here.)
+    if (money.feeChargeStatus !== "none" && userId) {
+      await logAuditEvent(request, userId, "cancellation_fee_charged", "booking", id, {
         kind: "cancellation",
         fee_cents: feeCents,
         charged_cents: feeChargedCents,
@@ -236,11 +273,25 @@ export async function POST(
 
   // Free the slot. Use the FRESH slot_id from the CAS update above, not the stale
   // pre-refund booking.slot_id snapshot (the CAS now guards slot_id too, so these match
-  // on the winning path, but the fresh value is the correct source of truth).
-  await supabase
+  // on the winning path, but the fresh value is the correct source of truth). ADMIN client:
+  // availability_slots' `slots_manage_owner` RLS policy is salon-owner-only (014_new_schema.sql),
+  // so a plain customer's (or guest's) session client always silently matched 0 rows here,
+  // this slot free-up never actually happened for a non-salon-owner cancel. Pre-existing gap
+  // (unrelated to guest support, discovered while moving this route off the session client
+  // for the guest path), fixed here the same way reschedule.ts already routes ALL slot writes
+  // through the service-role client ("Slot state changes are a SYSTEM op"). CAS on booking_id
+  // so a lost race (slot already freed/reassigned concurrently) is detected instead of
+  // silently reporting success on a zero-row update.
+  const { data: freedSlot } = await admin
     .from("availability_slots")
     .update({ status: "available", booked_by: null, booking_id: null })
-    .eq("id", updatedBooking.slot_id);
+    .eq("id", updatedBooking.slot_id)
+    .eq("booking_id", id) // CAS: only free if the slot still points at THIS booking
+    .select("id")
+    .maybeSingle();
+  if (!freedSlot) {
+    console.error("[Cancel] Slot free skipped: slot no longer linked to this booking", { bookingId: id, slotId: updatedBooking.slot_id });
+  }
 
   // Notify waitlist entries for the freed slot
   const adminForWaitlist = createAdminSupabaseClient();
@@ -270,10 +321,19 @@ export async function POST(
     await adminForWaitlist.from("waitlist").update({ notified_at: new Date().toISOString() }).eq("id", entry.id);
   }
 
-  // Send cancellation emails to customer + salon owner
-  const admin = createAdminSupabaseClient();
-  const { data: profile } = await admin.from("profiles").select("locale").eq("id", user.id).single();
-  const locale = (profile?.locale as "de" | "en" | "fr") ?? "de";
+  // Send cancellation emails to customer + salon owner. Acting-party identity is `userId`
+  // (set for a logged-in customer/salon owner, null for a token-verified guest); a guest has
+  // neither a profiles row nor an auth.users row, so both lookups below branch on it instead
+  // of the old unconditional `user.id`/`user.email` reads (reuses the `admin` client created
+  // above for the relational booking fetch, no second instance).
+  let locale: "de" | "en" | "fr" = "de";
+  let actingEmail: string | null = null;
+  if (userId) {
+    const { data: profile } = await admin.from("profiles").select("locale").eq("id", userId).maybeSingle();
+    locale = (profile?.locale as "de" | "en" | "fr") ?? "de";
+    const { data: actingAuth } = await admin.auth.admin.getUserById(userId);
+    actingEmail = actingAuth?.user?.email ?? null;
+  }
   const dateStr = new Date(booking.starts_at).toLocaleDateString("de-CH");
   const serviceName = booking.services?.name_de ?? "Service";
   const salonName = booking.salons?.name ?? "Salon";
@@ -282,7 +342,9 @@ export async function POST(
 
   const promises: Promise<void>[] = [];
 
-  if (user.email && customerId) {
+  if (actingEmail && customerId) {
+    // Unchanged from before: notify the booking's own logged-in customer (in-app + email,
+    // `to` the ACTING party's email, same as the prior `user.email` read).
     const { sendNotification } = await import("@/lib/notifications");
     promises.push(sendNotification({
       userId: customerId,
@@ -291,14 +353,22 @@ export async function POST(
       body: `Ihre Buchung bei ${salonName} am ${dateStr} wurde storniert.`,
       data: { booking_id: id },
       emailParams: {
-        to: user.email,
+        to: actingEmail,
         locale: locale,
         vars: { service: serviceName, salon: salonName, date: dateStr }
       }
     }));
+  } else if (isCustomer && !userId && booking.guest_email) {
+    // NEW: a token-verified guest cancelling their own booking has no in-app notifications
+    // row (notifications.user_id is NOT NULL REFERENCES auth.users) and no `actingEmail` (no
+    // auth.users row at all), so send the SAME cancellation email straight to
+    // bookings.guest_email (mirrors lib/bookings/notify-refund.ts's established guest branch).
+    promises.push(
+      sendEmail(bookingCancellation(booking.guest_email as string, { service: serviceName, salon: salonName, date: dateStr }, "de")),
+    );
   }
 
-  if (salonOwnerId && salonOwnerId !== user.id) {
+  if (salonOwnerId && salonOwnerId !== userId) {
     const { data: ownerAuth } = await admin.auth.admin.getUserById(salonOwnerId);
     const ownerEmail = ownerAuth?.user?.email;
     if (ownerEmail) {

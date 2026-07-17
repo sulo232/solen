@@ -18,8 +18,11 @@ Full per-gap analysis: public/_reports/gap-decisions + scratchpad/decisions.json
   cards' rating/price/postal match execute_sql; all 17 curated salons already have 7-25 real reviews
   + 11-15 services, so nothing needed seeding. No change. (Lesson: verify each gap vs current code
   before fixing; some findings are dead-code reads.)
-- [ ] #28 Guest cannot cancel/reschedule from confirmation (canManage=!isGuest). Real fix: wire the
-  guest actor path so a guest with a valid access token can cancel/reschedule.
+- [x] #28 DONE + independently live-verified. Guest with a valid access token can now cancel/reschedule
+  their own booking from the confirmation screen (token->cookie exchange + resolveBookingActor authz on
+  the routes). SECURITY-CRITICAL negative test PASSED: no-cookie / wrong-token / garbage all 404, booking
+  unchanged, no auth bypass. Caught + fixed 2 pre-existing RLS silent no-ops (reschedule + cancel writes
+  never took effect for non-owners; moved to admin client, CAS-scoped). Reviewer PASS 6/6, tsc clean.
 - [x] #29 DONE (the real fix, not hide). Phone resend branch now sends the access link via SMS
   (lib/sms.ts / seven.io, the cron sender). Live-traced: sendSMS invoked, token rotates, opaque 200
   preserved for match/no-match/bad-code (no enumeration leak), email branch unchanged. Commit below.

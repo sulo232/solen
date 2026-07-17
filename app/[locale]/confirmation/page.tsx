@@ -153,6 +153,7 @@ export default async function ConfirmationPage({
       hasOnlinePayment={Boolean((booking as { payment_intent_id?: string | null }).payment_intent_id)}
       isGuest={isGuest}
       accessLink={accessLink}
+      accessToken={isGuest ? (access_token ?? null) : null}
       contactEmail={null}
       vatRate={vat.ratePercent}
       netLabel={formatCurrency(vat.netRappen / 100, localeCode)}

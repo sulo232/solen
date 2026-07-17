@@ -29,6 +29,7 @@ export default function ConfirmPreview() {
       paymentStatus="paid"
       isGuest={true}
       accessLink="https://www.solen.ch/de/booking/lookup?code=SOL-7K2QX9&t=demo"
+      accessToken={null}
       contactEmail={null}
       vatRate={8.1}
       netLabel="CHF 78.63"

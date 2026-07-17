@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
@@ -53,7 +53,8 @@ import type { Booking } from "./BookingCard";
  *   - NEW: the date row opens RescheduleSheet (real in-place reschedule) when the booking is
  *     over 24h out and still confirmed/pending; a quiet red "cancel appointment" text row opens
  *     CancelBookingSheet when the booking is upcoming and confirmed (mirrors BookingCard.tsx's
- *     own gate). Both are hidden for a GUEST, see the `canManage` comment below for why.
+ *     own gate). For a GUEST both wait on the silent cookie exchange below, see the
+ *     `canManage` comment for why.
  *
  * AESTHETIC: Solen B&W chrome, Inter Tight + Inter (font-mono-code for the reference code), ink
  *   primary CTA, s-accent functional-only, success-green / error-red semantic (never monochromed).
@@ -102,6 +103,10 @@ export interface BookingConfirmationProps {
   isGuest: boolean;
   /** Guest only: the full re-entry link incl. the raw token (?code=&t=). */
   accessLink: string | null;
+  /** Guest only: the raw access_token itself (same token embedded in accessLink), used to
+   *  silently exchange it for the httpOnly solen_guest_access cookie on this screen so the
+   *  inline reschedule/cancel sheets below can authorize (see the canManage comment). */
+  accessToken: string | null;
   /** Logged-in only: the email the confirmation was sent to (if known). */
   contactEmail: string | null;
   /**
@@ -164,23 +169,48 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
   // and the footer carries the MWST-Nr; the itemized net/rate split lives on the emailed receipt.
   const showVat = isPaid && props.vatRate > 0;
 
+  // Silently exchange the guest's raw access_token for the httpOnly solen_guest_access
+  // cookie, the SAME GET /api/bookings/guest-lookup call the /booking/lookup page already
+  // makes (app/[locale]/booking/lookup/page.tsx), just triggered here instead of requiring a
+  // second click-through. Runs once per booking; on 200 the cookie is set and
+  // resolveBookingActor's guest branch can authorize the reschedule/cancel routes below.
+  const [guestAuthReady, setGuestAuthReady] = useState(false);
+  useEffect(() => {
+    if (!props.isGuest || !props.accessToken || !props.referenceCode) return;
+    let alive = true;
+    (async () => {
+      try {
+        const res = await fetch(
+          `/api/bookings/guest-lookup?code=${encodeURIComponent(props.referenceCode as string)}&t=${encodeURIComponent(props.accessToken as string)}`,
+          { method: "GET" },
+        );
+        if (alive && res.ok) setGuestAuthReady(true);
+      } catch (err) {
+        console.error("[BookingConfirmation] guest cookie exchange failed:", err);
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [props.isGuest, props.accessToken, props.referenceCode]);
+
   // Guest "manage" + the access link point at the same re-entry; logged-in goes to the lookup route.
   const manageHref = props.isGuest && props.accessLink ? props.accessLink : `/${locale}/booking/lookup`;
 
   // ── reschedule / cancel affordances (checklist item 9) ──────────────────────────────────
-  // Both RescheduleSheet's POST and CancelBookingSheet's GET/POST need a real requester identity.
-  // Reschedule authorizes through resolveBookingActor (lib/bookings/authorize.ts), whose guest
-  // branch reads the httpOnly `solen_guest_access` cookie (lib/bookings/guest-access.ts). That
-  // cookie is only ever written by setGuestCookie, called from ONE place: GET
-  // /api/bookings/guest-lookup (app/api/bookings/guest-lookup/route.ts:65). This confirmation
-  // page's guest read (app/[locale]/confirmation/page.tsx) verifies the access_token itself
-  // against the admin client and never calls that route, so a guest lands here with NO cookie set
-  // and a reschedule attempt would 401/403. Cancel is even more direct: app/api/bookings/[id]/cancel
-  // (both GET and POST) gate on `createServerSupabaseClient().auth.getUser()` alone, no guest path
-  // exists there at all (no resolveBookingActor, no cookie, no token check). So for either reason a
-  // guest can never complete these actions today, hide both affordances rather than show a control
-  // that always fails.
-  const canManage = !props.isGuest;
+  // Both RescheduleSheet's POST and CancelBookingSheet's GET/POST authorize through
+  // resolveBookingActor (lib/bookings/authorize.ts), whose guest branch reads the httpOnly
+  // `solen_guest_access` cookie (lib/bookings/guest-access.ts). That cookie is only ever
+  // written by setGuestCookie, called from ONE place: GET /api/bookings/guest-lookup
+  // (app/api/bookings/guest-lookup/route.ts:65), the SAME exchange the /booking/lookup page
+  // already performs. This confirmation page's own guest read (app/[locale]/confirmation/page.tsx)
+  // verifies the access_token itself against the admin client and never calls that route, so a
+  // guest used to land here with no cookie set. The useEffect below now runs that exact
+  // exchange itself as soon as the screen mounts, so the cookie exists before either sheet's
+  // first request. `canManage` waits on `guestAuthReady` (the exchange's own success signal)
+  // rather than trusting `!isGuest` alone, so the sheets never appear before the cookie that
+  // authorizes them actually exists.
+  const canManage = !props.isGuest || guestAuthReady;
 
   const isUpcoming = start.getTime() > Date.now();
   const hoursUntilBooking = (start.getTime() - Date.now()) / (1000 * 60 * 60);
@@ -570,8 +600,8 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
         </div>
       </main>
 
-      {/* ── reschedule / cancel sheets (checklist item 9: canManage = false for a guest, so
-          sheetBooking is null and neither sheet's affordance was ever shown to open them) ── */}
+      {/* ── reschedule / cancel sheets (checklist item 9: canManage stays false, and
+          sheetBooking null, until a guest's silent cookie exchange above succeeds) ── */}
       <RescheduleSheet
         booking={sheetBooking}
         isOpen={rescheduleOpen}
