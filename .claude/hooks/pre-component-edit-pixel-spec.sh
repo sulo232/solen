@@ -34,7 +34,7 @@ TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // empty')
 
 # Only Edit and Write are subject to this gate. Other tools (Read, Bash, Grep)
 # are needed for verification itself.
-if [[ "$TOOL_NAME" != "Edit" && "$TOOL_NAME" != "Write" ]]; then
+if [[ "$TOOL_NAME" != "Edit" && "$TOOL_NAME" != "Write" && "$TOOL_NAME" != "MultiEdit" ]]; then
   exit 0
 fi
 
@@ -43,7 +43,7 @@ FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
 # Only block edits to UI component files. Other edits (docs, configs, hooks
 # themselves) should not be blocked.
 case "$FILE_PATH" in
-  */app/*/_components/*|*/app/[locale]/*|*/components/*|*/components-legacy/*)
+  */app/*/_components/*|*/app/\[locale\]/*|*/components/*|*/components-legacy/*)
     : # UI component — subject to gate
     ;;
   *)
@@ -63,13 +63,18 @@ SPEC_MD=$(jq -r '.spec_md // empty' "$POINTER_FILE" 2>/dev/null)
 TIMESTAMP=$(jq -r '.timestamp // empty' "$POINTER_FILE" 2>/dev/null)
 SLUG=$(jq -r '.slug // empty' "$POINTER_FILE" 2>/dev/null)
 
-# If pointer is stale (>1 hour old), auto-clear and pass
+# If pointer is stale (>1 hour old), auto-clear and pass. An EMPTY/malformed
+# TIMESTAMP is also treated as expired (never trust an unparseable pointer to
+# keep the gate armed forever, orphaning the flag and blocking all UI edits).
 if [[ -n "$TIMESTAMP" ]]; then
   POINTER_AGE_SEC=$(( $(date +%s) - $(date -j -f "%Y-%m-%dT%H:%M:%S" "${TIMESTAMP%.*}" +%s 2>/dev/null || echo 0) ))
   if [[ "$POINTER_AGE_SEC" -gt 3600 ]]; then
     rm -f "$POINTER_FILE"
     exit 0
   fi
+else
+  rm -f "$POINTER_FILE"
+  exit 0
 fi
 
 # Check for the .review-needed flag in the output dir

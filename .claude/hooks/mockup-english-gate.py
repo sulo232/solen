@@ -16,7 +16,8 @@ import json, re, sys, os, time
 GERMAN = re.compile(
     r"\b(keine?|suchen|anzeigen|nichts|vorschl\w*|zurücksetzen|treffer|geöffnet|"
     r"probier\w*|schweiz\w*|wählen|stadt|städte|und|oder|für|nicht|weiter|ganzen?|"
-    r"aktuell|ruhig|wärmere|erhöht\w*|klarer)\b",
+    r"aktuell|ruhig|wärmere|erhöht\w*|klarer|termine?|buchung\w*|preis\w*|"
+    r"verfügbar\w*|datum|mitarbeiter)\b",
     re.I,
 )
 

@@ -48,13 +48,17 @@ def main():
     skipflag = os.path.expanduser("~/.claude/worklog-skip.flag")
 
     if mode == "start":
-        # stash HEAD for the stop comparison
+        # stash HEAD for the stop comparison, ONLY if not already stashed for
+        # this session_id. A SessionStart can re-fire on /compact or /resume;
+        # overwriting the head then would erase the true session-start baseline
+        # and let pre-compaction commits escape the worklog-stop check.
         try:
             os.makedirs(statedir, exist_ok=True)
-            head = git(proj, ["rev-parse", "HEAD"])
-            if head:
-                with open(headfile, "w") as f:
-                    f.write(head)
+            if not os.path.exists(headfile):
+                head = git(proj, ["rev-parse", "HEAD"])
+                if head:
+                    with open(headfile, "w") as f:
+                        f.write(head)
         except Exception:
             pass
         # surface the newest entries

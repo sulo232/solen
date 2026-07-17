@@ -136,7 +136,10 @@ def line_has_ok(text, idx):
 # "pre-existing drift never blocks an unrelated edit").
 RATINGSTARS_TAG = re.compile(r"<RatingStars\b[^>]*>")
 RATING_TOFIXED = re.compile(r"\b(?:rating|average_rating|averageRating|avgRating)\b\s*!?\s*\.\s*toFixed")
-HARDCODED_COUNT = re.compile(r"(?<![\w{.])\d{2,}\s+(Salons?|Bewertungen?|reviews?|Ergebnisse?|results?)\b")
+HARDCODED_COUNT = re.compile(
+    r"(?<![\w{.])\d+\s+(Salons?|Bewertungen?|reviews?|Ergebnisse?|results?|"
+    r"Kunden?|Mitarbeiter|Fotos?|Termine?)\b"
+)
 # P1c (HTML mockups only): a star MARKER (glyph, amber fill, or star class) followed
 # within a short window by a bare decimal rating (N.N) and NO count next to it. Real
 # mockups render this as `<span class="star">★</span> 4.8`. Verified against the live
