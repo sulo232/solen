@@ -8,6 +8,7 @@ import { validateBody, resendAccessSchema } from "@/lib/validations";
 import { normalizeReferenceCode } from "@/lib/bookings/reference";
 import { issueAccessToken } from "@/lib/bookings/guest-access";
 import { getServerEnv, getPublicEnv } from "@/lib/env";
+import { sendSMS } from "@/lib/sms";
 
 /**
  * POST /api/bookings/resend-access   body: { code, email? | phone? }
@@ -85,15 +86,48 @@ export async function POST(req: NextRequest) {
       return opaqueOk();
     }
 
-    // Send via the EXISTING Resend hook pattern (same as the report route — no new mailer).
+    // Send via the EXISTING channel senders: Resend for email (same as the report route),
+    // seven.io for SMS (lib/sms.ts, same sender the cron reminders use). No new mailer.
     // The link carries the raw token in a query param that the guest-lookup route
     // immediately exchanges for an httpOnly cookie. Token is never logged here.
-    const resendApiKey = getServerEnv().RESEND_API_KEY;
-    if (!resendApiKey) {
-      console.warn("[resend-access] RESEND_API_KEY not set — skipping email (token still rotated)");
-    } else if (email) {
-      // Phone-only resend has no email channel yet (SMS is the owner's later piece);
-      // the token is rotated regardless so a follow-up email resend works.
+    if (email) {
+      const resendApiKey = getServerEnv().RESEND_API_KEY;
+      if (!resendApiKey) {
+        console.warn("[resend-access] RESEND_API_KEY not set: skipping email (token still rotated)");
+      } else {
+        let appUrl: string | null = null;
+        try {
+          const pub = getPublicEnv();
+          appUrl = pub.NEXT_PUBLIC_APP_URL ?? pub.NEXT_PUBLIC_SITE_URL ?? null;
+        } catch {
+          appUrl = null;
+        }
+        const link = `${appUrl ?? ""}/booking/lookup?code=${encodeURIComponent(norm)}&t=${encodeURIComponent(raw)}`;
+        try {
+          await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${resendApiKey}`, "Content-Type": "application/json" },
+            body: JSON.stringify({
+              from: "support@solen.ch",
+              to: email,
+              subject: "Ihr Zugangslink zur Buchung",
+              html: `<p>Hier ist Ihr neuer Zugangslink für Buchung ${norm}.</p>
+                     <p><a href="${link}">Buchung öffnen</a></p>
+                     <p>Dieser Link ist 30 Tage gültig. Teilen Sie ihn nicht.</p>`,
+            }),
+          });
+        } catch (e) {
+          // Log without the token. Still return the opaque 200.
+          console.error("[resend-access] Resend email send failed for booking", row.id, e);
+        }
+      }
+    } else if (phone) {
+      // Same link shape as the email branch: the code plus the freshly-rotated raw token,
+      // exchanged by the guest-lookup route for an httpOnly cookie. Sent via the existing
+      // seven.io SMS sender (lib/sms.ts, the same one the cron reminders use). sendSMS
+      // never throws: it warns internally and returns false on its own if SEVEN_IO_API_KEY
+      // is missing, the number fails validation, or the per-phone rate limit is hit, so a
+      // missing or failed send still falls through to the opaque 200 below.
       let appUrl: string | null = null;
       try {
         const pub = getPublicEnv();
@@ -103,21 +137,15 @@ export async function POST(req: NextRequest) {
       }
       const link = `${appUrl ?? ""}/booking/lookup?code=${encodeURIComponent(norm)}&t=${encodeURIComponent(raw)}`;
       try {
-        await fetch("https://api.resend.com/emails", {
-          method: "POST",
-          headers: { Authorization: `Bearer ${resendApiKey}`, "Content-Type": "application/json" },
-          body: JSON.stringify({
-            from: "support@solen.ch",
-            to: email,
-            subject: "Ihr Zugangslink zur Buchung",
-            html: `<p>Hier ist Ihr neuer Zugangslink für Buchung ${norm}.</p>
-                   <p><a href="${link}">Buchung öffnen</a></p>
-                   <p>Dieser Link ist 30 Tage gültig. Teilen Sie ihn nicht.</p>`,
-          }),
-        });
+        const sent = await sendSMS(phone, `Ihr Zugangslink zur Buchung ${norm}: ${link}`);
+        if (!sent) {
+          // sendSMS already logged the specific reason (missing creds / invalid number /
+          // rate limit / provider error). Still return the opaque 200 either way.
+          console.warn("[resend-access] SMS resend did not complete for booking", row.id);
+        }
       } catch (e) {
         // Log without the token. Still return the opaque 200.
-        console.error("[resend-access] Resend email send failed for booking", row.id, e);
+        console.error("[resend-access] SMS send failed for booking", row.id, e);
       }
     }
   }

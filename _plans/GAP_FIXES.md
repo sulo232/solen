@@ -11,15 +11,18 @@ cleanup, not hiding). Enforced by .claude/hooks/no-easy-hide-gate.py (Stop gate,
 Full per-gap analysis: public/_reports/gap-decisions + scratchpad/decisions.json (60 gaps).
 
 ## WAVE 1 , highs + the fabrication class (do first)
-- [ ] #4 Homepage For-you/Nearby/Featured rows render HARDCODED rating 4.95 / price 45 / address
-  "Bahnhofstrasse 28" (forYouSalons.ts, searchFeatured.ts -> ForYouSalonRows.tsx:48-62). Real fix:
-  drop the hardcoded values, fetch each curated salon's REAL rating/price/address from DB; where a
-  test salon has no reviews, SEED test reviews via the real reviews table/route so the rating is
-  real-but-seeded. (This is the owner's exact example.)
+- [x] #4 , VERIFIED ALREADY REAL (rule 16, the audit finding was stale). The LIVE homepage rows
+  (ForYou/Nearby/Featured/RecentlyViewed) all pull real DB data via getSalonCardDataMap (fixed
+  2026-07-16, commit 82c288691). The "4.95 / Bahnhofstrasse 28" literals the audit flagged live ONLY
+  in FeaturedStylists.tsx, which is commented out at page.tsx:82 and never renders. Live-proven: 3
+  cards' rating/price/postal match execute_sql; all 17 curated salons already have 7-25 real reviews
+  + 11-15 services, so nothing needed seeding. No change. (Lesson: verify each gap vs current code
+  before fixing; some findings are dead-code reads.)
 - [ ] #28 Guest cannot cancel/reschedule from confirmation (canManage=!isGuest). Real fix: wire the
   guest actor path so a guest with a valid access token can cancel/reschedule.
-- [ ] #29 Phone-channel resend is a delivery no-op (rotates token, sends no SMS). Real fix: send the
-  SMS on the phone branch (seven.io is already wired for reminders), not hide the tab.
+- [x] #29 DONE (the real fix, not hide). Phone resend branch now sends the access link via SMS
+  (lib/sms.ts / seven.io, the cron sender). Live-traced: sendSMS invoked, token rotates, opaque 200
+  preserved for match/no-match/bad-code (no enumeration leak), email branch unchanged. Commit below.
 
 ## WAVE 2 , wire the unwired features (real fixes)
 - [ ] #5 Search date/service context dropped at PDP -> carry via query params + prefill booking.
