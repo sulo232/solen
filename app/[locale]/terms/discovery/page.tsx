@@ -15,7 +15,9 @@ export default async function DiscoveryTermsPage() {
   return (
     <main className="min-h-screen bg-white px-4 py-12">
       {/* V3-D298: H1 normalized to LOCKFILE Page H2 spec (display 25/40 700); muted ink (s-ink/70, s-ink/30) → canonical s-ink-2 */}
-      <div className="max-w-2xl mx-auto">
+      {/* mockup-ok: max-w-2xl swapped for the shared prose-measure utility (68ch), punch-list
+          long-form-prose sweep (globals.css:223-225, owner-approved law TASTE_LOG.md:187 2026-07-15). */}
+      <div className="prose-measure mx-auto">
         <h1 className="font-display text-[25px] md:text-[40px] font-semibold tracking-tight text-s-ink leading-[1.05] mb-8">{t("title")}</h1>
         <div className="space-y-6">
           {SECTIONS.map((key) => (

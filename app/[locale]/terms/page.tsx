@@ -54,7 +54,10 @@ export default async function TermsPage() {
           <TermsSidebar />
 
           {/* Main Terms Content */}
-          <div className="flex-1 min-w-0 max-w-3xl pb-24">
+          {/* ig7 (2026-07-17): hand-rolled max-w-3xl (768px, wider than the 68ch/
+              80ch reading-width cap) replaced with the shared .prose-measure
+              utility, same swap already applied to SalonAbout.tsx. */}
+          <div className="prose-measure min-w-0 flex-1 pb-24">
             <TermsContent />
 
             {/* Footer Area within content */}

@@ -271,7 +271,10 @@ function SalonResultCardInner(props: SalonResultCardProps) {
     const line = address ?? city ?? null;
     return (
       <Link href={href} className="group flex items-stretch gap-3 rounded-card border border-s-border bg-white p-3 active:scale-[0.99]">
-        <div className="relative h-[70px] w-[70px] shrink-0 overflow-hidden rounded-[12px] bg-s-bg-sunken">
+        {/* mockup-ok: DS-4 nested-radius formula (LOCKFILE:428-431, locked law, not new
+            design). Outer rounded-card=16, gap=p-3=12, inner = 16-12 = 4 (was rounded-[12px],
+            the exact bulge case LOCKFILE:430 calls out). */}
+        <div className="relative h-[70px] w-[70px] shrink-0 overflow-hidden rounded bg-s-bg-sunken">
           {photoUrl ? (
             <Image src={photoUrl} alt={`Foto von ${name}`} fill sizes="70px" className="object-cover" />
           ) : (
@@ -323,7 +326,10 @@ function SalonResultCardInner(props: SalonResultCardProps) {
           <HeartButton isSaved={isSaved} salonName={name} salonId={salonId} />
         </div>
         <Link href={href} className="group flex items-center gap-3.5 pr-10">
-          <div className="relative h-[104px] w-[104px] shrink-0 overflow-hidden rounded-[22px] bg-s-bg-sunken shadow-elevation-2 transition-[box-shadow] duration-200 ease-glide group-hover:shadow-elevation-3">
+          {/* mockup-ok: photo radius converged to rounded-card (16px), punch-list fix,
+              CONSISTENCY_AUDIT.md:35 "Kill 18+22" (owner-approved geometry law, not new design,
+              TASTE_LOG.md:187 2026-07-15). Was rounded-[22px], now matches card/grid/feed variants. */}
+          <div className="relative h-[104px] w-[104px] shrink-0 overflow-hidden rounded-card bg-s-bg-sunken shadow-elevation-2 transition-[box-shadow] duration-200 ease-glide group-hover:shadow-elevation-3">
             {photoInner}
           </div>
           <div className="flex min-w-0 flex-1 flex-col justify-center">
@@ -389,7 +395,9 @@ function SalonResultCardInner(props: SalonResultCardProps) {
         </div>
         <Link href={cardHref} className="group block">
           {/* mockup-ok: CARD_REDESIGN_2026-07-13 (C1, approved card-redesign.html #c11): aspect-[3/2] -> aspect-[5/4] */}
-          <div className="relative aspect-[5/4] w-full overflow-hidden rounded-[22px] bg-s-bg-sunken shadow-elevation-2 transition-[transform,box-shadow] duration-200 ease-glide group-hover:-translate-y-[3px] group-hover:shadow-elevation-3">
+          {/* Photo radius converged to rounded-card (16px) - punch-list fix, CONSISTENCY_AUDIT.md:35
+              "Kill 18+22": was rounded-[22px], now the same token as the list/grid/feed variants. */}
+          <div className="relative aspect-[5/4] w-full overflow-hidden rounded-card bg-s-bg-sunken shadow-elevation-2 transition-[transform,box-shadow] duration-200 ease-glide group-hover:-translate-y-[3px] group-hover:shadow-elevation-3">
             {photoInner}
           </div>
           {/* V3-D356 polish (per Gemini): looser rhythm below the photo + a bigger
@@ -454,7 +462,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
 
   // FEED variant (2026-07-02, owner-approved /dev/results-full + /dev/results-browse):
   // the mobile 1-col results feed. Borderless (no card shadow/border, per the mockup),
-  // rounded-2xl photo, carousel dots (real gallery_urls count, only when > 1), then
+  // rounded-card photo, carousel dots (real gallery_urls count, only when > 1), then
   // name + inline star, "distance, address" line, "category, N reviews" line. Searched
   // state (hasServiceQuery) adds up to 3 gray service-price rows plus a blue "View N"
   // link; browse state swaps in a right-hand rating + "from CHF X" column instead.
@@ -480,7 +488,9 @@ function SalonResultCardInner(props: SalonResultCardProps) {
     // <Link> block layout exactly, no new appearance. mockup-ok
     const feedPhoto = (
       // mockup-ok: CARD_REDESIGN_2026-07-13 (C1, approved card-redesign.html #c11): aspect-[3/2] -> aspect-[5/4]
-      <div className="relative aspect-[5/4] w-full overflow-hidden rounded-2xl bg-s-bg-sunken">
+      // Photo radius notation converged to rounded-card (punch-list fix): rounded-2xl was already
+      // numerically 16px (tailwind.config.js), same token name as the other three variants now.
+      <div className="relative aspect-[5/4] w-full overflow-hidden rounded-card bg-s-bg-sunken">
         {photoInner}
         {!onSelect && (
           <div className="absolute right-3 top-3 z-10">
@@ -623,7 +633,9 @@ function SalonResultCardInner(props: SalonResultCardProps) {
             (distance, popularity heuristic) stay. Supersedes the V3-D350 flat
             rounded-card look per user "keep it consistent with the locked homepage". */}
         {/* mockup-ok: CARD_REDESIGN_2026-07-13 (C1, approved card-redesign.html #c11): aspect-square -> aspect-[5/4] */}
-        <div className="relative aspect-[5/4] w-full overflow-hidden rounded-[22px] bg-s-bg-sunken shadow-elevation-2 transition-[transform,box-shadow] duration-200 ease-glide group-hover:-translate-y-[3px] group-hover:scale-[1.015] group-hover:shadow-elevation-3">
+        {/* Photo radius converged to rounded-card (16px) - punch-list fix, CONSISTENCY_AUDIT.md:35
+            "Kill 18+22": was rounded-[22px], now the same token as the list/card/feed variants. */}
+        <div className="relative aspect-[5/4] w-full overflow-hidden rounded-card bg-s-bg-sunken shadow-elevation-2 transition-[transform,box-shadow] duration-200 ease-glide group-hover:-translate-y-[3px] group-hover:scale-[1.015] group-hover:shadow-elevation-3">
           {photoInner}
         </div>
 

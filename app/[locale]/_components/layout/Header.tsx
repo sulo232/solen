@@ -193,7 +193,10 @@ function DropdownMenu({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.98 }}
             transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute left-0 top-full mt-2 min-w-[240px] rounded-[16px] bg-white p-2 z-[60]"
+            // mockup-ok: notation cleanup, locked law not new design (2026-07-17).
+            // rounded-[16px] numerically equals the rounded-2xl token; zero visual
+            // change, also the outer reference for the nested menu-item fix below.
+            className="absolute left-0 top-full mt-2 min-w-[240px] rounded-2xl bg-white p-2 z-[60]"
             style={{
               boxShadow:
                 "0 12px 36px rgba(0, 0, 0, 0.10), 0 2px 6px rgba(0, 0, 0, 0.04)",
@@ -207,7 +210,10 @@ function DropdownMenu({
                 href={`/${locale}${item.href}`}
                 role="menuitem"
                 className={cn(
-                  "flex items-center rounded-[12px] px-4 py-3 font-body text-[14px] font-medium text-s-ink",
+                  // mockup-ok: DS-4 nested-radius formula (LOCKFILE:428-431, locked law).
+                  // Outer (dropdown) rounded-2xl=16, gap=p-2=8, inner = 16-8 = 8 (was
+                  // rounded-[12px], no ladder token equals 8 so kept as an arbitrary value).
+                  "flex items-center rounded-[8px] px-4 py-3 font-body text-[14px] font-medium text-s-ink",
                   "transition-colors duration-150 ease-glide",
                   "hover:bg-s-bg-sunken hover:text-s-ink",
                   "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:bg-s-bg-sunken",
@@ -583,7 +589,8 @@ export default function Header({ locale }: { locale: string }) {
               // (CONTROL_ELEVATION rule 3: zero box-shadow on white chrome; the bar itself
               // lifts on scroll, not the buttons).
               // mockup-ok: S3 fix, 40px -> 44px floor, icon glyph size unchanged (approved fixes-refined)
-              "grid h-11 w-11 shrink-0 place-items-center rounded-[13px] border",
+              // mockup-ok: rounded snapped, punch-list geometry sweep, TASTE_LOG.md:187 2026-07-15
+              "grid h-11 w-11 shrink-0 place-items-center rounded-input border",
               "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.94]",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
@@ -606,7 +613,8 @@ export default function Header({ locale }: { locale: string }) {
             aria-label="Zurück"
             className={cn(
               // mockup-ok: S3 fix, 40px -> 44px floor, icon glyph size unchanged (approved fixes-refined)
-              "grid h-11 w-11 shrink-0 place-items-center rounded-[13px] border",
+              // mockup-ok: rounded snapped, punch-list geometry sweep, TASTE_LOG.md:187 2026-07-15
+              "grid h-11 w-11 shrink-0 place-items-center rounded-input border",
               "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.94]",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
@@ -775,10 +783,12 @@ export default function Header({ locale }: { locale: string }) {
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((v) => !v)}
             className={cn(
+              // mockup-ok: rounded-[13px] below snapped to rounded-input (16px, on-ladder),
+              // punch-list geometry sweep, TASTE_LOG.md:187 2026-07-15.
               // V3-D421k (2026-06-06): rounded-SQUARE tile matching the home button.
-              // V3-D421L (council 3/3): FLAT — no shadow (CONTROL_ELEVATION rule 3). Tap
+              // V3-D421L (council 3/3): FLAT - no shadow (CONTROL_ELEVATION rule 3). Tap
               // target 40px; folds with the header on category-route scroll.
-              "md:hidden relative grid h-11 w-11 place-items-center rounded-[13px] border transition-[transform,background-color,border-color] duration-200 ease-glide active:scale-[0.94] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+              "md:hidden relative grid h-11 w-11 place-items-center rounded-input border transition-[transform,background-color,border-color] duration-200 ease-glide active:scale-[0.94] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               isDark ? "border-white/30 bg-white/10 text-white" : "border-s-border bg-white text-s-ink",
             )}
           >

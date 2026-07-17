@@ -187,9 +187,12 @@ function ReviewCard({ review }: { review: Review }) {
 
       {text && (
         <>
+          {/* ig7 (2026-07-17): shared .prose-measure (68ch) caps the line length,
+              matching SalonAbout.tsx (same utility, same rationale) - the review
+              body was rendering with no width cap at all before this. */}
           <p
             className={cn(
-              "font-body mt-2.5 text-[15px] leading-relaxed text-s-ink-2",
+              "prose-measure font-body mt-2.5 text-[15px] leading-relaxed text-s-ink-2",
               !showFull && "line-clamp-3"
             )}
           >

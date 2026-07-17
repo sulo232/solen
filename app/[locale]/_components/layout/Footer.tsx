@@ -67,6 +67,11 @@ const LOCALES = [
 /** Inline Swiss flag — red rounded square + white cross. Intentional real color
  *  (a national flag is factual, like the rating star keeping its yellow). */
 function SwissFlag() {
+  // standalone-justified (punch-list geometry sweep, GEOMETRY_PRINCIPLES_2026-07-17.md:861):
+  // not nested inside a padding parent (no DS-4 gap relationship applies), and the outer
+  // rounded-[2px] clip tracks the flag's OWN internal rect rx="3" in a 32-unit viewBox scaled
+  // to this 13px render (3/32*13 approx 1.2px). Snapping to the 4px ladder minimum would
+  // roughly double the visible corner on a 13px glyph, a real visual change on a flag icon.
   return (
     <svg width="13" height="13" viewBox="0 0 32 32" aria-hidden className="inline-block rounded-[2px]" style={{ verticalAlign: "-1px" }}>
       <rect width="32" height="32" rx="3" fill="#DA291C" />
@@ -122,7 +127,11 @@ export default function Footer({ locale }: { locale: string }) {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="grid h-9 w-9 place-items-center rounded-[10px] bg-s-bg-sunken text-s-ink-3 transition-colors duration-200 ease-glide hover:bg-s-ink hover:text-white"
+                  // mockup-ok: snapped to rounded-xl (12px, on-ladder), punch-list geometry sweep
+                  // (owner-approved law, TASTE_LOG.md:187 2026-07-15). Was rounded-[10px]
+                  // (off-ladder), not nested (flex row, no padding parent), a 2px change on a
+                  // 36px button is a trivially-snappable notation fix.
+                  className="grid h-9 w-9 place-items-center rounded-xl bg-s-bg-sunken text-s-ink-3 transition-colors duration-200 ease-glide hover:bg-s-ink hover:text-white"
                 >
                   <Icon size={16} aria-hidden />
                 </a>
@@ -228,11 +237,14 @@ function NewsletterForm() {
         placeholder="deine@email.ch"
         className="w-full rounded-[12px] border border-s-border bg-white py-[12px] pl-[14px] pr-[48px] font-body text-[14px] text-s-ink outline-none transition-colors placeholder:text-s-ink-3 focus:border-s-ink"
       />
+      {/* mockup-ok: DS-4 nested-radius formula (LOCKFILE:428-431, locked law). This
+          button sits inset right-6/top-6 inside the input (rounded-[12px]); inner =
+          12-6 = 6 (was rounded-[9px], off the formula). */}
       <button
         type="submit"
         aria-label="Abonnieren"
         disabled={status === "loading"}
-        className="absolute right-[6px] top-[6px] grid h-9 w-9 place-items-center rounded-[9px] bg-s-ink text-white transition-transform duration-200 ease-glide active:scale-95 disabled:opacity-60"
+        className="absolute right-[6px] top-[6px] grid h-9 w-9 place-items-center rounded-[6px] bg-s-ink text-white transition-transform duration-200 ease-glide active:scale-95 disabled:opacity-60"
       >
         <ChevronRight size={18} aria-hidden />
       </button>

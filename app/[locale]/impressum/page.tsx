@@ -7,7 +7,9 @@ export const metadata: Metadata = {
 export default function ImpressumPage() {
   return (
     <main className="min-h-screen bg-white pb-24">
-      <div className="max-w-2xl mx-auto px-4 pt-8">
+      {/* mockup-ok: max-w-2xl swapped for the shared prose-measure utility (68ch), punch-list
+          long-form-prose sweep (globals.css:223-225, owner-approved law TASTE_LOG.md:187 2026-07-15). */}
+      <div className="prose-measure mx-auto px-4 pt-8">
         {/* V3-D296: tracking-wider (too loose for LOCKFILE -0.03em); ALL-CAPS dropped; weight 700 per LOCKFILE §2 Page H2 role */}
         <h1 className="font-display text-4xl md:text-5xl font-semibold tracking-tight text-s-ink mb-2">
           Impressum
