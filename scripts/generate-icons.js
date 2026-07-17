@@ -14,14 +14,12 @@ mkdirSync(OUT_DIR, { recursive: true });
 
 const SIZES = [72, 96, 128, 144, 152, 192, 384, 512];
 
+// Solen S mark (ig5, TASTE_LOG 2026-07-16) - same monoline path as public/favicon.svg,
+// scaled via the SVG viewBox so every rasterized size shares one geometric source.
 function makeSvg(size) {
-  const fontSize = Math.round(size * 0.55);
-  const dy = Math.round(size * 0.02);
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
-  <rect width="${size}" height="${size}" rx="${Math.round(size * 0.18)}" fill="#9B1D30"/>
-  <text x="50%" y="50%" dy="${dy}" text-anchor="middle" dominant-baseline="central"
-        font-family="Georgia, 'Times New Roman', serif" font-weight="bold"
-        font-size="${fontSize}" fill="#F8F4ED">S</text>
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 32 32">
+  <rect width="32" height="32" fill="#FFFFFF"/>
+  <path d="M 19 8 C 19 5 10 10 16 16 C 22 22 13 27 13 24" fill="none" stroke="#0A0A0A" stroke-width="5" stroke-linecap="round"/>
 </svg>`;
 }
 
@@ -31,4 +29,4 @@ for (const size of SIZES) {
   console.log(`  icon-${size}.png`);
 }
 
-console.log('Done — icons written to public/icons/');
+console.log('Done, icons written to public/icons/');
