@@ -1,0 +1,66 @@
+{
+  "skeleton": false,
+  "applied": {
+    "hair": 13,
+    "selected": 2,
+    "rhythm": 0,
+    "radius": 0
+  },
+  "breaks": {
+    "warm": 13,
+    "warmSample": "inline-flex items-center gap-1.5 rounded",
+    "blacks": [
+      {
+        "w": 48,
+        "h": 48,
+        "txt": ""
+      }
+    ],
+    "radii": {},
+    "outlined": [],
+    "small": [
+      {
+        "w": 114,
+        "h": 40,
+        "txt": "Defined Brows"
+      },
+      {
+        "w": 106,
+        "h": 40,
+        "txt": "Glossy Finish"
+      },
+      {
+        "w": 89,
+        "h": 40,
+        "txt": "Full Brows"
+      },
+      {
+        "w": 89,
+        "h": 40,
+        "txt": "Short Hair"
+      },
+      {
+        "w": 110,
+        "h": 40,
+        "txt": "Brow Shaping"
+      },
+      {
+        "w": 123,
+        "h": 40,
+        "txt": "Lash Extensions"
+      },
+      {
+        "w": 81,
+        "h": 40,
+        "txt": "Gel Nails"
+      },
+      {
+        "w": 86,
+        "h": 40,
+        "txt": "Long Hair"
+      }
+    ]
+  },
+  "loadedImgs": 17,
+  "finalUrl": "http://localhost:3000/de/inspo"
+}

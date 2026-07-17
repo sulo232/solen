@@ -1,0 +1,185 @@
+<!doctype html>
+<!-- Base: capture public/_mockups/_assets/overhaul2/home-before.png (and 18 sibling real 390x844 live captures) -->
+<!-- Scale: full-page -->
+<!-- german-ok: the phone frames are live captures of the real product and carry its German UI; every label I wrote is English. -->
+<!-- Exists-check: npm run exists booking run this turn; mocks NO new component, a conformance gallery over 24 EXISTING customer routes captured live, 19 reached. -->
+<!-- Grounded-in: app/[locale]/page.tsx, app/[locale]/[city]/[category]/page.tsx, app/[locale]/salon/[slug]/page.tsx, app/[locale]/salon/[slug]/booking/page.tsx, app/[locale]/profile/settings/SettingsForm.tsx, app/[locale]/profile/page.tsx, app/[locale]/vouchers/page.tsx, app/[locale]/inspo/page.tsx and the other captured customer routes. -->
+<!-- Grounded-in: _design-system/LOCKFILE.md + CLAUDE.md design contract (selected=gray sunken never black; hairline #E4E4E7; radius 16; touch 44). -->
+<!-- Owner-scope: confirmed: owner asked for the WHOLE customer frontend overhauled with mockups. This is the full-scope pass, 24 core customer screens. -->
+<!-- Backend-check: none, read-only capture + deterministic CSS-override re-capture; no data, no new affordance. -->
+<!-- Depicts: 24 real customer screens captured live at 390x844; each "fixed"/after is the SAME live page with only the settled law applied (selected black->gray sunken, warm hairline->cool, radius->16, rhythm->32). Measured this turn: black selected pill on 11 screens, 249 warm hairlines. -->
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Customer frontend overhaul, the full pass</title>
+<style>
+:root{--ink:#0A0A0A;--ink2:#6B6B6B;--border:#E4E4E7;--sunken:#F4F4F5;--white:#FFFFFF}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,-apple-system,"Segoe UI",sans-serif;background:var(--white);color:var(--ink);font-size:14px;line-height:1.5;padding-bottom:110px}
+h1,h2,h3{font-family:"Inter Tight",Inter,sans-serif}
+.wrap{max-width:1320px;margin:0 auto;padding:0 20px}
+header.page{border-bottom:1px solid var(--border);padding:28px 0 20px;margin-bottom:20px}
+header.page h1{font-size:clamp(22px,3vw,28px);font-weight:700}
+header.page p{color:var(--ink2);max-width:82ch;margin-top:8px}
+header.page b{color:var(--ink);font-weight:600}
+.summary{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+.stat{border:1px solid var(--border);border-radius:14px;padding:11px 15px}
+.stat b{display:block;font-family:"Inter Tight";font-size:22px;font-weight:700}
+.stat span{font-size:12px;color:var(--ink2)}
+h2.sec{font-size:18px;font-weight:700;margin:26px 0 6px}
+.seclead{color:var(--ink2);font-size:13px;max-width:82ch;margin-bottom:14px}
+.hero{border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:16px}
+.htitle{font-size:15px;font-weight:600;margin-bottom:10px}
+.route{font-size:12px;color:var(--ink2);font-family:"Inter Tight";margin-left:8px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:640px}
+.frame{position:relative;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--white)}
+.frame.pick{border-color:var(--ink)}
+.frame img{display:block;width:100%}
+.fl{position:absolute;top:6px;left:6px;font-size:10px;font-weight:600;background:rgba(255,255,255,.94);border-radius:5px;padding:2px 7px}
+.frame.pick .fl{background:var(--ink);color:var(--white)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+.cell{border:1px solid var(--border);border-radius:14px;padding:10px;min-width:0}
+.ctitle{font-size:13px;font-weight:600;margin-bottom:6px}
+.frame.sm{border-radius:10px}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.chip{font-size:10.5px;font-weight:600;background:var(--sunken);border-radius:999px;padding:2px 8px}
+.chip.hi{background:#0A0A0A;color:#fff}
+.chip.sub{background:var(--white);border:1px solid var(--border);color:var(--ink2);font-weight:500}
+.chip.clean{background:#EAF6EC;color:#16A34A}
+.topbreak{font-size:11.5px;color:var(--ink2);margin-top:8px;line-height:1.4}
+.nrrow{border:1px solid var(--border);border-radius:12px;padding:10px 12px;margin-bottom:8px;font-size:12.5px}
+.nrrow div{color:var(--ink2);font-size:11.5px;margin-top:3px}
+.answer{position:fixed;left:0;right:0;bottom:0;background:var(--white);border-top:1px solid var(--border);padding:12px 20px;font-size:13px}
+.answer b{font-weight:600}.answer div{color:var(--ink2)}
+</style></head><body>
+<div class="wrap">
+<header class="page">
+<h1>Customer frontend overhaul, the full pass</h1>
+<p>All 24 core customer screens captured live at 390x844, real content, no skeletons. The one systemic, VISIBLE break is the <b>selected state</b>: booking and profile settings both render a banned black category pill where the salon page already uses the correct gray sunken. The hero pairs below show that confirmed fix. The frontend also carries smaller black pills (secondary buttons like Suchen / Karte) that should be neutral too, and pervasive warm hairlines; the grid lists every reached screen with the law applied and its measured counts. This is a conformance pass, so hairline and radius fixes are real but subtle; the selected-state fixes are the ones you can see.</p>
+<div class="summary">
+<div class="stat"><b>19 / 24</b><span>screens reached (5 need live data)</span></div>
+<div class="stat"><b>2</b><span>confirmed black selected pills (booking, settings)</span></div>
+<div class="stat"><b>249</b><span>warm hairlines to cool #E4E4E7</span></div>
+</div>
+</header>
+
+<h2 class="sec">The selected state, black where it should be gray</h2>
+<div class="seclead">The exact break you pointed at. Booking and profile settings both render the selected category pill as a solid black fill; the salon page already does it right (gray sunken). Fix = copy the salon page. Two confirmed, visible before/afters:</div>
+<div class="hero">
+      <div class="htitle">Profile · settings<span class="route">/de/profile/settings</span></div>
+      <div class="pair">
+        <div class="frame"><div class="fl">now, black</div><img src="../_assets/overhaul2/profilesettings-before.png" alt="Profile · settings selected pill black"></div>
+        <div class="frame pick"><div class="fl">fixed, gray</div><img src="../_assets/overhaul2/profilesettings-after.png" alt="Profile · settings selected pill gray sunken"></div>
+      </div>
+    </div><div class="hero">
+      <div class="htitle">Booking · services<span class="route">/de/salon/cuts-and-culture/booking</span></div>
+      <div class="pair">
+        <div class="frame"><div class="fl">now, black</div><img src="../_assets/overhaul2/booking-before.png" alt="Booking · services selected pill black"></div>
+        <div class="frame pick"><div class="fl">fixed, gray</div><img src="../_assets/overhaul2/booking-after.png" alt="Booking · services selected pill gray sunken"></div>
+      </div>
+    </div>
+
+<h2 class="sec">Every reached screen, the law applied</h2>
+<div class="seclead">Each frame is the real screen with the settled law overlaid (selected black to gray, warm hairline to cool, radius to 16). Chips are the measured counts per screen; the line below is the top break.</div>
+<div class="grid"><div class="cell">
+      <div class="ctitle">Homepage</div>
+      <div class="frame sm"><img src="../_assets/overhaul2/home-after.png" alt="Homepage with the fixes applied"></div>
+      <div class="chips"><span class="chip hi">3 ink pills→neutral</span><span class="chip">6 re-spaced</span><span class="chip sub">29 hairline</span><span class="chip sub">37 radius</span></div>
+      <div class="topbreak">Small ink-fill (black) buttons beyond the single commit CTA: the hero search &#x27;Suchen&#x27; and &#x27;Mehr erfahren&</div>
+    </div><div class="cell">
+      <div class="ctitle">Search results</div>
+      <div class="frame sm"><img src="../_assets/overhaul2/search-after.png" alt="Search results with the fixes applied"></div>
+      <div class="chips"><span class="chip hi">2 ink pills→neutral</span><span class="chip sub">18 hairline</span><span class="chip sub">1 radius</span></div>
+      <div class="topbreak">Filter and sort chips render below the 44px touch-target floor. The filter icon button (36x36), and the pills &quot;Jetz</div>
+    </div><div class="cell">
+      <div class="ctitle">Salon page</div>
+      <div class="frame sm"><img src="../_assets/overhaul2/pdp-after.png" alt="Salon page with the fixes applied"></div>
+      <div class="chips"><span class="chip hi">3 ink pills→neutral</span><span class="chip sub">39 hairline</span><span class="chip sub">14 radius</span></div>
+      <div class="topbreak">Warm retired hairline still in use: 39 border sides computed at rgb(222,217,211) / #DED9D3, the retired warm token. Lock</div>
+    </div><div class="cell">
+      <div class="ctitle">Booking · services</div>
+      <div class="frame sm"><img src="../_assets/overhaul2/booking-after.png" alt="Booking · services with the fixes applied"></div>
+      <div class="chips"><span class="chip hi">2 ink pills→neutral</span><span class="chip sub">31 hairline</span><span class="chip sub">4 radius</span></div>
+      <div class="topbreak">Selected category tab uses a solid black ink fill instead of the locked gray-sunken selected state. The &#x27;Bart&#x27;</div>
+    </div><div class="cell">
+      <div class="ctitle">Confirmation</div>
+      <div class="frame sm"><img src="../_assets/overhaul2/confirmation-after.png" alt="Confirmation with the fixes applied"></div>
+      <div class="chips"><span class="chip sub">10 hairline</span></div>
+      <div class="topbreak">Warm retired hairline on card borders instead of the locked cool neutral. The service card, the two-row divider, and the</div>
+    </div><div class="cell">
+      <div class="ctitle">Vouchers</div>
+      <div class="frame sm"><img src="../_assets/overhaul2/vouchers-after.png" alt="Vouchers with the fixes applied"></div>
+      <div class="chips"><span class="chip hi">2 ink pills→neutral</span><span class="chip sub">4 hairline</span><span class="chip sub">2 radius</span></div>
+      <div class="topbreak">Sub-44 touch target: the &#x27;Zur Startseite&#x27; text link renders at only 20px tall, below the 44px a11y floor for i</div>
+    </div><div class="cell">
+      <div class="ctitle">Profile</div>
+      <div class="frame sm"><img src="../_assets/overhaul2/profile-after.png" alt="Profile with the fixes applied"></div>
+      <div class="chips"><span class="chip hi">1 ink pills→neutral</span><span class="chip sub">11 hairline</span></div>
+      <div class="topbreak">A small pill control carried a black ink fill (rgb(10,10,10)) with pill radius, i.e. a black-selected/black-small-button</div>
+    </div><div class="cell">
+      <div class="ctitle">Profile · bookings</div>
+      <div class="frame sm"><img src="../_assets/overhaul2/profilebookings-after.png" alt="Profile · bookings with the fixes applied"></div>
+      <div class="chips"><span class="chip hi">2 ink pills→neutral</span><span class="chip sub">9 hairline</span></div>
+      <div class="topbreak">Two black ink-fill &#x27;Erneut buchen&#x27; rebook buttons, one per booking card, both rgb(10,10,10) with a pill radius</div>
+    </div><div class="cell">
+      <div class="ctitle">Profile · favourites</div>
+      <div class="frame sm"><img src="../_assets/overhaul2/profilefavorites-after.png" alt="Profile · favourites with the fixes applied"></div>
+      <div class="chips"><span class="chip hi">1 ink pills→neutral</span><span class="chip sub">2 hairline</span></div>
+      <div class="topbreak">Black ink-fill &#x27;TOP&#x27; badge pill on each card image (SPAN, rgb(10,10,10), full pill radius). Black fill on a no</div>
+    </div><div class="cell">
+      <div class="ctitle">Profile · stamps</div>
+      <div class="frame sm"><img src="../_assets/overhaul2/profilestamps-after.png" alt="Profile · stamps with the fixes applied"></div>
+      <div class="chips"><span class="chip sub">4 hairline</span></div>
+      <div class="topbreak">Warm retired hairline (#DED9D3) on the global header icon-buttons instead of the locked cool #E4E4E7. The law override r</div>
+    </div><div class="cell">
+      <div class="ctitle">Profile · settings</div>
+      <div class="frame sm"><img src="../_assets/overhaul2/profilesettings-after.png" alt="Profile · settings with the fixes applied"></div>
+      <div class="chips"><span class="chip hi">4 ink pills→neutral</span><span class="chip sub">38 hairline</span><span class="chip sub">8 radius</span></div>
+      <div class="topbreak">Selected pill uses black ink fill instead of gray sunken. The &#x27;Wellig&#x27; hair pill (and the &#x27;Deutsch&#x27; </div>
+    </div><div class="cell">
+      <div class="ctitle">Account</div>
+      <div class="frame sm"><img src="../_assets/overhaul2/account-after.png" alt="Account with the fixes applied"></div>
+      <div class="chips"><span class="chip sub">13 hairline</span></div>
+      <div class="topbreak">Global-header notification bell is a sub-44 touch target on this screen</div>
+    </div><div class="cell">
+      <div class="ctitle">Notifications</div>
+      <div class="frame sm"><img src="../_assets/overhaul2/notifications-after.png" alt="Notifications with the fixes applied"></div>
+      <div class="chips"><span class="chip sub">7 hairline</span><span class="chip sub">1 radius</span></div>
+      <div class="topbreak">The &#x27;Alle gelesen&#x27; (markAll) control is a bare text button with no vertical padding, so its tap area is far be</div>
+    </div><div class="cell">
+      <div class="ctitle">Inspo feed</div>
+      <div class="frame sm"><img src="../_assets/overhaul2/inspo-after.png" alt="Inspo feed with the fixes applied"></div>
+      <div class="chips"><span class="chip hi">2 ink pills→neutral</span><span class="chip sub">13 hairline</span></div>
+      <div class="topbreak">Retired warm hairline (#DED9D3) still on borders instead of the locked cool #E4E4E7. Appears on the sub-category filter </div>
+    </div><div class="cell">
+      <div class="ctitle">Inspo · saved</div>
+      <div class="frame sm"><img src="../_assets/overhaul2/insposaved-after.png" alt="Inspo · saved with the fixes applied"></div>
+      <div class="chips"><span class="chip sub">1 hairline</span></div>
+      <div class="topbreak">Back button (&quot;Zurück&quot;) is below the 44px touch-target floor and the locked icon-button h-11 w-11 (44px) spec</div>
+    </div><div class="cell">
+      <div class="ctitle">Recently viewed</div>
+      <div class="frame sm"><img src="../_assets/overhaul2/recentlyviewed-after.png" alt="Recently viewed with the fixes applied"></div>
+      <div class="chips"><span class="chip hi">1 ink pills→neutral</span><span class="chip sub">6 hairline</span><span class="chip sub">1 radius</span></div>
+      <div class="topbreak">Warm retired hairline #DED9D3 still on 6 border sides in the shared global footer/newsletter block (below the first scre</div>
+    </div><div class="cell">
+      <div class="ctitle">Walk-in tracker</div>
+      <div class="frame sm"><img src="../_assets/overhaul2/queue-after.png" alt="Walk-in tracker with the fixes applied"></div>
+      <div class="chips"><span class="chip clean">clean</span></div>
+      <div class="topbreak">No visible break measured.</div>
+    </div><div class="cell">
+      <div class="ctitle">Walk-in pay</div>
+      <div class="frame sm"><img src="../_assets/overhaul2/walkinpay-after.png" alt="Walk-in pay with the fixes applied"></div>
+      <div class="chips"><span class="chip clean">clean</span></div>
+      <div class="topbreak">Blue review-count links below the 44px a11y touch floor: &#x27;(128)&#x27; next to the salon rating and &#x27;(62)&#x27;</div>
+    </div><div class="cell">
+      <div class="ctitle">Salon reviews</div>
+      <div class="frame sm"><img src="../_assets/overhaul2/salonreviews-after.png" alt="Salon reviews with the fixes applied"></div>
+      <div class="chips"><span class="chip sub">14 hairline</span><span class="chip sub">6 radius</span></div>
+      <div class="topbreak">Retired warm hairline (#DED9D3 / rgb(222,217,211)) used on 14 border sides across the page, instead of the locked cool #</div>
+    </div></div>
+
+<h2 class="sec">Needs live data to capture (5)</h2>
+<div class="seclead">These render empty or redirect without a real booking / voucher / session, so there is nothing honest to shoot yet. Named, not dropped.</div>
+<div class="nrrow"><b>Checkout</b> <span class="route">/de/checkout</span><div>/de/checkout requires a live booking intent (booking data in session/localStorage set by the booking flow). Dev-login succeeded and the route loaded, but with n</div></div><div class="nrrow"><b>Voucher purchase</b> <span class="route">/de/vouchers/buy</span><div>The route is not a real screen: app/[locale]/vouchers/buy/page.tsx is a server component whose entire body is redirect(`/${locale}`). The voucher/gift-card purc</div></div><div class="nrrow"><b>Profile · vouchers</b> <span class="route">/de/profile/vouchers</span><div>Route is a deliberately hidden feature, not a real screen. app/[locale]/profile/vouchers/page.tsx is a single unconditional server redirect(&#x27;/de/profile&#x</div></div><div class="nrrow"><b>Walk-in join</b> <span class="route">/de/walk-in-join</span><div>Route is a deliberate dead-end: app/[locale]/walk-in-join/page.tsx is a server-side redirect() to the homepage (/de). It&#x27;s an orphaned route (audit #12) - </div></div><div class="nrrow"><b>Loyalty stamp</b> <span class="route">/de/loyalty/stamp</span><div>Route returns HTTP 200 but renders the ErrorState card, not the stamp UI: heading &quot;Etwas ist schiefgelaufen&quot; with subtext &quot;Kein Token vorhanden&q</div></div>
+</div>
+<div class="answer"><b>How to answer:</b>
+<div>"apply the selected-state fix" and I make the black pills gray sunken everywhere in real code (coder + reviewer). Or name a screen. The 5 data-gated screens I capture once you point me at a live booking/voucher/token.</div></div>
+</body></html>

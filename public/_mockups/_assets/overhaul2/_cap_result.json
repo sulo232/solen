@@ -1,0 +1,183 @@
+{
+  "skeleton": false,
+  "applied": {
+    "hair": 29,
+    "selected": 3,
+    "rhythm": 6,
+    "radius": 37
+  },
+  "status": 200,
+  "finalUrl": "http://localhost:3000/de",
+  "skeletonCount": 0,
+  "measured": {
+    "blackSelected": [
+      {
+        "t": "Suchen",
+        "w": 112,
+        "h": 50,
+        "rad": 9999
+      },
+      {
+        "t": "Mehr erfahren",
+        "w": 178,
+        "h": 49,
+        "rad": 9999
+      }
+    ],
+    "warmHair": 29,
+    "subTouch": [
+      {
+        "t": "Zum Inhalt sprin",
+        "w": 1,
+        "h": 1
+      },
+      {
+        "t": "Solen",
+        "w": 71,
+        "h": 30
+      },
+      {
+        "t": "Service",
+        "w": 75,
+        "h": 33
+      },
+      {
+        "t": "Stadt",
+        "w": 60,
+        "h": 33
+      },
+      {
+        "t": "Zeit",
+        "w": 51,
+        "h": 33
+      },
+      {
+        "t": "Zurücksetzen",
+        "w": 123,
+        "h": 39
+      },
+      {
+        "t": "Cuts & Culture",
+        "w": 112,
+        "h": 18
+      },
+      {
+        "t": "Cuts & Culture",
+        "w": 112,
+        "h": 18
+      },
+      {
+        "t": "Cuts & Culture",
+        "w": 112,
+        "h": 18
+      },
+      {
+        "t": "Nail Studio Blis",
+        "w": 121,
+        "h": 18
+      },
+      {
+        "t": "Cuts & Culture",
+        "w": 112,
+        "h": 18
+      },
+      {
+        "t": "Nail Studio Blis",
+        "w": 121,
+        "h": 18
+      },
+      {
+        "t": "Solen",
+        "w": 60,
+        "h": 22
+      },
+      {
+        "t": "Über uns",
+        "w": 56,
+        "h": 16
+      },
+      {
+        "t": "Karriere",
+        "w": 49,
+        "h": 16
+      },
+      {
+        "t": "Presse",
+        "w": 42,
+        "h": 16
+      },
+      {
+        "t": "Blog",
+        "w": 27,
+        "h": 16
+      },
+      {
+        "t": "Für Salons",
+        "w": 65,
+        "h": 16
+      },
+      {
+        "t": "Salon-Hilfe",
+        "w": 68,
+        "h": 16
+      },
+      {
+        "t": "Kund:innen-Hilfe",
+        "w": 103,
+        "h": 16
+      },
+      {
+        "t": "Sicherheit",
+        "w": 62,
+        "h": 16
+      },
+      {
+        "t": "Kontakt",
+        "w": 47,
+        "h": 16
+      },
+      {
+        "t": "Datenschutz",
+        "w": 77,
+        "h": 16
+      },
+      {
+        "t": "AGB",
+        "w": 27,
+        "h": 16
+      },
+      {
+        "t": "Impressum",
+        "w": 68,
+        "h": 16
+      },
+      {
+        "t": "DE",
+        "w": 16,
+        "h": 18
+      },
+      {
+        "t": "EN",
+        "w": 16,
+        "h": 18
+      },
+      {
+        "t": "FR",
+        "w": 15,
+        "h": 18
+      },
+      {
+        "t": "IT",
+        "w": 11,
+        "h": 18
+      }
+    ],
+    "arbRadius": {
+      "11px": 1,
+      "22px": 20,
+      "6px": 5,
+      "24px": 6,
+      "13px": 5
+    }
+  }
+}

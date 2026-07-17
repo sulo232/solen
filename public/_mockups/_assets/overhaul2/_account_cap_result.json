@@ -1,0 +1,28 @@
+{
+  "applied": {
+    "hair": 13,
+    "selected": 0,
+    "rhythm": 0,
+    "radius": 0
+  },
+  "skeleton": false,
+  "loginUrl": "http://localhost:3000/de/profile",
+  "navUrl": "http://localhost:3000/de/profile",
+  "bodyInfo": {
+    "text": "Zum Inhalt springen\nKonto\n2\nQ\n\nQA Test\n\nhiroseseiju@proton.me\n\nAktivität\nTermine\n0 anstehend\nFavoriten\n3\nTreue\nMehr\nHaarprofil\nLooks\nKonsultationsformulare\nFreunde einladen\nCHF 10\nProfil & Einstellungen\nHilfe & Support\nAbmelden",
+    "h": 928,
+    "url": "http://localhost:3000/de/profile"
+  },
+  "preBreaks": {
+    "blackSelected": [],
+    "warmHair": 13,
+    "arbitraryRadii": {},
+    "focusRings": [],
+    "subTouch": [
+      {
+        "h": 40,
+        "text": "2"
+      }
+    ]
+  }
+}
