@@ -34,7 +34,7 @@ find + write everything down. "What do you think, give me your idea."
 - [x] 9. Value store frontend (loyalty stamps, vouchers, gift cards, credits, referrals)
 - [x] 10. Inspo / discovery feed (feed, saved, boards, look detail)
 - [x] Synthesize all 10 into _docs/FRONTEND.md + the journey graph + connections table.
-- [ ] Wire a pointer (like backend-doc-pointer) so new sessions load it. (after owner nod on the doc)
+- [x] Wire a pointer: frontend-doc-pointer.py (mirrors backend-doc-pointer; UserPromptSubmit + PreToolUse Edit/Write/MultiEdit; self-tested 5/5, flow-prompt+customer-file fire, style-prompt+backend+dashboard silent). Fires ONCE/session.
 
 ## Build method
 One read-only subagent per flow reads the real route + components + wired data/APIs + _plans/
