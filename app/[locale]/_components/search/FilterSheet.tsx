@@ -367,7 +367,9 @@ function SheetChip({
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        "inline-flex min-h-[36px] items-center gap-1.5 rounded-pill px-3.5",
+        // mockup-ok: 44px a11y-floor contract row (interactive controls >= h-11); matches the
+        // top-level filter chips raised in SearchTemplate this pass, so in-modal chips stay consistent.
+        "inline-flex min-h-[44px] items-center gap-1.5 rounded-pill px-3.5",
         "font-body text-[14px] font-medium leading-none",
         "transition-[background-color,border-color,color,transform] duration-150 ease-glide",
         "active:scale-[0.97] active:duration-[80ms]",
@@ -446,7 +448,8 @@ function FilterSheetContent({
                   onClick={() => onSortChange(opt.value)}
                   aria-pressed={isActive}
                   className={cn(
-                    "relative flex-1 whitespace-nowrap rounded-[9px] px-2 py-2 text-center",
+                    // mockup-ok: 44px a11y-floor contract row; sort segment raised to min-h-[44px].
+                    "relative flex min-h-[44px] flex-1 items-center justify-center whitespace-nowrap rounded-[9px] px-2 text-center",
                     "font-body text-[12.5px] leading-none",
                     "transition-colors duration-150 ease-glide",
                     "focus-visible:outline-none",
