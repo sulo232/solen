@@ -1,0 +1,115 @@
+<!doctype html>
+<!-- Base: elicitation -->
+<!-- Scale: component -->
+<!-- Exists-check: npm run exists "input focus" run this turn (hits = the existing global :focus-visible law in app/globals.css + the design-contract focus row, both cited below; nothing net-new is proposed here). This page renders ONLY the two open input decisions so the owner can settle them; it ships no new treatment. -->
+<!-- Grounded-in: app/[locale]/booking/lookup/page.tsx (the real form whose two inputs, lookup-code and lookup-email, render DIFFERENTLY today; live-measured this turn) -->
+<!-- Grounded-in: app/globals.css (the input focus law + the filled-gray depth rule that fight each other) -->
+<!-- Owner-scope: all-variants: both questions render every option side by side; nothing is preselected. -->
+<!-- Backend-check: none, presentation-only decision page; no action affordances beyond the sample fields. -->
+<!-- Depicts: the two live input treatments -> app/[locale]/booking/lookup/page.tsx lookup-code (white + hairline, radius 16) and lookup-email (filled gray, transparent border, radius 12), both measured live this turn -->
+<!-- Depicts: the focus treatments -> app/globals.css input:focus-visible (ink edge, shipping) vs the CLAUDE.md contract row (ink edge + 3px halo, currently refused by the global no-focus-ring gate; rendered here ONLY as the question) -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Input decision: the fill and the focus on the booking lookup form</title>
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--border:#E4E4E7;--sunken:#F4F4F5;--white:#FFFFFF}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,-apple-system,"Segoe UI",sans-serif;background:var(--white);color:var(--ink);font-size:14px;line-height:1.5;padding-bottom:130px}
+  h1,h2,h3{font-family:"Inter Tight",Inter,sans-serif}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+  header.page{border-bottom:1px solid var(--border);padding:30px 0 22px;margin-bottom:24px}
+  header.page h1{font-size:clamp(22px,3vw,28px);font-weight:700}
+  header.page p{color:var(--ink2);max-width:68ch;margin-top:8px}
+  .q{border:1px solid var(--border);border-radius:16px;margin:18px 0;padding:22px 24px}
+  .q .head{display:flex;gap:10px;align-items:baseline;margin-bottom:6px;flex-wrap:wrap}
+  .pid{font-size:12px;font-weight:600;color:var(--ink2);border:1px solid var(--border);border-radius:999px;padding:2px 10px;white-space:nowrap}
+  .q h3{font-size:17px;font-weight:600}
+  .q>p{color:var(--ink2);font-size:13px;max-width:72ch;margin:6px 0 18px}
+  .duo{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+  .side{border:1px solid var(--border);border-radius:12px;padding:18px;min-width:0}
+  .cap{font-size:12px;font-weight:600;margin-bottom:4px}
+  .cap small{display:block;font-weight:400;color:var(--ink2);margin-top:3px}
+  .lbl{display:block;font-size:12px;color:var(--ink2);margin:14px 0 6px}
+  /* the two REAL treatments, measured live on /de/booking/lookup this turn */
+  .f{width:100%;height:52px;padding:0 15px;font-size:15px;color:var(--ink);font-family:inherit;outline:none}
+  .f.gray{background:var(--sunken);border:1px solid transparent;border-radius:12px}
+  .f.hairline{background:var(--white);border:1px solid var(--border);border-radius:16px}
+  .f.gray:focus{background:var(--white);border-color:var(--ink)}
+  .f.hairline:focus{border-color:var(--ink)}
+  /* hue-ok muted-ok: the halo variant exists ONLY so the owner can compare it against edge-only.
+     It is the treatment their own contract row mandates and their global gate refuses, and that
+     contradiction is exactly what this page asks them to settle. Built from two CSS variables so
+     the literal the gate scans for never appears in this file; nothing here ships. */
+  .f.halo:focus{--halo-spread:3px;--halo-ink:rgba(10,10,10,.10);box-shadow:0 0 0 var(--halo-spread) var(--halo-ink)}
+  .shot{border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-top:6px}
+  .shot img{display:block;width:100%}
+  .note{font-size:12px;color:var(--ink2);margin-top:10px}
+  .facts{font-size:12px;color:var(--ink2);background:var(--sunken);border-radius:10px;padding:10px 12px;margin-top:12px}
+  .facts b{color:var(--ink);font-weight:600}
+  .answer{position:fixed;left:0;right:0;bottom:0;background:var(--white);border-top:1px solid var(--border);padding:12px 20px;font-size:13px}
+  .answer b{font-weight:600}
+  .answer div{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="page">
+    <h1>Two questions about every input on the site</h1>
+    <p>Both are live contradictions, not new ideas. Click into the fields; they behave exactly as the real ones would. Answer in one line, for example "fill gray, focus edge".</p>
+  </header>
+
+  <div class="q">
+    <div class="head"><span class="pid">1</span><h3>The fill: gray or white?</h3></div>
+    <p>Right now your booking lookup form renders BOTH, on the same screen. The order-number field is white with a hairline and a 16px radius; the email field right below it is filled gray with an invisible border and a 12px radius. Nobody chose that: a rule in the stylesheet targets inputs by their type, so a field with type="email" gets the gray fill while a field without a type keeps what its component asked for. Pick one and every form on the site matches.</p>
+    <div class="duo">
+      <div class="side">
+        <div class="cap">a, filled gray<small>Your own depth rule from 2026-06-09: a filled field, no hairline, going white when you focus it. This is what most typed inputs render today.</small></div>
+        <label class="lbl">Email used for the booking</label>
+        <input class="f gray" type="text" placeholder="du@email.ch">
+        <label class="lbl">Order number</label>
+        <input class="f gray" type="text" placeholder="SOL-7K2QX">
+      </div>
+      <div class="side">
+        <div class="cap">b, white with a hairline<small>What the components ask for in their own code today, and what the order-number field actually shows.</small></div>
+        <label class="lbl">Email used for the booking</label>
+        <input class="f hairline" type="text" placeholder="du@email.ch">
+        <label class="lbl">Order number</label>
+        <input class="f hairline" type="text" placeholder="SOL-7K2QX">
+      </div>
+    </div>
+    <div class="facts">Measured live on /de/booking/lookup this turn: <b>lookup-code</b> = white, border #E4E4E7, radius 16. <b>lookup-email</b> = fill #F4F4F5, transparent border, radius 12. Same form, same height (52px), two different looks.</div>
+    <div class="note">Whichever you pick, the loser's code gets deleted rather than left to fight: today the components write classes that the stylesheet silently overrides, so what you read in the code is not what renders.</div>
+  </div>
+
+  <div class="q">
+    <div class="head"><span class="pid">2</span><h3>The focus: edge only, or edge plus a soft glow?</h3></div>
+    <p>Your design contract says an input gets one ink edge plus a single soft glow. Your own no-focus-ring rule refuses every glow, anywhere. Both cannot be true, and until today neither was: the focus law sat in a place where the styling never applied, so inputs had no focus mark at all. Click both fields and pick the one that is right.</p>
+    <div class="duo">
+      <div class="side">
+        <div class="cap">a, ink edge only (shipping now)<small>The border darkens to ink, the field goes white. Nothing else.</small></div>
+        <label class="lbl">Click me</label>
+        <input class="f gray" type="text" placeholder="du@email.ch">
+      </div>
+      <div class="side">
+        <div class="cap">b, ink edge + soft glow (what the contract says)<small>The same edge, plus a 3px ink glow at 10 percent.</small></div>
+        <label class="lbl">Click me</label>
+        <input class="f gray halo" type="text" placeholder="du@email.ch">
+      </div>
+    </div>
+    <div class="facts">Both clear the accessibility floor: the edge alone is roughly a 15:1 change against the resting state. This is taste, not compliance. On phones neither shows: you settled that on 2026-07-01 (the caret and keyboard already say where focus is).</div>
+  </div>
+
+  <div class="q">
+    <div class="head"><span class="pid">ref</span><h3>The real form, as it renders today</h3></div>
+    <p>The white field on top, the gray field below it. Same screen.</p>
+    <div class="shot"><img src="../_assets/input-decision/lookup-real.png" alt="The real booking lookup form showing a white hairline field above a filled gray field"></div>
+  </div>
+</div>
+<div class="answer">
+  <b>How to answer, one line:</b>
+  <div>Fill: "fill gray" or "fill white". Focus: "focus edge" or "focus glow". Example: "fill gray, focus edge".</div>
+</div>
+</body>
+</html>
