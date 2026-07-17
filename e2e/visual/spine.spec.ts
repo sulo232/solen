@@ -59,3 +59,62 @@ test.describe("conversion spine visual regression", () => {
     });
   }
 });
+
+/**
+ * Solen - target-size (WCAG 2.5.8) on the conversion spine, via @axe-core/playwright.
+ *
+ * The 44px touch-target floor (CLAUDE.md design contract, `icon-button: h-11 w-11`)
+ * is convention + eyeballing today. axe-core ships a "target-size" rule that checks
+ * WCAG 2.5.8 (interactive targets >= 24x24 CSS px, axe-core's floor; Solen's own
+ * 44px convention is stricter). This block runs it over the same ROUTES this file
+ * already walks.
+ *
+ * NOT WIRED YET: @axe-core/playwright is not a dependency in this repo (confirmed via
+ * `grep axe package.json` - absent; `axe-core` itself is present only as someone else's
+ * transitive dependency, not usable directly for this). Per the task brief, this was
+ * deliberately NOT installed. The block below dynamically imports the package and
+ * SKIPS with a clear reason (naming the install command) when it is missing, so it is
+ * trivially enable-able: the day a maintainer runs
+ *
+ *   npm install --save-dev @axe-core/playwright
+ *
+ * these tests start actually running the target-size audit with zero further code
+ * changes. Verified against the real published package (registry inspection, not
+ * memory): `AxeBuilder` is both the default and a named export, constructed as
+ * `new AxeBuilder({ page })`, with `.withRules(rules)` and `.analyze(): Promise<AxeResults>`.
+ */
+test.describe("conversion spine target-size (WCAG 2.5.8)", () => {
+  test.describe.configure({ timeout: 120_000 });
+
+  for (const r of ROUTES) {
+    test(`${r.name} target-size`, async ({ page }, testInfo) => {
+      let AxeBuilder: new (opts: { page: Page }) => { withRules(rules: string | string[]): any; analyze(): Promise<any> };
+      try {
+        // @ts-expect-error - @axe-core/playwright is an optional dep, not installed (see
+        // block comment above). Once `npm install --save-dev @axe-core/playwright` runs,
+        // this directive itself starts erroring as "unused" - that is the enable signal,
+        // delete this line and the check is live.
+        ({ default: AxeBuilder } = await import("@axe-core/playwright"));
+      } catch {
+        testInfo.skip(
+          true,
+          "@axe-core/playwright is not installed - run `npm install --save-dev @axe-core/playwright` to enable this check",
+        );
+        return;
+      }
+
+      await page.goto(r.path, { waitUntil: "commit", timeout: 90_000 });
+      await page.waitForLoadState("domcontentloaded");
+      await page.waitForTimeout(4000);
+      await dismissCookies(page);
+      await page.waitForTimeout(600);
+
+      const results = await new AxeBuilder({ page }).withRules(["target-size"]).analyze();
+      const violations = results.violations.filter((v: { id: string }) => v.id === "target-size");
+
+      // eslint-disable-next-line no-console
+      console.log(`[target-size] ${r.name}: ${violations.length} violation group(s)`);
+      expect(violations, JSON.stringify(violations, null, 2)).toHaveLength(0);
+    });
+  }
+});
