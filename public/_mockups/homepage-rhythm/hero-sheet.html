@@ -1,0 +1,133 @@
+<!doctype html>
+<!-- Base: capture s-1-today.png -->
+<!-- Scale: full-page -->
+<!-- german-ok: the frames are live captures of the real product, so they carry its own German UI; every label and sentence written by me on this page is English. -->
+<!-- Exists-check: npm run exists hero AND npm run exists "bottom sheet" both run this turn. Hits: Hero.tsx (the surface probed, reused not rebuilt), HeroDuo / HeroHeadline / HeroSpotlight, SalonHero / CategoryHero / CategoryHeroCarousel (other routes), Sheet.tsx primitive + FilterBottomSheet (other sheets, untouched). Graveyard hits on the keyword: two hero treatments the owner killed by name, neither of which is proposed or depicted here. Nothing new is created: round 3 of the SAME probe moves the EXISTING FeedZone panel's own margin, after the owner said the point is WHERE THE SHEET STARTS, not where the text inside it sits. RATIONALE gap G3. -->
+<!-- Grounded-in: app/[locale]/_components/homepage/SectionHeader.tsx (line 307 "mt-12 md:mt-8": the FeedZone panel's margin, the ONE lever that moves the sheet's rounded edge; the file's own V3-D170b comment records the owner making this exact correction on 2026-05-26) -->
+<!-- Grounded-in: app/[locale]/_components/homepage/Hero.tsx (owns the top gap, the white between the logo and the headline) -->
+<!-- Owner-scope: confirmed: owner asked for the card to stay high, around 40, for the bottom sheet to START lower with a bigger gap, and for that gap to balance the top gap. All four cuts move exactly that one value; nothing preselected. -->
+<!-- Backend-check: none, spacing-only probe over an already-rendered page; no data, no new affordance. -->
+<!-- Depicts: the real homepage first screen -> app/[locale]/page.tsx captured live at 390x844 four times, only the FeedZone panel's margin-top overridden; every pixel is the live page. No card treatment is proposed or altered anywhere on this page: the salon cards inside the frames are whatever the live page renders. Measured this turn: sheet gap 56 / 72 / 88 / 104 against a top gap of 67, card centre 40.6 in all four. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Homepage: where the bottom sheet starts</title>
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--border:#E4E4E7;--sunken:#F4F4F5;--white:#FFFFFF}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,-apple-system,"Segoe UI",sans-serif;background:var(--white);color:var(--ink);font-size:14px;line-height:1.5;padding-bottom:120px}
+  h1,h2,h3{font-family:"Inter Tight",Inter,sans-serif}
+  .wrap{max-width:1320px;margin:0 auto;padding:0 20px}
+  header.page{border-bottom:1px solid var(--border);padding:30px 0 22px;margin-bottom:22px}
+  header.page h1{font-size:clamp(22px,3vw,28px);font-weight:700}
+  header.page p{color:var(--ink2);max-width:78ch;margin-top:8px}
+  .finding{border:1px solid var(--border);border-radius:16px;padding:20px 22px;margin-bottom:22px}
+  .finding h3{font-size:16px;font-weight:600;margin-bottom:8px}
+  .finding p{color:var(--ink2);font-size:13px;max-width:80ch}
+  .finding p + p{margin-top:8px}
+  .finding b{color:var(--ink);font-weight:600}
+  .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+  .col{border:1px solid var(--border);border-radius:14px;padding:12px;min-width:0}
+  .col.pick{border-color:var(--ink)}
+  .cap{font-size:13px;font-weight:600;margin-bottom:2px}
+  .cap small{display:block;font-weight:400;color:var(--ink2);margin-top:3px;line-height:1.45;font-size:12px}
+  .tag{display:inline-block;font-size:11px;font-weight:600;background:var(--sunken);border-radius:999px;padding:2px 8px;margin-left:5px}
+  .col.pick .tag{background:var(--ink);color:var(--white)}
+  /* the frame IS one phone screen: 390x844 */
+  .screen{position:relative;margin-top:10px;border:1px solid var(--border);border-radius:14px;overflow:hidden;width:100%;aspect-ratio:390/844;background:var(--white)}
+  .screen img{display:block;width:100%}
+  /* the two pieces of white being compared, tinted in the locked accent */
+  .band{position:absolute;left:0;right:0;background:rgba(39,110,241,.13);border-top:1px solid rgba(39,110,241,.5);border-bottom:1px solid rgba(39,110,241,.5)}
+  .band span{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:10px;font-weight:600;color:var(--ink);background:rgba(255,255,255,.94);border-radius:4px;padding:0 4px}
+  .edge{position:absolute;left:0;right:0;border-top:2px solid var(--ink)}
+  .edge span{position:absolute;left:6px;top:3px;font-size:9px;font-weight:600;color:var(--white);background:var(--ink);border-radius:4px;padding:1px 5px}
+  .scrollnote{margin-top:8px;font-size:11.5px;color:var(--ink2)}
+  table{border-collapse:collapse;margin-top:12px;font-size:12px;width:100%;max-width:740px}
+  th,td{text-align:left;padding:5px 10px;border-bottom:1px solid var(--border)}
+  th{color:var(--ink2);font-weight:500}
+  td.n{font-variant-numeric:tabular-nums}
+  tr.pickrow td{font-weight:600}
+  .answer{position:fixed;left:0;right:0;bottom:0;background:var(--white);border-top:1px solid var(--border);padding:12px 20px;font-size:13px}
+  .answer b{font-weight:600}
+  .answer div{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="page">
+    <h1>Where the bottom sheet starts</h1>
+    <p>The black line marks the sheet's rounded top edge, the thing that actually moves. The tinted bands are the two pieces of white you are balancing: the <b>top gap</b>, logo to headline, and the <b>sheet gap</b>, search card to the sheet's edge. Every number is measured. The card stays at 40.6 percent in all four.</p>
+  </header>
+
+  <div class="finding">
+    <h3>You were right, and you have corrected me on this exact thing before</h3>
+    <p>My last cut padded the <b>inside</b> of the panel, so the text dropped while the sheet's edge never moved. Your own file records you catching that same mistake on 2026-05-26, in almost the same words: "u jst lowered the text instead of the acc box". The lever is the panel's own margin, SectionHeader.tsx line 307, and that is what these four cuts move.</p>
+    <p>Measured: the sheet starts <b>56</b> below the search card while the top gap is <b>67</b>, so the sheet edge is the tighter of the two. That is the imbalance you are seeing.</p>
+    <p>One piece of history worth knowing before you pick: <b>80 was already tried and rejected</b>. On 2026-05-27 you asked for it lower twice, 48 to 64 to 80, then called the result unbalanced, and it was cut back to today's 48 because 80px of air above an 18px section heading dominated it. Cut 3 below is that exact rejected value, marked so you are not walked back into it blind.</p>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="cap">1, today<span class="tag">sheet gap 56</span><small>The sheet starts at 62% of the screen. Tighter than the top gap, which is the thing that reads off. Page 4281px.</small></div>
+      <div class="screen">
+        <img src="../_assets/hero/s-1-today.png" alt="The homepage today, with the bottom sheet starting 56px below the search card">
+        <div class="band" style="top:6.8%;height:7.9%"><span>67</span></div>
+        <div class="band" style="top:55.4%;height:6.6%"><span>56</span></div>
+        <div class="edge" style="top:62%"><span>sheet starts</span></div>
+      </div>
+      <div class="scrollnote">67 above, 56 below. The sheet is the tight one.</div>
+    </div>
+
+    <div class="col pick">
+      <div class="cap">2, sheet drops 16<span class="tag">sheet gap 72</span><small>The sheet's edge lands at 64%, and its gap of 72 now matches the top gap of 67 as closely as the 4pt grid allows. Both category rows still show, the second one cut by the fold. Page 4297px.</small></div>
+      <div class="screen">
+        <img src="../_assets/hero/s-2-mt16.png" alt="The homepage with the bottom sheet dropped so it starts 72px below the search card, matching the top gap">
+        <div class="band" style="top:6.8%;height:7.9%"><span>67</span></div>
+        <div class="band" style="top:55.4%;height:8.5%"><span>72</span></div>
+        <div class="edge" style="top:63.9%"><span>sheet starts</span></div>
+      </div>
+      <div class="scrollnote">67 above, 72 below: balanced, and bigger than today.</div>
+    </div>
+
+    <div class="col">
+      <div class="cap">3, sheet drops 32<span class="tag">sheet gap 88</span><small>This is the 80px margin you rejected on 2026-05-27 as unbalanced. The sheet edge falls to 66% and the air above the heading inside it grows to 105. Page 4313px.</small></div>
+      <div class="screen">
+        <img src="../_assets/hero/s-3-mt20.png" alt="The homepage with the bottom sheet dropped 32 further, the value rejected in May as unbalanced">
+        <div class="band" style="top:6.8%;height:7.9%"><span>67</span></div>
+        <div class="band" style="top:55.4%;height:10.4%"><span>88</span></div>
+        <div class="edge" style="top:65.8%"><span>sheet starts</span></div>
+      </div>
+      <div class="scrollnote">Previously rejected. Bottom band now a third bigger than the top.</div>
+    </div>
+
+    <div class="col">
+      <div class="cap">4, sheet drops 48<span class="tag">sheet gap 104</span><small>The most air under the card. The sheet starts at 68% and the bands are now clearly unequal, 67 against 104. Page 4329px.</small></div>
+      <div class="screen">
+        <img src="../_assets/hero/s-4-mt24.png" alt="The homepage with the bottom sheet dropped 48 further, the biggest gap">
+        <div class="band" style="top:6.8%;height:7.9%"><span>67</span></div>
+        <div class="band" style="top:55.4%;height:12.3%"><span>104</span></div>
+        <div class="edge" style="top:67.7%"><span>sheet starts</span></div>
+      </div>
+      <div class="scrollnote">Goes past the value you already rejected once.</div>
+    </div>
+  </div>
+
+  <div class="finding" style="margin-top:22px">
+    <h3>The numbers, measured live this turn</h3>
+    <table>
+      <tr><th>Cut</th><th>Panel margin</th><th>Top gap</th><th>Sheet gap</th><th>Sheet starts</th><th>Card centre</th><th>Category cards</th><th>Page</th></tr>
+      <tr><td>1, today</td><td class="n">48</td><td class="n">67</td><td class="n">56</td><td class="n">62.0%</td><td class="n">40.6%</td><td class="n">68%</td><td class="n">4281</td></tr>
+      <tr class="pickrow"><td>2, drops 16</td><td class="n">64</td><td class="n">67</td><td class="n">72</td><td class="n">63.9%</td><td class="n">40.6%</td><td class="n">70%</td><td class="n">4297</td></tr>
+      <tr><td>3, drops 32, rejected 2026-05-27</td><td class="n">80</td><td class="n">67</td><td class="n">88</td><td class="n">65.8%</td><td class="n">40.6%</td><td class="n">72%</td><td class="n">4313</td></tr>
+      <tr><td>4, drops 48</td><td class="n">96</td><td class="n">67</td><td class="n">104</td><td class="n">67.7%</td><td class="n">40.6%</td><td class="n">74%</td><td class="n">4329</td></tr>
+    </table>
+    <p style="margin-top:12px">Why 2 is marked: it is the only cut that is bigger than today AND lands within 5px of the top gap, and it stops short of the 80 you already threw out once. The card never moves, both category rows still show with the second one cut by the fold, and the whole change costs 16px of page height.</p>
+  </div>
+</div>
+<div class="answer">
+  <b>How to answer, one line:</b>
+  <div>"sheet 2" for balanced with the top gap, "sheet 3" or "sheet 4" for more air, past the value you rejected in May, or "sheet 1" to leave it. Any number works too, for example "sheet 80".</div>
+</div>
+</body>
+</html>
