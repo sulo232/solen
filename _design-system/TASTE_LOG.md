@@ -334,3 +334,15 @@ Reading logged: "all approves" = build all twelve, INCLUDING ig5's candidate sym
 | ig12 dp-progress-motion-is-status-signal | APPROVED | the one live determinate bar (discovery import) gains an activity signal so a stall reads as stalled, not as done-ish |
 
 Full per-principle reasoning + citations: _design-system/research/IG_PRINCIPLES_VERDICTS_2026-07-16.md.
+
+## 2026-07-17, inputs settled + the rhythm direction
+
+Owner verbatim: "for input decision both a and b2 was the problem i hated that sh 2 continue 3 breathing room is good but those are too bug of a gap"
+
+Reading logged (stated back to the owner in the same turn so a misread surfaces now): for the input decision the answer is a on BOTH questions, and 2b (the ink edge PLUS soft glow) is the thing they hated. Consistent with the standing record: they killed focus rings twice already, furious, 2026-07-01 and 2026-07-02 ("both has focus ring on open").
+
+| id | decision | what it means |
+|---|---|---|
+| input fill | **a, FILLED GRAY** | Every input is the filled field: #F4F4F5, no hairline, radius 12, going white on focus. The white + #E4E4E7 hairline treatment loses. It was never a decision, it was a leak: components write border-s-border + bg-white classes that the type-targeted base rule silently overrides, which is why /de/booking/lookup shipped BOTH looks on one screen (lookup-code white/16, lookup-email gray/12, measured live 2026-07-17). The dead classes get deleted, not left to fight. |
+| input focus | **a, INK EDGE ONLY** | Border darkens to ink, field goes white, nothing else. The soft glow is DEAD, by name, third time. The CLAUDE.md contract row that still writes "ink edge + a single soft halo" is now WRONG and must be corrected to edge-only; the global no-focus-ring gate was right and the doc was stale. |
+| page rhythm | **direction: breathe, but much tighter than probed** | "breathing room is good but those are too big of a gap": flat-8 (variant a) is rejected, the page does need air, but +56 (b) and +72 (c) overshot. Re-probe at tighter values. Note the arithmetic the owner is circling: their OWN locked section rhythm is 32 (LOCKFILE 442-450) and the homepage renders 8, so "tighter breathing room" lands almost exactly on the law that already exists. |
