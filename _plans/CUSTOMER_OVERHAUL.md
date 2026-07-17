@@ -84,14 +84,21 @@ not silently dropped.
   seed-data blocked live). Commits 2e3c97c06 + 336844637. Locked ink exceptions untouched: date/slot
   picker, check-badge discs, the one primary commit CTA per screen.
 
-## Remaining audit items , per-component JUDGMENT, not blind sweeps (owner call each)
-- Sub-44 touch targets: mixed. Filter pills (33-38px) -> h-11 is a defensible a11y-floor bump, but
-  the language switcher (16px) and inline chevron links (20px) need real per-control redesign, not a
-  blanket height. Blind-bumping distorts layout (the input-sweep lesson).
+- [x] Touch targets to the 44px a11y floor (pinned contract beats the component convenience height):
+  TabPill primitive sm/md -> h-11 (lifts every category strip incl. the salon page), booking category
+  strip + its quick-jump icon button, search filter/sort chips + filter icon button, and the in-modal
+  FilterSheet chips + sort segment. Live-measured 44px on booking/salon/search; selected gray state
+  intact; visual sanity check passed (not chunky); strips still scroll. Commits 5f2221bf2 + 898915276.
+  LEFT (need per-control redesign, not a height bump): language switcher (16px), see-all chevron links
+  (20px), date/slot picker (locked ink).
+
+## Remaining audit items , genuine per-component/per-screen JUDGMENT (owner call each, NOT guessed)
 - Arbitrary radii (6/10/11/13/20/22/24px): NOT a blind snap to 16. Some are intentional tokens
-  (card-lg 20, bento 24, sheet 28, pill full, image flush 0). Each needs a per-component check.
-- Small black SECONDARY buttons (Suchen/Karte/Mehr erfahren): a taste call, is each a primary commit
-  (stays ink) or secondary (neutral outline)? Per-screen, not a sweep.
+  (card-lg 20, bento 24, sheet 28, pill full, image flush 0). The hero search fields at 6px sit on a
+  heavily-locked surface. Each needs a per-component intent check.
+- Small black SECONDARY buttons (Suchen/Karte/Mehr erfahren): the contract says ONE primary commit CTA
+  per screen (ink), others neutral, but WHICH button is the primary on a screen with several is a
+  per-screen design call. Guessing it is the documented failure mode of this session.
 
 ## Parked owner picks (from the homepage-rhythm probes this session)
 - Hero search-card position: f (headline 40px, card 52%) marked / e (47%) / d (padding).
