@@ -1,0 +1,75 @@
+<!doctype html>
+<!-- Base: capture public/_mockups/_assets/selectfix/booking-before.png (real live 390x844 capture, real content, category selected) -->
+<!-- Scale: full-page -->
+<!-- Exists-check: npm run exists booking run this turn; mocks NO new component. It shows an EXISTING component (the category-tab strip) rendered on two EXISTING routes (booking, salon page) and corrects the booking instance to match the salon-page instance. Nothing net-new. -->
+<!-- Grounded-in: app/[locale]/salon/[slug]/booking/page.tsx (the booking category-tab strip, whose selected pill renders a BANNED black ink fill, measured rgb(10,10,10)) -->
+<!-- Grounded-in: app/[locale]/salon/[slug]/page.tsx (the salon-page category-tab strip, whose selected pill is the CORRECT gray sunken #F4F4F5, the reference the fix copies) -->
+<!-- Grounded-in: _design-system/LOCKFILE.md + CLAUDE.md design contract (selected/active = gray sunken #F4F4F5 + ink + semibold, NEVER black/ink fill; gate no-black-selected) -->
+<!-- Owner-scope: confirmed: owner pointed directly at this ("on the salon side how it selects, but on booking there's a whole other state"). This corrects booking to the salon-page instance; the fix value is the locked law, not a taste pick. -->
+<!-- Backend-check: none, presentation-only; no data, no new affordance. -->
+<!-- Depicts: the real booking + salon-page category strips captured live at 390x844; the "fixed" frame is the SAME live booking page with only the selected pill recolored to the locked gray-sunken selected state. Measured this turn: booking selected = bg rgb(10,10,10) white weight 400; salon-page selected = bg rgb(244,244,245) ink weight 600. -->
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Booking selected state, made to match the salon page</title>
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--border:#E4E4E7;--sunken:#F4F4F5;--white:#FFFFFF}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,-apple-system,"Segoe UI",sans-serif;background:var(--white);color:var(--ink);font-size:14px;line-height:1.5;padding-bottom:120px}
+  h1,h2,h3{font-family:"Inter Tight",Inter,sans-serif}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 20px}
+  header.page{border-bottom:1px solid var(--border);padding:30px 0 22px;margin-bottom:22px}
+  header.page h1{font-size:clamp(22px,3vw,28px);font-weight:700}
+  header.page p{color:var(--ink2);max-width:78ch;margin-top:8px}
+  header.page b{color:var(--ink);font-weight:600}
+  .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+  .col{border:1px solid var(--border);border-radius:14px;padding:12px;min-width:0}
+  .col.pick{border-color:var(--ink)}
+  .col.ref{background:var(--sunken)}
+  .cap{font-size:13px;font-weight:600;margin-bottom:2px}
+  .cap small{display:block;font-weight:400;color:var(--ink2);margin-top:3px;line-height:1.45;font-size:12px}
+  .tag{display:inline-block;font-size:11px;font-weight:600;background:var(--sunken);border-radius:999px;padding:2px 8px;margin-left:5px}
+  .col.pick .tag{background:var(--ink);color:var(--white)}
+  .col.ref .tag{background:var(--white)}
+  .frame{position:relative;margin-top:10px;border:1px solid var(--border);border-radius:14px;overflow:hidden}
+  .frame img{display:block;width:100%}
+  .scrollnote{margin-top:8px;font-size:11.5px;color:var(--ink2);font-variant-numeric:tabular-nums}
+  .facts{font-size:12px;color:var(--ink2);background:var(--sunken);border-radius:12px;padding:12px 14px;margin-top:18px}
+  .facts b{color:var(--ink);font-weight:600}
+  .answer{position:fixed;left:0;right:0;bottom:0;background:var(--white);border-top:1px solid var(--border);padding:12px 20px;font-size:13px}
+  .answer b{font-weight:600}.answer div{color:var(--ink2)}
+</style></head>
+<body>
+<div class="wrap">
+  <header class="page">
+    <h1>Booking selected state, made to match the salon page</h1>
+    <p>The category strip is the <b>same component</b> on the salon page and in booking, but it renders a <b>different selected state on each</b>. The salon page is right; booking is wrong and breaks a locked rule. This is not a taste call: the design contract says selected = gray sunken, never a black fill, and there is a gate for it. The fix copies the salon page's own instance.</p>
+  </header>
+
+  <div class="row">
+    <div class="col">
+      <div class="cap">Booking, now<span class="tag">black fill</span><small>The selected "Bart" chip is a solid black fill with white text, weight 400. Black selected fills are banned by the contract (gate no-black-selected).</small></div>
+      <div class="frame"><img src="../_assets/selectfix/booking-before.png" alt="Booking services, the selected Bart category as a black filled pill"></div>
+      <div class="scrollnote">Measured: bg rgb(10,10,10), white text, weight 400, height 38.</div>
+    </div>
+    <div class="col pick">
+      <div class="cap">Booking, fixed<span class="tag">gray sunken</span><small>The same chip as the locked selected state: gray sunken fill, ink text, semibold, hairline border. Now identical to the salon page.</small></div>
+      <div class="frame"><img src="../_assets/selectfix/booking-after.png" alt="Booking services, the selected Bart category corrected to the gray sunken selected state"></div>
+      <div class="scrollnote">Target: bg #F4F4F5, ink text, weight 600, 1px #E4E4E7.</div>
+    </div>
+    <div class="col ref">
+      <div class="cap">Salon page, the reference<span class="tag">already correct</span><small>The salon page's category strip already uses the gray sunken selected state. The fix simply makes booking match what this screen already does.</small></div>
+      <div class="frame"><img src="../_assets/selectfix/pdp-reference.png" alt="The salon page services category strip with the correct gray sunken selected state"></div>
+      <div class="scrollnote">Measured: bg rgb(244,244,245), ink text, weight 600.</div>
+    </div>
+  </div>
+
+  <div class="facts">
+    <b>Why this one first:</b> it is the exact thing you pointed at, it is a locked-law break (not an opinion), and the correct answer already exists on another route, so there is nothing to invent. Every frame is your real page at 390x844; the "fixed" frame is the live booking page with only the chip recolored, no redraw.
+  </div>
+</div>
+<div class="answer">
+  <b>How to answer:</b>
+  <div>"apply it" and I change booking's selected chip to the gray sunken state in real code (coder + reviewer), so it matches the salon page. Then I take the same consistency lens to the next real break.</div>
+</div>
+</body></html>
