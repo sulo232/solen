@@ -23,17 +23,17 @@ find + write everything down. "What do you think, give me your idea."
 4. Connections table , the edges: screen X -> screen Y, trigger, data transferred.
 
 ## The flows to map (one read-only discovery agent each; DISCOVERY = parallelizable, allowed)
-- [ ] 1. Discovery & Search (home -> city/category search -> results)
-- [ ] 2. Salon page / PDP (what it shows, interactions, handoff to booking)
-- [ ] 3. Booking flow (services w/ duration + add-ons -> staff -> time -> hair -> cart total -> handoff)
-- [ ] 4. Checkout & Payment (methods, TWINT, vouchers/credits, guest, handoff to confirmation)
-- [ ] 5. Confirmation & post-booking (confirmation, manage, reschedule, cancel, refund, report, upcharge)
-- [ ] 6. Walk-in & Queue (join -> pay -> queue tracker -> tip)
-- [ ] 7. Reviews & ratings (leave review, photos, stars, salon reply)
-- [ ] 8. Profile & account (hub, bookings, favourites, vouchers, stamps, settings, hair profile)
-- [ ] 9. Value store frontend (loyalty stamps, vouchers, gift cards, credits, referrals)
-- [ ] 10. Inspo / discovery feed (feed, saved, boards, look detail)
-- [ ] Synthesize all 10 into _docs/FRONTEND.md + the journey graph + connections table.
+- [x] 1. Discovery & Search (home -> city/category search -> results)
+- [x] 2. Salon page / PDP (what it shows, interactions, handoff to booking)
+- [x] 3. Booking flow (services w/ duration + add-ons -> staff -> time -> hair -> cart total -> handoff)
+- [x] 4. Checkout & Payment (methods, TWINT, vouchers/credits, guest, handoff to confirmation)
+- [x] 5. Confirmation & post-booking (confirmation, manage, reschedule, cancel, refund, report, upcharge)
+- [x] 6. Walk-in & Queue (join -> pay -> queue tracker -> tip)
+- [x] 7. Reviews & ratings (leave review, photos, stars, salon reply)
+- [x] 8. Profile & account (hub, bookings, favourites, vouchers, stamps, settings, hair profile)
+- [x] 9. Value store frontend (loyalty stamps, vouchers, gift cards, credits, referrals)
+- [x] 10. Inspo / discovery feed (feed, saved, boards, look detail)
+- [x] Synthesize all 10 into _docs/FRONTEND.md + the journey graph + connections table.
 - [ ] Wire a pointer (like backend-doc-pointer) so new sessions load it. (after owner nod on the doc)
 
 ## Build method
