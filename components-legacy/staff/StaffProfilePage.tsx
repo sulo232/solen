@@ -284,7 +284,8 @@ export default function StaffProfilePage({
                 type="button"
                 onClick={() => goTo(t)}
                 className={`shrink-0 rounded-full px-4 py-2 font-heading text-[13px] font-semibold transition-colors ${
-                  on ? "bg-s-ink text-white" : "border border-s-border text-s-ink hover:border-s-ink/25"
+                  // mockup-ok: locked selected-state contract (CLAUDE.md design contract, gate no-black-selected), gray sunken, never ink fill
+                  on ? "bg-s-bg-sunken text-s-ink font-semibold border border-s-border" : "border border-s-border text-s-ink hover:border-s-ink/25"
                 }`}
               >
                 {TAB_LABEL[t]}

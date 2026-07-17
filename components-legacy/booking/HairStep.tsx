@@ -41,7 +41,8 @@ function PillGroup({
               onClick={() => onSelect(on ? "" : o.value)}
               aria-pressed={on}
               className={`rounded-full border px-4 py-2 text-[13.5px] font-medium transition-colors duration-150 ${
-                on ? "border-s-ink bg-s-ink text-white" : "border-s-border bg-white text-s-ink hover:border-s-ink/30"
+                // mockup-ok: locked selected-state contract (CLAUDE.md design contract, gate no-black-selected), gray sunken, never ink fill
+                on ? "border-s-border bg-s-bg-sunken text-s-ink font-semibold" : "border-s-border bg-white text-s-ink hover:border-s-ink/30"
               }`}
             >
               {o.label}

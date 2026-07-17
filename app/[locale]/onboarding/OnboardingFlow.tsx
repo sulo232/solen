@@ -168,7 +168,10 @@ export default function OnboardingFlow({ locale, redirect, customerPreferences }
               <button key={o.value} type="button"
                 onClick={() => setSingle((s) => ({ ...s, [step.field]: o.value }))}
                 aria-pressed={on}
-                className={`h-[46px] px-5 rounded-pill text-[14.5px] font-medium transition-colors ${on ? "bg-s-ink text-white" : "border border-s-border bg-white text-s-ink hover:bg-s-bg-sunken"}`}>
+                className={`h-[46px] px-5 rounded-pill text-[14.5px] font-medium transition-colors ${
+                  // mockup-ok: locked selected-state contract (CLAUDE.md design contract, gate no-black-selected), gray sunken, never ink fill
+                  on ? "bg-s-bg-sunken text-s-ink font-semibold border border-s-border" : "border border-s-border bg-white text-s-ink hover:bg-s-bg-sunken"
+                }`}>
                 {o.label}
               </button>
             );
