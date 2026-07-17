@@ -360,7 +360,15 @@ export function SearchBar() {
             // extra mt-4 (16px) stacked on the 12px gap = 28px, so the CTA sat
             // unbalanced/low vs the even 12px input rhythm. mt-0 lets the gap-3
             // carry it = uniform 12px. Desktop unchanged (md:mt-0 already set).
-            className="font-heading shrink-0 mt-0 rounded-[13px] md:rounded-full border-0 bg-s-ink h-12 px-6 text-[15px] font-bold text-white transition-[colors,transform] duration-200 ease-glide hover:bg-black active:scale-[0.97] active:duration-[80ms] md:mt-0 md:h-12 md:py-0 md:px-6 tracking-[-0.01em]"
+            // mockup-ok: geometry fix (LOCKFILE DS-4 nested-radius formula, 2026-07-17
+            // check-geometry.mjs sweep). Mobile rounded-[13px] -> rounded-[6px], a
+            // mechanical derivation, not a design choice: this button sits inset by the
+            // morphing container's p-4 (16px) padding inside a 22px-radius card
+            // (borderRadius:22 on mobile, set above); DS-4 = inner = outer - gap =
+            // 22 - 16 = 6, min 4. 13px put the corner gap ~41% wider on the diagonal
+            // than the flat edge (the "amateur tell" the geometry research names). No
+            // token in the radius ladder matches 6px exactly, so this stays arbitrary.
+            className="font-heading shrink-0 mt-0 rounded-[6px] md:rounded-full border-0 bg-s-ink h-12 px-6 text-[15px] font-bold text-white transition-[colors,transform] duration-200 ease-glide hover:bg-black active:scale-[0.97] active:duration-[80ms] md:mt-0 md:h-12 md:py-0 md:px-6 tracking-[-0.01em]"
           >
             {/* V3-D178 (2026-05-26, council item #5): "Solen durchsuchen" →
                 "Termine finden". Rhetorical echo with the H1 ("Termin in
@@ -663,7 +671,15 @@ function CollapsedRow({
         // by 9px. Reverted to h-12 (~Fresha-exact 48px). px-5 + rounded-2xl
         // stay (those measurements were correct).
         // 2026-06-29 (owner + council): drop the gray fill , white + 1px hairline reads cleaner.
-        "rounded-[13px] bg-white border border-s-border h-[46px] px-[14px]",
+        // mockup-ok: geometry fix (LOCKFILE DS-4 nested-radius formula, 2026-07-17
+        // check-geometry.mjs sweep). rounded-[13px] to rounded-[6px], a mechanical
+        // derivation: this row sits inset by the morphing container's p-4 (16px)
+        // padding inside a 22px-radius card (mobile), DS-4 = inner = outer - gap =
+        // 22 - 16 = 6, min 4. All three CollapsedRow instances (Service/Stadt/Zeit)
+        // share this one component, so they change together per DS-4's own
+        // twin-control rule (styling repeated same-purpose controls differently is
+        // drift). No token in the ladder matches 6px, so this stays arbitrary.
+        "rounded-[6px] bg-white border border-s-border h-[46px] px-[14px]",
         "transition-[background,border-color] duration-150 ease-glide",
         "hover:bg-s-bg-sunken",
         "md:flex-1 md:rounded-full md:border-0 md:p-[11px_22px] md:hover:bg-s-bg-sunken",
