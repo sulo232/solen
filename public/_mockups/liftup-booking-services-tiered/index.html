@@ -7,23 +7,21 @@
 <!-- Base: capture live -->
 <!-- Scale: full-page -->
 <!--
-  Owner-scope: confirmed: approved this turn ("alr approved ... the mockup u made is good"), refined 2026-07-18:
-  chevron inline by the name, price below the description on expand, + centered vertically. This edit adds the
-  owner-required MOTION: the + -> check swap animates (opacity + scale + blur crossfade, glide ease, matching
-  ToggleCircle ENTER_RECIPE) plus a small circle pop; the price total ROLLS up (value-roll) when it changes;
-  the minutes bump (count-bump) when the duration changes. Interaction unchanged: tap the row body to expand,
-  tap the + to select. No before/after toggle.
-  Grounded-in: components-legacy/booking/ServicesStaffStep.tsx (its ToggleCircle add-control, its
-  animate-value-roll price + animate-count-bump count, the fixed total plus Continue bar, the per-service
-  description) restyled to match app/[locale]/_components/salon/SalonServices.tsx (subcategory filter pills ->
-  DURATION-TIER groups Express / Classic / Signature, each a rounded-[24px] border border-s-border bg-white
-  shadow-whisper list, name 15/600 md16 / duration "20 min" text-only no clock / price "from CHF N" bold). The
-  motion values mirror app/globals.css value-roll + count-bump keyframes and ToggleCircle.tsx (opacity+scale+
-  blur, glide). CHECKED all three live this turn. No review count on any row (C11), no blue accent used.
+  Owner-scope: confirmed: approved this turn ("alr approved ... the mockup u made is good"), refined 2026-07-18
+  (chevron by name, price under desc on expand, + centered) + a MOTION correction: keep the + -> check toggle
+  crossfade (owner likes it), but the price + minutes must use the LOCKED opacity+scale+blur ENTER_RECIPE
+  (glide), NOT a slide-up value-roll or a scale count-bump; and the Continue arrow starts as a chevron (arrow
+  without the shaft) that draws its shaft into a full arrow on hover/press. No before/after toggle.
+  Grounded-in: components-legacy/booking/ServicesStaffStep.tsx + ToggleCircle.tsx (the ENTER_RECIPE:
+  opacity 0->1, scale 0.96->1, blur 8px->0, glide ease, per _design-system/MOTION.md, the same recipe the
+  motion-recipe-gate.py enforces for .tsx) restyled to match app/[locale]/_components/salon/SalonServices.tsx
+  (subcategory filter pills -> DURATION-TIER groups Express / Classic / Signature, each a rounded-[24px]
+  border border-s-border bg-white shadow-whisper list, name 15/600 md16 / duration "20 min" text-only no clock
+  / price "from CHF N" bold). CHECKED all three live this turn. No review count on any row (C11), no blue.
   Exists-check: `npm run exists booking` ran this turn. The salon-page tier display (SalonServices.tsx), the
-  booking step (ServicesStaffStep.tsx), and the value-roll / count-bump keyframes (app/globals.css) all exist
-  and render today; REMOVED.md none. NEW = the booking step adopting the salon page's tier-card display; the
-  motion classes already exist in the real component.
+  booking step (ServicesStaffStep.tsx), and the ENTER_RECIPE (ToggleCircle.tsx + MOTION.md) all exist and
+  render today; REMOVED.md none. NEW = the booking step adopting the salon page's tier-card display; the
+  motion recipe already exists in the real component.
   Backend-check: the + = add/remove in the client booking-context cart (real, updates total/duration); the row
   body tap = expand info (client only, no write); Continue = goToStep(next) (real); every name/duration/price/
   description is display of a live service row (real). No fabricated value. Taste-current: no review count on
@@ -92,7 +90,7 @@
   .desc p{font-size:14px;line-height:1.5;padding-right:8px}
   .body .pr{font-size:15px;font-weight:700;color:var(--ink);margin-top:12px;font-variant-numeric:tabular-nums}
 
-  /* ToggleCircle (36px) with the + -> check crossfade (opacity+scale+blur, glide) + a select pop */
+  /* ToggleCircle (36px): the + -> check crossfade IS the ENTER_RECIPE (opacity+scale+blur, glide) + a pop */
   .tog{position:relative;width:36px;height:36px;border-radius:999px;flex:none;border:1px solid var(--hairline);color:var(--ink2);background:#fff;cursor:pointer;padding:0;transition:background-color .3s var(--glide),border-color .3s var(--glide)}
   .tog.on{background:var(--ink);color:#fff;border-color:var(--ink)}
   .tog.pop{animation:tog-pop .42s var(--pop)}
@@ -106,18 +104,21 @@
   /* Fixed bottom bar (total plus Continue) */
   .bar{position:absolute;left:0;right:0;bottom:0;border-top:1px solid var(--hairline);background:#fff;z-index:8}
   .bar .in{max-width:520px;margin:0 auto;padding:12px 16px calc(12px + env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:space-between;gap:14px}
-  .bar .tot{font-size:22px;font-weight:800;letter-spacing:-0.01em;line-height:1;font-variant-numeric:tabular-nums;overflow:hidden}
+  .bar .tot{font-size:22px;font-weight:800;letter-spacing:-0.01em;line-height:1;font-variant-numeric:tabular-nums}
   .bar .meta{font-size:12px;color:var(--ink3);margin-top:6px;display:flex;align-items:center;gap:6px}
   .cont{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;font-size:15px;font-weight:600;border:0;border-radius:14px;padding:14px 22px;font-family:inherit;cursor:pointer;transition:opacity .2s}
   .cont.off{opacity:.45;cursor:not-allowed}
+  /* Continue arrow: chevron head only by default; the shaft DRAWS in on hover/press -> full arrow */
+  .arw{display:inline-flex}
+  .arw .shaft{stroke-dasharray:14;stroke-dashoffset:14;transition:stroke-dashoffset .32s var(--glide)}
+  .cont:hover .arw .shaft,.cont:active .arw .shaft{stroke-dashoffset:0}
+  .arw .head{transition:transform .32s var(--glide)}
+  .cont:hover .arw .head,.cont:active .arw .head{transform:translateX(1.5px)}
 
-  /* Motion vocab (mirrors app/globals.css): price rolls, minutes/count bump */
-  .roll{display:inline-block}
-  .roll.go{animation:value-roll .38s var(--glide)}
-  @keyframes value-roll{0%{transform:translateY(60%);opacity:0}100%{transform:translateY(0);opacity:1}}
-  .bump{display:inline-block}
-  .bump.go{animation:count-bump .4s var(--pop)}
-  @keyframes count-bump{0%{transform:scale(1)}35%{transform:scale(1.4)}100%{transform:scale(1)}}
+  /* Value change = the locked ENTER RECIPE (opacity + scale + blur together, glide) , NOT a slide or bump */
+  .enter{display:inline-block}
+  .enter.go{animation:enterfx .42s var(--glide)}
+  @keyframes enterfx{0%{opacity:0;transform:scale(.96);filter:blur(8px)}100%{opacity:1;transform:scale(1);filter:blur(0)}}
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
   svg{display:block}
 </style>
@@ -235,10 +236,10 @@
     <div class="bar">
       <div class="in">
         <div>
-          <div class="tot"><span class="roll" id="rollv">CHF 65</span></div>
-          <div class="meta"><span data-i="cart"></span><span class="mt" id="metav">1 service, <span class="bump">45</span> min</span></div>
+          <div class="tot"><span class="enter" id="rollv">CHF 65</span></div>
+          <div class="meta"><span data-i="cart"></span><span class="mt" id="metav">1 service, <span class="enter">45</span> min</span></div>
         </div>
-        <button class="cont">Continue<span data-i="arrow"></span></button>
+        <button class="cont">Continue<span class="arw" data-arw></span></button>
       </div>
     </div>
   </div>
@@ -250,18 +251,18 @@ var I={
   chev:'<path d="M6 9l6 6 6-6"/>',
   plus:'<path d="M12 5v14M5 12h14"/>',
   check:'<path d="M20 6 9 17l-5-5"/>',
-  cart:'<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/>',
-  arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>'
+  cart:'<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/>'
 };
 function svg(p,st,w,sw){return '<svg class="lucide" width="'+w+'" height="'+w+'" viewBox="0 0 24 24" fill="none" stroke="'+st+'" stroke-width="'+(sw||2)+'" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>';}
 var ink='#0A0A0A',ink2='#52525B',ink3='#A1A1AA';
 document.querySelector('[data-i=back]').innerHTML=svg(I.back,ink,20);
 document.querySelector('[data-i=close]').innerHTML=svg(I.close,ink,19);
 document.querySelector('[data-i=cart]').innerHTML=svg(I.cart,ink3,13,1.8);
-document.querySelector('[data-i=arrow]').innerHTML=svg(I.arrow,'#fff',16);
 document.querySelectorAll('[data-i=chev]').forEach(function(e){e.innerHTML=svg(I.chev,ink3,17);});
 document.querySelectorAll('.pl-i[data-i=plus]').forEach(function(e){e.innerHTML=svg(I.plus,ink2,17);});
 document.querySelectorAll('.ck-i[data-i=check]').forEach(function(e){e.innerHTML=svg(I.check,'#fff',17,2.5);});
+// Continue arrow: a chevron head (arrow without the shaft) + a shaft that draws in on hover/press
+document.querySelector('[data-arw]').innerHTML='<svg class="lucide" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path class="shaft" d="M4 12h13"/><path class="head" d="M13 6l6 6-6 6"/></svg>';
 
 // restart a keyframe animation by removing + reflowing + re-adding the .go class
 function replay(el){if(!el)return;el.classList.remove('go');void el.offsetWidth;el.classList.add('go');}
@@ -271,7 +272,8 @@ document.querySelectorAll('[data-expand]').forEach(function(btn){
   btn.addEventListener('click',function(){btn.closest('.row').classList.toggle('open');});
 });
 
-// Tap the + -> select / deselect, pop the circle, recompute + animate the bar.
+// Tap the + -> select / deselect, pop the circle, recompute the bar. Price + minutes resolve with the
+// LOCKED enter recipe (opacity + scale + blur), not a slide or a bump.
 var cont=document.querySelector('.cont'), rollv=document.getElementById('rollv'), metav=document.getElementById('metav');
 var prevTotal=65, prevDur=45;
 function recompute(){
@@ -279,10 +281,10 @@ function recompute(){
   sel.forEach(function(r){total+=+r.dataset.price;dur+=+r.dataset.dur;});
   var n=sel.length;
   rollv.textContent='CHF '+total;
-  if(total!==prevTotal) replay(rollv);              // price rolls up on change
+  if(total!==prevTotal) replay(rollv);                       // price resolves in (opacity+scale+blur)
   if(n){
-    metav.innerHTML = n+(n===1?' service, ':' services, ')+'<span class="bump">'+dur+'</span> min';
-    if(dur!==prevDur) replay(metav.querySelector('.bump'));   // minutes bump on change
+    metav.innerHTML = n+(n===1?' service, ':' services, ')+'<span class="enter">'+dur+'</span> min';
+    if(dur!==prevDur) replay(metav.querySelector('.enter')); // minutes resolve in (opacity+scale+blur)
   } else { metav.textContent='No services yet'; }
   cont.classList.toggle('off', n===0);
   prevTotal=total; prevDur=dur;
@@ -290,7 +292,7 @@ function recompute(){
 document.querySelectorAll('[data-tog]').forEach(function(t){
   t.addEventListener('click',function(){
     t.classList.toggle('on');
-    t.classList.remove('pop');void t.offsetWidth;t.classList.add('pop');   // select pop
+    t.classList.remove('pop');void t.offsetWidth;t.classList.add('pop');   // toggle pop (owner likes it)
     t.closest('.row').classList.toggle('sel',t.classList.contains('on'));
     recompute();
   });
