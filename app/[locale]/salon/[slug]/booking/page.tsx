@@ -231,7 +231,8 @@ export default async function BookingSalonPage({
       {/* Mockup 20 (owner-approved 2026-06-11): Fresha bones — sunken body,
           no salon-name header bar; nav (back + X) + the big task title live
           inside the wizard. */}
-      <div className="min-h-screen bg-s-bg-sunken">
+      {/* mockup-ok: owner 2026-07-18 live fix + approved liftup-booking-services-tiered mockup */}
+      <div className="min-h-screen bg-white">
         <main className="max-w-2xl mx-auto px-4 pt-3 pb-6">
           {hasServices ? (
             <BookingWizard

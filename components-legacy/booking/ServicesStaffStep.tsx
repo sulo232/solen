@@ -173,23 +173,6 @@ export default function ServicesStaffStep({
     }
   };
 
-  // idea 1 (motion 22): a dot flies from the tapped + into the cart bar.
-  const flyToCart = (e: React.MouseEvent) => {
-    const target = document.querySelector('[data-cart-anchor]');
-    if (!target) return;
-    const t = target.getBoundingClientRect();
-    const dot = document.createElement('span');
-    dot.className = 'cart-fly-dot';
-    dot.style.left = `${e.clientX - 6}px`;
-    dot.style.top = `${e.clientY - 6}px`;
-    document.body.appendChild(dot);
-    requestAnimationFrame(() => {
-      dot.style.transform = `translate(${t.left + 40 - e.clientX}px, ${t.top + t.height / 2 - e.clientY}px) scale(0.35)`;
-      dot.style.opacity = '0';
-    });
-    window.setTimeout(() => dot.remove(), 560);
-  };
-
   const handleContinue = async () => {
     if (formData.services.length === 0) {
       setError(t('selectAtLeastOne'));
@@ -421,7 +404,7 @@ export default function ServicesStaffStep({
                 initial={{ height: 0, opacity: 0 }} // motion-ok: accordion collapse, not a card entrance
                 animate={{ height: 'auto', opacity: 1 }} // motion-ok: accordion collapse, not a card entrance
                 exit={{ height: 0, opacity: 0 }} // motion-ok: accordion collapse, not a card entrance
-                transition={{ duration: ENTER_DURATION, ease: GLIDE_EASE }}
+                transition={{ duration: 0.18, ease: GLIDE_EASE }} // mockup-ok: owner 2026-07-18 live fix + approved liftup-booking-services-tiered mockup, faster description-expand only
                 className="overflow-hidden"
               >
                 <p className="pr-2 pt-2.5 text-[14px] leading-relaxed text-s-ink-2">{desc}</p>
@@ -440,12 +423,10 @@ export default function ServicesStaffStep({
               // commits to the cart the moment the sheet opens (add-ons then
               // toggle live inside it).
               if (!hasOptions && !inCart) {
-                flyToCart(e);
                 commitSheetSelection(service.id, []);
               }
               setSheetServiceId(service.id);
             } else {
-              if (!inCart) flyToCart(e);
               handleSelectService(service);
             }
           }}
@@ -464,7 +445,7 @@ export default function ServicesStaffStep({
       <div ref={topSentinelRef} aria-hidden className="h-px w-full" />
       {/* Subcategory filter pills, owner-approved mockup public/_mockups/liftup-booking-services-tiered/index.html (2026-07-18) */}
       {filterCategories.length > 0 && (
-        <div className="sticky top-0 z-30 -mx-4 bg-s-bg-sunken px-4 py-2.5">
+        <div className="sticky top-0 z-30 -mx-4 bg-white/90 backdrop-blur border-b border-s-border px-4 py-2.5"> {/* mockup-ok: owner 2026-07-18 live fix + approved liftup-booking-services-tiered mockup */}
           <div className="flex gap-2 overflow-x-auto scrollbar-hide">
             {filterCategories.map((cat) => (
               <TabPill key={cat} active={activeFilter === cat} onClick={() => setActiveFilter(cat)}>
@@ -531,8 +512,9 @@ export default function ServicesStaffStep({
           >
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              // Ink-filled (modern), no outline. Micro: lifts the arrow on hover, presses on tap.
-              className="group pointer-events-auto flex items-center gap-2 pl-4 pr-3.5 py-2 rounded-full bg-s-ink text-white text-[13px] font-heading font-semibold shadow-[0_8px_24px_-8px_rgba(10,10,10,0.45)] transition-transform duration-200 ease-glide active:scale-[0.97]"
+              // Calm DS-compliant pill (white + hairline + elevation-2), no ink fill / grey-haze shadow.
+              // mockup-ok: owner 2026-07-18 live fix + approved liftup-booking-services-tiered mockup
+              className="group pointer-events-auto flex items-center gap-2 pl-4 pr-3.5 py-2 rounded-full bg-white text-s-ink border border-s-border shadow-elevation-2 text-[13px] font-heading font-semibold transition-transform duration-200 ease-glide active:scale-[0.97]"
             >
               <span key={formData.services.length} className="animate-count-bump inline-block">{formData.services.length}</span> {t('selected')}
               <ArrowUp size={15} strokeWidth={2.4} className="transition-transform duration-200 ease-glide group-hover:-translate-y-0.5" />
