@@ -33,13 +33,13 @@ Full per-gap analysis: public/_reports/gap-decisions + scratchpad/decisions.json
 - [x] #52 DONE. Auto-applied credit now shows as a Guthaben line item in PayConfirmStep (credit_applied from the pay-intent response); live-proven credit_applied:15 -> total 45->30.
 - [ ] #23 Receipt href /bookings/[id] 404s (no page) -> build the receipt page (or repoint to a real one).
 - [ ] #49 Referral attribution lost (code written to localStorage, never read) -> read it at signup/booking.
-- [ ] #37 Paged reviews lose photos (API doesn't select review_photos) -> select photos in the paged route.
-- [ ] #36 Per-dimension review scores unwired (phantom columns) -> add the columns + wire, or drop cleanly.
-- [ ] #55 Orphaned /inspo/board/[id] + /inspo/saved/[id] -> link them from the feed/saved surfaces.
-- [ ] #56 Session-only saved state -> hydrate savedIds from /api/discovery/saves on load.
-- [ ] #57 Boards not surfaced in the feed despite the comment -> surface boards or fix the comment+logic.
-- [ ] #44 /profile/stamps orphaned from hub -> link it (or make the hub's Loyalty row honest).
-- [ ] #46 /notifications not linked from the profile hub -> add a hub entry.
+- [x] #37 DONE + reviewer PASS 5/5. Paged public reviews route now joins review_photos(id, photo_url) ordered by sort_order and the load-more client passes them through in the same {id,photo_url}[] shape as the SSR page-1 loader; public-safe (no user_id, booking_id stripped). Commit acc69ca57.
+- [x] #36 VERIFIED ALREADY CLEAN (no code change needed). Grepped every review DISPLAY .tsx: NONE render per-dimension score bars. The phantom score_* columns are referenced write-side only (app/api/reviews/route.ts folds the 3 sub-scores into the weighted `rating`, never writes the nonexistent columns). No fabricated dimension UI to drop. Corrected the one stale comment. NOT re-opened as an add-columns feature (owner call, out of scope).
+- [ ] #55 PARKED , owner fork. /inspo/board/[id] + /inspo/saved/[id] routes EXIST but are orphaned. Whether to LINK them depends on whether "boards/collections" is a live feature or a ditched one , the code contradicts itself: inspo/page.tsx:294 "collections ditched 2026-06-23" vs a live /api/discovery/boards/[id] + board detail page (V3-D414) + inspo/page.tsx:447 "boards + personalized". Needs the owner to say: is boards/collections LIVE (surface + link) or DITCHED (correct comments + graveyard the orphans)? Surfaced at close.
+- [ ] #56 Session-only saved state -> hydrate savedIds from /api/discovery/saves on load. (unblocked; safe real fix, does NOT depend on the #55/#57 boards fork.)
+- [ ] #57 PARKED with #55 (same boards/collections fork). "surface boards or fix the comment+logic" is the opposite-direction fork above.
+- [x] #44 DONE + reviewer PASS 6/6. Added an honest Stempel row linking the still-live /profile/stamps (distinct from /rewards Solen Status). Commit 7ce6d21ed.
+- [x] #46 DONE + reviewer PASS. Added a Benachrichtigungen row linking /notifications from the profile hub. Commit 7ce6d21ed.
 
 ## WAVE 3 , dead-code deletions (real cleanup, allowed) + stale docs
 - [x] #1 dead SalonResultCard deep-link vars + comment DELETED (verified 0 JSX refs).
@@ -50,7 +50,7 @@ Full per-gap analysis: public/_reports/gap-decisions + scratchpad/decisions.json
 - [x] #3/#33/#40 stale comments CORRECTED (price filter wired, walk-in dedupe, i18n labels).
 - [x] #38 dead salon_response fallback DELETED (field never arrives).
 - [ ] #48 intake-forms raw DB-key labels -> localize.
-- [ ] #47 hub counts silently coerce errors to 0 -> surface the error path.
+- [x] #47 DONE + reviewer PASS (bundled with #44/#46). countOf() returns number|null; a genuine fetch error renders no badge instead of a fabricated "0"; a real successful 0 still renders. Commit 7ce6d21ed.
 - [x] #17 moot , /checkout deleted (#16).
 - [x] #18 moot , /checkout deleted (#16).
 - [x] #45 /profile/vouchers rebuilt into a real wallet (lists the user's real vouchers + credit); gift-cards left as-is (owner-hidden, verified). Live-proven wallet matches DB.
