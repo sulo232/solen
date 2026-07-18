@@ -7,20 +7,23 @@
 <!-- Base: capture live -->
 <!-- Scale: full-page -->
 <!--
-  Owner-scope: confirmed: approved this turn ("alr approved ... the mockup u made is good"), plus two layout
-  refinements 2026-07-18: (a) the down chevron moves INLINE beside the service NAME (not on the right); (b)
-  when a row is expanded the PRICE drops BELOW the description. Interaction unchanged: tap the row body to
-  expand the info, tap the + to select. No before/after toggle (owner: "ditch this changing thing").
-  Grounded-in: components-legacy/booking/ServicesStaffStep.tsx (the booking step, its ToggleCircle add-control,
-  the fixed total plus Continue bar, the per-service description it already stores) restyled to match
-  app/[locale]/_components/salon/SalonServices.tsx (the salon-page display: subcategory filter pills ->
+  Owner-scope: confirmed: approved this turn ("alr approved ... the mockup u made is good"), refined 2026-07-18:
+  chevron inline by the name, price below the description on expand, + centered vertically. This edit adds the
+  owner-required MOTION: the + -> check swap animates (opacity + scale + blur crossfade, glide ease, matching
+  ToggleCircle ENTER_RECIPE) plus a small circle pop; the price total ROLLS up (value-roll) when it changes;
+  the minutes bump (count-bump) when the duration changes. Interaction unchanged: tap the row body to expand,
+  tap the + to select. No before/after toggle.
+  Grounded-in: components-legacy/booking/ServicesStaffStep.tsx (its ToggleCircle add-control, its
+  animate-value-roll price + animate-count-bump count, the fixed total plus Continue bar, the per-service
+  description) restyled to match app/[locale]/_components/salon/SalonServices.tsx (subcategory filter pills ->
   DURATION-TIER groups Express / Classic / Signature, each a rounded-[24px] border border-s-border bg-white
-  shadow-whisper list, name 15/600 md16 / duration "20 min" text-only no clock / price "from CHF N" bold).
-  CHECKED both files live this turn.
-  Exists-check: `npm run exists booking` ran this turn. Both the salon-page tier display (SalonServices.tsx)
-  and the booking step (ServicesStaffStep.tsx) exist and render today; REMOVED.md none. NEW = only the booking
-  step adopting the salon page's tier-card display plus the tap-to-expand-info row (the description already
-  exists on the service row, it just moves behind a tap; the chevron and the expand price position are layout).
+  shadow-whisper list, name 15/600 md16 / duration "20 min" text-only no clock / price "from CHF N" bold). The
+  motion values mirror app/globals.css value-roll + count-bump keyframes and ToggleCircle.tsx (opacity+scale+
+  blur, glide). CHECKED all three live this turn. No review count on any row (C11), no blue accent used.
+  Exists-check: `npm run exists booking` ran this turn. The salon-page tier display (SalonServices.tsx), the
+  booking step (ServicesStaffStep.tsx), and the value-roll / count-bump keyframes (app/globals.css) all exist
+  and render today; REMOVED.md none. NEW = the booking step adopting the salon page's tier-card display; the
+  motion classes already exist in the real component.
   Backend-check: the + = add/remove in the client booking-context cart (real, updates total/duration); the row
   body tap = expand info (client only, no write); Continue = goToStep(next) (real); every name/duration/price/
   description is display of a live service row (real). No fabricated value. Taste-current: no review count on
@@ -31,8 +34,9 @@
 <style>
   :root{
     --ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--surface:#fff;--sunken:#F4F4F5;
-    --hairline:#E4E4E7;--accent:#276EF1;--green:#16A34A;
+    --hairline:#E4E4E7;
     --whisper:0 1px 2px rgba(10,10,10,.04),0 6px 20px -10px rgba(10,10,10,.08);
+    --glide:cubic-bezier(0.16,1,0.3,1);--pop:cubic-bezier(0.34,1.56,0.64,1);
     --font:'Inter Tight',system-ui,-apple-system,sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
@@ -76,33 +80,45 @@
   .row.sel{background:rgba(244,244,245,.7)}
   .top{display:flex;align-items:center;gap:10px;padding:16px 20px}
   .body{min-width:0;flex:1;text-align:left;background:none;border:0;font-family:inherit;cursor:pointer;padding:0}
-  /* Name line: name + the down chevron INLINE beside it (owner 2026-07-18) */
+  /* Name line: name + the down chevron INLINE beside it */
   .nmline{display:flex;align-items:center;gap:6px}
   .body .nm{font-size:16px;font-weight:600;color:var(--ink);line-height:1.25}
-  .chv{flex:none;display:grid;place-items:center;color:var(--ink3);transition:transform .26s ease}
+  .chv{flex:none;display:grid;place-items:center;color:var(--ink3);transition:transform .26s var(--glide)}
   .row.open .chv{transform:rotate(180deg)}
   .body .du{font-size:14px;color:var(--ink3);margin-top:4px;font-variant-numeric:tabular-nums}
-  /* Info panel sits BETWEEN duration and price, so on expand the price ends up UNDER the description (owner 2026-07-18) */
-  .desc{max-height:0;overflow:hidden;transition:max-height .28s ease,margin-top .28s ease;margin-top:0;color:var(--ink2)}
+  /* Info panel sits BETWEEN duration and price, so on expand the price ends up UNDER the description */
+  .desc{max-height:0;overflow:hidden;transition:max-height .28s var(--glide),margin-top .28s var(--glide);margin-top:0;color:var(--ink2)}
   .row.open .desc{max-height:160px;margin-top:10px}
   .desc p{font-size:14px;line-height:1.5;padding-right:8px}
   .body .pr{font-size:15px;font-weight:700;color:var(--ink);margin-top:12px;font-variant-numeric:tabular-nums}
 
-  /* ToggleCircle (real primitive: 36px, border plus Plus / ink plus Check), aligned to the name line */
-  .tog{width:36px;height:36px;border-radius:999px;display:grid;place-items:center;flex:none;border:1px solid var(--hairline);color:var(--ink2);background:#fff;cursor:pointer;padding:0}
+  /* ToggleCircle (36px) with the + -> check crossfade (opacity+scale+blur, glide) + a select pop */
+  .tog{position:relative;width:36px;height:36px;border-radius:999px;flex:none;border:1px solid var(--hairline);color:var(--ink2);background:#fff;cursor:pointer;padding:0;transition:background-color .3s var(--glide),border-color .3s var(--glide)}
   .tog.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-  .tog .pl-i{display:grid}
-  .tog .ck-i{display:none}
-  .tog.on .pl-i{display:none}
-  .tog.on .ck-i{display:grid}
+  .tog.pop{animation:tog-pop .42s var(--pop)}
+  .tog .pl-i,.tog .ck-i{position:absolute;inset:0;display:grid;place-items:center;transition:opacity .42s var(--glide),transform .42s var(--glide),filter .42s var(--glide)}
+  .tog .pl-i{opacity:1;transform:scale(1);filter:blur(0)}
+  .tog .ck-i{opacity:0;transform:scale(.6);filter:blur(6px)}
+  .tog.on .pl-i{opacity:0;transform:scale(.6);filter:blur(6px)}
+  .tog.on .ck-i{opacity:1;transform:scale(1);filter:blur(0)}
+  @keyframes tog-pop{0%{transform:scale(1)}38%{transform:scale(1.18)}100%{transform:scale(1)}}
 
   /* Fixed bottom bar (total plus Continue) */
   .bar{position:absolute;left:0;right:0;bottom:0;border-top:1px solid var(--hairline);background:#fff;z-index:8}
   .bar .in{max-width:520px;margin:0 auto;padding:12px 16px calc(12px + env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:space-between;gap:14px}
-  .bar .tot{font-size:22px;font-weight:800;letter-spacing:-0.01em;line-height:1;font-variant-numeric:tabular-nums}
+  .bar .tot{font-size:22px;font-weight:800;letter-spacing:-0.01em;line-height:1;font-variant-numeric:tabular-nums;overflow:hidden}
   .bar .meta{font-size:12px;color:var(--ink3);margin-top:6px;display:flex;align-items:center;gap:6px}
   .cont{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;font-size:15px;font-weight:600;border:0;border-radius:14px;padding:14px 22px;font-family:inherit;cursor:pointer;transition:opacity .2s}
   .cont.off{opacity:.45;cursor:not-allowed}
+
+  /* Motion vocab (mirrors app/globals.css): price rolls, minutes/count bump */
+  .roll{display:inline-block}
+  .roll.go{animation:value-roll .38s var(--glide)}
+  @keyframes value-roll{0%{transform:translateY(60%);opacity:0}100%{transform:translateY(0);opacity:1}}
+  .bump{display:inline-block}
+  .bump.go{animation:count-bump .4s var(--pop)}
+  @keyframes count-bump{0%{transform:scale(1)}35%{transform:scale(1.4)}100%{transform:scale(1)}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
   svg{display:block}
 </style>
 </head>
@@ -219,8 +235,8 @@
     <div class="bar">
       <div class="in">
         <div>
-          <div class="tot">CHF 65</div>
-          <div class="meta"><span data-i="cart"></span><span class="mt">1 service, 45 min</span></div>
+          <div class="tot"><span class="roll" id="rollv">CHF 65</span></div>
+          <div class="meta"><span data-i="cart"></span><span class="mt" id="metav">1 service, <span class="bump">45</span> min</span></div>
         </div>
         <button class="cont">Continue<span data-i="arrow"></span></button>
       </div>
@@ -247,29 +263,38 @@ document.querySelectorAll('[data-i=chev]').forEach(function(e){e.innerHTML=svg(I
 document.querySelectorAll('.pl-i[data-i=plus]').forEach(function(e){e.innerHTML=svg(I.plus,ink2,17);});
 document.querySelectorAll('.ck-i[data-i=check]').forEach(function(e){e.innerHTML=svg(I.check,'#fff',17,2.5);});
 
+// restart a keyframe animation by removing + reflowing + re-adding the .go class
+function replay(el){if(!el)return;el.classList.remove('go');void el.offsetWidth;el.classList.add('go');}
+
 // Tap the row body -> expand the info panel. Select is NOT here.
 document.querySelectorAll('[data-expand]').forEach(function(btn){
   btn.addEventListener('click',function(){btn.closest('.row').classList.toggle('open');});
 });
 
-// Tap the + -> select / deselect the service, then recompute the bottom bar.
-var cont=document.querySelector('.cont'), tot=document.querySelector('.tot'), mt=document.querySelector('.mt');
+// Tap the + -> select / deselect, pop the circle, recompute + animate the bar.
+var cont=document.querySelector('.cont'), rollv=document.getElementById('rollv'), metav=document.getElementById('metav');
+var prevTotal=65, prevDur=45;
 function recompute(){
   var sel=document.querySelectorAll('.row.sel'), total=0, dur=0;
   sel.forEach(function(r){total+=+r.dataset.price;dur+=+r.dataset.dur;});
-  tot.textContent='CHF '+total;
   var n=sel.length;
-  mt.textContent = n ? (n+(n===1?' service, ':' services, ')+dur+' min') : 'No services yet';
+  rollv.textContent='CHF '+total;
+  if(total!==prevTotal) replay(rollv);              // price rolls up on change
+  if(n){
+    metav.innerHTML = n+(n===1?' service, ':' services, ')+'<span class="bump">'+dur+'</span> min';
+    if(dur!==prevDur) replay(metav.querySelector('.bump'));   // minutes bump on change
+  } else { metav.textContent='No services yet'; }
   cont.classList.toggle('off', n===0);
+  prevTotal=total; prevDur=dur;
 }
 document.querySelectorAll('[data-tog]').forEach(function(t){
   t.addEventListener('click',function(){
     t.classList.toggle('on');
+    t.classList.remove('pop');void t.offsetWidth;t.classList.add('pop');   // select pop
     t.closest('.row').classList.toggle('sel',t.classList.contains('on'));
     recompute();
   });
 });
-recompute();
 </script>
 </body>
 </html>
