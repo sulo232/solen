@@ -114,14 +114,15 @@ per-screen approval.
 - [x] Bigger + (add) icon on the service rows , DONE: 38px control + 22px + icon (was 26/15). services-fs.
 - [x] Sticky category pill CHANGES as you scroll (scrollspy) , DONE: active pill steps Cut->Color->Styling as
   you scroll (11-service list for range), tap a pill to jump; fixed an init-on-hidden-pane bug. Verified live.
-- [~] Convert OTHER mockups to FULL-PAGE , template DONE (services-fs) + mockup-fullscreen-gate ENFORCES it on
-  every new mockup Write. Remaining: rebuild the existing galleries (booking steps, salon PDP, settings,
-  appointments, profile, home, inspo) each as full-page. Progressive, one per turn.
-- [~] Before/after (toggle) for OTHER mockups , toggle template DONE (services-fs). PUBLIC screens (booking,
-  salon PDP, home, search, inspo) support a LIVE iframe before, so they convert cleanly. NAMED DEPENDENCY:
-  ACCOUNT/personal screens (settings, appointments, profile, favorites, looks, stamps) are AUTH-GATED , a
-  live iframe there redirects to login, so their "before" needs a LOGGED-IN capture (Playwright with
-  /api/dev/login), a heavier path than the public-screen iframe. Flagging, not silently dropping.
+- [~] Convert OTHER mockups to FULL-PAGE + before/after (toggle) , template DONE (services-fs) + gate enforces.
+  PUBLIC screens DONE this session as full-page before/after (live-iframe before): services-fs (APPROVED),
+  salon-fs (APPROVED), home-fs, search-fs, inspo-fs. All on the hub (liftup/). REMAINING:
+  - booking sub-steps (stylist, date/time, hair, pay, confirmation) full-page , the wizard is client-state so
+    the "before" iframe only shows step 1; will drive/capture per step.
+  - ACCOUNT screens (profile, settings, appointments, favorites, looks, haarprofil, stamps, rewards,
+    notifications, referral) , AUTH-GATED, so the "before" needs a LOGGED-IN capture (Playwright + /api/dev/login),
+    a heavier path than the public-screen live iframe. NAMED DEPENDENCY, flagged not dropped.
+  - walk-in queue + the unified Saved page (built out).
 
 ## 5. Method / guardrails
 - MOCKUP-FIRST, one owner approval per screen, before ANY code. Grounded in the real screen structure
