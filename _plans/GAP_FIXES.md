@@ -62,13 +62,26 @@ design, #14 promo fields arrive pre-filled, #15 no-fabricate staff slot (correct
 (backend), #22 dead-link already in #23, #24 sheet-adapter placeholders (verify no reliance, minor),
 #25... (map exact numbers to decisions.json before skipping; only skip a true "leave").
 
-## CRITICAL FINDING (surfaced by the #19 coder, NOT this scope, needs urgent separate fix)
-- [ ] LOGGED-IN BOOKING BLOCKER: app/api/bookings/route.ts resolves the chosen availability_slots via the
-  RLS-scoped SESSION client, which returns ZERO rows for any logged-in customer (even a bare
-  select status='available'), while the admin client returns the row. slots_select_available is USING(true)
-  in migration 014, so a LIVE-only RLS change (June/July hardening) is overriding it. Would break EVERY
-  logged-in online booking once live (guest bookings use the admin client, unaffected). Discriminating test:
-  same query, admin returns row / session returns 0. NEEDS urgent RLS investigation + fix, separate workstream.
+## CRITICAL FINDING (surfaced by the #19 coder) , FIXED + live-verified 2026-07-18
+- [x] LOGGED-IN BOOKING BLOCKER , ROOT-CAUSED + FIXED. app/api/bookings/route.ts resolves the chosen
+  availability_slots via the RLS-scoped SESSION client, which returned ZERO rows for any logged-in customer.
+  Root cause (live pg_policies dump, not migration files): a June/July hardening pass replaced migration 014's
+  public-read policy (`slots_select_available USING(true)`) with an OWNER-ONLY select policy
+  (`availability_slots_select_4c9184_m`, EXISTS(salons WHERE owner_id=auth.uid())), leaving zero SELECT access
+  for a logged-in non-owner. Guest bookings were unaffected (admin client bypasses RLS).
+  FIX (additive, tightest predicate): migration 20260718120000 adds `availability_slots_select_public_available`
+  FOR SELECT USING (status='available'). Every session-client read of this table already filters
+  .eq("status","available"); booked/blocked rows (carrying another customer's booked_by/booking_id/client_id)
+  stay invisible to non-owners. Owner-only policy untouched (Postgres OR's permissive SELECT policies).
+  LIVE-VERIFIED via RLS simulation as a non-owner customer (kunde, sub=7c88e454) against a salon they don't own:
+  available slots readable = 1660 (was 0), booked slots readable = 0 (no over-exposure). Migration applied live +
+  committed. Related degradation still open below.
+- [ ] RELATED (not the booking blocker, separate design call): app/api/availability/[salon_id]/route.ts and
+  app/api/slots/route.ts (GET) read ALL statuses via the SESSION client to compute the calendar / fully-booked
+  view. With the new policy a non-owner now sees only `available` rows through the session client, so booked
+  slots are invisible to those two read paths , the calendar can no longer distinguish "booked" from "free".
+  Needs a SECURITY DEFINER RPC or a status-only rollup view (return counts/booleans, never booked_by/client_id).
+  NOT urgent for launch (booking POST works); flag before the calendar's fully-booked UI is relied on.
 
 ## Method
 Layered loop per fix (coder + loop-reviewer), one commit per gap, live-verify. Backend-touching
