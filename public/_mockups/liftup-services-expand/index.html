@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
+<title>Borderless services , simple rows with expand on tap / hover</title>
+<!-- Base: elicitation -->
+<!-- Scale: component -->
+<!--
+  Grounded-in: components-legacy/booking/ServicesStaffStep.tsx (the service row + its description).
+  Reference-checked: /Users/sulo/.claude/uploads/52878f2d-37a1-43b1-9756-e2e3a26b664d/83a70cdc-IMG_6537.png
+  (+ IMG_6538/6539 Uber, subagent-analysed this session). Exists-check: the services step + service rows +
+  the per-service description ALL exist and render today (description shown inline); REMOVED.md none. NEW =
+  an interaction only: keep the row simple (name + duration + price) and reveal the description ON DEMAND
+  (tap to expand on mobile, hover to auto-expand on desktop), instead of always showing it inline.
+  Backend-check: expand/collapse = pure client UI (no backend); add-toggle = client cart; Continue = client
+  step. No live data affected. Taste-current: star+value only, no review count; no full-bleed. English chrome.
+  Interaction-elicitation (owner 2026-07-18: "simpler one but with an expand button, click for more info, or
+  on pc hover it auto expands"). Treatment-only per mockup policy.
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--surface:#FFFFFF;--sunken:#F4F4F5;--hairline:#E4E4E7;--accent:#276EF1;--green:#16A34A;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);background:#FAFAFA;color:var(--ink);-webkit-font-smoothing:antialiased;padding:26px 16px 60px;display:flex;flex-direction:column;align-items:center}
+  h1{font-size:20px;font-weight:800;letter-spacing:-0.02em;margin-bottom:4px;text-align:center}
+  .hint{font-size:13px;color:var(--ink2);margin-bottom:20px;text-align:center;max-width:340px;line-height:1.5}
+  .hint b{color:var(--ink)}
+  .phone{width:340px;background:var(--surface);border-radius:32px;box-shadow:0 22px 54px -20px rgba(0,0,0,.28),0 0 0 1px rgba(0,0,0,.04);overflow:hidden;position:relative}
+  .status{height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-size:12px;font-weight:600}
+  .sys{display:flex;gap:5px;color:var(--ink)}
+  .head{display:flex;align-items:center;justify-content:space-between;padding:2px 14px 12px}
+  .rd{width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:var(--ink)}
+  .title{font-size:16.5px;font-weight:600}
+  .cats{display:flex;gap:8px;padding:4px 16px 8px}
+  .cat{font-size:13px;font-weight:600;padding:8px 15px;border-radius:999px;border:1px solid var(--hairline);color:var(--ink2)}
+  .cat.on{background:var(--sunken);color:var(--ink);border-color:transparent}
+  .sec{font-size:19px;font-weight:700;letter-spacing:-0.01em;padding:12px 18px 4px}
+  .scr{padding-bottom:86px}
+
+  .srow{padding:13px 18px;cursor:pointer;transition:background .15s ease}
+  .srow+.srow{border-top:1px solid var(--hairline)}
+  .rtop{display:flex;align-items:flex-start;gap:12px}
+  .m{flex:1;min-width:0}
+  .nmline{display:flex;align-items:center;gap:6px}
+  .sn{font-size:15px;font-weight:600}
+  .exp-chev{color:var(--ink3);flex:none;transition:transform .25s ease}
+  .sd{font-size:12.5px;color:var(--ink3);margin-top:2px;display:flex;align-items:center;gap:5px}
+  .sp{font-size:14px;font-weight:700;margin-top:6px}
+  .tog{width:26px;height:26px;border-radius:999px;border:1.5px solid var(--hairline);flex:none;display:flex;align-items:center;justify-content:center;color:var(--ink3);align-self:center}
+  .tog.on{background:var(--ink);border-color:var(--ink);color:#fff}
+  /* the on-demand description , collapsed by default */
+  .desc{max-height:0;overflow:hidden;opacity:0;transition:max-height .28s ease, opacity .2s ease, margin .28s ease}
+  .desc p{font-size:13px;color:var(--ink2);line-height:1.5;padding-right:38px}
+  .srow.exp .desc{max-height:120px;opacity:1;margin-top:9px}
+  .srow.exp .exp-chev{transform:rotate(180deg)}
+  .srow.exp{background:#FCFCFD}
+  /* desktop: hover auto-expands */
+  @media (hover:hover) and (pointer:fine){
+    .srow:hover{background:#FCFCFD}
+    .srow:hover .desc{max-height:120px;opacity:1;margin-top:9px}
+    .srow:hover .exp-chev{transform:rotate(180deg)}
+  }
+  .bar{position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--hairline);padding:12px 16px;display:flex;align-items:center;gap:12px}
+  .tot{font-size:18px;font-weight:800}.cnt{font-size:11.5px;color:var(--ink3)}
+  .cta{margin-left:auto;background:var(--ink);color:#fff;font-size:14.5px;font-weight:700;border-radius:999px;padding:11px 22px;display:flex;align-items:center;gap:6px}
+  svg{display:block}
+</style>
+</head>
+<body>
+  <h1>Simple rows, info on demand</h1>
+  <p class="hint">Rows stay clean , name, time, price. <b>Tap a row to expand</b> the description (mobile). <b>On a computer, just hover</b> and it opens automatically. Tap the circle to add.</p>
+  <div class="phone">
+    <div class="status"><span>9:41</span><span class="sys" id="sys"></span></div>
+    <div class="head"><span class="rd" id="bk"></span><span class="title">Select services</span><span class="rd" id="xx"></span></div>
+    <div class="cats"><span class="cat on">Cut</span><span class="cat">Color</span><span class="cat">Styling</span></div>
+    <div class="scr">
+      <div class="sec">Cut</div>
+      <div class="srow" data-row>
+        <div class="rtop">
+          <div class="m">
+            <div class="nmline"><span class="sn">Signature cut</span><span class="exp-chev" id="e1"></span></div>
+            <div class="sd"><span id="c1"></span>45 min</div>
+            <div class="sp">CHF 65</div>
+            <div class="desc"><p>A tailored cut and finish with a short consultation. Wash included.</p></div>
+          </div>
+          <span class="tog on" id="t1"></span>
+        </div>
+      </div>
+      <div class="srow" data-row>
+        <div class="rtop">
+          <div class="m">
+            <div class="nmline"><span class="sn">Wash and blow-dry</span><span class="exp-chev" id="e2"></span></div>
+            <div class="sd"><span id="c2"></span>30 min</div>
+            <div class="sp">CHF 45</div>
+            <div class="desc"><p>Shampoo, condition and a smooth blow-dry to finish. Great between cuts.</p></div>
+          </div>
+          <span class="tog" id="t2"></span>
+        </div>
+      </div>
+      <div class="srow" data-row>
+        <div class="rtop">
+          <div class="m">
+            <div class="nmline"><span class="sn">Fringe trim</span><span class="exp-chev" id="e3"></span></div>
+            <div class="sd"><span id="c3"></span>15 min</div>
+            <div class="sp">from CHF 20</div>
+            <div class="desc"><p>A quick reshape of the fringe to keep it out of your eyes between visits.</p></div>
+          </div>
+          <span class="tog" id="t3"></span>
+        </div>
+      </div>
+    </div>
+    <div class="bar"><div><div class="tot">CHF 65</div><div class="cnt">1 item . 45 min</div></div><span class="cta">Continue<span id="cta"></span></span></div>
+  </div>
+<script>
+const I={back:'<path d="M19 12H5M12 19l-7-7 7-7"/>',x:'<path d="M18 6 6 18M6 6l12 12"/>',chev:'<path d="M9 6l6 6-6 6"/>',chevd:'<path d="M6 9l6 6 6-6"/>',check:'<path d="M20 6 9 17l-5-5"/>',plus:'<path d="M12 5v14M5 12h14"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',signal:'<path d="M2 20h.01M7 20v-4M12 20v-8M17 20V8M22 4v16"/>',wifi:'<path d="M5 13a10 10 0 0 1 14 0M8.5 16.5a5 5 0 0 1 7 0M2 8.8a15 15 0 0 1 20 0M12 20h.01"/>',bat:'<rect x="2" y="7" width="16" height="10" rx="2"/><path d="M22 11v2"/>'};
+function svg(p,st,w,fill){return '<svg class="lucide" data-lucide="icon" width="'+(w||20)+'" height="'+(w||20)+'" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="'+st+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>';}
+const ink='#0A0A0A',ink3='#A1A1AA';
+document.getElementById('bk').innerHTML=svg(I.back,ink,20);
+document.getElementById('xx').innerHTML=svg(I.x,ink,19);
+['e1','e2','e3'].forEach(id=>document.getElementById(id).innerHTML=svg(I.chevd,ink3,16));
+['c1','c2','c3'].forEach(id=>document.getElementById(id).innerHTML=svg(I.clock,ink3,13));
+document.getElementById('t1').innerHTML=svg(I.check,'#fff',16);
+['t2','t3'].forEach(id=>document.getElementById(id).innerHTML=svg(I.plus,ink3,15));
+document.getElementById('cta').innerHTML=svg(I.chev,'#fff',15);
+document.getElementById('sys').innerHTML=svg(I.signal,ink,13)+svg(I.wifi,ink,13)+svg(I.bat,ink,15);
+// tap to expand (mobile); do not toggle when tapping the add circle
+document.querySelectorAll('[data-row]').forEach(r=>{
+  r.addEventListener('click',e=>{ if(e.target.closest('.tog')) return; r.classList.toggle('exp'); });
+});
+</script>
+</body>
+</html>
