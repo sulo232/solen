@@ -5250,7 +5250,10 @@
       "for": "Für",
       "daysUntilExpiry": "Tage",
       "remaining": "Verbleibend",
-      "error": "Fehler beim Laden der Gutscheine"
+      "error": "Fehler beim Laden der Gutscheine",
+      "retry": "Erneut versuchen",
+      "creditLabel": "Guthaben",
+      "emptyBoth": "Du hast noch keine Gutscheine oder Guthaben."
     }
   },
   "coiffeur": {
@@ -6040,7 +6043,13 @@
     "payDeposit": "Anzahlung bezahlen",
     "changeLabel": "Ändern",
     "yourStylist": "Dein:e Stylist:in",
-    "vatIncl": "inkl. 8.1% MwSt"
+    "vatIncl": "inkl. 8.1% MwSt",
+    "voucherLabel": "Gutschein-Code",
+    "voucherPlaceholder": "Code eingeben",
+    "voucherApply": "Anwenden",
+    "voucherLine": "Gutschein",
+    "creditLine": "Guthaben",
+    "voucherInvalid": "Dieser Gutschein-Code ist ungültig, abgelaufen oder für diesen Salon nicht gültig."
   },
   "searchUi": {
     "sort_rating": "Beliebteste",

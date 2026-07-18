@@ -29,9 +29,8 @@ Full per-gap analysis: public/_reports/gap-decisions + scratchpad/decisions.json
 
 ## WAVE 2 , wire the unwired features (real fixes)
 - [ ] #5 Search date/service context dropped at PDP -> carry via query params + prefill booking.
-- [ ] #19 / #50 Voucher spend unwired from the live pay UI -> add the voucher field to PayConfirmStep
-  and send voucher_code (the spend path in booking-pay-intent is fully built).
-- [ ] #52 Credit auto-applied silently -> show the applied credit in PayConfirmStep.
+- [x] #19/#50 DONE + live-proven. Voucher entry wired into PayConfirmStep -> sends voucher_code; TESTV10 drops CHF 45->35, invalid code -> toast + total unchanged. Reused the existing booking-pay-intent redemption path verbatim.
+- [x] #52 DONE. Auto-applied credit now shows as a Guthaben line item in PayConfirmStep (credit_applied from the pay-intent response); live-proven credit_applied:15 -> total 45->30.
 - [ ] #23 Receipt href /bookings/[id] 404s (no page) -> build the receipt page (or repoint to a real one).
 - [ ] #49 Referral attribution lost (code written to localStorage, never read) -> read it at signup/booking.
 - [ ] #37 Paged reviews lose photos (API doesn't select review_photos) -> select photos in the paged route.
@@ -54,7 +53,7 @@ Full per-gap analysis: public/_reports/gap-decisions + scratchpad/decisions.json
 - [ ] #47 hub counts silently coerce errors to 0 -> surface the error path.
 - [x] #17 moot , /checkout deleted (#16).
 - [x] #18 moot , /checkout deleted (#16).
-- [ ] #45 /profile/vouchers + /profile/gift-cards redirect-only no-op routes -> once vouchers wired (#19), make real; else delete the routes.
+- [x] #45 /profile/vouchers rebuilt into a real wallet (lists the user's real vouchers + credit); gift-cards left as-is (owner-hidden, verified). Live-proven wallet matches DB.
 
 ## SKIP , genuine LEAVE (intentional/known/harmless, per analysis)
 #6 gift card owner-hidden (dated decision), #7 SalonLoyalty correctly removed, #8 nav/section minor,
@@ -62,6 +61,14 @@ Full per-gap analysis: public/_reports/gap-decisions + scratchpad/decisions.json
 design, #14 promo fields arrive pre-filled, #15 no-fabricate staff slot (correct), #21 two PI paths
 (backend), #22 dead-link already in #23, #24 sheet-adapter placeholders (verify no reliance, minor),
 #25... (map exact numbers to decisions.json before skipping; only skip a true "leave").
+
+## CRITICAL FINDING (surfaced by the #19 coder, NOT this scope, needs urgent separate fix)
+- [ ] LOGGED-IN BOOKING BLOCKER: app/api/bookings/route.ts resolves the chosen availability_slots via the
+  RLS-scoped SESSION client, which returns ZERO rows for any logged-in customer (even a bare
+  select status='available'), while the admin client returns the row. slots_select_available is USING(true)
+  in migration 014, so a LIVE-only RLS change (June/July hardening) is overriding it. Would break EVERY
+  logged-in online booking once live (guest bookings use the admin client, unaffected). Discriminating test:
+  same query, admin returns row / session returns 0. NEEDS urgent RLS investigation + fix, separate workstream.
 
 ## Method
 Layered loop per fix (coder + loop-reviewer), one commit per gap, live-verify. Backend-touching

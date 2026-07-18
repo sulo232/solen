@@ -5221,7 +5221,10 @@
       "for": "Per",
       "daysUntilExpiry": "giorni",
       "remaining": "Rimanente",
-      "error": "Errore nel caricamento dei voucher"
+      "error": "Errore nel caricamento dei voucher",
+      "retry": "Riprova",
+      "creditLabel": "Credito",
+      "emptyBoth": "Non hai ancora voucher o credito."
     }
   },
   "coiffeur": {
@@ -6011,7 +6014,13 @@
     "payDeposit": "Paga acconto",
     "changeLabel": "Modifica",
     "yourStylist": "Il tuo stilista",
-    "vatIncl": "IVA 8.1% inclusa"
+    "vatIncl": "IVA 8.1% inclusa",
+    "voucherLabel": "Codice buono",
+    "voucherPlaceholder": "Inserisci codice",
+    "voucherApply": "Applica",
+    "voucherLine": "Buono",
+    "creditLine": "Credito",
+    "voucherInvalid": "Questo codice buono non è valido, è scaduto o non è valido per questo salone."
   },
   "searchUi": {
     "sort_rating": "Piu popolari",

@@ -5240,7 +5240,10 @@
       "for": "For",
       "daysUntilExpiry": "days",
       "remaining": "Remaining",
-      "error": "Error loading vouchers"
+      "error": "Error loading vouchers",
+      "retry": "Try again",
+      "creditLabel": "Credit",
+      "emptyBoth": "You don't have any vouchers or credit yet."
     }
   },
   "coiffeur": {
@@ -6029,7 +6032,13 @@
     "payDeposit": "Pay deposit",
     "changeLabel": "Change",
     "yourStylist": "Your stylist",
-    "vatIncl": "incl. 8.1% VAT"
+    "vatIncl": "incl. 8.1% VAT",
+    "voucherLabel": "Voucher code",
+    "voucherPlaceholder": "Enter code",
+    "voucherApply": "Apply",
+    "voucherLine": "Voucher",
+    "creditLine": "Credit",
+    "voucherInvalid": "This voucher code is invalid, expired, or not valid for this salon."
   },
   "searchUi": {
     "sort_rating": "Most popular",

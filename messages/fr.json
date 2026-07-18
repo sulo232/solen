@@ -5232,7 +5232,10 @@
       "for": "Pour",
       "daysUntilExpiry": "jours",
       "remaining": "Restant",
-      "error": "Erreur lors du chargement des bons"
+      "error": "Erreur lors du chargement des bons",
+      "retry": "Réessayer",
+      "creditLabel": "Crédit",
+      "emptyBoth": "Vous n'avez pas encore de bons ni de crédit."
     }
   },
   "coiffeur": {
@@ -6022,7 +6025,13 @@
     "payDeposit": "Payer l'acompte",
     "changeLabel": "Modifier",
     "yourStylist": "Votre styliste",
-    "vatIncl": "TVA 8.1% incluse"
+    "vatIncl": "TVA 8.1% incluse",
+    "voucherLabel": "Code de bon",
+    "voucherPlaceholder": "Saisir le code",
+    "voucherApply": "Appliquer",
+    "voucherLine": "Bon",
+    "creditLine": "Crédit",
+    "voucherInvalid": "Ce code de bon est invalide, expiré ou non valable pour ce salon."
   },
   "searchUi": {
     "sort_rating": "Les plus populaires",

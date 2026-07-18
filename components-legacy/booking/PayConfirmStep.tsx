@@ -117,6 +117,23 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
   const [confirmationPath, setConfirmationPath] = useState<string | null>(null);
   const chargeRef = useRef(false);
 
+  // Voucher spend (#19/#50, 2026-07-18): the backend (booking-pay-intent) already implements
+  // voucher_code redemption + auto-applied referral credit, this wires the FE. voucherCodeInput
+  // is the live-typed value; appliedVoucherCode is committed by the "Anwenden" button and is what
+  // actually goes on the wire, so a half-typed code never rides along on a stray Buchen click.
+  // The real redemption + validation only happens server-side inside booking-pay-intent (there is
+  // no separate voucher preview endpoint, only promo has one), so payIntentSummary holds whatever
+  // that response actually reports applied, never a client-guessed figure.
+  const [voucherCodeInput, setVoucherCodeInput] = useState('');
+  const [appliedVoucherCode, setAppliedVoucherCode] = useState<string | null>(null);
+  const [voucherError, setVoucherError] = useState<string | null>(null);
+  const [payIntentSummary, setPayIntentSummary] = useState<{
+    amount: number;
+    creditApplied: number;
+    voucherApplied: number;
+    voucherCode: string | null;
+  } | null>(null);
+
   const localeCode = locale === 'de' ? 'de-CH' : locale === 'fr' ? 'fr-CH' : locale === 'it' ? 'it-CH' : 'en-GB';
   const cancellationHours = salon.cancellation_window_hours ?? 24;
 
@@ -293,13 +310,34 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
       const piRes = await fetch('/api/stripe/booking-pay-intent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ booking_id: bookingId }),
+        body: JSON.stringify({
+          booking_id: bookingId,
+          ...(appliedVoucherCode ? { voucher_code: appliedVoucherCode } : {}),
+        }),
       });
       const piData = await piRes.json().catch(() => null);
       if (!piRes.ok || !piData?.client_secret) {
         console.error('[PayConfirmStep] booking-pay-intent failed:', piData?.error ?? piRes.status);
         throw new Error(t('payment.bookingFailed'));
       }
+
+      // The response is the source of truth for what actually got redeemed (never the request
+      // echoed back): a requested code that is wrong / wrong-salon / expired / exhausted comes
+      // back with voucher_code:null and voucher_applied:0, so it surfaces as an inline error
+      // instead of silently charging full price with no explanation.
+      setPayIntentSummary({
+        amount: Number(piData.amount) || 0,
+        creditApplied: Number(piData.credit_applied) || 0,
+        voucherApplied: Number(piData.voucher_applied) || 0,
+        voucherCode: piData.voucher_code ?? null,
+      });
+      const voucherFailed = appliedVoucherCode && !piData.voucher_code;
+      setVoucherError(voucherFailed ? tp('voucherInvalid') : null);
+      // The inline error text lives in the phase:'select' voucher block, which unmounts in
+      // this SAME state update once phase flips to 'pay' below, so it would never actually
+      // become visible. A toast is phase-independent (still visible on the card step), and
+      // payment still proceeds at the un-discounted price rather than blocking the booking.
+      if (voucherFailed) toast.error(tp('voucherInvalid'));
 
       setConfirmationPath(path);
       setClientSecret(piData.client_secret);
@@ -431,10 +469,34 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
               <span className="shrink-0 tabular-nums text-s-ink-2">{formatPrice(vatIncludedAmount, localeCode)}</span>
             </div>
           )}
+          {/* Voucher + credit line items (#19/#50/#52): only rendered once the pay-intent response
+              confirms a real applied Rappen amount, never a client-guessed preview. mockup-ok: this
+              is an EXACT reuse of the VAT row directly above (same text-[13px] row, same flex
+              layout), swapping only the LOCKFILE semantic success token text-s-success for the
+              savings amount, no new size/color/spacing invented. */}
+          {payIntentSummary && payIntentSummary.voucherApplied > 0 && (
+            <div className="flex items-baseline justify-between gap-3 text-[13px]"> {/* mockup-ok */}
+              <span className="text-s-success">{tp('voucherLine')}</span>
+              <span className="shrink-0 tabular-nums text-s-success">-{formatPrice(payIntentSummary.voucherApplied, localeCode)}</span>
+            </div>
+          )}
+          {payIntentSummary && payIntentSummary.creditApplied > 0 && (
+            <div className="flex items-baseline justify-between gap-3 text-[13px]"> {/* mockup-ok */}
+              <span className="text-s-success">{tp('creditLine')}</span>
+              <span className="shrink-0 tabular-nums text-s-success">-{formatPrice(payIntentSummary.creditApplied, localeCode)}</span>
+            </div>
+          )}
         </div>
         <div className="mt-2.5 flex items-baseline justify-between gap-3 border-t border-s-ink/[0.08] pt-2.5">
           <span className="font-heading text-[15px] font-semibold text-s-ink">{tp('totalLabel')}</span>
-          <span className="font-heading text-[22px] font-bold tabular-nums tracking-[-0.01em] text-s-ink">{formatPrice(totalPrice, localeCode)}</span>
+          <span className="font-heading text-[22px] font-bold tabular-nums tracking-[-0.01em] text-s-ink">
+            {formatPrice(
+              payIntentSummary
+                ? Math.max(0, totalPrice - payIntentSummary.voucherApplied - payIntentSummary.creditApplied)
+                : totalPrice,
+              localeCode,
+            )}
+          </span>
         </div>
       </motion.div>
 
@@ -594,7 +656,48 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
         )}
       </div>
 
-      {/* Cancellation policy mini-banner — below Zahlung per owner (mockup 24c/24d) */}
+      {/* Voucher spend (#19/#50, 2026-07-18): only offered when THIS booking will actually
+          create a PaymentIntent (deposit/prepay always online; at_salon only when the
+          customer picked "online" above). A purely in-person booking never reaches the
+          redemption path server-side, so the field would be a dead promise there.
+          mockup-ok: wrapper reuses the EXACT contact-block classes above (rounded-input
+          border border-s-border bg-s-bg-surface p-4), the label reuses the "(d) Payment"
+          eyebrow classes above, the input is the bare global input primitive (same as
+          contactName/contactPhone), the button reuses BookingPaymentForm's existing
+          "Andere Zahlungsart" neutral-outline classes verbatim. No new size/color/radius. */}
+      {paymentMethod === 'online' && (
+        <div className="rounded-input border border-s-border bg-s-bg-surface p-4">
+          <p className="mb-2 text-[13px] font-semibold text-s-ink">{tp('voucherLabel')}</p>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={voucherCodeInput}
+              onChange={(e) => { setVoucherCodeInput(e.target.value); setVoucherError(null); }}
+              placeholder={tp('voucherPlaceholder')}
+              aria-label={tp('voucherLabel')}
+              className={`min-w-0 flex-1${voucherError ? ' input-error' : ''}`}
+            />
+            <button
+              type="button"
+              onClick={() => {
+                const code = voucherCodeInput.trim().toUpperCase();
+                setAppliedVoucherCode(code || null);
+                setVoucherError(null);
+                setPayIntentSummary(null);
+              }}
+              disabled={!voucherCodeInput.trim()}
+              className="h-11 shrink-0 rounded-full border border-s-border bg-transparent px-5 font-body text-[13.5px] font-semibold text-s-ink-2 transition-colors duration-150 hover:bg-s-bg-sunken disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {tp('voucherApply')}
+            </button>
+          </div>
+          {voucherError && (
+            <p className="mt-2 text-[12.5px] text-s-error">{voucherError}</p>
+          )}
+        </div>
+      )}
+
+      {/* Cancellation policy mini-banner (below Zahlung per owner, mockup 24c/24d) */}
       <div className="flex items-start gap-2 px-1">
         <ShieldCheck size={14} className="mt-[2px] shrink-0 text-s-success" aria-hidden />
         <p className="font-body text-[12.5px] leading-[1.5] text-s-ink-2">
@@ -631,17 +734,19 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
         <div className="rounded-input border border-s-border bg-s-bg-surface p-4">
           <BookingPaymentForm
             clientSecret={clientSecret}
-            amount={chargeNow}
+            amount={payIntentSummary?.amount ?? chargeNow}
             locale={locale}
             localeCode={localeCode}
             returnUrl={`${typeof window !== 'undefined' ? window.location.origin : ''}/${locale}${confirmationPath}`}
             onSucceeded={() => { resetForm(); router.replace(`/${locale}${confirmationPath}`); }}
             onUseOtherMethod={() => {
               // Drop back to the selector. The pending online booking is left for the
-              // abandon-sweep cron; a fresh selection creates its own booking.
+              // abandon-sweep cron; a fresh selection creates its own booking. The prior
+              // pay-intent summary is stale once a new booking/PI gets created on retry.
               setPhase('select');
               setClientSecret(null);
               setConfirmationPath(null);
+              setPayIntentSummary(null);
               chargeRef.current = false;
             }}
           />
