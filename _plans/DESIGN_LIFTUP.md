@@ -53,7 +53,17 @@ media-read rule) at the START of this workstream, not now.
   codify it.
 - Item D is a code removal the owner already decided , not blocked on a mockup.
 
+## Decision log
+- 2026-07-18 ROUND 1 delivered (public/_mockups/liftup-directions/ , profile current-vs-minimalist + unified saved).
+  Owner verdict: "i like the uber but ion think everywhere like that is good we can mix up. gimme ideas on
+  other screens n how we gonna integrate it." => DIRECTION SETTLED: adopt the Uber-borderless-minimalist, but
+  MIXED (not everywhere). The open question is now the INTEGRATION MODEL (how to decide which screen gets
+  minimalist vs keeps marketplace density) + seeing the mix applied to OTHER screens.
+- 2026-07-18 ROUND 2 (in progress): integration mockups. 3 candidate integration models side-by-side +
+  the mix rendered on other screens (Settings, Appointments, Search results, Salon PDP), grounded in a
+  read-only screen-map (workflow liftup-screen-map). Lead with a recommended model.
+
 ## Open forks to resolve with the owner (via the mockups)
-1. Minimalist-borderless vs pills/Fresha/Airbnb , where does each win, and which becomes the default? (item G)
+1. RESOLVED toward MIXED (owner 2026-07-18). Remaining: which INTEGRATION MODEL governs the mix (round 2).
 2. Unified-favorites: which surfaces fold in (Favoriten, Inspo saved, saved salons, saved looks, boards?) and
    the tab set. (item B)
