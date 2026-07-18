@@ -111,12 +111,17 @@ per-screen approval.
 ---
 
 ## 4b. Round-3 asks (owner 2026-07-18, format polish , atomic)
-- [ ] Bigger + (add) icon on the service rows (services-fs + services-expand).
-- [ ] Sticky category pill CHANGES as you scroll (scrollspy: active pill follows the section; tap a pill scrolls to it). Needs real Cut/Color/Styling sections with services.
-- [ ] Convert the OTHER mockups to FULL-PAGE (full-screen), like services-fs (gate now enforces this).
-- [ ] Before/after (full-screen Before/After toggle, live iframe vs proposal) for the OTHER mockups too, not just services.
-NOTE (no silent narrowing): asks 3+4 = "all other mockups"; delivering the template + a first batch this turn,
-the remaining screens queued explicitly below and enforced full-screen by mockup-fullscreen-gate.
+- [x] Bigger + (add) icon on the service rows , DONE: 38px control + 22px + icon (was 26/15). services-fs.
+- [x] Sticky category pill CHANGES as you scroll (scrollspy) , DONE: active pill steps Cut->Color->Styling as
+  you scroll (11-service list for range), tap a pill to jump; fixed an init-on-hidden-pane bug. Verified live.
+- [~] Convert OTHER mockups to FULL-PAGE , template DONE (services-fs) + mockup-fullscreen-gate ENFORCES it on
+  every new mockup Write. Remaining: rebuild the existing galleries (booking steps, salon PDP, settings,
+  appointments, profile, home, inspo) each as full-page. Progressive, one per turn.
+- [~] Before/after (toggle) for OTHER mockups , toggle template DONE (services-fs). PUBLIC screens (booking,
+  salon PDP, home, search, inspo) support a LIVE iframe before, so they convert cleanly. NAMED DEPENDENCY:
+  ACCOUNT/personal screens (settings, appointments, profile, favorites, looks, stamps) are AUTH-GATED , a
+  live iframe there redirects to login, so their "before" needs a LOGGED-IN capture (Playwright with
+  /api/dev/login), a heavier path than the public-screen iframe. Flagging, not silently dropping.
 
 ## 5. Method / guardrails
 - MOCKUP-FIRST, one owner approval per screen, before ANY code. Grounded in the real screen structure
