@@ -30,8 +30,9 @@
  *   - min_rating          → supported (gte average_rating)
  *   - open_now            → supported (isOpenNow over opening_hours; open salon IDs
  *                           resolved server-side before pagination, route.ts ~L138).
- * OMITTED (no API support): Preis (min_price/max_price read but not applied,
- *   route.ts L133-134) and "In deiner Naehe" (needs lat/lng geolocation capture,
+ *   - min_price/max_price → supported (Preis; buildPriceTask matches salons with
+ *                           >=1 active service in the band, route.ts ~L276-282).
+ * OMITTED (no API support): "In deiner Naehe" (needs lat/lng geolocation capture,
  *   no `distance` param + no geo-prompt UI in scope). Haartyp / Ausstattung
  *   omitted per spec (no DB data).
  */

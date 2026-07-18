@@ -165,13 +165,6 @@ function formatSlotTime(iso: string, locale: string): string {
   }
 }
 
-const ALL_SVC_LABEL: Record<string, string> = {
-  de: "Alle Services ansehen",
-  en: "View all services",
-  fr: "Voir tous les services",
-  it: "Vedi tutti i servizi",
-};
-
 // "feed" variant only (approved /dev/results-full mockup copy): "View N matching
 // services" under the max-3 service-price rows, blue small-clickable-bit link.
 const VIEW_N_SERVICES_LABEL: Record<string, (n: number) => string> = {
@@ -215,18 +208,6 @@ function SalonResultCardInner(props: SalonResultCardProps) {
   // Rendered via the <RatingStars> primitive at each site below.
   // V3-D353: monogram fallback initial (matches the homepage SalonCard when no photo).
   const initial = (name ?? "").trim().charAt(0).toUpperCase() || "?";
-
-  // V3-D376: featured service for the card booking block — prefer one with open
-  // slots, else the first. Its slots (ISO) format to HH:MM; each pill links into
-  // booking with that service preselected. "Alle Services" → the PDP service list.
-  const featured = services?.find((s) => (s.slots?.length ?? 0) > 0) ?? services?.[0] ?? null;
-  const featuredName = featured
-    ? (locale === "en" && featured.name_en ? featured.name_en : featured.name_de) ?? null
-    : null;
-  const featuredDur = featured ? formatDuration(featured.duration_minutes) : null;
-  const featuredSlots = (featured?.slots ?? []).slice(0, 3);
-  const hasMoreSlots = (featured?.slots?.length ?? 0) > 3;
-  const allServicesLabel = ALL_SVC_LABEL[locale] ?? ALL_SVC_LABEL.de;
 
   // Shared photo fill (next/Image or monogram) - reused by BOTH variants so the
   // photo treatment stays identical across the square card and the list row.

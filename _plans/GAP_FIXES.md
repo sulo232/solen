@@ -43,17 +43,17 @@ Full per-gap analysis: public/_reports/gap-decisions + scratchpad/decisions.json
 - [ ] #46 /notifications not linked from the profile hub -> add a hub entry.
 
 ## WAVE 3 , dead-code deletions (real cleanup, allowed) + stale docs
-- [ ] #1 dead SalonResultCard deep-link vars + comment -> delete.
+- [x] #1 dead SalonResultCard deep-link vars + comment DELETED (verified 0 JSX refs).
 - [ ] #2 dormant SearchBar island + handleSubmit -> delete (after confirming no live handler reads it).
-- [ ] #11 dead date-picker.tsx (zero importers) -> delete.
-- [ ] #16 / #51 dead /checkout page (~660 lines, unreachable, dup of live pay) -> delete + graveyard.
-- [ ] #35 dead walk-in-pay copy labels -> delete.
-- [ ] #3 / #33 / #40 stale comments (price filter, dedupe, i18n) -> correct them.
-- [ ] #38 dead salon_response fallback -> delete.
+- [x] #11 dead date-picker.tsx DELETED (verified 0 importers).
+- [x] #16/#51 dead /checkout page DELETED (748 lines, verified unreachable) + graveyarded. #17/#18 moot.
+- [x] #35 dead walk-in-pay copy labels DELETED (verified unused).
+- [x] #3/#33/#40 stale comments CORRECTED (price filter wired, walk-in dedupe, i18n labels).
+- [x] #38 dead salon_response fallback DELETED (field never arrives).
 - [ ] #48 intake-forms raw DB-key labels -> localize.
 - [ ] #47 hub counts silently coerce errors to 0 -> surface the error path.
-- [ ] #17 /checkout misrepresents referral total_earned as credit -> moot once #16 deletes /checkout; verify.
-- [ ] #18 /checkout warm-terracotta stale design -> moot once #16 deletes it; verify.
+- [x] #17 moot , /checkout deleted (#16).
+- [x] #18 moot , /checkout deleted (#16).
 - [ ] #45 /profile/vouchers + /profile/gift-cards redirect-only no-op routes -> once vouchers wired (#19), make real; else delete the routes.
 
 ## SKIP , genuine LEAVE (intentional/known/harmless, per analysis)

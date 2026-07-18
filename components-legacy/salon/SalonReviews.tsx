@@ -34,7 +34,6 @@ type EnrichedReview = Review & {
   review_photos?: ReviewPhoto[];
   review_replies?: ReviewReply[];
   booking_id?: string;
-  salon_response?: string;
 };
 
 interface SalonReviewsProps {
@@ -427,7 +426,7 @@ export default function SalonReviews({
                       const reply =
                         rev.review_replies && rev.review_replies.length > 0 && rev.review_replies[0].is_public
                           ? rev.review_replies[0].reply_text
-                          : (rev as any).salon_response ?? null;
+                          : null;
                       if (!reply) return null;
                       return (
                         <div className="mt-3 pl-4 border-l-2 border-s-success/30">

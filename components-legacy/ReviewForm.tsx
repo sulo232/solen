@@ -62,8 +62,9 @@ type AmenityItem = {
 // EXPERIENTIAL amenities a customer confirms about the place (Google-Maps style).
 // Deliberately EXCLUDES booking/platform features (instant booking, online pay, free
 // cancel) , those are not something a reviewer attests to about the physical/social space.
-// Labels are hardcoded DE here mirroring SalonAdditionalInfo (which is also hardcoded DE);
-// TODO(i18n): add per-amenity keys to messages/*.json + reuse them in both places.
+// labelKey below is just the amenity key; the localized label is resolved via the
+// shared searchUi i18n namespace (`amenity_${item.key}`, messages/*.json), same as
+// the search filters , see tAmenity() at the render site.
 const AMENITY_ITEMS: AmenityItem[] = [
   { key: "lgbtq_friendly", icon: Heart, labelKey: "lgbtq_friendly" },
   { key: "wheelchair_accessible", icon: Accessibility, labelKey: "wheelchair_accessible" },

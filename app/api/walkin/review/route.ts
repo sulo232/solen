@@ -13,10 +13,10 @@ import { validateBody, walkinReviewSchema } from "@/lib/validations";
 // recomputes BOTH the salon's and the barber's average_rating/review_count, so per-staff
 // counts grow on every visit (the salon-only recompute in /api/reviews didn't touch staff).
 //
-// Dedupe: best-effort. barber_walkin_queue has no booking_id, so we can't key on it like
-// /api/reviews does; we skip a duplicate when the SAME signed-in customer already reviewed
-// this barber today. Robust per-visit dedupe (a reviews.walkin_queue_id unique index) is a
-// flagged hardening follow-up — until then the rate-limiter + one-shot UI cover casual cases.
+// Dedupe: barber_walkin_queue has no booking_id, so we can't key on it like /api/reviews
+// does. Instead the review row is UPSERTed on walkin_queue_id (partial unique index from
+// migration 20260610_walkin_review), one review per visit, a re-submit updates in place
+// instead of inserting a duplicate. See the upsert below for the real mechanism.
 export async function POST(req: NextRequest) {
   const disabled = await checkFeatureEnabled("reviews");
   if (disabled) return disabled;
