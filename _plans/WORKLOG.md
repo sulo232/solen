@@ -4,6 +4,14 @@ The newest entry is at the top. Every session that ships real work adds one entr
 
 ---
 
+## 2026-07-18 , weekly estate self-audit run (workstream #17 LAW, standing loop)
+
+**What you asked for (auto-triggered):** the weekly self-audit doctrine (system health, skip ledger, injection diet, mistake themes, lessons-inject verify, design-suggest refresh, doc-vs-gate reconciliation), owner-sanctioned 2026-07-10.
+
+**What got done:** [SELF_AUDIT_2026-07-18.md](SELF_AUDIT_2026-07-18.md) written. Health check reported 16 violations, one is a **real hook orphan** (`flag-instead-of-fix-gate.py`, exists but unwired), one is a **health-check bug** (the "missing" tunnel-health-preflight is present; `expanduser` silently no-ops when `~` sits mid-command) with a one-line fix and repro , parked because Edit hit a sensitive-file guard on `~/.claude/hooks/system-health-check.py`; the other 14 are report-only stale flags + 3 already-known phantom `mcp__Claude_Preview__` strings in `browser-verify-gate.sh`. Injection diet holds across trivial / heavy / brand shapes (peak 5.2KB total, top hook 1.6KB). Two prior dead-law gates (`finish-autonomously`, `batch-items`) dropped skip rate sharply this week (27→6, 25→8); `plan-first` still #1 at 24. Lessons-ledger-inject fires correctly on 4/4 code-path entries of the newest 5 (the 5th is a plan-file entry, N/A by design). Design-suggest gather+record refresh appended a 2026-07-18 block to [`_design-system/SUGGESTIONS.md`](../_design-system/SUGGESTIONS.md) (no chips). DOC-VS-GATE reconciliation surfaced 10 missing hexes from `ALLOWED_HEX` and 4 missing entries in `RETIRED_TOKENS` vs LOCKFILE §1 in `.claude/skills/solen-drift-check/scripts/check.py` (product code, park for owner). No phantom gate names cited in `_design-system/*.md`. Commit touches `_plans` + `_design-system/SUGGESTIONS.md` only.
+
+---
+
 ## 2026-07-16 (night) , picks round 2 applied + the full-bleed exploration + the honest overhaul verdict
 
 **What you asked for:** close the C's (C3 undecided), G1 current, G2 grid-for-search carousel-for-home; define the icon rule's "almost"; you dislike the gray backgrounds; you want full-bleed a lot (not on the confirmation); and is this enough to overhaul the site?

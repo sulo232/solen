@@ -111,3 +111,18 @@ low visible payoff , resurface with the next tailwind.config touch).
 - drift-report (2026-07-06): 30 hard findings, ~21 on rebuilt/live routes (9 partner A21, 4 PayConfirm A17, 3 vouchers A21, 4 single A21s, 1 A1 not-found hex, 1 A19 gift-card sub-12px, 1 B5 BookingWizard).
 - MOTION.md: 1 open leftover (haptics).
 - PSYCH_AUDIT_2026-07-07: ~13 still-open [mockup]/[code] items after kill-list drops; top 3 carried above.
+
+---
+
+## 2026-07-18 weekly self-audit refresh (gather+record only, no chips)
+
+Verified sources: _drift-report.md (no rerun this pass, 2026-06-12 report still current), MOTION.md, TASTE_LOG.md through 2026-07-17.
+
+Prior 6 live items (2026-07-11): none surfaced as "resolved" in TASTE_LOG or in recent commits touching the cited files, so all 6 remain open. Owner should approve or drop rather than re-list; no chips fired.
+
+New deltas since 2026-07-11:
+- **TASTE_LOG 2026-07-17 input law**: input radius corrected from 16 to 12; input fill = filled gray #F4F4F5. CLAUDE.md updated. Not a suggestion (it is a settled call already applied via the type-targeted base rule); flagged here so no future suggestion re-litigates it.
+- **TASTE_LOG 2026-07-16 IG-principles round 1**: 12 ADD candidates owner-approved; deliverables tracked in workstream #30 (IG_PRINCIPLES_EVAL.md), not in this file.
+- **TASTE_LOG 2026-07-15 dark mode**: DECLINED, graveyarded. No suggestion.
+- **Drift-gate literal gaps surfaced by 2026-07-18 audit (DOC-VS-GATE reconciliation)**: 10 LOCKFILE §1 hexes are missing from `ALLOWED_HEX` in `.claude/skills/solen-drift-check/scripts/check.py` (#E4E4E7 s-border, #F1AE27 s-warning, #C2410C s-urgency, #EA580C s-surcharge, #C03001 s-pop, #DC2626 s-error/s-closed, #1F8900 s-open, #B45309 s-warning.text, #EAEFFE s-accent.pale, #9CA3AF s-chart-2). Legitimate inline SVG fills for those tokens currently fire A1 false-positive drift. Parked here (fix belongs to the checker, out of write scope for this audit; see _plans/SELF_AUDIT_2026-07-18.md).
+- **Drift-gate RETIRED_TOKENS gaps**: `s-amber`, `s-love*`, `s-cat-*-text`, and 5 of the `s-atm-*` family are named RETIRED in LOCKFILE §1 but missing from the checker's `RETIRED_TOKENS` set; net-new use would not be flagged. Same parking as above.
