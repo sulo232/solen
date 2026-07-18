@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Homepage , full screen before/after (toggle)</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/page.tsx + app/[locale]/_components/homepage/Hero.tsx + SearchBar.tsx +
+  MobileCategoriesRow.tsx + SalonCard.tsx + Entdecken.tsx (the real home sections).
+  BEFORE = a LIVE <iframe> of the real /de home (actual current screen).
+  AFTER = borderless, FULL-SCREEN with a Before/After toggle. Home is a BROWSE surface, so it STAYS mostly
+  dense (cards, category tiles, search, walk-in chips): the borderless change here is subtle , the drop
+  shadows come off (search bar, salon-card photos, category tiles, the rising feed panel) so it reads flat
+  and clean; the content density stays.
+  Reference-checked: owner Uber screenshots (IMG_6537/6538/6539, subagent-analysed this session).
+  Exists-check: hero + search + category tiles + salon rows + inspo row all exist and render today;
+  REMOVED.md none; NEW = borderless (shadows off) treatment only.
+  Backend-check: search = navigates to /search (client); card = navigates to /salon/[slug] (client). Every
+  value is display of live data. Taste-current: star+value only, no review count; NO edge-to-edge photo band.
+  English chrome. Owner 2026-07-18 "and for other places / next" , converting the others to full-page + before/after.
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--surface:#fff;--sunken:#F4F4F5;--hairline:#E4E4E7;--accent:#276EF1;--green:#16A34A;--star:#FFC32B;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
+  .top{position:fixed;top:0;left:0;right:0;height:52px;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;padding:0 12px}
+  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
+  .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .stage{position:fixed;top:52px;left:0;right:0;bottom:0}
+  .pane{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .pane.hidden{display:none}
+  iframe{width:100%;height:100%;border:0;display:block}
+
+  .afwrap{max-width:520px;margin:0 auto;min-height:100%;padding:6px 0 40px}
+  .greet{font-size:13px;color:var(--ink3);padding:8px 16px 0}
+  .h1{font-size:28px;font-weight:700;letter-spacing:-0.03em;line-height:1.06;padding:2px 16px 0}
+  .sub{font-size:15px;color:var(--ink2);padding:6px 16px 0}
+  .search{margin:16px 16px 0;border:1px solid var(--hairline);border-radius:999px;display:flex;align-items:center;height:56px;padding:0 6px 0 16px;gap:10px}
+  .search .sp{flex:1;font-size:14px;color:var(--ink3);display:flex;align-items:center;gap:8px}
+  .search .div{width:1px;height:22px;background:var(--hairline)}
+  .search .go{background:var(--ink);color:#fff;font-size:14px;font-weight:700;border-radius:999px;padding:10px 18px;white-space:nowrap}
+  .sh{font-size:20px;font-weight:700;letter-spacing:-0.01em;padding:24px 16px 4px;display:flex;align-items:center}
+  .sh .all{margin-left:auto;font-size:13px;font-weight:600;color:var(--ink2);display:flex;align-items:center;gap:3px}
+  .cats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:6px 16px 0}
+  .ctile{aspect-ratio:1.2/1;border-radius:16px;background:var(--sunken);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+  .ctile .cl{font-size:13px;font-weight:600}
+  .row{display:flex;gap:14px;padding:8px 16px 0;overflow-x:auto;scrollbar-width:none}
+  .row::-webkit-scrollbar{display:none}
+  .card{flex:0 0 74%;max-width:280px}
+  .card .ph{aspect-ratio:5/4;border-radius:16px;background:#E7E5E4;position:relative}
+  .card .hb{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center}
+  .card .nm{font-size:15px;font-weight:700;margin-top:9px;display:flex;align-items:center;gap:6px}
+  .card .nm .st{display:inline-flex;align-items:center;gap:3px;font-size:13px;font-weight:600;margin-left:auto}
+  .card .fm{font-size:12.5px;color:var(--ink3);margin-top:2px}
+  .card .fp{font-size:13px;font-weight:700;margin-top:3px}
+  .inspo{display:flex;gap:12px;padding:8px 16px 0;overflow-x:auto;scrollbar-width:none}
+  .inspo::-webkit-scrollbar{display:none}
+  .itile{flex:0 0 44%;max-width:200px;aspect-ratio:9/16;border-radius:16px;background:#EAE7E2;position:relative}
+  svg{display:block}
+</style>
+</head>
+<body>
+  <div class="top"><div class="seg"><button id="tb" class="on" onclick="show('before')">Before</button><button id="ta" onclick="show('after')">After</button></div></div>
+  <div class="stage">
+    <div class="pane before" id="pB"><iframe src="/de" title="live before" loading="eager"></iframe></div>
+    <div class="pane after hidden" id="pA">
+      <div class="afwrap">
+        <div class="greet">Hi, QA Test</div>
+        <div class="h1">Book beauty, instantly.</div>
+        <div class="sub">Salons across Switzerland.</div>
+        <div class="search"><span class="sp"><span data-i="search"></span>Service</span><span class="div"></span><span class="sp">City</span><span class="go">Find times</span></div>
+
+        <div class="sh">For you</div>
+        <div class="cats">
+          <div class="ctile"><span data-i="scissors"></span><span class="cl">Hair</span></div>
+          <div class="ctile"><span data-i="scissors"></span><span class="cl">Barber</span></div>
+          <div class="ctile"><span data-i="sparkle"></span><span class="cl">Nails</span></div>
+          <div class="ctile"><span data-i="map"></span><span class="cl">Map</span></div>
+          <div class="ctile"><span data-i="walk"></span><span class="cl">Walk-in</span></div>
+          <div class="ctile"><span data-i="sparkle"></span><span class="cl">Spa</span></div>
+        </div>
+
+        <div class="sh">Top on Solen <span class="all">See all<span data-i="chev"></span></span></div>
+        <div class="row">
+          <div class="card"><div class="ph"><span class="hb" data-hb></span></div><div class="nm">Studio Belle<span class="st"><span data-i="star"></span>4.8</span></div><div class="fm">Coiffeur . Spalenvorstadt 22</div><div class="fp">from CHF 45</div></div>
+          <div class="card"><div class="ph" style="background:#EDE9E4"><span class="hb" data-hb></span></div><div class="nm">Blade &amp; Stone<span class="st"><span data-i="star"></span>4.9</span></div><div class="fm">Barbershop . Steinenvorstadt 8</div><div class="fp">from CHF 42</div></div>
+        </div>
+
+        <div class="sh">Get inspired <span class="all">See all<span data-i="chev"></span></span></div>
+        <div class="inspo"><div class="itile"></div><div class="itile" style="background:#E8EAF0"></div><div class="itile" style="background:#E7E5E4"></div></div>
+      </div>
+    </div>
+  </div>
+<script>
+function show(w){document.getElementById('pB').classList.toggle('hidden',w!=='before');document.getElementById('pA').classList.toggle('hidden',w!=='after');document.getElementById('tb').classList.toggle('on',w==='before');document.getElementById('ta').classList.toggle('on',w==='after');}
+var I={search:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',scissors:'<circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 12.5 20 20M8.1 8.1 12 12"/>',sparkle:'<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z"/>',map:'<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14"/>',walk:'<circle cx="13" cy="4" r="2"/><path d="M7 21l3-6 2-4M11 11l4 2 2 5M10 15l-3-2V9l4-2 3 3 3 1"/>',star:'<path d="M12 2l3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/>',chev:'<path d="M9 6l6 6-6 6"/>',heart:'<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/>'};
+function svg(p,st,w,fill){return '<svg class="lucide" data-lucide="icon" width="'+w+'" height="'+w+'" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="'+st+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>';}
+var ink='#0A0A0A',ink2='#52525B',ink3='#A1A1AA',star='#FFC32B',pink='#FF3366';
+document.querySelector('[data-i=search]').innerHTML=svg(I.search,ink3,18);
+document.querySelectorAll('.ctile [data-i]').forEach(function(e){e.innerHTML=svg(I[e.dataset.i],ink,24);});
+document.querySelectorAll('[data-i=chev]').forEach(function(e){e.innerHTML=svg(I.chev,ink2,15);});
+document.querySelectorAll('[data-i=star]').forEach(function(e){e.innerHTML=svg(I.star,star,13,star);});
+document.querySelectorAll('[data-hb]').forEach(function(e){e.innerHTML=svg(I.heart,pink,17);});
+</script>
+</body>
+</html>
