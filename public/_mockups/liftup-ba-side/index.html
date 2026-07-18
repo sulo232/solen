@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
+<title>Booking services , before vs after side by side</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/salon/[slug]/booking/page.tsx + components-legacy/booking/ServicesStaffStep.tsx.
+  BEFORE = a LIVE <iframe> of the real /de/salon/blade-and-stone/booking page (the actual current screen,
+  not a screenshot or redraw). AFTER = the borderless proposal inline. Reference-checked: owner Uber
+  screenshots (IMG_6537/6538/6539, subagent-analysed this session). Exists-check: booking wizard exists +
+  renders the services step; REMOVED.md none; NEW = only a borderless treatment.
+  Backend-check: Continue = client step state; add-service toggle = client cart (no new backend); the BEFORE
+  iframe is the real app. Taste-current: star+value only, no review count; no full-bleed. English chrome.
+  Measured live /de/profile this session (rows 52px, header 13px/500, radius 16px). Purpose: owner on mobile
+  asked to see before/after SIDE BY SIDE; chat images would not render, so this is a served page to open in a
+  phone browser and pinch-zoom. Treatment-only per mockup policy.
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--surface:#FFFFFF;--sunken:#F4F4F5;--hairline:#E4E4E7;--accent:#276EF1;--green:#16A34A;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);background:#FAFAFA;color:var(--ink);-webkit-font-smoothing:antialiased;padding:18px 14px 60px}
+  h1{font-size:20px;font-weight:800;letter-spacing:-0.02em;margin-bottom:4px}
+  .hint{font-size:13px;color:var(--ink2);margin-bottom:16px}
+  .hint b{color:var(--ink)}
+  .row{display:flex;gap:18px;align-items:flex-start;min-width:760px}
+  .pane{flex:0 0 360px}
+  .lab{font-size:14px;font-weight:700;margin-bottom:8px}
+  .lab.b{color:var(--ink)}
+  .lab.a{color:var(--green)}
+  .frame{width:360px;height:720px;border-radius:26px;overflow:hidden;box-shadow:0 16px 40px -18px rgba(0,0,0,.28),0 0 0 1px rgba(0,0,0,.05);background:#fff;position:relative}
+  iframe{width:360px;height:720px;border:0;display:block}
+
+  .a-scr{height:720px;overflow:hidden;background:#fff}
+  .a-status{height:38px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-size:12px;font-weight:600}
+  .a-sys{display:flex;gap:5px;color:var(--ink)}
+  .a-head{display:flex;align-items:center;justify-content:space-between;padding:2px 14px 10px}
+  .a-rd{width:34px;height:34px;display:flex;align-items:center;justify-content:center;color:var(--ink)}
+  .a-title{font-size:16.5px;font-weight:600}
+  .a-cats{display:flex;gap:8px;padding:4px 16px 8px}
+  .a-cat{font-size:13px;font-weight:600;padding:8px 15px;border-radius:999px;border:1px solid var(--hairline);color:var(--ink2)}
+  .a-cat.on{background:var(--sunken);color:var(--ink);border-color:transparent}
+  .a-sec{font-size:19px;font-weight:700;letter-spacing:-0.01em;padding:12px 18px 4px}
+  .a-srow{display:flex;align-items:flex-start;gap:12px;padding:13px 18px}
+  .a-srow+.a-srow{border-top:1px solid var(--hairline)}
+  .a-m{flex:1}
+  .a-sn{font-size:15px;font-weight:600}
+  .a-sd{font-size:12.5px;color:var(--ink3);margin-top:2px;display:flex;align-items:center;gap:5px}
+  .a-sp{font-size:14px;font-weight:700;margin-top:6px}
+  .a-tog{width:26px;height:26px;border-radius:999px;border:1.5px solid var(--hairline);flex:none;display:flex;align-items:center;justify-content:center;color:var(--ink3)}
+  .a-tog.on{background:var(--ink);border-color:var(--ink);color:#fff}
+  .a-bar{position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--hairline);padding:12px 16px;display:flex;align-items:center;gap:12px}
+  .a-tot{font-size:18px;font-weight:800}.a-cnt{font-size:11.5px;color:var(--ink3)}
+  .a-cta{margin-left:auto;background:var(--ink);color:#fff;font-size:14.5px;font-weight:700;border-radius:999px;padding:11px 22px;display:flex;align-items:center;gap:6px}
+  svg{display:block}
+</style>
+</head>
+<body>
+  <h1>Booking , services: before vs after</h1>
+  <p class="hint"><b>Pinch to zoom</b> and pan to compare. Left is your live current screen (real page). Right is the borderless proposal , only the white card box comes off.</p>
+  <div class="row">
+    <div class="pane">
+      <div class="lab b">BEFORE . live current screen</div>
+      <div class="frame"><iframe src="/de/salon/blade-and-stone/booking" title="live before" loading="eager"></iframe></div>
+    </div>
+    <div class="pane">
+      <div class="lab a">AFTER . borderless (proposed)</div>
+      <div class="frame">
+        <div class="a-scr">
+          <div class="a-status"><span>9:41</span><span class="a-sys" id="sys"></span></div>
+          <div class="a-head"><span class="a-rd" id="bk"></span><span class="a-title">Select services</span><span class="a-rd" id="xx"></span></div>
+          <div class="a-cats"><span class="a-cat on">Cut</span><span class="a-cat">Color</span><span class="a-cat">Styling</span></div>
+          <div class="a-sec">Cut</div>
+          <div class="a-srow"><div class="a-m"><div class="a-sn">Signature cut</div><div class="a-sd"><span id="c1"></span>45 min</div><div class="a-sp">CHF 65</div></div><span class="a-tog on" id="t1"></span></div>
+          <div class="a-srow"><div class="a-m"><div class="a-sn">Wash and blow-dry</div><div class="a-sd"><span id="c2"></span>30 min</div><div class="a-sp">CHF 45</div></div><span class="a-tog" id="t2"></span></div>
+          <div class="a-srow"><div class="a-m"><div class="a-sn">Fringe trim</div><div class="a-sd"><span id="c3"></span>15 min</div><div class="a-sp">from CHF 20</div></div><span class="a-tog" id="t3"></span></div>
+          <div class="a-bar"><div><div class="a-tot">CHF 65</div><div class="a-cnt">1 item . 45 min</div></div><span class="a-cta">Continue<span id="cta"></span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+<script>
+const I={back:'<path d="M19 12H5M12 19l-7-7 7-7"/>',x:'<path d="M18 6 6 18M6 6l12 12"/>',chev:'<path d="M9 6l6 6-6 6"/>',check:'<path d="M20 6 9 17l-5-5"/>',plus:'<path d="M12 5v14M5 12h14"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',signal:'<path d="M2 20h.01M7 20v-4M12 20v-8M17 20V8M22 4v16"/>',wifi:'<path d="M5 13a10 10 0 0 1 14 0M8.5 16.5a5 5 0 0 1 7 0M2 8.8a15 15 0 0 1 20 0M12 20h.01"/>',bat:'<rect x="2" y="7" width="16" height="10" rx="2"/><path d="M22 11v2"/>'};
+function svg(p,st,w,fill){return '<svg class="lucide" data-lucide="icon" width="'+(w||20)+'" height="'+(w||20)+'" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="'+st+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>';}
+const ink='#0A0A0A',ink3='#A1A1AA';
+document.getElementById('bk').innerHTML=svg(I.back,ink,20);
+document.getElementById('xx').innerHTML=svg(I.x,ink,19);
+['c1','c2','c3'].forEach(id=>document.getElementById(id).innerHTML=svg(I.clock,ink3,13));
+document.getElementById('t1').innerHTML=svg(I.check,'#fff',16);
+['t2','t3'].forEach(id=>document.getElementById(id).innerHTML=svg(I.plus,ink3,15));
+document.getElementById('cta').innerHTML=svg(I.chev,'#fff',15);
+document.getElementById('sys').innerHTML=svg(I.signal,ink,13)+svg(I.wifi,ink,13)+svg(I.bat,ink,15);
+</script>
+</body>
+</html>
