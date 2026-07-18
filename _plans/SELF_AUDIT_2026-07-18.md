@@ -1,5 +1,16 @@
 # Weekly estate self-audit , 2026-07-18
 
+## Batch checkboxes (readback contract)
+
+- [x] System health check report + violation list , §1
+- [x] Skip-flag ledger review, flag over-skipped gates , §2
+- [x] UserPromptSubmit injection-size profile, flag over-diet , §3
+- [x] Mistake-themes-global warning-tier themes , §4
+- [x] Newest 5 LESSONS_LEARNED entries parse against lessons-ledger-inject , §5
+- [x] Design-suggest gather+record only (refresh SUGGESTIONS.md, no chips) , §6
+- [x] Drift-gate literals vs LOCKFILE §1-3 + phantom gate-name grep , §7
+- [x] Write _plans/SELF_AUDIT_2026-07-18.md, ACTIVE row, WORKLOG entry, commit _plans , this file + commit 2feec0418
+
 Standing loop (workstream #17 LAW, owner-sanctioned 2026-07-10). Doctrine: `~/.claude/IMPROVE_SYSTEM.md` §5 + `~/.claude/LAW_SYSTEM.md`. Scope: hook scripts under `~/.claude/hooks` + doctrine `.md` files may be fixed; product code is READ-ONLY; commit only `_plans`.
 
 Prior run: [SELF_AUDIT_2026-07-11.md](SELF_AUDIT_2026-07-11.md).
