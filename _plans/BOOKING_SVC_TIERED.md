@@ -25,6 +25,17 @@ Mockup: `public/_mockups/liftup-booking-services-tiered/index.html`
 ## Motion feel (owner 2026-07-18: "it looks soo ass i want more of the morphing")
 - [x] The plain blur fade landed flat. Built a MOTION LAB (`liftup-services-motion/`) with 4 replayable value-change motions to pick from instead of guessing again: Blur fade / Count up / Zoom morph / Count + pop (recommended). All 4 verified live. AWAITING the owner's pick, then apply the chosen one to the tiered mockup + the real bottom bar.
 
+## Implement the counter (owner 2026-07-18: "implement the counter ... implement it already ... let me see the end result")
+- [x] Build a CountUpNumber client component: animates the number from the PREVIOUS value to the new one over a CONSTANT ~480ms (ease-out), NOT scaled by the delta, so 0->200 takes the same time as 65->93 (the owner's fear: a big price should not take long to climb). Renders ONLY the number; reduced-motion jumps. Also takes an optional `format` prop so the Swiss thousands separator survives the count (verified live: "CHF 1'210" at de-CH, "1 210 CHF" at fr-CH).
+- [x] Wire into ServicesStaffStep.tsx bottom bar: total = "CHF " static + CountUpNumber(totalPrice) (remove animate-value-roll); minutes = CountUpNumber(totalDuration) + " min" static. No pop/bump. Meta line carries `tabular-nums` so the digit width doesn't jitter while it counts.
+- [x] Verify live on the real booking route + show the owner the end result (clickable tunnel link).
+
+## Polish round (owner 2026-07-18, live on the real page)
+- [x] Details expand is too SLOW , ServicesStaffStep.tsx ~line 424 uses `duration: ENTER_DURATION` (~0.42s); drop to ~0.18s (keep GLIDE_EASE).
+- [x] Background not WHITE , the booking body is `min-h-screen bg-s-bg-sunken` (booking/page.tsx:234) + the sticky filter strip is `bg-s-bg-sunken` (ServicesStaffStep ~467). Make both WHITE (strip keeps a bottom hairline + blur for the sticky separation). NOTE: overrides the "sunken body" lock (mockup 20 / project_booking_flow_canonical); owner's live ask + the approved white mockup win. Affects ALL booking steps.
+- [x] "N ausgewählt" pill not design-system-like , ServicesStaffStep ~535 is `bg-s-ink text-white` + a heavy `shadow-[0_8px_24px_-8px_rgba(10,10,10,.45)]` (banned black fill + heavy shadow). Make it DS-compliant: white + `border-s-border` + `text-s-ink` + soft `shadow-elevation-2` (keep the count-bump + ArrowUp).
+- [x] The little black dot flying to the bottom-left on click , owner dislikes it. Remove flyToCart (ServicesStaffStep ~177 + its 2 calls) + the `.cart-fly-dot` CSS (globals.css ~1195).
+
 ## Carry into the HELD code build (not this turn)
 - [ ] Real bottom-bar MINUTES gets `animate-count-bump` on change (price already has `animate-value-roll` at ServicesStaffStep.tsx:553; the pill count has `animate-count-bump` at :540; ToggleCircle already ENTER_RECIPE). So the only real-code motion gap is the bottom-bar duration.
 - [ ] Full layered-loop build of the tier display (grouping + filter pills + tap-expand + +-select + ServiceDetailSheet reconciliation + de/en/fr/it) , HELD until the owner confirms the layout is final.
