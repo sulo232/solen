@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Salon page , full screen before/after (toggle)</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/salon/[slug]/page.tsx (SalonDetailV3) + SalonServices / SalonTeam / SalonReviews /
+  SalonOpeningTimes.
+  BEFORE = a LIVE <iframe> of the real /de/salon/blade-and-stone page (actual current screen).
+  AFTER = the borderless proposal, FULL-SCREEN with a Before/After toggle: the service TIER cards and the
+  Team/Reviews shadow-float PANELS lose their boxes (rows on white with hairlines + bold section titles);
+  filter pills, prices, ratings, photos, the info tail (already borderless) all stay.
+  Reference-checked: owner Uber screenshots (IMG_6537/6538/6539, subagent-analysed this session).
+  Exists-check: the PDP + services + team + reviews + hours all exist and render today; REMOVED.md none;
+  NEW = borderless treatment only (no new sections/features).
+  Backend-check: Book = navigates to /salon/[slug]/booking (client route, EXISTS); Heart = save; Share = client.
+  Every value (rating, prices, hours) is display of already-live data. Taste-current: star+value only, no
+  review count; NO edge-to-edge photo band (rounded inset photo instead). English chrome.
+  Owner 2026-07-18 "and for other places?" , converting the other screens to the full-page + before/after format.
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--surface:#fff;--sunken:#F4F4F5;--hairline:#E4E4E7;--accent:#276EF1;--green:#16A34A;--star:#FFC32B;--heart:#FF3366;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
+  .top{position:fixed;top:0;left:0;right:0;height:52px;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;padding:0 12px}
+  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
+  .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .stage{position:fixed;top:52px;left:0;right:0;bottom:0}
+  .pane{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .pane.hidden{display:none}
+  iframe{width:100%;height:100%;border:0;display:block}
+
+  .afwrap{max-width:520px;margin:0 auto;min-height:100%;padding-bottom:90px}
+  .navrow{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 8px}
+  .cbtn{width:38px;height:38px;border-radius:999px;border:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;color:var(--ink)}
+  .hero{margin:2px 16px 0;border-radius:16px;aspect-ratio:5/4;background:#E7E5E4;overflow:hidden;position:relative}
+  .thumbs{display:flex;gap:8px;padding:8px 16px 0}
+  .thumb{flex:1;aspect-ratio:1/1;border-radius:10px;background:#EDE9E4}
+  .hname{font-size:24px;font-weight:800;letter-spacing:-0.02em;padding:16px 16px 2px}
+  .meta{padding:0 16px}
+  .mrow{display:flex;align-items:center;gap:7px;padding:5px 0;font-size:14px;color:var(--ink2)}
+  .mrow .st{display:inline-flex;align-items:center;gap:4px;color:var(--ink);font-weight:600}
+  .mrow .open{color:var(--green);font-weight:600}
+  .sh{font-size:20px;font-weight:700;letter-spacing:-0.01em;padding:20px 16px 2px;display:flex;align-items:center}
+  .sh .all{margin-left:auto;font-size:13px;font-weight:600;color:var(--ink2)}
+  .pills{display:flex;gap:8px;padding:8px 16px 2px;overflow-x:auto;scrollbar-width:none}
+  .pills::-webkit-scrollbar{display:none}
+  .pl{font-size:13.5px;font-weight:600;padding:9px 16px;border-radius:999px;border:1px solid var(--hairline);color:var(--ink2);white-space:nowrap}
+  .pl.on{background:var(--sunken);color:var(--ink);border-color:transparent}
+  .svc{display:flex;align-items:center;padding:14px 16px}
+  .svc+.svc{border-top:1px solid var(--hairline)}
+  .svc .m{flex:1}
+  .svc .sn{font-size:15px;font-weight:600}
+  .svc .sd{font-size:12.5px;color:var(--ink3);margin-top:2px}
+  .svc .sp{margin-left:auto;font-size:14px;font-weight:700}
+  .team{display:flex;gap:16px;padding:10px 16px 4px;overflow-x:auto;scrollbar-width:none}
+  .team::-webkit-scrollbar{display:none}
+  .av{width:64px;flex:none;text-align:center}
+  .av .c{width:60px;height:60px;border-radius:999px;background:var(--sunken);margin:0 auto}
+  .av .n{font-size:12px;color:var(--ink2);margin-top:6px}
+  .rev{padding:14px 16px}
+  .rev+.rev{border-top:1px solid var(--hairline)}
+  .revh{display:flex;align-items:center;gap:10px}
+  .ra{width:40px;height:40px;border-radius:999px;background:var(--sunken);flex:none;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--ink2)}
+  .rn{font-size:14px;font-weight:600}
+  .rd{font-size:12px;color:var(--ink3)}
+  .rstars{display:flex;gap:1px;margin-top:8px}
+  .rtext{font-size:13.5px;color:var(--ink2);line-height:1.5;margin-top:6px}
+  .inforow{display:flex;align-items:center;gap:12px;padding:13px 16px}
+  .inforow+.inforow{border-top:1px solid var(--hairline)}
+  .inforow .l{font-size:15px;font-weight:600}
+  .inforow .v{margin-left:auto;font-size:13.5px;color:var(--ink3)}
+  .inforow .v.open{color:var(--green);font-weight:600}
+  .bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--hairline);padding:12px 16px}
+  .barinner{max-width:520px;margin:0 auto;display:flex;align-items:center;gap:12px}
+  .fromlbl{font-size:12px;color:var(--ink3)}.fromv{font-size:17px;font-weight:800}
+  .book{margin-left:auto;background:var(--ink);color:#fff;font-size:15px;font-weight:700;border-radius:999px;padding:13px 30px}
+  svg{display:block}
+</style>
+</head>
+<body>
+  <div class="top"><div class="seg"><button id="tb" class="on" onclick="show('before')">Before</button><button id="ta" onclick="show('after')">After</button></div></div>
+  <div class="stage">
+    <div class="pane before" id="pB"><iframe src="/de/salon/blade-and-stone" title="live before" loading="eager"></iframe></div>
+    <div class="pane after hidden" id="pA">
+      <div class="afwrap">
+        <div class="navrow"><span class="cbtn" data-i="back"></span><span style="display:flex;gap:10px"><span class="cbtn" data-i="share"></span><span class="cbtn" data-i="heart"></span></span></div>
+        <div class="hero"></div>
+        <div class="thumbs"><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div></div>
+        <div class="hname">Blade &amp; Stone</div>
+        <div class="meta">
+          <div class="mrow"><span class="st"><span data-i="star"></span>4.9</span></div>
+          <div class="mrow"><span data-i="pin"></span><span class="open">Open</span> . until 19:00 . Steinenvorstadt 8, Basel</div>
+        </div>
+
+        <div class="sh">Services</div>
+        <div class="pills"><span class="pl on">All</span><span class="pl">Cut</span><span class="pl">Shave</span><span class="pl">Beard</span></div>
+        <div style="margin-top:6px">
+          <div class="svc"><div class="m"><div class="sn">Signature cut</div><div class="sd">45 min</div></div><span class="sp">CHF 65</span></div>
+          <div class="svc"><div class="m"><div class="sn">Skin fade</div><div class="sd">40 min</div></div><span class="sp">CHF 55</span></div>
+          <div class="svc"><div class="m"><div class="sn">Hot-towel shave</div><div class="sd">30 min</div></div><span class="sp">CHF 42</span></div>
+        </div>
+
+        <div class="sh">Team <span class="all">See all</span></div>
+        <div class="team">
+          <div class="av"><div class="c"></div><div class="n">Marco</div></div>
+          <div class="av"><div class="c"></div><div class="n">Luca</div></div>
+          <div class="av"><div class="c"></div><div class="n">Jon</div></div>
+          <div class="av"><div class="c"></div><div class="n">Ali</div></div>
+        </div>
+
+        <div class="sh">Reviews <span class="all">See all</span></div>
+        <div class="rev">
+          <div class="revh"><span class="ra">M</span><div><div class="rn">Michael</div><div class="rd">2 weeks ago</div></div></div>
+          <div class="rstars" data-stars></div>
+          <div class="rtext">Sharpest fade in Basel. Marco takes his time and the hot-towel finish is unreal.</div>
+        </div>
+
+        <div class="sh">Opening hours</div>
+        <div class="inforow"><span class="l">Today</span><span class="v open">Open . until 19:00</span></div>
+        <div class="inforow"><span class="l">Tomorrow</span><span class="v">09:00 . 19:00</span></div>
+      </div>
+      <div class="bar"><div class="barinner"><div><div class="fromlbl">from</div><div class="fromv">CHF 42</div></div><span class="book">Book</span></div></div>
+    </div>
+  </div>
+<script>
+function show(w){document.getElementById('pB').classList.toggle('hidden',w!=='before');document.getElementById('pA').classList.toggle('hidden',w!=='after');document.getElementById('tb').classList.toggle('on',w==='before');document.getElementById('ta').classList.toggle('on',w==='after');}
+var I={back:'<path d="M19 12H5M12 19l-7-7 7-7"/>',share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5 15.4 17.5M15.4 6.5 8.6 10.5"/>',heart:'<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/>',star:'<path d="M12 2l3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/>',pin:'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/>'};
+function svg(p,st,w,fill){return '<svg class="lucide" data-lucide="icon" width="'+w+'" height="'+w+'" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="'+st+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>';}
+var ink='#0A0A0A',star='#FFC32B',pink='#FF3366',ink2='#52525B';
+document.querySelector('[data-i=back]').innerHTML=svg(I.back,ink,20);
+document.querySelector('[data-i=share]').innerHTML=svg(I.share,ink,18);
+document.querySelector('[data-i=heart]').innerHTML=svg(I.heart,ink,18);
+document.querySelector('[data-i=star]').innerHTML=svg(I.star,star,15,star);
+document.querySelector('[data-i=pin]').innerHTML=svg(I.pin,ink2,15);
+var sw=document.querySelector('[data-stars]'); for(var i=0;i<5;i++)sw.innerHTML+=svg(I.star,star,15,star);
+</script>
+</body>
+</html>
