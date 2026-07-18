@@ -22,6 +22,9 @@ Mockup: `public/_mockups/liftup-booking-services-tiered/index.html`
 > uses). For the REAL app this means the bottom-bar price + minutes should use the enter recipe, not
 > value-roll/count-bump , folded into the held build note below.
 
+## Motion feel (owner 2026-07-18: "it looks soo ass i want more of the morphing")
+- [x] The plain blur fade landed flat. Built a MOTION LAB (`liftup-services-motion/`) with 4 replayable value-change motions to pick from instead of guessing again: Blur fade / Count up / Zoom morph / Count + pop (recommended). All 4 verified live. AWAITING the owner's pick, then apply the chosen one to the tiered mockup + the real bottom bar.
+
 ## Carry into the HELD code build (not this turn)
 - [ ] Real bottom-bar MINUTES gets `animate-count-bump` on change (price already has `animate-value-roll` at ServicesStaffStep.tsx:553; the pill count has `animate-count-bump` at :540; ToggleCircle already ENTER_RECIPE). So the only real-code motion gap is the bottom-bar duration.
 - [ ] Full layered-loop build of the tier display (grouping + filter pills + tap-expand + +-select + ServiceDetailSheet reconciliation + de/en/fr/it) , HELD until the owner confirms the layout is final.
