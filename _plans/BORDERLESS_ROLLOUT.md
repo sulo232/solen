@@ -110,6 +110,14 @@ per-screen approval.
 
 ---
 
+## 4b. Round-3 asks (owner 2026-07-18, format polish , atomic)
+- [ ] Bigger + (add) icon on the service rows (services-fs + services-expand).
+- [ ] Sticky category pill CHANGES as you scroll (scrollspy: active pill follows the section; tap a pill scrolls to it). Needs real Cut/Color/Styling sections with services.
+- [ ] Convert the OTHER mockups to FULL-PAGE (full-screen), like services-fs (gate now enforces this).
+- [ ] Before/after (full-screen Before/After toggle, live iframe vs proposal) for the OTHER mockups too, not just services.
+NOTE (no silent narrowing): asks 3+4 = "all other mockups"; delivering the template + a first batch this turn,
+the remaining screens queued explicitly below and enforced full-screen by mockup-fullscreen-gate.
+
 ## 5. Method / guardrails
 - MOCKUP-FIRST, one owner approval per screen, before ANY code. Grounded in the real screen structure
   (read-only screen-map workflow), never invented. English chrome, real tokens, Lucide icons, served +

@@ -3,106 +3,124 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-<title>Services , before/after full screen (toggle)</title>
+<title>Services , full screen, scroll-linked pills, before/after toggle</title>
 <!-- Base: capture live -->
 <!-- Scale: full-page -->
 <!--
-  Grounded-in: components-legacy/booking/ServicesStaffStep.tsx (the real services step + service rows).
-  BEFORE = a LIVE <iframe> of the real /de/salon/blade-and-stone/booking page (actual current screen, not a
-  screenshot/redraw). AFTER = the approved borderless services (expand on tap/hover). FULL-SCREEN: fills the
-  whole viewport, no tiny centered device frame, a Before/After toggle to compare.
+  Grounded-in: components-legacy/booking/ServicesStaffStep.tsx (the real services step: sticky category pill
+  strip, per-category sections, service rows with add-toggle + description).
+  BEFORE = a LIVE <iframe> of the real /de/salon/blade-and-stone/booking page (actual current screen).
+  AFTER = the approved borderless services, FULL-SCREEN, with: a bigger + add control, sticky category pills
+  that CHANGE as you scroll (scrollspy) + tap-to-scroll, and expand-on-demand descriptions.
   Reference-checked: owner Uber screenshots (IMG_6537/6538/6539, subagent-analysed this session).
-  Exists-check: the services step + rows + per-service description exist and render today; REMOVED.md none;
-  NEW = borderless treatment + expand-on-demand interaction only.
-  Backend-check: Continue = client step; add-toggle = client cart; expand = pure client UI; the BEFORE iframe
-  is the real app. Taste-current: star+value only, no review count; no full-bleed. English chrome.
-  Owner 2026-07-18 "i cant see before/after and it's not full screen" , this is the full-screen fix.
+  Exists-check: the services step + sticky category strip + per-category sections + add-toggle + description
+  ALL exist and render today; REMOVED.md none; NEW = borderless treatment + expand + a bigger add icon.
+  Backend-check: Continue = client step; add-toggle = client cart; expand/scrollspy = pure client UI; BEFORE
+  iframe is the real app. Taste-current: star+value only, no review count; no full-bleed. English chrome.
+  Owner 2026-07-18 "make the plus icon bigger + as you scroll the category pill changes + full page + before/after".
 -->
 <style>
   :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--surface:#fff;--sunken:#F4F4F5;--hairline:#E4E4E7;--accent:#276EF1;--green:#16A34A;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
-  /* top toggle bar */
-  .top{position:fixed;top:0;left:0;right:0;height:52px;z-index:10;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;gap:0;padding:0 12px}
+  .top{position:fixed;top:0;left:0;right:0;height:52px;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;padding:0 12px}
   .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
   .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
   .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
-  /* stage fills the rest */
   .stage{position:fixed;top:52px;left:0;right:0;bottom:0}
-  .pane{position:absolute;inset:0;overflow-y:auto}
+  .pane{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
   .pane.hidden{display:none}
   iframe{width:100%;height:100%;border:0;display:block}
 
-  /* AFTER , full-width mobile screen (no device frame) */
-  .afwrap{max-width:520px;margin:0 auto;min-height:100%;position:relative;padding-bottom:82px}
-  .head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 10px}
-  .rd{width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:var(--ink)}
+  .afwrap{max-width:520px;margin:0 auto;min-height:100%;position:relative;padding-bottom:88px}
+  .head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 8px}
+  .rd{width:38px;height:38px;display:flex;align-items:center;justify-content:center;color:var(--ink)}
   .htitle{font-size:17px;font-weight:600}
-  .cats{display:flex;gap:8px;padding:2px 16px 8px;overflow-x:auto}
-  .cat{font-size:13.5px;font-weight:600;padding:9px 16px;border-radius:999px;border:1px solid var(--hairline);color:var(--ink2);white-space:nowrap}
+  .cats{position:sticky;top:0;z-index:5;display:flex;gap:8px;padding:8px 16px;overflow-x:auto;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);scrollbar-width:none}
+  .cats::-webkit-scrollbar{display:none}
+  .cat{font-size:13.5px;font-weight:600;padding:9px 16px;border-radius:999px;border:1px solid var(--hairline);color:var(--ink2);white-space:nowrap;cursor:pointer;transition:background .18s,color .18s,border-color .18s}
   .cat.on{background:var(--sunken);color:var(--ink);border-color:transparent}
-  .sec{font-size:21px;font-weight:700;letter-spacing:-0.01em;padding:14px 16px 4px}
+  .sec{font-size:21px;font-weight:700;letter-spacing:-0.01em;padding:16px 16px 2px;scroll-margin-top:60px}
   .srow{padding:15px 16px;cursor:pointer}
   .srow+.srow{border-top:1px solid var(--hairline)}
-  .rtop{display:flex;align-items:flex-start;gap:12px}
+  .rtop{display:flex;align-items:center;gap:14px}
   .m{flex:1;min-width:0}
   .nmline{display:flex;align-items:center;gap:7px}
   .sn{font-size:16px;font-weight:600}
   .echev{color:var(--ink3);flex:none;transition:transform .25s ease}
   .sd{font-size:13px;color:var(--ink3);margin-top:3px;display:flex;align-items:center;gap:5px}
   .sp{font-size:15px;font-weight:700;margin-top:7px}
-  .tog{width:28px;height:28px;border-radius:999px;border:1.5px solid var(--hairline);flex:none;display:flex;align-items:center;justify-content:center;color:var(--ink3);align-self:center}
+  .tog{width:38px;height:38px;border-radius:999px;border:2px solid var(--hairline);flex:none;display:flex;align-items:center;justify-content:center;color:var(--ink2)}
   .tog.on{background:var(--ink);border-color:var(--ink);color:#fff}
   .desc{max-height:0;overflow:hidden;opacity:0;transition:max-height .28s ease,opacity .2s ease,margin .28s ease}
-  .desc p{font-size:14px;color:var(--ink2);line-height:1.5;padding-right:40px}
+  .desc p{font-size:14px;color:var(--ink2);line-height:1.5;padding-right:44px}
   .srow.exp .desc{max-height:140px;opacity:1;margin-top:10px}
   .srow.exp .echev{transform:rotate(180deg)}
   .srow.exp{background:#FCFCFD}
   @media (hover:hover) and (pointer:fine){.srow:hover{background:#FCFCFD}.srow:hover .desc{max-height:140px;opacity:1;margin-top:10px}.srow:hover .echev{transform:rotate(180deg)}}
-  .bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--hairline);padding:12px 16px;display:flex;align-items:center;gap:12px}
-  .barinner{max-width:520px;margin:0 auto;width:100%;display:flex;align-items:center;gap:12px}
+  .bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--hairline);padding:12px 16px}
+  .barinner{max-width:520px;margin:0 auto;display:flex;align-items:center;gap:12px}
   .tot{font-size:19px;font-weight:800}.cnt{font-size:12px;color:var(--ink3)}
   .cta{margin-left:auto;background:var(--ink);color:#fff;font-size:15px;font-weight:700;border-radius:999px;padding:12px 24px;display:flex;align-items:center;gap:6px}
   svg{display:block}
 </style>
 </head>
 <body>
-  <div class="top">
-    <div class="seg"><button id="tb" class="on" onclick="show('before')">Before</button><button id="ta" onclick="show('after')">After</button></div>
-  </div>
+  <div class="top"><div class="seg"><button id="tb" class="on" onclick="show('before')">Before</button><button id="ta" onclick="show('after')">After</button></div></div>
   <div class="stage">
     <div class="pane before" id="pB"><iframe src="/de/salon/blade-and-stone/booking" title="live before" loading="eager"></iframe></div>
     <div class="pane after hidden" id="pA">
       <div class="afwrap">
-        <div class="head"><span class="rd" id="bk"></span><span class="htitle">Select services</span><span class="rd" id="xx"></span></div>
-        <div class="cats"><span class="cat on">Cut</span><span class="cat">Color</span><span class="cat">Styling</span></div>
-        <div class="sec">Cut</div>
-        <div class="srow" data-row><div class="rtop"><div class="m"><div class="nmline"><span class="sn">Signature cut</span><span class="echev" id="e1"></span></div><div class="sd"><span id="c1"></span>45 min</div><div class="sp">CHF 65</div><div class="desc"><p>A tailored cut and finish with a short consultation. Wash included.</p></div></div><span class="tog on" id="t1"></span></div></div>
-        <div class="srow" data-row><div class="rtop"><div class="m"><div class="nmline"><span class="sn">Wash and blow-dry</span><span class="echev" id="e2"></span></div><div class="sd"><span id="c2"></span>30 min</div><div class="sp">CHF 45</div><div class="desc"><p>Shampoo, condition and a smooth blow-dry to finish. Great between cuts.</p></div></div><span class="tog" id="t2"></span></div></div>
-        <div class="srow" data-row><div class="rtop"><div class="m"><div class="nmline"><span class="sn">Fringe trim</span><span class="echev" id="e3"></span></div><div class="sd"><span id="c3"></span>15 min</div><div class="sp">from CHF 20</div><div class="desc"><p>A quick reshape of the fringe to keep it out of your eyes between visits.</p></div></div><span class="tog" id="t3"></span></div></div>
+        <div class="head"><span class="rd" data-i="back"></span><span class="htitle">Select services</span><span class="rd" data-i="x"></span></div>
+        <div class="cats" id="cats">
+          <span class="cat on" data-t="secCut">Cut</span>
+          <span class="cat" data-t="secColor">Color</span>
+          <span class="cat" data-t="secStyle">Styling</span>
+        </div>
+
+        <div class="sec" id="secCut">Cut</div>
+        <div class="srow" data-row data-add="on"><div class="rtop"><div class="m"><div class="nmline"><span class="sn">Signature cut</span><span class="echev"></span></div><div class="sd"><span data-i="clock"></span>45 min</div><div class="sp">CHF 65</div><div class="desc"><p>A tailored cut and finish with a short consultation. Wash included.</p></div></div><span class="tog on"></span></div></div>
+        <div class="srow" data-row><div class="rtop"><div class="m"><div class="nmline"><span class="sn">Skin fade</span><span class="echev"></span></div><div class="sd"><span data-i="clock"></span>40 min</div><div class="sp">CHF 55</div><div class="desc"><p>A clean tapered fade blended to your preferred length.</p></div></div><span class="tog"></span></div></div>
+        <div class="srow" data-row><div class="rtop"><div class="m"><div class="nmline"><span class="sn">Kids cut</span><span class="echev"></span></div><div class="sd"><span data-i="clock"></span>25 min</div><div class="sp">CHF 35</div><div class="desc"><p>A patient, gentle cut for younger clients.</p></div></div><span class="tog"></span></div></div>
+        <div class="srow" data-row><div class="rtop"><div class="m"><div class="nmline"><span class="sn">Fringe trim</span><span class="echev"></span></div><div class="sd"><span data-i="clock"></span>15 min</div><div class="sp">from CHF 20</div><div class="desc"><p>A quick reshape of the fringe between visits.</p></div></div><span class="tog"></span></div></div>
+
+        <div class="sec" id="secColor">Color</div>
+        <div class="srow" data-row><div class="rtop"><div class="m"><div class="nmline"><span class="sn">Full color</span><span class="echev"></span></div><div class="sd"><span data-i="clock"></span>90 min</div><div class="sp">CHF 120</div><div class="desc"><p>Single-tone colour from roots to ends, gloss finish.</p></div></div><span class="tog"></span></div></div>
+        <div class="srow" data-row><div class="rtop"><div class="m"><div class="nmline"><span class="sn">Highlights</span><span class="echev"></span></div><div class="sd"><span data-i="clock"></span>120 min</div><div class="sp">from CHF 150</div><div class="desc"><p>Hand-painted highlights for natural depth and lift.</p></div></div><span class="tog"></span></div></div>
+        <div class="srow" data-row><div class="rtop"><div class="m"><div class="nmline"><span class="sn">Root touch-up</span><span class="echev"></span></div><div class="sd"><span data-i="clock"></span>60 min</div><div class="sp">CHF 75</div><div class="desc"><p>Refreshes the roots to match your existing colour.</p></div></div><span class="tog"></span></div></div>
+
+        <div class="sec" id="secStyle">Styling</div>
+        <div class="srow" data-row><div class="rtop"><div class="m"><div class="nmline"><span class="sn">Wash and blow-dry</span><span class="echev"></span></div><div class="sd"><span data-i="clock"></span>30 min</div><div class="sp">CHF 45</div><div class="desc"><p>Shampoo, condition and a smooth blow-dry to finish.</p></div></div><span class="tog"></span></div></div>
+        <div class="srow" data-row><div class="rtop"><div class="m"><div class="nmline"><span class="sn">Special occasion styling</span><span class="echev"></span></div><div class="sd"><span data-i="clock"></span>60 min</div><div class="sp">CHF 80</div><div class="desc"><p>An event-ready set, from soft waves to a full updo.</p></div></div><span class="tog"></span></div></div>
+        <div class="srow" data-row><div class="rtop"><div class="m"><div class="nmline"><span class="sn">Beard trim and shape</span><span class="echev"></span></div><div class="sd"><span data-i="clock"></span>20 min</div><div class="sp">CHF 25</div><div class="desc"><p>Line-up and shape with a hot-towel finish.</p></div></div><span class="tog"></span></div></div>
       </div>
-      <div class="bar"><div class="barinner"><div><div class="tot">CHF 65</div><div class="cnt">1 item . 45 min</div></div><span class="cta">Continue<span id="cta"></span></span></div></div>
+      <div class="bar"><div class="barinner"><div><div class="tot">CHF 65</div><div class="cnt">1 item . 45 min</div></div><span class="cta">Continue<span data-i="chev-w"></span></span></div></div>
     </div>
   </div>
 <script>
-function show(w){
-  document.getElementById('pB').classList.toggle('hidden', w!=='before');
-  document.getElementById('pA').classList.toggle('hidden', w!=='after');
-  document.getElementById('tb').classList.toggle('on', w==='before');
-  document.getElementById('ta').classList.toggle('on', w==='after');
-}
-const I={back:'<path d="M19 12H5M12 19l-7-7 7-7"/>',x:'<path d="M18 6 6 18M6 6l12 12"/>',chev:'<path d="M9 6l6 6-6 6"/>',chevd:'<path d="M6 9l6 6 6-6"/>',check:'<path d="M20 6 9 17l-5-5"/>',plus:'<path d="M12 5v14M5 12h14"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'};
-function svg(p,st,w,fill){return '<svg class="lucide" data-lucide="icon" width="'+(w||20)+'" height="'+(w||20)+'" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="'+st+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>';}
-const ink='#0A0A0A',ink3='#A1A1AA';
-document.getElementById('bk').innerHTML=svg(I.back,ink,20);
-document.getElementById('xx').innerHTML=svg(I.x,ink,19);
-['e1','e2','e3'].forEach(id=>document.getElementById(id).innerHTML=svg(I.chevd,ink3,17));
-['c1','c2','c3'].forEach(id=>document.getElementById(id).innerHTML=svg(I.clock,ink3,14));
-document.getElementById('t1').innerHTML=svg(I.check,'#fff',16);
-['t2','t3'].forEach(id=>document.getElementById(id).innerHTML=svg(I.plus,ink3,16));
-document.getElementById('cta').innerHTML=svg(I.chev,'#fff',16);
-document.querySelectorAll('[data-row]').forEach(r=>r.addEventListener('click',e=>{if(e.target.closest('.tog'))return;r.classList.toggle('exp');}));
+function show(w){document.getElementById('pB').classList.toggle('hidden',w!=='before');document.getElementById('pA').classList.toggle('hidden',w!=='after');document.getElementById('tb').classList.toggle('on',w==='before');document.getElementById('ta').classList.toggle('on',w==='after');if(w==='after')window.requestAnimationFrame(spy);}
+var I={back:'<path d="M19 12H5M12 19l-7-7 7-7"/>',x:'<path d="M18 6 6 18M6 6l12 12"/>',chev:'<path d="M9 6l6 6-6 6"/>',chevd:'<path d="M6 9l6 6 6-6"/>',check:'<path d="M20 6 9 17l-5-5"/>',plus:'<path d="M12 5v14M5 12h14"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'};
+function svg(p,st,w){return '<svg class="lucide" data-lucide="icon" width="'+w+'" height="'+w+'" viewBox="0 0 24 24" fill="none" stroke="'+st+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>';}
+var ink='#0A0A0A',ink3='#A1A1AA';
+document.querySelector('[data-i=back]').innerHTML=svg(I.back,ink,20);
+document.querySelector('[data-i=x]').innerHTML=svg(I.x,ink,19);
+document.querySelector('[data-i="chev-w"]').innerHTML=svg(I.chev,'#fff',16);
+document.querySelectorAll('[data-i=clock]').forEach(function(e){e.innerHTML=svg(I.clock,ink3,14);});
+document.querySelectorAll('.echev').forEach(function(e){e.innerHTML=svg(I.chevd,ink3,17);});
+document.querySelectorAll('.srow').forEach(function(r){
+  var t=r.querySelector('.tog');
+  t.innerHTML = t.classList.contains('on') ? svg(I.check,'#fff',22) : svg(I.plus,ink3,22);
+  r.addEventListener('click',function(e){if(e.target.closest('.tog'))return;r.classList.toggle('exp');});
+});
+// scroll-linked category pills + tap-to-scroll
+var pane=document.getElementById('pA');
+var pills=[].slice.call(document.querySelectorAll('#cats .cat'));
+var secs=pills.map(function(p){return document.getElementById(p.dataset.t);});
+pills.forEach(function(p){p.addEventListener('click',function(){var s=document.getElementById(p.dataset.t);pane.scrollTo({top:s.offsetTop-58,behavior:'smooth'});});});
+function spy(){var st=pane.scrollTop,ph=pane.clientHeight,ch=pane.scrollHeight,idx;if(!ph||!ch)return;if(st+ph>=ch-24){idx=secs.length-1;}else{var line=st+ph*0.35,k=0;secs.forEach(function(s,i){if(s.offsetTop<=line)k=i;});idx=k;}pills.forEach(function(p,i){p.classList.toggle('on',i===idx);});}
+pane.addEventListener('scroll',function(){window.requestAnimationFrame(spy);},{passive:true});
+spy();
 </script>
 </body>
 </html>
