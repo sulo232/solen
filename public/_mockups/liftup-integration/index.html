@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lift-up integration , settings, bookings, search, salon</title>
+<!-- Base: elicitation -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/profile/settings/page.tsx, app/[locale]/profile/bookings/page.tsx,
+  app/[locale]/_components/search/SearchTemplate.tsx, app/[locale]/salon/[slug]/page.tsx (SalonDetailV3).
+  Reference-checked: /Users/sulo/.claude/uploads/52878f2d-37a1-43b1-9756-e2e3a26b664d/83a70cdc-IMG_6537.png
+  (+ IMG_6538 + IMG_6539, the owner's Uber profile screenshots; analyzed by a subagent THIS session for the
+  borderless-minimalist recipe , whitespace-not-lines, bold-text grouping, leading-icon rows. Not from memory.)
+  Exists-check: settings (SettingsForm + BeautyProfileForm, bordered-card sections), bookings (BookingsList ->
+  BookingCard 3-col shadowed grid), search (SearchTemplate + SalonResultCard feed/card + filter pills), salon
+  PDP (SalonDetailV3, carded Services/Bundles + shadow-float Team/Reviews + already-borderless info tail) ALL
+  already exist and render the sections shown here; REMOVED.md hits: none. NEW: only a borderless TREATMENT
+  applied to those existing structures (no new screens/features).
+  Backend-check: rebook -> POST /api/bookings/express-rebook + /api/bookings/express-rebook/confirm (BOTH EXIST
+  and are wired live: BookingsList.tsx:101/118 posts rebook_from_booking_id, button BookingCard.tsx:154). No
+  new backend needed , this mockup only restyles an existing, working action. Every other element shown (status
+  pills, prices, filter pills, switches, service prices, opening hours) is display of already-live data.
+  Taste-current: salon cards show rating as star + value ONLY, no review count (owner-approved C11 converged
+  card, 2026-07-13, dropped the card review count). Real structure + current treatment read this turn by a
+  4-agent read-only screen-map; live profile measured (rows 52px, header 13px/500, radius 16px). Labels in
+  English for locale-free review. Rebuilds nothing into production; direction-elicitation probe (round 2)
+  per owner 2026-07-18 ("i like the uber but not everywhere, mix it up, ideas on other screens + how we
+  integrate"). Treatment-only per mockup policy.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#52525B; --ink3:#A1A1AA;
+    --surface:#FFFFFF; --sunken:#F4F4F5; --hairline:#E4E4E7;
+    --accent:#276EF1; --heart:#FF3366; --star:#FFC32B; --green:#16A34A; --red:#DC2626; --orange:#EA580C;
+    --page:#FAFAFA;
+    --font:'Inter Tight',system-ui,-apple-system,'Segoe UI',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);background:var(--page);color:var(--ink);-webkit-font-smoothing:antialiased;padding:40px 20px 90px}
+  .wrap{max-width:1200px;margin:0 auto}
+  h1{font-size:26px;font-weight:800;letter-spacing:-0.02em;margin-bottom:6px}
+  h2.block{font-size:19px;font-weight:800;letter-spacing:-0.02em;margin:48px 0 4px}
+  .lede{font-size:15px;color:var(--ink2);line-height:1.55;max-width:820px}
+  .rec{font-size:14px;color:var(--ink);background:#EFF4FF;border:1px solid #D6E3FF;border-radius:12px;padding:15px 17px;max-width:820px;margin:18px 0 6px;line-height:1.6}
+  .rec b{font-weight:700}
+  .sub{font-size:13.5px;color:var(--ink2);max-width:820px;margin-top:6px;line-height:1.55}
+
+  .models{display:flex;gap:18px;flex-wrap:wrap;margin-top:22px}
+  .model{flex:1;min-width:300px;background:#fff;border:1px solid var(--hairline);border-radius:16px;padding:18px 18px 20px}
+  .model.pick{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+  .model .mh{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .model .mt{font-size:15px;font-weight:700}
+  .model .pill{font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;background:var(--sunken);color:var(--ink2)}
+  .model .pill.on{background:var(--ink);color:#fff}
+  .model .rule{font-size:13.5px;color:var(--ink);line-height:1.5;margin-bottom:10px}
+  .model .rule b{font-weight:700}
+  .model .pc{font-size:12.5px;color:var(--ink2);line-height:1.5}
+  .model .pc .g{color:var(--green);font-weight:700}
+  .model .pc .r{color:var(--red);font-weight:700}
+  .mini{display:flex;gap:10px;margin:12px 0 14px}
+  .mini .m{flex:1}
+  .mini .cap{font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:5px}
+  .mini .boxed{border:1px solid var(--hairline);border-radius:10px;box-shadow:0 1px 2px rgba(0,0,0,.06);padding:8px;display:flex;flex-direction:column;gap:6px}
+  .mini .flat{padding:8px 2px;display:flex;flex-direction:column;gap:0}
+  .mini .ln{height:8px;border-radius:3px;background:#E9E9EC}
+  .mini .flat .ln{margin:7px 0;border-bottom:1px solid var(--hairline);height:0;padding-bottom:7px}
+  .mini .flat .ln:last-child{border-bottom:0}
+  .mini .chip{display:inline-block;height:14px;width:38px;border-radius:999px;background:var(--sunken)}
+
+  .screens{display:flex;gap:34px;flex-wrap:wrap;align-items:flex-start;margin-top:20px}
+  .col{flex:1;min-width:320px;max-width:380px}
+  .tag{display:inline-block;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--ink);color:#fff;margin-bottom:12px}
+  .phone{width:340px;background:var(--surface);border-radius:32px;box-shadow:0 22px 54px -20px rgba(0,0,0,.28),0 0 0 1px rgba(0,0,0,.04);overflow:hidden;margin:0 auto}
+  .status{height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-size:12.5px;font-weight:600}
+  .sysicons{display:flex;gap:6px;align-items:center;color:var(--ink)}
+  .nav{display:flex;align-items:center;gap:12px;padding:4px 16px 12px}
+  .nav .back{width:36px;height:36px;border-radius:999px;border:1px solid var(--hairline);display:flex;align-items:center;justify-content:center}
+  .nav .title{font-size:19px;font-weight:700;letter-spacing:-0.01em}
+  .scr{padding:0 0 22px}
+  .ico{width:20px;height:20px;flex:none;display:flex;align-items:center;justify-content:center}
+  .chev{color:var(--ink3);flex:none;margin-left:auto}
+  svg{display:block}
+  .seclbl{font-size:13px;font-weight:500;color:var(--ink2);margin:20px 20px 2px}
+  .caption{font-size:12.5px;color:var(--ink2);line-height:1.5;margin-top:14px;max-width:340px}
+  .caption b{color:var(--ink);font-weight:600}
+  .caption .off{color:var(--red);font-weight:700}
+  .caption .keep{color:var(--green);font-weight:700}
+
+  .row{display:flex;align-items:center;gap:14px;padding:14px 20px}
+  .row + .row{border-top:1px solid var(--hairline)}
+  .row .lbl{font-size:15px;font-weight:600}
+  .row .sub2{font-size:12.5px;color:var(--ink3);margin-top:1px}
+  .row .val{font-size:13px;color:var(--ink3);margin-left:auto}
+  .rowgrp{border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline)}
+
+  .sw{width:40px;height:24px;border-radius:999px;flex:none;position:relative;background:var(--sunken)}
+  .sw.on{background:var(--ink)}
+  .sw i{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:999px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+  .sw.on i{left:19px}
+
+  .pills{display:flex;gap:8px;flex-wrap:wrap;padding:8px 20px 2px}
+  .pl{font-size:13px;font-weight:600;padding:8px 14px;border-radius:999px;border:1px solid var(--hairline);color:var(--ink2)}
+  .pl.on{background:var(--sunken);color:var(--ink);font-weight:600;border-color:transparent}
+  .del{margin:16px 20px 0;font-size:15px;font-weight:600;color:var(--red)}
+
+  .utabs{display:flex;gap:22px;padding:2px 20px 0;border-bottom:1px solid var(--hairline)}
+  .ut{font-size:14px;font-weight:600;color:var(--ink3);padding:0 0 11px;position:relative}
+  .ut.on{color:var(--ink)}
+  .ut.on:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--ink);border-radius:2px}
+
+  .bk{display:flex;gap:14px;padding:15px 20px;align-items:center}
+  .bk + .bk{border-top:1px solid var(--hairline)}
+  .datebl{width:52px;flex:none;border-radius:12px;background:var(--sunken);padding:7px 0;text-align:center}
+  .datebl .wd{font-size:10px;font-weight:700;color:var(--ink3)}
+  .datebl .dd{font-size:20px;font-weight:800;line-height:1.05}
+  .datebl .mo{font-size:10px;color:var(--ink3)}
+  .bk .bn{font-size:15px;font-weight:700;letter-spacing:-0.01em}
+  .bk .bs{font-size:12.5px;color:var(--ink3);margin-top:1px}
+  .stat{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;margin-top:5px;display:inline-block}
+  .stat.ok{background:rgba(22,163,74,.1);color:var(--green)}
+  .bk .rt{margin-left:auto;text-align:right}
+  .bk .pr{font-size:14px;font-weight:700}
+  .bk .rb{font-size:12px;font-weight:700;color:#fff;background:var(--ink);border-radius:999px;padding:6px 12px;margin-top:7px;display:inline-block}
+
+  .feed{padding:14px 16px 0}
+  .fc + .fc{margin-top:18px}
+  .fc .ph{border-radius:16px;aspect-ratio:5/4;background:#E7E5E4;position:relative}
+  .fc .hb{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center}
+  .fc .fn{font-size:15px;font-weight:700;margin-top:9px;display:flex;align-items:center;gap:6px}
+  .fc .fn .st{display:inline-flex;align-items:center;gap:3px;font-size:13px;font-weight:600;margin-left:auto}
+  .fc .fm{font-size:12.5px;color:var(--ink3);margin-top:2px}
+  .fc .fp{font-size:13px;font-weight:700;margin-top:4px}
+
+  .svc{padding:12px 20px}
+  .svc + .svc{border-top:1px solid var(--hairline)}
+  .svc .sn{font-size:15px;font-weight:600}
+  .svc .sd{font-size:12.5px;color:var(--ink3);margin-top:1px}
+  .svc .sp{margin-left:auto;font-size:14px;font-weight:700}
+  .svcrow{display:flex;align-items:center}
+  .team{display:flex;gap:14px;padding:12px 20px 4px;overflow:hidden}
+  .av{width:60px;flex:none;text-align:center}
+  .av .c{width:56px;height:56px;border-radius:999px;background:var(--sunken);margin:0 auto}
+  .av .n{font-size:11.5px;color:var(--ink2);margin-top:6px}
+  .sh{font-size:17px;font-weight:700;letter-spacing:-0.01em;padding:18px 20px 2px;display:flex;align-items:center}
+  .sh .all{margin-left:auto;font-size:13px;font-weight:600;color:var(--ink2)}
+
+  footer{max-width:820px;margin:56px auto 0;font-size:13px;color:var(--ink2);line-height:1.65}
+  footer b{color:var(--ink)}
+  .legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .legend span{font-size:12px;background:#fff;border:1px solid var(--hairline);border-radius:999px;padding:4px 10px;color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>How we mix it , the integration question</h1>
+  <p class="lede">You liked the Uber-minimalist but not everywhere. Good instinct: I read all four of your other screens in code, and the app is already about 70% there , the salon info sections and the notification switches are ALREADY borderless. What sticks out are the leftover <b>card boxes</b>: the settings sections, the bookings grid, the service tiers, the team/reviews panels. So the real question is not "which screens" but "what is the rule". Here are three ways to draw it.</p>
+
+  <div class="rec">
+    <b>My recommendation: Model B , "chrome off, density stays".</b> One rule for the whole app: remove the decorative box (card border + shadow) everywhere, so content sits on white grouped by hairlines, whitespace and bold labels. KEEP a dense control only when it carries a real decision , filter pills, prices, taxonomy pickers, photos, status. It gives you ONE visual language everywhere (no "two apps" feeling, which was the risk with a screen-by-screen split), it is decidable element by element, and the code shows you are already most of the way there. The other two models are below so you can compare.
+  </div>
+
+  <div class="models">
+    <div class="model">
+      <div class="mh"><span class="mt">Model A</span><span class="pill">screen-level</span></div>
+      <div class="rule"><b>Surface split.</b> Whole screens are either minimalist or dense. Account/personal screens go all-borderless. Marketplace/browse screens stay all-dense.</div>
+      <div class="mini">
+        <div class="m"><div class="cap">Account</div><div class="flat"><div class="ln"></div><div class="ln"></div><div class="ln"></div></div></div>
+        <div class="m"><div class="cap">Browse</div><div class="boxed"><div class="ln"></div><span class="chip"></span></div></div>
+      </div>
+      <div class="pc"><span class="g">+ dead simple to decide.</span> <span class="r">, hybrid screens (the salon page, settings) do not fit one bucket; the boundary between the two languages can feel abrupt.</span></div>
+    </div>
+
+    <div class="model pick">
+      <div class="mh"><span class="mt">Model B</span><span class="pill on">element-level , my pick</span></div>
+      <div class="rule"><b>Chrome off, density stays.</b> Every screen: kill the card box + shadow, content on white with hairlines + bold labels. Keep a dense control only where it carries a decision (filters, prices, taxonomy, photos, status).</div>
+      <div class="mini">
+        <div class="m"><div class="cap">Before</div><div class="boxed"><div class="ln"></div><div class="ln"></div></div></div>
+        <div class="m"><div class="cap">After</div><div class="flat"><div class="ln"></div><div class="ln"></div><span class="chip"></span></div></div>
+      </div>
+      <div class="pc"><span class="g">+ one language everywhere; decidable per element; the code is already ~70% here.</span> <span class="r">, needs judgment on what "carries a decision".</span></div>
+    </div>
+
+    <div class="model">
+      <div class="mh"><span class="mt">Model C</span><span class="pill">depth-level</span></div>
+      <div class="rule"><b>Calm hubs, dense detail.</b> Entry / hub / list screens go minimalist (calm to navigate). Deep detail / action screens keep density (info to act on).</div>
+      <div class="mini">
+        <div class="m"><div class="cap">Hub</div><div class="flat"><div class="ln"></div><div class="ln"></div></div></div>
+        <div class="m"><div class="cap">Detail</div><div class="boxed"><div class="ln"></div><span class="chip"></span></div></div>
+      </div>
+      <div class="pc"><span class="g">+ matches attention: calm when browsing, dense when deciding.</span> <span class="r">, some screens are both hub and detail; overlaps messily with A.</span></div>
+    </div>
+  </div>
+
+  <h2 class="block">The rule applied , your other 4 screens under Model B</h2>
+  <p class="sub">Each is reconstructed from the real sections in your code. Green = density that stays because it carries a decision. Red = the card chrome that comes off.</p>
+
+  <div class="screens">
+    <div class="col">
+      <span class="tag">Settings</span>
+      <div class="phone">
+        <div class="status"><span>9:41</span><span class="sysicons"></span></div>
+        <div class="nav"><div class="back"><span class="ico" id="b1"></span></div><div class="title">Settings</div></div>
+        <div class="scr">
+          <div class="seclbl">Beauty profile</div>
+          <div class="pills"><span class="pl on">Woman</span><span class="pl">Man</span><span class="pl">Non-binary</span></div>
+          <div class="pills" style="padding-top:6px"><span class="pl">Straight</span><span class="pl on">Wavy</span><span class="pl">Curly</span><span class="pl">Coily</span></div>
+          <div class="seclbl">Profile</div>
+          <div class="rowgrp">
+            <div class="row"><span class="lbl">Name</span><span class="val">Sara M.</span></div>
+            <div class="row"><span class="lbl">Phone</span><span class="val">Add</span></div>
+            <div class="row"><span class="lbl">Language</span><span class="val">English</span><span class="chev" id="c1"></span></div>
+          </div>
+          <div class="seclbl">Notifications</div>
+          <div class="rowgrp">
+            <div class="row"><div><div class="lbl">Email</div><div class="sub2">Confirmations, reminders</div></div><span class="sw on" style="margin-left:auto"><i></i></span></div>
+            <div class="row"><div><div class="lbl">SMS</div><div class="sub2">Last-minute and offers</div></div><span class="sw" style="margin-left:auto"><i></i></span></div>
+          </div>
+          <div class="del">Delete account</div>
+        </div>
+      </div>
+      <p class="caption"><span class="off">Chrome off:</span> Profile / Notifications / Security lose their card boxes , rows sit flush on white under bold labels. <span class="keep">Density stays:</span> the Beauty-profile pickers keep their pills (they are taxonomy, they earn it). Fixed: the language selector became a clean disclosure row.</p>
+    </div>
+
+    <div class="col">
+      <span class="tag">Appointments</span>
+      <div class="phone">
+        <div class="status"><span>9:41</span><span class="sysicons"></span></div>
+        <div class="nav"><div class="back"><span class="ico" id="b2"></span></div><div class="title">Appointments</div></div>
+        <div class="scr">
+          <div class="utabs"><span class="ut on">Upcoming</span><span class="ut">Past</span><span class="ut">Cancelled</span></div>
+          <div class="bk">
+            <div class="datebl"><div class="wd">Fri</div><div class="dd">20</div><div class="mo">Jul</div></div>
+            <div><div class="bn">Studio Belle</div><div class="bs">Signature cut . 45 min</div><span class="stat ok">Confirmed</span></div>
+            <div class="rt"><div class="pr">CHF 65</div><span class="rb">Rebook</span></div>
+          </div>
+          <div class="bk">
+            <div class="datebl"><div class="wd">Wed</div><div class="dd">25</div><div class="mo">Jul</div></div>
+            <div><div class="bn">Nagelbar Basel</div><div class="bs">Gel manicure . 60 min</div><span class="stat ok">Confirmed</span></div>
+            <div class="rt"><div class="pr">CHF 55</div><span class="rb">Rebook</span></div>
+          </div>
+        </div>
+      </div>
+      <p class="caption"><span class="off">Chrome off:</span> the 3-column card grid becomes one full-width column of rows , no border, no shadow, no hover lift. <span class="keep">Density stays:</span> the calm date tile anchors each row, the semantic status pill and the underline tabs are kept exactly. (Rebook is your existing express-rebook action, only restyled.)</p>
+    </div>
+
+    <div class="col">
+      <span class="tag">Search , stays dense on purpose</span>
+      <div class="phone">
+        <div class="status"><span>9:41</span><span class="sysicons"></span></div>
+        <div class="nav"><div class="back"><span class="ico" id="b3"></span></div><div class="title">Basel</div></div>
+        <div class="scr">
+          <div class="pills">
+            <span class="pl" style="padding:8px 11px"><span class="ico" id="f1" style="width:16px;height:16px"></span></span>
+            <span class="pl on">Open now</span><span class="pl">Price</span><span class="pl">For whom</span>
+          </div>
+          <div class="feed">
+            <div class="fc">
+              <div class="ph"><span class="hb" id="h1"></span></div>
+              <div class="fn">Studio Belle<span class="st"><span class="ico" id="s1" style="width:14px;height:14px"></span>4.8</span></div>
+              <div class="fm">Coiffeur . Spalenvorstadt 22</div>
+              <div class="fp">from CHF 45</div>
+            </div>
+            <div class="fc">
+              <div class="ph" style="background:#EDE9E4"><span class="hb" id="h2"></span></div>
+              <div class="fn">Barber Central<span class="st"><span class="ico" id="s2" style="width:14px;height:14px"></span>4.9</span></div>
+              <div class="fm">Barbershop . Steinenvorstadt 8</div>
+              <div class="fp">from CHF 38</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="caption"><span class="keep">Mostly unchanged , this is the marketplace side.</span> Filter pills, sort, and the photo cards all stay: scanning many salons fast is the whole point. <span class="off">One move only:</span> the desktop card shadow comes off so it matches the already-borderless mobile feed.</p>
+    </div>
+
+    <div class="col">
+      <span class="tag">Salon page</span>
+      <div class="phone">
+        <div class="status"><span>9:41</span><span class="sysicons"></span></div>
+        <div class="nav"><div class="back"><span class="ico" id="b4"></span></div><div class="title">Studio Belle</div></div>
+        <div class="scr">
+          <div class="sh">Services</div>
+          <div class="pills"><span class="pl on">All</span><span class="pl">Cut</span><span class="pl">Color</span></div>
+          <div style="margin-top:8px">
+            <div class="svc svcrow"><div><div class="sn">Signature cut</div><div class="sd">45 min</div></div><span class="sp">CHF 65</span></div>
+            <div class="svc svcrow"><div><div class="sn">Wash and blow-dry</div><div class="sd">30 min</div></div><span class="sp">CHF 45</span></div>
+            <div class="svc svcrow"><div><div class="sn">Full color</div><div class="sd">90 min</div></div><span class="sp">CHF 120</span></div>
+          </div>
+          <div class="sh">Team <span class="all">See all</span></div>
+          <div class="team">
+            <div class="av"><div class="c"></div><div class="n">Sara</div></div>
+            <div class="av"><div class="c"></div><div class="n">Luca</div></div>
+            <div class="av"><div class="c"></div><div class="n">Mia</div></div>
+            <div class="av"><div class="c"></div><div class="n">Jon</div></div>
+          </div>
+          <div class="sh">Opening hours</div>
+          <div class="row"><span class="lbl" style="font-weight:600">Today</span><span class="val" style="color:var(--green);font-weight:600">Open . until 19:00</span></div>
+        </div>
+      </div>
+      <p class="caption"><span class="off">Chrome off:</span> the service tiers lose their boxed cards, and Team / Reviews drop their shadow-float panels , all borderless on white with hairlines. <span class="keep">Density stays:</span> the service filter pills, prices, ratings and photos. The info tail (hours, about) was already borderless.</p>
+    </div>
+  </div>
+
+  <footer>
+    <b>The one rule, in a sentence:</b> take the box off, keep the info. If a card is just a decorative border + shadow around a list, it goes borderless. If a control is a filter pill, a price, a taxonomy picker, a photo, or a status, it stays , that is real density, not chrome. <br><br>
+    <b>Pick a model (A, B, or C)</b> , I recommend B. Once you pick, I will: apply it to these screens for real (one at a time, mockup then code), do the same on the profile from round 1, then move to the lift-up + motion mockups, the unified Saved page, and I will remove the wandering staff-icon animation on the salon page (that one is a straight code fix). <br>
+    <span class="legend"><span>Ink #0A0A0A</span><span>Sunken #F4F4F5</span><span>Hairline #E4E4E7</span><span>Blue #276EF1</span><span>Heart #FF3366</span><span>Star #FFC32B</span><span>Green #16A34A</span></span>
+  </footer>
+</div>
+
+<script>
+const I={
+  chev:'<path d="M9 6l6 6-6 6"/>',
+  back:'<path d="M19 12H5M12 19l-7-7 7-7"/>',
+  heart:'<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/>',
+  star:'<path d="M12 2l3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/>',
+  sliders:'<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>',
+  signal:'<path d="M2 20h.01M7 20v-4M12 20v-8M17 20V8M22 4v16"/>',
+  wifi:'<path d="M5 13a10 10 0 0 1 14 0M8.5 16.5a5 5 0 0 1 7 0M2 8.8a15 15 0 0 1 20 0M12 20h.01"/>',
+  bat:'<rect x="2" y="7" width="16" height="10" rx="2"/><path d="M22 11v2"/>'
+};
+function svg(p,stroke,w,fill){return '<svg class="lucide" data-lucide="icon" width="'+(w||20)+'" height="'+(w||20)+'" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="'+stroke+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>';}
+const ink='#0A0A0A',ink3='#A1A1AA',pink='#FF3366',star='#FFC32B';
+['b1','b2','b3','b4'].forEach(id=>{var e=document.getElementById(id);if(e)e.innerHTML=svg(I.back,ink,18);});
+['c1'].forEach(id=>{var e=document.getElementById(id);if(e)e.innerHTML=svg(I.chev,ink3,18);});
+['h1','h2'].forEach(id=>{var e=document.getElementById(id);if(e)e.innerHTML=svg(I.heart,pink,17);});
+['s1','s2'].forEach(id=>{var e=document.getElementById(id);if(e)e.innerHTML=svg(I.star,star,14,star);});
+document.getElementById('f1').innerHTML=svg(I.sliders,ink,15);
+document.querySelectorAll('.sysicons').forEach(e=>e.innerHTML=svg(I.signal,ink,13)+svg(I.wifi,ink,13)+svg(I.bat,ink,15));
+</script>
+</body>
+</html>
