@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Inspo feed , full screen before/after (toggle)</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/inspo/page.tsx (the discovery masonry feed + category pills + heart save).
+  BEFORE = a LIVE <iframe> of the real /de/inspo feed (actual current screen).
+  AFTER = borderless, FULL-SCREEN with a Before/After toggle. Inspo is a PHOTO-LED discovery surface, so it
+  STAYS dense: the masonry photo tiles, the heart save, the category pills, the caption all stay. The
+  borderless move is only dropping any tile shadow / label chrome so the photos read cleanly in the grid.
+  Reference-checked: owner Uber screenshots (IMG_6537/6538/6539, subagent-analysed this session).
+  Exists-check: the inspo masonry + category pills + heart save all exist and render today; REMOVED.md none;
+  NEW = borderless (shadow off) treatment only.
+  Backend-check: heart = save (discovery_saves, real); tap = look/board detail (client). Every value is
+  display of live data. Taste-current: no review count; NO edge-to-edge photo band takeover (a grid of
+  rounded tiles, not one full-screen photo). English chrome. Owner 2026-07-18 "next / other places".
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--surface:#fff;--sunken:#F4F4F5;--hairline:#E4E4E7;--accent:#276EF1;--green:#16A34A;--heart:#FF3366;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
+  .top{position:fixed;top:0;left:0;right:0;height:52px;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;padding:0 12px}
+  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
+  .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .stage{position:fixed;top:52px;left:0;right:0;bottom:0}
+  .pane{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .pane.hidden{display:none}
+  iframe{width:100%;height:100%;border:0;display:block}
+
+  .afwrap{max-width:560px;margin:0 auto;min-height:100%;padding:0 0 40px}
+  .band{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);padding:12px 14px 8px}
+  .searchpill{display:flex;align-items:center;gap:10px;border:1px solid var(--hairline);border-radius:999px;height:46px;padding:0 16px;font-size:14px;color:var(--ink3)}
+  .pills{display:flex;gap:8px;padding:10px 0 0;overflow-x:auto;scrollbar-width:none}
+  .pills::-webkit-scrollbar{display:none}
+  .pl{font-size:13px;font-weight:600;padding:8px 14px;border-radius:999px;border:1px solid var(--hairline);color:var(--ink2);white-space:nowrap;flex:none}
+  .pl.on{background:var(--sunken);color:var(--ink);border-color:transparent}
+  .masonry{columns:2;column-gap:10px;padding:12px 14px 0}
+  .pin{break-inside:avoid;margin-bottom:10px;border-radius:16px;overflow:hidden;position:relative}
+  .pin .ph{width:100%;display:block}
+  .pin .hb{position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:999px;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+  .pin .cap{position:absolute;left:0;right:0;bottom:0;padding:22px 10px 8px;background:linear-gradient(transparent,rgba(0,0,0,.55));color:#fff;font-size:12px;font-weight:600}
+  svg{display:block}
+</style>
+</head>
+<body>
+  <div class="top"><div class="seg"><button id="tb" class="on" onclick="show('before')">Before</button><button id="ta" onclick="show('after')">After</button></div></div>
+  <div class="stage">
+    <div class="pane before" id="pB"><iframe src="/de/inspo" title="live before" loading="eager"></iframe></div>
+    <div class="pane after hidden" id="pA">
+      <div class="afwrap">
+        <div class="band">
+          <div class="searchpill"><span data-i="search"></span>Search styles</div>
+          <div class="pills"><span class="pl on">All</span><span class="pl">Hair</span><span class="pl">Nails</span><span class="pl">Color</span><span class="pl">Beard</span></div>
+        </div>
+        <div class="masonry" id="mas"></div>
+      </div>
+    </div>
+  </div>
+<script>
+function show(w){document.getElementById('pB').classList.toggle('hidden',w!=='before');document.getElementById('pA').classList.toggle('hidden',w!=='after');document.getElementById('tb').classList.toggle('on',w==='before');document.getElementById('ta').classList.toggle('on',w==='after');}
+var I={search:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',heart:'<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/>'};
+function svg(p,st,w,fill){return '<svg class="lucide" data-lucide="icon" width="'+w+'" height="'+w+'" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="'+st+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>';}
+document.querySelector('[data-i=search]').innerHTML=svg(I.search,'#A1A1AA',18);
+var tiles=[[210,'#E7E5E4','Textured crop'],[150,'#EDE9E4','Balayage'],[190,'#E8EAF0','Skin fade'],[240,'#EAE7E2','Soft waves'],[160,'#E9E6E1','French tips'],[200,'#E6E9E6','Beard shape'],[180,'#EEEAE5','Blunt bob'],[220,'#E7EAEF','Curtain fringe']];
+var m=document.getElementById('mas');
+tiles.forEach(function(t){var d=document.createElement('div');d.className='pin';d.innerHTML='<div class="ph" style="background:'+t[1]+';height:'+t[0]+'px"></div><span class="hb">'+svg(I.heart,'#FF3366',18)+'</span><span class="cap">'+t[2]+'</span>';m.appendChild(d);});
+</script>
+</body>
+</html>
