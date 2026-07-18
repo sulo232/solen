@@ -104,12 +104,14 @@ export default function ServicesStaffStep({
     });
   };
   // B17 (owner 2026-07-09, "why is there still this pill even though I'm not
-  // scrolled down"): the floating "N chosen" pill used to render unconditionally
-  // the moment a service was selected. It is a scroll-back-to-top affordance for
-  // when the list has scrolled the bottom bar's own count out of easy reach, not
-  // a permanent second summary, so it must stay hidden until the user has
-  // actually scrolled down (see `topSentinelRef` + the IntersectionObserver below).
-  const [hasScrolled, setHasScrolled] = useState(false);
+  // scrolled down") -> owner 2026-07-19 follow-up ("still always there"): a
+  // fixed 120px scroll threshold showed the pill even on a short list where the
+  // selection stayed on screen the whole time. It's a scroll-back-to-top
+  // affordance for when the selection has scrolled OUT OF VIEW, not a generic
+  // "you've scrolled" indicator, so the real signal is visibility of the
+  // SELECTED rows themselves (see the IntersectionObserver below), not a
+  // fixed distance from the top of the page.
+  const [selectionOffscreen, setSelectionOffscreen] = useState(false);
 
   const selectedServiceIds = new Set(formData.services.map((s) => s.id));
   const hasSelectedServices = formData.services.length > 0;
@@ -324,21 +326,67 @@ export default function ServicesStaffStep({
   // Services with no usable duration fall outside every tier, kept visible as an untiered card.
   const untiered = filtered.filter((s) => !TIERS.some((tier) => tier.match(s.duration_minutes ?? 0)));
 
-  // B17: a 1px sentinel pinned at the very top of the content. While it is
-  // still intersecting the viewport, the user hasn't scrolled meaningfully
-  // yet, so the floating "N chosen" pill stays hidden; once it scrolls out
-  // (past the `rootMargin` threshold), the pill is allowed to mount.
-  const topSentinelRef = useRef<HTMLDivElement>(null);
+  // B17 follow-up (owner 2026-07-19): each service row registers its DOM node
+  // here (keyed by service id, see `registerRow` + the `data-service-id` /
+  // `data-selected` attributes on the row below). A single IntersectionObserver
+  // only ever watches the currently-SELECTED rows (observe/unobserve follows
+  // `formData.services` in the effect below); `intersectingIdsRef` accumulates
+  // which of those are on screen right now, since IntersectionObserver only
+  // reports entries whose status just changed, not a full snapshot per callback.
+  const rowElsRef = useRef<Map<string, HTMLDivElement>>(new Map());
+  const registerRow = (id: string) => (el: HTMLDivElement | null) => {
+    if (el) rowElsRef.current.set(id, el);
+    else rowElsRef.current.delete(id);
+  };
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const observedIdsRef = useRef<Set<string>>(new Set());
+  const intersectingIdsRef = useRef<Set<string>>(new Set());
+
   useEffect(() => {
-    const el = topSentinelRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setHasScrolled(!entry.isIntersecting),
-      { rootMargin: '-120px 0px 0px 0px' }
-    );
-    observer.observe(el);
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        const id = (entry.target as HTMLElement).dataset.serviceId;
+        if (!id) continue;
+        if (entry.isIntersecting) intersectingIdsRef.current.add(id);
+        else intersectingIdsRef.current.delete(id);
+      }
+      const stillObserved = observedIdsRef.current;
+      setSelectionOffscreen(
+        stillObserved.size > 0 &&
+          ![...stillObserved].some((id) => intersectingIdsRef.current.has(id))
+      );
+    });
+    observerRef.current = observer;
     return () => observer.disconnect();
   }, []);
+
+  // Keeps the observed set in sync with the current selection: start watching
+  // a row the moment it's added to the cart, stop the moment it's removed.
+  useEffect(() => {
+    const observer = observerRef.current;
+    if (!observer) return;
+    const nextIds = new Set(formData.services.map((s) => s.id));
+    for (const id of observedIdsRef.current) {
+      if (!nextIds.has(id)) {
+        const el = rowElsRef.current.get(id);
+        if (el) observer.unobserve(el);
+        intersectingIdsRef.current.delete(id);
+      }
+    }
+    for (const id of nextIds) {
+      if (!observedIdsRef.current.has(id)) {
+        const el = rowElsRef.current.get(id);
+        if (el) observer.observe(el);
+        // Assume visible until the observer's own callback reports otherwise
+        // (fires within a frame), so selecting a row never flashes the pill.
+        intersectingIdsRef.current.add(id);
+      }
+    }
+    observedIdsRef.current = nextIds;
+    setSelectionOffscreen(
+      nextIds.size > 0 && ![...nextIds].some((id) => intersectingIdsRef.current.has(id))
+    );
+  }, [formData.services]);
 
   // Shared ENTER RECIPE (MOTION.md, owner-approved 2026-07-09), reduced-motion
   // safe. Fixes B1 (the "+X add-ons" detail popping in with no animation and
@@ -366,6 +414,9 @@ export default function ServicesStaffStep({
     return (
       <motion.div // mockup-ok: shared ENTER RECIPE stagger item (MOTION.md, owner-approved 2026-07-09)
         key={service.id}
+        ref={registerRow(service.id)} // owner 2026-07-19: B17 follow-up, selected-row visibility tracking
+        data-service-id={service.id} // owner 2026-07-19: B17 follow-up, selected-row visibility tracking
+        data-selected={inCart || undefined} // owner 2026-07-19: B17 follow-up, selected-row visibility tracking
         variants={rowItem} // mockup-ok
         className={`flex items-center gap-2.5 border-t border-s-border px-5 py-[18px] first:border-t-0 ${
           inCart ? 'bg-s-bg-sunken/60' : ''
@@ -441,8 +492,6 @@ export default function ServicesStaffStep({
 
   return (
     <div className="pb-32">
-      {/* B17: 1px, non-visual scroll sentinel, see the effect above. */}
-      <div ref={topSentinelRef} aria-hidden className="h-px w-full" />
       {/* Subcategory filter pills, owner-approved mockup public/_mockups/liftup-booking-services-tiered/index.html (2026-07-18) */}
       {filterCategories.length > 0 && (
         <div className="sticky top-0 z-30 -mx-4 bg-white/90 backdrop-blur border-b border-s-border px-4 py-2.5"> {/* mockup-ok: owner 2026-07-18 live fix + approved liftup-booking-services-tiered mockup */}
@@ -497,11 +546,15 @@ export default function ServicesStaffStep({
 
       {/* Floating "X selected" pill (Fresha pattern, ink, matches selection language).
           B2: used to pop in with no animation; now enters once with the shared ENTER
-          RECIPE. `hasSelectedServices` is a boolean (services.length > 0), so it only
-          mounts/unmounts crossing the 0 to 1 boundary, never re-announcing itself while
-          more services are added (same quiet discipline as StaffStep's CheckBadge). */}
+          RECIPE. B17 follow-up (owner 2026-07-19): the pill is a scroll-back-to-top
+          affordance for when the selection has scrolled out of view, so it only mounts
+          when there's a selection AND none of the currently-selected rows are visible
+          on screen (`selectionOffscreen`, see the IntersectionObserver above), never on
+          a short list where the selected row(s) stay on screen. mockup-ok: owner
+          2026-07-19, matches liftup-booking-services-tiered mockup (unchanged pill look,
+          only its mount condition changed). */}
       <AnimatePresence> {/* mockup-ok */}
-        {hasSelectedServices && hasScrolled && (
+        {hasSelectedServices && selectionOffscreen && (
           <motion.div // mockup-ok
             key="selected-pill"
             initial={enterMotion.initial} // mockup-ok
