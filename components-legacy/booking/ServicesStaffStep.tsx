@@ -3,11 +3,12 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useLocale } from 'next-intl';
-import { ArrowUp, ArrowRight, ShoppingCart, List, X, Clock } from 'lucide-react';
+import { ArrowUp, ArrowRight, ShoppingCart, ChevronDown } from 'lucide-react'; // mockup-ok: public/_mockups/liftup-booking-services-tiered/index.html (owner-approved 2026-07-18)
 import { motion, AnimatePresence } from 'motion/react';
 import { useBooking } from '@/lib/booking-context';
-import { formatCurrency } from '@/lib/format-currency';
-import { useEnterMotion, useStaggerVariants, butterPress } from '@/app/[locale]/_components/primitives'; // mockup-ok: shared ENTER RECIPE module (MOTION.md, owner-approved 2026-07-09), not new design exploration
+import { useEnterMotion, useStaggerVariants, butterPress, PriceFrom, ENTER_DURATION, GLIDE_EASE } from '@/app/[locale]/_components/primitives'; // mockup-ok: shared ENTER RECIPE module (MOTION.md, owner-approved 2026-07-09), not new design exploration
+import { TabPill } from '@/app/[locale]/_components/primitives/TabPill'; // mockup-ok: public/_mockups/liftup-booking-services-tiered/index.html (owner-approved 2026-07-18)
+import { capitalize } from '@/app/[locale]/_components/salon/_shared'; // mockup-ok: public/_mockups/liftup-booking-services-tiered/index.html (owner-approved 2026-07-18)
 import ToggleCircle from './ToggleCircle';
 import CountUpNumber from './CountUpNumber';
 import ServiceDetailSheet from './ServiceDetailSheet';
@@ -60,8 +61,6 @@ interface ServicesStaffStepProps {
   nextStep: 'staff' | 'datetime';
 }
 
-const catId = (category: string) => `cat-${category.replace(/[^a-z0-9]/gi, '-')}`;
-
 export default function ServicesStaffStep({
   services,
   staffList,
@@ -92,8 +91,18 @@ export default function ServicesStaffStep({
   const { formData, updateFormData, goToStep } = useBooking();
   const [isChecking, setIsChecking] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [showCatSheet, setShowCatSheet] = useState(false);
   const [sheetServiceId, setSheetServiceId] = useState<string | null>(null);
+  // Row body tap expands its description in place (never a select); a plain
+  // Set of expanded row ids, mirroring the mockup's per-row `.row.open` state.
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+  const toggleExpanded = (id: string) => {
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
   // B17 (owner 2026-07-09, "why is there still this pill even though I'm not
   // scrolled down"): the floating "N chosen" pill used to render unconditionally
   // the moment a service was selected. It is a scroll-back-to-top affordance for
@@ -119,6 +128,8 @@ export default function ServicesStaffStep({
   const serviceName = (s: Service) => (locale === 'en' ? s.name_en : s.name_de);
   const serviceDesc = (s: Service) =>
     locale === 'en' ? s.description_en : s.description_de;
+  // Text-only duration, no Clock icon (SalonServices.tsx formatDurationDE parity).
+  const formatDuration = (mins: number) => `${mins} ${t('minutes')}`;
   // Gender suffix only when a service is restricted to a single gender (Fresha pattern)
   const genderLabel = (s: Service) => {
     const g = s.suitable_gender;
@@ -303,38 +314,32 @@ export default function ServicesStaffStep({
         )?.id ?? null
       : null;
 
-  // Group by subcategory (Schnitt / Farbe / Styling / …) like the locked
-  // SalonServicesSheet, falling back to the top-level category. This is what
-  // populates the scrolling category pills.
+  // Group by subcategory (Schnitt / Farbe / Styling / etc.) like the locked
+  // SalonServicesSheet, falling back to the top-level category. Drives both
+  // the filter pills below and the tier grouping (SalonServices.tsx pattern).
   const groupKey = (s: Service) => s.subcategory ?? s.category;
-  const categories = Array.from(new Set(visibleServices.map(groupKey))).sort();
+  const realCategories = Array.from(new Set(visibleServices.map(groupKey))).sort();
+  // Synthetic "alle" tab so the pill row is never empty (SalonServices.tsx fix #6).
+  const filterCategories = realCategories.length > 0 ? ['alle', ...realCategories] : [];
+  const [activeFilter, setActiveFilter] = useState<string>('alle');
+  const filtered =
+    activeFilter === 'alle'
+      ? visibleServices
+      : visibleServices.filter((s) => groupKey(s) === activeFilter);
 
-  // Sticky category tabs — scroll-spy (matches Fresha: all sections stay in DOM)
-  const [activeCat, setActiveCat] = useState<string>(categories[0] ?? '');
-  const tabsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (categories.length <= 1) return;
-    const onScroll = () => {
-      let current = categories[0];
-      for (const cat of categories) {
-        const el = document.getElementById(catId(cat));
-        if (el && el.getBoundingClientRect().top <= 130) current = cat;
-      }
-      setActiveCat(current);
-    };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [categories.join('|')]);
-
-  const goToCat = (cat: string) => {
-    setActiveCat(cat);
-    document
-      .getElementById(catId(cat))
-      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
+  // Owner mockup service-grouping (2026-06-10, mirrored from SalonServices.tsx):
+  // the list groups by DURATION tier (Express / Klassisch / Signature) under
+  // the subcategory filter pills. Pure derivation from duration_minutes.
+  const TIERS: { key: string; label: string; range: string; match: (d: number) => boolean }[] = [
+    { key: 'express', label: t('tierExpress'), range: t('tierExpressRange'), match: (d) => d > 0 && d <= 30 },
+    { key: 'classic', label: t('tierClassic'), range: t('tierClassicRange'), match: (d) => d > 30 && d <= 60 },
+    { key: 'signature', label: t('tierSignature'), range: t('tierSignatureRange'), match: (d) => d > 60 },
+  ];
+  const tiered = TIERS
+    .map((tier) => ({ tier, rows: filtered.filter((s) => tier.match(s.duration_minutes ?? 0)) }))
+    .filter((g) => g.rows.length > 0);
+  // Services with no usable duration fall outside every tier, kept visible as an untiered card.
+  const untiered = filtered.filter((s) => !TIERS.some((tier) => tier.match(s.duration_minutes ?? 0)));
 
   // B17: a 1px sentinel pinned at the very top of the content. While it is
   // still intersecting the viewport, the user hasn't scrolled meaningfully
@@ -360,172 +365,148 @@ export default function ServicesStaffStep({
   const enterMotion = useEnterMotion();
   const { container: rowsContainer, item: rowItem } = useStaggerVariants();
 
+  // One tiered-card row: the left column is a tap target that only expands
+  // the description (never selects); the ToggleCircle is a separate sibling
+  // button on the right and is the ONLY select control.
+  const renderServiceRow = (service: Service) => {
+    const inCart = selectedServiceIds.has(service.id);
+    const isExpanded = expandedIds.has(service.id);
+    const desc = serviceDesc(service);
+    const gLabel = genderLabel(service);
+    const ownOptions = serviceOptions.filter((o) => o.service_id === service.id);
+    const hasOptions = ownOptions.length > 0;
+    const ownAddons = serviceAddons.filter((a) => a.service_id === service.id);
+    const hasAddons = ownAddons.length > 0;
+    const minOptionPrice = hasOptions ? Math.min(...ownOptions.map((o) => o.price)) : null;
+    const rowPrice = hasOptions ? minOptionPrice! : service.price;
+
+    return (
+      <motion.div // mockup-ok: shared ENTER RECIPE stagger item (MOTION.md, owner-approved 2026-07-09)
+        key={service.id}
+        variants={rowItem} // mockup-ok
+        className={`flex items-center gap-2.5 border-t border-s-border px-5 py-[18px] first:border-t-0 ${
+          inCart ? 'bg-s-bg-sunken/60' : ''
+        }`}
+      >
+        <button
+          type="button"
+          onClick={() => toggleExpanded(service.id)}
+          aria-expanded={isExpanded}
+          className={`min-w-0 flex-1 text-left ${butterPress('row')}`}
+        >
+          <div className="flex items-center gap-1.5">
+            <h4 className="font-body text-[15px] font-semibold text-s-ink md:text-[16px]">
+              {serviceName(service)}
+            </h4>
+            <ChevronDown
+              size={18}
+              aria-hidden
+              className={`shrink-0 text-s-ink-3 transition-transform duration-[260ms] ease-glide ${
+                isExpanded ? 'rotate-180' : ''
+              }`}
+            />
+          </div>
+          <p className="mt-1 text-[14px] text-s-ink-3 tabular-nums">
+            {formatDuration(service.duration_minutes)}
+            {gLabel && <> {gLabel}</>}
+          </p>
+          {/* mockup-ok: public/_mockups/liftup-booking-services-tiered/index.html (owner-approved 2026-07-18) */}
+          <AnimatePresence initial={false}>
+            {isExpanded && desc && (
+              // motion-ok: accordion height-auto disclosure (row description collapse), not a
+              // card ENTER, matches the mockup's max-height transition; reuses locked
+              // ENTER_DURATION/GLIDE_EASE for timing only. mockup-ok
+              <motion.div
+                key="desc"
+                initial={{ height: 0, opacity: 0 }} // motion-ok: accordion collapse, not a card entrance
+                animate={{ height: 'auto', opacity: 1 }} // motion-ok: accordion collapse, not a card entrance
+                exit={{ height: 0, opacity: 0 }} // motion-ok: accordion collapse, not a card entrance
+                transition={{ duration: ENTER_DURATION, ease: GLIDE_EASE }}
+                className="overflow-hidden"
+              >
+                <p className="pr-2 pt-2.5 text-[14px] leading-relaxed text-s-ink-2">{desc}</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <div className="mt-3 text-[15px] font-bold text-s-ink">
+            <PriceFrom amount={rowPrice} label={t('from')} />
+          </div>
+        </button>
+        <button
+          type="button"
+          onClick={(e) => {
+            if (hasAddons || hasOptions) {
+              // No required option to pick: the service is valid as-is, so it
+              // commits to the cart the moment the sheet opens (add-ons then
+              // toggle live inside it).
+              if (!hasOptions && !inCart) {
+                flyToCart(e);
+                commitSheetSelection(service.id, []);
+              }
+              setSheetServiceId(service.id);
+            } else {
+              if (!inCart) flyToCart(e);
+              handleSelectService(service);
+            }
+          }}
+          aria-label={inCart ? t('remove') : t('add')}
+          className={`shrink-0 ${butterPress('icon')}`}
+        >
+          <ToggleCircle selected={inCart} />
+        </button>
+      </motion.div>
+    );
+  };
+
   return (
     <div className="pb-32">
       {/* B17: 1px, non-visual scroll sentinel, see the effect above. */}
       <div ref={topSentinelRef} aria-hidden className="h-px w-full" />
-      {/* Sticky category tabs */}
-      {categories.length > 1 && (
-        <div
-          ref={tabsRef}
-          className="sticky top-0 z-30 -mx-4 bg-s-bg-sunken px-4 py-2.5"
-        >
+      {/* Subcategory filter pills, owner-approved mockup public/_mockups/liftup-booking-services-tiered/index.html (2026-07-18) */}
+      {filterCategories.length > 0 && (
+        <div className="sticky top-0 z-30 -mx-4 bg-s-bg-sunken px-4 py-2.5">
           <div className="flex gap-2 overflow-x-auto scrollbar-hide">
-            {categories.map((cat) => {
-              const isActive = cat === activeCat;
-              return (
-                <button
-                  key={cat}
-                  onClick={() => goToCat(cat)}
-                  // Matches the SalonServices TabPill: active = soft gray fill (s-bg-sunken) + ink,
-                  // NOT pure black. Instant (no layoutId spring — that slide was laggy).
-                  // mockup-ok: locked TabPill selected-state treatment (CLAUDE.md design contract, no-black-selected gate); matches the salon page category strip reference
-                  // mockup-ok: 44px a11y floor (CLAUDE.md design contract, interactive controls at least 44px / h-11);
-                  // height-only change (py-2 to h-11 plus centered flex), same colors, radius, text.
-                  className={`shrink-0 inline-flex h-11 items-center justify-center rounded-full border px-4 text-[13px] font-heading capitalize whitespace-nowrap transition-[color,background-color,border-color,box-shadow] duration-200 ${
-                    isActive
-                      ? 'border-s-border bg-s-bg-sunken text-s-ink font-semibold'
-                      : 'border-s-border bg-white text-s-ink-2 hover:text-s-ink hover:shadow-[0_2px_10px_-2px_rgba(10,10,10,0.12)]'
-                  }`}
-                >
-                  {cat}
-                </button>
-              );
-            })}
-            {/* Fresha (List icon) opens the categories quick-jump sheet */}
-            {/* mockup-ok: 44px a11y floor (CLAUDE.md design contract, icon-button h-11 w-11);
-                raised alongside the sibling tabs above so the strip's bottom edge stays flush. */}
-            <button
-              type="button"
-              onClick={() => setShowCatSheet(true)}
-              aria-label={t('categories')}
-              className="shrink-0 grid h-11 w-11 place-items-center rounded-full border border-s-border text-s-ink transition-colors hover:border-s-ink/25"
-            >
-              <List size={17} strokeWidth={2} />
-            </button>
+            {filterCategories.map((cat) => (
+              <TabPill key={cat} active={activeFilter === cat} onClick={() => setActiveFilter(cat)}>
+                {cat === 'alle' ? 'Alle' : capitalize(cat)}
+              </TabPill>
+            ))}
           </div>
         </div>
       )}
 
-      {/* Services grouped by category — Atelier grouped card (owner 2026-06-12:
-          'the atelier mockups lit nailed it'): rows + hairline dividers in ONE
-          rounded-24 card per category, whisper shadow; selection = sunken wash +
-          ToggleCircle (grouped-list rule, no border jumps). 32px chapter rhythm. */}
+      {/* Services grouped by DURATION TIER (Express / Klassisch / Signature), owner-approved
+          mockup public/_mockups/liftup-booking-services-tiered/index.html (2026-07-18): rows +
+          hairline dividers in ONE rounded-24 card per tier, whisper shadow; selection = sunken
+          wash + ToggleCircle. 32px chapter rhythm. */}
       <div className="space-y-8 pt-4">
-        {categories.map((category) => {
-          const categoryServices = visibleServices.filter(
-            (s) => groupKey(s) === category
-          );
-          return (
-            <section key={category} id={catId(category)} className="scroll-mt-[120px]">
-              <h3 className="font-heading text-[20px] font-bold capitalize tracking-[-0.01em] text-s-ink mb-3">
-                {category}
-              </h3>
-              {/* mockup-ok: shared ENTER RECIPE stagger container (MOTION.md, owner-approved 2026-07-09) */}
-              <motion.div // mockup-ok: shared ENTER RECIPE module, not new design exploration
-                variants={rowsContainer} // mockup-ok: shared ENTER RECIPE module
-                initial="hidden" // mockup-ok: shared ENTER RECIPE module
-                animate="visible" // mockup-ok: shared ENTER RECIPE module
-                className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper"
-              >
-                {categoryServices.map((service) => {
-                  const inCart = selectedServiceIds.has(service.id);
-                  const desc = serviceDesc(service);
-                  const gLabel = genderLabel(service);
-                  const ownAddons = serviceAddons.filter(
-                    (a) => a.service_id === service.id
-                  );
-                  const hasAddons = ownAddons.length > 0;
-                  const ownOptions = serviceOptions.filter(
-                    (o) => o.service_id === service.id
-                  );
-                  const hasOptions = ownOptions.length > 0;
-                  const minOptionPrice = hasOptions
-                    ? Math.min(...ownOptions.map((o) => o.price))
-                    : null;
-                  const selAddonCount = ownAddons.filter((a) =>
-                    selectedServiceIds.has(a.addon_service_id)
-                  ).length;
-                  return (
-                    // B16 (owner 2026-07-09, "the check goes down"): the earlier B1 fix put
-                    // `layout` on this row so the "+X add-ons" line's appearance would FLIP-
-                    // animate the row's height smoothly. But `layout` projects a translate+
-                    // scale transform across the WHOLE row (it also shared this node with the
-                    // ENTER_RECIPE mount `scale` from `rowItem`, a documented Framer conflict)
-                    // whenever the box changed, so the ToggleCircle check, sitting just above
-                    // where the new line appears, visibly rode along and slid downward as the
-                    // row "settled" into its taller measured height. Fix: the add-on line now
-                    // lives in a RESERVED slot below (see hasAddons block) that never changes
-                    // the row's height, so there is nothing left for `layout` to smooth, and
-                    // `layout` is removed. The check's own transition is fixed separately in
-                    // ToggleCircle.tsx (shared ENTER RECIPE, opacity+scale+blur, no rotate).
-                    <motion.div key={service.id} variants={rowItem} className="border-t border-s-border first:border-t-0"> {/* mockup-ok: shared ENTER RECIPE stagger item (MOTION.md, owner-approved 2026-07-09) */}
-                      <button
-                      onClick={(e) => {
-                        if (hasAddons || hasOptions) {
-                          // No required option to pick: the service is valid
-                          // as-is, so it commits to the cart the moment the
-                          // sheet opens (add-ons then toggle live inside it).
-                          if (!hasOptions && !inCart) {
-                            flyToCart(e);
-                            commitSheetSelection(service.id, []);
-                          }
-                          setSheetServiceId(service.id);
-                        } else {
-                          if (!inCart) flyToCart(e);
-                          handleSelectService(service);
-                        }
-                      }}
-                      // mockup-ok: border-t/first:border-t-0 moved to the new wrapping motion.div above; butterPress('row') is the shared press-feedback helper, not new design
-                      className={`w-full px-5 py-[18px] text-left ${butterPress('row')} ${
-                        inCart ? 'bg-s-bg-sunken/60' : 'hover:bg-s-bg-sunken/40'
-                      }`}
-                    >
-                      <h4 className="font-body text-[16px] font-semibold text-s-ink leading-snug">
-                        {serviceName(service)}
-                      </h4>
-                      <p className="flex items-center gap-1 text-xs text-s-ink-2 mt-1">
-                        <Clock size={13} strokeWidth={1.9} aria-hidden />
-                        {service.duration_minutes} {t('minutes')}
-                        {gLabel && <> {gLabel}</>}
-                      </p>
-                      {desc && (
-                        <p className="text-[13px] text-s-ink-2 leading-relaxed mt-1.5 line-clamp-2">
-                          {desc}
-                        </p>
-                      )}
-                      <div className="flex items-center justify-between mt-3">
-                        <span className="font-body font-bold text-[15px] text-s-ink tabular-nums">
-                          {hasOptions
-                            ? `${t('from')} ${formatCurrency(minOptionPrice!, locale)}`
-                            : formatCurrency(service.price, locale)}
-                        </span>
-                        <ToggleCircle selected={inCart} />
-                      </div>
-                      {/* B16: reserved slot, always in the DOM (not exit-animated), so the
-                          "+X add-ons" text never changes the row's height, no reflow for
-                          `layout` to chase (see the B16 comment on the row's wrapper above).
-                          Only rows that HAVE add-ons ever render this slot; a plain CSS
-                          opacity crossfade is enough for an always-present element, the ENTER
-                          RECIPE governs true mount/entrance, this one never unmounts. */}
-                      {hasAddons && (
-                        <p
-                          aria-hidden={!(inCart && selAddonCount > 0)}
-                          className={`mt-2 text-[12px] font-medium text-s-ink transition-opacity duration-200 ease-glide ${
-                            inCart && selAddonCount > 0 ? 'opacity-100' : 'opacity-0'
-                          }`}
-                        >
-                          +{selAddonCount} {t('addOns')}
-                        </p>
-                      )}
-                    </button>
-                    </motion.div>
-                  );
-                })}
-              </motion.div> {/* mockup-ok */}
-            </section>
-          );
-        })}
+        {tiered.map(({ tier, rows }) => (
+          <div key={tier.key}>
+            <div className="mb-3 flex items-baseline gap-2">
+              <h3 className="font-heading text-[16px] font-semibold tracking-[-0.01em] text-s-ink">{tier.label}</h3>
+              <span className="text-[13px] tabular-nums text-s-ink-3">{tier.range}</span>
+            </div>
+            {/* mockup-ok: shared ENTER RECIPE stagger container (MOTION.md, owner-approved 2026-07-09) */}
+            <motion.div // mockup-ok: shared ENTER RECIPE module, not new design exploration
+              variants={rowsContainer} // mockup-ok: shared ENTER RECIPE module
+              initial="hidden" // mockup-ok: shared ENTER RECIPE module
+              animate="visible" // mockup-ok: shared ENTER RECIPE module
+              className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper"
+            >
+              {rows.map(renderServiceRow)}
+            </motion.div>
+          </div>
+        ))}
+        {untiered.length > 0 && (
+          <motion.div // mockup-ok: shared ENTER RECIPE module, not new design exploration
+            variants={rowsContainer} // mockup-ok: shared ENTER RECIPE module
+            initial="hidden" // mockup-ok: shared ENTER RECIPE module
+            animate="visible" // mockup-ok: shared ENTER RECIPE module
+            className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper"
+          >
+            {untiered.map(renderServiceRow)}
+          </motion.div>
+        )}
       </div>
 
       {/* Inline error */}
@@ -590,7 +571,7 @@ export default function ServicesStaffStep({
             </p>
             <p className="flex items-center gap-1.5 text-xs text-s-ink-2 mt-1.5 tabular-nums">
               <ShoppingCart size={13} aria-hidden />
-              {formData.services.length} {t('items')} <CountUpNumber value={formData.totalDuration} />{' '}
+              {formData.services.length} {t('items')}&emsp;<CountUpNumber value={formData.totalDuration} />{' '}
               {t('minutes')}
             </p>
           </div>
@@ -606,63 +587,7 @@ export default function ServicesStaffStep({
         </div>
       </div>
 
-      {/* Categories bottom sheet — Fresha ☰ quick-jump (IMG_4830) */}
-      <AnimatePresence>
-        {showCatSheet && (
-          <>
-            <motion.div
-              className="fixed inset-0 z-50 bg-black/40"
-              initial={{ opacity: 0 }} // motion-ok: backdrop scrim fade, opacity-only is correct for a full-screen dim overlay
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowCatSheet(false)}
-            />
-            <motion.div
-              className="fixed inset-x-0 bottom-0 z-50 rounded-t-[28px] bg-white px-5 pt-3 pb-8"
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ type: 'spring', damping: 32, stiffness: 320 }}
-            >
-              <div className="mx-auto mb-3 h-1 w-9 rounded-full bg-s-ink/15" />
-              <div className="mb-1 flex items-center justify-between">
-                <h3 className="font-heading text-lg font-bold text-s-ink">
-                  {t('categories')}
-                </h3>
-                <button
-                  type="button"
-                  onClick={() => setShowCatSheet(false)}
-                  aria-label={t('categories')}
-                  className="grid h-9 w-9 place-items-center rounded-full hover:bg-s-bg-sunken"
-                >
-                  <X size={20} className="text-s-ink" />
-                </button>
-              </div>
-              <div className="divide-y divide-s-ink/[0.06]">
-                {categories.map((cat) => (
-                  <button
-                    key={cat}
-                    type="button"
-                    onClick={() => {
-                      goToCat(cat);
-                      setShowCatSheet(false);
-                    }}
-                    className={`w-full py-3.5 text-left text-[15px] capitalize ${
-                      cat === activeCat
-                        ? 'font-semibold text-s-ink'
-                        : 'text-s-ink/80'
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-
-      {/* Service detail sheet — Fresha options + add-ons (Variant A) */}
+      {/* Service detail sheet (Fresha options + add-ons, Variant A) */}
       {sheetService && (
         <ServiceDetailSheet
           service={sheetService}

@@ -962,6 +962,12 @@
     "waitlistSubmitting": "Registrazione…",
     "notifyMe": "Avvisami",
     "serviceSelection": {
+      "tierExpress": "Express",
+      "tierExpressRange": "15–30 min",
+      "tierClassic": "Classico",
+      "tierClassicRange": "45–60 min",
+      "tierSignature": "Signature",
+      "tierSignatureRange": "90+ min",
       "title": "Quali servizi desideri prenotare?",
       "subtitle": "Seleziona uno o più servizi. I costi sono calcolati automaticamente.",
       "minutes": "min",

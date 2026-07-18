@@ -987,6 +987,12 @@
     "waitlistSubmitting": "Adding you…",
     "notifyMe": "Notify me",
     "serviceSelection": {
+      "tierExpress": "Express",
+      "tierExpressRange": "15–30 min",
+      "tierClassic": "Classic",
+      "tierClassicRange": "45–60 min",
+      "tierSignature": "Signature",
+      "tierSignatureRange": "90+ min",
       "title": "Which services would you like to book?",
       "subtitle": "Select one or more services. Costs are calculated automatically.",
       "minutes": "min",

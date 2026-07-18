@@ -997,6 +997,12 @@
     "waitlistSubmitting": "Wird eingetragen…",
     "notifyMe": "Benachrichtige mich",
     "serviceSelection": {
+      "tierExpress": "Express",
+      "tierExpressRange": "15–30 Min",
+      "tierClassic": "Klassisch",
+      "tierClassicRange": "45–60 Min",
+      "tierSignature": "Signature",
+      "tierSignatureRange": "90+ Min",
       "title": "Welche Services möchtest du buchen?",
       "subtitle": "Wähle ein oder mehrere Services aus. Die Kosten werden automatisch berechnet.",
       "minutes": "Min",
