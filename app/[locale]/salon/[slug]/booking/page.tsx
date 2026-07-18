@@ -8,7 +8,18 @@ import type { StaffMember, Salon } from '@/lib/types';
 
 interface BookingSalonPageProps {
   params: Promise<{ locale: string; slug: string }>;
-  searchParams: Promise<{ staff?: string; service?: string; services?: string; start?: string; note?: string; bundle?: string }>;
+  searchParams: Promise<{ staff?: string; service?: string; services?: string; start?: string; date?: string; note?: string; bundle?: string }>;
+}
+
+// GAP #5 punch (round 2, 2026-07-18): a NaN-only Date() check does NOT catch day-of-month
+// overflow, JS silently normalizes "2026-02-30" -> "2026-03-02" instead of throwing, so a
+// garbage ?date= would prefill the WRONG date rather than falling back to no-prefill. This
+// round-trips the y/m/d components through a LOCAL-time Date (no UTC shift) and requires
+// them to read back identically, the only way to catch an auto-normalized invalid date.
+function isRealCalendarDate(ymd: string): boolean {
+  const [y, m, d] = ymd.split('-').map(Number);
+  const parsed = new Date(y, m - 1, d);
+  return parsed.getFullYear() === y && parsed.getMonth() === m - 1 && parsed.getDate() === d;
 }
 
 export async function generateMetadata({
@@ -27,7 +38,7 @@ export default async function BookingSalonPage({
   searchParams,
 }: BookingSalonPageProps) {
   const { locale, slug } = await params;
-  const { staff: staffParam, service: serviceParam, services: servicesParam, start: startParam, note: noteParam, bundle: bundleParam } = await searchParams;
+  const { staff: staffParam, service: serviceParam, services: servicesParam, start: startParam, date: dateParam, note: noteParam, bundle: bundleParam } = await searchParams;
   const supabase = createAdminSupabaseClient();
   const t = await getTranslations({ locale, namespace: 'booking' });
 
@@ -91,6 +102,20 @@ export default async function BookingSalonPage({
   // Validated against the real staff list so a bogus param is ignored.
   const initialStaffId =
     staffParam && staff.some((s) => s.id === staffParam) ? staffParam : undefined;
+
+  // GAP #5 (2026-07-18): preselect the DATE only (never a time) when arriving from a
+  // search result / PDP link that carried ?date=YYYY-MM-DD. Strict format check plus a
+  // real-date check plus a not-in-the-past check; anything that fails just falls back to
+  // no prefill (never crashes the page). Deliberately date-only, not a fabricated ?start=
+  // (which would also seed a fake time), so the user still picks a real slot.
+  const todayYmd = new Date().toISOString().slice(0, 10);
+  const initialDate =
+    dateParam &&
+    /^\d{4}-\d{2}-\d{2}$/.test(dateParam) &&
+    isRealCalendarDate(dateParam) &&
+    dateParam >= todayYmd
+      ? dateParam
+      : undefined;
 
   // V3-D379: preselect a service when arriving from a search/category card slot
   // pill (?service=<id>) — validated against the real service list, so it lands
@@ -202,7 +227,7 @@ export default async function BookingSalonPage({
   const bookingServices = services.map((s) => ({ ...s, is_active: s.is_active ?? true }));
 
   return (
-    <BookingProvider salonId={salon.id} initialStaffId={safeStaffId} initialService={initialService} initialServices={initialServices} initialStart={startParam} initialNote={noteParam} initialBundleId={initialBundleId}>
+    <BookingProvider salonId={salon.id} initialStaffId={safeStaffId} initialService={initialService} initialServices={initialServices} initialStart={startParam} initialDate={initialDate} initialNote={noteParam} initialBundleId={initialBundleId}>
       {/* Mockup 20 (owner-approved 2026-06-11): Fresha bones — sunken body,
           no salon-name header bar; nav (back + X) + the big task title live
           inside the wizard. */}

@@ -2,12 +2,13 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import {
   ChevronDown,
   MapPin,
 } from "lucide-react";
 import type { SalonDetail, OpenStatus } from "./_shared";
-import { DAY_KEYS, DAY_LABEL, type DayKey } from "./_shared";
+import { DAY_KEYS, DAY_LABEL, withDateParam, type DayKey } from "./_shared";
 import { StatusInline } from "./StatusInline";
 import { RatingStars } from "../primitives";
 import { cn } from "@/lib/utils";
@@ -87,6 +88,10 @@ export function SalonSidebar({
   const [showHours, setShowHours] = React.useState(false);
   const fullAddress = salon.address;
   const directionsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`;
+  // GAP #5: a searched date (?date=YYYY-MM-DD, forwarded from the search result the
+  // user tapped) rides through to the booking picker instead of getting dropped.
+  const searchParams = useSearchParams();
+  const bookingHref = withDateParam(`/${locale}/salon/${salon.slug}/booking`, searchParams?.get("date"));
 
   // V3-D230: scroll to #section-reviews on rating-count click. Same anchor the
   // sticky tab nav uses. No router push — purely scroll behavior.
@@ -134,7 +139,7 @@ export function SalonSidebar({
 
       {/* 3. Primary CTA — match Fresha: ink bg + white text + 48 height + 999 radius */}
       <Link
-        href={`/${locale}/salon/${salon.slug}/booking`}
+        href={bookingHref}
         className="font-body mt-5 inline-flex w-full items-center justify-center rounded-full bg-s-ink py-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-black active:bg-black"
       >
         Jetzt buchen

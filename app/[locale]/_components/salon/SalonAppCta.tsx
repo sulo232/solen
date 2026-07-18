@@ -2,8 +2,9 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { ChevronRight } from "lucide-react";
-import { capitalize } from "./_shared";
+import { capitalize, withDateParam } from "./_shared";
 import { formatQuartier } from "@/lib/basel-neighborhoods";
 
 /**
@@ -32,6 +33,10 @@ export function SalonAppCta({
 }) {
   const cityLabel = capitalize(city);
   const quartierLabel = quartier ? formatQuartier(quartier) : null;
+  // GAP #5: a searched date (?date=YYYY-MM-DD, forwarded from the search result the
+  // user tapped) rides through to the booking picker instead of getting dropped.
+  const searchParams = useSearchParams();
+  const bookingHref = withDateParam(`/${locale}/salon/${slug}/booking`, searchParams?.get("date"));
   const chips = [
     { label: `Andere Salons in ${cityLabel}`, href: `/${locale}/search?city=${encodeURIComponent(cityLabel)}` },
     ...(quartierLabel && quartierLabel.toLowerCase() !== cityLabel.toLowerCase()
@@ -66,7 +71,7 @@ export function SalonAppCta({
       <div className="mt-6 flex justify-center md:justify-start">
         {/* V3-D202 (A22): tinted emerald shadow → shadow-elevation-2. */}
         <Link
-          href={`/${locale}/salon/${slug}/booking`}
+          href={bookingHref}
           className="font-body inline-flex items-center gap-2 rounded-full bg-s-ink px-7 py-3.5 text-[14px] font-semibold text-white shadow-elevation-2 transition-colors hover:bg-black active:bg-black md:text-[15px]"
         >
           Termin buchen

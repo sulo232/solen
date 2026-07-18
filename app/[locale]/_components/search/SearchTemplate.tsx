@@ -1600,6 +1600,7 @@ export default function SearchTemplate({
                       services={s.services}
                       isSaved={favoriteIds.has(s.id)}
                       salonId={s.id}
+                      date={date}
                     />
                   ))}
                 </div>
@@ -1673,6 +1674,7 @@ export default function SearchTemplate({
                     walkInWaitMin={walkinAvail[s.id]?.waitMinutes ?? null}
                     walkInWaitMax={walkinAvail[s.id]?.waitMinutesMax ?? null}
                     walkInQueue={walkinAvail[s.id]?.queueLength ?? null}
+                    date={date}
                   />
                 ))}
               </div>
@@ -1955,6 +1957,7 @@ export default function SearchTemplate({
                           isSaved={favoriteIds.has(selectedSalon.id)}
                           backLabel={t("allSalons")}
                           viewStoreLabel={t("viewStore")}
+                          date={date}
                         />
                       </motion.div>
                     );

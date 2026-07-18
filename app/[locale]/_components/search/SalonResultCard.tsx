@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Calendar, Store, MapPin, ArrowRight } from "lucide-react";
 import { cn, splitHighlight } from "@/lib/utils";
+import { withDateParam } from "../salon/_shared";
 import { FROST_GLASS } from "@/lib/frost-glass";
 import { CardName, CardMeta, RatingStars, PriceFrom } from "../primitives";
 import { HeartButton } from "../homepage/HeartButton";
@@ -52,6 +53,11 @@ export interface SalonResultCardProps {
   /** V3-D357: earliest available slot label ("heute 15:30") - the booking hook +
    *  the content that stops the card reading empty. Computed in SearchTemplate. */
   nextSlot?: string | null;
+  /** GAP #5 (2026-07-18): the active search's `?date=YYYY-MM-DD`, if any , carried
+   *  onto the PDP link so the booking flow can pre-select it instead of dropping the
+   *  context the user already picked. Only a strict YYYY-MM-DD shape is forwarded
+   *  (see `withDateParam`); anything else is silently dropped, no crash. */
+  date?: string | null;
   /** V3-D376 (2026-05-30): top services + their bookable slots, rendered as the
    *  card's "featured service + time pills + Alle Services" block (user pick "#3").
    *  Supersedes the V3-D371 no-service-rows decision. From ?with_slots=1. */
@@ -190,10 +196,11 @@ function SalonResultCardInner(props: SalonResultCardProps) {
     nextSlot, services, variant = "grid", matchQuery,
     galleryCount, hasServiceQuery, matchChip,
     walkInWaitMin, walkInQueue,
-    onSelect,
+    onSelect, date,
   } = props;
 
-  const href = `/${locale}/salon/${slug}`;
+  // GAP #5: carry the searched date onto the PDP link (dropped silently if malformed).
+  const href = withDateParam(`/${locale}/salon/${slug}`, date);
   const fromLabel = FROM_LABEL[locale] ?? "ab";
   const wl = WALKIN_LABEL[locale] ?? WALKIN_LABEL.de;
   const catLabel = category ? CATEGORY_LABEL[category] ?? category : null;
@@ -368,7 +375,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
     // In walk-in mode the WHOLE card taps into the salon PROFILE opened in walk-in mode
     // (?walkin=1 → the PDP's Book/Walk-in toggle starts on Walk-in), NOT the bare
     // /walk-in-join screen. The profile is the richer, already-built walk-in surface.
-    const cardHref = walkInWaitMin != null ? `${href}?walkin=1` : href;
+    const cardHref = walkInWaitMin != null ? withDateParam(`/${locale}/salon/${slug}?walkin=1`, date) : href;
     return (
       <article className="relative">
         <div className="absolute right-2.5 top-2.5 z-10">

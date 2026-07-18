@@ -140,6 +140,19 @@ export function capitalize(s: string): string {
 }
 
 /**
+ * GAP #5 (2026-07-18): carries a searched date through to a booking link. `date`
+ * comes straight from `useSearchParams().get("date")` on the PDP (itself forwarded
+ * by SalonResultCard/MapSalonDetail from the search results), so it is untrusted
+ * input , only a strict YYYY-MM-DD shape is appended, anything else is dropped
+ * silently (no crash, no malformed param forwarded). The booking page re-validates
+ * server-side before it ever seeds the picker.
+ */
+export function withDateParam(href: string, date: string | null | undefined): string {
+  if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return href;
+  return `${href}${href.includes("?") ? "&" : "?"}date=${date}`;
+}
+
+/**
  * Maps a Swiss postal code to the dominant city in that postal region.
  * First-digit only — accurate enough for city-chip labels (V2-D53.3 fix #2).
  *

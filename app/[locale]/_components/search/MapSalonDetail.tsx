@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { CardName, CardMeta, RatingStars, PriceFrom } from "../primitives";
 import { HeartButton } from "../homepage/HeartButton";
 import { CATEGORY_LABEL, FROM_LABEL, REVIEWS_LABEL } from "./SalonResultCard";
+import { withDateParam } from "../salon/_shared";
 import type { Salon } from "./SearchTemplate";
 
 /**
@@ -74,6 +75,9 @@ export interface MapSalonDetailProps {
   backLabel: string;
   /** "View store" link copy (searchUi.viewStore). */
   viewStoreLabel: string;
+  /** GAP #5 (2026-07-18): the active search's `?date=YYYY-MM-DD`, if any , carried
+   *  onto the PDP link the same way SalonResultCard does. */
+  date?: string | null;
 }
 
 export function MapSalonDetail({
@@ -84,8 +88,9 @@ export function MapSalonDetail({
   isSaved = false,
   backLabel,
   viewStoreLabel,
+  date,
 }: MapSalonDetailProps) {
-  const href = `/${locale}/salon/${salon.slug}`;
+  const href = withDateParam(`/${locale}/salon/${salon.slug}`, date);
   const fromLabel = FROM_LABEL[locale] ?? FROM_LABEL.de;
   const catKey = safeCategory(salon.categories);
   const catLabel = catKey ? CATEGORY_LABEL[catKey] ?? catKey : null;
