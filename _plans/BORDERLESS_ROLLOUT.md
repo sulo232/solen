@@ -84,8 +84,8 @@ Status: [x] mocked+delivered · [~] mocked, being refined · [ ] not mocked yet 
 - [x] Salon PDP (`/de/salon/[slug]`) , round 2 (service tiers + team/review panels off, filters/prices stay)
 
 ### Booking flow (the wizard, booking-LOCKED order: services -> Staff -> Zeit(->Haare) -> Bezahlen)
-- [ ] Service select · [ ] Staff step · [ ] Date/time step · [ ] Hair step · [ ] Pay/confirm step
-- [ ] Confirmation / receipt (`/de/confirmation`)
+- [~] Service select · [~] Staff · [~] Date/time · [~] Hair · [~] Pay/confirm , MOCKED (liftup-booking/), awaiting approval
+- [~] Confirmation / receipt (`/de/confirmation`) , MOCKED (liftup-booking/), calm green success header
 
 ### Account (the calm borderless heartland)
 - [x] Profile hub (`/de/profile`) , round 1 (A: direction liked)

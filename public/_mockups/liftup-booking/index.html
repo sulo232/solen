@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Borderless booking , services, staff, datetime, hair, pay, confirmation</title>
+<!-- Base: elicitation -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/salon/[slug]/booking/page.tsx + lib/booking-context.tsx +
+  components-legacy/booking/BookingWizard.tsx / ServicesStaffStep.tsx / StaffStep.tsx / DateTimeStep.tsx /
+  HairStep.tsx / PayConfirmStep.tsx + app/[locale]/confirmation/page.tsx + BookingConfirmation.tsx.
+  Reference-checked: /Users/sulo/.claude/uploads/52878f2d-37a1-43b1-9756-e2e3a26b664d/83a70cdc-IMG_6537.png
+  (+ IMG_6538/6539, owner Uber screenshots; subagent-analysed this session for the borderless recipe).
+  Exists-check: the whole booking wizard (5 client steps on one route) + confirmation ALL exist and render the
+  sections shown (mapped this turn by a read-only screen-map workflow); REMOVED.md: none. NEW: only the
+  borderless TREATMENT on existing steps (today the wizard body is bg-s-bg-sunken gray with WHITE CARDS
+  floating on it , that card chrome is what comes off). The confirmation opens with a calm centered success
+  header (green check), no photo band.
+  Backend-check: Continue = client step state (BookingWizard); Confirm & pay = POST /api/bookings (+ POST
+  /api/stripe/booking-pay-intent for online) , BOTH EXIST; Cancel = POST /api/bookings/[id]/cancel (EXISTS);
+  Add to calendar = client ICS; Directions = maps deep-link. Every value (prices, durations, ratings, VAT,
+  slots) is display of already-live data.
+  Taste-current: ratings show star + value only, no review count (C11 converged card, 2026-07-13).
+  Booking order LOCKED (Mockup 20, owner 2026-06-11): services -> Staff -> Zeit(->Haare) -> Bezahlen, one shared
+  header (back + centered small step title + X), NO progress bar/step dots. Labels English for locale-free
+  review. Rebuilds nothing into production; direction-elicitation for per-screen approval (owner 2026-07-18:
+  Model B approved, make tons of mockups before implementing, approve each). Treatment-only per mockup policy.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#52525B; --ink3:#A1A1AA;
+    --surface:#FFFFFF; --sunken:#F4F4F5; --hairline:#E4E4E7;
+    --accent:#276EF1; --heart:#FF3366; --star:#FFC32B; --green:#16A34A; --red:#DC2626; --orange:#EA580C;
+    --page:#FAFAFA;
+    --font:'Inter Tight',system-ui,-apple-system,'Segoe UI',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);background:var(--page);color:var(--ink);-webkit-font-smoothing:antialiased;padding:40px 20px 90px}
+  .wrap{max-width:1240px;margin:0 auto}
+  h1{font-size:25px;font-weight:800;letter-spacing:-0.02em;margin-bottom:6px}
+  .lede{font-size:14.5px;color:var(--ink2);line-height:1.55;max-width:840px}
+  .rec{font-size:13.5px;color:var(--ink);background:#EFF4FF;border:1px solid #D6E3FF;border-radius:12px;padding:13px 16px;max-width:840px;margin:16px 0 30px;line-height:1.55}
+  .rec b{font-weight:700}
+  .screens{display:flex;gap:30px;flex-wrap:wrap;align-items:flex-start}
+  .col{flex:1;min-width:300px;max-width:340px}
+  .tag{display:inline-block;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--ink);color:#fff;margin-bottom:11px}
+  .caption{font-size:12px;color:var(--ink2);line-height:1.5;margin-top:12px;max-width:320px}
+  .caption .off{color:var(--red);font-weight:700}
+  .caption .keep{color:var(--green);font-weight:700}
+
+  .phone{width:320px;background:var(--surface);border-radius:32px;box-shadow:0 22px 54px -20px rgba(0,0,0,.28),0 0 0 1px rgba(0,0,0,.04);overflow:hidden;margin:0 auto;position:relative}
+  .status{height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-size:12px;font-weight:600}
+  .sysicons{display:flex;gap:6px;align-items:center;color:var(--ink)}
+  .whead{display:flex;align-items:center;justify-content:space-between;padding:2px 14px 12px}
+  .whead .rd{width:36px;height:36px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:var(--ink)}
+  .whead .stitle{font-size:16.5px;font-weight:600;letter-spacing:-0.01em}
+  .scr{padding:0 0 84px}
+  .ico{flex:none;display:flex;align-items:center;justify-content:center}
+  svg{display:block}
+
+  .cats{display:flex;gap:8px;overflow:hidden;padding:6px 16px 10px;background:var(--surface)}
+  .cat{font-size:13px;font-weight:600;padding:8px 15px;border-radius:999px;border:1px solid var(--hairline);color:var(--ink2);flex:none}
+  .cat.on{background:var(--sunken);color:var(--ink);border-color:transparent}
+
+  .seclbl{font-size:19px;font-weight:700;letter-spacing:-0.01em;padding:14px 18px 4px}
+  .seclbl.sm{font-size:13px;font-weight:600;color:var(--ink2);padding:16px 18px 4px}
+
+  .srow{display:flex;align-items:flex-start;gap:12px;padding:13px 18px}
+  .srow + .srow{border-top:1px solid var(--hairline)}
+  .srow .m{flex:1}
+  .srow .sn{font-size:15px;font-weight:600}
+  .srow .sd{font-size:12.5px;color:var(--ink3);margin-top:2px;display:flex;align-items:center;gap:5px}
+  .srow .sp{font-size:14px;font-weight:700;margin-top:6px}
+  .tog{width:26px;height:26px;border-radius:999px;border:1.5px solid var(--hairline);flex:none;display:flex;align-items:center;justify-content:center;color:var(--ink3)}
+  .tog.on{background:var(--ink);border-color:var(--ink);color:#fff}
+
+  .strow{display:flex;align-items:center;gap:13px;padding:13px 18px}
+  .strow + .strow{border-top:1px solid var(--hairline)}
+  .strow.sel{background:var(--sunken)}
+  .av{width:48px;height:48px;border-radius:999px;background:var(--sunken);flex:none;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--ink2)}
+  .strow .nm{font-size:15px;font-weight:600}
+  .strow .sub{font-size:12.5px;color:var(--ink3);margin-top:1px;display:flex;align-items:center;gap:6px}
+  .strow .st{display:inline-flex;align-items:center;gap:3px;color:var(--ink2);font-weight:600}
+  .strow .lk{color:var(--accent);font-weight:600;font-size:12.5px}
+  .cb{width:24px;height:24px;border-radius:999px;background:var(--ink);color:#fff;flex:none;margin-left:auto;display:flex;align-items:center;justify-content:center}
+
+  .stylistpill{display:inline-flex;align-items:center;gap:8px;margin:6px 18px 4px;border:1px solid var(--hairline);border-radius:999px;padding:5px 12px 5px 5px;font-size:13px;font-weight:600}
+  .stylistpill .a{width:26px;height:26px;border-radius:999px;background:var(--sunken)}
+  .days{display:flex;gap:9px;padding:8px 18px 2px;overflow:hidden}
+  .day{width:64px;flex:none;border:1px solid var(--hairline);border-radius:16px;text-align:center;padding:9px 0}
+  .day.on{background:var(--ink);border-color:var(--ink);color:#fff}
+  .day .wd{font-size:10.5px;font-weight:700;opacity:.7}
+  .day .dd{font-size:18px;font-weight:800;line-height:1.1;margin-top:2px}
+  .times{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;padding:8px 18px 2px}
+  .tm{border:1px solid var(--hairline);border-radius:999px;text-align:center;padding:9px 0;font-size:13.5px;font-weight:600;color:var(--ink)}
+  .tm.on{background:var(--ink);border-color:var(--ink);color:#fff}
+  .tm.off{color:var(--ink3);opacity:.5}
+
+  .hpills{display:flex;gap:8px;flex-wrap:wrap;padding:6px 18px 2px}
+  .hp{font-size:13px;font-weight:600;padding:8px 14px;border-radius:999px;border:1px solid var(--hairline);color:var(--ink2)}
+  .hp.on{background:var(--sunken);color:var(--ink);border-color:transparent}
+  .prov{display:inline-flex;align-items:center;gap:7px;margin:8px 18px 2px;background:var(--sunken);border-radius:999px;padding:6px 12px;font-size:12.5px;color:var(--ink2)}
+  .note{margin:10px 18px 0;border:1px solid var(--hairline);border-radius:12px;padding:11px 13px;font-size:13px;color:var(--ink3);min-height:58px}
+
+  .sumrow{display:flex;align-items:center;gap:12px;padding:13px 18px}
+  .sumrow + .sumrow{border-top:1px solid var(--hairline)}
+  .sumrow .ci{width:40px;height:40px;border-radius:10px;background:var(--sunken);flex:none;display:flex;align-items:center;justify-content:center;color:var(--ink2)}
+  .sumrow .t1{font-size:14.5px;font-weight:600}
+  .sumrow .t2{font-size:12.5px;color:var(--ink3);margin-top:1px}
+  .prices{padding:12px 18px 0}
+  .pl{display:flex;justify-content:space-between;font-size:13.5px;color:var(--ink2);padding:4px 0}
+  .pl.save{color:var(--green);font-weight:600}
+  .ptot{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--hairline);margin-top:8px;padding-top:10px}
+  .ptot .l{font-size:15px;font-weight:600}
+  .ptot .v{font-size:22px;font-weight:800}
+  .vat{font-size:11.5px;color:var(--ink3);text-align:right;margin-top:2px}
+  .payopts{display:flex;gap:10px;padding:12px 18px 0}
+  .po{flex:1;border:1px solid var(--hairline);border-radius:14px;padding:12px;font-size:13px}
+  .po.on{border:2px solid var(--ink);padding:11px}
+  .po .pt{font-weight:700}
+  .po .ps{color:var(--ink3);font-size:11.5px;margin-top:3px}
+
+  .bar{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--hairline);padding:12px 16px;display:flex;align-items:center;gap:12px}
+  .bar .tot{font-size:18px;font-weight:800}
+  .bar .cnt{font-size:11.5px;color:var(--ink3)}
+  .bar .cta{margin-left:auto;background:var(--ink);color:#fff;font-size:14.5px;font-weight:700;border-radius:999px;padding:11px 22px;display:flex;align-items:center;gap:6px}
+  .bar .skip{margin-left:auto;color:var(--ink2);font-weight:600;font-size:13.5px}
+  .bar.center{justify-content:center}
+  .bar .ctaw{width:100%;background:var(--ink);color:#fff;font-size:15px;font-weight:700;border-radius:999px;padding:13px;text-align:center}
+
+  .cf{padding:16px 18px 0;text-align:center}
+  .sdisc{width:66px;height:66px;border-radius:999px;background:rgba(22,163,74,.1);margin:6px auto 0;display:flex;align-items:center;justify-content:center;color:var(--green)}
+  .cf .ttl{font-size:23px;font-weight:800;letter-spacing:-0.02em;margin-top:12px}
+  .cf .paid{display:inline-flex;align-items:center;gap:6px;background:rgba(22,163,74,.1);color:var(--green);font-size:12.5px;font-weight:700;border-radius:999px;padding:5px 12px;margin-top:9px}
+  .cf .money{font-size:28px;font-weight:800;margin-top:14px}
+  .cfacts{margin-top:10px;text-align:left}
+  .act{margin:8px 18px 0}
+  .act.ink{background:var(--ink);color:#fff;border-radius:999px;padding:13px;text-align:center;font-size:15px;font-weight:700}
+  .act.out{border:1px solid var(--hairline);border-radius:999px;padding:12px;text-align:center;font-size:14.5px;font-weight:600}
+  .act.red{color:var(--red);text-align:center;font-size:14.5px;font-weight:600;padding:12px}
+
+  footer{max-width:840px;margin:52px auto 0;font-size:13px;color:var(--ink2);line-height:1.6}
+  footer b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Booking flow , borderless (chrome off, density stays)</h1>
+  <p class="lede">Your whole booking wizard, all five steps + the confirmation, in the approved direction. Today the wizard body is gray with WHITE CARDS floating on it. Borderless strips those cards: each step's content sits flat on white, grouped by hairlines and bold step titles. The dense controls that drive the booking , category pills, prices, the calendar, time slots, taxonomy pickers, the fixed commit bar , all stay.</p>
+  <div class="rec">
+    <b>The locked booking anatomy is untouched:</b> one shared header (back + centered small step title + X, no progress bar), the fixed bottom bar (rolling total + Continue), the step order (services, staff, time, hair, pay). Borderless only removes the card boxes + shadows around the lists. Approve this, or tell me which step to adjust, and I will build it in code.
+  </div>
+
+  <div class="screens">
+    <!-- 1 SERVICES -->
+    <div class="col">
+      <span class="tag">1 , Services</span>
+      <div class="phone">
+        <div class="status"><span>9:41</span><span class="sysicons"></span></div>
+        <div class="whead"><div class="rd" id="s1b"></div><div class="stitle">Select services</div><div class="rd" id="s1x"></div></div>
+        <div class="cats"><span class="cat on">Cut</span><span class="cat">Color</span><span class="cat">Styling</span></div>
+        <div class="scr">
+          <div class="seclbl">Cut</div>
+          <div class="srow"><div class="m"><div class="sn">Signature cut</div><div class="sd"><span class="ico" id="c1" style="width:13px;height:13px"></span>45 min</div><div class="sp">CHF 65</div></div><span class="tog on" id="t1"></span></div>
+          <div class="srow"><div class="m"><div class="sn">Wash and blow-dry</div><div class="sd"><span class="ico" id="c2" style="width:13px;height:13px"></span>30 min</div><div class="sp">CHF 45</div></div><span class="tog" id="t2"></span></div>
+          <div class="srow"><div class="m"><div class="sn">Fringe trim</div><div class="sd"><span class="ico" id="c3" style="width:13px;height:13px"></span>15 min</div><div class="sp">from CHF 20</div></div><span class="tog" id="t3"></span></div>
+        </div>
+        <div class="bar"><div><div class="tot">CHF 65</div><div class="cnt">1 item . 45 min</div></div><span class="cta">Continue<span class="ico" id="cta1" style="width:15px;height:15px"></span></span></div>
+      </div>
+      <p class="caption"><span class="off">Off:</span> the per-category rounded card + shadow-whisper box. <span class="keep">Stays:</span> the sticky category pills, prices, durations, the toggle-to-add circle, the fixed total + Continue bar.</p>
+    </div>
+
+    <!-- 2 STAFF -->
+    <div class="col">
+      <span class="tag">2 , Stylist</span>
+      <div class="phone">
+        <div class="status"><span>9:41</span><span class="sysicons"></span></div>
+        <div class="whead"><div class="rd" id="s2b"></div><div class="stitle">Select stylist</div><div class="rd" id="s2x"></div></div>
+        <div class="scr">
+          <div class="strow"><div class="av" id="u1"></div><div><div class="nm">No preference</div><div class="sub">Maximum availability</div></div></div>
+          <div class="strow sel"><div class="av">S</div><div><div class="nm">Sara M.</div><div class="sub">Color specialist . <span class="st"><span class="ico" id="st1" style="width:13px;height:13px"></span>4.9</span> . <span class="lk">View profile</span></div></div><span class="cb" id="cb1"></span></div>
+          <div class="strow"><div class="av">L</div><div><div class="nm">Luca R.</div><div class="sub">Barber . <span class="st"><span class="ico" id="st2" style="width:13px;height:13px"></span>4.8</span> . <span class="lk">View profile</span></div></div></div>
+        </div>
+        <div class="bar"><div><div class="tot">CHF 65</div><div class="cnt">1 item . 45 min</div></div><span class="cta">Continue<span class="ico" id="cta2" style="width:15px;height:15px"></span></span></div>
+      </div>
+      <p class="caption"><span class="off">Off:</span> the white rounded-card block around each stylist. <span class="keep">Stays:</span> avatar, name, specialty, the gold star, the blue "View profile" link, and gray-fill + ink check as the selected state.</p>
+    </div>
+
+    <!-- 3 DATE/TIME -->
+    <div class="col">
+      <span class="tag">3 , Date & time</span>
+      <div class="phone">
+        <div class="status"><span>9:41</span><span class="sysicons"></span></div>
+        <div class="whead"><div class="rd" id="s3b"></div><div class="stitle">Date & time</div><div class="rd" id="s3x"></div></div>
+        <div class="scr">
+          <div class="stylistpill"><span class="a"></span>Sara M.<span class="ico" id="ch3" style="width:15px;height:15px"></span></div>
+          <div class="seclbl sm">Select date</div>
+          <div class="days">
+            <div class="day"><div class="wd">Thu</div><div class="dd">19</div></div>
+            <div class="day on"><div class="wd">Fri</div><div class="dd">20</div></div>
+            <div class="day"><div class="wd">Sat</div><div class="dd">21</div></div>
+            <div class="day"><div class="wd">Mon</div><div class="dd">23</div></div>
+          </div>
+          <div class="seclbl sm">Select time</div>
+          <div class="times">
+            <span class="tm">09:00</span><span class="tm on">09:30</span><span class="tm">10:15</span>
+            <span class="tm">11:00</span><span class="tm off">11:45</span><span class="tm">14:00</span>
+          </div>
+        </div>
+        <div class="bar"><div><div class="tot">CHF 65</div><div class="cnt">Fri 20 Jul . 09:30</div></div><span class="cta">Continue<span class="ico" id="cta3" style="width:15px;height:15px"></span></span></div>
+      </div>
+      <p class="caption"><span class="keep">Almost all stays , this step is dense on purpose.</span> The day strip and the time-slot pills ARE the calendar. <span class="off">Off:</span> only the bordered box that used to wrap the time grid.</p>
+    </div>
+
+    <!-- 4 HAIR -->
+    <div class="col">
+      <span class="tag">4 , Your hair (coiffeur/barber only)</span>
+      <div class="phone">
+        <div class="status"><span>9:41</span><span class="sysicons"></span></div>
+        <div class="whead"><div class="rd" id="s4b"></div><div class="stitle">Your hair</div><div class="rd" id="s4x"></div></div>
+        <div class="scr">
+          <div class="prov"><span class="ico" id="pv" style="width:14px;height:14px;color:var(--green)"></span>From your hair profile</div>
+          <div class="seclbl sm">Hair type</div>
+          <div class="hpills"><span class="hp">Straight</span><span class="hp on">Wavy</span><span class="hp">Curly</span><span class="hp">Coily</span></div>
+          <div class="seclbl sm">Length</div>
+          <div class="hpills"><span class="hp">Short</span><span class="hp on">Medium</span><span class="hp">Long</span></div>
+          <div class="seclbl sm">Note</div>
+          <div class="note">Anything your stylist should know. Optional.</div>
+        </div>
+        <div class="bar"><span class="skip">Skip</span><span class="cta">Continue<span class="ico" id="cta4" style="width:15px;height:15px"></span></span></div>
+      </div>
+      <p class="caption"><span class="off">Off:</span> the two white cards + their shadow. <span class="keep">Stays:</span> the taxonomy pill groups, the note field, and the green "from your hair profile" chip. The whole step is still optional.</p>
+    </div>
+
+    <!-- 5 PAY -->
+    <div class="col">
+      <span class="tag">5 , Confirm & pay</span>
+      <div class="phone">
+        <div class="status"><span>9:41</span><span class="sysicons"></span></div>
+        <div class="whead"><div class="rd" id="s5b"></div><div class="stitle">Confirm & pay</div><div class="rd" id="s5x"></div></div>
+        <div class="scr">
+          <div class="sumrow"><div class="av" style="width:40px;height:40px;border-radius:10px">B</div><div class="m"><div class="t1">Studio Belle</div><div class="t2"><span class="ico" id="sp1" style="width:12px;height:12px;display:inline-flex;vertical-align:-1px"></span> 4.8 . Spalenvorstadt 22</div></div></div>
+          <div class="sumrow"><div class="ci" id="sc2"></div><div class="m"><div class="t1">Signature cut</div><div class="t2">45 min with Sara M.</div></div></div>
+          <div class="sumrow"><div class="ci" id="sc3"></div><div class="m"><div class="t1">Fri 20 Jul, 09:30</div></div></div>
+          <div class="prices">
+            <div class="pl"><span>Signature cut</span><span>CHF 65</span></div>
+            <div class="pl save"><span>Voucher TESTV10</span><span>, CHF 10</span></div>
+            <div class="ptot"><span class="l">Total</span><span class="v">CHF 55</span></div>
+            <div class="vat">incl. 8.1% VAT</div>
+          </div>
+          <div class="payopts">
+            <div class="po on"><div class="pt">Pay now</div><div class="ps">Card or TWINT</div></div>
+            <div class="po"><div class="pt">Pay at salon</div><div class="ps">On arrival</div></div>
+          </div>
+        </div>
+        <div class="bar center"><span class="ctaw">Confirm & pay . CHF 55</span></div>
+      </div>
+      <p class="caption"><span class="off">Off:</span> the summary card, price card and field boxes. <span class="keep">Stays:</span> the pay-method chooser (ink-selected), the deposit split, every price + the bold total, VAT line, and the green savings line.</p>
+    </div>
+
+    <!-- 6 CONFIRMATION -->
+    <div class="col">
+      <span class="tag">6 , Confirmation</span>
+      <div class="phone">
+        <div class="status"><span>9:41</span><span class="sysicons"></span></div>
+        <div class="whead"><div class="rd" id="s6b"></div><div class="stitle">Confirmation</div><div class="rd" id="s6h"></div></div>
+        <div class="scr" style="padding-bottom:22px">
+          <div class="cf">
+            <div class="sdisc" id="sd"></div>
+            <div class="ttl">Booking confirmed</div>
+            <span class="paid"><span class="ico" id="pk" style="width:13px;height:13px"></span>Paid</span>
+            <div class="money">CHF 55</div>
+          </div>
+          <div class="cfacts">
+            <div class="sumrow"><div class="ci" id="cc1"></div><div class="m"><div class="t1">Fri 20 Jul, 09:30</div><div class="t2">Studio Belle</div></div></div>
+            <div class="sumrow"><div class="ci" id="cc2"></div><div class="m"><div class="t1">Signature cut</div><div class="t2">45 min</div></div></div>
+            <div class="sumrow"><div class="av" style="width:40px;height:40px">S</div><div class="m"><div class="t1">Sara M.</div><div class="t2">Your stylist</div></div></div>
+          </div>
+          <div class="act ink">Add to calendar</div>
+          <div class="act out">Directions</div>
+          <div class="act red">Cancel booking</div>
+        </div>
+      </div>
+      <p class="caption"><span class="keep">Stays:</span> the bold amount, the green "Paid" pill, the three actions (ink / outline / red). <span class="off">Off:</span> the details + money cards , rows sit on white like a receipt. Opens with a calm green success header.</p>
+    </div>
+  </div>
+
+  <footer>
+    <b>Approve the flow</b> (or tell me which step to change), and I will build it in code, step by step, then verify each live. Next galleries queued: home + inspo, and the profile sub-pages (favorites, looks, haarprofil, stamps, rewards, notifications) + the unified Saved page. Every screen mocked and approved before any code, per your call.
+  </footer>
+</div>
+
+<script>
+const I={
+  back:'<path d="M19 12H5M12 19l-7-7 7-7"/>', x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  chev:'<path d="M9 6l6 6-6 6"/>', chevd:'<path d="M6 9l6 6 6-6"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>', plus:'<path d="M12 5v14M5 12h14"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  users:'<circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0M19 8v6M22 11h-6"/>',
+  star:'<path d="M12 2l3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/>',
+  cal:'<path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/>',
+  scissors:'<circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 12.5 20 20M8.1 8.1 12 12"/>',
+  help:'<circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/>',
+  signal:'<path d="M2 20h.01M7 20v-4M12 20v-8M17 20V8M22 4v16"/>',
+  wifi:'<path d="M5 13a10 10 0 0 1 14 0M8.5 16.5a5 5 0 0 1 7 0M2 8.8a15 15 0 0 1 20 0M12 20h.01"/>',
+  bat:'<rect x="2" y="7" width="16" height="10" rx="2"/><path d="M22 11v2"/>'
+};
+function svg(p,st,w,fill){return '<svg class="lucide" data-lucide="icon" width="'+(w||20)+'" height="'+(w||20)+'" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="'+st+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>';}
+const ink='#0A0A0A',ink3='#A1A1AA',star='#FFC32B',green='#16A34A';
+['s1b','s2b','s3b','s4b','s5b','s6b'].forEach(id=>{var e=document.getElementById(id);if(e)e.innerHTML=svg(I.back,ink,20);});
+['s1x','s2x','s3x','s4x','s5x'].forEach(id=>{var e=document.getElementById(id);if(e)e.innerHTML=svg(I.x,ink,19);});
+document.getElementById('s6h').innerHTML=svg(I.help,ink,19);
+['c1','c2','c3'].forEach(id=>{var e=document.getElementById(id);if(e)e.innerHTML=svg(I.clock,ink3,13);});
+document.getElementById('t1').innerHTML=svg(I.check,'#fff',16);
+['t2','t3'].forEach(id=>{var e=document.getElementById(id);if(e)e.innerHTML=svg(I.plus,ink3,15);});
+['cta1','cta2','cta3','cta4'].forEach(id=>{var e=document.getElementById(id);if(e)e.innerHTML=svg(I.chev,'#fff',15);});
+document.getElementById('u1').innerHTML=svg(I.users,ink3,20);
+['st1','st2','sp1'].forEach(id=>{var e=document.getElementById(id);if(e)e.innerHTML=svg(I.star,star,13,star);});
+document.getElementById('cb1').innerHTML=svg(I.check,'#fff',15);
+document.getElementById('ch3').innerHTML=svg(I.chevd,ink3,15);
+document.getElementById('pv').innerHTML=svg(I.check,green,14);
+document.getElementById('sc2').innerHTML=svg(I.scissors,ink,18);
+document.getElementById('sc3').innerHTML=svg(I.cal,ink,18);
+document.getElementById('cc1').innerHTML=svg(I.cal,ink,18);
+document.getElementById('cc2').innerHTML=svg(I.scissors,ink,18);
+document.getElementById('sd').innerHTML=svg(I.check,green,30);
+document.getElementById('pk').innerHTML=svg(I.check,green,13);
+document.querySelectorAll('.sysicons').forEach(e=>e.innerHTML=svg(I.signal,ink,13)+svg(I.wifi,ink,13)+svg(I.bat,ink,15));
+</script>
+</body>
+</html>
