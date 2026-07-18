@@ -13,6 +13,21 @@ export async function GET(req: NextRequest) {
 
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
+
+  // GAP #56: ids-only mode for feed heart-state hydration. Returns ALL of the user's saved
+  // item_ids (no 60-cap, no item fetch), so a returning signed-in user sees their real saved
+  // hearts on load instead of empty ones until they interact this session. Signed-out -> empty,
+  // and the query is scoped to this user's own rows, so it can never leak another user's saves.
+  if (req.nextUrl.searchParams.get("ids")) {
+    if (!user) return NextResponse.json({ ids: [] });
+    const { data: idRows } = await supabase
+      .from("discovery_saves")
+      .select("item_id")
+      .eq("user_id", user.id);
+    const ids = (idRows ?? []).map((r) => r.item_id).filter((v): v is string => v !== null);
+    return NextResponse.json({ ids });
+  }
+
   if (!user) return NextResponse.json({ items: [] });
 
   // Default 3 (the ForYouSection peek); the Gespeichert page asks for up to 60 to show the full saved grid.

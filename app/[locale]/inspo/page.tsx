@@ -106,8 +106,13 @@ function DiscoverPageContent() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   // Save-to-lookbook gesture (feed-save mockup): tapping a tile's heart opens the picker for THAT item.
-  // `savedIds` fills the heart for looks the user saved THIS session (a real action just taken, never fabricated).
+  // `savedIds` fills the heart for looks the user saved THIS session, PLUS (GAP #56) looks hydrated
+  // from their real saved history on load below, so a returning signed-in user sees their actual hearts.
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
+  // GAP #56: every itemId the user has explicitly toggled (saved or unsaved) THIS session. The
+  // hydration effect below skips these ids so a slow /saves?ids=1 response can never clobber a
+  // save/unsave the user just made while it was in flight.
+  const sessionToggledIds = useRef<Set<string>>(new Set());
 
   // Profile setup
   const [showProfileSetup, setShowProfileSetup] = useState(false);
@@ -152,6 +157,32 @@ function DiscoverPageContent() {
     });
     return () => { cancelled = true; };
   }, []);
+
+  // GAP #56: hydrate saved-heart state for a RETURNING signed-in user. Without this, savedIds only ever
+  // filled during the current session, so someone who saved looks earlier saw every heart empty until
+  // they tapped one again. Fires once isAuthenticated flips true (set above); merges the real saved
+  // item_ids into savedIds instead of replacing it (keeps anything the toggle handler already set), and
+  // skips any id already in sessionToggledIds so a slow response can't clobber a save/unsave made while
+  // this request was still in flight. Uses the ids-only mode on the real saves route (no items fetch,
+  // no 60-cap) , /api/discovery/saves?ids=1, scoped server-side to the signed-in user only.
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    let cancelled = false;
+    fetch("/api/discovery/saves?ids=1")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (cancelled || !Array.isArray(d?.ids)) return;
+        setSavedIds((prev) => {
+          const next = new Set(prev);
+          for (const id of d.ids as string[]) {
+            if (!sessionToggledIds.current.has(id)) next.add(id);
+          }
+          return next;
+        });
+      })
+      .catch((err) => console.error("[inspo] saved-ids hydration failed:", err));
+    return () => { cancelled = true; };
+  }, [isAuthenticated]);
 
   // Data-driven quick-chip terms, now PER CATEGORY (owner 2026-06-23): refetch when the selected category changes,
   // so Haare shows hair tags and Nägel shows nail finishes (not one global mixed list). "all" -> global top tags.
@@ -294,6 +325,9 @@ function DiscoverPageContent() {
   // Heart tapped while signed in → plain save toggle (no board picker; collections ditched 2026-06-23).
   // Optimistic, then reconcile to the server's authoritative state from the toggle RPC.
   const handleSave = async (itemId: string) => {
+    // GAP #56: mark this id as user-decided this session so the hydration effect's merge never
+    // overwrites a save/unsave the user just made (e.g. if its response lands after this toggle).
+    sessionToggledIds.current.add(itemId);
     const wasSaved = savedIds.has(itemId);
     setSavedIds((prev) => {
       const next = new Set(prev);
