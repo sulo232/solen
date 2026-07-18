@@ -166,9 +166,9 @@ export default function SalonReviews({
   // Ring 2b: "Mehr laden" first reveals more of what's already loaded (5 at a
   // time, unchanged); once that's exhausted and the salon has more reviews than
   // loadedReviews holds, it fetches the next server page from the existing
-  // paginated endpoint and appends. That endpoint's review_replies select omits
-  // review_photos, so photos only render for the first (server-side) page , a
-  // known, accepted trade-off of reusing the existing endpoint as-is.
+  // paginated endpoint and appends. That endpoint's select now also joins
+  // review_photos(id, photo_url), ordered by sort_order, so photos render on
+  // paged (server-side) reviews too, not just the first page.
   const handleShowMore = async () => {
     if (reviewsVisible.length < filteredReviews.length) {
       setReviewPage((p) => p + 1);
@@ -188,13 +188,14 @@ export default function SalonReviews({
         created_at: string;
         profiles?: { display_name: string; avatar_url: string | null } | null;
         review_replies?: { reply_text: string; is_public: boolean }[];
+        review_photos?: { id: string; photo_url: string }[];
       }>).map((r) => ({
         id: r.id,
         rating: r.rating,
         comment: r.comment,
         created_at: r.created_at,
         profiles: r.profiles ?? undefined,
-        review_photos: [],
+        review_photos: r.review_photos ?? [],
         review_replies: r.review_replies ?? [],
       })) as unknown as EnrichedReview[];
       setLoadedReviews((prev) => [...prev, ...mapped]);

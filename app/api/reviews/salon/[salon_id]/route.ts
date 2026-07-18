@@ -31,18 +31,23 @@ export async function GET(
   // elsewhere to derive referral codes) or `booking_id`. `booking_id` is still
   // selected here (needed to compute `is_verified` below) but stripped from
   // every item before the response is built. Column list confirmed against the
-  // live snapshot (_inventory/_db-columns.json, reviews table): owner_reply,
-  // photo_url and score_* are unapplied migrations (schema drift), not live
-  // columns, so they are intentionally left out rather than selected as dead null.
+  // live snapshot (_inventory/_db-columns.json, reviews table): owner_reply and
+  // score_* are unapplied migrations (schema drift) on `reviews` itself, not
+  // live columns, so they are intentionally left out rather than selected as
+  // dead null. `review_photos` IS a live, separate table (id, review_id,
+  // photo_url, created_at, sort_order) and is joined below so paged reviews
+  // (page > 1, loaded via "Mehr laden") show photos too, matching the initial
+  // SSR fetch in app/[locale]/salon/[slug]/reviews/page.tsx.
   const { data, error, count } = await supabase
     .from("reviews")
     .select(
-      "id, rating, comment, created_at, booking_id, profiles!user_id(display_name, avatar_url), staff_members(name), review_replies(reply_text, is_public)",
+      "id, rating, comment, created_at, booking_id, profiles!user_id(display_name, avatar_url), staff_members(name), review_replies(reply_text, is_public), review_photos(id, photo_url)",
       { count: "exact" }
     )
     .eq("salon_id", salon_id)
     .eq("is_hidden", false)
     .order(orderCol, { ascending })
+    .order("sort_order", { ascending: true, foreignTable: "review_photos" })
     .range(offset, offset + limit - 1);
 
   if (error) return NextResponse.json({ message: error.message, code: "DB_ERROR" }, { status: 500 });
