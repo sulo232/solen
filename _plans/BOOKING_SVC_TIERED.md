@@ -41,6 +41,10 @@ Mockup: `public/_mockups/liftup-booking-services-tiered/index.html`
 - [ ] The "ausgewählt" pill is ALWAYS there (fires at 120px scroll). Owner wants it only when you've selected AND scrolled down so far you can't see your selection anymore (long lists), NOT always/eagerly, and NOT on short lists where the selection stays visible. Change from hasScrolled@120px to: show only when hasSelectedServices AND no selected service row is visible in the viewport (scrolled past all selections).
 - [ ] (BIG, NEEDS SCOPE, owner 2026-07-19) Roll out the dropdown/tap-to-expand pattern to more surfaces: the DASHBOARD, the SALON page, and BACKEND SETTINGS. Vague + multi-surface = needs per-surface investigation + mockups + owner confirm (mockup-first). PARKED pending scope: which sections exactly, and a mockup per surface. Do NOT build blind.
 
+## Polish round 3 (owner 2026-07-19, REAL booking page, no mockups)
+- [~] Category pills selected state , owner DECIDED (2026-07-19): BLACK/ink selected pill, explicitly overriding the locked gray-selected + the no-black-selected gate (custom pill, not shared TabPill; drift-ok comment). Building via wtnuzp005.
+- [~] Category pills behavior , owner DECIDED (2026-07-19): CATEGORY SECTIONS + scroll-to-section pills (scroll-spy), REPLACING the Express/Classic/Signature duration tiers. Categories are the salon's own service subcategories (dynamic). Building via wtnuzp005.
+
 ## Carry into the HELD code build (not this turn)
 - [ ] Real bottom-bar MINUTES gets `animate-count-bump` on change (price already has `animate-value-roll` at ServicesStaffStep.tsx:553; the pill count has `animate-count-bump` at :540; ToggleCircle already ENTER_RECIPE). So the only real-code motion gap is the bottom-bar duration.
 - [ ] Full layered-loop build of the tier display (grouping + filter pills + tap-expand + +-select + ServiceDetailSheet reconciliation + de/en/fr/it) , HELD until the owner confirms the layout is final.

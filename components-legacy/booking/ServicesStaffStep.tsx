@@ -7,8 +7,6 @@ import { ArrowUp, ArrowRight, ShoppingCart, ChevronDown } from 'lucide-react'; /
 import { motion, AnimatePresence } from 'motion/react';
 import { useBooking } from '@/lib/booking-context';
 import { useEnterMotion, useStaggerVariants, butterPress, PriceFrom, ENTER_DURATION, GLIDE_EASE } from '@/app/[locale]/_components/primitives'; // mockup-ok: shared ENTER RECIPE module (MOTION.md, owner-approved 2026-07-09), not new design exploration
-import { TabPill } from '@/app/[locale]/_components/primitives/TabPill'; // mockup-ok: public/_mockups/liftup-booking-services-tiered/index.html (owner-approved 2026-07-18)
-import { capitalize } from '@/app/[locale]/_components/salon/_shared'; // mockup-ok: public/_mockups/liftup-booking-services-tiered/index.html (owner-approved 2026-07-18)
 import ToggleCircle from './ToggleCircle';
 import CountUpNumber from './CountUpNumber';
 import ServiceDetailSheet from './ServiceDetailSheet';
@@ -299,32 +297,44 @@ export default function ServicesStaffStep({
         )?.id ?? null
       : null;
 
-  // Group by subcategory (Schnitt / Farbe / Styling / etc.) like the locked
-  // SalonServicesSheet, falling back to the top-level category. Drives both
-  // the filter pills below and the tier grouping (SalonServices.tsx pattern).
-  const groupKey = (s: Service) => s.subcategory ?? s.category;
-  const realCategories = Array.from(new Set(visibleServices.map(groupKey))).sort();
-  // Synthetic "alle" tab so the pill row is never empty (SalonServices.tsx fix #6).
-  const filterCategories = realCategories.length > 0 ? ['alle', ...realCategories] : [];
-  const [activeFilter, setActiveFilter] = useState<string>('alle');
-  const filtered =
-    activeFilter === 'alle'
-      ? visibleServices
-      : visibleServices.filter((s) => groupKey(s) === activeFilter);
+  // Owner change (2026-07-19): group by the salon's own CATEGORY (subcategory,
+  // falling back to the top-level category), replacing the fixed duration-tier
+  // grouping. Dynamic from the real service list, so a salon's own taxonomy
+  // drives the sections, never a hardcoded Express/Klassisch/Signature split.
+  const groupKey = (s: Service) => s.subcategory ?? s.category ?? 'andere';
+  const categories = Array.from(new Set(visibleServices.map(groupKey))).sort();
+  // Deterministic DOM id per category section (CSS-safe token) so a pill tap
+  // can scrollIntoView its matching <section>.
+  const catId = (c: string) => 'cat-' + c.replace(/[^a-z0-9]/gi, '-');
+  const [activeCat, setActiveCat] = useState(categories[0] ?? '');
+  // Pills SCROLL to a section, they never filter the list (every category
+  // renders at once); the tap also sets the active pill immediately so the
+  // highlight doesn't lag the smooth-scroll animation.
+  const goToCat = (cat: string) => {
+    setActiveCat(cat);
+    document.getElementById(catId(cat))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
-  // Owner mockup service-grouping (2026-06-10, mirrored from SalonServices.tsx):
-  // the list groups by DURATION tier (Express / Klassisch / Signature) under
-  // the subcategory filter pills. Pure derivation from duration_minutes.
-  const TIERS: { key: string; label: string; range: string; match: (d: number) => boolean }[] = [
-    { key: 'express', label: t('tierExpress'), range: t('tierExpressRange'), match: (d) => d > 0 && d <= 30 },
-    { key: 'classic', label: t('tierClassic'), range: t('tierClassicRange'), match: (d) => d > 30 && d <= 60 },
-    { key: 'signature', label: t('tierSignature'), range: t('tierSignatureRange'), match: (d) => d > 60 },
-  ];
-  const tiered = TIERS
-    .map((tier) => ({ tier, rows: filtered.filter((s) => tier.match(s.duration_minutes ?? 0)) }))
-    .filter((g) => g.rows.length > 0);
-  // Services with no usable duration fall outside every tier, kept visible as an untiered card.
-  const untiered = filtered.filter((s) => !TIERS.some((tier) => tier.match(s.duration_minutes ?? 0)));
+  // Scroll-spy: the pill row tracks scroll position, mirroring the standard
+  // "last section whose top has crossed the ~130px sticky-bar threshold wins"
+  // pattern, so the pill highlight follows the section actually in view.
+  useEffect(() => {
+    if (categories.length === 0) return;
+    const handleScroll = () => {
+      let current = categories[0];
+      for (const cat of categories) {
+        const el = document.getElementById(catId(cat));
+        if (el && el.getBoundingClientRect().top <= 130) {
+          current = cat;
+        }
+      }
+      setActiveCat(current);
+    };
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [categories.join('|')]);
 
   // B17 follow-up (owner 2026-07-19): each service row registers its DOM node
   // here (keyed by service id, see `registerRow` + the `data-service-id` /
@@ -492,30 +502,40 @@ export default function ServicesStaffStep({
 
   return (
     <div className="pb-32">
-      {/* Subcategory filter pills, owner-approved mockup public/_mockups/liftup-booking-services-tiered/index.html (2026-07-18) */}
-      {filterCategories.length > 0 && (
+      {/* Category pills, owner change 2026-07-19: SCROLL to a section, never a filter
+          (every category renders below at once). Selected pill is BLACK/ink, an
+          explicit owner override of the locked gray-selected contract for this
+          booking scroll-spy surface only. */}
+      {categories.length > 0 && (
         <div className="sticky top-0 z-30 -mx-4 bg-white/90 backdrop-blur border-b border-s-border px-4 py-2.5"> {/* mockup-ok: owner 2026-07-18 live fix + approved liftup-booking-services-tiered mockup */}
           <div className="flex gap-2 overflow-x-auto scrollbar-hide">
-            {filterCategories.map((cat) => (
-              <TabPill key={cat} active={activeFilter === cat} onClick={() => setActiveFilter(cat)}>
-                {cat === 'alle' ? 'Alle' : capitalize(cat)}
-              </TabPill>
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                type="button"
+                aria-pressed={cat === activeCat}
+                onClick={() => goToCat(cat)} // selected-ok: owner explicitly chose a BLACK/ink selected category pill (2026-07-19), overrides the locked gray-selected + no-black-selected gate for these booking scroll-spy pills only
+                className={`h-11 shrink-0 whitespace-nowrap rounded-full px-3 text-[13px] font-semibold capitalize transition-colors ${
+                  cat === activeCat
+                    ? 'bg-s-ink text-white'
+                    : 'bg-white border border-s-border text-s-ink-2 hover:text-s-ink'
+                }`}
+              >
+                {cat}
+              </button>
             ))}
           </div>
         </div>
       )}
 
-      {/* Services grouped by DURATION TIER (Express / Klassisch / Signature), owner-approved
-          mockup public/_mockups/liftup-booking-services-tiered/index.html (2026-07-18): rows +
-          hairline dividers in ONE rounded-24 card per tier, whisper shadow; selection = sunken
-          wash + ToggleCircle. 32px chapter rhythm. */}
+      {/* Services grouped by the salon's own CATEGORY (owner change 2026-07-19,
+          replaces the DURATION-tier grouping): rows + hairline dividers in ONE
+          rounded-24 card per category, whisper shadow; selection = sunken wash +
+          ToggleCircle. 32px chapter rhythm. */}
       <div className="space-y-8 pt-4">
-        {tiered.map(({ tier, rows }) => (
-          <div key={tier.key}>
-            <div className="mb-3 flex items-baseline gap-2">
-              <h3 className="font-heading text-[16px] font-semibold tracking-[-0.01em] text-s-ink">{tier.label}</h3>
-              <span className="text-[13px] tabular-nums text-s-ink-3">{tier.range}</span>
-            </div>
+        {categories.map((cat) => (
+          <section key={cat} id={catId(cat)} className="scroll-mt-[120px]">
+            <h3 className="font-heading text-[16px] font-semibold capitalize tracking-[-0.01em] text-s-ink mb-3">{cat}</h3>
             {/* mockup-ok: shared ENTER RECIPE stagger container (MOTION.md, owner-approved 2026-07-09) */}
             <motion.div // mockup-ok: shared ENTER RECIPE module, not new design exploration
               variants={rowsContainer} // mockup-ok: shared ENTER RECIPE module
@@ -523,20 +543,10 @@ export default function ServicesStaffStep({
               animate="visible" // mockup-ok: shared ENTER RECIPE module
               className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper"
             >
-              {rows.map(renderServiceRow)}
-            </motion.div>
-          </div>
+              {visibleServices.filter((s) => groupKey(s) === cat).map(renderServiceRow)}
+            </motion.div> {/* mockup-ok: shared ENTER RECIPE module, not new design exploration */}
+          </section>
         ))}
-        {untiered.length > 0 && (
-          <motion.div // mockup-ok: shared ENTER RECIPE module, not new design exploration
-            variants={rowsContainer} // mockup-ok: shared ENTER RECIPE module
-            initial="hidden" // mockup-ok: shared ENTER RECIPE module
-            animate="visible" // mockup-ok: shared ENTER RECIPE module
-            className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper"
-          >
-            {untiered.map(renderServiceRow)}
-          </motion.div>
-        )}
       </div>
 
       {/* Inline error */}

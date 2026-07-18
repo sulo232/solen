@@ -346,3 +346,14 @@ Reading logged (stated back to the owner in the same turn so a misread surfaces 
 | input fill | **a, FILLED GRAY** | Every input is the filled field: #F4F4F5, no hairline, radius 12, going white on focus. The white + #E4E4E7 hairline treatment loses. It was never a decision, it was a leak: components write border-s-border + bg-white classes that the type-targeted base rule silently overrides, which is why /de/booking/lookup shipped BOTH looks on one screen (lookup-code white/16, lookup-email gray/12, measured live 2026-07-17). The dead classes get deleted, not left to fight. |
 | input focus | **a, INK EDGE ONLY** | Border darkens to ink, field goes white, nothing else. The soft glow is DEAD, by name, third time. The CLAUDE.md contract row that still writes "ink edge + a single soft halo" is now WRONG and must be corrected to edge-only; the global no-focus-ring gate was right and the doc was stale. |
 | page rhythm | **direction: breathe, but much tighter than probed** | "breathing room is good but those are too big of a gap": flat-8 (variant a) is rejected, the page does need air, but +56 (b) and +72 (c) overshot. Re-probe at tighter values. Note the arithmetic the owner is circling: their OWN locked section rhythm is 32 (LOCKFILE 442-450) and the homepage renders 8, so "tighter breathing room" lands almost exactly on the law that already exists. |
+
+## 2026-07-19, booking category pills: BLACK selected + scroll-spy (two owner overrides)
+
+Owner verbatim: "i want the category pills yk on the top to be black bit gray when selected and also not each category having page when u click i want it to scroll down when u click" + confirmed "Actual black / ink" + "ye bro category sections plus scroll".
+
+Scoped to the BOOKING services-step category pills only (custom pills, NOT the shared TabPill, so nothing else's selected-state changes). Verified live 2026-07-19: active pill bg = rgb(10,10,10), scroll-spy follows.
+
+| id | decision | what it means |
+|---|---|---|
+| booking category pill, selected | **BLACK / ink** | Selected pill = `bg-s-ink text-white`, overriding the LOCKED calm-gray selected state AND the no-black-selected gate (owner picked black when told the lock+gate block it). `selected-ok:` escape on the line. Does NOT reopen gray-selected anywhere else; the 3 prior named exceptions plus this one. |
+| booking category pill, behavior | **scroll-spy, not filter** | Clicking a pill SCROLLS to that category's section (all sections render); active pill follows on scroll. REPLACES the Express/Klassisch/Signature duration-tier grouping with CATEGORY sections (the salon's own service subcategories, dynamic). The tap-to-expand row design stays. |
