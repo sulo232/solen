@@ -9,6 +9,7 @@ import { useBooking } from '@/lib/booking-context';
 import { formatCurrency } from '@/lib/format-currency';
 import { useEnterMotion, useStaggerVariants, butterPress } from '@/app/[locale]/_components/primitives'; // mockup-ok: shared ENTER RECIPE module (MOTION.md, owner-approved 2026-07-09), not new design exploration
 import ToggleCircle from './ToggleCircle';
+import CountUpNumber from './CountUpNumber';
 import ServiceDetailSheet from './ServiceDetailSheet';
 import Spinner from '@/components-legacy/ui/Spinner';
 import type { SelectedService } from '@/lib/booking-state';
@@ -73,6 +74,21 @@ export default function ServicesStaffStep({
 }: ServicesStaffStepProps) {
   const t = useTranslations('booking.serviceSelection');
   const locale = useLocale();
+  // Swiss thousands grouping ("1'200") for the animated total, mirroring
+  // formatCurrency's SWISS_LOCALES map so a >= CHF 1000 total keeps its
+  // separator while it counts up (bare locale strings would render the
+  // German "1.200" grouping instead of the Swiss apostrophe).
+  const swissLocale =
+    locale === 'fr' ? 'fr-CH' : locale === 'en' ? 'en-CH' : locale === 'it' ? 'it-CH' : 'de-CH';
+  // Mirrors formatCurrency's own hasFraction logic (lib/format-currency.ts) so the
+  // count-up's settled value matches it exactly: a fractional total keeps both
+  // decimals ("65.50", never "65.5" or a rounded "66"), a whole total stays bare
+  // ("85") with Swiss thousands grouping.
+  const formatTotalNumber = (n: number) =>
+    n.toLocaleString(
+      swissLocale,
+      Number.isInteger(n) ? undefined : { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+    );
   const { formData, updateFormData, goToStep } = useBooking();
   const [isChecking, setIsChecking] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -549,12 +565,32 @@ export default function ServicesStaffStep({
         <div className="max-w-2xl mx-auto px-4 py-3 flex justify-between items-center">
           <div data-cart-anchor>
             <p className="font-body font-extrabold text-xl text-s-ink tabular-nums leading-none overflow-hidden">
-              {/* idea 3 (motion 22): price rolls on change — key re-mounts the value */}
-              <span key={formData.totalPrice} className="animate-value-roll">{formatCurrency(formData.totalPrice, locale)}</span>
+              {/* Owner-approved count-up (2026-07-18 comparison lab, public/_mockups/
+                  liftup-services-motion): only the NUMBER animates on change, the CHF
+                  label stays static. fr-CH is a suffix locale (formatCurrency renders
+                  "65 CHF", not "CHF 65", verified via Intl.NumberFormat), so the
+                  label's position follows locale while the label text itself never moves. */}
+              {locale === 'fr' ? (
+                <>
+                  <CountUpNumber
+                    value={formData.totalPrice}
+                    format={formatTotalNumber}
+                  />{' '}
+                  CHF
+                </>
+              ) : (
+                <>
+                  CHF{' '}
+                  <CountUpNumber
+                    value={formData.totalPrice}
+                    format={formatTotalNumber}
+                  />
+                </>
+              )}
             </p>
-            <p className="flex items-center gap-1.5 text-xs text-s-ink-2 mt-1.5">
+            <p className="flex items-center gap-1.5 text-xs text-s-ink-2 mt-1.5 tabular-nums">
               <ShoppingCart size={13} aria-hidden />
-              {formData.services.length} {t('items')} {formData.totalDuration}{' '}
+              {formData.services.length} {t('items')} <CountUpNumber value={formData.totalDuration} />{' '}
               {t('minutes')}
             </p>
           </div>
