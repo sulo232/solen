@@ -7,33 +7,31 @@
 <!-- Base: capture live -->
 <!-- Scale: full-page -->
 <!--
-  Owner-scope: confirmed: "bring back the booking service ui from bfr but change the ui so it latches the
-  style of the salon page like how its displayed" (owner 2026-07-18). Target named by the owner = the salon
-  page services display. No before/after toggle (owner: "ditch this changing thing").
-  Grounded-in: components-legacy/booking/ServicesStaffStep.tsx (the booking step being restyled, "from before":
-  same rounded-24 shadow-whisper card, ToggleCircle add-control, fixed total plus Continue bar) restyled to
-  match app/[locale]/_components/salon/SalonServices.tsx (the salon-page display: subcategory filter pills ->
-  DURATION-TIER groups Express / Classic / Signature by duration, each a rounded-[24px] border border-s-border
-  bg-white shadow-whisper list, horizontal ServiceRow = name 15/600 md16 / duration "20 min" text-only no
-  clock / price "from CHF N" 14/700 bold, control on the right). CHECKED both files live this turn.
-  The delta from the current booking step: grouping switches subcategory -> duration tier; the vertical
-  name/clock/desc/price stack becomes the salon page's horizontal row; the h3 becomes 16/600 plus a grey range;
-  the clock icon and the list description are dropped (salon page is text-only, "keeps density"). The
-  booking-only bits stay: the right control is the ToggleCircle ADD affordance (not the PDP per-service Book
-  link, which navigates away), and the fixed bottom total plus Continue bar.
+  Owner-scope: confirmed: approved this turn ("alr approved ... the mockup u made is good"). This edit adds
+  the owner's requested interaction: "when u click the empty space in the card it expands n has info and to
+  acc select u have to click the plus button". So the row body is a tap target that expands a description
+  panel; selecting a service is done ONLY by tapping the + (ToggleCircle). No before/after toggle (owner:
+  "ditch this changing thing").
+  Grounded-in: components-legacy/booking/ServicesStaffStep.tsx (the booking step, its ToggleCircle add-control,
+  the fixed total plus Continue bar, and the description text it already stores per service) restyled to match
+  app/[locale]/_components/salon/SalonServices.tsx (the salon-page display: subcategory filter pills ->
+  DURATION-TIER groups Express / Classic / Signature, each a rounded-[24px] border border-s-border bg-white
+  shadow-whisper list, horizontal row = name 15/600 md16 / duration "20 min" text-only no clock / price
+  "from CHF N" 14/700 bold, control on the right). CHECKED both files live this turn.
+  Delta vs the current booking step: grouping subcategory -> duration tier; the vertical name/clock/desc/price
+  stack becomes the salon page's horizontal row; the h3 becomes 16/600 plus a grey range; the clock icon leaves;
+  the description moves from always-on into a tap-to-expand panel. Booking-only bits kept: the + ADD affordance
+  (not the PDP per-service Book link, which navigates away) and the fixed bottom total plus Continue bar.
   Exists-check: `npm run exists booking` ran this turn. Both the salon-page tier display (SalonServices.tsx)
   and the booking step (ServicesStaffStep.tsx) exist and render today; REMOVED.md none. NEW = only the booking
-  step adopting the salon page's tier-card display plus row layout (no new element invented).
-  Backend-check: the add-toggle = add/remove in the client booking-context cart (real, updates total/duration);
-  Continue = goToStep(next) (real); every name/duration/price is display of a live service row (real). No
-  fabricated value. Taste-current: no review count on rows; no full-bleed; no ALL-CAPS. English chrome.
+  step adopting the salon page's tier-card display plus the tap-to-expand-info row (no new element invented;
+  the description already exists on the service row, it just moves behind a tap).
+  Backend-check: the + = add/remove in the client booking-context cart (real, updates total/duration); the row
+  body tap = expand info (client only, no write); Continue = goToStep(next) (real); every name/duration/price/
+  description is display of a live service row (real). No fabricated value. Taste-current: no review count on
+  rows; no full-bleed; no ALL-CAPS. English chrome.
   Reference-checked: the salon page is Solen's own surface (SalonServices.tsx plus live PDP
-  /de/salon/blade-and-stone), read plus rendered this turn; plus the owner Uber screenshots
-  (IMG_6537/6538/6539) from this session.
-  NOTE for the owner: matching the salon page here means KEEPING the rounded-24 card plus whisper shadow. That
-  is the real current salon page, but it runs against the "chrome off" borderless direction we approved for
-  other screens. Flagged, not silently resolved: this screen is an intentional carded exception unless you say
-  the salon page itself should go borderless too (then booking follows it).
+  /de/salon/blade-and-stone), read plus rendered this turn.
 -->
 <style>
   :root{
@@ -77,25 +75,38 @@
   /* The card (salon-page: rounded-24 plus hairline plus whisper) */
   .card{margin-top:12px;border:1px solid var(--hairline);border-radius:24px;background:#fff;box-shadow:var(--whisper);overflow:hidden}
 
-  /* Row (salon-page horizontal ServiceRow plus booking ToggleCircle on the right) */
-  .row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 20px;border-top:1px solid var(--hairline)}
-  .row:first-child{border-top:0}
+  /* Row = expandable body + a separate select control */
+  .row{border-top:1px solid var(--hairline)}
+  .card .row:first-child{border-top:0}
   .row.sel{background:rgba(244,244,245,.7)}
-  .row .l{min-width:0;flex:1}
-  .row .nm{font-size:16px;font-weight:600;color:var(--ink);line-height:1.25}
-  .row .du{font-size:14px;color:var(--ink3);margin-top:4px;font-variant-numeric:tabular-nums}
-  .row .pr{font-size:15px;font-weight:700;color:var(--ink);margin-top:12px;font-variant-numeric:tabular-nums}
+  .top{display:flex;align-items:center;gap:10px;padding:16px 20px}
+  .body{min-width:0;flex:1;text-align:left;background:none;border:0;font-family:inherit;cursor:pointer;padding:0}
+  .body .nm{font-size:16px;font-weight:600;color:var(--ink);line-height:1.25}
+  .body .du{font-size:14px;color:var(--ink3);margin-top:4px;font-variant-numeric:tabular-nums}
+  .body .pr{font-size:15px;font-weight:700;color:var(--ink);margin-top:12px;font-variant-numeric:tabular-nums}
+  .chev{flex:none;width:28px;height:28px;display:grid;place-items:center;color:var(--ink3);background:none;border:0;cursor:pointer;transition:transform .26s ease}
+  .row.open .chev{transform:rotate(180deg)}
 
   /* ToggleCircle (real primitive: 36px, border plus Plus / ink plus Check) */
-  .tog{width:36px;height:36px;border-radius:999px;display:grid;place-items:center;flex:none;border:1px solid var(--hairline);color:var(--ink2);background:#fff}
+  .tog{width:36px;height:36px;border-radius:999px;display:grid;place-items:center;flex:none;border:1px solid var(--hairline);color:var(--ink2);background:#fff;cursor:pointer;padding:0}
   .tog.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .tog .pl-i{display:grid}
+  .tog .ck-i{display:none}
+  .tog.on .pl-i{display:none}
+  .tog.on .ck-i{display:grid}
+
+  /* Expandable info panel */
+  .desc{max-height:0;overflow:hidden;transition:max-height .28s ease,padding .28s ease;padding:0 20px;color:var(--ink2)}
+  .row.open .desc{max-height:180px;padding:0 64px 16px 20px}
+  .desc p{font-size:14px;line-height:1.5}
 
   /* Fixed bottom bar (total plus Continue) */
   .bar{position:absolute;left:0;right:0;bottom:0;border-top:1px solid var(--hairline);background:#fff;z-index:8}
   .bar .in{max-width:520px;margin:0 auto;padding:12px 16px calc(12px + env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:space-between;gap:14px}
   .bar .tot{font-size:22px;font-weight:800;letter-spacing:-0.01em;line-height:1;font-variant-numeric:tabular-nums}
   .bar .meta{font-size:12px;color:var(--ink3);margin-top:6px;display:flex;align-items:center;gap:6px}
-  .cont{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;font-size:15px;font-weight:600;border:0;border-radius:14px;padding:14px 22px;font-family:inherit;cursor:pointer}
+  .cont{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;font-size:15px;font-weight:600;border:0;border-radius:14px;padding:14px 22px;font-family:inherit;cursor:pointer;transition:opacity .2s}
+  .cont.off{opacity:.45;cursor:not-allowed}
   svg{display:block}
 </style>
 </head>
@@ -124,17 +135,29 @@
         <div class="tier">
           <div class="tlab"><h3>Express</h3><span class="rng">15&ndash;30 min</span></div>
           <div class="card">
-            <div class="row">
-              <div class="l"><div class="nm">Beard trim</div><div class="du">20 min</div><div class="pr">from CHF 28</div></div>
-              <span class="tog" data-tog></span>
+            <div class="row" data-price="28" data-dur="20">
+              <div class="top">
+                <button class="body" data-expand><div class="nm">Beard trim</div><div class="du">20 min</div><div class="pr">from CHF 28</div></button>
+                <button class="chev" data-expand data-i="chev"></button>
+                <button class="tog" data-tog><span class="pl-i" data-i="plus"></span><span class="ck-i" data-i="check"></span></button>
+              </div>
+              <div class="desc"><p>Shape and tidy the beard line with a scissor and clipper finish.</p></div>
             </div>
-            <div class="row">
-              <div class="l"><div class="nm">Line-up &amp; edges</div><div class="du">25 min</div><div class="pr">from CHF 25</div></div>
-              <span class="tog" data-tog></span>
+            <div class="row" data-price="25" data-dur="25">
+              <div class="top">
+                <button class="body" data-expand><div class="nm">Line-up &amp; edges</div><div class="du">25 min</div><div class="pr">from CHF 25</div></button>
+                <button class="chev" data-expand data-i="chev"></button>
+                <button class="tog" data-tog><span class="pl-i" data-i="plus"></span><span class="ck-i" data-i="check"></span></button>
+              </div>
+              <div class="desc"><p>Crisp hairline and edge detailing to sharpen your current cut.</p></div>
             </div>
-            <div class="row">
-              <div class="l"><div class="nm">Hot-towel shave</div><div class="du">30 min</div><div class="pr">from CHF 42</div></div>
-              <span class="tog" data-tog></span>
+            <div class="row open" data-price="42" data-dur="30">
+              <div class="top">
+                <button class="body" data-expand><div class="nm">Hot-towel shave</div><div class="du">30 min</div><div class="pr">from CHF 42</div></button>
+                <button class="chev" data-expand data-i="chev"></button>
+                <button class="tog" data-tog><span class="pl-i" data-i="plus"></span><span class="ck-i" data-i="check"></span></button>
+              </div>
+              <div class="desc"><p>Traditional straight razor shave with hot towels and a post shave balm.</p></div>
             </div>
           </div>
         </div>
@@ -143,13 +166,21 @@
         <div class="tier">
           <div class="tlab"><h3>Classic</h3><span class="rng">45&ndash;60 min</span></div>
           <div class="card">
-            <div class="row sel">
-              <div class="l"><div class="nm">Signature cut</div><div class="du">45 min</div><div class="pr">from CHF 65</div></div>
-              <span class="tog on" data-tog-on></span>
+            <div class="row sel" data-price="65" data-dur="45">
+              <div class="top">
+                <button class="body" data-expand><div class="nm">Signature cut</div><div class="du">45 min</div><div class="pr">from CHF 65</div></button>
+                <button class="chev" data-expand data-i="chev"></button>
+                <button class="tog on" data-tog><span class="pl-i" data-i="plus"></span><span class="ck-i" data-i="check"></span></button>
+              </div>
+              <div class="desc"><p>Consultation, wash, precision cut and finish tailored to your hair.</p></div>
             </div>
-            <div class="row">
-              <div class="l"><div class="nm">Cut &amp; beard combo</div><div class="du">60 min</div><div class="pr">from CHF 88</div></div>
-              <span class="tog" data-tog></span>
+            <div class="row" data-price="88" data-dur="60">
+              <div class="top">
+                <button class="body" data-expand><div class="nm">Cut &amp; beard combo</div><div class="du">60 min</div><div class="pr">from CHF 88</div></button>
+                <button class="chev" data-expand data-i="chev"></button>
+                <button class="tog" data-tog><span class="pl-i" data-i="plus"></span><span class="ck-i" data-i="check"></span></button>
+              </div>
+              <div class="desc"><p>A full haircut paired with a beard shape and line up in one visit.</p></div>
             </div>
           </div>
         </div>
@@ -158,9 +189,13 @@
         <div class="tier">
           <div class="tlab"><h3>Signature</h3><span class="rng">90+ min</span></div>
           <div class="card">
-            <div class="row">
-              <div class="l"><div class="nm">Full grooming ritual</div><div class="du">90 min</div><div class="pr">from CHF 120</div></div>
-              <span class="tog" data-tog></span>
+            <div class="row" data-price="120" data-dur="90">
+              <div class="top">
+                <button class="body" data-expand><div class="nm">Full grooming ritual</div><div class="du">90 min</div><div class="pr">from CHF 120</div></button>
+                <button class="chev" data-expand data-i="chev"></button>
+                <button class="tog" data-tog><span class="pl-i" data-i="plus"></span><span class="ck-i" data-i="check"></span></button>
+              </div>
+              <div class="desc"><p>Haircut, hot towel shave, beard care and styling, the complete session.</p></div>
             </div>
           </div>
         </div>
@@ -171,7 +206,7 @@
       <div class="in">
         <div>
           <div class="tot">CHF 65</div>
-          <div class="meta"><span data-i="cart"></span>1 service, 45 min</div>
+          <div class="meta"><span data-i="cart"></span><span class="mt">1 service, 45 min</span></div>
         </div>
         <button class="cont">Continue<span data-i="arrow"></span></button>
       </div>
@@ -182,6 +217,7 @@
 var I={
   back:'<path d="M15 18l-6-6 6-6"/>',
   close:'<path d="M18 6 6 18M6 6l12 12"/>',
+  chev:'<path d="M6 9l6 6 6-6"/>',
   plus:'<path d="M12 5v14M5 12h14"/>',
   check:'<path d="M20 6 9 17l-5-5"/>',
   cart:'<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/>',
@@ -193,8 +229,33 @@ document.querySelector('[data-i=back]').innerHTML=svg(I.back,ink,20);
 document.querySelector('[data-i=close]').innerHTML=svg(I.close,ink,19);
 document.querySelector('[data-i=cart]').innerHTML=svg(I.cart,ink3,13,1.8);
 document.querySelector('[data-i=arrow]').innerHTML=svg(I.arrow,'#fff',16);
-document.querySelectorAll('[data-tog]').forEach(function(e){e.innerHTML=svg(I.plus,ink2,17);});
-document.querySelectorAll('[data-tog-on]').forEach(function(e){e.innerHTML=svg(I.check,'#fff',17,2.5);});
+document.querySelectorAll('[data-i=chev]').forEach(function(e){e.innerHTML=svg(I.chev,ink3,18);});
+document.querySelectorAll('.pl-i[data-i=plus]').forEach(function(e){e.innerHTML=svg(I.plus,ink2,17);});
+document.querySelectorAll('.ck-i[data-i=check]').forEach(function(e){e.innerHTML=svg(I.check,'#fff',17,2.5);});
+
+// Tap the row body (or the chevron) -> expand the info panel. Select is NOT here.
+document.querySelectorAll('[data-expand]').forEach(function(btn){
+  btn.addEventListener('click',function(){btn.closest('.row').classList.toggle('open');});
+});
+
+// Tap the + -> select / deselect the service, then recompute the bottom bar.
+var cont=document.querySelector('.cont'), tot=document.querySelector('.tot'), mt=document.querySelector('.mt');
+function recompute(){
+  var sel=document.querySelectorAll('.row.sel'), total=0, dur=0;
+  sel.forEach(function(r){total+=+r.dataset.price;dur+=+r.dataset.dur;});
+  tot.textContent='CHF '+total;
+  var n=sel.length;
+  mt.textContent = n ? (n+(n===1?' service, ':' services, ')+dur+' min') : 'No services yet';
+  cont.classList.toggle('off', n===0);
+}
+document.querySelectorAll('[data-tog]').forEach(function(t){
+  t.addEventListener('click',function(){
+    t.classList.toggle('on');
+    t.closest('.row').classList.toggle('sel',t.classList.contains('on'));
+    recompute();
+  });
+});
+recompute();
 </script>
 </body>
 </html>
