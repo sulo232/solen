@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Search results , full screen before/after (toggle)</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/_components/search/SearchTemplate.tsx + SalonResultCard.tsx (the real search band,
+  filter pills, and result feed cards).
+  BEFORE = a LIVE <iframe> of the real /de/basel/coiffeur search results (actual current screen).
+  AFTER = borderless, FULL-SCREEN with a Before/After toggle. Search is a MARKETPLACE/browse surface, so it
+  STAYS dense on purpose: the filter pills, sort, and photo cards all stay (fast scanning is the point). The
+  one borderless move is dropping the desktop card photo shadow so it matches the already-borderless mobile feed.
+  Reference-checked: owner Uber screenshots (IMG_6537/6538/6539, subagent-analysed this session).
+  Exists-check: the search band + filter pills + result feed cards all exist and render today; REMOVED.md none;
+  NEW = borderless (shadow off) treatment only.
+  Backend-check: filters/sort = client query params (real); card = navigates to /salon/[slug] (client). Every
+  value is display of live data. Taste-current: star+value only, no review count; NO edge-to-edge photo band.
+  English chrome. Owner 2026-07-18 "next / other places" , full-page + before/after conversion.
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--surface:#fff;--sunken:#F4F4F5;--hairline:#E4E4E7;--accent:#276EF1;--green:#16A34A;--star:#FFC32B;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
+  .top{position:fixed;top:0;left:0;right:0;height:52px;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;padding:0 12px}
+  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
+  .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .stage{position:fixed;top:52px;left:0;right:0;bottom:0}
+  .pane{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .pane.hidden{display:none}
+  iframe{width:100%;height:100%;border:0;display:block}
+
+  .afwrap{max-width:520px;margin:0 auto;min-height:100%;padding:0 0 40px}
+  .band{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);padding:12px 16px 8px}
+  .searchpill{display:flex;align-items:center;gap:10px;border:1px solid var(--hairline);border-radius:999px;height:52px;padding:0 6px 0 16px}
+  .searchpill .t1{font-size:14px;font-weight:600}
+  .searchpill .t2{font-size:12px;color:var(--ink3)}
+  .searchpill .mp{margin-left:auto;width:40px;height:40px;border-radius:999px;border:1px solid var(--hairline);display:flex;align-items:center;justify-content:center}
+  .filters{display:flex;gap:8px;padding:10px 0 0;overflow-x:auto;scrollbar-width:none}
+  .filters::-webkit-scrollbar{display:none}
+  .fpill{font-size:13px;font-weight:600;padding:8px 14px;border-radius:999px;border:1px solid var(--hairline);color:var(--ink2);white-space:nowrap;flex:none}
+  .fpill.on{background:var(--sunken);color:var(--ink);border-color:transparent}
+  .fpill.round{width:38px;padding:0;height:38px;display:flex;align-items:center;justify-content:center}
+  .count{font-size:14px;font-weight:600;padding:14px 16px 2px}
+  .count .sort{float:right;font-size:13px;font-weight:600;color:var(--ink2)}
+  .feed{padding:8px 16px 0}
+  .fc+.fc{margin-top:20px}
+  .fc .ph{aspect-ratio:5/4;border-radius:16px;background:#E7E5E4;position:relative}
+  .fc .hb{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center}
+  .fc .nm{font-size:16px;font-weight:700;margin-top:10px;display:flex;align-items:center;gap:6px}
+  .fc .nm .st{display:inline-flex;align-items:center;gap:3px;font-size:13.5px;font-weight:600;margin-left:auto}
+  .fc .fm{font-size:13px;color:var(--ink3);margin-top:2px}
+  .fc .svcpills{display:flex;gap:8px;margin-top:9px;flex-wrap:wrap}
+  .fc .svp{font-size:12.5px;background:var(--sunken);border-radius:8px;padding:6px 10px;color:var(--ink2)}
+  .fc .fp{font-size:14px;font-weight:700;margin-top:8px}
+  svg{display:block}
+</style>
+</head>
+<body>
+  <div class="top"><div class="seg"><button id="tb" class="on" onclick="show('before')">Before</button><button id="ta" onclick="show('after')">After</button></div></div>
+  <div class="stage">
+    <div class="pane before" id="pB"><iframe src="/de/basel/coiffeur" title="live before" loading="eager"></iframe></div>
+    <div class="pane after hidden" id="pA">
+      <div class="afwrap">
+        <div class="band">
+          <div class="searchpill"><span data-i="search"></span><div><div class="t1">Coiffeur . Basel</div><div class="t2">Any date</div></div><span class="mp" data-i="map"></span></div>
+          <div class="filters">
+            <span class="fpill round" data-i="filter"></span>
+            <span class="fpill on">Open now</span><span class="fpill">Price</span><span class="fpill">For whom</span><span class="fpill">Rating</span>
+          </div>
+        </div>
+        <div class="count">24 salons in Basel<span class="sort">Sort</span></div>
+        <div class="feed">
+          <div class="fc"><div class="ph"><span class="hb" data-hb></span></div><div class="nm">Studio Belle<span class="st"><span data-i="star"></span>4.8</span></div><div class="fm">Spalenvorstadt 22, Basel</div><div class="svcpills"><span class="svp">Signature cut . CHF 65</span><span class="svp">Color . from CHF 120</span></div><div class="fp">from CHF 45</div></div>
+          <div class="fc"><div class="ph" style="background:#EDE9E4"><span class="hb" data-hb></span></div><div class="nm">Rouge Studio<span class="st"><span data-i="star"></span>4.7</span></div><div class="fm">Gerbergasse 14, Basel</div><div class="svcpills"><span class="svp">Blow-dry . CHF 45</span><span class="svp">Balayage . from CHF 160</span></div><div class="fp">from CHF 40</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+<script>
+function show(w){document.getElementById('pB').classList.toggle('hidden',w!=='before');document.getElementById('pA').classList.toggle('hidden',w!=='after');document.getElementById('tb').classList.toggle('on',w==='before');document.getElementById('ta').classList.toggle('on',w==='after');}
+var I={search:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',map:'<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14"/>',filter:'<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>',star:'<path d="M12 2l3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/>',heart:'<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/>'};
+function svg(p,st,w,fill){return '<svg class="lucide" data-lucide="icon" width="'+w+'" height="'+w+'" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="'+st+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>';}
+var ink='#0A0A0A',ink3='#A1A1AA',star='#FFC32B',pink='#FF3366';
+document.querySelector('[data-i=search]').innerHTML=svg(I.search,ink3,18);
+document.querySelector('[data-i=map]').innerHTML=svg(I.map,ink,18);
+document.querySelector('[data-i=filter]').innerHTML=svg(I.filter,ink,17);
+document.querySelectorAll('[data-i=star]').forEach(function(e){e.innerHTML=svg(I.star,star,13,star);});
+document.querySelectorAll('[data-hb]').forEach(function(e){e.innerHTML=svg(I.heart,pink,17);});
+</script>
+</body>
+</html>
