@@ -75,8 +75,8 @@
   .tog{width:26px;height:26px;border-radius:999px;border:1.5px solid var(--hairline);flex:none;display:flex;align-items:center;justify-content:center;color:var(--ink3)}
   .tog.on{background:var(--ink);border-color:var(--ink);color:#fff}
 
-  .strow{display:flex;align-items:center;gap:13px;padding:13px 18px}
-  .strow + .strow{border-top:1px solid var(--hairline)}
+  .strow{display:flex;align-items:center;gap:13px;padding:13px 18px;position:relative}
+  .strow + .strow::before{content:"";position:absolute;left:79px;right:0;top:0;height:1px;background:var(--hairline)}
   .strow.sel{background:var(--sunken)}
   .av{width:48px;height:48px;border-radius:999px;background:var(--sunken);flex:none;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--ink2)}
   .strow .nm{font-size:15px;font-weight:600}
@@ -103,8 +103,8 @@
   .prov{display:inline-flex;align-items:center;gap:7px;margin:8px 18px 2px;background:var(--sunken);border-radius:999px;padding:6px 12px;font-size:12.5px;color:var(--ink2)}
   .note{margin:10px 18px 0;border:1px solid var(--hairline);border-radius:12px;padding:11px 13px;font-size:13px;color:var(--ink3);min-height:58px}
 
-  .sumrow{display:flex;align-items:center;gap:12px;padding:13px 18px}
-  .sumrow + .sumrow{border-top:1px solid var(--hairline)}
+  .sumrow{display:flex;align-items:center;gap:12px;padding:13px 18px;position:relative}
+  .sumrow + .sumrow::before{content:"";position:absolute;left:70px;right:0;top:0;height:1px;background:var(--hairline)}
   .sumrow .ci{width:40px;height:40px;border-radius:10px;background:var(--sunken);flex:none;display:flex;align-items:center;justify-content:center;color:var(--ink2)}
   .sumrow .t1{font-size:14.5px;font-weight:600}
   .sumrow .t2{font-size:12.5px;color:var(--ink3);margin-top:1px}
