@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Salon services , tap-to-expand rows (mockup)</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  Owner-scope: confirmed: owner 2026-07-19 "all three, plan it out" , roll the booking row's tap-to-expand
+  pattern out to the salon page, the dashboard, and settings, one mockup per surface. THIS is surface 1: the
+  salon page service rows. The salon ServiceRow is the read-only twin of the booking row , the description is
+  already in the DB but hidden from the list ("NO description line in the list view", SalonServices.tsx:189).
+  This mockup adds the inline chevron beside the name + tap-to-expand description, keeping the existing "Book"
+  button as a SEPARATE action on the right (the salon row books per-service, it has no cart).
+  Convention (locked with the owner): the booking row's ChevronDown that rotates 180 + multi-open.
+  Grounded-in: app/[locale]/_components/salon/SalonServices.tsx (the tiered filter-pills + duration-tier cards +
+  the ServiceRow name/duration/from-price/Book). CHECKED this turn. English chrome for the mockup.
+  Exists-check: `npm run exists "salon services"` ran this turn. SalonServices.tsx + its ServiceRow exist and
+  render today; REMOVED.md none. NEW = only the tap-to-expand-description row treatment on the salon page (the
+  description already exists on the service, it just moves behind a tap; matches the booking row we shipped).
+  Backend-check: the row body tap = expand info (client only, no write); "Book" = navigates to the booking
+  flow (client, real, /salon/[slug]/booking?service=id). Every name/duration/price/description is display of a
+  live service row (real). No fabricated value. Taste-current: no review count on rows; no full-bleed; no
+  ALL-CAPS; no blue. Reference-checked: the salon page is Solen's own surface (SalonServices.tsx), read this turn.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--surface:#fff;--sunken:#F4F4F5;--hairline:#E4E4E7;
+    --whisper:0 1px 2px rgba(10,10,10,.04),0 6px 20px -10px rgba(10,10,10,.08);
+    --glide:cubic-bezier(0.16,1,0.3,1);
+    --font:'Inter Tight',system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
+  .app{position:fixed;inset:0;width:100%;display:flex;flex-direction:column;background:#fff}
+  .hd{flex:none;display:flex;align-items:center;gap:10px;height:56px;padding:0 16px;border-bottom:1px solid var(--hairline)}
+  .hd .ttl{font-size:16px;font-weight:700;letter-spacing:-0.01em}
+  .scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .wrap{max-width:520px;margin:0 auto;padding:0 16px 40px}
+  .h2{font-size:clamp(18px,2vw,20px);font-weight:600;letter-spacing:-0.02em;line-height:1.2;padding:18px 0 0}
+
+  .pills{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:12px 0 4px}
+  .pills::-webkit-scrollbar{display:none}
+  .pl{flex:none;font-size:13px;font-weight:600;padding:9px 15px;border-radius:999px;border:1px solid var(--hairline);color:var(--ink2);background:#fff;white-space:nowrap}
+  .pl.on{background:var(--sunken);color:var(--ink);border-color:transparent}
+
+  .tier{margin-top:22px}
+  .tier:first-of-type{margin-top:14px}
+  .tlab{display:flex;align-items:baseline;gap:8px}
+  .tlab h3{font-size:16px;font-weight:600;letter-spacing:-0.01em;color:var(--ink)}
+  .tlab .rng{font-size:13px;color:var(--ink3);font-variant-numeric:tabular-nums}
+  .card{margin-top:12px;border:1px solid var(--hairline);border-radius:24px;background:#fff;box-shadow:var(--whisper);overflow:hidden}
+
+  .row{border-top:1px solid var(--hairline)}
+  .card .row:first-child{border-top:0}
+  .top{display:flex;align-items:center;gap:14px;padding:16px 20px}
+  .body{min-width:0;flex:1;text-align:left;background:none;border:0;font-family:inherit;cursor:pointer;padding:0}
+  .nmline{display:flex;align-items:center;gap:6px}
+  .body .nm{font-size:16px;font-weight:600;color:var(--ink);line-height:1.25}
+  .chv{flex:none;display:grid;place-items:center;color:var(--ink3);transition:transform .22s var(--glide)}
+  .row.open .chv{transform:rotate(180deg)}
+  .body .du{font-size:14px;color:var(--ink3);margin-top:4px;font-variant-numeric:tabular-nums}
+  .desc{max-height:0;overflow:hidden;transition:max-height .18s var(--glide),margin-top .18s var(--glide);margin-top:0;color:var(--ink2)}
+  .row.open .desc{max-height:160px;margin-top:10px}
+  .desc p{font-size:14px;line-height:1.5;padding-right:8px}
+  .body .pr{font-size:15px;font-weight:700;color:var(--ink);margin-top:12px;font-variant-numeric:tabular-nums}
+  .book{flex:none;border:1px solid var(--hairline);background:#fff;color:var(--ink);font-family:inherit;font-size:13px;font-weight:600;border-radius:999px;padding:9px 20px;cursor:pointer}
+  .book:hover{background:var(--sunken)}
+  svg{display:block}
+</style>
+</head>
+<body>
+  <div class="app">
+    <div class="hd"><span id="back"></span><span class="ttl">Blade &amp; Stone</span></div>
+    <div class="scroll">
+      <div class="wrap">
+        <h2 class="h2">Services</h2>
+        <div class="pills">
+          <span class="pl on">All</span>
+          <span class="pl">Haircut</span>
+          <span class="pl">Beard</span>
+          <span class="pl">Combo</span>
+          <span class="pl">Extras</span>
+        </div>
+
+        <div class="tier">
+          <div class="tlab"><h3>Express</h3><span class="rng">15&ndash;30 min</span></div>
+          <div class="card">
+            <div class="row" data-row>
+              <div class="top">
+                <button class="body" data-expand>
+                  <div class="nmline"><span class="nm">Beard trim</span><span class="chv" data-i="chev"></span></div>
+                  <div class="du">20 min</div>
+                  <div class="desc"><p>Shape and tidy the beard line with a scissor and clipper finish.</p></div>
+                  <div class="pr">from CHF 28</div>
+                </button>
+                <button class="book">Book</button>
+              </div>
+            </div>
+            <div class="row open" data-row>
+              <div class="top">
+                <button class="body" data-expand>
+                  <div class="nmline"><span class="nm">Hot-towel shave</span><span class="chv" data-i="chev"></span></div>
+                  <div class="du">30 min</div>
+                  <div class="desc"><p>Traditional straight razor shave with hot towels and a post shave balm.</p></div>
+                  <div class="pr">from CHF 42</div>
+                </button>
+                <button class="book">Book</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tier">
+          <div class="tlab"><h3>Classic</h3><span class="rng">45&ndash;60 min</span></div>
+          <div class="card">
+            <div class="row" data-row>
+              <div class="top">
+                <button class="body" data-expand>
+                  <div class="nmline"><span class="nm">Signature cut</span><span class="chv" data-i="chev"></span></div>
+                  <div class="du">45 min</div>
+                  <div class="desc"><p>Consultation, wash, precision cut and finish tailored to your hair.</p></div>
+                  <div class="pr">from CHF 65</div>
+                </button>
+                <button class="book">Book</button>
+              </div>
+            </div>
+            <div class="row" data-row>
+              <div class="top">
+                <button class="body" data-expand>
+                  <div class="nmline"><span class="nm">Cut &amp; beard combo</span><span class="chv" data-i="chev"></span></div>
+                  <div class="du">60 min</div>
+                  <div class="desc"><p>A full haircut paired with a beard shape and line up in one visit.</p></div>
+                  <div class="pr">from CHF 88</div>
+                </button>
+                <button class="book">Book</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tier">
+          <div class="tlab"><h3>Signature</h3><span class="rng">90+ min</span></div>
+          <div class="card">
+            <div class="row" data-row>
+              <div class="top">
+                <button class="body" data-expand>
+                  <div class="nmline"><span class="nm">Full grooming ritual</span><span class="chv" data-i="chev"></span></div>
+                  <div class="du">90 min</div>
+                  <div class="desc"><p>Haircut, hot towel shave, beard care and styling, the complete session.</p></div>
+                  <div class="pr">from CHF 120</div>
+                </button>
+                <button class="book">Book</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<script>
+function svg(p,st,w){return '<svg class="lucide" width="'+w+'" height="'+w+'" viewBox="0 0 24 24" fill="none" stroke="'+st+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>';}
+document.getElementById('back').innerHTML=svg('<path d="M15 18l-6-6 6-6"/>','#0A0A0A',20);
+document.querySelectorAll('[data-i=chev]').forEach(function(e){e.innerHTML=svg('<path d="M6 9l6 6 6-6"/>','#A1A1AA',17);});
+// Tap the row body (or the chevron) -> expand the description. Book is a separate action.
+document.querySelectorAll('[data-expand]').forEach(function(btn){
+  btn.addEventListener('click',function(){btn.closest('.row').classList.toggle('open');});
+});
+document.querySelectorAll('.book').forEach(function(b){b.addEventListener('click',function(ev){ev.stopPropagation();});});
+</script>
+</body>
+</html>
