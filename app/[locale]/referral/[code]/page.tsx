@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Gift, ArrowRight, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { REFERRAL_STORAGE_KEY } from "@/lib/referral/storage";
 
 const REDIRECT_SECONDS = 5;
-const STORAGE_KEY = "solen_referral_code";
+const STORAGE_KEY = REFERRAL_STORAGE_KEY;
 
 interface Props {
   params: Promise<{ code: string; locale: string }>;

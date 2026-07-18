@@ -19,6 +19,8 @@ import { FROST_GLASS } from "@/lib/frost-glass";
 import { formatCurrency } from "@/lib/format-currency";
 import { Avatar } from "@/app/[locale]/_components/primitives/Avatar";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
+import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
+import { attributeStoredReferral } from "@/lib/referral/attributeStoredReferral";
 import RescheduleSheet from "./RescheduleSheet";
 import CancelBookingSheet from "./CancelBookingSheet";
 import type { Booking } from "./BookingCard";
@@ -193,6 +195,32 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
       alive = false;
     };
   }, [props.isGuest, props.accessToken, props.referenceCode]);
+
+  // GAP #49 second retry hook. At signup the referred user almost always has 0 bookings
+  // yet, so the onboarding hook (OnboardingFlow.tsx) leaves any stored referral code in
+  // place. This screen is the first point after a REAL booking exists, where the
+  // anti-farming "complete a booking first" gate in POST /api/referral/complete
+  // (app/api/referral/complete/route.ts:68-79) can actually pass, so it is the right
+  // place to retry. Guest bookings have no user_id to credit, so this checks a real
+  // browser session (not just `!props.isGuest`, which only reflects the BOOKING's owner,
+  // not who is currently looking at this screen) before ever calling out. Shares the
+  // exact read-code / POST / handle-response / clear logic with the onboarding hook via
+  // attributeStoredReferral, so the two can never drift.
+  useEffect(() => {
+    if (props.isGuest) return;
+    let alive = true;
+    (async () => {
+      const supabase = createBrowserSupabaseClient();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!alive || !session) return;
+      attributeStoredReferral();
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [props.isGuest]);
 
   // Guest "manage" + the access link point at the same re-entry; logged-in goes to the lookup route.
   const manageHref = props.isGuest && props.accessLink ? props.accessLink : `/${locale}/booking/lookup`;

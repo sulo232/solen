@@ -14,6 +14,7 @@ import {
   GENDER_OPTS, HAIR_OPTS, SKIN_OPTS, CATEGORY_OPTS, INTEREST_OPTS,
   CatIcon, INTEREST_ICON, type Choice, type InterestChoice,
 } from "./beautyFields";
+import { attributeStoredReferral } from "@/lib/referral/attributeStoredReferral";
 
 type Prefs = Record<string, unknown>;
 
@@ -71,6 +72,18 @@ export default function OnboardingFlow({ locale, redirect, customerPreferences }
 
   const step = STEPS[i];
   const progress = Math.round(((i + 1) / TOTAL) * 100);
+
+  // GAP #49: attribute a pending referral. /referral/[code]/page.tsx stashes the code in
+  // localStorage on mount but nothing ever reads it back, so the referrer was never
+  // credited. This page is the earliest reliable point after signup where a session is
+  // guaranteed (the server component above redirects to /auth/login when there is none),
+  // so it is the right hook. Runs once on mount, fire-and-forget, never blocks the wizard.
+  // A brand new user almost always has 0 bookings yet, so this call typically hits the
+  // "book first" gate and leaves the code stored; the SECOND retry, once a booking
+  // actually exists, lives in BookingConfirmation.tsx (shared logic: attributeStoredReferral).
+  React.useEffect(() => {
+    attributeStoredReferral();
+  }, []);
 
   const toggleMulti = (id: string, v: string) =>
     setMulti((m) => {
