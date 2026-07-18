@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solen borderless mockups , all of them</title>
+<!-- Base: net-new -->
+<!-- Scale: full-page -->
+<!--
+  Base: net-new , this is an INDEX/hub that links the borderless mockup galleries, not a rebuild of any
+  existing product surface (grounding-skip + preflight-skip flags set: there is no real page to ground or
+  exists-check a link directory against).
+  Grounded-in: net-new (no product surface; links public/_mockups/liftup-* galleries).
+  Exists-check: net-new hub , links the already-built galleries (liftup-services-expand, liftup-booking,
+  liftup-integration, liftup-directions, liftup-ba-side); no product route rebuilt; REMOVED.md hits: none;
+  NEW = only this index/directory page.
+  Reference-checked: owner Uber screenshots (IMG_6537/6538/6539, subagent-analysed this session).
+  Backend-check: none (link directory only). English chrome, locked tokens.
+  Owner 2026-07-18 "show me all" , one hub to tap through every borderless mockup on mobile.
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--surface:#fff;--sunken:#F4F4F5;--hairline:#E4E4E7;--accent:#276EF1;--green:#16A34A;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);background:#FAFAFA;color:var(--ink);-webkit-font-smoothing:antialiased;padding:30px 16px 70px}
+  .wrap{max-width:560px;margin:0 auto}
+  h1{font-size:24px;font-weight:800;letter-spacing:-0.02em}
+  .rule{font-size:14px;color:var(--ink2);line-height:1.5;margin:8px 0 22px}
+  .rule b{color:var(--ink)}
+  a.card{display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;padding:16px 4px;border-top:1px solid var(--hairline)}
+  a.card:last-of-type{border-bottom:1px solid var(--hairline)}
+  .num{width:34px;height:34px;border-radius:999px;background:var(--sunken);flex:none;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--ink2)}
+  .num.ok{background:rgba(22,163,74,.12);color:var(--green)}
+  .tx{flex:1;min-width:0}
+  .tt{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .badge{font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:999px;background:rgba(22,163,74,.12);color:var(--green)}
+  .badge.rev{background:var(--sunken);color:var(--ink2)}
+  .ds{font-size:13px;color:var(--ink3);margin-top:3px;line-height:1.4}
+  .chev{color:var(--ink3);flex:none}
+  .soon{margin-top:30px}
+  .soon .h{font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:8px}
+  .soon .list{font-size:13.5px;color:var(--ink3);line-height:1.7}
+  svg{display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Borderless mockups</h1>
+  <p class="rule"><b>The rule:</b> take the box off, keep the info. Card boxes + shadows come off; the dense controls that carry a decision (pills, prices, calendar, photos, status) stay. Tap any row to open it.</p>
+
+  <a class="card" href="/_mockups/liftup-services-expand/index.html">
+    <span class="num ok" id="n1"></span>
+    <span class="tx"><span class="tt">Services , simple, info on demand <span class="badge">approved</span></span><span class="ds">Clean rows; tap (or hover on a computer) to expand the description.</span></span>
+    <span class="chev" id="c1"></span>
+  </a>
+
+  <a class="card" href="/_mockups/liftup-booking/index.html">
+    <span class="num">1</span>
+    <span class="tx"><span class="tt">Booking flow , 6 steps <span class="badge rev">for review</span></span><span class="ds">Services, stylist, date/time, hair, confirm & pay, confirmation.</span></span>
+    <span class="chev" id="c2"></span>
+  </a>
+
+  <a class="card" href="/_mockups/liftup-integration/index.html">
+    <span class="num">2</span>
+    <span class="tx"><span class="tt">Settings, Appointments, Search, Salon page <span class="badge rev">for review</span></span><span class="ds">The mix applied across four screens, plus the 3 integration models.</span></span>
+    <span class="chev" id="c3"></span>
+  </a>
+
+  <a class="card" href="/_mockups/liftup-directions/index.html">
+    <span class="num">3</span>
+    <span class="tx"><span class="tt">Profile direction + Saved concept <span class="badge rev">for review</span></span><span class="ds">Profile: cards vs borderless. Plus the unified Saved (swipe tabs) idea.</span></span>
+    <span class="chev" id="c4"></span>
+  </a>
+
+  <a class="card" href="/_mockups/liftup-ba-side/index.html">
+    <span class="num">4</span>
+    <span class="tx"><span class="tt">Services , before vs after <span class="badge rev">reference</span></span><span class="ds">Your live current screen beside the proposal. Pinch to zoom.</span></span>
+    <span class="chev" id="c5"></span>
+  </a>
+
+  <div class="soon">
+    <div class="h">Coming next (mocking now)</div>
+    <div class="list">Home . Inspo feed . the unified Saved page (built out) . profile sub-pages (favorites, looks, hair profile, stamps, rewards, notifications, referral) . walk-in queue</div>
+  </div>
+</div>
+<script>
+const I={chev:'<path d="M9 6l6 6-6 6"/>',check:'<path d="M20 6 9 17l-5-5"/>'};
+function svg(p,st,w){return '<svg class="lucide" data-lucide="icon" width="'+(w||20)+'" height="'+(w||20)+'" viewBox="0 0 24 24" fill="none" stroke="'+st+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>';}
+document.getElementById('n1').innerHTML=svg(I.check,'#16A34A',18);
+['c1','c2','c3','c4','c5'].forEach(id=>document.getElementById(id).innerHTML=svg(I.chev,'#A1A1AA',18));
+</script>
+</body>
+</html>

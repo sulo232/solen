@@ -84,7 +84,12 @@ Status: [x] mocked+delivered · [~] mocked, being refined · [ ] not mocked yet 
 - [x] Salon PDP (`/de/salon/[slug]`) , round 2 (service tiers + team/review panels off, filters/prices stay)
 
 ### Booking flow (the wizard, booking-LOCKED order: services -> Staff -> Zeit(->Haare) -> Bezahlen)
-- [~] Service select · [~] Staff · [~] Date/time · [~] Hair · [~] Pay/confirm , MOCKED (liftup-booking/), awaiting approval
+- [x] Service select , APPROVED (owner 2026-07-18) as borderless + EXPAND-ON-DEMAND: rows stay simple
+  (name + chevron + time + price); the description is collapsed by default and reveals on TAP (mobile) or
+  HOVER (desktop @media hover), chevron flips. Mockup: liftup-services-expand/. This expand-on-demand row is
+  now an APPROVED pattern for any row that has secondary info. Ready to implement in code (awaiting owner go on
+  build-vs-keep-mocking).
+- [~] Staff · [~] Date/time · [~] Hair · [~] Pay/confirm , MOCKED borderless (liftup-booking/), awaiting approval
 - [~] Confirmation / receipt (`/de/confirmation`) , MOCKED (liftup-booking/), calm green success header
 
 ### Account (the calm borderless heartland)
