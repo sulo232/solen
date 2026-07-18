@@ -74,7 +74,7 @@
   .row{border-top:1px solid var(--hairline)}
   .card .row:first-child{border-top:0}
   .row.sel{background:rgba(244,244,245,.7)}
-  .top{display:flex;align-items:flex-start;gap:10px;padding:16px 20px}
+  .top{display:flex;align-items:center;gap:10px;padding:16px 20px}
   .body{min-width:0;flex:1;text-align:left;background:none;border:0;font-family:inherit;cursor:pointer;padding:0}
   /* Name line: name + the down chevron INLINE beside it (owner 2026-07-18) */
   .nmline{display:flex;align-items:center;gap:6px}
@@ -89,7 +89,7 @@
   .body .pr{font-size:15px;font-weight:700;color:var(--ink);margin-top:12px;font-variant-numeric:tabular-nums}
 
   /* ToggleCircle (real primitive: 36px, border plus Plus / ink plus Check), aligned to the name line */
-  .tog{width:36px;height:36px;border-radius:999px;display:grid;place-items:center;flex:none;border:1px solid var(--hairline);color:var(--ink2);background:#fff;cursor:pointer;padding:0;margin-top:-4px}
+  .tog{width:36px;height:36px;border-radius:999px;display:grid;place-items:center;flex:none;border:1px solid var(--hairline);color:var(--ink2);background:#fff;cursor:pointer;padding:0}
   .tog.on{background:var(--ink);color:#fff;border-color:var(--ink)}
   .tog .pl-i{display:grid}
   .tog .ck-i{display:none}
