@@ -29,6 +29,8 @@ import {
   ChevronRight,
   Clock,
   MapPin,
+  Stamp,
+  Bell,
   type LucideIcon,
 } from "lucide-react";
 
@@ -39,17 +41,20 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return { title: t("title"), robots: { index: false, follow: false } };
 }
 
-async function countOf(build: () => PromiseLike<{ count: number | null; error: unknown }>, label: string): Promise<number> {
+// Returns the real count on success (0 is a legitimate, successful zero).
+// Returns null on a genuine fetch error/exception, distinct from a real zero,
+// so the caller can omit the badge instead of rendering a fabricated "0".
+async function countOf(build: () => PromiseLike<{ count: number | null; error: unknown }>, label: string): Promise<number | null> {
   try {
     const { count, error } = await build();
     if (error) {
       console.error(`[ProfileHub] ${label} count error:`, (error as { message?: string })?.message ?? error);
-      return 0;
+      return null;
     }
     return count ?? 0;
   } catch (err) {
     console.error(`[ProfileHub] ${label} count exception:`, err);
-    return 0;
+    return null;
   }
 }
 
@@ -198,10 +203,14 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
         {/* Activity */}
         <h2 className="text-[13px] font-medium text-s-ink-2 mt-8 mb-2.5 px-0.5">{t("sectionActivity")}</h2>
         <section className="rounded-card bg-white shadow-elevation-1 overflow-hidden">
-          <Row href={p("/profile/bookings")} icon={Calendar} label={t("tileAppointments")} meta={t("upcomingCount", { count: upcomingBookings })} />
-          <Row href={p("/profile/favorites")} icon={Heart} iconClass="text-[#FF3366]" label={t("tileFavorites")} meta={String(favCount)} />
-          {/* Loyalty now points to the Solen-wide Status (rank) page; /profile/stamps is legacy. */}
+          <Row href={p("/profile/bookings")} icon={Calendar} label={t("tileAppointments")} meta={upcomingBookings != null ? t("upcomingCount", { count: upcomingBookings }) : undefined} />
+          <Row href={p("/profile/favorites")} icon={Heart} iconClass="text-[#FF3366]" label={t("tileFavorites")} meta={favCount != null ? String(favCount) : undefined} />
+          {/* Loyalty (Treue) is the Solen-wide Status (rank) page. /profile/stamps is the separate
+              per-salon stamp-card system (loyalty_cards/loyalty_stamps); it is NOT frozen yet
+              (LOYALTY_STRUCTURE.md §6: freeze happens on launch day, existing balances stay
+              redeemable for 12mo after), so it stays reachable as its own row, not merged. */}
           <Row href={p("/rewards")} icon={Award} label={t("tileLoyalty")} />
+          <Row href={p("/profile/stamps")} icon={Stamp} label={t("tileStamps")} meta={stampCount != null ? String(stampCount) : undefined} />
           {/* Gift-card wallet HIDDEN from customers (owner, 2026-06-14) in favour of a Solen-wide loyalty card. */}
         </section>
 
@@ -213,6 +222,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
           {/* Vouchers (gift cards) HIDDEN from customers (owner, 2026-06-14) in favour of a Solen-wide loyalty card. */}
           <Row href={p("/profile/intake-forms")} icon={ClipboardList} label={t("intakeForms")} />
           <Row href={p("/profile/referral")} icon={UserPlus} label={t("refer")} meta={t("referReward")} />
+          <Row href={p("/notifications")} icon={Bell} label={t("tileNotifications")} />
           <Row href={p("/profile/settings")} icon={SlidersHorizontal} label={t("settings")} />
           <Row href={p("/help")} icon={HelpCircle} label={t("help")} />
         </section>
