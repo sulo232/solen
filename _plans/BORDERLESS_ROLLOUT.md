@@ -1,4 +1,17 @@
-# Borderless rollout , "chrome off, density stays" (owner-approved Model B, 2026-07-18)
+> # 🛑 REVERTED , owner 2026-07-18 (do not act on anything below)
+> The owner reverted this whole direction the same day it was approved, right after approving the CARDED
+> salon-page-style booking-services mockup (`public/_mockups/liftup-booking-services-tiered/`): "revert the
+> design system" + "remove the gates n sh for the simple thing that we made." The winning direction is the
+> EXISTING carded salon-page tier-card display (rounded-24 + hairline + whisper shadow), NOT "take the box
+> off." Actions taken: the fullscreen mockup gate was removed (`.claude/hooks/mockup-fullscreen-gate.py` +
+> the `check_fullscreen` arm of `~/.claude/hooks/mockup-preflight-manifest.py`); REMOVED.md was fed so
+> borderless is not re-proposed; no LOCKFILE/RATIONALE row was ever amended, so there is nothing there to
+> undo. The `liftup-*-fs` before/after mockups remain on disk as dead exploration. Everything below is the
+> abandoned plan, kept only as a record.
+
+---
+
+# Borderless rollout , "chrome off, density stays" (owner-approved Model B, 2026-07-18) , REVERTED, see banner
 
 Owner: "alr approved. make real design principle like change cz rn we got everything around those
 [old principles] n gates n hooks too. make acc plan n make tons of mockups bfr u acc implement, ima
