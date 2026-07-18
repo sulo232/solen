@@ -7,10 +7,10 @@
 <!-- Base: capture live -->
 <!-- Scale: full-page -->
 <!--
-  Owner-scope: confirmed: owner 2026-07-18 "it looks soo ass i want more of the morphing is it not the blur
-  and the othr stuff or idk". The plain blur fade landed flat, so this is a COMPARISON LAB: four value-change
-  motions on the real booking total, each replayable, so the owner can feel them and pick one, instead of me
-  guessing a third time. Recommendation carried in the UI (Count + pop).
+  Owner-scope: confirmed: owner 2026-07-18. Round 1 lab had 4 options; owner narrowed: "count up is good but
+  idk abt counting from beginning and zoom morph too maybe but i dont want chf i want that to be static and
+  the number i want no pop thing in morph". So: two candidates only (Count up + Zoom morph), the CHF label is
+  STATIC and only the NUMBER animates, and there is no pop. Count starts from the current total (not zero).
   Grounded-in: components-legacy/booking/ServicesStaffStep.tsx (the fixed bottom bar total + minutes this
   motion applies to) + _design-system/MOTION.md (the enter recipe: opacity+scale+blur, glide). The number
   values (CHF 65 -> 93, 45 -> 65 min) are the same as the booking-services tiered mockup's Signature cut +
@@ -18,15 +18,15 @@
   Exists-check: `npm run exists motion` ran this turn. The booking services total bar (ServicesStaffStep.tsx)
   and the MOTION.md recipe exist; REMOVED.md none. NEW = a motion-comparison lab (throwaway once the owner
   picks); no product surface is rebuilt.
-  Backend-check: none , this is a static motion demo, the Add button only toggles a local 1<->2 service count
-  to replay the animation. No fabricated product data (illustrative barber numbers, same as the tiered mockup).
+  Backend-check: none , static motion demo, the Add button toggles a local 1<->2 service count to replay the
+  animation. No fabricated product data (illustrative barber numbers, same as the tiered mockup).
   Reference-checked: the enter recipe is Solen's own (MOTION.md + ToggleCircle.tsx), read this turn. Taste:
-  no review count, no full-bleed, no ALL-CAPS, no blue. English chrome.
+  no review count, no full-bleed, no ALL-CAPS, no blue, CHF label static (animated only the number). English.
 -->
 <style>
   :root{
     --ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--sunken:#F4F4F5;--hairline:#E4E4E7;
-    --glide:cubic-bezier(0.16,1,0.3,1);--pop:cubic-bezier(0.34,1.56,0.64,1);
+    --glide:cubic-bezier(0.16,1,0.3,1);
     --font:'Inter Tight',system-ui,-apple-system,sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
@@ -50,16 +50,13 @@
   .desc{font-size:13px;color:var(--ink3);line-height:1.5;margin-top:16px;min-height:38px}
   .add{margin-top:20px;display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;font-family:inherit;font-size:15px;font-weight:600;border:0;border-radius:14px;padding:14px 24px;cursor:pointer}
 
-  /* the animated number wrappers */
+  /* Only the NUMBER animates. The CHF label + " min" unit sit OUTSIDE .val and stay static. */
   .num{position:relative;display:inline-block}
-  .num .val{display:inline-block;transition:opacity .44s var(--glide),transform .44s var(--glide),filter .44s var(--glide)}
-  .num .val.fx{animation:enterfx .44s var(--glide)}
-  @keyframes enterfx{0%{opacity:0;transform:scale(.96);filter:blur(8px)}100%{opacity:1;transform:scale(1);filter:blur(0)}}
-  .num .val.pop{animation:landpop .42s var(--pop)}
-  @keyframes landpop{0%{transform:scale(1.16);filter:blur(4px)}100%{transform:scale(1);filter:blur(0)}}
+  .num .val{display:inline-block;transition:opacity .42s var(--glide),transform .42s var(--glide),filter .42s var(--glide)}
+  /* zoom morph: old number blurs + grows out, new number resolves in from small (no slide, no pop) */
   .num .val.leave{position:absolute;left:0;right:0;top:0;opacity:0;transform:scale(1.3);filter:blur(9px)}
   .num .val.enter-in{opacity:0;transform:scale(.55);filter:blur(9px)}
-  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
   svg{display:block}
 </style>
 </head>
@@ -67,18 +64,16 @@
   <div class="app">
     <div class="hd"><span id="back"></span><span class="ttl">Total motion</span></div>
     <div class="body">
-      <p class="lead">Four ways the total can move when a service is added. Pick a style, then tap Add to replay it. The + to check toggle stays as it is , this is only about the number.</p>
+      <p class="lead">Two ways the total can move when a service is added. Pick one, then tap Add to replay it. The CHF label stays put , only the number moves. The + to check toggle is unchanged.</p>
 
       <div class="seg" id="seg">
-        <button class="sg" data-v="fade">Blur fade</button>
-        <button class="sg" data-v="count">Count up</button>
+        <button class="sg on" data-v="count">Count up<span class="rec">rec</span></button>
         <button class="sg" data-v="morph">Zoom morph</button>
-        <button class="sg on" data-v="countpop">Count + pop<span class="rec">rec</span></button>
       </div>
 
       <div class="stage">
         <div class="eyebrow">Total</div>
-        <div class="total"><span class="num" id="totNum"><span class="val">CHF 65</span></span></div>
+        <div class="total">CHF <span class="num" id="totNum"><span class="val">65</span></span></div>
         <div class="meta"><span id="svcCount">1 service</span>, <span class="num" id="minNum"><span class="val">45</span></span> min</div>
         <div class="desc" id="desc"></div>
         <button class="add" id="add"><span id="addIcon"></span>Add a service</button>
@@ -92,35 +87,29 @@ document.getElementById('back').innerHTML=svg('<path d="M15 18l-6-6 6-6"/>','#0A
 document.getElementById('addIcon').innerHTML=svg('<path d="M12 5v14M5 12h14"/>','#fff',17);
 
 var DESC={
-  fade:'Blur fade , the new number fades in with a touch of scale and blur. Calm. (This is the one that felt flat.)',
-  count:'Count up , the number ticks from 65 up to the new total, so you watch the price climb.',
-  morph:'Zoom morph , the old number blurs and grows out while the new one resolves in from small. A real morph, no sliding.',
-  countpop:'Count up, then a pop , the number climbs, then the final value snaps in with a scale and blur. Most alive.'
+  count:'Count up , the number climbs from the current total to the new one, so you watch the price go up. It starts from 65, not from zero, and it is quick (~0.5s).',
+  morph:'Zoom morph , the old number blurs and grows out while the new one resolves in from small. A clean swap, no counting, no sliding, no pop.'
 };
-var variant='countpop';
+var variant='count';
 var curTotal=65, curMin=45, sel=1;
 
-function fade(numEl,text){var v=numEl.querySelector('.val');v.textContent=text;v.classList.remove('fx');void v.offsetWidth;v.classList.add('fx');}
-function pop(v){v.classList.remove('pop');void v.offsetWidth;v.classList.add('pop');}
-function countUp(numEl,from,to,prefix,then){
-  var v=numEl.querySelector('.val'),start=null,ms=620;
+function countUp(numEl,from,to,then){
+  var v=numEl.querySelector('.val'),start=null,ms=520;
   function step(ts){if(!start)start=ts;var p=Math.min((ts-start)/ms,1);var e=1-Math.pow(1-p,3);
-    v.textContent=prefix+Math.round(from+(to-from)*e);
-    if(p<1)requestAnimationFrame(step);else{v.textContent=prefix+to;if(then)then(v);}}
+    v.textContent=Math.round(from+(to-from)*e);
+    if(p<1)requestAnimationFrame(step);else{v.textContent=to;if(then)then();}}
   requestAnimationFrame(step);
 }
-function morphSwap(numEl,text){
+function morphSwap(numEl,to){
   var old=numEl.querySelector('.val');
-  var nu=document.createElement('span');nu.className='val enter-in';nu.textContent=text;
+  var nu=document.createElement('span');nu.className='val enter-in';nu.textContent=to;
   numEl.appendChild(nu);void nu.offsetWidth;
   old.classList.add('leave');nu.classList.remove('enter-in');
-  setTimeout(function(){if(old.parentNode)old.remove();},520);
+  setTimeout(function(){if(old.parentNode)old.remove();},500);
 }
-function applyTo(numEl,from,to,prefix){
-  if(variant==='fade') fade(numEl,prefix+to);
-  else if(variant==='count') countUp(numEl,from,to,prefix);
-  else if(variant==='morph') morphSwap(numEl,prefix+to);
-  else countUp(numEl,from,to,prefix,function(v){pop(v);});
+function applyTo(numEl,from,to){
+  if(variant==='count') countUp(numEl,from,to);
+  else morphSwap(numEl,to);
 }
 
 document.getElementById('desc').textContent=DESC[variant];
@@ -137,8 +126,8 @@ var addLabel=document.getElementById('add').lastChild;
 document.getElementById('add').addEventListener('click',function(){
   sel = sel===1?2:1;
   var nt = sel===2?93:65, nm = sel===2?65:45;
-  applyTo(totNum, curTotal, nt, 'CHF ');
-  applyTo(minNum, curMin, nm, '');
+  applyTo(totNum, curTotal, nt);
+  applyTo(minNum, curMin, nm);
   svcCount.textContent = sel===1?'1 service':'2 services';
   curTotal=nt; curMin=nm;
   addLabel.textContent = sel===2?'Remove a service':'Add a service';
