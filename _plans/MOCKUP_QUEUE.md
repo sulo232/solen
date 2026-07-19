@@ -15,8 +15,8 @@ Per file `public/_mockups/sweep-<slug>/index.html`: `<!-- Base: elicitation --><
 - [x] sweep-salon-sections , PDP section-wrapper rhythm (flat vs all-carded) , BUILT (was sweep-pdp-section-wrapper)
 - [x] sweep-search-empty , SearchTemplate.tsx C1State empty chip (rounded-square vs full-circle) , BUILT
 - [x] sweep-queue-skeleton , walk-in tracker skeleton vs spinner , BUILT
-- [ ] sweep-salon-card , homepage SalonCard.tsx superseded pre-CARD_REDESIGN_2026-07-13 (aspect 3/2->5/4, drop blue review count, drop next-slot row) , VET vs the stranded branch first
-- [ ] sweep-salon-team , SalonTeam.tsx:111 team carousel rounded-3xl + shadow-float (group card of PEOPLE) -> individual cards? (ties to the group-vs-individual principle) / or rounded-2xl match
+- [~] sweep-salon-card , APPLY the stranded-APPROVED CARD_REDESIGN_2026-07-13 (aspect 5/4, drop blue review count + next-slot). NOT an A/B mockup , an owner-approved design to APPLY (vet vs the stranded branch first). Flagged for the fix phase.
+- [x] sweep-salon-team , Team section wrapper (match rhythm vs float) , BUILT
 - [ ] Tier 2-4 surfaces , audit each tier, add its design-decisions here (account, notifications, termine, vouchers, rewards, referral, profile subs, marketing pages, dashboards)
 
 ## Tier-2/3 decisions (audit wtvjz5xdt, 2026-07-19) , 25 mockup-worthy + 11 mechanical
