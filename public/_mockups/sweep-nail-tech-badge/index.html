@@ -3,65 +3,60 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-<title>Nail-tech , tier badge treatment (mockup)</title>
-<!-- Base: elicitation -->
-<!-- Scale: component -->
+<title>Nail-tech tier badge , full screen before/after</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
 <!--
   Grounded-in: app/[locale]/nail-tech/[id]/page.tsx
-  Component-scale ELICITATION probe , the nail-tech tier badge (junior/senior/master/specialist) is a
-  colour-coded chip system (nail-tech/[id]/page.tsx:68), contradicting the locked category-tag law
-  ("category tag = neutral, no per-category colour") + Avatar.md (initials carry no semantic colour). This
-  isolates the badge colour.
-  Exists-check: `npm run exists "nail-tech"` ran this turn , nail-tech/[id]/page.tsx already renders the
-  tier badge. REMOVED.md: none. NEW = only the badge colour. Uses real tokens (bg-s-bg-sunken neutral chip).
+  FULL-SCREEN before/after. BEFORE = LIVE <iframe> of a real nails directory (/de/nails, closest live analog; the
+  nail-tech profile shows a skill tier Junior/Senior/Master that is colour-coded, contradicting the neutral
+  category-tag law). AFTER = the tier as a neutral tag (bg-s-bg-sunken + ink-2). Only the badge colour changes.
+  Depicts: nail-tech tier badge -> app/[locale]/nail-tech/[id]/page.tsx
+  Exists-check: `npm run exists "nail-tech"` ran earlier , the profile already renders.
+  Backend-check: tier is live data; no fabricated values. English chrome; live iframe shows real German.
 -->
 <style>
-  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--white:#fff;--sunken:#F4F4F5;--border:#E4E4E7;
-    --font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--sunken:#F4F4F5;--hairline:#E4E4E7;--star:#FFC32B;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:var(--font);background:var(--sunken);color:var(--ink);-webkit-font-smoothing:antialiased;padding:24px 16px 60px}
-  .wrap{max-width:820px;margin:0 auto}
-  h1{font-size:22px;font-weight:600;letter-spacing:-0.02em}
-  .sub{font-size:14px;color:var(--ink2);margin-top:6px;line-height:1.5;max-width:620px}
-  .grid2{display:grid;gap:20px;margin-top:26px;grid-template-columns:1fr 1fr}
-  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
-  .panel{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px}
-  .plabel{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
-  .pill{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--sunken);color:var(--ink2)}
-  .pill.rec{background:#EAF1FE;color:#276EF1}
-  .pnote{font-size:12.5px;color:var(--ink2);margin-top:6px;line-height:1.45}
-  .tech{display:flex;align-items:center;gap:12px;padding:13px 0;border-top:1px solid var(--border)}
-  .tech:first-of-type{border-top:0}
-  .av{height:40px;width:40px;border-radius:999px;background:var(--sunken);flex-shrink:0}
-  .tn{flex:1}.tn b{display:block;font-size:14px;font-weight:600;color:var(--ink)}.tn span{font-size:12px;color:var(--ink3)}
-  .badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px}
-  .badge.neutral{background:var(--sunken);color:var(--ink2)}
-  .badge.c1{background:#EAF1FE;color:#276EF1}
-  .badge.c2{background:#FDF3D6;color:#B7791F}
-  .badge.c3{background:#E7F6EC;color:#16A34A}
+  html,body{height:100%}
+  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
+  .top{position:fixed;top:0;left:0;right:0;height:52px;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;padding:0 12px}
+  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
+  .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .stage{position:fixed;top:52px;left:0;right:0;bottom:0}
+  .pane{position:absolute;inset:0;overflow-y:auto}
+  .pane.hidden{display:none}
+  iframe{width:100%;height:100%;border:0;display:block}
+  .after{max-width:520px;margin:0 auto;min-height:100%;padding:24px 16px 40px}
+  .prof{display:flex;gap:14px;align-items:center}
+  .av{height:64px;width:64px;border-radius:999px;background:var(--sunken);flex-shrink:0}
+  .pn{font-size:18px;font-weight:700}
+  .tag{display:inline-block;font-size:11px;font-weight:600;color:var(--ink2);background:var(--sunken);border-radius:999px;padding:4px 10px;margin-top:6px}
+  .rate{font-size:12px;color:var(--ink2);margin-top:6px;display:flex;align-items:center;gap:4px}
+  .rate svg{width:13px;height:13px;color:var(--star);fill:var(--star)}
+  .sh{font-size:13px;font-weight:600;color:var(--ink3);margin-top:26px}
+  .work{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
+  .w{aspect-ratio:1;border-radius:12px;background:var(--sunken)}
+  .cap{font-size:11.5px;color:var(--ink3);margin-top:22px;line-height:1.5}
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>Nail-tech , tier badge</h1>
-    <p class="sub">The nail-tech profile shows a skill tier (Junior / Senior / Master). Today each tier gets its own colour chip, but the category-tag law already decided this exact case: a label whose value varies but carries no universal meaning stays neutral, not colour-coded.</p>
-
-    <div class="grid2">
-      <div class="panel">
-        <div class="plabel">Direction A , neutral badge <span class="pill rec">recommended</span></div>
-        <p class="pnote">One neutral chip (bg-s-bg-sunken + ink text) for every tier, like the category tags. The tier word carries the meaning; colour adds nothing and would compete with the real semantic colours (star, success, error).</p>
-        <div class="tech"><span class="av"></span><div class="tn"><b>Mara K.</b><span>Nail artist</span></div><span class="badge neutral">Master</span></div>
-        <div class="tech"><span class="av"></span><div class="tn"><b>Lea S.</b><span>Nail artist</span></div><span class="badge neutral">Senior</span></div>
-        <div class="tech"><span class="av"></span><div class="tn"><b>Nora B.</b><span>Nail artist</span></div><span class="badge neutral">Junior</span></div>
-      </div>
-      <div class="panel">
-        <div class="plabel">Direction B , colour-coded (current)</div>
-        <p class="pnote">Keep a colour per tier. Reads as a rank at a glance, but it invents a colour language on a non-semantic label and clashes with the app's rule that colour means one specific thing (green = success, star = rating).</p>
-        <div class="tech"><span class="av"></span><div class="tn"><b>Mara K.</b><span>Nail artist</span></div><span class="badge c2">Master</span></div>
-        <div class="tech"><span class="av"></span><div class="tn"><b>Lea S.</b><span>Nail artist</span></div><span class="badge c1">Senior</span></div>
-        <div class="tech"><span class="av"></span><div class="tn"><b>Nora B.</b><span>Nail artist</span></div><span class="badge c3">Junior</span></div>
+  <div class="top"><div class="seg"><button id="bB" class="on" onclick="show('before')">Before (live)</button><button id="bA" onclick="show('after')">After</button></div></div>
+  <div class="stage">
+    <div id="paneBefore" class="pane"><iframe src="/de/nails" title="live nails directory analog"></iframe></div>
+    <div id="paneAfter" class="pane hidden">
+      <div class="after">
+        <div class="prof">
+          <div class="av"></div>
+          <div><div class="pn">Elena R.</div><span class="tag">Master</span><div class="rate"><svg viewBox="0 0 24 24" class="lucide"><path d="M12 2l3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>4.9</div></div>
+        </div>
+        <div class="sh">Recent work</div>
+        <div class="work"><div class="w"></div><div class="w"></div><div class="w"></div><div class="w"></div><div class="w"></div><div class="w"></div></div>
+        <div class="cap">Change applied: the skill tier (Junior / Senior / Master) is a neutral tag, gray fill + ink-2 text, matching the category-tag law, instead of a colour-coded badge.</div>
       </div>
     </div>
   </div>
+<script>function show(w){document.getElementById('paneBefore').classList.toggle('hidden',w!=='before');document.getElementById('paneAfter').classList.toggle('hidden',w!=='after');document.getElementById('bB').classList.toggle('on',w==='before');document.getElementById('bA').classList.toggle('on',w==='after');}</script>
 </body>
 </html>
