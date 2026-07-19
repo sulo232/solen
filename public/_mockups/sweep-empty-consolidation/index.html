@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Empty states , registry vs hand-rolled (mockup)</title>
+<!-- Base: elicitation -->
+<!-- Scale: component -->
+<!--
+  Grounded-in: components-legacy/ui/EmptyState.tsx
+  Component-scale elicitation probe , the locked registry <EmptyState> exists, but several customer surfaces
+  hand-roll their own empty/error state instead: /reviews (reviews/page.tsx:99-109) puts a bg-s-bg-sunken icon
+  disc INSIDE a bg-s-bg-sunken container = zero contrast, the disc vanishes; intake-forms (page.tsx:84-88) uses
+  a bare bg-white box at text-s-ink/40; inspo/saved (saved/page.tsx:77) is a bare left-aligned <p>. Canon:
+  empty = <EmptyState>, error = <ErrorState>. This isolates registry-vs-hand-roll (and shows the invisible-disc bug).
+  Exists-check: `npm run exists "EmptyState"` ran this turn , EmptyState.tsx already exists (registry). REMOVED.md:
+  none for this. New = routing the hand-rolls through the registry. Real tokens (white disc-on-sunken contrast,
+  ink title, ink-2 body, ink CTA).
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--white:#fff;--sunken:#F4F4F5;--border:#E4E4E7;
+    --font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);background:var(--sunken);color:var(--ink);-webkit-font-smoothing:antialiased;padding:24px 16px 60px}
+  .wrap{max-width:840px;margin:0 auto}
+  h1{font-size:22px;font-weight:600;letter-spacing:-0.02em}
+  .sub{font-size:14px;color:var(--ink2);margin-top:6px;line-height:1.5;max-width:660px}
+  .grid2{display:grid;gap:20px;margin-top:26px;grid-template-columns:1fr 1fr}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
+  .panel{background:var(--sunken);border:1px solid var(--border);border-radius:16px;padding:16px}
+  .plabel{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
+  .pill{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:#fff;border:1px solid var(--border);color:var(--ink2)}
+  .pill.rec{background:#EAF1FE;color:#276EF1;border-color:transparent}
+  .pill.bug{background:#FDECEC;color:#DC2626;border-color:transparent}
+  .pnote{font-size:12.5px;color:var(--ink2);margin-top:6px;line-height:1.45}
+  /* the surface the empty state sits on (reviews page = sunken) */
+  .surface{margin-top:14px;background:var(--sunken);border:1px solid var(--border);border-radius:16px;min-height:230px;display:grid;place-items:center;padding:24px}
+  /* A: registry EmptyState , white disc reads on sunken */
+  .es{text-align:center;max-width:260px}
+  .es .disc{height:56px;width:56px;border-radius:16px;background:#fff;border:1px solid var(--border);display:grid;place-items:center;margin:0 auto;box-shadow:0 1px 2px rgba(10,10,10,.05)}
+  .es .disc svg{width:26px;height:26px;color:var(--ink)}
+  .es .t{font-size:15px;font-weight:600;margin-top:14px}
+  .es .m{font-size:13px;color:var(--ink2);margin-top:5px;line-height:1.45}
+  .es .cta{display:inline-grid;place-items:center;height:40px;padding:0 18px;border-radius:999px;background:var(--ink);color:#fff;font-size:14px;font-weight:500;margin-top:14px}
+  /* B: hand-rolled , sunken disc on sunken = invisible */
+  .hr{text-align:center;max-width:260px}
+  .hr .disc{height:56px;width:56px;border-radius:16px;background:var(--sunken);display:grid;place-items:center;margin:0 auto}
+  .hr .disc svg{width:26px;height:26px;color:var(--ink3)}
+  .hr .m{font-size:14px;color:rgba(10,10,10,.40);margin-top:14px;line-height:1.45}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Empty states , registry vs hand-rolled</h1>
+    <p class="sub">The app has one locked EmptyState component, but /reviews, intake-forms and Inspo/Saved each hand-roll their own. On /reviews the hand-rolled icon disc is the same sunken gray as the panel behind it, so the disc disappears and a bare glyph floats. Route them all through the registry component?</p>
+
+    <div class="grid2">
+      <div class="panel">
+        <div class="plabel">Direction A , registry EmptyState <span class="pill rec">recommended</span></div>
+        <p class="pnote">One shared component: a white icon disc that reads on the sunken panel, an ink title, a supporting line, and an optional ink action. Same empty state everywhere, and the disc is actually visible.</p>
+        <div class="surface">
+          <div class="es">
+            <div class="disc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="lucide"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            <div class="t">Noch keine Bewertungen</div>
+            <div class="m">Sobald Gäste bewerten, erscheinen sie hier.</div>
+            <div class="cta">Salon finden</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="plabel">Direction B , hand-rolled (current) <span class="pill bug">disc invisible</span></div>
+        <p class="pnote">Keep each page's own version. On /reviews the disc is sunken gray on a sunken gray panel, so it vanishes, and the copy is a faint ink/40. Three surfaces, three different empty states, one of them broken.</p>
+        <div class="surface">
+          <div class="hr">
+            <div class="disc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="lucide"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            <div class="m">Noch keine Bewertungen vorhanden.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

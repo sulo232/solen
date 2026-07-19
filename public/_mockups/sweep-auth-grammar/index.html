@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Auth pages , card + success grammar (mockup)</title>
+<!-- Base: elicitation -->
+<!-- Scale: component -->
+<!--
+  Grounded-in: app/[locale]/auth/reset-password/page.tsx
+  Component-scale elicitation probe , the auth pages diverge. login (login/page.tsx:10) and register
+  (register/page.tsx:293) use a clean bordered white card on flat bg-white; reset-password adds a warm ambient
+  wash (reset-password:100-103) and staff-invite (staff-invite:87) uses a warm-shadow borderless rounded-12
+  card. Success discs use 3 different recipes (staff-invite:91 grey ink/10 disc + green check; reset-password:81
+  green-tint disc). Canon: clean bordered white card, flat calm surface, success = solid green #16A34A disc +
+  WHITE check. This isolates the shared auth card + success grammar. (The reset page's tracked-uppercase eyebrows
+  and 12px uppercase CTAs are a separate mechanical fix, described here, not rendered.)
+  Exists-check: `npm run exists "auth login register"` ran this turn , these auth pages already render.
+  REMOVED.md: none. New = the shared card chrome + success disc. Real tokens (rounded-card 16, border #E4E4E7,
+  green #16A34A disc + white check, s-accent link).
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--white:#fff;--sunken:#F4F4F5;--border:#E4E4E7;--accent:#276EF1;
+    --success:#16A34A;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);background:var(--sunken);color:var(--ink);-webkit-font-smoothing:antialiased;padding:24px 16px 60px}
+  .wrap{max-width:840px;margin:0 auto}
+  h1{font-size:22px;font-weight:600;letter-spacing:-0.02em}
+  .sub{font-size:14px;color:var(--ink2);margin-top:6px;line-height:1.5;max-width:660px}
+  .grid2{display:grid;gap:20px;margin-top:26px;grid-template-columns:1fr 1fr}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
+  .panel{background:var(--sunken);border:1px solid var(--border);border-radius:16px;padding:16px;position:relative;overflow:hidden}
+  .panel.warm::before{content:"";position:absolute;inset:0;background:radial-gradient(300px circle at 50% 20%,rgba(50,47,44,.05),transparent 70%);pointer-events:none}
+  .plabel{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;position:relative}
+  .pill{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:#fff;border:1px solid var(--border);color:var(--ink2)}
+  .pill.rec{background:#EAF1FE;color:#276EF1;border-color:transparent}
+  .pnote{font-size:12.5px;color:var(--ink2);margin-top:6px;line-height:1.45;position:relative}
+  /* auth card */
+  .auth{margin-top:14px;position:relative;background:#fff;padding:22px 18px}
+  .auth.clean{border:1px solid var(--border);border-radius:16px;box-shadow:0 1px 2px rgba(10,10,10,.04)}
+  .auth.warmcard{border:none;border-radius:12px;box-shadow:0 10px 30px -8px rgba(50,47,44,.28)}
+  .disc{height:52px;width:52px;border-radius:999px;display:grid;place-items:center;margin:0 auto}
+  .disc.solid{background:var(--success)}
+  .disc.solid svg{color:#fff}
+  .disc.tint{background:rgba(10,10,10,.10)}
+  .disc.tint svg{color:var(--success)}
+  .disc svg{width:26px;height:26px}
+  .ah{text-align:center;font-size:17px;font-weight:600;margin-top:12px}
+  .ap{text-align:center;font-size:13px;color:var(--ink2);margin-top:4px}
+  .field{height:44px;border:1px solid var(--border);border-radius:12px;margin-top:14px;background:#fff}
+  .cta{height:46px;border-radius:999px;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:15px;font-weight:500;margin-top:12px}
+  .foot{text-align:center;font-size:13px;margin-top:14px;color:var(--ink2)}
+  .foot .lk{font-weight:600}
+  .foot .lk.blue{color:var(--accent)}
+  .foot .lk.inky{color:var(--ink)}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Auth pages , card + success grammar</h1>
+    <p class="sub">Login and register use a clean bordered white card and a solid-green success check. Reset-password adds a warm ambient wash, staff-invite uses a warm-shadow borderless card, and the success disc has three different recipes across the auth pages. Should the auth pages share one card + success grammar?</p>
+
+    <div class="grid2">
+      <div class="panel">
+        <div class="plabel">Direction A , one clean auth grammar <span class="pill rec">matches login / register</span></div>
+        <p class="pnote">Clean bordered white card on a flat calm surface (no wash), solid green disc + white check, blue text links. The whole auth set reads as one system. Also fixes the reset page's 12px uppercase CTAs to the normal 15px ink CTA and drops the tracked-uppercase eyebrows.</p>
+        <div class="auth clean">
+          <div class="disc solid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="lucide"><path d="M20 6 9 17l-5-5"/></svg></div>
+          <div class="ah">Passwort zurücksetzen</div>
+          <div class="ap">Wir senden dir einen Link.</div>
+          <div class="field"></div>
+          <div class="cta">Link senden</div>
+          <div class="foot">Zurück zur <span class="lk blue">Anmeldung</span></div>
+        </div>
+      </div>
+      <div class="panel warm">
+        <div class="plabel">Direction B , divergent (current)</div>
+        <p class="pnote">Keep each page as-is: warm ambient wash + warm-brown shadow, borderless rounded-12 card, grey ink/10 success disc with a green check, ink footer links. Three success recipes and a warm tint pull against the cool-neutral B&W surface.</p>
+        <div class="auth warmcard">
+          <div class="disc tint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="lucide"><path d="M20 6 9 17l-5-5"/></svg></div>
+          <div class="ah">Passwort zurücksetzen</div>
+          <div class="ap">Wir senden dir einen Link.</div>
+          <div class="field"></div>
+          <div class="cta">Link senden</div>
+          <div class="foot">Zurück zur <span class="lk inky">Anmeldung</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
