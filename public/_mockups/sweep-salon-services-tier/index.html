@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Salon services , tier-card + select , full page before/after</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/_components/salon/SalonServices.tsx
+  FORMAT v3, WINNING carded tier-card 'service selection' principle (the approved liftup-booking-services-tiered
+  design). BOTH panes are the real /de/salon/blade-and-stone. BEFORE = untouched (each service has a per-service
+  "Buchen" pill). AFTER = the same real page with the services adopting the +-SELECT affordance (each service gets
+  a + circle to add, matching the approved tier-card service-selection), instead of per-service Buchen buttons.
+  The page already has the duration tiers (Express / Klassisch) + filter pills; this brings the SELECT interaction
+  onto them. Change is stated in the TOP BAR only, no overlay on the page.
+  Depicts: salon services tier display + select -> app/[locale]/_components/salon/SalonServices.tsx
+  Exists-check: `npm run exists "SalonServices tier"` ran this turn , the tier display already renders.
+  Backend-check: real live page + real services, no fabricated values. English chrome; live page shows real German.
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#52525B;--sunken:#F4F4F5;--hairline:#E4E4E7;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
+  .top{position:fixed;top:0;left:0;right:0;height:52px;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;padding:0 12px}
+  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
+  .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .cap{position:fixed;top:52px;left:0;right:0;z-index:19;background:var(--sunken);color:var(--ink2);font-size:12px;font-weight:600;text-align:center;padding:6px 12px;line-height:1.35}
+  .stage{position:fixed;top:84px;left:0;right:0;bottom:0}
+  .pane{position:absolute;inset:0}
+  .pane.hidden{display:none}
+  iframe{width:100%;height:100%;border:0;display:block}
+</style>
+</head>
+<body>
+  <div class="top"><div class="seg"><button id="bB" class="on" onclick="show('before')">Before (live)</button><button id="bA" onclick="show('after')">After</button></div></div>
+  <div class="cap">After = each service gets a + to add (tier-card select), instead of a Buchen button.</div>
+  <div class="stage">
+    <div id="paneBefore" class="pane"><iframe id="beforeFrame" src="/de/salon/blade-and-stone" title="real page, before"></iframe></div>
+    <div id="paneAfter" class="pane hidden"><iframe id="afterFrame" src="/de/salon/blade-and-stone" title="real page, after"></iframe></div>
+  </div>
+<script>
+  function applyChange(doc){
+    var hit = 0;
+    // replace each per-service "Buchen" pill with the +-select circle (the approved tier-card affordance)
+    [].forEach.call(doc.querySelectorAll('button,a'), function(b){
+      if(!/^buchen$/i.test((b.textContent||'').trim())) return;
+      if(b.getAttribute('data-sweep-done')) return;
+      b.setAttribute('data-sweep-done','1');
+      b.setAttribute('aria-label','Hinzufügen');
+      b.style.cssText = 'width:38px;height:38px;min-width:38px;padding:0;border-radius:999px;border:1.5px solid #0A0A0A;background:#fff;color:#0A0A0A;display:inline-flex;align-items:center;justify-content:center;font:400 24px/1 -apple-system,sans-serif;';
+      b.textContent = '+';
+      hit++;
+    });
+    // scroll to the Services section so the change is in view
+    var svc = [].filter.call(doc.querySelectorAll('h2,h3'), function(h){ return /^Services/i.test((h.textContent||'').trim()); })[0];
+    if(svc){ try{ svc.scrollIntoView({block:'start'}); }catch(e){} }
+    return hit;
+  }
+  var afterStarted = false;
+  function startAfter(){
+    if(afterStarted) return; afterStarted = true;
+    var f = document.getElementById('afterFrame'), tries = 0;
+    var iv = setInterval(function(){
+      tries++;
+      try{ var doc = f.contentDocument; if(doc && doc.querySelector('h1,h2,h3')){ if(applyChange(doc) > 0){ clearInterval(iv); } } }catch(e){}
+      if(tries > 120){ clearInterval(iv); }
+    }, 200);
+  }
+  function show(w){
+    document.getElementById('paneBefore').classList.toggle('hidden', w!=='before');
+    document.getElementById('paneAfter').classList.toggle('hidden', w!=='after');
+    document.getElementById('bB').classList.toggle('on', w==='before');
+    document.getElementById('bA').classList.toggle('on', w==='after');
+    if(w==='after') startAfter();
+  }
+</script>
+</body>
+</html>
