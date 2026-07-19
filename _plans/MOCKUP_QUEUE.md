@@ -38,7 +38,7 @@ Build order = HIGH impact first. (arch/behavior/copy items are DECISIONS, not A/
 - [ ] sweep-partner-faq [MED] , partner:415 bespoke swipe cards vs shared FAQItem accordion. rec A.
 - [x] sweep-warum-badge [MED] , say-once vs badge-on-each , BUILT
 - [x] sweep-help-rows [MED] , grouped card vs flat link list , BUILT
-- [ ] sweep-nail-tech-badge [MED] , nail-tech:68 color-coded tier chips vs neutral (category-tag law). rec A neutral.
+- [x] sweep-nail-tech-badge [MED] , neutral vs colour-coded tier , BUILT
 - [ ] sweep-hairtype-dup [MED] , settings/BeautyProfileForm:92 hair_type editable in 2 places , canonicalize to Haarprofil.
 - [ ] sweep-profile-loading [MED] , profile/loading.tsx one stale shared skeleton across 4 pages , per-route.
 - [ ] sweep-bookings-skeleton [MED] , BookingsList:177 spinner vs BookingCard-shaped skeleton.
