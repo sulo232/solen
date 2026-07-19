@@ -17,7 +17,9 @@ Per file `public/_mockups/sweep-<slug>/index.html`: `<!-- Base: elicitation --><
 - [x] sweep-queue-skeleton , walk-in tracker skeleton vs spinner , BUILT
 - [~] sweep-salon-card , APPLY the stranded-APPROVED CARD_REDESIGN_2026-07-13 (aspect 5/4, drop blue review count + next-slot). NOT an A/B mockup , an owner-approved design to APPLY (vet vs the stranded branch first). Flagged for the fix phase.
 - [x] sweep-salon-team , Team section wrapper (match rhythm vs float) , BUILT
-- [ ] Tier 2-4 surfaces , audit each tier, add its design-decisions here (account, notifications, termine, vouchers, rewards, referral, profile subs, marketing pages, dashboards)
+- [~] Tier 2-4 surfaces , audit each tier, add its design-decisions here (account, notifications, termine, vouchers, rewards, referral, profile subs, marketing pages, dashboards). DONE: notifications, rewards, referral, profile(loading+loyalty-meta), marketing(partner/warum/ueber-uns/help/brand).
+- [~] Customer-tier-2 sweep IN PROGRESS (audit wf_d412c0e9-428, 2026-07-19) , un-covered customer surfaces: booking flow (5 steps), profile subpages (bookings/favorites/looks/intake-forms/haarprofil/settings), termine, vouchers, tip, auth, onboarding, inspo, reviews, category landings. Findings feed the build queue below.
+- [ ] SEPARATE LARGE TIER (flag to owner, NOT folded in silently): ~50 `dashboard/*` OWNER-FACING admin pages + ~40 `dev/*` scratch routes. These are a distinct design tier (owner tools, not customer). Sweeping all of them is its own multi-hour batch , surface to owner before starting, don't absorb into the customer sweep.
 
 ## Tier-2/3 decisions (audit wtvjz5xdt, 2026-07-19) , 25 mockup-worthy + 11 mechanical
 Build order = HIGH impact first. (arch/behavior/copy items are DECISIONS, not A/B visual mockups , flag to owner.)
