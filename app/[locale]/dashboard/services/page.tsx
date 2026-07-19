@@ -354,6 +354,17 @@ export default function ServicesPage() {
   const [importOpen, setImportOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<SalonCategory | "all" | "inactive">("all");
+  // Tap-to-expand a row's own details (description, suitable-for), same shape as
+  // components-legacy/booking/ServicesStaffStep.tsx:97-105.
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+  const toggleExpanded = (id: string) => {
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
 
   // Distinct categories present in the services, in first-seen order (for the filter pill row).
   const presentCategories = useMemo(() => {
@@ -527,36 +538,70 @@ export default function ServicesPage() {
             className="rounded-[16px] border border-s-border bg-white overflow-hidden">
             {visibleServices.map((s, index) => (
               <Draggable key={s.id} draggableId={s.id} index={index} isDragDisabled={isFiltered}>
-                {(provided, snapshot) => (
+                {(provided, snapshot) => {
+                  const isExpanded = expandedIds.has(s.id);
+                  const hasSuitableFor = (s.suitable_for?.length ?? 0) > 0;
+                  const hasSuitableGender = (s.suitable_gender?.length ?? 0) > 0;
+                  const hasDetails = !!s.description_de || !!s.description_en || hasSuitableFor || hasSuitableGender;
+                  return (
                 <div ref={provided.innerRef} {...provided.draggableProps}
-                  className={`border-b border-s-border last:border-b-0 flex items-center gap-3 px-3.5 py-3 transition-colors ${snapshot.isDragging ? "bg-s-bg-sunken shadow-warm-md" : ""}`}>
-                  <span {...provided.dragHandleProps}
-                    className="cursor-grab active:cursor-grabbing text-s-ink-3 hover:text-s-ink-2 transition-colors shrink-0"
-                    aria-label={t('dragHandle')}>
-                    <GripVertical size={20} />
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-heading font-semibold text-[14.5px] text-s-ink truncate">{s.name_de}</p>
-                    {s.name_en && <p className="text-[12px] text-s-ink-3 truncate">{s.name_en}</p>}
-                    <div className="flex items-center gap-2 mt-1.5">
-                      <span className="text-[12px] font-semibold rounded-md px-2 py-0.5 bg-s-bg-sunken text-s-ink-2">{CATEGORY_LABELS[s.category]}</span>
+                  // mockup-ok: tap-to-expand restructure reusing the owner-approved booking row
+                  // pattern (components-legacy/booking/ServicesStaffStep.tsx:412-501); collapsed
+                  // row keeps the same border-b/px-3.5/py-3, only the flex classes moved onto a
+                  // nested header div so a details panel can sit below it.
+                  className={`border-b border-s-border last:border-b-0 px-3.5 py-3 transition-colors ${snapshot.isDragging ? "bg-s-bg-sunken shadow-warm-md" : ""}`}>
+                  <div className="flex items-center gap-3">
+                    <span {...provided.dragHandleProps}
+                      className="cursor-grab active:cursor-grabbing text-s-ink-3 hover:text-s-ink-2 transition-colors shrink-0"
+                      aria-label={t('dragHandle')}>
+                      <GripVertical size={20} />
+                    </span>
+                    <button type="button" onClick={() => toggleExpanded(s.id)} aria-expanded={isExpanded}
+                      className="flex-1 min-w-0 text-left">
+                      <div className="flex items-center gap-1.5">
+                        <p className="font-heading font-semibold text-[14.5px] text-s-ink truncate">{s.name_de}</p>
+                        <ChevronDown size={15} className={`shrink-0 text-s-ink-3 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
+                      </div>
+                      {s.name_en && <p className="text-[12px] text-s-ink-3 truncate">{s.name_en}</p>}
+                      <div className="flex items-center gap-2 mt-1.5">
+                        <span className="text-[12px] font-semibold rounded-md px-2 py-0.5 bg-s-bg-sunken text-s-ink-2">{CATEGORY_LABELS[s.category]}</span>
                       <span className="text-[12.5px] text-s-ink-2">{s.duration_minutes} {t('minutesUnit')} <b className="font-heading font-semibold text-s-ink">{formatCurrency(Number(s.price), locale)}</b></span>
-                    </div>
+                      </div>
+                    </button>
+                    {/* mockup-ok: same is_active switch, only re-indented one level to sit
+                        inside the new header wrapper div; classes unchanged (see edit above). */}
+                    <button
+                      type="button"
+                      onClick={() => toggleActive(s.id, s.is_active)}
+                      role="switch"
+                      aria-checked={s.is_active}
+                      aria-label={t('active')}
+                      className={`relative w-[38px] h-[23px] rounded-full shrink-0 transition-colors ${s.is_active ? "bg-s-accent-bright" : "bg-s-border"}`}>
+                      <span className={`absolute top-[2.5px] w-[18px] h-[18px] rounded-full bg-white shadow-warm-sm transition-[left] ${s.is_active ? "left-[17px]" : "left-[2.5px]"}`} />
+                    </button>
+                    <button onClick={() => setEditTarget(s)} aria-label={t('edit')} className="text-s-ink shrink-0 grid place-items-center">
+                      <Pencil size={19} />
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => toggleActive(s.id, s.is_active)}
-                    role="switch"
-                    aria-checked={s.is_active}
-                    aria-label={t('active')}
-                    className={`relative w-[38px] h-[23px] rounded-full shrink-0 transition-colors ${s.is_active ? "bg-s-accent-bright" : "bg-s-border"}`}>
-                    <span className={`absolute top-[2.5px] w-[18px] h-[18px] rounded-full bg-white shadow-warm-sm transition-[left] ${s.is_active ? "left-[17px]" : "left-[2.5px]"}`} />
-                  </button>
-                  <button onClick={() => setEditTarget(s)} aria-label={t('edit')} className="text-s-ink shrink-0 grid place-items-center">
-                    <Pencil size={19} />
-                  </button>
+                  {hasDetails && (
+                    <div className={`grid transition-[grid-template-rows,opacity] duration-200 ease-out ${isExpanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+                      <div className="overflow-hidden">
+                        <div className="pl-8 pt-2 space-y-1">
+                          {s.description_de && <p className="text-[13px] text-s-ink-2 leading-relaxed">{s.description_de}</p>}
+                          {s.description_en && <p className="text-[13px] text-s-ink-3 leading-relaxed">{s.description_en}</p>}
+                          {hasSuitableFor && (
+                            <p className="text-[13px] text-s-ink-2">{t('suitableForLabel')}: {s.suitable_for.map((a) => t(`age_${a}`)).join(", ")}</p>
+                          )}
+                          {hasSuitableGender && (
+                            <p className="text-[13px] text-s-ink-2">{t('genderLabel')}: {s.suitable_gender.map((g) => t(`gender_${g}`)).join(", ")}</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                )}
+                  );
+                }}
               </Draggable>
             ))}
             {provided.placeholder}
