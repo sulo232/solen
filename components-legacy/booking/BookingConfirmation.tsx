@@ -599,7 +599,7 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
                 aria-label={copiedLink ? t("copied") : t("copyLink")}
                 title={copiedLink ? t("copied") : t("copyLink")}
                 className={[
-                  "grid h-[36px] w-[36px] shrink-0 place-items-center rounded-[9px] border border-s-border bg-s-bg-surface transition-colors duration-150",
+                  "grid h-11 w-11 shrink-0 place-items-center rounded-[9px] border border-s-border bg-s-bg-surface transition-colors duration-150",
                   copiedLink ? "text-s-success" : "text-s-ink",
                 ].join(" ")}
               >

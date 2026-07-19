@@ -335,7 +335,7 @@ export default function SalonReviews({
                           onClick={() => handleFlagReview(rev.id)}
                           aria-label={t("flagReview")}
                           title={t("flagReview")}
-                          className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-s-ink-3 transition-colors duration-150 hover:bg-s-bg-sunken hover:text-s-ink-2"
+                          className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-s-ink-3 transition-colors duration-150 hover:bg-s-bg-sunken hover:text-s-ink-2"
                         >
                           <Flag size={15} aria-hidden />
                         </button>

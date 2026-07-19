@@ -141,7 +141,7 @@ export function SalonHeader({
             type="button"
             aria-label="Salon teilen"
             onClick={() => shareOrCopy(salon.name, window.location.href)}
-            className="grid h-10 w-10 place-items-center rounded-full border border-s-border bg-white transition-transform hover:scale-105 active:scale-95"
+            className="grid h-11 w-11 place-items-center rounded-full border border-s-border bg-white transition-transform hover:scale-105 active:scale-95"
           >
             <Share size={18} strokeWidth={2.1} className="text-s-ink" aria-hidden />
           </button>
