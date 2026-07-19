@@ -12,7 +12,7 @@ Per file `public/_mockups/sweep-<slug>/index.html`: `<!-- Base: elicitation --><
 
 ## Queue (design-decision / improvable surfaces , grow as tiers get audited)
 - [x] sweep-products-cta , SalonProducts.tsx:230 retail checkout CTA (neutral vs keep-ink) , BUILT
-- [ ] sweep-pdp-section-wrapper , SalonReviews:88 + SalonBundles: only 2 of ~9 PDP sections wrapped in a floating card -> wrap all / unwrap these / keep
+- [x] sweep-salon-sections , PDP section-wrapper rhythm (flat vs all-carded) , BUILT (was sweep-pdp-section-wrapper)
 - [x] sweep-search-empty , SearchTemplate.tsx C1State empty chip (rounded-square vs full-circle) , BUILT
 - [ ] sweep-walkin-skeleton , walk-in-pay:367 / queue:162 loading: mechanical spinner/dots -> tracker-shaped Skeleton (1-2 dir)
 - [ ] sweep-salon-card , homepage SalonCard.tsx superseded pre-CARD_REDESIGN_2026-07-13 (aspect 3/2->5/4, drop blue review count, drop next-slot row) , VET vs the stranded branch first
