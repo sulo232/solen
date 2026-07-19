@@ -3,85 +3,93 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-<title>Salon PDP , section wrapper rhythm (mockup)</title>
-<!-- Base: elicitation -->
-<!-- Scale: component -->
+<title>Salon PDP , section rhythm , full screen before/after</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
 <!--
-  Grounded-in: app/[locale]/_components/salon/SalonReviews.tsx
-  Component-scale ELICITATION probe , on the salon page, Reviews + Buy sit inside a floating white card
-  (SalonReviews.tsx:88, SalonBundles), while most of the ~9 sections are flat on the page. SalonTeam uses
-  yet another wrapper (rounded-3xl + shadow-float). This isolates the section-wrapper rhythm so the page
-  reads as one system.
-  Exists-check: `npm run exists "salon sections reviews"` ran this turn , the salon PDP already renders
-  these sections (Services, Team, Reviews, Buy, ...). REMOVED.md: none. NEW = only the section-wrapper
-  treatment, not the section content.
-  Uses the real tokens (section H2 clamp(18,2vw,20), rounded-card, border-s-border, shadow-elevation-1).
+  Grounded-in: app/[locale]/_components/salon/ (SalonReviews, SalonBuy, SalonTeam, section wrappers)
+  FULL-SCREEN before/after. BEFORE = a LIVE <iframe> of the real /de/salon/blade-and-stone PDP (mixed section
+  wrappers: some flat, Reviews + Buy float in white cards, Team uses a third rounded-3xl float). AFTER = the same
+  PDP with ONE consistent section rhythm (all sections flat, one hairline between them). Lists inside stay carded.
+  Depicts: salon PDP sections -> app/[locale]/_components/salon/*
+  Exists-check: `npm run exists "salon sections"` ran this turn , the PDP already renders these sections.
+  Backend-check: display of live salon data; no fabricated values. English chrome; live iframe shows real German.
 -->
 <style>
-  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--white:#fff;--sunken:#F4F4F5;--border:#E4E4E7;--star:#FFC32B;
-    --el1:0 1px 2px rgba(10,10,10,.04),0 8px 24px -14px rgba(10,10,10,.10);--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--surface:#fff;--sunken:#F4F4F5;--hairline:#E4E4E7;--accent:#276EF1;--star:#FFC32B;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:var(--font);background:var(--sunken);color:var(--ink);-webkit-font-smoothing:antialiased;padding:24px 16px 60px}
-  .wrap{max-width:860px;margin:0 auto}
-  h1{font-size:22px;font-weight:600;letter-spacing:-0.02em}
-  .sub{font-size:14px;color:var(--ink2);margin-top:6px;line-height:1.5;max-width:640px}
-  .grid2{display:grid;gap:20px;margin-top:26px;grid-template-columns:1fr 1fr}
-  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
-  .panel{background:var(--sunken);border:1px solid var(--border);border-radius:16px;padding:16px}
-  .plabel{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
-  .pill{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:#fff;border:1px solid var(--border);color:var(--ink2)}
-  .pill.rec{background:#EAF1FE;color:#276EF1;border-color:transparent}
-  .pnote{font-size:12.5px;color:var(--ink2);margin-top:6px;line-height:1.4}
-  /* a phone-ish PDP frame on white so "flat vs card" is visible */
-  .phone{margin-top:14px;background:#fff;border-radius:18px;border:1px solid var(--border);padding:16px 14px;display:flex;flex-direction:column;gap:16px}
-  .sec .h2{font-size:18px;font-weight:600;letter-spacing:-0.02em;color:var(--ink)}
-  .sec .body{margin-top:10px}
-  /* wrapped = floating white card; flat = same content, no card */
-  .card{border-radius:16px;border:1px solid var(--border);background:#fff;box-shadow:var(--el1);padding:14px}
-  .flat{padding:0}
-  .rev{display:flex;flex-direction:column;gap:4px}
-  .rev .top{display:flex;align-items:center;gap:8px}
-  .av{height:32px;width:32px;border-radius:999px;background:var(--sunken)}
-  .nm{font-size:13.5px;font-weight:600;color:var(--ink)}
-  .stars{margin-left:auto;color:var(--star);font-size:12px;letter-spacing:1px}
-  .rt{font-size:13px;color:var(--ink2);line-height:1.45}
-  .hr{height:1px;background:var(--border);margin:12px 0}
-  .prow{display:flex;align-items:center;justify-content:space-between}
-  .pnm{font-size:14px;font-weight:600;color:var(--ink)}
-  .ppr{font-size:13px;color:var(--ink2)}
+  html,body{height:100%}
+  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
+  .top{position:fixed;top:0;left:0;right:0;height:52px;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;padding:0 12px}
+  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
+  .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .stage{position:fixed;top:52px;left:0;right:0;bottom:0}
+  .pane{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .pane.hidden{display:none}
+  iframe{width:100%;height:100%;border:0;display:block}
+  .after{max-width:520px;margin:0 auto;min-height:100%;padding-bottom:40px}
+  .hero{height:200px;background:linear-gradient(135deg,#e7e5e4,#f4f4f5)}
+  .pdphd{padding:16px 16px 0}
+  .pn{font-size:22px;font-weight:700;letter-spacing:-0.02em}
+  .pm{font-size:13px;color:var(--ink2);margin-top:3px;display:flex;align-items:center;gap:5px}
+  .pm svg{width:13px;height:13px;color:var(--star);fill:var(--star)}
+  .sec{padding:20px 16px}
+  .sec + .sec{border-top:1px solid var(--hairline)}
+  .sh{font-size:18px;font-weight:600;letter-spacing:-0.02em}
+  .svc{display:flex;justify-content:space-between;align-items:center;padding:12px 0}
+  .svc + .svc{border-top:1px solid var(--hairline)}
+  .svn{font-size:14px;font-weight:600}
+  .svm{font-size:12px;color:var(--ink3);margin-top:2px}
+  .svp{font-size:13px;font-weight:600}
+  .team{display:flex;gap:16px;margin-top:12px;overflow-x:auto}
+  .mem{width:84px;flex-shrink:0;text-align:center}
+  .av{height:64px;width:64px;border-radius:999px;background:var(--sunken);margin:0 auto}
+  .mn{font-size:12.5px;font-weight:600;margin-top:7px}
+  .mr{font-size:11px;color:var(--ink3)}
+  .rev{margin-top:12px}
+  .rc{padding:12px 0}
+  .rc + .rc{border-top:1px solid var(--hairline)}
+  .cap{max-width:520px;margin:8px auto 0;padding:0 16px;font-size:11.5px;color:var(--ink3);line-height:1.5}
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>Salon PDP , section wrapper rhythm</h1>
-    <p class="sub">On the salon page, Reviews and Buy float inside white cards while most sections sit flat, and Team uses a third wrapper. The page should pick one rhythm. Two consistent directions below (each shows a Reviews section over a Products row).</p>
-
-    <div class="grid2">
-      <div class="panel">
-        <div class="plabel">Direction A , flat sections <span class="pill rec">recommended</span></div>
-        <p class="pnote">Every section flat on the page, separated by whitespace + hairlines. Calm, Apple-like; the page is the surface, sections do not each float. Matches the majority of sections today.</p>
-        <div class="phone">
-          <div class="sec"><div class="h2">Reviews</div><div class="body flat">
-            <div class="rev"><div class="top"><div class="av"></div><div class="nm">Lena M.</div><div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div></div><div class="rt">Best fade in Basel, in and out in 30 minutes.</div></div>
-          </div></div>
-          <div class="sec"><div class="h2">Products</div><div class="body flat">
-            <div class="prow"><span class="pnm">Styling paste</span><span class="ppr">CHF 24</span></div>
-          </div></div>
+  <div class="top"><div class="seg"><button id="bB" class="on" onclick="show('before')">Before (live)</button><button id="bA" onclick="show('after')">After</button></div></div>
+  <div class="stage">
+    <div id="paneBefore" class="pane"><iframe src="/de/salon/blade-and-stone" title="live salon PDP"></iframe></div>
+    <div id="paneAfter" class="pane hidden">
+      <div class="after">
+        <div class="hero"></div>
+        <div class="pdphd">
+          <div class="pn">Blade &amp; Stone</div>
+          <div class="pm"><svg viewBox="0 0 24 24" class="lucide"><path d="M12 2l3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>4.9 . Barbershop . Zürich</div>
         </div>
-      </div>
-      <div class="panel">
-        <div class="plabel">Direction B , all sections carded</div>
-        <p class="pnote">Every section floats in the same white card (rounded-card + border + soft shadow), like Reviews/Buy today. More structured, but heavier; card-on-sunken repeated ~9 times down the page.</p>
-        <div class="phone">
-          <div class="sec"><div class="h2">Reviews</div><div class="body"><div class="card">
-            <div class="rev"><div class="top"><div class="av"></div><div class="nm">Lena M.</div><div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div></div><div class="rt">Best fade in Basel, in and out in 30 minutes.</div></div>
-          </div></div></div>
-          <div class="sec"><div class="h2">Products</div><div class="body"><div class="card">
-            <div class="prow"><span class="pnm">Styling paste</span><span class="ppr">CHF 24</span></div>
-          </div></div></div>
+        <div class="sec">
+          <div class="sh">Services</div>
+          <div class="svc"><div><div class="svn">Haircut</div><div class="svm">45 min</div></div><div class="svp">CHF 55</div></div>
+          <div class="svc"><div><div class="svn">Beard trim</div><div class="svm">20 min</div></div><div class="svp">CHF 30</div></div>
         </div>
+        <div class="sec">
+          <div class="sh">Team</div>
+          <div class="team">
+            <div class="mem"><div class="av"></div><div class="mn">Marco</div><div class="mr">Cuts</div></div>
+            <div class="mem"><div class="av"></div><div class="mn">Luca</div><div class="mr">Fades</div></div>
+            <div class="mem"><div class="av"></div><div class="mn">Sami</div><div class="mr">Beard</div></div>
+          </div>
+        </div>
+        <div class="sec">
+          <div class="sh">Reviews</div>
+          <div class="rev">
+            <div class="rc"><div class="pm"><svg viewBox="0 0 24 24" class="lucide"><path d="M12 2l3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>5.0 . Jonas</div><div class="svm" style="margin-top:4px">Sharp fade, friendly team.</div></div>
+            <div class="rc"><div class="pm"><svg viewBox="0 0 24 24" class="lucide"><path d="M12 2l3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>4.8 . Nina</div><div class="svm" style="margin-top:4px">Best beard trim in town.</div></div>
+          </div>
+        </div>
+        <div class="cap">Change applied: one section rhythm. Every PDP section is flat with a single hairline between them, instead of some flat, Reviews and Buy floating in white cards, and Team in a third rounded-3xl float. The lists inside stay carded; only the section wrappers unify.</div>
       </div>
     </div>
   </div>
+<script>
+  function show(w){document.getElementById('paneBefore').classList.toggle('hidden',w!=='before');document.getElementById('paneAfter').classList.toggle('hidden',w!=='after');document.getElementById('bB').classList.toggle('on',w==='before');document.getElementById('bA').classList.toggle('on',w==='after');}
+</script>
 </body>
 </html>
