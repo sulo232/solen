@@ -3,20 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-<title>Salon PDP , section rhythm , full screen before/after</title>
+<title>Salon PDP , section rhythm , full page before/after</title>
 <!-- Base: capture live -->
 <!-- Scale: full-page -->
 <!--
-  Grounded-in: app/[locale]/_components/salon/ (SalonReviews, SalonBuy, SalonTeam, section wrappers)
-  FULL-SCREEN before/after. BEFORE = a LIVE <iframe> of the real /de/salon/blade-and-stone PDP (mixed section
-  wrappers: some flat, Reviews + Buy float in white cards, Team uses a third rounded-3xl float). AFTER = the same
-  PDP with ONE consistent section rhythm (all sections flat, one hairline between them). Lists inside stay carded.
-  Depicts: salon PDP sections -> app/[locale]/_components/salon/*
-  Exists-check: `npm run exists "salon sections"` ran this turn , the PDP already renders these sections.
-  Backend-check: display of live salon data; no fabricated values. English chrome; live iframe shows real German.
+  Grounded-in: app/[locale]/_components/salon/ (section wrappers: SalonTeam, SalonReviews)
+  FULL-PAGE before/after, BOTH panes are the REAL page (live iframe of /de/salon/blade-and-stone). BEFORE = the
+  real page untouched. AFTER = the SAME real page with the change INJECTED on top (the Team + Reviews section
+  wrappers flattened to match the flat section rhythm) and the changed sections HIGHLIGHTED with a blue ring +
+  "After" label, so you can see exactly WHERE the change is, in full context. No hand-drawn placeholders, no fake data.
+  Depicts: salon PDP section wrappers -> app/[locale]/_components/salon/*
+  Exists-check: `npm run exists "salon sections"` ran earlier , the PDP already renders these sections.
+  Backend-check: real live page; no fabricated values. English chrome; the live page shows real German.
 -->
 <style>
-  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--surface:#fff;--sunken:#F4F4F5;--hairline:#E4E4E7;--accent:#276EF1;--star:#FFC32B;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  :root{--ink:#0A0A0A;--ink2:#52525B;--sunken:#F4F4F5;--hairline:#E4E4E7;--accent:#276EF1;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
@@ -24,72 +25,75 @@
   .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
   .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
   .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
-  .stage{position:fixed;top:52px;left:0;right:0;bottom:0}
-  .pane{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .cap{position:fixed;top:52px;left:0;right:0;z-index:19;background:#EAF1FE;color:#1E54B7;font-size:12px;font-weight:600;text-align:center;padding:6px 12px;line-height:1.35}
+  .stage{position:fixed;top:84px;left:0;right:0;bottom:0}
+  .pane{position:absolute;inset:0}
   .pane.hidden{display:none}
   iframe{width:100%;height:100%;border:0;display:block}
-  .after{max-width:520px;margin:0 auto;min-height:100%;padding-bottom:40px}
-  .hero{height:200px;background:linear-gradient(135deg,#e7e5e4,#f4f4f5)}
-  .pdphd{padding:16px 16px 0}
-  .pn{font-size:22px;font-weight:700;letter-spacing:-0.02em}
-  .pm{font-size:13px;color:var(--ink2);margin-top:3px;display:flex;align-items:center;gap:5px}
-  .pm svg{width:13px;height:13px;color:var(--star);fill:var(--star)}
-  .sec{padding:20px 16px}
-  .sec + .sec{border-top:1px solid var(--hairline)}
-  .sh{font-size:18px;font-weight:600;letter-spacing:-0.02em}
-  .svc{display:flex;justify-content:space-between;align-items:center;padding:12px 0}
-  .svc + .svc{border-top:1px solid var(--hairline)}
-  .svn{font-size:14px;font-weight:600}
-  .svm{font-size:12px;color:var(--ink3);margin-top:2px}
-  .svp{font-size:13px;font-weight:600}
-  .team{display:flex;gap:16px;margin-top:12px;overflow-x:auto}
-  .mem{width:84px;flex-shrink:0;text-align:center}
-  .av{height:64px;width:64px;border-radius:999px;background:var(--sunken);margin:0 auto}
-  .mn{font-size:12.5px;font-weight:600;margin-top:7px}
-  .mr{font-size:11px;color:var(--ink3)}
-  .rev{margin-top:12px}
-  .rc{padding:12px 0}
-  .rc + .rc{border-top:1px solid var(--hairline)}
-  .cap{max-width:520px;margin:8px auto 0;padding:0 16px;font-size:11.5px;color:var(--ink3);line-height:1.5}
 </style>
 </head>
 <body>
   <div class="top"><div class="seg"><button id="bB" class="on" onclick="show('before')">Before (live)</button><button id="bA" onclick="show('after')">After</button></div></div>
+  <div class="cap" id="cap">The change is applied to the real page and outlined in blue below.</div>
   <div class="stage">
-    <div id="paneBefore" class="pane"><iframe src="/de/salon/blade-and-stone" title="live salon PDP"></iframe></div>
-    <div id="paneAfter" class="pane hidden">
-      <div class="after">
-        <div class="hero"></div>
-        <div class="pdphd">
-          <div class="pn">Blade &amp; Stone</div>
-          <div class="pm"><svg viewBox="0 0 24 24" class="lucide"><path d="M12 2l3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>4.9 . Barbershop . Zürich</div>
-        </div>
-        <div class="sec">
-          <div class="sh">Services</div>
-          <div class="svc"><div><div class="svn">Haircut</div><div class="svm">45 min</div></div><div class="svp">CHF 55</div></div>
-          <div class="svc"><div><div class="svn">Beard trim</div><div class="svm">20 min</div></div><div class="svp">CHF 30</div></div>
-        </div>
-        <div class="sec">
-          <div class="sh">Team</div>
-          <div class="team">
-            <div class="mem"><div class="av"></div><div class="mn">Marco</div><div class="mr">Cuts</div></div>
-            <div class="mem"><div class="av"></div><div class="mn">Luca</div><div class="mr">Fades</div></div>
-            <div class="mem"><div class="av"></div><div class="mn">Sami</div><div class="mr">Beard</div></div>
-          </div>
-        </div>
-        <div class="sec">
-          <div class="sh">Reviews</div>
-          <div class="rev">
-            <div class="rc"><div class="pm"><svg viewBox="0 0 24 24" class="lucide"><path d="M12 2l3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>5.0 . Jonas</div><div class="svm" style="margin-top:4px">Sharp fade, friendly team.</div></div>
-            <div class="rc"><div class="pm"><svg viewBox="0 0 24 24" class="lucide"><path d="M12 2l3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>4.8 . Nina</div><div class="svm" style="margin-top:4px">Best beard trim in town.</div></div>
-          </div>
-        </div>
-        <div class="cap">Change applied: one section rhythm. Every PDP section is flat with a single hairline between them, instead of some flat, Reviews and Buy floating in white cards, and Team in a third rounded-3xl float. The lists inside stay carded; only the section wrappers unify.</div>
-      </div>
-    </div>
+    <div id="paneBefore" class="pane"><iframe id="beforeFrame" src="/de/salon/blade-and-stone" title="real page, before"></iframe></div>
+    <div id="paneAfter" class="pane hidden"><iframe id="afterFrame" src="/de/salon/blade-and-stone" title="real page, after (change applied + highlighted)"></iframe></div>
   </div>
 <script>
-  function show(w){document.getElementById('paneBefore').classList.toggle('hidden',w!=='before');document.getElementById('paneAfter').classList.toggle('hidden',w!=='after');document.getElementById('bB').classList.toggle('on',w==='before');document.getElementById('bA').classList.toggle('on',w==='after');}
+  // ONE change definition for this mockup: flatten the Team + Reviews section wrappers to the flat rhythm.
+  var CHANGE_LABEL = 'After: flat section rhythm';
+  function applyChange(doc){
+    var heads = doc.querySelectorAll('h1,h2,h3');
+    var hit = 0, first = null;
+    heads.forEach(function(h){
+      var t = (h.textContent||'').trim();
+      if(!/^(Team|Bewertungen|Reviews)\b/i.test(t)) return;
+      var el = h, up = 0;
+      while(el.parentElement && up < 6){ el = el.parentElement; up++; if(/rounded|shadow/i.test((el.className||'').toString())) break; }
+      if(el.getAttribute('data-sweep-done')) return;
+      el.setAttribute('data-sweep-done','1');
+      // apply the change: flatten (no float shadow, unified radius, hairline top)
+      el.style.boxShadow = 'none';
+      el.style.borderRadius = '0';
+      el.style.borderTop = '1px solid #E4E4E7';
+      // highlight it
+      el.style.outline = '2px solid #276EF1';
+      el.style.outlineOffset = '-2px';
+      el.style.borderRadius = '10px';
+      el.style.position = 'relative';
+      var lab = doc.createElement('div');
+      lab.textContent = CHANGE_LABEL;
+      lab.style.cssText = 'position:absolute;top:-1px;left:-1px;background:#276EF1;color:#fff;font:600 10px/1.3 -apple-system,sans-serif;padding:3px 8px;border-radius:10px 0 8px 0;z-index:99999';
+      el.appendChild(lab);
+      if(!first) first = el;
+      hit++;
+    });
+    if(first){ try{ first.scrollIntoView({block:'center'}); }catch(e){} }
+    return hit;
+  }
+  var afterStarted = false;
+  function startAfter(){
+    if(afterStarted) return; afterStarted = true;
+    var f = document.getElementById('afterFrame');
+    var tries = 0;
+    var iv = setInterval(function(){
+      tries++;
+      try{
+        var doc = f.contentDocument;
+        if(doc && doc.querySelector('h1,h2,h3')){
+          if(applyChange(doc) > 0){ clearInterval(iv); }
+        }
+      }catch(e){}
+      if(tries > 100){ clearInterval(iv); }   // ~20s safety
+    }, 200);
+  }
+  function show(w){
+    document.getElementById('paneBefore').classList.toggle('hidden', w!=='before');
+    document.getElementById('paneAfter').classList.toggle('hidden', w!=='after');
+    document.getElementById('bB').classList.toggle('on', w==='before');
+    document.getElementById('bA').classList.toggle('on', w==='after');
+    if(w==='after') startAfter();
+  }
 </script>
 </body>
 </html>
