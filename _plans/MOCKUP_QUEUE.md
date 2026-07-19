@@ -24,7 +24,7 @@ Build order = HIGH impact first. (arch/behavior/copy items are DECISIONS, not A/
 - [x] sweep-rewards-hero-gradient [HIGH] , HeroStampCard gradient: A ink card / B keep gradient , BUILT
 - [x] sweep-referral-buttons [HIGH] , referral share buttons: A WhatsApp=ink primary / B two fills , BUILT
 - [ ] sweep-partner-cta [HIGH] , partner/page.tsx:495 three divergent CTA destinations: A one funnel to the lead form. rec A.
-- [ ] sweep-help-h1 [HIGH] , help/[slug]:80 H1 has 3 undocumented sizes across 4 pages: A unify to Page-H2 / B two-tier editorial. 
+- [x] sweep-help-h1 [HIGH] , help/info H1 scale: A one scale / B two-tier , BUILT
 - [ ] sweep-stampcard-generation [HIGH] , StampCard.tsx:43 stamp surfaces a generation behind RewardsView (uppercase/off-token/radius) , mostly mechanical + a layout call.
 - [ ] sweep-ueber-uns-stub [HIGH] , ueber-uns/page.tsx bare stub vs the richer marketing grammar: A leave / B upgrade / C light polish. rec C.
 - [ ] (DECISION, not mockup) sweep-nail-tech-dup [HIGH] , nail-tech/[id] DUPLICATES StaffProfilePage (rule 12) , retire+extend. dedup, not a mockup.
