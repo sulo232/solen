@@ -556,6 +556,7 @@ export default function ServicesPage() {
                       aria-label={t('dragHandle')}>
                       <GripVertical size={20} />
                     </span>
+                    {hasDetails ? (
                     <button type="button" onClick={() => toggleExpanded(s.id)} aria-expanded={isExpanded}
                       className="flex-1 min-w-0 text-left">
                       <div className="flex items-center gap-1.5">
@@ -568,6 +569,18 @@ export default function ServicesPage() {
                       <span className="text-[12.5px] text-s-ink-2">{s.duration_minutes} {t('minutesUnit')} <b className="font-heading font-semibold text-s-ink">{formatCurrency(Number(s.price), locale)}</b></span>
                       </div>
                     </button>
+                    ) : (
+                      // No details to reveal (no description, no suitable-for/gender): a plain
+                      // block, not a button, so no dead chevron affordance (TASTE_LOG.md:253).
+                      <div className="flex-1 min-w-0 text-left">
+                        <p className="font-heading font-semibold text-[14.5px] text-s-ink truncate">{s.name_de}</p>
+                        {s.name_en && <p className="text-[12px] text-s-ink-3 truncate">{s.name_en}</p>}
+                        <div className="flex items-center gap-2 mt-1.5">
+                          <span className="text-[12px] font-semibold rounded-md px-2 py-0.5 bg-s-bg-sunken text-s-ink-2">{CATEGORY_LABELS[s.category]}</span>
+                          <span className="text-[12.5px] text-s-ink-2">{s.duration_minutes} {t('minutesUnit')} <b className="font-heading font-semibold text-s-ink">{formatCurrency(Number(s.price), locale)}</b></span>
+                        </div>
+                      </div>
+                    )}
                     {/* mockup-ok: same is_active switch, only re-indented one level to sit
                         inside the new header wrapper div; classes unchanged (see edit above). */}
                     <button
