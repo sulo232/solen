@@ -202,7 +202,7 @@ function ReviewCard({ review }: { review: Review }) {
             <button
               type="button"
               onClick={() => setShowFull(true)}
-              className="font-body mt-1 text-[13px] font-medium text-s-ink transition-opacity hover:opacity-80"
+              className="font-body mt-1 text-[13px] font-medium text-s-accent transition-opacity hover:opacity-80"
             >
               Mehr lesen
             </button>
