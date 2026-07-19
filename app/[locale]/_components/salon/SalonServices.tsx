@@ -1,17 +1,12 @@
 "use client";
 
 import * as React from "react";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import type { Service, SalonDetail } from "./_shared";
 import { capitalize } from "./_shared";
 import { TabPill } from "../primitives/TabPill";
 import { PriceFrom, SeeAllButton } from "../primitives";
 import { cn } from "@/lib/utils";
-
-// B4 load audit (2026-07-04, finding #2): the full-screen "Alle ansehen" sheet
-// is click-triggered , same dynamic() pattern as SalonTeam.tsx:12.
-const SalonServicesSheet = dynamic(() => import("./SalonServicesSheet").then((m) => m.SalonServicesSheet), { ssr: false });
 
 /**
  * Duration label. Owner spec (2026-06-09): ALWAYS minutes, lowercase "min",
@@ -53,8 +48,6 @@ export function SalonServices({
    *  can render the sticky cart sidebar with salon info + thumbnail. */
   salon: SalonDetail;
 }) {
-  const [sheetOpen, setSheetOpen] = React.useState(false);
-
   // V2-D53.3: group by subcategory (Schnitt/Farbe/Styling/...) when available,
   // falling back to top-level category for older seed data.
   const grouped = React.useMemo(() => {
@@ -152,24 +145,15 @@ export function SalonServices({
         )}
       </div>
 
-      {/* "Alle ansehen" — V2-D53.3 polish: now opens a full-screen sheet
-          matching Fresha's services-selection step instead of expanding
-          inline. Shows whenever there are services (even if < 5 visible)
-          because the sheet IS the booking flow's step 1. */}
+      {/* "Alle ansehen" links into the booking flow's service step (the single
+          service-selection UI); the standalone sheet was a duplicate, removed 2026-07-19. */}
       {visible.length > 0 && (
         <div className="mt-5 flex justify-center">
           {/* mockup-ok: SeeAllButton port, byte-identical pill class string */}
-          <SeeAllButton label="Alle ansehen" onClick={() => setSheetOpen(true)} />
+          <SeeAllButton label="Alle ansehen" href={`/${locale}/salon/${slug}/booking`} />
         </div>
       )}
 
-      {/* Full-screen sheet (open on "Alle ansehen" click) */}
-      <SalonServicesSheet
-        salon={salon}
-        locale={locale}
-        open={sheetOpen}
-        onClose={() => setSheetOpen(false)}
-      />
     </section>
   );
 }
