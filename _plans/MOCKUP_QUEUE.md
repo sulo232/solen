@@ -26,7 +26,7 @@ Build order = HIGH impact first. (arch/behavior/copy items are DECISIONS, not A/
 - [ ] sweep-partner-cta [HIGH] , partner/page.tsx:495 three divergent CTA destinations: A one funnel to the lead form. rec A.
 - [x] sweep-help-h1 [HIGH] , help/info H1 scale: A one scale / B two-tier , BUILT
 - [ ] sweep-stampcard-generation [HIGH] , StampCard.tsx:43 stamp surfaces a generation behind RewardsView (uppercase/off-token/radius) , mostly mechanical + a layout call.
-- [ ] sweep-ueber-uns-stub [HIGH] , ueber-uns/page.tsx bare stub vs the richer marketing grammar: A leave / B upgrade / C light polish. rec C.
+- [x] sweep-ueber-uns [HIGH] , light polish vs bare stub , BUILT
 - [ ] (DECISION, not mockup) sweep-nail-tech-dup [HIGH] , nail-tech/[id] DUPLICATES StaffProfilePage (rule 12) , retire+extend. dedup, not a mockup.
 - [ ] (COPY, not mockup) stamps 'Eingeloest' mislabel [HIGH] , profile/stamps:167 no redemption schema , rename honestly.
 - [ ] (BEHAVIOR, not mockup) referral 5-sec auto-redirect [HIGH] , referral/[code]:36 , remove the forced redirect.
