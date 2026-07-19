@@ -44,17 +44,32 @@
 <script>
   function applyChange(doc){
     var hit = 0;
-    // replace each per-service "Buchen" pill with the +-select circle (the approved tier-card affordance)
+    // replace each per-service "Buchen" pill with the +-select circle, matching the APPROVED tier-card:
+    // 44px circle (touch floor), thin ink outline, centred +.
     [].forEach.call(doc.querySelectorAll('button,a'), function(b){
       if(!/^buchen$/i.test((b.textContent||'').trim())) return;
       if(b.getAttribute('data-sweep-done')) return;
       b.setAttribute('data-sweep-done','1');
       b.setAttribute('aria-label','Hinzufügen');
-      b.style.cssText = 'width:38px;height:38px;min-width:38px;padding:0;border-radius:999px;border:1.5px solid #0A0A0A;background:#fff;color:#0A0A0A;display:inline-flex;align-items:center;justify-content:center;font:400 24px/1 -apple-system,sans-serif;';
+      b.style.cssText = 'width:44px;height:44px;min-width:44px;padding:0;border-radius:999px;border:1px solid #D4D4D8;background:#fff;color:#0A0A0A;display:inline-flex;align-items:center;justify-content:center;font:300 26px/1 -apple-system,sans-serif;flex:0 0 44px;';
       b.textContent = '+';
+      // add a tap-to-expand chevron next to the service NAME (the approved pattern), once per row
+      var row = b.closest('li') || b.parentElement.parentElement;
+      if(row && !row.getAttribute('data-chev')){
+        var name = [].filter.call(row.querySelectorAll('*'), function(e){
+          return e.children.length===0 && (e.textContent||'').trim().length>2 && parseFloat(getComputedStyle(e).fontWeight)>=600 && !/CHF|min/i.test(e.textContent);
+        })[0];
+        if(name){
+          row.setAttribute('data-chev','1');
+          var ch = doc.createElement('span');
+          ch.setAttribute('aria-hidden','true');
+          ch.style.cssText = 'display:inline-block;margin-left:6px;color:#A1A1AA;font-size:12px;vertical-align:middle;';
+          ch.textContent = '⌄'; // chevron down
+          name.appendChild(ch);
+        }
+      }
       hit++;
     });
-    // scroll to the Services section so the change is in view
     var svc = [].filter.call(doc.querySelectorAll('h2,h3'), function(h){ return /^Services/i.test((h.textContent||'').trim()); })[0];
     if(svc){ try{ svc.scrollIntoView({block:'start'}); }catch(e){} }
     return hit;
