@@ -402,7 +402,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
 
         {/* Stylist */}
         {staff && (
-          <div className="mt-3 flex items-center gap-3 border-t border-s-ink/[0.06] pt-3">
+          <div className="mt-3 flex items-center gap-3 border-t border-s-border pt-3">
             {/* Sits directly under the salon row's 44px SQUARE tile above (h-11 w-11
                 rounded-[12px]) at the same left-column position, so this circle gets the
                 owner-approved 2026-07-15 overshoot (RATIONALE.md:144, lib/optical.ts) to
@@ -422,7 +422,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
 
         {/* Services */}
         {formData.services.map((s, i) => (
-          <div key={s.id} className="mt-3 flex items-center gap-3 border-t border-s-ink/[0.06] pt-3">
+          <div key={s.id} className="mt-3 flex items-center gap-3 border-t border-s-border pt-3">
             <div className="grid h-11 w-11 shrink-0 place-items-center text-s-ink-2">
               <Scissors size={20} strokeWidth={1.9} aria-hidden />
             </div>
@@ -439,7 +439,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
         ))}
 
         {/* When */}
-        <div className="mt-3 flex items-center gap-3 border-t border-s-ink/[0.06] pt-3">
+        <div className="mt-3 flex items-center gap-3 border-t border-s-border pt-3">
           <div className="grid h-11 w-11 shrink-0 place-items-center text-s-ink-2">
             <Calendar size={20} strokeWidth={1.9} aria-hidden />
           </div>
@@ -487,7 +487,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
             </div>
           )}
         </div>
-        <div className="mt-2.5 flex items-baseline justify-between gap-3 border-t border-s-ink/[0.08] pt-2.5">
+        <div className="mt-2.5 flex items-baseline justify-between gap-3 border-t border-s-border pt-2.5">
           <span className="font-heading text-[15px] font-semibold text-s-ink">{tp('totalLabel')}</span>
           <span className="font-heading text-[22px] font-bold tabular-nums tracking-[-0.01em] text-s-ink">
             {formatPrice(

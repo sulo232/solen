@@ -461,10 +461,10 @@ export default function WalkInPayPage() {
 
               {/* Barber — face kept (your requirement), as the row's leading element */}
               {booking.barber_name && (
-                <div className="mt-3 flex items-center gap-3 border-t border-s-ink/[0.06] pt-3">
+                <div className="mt-3 flex items-center gap-3 border-t border-s-border pt-3">
                   {booking.barber_avatar ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={booking.barber_avatar} alt="" className="h-11 w-11 shrink-0 rounded-full object-cover ring-1 ring-s-ink/[0.06]" />
+                    <img src={booking.barber_avatar} alt="" className="h-11 w-11 shrink-0 rounded-full object-cover ring-1 ring-s-border" />
                   ) : (
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-s-bg-sunken font-heading text-sm font-semibold text-s-ink-2">
                       {booking.barber_name.charAt(0)}
@@ -492,7 +492,7 @@ export default function WalkInPayPage() {
               )}
 
               {/* Service */}
-              <div className="mt-3 flex items-center gap-3 border-t border-s-ink/[0.06] pt-3">
+              <div className="mt-3 flex items-center gap-3 border-t border-s-border pt-3">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center">
                   <Scissors size={20} className="text-s-ink-2" />
                 </div>
@@ -513,7 +513,7 @@ export default function WalkInPayPage() {
               </div>
 
               {/* When — adaptive: walk-in (Sofort + ETA + ticket-after-pay) vs scheduled (date/time) */}
-              <div className="mt-3 flex items-center gap-3 border-t border-s-ink/[0.06] pt-3">
+              <div className="mt-3 flex items-center gap-3 border-t border-s-border pt-3">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center">
                   <Clock size={20} className="text-s-ink-2" />
                 </div>
@@ -543,7 +543,7 @@ export default function WalkInPayPage() {
                   <span className="shrink-0 tabular-nums text-s-ink-2">{vatStr}</span>
                 </div>
               </div>
-              <div className="mt-2.5 flex items-baseline justify-between gap-3 border-t border-s-ink/[0.08] pt-2.5">
+              <div className="mt-2.5 flex items-baseline justify-between gap-3 border-t border-s-border pt-2.5">
                 <span className="self-center font-heading text-[15px] font-semibold text-s-ink">{l.total}</span>
                 <span className="font-body text-[22px] font-semibold tabular-nums text-s-ink">{amountStr}</span>
               </div>
