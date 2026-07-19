@@ -42,7 +42,13 @@ FLAGGED AS FIX (not new mockups , same call recurring / mechanical):
 - banned Zap icon (segments).
 -> FIX phase (coder + reviewer), not mockups. `dev/*` (~40 scratch routes) EXCLUDED. Super-admin utility pages (all-users/feature-flags/cities-admin/...) covered by the 4 SYSTEMIC decisions above; no per-page mockup needed.
 
-- [~] FINAL completeness pass , shared CUSTOMER COMPONENT layer (global Header/Footer/bottom-nav/consent banner, SearchBar/filters/SearchTemplate, SalonCard variants/review components, sheets/modals/toasts). Audited by PAGE, not yet by shared component. Audit wf next.
+### COMPONENT LAYER audit RESULTS (wf_cf4be4ec-8ae) , 14 findings, 11 worthMockup -> 5 distinct BUILT + 1 dropped-as-fix + rest flagged
+BUILT: #35 sweep-result-card-variants, #36 sweep-city-picker-selected, #37 sweep-nav-hover, #38 sweep-cookie-consent, #39 sweep-overlay-scrim.
+DROPPED-AS-FIX (not a mockup): SalonCard discount pill , direction is SETTLED (pale-green %-pill in price row, memory project_card_badges) + the rose photo-tag is REJECTED (resurrection gate blocked rendering it, correctly). Also remove the auto "Top bewertet"/"Beliebt"/"Neu" CurationBadge (rejected). Both dormant-but-baked in SalonCard.tsx -> FIX phase, apply the settled green-pill + delete the rejected badges.
+FLAGGED AS FIX: MobileMenu Schnellzugriff tracked-uppercase eyebrow; ReviewCard border+shadow double-edge; Entdecken dashed see-all end-cap; Sheet/CookieConsent warm rgba(50,47,44) shadows.
+
+## SWEEP COMPLETE (2026-07-19) , 39 distinct design-decision mockups, gallery=39
+Three full audits (customer pages, operator dashboard, shared components) -> every DISTINCT design decision is now a mockup. What remains is NOT mockups, it is the FIX phase (coder + reviewer): apply the picked directions + the mechanical/systemic fixes flagged above. Headline systemic bug for the fix phase: dead `s-coral` token renders the dashboard monochrome (#31/#33). Further audits would only return more mechanical fixes, not new decisions, so the mockup loop is genuinely done. Gallery: /_mockups/sweep-gallery/index.html.
 
 ## Tier-2/3 decisions (audit wtvjz5xdt, 2026-07-19) , 25 mockup-worthy + 11 mechanical
 Build order = HIGH impact first. (arch/behavior/copy items are DECISIONS, not A/B visual mockups , flag to owner.)
