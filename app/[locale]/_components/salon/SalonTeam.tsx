@@ -118,9 +118,10 @@ export function SalonTeam({
         <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
           Team
         </h2>
-        {/* mockup-ok: SeeAllButton port, byte-identical pill class string (P2 fix,
-            owner-approved 2026-07-15), same instance as SalonServices/SalonReviews */}
-        <SeeAllButton label="Alle ansehen" href={`/${locale}/salon/${slug}/booking`} />
+        {/* mockup-ok: link variant, ink text + chevron per owner 2026-07-19 (Team sits next
+            to the busy avatar-scroll row and read too big/unbalanced as a pill); Services and
+            Reviews keep the default pill (booking-flow entry, owner-approved 2026-07-15). */}
+        <SeeAllButton label="Alle ansehen" href={`/${locale}/salon/${slug}/booking`} variant="link" />
       </div>
 
       {/* Horizontal carousel — tapping a stylist opens their individual profile

@@ -32,7 +32,7 @@ import { cn } from "@/lib/utils";
  *   pill-outline: border-s-border outline, font-heading, hover:border-s-ink/25.
  *     StaffProfilePage's full-width "Alle ansehen" below its reviews list.
  */
-export type SeeAllButtonVariant = "pill" | "pill-outline";
+export type SeeAllButtonVariant = "pill" | "pill-outline" | "link";
 
 export interface SeeAllButtonProps {
   label: string;
@@ -53,24 +53,26 @@ export function SeeAllButton({
   "aria-label": ariaLabel,
 }: SeeAllButtonProps) {
   const cls = cn(
-    // mockup-ok: default (pill) variant is a drift fix to LOCKFILE §170, an ink text link +
-    // chevron (not a pill), no owner-approval-needed since it's reverting to the locked spec.
-    // pill-outline (StaffProfilePage) is untouched, byte-identical to its prior class string.
+    // mockup-ok: pill = owner-approved 2026-07-15 gray see-all (Services/Reviews); link = ink
+    // text+chevron for the stylist/Team see-all per owner 2026-07-19. pill-outline
+    // (StaffProfilePage) is untouched, byte-identical to its prior class string.
     "text-[14px] font-semibold text-s-ink transition-colors",
     variant === "pill-outline"
       ? "rounded-full border border-s-border py-3 font-heading hover:border-s-ink/25"
-      : "inline-flex items-center gap-0.5",
+      : variant === "link"
+        ? "inline-flex items-center gap-0.5"
+        : "rounded-full font-body inline-flex items-center bg-s-bg-sunken px-8 py-3 hover:bg-s-border md:px-10 md:py-3.5 md:text-[15px]",
     className,
   );
 
   const content =
-    variant === "pill-outline" ? (
-      label
-    ) : (
+    variant === "link" ? (
       <>
         {label}
         <ChevronRight className="h-4 w-4 text-s-ink-3" />
       </>
+    ) : (
+      label
     );
 
   if (href) {
