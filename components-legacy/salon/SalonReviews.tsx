@@ -248,7 +248,7 @@ export default function SalonReviews({
                       aria-pressed={on}
                       className="flex w-full items-center gap-3 py-1.5 text-left"
                     >
-                      <span className={`grid h-[22px] w-[22px] shrink-0 place-items-center rounded-[6px] border transition-colors ${on ? "border-s-accent bg-s-accent text-white" : "border-s-border bg-white"}`}>
+                      <span className={`grid h-[22px] w-[22px] shrink-0 place-items-center rounded-[6px] border border-s-border transition-colors ${on ? "bg-s-bg-sunken text-s-ink" : "bg-white"}`}>
                         {on && <Check size={14} strokeWidth={3} />}
                       </span>
                       <span className="w-2.5 text-[15px] tabular-nums text-s-ink">{s}</span>

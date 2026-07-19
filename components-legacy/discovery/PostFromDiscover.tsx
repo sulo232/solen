@@ -196,14 +196,14 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                   <button
                     aria-pressed={mode === "photo"}
                     onClick={() => setMode("photo")}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-[12px] font-heading uppercase tracking-[.06em] transition-colors duration-150 ${mode === "photo" ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink-2"}`}
+                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-[12px] font-heading transition-colors duration-150 ${mode === "photo" ? "bg-s-bg-sunken text-s-ink font-semibold" : "bg-s-ink/5 text-s-ink-2"}`}
                   >
                     <Upload size={14} /> {t.photo}
                   </button>
                   <button
                     aria-pressed={mode === "tiktok"}
                     onClick={() => setMode("tiktok")}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-[12px] font-heading uppercase tracking-[.06em] transition-colors duration-150 ${mode === "tiktok" ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink-2"}`}
+                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-[12px] font-heading transition-colors duration-150 ${mode === "tiktok" ? "bg-s-bg-sunken text-s-ink font-semibold" : "bg-s-ink/5 text-s-ink-2"}`}
                   >
                     <LinkIcon size={14} /> {t.tiktok}
                   </button>
@@ -239,7 +239,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                       <button
                         key={key}
                         onClick={() => setCategory(key)}
-                        className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${category === key ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink-2"}`}
+                        className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${category === key ? "bg-s-bg-sunken text-s-ink font-semibold" : "bg-s-ink/5 text-s-ink-2"}`}
                       >
                         {label}
                       </button>
@@ -255,7 +255,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                       <button
                         key={key}
                         onClick={() => setGender(key)}
-                        className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${gender === key ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink-2"}`}
+                        className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${gender === key ? "bg-s-bg-sunken text-s-ink font-semibold" : "bg-s-ink/5 text-s-ink-2"}`}
                       >
                         {label}
                       </button>
