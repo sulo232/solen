@@ -19,7 +19,16 @@ Per file `public/_mockups/sweep-<slug>/index.html`: `<!-- Base: elicitation --><
 - [x] sweep-salon-team , Team section wrapper (match rhythm vs float) , BUILT
 - [~] Tier 2-4 surfaces , audit each tier, add its design-decisions here (account, notifications, termine, vouchers, rewards, referral, profile subs, marketing pages, dashboards). DONE: notifications, rewards, referral, profile(loading+loyalty-meta), marketing(partner/warum/ueber-uns/help/brand).
 - [~] Customer-tier-2 sweep IN PROGRESS (audit wf_d412c0e9-428, 2026-07-19) , un-covered customer surfaces: booking flow (5 steps), profile subpages (bookings/favorites/looks/intake-forms/haarprofil/settings), termine, vouchers, tip, auth, onboarding, inspo, reviews, category landings. Findings feed the build queue below.
-- [ ] SEPARATE LARGE TIER (flag to owner, NOT folded in silently): ~50 `dashboard/*` OWNER-FACING admin pages + ~40 `dev/*` scratch routes. These are a distinct design tier (owner tools, not customer). Sweeping all of them is its own multi-hour batch , surface to owner before starting, don't absorb into the customer sweep.
+### Customer tier-2 audit RESULTS (wf_d412c0e9-428) , 33 findings, 19 worthMockup -> 6 distinct decisions BUILT + rest flagged as fix
+BUILT: #25 sweep-booking-payment-selected, #26 sweep-booking-panel-radii, #27 sweep-selected-ink-pill, #28 sweep-voucher-status-chip, #29 sweep-auth-grammar, #30 sweep-empty-consolidation.
+FLAGGED AS APPLY-AN-ALREADY-DECIDED-CALL (not new mockups , would be near-dupes of built ones):
+- bare-spinner -> shaped Skeleton (decided 3x already): intake-forms:70, walk-in-tip:40, tip:39, recently-viewed:77, inspo append-dots:656.
+- tracked-uppercase eyebrow (BANNED treatment, mechanical fix): intake-forms h2:93, inspo board eyebrow:75, reset-password 3 eyebrows:85/108/123.
+- icon-button 40 -> 44px (a11y floor): inspo:450, saved:67, board:69.
+- mechanical harmony (worthMockup=false): profile container widths (settings md vs haarprofil 2xl vs intake 3xl), profile page-bg token (bookings bg-[--base] vs siblings), intake entry-card radius 12->16, recently-viewed thumb radius 14, board empty/error -> registry, Sparkles icon on intake AI block.
+-> These go to the FIX phase (coder + reviewer), not the mockup gallery.
+
+- [~] DASHBOARD TIER (owner said "everywhere") , ~50 `dashboard/*` OWNER-FACING admin pages. AUDIT IN PROGRESS with the DASHBOARD canon (LOCKFILE section 12 / Aurora), NOT the customer B&W yardstick (different design tier -> customer canon would false-positive). `dev/*` (~40 scratch routes) EXCLUDED (throwaway, not shipped surfaces).
 
 ## Tier-2/3 decisions (audit wtvjz5xdt, 2026-07-19) , 25 mockup-worthy + 11 mechanical
 Build order = HIGH impact first. (arch/behavior/copy items are DECISIONS, not A/B visual mockups , flag to owner.)
