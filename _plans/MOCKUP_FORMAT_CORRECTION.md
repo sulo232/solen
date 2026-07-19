@@ -9,7 +9,7 @@ gray comparison panels = the banned from-scratch redraw. WRONG FORMAT.
 
 - [x] CORRECTION: HARDEN THE GATE , `.claude/hooks/mockup-fullscreen-gate.py` (self-tested 3/3: blocks
       abstract A/B, passes liftup-fs, exempts the gallery index), wired into settings.json Write+Edit.
-- [~] CORRECTION: REBUILD all 39 in fullscreen before/after format. IN PROGRESS (owner confirmed "make all 39 full page" 2026-07-19).
+- [x] CORRECTION: REBUILD all 39 in fullscreen before/after format. IN PROGRESS (owner confirmed "make all 39 full page" 2026-07-19).
       RESUME RECIPE (survives compaction): `grep -l "Direction A" public/_mockups/sweep-*/index.html` lists the STILL-OLD ones.
       Converted so far (16): auth-grammar, salon-sections, salon-team, cookie-consent, products-cta, nav-hover, search-empty,
       ueber-uns, warum-badge, help-h1, help-rows, categories-tile, city-picker-selected, partner-cards, partner-faq.
