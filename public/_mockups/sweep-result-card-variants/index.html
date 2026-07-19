@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Result card variants , name weight + price (mockup)</title>
+<!-- Base: elicitation -->
+<!-- Scale: component -->
+<!--
+  Grounded-in: app/[locale]/_components/search/SalonResultCard.tsx
+  Component-scale elicitation probe , the shared salon-name anchor renders at THREE weights for the same role:
+  CardName's locked recipe is font-body font-medium weight-500, used by grid/list/card/suggest, but the feed
+  variant overrides to font-heading font-bold weight-700 at SalonResultCard.tsx:518/557, MapSalonDetail bold-700,
+  and CategoryHeroCarousel font-display weight-600. And the feed price is dark text-s-ink vs the recessive grey
+  text-s-ink-2 every other variant uses. CardText.tsx documents className as LAYOUT-ONLY and cn()=clsx (no
+  tailwind-merge), so these font overrides are off-contract + unreliable. Canon: name leads by SIZE, price recedes.
+  Rating = star + value only, no review count on cards, per CARD_REDESIGN_2026-07-13 C11.
+  Exists-check: `npm run exists "SalonResultCard"` ran this turn , the card + variants already render.
+  REMOVED.md: none. New = converging the name/price recipe. Real tokens (font-body, s-ink, s-ink-2, star #FFC32B).
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--white:#fff;--sunken:#F4F4F5;--border:#E4E4E7;--star:#FFC32B;
+    --font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);background:var(--sunken);color:var(--ink);-webkit-font-smoothing:antialiased;padding:24px 16px 60px}
+  .wrap{max-width:860px;margin:0 auto}
+  h1{font-size:22px;font-weight:600;letter-spacing:-0.02em}
+  .sub{font-size:14px;color:var(--ink2);margin-top:6px;line-height:1.5;max-width:680px}
+  .grid2{display:grid;gap:20px;margin-top:26px;grid-template-columns:1fr 1fr}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
+  .panel{background:var(--sunken);border:1px solid var(--border);border-radius:16px;padding:16px}
+  .plabel{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
+  .pill{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:#fff;border:1px solid var(--border);color:var(--ink2)}
+  .pill.rec{background:#EAF1FE;color:#276EF1;border-color:transparent}
+  .pnote{font-size:12.5px;color:var(--ink2);margin-top:6px;line-height:1.45}
+  .cards{margin-top:14px;display:flex;flex-direction:column;gap:12px}
+  .card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:12px;display:flex;gap:12px;box-shadow:0 1px 2px rgba(10,10,10,.04)}
+  .thumb{height:66px;width:66px;border-radius:12px;background:var(--sunken);flex-shrink:0}
+  .body{flex:1;min-width:0}
+  .vtag{font-size:10px;color:var(--ink3)}
+  .rate{font-size:11.5px;color:var(--ink2);margin-top:2px;display:flex;align-items:center;gap:3px}
+  .rate svg{width:12px;height:12px;color:var(--star);fill:var(--star)}
+  .price{margin-top:4px}
+  /* A: unified , name font-body semibold, size leads; price recessive grey */
+  .a .nm{font-family:var(--font);font-weight:600;color:var(--ink)}
+  .a .nm.feed{font-size:16px} .a .nm.grid{font-size:14px}
+  .a .price{font-size:13px;font-weight:600;color:var(--ink2)}
+  /* B: current split */
+  .b .nm.feed{font-weight:700;font-size:16px;color:var(--ink)}
+  .b .nm.grid{font-weight:500;font-size:14px;color:var(--ink)}
+  .b .price.feed{font-size:13.5px;font-weight:600;color:var(--ink)}
+  .b .price.grid{font-size:13px;font-weight:600;color:var(--ink2)}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Result card variants , one name + price recipe</h1>
+    <p class="sub">The same salon-result card renders the name at three weights (grid semibold, hero medium-heavy, feed bold) and the price two colours (feed dark ink, grid grey), because the feed variant overrides CardName and CardMeta through className, which the component documents as layout-only. Converge on one recipe where SIZE, not weight, marks emphasis?</p>
+
+    <div class="grid2">
+      <div class="panel a">
+        <div class="plabel">Direction A , one recipe, size leads <span class="pill rec">recommended</span></div>
+        <p class="pnote">One name weight everywhere; the feed card is bigger, so it leads by SIZE, not a heavier font. Price stays the recessive grey-semibold on every variant. Matches "name leads by size, price recedes" and stops the off-contract className overrides.</p>
+        <div class="cards">
+          <div class="card"><div class="thumb"></div><div class="body"><div class="vtag">Feed, mobile</div><div class="nm feed">Blade &amp; Stone</div><div class="rate"><svg viewBox="0 0 24 24" class="lucide"><path d="M12 2l3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>4.9</div><div class="price feed">ab CHF 45</div></div></div>
+          <div class="card"><div class="thumb"></div><div class="body"><div class="vtag">Grid, desktop</div><div class="nm grid">Blade &amp; Stone</div><div class="rate"><svg viewBox="0 0 24 24" class="lucide"><path d="M12 2l3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>4.9</div><div class="price grid">ab CHF 45</div></div></div>
+        </div>
+      </div>
+      <div class="panel b">
+        <div class="plabel">Direction B , current, three weights</div>
+        <p class="pnote">What ships: the feed name is bold, the grid name is lighter, the price is dark ink on the feed but grey on the grid, so the identical salon reads differently by surface. And because cn() is clsx, the font-family override can silently lose while the weight wins, so it's also fragile.</p>
+        <div class="cards">
+          <div class="card"><div class="thumb"></div><div class="body"><div class="vtag">Feed, mobile</div><div class="nm feed">Blade &amp; Stone</div><div class="rate"><svg viewBox="0 0 24 24" class="lucide"><path d="M12 2l3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>4.9</div><div class="price feed">ab CHF 45</div></div></div>
+          <div class="card"><div class="thumb"></div><div class="body"><div class="vtag">Grid, desktop</div><div class="nm grid">Blade &amp; Stone</div><div class="rate"><svg viewBox="0 0 24 24" class="lucide"><path d="M12 2l3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>4.9</div><div class="price grid">ab CHF 45</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
