@@ -28,7 +28,21 @@ FLAGGED AS APPLY-AN-ALREADY-DECIDED-CALL (not new mockups , would be near-dupes 
 - mechanical harmony (worthMockup=false): profile container widths (settings md vs haarprofil 2xl vs intake 3xl), profile page-bg token (bookings bg-[--base] vs siblings), intake entry-card radius 12->16, recently-viewed thumb radius 14, board empty/error -> registry, Sparkles icon on intake AI block.
 -> These go to the FIX phase (coder + reviewer), not the mockup gallery.
 
-- [~] DASHBOARD TIER (owner said "everywhere") , ~50 `dashboard/*` OWNER-FACING admin pages. AUDIT IN PROGRESS with the DASHBOARD canon (LOCKFILE section 12 / Aurora), NOT the customer B&W yardstick (different design tier -> customer canon would false-positive). `dev/*` (~40 scratch routes) EXCLUDED (throwaway, not shipped surfaces).
+### DASHBOARD TIER audit RESULTS (wf_637dfd30-8a5) , 48 findings, 22 worthMockup -> 4 distinct decisions BUILT + rest flagged as fix
+BUILT: #31 sweep-dash-vibrancy, #32 sweep-dash-selected-state, #33 sweep-dash-status-pill, #34 sweep-dash-card-signature.
+**BIGGEST FINDING (systemic BUG, high priority for the fix phase):** the RETIRED token `s-coral` is aliased to `#0A0A0A` (ink) in tailwind.config.js:81 but still used across revenue/earnings/calendar/platform-analytics/loyalty/settings, so the "vibrant" dashboard SILENTLY RENDERS MONOCHROME INK , the owner's exact "too monochrome" complaint, caused by a dead token. Also `s-blue-subtle`/`s-blue-text`/`s-star-text` are UNDEFINED -> some status pills emit no CSS (colourless). #31 + #33 show these.
+FLAGGED AS FIX (not new mockups , same call recurring / mechanical):
+- dead/undefined tokens -> live tokens (s-coral->s-accent-bright/semantic; undefined pill tokens -> DashStatusPill): revenue, earnings, calendar, platform-analytics, loyalty, settings (VAT/warning/sliders/commission).
+- ink primary CTA -> DashButton blue: home Neuer-Termin, services/bundles/staff Add+Save, calendar create, reviews Send-reply, sales-ops upcharge/refunds/bookings, settings Save (ink tabs).
+- muted s-sage success -> s-success #16A34A: loyalty scan, verification approved.
+- bare-spinner -> Skeleton: clients, segments, all 5 sales-ops, marketing/reviews/content-editor.
+- hand-rolled empty/error -> registry: refunds/upcharge/bookings, content-editor/discovery.
+- tracked-uppercase eyebrow: coiffeur/barber/nail CRM, settings category chips.
+- card radius/shadow -> DashPanel (rounded-card-lg 20 + hairline + elevation): analytics/revenue/earnings/segments/sales-ops/marketing/settings/approvals (warm-shadow 12/14/16 drift).
+- banned Zap icon (segments).
+-> FIX phase (coder + reviewer), not mockups. `dev/*` (~40 scratch routes) EXCLUDED. Super-admin utility pages (all-users/feature-flags/cities-admin/...) covered by the 4 SYSTEMIC decisions above; no per-page mockup needed.
+
+- [~] FINAL completeness pass , shared CUSTOMER COMPONENT layer (global Header/Footer/bottom-nav/consent banner, SearchBar/filters/SearchTemplate, SalonCard variants/review components, sheets/modals/toasts). Audited by PAGE, not yet by shared component. Audit wf next.
 
 ## Tier-2/3 decisions (audit wtvjz5xdt, 2026-07-19) , 25 mockup-worthy + 11 mechanical
 Build order = HIGH impact first. (arch/behavior/copy items are DECISIONS, not A/B visual mockups , flag to owner.)
