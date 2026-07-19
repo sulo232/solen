@@ -33,7 +33,7 @@ Build order = HIGH impact first. (arch/behavior/copy items are DECISIONS, not A/
 - [x] sweep-notif-grouping [MED] , notifications flat edge-to-edge rows vs grouped card , BUILT
 - [ ] (IA DECISION, not visual mockup) sweep-partner-cta [HIGH] , partner 3 CTAs all ink but 3 destinations , unify to one funnel (lead form). Investigated: not a visual A/B (they look identical); a written funnel recommendation, not a mockup.
 - [x] sweep-rewards-tier-ladder [MED] , ink tiers vs green stepper , BUILT
-- [ ] sweep-referral-hero [MED] , referral/page.tsx:72 gradient hero vs flat 80/17. rec C.
+- [x] sweep-referral-hero [MED] , gradient vs flat , BUILT
 - [ ] sweep-partner-cards [MED] , partner:110 feature-grid vs category-grid cards differ. rec A unify.
 - [ ] sweep-partner-faq [MED] , partner:415 bespoke swipe cards vs shared FAQItem accordion. rec A.
 - [ ] sweep-warum-badge [MED] , warum-solen:229 'Nur bei Solen' x5 + banned Sparkles. rec drop-to-once + kill Sparkles.
