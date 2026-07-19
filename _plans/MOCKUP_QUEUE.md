@@ -35,7 +35,7 @@ Build order = HIGH impact first. (arch/behavior/copy items are DECISIONS, not A/
 - [x] sweep-rewards-tier-ladder [MED] , ink tiers vs green stepper , BUILT
 - [x] sweep-referral-hero [MED] , gradient vs flat , BUILT
 - [x] sweep-partner-cards [MED] , feature vs category card chrome , BUILT
-- [ ] sweep-partner-faq [MED] , partner:415 bespoke swipe cards vs shared FAQItem accordion. rec A.
+- [x] sweep-partner-faq [MED] , accordion vs swipe cards , BUILT
 - [x] sweep-warum-badge [MED] , say-once vs badge-on-each , BUILT
 - [x] sweep-help-rows [MED] , grouped card vs flat link list , BUILT
 - [x] sweep-nail-tech-badge [MED] , neutral vs colour-coded tier , BUILT
