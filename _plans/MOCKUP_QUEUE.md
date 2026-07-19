@@ -11,9 +11,9 @@ Per file `public/_mockups/sweep-<slug>/index.html`: `<!-- Base: elicitation --><
 - [x] sweep-queue-feedback , walk-in queue low-rating feedback CTA (ink vs blue-ghost)
 
 ## Queue (design-decision / improvable surfaces , grow as tiers get audited)
-- [ ] sweep-products-cta , SalonProducts.tsx:230 retail checkout CTA: 2nd ink CTA on PDP -> keep ink vs demote to neutral (booking is the one primary)
+- [x] sweep-products-cta , SalonProducts.tsx:230 retail checkout CTA (neutral vs keep-ink) , BUILT
 - [ ] sweep-pdp-section-wrapper , SalonReviews:88 + SalonBundles: only 2 of ~9 PDP sections wrapped in a floating card -> wrap all / unwrap these / keep
-- [ ] sweep-search-empty , SearchTemplate.tsx:2165 cause-aware empty chip: rounded-full 68 -> error-family rounded-[14]/48 vs empty-family rounded-[20]
+- [x] sweep-search-empty , SearchTemplate.tsx C1State empty chip (rounded-square vs full-circle) , BUILT
 - [ ] sweep-walkin-skeleton , walk-in-pay:367 / queue:162 loading: mechanical spinner/dots -> tracker-shaped Skeleton (1-2 dir)
 - [ ] sweep-salon-card , homepage SalonCard.tsx superseded pre-CARD_REDESIGN_2026-07-13 (aspect 3/2->5/4, drop blue review count, drop next-slot row) , VET vs the stranded branch first
 - [ ] sweep-salon-team , SalonTeam.tsx:111 team carousel rounded-3xl + shadow-float (group card of PEOPLE) -> individual cards? (ties to the group-vs-individual principle) / or rounded-2xl match
