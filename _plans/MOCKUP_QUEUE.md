@@ -43,7 +43,7 @@ Build order = HIGH impact first. (arch/behavior/copy items are DECISIONS, not A/
 - [x] sweep-profile-loading [MED] , per-route vs shared skeleton , BUILT
 - [x] sweep-bookings-skeleton [MED] , spinner vs layout skeleton , BUILT
 - [x] sweep-brand-hero [LOW] , PDP-scale vs Section-title hero , BUILT
-- [ ] sweep-profile-loyalty-meta [LOW] , profile/page.tsx:204 loyalty row blank meta , show rank word?
+- [x] sweep-profile-loyalty-meta [LOW] , rank word vs blank , BUILT
 - [ ] (+ mechanical fixes: notif Skeleton/EmptyState/blue-icon, referral states, help Spinner->Skeleton , feed FRONTEND_SWEEP fix-now)
 
 ## Notes
