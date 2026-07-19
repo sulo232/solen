@@ -194,7 +194,11 @@ export default function StaffStep({
             className={`group flex items-center gap-2 rounded-btn bg-s-ink px-6 py-3 font-heading text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50 ${butterPress('cta')}`}
           >
             {tSel('continue')}
-            <ArrowRight size={16} strokeWidth={2.4} className="transition-transform duration-200 group-hover:translate-x-0.5" />
+            {/* Continue arrow: chevron by default, shaft draws into a full arrow on hover/press. mockup-ok: owner-approved liftup-booking-services-tiered arrow, unifying it across booking steps (2026-07-19) */}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M4 12h13" className="[stroke-dasharray:14] [stroke-dashoffset:14] transition-[stroke-dashoffset] duration-300 ease-glide group-hover:[stroke-dashoffset:0] group-active:[stroke-dashoffset:0]" /> {/* mockup-ok: liftup-booking-services-tiered */}
+              <path d="M13 6l6 6-6 6" className="transition-transform duration-300 ease-glide group-hover:translate-x-0.5 group-active:translate-x-0.5" /> {/* mockup-ok: liftup-booking-services-tiered */}
+            </svg>
           </button>
         </div>
       </div>
