@@ -85,17 +85,19 @@ export default function StaffStep({
   // Shared stagger (MOTION.md ENTER RECIPE, reduced-motion safe).
   const { container: rowsContainer, item: rowItem } = useStaggerVariants();
 
-  // mockup-ok: owner-approved 'match up' 2026-07-19 , rows sit flush inside the grouped card, no per-row rounding/fill
+  // mockup-ok: owner 2026-07-19 , each stylist is its OWN individual entity card
+  // (rounded-card + border, flat, gap-separated), matching the SalonResultCard entity-card
+  // grammar; NOT rows in a shared group card. Selected = the locked bg-s-bg-sunken gray fill.
   const rowCls = (active: boolean) =>
-    `flex w-full cursor-pointer items-center gap-3.5 p-4 text-left ${butterPress('row')} ${
-      active ? 'bg-s-bg-sunken' : ''
+    `flex w-full cursor-pointer items-center gap-3.5 rounded-card border border-s-border p-4 text-left ${butterPress('row')} ${
+      active ? 'bg-s-bg-sunken' : 'bg-white'
     }`;
 
   return (
     <div className="pb-32">
-      <motion.ul variants={rowsContainer} initial="hidden" animate="visible" className="mt-1 overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper"> {/* mockup-ok: owner-approved 'match up' 2026-07-19 , stylist rows now share the services step's bordered grouped-card idiom (radius 24, the grouped-card grammar) */}
+      <motion.ul variants={rowsContainer} initial="hidden" animate="visible" className="flex flex-col gap-2.5 pt-1"> {/* mockup-ok: owner 2026-07-19 , stylists are INDIVIDUAL entities, each its OWN card (SalonResultCard entity-card grammar), gap-separated; NOT a group card (group cards are for category members like services) */}
         {/* Egal (no preference), pinned first */}
-        <motion.li variants={rowItem} className="border-t border-s-border first:border-t-0">
+        <motion.li variants={rowItem}>
           <button
             type="button"
             onClick={() => pick('any')}
@@ -121,7 +123,7 @@ export default function StaffStep({
           const reviewCount = st.review_count ?? 0;
           const specialty = st.specialties?.[0] ?? null;
           return (
-            <motion.li key={st.id} variants={rowItem} className="border-t border-s-border first:border-t-0"> {/* mockup-ok: grouped-card divider added 2026-07-19 'match up'; pre-existing ENTER RECIPE stagger item */}
+            <motion.li key={st.id} variants={rowItem}> {/* mockup-ok: pre-existing ENTER RECIPE stagger item */}
               {/* B19: row is now a div (not a button) so the "Profil ansehen" link
                   below can be a REAL nested <button> (button-in-button is invalid
                   HTML); role/tabIndex/onKeyDown restore the same button semantics. */}
