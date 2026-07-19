@@ -7,8 +7,21 @@ every mockup must be a FULL-SCREEN preview of the real account/app page, with a 
 The format is the liftup-*-fs pattern (2026-07-18). My 38 sweep-* mockups are abstract "Direction A / B"
 gray comparison panels = the banned from-scratch redraw. WRONG FORMAT.
 
-- [x] CORRECTION: HARDEN THE GATE , `.claude/hooks/mockup-fullscreen-gate.py` (self-tested 3/3: blocks
-      abstract A/B, passes liftup-fs, exempts the gallery index), wired into settings.json Write+Edit.
+- [x] CORRECTION: HARDEN THE GATE , `.claude/hooks/mockup-fullscreen-gate.py` (self-tested 4/4: blocks
+      abstract A/B, blocks 1-iframe HAND-DRAWN After, passes 2-iframe injected After, exempts gallery), wired Write+Edit.
+
+## CORRECT FORMAT v2 (owner 2026-07-19 round 2: "the after only made ONE section, i dont know where it is; overlay on a copy of the page + highlight the after part")
+The sparse hand-drawn After was WRONG. CORRECT = BOTH panes are a live <iframe> of the SAME real route:
+- BEFORE = real page untouched.
+- AFTER = real page + INJECTED change + highlight. On show('after'), poll `afterFrame.contentDocument` until hydrated,
+  run `applyChange(doc)`: find the target (by heading text / selector), apply the change (inline style), set
+  `data-sweep-done`, add a blue outline + a `<div>After: <change></div>` label, `scrollIntoView({block:'center'})`.
+- Same-origin (tunnel serves both /de/* and /_mockups/*), so contentDocument access works. Poll because the Next app
+  hydrates AFTER iframe load, and a hidden iframe doesn't hydrate until shown , so START the poll inside show('after').
+- REFERENCE TEMPLATE (validated live): public/_mockups/sweep-salon-sections/index.html.
+- [ ] REBUILD ALL 39 in FORMAT v2 (the 38 non-salon-sections are still the sparse hand-drawn After = WRONG).
+      RESUME: `grep -L "applyChange" public/_mockups/sweep-*/index.html` lists the ones NOT yet on v2.
+      Each needs custom applyChange targeting (inspect the real route's DOM to find the element, then change+highlight it).
 - [x] CORRECTION: REBUILD all 39 in fullscreen before/after format. IN PROGRESS (owner confirmed "make all 39 full page" 2026-07-19).
       RESUME RECIPE (survives compaction): `grep -l "Direction A" public/_mockups/sweep-*/index.html` lists the STILL-OLD ones.
       Converted so far (16): auth-grammar, salon-sections, salon-team, cookie-consent, products-cta, nav-hover, search-empty,
