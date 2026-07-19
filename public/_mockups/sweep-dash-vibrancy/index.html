@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Dashboard vibrancy , dead token renders ink (mockup)</title>
+<!-- Base: elicitation -->
+<!-- Scale: component -->
+<!--
+  Grounded-in: app/[locale]/dashboard/revenue/page.tsx
+  Component-scale elicitation probe , the operator dashboard is a VIBRANT skin (LOCKFILE section 12), but the
+  RETIRED token s-coral is aliased to #0A0A0A (ink) in tailwind.config.js:81 and is still used across
+  revenue/page.tsx (KPI chips L98/105/112, rank badge L222, figures L261), earnings, calendar accents, loyalty,
+  platform-analytics and settings. So every "accent" silently renders BLACK, and the vibrant dashboard reads
+  monochrome, the owner's exact "too monochrome, I want vibrancy" complaint, caused by a dead token. Plus the
+  primary CTA is hand-rolled ink (page.tsx:170) where canon wants accent-blue DashButton, and success uses muted
+  s-sage instead of s-success. This shows vibrant vs accidentally-ink.
+  Exists-check: `npm run exists "dashboard vibrancy"` ran this turn , these dashboard pages already render.
+  REMOVED.md: s-coral is a retired/killed token (do NOT reuse; swap to live tokens). New = swapping dead tokens
+  for live ones. Real tokens (s-accent-bright #276EF1, s-success #16A34A, s-warning #B45309).
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--white:#fff;--sunken:#F4F4F5;--border:#E4E4E7;
+    --accent:#276EF1;--accentDeep:#1E54B7;--success:#16A34A;--warning:#B45309;--sage:#A8B89A;
+    --font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);background:var(--sunken);color:var(--ink);-webkit-font-smoothing:antialiased;padding:24px 16px 60px}
+  .wrap{max-width:900px;margin:0 auto}
+  h1{font-size:22px;font-weight:600;letter-spacing:-0.02em}
+  .sub{font-size:14px;color:var(--ink2);margin-top:6px;line-height:1.5;max-width:680px}
+  .grid2{display:grid;gap:20px;margin-top:26px;grid-template-columns:1fr 1fr}
+  @media(max-width:760px){.grid2{grid-template-columns:1fr}}
+  .panel{background:var(--sunken);border:1px solid var(--border);border-radius:16px;padding:16px}
+  .plabel{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
+  .pill{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:#fff;border:1px solid var(--border);color:var(--ink2)}
+  .pill.rec{background:#EAF1FE;color:#276EF1;border-color:transparent}
+  .pill.bug{background:#FDECEC;color:#DC2626;border-color:transparent}
+  .pnote{font-size:12.5px;color:var(--ink2);margin-top:6px;line-height:1.45}
+  .board{margin-top:14px;background:#fff;border:1px solid var(--border);border-radius:20px;padding:16px;box-shadow:0 1px 2px rgba(10,10,10,.04)}
+  .kpis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .kpi{border:1px solid var(--border);border-radius:16px;padding:12px}
+  .kchip{height:30px;width:30px;border-radius:9px;display:grid;place-items:center;margin-bottom:8px}
+  .kchip svg{width:16px;height:16px}
+  .kval{font-size:17px;font-weight:600;letter-spacing:-0.02em}
+  .klab{font-size:10.5px;color:var(--ink3);margin-top:1px}
+  .foot{margin-top:14px;display:flex;align-items:center;justify-content:space-between}
+  .succ{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600}
+  .succ svg{width:15px;height:15px}
+  .cta{height:40px;padding:0 16px;border-radius:999px;display:grid;place-items:center;font-size:14px;font-weight:600;color:#fff}
+  /* A vibrant */
+  .a .kchip{background:rgba(39,110,241,.12);color:var(--accent)}
+  .a .kchip.g{background:rgba(22,163,74,.12);color:var(--success)}
+  .a .succ{color:var(--success)}
+  .a .cta{background:var(--accent)}
+  /* B accidentally ink (s-coral -> #0A0A0A) */
+  .b .kchip{background:rgba(10,10,10,.06);color:var(--ink)}
+  .b .succ{color:var(--sage)}
+  .b .cta{background:var(--ink)}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Dashboard vibrancy , a dead token is rendering everything ink</h1>
+    <p class="sub">The operator dashboard is meant to be the vibrant skin, but its accent token (s-coral) was retired and now points at pure ink. So the KPI chips, figures, calendar accents and rank badges silently render black, the primary CTA is hand-rolled ink, and "success" is a muted sage. The dashboard looks monochrome, exactly the "I want vibrancy" complaint. Restore the live tokens?</p>
+
+    <div class="grid2">
+      <div class="panel a">
+        <div class="plabel">Direction A , vibrant (live tokens) <span class="pill rec">canon §12</span></div>
+        <p class="pnote">Accent chips + primary CTA in accent-blue #276EF1, success in real green #16A34A. The vibrant operator skin the design system already specifies, and what the primitives (DashButton, DashStatCard) produce.</p>
+        <div class="board">
+          <div class="kpis">
+            <div class="kpi"><div class="kchip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="lucide"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></div><div class="kval">CHF 4.2k</div><div class="klab">Umsatz</div></div>
+            <div class="kpi"><div class="kchip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="lucide"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div class="kval">128</div><div class="klab">Termine</div></div>
+            <div class="kpi"><div class="kchip g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="lucide"><path d="M20 6 9 17l-5-5"/></svg></div><div class="kval">CHF 380</div><div class="klab">Trinkgeld</div></div>
+          </div>
+          <div class="foot"><span class="succ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="lucide"><path d="M20 6 9 17l-5-5"/></svg>Gespeichert</span><span class="cta">Neuer Termin</span></div>
+        </div>
+      </div>
+      <div class="panel b">
+        <div class="plabel">Direction B , current (renders ink) <span class="pill bug">dead token</span></div>
+        <p class="pnote">What ships today: s-coral resolves to #0A0A0A so every accent chip and figure is black, the CTA is ink, success is muted sage. No one chose monochrome, a retired token did. This is the drift the vibrant skin was supposed to prevent.</p>
+        <div class="board">
+          <div class="kpis">
+            <div class="kpi"><div class="kchip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="lucide"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></div><div class="kval">CHF 4.2k</div><div class="klab">Umsatz</div></div>
+            <div class="kpi"><div class="kchip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="lucide"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div class="kval">128</div><div class="klab">Termine</div></div>
+            <div class="kpi"><div class="kchip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="lucide"><path d="M20 6 9 17l-5-5"/></svg></div><div class="kval">CHF 380</div><div class="klab">Trinkgeld</div></div>
+          </div>
+          <div class="foot"><span class="succ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="lucide"><path d="M20 6 9 17l-5-5"/></svg>Gespeichert</span><span class="cta">Neuer Termin</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -71,7 +71,9 @@
     {slug:'sweep-selected-ink-pill', title:'Selected pill , ink fill vs gray', desc:'Settings language pill and the Inspo refine chip both fill selected with ink/black, contradicting the gray-sunken selected lock.', dirs:'A gray sunken (rec) . B ink fill (current)'},
     {slug:'sweep-voucher-status-chip', title:'Voucher wallet , status chip', desc:'The Active/Used chip paints icon AND label in the status hue, so "Aktiv" is faint amber on amber tint.', dirs:'A ink label + saturated icon (rec) . B both hued (current)'},
     {slug:'sweep-auth-grammar', title:'Auth pages , card + success grammar', desc:'Reset-password and staff-invite diverge from login/register: warm-shadow borderless card, grey-tint success disc.', dirs:'A clean bordered white + solid-green disc (rec) . B divergent (current)'},
-    {slug:'sweep-empty-consolidation', title:'Empty states , registry vs hand-rolled', desc:'One locked EmptyState exists, but /reviews, intake-forms and Inspo/Saved hand-roll their own (reviews disc is sunken-on-sunken, invisible).', dirs:'A registry EmptyState (rec) . B hand-rolled (current)'}
+    {slug:'sweep-empty-consolidation', title:'Empty states , registry vs hand-rolled', desc:'One locked EmptyState exists, but /reviews, intake-forms and Inspo/Saved hand-roll their own (reviews disc is sunken-on-sunken, invisible).', dirs:'A registry EmptyState (rec) . B hand-rolled (current)'},
+    {slug:'sweep-dash-vibrancy', title:'Dashboard , a dead token renders it ink', desc:'The vibrant operator dashboard uses retired s-coral (aliased to ink), so KPI chips, figures and the CTA silently render black.', dirs:'A vibrant live tokens (rec) . B current (ink via dead token)'},
+    {slug:'sweep-dash-selected-state', title:'Dashboard , selected state (3 ways)', desc:'Selected is drawn ink-fill, blue-tint AND gray-sunken across dashboard pages. Pick one for the vibrant skin.', dirs:'B blue tint (rec, vibrant) . A gray sunken . C ink (off-canon)'}
   ];
   var list=document.getElementById('list');
   MOCKS.forEach(function(m){
