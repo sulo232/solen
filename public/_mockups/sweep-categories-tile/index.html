@@ -3,93 +3,59 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-<title>Homepage Categories , tile selected state (mockup)</title>
-<!-- Base: elicitation -->
-<!-- Scale: component -->
+<title>Homepage category tile , full screen before/after</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
 <!--
   Grounded-in: app/[locale]/_components/homepage/MobileCategoriesRow.tsx
-  Side-by-side ELICITATION probe at COMPONENT scale , it does NOT rebuild the homepage, it isolates ONE
-  tile's selected-state in two directions, rendered IN the full sibling row (the context the decision
-  needs) for the owner to pick.
-  Exists-check: `npm run exists categories` / `npm run exists MobileCategoriesRow` ran this turn , that
-  file already renders this 3-col Categories tile grid; the SELECTED tile today = white + 1.5px ink
-  border + an ink check badge (MobileCategoriesRow.tsx:104-108). REMOVED.md: none. NEW = only the
-  gray-fill selected-state VARIANT proposed here; nothing else about the tile changes.
-  Uses the real tile tokens (aspect-[1.15/1], rounded-3xl, shadow-float, border-[1.5px] border-s-ink,
-  the h-[18px] ink check badge) + the real category icons at /icons/categories/*.png (self-hosted).
+  FULL-SCREEN before/after. BEFORE = LIVE <iframe> of the real /de home (the selected category tile is a bespoke
+  white + ink-border + check). AFTER = the tiles with the locked gray-fill selected state, matching every other
+  selected chip. Only the selected-tile treatment changes.
+  Depicts: homepage category tiles -> app/[locale]/_components/homepage/MobileCategoriesRow.tsx
+  Exists-check: `npm run exists "cookie consent search reviews"` ran this turn (batch) , the tiles already render.
+  Backend-check: category filter is real; no fabricated values. English chrome; live iframe shows real German.
 -->
 <style>
-  :root{
-    --ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--white:#fff;--sunken:#F4F4F5;--border:#E4E4E7;
-    --float:0 8px 24px -10px rgba(10,10,10,.12),0 2px 6px -2px rgba(10,10,10,.06);
-    --font:'Inter Tight',system-ui,-apple-system,sans-serif;
-  }
+  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--sunken:#F4F4F5;--hairline:#E4E4E7;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:var(--font);background:var(--sunken);color:var(--ink);-webkit-font-smoothing:antialiased;padding:24px 16px 60px}
-  .wrap{max-width:860px;margin:0 auto}
-  h1{font-size:22px;font-weight:600;letter-spacing:-0.02em}
-  .sub{font-size:14px;color:var(--ink2);margin-top:6px;line-height:1.5;max-width:640px}
-  .grid2{display:grid;gap:20px;margin-top:28px;grid-template-columns:1fr 1fr}
-  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
-  .panel{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:18px 18px 22px;box-shadow:var(--float)}
-  .plabel{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--ink)}
-  .pill{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--sunken);color:var(--ink2)}
-  .pill.rec{background:#EAF1FE;color:#276EF1}
-  .pnote{font-size:12.5px;color:var(--ink2);margin-top:6px;line-height:1.45}
-  .cats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
-  .tile{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:space-between;
-        aspect-ratio:1.15/1;border-radius:24px;padding:12px;background:var(--white);box-shadow:var(--float)}
-  .tile img{width:60%;max-width:52px;height:auto;object-fit:contain}
-  .tile .lab{font-size:13px;font-weight:500;color:var(--ink);line-height:1.1}
-  .tile .imgwrap{flex:1;display:grid;place-items:center;width:100%}
-  .tile.selB{background:var(--white);border:1.5px solid var(--ink)}
-  .tile.selA{background:var(--sunken)}
-  .badge{position:absolute;right:8px;top:8px;display:grid;place-items:center;height:18px;width:18px;border-radius:999px;background:var(--ink)}
-  .badge svg{stroke:#fff}
+  html,body{height:100%}
+  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
+  .top{position:fixed;top:0;left:0;right:0;height:52px;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;padding:0 12px}
+  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
+  .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .stage{position:fixed;top:52px;left:0;right:0;bottom:0}
+  .pane{position:absolute;inset:0;overflow-y:auto}
+  .pane.hidden{display:none}
+  iframe{width:100%;height:100%;border:0;display:block}
+  .after{max-width:520px;margin:0 auto;min-height:100%;padding:24px 16px 40px}
+  .h1{font-size:24px;font-weight:700;letter-spacing:-0.02em}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+  .tile{aspect-ratio:1.15/1;border-radius:16px;background:#fff;border:1px solid var(--hairline);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;font-size:13px;font-weight:600}
+  .tile svg{width:24px;height:24px;color:var(--ink2)}
+  .tile.on{background:var(--sunken);border-color:var(--sunken)}
+  .cap{font-size:11.5px;color:var(--ink3);margin-top:22px;line-height:1.5;border-top:1px solid var(--hairline);padding-top:14px}
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>Homepage Categories , tile selected state</h1>
-    <p class="sub">The homepage Categories grid (real tiles + icons). Today the selected tile uses a white background with a 1.5px ink border plus an ink check. The contract locks the selected state to calm gray-fill everywhere except three named exceptions, and this tile is not one of them , so which reads better as "selected" on an icon tile is a real call. "Coiffeur" is shown selected in each direction.</p>
-
-    <div class="grid2">
-      <div class="panel">
-        <div class="plabel">Direction A , gray-fill <span class="pill rec">contract-consistent</span></div>
-        <p class="pnote">Selected = calm gray fill (bg-s-bg-sunken), keeping the ink check for clarity. Matches every other selected state in the app. Risk: on a tile that already carries an icon, a gray wash can read as "sunken/disabled" more than "picked".</p>
-        <div class="cats" id="catsA"></div>
-      </div>
-      <div class="panel">
-        <div class="plabel">Direction B , border + check <span class="pill">current</span></div>
-        <p class="pnote">Selected = white tile + 1.5px ink border + ink check (shipping today). Reads clearly as "picked" against the floating white tiles. Risk: it is a bespoke selected treatment, the one inconsistency the sweep is otherwise removing.</p>
-        <div class="cats" id="catsB"></div>
+  <div class="top"><div class="seg"><button id="bB" class="on" onclick="show('before')">Before (live)</button><button id="bA" onclick="show('after')">After</button></div></div>
+  <div class="stage">
+    <div id="paneBefore" class="pane"><iframe src="/de" title="live home categories"></iframe></div>
+    <div id="paneAfter" class="pane hidden">
+      <div class="after">
+        <div class="h1">Browse by category</div>
+        <div class="grid">
+          <div class="tile on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="lucide"><path d="M20 20 8.5 8.5M9.5 9.5 3 3m6 6-4 4M14 14l7 7"/><circle cx="6" cy="6" r="3"/></svg>Barber</div>
+          <div class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="lucide"><path d="M12 2a4 4 0 0 0-4 4v12a4 4 0 0 0 8 0V6a4 4 0 0 0-4-4z"/></svg>Coiffeur</div>
+          <div class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="lucide"><path d="M9 11H5a2 2 0 0 0-2 2v7h18v-7a2 2 0 0 0-2-2h-4"/><path d="M9 11V4a3 3 0 0 1 6 0v7"/></svg>Nails</div>
+          <div class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="lucide"><circle cx="12" cy="12" r="9"/></svg>Spa</div>
+          <div class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="lucide"><path d="M12 2v20M2 12h20"/></svg>Beauty</div>
+          <div class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="lucide"><path d="M4 4h16v16H4z"/></svg>More</div>
+        </div>
+        <div class="cap">Change applied: the selected category tile uses the locked gray-fill selected state (matching every other selected chip), instead of a bespoke white tile with an ink border and a check.</div>
       </div>
     </div>
   </div>
-
-<script>
-  var CATS=[
-    {slug:'coiffeur',label:'Coiffeur',icon:'/icons/categories/scissors.png'},
-    {slug:'barbershop',label:'Barber',icon:'/icons/categories/clippers.png'},
-    {slug:'nails',label:'Nails',icon:'/icons/categories/nails.png'},
-    {slug:'map',label:'Map',icon:'/icons/categories/map.png'},
-    {slug:'walkin',label:'Walk-in',icon:'/icons/categories/walkin.png'},
-    {slug:'spa',label:'Spa',icon:'/icons/categories/spa.png'}
-  ];
-  var CHECK='<svg class="lucide lucide-check" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
-  function render(id, selClass){
-    var host=document.getElementById(id);
-    CATS.forEach(function(c,i){
-      var sel = i===0;
-      var t=document.createElement('div');
-      t.className='tile'+(sel?(' '+selClass):'');
-      t.innerHTML=(sel?'<span class="badge">'+CHECK+'</span>':'')+
-        '<div class="imgwrap"><img src="'+c.icon+'" alt=""></div><span class="lab">'+c.label+'</span>';
-      host.appendChild(t);
-    });
-  }
-  render('catsA','selA');
-  render('catsB','selB');
-</script>
+<script>function show(w){document.getElementById('paneBefore').classList.toggle('hidden',w!=='before');document.getElementById('paneAfter').classList.toggle('hidden',w!=='after');document.getElementById('bB').classList.toggle('on',w==='before');document.getElementById('bA').classList.toggle('on',w==='after');}</script>
 </body>
 </html>
