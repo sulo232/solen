@@ -42,7 +42,7 @@ Build order = HIGH impact first. (arch/behavior/copy items are DECISIONS, not A/
 - [ ] sweep-hairtype-dup [MED] , settings/BeautyProfileForm:92 hair_type editable in 2 places , canonicalize to Haarprofil.
 - [ ] sweep-profile-loading [MED] , profile/loading.tsx one stale shared skeleton across 4 pages , per-route.
 - [ ] sweep-bookings-skeleton [MED] , BookingsList:177 spinner vs BookingCard-shaped skeleton.
-- [ ] sweep-brand-hero [LOW] , brand/[slug]:79 PDP-scale H1 for a directory index , demote?
+- [x] sweep-brand-hero [LOW] , PDP-scale vs Section-title hero , BUILT
 - [ ] sweep-profile-loyalty-meta [LOW] , profile/page.tsx:204 loyalty row blank meta , show rank word?
 - [ ] (+ mechanical fixes: notif Skeleton/EmptyState/blue-icon, referral states, help Spinner->Skeleton , feed FRONTEND_SWEEP fix-now)
 
