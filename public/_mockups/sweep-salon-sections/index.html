@@ -3,21 +3,22 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-<title>Salon PDP , section rhythm , full page before/after</title>
+<title>Salon PDP , sections carded , full page before/after</title>
 <!-- Base: capture live -->
 <!-- Scale: full-page -->
 <!--
-  Grounded-in: app/[locale]/_components/salon/ (section wrappers: SalonTeam, SalonReviews)
-  FULL-PAGE before/after, BOTH panes are the REAL page (live iframe of /de/salon/blade-and-stone). BEFORE = the
-  real page untouched. AFTER = the SAME real page with the change INJECTED on top (the Team + Reviews section
-  wrappers flattened to match the flat section rhythm) and the changed sections HIGHLIGHTED with a blue ring +
-  "After" label, so you can see exactly WHERE the change is, in full context. No hand-drawn placeholders, no fake data.
+  Grounded-in: app/[locale]/_components/salon/ (SalonTeam, SalonReviews section wrappers)
+  FORMAT v3. Direction = the WINNING carded tier-card 'service selection' principle (rounded-24 + shadow-whisper
+  + border), NOT flat (flat is ditched, REMOVED.md:85). BOTH panes are the real /de/salon/blade-and-stone.
+  BEFORE = untouched. AFTER = the same real page with the Team + Reviews sections UNIFIED to the carded tier-card
+  grammar (rounded-24, soft whisper shadow, hairline border) so they match the service cards. Marked with a small
+  corner label + auto-scroll, NO blue outline box.
   Depicts: salon PDP section wrappers -> app/[locale]/_components/salon/*
   Exists-check: `npm run exists "salon sections"` ran earlier , the PDP already renders these sections.
-  Backend-check: real live page; no fabricated values. English chrome; the live page shows real German.
+  Backend-check: real live page, no fabricated values. English chrome; live page shows real German.
 -->
 <style>
-  :root{--ink:#0A0A0A;--ink2:#52525B;--sunken:#F4F4F5;--hairline:#E4E4E7;--accent:#276EF1;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  :root{--ink:#0A0A0A;--ink2:#52525B;--sunken:#F4F4F5;--hairline:#E4E4E7;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
@@ -25,7 +26,7 @@
   .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
   .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
   .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
-  .cap{position:fixed;top:52px;left:0;right:0;z-index:19;background:#EAF1FE;color:#1E54B7;font-size:12px;font-weight:600;text-align:center;padding:6px 12px;line-height:1.35}
+  .cap{position:fixed;top:52px;left:0;right:0;z-index:19;background:var(--sunken);color:var(--ink2);font-size:12px;font-weight:600;text-align:center;padding:6px 12px;line-height:1.35}
   .stage{position:fixed;top:84px;left:0;right:0;bottom:0}
   .pane{position:absolute;inset:0}
   .pane.hidden{display:none}
@@ -34,39 +35,31 @@
 </head>
 <body>
   <div class="top"><div class="seg"><button id="bB" class="on" onclick="show('before')">Before (live)</button><button id="bA" onclick="show('after')">After</button></div></div>
-  <div class="cap" id="cap">The change is applied to the real page and outlined in blue below.</div>
+  <div class="cap">After = the real page with the sections carded like the service cards.</div>
   <div class="stage">
     <div id="paneBefore" class="pane"><iframe id="beforeFrame" src="/de/salon/blade-and-stone" title="real page, before"></iframe></div>
-    <div id="paneAfter" class="pane hidden"><iframe id="afterFrame" src="/de/salon/blade-and-stone" title="real page, after (change applied + highlighted)"></iframe></div>
+    <div id="paneAfter" class="pane hidden"><iframe id="afterFrame" src="/de/salon/blade-and-stone" title="real page, after"></iframe></div>
   </div>
 <script>
-  // ONE change definition for this mockup: flatten the Team + Reviews section wrappers to the flat rhythm.
-  var CHANGE_LABEL = 'After: flat section rhythm';
+  var CHANGE_LABEL = 'After: carded like the services';
   function applyChange(doc){
-    var heads = doc.querySelectorAll('h1,h2,h3');
-    var hit = 0, first = null;
+    var heads = doc.querySelectorAll('h1,h2,h3'), hit = 0, first = null;
     heads.forEach(function(h){
-      var t = (h.textContent||'').trim();
-      if(!/^(Team|Bewertungen|Reviews)\b/i.test(t)) return;
+      if(!/^(Team|Bewertungen|Reviews)\b/i.test((h.textContent||'').trim())) return;
       var el = h, up = 0;
       while(el.parentElement && up < 6){ el = el.parentElement; up++; if(/rounded|shadow/i.test((el.className||'').toString())) break; }
       if(el.getAttribute('data-sweep-done')) return;
       el.setAttribute('data-sweep-done','1');
-      // apply the change: flatten (no float shadow, unified radius, hairline top)
-      el.style.boxShadow = 'none';
-      el.style.borderRadius = '0';
-      el.style.borderTop = '1px solid #E4E4E7';
-      // highlight it
-      el.style.outline = '2px solid #276EF1';
-      el.style.outlineOffset = '-2px';
-      el.style.borderRadius = '10px';
+      // WINNING direction: unify to the carded tier-card grammar (rounded-24 + soft whisper shadow + hairline)
+      el.style.borderRadius = '24px';
+      el.style.boxShadow = '0 1px 2px rgba(10,10,10,.04), 0 10px 30px -18px rgba(10,10,10,.12)';
+      el.style.border = '1px solid #E4E4E7';
       el.style.position = 'relative';
-      var lab = doc.createElement('div');
-      lab.textContent = CHANGE_LABEL;
-      lab.style.cssText = 'position:absolute;top:-1px;left:-1px;background:#276EF1;color:#fff;font:600 10px/1.3 -apple-system,sans-serif;padding:3px 8px;border-radius:10px 0 8px 0;z-index:99999';
+      // gentle marker: a small corner chip, NO blue outline box
+      var lab = doc.createElement('div'); lab.textContent = CHANGE_LABEL;
+      lab.style.cssText = 'position:absolute;top:8px;right:8px;background:rgba(10,10,10,.82);color:#fff;font:600 10px/1.3 -apple-system,sans-serif;padding:3px 8px;border-radius:999px;z-index:99999';
       el.appendChild(lab);
-      if(!first) first = el;
-      hit++;
+      if(!first) first = el; hit++;
     });
     if(first){ try{ first.scrollIntoView({block:'center'}); }catch(e){} }
     return hit;
@@ -74,17 +67,11 @@
   var afterStarted = false;
   function startAfter(){
     if(afterStarted) return; afterStarted = true;
-    var f = document.getElementById('afterFrame');
-    var tries = 0;
+    var f = document.getElementById('afterFrame'), tries = 0;
     var iv = setInterval(function(){
       tries++;
-      try{
-        var doc = f.contentDocument;
-        if(doc && doc.querySelector('h1,h2,h3')){
-          if(applyChange(doc) > 0){ clearInterval(iv); }
-        }
-      }catch(e){}
-      if(tries > 100){ clearInterval(iv); }   // ~20s safety
+      try{ var doc = f.contentDocument; if(doc && doc.querySelector('h1,h2,h3')){ if(applyChange(doc) > 0){ clearInterval(iv); } } }catch(e){}
+      if(tries > 100){ clearInterval(iv); }
     }, 200);
   }
   function show(w){
