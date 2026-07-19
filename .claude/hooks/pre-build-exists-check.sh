@@ -52,7 +52,14 @@ case "$FILE" in
   */app/*/route.ts|*/app/*/route.js) SURFACE="API endpoint";;
   */supabase/migrations/*.sql)       SURFACE="DB migration";;
   */lib/*.ts|*/lib/*.tsx)            SURFACE="lib module";;
-  */components/*.tsx|*/components-legacy/*.tsx) SURFACE="component";;
+  # component surfaces , the app's PRIMARY component tree is app/**/_components/** (underscore,
+  # route-group-excluded); the old globs matched only top-level `components/` + `components-legacy/`
+  # and MISSED `_components` entirely, so a duplicate like SalonServicesSheet (a parallel
+  # service-selection UI next to the booking ServicesStaffStep) was never gated. Case-glob `*`
+  # spans `/`, so these match at ANY nesting depth. (owner 2026-07-19, the store "Alle ansehen" dup.)
+  */_components/*.tsx|*/_components/*.jsx) SURFACE="component";;
+  */components/*.tsx|*/components/*.jsx)   SURFACE="component";;
+  */components-legacy/*.tsx|*/components-legacy/*.jsx) SURFACE="component";;
   */public/solen-*.html)             SURFACE="design mockup";;
   */public/_mockups/*.html)          SURFACE="design mockup";;
   *) exit 0;;
