@@ -183,7 +183,7 @@ export default function StaffStep({
       <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-s-border bg-white">
         <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
           <div>
-            <p className="font-body text-xl font-extrabold leading-none tabular-nums text-s-ink">
+            <p className="font-body text-xl font-bold leading-none tabular-nums text-s-ink">
               {formatCurrency(formData.totalPrice, locale)}
             </p>
             <p className="mt-1.5 flex items-center gap-1.5 text-xs text-s-ink-2">

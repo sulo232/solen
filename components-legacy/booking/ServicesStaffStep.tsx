@@ -590,7 +590,7 @@ export default function ServicesStaffStep({
       <div className="fixed bottom-0 left-0 right-0 border-t border-s-border bg-white z-40">
         <div className="max-w-2xl mx-auto px-4 py-3 flex justify-between items-center">
           <div data-cart-anchor>
-            <p className="font-body font-extrabold text-xl text-s-ink tabular-nums leading-none overflow-hidden">
+            <p className="font-body font-bold text-xl text-s-ink tabular-nums leading-none overflow-hidden">
               {/* Owner-approved count-up (2026-07-18 comparison lab, public/_mockups/
                   liftup-services-motion): only the NUMBER animates on change, the CHF
                   label stays static. fr-CH is a suffix locale (formatCurrency renders

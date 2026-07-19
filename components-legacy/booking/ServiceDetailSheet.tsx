@@ -228,7 +228,7 @@ export default function ServiceDetailSheet({
             initial={{ y: 6, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.22, ease: [0.2, 0.8, 0.4, 1] }}
-            className="font-body text-[22px] font-extrabold leading-none tabular-nums text-s-ink"
+            className="font-body text-[22px] font-bold leading-none tabular-nums text-s-ink"
           >
             {showFrom
               ? `${t('from')} ${formatCurrency(Math.min(...options.map((o) => o.price)), locale)}`
