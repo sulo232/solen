@@ -20,5 +20,35 @@ Owner 2026-07-19: "go look into every frontend in solen and see improvements cz 
 - [ ] Tier 1 fix-now + mockups
 - [ ] Tier 2 / 3 / 4
 
+## Tier-1 audit RESULT (2026-07-19, workflow w7nnini3r , 105 findings: 30 high/44 med/31 low; 100 mechanical + 5 mockup)
+Full backlog: task output w7nnini3r. Per-surface verdict: homepage/booking/inspo/walkin/reviews/auth-onboarding = NEEDS-WORK; search/salon-pdp/profile/confirmation = MINOR.
+
+### LANDMINES (do NOT blindly apply , vet against settled decisions)
+- **Booking category pills = owner-approved BLACK/ink** (TASTE_LOG 2026-07-19, `selected-ok:`). The audit WRONGLY flagged `ServicesStaffStep.tsx:366` as a selected-state violation. DO NOT change it. (HairStep pills + inspo/profile/reviews selected states ARE genuine violations , the override was scoped to the booking category pills only.)
+- **Fabricated data = SEED via real routes, NOT hide/delete** (owner GAP_FIXES WS30 + prelaunch memory). Homepage 5 sections (Nearby/RecentlyViewed/forYouSalons/Reviews/BusinessTeaser fake ratings/testimonials), onboarding claim, confirmation `SOL-•••••` -> route to WS30, don't naive-delete. EXCEPTION: pure marketing-copy fabrications with no data path (BusinessTeaser "1'200 Salons" stat, WIP placeholder image) can just be removed/restored now.
+
+### FIX-NOW sweeps (mechanical, cross-surface , the owner's "fix every inconsistency")
+- [ ] SELECTED-STATE -> gray `bg-s-bg-sunken` (EXCLUDE booking category pills): HairStep:43, PostFromDiscover:199/206/242/258, HaarprofilForm:30 (HIGH, unfixed since 2026-07-08), SalonReviews filter checkbox:251, dead CategoryTabBar (delete).
+- [ ] INPUT FOCUS RING -> global ink-edge (remove `focus:ring/border-s-accent`): all auth/onboarding inputs (SignIn:209, register, OnboardingFlow, reset, salon), reviews textarea:382; confirmation box-shadow rings :281/291/315.
+- [ ] "MEHR LESEN" -> `text-s-accent`: SalonReviews:213, MarketplaceReviewsList:67.
+- [ ] TOUCH TARGETS -> h-11 w-11: SalonHeader Share:144, SalonReviews flag:334, inspo (DetailPage 255/265/285, FilterDrawer:62, back buttons), confirmation copy:314, walk-in info:503, search clear:1336.
+- [ ] STATES -> registry Skeleton/EmptyState/ErrorState: search:249/2319, SalonProducts/Bundles shimmer+error, reviews page:99, onboarding/salon:536, SalonReviews in-flight, + add confirmation/profile loading.tsx.
+- [ ] HAIRLINE -> `border-s-border` (kill `border-s-ink/[0.0x]`): booking (PayConfirmStep, ServicesStaffStep:600, ServiceDetailSheet), walk-in-pay (many), onboarding/salon (many).
+- [ ] SHADOW -> `shadow-elevation-1/2` (kill one-off + shadow-float): walk-in-pay, confirmation, queue.
+- [ ] BIG CTA color -> ink primary / blue-ghost secondary (never blue-fill): queue Directions:534, walkin Feedback:277 (mockup , see below).
+- [ ] WEIGHT -> font-extrabold(800)->bold, H2->semibold: ServicesStaffStep:546/400, StaffStep:183, ServiceDetailSheet:231.
+- [ ] EM-DASH sweep: salon, reviews, confirmation comments+copy, profile toasts (de.json:30/31), inspo modal, onboarding, search metadata titles.
+- [ ] DEAD/ORPHAN delete: SearchResults.tsx, CategoryHeroCarousel.tsx, inspo board/[id]+saved/[id] (killed Kollektion), CategoryTabBar, forYouSalons FORYOU_DEALS.
+- [ ] SalonCard superseded redesign (aspect 3/2->5/4, drop blue review count, drop next-slot row) , CARD_REDESIGN_2026-07-13; vet vs the STRANDED branch first.
+- [ ] FUNCTIONAL: search Retry no-op (SearchTemplate:1524, re-run fetch not router.refresh); nearby=true no-op link (Nearby:159); PDP two ink CTAs (SalonProducts:230 -> neutral); DateTimeStep:201 selectedTone ink->accent (locked blue slot).
+- [ ] Pre-migration surfaces: reset-password/page.tsx + onboarding/salon/page.tsx (uppercase-tracked, ad-hoc shadows, banned Zap/Sparkles).
+
+### MOCKUP (multi-direction, owner picks):
+1. Homepage MobileCategoriesRow selected photo-tile (gray-fill vs border+check) , 2 dir.
+2. search cause-aware empty chip family (error vs empty radius) , 2 dir.
+3. walkin queue Feedback CTA (ink commit vs blue-ghost) , 2 dir.
+4. walkin loading skeletons (tracker-shaped) , 1-2 dir.
+5. reviews+buy floating-card wrapper (wrap-all / unwrap-these / keep) , PDP rhythm, 3 dir.
+
 ## Log
-- 2026-07-19: sweep started. Tiered 132 routes. Tier-1 design audit launched (parallel read-only agents vs LOCKFILE/TASTE_LOG/RATIONALE).
+- 2026-07-19: sweep started. Tiered 132 routes. Tier-1 audit DONE (105 findings). Executing fix-now sweeps (vetting each vs settled decisions); fabricated-data -> WS30; 5 mockups queued.
