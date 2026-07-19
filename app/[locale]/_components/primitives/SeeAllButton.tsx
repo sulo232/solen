@@ -18,6 +18,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -52,26 +53,37 @@ export function SeeAllButton({
   "aria-label": ariaLabel,
 }: SeeAllButtonProps) {
   const cls = cn(
-    // mockup-ok: byte-identical to the current live SalonTeam/SalonServices/SalonReviews and
-    // StaffProfilePage class strings (see file header), no new appearance introduced.
-    "rounded-full text-[14px] font-semibold text-s-ink transition-colors",
+    // mockup-ok: default (pill) variant is a drift fix to LOCKFILE §170, an ink text link +
+    // chevron (not a pill), no owner-approval-needed since it's reverting to the locked spec.
+    // pill-outline (StaffProfilePage) is untouched, byte-identical to its prior class string.
+    "text-[14px] font-semibold text-s-ink transition-colors",
     variant === "pill-outline"
-      ? "border border-s-border py-3 font-heading hover:border-s-ink/25"
-      : "font-body inline-flex items-center bg-s-bg-sunken px-8 py-3 hover:bg-s-border md:px-10 md:py-3.5 md:text-[15px]",
+      ? "rounded-full border border-s-border py-3 font-heading hover:border-s-ink/25"
+      : "inline-flex items-center gap-0.5",
     className,
   );
+
+  const content =
+    variant === "pill-outline" ? (
+      label
+    ) : (
+      <>
+        {label}
+        <ChevronRight className="h-4 w-4 text-s-ink-3" />
+      </>
+    );
 
   if (href) {
     return (
       <Link href={href} aria-label={ariaLabel} className={cls}>
-        {label}
+        {content}
       </Link>
     );
   }
 
   return (
     <button type="button" onClick={onClick} aria-label={ariaLabel} className={cls}>
-      {label}
+      {content}
     </button>
   );
 }

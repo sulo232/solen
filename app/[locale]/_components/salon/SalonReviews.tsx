@@ -85,7 +85,13 @@ export function SalonReviews({
   const visible = expanded ? rows : rows.slice(0, 6);
 
   return (
-    <section id="section-reviews" className="rounded-2xl bg-white shadow-float p-5 md:p-7">
+    <section
+      id="section-reviews"
+      // mockup-ok: drift fix to the LOCKED §427 grouped list-card grammar, byte-identical to
+      // SalonServices.tsx's already-shipped `<ul>` wrapper class string (rounded-[24px] border
+      // border-s-border bg-white shadow-whisper), no new appearance introduced.
+      className="rounded-[24px] border border-s-border bg-white shadow-whisper p-5 md:p-7"
+    >
       {/* V3-D202 (A9): font-body → font-display + Scale B. */}
       <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
         Bewertungen

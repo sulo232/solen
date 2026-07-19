@@ -108,7 +108,10 @@ export function SalonTeam({
   return (
     <section
       id="section-team"
-      className="overflow-hidden rounded-3xl bg-white shadow-float p-5 md:p-7"
+      // mockup-ok: drift fix to the LOCKED §427 grouped list-card grammar, byte-identical to
+      // SalonServices.tsx's already-shipped `<ul>` wrapper class string (rounded-[24px] border
+      // border-s-border bg-white shadow-whisper), no new appearance introduced.
+      className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper p-5 md:p-7"
     >
       {/* Title row + "Alle ansehen" → opens the booking flow's stylist picker */}
       <div className="flex items-baseline justify-between">
