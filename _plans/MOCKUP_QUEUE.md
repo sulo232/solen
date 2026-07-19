@@ -21,7 +21,7 @@ Per file `public/_mockups/sweep-<slug>/index.html`: `<!-- Base: elicitation --><
 
 ## Tier-2/3 decisions (audit wtvjz5xdt, 2026-07-19) , 25 mockup-worthy + 11 mechanical
 Build order = HIGH impact first. (arch/behavior/copy items are DECISIONS, not A/B visual mockups , flag to owner.)
-- [ ] sweep-rewards-hero-gradient [HIGH] , HeroStampCard.tsx:50 green->orange gradient breaks the neutral-ink system: A vivid-from-token / B flatten to system. rec B.
+- [x] sweep-rewards-hero-gradient [HIGH] , HeroStampCard gradient: A ink card / B keep gradient , BUILT
 - [ ] sweep-referral-buttons [HIGH] , referral/page.tsx:99 three competing button treatments, no single ink: A WhatsApp=ink primary + rest demoted. rec A.
 - [ ] sweep-partner-cta [HIGH] , partner/page.tsx:495 three divergent CTA destinations: A one funnel to the lead form. rec A.
 - [ ] sweep-help-h1 [HIGH] , help/[slug]:80 H1 has 3 undocumented sizes across 4 pages: A unify to Page-H2 / B two-tier editorial. 
