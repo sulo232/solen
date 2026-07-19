@@ -43,7 +43,7 @@ export function SalonLocation({ salon }: { salon: SalonDetail }) {
           <img
             src={staticMap}
             alt={`Karte: ${salon.address}`}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+            className="h-full w-full object-cover"
             loading="lazy"
           />
         </a>

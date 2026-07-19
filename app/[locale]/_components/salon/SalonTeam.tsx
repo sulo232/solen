@@ -52,20 +52,6 @@ export function SalonTeam({
   const [openStaffId, setOpenStaffId] = React.useState<string | null>(null);
   const pushedRef = React.useRef(false);
 
-  // idea 8 (motion 22): avatars bounce hello once when the section scrolls into view
-  const [waved, setWaved] = React.useState(false);
-  const waveRef = React.useRef<HTMLDivElement | null>(null);
-  React.useEffect(() => {
-    const el = waveRef.current;
-    if (!el || waved) return;
-    const io = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setWaved(true); io.disconnect(); } },
-      { threshold: 0.4 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, [waved]);
-
   // Deep-link in: /salon/<slug>?staff_profile=<id> opens the sheet directly.
   React.useEffect(() => {
     const id = new URLSearchParams(window.location.search).get("staff_profile");
@@ -127,7 +113,7 @@ export function SalonTeam({
       {/* Horizontal carousel — tapping a stylist opens their individual profile
           (Fresha); "Alle ansehen" above opens the booking flow. Cards clip at the
           panel's rounded edge as a subtle "scroll for more" cue. */}
-      <div ref={waveRef} className={`mt-5 flex gap-5 overflow-x-auto pt-2 pb-3 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${waved ? "team-wave" : ""}`}>
+      <div className="mt-5 flex gap-5 overflow-x-auto pt-2 pb-3 snap-x snap-proximity [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {staff.map((s) => (
           <button
             key={s.id}
