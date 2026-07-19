@@ -22,7 +22,7 @@ Per file `public/_mockups/sweep-<slug>/index.html`: `<!-- Base: elicitation --><
 ## Tier-2/3 decisions (audit wtvjz5xdt, 2026-07-19) , 25 mockup-worthy + 11 mechanical
 Build order = HIGH impact first. (arch/behavior/copy items are DECISIONS, not A/B visual mockups , flag to owner.)
 - [x] sweep-rewards-hero-gradient [HIGH] , HeroStampCard gradient: A ink card / B keep gradient , BUILT
-- [ ] sweep-referral-buttons [HIGH] , referral/page.tsx:99 three competing button treatments, no single ink: A WhatsApp=ink primary + rest demoted. rec A.
+- [x] sweep-referral-buttons [HIGH] , referral share buttons: A WhatsApp=ink primary / B two fills , BUILT
 - [ ] sweep-partner-cta [HIGH] , partner/page.tsx:495 three divergent CTA destinations: A one funnel to the lead form. rec A.
 - [ ] sweep-help-h1 [HIGH] , help/[slug]:80 H1 has 3 undocumented sizes across 4 pages: A unify to Page-H2 / B two-tier editorial. 
 - [ ] sweep-stampcard-generation [HIGH] , StampCard.tsx:43 stamp surfaces a generation behind RewardsView (uppercase/off-token/radius) , mostly mechanical + a layout call.
