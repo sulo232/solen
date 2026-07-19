@@ -19,6 +19,32 @@ Per file `public/_mockups/sweep-<slug>/index.html`: `<!-- Base: elicitation --><
 - [ ] sweep-salon-team , SalonTeam.tsx:111 team carousel rounded-3xl + shadow-float (group card of PEOPLE) -> individual cards? (ties to the group-vs-individual principle) / or rounded-2xl match
 - [ ] Tier 2-4 surfaces , audit each tier, add its design-decisions here (account, notifications, termine, vouchers, rewards, referral, profile subs, marketing pages, dashboards)
 
+## Tier-2/3 decisions (audit wtvjz5xdt, 2026-07-19) , 25 mockup-worthy + 11 mechanical
+Build order = HIGH impact first. (arch/behavior/copy items are DECISIONS, not A/B visual mockups , flag to owner.)
+- [ ] sweep-rewards-hero-gradient [HIGH] , HeroStampCard.tsx:50 green->orange gradient breaks the neutral-ink system: A vivid-from-token / B flatten to system. rec B.
+- [ ] sweep-referral-buttons [HIGH] , referral/page.tsx:99 three competing button treatments, no single ink: A WhatsApp=ink primary + rest demoted. rec A.
+- [ ] sweep-partner-cta [HIGH] , partner/page.tsx:495 three divergent CTA destinations: A one funnel to the lead form. rec A.
+- [ ] sweep-help-h1 [HIGH] , help/[slug]:80 H1 has 3 undocumented sizes across 4 pages: A unify to Page-H2 / B two-tier editorial. 
+- [ ] sweep-stampcard-generation [HIGH] , StampCard.tsx:43 stamp surfaces a generation behind RewardsView (uppercase/off-token/radius) , mostly mechanical + a layout call.
+- [ ] sweep-ueber-uns-stub [HIGH] , ueber-uns/page.tsx bare stub vs the richer marketing grammar: A leave / B upgrade / C light polish. rec C.
+- [ ] (DECISION, not mockup) sweep-nail-tech-dup [HIGH] , nail-tech/[id] DUPLICATES StaffProfilePage (rule 12) , retire+extend. dedup, not a mockup.
+- [ ] (COPY, not mockup) stamps 'Eingeloest' mislabel [HIGH] , profile/stamps:167 no redemption schema , rename honestly.
+- [ ] (BEHAVIOR, not mockup) referral 5-sec auto-redirect [HIGH] , referral/[code]:36 , remove the forced redirect.
+- [ ] sweep-notif-grouping [MED] , NotificationsClient:147 flat full-bleed rows vs grouped card. rec A (inbox = its own grammar).
+- [ ] sweep-rewards-tier-ladder [MED] , RewardsView:39 ink tiers vs ProgressStepper green. rec A (permanent rank != flow step).
+- [ ] sweep-referral-hero [MED] , referral/page.tsx:72 gradient hero vs flat 80/17. rec C.
+- [ ] sweep-partner-cards [MED] , partner:110 feature-grid vs category-grid cards differ. rec A unify.
+- [ ] sweep-partner-faq [MED] , partner:415 bespoke swipe cards vs shared FAQItem accordion. rec A.
+- [ ] sweep-warum-badge [MED] , warum-solen:229 'Nur bei Solen' x5 + banned Sparkles. rec drop-to-once + kill Sparkles.
+- [ ] sweep-help-rows [MED] , help/page.tsx:149 flat rows vs grouped-list-card. rec B/C (link list is lighter).
+- [ ] sweep-nail-tech-badge [MED] , nail-tech:68 color-coded tier chips vs neutral (category-tag law). rec A neutral.
+- [ ] sweep-hairtype-dup [MED] , settings/BeautyProfileForm:92 hair_type editable in 2 places , canonicalize to Haarprofil.
+- [ ] sweep-profile-loading [MED] , profile/loading.tsx one stale shared skeleton across 4 pages , per-route.
+- [ ] sweep-bookings-skeleton [MED] , BookingsList:177 spinner vs BookingCard-shaped skeleton.
+- [ ] sweep-brand-hero [LOW] , brand/[slug]:79 PDP-scale H1 for a directory index , demote?
+- [ ] sweep-profile-loyalty-meta [LOW] , profile/page.tsx:204 loyalty row blank meta , show rank word?
+- [ ] (+ mechanical fixes: notif Skeleton/EmptyState/blue-icon, referral states, help Spinner->Skeleton , feed FRONTEND_SWEEP fix-now)
+
 ## Notes
 - Mechanical/objective drift (token/radius/shadow/em-dash/states/touch-target) is NOT a mockup , it's a fix-now (see FRONTEND_SWEEP.md). Only genuine DESIGN CHOICES get a mockup.
 - Each mockup = an A/B(/C) probe with a recommendation, for the owner to pick, then apply the pick.
