@@ -25,7 +25,7 @@ Build order = HIGH impact first. (arch/behavior/copy items are DECISIONS, not A/
 - [x] sweep-referral-buttons [HIGH] , referral share buttons: A WhatsApp=ink primary / B two fills , BUILT
 - [ ] sweep-partner-cta [HIGH] , partner/page.tsx:495 three divergent CTA destinations: A one funnel to the lead form. rec A.
 - [x] sweep-help-h1 [HIGH] , help/info H1 scale: A one scale / B two-tier , BUILT
-- [ ] sweep-stampcard-generation [HIGH] , StampCard.tsx:43 stamp surfaces a generation behind RewardsView (uppercase/off-token/radius) , mostly mechanical + a layout call.
+- [x] sweep-stampcard-generation [HIGH] , on-system vs current gen , BUILT
 - [x] sweep-ueber-uns [HIGH] , light polish vs bare stub , BUILT
 - [ ] (DECISION, not mockup) sweep-nail-tech-dup [HIGH] , nail-tech/[id] DUPLICATES StaffProfilePage (rule 12) , retire+extend. dedup, not a mockup.
 - [ ] (COPY, not mockup) stamps 'Eingeloest' mislabel [HIGH] , profile/stamps:167 no redemption schema , rename honestly.
