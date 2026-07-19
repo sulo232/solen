@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils";
 /**
  * TabPill — V3-D201 (2026-05-26, salon Phase A · A7).
  *
- * Active/inactive segmented filter pill. Currently inlined in 3 places
- * (SalonServices, SalonServicesSheet, plus future booking flow). This is the
+ * Active/inactive segmented filter pill. Currently used in SalonServices and
+ * the booking flow (SalonServicesSheet was removed 2026-07-19). This is the
  * single source. Generic primitive — will be used by search filters too.
  *
  * Layer: 1 (chrome) — TabPill is a navigation/filter affordance, not a
