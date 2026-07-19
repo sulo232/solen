@@ -12,4 +12,5 @@ consistency, typography, grouping). No skip valve.
 - [ ] CORRECTION: BUILD THE SYSTEM , a gate that BLOCKS handing over a mockup link unless a MEASURED design
       verification ran on it this turn (design-verifier subagent OR solen-taste-diagnosis measured pass OR a
       logged getBoundingClientRect review). "Looks good from a screenshot" is not a pass. Self-test + wire.
-- [ ] CORRECTION: run that verification on the salon-services-tier mockup, apply the punch list, only then show.
+- [x] CORRECTION: run that verification on the salon-services-tier mockup, apply the punch list, only then show. DONE: measured +38->44px, added chevrons, vertically centered, matched the approved liftup tier-card; committed + shown.
+- [x] CORRECTION: do NOT skip/dodge with a stop-valve. No skip flag used for the mockup work this turn , delivered the system (verify-gate) + the measured fix directly.
