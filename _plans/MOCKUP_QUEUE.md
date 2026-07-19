@@ -30,7 +30,8 @@ Build order = HIGH impact first. (arch/behavior/copy items are DECISIONS, not A/
 - [ ] (DECISION, not mockup) sweep-nail-tech-dup [HIGH] , nail-tech/[id] DUPLICATES StaffProfilePage (rule 12) , retire+extend. dedup, not a mockup.
 - [ ] (COPY, not mockup) stamps 'Eingeloest' mislabel [HIGH] , profile/stamps:167 no redemption schema , rename honestly.
 - [ ] (BEHAVIOR, not mockup) referral 5-sec auto-redirect [HIGH] , referral/[code]:36 , remove the forced redirect.
-- [ ] sweep-notif-grouping [MED] , NotificationsClient:147 flat full-bleed rows vs grouped card. rec A (inbox = its own grammar).
+- [x] sweep-notif-grouping [MED] , notifications flat edge-to-edge rows vs grouped card , BUILT
+- [ ] (IA DECISION, not visual mockup) sweep-partner-cta [HIGH] , partner 3 CTAs all ink but 3 destinations , unify to one funnel (lead form). Investigated: not a visual A/B (they look identical); a written funnel recommendation, not a mockup.
 - [ ] sweep-rewards-tier-ladder [MED] , RewardsView:39 ink tiers vs ProgressStepper green. rec A (permanent rank != flow step).
 - [ ] sweep-referral-hero [MED] , referral/page.tsx:72 gradient hero vs flat 80/17. rec C.
 - [ ] sweep-partner-cards [MED] , partner:110 feature-grid vs category-grid cards differ. rec A unify.
