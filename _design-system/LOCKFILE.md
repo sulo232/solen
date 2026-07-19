@@ -424,6 +424,7 @@ One-off campaign-style decorative type → use `style={{}}` inline + `// V3-D{n}
 | `rounded-full` | 9999px | Avatars, icon buttons |
 | `rounded-2xl` | 16px | Sidebar card, info cards |
 | `rounded-3xl` | 24px | Bento cards, larger surfaces |
+| grouped list-card | 24px (`rounded-[24px]`) | The salon **grouped LIST-card grammar**: `overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper`, rows hairline-divided (`border-t first:border-t-0`). Services / booking-stylist / Produkte / Pakete / service-sheet / staff / dashboard , 12 call-sites, all 24 (owner-confirmed 2026-07-19, "pick whichever the services use"). ONE radius, gate-enforced (`.claude/hooks/card-radius-gate.py`, whisper-only). Do NOT confuse with `card`/`rounded-card` (16), which is the FORM/summary card (hair/pay/datetime, `shadow-elevation-1`). |
 
 ### Nested radius formula (DS-4, video-audit 2026-06-11, owner-approved)
 

@@ -357,3 +357,17 @@ Scoped to the BOOKING services-step category pills only (custom pills, NOT the s
 |---|---|---|
 | booking category pill, selected | **BLACK / ink** | Selected pill = `bg-s-ink text-white`, overriding the LOCKED calm-gray selected state AND the no-black-selected gate (owner picked black when told the lock+gate block it). `selected-ok:` escape on the line. Does NOT reopen gray-selected anywhere else; the 3 prior named exceptions plus this one. |
 | booking category pill, behavior | **scroll-spy, not filter** | Clicking a pill SCROLLS to that category's section (all sections render); active pill follows on scroll. REPLACES the Express/Klassisch/Signature duration-tier grouping with CATEGORY sections (the salon's own service subcategories, dynamic). The tap-to-expand row design stays. |
+
+---
+
+## 2026-07-19 , Booking select-step card idiom + the grouped-card radius canon
+
+Owner flagged a cross-page inconsistency in the booking flow: the SERVICES step sits in a bordered grouped card, but the STYLIST step was borderless gap-separated rows (Direction B), so the two select-steps read as different UIs. Owner: "match up" (stylist adopts the services idiom); then on the radius question, "pick whichever the services use."
+
+Investigation surfaced that `rounded-[24px] border border-s-border bg-white shadow-whisper` is an established **grouped LIST-card grammar** shared across 12 call-sites (salon Services / Produkte / Pakete / service-sheet / staff profiles / dashboard + the booking services step). A full audit confirmed all 12 are 24. `shadow-elevation` is a separate, general elevation utility used at many radii by design (SalonCard 22, carousels 22, sidebars 12/14/18, form cards `rounded-card`/16) and is NOT a single-radius family. An earlier pass this turn briefly set services/salon/stylist to 16; that was the odd one out and was reverted to 24.
+
+| id | decision | what it means |
+|---|---|---|
+| booking stylist step, card | **bordered grouped card (match services)** | Stylist rows now live in ONE `overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper` card, hairline-divided (`border-t first:border-t-0`), rows flush (no per-row rounding/fill), selected row = `bg-s-bg-sunken` gray fill + ink check. Replaces the borderless Direction-B gap-rows. This was the owner's original border complaint. |
+| grouped list-card radius | **24 (`rounded-[24px]`), NOT 16** | The salon/booking grouped LIST-card grammar is 24 (the services grammar the owner pointed at), shared across 12 call-sites. `rounded-card` (16) stays the FORM/summary card (hair/pay/datetime, `shadow-elevation-1`). Two families, told apart by shadow: `shadow-whisper` = 24 list-card, `shadow-elevation` = the diverse-radius utility. |
+| enforcement | **card-radius-gate.py (whisper-only)** | PreToolUse gate blocks a NET-NEW `shadow-whisper` card at any radius != 24. `shadow-elevation` intentionally NOT gated (21 legit radii). Escape: `radius-ok:` on the line / `~/.claude/card-radius-skip.flag`. |

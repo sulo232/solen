@@ -37,17 +37,24 @@ Mockup: `public/_mockups/liftup-booking-services-tiered/index.html`
 - [x] The little black dot flying to the bottom-left on click , owner dislikes it. Remove flyToCart (ServicesStaffStep ~177 + its 2 calls) + the `.cart-fly-dot` CSS (globals.css ~1195).
 
 ## Polish round 2 (owner 2026-07-19)
-- [ ] The + -> check MORPH on click isn't satisfying + doesn't match the mockup. Real ToggleCircle.tsx uses the ENTER_RECIPE crossfade (scale 0.96, no pop); the approved liftup-booking-services-tiered mockup had a POP (circle scale 1->1.18->1, cubic-bezier(0.34,1.56,0.64,1)) + a more pronounced check-in (scale ~0.6 + blur). Add the pop-on-select + the sharper crossfade to match the mockup. (ToggleCircle is shared , the pop is a nice select feedback everywhere.)
-- [ ] The "ausgewählt" pill is ALWAYS there (fires at 120px scroll). Owner wants it only when you've selected AND scrolled down so far you can't see your selection anymore (long lists), NOT always/eagerly, and NOT on short lists where the selection stays visible. Change from hasScrolled@120px to: show only when hasSelectedServices AND no selected service row is visible in the viewport (scrolled past all selections).
-- [ ] (BIG, NEEDS SCOPE, owner 2026-07-19) Roll out the dropdown/tap-to-expand pattern to more surfaces: the DASHBOARD, the SALON page, and BACKEND SETTINGS. Vague + multi-surface = needs per-surface investigation + mockups + owner confirm (mockup-first). PARKED pending scope: which sections exactly, and a mockup per surface. Do NOT build blind.
+- [x] The + -> check MORPH , DONE + verified live: pop scale 1->1.18->1 on select (peak 1.197 measured) + sharper check-in (scale 0.6 + blur 6px). (Follow-up chip: make the Plus icon symmetric with the Check for exact 1:1 mockup parity.)
+- [x] The "ausgewählt" pill , DONE + verified live: now shows only when a selected row is scrolled off-screen (IntersectionObserver over the selected rows); hidden at top / on short lists. (Follow-up chip: also treat filter-hidden selections as off-screen.)
+- [ ] (BIG, PARKED, owner 2026-07-19 "all three, plan it out") Roll out the tap-to-expand pattern to the DASHBOARD, SALON page, and SETTINGS. Surface 1 (salon services) MOCKUP built + delivered (`liftup-salon-services-expand/`), but the owner then pivoted to the real booking-page pills, so the rollout is PAUSED. Resume: owner approves the salon mockup -> wire it -> dashboard mockup -> settings chevron-align. Research map done (salon best fit, dashboard good, settings already has tap-to-reveal).
 
 ## Polish round 3 (owner 2026-07-19, REAL booking page, no mockups)
-- [~] Category pills selected state , owner DECIDED (2026-07-19): BLACK/ink selected pill, explicitly overriding the locked gray-selected + the no-black-selected gate (custom pill, not shared TabPill; drift-ok comment). Building via wtnuzp005.
-- [~] Category pills behavior , owner DECIDED (2026-07-19): CATEGORY SECTIONS + scroll-to-section pills (scroll-spy), REPLACING the Express/Classic/Signature duration tiers. Categories are the salon's own service subcategories (dynamic). Building via wtnuzp005.
+- [x] Category pills selected state , DONE + verified live (active bg rgb(10,10,10)): BLACK/ink selected pill, scoped override logged in TASTE_LOG. (878c0d23d)
+- [x] Category pills behavior , DONE + verified live: CATEGORY SECTIONS + scroll-spy pills (click scrolls to section, active follows on scroll), replacing the duration tiers. (878c0d23d)
 
-## Carry into the HELD code build (not this turn)
-- [ ] Real bottom-bar MINUTES gets `animate-count-bump` on change (price already has `animate-value-roll` at ServicesStaffStep.tsx:553; the pill count has `animate-count-bump` at :540; ToggleCircle already ENTER_RECIPE). So the only real-code motion gap is the bottom-bar duration.
-- [ ] Full layered-loop build of the tier display (grouping + filter pills + tap-expand + +-select + ServiceDetailSheet reconciliation + de/en/fr/it) , HELD until the owner confirms the layout is final.
+## Polish round 4 (owner 2026-07-19, cross-page card CONSISTENCY + a gate)
+Owner: "look at the border, there is none in stylist choosing but there is in selecting the haircut option ... many other places inconsistencies ... first we need to make a new gate or improve the current one."
+- [x] NEW GATE , `.claude/hooks/card-radius-gate.py` + wired into `.claude/settings.json` PreToolUse (Edit|Write|MultiEdit). Blocks a NET-NEW `shadow-whisper` grouped-card at radius != 24. shadow-elevation NOT gated (general utility, 21 legit radii). 8/8 self-tests. (b1744b1af -> retargeted b1f281e05)
+- [x] STYLIST step , now the SAME bordered grouped card as services: `overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper`, hairline dividers, flush rows, selected = gray fill. The owner's literal border complaint. Verified live (24px / #E4E4E7 / whisper / 3 dividers / first flush / gray-fill). (b1f281e05)
+- [x] RADIUS CANON , owner "pick whichever the services use" = 24 (the established 12-call-site grouped-card grammar). Reverted a mid-turn 24->16 detour back to 24 on services/salon/stylist. Logged in TASTE_LOG + LOCKFILE radius table + CLAUDE.md radius row.
+- [x] AUDIT , all 12 shadow-whisper grouped-cards confirmed at 24; the salon PDP (Services/Produkte/Pakete) is internally consistent again.
+
+## DONE / superseded (the booking services step is fully rebuilt on the real page)
+- [x] Full tiered display built into the real ServicesStaffStep.tsx, then EVOLVED to category-section grouping per the owner. Filter pills -> scroll-spy pills. tap-to-expand rows, +-select + ServiceDetailSheet, de/en/fr/it all shipped.
+- [x] Bottom-bar minutes , SUPERSEDED: minutes now use the count-up counter (CountUpNumber), not count-bump. Shipped.
 
 ## Notes
 - Real component already carries the motion vocab (motion-22): value-roll, count-bump, ToggleCircle crossfade. The MOCKUP lacked it, and `motion-recipe-gate.py` only scans .tsx/.jsx framer props, so the static HTML slipped through. Gate hardened for mockups.

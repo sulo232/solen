@@ -56,7 +56,7 @@ Frozen single-values. Do NOT re-open any row without the owner saying so by name
 | text size | name **14** · meta **12** · section-H2 **clamp(18px,2vw,20)** · body **14** · CTA **15** (never ≤13 on a button) · eyebrow **11** |
 | hierarchy | name leads by SIZE; price bold-ink but smaller than name; rating = yellow star; filler (category·city·distance) greys out |
 | availability | **plain ink text — NO green pill** (owner call, do not re-add) |
-| radius | card/block **16** (`rounded-card`) · button/chip pill · input **12** (corrected 2026-07-17, see below) · sheet **28** · image flush(0) |
+| radius | form/summary card **16** (`rounded-card`, `shadow-elevation`) · **grouped LIST-card 24** (`rounded-[24px]`+`shadow-whisper`: salon services/booking-stylist/products/bundles/staff/dashboard, owner 2026-07-19 "match the services", gate-enforced) · button/chip pill · input **12** (corrected 2026-07-17, see below) · sheet **28** · image flush(0) |
 | spacing | 4-pt scale only; card pad `p-4`/`p-3`; page `max-w-[1280px]` (PDP 1180) |
 | wrap | name truncate · meta truncate · title wrap · body line-clamp · price/rating nowrap |
 | icon-button | `h-11 w-11` |
