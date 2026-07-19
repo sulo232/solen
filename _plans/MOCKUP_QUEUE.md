@@ -36,7 +36,7 @@ Build order = HIGH impact first. (arch/behavior/copy items are DECISIONS, not A/
 - [x] sweep-referral-hero [MED] , gradient vs flat , BUILT
 - [x] sweep-partner-cards [MED] , feature vs category card chrome , BUILT
 - [ ] sweep-partner-faq [MED] , partner:415 bespoke swipe cards vs shared FAQItem accordion. rec A.
-- [ ] sweep-warum-badge [MED] , warum-solen:229 'Nur bei Solen' x5 + banned Sparkles. rec drop-to-once + kill Sparkles.
+- [x] sweep-warum-badge [MED] , say-once vs badge-on-each , BUILT
 - [ ] sweep-help-rows [MED] , help/page.tsx:149 flat rows vs grouped-list-card. rec B/C (link list is lighter).
 - [ ] sweep-nail-tech-badge [MED] , nail-tech:68 color-coded tier chips vs neutral (category-tag law). rec A neutral.
 - [ ] sweep-hairtype-dup [MED] , settings/BeautyProfileForm:92 hair_type editable in 2 places , canonicalize to Haarprofil.
