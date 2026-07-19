@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Frontend sweep , mockup gallery</title>
+<!-- Base: net-new -->
+<!-- Scale: full-page -->
+<!--
+  Net-new INDEX page (not a treatment mockup) , links every per-surface elicitation mockup produced for
+  the frontend-improvement sweep (owner 2026-07-19 "make mockups for all improvable surfaces"). Each
+  linked mockup grounds itself in its real component; this index has no single surface to ground in.
+  Exists-check: `npm run exists "mockup gallery"` ran this turn , nothing found, no existing sweep
+  gallery index to extend. REMOVED.md: none. NEW: this index page only. Grows as more mockups land.
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--white:#fff;--sunken:#F4F4F5;--border:#E4E4E7;--accent:#276EF1;
+    --sh:0 8px 24px -12px rgba(10,10,10,.10);--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);background:var(--sunken);color:var(--ink);-webkit-font-smoothing:antialiased;padding:28px 16px 60px}
+  .wrap{max-width:760px;margin:0 auto}
+  h1{font-size:24px;font-weight:600;letter-spacing:-0.02em}
+  .sub{font-size:14px;color:var(--ink2);margin-top:6px;line-height:1.5;max-width:600px}
+  .count{margin-top:14px;font-size:12.5px;font-weight:600;color:var(--ink2);background:#fff;border:1px solid var(--border);border-radius:999px;padding:5px 12px;display:inline-block}
+  ul{list-style:none;margin-top:22px;display:flex;flex-direction:column;gap:12px}
+  a.card{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px 18px;box-shadow:var(--sh);transition:transform .15s ease}
+  a.card:hover{transform:translateY(-2px)}
+  .ct{font-size:15px;font-weight:600;color:var(--ink);display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .arrow{color:var(--accent);font-size:13px;font-weight:600}
+  .cd{font-size:13px;color:var(--ink2);margin-top:5px;line-height:1.45}
+  .dirs{margin-top:8px;font-size:11.5px;color:var(--ink3)}
+  .pend{font-size:12.5px;color:var(--ink3);margin-top:20px;line-height:1.5}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Frontend sweep , mockup gallery</h1>
+    <p class="sub">Every improvable / inconsistent surface the sweep found, as an A/B/C decision you can pick. Each is a faithful probe built on the real component tokens. Tap one.</p>
+    <div class="count" id="count"></div>
+    <ul id="list"></ul>
+    <p class="pend">More landing continuously , this index grows as each mockup is built.</p>
+  </div>
+<script>
+  var MOCKS=[
+    {slug:'sweep-categories-tile', title:'Homepage , category tile selected state', desc:'The selected tile is a bespoke white+ink-border+check. Should it become the locked gray-fill like every other selected state?', dirs:'A gray-fill (rec) . B border+check (current)'},
+    {slug:'sweep-queue-feedback', title:'Walk-in queue , low-rating feedback CTA', desc:'"Send feedback" is blue-FILLED today (blue is only for small clickable bits, never a big filled CTA).', dirs:'A ink primary (rec) . B blue-ghost secondary'}
+  ];
+  var list=document.getElementById('list');
+  MOCKS.forEach(function(m){
+    var a=document.createElement('a'); a.className='card'; a.href='/_mockups/'+m.slug+'/index.html';
+    a.innerHTML='<div class="ct">'+m.title+'<span class="arrow">Open</span></div><div class="cd">'+m.desc+'</div><div class="dirs">'+m.dirs+'</div>';
+    list.appendChild(a);
+  });
+  document.getElementById('count').textContent=MOCKS.length+' mockups so far';
+</script>
+</body>
+</html>
