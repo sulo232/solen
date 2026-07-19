@@ -1,35 +1,45 @@
 #!/usr/bin/env python3
 """card-radius-gate , PreToolUse (Edit|Write|MultiEdit).
 
-Owner 2026-07-19 ("look at the border there is none in stylist choosing but there is
-in selecting the haircut ... many other places inconsistencies and we even made gates
-for it ... first we need to make a new gate"): cross-page CARD treatment drifted. The
-booking flow alone renders three different card radii , services rounded-[24px], stylist
-rounded-[16px], pay/hair rounded-[12px] , and inconsistent borders. No gate checked card
-radius, so the drift shipped.
+Owner 2026-07-19: cross-page CARD treatment drifted (the booking flow rendered the
+services grouped-card at rounded-24 but the stylist step as a borderless rounded-16
+row list). No gate checked card radius, so the drift shipped. The owner set the canon
+by pointing at the SERVICES step ("pick whichever the services use"): the grouped
+list-card grammar is rounded-[24px].
 
-THE RULE (LOCKFILE design-contract, `radius` row): a CARD/block container is `rounded-card`
-(16px). This gate BLOCKS a NET-NEW card container that uses any OTHER radius, so cross-page
-cards stay one radius.
+THE ONE ENFORCED INVARIANT , the GROUPED LIST-CARD grammar:
+    `overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper`
+This exact grammar is shared, verified 2026-07-19, across the salon Services,
+Produkte, Pakete, the service sheet, staff profiles, the dashboard, and the booking
+services + stylist steps , 12 call-sites, ALL rounded-[24px]. It is the ONE card
+family that is genuinely a single radius, and `shadow-whisper` is its reliable
+marker. This gate BLOCKS a NET-NEW `shadow-whisper` card written at any radius other
+than 24, so that family can never split again.
 
-What counts as a CARD container (kept narrow to stay false-positive-free): a `rounded-[Npx]`
-that co-occurs (same className, within ~90 chars) with a CARD signal , `border border-s-border`
-or `shadow-whisper` or `shadow-elevation`. That is the bordered/shadowed block treatment, NOT
-an input (rounded-[12px] fill, no border-s-border+shadow pair), NOT a pill (rounded-full), NOT
-a sheet (rounded-t-[28px], handled by the `-t-` exclusion), NOT an image (rounded-[12px] alone).
+Deliberately NOT gated (would be false positives):
+  - `shadow-elevation-N` is a GENERAL elevation utility, not a card family. It is used
+    at many radii by design , SalonCard (locked primitive) at 22, carousels at 22,
+    sidebars/referral/partner tiles at 12/14/18, form cards at rounded-card(16). An
+    audit found 21 such legitimate radii; gating them would be noise. Left alone.
+  - Form/summary cards use the `rounded-card` TOKEN (16px), not a bracket radius, so
+    they are outside this gate's `rounded-[Npx]` match anyway.
+  - Bordered-no-shadow bracket radii (inputs, tiles, chips, rows) span 8..24 by design.
+  - Sheets (rounded-t-/rounded-b-), images, inputs.
 
-Scope: design-surface .tsx/.jsx under app|components (NOT mockups/public, generated, .d.ts,
-node_modules, _audits). NET-NEW only (Write content / Edit new_string / MultiEdit new_strings);
-pre-existing drift never blocks an unrelated edit.
+Scope: design-surface .tsx/.jsx under app|components (NOT mockups/public, generated,
+.d.ts, node_modules, _audits, /dev/). NET-NEW only (Write content / Edit new_string /
+MultiEdit new_strings); pre-existing drift never blocks an unrelated edit.
 
 Escape hatches:
-  - Per line:  add `radius-ok: <reason>` on/near the offending line (within ~120 chars).
+  - Per line:  add `radius-ok: <reason>` (or `drift-ok:`) on/near the offending line
+    (also clears the rare case of a doc-comment that juxtaposes another bracket radius
+    with the word shadow-whisper within ~90 chars).
   - This turn: touch ~/.claude/card-radius-skip.flag        # 5-minute TTL
 FAIL-OPEN on any parse error.
 """
 import json, os, re, sys, time
 
-CANON_RADIUS = 16  # LOCKFILE `radius` row: card/block = rounded-card (16px). Change ONLY with an owner yes.
+WHISPER_RADIUS = 24  # the grouped list-card grammar (shadow-whisper). Change ONLY with an owner yes.
 
 try:
     data = json.load(sys.stdin)
@@ -71,21 +81,20 @@ blob = "\n".join(a for a in added if a)
 if not blob.strip():
     sys.exit(0)
 
-CARD_SIGNAL = re.compile(r"border border-s-border|shadow-whisper|shadow-elevation")
 RADIUS = re.compile(r"rounded-\[(\d+)px\]")
 
 offenders = []
 for m in RADIUS.finditer(blob):
     n = int(m.group(1))
-    if n == CANON_RADIUS:
+    if n == WHISPER_RADIUS:
         continue
     # sheet corners (rounded-t-[28px] / rounded-b-...) are not a card block
     pre = blob[max(0, m.start() - 12):m.start()]
     if re.search(r"rounded-[tbrl]{1,2}-\[$", pre) or pre.rstrip().endswith("-t") or pre.rstrip().endswith("-b"):
         continue
-    # is this a CARD? require a card signal within the same className window
+    # ONLY the shadow-whisper grouped-card grammar is gated
     window = blob[max(0, m.start() - 90):m.end() + 90]
-    if not CARD_SIGNAL.search(window):
+    if "shadow-whisper" not in window:
         continue
     # per-line escape
     esc_win = blob[max(0, m.start() - 120):m.end() + 120]
@@ -100,14 +109,15 @@ if offenders:
             "hookEventName": "PreToolUse",
             "permissionDecision": "deny",
             "permissionDecisionReason":
-                "CARD RADIUS DRIFT (owner 2026-07-19, cross-page consistency): a card/block container "
-                "(border-s-border / shadow-whisper / shadow-elevation) must use `rounded-card` (16px) per "
-                "the LOCKFILE `radius` row , so cross-page cards stay ONE radius. This edit adds a card at "
-                "rounded-[" + "px], rounded-[".join(str(n) for n in uniq) + "px]. The booking flow already "
-                "drifted (services rounded-24, stylist rounded-16, pay/hair rounded-12); that is exactly the "
-                "inconsistency the owner flagged. Use `rounded-card` (or rounded-[16px]). If this is a "
-                "genuinely-different element (a sheet, a real exception the owner approved), add "
-                "`radius-ok: <reason>` on the line, or touch ~/.claude/card-radius-skip.flag (5-min TTL)."
+                "CARD RADIUS DRIFT (owner 2026-07-19, cross-page consistency): the GROUPED LIST-CARD "
+                "grammar , `border border-s-border bg-white shadow-whisper` , is rounded-[24px] "
+                "everywhere (salon Services / Produkte / Pakete / service sheet / staff / dashboard + "
+                "the booking services & stylist steps, 12 call-sites). This edit adds a shadow-whisper "
+                "card at rounded-[" + "px], rounded-[".join(str(n) for n in uniq) + "px]. Use "
+                "rounded-[24px] so the grouped-card family stays one radius. (shadow-elevation cards "
+                "are NOT gated , that utility is used at many radii by design.) If this is a genuine "
+                "owner-approved exception, add `radius-ok: <reason>` on the line, or touch "
+                "~/.claude/card-radius-skip.flag (5-min TTL)."
         }
     }))
     sys.exit(0)

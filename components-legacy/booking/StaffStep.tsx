@@ -93,7 +93,7 @@ export default function StaffStep({
 
   return (
     <div className="pb-32">
-      <motion.ul variants={rowsContainer} initial="hidden" animate="visible" className="mt-1 overflow-hidden rounded-[16px] border border-s-border bg-white shadow-whisper"> {/* mockup-ok: owner-approved 'match up' 2026-07-19 , stylist rows now share the services step's bordered grouped-card idiom */}
+      <motion.ul variants={rowsContainer} initial="hidden" animate="visible" className="mt-1 overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper"> {/* mockup-ok: owner-approved 'match up' 2026-07-19 , stylist rows now share the services step's bordered grouped-card idiom (radius 24, the grouped-card grammar) */}
         {/* Egal (no preference), pinned first */}
         <motion.li variants={rowItem} className="border-t border-s-border first:border-t-0">
           <button

@@ -541,7 +541,7 @@ export default function ServicesStaffStep({
               variants={rowsContainer} // mockup-ok: shared ENTER RECIPE module
               initial="hidden" // mockup-ok: shared ENTER RECIPE module
               animate="visible" // mockup-ok: shared ENTER RECIPE module
-              className="overflow-hidden rounded-[16px] border border-s-border bg-white shadow-whisper"
+              className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper"
             >
               {visibleServices.filter((s) => groupKey(s) === cat).map(renderServiceRow)}
             </motion.div> {/* mockup-ok: shared ENTER RECIPE module, not new design exploration */}
