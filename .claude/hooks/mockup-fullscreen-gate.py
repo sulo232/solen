@@ -78,7 +78,11 @@ def main():
         sys.exit(0)
 
     lc = content.lower()
-    has_iframe = "<iframe" in lc
+    iframe_count = lc.count("<iframe")
+    has_iframe = iframe_count >= 1
+    has_two_iframes = iframe_count >= 2
+    # the AFTER must INJECT the change onto the real page + highlight it, not hand-draw a sparse copy
+    has_injection = ("applychange" in lc) or ("data-sweep" in lc) or ("contentdocument" in lc)
     has_toggle = ("before" in lc) and ("after" in lc)
     has_fullscreen = ("overflow:hidden" in lc.replace(" ", "")) or ("position:fixed" in lc.replace(" ", ""))
 
@@ -88,6 +92,16 @@ def main():
             "NO live BEFORE. Add an `<iframe src=\"<real route>\">` of the actual current screen as the\n"
             "  BEFORE pane (e.g. the real /de/profile or /de/dashboard route). A hand-drawn 'current' panel\n"
             "  is a from-scratch redraw, which is exactly what the owner rejects."
+        )
+    elif not (has_two_iframes and has_injection):
+        missing.append(
+            "AFTER IS A HAND-DRAWN REDRAW (owner 2026-07-19: 'these before after does not make any sense ...\n"
+            "  you only made ONE section of the page, i dont even know where it is'). Both BEFORE and AFTER must\n"
+            "  be a live <iframe> of the SAME real route (2 iframes). The AFTER pane applies the change by\n"
+            "  INJECTING it onto the real page: poll contentDocument, run applyChange(doc) to edit + set\n"
+            "  data-sweep-done + outline the changed element + add an 'After:' label + scrollIntoView. So the\n"
+            "  AFTER is the FULL real page with the change highlighted in place, NOT a sparse hand-built copy with\n"
+            "  placeholder blocks or fake data. Copy the mechanism from public/_mockups/sweep-salon-sections/index.html."
         )
     if not has_toggle:
         missing.append(
@@ -142,20 +156,32 @@ def selftest():
         "<div class='panel'><div class='plabel'>Direction A , gray fill</div></div>"
         "<div class='panel'><div class='plabel'>Direction B , current</div></div></body>"
     )
-    good = (
+    handdrawn = (  # 1 iframe BEFORE + a hand-drawn AFTER = the sparse-redraw the owner rejected
         "<!doctype html><!-- Base: capture live --><!-- Scale: full-page -->"
         "<body style='overflow:hidden'><div class='seg'><button class='on'>Before</button>"
-        "<button>After</button></div><div class='stage'><iframe src='/de/profile'></iframe></div></body>"
+        "<button>After</button></div><div class='stage'>"
+        "<div class='pane'><iframe src='/de/profile'></iframe></div>"
+        "<div class='pane hidden'><div class='after'><div class='card'>hand drawn</div></div></div></div></body>"
+    )
+    good = (  # 2 iframes (before + after same route) + injected change (applyChange)
+        "<!doctype html><!-- Base: capture live --><!-- Scale: full-page -->"
+        "<body style='overflow:hidden'><div class='seg'><button class='on'>Before</button>"
+        "<button>After</button></div><div class='stage'>"
+        "<div class='pane'><iframe src='/de/profile'></iframe></div>"
+        "<div class='pane hidden'><iframe id='afterFrame' src='/de/profile'></iframe></div></div>"
+        "<script>function applyChange(doc){doc.querySelector('h2').setAttribute('data-sweep-done','1')}</script></body>"
     )
     index = "<!doctype html><body><script>var MOCKS=[{slug:'a'},{slug:'b'}]</script></body>"
 
     r_bad = check(bad)
+    r_hand = check(handdrawn)
     r_good = check(good)
     r_index = check(index, "public/_mockups/sweep-gallery/index.html")
-    ok = (r_bad == 2) and (r_good == 0) and (r_index == 0)
-    print(f"abstract A/B panel : {'BLOCK' if r_bad == 2 else 'MISS(' + str(r_bad) + ')'}")
-    print(f"fullscreen b/a     : {'PASS' if r_good == 0 else 'FALSE-BLOCK(' + str(r_good) + ')'}")
-    print(f"gallery index      : {'PASS(exempt)' if r_index == 0 else 'FALSE-BLOCK(' + str(r_index) + ')'}")
+    ok = (r_bad == 2) and (r_hand == 2) and (r_good == 0) and (r_index == 0)
+    print(f"abstract A/B panel     : {'BLOCK' if r_bad == 2 else 'MISS(' + str(r_bad) + ')'}")
+    print(f"1-iframe hand-drawn After: {'BLOCK' if r_hand == 2 else 'MISS(' + str(r_hand) + ')'}")
+    print(f"2-iframe injected After : {'PASS' if r_good == 0 else 'FALSE-BLOCK(' + str(r_good) + ')'}")
+    print(f"gallery index          : {'PASS(exempt)' if r_index == 0 else 'FALSE-BLOCK(' + str(r_index) + ')'}")
     print("SELFTEST", "OK" if ok else "FAILED")
     sys.exit(0 if ok else 1)
 
