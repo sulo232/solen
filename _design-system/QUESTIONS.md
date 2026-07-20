@@ -385,3 +385,33 @@ global header for EVERY route, so a missing i18n key there would throw and white
 the whole app. fr/it/en currently see German chips. Fix later as ONE guarded pass (a
 `pageTitles` namespace with a literal fallback), not piecemeal. Non-profile deep pages
 (e.g. /notifications, /help) are NOT yet covered — extend the same way if owner wants.
+
+### Q22 — Team section: grouped list-card or individual entity-cards? (a real LOCKFILE contradiction)
+**Severity:** MED
+**SOURCE.md anchor:** N/A (LOCKFILE radius table)
+**Question:** Is the salon-PDP Team section a §427 grouped list-card (staff as category members) or §428 individual entity-cards (each stylist their own card)?
+**Observation:** Both LOCKFILE rows are dated 2026-07-19 and contradict for Team: the grouped row lists "staff", the entity row says "stylists are individual not groups". Today Team ships as ONE §427 group card wrapping the avatar-scroll (consistent with Services/Reviews, verified rendered).
+**Options:**
+- A. Keep §427 group card (as shipped , consistent PDP section rhythm; the "individual" rule applies to the booking stylist PICKER, not the PDP showcase row).
+- B. Individual entity-cards per stylist on the PDP too (consistent with the booking picker; breaks the 3-section rhythm).
+**Recommendation:** A — the PDP Team row is a SHOWCASE of category members inside one section; the booking picker is where each stylist is a selectable ENTITY.
+
+### Q23 — PDP map: tap behavior + pin accuracy
+**Severity:** MED
+**SOURCE.md anchor:** N/A
+**Question:** When the customer taps the map, what happens , and is the pin location wrong?
+**Observation:** Today: static Mapbox image (hover-scale removed per owner), whole image is an `<a>` to a Google-Maps ADDRESS SEARCH. Owner: "not accurate + not clickable". Pin renders at the salon's stored coords (seed data). An inline interactive mini-map was tried before and felt "stuck" (code comment).
+**Options:**
+- A. Keep static; tap opens Google Maps pinned to the EXACT coords (not address search); make tappability obvious (a small "open in Maps" chip on the image). Fix seed coords if wrong.
+- B. Tap expands an inline interactive map (re-tries the approach that previously felt stuck).
+**Recommendation:** A — keeps the calm static section, fixes accuracy + affordance, avoids re-shipping the known-bad inline map.
+
+### Q24 — Reviews section content direction
+**Severity:** HIGH (owner called the current one broken)
+**SOURCE.md anchor:** N/A
+**Question:** Which direction for the salon-PDP reviews content (the bare blue "(11)" + long stack must die)?
+**Options:**
+- A. Summary-first compact: star + value, count folded into the ink see-all ("Alle 11 Bewertungen ›"), then the 2 best reviews, gap-separated. Shortest.
+- B. Distribution-led: 5-bar star histogram + one featured review. NOTE: a code comment says the histogram was dropped per owner , needs an explicit un-drop.
+- C. Featured-voice: one hero review + a chrome-less horizontal peek row.
+**Recommendation:** A — kills both named defects (bare count, too long) with zero re-proposal risk.

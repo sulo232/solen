@@ -167,7 +167,7 @@ same component, or 3+ blues line up vertically ("blue staircase"), demote the we
 | "Passwort vergessen?" (the ONE auth helper) | **BLUE** | only blue string on the form |
 | Ändern jump-links in checkout summary | **BLUE** (owner-approved exception to no-repeat) | right-aligned 13px semibold |
 | Bare inline action label attached to data (Wegbeschreibung next to an address, as TEXT not a button) | **BLUE** | text-as-link; if given button geometry → ink |
-| See-all / Alle ansehen section links | **INK** + chevron | color off, affordance on |
+| See-all / Alle ansehen section links | **SPLIT by intent (owner 2026-07-19, supersedes the blanket ink-chevron)** | Services + Reviews see-all = the gray PILL (`bg-s-bg-sunken px-8 py-3`, owner-approved 2026-07-15, reconfirmed 2026-07-19 , it is a booking-flow ENTRY, so it earns button affordance). Team/stylist see-all = INK text + `ChevronRight text-s-ink-3` (light , it sits beside a busy avatar row and read too big as a pill). `SeeAllButton` variants: default `pill` / `link`. LESSON: the pill was blanket-"fixed" to ink once by applying this row over the component's dated approval , a dated owner decision on a component ALWAYS outranks a blanket row here. |
 | Skip / Später / tertiary under a primary CTA | **INK-2/3** lighter weight, centered | never blue |
 | "Zur Startseite" / "Stattdessen anmelden" under CTAs (404/success/auth) | **INK-2** semibold, NO underline (v3.1) | weight + position carry it; hover → `text-s-ink` |
 | Secondary / ghost buttons | **INK** outline (never blue-filled, never blue-ghost) | CONTROL_ELEVATION B |
