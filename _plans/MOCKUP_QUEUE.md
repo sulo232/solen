@@ -10,8 +10,8 @@ compaction: `grep -L "applyChange" public/_mockups/sweep-*/index.html` = not yet
 - [x] v2-1 sweep-reviews-direction , reviews direction A (bare blue count -> folded into pill). VERIFIED + committed.
 - [x] v2-2 sweep-auth-grammar REBUILT as injection , DONE + verified (measured: 3 defects stripped , eyebrows normal-case, orange wordmark -> ink, CTA 15px; screenshot-checked).
 - [x] v2-3 sweep-cookie-consent REBUILT as injection , DONE + verified (banner forced visible via consent-key clear; badge measured neutral sunken/ink-2; screenshot-checked).
-- [ ] v2-4 sweep-empty-consolidation REBUILD as injection , /de/reviews: the sunken-on-sunken invisible disc -> white disc on sunken (registry EmptyState look).
-- [ ] v2-5 sweep-dash-vibrancy REBUILD as injection , /de/dashboard via /api/dev/login: restyle '[class*=s-coral]' elements to accent blue / semantic tokens (the dead-token monochrome bug made visible). (Auth-gated: dev-login first.)
+- [x] v2-4 sweep-empty-consolidation , REROUTED to the FIX phase (measured live: /de/reviews has real reviews, the empty state , where the invisible sunken-on-sunken disc lives , does not render on live data; the registry-EmptyState consolidation is an already-decided mechanical class, not an A/B).
+- [x] v2-5 sweep-dash-vibrancy REBUILT as injection , DONE + verified on /de/dashboard/calendar (203 dead-token elements; text measured rgb(39,110,241) after; screenshot-checked). NOTE: panes need the dev session , open /api/dev/login?to=/de/dashboard once if they show login.
 - [ ] v2-6 sweep-voucher-status-chip REBUILD as injection , /de/profile/vouchers via dev-login: status chip label -> ink, icon stays semantic.
 - [ ] v2-7 sweep-selected-ink-pill REBUILD as injection , /de/profile/settings via dev-login: language pill selected ink-fill -> gray sunken.
 - [ ] v2-8 sweep-city-picker-selected REBUILD as injection , home header: open the picker via injected click, selected option -> sunken fill + check.
