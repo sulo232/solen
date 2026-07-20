@@ -24,12 +24,13 @@ everywhere, and it is everywhere outside these mockups too."
   - [x] iconless rows + Einstellungen/Anmeldung/Support sections + external arrows + plain Abmelden.
   - [x] mapping: Empfehlungen anpassen = Beauty-Profil + Inspo; Konto = E-Mail/Telefon/Passwort; Support = help/agb/datenschutz.
   - [x] 3 live directions in sweep-settings-pinterest (A faithful / B hybrid / C profile-first); A + C rendered-verified; REC = A. Committed.
-- [ ] CORRECTION 3 (owner 2026-07-20, "i like hybrid but w lines + fonts like before"): settings pick = B HYBRID, refined:
-  - [ ] B2 variant in sweep-settings-pinterest: icons KEPT + hairline dividers between the big sections (like the Before page) + row font/text sizes matching the Before (15px labels, current row heights), not the Pinterest-shrunk sizes.
-- [ ] PROFILE PAGE, Pinterest model (owner 2026-07-20, IMG_6647 anatomy): new mockup sweep-profile-pinterest on /de/profile:
-  - [ ] tabs: Pins -> Gespeichert (saved salons), Boards -> Termine (past bookings); Collages -> OPEN, ideas mockuped
-  - [ ] live-activity hero: if an upcoming booking exists, a BIG card on top (live-activity style), read from real data, no fabrication
-  - [ ] 3 directions for the Collages slot, one mockup pane each: (1) Looks (route exists, closest 1:1), (2) Bewertungen, (3) Gutscheine and Guthaben
-  - [ ] search bar + chips row per the Pinterest anatomy, only where honest (search over saved needs backend, mark as net-new)
-- [ ] SETTINGS TAXONOMY (owner: "what do we acc need, check your-account ss + uber eats + fresha"): Fresha + Uber Eats account screens CAPTURED via Mobbin this turn; propose the full Solen settings/account list grounded in the three refs + existing routes; flag net-new (payment methods, security/2FA) as parked, no invented surfaces.
+- [x] CORRECTION 3 DELIVERED (owner 2026-07-20, "i like hybrid but w lines + fonts like before"): settings pick = B HYBRID, refined:
+  - [x] B2 pane in sweep-settings-pinterest: icons KEPT + hairline dividers between the big groups + the Before page's MEASURED row spec (label 15px/500 ink, pad 13x16, icons 22/1.9, gray chevron) + the FULL taxonomy rows (Konto, Empfehlungen, Haarprofil, Benachrichtigungen, Sprache, Formulare / Prämien: Treue, Stempel, Einladen / Anmeldung / Support). Rendered-verified + screenshot. NEXT once approved: build in code.
+- [x] PROFILE PAGE Pinterest model DELIVERED (owner 2026-07-20, IMG_6647 anatomy, PIL-measured): sweep-profile-pinterest on /de/profile:
+  - [x] tabs Gespeichert / Termine / third, tappable inside the mockup; gear -> settings
+  - [x] live hero: the page's own next-appointment card promoted to a BIG block on top; seeded 1 upcoming confirmed booking (slot+booking) for the QA user so it demos; reads real data only
+  - [x] 3 directions for the Collages slot: D1 Looks (REC, route exists as stub) / D2 Bewertungen (net-new, labeled) / D3 Gutscheine (real route state)
+  - [x] grid = real past bookings (bookings API, cover photos) + real favorites (parsed live); search pill = net-new, labeled; Pinterest chips dropped (filters not built)
+  - [x] rendered-verified: D1 Termine grid + Gespeichert tab + live block, screenshots taken. Favorites tiles show the icon fallback (favorites page SSR imgs not parseable), flagged.
+- [x] SETTINGS TAXONOMY DELIVERED: Fresha profile+settings and Uber Eats account screens captured via Mobbin (verified, not memory); full proposal in the 2026-07-21 reply + made visible as the B2 row set. PARKED net-new candidates (need an owner yes + backend): Zahlungsmethoden (saved cards), Sicherheit (2FA/sessions), Adressen, user-reviews list (D2). Gift cards stay hidden (killed 2026-06-14).
 - [x] REGISTERED this batch + ACTIVE row (survives compaction).
