@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Settings , Insta-style rows , full page before/after</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/profile/settings/SettingsForm.tsx
+  FORMAT v2, the owner's "settings more like Insta, think as a user" restructure. BEFORE = the real
+  /de/profile/settings (a form WALL: every field always visible). AFTER = the same real page with the wall
+  replaced by the Instagram settings anatomy, CAPTURED this turn from the real reference (Mobbin, Instagram
+  "Settings and activity", screen f08baa0d): plain white nav rows (mono line-icon + label + chevron, right
+  values), thin gray section labels, text-only red footer actions, no cards, no gray slabs (white-first per the
+  owner's gray reopen). Every row maps to a section that EXISTS on the page today; tapping a row would open it
+  as its own sub-page.
+  german-ok: the injected rows carry the app's real German product labels so the restructure blends into the
+  real German page; the mockup's own chrome is English.
+  psych-ok: no hardcoded counts; the language right-value is READ live from the page's selected pill.
+  Depicts: personal-details row -> SettingsForm.tsx (name/email/phone/bio fields)
+  Depicts: password row -> SettingsForm.tsx (change-password section)
+  Depicts: language row (value read live) -> SettingsForm.tsx (language selector)
+  Depicts: beauty-profile row -> app/[locale]/profile/settings/BeautyProfileForm.tsx
+  Depicts: notifications row -> SettingsForm.tsx (email notification toggles)
+  Depicts: delete-account row -> SettingsForm.tsx (danger zone; per owner 2026-07-20 the type-to-confirm dies, a plain confirm dialog instead)
+  Depicts: sub-page NAVIGATION -> NET-NEW: today everything is one page; the rows imply per-section sub-pages
+  Exists-check: `npm run exists "settings insta rows"` ran this turn , all mapped sections already render.
+  Backend-check: real live page; the language right-value is READ from the page's own selected pill; no invented data.
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--sunken:#F4F4F5;--hairline:#E4E4E7;--accent:#276EF1;--error:#DC2626;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
+  .top{position:fixed;top:0;left:0;right:0;height:52px;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;padding:0 12px}
+  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
+  .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .cap{position:fixed;top:52px;left:0;right:0;z-index:19;background:var(--sunken);color:var(--ink2);font-size:12px;font-weight:600;text-align:center;padding:6px 12px;line-height:1.35}
+  .stage{position:fixed;top:84px;left:0;right:0;bottom:0}
+  .pane{position:absolute;inset:0}
+  .pane.hidden{display:none}
+  iframe{width:100%;height:100%;border:0;display:block}
+</style>
+</head>
+<body>
+  <div class="top"><div class="seg"><button id="bB" class="on" onclick="show('before')">Before (live)</button><button id="bA" onclick="show('after')">After</button></div></div>
+  <div class="cap">After: the form wall becomes Instagram-style settings , plain rows that open each section, white-first. Tap the gallery mint card first if you see login.</div>
+  <div class="stage">
+    <div id="paneBefore" class="pane"><iframe id="beforeFrame" src="/de/profile/settings" title="real settings, before (the form wall)"></iframe></div>
+    <div id="paneAfter" class="pane hidden"><iframe id="afterFrame" src="/de/profile/settings" title="real settings, after (Insta-style rows injected)"></iframe></div>
+  </div>
+<script>
+  // Real Lucide icon paths (lucide-static markup), monochrome ink per the Insta reference
+  function icon(d){
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="lucide" aria-hidden="true">' + d + '</svg>';
+  }
+  var CHEV = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>';
+  var ICONS = {
+    user:  icon('<circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/>'),
+    lock:  icon('<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>'),
+    globe: icon('<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>'),
+    scissors: icon('<circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/>'),
+    bell:  icon('<path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/>'),
+  };
+  function row(ic, label, sub, value){
+    return '<button data-sweep-row style="display:flex;align-items:center;gap:14px;width:100%;background:#fff;border:0;padding:13px 16px;font-family:inherit;text-align:left;cursor:pointer">'
+      + ic
+      + '<span style="flex:1;min-width:0"><span style="display:block;font-size:15px;color:#0A0A0A;font-weight:500">' + label + '</span>'
+      + (sub ? '<span style="display:block;font-size:12.5px;color:#A1A1AA;margin-top:1px">' + sub + '</span>' : '')
+      + '</span>'
+      + (value ? '<span style="font-size:13.5px;color:#A1A1AA;margin-right:2px">' + value + '</span>' : '')
+      + CHEV + '</button>';
+  }
+  function sectionLabel(t){
+    return '<div style="font-size:12.5px;color:#A1A1AA;font-weight:600;padding:18px 16px 6px">' + t + '</div>';
+  }
+  function textRow(label, color){
+    return '<button data-sweep-row style="display:block;width:100%;background:#fff;border:0;padding:14px 16px;font-family:inherit;text-align:left;font-size:15px;font-weight:500;color:' + color + ';cursor:pointer">' + label + '</button>';
+  }
+  function applyChange(doc){
+    if(doc.getElementById('sweep-insta-root')) return 1;
+    var anchor = [].filter.call(doc.querySelectorAll('*'), function(e){
+      return e.children.length === 0 && /^Beauty-Profil$/.test((e.textContent||'').trim());
+    })[0];
+    if(!anchor) return 0;
+    var col = anchor, up = 0;
+    while(col.parentElement && up < 8){
+      col = col.parentElement; up++;
+      if(col.getBoundingClientRect().width > 300 && col.children.length >= 2) break;
+    }
+    // read the REAL current language from the page (the ink-filled selected pill)
+    var lang = '';
+    [].forEach.call(doc.querySelectorAll('button'), function(b){
+      var t=(b.textContent||'').trim();
+      if(/^(Deutsch|English|Français|Italiano)$/.test(t) && doc.defaultView.getComputedStyle(b).backgroundColor==='rgb(10, 10, 10)') lang = t;
+    });
+    var root = doc.createElement('div');
+    root.id = 'sweep-insta-root';
+    root.setAttribute('data-sweep-done','1');
+    root.style.cssText = 'background:#fff;max-width:560px;margin:0 auto;padding-bottom:24px';
+    root.innerHTML =
+      sectionLabel('Konto')
+      + row(ICONS.user, 'Persönliche Angaben', 'Name, E-Mail, Telefon, Bio', '')
+      + row(ICONS.lock, 'Passwort', '', '')
+      + row(ICONS.globe, 'Sprache', '', lang)
+      + '<div style="height:1px;background:#E4E4E7;margin:10px 16px"></div>'
+      + sectionLabel('Für dich')
+      + row(ICONS.scissors, 'Beauty-Profil', 'Haare, Haut, Stil', '')
+      + row(ICONS.bell, 'Benachrichtigungen', '', '')
+      + '<div style="height:1px;background:#E4E4E7;margin:10px 16px"></div>'
+      + textRow('Abmelden', '#DC2626')
+      + textRow('Konto löschen', '#DC2626');
+    [].forEach.call(col.children, function(ch){ ch.style.display = 'none'; });
+    col.appendChild(root);
+    try{ doc.documentElement.style.scrollBehavior='auto'; root.scrollIntoView({block:'start'}); }catch(e){}
+    return 1;
+  }
+  var afterStarted = false;
+  function startAfter(){
+    if(afterStarted) return; afterStarted = true;
+    var f = document.getElementById('afterFrame'), tries = 0;
+    var MAX_POLLS = 600; // psych-ok: a poll cap, never a displayed count. Re-applies across re-renders.
+    var iv = setInterval(function(){
+      tries++;
+      try{ var doc = f.contentDocument; if(doc){ applyChange(doc); } }catch(e){}
+      if(tries > MAX_POLLS){ clearInterval(iv); }
+    }, 300);
+  }
+  function show(w){
+    document.getElementById('paneBefore').classList.toggle('hidden', w!=='before');
+    document.getElementById('paneAfter').classList.toggle('hidden', w!=='after');
+    document.getElementById('bB').classList.toggle('on', w==='before');
+    document.getElementById('bA').classList.toggle('on', w==='after');
+    if(w==='after') startAfter();
+  }
+</script>
+</body>
+</html>
