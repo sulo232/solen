@@ -3,20 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-<title>Cookie consent , full screen before/after</title>
+<title>Cookie consent , badge + link , full page before/after</title>
 <!-- Base: capture live -->
 <!-- Scale: full-page -->
 <!--
   Grounded-in: app/[locale]/_components/primitives/CookieConsent.tsx
-  FULL-SCREEN before/after. BEFORE = LIVE <iframe> of the real /de home (the cookie banner overlays it, with the
-  hardcoded warm-brown badge #A1672F and an ink dead-hover Datenschutz link). AFTER = the same page with the
-  banner fixed: neutral gray badge + blue underlined Datenschutz link. Only the badge token + link colour change.
-  Depicts: cookie consent banner -> app/[locale]/_components/primitives/CookieConsent.tsx
-  Exists-check: `npm run exists "cookie consent search reviews"` ran this turn , the banner already renders.
-  Backend-check: consent write is real; no fabricated values. English chrome; live iframe shows real German.
+  FORMAT v2. BOTH panes are the real /de home as LIVE iframes; this page clears the consent record
+  (localStorage "solen-cookie-consent") before the frames load so the real banner shows in both.
+  BEFORE = untouched (warm-brown badge). AFTER = injected: the off-palette brown badge goes neutral
+  (sunken bg + ink-2 glyph), and any ink dead-hover privacy link goes blue underline.
+  english-ok: match-selectors mirror the live page's real German copy.
+  psych-ok: no hardcoded counts; the injection only restyles live elements.
+  Depicts: cookie banner badge + privacy link -> app/[locale]/_components/primitives/CookieConsent.tsx
+  Diagnosis: banner badge hue | measured bg rgba(161,103,47,.15) + glyph rgb(161,103,47) (the hardcoded #A1672F pair, line 268) | violates the closed B&W palette (no brown; tokens only) | target bg #F4F4F5 + glyph #52525B (neutral sunken, the Toast badge system)
+  Diagnosis: privacy link | measured ink text with hover:text-s-ink (a no-op hover, reads non-interactive) | violates the link law (text links = blue + hover underline) | target #276EF1 + underline
+  Exists-check: `npm run exists "CookieConsent"` ran this turn , the banner already renders.
+  Backend-check: real live page; consent writes are the component's own real behavior; no fabricated values.
 -->
 <style>
-  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--sunken:#F4F4F5;--hairline:#E4E4E7;--accent:#276EF1;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  :root{--ink:#0A0A0A;--ink2:#52525B;--sunken:#F4F4F5;--hairline:#E4E4E7;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
@@ -24,45 +29,68 @@
   .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
   .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
   .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
-  .stage{position:fixed;top:52px;left:0;right:0;bottom:0}
-  .pane{position:absolute;inset:0;overflow:hidden}
+  .cap{position:fixed;top:52px;left:0;right:0;z-index:19;background:var(--sunken);color:var(--ink2);font-size:12px;font-weight:600;text-align:center;padding:6px 12px;line-height:1.35}
+  .stage{position:fixed;top:84px;left:0;right:0;bottom:0}
+  .pane{position:absolute;inset:0}
   .pane.hidden{display:none}
   iframe{width:100%;height:100%;border:0;display:block}
-  /* AFTER = home backdrop + fixed corrected banner */
-  .bg{position:absolute;inset:0;background:#fff;padding:16px;overflow:hidden}
-  .bl{height:15px;border-radius:6px;background:var(--sunken);margin-bottom:12px}
-  .bl.w70{width:70%}.bl.w40{width:40%}.bl.big{height:150px;border-radius:16px}
-  .banner{position:absolute;left:12px;right:12px;bottom:14px;background:#fff;border:1px solid var(--hairline);border-radius:16px;padding:16px;box-shadow:0 1px 2px rgba(10,10,10,.04),0 14px 34px -18px rgba(10,10,10,.18)}
-  .brow{display:flex;gap:12px}
-  .badge{height:38px;width:38px;border-radius:11px;background:var(--sunken);display:grid;place-items:center;flex-shrink:0}
-  .badge svg{width:19px;height:19px;color:var(--ink2)}
-  .btitle{font-size:14px;font-weight:600}
-  .bd{font-size:12.5px;color:var(--ink2);margin-top:3px;line-height:1.45}
-  .bd a{color:var(--accent);font-weight:600;text-decoration:underline;text-underline-offset:2px}
-  .bbtns{margin-top:12px;display:flex;gap:8px}
-  .bt{flex:1;height:40px;border-radius:999px;display:grid;place-items:center;font-size:13px;font-weight:600}
-  .bg-ghost{border:1px solid var(--hairline);color:var(--ink)} .bg-ink{background:var(--ink);color:#fff}
-  .cap{position:absolute;left:12px;right:12px;top:10px;font-size:11px;color:var(--ink3);text-align:center}
 </style>
 </head>
 <body>
   <div class="top"><div class="seg"><button id="bB" class="on" onclick="show('before')">Before (live)</button><button id="bA" onclick="show('after')">After</button></div></div>
+  <div class="cap">After: the brown cookie badge goes neutral (sunken + ink glyph); the privacy link goes blue underline. Banner forced visible in both panes.</div>
   <div class="stage">
-    <div id="paneBefore" class="pane"><iframe src="/de" title="live home + cookie banner"></iframe></div>
-    <div id="paneAfter" class="pane hidden">
-      <div class="bg">
-        <div class="cap">Change: neutral badge (not brown), blue underlined privacy link</div>
-        <div class="bl w70" style="margin-top:22px"></div><div class="bl big"></div><div class="bl w40"></div><div class="bl w70"></div>
-        <div class="banner">
-          <div class="brow">
-            <div class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="lucide"><circle cx="12" cy="12" r="10"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="14" r="1"/><circle cx="9.5" cy="15" r="1"/></svg></div>
-            <div><div class="btitle">Cookies</div><div class="bd">Analytics &amp; marketing only with your OK. More in the <a href="#">privacy policy</a>.</div></div>
-          </div>
-          <div class="bbtns"><span class="bt bg-ghost">Only necessary</span><span class="bt bg-ink">Accept all</span></div>
-        </div>
-      </div>
-    </div>
+    <div id="paneBefore" class="pane"><iframe id="beforeFrame" title="real home, before"></iframe></div>
+    <div id="paneAfter" class="pane hidden"><iframe id="afterFrame" title="real home, after (badge + link injected)"></iframe></div>
   </div>
-<script>function show(w){document.getElementById('paneBefore').classList.toggle('hidden',w!=='before');document.getElementById('paneAfter').classList.toggle('hidden',w!=='after');document.getElementById('bB').classList.toggle('on',w==='before');document.getElementById('bA').classList.toggle('on',w==='after');}</script>
+<script>
+  // same-origin: clear the consent record so the REAL banner mounts in both panes
+  try { localStorage.removeItem('solen-cookie-consent'); } catch(e) {}
+  document.getElementById('beforeFrame').src = '/de';
+  document.getElementById('afterFrame').src = '/de';
+
+  function applyChange(doc){
+    var hit = 0;
+    // 1. the brown badge -> neutral sunken + ink-2 glyph
+    [].forEach.call(doc.querySelectorAll('[class*="A1672F"]'), function(b){
+      if(b.getAttribute('data-sweep-done')) return;
+      b.style.background = '#F4F4F5';
+      b.style.color = '#52525B';
+      b.setAttribute('data-sweep-done','1');
+      hit++;
+    });
+    // 2. an ink dead-hover privacy link -> blue underline (banner or settings modal, whichever renders)
+    [].forEach.call(doc.querySelectorAll('a[href*="datenschutz"]'), function(a){
+      if(a.getAttribute('data-sweep-done')) return;
+      a.style.color = '#276EF1';
+      a.style.textDecoration = 'underline';
+      a.style.textUnderlineOffset = '2px';
+      a.setAttribute('data-sweep-done','1');
+      hit++;
+    });
+    return hit;
+  }
+  var afterStarted = false;
+  function startAfter(){
+    if(afterStarted) return; afterStarted = true;
+    var f = document.getElementById('afterFrame'), tries = 0;
+    var MAX_POLLS = 150; // psych-ok: a poll cap, never a displayed count
+    var iv = setInterval(function(){
+      tries++;
+      try{
+        var doc = f.contentDocument;
+        if(doc && doc.querySelector('[class*="A1672F"]')){ if(applyChange(doc) > 0){ clearInterval(iv); } }
+      }catch(e){}
+      if(tries > MAX_POLLS){ clearInterval(iv); }
+    }, 200);
+  }
+  function show(w){
+    document.getElementById('paneBefore').classList.toggle('hidden', w!=='before');
+    document.getElementById('paneAfter').classList.toggle('hidden', w!=='after');
+    document.getElementById('bB').classList.toggle('on', w==='before');
+    document.getElementById('bA').classList.toggle('on', w==='after');
+    if(w==='after') startAfter();
+  }
+</script>
 </body>
 </html>
