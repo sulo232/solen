@@ -19,4 +19,9 @@ everywhere, and it is everywhere outside these mockups too."
   - [x] settings/personal = E-Mail + Telefon ONLY (verified: no Foto/Bio/Name; hub sub-line updated in 4 locales).
   - [x] /de/profile "Profil bearbeiten" row -> /profile/edit (verified: 73px row, existing row grammar).
   - [x] Header title "Profil bearbeiten". Committed bebb6f099.
+- [ ] CORRECTION 2 (owner 2026-07-20, screenshots IMG_6646-6650): the model is PINTEREST's account screen, not Insta:
+  - [ ] identity CARD top (avatar + name + handle-slot, "Profil ansehen" + "Profil teilen" pills) , soft near-white card, measured.
+  - [ ] plain TEXT rows (NO icons), sections "Einstellungen" / "Anmeldung" / "Support"; external rows get the up-right arrow; Abmelden = plain row.
+  - [ ] MAP Pinterest-only rows to OURS (ideas): Refine-recommendations -> "Empfehlungen anpassen" (Beauty-Profil + Inspo-Interessen); Account management -> Konto (E-Mail/Telefon/Passwort); Support -> Hilfe-Center (/help), AGB, Datenschutz (routes exist).
+  - [ ] >=3 DISTINCT mockup directions, live v2 format, side-by-side toggles; recommendation stated.
 - [x] REGISTERED this batch + ACTIVE row (survives compaction).
