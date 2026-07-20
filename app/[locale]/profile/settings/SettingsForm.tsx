@@ -9,8 +9,12 @@ import { TextInput } from "@/app/[locale]/_components/primitives/TextInput";
 import { FieldLabel } from "@/app/[locale]/_components/primitives/FieldLabel";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "@/app/[locale]/_components/primitives/Modal";
+import { LOCALES, type SettingsLocale } from "./locales";
 
-export type SettingsLocale = "de" | "en" | "fr" | "it";
+// SettingsLocale moved to ./locales.ts (2026-07-20 crash fix, see that file's header comment for
+// why): re-exported here so existing `import { type SettingsLocale } from "./SettingsForm"`
+// call sites (the personal/password/language/notifications/delete sub-pages) keep resolving.
+export type { SettingsLocale };
 
 // Settings hub restructure (2026-07-20, owner-approved mockup public/_mockups/sweep-settings-insta):
 // each slice below renders standalone on its own sub-page (app/[locale]/profile/settings/<slice>/page.tsx).
@@ -26,13 +30,6 @@ export interface SettingsInitial {
   notification_email: boolean;
   notification_sms: boolean;
 }
-
-export const LOCALES: { value: SettingsLocale; label: string }[] = [
-  { value: "de", label: "Deutsch" },
-  { value: "en", label: "English" },
-  { value: "fr", label: "Français" },
-  { value: "it", label: "Italiano" },
-];
 
 // White-first override for the sub-pages (LOCFILE input law defaults to a sunken #F4F4F5 fill;
 // the settings sub-pages are white-first per the owner-approved mockup, radius stays 12 unchanged).

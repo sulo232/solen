@@ -18,7 +18,11 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { User, Lock, Globe, Scissors, Bell, ChevronRight, type LucideIcon } from "lucide-react";
 import { createServerSupabaseClient } from "@/lib/supabase";
-import { LOCALES, type SettingsLocale } from "./SettingsForm";
+// LOCALES/SettingsLocale come from ./locales.ts, not ./SettingsForm (2026-07-20 crash fix): this
+// page is a Server Component, and SettingsForm.tsx is "use client", so importing a plain VALUE
+// export (LOCALES) from it here crossed the RSC client boundary and returned a proxy instead of
+// the real array, breaking `.find`. See locales.ts's header comment for the full root cause.
+import { LOCALES, type SettingsLocale } from "./locales";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
