@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Modal scrim , warm vs cool , full page before/after</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/_components/primitives/Modal.tsx
+  FORMAT v2. BOTH panes are the real /de home as LIVE iframes; this page clears the consent record so the
+  banner shows, then each pane auto-opens the cookie-settings modal (the gear) so the REAL modal + veil render.
+  BEFORE = untouched: the backdrop is the warm brown-ink veil. AFTER = injected: the same veil re-tinted to
+  the cool ink of the post-pivot palette. Only the scrim tint changes.
+  psych-ok: no hardcoded counts; the injection only re-tints the live backdrop.
+  Depicts: modal backdrop veil -> app/[locale]/_components/primitives/Modal.tsx (shared literal with Sheet.tsx)
+  Diagnosis: modal backdrop | measured rgba(26,18,9,0.4) warm brown-ink veil behind the settings modal | violates the cool-neutral palette (ink is rgb(10,10,10); warm was reversed at the B&W pivot) | target rgba(10,10,10,0.4)
+  Exists-check: `npm run exists "Modal Sheet scrim"` ran this turn , both overlays already render.
+  Backend-check: real live page; the settings modal is the component's own real behavior; no fabricated values.
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#52525B;--sunken:#F4F4F5;--hairline:#E4E4E7;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
+  .top{position:fixed;top:0;left:0;right:0;height:52px;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;padding:0 12px}
+  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
+  .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .cap{position:fixed;top:52px;left:0;right:0;z-index:19;background:var(--sunken);color:var(--ink2);font-size:12px;font-weight:600;text-align:center;padding:6px 12px;line-height:1.35}
+  .stage{position:fixed;top:84px;left:0;right:0;bottom:0}
+  .pane{position:absolute;inset:0}
+  .pane.hidden{display:none}
+  iframe{width:100%;height:100%;border:0;display:block}
+</style>
+</head>
+<body>
+  <div class="top"><div class="seg"><button id="bB" class="on" onclick="show('before')">Before (live)</button><button id="bA" onclick="show('after')">After</button></div></div>
+  <div class="cap">Both panes auto-open the cookie-settings modal. Before: a warm brown veil dims the page. After: the same veil in cool ink.</div>
+  <div class="stage">
+    <div id="paneBefore" class="pane"><iframe id="beforeFrame" title="real modal, before (warm veil)"></iframe></div>
+    <div id="paneAfter" class="pane hidden"><iframe id="afterFrame" title="real modal, after (cool veil injected)"></iframe></div>
+  </div>
+<script>
+  try { localStorage.removeItem('solen-cookie-consent'); } catch(e) {}
+  document.getElementById('beforeFrame').src = '/de';
+  document.getElementById('afterFrame').src = '/de';
+
+  function openSettings(doc){
+    // find the banner card via its title text, then its icon-only (gear) button
+    var title = [].filter.call(doc.querySelectorAll('*'), function(e){
+      return e.children.length === 0 && /verwenden Cookies/.test(e.textContent || '');
+    })[0];
+    if(!title) return false;
+    var card = title, up = 0;
+    while(card.parentElement && up < 6){ card = card.parentElement; up++; if(card.querySelector('button svg')) break; }
+    var gear = [].filter.call(card.querySelectorAll('button'), function(b){
+      return b.querySelector('svg') && !(b.textContent || '').trim();
+    })[0];
+    if(gear && !gear.getAttribute('data-sweep-opened')){ gear.setAttribute('data-sweep-opened','1'); gear.click(); }
+    return !!gear;
+  }
+  function findVeil(doc){
+    var w = doc.defaultView;
+    return [].filter.call(doc.querySelectorAll('div'), function(d){
+      var cs = w.getComputedStyle(d), r = d.getBoundingClientRect();
+      return r.width >= w.innerWidth - 2 && r.height >= w.innerHeight - 2 && /rgba\(26, 18, 9/.test(cs.backgroundColor);
+    })[0];
+  }
+  function poll(frameId, retint){
+    var f = document.getElementById(frameId), tries = 0;
+    var MAX_POLLS = 150; // psych-ok: a poll cap, never a displayed count
+    var iv = setInterval(function(){
+      tries++;
+      try{
+        var doc = f.contentDocument;
+        if(doc && doc.body && doc.body.textContent.length){
+          var veil = findVeil(doc);
+          if(!veil){ openSettings(doc); }
+          else if(retint){
+            veil.style.backgroundColor = 'rgba(10,10,10,0.4)';
+            veil.setAttribute('data-sweep-done','1');
+            clearInterval(iv);
+          } else { clearInterval(iv); }
+        }
+      }catch(e){}
+      if(tries > MAX_POLLS){ clearInterval(iv); }
+    }, 250);
+  }
+  var started = {};
+  function show(w){
+    document.getElementById('paneBefore').classList.toggle('hidden', w!=='before');
+    document.getElementById('paneAfter').classList.toggle('hidden', w!=='after');
+    document.getElementById('bB').classList.toggle('on', w==='before');
+    document.getElementById('bA').classList.toggle('on', w==='after');
+    if(w==='before' && !started.b){ started.b=1; poll('beforeFrame', false); }
+    if(w==='after' && !started.a){ started.a=1; poll('afterFrame', true); }
+  }
+  show('before');
+</script>
+</body>
+</html>

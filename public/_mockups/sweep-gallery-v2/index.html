@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Mockups v2 , live before/after gallery</title>
+<!-- Base: net-new -->
+<!-- Scale: full-page -->
+<!--
+  Net-new INDEX page (a MOCKS link list, not a treatment mockup). Lists ONLY the v2-format mockups:
+  both panes live iframes of the real route, After = the change injected + measured. The old A/B-panel
+  mockups are dead (owner rejected the format); this gallery replaces the old index as THE link.
+  Exists-check: `npm run exists "mockup gallery v2"` ran this turn; extends public/_mockups/sweep-gallery/index.html (the v1 index, now superseded).
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--sunken:#F4F4F5;--border:#E4E4E7;--accent:#276EF1;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);background:var(--sunken);color:var(--ink);-webkit-font-smoothing:antialiased;padding:28px 16px 60px}
+  .wrap{max-width:760px;margin:0 auto}
+  h1{font-size:24px;font-weight:600;letter-spacing:-0.02em}
+  .sub{font-size:14px;color:var(--ink2);margin-top:6px;line-height:1.5;max-width:620px}
+  ul{list-style:none;margin-top:22px;display:flex;flex-direction:column;gap:12px}
+  a.card{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px 18px;box-shadow:0 1px 2px rgba(10,10,10,.04)}
+  .ct{font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .arrow{color:var(--accent);font-size:13px;font-weight:600}
+  .cd{font-size:13px;color:var(--ink2);margin-top:5px;line-height:1.45}
+  .note{margin-top:22px;font-size:12.5px;color:var(--ink3);line-height:1.55}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Mockups v2 , live before/after</h1>
+    <p class="sub">Each opens the REAL page twice: Before is live and untouched; After is the same live page with only the one change applied. Tap After inside each and give it a second to apply.</p>
+    <ul id="list"></ul>
+    <p class="note" id="note"></p>
+  </div>
+<script>
+  var MOCKS=[
+    {slug:'sweep-reviews-direction', title:'Salon reviews , direction A', desc:'The bare blue review count dies; star + value only; the count folds into the see-all pill. Scroll to the reviews block after tapping After.'},
+    {slug:'sweep-auth-grammar', title:'Reset-password , grammar', desc:'The tracked all-caps eyebrows go normal-case, the orange wordmark goes ink, the small all-caps CTA goes 15px normal-case.'},
+    {slug:'sweep-cookie-consent', title:'Cookie banner , badge', desc:'The off-palette brown cookie badge goes neutral (sunken + ink glyph). Banner forced visible in both panes.'},
+    {slug:'sweep-dash-vibrancy', title:'Dashboard calendar , vibrancy', desc:'The retired accent token secretly renders INK (monochrome). After: the accent layer on the dashboard blue. Needs the dev session (open /api/dev/login?to=/de/dashboard once if you see login).'},
+    {slug:'sweep-selected-ink-pill', title:'Settings , selected language pill', desc:'The ink-filled selected pill goes to the locked calm gray selected state. Auto-scrolls to the language row. Needs the dev session.'}
+  ];
+  var list=document.getElementById('list');
+  MOCKS.forEach(function(m){
+    var a=document.createElement('a'); a.className='card'; a.href='/_mockups/'+m.slug+'/index.html';
+    a.innerHTML='<div class="ct">'+m.title+'<span class="arrow">Open</span></div><div class="cd">'+m.desc+'</div>';
+    list.appendChild(a);
+  });
+  document.getElementById('note').textContent='Five more findings were rerouted to direct code fixes instead of mockups (they cannot render honestly on the phone or on live seed data): the reviews empty-state disc, the voucher status chip, the city-picker selected option (the mobile menu already ships the correct treatment), the desktop nav hover, and the modal scrim tint.';
+</script>
+</body>
+</html>
