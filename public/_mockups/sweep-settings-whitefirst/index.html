@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Settings , white-first (less gray) , full page before/after</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/profile/settings/SettingsForm.tsx
+  FORMAT v2, a PROBE for the owner's 2026-07-20 gray-background reopen ("i dont like ths background gray sh
+  everywhere"). BOTH panes are the real /de/profile/settings as LIVE iframes. BEFORE = untouched: the inputs
+  and textarea render as filled sunken-gray slabs. AFTER = injected: every gray-filled field goes WHITE with a
+  hairline border (the white-first input look) , the gray wash off, structure unchanged. If this lands, it
+  becomes the direction for a product-wide pass (owner confirms first; the gray SELECTED state is a separate
+  lock and is not touched here).
+  psych-ok: no hardcoded counts; the injection only restyles live fields.
+  Depicts: settings inputs/textarea -> app/[locale]/profile/settings/SettingsForm.tsx
+  Diagnosis: input fill | measured 6 inputs + 1 textarea + 1 button filled rgb(244,244,245) (the gray slabs) | violates the owner's 2026-07-20 gray-background reopen (probe , the current gray-fill law is what is being TESTED) | target white fill + 1px #E4E4E7 hairline
+  Exists-check: `npm run exists "SettingsForm"` ran this turn , the settings form already renders.
+  Backend-check: real live page; no fabricated values. Needs the dev session (mint card in the gallery).
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#52525B;--sunken:#F4F4F5;--hairline:#E4E4E7;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
+  .top{position:fixed;top:0;left:0;right:0;height:52px;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;padding:0 12px}
+  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
+  .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .cap{position:fixed;top:52px;left:0;right:0;z-index:19;background:var(--sunken);color:var(--ink2);font-size:12px;font-weight:600;text-align:center;padding:6px 12px;line-height:1.35}
+  .stage{position:fixed;top:84px;left:0;right:0;bottom:0}
+  .pane{position:absolute;inset:0}
+  .pane.hidden{display:none}
+  iframe{width:100%;height:100%;border:0;display:block}
+</style>
+</head>
+<body>
+  <div class="top"><div class="seg"><button id="bB" class="on" onclick="show('before')">Before (live)</button><button id="bA" onclick="show('after')">After</button></div></div>
+  <div class="cap">The gray-wash probe: every gray-filled field goes white + hairline. Structure untouched. If it shows login, tap the mint card in the gallery first.</div>
+  <div class="stage">
+    <div id="paneBefore" class="pane"><iframe id="beforeFrame" src="/de/profile/settings" title="real settings, before (gray-filled fields)"></iframe></div>
+    <div id="paneAfter" class="pane hidden"><iframe id="afterFrame" src="/de/profile/settings" title="real settings, after (white-first injected)"></iframe></div>
+  </div>
+<script>
+  function applyChange(doc){
+    var hit = 0;
+    if(!doc.getElementById('sweep-white-style')){
+      var st = doc.createElement('style');
+      st.id = 'sweep-white-style';
+      st.textContent = '[data-sweep-done]{transition:none !important;background:#fff !important;border:1px solid #E4E4E7 !important}';
+      doc.head.appendChild(st);
+    }
+    // fields only , the selected-state gray (chips/pills) is a separate LOCK and stays untouched
+    [].forEach.call(doc.querySelectorAll('input,textarea'), function(e){
+      if(e.getAttribute('data-sweep-done')) return;
+      var cs = doc.defaultView.getComputedStyle(e);
+      if(cs.backgroundColor === 'rgb(244, 244, 245)'){
+        var r = e.getBoundingClientRect();
+        if(r.width > 40 && r.height > 20){ e.setAttribute('data-sweep-done','1'); hit++; }
+      }
+    });
+    return hit;
+  }
+  var afterStarted = false;
+  function startAfter(){
+    if(afterStarted) return; afterStarted = true;
+    var f = document.getElementById('afterFrame'), tries = 0;
+    var MAX_POLLS = 600; // psych-ok: a poll cap, never a displayed count. Keeps re-applying across re-renders.
+    var iv = setInterval(function(){
+      tries++;
+      try{ var doc = f.contentDocument; if(doc){ applyChange(doc); } }catch(e){}
+      if(tries > MAX_POLLS){ clearInterval(iv); }
+    }, 300);
+  }
+  function show(w){
+    document.getElementById('paneBefore').classList.toggle('hidden', w!=='before');
+    document.getElementById('paneAfter').classList.toggle('hidden', w!=='after');
+    document.getElementById('bB').classList.toggle('on', w==='before');
+    document.getElementById('bA').classList.toggle('on', w==='after');
+    if(w==='after') startAfter();
+  }
+</script>
+</body>
+</html>
