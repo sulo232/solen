@@ -17,3 +17,9 @@ taste files its missing."
   - [x] LESSONS_LEARNED: precedence-inversion class + flag-spam class added (the §427-drift class already existed; describe-not-deliver is covered in the retro ledger).
 - [x] SYSTEMS: retro written , _design-system/_diagnosis/SESSION_RETRO_2026-07-19.md (ledger + 3 root causes + what now binds).
 - [x] Commit; closed against the owner's original message (gates fixed, principles written, systems analyzed, missing entries added).
+
+Readback ticks (same deliverables, readback phrasing):
+- [x] Analyze our chat rounds , what you said, what failed, why (retro ledger R1-R6 + verbatim quotes).
+- [x] Fix the GATES (the enforcement holes the rounds exposed) (flag-spam gate + 4 mockup gates confirmed).
+- [x] Fix the SYSTEMS (the process failures , why gates existed yet rounds still failed) (flag-spam root cause + measure-first + precedence procedure, all enforced).
+- [x] Fix the PRINCIPLES , missing design/taste file entries (LOCKFILE, TASTE_LOG, REMOVED, QUESTIONS, LESSONS).
