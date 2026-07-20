@@ -14,4 +14,9 @@ everywhere, and it is everywhere outside these mockups too."
   - [x] investigated: 5 existing upload endpoints found; client-photos bucket has a documented public-URL bug -> new PUBLIC `avatars` bucket instead (service-photos family), migration backfilled.
   - [x] Avatar-URL input REPLACED: round preview + "Foto ändern" picker + client downscale -> POST /api/profile/avatar -> profiles.avatar_url. Live-tested (upload 200, public URL 200, avatar renders); looked at rendered.
   - [x] cap: 100MB app-side per the owner; PLATFORM ceiling is 50MB (Supabase plan rejected 100MB) , flagged, harmless since the client downscales before upload.
+- [x] CORRECTION DELIVERED (owner 2026-07-20 "make settings and profile-edit DIFFERENT , like the Insta profile page"):
+  - [x] /profile/edit ("Profil bearbeiten"): Profilfoto upload + Name + Bio , rendered-verified (screenshot).
+  - [x] settings/personal = E-Mail + Telefon ONLY (verified: no Foto/Bio/Name; hub sub-line updated in 4 locales).
+  - [x] /de/profile "Profil bearbeiten" row -> /profile/edit (verified: 73px row, existing row grammar).
+  - [x] Header title "Profil bearbeiten". Committed bebb6f099.
 - [x] REGISTERED this batch + ACTIVE row (survives compaction).
