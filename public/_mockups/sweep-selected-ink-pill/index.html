@@ -3,21 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-<title>Selected pill , full screen before/after</title>
+<title>Settings language pill , selected fill , full page before/after</title>
 <!-- Base: capture live -->
 <!-- Scale: full-page -->
 <!--
   Grounded-in: app/[locale]/profile/settings/SettingsForm.tsx
-  FULL-SCREEN before/after. BEFORE = LIVE <iframe> of the real settings page via
-  /api/dev/login?to=/de/profile/settings (the selected language pill is an ink/black fill, contradicting the gray
-  Beauty chips one section up on the same page). AFTER = the language pill on the locked gray-sunken selected state.
-  Only the selected-pill fill changes.
+  FORMAT v2. BOTH panes are the real /de/profile/settings as LIVE iframes (needs the dev session ,
+  open /api/dev/login?to=/de/profile/settings once if the panes show login). BEFORE = untouched: the selected
+  language pill is a solid ink fill + white text. AFTER = injected: the selected pill becomes the LOCKED calm
+  gray selected state (sunken fill + ink text + semibold), matching the Beauty chips one section up and every
+  TabPill in the app.
+  english-ok: match-labels mirror the live page's real language names.
+  psych-ok: no hardcoded counts; the injection only restyles the live selected pill.
   Depicts: settings language selector -> app/[locale]/profile/settings/SettingsForm.tsx
-  Exists-check: `npm run exists "settings inspo pill"` ran earlier , the selector already renders.
-  Backend-check: language switch is real; no fabricated values. English chrome; live iframe shows real German.
+  Diagnosis: selected language pill | measured bg rgb(10,10,10) ink fill + white text ("Deutsch") | violates the locked selected state (calm gray bg-s-bg-sunken + ink + semibold; ink fill is not one of the named exceptions) | target bg #F4F4F5 + #0A0A0A + 600
+  Exists-check: `npm run exists "settings language"` ran this turn , the selector already renders.
+  Backend-check: real live page + the real language options; no fabricated values.
 -->
 <style>
-  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--sunken:#F4F4F5;--hairline:#E4E4E7;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  :root{--ink:#0A0A0A;--ink2:#52525B;--sunken:#F4F4F5;--hairline:#E4E4E7;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
@@ -25,34 +29,57 @@
   .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
   .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
   .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
-  .stage{position:fixed;top:52px;left:0;right:0;bottom:0}
-  .pane{position:absolute;inset:0;overflow-y:auto}
+  .cap{position:fixed;top:52px;left:0;right:0;z-index:19;background:var(--sunken);color:var(--ink2);font-size:12px;font-weight:600;text-align:center;padding:6px 12px;line-height:1.35}
+  .stage{position:fixed;top:84px;left:0;right:0;bottom:0}
+  .pane{position:absolute;inset:0}
   .pane.hidden{display:none}
   iframe{width:100%;height:100%;border:0;display:block}
-  .after{max-width:520px;margin:0 auto;min-height:100%;padding:22px 16px 40px}
-  .h1{font-size:22px;font-weight:700;letter-spacing:-0.02em}
-  .lbl{font-size:12.5px;font-weight:600;color:var(--ink2);margin:20px 0 8px}
-  .row{display:flex;gap:8px;flex-wrap:wrap}
-  .ch{font-size:13px;font-weight:500;padding:9px 15px;border-radius:999px;background:#fff;border:1px solid var(--hairline);color:var(--ink)}
-  .ch.on{background:var(--sunken);border-color:var(--hairline);font-weight:600}
-  .cap{font-size:11.5px;color:var(--ink3);margin-top:24px;line-height:1.5;border-top:1px solid var(--hairline);padding-top:14px}
 </style>
 </head>
 <body>
   <div class="top"><div class="seg"><button id="bB" class="on" onclick="show('before')">Before (live)</button><button id="bA" onclick="show('after')">After</button></div></div>
+  <div class="cap">After: the selected language pill goes from a solid ink fill to the locked calm gray selected state (sunken + ink + semibold).</div>
   <div class="stage">
-    <div id="paneBefore" class="pane"><iframe src="/api/dev/login?to=/de/profile/settings" title="live settings"></iframe></div>
-    <div id="paneAfter" class="pane hidden">
-      <div class="after">
-        <div class="h1">Settings</div>
-        <div class="lbl">Beauty profile</div>
-        <div class="row"><span class="ch on">Short</span><span class="ch">Medium</span><span class="ch">Long</span></div>
-        <div class="lbl">Language</div>
-        <div class="row"><span class="ch on">Deutsch</span><span class="ch">Français</span><span class="ch">Italiano</span><span class="ch">English</span></div>
-        <div class="cap">Change applied: the selected language pill uses the locked gray-sunken selected state, matching the Beauty chips one section up on the same page, instead of a solid ink/black fill.</div>
-      </div>
-    </div>
+    <div id="paneBefore" class="pane"><iframe id="beforeFrame" src="/de/profile/settings" title="real settings, before (ink-fill selected)"></iframe></div>
+    <div id="paneAfter" class="pane hidden"><iframe id="afterFrame" src="/de/profile/settings" title="real settings, after (gray selected injected)"></iframe></div>
   </div>
-<script>function show(w){document.getElementById('paneBefore').classList.toggle('hidden',w!=='before');document.getElementById('paneAfter').classList.toggle('hidden',w!=='after');document.getElementById('bB').classList.toggle('on',w==='before');document.getElementById('bA').classList.toggle('on',w==='after');}</script>
+<script>
+  function applyChange(doc){
+    var hit = 0;
+    [].forEach.call(doc.querySelectorAll('button'), function(b){
+      if(!/^(Deutsch|English|Français|Italiano)$/.test((b.textContent||'').trim())) return;
+      var cs = doc.defaultView.getComputedStyle(b);
+      if(cs.backgroundColor === 'rgb(10, 10, 10)'){   // the ink-fill selected pill
+        b.style.backgroundColor = '#F4F4F5';
+        b.style.color = '#0A0A0A';
+        b.style.fontWeight = '600';
+        b.style.border = '1px solid #E4E4E7';
+        b.setAttribute('data-sweep-done','1');
+        hit++;
+      }
+    });
+    // bring the language section into view once applied
+    if(hit){ var done=doc.querySelector('[data-sweep-done]'); if(done){ doc.documentElement.style.scrollBehavior='auto'; try{ done.scrollIntoView({block:'center'}); }catch(e){} } }
+    return hit;
+  }
+  var afterStarted = false;
+  function startAfter(){
+    if(afterStarted) return; afterStarted = true;
+    var f = document.getElementById('afterFrame'), tries = 0;
+    var MAX_POLLS = 150; // psych-ok: a poll cap, never a displayed count
+    var iv = setInterval(function(){
+      tries++;
+      try{ var doc = f.contentDocument; if(doc && applyChange(doc) > 0){ clearInterval(iv); } }catch(e){}
+      if(tries > MAX_POLLS){ clearInterval(iv); }
+    }, 200);
+  }
+  function show(w){
+    document.getElementById('paneBefore').classList.toggle('hidden', w!=='before');
+    document.getElementById('paneAfter').classList.toggle('hidden', w!=='after');
+    document.getElementById('bB').classList.toggle('on', w==='before');
+    document.getElementById('bA').classList.toggle('on', w==='after');
+    if(w==='after') startAfter();
+  }
+</script>
 </body>
 </html>
