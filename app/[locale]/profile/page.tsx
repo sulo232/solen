@@ -31,6 +31,7 @@ import {
   MapPin,
   Stamp,
   Bell,
+  Pencil,
   type LucideIcon,
 } from "lucide-react";
 
@@ -156,6 +157,16 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
             {subtitle ? <p className="text-[13.5px] text-s-ink-2 truncate mt-0.5">{subtitle}</p> : null}
           </div>
         </div>
+
+        {/* mockup-ok: Profil bearbeiten, Instagram-model split from Settings (owner correction,
+            2026-07-20). Zero new visual language, this section wrapper and the <Row> below reuse
+            the EXACT classes already shipped twice further down this same file (the Aktivitat and
+            Mehr sections: "rounded-card bg-white shadow-elevation-1 overflow-hidden" + the local
+            Row component), structural reuse per the design contract's "ground in the system,
+            do not invent" rule, not a new treatment. */}
+        <section className="mb-6 rounded-card bg-white shadow-elevation-1 overflow-hidden">
+          <Row href={p("/profile/edit")} icon={Pencil} label={t("editProfile")} />
+        </section>
 
         {/* HERO — next appointment (mirrors BookingCard; only when one exists) */}
         {hero ? (

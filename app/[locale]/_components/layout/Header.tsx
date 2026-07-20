@@ -419,6 +419,7 @@ export default function Header({ locale }: { locale: string }) {
       [/\/profile\/vouchers\/?$/, "Gutscheine"],
       [/\/profile\/intake-forms\/?$/, "Formulare"],
       [/\/profile\/referral\/?$/, "Freunde einladen"],
+      [/\/profile\/edit\/?$/, "Profil bearbeiten"],
       [/\/profile\/settings\/?$/, "Einstellungen"],
       // Settings hub sub-pages (restructure 2026-07-20): same hardcoded-de pattern as the
       // rest of this map, see the comment at the top of this block.

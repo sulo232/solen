@@ -47,7 +47,10 @@ export type { SettingsLocale };
 // Settings hub restructure (2026-07-20, owner-approved mockup public/_mockups/sweep-settings-insta):
 // each slice below renders standalone on its own sub-page (app/[locale]/profile/settings/<slice>/page.tsx).
 // `section` omitted keeps the original full-page render as a safety net (nothing else imports it today).
-export type SettingsSection = "personal" | "password" | "language" | "notifications" | "delete";
+// "identity" added same day (owner correction, Instagram model): photo/name/bio moved OUT of
+// "personal" into their own /profile/edit page; "personal" keeps only account contact data
+// (email/phone).
+export type SettingsSection = "personal" | "identity" | "password" | "language" | "notifications" | "delete";
 
 export interface SettingsInitial {
   display_name: string;
@@ -239,7 +242,10 @@ export default function SettingsForm({
   };
 
   // ── sectioned sub-page renders ────────────────────────────
-  if (section === "personal") {
+  // "identity" (/profile/edit): Instagram-model "Edit profile", photo/name/bio, moved out of
+  // "personal" 2026-07-20 per owner correction. Same avatar-upload + Field markup as before,
+  // just without the account-contact fields (those stay in "personal" below).
+  if (section === "identity") {
     return (
       <form onSubmit={saveProfile} className="space-y-7">
         <div className="space-y-[18px]">
@@ -266,6 +272,29 @@ export default function SettingsForm({
             <TextInput id="display_name" className={WHITE_INPUT} value={form.display_name}
               onChange={(e) => set("display_name", e.target.value)} />
           </Field>
+          <Field label={tp("bio")} htmlFor="bio" optional>
+            <textarea id="bio" rows={3} maxLength={500} value={form.bio}
+              onChange={(e) => set("bio", e.target.value)}
+              className={cn("block w-full font-body font-normal text-[16px] text-s-ink px-4 py-3 placeholder:text-s-ink-3 transition-colors duration-150", WHITE_INPUT)} />
+          </Field>
+        </div>
+
+        <button type="submit" disabled={saving}
+          className="w-full h-12 rounded-btn bg-s-ink text-white text-[15px] font-medium tracking-[-0.005em] flex items-center justify-center gap-2 transition-opacity duration-200 disabled:opacity-50 active:scale-[0.97]">
+          {saving && <span aria-hidden className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />}
+          {t("saveProfile")}
+        </button>
+      </form>
+    );
+  }
+
+  // "personal" (/profile/settings/personal): account CONTACT data only (email/phone). Avatar,
+  // name and bio moved to "identity" above (2026-07-20, owner correction: public identity is a
+  // separate Instagram-model "Edit profile" page, not part of Settings).
+  if (section === "personal") {
+    return (
+      <form onSubmit={saveProfile} className="space-y-7">
+        <div className="space-y-[18px]">
           <Field label={t("changeEmail")} htmlFor="new_email">
             <div className="flex gap-2">
               <TextInput id="new_email" type="email" inputMode="email" autoComplete="email"
@@ -279,11 +308,6 @@ export default function SettingsForm({
           <Field label={t("phone")} htmlFor="phone" optional>
             <TextInput id="phone" type="tel" inputMode="tel" autoComplete="tel" className={WHITE_INPUT}
               value={form.phone_number} onChange={(e) => set("phone_number", e.target.value)} />
-          </Field>
-          <Field label={tp("bio")} htmlFor="bio" optional>
-            <textarea id="bio" rows={3} maxLength={500} value={form.bio}
-              onChange={(e) => set("bio", e.target.value)}
-              className={cn("block w-full font-body font-normal text-[16px] text-s-ink px-4 py-3 placeholder:text-s-ink-3 transition-colors duration-150", WHITE_INPUT)} />
           </Field>
         </div>
 
