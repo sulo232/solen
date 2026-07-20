@@ -5,7 +5,7 @@ Owner 2026-07-20: "for settings yk profile sh i want more like insta; the delete
 dashboard looks ass; the calendar i dont see any difference; overall i dont like ths background gray sh
 everywhere, and it is everywhere outside these mockups too."
 
-- [ ] CORRECTION (owner repeat 2026-07-20 "i told you settings n sh, its not right, think as a user"): SETTINGS more like INSTA , DELIVER THE MOCKUP THIS TURN: capture the Instagram settings reference (Mobbin), distill (grouped plain nav ROWS: icon + label + chevron, thin sections, no form-wall), build the v2 live mockup restructuring /de/profile/settings that way.
+- [x] CORRECTION (owner repeat 2026-07-20): SETTINGS more like INSTA , DELIVERED: Instagram reference captured (Mobbin screen f08baa0d, "Settings and activity" row anatomy), sweep-settings-insta built as a v2 live mockup (form wall -> plain nav rows, real German labels, live language value, white-first), verified rendered (7 rows, wall hidden) + in the gallery. NEXT once approved: build the real sub-page structure in code.
 - [ ] DELETE type-to-confirm: REMOVE the "type KONTO LÖSCHEN to confirm" step (owner order). Replace with a plain confirm (button + one confirm dialog). -> FIX phase, owner-decided.
 - [ ] DASHBOARD redesign: "looks ass" , run solen-taste-diagnosis on the rendered dashboard home (measured walk), then propose directions. Note the stranded Aurora V2 skin branch (bold-hellman) as a possible direction , surface, don't silently adopt.
 - [ ] CALENDAR mockup honesty: on MOBILE the dead-token accents barely render (the 203 are desktop-grid). Either point the After at the desktop grid or drop the mockup and just FIX the dead token in code (already an approved mechanical fix).
