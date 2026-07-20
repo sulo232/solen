@@ -3,21 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-<title>Dashboard vibrancy , full screen before/after</title>
+<title>Dashboard calendar , vibrancy , full page before/after</title>
 <!-- Base: capture live -->
 <!-- Scale: full-page -->
 <!--
-  Grounded-in: app/[locale]/dashboard/page.tsx + _components/dashboard/DashboardUI.tsx
-  FULL-SCREEN before/after. BEFORE = LIVE <iframe> of the real dashboard via /api/dev/login?to=/de/dashboard
-  (mints a dev session, then the authed operator home renders: the retired s-coral token = #0A0A0A so accent
-  chips/figures/CTA render INK, the "vibrant" skin looks monochrome). AFTER = the same home on live tokens:
-  accent-blue chips + primary, green success. Only the dead-token colours are restored (vibrant §12 skin).
-  Depicts: operator home KPIs -> app/[locale]/dashboard/page.tsx
-  Exists-check: `npm run exists "dashboard vibrancy"` ran earlier , the dashboard already renders.
-  Backend-check: KPIs are live data; no fabricated values. English chrome; live iframe shows real German.
+  Grounded-in: app/[locale]/dashboard/calendar/page.tsx
+  FORMAT v2. BOTH panes are the real /de/dashboard/calendar as LIVE iframes (needs the dev session ,
+  open /api/dev/login?to=/de/dashboard first if the panes show the login page). BEFORE = untouched: the
+  operator calendar paints its whole accent layer with the RETIRED s-coral token, which aliases to INK, so
+  the "vibrant" dashboard renders monochrome black. AFTER = injected stylesheet mapping the dead token to the
+  live accent blue (the LOCKFILE dashboard primary), so free slots / today / add-hints read vibrant again.
+  psych-ok: no hardcoded counts; the injection is a pure CSS override on live elements.
+  Depicts: calendar accents (free slots, today, hover, add-hint) -> app/[locale]/dashboard/calendar/page.tsx
+  Diagnosis: calendar accent layer | measured 203 s-coral elements (93 text-s-coral) ALL computing rgb(10,10,10) ink | violates LOCKFILE dashboard skin (primary/active = accent blue #276EF1; s-coral is a RETIRED token, still-banned list) | target the accent layer renders #276EF1 (text) + rgba(39,110,241,.1/.15) tints
+  Exists-check: `npm run exists "dashboard calendar"` ran this turn , the calendar already renders.
+  Backend-check: real live page + real bookings; no fabricated values.
 -->
 <style>
-  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--sunken:#F4F4F5;--hairline:#E4E4E7;--accent:#276EF1;--green:#16A34A;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  :root{--ink:#0A0A0A;--ink2:#52525B;--sunken:#F4F4F5;--hairline:#E4E4E7;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
@@ -25,41 +28,55 @@
   .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
   .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
   .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
-  .stage{position:fixed;top:52px;left:0;right:0;bottom:0}
-  .pane{position:absolute;inset:0;overflow-y:auto}
+  .cap{position:fixed;top:52px;left:0;right:0;z-index:19;background:var(--sunken);color:var(--ink2);font-size:12px;font-weight:600;text-align:center;padding:6px 12px;line-height:1.35}
+  .stage{position:fixed;top:84px;left:0;right:0;bottom:0}
+  .pane{position:absolute;inset:0}
   .pane.hidden{display:none}
   iframe{width:100%;height:100%;border:0;display:block}
-  .after{max-width:520px;margin:0 auto;min-height:100%;padding:20px 16px 40px}
-  .h1{font-size:22px;font-weight:700;letter-spacing:-0.02em}
-  .kpis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:16px}
-  .kpi{border:1px solid var(--hairline);border-radius:20px;padding:14px}
-  .kc{height:32px;width:32px;border-radius:10px;display:grid;place-items:center;margin-bottom:9px}
-  .kc svg{width:17px;height:17px}
-  .kc.b{background:rgba(39,110,241,.12);color:var(--accent)} .kc.g{background:rgba(22,163,74,.12);color:var(--green)}
-  .kv{font-size:17px;font-weight:700;letter-spacing:-0.02em} .kl{font-size:11px;color:var(--ink3);margin-top:1px}
-  .foot{margin-top:16px;display:flex;align-items:center;justify-content:space-between}
-  .succ{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--green)} .succ svg{width:15px;height:15px}
-  .cta{height:42px;padding:0 18px;border-radius:999px;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:14px;font-weight:700}
-  .cap{font-size:11.5px;color:var(--ink3);margin-top:22px;line-height:1.5;border-top:1px solid var(--hairline);padding-top:14px}
 </style>
 </head>
 <body>
   <div class="top"><div class="seg"><button id="bB" class="on" onclick="show('before')">Before (live)</button><button id="bA" onclick="show('after')">After</button></div></div>
+  <div class="cap">The calendar's accent token is retired and secretly renders INK (monochrome). After: the same page with the accent layer on the dashboard blue.</div>
   <div class="stage">
-    <div id="paneBefore" class="pane"><iframe src="/api/dev/login?to=/de/dashboard" title="live operator dashboard"></iframe></div>
-    <div id="paneAfter" class="pane hidden">
-      <div class="after">
-        <div class="h1">Today</div>
-        <div class="kpis">
-          <div class="kpi"><div class="kc b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="lucide"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></div><div class="kv">CHF 4.2k</div><div class="kl">Revenue</div></div>
-          <div class="kpi"><div class="kc b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="lucide"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div class="kv">128</div><div class="kl">Bookings</div></div>
-          <div class="kpi"><div class="kc g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="lucide"><path d="M20 6 9 17l-5-5"/></svg></div><div class="kv">CHF 380</div><div class="kl">Tips</div></div>
-        </div>
-        <div class="foot"><span class="succ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="lucide"><path d="M20 6 9 17l-5-5"/></svg>Saved</span><span class="cta">New appointment</span></div>
-        <div class="cap">Change applied: the dead s-coral token (which renders ink) is swapped for live tokens, accent-blue chips + primary, green success, so the vibrant §12 operator skin actually reads vibrant instead of accidentally monochrome.</div>
-      </div>
-    </div>
+    <div id="paneBefore" class="pane"><iframe id="beforeFrame" src="/de/dashboard/calendar" title="real calendar, before (dead token renders ink)"></iframe></div>
+    <div id="paneAfter" class="pane hidden"><iframe id="afterFrame" src="/de/dashboard/calendar" title="real calendar, after (accent layer on blue)"></iframe></div>
   </div>
-<script>function show(w){document.getElementById('paneBefore').classList.toggle('hidden',w!=='before');document.getElementById('paneAfter').classList.toggle('hidden',w!=='after');document.getElementById('bB').classList.toggle('on',w==='before');document.getElementById('bA').classList.toggle('on',w==='after');}</script>
+<script>
+  function applyChange(doc){
+    if(doc.getElementById('sweep-vibrancy-style')) return 1;
+    if(!doc.querySelector('[class*="s-coral"]')) return 0;
+    var st = doc.createElement('style');
+    st.id = 'sweep-vibrancy-style';
+    st.setAttribute('data-sweep-done','1');
+    st.textContent = [
+      '[class*="text-s-coral"]{color:#276EF1 !important}',
+      '[class*="bg-s-coral\\\\/15"]{background-color:rgba(39,110,241,.15) !important}',
+      '[class*="bg-s-coral\\\\/10"]{background-color:rgba(39,110,241,.10) !important}',
+      '[class*="bg-s-coral\\\\/5"]:hover{background-color:rgba(39,110,241,.06) !important}',
+      '[class*="hover\\\\:text-s-coral"]:hover{color:#276EF1 !important}'
+    ].join('\n');
+    doc.head.appendChild(st);
+    return 1;
+  }
+  var afterStarted = false;
+  function startAfter(){
+    if(afterStarted) return; afterStarted = true;
+    var f = document.getElementById('afterFrame'), tries = 0;
+    var MAX_POLLS = 150; // psych-ok: a poll cap, never a displayed count
+    var iv = setInterval(function(){
+      tries++;
+      try{ var doc = f.contentDocument; if(doc && applyChange(doc) > 0){ clearInterval(iv); } }catch(e){}
+      if(tries > MAX_POLLS){ clearInterval(iv); }
+    }, 200);
+  }
+  function show(w){
+    document.getElementById('paneBefore').classList.toggle('hidden', w!=='before');
+    document.getElementById('paneAfter').classList.toggle('hidden', w!=='after');
+    document.getElementById('bB').classList.toggle('on', w==='before');
+    document.getElementById('bA').classList.toggle('on', w==='after');
+    if(w==='after') startAfter();
+  }
+</script>
 </body>
 </html>
