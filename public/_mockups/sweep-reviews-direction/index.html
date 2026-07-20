@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Reviews section , direction A , full page before/after</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/_components/salon/SalonReviews.tsx
+  FULL-PAGE before/after (Q24 direction A, the recommended pick). BOTH panes are the real
+  /de/salon/blade-and-stone rendered as LIVE iframes (the base IS the live page, no static capture needed).
+  BEFORE = untouched. AFTER = direction A INJECTED on the real page: the bare blue review count beside the
+  star value is removed and folded into the reviews see-all pill (label mirrors the page's own real count ,
+  no invented data), so the summary reads star + value only and the block gets shorter. The pill STAYS a pill
+  (Reviews see-all = pill per the LOCKFILE intent split).
+  english-ok: the injected label + match regexes mirror the live page's real German product copy.
+  psych-ok: no hardcoded counts anywhere , the count is READ from the live DOM at runtime; the only numeric
+  literal in the script is a poll cap, not a displayed value.
+  Depicts: reviews summary + see-all -> app/[locale]/_components/salon/SalonReviews.tsx
+  Diagnosis: reviews bare count | measured a blue rgb(39,110,241) 16px parenthesised count beside the 4.4 star value | violates the TASTE_LOG reviews-open row (dated 2026-07) , the bare blue count must die | target count folded into the see-all pill text
+  Diagnosis: reviews block length | measured summary + hairline + a comment-less stack line | violates copy economy (owner, "too long") | target compact summary-first block, see-all carries the count
+  Exists-check: `npm run exists "SalonReviews"` ran this turn , the section already renders.
+  Backend-check: real live page + real count read from the DOM; directions B (histogram) and C (featured voice)
+  need seed data that does not exist yet (no text reviews in seed), so they are NOT rendered , flagged, not faked.
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#52525B;--sunken:#F4F4F5;--hairline:#E4E4E7;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
+  .top{position:fixed;top:0;left:0;right:0;height:52px;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;padding:0 12px}
+  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
+  .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .cap{position:fixed;top:52px;left:0;right:0;z-index:19;background:var(--sunken);color:var(--ink2);font-size:12px;font-weight:600;text-align:center;padding:6px 12px;line-height:1.35}
+  .stage{position:fixed;top:84px;left:0;right:0;bottom:0}
+  .pane{position:absolute;inset:0}
+  .pane.hidden{display:none}
+  iframe{width:100%;height:100%;border:0;display:block}
+</style>
+</head>
+<body>
+  <div class="top"><div class="seg"><button id="bB" class="on" onclick="show('before')">Before (live)</button><button id="bA" onclick="show('after')">After , A</button></div></div>
+  <div class="cap">A: star + value only; the count moves into the see-all pill. B (histogram) + C (featured voice) need text-review seed data that does not exist yet , flagged, not faked.</div>
+  <div class="stage">
+    <div id="paneBefore" class="pane"><iframe id="beforeFrame" src="/de/salon/blade-and-stone" title="real page, before"></iframe></div>
+    <div id="paneAfter" class="pane hidden"><iframe id="afterFrame" src="/de/salon/blade-and-stone" title="real page, after (direction A injected)"></iframe></div>
+  </div>
+<script>
+  var MAX_POLLS = 120; // psych-ok: an injection poll cap, never a displayed count
+  function applyChange(doc){
+    var h = [].filter.call(doc.querySelectorAll('h2'), function(x){ return /^Bewertungen/i.test((x.textContent||'').trim()); })[0];
+    if(!h) return 0;
+    var sec = h.closest('section') || h.parentElement;
+    if(sec.getAttribute('data-sweep-done')) return 1;
+    // 1. read the REAL count from the page's own parenthesised count, then remove that bare count
+    var count = null; // psych-ok: read from the live DOM below, never hardcoded
+    var cand = [].filter.call(sec.querySelectorAll('a,span'), function(e){
+      return e.children.length===0 && /^\(\d+\)$/.test((e.textContent||'').trim());
+    })[0];
+    if(cand){ count = (cand.textContent||'').replace(/[()]/g,'').trim(); cand.style.display='none'; }
+    // 2. fold the count into the reviews see-all pill; if this salon renders no pill (comment-less state),
+    //    add the owner-approved pill (the exact SeeAllButton pill grammar) so the count keeps a home
+    var pill = [].filter.call(sec.querySelectorAll('a,button'), function(e){ return /alle ansehen/i.test(e.textContent||''); })[0];
+    if(!pill && count){
+      pill = doc.createElement('a');
+      pill.href = '#section-reviews';
+      pill.className = 'rounded-full font-body inline-flex items-center bg-s-bg-sunken px-8 py-3 text-[14px] font-semibold text-s-ink';
+      pill.style.marginTop = '14px';
+      pill.style.whiteSpace = 'nowrap';
+      pill.style.width = 'fit-content';
+      sec.appendChild(pill);
+    }
+    if(pill && count){ pill.textContent = 'Alle ' + count + ' Bewertungen'; }
+    sec.setAttribute('data-sweep-done','1');
+    try{ sec.scrollIntoView({block:'center'}); }catch(e){}
+    return 1;
+  }
+  var afterStarted = false;
+  function startAfter(){
+    if(afterStarted) return; afterStarted = true;
+    var f = document.getElementById('afterFrame'), tries = 0;
+    var iv = setInterval(function(){
+      tries++;
+      try{ var doc = f.contentDocument; if(doc && doc.querySelector('h2')){ if(applyChange(doc) > 0){ clearInterval(iv); } } }catch(e){}
+      if(tries > MAX_POLLS){ clearInterval(iv); }
+    }, 200);
+  }
+  function show(w){
+    document.getElementById('paneBefore').classList.toggle('hidden', w!=='before');
+    document.getElementById('paneAfter').classList.toggle('hidden', w!=='after');
+    document.getElementById('bB').classList.toggle('on', w==='before');
+    document.getElementById('bA').classList.toggle('on', w==='after');
+    if(w==='after') startAfter();
+  }
+</script>
+</body>
+</html>
