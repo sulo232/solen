@@ -8,8 +8,14 @@ import { Switch } from "@/app/[locale]/_components/primitives/Switch";
 import { TextInput } from "@/app/[locale]/_components/primitives/TextInput";
 import { FieldLabel } from "@/app/[locale]/_components/primitives/FieldLabel";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "@/app/[locale]/_components/primitives/Modal";
 
 export type SettingsLocale = "de" | "en" | "fr" | "it";
+
+// Settings hub restructure (2026-07-20, owner-approved mockup public/_mockups/sweep-settings-insta):
+// each slice below renders standalone on its own sub-page (app/[locale]/profile/settings/<slice>/page.tsx).
+// `section` omitted keeps the original full-page render as a safety net (nothing else imports it today).
+export type SettingsSection = "personal" | "password" | "language" | "notifications" | "delete";
 
 export interface SettingsInitial {
   display_name: string;
@@ -21,21 +27,27 @@ export interface SettingsInitial {
   notification_sms: boolean;
 }
 
-const LOCALES: { value: SettingsLocale; label: string }[] = [
+export const LOCALES: { value: SettingsLocale; label: string }[] = [
   { value: "de", label: "Deutsch" },
   { value: "en", label: "English" },
   { value: "fr", label: "Français" },
   { value: "it", label: "Italiano" },
 ];
 
+// White-first override for the sub-pages (LOCFILE input law defaults to a sunken #F4F4F5 fill;
+// the settings sub-pages are white-first per the owner-approved mockup, radius stays 12 unchanged).
+const WHITE_INPUT = "!bg-white !border !border-s-border";
+
 export default function SettingsForm({
   locale,
   email,
   initial,
+  section,
 }: {
   locale: string;
   email: string;
   initial: SettingsInitial;
+  section?: SettingsSection;
 }) {
   const t = useTranslations("profileHub");
   const tp = useTranslations("Profile");
@@ -134,12 +146,11 @@ export default function SettingsForm({
   };
 
   // ── danger: delete account ───────────────────────────────
-  const CONFIRM = tp("deleteAccountConfirmPlaceholder");
-  const [confirmText, setConfirmText] = React.useState("");
+  // Type-to-confirm KILLED (owner 2026-07-20): a plain confirm dialog replaces it.
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false);
   const [deleting, setDeleting] = React.useState(false);
 
   const deleteAccount = async () => {
-    if (confirmText.trim() !== CONFIRM) return;
     setDeleting(true);
     try {
       // The canonical full deletion flow (app/api/profile/request-deletion):
@@ -155,6 +166,7 @@ export default function SettingsForm({
         const err = await res.json().catch(() => ({}));
         console.error("[Settings] delete failed:", err?.message ?? res.status);
         toast.error(err?.message || t("saveError"));
+        setDeleteConfirmOpen(false);
         return;
       }
       toast.success(tp("deleteAccount30Days"));
@@ -162,11 +174,145 @@ export default function SettingsForm({
     } catch (err) {
       console.error("[Settings] delete exception:", err);
       toast.error(t("saveError"));
+      setDeleteConfirmOpen(false);
     } finally {
       setDeleting(false);
     }
   };
 
+  // ── sectioned sub-page renders ────────────────────────────
+  if (section === "personal") {
+    return (
+      <form onSubmit={saveProfile} className="space-y-7">
+        <div className="space-y-[18px]">
+          <Field label={tp("avatarUrl")} htmlFor="avatar_url" optional>
+            <TextInput id="avatar_url" type="url" inputMode="url" placeholder="https://…" className={WHITE_INPUT}
+              value={form.avatar_url} onChange={(e) => set("avatar_url", e.target.value)} />
+          </Field>
+          <Field label={tp("name")} htmlFor="display_name">
+            <TextInput id="display_name" className={WHITE_INPUT} value={form.display_name}
+              onChange={(e) => set("display_name", e.target.value)} />
+          </Field>
+          <Field label={t("changeEmail")} htmlFor="new_email">
+            <div className="flex gap-2">
+              <TextInput id="new_email" type="email" inputMode="email" autoComplete="email"
+                placeholder={email} value={newEmail} onChange={(e) => setNewEmail(e.target.value)}
+                className={cn(WHITE_INPUT, "flex-1")} />
+              <ActionButton onClick={updateEmail} busy={emailBusy} disabled={!emailValid}>
+                {t("updateAction")}
+              </ActionButton>
+            </div>
+          </Field>
+          <Field label={t("phone")} htmlFor="phone" optional>
+            <TextInput id="phone" type="tel" inputMode="tel" autoComplete="tel" className={WHITE_INPUT}
+              value={form.phone_number} onChange={(e) => set("phone_number", e.target.value)} />
+          </Field>
+          <Field label={tp("bio")} htmlFor="bio" optional>
+            <textarea id="bio" rows={3} maxLength={500} value={form.bio}
+              onChange={(e) => set("bio", e.target.value)}
+              className={cn("block w-full font-body font-normal text-[16px] text-s-ink px-4 py-3 placeholder:text-s-ink-3 transition-colors duration-150", WHITE_INPUT)} />
+          </Field>
+        </div>
+
+        <button type="submit" disabled={saving}
+          className="w-full h-12 rounded-btn bg-s-ink text-white text-[15px] font-medium tracking-[-0.005em] flex items-center justify-center gap-2 transition-opacity duration-200 disabled:opacity-50 active:scale-[0.97]">
+          {saving && <span aria-hidden className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />}
+          {t("saveProfile")}
+        </button>
+      </form>
+    );
+  }
+
+  if (section === "password") {
+    return (
+      <Field label={t("changePassword")} htmlFor="new_password">
+        <div className="flex gap-2">
+          <TextInput id="new_password" type="password" revealable autoComplete="new-password"
+            placeholder={t("newPassword")} value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)} className={cn(WHITE_INPUT, "flex-1")} />
+          <ActionButton onClick={updatePassword} busy={pwBusy} disabled={!pwValid}>
+            {t("updateAction")}
+          </ActionButton>
+        </div>
+      </Field>
+    );
+  }
+
+  if (section === "language") {
+    return (
+      <form onSubmit={saveProfile} className="space-y-7">
+        <div className="space-y-1.5">
+          <div className="flex flex-wrap gap-2">
+            {LOCALES.map((l) => (
+              <button key={l.value} type="button" onClick={() => set("locale", l.value)}
+                aria-pressed={form.locale === l.value}
+                className={cn(
+                  "h-10 px-4 rounded-btn text-[14px] font-medium transition-colors duration-200",
+                  form.locale === l.value
+                    ? "bg-s-ink text-white"
+                    : "border border-s-border text-s-ink hover:bg-s-bg-sunken",
+                )}>
+                {l.label}
+              </button>
+            ))}
+          </div>
+          <p className="text-[12px] text-s-ink-2">{t("localeNote")}</p>
+        </div>
+
+        <button type="submit" disabled={saving}
+          className="w-full h-12 rounded-btn bg-s-ink text-white text-[15px] font-medium tracking-[-0.005em] flex items-center justify-center gap-2 transition-opacity duration-200 disabled:opacity-50 active:scale-[0.97]">
+          {saving && <span aria-hidden className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />}
+          {t("saveProfile")}
+        </button>
+      </form>
+    );
+  }
+
+  if (section === "notifications") {
+    return (
+      <form onSubmit={saveProfile} className="space-y-7">
+        <div className="rounded-card border border-s-border bg-white px-[18px]">
+          <Switch checked={form.notification_email}
+            onCheckedChange={(v) => set("notification_email", v)}
+            label={tp("emailNotifications")} subLabel={tp("notifBookingsDesc")} />
+          <Switch checked={form.notification_sms}
+            onCheckedChange={(v) => set("notification_sms", v)}
+            label="SMS" subLabel={tp("notifDealsDesc")} />
+        </div>
+
+        <button type="submit" disabled={saving}
+          className="w-full h-12 rounded-btn bg-s-ink text-white text-[15px] font-medium tracking-[-0.005em] flex items-center justify-center gap-2 transition-opacity duration-200 disabled:opacity-50 active:scale-[0.97]">
+          {saving && <span aria-hidden className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />}
+          {t("saveProfile")}
+        </button>
+      </form>
+    );
+  }
+
+  if (section === "delete") {
+    return (
+      <div className="space-y-3">
+        <p className="text-[14px] font-medium text-s-ink">{tp("deleteAccount")}</p>
+        <p className="text-[13px] text-s-ink-2 leading-[1.5]">{tp("deleteAccountWarningDesc")}</p>
+        <button type="button" onClick={() => setDeleteConfirmOpen(true)}
+          className="w-full h-11 rounded-btn border border-s-error/40 text-s-error text-[14px] font-medium flex items-center justify-center gap-2 transition-colors duration-200 hover:bg-s-error-bg">
+          {tp("deleteAccountConfirm")}
+        </button>
+        <DeleteConfirmModal
+          isOpen={deleteConfirmOpen}
+          onOpenChange={setDeleteConfirmOpen}
+          deleting={deleting}
+          onConfirm={deleteAccount}
+          title={tp("deleteAccountConfirm")}
+          warning={tp("deleteAccountWarningDesc")}
+          cancelLabel={tp("cancel")}
+        />
+      </div>
+    );
+  }
+
+  // ── default: full render (unused today, kept per the section-prop rollout so nothing
+  //    that still imports SettingsForm without a `section` regresses) ─────────────────
   return (
     <div className="space-y-7">
       {/* Profile + notifications */}
@@ -255,25 +401,28 @@ export default function SettingsForm({
         </Field>
       </Section>
 
-      {/* Danger zone */}
+      {/* Danger zone. Type-to-confirm KILLED (owner 2026-07-20): warning + a plain confirm dialog. */}
       <section>
         <h2 className="text-[13px] font-medium text-s-ink-2 mb-2 px-0.5">{tp("dangerZone")}</h2>
         <div className="rounded-card border border-s-error/30 bg-white p-[18px] space-y-3">
           <p className="text-[14px] font-medium text-s-ink">{tp("deleteAccount")}</p>
           <p className="text-[13px] text-s-ink-2 leading-[1.5]">{tp("deleteAccountWarningDesc")}</p>
-          <div className="space-y-1.5 pt-1">
-            <FieldLabel htmlFor="delete_confirm">{tp("deleteAccountConfirmLabel")}</FieldLabel>
-            <TextInput id="delete_confirm" value={confirmText} placeholder={CONFIRM}
-              onChange={(e) => setConfirmText(e.target.value)} autoComplete="off" />
-          </div>
-          <button type="button" onClick={deleteAccount}
-            disabled={confirmText.trim() !== CONFIRM || deleting}
-            className="w-full h-11 rounded-btn border border-s-error/40 text-s-error text-[14px] font-medium flex items-center justify-center gap-2 transition-colors duration-200 hover:bg-s-error-bg disabled:opacity-40 disabled:hover:bg-white">
-            {deleting && <span aria-hidden className="w-4 h-4 rounded-full border-2 border-s-error/30 border-t-s-error animate-spin" />}
+          <button type="button" onClick={() => setDeleteConfirmOpen(true)}
+            className="w-full h-11 rounded-btn border border-s-error/40 text-s-error text-[14px] font-medium flex items-center justify-center gap-2 transition-colors duration-200 hover:bg-s-error-bg">
             {tp("deleteAccountConfirm")}
           </button>
         </div>
       </section>
+
+      <DeleteConfirmModal
+        isOpen={deleteConfirmOpen}
+        onOpenChange={setDeleteConfirmOpen}
+        deleting={deleting}
+        onConfirm={deleteAccount}
+        title={tp("deleteAccountConfirm")}
+        warning={tp("deleteAccountWarningDesc")}
+        cancelLabel={tp("cancel")}
+      />
     </div>
   );
 }
@@ -303,5 +452,45 @@ function ActionButton({ onClick, busy, disabled, children }: { onClick: () => vo
       {busy && <span aria-hidden className="w-4 h-4 rounded-full border-2 border-s-border border-t-s-ink animate-spin" />}
       {children}
     </button>
+  );
+}
+
+// Plain confirm dialog (Modal primitive), replaces the killed type-to-confirm input.
+// Mirrors the destructive-confirm pattern in app/[locale]/queue/[token]/page.tsx.
+function DeleteConfirmModal({
+  isOpen,
+  onOpenChange,
+  deleting,
+  onConfirm,
+  title,
+  warning,
+  cancelLabel,
+}: {
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  deleting: boolean;
+  onConfirm: () => void;
+  title: string;
+  warning: string;
+  cancelLabel: string;
+}) {
+  return (
+    <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="sm" keyboardDismissDisabled={deleting} isDismissable={!deleting}>
+      <ModalHeader title={title} closeButton={!deleting} />
+      <ModalBody>
+        <p>{warning}</p>
+      </ModalBody>
+      <ModalFooter>
+        <button type="button" onClick={() => onOpenChange(false)} disabled={deleting}
+          className="rounded-full border border-s-border bg-white px-5 py-2.5 text-[14px] font-semibold text-s-ink transition-colors hover:bg-s-bg-sunken disabled:opacity-50">
+          {cancelLabel}
+        </button>
+        <button type="button" onClick={onConfirm} disabled={deleting}
+          className="rounded-full bg-s-error px-5 py-2.5 text-[14px] font-semibold text-white transition-colors hover:brightness-[1.06] disabled:opacity-50">
+          {deleting && <span aria-hidden className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />}
+          {title}
+        </button>
+      </ModalFooter>
+    </Modal>
   );
 }

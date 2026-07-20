@@ -420,7 +420,15 @@ export default function Header({ locale }: { locale: string }) {
       [/\/profile\/intake-forms\/?$/, "Formulare"],
       [/\/profile\/referral\/?$/, "Freunde einladen"],
       [/\/profile\/settings\/?$/, "Einstellungen"],
-      // The hub itself ("profile rn it says account" — its body title read "Konto").
+      // Settings hub sub-pages (restructure 2026-07-20): same hardcoded-de pattern as the
+      // rest of this map, see the comment at the top of this block.
+      [/\/profile\/settings\/personal\/?$/, "Persönliche Angaben"],
+      [/\/profile\/settings\/password\/?$/, "Passwort"],
+      [/\/profile\/settings\/language\/?$/, "Sprache"],
+      [/\/profile\/settings\/beauty\/?$/, "Beauty-Profil"],
+      [/\/profile\/settings\/notifications\/?$/, "Benachrichtigungen"],
+      [/\/profile\/settings\/delete\/?$/, "Konto löschen"],
+      // The hub itself ("profile rn it says account" , its body title read "Konto").
       // $-anchored so it never matches the sub-pages above.
       [/\/profile\/?$/, "Konto"],
     ];
