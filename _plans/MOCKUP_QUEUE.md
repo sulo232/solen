@@ -1,5 +1,23 @@
-<!-- batch: mockups for every improvable/inconsistent frontend surface (owner 2026-07-19 "make mockups for all, 100+, dont stop") -->
+<!-- batch: mockups for every improvable/inconsistent frontend surface (owner 2026-07-19 "make mockups for all, 100+, dont stop"; RE-ARMED 2026-07-20 "jst make these mockup for everywhere as a loop" in FORMAT v2) -->
 # Mockup queue , every improvable surface (LOOP, don't stop)
+
+## V2 LOOP (owner 2026-07-20 "make these mockups for everywhere as a loop") , the validated format ONLY
+Format per mockup: BOTH panes live iframes of the SAME real route; After = the change INJECTED + measured;
+Diagnosis manifest (measured | violates | target) from a same-turn measurement; verify + LOOK before commit; no flag-spam.
+Defects come from the session audits (all measured findings). Gallery: sweep-gallery-v2/index.html. RESUME after
+compaction: `grep -L "applyChange" public/_mockups/sweep-*/index.html` = not yet v2; continue down this list.
+
+- [x] v2-1 sweep-reviews-direction , reviews direction A (bare blue count -> folded into pill). VERIFIED + committed.
+- [ ] v2-2 sweep-auth-grammar REBUILD as injection , /de/auth/reset-password: tracked-uppercase eyebrows -> normal-case, 12px uppercase CTA -> 15px normal-case, warm ambient wash -> flat white. (Public route.)
+- [ ] v2-3 sweep-cookie-consent REBUILD as injection , real home banner: brown #A1672F badge -> neutral sunken, ink dead-hover Datenschutz link -> blue underline. (Fresh-session banner.)
+- [ ] v2-4 sweep-empty-consolidation REBUILD as injection , /de/reviews: the sunken-on-sunken invisible disc -> white disc on sunken (registry EmptyState look).
+- [ ] v2-5 sweep-dash-vibrancy REBUILD as injection , /de/dashboard via /api/dev/login: restyle '[class*=s-coral]' elements to accent blue / semantic tokens (the dead-token monochrome bug made visible). (Auth-gated: dev-login first.)
+- [ ] v2-6 sweep-voucher-status-chip REBUILD as injection , /de/profile/vouchers via dev-login: status chip label -> ink, icon stays semantic.
+- [ ] v2-7 sweep-selected-ink-pill REBUILD as injection , /de/profile/settings via dev-login: language pill selected ink-fill -> gray sunken.
+- [ ] v2-8 sweep-city-picker-selected REBUILD as injection , home header: open the picker via injected click, selected option -> sunken fill + check.
+- [ ] v2-9 sweep-overlay-scrim REBUILD as injection , open the cookie-settings modal via injected click: warm rgb(26,18,9) veil -> cool rgb(10,10,10).
+- [ ] v2-10 sweep-nav-hover REBUILD as injection , desktop header: force the About-us hover to the sunken pill (frosted bloom off).
+- [ ] Then: continue down the audit fix-list (skeletons, uppercase eyebrows, registry states) , one v2 mockup per DISTINCT decision still unapproved; mechanical already-decided fixes go to the FIX phase, not mockups.
 
 Owner 2026-07-19: "make me [a mockup] for all the inconsistent or like improvable frontend, idc if its one hundred or more mockup, just make and dont stop." No parallel frontend agents (memory) -> built sequentially by the orchestrator. Delivered via the growing GALLERY INDEX: `/_mockups/sweep-gallery/index.html`.
 
