@@ -199,8 +199,10 @@
       + '</a></div>';
   }
   function searchField(){
-    // NET-NEW, non-functional: proposed search over the profile content (labeled in the manifest)
-    return '<div style="display:flex;align-items:center;gap:10px;height:46px;border:1px solid #E4E4E7;border-radius:999px;padding:0 16px;margin:14px 0 4px">'+SEARCH+'<span style="font-size:15px;color:#A1A1AA">Suchen</span></div>'; // lang-ok german-ok english-ok: real app label
+    // NET-NEW, non-functional: proposed search over the profile content (labeled in the manifest).
+    // radius 16px (rounded RECT, not a pill) to match the measured Pinterest search anatomy; sits directly
+    // under the tabs (the reference's search-under-tabs signature) with the live block below it.
+    return '<div style="display:flex;align-items:center;gap:10px;height:46px;border:1px solid #E4E4E7;border-radius:16px;padding:0 16px;margin:12px 0 2px">'+SEARCH+'<span style="font-size:15px;color:#A1A1AA">Suchen</span></div>'; // lang-ok german-ok english-ok: real app label
   }
   function tileHtml(name, img, meta, meta2, icon){
     var cover = img
@@ -277,7 +279,7 @@
     var stamp=DATA.state+'|'+tabPick[key];
     if(root.getAttribute('data-render')===stamp) return 1;
     root.setAttribute('data-render',stamp);
-    root.innerHTML = tabBar(key,tabPick[key],idn) + liveBlock(hero) + searchField() + gridFor(key,tabPick[key]);
+    root.innerHTML = tabBar(key,tabPick[key],idn) + searchField() + liveBlock(hero) + gridFor(key,tabPick[key]);
     return 1;
   }
   var begun={};
