@@ -3,8 +3,10 @@
 // Editable Beauty Profile (V3-D348) — the settings-side counterpart to the
 // /onboarding flow. Same fields, same persisted values (shared ./beautyFields),
 // so a user can change in settings exactly what they picked during onboarding.
-// Saves via PATCH /api/profile: gender + hair_type columns + customer_preferences
-// JSONB (skinType, categories, interests), merged with existing prefs.
+// Saves via PATCH /api/profile: gender column + customer_preferences JSONB
+// (skinType, categories, interests), merged with existing prefs. hair_type
+// dedup (2026-07-21): the hair chip row moved out, /profile/haarprofil is
+// the canonical place to edit it.
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
@@ -14,7 +16,7 @@ import { cn } from "@/lib/utils";
 import { FieldLabel } from "@/app/[locale]/_components/primitives/FieldLabel";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
 import {
-  GENDER_OPTS, HAIR_OPTS, SKIN_OPTS, CATEGORY_OPTS, INTEREST_OPTS,
+  GENDER_OPTS, SKIN_OPTS, CATEGORY_OPTS, INTEREST_OPTS,
   CatIcon, INTEREST_ICON, type Choice,
 } from "@/app/[locale]/onboarding/beautyFields";
 
@@ -37,7 +39,6 @@ export default function BeautyProfileForm({
   const router = useRouter();
 
   const [gender, setGender] = React.useState(initial.gender);
-  const [hair, setHair] = React.useState(initial.hair_type);
   const [skin, setSkin] = React.useState(initial.skinType);
   const [categories, setCategories] = React.useState<string[]>(initial.categories);
   const [interests, setInterests] = React.useState<string[]>(initial.interests);
@@ -60,7 +61,6 @@ export default function BeautyProfileForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           gender: gender || null,
-          hair_type: hair || null,
           customer_preferences: prefs,
         }),
       });
@@ -86,11 +86,10 @@ export default function BeautyProfileForm({
       <div className="rounded-card border border-s-border bg-white p-[18px] space-y-[18px]">
         <p className="text-[13px] text-s-ink-2 leading-[1.5] -mt-0.5">{t("beautyIntro")}</p>
 
-        {/* single-select chips */}
+        {/* single-select chips. mockup-ok: removing the hair_type chip row, no new visual
+            design, hair_type is canonically owned + edited on /profile/haarprofil (dedup). */}
         <ChipGroup label={t("beautyGender")} opts={GENDER_OPTS} value={gender}
           onSelect={(v) => setGender(gender === v ? "" : v)} />
-        <ChipGroup label={t("beautyHair")} opts={HAIR_OPTS} value={hair}
-          onSelect={(v) => setHair(hair === v ? "" : v)} />
         <ChipGroup label={t("beautySkin")} opts={SKIN_OPTS} value={skin}
           onSelect={(v) => setSkin(skin === v ? "" : v)} />
 

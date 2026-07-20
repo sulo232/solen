@@ -68,7 +68,7 @@ export default async function SettingsPage({ params }: { params: Promise<{ local
 
         <SectionLabel>{t("hubSectionForYou")}</SectionLabel>
         <Row href={p("/beauty")} icon={Scissors} label={t("secBeauty")} sub={t("hubBeautySub")} />
-        <Row href={p("/notifications")} icon={Bell} label={t("tileNotifications")} />
+        <Row href={p("/notifications")} icon={Bell} label={t("notificationPrefs")} />
 
         <Hairline />
 

@@ -6,7 +6,7 @@ import { Calendar } from 'lucide-react';
 import BookingCard, { type Booking } from './BookingCard';
 import CancelBookingSheet from './CancelBookingSheet';
 import RescheduleSheet from './RescheduleSheet';
-import Spinner from '@/components-legacy/ui/Spinner';
+import { Skeleton } from '@/app/[locale]/_components/primitives';
 import EmptyState from '@/components-legacy/ui/EmptyState';
 import { toast } from '@/app/[locale]/_components/primitives/Toast';
 
@@ -174,9 +174,42 @@ export default function BookingsList({ userId }: BookingsListProps) {
       </div>
 
       {/* Content */}
+      {/* mockup-ok: container/spacing classes copied verbatim from the locked BookingCard.tsx
+          (bg-[--raised] rounded-card border-s-border shadow-elevation-1) so the skeleton shape
+          matches the real card , no new visual design, per design contract "loading = Skeleton". */}
       {loading && (
-        <div className="flex items-center justify-center py-12">
-          <Spinner />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div
+              key={i}
+              className="bg-[--raised] rounded-card border border-s-border p-4 shadow-elevation-1"
+              aria-hidden="true"
+            >
+              <div className="flex items-start gap-3">
+                {/* Focal date block */}
+                <Skeleton width={52} height={64} rounded={12} className="flex-none" />
+
+                {/* Salon + service + place + time */}
+                <div className="min-w-0 flex-1 space-y-2">
+                  <Skeleton height={16} width="70%" rounded={4} />
+                  <Skeleton height={14} width="55%" rounded={4} />
+                  <Skeleton height={13} width="45%" rounded={4} />
+                </div>
+
+                {/* Status pill */}
+                <Skeleton width={60} height={24} rounded="full" className="flex-none" />
+              </div>
+
+              {/* Footer: price + actions */}
+              <div className="mt-3 flex items-center justify-between border-t border-s-border pt-3">
+                <Skeleton width={80} height={18} rounded={4} />
+                <div className="flex items-center gap-2">
+                  <Skeleton width={90} height={36} rounded="full" />
+                  <Skeleton width={38} height={38} rounded="full" />
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 

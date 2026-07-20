@@ -16,7 +16,7 @@ import SettingsForm, { type SettingsLocale } from "../SettingsForm";
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "profileHub" });
-  return { title: t("tileNotifications"), robots: { index: false, follow: false } };
+  return { title: t("notificationPrefs"), robots: { index: false, follow: false } };
 }
 
 export default async function NotificationsSettingsPage({ params }: { params: Promise<{ locale: string }> }) {
