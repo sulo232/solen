@@ -36,15 +36,16 @@
   </div>
 <script>
   var MOCKS=[
+    {slug:'', href:'/api/dev/login?to=/de/dashboard', title:'Tap FIRST if the two gated ones show login', desc:'Mints the dev test session on this phone (dev-only), then come back here and open Dashboard / Settings.'},
     {slug:'sweep-reviews-direction', title:'Salon reviews , direction A', desc:'The bare blue review count dies; star + value only; the count folds into the see-all pill. Scroll to the reviews block after tapping After.'},
     {slug:'sweep-auth-grammar', title:'Reset-password , grammar', desc:'The tracked all-caps eyebrows go normal-case, the orange wordmark goes ink, the small all-caps CTA goes 15px normal-case.'},
     {slug:'sweep-cookie-consent', title:'Cookie banner , badge', desc:'The off-palette brown cookie badge goes neutral (sunken + ink glyph). Banner forced visible in both panes.'},
-    {slug:'sweep-dash-vibrancy', title:'Dashboard calendar , vibrancy', desc:'The retired accent token secretly renders INK (monochrome). After: the accent layer on the dashboard blue. Needs the dev session (open /api/dev/login?to=/de/dashboard once if you see login).'},
-    {slug:'sweep-selected-ink-pill', title:'Settings , selected language pill', desc:'The ink-filled selected pill goes to the locked calm gray selected state. Auto-scrolls to the language row. Needs the dev session.'}
+    {slug:'sweep-dash-vibrancy', title:'Dashboard calendar , vibrancy', desc:'The retired accent token secretly renders INK (monochrome). After: the accent layer on the dashboard blue. If it shows login, tap the mint card above first.'},
+    {slug:'sweep-selected-ink-pill', title:'Settings , selected language pill', desc:'The ink-filled selected pill goes to the locked calm gray selected state. Scroll to the language row after tapping After. If it shows login, tap the mint card above first.'}
   ];
   var list=document.getElementById('list');
   MOCKS.forEach(function(m){
-    var a=document.createElement('a'); a.className='card'; a.href='/_mockups/'+m.slug+'/index.html';
+    var a=document.createElement('a'); a.className='card'; a.href=m.href || ('/_mockups/'+m.slug+'/index.html');
     a.innerHTML='<div class="ct">'+m.title+'<span class="arrow">Open</span></div><div class="cd">'+m.desc+'</div>';
     list.appendChild(a);
   });

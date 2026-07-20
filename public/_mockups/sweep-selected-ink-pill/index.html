@@ -46,32 +46,51 @@
 <script>
   function applyChange(doc){
     var hit = 0;
+    // a persistent !important stylesheet keyed on an attribute survives React re-renders
+    if(!doc.getElementById('sweep-pill-style')){
+      var st = doc.createElement('style');
+      st.id = 'sweep-pill-style';
+      st.textContent = '[data-sweep-done]{transition:none !important;background:#F4F4F5 !important;color:#0A0A0A !important;font-weight:600 !important;border:1px solid #E4E4E7 !important}';
+      doc.head.appendChild(st);
+    }
     [].forEach.call(doc.querySelectorAll('button'), function(b){
       if(!/^(Deutsch|English|Français|Italiano)$/.test((b.textContent||'').trim())) return;
       var cs = doc.defaultView.getComputedStyle(b);
-      if(cs.backgroundColor === 'rgb(10, 10, 10)'){   // the ink-fill selected pill
-        b.style.backgroundColor = '#F4F4F5';
-        b.style.color = '#0A0A0A';
-        b.style.fontWeight = '600';
-        b.style.border = '1px solid #E4E4E7';
+      if(cs.backgroundColor === 'rgb(10, 10, 10)' && !b.getAttribute('data-sweep-done')){   // the ink-fill selected pill
         b.setAttribute('data-sweep-done','1');
         hit++;
       }
     });
-    // bring the language section into view once applied
-    if(hit){ var done=doc.querySelector('[data-sweep-done]'); if(done){ doc.documentElement.style.scrollBehavior='auto'; try{ done.scrollIntoView({block:'center'}); }catch(e){} } }
+    // bring the language section into view ONCE (re-applies must not fight the user's scrolling)
+    if(hit && !doc.body.getAttribute('data-sweep-scrolled')){
+      doc.body.setAttribute('data-sweep-scrolled','1');
+      var done=doc.querySelector('[data-sweep-done]');
+      if(done){ doc.documentElement.style.scrollBehavior='auto'; try{ done.scrollIntoView({block:'center'}); }catch(e){} }
+    }
     return hit;
   }
   var afterStarted = false;
   function startAfter(){
     if(afterStarted) return; afterStarted = true;
     var f = document.getElementById('afterFrame'), tries = 0;
-    var MAX_POLLS = 150; // psych-ok: a poll cap, never a displayed count
+    var MAX_POLLS = 600; // psych-ok: a poll cap, never a displayed count. KEEPS re-applying:
+    // the settings form re-renders after hydration and wipes injected inline styles, so the
+    // injection re-asserts itself instead of stopping at first success.
     var iv = setInterval(function(){
       tries++;
-      try{ var doc = f.contentDocument; if(doc && applyChange(doc) > 0){ clearInterval(iv); } }catch(e){}
+      try{
+        var doc = f.contentDocument;
+        if(doc){
+          applyChange(doc);
+          // late re-scroll once the hydrating layout has settled (the first scroll can land off)
+          if(tries === 20){
+            var done = doc.querySelector('[data-sweep-done]');
+            if(done){ doc.documentElement.style.scrollBehavior='auto'; try{ done.scrollIntoView({block:'center'}); }catch(e){} }
+          }
+        }
+      }catch(e){}
       if(tries > MAX_POLLS){ clearInterval(iv); }
-    }, 200);
+    }, 300);
   }
   function show(w){
     document.getElementById('paneBefore').classList.toggle('hidden', w!=='before');
