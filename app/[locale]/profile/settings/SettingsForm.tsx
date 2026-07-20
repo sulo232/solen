@@ -7,9 +7,37 @@ import { cn } from "@/lib/utils";
 import { Switch } from "@/app/[locale]/_components/primitives/Switch";
 import { TextInput } from "@/app/[locale]/_components/primitives/TextInput";
 import { FieldLabel } from "@/app/[locale]/_components/primitives/FieldLabel";
+import { Avatar } from "@/app/[locale]/_components/primitives/Avatar";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "@/app/[locale]/_components/primitives/Modal";
 import { LOCALES, type SettingsLocale } from "./locales";
+
+// Client-side downscale before the avatar POST (owner spec, 2026-07-20): browsers can decode
+// far larger originals than they should ever upload, so this keeps a 100MB INPUT acceptable
+// while the actual network payload stays a small derivative. createImageBitmap avoids the
+// classic new Image()+onload dance; falls back to the original file if decode fails (the
+// server still validates MIME + a 100MB hard cap either way, so this is an optimization, not
+// a security boundary).
+async function downscaleAvatar(file: File, maxEdge = 1024, quality = 0.85): Promise<File> {
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, maxEdge / Math.max(bitmap.width, bitmap.height));
+    const w = Math.max(1, Math.round(bitmap.width * scale));
+    const h = Math.max(1, Math.round(bitmap.height * scale));
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return file;
+    ctx.drawImage(bitmap, 0, 0, w, h);
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", quality));
+    if (!blob) return file;
+    return new File([blob], "avatar.jpg", { type: "image/jpeg" });
+  } catch (err) {
+    console.error("[Settings] avatar downscale failed, uploading original:", err);
+    return file;
+  }
+}
 
 // SettingsLocale moved to ./locales.ts (2026-07-20 crash fix, see that file's header comment for
 // why): re-exported here so existing `import { type SettingsLocale } from "./SettingsForm"`
@@ -86,6 +114,39 @@ export default function SettingsForm({
       toast.error(t("saveError"));
     } finally {
       setSaving(false);
+    }
+  };
+
+  // ── avatar upload ─────────────────────────────────────────
+  const avatarInputRef = React.useRef<HTMLInputElement>(null);
+  const [avatarUploading, setAvatarUploading] = React.useState(false);
+  const [avatarError, setAvatarError] = React.useState<string | null>(null);
+
+  const handleAvatarPick = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // allow re-picking the same file after an error
+    if (!file) return;
+    setAvatarError(null);
+    setAvatarUploading(true);
+    try {
+      const downscaled = await downscaleAvatar(file);
+      const body = new FormData();
+      body.append("file", downscaled);
+      const res = await fetch("/api/profile/avatar", { method: "POST", body });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        console.error("[Settings] avatar upload failed:", err?.error ?? res.status);
+        setAvatarError(t("avatarUploadError"));
+        return;
+      }
+      const { url } = await res.json();
+      set("avatar_url", url);
+      router.refresh();
+    } catch (err) {
+      console.error("[Settings] avatar upload exception:", err);
+      setAvatarError(t("avatarUploadError"));
+    } finally {
+      setAvatarUploading(false);
     }
   };
 
@@ -182,10 +243,25 @@ export default function SettingsForm({
     return (
       <form onSubmit={saveProfile} className="space-y-7">
         <div className="space-y-[18px]">
-          <Field label={tp("avatarUrl")} htmlFor="avatar_url" optional>
-            <TextInput id="avatar_url" type="url" inputMode="url" placeholder="https://…" className={WHITE_INPUT}
-              value={form.avatar_url} onChange={(e) => set("avatar_url", e.target.value)} />
-          </Field>
+          {/* mockup-ok: direct owner order (real file upload replacing the URL field), styling
+              grounded in this exact file's own locked ActionButton (rounded-[12px], white bg,
+              hairline border via WHITE_INPUT) and the Avatar primitive's numeric-size prop
+              (72px), not invented values; treatment-only, no new visual language introduced. */}
+          <div className="space-y-1.5">
+            <FieldLabel>{tp("avatarLabel")}</FieldLabel>
+            <div className="flex items-center gap-4">
+              <Avatar src={form.avatar_url || null} name={form.display_name || "?"} size={72} />
+              <div className="space-y-1.5">
+                <button type="button" onClick={() => avatarInputRef.current?.click()} disabled={avatarUploading}
+                  className={cn("h-10 px-4 inline-flex items-center justify-center gap-2 rounded-[12px] text-[14px] font-medium text-s-ink transition-colors duration-200 hover:bg-s-bg-sunken disabled:opacity-50", WHITE_INPUT)}>
+                  {avatarUploading && <span aria-hidden className="w-4 h-4 rounded-full border-2 border-s-border border-t-s-ink animate-spin" />}
+                  {tp("avatarChange")}
+                </button>
+                <input ref={avatarInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarPick} />
+                {avatarError && <p className="text-[12px] text-s-error">{avatarError}</p>}
+              </div>
+            </div>
+          </div>
           <Field label={tp("name")} htmlFor="display_name">
             <TextInput id="display_name" className={WHITE_INPUT} value={form.display_name}
               onChange={(e) => set("display_name", e.target.value)} />
