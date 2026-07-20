@@ -8,7 +8,7 @@ Defects come from the session audits (all measured findings). Gallery: sweep-gal
 compaction: `grep -L "applyChange" public/_mockups/sweep-*/index.html` = not yet v2; continue down this list.
 
 - [x] v2-1 sweep-reviews-direction , reviews direction A (bare blue count -> folded into pill). VERIFIED + committed.
-- [ ] v2-2 sweep-auth-grammar REBUILD as injection , /de/auth/reset-password: tracked-uppercase eyebrows -> normal-case, 12px uppercase CTA -> 15px normal-case, warm ambient wash -> flat white. (Public route.)
+- [x] v2-2 sweep-auth-grammar REBUILT as injection , DONE + verified (measured: 3 defects stripped , eyebrows normal-case, orange wordmark -> ink, CTA 15px; screenshot-checked).
 - [ ] v2-3 sweep-cookie-consent REBUILD as injection , real home banner: brown #A1672F badge -> neutral sunken, ink dead-hover Datenschutz link -> blue underline. (Fresh-session banner.)
 - [ ] v2-4 sweep-empty-consolidation REBUILD as injection , /de/reviews: the sunken-on-sunken invisible disc -> white disc on sunken (registry EmptyState look).
 - [ ] v2-5 sweep-dash-vibrancy REBUILD as injection , /de/dashboard via /api/dev/login: restyle '[class*=s-coral]' elements to accent blue / semantic tokens (the dead-token monochrome bug made visible). (Auth-gated: dev-login first.)
