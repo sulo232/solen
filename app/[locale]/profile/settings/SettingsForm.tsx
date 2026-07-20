@@ -48,8 +48,9 @@ export type { SettingsLocale };
 // each slice below renders standalone on its own sub-page (app/[locale]/profile/settings/<slice>/page.tsx).
 // `section` omitted keeps the original full-page render as a safety net (nothing else imports it today).
 // "identity" added same day (owner correction, Instagram model): photo/name/bio moved OUT of
-// "personal" into their own /profile/edit page; "personal" keeps only account contact data
-// (email/phone).
+// "personal" into their own /profile/edit page. 2026-07-21: "personal" (email/phone) merged INTO
+// "identity" too, so /profile/edit is now the single "who you are" screen (Foto, Name, Bio,
+// E-Mail, Telefon); /profile/settings/personal just redirects there.
 export type SettingsSection = "personal" | "identity" | "password" | "language" | "notifications" | "delete";
 
 export interface SettingsInitial {
@@ -242,9 +243,12 @@ export default function SettingsForm({
   };
 
   // ── sectioned sub-page renders ────────────────────────────
-  // "identity" (/profile/edit): Instagram-model "Edit profile", photo/name/bio, moved out of
-  // "personal" 2026-07-20 per owner correction. Same avatar-upload + Field markup as before,
-  // just without the account-contact fields (those stay in "personal" below).
+  // "identity" (/profile/edit): merged single "who you are" screen (owner correction, 2026-07-21):
+  // Foto/Name/Bio (originally identity) PLUS E-Mail/Telefon (originally "personal" below) now
+  // render together here, reusing the personal branch's exact email-change + phone markup and
+  // handlers (updateEmail/newEmail/emailBusy, form.phone_number) rather than re-inventing them.
+  // "personal" is kept below unreferenced (its route now redirects to /profile/edit) per
+  // instruction to leave it in place, not delete it.
   if (section === "identity") {
     return (
       <form onSubmit={saveProfile} className="space-y-7">
@@ -277,6 +281,20 @@ export default function SettingsForm({
               onChange={(e) => set("bio", e.target.value)}
               className={cn("block w-full font-body font-normal text-[16px] text-s-ink px-4 py-3 placeholder:text-s-ink-3 transition-colors duration-150", WHITE_INPUT)} />
           </Field>
+          <Field label={t("changeEmail")} htmlFor="new_email">
+            <div className="flex gap-2">
+              <TextInput id="new_email" type="email" inputMode="email" autoComplete="email"
+                placeholder={email} value={newEmail} onChange={(e) => setNewEmail(e.target.value)}
+                className={cn(WHITE_INPUT, "flex-1")} />
+              <ActionButton onClick={updateEmail} busy={emailBusy} disabled={!emailValid}>
+                {t("updateAction")}
+              </ActionButton>
+            </div>
+          </Field>
+          <Field label={t("phone")} htmlFor="phone" optional>
+            <TextInput id="phone" type="tel" inputMode="tel" autoComplete="tel" className={WHITE_INPUT}
+              value={form.phone_number} onChange={(e) => set("phone_number", e.target.value)} />
+          </Field>
         </div>
 
         <button type="submit" disabled={saving}
@@ -288,9 +306,9 @@ export default function SettingsForm({
     );
   }
 
-  // "personal" (/profile/settings/personal): account CONTACT data only (email/phone). Avatar,
-  // name and bio moved to "identity" above (2026-07-20, owner correction: public identity is a
-  // separate Instagram-model "Edit profile" page, not part of Settings).
+  // "personal" (/profile/settings/personal): kept unreferenced (2026-07-21, merged into
+  // "identity" above per owner correction; the route now redirects to /profile/edit). Left in
+  // place rather than deleted per instruction, in case anything still imports section="personal".
   if (section === "personal") {
     return (
       <form onSubmit={saveProfile} className="space-y-7">
