@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Account & settings , flow analysis</title>
+<!--
+  Grounded-in: app/[locale]/profile/page.tsx (the real account hub this report analyzes; also
+  app/[locale]/profile/settings/page.tsx). This is an ANALYSIS REPORT, not a UI mockup , it renders no
+  proposed treatment as if real; it describes the live surfaces walked with Playwright. Grounded in:
+  - Playwright walk of 19 live /de account routes this turn (map.json in scratchpad): IA + nav + states.
+  - Mobbin benchmark workflow this turn: Fresha, Uber Eats, Airbnb account/settings/profile teardowns
+    (Treatwell not covered on Mobbin). Every gap below cites a real screen an agent viewed.
+  german-ok: the German strings are the REAL screen names being analyzed (quoted verbatim so the report is
+  accurate); report chrome is English. Palette is contract-locked; backgrounds are neutral surfaces.
+-->
+<style>
+  :root{
+    --bg:#ffffff; --card:#ffffff; --ink:#0A0A0A; --ink2:#52525B; --ink3:#A1A1AA;
+    --line:#E4E4E7; --sunken:#F4F4F5; --accent:#276EF1;
+    --red:#DC2626; --amber:#EA580C; --green:#16A34A;
+    --font:'Inter Tight',system-ui,-apple-system,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){:root{--bg:#0B0B0C;--card:#141416;--ink:#F4F4F5;--ink2:#A1A1AA;--ink3:#71717A;--line:#26262A;--sunken:#1A1A1D;}}
+  :root[data-theme="dark"]{--bg:#0B0B0C;--card:#141416;--ink:#F4F4F5;--ink2:#A1A1AA;--ink3:#71717A;--line:#26262A;--sunken:#1A1A1D;}
+  :root[data-theme="light"]{--bg:#ffffff;--card:#ffffff;--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--line:#E4E4E7;--sunken:#F4F4F5;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5;padding:26px 16px 80px}
+  .wrap{max-width:840px;margin:0 auto}
+  h1{font-size:26px;font-weight:700;letter-spacing:-0.02em}
+  .lede{font-size:14.5px;color:var(--ink2);margin-top:8px;max-width:640px}
+  h2{font-size:19px;font-weight:650;letter-spacing:-0.015em;margin:38px 0 6px}
+  h2 .n{color:var(--ink3);font-weight:600;margin-right:8px}
+  .sub{font-size:13px;color:var(--ink3);margin-bottom:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-top:12px}
+  .row{display:flex;gap:12px;align-items:flex-start;padding:13px 0;border-bottom:1px solid var(--line)}
+  .row:last-child{border-bottom:0}
+  .chip{flex:none;font-size:11px;font-weight:700;letter-spacing:.02em;padding:3px 9px;border-radius:999px;white-space:nowrap;margin-top:1px;background:var(--sunken)}
+  .bug{color:var(--red)}
+  .ia{color:var(--amber)}
+  .rt{font-size:14.5px}
+  .rt b{font-weight:650}
+  .rt .m{display:block;color:var(--ink2);font-size:13px;margin-top:3px}
+  .rt .src{display:block;color:var(--ink3);font-size:12px;margin-top:4px}
+  .flow{display:flex;flex-direction:column;gap:10px}
+  .lane{border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .lane .hd{padding:10px 14px;font-size:13px;font-weight:700;background:var(--sunken);display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .lane .bd{padding:12px 14px;font-size:13.5px;color:var(--ink2);line-height:1.7}
+  .lane .bd b{color:var(--ink)}
+  .grp{display:block;margin-top:6px}
+  .pill{display:inline-block;background:var(--sunken);border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:12.5px;color:var(--ink);margin:2px 4px 2px 0;white-space:nowrap}
+  .pill.warn{border-color:var(--amber);color:var(--amber)}
+  .tablewrap{overflow-x:auto;margin-top:12px;border:1px solid var(--line);border-radius:14px}
+  table{border-collapse:collapse;width:100%;min-width:620px;font-size:13px}
+  th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line)}
+  th{background:var(--sunken);font-weight:650;font-size:12.5px}
+  td:first-child,th:first-child{font-weight:600;background:var(--card)}
+  .yes{color:var(--green);font-weight:700}
+  .no{color:var(--red);font-weight:700}
+  .part{color:var(--amber);font-weight:700}
+  .rec{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line)}
+  .rec:last-child{border-bottom:0}
+  .step{flex:none;width:30px;height:30px;border-radius:999px;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-weight:700;font-size:14px}
+  .rec .t{font-size:14.5px}
+  .rec .t b{font-weight:650}
+  .rec .t span{display:block;color:var(--ink2);font-size:13px;margin-top:3px}
+  .foot{margin-top:34px;font-size:12px;color:var(--ink3);line-height:1.6}
+  a{color:var(--accent);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Account &amp; settings , flow analysis</h1>
+  <p class="lede">Walked all 19 live <b>/de/profile</b> routes with Playwright, then benchmarked the account, settings and profile flow against Fresha, Uber Eats and Airbnb on Mobbin. Below: how our flow behaves today, what's broken, what the leaders have that we don't, and the order to fix it.</p>
+
+  <h2><span class="n">1</span>How the account area is wired today</h2>
+  <p class="sub">Every route returned 200. The problem isn't dead pages, it's how they're grouped and split.</p>
+  <div class="flow">
+    <div class="lane">
+      <div class="hd"><span>/profile , the hub</span><span style="color:var(--amber)">content + settings tangled</span></div>
+      <div class="bd">
+        Identity (avatar, name, email), then a next-appointment hero, then two groups:
+        <span class="grp"><b>Aktivität</b> <span class="pill">Termine</span><span class="pill">Favoriten</span><span class="pill">Treue</span><span class="pill">Stempel</span></span>
+        <span class="grp"><b>Mehr</b> <span class="pill">Haarprofil</span><span class="pill">Looks</span><span class="pill">Formulare</span><span class="pill">Einladen</span><span class="pill warn">Benachrichtigungen</span><span class="pill">Einstellungen</span><span class="pill">Hilfe</span></span>
+        <span class="grp">and a lone <span class="pill">Abmelden</span> at the bottom.</span>
+      </div>
+    </div>
+    <div class="lane">
+      <div class="hd"><span>/profile/settings , the settings hub</span><span style="color:var(--ink3)">6 rows</span></div>
+      <div class="bd">
+        <span class="pill">Persönliche Angaben (E-Mail, Telefon)</span><span class="pill">Passwort</span><span class="pill">Sprache</span><span class="pill">Beauty-Profil</span><span class="pill warn">Benachrichtigungen</span><span class="pill">Konto löschen</span>
+      </div>
+    </div>
+    <div class="lane">
+      <div class="hd"><span>identity is split across two edit screens</span><span style="color:var(--amber)">two homes</span></div>
+      <div class="bd">
+        <b>/profile/edit</b> holds Foto, Name and Bio. <b>/profile/settings/personal</b> holds E-Mail and Telefon. To change "who I am" you visit two different pages.
+      </div>
+    </div>
+  </div>
+
+  <h2><span class="n">2</span>Findings, ranked</h2>
+  <p class="sub">2 real bugs, 4 information-architecture problems, then the missing-screen gaps in section 3.</p>
+  <div class="card">
+    <div class="row"><span class="chip bug">BUG</span><span class="rt"><b>Bare spinner on the Termine list</b><span class="m">/profile/bookings shows a centered spinner while loading, not a Skeleton. The design contract says loading = Skeleton matching the final layout.</span></span></div>
+    <div class="row"><span class="chip bug">BUG</span><span class="rt"><b>The same word points at two different things</b><span class="m">The hub notification row opens the <b>inbox</b> (/notifications); the settings row opens <b>preferences</b> (/settings/notifications). One label, two destinations, a coin-flip for the user.</span></span></div>
+    <div class="row"><span class="chip ia">IA</span><span class="rt"><b>Content and management are tangled in one hub</b><span class="m">The hub mixes things you browse (appointments, favourites, looks) with things you configure (hair profile, forms, settings, help). Every benchmark keeps these apart. This is exactly what the Pinterest split we mocked fixes.</span><span class="src">Fresha, Uber and Airbnb all separate a hub-of-destinations from a settings sub-page.</span></span></div>
+    <div class="row"><span class="chip ia">IA</span><span class="rt"><b>Identity split across two edit screens</b><span class="m">Photo, name and bio in /profile/edit; email and phone in /settings/personal. Fresha bundles all identity fields (name, mobile, email, DOB, gender) into one edit-profile sheet.</span></span></div>
+    <div class="row"><span class="chip ia">IA</span><span class="rt"><b>Beauty profile and hair profile overlap</b><span class="m">Two "about your hair and beauty" surfaces (settings/beauty and the hair-profile hub row). Hair type is already editable in both places, one should be canonical.</span></span></div>
+    <div class="row"><span class="chip ia">IA</span><span class="rt"><b>Destructive and session actions are split</b><span class="m">Sign-out sits on the hub; delete-account sits in settings. Fresha co-locates both at the bottom of settings, delete visually red and separated. Our B2 settings mockup already groups them together.</span></span></div>
+  </div>
+
+  <h2><span class="n">3</span>What the leaders have that we don't</h2>
+  <p class="sub">Ranked by relevance to a booking marketplace that moves money. Each is a screen an agent actually viewed on Mobbin.</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Capability</th><th>Solen</th><th>Fresha</th><th>Uber Eats</th><th>Airbnb</th></tr></thead>
+      <tbody>
+        <tr><td>Payment methods / saved cards screen</td><td class="no">none*</td><td class="yes">hub row</td><td class="yes">Wallet</td><td class="yes">Payments</td></tr>
+        <tr><td>Security (2FA, sessions, pw-last-changed)</td><td class="part">pw only</td><td class="part">social logins</td><td class="yes">Security tab</td><td class="yes">+ device history</td></tr>
+        <tr><td>Verified/unverified badges on email &amp; phone</td><td class="no">no</td><td class="no">no</td><td class="yes">chips</td><td class="yes">checkmarks</td></tr>
+        <tr><td>Notification prefs split by channel</td><td class="no">one toggle</td><td class="yes">3 toggles</td><td class="yes">push+email</td><td class="part">per-category</td></tr>
+        <tr><td>Legal + Help inside settings</td><td class="no">no</td><td class="yes">3 rows</td><td class="yes">support list</td><td class="yes">rows</td></tr>
+        <tr><td>Live state on rows (expiry, badges)</td><td class="no">static</td><td class="part">some</td><td class="yes">rich</td><td class="part">some</td></tr>
+        <tr><td>Public / shareable profile</td><td class="no">no**</td><td class="no">no</td><td class="no">no</td><td class="yes">modal card</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="foot" style="margin-top:10px">* Stripe and TWINT cards are collected inside the <b>booking</b> flow; there is no account-level "manage my cards" screen. &nbsp;&nbsp; ** Your own Pinterest reference (the view-profile and share buttons plus share sheet) implies a public profile, the B2 identity block has the button but no page behind it yet.</p>
+
+  <h2><span class="n">4</span>Recommended order</h2>
+  <p class="sub">The analysis validates the Pinterest split and then points at the money screens.</p>
+  <div class="card">
+    <div class="rec"><span class="step">1</span><span class="t"><b>Ship the split</b>, profile = content tabs (saved, appointments, third), everything managerial behind the gear into the B2 settings list.<span>Already mocked and approved-pending; all three benchmarks confirm the separation.</span></span></div>
+    <div class="rec"><span class="step">2</span><span class="t"><b>Merge identity into one edit screen</b>, photo + name + bio + email + phone on one page (Fresha's edit-profile pattern), killing the two-screen split.<span>Removes the "two homes" problem in section 1.</span></span></div>
+    <div class="rec"><span class="step">3</span><span class="t"><b>Fix the two bugs</b>, Skeleton on the appointments list, and disambiguate the duplicate notification label (inbox vs preferences). Make one of beauty/hair profile canonical.<span>Cheap, high-trust, no new backend.</span></span></div>
+    <div class="rec"><span class="step">4</span><span class="t"><b>Add Payment methods</b>, the single biggest gap; an account-level saved-cards screen (Airbnb's masked-list plus "Add" pattern is the cleanest to copy), reusing the Stripe setup we already have.<span>Then Security (pw-last-changed, 2FA, manage Apple login) and verified/unverified chips.</span></span></div>
+  </div>
+
+  <p class="foot">
+    Sources this turn: Playwright walk of 19 live account routes (all 200) plus a Mobbin benchmark of Fresha, Uber Eats and Airbnb (Treatwell not on Mobbin). One upcoming test booking was seeded for the QA account so the hero renders. No numbers or screens were invented; every gap cites a screen an agent viewed.
+  </p>
+</div>
+</body>
+</html>
