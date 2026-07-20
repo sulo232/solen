@@ -3,20 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-<title>City picker selected , full screen before/after</title>
+<title>City picker , selected option , full page before/after</title>
 <!-- Base: capture live -->
 <!-- Scale: full-page -->
 <!--
   Grounded-in: app/[locale]/_components/layout/DesktopCitySelector.tsx
-  FULL-SCREEN before/after. BEFORE = LIVE <iframe> of the real /de home (the header city picker marks the current
-  city by bold weight only, no fill, no check , in 3 pickers). AFTER = the city dropdown with the locked
-  list-option treatment: gray sunken fill + semibold + a trailing check. Only the selected-option affordance changes.
-  Depicts: city picker -> app/[locale]/_components/layout/DesktopCitySelector.tsx
-  Exists-check: `npm run exists "cookie consent search reviews"` ran this turn (batch) , the picker already renders.
-  Backend-check: city switch is real; no fabricated values. English chrome; live iframe shows real German.
+  FORMAT v2. BOTH panes are the real /de home as LIVE iframes, and BOTH auto-open the header city picker so
+  the menu is visible. BEFORE = untouched menu: the current city is marked by BOLD WEIGHT ONLY (no fill, no
+  check). AFTER = injected: the current option gets the LOCKED list-option treatment , gray sunken fill,
+  semibold, and a trailing check.
+  psych-ok: no hardcoded counts; the injection only restyles the live current option.
+  Depicts: header city picker menu -> app/[locale]/_components/layout/DesktopCitySelector.tsx (+ the mobile chip menu in Header.tsx)
+  Diagnosis: current-city option | measured role=option "Basel" weight 700, transparent bg, no check | violates the locked list-option selected treatment (sunken fill + semibold + trailing check) | target bg #F4F4F5 + 600 + a check glyph
+  Exists-check: `npm run exists "DesktopCitySelector"` ran this turn , the picker already renders.
+  Backend-check: real live page + the real active-cities list; no fabricated values.
 -->
 <style>
-  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--sunken:#F4F4F5;--hairline:#E4E4E7;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  :root{--ink:#0A0A0A;--ink2:#52525B;--sunken:#F4F4F5;--hairline:#E4E4E7;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
@@ -24,38 +27,76 @@
   .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
   .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
   .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
-  .stage{position:fixed;top:52px;left:0;right:0;bottom:0}
-  .pane{position:absolute;inset:0;overflow-y:auto}
+  .cap{position:fixed;top:52px;left:0;right:0;z-index:19;background:var(--sunken);color:var(--ink2);font-size:12px;font-weight:600;text-align:center;padding:6px 12px;line-height:1.35}
+  .stage{position:fixed;top:84px;left:0;right:0;bottom:0}
+  .pane{position:absolute;inset:0}
   .pane.hidden{display:none}
   iframe{width:100%;height:100%;border:0;display:block}
-  .after{min-height:100%;background:var(--sunken);padding:24px 16px}
-  .chip{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--hairline);border-radius:999px;padding:9px 14px;font-size:14px;font-weight:600}
-  .chip svg{width:15px;height:15px;color:var(--ink3)}
-  .menu{margin-top:10px;width:240px;background:#fff;border:1px solid var(--hairline);border-radius:16px;padding:6px;box-shadow:0 1px 2px rgba(10,10,10,.04),0 12px 30px -18px rgba(10,10,10,.16)}
-  .opt{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border-radius:10px;font-size:14px}
-  .opt.on{background:var(--sunken);font-weight:600}
-  .opt svg{width:16px;height:16px;color:var(--ink)}
-  .cap{font-size:11.5px;color:var(--ink3);margin-top:20px;line-height:1.5}
 </style>
 </head>
 <body>
   <div class="top"><div class="seg"><button id="bB" class="on" onclick="show('before')">Before (live)</button><button id="bA" onclick="show('after')">After</button></div></div>
+  <div class="cap">Both panes auto-open the city menu. Before: the current city is only bolder. After: the locked list-option , sunken fill + semibold + check.</div>
   <div class="stage">
-    <div id="paneBefore" class="pane"><iframe src="/de" title="live home header city picker"></iframe></div>
-    <div id="paneAfter" class="pane hidden">
-      <div class="after">
-        <div class="chip">Zürich <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="lucide"><path d="m6 9 6 6 6-6"/></svg></div>
-        <div class="menu">
-          <div class="opt on">Zürich <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="lucide"><path d="M20 6 9 17l-5-5"/></svg></div>
-          <div class="opt">Genève</div>
-          <div class="opt">Basel</div>
-          <div class="opt">Bern</div>
-          <div class="opt">Lausanne</div>
-        </div>
-        <div class="cap">Change applied: the current city gets the locked list-option treatment, gray sunken fill, semibold, and a trailing check, instead of just a heavier weight. Applies to all three city pickers.</div>
-      </div>
-    </div>
+    <div id="paneBefore" class="pane"><iframe id="beforeFrame" src="/de" title="real home, city menu open, before"></iframe></div>
+    <div id="paneAfter" class="pane hidden"><iframe id="afterFrame" src="/de" title="real home, city menu open, after (locked option injected)"></iframe></div>
   </div>
-<script>function show(w){document.getElementById('paneBefore').classList.toggle('hidden',w!=='before');document.getElementById('paneAfter').classList.toggle('hidden',w!=='after');document.getElementById('bB').classList.toggle('on',w==='before');document.getElementById('bA').classList.toggle('on',w==='after');}</script>
+<script>
+  var CITY = /^(Basel|Luzern|Zürich|Bern|Genf|Genève|Lausanne)$/; // german-ok: the live pages' real city option labels (a data constant)
+  function openMenu(doc){
+    var chip = [].filter.call(doc.querySelectorAll('button'), function(b){
+      var t=(b.textContent||'').trim(); return CITY.test(t) && t.length < 16;
+    })[0];
+    if(chip && !chip.getAttribute('data-sweep-opened')){ chip.setAttribute('data-sweep-opened','1'); chip.click(); return true; }
+    return !!chip;
+  }
+  function menuOpen(doc){ return !!doc.querySelector('[role="option"]'); }
+  function styleCurrent(doc){
+    var cur = [].filter.call(doc.querySelectorAll('[role="option"]'), function(o){
+      return parseInt(doc.defaultView.getComputedStyle(o).fontWeight, 10) >= 700;
+    })[0] || doc.querySelector('[role="option"]');
+    if(!cur || cur.getAttribute('data-sweep-done')) return !!cur;
+    cur.style.background = '#F4F4F5';
+    cur.style.borderRadius = '10px';
+    cur.style.fontWeight = '600';
+    cur.style.display = 'flex';
+    cur.style.alignItems = 'center';
+    cur.style.justifyContent = 'space-between';
+    var ck = doc.createElementNS('http://www.w3.org/2000/svg','svg');
+    ck.setAttribute('viewBox','0 0 24 24'); ck.setAttribute('width','16'); ck.setAttribute('height','16');
+    ck.setAttribute('fill','none'); ck.setAttribute('stroke','#0A0A0A'); ck.setAttribute('stroke-width','2');
+    ck.setAttribute('class','lucide lucide-check'); ck.setAttribute('aria-hidden','true');
+    var p = doc.createElementNS('http://www.w3.org/2000/svg','path'); p.setAttribute('d','M20 6 9 17l-5-5');
+    ck.appendChild(p); cur.appendChild(ck);
+    cur.setAttribute('data-sweep-done','1');
+    return true;
+  }
+  function poll(frameId, restyle){
+    var f = document.getElementById(frameId), tries = 0;
+    var MAX_POLLS = 150; // psych-ok: a poll cap, never a displayed count
+    var iv = setInterval(function(){
+      tries++;
+      try{
+        var doc = f.contentDocument;
+        if(doc && doc.body){
+          if(!menuOpen(doc)) openMenu(doc);
+          else if(!restyle || styleCurrent(doc)){ clearInterval(iv); }
+        }
+      }catch(e){}
+      if(tries > MAX_POLLS){ clearInterval(iv); }
+    }, 250);
+  }
+  var started = {};
+  function show(w){
+    document.getElementById('paneBefore').classList.toggle('hidden', w!=='before');
+    document.getElementById('paneAfter').classList.toggle('hidden', w!=='after');
+    document.getElementById('bB').classList.toggle('on', w==='before');
+    document.getElementById('bA').classList.toggle('on', w==='after');
+    if(w==='before' && !started.b){ started.b=1; poll('beforeFrame', false); }
+    if(w==='after' && !started.a){ started.a=1; poll('afterFrame', true); }
+  }
+  // the Before pane is visible first , start its menu-open poll immediately
+  show('before');
+</script>
 </body>
 </html>
