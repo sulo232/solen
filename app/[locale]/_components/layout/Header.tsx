@@ -429,9 +429,10 @@ export default function Header({ locale }: { locale: string }) {
       [/\/profile\/settings\/beauty\/?$/, "Beauty-Profil"],
       [/\/profile\/settings\/notifications\/?$/, "Benachrichtigungen"],
       [/\/profile\/settings\/delete\/?$/, "Konto löschen"],
-      // The hub itself ("profile rn it says account" , its body title read "Konto").
-      // $-anchored so it never matches the sub-pages above.
-      [/\/profile\/?$/, "Konto"],
+      // The content hub (2026-07-20/21 D1 rebuild split /profile into content-only,
+      // "Konto" moved to /profile/settings, which already says "Solen Konto" in its
+      // own identity block). $-anchored so it never matches the sub-pages above.
+      [/\/profile\/?$/, "Profil"],
     ];
     for (const [re, label] of TITLES) if (re.test(pathname)) return label;
     return null;

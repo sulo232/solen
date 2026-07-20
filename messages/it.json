@@ -89,7 +89,21 @@
     "hubTerms": "Termini",
     "hubPrivacy": "Privacy",
     "identitySubtitle": "Account Solen",
-    "viewProfile": "Vedi profilo"
+    "viewProfile": "Vedi profilo",
+    "tabSaved": "Salvati",
+    "searchPlaceholder": "Cerca",
+    "tabAppointmentsEmpty": "Nessun appuntamento ancora",
+    "tabAppointmentsEmptyLead": "I tuoi appuntamenti passati appariranno qui.",
+    "tabSavedEmpty": "Ancora nulla di salvato",
+    "tabSavedEmptyLead": "I saloni salvati appariranno qui.",
+    "noSearchResults": "Nessun risultato",
+    "noSearchResultsLead": "Prova un altro termine di ricerca.",
+    "looksEmptyTitle": "Ancora nessun look.",
+    "looksEmptyLead": "Raccogli ispirazione dai profili dei saloni e da Inspo, ritrovala qui.",
+    "looksEmptyBannerTitle": "Apri Inspo",
+    "looksEmptyBannerSub": "Look freschi dai saloni di Basilea",
+    "looksEmptyHint": "Salva i look direttamente dal feed di scoperta e dai portfolio dei saloni.",
+    "emptyRailTitle": "I più votati"
   },
   "cities": {
     "label": "Città",

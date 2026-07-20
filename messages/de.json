@@ -89,7 +89,21 @@
     "hubTerms": "AGB",
     "hubPrivacy": "Datenschutz",
     "identitySubtitle": "Solen Konto",
-    "viewProfile": "Profil ansehen"
+    "viewProfile": "Profil ansehen",
+    "tabSaved": "Gespeichert",
+    "searchPlaceholder": "Suchen",
+    "tabAppointmentsEmpty": "Noch keine Termine",
+    "tabAppointmentsEmptyLead": "Deine vergangenen Termine erscheinen hier.",
+    "tabSavedEmpty": "Noch nichts gespeichert",
+    "tabSavedEmptyLead": "Gespeicherte Salons erscheinen hier.",
+    "noSearchResults": "Keine Ergebnisse",
+    "noSearchResultsLead": "Versuch's mit einem anderen Suchbegriff.",
+    "looksEmptyTitle": "Noch keine Looks.",
+    "looksEmptyLead": "Sammle Inspiration aus Salon-Profilen und Inspo, hier findest du sie wieder.",
+    "looksEmptyBannerTitle": "Inspo öffnen",
+    "looksEmptyBannerSub": "Frische Looks aus Basler Salons",
+    "looksEmptyHint": "Speichere Looks direkt aus dem Discovery-Feed und aus Salon-Portfolios.",
+    "emptyRailTitle": "Top bewertet"
   },
   "cities": {
     "label": "Stadt",

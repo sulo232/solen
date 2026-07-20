@@ -89,7 +89,21 @@
     "hubTerms": "Terms",
     "hubPrivacy": "Privacy",
     "identitySubtitle": "Solen account",
-    "viewProfile": "View profile"
+    "viewProfile": "View profile",
+    "tabSaved": "Saved",
+    "searchPlaceholder": "Search",
+    "tabAppointmentsEmpty": "No appointments yet",
+    "tabAppointmentsEmptyLead": "Your past appointments will show up here.",
+    "tabSavedEmpty": "Nothing saved yet",
+    "tabSavedEmptyLead": "Salons you save will show up here.",
+    "noSearchResults": "No results",
+    "noSearchResultsLead": "Try a different search term.",
+    "looksEmptyTitle": "No looks yet.",
+    "looksEmptyLead": "Collect inspiration from salon profiles and Inspo, find it again here.",
+    "looksEmptyBannerTitle": "Open Inspo",
+    "looksEmptyBannerSub": "Fresh looks from Basel salons",
+    "looksEmptyHint": "Save looks straight from the discovery feed and salon portfolios.",
+    "emptyRailTitle": "Top rated"
   },
   "cities": {
     "label": "City",
