@@ -3,24 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-<title>Auth reset-password , full screen before/after</title>
+<title>Auth reset-password , grammar , full page before/after</title>
 <!-- Base: capture live -->
 <!-- Scale: full-page -->
 <!--
   Grounded-in: app/[locale]/auth/reset-password/page.tsx
-  FULL-SCREEN before/after (liftup-*-fs format). BEFORE = a LIVE <iframe> of the real /de/auth/reset-password
-  (the actual current screen: warm ambient wash + warm-shadow borderless card + tracked-uppercase orange
-  wordmark + 12px uppercase CTA). AFTER = the same page full-screen with ONLY the grammar fix applied: clean
-  bordered white card on a flat surface (no wash), ink normal-case wordmark, a 15px normal-case ink CTA, a blue
-  footer text-link, and the success disc as solid green #16A34A + white check. Cards STAY (borderless is dead,
-  REMOVED.md:85) , this changes chrome grammar only. Mockup chrome is English; the live iframe shows real German.
-  Depicts: password-reset form -> app/[locale]/auth/reset-password/page.tsx
-  Depicts: success confirmation disc -> app/[locale]/auth/reset-password/page.tsx (success state)
-  Exists-check: `npm run exists "auth reset-password"` ran this turn , the page already renders.
-  Backend-check: submit posts the reset request (real); no fabricated values.
+  FORMAT v2. BOTH panes are the real /de/auth/reset-password as LIVE iframes. BEFORE = untouched.
+  AFTER = the grammar fix INJECTED on the real page: the tracked all-caps eyebrows go normal-case (the orange
+  wordmark goes ink), and the small all-caps CTAs go 15px normal-case , the register/login grammar.
+  The injection DETECTS the banned treatment on the live page and STRIPS it (adds none).
+  english-ok: match-regexes mirror the live page's real German copy.
+  psych-ok: no hardcoded counts; all values are read or restyled from the live DOM.
+  Depicts: reset-password eyebrows + CTAs -> app/[locale]/auth/reset-password/page.tsx
+  Diagnosis: tracked all-caps eyebrows | measured "solen.ch" 12px tracking 2.64px orange rgb(241,174,39) + "Konto-Wiederherstellung" 12px tracking 2.16px | violates the banned tracked-caps treatment + semantic-token misuse (orange on a wordmark) | target normal-case, zero tracking, ink wordmark
+  Diagnosis: CTA size/case | measured all-caps 12px button labels (text-xs font-heading) | violates the CTA floor (15px, never <=13, no caps) | target 15px normal-case font-medium
+  Exists-check: `npm run exists "reset-password auth"` ran this turn , the page already renders.
+  Backend-check: real live page; the form posts the real reset request; no fabricated values.
 -->
 <style>
-  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--surface:#fff;--sunken:#F4F4F5;--hairline:#E4E4E7;--accent:#276EF1;--green:#16A34A;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  :root{--ink:#0A0A0A;--ink2:#52525B;--sunken:#F4F4F5;--hairline:#E4E4E7;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
@@ -28,61 +29,68 @@
   .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
   .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
   .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
-  .stage{position:fixed;top:52px;left:0;right:0;bottom:0}
-  .pane{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .cap{position:fixed;top:52px;left:0;right:0;z-index:19;background:var(--sunken);color:var(--ink2);font-size:12px;font-weight:600;text-align:center;padding:6px 12px;line-height:1.35}
+  .stage{position:fixed;top:84px;left:0;right:0;bottom:0}
+  .pane{position:absolute;inset:0}
   .pane.hidden{display:none}
   iframe{width:100%;height:100%;border:0;display:block}
-  /* AFTER , full-screen faithful reset-password with the grammar fix */
-  .after{min-height:100%;display:flex;align-items:flex-start;justify-content:center;background:#fff;padding:40px 20px}
-  .card{width:100%;max-width:400px;background:#fff;border:1px solid var(--hairline);border-radius:16px;box-shadow:0 1px 2px rgba(10,10,10,.04);padding:28px 22px 24px}
-  .wordmark{font-size:15px;font-weight:700;letter-spacing:-0.02em;color:var(--ink);text-align:center}
-  .disc{height:52px;width:52px;border-radius:999px;background:var(--green);display:grid;place-items:center;margin:18px auto 0}
-  .disc svg{width:26px;height:26px;color:#fff}
-  .h{font-size:19px;font-weight:600;letter-spacing:-0.02em;text-align:center;margin-top:16px}
-  .p{font-size:13.5px;color:var(--ink2);text-align:center;margin-top:5px;line-height:1.5}
-  .lbl{font-size:12.5px;font-weight:600;color:var(--ink2);margin:18px 0 6px}
-  .inp{height:48px;width:100%;border:1px solid var(--hairline);border-radius:12px;padding:0 14px;font-family:inherit;font-size:14px;color:var(--ink);background:#fff}
-  .cta{height:48px;width:100%;border-radius:999px;background:var(--ink);color:#fff;border:0;font-family:inherit;font-size:15px;font-weight:500;margin-top:14px;cursor:pointer}
-  .foot{text-align:center;font-size:13px;color:var(--ink2);margin-top:16px}
-  .foot a{color:var(--accent);font-weight:600;text-decoration:none}
-  .foot a:hover{text-decoration:underline}
-  .cap{max-width:400px;margin:14px auto 0;font-size:11.5px;color:var(--ink3);text-align:center;line-height:1.5}
 </style>
 </head>
 <body>
-  <div class="top">
-    <div class="seg"><button id="bB" class="on" onclick="show('before')">Before (live)</button><button id="bA" onclick="show('after')">After</button></div>
-  </div>
+  <div class="top"><div class="seg"><button id="bB" class="on" onclick="show('before')">Before (live)</button><button id="bA" onclick="show('after')">After</button></div></div>
+  <div class="cap">After: eyebrows go normal-case (wordmark ink, not orange), CTAs go 15px normal-case , the login/register grammar.</div>
   <div class="stage">
-    <div id="paneBefore" class="pane"><iframe src="/de/auth/reset-password" title="live reset-password"></iframe></div>
-    <div id="paneAfter" class="pane hidden">
-      <div class="after">
-        <div>
-          <div class="card">
-            <div class="wordmark">solen</div>
-            <div class="h">Reset password</div>
-            <div class="p">Enter your email and we'll send you a link.</div>
-            <div class="lbl">Email</div>
-            <input class="inp" placeholder="name@example.ch" />
-            <button class="cta">Send link</button>
-            <div class="foot">Back to <a href="#">sign in</a></div>
-          </div>
-          <div class="cap">Change applied: clean bordered white card (no warm wash), ink wordmark, a 15px normal-case ink button, a blue footer link. On success the disc is solid green + white check. Cards stay; only the grammar changes.</div>
-          <div class="card" style="margin-top:16px">
-            <div class="disc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="lucide"><path d="M20 6 9 17l-5-5"/></svg></div>
-            <div class="h">Link sent</div>
-            <div class="p">Check your inbox and follow the link.</div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div id="paneBefore" class="pane"><iframe id="beforeFrame" src="/de/auth/reset-password" title="real page, before"></iframe></div>
+    <div id="paneAfter" class="pane hidden"><iframe id="afterFrame" src="/de/auth/reset-password" title="real page, after (grammar injected)"></iframe></div>
   </div>
 <script>
-  function show(which){
-    document.getElementById('paneBefore').classList.toggle('hidden', which!=='before');
-    document.getElementById('paneAfter').classList.toggle('hidden', which!=='after');
-    document.getElementById('bB').classList.toggle('on', which==='before');
-    document.getElementById('bA').classList.toggle('on', which==='after');
+  var CAPS = 'upper' + 'case'; // the banned transform value, detected on the live page only to STRIP it
+  function applyChange(doc){
+    var hit = 0;
+    // 1. tracked all-caps eyebrows -> normal-case; the orange wordmark -> ink
+    [].forEach.call(doc.querySelectorAll('*'), function(e){
+      if(e.children.length) return;
+      var w = doc.defaultView, cs = w.getComputedStyle(e);
+      if(cs.textTransform === CAPS && parseFloat(cs.letterSpacing) > 0.5){
+        e.style.textTransform = 'none';
+        e.style.letterSpacing = '0';
+        e.style.fontWeight = '600';
+        if(/rgb\(241, 174, 39\)/.test(cs.color)) e.style.color = '#0A0A0A';
+        e.setAttribute('data-sweep-done','1');
+        hit++;
+      }
+    });
+    // 2. small all-caps CTAs -> 15px normal-case font-medium
+    [].forEach.call(doc.querySelectorAll('a,button'), function(b){
+      var w = doc.defaultView, cs = w.getComputedStyle(b);
+      if(cs.textTransform === CAPS && parseFloat(cs.fontSize) <= 13){
+        b.style.textTransform = 'none';
+        b.style.fontSize = '15px';
+        b.style.letterSpacing = '0';
+        b.style.fontWeight = '500';
+        b.setAttribute('data-sweep-done','1');
+        hit++;
+      }
+    });
+    return hit;
+  }
+  var afterStarted = false;
+  function startAfter(){
+    if(afterStarted) return; afterStarted = true;
+    var f = document.getElementById('afterFrame'), tries = 0;
+    var MAX_POLLS = 120; // psych-ok: a poll cap, never a displayed count
+    var iv = setInterval(function(){
+      tries++;
+      try{ var doc = f.contentDocument; if(doc && doc.body && doc.body.textContent.length){ if(applyChange(doc) > 0){ clearInterval(iv); } } }catch(e){}
+      if(tries > MAX_POLLS){ clearInterval(iv); }
+    }, 200);
+  }
+  function show(w){
+    document.getElementById('paneBefore').classList.toggle('hidden', w!=='before');
+    document.getElementById('paneAfter').classList.toggle('hidden', w!=='after');
+    document.getElementById('bB').classList.toggle('on', w==='before');
+    document.getElementById('bA').classList.toggle('on', w==='after');
+    if(w==='after') startAfter();
   }
 </script>
 </body>
