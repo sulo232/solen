@@ -85,10 +85,13 @@
       return e.children.length === 0 && /^Beauty-Profil$/.test((e.textContent||'').trim());
     })[0];
     if(!anchor) return 0;
+    // climb until the container holds the WHOLE settings content (both the Beauty and the Password sections),
+    // so nothing from the form wall leaks below the injected list on any breakpoint
     var col = anchor, up = 0;
-    while(col.parentElement && up < 8){
+    while(col.parentElement && up < 10){
       col = col.parentElement; up++;
-      if(col.getBoundingClientRect().width > 300 && col.children.length >= 2) break;
+      var t = col.textContent || '';
+      if(col.getBoundingClientRect().width > 300 && /Passwort/.test(t) && /Beauty-Profil/.test(t) && col.children.length >= 2) break;
     }
     // read the REAL current language from the page (the ink-filled selected pill)
     var lang = '';
