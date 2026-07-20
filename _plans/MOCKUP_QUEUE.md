@@ -12,8 +12,8 @@ compaction: `grep -L "applyChange" public/_mockups/sweep-*/index.html` = not yet
 - [x] v2-3 sweep-cookie-consent REBUILT as injection , DONE + verified (banner forced visible via consent-key clear; badge measured neutral sunken/ink-2; screenshot-checked).
 - [x] v2-4 sweep-empty-consolidation , REROUTED to the FIX phase (measured live: /de/reviews has real reviews, the empty state , where the invisible sunken-on-sunken disc lives , does not render on live data; the registry-EmptyState consolidation is an already-decided mechanical class, not an A/B).
 - [x] v2-5 sweep-dash-vibrancy REBUILT as injection , DONE + verified on /de/dashboard/calendar (203 dead-token elements; text measured rgb(39,110,241) after; screenshot-checked). NOTE: panes need the dev session , open /api/dev/login?to=/de/dashboard once if they show login.
-- [ ] v2-6 sweep-voucher-status-chip REBUILD as injection , /de/profile/vouchers via dev-login: status chip label -> ink, icon stays semantic.
-- [ ] v2-7 sweep-selected-ink-pill REBUILD as injection , /de/profile/settings via dev-login: language pill selected ink-fill -> gray sunken.
+- [x] v2-6 sweep-voucher-status-chip , REROUTED to the FIX phase (measured live: the seed user's wallet is EMPTY, no status chips render; the fix is the written rule-6 pattern , pastel bg + ink label + saturated icon , mechanical, no A/B needed).
+- [x] v2-7 sweep-selected-ink-pill REBUILT as injection , DONE + verified (Deutsch pill: ink-fill -> gray sunken + semibold + hairline, auto-scrolls into view; measured + screenshot-checked).
 - [ ] v2-8 sweep-city-picker-selected REBUILD as injection , home header: open the picker via injected click, selected option -> sunken fill + check.
 - [ ] v2-9 sweep-overlay-scrim REBUILD as injection , open the cookie-settings modal via injected click: warm rgb(26,18,9) veil -> cool rgb(10,10,10).
 - [ ] v2-10 sweep-nav-hover REBUILD as injection , desktop header: force the About-us hover to the sunken pill (frosted bloom off).
