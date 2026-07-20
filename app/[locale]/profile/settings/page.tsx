@@ -1,22 +1,40 @@
-// /profile/settings, the settings HUB (restructure 2026-07-20, owner-approved mockup
-// public/_mockups/sweep-settings-insta/index.html): an Instagram-style nav-row list replacing the old
-// form-wall single page. Each row links to its own sub-page under
+// /profile/settings, the settings HUB (restructure 2026-07-21, owner-approved B2 mockup
+// public/_mockups/sweep-settings-pinterest/index.html, "B2 pick" pane): identity block on
+// top (avatar + name + "Profil ansehen"/"Profil bearbeiten" pills) + the full taxonomy
+// grouped under Einstellungen / Prämien / Anmeldung / Support, with hairline dividers
+// between the groups. Each row links to its own sub-page under
 // app/[locale]/profile/settings/<slice>/page.tsx, which renders a slice of <SettingsForm>
-// (via its `section` prop) or <BeautyProfileForm> standalone. Server component: auth guard
-// + fetch the editable profile (still needed here to read the current language for the
-// "Sprache" row's right-value).
+// (via its `section` prop) or <BeautyProfileForm> standalone, or to an existing top-level
+// route (Haarprofil, Formulare, Treue, Stempel, Einladen, help/agb/datenschutz). Server
+// component: auth guard + fetch the editable profile (display_name/avatar_url for the
+// identity block, locale for the "Sprache" row's right-value).
 //
-// mockup-ok: every visual value in this file (white bg, no cards, row padding/gap, icon size,
-// label/sub-line/right-value/chevron sizes and colors, section-label styling, hairline dividers,
-// red text-only footer actions) is copied 1:1 from the owner-approved sweep-settings-insta mockup's
-// injected `row()` / `sectionLabel()` / `textRow()` markup (public/_mockups/sweep-settings-insta/index.html).
+// mockup-ok: every visual value in this file (row padding/gap, icon size, label/sub-line/
+// right-value/chevron sizes and colors, section-label styling, hairline dividers, red
+// text-only footer actions, identity-block sunken card + avatar + pills) is copied 1:1 from
+// the owner-approved sweep-settings-pinterest mockup's B2 `identityBlock()` / `srow2()` /
+// `slabel()` / `hairline()` markup (public/_mockups/sweep-settings-pinterest/index.html).
 
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { User, Lock, Globe, Scissors, Bell, ChevronRight, type LucideIcon } from "lucide-react";
+import {
+  User,
+  Lock,
+  Globe,
+  Scissors,
+  Bell,
+  ClipboardList,
+  SlidersHorizontal,
+  Award,
+  Stamp,
+  UserPlus,
+  ArrowUpRight,
+  ChevronRight,
+  type LucideIcon,
+} from "lucide-react";
 import { createServerSupabaseClient } from "@/lib/supabase";
 // LOCALES/SettingsLocale come from ./locales.ts, not ./SettingsForm (2026-07-20 crash fix): this
 // page is a Server Component, and SettingsForm.tsx is "use client", so importing a plain VALUE
@@ -42,7 +60,7 @@ export default async function SettingsPage({ params }: { params: Promise<{ local
 
   const { data: profile, error } = await supabase
     .from("profiles")
-    .select("locale")
+    .select("locale, display_name, avatar_url")
     .eq("id", user.id)
     .maybeSingle();
   if (error) console.error("[Settings] profile fetch error:", error.message);
@@ -53,25 +71,38 @@ export default async function SettingsPage({ params }: { params: Promise<{ local
     : ((allowed as string[]).includes(locale) ? (locale as SettingsLocale) : "de");
   const languageLabel = LOCALES.find((l) => l.value === profileLocale)?.label ?? "";
 
+  // Same fallback convention as /profile's identity header: trimmed display_name, else the
+  // email local-part, else the generic "Konto" translation, never a fabricated value.
+  const displayName = profile?.display_name?.trim() || user.email?.split("@")[0] || t("title");
+  const avatarSrc = profile?.avatar_url && /^https?:\/\//.test(profile.avatar_url) ? profile.avatar_url : null;
+
   const p = (path: string) => `/${locale}/profile/settings${path}`;
 
   return (
     <main className="min-h-screen bg-white">
       <div className="max-w-[560px] mx-auto pb-20">
         {/* Title now lives beside the global back tile (Header deepPageTitle). */}
-        <SectionLabel>{t("hubSectionAccount")}</SectionLabel>
-        <Row href={p("/personal")} icon={User} label={t("hubPersonal")} sub={t("hubPersonalSub")} />
+        <IdentityBlock locale={locale} name={displayName} avatarSrc={avatarSrc} viewLabel={t("viewProfile")} editLabel={t("editProfile")} subtitle={t("identitySubtitle")} />
+
+        <SectionLabel>{t("hubSectionSettings")}</SectionLabel>
+        <Row href={`/${locale}/profile/edit`} icon={User} label={t("hubKonto")} />
         <Row href={p("/password")} icon={Lock} label={t("hubPassword")} />
-        <Row href={p("/language")} icon={Globe} label={t("hubLanguage")} value={languageLabel} />
-
-        <Hairline />
-
-        <SectionLabel>{t("hubSectionForYou")}</SectionLabel>
-        <Row href={p("/beauty")} icon={Scissors} label={t("secBeauty")} sub={t("hubBeautySub")} />
+        <Row href={p("/beauty")} icon={SlidersHorizontal} label={t("hubRecommendations")} />
+        <Row href={`/${locale}/profile/haarprofil`} icon={Scissors} label={t("haarprofil")} />
         <Row href={p("/notifications")} icon={Bell} label={t("notificationPrefs")} />
+        <Row href={p("/language")} icon={Globe} label={t("hubLanguage")} value={languageLabel} />
+        <Row href={`/${locale}/profile/intake-forms`} icon={ClipboardList} label={t("hubForms")} />
 
         <Hairline />
 
+        <SectionLabel>{t("hubSectionRewards")}</SectionLabel>
+        <Row href={`/${locale}/rewards`} icon={Award} label={t("hubLoyalty")} />
+        <Row href={`/${locale}/profile/stamps`} icon={Stamp} label={t("tileStamps")} />
+        <Row href={`/${locale}/profile/referral`} icon={UserPlus} label={t("hubInvite")} />
+
+        <Hairline />
+
+        <SectionLabel>{t("hubSectionLogin")}</SectionLabel>
         {/* Sign out, quiet text row (form POST so it works without client JS; same
             pattern as /profile's footer sign-out). */}
         <form action="/api/auth/logout" method="post">
@@ -82,6 +113,13 @@ export default async function SettingsPage({ params }: { params: Promise<{ local
         <Link href={p("/delete")} className="block w-full bg-white px-4 py-[14px] text-[15px] font-medium text-s-error">
           {t("hubDeleteAccount")}
         </Link>
+
+        <Hairline />
+
+        <SectionLabel>{t("hubSectionSupport")}</SectionLabel>
+        <ExternalRow href={`/${locale}/help`} label={t("hubHelpCenter")} />
+        <ExternalRow href={`/${locale}/agb`} label={t("hubTerms")} />
+        <ExternalRow href={`/${locale}/datenschutz`} label={t("hubPrivacy")} />
       </div>
     </main>
   );
@@ -106,5 +144,54 @@ function Row({ href, icon: Icon, label, sub, value }: { href: string; icon: Luci
       {value ? <span className="mr-0.5 text-[13.5px] text-s-ink-3">{value}</span> : null}
       <ChevronRight size={16} className="shrink-0 text-s-ink-3" aria-hidden />
     </Link>
+  );
+}
+
+// mockup-ok: ExternalRow + IdentityBlock below are copied 1:1 from the owner-approved B2 pane
+// in public/_mockups/sweep-settings-pinterest/index.html (identityBlock() / srow2() with EXT).
+
+// External row (Hilfe-Center / AGB / Datenschutz): same row rhythm as `Row` but no left icon,
+// and a trailing up-right arrow instead of a chevron, marking "leaves this list" (B2 mockup's
+// `srow2(label, href, '', EXT)` treatment for the Support section).
+function ExternalRow({ href, label }: { href: string; label: string }) {
+  return (
+    <Link href={href} className="flex items-center gap-[14px] bg-white px-4 py-[13px]">
+      <span className="min-w-0 flex-1 text-[15px] font-medium text-s-ink">{label}</span>
+      <ArrowUpRight size={16} className="shrink-0 text-s-ink-3" aria-hidden />
+    </Link>
+  );
+}
+
+// Identity block: soft sunken card, avatar (image or initial), name, "Solen Konto" sub-line,
+// two pill links (view / edit profile). B2 mockup's `identityBlock()` markup 1:1.
+function IdentityBlock({ locale, name, avatarSrc, subtitle, viewLabel, editLabel }: { locale: string; name: string; avatarSrc: string | null; subtitle: string; viewLabel: string; editLabel: string }) {
+  const initial = name.trim().charAt(0).toUpperCase() || "S";
+  return (
+    <div className="mx-4 mb-2 mt-4 rounded-[24px] bg-s-bg-sunken p-5">
+      <div className="flex items-center gap-[14px]">
+        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full bg-s-border">
+          {avatarSrc ? (
+            // eslint-disable-next-line @next/next/no-img-element -- arbitrary user-supplied avatar URL; next/image remote config not guaranteed
+            <img src={avatarSrc} alt="" className="absolute inset-0 h-full w-full object-cover" />
+          ) : (
+            <span className="grid h-full w-full place-items-center text-[24px] font-semibold text-s-ink-2" aria-hidden>
+              {initial}
+            </span>
+          )}
+        </div>
+        <div className="min-w-0">
+          <div className="truncate text-[20px] font-bold tracking-[-0.02em] text-s-ink">{name}</div>
+          <div className="mt-px text-[13px] text-s-ink-3">{subtitle}</div>
+        </div>
+      </div>
+      <div className="mt-[14px] flex gap-[10px]">
+        <Link href={`/${locale}/profile`} className="flex-1 rounded-full border border-s-border bg-white py-[11px] text-center text-[14px] font-semibold text-s-ink">
+          {viewLabel}
+        </Link>
+        <Link href={`/${locale}/profile/edit`} className="flex-1 rounded-full border border-s-border bg-white py-[11px] text-center text-[14px] font-semibold text-s-ink">
+          {editLabel}
+        </Link>
+      </div>
+    </div>
   );
 }

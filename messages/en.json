@@ -75,7 +75,21 @@
     "beautySkin": "Skin",
     "beautyCategories": "Categories",
     "beautyInterests": "Interests",
-    "saveBeauty": "Save beauty profile"
+    "saveBeauty": "Save beauty profile",
+    "hubSectionSettings": "Settings",
+    "hubSectionRewards": "Rewards",
+    "hubSectionLogin": "Login",
+    "hubSectionSupport": "Support",
+    "hubKonto": "Account",
+    "hubRecommendations": "Refine recommendations",
+    "hubForms": "Forms",
+    "hubLoyalty": "Loyalty status",
+    "hubInvite": "Invite friends",
+    "hubHelpCenter": "Help centre",
+    "hubTerms": "Terms",
+    "hubPrivacy": "Privacy",
+    "identitySubtitle": "Solen account",
+    "viewProfile": "View profile"
   },
   "cities": {
     "label": "City",

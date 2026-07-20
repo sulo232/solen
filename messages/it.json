@@ -75,7 +75,21 @@
     "beautySkin": "Pelle",
     "beautyCategories": "Categorie",
     "beautyInterests": "Interessi",
-    "saveBeauty": "Salva profilo beauty"
+    "saveBeauty": "Salva profilo beauty",
+    "hubSectionSettings": "Impostazioni",
+    "hubSectionRewards": "Premi",
+    "hubSectionLogin": "Accesso",
+    "hubSectionSupport": "Supporto",
+    "hubKonto": "Account",
+    "hubRecommendations": "Personalizza i consigli",
+    "hubForms": "Moduli",
+    "hubLoyalty": "Stato fedeltà",
+    "hubInvite": "Invita amici",
+    "hubHelpCenter": "Centro assistenza",
+    "hubTerms": "Termini",
+    "hubPrivacy": "Privacy",
+    "identitySubtitle": "Account Solen",
+    "viewProfile": "Vedi profilo"
   },
   "cities": {
     "label": "Città",
