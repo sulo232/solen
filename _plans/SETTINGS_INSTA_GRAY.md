@@ -24,4 +24,12 @@ everywhere, and it is everywhere outside these mockups too."
   - [x] iconless rows + Einstellungen/Anmeldung/Support sections + external arrows + plain Abmelden.
   - [x] mapping: Empfehlungen anpassen = Beauty-Profil + Inspo; Konto = E-Mail/Telefon/Passwort; Support = help/agb/datenschutz.
   - [x] 3 live directions in sweep-settings-pinterest (A faithful / B hybrid / C profile-first); A + C rendered-verified; REC = A. Committed.
+- [ ] CORRECTION 3 (owner 2026-07-20, "i like hybrid but w lines + fonts like before"): settings pick = B HYBRID, refined:
+  - [ ] B2 variant in sweep-settings-pinterest: icons KEPT + hairline dividers between the big sections (like the Before page) + row font/text sizes matching the Before (15px labels, current row heights), not the Pinterest-shrunk sizes.
+- [ ] PROFILE PAGE, Pinterest model (owner 2026-07-20, IMG_6647 anatomy): new mockup sweep-profile-pinterest on /de/profile:
+  - [ ] tabs: Pins -> Gespeichert (saved salons), Boards -> Termine (past bookings); Collages -> OPEN, ideas mockuped
+  - [ ] live-activity hero: if an upcoming booking exists, a BIG card on top (live-activity style), read from real data, no fabrication
+  - [ ] 3 directions for the Collages slot, one mockup pane each: (1) Looks (route exists, closest 1:1), (2) Bewertungen, (3) Gutscheine and Guthaben
+  - [ ] search bar + chips row per the Pinterest anatomy, only where honest (search over saved needs backend, mark as net-new)
+- [ ] SETTINGS TAXONOMY (owner: "what do we acc need, check your-account ss + uber eats + fresha"): Fresha + Uber Eats account screens CAPTURED via Mobbin this turn; propose the full Solen settings/account list grounded in the three refs + existing routes; flag net-new (payment methods, security/2FA) as parked, no invented surfaces.
 - [x] REGISTERED this batch + ACTIVE row (survives compaction).

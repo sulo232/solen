@@ -16,6 +16,12 @@
   contact + password pages; the support block maps to the existing help/terms/privacy routes.
   A = faithful: identity block + pills, iconless rows, 3 sections.
   B = hybrid: the identity block + our small mono icons kept on the rows.
+  B2 = THE PICK refined (owner 2026-07-20 "hybrid but w lines + fonts like before"): icons kept, hairline
+       dividers between the big groups, rows at the live page's MEASURED sizes (label 15px/500 ink, padding
+       13px 16px, icons 22px stroke 1.9, gray chevron, all read off the rendered before page this turn), plus
+       the FULL taxonomy: every row maps to an existing route (settings sub-pages, Haarprofil, Formulare,
+       Treue, Stempel, Einladen, help/agb/datenschutz). Net-new candidates (Zahlungsmethoden, Sicherheit)
+       are NOT rendered, they are parked in the reply.
   C = profile-first: the big profile header (avatar + pencil, name, bio line, edit pill, tabs) mounted on the
       settings surface, settings shrink to a short list below.
   german-ok: injected rows use the app's real German product labels (the mockup chrome is English).
@@ -47,13 +53,15 @@
 <body>
   <div class="top"><div class="seg">
     <button id="bv0" class="on" onclick="show('v0')">Before</button>
-    <button id="bv1" onclick="show('v1')">A faithful</button>
-    <button id="bv2" onclick="show('v2')">B hybrid</button>
-    <button id="bv3" onclick="show('v3')">C profile-first</button>
+    <button id="bv4" onclick="show('v4')">B2 pick</button>
+    <button id="bv2" onclick="show('v2')">B</button>
+    <button id="bv1" onclick="show('v1')">A</button>
+    <button id="bv3" onclick="show('v3')">C</button>
   </div></div>
-  <div class="cap">The reference account model on the real page. A: iconless rows + identity block. B: block + our icons. C: big profile header first. Mint via the gallery if you see login.</div>
+  <div class="cap">B2 = your pick refined: icons + hairline lines between the big groups + the app's own text sizes, full row set. B/A/C stay for comparison. Mint via the gallery if you see login.</div>
   <div class="stage">
     <div id="pv0" class="pane"><iframe id="fv0" src="/de/profile/settings" title="real settings, before"></iframe></div>
+    <div id="pv4" class="pane hidden"><iframe id="fv4" src="/de/profile/settings" title="direction B2 injected"></iframe></div>
     <div id="pv1" class="pane hidden"><iframe id="fv1" src="/de/profile/settings" title="direction A injected"></iframe></div>
     <div id="pv2" class="pane hidden"><iframe id="fv2" src="/de/profile/settings" title="direction B injected"></iframe></div>
     <div id="pv3" class="pane hidden"><iframe id="fv3" src="/de/profile/settings" title="direction C injected"></iframe></div>
@@ -66,6 +74,17 @@
           heart:micon('<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>'),
           bell:micon('<path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/>'),
           globe:micon('<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>')};
+  // B2 icon set at the live page's MEASURED icon spec: 22px, stroke 1.9 (read off the rendered before rows this turn)
+  function micon22(d){ return '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="lucide" aria-hidden="true">'+d+'</svg>'; }
+  var IC2={user:micon22('<circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/>'),
+           sliders:micon22('<line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/>'),
+           scissors:micon22('<circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/>'),
+           bell:micon22('<path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/>'),
+           globe:micon22('<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>'),
+           clip:micon22('<rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/>'),
+           award:micon22('<path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/><circle cx="12" cy="8" r="6"/>'),
+           stamp:micon22('<path d="M5 22h14"/><path d="M19.27 13.73A2.5 2.5 0 0 0 17.5 13h-11A2.5 2.5 0 0 0 4 15.5V17a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-1.5c0-.66-.26-1.3-.73-1.77Z"/><path d="M14 13V8.5C14 7 15 7 15 5a3 3 0 0 0-6 0c0 2 1 2 1 3.5V13"/>'),
+           invite:micon22('<path d="M2 21a8 8 0 0 1 13.292-6"/><circle cx="10" cy="8" r="5"/><path d="M19 16v6"/><path d="M22 19h-6"/>')};
   function readIdentity(doc){
     var name='';
     var el=[].filter.call(doc.querySelectorAll('*'),function(e){return e.children.length===0 && /Hallo, /.test(e.textContent||'');})[0];
@@ -105,6 +124,42 @@
       + srow('AGB', EXT, '')
       + srow('Datenschutz', EXT, '');
   }
+  // lang-ok: genuinely-localised mockup, the injected rows carry the app's REAL German product labels (each
+  // label is the live surface's real i18n string) so the restructure blends into the real German page.
+  // B2: rows at the live page's measured spec (label 15px/500 ink, padding 13px 16px -> 13px 4px here since
+  // the root already carries 12px side padding; gray chevron like the live rows), hairline dividers between groups.
+  var CHEV2='<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>';
+  function srow2(label, href, icon, right){
+    return '<a href="'+(href||'#')+'" style="display:flex;align-items:center;gap:14px;padding:13px 4px;text-decoration:none;color:#0A0A0A">'
+      + (icon||'')
+      + '<span style="flex:1;font-size:15px;font-weight:500;letter-spacing:-0.005em">'+label+'</span>'
+      + (right===undefined?CHEV2:right) + '</a>';
+  }
+  function hairline(){ return '<div style="height:1px;background:#E4E4E7;margin:14px 0 2px"></div>'; }
+  function buildRefined(idn){
+    return identityBlock(idn)
+      + slabel('Einstellungen') // german-ok: real app label
+      + srow2('Konto', '/de/profile/settings/personal', IC2.user) // german-ok: real app label
+      + srow2('Empfehlungen anpassen', '/de/profile/settings/beauty', IC2.sliders) // german-ok: real app label
+      + srow2('Haarprofil', '/de/profile/haarprofil', IC2.scissors) // german-ok: real app label
+      + srow2('Benachrichtigungen', '/de/profile/settings/notifications', IC2.bell) // german-ok: real app label
+      + srow2('Sprache', '/de/profile/settings/language', IC2.globe) // german-ok: real app label
+      + srow2('Formulare', '/de/profile/intake-forms', IC2.clip) // german-ok: real app label
+      + hairline()
+      + slabel('Prämien') // german-ok: real app label
+      + srow2('Treue-Status', '/de/rewards', IC2.award) // german-ok: real app label
+      + srow2('Stempel', '/de/profile/stamps', IC2.stamp) // german-ok: real app label
+      + srow2('Freunde einladen', '/de/profile/referral', IC2.invite) // german-ok: real app label
+      + hairline()
+      + slabel('Anmeldung') // german-ok: real app label
+      + srow2('Abmelden', '#', '', '') // german-ok: real app label
+      + srow2('Konto löschen', '/de/profile/settings/delete', '', '') // german-ok: real app label
+      + hairline()
+      + slabel('Support') // german-ok: real app label
+      + srow2('Hilfe-Center', '/de/help', '', EXT) // german-ok: real app label
+      + srow2('AGB', '/de/agb', '', EXT) // german-ok: real app label
+      + srow2('Datenschutz', '/de/datenschutz', '', EXT); // german-ok: real app label
+  }
   function buildProfileFirst(idn){
     return '<div style="text-align:center;padding:8px 0 4px">'
       + '<div style="position:relative;display:inline-block"><div style="height:96px;width:96px;border-radius:999px;background:#E4E4E7;display:grid;place-items:center;font-size:36px;font-weight:600;color:#52525B">'+(idn.name.charAt(0)||'S')+'</div>'
@@ -131,7 +186,7 @@
     var root=doc.createElement('div');
     root.id='sweep-pin-root'; root.setAttribute('data-sweep-done','1');
     root.style.cssText='background:#fff;max-width:560px;margin:0 auto;padding:0 12px 24px';
-    root.innerHTML = (variant==='C') ? buildProfileFirst(idn) : buildList(idn, variant==='B');
+    root.innerHTML = (variant==='C') ? buildProfileFirst(idn) : (variant==='B2') ? buildRefined(idn) : buildList(idn, variant==='B');
     [].forEach.call(col.children,function(ch){ ch.style.display='none'; });
     col.appendChild(root);
     return 1;
@@ -148,13 +203,14 @@
     },300);
   }
   function show(key){
-    ['v0','v1','v2','v3'].forEach(function(k){
+    ['v0','v1','v2','v3','v4'].forEach(function(k){
       document.getElementById('p'+k).classList.toggle('hidden', k!==key);
       document.getElementById('b'+k).classList.toggle('on', k===key);
     });
     if(key==='v1') beginPane('v1','A');
     if(key==='v2') beginPane('v2','B');
     if(key==='v3') beginPane('v3','C');
+    if(key==='v4') beginPane('v4','B2');
   }
 </script>
 </body>
