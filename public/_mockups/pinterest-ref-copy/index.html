@@ -20,8 +20,12 @@
   full-diff: 8/8 boxes match the reference within 3px: avatar 36/36, search h 37/37, chip h 31/31,
   tile 195x131, sugg image 148x101, Create 74x44, nav tile 50x50, tab font 18 (word 57/56).
   type-budget-ok: faithful copy of the reference's text ramp; Solen adaptation is the next step.
-  english-ok lang-ok: the reference's own English labels (a 1:1 copy). psych-ok: grey stand-ins for photos.
-  hue-ok: all neutral greys, no saturated hues (the fake status bar that carried the call-green is deleted).
+  english-ok lang-ok: the reference's own English labels (a 1:1 copy).
+  psych-ok: REAL self-hosted product photos (/_mockups/_assets/salon-photos, 12 seed images) , grey wireframes
+  made correct geometry read wrong on the phone (_BASE rule, owner phone-diff 2026-07-21). No fabricated data.
+  hue-ok: photography carries the color; UI chrome stays neutral, no invented saturated hues.
+  _BASE compliance: text-size-adjust 100%, min-height 100dvh, safe-area-inset on the fixed nav, self-hosted
+  assets only, full-bleed (no fake phone). See public/_mockups/_BASE.md.
   Exists-check: reuses this slug (same surface, corrected format after the owner rejected the fake phone frame).
 -->
 <style>
@@ -30,8 +34,9 @@
     --sf:-apple-system,BlinkMacSystemFont,'Inter Tight','SF Pro Display',system-ui,sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%} /* _BASE: stop iOS Safari auto-inflating text */
   html,body{background:#fff}
-  body{font-family:var(--sf);-webkit-font-smoothing:antialiased;color:var(--ink);padding-bottom:110px}
+  body{font-family:var(--sf);-webkit-font-smoothing:antialiased;color:var(--ink);min-height:100dvh;padding-bottom:calc(110px + env(safe-area-inset-bottom))}
   /* header */
   .hdr{display:flex;align-items:center;gap:10px;padding:10px 8px 0}
   .av{width:36px;height:36px;border-radius:50%;background:var(--lav);display:grid;place-items:center;font-size:16px;font-weight:600;color:#52525B;flex:none}
@@ -71,13 +76,20 @@
   .sname{font-size:14px;font-weight:600;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .smeta{font-size:11px;margin-top:2px;color:var(--ink)}
   /* bottom nav (part of the reference screen itself) */
-  .nav{position:fixed;left:0;right:0;bottom:0;height:96px;background:linear-gradient(rgba(255,255,255,0),#fff 40%,#E7E7EA);display:flex;align-items:center;justify-content:center;gap:14px;padding-bottom:14px}
+  .nav{position:fixed;left:0;right:0;bottom:0;height:calc(96px + env(safe-area-inset-bottom));background:linear-gradient(rgba(255,255,255,0),#fff 40%,#E7E7EA);display:flex;align-items:center;justify-content:center;gap:14px;padding-bottom:calc(14px + env(safe-area-inset-bottom))} /* _BASE: safe-area so the home indicator / Safari bar does not overlap */
   .navi{width:50px;height:50px;background:#fff;border-radius:14px;display:grid;place-items:center;box-shadow:0 2px 10px rgba(0,0,0,.08)}
   .navi svg{width:24px;height:24px;color:var(--ink)}
-  /* neutral grey stand-ins for the reference photos (geometry copy) */
-  .g1{background:#BFC2C7} .g2{background:#D2D0CE} .g3{background:#ADB0B5} .g4{background:#C7CBD0}
-  .g5{background:#9EA2A8} .g6{background:#D8D6D3} .g7{background:#8C9096} .g8{background:#B6B4B1}
-  .g9{background:#A7A5AE} .g10{background:#C2BEB8}
+  /* real self-hosted product photos (_BASE rule: grey wireframes read wrong; rich-not-bland) */
+  .g1{background:#F4F4F5 url(/_mockups/_assets/salon-photos/p05.jpg) center/cover}
+  .g2{background:#F4F4F5 url(/_mockups/_assets/salon-photos/p06.jpg) center/cover}
+  .g3{background:#F4F4F5 url(/_mockups/_assets/salon-photos/p04.jpg) center/cover}
+  .g4{background:#F4F4F5 url(/_mockups/_assets/salon-photos/p10.jpg) center/cover}
+  .g5{background:#F4F4F5 url(/_mockups/_assets/salon-photos/p01.jpg) center/cover}
+  .g6{background:#F4F4F5 url(/_mockups/_assets/salon-photos/p02.jpg) center/cover}
+  .g7{background:#F4F4F5 url(/_mockups/_assets/salon-photos/p07.jpg) center/cover}
+  .g8{background:#F4F4F5 url(/_mockups/_assets/salon-photos/p08.jpg) center/cover}
+  .g9{background:#F4F4F5 url(/_mockups/_assets/salon-photos/p09.jpg) center/cover}
+  .g10{background:#F4F4F5 url(/_mockups/_assets/salon-photos/p12.jpg) center/cover}
 </style>
 </head>
 <body>
