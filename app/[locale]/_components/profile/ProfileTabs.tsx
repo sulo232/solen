@@ -258,7 +258,7 @@ export default function ProfileTabs({
                     {b.serviceName ? <p className="truncate text-[14px] text-s-ink-2">{b.serviceName}</p> : null}
                     <p className="mt-0.5 flex items-center gap-2.5 text-[12px] text-s-ink-2">
                       <span>{b.dateLabel}</span>
-                      {b.price != null ? <b className="font-semibold text-s-ink">{formatCurrency(b.price)}</b> : null}
+                      {b.price != null ? <b className="font-semibold text-s-ink">{formatCurrency(b.price, locale)}</b> : null}
                     </p>
                   </div>
                   <button

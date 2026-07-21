@@ -19,6 +19,7 @@ export const dynamic = "force-dynamic";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { formatQuartier } from "@/lib/basel-neighborhoods";
 import ProfileTabs, {
   type ProfilePastBookingTile,
   type ProfileSavedSalonTile,
@@ -71,16 +72,14 @@ function buildTilePhotos(cover: string | null, gallery: string[] | null): string
   return out;
 }
 
-function capitalize(s: string): string {
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
-
 function toSalonTile(s: SalonRow): { slug: string; name: string; photos: string[]; city: string | null } {
   return {
     slug: s.slug,
     name: s.name,
     photos: buildTilePhotos(s.cover_photo_url, s.gallery_urls),
-    city: s.quartier ? capitalize(s.quartier) : null,
+    // formatQuartier, not a local capitalize: the raw slug ("st_johann") leaked on cards before,
+    // and the shared helper exists exactly for that (reviewer catch 2026-07-21).
+    city: s.quartier ? formatQuartier(s.quartier) : null,
   };
 }
 
