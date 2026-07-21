@@ -9,11 +9,14 @@
 <!-- Grounded-in: /Users/sulo/solen/screenshots/IMG_6647.PNG -->
 <!-- Owner-scope: confirmed: "just try to copy over like everything from the reference... just copy over everything that's on the screenshot. Make a mockup of that and then we can iterate" (2026-07-21) , scope = the ENTIRE screen, every element, 1:1. No interpretation fork: copy all of it. -->
 <!--
-  measure-ok / measured: every size below is PIL-measured from IMG_6647 (1206x2622, iPhone 16 Pro 3x = 402pt),
-  converted with the council method (font = cap_px / 3 / 0.72; boxes = px / 3; build container = exactly 402px so
-  ref-px/3 maps 1:1). Measured (device px -> CSS px @402): avatar 108->36 ; tab cap 63 -> 22 ; search h 112->37 ;
-  chip h 93->31, chip text ->14 ; TILE 584x392 -> 195x131 (aspect 1.49) ; col-gap 13->4 ; board name -> 20 ;
-  meta ->13 ; section header -> 28 ; sugg card ~170 wide.
+  measure-ok / measured: BOXES are PIL-measured from IMG_6647 (1206x2622, iPhone 16 Pro 3x = 402pt), boxes = px/3,
+  built at exactly 402px so ref-px/3 maps 1:1: avatar 108->36 ; search h 112->37 ; chip h 93->31 ;
+  TILE 584x392 -> 195x131 (aspect 1.49) ; col-gap 13->4.
+  width-calibrated: FONTS are set by matching WORD WIDTH to the reference, NOT by glyph height (height caught the
+  tab underline + descender tails + neighbor letters and came out ~30% too big , the recurring 'too big' bug).
+  Reference word widths @402 -> font: "Boards" 56 -> tab 18 ; "Board suggestions" 174 -> shead 21 ;
+  "web deisgn" 74 -> bname 14 ; "Search your saved ideas" 176 -> search 16 ; "Group" 40 -> chip 14.
+  Verified render word widths within 2% of the reference (tab 57/56, section 177/174, bname 75/74, search 176/176).
   type-budget-ok: faithful COPY of Pinterest's big-text ramp; adapting to Solen's 4-size budget is the NEXT step.
   english-ok lang-ok: reference's own English labels (a 1:1 copy). psych-ok: grey stand-ins for the photos.
   hue-ok: only saturated color is the iOS call green, mapped to the locked green token.
@@ -39,12 +42,12 @@
   .hdr{display:flex;align-items:center;gap:10px;padding:6px 12px 0}
   .av{width:36px;height:36px;border-radius:50%;background:var(--lav);display:grid;place-items:center;font-size:16px;font-weight:600;color:#52525B;flex:none}
   .tabs{flex:1;display:flex;align-items:center;justify-content:center;gap:26px}
-  .tab{font-size:22px;font-weight:600;color:var(--grey);letter-spacing:-0.02em}
+  .tab{font-size:18px;font-weight:600;color:var(--grey);letter-spacing:-0.02em}
   .tab.on{color:var(--ink);position:relative}
   .tab.on::after{content:'';position:absolute;left:0;right:0;bottom:-8px;height:3px;background:var(--ink);border-radius:2px}
   .gear{width:30px;height:30px;flex:none;color:var(--ink)}
   .srow{display:flex;align-items:center;gap:14px;padding:17px 12px 0}
-  .search{flex:1;height:37px;border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;gap:10px;padding:0 14px;color:var(--grey);font-size:17px}
+  .search{flex:1;height:37px;border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;gap:10px;padding:0 14px;color:var(--grey);font-size:16px}
   .plus{width:22px;height:22px;flex:none;color:var(--ink)}
   .chips{display:flex;gap:8px;align-items:center;padding:22px 12px 0}
   .chip{height:31px;border-radius:999px;background:var(--chip);display:flex;align-items:center;gap:6px;padding:0 16px;font-size:14px;font-weight:600;color:var(--ink)}
@@ -54,10 +57,10 @@
   .tile .main{flex:0 0 66%}
   .tile .thc{flex:1;display:flex;flex-direction:column;gap:2px}
   .tile .thc > div{flex:1}
-  .bname{font-size:20px;font-weight:600;margin-top:7px;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bname{font-size:14px;font-weight:600;margin-top:7px;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .bmeta{font-size:13px;margin-top:4px;color:var(--ink)}
   .bmeta .g{color:var(--grey)}
-  .shead{font-size:28px;font-weight:700;letter-spacing:-0.02em;padding:19px 12px 0}
+  .shead{font-size:21px;font-weight:700;letter-spacing:-0.02em;padding:19px 12px 0}
   .sugg{display:flex;gap:10px;overflow-x:auto;padding:12px 12px 0;scrollbar-width:none}
   .sugg::-webkit-scrollbar{display:none}
   .scard{flex:none;width:170px}
@@ -65,8 +68,8 @@
   .simg .main{flex:0 0 66%}
   .simg .thc{flex:1;display:flex;flex-direction:column;gap:2px}
   .simg .thc > div{flex:1}
-  .create{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;border-radius:999px;padding:9px 22px;font-size:19px;font-weight:600;color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.18)}
-  .sname{font-size:20px;font-weight:600;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .create{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;border-radius:999px;padding:9px 22px;font-size:15px;font-weight:600;color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.18)}
+  .sname{font-size:14px;font-weight:600;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .smeta{font-size:13px;margin-top:2px;color:var(--ink)}
   .nav{height:150px;margin-top:40px;background:linear-gradient(#fff,#E7E7EA);display:flex;align-items:flex-start;justify-content:center;gap:14px;padding-top:26px}
   .navi{width:70px;height:56px;background:#fff;border-radius:16px;display:grid;place-items:center;box-shadow:0 2px 10px rgba(0,0,0,.06)}
