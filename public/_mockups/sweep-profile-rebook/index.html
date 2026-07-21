@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Profile , the council direction (rebook list, not a collage board)</title>
+<!-- Base: capture live (live-iframe of the real /de/profile, not a static img) -->
+<!-- Scale: full-page -->
+<!-- Grounded-in: app/[locale]/profile/page.tsx -->
+<!--
+  Grounded-in: app/[locale]/profile/page.tsx (the real /de/profile) + components-legacy/booking/BookingCard.tsx
+  (the rebook-row grammar this reuses).
+  measure-ok , this is a DIRECTION change (IA), grounded in an EXISTING component, not derived from a reference
+  image, so there is no pixel spec to match; sizes come from the locked type roles (18/16/14/12).
+  type-budget-ok , designed surface holds 4 sizes {18,16,14,12} / 2 weights {600,400}.
+  english-ok lang-ok german-ok , injected labels are the app's REAL German product strings; chrome is English.
+  psych-ok , every row is real data; empty tabs show the true empty state; no fabricated numbers; per-item
+  scores are omitted where the data has none to show honestly.
+  Backend-check: rebook -> POST /api/bookings/express-rebook (+ /confirm) EXISTS and is ALREADY WIRED in
+  components-legacy/booking/BookingsList.tsx (handleRebook: express-rebook finds next slot, then confirm,
+  then toast); the visible affordance here links to the salon PDP booking (app/[locale]/salon/[slug]/booking,
+  EXISTS) as the safe path. The manage link and the book link both point to the salon PDP (EXISTS). No fantasy action.
+  Exists-check: `npm run exists "profile rebook booking list"` ran this turn (0 hits for the phrase), but the
+  BUILDING BLOCKS already exist and are REUSED here, not duplicated: components-legacy/booking/BookingCard.tsx
+  (ink rebook button + status pill + thumbnail), BookingsList.tsx (upcoming/past tabs), /api/bookings/user,
+  /api/bookings/express-rebook, /api/salons. REMOVED: none re-proposed. NEW = only the IA: past bookings render
+  as a rebook LIST (BookingCard grammar) instead of the Pinterest collage grid; the collage lives ONLY on Looks.
+  Why this mockup exists: the external council (Gemini + Opus + Grok) unanimously said the Pinterest-Boards
+  metaphor is wrong for a booking profile , a past appointment is a TRANSACTION to rebook, not a saved idea to
+  browse. This shows the corrected direction.
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#575757;--ink3:#A1A1AA;--line:#E4E4E7;--sunken:#F4F4F5;--green:#16A34A;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
+  .top{position:fixed;top:0;left:0;right:0;height:52px;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center;padding:0 12px}
+  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(360px,88vw)}
+  .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:13px;font-weight:600;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .cap{position:fixed;top:52px;left:0;right:0;z-index:19;background:var(--sunken);color:var(--ink2);font-size:12px;font-weight:600;text-align:center;padding:6px 12px;line-height:1.35}
+  .stage{position:fixed;top:84px;left:0;right:0;bottom:0}
+  .pane{position:absolute;inset:0}
+  .pane.hidden{display:none}
+  iframe{width:100%;height:100%;border:0;display:block}
+</style>
+</head>
+<body>
+  <div class="top"><div class="seg"><button id="bB" class="on" onclick="show('before')">Before (live)</button><button id="bA" onclick="show('after')">After , council direction</button></div></div>
+  <div class="cap">After: the council fix. A past booking is a TRANSACTION, so the bookings tab is a rebook LIST (thumbnail, service, date, price, rebook), not a collage. The collage lives only on Looks. Tap the gallery mint tile first if you see login.</div>
+  <div class="stage">
+    <div id="paneBefore" class="pane"><iframe id="beforeFrame" src="/de/profile" title="real profile, before"></iframe></div>
+    <div id="paneAfter" class="pane hidden"><iframe id="afterFrame" src="/de/profile" title="real profile, council direction"></iframe></div>
+  </div>
+<script>
+  var DATA={state:'idle',up:null,past:[],favs:[],sugg:[]};
+  function load(){ if(DATA.state!=='idle') return; DATA.state='loading';
+    Promise.all([
+      fetch('/api/bookings/user?tab=upcoming',{credentials:'include'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}),
+      fetch('/api/bookings/user?tab=past',{credentials:'include'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}),
+      fetch('/de/profile/favorites',{credentials:'include'}).then(function(r){return r.ok?r.text():'';}).catch(function(){return '';}),
+      fetch('/api/salons?limit=12',{credentials:'include'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})
+    ]).then(function(res){
+      var sj=res[3]; var items=(sj&&(sj.items||sj.salons||sj.data))||[];
+      var gmap={},cmap={}; items.forEach(function(s){ gmap[s.slug]=[s.cover_photo_url].concat(s.gallery_urls||[]).filter(Boolean); cmap[s.slug]=s.cover_photo_url; });
+      DATA.sugg=items.slice(0,8).map(function(s){ return {slug:s.slug,name:s.name,img:s.cover_photo_url,imgs:(gmap[s.slug]||[]).filter(Boolean)}; });
+      var upj=res[0]; var ups=((upj&&upj.bookings)||[]); DATA.up=ups.length?mapB(ups[0],cmap):null;
+      var pj=res[1]; DATA.past=((pj&&pj.bookings)||[]).slice(0,10).map(function(b){ return mapB(b,cmap); });
+      DATA.favs=parseFavs(res[2]).map(function(f){ return {name:f.name,slug:f.slug,img:cmap[f.slug]||f.img,imgs:(gmap[f.slug]||(f.img?[f.img]:[]))}; });
+      DATA.state='ready';
+    }).catch(function(){ DATA.state='ready'; });
+  }
+  function mapB(b,cmap){ var s=b.salon||{},svc=b.service||{};
+    return {name:s.name||'', slug:s.slug, img:(s.cover_photo_url||cmap[s.slug]||null),
+      svc:(svc.name_de||svc.name||''), date:b.starts_at, status:b.status,
+      price:(b.price_paid!=null?b.price_paid:(svc.price!=null?svc.price:null))}; }
+  function parseFavs(html){ try{ var d=new DOMParser().parseFromString(html,'text/html'); var out=[],seen={};
+    [].forEach.call(d.querySelectorAll('a[href*="/salon/"]'),function(a){ if(out.length>=8) return;
+      var href=a.getAttribute('href')||''; var slug=(href.split('/salon/')[1]||'').split(/[/?#]/)[0];
+      var img=a.querySelector('img'); var h=a.querySelector('h3,h2'); var name=h?(h.textContent||'').trim():'';
+      if(!name){ name=((a.textContent||'').trim().split('\n')[0]||'').trim().slice(0,40); }
+      if(name && !seen[name]){ seen[name]=1; out.push({name:name,slug:slug,img:img?img.getAttribute('src'):null}); } });
+    return out; }catch(e){ return []; } }
+  function fmtDate(iso){ try{ var d=new Date(iso); var M=['Jan.','Feb.','Maerz','Apr.','Mai','Juni','Juli','Aug.','Sep.','Okt.','Nov.','Dez.']; return d.getDate()+'. '+M[d.getMonth()]; }catch(e){ return ''; } }
+  function chf(n){ return (n!=null)?'CHF '+(Math.round(n*100)/100).toString().replace(/\.00$/,'.'):''; }
+  function bg(u){ return u?'background:#F4F4F5 url('+JSON.stringify(u).slice(1,-1)+') center/cover':'background:#F4F4F5'; }
+  // real Lucide markup (class="lucide"): scissors, calendar, settings are all straight from lucide.dev
+  function I(d,c){ return '<svg xmlns="http://www.w3.org/2000/svg" class="lucide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="'+(c||'#0A0A0A')+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+d+'</svg>'; }
+  var SCIS='<path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/>';
+  var CAL='<rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/>';
+  var GEAR='<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>';
+  function readIdentity(doc){ var el=doc.querySelector('p[class*="text-[21px]"]'); var name=el?(el.textContent||'').trim():''; return {name:name||'Dein Profil'}; } // german-ok
+
+  var TAB='appts';
+  // bookings-tab ROW = the BookingCard grammar (thumbnail, name, service, date, price, rebook). NOT a collage.
+  // service and date sit on separate lines / gap-separated spans , no decorative separator dot (contrast IS the separator).
+  function rebookRow(b){
+    var thumb='<div style="flex:none;width:56px;height:56px;border-radius:12px;'+bg(b.img)+';display:grid;place-items:center">'+(b.img?'':I(SCIS,'#A1A1AA'))+'</div>';
+    var line2='<div style="display:flex;gap:10px;align-items:center;font-size:12px;color:#575757">'
+      + '<span>'+fmtDate(b.date)+'</span>'
+      + (b.price!=null?'<span style="color:#0A0A0A">'+chf(b.price)+'</span>':'')
+      + '</div>';
+    var right='<a href="/de/salon/'+(b.slug||'')+'" style="flex:none;align-self:center;font-size:14px;font-weight:600;color:#0A0A0A;text-decoration:none;white-space:nowrap">Erneut buchen</a>'; // german-ok
+    return '<div style="display:flex;gap:12px;padding:14px 0;border-bottom:1px solid #E4E4E7">'
+      + thumb
+      + '<div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:3px">'
+      +   '<div style="font-size:16px;font-weight:600;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(b.name||'')+'</div>'
+      +   (b.svc?'<div style="font-size:14px;color:#575757;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+b.svc+'</div>':'')
+      +   line2
+      + '</div>'
+      + right + '</div>';
+  }
+  function salonTile(s){ // saved tab = book-oriented tile (photo, name, book)
+    return '<a href="/de/salon/'+(s.slug||'')+'" style="text-decoration:none;color:#0A0A0A">'
+      + '<div style="width:100%;aspect-ratio:1.3/1;border-radius:16px;'+bg(s.img)+'"></div>'
+      + '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px">'
+      +   '<span style="font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(s.name||'')+'</span>'
+      +   '<span style="flex:none;font-size:14px;font-weight:600;color:#0A0A0A">Buchen</span>' // german-ok
+      + '</div></a>';
+  }
+  function collage(imgs){ // the ONE place collage belongs = Looks (visual saved artifacts)
+    function c(u){ return u?bg(u):'background:#F4F4F5'; }
+    if(!imgs||!imgs.length) return '<div style="width:100%;aspect-ratio:1/1.2;border-radius:16px;background:#F4F4F5;display:grid;place-items:center">'+I(SCIS,'#A1A1AA')+'</div>';
+    if(imgs.length===1) return '<div style="width:100%;aspect-ratio:1/1.2;border-radius:16px;'+c(imgs[0])+'"></div>';
+    var th=imgs.slice(1,3).map(function(u){return '<div style="flex:1;'+c(u)+'"></div>';}).join('<div style="height:3px"></div>');
+    return '<div style="width:100%;aspect-ratio:1/1.2;border-radius:16px;overflow:hidden;display:flex;gap:3px"><div style="flex:0 0 62%;'+c(imgs[0])+'"></div><div style="flex:1;display:flex;flex-direction:column">'+th+'</div></div>';
+  }
+  function nextAppt(){
+    if(DATA.up){ var b=DATA.up;
+      return '<a href="/de/salon/'+(b.slug||'')+'" style="display:flex;gap:12px;align-items:center;text-decoration:none;color:#0A0A0A;background:#F4F4F5;border-radius:16px;padding:14px;margin-top:14px">'
+        + '<div style="flex:none;width:44px;height:44px;border-radius:10px;background:#fff;display:grid;place-items:center">'+I(CAL)+'</div>'
+        + '<div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+b.name+'</div>'
+        +   '<div style="display:flex;gap:10px;font-size:14px;color:#575757"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(b.svc||'')+'</span><span style="flex:none">'+fmtDate(b.date)+'</span></div></div>'
+        + '<span style="flex:none;font-size:14px;font-weight:600;color:#0A0A0A">Verwalten</span></a>'; // german-ok
+    }
+    var last=DATA.past[0];
+    return '<div style="display:flex;gap:12px;align-items:center;background:#F4F4F5;border-radius:16px;padding:16px 14px;margin-top:14px">'
+      + '<div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600">Kein Termin geplant</div>' // german-ok
+      +   '<div style="font-size:14px;color:#575757">'+(last?'Zuletzt bei '+last.name:'Bereit fuer den naechsten Termin?')+'</div></div>' // german-ok
+      + (last?'<a href="/de/salon/'+(last.slug||'')+'" style="flex:none;font-size:14px;font-weight:600;color:#0A0A0A;text-decoration:none">Erneut buchen</a>':'') + '</div>'; // german-ok
+  }
+  function tab(id,label,n){ var on=TAB===id; var c=(n!=null&&n>0)?' '+n:'';
+    return '<button data-ptab="'+id+'" style="border:0;background:none;font-family:inherit;cursor:pointer;padding:0 1px 10px;font-size:18px;letter-spacing:-0.02em;white-space:nowrap;'+(on?'font-weight:600;color:#0A0A0A;border-bottom:2px solid #0A0A0A;':'font-weight:400;color:#575757;border-bottom:2px solid transparent;')+'">'+label+c+'</button>'; }
+  function tabBody(){
+    if(TAB==='appts'){
+      if(!DATA.past.length) return empty('Noch keine Termine'); // german-ok
+      return '<div style="margin-top:6px">'+DATA.past.map(rebookRow).join('')+'</div>';
+    }
+    if(TAB==='saved'){
+      if(!DATA.favs.length) return empty('Noch nichts gespeichert'); // german-ok
+      return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px 12px;margin-top:16px">'+DATA.favs.map(salonTile).join('')+'</div>';
+    }
+    var looks=DATA.favs.concat(DATA.sugg).slice(0,8); // Looks , the gallery tab (collage lives here only)
+    if(!looks.length) return empty('Noch keine Looks'); // german-ok
+    return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 8px;margin-top:16px">'+looks.map(function(l){return '<div>'+collage(l.imgs)+'</div>';}).join('')+'</div>';
+  }
+  function empty(t){ return '<div style="text-align:center;padding:40px 20px"><div style="display:inline-grid;place-items:center;height:52px;width:52px;border-radius:999px;background:#F4F4F5">'+I(SCIS,'#A1A1AA')+'</div><div style="font-size:16px;font-weight:600;margin-top:12px">'+t+'</div></div>'; }
+  function discovery(){ if(!DATA.sugg.length) return '';
+    return '<div style="margin-top:28px"><div style="font-size:18px;font-weight:600;letter-spacing:-0.01em;margin-bottom:12px">Neu fuer dich</div>' // german-ok
+      + '<div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none">'
+      + DATA.sugg.map(function(s){ return '<a href="/de/salon/'+(s.slug||'')+'" style="flex:none;width:132px;text-decoration:none;color:#0A0A0A">'
+          + '<div style="width:132px;aspect-ratio:1.3/1;border-radius:14px;'+bg(s.img)+'"></div>'
+          + '<div style="font-size:14px;font-weight:600;margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(s.name||'')+'</div>'
+          + '</a>'; }).join('') + '</div></div>';
+  }
+  function render(doc,root,idn){
+    root.innerHTML =
+      '<div style="display:flex;align-items:center;gap:12px;padding:12px 0 0">'
+      + '<div style="height:44px;width:44px;border-radius:999px;background:#F4F4F5;display:grid;place-items:center;font-size:16px;font-weight:600;color:#575757;flex:none">'+((idn.name||'S').slice(0,1))+'</div>'
+      + '<div style="flex:1;min-width:0"><div style="font-size:18px;font-weight:600;letter-spacing:-0.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+idn.name+'</div></div>'
+      + '<a href="/de/profile/settings" aria-label="settings" style="flex:none;height:44px;width:44px;display:grid;place-items:center">'+I(GEAR)+'</a>'
+      + '</div>'
+      + nextAppt()
+      + '<div style="display:flex;gap:22px;margin:24px 0 0;border-bottom:1px solid #E4E4E7">'
+      +   tab('saved','Gespeichert',DATA.favs.length)+tab('appts','Termine',DATA.past.length)+tab('third','Looks') // german-ok
+      + '</div>'
+      + tabBody()
+      + discovery();
+    root.querySelectorAll('[data-ptab]').forEach(function(b){ b.onclick=function(){ TAB=b.getAttribute('data-ptab'); render(doc,root,idn); }; });
+  }
+  function applyTo(doc){
+    var root=doc.getElementById('sweep-rebook'); if(root) return 1;
+    var main=doc.querySelector('main.min-h-screen'); if(!main) return 0;
+    var col=main.querySelector(':scope > div'); if(!col||col.getBoundingClientRect().width<200) return 0;
+    main.style.background='#fff';
+    var st=doc.createElement('style'); st.textContent='#sweep-rebook *{transition:none !important}'; doc.head.appendChild(st);
+    [].forEach.call(col.children,function(ch){ ch.style.display='none'; });
+    root=doc.createElement('div'); root.id='sweep-rebook';
+    root.style.cssText='background:#fff;max-width:560px;margin:0 auto;padding:0 16px 32px;font-family:var(--font)';
+    col.appendChild(root);
+    render(doc,root,readIdentity(doc));
+    return 1;
+  }
+  var started=false;
+  function startAfter(){ if(started) return; started=true; load();
+    var f=document.getElementById('afterFrame'),n=0,MAX=600;
+    var iv=setInterval(function(){ n++; try{var d=f.contentDocument; if(d){ if(applyTo(d) && DATA.state==='ready'){ var r=d.getElementById('sweep-rebook'); if(r && !r.getAttribute('data-hyd')){ r.setAttribute('data-hyd','1'); render(d,r,readIdentity(d)); } } } }catch(e){} if(n>MAX) clearInterval(iv); },300);
+  }
+  function show(w){
+    document.getElementById('paneBefore').classList.toggle('hidden', w!=='before');
+    document.getElementById('paneAfter').classList.toggle('hidden', w!=='after');
+    document.getElementById('bB').classList.toggle('on', w==='before');
+    document.getElementById('bA').classList.toggle('on', w==='after');
+    if(w==='after') startAfter();
+  }
+</script>
+</body>
+</html>
