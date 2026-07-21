@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Taste questions , pick what Solen should FEEL like</title>
+<!-- Base: net-new (owner-requested visual elicitation: "ask me visualize questions"; Taste Lab format the owner approved 2026-07-15) -->
+<!-- Scale: full-page -->
+<!-- Grounded-in: _design-system/TASTE_LOG.md -->
+<!-- Owner-scope: confirmed: "ask me visyalize wuestions" (2026-07-21) , a visual question round to transfer the FEELING the owner wants; answers get logged as dated law in TASTE_LOG. -->
+<!--
+  lang-ok english-ok: elicitation page, English chrome by design (the approved Taste Lab format); the few
+  product words in demos are real strings. german-ok.
+  floors: (1) photographic focal = every option card carries real product-seed photography via the app's own
+  same-origin /_next/image proxy (2) biggest element = the 28px title (3) real number = the 6 numbered
+  questions (4) semantic-color moment = the photography + the star gold in Q3 demos (5) dead-grey zones =
+  none, options alternate photo-rich cards, checked.
+  psych-ok: no fabricated product claims; demo cards are labeled option demos for taste elicitation.
+  hue-ok: locked tokens + photography only.
+  measured: demo geometry reuses this sprint's measured card anatomy (tile 1.49, radius 16); type
+  {28,18,14,12} weights {600,400}. No reference reproduction.
+  Imagery note (_BASE): all photos load through the SAME-ORIGIN /_next/image proxy path (the app's own image
+  pipeline for its seed data) , no third-party dependency in this page's markup.
+  Exists-check: `npm run exists "taste questions elicitation lab"` ran this turn (0 hits). REMOVED: none re-proposed.
+  _BASE compliance: viewport, text-size-adjust, 100dvh, full-bleed, no fake phone.
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#575757;--line:#E4E4E7;--sunken:#F4F4F5;--star:#FFC32B;
+    --font:'Inter Tight',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  b,strong{font-weight:600}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100dvh;padding:24px 16px calc(48px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto}
+  h1{font-size:28px;font-weight:600;letter-spacing:-0.02em;line-height:1.2}
+  .sub{font-size:14px;color:var(--ink2);margin-top:8px;line-height:1.5}
+  h2{font-size:18px;font-weight:600;letter-spacing:-0.01em;margin-top:36px}
+  .q{font-size:14px;color:var(--ink2);margin-top:4px;line-height:1.5}
+  .opts{display:flex;gap:8px;margin-top:12px}
+  .opt{flex:1;min-width:0}
+  .ol{font-size:14px;font-weight:600;margin-bottom:6px}
+  .card{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff}
+  .im{background-color:var(--sunken);background-size:cover;background-position:center}
+  .airy{padding:18px}
+  .airy .im{aspect-ratio:3/2;border-radius:12px}
+  .airy .nm{font-size:14px;font-weight:600;margin-top:10px}
+  .airy .mt{font-size:12px;color:var(--ink2);margin-top:2px}
+  .packed{display:grid;grid-template-columns:1fr 1fr;gap:3px;padding:3px}
+  .packed .im{aspect-ratio:1/1.1;border-radius:6px}
+  .bw .im{filter:grayscale(100%)}
+  .flatcard{padding:0}
+  .flatcard .im{aspect-ratio:3/2}
+  .flatcard .bd{padding:10px 12px 12px}
+  .nm{font-size:14px;font-weight:600}
+  .mt{font-size:12px;color:var(--ink2);margin-top:2px}
+  .st{font-size:12px;margin-top:2px}
+  .st i{font-style:normal;color:var(--star)}
+  .shadowcard{border:0;box-shadow:0 4px 16px rgba(10,10,10,.14);margin:6px}
+  .traywrap{background:var(--sunken);padding:8px;border:0;border-radius:16px}
+  .traywrap .inner{background:#fff;border-radius:12px;overflow:hidden}
+  .typedemo{padding:14px}
+  .typedemo .big{font-size:28px;font-weight:600;letter-spacing:-0.02em;line-height:1.1}
+  .typedemo .quiet{font-size:18px;font-weight:600}
+  .typedemo .body{font-size:12px;color:var(--ink2);margin-top:6px;line-height:1.5}
+  .key{background:var(--sunken);border-radius:16px;padding:16px;margin-top:36px}
+  .key .t{font-size:18px;font-weight:600}
+  .key p{font-size:14px;color:var(--ink2);margin-top:6px;line-height:1.6}
+  .key b{color:var(--ink)}
+  .p-barber{background-image:url(/_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1503951914875-452162b0f3f1%3Fw%3D800%26q%3D80&w=828&q=75)}
+  .p-nails{background-image:url(/_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1604654894610-df63bc536371%3Fw%3D800%26q%3D80&w=828&q=75)}
+  .p-spa{background-image:url(/_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1570172619644-dfd03ed5d881%3Fw%3D800%26q%3D80&w=828&q=75)}
+  .p-hair{background-image:url(/_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1522337360788-8b13dee7a37e%3Fw%3D800%26q%3D80&w=828&q=75)}
+  .p-glow{background-image:url(/_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1512290923902-8a9f81dc236c%3Fw%3D800%26q%3D80&w=828&q=75)}
+  .p-lum{background-image:url(/_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1560066984-138dadb4c035%3Fw%3D800%26q%3D80&w=828&q=75)}
+</style>
+</head>
+<body>
+  <h1>What should Solen feel like?</h1>
+  <p class="sub">6 visual picks. Look, choose, reply in chat like: <b>1B 2A 3C 4A 5B 6: search=A booking=A</b>. Every answer becomes written law , asked once, never re-litigated.</p>
+
+  <h2>1. How full should a browse screen feel?</h2>
+  <p class="q">The same salons, two densities.</p>
+  <div class="opts">
+    <div class="opt">
+      <div class="ol">A , airy</div>
+      <div class="card airy">
+        <div class="im p-hair"></div>
+        <div class="nm">Haarsalon Margot</div>
+        <div class="mt">Grossbasel</div>
+      </div>
+    </div>
+    <div class="opt">
+      <div class="ol">B , packed</div>
+      <div class="card packed">
+        <div class="im p-hair"></div>
+        <div class="im p-barber"></div>
+        <div class="im p-nails"></div>
+        <div class="im p-spa"></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>2. Photos: color or black&amp;white?</h2>
+  <p class="q">The chrome stays black/white either way , this is only about the photography.</p>
+  <div class="opts">
+    <div class="opt">
+      <div class="ol">A , full color</div>
+      <div class="card flatcard"><div class="im p-nails"></div></div>
+    </div>
+    <div class="opt bw">
+      <div class="ol">B , black&amp;white</div>
+      <div class="card flatcard"><div class="im p-nails"></div></div>
+    </div>
+  </div>
+
+  <h2>3. What is a salon card?</h2>
+  <div class="opts">
+    <div class="opt">
+      <div class="ol">A , flat, photo leads</div>
+      <div class="card flatcard">
+        <div class="im p-barber"></div>
+        <div class="bd"><div class="nm">Old Town Barbers</div><div class="mt">Barbershop, Basel</div><div class="st"><i>&#9733;</i> 4.8</div></div>
+      </div>
+    </div>
+    <div class="opt">
+      <div class="ol">B , floating card</div>
+      <div class="card flatcard shadowcard">
+        <div class="im p-glow"></div>
+        <div class="bd"><div class="nm">Glow Lab</div><div class="mt">Kosmetik, Basel</div><div class="st"><i>&#9733;</i> 4.6</div></div>
+      </div>
+    </div>
+    <div class="opt">
+      <div class="ol">C , on a gray tray</div>
+      <div class="card traywrap">
+        <div class="inner">
+          <div class="im p-lum" style="aspect-ratio:3/2"></div>
+          <div class="bd" style="padding:10px 12px 12px"><div class="nm">Salon Lumière</div><div class="mt">Coiffeur, Basel</div><div class="st"><i>&#9733;</i> 4.7</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>4. How loud should the words be?</h2>
+  <div class="opts">
+    <div class="opt">
+      <div class="ol">A , big editorial</div>
+      <div class="card typedemo">
+        <div class="big">Dein n&auml;chster Termin</div><!-- german-ok: demo of real product voice -->
+        <div class="body">Big confident headline leads every screen. The screen speaks first.</div>
+      </div>
+    </div>
+    <div class="opt">
+      <div class="ol">B , quiet functional</div>
+      <div class="card typedemo">
+        <div class="quiet">Termine</div><!-- german-ok: demo of real product voice -->
+        <div class="body">Small calm labels. The content speaks, the words stay out of the way.</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>5. When a screen is empty, show...</h2>
+  <div class="opts">
+    <div class="opt">
+      <div class="ol">A , a warm promise</div>
+      <div class="card typedemo">
+        <div class="quiet">Dein erster Termin wartet</div><!-- german-ok: demo copy -->
+        <div class="body">Friendly headline + one button. Like Pinterest's "tons of potential".</div>
+      </div>
+    </div>
+    <div class="opt">
+      <div class="ol">B , skip it, go straight to salons</div>
+      <div class="card packed">
+        <div class="im p-spa"></div>
+        <div class="im p-hair"></div>
+        <div class="im p-glow"></div>
+        <div class="im p-barber"></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>6. North star per screen (one app each)</h2>
+  <p class="q">Profile = Pinterest is already locked from your reference. Pick the rest:</p>
+  <div class="key" style="margin-top:12px">
+    <p><b>Search:</b> A = Airbnb (map + cards, exploratory) &nbsp;|&nbsp; B = Fresha (list-first, efficient) &nbsp;|&nbsp; C = Google Maps (map is the hero)</p>
+    <p><b>Booking flow:</b> A = Fresha (fast steps) &nbsp;|&nbsp; B = Apple (one thing per screen, slow and premium)</p>
+    <p><b>Inspo feed:</b> A = Pinterest (masonry, endless) &nbsp;|&nbsp; B = Instagram Explore (uniform grid)</p>
+  </div>
+
+  <div class="key">
+    <div class="t">How to answer</div>
+    <p>Reply in chat, one line: <b>1B 2A 3A 4B 5B 6: search=B booking=A inspo=A</b> , or add a word if something needs a twist ("3A but softer corners"). Each answer gets logged as dated law and I never ask again.</p>
+  </div>
+</body>
+</html>
