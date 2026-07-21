@@ -1,6 +1,19 @@
 <!-- batch: account restructure BUILD (owner 2026-07-21 "build each one as all full loop ima go sleep") -->
 # Account restructure , autonomous overnight build
 
+## THE 5-SCREEN REFERENCE MAP (owner 2026-07-21: "i want these all build, think what we acc need to build")
+Grounded in the owner's full Pinterest set (IMG_6646-6650), mapped to Solen , NOTHING invented:
+
+| ref | Pinterest screen | Solen equivalent | state |
+|---|---|---|---|
+| IMG_6647 | Boards tab (collage grid + chips + suggestions) | /profile "Gespeichert" tab: saved-salon collage grid + Sortieren + "Neu fuer dich" | mockup APPROVED look (pinterest-ref-solen); build = iterate into real /profile |
+| IMG_6648 | Public profile (avatar+name+handle+bio+Edit pill, Created/Saved UNDERLINE tabs, warm empty state) | /profile identity header (avatar+name+Edit) above the tabs; warm empty-state copy pattern (the "tons of potential" tone) for Looks/Termine | header placement = OPEN owner fork (minimal row vs 6648-style block); empty-state pattern demoed |
+| IMG_6646 | Your account hub (identity card + View/Share profile + settings groups) | /profile/settings , BUILT this sprint (B2, approved). DELTA: add "Profil teilen" button + a Security screen (was already in the recommendations list) | delta queued |
+| IMG_6649 | Your account scrolled (Settings/Login/Support groups, external-link arrows) | the same B2 taxonomy (Einstellungen/Praemien/Anmeldung/Support) , BUILT; external-link arrow affordance on Hilfe/AGB/Datenschutz = small polish | polish queued |
+| IMG_6650 | Share-profile sheet (profile card + WhatsApp/Copy/Line/Messages/Email/X/Instagram grid) | the REFERRAL share sheet: "Weiterempfehlen" opens a sheet with the invite card + native share targets (navigator.share + explicit targets). Solen's referral backend EXISTS (invite/referral_code) | net-new UI, mockup-first |
+
+Build order after the profile lands: 6648 identity header fork -> settings delta (Share + Security) -> referral share sheet mockup -> external-arrow polish.
+
 Owner 2026-07-21: after the account-flow analysis + the approved Pinterest mockups (B2 settings, profile 3-directions rec=D1 Looks), "build each one as all full loop, ima go sleep." Autonomous: finish, verify each, commit each, never push. Layered loop (coder + loop-reviewer to PASS) per item. Frontend = one coherent pass per item, never parallel.
 
 ## Premortem (gate 3)
