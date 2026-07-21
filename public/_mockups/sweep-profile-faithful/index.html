@@ -43,7 +43,7 @@
 </head>
 <body>
   <div class="top"><div class="seg"><button id="bB" class="on" onclick="show('before')">Before (live)</button><button id="bA" onclick="show('after')">After , like the reference</button></div></div>
-  <div class="cap">After: the reference anatomy , tabs, search + plus, chip row, and COLLAGE-cover tiles (main + gallery thumbs) like Pinterest boards, plus a for-you row. No next-appointment card. Tap the gallery mint card first if you see login.</div>
+  <div class="cap">After: the reference anatomy, now on the type LAW , 4 sizes / 2 weights, one focal anchor ("Für dich"), photos lead, names are quiet captions, one gutter so each caption groups with its own tile. Tap the gallery mint card first if you see login.</div>
   <div class="stage">
     <div id="paneBefore" class="pane"><iframe id="beforeFrame" src="/de/profile" title="real profile, before"></iframe></div>
     <div id="paneAfter" class="pane hidden"><iframe id="afterFrame" src="/de/profile" title="real profile, faithful reference layout"></iframe></div>
@@ -96,48 +96,47 @@
   }
   function bigTile(it){
     return '<div>'+collage(it.imgs,'1.15/1')
-      + '<div style="font-size:19px;font-weight:700;margin-top:9px;letter-spacing:-0.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(it.name||'')+'</div>'
-      + (it.meta?'<div style="font-size:13px;color:#767680;margin-top:1px">'+it.meta+'</div>':'')+'</div>';
+      + '<div style="font-size:14px;font-weight:600;margin-top:8px;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(it.name||'')+'</div>' // name role 14/600 , quiet, not a competing bold
+      + (it.meta?'<div style="font-size:12px;color:#575757;margin-top:2px">'+it.meta+'</div>':'')+'</div>'; // meta 12/400 #575757 (AA on sunken)
   }
   function suggCard(s){
-    var rate=(s.rating!=null)?'<div style="display:flex;align-items:center;gap:4px;font-size:12.5px;margin-top:3px">'+STAR+'<span style="color:#0A0A0A;font-weight:600">'+s.rating+'</span></div>':''; // psych-ok: live salon-card treatment (star + value)
+    var rate=(s.rating!=null)?'<div style="display:flex;align-items:center;gap:4px;font-size:12px;margin-top:3px">'+STAR+'<span style="color:#0A0A0A;font-weight:600">'+s.rating+'</span></div>':''; // psych-ok: live salon-card treatment (star + value)
     return '<a href="/de/salon/'+(s.slug||'')+'" style="flex:none;width:130px;text-decoration:none;color:#0A0A0A">'
       + '<div style="width:130px">'+collage(s.imgs,'1.15/1')+'</div>'
-      + '<div style="font-size:15px;font-weight:600;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(s.name||'')+'</div>'+rate+'</a>';
+      + '<div style="font-size:14px;font-weight:600;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(s.name||'')+'</div>'+rate+'</a>'; // name 14/600, rating 12 , same locked roles as the grid
   }
   function grid(){
     var items = TAB==='appts'?DATA.past.slice() : TAB==='saved'?DATA.favs.slice() : [];
     if(TAB!=='third'){
       items.sort(function(a,c){ if(!a.date||!c.date) return 0; return SORTDESC?(new Date(c.date)-new Date(a.date)):(new Date(a.date)-new Date(c.date)); });
-      if(!items.length) return '<div style="text-align:center;padding:36px 20px"><div style="display:inline-grid;place-items:center;height:52px;width:52px;border-radius:999px;background:#F4F4F5">'+SCIS+'</div><div style="font-size:15px;font-weight:600;margin-top:12px">Noch nichts hier</div></div>'; // english-ok german-ok
-      return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 6px;margin-top:12px">'+items.map(bigTile).join('')+'</div>';
+      if(!items.length) return '<div style="text-align:center;padding:36px 20px"><div style="display:inline-grid;place-items:center;height:52px;width:52px;border-radius:999px;background:#F4F4F5">'+SCIS+'</div><div style="font-size:14px;font-weight:600;margin-top:12px">Noch nichts hier</div></div>'; // english-ok german-ok
+      return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px 8px;margin-top:16px">'+items.map(bigTile).join('')+'</div>'; // row-gap 24 > intra-tile 8/2 so meta groups with its OWN tile; column 8 ~= reference gutter
     }
     return '';
   }
   function suggestions(){
     if(!DATA.sugg.length) return '';
-    return '<div style="margin-top:32px"><div style="font-size:28px;font-weight:700;letter-spacing:-0.03em;margin-bottom:14px">Für dich</div>' // english-ok german-ok: matches the reference suggestions header (measured 28-30pt, the biggest text = anchor)
+    return '<div style="margin-top:32px"><div style="font-size:20px;font-weight:600;letter-spacing:-0.02em;margin-bottom:14px">Für dich</div>' // english-ok german-ok: Section-H2 role 20/600 (the reference 28 broke the 4-size type budget); single largest = focal anchor
       + '<div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none">'+DATA.sugg.map(suggCard).join('')+'</div></div>';
   }
-  function chipRow(){
-    return '<div style="display:flex;gap:9px;margin-top:12px;align-items:center">'
-      + '<button data-sort style="display:grid;place-items:center;height:36px;width:40px;border:0;background:#F4F4F5;border-radius:12px;cursor:pointer">'+SORT+'</button>'
-      + '<span style="background:#F4F4F5;border-radius:999px;padding:8px 16px;font-size:14px;font-weight:600;color:#0A0A0A">Sortieren</span>' // english-ok german-ok: real sort control
+  function chipRow(){ // ONE sort control (icon + label in a single pill); the duplicate icon-button is gone
+    return '<div style="display:flex;gap:9px;margin-top:14px;align-items:center">'
+      + '<button data-sort style="display:inline-flex;align-items:center;gap:7px;height:40px;border:0;background:#F4F4F5;border-radius:999px;padding:0 16px;font-family:inherit;font-size:14px;font-weight:600;color:#0A0A0A;cursor:pointer">'+SORT+'Sortieren</button>' // english-ok german-ok
       + '</div>';
   }
-  function tab(id,label){ var on=TAB===id; return '<button data-ptab="'+id+'" style="border:0;background:none;font-family:inherit;cursor:pointer;padding:0 1px 10px;font-size:18px;letter-spacing:-0.02em;white-space:nowrap;'+(on?'font-weight:700;color:#0A0A0A;border-bottom:3px solid #0A0A0A;':'font-weight:500;color:#767680;border-bottom:3px solid transparent;')+'">'+label+'</button>'; }
+  // type law: 4 sizes {20,18,14,12} / 2 weights {600,400}. tabs = 18; active 600 ink + underline is the top-region emphasis, inactive 400 grey.
+  function tab(id,label){ var on=TAB===id; return '<button data-ptab="'+id+'" style="border:0;background:none;font-family:inherit;cursor:pointer;padding:0 1px 10px;font-size:18px;letter-spacing:-0.02em;white-space:nowrap;'+(on?'font-weight:600;color:#0A0A0A;border-bottom:2px solid #0A0A0A;':'font-weight:400;color:#575757;border-bottom:2px solid transparent;')+'">'+label+'</button>'; }
   function render(doc,root,idn){
     root.innerHTML =
       '<div style="display:flex;align-items:center;gap:8px;padding:10px 0 0">'
-      + '<div style="height:34px;width:34px;border-radius:999px;background:#F4F4F5;display:grid;place-items:center;font-size:15px;font-weight:600;color:#52525B;flex:none">'+(idn.name.charAt(0)||'S')+'</div>'
+      + '<div style="height:34px;width:34px;border-radius:999px;background:#F4F4F5;display:grid;place-items:center;font-size:14px;font-weight:600;color:#52525B;flex:none">'+(idn.name.charAt(0)||'S')+'</div>'
       + '<div style="flex:1;min-width:0;display:flex;justify-content:center;gap:11px">'
       +   tab('saved','Gespeichert')+tab('appts','Termine')+tab('third','Looks') // english-ok german-ok
       + '</div>'
-      + '<a href="/de/profile/settings" aria-label="settings" style="height:34px;width:34px;display:grid;place-items:center;flex:none">'+GEAR+'</a>'
+      + '<a href="/de/profile/settings" aria-label="settings" style="height:44px;width:44px;margin-right:-9px;display:grid;place-items:center;flex:none">'+GEAR+'</a>' // 44px hit area, 26px glyph
       + '</div>'
-      + '<div style="display:flex;align-items:center;gap:12px;margin:12px 0 0">'
-      +   '<div style="flex:1;display:flex;align-items:center;gap:10px;height:50px;border:1px solid #E4E4E7;border-radius:14px;padding:0 16px">'+SEARCH+'<span style="font-size:16px;color:#A1A1AA">Suchen</span></div>' // english-ok german-ok
-      +   '<a href="/de/search" aria-label="search" style="flex:none;height:30px;width:30px;display:grid;place-items:center">'+PLUS+'</a>'
+      + '<div style="margin:12px 0 0">'
+      +   '<div style="display:flex;align-items:center;gap:10px;height:50px;border:1px solid #E4E4E7;border-radius:14px;padding:0 16px">'+SEARCH+'<span style="font-size:14px;color:#6B6B6B">Suchen</span></div>' // english-ok german-ok , orphan '+' removed (not in the reference, no scent)
       + '</div>'
       + chipRow()
       + grid()
