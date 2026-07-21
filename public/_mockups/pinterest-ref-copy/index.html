@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Reference copy , IMG_6647 reproduced 1:1 at 402px</title>
+<!-- Base: net-new (owner-ordered pixel-faithful reproduction of the reference screenshot IMG_6647) -->
+<!-- Scale: full-page -->
+<!-- Grounded-in: /Users/sulo/solen/screenshots/IMG_6647.PNG -->
+<!-- Owner-scope: confirmed: "just try to copy over like everything from the reference... just copy over everything that's on the screenshot. Make a mockup of that and then we can iterate" (2026-07-21) , scope = the ENTIRE screen, every element, 1:1. No interpretation fork: copy all of it. -->
+<!--
+  measure-ok / measured: every size below is PIL-measured from IMG_6647 (1206x2622, iPhone 16 Pro 3x = 402pt),
+  converted with the council method (font = cap_px / 3 / 0.72; boxes = px / 3; build container = exactly 402px so
+  ref-px/3 maps 1:1). Measured (device px -> CSS px @402): avatar 108->36 ; tab cap 63 -> 22 ; search h 112->37 ;
+  chip h 93->31, chip text ->14 ; TILE 584x392 -> 195x131 (aspect 1.49) ; col-gap 13->4 ; board name -> 20 ;
+  meta ->13 ; section header -> 28 ; sugg card ~170 wide.
+  type-budget-ok: faithful COPY of Pinterest's big-text ramp; adapting to Solen's 4-size budget is the NEXT step.
+  english-ok lang-ok: reference's own English labels (a 1:1 copy). psych-ok: grey stand-ins for the photos.
+  hue-ok: only saturated color is the iOS call green, mapped to the locked green token.
+  Exists-check: `npm run exists "pinterest ref copy profile boards"` ran this turn (0 hits).
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --grey:#767676; --line:#E0E0E0; --chip:#E9E9E9; --lav:#CDCBEF;
+    --sf:-apple-system,BlinkMacSystemFont,'Inter Tight','SF Pro Display',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#B8BCC4;font-family:var(--sf);-webkit-font-smoothing:antialiased;padding:22px 0 60px;display:flex;flex-direction:column;align-items:center;gap:12px}
+  .lbl{color:#2B2E33;font-size:13px;font-weight:600;max-width:402px;text-align:center;line-height:1.4}
+  .phone{width:402px;background:#fff;border-radius:38px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35);color:var(--ink)}
+  .status{height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 30px;font-weight:600;font-size:16px}
+  .island{width:126px;height:37px;background:#000;border-radius:20px;display:flex;align-items:center;justify-content:center;gap:6px;color:#16A34A;font-size:15px;font-weight:600}
+  .status .r{display:flex;align-items:center;gap:6px}
+  .bar{display:flex;gap:2px;align-items:flex-end;height:12px}
+  .bar i{width:3px;background:#000;border-radius:1px}
+  .batt{width:26px;height:13px;border:1.5px solid #000;border-radius:4px;position:relative;display:flex;align-items:center;padding:1.5px}
+  .batt::after{content:'';position:absolute;right:-3px;top:4px;width:2px;height:5px;background:#000;border-radius:0 1px 1px 0}
+  .batt b{display:block;height:100%;width:55%;background:#000;border-radius:2px}
+  .hdr{display:flex;align-items:center;gap:10px;padding:6px 12px 0}
+  .av{width:36px;height:36px;border-radius:50%;background:var(--lav);display:grid;place-items:center;font-size:16px;font-weight:600;color:#52525B;flex:none}
+  .tabs{flex:1;display:flex;align-items:center;justify-content:center;gap:26px}
+  .tab{font-size:22px;font-weight:600;color:var(--grey);letter-spacing:-0.02em}
+  .tab.on{color:var(--ink);position:relative}
+  .tab.on::after{content:'';position:absolute;left:0;right:0;bottom:-8px;height:3px;background:var(--ink);border-radius:2px}
+  .gear{width:30px;height:30px;flex:none;color:var(--ink)}
+  .srow{display:flex;align-items:center;gap:14px;padding:17px 12px 0}
+  .search{flex:1;height:37px;border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;gap:10px;padding:0 14px;color:var(--grey);font-size:17px}
+  .plus{width:22px;height:22px;flex:none;color:var(--ink)}
+  .chips{display:flex;gap:8px;align-items:center;padding:22px 12px 0}
+  .chip{height:31px;border-radius:999px;background:var(--chip);display:flex;align-items:center;gap:6px;padding:0 16px;font-size:14px;font-weight:600;color:var(--ink)}
+  .chip.icon{padding:0 12px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:16px 12px 0}
+  .tile{width:100%;aspect-ratio:195/131;border-radius:16px;overflow:hidden;display:flex;gap:2px}
+  .tile .main{flex:0 0 66%}
+  .tile .thc{flex:1;display:flex;flex-direction:column;gap:2px}
+  .tile .thc > div{flex:1}
+  .bname{font-size:20px;font-weight:600;margin-top:7px;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bmeta{font-size:13px;margin-top:4px;color:var(--ink)}
+  .bmeta .g{color:var(--grey)}
+  .shead{font-size:28px;font-weight:700;letter-spacing:-0.02em;padding:19px 12px 0}
+  .sugg{display:flex;gap:10px;overflow-x:auto;padding:12px 12px 0;scrollbar-width:none}
+  .sugg::-webkit-scrollbar{display:none}
+  .scard{flex:none;width:170px}
+  .simg{width:170px;aspect-ratio:170/150;border-radius:16px;overflow:hidden;position:relative;display:flex;gap:2px}
+  .simg .main{flex:0 0 66%}
+  .simg .thc{flex:1;display:flex;flex-direction:column;gap:2px}
+  .simg .thc > div{flex:1}
+  .create{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;border-radius:999px;padding:9px 22px;font-size:19px;font-weight:600;color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.18)}
+  .sname{font-size:20px;font-weight:600;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .smeta{font-size:13px;margin-top:2px;color:var(--ink)}
+  .nav{height:150px;margin-top:40px;background:linear-gradient(#fff,#E7E7EA);display:flex;align-items:flex-start;justify-content:center;gap:14px;padding-top:26px}
+  .navi{width:70px;height:56px;background:#fff;border-radius:16px;display:grid;place-items:center;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+  .navi svg{width:26px;height:26px;color:var(--ink)}
+  .g1{background:#BFC2C7} .g2{background:#D2D0CE} .g3{background:#ADB0B5} .g4{background:#C7CBD0}
+  .g5{background:#9EA2A8} .g6{background:#D8D6D3} .g7{background:#8C9096} .g8{background:#B6B4B1}
+  .g9{background:#A7A5AE} .g10{background:#C2BEB8}
+</style>
+</head>
+<body>
+  <div class="lbl">1:1 reproduction of your reference (IMG_6647), measured and built at exactly 402px. Top-to-bottom is fully visible , no toggle covering it. This is the geometry canvas; next we iterate it into Solen.</div>
+  <div class="phone">
+    <div class="status">
+      <span>22:38</span>
+      <div class="island"><svg class="lucide" viewBox="0 0 24 24" width="15" height="15" fill="#16A34A" aria-hidden="true"><path d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.6c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg><span>22m</span></div>
+      <div class="r">
+        <div class="bar"><i style="height:5px"></i><i style="height:7px"></i><i style="height:9px"></i><i style="height:12px"></i></div>
+        <div class="batt"><b></b></div>
+      </div>
+    </div>
+    <div class="hdr">
+      <div class="av">H</div>
+      <div class="tabs">
+        <span class="tab">Pins</span>
+        <span class="tab on">Boards</span>
+        <span class="tab">Collages</span>
+      </div>
+      <svg class="gear lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </div>
+    <div class="srow">
+      <div class="search">
+        <svg class="lucide" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <span>Search your saved ideas</span>
+      </div>
+      <svg class="plus lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    </div>
+    <div class="chips">
+      <div class="chip icon"><svg class="lucide" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M7 20l-3-3M7 4l3 3M17 20V4M17 4l3 3M17 20l-3-3"/></svg></div>
+      <div class="chip">Group</div>
+      <div class="chip">Archived</div>
+    </div>
+    <div class="grid">
+      <div class="tilewrap">
+        <div class="tile"><div class="main g1"></div><div class="thc"><div class="g2"></div><div class="g3"></div></div></div>
+        <div class="bname">web deisgn</div>
+        <div class="bmeta">26 Pins <span class="g">2mo</span></div>
+      </div>
+      <div class="tilewrap">
+        <div class="tile"><div class="main g5"></div><div class="thc"><div class="g6"></div><div class="g8"></div></div></div>
+        <div class="bname">f</div>
+        <div class="bmeta">2 Pins <span class="g">2y</span></div>
+      </div>
+    </div>
+    <div class="shead">Board suggestions</div>
+    <div class="sugg">
+      <div class="scard">
+        <div class="simg"><div class="main g7"></div><div class="thc"><div class="g3"></div><div class="g9"></div></div><div class="create">Create</div></div>
+        <div class="sname">Aesthetic art</div>
+        <div class="smeta">21 Pins</div>
+      </div>
+      <div class="scard">
+        <div class="simg"><div class="main g8"></div><div class="thc"><div class="g9"></div><div class="g5"></div></div><div class="create">Create</div></div>
+        <div class="sname">Phone wallpaper</div>
+        <div class="smeta">6 Pins</div>
+      </div>
+      <div class="scard">
+        <div class="simg"><div class="main g10"></div><div class="thc"><div class="g6"></div><div class="g7"></div></div><div class="create">Create</div></div>
+        <div class="sname">Waves</div>
+        <div class="smeta">5 Pins</div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="navi"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></div>
+      <div class="navi"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div>
+      <div class="navi"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6 8-6s8 2 8 6"/></svg></div>
+    </div>
+  </div>
+</body>
+</html>
