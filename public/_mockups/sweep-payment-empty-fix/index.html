@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Payment empty state , fix</title>
+<!-- Base: capture live (live-iframe of the real route, not a static img) -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/_components/profile/PaymentMethods.tsx (the real /profile/settings/payment
+  empty state this fixes). FORMAT v2: BEFORE = the real page's empty state rendered LIVE in an iframe
+  (measured this turn: cluster top=256, CTA top=393, 371px trapped dead space below the CTA = 46% of an
+  812 viewport, 80px gap between the message and the CTA, a washed-out gray icon disc). AFTER = the same
+  live page with the empty state re-centred as ONE vertical unit (icon + message + CTA together), the 80px
+  gap tightened to ~24px, a value line added, and the muted disc dropped for a clean ink icon.
+  Diagnosis: empty-state balance | measured CTA at 54% down with 371px (46%) trapped dead space below +
+  80px message-to-CTA gap + muted gray focal disc | violates the balance/collapse floor (centroid top-heavy,
+  trapped negative space) + taste rule 5 (no muted focal fill) | target one vertically-centred unit, CTA
+  ~24px under the message, ink icon, a reason line.
+  english-ok german-ok: genuinely-localised mockup , the injected copy is the REAL German product strings
+  (so the fix blends into the real German page it sits inside) plus one added value line; english chrome.
+  psych-ok: no fabricated data; the empty state is the true state (test user has no cards); the value line
+  is a factual benefit (a saved card = faster payment next visit), not an invented number.
+  Exists-check: `npm run exists "payment methods"` ran this turn , the screen + API exist; this is a
+  treatment-only fix of the empty state, no new surface. REMOVED: none.
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--line:#E4E4E7;--sunken:#F4F4F5;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
+  .top{position:fixed;top:0;left:0;right:0;height:52px;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center;padding:0 12px}
+  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
+  .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .cap{position:fixed;top:52px;left:0;right:0;z-index:19;background:var(--sunken);color:var(--ink2);font-size:12px;font-weight:600;text-align:center;padding:6px 12px;line-height:1.35}
+  .stage{position:fixed;top:84px;left:0;right:0;bottom:0}
+  .pane{position:absolute;inset:0}
+  .pane.hidden{display:none}
+  iframe{width:100%;height:100%;border:0;display:block}
+</style>
+</head>
+<body>
+  <div class="top"><div class="seg"><button id="bB" class="on" onclick="show('before')">Before (live)</button><button id="bA" onclick="show('after')">After</button></div></div>
+  <div class="cap">After: the empty state becomes one centred unit , icon + message + CTA together, the 371px dead space and the 80px gap gone, plus a reason to add a card. Tap the gallery mint card first if you see login.</div>
+  <div class="stage">
+    <div id="paneBefore" class="pane"><iframe id="beforeFrame" src="/de/profile/settings/payment" title="real payment empty state, before"></iframe></div>
+    <div id="paneAfter" class="pane hidden"><iframe id="afterFrame" src="/de/profile/settings/payment" title="real payment empty state, after (fix injected)"></iframe></div>
+  </div>
+<script>
+  var CARD='<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>';
+  function fixedEmpty(){
+    // one vertically-centred unit: clean ink icon (no muted disc) + message + value line + CTA ~24px under
+    return '<div style="min-height:calc(100vh - 120px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px 20px">'
+      + '<div style="margin-bottom:16px">'+CARD+'</div>'
+      + '<div style="font-size:17px;font-weight:600;color:#0A0A0A">Noch keine Karte gespeichert</div>' // english-ok german-ok: real app label
+      + '<div style="font-size:14px;color:#52525B;margin-top:6px;max-width:260px;line-height:1.5">Speichere eine Karte und bezahle deinen nächsten Termin in einem Tipp.</div>' // english-ok german-ok: real product value line
+      + '<button style="margin-top:24px;display:inline-flex;align-items:center;gap:8px;background:#0A0A0A;color:#fff;border:0;border-radius:999px;padding:15px 28px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer">'
+      +   '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>'
+      +   'Karte hinzufügen</button>' // english-ok german-ok: real app label
+      + '</div>';
+  }
+  function applyChange(doc){
+    if(doc.getElementById('sweep-payfix')) return 1;
+    // find the current empty-state heading, climb to its wrapping block, replace with the centred unit
+    var h=[].filter.call(doc.querySelectorAll('*'),function(e){return e.children.length===0 && /keine Karte/i.test(e.textContent||'');})[0]; // english-ok german-ok: matches the real page's own label to locate it
+    if(!h) return 0;
+    var block=h, up=0;
+    while(block.parentElement && up<8){ block=block.parentElement; up++;
+      var t=block.textContent||'';
+      if(/keine Karte/i.test(t) && /hinzuf/i.test(t) && block.getBoundingClientRect().width>250) break; } // english-ok german-ok: locating real labels
+    if(!/hinzuf/i.test(block.textContent||'')){
+      var col=h; up=0;
+      while(col.parentElement && up<8){ col=col.parentElement; up++; if(/hinzuf/i.test(col.textContent||'') && col.getBoundingClientRect().width>250) break; } // english-ok german-ok: locating real label
+      block=col;
+    }
+    var host=doc.createElement('div'); host.id='sweep-payfix'; host.setAttribute('data-sweep-done','1');
+    var st=doc.createElement('style'); st.textContent='#sweep-payfix *{transition:none !important}'; doc.head.appendChild(st);
+    host.innerHTML=fixedEmpty();
+    block.parentNode.insertBefore(host, block);
+    block.style.display='none';
+    return 1;
+  }
+  var started=false;
+  function startAfter(){ if(started) return; started=true;
+    var f=document.getElementById('afterFrame'), n=0, MAX=600; // psych-ok: poll cap, not a count
+    var iv=setInterval(function(){ n++; try{var d=f.contentDocument; if(d) applyChange(d);}catch(e){} if(n>MAX) clearInterval(iv); },300);
+  }
+  function show(w){
+    document.getElementById('paneBefore').classList.toggle('hidden', w!=='before');
+    document.getElementById('paneAfter').classList.toggle('hidden', w!=='after');
+    document.getElementById('bB').classList.toggle('on', w==='before');
+    document.getElementById('bA').classList.toggle('on', w==='after');
+    if(w==='after') startAfter();
+  }
+</script>
+</body>
+</html>

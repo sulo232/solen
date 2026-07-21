@@ -50,5 +50,20 @@ Top failure modes + mitigations:
 - [ ] Then GO ANALYZE.
 - [x] WHITE-ONLY-WEB gate built + self-tested 5/5 at ~/.claude/hooks/white-only-web-gate.py. Wiring into settings.json is SANDBOX-WRITE-DENIED (global + worktree + main-checkout .claude all locked). Rule made LAW in CLAUDE.md instead; the executable gate is ready to wire with one line when settings is editable.
 
+## CORRECTION 2 (owner 2026-07-21, dislikes what shipped + wants deeper research)
+- [ ] POST-LOGIN/BACK , DEEPER: the quick 3-app Mobbin benchmark was too shallow. Owner wants: (a) actually research how other companies do it, (b) think the PSYCHOLOGY, (c) think OVERALL what WE should do. Park the quick mechanism answer; produce a real principle. Ties to the research-principle.
+- [ ] RESEARCH PRINCIPLE , must EMBODY that depth (why the owner asked for it): research = deep, psychology-informed, overall reasoning, not a fast skim.
+- [ ] PAYMENT EMPTY STATE , owner "dont like the empty states of payment". Look-complaint -> solen-taste-diagnosis (measured walk, named violations) FIRST, then redesign (mockup-first).
+- [ ] PROFILE OVERALL DESIGN , owner "the profiles overall the design" (dislikes it). Look-complaint -> solen-taste-diagnosis on /profile FIRST, then propose. Do NOT guess-and-apply.
+
+## DIAGNOSIS (measured this turn, solen-taste-diagnosis)
+- PAYMENT EMPTY STATE: CTA at 54% down, 371px (46% of 812) trapped dead space below it; 80px gap message->CTA; muted gray icon disc. Violations: balance/collapse (top-heavy centroid + trapped negative space) + taste rule 5 (muted focal). FIX MOCKUP BUILT + verified: sweep-payment-empty-fix (one centred unit, ink icon, value line, CTA ~24px under). DONE, awaiting owner ok before code.
+- PROFILE: 6 distinct font sizes on one screen (22/16/15/14/13/12; floor 3, max 4) = busy/no anchor; 2 tiles + 178px dead space = reads empty on thin data. FIX DIRECTION: collapse to 3-4 sizes; fill thin tabs with a suggestion row (Looks already does). Fix mockup = next (a real redesign, not a guess).
+
+## DEEP POST-LOGIN RESEARCH (wf_39db7441, psychology + patterns) , THE PRINCIPLE
+Psychology (Zeigarnik/goal-gradient/cognitive-load/peak-end/prospect-theory, grounded in PSYCHOLOGY.md laws 1/3/8/10): an interrupted booking is an open loop with real motivational pull; reaching the same ROUTE after login is necessary but NOT sufficient , the SELECTION (service/staff/time) must survive the round-trip or the goal-gradient momentum is lost and it feels like a LOSS (looms ~1.3-2x). New user post-login = a small peak (first-impression anchors); returning user = SPEED is the trust signal (no re-onboarding friction). Never a dead-end leaf (lost-in-hyperspace); land on the explorable root when no pending action.
+PRINCIPLE: (1) resume the EXACT interrupted state (route + the in-progress booking selection via query/sessionStorage/server draft), (2) else land on the explorable home, never a dead-end, (3) never trap on login (already fixed: replace() not href), (4) differentiate new (warm) vs returning (fast) user.
+Full result: tasks/w6awe8gba.output.
+
 ## ALL 5 ITEMS DONE (2026-07-21 overnight). Each verified + committed. No push.
 Parked for owner: (a) profile third tab built as D1 Looks per my rec, swap to D2/D3 is trivial; (b) Payment methods needs sign-off + a set-default/remove endpoint before real build; (c) Security screen (2FA/pw-last-changed) + verified/unverified chips are the next analysis gaps, not built.
