@@ -29,10 +29,8 @@
 -->
 <style>
   :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--line:#E4E4E7;--sunken:#F4F4F5;--accent:#276EF1;--green:#16A34A;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
-  @media(prefers-color-scheme:dark){:root{--ink:#F4F4F5;--ink2:#A1A1AA;--ink3:#71717A;--line:#26262A;--sunken:#1A1A1D;}}
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased}
-  @media(prefers-color-scheme:dark){body{background:#0B0B0C}}
   .top{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line);position:sticky;top:0;background:inherit;z-index:5}
   .back{width:40px;height:40px;border:1px solid var(--line);border-radius:12px;display:grid;place-items:center;flex:none}
   .top h1{font-size:19px;font-weight:700;letter-spacing:-0.01em}
@@ -40,7 +38,6 @@
   .note{font-size:12.5px;color:var(--ink3);background:var(--sunken);border-radius:12px;padding:10px 12px;margin:12px 0;line-height:1.5}
   .label{font-size:12.5px;font-weight:600;color:var(--ink3);padding:18px 2px 8px}
   .card-row{display:flex;align-items:center;gap:14px;border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:10px;background:#fff}
-  @media(prefers-color-scheme:dark){.card-row{background:#141416}}
   .brand{width:44px;height:30px;border-radius:6px;background:var(--sunken);display:grid;place-items:center;flex:none;font-size:11px;font-weight:700;letter-spacing:.02em}
   .cardmeta{flex:1;min-width:0}
   .cardmeta .n{font-size:15px;font-weight:600}
@@ -51,7 +48,6 @@
   .empty .h{font-size:15px;font-weight:600;margin-top:12px}
   .empty .p{font-size:13px;color:var(--ink2);margin-top:5px}
   .add{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--ink);color:#fff;border:0;border-radius:999px;padding:15px;font-family:inherit;font-size:15px;font-weight:600;margin-top:16px;cursor:pointer}
-  @media(prefers-color-scheme:dark){.add{background:#fff;color:#0A0A0A}}
   .foot{font-size:12px;color:var(--ink3);margin-top:18px;line-height:1.6}
 </style>
 </head>

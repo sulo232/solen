@@ -21,9 +21,7 @@
     --red:#DC2626; --amber:#EA580C; --green:#16A34A;
     --font:'Inter Tight',system-ui,-apple-system,sans-serif;
   }
-  @media (prefers-color-scheme:dark){:root{--bg:#0B0B0C;--card:#141416;--ink:#F4F4F5;--ink2:#A1A1AA;--ink3:#71717A;--line:#26262A;--sunken:#1A1A1D;}}
-  :root[data-theme="dark"]{--bg:#0B0B0C;--card:#141416;--ink:#F4F4F5;--ink2:#A1A1AA;--ink3:#71717A;--line:#26262A;--sunken:#1A1A1D;}
-  :root[data-theme="light"]{--bg:#ffffff;--card:#ffffff;--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--line:#E4E4E7;--sunken:#F4F4F5;}
+  /* web is single light theme (tailwind.config: darkMode removed Q62); no dark-mode CSS */
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:var(--font);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5;padding:26px 16px 80px}
   .wrap{max-width:840px;margin:0 auto}

@@ -69,6 +69,7 @@ Frozen single-values. Do NOT re-open any row without the owner saying so by name
 | category tag | neutral — `bg-s-bg-sunken` + `text-s-ink-2`, NO per-category colour (incl. the on-photo eyebrow → `text-white`); owner picked B, V3-D449 |
 | date / time | ONE `DateTimePicker` primitive — `dateLayout` strip (booking) \| calendar (search); booking + search share it. NO bespoke date UI (V3-D445) |
 | nav | sub-page nav is single — the global `Breadcrumb` is excluded on `/{city}/{category}` (SearchTemplate owns it). No stacked home+back (V3-D449) |
+| theme | **WEB = SINGLE LIGHT THEME, no dark mode** (`tailwind.config.js` darkMode removed 2026-05-02 Q62; Taste Lab "5 no dark mode"). NEVER put `prefers-color-scheme:dark` / `data-theme="dark"` / dark-mode CSS in ANY web file (mockup, analysis page, component, globals) — it renders BLACK and the owner rejected it twice (2026-07-16, 2026-07-21 "only white for web"). Gate: `~/.claude/hooks/white-only-web-gate.py` (built + self-tested; wire on Write/Edit when settings is writable). iOS (`solen-mobile`) keeps dark mode — this is web-only. |
 
 **States are componentised + locked** (above) — USE them, don't hand-roll. Drift-checker: A2/A3=INFO; A1/A15/A17 comment-aware; token-equivalent hexes whitelisted; `drift-ok` respected.
 

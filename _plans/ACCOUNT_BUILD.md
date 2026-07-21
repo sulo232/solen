@@ -35,5 +35,18 @@ Top failure modes + mitigations:
 - [x] 4 Profile split , DONE (commit): /profile = ProfileTabs (Gespeichert/Termine/Looks + live block + search + gear), management moved to settings, title Konto->Profil, bell deduped. Rendered-verified all 3 tabs with real data.
 - [x] 5 Payment methods mockup , DONE (commit): served net-new mockup, fetches the REAL GET /api/stripe/payment-methods (backend already exists: GET+POST), honest empty state + labeled example + Add (backed by SetupIntent). set-default/remove flagged as needing a new endpoint. In the gallery. NOT built in code (payments, owner sign-off).
 
+## CORRECTION (owner 2026-07-21): "why black i told you only white for web , harden the gate , its approved"
+- [ ] Web is WHITE-ONLY (tailwind.config.js: darkMode removed 2026-05-02, Q62 single light theme). I added prefers-color-scheme:dark to the payment mockup + analysis report, which rendered BLACK in dark mode. FIX: strip all dark-mode CSS from both -> white only.
+- [ ] HARDEN: a gate that blocks dark-mode CSS (prefers-color-scheme:dark / data-theme="dark" / near-black body bg) in web mockup/report/app files. Self-test block+pass, then wire.
+- [ ] "its approved": build the REAL payment-methods screen (list via GET, Add via SetupIntent), white-only, Solen tokens.
+
+## NEW asks (owner 2026-07-21, mid-turn)
+- [ ] BUILD payment screen , real code (approved). IN PROGRESS.
+- [ ] BACK-BUTTON / POST-LOGIN principle: after login, ALWAYS land on the HOMEPAGE, ignore the pre-login deep link (redirect param). Owner: "even if the link they clicked before logging in was profile, it should go to homepage when they log in." -> a behavior fix (login redirect -> /[locale]) + a documented principle. (Note: this partly conflicts with the existing ?redirect= UX; owner's call is homepage-always.)
+- [ ] DEEP-RESEARCH principle: we have none. Owner wants plain-English IDEAS for what a "deep research" principle/process should be. -> propose.
+- [ ] OTHER principles: propose a few (plain English).
+- [ ] Then GO ANALYZE.
+- [x] WHITE-ONLY-WEB gate built + self-tested 5/5 at ~/.claude/hooks/white-only-web-gate.py. Wiring into settings.json is SANDBOX-WRITE-DENIED (global + worktree + main-checkout .claude all locked). Rule made LAW in CLAUDE.md instead; the executable gate is ready to wire with one line when settings is editable.
+
 ## ALL 5 ITEMS DONE (2026-07-21 overnight). Each verified + committed. No push.
 Parked for owner: (a) profile third tab built as D1 Looks per my rec, swap to D2/D3 is trivial; (b) Payment methods needs sign-off + a set-default/remove endpoint before real build; (c) Security screen (2FA/pw-last-changed) + verified/unverified chips are the next analysis gaps, not built.
