@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>The Floors Law , why mockups looked unfinished, and the fix</title>
+<!-- Base: net-new (owner-facing visual explainer of the UNFINISHED_AUDIT verdict + the approved FLOORS LAW) -->
+<!-- Scale: full-page -->
+<!-- Grounded-in: _design-system/research/UNFINISHED_AUDIT_2026-07-21.md -->
+<!-- Owner-scope: confirmed: "go investigate it and tell me here" + approved "Yes, all 5" (2026-07-21). This page is the visual companion of the audit report. -->
+<!--
+  floors: (1) photographic focal = the Right-side demo cards carry real salon photography (2) biggest element =
+  the 28px page title (3) real number = the measured evidence numbers (4 sizes, 1/3 viewport, 44px)
+  (4) semantic-color moment = the green PASS ticks + the star gold in demo cards (5) dead-grey zones = none,
+  every section alternates white/sunken with photo-rich demos, checked.
+  english-ok lang-ok: knowledge page, English by design. psych-ok: all numbers cited from the audit; photos are
+  the product's own seed imagery, self-hosted; demo card rating = star + value only (C11 converged card law).
+  hue-ok: locked tokens only (green 16A34A, star FFC32B).
+  measured / width-calibrated / full-diff: explainer page, not a reference reproduction; type {28,18,14,12},
+  weights {600,400}.
+  Exists-check: `npm run exists "floors law explainer"` ran this turn (0 hits); net-new explainer under the
+  audit workstream; no product surface duplicated. REMOVED: none re-proposed.
+  _BASE compliance: viewport, text-size-adjust, 100dvh, self-hosted imagery, full-bleed.
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#575757;--line:#E4E4E7;--sunken:#F4F4F5;--green:#16A34A;--star:#FFC32B;
+    --font:'Inter Tight',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100dvh;padding:24px 16px calc(48px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto}
+  h1{font-size:28px;font-weight:600;letter-spacing:-0.02em;line-height:1.2}
+  .sub{font-size:14px;color:var(--ink2);margin-top:8px;line-height:1.5}
+  .verdict{background:var(--sunken);border-radius:16px;padding:16px;margin-top:20px;font-size:14px;line-height:1.55}
+  .verdict b{font-weight:600}
+  h2{font-size:18px;font-weight:600;letter-spacing:-0.01em;margin-top:32px}
+  p{font-size:14px;color:var(--ink2);line-height:1.55;margin-top:6px}
+  .pair{display:flex;gap:8px;margin-top:12px}
+  .half{flex:1;min-width:0}
+  .tag{font-size:12px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:5px}
+  .tag.bad{color:var(--ink2)}
+  .tag.good{color:var(--green)}
+  .demo{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff}
+  .demo .ph{aspect-ratio:3/2;background:var(--sunken)}
+  .demo .ph.img1{background:#F4F4F5 url(/_mockups/_assets/salon-photos/p01.jpg) center/cover}
+  .demo .ph.img2{background:#F4F4F5 url(/_mockups/_assets/salon-photos/p07.jpg) center/cover}
+  .demo .ph.img3{background:#F4F4F5 url(/_mockups/_assets/salon-photos/p04.jpg) center/cover}
+  .demo .bd{padding:10px 12px 12px}
+  .demo .nm{font-size:14px;font-weight:600}
+  .demo .mt{font-size:12px;color:var(--ink2);margin-top:2px}
+  .demo .pr{font-size:12px;font-weight:600;margin-top:4px}
+  .demo .st{font-size:12px;margin-top:2px}
+  .demo .st .s{color:var(--star)}
+  .empty-demo{border:1px solid var(--line);border-radius:16px;height:100%;min-height:150px;display:grid;place-items:center;color:var(--ink2);font-size:12px}
+  .check{color:var(--green);font-weight:600}
+  ol{margin:10px 0 0 18px}
+  ol li{font-size:14px;line-height:1.6;color:var(--ink2)}
+  ol li b{color:var(--ink);font-weight:600}
+  .foot{margin-top:36px;font-size:12px;color:var(--ink2);border-top:1px solid var(--line);padding-top:14px;line-height:1.5}
+</style>
+</head>
+<body>
+  <h1>Why every mockup looked unfinished</h1>
+  <p class="sub">The audit you asked for, in plain English. 7 design-law files were read end to end. The flaw is real, it is structural, and it is now fixed with your approval.</p>
+
+  <div class="verdict"><b>The verdict:</b> the design law only had <b>ceilings</b> ("not more than 4 text sizes", "no dots", "less blue", "delete extra words") and <b>zero floors</b> ("at least this much"). Removing things never broke a rule; adding things could. So the screen that passed every rule most easily was the <b>emptiest</b> one. A compliant screen was a wireframe by construction. That is exactly the "unfinished" you kept seeing.</div>
+
+  <h2>Wrong vs Right , the same card under the old and new law</h2>
+  <p>Both cards below were "legal" before. Only the right one is legal now.</p>
+  <div class="pair">
+    <div class="half">
+      <div class="tag bad">BEFORE , passed every rule</div>
+      <div class="empty-demo">grey box, name only</div>
+    </div>
+    <div class="half">
+      <div class="tag good">NOW , the floors require this</div>
+      <div class="demo">
+        <div class="ph img1"></div>
+        <div class="bd">
+          <div class="nm">Old Town Barbers</div>
+          <div class="mt">Barbershop, Basel</div>
+          <div class="st"><span class="s">&#9733;</span> 4.8</div>
+          <div class="pr">ab CHF 45</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>The 5 floors now in law</h2>
+  <ol>
+    <li><b>Photos are required, not optional.</b> Browse screens carry about a third of the viewport in real photography; a missing photo gets a designed fallback, never a bare grey box. (The B&amp;W restraint only works when photos supply the life , that was always the theory; now it is enforced.)</li>
+    <li><b>The full screen is the design target.</b> Mockups show the IDEAL populated state from real seed data: full card info, 4+ items per screen, the next item peeking (so it feels alive, not empty).</li>
+    <li><b>Every card edge must be visible.</b> No white-on-white with an invisible 4% shadow; photo-less groups sit on the gray tray; gray and white alternate down the page.</li>
+    <li><b>One clear anchor per screen.</b> A 28px+ title or the photo leads; cards carry the name + price two-anchor rule.</li>
+    <li><b>The finished-screen pass.</b> Before anything reaches you: photo focal <span class="check">PASS</span>, one biggest element <span class="check">PASS</span>, a real number <span class="check">PASS</span>, a color moment <span class="check">PASS</span>, no dead-grey zone <span class="check">PASS</span>. All five or it does not ship , a new gate blocks it.</li>
+  </ol>
+
+  <h2>What did NOT change</h2>
+  <p>The restraint itself , the black/white palette, sparse blue, calm gray selected states, the type budget , is untouched. The audit confirmed those rules are right. The fix adds the missing "at least" half; it never loosens the "at most" half. Restraint stays; emptiness is no longer a legal outcome.</p>
+
+  <div class="pair">
+    <div class="half">
+      <div class="tag good">Rich AND restrained , the target</div>
+      <div class="demo">
+        <div class="ph img2"></div>
+        <div class="bd">
+          <div class="nm">Smooth Skin Studio</div>
+          <div class="mt">Kosmetik, Basel</div>
+          <div class="st"><span class="s">&#9733;</span> 4.6</div>
+          <div class="pr">ab CHF 80</div>
+        </div>
+      </div>
+    </div>
+    <div class="half">
+      <div class="tag good">Photography carries the color</div>
+      <div class="demo">
+        <div class="ph img3"></div>
+        <div class="bd">
+          <div class="nm">Pink Petal Nails</div>
+          <div class="mt">Nagelstudio, Basel</div>
+          <div class="st"><span class="s">&#9733;</span> 4.7</div>
+          <div class="pr">ab CHF 55</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">Full evidence trail: _design-system/research/UNFINISHED_AUDIT_2026-07-21.md. Demo ratings/prices shown here are illustrative of the card ANATOMY the floors require (rating = star + value only, per the converged card law); the product renders only live values (no-fabrication binds production and current-state mockups; this is a law explainer). Enforcement: LOCKFILE 17, CLAUDE.md FLOORS LAW, mockup-floors-gate.</div>
+</body>
+</html>
