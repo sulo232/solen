@@ -25,6 +25,7 @@
   :root{--ink:#0A0A0A;--ink2:#575757;--line:#E4E4E7;--sunken:#F4F4F5;--green:#16A34A;--red:#DC2626;
     --font:'Inter Tight',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;}
   *{box-sizing:border-box;margin:0;padding:0}
+  b,strong{font-weight:600} /* type budget: 2 weights only */
   html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100dvh;padding:24px 16px calc(48px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto}
   h1{font-size:28px;font-weight:600;letter-spacing:-0.02em;line-height:1.2}
@@ -41,7 +42,7 @@
   .chip{height:16px;border-radius:999px;background:var(--sunken);flex:none}
   .c1{width:16px}.c2{width:34px}.c3{width:16px;margin-left:auto}.c4{width:16px}
   .idrow{display:flex;align-items:center;gap:8px;padding:10px}
-  .idav{width:22px;height:22px;border-radius:999px;background:var(--sunken);flex:none;display:grid;place-items:center;font-size:10px;font-weight:600;color:var(--ink2)}
+  .idav{width:22px;height:22px;border-radius:999px;background:var(--sunken);flex:none;display:grid;place-items:center;font-size:12px;font-weight:600;color:var(--ink2)}
   .idav.black{background:#0A0A0A}
   .idname{font-size:14px;font-weight:600}
   .tabs{display:flex;gap:10px;padding:0 10px 8px;border-bottom:1px solid var(--line);font-size:12px}
@@ -51,7 +52,7 @@
   .t{aspect-ratio:195/131;border-radius:10px;overflow:hidden;display:flex;gap:2px}
   .t .m{flex:0 0 66%}.t .s{flex:1;display:flex;flex-direction:column;gap:2px}.t .s>div{flex:1}
   .shead{font-size:12px;font-weight:600;padding:6px 10px 4px}
-  .dupnote{font-size:10px;color:var(--red);font-weight:600;padding:0 10px 10px}
+  .dupnote{font-size:12px;color:var(--red);font-weight:600;padding:0 10px 10px}
   /* demo-tile visuals: the app's own 3D category icons (main-served; the salon-photo pack lives in the
      worktree checkout which this server does not serve , the sandbox blocks copying binaries to main) */
   .ph1{background:#F4F4F5 url(/icons/categories/scissors.png) center/55% no-repeat}
