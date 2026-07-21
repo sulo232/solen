@@ -11,6 +11,12 @@
 <!--
   lang-ok english-ok: genuinely-localised mockup , the rendered copy IS the German product language (the owner
   reviews in German; these are the app's real strings, not invented labels). german-ok.
+  floors: (1) photographic focal = the saved-salon collage grid (real seed photos) (2) biggest element = the
+  28px identity name (IMG_6648 anchor; photo grid leads on the saved tab) (3) real number = CHF 45 / CHF 120
+  seed booking prices (4) semantic-color moment = the photography carries color on every tab; the star stays
+  reserved for rating rows in product (5) dead-grey zones = none: the Looks empty state sits on the sunken
+  tray and the discovery photo row fills the lower viewport on every tab, checked.
+  Target-state footer (density boundary): Looks saving is not yet wired; everything else renders live seed data.
   Grounded-in: app/[locale]/profile/page.tsx (the surface this becomes) + components-legacy/booking/BookingCard.tsx
   (the rebook row grammar) + the approved pinterest-ref-solen iteration 1 (owner: "looks good").
   measured / width-calibrated: geometry carries the phone-proven values unchanged (tile aspect 1.49, sugg image
@@ -39,6 +45,10 @@
   html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   html,body{background:#fff}
   body{font-family:var(--font);-webkit-font-smoothing:antialiased;color:var(--ink);min-height:100dvh;padding-bottom:calc(32px + env(safe-area-inset-bottom))}
+  /* identity anchor (IMG_6648 + FLOORS LAW display anchor >= 28) */
+  .idrow{display:flex;align-items:center;gap:14px;padding:18px 16px 0}
+  .idav{width:48px;height:48px;border-radius:999px;background:var(--sunken);display:grid;place-items:center;font-size:18px;font-weight:600;color:var(--ink2);flex:none}
+  .idname{font-size:28px;font-weight:600;letter-spacing:-0.02em;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .hdr{display:flex;align-items:center;gap:12px;padding:14px 16px 0}
   .av{width:36px;height:36px;border-radius:999px;background:var(--sunken);display:grid;place-items:center;font-size:14px;font-weight:600;color:var(--ink2);flex:none}
   .tabs{flex:1;display:flex;align-items:center;justify-content:center;gap:24px}
@@ -68,8 +78,8 @@
   .rline{display:flex;gap:10px;align-items:center;font-size:12px;color:var(--ink2)}
   .rline b{color:var(--ink);font-weight:600}
   .ract{flex:none;font-size:14px;font-weight:600;color:var(--ink)}
-  .empty{text-align:center;padding:48px 24px 24px}
-  .edisc{display:inline-grid;place-items:center;width:52px;height:52px;border-radius:999px;background:var(--sunken)}
+  .empty{text-align:center;padding:36px 24px;margin:16px 16px 0;background:var(--sunken);border-radius:16px} /* FLOORS 4: photo-less group sits on the sunken tray, no dead white zone */
+  .edisc{display:inline-grid;place-items:center;width:52px;height:52px;border-radius:999px;background:#fff}
   .etitle{font-size:16px;font-weight:600;margin-top:12px}
   .esub{font-size:14px;color:var(--ink2);margin-top:4px}
   .shead{font-size:18px;font-weight:600;letter-spacing:-0.01em;padding:32px 16px 0}
@@ -95,14 +105,18 @@
 </style>
 </head>
 <body>
-  <div class="hdr">
-    <div class="av">D</div>
+  <div class="idrow">
+    <div class="idav">D</div>
+    <div class="idname">Deniz</div>
+    <span class="gear" style="margin-right:-10px"><svg class="lucide" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+  </div>
+  <div class="hdr" style="padding-top:6px">
     <div class="tabs">
       <button class="tab on" data-t="saved">Gespeichert</button><!-- german-ok: real product tab -->
       <button class="tab" data-t="appts">Termine</button><!-- german-ok: real product tab -->
       <button class="tab" data-t="looks">Looks</button>
     </div>
-    <span class="gear"><svg class="lucide" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+    <span class="gear" style="display:none"><svg class="lucide" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
   </div>
   <div class="rule"></div>
   <div class="srow">
