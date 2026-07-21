@@ -3,23 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-<title>The like/dislike walk , every core screen, live, one verdict each</title>
-<!-- Base: capture live (every section embeds the REAL route in a live iframe; nothing redrawn) -->
+<title>The like/dislike walk , open each real screen, judge it, reply</title>
+<!-- Base: capture live (a HUB of direct links to the REAL routes; each opens full-screen at true dimensions , the iframe version scaled pages to ~370px on iOS and is dead) -->
 <!-- Scale: full-page -->
 <!-- Grounded-in: app/[locale]/profile/page.tsx -->
-<!-- Owner-scope: confirmed: "what if we track down onto what i like on each page and what i dont and we narrow down w stuff that i dont like but its everywhere" (2026-07-21) , the owner's own method: per-page like/dislike, then cluster the dislikes that repeat across pages into the global kill-list. -->
+<!-- Owner-scope: confirmed: "track down what i like on each page and what i dont, narrow down the stuff i dont like thats everywhere" + "what are these dimentions" (2026-07-21) -> full-screen real pages, no frames. -->
 <!--
-  lang-ok english-ok: elicitation chrome in English (the approved Taste Lab format); embedded content is the
-  live German product; the few German words in the pattern lists are the product's own terms. german-ok.
-  floors: (1) visual focal = the live screens themselves inside each frame + the 3D category icons on section
-  titles (2) biggest element = the 28px title (3) real number = the 6 numbered screens + numbered patterns
-  (4) semantic-color moment = the live pages' own photography + icons (5) dead-grey zones = none, checked.
-  psych-ok: everything shown is the LIVE product , zero fabrication by construction.
-  hue-ok: neutral chrome; color comes from the live pages + sanctioned 3D icons.
-  measured: type {28,18,14,12} weights {600,400}; frames 402-wide x 560 (the real device width).
-  Exists-check: `npm run exists "like dislike walkthrough audit"` ran this turn (0 hits). REMOVED: none re-proposed.
-  _BASE compliance: viewport, text-size-adjust, 100dvh, full-bleed, no fake phone, no remote deps
-  (iframes + icons are same-origin).
+  lang-ok english-ok: elicitation chrome in English (the approved Taste Lab format); German words in the
+  pattern lists are the product's own terms. german-ok.
+  floors: (1) visual focal = the six real screens this hub opens (2) biggest element = the 28px title
+  (3) real number = 6 numbered screens with numbered patterns (4) semantic-color moment = the 3D category
+  icons on each card (5) dead-grey zones = none, checked.
+  psych-ok: links to the LIVE product only , zero fabrication. hue-ok: neutral chrome + sanctioned 3D icons.
+  measured: type {28,18,14,12} weights {600,400}. No reference reproduction.
+  Exists-check: same slug as the prior iteration (format fix, no new surface). REMOVED: none re-proposed.
+  _BASE compliance: viewport, text-size-adjust, 100dvh, full-bleed, no fake phone, no remote deps.
 -->
 <style>
   :root{--ink:#0A0A0A;--ink2:#575757;--line:#E4E4E7;--sunken:#F4F4F5;
@@ -32,13 +30,13 @@
   .sub{font-size:14px;color:var(--ink2);margin-top:8px;line-height:1.5}
   .mint{display:block;background:var(--sunken);border-radius:16px;padding:14px 16px;margin-top:14px;text-decoration:none;color:var(--ink);font-size:14px;font-weight:600}
   .mint span{display:block;font-weight:400;color:var(--ink2);margin-top:2px}
-  h2{font-size:18px;font-weight:600;letter-spacing:-0.01em;margin-top:36px;display:flex;align-items:center;gap:8px}
-  h2 img{width:24px;height:24px}
-  .frame{border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-top:10px;height:560px}
-  .frame iframe{width:100%;height:100%;border:0}
-  .pats{font-size:14px;color:var(--ink2);line-height:1.7;margin-top:8px}
+  a.scr{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:16px;padding:14px;margin-top:12px;text-decoration:none;color:var(--ink)}
+  a.scr img{width:40px;height:40px;flex:none}
+  a.scr .tt{font-size:18px;font-weight:600;letter-spacing:-0.01em}
+  a.scr .go{margin-left:auto;font-size:14px;font-weight:600;flex:none}
+  .pats{font-size:14px;color:var(--ink2);line-height:1.7;margin-top:6px;padding:0 2px}
   .pats b{color:var(--ink)}
-  .key{background:var(--sunken);border-radius:16px;padding:16px;margin-top:36px}
+  .key{background:var(--sunken);border-radius:16px;padding:16px;margin-top:32px}
   .key .t{font-size:18px;font-weight:600}
   .key p{font-size:14px;color:var(--ink2);margin-top:6px;line-height:1.6}
   .key b{color:var(--ink)}
@@ -46,36 +44,30 @@
 </head>
 <body>
   <h1>The like/dislike walk</h1>
-  <p class="sub">Your method: every core screen, live, below. Scroll INSIDE each frame. For each screen reply with what you <b>like</b> and what you <b>hate</b> , numbers from its list, or your own words. I cluster the hates that repeat across screens and kill them everywhere at once.</p>
+  <p class="sub">Open each screen full-size (the real page, real dimensions), look around, come back, drop one line per screen: what you <b>like</b>, what you <b>hate</b> , the numbers below or your own words. I cluster the hates that repeat across screens and we kill those everywhere first.</p>
   <a class="mint" href="/api/dev/login?to=/_mockups/like-dislike-walk/index.html">Tap FIRST , unlock the account screens<span>Mints the dev test session on this phone and brings you back here.</span></a>
 
-  <h2><img src="/icons/categories/map.png" alt="">1. Home</h2>
-  <div class="frame"><iframe src="/de" title="home live"></iframe></div>
+  <a class="scr" href="/de"><img src="/icons/categories/map.png" alt=""><span class="tt">1. Home</span><span class="go">Open</span></a>
   <p class="pats"><b>1</b> hero + search &nbsp; <b>2</b> category tiles &nbsp; <b>3</b> salon cards &nbsp; <b>4</b> section headers &nbsp; <b>5</b> spacing between sections &nbsp; <b>6</b> footer</p>
 
-  <h2><img src="/icons/categories/scissors.png" alt="">2. Search</h2>
-  <div class="frame"><iframe src="/de/search" title="search live"></iframe></div>
+  <a class="scr" href="/de/search"><img src="/icons/categories/scissors.png" alt=""><span class="tt">2. Search</span><span class="go">Open</span></a>
   <p class="pats"><b>1</b> search bar &nbsp; <b>2</b> filter pills &nbsp; <b>3</b> result cards &nbsp; <b>4</b> map &nbsp; <b>5</b> empty/edge moments</p>
 
-  <h2><img src="/icons/categories/spa.png" alt="">3. Salon page</h2>
-  <div class="frame"><iframe src="/de/salon/old-town-barbers" title="salon live"></iframe></div>
+  <a class="scr" href="/de/salon/old-town-barbers"><img src="/icons/categories/spa.png" alt=""><span class="tt">3. Salon page</span><span class="go">Open</span></a>
   <p class="pats"><b>1</b> photo gallery &nbsp; <b>2</b> name/rating block &nbsp; <b>3</b> services list &nbsp; <b>4</b> team row &nbsp; <b>5</b> reviews &nbsp; <b>6</b> the book button</p>
 
-  <h2><img src="/icons/categories/nails.png" alt="">4. Inspo</h2>
-  <div class="frame"><iframe src="/de/inspo" title="inspo live"></iframe></div>
+  <a class="scr" href="/de/inspo"><img src="/icons/categories/nails.png" alt=""><span class="tt">4. Inspo</span><span class="go">Open</span></a>
   <p class="pats"><b>1</b> feed grid &nbsp; <b>2</b> chips/filters &nbsp; <b>3</b> tile style &nbsp; <b>4</b> top chrome</p>
 
-  <h2><img src="/icons/categories/walkin.png" alt="">5. Profile (the new build)</h2>
-  <div class="frame"><iframe src="/de/profile" title="profile live"></iframe></div>
+  <a class="scr" href="/de/profile"><img src="/icons/categories/walkin.png" alt=""><span class="tt">5. Profile (new build)</span><span class="go">Open</span></a>
   <p class="pats"><b>1</b> the doubled top (app bar + identity row) &nbsp; <b>2</b> avatar &nbsp; <b>3</b> tabs &nbsp; <b>4</b> saved tiles &nbsp; <b>5</b> Termine list &nbsp; <b>6</b> Neu-fuer-dich row</p><!-- german-ok: real product terms -->
 
-  <h2><img src="/icons/categories/clippers.png" alt="">6. Settings</h2>
-  <div class="frame"><iframe src="/de/profile/settings" title="settings live"></iframe></div>
+  <a class="scr" href="/de/profile/settings"><img src="/icons/categories/clippers.png" alt=""><span class="tt">6. Settings</span><span class="go">Open</span></a>
   <p class="pats"><b>1</b> identity block &nbsp; <b>2</b> row style + icons &nbsp; <b>3</b> group dividers &nbsp; <b>4</b> order of groups</p>
 
   <div class="key">
     <div class="t">How to answer</div>
-    <p>Per screen, one line each, your words or the numbers:<br><b>home: like 2,3 hate 1,5</b><br><b>salon: hate the reviews block, like gallery</b><br>Skip screens you're fine with. When your list is in, I show you the dislikes that appear on MORE than one screen , that shortlist is what we fix everywhere first.</p>
+    <p>One line per screen, your words or the numbers:<br><b>home: like 2,3 hate 1,5</b><br><b>salon: hate the reviews block, like gallery</b><br>Skip screens you're fine with. Then I show you the dislikes appearing on MORE than one screen , the everywhere-list we fix first.</p>
   </div>
 </body>
 </html>
