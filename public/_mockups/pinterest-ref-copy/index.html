@@ -17,6 +17,10 @@
   Reference word widths @402 -> font: "Boards" 56 -> tab 18 ; "Board suggestions" 174 -> shead 21 ;
   "web deisgn" 74 -> bname 14 ; "Search your saved ideas" 176 -> search 16 ; "Group" 40 -> chip 14.
   Verified render word widths within 2% of the reference (tab 57/56, section 177/174, bname 75/74, search 176/176).
+  full-diff: 9/9 boxes match the reference within 3px (round-2 coverage fix , unmeasured elements had shipped
+  +15-50% too big): phone 402/402, avatar 36/36, island 232x37/232x37, search h 37/37, chip h 31/31,
+  tile 195x131/195x131, sugg image 148x101/148x101, Create pill 74x44/74x44, nav tile 50x50/50x50.
+  Also: page margins measured (avatar/chips x=8, tiles x=4, sugg x=9), meta 11px, nav icons 24.
   type-budget-ok: faithful COPY of Pinterest's big-text ramp; adapting to Solen's 4-size budget is the NEXT step.
   english-ok lang-ok: reference's own English labels (a 1:1 copy). psych-ok: grey stand-ins for the photos.
   hue-ok: only saturated color is the iOS call green, mapped to the locked green token.
@@ -32,48 +36,48 @@
   .lbl{color:#2B2E33;font-size:13px;font-weight:600;max-width:402px;text-align:center;line-height:1.4}
   .phone{width:402px;background:#fff;border-radius:38px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35);color:var(--ink)}
   .status{height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 30px;font-weight:600;font-size:16px}
-  .island{width:126px;height:37px;background:#000;border-radius:20px;display:flex;align-items:center;justify-content:center;gap:6px;color:#16A34A;font-size:15px;font-weight:600}
+  .island{width:232px;height:37px;background:#000;border-radius:20px;display:flex;align-items:center;justify-content:flex-start;padding-left:16px;gap:6px;color:#16A34A;font-size:15px;font-weight:600} /* measured island: 696x110 dev = 232x37 CSS */
   .status .r{display:flex;align-items:center;gap:6px}
   .bar{display:flex;gap:2px;align-items:flex-end;height:12px}
   .bar i{width:3px;background:#000;border-radius:1px}
   .batt{width:26px;height:13px;border:1.5px solid #000;border-radius:4px;position:relative;display:flex;align-items:center;padding:1.5px}
   .batt::after{content:'';position:absolute;right:-3px;top:4px;width:2px;height:5px;background:#000;border-radius:0 1px 1px 0}
   .batt b{display:block;height:100%;width:55%;background:#000;border-radius:2px}
-  .hdr{display:flex;align-items:center;gap:10px;padding:6px 12px 0}
+  .hdr{display:flex;align-items:center;gap:10px;padding:6px 8px 0} /* measured: avatar starts x24 dev = 8 CSS */
   .av{width:36px;height:36px;border-radius:50%;background:var(--lav);display:grid;place-items:center;font-size:16px;font-weight:600;color:#52525B;flex:none}
   .tabs{flex:1;display:flex;align-items:center;justify-content:center;gap:26px}
   .tab{font-size:18px;font-weight:600;color:var(--grey);letter-spacing:-0.02em}
   .tab.on{color:var(--ink);position:relative}
   .tab.on::after{content:'';position:absolute;left:0;right:0;bottom:-8px;height:3px;background:var(--ink);border-radius:2px}
   .gear{width:30px;height:30px;flex:none;color:var(--ink)}
-  .srow{display:flex;align-items:center;gap:14px;padding:17px 12px 0}
+  .srow{display:flex;align-items:center;gap:14px;padding:17px 8px 0}
   .search{flex:1;height:37px;border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;gap:10px;padding:0 14px;color:var(--grey);font-size:16px}
   .plus{width:22px;height:22px;flex:none;color:var(--ink)}
-  .chips{display:flex;gap:8px;align-items:center;padding:22px 12px 0}
+  .chips{display:flex;gap:8px;align-items:center;padding:22px 8px 0} /* measured: chips start x24 dev = 8 CSS */
   .chip{height:31px;border-radius:999px;background:var(--chip);display:flex;align-items:center;gap:6px;padding:0 16px;font-size:14px;font-weight:600;color:var(--ink)}
   .chip.icon{padding:0 12px}
-  .grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:16px 12px 0}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:16px 4px 0} /* measured: tiles start x12 dev = 4 CSS margin -> tile width 195 = ref 584/3 */
   .tile{width:100%;aspect-ratio:195/131;border-radius:16px;overflow:hidden;display:flex;gap:2px}
   .tile .main{flex:0 0 66%}
   .tile .thc{flex:1;display:flex;flex-direction:column;gap:2px}
   .tile .thc > div{flex:1}
-  .bname{font-size:14px;font-weight:600;margin-top:7px;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .bmeta{font-size:13px;margin-top:4px;color:var(--ink)}
+  .bname{font-size:14px;font-weight:600;margin-top:7px;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 8px} /* name/meta indent to x~12 like ref (tiles at 4 + 8) */
+  .bmeta{font-size:11px;margin-top:4px;color:var(--ink);padding:0 8px} /* measured meta cap ~24 dev = 8 CSS -> font 11 */
   .bmeta .g{color:var(--grey)}
   .shead{font-size:21px;font-weight:700;letter-spacing:-0.02em;padding:19px 12px 0}
-  .sugg{display:flex;gap:10px;overflow-x:auto;padding:12px 12px 0;scrollbar-width:none}
+  .sugg{display:flex;gap:10px;overflow-x:auto;padding:12px 9px 0;scrollbar-width:none} /* measured: card1 starts x27 dev = 9 CSS; gap 30 dev = 10 */
   .sugg::-webkit-scrollbar{display:none}
-  .scard{flex:none;width:170px}
-  .simg{width:170px;aspect-ratio:170/150;border-radius:16px;overflow:hidden;position:relative;display:flex;gap:2px}
+  .scard{flex:none;width:148px} /* measured: card1 27..470 dev = 444/3 = 148 CSS */
+  .simg{width:148px;aspect-ratio:148/101;border-radius:16px;overflow:hidden;position:relative;display:flex;gap:2px} /* measured: image band 1429..1731 dev = 303/3 = 101 CSS tall */
   .simg .main{flex:0 0 66%}
   .simg .thc{flex:1;display:flex;flex-direction:column;gap:2px}
   .simg .thc > div{flex:1}
-  .create{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;border-radius:999px;padding:9px 22px;font-size:15px;font-weight:600;color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.18)}
+  .create{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;border-radius:999px;padding:13px 13px;font-size:15px;font-weight:600;line-height:1.2;color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.18)} /* measured pill: 221x132 dev = 74x44 CSS; text ~48 wide -> font 15, pad 13 */
   .sname{font-size:14px;font-weight:600;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .smeta{font-size:13px;margin-top:2px;color:var(--ink)}
+  .smeta{font-size:11px;margin-top:2px;color:var(--ink)} /* same meta role as bmeta, measured ~11 */
   .nav{height:150px;margin-top:40px;background:linear-gradient(#fff,#E7E7EA);display:flex;align-items:flex-start;justify-content:center;gap:14px;padding-top:26px}
-  .navi{width:70px;height:56px;background:#fff;border-radius:16px;display:grid;place-items:center;box-shadow:0 2px 10px rgba(0,0,0,.06)}
-  .navi svg{width:26px;height:26px;color:var(--ink)}
+  .navi{width:50px;height:50px;background:#fff;border-radius:14px;display:grid;place-items:center;box-shadow:0 2px 10px rgba(0,0,0,.06)} /* measured tile ~151 dev = 50 CSS */
+  .navi svg{width:24px;height:24px;color:var(--ink)}
   .g1{background:#BFC2C7} .g2{background:#D2D0CE} .g3{background:#ADB0B5} .g4{background:#C7CBD0}
   .g5{background:#9EA2A8} .g6{background:#D8D6D3} .g7{background:#8C9096} .g8{background:#B6B4B1}
   .g9{background:#A7A5AE} .g10{background:#C2BEB8}
