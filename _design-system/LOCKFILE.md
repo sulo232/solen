@@ -1484,3 +1484,35 @@ Overshoot is EARNED by gesture momentum only — a bounce on something that mere
 - **The 3D category icon set** (`/icons/categories/*.png`) is a sanctioned separate icon ZONE (per the
   §13.7 zone rule): category tiles, section headers (walk-in), and empty-state accents may use it.
   Never mix 3D icons into rows/buttons where Lucide glyphs live.
+
+---
+
+## §17 · FLOORS (owner-approved 2026-07-21 , the missing half; ceilings unchanged)
+
+Source + evidence: `research/UNFINISHED_AUDIT_2026-07-21.md`. Co-equal with every ceiling in this file.
+
+- **§17.1 Imagery presence:** customer browse/discovery/PDP viewports at 375x812 carry roughly >= 1/3
+  photographic area; the photo is the largest element of every SalonCard; a missing photo renders the
+  spec'd fallback (s-bg-sunken + 3D category icon + salon initial), NEVER a bare grey box, never
+  slot-omission. Mockups use real seeded photography. Exempt by name: forms, checkout payment step,
+  legal, receipts.
+- **§17.2 Depth table (supersedes §3 "sparingly" + §3.5 "both fine"):** SalonCard = photo +
+  shadow-whisper + NO border · grouped list card = whisper · PDP/booking sidebar card = hairline only ·
+  tile on a gray tray = white, no shadow · overlays/sheets/dropdowns = elevation-2/3 · a card carrying
+  elevation drops its border, never both. Edge-visibility floor: every elevated container needs a
+  perceivable boundary against its ACTUAL background ((a) on s-bg-sunken, (b) flush photo edge, or
+  (c) on white keep the hairline OR step to elevation-2); a white card with only a 4% shadow on white
+  is INVALID. The gray tray is RULE, not CONV: grouped/list/panel content on white with no photo anchor
+  requires the sunken tray; alternate gray and white down a page.
+- **§17.3 Warmth carrier:** cool chrome is legal only when photography OR a semantic-color moment
+  shares the viewport; a customer screen with zero warm/chromatic pixels outside pure chrome is the
+  dead-grey FAIL, not restraint.
+- **§17.4 Card two-anchor rule (V3-D442 adopted as THE card-emphasis law):** TWO ink anchors per card ,
+  name (larger, 600) + price (600, tabular); rating value ink-2 beside the yellow star; card titles/H3
+  are s-ink, not grey. Display floor: one display anchor >= 28px per customer screen unless the
+  photograph is the focal. Tertiary grey #9CA3AF (s-chart-2) reinstated for NON-load-bearing text only
+  (chevrons, placeholders, timestamps, hints); forbidden on load-bearing copy.
+- **§17.5 The finished-screen pass (ship condition):** (1) photographic focal present, (2) exactly one
+  biggest element, (3) >= 1 tabular/real number, (4) >= 1 semantic-color moment, (5) no dead-grey zone.
+  All five = Pass before a customer screen or mockup reaches the owner; mockups carry a `floors:` note
+  answering all five.

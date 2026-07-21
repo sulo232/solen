@@ -681,6 +681,19 @@ For ALL UI affordances (buttons, controls, labels), use lucide. No mixing.
 
 ## §10 · Loading / empty / error / async state grammar
 
+### §10.0 · The populated state is the design target (owner-approved 2026-07-21, FLOORS LAW)
+
+Every surface is specced and mocked at IDEAL density first, from the SEED library (seed data is real
+wired data, so it satisfies no-fabrication): PDP gallery >= 5 photos, reviews >= 3 visible, services
+>= 6 rows, home feed >= 4 sections; a populated list/grid first viewport shows >= 4 content units
+mobile / >= 6 desktop plus a visibly cropped next item (the scroll promise); a card renders its FULL
+info stack (photo, name, star+rating+count, category, city/distance, ab-CHF price) whenever the data
+exists , omission is legal only for null data, never for minimalism. Loading/empty/error DERIVE from
+the populated layout, not the reverse. Boundary: the dead-affordance + no-fabrication rules bind
+production and current-state mockups; a TARGET-state mockup renders full seeded content and carries a
+one-line footer naming what is not yet wired. Root cause + evidence:
+`research/UNFINISHED_AUDIT_2026-07-21.md`.
+
 **Every Supabase-backed surface must define all four states.** Card grammar only covers the populated case.
 
 ### §10.1 · Loading state
