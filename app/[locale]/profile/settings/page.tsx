@@ -27,6 +27,7 @@ import {
   Scissors,
   Bell,
   ClipboardList,
+  CreditCard,
   SlidersHorizontal,
   Award,
   Stamp,
@@ -87,6 +88,7 @@ export default async function SettingsPage({ params }: { params: Promise<{ local
         <SectionLabel>{t("hubSectionSettings")}</SectionLabel>
         <Row href={`/${locale}/profile/edit`} icon={User} label={t("hubKonto")} />
         <Row href={p("/password")} icon={Lock} label={t("hubPassword")} />
+        <Row href={p("/payment")} icon={CreditCard} label={t("hubPayment")} />
         <Row href={p("/beauty")} icon={SlidersHorizontal} label={t("hubRecommendations")} />
         <Row href={`/${locale}/profile/haarprofil`} icon={Scissors} label={t("haarprofil")} />
         <Row href={p("/notifications")} icon={Bell} label={t("notificationPrefs")} />

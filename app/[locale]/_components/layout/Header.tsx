@@ -425,6 +425,7 @@ export default function Header({ locale }: { locale: string }) {
       // rest of this map, see the comment at the top of this block.
       [/\/profile\/settings\/personal\/?$/, "Persönliche Angaben"],
       [/\/profile\/settings\/password\/?$/, "Passwort"],
+      [/\/profile\/settings\/payment\/?$/, "Zahlungsmethoden"],
       [/\/profile\/settings\/language\/?$/, "Sprache"],
       [/\/profile\/settings\/beauty\/?$/, "Beauty-Profil"],
       [/\/profile\/settings\/notifications\/?$/, "Benachrichtigungen"],
