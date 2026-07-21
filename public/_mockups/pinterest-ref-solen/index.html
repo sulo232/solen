@@ -1,36 +1,34 @@
 <!doctype html>
-<html lang="en">
+<html lang="de">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-<title>Profile , the reference geometry with Solen taste + design law applied</title>
-<!-- Base: net-new (the owner-approved reference geometry re-skinned under Solen law; sibling of pinterest-ref-copy) -->
+<title>Solen profile , the approved geometry iterated to real Solen content</title>
+<!-- Base: net-new (iteration 2 of the approved Solen-law skin: same link, now the ACTUAL Solen profile content) -->
 <!-- Scale: full-page -->
 <!-- Grounded-in: app/[locale]/profile/page.tsx -->
-<!-- Owner-scope: confirmed: "make me a mockup of ths page with out taste and design rules applied" (2026-07-21, read as "with OUR taste and design rules applied" , the no-rules 1:1 copy already exists at pinterest-ref-copy and stays untouched; this sibling is the Solen-law version). The liked "title and underneath line when selected" tab treatment is DEMOED here as the proposal , not yet law, owner decides. -->
+<!-- Owner-scope: confirmed: "alr looks good but this mockup was not for the profile itself, we need to iterate for acc solen stuff" (2026-07-21) , keep the approved look (underline tabs, 44px inputs, collage tiles, real photos), swap the content to the REAL Solen profile: saved salons tab, the rebook list tab (council direction, owner-seen), the looks tab. Tabs are tappable. -->
 <!--
-  Grounded-in: app/[locale]/profile/page.tsx (the real /de/profile surface this would become) + the measured
-  geometry canvas public/_mockups/pinterest-ref-copy/index.html (PIL-measured from IMG_6647, phone-diff exact).
-  measured / width-calibrated: geometry inherits the phone-proven canvas (tile aspect 1.49, sugg image 148x101,
-  avatar 36, fonts word-width-derived 18/14/12 band); Solen deltas are LAW values, not guesses: page margin 16
-  (p-4), grid gap 8 (4-pt), input h 44 (touch floor) radius 12 (input law), pill h 44, name role 16, meta 12
-  at #575757 (AA on white), section H2 18/600.
-  full-diff: verified on render at 402x874 , tile 181x121 (aspect 1.49 kept), sugg image 148x101 (canvas-exact),
-  avatar 36x36, search h 44, pill h 44, 4 font sizes {18,16,14,12} / 2 weights {600,400}, no h-scroll.
-  type-budget-ok by construction: 4 sizes / 2 weights counted above.
-  german-ok: rendered copy is the app's real product language (the profile tab names, the search placeholder,
-  the sort control, the for-you section header); no invented labels. english-ok: comments only.
-  psych-ok: real seed salon names + cities only; NO counts, NO stars (no honest review-count available here),
-  NO times, no fabricated data. Photos are the product's own seed imagery, self-hosted
-  (/_mockups/_assets/salon-photos, _BASE rule).
-  hue-ok: neutral surfaces + ink + photos; zero saturated UI hues.
-  Backend-check: every tile/card links to /de/salon/<slug> (salon PDP EXISTS: app/[locale]/salon/[slug]);
-  tabs are the profile's own tabs (profile page EXISTS). No fantasy actions , the Create pill was dropped
-  (a Pinterest-ism with no Solen backend), navigation lives in the global Header, so no bottom nav is drawn.
-  Exists-check: `npm run exists "profile boards tabs solen mockup"` ran this turn (0 hits); this is the
-  Solen-law sibling of the approved geometry canvas, not a duplicate surface.
-  _BASE compliance: viewport meta, text-size-adjust lock, min-height 100dvh, self-hosted real imagery,
-  full-bleed (no fake phone), no remote deps.
+  lang-ok english-ok: genuinely-localised mockup , the rendered copy IS the German product language (the owner
+  reviews in German; these are the app's real strings, not invented labels). german-ok.
+  Grounded-in: app/[locale]/profile/page.tsx (the surface this becomes) + components-legacy/booking/BookingCard.tsx
+  (the rebook row grammar) + the approved pinterest-ref-solen iteration 1 (owner: "looks good").
+  measured / width-calibrated: geometry carries the phone-proven values unchanged (tile aspect 1.49, sugg image
+  148x101, avatar 36, word-width-derived 18/16/14/12 band); nothing re-guessed.
+  full-diff: re-verified on render at 402x874 , tile 181x121 (1.49), sugg 148x101, search 44, pill 44, avatar 36,
+  4 font sizes {18,16,14,12} / 2 weights {600,400}, no h-scroll, tabs switch without layout shift.
+  type-budget-ok by construction (counted above).
+  psych-ok: REAL seed data only , saved salons (seed), the two seed bookings (the barber cut 11. Juni CHF 45;
+  the nails salon cut 29. Mai CHF 120, both from /api/bookings/user seed, seen rendered earlier this sprint);
+  no stars without counts, no invented numbers; date format TT. Monat, NO times on cards (law). Photos
+  self-hosted product seed imagery.
+  hue-ok: neutral + photos only.
+  Backend-check: rebook -> POST /api/bookings/express-rebook (+ /confirm) EXISTS and is wired in
+  components-legacy/booking/BookingsList.tsx (handleRebook); the visible affordance links to the salon PDP
+  (EXISTS) as the safe path; all tiles/cards -> /de/salon/<slug> (EXISTS); tabs are the profile's own.
+  Looks tab: honest EMPTY state (the looks feature is dormant , no fabricated saved looks).
+  Exists-check: iteration of this same mockup surface; no new surface introduced.
+  _BASE compliance: viewport, text-size-adjust lock, 100dvh, self-hosted imagery, full-bleed, no remote deps.
 -->
 <style>
   :root{
@@ -41,23 +39,19 @@
   html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   html,body{background:#fff}
   body{font-family:var(--font);-webkit-font-smoothing:antialiased;color:var(--ink);min-height:100dvh;padding-bottom:calc(32px + env(safe-area-inset-bottom))}
-  /* header row: avatar + tabs + settings, Solen neutral */
   .hdr{display:flex;align-items:center;gap:12px;padding:14px 16px 0}
   .av{width:36px;height:36px;border-radius:999px;background:var(--sunken);display:grid;place-items:center;font-size:14px;font-weight:600;color:var(--ink2);flex:none}
   .tabs{flex:1;display:flex;align-items:center;justify-content:center;gap:24px}
-  .tab{font-size:18px;font-weight:400;color:var(--ink2);letter-spacing:-0.02em;padding-bottom:10px;position:relative}
-  /* THE PROPOSED treatment the owner likes: selected = ink title + 2px ink line underneath (demo, not law yet) */
+  .tab{font-size:18px;font-weight:400;color:var(--ink2);letter-spacing:-0.02em;padding:0 1px 10px;position:relative;background:none;border:0;font-family:inherit;cursor:pointer}
+  /* sanctioned 2026-07-21: content tabs = title + 2px ink underline */
   .tab.on{font-weight:600;color:var(--ink)}
   .tab.on::after{content:'';position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--ink);border-radius:2px}
   .gear{width:44px;height:44px;display:grid;place-items:center;flex:none;color:var(--ink);margin-right:-10px}
   .rule{border-bottom:1px solid var(--line);margin:0 16px}
-  /* search: Solen input law , 44 tall, radius 12, hairline */
   .srow{display:flex;align-items:center;gap:12px;padding:16px 16px 0}
   .search{flex:1;height:44px;border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;gap:10px;padding:0 14px;color:var(--ink2);font-size:14px}
-  /* sort: ONE unselected filter pill , white + hairline (filter-pill law) */
   .chips{display:flex;gap:8px;align-items:center;padding:16px 16px 0}
   .chip{height:44px;border-radius:999px;background:#fff;border:1px solid var(--line);display:inline-flex;align-items:center;gap:8px;padding:0 18px;font-size:14px;font-weight:600;color:var(--ink)}
-  /* saved-salon grid: measured collage geometry, Solen margins (16 page / 8 gap, 4-pt scale) */
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px 8px;padding:16px 16px 0}
   .tile{width:100%;aspect-ratio:195/131;border-radius:16px;overflow:hidden;display:flex;gap:2px}
   .tile .main{flex:0 0 66%}
@@ -65,15 +59,29 @@
   .tile .thc > div{flex:1}
   .name{font-size:16px;font-weight:600;margin-top:8px;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .meta{font-size:12px;margin-top:2px;color:var(--ink2)}
+  .rlist{padding:6px 16px 0}
+  .rrow{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);align-items:center}
+  .rthumb{flex:none;width:56px;height:56px;border-radius:12px;overflow:hidden}
+  .rbody{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+  .rname{font-size:16px;font-weight:600;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rsvc{font-size:14px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rline{display:flex;gap:10px;align-items:center;font-size:12px;color:var(--ink2)}
+  .rline b{color:var(--ink);font-weight:600}
+  .ract{flex:none;font-size:14px;font-weight:600;color:var(--ink)}
+  .empty{text-align:center;padding:48px 24px 24px}
+  .edisc{display:inline-grid;place-items:center;width:52px;height:52px;border-radius:999px;background:var(--sunken)}
+  .etitle{font-size:16px;font-weight:600;margin-top:12px}
+  .esub{font-size:14px;color:var(--ink2);margin-top:4px}
   .shead{font-size:18px;font-weight:600;letter-spacing:-0.01em;padding:32px 16px 0}
   .sugg{display:flex;gap:12px;overflow-x:auto;padding:12px 16px 0;scrollbar-width:none}
   .sugg::-webkit-scrollbar{display:none}
-  .scard{flex:none;width:148px;text-decoration:none;color:var(--ink)}
+  .scard{flex:none;width:148px}
   .simg{width:148px;aspect-ratio:148/101;border-radius:16px;overflow:hidden;display:flex;gap:2px}
   .simg .main{flex:0 0 66%}
   .simg .thc{flex:1;display:flex;flex-direction:column;gap:2px}
   .simg .thc > div{flex:1}
   a{text-decoration:none;color:inherit}
+  .hidden{display:none}
   .p1{background:#F4F4F5 url(/_mockups/_assets/salon-photos/p05.jpg) center/cover}
   .p2{background:#F4F4F5 url(/_mockups/_assets/salon-photos/p06.jpg) center/cover}
   .p3{background:#F4F4F5 url(/_mockups/_assets/salon-photos/p04.jpg) center/cover}
@@ -90,9 +98,9 @@
   <div class="hdr">
     <div class="av">D</div>
     <div class="tabs">
-      <span class="tab on">Gespeichert</span><!-- german-ok: real product tab name -->
-      <span class="tab">Termine</span><!-- german-ok: real product tab name -->
-      <span class="tab">Looks</span>
+      <button class="tab on" data-t="saved">Gespeichert</button><!-- german-ok: real product tab -->
+      <button class="tab" data-t="appts">Termine</button><!-- german-ok: real product tab -->
+      <button class="tab" data-t="looks">Looks</button>
     </div>
     <span class="gear"><svg class="lucide" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
   </div>
@@ -106,28 +114,63 @@
   <div class="chips">
     <span class="chip"><svg class="lucide" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M7 20l-3-3M7 4l3 3M17 20V4M17 4l3 3M17 20l-3-3"/></svg>Sortieren</span><!-- german-ok: real product sort control -->
   </div>
-  <div class="grid">
-    <a href="/de/salon/old-town-barbers">
-      <div class="tile"><div class="main p5"></div><div class="thc"><div class="p6"></div><div class="p8"></div></div></div>
-      <div class="name">Old Town Barbers</div>
-      <div class="meta">Basel</div>
-    </a>
-    <a href="/de/salon/pink-petal-nails">
-      <div class="tile"><div class="main p3"></div><div class="thc"><div class="p1"></div><div class="p9"></div></div></div>
-      <div class="name">Pink Petal Nails</div>
-      <div class="meta">Basel</div>
-    </a>
-    <a href="/de/salon/glow-lab-basel">
-      <div class="tile"><div class="main p2"></div><div class="thc"><div class="p7"></div><div class="p10"></div></div></div>
-      <div class="name">Glow Lab</div>
-      <div class="meta">Basel</div>
-    </a>
-    <a href="/de/salon/salon-lumiere">
-      <div class="tile"><div class="main p9"></div><div class="thc"><div class="p4"></div><div class="p5"></div></div></div>
-      <div class="name">Salon Lumière</div>
-      <div class="meta">Basel</div>
-    </a>
+
+  <div id="pane-saved">
+    <div class="grid">
+      <a href="/de/salon/old-town-barbers">
+        <div class="tile"><div class="main p5"></div><div class="thc"><div class="p6"></div><div class="p8"></div></div></div>
+        <div class="name">Old Town Barbers</div>
+        <div class="meta">Basel</div>
+      </a>
+      <a href="/de/salon/pink-petal-nails">
+        <div class="tile"><div class="main p3"></div><div class="thc"><div class="p1"></div><div class="p9"></div></div></div>
+        <div class="name">Pink Petal Nails</div>
+        <div class="meta">Basel</div>
+      </a>
+      <a href="/de/salon/glow-lab-basel">
+        <div class="tile"><div class="main p2"></div><div class="thc"><div class="p7"></div><div class="p10"></div></div></div>
+        <div class="name">Glow Lab</div>
+        <div class="meta">Basel</div>
+      </a>
+      <a href="/de/salon/salon-lumiere">
+        <div class="tile"><div class="main p9"></div><div class="thc"><div class="p4"></div><div class="p5"></div></div></div>
+        <div class="name">Salon Lumière</div>
+        <div class="meta">Basel</div>
+      </a>
+    </div>
   </div>
+
+  <div id="pane-appts" class="hidden">
+    <div class="rlist">
+      <div class="rrow">
+        <a class="rthumb p5" href="/de/salon/old-town-barbers" aria-label="Old Town Barbers"></a>
+        <div class="rbody">
+          <div class="rname">Old Town Barbers</div>
+          <div class="rsvc">Herrenschnitt</div><!-- german-ok: real seed service -->
+          <div class="rline"><span>11. Juni</span><b>CHF 45</b></div><!-- german-ok: real seed booking -->
+        </div>
+        <a class="ract" href="/de/salon/old-town-barbers">Erneut buchen</a><!-- german-ok: real product action -->
+      </div>
+      <div class="rrow">
+        <a class="rthumb p3" href="/de/salon/la-belle-ongle" aria-label="La Belle Ongle"></a>
+        <div class="rbody">
+          <div class="rname">La Belle Ongle</div>
+          <div class="rsvc">Damen-Haarschnitt</div><!-- german-ok: real seed service -->
+          <div class="rline"><span>29. Mai</span><b>CHF 120</b></div><!-- german-ok: real seed booking -->
+        </div>
+        <a class="ract" href="/de/salon/la-belle-ongle">Erneut buchen</a><!-- german-ok: real product action -->
+      </div>
+    </div>
+  </div>
+
+  <div id="pane-looks" class="hidden">
+    <div class="empty">
+      <span class="edisc"><svg class="lucide" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#575757" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/></svg></span>
+      <div class="etitle">Noch keine Looks</div><!-- german-ok: real empty-state copy -->
+      <div class="esub">Gespeicherte Looks aus Inspo erscheinen hier</div><!-- german-ok: real empty-state copy -->
+    </div>
+  </div>
+
   <div class="shead">Neu für dich</div><!-- german-ok: real product section header -->
   <div class="sugg">
     <a class="scard" href="/de/salon/smooth-skin-studio">
@@ -146,5 +189,14 @@
       <div class="meta">Basel</div>
     </a>
   </div>
+<script>
+  var tabs=document.querySelectorAll('.tab');
+  tabs.forEach(function(b){ b.addEventListener('click',function(){
+    tabs.forEach(function(x){ x.classList.toggle('on', x===b); });
+    ['saved','appts','looks'].forEach(function(k){
+      document.getElementById('pane-'+k).classList.toggle('hidden', b.getAttribute('data-t')!==k);
+    });
+  });});
+</script>
 </body>
 </html>
