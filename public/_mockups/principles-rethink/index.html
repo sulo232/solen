@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>The rethink , why approved mockups keep turning into wtf live pages</title>
+<!-- Base: net-new (owner-facing visual of the principles rethink; owner: "visualize it") -->
+<!-- Scale: full-page -->
+<!-- Grounded-in: app/[locale]/profile/page.tsx -->
+<!-- Owner-scope: confirmed: "nah we acc need to rethink principles what do u need from me" + "visualize it" (2026-07-21). -->
+<!--
+  lang-ok english-ok: knowledge page, English by design; the small demo labels reuse real product strings
+  (german-ok markers inline). german-ok.
+  floors: (1) visual focal = the demo columns carry the app's own 3D category icons (the DESIGNED no-photo
+  fallback; the photo pack is worktree-only and the sandbox blocks binary copies to this served checkout)
+  (2) biggest element = the 28px page title (3) real number = the 4 asks + the 3 named breaks (4) semantic-color
+  moment = green YES + red break markers + the colorful 3D icons (5) dead-grey zones = none, checked.
+  psych-ok: the two demo columns depict the REAL divergence observed on the live page this session (double
+  header, black avatar, duplicated salons); no fabricated claims. hue-ok: locked tokens only (16A34A, DC2626).
+  measured: demo geometry reuses this sprint's measured card anatomy; explainer page, not a reference copy.
+  Exists-check: `npm run exists "principles rethink visual"` ran this turn (0 hits). REMOVED: none re-proposed.
+  _BASE compliance: viewport, text-size-adjust, 100dvh, self-hosted imagery, full-bleed.
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#575757;--line:#E4E4E7;--sunken:#F4F4F5;--green:#16A34A;--red:#DC2626;
+    --font:'Inter Tight',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100dvh;padding:24px 16px calc(48px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto}
+  h1{font-size:28px;font-weight:600;letter-spacing:-0.02em;line-height:1.2}
+  .sub{font-size:14px;color:var(--ink2);margin-top:8px;line-height:1.5}
+  h2{font-size:18px;font-weight:600;letter-spacing:-0.01em;margin-top:32px}
+  p{font-size:14px;color:var(--ink2);line-height:1.55;margin-top:6px}
+  .pair{display:flex;gap:8px;margin-top:12px}
+  .half{flex:1;min-width:0}
+  .tag{font-size:12px;font-weight:600;margin-bottom:6px}
+  .tag.good{color:var(--green)}
+  .tag.bad{color:var(--red)}
+  .phone{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff}
+  .chrome{display:flex;align-items:center;gap:6px;padding:8px 10px;border-bottom:1px solid var(--line)}
+  .chip{height:16px;border-radius:999px;background:var(--sunken);flex:none}
+  .c1{width:16px}.c2{width:34px}.c3{width:16px;margin-left:auto}.c4{width:16px}
+  .idrow{display:flex;align-items:center;gap:8px;padding:10px}
+  .idav{width:22px;height:22px;border-radius:999px;background:var(--sunken);flex:none;display:grid;place-items:center;font-size:10px;font-weight:600;color:var(--ink2)}
+  .idav.black{background:#0A0A0A}
+  .idname{font-size:14px;font-weight:600}
+  .tabs{display:flex;gap:10px;padding:0 10px 8px;border-bottom:1px solid var(--line);font-size:12px}
+  .tabs b{font-weight:600;border-bottom:2px solid var(--ink);padding-bottom:4px}
+  .tabs span{color:var(--ink2)}
+  .g{display:grid;grid-template-columns:1fr 1fr;gap:8px 6px;padding:10px}
+  .t{aspect-ratio:195/131;border-radius:10px;overflow:hidden;display:flex;gap:2px}
+  .t .m{flex:0 0 66%}.t .s{flex:1;display:flex;flex-direction:column;gap:2px}.t .s>div{flex:1}
+  .shead{font-size:12px;font-weight:600;padding:6px 10px 4px}
+  .dupnote{font-size:10px;color:var(--red);font-weight:600;padding:0 10px 10px}
+  /* demo-tile visuals: the app's own 3D category icons (main-served; the salon-photo pack lives in the
+     worktree checkout which this server does not serve , the sandbox blocks copying binaries to main) */
+  .ph1{background:#F4F4F5 url(/icons/categories/scissors.png) center/55% no-repeat}
+  .ph2{background:#F4F4F5 url(/icons/categories/nails.png) center/55% no-repeat}
+  .ph3{background:#F4F4F5 url(/icons/categories/spa.png) center/55% no-repeat}
+  .ph4{background:#F4F4F5 url(/icons/categories/clippers.png) center/55% no-repeat}
+  .ph5{background:#F4F4F5 url(/icons/categories/walkin.png) center/55% no-repeat}
+  .ph6{background:#F4F4F5 url(/icons/categories/map.png) center/55% no-repeat}
+  .breaks{margin-top:10px}
+  .brk{display:flex;gap:8px;align-items:flex-start;font-size:14px;color:var(--ink2);line-height:1.5;margin-top:6px}
+  .brk b{color:var(--red);font-weight:600;flex:none}
+  .ask{background:var(--sunken);border-radius:16px;padding:14px;margin-top:10px}
+  .ask .n{font-size:14px;font-weight:600;color:var(--ink);display:flex;gap:8px;align-items:center}
+  .ask .n i{font-style:normal;color:var(--green);font-weight:600}
+  .ask p{margin-top:4px;font-size:14px}
+  .flow{display:flex;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap}
+  .step{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:12px;font-weight:600}
+  .step.done{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .arr{color:var(--ink2);font-size:12px;font-weight:600}
+  .old{text-decoration:line-through;color:var(--ink2);font-weight:400}
+</style>
+</head>
+<body>
+  <h1>Why approved mockups keep turning into wtf live pages</h1>
+  <p class="sub">You approved the profile mockup. The live page made you say wtf. Both are true, and here is the exact seam where it breaks , visual, then the 4 things I need from you.</p>
+
+  <h2>The same design, twice</h2>
+  <div class="pair">
+    <div class="half">
+      <div class="tag good">WHAT YOU APPROVED (the mockup)</div>
+      <div class="phone">
+        <div class="idrow"><span class="idav">D</span><span class="idname">Deniz</span></div>
+        <div class="tabs"><b>Gespeichert</b><span>Termine</span></div><!-- german-ok: real product tab names in the demo -->
+        <div class="g">
+          <div><div class="t"><div class="m ph1"></div><div class="s"><div class="ph2"></div><div class="ph6"></div></div></div></div>
+          <div><div class="t"><div class="m ph3"></div><div class="s"><div class="ph4"></div><div class="ph5"></div></div></div></div>
+          <div><div class="t"><div class="m ph5"></div><div class="s"><div class="ph1"></div><div class="ph3"></div></div></div></div>
+          <div><div class="t"><div class="m ph6"></div><div class="s"><div class="ph2"></div><div class="ph4"></div></div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="half">
+      <div class="tag bad">WHAT WENT LIVE (real page, real data)</div>
+      <div class="phone">
+        <div class="chrome"><span class="chip c1"></span><span class="chip c2"></span><span class="chip c3"></span><span class="chip c4"></span></div>
+        <div class="idrow"><span class="idav black"></span><span class="idname">QA</span></div>
+        <div class="tabs"><b>Gespeichert</b><span>Termine</span></div><!-- german-ok: real product tab names in the demo -->
+        <div class="g">
+          <div><div class="t"><div class="m ph1"></div><div class="s"><div class="ph2"></div><div class="ph6"></div></div></div></div>
+          <div><div class="t"><div class="m ph3"></div><div class="s"><div class="ph4"></div><div class="ph5"></div></div></div></div>
+        </div>
+        <div class="shead">Neu für dich</div><!-- german-ok: real product header -->
+        <div class="g" style="padding-top:0">
+          <div><div class="t"><div class="m ph1"></div><div class="s"><div class="ph2"></div><div class="ph6"></div></div></div></div>
+          <div><div class="t"><div class="m ph3"></div><div class="s"><div class="ph4"></div><div class="ph5"></div></div></div></div>
+        </div>
+        <div class="dupnote">same two salons repeated</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="breaks">
+    <div class="brk"><b>1</b><span>The app shell was never in the mockup: the global header stacks ON TOP of the new identity row , double chrome.</span></div>
+    <div class="brk"><b>2</b><span>The real account's avatar renders as a black blob , no mockup ever met real account data.</span></div>
+    <div class="brk"><b>3</b><span>Real data is thin: 2 saved salons, and the suggestion row repeats the exact same salons underneath.</span></div>
+  </div>
+
+  <h2>The principle flaw, in one line</h2>
+  <p><b style="color:var(--ink)">We approve isolated, ideal mockups , you experience composed, live pages with real data.</b> No rule governs that seam. Every "unfinished" this month was born there, not in the colors or the sizes.</p>
+
+  <h2>The 4 things I need from you</h2>
+  <div class="ask"><div class="n"><i>1</i> Your wtf in 5 words</div><p>"double header, black circle" beats a guessing round. A circled screenshot is even better. Every time.</p></div>
+  <div class="ask"><div class="n"><i>2</i> One north-star app per surface</div><p>Profile = Pinterest. Search = ? Booking = ? Inspo = ? Written once as law , references stop being improvised mid-crisis.</p></div>
+  <div class="ask"><div class="n"><i>3</i> 15 minutes of Taste Lab on LIVE screens</div><p>Binary picks like the Taste Book you loved , but on the real pages on your phone, so the decisions bind the thing you actually see.</p></div>
+  <div class="ask"><div class="n"><i>4</i> Flip the close rule</div><p>Mockups only pick the direction. Nothing is called done until YOU approve the live page on your phone.</p></div>
+
+  <h2>The new flow, if you say go</h2>
+  <div class="flow">
+    <span class="step">mockup = direction</span><span class="arr">&#8594;</span>
+    <span class="step">build with app shell + real data</span><span class="arr">&#8594;</span>
+    <span class="step">I verify measured + rendered</span><span class="arr">&#8594;</span>
+    <span class="step done">YOUR live yes = done</span>
+  </div>
+  <p style="margin-top:10px"><span class="old">mockup approved = done</span> is dead.</p>
+
+  <p style="margin-top:24px">First fix under the new rule, tonight if you say go: kill the double header, fix the avatar, stop the duplicate suggestion row , then you judge the live page, not a picture of it.</p>
+</body>
+</html>
