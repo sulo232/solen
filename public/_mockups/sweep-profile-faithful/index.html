@@ -73,7 +73,7 @@
     return out; }catch(e){ return []; } }
   function fmtDate(iso){ try{ var d=new Date(iso); return ('0'+d.getDate()).slice(-2)+'.'+('0'+(d.getMonth()+1)).slice(-2)+'.'; }catch(e){ return ''; } }
   function micon(d){ return '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A1A1AA" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="lucide" aria-hidden="true">'+d+'</svg>'; }
-  var GEAR='<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>';
+  var GEAR='<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>';
   var SEARCH='<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>';
   var SORT='<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-down"><path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/></svg>';
   var PLUS='<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>';
@@ -96,14 +96,14 @@
   }
   function bigTile(it){
     return '<div>'+collage(it.imgs,'1.15/1')
-      + '<div style="font-size:18px;font-weight:700;margin-top:8px;letter-spacing:-0.015em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(it.name||'')+'</div>'
-      + (it.meta?'<div style="font-size:13px;color:#52525B;margin-top:2px">'+it.meta+'</div>':'')+'</div>';
+      + '<div style="font-size:19px;font-weight:700;margin-top:9px;letter-spacing:-0.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(it.name||'')+'</div>'
+      + (it.meta?'<div style="font-size:13px;color:#767680;margin-top:1px">'+it.meta+'</div>':'')+'</div>';
   }
   function suggCard(s){
     var rate=(s.rating!=null)?'<div style="display:flex;align-items:center;gap:4px;font-size:12.5px;margin-top:3px">'+STAR+'<span style="color:#0A0A0A;font-weight:600">'+s.rating+'</span></div>':''; // psych-ok: live salon-card treatment (star + value)
     return '<a href="/de/salon/'+(s.slug||'')+'" style="flex:none;width:130px;text-decoration:none;color:#0A0A0A">'
       + '<div style="width:130px">'+collage(s.imgs,'1.15/1')+'</div>'
-      + '<div style="font-size:14px;font-weight:600;margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(s.name||'')+'</div>'+rate+'</a>';
+      + '<div style="font-size:15px;font-weight:600;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(s.name||'')+'</div>'+rate+'</a>';
   }
   function grid(){
     var items = TAB==='appts'?DATA.past.slice() : TAB==='saved'?DATA.favs.slice() : [];
@@ -116,7 +116,7 @@
   }
   function suggestions(){
     if(!DATA.sugg.length) return '';
-    return '<div style="margin-top:28px"><div style="font-size:22px;font-weight:700;letter-spacing:-0.02em;margin-bottom:12px">Für dich</div>' // english-ok german-ok: matches the reference suggestions header
+    return '<div style="margin-top:32px"><div style="font-size:28px;font-weight:700;letter-spacing:-0.03em;margin-bottom:14px">Für dich</div>' // english-ok german-ok: matches the reference suggestions header (measured 28-30pt, the biggest text = anchor)
       + '<div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none">'+DATA.sugg.map(suggCard).join('')+'</div></div>';
   }
   function chipRow(){
@@ -125,19 +125,19 @@
       + '<span style="background:#F4F4F5;border-radius:999px;padding:8px 16px;font-size:14px;font-weight:600;color:#0A0A0A">Sortieren</span>' // english-ok german-ok: real sort control
       + '</div>';
   }
-  function tab(id,label){ var on=TAB===id; return '<button data-ptab="'+id+'" style="border:0;background:none;font-family:inherit;cursor:pointer;padding:0 2px 9px;font-size:15px;'+(on?'font-weight:600;color:#0A0A0A;border-bottom:3px solid #0A0A0A;':'font-weight:400;color:#52525B;border-bottom:3px solid transparent;')+'">'+label+'</button>'; }
+  function tab(id,label){ var on=TAB===id; return '<button data-ptab="'+id+'" style="border:0;background:none;font-family:inherit;cursor:pointer;padding:0 1px 10px;font-size:18px;letter-spacing:-0.02em;white-space:nowrap;'+(on?'font-weight:700;color:#0A0A0A;border-bottom:3px solid #0A0A0A;':'font-weight:500;color:#767680;border-bottom:3px solid transparent;')+'">'+label+'</button>'; }
   function render(doc,root,idn){
     root.innerHTML =
       '<div style="display:flex;align-items:center;gap:8px;padding:10px 0 0">'
-      + '<div style="height:26px;width:26px;border-radius:999px;background:#F4F4F5;display:grid;place-items:center;font-size:12px;font-weight:600;color:#52525B;flex:none">'+(idn.name.charAt(0)||'S')+'</div>'
-      + '<div style="flex:1;display:flex;justify-content:center;gap:22px">'
+      + '<div style="height:34px;width:34px;border-radius:999px;background:#F4F4F5;display:grid;place-items:center;font-size:15px;font-weight:600;color:#52525B;flex:none">'+(idn.name.charAt(0)||'S')+'</div>'
+      + '<div style="flex:1;min-width:0;display:flex;justify-content:center;gap:11px">'
       +   tab('saved','Gespeichert')+tab('appts','Termine')+tab('third','Looks') // english-ok german-ok
       + '</div>'
-      + '<a href="/de/profile/settings" aria-label="settings" style="height:26px;width:26px;display:grid;place-items:center;flex:none">'+GEAR+'</a>'
+      + '<a href="/de/profile/settings" aria-label="settings" style="height:34px;width:34px;display:grid;place-items:center;flex:none">'+GEAR+'</a>'
       + '</div>'
       + '<div style="display:flex;align-items:center;gap:12px;margin:12px 0 0">'
-      +   '<div style="flex:1;display:flex;align-items:center;gap:10px;height:48px;border:1px solid #E4E4E7;border-radius:12px;padding:0 16px">'+SEARCH+'<span style="font-size:15px;color:#A1A1AA">Suchen</span></div>' // english-ok german-ok
-      +   '<a href="/de/search" aria-label="search" style="flex:none;height:26px;width:26px;display:grid;place-items:center">'+PLUS+'</a>'
+      +   '<div style="flex:1;display:flex;align-items:center;gap:10px;height:50px;border:1px solid #E4E4E7;border-radius:14px;padding:0 16px">'+SEARCH+'<span style="font-size:16px;color:#A1A1AA">Suchen</span></div>' // english-ok german-ok
+      +   '<a href="/de/search" aria-label="search" style="flex:none;height:30px;width:30px;display:grid;place-items:center">'+PLUS+'</a>'
       + '</div>'
       + chipRow()
       + grid()
