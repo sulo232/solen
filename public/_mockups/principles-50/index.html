@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>The 50 , Solen's design principles</title>
+<!-- Base: net-new (the owner-ordered 50-principle canon, Taste-Book format; source doc _design-system/research/PRINCIPLES_50.md) -->
+<!-- Scale: full-page -->
+<!-- Grounded-in: _design-system/TASTE_LOG.md -->
+<!-- Owner-scope: confirmed: "these are what i mean gimme like 50 principle we need to establish" (2026-07-21, with the five reference posts IMG_6659-6664). -->
+<!--
+  lang-ok english-ok: knowledge book, English by design (the approved Taste Book format). german-ok.
+  floors: (1) visual focal = the numbered principle cards with the family color-icons (2) biggest element =
+  the 28px title (3) real number = 50 numbered principles, 8 families (4) semantic-color moment = the
+  3D family icons + the NEW badges in green (5) dead-grey zones = none, families alternate white/tray, checked.
+  psych-ok: every principle cites its law source or is marked NEW , no invented authority. hue-ok: locked
+  green 16A34A for NEW badges + neutral chrome + sanctioned 3D icons.
+  measured: type {28,18,14,12} weights {400,600}. Exists-check: consolidation canon, net-new page (0 hits).
+  _BASE compliance: viewport, text-size-adjust, 100dvh, full-bleed, self-hosted only.
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#575757;--line:#E4E4E7;--sunken:#F4F4F5;--green:#16A34A;
+    --font:'Inter Tight',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  b,strong{font-weight:600}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100dvh;padding:24px 16px calc(48px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto}
+  h1{font-size:28px;font-weight:600;letter-spacing:-0.02em;line-height:1.2}
+  .sub{font-size:14px;color:var(--ink2);margin-top:8px;line-height:1.5}
+  h2{font-size:18px;font-weight:600;letter-spacing:-0.01em;margin-top:34px;display:flex;align-items:center;gap:8px}
+  h2 img{width:26px;height:26px}
+  .fam{border-radius:16px;padding:4px 12px 12px;margin-top:8px}
+  .fam.tray{background:var(--sunken)}
+  .p{display:flex;gap:10px;padding:10px 2px;border-bottom:1px solid var(--line);align-items:baseline}
+  .fam .p:last-child{border-bottom:0}
+  .n{font-size:14px;font-weight:600;flex:none;width:24px;color:var(--ink2)}
+  .tx{font-size:14px;line-height:1.5;color:var(--ink2);min-width:0}
+  .tx b{color:var(--ink)}
+  .new{display:inline-block;font-size:12px;font-weight:600;color:var(--green);margin-left:6px}
+  .key{background:var(--sunken);border-radius:16px;padding:16px;margin-top:32px}
+  .key .t{font-size:18px;font-weight:600}
+  .key p{font-size:14px;color:var(--ink2);margin-top:6px;line-height:1.6}
+  .key b{color:var(--ink)}
+</style>
+</head>
+<body>
+  <h1>The 50</h1>
+  <p class="sub">Every principle Solen builds by , one line each, in the format of the five posts you sent. 44 are already written law; the <b style="color:var(--green)">6 marked NEW</b> come straight from your references and this week's lessons. Say "lock the 50" and the NEW ones get written into law too.</p>
+
+  <h2><img src="/icons/categories/scissors.png" alt="">Shape &amp; geometry</h2>
+  <div class="fam">
+    <div class="p"><span class="n">1</span><span class="tx"><b>Concentric corners.</b> Outer radius = inner radius + padding, never equal.</span></div>
+    <div class="p"><span class="n">2</span><span class="tx"><b>The 4pt grid.</b> Every gap and size is a multiple of 4.</span></div>
+    <div class="p"><span class="n">3</span><span class="tx"><b>Touch floor 44.</b> Everything tappable is 44px+, pad invisible hit areas.</span></div>
+    <div class="p"><span class="n">4</span><span class="tx"><b>Optical beats mathematical.</b> Align to what the eye sees, not the bounding box.</span></div>
+    <div class="p"><span class="n">5</span><span class="tx"><b>One radius family per container.</b> Card 16, input 12, sheet 28, pill round.</span></div>
+    <div class="p"><span class="n">6</span><span class="tx"><b>One icon stroke table.</b> Calibrated by size, never blind-scaled.</span></div>
+    <div class="p"><span class="n">7</span><span class="tx"><b>Border or shadow.</b> Never both on one box.</span></div>
+    <div class="p"><span class="n">8</span><span class="tx"><b>Every edge visible.</b> A container must read against its actual background.</span></div>
+  </div>
+
+  <h2><img src="/icons/categories/nails.png" alt="">Type</h2>
+  <div class="fam tray">
+    <div class="p"><span class="n">9</span><span class="tx"><b>One anchor per screen.</b> Exactly one biggest thing , two biggests = none.</span></div>
+    <div class="p"><span class="n">10</span><span class="tx"><b>Jumps, not nudges.</b> Levels differ 30-50%, never 1-2px.</span></div>
+    <div class="p"><span class="n">11</span><span class="tx"><b>The 4-size budget.</b> Four body sizes + one display anchor, counted before shipping.</span></div>
+    <div class="p"><span class="n">12</span><span class="tx"><b>Two weights.</b> 400 and 600 , bold is a role, not a mood.</span></div>
+    <div class="p"><span class="n">13</span><span class="tx"><b>Copy by word width.</b> Glyph height lies (underlines, tails); word width doesn't.</span></div>
+    <div class="p"><span class="n">14</span><span class="tx"><b>Emphasis binds whole units.</b> Bold the whole price, never half a phrase.</span></div>
+    <div class="p"><span class="n">15</span><span class="tx"><b>A display anchor of 28+</b> on every screen unless the photo is the hero.</span></div>
+    <div class="p"><span class="n">16</span><span class="tx"><b>Lines cap at ~68 characters.</b> German compounds need room.</span></div>
+  </div>
+
+  <h2><img src="/icons/categories/spa.png" alt="">Color &amp; surface</h2>
+  <div class="fam">
+    <div class="p"><span class="n">17</span><span class="tx"><b>80/17.</b> Neutral surfaces carry the app, ink speaks, accents are crumbs.</span></div>
+    <div class="p"><span class="n">18</span><span class="tx"><b>Photography carries the color.</b> The chrome stays quiet.</span></div>
+    <div class="p"><span class="n">19</span><span class="tx"><b>Blue is tiny.</b> Small clickable bits only , never structure, never big CTAs.</span></div>
+    <div class="p"><span class="n">20</span><span class="tx"><b>Semantic colors are sovereign.</b> Star gold, success green, error red never go monochrome.</span></div>
+    <div class="p"><span class="n">21</span><span class="tx"><b>Selected has three dialects.</b> Gray fill for options, ink underline for content tabs, blue only for booking slots.</span></div>
+    <div class="p"><span class="n">22</span><span class="tx"><b>The gray tray.</b> Photo-less groups sit on sunken gray; alternate gray/white down the page.</span></div>
+    <div class="p"><span class="n">23</span><span class="tx"><b>The palette is closed.</b> Not a token = doesn't exist.</span></div>
+    <div class="p"><span class="n">24</span><span class="tx"><b>Warmth is mandatory.</b> Zero photos and zero semantic color in a viewport = dead, not minimal.</span></div>
+  </div>
+
+  <h2><img src="/icons/categories/map.png" alt="">Layout &amp; grouping</h2>
+  <div class="fam tray">
+    <div class="p"><span class="n">25</span><span class="tx"><b>Chunking.</b> Break content into small meaningful groups , grouped checkout, formatted numbers, cuisine rows.<span class="new">NEW</span></span></div>
+    <div class="p"><span class="n">26</span><span class="tx"><b>Proximity is truth.</b> A caption sits closer to its own image than to anything else.</span></div>
+    <div class="p"><span class="n">27</span><span class="tx"><b>Contrast is the separator.</b> Never add a dot between things that already differ.</span></div>
+    <div class="p"><span class="n">28</span><span class="tx"><b>Name the grid first.</b> Reading page, repeated peers, equal tiles, or one hero , wrong grid, wrong page.</span></div>
+    <div class="p"><span class="n">29</span><span class="tx"><b>Design the full state.</b> The populated screen is the target; loading/empty/error derive from it.</span></div>
+    <div class="p"><span class="n">30</span><span class="tx"><b>Density floors.</b> Four-plus items per browse viewport, the next one peeking, full card info stacks.</span></div>
+    <div class="p"><span class="n">31</span><span class="tx"><b>Whitespace is designed.</b> Trapped dead space is a bug, not air.</span></div>
+    <div class="p"><span class="n">32</span><span class="tx"><b>The composed page is the unit.</b> Design with the app shell and real data , isolated mockups lie.<span class="new">NEW</span></span></div>
+  </div>
+
+  <h2><img src="/icons/categories/scissors.png" alt="">Content &amp; copy</h2>
+  <div class="fam">
+    <div class="p"><span class="n">33</span><span class="tx"><b>Recognition over recall.</b> Show recents, suggestions and saved things instead of demanding memory.<span class="new">NEW</span></span></div>
+    <div class="p"><span class="n">34</span><span class="tx"><b>Promise, then gesture.</b> Empty states tease the future, teach the filling action, carry one real CTA.</span></div>
+    <div class="p"><span class="n">35</span><span class="tx"><b>Delete-test every word.</b> If meaning survives, the word was padding.</span></div>
+    <div class="p"><span class="n">36</span><span class="tx"><b>Real data or nothing.</b> Never render an unwired number , omit and flag.</span></div>
+    <div class="p"><span class="n">37</span><span class="tx"><b>No times on cards.</b> Dates only; times live in the booking picker.</span></div>
+    <div class="p"><span class="n">38</span><span class="tx"><b>One primary verb per screen.</b> Exactly one ink commit button.</span></div>
+    <div class="p"><span class="n">39</span><span class="tx"><b>Icons carry labels</b> unless in the closed 7-icon universal set.</span></div>
+    <div class="p"><span class="n">40</span><span class="tx"><b>Stars never travel alone.</b> Rating = star + value, nothing bare.</span></div>
+  </div>
+
+  <h2><img src="/icons/categories/clippers.png" alt="">Speed &amp; feedback</h2>
+  <div class="fam tray">
+    <div class="p"><span class="n">41</span><span class="tx"><b>The 400ms rule.</b> Respond instantly or show honest progress , skeletons matching the final layout, never spinners.<span class="new">NEW</span></span></div>
+    <div class="p"><span class="n">42</span><span class="tx"><b>Every tap answers.</b> Press states, outcome toasts, inline errors that keep your data.</span></div>
+    <div class="p"><span class="n">43</span><span class="tx"><b>Waits feel active.</b> Optimistic where safe , the heart fills instantly, reconcile after.<span class="new">NEW</span></span></div>
+    <div class="p"><span class="n">44</span><span class="tx"><b>Motion is physics.</b> One vocabulary; nothing bounces hello.</span></div>
+  </div>
+
+  <h2><img src="/icons/categories/walkin.png" alt="">Psychology</h2>
+  <div class="fam">
+    <div class="p"><span class="n">45</span><span class="tx"><b>Goal gradient.</b> Show progress toward the next step , started beats empty.</span></div>
+    <div class="p"><span class="n">46</span><span class="tx"><b>Peak-end.</b> The confirmation moment is the memory of the whole flow , invest there.</span></div>
+    <div class="p"><span class="n">47</span><span class="tx"><b>Defaults are recommendations.</b> Preselect the sensible option; never start at zero.</span></div>
+    <div class="p"><span class="n">48</span><span class="tx"><b>Honest persuasion only.</b> Bounded loss framing, no fake urgency, no invented social proof.</span></div>
+  </div>
+
+  <h2><img src="/icons/categories/map.png" alt="">Process</h2>
+  <div class="fam tray">
+    <div class="p"><span class="n">49</span><span class="tx"><b>Measure, never eyeball.</b> Numbers from real instruments; references width-calibrated and full-diffed; your phone screenshot is the final judge.</span></div>
+    <div class="p"><span class="n">50</span><span class="tx"><b>The live page is the verdict.</b> Mockups pick direction; done = your yes on the real page on your phone.<span class="new">NEW</span></span></div>
+  </div>
+
+  <div class="key">
+    <div class="t">What happens next</div>
+    <p>Say <b>"lock the 50"</b> and the 6 NEW ones get written into the law files like the rest (each already has its source: your five reference posts + this week's lessons). Want one changed, cut, or added , name its number.</p>
+  </div>
+</body>
+</html>
