@@ -96,16 +96,16 @@
   }
   var TAB='appts', SORTDESC=true;
   function bigTile(name,img,meta){
-    var cover=img?'<img src="'+img+'" alt="" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:16px;display:block;background:#F4F4F5">'
-      :'<div style="width:100%;aspect-ratio:1/1;border-radius:16px;background:#F4F4F5;display:grid;place-items:center">'+SCIS+'</div>';
+    var cover=img?'<img src="'+img+'" alt="" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;display:block;background:#F4F4F5">'
+      :'<div style="width:100%;aspect-ratio:1/1;border-radius:12px;background:#F4F4F5;display:grid;place-items:center">'+SCIS+'</div>';
     return '<div>'+cover+'<div style="font-size:16px;font-weight:700;margin-top:9px;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+name+'</div>'
       + (meta?'<div style="font-size:13px;color:#52525B;margin-top:2px">'+meta+'</div>':'')+'</div>';
   }
   function suggCard(s){
     var img=s.cover_photo_url||s.image||null;
     var name=s.name||''; var rv=(s.average_rating!=null?s.average_rating:s.rating);
-    var cover=img?'<img src="'+img+'" alt="" style="width:160px;height:160px;object-fit:cover;border-radius:16px;display:block;background:#F4F4F5">'
-      :'<div style="width:160px;height:160px;border-radius:16px;background:#F4F4F5;display:grid;place-items:center">'+SCIS+'</div>';
+    var cover=img?'<img src="'+img+'" alt="" style="width:160px;height:160px;object-fit:cover;border-radius:12px;display:block;background:#F4F4F5">'
+      :'<div style="width:160px;height:160px;border-radius:12px;background:#F4F4F5;display:grid;place-items:center">'+SCIS+'</div>';
     var rate=(rv!=null)?'<div style="display:flex;align-items:center;gap:4px;font-size:12.5px;margin-top:3px">'+STAR+'<span style="color:#0A0A0A;font-weight:600">'+rv+'</span></div>':''; // psych-ok: mirrors the live SalonCard rating (star + value)
     return '<a href="/de/salon/'+(s.slug||'')+'" style="flex:none;width:160px;text-decoration:none;color:#0A0A0A">'+cover
       + '<div style="font-size:14px;font-weight:600;margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+name+'</div>'+rate+'</a>';
@@ -148,7 +148,7 @@
       + '</div>'
       + '<a href="/de/profile/settings" aria-label="settings" style="height:40px;width:40px;display:grid;place-items:center;flex:none">'+GEAR+'</a>'
       + '</div>'
-      + '<div style="display:flex;align-items:center;gap:10px;height:46px;border:1px solid #E4E4E7;border-radius:16px;padding:0 16px;margin:12px 0 0">'+SEARCH+'<span style="font-size:15px;color:#A1A1AA">Suchen</span></div>' // english-ok german-ok
+      + '<div style="display:flex;align-items:center;gap:10px;height:46px;border:1px solid #E4E4E7;border-radius:12px;padding:0 16px;margin:12px 0 0">'+SEARCH+'<span style="font-size:15px;color:#A1A1AA">Suchen</span></div>' // english-ok german-ok
       + chipRow()
       + liveBlock(hero)
       + grid()
