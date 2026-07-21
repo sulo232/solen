@@ -94,8 +94,10 @@ export default function SignIn() {
         setLoading(false);
       } else if (data.session) {
         markWelcome(); // greet on the destination after the full-page nav
-        // Full page navigation to ensure middleware runs and session cookies propagate
-        window.location.href = redirect;
+        // Full-page nav (middleware runs, session cookies propagate) via REPLACE, not href:
+        // the login page must NOT stay in history, else Back returns to login (the back-trap).
+        // Benchmark (IG/Airbnb/Uber): auth is always dropped from history on success. (2026-07-21)
+        window.location.replace(redirect);
       }
     } catch {
       toast.error("Netzwerkfehler");
