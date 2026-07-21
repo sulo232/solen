@@ -53,7 +53,9 @@ The recurring look-mistakes the owner keeps catching AFTER they ship. These are 
 3. **Empty states = ONE vertically-centred unit** (icon + message + CTA together, message→CTA gap ≤ 24px). NO floating CTA with a big trapped gap below it: **trapped dead space below the primary action must be < 30% of the viewport**. The payment empty state shipped with the CTA at 54% down and **46% dead space** below + an 80px message-gap. Centre the cluster.
 4. **No muted focal.** An empty-state / focal icon is a clean ink or a vivid `.DEFAULT` token, NEVER a washed-out gray disc or a dark `.text`-token fill (taste rule 5). The payment icon shipped as a gray-disc blob.
 
-Enforcement chain: (a) the two static ones are/should be gates; (b) 2-4 are render-time, so the design-verifier MUST run on every customer UI and grade against these numbers, and skipping design-verify without rendering is banned (design-verify-gate proof-of-looking); (c) YOUR own pre-ship measured self-check is the first line. A UI that trips any of these is not shippable.
+5. **A reference is MEASURED, never eyeballed.** When a mockup is built from a reference screenshot (IMG_xxxx, "like the reference"), run pixel-spec-auto (`extract.py`); if it fails on borderless cards, PIL pixel-sample the reference directly, then MATCH the measured px/pt (avatar, tile w:h ratio, gutter, font sizes), and cite them in a `measured:` note. The profile shipped with a 40px avatar (measured 26pt), square tiles (measured 1.15:1), 160px suggestion tiles (measured 114pt) , all eyeballed. **GATE: `~/.claude/hooks/reference-measure-gate.py`** (blocks a reference-derived mockup with no measured sizes; self-tested 5/5).
+
+Enforcement chain: (a) the static ones (1, 5) are wired gates; (b) 2-4 are render-time, so the design-verifier MUST run on every customer UI and grade against these numbers, and skipping design-verify without rendering is banned (design-verify-gate proof-of-looking); (c) YOUR own pre-ship measured self-check is the first line. A UI that trips any of these is not shippable.
 
 ---
 
