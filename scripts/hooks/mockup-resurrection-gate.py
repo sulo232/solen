@@ -51,6 +51,13 @@ def flag_ok(pdir: str) -> bool:
         return False
 
 def check(content: str, file_path: str, entries) -> list:
+    # Comments/doc-notes are not rendered treatment (fix 2026-07-21, owner-approved): a mockup
+    # EXPLAINING why a rejected treatment is absent kept re-triggering the gate (e.g. the words
+    # 'rating'/'count' in an HTML doc comment). Strip <!-- -->, /* */, and // line comments so
+    # signatures must match RENDERED markup/scripts, not prose about them.
+    content = re.sub(r"<!--.*?-->", " ", content, flags=re.DOTALL)
+    content = re.sub(r"/\*.*?\*/", " ", content, flags=re.DOTALL)
+    content = re.sub(r"(?<!:)//[^\n]*", " ", content)
     hits = []
     for e in entries:
         if any(x and x in file_path for x in e.get("exclude_paths", [])):
