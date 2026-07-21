@@ -44,6 +44,19 @@ Full system lives in `_design-system/SOURCE.md` (canonical) + `LOCKFILE.md` (fro
 
 ---
 
+## 🚫 NEVER-AGAIN design floors (owner 2026-07-21 "make it so these never happen again")
+
+The recurring look-mistakes the owner keeps catching AFTER they ship. These are MEASURED floors, not vibes. Run the check (getBoundingClientRect / computed styles / the gate) on EVERY UI you build or mock, BEFORE you ship, not after. The design-verifier grades against these; two are also wired gates.
+
+1. **WEB = ONE LIGHT THEME. No dark mode, ever.** No `prefers-color-scheme:dark` / `data-theme="dark"` / dark-mode CSS in any web file (mockup, analysis page, component, globals). It renders BLACK; rejected twice (2026-07-16, 2026-07-21). `tailwind.config.js` darkMode removed Q62. **GATE: `~/.claude/hooks/white-only-web-gate.py`** (self-tested 5/5). iOS (`solen-mobile`) keeps dark mode; web never.
+2. **≤ 4 distinct font sizes on one screen** (floor 3). Measure with getBoundingClientRect on the RENDERED page. The /profile split shipped with **6** (22/16/15/14/13/12) and read busy with no anchor. Collapse redundant sizes.
+3. **Empty states = ONE vertically-centred unit** (icon + message + CTA together, message→CTA gap ≤ 24px). NO floating CTA with a big trapped gap below it: **trapped dead space below the primary action must be < 30% of the viewport**. The payment empty state shipped with the CTA at 54% down and **46% dead space** below + an 80px message-gap. Centre the cluster.
+4. **No muted focal.** An empty-state / focal icon is a clean ink or a vivid `.DEFAULT` token, NEVER a washed-out gray disc or a dark `.text`-token fill (taste rule 5). The payment icon shipped as a gray-disc blob.
+
+Enforcement chain: (a) the two static ones are/should be gates; (b) 2-4 are render-time, so the design-verifier MUST run on every customer UI and grade against these numbers, and skipping design-verify without rendering is banned (design-verify-gate proof-of-looking); (c) YOUR own pre-ship measured self-check is the first line. A UI that trips any of these is not shippable.
+
+---
+
 ## 🔒 Design contract — LOCKED (V3-D443, council-stamped 2026-06-07)
 
 Frozen single-values. Do NOT re-open any row without the owner saying so by name. Visual rulebook: `public/solen-styleguide.html`. Full axes + sweep status: `_design-system/CONSISTENCY_AUDIT.md`.
