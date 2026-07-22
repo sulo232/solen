@@ -19,6 +19,14 @@ without asking me; make me a mockup of this page with our taste and design rules
         CLAUDE.md contract row amended (tabs = ink underline; pills/chips stay TabPill gray)
 - [x] _BASE blessed as LAW (TASTE_LOG entry + CLAUDE.md "mockup base" row); app-code fidelity gates
       QUEUED (approved) for when the real profile build starts
+- [x] design-law-integrity-gate.py (owner 2026-07-21 "find duplication or contradiction before adding,
+      auto-flag"): PreToolUse on every law-file write , blocks additions that duplicate an existing rule
+      (token-overlap matcher) or contradict a pinned axis value (radius/px/hex/weight extraction);
+      passes on `supersedes <name>` / `extends <name>` / `law-check-ok`. Self-tested 5/5, wired.
+- [x] design-law-improve scheduled task (owner: "keep improving taste and design file even outside this
+      session"): every Monday 10:00 , harvest the week's dated decisions into law, contradiction +
+      duplication + staleness scans, safe fixes auto-committed, owner-decision list + max-5 proposed
+      upgrades written to _plans/LAW_IMPROVE_<date>.md. Runs in future sessions independent of this one.
 - [x] Mockup: this page WITH Solen taste + design rules applied (public/_mockups/pinterest-ref-solen/)
   - [x] type budget 4 sizes/2 weights, Inter-Tight stack, German product copy, 44px touch floor,
         16px page margin, filter-pill law, no fabricated data, no bare stars, real photos, _BASE rules
