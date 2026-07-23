@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Bus, MapPin, Navigation, TrainFront, TramFront } from "lucide-react";
+import { Bus, MapPin, Navigation, TrainFront, TramFront, type LucideIcon } from "lucide-react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import type { SalonDetail } from "./_shared";
@@ -30,17 +30,31 @@ import { SOLEN_MAP_STYLE, toStaticStylePath } from "@/lib/map-style";
  * mockup directions — every existing caller, e.g. SalonDetailV3, omits the prop and
  * gets this). "map" is the original pre-mockup markup, kept for reference/reversion.
  * "compact" is the third mockup direction, not currently used by any caller.
+ *
+ * `transitChipVariant` (added 2026-07-24 for the /dev/pdp/transit direction mockup,
+ * card-overlay only): owner critique on the shipped chip — "it's not really balanced"
+ * (alignment), "we don't need the city name", "we don't need the point" (the trailing
+ * period), "we can't really identify what it is" (16px bare glyph). Default "current"
+ * is the exact pre-existing markup, byte-for-byte unchanged, so every existing caller
+ * (which omits this prop) is unaffected. See TransitChip below for the 3 new
+ * treatments.
  */
 export function SalonLocation({
   salon,
   variant = "card-overlay",
   mapStyle,
+  transitChipVariant = "current",
 }: {
   salon: SalonDetail;
   variant?: "map" | "card-overlay" | "compact";
   /** Standard Mapbox style id — works with the existing public token. Default = the
    *  same Solen Studio style the search map uses (see SOLEN_STYLE below). */
   mapStyle?: string;
+  /** Transit chip treatment inside the card-overlay variant's floating info card —
+   *  mockup switch for /dev/pdp/transit. Default "current" is the exact pre-existing
+   *  markup, byte-for-byte unchanged, so every existing caller (which omits this prop)
+   *  renders identically to before this prop existed. */
+  transitChipVariant?: "current" | "stacked-badge" | "inline-pill" | "labelled";
 }) {
   const hasCoords = Boolean(salon.latitude && salon.longitude);
 
@@ -108,7 +122,9 @@ export function SalonLocation({
               target="_blank"
               rel="noreferrer noopener"
               aria-label={`${salon.name}: In Google Maps öffnen`}
-              className="absolute inset-x-3 bottom-3 z-10 flex items-center justify-between gap-3 rounded-2xl bg-white p-3.5 shadow-elevation-3 transition-opacity hover:opacity-90"
+              className={`absolute inset-x-3 bottom-3 z-10 flex ${
+                transitChipVariant === "inline-pill" ? "items-end" : "items-center"
+              } justify-between gap-3 rounded-2xl bg-white p-3.5 shadow-elevation-3 transition-opacity hover:opacity-90`}
             >
               <span className="min-w-0">
                 <span className="block truncate font-body text-[14px] font-semibold text-s-ink">{salon.name}</span>
@@ -117,15 +133,19 @@ export function SalonLocation({
                   <span className="truncate">{salon.address}</span>
                 </span>
               </span>
-              {transitStop && TransitIcon && (
-                <span className="flex shrink-0 items-center gap-1.5 text-s-accent">
-                  <TransitIcon size={16} strokeWidth={2} className="shrink-0" />
-                  <span className="flex flex-col items-start leading-tight">
-                    <span className="max-w-[100px] truncate text-[11px] font-semibold text-s-ink">{transitStop.name}</span>
-                    <span className="text-[11px] font-semibold text-s-accent">{transitStop.walkMinutes} Min.</span>
+              {transitStop &&
+                TransitIcon &&
+                (transitChipVariant === "current" ? (
+                  <span className="flex shrink-0 items-center gap-1.5 text-s-accent">
+                    <TransitIcon size={16} strokeWidth={2} className="shrink-0" />
+                    <span className="flex flex-col items-start leading-tight">
+                      <span className="max-w-[100px] truncate text-[11px] font-semibold text-s-ink">{transitStop.name}</span>
+                      <span className="text-[11px] font-semibold text-s-accent">{transitStop.walkMinutes} Min.</span>
+                    </span>
                   </span>
-                </span>
-              )}
+                ) : (
+                  <TransitChip variant={transitChipVariant} Icon={TransitIcon} stop={transitStop} />
+                ))}
             </a>
           </div>
         )}
@@ -223,6 +243,104 @@ function transitIconFor(type: TransitStopType) {
   if (type === "tram") return TramFront;
   if (type === "train") return TrainFront;
   return Bus;
+}
+
+/** Swiss opendata.ch stop names are city-prefixed ("Basel, Spalentor") — the non-
+ *  "current" transit-chip treatments show only the stop name (owner feedback
+ *  2026-07-24: "we don't need the city name"). Splits on the first comma; falls back
+ *  to the untouched name when there's no comma (a minority of opendata.ch stop names
+ *  carry no city prefix). */
+function stripCityPrefix(name: string): string {
+  const commaIndex = name.indexOf(",");
+  if (commaIndex === -1) return name.trim();
+  return name.slice(commaIndex + 1).trim();
+}
+
+/** "2 Min" — no trailing period (owner feedback 2026-07-24: "we don't need the
+ *  point"). */
+function formatWalkMinutes(walkMinutes: number): string {
+  return `${walkMinutes} Min`;
+}
+
+/** tram/bus/train -> the German transit-type eyebrow word for the "labelled" chip
+ *  treatment (owner feedback 2026-07-24: "we can't really identify what it is"). "Zug"
+ *  (not "Bahn"/"Train") matches everyday CH German for a train stop. "other" is
+ *  opendata.ch's rarer non-tram/bus/train icon value (e.g. a ferry stop) — "ÖV"
+ *  (öffentlicher Verkehr, the generic Swiss "public transit" abbreviation) covers it
+ *  without inventing a specific mode word. */
+function transitTypeLabel(type: TransitStopType): string {
+  if (type === "tram") return "Tram";
+  if (type === "train") return "Zug";
+  if (type === "bus") return "Bus";
+  return "ÖV";
+}
+
+/**
+ * TransitChip — the 3 non-"current" transit-chip treatments for the card-overlay
+ * variant's floating info card, built for the /dev/pdp/transit direction mockup
+ * (owner critique 2026-07-24 on the shipped chip: "it's not really balanced" / "we
+ * don't need the city name" / "we don't need the point" / "we can't really identify
+ * what it is"). All 3 keep what the owner liked: an icon with the minutes
+ * underneath/beside it in blue, and the tram/train icon concept. "current" is NOT
+ * handled here — it stays inline in the card-overlay markup above, byte-for-byte
+ * unchanged.
+ */
+function TransitChip({
+  variant,
+  Icon,
+  stop,
+}: {
+  variant: "stacked-badge" | "inline-pill" | "labelled";
+  Icon: LucideIcon;
+  stop: NearestTransitStop;
+}) {
+  const name = stripCityPrefix(stop.name);
+  const minutesLabel = formatWalkMinutes(stop.walkMinutes);
+
+  // Direction A "Stacked badge" — a larger icon inside a sunken circle badge (legible
+  // at a glance, the size the old bare 16px glyph couldn't manage), minutes directly
+  // underneath in blue, stop name beneath that in ink. One tidy centered column.
+  if (variant === "stacked-badge") {
+    return (
+      <span className="flex shrink-0 flex-col items-center gap-1">
+        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-s-bg-sunken">
+          <Icon size={18} strokeWidth={2} className="text-s-ink-2" />
+        </span>
+        <span className="text-[12px] font-bold leading-none text-s-accent">{minutesLabel}</span>
+        <span className="max-w-[88px] truncate text-[10.5px] font-medium leading-none text-s-ink">{name}</span>
+      </span>
+    );
+  }
+
+  // Direction B "Inline pill" — a sunken pill holding icon + stop name, with the blue
+  // minutes as a separate element to its right. The whole block bottom-aligns with the
+  // address row (see the card-overlay <a>'s items-end for this variant), instead of
+  // vertically centering against the whole two-line name+address block.
+  if (variant === "inline-pill") {
+    return (
+      <span className="flex shrink-0 items-center gap-2">
+        <span className="flex items-center gap-1.5 rounded-full bg-s-bg-sunken px-2.5 py-1">
+          <Icon size={14} strokeWidth={2} className="shrink-0 text-s-ink-2" />
+          <span className="max-w-[76px] truncate text-[11.5px] font-medium text-s-ink">{name}</span>
+        </span>
+        <span className="text-[12px] font-bold text-s-accent">{minutesLabel}</span>
+      </span>
+    );
+  }
+
+  // Direction C "Labelled" — icon + the transit TYPE word ("Tram"/"Bus"/"Zug") as a
+  // tiny uppercase eyebrow, stop name under it, minutes in blue under that. Answers
+  // "what is this" twice over (glyph + word), not just once.
+  return (
+    <span className="flex shrink-0 flex-col items-end gap-0.5 text-right">
+      <span className="flex items-center gap-1 text-s-ink-3">
+        <Icon size={13} strokeWidth={2.25} className="shrink-0" />
+        <span className="text-[9.5px] font-bold uppercase tracking-[0.08em]">{transitTypeLabel(stop.type)}</span>
+      </span>
+      <span className="max-w-[100px] truncate text-[12px] font-semibold text-s-ink">{name}</span>
+      <span className="text-[11.5px] font-bold text-s-accent">{minutesLabel}</span>
+    </span>
+  );
 }
 
 // Single-salon framing zoom. MEASURED against the Solen Studio style's own definition

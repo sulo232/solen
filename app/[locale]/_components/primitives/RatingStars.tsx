@@ -189,7 +189,7 @@ export function RatingStars({
 
   return (
     <span
-      className={cn("inline-flex items-center gap-[3px] tabular-nums", className)}
+      className={cn("inline-flex items-center gap-[3px]", className)}
       aria-label={count != null ? `${value}, ${count} reviews` : `${value}`}
     >
       <Star size={px} stroke="none" aria-hidden className="fill-s-star" />
