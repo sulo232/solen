@@ -23,15 +23,33 @@
  *  - the dotted walking route's own future ("did you draw it yourself... not really
  *    feasible when we scale it up") is treated below as a genuine per-direction
  *    choice, not a given.
+ * Round 2's replacement was 3 frames — "clean-white" / "ink-glyph" / "sunken" — all
+ * sharing a white-or-sunken (never black), ring-free CIRCULAR store marker and a
+ * glyph-above-name transit unit.
  *
- * These 3 frames are the round-2 replacement — "clean-white" / "ink-glyph" / "sunken"
- * — all sharing a white-or-sunken (never black), ring-free circular store marker and
- * the new glyph-above-name transit unit; they differ in store-marker fill,
- * transit-unit colour, and whether the route line renders at all.
+ * ROUND 3 (2026-07-24, same day) — the owner reviewed round 2 and asked for further
+ * iteration, not a rejection: the map basemap itself read "so empty, like all white"
+ * (fixed globally in `applySolenBasemapConfig` — `colorLand`/`colorBuildings`, not a
+ * per-direction control, applies here AND in production); the store marker should be
+ * a PIN, not a circle (owner liked the glyph, wanted the shape changed); the station
+ * should become the CIRCLE instead, holding an always-BLUE transit glyph (the shapes
+ * swap); the station name must sit inside ONE pill/shape, not bare text; and the
+ * dotted route line should read as saturated, near-full-opacity blue instead of the
+ * low-opacity line round 2 shipped. Zoom is ALSO no longer a flat number — `fit()`
+ * now calibrates `maxZoom` to the real stop distance via `maxZoomForStopDistance`
+ * (SalonLocation.tsx), a global change reported against the whole map, not one frame.
+ *
+ * These 3 frames are the round-3 replacement — same 3 `mapDesign` keys as round 2
+ * ("clean-white" / "ink-glyph" / "sunken"), completely rewritten internals: all 3 now
+ * carry the pin-shaped store marker + blue-glyph circular station marker + one-shape
+ * name pill; they differ in pill attachment (under the circle vs beside it), marker
+ * fill (white vs sunken), and whether the boosted-blue dotted route renders at all.
  *
  * Fixture: "Barbershop Spalentor", Basel — coordinates 47.5589 / 7.5791. The nearest
  * real transit stop (transport.opendata.ch, live, no mock data) resolves to
- * {name: "Basel, Spalentor", type: "tram", distanceMeters: 189, walkMinutes: 2}.
+ * {name: "Basel, Spalentor", type: "tram", distanceMeters: 189, walkMinutes: 2}. At
+ * 189m this fixture lands in maxZoomForStopDistance's own 151-250m band (-> 15.5),
+ * the same value the owner already reviewed and approved in round 2.
  * Direction B ("ink-glyph") additionally makes a live fetch to the real Mapbox
  * Directions API (walking profile) for its route line — MEASURED (2026-07-24, curled
  * directly against this exact salon+stop pair): distance 191.531m, duration 131.372s,
@@ -103,7 +121,7 @@ export default function PdpMapDesignMockup() {
     <main className="min-h-screen bg-s-bg-sunken px-4 py-10">
       <div className="mx-auto max-w-[430px]">
         <p className="text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink-3">
-          Mockup — PDP map INTERIOR, round 2, 3 in-map design directions
+          Mockup — PDP map INTERIOR, round 3, 3 in-map design directions
         </p>
         <h1 className="mt-1 font-heading text-[20px] font-bold text-s-ink">
           The real SalonLocation map canvas, 3 treatments
@@ -114,17 +132,19 @@ export default function PdpMapDesignMockup() {
           <code className="rounded bg-white px-1 py-0.5 text-[12px]">card-overlay</code> variant, with a different{" "}
           <code className="rounded bg-white px-1 py-0.5 text-[12px]">mapDesign</code> prop. Fixture: Barbershop
           Spalentor, Basel — the transit stop (Spalentor · Tram · 189 m · 2 Min) comes from a real, live call to{" "}
-          <code className="rounded bg-white px-1 py-0.5 text-[12px]">/api/transit/nearest-stop</code>; Direction B's
+          <code className="rounded bg-white px-1 py-0.5 text-[12px]">/api/transit/nearest-stop</code>; Direction B&apos;s
           route line additionally comes from the live Mapbox Directions API.
         </p>
 
         <div className="mt-3 rounded-2xl border border-s-border bg-white p-3.5 text-[12.5px] leading-snug text-s-ink-2">
-          <span className="font-semibold text-s-ink">Round-2 owner feedback: </span>no black store marker, no
-          accent-blue ring, no on-map time pill, transit glyph + station name as one centred unit, no POI/place/street
-          labels, no 3D landmarks, and a wider salon+stop frame. The last 4 are global fixes (
-          <code className="rounded bg-s-bg-sunken px-1 py-0.5 text-[11.5px]">applySolenBasemapConfig</code> + the
-          shared <code className="rounded bg-s-bg-sunken px-1 py-0.5 text-[11.5px]">fit()</code> zoom) — identical
-          across all 3 directions below AND in production, not part of what's being compared. The floating
+          <span className="font-semibold text-s-ink">Round-3 owner feedback: </span>map read &quot;so empty, like all
+          white&quot; (buildings now clearly darker than the ground), store marker is a PIN not a circle, the station is
+          now the CIRCLE with an always-blue glyph, the station name sits inside one pill shape, the dotted route is
+          bolder/more saturated blue, and zoom is calibrated to the real stop distance instead of one fixed number.
+          The first and last 2 are global fixes (
+          <code className="rounded bg-s-bg-sunken px-1 py-0.5 text-[11.5px]">applySolenBasemapConfig</code> +{" "}
+          <code className="rounded bg-s-bg-sunken px-1 py-0.5 text-[11.5px]">maxZoomForStopDistance</code>) — identical
+          across all 3 directions below AND in production, not part of what&apos;s being compared. The floating
           name/address/time card is also untouched in all 3 — this mockup is scoped to the map interior only, per the
           ask.
         </div>
@@ -132,22 +152,22 @@ export default function PdpMapDesignMockup() {
 
       <div className="mx-auto mt-8 flex max-w-[430px] flex-col gap-10">
         <PhoneFrame
-          label="Direction A — Clean white"
-          rationale="White circular store marker with an ink glyph, hairline s-border, and a soft shadow. The transit stop is a blue glyph directly above the blue stop name, no background at all. No route line — tests whether the path is even needed to understand the walk."
+          label="Direction A — Pin + pill under, white"
+          rationale="White pin-shaped store marker with an ink Store glyph; white circular station marker with a blue transit glyph, name pill stacked directly under it. No route line — the quietest of the 3, testing whether the pins alone read clearly enough without a path."
         >
           <SalonLocation salon={SALON} variant="card-overlay" mapDesign="clean-white" />
         </PhoneFrame>
 
         <PhoneFrame
-          label="Direction B — Ink glyph on white"
-          rationale="The same white circular store marker as A, but the transit unit is ink instead of blue — glyph and stop name both read as plain content, not a link. Keeps a very subtle, thin, low-opacity dotted route so it can be judged directly against A's no-route choice."
+          label="Direction B — Pin + pill beside, routed"
+          rationale="Same white pin + blue-glyph circle as A, but the station name pill trails beside the circle instead of stacking under it — useful when vertical space over the stop is tight. Adds the bold, near-full-opacity blue dotted walking route for direct comparison against A and C's no-route choice."
         >
           <SalonLocation salon={SALON} variant="card-overlay" mapDesign="ink-glyph" />
         </PhoneFrame>
 
         <PhoneFrame
-          label="Direction C — Sunken"
-          rationale="The store marker sits on an s-bg-sunken circle instead of white, still an ink glyph, still no ring. The transit unit flips to white with a soft dark shadow for legibility on the light basemap. No route line."
+          label="Direction C — Sunken, pill under"
+          rationale="Same pin + circle + under-pill layout as A, but every shape (pin, circle, pill background) sits on the s-bg-sunken tone instead of white — a softer, more tonal reading with no hairline borders. No route line."
         >
           <SalonLocation salon={SALON} variant="card-overlay" mapDesign="sunken" />
         </PhoneFrame>

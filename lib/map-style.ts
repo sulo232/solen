@@ -65,6 +65,23 @@ export function toStaticStylePath(style: string = SOLEN_MAP_STYLE): string {
  * `show3dBuildings`, `show3dFacades`, `show3dTrees`, all set `false` — so no 3D icon
  * or extruded structure renders on any map surface.
  *
+ * ROUND 3 (2026-07-24, same day, owner: map "looks so empty, like all white") —
+ * MEASURED root cause: `colorLand` defaults to `hsl(20, 0%, 100%)` (pure white,
+ * L=100%) and this function's own `colorBuildings` default was `#E4E4E7` (s-border,
+ * L≈90.0%) — only ~10 percentage points of lightness apart, so building footprints
+ * were nearly invisible against the ground even with labels/3D correctly off. Fixed
+ * by adding a `colorLand` config property (this style never had one set explicitly
+ * before) and darkening the `colorBuildings` default, both pinned to the project's
+ * own neutral ramp (`_design-system/LOCKFILE.md` §1) — no invented colour:
+ *   - `colorLand` -> `#F4F4F5` (token `s-bg-sunken`, L≈95.9%)
+ *   - `colorBuildings` default -> `#6B6B6B` (token `s-ink-2`, L≈42.0%)
+ * Lightness delta ≈ 53.9 percentage points (was ≈5.9pp between the old
+ * `#E4E4E7`-on-white pairing) — buildings now read as a clearly distinct grey mass
+ * against the sunken ground, without turning the basemap into wayfinding chrome
+ * (labels/3D stay off, untouched by this fix). Applies globally, the same way the
+ * label/3D-off fixes above do — every map surface that calls this function inherits
+ * the new contrast, not just one direction of one mockup.
+ *
  * This helper is THE canonical place for all of the above — call it from EVERY map
  * surface's style-ready handler, never duplicate this flag list inline in a
  * component.
@@ -75,7 +92,7 @@ export function toStaticStylePath(style: string = SOLEN_MAP_STYLE): string {
  */
 export function applySolenBasemapConfig(
   map: MapboxMap,
-  options?: { colorBuildings?: string | null },
+  options?: { colorBuildings?: string | null; colorLand?: string | null },
 ): void {
   const IMPORT_ID = "basemap";
   // Owner reversal (2026-07-24): "he does NOT want street names, place names, or
@@ -94,7 +111,17 @@ export function applySolenBasemapConfig(
   map.setConfigProperty(IMPORT_ID, "show3dFacades", false);
   map.setConfigProperty(IMPORT_ID, "show3dTrees", false);
 
-  const colorBuildings = options && "colorBuildings" in options ? options.colorBuildings : "#E4E4E7"; // drift-ok: token s-border, inline for Mapbox Standard config property (not a Tailwind/JSX context)
+  // Round 3 (2026-07-24): ground darkened one step off pure white so buildings have
+  // something to contrast against — token s-bg-sunken, see the dated comment above.
+  const colorLand = options && "colorLand" in options ? options.colorLand : "#F4F4F5"; // drift-ok: token s-bg-sunken, inline for Mapbox Standard config property (not a Tailwind/JSX context)
+  if (colorLand) {
+    map.setConfigProperty(IMPORT_ID, "colorLand", colorLand);
+  }
+
+  // Round 3 (2026-07-24): darkened from s-border (#E4E4E7, ~5.9pp off the new
+  // s-bg-sunken land) to s-ink-2 (#6B6B6B, ~53.9pp off) — see the dated comment above
+  // for the measured before/after delta.
+  const colorBuildings = options && "colorBuildings" in options ? options.colorBuildings : "#6B6B6B"; // drift-ok: token s-ink-2, inline for Mapbox Standard config property (not a Tailwind/JSX context)
   if (colorBuildings) {
     map.setConfigProperty(IMPORT_ID, "colorBuildings", colorBuildings);
   }

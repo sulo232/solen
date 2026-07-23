@@ -79,6 +79,36 @@ import { SOLEN_MAP_STYLE, toStaticStylePath, applySolenBasemapConfig } from "@/l
  * unit, no route), "ink-glyph" (white marker, ink transit unit, a thin/low-opacity
  * route), "sunken" (s-bg-sunken marker, white transit unit with a legibility shadow,
  * no route). See /dev/pdp/mapdesign for all 3 rendered side by side.
+ *
+ * ROUND 3 (2026-07-24, same day, owner review of round 2's 3 directions): further
+ * iteration, not a wholesale rejection this time — round 2's white-or-sunken circular
+ * store marker and glyph-above-name transit unit are SUPERSEDED, everything else
+ * (labels/3D off, the zoom-out fitBounds framing) carries forward unchanged. Four
+ * owner asks, all system-wide across every non-"current" direction:
+ *  - the store marker becomes a PIN, not a circle ("the owner likes the store glyph
+ *    but wants a PIN shape, not a full circle") — `storePinMarkerEl` reuses
+ *    `pinMarkerEl`'s own teardrop geometry with the Store glyph inset in its head,
+ *    still white-or-sunken, never black.
+ *  - the transit stop becomes a CIRCLE with an always-BLUE (`s-accent` #276EF1)
+ *    glyph — the shapes literally swap (`transitCircleMarkerEl`, reusing round 2's
+ *    circular geometry). Per-direction ink/white glyph colour (`transitUnitColorFor`)
+ *    is gone — blue is now fixed everywhere non-"current" renders, so the 3
+ *    directions differ on OTHER axes instead (see below).
+ *  - the station name moves INTO one pill shape attached to the circle
+ *    (`pillAttachmentFor`: "under" the circle vs "beside" it), replacing round 2's
+ *    bare label-under-glyph text — "the bare text label is rejected... put the
+ *    station name inside one pill/shape".
+ *  - the dotted walking route (only Direction B below still draws one) goes from
+ *    `line-opacity: 0.45` to a much bolder `0.9` — "increase the dotted route's
+ *    saturation/opacity toward full s-accent".
+ * Building legibility (map "looks so empty, like all white") and the zoom-to-distance
+ * system are NOT per-direction toggles — both are global fixes: see
+ * `applySolenBasemapConfig` (lib/map-style.ts, `colorLand`/`colorBuildings`) and
+ * `maxZoomForStopDistance` below, applied identically across all 3 directions AND
+ * "current" production, the same way round 2 treated the labels/3D/zoom-out fixes.
+ * The 3 directions below now differ on pill attachment (under vs beside), marker fill
+ * (white vs sunken), and whether the boosted-blue route line renders at all — see
+ * /dev/pdp/mapdesign for all 3 rendered side by side.
  */
 export function SalonLocation({
   salon,
@@ -102,15 +132,17 @@ export function SalonLocation({
   transitChipVariant?: "current" | "stacked-badge" | "inline-pill" | "labelled";
   /** In-map treatment for the card-overlay variant's map canvas — see the file header
    *  JSDoc above for the full owner-reference context (round-1 "path-pill" /
-   *  "store-anchor" / "minimal" are gone, superseded by round 2). Default "current" is
-   *  the untouched production render (ink teardrop salon pin, old transit-stop marker,
-   *  no route line) — every existing caller omits this prop and is unaffected.
-   *  "clean-white" / "ink-glyph" / "sunken" are the 3 round-2 directions built for the
-   *  /dev/pdp/mapdesign mockup, reachable only via this explicit prop; the owner has
-   *  not picked one yet, so none of them ship anywhere. This prop ONLY affects the map
-   *  canvas — the floating card's own content (name/address/walk-time chip) is
-   *  identical across all 3 directions, since the ask was explicitly "in-map" design
-   *  directions, not a card redesign. */
+   *  "store-anchor" / "minimal" are gone, superseded by round 2; round 2's circular
+   *  store marker + glyph-above-name transit unit are gone, superseded by round 3).
+   *  Default "current" is the untouched production render (ink teardrop salon pin, old
+   *  dot+pill transit-stop marker, no route line) — every existing caller omits this
+   *  prop and is unaffected. "clean-white" / "ink-glyph" / "sunken" are the 3 round-3
+   *  directions (pin-shaped store marker, blue-glyph circular transit marker, station
+   *  name in one pill) built for the /dev/pdp/mapdesign mockup, reachable only via
+   *  this explicit prop; the owner has not picked one yet, so none of them ship
+   *  anywhere. This prop ONLY affects the map canvas — the floating card's own content
+   *  (name/address/walk-time chip) is identical across all 3 directions, since the ask
+   *  was explicitly "in-map" design directions, not a card redesign. */
   mapDesign?: "current" | "clean-white" | "ink-glyph" | "sunken";
 }) {
   const hasCoords = Boolean(salon.latitude && salon.longitude);
@@ -424,6 +456,42 @@ function TransitChip({
 // minzoom:17, so the salon's building carries its street-number label too.
 const STREET_ZOOM = 17;
 
+/**
+ * ROUND 3 (2026-07-24) — zoom CALIBRATED TO DISTANCE, replacing the hardcoded flat
+ * `maxZoom: 15.5` that `fit()` used for every salon+stop pair regardless of how far
+ * apart they actually are (owner: "zoom calibrated to distance, not a fixed
+ * maxZoom... closer stop -> tighter zoom, farther stop -> wider, with sane clamps").
+ *
+ * Input is `distanceMeters` — the REAL straight-line distance
+ * /api/transit/nearest-stop already returns (opendata.ch's own `distance` field, see
+ * that route's header comment), not a derived/estimated number.
+ *
+ * Bands (closer -> tighter/higher zoom, farther -> wider/lower zoom), documented so
+ * this is a system, not a magic number:
+ *   <=150m    -> 16.0  Very close (e.g. right around the corner) — the pair barely
+ *                       spans the frame even zoomed in, so go tight enough that
+ *                       individual buildings (minzoom 15, see STREET_ZOOM above) stay
+ *                       legible rather than wasting the extra room.
+ *   151-250m  -> 15.5  The Spalentor fixture band (189m) — the exact value the owner
+ *                       already reviewed and approved as "zoomed out further" in
+ *                       round 2, kept as its own band so that specific, already-signed-
+ *                       off framing doesn't shift under this system.
+ *   251-400m  -> 15.0  A longer but still comfortably walkable stretch.
+ *   401-600m  -> 14.5  Edge of comfortable walking distance — needs real breathing
+ *                       room for both pins to read clearly with the stop this far off.
+ *   >600m     -> 14.0  Floor clamp — a genuinely distant stop; never zoom out past
+ *                       this or the salon pin gets lost among unrelated blocks.
+ * Clamped to [14.0, 16.0] by construction (every branch returns a literal inside that
+ * range) — never extrapolates past the documented bands.
+ */
+export function maxZoomForStopDistance(distanceMeters: number): number {
+  if (distanceMeters <= 150) return 16.0;
+  if (distanceMeters <= 250) return 15.5;
+  if (distanceMeters <= 400) return 15.0;
+  if (distanceMeters <= 600) return 14.5;
+  return 14.0;
+}
+
 // mapDesign route source/layer ids — module-scope constants (not per-render) so the
 // add/getSource/getLayer/removeLayer/removeSource calls in LocationMapCanvas's effect
 // all agree on the same id, and a stray previous instance (rapid dep-array remount)
@@ -432,30 +500,35 @@ const STREET_ZOOM = 17;
 const ROUTE_SOURCE_ID = "salon-walking-route";
 const ROUTE_LAYER_ID = "salon-walking-route-line";
 
-// Round-2 (2026-07-24) marker constants + per-direction pickers — module scope so
-// storeMarkerEl/transitUnitMarkerEl and LocationMapCanvas's effect all agree on the
-// same numbers (the anchor-offset math below depends on TRANSIT_UNIT_GLYPH_SIZE
-// matching what transitUnitMarkerEl actually renders).
-const STORE_MARKER_DIAMETER = 34;
-const TRANSIT_UNIT_GLYPH_SIZE = 22;
-const TRANSIT_UNIT_COLOR_HEX: Record<"blue" | "ink" | "white", string> = {
-  blue: "#276EF1", // s-accent
-  ink: "#0A0A0A", // s-ink
-  white: "#FFFFFF",
-};
+// Round-3 (2026-07-24) marker constants + per-direction pickers — module scope so
+// storePinMarkerEl/transitCircleMarkerEl and LocationMapCanvas's effect all agree on
+// the same numbers (the anchor-offset math in LocationMapCanvas depends on
+// TRANSIT_CIRCLE_DIAMETER matching what transitCircleMarkerEl actually renders).
+// TRANSIT_CIRCLE_DIAMETER reuses round 2's own circular store-marker size (34px) —
+// the station now gets that exact geometry since the shapes swapped.
+const STORE_PIN_WIDTH = 30; // matches pinMarkerEl's own rendered width — reusing its teardrop geometry, not a new shape
+const STORE_PIN_HEIGHT = 40; // matches pinMarkerEl's own rendered height
+const TRANSIT_CIRCLE_DIAMETER = 34;
+const TRANSIT_CIRCLE_GLYPH_SIZE = Math.round(TRANSIT_CIRCLE_DIAMETER * 0.46);
 
-/** "sunken" gets the s-bg-sunken store-marker fill; every other direction (including
- *  the unreachable "current", which never calls storeMarkerEl at all) gets white. */
-function storeMarkerFillFor(mapDesign: "current" | "clean-white" | "ink-glyph" | "sunken"): "white" | "sunken" {
+/** "sunken" gets the s-bg-sunken fill on BOTH the store pin and the transit circle;
+ *  every other direction (including the unreachable "current", which never calls
+ *  either marker function) gets white. Shared by storePinMarkerEl and
+ *  transitCircleMarkerEl now that round 3 swapped which shape is which — round 2's
+ *  separate `storeMarkerFillFor` name is retired in favour of this more general one. */
+function markerFillFor(mapDesign: "current" | "clean-white" | "ink-glyph" | "sunken"): "white" | "sunken" {
   return mapDesign === "sunken" ? "sunken" : "white";
 }
 
-/** Direction A ("clean-white") = blue transit unit, Direction B ("ink-glyph") = ink,
- *  Direction C ("sunken") = white. Never called for "current". */
-function transitUnitColorFor(mapDesign: "current" | "clean-white" | "ink-glyph" | "sunken"): "blue" | "ink" | "white" {
-  if (mapDesign === "ink-glyph") return "ink";
-  if (mapDesign === "sunken") return "white";
-  return "blue";
+/** ROUND 3 (2026-07-24): where the station-name pill attaches to its circle — "under"
+ *  (stacked, centred under the circle) or "side" (a trailing chip beside it). Replaces
+ *  round 2's `transitUnitColorFor` (per-direction ink/white/blue glyph colour), which
+ *  is gone now that the transit glyph is fixed blue everywhere (owner: "a circle with
+ *  a BLUE transit glyph"); pill attachment is the new per-direction axis instead.
+ *  Direction B ("ink-glyph") gets "side" (paired with its route line, see
+ *  addRouteFeatures); the other two get "under". Never called for "current". */
+function pillAttachmentFor(mapDesign: "current" | "clean-white" | "ink-glyph" | "sunken"): "under" | "side" {
+  return mapDesign === "ink-glyph" ? "side" : "under";
 }
 
 /** Minimal shape read off the real Mapbox Directions API response (walking profile,
@@ -492,16 +565,25 @@ function LocationMapCanvas({
   latitude: number;
   stylePath: string;
   label: string;
-  /** Nearest public-transport stop — rendered as a small marker on the map itself
-   *  (owner 2026-07-24: no more tram icon/badge on the card; the station belongs on
-   *  the map). Visually subordinate to the salon's ink teardrop pin (a small dot with
-   *  a tiny transit glyph, not a full pin). Only card-overlay passes this; the other
-   *  variants omit it and get no second marker. */
-  transitStop?: { latitude: number; longitude: number; type: TransitStopType; name?: string; walkMinutes: number } | null;
+  /** Nearest public-transport stop — rendered as a marker on the map itself (owner
+   *  2026-07-24: no more tram icon/badge on the card; the station belongs on the
+   *  map). Only card-overlay passes this; the other variants omit it and get no
+   *  second marker. `distanceMeters` (round 3, 2026-07-24) feeds
+   *  `maxZoomForStopDistance` below — the real straight-line distance
+   *  /api/transit/nearest-stop already computes, not a derived value. */
+  transitStop?: {
+    latitude: number;
+    longitude: number;
+    type: TransitStopType;
+    name?: string;
+    walkMinutes: number;
+    distanceMeters: number;
+  } | null;
   /** In-map design direction — see SalonLocation's own mapDesign JSDoc above (file
    *  header; round-1 "path-pill" / "store-anchor" / "minimal" are gone, superseded by
-   *  round 2). Only card-overlay passes anything but the "current" default; the other
-   *  variants omit it and render exactly as before. */
+   *  round 2, itself superseded by round 3's pin/circle/pill markers). Only
+   *  card-overlay passes anything but the "current" default; the other variants omit
+   *  it and render exactly as before. */
   mapDesign?: "current" | "clean-white" | "ink-glyph" | "sunken";
 }) {
   const holder = React.useRef<HTMLDivElement>(null);
@@ -510,6 +592,7 @@ function LocationMapCanvas({
   const transitType = transitStop?.type;
   const transitName = transitStop?.name;
   const transitWalkMinutes = transitStop?.walkMinutes;
+  const transitDistanceMeters = transitStop?.distanceMeters;
 
   React.useEffect(() => {
     const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
@@ -527,39 +610,49 @@ function LocationMapCanvas({
       attributionControl: false,
     });
 
-    // Round 2 (2026-07-24): every non-"current" direction gets the redesigned
-    // circular store marker (storeMarkerEl) — white or sunken fill, ink glyph, no ring
-    // (owner: "it must NOT be black, and the blue ring... must go"). "current" keeps
-    // the original ink teardrop, untouched.
-    const useStoreMarker = mapDesign !== "current";
+    // Round 3 (2026-07-24): every non-"current" direction gets a PIN-shaped store
+    // marker (storePinMarkerEl) instead of round 2's circle — "the owner likes the
+    // store glyph but wants a PIN shape, not a full circle". Reuses pinMarkerEl's own
+    // teardrop geometry (same anchor:"bottom", tip on the coordinate), white or sunken
+    // fill, ink glyph, still never black / never ringed. "current" keeps the original
+    // plain ink teardrop, untouched.
     const marker = new mapboxgl.Marker({
-      element: useStoreMarker ? storeMarkerEl({ fill: storeMarkerFillFor(mapDesign) }) : pinMarkerEl(),
-      anchor: useStoreMarker ? "center" : "bottom",
+      element: mapDesign === "current" ? pinMarkerEl() : storePinMarkerEl({ fill: markerFillFor(mapDesign) }),
+      anchor: "bottom",
     })
       .setLngLat(centre)
       .addTo(map);
 
-    // Round 2: the transit-stop marker becomes a single glyph-above-name unit with NO
-    // circle/pill/background chip (owner: "must read as a single element"), anchored
-    // "top" with a negative y-offset of half the glyph's own size so the GLYPH itself —
-    // not the label under it, not the element's full bounding box — sits exactly on the
-    // stop's coordinate. "current" keeps the original dot-badge transitMarkerEl,
-    // untouched.
+    // Round 3: the station becomes a CIRCLE with an always-blue transit glyph (the
+    // shapes literally swap with the store pin above), and the station name moves
+    // into ONE pill shape attached to the circle instead of round 2's bare
+    // glyph-above-name text (owner: "the bare text label is rejected... put the
+    // station name inside one pill/shape"). `pillAttachmentFor` picks where that pill
+    // attaches ("under" the circle, centred, vs "beside" it) — the anchor/offset pair
+    // below is chosen per attachment so the CIRCLE's own centre (not the pill, not the
+    // element's full bounding box) sits exactly on the stop's coordinate, same
+    // precision goal as round 2's glyph-centring math. "current" keeps the original
+    // dot-badge transitMarkerEl, untouched.
     let transitMarker: MapboxMarker | null = null;
     if (transitLat != null && transitLng != null && transitType != null) {
       const stopName = transitName ? stripCityPrefix(transitName) : undefined;
-      transitMarker =
-        mapDesign === "current"
-          ? new mapboxgl.Marker({ element: transitMarkerEl(transitType, stopName) })
-              .setLngLat([transitLng, transitLat])
-              .addTo(map)
-          : new mapboxgl.Marker({
-              element: transitUnitMarkerEl(transitType, stopName, transitUnitColorFor(mapDesign)),
-              anchor: "top",
-              offset: [0, -(TRANSIT_UNIT_GLYPH_SIZE / 2)],
-            })
-              .setLngLat([transitLng, transitLat])
-              .addTo(map);
+      if (mapDesign === "current") {
+        transitMarker = new mapboxgl.Marker({ element: transitMarkerEl(transitType, stopName) })
+          .setLngLat([transitLng, transitLat])
+          .addTo(map);
+      } else {
+        const attachment = pillAttachmentFor(mapDesign);
+        const element = transitCircleMarkerEl({ type: transitType, name: stopName, fill: markerFillFor(mapDesign), attachment });
+        const radius = TRANSIT_CIRCLE_DIAMETER / 2;
+        transitMarker =
+          attachment === "under"
+            ? new mapboxgl.Marker({ element, anchor: "top", offset: [0, -radius] })
+                .setLngLat([transitLng, transitLat])
+                .addTo(map)
+            : new mapboxgl.Marker({ element, anchor: "left", offset: [-radius, 0] })
+                .setLngLat([transitLng, transitLat])
+                .addTo(map);
+      }
     }
 
     // Same below-the-fold 0px-container guard as NearbyMap.tsx: on first mount the
@@ -571,18 +664,25 @@ function LocationMapCanvas({
       // With a nearest stop, frame BOTH points. Measured: a fixed setZoom(STREET_ZOOM)
       // put the Spalentor stop (189 m away) outside the viewport entirely, and it also
       // clobbered any earlier fitBounds because this runs on every load/resize.
-      // Zoomed out further (2026-07-24, owner: "zoom out 30-40%") — maxZoom 17 -> 15.5
-      // (the low end of the owner-given 15.5-16 range) and padding raised ~33% on every
-      // side (48->64, 104->140) so the salon+stop pair reads with real margin instead of
-      // nearly filling the frame. Applies to every direction, including "current"
-      // (production) — reported against the whole map, not one mockup direction.
+      // Zoomed out further (2026-07-24, owner: "zoom out 30-40%") — maxZoom 17 -> a flat
+      // 15.5 (the low end of the owner-given 15.5-16 range) and padding raised ~33% on
+      // every side (48->64, 104->140) so the salon+stop pair reads with real margin
+      // instead of nearly filling the frame. ROUND 3 (2026-07-24, same day): the owner
+      // wants zoom CALIBRATED TO DISTANCE instead of that one flat number — closer stop
+      // -> tighter zoom, farther stop -> wider. `maxZoomForStopDistance` (below) replaces
+      // the hardcoded 15.5; the Spalentor fixture (189m) lands in that function's own
+      // 151-250m band, which is pinned to 15.5 specifically so the owner-reviewed round-2
+      // framing doesn't shift under the one stop they already approved. Padding logic is
+      // unchanged. Applies to every direction, including "current" (production) —
+      // reported against the whole map, not one mockup direction.
       if (transitLng != null && transitLat != null) {
+        const maxZoom = transitDistanceMeters != null ? maxZoomForStopDistance(transitDistanceMeters) : 15.5;
         map.fitBounds(
           [
             [Math.min(longitude, transitLng), Math.min(latitude, transitLat)],
             [Math.max(longitude, transitLng), Math.max(latitude, transitLat)],
           ],
-          { padding: { top: 64, bottom: 140, left: 64, right: 64 }, maxZoom: 15.5, duration: 0 },
+          { padding: { top: 64, bottom: 140, left: 64, right: 64 }, maxZoom, duration: 0 },
         );
         return;
       }
@@ -597,14 +697,17 @@ function LocationMapCanvas({
 
     // Round 2 (2026-07-24): the owner questioned whether a manually-fetched route line
     // "holds up when scaled" — treated as a genuine per-direction choice, not a given.
-    // Only "ink-glyph" (Direction B) draws one now, as a thin/low-opacity dotted line
-    // for direct comparison against "clean-white" (no route at all) and "sunken" (also
-    // none). The on-map walking-time pill from round 1 is deleted outright — no
-    // direction renders it (owner: "he does not want it on the map at all"). Fetched
-    // live from Mapbox Directions using the same public token the map itself already
-    // renders with — never a fabricated straight line; degrades to no route on any
-    // fetch failure, the same graceful-degrade contract as the transit-stop fetch above
-    // this component.
+    // Only "ink-glyph" (Direction B) draws one, for direct comparison against
+    // "clean-white" (no route at all) and "sunken" (also none). ROUND 3 (2026-07-24,
+    // same day): that route line is now a bold, near-full-opacity blue dotted trail
+    // (see addRouteFeatures's paint block below) instead of round 2's thin/low-opacity
+    // version — same per-direction choice of whether to draw one at all, just louder
+    // where it does render. The on-map walking-time pill from round 1 is deleted
+    // outright — no direction renders it (owner: "he does not want it on the map at
+    // all"). Fetched live from Mapbox Directions using the same public token the map
+    // itself already renders with — never a fabricated straight line; degrades to no
+    // route on any fetch failure, the same graceful-degrade contract as the
+    // transit-stop fetch above this component.
     let cancelled = false;
 
     async function addRouteFeatures() {
@@ -632,9 +735,11 @@ function LocationMapCanvas({
           layout: { "line-cap": "round", "line-join": "round" },
           paint: {
             "line-color": "#276EF1", // drift-ok: token s-accent, inline for Mapbox GL paint (not a Tailwind/JSX context)
-            "line-width": 2, // thin — owner: "very subtle"
-            "line-dasharray": [0, 2.8], // sparse dots — sparser than any round-1 direction
-            "line-opacity": 0.45, // low opacity — owner: "very subtle... thin, low opacity"
+            "line-width": 2.5, // round 3: a touch bolder than round 2's 2px thin line
+            "line-dasharray": [0, 2.2], // round 3: denser dots than round 2's [0, 2.8] — reads as a clearer trail
+            // round 3 (2026-07-24, owner: "increase the dotted route's saturation/opacity toward full s-accent —
+            // currently low-opacity on some directions") — up from round 2's 0.45, near-full strength blue
+            "line-opacity": 0.9,
           },
         });
       } catch {
@@ -657,7 +762,7 @@ function LocationMapCanvas({
       if (map.getSource(ROUTE_SOURCE_ID)) map.removeSource(ROUTE_SOURCE_ID);
       map.remove();
     };
-  }, [longitude, latitude, stylePath, transitLat, transitLng, transitType, transitName, transitWalkMinutes, mapDesign]);
+  }, [longitude, latitude, stylePath, transitLat, transitLng, transitType, transitName, transitWalkMinutes, transitDistanceMeters, mapDesign]);
 
   return (
     // h-full, NOT `absolute inset-0`: mapbox-gl.css sets `.mapboxgl-map { position: relative }`
@@ -684,8 +789,8 @@ function pinMarkerEl(): HTMLDivElement {
 
 /** lucide-react's "Store" icon path data, copied verbatim (same safe static-SVG-string
  *  pattern as transitGlyphPaths below — node_modules/lucide-react/dist/esm/icons/store.js,
- *  lucide-react 0.577.0). Used by storeMarkerEl for the round-2 circular destination
- *  marker shared by every non-"current" mapDesign direction. */
+ *  lucide-react 0.577.0). Used by storePinMarkerEl for the round-3 pin-shaped
+ *  destination marker shared by every non-"current" mapDesign direction. */
 function storeGlyphPaths(): string {
   return (
     '<path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5"/>' +
@@ -694,26 +799,30 @@ function storeGlyphPaths(): string {
   );
 }
 
-/** Circular "destination" marker shared by every round-2 mapDesign direction
- *  ("clean-white" / "ink-glyph" / "sunken") — never black, never ringed in accent
- *  blue (owner: "it must NOT be black, and the blue ring around it must go [off
- *  design system]"). `fill` picks the circle's own background: "white"
- *  (clean-white + ink-glyph, a hairline s-border keeps the edge legible) or "sunken"
- *  (the sunken direction's s-bg-sunken fill, no border — the tonal fill itself reads
- *  as the edge). The Store glyph is always ink, safe on either fill. Default
- *  anchor = center (a circle marks a point, unlike pinMarkerEl's teardrop tip).
- *  "current" never calls this — it keeps the original ink teardrop. */
-function storeMarkerEl({ fill }: { fill: "white" | "sunken" }): HTMLDivElement {
+/** ROUND 3 (2026-07-24) — the store marker becomes a PIN (owner: "the owner likes the
+ *  store glyph but wants a PIN shape, not a full circle"), reusing pinMarkerEl's own
+ *  teardrop path verbatim (same viewBox, same 30x40 render size, same anchor:"bottom"
+ *  tip-on-coordinate contract) instead of round 2's full circle. `fill` still picks
+ *  white (hairline s-border edge) or sunken (tonal, no border) — never black, never
+ *  accent-ringed, same guardrail as round 2's storeMarkerEl. The Store glyph sits
+ *  inset in the pin's circular head (viewBox y 0-24, centred (12,12), radius 12),
+ *  scaled + translated so its own centre lands on that same point. "current" never
+ *  calls this — it keeps the original plain ink teardrop (pinMarkerEl, no glyph). */
+function storePinMarkerEl({ fill }: { fill: "white" | "sunken" }): HTMLDivElement {
   const el = document.createElement("div");
-  el.style.filter = "drop-shadow(0 2px 5px rgba(10,10,10,0.18))"; // soft shadow — not the old heavy 0.35-alpha black-circle shadow
+  el.style.filter = "drop-shadow(0 2px 5px rgba(10,10,10,0.22))"; // soft shadow — not pinMarkerEl's heavier 0.35-alpha black-teardrop shadow
   const background = fill === "white" ? "#FFFFFF" : "#F4F4F5"; // drift-ok: white + token s-bg-sunken, inline for vanilla-DOM marker
-  const border = fill === "white" ? "1px solid #E4E4E7" : "none"; // drift-ok: token s-border, inline for vanilla-DOM marker
-  const glyphSize = Math.round(STORE_MARKER_DIAMETER * 0.46);
+  const pinFill =
+    fill === "white"
+      ? `<path d="M12 0C5.373 0 0 5.373 0 12c0 8.5 12 20 12 20s12-11.5 12-20C24 5.373 18.627 0 12 0Z" fill="${background}" stroke="#E4E4E7" stroke-width="1"/>` // drift-ok: white fill + token s-border stroke, inline for vanilla-DOM marker
+      : `<path d="M12 0C5.373 0 0 5.373 0 12c0 8.5 12 20 12 20s12-11.5 12-20C24 5.373 18.627 0 12 0Z" fill="${background}"/>`; // drift-ok: token s-bg-sunken, inline for vanilla-DOM marker
+  const glyphScale = 0.56; // fraction of the Store glyph's own 24x24 viewBox that fits inside the pin's 24-wide circular head without touching its edge
+  const glyphOffset = (12 - 12 * glyphScale).toFixed(2); // centres the scaled glyph on the head's own (12,12) centre
   el.innerHTML =
-    `<div style="width:${STORE_MARKER_DIAMETER}px;height:${STORE_MARKER_DIAMETER}px;border-radius:9999px;background:${background};` +
-    `border:${border};box-sizing:border-box;display:flex;align-items:center;justify-content:center;">` +
-    `<svg aria-hidden="true" viewBox="0 0 24 24" width="${glyphSize}" height="${glyphSize}" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${storeGlyphPaths()}</svg>` + // drift-ok: token s-ink, inline for vanilla-DOM marker
-    "</div>";
+    `<svg aria-hidden="true" viewBox="0 0 24 32" width="${STORE_PIN_WIDTH}" height="${STORE_PIN_HEIGHT}" style="display:block">` +
+    pinFill +
+    `<g transform="translate(${glyphOffset},${glyphOffset}) scale(${glyphScale})" fill="none" stroke="#0A0A0A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${storeGlyphPaths()}</g>` + // drift-ok: token s-ink, inline for vanilla-DOM marker
+    "</svg>";
   return el;
 }
 
@@ -750,9 +859,9 @@ function transitGlyphPaths(type: TransitStopType): string {
 /** Nearest public-transport stop marker for "current" (production) — a compact 16px
  *  s-accent dot (default anchor = center, not "bottom" — this marks a point, it
  *  doesn't need a tip) with a tiny white transit glyph, station name in a small white
- *  pill beside it. Round 2 (2026-07-24) replaces this shape for every OTHER direction
- *  with transitUnitMarkerEl below (owner: no circle/pill/chip, glyph directly above
- *  the name) — "current" keeps this exact original markup, untouched. */
+ *  pill beside it. Round 2 (2026-07-24) replaced this shape for every OTHER direction
+ *  with transitUnitMarkerEl (round 3's transitCircleMarkerEl now, see below) — "current"
+ *  keeps this exact original markup, untouched. */
 function transitMarkerEl(type: TransitStopType, name?: string): HTMLDivElement {
   const el = document.createElement("div");
   el.style.filter = "drop-shadow(0 1px 3px rgba(0,0,0,0.3))";
@@ -774,32 +883,56 @@ function transitMarkerEl(type: TransitStopType, name?: string): HTMLDivElement {
   return el;
 }
 
-/** ROUND 2 (2026-07-24) transit-stop marker for "clean-white" / "ink-glyph" /
- *  "sunken" — a single glyph-above-name UNIT, no circle, no pill, no background chip
- *  (owner: "the tram/bus/train glyph and the station name must read as a single
- *  element... NO circle, NO pill, NO background chip"). `color` is picked per
- *  direction by transitUnitColorFor: "blue" (s-accent, clean-white), "ink" (s-ink,
- *  ink-glyph), or "white" (sunken — a soft dark drop-shadow on the glyph plus a
- *  text-shadow on the name keep both legible against the light basemap, per the
- *  owner's own ask for that direction). Caller anchors this marker "top" with a
- *  negative y-offset of half TRANSIT_UNIT_GLYPH_SIZE, so the GLYPH's own center — not
- *  the label under it, not the element's full bounding box — sits exactly on the
- *  stop's coordinate ("the glyph must sit exactly at the stop's coordinate"). */
-function transitUnitMarkerEl(type: TransitStopType, name: string | undefined, color: "blue" | "ink" | "white"): HTMLDivElement {
+/** ROUND 3 (2026-07-24) transit-stop marker for "clean-white" / "ink-glyph" /
+ *  "sunken" — the station becomes a CIRCLE (round 2's store-marker geometry, reused
+ *  now that the shapes swapped) holding an always-BLUE (`s-accent` #276EF1) transit
+ *  glyph, and the station name sits inside ONE pill shape attached to that circle
+ *  (owner: "a circle with a BLUE transit glyph"; "the bare text label is rejected...
+ *  put the station name inside one pill/shape") — replacing round 2's bare
+ *  glyph-above-name unit outright. `fill` mirrors storePinMarkerEl's own white/sunken
+ *  choice (never black, never a colour outside the token ramp). `attachment` picks
+ *  where the pill sits: "under" the circle (stacked, centred) or "side" (a trailing
+ *  chip). Caller anchors this marker so the CIRCLE's own centre — not the pill, not
+ *  the element's full bounding box — sits exactly on the stop's coordinate (same
+ *  precision goal round 2 held for its glyph). */
+function transitCircleMarkerEl({
+  type,
+  name,
+  fill,
+  attachment,
+}: {
+  type: TransitStopType;
+  name: string | undefined;
+  fill: "white" | "sunken";
+  attachment: "under" | "side";
+}): HTMLDivElement {
   const el = document.createElement("div");
   el.style.display = "flex";
-  el.style.flexDirection = "column";
+  el.style.flexDirection = attachment === "under" ? "column" : "row";
   el.style.alignItems = "center";
-  el.style.gap = "2px";
+  el.style.gap = attachment === "under" ? "4px" : "6px";
   el.style.whiteSpace = "nowrap";
-  const hex = TRANSIT_UNIT_COLOR_HEX[color];
-  el.style.filter =
-    color === "white"
-      ? "drop-shadow(0 1px 3px rgba(10,10,10,0.55))" // stronger — white-on-light-tile needs it to read at all
-      : "drop-shadow(0 1px 2px rgba(10,10,10,0.18))"; // light — blue/ink already contrast the basemap
-  const textShadow = color === "white" ? "text-shadow:0 1px 2px rgba(10,10,10,0.55);" : "";
-  el.innerHTML =
-    `<svg aria-hidden="true" viewBox="0 0 24 24" width="${TRANSIT_UNIT_GLYPH_SIZE}" height="${TRANSIT_UNIT_GLYPH_SIZE}" style="display:block" fill="none" stroke="${hex}" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">${transitGlyphPaths(type)}</svg>` +
-    (name ? `<span style="font:600 11px/1.1 Inter,system-ui,sans-serif;color:${hex};${textShadow}">${name}</span>` : "");
+  el.style.filter = "drop-shadow(0 1px 3px rgba(10,10,10,0.22))";
+
+  const circleBackground = fill === "white" ? "#FFFFFF" : "#F4F4F5"; // drift-ok: white + token s-bg-sunken, inline for vanilla-DOM marker
+  const circleBorder = fill === "white" ? "1px solid #E4E4E7" : "none"; // drift-ok: token s-border, inline for vanilla-DOM marker
+  const circle =
+    `<div style="width:${TRANSIT_CIRCLE_DIAMETER}px;height:${TRANSIT_CIRCLE_DIAMETER}px;border-radius:9999px;background:${circleBackground};` +
+    `border:${circleBorder};box-sizing:border-box;display:flex;align-items:center;justify-content:center;flex-shrink:0;">` +
+    `<svg aria-hidden="true" viewBox="0 0 24 24" width="${TRANSIT_CIRCLE_GLYPH_SIZE}" height="${TRANSIT_CIRCLE_GLYPH_SIZE}" fill="none" stroke="#276EF1" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">${transitGlyphPaths(type)}</svg>` + // drift-ok: token s-accent, inline for vanilla-DOM marker
+    "</div>";
+
+  // Pill fill mirrors the circle's own fill (white-with-border or sunken-no-border) —
+  // "every shape reads as one tonal family" for the sunken direction, same as
+  // storePinMarkerEl's pin.
+  const pillBackground = fill === "white" ? "#FFFFFF" : "#F4F4F5"; // drift-ok: white + token s-bg-sunken, inline for vanilla-DOM marker
+  const pillBorder = fill === "white" ? "1px solid #E4E4E7" : "none"; // drift-ok: token s-border, inline for vanilla-DOM marker
+  const pill = name
+    ? `<span style="display:inline-block;max-width:120px;overflow:hidden;text-overflow:ellipsis;` +
+      `font:600 11px/1.1 Inter,system-ui,sans-serif;color:#0A0A0A;background:${pillBackground};` + // drift-ok: token s-ink text, inline for vanilla-DOM marker
+      `border:${pillBorder};border-radius:9999px;padding:3px 9px;">${name}</span>`
+    : "";
+
+  el.innerHTML = circle + pill;
   return el;
 }
