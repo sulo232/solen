@@ -8,7 +8,7 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { MapPin } from "lucide-react";
 import type { SalonCard } from "@/lib/types";
-import { SOLEN_MAP_STYLE } from "@/lib/map-style";
+import { SOLEN_MAP_STYLE, applySolenBasemapConfig } from "@/lib/map-style";
 import Supercluster from "supercluster";
 
 const BASEL_CENTER: [number, number] = [7.5886, 47.5596];
@@ -163,6 +163,18 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
     // canvas can paint blank when the map inits before layout settles.
     map.on("load", () => {
       map.resize();
+      // Owner reference (2026-07-24): POI icons + labels, street names, place labels, grey
+      // buildings, everywhere — this style ships those flags off by default
+      // (lib/map-style.ts). CONFLICT flagged, not silently resolved: the ALWAYS regex two
+      // lines down was added 2026-07-02 to force-hide poi/transit/rail/station/airport/ferry
+      // layers on THIS surface specifically ("owner: dislikes the blue map labels"). That is
+      // a different mechanism (setLayoutProperty on individual style layers) than this
+      // config-property call, and — if it still matches real layer ids on this Standard-based
+      // style — can visually cancel the showPointOfInterestLabels/showTransitLabels config
+      // below on the search map ONLY (SalonLocation/NearbyMap don't run this ALWAYS pass).
+      // Left the 2026-07-02 declutter untouched pending an explicit call on whether the new
+      // "POI everywhere" ask supersedes it here too; needs visual verification.
+      applySolenBasemapConfig(map);
       // Uber-style clean detail on Fresha-colour streets: KEEP the drivable road
       // network (minor / service / street / arterials) so it reads as a real
       // map, but hide the clutter that felt "busy". Iterate ids so it's robust to

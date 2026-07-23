@@ -11,7 +11,7 @@ import * as React from "react";
 import mapboxgl from "mapbox-gl";
 import { MapPin } from "lucide-react";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { SOLEN_MAP_STYLE } from "@/lib/map-style";
+import { SOLEN_MAP_STYLE, applySolenBasemapConfig } from "@/lib/map-style";
 
 /**
  * NearbyMap: the "In der Nähe" map teaser.
@@ -154,6 +154,10 @@ export default function NearbyMap({
       decollide();
     };
     map.on("load", fit);
+    // Owner reference (2026-07-24): POI icons + labels, street names, place labels, grey
+    // buildings — this style ships those flags off by default (lib/map-style.ts). Must run
+    // after "load" (style is ready by then), never before.
+    map.on("load", () => applySolenBasemapConfig(map));
     const ro = new ResizeObserver(fit);
     ro.observe(holder.current);
 

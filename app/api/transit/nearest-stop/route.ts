@@ -48,6 +48,7 @@ export type NearestTransitStop = {
   longitude: number;
   distanceMeters: number;
   walkMinutes: number;
+  walkSource?: "directions" | "straight-line";
 };
 
 // Average adult walking speed, used to convert the station's distance into a minutes
@@ -119,7 +120,7 @@ async function fetchNearestStop(lat: number, lng: number): Promise<NearestTransi
       distanceMeters: Math.round(distanceMeters),
       // Minimum 1 — a "0 Min." chip for a stop right outside the door reads as broken,
       // not fast.
-      walkMinutes: Math.max(1, Math.round(distanceMeters / WALK_SPEED_M_PER_MIN)),
+      ...(await routedWalk(lng, lat, stopLng, stopLat, distanceMeters)),
     };
   } catch (err) {
     console.error("[api/transit/nearest-stop] fetch failed:", err);
@@ -150,4 +151,42 @@ export async function GET(request: NextRequest) {
   const stop = await fetchNearestStop(lat, lng);
   stopCache.set(key, { stop, fetchedAt: Date.now() });
   return NextResponse.json({ stop });
+}
+
+/**
+ * Real walking time from the Mapbox Directions walking profile — a routed duration that
+ * respects actual paths (detours, closures), instead of a straight-line guess. Falls back
+ * to the haversine/WALK_SPEED estimate only if Directions fails, and ALWAYS reports which
+ * source produced the number so the UI never passes an estimate off as a routed figure.
+ */
+async function routedWalk(
+  fromLng: number,
+  fromLat: number,
+  toLng: number,
+  toLat: number,
+  fallbackMeters: number,
+): Promise<{ walkMinutes: number; walkSource: "directions" | "straight-line" }> {
+  const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+  if (token) {
+    try {
+      const u =
+        "https://api.mapbox.com/directions/v5/mapbox/walking/" +
+        `${fromLng},${fromLat};${toLng},${toLat}` +
+        `?overview=false&access_token=${token}`;
+      const res = await fetch(u, { next: { revalidate: 86400 } });
+      if (res.ok) {
+        const j = (await res.json()) as { routes?: { duration?: number }[] };
+        const secs = j.routes?.[0]?.duration;
+        if (typeof secs === "number" && Number.isFinite(secs)) {
+          return { walkMinutes: Math.max(1, Math.round(secs / 60)), walkSource: "directions" };
+        }
+      }
+    } catch {
+      // fall through to the estimate below
+    }
+  }
+  return {
+    walkMinutes: Math.max(1, Math.round(fallbackMeters / WALK_SPEED_M_PER_MIN)),
+    walkSource: "straight-line",
+  };
 }
