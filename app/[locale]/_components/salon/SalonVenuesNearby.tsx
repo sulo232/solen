@@ -125,7 +125,7 @@ export function SalonVenuesNearby({
         </h2>
         <div className="mt-5 flex gap-4 overflow-hidden">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="h-[200px] w-[calc(50%-8px)] shrink-0 animate-pulse rounded-2xl bg-s-bg-sunken" />
+            <div key={i} className="h-[200px] w-[calc(66%-12px)] shrink-0 animate-pulse rounded-2xl bg-s-bg-sunken" />
           ))}
         </div>
       </section>
@@ -172,7 +172,7 @@ export function SalonVenuesNearby({
           <Link
             key={s.id}
             href={`/${locale}/salon/${s.slug}`}
-            className="font-body group flex w-[calc(50%-8px)] shrink-0 flex-col snap-start md:w-[260px]"
+            className="font-body group flex w-[calc(66%-12px)] shrink-0 flex-col snap-start md:w-[260px]"
           >
             <div className="aspect-[4/3] w-full overflow-hidden rounded-xl bg-s-bg-sunken">
               {s.cover_photo_url && (

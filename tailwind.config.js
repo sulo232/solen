@@ -171,7 +171,7 @@ module.exports = {
         // Open-status green ONLY (Geöffnet text + open dot). Fresha's calmer
         // rgb(31,137,0), owner 2026-06-12 "make the green more like Fresha".
         // s-success stays the universal success green everywhere else.
-        "s-open": { DEFAULT: "#1F8900" },
+        "s-open": { DEFAULT: "#22C55E" },
         "s-warning": { DEFAULT: "#F1AE27", bg: "#FDF6E7", text: "#B45309" },  // V3-D421: the "amber twin" of s-accent (Uber-blue HSL S+L, hue rotated to 40deg) so warning is cohesive with the accent. .text = deep amber for text-on-pale.  // V3: aligned to LIVE_TRUTH §3 hex. `.text` = readable amber for text-on-pale (V3-D347 dashboard)
         // V3-D347 — operator-dashboard CALENDAR service palette (vibrant, dashboard-only per LOCKFILE §12). Store-defined service types; NO makeup.
         "s-cal": { hair: "#2563EB", color: "#EC4899", nails: "#8B5CF6", spa: "#10B981", barber: "#F97316" },

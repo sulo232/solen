@@ -8,6 +8,7 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { MapPin } from "lucide-react";
 import type { SalonCard } from "@/lib/types";
+import { SOLEN_MAP_STYLE } from "@/lib/map-style";
 import Supercluster from "supercluster";
 
 const BASEL_CENTER: [number, number] = [7.5886, 47.5596];
@@ -135,8 +136,9 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
     mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
     // Default basemap = Solen's custom Mapbox Studio style (solen32 account),
     // used exactly as designed. The runtime declutter below only applies to the
-    // bare streets-v12 fallback. NEXT_PUBLIC_MAPBOX_STYLE_LIGHT still overrides.
-    const style = process.env.NEXT_PUBLIC_MAPBOX_STYLE_LIGHT || "mapbox://styles/solen32/cmpshru31000801s751e55735";
+    // bare streets-v12 fallback. Canonical style + NEXT_PUBLIC_MAPBOX_STYLE_LIGHT
+    // override now live in lib/map-style.ts (the ONE map style for Solen — LOCKFILE §0.13).
+    const style = SOLEN_MAP_STYLE;
     const isBareStreets = style === "mapbox://styles/mapbox/streets-v12";
 
     const map = new mapboxgl.Map({

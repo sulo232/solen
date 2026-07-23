@@ -336,6 +336,7 @@ export function SalonDetailV3({
                 <SalonAppCta
                   locale={locale}
                   slug={slug}
+                  salonName={salon.name}
                   city={postalToCity(salon.postal_code)}
                   quartier={salon.quartier}
                 />

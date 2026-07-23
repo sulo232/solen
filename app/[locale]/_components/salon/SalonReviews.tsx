@@ -34,6 +34,7 @@ export function SalonReviews({
   salonId,
   salonSlug,
   locale,
+  layout = "stack",
 }: {
   average: number | null;
   count: number;
@@ -45,6 +46,16 @@ export function SalonReviews({
    *  reviews-portfolio-tap capture) instead of expanding inline. */
   salonSlug?: string;
   locale?: string;
+  /**
+   * Card treatment (net-new optional prop, /dev/pdp/reviews A/B/C comparison, 2026-07-23).
+   * `stack` (default) is the existing shipped vertical layout, byte-identical to every
+   * current caller , nothing else changes unless a caller opts in.
+   * `swipe` renders ALL rows in a horizontal snap-scroll deck (~1.5 cards visible per
+   * viewport) instead of the 2-card cap + see-all pill , swiping already reveals the rest.
+   * `collapsed` keeps the vertical stack but previews exactly ONE review before the
+   * existing see-all/expand affordance, instead of two.
+   */
+  layout?: "stack" | "swipe" | "collapsed";
 }) {
   const [expanded, setExpanded] = React.useState(false);
   const [fetched, setFetched] = React.useState<Review[] | null>(null);
@@ -82,7 +93,9 @@ export function SalonReviews({
     Boolean(r.comment ?? r.comment_de ?? r.comment_en) || Boolean(r.profiles?.display_name);
   const rows = all.filter(hasIdentity);
   const silentCount = all.length - rows.length;
-  const visible = expanded ? rows : rows.slice(0, 6);
+  const previewCount = layout === "collapsed" ? 1 : 2;
+  const visible = layout === "swipe" ? rows : expanded ? rows : rows.slice(0, previewCount);
+  const showSeeAll = layout !== "swipe" && rows.length > previewCount && !expanded;
 
   return (
     <section
@@ -97,9 +110,13 @@ export function SalonReviews({
         Bewertungen
       </h2>
 
-      {/* Summary — Fresha PDP capture (pdp-bottom, 2026-06-12): big star row, then
-          "4,9 (3'249)" with the COUNT in accent (review counts are THE blue case,
-          LOCKFILE §1.5 v3). No histogram on Fresha mobile — dropped per owner. */}
+      {/* Summary — Direction A "summary-first" (2026-07-23, _design-system/QUESTIONS.md Q24 /
+          _diagnosis/salon-pdp-sections.md — recommended reading of A; owner sign-off still marked
+          OPEN there, flag for confirmation). Star row + big average only; the bare blue "(11)" is
+          gone — the count folds into the "Alle N Bewertungen" see-all pill below instead (kills the
+          named bare-count defect). No histogram: that's Direction B, and a code comment already
+          states the histogram was dropped per owner — un-dropping it is its own owner call, not
+          bundled into this pass. */}
       <div className="mt-4 flex items-center gap-1.5">
         {[0, 1, 2, 3, 4].map((i) => (
           <Star
@@ -110,14 +127,9 @@ export function SalonReviews({
           />
         ))}
       </div>
-      <div className="mt-2.5 flex items-baseline gap-1.5">
-        <span className="font-body text-[18px] font-bold tracking-tight text-s-ink">
-          {average?.toFixed(1) ?? "—"}
-        </span>
-        <span className="font-body text-[16px] font-medium text-s-accent">
-          ({count.toLocaleString("de-CH")})
-        </span>
-      </div>
+      <span className="font-body mt-2.5 block text-[18px] font-bold tracking-tight text-s-ink">
+        {average?.toFixed(1) ?? "—"}
+      </span>
 
       <div className="mt-5 border-t border-s-border" />
 
@@ -135,24 +147,49 @@ export function SalonReviews({
         )
       ) : (
         <>
-          <div className="mt-6 flex flex-col gap-7">
-            {visible.map((r) => (
-              <ReviewCard key={r.id} review={r} />
-            ))}
-          </div>
+          {layout === "swipe" ? (
+            <div
+              className="mt-6 -mx-5 flex gap-4 overflow-x-auto px-5 pb-1 md:-mx-7 md:px-7 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              style={{ scrollSnapType: "x proximity" }}
+            >
+              {visible.map((r) => (
+                <div
+                  key={r.id}
+                  className="w-[68%] shrink-0 sm:w-[46%]"
+                  style={{ scrollSnapAlign: "start" }}
+                >
+                  <ReviewCard review={r} />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="mt-6 flex flex-col gap-7">
+              {visible.map((r) => (
+                <ReviewCard key={r.id} review={r} />
+              ))}
+            </div>
+          )}
           {silentCount > 0 && (
             <p className="mt-5 font-body text-[13.5px] text-s-ink-3">
               {rows.length > 0 ? "+ " : ""}{silentCount} {silentCount === 1 ? "Bewertung" : "Bewertungen"} ohne Kommentar
             </p>
           )}
-          {rows.length > 6 && !expanded && (
+          {showSeeAll && (
             <div className="mt-6 flex justify-center">
               {/* mockup-ok: SeeAllButton port, byte-identical pill class string, same instance as
-                  SalonServices/SalonTeam on this page (P2 fix, owner-approved 2026-07-15) */}
+                  SalonServices/SalonTeam on this page (P2 fix, owner-approved 2026-07-15).
+                  Label now folds the review count in (Direction A, QUESTIONS.md Q24: "Alle 11
+                  Bewertungen ›") — this pill IS the count's home now that the bare "(11)" is gone. */}
               {salonSlug && locale ? (
-                <SeeAllButton label="Alle ansehen" href={`/${locale}/salon/${salonSlug}/reviews`} />
+                <SeeAllButton
+                  label={`Alle ${count.toLocaleString("de-CH")} Bewertungen`}
+                  href={`/${locale}/salon/${salonSlug}/reviews`}
+                />
               ) : (
-                <SeeAllButton label="Alle ansehen" onClick={() => setExpanded(true)} />
+                <SeeAllButton
+                  label={`Alle ${count.toLocaleString("de-CH")} Bewertungen`}
+                  onClick={() => setExpanded(true)}
+                />
               )}
             </div>
           )}

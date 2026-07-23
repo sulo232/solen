@@ -102,7 +102,7 @@ export function SalonHeader({
                 type="button"
                 onClick={scrollToReviews}
                 aria-label={`${salon.review_count} Bewertungen anzeigen`}
-                className="font-medium text-s-accent transition-opacity hover:opacity-80"
+                className="tabular-nums text-s-accent transition-opacity hover:opacity-80"
               >
                 ({salon.review_count.toLocaleString("de-CH")})
               </button>

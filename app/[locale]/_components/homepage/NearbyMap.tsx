@@ -11,6 +11,7 @@ import * as React from "react";
 import mapboxgl from "mapbox-gl";
 import { MapPin } from "lucide-react";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { SOLEN_MAP_STYLE } from "@/lib/map-style";
 
 /**
  * NearbyMap: the "In der Nähe" map teaser.
@@ -26,63 +27,14 @@ import "mapbox-gl/dist/mapbox-gl.css";
  * coordinates, real rating + review count, real count. See _design-system/REMOVED.md.
  *
  * Design decisions the owner settled over those rounds:
- *  - palette pixel-sampled from their reference screenshots (see below)
+ *  - basemap = SOLEN_MAP_STYLE (lib/map-style.ts), the ONE canonical Solen map style
+ *    (LOCKFILE §0.13) — the divergent hand-authored palette this component used to
+ *    define inline was replaced 2026-07-23, it is no longer a separate decision
  *  - normal light map WITH streets + labels; only motorway/trunk dropped
  *  - one marker = one real salon (no clustering, no aggregate "N Salons" blob)
  *  - marker carries the decision fact: gold star + rating + review count
  *  - no "Karte öffnen" button; the whole tile is the link
  */
-
-// Cartographic palette, pixel-sampled from the owner's reference map screenshots
-// (~/solen/screenshots IMG_6489-6491). These are MAP fills (land/park/water/road),
-// not UI surfaces: the design tokens are deliberately not used here, a river cannot
-// be s-accent. No Tailwind token exists for them by design.
-const LAND = "#E8EAEA"; // drift-ok, mockup-ok: cartographic land fill sampled from the owner's reference
-const PARK = "#CFF2D0"; // drift-ok, mockup-ok: cartographic park fill sampled from the owner's reference
-const WATER = "#CBE3FC"; // drift-ok, mockup-ok: cartographic water fill sampled from the owner's reference
-const ROAD = "#F8F8F8"; // drift-ok, mockup-ok: cartographic road fill sampled from the owner's reference
-const LABEL = "#AEB3BA"; // drift-ok, mockup-ok: cartographic label ink sampled from the owner's reference
-
-const MAP_STYLE: mapboxgl.StyleSpecification = {
-  version: 8,
-  glyphs: "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
-  sources: { mb: { type: "vector", url: "mapbox://mapbox.mapbox-streets-v8" } },
-  layers: [
-    { id: "land", type: "background", paint: { "background-color": LAND } },
-    {
-      id: "park",
-      type: "fill",
-      source: "mb",
-      "source-layer": "landuse",
-      filter: ["match", ["get", "class"], ["park", "grass", "cemetery", "pitch", "garden", "golf_course"], true, false],
-      paint: { "fill-color": PARK },
-    },
-    { id: "water", type: "fill", source: "mb", "source-layer": "water", paint: { "fill-color": WATER } },
-    {
-      id: "roads",
-      type: "line",
-      source: "mb",
-      "source-layer": "road",
-      // normal streets stay; only the loud motorway/trunk is dropped (owner call)
-      filter: ["match", ["get", "class"], ["motorway", "motorway_link", "trunk", "trunk_link"], false, true],
-      layout: { "line-cap": "round", "line-join": "round" },
-      paint: { "line-color": ROAD, "line-width": ["interpolate", ["linear"], ["zoom"], 11, 0.6, 15, 2.4] },
-    },
-    {
-      id: "labels",
-      type: "symbol",
-      source: "mb",
-      "source-layer": "place_label",
-      filter: ["match", ["get", "type"], ["city", "town", "neighbourhood", "suburb"], true, false],
-      layout: {
-        "text-field": ["get", "name"],
-        "text-font": ["Arial Unicode MS Regular"],
-        "text-size": ["interpolate", ["linear"], ["zoom"], 12, 10, 15, 12.5],
-      },
-      paint: { "text-color": LABEL, "text-halo-color": "#FFFFFF", "text-halo-width": 1.4 },
-    },
-  ],
-};
 
 export interface NearbyMapSalon {
   id: string;
@@ -160,7 +112,7 @@ export default function NearbyMap({
 
     const map = new mapboxgl.Map({
       container: holder.current,
-      style: MAP_STYLE,
+      style: SOLEN_MAP_STYLE,
       center: centre,
       zoom: STREET_ZOOM,
       interactive: false,

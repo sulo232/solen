@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { createPortal } from "react-dom";
 import { ArrowLeft } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { SalonLightbox } from "./SalonLightbox";
@@ -15,6 +16,14 @@ import { cn } from "@/lib/utils";
  * Tapping any photo opens the shared SalonLightbox to zoom/swipe within the current set.
  * Per-stylist photos come from staff_portfolio_images (public-read RLS), fetched lazily
  * the first time the gallery opens.
+ *
+ * Portaled straight to document.body (overlap-bug fix, 2026-07-23, same root
+ * cause + fix as SalonLightbox.tsx): the root layout's
+ * `<main id="main-content">` carries `isolation: isolate`, which trapped
+ * this modal's z-[70] inside a single stacking slot — so the portaled
+ * SalonStickyTabNav (fixed, z-[60], mounted outside that isolated slot)
+ * always painted on top of this gallery's own header, regardless of the
+ * z-index numbers. Portaling here escapes the same trap.
  */
 export function SalonImageGallery({
   open,
@@ -89,7 +98,7 @@ export function SalonImageGallery({
 
   const openLb = (photos: string[], i: number) => setLb({ open: true, photos, index: i });
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[70] flex flex-col bg-white">
       {/* Header */}
       <div className="flex items-center gap-3 border-b border-s-border px-4 py-3">
@@ -187,7 +196,8 @@ export function SalonImageGallery({
         startIndex={lb.index}
         onClose={() => setLb((p) => ({ ...p, open: false }))}
       />
-    </div>
+    </div>,
+    document.body
   );
 }
 
