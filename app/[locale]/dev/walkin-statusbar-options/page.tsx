@@ -70,6 +70,25 @@ function OptC() {
   );
 }
 
+/* D — Waiting room: grounded in the waitlist-app pattern (restaurant/queue apps). The two
+   facts a walk-in customer checks — the wait and the position — get real room and equal weight,
+   split by a hairline; status is just the green dot, and details live behind a tap. No labels
+   competing for space, no clock icon, no inline (i). */
+function OptD() {
+  return (
+    <div className="flex items-center gap-3.5 rounded-[20px] border border-s-border bg-white shadow-whisper px-5 py-4">
+      <Dot />
+      <span className="font-display text-[17px] font-semibold leading-none tabular-nums tracking-[-.02em] text-s-ink">
+        {S.low}–{S.high}<span className="ml-1 text-[13px] font-medium text-s-ink-3">min</span>
+      </span>
+      <span className="h-5 w-px bg-s-border" />
+      <span className="font-display text-[17px] font-semibold leading-none tabular-nums tracking-[-.02em] text-s-ink">
+        {S.ahead}<span className="ml-1 text-[13px] font-medium text-s-ink-3">ahead</span>
+      </span>
+    </div>
+  );
+}
+
 function Row({ tag, name, note, rec, children }: { tag: string; name: string; note: string; rec?: boolean; children: React.ReactNode }) {
   return (
     <section className="mt-9 first:mt-6">
@@ -89,15 +108,16 @@ export default function WalkinStatusBarOptions() {
     <main className="mx-auto min-h-screen max-w-[440px] bg-white px-4 py-8">
       <h1 className="font-display text-[23px] font-bold tracking-[-.02em] text-s-ink">Walk-in status bar · declutter</h1>
       <p className="mt-2 font-body text-[14px] leading-relaxed text-s-ink-2">
-        Same pill shape you liked, lighter content. Pick A / B / C and I&apos;ll wire it live.
-        My pick: <span className="font-semibold text-s-ink">A</span> — it keeps only the two things a walk-in
-        customer decides on (open? how long?), and the queue detail moves into the info popup.
+        Same pill shape you liked, lighter content. Pick a direction and I&apos;ll wire it live.
+        My pick: <span className="font-semibold text-s-ink">D</span> — it&apos;s how real waitlist apps do it:
+        the wait and your position get equal weight and room, status is just the dot. That&apos;s what makes it
+        read as &quot;correct&quot; instead of a cramped line.
       </p>
       <div className="mt-6">
         <p className="mb-2 font-body text-[12px] font-semibold uppercase tracking-wide text-s-ink-3">Now (too busy)</p>
         <Current />
       </div>
-      <Row tag="A" name="Minimal" rec note="Status + wait only. Drops the '5 ahead' count and the info icon — the queue detail lives in the info popup you already have.">
+      <Row tag="A" name="Minimal" note="Status + wait only. Drops the '5 ahead' count and the info icon; queue detail lives in the info popup you already have.">
         <OptA />
       </Row>
       <Row tag="B" name="Wait-first" note="The wait time is the hero; status shrinks to a labelled dot. Best if the wait is the #1 thing people look at.">
@@ -105,6 +125,9 @@ export default function WalkinStatusBarOptions() {
       </Row>
       <Row tag="C" name="One phrase" note="Folds the queue + wait into a single sentence ('5 ahead · ~1h wait'). Keeps the count but reads as one calm line.">
         <OptC />
+      </Row>
+      <Row tag="D" name="Waiting room" rec note="The waitlist-app convention: wait + position, equal weight and room, split by a hairline. Status is the dot; details on tap. The reference-grounded one.">
+        <OptD />
       </Row>
       <div className="h-16" />
     </main>
