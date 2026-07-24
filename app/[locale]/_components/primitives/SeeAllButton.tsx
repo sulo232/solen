@@ -25,12 +25,14 @@ import { cn } from "@/lib/utils";
  * SeeAllButton, the canonical "see all / show more" affordance.
  * Layer 1 (chrome).
  *
- * Two variants, each reproducing an EXISTING owner-approved look (className is LAYOUT only,
- * e.g. spacing/width, per the established primitive convention, see CardMeta):
- *   pill (default): bg-s-bg-sunken fill, hover:bg-s-border. SalonTeam / SalonServices /
- *     SalonReviews "Alle ansehen" (identical class string, 3x duplicated before this primitive).
- *   pill-outline: border-s-border outline, font-heading, hover:border-s-ink/25.
- *     StaffProfilePage's full-width "Alle ansehen" below its reviews list.
+ * Per THE SEE-ALL / CTA LADDER (_design-system/CONTROL_ELEVATION.md, rung 3, 2026-07-24):
+ * a see-all is not a commit, so there is ONE canonical treatment, the gray sunken pill.
+ *   pill (default, the survivor): bg-s-bg-sunken fill, hover:bg-s-border.
+ *   pill-outline: DEPRECATED 2026-07-24 (CTA ladder). Resolves to the same "pill" treatment
+ *     below, kept only so existing callers passing this variant string don't break; do not
+ *     use it in new code, pass no variant (defaults to "pill") instead.
+ *   link: allowed ONLY as the top-right affordance beside a section H2, where a pill would
+ *     out-weigh the heading (ladder note).
  */
 export type SeeAllButtonVariant = "pill" | "pill-outline" | "link";
 
@@ -54,14 +56,13 @@ export function SeeAllButton({
 }: SeeAllButtonProps) {
   const cls = cn(
     // mockup-ok: pill = owner-approved 2026-07-15 gray see-all (Services/Reviews); link = ink
-    // text+chevron for the stylist/Team see-all per owner 2026-07-19. pill-outline
-    // (StaffProfilePage) is untouched, byte-identical to its prior class string.
+    // text+chevron for the stylist/Team see-all per owner 2026-07-19. pill-outline is
+    // DEPRECATED (CTA ladder, 2026-07-24) and resolves to the same "pill" branch below, it no
+    // longer renders its old bordered look.
     "text-[14px] font-semibold text-s-ink transition-colors",
-    variant === "pill-outline"
-      ? "rounded-full border border-s-border py-3 font-heading hover:border-s-ink/25"
-      : variant === "link"
-        ? "inline-flex items-center gap-0.5"
-        : "rounded-full font-body inline-flex items-center bg-s-bg-sunken px-8 py-3 hover:bg-s-border md:px-10 md:py-3.5 md:text-[15px]",
+    variant === "link"
+      ? "inline-flex items-center gap-0.5"
+      : "rounded-full font-body inline-flex items-center bg-s-bg-sunken px-8 py-3 hover:bg-s-border md:px-10 md:py-3.5 md:text-[15px]",
     className,
   );
 

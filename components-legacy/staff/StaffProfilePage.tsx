@@ -435,13 +435,12 @@ export default function StaffProfilePage({
               })}
             </div>
             {reviews.length > REVIEWS_PREVIEW && (
-              // mockup-ok: SeeAllButton port, byte-identical pill-outline class string
-              <SeeAllButton
-                label="Alle ansehen"
-                variant="pill-outline"
-                onClick={() => setShowReviews(true)}
-                className="mt-6 w-full"
-              />
+              // CTA ladder (2026-07-24): pill-outline retired, this see-all now uses the
+              // default "pill" (gray sunken) treatment, centred under the list like every
+              // other see-all (SalonServices.tsx is the same centering pattern).
+              <div className="mt-6 flex justify-center">
+                <SeeAllButton label="Alle ansehen" onClick={() => setShowReviews(true)} />
+              </div>
             )}
           </>
         )}

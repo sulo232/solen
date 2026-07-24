@@ -15,12 +15,33 @@ import Footer from "./Footer";
  * docstring) and the marketing footer stacking below its sticky CTAs is off-pattern, same
  * rationale as the booking flow. `/booking` stays listed too (redundant with HideInBooking, but
  * Breadcrumb's own EXCLUDED array keeps that same redundant entry, so this matches precedent).
+ *
+ * Extended per `_design-system/FOOTER_VISIBILITY.md`: a "task step" (a picker, a filter view, a
+ * tab-like sub-view of a destination, or any screen with a bottom-pinned control) also hides the
+ * footer, same as "terminal". Exposed as `isTaskStep()` so a NEW route opts in by classification
+ * (prefix or pattern) instead of someone remembering to grow a flat array.
  */
-const EXCLUDED = ["/booking", "/confirmation"];
+const TASK_STEP_PREFIXES = ["/booking", "/confirmation"];
+
+// Dev-only mockup routes standing in for not-yet-shipped task-step screens (see-all/filter
+// sub-views, the "Select professional" picker) , FOOTER_VISIBILITY.md clause 2.
+const DEV_TASK_STEP_PREFIXES = ["/dev/pdp/reviews-full", "/dev/pdp/team-all", "/dev/pdp/reviews-filter"];
+
+// Real "see all" sub-views of a destination PDP: the dedicated reviews page
+// (`/salon/[slug]/reviews`) is a task-step sub-view of the salon PDP, not its own destination.
+const TASK_STEP_PATTERNS = [/^\/salon\/[^/]+\/reviews(\/|$)/];
+
+export function isTaskStep(pathnameWithoutLocale: string): boolean {
+  return (
+    TASK_STEP_PREFIXES.some((prefix) => pathnameWithoutLocale.startsWith(prefix)) ||
+    DEV_TASK_STEP_PREFIXES.some((prefix) => pathnameWithoutLocale.startsWith(prefix)) ||
+    TASK_STEP_PATTERNS.some((pattern) => pattern.test(pathnameWithoutLocale))
+  );
+}
 
 export default function FooterGate({ locale }: { locale: string }) {
   const pathname = usePathname() ?? "/";
   const withoutLocale = pathname.replace(`/${locale}`, "") || "/";
-  if (EXCLUDED.some((prefix) => withoutLocale.startsWith(prefix))) return null;
+  if (isTaskStep(withoutLocale)) return null;
   return <Footer locale={locale} />;
 }

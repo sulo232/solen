@@ -158,3 +158,65 @@ answer the same rung and still look different, one is drift. If a button's look 
 
 STATUS: principle written 2026-07-24, owner sign-off pending. Applying it retires a variant and touches
 7 importers (shipped surfaces), so it waits for the yes, then goes through the normal loop.
+
+---
+
+## AMENDMENT 2026-07-24 (owner-driven, after a REJECTION the tree itself caused)
+
+The owner rejected an ink-filled Select button on the "Select professional" picker with:
+"that's not at all what I asked you to do, and that's completely against the design and taste file...
+if this is the design and taste file, then fix the taste file." Two gaps are being closed, because the
+tree above is what produced the wrong answer.
+
+### GAP 1 , the tree had no rung for a LIST OF PEER COMMITS
+Q1 says "the one primary commit action of the region -> INK-FILLED, max ONE per region (CTA lock)".
+A picker LIST (choose a stylist, choose a slot, choose an address) is neither: every row carries the
+same commit, so applying Q1 literally multiplies the ink CTA down the page and destroys the very
+hierarchy the CTA lock exists to protect.
+
+**NEW Q1.2 (insert before Q1.5): Is this the commit action of ONE ROW in a list of PEER CHOICES?**
+-> **(F) ROW-COMMIT.** NOT ink. A calm pill that reads tappable without claiming page-level primacy:
+   white fill + pill radius + `shadow-whisper` (the "floating" lift the owner asked for, see GAP 2),
+   `text-s-ink` semibold, >= 44px. Identical on every row , never promote one row over another.
+   The page's ONE ink CTA, if it has one, stays reserved for a page-level commit (e.g. the sticky
+   Book bar), never for a row.
+
+### GAP 2 , "white + shadow" is not always the grey-haze
+Taste rule 7 says elevation is earned by the background, and bans white-elevated-on-white as noise.
+That holds for DECORATIVE lift. It does NOT hold for a row-commit control, which needs to read as
+liftable/tappable against a card that is itself white. Owner decision 2026-07-24, chosen from a
+rendered comparison: the row-commit pill is **white + a soft shadow (floating)**.
+Scope of this exception: row-commit controls only (F above). Everywhere else taste rule 7 is unchanged,
+and a white card on white still needs a hairline or a sunken tray, never a shadow alone (FLOORS LAW 4).
+
+### CONSEQUENCE
+The ink Select shipped on 2026-07-24 is REVERTED and graveyarded (REMOVED.md). Any future picker list
+uses (F), not Q1.
+
+---
+
+## FINAL TASTE PRINCIPLE , the CHIP ROW is the one selection grammar (owner 2026-07-24)
+
+Owner, on picking filter direction F2 for reviews: "in all these type of styles, we already have it in
+the other section, so I can make this like a taste final principle for consistencies."
+
+He is right that it already exists , `app/[locale]/_components/primitives/TabPill.tsx:73/79` is the
+shipped grammar (selected `border-s-border bg-s-bg-sunken text-s-ink`, unselected `bg-white text-s-ink-2`),
+already used by SalonServices (category pills) and the search FilterSheet. The reviews filter was the
+odd one out, first as single-select chips, then as a checkbox+bar chart. Both are now retired.
+
+### THE PRINCIPLE
+**Any "narrow this list by a known set of options" control is a CHIP ROW, and the chip row is TabPill.**
+- Options render as horizontal pills, each carrying its own count when a count exists ("5 (13)").
+- Selected = `bg-s-bg-sunken` + `text-s-ink` + semibold. Unselected = white + hairline.
+  Never blue, never black fill (design contract "selected / active" row + taste rule 3).
+- Multi-select and single-select use the SAME look; the difference is behaviour, not treatment.
+- No bar charts. A distribution bar implies the distribution is worth reading; on real Solen volumes
+  (a salon with 16 reviews) it is decoration that reads as a black mass. Owner rejected it by name.
+- The only sanctioned neighbours of a chip row are a section label above it and a sort control beside it.
+
+### WHY THIS IS A CONSISTENCY RULE, NOT A STYLE PREFERENCE
+The reviews filter drifted three times (chips -> checkbox+bars -> chips) because each rebuild looked at
+the SURFACE it was on instead of asking "what kind of control is this?". Same root cause as the three
+divergent see-all variants above. One grammar per job is the fix; the ladder covers actions, this covers
+selection.
