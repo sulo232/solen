@@ -18,7 +18,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
 
   const { data: barber, error } = await admin
     .from("staff_members")
-    .select("id, name, avatar_url, cover_photo_url, accent_color, slug, specialties, salon_id, salons(name, slug, categories)")
+    .select("id, name, avatar_url, cover_photo_url, accent_color, slug, specialties, languages, salon_id, salons(name, slug, categories)")
     .eq("slug", slug)
     .eq("is_active", true)
     .single();
@@ -46,6 +46,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
       accent_color: barber.accent_color,
       slug: barber.slug,
       specialties: barber.specialties,
+      languages: barber.languages ?? [],
       salon: { name: salon.name, slug: salon.slug },
       totalCuts: cutCount ?? 0,
     },

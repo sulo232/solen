@@ -23,19 +23,24 @@ const StaffProfilePage = dynamic(() => import("@/components-legacy/staff/StaffPr
  *     bg if no photo with initial letter centered in s-accent
  *   - Rating BELOW avatar (★ + "5.0"), 14/600 ink, small inline
  *   - Name 16/500 ink (matches s-ink)
- *   - Role 14/400 muted grey (s-ink-2) — for us: first specialty
+ *   - Subtitle 14/400 muted grey (s-ink-2) — for us: spoken languages
  *
  * REMOVED from V2-D53.3:
  *   - The floating yellow rating BADGE overlay on the avatar bottom-left
  *     (Fresha puts rating BELOW the avatar, not on it)
- *   - The "DE / EN / FR" languages row (Fresha doesn't show languages on
- *     the team grid — they live in the booking flow when picking a stylist)
  *   - The ring-2 white + shadow-elevation-1 on the avatar (Fresha avatar
  *     is just a flat circle, no chrome)
  *
+ * Owner 2026-07-24: REVERSES the languages→specialty swap this file made at
+ * V3-D234 ("the DE/EN/FR lang row" was removed then in favor of "first
+ * specialty" as the subtitle). Per the current owner goal, specialties are no
+ * longer shown as the subtitle at all — spoken languages are, formatted as
+ * uppercase 2-letter codes joined by " / " (e.g. "EN / JP / DE"), sourced from
+ * staff_members.languages. Empty/null languages render nothing (no fallback).
+ *
  * ADDED:
  *   - Rating row below avatar (small ★ + decimal)
- *   - Role line below name (first specialty as the "title")
+ *   - Languages line below name (spoken languages as the subtitle)
  *   - "Alle ansehen" link top-right (Fresha "See all" parity)
  */
 export function SalonTeam({
@@ -156,9 +161,13 @@ function TeamMember({
   const displayRating = member.staff_average_rating;
   const showRating = hasRating && displayRating !== null && displayRating !== undefined && displayRating > 0;
 
-  // V3-D234: role = first specialty (Fresha uses "Founder" / role text;
-  // we don't have a role field but specialties carry the same signal).
-  const role = member.specialties?.[0] ?? null;
+  // Owner 2026-07-24: subtitle is spoken languages (uppercase codes, "EN / JP / DE"),
+  // NOT specialties — reverses V3-D234's "first specialty as role text" swap. No
+  // fallback text when languages is empty/null (per the owner's explicit instruction).
+  const languages =
+    member.languages && member.languages.length > 0
+      ? member.languages.map((l) => l.toUpperCase()).join(" / ")
+      : null;
 
   return (
     <div className="flex flex-col items-center text-center">
@@ -178,10 +187,10 @@ function TeamMember({
         {member.name}
       </div>
 
-      {/* Role (first specialty) — V3-D234: replaces the "DE / EN / FR" lang row */}
-      {role && (
+      {/* Spoken languages — owner 2026-07-24, reverses V3-D234's specialty subtitle */}
+      {languages && (
         <div className="font-body mt-1 text-[12px] leading-snug text-s-ink-2 md:text-[13px]">
-          {role}
+          {languages}
         </div>
       )}
     </div>

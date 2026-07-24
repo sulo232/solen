@@ -24,7 +24,7 @@ export async function GET(request: Request) {
 
     const { data, error } = await supabase
       .from("staff_members")
-      .select("id, name, avatar_url, specialties, is_active, commission_rate, permissions")
+      .select("id, name, avatar_url, specialties, languages, is_active, commission_rate, permissions")
       .eq("salon_id", salonId)
       .order("name");
 

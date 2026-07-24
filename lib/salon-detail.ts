@@ -83,7 +83,7 @@ export async function loadSalonDetailWithAccess(
       .eq("is_active", true),
     supabase
       .from("staff_members")
-      .select("id, name, avatar_url, specialties, average_rating, review_count")
+      .select("id, name, avatar_url, specialties, languages, average_rating, review_count")
       .eq("salon_id", salon.id)
       .eq("is_active", true),
     // Reviews via the service-role client: profiles RLS (rightly) blocks anon reads,

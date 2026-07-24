@@ -20,6 +20,11 @@ const AV_GRADS = [
 ];
 const avGrad = (s: string) => AV_GRADS[[...s].reduce((a, c) => a + c.charCodeAt(0), 0) % AV_GRADS.length];
 
+// Swiss/Basel-relevant spoken-language set for the staff editor's language picker.
+// Stored lowercase in staff_members.languages, shown uppercase in the UI (matches
+// the PDP/booking subtitle formatting in SalonTeam.tsx / StaffStep.tsx).
+const LANGUAGE_CODES = ["de", "en", "fr", "it", "es", "pt", "ru", "uk", "tr", "sq", "sr", "hr", "ar", "jp", "zh"] as const;
+
 // ─────────────────────────────────────────
 // Staff Modal (Add / Edit) — now with services & permissions
 // ─────────────────────────────────────────
@@ -43,6 +48,7 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
   const [avatar, setAvatar] = useState(initial?.avatar_url ?? "");
   const [specialties, setSpecialties] = useState<string[]>(initial?.specialties ?? []);
   const [specInput, setSpecInput] = useState("");
+  const [languages, setLanguages] = useState<string[]>(initial?.languages ?? []);
   const [active, setActive] = useState(initial?.is_active ?? true);
   const [loading, setLoading] = useState(false);
 
@@ -92,6 +98,10 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
     setSpecInput("");
   };
 
+  const toggleLanguage = (code: string) => {
+    setLanguages((prev) => (prev.includes(code) ? prev.filter((c) => c !== code) : [...prev, code]));
+  };
+
   const handleSave = async () => {
     if (!name) return;
     setLoading(true);
@@ -100,6 +110,7 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
         name,
         avatar_url: avatar || null,
         specialties,
+        languages,
         is_active: active,
         commission_rate: commissionRate,
         permissions: {
@@ -181,6 +192,32 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
                   <button type="button" onClick={() => setSpecialties((p) => p.filter((_, j) => j !== i))}>×</button>
                 </span>
               ))}
+            </div>
+          </div>
+
+          {/* Spoken languages — toggle chips from a fixed code set, persisted to
+              staff_members.languages. Selected = sunken gray fill (no-black-selected law). */}
+          <div>
+            <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("languagesLabel")}</label>
+            <div className="flex flex-wrap gap-1.5">
+              {LANGUAGE_CODES.map((code) => {
+                const active = languages.includes(code);
+                return (
+                  <button
+                    key={code}
+                    type="button"
+                    onClick={() => toggleLanguage(code)}
+                    aria-pressed={active}
+                    className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors ${
+                      active
+                        ? "bg-s-bg-sunken text-s-ink border-transparent"
+                        : "bg-white text-s-ink-2 border-s-border hover:bg-s-bg-sunken"
+                    }`}
+                  >
+                    {code.toUpperCase()}
+                  </button>
+                );
+              })}
             </div>
           </div>
 

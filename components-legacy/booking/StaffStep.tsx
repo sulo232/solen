@@ -44,12 +44,18 @@ interface StaffService {
  * which has a services/"Buchen" tab that would re-break B7). See
  * StaffProfileSheet.tsx for the selection-only guarantee.
  *
- * Also drops the ALL-CAPS language tag entirely (copy rule 4: a tag must add
- * a decision-relevant fact not already on the row; matches the /dev direction
- * mockup, which dropped it for the same reason). No "soonest slot" line either:
- * there is no live per-staff next-availability endpoint to source one from, and
- * inventing a time would be fabricated data (same call the mockup's own
- * exists-check documented).
+ * Owner 2026-07-24 (Fresha ref IMG_6696, "Teammitglied auswählen"): RESTORES
+ * the ALL-CAPS spoken-language tag this file previously dropped (original note
+ * below, kept for history) — the current owner goal is for languages, not
+ * specialties, to be a staff member's subtitle everywhere in the app, and
+ * Fresha's own picker shows them under each stylist's name. Flagged as a
+ * direct reversal of a documented decision, not a silent one.
+ * [original 2026-07-09 note]: Also drops the ALL-CAPS language tag entirely
+ * (copy rule 4: a tag must add a decision-relevant fact not already on the
+ * row; matches the /dev direction mockup, which dropped it for the same
+ * reason). No "soonest slot" line either: there is no live per-staff
+ * next-availability endpoint to source one from, and inventing a time would
+ * be fabricated data (same call the mockup's own exists-check documented).
  */
 export default function StaffStep({
   staffList,
@@ -121,7 +127,10 @@ export default function StaffStep({
           const active = selected === st.id;
           const rating = st.average_rating != null && st.average_rating > 0 ? st.average_rating : null;
           const reviewCount = st.review_count ?? 0;
-          const specialty = st.specialties?.[0] ?? null;
+          const languages =
+            st.languages && st.languages.length > 0
+              ? st.languages.map((l) => l.toUpperCase()).join(' / ')
+              : null;
           return (
             <motion.li key={st.id} variants={rowItem}> {/* mockup-ok: pre-existing ENTER RECIPE stagger item */}
               {/* B19: row is now a div (not a button) so the "Profil ansehen" link
@@ -147,8 +156,8 @@ export default function StaffStep({
                   <span className={`block truncate text-[15px] font-heading ${active ? 'font-semibold' : 'font-medium'} text-s-ink`}>
                     {st.name}
                   </span>
-                  {specialty && (
-                    <span className="mt-0.5 block truncate text-[13px] text-s-ink-2">{specialty}</span>
+                  {languages && (
+                    <span className="mt-0.5 block truncate text-[13px] text-s-ink-2">{languages}</span>
                   )}
                   {rating != null && reviewCount > 0 && (
                     <span className="mt-1 inline-flex items-center gap-1 text-[12px] text-s-ink-2">
