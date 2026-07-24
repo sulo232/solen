@@ -14,9 +14,15 @@
 // wide), star 13px, value 14px/600 tabular. The shared `Avatar` primitive's `badge` prop can't be
 // resized without touching the shipped primitive (HARD LAW), so this copy renders the avatar
 // WITHOUT that prop and layers its own bigger pill on top, same anchor (-bottom-1, centered).
+//
+// ROUND 5 (T5, owner: the "see all" was a DEAD CLICK, wire it up): "Alle ansehen" now navigates
+// to the new /dev/pdp/team-all "Select professional" screen (was the plain booking URL, which
+// never actually opened a stylist picker). Carries the current `?salon=` override through so the
+// team-all screen reviews against the same salon this mockup page is loaded with.
 
 import * as React from "react";
 import { Star } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import type { StaffMember } from "../../../_components/salon/_shared";
 import { Avatar, SeeAllButton } from "@/app/[locale]/_components/primitives";
 
@@ -33,6 +39,10 @@ export function SalonTeamOverhaul({
 }) {
   void salonAverageRating; // kept for signature parity with the shipped component; unused there too
 
+  const searchParams = useSearchParams();
+  const salonOverride = searchParams?.get("salon");
+  const teamAllHref = `/${locale}/dev/pdp/team-all${salonOverride ? `?salon=${salonOverride}` : ""}`;
+
   const openProfile = (id: string) => {
     window.location.assign(`/${locale}/salon/${slug}/staff/${id}`);
   };
@@ -48,7 +58,7 @@ export function SalonTeamOverhaul({
         <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
           Team
         </h2>
-        <SeeAllButton label="Alle ansehen" href={`/${locale}/salon/${slug}/booking`} variant="link" />
+        <SeeAllButton label="Alle ansehen" href={teamAllHref} variant="link" />
       </div>
 
       <div className="mt-5 flex gap-5 overflow-x-auto pt-2 pb-3 snap-x snap-proximity [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
