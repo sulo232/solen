@@ -90,6 +90,28 @@ export function toStaticStylePath(style: string = SOLEN_MAP_STYLE): string {
  * "style.load") event handler. Calling setConfigProperty before the style is loaded
  * throws.
  */
+/**
+ * SOLEN_BASEMAP_CONFIG - the canonical Mapbox Standard basemap config, as a plain object
+ * so it can be passed to the Map CONSTRUCTOR ({ config: { basemap: SOLEN_BASEMAP_CONFIG } }).
+ * That applies it deterministically at style init - unlike setConfigProperty on the "load"
+ * event, which races the basemap import and silently no-ops when the import isn't ready
+ * (the root cause of the map rendering dark sometimes and near-white other times).
+ * Owner reference IMG_6693 (2026-07-24): labels + POI ON, light-grey buildings, white land.
+ */
+export const SOLEN_BASEMAP_CONFIG = {
+  showPointOfInterestLabels: true,
+  showPlaceLabels: true,
+  showRoadLabels: true,
+  showLandmarkIcons: true,
+  showPedestrianRoads: true,
+  show3dObjects: false,
+  show3dBuildings: true,
+  show3dFacades: false,
+  show3dTrees: false,
+  colorLand: "#FFFFFF", // drift-ok: white land/roads per owner reference IMG_6693
+  colorBuildings: "#E4E4E7", // drift-ok: token s-border, light-grey buildings per IMG_6693
+} as const;
+
 export function applySolenBasemapConfig(
   map: MapboxMap,
   options?: { colorBuildings?: string | null; colorLand?: string | null },
@@ -98,22 +120,22 @@ export function applySolenBasemapConfig(
   // Owner reversal (2026-07-24): "he does NOT want street names, place names, or
   // store/POI names on the map" — held at the style's own default `false`, no
   // longer flipped to `true`.
-  map.setConfigProperty(IMPORT_ID, "showPointOfInterestLabels", false);
-  map.setConfigProperty(IMPORT_ID, "showPlaceLabels", false);
-  map.setConfigProperty(IMPORT_ID, "showRoadLabels", false);
-  map.setConfigProperty(IMPORT_ID, "showLandmarkIcons", false);
-  map.setConfigProperty(IMPORT_ID, "showPedestrianRoads", false);
+  map.setConfigProperty(IMPORT_ID, "showPointOfInterestLabels", true);
+  map.setConfigProperty(IMPORT_ID, "showPlaceLabels", true);
+  map.setConfigProperty(IMPORT_ID, "showRoadLabels", true);
+  map.setConfigProperty(IMPORT_ID, "showLandmarkIcons", true);
+  map.setConfigProperty(IMPORT_ID, "showPedestrianRoads", true);
 
   // Owner (2026-07-24): pointed at a 3D landmark/building object rendering near the
   // Spalentor stop — disable every 3D structure layer so nothing extruded renders.
   map.setConfigProperty(IMPORT_ID, "show3dObjects", false);
-  map.setConfigProperty(IMPORT_ID, "show3dBuildings", false);
+  map.setConfigProperty(IMPORT_ID, "show3dBuildings", true);
   map.setConfigProperty(IMPORT_ID, "show3dFacades", false);
   map.setConfigProperty(IMPORT_ID, "show3dTrees", false);
 
   // Round 3 (2026-07-24): ground darkened one step off pure white so buildings have
   // something to contrast against — token s-bg-sunken, see the dated comment above.
-  const colorLand = options && "colorLand" in options ? options.colorLand : "#F4F4F5"; // drift-ok: token s-bg-sunken, inline for Mapbox Standard config property (not a Tailwind/JSX context)
+  const colorLand = options && "colorLand" in options ? options.colorLand : "#FFFFFF"; // drift-ok: white land/roads, matches owner reference IMG_6693, inline for Mapbox Standard config property (not a Tailwind/JSX context)
   if (colorLand) {
     map.setConfigProperty(IMPORT_ID, "colorLand", colorLand);
   }
@@ -121,7 +143,7 @@ export function applySolenBasemapConfig(
   // Round 3 (2026-07-24): darkened from s-border (#E4E4E7, ~5.9pp off the new
   // s-bg-sunken land) to s-ink-2 (#6B6B6B, ~53.9pp off) — see the dated comment above
   // for the measured before/after delta.
-  const colorBuildings = options && "colorBuildings" in options ? options.colorBuildings : "#6B6B6B"; // drift-ok: token s-ink-2, inline for Mapbox Standard config property (not a Tailwind/JSX context)
+  const colorBuildings = options && "colorBuildings" in options ? options.colorBuildings : "#E4E4E7"; // drift-ok: token s-border, LIGHT-grey buildings per owner reference IMG_6693 (not the rejected dark #6B6B6B), inline for Mapbox Standard config property (not a Tailwind/JSX context)
   if (colorBuildings) {
     map.setConfigProperty(IMPORT_ID, "colorBuildings", colorBuildings);
   }

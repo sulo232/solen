@@ -6,7 +6,7 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import type { Marker as MapboxMarker } from "mapbox-gl";
 import type { SalonDetail } from "./_shared";
-import { SOLEN_MAP_STYLE, toStaticStylePath, applySolenBasemapConfig } from "@/lib/map-style";
+import { SOLEN_MAP_STYLE, toStaticStylePath, applySolenBasemapConfig, SOLEN_BASEMAP_CONFIG } from "@/lib/map-style";
 
 /**
  * SalonLocation — V3-D389 (2026-05-31, Fresha 1:1 PDP capture).
@@ -616,6 +616,7 @@ function LocationMapCanvas({
     const centre: [number, number] = [longitude, latitude];
 
     const map = new mapboxgl.Map({
+      config: { basemap: SOLEN_BASEMAP_CONFIG }, // deterministic basemap config at init (avoids the on-load race)
       container: holder.current,
       style: `mapbox://styles/${stylePath}`,
       center: centre,

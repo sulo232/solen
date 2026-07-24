@@ -11,7 +11,7 @@ import * as React from "react";
 import mapboxgl from "mapbox-gl";
 import { MapPin } from "lucide-react";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { SOLEN_MAP_STYLE, applySolenBasemapConfig } from "@/lib/map-style";
+import { SOLEN_MAP_STYLE, applySolenBasemapConfig , SOLEN_BASEMAP_CONFIG } from "@/lib/map-style";
 
 /**
  * NearbyMap: the "In der Nähe" map teaser.
@@ -111,6 +111,7 @@ export default function NearbyMap({
     const STREET_ZOOM = 14.3;
 
     const map = new mapboxgl.Map({
+      config: { basemap: SOLEN_BASEMAP_CONFIG }, // deterministic basemap config at init (avoids on-load race)
       container: holder.current,
       style: SOLEN_MAP_STYLE,
       center: centre,

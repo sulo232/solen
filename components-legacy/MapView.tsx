@@ -8,7 +8,7 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { MapPin } from "lucide-react";
 import type { SalonCard } from "@/lib/types";
-import { SOLEN_MAP_STYLE, applySolenBasemapConfig } from "@/lib/map-style";
+import { SOLEN_MAP_STYLE, applySolenBasemapConfig , SOLEN_BASEMAP_CONFIG } from "@/lib/map-style";
 import Supercluster from "supercluster";
 
 const BASEL_CENTER: [number, number] = [7.5886, 47.5596];
@@ -142,6 +142,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
     const isBareStreets = style === "mapbox://styles/mapbox/streets-v12";
 
     const map = new mapboxgl.Map({
+      config: { basemap: SOLEN_BASEMAP_CONFIG }, // deterministic basemap config at init (avoids on-load race)
       container: containerRef.current,
       style,
       center: BASEL_CENTER,
