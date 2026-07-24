@@ -224,3 +224,9 @@ The owner approved the redesign and said "don't stop per step" , they expected i
       picks the category model (3b) , shipping sample categories would be fabrication.
       `verified:` confirmed not ported in P2 (SalonImageGallery renders the plain
       Salon/Team pill row + dense grid, no Fades/Haircuts/Beard split anywhere).
+
+## ROUND 9 — owner 2026-07-25: "fix evrth and backend db too and unfy evrth"
+- [x] X1. DONE `verified:` runtime on /de/salon/cuts-and-culture = tiles 9, cols 3, rows 3, NO shortfall footnote. ROOT CAUSE WAS THE DB (owner right to say 'backend db too'): TILE_CAP was already 9, the salon only had 6 rows in gallery_urls. Topped 11 hair salons to 9 real seed photos each via Supabase (coiffeur+barbershop share one haircut-photo pool; no invented URLs, every photo already live in this DB). DATA GAP FLAGGED: nails (4 distinct seed photos) and spa (3) cannot reach 9 without a new photo source. WAS: Root cause is DATA, not layout: TILE_CAP is already 9 but `cuts-and-culture` only has 6 real `gallery_urls` and 0 staff portfolio images, so the grid honestly renders 6. Owner now says fix the BACKEND DB too , seed the salon to >= 9 REAL photos so the 3x3 fills. Sanctioned by FLOORS LAW density floor ("mock at IDEAL density from SEED data; seed = real wired data, satisfies no-fabrication") and the project is pre-launch.
+- [ ] X2. Backend/DB: the portfolio CATEGORY system (3b/3c/3e) , owner said do the backend, so build it.
+- [ ] X3. UNIFY everything , apply the CTA ladder + one see-all grammar across the estate, not just the primitive.
+- [ ] X4. SEE-ALL consistency MOCKUP with 3+ distinct variations (owner asked for a mockup to pick from).
