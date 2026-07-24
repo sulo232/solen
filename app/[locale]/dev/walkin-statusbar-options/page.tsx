@@ -76,15 +76,17 @@ function OptC() {
    competing for space, no clock icon, no inline (i). */
 function OptD() {
   return (
-    <div className="flex items-center gap-3.5 rounded-[20px] border border-s-border bg-white shadow-whisper px-5 py-4">
-      <Dot />
-      <span className="font-display text-[17px] font-semibold leading-none tabular-nums tracking-[-.02em] text-s-ink">
-        {S.low}–{S.high}<span className="ml-1 text-[13px] font-medium text-s-ink-3">min</span>
+    <div className="flex items-center gap-3 rounded-[20px] border border-s-border bg-white shadow-whisper px-5 py-3.5">
+      <span className="inline-flex shrink-0 items-center gap-1.5">
+        <Dot />
+        <span className="font-body text-[13px] font-medium text-s-ink-2">Open</span>
       </span>
-      <span className="h-5 w-px bg-s-border" />
-      <span className="font-display text-[17px] font-semibold leading-none tabular-nums tracking-[-.02em] text-s-ink">
-        {S.ahead}<span className="ml-1 text-[13px] font-medium text-s-ink-3">ahead</span>
+      <span className="ml-auto inline-flex items-baseline gap-1.5">
+        <span className="font-display text-[22px] font-bold leading-none tabular-nums tracking-[-.03em] text-s-ink">{S.low}–{S.high}</span>
+        <span className="font-body text-[13px] font-medium text-s-ink-2">min</span>
       </span>
+      <span className="mx-0.5 h-4 w-px bg-s-border" />
+      <span className="font-body text-[13px] font-medium tabular-nums text-s-ink-2">{S.ahead} ahead</span>
     </div>
   );
 }
