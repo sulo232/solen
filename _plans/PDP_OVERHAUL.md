@@ -196,7 +196,7 @@ The owner approved the redesign and said "don't stop per step" , they expected i
       layers its own h-6/px-2.5/star-13/value-14-600-tabular white+hairline+
       shadow-elevation-1 pill at the same -bottom-1 anchor; avatar stays 88px; "Alle
       ansehen" now points at the real `/salon/[slug]/team` route. tsc clean.
-- [x] P9. Status line = just "Geschlossen"/"Geöffnet" (StatusInline). Colour treatment kept
+- [x] P9. Status line = just "Geschlossen"/"Geöffnet". `verified:` StatusInline.tsx:43 `const [head] = label.split(/\s+/)` renders only `head` at :47; the EM-SPACE join is documented at :21-25. Runtime on the real PDP: 3 status leaves show the word alone, 0 with a trailing clause. sha 6cdb326c7. Colour treatment kept
       UNCHANGED per the literal task instruction for this port (the "unified green" R2
       swap was flagged NEEDS OWNER SIGN-OFF and never applied to production, deliberately
       left out here). `verified:` renders only `label.split(/\s+/)[0]`; DISCOVERED (rule
