@@ -149,6 +149,9 @@ export default function SalonWalkInPanel({
   // reads per-service and updates live with the selected barber. No per-service queue data exists,
   // so this reflects the salon/barber wait, never a fabricated per-service number.
   const rowWaitLabel = isOpen && hasQueue ? `${low}–${wait} ${l.min}` : null;
+  // E (owner 2026-07-24): the wait RANGE read as a guess; collapse to ONE soft single estimate
+  // (midpoint rounded to 5) so the exact POSITION can be the hero number instead.
+  const singleWait = Math.round((low + wait) / 2 / 5) * 5;
 
   // staff_id rides the join link → pay-intent metadata → barber_walkin_queue.preferred_barber_id.
   const joinHref = (serviceId: string) =>
@@ -180,41 +183,22 @@ export default function SalonWalkInPanel({
           category chips (Termin parity). The status is a slim, always-compact row (not a tall
           card); the sticky bar on scroll mirrors it 1:1. Reverses the earlier tall status card. */}
       <div className="space-y-7">
-        {/* (a) Compact live-status bar */}
-        <div className="flex items-center gap-3 rounded-[20px] border border-s-border bg-white shadow-whisper px-5 py-3.5">
-          <span className="inline-flex shrink-0 items-center gap-2">
-            {isOpen ? (
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full rounded-full opacity-50" style={{ background: dotColor, animation: "ping 2.6s cubic-bezier(0,0,.2,1) infinite" }} />
-                <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: dotColor }} />
-              </span>
-            ) : (
-              <span className="h-2 w-2 rounded-full" style={{ background: dotColor }} />
-            )}
-            <span className="font-display text-[14px] font-semibold tracking-[-.01em]" style={{ color: dotColor }}>{statusLabel}</span>
-          </span>
-          {isOpen && hasQueue && (
-            <>
-              <span className="h-4 w-px shrink-0 bg-s-border" aria-hidden />
-              <span className="inline-flex min-w-0 items-center gap-1.5 text-s-ink">
-                <Clock className="h-4 w-4 shrink-0 text-s-ink-2" aria-hidden />
-                <span className="font-display text-[15px] font-semibold tabular-nums tracking-[-.01em]">{low}–{wait} {l.min}</span>
-              </span>
-            </>
-          )}
-          {isOpen && !hasQueue && (
-            <>
-              <span className="h-4 w-px shrink-0 bg-s-border" aria-hidden />
-              <span className="truncate font-body text-[13px] text-s-ink-2">{l.emptyBig}</span>
-            </>
-          )}
-          <div className="ml-auto flex shrink-0 items-center gap-2">
-            {isOpen && hasQueue && (
-              <span className="inline-flex items-center gap-1 text-s-ink-2">
-                <Users className="h-3.5 w-3.5" aria-hidden />
-                <span className="font-body text-[12px] tabular-nums">{ahead} {l.ahead}</span>
-              </span>
-            )}
+        {/* (a) Live status — E (owner 2026-07-24, reference-grounded on the Waymo/Equinox queue
+            screens via Mobbin): the queue POSITION is the ONE exact hero number — no wait RANGE,
+            which read as a guess — and the wait sits below as a soft single "~X Min" estimate. */}
+        <div className="rounded-[20px] border border-s-border bg-white shadow-whisper px-5 py-4">
+          <div className="flex items-center justify-between">
+            <span className="inline-flex shrink-0 items-center gap-2">
+              {isOpen ? (
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full rounded-full opacity-50" style={{ background: dotColor, animation: "ping 2.6s cubic-bezier(0,0,.2,1) infinite" }} />
+                  <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: dotColor }} />
+                </span>
+              ) : (
+                <span className="h-2 w-2 rounded-full" style={{ background: dotColor }} />
+              )}
+              <span className="font-display text-[13px] font-semibold tracking-[-.01em]" style={{ color: dotColor }}>{statusLabel}</span>
+            </span>
             <button
               type="button"
               onClick={() => setInfoOpen(true)}
@@ -224,6 +208,24 @@ export default function SalonWalkInPanel({
               <Info className="h-[15px] w-[15px]" />
             </button>
           </div>
+          {isOpen && hasQueue && (
+            <>
+              <div className="mt-2.5 flex items-baseline gap-2">
+                <span className="font-display text-[28px] font-bold leading-none tabular-nums tracking-[-.03em] text-s-ink">{ahead}</span>
+                <span className="font-body text-[15px] font-medium text-s-ink-2">{l.ahead}</span>
+              </div>
+              <div className="mt-2 inline-flex items-center gap-1.5 text-s-ink-2">
+                <Clock className="h-3.5 w-3.5" aria-hidden />
+                <span className="font-body text-[13px] tabular-nums">~{singleWait} {l.min} {l.waitW}</span>
+              </div>
+            </>
+          )}
+          {isOpen && !hasQueue && (
+            <div className="mt-2.5 font-display text-[18px] font-semibold leading-[1.2] tracking-[-.02em] text-s-ink">{l.emptyBig}</div>
+          )}
+          {!isOpen && (
+            <div className="mt-2.5 font-display text-[18px] font-semibold leading-[1.2] tracking-[-.02em] text-s-ink">{l.closedBig}</div>
+          )}
         </div>
 
         {/* (b) Stylist section — the SINGLE walk-in stylist section (owner 2026-07-24: was a
