@@ -200,7 +200,7 @@ export function SalonDetailV3({
     // services. Switched to overflow-x-clip which prevents horizontal
     // bleed without breaking vertical sticky.
     // bg-white substrate per §5h.3 (commerce surface).
-    <main className="relative min-h-screen overflow-x-clip bg-white pt-2 pb-24 md:pt-3 md:pb-16">
+    <main className="relative min-h-screen overflow-x-clip bg-white pb-24 md:pt-3 md:pb-16">
       {/* V3-D202 (A23): ambient gradient washes block DELETED. Was 8 absolute
           <div>s in retired warm/sage colors (peach #F2C49B, emerald #5BAE85,
           terracotta #D6754F, butter #F0C85A, sage #9CC0A4, rose #E89A88).
@@ -231,7 +231,7 @@ export function SalonDetailV3({
           expand-on-scroll behavior, just triggered at the higher threshold
           where the sidebar's natural document position has scrolled into
           sticky-pinned state. */}
-      <section ref={heroRef} className="mx-auto mt-3 w-full max-w-[1180px] md:px-6">
+      <section ref={heroRef} className="mx-auto mt-0 w-full max-w-[1180px] md:mt-3 md:px-6">
         <SalonHero salon={salon} onOpenLightbox={openLightbox} onOpenGallery={openGallery} />
       </section>
 
