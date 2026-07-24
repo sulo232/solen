@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Clock, Users, Info, Star, X, Check } from "lucide-react";
 import { SelectedCheckBadge } from "@/components-legacy/ui/SelectedCheckBadge";
+import { groupServicesByDurationTier } from "@/lib/service-tiers";
 
 interface WalkInService {
   id: string;
@@ -156,6 +157,11 @@ export default function SalonWalkInPanel({
     ? services.filter((s) => selectedStaff.service_ids!.includes(s.id))
     : services;
 
+  // Group by duration tier, same shared source of truth as Termin mode
+  // (SalonServices.tsx) via lib/service-tiers.ts — owner fix 2026-07-23:
+  // walk-in previously rendered one flat ungrouped list.
+  const { tiered: tieredServices, untiered: untieredServices } = groupServicesByDurationTier(visibleServices);
+
   return (
     <div>
       {/* ONE module card (owner 2026-06-12: "not one big card... hard to distinguish
@@ -251,36 +257,75 @@ export default function SalonWalkInPanel({
           </div>
         )}
 
-        {/* Service pick — hairline rows inside the card (not separate cards) */}
+        {/* Service pick — hairline rows inside the card (not separate cards).
+            Grouped by duration tier (owner fix 2026-07-23), same shared derivation
+            as Termin mode (SalonServices.tsx) via lib/service-tiers.ts. */}
         <div className="border-t border-s-border px-5 pb-1 pt-[18px]">
           <p className="text-[13px] font-semibold text-s-ink">{l.pick}</p>
-          <ul>
-            {visibleServices.map((s, i) => (
-              <li key={s.id} className={`flex items-center justify-between gap-4 py-4 ${i > 0 ? "border-t border-s-border" : ""}`}>
-                <div className="min-w-0 flex-1">
-                  <div className="font-body text-[15px] font-semibold text-s-ink">{svcName(s)}</div>
-                  <div className="font-body mt-0.5 text-[13px] text-s-ink-3">
-                    {s.duration_minutes ? `${s.duration_minutes} ${l.min}, ` : ""}{l.from} {Number(s.price).toFixed(0)} CHF
+          {tieredServices.map(({ tier, rows }, gi) => (
+            <div key={tier.key}>
+              <div className={`flex items-baseline gap-2 ${gi === 0 ? "mt-3" : "mt-4"}`}>
+                <h4 className="font-body text-[14px] font-semibold text-s-ink">{tier.label}</h4>
+                <span className="font-body text-[12px] text-s-ink-3">{tier.range}</span>
+              </div>
+              <ul>
+                {rows.map((s, i) => (
+                  <li key={s.id} className={`flex items-center justify-between gap-4 py-4 ${i > 0 ? "border-t border-s-border" : ""}`}>
+                    <div className="min-w-0 flex-1">
+                      <div className="font-body text-[15px] font-semibold text-s-ink">{svcName(s)}</div>
+                      <div className="font-body mt-0.5 text-[13px] text-s-ink-3">
+                        {s.duration_minutes ? `${s.duration_minutes} ${l.min}, ` : ""}{l.from} {Number(s.price).toFixed(0)} CHF
+                      </div>
+                    </div>
+                    {isOpen ? (
+                      <Link
+                        href={joinHref(s.id)}
+                        className="font-body shrink-0 rounded-full bg-s-bg-sunken px-5 py-2 text-[13px] font-semibold text-s-ink transition-colors hover:bg-s-border"
+                      >
+                        {l.join}
+                      </Link>
+                    ) : (
+                      <span
+                        aria-disabled="true"
+                        className="font-body shrink-0 cursor-not-allowed rounded-full bg-s-bg-sunken px-5 py-2 text-[13px] font-semibold text-s-ink-3 opacity-70"
+                      >
+                        {CLOSED_PILL[locale] ?? CLOSED_PILL.de}
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+          {untieredServices.length > 0 && (
+            <ul className={tieredServices.length > 0 ? "mt-2" : ""}>
+              {untieredServices.map((s, i) => (
+                <li key={s.id} className={`flex items-center justify-between gap-4 py-4 ${i > 0 ? "border-t border-s-border" : ""}`}>
+                  <div className="min-w-0 flex-1">
+                    <div className="font-body text-[15px] font-semibold text-s-ink">{svcName(s)}</div>
+                    <div className="font-body mt-0.5 text-[13px] text-s-ink-3">
+                      {s.duration_minutes ? `${s.duration_minutes} ${l.min}, ` : ""}{l.from} {Number(s.price).toFixed(0)} CHF
+                    </div>
                   </div>
-                </div>
-                {isOpen ? (
-                  <Link
-                    href={joinHref(s.id)}
-                    className="font-body shrink-0 rounded-full bg-s-bg-sunken px-5 py-2 text-[13px] font-semibold text-s-ink transition-colors hover:bg-s-border"
-                  >
-                    {l.join}
-                  </Link>
-                ) : (
-                  <span
-                    aria-disabled="true"
-                    className="font-body shrink-0 cursor-not-allowed rounded-full bg-s-bg-sunken px-5 py-2 text-[13px] font-semibold text-s-ink-3 opacity-70"
-                  >
-                    {CLOSED_PILL[locale] ?? CLOSED_PILL.de}
-                  </span>
-                )}
-              </li>
-            ))}
-          </ul>
+                  {isOpen ? (
+                    <Link
+                      href={joinHref(s.id)}
+                      className="font-body shrink-0 rounded-full bg-s-bg-sunken px-5 py-2 text-[13px] font-semibold text-s-ink transition-colors hover:bg-s-border"
+                    >
+                      {l.join}
+                    </Link>
+                  ) : (
+                    <span
+                      aria-disabled="true"
+                      className="font-body shrink-0 cursor-not-allowed rounded-full bg-s-bg-sunken px-5 py-2 text-[13px] font-semibold text-s-ink-3 opacity-70"
+                    >
+                      {CLOSED_PILL[locale] ?? CLOSED_PILL.de}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
 

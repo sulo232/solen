@@ -7,6 +7,7 @@ import { capitalize } from "./_shared";
 import { TabPill } from "../primitives/TabPill";
 import { PriceFrom, SeeAllButton } from "../primitives";
 import { cn } from "@/lib/utils";
+import { groupServicesByDurationTier } from "@/lib/service-tiers";
 
 /**
  * Duration label. Owner spec (2026-06-09): ALWAYS minutes, lowercase "min",
@@ -86,16 +87,8 @@ export function SalonServices({
   // Owner mockup service-grouping (2026-06-10): the inline list groups by DURATION tier
   // (Express / Klassisch / Signature) under the existing subcategory filter pills.
   // Pure derivation from duration_minutes — no schema change, no invented data.
-  const TIERS: { key: string; label: string; range: string; match: (d: number) => boolean }[] = [
-    { key: "express", label: "Express", range: "15–30 Min", match: (d) => d > 0 && d <= 30 },
-    { key: "klassisch", label: "Klassisch", range: "45–60 Min", match: (d) => d > 30 && d <= 60 },
-    { key: "signature", label: "Signature", range: "90+ Min", match: (d) => d > 60 },
-  ];
-  const tiered = TIERS
-    .map((tier) => ({ tier, rows: shown.filter((s) => tier.match(s.duration_minutes ?? 0)) }))
-    .filter((g) => g.rows.length > 0);
-  // Services with no usable duration fall outside every tier — keep them visible, untiered.
-  const untiered = shown.filter((s) => !TIERS.some((tier) => tier.match(s.duration_minutes ?? 0)));
+  // Shared with Walk-in mode (SalonWalkInPanel.tsx) via lib/service-tiers.ts (rule 12: share, not duplicate).
+  const { tiered, untiered } = groupServicesByDurationTier(shown);
 
   return (
     <section id="section-services">
