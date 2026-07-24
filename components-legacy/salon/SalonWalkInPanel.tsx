@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Clock, Users, Info, X, Check } from "lucide-react";
+import { Users, Info, X, Check } from "lucide-react";
 import { SelectedCheckBadge } from "@/components-legacy/ui/SelectedCheckBadge";
 import { Avatar } from "@/app/[locale]/_components/primitives";
 import { useWalkInQueue } from "@/components-legacy/salon/WalkInQueueContext";
@@ -194,26 +194,14 @@ export default function SalonWalkInPanel({
             <span className="font-display text-[14px] font-semibold tracking-[-.01em]" style={{ color: dotColor }}>{statusLabel}</span>
           </span>
           {isOpen && hasQueue && (
-            <>
-              <span className="h-4 w-px shrink-0 bg-s-border" aria-hidden />
-              <span className="inline-flex min-w-0 items-center gap-1.5 text-s-ink">
-                <Clock className="h-4 w-4 shrink-0 text-s-ink-2" aria-hidden />
-                <span className="font-display text-[15px] font-semibold tabular-nums tracking-[-.01em]">{l.from} {low} {l.min}</span>
-              </span>
-            </>
+            <span className="min-w-0 font-display text-[15px] font-semibold tabular-nums tracking-[-.01em] text-s-ink">{l.from} {low} {l.min}</span>
           )}
           {isOpen && !hasQueue && (
-            <>
-              <span className="h-4 w-px shrink-0 bg-s-border" aria-hidden />
-              <span className="truncate font-body text-[13px] text-s-ink-2">{l.emptyBig}</span>
-            </>
+            <span className="min-w-0 truncate font-body text-[13px] text-s-ink-2">{l.emptyBig}</span>
           )}
           <div className="ml-auto flex shrink-0 items-center gap-2">
             {isOpen && hasQueue && (
-              <span className="inline-flex items-center gap-1 text-s-ink-2">
-                <Users className="h-3.5 w-3.5" aria-hidden />
-                <span className="font-body text-[12px] tabular-nums">{ahead} {l.ahead}</span>
-              </span>
+              <span className="font-body text-[12px] tabular-nums text-s-ink-2">{ahead} {l.ahead}</span>
             )}
             <button
               type="button"
@@ -379,8 +367,7 @@ function WalkInServiceRow({
             {service.duration_minutes ? `${service.duration_minutes} ${l.min}, ` : ""}{l.from} {Number(service.price).toFixed(0)} CHF
           </div>
           {waitLabel && (
-            <div className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-s-bg-sunken px-2 py-0.5 text-[11.5px] font-medium text-s-ink-2">
-              <Clock className="h-3 w-3" aria-hidden />
+            <div className="mt-1.5 inline-flex items-center rounded-full bg-s-bg-sunken px-2 py-0.5 text-[11.5px] font-medium text-s-ink-2">
               <span className="tabular-nums">{waitLabel}</span>
             </div>
           )}
