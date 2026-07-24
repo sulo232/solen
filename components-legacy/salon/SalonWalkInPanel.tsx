@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Clock, Users, Info, Star, X, Check } from "lucide-react";
+import { Clock, Users, Info, X, Check } from "lucide-react";
 import { SelectedCheckBadge } from "@/components-legacy/ui/SelectedCheckBadge";
-import { FROST_GLASS } from "@/lib/frost-glass";
+import { Avatar } from "@/app/[locale]/_components/primitives";
 import { useWalkInQueue } from "@/components-legacy/salon/WalkInQueueContext";
 
 interface WalkInService {
@@ -25,6 +25,7 @@ interface WalkInStaff {
   staff_average_rating?: number | null;
   staff_review_count?: number | null;
   service_ids?: string[] | null; // services this barber performs (staff_services)
+  languages?: string[] | null; // spoken languages (Team-card principle); rides on salon.staff at runtime
 }
 
 // No em-dashes anywhere (user rule). Separators are middots (·) or commas.
@@ -214,61 +215,57 @@ export default function SalonWalkInPanel({
           </div>
         </div>
 
-        {/* (b) Barber pick — compact, no card (Option B) */}
+        {/* (b) Stylist section — the SINGLE walk-in stylist section (owner 2026-07-24: was a
+            small 64px picker AND a separate SalonTeam = two; deduped to one). Applies the LOCKED
+            Team-card principle (COMPONENT_REGISTRY -> SalonTeam: 88px Avatar + floating star badge
+            + spoken languages + SelectedCheckBadge). Tapping SELECTS your barber, driving the wait
+            (shared provider) + filtering that barber's services below. id="section-team" so the
+            sub-nav Team tab lands here; SalonTeam is Termin-only now. */}
         {staff.length > 0 && (
-          <div>
-            <p className="mb-3 text-[13px] font-semibold text-s-ink">{l.barberPick}</p>
-            <div className="-mx-1 flex gap-4 overflow-x-auto px-1 pt-2 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <section id="section-team">
+            <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">{l.barberPick}</h2>
+            <div className="-mx-1 mt-4 flex gap-5 overflow-x-auto px-1 pt-2 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {/* Egal / anyone */}
               <button
                 type="button"
                 onClick={() => setBarberId(null)}
                 aria-pressed={barberId === null}
-                className="flex w-[74px] shrink-0 flex-col items-center text-center"
+                className="w-[104px] shrink-0 text-center md:w-[112px]"
               >
-                <div className="relative">
-                  <div className="grid h-[64px] w-[64px] place-items-center overflow-hidden rounded-full bg-s-bg-sunken ring-1 ring-s-ink/[0.05]">
-                    <Users className="h-6 w-6 text-s-ink-2" />
+                <div className="relative mx-auto w-[88px]">
+                  <div className="grid h-[88px] w-[88px] place-items-center overflow-hidden rounded-full bg-s-bg-sunken ring-1 ring-s-ink/[0.05]">
+                    <Users className="h-8 w-8 text-s-ink-2" />
                   </div>
-                  <SelectedCheckBadge selected={barberId === null} size={22} />
+                  <SelectedCheckBadge selected={barberId === null} />
                 </div>
-                <div className={`mt-2.5 font-body text-[13px] leading-tight text-s-ink ${barberId === null ? "font-semibold" : "font-medium"}`}>{l.anyone}</div>
+                <div className={`mt-3 font-body text-[14px] leading-tight text-s-ink md:text-[15px] ${barberId === null ? "font-semibold" : "font-medium"}`}>{l.anyone}</div>
+                <div className="mt-1 font-body text-[12px] leading-snug text-s-ink-2 md:text-[13px]">{l.noPref}</div>
               </button>
               {staff.map((b) => {
                 const active = barberId === b.id;
                 const hasRating = (b.staff_review_count ?? 0) > 0;
-                const displayRating = hasRating ? b.staff_average_rating : salonAverageRating;
-                const showRating = displayRating != null && displayRating > 0;
+                const displayRating = hasRating ? b.staff_average_rating : null;
+                const showRating = hasRating && displayRating != null && displayRating > 0;
+                const langs = b.languages && b.languages.length > 0 ? b.languages.map((x) => x.toUpperCase()).join(" / ") : null;
                 return (
                   <button
                     key={b.id}
                     type="button"
                     onClick={() => setBarberId(active ? null : b.id)}
                     aria-pressed={active}
-                    className="flex w-[74px] shrink-0 flex-col items-center text-center"
+                    className="w-[104px] shrink-0 text-center md:w-[112px]"
                   >
-                    <div className="relative">
-                      <div className="relative grid h-[64px] w-[64px] place-items-center overflow-hidden rounded-full bg-white ring-1 ring-s-ink/[0.05]">
-                        {b.avatar_url ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={b.avatar_url} alt="" className="h-full w-full object-cover" loading="lazy" />
-                        ) : (
-                          <span className="font-display text-[24px] font-semibold text-s-ink-2">{b.name.charAt(0).toUpperCase()}</span>
-                        )}
-                      </div>
-                      <SelectedCheckBadge selected={active} size={22} />
-                      {showRating && (
-                        <span className="absolute -bottom-2 left-1/2 inline-flex -translate-x-1/2 items-center gap-0.5 rounded-full px-2 py-[3px]" style={FROST_GLASS}>
-                          <Star size={11} stroke="none" className="fill-s-star" />
-                          <span className={`text-[12px] font-semibold leading-none tabular-nums text-s-ink ${!hasRating ? "opacity-70" : ""}`}>{displayRating?.toFixed(1)}</span>
-                        </span>
-                      )}
+                    <div className="relative mx-auto w-[88px]">
+                      <Avatar src={b.avatar_url} name={b.name} size={88} badge={showRating ? { rating: displayRating as number } : undefined} />
+                      <SelectedCheckBadge selected={active} />
                     </div>
-                    <div className={`mt-3 font-body text-[13px] leading-tight text-s-ink ${active ? "font-semibold" : "font-medium"}`}>{b.name.split(" ")[0]}</div>
+                    <div className={`mt-3 font-body text-[14px] leading-tight text-s-ink md:text-[15px] ${active ? "font-semibold" : "font-medium"}`}>{b.name.split(" ")[0]}</div>
+                    {langs && <div className="mt-1 font-body text-[12px] leading-snug text-s-ink-2 md:text-[13px]">{langs}</div>}
                   </button>
                 );
               })}
             </div>
-          </div>
+          </section>
         )}
 
         {/* (c) Services section — #section-services, category chips (Termin parity) + grouped list */}

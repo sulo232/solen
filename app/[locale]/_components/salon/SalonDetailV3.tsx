@@ -287,11 +287,10 @@ export function SalonDetailV3({
               />
             )}
 
-            {/* Owner 2026-07-24: Team now renders in BOTH modes. Walk-in used to hide it
-                (and Services), which left the sticky sub-nav's Team/Services tabs pointing
-                at #section-team / #section-services elements that didn't exist -> dead tabs.
-                Un-hiding gives walk-in the clickable stylist browse + a working sub-nav. */}
-            {salon.staff.length > 0 && (
+            {/* Termin-only: walk-in has its OWN single selectable stylist section (the deduped
+                "Dein Barber" = #section-team, inside SalonWalkInPanel) per owner 2026-07-24, so
+                rendering browse-profile SalonTeam here too would be a SECOND stylist section. */}
+            {!walkinMode && salon.staff.length > 0 && (
               <SalonTeam staff={salon.staff} salonAverageRating={salon.average_rating} slug={slug} locale={locale} />
             )}
 
