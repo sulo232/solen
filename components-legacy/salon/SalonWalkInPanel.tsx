@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { Clock, Users, Info, Star, X, Check } from "lucide-react";
 import { SelectedCheckBadge } from "@/components-legacy/ui/SelectedCheckBadge";
 import { FROST_GLASS } from "@/lib/frost-glass";
+import { useWalkInQueue } from "@/components-legacy/salon/WalkInQueueContext";
 
 interface WalkInService {
   id: string;
@@ -117,21 +118,12 @@ export default function SalonWalkInPanel({
   isOpen?: boolean;
 }) {
   const l = COPY[locale] ?? COPY.de;
-  const [stats, setStats] = useState<{ ahead: number; wait_minutes: number; wait_low?: number; busy?: boolean } | null>(null);
-  const [barberId, setBarberId] = useState<string | null>(null); // null = "Egal"
+  // barberId + live queue stats come from the shared WalkInQueueProvider so this panel
+  // and the sticky bar always read ONE source (owner 2026-07-24: they used to fetch
+  // separately and could disagree). setBarberId refetches THAT barber's line in the provider.
+  const { barberId, setBarberId, stats } = useWalkInQueue();
   const [infoOpen, setInfoOpen] = useState(false);
   const [activeCat, setActiveCat] = useState<string>("alle");
-
-  // Per-barber dynamic wait (owner 2026-06-12): picking a barber refetches THEIR
-  // line; Egal shows the anyone-wait across the whole crew.
-  useEffect(() => {
-    let cancelled = false;
-    fetch(`/api/walkin/queue-stats?salon_id=${salonId}${barberId ? `&staff_id=${barberId}` : ""}`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => { if (!cancelled && d) setStats(d); })
-      .catch((e) => console.error("[SalonWalkInPanel] queue-stats failed:", e));
-    return () => { cancelled = true; };
-  }, [salonId, barberId]);
 
   const svcName = (s: WalkInService) => (locale === "en" ? s.name_en : s.name_de) || s.name_de || s.name_en || "Service";
 

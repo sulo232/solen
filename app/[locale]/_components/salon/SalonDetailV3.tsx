@@ -26,7 +26,7 @@ import { SalonSidebar } from "./SalonSidebar";
 import { SalonMobileBookBar } from "./SalonMobileBookBar";
 import SalonModeToggle from "@/components-legacy/salon/SalonModeToggle";
 import SalonWalkInPanel from "@/components-legacy/salon/SalonWalkInPanel";
-import SalonWalkInStickyStatus from "@/components-legacy/salon/SalonWalkInStickyStatus";
+import { WalkInQueueProvider } from "@/components-legacy/salon/WalkInQueueContext";
 import type { SalonDetail, TabKey, OpenStatus, DayKey } from "./_shared";
 import { postalToCity } from "./_shared";
 import { usePostHog } from "posthog-js/react";
@@ -256,9 +256,11 @@ export function SalonDetailV3({
             {salon.categories?.includes("barbershop") && salon.walkin_enabled && (
               <div className="mt-6 flex flex-col gap-5">
                 <SalonModeToggle mode={walkinMode ? "walkin" : "book"} onChange={(m) => setWalkinMode(m === "walkin")} locale={locale} />
-                {walkinMode && <SalonWalkInPanel salonId={salon.id} services={salon.services} staff={salon.staff} salonAverageRating={salon.average_rating} slug={slug} isOpen={salonOpen} locale={locale} />}
-                {/* Compact sticky live-status echo (owner 2026-07-24 R2) — portals to body, appears on scroll. */}
-                {walkinMode && <SalonWalkInStickyStatus salonId={salon.id} isOpen={salonOpen} locale={locale} />}
+                {walkinMode && (
+                  <WalkInQueueProvider salonId={salon.id}>
+                    <SalonWalkInPanel salonId={salon.id} services={salon.services} staff={salon.staff} salonAverageRating={salon.average_rating} slug={slug} isOpen={salonOpen} locale={locale} />
+                  </WalkInQueueProvider>
+                )}
               </div>
             )}
 
