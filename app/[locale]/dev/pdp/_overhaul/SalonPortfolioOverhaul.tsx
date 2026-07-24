@@ -9,17 +9,18 @@
 // already reads for the categorized gallery) instead of fabricating anything; if fewer than the
 // cap real photos exist across venue + staff, it shows all available and adds a one-line
 // footnote.
-// ROUND 3 (S3, owner verbatim "three by three, so six images instead of whatever we have right
-// now"): cap dropped from 9 (3x3) to 6 (3x2). Supersedes R1's 9-tile fill.
+// ROUND 3 (S3): briefly dropped the cap to 6 (3x2) on a misheard "three by three" instruction.
+// ROUND 4 (C1, owner verbatim "I meant nine"): reverted, cap is 9 (3x3). This is the current,
+// correct state , do not re-drop to 6 without an explicit new owner instruction.
 
 import * as React from "react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import type { StaffMember } from "../../../_components/salon/_shared";
 
-const TILE_CAP = 6; // 3 columns x 2 rows (S1, owner "three by three, so six images")
+const TILE_CAP = 9; // 3 columns x 3 rows (owner correction 2026-07-24: "I meant nine")
 
 /**
- * SalonPortfolioOverhaul , S3: render a 3x2 (up to 6) grid without fabrication. Venue photos
+ * SalonPortfolioOverhaul , renders a 3x3 (up to 9) grid without fabrication. Venue photos
  * (`urls`) come first; if that's short of the cap, staff portfolio photos (staff_portfolio_images,
  * real seeded data) fill the remainder. If the combined real-photo count is still under the cap,
  * all available tiles render and a small English footnote states the real count (mockup chrome).

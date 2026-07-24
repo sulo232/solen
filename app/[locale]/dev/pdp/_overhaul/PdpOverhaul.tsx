@@ -17,7 +17,6 @@ import { SalonStickyTabNav } from "../../../_components/salon/SalonStickyTabNav"
 import { SalonServices } from "../../../_components/salon/SalonServices";
 import { SalonBundles } from "../../../_components/salon/SalonBundles";
 import { SalonProducts } from "../../../_components/salon/SalonProducts";
-import { SalonTeam } from "../../../_components/salon/SalonTeam";
 import { SalonAbout } from "../../../_components/salon/SalonAbout";
 import { SalonLocation } from "../../../_components/salon/SalonLocation";
 import { SalonAdditionalInfo } from "../../../_components/salon/SalonAdditionalInfo";
@@ -33,6 +32,7 @@ import { SalonOpeningTimesOverhaul } from "./SalonOpeningTimesOverhaul";
 import { SalonVenuesNearbyOverhaul } from "./SalonVenuesNearbyOverhaul";
 import { SalonAppCtaOverhaul } from "./SalonAppCtaOverhaul";
 import { SalonMobileBookBarOverhaul } from "./SalonMobileBookBarOverhaul";
+import { SalonTeamOverhaul } from "./SalonTeamOverhaul";
 
 // No top-level SalonLightbox here (unlike the real orchestrator): every photo entry point in
 // this overhaul (hero tap, inline portfolio tap) routes into the categorized gallery instead,
@@ -119,8 +119,10 @@ export function PdpOverhaul({
 
                 <SalonProducts salonId={salon.id} category={primaryCategory} locale={locale} onLoaded={setHasProducts} />
 
+                {/* CHANGED (C3): rating pill on the team avatars enlarged per the owner's
+                    Fresha reference; see SalonTeamOverhaul.tsx for the measured sizing. */}
                 {salon.staff.length > 0 && (
-                  <SalonTeam staff={salon.staff} salonAverageRating={salon.average_rating} slug={slug} locale={locale} />
+                  <SalonTeamOverhaul staff={salon.staff} salonAverageRating={salon.average_rating} slug={slug} locale={locale} />
                 )}
 
                 {/* CHANGED (ask 4): renewed, grouped review list (density-floor fix). */}
@@ -173,11 +175,16 @@ export function PdpOverhaul({
       </div>
 
       {/* CHANGED (S5, owner: no snap, the bar just stays put): permanently fixed, no
-          in-flow wrapper needed since a fixed element takes no flow space. Clearance from the
-          footer/newsletter comes from the `<main>` bottom padding below (~130px, bigger than
-          the bar's own ~76px footprint) PLUS the footer's own content after the newsletter band
-          (link columns + legal bar, several hundred px, see Footer.tsx) , so the newsletter is
-          never the last thing visible at max scroll. */}
+          in-flow wrapper needed since a fixed element takes no flow space. Room-to-scroll comes
+          from the `<main>` bottom padding below (~130px, bigger than the bar's own ~76px
+          footprint) PLUS the footer's own content after the newsletter band (link columns +
+          legal bar, several hundred px, see Footer.tsx) , so the newsletter is never the last
+          thing visible at max scroll.
+          ROUND 4 (C2): the bar itself now portals to document.body (see
+          SalonMobileBookBarOverhaul.tsx) so it always escapes this `<main>`'s isolated stacking
+          context and the later `<footer>` sibling can never paint over it, at any scroll
+          position. This render spot is now only where the component MOUNTS from, not where it
+          visually sits. */}
       <SalonMobileBookBarOverhaul locale={locale} slug={slug} />
 
       <SalonImageGalleryOverhaul
