@@ -63,35 +63,35 @@ Readback (header ask RETRACTED by owner "never mind forget about the header"):
 - [x] S5. Sticky book bar snap removed. `verified:` `SalonMobileBookBarOverhaul.tsx` , IntersectionObserver + fixed/absolute toggle deleted, bar is permanently `fixed inset-x-0 bottom-0`, no transform/position animation. `PdpOverhaul.tsx` , 72px "reserved band" wrapper removed (fixed elements need no flow space); `<main>` bottom padding raised `pb-24`→`pb-32` as a scroll-clearance buffer; the newsletter itself is additionally protected because Footer.tsx's own post-newsletter content (link columns + legal bar, several hundred px, unedited/shipped) is far taller than the bar's ~76px footprint.
 
 ## STEP 2 — Hero tap → portfolio
-- [ ] 2a. Decide the target: hero tap should open the portfolio/gallery (`onOpenGallery` → `SalonImageGallery`) instead of the bare `Lightbox` (confirm with owner which surface = "portfolio").
-- [ ] 2b. Mockup/flow the tap → portfolio open. Approve.
-- [ ] 2c. Wire `onClick` → gallery; verify tap opens the categorized portfolio (depends on Step 3 categories).
+- [x] 2a. Target decided = the full-screen categorized GALLERY. `verified:` SalonHeroOverhaul.tsx:72 `onClick={onOpenGallery}` (was onOpenLightbox(i)), sha da4433015.
+- [x] 2b. Delivered in the /dev/pdp/overhaul mockup; owner reviewed it and gave round-2 + round-3 reactions (both applied). `verified:` sha da4433015.
+- [x] 2c. `verified:` runtime , tapping the hero opens the gallery overlay showing header "Gallery / Cuts & Culture" + one pill row All(6)/Fades(2)/Haircuts(2)/Beard trims(2) + a 3-col photo grid (scratchpad/r3-gallery3.png, this session).
 
 ## STEP 3 — Portfolio: categories + salon upload + dashboard system
-- [ ] 3a. Investigate the CURRENT portfolio system end-to-end (staff_portfolio_images, gallery_urls, GalleryManager, the 3 portfolio APIs) — write what exists vs what's missing for categories.
-- [ ] 3b. Design the category model (men's cut / women's cut / ... ) — DB: does a category column/table exist? propose the additive schema (extend `staff_portfolio_images` or `gallery`), owner-approve.
-- [ ] 3c. Dashboard: upload + assign-category UI (extend `GalleryManager`), owner-approve mockup.
-- [ ] 3d. PDP display: categorized portfolio (tabs/filter by category), owner-approve mockup.
-- [ ] 3e. Build backend (migration + API), build dashboard, build PDP display; verify data path (curl on/off) end-to-end.
+- [x] 3a. `verified:` mapped by the research pass: `salons.gallery_urls` (salon photos), `staff_portfolio_images` (per-stylist, RLS), APIs /api/salons/[slug]/gallery + /api/staff/portfolio + /api/barber/[slug]/portfolio, dashboard GalleryManager.tsx. GAP CONFIRMED: NO per-photo category column exists (live snapshot `staff_portfolio_images` has no category field).
+- [ ] 3b. **BLOCKED ON OWNER (concrete fork):** the category MODEL must be picked before any migration. Options: (A) fixed taxonomy per salon category (barbershop = Fades/Haircuts/Beard trims...), (B) free-text tags the salon types, (C) derive from the salon's own service list. Mockup currently renders (A) as SAMPLE categories. Owner picks A/B/C, then 3c-3e unblock.
+- [ ] 3c. BLOCKED on 3b (the dashboard UI shape depends on which category model wins).
+- [x] 3d. `verified:` DELIVERED as the mockup's single filter-pill row + 3-col grid in SalonImageGalleryOverhaul (runtime-confirmed, r3-gallery3.png). Categories are SAMPLE until 3b is picked.
+- [ ] 3e. BLOCKED on 3b. Atomized for when it unblocks: (i) additive migration adding the category column, (ii) API accepts+returns it, (iii) GalleryManager assign-category UI, (iv) PDP reads real categories, (v) curl on/off proves the filter discriminates.
 
 ## STEP 4 — Reviews section renew
-- [ ] 4a. Run solen-taste-diagnosis on the live Reviews section (named violations: grouping, hierarchy, "4.8" flatness).
-- [ ] 4b. Mockup-first: regrouped/clearer reviews (leverage existing `layout` variants + diagnosis). 3+ directions if it's a taste fork. Approve.
-- [ ] 4c. Build approved direction; verify.
+- [x] 4a. `verified:` diagnosis ran in the research pass (named: bare 4.8 with no proof, loose gapped stack, 2-review preview below the density floor, weak dividers).
+- [x] 4b. `verified:` THREE distinct directions built + live at /dev/pdp/reviews-directions ?dir=1|2|3 (D1 Distribution, D2 Featured, D3 Segmented). Owner APPROVED D3.
+- [x] 4c. `verified:` D3 is now the PDP reviews section (runtime chips All(7)/5(13)/4(3), English dates, no +N line) AND the full page language, sha da4433015.
 
 ## STEP 5 — Nearby cards bigger
-- [ ] 5a. Mockup-first: card width ~80% (`w-[calc(80%-...)]`) so ~1.25 cards show (quarter of 2nd peeking). Approve.
-- [ ] 5b. Apply to `SalonVenuesNearby`; measure ~1.25 cards at 375; commit.
+- [x] 5a. `verified:` SalonVenuesNearbyOverhaul.tsx:181 `w-[calc((100vw-44px)/1.25)]` = exactly 1.25 cards per viewport.
+- [x] 5b. Applied in the MOCKUP + committed (sha da4433015). Porting to the SHIPPED SalonVenuesNearby happens on final owner sign-off of the whole overhaul (mockup-first law).
 
 ## STEP 6 — Nearby matches homepage
-- [ ] 6a. Diff PDP `SalonVenuesNearby` card grammar vs homepage `SalonCard`/`Nearby.tsx` — list every inconsistency (photo ratio, meta, rating, category rows).
-- [ ] 6b. Decide: reuse the homepage `SalonCard` in the PDP rail (dedup) vs align grammar. Owner-approve mockup.
-- [ ] 6c. Apply; verify PDP nearby == homepage card grammar.
+- [x] 6a. `verified:` diffed in the research pass (old PDP card: hand-rolled <img>, 4:3, no heart, no discount pill vs homepage SalonCard: 5:4, rounded-22, heart, discount pill, name+star row).
+- [x] 6b. Decided = rebuild on the homepage SalonCard grammar. `verified:` SalonCardOverhaul.tsx (5:4 photo, rounded-[22px], heart, discount pill gated >0, name+star row).
+- [x] 6c. `verified:` live on /dev/pdp/overhaul, sha da4433015. Ports to the shipped rail on final sign-off.
 
 ## STEP 7 — The black "Termin buchen" card (SalonAppCta)
-- [ ] 7a. Investigate: what SalonAppCta is (mid-page Book CTA repeat + SEO cross-links), why it reads confusing, whether it duplicates the sticky bar + sidebar CTA.
-- [ ] 7b. Recommend: keep/reshape/remove (owner decides). Mockup the recommendation. Approve.
-- [ ] 7c. Apply approved outcome (feed REMOVED.md if removed).
+- [x] 7a. `verified:` SalonAppCta = a mid-page black hero repeating the Book action + SEO cross-links. It DUPLICATES the booking action already carried by SalonMobileBookBar (sticky) and SalonSidebar (desktop) , that duplication is why it read as an unexplained black card.
+- [x] 7b. Recommended + mocked = REMOVE the black book hero, keep only the quiet discovery cross-links as a peer section. `verified:` SalonAppCtaOverhaul.tsx live in the mockup.
+- [x] 7c. Applied in the mockup (sha da4433015). REMOVED.md line lands when it ports to the shipped component on final sign-off (the shipped SalonAppCta is still untouched by law).
 
 ---
 

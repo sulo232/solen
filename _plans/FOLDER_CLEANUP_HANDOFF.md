@@ -55,7 +55,7 @@
 ### Phase A , SAFE + reversible
 - [ ] A1. Rescue the two tiny unique files into the new repo: copy `~/solen/_prompts/` and `~/solen/braids-tiktok-links.txt` into `~/Documents/solen/_archive/from-old-solen/`. (Additive copy, destroys nothing.)
   - **BLOCKED from a sandboxed worktree session (measured 2026-07-24):** `mkdir` under `~/Documents/solen/_archive/` returns `Operation not permitted` (SANDBOX_RUNTIME=1). Bash writes there are sandbox-denied from this worktree. RUN THIS FROM A NORMAL session opened directly in `~/Documents/solen` (where `cp` works). NOT URGENT: the files are safe sitting in `~/solen` and are only a prerequisite for the destructive Phase D, which is owner-gated anyway.
-- [x] A2. **DONE (verified 2026-07-24):** key-diff of old vs new `.env.local` came back EMPTY , the new `.env.local` already contains every key the old one has. Nothing secret is unique to the old folder.
+- [x] A2. **DONE** `verified:` 2026-07-24 key-diff of old vs new `.env.local` came back EMPTY , the new `.env.local` already contains every key the old one has. Nothing secret is unique to the old folder.
 
 ### Phase B , screenshots relocation (BLOCKED on owner decision B0)
 - [ ] B0. **DECISION (owner):** where should screenshots permanently live? Options:
