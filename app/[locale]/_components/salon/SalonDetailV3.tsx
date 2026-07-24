@@ -309,7 +309,12 @@ export function SalonDetailV3({
             {/* V3-D389 (Fresha 1:1 capture): location, opening times + amenities are
                 each their OWN full-width section now — no more lumped "Über uns"
                 block + no side-by-side hours/amenities grid. */}
-            <SalonLocation salon={salon} />
+            {/* mapDesign="clean-white" (ROUND 4, 2026-07-24): Direction A promoted to
+                production, plus the dotted walking route (owner: "Direction A, but
+                with dots") — store PIN salon marker, circle + always-blue-glyph
+                transit stop, station name in one pill. See SalonLocation.tsx's
+                mapDesign JSDoc for the full owner-reference history. */}
+            <SalonLocation salon={salon} mapDesign="clean-white" />
 
             <SalonOpeningTimes hours={salon.opening_hours} todayKey={todayKey} />
 

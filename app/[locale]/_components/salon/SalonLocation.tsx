@@ -109,6 +109,17 @@ import { SOLEN_MAP_STYLE, toStaticStylePath, applySolenBasemapConfig } from "@/l
  * The 3 directions below now differ on pill attachment (under vs beside), marker fill
  * (white vs sunken), and whether the boosted-blue route line renders at all — see
  * /dev/pdp/mapdesign for all 3 rendered side by side.
+ *
+ * ROUND 4 (2026-07-24, same day, the owner's decision on round 3's 3 directions):
+ * "clean-white" (Direction A) is promoted to the PRODUCTION default — SalonDetailV3
+ * now passes `mapDesign="clean-white"` explicitly instead of omitting the prop, and
+ * "current" (the original ink-teardrop/dot-pill render) is what now sits behind an
+ * explicit opt-in prop for reference/reversion. The owner's exact ask: "Direction A,
+ * but with dots" — so "clean-white" also gains the dotted walking route
+ * (addRouteFeatures, previously gated to "ink-glyph" only), keeping its route styling
+ * unchanged (real Mapbox Directions geometry, dashed, s-accent #276EF1, no on-map time
+ * pill). "ink-glyph" and "sunken" are untouched, still reachable only via an explicit
+ * mapDesign prop for the /dev/pdp/mapdesign comparison route.
  */
 export function SalonLocation({
   salon,
@@ -134,14 +145,17 @@ export function SalonLocation({
    *  JSDoc above for the full owner-reference context (round-1 "path-pill" /
    *  "store-anchor" / "minimal" are gone, superseded by round 2; round 2's circular
    *  store marker + glyph-above-name transit unit are gone, superseded by round 3).
-   *  Default "current" is the untouched production render (ink teardrop salon pin, old
-   *  dot+pill transit-stop marker, no route line) — every existing caller omits this
-   *  prop and is unaffected. "clean-white" / "ink-glyph" / "sunken" are the 3 round-3
-   *  directions (pin-shaped store marker, blue-glyph circular transit marker, station
-   *  name in one pill) built for the /dev/pdp/mapdesign mockup, reachable only via
-   *  this explicit prop; the owner has not picked one yet, so none of them ship
-   *  anywhere. This prop ONLY affects the map canvas — the floating card's own content
-   *  (name/address/walk-time chip) is identical across all 3 directions, since the ask
+   *  ROUND 4 (2026-07-24, same day): the owner picked "clean-white" (Direction A) as
+   *  the PRODUCTION default, plus the dotted walking route ("Direction A, but with
+   *  dots") — SalonDetailV3 now passes `mapDesign="clean-white"` explicitly instead of
+   *  omitting the prop. "current" (the untouched original render: ink teardrop salon
+   *  pin, old dot+pill transit-stop marker, no route line) stays reachable only via an
+   *  explicit prop now, kept for reference/reversion and the /dev/pdp/mapdesign
+   *  comparison. "ink-glyph" / "sunken" are the remaining round-3 directions
+   *  (pin-shaped store marker, blue-glyph circular transit marker, station name in one
+   *  pill), still reachable only via this explicit prop for the dev comparison route.
+   *  This prop ONLY affects the map canvas — the floating card's own content
+   *  (name/address/walk-time chip) is identical across all 4 directions, since the ask
    *  was explicitly "in-map" design directions, not a card redesign. */
   mapDesign?: "current" | "clean-white" | "ink-glyph" | "sunken";
 }) {
@@ -697,21 +711,24 @@ function LocationMapCanvas({
 
     // Round 2 (2026-07-24): the owner questioned whether a manually-fetched route line
     // "holds up when scaled" — treated as a genuine per-direction choice, not a given.
-    // Only "ink-glyph" (Direction B) draws one, for direct comparison against
+    // Only "ink-glyph" (Direction B) drew one at first, for direct comparison against
     // "clean-white" (no route at all) and "sunken" (also none). ROUND 3 (2026-07-24,
-    // same day): that route line is now a bold, near-full-opacity blue dotted trail
+    // same day): that route line became a bold, near-full-opacity blue dotted trail
     // (see addRouteFeatures's paint block below) instead of round 2's thin/low-opacity
     // version — same per-direction choice of whether to draw one at all, just louder
-    // where it does render. The on-map walking-time pill from round 1 is deleted
-    // outright — no direction renders it (owner: "he does not want it on the map at
-    // all"). Fetched live from Mapbox Directions using the same public token the map
-    // itself already renders with — never a fabricated straight line; degrades to no
-    // route on any fetch failure, the same graceful-degrade contract as the
-    // transit-stop fetch above this component.
+    // where it does render. ROUND 4 (2026-07-24, same day): "clean-white" is now the
+    // PRODUCTION default AND draws this same route ("Direction A, but with dots" —
+    // the owner's decision) — "sunken" is the only direction left with none. The
+    // on-map walking-time pill from round 1 stays deleted outright — no direction
+    // renders it (owner: "he does not want it on the map at all"). Fetched live from
+    // Mapbox Directions using the same public token the map itself already renders
+    // with — never a fabricated straight line; degrades to no route on any fetch
+    // failure, the same graceful-degrade contract as the transit-stop fetch above
+    // this component.
     let cancelled = false;
 
     async function addRouteFeatures() {
-      if (mapDesign !== "ink-glyph") return;
+      if (mapDesign !== "ink-glyph" && mapDesign !== "clean-white") return;
       if (transitLat == null || transitLng == null) return;
       try {
         const url =
