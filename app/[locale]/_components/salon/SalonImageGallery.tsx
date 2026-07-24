@@ -119,8 +119,12 @@ export function SalonImageGallery({
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        {/* Salon / Team pills */}
-        <div className="flex gap-2 px-4 py-3">
+        {/* mockup-ok: porting the owner-approved _overhaul/SalonImageGalleryOverhaul.tsx S4
+            fix (owner 2026-07-24, "two stacked selector rows is a 'double thing'", logged
+            REMOVED.md). ONE filter-pill row: Salon/Team toggle pills, then , in the SAME
+            row , the stylist pills (Team tab only), all sharing the one neutral filter-pill
+            grammar. Never two stacked rows or the old underline content-tab treatment. */}
+        <div className="flex items-center gap-2 overflow-x-auto border-b border-s-border px-4 py-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <Pill active={tab === "salon"} onClick={() => setTab("salon")}>
             Salon ({venuePhotos.length})
           </Pill>
@@ -129,45 +133,35 @@ export function SalonImageGallery({
               Team ({teamTotal})
             </Pill>
           )}
+
+          {tab === "team" && stylistsWithPhotos.length > 0 && (
+            <>
+              <span className="mx-1 h-5 w-px shrink-0 bg-s-border" aria-hidden />
+              {stylistsWithPhotos.map((s) => (
+                <Pill key={s.id} active={activeStylist === s.id} onClick={() => setActiveStylist(s.id)}>
+                  {s.name} ({portfolios[s.id]?.length ?? 0})
+                </Pill>
+              ))}
+            </>
+          )}
         </div>
 
-        {/* Team: per-stylist sub-tabs */}
-        {tab === "team" && stylistsWithPhotos.length > 0 && (
-          <div className="flex gap-5 overflow-x-auto border-b border-s-border px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {stylistsWithPhotos.map((s) => (
-              <button
-                key={s.id}
-                type="button"
-                onClick={() => setActiveStylist(s.id)}
-                className={cn(
-                  "font-body relative shrink-0 py-3 text-[14px] font-semibold transition-colors",
-                  activeStylist === s.id ? "text-s-ink" : "text-s-ink-3 hover:text-s-ink",
-                )}
-              >
-                {s.name}{" "}
-                <span className="font-normal text-s-ink-3">{portfolios[s.id]?.length ?? 0}</span>
-                {activeStylist === s.id && (
-                  <span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-s-ink" />
-                )}
-              </button>
-            ))}
-          </div>
-        )}
-
-        {/* Photo grid */}
+        {/* mockup-ok: salon tab is now a dense 3-col square grid (same grammar as the real
+            SalonPortfolio UniformGrid), replacing the old stacked 4:3 list; team tab keeps
+            its 2-col grid. */}
         <div className="px-4 py-4">
           {tab === "salon" ? (
-            <div className="flex flex-col gap-3">
+            <div className="grid grid-cols-3 gap-1.5 md:gap-2.5">
               {venuePhotos.map((u, i) => (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  key={i}
-                  src={u}
-                  alt={`${salonName} – ${i + 1}`}
+                <button
+                  key={u}
+                  type="button"
                   onClick={() => openLb(venuePhotos, i)}
-                  className="aspect-[4/3] w-full cursor-pointer rounded-xl bg-s-bg-sunken object-cover"
-                  loading="lazy"
-                />
+                  className="relative aspect-square overflow-hidden rounded-md bg-s-bg-sunken transition-transform hover:scale-[0.99] active:scale-[0.98] md:rounded-lg"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={u} alt={`${salonName} – ${i + 1}`} className="h-full w-full object-cover" loading="lazy" /> {/* em-dash-ok */}
+                </button>
               ))}
             </div>
           ) : (
@@ -215,10 +209,12 @@ function Pill({
       type="button"
       onClick={onClick}
       className={cn(
+        // mockup-ok: the LOCKED neutral filter-pill grammar (design contract "filter pill"
+        // row): selected = gray sunken fill, never ink/black.
         "font-body shrink-0 rounded-full px-4 py-2 text-[13px] font-semibold transition-colors",
         active
-          ? "bg-s-ink text-white"
-          : "border border-s-border bg-white text-s-ink hover:bg-s-bg-sunken",
+          ? "bg-s-bg-sunken text-s-ink"
+          : "border border-s-border bg-white text-s-ink-2 hover:bg-s-bg-sunken",
       )}
     >
       {children}

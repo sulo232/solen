@@ -5,28 +5,27 @@ import { Star } from "lucide-react";
 import type { Review } from "./_shared";
 import { formatReviewDate } from "./_shared";
 import { Avatar, RatingStars, SeeAllButton } from "@/app/[locale]/_components/primitives";
+import { TabPill } from "../primitives/TabPill";
 import { cn } from "@/lib/utils";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 
 /**
- * SalonReviews — V2-D53.3 (2026-05-11).
- *
- * Big star summary + grid of review cards. No outer borders on cards —
- * Fresha trusts whitespace + dividers. "See all" pill button below
- * expands the visible review list inline.
- *
- * Layout:
- *   • Mobile: single column stack
- *   • Desktop: 2-col grid with generous gap
+ * SalonReviews, D3 "Segmented" (2026-07-24 PORT, owner "I love this D3 segmented
+ * look", ref _overhaul/reviews/DirectionSegmented.tsx). A compact summary line
+ * (star + average + grey count), then rating-tier TabPill chips (built only for
+ * tiers that actually have reviews) filtering a hairline-divided list capped at 3
+ * rows below. "Alle N Bewertungen" always navigates to the real full reviews page,
+ * never an inline expand, and the old "+N ohne Kommentar" line is gone (owner
+ * deleted it, logged in REMOVED.md).
  *
  * Each card:
  *   • Initial-based colored avatar circle (deterministic per name)
  *   • Name (bold) + date (muted)
  *   • 5-star row
  *   • Comment with line-clamp-3 + "Mehr lesen" toggle when truncated
- *
- * Brand: emerald-text "See all" link per Solen brand. Yellow star fills.
  */
+type Tier = "all" | 5 | 4 | 3 | 2 | 1;
+
 export function SalonReviews({
   average,
   count,
@@ -47,17 +46,14 @@ export function SalonReviews({
   salonSlug?: string;
   locale?: string;
   /**
-   * Card treatment (net-new optional prop, /dev/pdp/reviews A/B/C comparison, 2026-07-23).
-   * `stack` (default) is the existing shipped vertical layout, byte-identical to every
-   * current caller , nothing else changes unless a caller opts in.
-   * `swipe` renders ALL rows in a horizontal snap-scroll deck (~1.5 cards visible per
-   * viewport) instead of the 2-card cap + see-all pill , swiping already reveals the rest.
-   * `collapsed` keeps the vertical stack but previews exactly ONE review before the
-   * existing see-all/expand affordance, instead of two.
+   * Retired (2026-07-24 D3 port): the stack/swipe/collapsed A/B/C comparison is
+   * superseded by the one approved Segmented design below, which now renders
+   * unconditionally. Kept, unused-by-render, only so app/[locale]/dev/pdp/reviews/page.tsx
+   * (left as reference, not deleted) still compiles , same pattern as SalonCard's
+   * `nextSlotLabel`.
    */
   layout?: "stack" | "swipe" | "collapsed";
 }) {
-  const [expanded, setExpanded] = React.useState(false);
   const [fetched, setFetched] = React.useState<Review[] | null>(null);
 
   React.useEffect(() => {
@@ -85,17 +81,37 @@ export function SalonReviews({
     };
   }, [reviews.length, salonId]);
 
-  const all = reviews.length > 0 ? reviews : fetched ?? [];
+  const all = React.useMemo(() => (reviews.length > 0 ? reviews : fetched ?? []), [reviews, fetched]);
   // Anti-wall (owner 2026-06-12): a list of identical "Anonym + 5 stars, no text"
   // rows reads fake. Rows = reviews with TEXT or a real name; rating-only
-  // anonymous reviews collapse into one honest count line below the list.
+  // anonymous reviews are simply not shown in the compact preview (no separate
+  // count line for them, owner-deleted, logged in REMOVED.md).
   const hasIdentity = (r: Review) =>
     Boolean(r.comment ?? r.comment_de ?? r.comment_en) || Boolean(r.profiles?.display_name);
-  const rows = all.filter(hasIdentity);
-  const silentCount = all.length - rows.length;
-  const previewCount = layout === "collapsed" ? 1 : 2;
-  const visible = layout === "swipe" ? rows : expanded ? rows : rows.slice(0, previewCount);
-  const showSeeAll = layout !== "swipe" && rows.length > previewCount && !expanded;
+  const rows = React.useMemo(() => all.filter(hasIdentity), [all]);
+
+  // D3 Segmented tier chips: index 0 = 1-star .. index 4 = 5-star, real counts off
+  // the actual loaded rows, never fabricated.
+  const ratingCounts = React.useMemo(() => {
+    const counts = [0, 0, 0, 0, 0];
+    all.forEach((r) => {
+      const idx = Math.min(5, Math.max(1, Math.round(r.rating))) - 1;
+      counts[idx] += 1;
+    });
+    return counts;
+  }, [all]);
+  const tiers = React.useMemo(() => {
+    const list: { key: Tier; count: number }[] = [{ key: "all", count: rows.length }];
+    ([5, 4, 3, 2, 1] as const).forEach((star) => {
+      const c = ratingCounts[star - 1];
+      if (c > 0) list.push({ key: star, count: c });
+    });
+    return list;
+  }, [rows.length, ratingCounts]);
+
+  const [active, setActive] = React.useState<Tier>("all");
+  const filtered = active === "all" ? rows : rows.filter((r) => Math.round(r.rating) === active);
+  const visible = filtered.slice(0, 3);
 
   return (
     <section
@@ -110,29 +126,18 @@ export function SalonReviews({
         Bewertungen
       </h2>
 
-      {/* Summary — Direction A "summary-first" (2026-07-23, _design-system/QUESTIONS.md Q24 /
-          _diagnosis/salon-pdp-sections.md — recommended reading of A; owner sign-off still marked
-          OPEN there, flag for confirmation). Star row + big average only; the bare blue "(11)" is
-          gone — the count folds into the "Alle N Bewertungen" see-all pill below instead (kills the
-          named bare-count defect). No histogram: that's Direction B, and a code comment already
-          states the histogram was dropped per owner — un-dropping it is its own owner call, not
-          bundled into this pass. */}
-      <div className="mt-4 flex items-center gap-1.5">
-        {[0, 1, 2, 3, 4].map((i) => (
-          <Star
-            key={i}
-            size={28}
-            stroke="none"
-            className={average !== null && i < Math.round(average) ? "fill-s-star" : "fill-s-border"}
-          />
-        ))}
+      {/* mockup-ok: D3 Segmented summary (owner-approved 2026-07-24, _overhaul/reviews/
+          DirectionSegmented.tsx). Compact star + average + grey count line, replacing the
+          old 5-star row + big number. */}
+      <div className="mt-4 flex items-center gap-2">
+        <Star size={16} stroke="none" aria-hidden className="fill-s-star" />
+        <span className="font-display text-[20px] font-bold leading-none text-s-ink tabular-nums">
+          {average?.toFixed(1) ?? "-"}
+        </span>
+        <span className="font-body text-[13px] text-s-ink-3">
+          {count.toLocaleString("de-CH")} {count === 1 ? "Bewertung" : "Bewertungen"}
+        </span>
       </div>
-      <span className="font-body mt-2.5 block text-[18px] font-bold tracking-tight text-s-ink">
-        {average?.toFixed(1) ?? "—"}
-      </span>
-
-      <div className="mt-5 border-t border-s-border" />
-
 
       {all.length === 0 ? (
         // Aggregate without bodies (count > 0) softens to "texts coming"; truly-empty (0) stays.
@@ -147,50 +152,46 @@ export function SalonReviews({
         )
       ) : (
         <>
-          {layout === "swipe" ? (
-            <div
-              className="mt-6 -mx-5 flex gap-4 overflow-x-auto px-5 pb-1 md:-mx-7 md:px-7 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-              style={{ scrollSnapType: "x proximity" }}
-            >
-              {visible.map((r) => (
-                <div
-                  key={r.id}
-                  className="w-[68%] shrink-0 sm:w-[46%]"
-                  style={{ scrollSnapAlign: "start" }}
-                >
+          {/* mockup-ok: rating-tier TabPill filter row (D3 Segmented), built only for
+              tiers that actually have reviews, over a hairline-grouped list , the
+              owner-approved fix for "hard to distinguish between things, not grouped". */}
+          <div className="mt-5 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {tiers.map((t) => (
+              <TabPill key={String(t.key)} active={active === t.key} onClick={() => setActive(t.key)} size="sm">
+                {t.key === "all" ? (
+                  `Alle (${t.count})`
+                ) : (
+                  <span className="inline-flex items-center gap-1">
+                    {t.key}
+                    <Star size={11} strokeWidth={0} aria-hidden className="fill-s-star" />
+                    {`(${t.count})`}
+                  </span>
+                )}
+              </TabPill>
+            ))}
+          </div>
+
+          <div className="mt-5 flex flex-col">
+            {visible.length === 0 ? (
+              <p className="font-body text-[14px] text-s-ink-3">Noch keine Bewertungen in dieser Gruppe.</p>
+            ) : (
+              visible.map((r) => (
+                <div key={r.id} className="border-t border-s-border pt-5 first:border-t-0 first:pt-0 [&+&]:mt-5">
                   <ReviewCard review={r} />
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="mt-6 flex flex-col gap-7">
-              {visible.map((r) => (
-                <ReviewCard key={r.id} review={r} />
-              ))}
-            </div>
-          )}
-          {silentCount > 0 && (
-            <p className="mt-5 font-body text-[13.5px] text-s-ink-3">
-              {rows.length > 0 ? "+ " : ""}{silentCount} {silentCount === 1 ? "Bewertung" : "Bewertungen"} ohne Kommentar
-            </p>
-          )}
-          {showSeeAll && (
+              ))
+            )}
+          </div>
+
+          {salonSlug && locale && (
             <div className="mt-6 flex justify-center">
               {/* mockup-ok: SeeAllButton port, byte-identical pill class string, same instance as
-                  SalonServices/SalonTeam on this page (P2 fix, owner-approved 2026-07-15).
-                  Label now folds the review count in (Direction A, QUESTIONS.md Q24: "Alle 11
-                  Bewertungen ›") — this pill IS the count's home now that the bare "(11)" is gone. */}
-              {salonSlug && locale ? (
-                <SeeAllButton
-                  label={`Alle ${count.toLocaleString("de-CH")} Bewertungen`}
-                  href={`/${locale}/salon/${salonSlug}/reviews`}
-                />
-              ) : (
-                <SeeAllButton
-                  label={`Alle ${count.toLocaleString("de-CH")} Bewertungen`}
-                  onClick={() => setExpanded(true)}
-                />
-              )}
+                  SalonServices/SalonTeam on this page. Always navigates to the real full reviews
+                  page (owner: no inline expand). */}
+              <SeeAllButton
+                label={`Alle ${count.toLocaleString("de-CH")} Bewertungen`}
+                href={`/${locale}/salon/${salonSlug}/reviews`}
+              />
             </div>
           )}
         </>

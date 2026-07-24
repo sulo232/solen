@@ -75,7 +75,7 @@ export function SalonHero({
                 key={i}
                 className="relative h-full w-full shrink-0 snap-center bg-s-bg-sunken"
                 style={i === 0 ? { viewTransitionName: `vt-salon-${salon.slug}` } : undefined}
-                onClick={() => onOpenLightbox(i)}
+                onClick={onOpenGallery}
               >
                 <Image
                   src={u}
@@ -164,7 +164,7 @@ export function SalonHero({
 
       {/* DESKTOP — 3-photo gallery (or fallback) */}
       <div className="hidden md:block">
-        <DesktopGallery photos={photos} salonName={salon.name} onOpenLightbox={onOpenLightbox} />
+        <DesktopGallery photos={photos} salonName={salon.name} onOpenGallery={onOpenGallery} />
       </div>
     </section>
   );
@@ -173,11 +173,11 @@ export function SalonHero({
 function DesktopGallery({
   photos,
   salonName,
-  onOpenLightbox,
+  onOpenGallery,
 }: {
   photos: string[];
   salonName: string;
-  onOpenLightbox: (i: number) => void;
+  onOpenGallery: () => void;
 }) {
   if (photos.length === 0) {
     // V3-D202 (A2): rounded-none → rounded-card-lg token; opacity → s-ink-disabled.
@@ -195,7 +195,7 @@ function DesktopGallery({
     return (
       <button
         type="button"
-        onClick={() => onOpenLightbox(0)}
+        onClick={onOpenGallery}
         className="relative block aspect-[16/7] w-full overflow-hidden rounded-none bg-s-bg-sunken"
       >
         <Image src={photos[0]} alt={salonName} fill sizes="(max-width: 1180px) 100vw, 1180px" className="object-cover" priority /> {/* copy-ok */}
@@ -210,7 +210,7 @@ function DesktopGallery({
           <button
             key={u}
             type="button"
-            onClick={() => onOpenLightbox(i)}
+            onClick={onOpenGallery}
             className="relative overflow-hidden bg-s-bg-sunken"
           >
             <Image src={u} alt={`${salonName} – Foto ${i + 1}`} fill sizes="(max-width: 1180px) 50vw, 590px" className="object-cover" priority={i === 0} /> {/* copy-ok em-dash-ok */}
@@ -225,26 +225,32 @@ function DesktopGallery({
     <div className="relative grid aspect-[16/7] w-full grid-cols-3 grid-rows-2 gap-2 overflow-hidden rounded-none">
       <button
         type="button"
-        onClick={() => onOpenLightbox(0)}
+        onClick={onOpenGallery}
         className={cn("relative col-span-2 row-span-2 overflow-hidden bg-s-bg-sunken")}
       >
         <Image src={photos[0]} alt={salonName} fill sizes="(max-width: 1180px) 66vw, 786px" className="object-cover" priority /> {/* copy-ok */}
       </button>
       <button
         type="button"
-        onClick={() => onOpenLightbox(1)}
+        onClick={onOpenGallery}
         className="relative overflow-hidden bg-s-bg-sunken"
       >
         <Image src={photos[1]} alt={`${salonName} – Foto 2`} fill sizes="(max-width: 1180px) 33vw, 393px" className="object-cover" /> {/* copy-ok em-dash-ok */}
       </button>
       <button
         type="button"
-        onClick={() => onOpenLightbox(2)}
+        onClick={onOpenGallery}
         className="relative overflow-hidden bg-s-bg-sunken"
       >
         <Image src={photos[2]} alt={`${salonName} – Foto 3`} fill sizes="(max-width: 1180px) 33vw, 393px" className="object-cover" /> {/* copy-ok em-dash-ok */}
         {photos.length > 3 && (
-          <span className="font-body absolute bottom-3 right-3 z-[1] rounded-full bg-white/95 px-3 py-1.5 text-[12px] font-semibold text-s-ink shadow-md">
+          <span
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpenGallery();
+            }}
+            className="font-body absolute bottom-3 right-3 z-[1] rounded-full bg-white/95 px-3 py-1.5 text-[12px] font-semibold text-s-ink shadow-md"
+          >
             Alle Fotos ansehen
           </span>
         )}

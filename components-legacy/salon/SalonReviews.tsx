@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Star, ShieldCheck, MessageSquare, Check, ChevronDown, Flag } from "lucide-react";
+import Link from "next/link";
+import { ArrowLeft, Star, ShieldCheck, MessageSquare, ChevronDown, Flag } from "lucide-react";
 import EmptyState from "@/components-legacy/ui/EmptyState";
 import { motion, AnimatePresence } from "motion/react";
 import { useTranslations } from "next-intl";
 import { Sheet } from "@/app/[locale]/_components/primitives/Sheet";
+import { TabPill } from "@/app/[locale]/_components/primitives/TabPill";
 import ReviewForm from "@/components-legacy/ReviewForm";
 import { RatingStars } from "@/app/[locale]/_components/primitives/RatingStars";
 import type { Review } from "@/lib/types";
@@ -112,7 +114,6 @@ export default function SalonReviews({
       : sortedReviews;
   const reviewsVisible = filteredReviews.slice(0, reviewPage * 5);
   const starCounts = [5, 4, 3, 2, 1].map((s) => loadedReviews.filter((r) => Math.round(r.rating) === s).length);
-  const maxStarCount = Math.max(1, ...starCounts);
   const toggleRating = (s: number) => {
     setReviewPage(1);
     setRatingFilter((prev) => {
@@ -210,9 +211,23 @@ export default function SalonReviews({
 
   return (
     <div id="section-bewertungen" className="scroll-mt-[80px]">
-      <h2 className="font-heading text-[24px] font-bold tracking-[-0.01em] text-s-ink">
-        {t("reviews")}
-      </h2>
+      {/* mockup-ok: 2026-07-24 PORT (P10a, ref app/[locale]/dev/pdp/reviews-full/page.tsx),
+          large title + back arrow , this route is a task-step sub-view of the salon PDP
+          (FooterGate.tsx already classifies /salon/[slug]/reviews as one), which per the
+          single-global-back doctrine keeps its own local back, same as /dev/pdp/team-all
+          and /dev/pdp/reviews-full. */}
+      <div className="flex items-center gap-3">
+        <Link
+          href={`/${locale}/salon/${salonSlug}#section-reviews`}
+          aria-label="Zurück"
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border bg-white transition-colors hover:bg-s-bg-sunken"
+        >
+          <ArrowLeft size={20} strokeWidth={2.1} aria-hidden className="text-s-ink" />
+        </Link>
+        <h2 className="font-display text-[30px] font-semibold tracking-[-0.02em] text-s-ink">
+          {t("reviews")}
+        </h2>
+      </div>
       <div className="mt-3 md:mt-0">
         {loadedReviews.length === 0 ? (
           <EmptyState
@@ -222,41 +237,30 @@ export default function SalonReviews({
           />
         ) : (
           <>
-            {/* Summary - big rating + count. Blue (s-accent) on the count where Fresha uses
-                purple; Inter Tight bold number (not the lighter data-text weight). */}
-            <div className="mt-3 flex items-center gap-2">
-              <Star className="h-6 w-6 fill-s-star text-s-star" />
-              {/* number + count share a BASELINE (measured: items-center floated the count 3-5px high vs the Fresha ref) */}
-              <span className="flex items-baseline gap-1.5">
-                <span className="font-heading text-[32px] font-bold leading-none tracking-[-0.01em] tabular-nums text-s-ink">{averageRating.toFixed(1)}</span>
-                <span className="text-[17px] font-medium leading-none tabular-nums text-s-accent">({reviewCount.toLocaleString("de-CH")})</span>
-              </span>
+            {/* mockup-ok: compact star + average + GREY count (was s-accent blue), matching
+                the approved reviews-full page. */}
+            <div className="mt-5 flex items-center gap-2">
+              <Star size={20} stroke="none" aria-hidden className="fill-s-star" />
+              <span className="font-heading text-[20px] font-bold leading-none tracking-[-0.01em] tabular-nums text-s-ink">{averageRating.toFixed(1)}</span>
+              <span className="text-[13px] text-s-ink-3">({reviewCount.toLocaleString("de-CH")})</span>
             </div>
 
-            {/* Filter by rating - interactive checkboxes that filter the list (Fresha). */}
+            {/* mockup-ok: F2 chip filter row (owner-picked direction, REMOVED.md "reviews
+                filter distribution bars"), replacing the checkbox+bar rows. Same ratingFilter
+                state/logic, multi-select, real counts off the loaded rows. */}
             <div className="mt-6">
-              <p className="mb-2.5 text-[15px] font-semibold text-s-ink">{t("filterBy")}</p>
-              <div className="space-y-0.5">
+              <p className="mb-2.5 font-body text-[14px] font-semibold text-s-ink">{t("filterBy")}</p>
+              <div className="flex flex-wrap gap-2">
                 {[5, 4, 3, 2, 1].map((s, i) => {
                   const c = starCounts[i];
-                  const on = ratingFilter.has(s);
                   return (
-                    <button
-                      key={s}
-                      type="button"
-                      onClick={() => toggleRating(s)}
-                      aria-pressed={on}
-                      className="flex w-full items-center gap-3 py-1.5 text-left"
-                    >
-                      <span className={`grid h-[22px] w-[22px] shrink-0 place-items-center rounded-[6px] border border-s-border transition-colors ${on ? "bg-s-bg-sunken text-s-ink" : "bg-white"}`}>
-                        {on && <Check size={14} strokeWidth={3} />}
+                    <TabPill key={s} active={ratingFilter.has(s)} onClick={() => toggleRating(s)} size="sm">
+                      <span className="inline-flex items-center gap-1">
+                        {s}
+                        <Star size={11} strokeWidth={0} aria-hidden className="fill-s-star" />
+                        {`(${c.toLocaleString("de-CH")})`}
                       </span>
-                      <span className="w-2.5 text-[15px] tabular-nums text-s-ink">{s}</span>
-                      <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-s-bg-sunken">
-                        <span className="block h-full rounded-full bg-s-ink" style={{ width: `${(c / maxStarCount) * 100}%` }} />
-                      </span>
-                      <span className="w-12 text-right text-[14px] tabular-nums text-s-ink-3">{c.toLocaleString("de-CH")}</span>
-                    </button>
+                    </TabPill>
                   );
                 })}
               </div>
@@ -281,10 +285,12 @@ export default function SalonReviews({
               <span className="text-[15px] tabular-nums text-s-ink-2">
                 {t("reviewsCount", { count: filteredReviews.length.toLocaleString("de-CH") })}
               </span>
+              {/* mockup-ok: floating sort pill sizing (h-11 + shadow-whisper), matching the
+                  approved reviews-full page's pill. */}
               <button
                 type="button"
                 onClick={() => setSortSheetOpen(true)}
-                className="flex items-center gap-1.5 rounded-full border border-s-border bg-white px-4 py-2 text-[14px] font-medium text-s-ink transition active:scale-[0.98]"
+                className="flex h-11 items-center gap-1.5 rounded-full border border-s-border bg-white px-4 font-body text-[13px] font-semibold text-s-ink shadow-whisper transition active:scale-[0.98]"
               >
                 {sortLabel}
                 <ChevronDown size={16} className="text-s-ink-2" />

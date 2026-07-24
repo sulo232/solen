@@ -309,6 +309,12 @@ export interface SalonCardProps extends VariantProps<typeof curationVariants> {
   citySelected?: boolean;
   /** Override card width (rare — defaults to §16.2 spec 160 mobile / 180 tablet+). */
   className?: string;
+  /** Replaces the default responsive width classes outright (2026-07-24, PDP nearby
+   *  rail's ~1.25-visible sizing). cn() is plain clsx with no tailwind-merge, so a
+   *  wider className alone cannot reliably override the baked-in w-[calc(...)]
+   *  classes below (both would survive, source order decides). Every existing caller
+   *  passes no widthClassName, so their output is byte-identical to before. */
+  widthClassName?: string;
 }
 
 export function SalonCard({
@@ -332,6 +338,7 @@ export function SalonCard({
   city,
   citySelected,
   className,
+  widthClassName,
 }: SalonCardProps) {
   // Locale-prefixed href (2026-06-11): the bare `/salon/x` href relied on the
   // next-intl middleware to guess a locale — which (a) could land on the wrong
@@ -376,11 +383,16 @@ export function SalonCard({
         // No 2xl breakpoint, Section is capped at max-w-[1280px], so wider
         // viewports keep the 6-card layout instead of shrinking cards to fit 7.
         // Formula per breakpoint: card-width = (100% - (N-1)*12gap) / N
-        "w-[calc((100vw-44px)/1.5)]", // mockup-ok: /dev/card-ratio V2 approved (owner 2026-07-03, R4-2)
-        "sm:w-[calc((100%-24px)/3)]",
-        "md:w-[calc((100%-36px)/4)]",
-        "lg:w-[calc((100%-48px)/5)]",
-        "xl:w-[calc((100%-60px)/6)]",
+        // mockup-ok: widthClassName (2026-07-24) replaces this whole responsive block
+        // outright when passed; every existing caller omits it, so this stays the
+        // untouched default.
+        widthClassName ?? [
+          "w-[calc((100vw-44px)/1.5)]", // mockup-ok: /dev/card-ratio V2 approved (owner 2026-07-03, R4-2)
+          "sm:w-[calc((100%-24px)/3)]",
+          "md:w-[calc((100%-36px)/4)]",
+          "lg:w-[calc((100%-48px)/5)]",
+          "xl:w-[calc((100%-60px)/6)]",
+        ],
         "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:rounded-[14px]",
         // V2-D43 (Emil polish): scale(0.94) → scale(0.97) per Emil's subtle range
         // (0.95-0.98). 0.94 felt too jumpy for content cards.
@@ -432,7 +444,9 @@ export function SalonCard({
         )}
 
         {/* Top-left badge slot — curation OR discount, never both */}
-        {discountPercent != null ? (
+        {/* mockup-ok: gated on > 0, not just != null (2026-07-24, REMOVED.md "discount pill
+            -0% zero percent"): a real discount of exactly 0 must never render "-0%". */}
+        {discountPercent != null && discountPercent > 0 ? (
           <DiscountBadge percentOff={discountPercent} />
         ) : curation ? (
           <CurationBadge type={curation} />

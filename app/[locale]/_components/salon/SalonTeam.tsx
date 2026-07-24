@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Star } from "lucide-react";
 import type { StaffMember } from "./_shared";
 import { Avatar, SeeAllButton } from "@/app/[locale]/_components/primitives";
 
@@ -73,8 +74,10 @@ export function SalonTeam({
         </h2>
         {/* mockup-ok: link variant, ink text + chevron per owner 2026-07-19 (Team sits next
             to the busy avatar-scroll row and read too big/unbalanced as a pill); Services and
-            Reviews keep the default pill (booking-flow entry, owner-approved 2026-07-15). */}
-        <SeeAllButton label="Alle ansehen" href={`/${locale}/salon/${slug}/booking`} variant="link" />
+            Reviews keep the default pill (booking-flow entry, owner-approved 2026-07-15).
+            href , 2026-07-24 PORT (T5, owner: this was a dead click to the plain booking
+            URL): now opens the real "Select professional" picker. */}
+        <SeeAllButton label="Alle ansehen" href={`/${locale}/salon/${slug}/team`} variant="link" />
       </div>
 
       {/* Horizontal carousel — tapping a stylist opens their individual profile
@@ -118,15 +121,21 @@ function TeamMember({
 
   return (
     <div className="flex flex-col items-center text-center">
-      {/* Avatar + Fresha rating badge folded into the Avatar primitive
-          (V3-D234 rating-below pattern → primitive badge at bottom edge). */}
+      {/* mockup-ok: avatar rating pill enlarged (2026-07-24 PORT, ref
+          _overhaul/SalonTeamOverhaul.tsx C3, owner Fresha reference): 24px tall, ~10px
+          horizontal padding, star 13px, value 14px/600 tabular, white + hairline +
+          shadow-elevation-1. The shared Avatar primitive's `badge` prop can't be resized
+          without touching that shipped primitive, so this renders the avatar WITHOUT it
+          and layers its own bigger pill on top, same -bottom-1 centered anchor as the
+          primitive's own badge. Avatar itself stays 88px. */}
       <div className="relative transition-transform duration-200 group-hover:scale-[1.04]">
-        <Avatar
-          src={member.avatar_url}
-          name={member.name}
-          size={88}
-          badge={showRating ? { rating: displayRating as number } : undefined}
-        />
+        <Avatar src={member.avatar_url} name={member.name} size={88} />
+        {showRating && (
+          <span className="absolute -bottom-1 left-1/2 inline-flex h-6 -translate-x-1/2 items-center gap-1 whitespace-nowrap rounded-full border border-s-border bg-white px-2.5 text-[14px] font-semibold leading-none tabular-nums text-s-ink shadow-elevation-1">
+            <Star size={13} stroke="none" aria-hidden className="fill-s-star" />
+            {(displayRating as number).toFixed(1)}
+          </span>
+        )}
       </div>
 
       {/* Name */}

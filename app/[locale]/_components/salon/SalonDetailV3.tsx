@@ -303,7 +303,7 @@ export function SalonDetailV3({
               locale={locale}
             />
 
-            <SalonPortfolio urls={salon.gallery_urls ?? []} onOpen={() => openGallery()} />
+            <SalonPortfolio urls={salon.gallery_urls ?? []} staff={salon.staff} onOpen={() => openGallery()} />
 
             {/* Mobile + tablet Buy card (gift card) HIDDEN from customers
                 (owner, 2026-06-14) in favour of a Solen-wide loyalty card.

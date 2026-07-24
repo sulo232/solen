@@ -146,3 +146,81 @@ FACT CHECK (rule 18) for V7: the `Geschlossen · Öffnet Mittwoch um 09:00` form
 ## Notes / parked
 - Prior WIP already exists for reviews (A/B/C), cta (hero/twoTier/minimal), portfolio directions under `app/[locale]/dev/pdp/*` — reuse, don't restart.
 - Owner order is literal: 1→2→3, then 4, then 5→6, then 7. Do NOT reorder.
+
+## ROUND 8 — PORT TO PRODUCTION (owner 2026-07-24: "all the design changes arent applied at all")
+ORCHESTRATOR RUNTIME VERIFICATION on the REAL page /de/salon/cuts-and-culture @390 (`verified:` this turn,
+independent of the coder's own claims): status leaves rendering the word ALONE = 3, with a trailing clause = 0;
+black "Termin buchen bei" hero cards = 0; #section-reviews chips = "Alle (7)" / "5 (13)" / "4 (3)" with
+noCommentLine = false; book bar z = 800 and parentElement === document.body; nearby card width = 277px =
+(390-44)/1.25 exactly; portfolio = the salon's 6 real photos (only 6 exist, honest footnote); page errors = 0;
+`npx tsc --noEmit` errors = 0. Real routes /reviews and /team both 200.
+MY MISS: rounds 2-7 were all built as `_overhaul/` COPIES on `/dev/pdp/*` routes. Only the hero
+full-bleed (cdadc5881), the footer rule, the CTA ladder and the italic strip ever touched shipped code.
+The owner approved the redesign and said "don't stop per step" , they expected it APPLIED.
+- [x] P1. Hero tap -> categorized gallery (SalonHero: onOpenLightbox -> onOpenGallery).
+      `verified:` every tap (mobile carousel + desktop 1/2/3-photo buttons + "Alle Fotos
+      ansehen" pill) now calls `onOpenGallery()`; `onOpenLightbox` kept in the prop type,
+      unused, so SalonDetailV3's existing call site needed zero changes. tsc clean.
+- [x] P2. Gallery: ONE filter-pill row, no underline tab row (SalonImageGallery).
+      `verified:` Salon/Team toggle + (Team tab) stylist pills now share one row with a
+      hairline divider; underline sub-tab row deleted; Pill component switched from
+      ink-fill to the neutral bg-s-bg-sunken selected grammar; salon tab is now a dense
+      3-col grid (no sample-category split, per P11). tsc clean.
+- [x] P3. Reviews section -> D3 Segmented + see-all to the real full reviews page (SalonReviews).
+      `verified:` section body replaced with rating-tier TabPill chips (built only for
+      tiers with reviews) over a hairline-grouped list capped at 3; "+N ohne Kommentar"
+      line deleted (already graveyarded); "Alle N Bewertungen" always navigates to
+      `/salon/[slug]/reviews` (no inline expand); `layout` prop kept typed-unused for the
+      /dev/pdp/reviews comparison page. tsc clean.
+- [x] P4. Portfolio 3x3 = up to 9 tiles (SalonPortfolio).
+      `verified:` added `staff` prop (optional, defaults to none), fetches
+      staff_portfolio_images to fill remaining slots up to TILE_CAP=9, honest "Zeigt N
+      echte Fotos" footnote when under 9, no fabrication; SalonDetailV3 now passes
+      `staff={salon.staff}`. tsc clean.
+- [x] P5. Nearby: ~1.25 cards + homepage SalonCard grammar, no -0% pill (SalonVenuesNearby).
+      `verified:` SalonVenuesNearby now renders the REAL homepage SalonCard (not a forked
+      copy) at `w-[calc((100vw-44px)/1.25)] md:w-[300px]`; SalonCard.tsx gained an
+      additive `widthClassName` prop (every other caller unaffected) and the discount
+      badge gate changed to `!= null && > 0` (never "-0%"). tsc clean.
+- [x] P6. Black "Termin buchen bei X" hero card REMOVED, quiet cross-links only (SalonAppCta).
+      `verified:` hero/twoTier/minimal booking-card system deleted; only the German
+      "Weitere Salons entdecken" cross-links block remains; `variant`/`slug`/`salonName`
+      kept typed-unused so /dev/pdp/cta still compiles; logged to REMOVED.md. tsc clean.
+- [x] P7. Book bar: portal to body + z above the cookie layer, never parks/snaps (SalonMobileBookBar).
+      `verified:` renders via `ReactDOM.createPortal(..., document.body)` with an SSR
+      mounted-guard, permanently `fixed inset-x-0 bottom-0 z-[800]` (verified `z-tooltip`
+      = 700 in tailwind.config.js), no IntersectionObserver, no position/transform
+      animation. tsc clean.
+- [x] P8. Team rating pill enlarged 24px/13px star/14px value (SalonTeam).
+      `verified:` avatar renders without the shared Avatar primitive's `badge` prop and
+      layers its own h-6/px-2.5/star-13/value-14-600-tabular white+hairline+
+      shadow-elevation-1 pill at the same -bottom-1 anchor; avatar stays 88px; "Alle
+      ansehen" now points at the real `/salon/[slug]/team` route. tsc clean.
+- [x] P9. Status line = just "Geschlossen"/"Geöffnet" (StatusInline). Colour treatment kept
+      UNCHANGED per the literal task instruction for this port (the "unified green" R2
+      swap was flagged NEEDS OWNER SIGN-OFF and never applied to production, deliberately
+      left out here). `verified:` renders only `label.split(/\s+/)[0]`; DISCOVERED (rule
+      18) the closed-state labels join via a U+2003 EM SPACE (not a literal " " or "·"),
+      so a naive `.split(" ")` port would have left "Öffnet" glued onto "Geschlossen" in
+      the same colour; `\s+` handles both the em-space and the open-case's plain-space
+      label correctly. SalonHeader + SalonSidebar both already delegate to StatusInline,
+      so zero caller changes were needed. Logged to REMOVED.md. tsc clean.
+- [x] P10. Real routes for the two new screens.
+      (a) `verified:` `/salon/[slug]/reviews` restyled IN PLACE (components-legacy/salon/
+      SalonReviews.tsx, the component that route actually renders, not the V3 one): large
+      30px title + back arrow, grey (was s-accent blue) count in parens, F2 TabPill filter
+      chips (replacing the checkbox+bar rows), sort pill resized to the approved h-11+
+      shadow-whisper pill. Existing write-review/photo-upload/reply-thread/flag/pagination
+      functionality preserved untouched (that was never named in scope and dropping it
+      would have been a functionality regression, not a design port).
+      (b) `verified:` new real route `app/[locale]/salon/[slug]/team/page.tsx` (server
+      component, `loadSalonDetailWithStatus`), German copy via the ALREADY-established
+      `staffPicker`/`booking.staffStep` i18n keys (same vocabulary the booking wizard's
+      own StaffStep ships, zero new message-file edits needed), ONE back arrow (dropped
+      the dev mockup's redundant back+close pair), Select pill white+hairline+
+      shadow-whisper per CONTROL_ELEVATION's ROW-COMMIT amendment. SalonTeam's see-all
+      wired to it (P8). tsc clean.
+- [x] P11. BLOCKED-DEPENDENT: the gallery's CATEGORY split stays out of production until the owner
+      picks the category model (3b) , shipping sample categories would be fabrication.
+      `verified:` confirmed not ported in P2 (SalonImageGallery renders the plain
+      Salon/Team pill row + dense grid, no Fades/Haircuts/Beard split anywhere).

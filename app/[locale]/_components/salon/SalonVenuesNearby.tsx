@@ -1,10 +1,9 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { RatingStars } from "../primitives";
-import { capitalize } from "./_shared";
+import { SalonCard } from "../homepage/SalonCard";
+import { safeCategory } from "./_shared";
 
 interface NearbyVenue {
   id: string;
@@ -15,25 +14,30 @@ interface NearbyVenue {
   review_count?: number;
   categories?: string[];
   address?: string | null;
+  last_minute_discount_percent?: number | null;
 }
 
 /**
- * SalonVenuesNearby — V2-D53.3 (2026-05-11).
+ * SalonVenuesNearby (2026-07-24 PORT, ref _overhaul/SalonVenuesNearbyOverhaul.tsx +
+ * SalonCardOverhaul.tsx). Horizontal carousel of nearby salons (same category), now
+ * built on the real homepage SalonCard (5:4 photo, rounded-[22px], heart, discount
+ * pill gated > 0, name+star row) instead of a hand-rolled card, at a bigger width so
+ * ~1.25 cards are visible per viewport (a quarter of the 2nd card peeking): card =
+ * (100vw - 44px) / 1.25, gap = 12px. Native swipe on mobile + visible arrow buttons on
+ * desktop. Arrows fade out when at the scroll boundary.
  *
- * Horizontal carousel of nearby salons (same category). Native swipe on
- * mobile + visible arrow buttons on desktop. Arrows fade out when at the
- * scroll boundary.
- *
- * Data: `/api/salons/by-category?cat={primaryCat}&limit=8` (existing
- * V2-D52 endpoint). Excludes the current salon by id.
+ * Data: `/api/salons/by-category?cat={primaryCat}&limit=8` (existing V2-D52 endpoint,
+ * unchanged). Excludes the current salon by id. The endpoint returns the street
+ * `address` but no postal_code or price, so the card's Row 3 shows the address only.
  */
 export function SalonVenuesNearby({
   cat,
   excludeId,
-  locale,
 }: {
   cat: string;
   excludeId: string;
+  /** No longer read directly, SalonCard derives its own locale via useLocale().
+   *  Kept in the type so SalonDetailV3's existing `locale={locale}` call needs no change. */
   locale: string;
 }) {
   const [items, setItems] = React.useState<NearbyVenue[]>([]);
@@ -123,9 +127,14 @@ export function SalonVenuesNearby({
         <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
           In der Nähe
         </h2>
-        <div className="mt-5 flex gap-4 overflow-hidden">
-          {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="h-[200px] w-[calc(66%-12px)] shrink-0 animate-pulse rounded-2xl bg-s-bg-sunken" />
+        {/* mockup-ok: skeleton matches the ported card's own w-[calc((100vw-44px)/1.25)]
+            + gap-3, so the loading state doesn't jump size once real cards land. */}
+        <div className="mt-5 flex gap-3 overflow-hidden">
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              className="w-[calc((100vw-44px)/1.25)] shrink-0 animate-pulse rounded-[22px] bg-s-bg-sunken md:w-[300px] aspect-[5/4]"
+            />
           ))}
         </div>
       </section>
@@ -164,48 +173,29 @@ export function SalonVenuesNearby({
         </div>
       </div>
 
+      {/* mockup-ok: real homepage SalonCard (ask 6: nearby-rail card grammar matches the
+          homepage 1:1) at a bigger width so ~1.25 cards are visible (ask 5). address only
+          (citySelected=true): the by-category endpoint returns no postal_code/price. */}
       <div
         ref={scrollRef}
-        className="mt-5 flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="mt-5 flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {items.map((s) => (
-          <Link
+          <SalonCard
             key={s.id}
-            href={`/${locale}/salon/${s.slug}`}
-            className="font-body group flex w-[calc(66%-12px)] shrink-0 flex-col snap-start md:w-[260px]"
-          >
-            <div className="aspect-[4/3] w-full overflow-hidden rounded-xl bg-s-bg-sunken">
-              {s.cover_photo_url && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={s.cover_photo_url}
-                  alt=""
-                  className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
-                  loading="lazy"
-                />
-              )}
-            </div>
-            {/* Fresha card meta (pdp-bottom capture): name 16/600, grey ADDRESS line,
-                sentence-case type · rating. No uppercase tags. */}
-            <div className="mt-2.5">
-              <div className="truncate text-[16px] font-semibold text-s-ink">
-                {s.name}
-              </div>
-              {s.address && (
-                <div className="mt-0.5 truncate text-[13px] text-s-ink-3">{s.address}</div>
-              )}
-              {s.categories?.[0] && (
-                <div className="mt-0.5 text-[13px] text-s-ink-3">
-                  {capitalize(s.categories[0])}
-                </div>
-              )}
-              <div className="mt-1 text-[13px] text-s-ink-3">
-                {s.average_rating != null ? (
-                  <RatingStars value={s.average_rating} count={s.review_count} size="sm" />
-                ) : null}
-              </div>
-            </div>
-          </Link>
+            slug={s.slug}
+            salonId={s.id}
+            name={s.name}
+            rating={s.average_rating}
+            reviewCount={s.review_count}
+            category={safeCategory(s.categories)}
+            photoUrl={s.cover_photo_url ?? undefined}
+            discountPercent={s.last_minute_discount_percent ?? null}
+            variant="availability"
+            citySelected
+            address={s.address ?? undefined}
+            widthClassName="w-[calc((100vw-44px)/1.25)] md:w-[300px]"
+          />
         ))}
       </div>
     </section>
