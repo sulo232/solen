@@ -148,7 +148,7 @@ export default function SalonWalkInPanel({
   // Per-service live wait tag (owner 2026-07-24 "CO"): the current wait, shown on each row so it
   // reads per-service and updates live with the selected barber. No per-service queue data exists,
   // so this reflects the salon/barber wait, never a fabricated per-service number.
-  const rowWaitLabel = isOpen && hasQueue ? `${low}–${wait} ${l.min}` : null;
+  const rowWaitLabel = isOpen && hasQueue ? `${l.from} ${low} ${l.min}` : null;
 
   // staff_id rides the join link → pay-intent metadata → barber_walkin_queue.preferred_barber_id.
   const joinHref = (serviceId: string) =>
@@ -198,7 +198,7 @@ export default function SalonWalkInPanel({
               <span className="h-4 w-px shrink-0 bg-s-border" aria-hidden />
               <span className="inline-flex min-w-0 items-center gap-1.5 text-s-ink">
                 <Clock className="h-4 w-4 shrink-0 text-s-ink-2" aria-hidden />
-                <span className="font-display text-[15px] font-semibold tabular-nums tracking-[-.01em]">{low}–{wait} {l.min}</span>
+                <span className="font-display text-[15px] font-semibold tabular-nums tracking-[-.01em]">{l.from} {low} {l.min}</span>
               </span>
             </>
           )}
