@@ -374,9 +374,14 @@ export function SalonDetailV3({
       </div>
       {/* /content layer */}
 
-      {/* Mobile sticky bottom CTA — hidden in walk-in mode (the walk-in cards carry their
-          own "Anstehen" action, so the global Book bar would be a confusing 2nd button). */}
-      {!walkinMode && <SalonMobileBookBar locale={locale} slug={slug} />}
+      {/* Mobile sticky bottom CTA, hidden in walk-in mode (the walk-in cards carry their
+          own "Anstehen" action, so the global Book bar would be a confusing 2nd button).
+          Also suppressed while the gallery or lightbox overlay is open: both are portaled
+          to document.body too, at a lower z-index than this bar's z-[800], so without this
+          the bar would float on top of them (regression fix, see SalonMobileBookBar.tsx). */}
+      {!walkinMode && (
+        <SalonMobileBookBar locale={locale} slug={slug} suppressed={galleryOpen || lightboxOpen} />
+      )}
 
       {/* Lightbox modal */}
       <SalonLightbox

@@ -21,14 +21,27 @@ import { withDateParam } from "./_shared";
  * consent banner (`z-tooltip` = 700 in tailwind.config.js), which otherwise painted
  * over the bar at page bottom.
  *
+ * REGRESSION FIX (2026-07-24, same-day follow-up): z-[800] also beats the full-screen
+ * gallery (`SalonImageGallery`, z-[70]) and lightbox (`SalonLightbox`, z-[80]) overlays,
+ * both ALSO portaled to document.body, so the bar started floating on top of them. Those
+ * two booleans already live in `SalonDetailV3` (the only real caller); rather than
+ * re-derive "an overlay is open" from a DOM signal (both overlays toggle
+ * `document.body.style.overflow`, which is an inline style, not something React can read
+ * declaratively without a MutationObserver), the parent passes it down explicitly via
+ * `suppressed`. Honest > clever.
+ *
  * Hidden on desktop (`lg:hidden`), desktop uses SalonSidebar instead.
  */
 export function SalonMobileBookBar({
   locale,
   slug,
+  suppressed = false,
 }: {
   locale: string;
   slug: string;
+  /** True while a full-screen overlay (gallery/lightbox) is open, so this z-[800] bar
+   * doesn't paint over it. Defaults to false so every other/future caller is unaffected. */
+  suppressed?: boolean;
 }) {
   // GAP #5: a searched date (?date=YYYY-MM-DD, forwarded from the search result the
   // user tapped) rides through to the booking picker instead of getting dropped.
@@ -39,7 +52,7 @@ export function SalonMobileBookBar({
   React.useEffect(() => {
     setMounted(true);
   }, []);
-  if (!mounted) return null;
+  if (!mounted || suppressed) return null;
 
   // V3-D202 (A20): drop bg-white/95 backdrop-blur-md → bg-white per drift-detox.
   // V3-D442 (round 2): gradient content-fade above the bar instead of a hard

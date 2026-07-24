@@ -28,8 +28,10 @@ const TASK_STEP_PREFIXES = ["/booking", "/confirmation"];
 const DEV_TASK_STEP_PREFIXES = ["/dev/pdp/reviews-full", "/dev/pdp/team-all", "/dev/pdp/reviews-filter"];
 
 // Real "see all" sub-views of a destination PDP: the dedicated reviews page
-// (`/salon/[slug]/reviews`) is a task-step sub-view of the salon PDP, not its own destination.
-const TASK_STEP_PATTERNS = [/^\/salon\/[^/]+\/reviews(\/|$)/];
+// (`/salon/[slug]/reviews`) AND the "Select professional" team picker (`/salon/[slug]/team`,
+// shipped 2026-07-24 alongside the reviews port, missed here originally) are both task-step
+// sub-views of the salon PDP, not their own destination.
+const TASK_STEP_PATTERNS = [/^\/salon\/[^/]+\/reviews(\/|$)/, /^\/salon\/[^/]+\/team(\/|$)/];
 
 export function isTaskStep(pathnameWithoutLocale: string): boolean {
   return (
