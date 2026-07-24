@@ -102,7 +102,7 @@ export const SOLEN_BASEMAP_CONFIG = {
   showPointOfInterestLabels: true,
   showPlaceLabels: true,
   showRoadLabels: true,
-  showLandmarkIcons: true,
+  showLandmarkIcons: false, // OFF: renders a 3D landmark building model (e.g. the Spalentor gate) as a circular highlight behind markers - owner rejected. Text/POI labels stay via the other flags.
   showPedestrianRoads: true,
   show3dObjects: false,
   show3dBuildings: true,
@@ -123,7 +123,7 @@ export function applySolenBasemapConfig(
   map.setConfigProperty(IMPORT_ID, "showPointOfInterestLabels", true);
   map.setConfigProperty(IMPORT_ID, "showPlaceLabels", true);
   map.setConfigProperty(IMPORT_ID, "showRoadLabels", true);
-  map.setConfigProperty(IMPORT_ID, "showLandmarkIcons", true);
+  map.setConfigProperty(IMPORT_ID, "showLandmarkIcons", false);
   map.setConfigProperty(IMPORT_ID, "showPedestrianRoads", true);
 
   // Owner (2026-07-24): pointed at a 3D landmark/building object rendering near the
