@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Clock, Users, Info, Star, X, Check } from "lucide-react";
 import { SelectedCheckBadge } from "@/components-legacy/ui/SelectedCheckBadge";
-import { groupServicesByDurationTier } from "@/lib/service-tiers";
+import { FROST_GLASS } from "@/lib/frost-glass";
 
 interface WalkInService {
   id: string;
@@ -12,6 +12,8 @@ interface WalkInService {
   name_en?: string | null;
   price: number;
   duration_minutes?: number | null;
+  category?: string | null;
+  subcategory?: string | null;
 }
 
 interface WalkInStaff {
@@ -157,17 +159,24 @@ export default function SalonWalkInPanel({
     ? services.filter((s) => selectedStaff.service_ids!.includes(s.id))
     : services;
 
-  // Group by duration tier, same shared source of truth as Termin mode
-  // (SalonServices.tsx) via lib/service-tiers.ts — owner fix 2026-07-23:
-  // walk-in previously rendered one flat ungrouped list.
-  const { tiered: tieredServices, untiered: untieredServices } = groupServicesByDurationTier(visibleServices);
+  // Group by the salon's OWN category (subcategory, falling back to top-level),
+  // exactly like the booking flow / "Alle ansehen" (ServicesStaffStep, owner
+  // 2026-07-19) — the real service taxonomy drives the sections, never the
+  // removed hardcoded Express/Klassisch/Signature duration split (which was
+  // invented and mismatched the booking view). category/subcategory ride along
+  // on the same salon.services object Termin gets; grouped here, not fabricated.
+  const svcGroupKey = (s: WalkInService) => s.subcategory ?? s.category ?? "andere";
+  const svcCategories = Array.from(new Set(visibleServices.map(svcGroupKey))).sort();
 
   return (
     <div>
       {/* ONE module card (owner 2026-06-12: "not one big card... hard to distinguish
-          booking and walk-in") — sunken header + live status + barber + services all
-          INSIDE one bordered card, visually distinct from the booking sections. */}
-      <div className="overflow-hidden rounded-[24px] border border-s-border bg-white">
+          booking and walk-in", commit 635a33183, verified live) — sunken header + live
+          status + barber + services all INSIDE one bordered card, visually distinct
+          from the booking sections. Kept as ONE card (not split into Termin's separate
+          32px-gapped sections) per that owner lock; shadow-whisper added below so the
+          card itself follows the grouped-card law (LOCKFILE §3 line 431). */}
+      <div className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper">
         {/* Live status — v3: (i) lives here, big line is the wait range */}
         <div className="px-5 py-[18px]">
           <div className="flex items-center justify-between">
@@ -242,7 +251,13 @@ export default function SalonWalkInPanel({
                       </div>
                       <SelectedCheckBadge selected={active} size={24} />
                       {showRating && (
-                        <span className="absolute -bottom-2 left-1/2 inline-flex -translate-x-1/2 items-center gap-0.5 rounded-full bg-white px-2 py-[3px] shadow-[0_2px_8px_rgba(0,0,0,0.14)] ring-1 ring-s-ink/[0.05]">
+                        // CONTROL_ELEVATION Q2 (over-photo control): the pill straddles the barber
+                        // photo circle, so it takes the canonical FROST_GLASS recipe instead of the
+                        // ad-hoc bg-white + shadow-[...] it had before (owner fix 2026-07-23).
+                        <span
+                          className="absolute -bottom-2 left-1/2 inline-flex -translate-x-1/2 items-center gap-0.5 rounded-full px-2 py-[3px]"
+                          style={FROST_GLASS}
+                        >
                           <Star size={11} stroke="none" className="fill-s-star" />
                           <span className={`text-[12px] font-semibold leading-none tabular-nums text-s-ink ${!hasRating ? "opacity-70" : ""}`}>{displayRating?.toFixed(1)}</span>
                         </span>
@@ -257,75 +272,30 @@ export default function SalonWalkInPanel({
           </div>
         )}
 
-        {/* Service pick — hairline rows inside the card (not separate cards).
-            Grouped by duration tier (owner fix 2026-07-23), same shared derivation
-            as Termin mode (SalonServices.tsx) via lib/service-tiers.ts. */}
-        <div className="border-t border-s-border px-5 pb-1 pt-[18px]">
-          <p className="text-[13px] font-semibold text-s-ink">{l.pick}</p>
-          {tieredServices.map(({ tier, rows }, gi) => (
-            <div key={tier.key}>
-              <div className={`flex items-baseline gap-2 ${gi === 0 ? "mt-3" : "mt-4"}`}>
-                <h4 className="font-body text-[14px] font-semibold text-s-ink">{tier.label}</h4>
-                <span className="font-body text-[12px] text-s-ink-3">{tier.range}</span>
+        {/* Service pick — grouped by the salon's real category (subcategory ?? category ??
+            "andere"), same taxonomy as booking / "Alle ansehen" (owner 2026-07-24); the old
+            invented Express/Klassisch/Signature duration tiers were removed.
+            The OUTER walk-in card IS the grouped list-card (LOCKFILE §3 grouped-list-card
+            law): rows are hairline-divided FULL-WIDTH rows inside it (px-5 py-[18px],
+            border-t first:border-t-0), NOT nested rounded-[24px] cards. A 24px card inside
+            the 24px outer card is the DS-4 same-radius-in-same-radius amateur tell, and
+            re-creates the "scattered cards indistinguishable from booking" the one-card
+            lock (commit 635a33183) exists to prevent. Tiers separate by header + 24px
+            whitespace, matching Termin's space-y-6 tier rhythm. */}
+        <div className="border-t border-s-border pb-2 pt-[18px]">
+          <p className="px-5 text-[13px] font-semibold text-s-ink">{l.pick}</p>
+          <div className="mt-3">
+            {svcCategories.map((cat, gi) => (
+              <div key={cat} className={gi > 0 ? "mt-6" : ""}>
+                <h4 className="px-5 font-heading text-[16px] font-semibold capitalize tracking-[-0.01em] text-s-ink">{cat}</h4>
+                <ul className="mt-2">
+                  {visibleServices.filter((s) => svcGroupKey(s) === cat).map((s) => (
+                    <WalkInServiceRow key={s.id} service={s} name={svcName(s)} isOpen={isOpen} joinHref={joinHref(s.id)} l={l} locale={locale} />
+                  ))}
+                </ul>
               </div>
-              <ul>
-                {rows.map((s, i) => (
-                  <li key={s.id} className={`flex items-center justify-between gap-4 py-4 ${i > 0 ? "border-t border-s-border" : ""}`}>
-                    <div className="min-w-0 flex-1">
-                      <div className="font-body text-[15px] font-semibold text-s-ink">{svcName(s)}</div>
-                      <div className="font-body mt-0.5 text-[13px] text-s-ink-3">
-                        {s.duration_minutes ? `${s.duration_minutes} ${l.min}, ` : ""}{l.from} {Number(s.price).toFixed(0)} CHF
-                      </div>
-                    </div>
-                    {isOpen ? (
-                      <Link
-                        href={joinHref(s.id)}
-                        className="font-body shrink-0 rounded-full bg-s-bg-sunken px-5 py-2 text-[13px] font-semibold text-s-ink transition-colors hover:bg-s-border"
-                      >
-                        {l.join}
-                      </Link>
-                    ) : (
-                      <span
-                        aria-disabled="true"
-                        className="font-body shrink-0 cursor-not-allowed rounded-full bg-s-bg-sunken px-5 py-2 text-[13px] font-semibold text-s-ink-3 opacity-70"
-                      >
-                        {CLOSED_PILL[locale] ?? CLOSED_PILL.de}
-                      </span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-          {untieredServices.length > 0 && (
-            <ul className={tieredServices.length > 0 ? "mt-2" : ""}>
-              {untieredServices.map((s, i) => (
-                <li key={s.id} className={`flex items-center justify-between gap-4 py-4 ${i > 0 ? "border-t border-s-border" : ""}`}>
-                  <div className="min-w-0 flex-1">
-                    <div className="font-body text-[15px] font-semibold text-s-ink">{svcName(s)}</div>
-                    <div className="font-body mt-0.5 text-[13px] text-s-ink-3">
-                      {s.duration_minutes ? `${s.duration_minutes} ${l.min}, ` : ""}{l.from} {Number(s.price).toFixed(0)} CHF
-                    </div>
-                  </div>
-                  {isOpen ? (
-                    <Link
-                      href={joinHref(s.id)}
-                      className="font-body shrink-0 rounded-full bg-s-bg-sunken px-5 py-2 text-[13px] font-semibold text-s-ink transition-colors hover:bg-s-border"
-                    >
-                      {l.join}
-                    </Link>
-                  ) : (
-                    <span
-                      aria-disabled="true"
-                      className="font-body shrink-0 cursor-not-allowed rounded-full bg-s-bg-sunken px-5 py-2 text-[13px] font-semibold text-s-ink-3 opacity-70"
-                    >
-                      {CLOSED_PILL[locale] ?? CLOSED_PILL.de}
-                    </span>
-                  )}
-                </li>
-              ))}
-            </ul>
-          )}
+            ))}
+          </div>
         </div>
       </div>
 
@@ -356,5 +326,54 @@ export default function SalonWalkInPanel({
         </div>
       )}
     </div>
+  );
+}
+
+// Extracted so the tiered + untiered lists share one row (V2 fix 2026-07-24, was
+// two near-identical inline <li> blocks). Content unchanged: name / "{duration}
+// min, ab {price} CHF" / Join-link or closed-pill — only the card/grouping wrapper
+// this sits inside changed. Matches SalonServices.tsx's ServiceRow row grammar
+// (px-5 py-[18px] hairline-divided, border-t first:border-t-0).
+function WalkInServiceRow({
+  service,
+  name,
+  isOpen,
+  joinHref,
+  l,
+  locale,
+}: {
+  service: WalkInService;
+  name: string;
+  isOpen: boolean;
+  joinHref: string;
+  l: (typeof COPY)["de"];
+  locale: string;
+}) {
+  return (
+    <li className="border-t border-s-border px-5 py-[18px] first:border-t-0">
+      <div className="flex items-center justify-between gap-4">
+        <div className="min-w-0 flex-1">
+          <div className="font-body text-[15px] font-semibold text-s-ink">{name}</div>
+          <div className="font-body mt-0.5 text-[13px] text-s-ink-3">
+            {service.duration_minutes ? `${service.duration_minutes} ${l.min}, ` : ""}{l.from} {Number(service.price).toFixed(0)} CHF
+          </div>
+        </div>
+        {isOpen ? (
+          <Link
+            href={joinHref}
+            className="font-body shrink-0 rounded-full bg-s-bg-sunken px-5 py-2 text-[13px] font-semibold text-s-ink transition-colors hover:bg-s-border"
+          >
+            {l.join}
+          </Link>
+        ) : (
+          <span
+            aria-disabled="true"
+            className="font-body shrink-0 cursor-not-allowed rounded-full bg-s-bg-sunken px-5 py-2 text-[13px] font-semibold text-s-ink-3 opacity-70"
+          >
+            {CLOSED_PILL[locale] ?? CLOSED_PILL.de}
+          </span>
+        )}
+      </div>
+    </li>
   );
 }

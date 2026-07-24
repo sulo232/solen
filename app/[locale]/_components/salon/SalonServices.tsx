@@ -7,7 +7,6 @@ import { capitalize } from "./_shared";
 import { TabPill } from "../primitives/TabPill";
 import { PriceFrom, SeeAllButton } from "../primitives";
 import { cn } from "@/lib/utils";
-import { groupServicesByDurationTier } from "@/lib/service-tiers";
 
 /**
  * Duration label. Owner spec (2026-06-09): ALWAYS minutes, lowercase "min",
@@ -84,11 +83,11 @@ export function SalonServices({
   // Always show only first 5 inline — full list lives in the sheet (V2-D53.3 polish).
   const shown = visible.slice(0, 5);
 
-  // Owner mockup service-grouping (2026-06-10): the inline list groups by DURATION tier
-  // (Express / Klassisch / Signature) under the existing subcategory filter pills.
-  // Pure derivation from duration_minutes — no schema change, no invented data.
-  // Shared with Walk-in mode (SalonWalkInPanel.tsx) via lib/service-tiers.ts (rule 12: share, not duplicate).
-  const { tiered, untiered } = groupServicesByDurationTier(shown);
+  // Inline preview = the active category's first 5 as ONE flat grouped list-card.
+  // Real-category organization is the filter pills above (and the full per-category
+  // sectioned view lives in "Alle ansehen" → booking). The old invented
+  // Express/Klassisch/Signature duration tiers were removed 2026-07-24, matching the
+  // booking flow's 2026-07-19 switch to the salon's own category taxonomy.
 
   return (
     <section id="section-services">
@@ -112,31 +111,15 @@ export function SalonServices({
         </div>
       )}
 
-      {/* Grouped cards per the Atelier-Nord service-grouping mockup (owner, 2026-06-11):
-          ONE rounded-24 card per tier with whisper shadow (exact mockup values), rows
-          inside divided by hairlines — not separate cards per service. */}
-      <div className="mt-5 space-y-6">
-        {tiered.map(({ tier, rows }) => (
-          <div key={tier.key}>
-            <div className="flex items-baseline gap-2">
-              <h3 className="font-heading text-[16px] font-semibold tracking-[-0.01em] text-s-ink">{tier.label}</h3>
-              <span className="text-[13px] tabular-nums text-s-ink-3">{tier.range}</span>
-            </div>
-            <ul className="mt-3 overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper">
-              {rows.map((s) => (
-                <ServiceRow key={s.id} service={s} locale={locale} slug={slug} />
-              ))}
-            </ul>
-          </div>
+      {/* Single grouped list-card of the inline preview, rows hairline-divided
+          (LOCKFILE grouped-list-card grammar). Category grouping is the filter
+          pills above; "Alle ansehen" opens the full per-category sectioned view
+          in booking. Invented Express/Klassisch/Signature tiers removed 2026-07-24. */}
+      <ul className="mt-5 overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper">
+        {shown.map((s) => (
+          <ServiceRow key={s.id} service={s} locale={locale} slug={slug} />
         ))}
-        {untiered.length > 0 && (
-          <ul className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper">
-            {untiered.map((s) => (
-              <ServiceRow key={s.id} service={s} locale={locale} slug={slug} />
-            ))}
-          </ul>
-        )}
-      </div>
+      </ul>
 
       {/* "Alle ansehen" links into the booking flow's service step (the single
           service-selection UI); the standalone sheet was a duplicate, removed 2026-07-19. */}
