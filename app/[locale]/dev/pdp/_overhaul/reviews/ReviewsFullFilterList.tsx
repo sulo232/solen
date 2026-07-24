@@ -5,16 +5,25 @@
 // net-new piece: a client-side sort + keyword filter over the real review rows. "use client":
 // sort key + query are local interactive state, and both must actually re-order/re-filter the
 // rendered list (not a dead control).
+// ROUND 3 (S2, owner: apply the D3 segmented look to this page too so the section + full page
+// read as one system): added a rating-tier TabPill row (same grammar as DirectionSegmented,
+// built from `ratingCounts`/`hasIdentity`... only tiers WITH results render) ABOVE the existing
+// sort-chip row, each row carrying its own English label ("Sort by" / "Filter by rating") so the
+// two rows never read as duplicates. Both stay independently functional and compose (AND). The
+// per-row card also now reuses the shared `ReviewCard` (same avatar/name/date/stars/comment
+// grammar as the PDP section) instead of a second hand-rolled row, for one consistent card
+// treatment across the section and this page.
 "use client";
 
 import * as React from "react";
-import { Search } from "lucide-react";
+import { Search, Star } from "lucide-react";
 import type { Review } from "@/app/[locale]/_components/salon/_shared";
-import { Avatar, RatingStars } from "@/app/[locale]/_components/primitives";
 import { TabPill } from "@/app/[locale]/_components/primitives/TabPill";
-import { formatReviewDateEn, reviewText } from "./shared";
+import { ReviewCard } from "./ReviewCard";
+import { ratingCounts, reviewText } from "./shared";
 
 type SortKey = "relevant" | "newest" | "highest" | "lowest";
+type Tier = "all" | 5 | 4 | 3 | 2 | 1;
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: "relevant", label: "Most relevant" },
@@ -49,15 +58,27 @@ function sortReviews(reviews: Review[], sort: SortKey): Review[] {
 
 export function ReviewsFullFilterList({ reviews }: { reviews: Review[] }) {
   const [sort, setSort] = React.useState<SortKey>("relevant");
+  const [tier, setTier] = React.useState<Tier>("all");
   const [query, setQuery] = React.useState("");
 
+  const counts = React.useMemo(() => ratingCounts(reviews), [reviews]);
+  const tiers = React.useMemo(() => {
+    const list: { key: Tier; count: number }[] = [{ key: "all", count: reviews.length }];
+    ([5, 4, 3, 2, 1] as const).forEach((star) => {
+      const c = counts[star - 1];
+      if (c > 0) list.push({ key: star, count: c });
+    });
+    return list;
+  }, [reviews.length, counts]);
+
   const q = query.trim().toLowerCase();
-  const filtered = q
-    ? reviews.filter((r) => {
-        const name = r.profiles?.display_name?.toLowerCase() ?? "";
-        return reviewText(r).toLowerCase().includes(q) || name.includes(q);
-      })
-    : reviews;
+  const filtered = reviews
+    .filter((r) => (tier === "all" ? true : Math.round(r.rating) === tier))
+    .filter((r) => {
+      if (!q) return true;
+      const name = r.profiles?.display_name?.toLowerCase() ?? "";
+      return reviewText(r).toLowerCase().includes(q) || name.includes(q);
+    });
   const sorted = React.useMemo(() => sortReviews(filtered, sort), [filtered, sort]);
 
   return (
@@ -79,7 +100,25 @@ export function ReviewsFullFilterList({ reviews }: { reviews: Review[] }) {
         />
       </div>
 
-      <div className="mt-3 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <p className="mt-5 font-body text-[12px] font-semibold text-s-ink-3">Filter by rating</p>
+      <div className="mt-2 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {tiers.map((t) => (
+          <TabPill key={String(t.key)} active={tier === t.key} onClick={() => setTier(t.key)} size="sm">
+            {t.key === "all" ? (
+              `All (${t.count})`
+            ) : (
+              <span className="inline-flex items-center gap-1">
+                {t.key}
+                <Star size={11} strokeWidth={0} aria-hidden className="fill-s-star" />
+                {`(${t.count})`}
+              </span>
+            )}
+          </TabPill>
+        ))}
+      </div>
+
+      <p className="mt-4 font-body text-[12px] font-semibold text-s-ink-3">Sort by</p>
+      <div className="mt-2 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {SORT_OPTIONS.map((opt) => (
           <TabPill key={opt.key} active={sort === opt.key} onClick={() => setSort(opt.key)} size="sm">
             {opt.label}
@@ -87,7 +126,7 @@ export function ReviewsFullFilterList({ reviews }: { reviews: Review[] }) {
         ))}
       </div>
 
-      <p className="mt-3 font-body text-[13px] text-s-ink-3">
+      <p className="mt-4 font-body text-[13px] text-s-ink-3">
         {sorted.length} {sorted.length === 1 ? "review" : "reviews"}
         {q ? ` matching "${query.trim()}"` : ""}
       </p>
@@ -95,30 +134,14 @@ export function ReviewsFullFilterList({ reviews }: { reviews: Review[] }) {
       <div className="mt-4 flex flex-col">
         {sorted.length === 0 ? (
           <p className="py-8 text-center font-body text-[14px] italic text-s-ink-3">
-            No reviews match this search.
+            No reviews match this filter.
           </p>
         ) : (
-          sorted.map((r) => {
-            const text = reviewText(r);
-            const name = r.profiles?.display_name ?? "Anonymous";
-            return (
-              <div key={r.id} className="border-t border-s-border py-5 first:border-t-0 first:pt-0">
-                <div className="flex items-center gap-3">
-                  <Avatar src={r.profiles?.avatar_url} name={name} size={44} />
-                  <div className="min-w-0 flex-1">
-                    <div className="font-body truncate text-[14px] font-semibold text-s-ink">{name}</div>
-                    <div className="font-body mt-0.5 text-[13px] text-s-ink-3">
-                      {formatReviewDateEn(r.created_at)}
-                    </div>
-                  </div>
-                  <RatingStars value={r.rating} mode="five" size="sm" /* psych-ok: per-review star ICONS (mode=five), not a bare average summary, same shape as the real production ReviewCard (SalonReviews.tsx:229) which also carries no count on this mode */ />
-                </div>
-                {text && (
-                  <p className="font-body mt-2.5 text-[14px] leading-relaxed text-s-ink-2">{text}</p>
-                )}
-              </div>
-            );
-          })
+          sorted.map((r) => (
+            <div key={r.id} className="border-t border-s-border pt-5 first:border-t-0 first:pt-0 [&+&]:mt-5">
+              <ReviewCard review={r} />
+            </div>
+          ))
         )}
       </div>
     </div>

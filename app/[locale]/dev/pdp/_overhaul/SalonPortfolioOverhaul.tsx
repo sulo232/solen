@@ -6,18 +6,23 @@
 // fixture salon only has 6 `gallery_urls`, so the real component renders 6 tiles (not a bug,
 // just data-limited). This copy fills the remaining slots with REAL photos already fetched
 // elsewhere on this page (staff_portfolio_images, same table + query SalonImageGalleryOverhaul
-// already reads for the categorized gallery) instead of fabricating anything; if fewer than 9
-// real photos exist across venue + staff, it shows all available and adds a one-line footnote.
+// already reads for the categorized gallery) instead of fabricating anything; if fewer than the
+// cap real photos exist across venue + staff, it shows all available and adds a one-line
+// footnote.
+// ROUND 3 (S3, owner verbatim "three by three, so six images instead of whatever we have right
+// now"): cap dropped from 9 (3x3) to 6 (3x2). Supersedes R1's 9-tile fill.
 
 import * as React from "react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import type { StaffMember } from "../../../_components/salon/_shared";
 
+const TILE_CAP = 6; // 3 columns x 2 rows (S1, owner "three by three, so six images")
+
 /**
- * SalonPortfolioOverhaul , R1: render a 3x3 (up to 9) grid without fabrication. Venue photos
- * (`urls`) come first; if that's short of 9, staff portfolio photos (staff_portfolio_images,
- * real seeded data) fill the remainder. If the combined real-photo count is still under 9, all
- * available tiles render and a small English footnote states the real count (mockup chrome).
+ * SalonPortfolioOverhaul , S3: render a 3x2 (up to 6) grid without fabrication. Venue photos
+ * (`urls`) come first; if that's short of the cap, staff portfolio photos (staff_portfolio_images,
+ * real seeded data) fill the remainder. If the combined real-photo count is still under the cap,
+ * all available tiles render and a small English footnote states the real count (mockup chrome).
  */
 export function SalonPortfolioOverhaul({
   urls,
@@ -32,7 +37,7 @@ export function SalonPortfolioOverhaul({
   const [loaded, setLoaded] = React.useState(false);
 
   React.useEffect(() => {
-    if (loaded || urls.length >= 9 || staff.length === 0) {
+    if (loaded || urls.length >= TILE_CAP || staff.length === 0) {
       setLoaded(true);
       return;
     }
@@ -65,9 +70,9 @@ export function SalonPortfolioOverhaul({
   if (combined.length === 0) return null;
 
   const totalReal = combined.length;
-  const visible = combined.slice(0, 9);
+  const visible = combined.slice(0, TILE_CAP);
   const overflow = totalReal - visible.length;
-  const showFootnote = totalReal < 9;
+  const showFootnote = totalReal < TILE_CAP;
 
   return (
     <section id="section-portfolio">

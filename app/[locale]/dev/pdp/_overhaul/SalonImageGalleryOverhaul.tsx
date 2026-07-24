@@ -37,15 +37,15 @@ function categorizePhotos(urls: string[]) {
 
 /**
  * SalonImageGalleryOverhaul , mockup copy of
- * app/[locale]/_components/salon/SalonImageGallery.tsx (real, unmodified). Two changes
- * (research spec, "Salon PDP portfolio + hero-tap wiring"):
- *   1. Salon tab gains a CATEGORY tab row (reusing the exact Team sub-tab CONTENT-TAB
- *      treatment already in this file) + a dense 3-col square grid (copied from
- *      SalonPortfolio's real UniformGrid) instead of the current stacked 4:3 list.
- *   2. Bonus token-compliance fix: the top-level Salon/Team Pill moves off its old dark
- *      solid fill onto the current neutral filter-pill lock (selected = calm gray fill +
- *      ink text + semibold), flagged as a bonus in the research spec , kept in scope
- *      since it is the same tab row being touched.
+ * app/[locale]/_components/salon/SalonImageGallery.tsx (real, unmodified).
+ * ROUND 3 (S4, owner rejects the earlier "double thing"): the Salon/Team pill row and the
+ * underline content-tab row (category tabs + per-stylist sub-tabs) used to stack as TWO
+ * selector rows. Collapsed to ONE single filter-pill row: Salon/Team toggle pills, then a
+ * hairline divider, then the category pills (Salon tab) or stylist pills (Team tab) inline in
+ * the SAME row , never two rows visible at once. The underline/content-tab treatment is
+ * deleted entirely from this file; every pill in the row (toggle + sub-filter) now shares the
+ * one neutral filter-pill grammar (selected = `bg-s-bg-sunken` + ink text + semibold,
+ * unselected = white + hairline, never blue/black).
  */
 export function SalonImageGalleryOverhaul({
   open,
@@ -146,9 +146,11 @@ export function SalonImageGalleryOverhaul({
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        {/* Salon / Team pills , neutral filter-pill treatment (bonus fix: selected = calm
-            gray fill + ink text + semibold, never a dark solid fill or blue border). */}
-        <div className="flex gap-2 px-4 py-3">
+        {/* ONE single filter-pill row (S4): Salon/Team toggle, then , in the SAME row , the
+            category pills (Salon tab) or stylist pills (Team tab). All pills share the one
+            neutral filter-pill grammar; a hairline divider only groups the toggle from the
+            sub-filter, it never stacks a second row. */}
+        <div className="flex items-center gap-2 overflow-x-auto border-b border-s-border px-4 py-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <Pill active={tab === "salon"} onClick={() => setTab("salon")}>
             Salon ({venuePhotos.length})
           </Pill>
@@ -157,67 +159,32 @@ export function SalonImageGalleryOverhaul({
               Team ({teamTotal})
             </Pill>
           )}
+
+          {tab === "salon" && categories.length > 1 && (
+            <>
+              <span className="mx-1 h-5 w-px shrink-0 bg-s-border" aria-hidden />
+              <Pill active={activeCategory === "all"} onClick={() => setActiveCategory("all")}>
+                All ({venuePhotos.length})
+              </Pill>
+              {categories.map((c) => (
+                <Pill key={c.key} active={activeCategory === c.key} onClick={() => setActiveCategory(c.key)}>
+                  {c.label} ({c.photos.length})
+                </Pill>
+              ))}
+            </>
+          )}
+
+          {tab === "team" && stylistsWithPhotos.length > 0 && (
+            <>
+              <span className="mx-1 h-5 w-px shrink-0 bg-s-border" aria-hidden />
+              {stylistsWithPhotos.map((s) => (
+                <Pill key={s.id} active={activeStylist === s.id} onClick={() => setActiveStylist(s.id)}>
+                  {s.name} ({portfolios[s.id]?.length ?? 0})
+                </Pill>
+              ))}
+            </>
+          )}
         </div>
-
-        {/* Salon: NEW category tab row , exact CONTENT-TAB treatment as the Team
-            sub-tabs below (active 600 ink + 2px underline, inactive 400 ink-2, no fill,
-            no blue). Only shown when the sample split produced more than one category. */}
-        {tab === "salon" && categories.length > 1 && (
-          <div className="flex gap-5 overflow-x-auto border-b border-s-border px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            <button
-              type="button"
-              onClick={() => setActiveCategory("all")}
-              className={cn(
-                "font-body relative shrink-0 py-3 text-[14px] font-semibold transition-colors",
-                activeCategory === "all" ? "text-s-ink" : "text-s-ink-2 hover:text-s-ink",
-              )}
-            >
-              All <span className="font-normal text-s-ink-3">{venuePhotos.length}</span>
-              {activeCategory === "all" && (
-                <span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-s-ink" />
-              )}
-            </button>
-            {categories.map((c) => (
-              <button
-                key={c.key}
-                type="button"
-                onClick={() => setActiveCategory(c.key)}
-                className={cn(
-                  "font-body relative shrink-0 py-3 text-[14px] font-semibold transition-colors",
-                  activeCategory === c.key ? "text-s-ink" : "text-s-ink-2 hover:text-s-ink",
-                )}
-              >
-                {c.label} <span className="font-normal text-s-ink-3">{c.photos.length}</span>
-                {activeCategory === c.key && (
-                  <span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-s-ink" />
-                )}
-              </button>
-            ))}
-          </div>
-        )}
-
-        {/* Team: per-stylist sub-tabs (unchanged real treatment) */}
-        {tab === "team" && stylistsWithPhotos.length > 0 && (
-          <div className="flex gap-5 overflow-x-auto border-b border-s-border px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {stylistsWithPhotos.map((s) => (
-              <button
-                key={s.id}
-                type="button"
-                onClick={() => setActiveStylist(s.id)}
-                className={cn(
-                  "font-body relative shrink-0 py-3 text-[14px] font-semibold transition-colors",
-                  activeStylist === s.id ? "text-s-ink" : "text-s-ink-3 hover:text-s-ink",
-                )}
-              >
-                {s.name}{" "}
-                <span className="font-normal text-s-ink-3">{portfolios[s.id]?.length ?? 0}</span>
-                {activeStylist === s.id && (
-                  <span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-s-ink" />
-                )}
-              </button>
-            ))}
-          </div>
-        )}
 
         {/* Photo grid */}
         <div className="px-4 py-4">

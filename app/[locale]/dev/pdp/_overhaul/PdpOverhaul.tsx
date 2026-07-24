@@ -90,7 +90,7 @@ export function PdpOverhaul({
   void salonOpen; // kept for parity with the real orchestrator; walk-in panel not mounted here
 
   return (
-    <main className="relative min-h-screen overflow-x-clip bg-white pb-24 md:pt-3 md:pb-16">
+    <main className="relative min-h-screen overflow-x-clip bg-white pb-32 md:pt-3 md:pb-16">
       <div className="relative z-10">
         <div className="mx-auto hidden w-full max-w-[1180px] px-4 md:block md:px-6">
           <SalonBreadcrumb salon={salon} locale={locale} />
@@ -172,11 +172,13 @@ export function PdpOverhaul({
         </div>
       </div>
 
-      {/* CHANGED (R5): reserved 72px band, last flow child before the gallery modal, so the
-          bar parks in-flow just above the footer instead of overlapping/sliding under it. */}
-      <div className="relative lg:hidden" style={{ height: 72 }}>
-        <SalonMobileBookBarOverhaul locale={locale} slug={slug} />
-      </div>
+      {/* CHANGED (S5, owner: no snap, the bar just stays put): permanently fixed, no
+          in-flow wrapper needed since a fixed element takes no flow space. Clearance from the
+          footer/newsletter comes from the `<main>` bottom padding below (~130px, bigger than
+          the bar's own ~76px footprint) PLUS the footer's own content after the newsletter band
+          (link columns + legal bar, several hundred px, see Footer.tsx) , so the newsletter is
+          never the last thing visible at max scroll. */}
+      <SalonMobileBookBarOverhaul locale={locale} slug={slug} />
 
       <SalonImageGalleryOverhaul
         open={galleryOpen}
