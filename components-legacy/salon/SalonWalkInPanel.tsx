@@ -143,7 +143,7 @@ export default function SalonWalkInPanel({
   // v3 (LOCKFILE §0 rule 12): wait is a RANGE "20–35 Min" (en-dash allowed only
   // in numeric ranges), caption is the count only ("3 vor dir").
   const low = stats?.wait_low ?? 0;
-  const bigLine = !isOpen ? l.closedBig : hasQueue ? `${low}–${wait} ${l.min}` : l.emptyBig;
+  const bigLine = !isOpen ? l.closedBig : hasQueue ? `${l.from} ${low} ${l.min}` : l.emptyBig;
   const subLine = !isOpen ? "" : hasQueue ? `${ahead} ${l.ahead}` : l.emptySub;
   // Per-service live wait tag (owner 2026-07-24 "CO"): the current wait, shown on each row so it
   // reads per-service and updates live with the selected barber. No per-service queue data exists,
