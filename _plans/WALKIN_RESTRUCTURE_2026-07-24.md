@@ -65,3 +65,10 @@ First pass LANDED + owner saw it (screenshotted the redesigned queued status car
 - RULE (behavioral, no clean gate possible since "approval" isn't detectable): status-bar / walk-in
   design experiments live ONLY in the /dev/walkin-statusbar-options mockup route. NEVER edit the live
   SalonWalkInPanel presentation until the owner says explicitly "ship option X" / "make it live".
+
+## CORRECTION 2 (owner 2026-07-24, "i told you to give me mockup to renew the number, u skipped it")
+- [ ] Owner asked for a MOCKUP renewing the status-bar NUMBER ("55–70 Min" range look = disliked).
+  Deliverable = a /dev mockup with SINGLE-number wait treatments (NOT a range, NOT the rejected
+  position-hero). Build it in /dev; do NOT touch the live bar.
+- [ ] HARDEN: mockup-vs-live gate — when the owner asks for a "mockup"/"renew", the edits must land
+  in a /dev mockup route, never the live customer component.
