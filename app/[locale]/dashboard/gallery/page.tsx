@@ -65,7 +65,7 @@ export default function GalleryPage() {
 
       <GalleryManager
         salonId={salon.id}
-        galleryUrls={salon.gallery_urls || []}
+        salonCategories={salon.categories || []}
         coverPhotoUrl={salon.cover_photo_url}
         onUpdate={fetchSalon}
       />

@@ -1,4 +1,5 @@
 import { z, ZodSchema } from "zod";
+import { PORTFOLIO_CATEGORY_KEYS } from "@/lib/portfolio-categories";
 
 // ─── Helper ──────────────────────────────────────────────────────────────────
 
@@ -550,6 +551,18 @@ export const nailPortfolioTagsSchema = z.object({
   nail_shape: z.string().max(50).optional(),
   nail_material: z.string().max(50).optional(),
   tags: z.array(z.string().max(50)).max(10).optional(),
+});
+
+// Salon gallery photo category (fixed taxonomy, see lib/portfolio-categories.ts). One value shared
+// by the POST-upload category field and the PATCH category-reassignment body on
+// app/api/salons/[slug]/gallery/route.ts. Null clears the category back to uncategorized; the
+// route additionally checks the value is valid for the salon's OWN category via
+// isValidPortfolioCategoryForSalon(), this schema only guards "is it a real taxonomy value at all".
+export const portfolioCategoryValue = z.enum(PORTFOLIO_CATEGORY_KEYS).nullable();
+
+export const salonPortfolioCategorySchema = z.object({
+  id: z.string().uuid(),
+  category: portfolioCategoryValue,
 });
 
 // ---------------------------------------------------------------------------

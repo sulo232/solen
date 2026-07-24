@@ -395,7 +395,9 @@ export function SalonDetailV3({
       <SalonImageGallery
         open={galleryOpen}
         onClose={() => setGalleryOpen(false)}
+        salonId={salon.id}
         salonName={salon.name}
+        salonCategories={salon.categories}
         venuePhotos={photos}
         staff={salon.staff}
       />

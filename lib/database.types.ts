@@ -6028,6 +6028,45 @@ export type Database = {
         }
         Relationships: []
       }
+      // MANUAL addition (2026-07-25): supabase/migrations/20260725120000_salon_portfolio_images.sql
+      // was written but could not be applied live in this session (no Supabase MCP tool bound to
+      // this coder sub-agent). Regenerate via the MCP generate_typescript_types tool once the
+      // migration is actually applied, then drop this comment. Shape mirrors staff_portfolio_images.
+      salon_portfolio_images: {
+        Row: {
+          category: string | null
+          created_at: string
+          id: string
+          image_url: string
+          salon_id: string
+          sort_order: number
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          image_url: string
+          salon_id: string
+          sort_order?: number
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string
+          salon_id?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "salon_portfolio_images_salon_id_fkey"
+            columns: ["salon_id"]
+            isOneToOne: false
+            referencedRelation: "salons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       salon_of_month_winners: {
         Row: {
           id: string

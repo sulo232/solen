@@ -3,24 +3,30 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { ArrowLeft } from "lucide-react";
+import { useLocale } from "next-intl";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { SalonLightbox } from "./SalonLightbox";
 import type { StaffMember } from "./_shared";
 import { cn } from "@/lib/utils";
+import { getPortfolioCategoriesForSalon, getPortfolioCategoryLabel, PORTFOLIO_CATEGORY_ALL_LABEL, type PortfolioLocale } from "@/lib/portfolio-categories";
 
 /**
- * SalonImageGallery — full-screen photo browser (Fresha "Image gallery" pattern,
+ * SalonImageGallery: full-screen photo browser (Fresha "Image gallery" pattern,
  * 2026-06-09). Opened from the hero photo-counter + the Portfolio section. Two modes:
- *   • Salon: the salon's gallery_urls, full-width stacked.
+ *   • Salon: the salon's photos (salon_portfolio_images, categorized), full-width stacked,
+ *     with category pills (fixed taxonomy, lib/portfolio-categories.ts) in the SAME filter
+ *     row as the Salon/Team toggle (owner 2026-07-24/25: never a second stacked row).
  *   • Team: per-stylist sub-tabs (each with its photo count) + that stylist's grid.
- * Tapping any photo opens the shared SalonLightbox to zoom/swipe within the current set.
- * Per-stylist photos come from staff_portfolio_images (public-read RLS), fetched lazily
- * the first time the gallery opens.
+ * Tapping any photo opens the shared SalonLightbox to zoom/swipe within the current
+ * (possibly category-filtered) set.
+ * Per-stylist photos come from staff_portfolio_images (public-read RLS); salon photos +
+ * their categories come from salon_portfolio_images (public-read RLS, same pattern), both
+ * fetched lazily the first time the gallery opens.
  *
  * Portaled straight to document.body (overlap-bug fix, 2026-07-23, same root
  * cause + fix as SalonLightbox.tsx): the root layout's
  * `<main id="main-content">` carries `isolation: isolate`, which trapped
- * this modal's z-[70] inside a single stacking slot — so the portaled
+ * this modal's z-[70] inside a single stacking slot, so the portaled
  * SalonStickyTabNav (fixed, z-[60], mounted outside that isolated slot)
  * always painted on top of this gallery's own header, regardless of the
  * z-index numbers. Portaling here escapes the same trap.
@@ -28,19 +34,27 @@ import { cn } from "@/lib/utils";
 export function SalonImageGallery({
   open,
   onClose,
+  salonId,
   salonName,
+  salonCategories,
   venuePhotos,
   staff,
 }: {
   open: boolean;
   onClose: () => void;
+  salonId: string;
   salonName: string;
+  /** salon.categories, resolves which fixed taxonomy this salon's photos can carry. */
+  salonCategories: string[];
   venuePhotos: string[];
   staff: StaffMember[];
 }) {
+  const locale = useLocale();
   const [tab, setTab] = React.useState<"salon" | "team">("salon");
   const [activeStylist, setActiveStylist] = React.useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = React.useState<string>("all");
   const [portfolios, setPortfolios] = React.useState<Record<string, string[]>>({});
+  const [salonPhotos, setSalonPhotos] = React.useState<Array<{ url: string; category: string | null }>>([]);
   const [loaded, setLoaded] = React.useState(false);
   const [lb, setLb] = React.useState<{ open: boolean; photos: string[]; index: number }>({
     open: false,
@@ -48,36 +62,55 @@ export function SalonImageGallery({
     index: 0,
   });
 
-  // Lazy-fetch per-stylist portfolios the first time the gallery opens.
+  // Lazy-fetch, the first time the gallery opens: per-stylist portfolios (staff_portfolio_images)
+  // AND the salon's own categorized photos (salon_portfolio_images). Runs even when the salon
+  // has zero staff (a staffless salon still has its own gallery + categories to load).
   React.useEffect(() => {
-    if (!open || loaded || staff.length === 0) return;
+    if (!open || loaded) return;
     let cancelled = false;
     (async () => {
+      const supabase = createBrowserSupabaseClient();
       try {
-        const supabase = createBrowserSupabaseClient();
+        if (staff.length > 0) {
+          const { data, error } = await supabase
+            .from("staff_portfolio_images")
+            .select("staff_id, image_url, sort_order")
+            .in("staff_id", staff.map((s) => s.id))
+            .order("sort_order", { ascending: true });
+          if (error) throw error;
+          if (!cancelled) {
+            const grouped: Record<string, string[]> = {};
+            for (const row of data ?? []) {
+              (grouped[row.staff_id as string] ??= []).push(row.image_url as string);
+            }
+            setPortfolios(grouped);
+            setActiveStylist(staff.find((s) => (grouped[s.id]?.length ?? 0) > 0)?.id ?? null);
+          }
+        }
+      } catch (err) {
+        console.error("[SalonImageGallery] staff portfolio fetch failed:", err);
+      }
+
+      try {
         const { data, error } = await supabase
-          .from("staff_portfolio_images")
-          .select("staff_id, image_url, sort_order")
-          .in("staff_id", staff.map((s) => s.id))
+          .from("salon_portfolio_images")
+          .select("image_url, category, sort_order")
+          .eq("salon_id", salonId)
           .order("sort_order", { ascending: true });
         if (error) throw error;
-        if (cancelled) return;
-        const grouped: Record<string, string[]> = {};
-        for (const row of data ?? []) {
-          (grouped[row.staff_id as string] ??= []).push(row.image_url as string);
+        if (!cancelled) {
+          setSalonPhotos((data ?? []).map((row) => ({ url: row.image_url as string, category: row.category as string | null })));
         }
-        setPortfolios(grouped);
-        setActiveStylist(staff.find((s) => (grouped[s.id]?.length ?? 0) > 0)?.id ?? null);
-        setLoaded(true);
       } catch (err) {
-        console.error("[SalonImageGallery] portfolio fetch failed:", err);
-        setLoaded(true);
+        console.error("[SalonImageGallery] salon portfolio fetch failed:", err);
       }
+
+      if (!cancelled) setLoaded(true);
     })();
     return () => {
       cancelled = true;
     };
-  }, [open, loaded, staff]);
+  }, [open, loaded, staff, salonId]);
 
   // Lock body scroll while open.
   React.useEffect(() => {
@@ -93,8 +126,28 @@ export function SalonImageGallery({
 
   const stylistsWithPhotos = staff.filter((s) => (portfolios[s.id]?.length ?? 0) > 0);
   const teamTotal = stylistsWithPhotos.reduce((n, s) => n + (portfolios[s.id]?.length ?? 0), 0);
+
+  // Category pills: fixed taxonomy for THIS salon's own category/categories, in the owner's
+  // stated per-category order, filtered to only categories that actually have a photo (never
+  // show a category with zero photos).
+  const taxonomyForSalon = getPortfolioCategoriesForSalon(salonCategories);
+  const categoryCounts = taxonomyForSalon
+    .map((cat) => ({
+      key: cat.key,
+      count: salonPhotos.filter((p) => p.category === cat.key).length,
+    }))
+    .filter((c) => c.count > 0);
+
+  // Fall back to the venuePhotos prop until the categorized fetch resolves (or if it comes
+  // back empty), so the grid never regresses to blank while salon_portfolio_images loads.
+  const salonPhotosBase = salonPhotos.length > 0 ? salonPhotos.map((p) => p.url) : venuePhotos;
+  const filteredSalonPhotos =
+    activeCategory === "all"
+      ? salonPhotosBase
+      : salonPhotos.filter((p) => p.category === activeCategory).map((p) => p.url);
+
   const activePhotos =
-    tab === "salon" ? venuePhotos : activeStylist ? portfolios[activeStylist] ?? [] : [];
+    tab === "salon" ? filteredSalonPhotos : activeStylist ? portfolios[activeStylist] ?? [] : [];
 
   const openLb = (photos: string[], i: number) => setLb({ open: true, photos, index: i });
 
@@ -144,6 +197,22 @@ export function SalonImageGallery({
               ))}
             </>
           )}
+
+          {/* Category pills, SAME row (owner 2026-07-24: never a second stacked row). Alle +
+              only categories that actually have a photo, in the taxonomy's declared order. */}
+          {tab === "salon" && categoryCounts.length > 0 && (
+            <>
+              <span className="mx-1 h-5 w-px shrink-0 bg-s-border" aria-hidden />
+              <Pill active={activeCategory === "all"} onClick={() => setActiveCategory("all")}>
+                {PORTFOLIO_CATEGORY_ALL_LABEL[locale as PortfolioLocale] ?? PORTFOLIO_CATEGORY_ALL_LABEL.de} ({salonPhotosBase.length})
+              </Pill>
+              {categoryCounts.map((c) => (
+                <Pill key={c.key} active={activeCategory === c.key} onClick={() => setActiveCategory(c.key)}>
+                  {getPortfolioCategoryLabel(c.key, locale)} ({c.count})
+                </Pill>
+              ))}
+            </>
+          )}
         </div>
 
         {/* mockup-ok: salon tab is now a dense 3-col square grid (same grammar as the real
@@ -152,11 +221,11 @@ export function SalonImageGallery({
         <div className="px-4 py-4">
           {tab === "salon" ? (
             <div className="grid grid-cols-3 gap-1.5 md:gap-2.5">
-              {venuePhotos.map((u, i) => (
+              {filteredSalonPhotos.map((u, i) => (
                 <button
                   key={u}
                   type="button"
-                  onClick={() => openLb(venuePhotos, i)}
+                  onClick={() => openLb(filteredSalonPhotos, i)}
                   className="relative aspect-square overflow-hidden rounded-md bg-s-bg-sunken transition-transform hover:scale-[0.99] active:scale-[0.98] md:rounded-lg"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
