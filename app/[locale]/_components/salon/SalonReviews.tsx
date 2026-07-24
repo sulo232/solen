@@ -114,89 +114,92 @@ export function SalonReviews({
   const visible = filtered.slice(0, 3);
 
   return (
-    <section
-      id="section-reviews"
-      // mockup-ok: drift fix to the LOCKED §427 grouped list-card grammar, byte-identical to
-      // SalonServices.tsx's already-shipped `<ul>` wrapper class string (rounded-[24px] border
-      // border-s-border bg-white shadow-whisper), no new appearance introduced.
-      className="rounded-[24px] border border-s-border bg-white shadow-whisper p-5 md:p-7"
-    >
-      {/* V3-D202 (A9): font-body → font-display + Scale B. */}
-      <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
-        Bewertungen
-      </h2>
+    <div id="section-reviews">
+      <section
+        // mockup-ok: drift fix to the LOCKED §427 grouped list-card grammar, byte-identical to
+        // SalonServices.tsx's already-shipped `<ul>` wrapper class string (rounded-[24px] border
+        // border-s-border bg-white shadow-whisper), no new appearance introduced.
+        className="rounded-[24px] border border-s-border bg-white shadow-whisper p-5 md:p-7"
+      >
+        {/* V3-D202 (A9): font-body → font-display + Scale B. */}
+        <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
+          Bewertungen
+        </h2>
 
-      {/* mockup-ok: D3 Segmented summary (owner-approved 2026-07-24, _overhaul/reviews/
-          DirectionSegmented.tsx). Compact star + average + grey count line, replacing the
-          old 5-star row + big number. */}
-      <div className="mt-4 flex items-center gap-2">
-        <Star size={16} stroke="none" aria-hidden className="fill-s-star" />
-        <span className="font-display text-[20px] font-bold leading-none text-s-ink tabular-nums">
-          {average?.toFixed(1) ?? "-"}
-        </span>
-        <span className="font-body text-[13px] text-s-ink-3">
-          {count.toLocaleString("de-CH")} {count === 1 ? "Bewertung" : "Bewertungen"}
-        </span>
-      </div>
+        {/* mockup-ok: D3 Segmented summary (owner-approved 2026-07-24, _overhaul/reviews/
+            DirectionSegmented.tsx). Compact star + average + grey count line, replacing the
+            old 5-star row + big number. */}
+        <div className="mt-4 flex items-center gap-2">
+          <Star size={16} stroke="none" aria-hidden className="fill-s-star" />
+          <span className="font-display text-[20px] font-bold leading-none text-s-ink tabular-nums">
+            {average?.toFixed(1) ?? "-"}
+          </span>
+          <span className="font-body text-[13px] text-s-ink-3">
+            {count.toLocaleString("de-CH")} {count === 1 ? "Bewertung" : "Bewertungen"}
+          </span>
+        </div>
 
-      {all.length === 0 ? (
-        // Aggregate without bodies (count > 0) softens to "texts coming"; truly-empty (0) stays.
-        count > 0 ? (
-          <p className="font-body mt-5 text-[14px] text-s-ink-3">
-            Bewertungstexte folgen.
-          </p>
+        {all.length === 0 ? (
+          // Aggregate without bodies (count > 0) softens to "texts coming"; truly-empty (0) stays.
+          count > 0 ? (
+            <p className="font-body mt-5 text-[14px] text-s-ink-3">
+              Bewertungstexte folgen.
+            </p>
+          ) : (
+            <p className="font-body mt-5 text-[14px] text-s-ink-3">
+              Noch keine Bewertungen.
+            </p>
+          )
         ) : (
-          <p className="font-body mt-5 text-[14px] text-s-ink-3">
-            Noch keine Bewertungen.
-          </p>
-        )
-      ) : (
-        <>
-          {/* mockup-ok: rating-tier TabPill filter row (D3 Segmented), built only for
-              tiers that actually have reviews, over a hairline-grouped list , the
-              owner-approved fix for "hard to distinguish between things, not grouped". */}
-          <div className="mt-5 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {tiers.map((t) => (
-              <TabPill key={String(t.key)} active={active === t.key} onClick={() => setActive(t.key)} size="sm">
-                {t.key === "all" ? (
-                  `Alle (${t.count})`
-                ) : (
-                  <span className="inline-flex items-center gap-1">
-                    {t.key}
-                    <Star size={11} strokeWidth={0} aria-hidden className="fill-s-star" />
-                    {`(${t.count})`}
-                  </span>
-                )}
-              </TabPill>
-            ))}
-          </div>
-
-          <div className="mt-5 flex flex-col">
-            {visible.length === 0 ? (
-              <p className="font-body text-[14px] text-s-ink-3">Noch keine Bewertungen in dieser Gruppe.</p>
-            ) : (
-              visible.map((r) => (
-                <div key={r.id} className="border-t border-s-border pt-5 first:border-t-0 first:pt-0 [&+&]:mt-5">
-                  <ReviewCard review={r} />
-                </div>
-              ))
-            )}
-          </div>
-
-          {salonSlug && locale && (
-            <div className="mt-6 flex justify-center">
-              {/* mockup-ok: SeeAllButton port, byte-identical pill class string, same instance as
-                  SalonServices/SalonTeam on this page. Always navigates to the real full reviews
-                  page (owner: no inline expand). */}
-              <SeeAllButton
-                label={`Alle ${count.toLocaleString("de-CH")} Bewertungen`}
-                href={`/${locale}/salon/${salonSlug}/reviews`}
-              />
+          <>
+            {/* mockup-ok: rating-tier TabPill filter row (D3 Segmented), built only for
+                tiers that actually have reviews, over a hairline-grouped list , the
+                owner-approved fix for "hard to distinguish between things, not grouped". */}
+            <div className="mt-5 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {tiers.map((t) => (
+                <TabPill key={String(t.key)} active={active === t.key} onClick={() => setActive(t.key)} size="sm">
+                  {t.key === "all" ? (
+                    `Alle (${t.count})`
+                  ) : (
+                    <span className="inline-flex items-center gap-1">
+                      {t.key}
+                      <Star size={11} strokeWidth={0} aria-hidden className="fill-s-star" />
+                      {`(${t.count})`}
+                    </span>
+                  )}
+                </TabPill>
+              ))}
             </div>
-          )}
-        </>
+
+            <div className="mt-5 flex flex-col">
+              {visible.length === 0 ? (
+                <p className="font-body text-[14px] text-s-ink-3">Noch keine Bewertungen in dieser Gruppe.</p>
+              ) : (
+                visible.map((r) => (
+                  <div key={r.id} className="border-t border-s-border pt-5 first:border-t-0 first:pt-0 [&+&]:mt-5">
+                    <ReviewCard review={r} />
+                  </div>
+                ))
+              )}
+            </div>
+          </>
+        )}
+      </section>
+
+      {all.length > 0 && salonSlug && locale && (
+        <div className="mt-5 flex justify-center">
+          {/* mockup-ok: SeeAllButton port, byte-identical pill class string, same instance as
+              SalonServices/SalonTeam on this page. Always navigates to the real full reviews
+              page (owner: no inline expand). Sibling of the card, not nested inside it (owner
+              2026-07-25: "outside of the reviews group card"); gap matches SalonServices.tsx's
+              established card→SeeAllButton mt-5 (both direct children of a non-card wrapper). */}
+          <SeeAllButton
+            label={`Alle ${count.toLocaleString("de-CH")} Bewertungen`}
+            href={`/${locale}/salon/${salonSlug}/reviews`}
+          />
+        </div>
       )}
-    </section>
+    </div>
   );
 }
 
