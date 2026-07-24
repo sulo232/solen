@@ -61,7 +61,7 @@ const WALK_SPEED_M_PER_MIN = 80;
 // In-memory TTL cache, module-scope (same pattern as app/api/search/geocode/route.ts's
 // servedCitiesCache) — station positions near a fixed salon address essentially never
 // change, so a long TTL avoids hammering the upstream API on every PDP render.
-const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24h
+const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days (owner 2026-07-24: refresh weekly, not daily - a stop rarely moves; also fewer upstream calls)
 const stopCache = new Map<string, { stop: NearestTransitStop | null; fetchedAt: number }>();
 
 function cacheKey(lat: number, lng: number): string {
@@ -173,7 +173,7 @@ async function routedWalk(
         "https://api.mapbox.com/directions/v5/mapbox/walking/" +
         `${fromLng},${fromLat};${toLng},${toLat}` +
         `?overview=false&access_token=${token}`;
-      const res = await fetch(u, { next: { revalidate: 86400 } });
+      const res = await fetch(u, { next: { revalidate: 604800 } });
       if (res.ok) {
         const j = (await res.json()) as { routes?: { duration?: number }[] };
         const secs = j.routes?.[0]?.duration;

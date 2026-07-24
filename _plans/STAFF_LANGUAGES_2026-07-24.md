@@ -16,3 +16,8 @@
 - [ ] booking staff-picker (booking/page.tsx) also shows languages under name (Fresha ref IMG_6696)
 
 Status: ACTIVE
+
+## PARKED (owner 2026-07-24): review the DAILY customer-nudge crons
+Owner did not realise all these run daily and wants to review cadence later (do NOT change now):
+rebooking-nudge (11:00), welcome-series (10:00), nail-infill-reminders (10:00), barber-smart-reminders (08:00, time-sensitive), birthday-messages (09:00), review-prompt (hourly). Schedules in .github/workflows/cron-jobs.yml.
+DONE this turn: transit lookup cadence daily->weekly (nearest-stop cache 7d + Directions revalidate 7d).
