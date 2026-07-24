@@ -91,6 +91,32 @@ function OptD() {
   );
 }
 
+/* E — Reference-grounded (Mobbin: Waymo "number 2 in line" + Greg position bar + Binance
+   "estimated time" hero). ONE hero (the wait), a Greg-style queue progress bar for position,
+   status as the dot. Slightly taller than a pill because that's what makes it read as a real
+   app's queue status instead of a cramped label. */
+function OptE() {
+  const pct = 62; // 5 ahead -> ~62% through a typical queue, illustrative
+  return (
+    <div className="rounded-[20px] border border-s-border bg-white shadow-whisper px-5 py-4">
+      <span className="inline-flex items-center gap-2">
+        <Dot />
+        <span className="font-display text-[13px] font-semibold tracking-[-.01em]" style={{ color: GREEN }}>Open</span>
+      </span>
+      <div className="mt-2.5 flex items-baseline gap-2">
+        <span className="font-display text-[26px] font-bold leading-none tabular-nums tracking-[-.03em] text-s-ink">{S.low}–{S.high}</span>
+        <span className="font-body text-[14px] font-medium text-s-ink-2">min wait</span>
+      </div>
+      <div className="mt-3.5 flex items-center gap-3">
+        <div className="relative h-1.5 flex-1 overflow-hidden rounded-full bg-s-bg-sunken">
+          <div className="absolute inset-y-0 left-0 rounded-full" style={{ width: `${pct}%`, background: GREEN }} />
+        </div>
+        <span className="shrink-0 font-body text-[12px] font-medium tabular-nums text-s-ink-2">{S.ahead} ahead</span>
+      </div>
+    </div>
+  );
+}
+
 function Row({ tag, name, note, rec, children }: { tag: string; name: string; note: string; rec?: boolean; children: React.ReactNode }) {
   return (
     <section className="mt-9 first:mt-6">
@@ -111,9 +137,9 @@ export default function WalkinStatusBarOptions() {
       <h1 className="font-display text-[23px] font-bold tracking-[-.02em] text-s-ink">Walk-in status bar · declutter</h1>
       <p className="mt-2 font-body text-[14px] leading-relaxed text-s-ink-2">
         Same pill shape you liked, lighter content. Pick a direction and I&apos;ll wire it live.
-        My pick: <span className="font-semibold text-s-ink">D</span> — it&apos;s how real waitlist apps do it:
-        the wait and your position get equal weight and room, status is just the dot. That&apos;s what makes it
-        read as &quot;correct&quot; instead of a cramped line.
+        My pick: <span className="font-semibold text-s-ink">E</span>, grounded in real Mobbin queue screens
+        (Waymo, Greg, Binance): one hero number for the wait + a progress bar for your position. That structure
+        is what makes it read like a real app instead of a cramped label.
       </p>
       <div className="mt-6">
         <p className="mb-2 font-body text-[12px] font-semibold uppercase tracking-wide text-s-ink-3">Now (too busy)</p>
@@ -128,8 +154,11 @@ export default function WalkinStatusBarOptions() {
       <Row tag="C" name="One phrase" note="Folds the queue + wait into a single sentence ('5 ahead · ~1h wait'). Keeps the count but reads as one calm line.">
         <OptC />
       </Row>
-      <Row tag="D" name="Waiting room" rec note="The waitlist-app convention: wait + position, equal weight and room, split by a hairline. Status is the dot; details on tap. The reference-grounded one.">
+      <Row tag="D" name="Waiting room" note="Wait + position on one line, split by a hairline. Compact, but flatter than a real queue status.">
         <OptD />
+      </Row>
+      <Row tag="E" name="Reference (Mobbin)" rec note="Grounded in real queue screens (Waymo, Greg, Binance): the wait is the hero number, a Greg-style progress bar shows your position, status is the dot. This is the one that reads like a real app.">
+        <OptE />
       </Row>
       <div className="h-16" />
     </main>
