@@ -26,6 +26,7 @@ import { SalonSidebar } from "./SalonSidebar";
 import { SalonMobileBookBar } from "./SalonMobileBookBar";
 import SalonModeToggle from "@/components-legacy/salon/SalonModeToggle";
 import SalonWalkInPanel from "@/components-legacy/salon/SalonWalkInPanel";
+import SalonWalkInStickyStatus from "@/components-legacy/salon/SalonWalkInStickyStatus";
 import type { SalonDetail, TabKey, OpenStatus, DayKey } from "./_shared";
 import { postalToCity } from "./_shared";
 import { usePostHog } from "posthog-js/react";
@@ -256,6 +257,8 @@ export function SalonDetailV3({
               <div className="mt-6 flex flex-col gap-5">
                 <SalonModeToggle mode={walkinMode ? "walkin" : "book"} onChange={(m) => setWalkinMode(m === "walkin")} locale={locale} />
                 {walkinMode && <SalonWalkInPanel salonId={salon.id} services={salon.services} staff={salon.staff} salonAverageRating={salon.average_rating} slug={slug} isOpen={salonOpen} locale={locale} />}
+                {/* Compact sticky live-status echo (owner 2026-07-24 R2) — portals to body, appears on scroll. */}
+                {walkinMode && <SalonWalkInStickyStatus salonId={salon.id} isOpen={salonOpen} locale={locale} />}
               </div>
             )}
 
@@ -282,7 +285,11 @@ export function SalonDetailV3({
               />
             )}
 
-            {!walkinMode && salon.staff.length > 0 && (
+            {/* Owner 2026-07-24: Team now renders in BOTH modes. Walk-in used to hide it
+                (and Services), which left the sticky sub-nav's Team/Services tabs pointing
+                at #section-team / #section-services elements that didn't exist -> dead tabs.
+                Un-hiding gives walk-in the clickable stylist browse + a working sub-nav. */}
+            {salon.staff.length > 0 && (
               <SalonTeam staff={salon.staff} salonAverageRating={salon.average_rating} slug={slug} locale={locale} />
             )}
 

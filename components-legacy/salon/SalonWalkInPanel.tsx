@@ -97,6 +97,7 @@ const COPY: Record<string, {
 };
 
 const CLOSED_PILL: Record<string, string> = { de: "Geschlossen", en: "Closed", fr: "Fermé", it: "Chiuso" };
+const ALL_LABEL: Record<string, string> = { de: "Alle", en: "All", fr: "Tous", it: "Tutti" };
 
 export default function SalonWalkInPanel({
   salonId,
@@ -119,6 +120,7 @@ export default function SalonWalkInPanel({
   const [stats, setStats] = useState<{ ahead: number; wait_minutes: number; wait_low?: number; busy?: boolean } | null>(null);
   const [barberId, setBarberId] = useState<string | null>(null); // null = "Egal"
   const [infoOpen, setInfoOpen] = useState(false);
+  const [activeCat, setActiveCat] = useState<string>("alle");
 
   // Per-barber dynamic wait (owner 2026-06-12): picking a barber refetches THEIR
   // line; Egal shows the anyone-wait across the whole crew.
@@ -170,27 +172,45 @@ export default function SalonWalkInPanel({
 
   return (
     <div>
-      {/* ONE module card (owner 2026-06-12: "not one big card... hard to distinguish
-          booking and walk-in", commit 635a33183, verified live) — sunken header + live
-          status + barber + services all INSIDE one bordered card, visually distinct
-          from the booking sections. Kept as ONE card (not split into Termin's separate
-          32px-gapped sections) per that owner lock; shadow-whisper added below so the
-          card itself follows the grouped-card law (LOCKFILE §3 line 431). */}
-      <div className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper">
-        {/* Live status — v3: (i) lives here, big line is the wait range */}
-        <div className="px-5 py-[18px]">
-          <div className="flex items-center justify-between">
-            <span className="inline-flex items-center gap-2.5">
-              {isOpen ? (
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full rounded-full opacity-50" style={{ background: dotColor, animation: "ping 2.6s cubic-bezier(0,0,.2,1) infinite" }} />
-                  <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: dotColor }} />
-                </span>
-              ) : (
-                <span className="h-2 w-2 rounded-full" style={{ background: dotColor }} />
-              )}
-              <span className="font-display text-[13px] font-semibold tracking-[-.01em]" style={{ color: dotColor }}>{statusLabel}</span>
-            </span>
+      {/* Option B (owner pick 2026-07-24): COMPACT live-status bar + barber + services with
+          category chips (Termin parity). The status is a slim, always-compact row (not a tall
+          card); the sticky bar on scroll mirrors it 1:1. Reverses the earlier tall status card. */}
+      <div className="space-y-7">
+        {/* (a) Compact live-status bar */}
+        <div className="flex items-center gap-3 rounded-[20px] border border-s-border bg-white shadow-whisper px-5 py-3.5">
+          <span className="inline-flex shrink-0 items-center gap-2">
+            {isOpen ? (
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full rounded-full opacity-50" style={{ background: dotColor, animation: "ping 2.6s cubic-bezier(0,0,.2,1) infinite" }} />
+                <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: dotColor }} />
+              </span>
+            ) : (
+              <span className="h-2 w-2 rounded-full" style={{ background: dotColor }} />
+            )}
+            <span className="font-display text-[14px] font-semibold tracking-[-.01em]" style={{ color: dotColor }}>{statusLabel}</span>
+          </span>
+          {isOpen && hasQueue && (
+            <>
+              <span className="h-4 w-px shrink-0 bg-s-border" aria-hidden />
+              <span className="inline-flex min-w-0 items-center gap-1.5 text-s-ink">
+                <Clock className="h-4 w-4 shrink-0 text-s-ink-2" aria-hidden />
+                <span className="font-display text-[15px] font-semibold tabular-nums tracking-[-.01em]">{low}–{wait} {l.min}</span>
+              </span>
+            </>
+          )}
+          {isOpen && !hasQueue && (
+            <>
+              <span className="h-4 w-px shrink-0 bg-s-border" aria-hidden />
+              <span className="truncate font-body text-[13px] text-s-ink-2">{l.emptyBig}</span>
+            </>
+          )}
+          <div className="ml-auto flex shrink-0 items-center gap-2">
+            {isOpen && hasQueue && (
+              <span className="inline-flex items-center gap-1 text-s-ink-2">
+                <Users className="h-3.5 w-3.5" aria-hidden />
+                <span className="font-body text-[12px] tabular-nums">{ahead} {l.ahead}</span>
+              </span>
+            )}
             <button
               type="button"
               onClick={() => setInfoOpen(true)}
@@ -200,35 +220,29 @@ export default function SalonWalkInPanel({
               <Info className="h-[15px] w-[15px]" />
             </button>
           </div>
-          {hasQueue && isOpen && <div className="mt-2.5 font-body text-[13px] text-s-ink-2">{l.waitW}</div>}
-          <div className={`font-display font-semibold leading-none tracking-[-.02em] tabular-nums text-s-ink ${hasQueue && isOpen ? "mt-1 text-[32px]" : "mt-2.5 text-[19px] leading-[1.15]"}`}>{bigLine}</div>
-          {subLine ? <div className="mt-2 font-body text-[13px] text-s-ink-2">{subLine}</div> : null}
         </div>
 
-        {/* Barber pick — inside the card */}
+        {/* (b) Barber pick — compact, no card (Option B) */}
         {staff.length > 0 && (
-          <div className="border-t border-s-border px-5 py-[18px]">
+          <div>
             <p className="mb-3 text-[13px] font-semibold text-s-ink">{l.barberPick}</p>
             <div className="-mx-1 flex gap-4 overflow-x-auto px-1 pt-2 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {/* Egal / anyone */}
               <button
                 type="button"
                 onClick={() => setBarberId(null)}
                 aria-pressed={barberId === null}
-                className="flex w-[88px] shrink-0 flex-col items-center text-center"
+                className="flex w-[74px] shrink-0 flex-col items-center text-center"
               >
                 <div className="relative">
-                  <div className="grid h-[78px] w-[78px] place-items-center overflow-hidden rounded-full bg-s-bg-sunken ring-1 ring-s-ink/[0.05]">
-                    <Users className="h-7 w-7 text-s-ink-2" />
+                  <div className="grid h-[64px] w-[64px] place-items-center overflow-hidden rounded-full bg-s-bg-sunken ring-1 ring-s-ink/[0.05]">
+                    <Users className="h-6 w-6 text-s-ink-2" />
                   </div>
-                  <SelectedCheckBadge selected={barberId === null} size={24} />
+                  <SelectedCheckBadge selected={barberId === null} size={22} />
                 </div>
-                <div className={`mt-3 font-body text-[14px] leading-tight text-s-ink ${barberId === null ? "font-semibold" : "font-medium"}`}>{l.anyone}</div>
-                <div className="mt-1 font-body text-[12px] leading-snug text-s-ink-2">{l.noPref}</div>
+                <div className={`mt-2.5 font-body text-[13px] leading-tight text-s-ink ${barberId === null ? "font-semibold" : "font-medium"}`}>{l.anyone}</div>
               </button>
               {staff.map((b) => {
                 const active = barberId === b.id;
-                const role = b.specialties?.[0] ?? null;
                 const hasRating = (b.staff_review_count ?? 0) > 0;
                 const displayRating = hasRating ? b.staff_average_rating : salonAverageRating;
                 const showRating = displayRating != null && displayRating > 0;
@@ -238,33 +252,26 @@ export default function SalonWalkInPanel({
                     type="button"
                     onClick={() => setBarberId(active ? null : b.id)}
                     aria-pressed={active}
-                    className="flex w-[88px] shrink-0 flex-col items-center text-center"
+                    className="flex w-[74px] shrink-0 flex-col items-center text-center"
                   >
                     <div className="relative">
-                      <div className="relative grid h-[78px] w-[78px] place-items-center overflow-hidden rounded-full bg-white ring-1 ring-s-ink/[0.05]">
+                      <div className="relative grid h-[64px] w-[64px] place-items-center overflow-hidden rounded-full bg-white ring-1 ring-s-ink/[0.05]">
                         {b.avatar_url ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img src={b.avatar_url} alt="" className="h-full w-full object-cover" loading="lazy" />
                         ) : (
-                          <span className="font-display text-[28px] font-semibold text-s-ink-2">{b.name.charAt(0).toUpperCase()}</span>
+                          <span className="font-display text-[24px] font-semibold text-s-ink-2">{b.name.charAt(0).toUpperCase()}</span>
                         )}
                       </div>
-                      <SelectedCheckBadge selected={active} size={24} />
+                      <SelectedCheckBadge selected={active} size={22} />
                       {showRating && (
-                        // CONTROL_ELEVATION Q2 (over-photo control): the pill straddles the barber
-                        // photo circle, so it takes the canonical FROST_GLASS recipe instead of the
-                        // ad-hoc bg-white + shadow-[...] it had before (owner fix 2026-07-23).
-                        <span
-                          className="absolute -bottom-2 left-1/2 inline-flex -translate-x-1/2 items-center gap-0.5 rounded-full px-2 py-[3px]"
-                          style={FROST_GLASS}
-                        >
+                        <span className="absolute -bottom-2 left-1/2 inline-flex -translate-x-1/2 items-center gap-0.5 rounded-full px-2 py-[3px]" style={FROST_GLASS}>
                           <Star size={11} stroke="none" className="fill-s-star" />
                           <span className={`text-[12px] font-semibold leading-none tabular-nums text-s-ink ${!hasRating ? "opacity-70" : ""}`}>{displayRating?.toFixed(1)}</span>
                         </span>
                       )}
                     </div>
-                    <div className={`mt-4 font-body text-[14px] leading-tight text-s-ink ${active ? "font-semibold" : "font-medium"}`}>{b.name.split(" ")[0]}</div>
-                    {role && <div className="mt-1 font-body text-[12px] leading-snug text-s-ink-2">{role}</div>}
+                    <div className={`mt-3 font-body text-[13px] leading-tight text-s-ink ${active ? "font-semibold" : "font-medium"}`}>{b.name.split(" ")[0]}</div>
                   </button>
                 );
               })}
@@ -272,31 +279,41 @@ export default function SalonWalkInPanel({
           </div>
         )}
 
-        {/* Service pick — grouped by the salon's real category (subcategory ?? category ??
-            "andere"), same taxonomy as booking / "Alle ansehen" (owner 2026-07-24); the old
-            invented Express/Klassisch/Signature duration tiers were removed.
-            The OUTER walk-in card IS the grouped list-card (LOCKFILE §3 grouped-list-card
-            law): rows are hairline-divided FULL-WIDTH rows inside it (px-5 py-[18px],
-            border-t first:border-t-0), NOT nested rounded-[24px] cards. A 24px card inside
-            the 24px outer card is the DS-4 same-radius-in-same-radius amateur tell, and
-            re-creates the "scattered cards indistinguishable from booking" the one-card
-            lock (commit 635a33183) exists to prevent. Tiers separate by header + 24px
-            whitespace, matching Termin's space-y-6 tier rhythm. */}
-        <div className="border-t border-s-border pb-2 pt-[18px]">
-          <p className="px-5 text-[13px] font-semibold text-s-ink">{l.pick}</p>
-          <div className="mt-3">
-            {svcCategories.map((cat, gi) => (
-              <div key={cat} className={gi > 0 ? "mt-6" : ""}>
-                <h4 className="px-5 font-heading text-[16px] font-semibold capitalize tracking-[-0.01em] text-s-ink">{cat}</h4>
-                <ul className="mt-2">
-                  {visibleServices.filter((s) => svcGroupKey(s) === cat).map((s) => (
-                    <WalkInServiceRow key={s.id} service={s} name={svcName(s)} isOpen={isOpen} joinHref={joinHref(s.id)} l={l} locale={locale} />
-                  ))}
-                </ul>
-              </div>
-            ))}
+        {/* (c) Services section — #section-services, category chips (Termin parity) + grouped list */}
+        <section id="section-services">
+          <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">Services</h2>
+          {svcCategories.length > 0 && (
+            <div className="mt-3 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {["alle", ...svcCategories].map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => setActiveCat(c)}
+                  className={`shrink-0 rounded-full border px-4 py-1.5 text-[13px] font-semibold capitalize transition-colors ${
+                    activeCat === c ? "border-transparent bg-s-bg-sunken text-s-ink" : "border-s-border text-s-ink-2 hover:text-s-ink"
+                  }`}
+                >
+                  {c === "alle" ? (ALL_LABEL[locale] ?? ALL_LABEL.de) : c}
+                </button>
+              ))}
+            </div>
+          )}
+          <div className="mt-4 overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper pb-2 pt-[18px]">
+            <p className="px-5 text-[13px] font-semibold text-s-ink">{l.pick}</p>
+            <div className="mt-3">
+              {(activeCat === "alle" ? svcCategories : [activeCat]).map((cat, gi) => (
+                <div key={cat} className={gi > 0 ? "mt-6" : ""}>
+                  <h4 className="px-5 font-heading text-[16px] font-semibold capitalize tracking-[-0.01em] text-s-ink">{cat}</h4>
+                  <ul className="mt-2">
+                    {visibleServices.filter((s) => svcGroupKey(s) === cat).map((s) => (
+                      <WalkInServiceRow key={s.id} service={s} name={svcName(s)} isOpen={isOpen} joinHref={joinHref(s.id)} l={l} locale={locale} />
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        </section>
       </div>
 
       {/* "How walk-in works" popup — bottom sheet on mobile, centered on desktop. */}
