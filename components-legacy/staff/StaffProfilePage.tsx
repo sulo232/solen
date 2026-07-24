@@ -350,7 +350,7 @@ export default function StaffProfilePage({
                     {s.duration_minutes} Min {formatCurrency(s.price, locale)}
                   </div>
                 </div>
-                <Link href={bookHref} className="shrink-0 rounded-full border border-s-border px-5 py-2.5 font-heading text-[14px] font-semibold text-s-ink transition-colors hover:border-s-ink/30">
+                <Link href={`${bookHref}&service=${s.id}`} className="shrink-0 rounded-full border border-s-border px-5 py-2.5 font-heading text-[14px] font-semibold text-s-ink transition-colors hover:border-s-ink/30">
                   Buchen
                 </Link>
               </div>

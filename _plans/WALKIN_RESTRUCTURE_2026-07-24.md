@@ -38,3 +38,13 @@ First pass LANDED + owner saw it (screenshotted the redesigned queued status car
 - [ ] R2-2. Services: group "like the normal appointments" (Termin) + add "Alle ansehen"
   see-all affordance(s) instead of dumping all 11 services in one long list. [interpretation
   to confirm: Termin-style category chips + preview + see-all, vs per-category see-all]
+
+## Round 3 (owner 2026-07-24, angry — STOP PHASING, finish this turn)
+- [ ] CORRECTION: stop stopping/phasing ("next pass"). Finish ALL items in one turn.
+  HARDEN: extend defer-bulk-gate to catch phasing language ("next pass", "focused pass", "next turn").
+- [ ] BUG: Termin mode -> click a Team member -> jumps into Walk-in mode (regression). Then
+  clicking Termin opens the stylist profile. Reproduce + fix.
+- [ ] #9 redesign StaffProfilePage bottom sheet (cleaner/fresher).
+- [ ] #10 add "see all" to the stylist profile.
+- [ ] #11 BUG: stylist profile -> book their service -> selection doesn't carry into booking.
+- [ ] #6 CO = per-service live/walk-in badge (no per-service wait data exists).

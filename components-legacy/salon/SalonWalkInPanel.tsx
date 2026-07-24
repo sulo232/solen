@@ -142,6 +142,10 @@ export default function SalonWalkInPanel({
   const low = stats?.wait_low ?? 0;
   const bigLine = !isOpen ? l.closedBig : hasQueue ? `${low}–${wait} ${l.min}` : l.emptyBig;
   const subLine = !isOpen ? "" : hasQueue ? `${ahead} ${l.ahead}` : l.emptySub;
+  // Per-service live wait tag (owner 2026-07-24 "CO"): the current wait, shown on each row so it
+  // reads per-service and updates live with the selected barber. No per-service queue data exists,
+  // so this reflects the salon/barber wait, never a fabricated per-service number.
+  const rowWaitLabel = isOpen && hasQueue ? `${low}–${wait} ${l.min}` : null;
 
   // staff_id rides the join link → pay-intent metadata → barber_walkin_queue.preferred_barber_id.
   const joinHref = (serviceId: string) =>
@@ -295,7 +299,7 @@ export default function SalonWalkInPanel({
                   <h4 className="px-5 font-heading text-[16px] font-semibold capitalize tracking-[-0.01em] text-s-ink">{cat}</h4>
                   <ul className="mt-2">
                     {visibleServices.filter((s) => svcGroupKey(s) === cat).map((s) => (
-                      <WalkInServiceRow key={s.id} service={s} name={svcName(s)} isOpen={isOpen} joinHref={joinHref(s.id)} l={l} locale={locale} />
+                      <WalkInServiceRow key={s.id} service={s} name={svcName(s)} isOpen={isOpen} joinHref={joinHref(s.id)} waitLabel={rowWaitLabel} l={l} locale={locale} />
                     ))}
                   </ul>
                 </div>
@@ -345,6 +349,7 @@ function WalkInServiceRow({
   name,
   isOpen,
   joinHref,
+  waitLabel,
   l,
   locale,
 }: {
@@ -352,6 +357,7 @@ function WalkInServiceRow({
   name: string;
   isOpen: boolean;
   joinHref: string;
+  waitLabel?: string | null;
   l: (typeof COPY)["de"];
   locale: string;
 }) {
@@ -363,6 +369,12 @@ function WalkInServiceRow({
           <div className="font-body mt-0.5 text-[13px] text-s-ink-3">
             {service.duration_minutes ? `${service.duration_minutes} ${l.min}, ` : ""}{l.from} {Number(service.price).toFixed(0)} CHF
           </div>
+          {waitLabel && (
+            <div className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-s-bg-sunken px-2 py-0.5 text-[11.5px] font-medium text-s-ink-2">
+              <Clock className="h-3 w-3" aria-hidden />
+              <span className="tabular-nums">{waitLabel}</span>
+            </div>
+          )}
         </div>
         {isOpen ? (
           <Link
