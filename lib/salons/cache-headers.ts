@@ -32,3 +32,22 @@ export const ANON_CACHE_HEADERS = {
   "Netlify-CDN-Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
   "Cache-Control": "public, max-age=0, must-revalidate",
 };
+
+// --- PDP (salon detail) cache headers, moved out of app/api/salons/[slug]/route.ts ---
+// Same Next.js route-export constraint as ANON_CACHE_HEADERS above: a route.ts may only
+// export HTTP-method + config symbols, so exporting these broke .next/types (TS2344).
+// The owner-preview seam: loadSalonDetailWithAccess returns isOwnerView=true for the
+// salon's own owner (moderation fields, possibly an inactive salon), which must NEVER be
+// edge-cached under the slug key; only the public response is cached.
+export const PDP_CACHE_HEADERS = {
+  "Netlify-CDN-Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+  "Cache-Control": "public, max-age=0, must-revalidate",
+};
+export const PDP_NO_STORE_HEADERS = {
+  "Netlify-CDN-Cache-Control": "private, no-store",
+  "Cache-Control": "no-store, no-cache, must-revalidate",
+};
+/** Pure header-selection (tested by scripts/ring5b-kill-test.ts with isOwnerView both ways). */
+export function salonDetailCacheHeaders(isOwnerView: boolean) {
+  return isOwnerView ? PDP_NO_STORE_HEADERS : PDP_CACHE_HEADERS;
+}

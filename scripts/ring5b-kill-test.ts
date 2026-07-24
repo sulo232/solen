@@ -218,8 +218,9 @@ async function main() {
     if (!anySlug?.slug) {
       check("GET /api/salons/[slug] (anon, real active salon): headers", false, { reason: "no active salon found to probe" });
     } else {
-      const { GET, salonDetailCacheHeaders, PDP_CACHE_HEADERS, PDP_NO_STORE_HEADERS } = await import(
-        join(REPO_ROOT, "app/api/salons/[slug]/route.ts")
+      const { GET } = await import(join(REPO_ROOT, "app/api/salons/[slug]/route.ts"));
+      const { salonDetailCacheHeaders, PDP_CACHE_HEADERS, PDP_NO_STORE_HEADERS } = await import(
+        join(REPO_ROOT, "lib/salons/cache-headers.ts")
       );
       const req = new NextRequest(`http://localhost:3000/api/salons/${anySlug.slug}`);
       const res = await GET(req, { params: Promise.resolve({ slug: anySlug.slug }) });
