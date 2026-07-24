@@ -102,7 +102,7 @@ export function ReviewsFullFilterList({ reviews }: { reviews: Review[] }) {
 
       <div className="mt-4 flex flex-col">
         {sorted.length === 0 ? (
-          <p className="py-8 text-center font-body text-[14px] italic text-s-ink-3">
+          <p className="py-8 text-center font-body text-[14px] text-s-ink-3">
             No reviews match this filter.
           </p>
         ) : (

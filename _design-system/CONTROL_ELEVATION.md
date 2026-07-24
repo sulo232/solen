@@ -118,3 +118,43 @@ surface: a grouped rows-in-one-card list may carry `shadow-whisper` (0 1px 3px 4
 0 10px 28px -14px 10%). It is a whisper, not a lift — anything heavier (elevation-1/2/3
 at rest, hover shadow bumps) on a list card is the grey-haze drift this doc bans.
 Full rule: LOCKFILE "Grouped list cards".
+
+---
+
+## THE SEE-ALL / CTA LADDER (owner-requested 2026-07-24: "we have multiple CTA variations, we need ONE principle variation, right now it's so inconsistent between itself")
+
+### The measured inconsistency
+`app/[locale]/_components/primitives/SeeAllButton.tsx:35` exports THREE variants,
+`"pill" | "pill-outline" | "link"`, and the file's own header states why: each was added to
+"reproduce an EXISTING owner-approved look" from a different surface. Seven files import it, and
+several sections still hand-roll their own "Alle ansehen". Same job, three looks, chosen by SURFACE
+instead of by JOB. Nobody decided that; it accumulated.
+
+**CONTRADICTION SURFACED (rule 18):** Q1.5 above lists "a see-all/view-all" under (E) BLUE-GHOST,
+but every shipped see-all is the GRAY SUNKEN pill (owner-approved 2026-07-15, Services/Reviews/Team).
+Code + the dated owner approval win over the older prose. Q1.5 is hereby corrected: a see-all is
+rung 3 below, NOT blue-ghost. Blue-ghost stays for genuine secondary ACTIONS (Directions, Share, Manage).
+
+### THE LADDER , rung is chosen by the ACTION'S WEIGHT, never by the surface it sits on
+| Rung | Job | Treatment | Per screen |
+|---|---|---|---|
+| 1. Commit | The action the screen exists for: Book, Pay, Join queue, Select in a picker list | INK-FILLED `bg-s-ink text-white`, pill, may carry `shadow-elevation-2` | ONE job; a LIST of peer choices may repeat it once per row |
+| 2. Secondary action | A real labelled action that is not the commit: Directions, Add to calendar, Share, Manage | BLUE-GHOST `bg-white border border-s-accent text-s-accent`, press-scale. Never blue-FILLED | Any number, all identical |
+| 3. Expand / navigate (see-all) | Reveal the rest of a list, or go to that list's own page | THE canonical see-all: gray sunken pill (`bg-s-bg-sunken`, `text-s-ink`, semibold, hover `bg-s-border`), centred under the list, label folds the count in ("All 16 reviews") | ONE per section |
+| 4. Quiet control | Filters, steppers, the `(i)`, chips | FLAT neutral: white + hairline; selected = `bg-s-bg-sunken` + ink + semibold. Never blue, never black fill | Any number |
+
+### What collapses into what
+- variant `pill` , **the survivor.** It is the only see-all.
+- variant `pill-outline` , RETIRED. Its caller (StaffProfilePage's full-width bordered pill) adopts rung 3.
+  A see-all is not a commit, so it must not wear button-like outline weight.
+- variant `link` , allowed ONLY as the top-right affordance beside a section H2 ("Team ... See all >"),
+  where a pill would out-weigh the heading. Everywhere else: rung 3.
+- Hand-rolled "Alle ansehen" markup in section components , replaced by the primitive.
+
+### The test
+Point at any button and ask: WHICH RUNG IS THIS JOB? If two buttons doing the same job on two screens
+answer the same rung and still look different, one is drift. If a button's look was chosen because
+"that's how this surface already did it", that is exactly the failure this ladder exists to stop.
+
+STATUS: principle written 2026-07-24, owner sign-off pending. Applying it retires a variant and touches
+7 importers (shipped surfaces), so it waits for the yes, then goes through the normal loop.

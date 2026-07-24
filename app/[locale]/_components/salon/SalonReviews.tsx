@@ -137,11 +137,11 @@ export function SalonReviews({
       {all.length === 0 ? (
         // Aggregate without bodies (count > 0) softens to "texts coming"; truly-empty (0) stays.
         count > 0 ? (
-          <p className="font-body mt-5 text-[14px] italic text-s-ink-3">
+          <p className="font-body mt-5 text-[14px] text-s-ink-3">
             Bewertungstexte folgen.
           </p>
         ) : (
-          <p className="font-body mt-5 text-[14px] italic text-s-ink-3">
+          <p className="font-body mt-5 text-[14px] text-s-ink-3">
             Noch keine Bewertungen.
           </p>
         )

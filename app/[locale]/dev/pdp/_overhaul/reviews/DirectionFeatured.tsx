@@ -79,7 +79,7 @@ export function DirectionFeatured({ average, count, reviews, seeAllHref }: Revie
           </div>
         </div>
       ) : (
-        <p className="font-body mt-5 text-[14px] italic text-s-ink-3">Review text coming soon.</p>
+        <p className="font-body mt-5 text-[14px] text-s-ink-3">Review text coming soon.</p>
       )}
 
       {rest.length > 0 && (

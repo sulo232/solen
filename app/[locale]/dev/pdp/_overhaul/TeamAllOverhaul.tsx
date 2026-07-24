@@ -29,7 +29,7 @@ export function TeamAllOverhaul({
     `/${locale}/salon/${slug}/booking${staffId ? `?staff=${staffId}` : ""}`;
 
   return (
-    <main className="min-h-screen bg-s-bg-sunken pb-16">
+    <main className="min-h-screen bg-white pb-16">
       <div className="mx-auto max-w-[480px] px-4 pt-6">
         <div className="flex items-center justify-between">
           <Link
@@ -53,7 +53,7 @@ export function TeamAllOverhaul({
         </h1>
 
         <div className="mt-6 flex flex-col gap-3">
-          <div className="flex items-center gap-4 rounded-[16px] bg-white p-4">
+          <div className="flex items-center gap-4 rounded-[16px] border border-s-border bg-white p-4">
             <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-s-accent-pale">
               <Shuffle size={22} strokeWidth={2} aria-hidden className="text-s-accent" />
             </span>
@@ -63,7 +63,7 @@ export function TeamAllOverhaul({
             </div>
             <Link
               href={bookHref()}
-              className="inline-flex h-11 shrink-0 items-center rounded-full border border-s-border bg-white px-5 font-body text-[14px] font-semibold text-s-ink transition-colors hover:bg-s-bg-sunken"
+              className="inline-flex h-11 shrink-0 items-center rounded-full bg-s-ink px-5 font-body text-[14px] font-semibold text-white shadow-elevation-2 transition-opacity hover:opacity-90"
             >
               Select
             </Link>
@@ -102,8 +102,8 @@ function TeamAllCard({
   const role = member.specialties?.[0] ?? null;
 
   return (
-    <div className="rounded-[16px] bg-white p-4">
-      <div className="flex items-start gap-4">
+    <div className="rounded-[16px] border border-s-border bg-white p-4">
+      <div className="flex items-center gap-4">
         <div className="relative shrink-0">
           <Avatar src={member.avatar_url} name={member.name} size={88} />
           {showRating && (
@@ -116,7 +116,7 @@ function TeamAllCard({
           )}
         </div>
 
-        <div className="min-w-0 flex-1 pt-1">
+        <div className="min-w-0 flex-1">
           <div className="font-body text-[17px] font-semibold text-s-ink">{member.name}</div>
           {(languages || role) && (
             <div className="font-body mt-1 truncate whitespace-nowrap text-[13px] text-s-ink-2">
@@ -135,7 +135,7 @@ function TeamAllCard({
 
         <Link
           href={bookHref(member.id)}
-          className="inline-flex h-11 shrink-0 items-center self-start rounded-full border border-s-border bg-white px-5 font-body text-[14px] font-semibold text-s-ink transition-colors hover:bg-s-bg-sunken"
+          className="inline-flex h-11 shrink-0 items-center rounded-full bg-s-ink px-5 font-body text-[14px] font-semibold text-white shadow-elevation-2 transition-opacity hover:opacity-90"
         >
           Select
         </Link>

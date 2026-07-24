@@ -72,7 +72,7 @@ export function SalonServices({
     return (
       <section id="section-services">
         <SectionHeader>Services</SectionHeader>
-        <p className="font-body mt-4 text-[14px] italic text-s-ink-3">
+        <p className="font-body mt-4 text-[14px] text-s-ink-3">
           Dieser Salon hat noch keine Services hinterlegt.
         </p>
       </section>
