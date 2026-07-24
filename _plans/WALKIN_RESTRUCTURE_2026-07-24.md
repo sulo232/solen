@@ -48,3 +48,12 @@ First pass LANDED + owner saw it (screenshotted the redesigned queued status car
 - [ ] #10 add "see all" to the stylist profile.
 - [ ] #11 BUG: stylist profile -> book their service -> selection doesn't carry into booking.
 - [ ] #6 CO = per-service live/walk-in badge (no per-service wait data exists).
+
+## Round 4 (owner 2026-07-24)
+- [ ] A. Walk-in services = one huge grouped list (all categories, all rows). Make it like the
+  Termin "normal appointment" pattern: chips + FLAT preview (first ~5) + "Alle ansehen", not
+  category-header grouped-all.
+- [ ] B. "Alle ansehen" = a real BUTTON that OPENS the full walk-in service list (+ "create a
+  backend"). Data already exists client-side (salon.services); clarify if a real route/API is meant.
+- [ ] C. MOCKUPS (3 English options) to redesign the compact status-bar CONTENT — owner likes the
+  pill SHAPE, content ("Offen · 55-70 Min · 5 vor dir · i") is too cluttered.

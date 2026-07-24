@@ -100,6 +100,8 @@ const COPY: Record<string, {
 
 const CLOSED_PILL: Record<string, string> = { de: "Geschlossen", en: "Closed", fr: "Fermé", it: "Chiuso" };
 const ALL_LABEL: Record<string, string> = { de: "Alle", en: "All", fr: "Tous", it: "Tutti" };
+const SEE_ALL: Record<string, string> = { de: "Alle ansehen", en: "See all", fr: "Voir tout", it: "Vedi tutti" };
+const SHOW_LESS: Record<string, string> = { de: "Weniger anzeigen", en: "Show less", fr: "Voir moins", it: "Mostra meno" };
 
 export default function SalonWalkInPanel({
   salonId,
@@ -125,6 +127,7 @@ export default function SalonWalkInPanel({
   const { barberId, setBarberId, stats } = useWalkInQueue();
   const [infoOpen, setInfoOpen] = useState(false);
   const [activeCat, setActiveCat] = useState<string>("alle");
+  const [showAllServices, setShowAllServices] = useState(false); // Termin-style preview + "Alle ansehen"
 
   const svcName = (s: WalkInService) => (locale === "en" ? s.name_en : s.name_de) || s.name_de || s.name_en || "Service";
 
@@ -166,6 +169,10 @@ export default function SalonWalkInPanel({
   // on the same salon.services object Termin gets; grouped here, not fabricated.
   const svcGroupKey = (s: WalkInService) => s.subcategory ?? s.category ?? "andere";
   const svcCategories = Array.from(new Set(visibleServices.map(svcGroupKey))).sort();
+  // Termin "normal appointment" pattern (owner 2026-07-24): a FLAT preview of the active
+  // category's first 5, + an "Alle ansehen" button to expand — not the whole grouped list.
+  const activeServices = activeCat === "alle" ? visibleServices : visibleServices.filter((s) => svcGroupKey(s) === activeCat);
+  const previewServices = showAllServices ? activeServices : activeServices.slice(0, 5);
 
   return (
     <div>
@@ -281,7 +288,7 @@ export default function SalonWalkInPanel({
                 <button
                   key={c}
                   type="button"
-                  onClick={() => setActiveCat(c)}
+                  onClick={() => { setActiveCat(c); setShowAllServices(false); }}
                   className={`shrink-0 rounded-full border px-4 py-1.5 text-[13px] font-semibold capitalize transition-colors ${
                     activeCat === c ? "border-transparent bg-s-bg-sunken text-s-ink" : "border-s-border text-s-ink-2 hover:text-s-ink"
                   }`}
@@ -293,19 +300,21 @@ export default function SalonWalkInPanel({
           )}
           <div className="mt-4 overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper pb-2 pt-[18px]">
             <p className="px-5 text-[13px] font-semibold text-s-ink">{l.pick}</p>
-            <div className="mt-3">
-              {(activeCat === "alle" ? svcCategories : [activeCat]).map((cat, gi) => (
-                <div key={cat} className={gi > 0 ? "mt-6" : ""}>
-                  <h4 className="px-5 font-heading text-[16px] font-semibold capitalize tracking-[-0.01em] text-s-ink">{cat}</h4>
-                  <ul className="mt-2">
-                    {visibleServices.filter((s) => svcGroupKey(s) === cat).map((s) => (
-                      <WalkInServiceRow key={s.id} service={s} name={svcName(s)} isOpen={isOpen} joinHref={joinHref(s.id)} waitLabel={rowWaitLabel} l={l} locale={locale} />
-                    ))}
-                  </ul>
-                </div>
+            <ul className="mt-3">
+              {previewServices.map((s) => (
+                <WalkInServiceRow key={s.id} service={s} name={svcName(s)} isOpen={isOpen} joinHref={joinHref(s.id)} waitLabel={rowWaitLabel} l={l} locale={locale} />
               ))}
-            </div>
+            </ul>
           </div>
+          {activeServices.length > 5 && (
+            <button
+              type="button"
+              onClick={() => setShowAllServices((v) => !v)}
+              className="mt-3 w-full rounded-full border border-s-border py-3 font-heading text-[14px] font-semibold text-s-ink transition-colors hover:border-s-ink/25"
+            >
+              {showAllServices ? (SHOW_LESS[locale] ?? SHOW_LESS.de) : `${SEE_ALL[locale] ?? SEE_ALL.de} (${activeServices.length})`}
+            </button>
+          )}
         </section>
       </div>
 
