@@ -113,3 +113,57 @@ globals.css (motion sheet 22 block); all reduced-motion safe. The rule per situa
 **Icon canon (same date, owner picks):** Lucide ONLY · back = ArrowLeft (never ChevronLeft) ·
 share = Share · check = bare Check · error = AlertCircle · hero/frosted icon-buttons stroke 2.1 ·
 sheet-header X = 20 · empty star = s-border · meta icons = 13 · stars `fill-s-star`, hearts #FF3366.
+
+---
+
+## THE SPEED LAW (owner-approved 2026-07-25, from LIVE captures , supersedes this file's slower spread)
+
+READING CHECK: the owner said **"ok approved"** to the recommendation in the 2026-07-25 motion report,
+whose recommendation was the TWO-TIER model below (not a specific pair of numbers, which they had declined
+to pick: *"I'm not really sure about the speed because I'm not used to that... don't ask me about that one,
+show me a visual"*). If that reading is wrong, this section is what to correct.
+
+### The evidence (captured live, not recalled)
+Playwright, iPhone UA, 390x844, computed `transitionDuration` over ~3000 elements per page:
+
+| source | dominant durations | easing |
+|---|---|---|
+| x.com | **150ms x105**, 200ms x7 | cubic-bezier(0.4, ...) |
+| airbnb.com | **300ms x102, 250ms x90**, 100ms x28, 200ms x25 | cubic-bezier(0.2, ...) |
+| Solen code (before this law) | 150ms x335, 200ms x127, 300ms x37, 80ms x35 | mixed |
+| Solen docs (before this law) | 180/260/300/320/420 x3/500/520 | , |
+Plus the owner's own 60fps recording of X: sustained motion windows of **83ms and 167ms**.
+
+### The finding this law is built on
+The two references the owner named **disagree**, and that disagreement is the rule. X is fast and uniform
+because it is a feed you **scan**: motion must never stand between you and the next post. Airbnb is slower
+and **tiered** because it is a product you **browse**: the reveal is the point. So "fast = polished" is
+FALSE. Speed follows the JOB.
+Read against that, this file's old 180-520 spread was not uniformly wrong , it was **missing the fast
+tier** while being roughly right at the slow end. Our shipped code already had the fast tier (150ms x335,
+80ms x35), which is why the code has felt better than these docs would produce.
+
+### THE TIERS , three, and nothing between them
+| tier | duration | job | evidence |
+|---|---|---|---|
+| **press** | **80-100ms** | the instant acknowledgement that an input registered: press-scale, tap feedback | Airbnb 100ms x28; our code 80ms x35 |
+| **snap** | **150ms** | an in-place state flip: tab switch, chip select, filter change, toggle | X 150ms x105 (its workhorse); our code 150ms x335 |
+| **reveal** | **250-300ms** | something that TRAVELS or is revealed: sheet, card enter, title sliding into a bar, image reveal | Airbnb 300ms x102 + 250ms x90 |
+
+Above 300ms is reserved for a FULL-SCREEN transition only. It is never correct for an in-place state
+change: a 420ms tab switch reads as the UI thinking, not as the UI keeping up.
+
+### Hard rules
+1. **Pick the tier from the JOB, never from the surface.** The same tab switch is 150ms on the PDP and
+   150ms in the dashboard. A surface does not get its own speed.
+2. **Never animate width, height or top.** Transform, opacity and filter only, so nothing reflows mid-motion.
+3. **`prefers-reduced-motion` applies the END STATE with no animation**, and attaches no scroll listener.
+4. **Interruptible.** A user acting again mid-motion must not be made to wait for the first one to finish.
+5. **Repeated actions get the fastest tier that still reads.** Motion the user will see fifty times a
+   session must not cost them fifty delays.
+
+### Status
+Owner-approved 2026-07-25 as a MODEL. The visual it was approved from is `/de/dev/motion` (speed ladder +
+paired demos + the evidence table). The empirical backing is above; the PRINCIPLES backing (where motion
+helps vs hurts, easing, and the shadow/elevation half of the owner's ask) is being researched into
+`research/TASTE_MOTION.md`, and this section gets amended if that research contradicts it.
