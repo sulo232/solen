@@ -11,7 +11,7 @@ Owner ask (2026-07-25, verbatim intent): "improve the Claude Code experience in 
 - [x] A5. Weekly (7-day) limit remaining , SHIPPED d980fe4: `7d N%`, same treatment, plus per-model `weekly_scoped` rows
 - [x] A6. Subagent state , SHIPPED d980fe4: running count in the strip, tooltip lists each agent as `agentType · elapsed · description`
 - [x] A7. Status bar , SHIPPED d980fe4, deployed to `~/.vscode/extensions/local.claude-statusbar-0.0.1`, warning background at 80%
-- [x] A8. "Insight" , **REDIRECTED by the owner (see D4)**, rebuilt as three atomic pieces, all three shipped. Atomized:
+- [x] A8. "Insight" , **REDIRECTED by the owner (see D4)**, rebuilt as four atomic pieces, all four shipped across commits **892fd61** and **55af29a**. `verified:` each child below carries its own commit and file:line; this parent is the rollup of those four and claims nothing beyond them. Atomized:
   - [x] A8a. Remove the rejected tool-name readout , commit **892fd61**, `verified:` grep for renderInsight / describeActivity / verbFor / VERB_MAP / showInsight across `src/` and `package.json` returns nothing
   - [x] A8b. Why, not what , commit **55af29a**, `verified:` `src/extension.ts:432` `buildWorkStatusText`, `:502` `renderWorkStatus`, `package.json:43` `claudeStatusbar.showWorkStatus`
   - [x] A8c. Warnings and stalls in colour , commit **55af29a**, `verified:` `src/extension.ts:521` picks `statusBarItem.errorBackground` or `warningBackground` from the first warning's level
