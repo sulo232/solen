@@ -13,6 +13,21 @@ sandbox cannot write `settings.json` , a wiring script for them is built and sel
 
 ---
 
+## Audit steps , atomic checkboxes (the 8 doctrine steps, one box each)
+
+- [x] **1. Run `system-health-check.py --report`, list every violation** , verified: §1, all 23 enumerated in the BEFORE table + 1a/1b/1c/1d breakdown; re-ran after fixes, 13.
+- [x] **2. Read the skip-flag ledger, flag gates that keep getting skip-flagged** , verified: §2, 745 lines aggregated; mockup family 72x/6d, finish-autonomously 40x. No prior-week baseline (log starts 2026-07-19).
+- [x] **3. Profile UserPromptSubmit injection sizes, flag diet violations** , verified: §3, all 20 wired hooks x 5 prompt shapes + a worst-case fresh-session run. PASS, 4.6KB peak.
+- [x] **4. Read `mistake-themes-global.json`, list warning-tier themes** , verified: §4, 14-day window anchored on the newest event (2026-07-24); 4 themes at >=2 sessions: link 8, promised-visual 7, blue-black 3, selected-state 2.
+- [x] **5. Verify the newest 5 LESSONS_LEARNED entries parse against `lessons-ledger-inject.py`** , verified: §5, matching Edit payload piped per entry; 4/5 on the obvious payload, 5/5 on literal `File(s)` paths.
+- [x] **6. design-suggest gather+record only (refresh SUGGESTIONS.md, no chips)** , verified: §6, `2026-07-25 weekly self-audit refresh` block appended to `_design-system/SUGGESTIONS.md`; zero chips emitted.
+- [x] **7. DOC-VS-GATE reconciliation (drift-gate literals vs LOCKFILE §1-3; phantom gate names in prose)** , verified: §7a AST-parsed + block-proved (25 gaps, 16 false positives, 9 correct, 7 RETIRED_TOKENS gaps), §7b 0 real phantoms.
+- [x] **8. Write the report, add the ACTIVE.md row, append WORKLOG, commit `_plans`** , verified: this file + ACTIVE.md row 17 + WORKLOG 2026-07-25 entry, commit `a4e86a0fa`.
+
+Applied fixes (all self-tested before trusting): §8 table. Everything not applied is in the prioritized fix list with a named reason, not a bare TODO.
+
+---
+
 ## 1. Health check , every violation
 
 `python3 ~/.claude/hooks/system-health-check.py --report`
