@@ -162,6 +162,28 @@ change: a 420ms tab switch reads as the UI thinking, not as the UI keeping up.
 5. **Repeated actions get the fastest tier that still reads.** Motion the user will see fifty times a
    session must not cost them fifty delays.
 
+### THE CURVE RULE , by direction. Zero new tokens (added 2026-07-25, from the 1,386-element audit)
+The speed law fixed how LONG. This fixes what SHAPE, and the audit showed the gap was naming, not values.
+
+| direction | curve | why |
+|---|---|---|
+| **entering** (something arriving or being revealed) | `glide` `cubic-bezier(0.16, 1, 0.3, 1)` | decelerate: it comes in fast and settles, so the eye catches it early and it lands softly |
+| **exiting** (something leaving or being dismissed) | `thud` `cubic-bezier(0.7, 0, 0.84, 0)` | accelerate: it leaves slowly then rushes off, so the screen clears without holding attention on something the user already dismissed |
+| **in-place flip** (no travel: colour, selection, a state change) | `snap` | nothing is arriving or leaving, so neither shape applies |
+
+**Why this row exists.** `thud` is already in the system and is already a pure accelerate, the exact exit
+shape Material, Microsoft Fluent and Atlassian all specify. It has **one call site in the whole repo**
+(`Switch.tsx:98`, a press) and is documented press-only. Meanwhile every exit in the shared layer runs on
+the wrong shape: Sheet exit, Modal exit and Sheet-backdrop exit use `snap`, and Toast exit uses `glide`,
+which is the DECELERATE curve, so a dismissed toast visibly slows down on its way out.
+
+The root cause is that this file had no by-direction rule at all, which is why `glide` accumulated **132
+call sites** doing entrances, presses, colour flips and exits alike. The system defines five decelerate
+shapes and three spring shapes against exactly ONE accelerate, and then almost never used it.
+
+Nothing new is being introduced here. Both curves already exist, both are already locked, and this row only
+says which one goes where. Audit source: `_plans/motion-audit/RANKED.md` rank 7.
+
 ### Status
 Owner-approved 2026-07-25 as a MODEL. The visual it was approved from is `/de/dev/motion` (speed ladder +
 paired demos + the evidence table). The empirical backing is above; the PRINCIPLES backing (where motion
