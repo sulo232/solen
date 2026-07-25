@@ -107,8 +107,12 @@ through 2026-08-31) · haiku-4-5 1/5 · opus-4-8 / 4-7 / 4-6 5/25. Queued for ro
         Round 2A's brief did not include this task; it explicitly named
         `pendingToolUses`/`summarizeToolUse` as kept alive for this later round to use.
   - [ ] P2f. Webview panel: gauges, bars, burn sparkline, agent cards, timeline (D2) ,
-        queued for round 2B, not started. Mockup-first before it lands. Round 2A's brief did
-        not include this task at all.
+        MOCKUP BUILT and awaiting the owner's verdict, commit **0c10f3101**, `verified:`
+        `public/_mockups/cc-statusbar-panel/index.html` serves 200 through the tunnel.
+        Three states (calm with today's real numbers, warning, error). Playwright-measured:
+        anchor 1.85x, 4 sizes, 18% at weight >=600, no overflow; the first pass failed at
+        1.54x and 46% and was fixed before writing. The BUILD is deliberately not started:
+        mockup-first means the owner reacts before the webview goes into real code.
   - [x] P2g. Add opus-5 / sonnet-5 / fable-5 to `pricing.ts` , SHIPPED round 2A, commit
         **892fd61**, `verified:` `src/pricing.ts:12` opus-5, `:15` sonnet-5, `:18` fable-5,
         `:69` `isKnownModel`, `:3` Verified date 2026-07-25. All three
