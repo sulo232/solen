@@ -34,15 +34,47 @@
 //   d) ASYMMETRIC PAIR  sibling pairs (twin controls, DS-4) inside a flex row whose
 //                       combined center sits >2px off the row's own center.
 //
+// FLOORS section (added 2026-07-25, owner brief: "make the FLOORS LAW
+// measurable... a principle nobody can run is a principle that gets skipped").
+// Same report-only, always-exit-0 shape as (a)-(d) above, but its own in-page
+// extraction function (extractFloors, own viewport) since the checks and their
+// population (leaf TEXT elements, not boxes) are a different shape than the
+// geometry ones. Measures the FLOORS LAW / EMPHASIS BUDGET literals, on the
+// RENDERED first viewport at 390x844 (fixed, independent of --viewport - see
+// the FLOORS config block below for why). Numbers are hardcoded with a comment
+// citing the source, because this script cannot parse markdown law:
+//   F2  IMAGERY        photographic area (<img> + any background-image url())
+//                       as a share of the first viewport, floor 33%. Exempt BY
+//                       NAME (forms / checkout payment step / legal / receipts,
+//                       CLAUDE.md FLOORS LAW 2) via an editable prefix list.
+//   F6  DISPLAY ANCHOR  the largest rendered font-size in the first viewport,
+//                       floor 28px.
+//   F7a WEIGHT SHARE     share of visible leaf text at computed weight >= 600,
+//                       ceiling 30%.
+//   F7b ANCHOR RATIO     max font-size / median font-size of visible leaf text
+//                       (median lands on body, since most text IS body-sized),
+//                       floor 1.8x.
+//   F7c SIZE SPREAD      distinct sizes + spread (max-min); flags the trap of
+//                       >4 distinct sizes whose spread is under 8px (variety
+//                       without hierarchy, breaks the ceiling and the range
+//                       floor at once).
+//   ELEVATION            distinct non-none box-shadow values, floor 2.
+// Report-only, same as (a)-(d): a future turn can flip FLOORS to a gate once
+// its own noise floor is known. Not added now.
+//
 // Usage:
 //   node scripts/check-geometry.mjs
 //   node scripts/check-geometry.mjs --base-url http://localhost:3000 /de /de/some-route
 //   node scripts/check-geometry.mjs --viewport desktop
+//   node scripts/check-geometry.mjs --floors-only            (FLOORS section only, skips a-d)
+//   node scripts/check-geometry.mjs --floors-only /de /de/salon/some-slug
 //   BASE_URL=http://localhost:3000 node scripts/check-geometry.mjs
+//   npm run check:floors                                     (= --floors-only, package.json)
 //
-// Exit code: ALWAYS 0 on this first pass. This is a report-only tool until the
-// findings are triaged and a real noise floor is known (per the task brief); a
-// future round can add a --fail-on-new flag once false positives are pruned.
+// Exit code: ALWAYS 0, in every mode including --floors-only. This is a
+// report-only tool until the findings are triaged and a real noise floor is
+// known (per the task brief); a future round can add a --fail-on-new flag
+// once false positives are pruned.
 
 import { writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
@@ -87,23 +119,106 @@ const PILL_RADIUS_PX = 999; // Tailwind rounded-full / `pill` token convention
 const SAMPLE_CAP = 30;
 
 // ----------------------------------------------------------------------------
+// FLOORS config - frozen literals. This script cannot parse markdown law, so
+// the numbers are hardcoded here with a comment citing the source. Primary
+// source: _design-system/LOCKFILE.md "EMPHASIS BUDGET , frozen literals"
+// (2026-07-25, FLOORS LAW 7), which restates the same numbers CLAUDE.md's
+// pinned "NEVER-AGAIN design floors" (F6) and "FLOORS LAW" (F2, F7) blocks
+// already carry. If either doc's numbers ever move, this block needs a
+// matching hand-edit, nothing here re-derives it automatically.
+//
+// LOCKFILE measured these on the RENDERED first viewport at 390x844 (iPhone
+// 12/13/14 width) - a DIFFERENT viewport than this script's own geometry
+// default (VIEWPORTS.mobile = 375x812 above, used by checks a-d). Note: the
+// OLDER prose in CLAUDE.md's "FLOORS LAW" item 2 still says "375x812" for the
+// imagery floor specifically; the newer, more specific, same-day LOCKFILE
+// citation says 390x844, and that is what the task brief for this script
+// named explicitly, so FLOORS below always uses 390x844, fixed, regardless of
+// --viewport. Flagging the 375x812 vs 390x844 mismatch between the two law
+// docs here rather than silently picking one.
+// ----------------------------------------------------------------------------
+const FLOORS_VIEWPORT = { width: 390, height: 844 };
+
+const FLOOR_IMAGERY_PCT = 33; // F2 - LOCKFILE EMPHASIS BUDGET: "min imagery share, browse/discovery/PDP first viewport: 33%"
+const FLOOR_DISPLAY_ANCHOR_PX = 28; // F6 - LOCKFILE EMPHASIS BUDGET: "min display anchor: 28px" / CLAUDE.md NEVER-AGAIN floor 6
+const WEIGHT_SHARE_THRESHOLD = 600; // F7a - the ">= 600" weight cutoff itself (CLAUDE.md FLOORS LAW 7a)
+const CEILING_WEIGHT_SHARE_PCT = 30; // F7a - LOCKFILE EMPHASIS BUDGET: "max share of visible text at weight >= 600: 30%"
+const FLOOR_ANCHOR_RATIO = 1.8; // F7b - LOCKFILE EMPHASIS BUDGET: "min anchor-to-body size ratio: 1.8x"
+// F7c trap thresholds: the >4-distinct-sizes half is CLAUDE.md's NEVER-AGAIN
+// floor 2 ceiling ("<= 4 distinct font sizes on one screen"); the spread-under
+// half is this task's brief verbatim ("more than 4 distinct sizes whose
+// spread is under 8px"). Note: CLAUDE.md FLOORS LAW 7c's own prose describes
+// the same trap informally as "~6px", not 8px - flagging that mismatch too;
+// 8px is what's hardcoded below because it is the number given as this
+// script's literal spec.
+const SIZE_SPREAD_TRAP_MAX_DISTINCT = 4;
+const SIZE_SPREAD_TRAP_MAX_SPREAD_PX = 8;
+const FLOOR_ELEVATION_COUNT = 2; // ELEVATION - LOCKFILE EMPHASIS BUDGET: "min distinct elevation steps per screen: 2"
+
+// F2 IMAGERY exemption (CLAUDE.md FLOORS LAW 2: "Exempt BY NAME: forms, the
+// checkout payment step, legal pages, receipts"). Prefix array so adding an
+// exempt route is a one-line edit here, not a code change; matched against
+// the route with its /xx locale segment stripped (see stripLocale below).
+// Seeded from the real routes under app/[locale] as of 2026-07-25 - not an
+// exhaustive route audit, extend as new form/payment/legal/receipt routes
+// ship. Scoped to F2 IMAGERY ONLY per the task brief (the EXEMPT BY NAME line
+// sits under the F2 bullet, not the other floors) - F6/F7a/F7b/F7c/ELEVATION
+// apply to every route, exempt-from-imagery or not.
+const FLOORS_IMAGERY_EXEMPT_PREFIXES = [
+  // forms
+  "/auth", // login / register / reset-password
+  "/onboarding",
+  "/booking/lookup",
+  "/booking/resend-link",
+  "/staff-invite",
+  // checkout / payment step
+  "/walk-in-pay",
+  "/walk-in-tip",
+  "/tip",
+  "/vouchers/buy",
+  // legal
+  "/legal",
+  "/privacy",
+  "/terms",
+  "/tos",
+  "/agb",
+  "/datenschutz",
+  "/impressum",
+  // receipts
+  "/confirmation",
+  "/bookings",
+];
+
+function stripLocale(route) {
+  const stripped = route.replace(/^\/(de|en|fr|it)(?=\/|$)/, "");
+  return stripped === "" ? "/" : stripped;
+}
+
+function isFloorsImageryExempt(route) {
+  const path = stripLocale(route);
+  return FLOORS_IMAGERY_EXEMPT_PREFIXES.some((prefix) => path === prefix || path.startsWith(prefix + "/"));
+}
+
+// ----------------------------------------------------------------------------
 // CLI args
 // ----------------------------------------------------------------------------
 function parseArgs(argv) {
   const routes = [];
   let baseUrl = process.env.BASE_URL || "http://localhost:3000";
   let viewport = "mobile"; // Solen is mobile-first (CLAUDE.md); default the check to it.
+  let floorsOnly = false;
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === "--base-url") baseUrl = argv[++i];
     else if (a === "--viewport") viewport = argv[++i];
+    else if (a === "--floors-only") floorsOnly = true;
     else if (!a.startsWith("--")) routes.push(a);
   }
   if (!VIEWPORTS[viewport]) {
     console.error(`[check-geometry] unknown --viewport "${viewport}", falling back to mobile`);
     viewport = "mobile";
   }
-  return { baseUrl, viewport, routes: routes.length > 0 ? routes : DEFAULT_ROUTES };
+  return { baseUrl, viewport, floorsOnly, routes: routes.length > 0 ? routes : DEFAULT_ROUTES };
 }
 
 // ----------------------------------------------------------------------------
@@ -541,6 +656,266 @@ function extractGeometry(config) {
 }
 
 // ----------------------------------------------------------------------------
+// FLOORS extraction. A separate in-page function from extractGeometry (own
+// fixed viewport, own population: leaf TEXT elements + photo elements, not
+// generic boxes), serialized into the page the same way via page.evaluate, so
+// it must be equally self-contained (no closures over outer-scope variables
+// besides the passed `config` - selectorFor/isVisible/etc are duplicated from
+// extractGeometry above rather than shared, for that reason).
+// ----------------------------------------------------------------------------
+function extractFloors(config) {
+  const {
+    viewportWidth,
+    viewportHeight,
+    imageryFloorPct,
+    displayAnchorFloorPx,
+    weightThreshold,
+    weightShareCeilingPct,
+    anchorRatioFloor,
+    sizeSpreadTrapMaxDistinct,
+    sizeSpreadTrapMaxSpreadPx,
+    elevationFloorCount,
+    imageryExempt,
+  } = config;
+
+  const SKIP_TAGS = new Set(["html", "body", "head", "script", "style", "noscript", "template", "meta", "link", "title", "br"]);
+  const SVG_NS = "http://www.w3.org/2000/svg";
+
+  function round2(n) {
+    return Math.round(n * 100) / 100;
+  }
+
+  // Duplicated from extractGeometry's selectorFor (see file-header note above).
+  function selectorFor(el) {
+    if (el.id) return "#" + CSS.escape(el.id);
+    const parts = [];
+    let current = el;
+    let depth = 0;
+    while (current && current.nodeType === 1 && current !== document.documentElement && depth < 8) {
+      if (current.id) {
+        parts.unshift("#" + CSS.escape(current.id));
+        break;
+      }
+      const parent = current.parentElement;
+      const tag = current.tagName.toLowerCase();
+      if (!parent) {
+        parts.unshift(tag);
+        break;
+      }
+      const siblingsOfTag = Array.from(parent.children).filter((c) => c.tagName === current.tagName);
+      const pos = siblingsOfTag.indexOf(current) + 1;
+      const cls = current.className && typeof current.className === "string" ? current.className.trim().split(/\s+/)[0] : "";
+      parts.unshift(cls ? `${tag}.${cls}:nth-of-type(${pos})` : `${tag}:nth-of-type(${pos})`);
+      current = parent;
+      depth++;
+    }
+    return parts.join(" > ");
+  }
+
+  function truncateText(str, n) {
+    const s = (str || "").replace(/\s+/g, " ").trim();
+    return s.length > n ? s.slice(0, n) + "…" : s;
+  }
+
+  // Same visibility rule as extractGeometry's isVisible (rect + display/visibility
+  // only, no opacity check - kept identical on purpose).
+  function isVisible(rect, style) {
+    if (rect.width <= 0 || rect.height <= 0) return false;
+    if (style.display === "none" || style.visibility === "hidden") return false;
+    return true;
+  }
+
+  // Clip a rect to the first viewport ([0,0]-[viewportWidth,viewportHeight],
+  // since this runs right after navigation with no scroll) so off-screen area
+  // is never counted.
+  function clip(rect) {
+    const left = Math.max(rect.left, 0);
+    const top = Math.max(rect.top, 0);
+    const right = Math.min(rect.right, viewportWidth);
+    const bottom = Math.min(rect.bottom, viewportHeight);
+    const width = Math.max(0, right - left);
+    const height = Math.max(0, bottom - top);
+    return { width, height, area: width * height };
+  }
+
+  function hasOwnText(el) {
+    for (const node of el.childNodes) {
+      if (node.nodeType === 3 && node.textContent && node.textContent.trim().length > 0) return true;
+    }
+    return false;
+  }
+
+  function median(nums) {
+    if (nums.length === 0) return 0;
+    const sorted = [...nums].sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+    return sorted.length % 2 !== 0 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+  }
+
+  const allEls = Array.from(document.body.querySelectorAll("*")).filter((el) => {
+    const tag = el.tagName.toLowerCase();
+    if (SKIP_TAGS.has(tag)) return false;
+    if (el.namespaceURI === SVG_NS && tag !== "svg") return false; // path/circle/g/etc inside an icon
+    return true;
+  });
+
+  // ---------------------------------------------------------------------
+  // F2 IMAGERY - <img> plus any element with a background-image url(),
+  // clipped to the viewport, deduped so a bg-image container wrapping an
+  // <img> only counts once (the outer element, since it's checked first via
+  // ancestor-membership, not draw order).
+  // ---------------------------------------------------------------------
+  let imagery;
+  if (imageryExempt) {
+    imagery = { status: "EXEMPT", sharePct: null };
+  } else {
+    const candidates = [];
+    for (const el of allEls) {
+      const style = getComputedStyle(el);
+      const rect = el.getBoundingClientRect();
+      if (!isVisible(rect, style)) continue;
+      const isImg = el.tagName.toLowerCase() === "img";
+      const hasBgImage = /url\(/.test(style.backgroundImage || "");
+      if (!isImg && !hasBgImage) continue;
+      const c = clip(rect);
+      if (c.area <= 0) continue;
+      candidates.push({ el, area: c.area });
+    }
+    const candidateSet = new Set(candidates.map((c) => c.el));
+    let sum = 0;
+    for (const { el, area } of candidates) {
+      let ancestor = el.parentElement;
+      let nested = false;
+      while (ancestor) {
+        if (candidateSet.has(ancestor)) {
+          nested = true; // an ancestor is also a photo element, don't double-count
+          break;
+        }
+        ancestor = ancestor.parentElement;
+      }
+      if (!nested) sum += area;
+    }
+    const sharePct = (sum / (viewportWidth * viewportHeight)) * 100;
+    imagery = { status: sharePct >= imageryFloorPct ? "PASS" : "FAIL", sharePct: round2(sharePct) };
+  }
+
+  // ---------------------------------------------------------------------
+  // Shared "visible leaf text element" population for F6 / F7a / F7b / F7c -
+  // an element that owns a direct, non-whitespace text node (so a layout
+  // wrapper around other elements is never measured at the wrong level),
+  // visible, and at least partly inside the first viewport.
+  // ---------------------------------------------------------------------
+  const leaves = [];
+  for (const el of allEls) {
+    if (!hasOwnText(el)) continue;
+    const style = getComputedStyle(el);
+    const rect = el.getBoundingClientRect();
+    if (!isVisible(rect, style)) continue;
+    const c = clip(rect);
+    if (c.width <= 2 || c.height <= 2) continue; // same hairline/noise threshold as extractGeometry
+    const fontSize = parseFloat(style.fontSize) || 0;
+    if (fontSize <= 0) continue;
+    const fontWeight = parseInt(style.fontWeight, 10) || 400;
+    leaves.push({ el, fontSize, fontWeight, text: el.textContent });
+  }
+
+  const sizes = leaves.map((l) => l.fontSize);
+  const maxSize = sizes.length ? Math.max(...sizes) : 0;
+  const medianSize = median(sizes); // raw per-element array WITH duplicates, so body dominates
+  const maxLeaf = leaves.find((l) => l.fontSize === maxSize) || null;
+
+  // F6 DISPLAY ANCHOR
+  const displayAnchor = {
+    status: maxSize >= displayAnchorFloorPx ? "PASS" : "FAIL",
+    sizePx: round2(maxSize),
+    text: maxLeaf ? truncateText(maxLeaf.text, 60) : "",
+    selector: maxLeaf ? selectorFor(maxLeaf.el) : "",
+  };
+
+  // F7a WEIGHT SHARE
+  const heavyCount = leaves.filter((l) => l.fontWeight >= weightThreshold).length;
+  const weightSharePct = leaves.length ? (heavyCount / leaves.length) * 100 : 0;
+  const weightShare = {
+    status: weightSharePct <= weightShareCeilingPct ? "PASS" : "FAIL",
+    sharePct: round2(weightSharePct),
+    count: heavyCount,
+    total: leaves.length,
+  };
+
+  // F7b ANCHOR RATIO
+  const anchorRatioValue = medianSize > 0 ? maxSize / medianSize : 0;
+  const anchorRatio = {
+    status: anchorRatioValue >= anchorRatioFloor ? "PASS" : "FAIL",
+    ratio: round2(anchorRatioValue),
+  };
+
+  // F7c SIZE SPREAD - distinct sizes (2-decimal grouping) + spread, flagging
+  // the trap of many distinct sizes bunched into a small range.
+  const distinctSizes = Array.from(new Set(sizes.map((s) => round2(s)))).sort((a, b) => a - b);
+  const spreadPx = distinctSizes.length ? distinctSizes[distinctSizes.length - 1] - distinctSizes[0] : 0;
+  const trapTriggered = distinctSizes.length > sizeSpreadTrapMaxDistinct && spreadPx < sizeSpreadTrapMaxSpreadPx;
+  const sizeSpread = {
+    status: trapTriggered ? "FAIL" : "PASS",
+    distinctCount: distinctSizes.length,
+    spreadPx: round2(spreadPx),
+    trapTriggered,
+    sizes: distinctSizes,
+  };
+
+  // ---------------------------------------------------------------------
+  // ELEVATION - distinct non-none box-shadow VALUES among all visible
+  // elements in the first viewport (shadows sit on cards/buttons/sheets, not
+  // just text, so this scans allEls, not the leaves population above).
+  // ---------------------------------------------------------------------
+  // Tailwind's ring/shadow utilities near-universally compose box-shadow from
+  // CSS custom properties, so an element that merely CAN show a ring/shadow
+  // (e.g. focus:ring-2) but isn't right now still computes 1-2 leading
+  // "ghost" layers - fully transparent, zero offset/blur/spread, e.g.
+  // "rgba(0, 0, 0, 0) 0px 0px 0px 0px" - ahead of the real layer. The COUNT
+  // below is unaffected (it's keyed on the full raw string, so two elements
+  // whose real trailing layer differs are correctly still 2 distinct values);
+  // this only reformats the DISPLAYED example so a human reads the layer that
+  // actually distinguishes it, instead of 60 characters of identical ghost
+  // preamble that made every example look like the same no-op.
+  function isGhostShadowLayer(layer) {
+    const m = layer.match(/rgba?\(([^)]+)\)/);
+    if (m) {
+      const parts = m[1].split(",").map((s) => parseFloat(s.trim()));
+      const alpha = parts.length >= 4 ? parts[3] : 1;
+      if (alpha > 0.01) return false; // has real, visible color
+    }
+    const nums = (layer.match(/-?[\d.]+px/g) || []).map((n) => parseFloat(n));
+    return nums.length === 0 || nums.every((n) => Math.abs(n) < 0.5); // no offset/blur/spread either
+  }
+  function forDisplay(boxShadowStr) {
+    const layers = boxShadowStr.split(/,\s*(?=rgba?\()/);
+    const real = layers.filter((layer) => !isGhostShadowLayer(layer));
+    return (real.length > 0 ? real.join(", ") : boxShadowStr).trim();
+  }
+
+  const shadowMap = new Map(); // computed box-shadow string -> example selector
+  for (const el of allEls) {
+    const style = getComputedStyle(el);
+    const rect = el.getBoundingClientRect();
+    if (!isVisible(rect, style)) continue;
+    const c = clip(rect);
+    if (c.area <= 0) continue;
+    const bs = style.boxShadow;
+    if (!bs || bs === "none") continue;
+    if (!shadowMap.has(bs)) shadowMap.set(bs, selectorFor(el));
+  }
+  const elevation = {
+    status: shadowMap.size >= elevationFloorCount ? "PASS" : "FAIL",
+    distinctCount: shadowMap.size,
+    examples: Array.from(shadowMap.entries())
+      .slice(0, 5)
+      .map(([value, selector]) => ({ selector, value: truncateText(forDisplay(value), 80) })),
+  };
+
+  return { imagery, displayAnchor, weightShare, anchorRatio, sizeSpread, elevation, leavesScanned: leaves.length };
+}
+
+// ----------------------------------------------------------------------------
 // Report formatting
 // ----------------------------------------------------------------------------
 function formatFindingsSection(title, items, formatLine) {
@@ -559,8 +934,12 @@ function formatFindingsSection(title, items, formatLine) {
   return lines.join("\n");
 }
 
-function formatRouteReport(route, result) {
-  const lines = [`## ${route}`, "", `Elements scanned: ${result.elementsScanned}`, ""];
+// Geometry (a)-(d) portion only, unchanged content/format from before the
+// FLOORS task - split out of the old formatRouteReport(route, result) so a
+// route block can carry geometry, floors, both, or neither (--floors-only /
+// per-pass errors) without duplicating either section's formatting.
+function formatGeometrySection(result) {
+  const lines = [`Elements scanned: ${result.elementsScanned}`, ""];
   lines.push(
     formatFindingsSection("(a) OFF-GRID", result.offGrid, (i) => `\`${i.selector}\` ${i.property}=${i.value}px (nearest 4pt: ${i.nearest}px)`),
   );
@@ -587,6 +966,72 @@ function formatRouteReport(route, result) {
     ),
   );
   return lines.join("\n");
+}
+
+// FLOORS section - markdown TABLE (the existing (a)-(d) sections above are a
+// finding-count + bullet list, which doesn't fit FLOORS: every floor always
+// reports exactly one row - name, measured value, floor/ceiling, PASS/FAIL/
+// EXEMPT - which is what a table communicates, not a "count of problems"
+// list).
+function formatFloorsSection(floors) {
+  const rows = [
+    [
+      "F2 imagery",
+      floors.imagery.status === "EXEMPT" ? "n/a (exempt)" : `${floors.imagery.sharePct}%`,
+      `floor >= ${FLOOR_IMAGERY_PCT}%`,
+      floors.imagery.status,
+    ],
+    [
+      "F6 display anchor",
+      `${floors.displayAnchor.sizePx}px ("${floors.displayAnchor.text}")`,
+      `floor >= ${FLOOR_DISPLAY_ANCHOR_PX}px`,
+      floors.displayAnchor.status,
+    ],
+    [
+      "F7a weight share",
+      `${floors.weightShare.sharePct}% (${floors.weightShare.count}/${floors.weightShare.total})`,
+      `ceiling <= ${CEILING_WEIGHT_SHARE_PCT}%`,
+      floors.weightShare.status,
+    ],
+    ["F7b anchor ratio", `${floors.anchorRatio.ratio}x`, `floor >= ${FLOOR_ANCHOR_RATIO}x`, floors.anchorRatio.status],
+    [
+      "F7c size spread",
+      `${floors.sizeSpread.distinctCount} distinct, spread ${floors.sizeSpread.spreadPx}px` +
+        (floors.sizeSpread.trapTriggered ? ` , TRAP: >${SIZE_SPREAD_TRAP_MAX_DISTINCT} distinct sizes bunched under ${SIZE_SPREAD_TRAP_MAX_SPREAD_PX}px` : ""),
+      `trap: >${SIZE_SPREAD_TRAP_MAX_DISTINCT} distinct AND spread<${SIZE_SPREAD_TRAP_MAX_SPREAD_PX}px`,
+      floors.sizeSpread.status,
+    ],
+    ["ELEVATION", `${floors.elevation.distinctCount} distinct box-shadow`, `floor >= ${FLOOR_ELEVATION_COUNT}`, floors.elevation.status],
+  ];
+
+  const failCount = rows.filter((r) => r[3] === "FAIL").length;
+  const lines = [
+    `### FLOORS (${failCount} FAIL / ${rows.length})`,
+    "",
+    "| floor | measured | floor/ceiling | status |",
+    "|---|---|---|---|",
+  ];
+  for (const [name, measured, threshold, status] of rows) {
+    lines.push(`| ${name} | ${measured} | ${threshold} | ${status} |`);
+  }
+  if (floors.elevation.examples.length > 0) {
+    lines.push("", `elevation examples: ${floors.elevation.examples.map((e) => `\`${e.selector}\` ${e.value}`).join("; ")}`);
+  }
+  lines.push("");
+  return lines.join("\n");
+}
+
+// Compact one-line stdout summary, matching the existing console style
+// ([check-geometry] <route>: key=value key=value...).
+function formatFloorsConsoleLine(floors) {
+  return [
+    `imagery=${floors.imagery.status === "EXEMPT" ? "EXEMPT" : `${floors.imagery.sharePct}%(${floors.imagery.status})`}`,
+    `displayAnchor=${floors.displayAnchor.sizePx}px(${floors.displayAnchor.status})`,
+    `weightShare=${floors.weightShare.sharePct}%(${floors.weightShare.status})`,
+    `anchorRatio=${floors.anchorRatio.ratio}x(${floors.anchorRatio.status})`,
+    `sizeSpread=${floors.sizeSpread.distinctCount}distinct/${floors.sizeSpread.spreadPx}px(${floors.sizeSpread.status})`,
+    `elevation=${floors.elevation.distinctCount}(${floors.elevation.status})`,
+  ].join(" ");
 }
 
 // ----------------------------------------------------------------------------
@@ -708,72 +1153,265 @@ function selfTestNestedRadiusLogic() {
 }
 
 // ----------------------------------------------------------------------------
+// Self-test for the FLOORS math (rule 12.5: test new logic before wiring it
+// in). clip()/median()/the F7c trap live inside extractFloors, which - like
+// extractGeometry above - must stay 100% self-contained for page.evaluate, so
+// this self-test re-implements pure-math mirrors rather than importing them.
+// stripLocale/isFloorsImageryExempt are plain Node functions (never
+// serialized into the page), so those ARE called directly, no mirror needed.
+// ----------------------------------------------------------------------------
+function selfTestFloorsLogic() {
+  const assertions = [];
+  function assert(name, cond) {
+    assertions.push({ name, pass: !!cond });
+  }
+
+  // --- clip(): a rect that's partly off the viewport only counts the
+  // on-screen portion; fully off-screen is zero; fully on-screen is untouched.
+  {
+    const vw = 390;
+    const vh = 844;
+    function clip(rect) {
+      const left = Math.max(rect.left, 0);
+      const top = Math.max(rect.top, 0);
+      const right = Math.min(rect.right, vw);
+      const bottom = Math.min(rect.bottom, vh);
+      const width = Math.max(0, right - left);
+      const height = Math.max(0, bottom - top);
+      return { width, height, area: width * height };
+    }
+    const rightOverflow = clip({ left: 300, top: 0, right: 490, bottom: 100 });
+    assert("clip(): right-edge overflow truncates to the viewport (90 of 190px on-screen)", rightOverflow.width === 90);
+    const offscreen = clip({ left: 500, top: 0, right: 600, bottom: 100 });
+    assert("clip(): fully off-screen rect has zero area", offscreen.area === 0);
+    const onscreen = clip({ left: 10, top: 10, right: 60, bottom: 60 });
+    assert("clip(): fully on-screen rect is untouched (50x50=2500)", onscreen.area === 2500);
+  }
+
+  // --- median(): the RAW per-element array, with duplicates, so the value
+  // most elements share (body text) dominates - matching the F7b spec
+  // ("median = body"), not a median of the unique-size set.
+  {
+    function median(nums) {
+      if (nums.length === 0) return 0;
+      const sorted = [...nums].sort((a, b) => a - b);
+      const mid = Math.floor(sorted.length / 2);
+      return sorted.length % 2 !== 0 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+    }
+    assert("median(): odd count picks the middle", median([12, 14, 14, 14, 31]) === 14);
+    assert("median(): even count averages the two middles", median([14, 14, 16, 16]) === 15);
+    assert("median(): body-dominated set lands on the body size, not the anchor", median([14, 14, 14, 14, 31]) === 14);
+  }
+
+  // --- F7c trap: needs BOTH >4 distinct sizes AND spread<8px; either alone
+  // must not fire (variety-without-hierarchy is the specific failure mode).
+  {
+    const trap = (distinctCount, spreadPx) => distinctCount > SIZE_SPREAD_TRAP_MAX_DISTINCT && spreadPx < SIZE_SPREAD_TRAP_MAX_SPREAD_PX;
+    assert("F7c trap: 6 distinct sizes bunched in 5px fires", trap(6, 5) === true);
+    assert("F7c trap: 6 distinct sizes spread over 12px does NOT fire (a real range, not a wobble)", trap(6, 12) === false);
+    assert("F7c trap: 3 distinct sizes bunched in 5px does NOT fire (within the 4-size ceiling)", trap(3, 5) === false);
+  }
+
+  // --- ELEVATION display: Tailwind's transparent/zero-geometry "ghost" ring
+  // layers (real example seen live: "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0,
+  // 0, 0, 0) 0px 0px 0px 0px, rgba(50, 47, 44, 0.09) 0px 2px 8px 0px") must be
+  // stripped from the DISPLAYED example (the count itself is keyed on the raw
+  // string elsewhere and untouched by this).
+  {
+    function isGhostShadowLayer(layer) {
+      const m = layer.match(/rgba?\(([^)]+)\)/);
+      if (m) {
+        const parts = m[1].split(",").map((s) => parseFloat(s.trim()));
+        const alpha = parts.length >= 4 ? parts[3] : 1;
+        if (alpha > 0.01) return false;
+      }
+      const nums = (layer.match(/-?[\d.]+px/g) || []).map((n) => parseFloat(n));
+      return nums.length === 0 || nums.every((n) => Math.abs(n) < 0.5);
+    }
+    function forDisplay(boxShadowStr) {
+      const layers = boxShadowStr.split(/,\s*(?=rgba?\()/);
+      const real = layers.filter((layer) => !isGhostShadowLayer(layer));
+      return (real.length > 0 ? real.join(", ") : boxShadowStr).trim();
+    }
+    const withGhosts = "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(50, 47, 44, 0.09) 0px 2px 8px 0px";
+    assert("ELEVATION display: ghost layers are stripped, the real layer survives", forDisplay(withGhosts) === "rgba(50, 47, 44, 0.09) 0px 2px 8px 0px");
+    const allGhost = "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px";
+    assert("ELEVATION display: an all-ghost value (shouldn't normally reach here, none/skip handles it) falls back to itself, not empty", forDisplay(allGhost) === allGhost);
+    const noGhosts = "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(255, 255, 255, 0.4) 0px 1px 0px 0px inset";
+    assert("ELEVATION display: a value with no ghost layers passes through untouched", forDisplay(noGhosts) === noGhosts);
+  }
+
+  // --- F2 nested-image dedupe: an <img> inside a bg-image div counts the
+  // OUTER element's area once, never both.
+  {
+    const parentOf = { innerImg: "outerDiv" };
+    const candidateSet = new Set(["outerDiv", "innerImg"]);
+    function isNested(el) {
+      let ancestor = parentOf[el];
+      while (ancestor) {
+        if (candidateSet.has(ancestor)) return true;
+        ancestor = parentOf[ancestor];
+      }
+      return false;
+    }
+    assert("F2 dedupe: the outer bg-image div is not nested (counts)", isNested("outerDiv") === false);
+    assert("F2 dedupe: the inner <img> IS nested inside the counted outer (skipped)", isNested("innerImg") === true);
+  }
+
+  // --- exempt-prefix matcher: locale-stripping + a real path-boundary match,
+  // not a raw substring (a route that merely STARTS WITH the same characters
+  // as an exempt prefix must not false-match).
+  {
+    assert("exempt: home is not exempt", isFloorsImageryExempt("/de") === false);
+    assert("exempt: PDP is not exempt", isFloorsImageryExempt("/de/salon/cuts-and-culture") === false);
+    assert("exempt: booking lookup (a form) is exempt", isFloorsImageryExempt("/de/booking/lookup") === true);
+    assert("exempt: legal terms is exempt", isFloorsImageryExempt("/en/legal/terms") === true);
+    assert("exempt: prefix match respects a path boundary, not a raw substring", isFloorsImageryExempt("/de/legal-notice-board") === false);
+  }
+
+  const failed = assertions.filter((a) => !a.pass);
+  if (failed.length > 0) {
+    console.error("[check-geometry] SELF-TEST FAILED - FLOORS logic is not sound:");
+    for (const f of failed) console.error(`  - ${f.name}`);
+    process.exit(1);
+  }
+  console.log(`[check-geometry] self-test passed (${assertions.length} assertions, FLOORS logic)`);
+}
+
+// ----------------------------------------------------------------------------
 // main
 // ----------------------------------------------------------------------------
 async function main() {
   selfTestNestedRadiusLogic();
+  selfTestFloorsLogic();
 
-  const { baseUrl, viewport, routes } = parseArgs(process.argv.slice(2));
+  const { baseUrl, viewport, floorsOnly, routes } = parseArgs(process.argv.slice(2));
   const vp = VIEWPORTS[viewport];
 
-  console.log(`[check-geometry] base=${baseUrl} viewport=${viewport} (${vp.width}x${vp.height})`);
+  console.log(`[check-geometry] base=${baseUrl} viewport=${viewport} (${vp.width}x${vp.height}) floorsOnly=${floorsOnly}`);
   console.log(`[check-geometry] routes: ${routes.join(", ")}`);
+  console.log(
+    `[check-geometry] FLOORS viewport: ${FLOORS_VIEWPORT.width}x${FLOORS_VIEWPORT.height} (fixed - LOCKFILE EMPHASIS BUDGET, independent of --viewport)`,
+  );
 
   const browser = await launchBrowser();
-  const results = [];
+  const geometryByRoute = new Map(); // route -> { result, error? } - only populated when !floorsOnly
+  const floorsByRoute = new Map(); // route -> { floors, error? } - always populated
   try {
-    const context = await browser.newContext({ viewport: vp });
-    for (const route of routes) {
-      const page = await context.newPage();
-      const url = new URL(route, baseUrl).toString();
-      try {
-        await page.goto(url, { waitUntil: "commit", timeout: 90_000 });
-        await page.waitForLoadState("domcontentloaded");
-        await page.waitForTimeout(4000); // let images/fonts/API fetches/animations settle
-        await dismissCookies(page);
-        await page.waitForTimeout(600);
+    // -----------------------------------------------------------------
+    // Geometry pass (a)-(d) - UNCHANGED logic/output from before this task.
+    // Skipped entirely in --floors-only mode (that's the point of the flag).
+    // -----------------------------------------------------------------
+    if (!floorsOnly) {
+      const context = await browser.newContext({ viewport: vp });
+      for (const route of routes) {
+        const page = await context.newPage();
+        const url = new URL(route, baseUrl).toString();
+        try {
+          await page.goto(url, { waitUntil: "commit", timeout: 90_000 });
+          await page.waitForLoadState("domcontentloaded");
+          await page.waitForTimeout(4000); // let images/fonts/API fetches/animations settle
+          await dismissCookies(page);
+          await page.waitForTimeout(600);
 
-        const result = await page.evaluate(extractGeometry, {
-          grid: GRID,
-          gridTolerance: GRID_TOLERANCE,
-          nearMissMin: NEARMISS_MIN,
-          nearMissMax: NEARMISS_MAX,
-          radiusTolerance: RADIUS_TOLERANCE,
-          asymmetryTolerance: ASYMMETRY_TOLERANCE,
-          pillRadiusPx: PILL_RADIUS_PX,
-          radiusGapCap: RADIUS_GAP_CAP,
-        });
-        results.push({ route, result });
-        console.log(
-          `[check-geometry] ${route}: scanned=${result.elementsScanned} offGrid=${result.offGrid.length} brokenAxis=${result.brokenAxis.length} nestedRadius=${result.nestedRadius.length} asymmetricPair=${result.asymmetricPair.length}`,
-        );
-      } catch (err) {
-        console.error(`[check-geometry] route ${route} failed:`, err);
-        results.push({
-          route,
-          result: { elementsScanned: 0, offGrid: [], brokenAxis: [], nestedRadius: [], asymmetricPair: [] },
-          error: err && err.message ? err.message : String(err),
-        });
-      } finally {
-        await page.close().catch((err) => console.error("[check-geometry] page.close() failed:", err));
+          const result = await page.evaluate(extractGeometry, {
+            grid: GRID,
+            gridTolerance: GRID_TOLERANCE,
+            nearMissMin: NEARMISS_MIN,
+            nearMissMax: NEARMISS_MAX,
+            radiusTolerance: RADIUS_TOLERANCE,
+            asymmetryTolerance: ASYMMETRY_TOLERANCE,
+            pillRadiusPx: PILL_RADIUS_PX,
+            radiusGapCap: RADIUS_GAP_CAP,
+          });
+          geometryByRoute.set(route, { result });
+          console.log(
+            `[check-geometry] ${route}: scanned=${result.elementsScanned} offGrid=${result.offGrid.length} brokenAxis=${result.brokenAxis.length} nestedRadius=${result.nestedRadius.length} asymmetricPair=${result.asymmetricPair.length}`,
+          );
+        } catch (err) {
+          console.error(`[check-geometry] route ${route} failed:`, err);
+          geometryByRoute.set(route, {
+            result: { elementsScanned: 0, offGrid: [], brokenAxis: [], nestedRadius: [], asymmetricPair: [] },
+            error: err && err.message ? err.message : String(err),
+          });
+        } finally {
+          await page.close().catch((err) => console.error("[check-geometry] page.close() failed:", err));
+        }
+      }
+    }
+
+    // -----------------------------------------------------------------
+    // FLOORS pass - always runs (in every mode), always at FLOORS_VIEWPORT
+    // (390x844), its own context so it's independent of --viewport / the
+    // geometry pass above. Same settle sequence as the geometry pass.
+    // -----------------------------------------------------------------
+    {
+      const floorsContext = await browser.newContext({ viewport: FLOORS_VIEWPORT });
+      for (const route of routes) {
+        const page = await floorsContext.newPage();
+        const url = new URL(route, baseUrl).toString();
+        try {
+          await page.goto(url, { waitUntil: "commit", timeout: 90_000 });
+          await page.waitForLoadState("domcontentloaded");
+          await page.waitForTimeout(4000); // let images/fonts/API fetches/animations settle
+          await dismissCookies(page);
+          await page.waitForTimeout(600);
+
+          const exempt = isFloorsImageryExempt(route);
+          const floors = await page.evaluate(extractFloors, {
+            viewportWidth: FLOORS_VIEWPORT.width,
+            viewportHeight: FLOORS_VIEWPORT.height,
+            imageryFloorPct: FLOOR_IMAGERY_PCT,
+            displayAnchorFloorPx: FLOOR_DISPLAY_ANCHOR_PX,
+            weightThreshold: WEIGHT_SHARE_THRESHOLD,
+            weightShareCeilingPct: CEILING_WEIGHT_SHARE_PCT,
+            anchorRatioFloor: FLOOR_ANCHOR_RATIO,
+            sizeSpreadTrapMaxDistinct: SIZE_SPREAD_TRAP_MAX_DISTINCT,
+            sizeSpreadTrapMaxSpreadPx: SIZE_SPREAD_TRAP_MAX_SPREAD_PX,
+            elevationFloorCount: FLOOR_ELEVATION_COUNT,
+            imageryExempt: exempt,
+          });
+          floorsByRoute.set(route, { floors });
+          console.log(`[check-geometry] ${route} FLOORS: ${formatFloorsConsoleLine(floors)}`);
+        } catch (err) {
+          console.error(`[check-geometry] FLOORS route ${route} failed:`, err);
+          floorsByRoute.set(route, { floors: null, error: err && err.message ? err.message : String(err) });
+        } finally {
+          await page.close().catch((err) => console.error("[check-geometry] FLOORS page.close() failed:", err));
+        }
       }
     }
   } finally {
     await browser.close().catch((err) => console.error("[check-geometry] browser.close() failed:", err));
   }
 
-  const totals = results.reduce(
-    (acc, r) => {
-      acc.offGrid += r.result.offGrid.length;
-      acc.brokenAxis += r.result.brokenAxis.length;
-      acc.nestedRadius += r.result.nestedRadius.length;
-      acc.asymmetricPair += r.result.asymmetricPair.length;
-      return acc;
-    },
-    { offGrid: 0, brokenAxis: 0, nestedRadius: 0, asymmetricPair: 0 },
-  );
+  const totals = { offGrid: 0, brokenAxis: 0, nestedRadius: 0, asymmetricPair: 0 };
+  if (!floorsOnly) {
+    for (const { result } of geometryByRoute.values()) {
+      totals.offGrid += result.offGrid.length;
+      totals.brokenAxis += result.brokenAxis.length;
+      totals.nestedRadius += result.nestedRadius.length;
+      totals.asymmetricPair += result.asymmetricPair.length;
+    }
+  }
 
-  const header = [
+  let floorsFailTotal = 0;
+  let floorsCheckedTotal = 0;
+  for (const { floors } of floorsByRoute.values()) {
+    if (!floors) continue;
+    const statuses = [
+      floors.imagery.status,
+      floors.displayAnchor.status,
+      floors.weightShare.status,
+      floors.anchorRatio.status,
+      floors.sizeSpread.status,
+      floors.elevation.status,
+    ];
+    floorsCheckedTotal += statuses.filter((s) => s !== "EXEMPT").length;
+    floorsFailTotal += statuses.filter((s) => s === "FAIL").length;
+  }
+
+  const headerLines = [
     "# Geometry check report",
     "",
     `Generated: ${new Date().toISOString()}`,
@@ -781,14 +1419,37 @@ async function main() {
     "",
     "Report-only pass (checklist item 1): this script never fails the run. Findings",
     "below are raw candidates, not confirmed bugs, until triaged for false positives.",
+    "FLOORS is likewise report-only and always exits 0 - a future turn can flip it to",
+    "a gate once triaged (see the file header comment). Not a gate yet.",
     "",
-    `Totals: off-grid=${totals.offGrid}  broken-axis=${totals.brokenAxis}  nested-radius=${totals.nestedRadius}  asymmetric-pair=${totals.asymmetricPair}`,
-    "",
-    "---",
-    "",
-  ].join("\n");
+  ];
+  if (floorsOnly) {
+    headerLines.push("(--floors-only: geometry pass (a)-(d) skipped this run)", "");
+  } else {
+    headerLines.push(
+      `Totals: off-grid=${totals.offGrid}  broken-axis=${totals.brokenAxis}  nested-radius=${totals.nestedRadius}  asymmetric-pair=${totals.asymmetricPair}`,
+    );
+  }
+  headerLines.push(
+    `Totals (floors): ${floorsFailTotal} FAIL / ${floorsCheckedTotal} checks, ${routes.length} route(s), viewport ${FLOORS_VIEWPORT.width}x${FLOORS_VIEWPORT.height}`,
+  );
+  headerLines.push("", "---", "");
+  const header = headerLines.join("\n");
 
-  const body = results.map(({ route, result, error }) => (error ? `## ${route}\n\nERROR: ${error}\n` : formatRouteReport(route, result))).join("\n---\n\n");
+  const body = routes
+    .map((route) => {
+      const g = geometryByRoute.get(route);
+      const f = floorsByRoute.get(route);
+      const lines = [`## ${route}`, ""];
+      if (!floorsOnly) {
+        if (g && g.error) lines.push(`GEOMETRY ERROR: ${g.error}`, "");
+        else if (g) lines.push(formatGeometrySection(g.result));
+      }
+      if (f && f.error) lines.push(`FLOORS ERROR: ${f.error}`, "");
+      else if (f && f.floors) lines.push(formatFloorsSection(f.floors));
+      return lines.join("\n");
+    })
+    .join("\n---\n\n");
 
   const report = header + body + "\n";
 
@@ -800,7 +1461,7 @@ async function main() {
   console.log(report);
   console.log(`[check-geometry] report written to ${OUTPUT_PATH}`);
 
-  process.exit(0); // always 0 on this report-only first pass
+  process.exit(0); // always 0 on this report-only first pass, in every mode
 }
 
 main().catch((err) => {
