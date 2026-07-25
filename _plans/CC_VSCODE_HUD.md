@@ -11,7 +11,11 @@ Owner ask (2026-07-25, verbatim intent): "improve the Claude Code experience in 
 - [x] A5. Weekly (7-day) limit remaining , SHIPPED d980fe4: `7d N%`, same treatment, plus per-model `weekly_scoped` rows
 - [x] A6. Subagent state , SHIPPED d980fe4: running count in the strip, tooltip lists each agent as `agentType · elapsed · description`
 - [x] A7. Status bar , SHIPPED d980fe4, deployed to `~/.vscode/extensions/local.claude-statusbar-0.0.1`, warning background at 80%
-- [ ] A8. "Insight" , **REDIRECTED by the owner (see D4)**. The tool-name readout built in round 1 is REJECTED by name. Rebuild as: why-not-what, warnings/stalls in colour, plain-English session recap. IN FLIGHT: round-2A coder dispatched 2026-07-25, covers P2a + P2c + P2d data layer.
+- [x] A8. "Insight" , **REDIRECTED by the owner (see D4)**, rebuilt as three atomic pieces, all three shipped. Atomized:
+  - [x] A8a. Remove the rejected tool-name readout , commit **892fd61**, `verified:` grep for renderInsight / describeActivity / verbFor / VERB_MAP / showInsight across `src/` and `package.json` returns nothing
+  - [x] A8b. Why, not what , commit **55af29a**, `verified:` `src/extension.ts:432` `buildWorkStatusText`, `:502` `renderWorkStatus`, `package.json:43` `claudeStatusbar.showWorkStatus`
+  - [x] A8c. Warnings and stalls in colour , commit **55af29a**, `verified:` `src/extension.ts:521` picks `statusBarItem.errorBackground` or `warningBackground` from the first warning's level
+  - [x] A8d. Plain-English recap when a run finishes , commit **55af29a**, `verified:` `src/render.ts:54` `composeRecap`, `src/extension.ts:536` `maybeShowRecap`, `package.json:48` `claudeStatusbar.showRecap`
 - [x] A9. Ideas menu , written into this file below under "A9 , ideas menu (the durable copy)". 11 ideas, ranked into three tiers, each naming what it needs. `verified:` the section exists in this file.
 - [x] A10. Capability statement , written into this file below under "A10 , what is actually possible". Three buckets: readable from disk, readable only via the live call, not readable at all. `verified:` the section exists in this file.
 
@@ -74,8 +78,9 @@ through 2026-08-31) · haiku-4-5 1/5 · opus-4-8 / 4-7 / 4-6 5/25. Queued for ro
 - [x] P1 , SHIPPED d980fe4 + deployed: usage limits from the cache with staleness, context
       gauge, auto 1m detection, subagent detail, `deploy.sh`, tests extended (compile clean,
       fixture-check OK)
-- [ ] P2 , round 2 (owner-directed). Round 2A DISPATCHED 2026-07-25 to a coder subagent,
-      running at time of writing; 2B not yet dispatched.
+- [ ] P2 , round 2 (owner-directed). Rounds 2A and 2B are CLOSED (commits 892fd61, 55af29a).
+      Two children remain: P2b is blocked on the owner, P2f is building now off the approved
+      mockup. This parent stays open until both close.
   - [x] P2a. Kill the tool-name insight item (D4) , SHIPPED round 2A, commit **892fd61**,
         `verified:` grep for renderInsight / describeActivity / verbFor / VERB_MAP /
         showInsight across `src/` + `package.json` returns nothing: `renderInsight`,
@@ -90,7 +95,10 @@ through 2026-08-31) · haiku-4-5 1/5 · opus-4-8 / 4-7 / 4-6 5/25. Queued for ro
         path (already shipped) stays primary. Everything else in D1 (shape validation,
         backoff, timeout, non-throwing, cache floor) is specified and ready to build.
         Round 2A's brief did not include this task at all, so it was left untouched.
-  - [ ] P2c. Work-status readout: current step, done, remaining (D3) , DATA LAYER SHIPPED
+  - [x] P2c. Work-status readout: current step, done, remaining (D3) , SHIPPED end to end.
+        Rendering landed in commit **55af29a**, `verified:` `src/extension.ts:432`
+        `buildWorkStatusText` (in-progress step, else done/total, else title, else hide) and
+        `:502` `renderWorkStatus`. DATA LAYER SHIPPED
         round 2A: `src/workstate.ts`'s `deriveWorkState()` reads `ai-title` / `last-prompt` /
         `TodoWrite` records off an extended `parse.ts` Accumulator into
         `{ title, ask, currentStep, done, total, remaining }`, covered by fixture-check.js
@@ -98,14 +106,20 @@ through 2026-08-31) · haiku-4-5 1/5 · opus-4-8 / 4-7 / 4-6 5/25. Queued for ro
         Rendering into the status bar is round 2B, per the round 2A brief itself.
         Sources verified today: `aiTitle` and `lastPrompt` records, plus `TodoWrite` tool
         calls (present in 23 of 29 transcripts for this project, so common but not certain).
-  - [ ] P2d. Warnings and stalls with colour (D4b) , DETECTOR SHIPPED round 2A:
+  - [x] P2d. Warnings and stalls with colour (D4b) , SHIPPED end to end. Colour landed in
+        commit **55af29a**, `verified:` `src/extension.ts:521` selects
+        `statusBarItem.errorBackground` or `warningBackground` from the first warning's level.
+        DETECTOR SHIPPED round 2A:
         `workstate.ts`'s `detectWarnings()` (pending-call stall at 120s/600s, context at
         80%/92%, usage-limit windows at 80%/95%, stale windows silenced, errors ordered
         before warnings, no tool names in any message). Colour/status-bar rendering is
         round 2B, per the round 2A brief itself.
-  - [ ] P2e. Plain-English session recap on idle (D4c) , queued for round 2B, not started.
-        Round 2A's brief did not include this task; it explicitly named
-        `pendingToolUses`/`summarizeToolUse` as kept alive for this later round to use.
+  - [x] P2e. Plain-English session recap on idle (D4c) , SHIPPED commit **55af29a**,
+        `verified:` `src/render.ts:54` `composeRecap` (pure, outcome-first, omits the cost
+        clause when the model has no rate on file), `src/extension.ts:536` `maybeShowRecap`
+        firing on the busy-to-idle edge, `package.json:48` `claudeStatusbar.showRecap`.
+        Gated at 60 seconds so short turns raise no notification. A fixture assertion checks
+        no composed message can contain a tool name.
   - [ ] P2f. Webview panel: gauges, bars, burn sparkline, agent cards, timeline (D2) ,
         **MOCKUP APPROVED by the owner 2026-07-25 ("approved"), BUILD DISPATCHED** to a coder
         subagent the same turn. Mockup at commit **0c10f3101**, `verified:`
