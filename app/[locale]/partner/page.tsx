@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import Image from "next/image";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { Store, TrendingUp, Calendar, ArrowRight, Star, Check, ChevronDown, ChevronRight, UserPlus, Settings, Zap, Shield, Lock, CreditCard, Quote, BarChart3, Users, MessageSquare, Clock, Bell, Scissors, Sparkles, Droplets } from "lucide-react";
 import InteractiveHoverButton from "@/components-legacy/ui/interactive-hover-button";
 import PartnerSignupForm from "@/components-legacy/partner/PartnerSignupForm";
@@ -32,7 +31,6 @@ const FAQ_KEYS = [
 ];
 
 export default function PartnerPage() {
-  const locale = useLocale();
   const t = useTranslations("partner") as any;
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
 
@@ -492,12 +490,12 @@ export default function PartnerPage() {
             {t("cta_subtitle")}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href={`/${locale}/onboarding/salon?utm_source=partner_page&utm_content=bottom_cta`}>
+            <a href="#contact">
               <InteractiveHoverButton
                 text={t("cta_button")}
                 className="w-auto px-8 py-4"
               />
-            </Link>
+            </a>
             <a
               href={`mailto:info@solen.ch?subject=${encodeURIComponent(t("cta_consult_subject"))}`}
               className="text-xs font-heading text-s-ink hover:text-s-ink-2 transition-colors underline underline-offset-4"

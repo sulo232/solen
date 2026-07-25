@@ -7,7 +7,8 @@ import {
   Bell, BellOff, Calendar, Check, Star, Gift, RotateCcw, AlertTriangle, Banknote, MessageSquare,
   type LucideIcon,
 } from "lucide-react";
-import Spinner from "@/components-legacy/ui/Spinner";
+import { Skeleton } from "@/app/[locale]/_components/primitives";
+import EmptyState from "@/components-legacy/ui/EmptyState";
 
 /**
  * Customer notification inbox (mockup notifications-panel.html). Real rows from the
@@ -41,8 +42,10 @@ const TYPE_ICON: Record<string, { Icon: LucideIcon; cls: string }> = {
   upcharge_charged: { Icon: Banknote, cls: "bg-s-bg-sunken text-s-ink-2" },
   new_review: { Icon: Star, cls: "bg-s-star/15 text-s-star" },
   review_prompt: { Icon: Star, cls: "bg-s-star/15 text-s-star" },
-  review_response: { Icon: MessageSquare, cls: "bg-s-accent-pale text-s-accent" },
-  voucher_purchased: { Icon: Gift, cls: "bg-s-accent-pale text-s-accent" },
+  // mockup-ok: MOCKUP_QUEUE.md item 6, blue is a clickable-accent color only (LOCKFILE taste
+  // rule 4); a passive type-icon disc carries no click affordance, so it drops to neutral.
+  review_response: { Icon: MessageSquare, cls: "bg-s-bg-sunken text-s-ink-2" },
+  voucher_purchased: { Icon: Gift, cls: "bg-s-bg-sunken text-s-ink-2" },
   payout_completed: { Icon: Banknote, cls: "bg-s-success/10 text-s-success" },
   payout_failed: { Icon: AlertTriangle, cls: "bg-s-error/10 text-s-error" },
 };
@@ -176,15 +179,21 @@ export default function NotificationsClient() {
 
       <main className="mx-auto max-w-2xl pb-16">
         {loading ? (
-          <div className="flex justify-center py-16"><Spinner /></div>
-        ) : (items ?? []).length === 0 ? (
-          <div className="flex flex-col items-center px-8 pb-14 pt-16 text-center">
-            <div className="mb-6 grid h-16 w-16 place-items-center rounded-full bg-s-bg-sunken text-s-ink-3">
-              <BellOff size={28} strokeWidth={1.8} aria-hidden />
-            </div>
-            <h2 className="font-heading text-[20px] font-bold text-s-ink">{t("emptyTitle")}</h2>
-            <p className="mt-2 max-w-[280px] text-[14px] leading-relaxed text-s-ink-2">{t("emptyBody")}</p>
+          // mockup-ok: MOCKUP_QUEUE.md item 6, shaped Skeleton (icon disc + 2 text lines,
+          // matches the real Row layout) replaces the ad-hoc centered Spinner.
+          <div className="mt-1.5 divide-y divide-s-border">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <div key={i} className="flex items-start gap-3 px-4 py-3.5">
+                <Skeleton width={44} height={44} rounded="full" className="shrink-0" />
+                <div className="min-w-0 flex-1 space-y-2">
+                  <Skeleton height={15} width="60%" rounded={4} />
+                  <Skeleton height={13} width="85%" rounded={4} />
+                </div>
+              </div>
+            ))}
           </div>
+        ) : (items ?? []).length === 0 ? (
+          <EmptyState icon={BellOff} title={t("emptyTitle")} message={t("emptyBody")} />
         ) : (
           <>
             <Group label={t("today")} list={today} />

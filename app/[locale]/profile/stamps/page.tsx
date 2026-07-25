@@ -5,7 +5,8 @@
  *   - Q49-style header (eyebrow + Anton "Stempel")
  *   - HeroStampCard at top = closest-to-reward
  *   - Active list using existing StampCard component
- *   - Eingelöst (redeemed) history at 70% opacity with green check chip
+ *   - Abgeschlossen (completed, not "redeemed": no redemption column exists yet)
+ *     history at 70% opacity with green check chip
  *
  * Server component — fetches user's stamp cards on the server, hands client
  * components only what they need.
@@ -167,7 +168,7 @@ export default async function ProfileStampsPage({
       {redeemed.length > 0 && (
         <section className="mt-8 opacity-70">
           <h2 className="font-body text-[12px] font-bold uppercase tracking-[.22em] text-s-ink/40 mb-3">
-            Eingelöst {redeemed.length}
+            Abgeschlossen {redeemed.length}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {redeemed.map((c) =>

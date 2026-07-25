@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
-import { Copy, Check, Users, Gift, Share2 } from "lucide-react";
-import Spinner from "@/components-legacy/ui/Spinner";
+import { Copy, Check, Users, Gift, Share2, LogIn } from "lucide-react";
+import { Skeleton } from "@/app/[locale]/_components/primitives";
+import EmptyState from "@/components-legacy/ui/EmptyState";
 import { formatCurrency } from "@/lib/format-currency";
 
 export default function ReferralPage() {
@@ -42,23 +43,39 @@ export default function ReferralPage() {
   };
 
   if (loading) {
+    // mockup-ok: MOCKUP_QUEUE.md item 6, shaped Skeleton (hero + code row + stats,
+    // matches the real populated layout below) replaces the ad-hoc centered Spinner.
     return (
-      <div className="min-h-screen bg-s-bg-surface flex items-center justify-center">
-        <Spinner size="lg" />
+      <div className="min-h-screen bg-s-bg-surface py-8 px-4">
+        <div className="max-w-lg mx-auto space-y-4">
+          <Skeleton height={168} rounded={12} />
+          <Skeleton height={64} rounded={12} />
+          <div className="grid grid-cols-2 gap-3">
+            <Skeleton height={44} rounded={12} />
+            <Skeleton height={44} rounded={12} />
+          </div>
+          <Skeleton height={118} rounded={12} />
+        </div>
       </div>
     );
   }
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-s-bg-surface flex flex-col items-center justify-center px-4 text-center">
-        <p className="text-s-ink-2 text-sm mb-4">Bitte melde dich an, um deine Empfehlungen zu sehen.</p>
-        <Link
-          href={`/${locale}/auth/login?redirect=${encodeURIComponent(`/${locale}/profile/referral`)}`}
-          className="px-6 py-3 rounded-btn bg-s-ink text-white font-semibold text-sm hover:brightness-[1.06] transition-colors"
-        >
-          Anmelden
-        </Link>
+      <div className="min-h-screen bg-s-bg-surface flex items-center justify-center px-4">
+        <EmptyState
+          icon={LogIn}
+          title="Anmelden erforderlich"
+          message="Bitte melde dich an, um deine Empfehlungen zu sehen."
+          action={
+            <Link
+              href={`/${locale}/auth/login?redirect=${encodeURIComponent(`/${locale}/profile/referral`)}`}
+              className="inline-flex px-6 py-3 rounded-btn bg-s-ink text-white font-semibold text-sm hover:brightness-[1.06] transition-colors"
+            >
+              Anmelden
+            </Link>
+          }
+        />
       </div>
     );
   }

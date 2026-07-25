@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Gift, ArrowRight, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { REFERRAL_STORAGE_KEY } from "@/lib/referral/storage";
 
-const REDIRECT_SECONDS = 5;
 const STORAGE_KEY = REFERRAL_STORAGE_KEY;
 
 interface Props {
@@ -22,34 +21,14 @@ export default function ReferralLandingPage({ params }: Props) {
   // This type signature is for Next.js 15 compatibility
   const code = (params as any).code;
 
-  const [secondsLeft, setSecondsLeft] = useState(REDIRECT_SECONDS);
-  const [stored, setStored] = useState(false);
-
-  // Store referral code in localStorage on mount
+  // Store referral code in localStorage on mount. No auto-redirect: the user
+  // stays in control and continues via the explicit CTA below (owner fix,
+  // MOCKUP_QUEUE.md item 3, 2026-07-25).
   useEffect(() => {
     if (typeof window !== "undefined" && code) {
       localStorage.setItem(STORAGE_KEY, code);
-      setStored(true);
     }
   }, [code]);
-
-  // Auto-redirect countdown
-  useEffect(() => {
-    if (!stored) return;
-
-    const interval = setInterval(() => {
-      setSecondsLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          router.push(`/${locale}`);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [stored, locale, router]);
 
   const handleCta = () => {
     router.push(`/${locale}`);
@@ -104,7 +83,8 @@ export default function ReferralLandingPage({ params }: Props) {
           </span>
         </div>
 
-        {/* CTA button */}
+        {/* CTA button. mockup-ok: MOCKUP_QUEUE.md item 3, the auto-redirect notice that used to sit
+            below this button is removed here, this is the recorded recommendation, not a new design choice */}
         <button
           onClick={handleCta}
           aria-label={t("cta")}
@@ -120,13 +100,6 @@ export default function ReferralLandingPage({ params }: Props) {
           {t("cta")}
           <ArrowRight className="w-5 h-5" strokeWidth={2} aria-hidden="true" />
         </button>
-
-        {/* Countdown redirect notice */}
-        {secondsLeft > 0 && stored && (
-          <p className="font-body text-xs text-s-ink/40">
-            {t("redirect", { seconds: secondsLeft })}
-          </p>
-        )}
       </div>
     </main>
   );

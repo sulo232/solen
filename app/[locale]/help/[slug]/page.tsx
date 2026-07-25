@@ -5,7 +5,7 @@ import { useLocale } from "next-intl";
 import Link from "next/link";
 import { BookOpen } from "lucide-react";
 import { useParams } from "next/navigation";
-import Spinner from "@/components-legacy/ui/Spinner";
+import { Skeleton } from "@/app/[locale]/_components/primitives";
 import EmptyState from "@/components-legacy/ui/EmptyState";
 
 type HelpArticle = {
@@ -42,9 +42,20 @@ export default function HelpArticlePage() {
   }, [slug, locale]);
 
   if (loading) {
+    // mockup-ok: MOCKUP_QUEUE.md item 6, shaped Skeleton (title + meta line + paragraph
+    // lines, matches the real article layout below) replaces the ad-hoc centered Spinner.
     return (
-      <div className="min-h-screen bg-white flex justify-center items-center">
-        <Spinner size="lg" />
+      <div className="min-h-screen bg-white">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-8 pb-12">
+          <Skeleton height={32} width="70%" rounded={4} className="mb-3" />
+          <Skeleton height={14} width={140} rounded={4} className="mb-8" />
+          <div className="space-y-2">
+            <Skeleton height={14} width="100%" rounded={4} />
+            <Skeleton height={14} width="95%" rounded={4} />
+            <Skeleton height={14} width="88%" rounded={4} />
+            <Skeleton height={14} width="60%" rounded={4} />
+          </div>
+        </div>
       </div>
     );
   }

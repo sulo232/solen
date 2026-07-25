@@ -5,7 +5,7 @@ import { useLocale } from "next-intl";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { Search, Users, Store, Mail, BookOpen, ChevronRight } from "lucide-react";
-import Spinner from "@/components-legacy/ui/Spinner";
+import { Skeleton } from "@/app/[locale]/_components/primitives";
 import EmptyState from "@/components-legacy/ui/EmptyState";
 
 type HelpArticle = {
@@ -116,8 +116,22 @@ export default function HelpPage() {
       {/* Content */}
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
         {loading ? (
-          <div className="flex justify-center py-20">
-            <Spinner size="lg" />
+          // mockup-ok: MOCKUP_QUEUE.md item 6, shaped Skeleton (icon chip + article rows,
+          // matches the real grouped list below) replaces the ad-hoc centered Spinner.
+          <div className="space-y-8">
+            {[0, 1].map((g) => (
+              <div key={g}>
+                <div className="flex items-center gap-2 mb-3">
+                  <Skeleton width={32} height={32} rounded={12} />
+                  <Skeleton height={18} width={120} rounded={4} />
+                </div>
+                <div className="space-y-1">
+                  {[0, 1, 2].map((r) => (
+                    <Skeleton key={r} height={44} rounded={12} />
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         ) : articles.length === 0 ? (
           <EmptyState
