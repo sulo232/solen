@@ -101,8 +101,11 @@ export default function StationManager({ salonId }: { salonId: string }) {
           return (
             <div key={i} className="flex items-center gap-2">
               <span className="text-[12px] text-s-ink/40 w-8 shrink-0">#{i + 1}</span>
+              {/* motion audit RANK 5: was `transition-[width]` (hard rule 2), converted
+                  to a transform-only scaleX from the left edge, retimed to the reveal
+                  tier (250-300ms, THE SPEED LAW) since the fill travels. */}
               <div className="flex-1 h-3 rounded-pill bg-s-ink/10 overflow-hidden flex">
-                <div className="h-full bg-s-accent transition-[width] duration-[250ms]" style={{ width: isBooked ? "100%" : "0%" }} />
+                <div className="h-full w-full origin-left bg-s-accent transition-transform duration-[280ms]" style={{ transform: `scaleX(${isBooked ? 1 : 0})` }} />
                 {/* Buffer portion calculation skipped for simple boolean state */}
               </div>
               <span className="text-[12px] data-text text-s-ink/30 w-8 text-right">

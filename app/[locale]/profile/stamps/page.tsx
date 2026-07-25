@@ -40,8 +40,18 @@ interface LoyaltyCardRow {
     name: string;
     cover_photo_url: string | null;
   } | null;
-  loyalty_stamps: { id: string }[];
+  loyalty_stamps: { id: string; stamped_at: string | null }[];
 }
+
+/**
+ * "Just earned" window (motion audit RANK 4 / Motion sheet 22: "Earned moment
+ * without a client event, e.g. stamp | DO NOT fake on load"). `loyalty_stamps`
+ * has no "seen"/"celebrated" flag (verified against the live table), so the
+ * real signal available is the newest stamp's actual `stamped_at` timestamp,
+ * not the stamp count. A card only celebrates while its latest stamp is
+ * inside this window; a plain revisit outside it renders with no motion.
+ */
+const RECENT_STAMP_WINDOW_MS = 30 * 60 * 1000; // 30 minutes
 
 export default async function ProfileStampsPage({
   params,
@@ -64,19 +74,27 @@ export default async function ProfileStampsPage({
   // so no other customer's stamp data is ever fetched into this page.
   const { data: cardsRaw } = await supabase
     .from("loyalty_cards")
-    .select(`id, salon_id, stamps_needed, reward_text, is_active, salons(slug, name, cover_photo_url), loyalty_stamps!inner(id, customer_id)`)
+    .select(`id, salon_id, stamps_needed, reward_text, is_active, salons(slug, name, cover_photo_url), loyalty_stamps!inner(id, customer_id, stamped_at)`)
     .eq("is_active", true)
     .eq("loyalty_stamps.customer_id", user.id);
 
   // loyalty_stamps is now already scoped to this user's rows only (see query above).
   const enriched = ((cardsRaw ?? []) as unknown as LoyaltyCardRow[])
     .map((c) => {
+      const stamps = c.loyalty_stamps ?? [];
+      const latestStampedAt = stamps.reduce<number | null>((latest, s) => {
+        if (!s.stamped_at) return latest;
+        const t = new Date(s.stamped_at).getTime();
+        return latest === null || t > latest ? t : latest;
+      }, null);
+      const justEarned = latestStampedAt !== null && Date.now() - latestStampedAt < RECENT_STAMP_WINDOW_MS;
       return {
         id: c.id,
         salons: c.salons,
         stamps_needed: c.stamps_needed,
-        stamps_collected: (c.loyalty_stamps ?? []).length,
+        stamps_collected: stamps.length,
         reward_text: c.reward_text,
+        just_earned: justEarned,
       };
     })
     .filter((c) => c.stamps_collected > 0); // only show cards user has stamps on
@@ -158,6 +176,7 @@ export default async function ProfileStampsPage({
                   stampsTotal={c.stamps_needed}
                   stampsCollected={c.stamps_collected}
                   rewardText={c.reward_text}
+                  celebrate={c.just_earned}
                 />
               ) : null
             )}
@@ -181,6 +200,7 @@ export default async function ProfileStampsPage({
                     stampsTotal={c.stamps_needed}
                     stampsCollected={c.stamps_needed}
                     rewardText={c.reward_text}
+                    celebrate={c.just_earned}
                   />
                   <span
                     // V3-D289: was hardcoded rgba(22,163,74,0.10) + #16A34A → s-success token (matches the literal hex but via LOCKFILE §1 token)

@@ -14,13 +14,11 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { motion } from "motion/react";
 import { Flag, Eye, X, EyeOff, Loader2 } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI";
 import Spinner from "@/components-legacy/ui/Spinner";
 import EmptyState from "@/components-legacy/ui/EmptyState";
-import { containerVariants, itemVariants } from "@/lib/animations";
 import {
   REPORT_STATUSES,
   REPORT_TARGET_TYPES,
@@ -213,7 +211,7 @@ export default function ReportsAdminPage() {
         <EmptyState icon={Flag} title={t("emptyTitle")} message={t("emptyMessage")} />
       ) : (
         <>
-          <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-3">
+          <div className="space-y-3">
             {reports.map((r) => {
               const status = r.status ?? "pending";
               const canReview = isLegalReportStatusTransition(status, "reviewed");
@@ -222,9 +220,8 @@ export default function ReportsAdminPage() {
               const busy = actionLoadingId === r.id;
 
               return (
-                <motion.div
+                <div
                   key={r.id}
-                  variants={itemVariants}
                   className="bg-white rounded-2xl border border-s-border shadow-warm-md p-4"
                 >
                   {/* Header */}
@@ -290,10 +287,10 @@ export default function ReportsAdminPage() {
                       </button>
                     )}
                   </div>
-                </motion.div>
+                </div>
               );
             })}
-          </motion.div>
+          </div>
 
           {reports.length < total && (
             <button

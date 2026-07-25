@@ -151,14 +151,19 @@ export default function CoiffeurCRMPage() {
                     <p className="text-[12px] font-heading uppercase tracking-[.15em] text-s-ink/45 mb-3">
                       {t("metricsSparkTitle")}
                     </p>
+                    {/* motion audit RANK 5: was `transition-[height]` (hard rule 2, named
+                        verbatim), converted to a transform-only scaleY growing from the
+                        baseline, retimed to the reveal tier (250-300ms, THE SPEED LAW)
+                        since each bar travels, same conversion already shipped for the
+                        BentoBusiness chart bars. */}
                     <div className="flex items-end gap-1 h-12">
                       {cycleMetrics.sparkline.map((v, i) => {
                         const max = Math.max(...cycleMetrics.sparkline, 1);
                         return (
                           <div
                             key={i}
-                            className="flex-1 bg-s-ink rounded-t-[3px] transition-[height]"
-                            style={{ height: `${Math.max(4, (v / max) * 100)}%`, opacity: v === 0 ? 0.15 : 1 }}
+                            className="flex-1 h-full origin-bottom bg-s-ink rounded-t-[3px] transition-transform duration-[280ms]"
+                            style={{ transform: `scaleY(${Math.max(4, (v / max) * 100) / 100})`, opacity: v === 0 ? 0.15 : 1 }}
                           />
                         );
                       })}

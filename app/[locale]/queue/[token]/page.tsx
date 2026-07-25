@@ -429,7 +429,14 @@ export default function QueueTrackingPage() {
           return (
             <div className="mt-3.5">
               <div className="h-1.5 w-full overflow-hidden rounded-full bg-s-bg-sunken">
-                <div className="h-full rounded-full bg-s-accent transition-[width] duration-700" style={{ width: `${pct}%` }} />
+                {/* motion audit RANK 5 fix: was `transition-[width] duration-700`, the longest
+                    non-full-screen duration in the audit AND a hard-rule-2 break (width reflows).
+                    Converted to a transform-only scaleX from the track's left edge, retimed to
+                    the reveal tier (250-300ms, THE SPEED LAW) since the fill travels. */}
+                <div
+                  className="h-full w-full origin-left rounded-full bg-s-accent transition-transform duration-[280ms]"
+                  style={{ transform: `scaleX(${pct / 100})` }}
+                />
               </div>
               <p className="mt-1.5 text-[12px] tabular-nums text-s-ink-3">
                 {elapsedMin} / ~{totalMin} {l.min}

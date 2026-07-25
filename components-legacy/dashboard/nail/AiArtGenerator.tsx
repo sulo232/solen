@@ -73,10 +73,13 @@ export default function AiArtGenerator() {
             <span>{t("this_month")}</span>
             <span className="data-text">{budget.spent.toFixed(2)} / {budget.budget.toFixed(2)} CHF</span>
           </div>
+          {/* motion audit RANK 5: was `transition-[width]` (hard rule 2), converted to
+              a transform-only scaleX from the left edge, retimed to the reveal tier
+              (250-300ms, THE SPEED LAW) since the fill travels. */}
           <div className="h-2 rounded-pill bg-s-sand-subtle">
             <div
-              className={`h-full rounded-pill transition-[width] duration-[250ms] ${budget.percentUsed > 0.8 ? "bg-s-error" : "bg-s-accent"}`}
-              style={{ width: `${Math.min(100, budget.percentUsed * 100)}%` }}
+              className={`h-full w-full origin-left rounded-pill transition-transform duration-[280ms] ${budget.percentUsed > 0.8 ? "bg-s-error" : "bg-s-accent"}`}
+              style={{ transform: `scaleX(${Math.min(1, budget.percentUsed)})` }}
             />
           </div>
         </div>

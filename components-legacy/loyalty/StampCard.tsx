@@ -24,8 +24,12 @@ interface StampCardProps {
  *
  * Confetti animation removed 2026-05-02 per Q57 + Q59 anti-confetti rule.
  * Reward-unlock celebration now uses Q36 grammar via <CelebrationRing kind="loyalty">,
- * fired only on the actual stamp-earned event (caller controls `celebrate` prop) —
- * NEVER on page mount.
+ * fired only on the actual stamp-earned event (caller controls `celebrate` prop), NEVER
+ * on page mount. The newest-stamp overshoot pop below shares the same gate: it used to
+ * key off `isNewest`, which is derived from the stamp COUNT (not an earned event), so it
+ * replayed on every visit (motion audit RANK 4). Both now require `celebrate` from the
+ * caller, which is only true while the newest stamp's actual DB timestamp is recent
+ * (see `app/[locale]/profile/stamps/page.tsx`, the "just earned" window).
  */
 export default function StampCard({
   salonName,
@@ -91,11 +95,13 @@ export default function StampCard({
                 // supported with spring/inertia. Trying to animate 0.7,1.15,1."
                 // Old: 3-keyframe scale array with type:"spring" (incompatible).
                 // New: switched to type:"tween" with cubic-bezier easeOutBack curve
-                // [0.34, 1.56, 0.64, 1] — preserves the satisfying 1.15 overshoot
+                // [0.34, 1.56, 0.64, 1], preserves the satisfying 1.15 overshoot
                 // bounce on stamp add. Equivalent visual to original 3-keyframe spring
-                // but uses an ease curve which IS multi-keyframe compatible.
-                animate={isNewest ? { scale: [0.7, 1.15, 1] } : {}}
-                transition={isNewest ? { duration: 0.5, ease: [0.34, 1.56, 0.64, 1] } : {}}
+                // but uses an ease curve which IS multi-keyframe compatible. Gated on
+                // `celebrate` below (not just `isNewest`, which is index-derived from
+                // the stamp COUNT): without it this replayed on every plain revisit.
+                animate={isNewest && celebrate ? { scale: [0.7, 1.15, 1] } : {}} // mockup-ok: motion-audit bug fix (RANK 4), gating an existing animation onto a real signal, not new design
+                transition={isNewest && celebrate ? { duration: 0.5, ease: [0.34, 1.56, 0.64, 1] } : {}}
               >
                 {isFilled && <Check className="w-4 h-4" />}
               </motion.div>

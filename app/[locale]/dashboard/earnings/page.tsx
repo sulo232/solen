@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { motion, type Variants } from "motion/react";
 import { DollarSign, Wallet, FileText, Calendar, Clock, Users } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
@@ -35,16 +34,6 @@ interface StaffEarning {
   staff_share: number;
   house_share: number;
 }
-
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
-};
-
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 15 },
-  visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } },
-};
 
 function getStatusBadge(status: string, t: (key: "statusPaid" | "statusPending" | "statusRecorded") => string) {
   switch (status) {
@@ -102,9 +91,9 @@ export default function SalonEarningsPage() {
       ) : !data ? (
         <div className="text-center py-20 text-s-ink/30 text-sm">{t("noPaymentData")}</div>
       ) : (
-        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
+        <div className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md flex items-center gap-4">
+            <div className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md flex items-center gap-4">
               <div className="w-12 h-12 rounded-btn bg-s-coral/10 flex items-center justify-center shrink-0">
                 <Wallet size={24} className="text-s-coral" />
               </div>
@@ -113,9 +102,9 @@ export default function SalonEarningsPage() {
                 <p className="data-text font-bold text-3xl text-s-ink">{formatCurrency(data.pending_balance, locale)}</p>
                 <p className="text-xs text-s-ink/40 mt-1">{t("availableBalanceHint")}</p>
               </div>
-            </motion.div>
-            
-            <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md flex items-center gap-4">
+            </div>
+
+            <div className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md flex items-center gap-4">
               <div className="w-12 h-12 rounded-btn bg-green-50 flex items-center justify-center shrink-0">
                 <DollarSign size={24} className="text-green-600" />
               </div>
@@ -124,10 +113,10 @@ export default function SalonEarningsPage() {
                 <p className="data-text font-bold text-3xl text-s-ink">{formatCurrency(data.total_earnings, locale)}</p>
                 <p className="text-xs text-s-ink/40 mt-1">{t("totalPaidOutHint")}</p>
               </div>
-            </motion.div>
+            </div>
           </div>
 
-          <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md overflow-hidden">
+          <div className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md overflow-hidden">
             <div className="px-5 py-4 border-b border-s-ink/5">
               <h2 className="font-heading text-s-ink text-sm">{t("transactionsTitle")}</h2>
             </div>
@@ -186,10 +175,10 @@ export default function SalonEarningsPage() {
                 <p>{t("noTransactions")}</p>
               </div>
             )}
-          </motion.div>
+          </div>
 
           {/* Staff Payout Table */}
-          <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md overflow-hidden">
+          <div className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md overflow-hidden">
             <div className="px-5 py-4 border-b border-s-ink/5 flex items-center gap-2">
               <Users size={16} className="text-s-coral" />
               <h2 className="font-heading text-s-ink text-sm">{t("staffPayoutTitle")}</h2>
@@ -233,8 +222,8 @@ export default function SalonEarningsPage() {
                 </table>
               </div>
             )}
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       )}
     </DashboardLayout>
   );

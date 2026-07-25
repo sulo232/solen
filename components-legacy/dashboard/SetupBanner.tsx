@@ -55,10 +55,12 @@ export default function SetupBanner() {
       <p className="font-heading text-sm text-s-ink mb-3">
         {t("salonSetup")}: {data.completed}/{data.total} {t("done")}
       </p>
-      {/* Progress bar */}
+      {/* Progress bar. motion audit RANK 5: was `transition-[width]` (hard rule 2),
+          converted to a transform-only scaleX from the left edge, retimed to the
+          reveal tier (250-300ms, THE SPEED LAW) since the fill travels. */}
       <div className="h-1.5 rounded-full bg-s-bg-sunken mb-4 overflow-hidden">
-        <div className="h-full bg-s-accent rounded-full transition-[width] duration-200"
-          style={{ width: `${data.percentage}%` }} />
+        <div className="h-full w-full origin-left bg-s-accent rounded-full transition-transform duration-[280ms]"
+          style={{ transform: `scaleX(${data.percentage / 100})` }} />
       </div>
       {/* Steps list , the whole plan, done/current/upcoming all visible up front */}
       {data.steps.map((step, i) => {

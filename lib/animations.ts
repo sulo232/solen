@@ -1,4 +1,18 @@
 import type { Variants } from "motion/react";
+import {
+  enterStaggerContainer,
+  enterStaggerItem,
+} from "@/app/[locale]/_components/primitives/motion";
+
+// JOB 1 reconciliation (motion audit RANK 2b, 2026-07-25): this file is a second,
+// undocumented motion vocabulary that predates both THE ENTER RECIPE and THE SPEED
+// LAW (_design-system/MOTION.md). `containerVariants`/`itemVariants` below now
+// RE-EXPORT the sanctioned equivalents from `primitives/motion.ts`
+// (`enterStaggerContainer`/`enterStaggerItem`) instead of keeping a second set of
+// numbers, because that file already had one. `slideSwitch`'s directional x-slide
+// has no sanctioned equivalent (`useStepSwapMotion` there is opacity+scale only,
+// no x-offset), so it keeps its own shape, retimed. Every export name below still
+// works, nothing importing this file needs to change.
 
 /* ── Easing curves ── */
 /** V5 brand deceleration curve — use for all reveals and transitions */
@@ -13,7 +27,24 @@ export const EASE_OUT_STRONG = EASE_SOLEN;
 export const EASE_IN_OUT_STRONG = [0.77, 0, 0.175, 1] as const;
 
 /* ── Durations (seconds) ── */
-export const DURATION_FAST = 0.15;    // Hover / press feedback
+/**
+ * THE SPEED LAW press tier (80-100ms, MOTION.md "THE SPEED LAW"): the
+ * instant acknowledgement that an input registered, e.g. press-scale, tap
+ * feedback. Never share this with a hover/snap transition again; a shared
+ * `duration-*` silently pulling a press onto the hover timing is RANK 2's
+ * root cause across the dashboard.
+ */
+export const DURATION_PRESS = 0.09;
+/**
+ * THE SPEED LAW snap tier (150ms): an in-place state flip, e.g. hover, tab
+ * switch, chip select, filter change, toggle.
+ */
+export const DURATION_SNAP = 0.15;
+/** @deprecated `DURATION_FAST` used to serve both the press AND hover/snap
+ *  tiers at once (THE SPEED LAW splits them); kept as an alias to
+ *  `DURATION_SNAP` so no existing import breaks. Use `DURATION_PRESS` for a
+ *  press and `DURATION_SNAP` for a hover/in-place flip going forward. */
+export const DURATION_FAST = DURATION_SNAP;
 export const DURATION_NORMAL = 0.2;   // Modals, dropdowns
 export const DURATION_SMOOTH = 0.3;   // Page transitions, reveals
 export const DURATION_SLOW = 0.5;     // Hero animations
@@ -39,27 +70,22 @@ export const scaleIn: Variants = {
 };
 
 /* ── Grid / list stagger ── */
-/** Stagger container — 60ms per child (UI_RULES.md §4: Airbnb-style) */
-export const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: STAGGER_GRID,
-      delayChildren: 0.04,
-    },
-  },
-};
+/**
+ * Stagger container. Re-exports the sanctioned `enterStaggerContainer`
+ * (`app/[locale]/_components/primitives/motion.ts`) instead of keeping a
+ * second stagger schedule; `STAGGER_GRID` stays exported below for any
+ * caller that reads it directly, but no longer feeds this variant.
+ */
+export const containerVariants: Variants = enterStaggerContainer;
 
-/** Individual grid item — fades + slides up */
-export const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 16 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: DURATION_SMOOTH, ease: EASE_SOLEN },
-  },
-};
+/**
+ * Individual grid item. Re-exports the sanctioned `enterStaggerItem`, the
+ * locked ENTER RECIPE (opacity + scale 0.96 + blur(8px), 420ms glide). The
+ * old local version animated opacity+y only, no scale and no blur, the
+ * exact shape `motion-recipe-gate.py` exists to block for net-new code
+ * (MOTION.md "THE ENTER RECIPE, LOCKED").
+ */
+export const itemVariants: Variants = enterStaggerItem;
 
 /* ── Overlays ── */
 /** Dropdown / popover — search suggestions, city picker, category dropdowns */
@@ -75,7 +101,7 @@ export const popoverVariants: Variants = {
     opacity: 0,
     scale: 0.96,
     y: 8,
-    transition: { duration: DURATION_FAST },
+    transition: { duration: DURATION_SNAP },
   },
 };
 
@@ -91,7 +117,7 @@ export const modalVariants: Variants = {
   exit: {
     opacity: 0,
     scale: 0.95,
-    transition: { duration: DURATION_FAST },
+    transition: { duration: DURATION_SNAP },
   },
 };
 
@@ -109,7 +135,18 @@ export const sheetVariants: Variants = {
 };
 
 /* ── Misc reusable ── */
-/** Smooth tab slide — use with AnimatePresence mode="wait" */
+/**
+ * Directional step/tab slide: opacity + a direction-aware x offset. Retimed
+ * to THE SPEED LAW reveal band (250-300ms, MOTION.md "THE SPEED LAW"),
+ * matching the owner-approved step-swap tier (MOTION.md "THE ENTER RECIPE,
+ * LOCKED" section, 260ms). It shipped at 400ms in, 250ms out, over the
+ * ceiling for a swap that is not full-screen.
+ *
+ * Do NOT pair this with `AnimatePresence mode="wait"`: that serializes the
+ * exiting and entering step so a user acting again mid-swap has to wait for
+ * the first one to finish, which THE SPEED LAW hard rule 4 forbids. Use the
+ * default `AnimatePresence` (concurrent enter/exit) or `mode="popLayout"`.
+ */
 export const slideSwitch = (direction: "left" | "right" | 1 | -1 = "right"): Variants => {
   const isForward = direction === "right" || direction === 1;
   return {
@@ -117,12 +154,12 @@ export const slideSwitch = (direction: "left" | "right" | 1 | -1 = "right"): Var
     animate: {
       x: 0,
       opacity: 1,
-      transition: { duration: 0.4, ease: EASE_SOLEN },
+      transition: { duration: 0.26, ease: EASE_SOLEN },
     },
     exit: {
       x: isForward ? -40 : 40,
       opacity: 0,
-      transition: { duration: 0.25, ease: EASE_SOLEN },
+      transition: { duration: 0.26, ease: EASE_SOLEN },
     },
   };
 };

@@ -113,9 +113,12 @@ export default function StaffComparison({ salonId }: StaffComparisonProps) {
           {data.map((s) => (
             <div key={s.staff_member_id} className="flex items-center gap-3">
               <span className="text-xs font-medium text-s-ink w-20 truncate">{s.name.split(" ")[0]}</span>
+              {/* motion audit RANK 5: was `transition-[width]` (hard rule 2), converted
+                  to a transform-only scaleX from the left edge, retimed to the reveal
+                  tier (250-300ms, THE SPEED LAW) since the bar travels. */}
               <div className="flex-1 h-5 bg-s-bg-sunken rounded-btn overflow-hidden">
-                <div className="h-full bg-s-accent-bright rounded-btn transition-[width] duration-200"
-                  style={{ width: `${maxRevenue > 0 ? (s.revenue / maxRevenue) * 100 : 0}%` }} />
+                <div className="h-full w-full origin-left bg-s-accent-bright rounded-btn transition-transform duration-[280ms]"
+                  style={{ transform: `scaleX(${maxRevenue > 0 ? s.revenue / maxRevenue : 0})` }} />
               </div>
               <span className="text-xs data-text text-s-ink-2 w-16 text-right">
                 CHF {(s.revenue / 100).toFixed(0)}

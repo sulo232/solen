@@ -2,57 +2,74 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-07-16T15:04:36 (trigger: auto)
-- branch: claude/taste-rationale-frameworks-37390c
+- taken: 2026-07-25T22:33:37 (trigger: auto)
+- branch: main
 
 ## git
 ```
-454b12b44 docs(plans): propagation questions answered
-a409bacc9 docs(plans): correction boxes evidenced (2bfdd0741)
-2bfdd0741 revert(taste): full-bleed DENIED, the misread reversed and hardened
-243c2d84b docs(taste): dead-chevron rule visualized as a Wrong/Right pair on the rules page
-34b65e853 docs(taste): full-bleed picks locked (all approved per the recommendation set, full-bleed standing) + the dead-chevron rule
-```
-```
-M _plans/TASTE_RATIONALE_R2.md
+29a556ba4 B2B and auth: fix five live WCAG loops, four layout animations, one press value
+3a873ae06 Rank 1: fix the WCAG 2.2.2 failures that were unconditional
+03cf7dd9c Motion plan: cite sha b2542365a on D1
+b2542365a D1: merge the three motion audits into one ranked list
+34155b4ea Motion audit lands (508 elements) and the first hard-rule violations are fixed
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
+40 | MOTION + SHADOW LAW (research-first, then build as a loop) | **ACTIVE** (2026-07-25)
+33 | PDP consistency + motion (dates, reviews system, buttons, portfolio +N, frosted scroll) | **ACTIVE** (2026-07-25)
+31 | Home page overhaul (owner 10-ask dictation) , PIVOTED to whiteness/emptiness fix | **ACTIVE** (2026-07-24)
+30 | PDP overhaul (salon vision page) — owner 7-ask batch | **ACTIVE** (2026-07-24, round 3 delivered)
+29 | Folder cleanup (two "solen" folders) | **ACTIVE** (2026-07-24)
+19 | Taste/gate audit + underline-tab proposal + Solen-law profile mockup | **ACTIVE** (2026-07-21)
 7 | Admin Cities toggle | **ACTIVE**
-13 | Full-estate frontend audit (psychology + design-system + consistency) + mockups | **ACTIVE** (2026-07-08)
+13 | Full-estate frontend audit (psychology + design-system + consistency) + mockups | **ACTIVE** (2026-07-17: customer-overhaul mockup pass)
 16 | getSession -> getUser identity-verification migration (JWT-forgery CRITICAL) | **ACTIVE** (2026-07-10)
 18 | Estate audit (hooks/skills/rules/systems/memory , improvement proposal) | **ACTIVE** (2026-07-11)
 22 | Taste audit sweep (measured floors across dashboard + customer side) | **ACTIVE** (2026-07-15)
-20 | Taste Lab program (hundreds of A/B comparisons; owner ask 2026-07-15) | **ACTIVE** (2026-07-15)
-23 | Taste rationale ROUND 2 (refs + research expansion) | **ACTIVE** (2026-07-16)
+25 | Taste Lab program (hundreds of A/B comparisons; owner ask 2026-07-15) | **ACTIVE** (2026-07-15)
+26 | Make it all real (homepage rows lose fabricated values) | **ACTIVE** (2026-07-16)
+27 | Backend law layer (the backend "taste bible": 15 topics researched + audited + recommendations) | **ACTIVE** (2026-07-16)
+26 | IG design-principles harvest (designparser + designmotionhq) | **ACTIVE** (2026-07-16, SESSION MOVED , read [IG_HANDOFF.md](IG_HANDOFF.md) FIRST)
+30 | Frontend gap fixes (the REAL fix, no hiding) | **ACTIVE** (2026-07-18)
+30 | IG principles evaluation (add/skip verdicts + before/after mockups) | **ACTIVE** (2026-07-16)
+31 | Geometry + symmetry + the math of composition (owner reference, 2026-07-17) | **ACTIVE** (2026-07-17)
+33 | Booking services , salon-page tier-card display + motion | **ACTIVE** (mockup approved, build HELD) 2026-07-18
+39 | Settings-like-Insta + delete-confirm kill + dashboard redesign + GRAY-BACKGROUND reopen (owner 2026-07-20) | **ACTIVE** (2026-07-20)
+38 | Design-system HARDENING from the failed rounds (owner 2026-07-20 "fix gates + principles + systems, analyze our chats") | **ACTIVE** (2026-07-20)
+37 | Mockup ROOT-CAUSE + principles (owner 2026-07-19, 5th-round fury: "step back, use subagents") | **ACTIVE** (2026-07-19)
+36 | Mockup QUALITY system , stop shipping unchecked/unbalanced mockups (owner 2026-07-19, FURIOUS recurrence) | **ACTIVE** (2026-07-19)
+35 | Full frontend sweep , audit every surface vs the design system + mockup improvements (owner 2026-07-19, LOOP) | **ACTIVE** (2026-07-19)
 
-## SEARCH_MAP_OVERHAUL.md
+## MOTION_LAW.md
 Open boxes:
-- [ ] B4 frontend load-time audit: owner said YES. Runs after B6+A2 (prod build clobbers .next / the dev server they verify against). Needs a prod build to measure honestly (backend perf done).
-- [ ] B4. PERF: everything feels slow (maybe cloudflare tunnel, maybe real). Investigate (local vs tunnel; bundle; re-renders).
-- [ ] B5. FOCUS RINGS (RECURRING, owner FURIOUS): rings on HOVER on the homepage + the map icon in the search bar. Eliminate ALL; replace with something else. INVESTIGATE the source (the no-focus-ring-gate blocks NEW rings but these persist , find where they render). HARDEN.
-- [ ] C1. HOOK: ALWAYS make a plan first for BIG tasks (not small). Owner: "make a hook about that, maybe you have it." -> CHECK plan-first-gate/plan-first-stamp; confirm/strengthen; report.
-- [ ] C2. Orchestrator, not coder (standing). Use Workflow (ultracode).
-- [ ] R3-harden: real-size mockup gate (feed-grammar card inside a 2-col grid = deny) , build, self-test, wire.
-- [ ] A1.1 EACH filter = its OWN sheet (small per-filter sheet), NOT one big combined FilterSheet. Redo.
-- [ ] A1.2 amenities = CHIP-like (keep current chips), NOT the checklist I proposed.
-- [ ] A1.3 keep the price SLIDER.
-- [ ] A1.4 buttons NOT black (owner dislikes black buttons) , alternative treatment (investigate DS non-ink option).
-- [ ] A2.1 refine Model B (chosen direction) , cleaner + more complete.
-- [ ] A3.1 check: is my proposed card ratio the SAME as the SEARCH result cards' ratio?
-- [ ] A3.2 if same -> implement; if different -> implement SAME as search. (real code: SalonResultCard grid + SalonCard)
-- [ ] A4.2 make the A4 pill SMALLER (owner: "the pill is too big").
-- [ ] LATEST-MSG (post-interrupt): system flagged 3 asks + a MEASUREMENT complaint, but the message TEXT did not reach me. BLOCKED on owner resend.
-- [ ] A2 BUILD greenlit ("A2 build"): adopt the approved Model B search interaction (segmented category param decoupled from free-text ?q=) into the REAL customer search. Understand-workflow w4s0xy9fa running (maps real search arch + the /dev/search-model-b mockup + /api/salons params -> concrete build plan). On return: review plan, surface any genuine fork, then build via a SINGLE coder (frontend = no parallel agents), council + design-verifier + live verify. STRUCTURE=Model B mockup, AESTHETIC=locked DS (blue sparse, selected=gray sunken).
-- [ ] STILL QUEUED (post-A2): booking live-commit council hardening (stale-closure robustness, delta->reduce total, dedup getOwnedAddonIds) , non-user-reachable, do next.
+- [ ] D2. Fix the WCAG 2.2.2 exposures , Level A, so these lead the list. PARTIAL 2026-07-25: the two
+- [ ] D3. Resolve the 420ms ENTER RECIPE contradiction with a side-by-side the owner picks from.
+- [ ] D4. Document `thud` as the exit curve, zero new tokens.
 
-## FRONTEND_AUDIT.md
+## PDP_CONSISTENCY.md
 Open boxes:
-    - [ ] M2 bare star -> star + count (12 sites, psych law 6)
-    - [ ] M3 tracked-caps -> sentence case (14 sites)
-    - [ ] M4 skeleton shapes for the 9 bare spinners
-    - [ ] M5 44px touch targets (16 sites, visible size change)
-    - [ ] M6 SearchOverlay hand-rolled date step -> shared DateTimePicker primitive
-    - [ ] M7 photo-first SalonCard on /behandlungen + /brand
-    - [ ] M8 SeeAllButton unification (3 dialects -> 1)
-    - [ ] M9 window.confirm -> Modal on the paid walk-in cancel
+- [ ] C2. Reviews SYSTEM: one review-row component + one summary grammar shared by the PDP section, the full reviews page, and the stylist profile page. Audit first, name every divergence, then unify.
+- [ ] C3. BUTTON audit: enumerate every book/select/choose variant in the customer surfaces, then ONE rule per job (mockup, owner picks).
+- [ ] C6. Motion pass beyond C5, kept simple.
+- [ ] C2a. Extract ONE review-row component + one summary grammar, used by all three.
+- [ ] M1. Owner confirms the two-tier speed.
+- [ ] M2. CORRECTION: the frosted condensed bar is missing the PICTURE. The X reference puts the profile
+- [ ] M3. Motion mockups across surfaces at the measured speed, incl. the Termin/Walk-in tab switch the
+- [ ] M4. Owner correction to honour throughout: the BOOK BUTTON IS ALWAYS PRESENT, never removed from any
+
+## HOME_OVERHAUL.md
+Open boxes:
+- [ ] W5. BLOCKED on owner: pick A / B / C (or combo) -> apply the hero imagery + section rhythm to the real Hero + feed, fix the review placeholder, verify + commit.
+- [ ] R2. Get real REFERENCES. BLOCKED (in progress, concrete): the Mobbin reference sweep is a RUNNING background subagent dispatched this turn; its results arrive via a task-notification that re-invokes me. An async agent cannot be force-completed inside this turn , the turn ends here and RESUMES on that notification to finish R2 + R3.
+- [ ] R3. Synthesize council + refs -> GROUNDED LIGHT-photo-hero proposal + re-mock. BLOCKED on R2 (needs the reference results before synthesizing).
+- [ ] 1f. Apply chosen direction to the real card (owner-gated , the mockup-first pause). Atomized:
+  - [ ] 1f-i. Owner picks A / B / C (or a mix) , BLOCKED on owner (the whole point of the phase-1 preview)
+  - [ ] 1f-ii. Apply the picked treatment to `Hero.tsx` wrapper + `SearchBar.tsx` collapsed card (radius + width + separation) , BLOCKED on 1f-i (cannot apply a direction that is not picked yet)
+  - [ ] 1f-iii. Drop the `SearchOverlay.tsx:767` scrim blur to plain dim + verify smoothness with a Playwright video , BLOCKED on 1f-i (ships together with the chosen card)
+  - [ ] 1f-iv. Commit the applied card + post a tunnel link for owner sign-off , BLOCKED on 1f-ii/iii being done
+- [ ] 2. In deiner Nähe , remove the map, keep near-you list + city (BLOCKED on: phase-1 approval, then its own mockup round)
+- [ ] 3. Nähe/section font , identify the drifted font vs the locked family, fix (BLOCKED on: item 2 scope)
+- [ ] 4. Reviews section , diagnose + mockup fix (BLOCKED on: phase-1 approval)
+- [ ] 5. Walk-in section , diagnose + mockup fix (BLOCKED on: phase-1 approval)
+- [ ] 6. Inspo section , diagnose + mockup fix (BLOCKED on: phase-1 approval)
+- [ ] 7. Logo , clarify what's wrong + mockup fix (BLOCKED on: phase-1 approval + owner detail on what's off)

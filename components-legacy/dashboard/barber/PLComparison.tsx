@@ -110,14 +110,20 @@ export default function PLComparison({ salonId }: PLComparisonProps) {
             </div>
           </div>
 
-          {/* Share bar */}
+          {/* Share bar. motion audit RANK 5: was `transition-[width]` (hard rule 2).
+              Unlike a fill-inside-a-fixed-track bar, these two divs ARE the layout
+              (their widths sum to the row, there's no separate static track to scale
+              a fill inside), so a scaleX conversion here would need new wrapper
+              elements per segment, a structural change outside a treatment-only
+              fix. Removed the transition instead: the split still updates on data
+              change, it now snaps rather than interpolating a reflow mid-frame. */}
           <div className="flex rounded-full overflow-hidden h-2 mb-4">
             <div
-              className="bg-s-ink transition-[width] duration-[250ms]"
+              className="bg-s-ink"
               style={{ width: `${apptShare}%` }}
             />
             <div
-              className="bg-s-warning transition-[width] duration-[250ms]"
+              className="bg-s-warning"
               style={{ width: `${walkinShare}%` }}
             />
           </div>

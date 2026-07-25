@@ -94,17 +94,44 @@
 //        page that is simply still loading data. LIVE-DOM-CONDITIONAL is
 //        always report-only - it never fails --gate.
 //
+// --slow MODE: MAKING THE CONDITIONAL CASE MEASURABLE
+// --------------------------------------------------------------------------
+// The default run above settles the "still fetching at the budget" question
+// by whatever the local dev server's real response time happens to be. That
+// is exactly backwards for WCAG 2.2.2, which turns on "lasts more than five
+// seconds" - a shimmer that resolves in 400ms is not an exposure, the same
+// shimmer on a slow connection is. --slow makes that condition true on
+// purpose so it can actually be measured instead of argued about: a
+// context.route() handler delays every same-origin xhr/fetch request by
+// SLOW_DELAY_MS (route.continue() after an awaited setTimeout - see
+// installSlowRoute for why continue() over fulfill()). Document/script/
+// style/font/image requests are untouched, so the app shell still loads at
+// normal speed; only the data plane is held open past the budget.
+// Consequently the classification flips: a loop seen while a response is
+// DELIBERATELY held open is no longer downgraded to LIVE-DOM-CONDITIONAL -
+// it is the exposure, fully realised - so --slow reports it as blocking
+// LIVE-DOM. The normal (non-slow) run's behaviour and report file are
+// untouched by any of this; --slow writes to its own report file
+// (_probe-report-slow.md) so the two can never silently overwrite one
+// another. See OUTPUT_PATH_NORMAL / OUTPUT_PATH_SLOW below.
+//
 // Usage:
 //   node scripts/check-motion.mjs
 //   node scripts/check-motion.mjs --routes=/de,/de/business
 //   node scripts/check-motion.mjs --gate
+//   node scripts/check-motion.mjs --slow
+//   node scripts/check-motion.mjs --slow --routes=/de/inspo
 //   BASE_URL=http://localhost:3001 node scripts/check-motion.mjs
 //   npm run check:motion
+//   npm run check:motion:slow
 //   npm run gate:motion
 //
 // Exit code: 0 in report-only mode, always. --gate exits 1 the moment any
 // non-allowlisted route reports a CSS-LOOP finding or an unconditional
-// LIVE-DOM finding (LIVE-DOM-CONDITIONAL never gates, see above).
+// LIVE-DOM finding (LIVE-DOM-CONDITIONAL never gates, see above). --gate and
+// --slow may be combined; in that combination the forced-blocking LIVE-DOM
+// findings described above are subject to the gate exactly like any other
+// unconditional LIVE-DOM finding.
 
 import { writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
@@ -127,7 +154,19 @@ const BUFFER_CAP = 4000; // ring-buffer cap for the LIVE-DOM mutation log, see a
 const REPEAT_THRESHOLD = 3; // a late-mutation group needs >= this many repeats to count as a loop, not app life
 
 const DEFAULT_ROUTES = ["/de", "/de/business", "/de/fuer-salons", "/de/salon/old-town-barbers", "/de/inspo", "/de/zuerich/coiffeur"];
-const OUTPUT_PATH = resolve(process.cwd(), "_plans/motion-audit/_probe-report.md");
+
+// Two report files, not one, so a --slow run and a normal run can never
+// silently overwrite each other and a report can never be mistaken for the
+// other mode (see --slow doc block above).
+const OUTPUT_PATH_NORMAL = resolve(process.cwd(), "_plans/motion-audit/_probe-report.md");
+const OUTPUT_PATH_SLOW = resolve(process.cwd(), "_plans/motion-audit/_probe-report-slow.md");
+
+// --slow config: see the doc block above for the reasoning. 9000ms clears
+// WATCH_MS (7500ms) with headroom, so a request that fires right at
+// hydration is still guaranteed unresolved at the BUDGET_MS (5000ms) mark
+// AND still unresolved through the entire watch window - no coin-flip.
+const SLOW_DELAY_MS = 9000;
+const SLOW_DELAYED_RESOURCE_TYPES = new Set(["xhr", "fetch"]);
 
 // ----------------------------------------------------------------------------
 // MOTION_ALLOWLIST (ratchet, same spirit as check-geometry.mjs's
@@ -156,12 +195,14 @@ function matchAllowlist(matchText) {
 function parseArgs(argv) {
   let routes = null;
   let gate = false;
+  let slow = false;
   const baseUrl = process.env.BASE_URL || "http://localhost:3000";
   for (const a of argv) {
     if (a === "--gate") gate = true;
+    else if (a === "--slow") slow = true;
     else if (a.startsWith("--routes=")) routes = a.slice("--routes=".length).split(",").map((r) => r.trim()).filter(Boolean);
   }
-  return { baseUrl, gate, routes: routes && routes.length > 0 ? routes : DEFAULT_ROUTES };
+  return { baseUrl, gate, slow, routes: routes && routes.length > 0 ? routes : DEFAULT_ROUTES };
 }
 
 // ----------------------------------------------------------------------------
@@ -194,6 +235,40 @@ async function dismissCookies(page) {
     await btn.click().catch(() => {});
     await page.waitForTimeout(400);
   }
+}
+
+// ----------------------------------------------------------------------------
+// --slow: delay the data plane, leave the app shell alone (see doc block).
+// ----------------------------------------------------------------------------
+function shouldDelayForSlowMode(request, origin) {
+  return SLOW_DELAYED_RESOURCE_TYPES.has(request.resourceType()) && request.url().startsWith(origin);
+}
+
+// Installed ONCE per browser context (context.route, not page.route), so it
+// covers every page.newPage() this probe opens in the loop without having
+// to re-register per route.
+//
+// Uses route.continue() after an awaited setTimeout - NOT route.fulfill()
+// with a delayed fetch. continue() hands the request to the real server and
+// streams back the real response/headers/body untouched, so the app is
+// genuinely talking to itself on a slow network. fulfill() would require
+// this script to replay the request by hand (method, body, headers, then
+// its own fetch) and hand-construct a Playwright response from that, which
+// risks a body/header shape the app doesn't expect (and, worse, would mean
+// the "response" being measured is this script's fetch, not the app's
+// actual one). continue() carries none of that risk and was proven to work
+// in the self-test below (the found-count difference IS the proof).
+function installSlowRoute(context, origin, counter) {
+  return context.route("**/*", async (route) => {
+    const request = route.request();
+    if (!shouldDelayForSlowMode(request, origin)) {
+      await route.continue();
+      return;
+    }
+    counter.count++;
+    await new Promise((resolvePromise) => setTimeout(resolvePromise, SLOW_DELAY_MS));
+    await route.continue();
+  });
 }
 
 // ----------------------------------------------------------------------------
@@ -495,12 +570,20 @@ function formatLiveDomLine(group, conditional) {
 }
 
 function formatRouteSection(route, entry) {
-  const lines = [`## ${route}`, ""];
+  const modeTag = entry.mode ? ` [mode: ${entry.mode}]` : "";
+  const lines = [`## ${route}${modeTag}`, ""];
   if (entry.error) {
     lines.push(`ERROR: ${entry.error}`, "");
     return lines.join("\n");
   }
-  const { cssLoops, liveDomGroups, liveDomConditionalGroups, lastInputAt } = entry;
+  const { cssLoops, liveDomGroups, liveDomConditionalGroups, lastInputAt, mode, slowDelayedCount } = entry;
+  if (mode === "SLOW") {
+    lines.push(
+      `SLOW MODE: ${slowDelayedCount} same-origin xhr/fetch request(s) delayed ~${SLOW_DELAY_MS}ms. A fetch still open at the ${BUDGET_MS}ms budget ` +
+        "is reported below as blocking LIVE-DOM, not LIVE-DOM-CONDITIONAL - see the --slow doc block at the top of this file.",
+      "",
+    );
+  }
   lines.push(`### CSS-LOOP (${cssLoops.length})`, "");
   if (cssLoops.length === 0) lines.push("none found");
   else for (const f of cssLoops) lines.push("- " + formatCssLoopLine(f));
@@ -522,10 +605,19 @@ function formatRouteSection(route, entry) {
 async function main() {
   selfTestMotionLogic();
 
-  const { baseUrl, gate, routes } = parseArgs(process.argv.slice(2));
-  console.log(`[check-motion] base=${baseUrl} budget=${BUDGET_MS}ms watch=${WATCH_MS}ms viewport=${VIEWPORT.width}x${VIEWPORT.height}`);
+  const { baseUrl, gate, slow, routes } = parseArgs(process.argv.slice(2));
+  console.log(
+    `[check-motion] base=${baseUrl} budget=${BUDGET_MS}ms watch=${WATCH_MS}ms viewport=${VIEWPORT.width}x${VIEWPORT.height} mode=${slow ? "SLOW" : "normal"}`,
+  );
   console.log(`[check-motion] routes: ${routes.join(", ")}`);
+  if (slow) {
+    console.log(
+      `[check-motion] --slow: same-origin xhr/fetch requests will be delayed ~${SLOW_DELAY_MS}ms via context.route()+route.continue(); ` +
+        "document/script/style/font/image requests are untouched.",
+    );
+  }
 
+  const origin = new URL(baseUrl).origin;
   const browser = await launchBrowser();
   const byRoute = new Map();
   try {
@@ -535,12 +627,30 @@ async function main() {
       isMobile: IS_MOBILE,
       hasTouch: HAS_TOUCH,
     });
+    // Shared across every route in this context; reset to 0 per route below
+    // so each route's console log reports its OWN delayed-request count, not
+    // a running total across the whole probe run.
+    const slowCounter = { count: 0 };
+    if (slow) await installSlowRoute(context, origin, slowCounter);
+
     for (const route of routes) {
+      slowCounter.count = 0;
+      const navStart = Date.now();
       const page = await context.newPage();
       // Armed on THIS page before any navigation, so it re-arms fresh on
       // every new document this page loads and is present from hydration's
       // first tick, not from whenever this script happens to attach after.
       await page.addInitScript(armLiveDomProbe, { bufferCap: BUFFER_CAP });
+      if (slow) {
+        // Diagnostic only (console, not the report file): proves the delay
+        // is actually landing on the wire, with the observed elapsed time,
+        // rather than trusting that installSlowRoute did what it claims.
+        page.on("requestfinished", (request) => {
+          if (shouldDelayForSlowMode(request, origin)) {
+            console.log(`[check-motion] --slow ${route}: delayed request resolved at +${Date.now() - navStart}ms - ${request.url()}`);
+          }
+        });
+      }
       const url = new URL(route, baseUrl).toString();
       try {
         await page.goto(url, { waitUntil: "commit", timeout: 90_000 });
@@ -554,14 +664,28 @@ async function main() {
           return p ? { mutations: p.mutations, lastInputAt: p.lastInputAt, fetchLog: p.fetchLog } : { mutations: [], lastInputAt: 0, fetchLog: [] };
         });
 
-        const conditional = wasStillFetchingAtBudget(probe.fetchLog, BUDGET_MS);
+        // In --slow, a fetch still open at the budget is not an accident of
+        // local response time, it is the deliberately-realised exposure (see
+        // the --slow doc block), so it is never downgraded to CONDITIONAL
+        // here. Normal-mode behaviour is untouched: `slow` is false there,
+        // so this reduces to the original `wasStillFetchingAtBudget(...)`.
+        const stillFetchingAtBudget = wasStillFetchingAtBudget(probe.fetchLog, BUDGET_MS);
+        const conditional = stillFetchingAtBudget && !slow;
         const groups = groupLateMutations(probe.mutations, BUDGET_MS, REPEAT_THRESHOLD);
         const liveDomGroups = conditional ? [] : groups;
         const liveDomConditionalGroups = conditional ? groups : [];
 
-        byRoute.set(route, { cssLoops, liveDomGroups, liveDomConditionalGroups, lastInputAt: probe.lastInputAt });
+        byRoute.set(route, {
+          cssLoops,
+          liveDomGroups,
+          liveDomConditionalGroups,
+          lastInputAt: probe.lastInputAt,
+          mode: slow ? "SLOW" : "NORMAL",
+          slowDelayedCount: slow ? slowCounter.count : null,
+        });
         console.log(
-          `[check-motion] ${route}: cssLoops=${cssLoops.length} liveDom=${liveDomGroups.length} liveDomConditional=${liveDomConditionalGroups.length}`,
+          `[check-motion] ${route}: cssLoops=${cssLoops.length} liveDom=${liveDomGroups.length} liveDomConditional=${liveDomConditionalGroups.length}` +
+            (slow ? ` slowDelayedRequests=${slowCounter.count}` : ""),
         );
       } catch (err) {
         console.error(`[check-motion] route ${route} failed:`, err);
@@ -584,15 +708,23 @@ async function main() {
     liveDomConditionalTotal += entry.liveDomConditionalGroups.length;
   }
 
+  const modeLabel = slow ? "SLOW (network-delayed)" : "NORMAL (settled-state)";
   const header = [
-    "# Motion probe report , WCAG 2.2.2 (Pause, Stop, Hide, Level A)",
+    `# Motion probe report , WCAG 2.2.2 (Pause, Stop, Hide, Level A) , mode: ${modeLabel}`,
     "",
     `Generated: ${new Date().toISOString()}`,
-    `Base URL: ${baseUrl}  Budget: ${BUDGET_MS}ms  Watch window: ${WATCH_MS}ms  Viewport: ${VIEWPORT.width}x${VIEWPORT.height}`,
+    `Base URL: ${baseUrl}  Budget: ${BUDGET_MS}ms  Watch window: ${WATCH_MS}ms  Viewport: ${VIEWPORT.width}x${VIEWPORT.height}  Mode: ${modeLabel}`,
     "",
     "Runtime probe, not a source scan (see file header for why). Criterion: moving/blinking",
     "information that starts automatically, lasts past 5s, and runs alongside other content",
     "needs a user-facing pause/stop/hide mechanism. prefers-reduced-motion does NOT discharge it.",
+    "",
+    slow
+      ? `SLOW MODE: same-origin xhr/fetch requests were delayed ~${SLOW_DELAY_MS}ms (context.route + route.continue) so any loop that runs while ` +
+        "data is still loading is measured as the exposure it actually is on a slow connection, not downgraded to LIVE-DOM-CONDITIONAL. This is NOT " +
+        "comparable to a normal (settled-state) run - see _probe-report.md for that baseline."
+      : "NORMAL MODE: settled-state run, unchanged from before --slow existed. A route still fetching at the budget downgrades to " +
+        "LIVE-DOM-CONDITIONAL (report-only, see file header) rather than failing the gate.",
     "",
     `Totals: CSS-LOOP=${cssLoopTotal}  LIVE-DOM=${liveDomTotal}  LIVE-DOM-CONDITIONAL=${liveDomConditionalTotal} (report-only)  ${routes.length} route(s)`,
     "",
@@ -603,13 +735,14 @@ async function main() {
   const body = routes.map((route) => formatRouteSection(route, byRoute.get(route))).join("\n---\n\n");
   const report = header + body + "\n";
 
-  const outDir = dirname(OUTPUT_PATH);
+  const outputPath = slow ? OUTPUT_PATH_SLOW : OUTPUT_PATH_NORMAL;
+  const outDir = dirname(outputPath);
   if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
-  writeFileSync(OUTPUT_PATH, report);
+  writeFileSync(outputPath, report);
 
   console.log("");
   console.log(report);
-  console.log(`[check-motion] report written to ${OUTPUT_PATH}`);
+  console.log(`[check-motion] report written to ${outputPath}`);
 
   if (gate) {
     console.log("");
