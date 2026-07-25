@@ -201,7 +201,14 @@ export default async function Hero() {
           </h1>
           {/* V3-D327: Fresha sub 16px mobile / 22px desktop, weight 400, lh 1.3-1.4 */}
           {/* V3-D330: Hero sub tracking -0.015em → -0.005em per LOCKFILE §2.5 canonical Hero sub recipe. */}
-          <p className="font-body text-[clamp(16px,4.5vw,22px)] font-normal leading-[1.35] tracking-[-0.005em] text-s-ink-2">
+          {/* RANGE_LAW A6 (2026-07-25): clamp(16px,4.5vw,22px) rendered 17.55px at the
+              390px FLOORS viewport, an orphan size that didn't land on any locked bucket
+              and was the 5th size inside the F7c densest-cluster window (12/14/15/17.55/18).
+              Reused the SectionHeader H2 formula verbatim (SectionTitle in this file, and
+              MobileCategoriesRow's own h2) so the sub-line snaps onto the existing
+              section-H2 bucket (clamp(18px,2vw,20px)) instead of floating between it and
+              body/CTA sizes. Weight/leading/tracking/color untouched. */}
+          <p className="font-body text-[clamp(18px,2vw,20px)] font-normal leading-[1.35] tracking-[-0.005em] text-s-ink-2">
             Beauty &amp; Wellness in der ganzen Schweiz.
           </p>
         </div>

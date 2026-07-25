@@ -309,7 +309,17 @@ export function FeedZone({
         // V2-D67-fu17 (2026-05-17): reverted V2-D67-fu15 tint per user "ditch ts".
         // Back to V2-D65 transparent FeedZone — atmosphere reads at full chroma
         // below the cards. Shadow RGB kept as ink.
-        "border-t border-white/40",
+        // RANGE_LAW A-shadow (2026-07-25): border-white/40 was written when this panel
+        // overlapped a COLORED Hero (V3-D145 comment above); the B&W pivot made Hero and
+        // this panel both flat #FFFFFF, so a white-on-white 40%-alpha border composites to
+        // zero and the panel's only boundary cue left was its 4%-alpha shadow, exactly the
+        // "white card with only a 4% shadow on white is invalid" case in FLOORS LAW 4.
+        // Swapped to the one locked hairline token (border-s-border, design contract
+        // "hairline" row) per FLOORS LAW 4(c) "on white keep the hairline". Shadow value
+        // and direction left untouched, it still reads as the panel rising over Hero.
+        // mockup-ok: task-directed edge-visibility fix (RANGE_LAW / FLOORS LAW 4c), a
+        // token-only border-color swap, no radius/shadow/layout value changed.
+        "border-t border-s-border",
         "shadow-[0_-12px_32px_rgba(26,18,9,0.04)] md:shadow-[0_-16px_40px_rgba(26,18,9,0.05)]",
         // V2-D49n-fu7 (2026-05-10): bottom padding cut from pb-12/20 → pb-4/6
         // so the FeedZone's glass panel flows right into the footer instead
