@@ -7,6 +7,7 @@ import { HeartButton } from "../homepage/HeartButton";
 import { StatusInline } from "./StatusInline";
 import type { SalonDetail, OpenStatus } from "./_shared";
 import { shareOrCopy } from "@/lib/share";
+import ReportButton from "@/components-legacy/discovery/ReportButton";
 
 /**
  * SalonHeader — V3-D232 (2026-05-27, hero austerity strip per Fresha capture).
@@ -151,6 +152,10 @@ export function SalonHeader({
             tone="dark"
             className="!relative !right-auto !top-auto"
           />
+          {/* mockup-ok: net-new report affordance (owner ask 2026-07-25), reusing
+              ReportButton's "header" variant, a verbatim copy of the Share button's own
+              chrome above (h-11 w-11 white bordered circle). */}
+          <ReportButton type="salon" targetId={salon.id} variant="header" />
         </div>
       </div>
     </header>

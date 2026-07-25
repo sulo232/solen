@@ -1,5 +1,6 @@
 import { z, ZodSchema } from "zod";
 import { PORTFOLIO_CATEGORY_KEYS } from "@/lib/portfolio-categories";
+import { REPORT_STATUSES, REPORT_TARGET_TYPES, REPORT_REASONS } from "@/lib/content-reports";
 
 // ─── Helper ──────────────────────────────────────────────────────────────────
 
@@ -812,6 +813,26 @@ export const adminReviewActionSchema = z.object({
 
 export const flagReviewSchema = z.object({
   reason: z.string().min(5).max(500),
+});
+
+// POST /api/reports: the generic Trust & Safety report a customer files against a salon,
+// review, or user. Enum values mirror the live content_reports CHECK constraints
+// (supabase/migrations/078_content_reports.sql) via lib/content-reports.ts, the single
+// source of truth for the report taxonomy.
+export const reportSubmitSchema = z.object({
+  targetType: z.enum(REPORT_TARGET_TYPES),
+  targetId: uuid,
+  reason: z.enum(REPORT_REASONS),
+  details: z.string().max(1000).optional(),
+});
+
+// PATCH /api/admin/reports/[id]: admin triage of a content_reports row. `hide_content`
+// only applies when the report's target_type is "review" (checked server-side, not
+// here); it drives the real reviews.is_hidden/moderation_status write, not a cosmetic flag.
+export const adminReportActionSchema = z.object({
+  status: z.enum(REPORT_STATUSES).optional(),
+  admin_notes: z.string().max(1000).optional(),
+  hide_content: z.boolean().optional(),
 });
 
 export const adminDiscoveryItemSchema = z.object({

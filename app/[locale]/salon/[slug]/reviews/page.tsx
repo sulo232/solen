@@ -57,7 +57,7 @@ export default async function SalonReviewsPage({
   // need the id before we can fetch the review rows.
   const salonRes = await supabase
     .from("salons")
-    .select("id, slug, name, average_rating, review_count")
+    .select("id, slug, name, average_rating, review_count, owner_id")
     .eq("slug", slug)
     .single();
 
@@ -73,6 +73,10 @@ export default async function SalonReviewsPage({
     data: { user },
   } = await supabase.auth.getUser();
   const userId = user?.id ?? null;
+  // Gates which report affordance SalonReviews shows per row (owner-only internal
+  // flag vs the generic customer ReportButton). owner_id itself never reaches the
+  // client, same discipline as lib/salon-detail.ts's isOwner gate.
+  const isOwner = userId != null && userId === salon.owner_id;
 
   const [reviewsRes, completedRes] = await Promise.all([
     // Ring 2b: narrowed from the prior .limit(50) (bfa385699, 2026-06-30) to the
@@ -166,6 +170,7 @@ export default async function SalonReviewsPage({
           unreviewedBookingStaffMemberId={unreviewedBookingStaffMemberId ?? undefined}
           unreviewedBookingStaffPhotoUrl={unreviewedBookingStaffPhotoUrl}
           locale={locale}
+          isOwner={isOwner}
         />
       </div>
     </main>

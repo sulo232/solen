@@ -12,6 +12,7 @@ import { TabPill } from "@/app/[locale]/_components/primitives/TabPill";
 import ReviewForm from "@/components-legacy/ReviewForm";
 import { RatingStars } from "@/app/[locale]/_components/primitives/RatingStars";
 import { publicReply } from "@/app/[locale]/_components/salon/_shared";
+import ReportButton from "@/components-legacy/discovery/ReportButton";
 import type { Review } from "@/lib/types";
 
 // ─────────────────────────────────────────────────
@@ -62,6 +63,16 @@ interface SalonReviewsProps {
   locale: string;
   onLightbox?: (photoUrl: string) => void;
   onReviewSubmitted?: () => void;
+  /** True only for the reviewed salon's own owner (server-computed). Gates which
+   *  report affordance a viewer sees on each review row (see the header Flag icon
+   *  below): the owner keeps the existing internal moderation-flag tool
+   *  (POST /api/reviews/[id]/flag, owner-only per app/api/reviews/[id]/flag/route.ts),
+   *  everyone else gets the generic customer ReportButton (POST /api/reports). Before
+   *  this, the Flag icon rendered for every viewer but 403'd for non-owners (BACKEND.md
+   *  section 14 gotcha, "an ordinary customer... has no report affordance"). Defaults to
+   *  false so any caller that doesn't pass it explicitly gets the safe (non-owner) path.
+   */
+  isOwner?: boolean;
 }
 
 // ─────────────────────────────────────────────────
@@ -82,6 +93,7 @@ export default function SalonReviews({
   locale,
   onLightbox,
   onReviewSubmitted,
+  isOwner = false,
 }: SalonReviewsProps) {
   const t = useTranslations("salonDetail");
   const [reviewSort, setReviewSort] = useState<"newest" | "highest" | "lowest">("newest");
@@ -356,15 +368,25 @@ export default function SalonReviews({
                           </div>
                         </div>
                       </div>
-                      {flaggingReviewId !== rev.id && (
-                        <button
-                          onClick={() => handleFlagReview(rev.id)}
-                          aria-label={t("flagReview")}
-                          title={t("flagReview")}
-                          className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-s-ink-3 transition-colors duration-150 hover:bg-s-bg-sunken hover:text-s-ink-2"
-                        >
-                          <Flag size={15} aria-hidden />
-                        </button>
+                      {isOwner ? (
+                        // Owner-only internal moderation flag (POST /api/reviews/[id]/flag),
+                        // unchanged. Non-owners get the generic ReportButton below instead:
+                        // this route 403s for anyone but the reviewed salon's own owner
+                        // (app/api/reviews/[id]/flag/route.ts), so showing it to every
+                        // viewer regardless of ownership was a dead end for a normal
+                        // customer (BACKEND.md section 14).
+                        flaggingReviewId !== rev.id && (
+                          <button
+                            onClick={() => handleFlagReview(rev.id)}
+                            aria-label={t("flagReview")}
+                            title={t("flagReview")}
+                            className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-s-ink-3 transition-colors duration-150 hover:bg-s-bg-sunken hover:text-s-ink-2"
+                          >
+                            <Flag size={15} aria-hidden />
+                          </button>
+                        )
+                      ) : (
+                        <ReportButton type="review" targetId={rev.id} variant="row" />
                       )}
                     </div>
 

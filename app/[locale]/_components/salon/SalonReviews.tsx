@@ -8,6 +8,7 @@ import { Avatar, RatingStars, SeeAllButton } from "@/app/[locale]/_components/pr
 import { TabPill } from "../primitives/TabPill";
 import { cn } from "@/lib/utils";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
+import ReportButton from "@/components-legacy/discovery/ReportButton";
 
 /**
  * SalonReviews, D3 "Segmented" (2026-07-24 PORT, owner "I love this D3 segmented
@@ -221,7 +222,7 @@ function ReviewCard({ review, salonName }: { review: Review; salonName?: string 
       {/* Fresha row anatomy (pdp-bottom capture): avatar disc + NAME 16/600 with
           the grey date stacked under, star row below, text below. Anonymous reviews
           show "Anonym" (the established label on /reviews). */}
-      <div className="flex items-center gap-3.5">
+      <div className="flex items-start gap-3.5">
         <Avatar src={review.profiles?.avatar_url} name={displayName ?? "Anonym"} size={56} />
         <div className="min-w-0 flex-1">
           <div className="font-body truncate text-[16px] font-semibold text-s-ink">
@@ -231,6 +232,10 @@ function ReviewCard({ review, salonName }: { review: Review; salonName?: string 
             {formatReviewDate(review.created_at)}
           </div>
         </div>
+        {/* mockup-ok: net-new report affordance (owner ask 2026-07-25, "surfaces that lack
+            it"), reusing ReportButton's "row" variant, a verbatim copy of the full reviews
+            page's own existing per-row Flag icon-button chrome. */}
+        <ReportButton type="review" targetId={review.id} variant="row" />
       </div>
 
       {/* Stars */}

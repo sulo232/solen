@@ -12,7 +12,7 @@ import {
   ShieldCheck, Store, UsersRound, DollarSign, BarChart3, Award, FileEdit,
   MessageSquareWarning, Star, PieChart, Paintbrush, Compass, Camera,
   UserCheck, Megaphone, Image as ImageIcon, Sparkles, LayoutGrid, FlaskConical,
-  Scale, RotateCcw, TrendingUp, Percent, ArrowLeft, Package, MapPin, Gauge, Crown, ToggleLeft,
+  Scale, RotateCcw, TrendingUp, Percent, ArrowLeft, Package, MapPin, Gauge, Crown, ToggleLeft, Flag,
 } from "lucide-react";
 
 import { Skeleton } from "@/app/[locale]/_components/primitives";
@@ -46,6 +46,7 @@ const ADMIN_NAV = [
   { key: "badges",              href: "/dashboard/badge-manager",       icon: Award },
   { key: "content",             href: "/dashboard/content-editor",     icon: FileEdit },
   { key: "reviewModeration",   href: "/dashboard/review-moderation",  icon: MessageSquareWarning },
+  { key: "reports",             href: "/dashboard/reports",            icon: Flag },
   { key: "segments",            href: "/dashboard/segments",           icon: PieChart },
   { key: "visualEditor",       href: "/dashboard/editor",             icon: Paintbrush },
   { key: "discovery",           href: "/dashboard/discovery-admin",    icon: Compass },
