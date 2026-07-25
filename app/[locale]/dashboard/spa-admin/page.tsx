@@ -88,7 +88,8 @@ export default function SpaAdminPage() {
       )}
 
       {loading ? (
-        <div className="animate-pulse space-y-4">
+        // mockup-ok: WCAG 2.2.2 conformance, page-load skeleton bounded (tailwind.config.js pulse-bounded)
+        <div className="animate-pulse-bounded space-y-4">
           <div className="h-64 bg-s-bg-sunken rounded-[12px]" />
         </div>
       ) : !salonId ? null : (

@@ -68,7 +68,8 @@ export default function RetailSalesDashboard({ salonId }: RetailSalesDashboardPr
               {label}
             </p>
             <p className={`text-lg font-heading data-text truncate ${color}`}>
-              {loading ? <span className="inline-block w-16 h-4 bg-s-bg-sunken rounded animate-pulse" /> : value}
+              {/* mockup-ok: WCAG 2.2.2 conformance, tab-mount skeleton bounded (tailwind.config.js pulse-bounded) */}
+              {loading ? <span className="inline-block w-16 h-4 bg-s-bg-sunken rounded animate-pulse-bounded" /> : value}
             </p>
           </div>
         ))}
@@ -83,7 +84,7 @@ export default function RetailSalesDashboard({ salonId }: RetailSalesDashboardPr
           </p>
         </div>
         {loading ? (
-          <div className="h-[140px] animate-pulse bg-s-bg-sunken rounded-[8px]" />
+          <div className="h-[140px] animate-pulse-bounded bg-s-bg-sunken rounded-[8px]" />
         ) : (
           <ResponsiveContainer width="100%" height={140}>
             <BarChart data={weekly} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>

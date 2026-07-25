@@ -92,7 +92,8 @@ export default function AiLimitsAdminPage() {
 
       {loading ? (
         <div className="flex justify-center py-16">
-          <Loader2 size={24} className="animate-spin text-s-ink/40" />
+          {/* mockup-ok: WCAG 2.2.2 conformance, page-load spinner bounded (see tailwind.config.js spin-bounded) */}
+          <Loader2 size={24} className="animate-spin-bounded text-s-ink/40" />
         </div>
       ) : (
         <div className="max-w-md rounded-[14px] border border-s-border bg-white p-6 shadow-warm-md">

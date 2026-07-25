@@ -364,9 +364,10 @@ export default function WalkInPayPage() {
         </div>
       )}
       {loading ? (
+        // mockup-ok: WCAG 2.2.2 conformance, mount-load dots bounded (tailwind.config.js pulse-bounded)
         <div className="mx-auto flex w-full max-w-md flex-1 items-center justify-center gap-1.5 px-5">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="h-1.5 w-1.5 animate-pulse rounded-full bg-s-ink/50" style={{ animationDelay: `${i * 0.2}s` }} />
+            <div key={i} className="h-1.5 w-1.5 animate-pulse-bounded rounded-full bg-s-ink/50" style={{ animationDelay: `${i * 0.2}s` }} />
           ))}
         </div>
       ) : cancelled ? (
@@ -378,10 +379,11 @@ export default function WalkInPayPage() {
           <p className="mt-1.5 max-w-[280px] font-body text-[13.5px] leading-relaxed text-s-ink-2">{cancelPayment === "released" ? l.cancelledReleased : cancelPayment === "refunded" ? l.cancelledRefunded : l.cancelledDesc}</p>
         </motion.div>
       ) : paid ? (
-        // brief spinner — the redirect effect sends to /queue/[token] once the ticket exists
+        // brief spinner, the redirect effect sends to /queue/[token] once the ticket exists
+        // mockup-ok: WCAG 2.2.2 conformance, auto-redirect dots bounded (tailwind.config.js pulse-bounded)
         <div className="mx-auto flex w-full max-w-md flex-1 items-center justify-center gap-1.5 px-5">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="h-1.5 w-1.5 animate-pulse rounded-full bg-s-ink/50" style={{ animationDelay: `${i * 0.2}s` }} />
+            <div key={i} className="h-1.5 w-1.5 animate-pulse-bounded rounded-full bg-s-ink/50" style={{ animationDelay: `${i * 0.2}s` }} />
           ))}
         </div>
       ) : error ? (

@@ -85,7 +85,8 @@ export default function HomepageAdminPage() {
 
       {loading ? (
         <div className="flex justify-center py-16">
-          <Loader2 size={24} className="animate-spin text-s-coral" />
+          {/* mockup-ok: WCAG 2.2.2 conformance, page-load spinner bounded (see tailwind.config.js spin-bounded) */}
+          <Loader2 size={24} className="animate-spin-bounded text-s-coral" />
         </div>
       ) : (
         <div className="bg-white rounded-[12px] shadow-warm-md p-6 max-w-xl space-y-1">

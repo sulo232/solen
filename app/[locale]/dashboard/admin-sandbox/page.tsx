@@ -325,7 +325,8 @@ export default function AdminSandboxPage() {
       {loading ? (
         <div className="space-y-3">
           {[1, 2].map((i) => (
-            <div key={i} className="h-24 rounded-[12px] bg-s-bg-sunken animate-pulse" />
+            // mockup-ok: WCAG 2.2.2 conformance, page-load skeleton bounded (tailwind.config.js pulse-bounded)
+            <div key={i} className="h-24 rounded-[12px] bg-s-bg-sunken animate-pulse-bounded" />
           ))}
         </div>
       ) : salons.length === 0 ? (

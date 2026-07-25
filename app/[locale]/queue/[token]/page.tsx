@@ -571,7 +571,8 @@ export default function QueueTrackingPage() {
           </button>
         ) : (
           <button onClick={fetchStatus} aria-label={l.autoUpdate} className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-full border border-s-border bg-white text-s-ink active:scale-[0.98]">
-            <RefreshCw size={18} className={refreshing ? "animate-spin" : ""} />
+            {/* mockup-ok: WCAG 2.2.2 conformance, this also fires from the un-clicked adaptive poll, so it is bounded (see tailwind.config.js spin-bounded) */}
+            <RefreshCw size={18} className={refreshing ? "animate-spin-bounded" : ""} />
           </button>
         )}
       </div>

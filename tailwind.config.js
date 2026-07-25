@@ -359,6 +359,14 @@ module.exports = {
         // pulse's own keyframe ends back at opacity 1, so the dots settle fully
         // visible, a legible static state).
         "pulse-bounded": "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) 2 forwards",
+        // mockup-ok: WCAG 2.2.2 conformance fix, same technique as shimmer/ping/pulse above.
+        // `animate-spin` (Loader2/RefreshCw page-load indicators) was Tailwind's stock
+        // `infinite`; bounded to 4 cycles of the stock 1s/linear timing (4s, under the
+        // 5s ceiling). `forwards` holds the final frame at a WHOLE rotation (spin's
+        // keyframe is 0deg->360deg, so 4 full cycles land back at the upright, legible
+        // icon, never mid-turn), so a fetch that is still running past 4s reads as a
+        // paused/static icon in the loading slot, not a frozen half-spin.
+        "spin-bounded": "spin 1s linear 4 forwards",
         // V4 additions
         "v4-reveal": "v4-reveal 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards",
         "v4-scale-in": "v4-scale-in 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards",

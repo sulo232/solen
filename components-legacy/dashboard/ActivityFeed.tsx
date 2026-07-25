@@ -85,7 +85,8 @@ export default function ActivityFeed({ salonId }: ActivityFeedProps) {
 
   if (loading) {
     return (
-      <div className="space-y-2 animate-pulse">
+      // mockup-ok: WCAG 2.2.2 conformance, mount-load skeleton bounded (tailwind.config.js pulse-bounded)
+      <div className="space-y-2 animate-pulse-bounded">
         {[...Array(4)].map((_, i) => (
           <div key={i} className="flex gap-3 py-2.5 border-b border-s-ink/[0.04]">
             <div className="w-7 h-7 rounded-[8px] bg-s-bg-sunken shrink-0" />

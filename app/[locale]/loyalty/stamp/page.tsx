@@ -61,9 +61,10 @@ export default function LoyaltyStampPage() {
         {status === "loading" && (
           <div className="flex items-center justify-center gap-1.5 py-16">
             {[0, 1, 2].map((i) => (
+              // mockup-ok: WCAG 2.2.2 conformance, mount-load dots bounded (tailwind.config.js pulse-bounded)
               <div
                 key={i}
-                className="w-1.5 h-1.5 rounded-full bg-s-ink/50 animate-pulse"
+                className="w-1.5 h-1.5 rounded-full bg-s-ink/50 animate-pulse-bounded"
                 style={{ animationDelay: `${i * 0.2}s` }}
               />
             ))}

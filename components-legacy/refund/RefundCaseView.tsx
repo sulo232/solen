@@ -517,7 +517,8 @@ function Timeline({
                   className={cn(
                     "absolute inset-0 rounded-pill opacity-50 motion-reduce:hidden",
                     n.state === "reject" || nowIsError ? "bg-s-error" : "bg-s-accent",
-                    "animate-ping",
+                    // mockup-ok: WCAG 2.2.2 conformance, mount-load status ping bounded (tailwind.config.js ping-bounded)
+                    "animate-ping-bounded",
                   )}
                 />
               )}

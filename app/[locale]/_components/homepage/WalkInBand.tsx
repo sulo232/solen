@@ -104,10 +104,11 @@ export default function WalkInBand() {
                     key={i}
                     className="flex-[0_0_42%] min-w-0 snap-start rounded-[13px] border border-s-border bg-white p-3 shadow-[0_6px_16px_rgba(0,0,0,0.05)]"
                   >
-                    <div className="h-[16px] w-3/4 rounded bg-s-bg-sunken animate-pulse" />
-                    <div className="mt-2.5 h-[12px] w-1/2 rounded bg-s-bg-sunken animate-pulse" />
-                    <div className="mt-3 h-[12px] w-2/3 rounded bg-s-bg-sunken animate-pulse" />
-                    <div className="mt-3 h-[12px] w-1/2 rounded bg-s-bg-sunken animate-pulse" />
+                    {/* mockup-ok: WCAG 2.2.2 conformance, mount-load skeleton bounded (tailwind.config.js pulse-bounded) */}
+                    <div className="h-[16px] w-3/4 rounded bg-s-bg-sunken animate-pulse-bounded" />
+                    <div className="mt-2.5 h-[12px] w-1/2 rounded bg-s-bg-sunken animate-pulse-bounded" />
+                    <div className="mt-3 h-[12px] w-2/3 rounded bg-s-bg-sunken animate-pulse-bounded" />
+                    <div className="mt-3 h-[12px] w-1/2 rounded bg-s-bg-sunken animate-pulse-bounded" />
                   </div>
                 ))
               : salons!.map((s) => {

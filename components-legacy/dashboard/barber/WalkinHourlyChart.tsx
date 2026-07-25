@@ -77,7 +77,8 @@ export default function WalkinHourlyChart({ salonId }: WalkinHourlyChartProps) {
       </div>
 
       {loading ? (
-        <div className="h-[160px] animate-pulse bg-s-bg-sunken rounded-[8px]" />
+        // mockup-ok: WCAG 2.2.2 conformance, mount-load skeleton bounded (tailwind.config.js pulse-bounded)
+        <div className="h-[160px] animate-pulse-bounded bg-s-bg-sunken rounded-[8px]" />
       ) : (
         <ResponsiveContainer width="100%" height={160}>
           <BarChart data={data} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>

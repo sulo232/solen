@@ -35,7 +35,8 @@ export default function NailClientsPage() {
       </div>
 
       {loading ? (
-        <div className="space-y-6 animate-pulse">
+        // mockup-ok: WCAG 2.2.2 conformance, page-load skeleton bounded (tailwind.config.js pulse-bounded)
+        <div className="space-y-6 animate-pulse-bounded">
           <div className="h-96 bg-s-bg-sunken rounded-2xl" />
           <div className="h-64 bg-s-bg-sunken rounded-2xl" />
         </div>

@@ -261,7 +261,8 @@ export function Toaster() {
 //
 // Motion vocabulary (SOURCE.md §6.1 + §6.2):
 //   enter: y:-20 → 0, opacity 0 → 1 over 200ms ease-snap (cubic-bezier(0.4,0,0.2,1))
-//   exit:  opacity 1 → 0 over 150ms ease-glide (cubic-bezier(0.16,1,0.3,1))
+//   exit:  opacity 1 → 0 over 150ms ease-thud (cubic-bezier(0.7,0,0.84,0)) , THE CURVE RULE
+//   (MOTION.md, 2026-07-25): exits accelerate; was ease-glide, the decelerate curve.
 
 type AnimState = "entering" | "open" | "exiting";
 
@@ -324,7 +325,9 @@ function ToastItem({ toast: t }: { toast: InternalToast }) {
         transform: state === "open" ? "translateY(0)" : "translateY(20px)",
         transition:
           state === "exiting"
-            ? "opacity 150ms cubic-bezier(0.16, 1, 0.3, 1)"
+            // THE CURVE RULE (MOTION.md, 2026-07-25): exits accelerate on `thud`, was `glide`
+            // (the decelerate curve, so the dismissed toast used to visibly slow down leaving).
+            ? "opacity 150ms cubic-bezier(0.7, 0, 0.84, 0)"
             : "opacity 200ms cubic-bezier(0.4, 0, 0.2, 1), transform 350ms cubic-bezier(0.34, 1.56, 0.64, 1)",
         willChange: "transform, opacity",
       }}

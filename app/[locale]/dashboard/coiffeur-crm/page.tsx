@@ -102,7 +102,8 @@ export default function CoiffeurCRMPage() {
       </div>
 
       {loading ? (
-        <div className="h-64 bg-s-bg-sunken rounded-2xl animate-pulse" />
+        // mockup-ok: WCAG 2.2.2 conformance, page-load skeleton bounded (tailwind.config.js pulse-bounded)
+        <div className="h-64 bg-s-bg-sunken rounded-2xl animate-pulse-bounded" />
       ) : !salonId ? null : (
         <>
           {/* ── Formulas ── */}

@@ -45,7 +45,8 @@ export default function AiArtGallery({ salonId }: AiArtGalleryProps) {
     return (
       <div className="columns-2 md:columns-3 gap-3">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="mb-3 rounded-[12px] bg-s-bg-sunken animate-pulse"
+          // mockup-ok: WCAG 2.2.2 conformance, tab-mount skeleton bounded (tailwind.config.js pulse-bounded)
+          <div key={i} className="mb-3 rounded-[12px] bg-s-bg-sunken animate-pulse-bounded"
             style={{ height: `${140 + (i % 3) * 40}px` }} />
         ))}
       </div>

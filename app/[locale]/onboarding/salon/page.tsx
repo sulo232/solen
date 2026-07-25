@@ -238,7 +238,8 @@ function Step3({ data, onChange, category, t }: {
             />
             {suggesting && (
               <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                <Loader2 size={16} className="animate-spin text-s-accent" />
+                {/* mockup-ok: WCAG 2.2.2 conformance, fires on step-mount via useEffect (AI suggest), no click; bounded (see tailwind.config.js spin-bounded) */}
+                <Loader2 size={16} className="animate-spin-bounded text-s-accent" />
               </div>
             )}
           </div>
@@ -537,7 +538,8 @@ export default function SalonOnboardingPage() {
       <div className="min-h-screen bg-white">
         {/* Header skeleton */}
         <div className="bg-white border-b border-s-ink/[0.06] px-4 py-4">
-          <div className="max-w-xl mx-auto space-y-3 animate-pulse">
+          {/* mockup-ok: WCAG 2.2.2 conformance, auth-check skeleton bounded (tailwind.config.js pulse-bounded) */}
+          <div className="max-w-xl mx-auto space-y-3 animate-pulse-bounded">
             <div className="flex justify-between">
               <div className="h-4 w-20 bg-s-bg-sunken rounded" />
               <div className="h-3 w-16 bg-s-bg-sunken rounded" />
@@ -548,7 +550,7 @@ export default function SalonOnboardingPage() {
         </div>
         {/* Card skeleton */}
         <div className="px-4 py-8">
-          <div className="max-w-xl mx-auto rounded-card border border-s-ink/[0.06] bg-white p-8 animate-pulse">
+          <div className="max-w-xl mx-auto rounded-card border border-s-ink/[0.06] bg-white p-8 animate-pulse-bounded">
             <div className="h-2 w-24 bg-s-bg-sunken rounded mb-3" />
             <div className="h-7 w-48 bg-s-bg-sunken rounded mb-8" />
             <div className="space-y-5">

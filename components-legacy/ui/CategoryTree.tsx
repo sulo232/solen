@@ -64,7 +64,8 @@ export default function CategoryTree({ activeSlug }: CategoryTreeProps) {
     return (
       <div className="space-y-2">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="h-8 bg-s-bg-sunken rounded animate-pulse" />
+          // mockup-ok: WCAG 2.2.2 conformance, mount-load skeleton bounded (tailwind.config.js pulse-bounded)
+          <div key={i} className="h-8 bg-s-bg-sunken rounded animate-pulse-bounded" />
         ))}
       </div>
     );

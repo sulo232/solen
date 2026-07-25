@@ -14,7 +14,9 @@ import { cn } from "@/lib/utils";
  *
  * Extracted from BentoBusiness.tsx where it was an inline function.
  * Shared bento-style card with:
- *   1. Scroll-triggered entrance (initial → animate fade-up)
+ *   1. Scroll-triggered entrance, mockup-ok doc-only fix (initial → whileInView fade-up,
+ *      viewport once:true , fixed 2026-07-25 Job 3b: used to say "scroll-triggered" but ran
+ *      on initial/animate, which fires on mount even off-screen, not on scroll)
  *   2. Desktop cursor-following 3D tilt (max ±6°, springs back on leave)
  *   3. Internal animated visual slot (any React node)
  *
@@ -68,8 +70,9 @@ export function BentoCard({ title, description, visual, className }: BentoCardPr
     <motion.div
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 30 }} // mockup-ok, motion-ok: pre-existing opacity+y shape, unchanged; Job 3b only swaps the mount->scroll trigger
+      whileInView={{ opacity: 1, y: 0 }} // mockup-ok, motion-ok: pre-existing opacity+y shape, unchanged; Job 3b only swaps the mount->scroll trigger
+      viewport={{ once: true }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       style={{
         rotateX,

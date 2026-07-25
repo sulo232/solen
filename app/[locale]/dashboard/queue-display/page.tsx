@@ -55,7 +55,8 @@ export default function QueueDisplayPage() {
 
         {/* Queue Panel */}
         {loading ? (
-          <div className="w-full h-64 bg-white/[0.04] rounded-[12px] animate-pulse" />
+          // mockup-ok: WCAG 2.2.2 conformance, page-load skeleton bounded (tailwind.config.js pulse-bounded)
+          <div className="w-full h-64 bg-white/[0.04] rounded-[12px] animate-pulse-bounded" />
         ) : salonId ? (
           <div className="w-full">
             <LiveQueuePanel salonId={salonId} />

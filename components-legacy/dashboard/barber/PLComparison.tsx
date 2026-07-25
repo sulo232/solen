@@ -74,7 +74,8 @@ export default function PLComparison({ salonId }: PLComparisonProps) {
       </div>
 
       {loading ? (
-        <div className="space-y-3 animate-pulse">
+        // mockup-ok: WCAG 2.2.2 conformance, mount-load skeleton bounded (tailwind.config.js pulse-bounded)
+        <div className="space-y-3 animate-pulse-bounded">
           <div className="h-16 bg-s-bg-sunken rounded-[8px]" />
           <div className="h-[160px] bg-s-bg-sunken rounded-[8px]" />
         </div>

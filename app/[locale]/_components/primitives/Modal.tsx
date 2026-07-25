@@ -26,8 +26,9 @@ import { cn } from "@/lib/utils";
  *     <ModalFooter>...</ModalFooter>
  *   </Modal>
  *
- * Motion: ease-snap for both entry (200/250ms) and exit (150ms). No spring/bounce —
- * modals are functional, not playful (§F.2.9).
+ * Motion: ease-glide entry (200/250ms), ease-thud exit (150ms) (THE CURVE RULE, MOTION.md
+ * 2026-07-25: exits accelerate; was ease-snap for both). No spring/bounce, modals are
+ * functional, not playful (§F.2.9).
  */
 const modalSurfaceVariants = cva(
   cn(
@@ -35,10 +36,12 @@ const modalSurfaceVariants = cva(
     "bg-s-bg-base rounded-2xl shadow-elevation-3",
     "flex flex-col overflow-hidden",
     "max-h-[calc(100dvh-32px)]",
-    // entry/exit motion via react-aria data attrs
-    "transition-[opacity,transform] duration-[250ms] ease-snap",
+    // entry/exit motion via react-aria data attrs. THE CURVE RULE (MOTION.md, 2026-07-25): this was
+    // one shared `ease-snap` for both directions; split so entering decelerates on `glide` (base)
+    // and exiting accelerates on `thud` (override), instead of flipping both to one curve.
+    "transition-[opacity,transform] duration-[250ms] ease-glide",
     "data-[entering]:opacity-0 data-[entering]:scale-[0.95]",
-    "data-[exiting]:opacity-0 data-[exiting]:scale-[0.95] data-[exiting]:duration-150",
+    "data-[exiting]:opacity-0 data-[exiting]:scale-[0.95] data-[exiting]:duration-150 data-[exiting]:ease-thud",
     // reduced motion: collapse to opacity-only, 100ms (per §F.2.9 + §24b.3)
     "motion-reduce:transition-opacity motion-reduce:duration-100",
     "motion-reduce:data-[entering]:scale-100 motion-reduce:data-[exiting]:scale-100",

@@ -175,7 +175,8 @@ export default function DashboardPage() {
 
       {loading ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3.5">
-          {[...Array(2)].map((_, i) => <div key={i} className="rounded-card-lg border border-s-border bg-white h-56 animate-pulse" />)}
+          {/* mockup-ok: WCAG 2.2.2 conformance, page-load skeleton bounded (tailwind.config.js pulse-bounded) */}
+          {[...Array(2)].map((_, i) => <div key={i} className="rounded-card-lg border border-s-border bg-white h-56 animate-pulse-bounded" />)}
         </div>
       ) : (
         <div className="space-y-3.5">

@@ -29,7 +29,8 @@ import { cn } from "@/lib/utils";
  *     </SheetCTARow>
  *   </Sheet>
  *
- * Motion: ease-glide entry 600ms (long-distance smooth), ease-snap exit 200ms.
+ * Motion: ease-glide entry 600ms (long-distance smooth), ease-thud exit 200ms (THE CURVE RULE,
+ * MOTION.md 2026-07-25: exits accelerate; was ease-snap).
  * `motion-reduce:` collapses to opacity-only fade.
  */
 const sheetSurfaceVariants = cva(
@@ -42,7 +43,8 @@ const sheetSurfaceVariants = cva(
     // entry/exit motion via react-aria data attrs
     "transition-transform duration-[600ms] ease-glide",
     "data-[entering]:translate-y-full",
-    "data-[exiting]:translate-y-full data-[exiting]:duration-200 data-[exiting]:ease-snap",
+    // THE CURVE RULE (MOTION.md, 2026-07-25): exits accelerate on `thud`, was `snap`.
+    "data-[exiting]:translate-y-full data-[exiting]:duration-200 data-[exiting]:ease-thud",
     // reduced motion: collapse to opacity-only, 100ms (per §F.3.8 + §24b.3)
     "motion-reduce:transition-opacity motion-reduce:duration-100",
     "motion-reduce:data-[entering]:translate-y-0 motion-reduce:data-[entering]:opacity-0",
@@ -174,10 +176,12 @@ export function Sheet({
         // backdrop: fixed inset, warm-ink dim + 4px blur, RELATIVE positioning context for sheet
         "fixed inset-0 z-sheet-bg",
         "bg-[rgba(26,18,9,0.40)] backdrop-blur-[4px]",
-        // entry/exit fade
-        "transition-opacity duration-300 ease-snap",
+        // entry/exit fade. THE CURVE RULE (MOTION.md, 2026-07-25): this shared transition was one
+        // `ease-snap` for both directions; split so entering decelerates on `glide` (base) and
+        // exiting accelerates on `thud` (override), instead of flipping both to one curve.
+        "transition-opacity duration-300 ease-glide",
         "data-[entering]:opacity-0",
-        "data-[exiting]:opacity-0 data-[exiting]:duration-200",
+        "data-[exiting]:opacity-0 data-[exiting]:duration-200 data-[exiting]:ease-thud",
         overlayClassName,
       )}
     >

@@ -79,7 +79,8 @@ export default function HandChart({ customerId }: HandChartProps) {
   if (loading) {
     return (
       <div className="flex justify-center p-8">
-        <Loader2 className="animate-spin text-s-accent/50" />
+        {/* mockup-ok: WCAG 2.2.2 conformance, fires on tab-mount via useEffect with no further click, bounded (see tailwind.config.js spin-bounded) */}
+        <Loader2 className="animate-spin-bounded text-s-accent/50" />
       </div>
     );
   }
