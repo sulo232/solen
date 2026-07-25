@@ -76,24 +76,52 @@ through 2026-08-31) · haiku-4-5 1/5 · opus-4-8 / 4-7 / 4-6 5/25. Queued for ro
       fixture-check OK)
 - [ ] P2 , round 2 (owner-directed). Round 2A DISPATCHED 2026-07-25 to a coder subagent,
       running at time of writing; 2B not yet dispatched.
-  - [ ] P2a. Kill the tool-name insight item (D4) , IN FLIGHT (round 2A, task 1)
+  - [x] P2a. Kill the tool-name insight item (D4) , SHIPPED round 2A, commit **892fd61**,
+        `verified:` grep for renderInsight / describeActivity / verbFor / VERB_MAP /
+        showInsight across `src/` + `package.json` returns nothing: `renderInsight`,
+        `describeActivity`, `verbFor`, `VERB_MAP`, `ActivityDescription` deleted from
+        `render.ts`/`extension.ts`, the priority-99 status bar item removed, `showInsight`
+        dropped from `package.json`. `pendingToolUses`/`summarizeToolUse` kept on purpose
+        (stall detector below + a later recap round).
   - [ ] P2b. Live `/api/oauth/usage` fetch, shape-validated, cache-backed, non-throwing (D1)
         , **BLOCKED on the owner**, concrete blocker: the call needs the OAuth token from the
         macOS keychain item `Claude Code-credentials`, and reading it makes macOS prompt for
         keychain access. Asked in the closing report; until the owner says yes, the cache
         path (already shipped) stays primary. Everything else in D1 (shape validation,
         backoff, timeout, non-throwing, cache floor) is specified and ready to build.
-  - [ ] P2c. Work-status readout: current step, done, remaining (D3) , data layer IN FLIGHT
-        (round 2A, task 3: `src/workstate.ts`). Rendering is round 2B.
+        Round 2A's brief did not include this task at all, so it was left untouched.
+  - [ ] P2c. Work-status readout: current step, done, remaining (D3) , DATA LAYER SHIPPED
+        round 2A: `src/workstate.ts`'s `deriveWorkState()` reads `ai-title` / `last-prompt` /
+        `TodoWrite` records off an extended `parse.ts` Accumulator into
+        `{ title, ask, currentStep, done, total, remaining }`, covered by fixture-check.js
+        (replace-not-merge, title-only, no-signal-undefined, long-prompt truncation).
+        Rendering into the status bar is round 2B, per the round 2A brief itself.
         Sources verified today: `aiTitle` and `lastPrompt` records, plus `TodoWrite` tool
         calls (present in 23 of 29 transcripts for this project, so common but not certain).
-  - [ ] P2d. Warnings and stalls with colour (D4b) , detector IN FLIGHT (round 2A, task 3:
-        `detectWarnings`). Rendering is round 2B.
-  - [ ] P2e. Plain-English session recap on idle (D4c) , queued for round 2B, not started
+  - [ ] P2d. Warnings and stalls with colour (D4b) , DETECTOR SHIPPED round 2A:
+        `workstate.ts`'s `detectWarnings()` (pending-call stall at 120s/600s, context at
+        80%/92%, usage-limit windows at 80%/95%, stale windows silenced, errors ordered
+        before warnings, no tool names in any message). Colour/status-bar rendering is
+        round 2B, per the round 2A brief itself.
+  - [ ] P2e. Plain-English session recap on idle (D4c) , queued for round 2B, not started.
+        Round 2A's brief did not include this task; it explicitly named
+        `pendingToolUses`/`summarizeToolUse` as kept alive for this later round to use.
   - [ ] P2f. Webview panel: gauges, bars, burn sparkline, agent cards, timeline (D2) ,
-        queued for round 2B, not started. Mockup-first before it lands.
-  - [ ] P2g. Add opus-5 / sonnet-5 / fable-5 to `pricing.ts` , IN FLIGHT (round 2A, task 2),
-        plus an `isKnownModel` export so an unpriced model reads "unknown" instead of $0.00
+        queued for round 2B, not started. Mockup-first before it lands. Round 2A's brief did
+        not include this task at all.
+  - [x] P2g. Add opus-5 / sonnet-5 / fable-5 to `pricing.ts` , SHIPPED round 2A, commit
+        **892fd61**, `verified:` `src/pricing.ts:12` opus-5, `:15` sonnet-5, `:18` fable-5,
+        `:69` `isKnownModel`, `:3` Verified date 2026-07-25. All three
+        added (opus-5 5/25, sonnet-5 already present at 3/15, fable-5 10/50), plus a new
+        `isKnownModel()` export so the tooltip's Cost line reads
+        "unknown (no rate on file for <model>)" instead of silently `$0.00` for a model not
+        in the table. Verified: `node test/fixture-check.js` prints `OK`.
+
+Round 2A closed 2026-07-25: exactly the four tasks in its brief (kill insight item, pricing
+table, `workstate.ts` data layer, tests) are done; `npm run compile` and
+`node test/fixture-check.js` both pass; `./deploy.sh` installed the build. P2b/P2e/P2f were
+never part of that brief and were left untouched rather than expanded into, so P2 as a whole
+stays unticked until round 2B covers rendering + the remaining phases.
 
 ## A9 , ideas menu (the durable copy)
 
