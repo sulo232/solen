@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { ArrowLeft, ChevronDown, Star, Check } from "lucide-react";
 import { Avatar, RatingStars } from "@/app/[locale]/_components/primitives";
+import { formatReviewDate } from "@/app/[locale]/_components/salon/_shared";
 
 export interface SheetReview {
   id: string;
@@ -64,14 +65,7 @@ export default function StaffReviewsSheet({
 
   if (!mounted) return null;
 
-  const fmtDate = (iso: string) =>
-    new Date(iso).toLocaleDateString(locale === "en" ? "en-US" : "de-DE", {
-      weekday: "short", day: "2-digit", month: "long", year: "numeric",
-    }) +
-    " " +
-    new Date(iso).toLocaleTimeString(locale === "en" ? "en-US" : "de-DE", {
-      hour: "2-digit", minute: "2-digit",
-    });
+  const fmtDate = (iso: string) => formatReviewDate(iso, locale);
 
   const toggleFilter = (n: number) =>
     setFilters((prev) => {

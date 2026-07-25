@@ -7,6 +7,7 @@ import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Share, Star, X, ArrowLeft, Instagram, ChevronLeft, ChevronRight, Check } from "lucide-react";
 import { Avatar, RatingStars, SeeAllButton } from "@/app/[locale]/_components/primitives";
+import { formatReviewDate } from "@/app/[locale]/_components/salon/_shared";
 import Spinner from "@/components-legacy/ui/Spinner";
 import StaffReviewsSheet from "@/components-legacy/staff/StaffReviewsSheet";
 import { formatCurrency } from "@/lib/format-currency";
@@ -185,10 +186,7 @@ export default function StaffProfilePage({
     .join("  ");
   const bookHref = `/${locale}/salon/${salonSlug}/booking?staff=${staff.id}`;
   const sName = (s: StaffService) => (locale === "en" ? s.name_en : s.name_de);
-  const fmtDate = (iso: string) =>
-    new Date(iso).toLocaleDateString(locale === "en" ? "en-US" : "de-DE", {
-      day: "2-digit", month: "long", year: "numeric",
-    });
+  const fmtDate = (iso: string) => formatReviewDate(iso, locale);
 
   const goTo = (t: Tab) => {
     navLock.current = true;

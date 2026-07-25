@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Store, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Avatar, RatingStars } from "@/app/[locale]/_components/primitives";
+import { formatReviewDate } from "@/app/[locale]/_components/salon/_shared";
 
 /**
  * MarketplaceReviewsList — cross-salon aggregate review list for /reviews.
@@ -83,9 +84,7 @@ function ReviewCard({
           <ChevronRight size={13} strokeWidth={2.5} aria-hidden className="shrink-0" />
         </Link>
         <span className="shrink-0 text-xs text-s-ink/30 tabular-nums">
-          {new Date(review.created_at).toLocaleDateString(
-            locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-GB"
-          )}
+          {formatReviewDate(review.created_at, locale)}
         </span>
       </div>
     </article>

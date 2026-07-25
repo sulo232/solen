@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { ChevronRight, Star, Store } from "lucide-react";
 import { Section, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
+import { formatReviewDate } from "@/app/[locale]/_components/salon/_shared";
 import { cn, slugify } from "@/lib/utils";
 
 /**
@@ -69,14 +70,8 @@ export default function Reviews() {
           // Prefer the real slug from the API; fall back to deriving one from the name.
           const salonName: string = item.salon_name ?? "";
           const salonSlug = item.salon_slug || slugify(salonName);
-          // created_at gives us a relative date label, in the active locale.
-          const meta: string = item.created_at
-            ? new Date(item.created_at).toLocaleDateString(locale, {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })
-            : "";
+          // Date-only label (no weekday, no time), in the active locale.
+          const meta: string = item.created_at ? formatReviewDate(item.created_at, locale) : "";
           return {
             stars: Math.min(5, Math.max(1, Math.round(item.rating ?? 5))),
             text: item.comment ?? "",

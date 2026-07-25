@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
+import { FROST_GLASS } from "@/lib/frost-glass";
 import type { StaffMember } from "./_shared";
 
 const TILE_CAP = 9; // 3 columns x 3 rows
@@ -121,9 +122,19 @@ function UniformGrid({ urls, onOpen }: { urls: string[]; onOpen: (i: number) => 
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={u} alt="" className="h-full w-full object-cover" loading="lazy" />
             {showOverlay && (
-              <div className="absolute inset-0 grid place-items-center bg-black/55 font-display text-[24px] font-semibold text-white md:text-[32px]">
+              // mockup-ok: owner-specified treatment (2026-07-25, "plus how many are left on
+              // the last picture, on the right down"), grounded in the LOCKED FROST_GLASS
+              // control-over-photo recipe (lib/frost-glass.ts, already shipped on SalonHero)
+              // rather than a new scrim, per explicit instruction, not an invented appearance.
+              // Small, bottom-right, ink-on-frost, tabular numerals; decorative overlay inside
+              // an already-clickable <button>, so aria-hidden (doesn't swallow the tap).
+              <span
+                aria-hidden
+                style={FROST_GLASS}
+                className="absolute bottom-1.5 right-1.5 rounded-full px-2 py-0.5 font-body text-[12px] font-semibold tabular-nums text-s-ink md:bottom-2 md:right-2 md:px-2.5 md:py-1"
+              >
                 +{overflow}
-              </div>
+              </span>
             )}
           </button>
         );

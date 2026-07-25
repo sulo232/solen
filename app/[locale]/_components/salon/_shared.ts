@@ -370,26 +370,32 @@ export function computeOpenStatus(
 export { avatarColor } from "../primitives/Avatar";
 
 /**
- * Pretty date for review timestamps. Fresha format: "Fri, May 8, 2026 at 7:09 PM"
- * We emit a German equivalent: "Fr., 8. Mai 2026 um 19:09".
- *
- * Two-line variant — call this when you want a single-string label that
- * can be split via " um " into date + time if the layout needs two rows.
+ * Locale tag lookup for date formatting, same map used elsewhere in the app
+ * (e.g. app/[locale]/walk-in-pay/page.tsx LOCALE_TAG). Defaults to "de-CH"
+ * for an unrecognised or missing value.
  */
-export function formatReviewDate(iso: string): string {
+const DATE_LOCALE_TAG: Record<string, string> = { de: "de-CH", en: "en-GB", fr: "fr-CH", it: "it-CH" };
+
+/**
+ * Pretty date for review timestamps: DATE ONLY (owner, 2026-07-25, verbatim
+ * "I don't like how the dates, it's so detailed, how many hours and what
+ * weekday it is. We don't need that. We need just, like, the sixth June
+ * twenty twenty six. That's enough."). Was "Fr., 8. Mai 2026 um 19:09"
+ * (weekday + time); now e.g. "8. Mai 2026" , day, spelled month, year, and
+ * nothing else. A review-list date is a DATE, not a timestamp: no weekday,
+ * no time, no relative "vor 2 Tagen".
+ *
+ * `locale` selects the Intl tag via DATE_LOCALE_TAG above; defaults to "de"
+ * so existing single-argument call sites keep compiling.
+ */
+export function formatReviewDate(iso: string, locale?: string | null): string {
   try {
-    const d = new Date(iso);
-    const datePart = d.toLocaleDateString("de-CH", {
-      weekday: "short",
+    const tag = DATE_LOCALE_TAG[locale ?? "de"] ?? "de-CH";
+    return new Date(iso).toLocaleDateString(tag, {
       day: "numeric",
-      month: "short",
+      month: "long",
       year: "numeric",
     });
-    const timePart = d.toLocaleTimeString("de-CH", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-    return `${datePart} um ${timePart}`;
   } catch {
     return iso;
   }

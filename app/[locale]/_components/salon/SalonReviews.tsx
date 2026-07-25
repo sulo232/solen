@@ -181,7 +181,7 @@ export function SalonReviews({
               ) : (
                 visible.map((r) => (
                   <div key={r.id} className="border-t border-s-border pt-5 first:border-t-0 first:pt-0 [&+&]:mt-5">
-                    <ReviewCard review={r} salonName={salonName} />
+                    <ReviewCard review={r} salonName={salonName} locale={locale} />
                   </div>
                 ))
               )}
@@ -207,7 +207,7 @@ export function SalonReviews({
   );
 }
 
-function ReviewCard({ review, salonName }: { review: Review; salonName?: string }) {
+function ReviewCard({ review, salonName, locale }: { review: Review; salonName?: string; locale?: string }) {
   const text = review.comment ?? review.comment_de ?? review.comment_en ?? "";
   const [showFull, setShowFull] = React.useState(false);
   const isLong = text.length > 200;
@@ -229,7 +229,7 @@ function ReviewCard({ review, salonName }: { review: Review; salonName?: string 
             {displayName ?? "Anonym"}
           </div>
           <div className="font-body mt-0.5 text-[14px] text-s-ink-3">
-            {formatReviewDate(review.created_at)}
+            {formatReviewDate(review.created_at, locale)}
           </div>
         </div>
         {/* mockup-ok: net-new report affordance (owner ask 2026-07-25, "surfaces that lack
@@ -277,7 +277,7 @@ function ReviewCard({ review, salonName }: { review: Review; salonName?: string 
             {salonName ? `Antwort von ${salonName}` : "Antwort vom Salon"}
           </p>
           <p className="mt-1.5 text-[13px] leading-relaxed text-s-ink-2">{reply.reply_text}</p>
-          <p className="mt-1.5 text-[12px] text-s-ink-3">{formatReviewDate(reply.created_at)}</p>
+          <p className="mt-1.5 text-[12px] text-s-ink-3">{formatReviewDate(reply.created_at, locale)}</p>
         </div>
       )}
     </article>

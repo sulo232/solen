@@ -11,7 +11,7 @@ import { Sheet } from "@/app/[locale]/_components/primitives/Sheet";
 import { TabPill } from "@/app/[locale]/_components/primitives/TabPill";
 import ReviewForm from "@/components-legacy/ReviewForm";
 import { RatingStars } from "@/app/[locale]/_components/primitives/RatingStars";
-import { publicReply } from "@/app/[locale]/_components/salon/_shared";
+import { formatReviewDate, publicReply } from "@/app/[locale]/_components/salon/_shared";
 import ReportButton from "@/components-legacy/discovery/ReportButton";
 import type { Review } from "@/lib/types";
 
@@ -357,7 +357,7 @@ export default function SalonReviews({
                           </div>
                           <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[13px] text-s-ink-3">
                             <span>
-                              {new Date(rev.created_at).toLocaleDateString(locale === "de" ? "de-CH" : "en-GB", { day: "numeric", month: "long", year: "numeric" })}
+                              {formatReviewDate(rev.created_at, locale)}
                             </span>
                             {publicReply(rev.review_replies) && (
                               <span className="flex items-center gap-1 text-s-accent">
@@ -486,7 +486,7 @@ export default function SalonReviews({
                           </p>
                           <p className="mt-1.5 text-[13px] leading-relaxed text-s-ink-2">{reply.reply_text}</p>
                           <p className="mt-1.5 text-[12px] text-s-ink-3">
-                            {new Date(reply.created_at).toLocaleDateString(locale === "de" ? "de-CH" : "en-GB", { day: "numeric", month: "long", year: "numeric" })}
+                            {formatReviewDate(reply.created_at, locale)}
                           </p>
                         </div>
                       );
