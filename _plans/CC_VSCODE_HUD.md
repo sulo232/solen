@@ -107,7 +107,8 @@ through 2026-08-31) · haiku-4-5 1/5 · opus-4-8 / 4-7 / 4-6 5/25. Queued for ro
         Round 2A's brief did not include this task; it explicitly named
         `pendingToolUses`/`summarizeToolUse` as kept alive for this later round to use.
   - [ ] P2f. Webview panel: gauges, bars, burn sparkline, agent cards, timeline (D2) ,
-        MOCKUP BUILT and awaiting the owner's verdict, commit **0c10f3101**, `verified:`
+        **MOCKUP APPROVED by the owner 2026-07-25 ("approved"), BUILD DISPATCHED** to a coder
+        subagent the same turn. Mockup at commit **0c10f3101**, `verified:`
         `public/_mockups/cc-statusbar-panel/index.html` serves 200 through the tunnel.
         Three states (calm with today's real numbers, warning, error). Playwright-measured:
         anchor 1.85x, 4 sizes, 18% at weight >=600, no overflow; the first pass failed at
