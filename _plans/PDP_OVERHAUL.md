@@ -263,8 +263,8 @@ EXISTS-CHECK (rule 12) , partly built, EXTEND don't duplicate:
   - `ReportButton` exists at components-legacy/discovery/ReportButton.tsx (discovery only).
   - `app/[locale]/dashboard/review-moderation` exists but is reviews-specific, NOT a general report queue.
   - GAP: nothing lets an admin SEE or triage a report; the report button is not on reviews/salons; status transitions are unspecified.
-- [ ] Z1. MOCKUP (3+ distinct directions) of the ADMIN REPORT VIEW , the queue an admin works through. Owner asked for a mockup, so this gates the admin build.
-- [ ] Z2. Backend: finish the report lifecycle , statuses, transitions, admin-only guards (S1), the actions an admin can take (dismiss / hide content / warn / remove), audit trail via admin_notes.
-- [ ] Z3. Report button on the surfaces that need it (a review, a salon), reusing the existing ReportButton rather than a second one.
-- [ ] Z4. Admin panel page that consumes it, mounted in the existing ADMIN_NAV alongside the other *-admin pages.
-- [ ] Z5. Prove it: file a real report, see it in the admin queue, act on it, and show the status actually changed (curl or DB before/after).
+- [x] Z1. DELIVERED `verified:` sha b1e8f8f1e , /de/dev/reports-view?v=1|2|3 all 200 at 390 AND 1280, 0 page errors. R1 Triage queue / R2 Case card / R3 Split inbox, three different working models. Runtime-checked: sample-data notice present, hide-content button = rgb(220,38,38) error token, filter chips gray-sunken selected. Recommendation R3. KNOWN GAP for the re-skin: 7 distinct font sizes measured at 390px vs the floor of 4 (harness chrome inflates it); the chosen direction gets a type pass when it ports into the real admin page. AWAITING OWNER PICK.
+- [~] Z2. IN FLIGHT (background coder, dispatched 2026-07-25): Backend: finish the report lifecycle , statuses, transitions, admin-only guards (S1), the actions an admin can take (dismiss / hide content / warn / remove), audit trail via admin_notes.
+- [~] Z3. IN FLIGHT (background coder, dispatched 2026-07-25): Report button on the surfaces that need it (a review, a salon), reusing the existing ReportButton rather than a second one.
+- [~] Z4. IN FLIGHT (background coder, dispatched 2026-07-25): Admin panel page that consumes it, mounted in the existing ADMIN_NAV alongside the other *-admin pages.
+- [~] Z5. IN FLIGHT (background coder, dispatched 2026-07-25): Prove it: file a real report, see it in the admin queue, act on it, and show the status actually changed (curl or DB before/after).
