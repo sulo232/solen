@@ -100,4 +100,25 @@ Each returns: file:line | element | JOB | tier the LAW assigns | what it does TO
       (EmptyStateDiscovery, unconditional per RANKED.md but out of this task's named scope), `animate-bounce`
       (FormulaPhotoUpload). Box stays open until those are addressed.
 - [ ] D3. Resolve the 420ms ENTER RECIPE contradiction with a side-by-side the owner picks from.
-- [ ] D4. Document `thud` as the exit curve, zero new tokens.
+      **BLOCKED ON THE OWNER, and the blocker is real, not a parking excuse: this is a locked owner
+      approval (2026-07-09) against a locked owner approval (2026-07-25), so nobody but the owner can
+      break the tie.** What I got WRONG and am correcting here: N6 recorded `/de/dev/motion` as the visual
+      this decision would be made from. `verified:` I loaded it just now, 200, no page errors, and it does
+      NOT contain this comparison. It pairs **80-150ms feedback vs 250-300ms reveal** across four demos
+      (toggle, chip select, sheet present, card enter). That is a different and already-settled question.
+      D3 asks whether **420ms** buys anything that **250-300ms with the blur kept** does not, per
+      TASTE_MOTION finding 10 (Chang & Ungar, UIST '93: the BLUR is what buys perceptibility at speed, so
+      420 may have been paying duration for something the blur was already delivering). Neither 420ms nor a
+      blur-on/blur-off pair renders anywhere on that page. So the visual has to be BUILT before the owner
+      can pick, and until it is, this box cannot honestly close. Next action is mine, not the owner's:
+      build the 420-vs-280 pair with the blur held constant, on a real booking-step entrance rather than an
+      abstract box, then hand the owner one tap-to-compare. Queued behind the frontend batch in flight
+      (house rule: never two frontend agents at once).
+- [x] D4. `verified:` sha 57c947074 , `_design-system/MOTION.md` now carries "THE CURVE RULE , by direction"
+      immediately above the Status block: entrances decelerate on `glide`, exits accelerate on `thud`,
+      in-place flips are neither (nothing arrives or leaves). Zero new values, both curves were already
+      locked; the gap was NAMING, which is why `glide` had accumulated 132 call sites doing entrances,
+      presses, colour flips and exits alike against ONE accelerate that had a single press-only call site.
+      The row states the four wrong exits by name (Sheet, Modal, sheet-backdrop on `snap`; Toast on `glide`,
+      the decelerate curve, so a dismissed toast visibly slows down leaving). REPOINTING those four in code
+      is the other half of RANKED rank 7 and is queued behind the batch in flight, tracked there, not here.
