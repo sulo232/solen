@@ -34,6 +34,17 @@ export interface StaffMember {
   service_ids?: string[];
 }
 
+/**
+ * Round 10 Y3: the salon owner's reply to a review. `review_replies.review_id`
+ * is UNIQUE, so PostgREST (and the Supabase JS client, same wire protocol)
+ * treats the reviews -> review_replies join as a TO-ONE embed and returns a
+ * single OBJECT when a reply exists, never an array (confirmed live on
+ * /api/salons/cuts-and-culture). Read it through publicReply() below, never
+ * `.length` / `[0]` directly (that assumption is exactly the bug that
+ * silently dropped every rendered reply, fixed 2026-07-25).
+ */
+export type ReviewReply = { reply_text: string; is_public: boolean; created_at: string };
+
 export interface Review {
   id: string;
   rating: number;
@@ -43,6 +54,28 @@ export interface Review {
   comment_en?: string | null;
   created_at: string;
   profiles?: { display_name: string; avatar_url: string | null };
+  // Round 10 Y3: the salon owner's reply, embedded so ReviewCard (SalonReviews.tsx)
+  // can render it inline. PostgREST returns this as an OBJECT (to-one embed,
+  // review_replies.review_id is UNIQUE) when present, not an array. Read it
+  // via publicReply(), never `.length` / `[0]` directly.
+  review_replies?: ReviewReply | ReviewReply[] | null;
+}
+
+/**
+ * Normalises a `review_replies` embed (object, the live PostgREST to-one
+ * shape; array, the shape every render site used to assume; or
+ * null/undefined) down to "the one public reply, or null". Every reply
+ * render site must call this instead of hand-rolling
+ * `.length > 0 && [0].is_public`: that check is always falsy on the object
+ * shape (`.length` is `undefined` on a plain object), which is why owner
+ * replies never rendered despite being in the DB, the API payload, and the
+ * SSR HTML.
+ */
+export function publicReply(
+  raw: ReviewReply | ReviewReply[] | null | undefined
+): ReviewReply | null {
+  const candidate = Array.isArray(raw) ? raw[0] : raw;
+  return candidate && candidate.is_public ? candidate : null;
 }
 
 export interface SiblingSalon {

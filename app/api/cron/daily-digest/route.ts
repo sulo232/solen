@@ -119,18 +119,23 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    // 4. Pending reviews (no salon response yet).
+    // 4. Pending reviews (no owner reply yet). Round 10 Y3: reviews.salon_response is
+    // retired (see _design-system/REMOVED.md); review_replies is the winning table,
+    // and its UNIQUE(review_id) means its total row count already equals the number
+    // of DISTINCT reviews that have been replied to, platform-wide.
     {
-      const { count, error } = await admin
-        .from("reviews")
-        .select("id", { count: "exact", head: true })
-        .is("salon_response", null);
-      if (error) {
-        console.error("[daily-digest] pending-reviews query failed:", error.message);
-        errors.push(`pending-reviews query failed: ${error.message}`);
+      const [totalRes, repliedRes] = await Promise.all([
+        admin.from("reviews").select("id", { count: "exact", head: true }),
+        admin.from("review_replies").select("id", { count: "exact", head: true }),
+      ]);
+      if (totalRes.error || repliedRes.error) {
+        const msg = totalRes.error?.message ?? repliedRes.error?.message ?? "unknown error";
+        console.error("[daily-digest] pending-reviews query failed:", msg);
+        errors.push(`pending-reviews query failed: ${msg}`);
       } else {
         sectionsOk++;
-        sections.push(`<li><strong>${count ?? 0}</strong> reviews awaiting a salon response</li>`);
+        const pending = Math.max(0, (totalRes.count ?? 0) - (repliedRes.count ?? 0));
+        sections.push(`<li><strong>${pending}</strong> reviews awaiting a salon response</li>`);
       }
     }
 

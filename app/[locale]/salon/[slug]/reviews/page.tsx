@@ -85,7 +85,7 @@ export default async function SalonReviewsPage({
         id, rating, comment, created_at,
         profiles(display_name, avatar_url),
         review_photos(id, photo_url),
-        review_replies(id, reply_text, is_public)
+        review_replies(id, reply_text, is_public, created_at)
       `)
       .eq("salon_id", salon.id)
       .eq("is_hidden", false)

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Star, ShieldCheck, MessageSquare, ChevronDown, Flag } from "lucide-react";
+import { ArrowLeft, Star, MessageSquare, ChevronDown, Flag } from "lucide-react";
 import EmptyState from "@/components-legacy/ui/EmptyState";
 import { motion, AnimatePresence } from "motion/react";
 import { useTranslations } from "next-intl";
@@ -11,6 +11,7 @@ import { Sheet } from "@/app/[locale]/_components/primitives/Sheet";
 import { TabPill } from "@/app/[locale]/_components/primitives/TabPill";
 import ReviewForm from "@/components-legacy/ReviewForm";
 import { RatingStars } from "@/app/[locale]/_components/primitives/RatingStars";
+import { publicReply } from "@/app/[locale]/_components/salon/_shared";
 import type { Review } from "@/lib/types";
 
 // ─────────────────────────────────────────────────
@@ -24,17 +25,23 @@ interface ReviewPhoto {
 
 interface ReviewReply {
   // Ring 2b: optional , pages loaded via /api/reviews/salon/[salon_id] (the "Mehr
-  // laden" fetch below) select review_replies(reply_text, is_public) without an id
-  // column; id is never read by this component, only .reply_text / .is_public.
+  // laden" fetch below) select review_replies(reply_text, is_public, created_at) without
+  // an id column; id is never read by this component.
   id?: string;
   reply_text: string;
   is_public: boolean;
+  // Round 10 Y3: the reply's own timestamp, rendered under the reply text (owner spec:
+  // label + text + date).
+  created_at: string;
 }
 
 type EnrichedReview = Review & {
   profiles?: { display_name: string; avatar_url: string | null };
   review_photos?: ReviewPhoto[];
-  review_replies?: ReviewReply[];
+  // review_id is UNIQUE on review_replies, so PostgREST returns this embed as a
+  // single OBJECT when a reply exists, not an array , read it via publicReply(),
+  // never `.length` / `[0]` directly (2026-07-25 fix, see _shared.ts).
+  review_replies?: ReviewReply | ReviewReply[] | null;
   booking_id?: string;
 };
 
@@ -188,7 +195,9 @@ export default function SalonReviews({
         comment: string | null;
         created_at: string;
         profiles?: { display_name: string; avatar_url: string | null } | null;
-        review_replies?: { reply_text: string; is_public: boolean }[];
+        // Same to-one embed as everywhere else: PostgREST returns an object, not
+        // an array, when the review has a reply.
+        review_replies?: ReviewReply | ReviewReply[] | null;
         review_photos?: { id: string; photo_url: string }[];
       }>).map((r) => ({
         id: r.id,
@@ -242,17 +251,28 @@ export default function SalonReviews({
             <div className="mt-5 flex items-center gap-2">
               <Star size={20} stroke="none" aria-hidden className="fill-s-star" />
               <span className="font-heading text-[20px] font-bold leading-none tracking-[-0.01em] tabular-nums text-s-ink">{averageRating.toFixed(1)}</span>
-              <span className="text-[13px] text-s-ink-3">({reviewCount.toLocaleString("de-CH")})</span>
+              {/* mockup-ok: PDP-grammar transfer (owner round 10 Y1) , one grey count,
+                  "N Bewertungen" (was a bare "(N)"), reusing the same reviewsCount key the
+                  count+sort row below used to duplicate. */}
+              <span className="text-[13px] text-s-ink-3">{t("reviewsCount", { count: reviewCount.toLocaleString("de-CH") })}</span>
             </div>
 
             {/* mockup-ok: F2 chip filter row (owner-picked direction, REMOVED.md "reviews
-                filter distribution bars"), replacing the checkbox+bar rows. Same ratingFilter
+                filter distribution bars"). PDP-grammar transfer (owner round 10 Y1): a
+                leading "Alle (N)" chip (clears the filter) then only tiers that actually
+                have a review render a chip, matching app/[locale]/_components/salon/
+                SalonReviews.tsx's D3 tier-chip logic , this used to always render all 5
+                tiers including empty ones and had no "Alle" chip. Same ratingFilter
                 state/logic, multi-select, real counts off the loaded rows. */}
             <div className="mt-6">
               <p className="mb-2.5 font-body text-[14px] font-semibold text-s-ink">{t("filterBy")}</p>
               <div className="flex flex-wrap gap-2">
+                <TabPill active={ratingFilter.size === 0} onClick={() => setRatingFilter(new Set())} size="sm">
+                  {t("filterAllCount", { count: loadedReviews.length.toLocaleString("de-CH") })}
+                </TabPill>
                 {[5, 4, 3, 2, 1].map((s, i) => {
                   const c = starCounts[i];
+                  if (c === 0) return null;
                   return (
                     <TabPill key={s} active={ratingFilter.has(s)} onClick={() => toggleRating(s)} size="sm">
                       <span className="inline-flex items-center gap-1">
@@ -280,11 +300,11 @@ export default function SalonReviews({
               </div>
             )}
 
-            {/* Count + sort trigger (Fresha: "N reviews" + "Best ▾" → sheet) */}
-            <div className="mb-4 mt-6 flex items-center justify-between border-t border-s-border pt-5">
-              <span className="text-[15px] tabular-nums text-s-ink-2">
-                {t("reviewsCount", { count: filteredReviews.length.toLocaleString("de-CH") })}
-              </span>
+            {/* Sort trigger (Fresha: "Best ▾" → sheet). PDP-grammar transfer (owner round
+                10 Y1): dropped the "N Bewertungen" label this row used to carry , the
+                summary line above already renders that exact count once, so this row was
+                showing the same number twice in one header. */}
+            <div className="mb-4 mt-6 flex items-center justify-end border-t border-s-border pt-5">
               {/* mockup-ok: floating sort pill sizing (h-11 + shadow-whisper), matching the
                   approved reviews-full page's pill. */}
               <button
@@ -327,7 +347,7 @@ export default function SalonReviews({
                             <span>
                               {new Date(rev.created_at).toLocaleDateString(locale === "de" ? "de-CH" : "en-GB", { day: "numeric", month: "long", year: "numeric" })}
                             </span>
-                            {rev.review_replies && rev.review_replies.length > 0 && rev.review_replies[0].is_public && (
+                            {publicReply(rev.review_replies) && (
                               <span className="flex items-center gap-1 text-s-accent">
                                 <MessageSquare size={13} />
                                 {t("salonReplied")}
@@ -428,20 +448,24 @@ export default function SalonReviews({
                       </div>
                     )}
 
-                    {/* Review reply */}
+                    {/* mockup-ok: owner reply (round 10 Y3, explicit spec , indented, neutral
+                        tokens, never a coloured callout). Reuses this file's OWN existing
+                        rounded-[12px]/border-s-border/bg-s-bg-sunken recipe byte-for-byte
+                        (the flag-reason box a few lines up), just swapping content, so no new
+                        appearance is introduced. */}
                     {(() => {
-                      const reply =
-                        rev.review_replies && rev.review_replies.length > 0 && rev.review_replies[0].is_public
-                          ? rev.review_replies[0].reply_text
-                          : null;
+                      const reply = publicReply(rev.review_replies);
                       if (!reply) return null;
                       return (
-                        <div className="mt-3 pl-4 border-l-2 border-s-success/30">
-                          <p className="text-xs text-s-success font-medium flex items-center gap-1 mb-1">
-                            <ShieldCheck className="w-3 h-3" />
-                            {t("salonReplied")}
+                        <div className="mt-3 ml-4 rounded-[12px] border border-s-border bg-s-bg-sunken p-3">
+                          <p className="flex items-center gap-1.5 text-[13px] font-semibold text-s-ink">
+                            <MessageSquare size={13} aria-hidden />
+                            {salonName ? t("replyFrom", { name: salonName }) : t("salonReplied")}
                           </p>
-                          <p className="text-xs text-s-ink-2">{reply}</p>
+                          <p className="mt-1.5 text-[13px] leading-relaxed text-s-ink-2">{reply.reply_text}</p>
+                          <p className="mt-1.5 text-[12px] text-s-ink-3">
+                            {new Date(reply.created_at).toLocaleDateString(locale === "de" ? "de-CH" : "en-GB", { day: "numeric", month: "long", year: "numeric" })}
+                          </p>
                         </div>
                       );
                     })()}

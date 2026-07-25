@@ -300,6 +300,7 @@ export function SalonDetailV3({
               reviews={salon.reviews}
               salonId={salon.id}
               salonSlug={salon.slug}
+              salonName={salon.name}
               locale={locale}
             />
 

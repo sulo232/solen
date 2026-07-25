@@ -9,6 +9,7 @@ import Spinner from "@/components-legacy/ui/Spinner";
 import EmptyState from "@/components-legacy/ui/EmptyState";
 import ErrorState from "@/components-legacy/ui/ErrorState";
 import { containerVariants, itemVariants } from "@/lib/animations";
+import type { ReviewReply } from "@/app/[locale]/_components/salon/_shared";
 
 interface Review {
   id: string;
@@ -16,7 +17,24 @@ interface Review {
   comment: string | null;
   created_at: string;
   profiles: { display_name: string | null; avatar_url: string | null } | null;
-  review_replies?: { reply_text: string; is_public: boolean }[];
+  // review_replies.review_id is UNIQUE, so PostgREST returns this embed as a
+  // single OBJECT (to-one), never an array , see ownReply() below. Widened
+  // 2026-07-25 (was array-only, silently hid the owner's own reply).
+  review_replies?: ReviewReply | ReviewReply[] | null;
+}
+
+/**
+ * Normalises `review_replies` (object OR array OR null, matching the
+ * PostgREST to-one-embed shape , see publicReply() in salon/_shared.ts) to
+ * one value, but WITHOUT the is_public filter publicReply() applies. This
+ * page is the salon OWNER managing their own reply, not a customer-facing
+ * render, so the owner must see + edit it even if is_public is ever false.
+ * Only the array/object normalisation is shared logic here; the visibility
+ * decision is page-specific, so this stays local instead of reusing or
+ * weakening publicReply().
+ */
+function ownReply(raw: ReviewReply | ReviewReply[] | null | undefined): ReviewReply | null {
+  return (Array.isArray(raw) ? raw[0] : raw) ?? null;
 }
 
 function Stars({ rating }: { rating: number }) {
@@ -40,6 +58,8 @@ export default function SalonReviewsPage() {
   const [salonId, setSalonId] = useState<string | null>(null);
   const [respondingTo, setRespondingTo] = useState<string | null>(null);
   const [responseText, setResponseText] = useState("");
+  const [respondError, setRespondError] = useState(false);
+  const [deleteErrorId, setDeleteErrorId] = useState<string | null>(null);
   const [flagging, setFlagging] = useState<string | null>(null);
   const [flagReason, setFlagReason] = useState("");
   const [saving, setSaving] = useState(false);
@@ -80,18 +100,53 @@ export default function SalonReviewsPage() {
       .finally(() => { setSalonReady(true); fetchReviews(); });
   };
 
+  // Round 10 Y3: single write path (create AND edit, upsert server-side) into
+  // review_replies via PATCH /api/reviews/[id]/respond. Was silently broken , the
+  // route's schema required `reply_text` but this sent `salon_response`, so every
+  // submit 400'd and the UI never checked res.ok, so it looked like it worked.
   const handleRespond = async (reviewId: string) => {
     if (!responseText.trim()) return;
     setSaving(true);
-    await fetch(`/api/reviews/${reviewId}/respond`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ salon_response: responseText }),
-    });
-    setSaving(false);
-    setRespondingTo(null);
-    setResponseText("");
-    fetchReviews();
+    setRespondError(false);
+    try {
+      const res = await fetch(`/api/reviews/${reviewId}/respond`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reply_text: responseText.trim() }),
+      });
+      if (!res.ok) throw new Error(`respond ${res.status}`);
+      setRespondingTo(null);
+      setResponseText("");
+      fetchReviews();
+    } catch (err) {
+      console.error("[DashboardReviews] Failed to save reply:", err);
+      setRespondError(true);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleEditReply = (review: Review) => {
+    setRespondingTo(review.id);
+    setResponseText(ownReply(review.review_replies)?.reply_text ?? "");
+    setRespondError(false);
+    setFlagging(null);
+  };
+
+  const handleDeleteReply = async (reviewId: string) => {
+    if (!window.confirm(t("deleteReplyConfirm"))) return;
+    setSaving(true);
+    setDeleteErrorId(null);
+    try {
+      const res = await fetch(`/api/reviews/${reviewId}/respond`, { method: "DELETE" });
+      if (!res.ok) throw new Error(`delete ${res.status}`);
+      fetchReviews();
+    } catch (err) {
+      console.error("[DashboardReviews] Failed to delete reply:", err);
+      setDeleteErrorId(reviewId);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleFlag = async (reviewId: string) => {
@@ -164,16 +219,36 @@ export default function SalonReviewsPage() {
                 <p className="text-sm text-s-ink/70 mb-3">&ldquo;{r.comment}&rdquo;</p>
               )}
 
-              {/* Existing salon response */}
-              {r.review_replies && r.review_replies.length > 0 && (
+              {/* Existing salon response, plus edit/delete (round 10 Y3: create-only before,
+                  a reply had no way to be changed or removed once sent). Hidden while its
+                  own edit form is open below (respondingTo === r.id) to avoid showing the
+                  stale text twice. */}
+              {ownReply(r.review_replies) && respondingTo !== r.id && (
                 <div className="bg-s-bg-sunken rounded-btn p-3 mb-3">
                   <p className="text-[12px] font-bold text-s-ink mb-1">{t("yourReply")}</p>
-                  <p className="text-xs text-s-ink/70">{r.review_replies[0].reply_text}</p>
+                  <p className="text-xs text-s-ink/70">{ownReply(r.review_replies)?.reply_text}</p>
+                  <div className="flex gap-4 mt-2">
+                    <button
+                      onClick={() => handleEditReply(r)}
+                      className="text-[12px] font-medium text-s-ink-2 hover:text-s-ink transition-colors"
+                    >
+                      {t("editReply")}
+                    </button>
+                    <button
+                      onClick={() => handleDeleteReply(r.id)}
+                      className="text-[12px] font-medium text-s-error hover:brightness-110 transition-[filter]"
+                    >
+                      {t("deleteReply")}
+                    </button>
+                  </div>
+                  {deleteErrorId === r.id && (
+                    <p className="text-[12px] text-s-error mt-1.5">{t("deleteReplyError")}</p>
+                  )}
                 </div>
               )}
 
-              {/* Respond button / form */}
-              {(!r.review_replies || r.review_replies.length === 0) && !flagging && (
+              {/* Respond button / form , create (no reply yet) or edit (respondingTo === r.id) */}
+              {!flagging && (respondingTo === r.id || !ownReply(r.review_replies)) && (
                 <>
                   {respondingTo === r.id ? (
                     <div className="space-y-2">
@@ -189,7 +264,7 @@ export default function SalonReviewsPage() {
                         <span className="text-[12px] text-s-ink/30">{responseText.length}/500</span>
                         <div className="flex-1" />
                         <button
-                          onClick={() => { setRespondingTo(null); setResponseText(""); }}
+                          onClick={() => { setRespondingTo(null); setResponseText(""); setRespondError(false); }}
                           className="px-3 py-1.5 rounded-btn border border-s-border text-s-ink-2 text-xs hover:bg-s-bg-sunken transition-colors"
                         >
                           {t("cancel")}
@@ -203,10 +278,11 @@ export default function SalonReviewsPage() {
                           {t("send")}
                         </button>
                       </div>
+                      {respondError && <p className="text-[12px] text-s-error">{t("respondError")}</p>}
                     </div>
                   ) : (
                     <button
-                      onClick={() => { setRespondingTo(r.id); setFlagging(null); }}
+                      onClick={() => { setRespondingTo(r.id); setResponseText(""); setRespondError(false); setFlagging(null); }}
                       className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-ink text-s-ink text-xs font-medium hover:bg-s-bg-sunken transition-colors"
                     >
                       <MessageCircle size={12} />

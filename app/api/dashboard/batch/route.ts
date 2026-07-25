@@ -71,13 +71,18 @@ export async function POST(request: NextRequest) {
             break;
           }
           case "reviews_pending": {
-            const { count, error } = await admin
-              .from("reviews")
-              .select("id", { count: "exact", head: true })
-              .eq("salon_id", salonId)
-              .is("salon_response", null);
-            if (error) console.error("[dashboard/batch] reviews_pending query error:", error.message);
-            results[key] = { count: count ?? 0 };
+            // Round 10 Y3: "pending" = has no row in review_replies (the winning table
+            // for owner replies; reviews.salon_response is retired dead weight, see
+            // _design-system/REMOVED.md). review_replies.review_id is UNIQUE, so its
+            // per-salon row count already equals the number of DISTINCT reviews that
+            // have been replied to, no id-list needed.
+            const [totalRes, repliedRes] = await Promise.all([
+              admin.from("reviews").select("id", { count: "exact", head: true }).eq("salon_id", salonId),
+              admin.from("review_replies").select("id", { count: "exact", head: true }).eq("salon_id", salonId),
+            ]);
+            if (totalRes.error) console.error("[dashboard/batch] reviews_pending total query error:", totalRes.error.message);
+            if (repliedRes.error) console.error("[dashboard/batch] reviews_pending replied query error:", repliedRes.error.message);
+            results[key] = { count: Math.max(0, (totalRes.count ?? 0) - (repliedRes.count ?? 0)) };
             break;
           }
           case "walkin_queue": {

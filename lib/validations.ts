@@ -1175,16 +1175,14 @@ export const priceOfferSchema = z.object({
   photo_url: z.string().url().max(2048).optional(),
 });
 
-export const reviewReplySchema = z.object({
-  review_id: z.string().uuid(),
-  reply_text: z.string().min(1).max(1000),
-  is_public: z.boolean().default(true),
-});
-
+// Round 10 Y3: reviewReplySchema (the POST /api/reviews/reply duplicate write path)
+// retired , see _design-system/REMOVED.md. review_replies is the single winning
+// table; PATCH/DELETE /api/reviews/[id]/respond is the single write path into it.
+// Simplified from the old shape (which required `reply_text` but the ONLY real
+// caller, the dashboard, sent `salon_response`, so every dashboard reply attempt
+// 400'd silently, the actual root cause of "a reply is written and never shown").
 export const reviewRespondSchema = z.object({
   reply_text: z.string().min(1).max(1000),
-  is_public: z.boolean().default(true),
-  salon_response: z.string().min(1).max(1000).optional(),
 });
 
 export const intakeRecommendationSchema = z.object({

@@ -1,9 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { Star } from "lucide-react";
+import { Star, MessageSquare } from "lucide-react";
 import type { Review } from "./_shared";
-import { formatReviewDate } from "./_shared";
+import { formatReviewDate, publicReply } from "./_shared";
 import { Avatar, RatingStars, SeeAllButton } from "@/app/[locale]/_components/primitives";
 import { TabPill } from "../primitives/TabPill";
 import { cn } from "@/lib/utils";
@@ -32,6 +32,7 @@ export function SalonReviews({
   reviews,
   salonId,
   salonSlug,
+  salonName,
   locale,
   layout = "stack",
 }: {
@@ -44,6 +45,8 @@ export function SalonReviews({
   /** With slug+locale, "Alle ansehen" navigates to the full reviews view (Fresha
    *  reviews-portfolio-tap capture) instead of expanding inline. */
   salonSlug?: string;
+  /** Round 10 Y3: label an owner reply "Antwort von {salonName}". */
+  salonName?: string;
   locale?: string;
   /**
    * Retired (2026-07-24 D3 port): the stack/swipe/collapsed A/B/C comparison is
@@ -64,7 +67,7 @@ export function SalonReviews({
         const supabase = createBrowserSupabaseClient();
         const { data, error } = await supabase
           .from("reviews")
-          .select("id, rating, comment, created_at, profiles(display_name, avatar_url)")
+          .select("id, rating, comment, created_at, profiles(display_name, avatar_url), review_replies(reply_text, is_public, created_at)")
           .eq("salon_id", salonId)
           .eq("is_hidden", false)
           .order("created_at", { ascending: false })
@@ -177,7 +180,7 @@ export function SalonReviews({
               ) : (
                 visible.map((r) => (
                   <div key={r.id} className="border-t border-s-border pt-5 first:border-t-0 first:pt-0 [&+&]:mt-5">
-                    <ReviewCard review={r} />
+                    <ReviewCard review={r} salonName={salonName} />
                   </div>
                 ))
               )}
@@ -203,10 +206,11 @@ export function SalonReviews({
   );
 }
 
-function ReviewCard({ review }: { review: Review }) {
+function ReviewCard({ review, salonName }: { review: Review; salonName?: string }) {
   const text = review.comment ?? review.comment_de ?? review.comment_en ?? "";
   const [showFull, setShowFull] = React.useState(false);
   const isLong = text.length > 200;
+  const reply = publicReply(review.review_replies);
 
   // Reviewer name only when a public profile exists. Anonymous/seed reviews show a
   // "Verifizierte Buchung · date" line instead of a repeated placeholder name.
@@ -255,6 +259,21 @@ function ReviewCard({ review }: { review: Review }) {
             </button>
           )}
         </>
+      )}
+
+      {/* mockup-ok: owner reply (round 10 Y3, explicit spec , indented, neutral tokens,
+          never a coloured callout). Same rounded-[12px]/bg-s-bg-sunken/border-s-border
+          tray grammar as the full reviews page's reply block (components-legacy/salon/
+          SalonReviews.tsx), so the two surfaces read as one consistent feature. */}
+      {reply && (
+        <div className="mt-3 ml-4 rounded-[12px] border border-s-border bg-s-bg-sunken p-3">
+          <p className="flex items-center gap-1.5 text-[13px] font-semibold text-s-ink">
+            <MessageSquare size={13} aria-hidden />
+            {salonName ? `Antwort von ${salonName}` : "Antwort vom Salon"}
+          </p>
+          <p className="mt-1.5 text-[13px] leading-relaxed text-s-ink-2">{reply.reply_text}</p>
+          <p className="mt-1.5 text-[12px] text-s-ink-3">{formatReviewDate(reply.created_at)}</p>
+        </div>
       )}
     </article>
   );

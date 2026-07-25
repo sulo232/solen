@@ -37,11 +37,14 @@ export async function GET(req: NextRequest) {
 
     // Fetch reviews (explicit column list, not "*": reviews is a sensitive
     // table per no-select-star-sensitive.py; this is a self-export so every
-    // column is still returned, just spelled out for schema-drift safety)
+    // column is still returned, just spelled out for schema-drift safety).
+    // Round 10 Y3: salon_response / salon_response_at dropped from this list ,
+    // retired columns (see _design-system/REMOVED.md), permanently null, review
+    // replies now live in review_replies keyed by review_id, not on this row.
     const { data: reviews } = await admin
       .from("reviews")
       .select(
-        "admin_response, admin_response_at, booking_id, comment, created_at, flag_reason, id, is_flagged, is_hidden, rating, salon_id, salon_response, salon_response_at, staff_member_id, user_id, walkin_queue_id",
+        "admin_response, admin_response_at, booking_id, comment, created_at, flag_reason, id, is_flagged, is_hidden, rating, salon_id, staff_member_id, user_id, walkin_queue_id",
       )
       .eq("user_id", user.id);
 

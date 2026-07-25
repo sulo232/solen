@@ -89,11 +89,15 @@ export async function loadSalonDetailWithAccess(
     // Reviews via the service-role client: profiles RLS (rightly) blocks anon reads,
     // which nulled every reviewer name for logged-out visitors. The server exposes
     // ONLY display_name + avatar_url through this select, no broader profile access.
-    // No review_replies/review_photos embed: no PDP component reads them (the
-    // dedicated reviews page runs its own query for that).
+    // review_replies IS embedded (round 10 Y3: the owner's public reply now renders
+    // inline on the PDP too, not only on the dedicated reviews page) , is_public is
+    // selected so the UI can gate rendering (this query runs on the service-role
+    // client, which bypasses the review_replies RLS, so the app layer must do that
+    // filtering itself, same pattern the dedicated reviews page already uses). No
+    // review_photos embed: only the dedicated reviews page shows photos.
     createAdminSupabaseClient()
       .from("reviews")
-      .select("id, rating, comment, created_at, profiles(display_name, avatar_url)")
+      .select("id, rating, comment, created_at, profiles(display_name, avatar_url), review_replies(reply_text, is_public, created_at)")
       .eq("salon_id", salon.id)
       // Filter out auto-moderated (hidden) reviews: the admin client bypasses
       // RLS, so without this an automod-hidden review would ship to the PDP.

@@ -41,7 +41,7 @@ export async function GET(
   const { data, error, count } = await supabase
     .from("reviews")
     .select(
-      "id, rating, comment, created_at, booking_id, profiles!user_id(display_name, avatar_url), staff_members(name), review_replies(reply_text, is_public), review_photos(id, photo_url)",
+      "id, rating, comment, created_at, booking_id, profiles!user_id(display_name, avatar_url), staff_members(name), review_replies(reply_text, is_public, created_at), review_photos(id, photo_url)",
       { count: "exact" }
     )
     .eq("salon_id", salon_id)

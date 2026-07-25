@@ -51,17 +51,31 @@ export async function GET(req: NextRequest) {
     });
   });
 
-  // Pending reviews (unread reviews in last 7 days)
-  const { data: reviews } = await supabase
+  // Pending reviews (unread reviews in last 7 days). Round 10 Y3: reviews.salon_response
+  // is retired (see _design-system/REMOVED.md); review_replies is the winning table, and
+  // PostgREST has no "row does not exist in a related table" filter, so this resolves
+  // the replied IDs first, then excludes them client-side (computed-filter convention,
+  // project CLAUDE.md), over a bounded 20-row window, not a full unpaginated table scan.
+  const { data: recentReviews } = await supabase
     .from("reviews")
     .select("id, created_at, rating")
     .eq("salon_id", salonId)
     .gte("created_at", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
-    .is("salon_response", null)
     .order("created_at", { ascending: false })
-    .limit(5);
+    .limit(20);
 
-  (reviews ?? []).forEach((r) => {
+  const candidateIds = (recentReviews ?? []).map((r) => r.id);
+  let repliedIds = new Set<string>();
+  if (candidateIds.length > 0) {
+    const { data: replies } = await supabase
+      .from("review_replies")
+      .select("review_id")
+      .in("review_id", candidateIds);
+    repliedIds = new Set((replies ?? []).map((rep) => rep.review_id));
+  }
+  const reviews = (recentReviews ?? []).filter((r) => !repliedIds.has(r.id)).slice(0, 5);
+
+  reviews.forEach((r) => {
     notifications.push({
       id: `review-${r.id}`,
       type: "review",

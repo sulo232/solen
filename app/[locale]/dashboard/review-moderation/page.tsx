@@ -19,7 +19,6 @@ interface Review {
   flag_reason: string | null;
   admin_response: string | null;
   admin_response_at: string | null;
-  salon_response: string | null;
   created_at: string;
   profiles: { display_name: string | null } | null;
   salons: { name: string } | null;
