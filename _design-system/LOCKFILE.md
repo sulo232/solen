@@ -1520,3 +1520,26 @@ Source + evidence: `research/UNFINISHED_AUDIT_2026-07-21.md`. Co-equal with ever
   biggest element, (3) >= 1 tabular/real number, (4) >= 1 semantic-color moment, (5) no dead-grey zone.
   All five = Pass before a customer screen or mockup reaches the owner; mockups carry a `floors:` note
   answering all five.
+
+---
+
+## EMPHASIS BUDGET , frozen literals (2026-07-25, FLOORS LAW 7)
+
+Added after the measured flatness diagnosis (`research/FLATNESS_DIAGNOSIS_2026-07-25.md`) found the system
+had a size CEILING but no RANGE FLOOR. These are the numbers a customer screen is checked against, on the
+RENDERED first viewport at 390x844, not on source.
+
+| literal | value | why |
+|---|---|---|
+| max share of visible text at weight >= 600 | **30%** | measured PDP was 86%; above ~30% weight stops being a signal |
+| min anchor-to-body size ratio | **1.8x** | measured PDP was 1.57x; below ~1.8 the step reads as a wobble |
+| min display anchor | **28px** | already law (FLOORS LAW 6); this table sets the RATIO that pairs with it |
+| min imagery share, browse/discovery/PDP first viewport | **33%** | already law (FLOORS LAW 2); measured home was 4.7% |
+| min distinct elevation steps per screen | **2** | one shadow value = no depth vocabulary, everything on one plane |
+
+Exempt BY NAME (same carve-out as the imagery floor): forms, the checkout payment step, legal pages,
+receipts. An ADMIN surface may exceed the weight share, it is a density tool, not a customer screen.
+
+These are FLOORS, not targets. Nothing here licenses decoration, fake data, or a second ink CTA; the
+existing ceilings (4 sizes, 2 weights, sparse blue, no decorative artifacts) all still bind.
+

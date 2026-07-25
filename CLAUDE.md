@@ -70,6 +70,12 @@ The audited root cause of "compliant but unfinished": this system had only CEILI
 5. **Deletion names what it keeps:** any rule that deletes an element (copy economy, divider ladder, de-label) must state what the screen KEEPS; the deletion is legal only if the surviving cue passes a measured floor (between-group gap >= 2x in-group gap, or a full weight/size/color step). Every NEW ceiling rule added to this system must name its floor or state none exists.
 6. **Display anchor:** every customer screen carries one display anchor >= 28px unless the photograph is the focal. Card emphasis = the V3-D442 two-anchor rule: name (larger, 600) + price (600, tabular); rating value ink-2 beside the yellow star; card titles are s-ink, not grey. Tertiary grey #9CA3AF (s-chart-2) is reinstated for NON-load-bearing text only (chevrons, placeholders, timestamps, hints) , forbidden on load-bearing copy.
 
+7. **EMPHASIS BUDGET (added 2026-07-25, from the measured flatness diagnosis).** The system had a size CEILING (<=4 sizes) but no RANGE FLOOR, so every element landed in the same middle band and the screens read flat/beta. Measured on the live PDP: 86% of visible text was weight >=600 and the largest text was 1.57x the body. Floors, per customer screen, measured on the RENDERED first viewport:
+   (a) **at most ~30% of visible text may be weight >= 600.** Emphasis is a signal; when most text carries it, it stops encoding anything (Nielsen: emphasize everything, nothing gets focus).
+   (b) **the screen's anchor must be >= 1.8x its body size.** A 1.5x step reads as a rendering wobble, not a hierarchy. This pairs with the >=28px display anchor in floor 6, which sets the absolute, while this sets the RATIO.
+   (c) **size variety is not range:** breaking the 4-size ceiling while every size sits within ~6px is the worst case, it costs consistency and buys no hierarchy. Count sizes AND measure the spread.
+   Diagnosis + evidence: `_design-system/research/FLATNESS_DIAGNOSIS_2026-07-25.md`. Rationale for the whole block: restraint is spent SELECTIVELY so one thing can be loud; applied uniformly it produces a wireframe.
+
 ---
 
 ## 🔒 Design contract — LOCKED (V3-D443, council-stamped 2026-06-07)
