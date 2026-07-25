@@ -4,6 +4,20 @@ The newest entry is at the top. Every session that ships real work adds one entr
 
 ---
 
+## 2026-07-25 , weekly estate self-audit run (workstream #17 LAW, standing loop)
+
+**What you asked for (auto-triggered):** the weekly self-audit doctrine , system health, skip ledger, injection diet, mistake themes, lessons-inject verify, design-suggest refresh, doc-vs-gate reconciliation.
+
+**What got done:** [SELF_AUDIT_2026-07-25.md](SELF_AUDIT_2026-07-25.md). Health check went **23 -> 14** violations because I found and fixed two bugs IN THE CHECKER that were inventing 9 of them: it never read `settings.local.json`, so **8 live gates were reported as unenforced orphans**, and the 2026-07-18 `expanduser`-mid-command bug (parked back then) made it call `tunnel-health-preflight.py` missing every run. Both fixed with negative tests so the checker cannot start under-reporting instead (6/6).
+
+**The finding that matters:** four gates were built and self-tested (3 of 4 green) on 2026-07-13 / 07-24 and then **never armed**, because `~/.claude/settings.json` is unwritable under the sandbox (measured: `PermissionError`, not guessed). So `/harden` can build a gate but cannot switch it on, and until this pass the health check could not tell that apart from a helper script. The three from 07-24 each encode a mistake you had already been burned by (the italic font, the black Select button, the vanishing book bar). I wrote `~/.claude/hooks/wire-pending-gates.sh` , self-tested 4/4 placements, idempotent, dry-run proven not to touch the real file , so **one command arms all four**: `bash ~/.claude/hooks/wire-pending-gates.sh`. That is P0 and it needs a normal (non-sandboxed) shell, so it is yours to run.
+
+**Two things that need your call, not a hook edit:** the skip ledger (which starts 2026-07-19, so there are no week-over-week deltas this time) shows the **mockup gate family muted 72 times in 6 days** across its 7 members, and `finish-autonomously` skipped **40 times**. `flag-spam-gate.py` correctly killed the loop form, but 72 individually-reasoned single flags land in much the same place. Either mockup-first is over-enforced or it is being routed around; I can't decide that for you.
+
+**Rest:** injection diet passes (worst case 4.6KB, largest single hook 1.0KB). Four warning-tier mistake themes , `link` (8 sessions), `promised-visual` (7), `blue-black` (3), `selected-state` (2); `peer-list-ink-cta-gate.py` is the gate written for the last two and is one of the unwired four. Lessons-inject fires 4/5 on the obvious payload and 5/5 on literal paths, no regression. The DOC-VS-GATE step **corrected its own numbers from last week** , that pass text-grepped `check.py` and counted commented-out hexes as live, so "10 missing hexes" was wrong; AST-parsing the sets and then proving each gap through `--gate-stdin` gives **25 LOCKFILE hexes absent from ALLOWED_HEX, 16 of them genuine false positives and 9 correctly blocked**, plus 7 `RETIRED_TOKENS` gaps. That file is product code so it is parked for you (P4). Zero phantom gate names in the design docs. `_design-system/SUGGESTIONS.md` got the 2026-07-25 gather block, no chips (weekly cadence). Commit touches `_plans` + `SUGGESTIONS.md` only.
+
+---
+
 ## 2026-07-18 , weekly estate self-audit run (workstream #17 LAW, standing loop)
 
 **What you asked for (auto-triggered):** the weekly self-audit doctrine (system health, skip ledger, injection diet, mistake themes, lessons-inject verify, design-suggest refresh, doc-vs-gate reconciliation), owner-sanctioned 2026-07-10.

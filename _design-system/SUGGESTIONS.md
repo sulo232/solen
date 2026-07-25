@@ -126,3 +126,61 @@ New deltas since 2026-07-11:
 - **TASTE_LOG 2026-07-15 dark mode**: DECLINED, graveyarded. No suggestion.
 - **Drift-gate literal gaps surfaced by 2026-07-18 audit (DOC-VS-GATE reconciliation)**: 10 LOCKFILE §1 hexes are missing from `ALLOWED_HEX` in `.claude/skills/solen-drift-check/scripts/check.py` (#E4E4E7 s-border, #F1AE27 s-warning, #C2410C s-urgency, #EA580C s-surcharge, #C03001 s-pop, #DC2626 s-error/s-closed, #1F8900 s-open, #B45309 s-warning.text, #EAEFFE s-accent.pale, #9CA3AF s-chart-2). Legitimate inline SVG fills for those tokens currently fire A1 false-positive drift. Parked here (fix belongs to the checker, out of write scope for this audit; see _plans/SELF_AUDIT_2026-07-18.md).
 - **Drift-gate RETIRED_TOKENS gaps**: `s-amber`, `s-love*`, `s-cat-*-text`, and 5 of the `s-atm-*` family are named RETIRED in LOCKFILE §1 but missing from the checker's `RETIRED_TOKENS` set; net-new use would not be flagged. Same parking as above.
+
+---
+
+## 2026-07-25 weekly self-audit refresh (gather+record only, no chips)
+
+Verified sources: `_drift-report.md` (2026-06-12 report, not rerun , logger only), `MOTION.md`,
+`TASTE_LOG.md` through 2026-07-24, `REMOVED.md`, and a live `--gate-stdin` probe of the drift gate.
+
+**Prior live items:** the 6 from 2026-07-11 (carried at 2026-07-18) are all still open , nothing in
+TASTE_LOG or recent commits resolved the cited files. Still awaiting an owner approve-or-drop; no
+chips fired this pass either. Not re-listed here to avoid a third duplicate block.
+
+**MOTION.md:** still exactly 1 open leftover (`MOTION.md:80` haptics). No new motion debt.
+
+### CORRECTION to the 2026-07-18 DOC-VS-GATE numbers (this audit under-counted itself)
+
+Last pass reported "10 missing hexes" and "4 missing `RETIRED_TOKENS`" from a text grep of
+`.claude/skills/solen-drift-check/scripts/check.py`. That grep read COMMENTED-OUT and prose hexes as
+live set members, so both counts were wrong. This pass parsed the sets via AST (ground truth) and then
+PROVED each gap by piping a real payload through `check.py --gate-stdin` and reading the exit code.
+
+**Measured: 25 LOCKFILE §1-3 hexes are absent from `ALLOWED_HEX`; all 25 block (rc=2, rule A1).**
+Split by whether the block is CORRECT:
+
+- **16 are LIVE locked token values , these are FALSE POSITIVES** (a legitimate inline SVG `fill=` /
+  `style={{}}` / `tailwind.config.js` definition of the token is refused):
+  `#E4E4E7` s-border · `#1F8900` s-open · `#F1AE27` s-warning · `#FDF6E7` s-warning.bg ·
+  `#B45309` s-warning.text · `#C2410C` s-urgency · `#C03001` s-pop (UN-RETIRED V3-D424) ·
+  `#C5C8C4` s-ink-disabled · `#9CA3AF` s-chart-2 (reinstated 2026-07-21) · `#D1D5DB` s-chart-3 ·
+  `#DC2626` s-error/s-closed · `#FEE2E2` s-error.bg · `#E8F5E9` s-success.bg ·
+  `#EA580C` s-surcharge · `#FFEDD5` s-surcharge.bg · `#EAEFFE` s-accent.pale
+- **9 blocks are CORRECT** (superseded or conditional, the gate is right to refuse them):
+  `#15803D` (tokenized s-brand.mid only, removed 2026-07-12) · `#185CE0` (old accent-deep, current is
+  `#1E54B7`) · `#906309` (de-muddied V3-D424) · `#D32F2F` + `#FFEBEE` (consolidated onto `#DC2626`
+  / `#FEE2E2`) · `#E0DDDB` + `#E8E4DF` + `#F8F5F2` (warm chrome, reversed by v2 rule 4) ·
+  `#E09A0C` (sanctioned deeper amber sibling, needs an owner pick first)
+
+**Severity is MEDIUM, not high:** the gate blocks a RAW HEX and points at the Tailwind token, which is
+the correct authoring form on a component. The real false-positive surface is narrow , the
+single-point definition files (`app/globals.css`, `tailwind.config.js`, both measured BLOCK) and
+inline SVG fills. `drift-ok: <reason>` clears it, so nothing is actually wedged.
+
+**`RETIRED_TOKENS`: 7 gaps** (LOCKFILE §1 names them retired, the gate would not flag net-new use):
+`s-amber` (PERMANENTLY KILLED V3-D320) · `s-love` family · and 5 of the `s-atm-*` family the gate
+misses because it lists only warm/cool/base , `s-atm-cream`, `s-atm-terra`, `s-atm-sage`,
+`s-atm-bone`, `s-atm-butter`. (The bare `s-sage`/`s-butter` entries do NOT prefix-match the
+`s-atm-` forms.) The `s-cat-*-text` variants ARE covered: `retired_token_re` ends on `\b`, which
+matches before the `-text` suffix , verified.
+
+Both fixes live in `.claude/skills/solen-drift-check/scripts/check.py`, which is PRODUCT code and
+outside the self-audit's write scope. Parked for an owner-approved edit; full detail and the exact
+literal lists are in `_plans/SELF_AUDIT_2026-07-25.md`.
+
+### Not suggestions (recorded so no future pass re-litigates them)
+- Phantom-gate sweep of `_design-system/**` + `REMOVED.md`: **0 real phantoms.** All 20 raw regex hits
+  are English prose ("a hard gate", "the ship gate", "an owner gate") or truncation artifacts of the
+  matcher itself, not hook filenames. `mockup-depicts-gate` and `no-black-selected-gate.py`, the two
+  hits that DO look like filenames, both exist on disk. Same verdict as 2026-07-18.
