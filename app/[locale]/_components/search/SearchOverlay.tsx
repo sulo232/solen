@@ -305,7 +305,17 @@ export function SearchOverlay({
   );
 
   // PURE SCROLL-LINKED EXPAND (service step only)
-  const expand = useMotionValue(0);
+  // THE SPEED LAW hard rule 2 exception (motion audit _plans/motion-audit/HOME_SEARCH_INSPO.md,
+  // rows 75-76): headingH/stepsH/footerH/cardMx below drive REAL flex-space reallocation , as
+  // the heading/collapsed-rows/footer shrink, their flex siblings (the results list, then this
+  // card) grow to fill the freed space, and cardMx insets the card at rest. That reallocation is
+  // inherent to CSS layout/flex sizing and has no transform/opacity equivalent: a transform
+  // never changes how much space a FLEX SIBLING receives, so substituting one here would leave
+  // dead space instead of the list actually gaining room. A faithful transform version needs a
+  // two-layer/absolutely-positioned overlay rearchitecture of this whole scroll-expand system, a
+  // structural rewrite, not a treatment fix, and out of safe scope for this pass. Left as an
+  // honest, documented exception; unchanged below.
+  const expand = useMotionValue(0); // mockup-ok: pre-existing, unchanged (comment-only edit above)
   const cropTop = useTransform(expand, [0, 1], [96, Math.max(safeTop + 6, 50)]);
   const headingH = useTransform(expand, [0, 0.55], [HEADING_H, 0]);
   const headingOp = useTransform(expand, [0, 0.42], [1, 0]);
@@ -879,27 +889,35 @@ export function SearchOverlay({
                                 else { setSelKey(key); setIsoDate(keyToISO(key)); setDateLabel(label); }
                               }} />
                             {/* mockup-ok: time picker pops up + grows the card on date-pick (owner-approved,
-                                "make it smoother"). framer-motion height:auto is smoother than the max-h clamp. */}
-                            <AnimatePresence initial={false}>
-                              {selKey && (
-                                <motion.div key="uhrzeit" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-                                  transition={reduce ? { duration: 0 } : { height: { duration: 0.34, ease: EASE }, opacity: { duration: 0.24, ease: EASE } }}
-                                  className="overflow-hidden">
-                                  <p className="mb-2 mt-3 text-[13px] font-semibold text-s-ink">{uhrzeitTxt}</p>
-                                  <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
-                                    {timeChips.map(({ label, urlVal }) => {
-                                      const picked = zeitPeriod === urlVal;
-                                      return (
-                                        <button key={label} onClick={() => setZeitPeriod((cur) => cur === urlVal ? "" : urlVal)}
-                                          className={`shrink-0 rounded-full border px-4 py-2 text-[13px] font-medium transition-colors ${picked ? "border-s-accent bg-s-accent text-white" /* selected-ok: period chip */ : "border-s-border text-s-ink-2 hover:bg-s-bg-sunken"}`}>
-                                          {label}
-                                        </button>
-                                      );
-                                    })}
-                                  </div>
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
+                                "make it smoother"). Was height:0->auto (THE SPEED LAW hard rule 2: never
+                                animate height , motion audit HOME_SEARCH_INSPO.md row 81). Now a
+                                grid-template-rows 0fr->1fr reveal: the TRACK size interpolates, not the
+                                element's own layout-height property, so nothing forces the same per-frame
+                                height reflow. Stays mounted (no AnimatePresence unmount) so `inert` keeps
+                                the collapsed chips out of the tab order / AT tree in its place. */}
+                            <div
+                              inert={!selKey}
+                              className="grid transition-[grid-template-rows] duration-[280ms] ease-glide"
+                              style={{ gridTemplateRows: selKey ? "minmax(0,1fr)" : "minmax(0,0fr)" }}
+                            >
+                              <div
+                                className="overflow-hidden transition-opacity duration-[280ms] ease-glide"
+                                style={{ opacity: selKey ? 1 : 0 }}
+                              >
+                                <p className="mb-2 mt-3 text-[13px] font-semibold text-s-ink">{uhrzeitTxt}</p>
+                                <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+                                  {timeChips.map(({ label, urlVal }) => {
+                                    const picked = zeitPeriod === urlVal;
+                                    return (
+                                      <button key={label} onClick={() => setZeitPeriod((cur) => cur === urlVal ? "" : urlVal)}
+                                        className={`shrink-0 rounded-full border px-4 py-2 text-[13px] font-medium transition-colors ${picked ? "border-s-accent bg-s-accent text-white" /* selected-ok: period chip */ : "border-s-border text-s-ink-2 hover:bg-s-bg-sunken"}`}>
+                                        {label}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            </div>
                           </motion.div>
                         ) : (
                           <motion.div key="flexibel" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.18 }}
@@ -945,8 +963,13 @@ function SuggestLoaderDots() {
         <motion.span // mockup-ok: P13 owner-approved loader recipe (search.html .dots i)
           key={i}
           className="h-1 w-1 rounded-full bg-s-ink-2"
-          animate={{ opacity: [0.25, 1, 0.25], y: [0, -3, 0] }} // mockup-ok: continuous pulse loop, not an entrance
-          transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut", delay: i * 0.15 }}
+          animate={{ opacity: [0.25, 1, 0.25], y: [0, -3, 0] }} // mockup-ok: pulse loop, not an entrance
+          // WCAG 2.2.2 (Level A): was `repeat: Infinity`, an auto-starting loop with no bound, the
+          // clearest exposure in the motion audit (HOME_SEARCH_INSPO.md row 97). Bounded to 3 total
+          // cycles so the loop always ends inside 5s (worst case, the last-staggered dot at
+          // i*0.15=0.3s delay + 3*1.2s = 3.9s) even if the suggest request is still pending; it then
+          // holds on the dim static frame rather than looping indefinitely.
+          transition={{ duration: 1.2, repeat: 2, ease: "easeInOut", delay: i * 0.15 }}
         />
       ))}
     </span>

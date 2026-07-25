@@ -441,16 +441,27 @@ function DiscoverPageContent() {
               />
             </div>
             {/* Saved heart fades + collapses when the search is focused (owner 2026-06-23) so the input expands.
-                The filter moved OFF the search row to the refine row below the category tabs. */}
-            <div className={`flex items-center transition-all duration-300 ease-[cubic-bezier(.34,1.56,.64,1)] ${searchFocused ? "pointer-events-none w-0 overflow-hidden opacity-0" : ""}`}>
-            <button
-              type="button"
-              onClick={() => router.push(`/${locale}/inspo/saved`)}
-              aria-label="Gespeichert"
-              className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-s-border text-s-ink-2 transition-colors duration-150 hover:text-s-ink"
+                The filter moved OFF the search row to the refine row below the category tabs.
+                THE SPEED LAW hard rule 2 (motion audit HOME_SEARCH_INSPO.md row 122): was
+                `transition-all` over `w-0`, animating WIDTH. `grid-template-columns` (0fr <-> 1fr,
+                wrapped in `minmax(0, ...)` so it can reach true zero) reallocates the same flex space
+                to the search input by interpolating a GRID TRACK instead of the element's own layout
+                `width`, so nothing forces the identical per-frame width reflow. Tier corrected to snap
+                150 (an in-place control getting out of the way is not a reveal; 300ms was off-ladder). */}
+            <div
+              className={`grid transition-[grid-template-columns,opacity] duration-150 ease-glide ${searchFocused ? "pointer-events-none opacity-0" : "opacity-100"}`}
+              style={{ gridTemplateColumns: searchFocused ? "minmax(0,0fr)" : "minmax(0,1fr)" }}
             >
-              <Heart size={18} />
-            </button>
+              <div className="overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => router.push(`/${locale}/inspo/saved`)}
+                  aria-label="Gespeichert"
+                  className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-s-border text-s-ink-2 transition-colors duration-150 hover:text-s-ink"
+                >
+                  <Heart size={18} />
+                </button>
+              </div>
             </div>
           </div>
           {searchFocused && (

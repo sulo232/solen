@@ -189,13 +189,23 @@ export function CategoryHeroCarousel({
               aria-current={i === active ? "true" : undefined}
               className="pointer-events-auto grid min-h-[34px] place-items-center rounded-full px-1.5 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
             >
-              <span
-                className={
-                  i === active
-                    ? "block h-[7px] w-[22px] rounded-[4px] bg-white transition-all duration-300 ease-glide"
-                    : "block h-[7px] w-[7px] rounded-full bg-white/55 transition-all duration-300 ease-glide"
-                }
-              />
+              {/* THE SPEED LAW hard rule 2 (motion audit HOME_SEARCH_INSPO.md row 117): was
+                  `transition-all` over `w-[7px]` <-> `w-[22px]`, animating WIDTH. A `scaleX` on one
+                  shape would also work the FILL bar (row 100) but would distort THIS shape: scaling a
+                  rounded-full circle horizontally flattens its round caps into an ellipse, an actually
+                  visible defect on a 7px dot. Instead both fixed-size shapes (circle, pill) are always
+                  present, stacked in one grid cell, and crossfaded by opacity , same tier the LAW
+                  assigns an in-place state flip (snap 150; the 300ms here was also off-ladder). */}
+              <span className="relative grid h-[7px] w-[22px] place-items-center">
+                <span
+                  aria-hidden
+                  className={`col-start-1 row-start-1 h-[7px] w-[7px] rounded-full bg-white/55 transition-opacity duration-150 ease-glide ${i === active ? "opacity-0" : "opacity-100"}`}
+                />
+                <span
+                  aria-hidden
+                  className={`col-start-1 row-start-1 h-[7px] w-[22px] rounded-[4px] bg-white transition-opacity duration-150 ease-glide ${i === active ? "opacity-100" : "opacity-0"}`}
+                />
+              </span>
             </button>
           ))}
         </div>

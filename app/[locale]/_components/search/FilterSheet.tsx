@@ -228,16 +228,26 @@ function RatingBar({
         aria-valuetext={label}
       >
         <div className="h-1.5 w-full rounded-full bg-s-border" />
+        {/* THE SPEED LAW hard rule 2 (motion audit HOME_SEARCH_INSPO.md row 100): was
+            `animate={{ width }}`. A full-width bar scaled by `scaleX` from a left origin paints the
+            identical fill without ever animating `width` (no reflow). */}
         <motion.div
-          className="absolute h-1.5 rounded-full bg-s-ink"
-          animate={{ width: `${pct}%` }}
+          className="absolute left-0 h-1.5 w-full origin-left rounded-full bg-s-ink"
+          animate={{ scaleX: pct / 100 }}
           transition={dragging.current ? { duration: 0 } : { duration: 0.22, ease: EASE }}
         />
+        {/* row 101: was `animate={{ left }}`. `left` percentages are relative to the TRACK, which
+            `translateX` alone can't reproduce (transform % is relative to the element's own box), so
+            the thumb sits inside a full-width wrapper and the WRAPPER is translated by `pct`% of its
+            own width (== the track's width); the visible 20px circle stays statically centered at the
+            wrapper's left edge. */}
         <motion.div
-          className="absolute h-5 w-5 -translate-x-1/2 rounded-full border-2 border-s-ink bg-white shadow-[0_2px_6px_rgba(10,10,10,0.2)]"
-          animate={{ left: `${pct}%` }}
+          className="pointer-events-none absolute inset-0"
+          animate={{ x: `${pct}%` }}
           transition={dragging.current ? { duration: 0 } : { duration: 0.22, ease: EASE }}
-        />
+        >
+          <div className="absolute left-0 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-s-ink bg-white shadow-[0_2px_6px_rgba(10,10,10,0.2)]" />
+        </motion.div>
       </div>
       {/* Tick labels under the track - one per stop, >= 12px. */}
       <div className="mt-2 flex justify-between font-body text-[12px] text-s-ink-3">
