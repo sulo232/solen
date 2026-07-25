@@ -78,9 +78,9 @@ through 2026-08-31) · haiku-4-5 1/5 · opus-4-8 / 4-7 / 4-6 5/25. Queued for ro
 - [x] P1 , SHIPPED d980fe4 + deployed: usage limits from the cache with staleness, context
       gauge, auto 1m detection, subagent detail, `deploy.sh`, tests extended (compile clean,
       fixture-check OK)
-- [ ] P2 , round 2 (owner-directed). Rounds 2A and 2B are CLOSED (commits 892fd61, 55af29a).
-      Two children remain: P2b is blocked on the owner, P2f is building now off the approved
-      mockup. This parent stays open until both close.
+- [ ] P2 , round 2 (owner-directed). Six of seven children are CLOSED (892fd61, 55af29a,
+      43d833a). Only P2b remains: its module is built and tested, the WIRING into
+      `extension.ts` is dispatched and in flight. This parent closes when that lands.
   - [x] P2a. Kill the tool-name insight item (D4) , SHIPPED round 2A, commit **892fd61**,
         `verified:` grep for renderInsight / describeActivity / verbFor / VERB_MAP /
         showInsight across `src/` + `package.json` returns nothing: `renderInsight`,
@@ -129,14 +129,17 @@ through 2026-08-31) · haiku-4-5 1/5 · opus-4-8 / 4-7 / 4-6 5/25. Queued for ro
         firing on the busy-to-idle edge, `package.json:48` `claudeStatusbar.showRecap`.
         Gated at 60 seconds so short turns raise no notification. A fixture assertion checks
         no composed message can contain a tool name.
-  - [ ] P2f. Webview panel: gauges, bars, burn sparkline, agent cards, timeline (D2) ,
-        **MOCKUP APPROVED by the owner 2026-07-25 ("approved"), BUILD DISPATCHED** to a coder
-        subagent the same turn. Mockup at commit **0c10f3101**, `verified:`
-        `public/_mockups/cc-statusbar-panel/index.html` serves 200 through the tunnel.
-        Three states (calm with today's real numbers, warning, error). Playwright-measured:
-        anchor 1.85x, 4 sizes, 18% at weight >=600, no overflow; the first pass failed at
-        1.54x and 46% and was fixed before writing. The BUILD is deliberately not started:
-        mockup-first means the owner reacts before the webview goes into real code.
+  - [x] P2f. Webview panel (D2) , **SHIPPED** commit **43d833a**, deployed. `verified:`
+        `src/extension.ts:348` `StatusPanelViewProvider implements vscode.WebviewViewProvider`,
+        `:908` registers it; `src/render.ts:461` sets the Content-Security-Policy; `grep -c
+        '<script'` across `src/render.ts` and `src/extension.ts` returns 0, so the webview runs
+        no script at all; `src/render.ts:111` `escapeHtml` guards every interpolated string.
+        Built from the mockup the owner approved (0c10f3101). Inherits the active VS Code theme
+        via `--vscode-*`; the four semantic hues stay literal so they mean the same thing in any
+        theme. Sparkline is REAL, not the mockup's placeholder: `src/parse.ts:292` `perTurnCosts`
+        reads each assistant turn's own usage from the current transcript, and it hides below
+        three turns rather than drawing a stub. Also closes the 55af29a gap where a warning had
+        nowhere to render with no todos and no title.
   - [x] P2g. Add opus-5 / sonnet-5 / fable-5 to `pricing.ts` , SHIPPED round 2A, commit
         **892fd61**, `verified:` `src/pricing.ts:12` opus-5, `:15` sonnet-5, `:18` fable-5,
         `:69` `isKnownModel`, `:3` Verified date 2026-07-25. All three
