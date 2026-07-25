@@ -13,6 +13,7 @@
     "health": "node scripts/system-health.mjs",
     "check:invariants": "node scripts/check-invariants.mjs",
     "check:floors": "node scripts/check-geometry.mjs --floors-only",
+    "gate:floors": "node scripts/check-geometry.mjs --floors-only --gate",
     "test:visual": "playwright test",
     "test:visual:update": "playwright test --update-snapshots",
     "removed": "node scripts/removed.mjs",

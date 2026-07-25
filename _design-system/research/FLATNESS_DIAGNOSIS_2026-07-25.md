@@ -15,8 +15,11 @@ not from source. Every number below was measured this session with getBoundingCl
 
 ## THE CORE CAUSE, in one sentence
 
-**Emphasis is spent uniformly instead of selectively, so the screen has almost no dynamic range: on the PDP
-86% of visible text is semibold and the largest text is only 1.57x the body size.** When nearly everything
+**Emphasis is spent uniformly instead of selectively: on the PDP 86% of visible text is semibold.**
+The mechanism (TASTE_RANGE.md finding 1, Healey/NCSU): a target whose properties are UNIQUE pops out
+preattentively in under 250ms; a target sharing its properties with the field becomes a conjunction target
+and drops into slow serial search. At 86% weight-600, semibold is a property of the FIELD, not the anchor,
+so nothing pops. (The size-ratio half of this claim was overstated, see the corrected table row.) When nearly everything
 is emphasized, emphasis stops carrying information (Nielsen: "if you emphasize everything, nothing gets
 focus"), and the eye finds no entry point. "Flat" is not a vibe here, it is literally the measurement.
 
@@ -30,7 +33,7 @@ along: the FLOORS LAW was written, but the floors were never applied to the home
 | Metric | Home | PDP | Floor / ceiling in our own law |
 |---|---|---|---|
 | Imagery share of first viewport | **4.7%** | 34.7% | FLOORS LAW 2: ~>= 33% on browse/discovery/PDP |
-| Largest text vs body (dynamic range) | 2.4x | **1.57x** | a dominating level needs a 30-50% jump; 1.57x is one step, not a hierarchy |
+| Largest text vs body (dynamic range) | 2.4x | **1.57x** | **CORRECTED 2026-07-25 by TASTE_RANGE.md research:** the published 30-50% figure means 1.3x-1.5x, so 1.57x PASSES that bar. The original line here ("1.57x is one step, not a hierarchy") misread its own source. Our 1.8x floor is a HOUSE CONVENTION, stricter than any published number. The weight-share finding below is unaffected and remains the core cause. |
 | Share of visible text at weight >= 600 | 52% | **86%** | emphasis must be the exception; 86% makes it the default |
 | Max font size | 31.2px | **22px** | display anchor floor is >= 28px per customer screen (FLOORS LAW 6) |
 | Distinct chromatic colours on screen | **2** | 3 | semantic colour is allowed and expected; near-zero chroma reads unfinished |

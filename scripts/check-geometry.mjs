@@ -36,13 +36,13 @@
 //
 // FLOORS section (added 2026-07-25, owner brief: "make the FLOORS LAW
 // measurable... a principle nobody can run is a principle that gets skipped").
-// Same report-only, always-exit-0 shape as (a)-(d) above, but its own in-page
-// extraction function (extractFloors, own viewport) since the checks and their
-// population (leaf TEXT elements, not boxes) are a different shape than the
-// geometry ones. Measures the FLOORS LAW / EMPHASIS BUDGET literals, on the
-// RENDERED first viewport at 390x844 (fixed, independent of --viewport - see
-// the FLOORS config block below for why). Numbers are hardcoded with a comment
-// citing the source, because this script cannot parse markdown law:
+// Same in-page shape as (a)-(d) above (own extraction function extractFloors,
+// own viewport) since the checks and their population (leaf TEXT elements, not
+// boxes) are a different shape than the geometry ones. Measures the FLOORS LAW
+// / EMPHASIS BUDGET literals, on the RENDERED first viewport at 390x844
+// (fixed, independent of --viewport - see the FLOORS config block below for
+// why). Numbers are hardcoded with a comment citing the source, because this
+// script cannot parse markdown law:
 //   F2  IMAGERY        photographic area (<img> + any background-image url())
 //                       as a share of the first viewport, floor 33%. Exempt BY
 //                       NAME (forms / checkout payment step / legal / receipts,
@@ -54,13 +54,21 @@
 //   F7b ANCHOR RATIO     max font-size / median font-size of visible leaf text
 //                       (median lands on body, since most text IS body-sized),
 //                       floor 1.8x.
-//   F7c SIZE SPREAD      distinct sizes + spread (max-min); flags the trap of
-//                       >4 distinct sizes whose spread is under 8px (variety
-//                       without hierarchy, breaks the ceiling and the range
-//                       floor at once).
+//   F7c SIZE SPREAD      distinct sizes + a DENSEST-CLUSTER check (RANGE LAW
+//                       G4 fix, 2026-07-25): flags >4 distinct sizes that fall
+//                       inside ANY 8px window, found with a sliding window over
+//                       the sorted sizes - not the array's global max-min. The
+//                       global spread is still computed and shown in the
+//                       report as CONTEXT only, never as the trigger: it used
+//                       to BE the trigger, which let 1-2 outlier sizes stretch
+//                       the range past 8px and hide a real cluster (home: 9
+//                       distinct sizes / 19.2px global spread, PASSED under
+//                       the old math even though most of those 9 sit bunched
+//                       within a few px of each other).
 //   ELEVATION            distinct non-none box-shadow values, floor 2.
-// Report-only, same as (a)-(d): a future turn can flip FLOORS to a gate once
-// its own noise floor is known. Not added now.
+// Default and --floors-only (without --gate) stay report-only, always exit 0 -
+// see the --gate flag below (RANGE LAW G1, 2026-07-25) for the mode that can
+// actually fail the run.
 //
 // Usage:
 //   node scripts/check-geometry.mjs
@@ -68,13 +76,17 @@
 //   node scripts/check-geometry.mjs --viewport desktop
 //   node scripts/check-geometry.mjs --floors-only            (FLOORS section only, skips a-d)
 //   node scripts/check-geometry.mjs --floors-only /de /de/salon/some-slug
+//   node scripts/check-geometry.mjs --floors-only --gate     (FAILS the run on an un-allowlisted floor)
 //   BASE_URL=http://localhost:3000 node scripts/check-geometry.mjs
 //   npm run check:floors                                     (= --floors-only, package.json)
+//   npm run gate:floors                                      (= --floors-only --gate, package.json)
 //
-// Exit code: ALWAYS 0, in every mode including --floors-only. This is a
-// report-only tool until the findings are triaged and a real noise floor is
-// known (per the task brief); a future round can add a --fail-on-new flag
-// once false positives are pruned.
+// Exit code: 0 in every mode UNLESS --gate is passed - the (a)-(d) geometry
+// pass is never gated by this task, only FLOORS is. --gate (RANGE LAW G1,
+// 2026-07-25) exits 1 when any non-exempt route FAILs a floor that is not
+// listed in FLOORS_ALLOWLIST below. That list is the ratchet: an entry gets
+// DELETED once its surface is fixed, never added fresh to route around a new
+// failure (the gate prints this reminder on every un-allowlisted failure).
 
 import { writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
@@ -151,6 +163,17 @@ const FLOOR_ANCHOR_RATIO = 1.8; // F7b - LOCKFILE EMPHASIS BUDGET: "min anchor-t
 // the same trap informally as "~6px", not 8px - flagging that mismatch too;
 // 8px is what's hardcoded below because it is the number given as this
 // script's literal spec.
+//
+// RANGE LAW G4 fix (2026-07-25): SIZE_SPREAD_TRAP_MAX_SPREAD_PX is now the
+// width of the SLIDING WINDOW the trap searches for a dense cluster in (see
+// densestClusterCount inside extractFloors), not a ceiling on the whole
+// distinctSizes array's global max-min. Global spread used to BE the trap's
+// only signal, which is the wrong measurement for "size variety without
+// hierarchy": 1-2 outlier sizes stretch the global range past 8px and the
+// trap goes quiet even while the rest of the sizes sit bunched a couple px
+// apart - exactly what home does (9 distinct sizes, 19.2px global spread,
+// PASSED the old math) per the measured "nine sizes that all sit within 6px
+// of each other" finding in FLATNESS_DIAGNOSIS_2026-07-25.md.
 const SIZE_SPREAD_TRAP_MAX_DISTINCT = 4;
 const SIZE_SPREAD_TRAP_MAX_SPREAD_PX = 8;
 const FLOOR_ELEVATION_COUNT = 2; // ELEVATION - LOCKFILE EMPHASIS BUDGET: "min distinct elevation steps per screen: 2"
@@ -200,6 +223,111 @@ function isFloorsImageryExempt(route) {
 }
 
 // ----------------------------------------------------------------------------
+// GATE allowlist (RANGE LAW G1, 2026-07-25: "make check:floors a REAL gate").
+// EDITABLE ratchet: every entry below is a route+floor pair that is
+// KNOWN-FAILING today, each with a one-line reason citing the measured number.
+// --gate exits non-zero on any FAIL that is NOT covered by this list, so the
+// very first run of `npm run gate:floors` still exits 0 (the failure mode
+// this task names explicitly: "without this allowlist the gate would fail on
+// day one and get disabled"). The list only ever SHRINKS from here: delete an
+// entry the moment its surface is fixed, never add a fresh one to route
+// around a NEW failure (the gate reprints this rule on every un-allowlisted
+// FAIL - see the --gate block in main()).
+//
+// routePattern is matched against the LOCALE-STRIPPED path (stripLocale
+// above): an exact string, or a trailing "/*" to match a prefix - e.g.
+// "/salon/*" covers every salon slug, not just the one DEFAULT_ROUTES happens
+// to probe today.
+//
+// Seeded from the live measurement this same session (node scripts/
+// check-geometry.mjs --floors-only, 2026-07-25 - matches
+// _design-system/research/FLATNESS_DIAGNOSIS_2026-07-25.md for /de and the
+// PDP). The task brief named exactly two routes ("/de" and "/de/salon/
+// [slug]"); DEFAULT_ROUTES also always probes /de/booking/lookup, which the
+// SAME live run showed failing on three OTHER floors the brief did not name.
+// Leaving those out would make `npm run gate:floors` fail on its very first
+// run against the routes its own npm script actually walks - the exact
+// failure mode this task exists to avoid - so they are seeded too, flagged
+// here as a discovery rather than folded in silently as if they were part of
+// "the two".
+// ----------------------------------------------------------------------------
+const FLOORS_ALLOWLIST = [
+  {
+    routePattern: "/",
+    floor: "F2",
+    reason: "home imagery 4.66% vs the 33% floor; SEV4 fix (photographic hero) not yet applied, FLATNESS_DIAGNOSIS_2026-07-25.md",
+  },
+  {
+    routePattern: "/",
+    floor: "F7a",
+    reason: "home weight share 50% (11/22) vs the 30% ceiling; SEV4 fix (drop semibold usage) not yet applied, FLATNESS_DIAGNOSIS_2026-07-25.md",
+  },
+  // Not named in the task brief's "seed with the two we know" - a direct side
+  // effect of this SAME task's G4 fix: home's size spread was PASS under the
+  // old global-max-min math and only turned FAIL once the trap started
+  // measuring the densest cluster instead (see the SIZE_SPREAD_TRAP_MAX_
+  // SPREAD_PX comment above for why the old math missed it).
+  {
+    routePattern: "/",
+    floor: "F7c",
+    reason: "home densest cluster is 7 distinct sizes within an 8px window (ceiling 4); newly surfaced by this session's own G4 fix, matches FLATNESS_DIAGNOSIS_2026-07-25.md's 'nine sizes that all sit within 6px of each other'",
+  },
+  {
+    routePattern: "/salon/*",
+    floor: "F6",
+    reason: "PDP display anchor 22px vs the 28px floor; salon name does not yet own the screen, FLATNESS_DIAGNOSIS_2026-07-25.md SEV3",
+  },
+  {
+    routePattern: "/salon/*",
+    floor: "F7a",
+    reason: "PDP weight share 83.33% (25/30) vs the 30% ceiling; this is the measured root cause the flatness diagnosis names, SEV4",
+  },
+  {
+    routePattern: "/salon/*",
+    floor: "F7b",
+    reason: "PDP anchor ratio 1.57x vs the 1.8x floor; pairs with the F6 entry above, FLATNESS_DIAGNOSIS_2026-07-25.md SEV3",
+  },
+  // Not named in the task brief's "seed with the two we know" - discovered live
+  // while proving --gate exits 0 against DEFAULT_ROUTES (2026-07-25). The F7c
+  // one is a direct side effect of the SAME task's G4 fix: the PDP's size
+  // spread was PASS under the old global-max-min math and only turned FAIL
+  // once the trap started measuring the densest cluster instead.
+  {
+    routePattern: "/salon/*",
+    floor: "F7c",
+    reason: "PDP densest cluster is 5 distinct sizes within an 8px window (ceiling 4); newly surfaced by this session's own G4 densest-cluster fix, same root cause as the F7a/F7b entries above",
+  },
+  {
+    routePattern: "/booking/lookup",
+    floor: "F6",
+    reason: "booking-lookup display anchor 21px vs the 28px floor; not yet audited, found proving gate:floors exits 0",
+  },
+  {
+    routePattern: "/booking/lookup",
+    floor: "F7b",
+    reason: "booking-lookup anchor ratio 1.56x vs the 1.8x floor; not yet audited, found proving gate:floors exits 0",
+  },
+  {
+    routePattern: "/booking/lookup",
+    floor: "ELEVATION",
+    reason: "booking-lookup has 0 distinct box-shadow values vs the floor of 2; a bare form with no elevated surface yet, found proving gate:floors exits 0",
+  },
+];
+
+function floorsRouteMatchesPattern(pattern, path) {
+  if (pattern.endsWith("/*")) {
+    const prefix = pattern.slice(0, -2);
+    return path === prefix || path.startsWith(prefix + "/");
+  }
+  return path === pattern;
+}
+
+function isFloorAllowlisted(route, floorCode) {
+  const path = stripLocale(route);
+  return FLOORS_ALLOWLIST.some((entry) => entry.floor === floorCode && floorsRouteMatchesPattern(entry.routePattern, path));
+}
+
+// ----------------------------------------------------------------------------
 // CLI args
 // ----------------------------------------------------------------------------
 function parseArgs(argv) {
@@ -207,18 +335,20 @@ function parseArgs(argv) {
   let baseUrl = process.env.BASE_URL || "http://localhost:3000";
   let viewport = "mobile"; // Solen is mobile-first (CLAUDE.md); default the check to it.
   let floorsOnly = false;
+  let gate = false; // RANGE LAW G1, 2026-07-25: --gate flips FLOORS from report-only to failing
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === "--base-url") baseUrl = argv[++i];
     else if (a === "--viewport") viewport = argv[++i];
     else if (a === "--floors-only") floorsOnly = true;
+    else if (a === "--gate") gate = true;
     else if (!a.startsWith("--")) routes.push(a);
   }
   if (!VIEWPORTS[viewport]) {
     console.error(`[check-geometry] unknown --viewport "${viewport}", falling back to mobile`);
     viewport = "mobile";
   }
-  return { baseUrl, viewport, floorsOnly, routes: routes.length > 0 ? routes : DEFAULT_ROUTES };
+  return { baseUrl, viewport, floorsOnly, gate, routes: routes.length > 0 ? routes : DEFAULT_ROUTES };
 }
 
 // ----------------------------------------------------------------------------
@@ -849,15 +979,38 @@ function extractFloors(config) {
     ratio: round2(anchorRatioValue),
   };
 
-  // F7c SIZE SPREAD - distinct sizes (2-decimal grouping) + spread, flagging
-  // the trap of many distinct sizes bunched into a small range.
+  // F7c SIZE SPREAD - distinct sizes (2-decimal grouping) + a DENSEST-CLUSTER
+  // check (RANGE LAW G4 fix, 2026-07-25). Global max-min ("spreadPx" below) is
+  // kept and reported as CONTEXT only; it is no longer what trips the trap,
+  // because 1-2 outlier sizes can stretch the global range past the window
+  // and hide a real cluster of the rest - the exact wrong-measurement bug
+  // this fix targets (home: 9 distinct sizes, 19.2px global spread, but per
+  // the measured diagnosis "nine sizes that all sit within 6px of each
+  // other" - the old spreadPx<8 test PASSED that screen). densestClusterCount
+  // finds the largest number of distinct sizes that fit inside ANY window of
+  // width sizeSpreadTrapMaxSpreadPx, via a sorted two-pointer sweep; the trap
+  // fires the instant that count exceeds the >4-sizes ceiling, wherever in
+  // the range the cluster sits.
+  function densestClusterCount(sortedSizes, windowPx) {
+    if (sortedSizes.length === 0) return 0;
+    let best = 1;
+    let left = 0;
+    for (let right = 0; right < sortedSizes.length; right++) {
+      while (sortedSizes[right] - sortedSizes[left] > windowPx) left++;
+      best = Math.max(best, right - left + 1);
+    }
+    return best;
+  }
+
   const distinctSizes = Array.from(new Set(sizes.map((s) => round2(s)))).sort((a, b) => a - b);
   const spreadPx = distinctSizes.length ? distinctSizes[distinctSizes.length - 1] - distinctSizes[0] : 0;
-  const trapTriggered = distinctSizes.length > sizeSpreadTrapMaxDistinct && spreadPx < sizeSpreadTrapMaxSpreadPx;
+  const densestClusterSize = densestClusterCount(distinctSizes, sizeSpreadTrapMaxSpreadPx);
+  const trapTriggered = densestClusterSize > sizeSpreadTrapMaxDistinct;
   const sizeSpread = {
     status: trapTriggered ? "FAIL" : "PASS",
     distinctCount: distinctSizes.length,
-    spreadPx: round2(spreadPx),
+    spreadPx: round2(spreadPx), // context only, see comment above - not the trap trigger
+    densestClusterSize,
     trapTriggered,
     sizes: distinctSizes,
   };
@@ -973,46 +1126,75 @@ function formatGeometrySection(result) {
 // reports exactly one row - name, measured value, floor/ceiling, PASS/FAIL/
 // EXEMPT - which is what a table communicates, not a "count of problems"
 // list).
-function formatFloorsSection(floors) {
-  const rows = [
-    [
-      "F2 imagery",
-      floors.imagery.status === "EXEMPT" ? "n/a (exempt)" : `${floors.imagery.sharePct}%`,
-      `floor >= ${FLOOR_IMAGERY_PCT}%`,
-      floors.imagery.status,
-    ],
-    [
-      "F6 display anchor",
-      `${floors.displayAnchor.sizePx}px ("${floors.displayAnchor.text}")`,
-      `floor >= ${FLOOR_DISPLAY_ANCHOR_PX}px`,
-      floors.displayAnchor.status,
-    ],
-    [
-      "F7a weight share",
-      `${floors.weightShare.sharePct}% (${floors.weightShare.count}/${floors.weightShare.total})`,
-      `ceiling <= ${CEILING_WEIGHT_SHARE_PCT}%`,
-      floors.weightShare.status,
-    ],
-    ["F7b anchor ratio", `${floors.anchorRatio.ratio}x`, `floor >= ${FLOOR_ANCHOR_RATIO}x`, floors.anchorRatio.status],
-    [
-      "F7c size spread",
-      `${floors.sizeSpread.distinctCount} distinct, spread ${floors.sizeSpread.spreadPx}px` +
-        (floors.sizeSpread.trapTriggered ? ` , TRAP: >${SIZE_SPREAD_TRAP_MAX_DISTINCT} distinct sizes bunched under ${SIZE_SPREAD_TRAP_MAX_SPREAD_PX}px` : ""),
-      `trap: >${SIZE_SPREAD_TRAP_MAX_DISTINCT} distinct AND spread<${SIZE_SPREAD_TRAP_MAX_SPREAD_PX}px`,
-      floors.sizeSpread.status,
-    ],
-    ["ELEVATION", `${floors.elevation.distinctCount} distinct box-shadow`, `floor >= ${FLOOR_ELEVATION_COUNT}`, floors.elevation.status],
+//
+// buildFloorsRows is factored out (RANGE LAW G1, 2026-07-25) so the --gate
+// pass in main() evaluates the SAME rows (same `code` per floor - F2/F6/F7a/
+// F7b/F7c/ELEVATION - matching FLOORS_ALLOWLIST's `floor` field) that the
+// report table prints, instead of re-deriving pass/fail a second time and
+// risking the two drifting apart.
+function buildFloorsRows(floors) {
+  return [
+    {
+      code: "F2",
+      name: "F2 imagery",
+      measured: floors.imagery.status === "EXEMPT" ? "n/a (exempt)" : `${floors.imagery.sharePct}%`,
+      threshold: `floor >= ${FLOOR_IMAGERY_PCT}%`,
+      status: floors.imagery.status,
+    },
+    {
+      code: "F6",
+      name: "F6 display anchor",
+      measured: `${floors.displayAnchor.sizePx}px ("${floors.displayAnchor.text}")`,
+      threshold: `floor >= ${FLOOR_DISPLAY_ANCHOR_PX}px`,
+      status: floors.displayAnchor.status,
+    },
+    {
+      code: "F7a",
+      name: "F7a weight share",
+      measured: `${floors.weightShare.sharePct}% (${floors.weightShare.count}/${floors.weightShare.total})`,
+      threshold: `ceiling <= ${CEILING_WEIGHT_SHARE_PCT}%`,
+      status: floors.weightShare.status,
+    },
+    {
+      code: "F7b",
+      name: "F7b anchor ratio",
+      measured: `${floors.anchorRatio.ratio}x`,
+      threshold: `floor >= ${FLOOR_ANCHOR_RATIO}x`,
+      status: floors.anchorRatio.status,
+    },
+    {
+      code: "F7c",
+      name: "F7c size spread",
+      measured:
+        `${floors.sizeSpread.distinctCount} distinct, densest cluster ${floors.sizeSpread.densestClusterSize} within ${SIZE_SPREAD_TRAP_MAX_SPREAD_PX}px` +
+        ` (global spread ${floors.sizeSpread.spreadPx}px, context only)` +
+        (floors.sizeSpread.trapTriggered
+          ? ` , TRAP: ${floors.sizeSpread.densestClusterSize} distinct sizes inside one ${SIZE_SPREAD_TRAP_MAX_SPREAD_PX}px window`
+          : ""),
+      threshold: `trap: densest cluster >${SIZE_SPREAD_TRAP_MAX_DISTINCT} distinct within ${SIZE_SPREAD_TRAP_MAX_SPREAD_PX}px`,
+      status: floors.sizeSpread.status,
+    },
+    {
+      code: "ELEVATION",
+      name: "ELEVATION",
+      measured: `${floors.elevation.distinctCount} distinct box-shadow`,
+      threshold: `floor >= ${FLOOR_ELEVATION_COUNT}`,
+      status: floors.elevation.status,
+    },
   ];
+}
 
-  const failCount = rows.filter((r) => r[3] === "FAIL").length;
+function formatFloorsSection(floors) {
+  const rows = buildFloorsRows(floors);
+  const failCount = rows.filter((r) => r.status === "FAIL").length;
   const lines = [
     `### FLOORS (${failCount} FAIL / ${rows.length})`,
     "",
     "| floor | measured | floor/ceiling | status |",
     "|---|---|---|---|",
   ];
-  for (const [name, measured, threshold, status] of rows) {
-    lines.push(`| ${name} | ${measured} | ${threshold} | ${status} |`);
+  for (const r of rows) {
+    lines.push(`| ${r.name} | ${r.measured} | ${r.threshold} | ${r.status} |`);
   }
   if (floors.elevation.examples.length > 0) {
     lines.push("", `elevation examples: ${floors.elevation.examples.map((e) => `\`${e.selector}\` ${e.value}`).join("; ")}`);
@@ -1029,7 +1211,7 @@ function formatFloorsConsoleLine(floors) {
     `displayAnchor=${floors.displayAnchor.sizePx}px(${floors.displayAnchor.status})`,
     `weightShare=${floors.weightShare.sharePct}%(${floors.weightShare.status})`,
     `anchorRatio=${floors.anchorRatio.ratio}x(${floors.anchorRatio.status})`,
-    `sizeSpread=${floors.sizeSpread.distinctCount}distinct/${floors.sizeSpread.spreadPx}px(${floors.sizeSpread.status})`,
+    `sizeSpread=${floors.sizeSpread.distinctCount}distinct,densestCluster=${floors.sizeSpread.densestClusterSize}within${SIZE_SPREAD_TRAP_MAX_SPREAD_PX}px,globalSpread=${floors.sizeSpread.spreadPx}px(${floors.sizeSpread.status})`,
     `elevation=${floors.elevation.distinctCount}(${floors.elevation.status})`,
   ].join(" ");
 }
@@ -1203,13 +1385,44 @@ function selfTestFloorsLogic() {
     assert("median(): body-dominated set lands on the body size, not the anchor", median([14, 14, 14, 14, 31]) === 14);
   }
 
-  // --- F7c trap: needs BOTH >4 distinct sizes AND spread<8px; either alone
-  // must not fire (variety-without-hierarchy is the specific failure mode).
+  // --- F7c trap (RANGE LAW G4 fix, 2026-07-25): DENSEST-CLUSTER, not global
+  // max-min. Mirrors densestClusterCount() inside extractFloors (same
+  // self-containment constraint as median()/clip() above - if the cluster
+  // math there changes, mirror the change here).
   {
-    const trap = (distinctCount, spreadPx) => distinctCount > SIZE_SPREAD_TRAP_MAX_DISTINCT && spreadPx < SIZE_SPREAD_TRAP_MAX_SPREAD_PX;
-    assert("F7c trap: 6 distinct sizes bunched in 5px fires", trap(6, 5) === true);
-    assert("F7c trap: 6 distinct sizes spread over 12px does NOT fire (a real range, not a wobble)", trap(6, 12) === false);
-    assert("F7c trap: 3 distinct sizes bunched in 5px does NOT fire (within the 4-size ceiling)", trap(3, 5) === false);
+    function densestClusterCount(sortedSizes, windowPx) {
+      if (sortedSizes.length === 0) return 0;
+      let best = 1;
+      let left = 0;
+      for (let right = 0; right < sortedSizes.length; right++) {
+        while (sortedSizes[right] - sortedSizes[left] > windowPx) left++;
+        best = Math.max(best, right - left + 1);
+      }
+      return best;
+    }
+    const trap = (sortedSizes) => densestClusterCount(sortedSizes, SIZE_SPREAD_TRAP_MAX_SPREAD_PX) > SIZE_SPREAD_TRAP_MAX_DISTINCT;
+
+    // Regression control: the REAL home bug this fix targets. 9 distinct
+    // sizes, global spread 19.2px (matches the live /de measurement) - 7 of
+    // the 9 sit bunched inside a 6px band, with 2 outliers stretching the
+    // global range well past 8px.
+    const homeLikeSizes = [12, 13, 14, 15, 16, 17, 18, 24, 31.2];
+    const oldSpreadPx = homeLikeSizes[homeLikeSizes.length - 1] - homeLikeSizes[0];
+    assert("F7c trap regression control: home-like set's GLOBAL spread is >8px (why the OLD math missed it)", oldSpreadPx > SIZE_SPREAD_TRAP_MAX_SPREAD_PX);
+    assert(
+      "F7c trap regression control: the OLD (distinctCount>4 AND globalSpread<8) formula would have PASSED this set",
+      !(homeLikeSizes.length > SIZE_SPREAD_TRAP_MAX_DISTINCT && oldSpreadPx < SIZE_SPREAD_TRAP_MAX_SPREAD_PX),
+    );
+    assert("F7c trap: the NEW densest-cluster math FIRES on the same home-like set (the actual fix)", trap(homeLikeSizes) === true);
+
+    // A genuine type ramp: 6 distinct sizes, each step big enough that no 8px
+    // window ever catches more than 4 of them - must NOT fire.
+    const realRangeSizes = [11, 13, 15, 18, 22, 28];
+    assert("F7c trap: a real, evenly-stepped type range does NOT fire", trap(realRangeSizes) === false);
+
+    // Within the 4-size ceiling regardless of how tightly bunched - must NOT fire.
+    const withinCeilingSizes = [12, 13, 14];
+    assert("F7c trap: 3 distinct sizes bunched in 2px does NOT fire (within the 4-size ceiling)", trap(withinCeilingSizes) === false);
   }
 
   // --- ELEVATION display: Tailwind's transparent/zero-geometry "ghost" ring
@@ -1285,7 +1498,7 @@ async function main() {
   selfTestNestedRadiusLogic();
   selfTestFloorsLogic();
 
-  const { baseUrl, viewport, floorsOnly, routes } = parseArgs(process.argv.slice(2));
+  const { baseUrl, viewport, floorsOnly, gate, routes } = parseArgs(process.argv.slice(2));
   const vp = VIEWPORTS[viewport];
 
   console.log(`[check-geometry] base=${baseUrl} viewport=${viewport} (${vp.width}x${vp.height}) floorsOnly=${floorsOnly}`);
@@ -1461,10 +1674,55 @@ async function main() {
   console.log(report);
   console.log(`[check-geometry] report written to ${OUTPUT_PATH}`);
 
-  process.exit(0); // always 0 on this report-only first pass, in every mode
+  // ---------------------------------------------------------------------
+  // --gate (RANGE LAW G1, 2026-07-25): fail the run when a non-exempt route
+  // breaks a floor that is NOT in FLOORS_ALLOWLIST. Default / --floors-only
+  // WITHOUT --gate are unchanged from before this task: always exit 0.
+  // ---------------------------------------------------------------------
+  if (gate) {
+    console.log("");
+    console.log("[check-geometry] --gate: checking every FLOORS FAIL against FLOORS_ALLOWLIST...");
+    let gateFailed = false;
+    for (const route of routes) {
+      const entry = floorsByRoute.get(route);
+      if (!entry || !entry.floors) {
+        if (entry && entry.error) {
+          console.error(`[check-geometry] GATE: ${route} could not be measured (${entry.error}) - skipped, not counted as a floor failure.`);
+        }
+        continue;
+      }
+      for (const row of buildFloorsRows(entry.floors)) {
+        if (row.status !== "FAIL") continue;
+        if (isFloorAllowlisted(route, row.code)) continue;
+        gateFailed = true;
+        console.error(
+          `[check-geometry] GATE FAIL: ${route} - ${row.name} measured ${row.measured} (${row.threshold}). ` +
+            "This route+floor is not in FLOORS_ALLOWLIST (top of scripts/check-geometry.mjs). Fix the surface, " +
+            "or if it is a genuine new known-failing case, add a reasoned entry there. Once a currently-allowlisted " +
+            "route+floor is actually fixed: delete this route's allowlist entry once fixed, do not add a new one.",
+        );
+      }
+    }
+    if (gateFailed) {
+      console.error("");
+      console.error("[check-geometry] GATE: FAILED - one or more routes broke a floor outside the allowlist.");
+      process.exit(1);
+    }
+    console.log("[check-geometry] GATE: PASSED - every current FAIL is a reasoned, named entry in FLOORS_ALLOWLIST.");
+    process.exit(0);
+  }
+
+  process.exit(0); // report-only (no --gate): always 0, in every mode, unchanged from before this task
 }
 
 main().catch((err) => {
   console.error("[check-geometry] fatal error:", err);
-  process.exit(0); // still report-only: never fail the run on this first pass
+  if (process.argv.includes("--gate")) {
+    // A crash before FLOORS could even be measured must not read as a silent
+    // PASS under --gate - that would make the gate meaningless the moment
+    // Playwright/chromium is broken, which is worse than no gate at all.
+    console.error("[check-geometry] GATE: FAILED - fatal error before FLOORS could be measured, see above.");
+    process.exit(1);
+  }
+  process.exit(0); // report-only (no --gate): never fail the run on this first pass
 });

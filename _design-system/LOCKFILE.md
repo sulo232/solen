@@ -1540,6 +1540,21 @@ RENDERED first viewport at 390x844, not on source.
 Exempt BY NAME (same carve-out as the imagery floor): forms, the checkout payment step, legal pages,
 receipts. An ADMIN surface may exceed the weight share, it is a density tool, not a customer screen.
 
+**EVIDENCE TIER (added 2026-07-25 after `research/TASTE_RANGE.md`): every number in this table is a HOUSE
+CONVENTION, not a published finding.** The research pass found no external source for a weight-share
+threshold, the 1.8x ratio, the 33% imagery share, the 2-elevation-step floor or the 28px anchor. What IS
+externally grounded is the MECHANISM: a target sharing its visual properties with the field stops popping
+out preattentively and drops into slow serial search (Healey, NCSU), and misplaced emphasis measurably
+hurts comprehension rather than merely wasting ink (Gier et al. 2011, 82.59% vs 75.39%, p<.03). Note the
+published size figure is 30-50%, i.e. 1.3x-1.5x, so our 1.8x is deliberately STRICTER than the literature,
+by choice, not by evidence. Treat these as tunable house settings; do not cite them as research.
+
+**IMAGERY QUALITY CLAUSE (same research, finding 4):** the 33% share is necessary, not sufficient. NN/g
+eyetracking found SMALL thumbnails lose to the text beside them (0.9 vs 4.4 fixations) while enlarged
+photographs win (12 fixations), and decorative imagery raises cognitive load with no benefit. A screen that
+reaches 33% with a grid of small tiles or a mood banner passes the gate and fails the intent: the imagery
+must be the screen's largest single element and must show the THING being bought.
+
 These are FLOORS, not targets. Nothing here licenses decoration, fake data, or a second ink CTA; the
 existing ceilings (4 sizes, 2 weights, sparse blue, no decorative artifacts) all still bind.
 

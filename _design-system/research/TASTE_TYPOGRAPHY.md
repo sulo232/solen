@@ -1,4 +1,8 @@
 # Typographic Hierarchy: Operational Delta Findings
+> CITATION FIX 2026-07-25 (from `TASTE_RANGE.md`): the 30-50% size-jump figure was cited to
+> `visual-hierarchy-ux-definition`, which contains no percentage. The real source is
+> `why-does-a-design-look-good-part2`. Also note 30-50% means 1.3x-1.5x, so a 1.57x ratio PASSES it.
+
 
 ## Findings (ordered by usefulness)
 
@@ -6,7 +10,7 @@
 
 2. **UI screens cap at 2-3 type sizes total, same number as headings.** "Use no more than 3 sizes small, medium, and large" to signal importance in a page's information architecture; suggested web ranges run roughly 14-16px body, 18-22px subheader, up to 32px header. [source: https://www.nngroup.com/articles/visual-hierarchy-ux-definition/] T1
 
-3. **When a level must read as "more important," jump size by a lot, not a little.** To make one component read as dominant, "make this component 30-50% larger than other components." A 1-2px bump does not register as a hierarchy signal, it reads as a rendering glitch. [source: https://www.nngroup.com/articles/visual-hierarchy-ux-definition/] T2
+3. **When a level must read as "more important," jump size by a lot, not a little.** To make one component read as dominant, "make this component 30-50% larger than other components." A 1-2px bump does not register as a hierarchy signal, it reads as a rendering glitch. [source: https://www.nngroup.com/articles/why-does-a-design-look-good-part2/] T2
 
 4. **Contrast in running-prose headings works the opposite way: modest size jumps, spacing does the real work.** In continuous-text documents (not UI screens), increment heading size only slightly over body (e.g. 12pt body to 12.5-13pt heading) because "the best way to emphasize a heading is by putting space above and below, because it's both subtle and effective." Context matters: UI hierarchy leans on size delta, document hierarchy leans on space + weight. [source: https://practicaltypography.com/headings.html] CONV
 
