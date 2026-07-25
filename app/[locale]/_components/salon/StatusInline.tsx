@@ -25,8 +25,16 @@
  * ASCII space, so splitting on /\s+/ (not a literal " ") is required to correctly
  * isolate just the leading status word.
  *
- * Layer 3 semantic UI (color carries meaning — universal-color convention:
+ * Layer 3 semantic UI (color carries meaning, universal-color convention:
  * success=green, closed=red s-closed #DC2626, V3-D421).
+ *
+ * RANGE LAW A1 (2026-07-25): font-semibold -> font-medium. The word already
+ * carries its meaning through COLOR (green/red/amber), so stacking weight on
+ * top was redundant (CLAUDE.md taste rule 2, "colour/weight contrast IS the
+ * separator"), and it was one of the many status/meta lines pushing the PDP's
+ * weight share to 83% against the 30% ceiling. Not in the task's explicit
+ * "keep 600" list (salon name / section H2 / price / rating value / the one
+ * commit CTA).
  */
 import { cn } from "@/lib/utils";
 
@@ -43,7 +51,7 @@ export function StatusInline({
   const [head] = label.split(/\s+/);
   const sizeCls = size === "sm" ? "text-[13px]" : size === "lg" ? "text-[16px]" : "text-[15px]";
   return (
-    <span className={cn("font-body inline-block font-semibold", sizeCls, isOpen ? "text-s-open" : "text-s-closed")}>
+    <span className={cn("font-body inline-block font-medium", sizeCls, isOpen ? "text-s-open" : "text-s-closed")}>
       {head}
     </span>
   );

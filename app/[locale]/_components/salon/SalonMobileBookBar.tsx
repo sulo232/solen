@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import { withDateParam } from "./_shared";
+import { useCookieConsent } from "../primitives/CookieConsent";
 
 /**
  * mockup-ok: SalonMobileBookBar, 2026-07-24 PORT (ref
@@ -30,6 +31,15 @@ import { withDateParam } from "./_shared";
  * declaratively without a MutationObserver), the parent passes it down explicitly via
  * `suppressed`. Honest > clever.
  *
+ * CONSENT-FLOW FIX (2026-07-25): that same z-[800] also beat the cookie consent banner
+ * (`z-tooltip` = 700), which sits in the same bottom strip on mobile, so the bar physically
+ * covered the banner's "Alle akzeptieren" / "Nur notwendige" buttons and ate the taps meant
+ * for them: taps never reached the banner, so a first-time visitor could not dismiss it from
+ * a salon page. Fix: this bar now also yields while consent is unanswered, reusing the SAME
+ * `suppressed` gate rather than a second mechanism, driven by `useCookieConsent()`'s own
+ * `hasConsented` (no bespoke localStorage read). Once the visitor answers either button,
+ * `hasConsented` flips true and the bar returns to z-[800] as before.
+ *
  * Hidden on desktop (`lg:hidden`), desktop uses SalonSidebar instead.
  */
 export function SalonMobileBookBar({
@@ -48,11 +58,15 @@ export function SalonMobileBookBar({
   const searchParams = useSearchParams();
   const bookingHref = withDateParam(`/${locale}/salon/${slug}/booking`, searchParams?.get("date"));
 
+  // CONSENT-FLOW FIX (2026-07-25): fold "consent not answered yet" into the same
+  // suppressed gate below, so this z-[800] bar never covers the cookie banner's buttons.
+  const { hasConsented } = useCookieConsent();
+
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => {
     setMounted(true);
   }, []);
-  if (!mounted || suppressed) return null;
+  if (!mounted || suppressed || !hasConsented) return null;
 
   // V3-D202 (A20): drop bg-white/95 backdrop-blur-md → bg-white per drift-detox.
   // V3-D442 (round 2): gradient content-fade above the bar instead of a hard

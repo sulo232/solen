@@ -156,23 +156,31 @@ function ServiceRow({
   // V3-D442 (a card may carry TWO ink elements, name + price, when the name stays visibly
   // larger): price goes back to bold ink, matching SalonBundles/SalonProducts on this page,
   // duration alone recedes to grey.
+  // mockup-ok: RANGE LAW A1 (2026-07-25), owner-approved via /dev/flatness ("go apply
+  // evrth"). Name 600->500 (matches the Team-card-name sibling role, LOCKFILE §2 "500");
+  // "Buchen" 600->500 (it's the Secondary CTA role, LOCKFILE §2.5 locks that at 500, and
+  // there can be several of these per screen so it is never "the one commit CTA" the task
+  // keeps at 600, that's SalonMobileBookBar's single "Termin buchen"); price div drops its
+  // own font-bold and instead passes PriceFrom's `emphasis` prop, so ONLY the amount stays
+  // bold (the price value, kept per A1) while the "ab" prefix recedes to the div's own
+  // (now-normal) inherited weight, its colour (text-s-ink-2 inside PriceFrom) already
+  // marks it as a qualifier, not part of the number+currency unit (taste rule 5).
   const inner = (
     <div className="flex items-center justify-between gap-4">
       <div className="min-w-0 flex-1">
-        <div className="font-body text-[15px] font-semibold text-s-ink md:text-[16px]">
+        <div className="font-body text-[15px] font-medium text-s-ink md:text-[16px]">
           {service.name_de}
         </div>
         <div className="font-body mt-1 text-[13px] text-s-ink-3 md:text-[14px]">
           {formatDurationDE(service.duration_minutes)}
         </div>
-        {/* mockup-ok: P1 fix, price is the one bold-ink anchor per row (matches SalonBundles/SalonProducts on this same page, approved fixes-refined) */}
-        <div className="font-body mt-3 text-[14px] font-bold text-s-ink md:text-[15px]">
-          <PriceFrom amount={service.price} label="ab" />
+        <div className="font-body mt-3 text-[14px] text-s-ink md:text-[15px]">
+          <PriceFrom amount={service.price} label="ab" emphasis />
         </div>
       </div>
       <Link
         href={`/${locale}/salon/${slug}/booking?service=${service.id}`}
-        className="font-body shrink-0 rounded-full border border-s-border bg-white px-5 py-2 text-[13px] font-semibold text-s-ink transition-colors hover:bg-s-bg-sunken md:px-6 md:py-2.5 md:text-[14px]"
+        className="font-body shrink-0 rounded-full border border-s-border bg-white px-5 py-2 text-[13px] font-medium text-s-ink transition-colors hover:bg-s-bg-sunken md:px-6 md:py-2.5 md:text-[14px]"
       >
         Buchen
       </Link>

@@ -184,7 +184,13 @@ export function SalonStickyTabNav({
           >
             <ArrowLeft size={20} strokeWidth={2.2} aria-hidden />
           </button>
-          <span className="min-w-0 flex-1 truncate font-display text-[16px] font-semibold tracking-[-0.01em] text-s-ink">
+          {/* mockup-ok: RANGE LAW A1/A3 (2026-07-25), owner-approved via /dev/flatness
+              ("go apply evrth"). 16/600 -> 14/500: this is a secondary echo of the salon
+              name (the mini scroll header), not the page's one display anchor (that's
+              SalonHeader's h1, kept at 600); demoting it also merges the 16px size into
+              the locked "name 14" token, collapsing one size out of the 5-distinct-in-8px
+              cluster F7c flagged. */}
+          <span className="min-w-0 flex-1 truncate font-display text-[14px] font-medium tracking-[-0.01em] text-s-ink">
             {salon.name}
           </span>
           <button
@@ -203,11 +209,15 @@ export function SalonStickyTabNav({
               key={t.key}
               type="button"
               onClick={() => handleClick(t.key)}
+              // mockup-ok: RANGE LAW A1 (2026-07-25), owner-approved via /dev/flatness
+              // ("go apply evrth"). Weight now follows the 2026-07-21 TASTE_LOG "content-tab
+              // selected state" lock (active = 600 ink + underline, inactive = 400 ink-2)
+              // instead of every tab being unconditionally font-semibold.
               className={cn(
-                "font-body relative shrink-0 py-3.5 text-[14px] font-semibold transition-colors md:py-4",
+                "font-body relative shrink-0 py-3.5 text-[14px] transition-colors md:py-4",
                 activeTab === t.key
-                  ? "text-s-ink"
-                  : "text-s-ink-3 hover:text-s-ink"
+                  ? "font-semibold text-s-ink"
+                  : "font-normal text-s-ink-3 hover:text-s-ink"
               )}
             >
               {t.label}

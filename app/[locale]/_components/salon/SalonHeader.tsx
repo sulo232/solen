@@ -81,7 +81,14 @@ export function SalonHeader({
               content column is narrower (sidebar takes 340px on desktop);
               40 feels proportional. */}
           {/* V3-D335 (T3): tracking -0.03em → -0.02em (canonical per §2.5). */}
-          <h1 className="font-display text-[clamp(22px,2.8vw,26px)] font-semibold leading-[1.05] tracking-[-0.02em] text-s-ink">
+          {/* RANGE LAW A2 (2026-07-25): 22/26 was literally the Page H2 recipe, not a
+              display anchor; the salon name (the subject of the page) rendered smaller
+              than the 28px NEVER-AGAIN floor and never owned its own screen. Promoted to
+              the LOCKFILE §2 "Salon-PDP H1 (salon name in hero)" row (30px mobile, 34px
+              desktop, 600 weight, leading 1.1), a literal already reserved for this exact
+              element, not invented here. Weight stays 600 (A1 "keep 600 for the salon
+              name"). */}
+          <h1 className="font-display text-[clamp(30px,2.8vw,34px)] font-semibold leading-[1.1] tracking-[-0.02em] text-s-ink">
             {salon.name}
           </h1>
 

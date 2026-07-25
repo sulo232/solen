@@ -27,3 +27,31 @@ tier, so it reads as one person's opinion rather than researched law.
 - [x] G2. `verified:` ~/.claude/hooks/emphasis-budget-gate.py exists (8947 bytes), self-test 7/7 this turn. NOT REGISTERED , settings.json write re-probed this turn: PermissionError + shell 'Operation not permitted' under SANDBOX_RUNTIME=1. GATE: a PreToolUse hook that blocks a NEW customer screen shipping with the emphasis/range violation (the static half, catchable before render). DONE 2026-07-25: `~/.claude/hooks/emphasis-budget-gate.py`, built + self-tested (7/7). NOT YET registered in `~/.claude/settings.json` , that file is sandbox-write-blocked this session; the exact JSON snippet to paste was handed to the owner.
 - [x] G3. `verified:` emphasis gate 7/7 PASS printed this turn; floors gate proven both directions (exit 0 allowlisted / non-zero without). Self-test every gate (one input that must trip, one that must pass) and wire it. DONE 2026-07-25: hook has a 7-case `--selftest` (trip/pass/exempt/emphasis-ok/+3 more) plus a live stdin smoke test; the script gate has the exit-0/exit-1 proof above. Wiring: `gate:floors` is live via npm now; the PreToolUse hook still needs the manual settings.json paste (see G2), sandbox can't write it.
 - [x] G4. `verified:` CLAUDE.md now carries 390x844 in 2 places (was 375x812); size-spread now uses densestClusterCount (check-geometry.mjs:169,989) and home correctly FAILS at 7 sizes in one 8px window. Reconcile the two doc-level contradictions the checker surfaced: 375x812 vs 390x844 measurement viewport, and the size-spread trap using global max-min instead of densest-cluster. DONE 2026-07-25: CLAUDE.md now says 390x844 in both spots (old value kept inline as a dated note); F7c now uses a sliding-window densest-cluster check instead of global max-min. Re-run: home (`/de`) NOW TRIPS F7c (densest cluster of 7 distinct sizes inside an 8px window, previously hidden by a 19.2px global spread) , added to FLOORS_ALLOWLIST as a real, newly-surfaced finding, not swept under the old math.
+
+## APPLY PHASE (owner 2026-07-25: "ok now go apply evrth")
+Each box closes ONLY when `npm run gate:floors` shows the floor flipping FAIL -> PASS and its
+FLOORS_ALLOWLIST entry is DELETED (the allowlist is the ratchet, entries come out, never in).
+Baseline measured this turn: /de imagery 4.66% FAIL, weight 50% FAIL, F7c densest-cluster 7 FAIL;
+/de/salon/[slug] anchor 22px FAIL, weight 83% FAIL, ratio 1.57x FAIL, F7c 5 FAIL.
+- [ ] A1. PDP weight inflation: 83% -> <=30% at weight>=600.
+- [ ] A2. PDP display anchor: 22px -> >=28px (the salon name owns its screen).
+- [ ] A3. PDP size ladder: densest 8px cluster from 5 -> <=4.
+- [x] A4. `verified:` `npm run check:floors -- /de` this turn, imagery FAIL 4.66% -> PASS 37.91%
+      (floor 33%). Hero.tsx gets a real seeded salon cover photo (page.tsx's existing salonCardData
+      batch, zero new queries) as a mobile-only full-bleed 320px band above the h1/search, the single
+      largest element in the first viewport and a real salon scene per the research's QUALITY clause,
+      not a mood banner or small tiles.
+- [x] A5. `verified:` same run, weight FAIL 50% (11/22) -> PASS 25% (3/12). Demoted font-semibold ->
+      font-medium on SearchBar.tsx's SegmentTab (inactive state), "Suchen" footer submit, and
+      "Zurücksetzen"; kept weight on the headline, section H2s, and "Termine finden" (the one commit
+      CTA) per the exception list.
+- [x] A6. `verified:` same run, F7c FAIL 9 distinct/densest-cluster 7 -> PASS 5 distinct/densest-cluster
+      3 (ceiling 4). Merged orphan sizes into the locked scale's existing buckets instead of inventing
+      new ones: Hero subline 17.55px -> clamp(18px,2vw,20px) (SectionHeader's own H2 formula, reused
+      verbatim), SearchBar SegmentTab 13px -> 14px (body), "Suchen" 16px -> 15px (CTA), category tile
+      labels 13px -> 12px (meta, MobileCategoriesRow.tsx).
+- [ ] A7. Delete every allowlist entry that now passes; re-run the gate and paste the result. NOT DONE
+      BY DESIGN: out of this turn's scope by explicit instruction ("Do not touch... the
+      FLOORS_ALLOWLIST, the orchestrator handles the allowlist"). The three "/" entries (F2/F7a/F7c)
+      in `scripts/check-geometry.mjs`'s FLOORS_ALLOWLIST are now stale-but-harmless (gate still exits
+      0, "GATE: PASSED" reprinted this turn) and are safe to delete now that A4-A6 are verified PASS.

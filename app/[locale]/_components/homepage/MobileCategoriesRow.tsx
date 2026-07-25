@@ -118,7 +118,11 @@ export default function MobileCategoriesRow({
                       className={`h-auto object-contain ${iconClass ?? "w-[60%] max-w-[64px]"}`}
                     />
                   </div>
-                  <span className="font-body text-[13px] font-medium leading-tight text-s-ink">
+                  {/* RANGE_LAW A6 (2026-07-25): 13px -> 12px, merges this caption into the
+                      same "meta" size bucket the page already uses (review counts), instead
+                      of a size that only these six tile labels used.
+                      mockup-ok: task-directed size merge (RANGE_LAW A6). */}
+                  <span className="font-body text-[12px] font-medium leading-tight text-s-ink">
                     {label}
                   </span>
                 </div>

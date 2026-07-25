@@ -44,7 +44,7 @@ export interface TabPillProps {
 const tabPillVariants = cva(
   cn(
     "inline-flex items-center gap-1.5 shrink-0 select-none whitespace-nowrap",
-    "rounded-full font-body font-semibold",
+    "rounded-full font-body",
     "transition-[color,background-color,border-color,box-shadow] duration-200 ease-glide",
     "active:scale-[0.97] active:duration-[80ms]",
     "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
@@ -55,9 +55,19 @@ const tabPillVariants = cva(
         outline: "border",
         ghost:   "border-0",
       },
+      // A1 weight-share fix (2026-07-25, PDP weight share 83%->~43%, ceiling 30%):
+      // font-semibold used to sit in the shared base above, so BOTH tones rendered
+      // at 600. The locked selection grammar ("selected = bg-s-bg-sunken + text-s-ink
+      // + semibold over a WHITE unselected") only names semibold for the SELECTED
+      // state; unselected's cue is the fill + border, not weight. Demoted inactive to
+      // font-medium (500), not all the way to font-normal (400): grounded in
+      // SalonModeToggle.tsx's shipped inactive-segment weight (the other real
+      // selected/unselected pair in this codebase, text-s-ink-2 font-medium), and
+      // 400 read too light against text-s-ink-2 on the hairline border when rendered.
+      // Active stays font-semibold (600), unchanged.
       tone: {
-        active:   "",
-        inactive: "",
+        active:   "font-semibold",
+        inactive: "font-medium",
       },
       size: {
         // mockup-ok: 44px a11y floor (CLAUDE.md design contract, "interactive

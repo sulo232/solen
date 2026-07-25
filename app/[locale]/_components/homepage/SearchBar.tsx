@@ -603,7 +603,9 @@ export function SearchBar() {
                 setZeitDate(null);
                 setZeitPeriod("");
               }}
-              className="font-body text-[14px] font-semibold text-s-ink-3 underline-offset-2 px-3 py-2 hover:text-s-ink transition-colors"
+              // RANGE_LAW A5 (2026-07-25): font-semibold -> font-medium. A reset link
+              // is a label, not a commit action, keep weight on "Termine finden" only.
+              className="font-body text-[14px] font-medium text-s-ink-3 underline-offset-2 px-3 py-2 hover:text-s-ink transition-colors"
             >
               Zurücksetzen
             </button>
@@ -612,7 +614,13 @@ export function SearchBar() {
               onClick={handleSubmit}
               // V3-D192-fix: expanded picker CTA also reverted to ink (same logic
               // as primary CTA — accent ≠ primary action surface).
-              className="font-body shrink-0 rounded-full border-0 bg-s-ink px-6 py-3 font-semibold text-white transition-colors hover:bg-black"
+              // RANGE_LAW A5/A6 (2026-07-25): font-semibold -> font-medium ("Termine
+              // finden" is the one commit CTA that keeps weight, this is a secondary
+              // redundant submit); default 16px -> text-[15px] to merge into the same
+              // CTA-size bucket as "Termine finden" instead of adding a 6th size.
+              // mockup-ok: task-directed weight/size demotion (RANGE_LAW A5/A6, owner
+              // "go apply evrth" on /dev/flatness Demo 1's emphasis-inflation fix).
+              className="font-body shrink-0 rounded-full border-0 bg-s-ink px-6 py-3 text-[15px] font-medium text-white transition-colors hover:bg-black"
             >
               Suchen
             </button>
@@ -720,9 +728,14 @@ function SegmentTab({
     <button
       type="button"
       onClick={onClick}
+      // RANGE_LAW A5/A6 (2026-07-25): mirrors the TabPill primitive's locked
+      // active/inactive weight split (active font-semibold, inactive font-medium)
+      // instead of a flat font-semibold; 13px -> 14px merges into the body-size
+      // bucket rather than adding a distinct size next to it.
+      // mockup-ok: task-directed weight/size demotion (RANGE_LAW A5/A6).
       className={cn(
-        "rounded-full px-3 py-1.5 font-body text-[13px] font-semibold transition-colors",
-        active && "bg-s-bg-sunken text-s-ink",
+        "rounded-full px-3 py-1.5 font-body text-[14px] font-medium transition-colors",
+        active && "bg-s-bg-sunken text-s-ink font-semibold",
         !active && isPlaceholder && "text-s-ink-3 hover:text-s-ink",
         !active && !isPlaceholder && "text-s-ink hover:bg-s-bg-sunken",
       )}
