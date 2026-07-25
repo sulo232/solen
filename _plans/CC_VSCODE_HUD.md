@@ -78,9 +78,8 @@ through 2026-08-31) · haiku-4-5 1/5 · opus-4-8 / 4-7 / 4-6 5/25. Queued for ro
 - [x] P1 , SHIPPED d980fe4 + deployed: usage limits from the cache with staleness, context
       gauge, auto 1m detection, subagent detail, `deploy.sh`, tests extended (compile clean,
       fixture-check OK)
-- [ ] P2 , round 2 (owner-directed). Six of seven children are CLOSED (892fd61, 55af29a,
-      43d833a). Only P2b remains: its module is built and tested, the WIRING into
-      `extension.ts` is dispatched and in flight. This parent closes when that lands.
+- [x] P2 , round 2 (owner-directed) , **ALL SEVEN CHILDREN CLOSED**: 892fd61, 55af29a,
+      43d833a, 07f1901, abb1a30. Every one carries its own commit and file:line below.
   - [x] P2a. Kill the tool-name insight item (D4) , SHIPPED round 2A, commit **892fd61**,
         `verified:` grep for renderInsight / describeActivity / verbFor / VERB_MAP /
         showInsight across `src/` + `package.json` returns nothing: `renderInsight`,
@@ -88,22 +87,22 @@ through 2026-08-31) · haiku-4-5 1/5 · opus-4-8 / 4-7 / 4-6 5/25. Queued for ro
         `render.ts`/`extension.ts`, the priority-99 status bar item removed, `showInsight`
         dropped from `package.json`. `pendingToolUses`/`summarizeToolUse` kept on purpose
         (stall detector below + a later recap round).
-  - [ ] P2b. Live `/api/oauth/usage` fetch, shape-validated, cache-backed, non-throwing (D1)
-        , **UNBLOCKED 2026-07-25**: owner said "ye go acc make it" in answer to the keychain
-        question. BUILD DISPATCHED the same turn, scoped to two NEW files only
-        (`src/liveusage.ts`, `test/live-usage-check.js`) because another agent holds
-        `extension.ts` for P2f; wiring is a later two-line orchestrator step.
-        Endpoint facts VERIFIED against the official extension bundle, not guessed:
-        `https://api.anthropic.com/api/oauth/usage`, GET, headers `Authorization: Bearer`,
-        `anthropic-beta: oauth-2025-04-20`, `Content-Type: application/json`, 5000ms timeout.
-        Token at macOS keychain service `Claude Code-credentials`, JSON, at
-        `claudeAiOauth.accessToken` with `claudeAiOauth.expiresAt`.
-        Hardening per D1: pure shape validation that REJECTS rather than clamps an
-        out-of-contract percent; 60s minimum interval so the 1s tick cannot hammer a changed
-        endpoint; exponential backoff 1/2/4/8/30 minutes; permanent failure classes stop
-        polling entirely; last-good snapshot recomputes its own staleness so a live reading
-        that stops refreshing degrades exactly like a cached one; never throws; the
-        `~/.claude.json` cache remains the floor, not a bolt-on fallback.
+  - [x] P2b. Live `/api/oauth/usage` fetch, shape-validated, cache-backed, non-throwing (D1)
+        , **SHIPPED end to end** and deployed. Module 43d833a, wiring **abb1a30**.
+        `verified:` `src/extension.ts:53` holds a `LiveUsagePoller` on WatcherState, `:74`
+        constructs it once, `:865` reads `claudeStatusbar.liveUsage` (default true) every tick
+        so toggling needs no reload, `:870` calls `maybeRefresh` fire-and-forget. Compile
+        clean, `test/fixture-check.js` and `test/live-usage-check.js` both print OK.
+        Endpoint facts came from the official extension's own bundle, not from memory.
+        D1's "make fixes not patch" delivered as: the parser REJECTS an out-of-contract
+        percent instead of clamping; a 60s floor so the 1s tick cannot hammer a changed
+        endpoint; backoff 1/2/4/8/30 minutes; permanent failure classes stop polling; the last
+        good snapshot ages itself on the same 10-minute rule the cache uses, so a live path
+        that quietly dies degrades visibly rather than looking current; it never throws, and
+        returning nothing is a normal outcome that leaves the cache rendering. The token is
+        read into a local, never cached, never written, never logged.
+        Owner-facing note still open: macOS prompts for keychain access on first run and the
+        setting defaults ON; owner was asked whether they want it defaulted off instead.
   - [x] P2c. Work-status readout: current step, done, remaining (D3) , SHIPPED end to end.
         Rendering landed in commit **55af29a**, `verified:` `src/extension.ts:432`
         `buildWorkStatusText` (in-progress step, else done/total, else title, else hide) and
