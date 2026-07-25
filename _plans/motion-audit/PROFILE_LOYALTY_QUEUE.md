@@ -70,6 +70,37 @@ on their commit buttons. That is the press tier, correct, with a named primary s
 These four constants are the pattern the other ~100 presses should copy. Their secondary and ghost
 buttons still ship no press feedback.
 
+---
+
+## ⚠️ Provenance , and the concurrent-fix delta (read this before acting on a row)
+
+Every row below was read off the working tree as it stood **at the start of this audit**. **While the
+audit was running, a concurrent session began landing the RANK 1 WCAG fixes** in files this audit
+covers. Recording the delta rather than silently shipping stale rows:
+
+**Already fixed since capture (these rows are DISCHARGED, do not re-fix):**
+
+| row as captured | what it is now | effect |
+|---|---|---|
+| `queue/[token]:398` `animate-ping` infinite | `style={{animation:"ping 1s cubic-bezier(0,0,.2,1) 3 forwards"}}` , 3 cycles, 3s, holds final frame | **WCAG-2.2.2 discharged** |
+| `.walkin-ring-pulse` (globals.css:920) infinite `box-shadow` | rebuilt: static inset ring on the base class, halo moved to `::after` animating **transform + opacity**, `2 forwards` (4.2s) | **WCAG-2.2.2 AND `+RULE-2` both discharged** for `queue:446` |
+| `animate-shimmer` (tailwind.config.js:340) `1.5s infinite` | `1.5s ease-in-out 3 forwards` (4.5s) | **discharges the shimmer rows** at `profile/loading.tsx`, `profile/vouchers:106-108`, `profile/referral:51-57` |
+| `.skeleton-shimmer` (globals.css:982) `infinite` | `1.5s ease-in-out 2 forwards`; its lying "(2 cycles, then stops)" comment corrected | discharges RANKED's contradiction #1 (no call sites in this scope) |
+
+**Line numbers in `app/[locale]/queue/[token]/page.tsx` have since shifted by +7 below line 395** (the
+fix added a 7-line comment). Current locations of the rows in section 1: `:398`→**`:402`** ·
+`:412`→**`:419`** · `:425`→**`:432`** · `:446`→**`:453`** · `:560`→**`:567`**. Everything above line 395
+(`:173`, `:186`, `:189`, `:220`, `:242`, `:265`, `:280`, `:288`, `:291`, `:309`, `:361`, `:370`) is
+unmoved. All other files in this audit are unmodified.
+
+**NOT fixed, still live as captured:** `animate-pulse` (`walk-in-pay:369`, `:384`,
+`loyalty/stamp:66`), every `animate-spin` / `<Spinner>` row, `RefundCaseView:520`'s `animate-ping`,
+`queue:432`'s `transition-[width] duration-700`, and **all 47 WRONG-TIER + 67 MISSING rows** , the
+concurrent work is scoped to WCAG 2.2.2 only. Net after the delta: **21 of the 26 WCAG-2.2.2 rows remain
+open.**
+
+---
+
 ## Legend
 
 | token | meaning |

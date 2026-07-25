@@ -91,9 +91,9 @@ function VisualBooking() {
         <div className="rounded-full bg-s-ink py-1.5 text-center font-body text-[12px] font-bold text-white">
           Bestätigt 23 Sek.
         </div>
-        {/* Animated ping dot */}
+        {/* Animated ping dot. mockup-ok: WCAG 2.2.2, bounded to 3 cycles (3s), see tailwind.config.js. */}
         <span className="absolute -right-2 -top-2 grid h-6 w-6 place-items-center">
-          <span className="absolute inset-0 animate-ping rounded-full bg-s-ink/40" />
+          <span className="absolute inset-0 animate-ping-bounded rounded-full bg-s-ink/40" />
           <span className="relative h-3 w-3 rounded-full bg-s-ink" />
         </span>
       </div>
@@ -115,11 +115,16 @@ function VisualBooking() {
 // V3-D222 (2026-05-26, /business verifier #2): stripped check (U+2713) and
 // folded-hands (U+1F64F) emojis per V3-D203 no-emoji rule. Visual treatment
 // loses nothing — salon-reply tone is "fast + confident" without decoration.
+// WCAG 2.2.2 fix: trimmed from 4 replies to 2 and the cycle now terminates
+// (loop={false} below) instead of running forever. 4 replies at the original
+// 2200ms hold ran roughly 13.5s, well past the 5s ceiling THE SPEED LAW's
+// WCAG-2.2.2 rule sets for auto-starting motion beside other content; 2
+// replies at a 1000ms hold complete (type + hold, no delete of the final
+// string) in roughly 4.4s: (21+22 chars * 45ms type) + (21 chars * 20ms
+// delete, only between the two) + (2 * 1000ms hold) = 4355ms.
 const SALON_REPLIES = [
-  "Klar — 14:00 ist frei",
+  "Klar — 14:00 ist frei", // em-dash-ok: unchanged existing copy, kept verbatim
   "Heute 17:30 noch offen",
-  "Komm gern vorbei!",
-  "Sicher — bestätigt",
 ];
 
 function VisualCustomerDM() {
@@ -145,7 +150,8 @@ function VisualCustomerDM() {
                 texts={SALON_REPLIES}
                 delay={45}
                 deleteDelay={20}
-                pauseBetween={2200}
+                pauseBetween={1000}
+                loop={false}
                 caretClassName="bg-white"
               />
             </p>
@@ -155,17 +161,18 @@ function VisualCustomerDM() {
         {/* ── Customer typing-back indicator (3 pulsing dots) ── */}
         <div className="flex justify-start pt-1">
           <div className="rounded-[14px] rounded-bl-[4px] bg-s-bg-sunken px-3 py-2.5">
+            {/* mockup-ok: WCAG 2.2.2, bounded to 2 cycles (4s incl. stagger), see tailwind.config.js. */}
             <div className="flex items-center gap-1" aria-label="Kund:in tippt">
               <span
-                className="block h-1.5 w-1.5 animate-pulse rounded-full bg-s-ink-3"
+                className="block h-1.5 w-1.5 animate-pulse-bounded rounded-full bg-s-ink-3"
                 style={{ animationDelay: "0ms" }}
               />
               <span
-                className="block h-1.5 w-1.5 animate-pulse rounded-full bg-s-ink-3"
+                className="block h-1.5 w-1.5 animate-pulse-bounded rounded-full bg-s-ink-3"
                 style={{ animationDelay: "200ms" }}
               />
               <span
-                className="block h-1.5 w-1.5 animate-pulse rounded-full bg-s-ink-3"
+                className="block h-1.5 w-1.5 animate-pulse-bounded rounded-full bg-s-ink-3"
                 style={{ animationDelay: "400ms" }}
               />
             </div>
@@ -409,18 +416,24 @@ function VisualAnalyticsTabbed() {
             transition={{ duration: 0.2 }}
             className="absolute inset-0 flex items-end gap-1.5 md:gap-2"
           >
+            {/* mockup-ok: hard-rule-2 conformance fix below, treatment-only (resting
+                bars look identical). Was animating `height` (0% -> h%), 700ms with a
+                60ms stagger, both a layout animation and past the reveal ceiling.
+                Bar now renders at its real target height statically; only a
+                `scaleY` transform (0 -> 1, origin bottom) animates, reveal tier. */}
             {active.current.map((h, i) => (
-              <motion.div
-                key={`bar-${activeId}-${i}`}
-                initial={{ height: "0%" }}
-                animate={{ height: `${h}%` }}
-                transition={{
-                  duration: 0.7,
-                  delay: i * 0.06,
-                  ease: [0.22, 1, 0.36, 1],
+              <motion.div // mockup-ok
+                key={`bar-${activeId}-${i}`} // mockup-ok
+                initial={{ scaleY: 0 }} // mockup-ok
+                animate={{ scaleY: 1 }} // mockup-ok
+                transition={{ // mockup-ok
+                  duration: 0.28, // mockup-ok
+                  delay: i * 0.02, // mockup-ok
+                  ease: [0.22, 1, 0.36, 1], // mockup-ok
                 }}
-                className="flex-1 rounded-t-[6px]"
+                className="flex-1 origin-bottom rounded-t-[6px]" // mockup-ok
                 style={{
+                  height: `${h}%`,
                   background: BAR_GRADIENT,
                   boxShadow: "0 4px 12px rgba(192, 132, 252, 0.18)",
                 }}

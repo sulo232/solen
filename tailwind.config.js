@@ -344,6 +344,21 @@ module.exports = {
         // endpoints land on the flat neutral fill, never a mid-sweep highlight (`bg-position` at
         // +/-200% pushes the highlight fully out of view either direction).
         "shimmer": "shimmer 1.5s ease-in-out 3 forwards",
+        // mockup-ok: WCAG 2.2.2 conformance fix, same technique as `shimmer` above.
+        // `animate-ping` (BentoBusiness.tsx "Bestätigt 23 Sek." halo) was Tailwind's
+        // stock `infinite`; bounded to 3 cycles of the stock 1s/timing (3s, under the
+        // 5s ceiling), held on the final frame (forwards, ping's own keyframe already
+        // ends at opacity 0 / scale 2, so it settles invisible, leaving just the solid
+        // dot as the resting state).
+        "ping-bounded": "ping 1s cubic-bezier(0, 0, 0.2, 1) 3 forwards",
+        // mockup-ok: WCAG 2.2.2 conformance fix. `animate-pulse` was NOT on the known
+        // offender list (RANK 1) even though it is the same infinite-loop shape as
+        // shimmer/ping; BentoBusiness's 3 "customer is typing" dots ran it unbounded.
+        // Bounded to 2 cycles of the stock 2s timing (4s, under the 5s ceiling even
+        // with the dots' up to 400ms stagger), held on the final frame (forwards;
+        // pulse's own keyframe ends back at opacity 1, so the dots settle fully
+        // visible, a legible static state).
+        "pulse-bounded": "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) 2 forwards",
         // V4 additions
         "v4-reveal": "v4-reveal 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards",
         "v4-scale-in": "v4-scale-in 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards",

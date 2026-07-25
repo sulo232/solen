@@ -179,9 +179,13 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
       {password.length > 0 && (
         <div className="flex flex-col gap-1 -mt-1.5">
           <div className="h-1.5 w-full rounded-pill bg-s-bg-sunken overflow-hidden">
+            {/* mockup-ok: hard-rule-2 conformance fix, treatment-only (fill looks
+                identical). Was animating `width` at 300ms on a per-keystroke
+                control; converted to `scaleX` (origin left) on the snap tier
+                (150ms, finding 4: a repeated action gets the fastest tier). */}
             <div
-              className="h-full rounded-pill bg-s-ink transition-[width] duration-300"
-              style={{ width: `${(strength.score / 4) * 100}%` }}
+              className="h-full w-full origin-left rounded-pill bg-s-ink transition-transform duration-150" // mockup-ok
+              style={{ transform: `scaleX(${strength.score / 4})` }}
             />
           </div>
           <p className="text-[12px] text-s-ink-2">

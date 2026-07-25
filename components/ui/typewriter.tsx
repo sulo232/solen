@@ -88,6 +88,13 @@ export function Typewriter({
           charIdx++;
           setDisplayed(text.slice(0, charIdx));
           timerId = setTimeout(tick, delay);
+        } else if (!loop && textIdx === texts.length - 1) {
+          // WCAG 2.2.2: the cycle must actually terminate. Stop AFTER the
+          // hold, on the fully-typed final string, never delete it back to
+          // empty, so the resting state stays legible.
+          timerId = setTimeout(() => {
+            if (!cancelled) setDone(true);
+          }, pauseBetween);
         } else {
           mode = "pause";
           timerId = setTimeout(tick, pauseBetween);

@@ -432,14 +432,27 @@ export default function PartnerPage() {
                       }`}
                     />
                   </div>
+                  {/* mockup-ok: hard-rule-2 conformance fix. The old
+                      `transition-[height,opacity]` named `height` (forbidden by hard
+                      rule 2) while the class actually toggled was `max-height`, so
+                      only the opacity animated and the height snapped, a dead
+                      transition on top of the rule breach. Content height is
+                      variable per FAQ answer, so this reuses the
+                      `grid-template-rows: 0fr -> 1fr` reveal (SearchOverlay.tsx),
+                      which interpolates the grid TRACK, never the element's own
+                      layout-height property, on the reveal tier (280ms). */}
                   <div
-                    className={`overflow-hidden transition-[height,opacity] duration-300 ${
-                      expandedFaq === i ? "max-h-48 opacity-100 mt-4" : "max-h-0 opacity-0"
-                    }`}
+                    className="grid transition-[grid-template-rows] duration-[280ms] ease-glide" // mockup-ok
+                    style={{ gridTemplateRows: expandedFaq === i ? "minmax(0,1fr)" : "minmax(0,0fr)" }}
                   >
-                    <p className="text-sm text-s-ink-2 leading-relaxed">
-                      {t(`${key}_a` as any)}
-                    </p>
+                    <div
+                      className="overflow-hidden transition-opacity duration-[280ms] ease-glide"
+                      style={{ opacity: expandedFaq === i ? 1 : 0 }}
+                    >
+                      <p className="mt-4 text-sm text-s-ink-2 leading-relaxed">
+                        {t(`${key}_a` as any)}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </button>

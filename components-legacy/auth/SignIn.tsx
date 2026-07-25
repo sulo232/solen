@@ -231,7 +231,7 @@ export default function SignIn() {
         <button
           type="submit"
           disabled={loading || !email || !password}
-          className="w-full h-14 rounded-btn bg-s-ink text-white text-[15px] font-medium tracking-[-0.005em] active:scale-[0.98] transition-[transform,opacity] duration-150 disabled:opacity-50 flex items-center justify-center gap-2 mt-1">
+          className="w-full h-14 rounded-btn bg-s-ink text-white text-[15px] font-medium tracking-[-0.005em] active:scale-[0.97] transition-[transform,opacity] duration-[80ms] disabled:opacity-50 flex items-center justify-center gap-2 mt-1">
           {loading ? <Spinner size="sm" invert /> : null}
           Anmelden
         </button>
