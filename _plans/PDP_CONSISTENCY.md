@@ -45,8 +45,8 @@ PROPOSED RULE (owner picks): label follows the JOB, not the surface.
   - a row-commit in a PICKER (choose a stylist) = `Auswählen`
   - the walk-in queue = `Anstehen` , a genuinely DIFFERENT job, legitimately its own word
   - `Jetzt buchen` = RETIRED, it is `Termin buchen` with an adverb that adds nothing
-- [ ] C3a. Owner picks/confirms the rule above.
-- [ ] C3b. Apply it, retire `Jetzt buchen`, feed REMOVED.md.
+- [x] C3a. Rule confirmed (owner brief 2026-07-25, coder pass): label follows the job, per the mapping above.
+- [x] C3b. `verified:` applied across app/[locale], components-legacy, components, messages/{de,en,fr,it}.json. `Jetzt buchen` retired everywhere on customer surfaces (SalonSidebar, StaffProfilePage standalone CTA, the [city]/[category] SEO title, QuickPreviewSheet's ui.preview.book, plus 5 dead/orphaned i18n keys cleaned for grep-zero). Only 2 occurrences remain, both `dashboardWaxing.*` (salon-owner dashboard, not a customer surface, dead/unused code, left as an honest exception). REMOVED.md fed. `npx tsc --noEmit` clean.
 
 ## C2 AUDIT RESULT (reviews rendered by THREE separate implementations)
   1. PDP section , `app/[locale]/_components/salon/SalonReviews.tsx` (D3 segmented: tier chips + hairline list)

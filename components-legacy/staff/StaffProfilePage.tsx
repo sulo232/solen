@@ -60,7 +60,7 @@ const PORTFOLIO_PREVIEW = 9;
  *
  * Context-aware CTA:
  *   - `onSelect` set (opened from the booking staff-list) → "Auswählen" (pick).
- *   - else → "Jetzt buchen" (→ booking with this stylist preselected).
+ *   - else → "Termin buchen" (→ booking with this stylist preselected).
  * `onClose` → renders as a closeable sheet (X); else a back-link page.
  */
 export default function StaffProfilePage({
@@ -476,7 +476,7 @@ export default function StaffProfilePage({
         />
       )}
 
-      {/* CTA — Auswählen (selection mode) or Jetzt buchen */}
+      {/* CTA - Auswählen (selection mode) or Termin buchen */}
       <div className={`${onClose ? "sticky" : "fixed"} bottom-0 left-0 right-0 z-20 border-t border-s-border bg-white px-4 py-3`}>
         {onSelect ? (
           <button
@@ -492,7 +492,7 @@ export default function StaffProfilePage({
             href={bookHref}
             className="flex w-full items-center justify-center rounded-btn bg-s-ink py-3.5 font-heading text-[15px] font-semibold text-white transition-[filter] hover:brightness-[1.06]"
           >
-            Jetzt buchen
+            Termin buchen
           </Link>
         )}
       </div>

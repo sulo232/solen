@@ -497,7 +497,7 @@
     "errorSending": "Fehler beim Senden",
     "errorValidation": "Fehler bei der Validierung",
     "errorProcessing": "Fehler bei der Verarbeitung",
-    "bookNow": "Jetzt buchen",
+    "bookNow": "Termin buchen",
     "everywhereCH": "Überall (Schweizweit)",
     "clearAll": "Alle löschen",
     "chooseCategory": "Kategorie wählen",
@@ -894,7 +894,7 @@
     }
   },
   "salon": {
-    "book_now": "Jetzt buchen",
+    "book_now": "Termin buchen",
     "services": "Leistungen",
     "staff": "Team",
     "reviews": "Bewertungen",
@@ -1188,7 +1188,7 @@
     },
     "bookingBubble": {
       "title": "Termin buchen bei {salon}",
-      "cta": "Jetzt buchen",
+      "cta": "Termin buchen",
       "close": "Schliessen"
     },
     "clientTags": {
@@ -3394,7 +3394,7 @@
     "like": "Gefällt mir",
     "save": "Speichern",
     "share": "Teilen",
-    "book": "Jetzt buchen",
+    "book": "Buchen",
     "comments": "Kommentare",
     "add_comment": "Kommentar hinzufügen...",
     "post": "Posten",
@@ -4662,7 +4662,7 @@
       "topServices": "Top Leistungen",
       "minutes": "Min.",
       "showMore": "Mehr anzeigen",
-      "book": "Buchen"
+      "book": "Termin buchen"
     },
     "priceOffer": {
       "title": "Preisangebot erstellen",
@@ -5019,7 +5019,7 @@
     },
     "bookingBubble": {
       "title": "Termin buchen bei {salon}",
-      "cta": "Jetzt buchen",
+      "cta": "Termin buchen",
       "close": "Schliessen"
     },
     "clientTags": {
@@ -5643,7 +5643,7 @@
     "noGallery": "Noch keine Fotos",
     "staffWith": "mit",
     "serviceDuration": "{minutes} Min.",
-    "bookNow": "Jetzt buchen",
+    "bookNow": "Termin buchen",
     "closeSheet": "Schliessen",
     "sun": "Sonntag",
     "mon": "Montag",

@@ -497,7 +497,7 @@
     "errorSending": "Error sending",
     "errorValidation": "Validation error",
     "errorProcessing": "Processing error",
-    "bookNow": "Book now",
+    "bookNow": "Book appointment",
     "everywhereCH": "Everywhere (Switzerland)",
     "clearAll": "Clear all",
     "chooseCategory": "Choose category",
@@ -894,7 +894,7 @@
     }
   },
   "salon": {
-    "book_now": "Book now",
+    "book_now": "Book appointment",
     "services": "Services",
     "staff": "Team",
     "reviews": "Reviews",
@@ -1178,7 +1178,7 @@
     },
     "bookingBubble": {
       "title": "Book appointment at {salon}",
-      "cta": "Book now",
+      "cta": "Book appointment",
       "close": "Close"
     },
     "clientTags": {
@@ -3384,7 +3384,7 @@
     "like": "Like",
     "save": "Save",
     "share": "Share",
-    "book": "Book Now",
+    "book": "Book",
     "comments": "Comments",
     "add_comment": "Add a comment...",
     "post": "Post",
@@ -4652,7 +4652,7 @@
       "topServices": "Top Services",
       "minutes": "min.",
       "showMore": "Show more",
-      "book": "Book"
+      "book": "Book appointment"
     },
     "priceOffer": {
       "title": "Create Price Offer",
@@ -5009,7 +5009,7 @@
     },
     "bookingBubble": {
       "title": "Book appointment at {salon}",
-      "cta": "Book now",
+      "cta": "Book appointment",
       "close": "Close"
     },
     "clientTags": {
@@ -5616,7 +5616,7 @@
     "noGallery": "No photos yet",
     "staffWith": "with",
     "serviceDuration": "{minutes} min.",
-    "bookNow": "Book now",
+    "bookNow": "Book appointment",
     "closeSheet": "Close",
     "sun": "Sunday",
     "mon": "Monday",

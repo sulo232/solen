@@ -497,7 +497,7 @@
     "errorSending": "Erreur d'envoi",
     "errorValidation": "Erreur de validation",
     "errorProcessing": "Erreur de traitement",
-    "bookNow": "Réserver",
+    "bookNow": "Prendre rendez-vous",
     "everywhereCH": "Partout (Suisse)",
     "clearAll": "Tout effacer",
     "chooseCategory": "Choisir une catégorie",
@@ -881,7 +881,7 @@
     }
   },
   "salon": {
-    "book_now": "Réserver maintenant",
+    "book_now": "Prendre rendez-vous",
     "services": "Prestations",
     "staff": "Équipe",
     "reviews": "Avis",
@@ -1171,7 +1171,7 @@
     },
     "bookingBubble": {
       "title": "Réserver un rendez-vous chez {salon}",
-      "cta": "Réserver maintenant",
+      "cta": "Prendre rendez-vous",
       "close": "Fermer"
     },
     "clientTags": {
@@ -4644,7 +4644,7 @@
       "topServices": "Prestations principales",
       "minutes": "min.",
       "showMore": "Afficher plus",
-      "book": "Réserver"
+      "book": "Prendre rendez-vous"
     },
     "priceOffer": {
       "title": "Créer une offre de prix",
@@ -5001,7 +5001,7 @@
     },
     "bookingBubble": {
       "title": "Réserver un rendez-vous chez {salon}",
-      "cta": "Réserver maintenant",
+      "cta": "Prendre rendez-vous",
       "close": "Fermer"
     },
     "clientTags": {
@@ -5608,7 +5608,7 @@
     "noGallery": "Pas encore de photos",
     "staffWith": "avec",
     "serviceDuration": "{minutes} min.",
-    "bookNow": "Réserver",
+    "bookNow": "Prendre rendez-vous",
     "closeSheet": "Fermer",
     "sun": "Dimanche",
     "mon": "Lundi",

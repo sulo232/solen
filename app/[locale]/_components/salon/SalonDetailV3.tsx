@@ -196,7 +196,7 @@ export function SalonDetailV3({
     // wrapper had `sticky top-24` but couldn't pin because an ancestor with
     // overflow-hidden creates a new "containing block" that scoped sticky
     // to the wrong context. Result: sidebar scrolled away with the page
-    // instead of staying pinned, hiding Jetzt buchen CTA when reading
+    // instead of staying pinned, hiding Termin buchen CTA when reading
     // services. Switched to overflow-x-clip which prevents horizontal
     // bleed without breaking vertical sticky.
     // bg-white substrate per §5h.3 (commerce surface).

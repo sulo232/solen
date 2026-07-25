@@ -57,10 +57,10 @@ export async function generateMetadata({
   const categoryName = CATEGORY_NAMES[category]?.[locale] || category;
 
   const titles: Record<string, string> = {
-    de: `Beste ${categoryName} in ${cityName} — Jetzt buchen | Solen`,
-    en: `Best ${categoryName} in ${cityName} — Book now | Solen`,
-    fr: `Meilleurs ${categoryName} à ${cityName} — Réservez maintenant | Solen`,
-    it: `Migliori ${categoryName} a ${cityName} — Prenota ora | Solen`,
+    de: `Beste ${categoryName} in ${cityName} - Termin buchen | Solen`,
+    en: `Best ${categoryName} in ${cityName} - Book appointment | Solen`,
+    fr: `Meilleurs ${categoryName} à ${cityName} - Prendre rendez-vous | Solen`,
+    it: `Migliori ${categoryName} a ${cityName} - Prenota appuntamento | Solen`,
   };
 
   const descriptions: Record<string, string> = {

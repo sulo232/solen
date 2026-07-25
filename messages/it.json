@@ -479,7 +479,7 @@
     "errorSending": "Errore nell'invio",
     "errorValidation": "Errore di validazione",
     "errorProcessing": "Errore di elaborazione",
-    "bookNow": "Prenota ora",
+    "bookNow": "Prenota appuntamento",
     "everywhereCH": "Ovunque (Svizzera)",
     "clearAll": "Cancella tutto",
     "chooseCategory": "Scegli categoria",
@@ -863,7 +863,7 @@
     }
   },
   "salon": {
-    "book_now": "Prenota ora",
+    "book_now": "Prenota appuntamento",
     "services": "Servizi",
     "staff": "Team",
     "reviews": "Recensioni",
@@ -1153,7 +1153,7 @@
     },
     "bookingBubble": {
       "title": "Prenota appuntamento da {salon}",
-      "cta": "Prenota ora",
+      "cta": "Prenota appuntamento",
       "close": "Chiudi"
     },
     "clientTags": {
@@ -3358,7 +3358,7 @@
     "like": "Mi piace",
     "save": "Salva",
     "share": "Condividi",
-    "book": "Prenota ora",
+    "book": "Prenota",
     "comments": "Commenti",
     "add_comment": "Aggiungi un commento...",
     "post": "Pubblica",
@@ -4625,7 +4625,7 @@
       "topServices": "Servizi principali",
       "minutes": "min.",
       "showMore": "Mostra di più",
-      "book": "Prenota"
+      "book": "Prenota appuntamento"
     },
     "priceOffer": {
       "title": "Crea offerta di prezzo",
@@ -4982,7 +4982,7 @@
     },
     "bookingBubble": {
       "title": "Prenota appuntamento da {salon}",
-      "cta": "Prenota ora",
+      "cta": "Prenota appuntamento",
       "close": "Chiudi"
     },
     "clientTags": {
@@ -5597,7 +5597,7 @@
     "noGallery": "Nessuna foto ancora",
     "staffWith": "con",
     "serviceDuration": "{minutes} min.",
-    "bookNow": "Prenota ora",
+    "bookNow": "Prenota appuntamento",
     "closeSheet": "Chiudi",
     "sun": "Domenica",
     "mon": "Lunedì",

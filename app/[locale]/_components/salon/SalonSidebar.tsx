@@ -54,7 +54,7 @@ import { cn } from "@/lib/utils";
  * New structure — single unified card, always-visible, matches Fresha:
  *   1. Salon name (h2)
  *   2. Rating row (star + 4.8 + (4))
- *   3. [Jetzt buchen] CTA — full-width black pill
+ *   3. [Termin buchen] CTA - full-width black pill
  *   4. divider
  *   5. Status (with chevron, expands to hours)
  *   6. Address + Route
@@ -142,7 +142,7 @@ export function SalonSidebar({
         href={bookingHref}
         className="font-body mt-5 inline-flex w-full items-center justify-center rounded-full bg-s-ink py-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-black active:bg-black"
       >
-        Jetzt buchen
+        Termin buchen
       </Link>
 
       {/* 4. divider */}
