@@ -89,6 +89,15 @@ Each returns: file:line | element | JOB | tier the LAW assigns | what it does TO
 3. **The easing gap is NAMING, not tokens** , `thud` (0.7,0,0.84,0) already IS the accelerate/exit curve,
    documented press-only. "Exits use thud" completes the vocabulary with zero new values.
 - [x] D1. `verified:` sha b2542365a , merged into `_plans/motion-audit/RANKED.md` (99 lines, ranks 1-6). Source audits: `motion-audit/PDP_BOOKING.md`, `HOME_SEARCH_INSPO.md`, `PRIMITIVES_SHARED.md`. MERGED. 508 elements audited, ~330 defect rows, 33 WCAG exposures, ranked 1-6 with every row tracing to the law or a cited finding. Far past the owner's "100 or 200".
-- [ ] D2. Fix the WCAG 2.2.2 exposures , Level A, so these lead the list.
+- [ ] D2. Fix the WCAG 2.2.2 exposures , Level A, so these lead the list. PARTIAL 2026-07-25: the two
+      UNCONDITIONAL exposures (`SalonWalkInPanel.tsx` status ping, `resend-link/page.tsx` lockout spinner,
+      the latter also fabricated feedback) plus the highest-blast-radius ones (`animate-shimmer` utility in
+      `tailwind.config.js`, `.skeleton-shimmer` in `globals.css`, both now 2-3 finite cycles held on their
+      flat end frame) plus `queue/[token]` (`.walkin-ring-pulse` converted box-shadow -> transform/opacity,
+      bounded 2 cycles; its `animate-ping` LIVE dot bounded 3 cycles) are FIXED. NOT YET done: `animate-spin`
+      (62 occurrences, only conditionally over 5s while a real fetch is in flight, so lower priority per the
+      brief), the other `animate-ping` sites (BentoBusiness, RefundCaseView), `.animate-breathe`
+      (EmptyStateDiscovery, unconditional per RANKED.md but out of this task's named scope), `animate-bounce`
+      (FormulaPhotoUpload). Box stays open until those are addressed.
 - [ ] D3. Resolve the 420ms ENTER RECIPE contradiction with a side-by-side the owner picks from.
 - [ ] D4. Document `thud` as the exit curve, zero new tokens.

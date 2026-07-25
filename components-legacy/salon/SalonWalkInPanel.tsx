@@ -185,7 +185,13 @@ export default function SalonWalkInPanel({
           <span className="inline-flex shrink-0 items-center gap-2">
             {isOpen ? (
               <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full rounded-full opacity-50" style={{ background: dotColor, animation: "ping 2.6s cubic-bezier(0,0,.2,1) infinite" }} />
+                {/* mockup-ok: WCAG 2.2.2 conformance fix. This ran `infinite`, gated on no
+                    fetch, for as long as the salon reads open (hours), beside the whole PDP,
+                    with no user mechanism to stop it. Bounded to ONE pulse (2.6s, well under
+                    the 5s ceiling) and held on its final frame (fill-mode forwards), which for
+                    this keyframe is opacity 0: the ring fades out and the solid dot below
+                    (unanimated, always rendered) carries the "open" status on its own. */}
+                <span className="absolute inline-flex h-full w-full rounded-full opacity-50" style={{ background: dotColor, animation: "ping 2.6s cubic-bezier(0,0,.2,1) 1 forwards" }} />
                 <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: dotColor }} />
               </span>
             ) : (

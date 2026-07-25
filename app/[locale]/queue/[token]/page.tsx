@@ -395,7 +395,14 @@ export default function QueueTrackingPage() {
         {/* mockup-ok: LIVE badge sentence case per copy rule 5, no uppercase/tracking */}
         <span className="inline-flex items-center gap-[7px] rounded-full bg-s-accent-pale py-[5px] pl-2.5 pr-[11px] text-[12px] font-semibold text-s-accent">
           <span className="relative flex h-[7px] w-[7px]">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-s-accent opacity-60" />
+            {/* mockup-ok: WCAG 2.2.2 conformance fix. `animate-ping` (Tailwind default,
+                infinite) ran for as long as this tracker is open, "a screen built to be
+                watched for minutes" (RANKED.md), beside walkin-ring-pulse below. Bounded
+                to 3 pulses (3s total, under the 5s ceiling) via an inline override of the
+                shared keyframe, then held on its final frame (forwards): opacity 0, so the
+                ring fades out and the solid dot + "LIVE" label carry the status on their
+                own, same fix shape as SalonWalkInPanel's status dot. */}
+            <span className="absolute inline-flex h-full w-full rounded-full bg-s-accent opacity-60" style={{ animation: "ping 1s cubic-bezier(0,0,.2,1) 3 forwards" }} />
             <span className="relative inline-flex h-[7px] w-[7px] rounded-full bg-s-accent" />
           </span>
           {l.live}

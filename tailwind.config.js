@@ -337,7 +337,13 @@ module.exports = {
         "count-up": "count-up 0.6s ease-out forwards",
         "slide-in-up": "slide-in-up 0.4s cubic-bezier(0.23, 1, 0.32, 1)",
         "fade-in": "fade-in 0.3s cubic-bezier(0.23, 1, 0.32, 1)",
-        "shimmer": "shimmer 1.5s ease-in-out infinite",
+        // mockup-ok: WCAG 2.2.2 conformance fix. Was `infinite`, so a 6-card skeleton grid ran
+        // 30 concurrent unbounded loops until the fetch resolved. Bounded to 3 cycles (4.5s,
+        // under the 5s ceiling) and held on the final frame (forwards). The keyframe below is a
+        // symmetric 3-stop gradient (colour, highlight, same colour), so both the 0% and 100%
+        // endpoints land on the flat neutral fill, never a mid-sweep highlight (`bg-position` at
+        // +/-200% pushes the highlight fully out of view either direction).
+        "shimmer": "shimmer 1.5s ease-in-out 3 forwards",
         // V4 additions
         "v4-reveal": "v4-reveal 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards",
         "v4-scale-in": "v4-scale-in 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards",

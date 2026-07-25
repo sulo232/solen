@@ -566,7 +566,13 @@ function LimitedView(props: {
         className={cn(ctaInk, "mt-[22px]")}
         aria-live="polite"
       >
-        <span className="h-[17px] w-[17px] animate-[spin_0.7s_linear_infinite] rounded-full border-2 border-s-accent-pale border-t-s-accent" />
+        {/* mockup-ok: WCAG 2.2.2 conformance fix, not a taste change. Static lock glyph
+            replaces a spinner that ran for the whole lockout (minutes) on a DISABLED button
+            with nothing in flight: an unbounded auto-motion loop past the 5s bound with no
+            user mechanism to stop it, and fabricated feedback (implied work happening when
+            it wasn't). The real live signal is the countdown clock and progress bar above,
+            tied to actual state. */}
+        <Lock size={17} strokeWidth={2.2} className="shrink-0" aria-hidden />
         {t("lockedCta", { minutes: minsLeft })}
       </button>
 

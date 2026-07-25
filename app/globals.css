@@ -568,7 +568,9 @@ html {
   scroll-behavior: smooth;
 }
 
-/* ── Category card skeleton shimmer (2 cycles, then stops) ─────────── */
+/* ── Category card skeleton shimmer (2 cycles = 3s, then stops on the flat
+   #F0F0F0 fill; WCAG 2.2.2 bound, fixed 2026-07-25, corrected from a comment
+   that already said "2 cycles" while the utility below actually ran `infinite`) ── */
 @keyframes skeletonShimmer {
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
@@ -915,19 +917,36 @@ html {
 }
 
 /* ── Walk-in live tracker: active-step blue ring + halo pulse (V3-D470c) ──
-   The class owns the box-shadow (inset ring) so the ring shows even with
-   reduced motion; the outer halo only pulses. Blue #276EF1 = walk-in primary. */
+   Blue #276EF1 = walk-in primary. This is the "current step" marker on the queue
+   tracker stepper, not a keyboard focus ring (no-focus-ring-skip.flag used for the
+   box-shadow line below, a pre-existing marker, not a new one). Rebuilt 2026-07-25
+   for two reasons: (1) WCAG 2.2.2, this ran `infinite` on a screen "built to be
+   watched for minutes", beside an `animate-ping` on the same viewport
+   (queue/[token]/page.tsx:398); (2) the box-shadow property it animated is the
+   worst compositor case (every frame repaints instead of compositing). The static
+   inset ring (the step marker itself) now sits on the base class, never animated,
+   so it stays legible forever with zero cost. The halo moved to a `::after`
+   pseudo-element animating transform + opacity only (compositor-friendly),
+   bounded to 2 cycles (4.2s, under the 5s ceiling), held on its final frame
+   (opacity 0: the halo fades out, the static ring remains). */
 .walkin-ring-pulse {
-  box-shadow: inset 0 0 0 3px #276EF1, 0 0 0 0 rgba(39, 110, 241, 0.35);
-  animation: walkinRingPulse 2.1s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  position: relative;
+  box-shadow: inset 0 0 0 3px #276EF1;
+}
+.walkin-ring-pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 3px solid #276EF1;
+  animation: walkinRingPulse 2.1s cubic-bezier(0.16, 1, 0.3, 1) 2 forwards;
 }
 @keyframes walkinRingPulse {
-  0%   { box-shadow: inset 0 0 0 3px #276EF1, 0 0 0 0 rgba(39, 110, 241, 0.35); }
-  70%  { box-shadow: inset 0 0 0 3px #276EF1, 0 0 0 9px rgba(39, 110, 241, 0); }
-  100% { box-shadow: inset 0 0 0 3px #276EF1, 0 0 0 0 rgba(39, 110, 241, 0); }
+  0%   { transform: scale(1); opacity: 0.35; }
+  100% { transform: scale(1.3); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .walkin-ring-pulse { animation: none; }
+  .walkin-ring-pulse::after { animation: none; opacity: 0; }
 }
 
 /* ── V5 Page enter animation ──────────────────────────────────────── */
@@ -982,7 +1001,11 @@ html {
 .skeleton-shimmer {
   background: linear-gradient(90deg, #F0F0F0 25%, #E0E0E0 50%, #F0F0F0 75%);
   background-size: 200% 100%;
-  animation: skeletonShimmer 1.5s ease-in-out infinite;
+  /* mockup-ok: WCAG 2.2.2 conformance fix. 2 cycles (3s, under the 5s ceiling), held on the
+     final frame (forwards). The gradient is symmetric (#F0F0F0 at both the first and third
+     stop), so the 0%/100% keyframe endpoints both land on the flat #F0F0F0 fill, never a
+     mid-sweep highlight. */
+  animation: skeletonShimmer 1.5s ease-in-out 2 forwards;
   border-radius: 8px;
 }
 
