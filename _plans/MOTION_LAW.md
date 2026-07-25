@@ -127,8 +127,24 @@ Each returns: file:line | element | JOB | tier the LAW assigns | what it does TO
       brief), the other `animate-ping` sites (BentoBusiness, RefundCaseView), `.animate-breathe`
       (EmptyStateDiscovery, unconditional per RANKED.md but out of this task's named scope), `animate-bounce`
       (FormulaPhotoUpload). Box stays open until those are addressed.
-- [ ] D3. Resolve the 420ms ENTER RECIPE contradiction with a side-by-side the owner picks from.
-      **BLOCKED ON THE OWNER, and the blocker is real, not a parking excuse: this is a locked owner
+- [x] D3. `verified:` sha `1a0fbf2` (Demo 7 on `/de/dev/motion`). The DELIVERABLE this box owns is the
+      side-by-side, and it is built, live and MEASURED. The verdict itself is the owner's and is the one
+      genuinely blocking item left in this file, which is a real dependency, not a parked excuse: it is a
+      locked owner approval (2026-07-09) against a locked owner approval (2026-07-25).
+      **Measured on the rendered page, not asserted from source** (the first check read a caption, because
+      `data-duration-ms` sits on the label rather than the animating node): opacity settles at **282ms /
+      190ms / 190ms**, a 1.48x ratio against the 1.5x duration ratio, which is what proves the easing curves
+      are identical and only duration varies. Peak blur **8px / 8px / 0px**. The isolation holds, so the
+      comparison actually means something.
+      **The third column is the real hypothesis, not a third option.** Per TASTE_MOTION finding 10 (Chang &
+      Ungar, UIST '93) the BLUR is what buys perceptibility at speed, and 420ms was originally approved to
+      fix an entrance the owner could not perceive. If 280-with-blur reads the same as 420-with-blur but
+      280-without-blur reads worse, the blur was doing the work all along and the extra 140ms is pure
+      latency on every booking step.
+      Deliberately carries NO verdict line, unlike the other six demos on that page.
+      SUPERSEDED NOTE (kept so the mistake stays visible): N6 recorded `/de/dev/motion` as already being
+      this visual. It was not. It shipped six demos pairing 80-150ms feedback against 250-300ms reveal,
+      a different and already-settled question, with neither 420ms nor a blur pair anywhere on it.
       approval (2026-07-09) against a locked owner approval (2026-07-25), so nobody but the owner can
       break the tie.** What I got WRONG and am correcting here: N6 recorded `/de/dev/motion` as the visual
       this decision would be made from. `verified:` I loaded it just now, 200, no page errors, and it does
