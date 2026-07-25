@@ -89,12 +89,21 @@ through 2026-08-31) · haiku-4-5 1/5 · opus-4-8 / 4-7 / 4-6 5/25. Queued for ro
         dropped from `package.json`. `pendingToolUses`/`summarizeToolUse` kept on purpose
         (stall detector below + a later recap round).
   - [ ] P2b. Live `/api/oauth/usage` fetch, shape-validated, cache-backed, non-throwing (D1)
-        , **BLOCKED on the owner**, concrete blocker: the call needs the OAuth token from the
-        macOS keychain item `Claude Code-credentials`, and reading it makes macOS prompt for
-        keychain access. Asked in the closing report; until the owner says yes, the cache
-        path (already shipped) stays primary. Everything else in D1 (shape validation,
-        backoff, timeout, non-throwing, cache floor) is specified and ready to build.
-        Round 2A's brief did not include this task at all, so it was left untouched.
+        , **UNBLOCKED 2026-07-25**: owner said "ye go acc make it" in answer to the keychain
+        question. BUILD DISPATCHED the same turn, scoped to two NEW files only
+        (`src/liveusage.ts`, `test/live-usage-check.js`) because another agent holds
+        `extension.ts` for P2f; wiring is a later two-line orchestrator step.
+        Endpoint facts VERIFIED against the official extension bundle, not guessed:
+        `https://api.anthropic.com/api/oauth/usage`, GET, headers `Authorization: Bearer`,
+        `anthropic-beta: oauth-2025-04-20`, `Content-Type: application/json`, 5000ms timeout.
+        Token at macOS keychain service `Claude Code-credentials`, JSON, at
+        `claudeAiOauth.accessToken` with `claudeAiOauth.expiresAt`.
+        Hardening per D1: pure shape validation that REJECTS rather than clamps an
+        out-of-contract percent; 60s minimum interval so the 1s tick cannot hammer a changed
+        endpoint; exponential backoff 1/2/4/8/30 minutes; permanent failure classes stop
+        polling entirely; last-good snapshot recomputes its own staleness so a live reading
+        that stops refreshing degrades exactly like a cached one; never throws; the
+        `~/.claude.json` cache remains the floor, not a bolt-on fallback.
   - [x] P2c. Work-status readout: current step, done, remaining (D3) , SHIPPED end to end.
         Rendering landed in commit **55af29a**, `verified:` `src/extension.ts:432`
         `buildWorkStatusText` (in-progress step, else done/total, else title, else hide) and
