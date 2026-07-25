@@ -63,3 +63,32 @@ tier** (nothing under 180ms) while being roughly right at the slow end. Our CODE
 NOTE: this is computed-style evidence (what the CSS declares), not perceived-motion timing. It corroborates
 the 60fps video measurement of the owner's own recording (83ms and 167ms windows) but is a different
 instrument, and both are stated rather than merged.
+
+## DEEP MOTION MAP (owner 2026-07-25: "deep research onto where everywhere we should put in motion...
+## every button and make me big list of mockups idc if its 100 or 200")
+HARD CONSTRAINT the owner set in the same breath, governing the whole map:
+**"but dont invent unnececary stuff like based on principle we made"** , every row must TRACE to an existing
+rule (the SPEED LAW, or a cited finding in `research/TASTE_MOTION.md`). Where no rule covers a case the
+auditor writes NO RULE COVERS THIS and it becomes an owner question, never a guess. A row whose honest
+verdict is "no motion needed here" is a CORRECT row: the research is explicit that motion on
+frequently-repeated actions, and motion that delays a task, are HARMS.
+
+### Method , 3 read-only auditors in parallel over the customer estate (94 routes)
+Each returns: file:line | element | JOB | tier the LAW assigns | what it does TODAY (real class from code)
+| verdict OK / WRONG-TIER / MISSING / WCAG-2.2.2 / NO RULE.
+  - `_plans/motion-audit/PDP_BOOKING.md`
+  - `_plans/motion-audit/HOME_SEARCH_INSPO.md`
+  - `_plans/motion-audit/PRIMITIVES_SHARED.md` (highest leverage: one fix propagates estate-wide)
+
+### Defects the research already found, which the map must locate
+1. **WCAG 2.2.2 (Level A)** , auto-starting looping motion past 5s beside other content needs a pause/stop.
+   Shimmer skeletons, `animate-ping`, `.animate-breathe` cross it whenever an endpoint is slow. An
+   accessibility DEFECT, not a taste call, and the most serious thing the research found.
+2. **The 420ms ENTER RECIPE** exceeds every citable ceiling for non-full-screen motion and contradicts our
+   own new SPEED LAW. Needs an owner side-by-side, not a prose argument.
+3. **The easing gap is NAMING, not tokens** , `thud` (0.7,0,0.84,0) already IS the accelerate/exit curve,
+   documented press-only. "Exits use thud" completes the vocabulary with zero new values.
+- [ ] D1. Merge the three audits into ONE ranked list (the owner's "100 or 200").
+- [ ] D2. Fix the WCAG 2.2.2 exposures , Level A, so these lead the list.
+- [ ] D3. Resolve the 420ms ENTER RECIPE contradiction with a side-by-side the owner picks from.
+- [ ] D4. Document `thud` as the exit curve, zero new tokens.
