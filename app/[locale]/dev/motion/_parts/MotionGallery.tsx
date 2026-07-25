@@ -11,6 +11,7 @@ import { SheetDemo } from "./SheetDemo";
 import { CardEnterDemo } from "./CardEnterDemo";
 import { PressFeedbackDemo } from "./PressFeedbackDemo";
 import { TitleSlideDemo } from "./TitleSlideDemo";
+import { BlurSpeedDemo, type DemoService } from "./BlurSpeedDemo";
 
 export function MotionGallery({
   salonName,
@@ -18,12 +19,14 @@ export function MotionGallery({
   salonRating,
   salonReviewCount,
   cardSalons,
+  demoServices,
 }: {
   salonName: string;
   salonPhotoUrl: string | null;
   salonRating: number | null;
   salonReviewCount: number | null;
   cardSalons: { id: string; data: SalonCardData }[];
+  demoServices: DemoService[];
 }) {
   const [globalTick, setGlobalTick] = React.useState(0);
 
@@ -53,6 +56,7 @@ export function MotionGallery({
           rating={salonRating}
           reviewCount={salonReviewCount}
         />
+        <BlurSpeedDemo globalTick={globalTick} services={demoServices} />
       </div>
     </div>
   );

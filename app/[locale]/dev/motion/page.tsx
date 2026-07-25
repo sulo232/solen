@@ -30,6 +30,14 @@ export default async function MotionPage({
   if (!result) notFound();
   const { salon } = result;
 
+  // Demo 7 (BlurSpeedDemo): real salon services, never a fabricated row.
+  const demoServices = salon.services.slice(0, 2).map((s) => ({
+    id: s.id,
+    name: s.name_en ?? s.name_de,
+    price: s.price,
+    durationMinutes: s.duration_minutes,
+  }));
+
   const topIds = await getTopSalonIds(6);
   const cardDataMap = await getSalonCardDataMap(topIds);
   const cardSalons = topIds
@@ -47,10 +55,13 @@ export default async function MotionPage({
           <p className="mt-2 font-body text-[13px] leading-[1.5] text-s-ink-2">
             The owner&apos;s screen recording (an X profile scroll, 60fps, 309 frames frame-diffed)
             measures its sustained motion windows at 83ms and 167ms. This codebase&apos;s
-            documented system (MOTION.md) locks 180 to 520ms, 2 to 3x slower. Six demos below, each
-            showing the SAME interaction twice: &quot;Today&quot; at the documented/shipped speed,
-            &quot;Proposed&quot; at the measured speed. Tap any Play button to trigger a demo, or
-            &quot;Replay all&quot; above the list to trigger every demo at once. Demoed on real data
+            documented system (MOTION.md) locks 180 to 520ms, 2 to 3x slower. Seven demos below.
+            The first six show the SAME interaction twice: &quot;Today&quot; at the
+            documented/shipped speed, &quot;Proposed&quot; at the measured speed. Demo 7 is a
+            different, three-way comparison (THE ENTER RECIPE vs THE SPEED LAW, MOTION.md), with
+            no verdict, since that one is the owner&apos;s call. Tap any Play button to trigger a
+            demo, or &quot;Replay all&quot; above the list to trigger every demo at once. Demoed on
+            real data
             for &quot;{salon.name}&quot; and {cardSalons.length} real top-rated salons, loaded live,
             not lorem.
           </p>
@@ -63,6 +74,7 @@ export default async function MotionPage({
         salonRating={salon.average_rating}
         salonReviewCount={salon.review_count}
         cardSalons={cardSalons}
+        demoServices={demoServices}
       />
     </main>
   );

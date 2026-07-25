@@ -6,9 +6,21 @@
 // curve"). The only new numbers here are DURATIONS (ms), sourced from the measured evidence in
 // `_plans/MOTION_LAW.md` ("CAPTURED, LIVE" table), not invented.
 
-import { GLIDE_EASE, STAGGER_STEP } from "@/app/[locale]/_components/primitives/motion";
+import { GLIDE_EASE, STAGGER_STEP, ENTER_DURATION } from "@/app/[locale]/_components/primitives/motion";
 
-export { GLIDE_EASE, STAGGER_STEP };
+export { GLIDE_EASE, STAGGER_STEP, ENTER_DURATION };
+
+/**
+ * Demo 7 (BlurSpeedDemo.tsx) , the ENTER RECIPE vs SPEED LAW contradiction (MOTION.md line 16 vs
+ * line 119, TASTE_MOTION.md finding 3: "that is a side-by-side the owner can feel ... not a
+ * question to answer in prose"). `ENTER_DURATION` above (0.42s / 420ms) is the locked ENTER RECIPE
+ * value, re-exported verbatim, never re-typed. 280ms is the SPEED LAW's own "reveal" tier
+ * (250-300ms) at the specific value the task brief asks the owner to feel against 420ms, a new
+ * number this demo introduces on purpose (not re-derived from FAST_TIER/SLOW_TIER above, which
+ * serve the unrelated feedback-vs-reveal comparison in demos 1-6).
+ */
+export const SPEED_LAW_REVEAL_MS = 280;
+export const SPEED_LAW_REVEAL_S = SPEED_LAW_REVEAL_MS / 1000;
 
 /**
  * THE SPEED LADDER (page section 1). One row per candidate speed, same honest motion (a card
