@@ -18,6 +18,14 @@ Exempt: the gallery / link-index (a MOCKS list). Override: echo "<reason>" > .cl
 import json
 import os
 import re
+import sys as _sys
+
+_sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+try:
+    from _nonsolen_surface import is_non_solen_surface
+except Exception:  # helper missing or broken: fail CLOSED, keep gating as before
+    def is_non_solen_surface(content, project_root):
+        return False, "helper unavailable"
 import sys
 import time
 
@@ -41,6 +49,14 @@ def main():
         sys.exit(0)
 
     project = os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()
+    # LOCKFILE governs Solen product surfaces. A mockup for a surface outside
+    # this repo has no LOCKFILE row to diff against, so demanding one asks for a
+    # citation that cannot exist. Exempt it ONLY when the mockup cites real files
+    # that exist outside the repo. See _nonsolen_surface.py for why this is a
+    # falsifiable claim rather than another skip flag.
+    if is_non_solen_surface(content, project)[0]:
+        _sys.exit(0)
+
     flag = os.path.join(project, ".claude", "diagnosis-skip.flag")
     if os.path.isfile(flag):
         try:

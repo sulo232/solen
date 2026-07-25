@@ -30,6 +30,18 @@ import time
 
 HTML_EXT = (".html", ".htm")
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+try:
+    from _nonsolen_surface import is_non_solen_surface
+except Exception:  # helper missing or broken: fail CLOSED, keep gating as before
+    def is_non_solen_surface(content, project_root):
+        return False, "helper unavailable"
+
+
+def _non_solen(content: str, project_root: str) -> bool:
+    ok, _reason = is_non_solen_surface(content, project_root)
+    return ok
+
 
 def is_index(path: str, content: str) -> bool:
     """The gallery / link-index is not a page mockup: exempt it."""
@@ -75,6 +87,13 @@ def main():
             sys.exit(0)
 
     if is_index(path, content):
+        sys.exit(0)
+
+    # A surface outside this repo has no route to iframe, so this gate's whole
+    # premise is absent. Exempt it ONLY when the mockup cites real files that
+    # exist outside the repo, which cannot be faked by assertion. See
+    # _nonsolen_surface.py for why this exists instead of another skip flag.
+    if _non_solen(content, project):
         sys.exit(0)
 
     lc = content.lower()
