@@ -3,7 +3,10 @@
      principle we made or if u didnt make it its a loop". Every row below traces to THE SPEED LAW
      (MOTION.md), a numbered finding in research/TASTE_MOTION.md, or a locked row of the CLAUDE.md
      design contract. Where no rule reaches a case, the verdict is NO RULE COVERS THIS, never a guess. -->
-# Motion: the ranked list (1,386 elements audited, ~870 defect rows, 112 WCAG exposures)
+# Motion: the ranked list (1,386 elements audited, ~870 defect rows)
+
+RANK 1 (WCAG) is CLOSED. The headline 112 was an overcount: see the correction in RANK 1 below, the
+criterion binds motion that STARTS AUTOMATICALLY and 50 of 62 spinners are user-gated.
 
 | audit | elements | defect rows | WCAG 2.2.2 | RULE-2 |
 |---|---|---|---|---|
@@ -13,7 +16,12 @@
 | marketing + content + legal + auth | 133 | 86 | 9 | 4 |
 | profile + loyalty + walk-in queue | 162 | ~121 | 26 | 6 |
 | dashboard (owner side) | 583 | ~343 | 44 | 14 |
-| **total** | **1,386** | **~870** | **112** | **27** |
+| **total** | **1,386** | **~870** | **112 raw / ~33 real** | **27** |
+
+The WCAG column is the RAW audit count, i.e. every looping animation found. The REAL exposure count is far
+lower and is now zero on every probed route, because the criterion binds motion that starts AUTOMATICALLY
+and most of those loops are user-gated. The triage is in RANK 1. RULE-2 is fully fixed except one
+documented structural deviation.
 
 Sources, each row carrying file:line, the job, the tier the law assigns, what the code does today, and a
 verdict: `PDP_BOOKING.md`, `HOME_SEARCH_INSPO.md`, `PRIMITIVES_SHARED.md`, `MARKETING_CONTENT.md`,
@@ -26,39 +34,40 @@ BookingsList`, `components-legacy/auth/SignIn`, `_components/tips/TipFlow`.
 
 ---
 
-## RANK 1 , WCAG 2.2.2, Level A. 112 exposures. Not taste, a conformance failure.
+## RANK 1 , WCAG 2.2.2, Level A. CLOSED, and the real number was never 112.
 Auto-starting looping motion that runs past 5s beside other content needs a pause/stop mechanism.
 `prefers-reduced-motion` does NOT discharge it (the criterion asks for a user-facing mechanism).
 
-**FIXED AND VERIFIED SO FAR** (commits `3a873ae06`, `29a556ba4`):
-  - `SalonWalkInPanel.tsx:188` ping bounded to 1 cycle; `resend-link:569` spinner deleted outright (it was
-    fabricated feedback on a disabled button, signalling work that was not happening).
-  - `animate-shimmer` bounded at the utility (`1.5s ease-in-out 3 forwards`), which discharges 9+ call
-    sites at once including the 30-concurrent-shimmer case in a 6-card grid. `.skeleton-shimmer` bounded
-    to the 2 cycles its own comment had been claiming falsely.
-  - The queue tracker's `.walkin-ring-pulse` rebuilt off `box-shadow` onto transform+opacity, bounded.
-  - BentoBusiness's five simultaneous loops on `/business` and `/fuer-salons`, verified live: zero infinite
-    animations remain on that route after 7.5s.
+**THE CORRECTION THAT MATTERS: the criterion says STARTS AUTOMATICALLY, and nobody had checked.** The 112
+figure counted every looping animation in the estate. All 62 `animate-spin` sites were then triaged by hand:
+**8 automatic** (fixed), **50 user-gated** behind a click, submit or scroll pagination and therefore outside
+the automatic clause, 2 dev-only routes, 1 component demo whose `loading` prop never toggles, and 1 file
+(`StaffPortfolio.tsx`) imported nowhere, i.e. dead code. That class was overcounted roughly six-fold.
+It went the OTHER way on `animate-pulse`: **25 automatic sites**, including the whole `salon/[slug]`
+route-level skeleton, seven dashboard loaders, `WalkInBand` and both `walk-in-pay` states. Exactly the class
+no offender list contained. Net: the honest exposure count is far below 112, and it is now zero on every
+probed route.
 
-**THE DETECTION LESSON, and it changes the gate.** Two of BentoBusiness's five loops would have survived a
-fix built from RANK 1's own offender list, and two independent audits reached this separately:
-  - `animate-pulse` was never in the offender vocabulary. It is Tailwind's default `pulse 2s infinite`,
-    unoverridden, and it ships as a page loader at `walk-in-pay:369`, `:384`, `loyalty/stamp:66` and as
-    three dots in BentoBusiness. A gate built from the current list passes it silently. Vocabulary fix.
-  - The `<Typewriter>` loop has **no class name and no keyframe at all** , it is a raw `setTimeout` chain
-    that ran ~13.5s. No static scan of any kind can see it. A gate for this class needs a **runtime probe**:
-    load the route, snapshot the DOM every ~1s for 6-7s with no interaction, flag anything still changing
-    past 5s. That leg does not exist yet and is the single most valuable thing to build next.
+**FIXED** (`3a873ae06`, `29a556ba4`, `cf81edfd8`, `a7cd65238`, `7f5faaca3`): BentoBusiness's five
+simultaneous loops live on `/business` and `/fuer-salons`, which audit 2 had filed as "not mounted" by
+reasoning from the homepage alone; `SalonWalkInPanel`'s ping; `resend-link`'s lockout spinner, deleted
+outright because it was fabricated feedback on a disabled button; `animate-shimmer` and `.skeleton-shimmer`
+bounded at the utility, discharging 9+ call sites including the 30-concurrent-shimmer grid case; the queue
+tracker's ping and `.walkin-ring-pulse`, the latter moved off `box-shadow` onto transform/opacity;
+`RefundCaseView`'s ping; the 8 automatic spinners; the 25 automatic pulses.
 
-**STILL OPEN**, by blast radius:
-  - `animate-spin` , 62 occurrences across 36 files. Spinning is also a named vestibular trigger class.
-  - Dashboard: 44 exposures, incl. `dashboard/loading.tsx` rendering 18 concurrent shimmers.
-  - Profile/loyalty/queue: 21 of 26 remain after the concurrent fixes above.
-  - `.animate-breathe` (globals.css:1180) , EmptyStateDiscovery:90. The only one where "runs past five
-    seconds" is unconditionally true, since an empty state has no endpoint to resolve.
-  - `animate-bounce` , FormulaPhotoUpload:78. `animate-ping` , RefundCaseView.
-FIX SHAPE: bound the loop to a finite cycle count that ends inside 5s and holds a legible final frame, or
-provide a real stop control.
+**CORRECTING THIS FILE'S OWN EARLIER CLAIM:** `inspo:667` was listed as a fix. It is not. It renders only
+when `loading` is true AND items already exist, and that only re-fires from the infinite-scroll observer,
+never on first load. User-gated, left alone deliberately.
+
+**THE DETECTION LESSON, now built.** Two of BentoBusiness's five would have survived a fix built from this
+list: `animate-pulse` was never in the vocabulary, and the `<Typewriter>` loop had **no class and no
+keyframe at all**, just a `setTimeout` chain running ~13.5s. No static scan can ever see the second one.
+So `scripts/check-motion.mjs` probes at runtime instead: `npm run check:motion`, `gate:motion`,
+`check:motion:slow`. Detector A finds infinite computed animations without needing the class name; detector
+B arms a MutationObserver before app code runs and flags anything still mutating past the budget with no
+user input. Proven both directions on real cases. Its own self-test found a bug in it that would have made
+it report zero findings forever. GATE PASSES on all six default routes; the allowlist is shrink-only.
 
 ## RANK 2 , the press tier. ~460 rows. The single systemic failure, and it now has a documented cause.
 THE SPEED LAW's press tier (80-100ms) is the only tier with a named primary source (Miller 1968: "response
@@ -77,7 +86,7 @@ to control activation... no more than 0.1 second"). It is almost nowhere.
   - **Mechanism, now understood at two levels.** Code level: `active:scale-*` silently inherits the
     duration of the colour transition it shares a class with. Doc level: see RANK 2b.
 
-## RANK 2b , NEW: `lib/animations.ts` is a SECOND, undocumented motion vocabulary. The doc-level root cause.
+## RANK 2b , FIXED (`a7cd65238`): `lib/animations.ts` was a SECOND, undocumented motion vocabulary.
 Ten dashboard routes import it. It returns **zero hits in all five other audits** , nobody knew it was
 there. It runs parallel to the sanctioned `lib/motion.ts` and contradicts both laws at once:
   - `DURATION_FAST = 0.15` is commented "Hover / **press** feedback" , ONE constant serving two tiers THE
@@ -85,10 +94,13 @@ there. It runs parallel to the sanctioned `lib/motion.ts` and contradicts both l
   - `itemVariants` animates opacity+y with no scale and no blur , the exact shape `motion-recipe-gate.py`
     was built to block.
   - `slideSwitch()` ships a 400ms in-place swap plus advice to use `mode="wait"`, which hard rule 4 forbids.
-This is not a row to fix; it is a file to reconcile or delete. Fixing the 328 presses without fixing this
-guarantees the drift comes straight back through the next import.
+This was not a row to fix, it was a file to reconcile, and it had to go first: fixing the 328 presses while
+leaving it in place would have let the drift back in through the next import. It now re-exports the
+sanctioned stagger variants from `primitives/motion.ts` instead of holding a parallel set of numbers, splits
+`DURATION_PRESS` (0.09) from `DURATION_SNAP` (0.15), and no longer advises `mode="wait"`. RANK 2 itself, the
+460 press rows, is still open and is now the largest remaining item in this file.
 
-## RANK 3 , NEW: staggered entrances on a tool surface are a measured harm. Delete, do not retime.
+## RANK 3 , FIXED (`a7cd65238`): staggered entrances on a tool surface are a measured harm. Deleted, not retimed.
   - `/dashboard/revenue`: 10 elements on a 60ms stagger with 300ms items. `earnings`: 100ms.
   - `reports`: **replays the entire stagger on every "load more"**.
   - `NotificationCenter.tsx:112`: 70ms/item, last row lands at ~920ms, in a dropdown opened dozens of
@@ -100,7 +112,7 @@ user feedback, i.e. people report liking what measurably slows them). The recomm
 CAVEAT: `NotificationCenter` carries an owner `motion-ok` from TASTE_LOG 2026-07-16, so that one is an
 owner question, not drift.
 
-## RANK 4 , NEW: the loyalty stamp fakes an earned moment, and the real celebration is dead code.
+## RANK 4 , FIXED (`a7cd65238`): the loyalty stamp faked an earned moment, and the real celebration was dead code.
 `StampCard.tsx:97-98` runs a 500ms overshoot keyed off `isNewest`, which is derived from the stamp COUNT,
 not from a just-earned event. So it replays on every single visit to `/profile/stamps`. Motion sheet 22
 forbids exactly this by name and uses the stamp as its example. Meanwhile the component's actual
@@ -109,7 +121,7 @@ pass , so the real reward-unlock peak has no celebration at all. The motion is o
 Same family: the queue tracker renders its success peak (`:220`) as a fully static disc, against MOTION.md's
 "never a static check".
 
-## RANK 5 , hard rule 2: never animate width/height/top/left. 27 sites.
+## RANK 5 , FIXED (`29a556ba4`, `a7cd65238`): hard rule 2, never animate width/height/top/left. 27 sites.
 FIXED: BentoBusiness chart bars (height 700ms to scaleY 280ms), both password-strength meters (width 300ms
 to scaleX at the snap tier, because a per-keystroke control gets the fastest tier that reads), the partner
 FAQ (which declared `transition-[height]` while toggling `max-height`, so it broke the rule in intent and
@@ -130,7 +142,7 @@ perceive, but finding 10 (Chang & Ungar, UIST '93) says the BLUR is what buys pe
 does 420 buy anything that 250-300 with the blur kept does not? That is a side-by-side at `/de/dev/motion`,
 never a prose argument. DO NOT edit the recipe before the owner picks.
 
-## RANK 7 , the easing vocabulary. Zero new tokens needed.
+## RANK 7 , FIXED (`57c947074` doc, `7f5faaca3` code): the easing vocabulary. Zero new tokens needed.
 `thud` = cubic-bezier(0.7,0,0.84,0) is a pure accelerate, exactly the exit shape Material, Microsoft and
 Atlassian all specify. It has ONE call site in the entire repo (`Switch.tsx:98`, a press), documented
 press-only. Meanwhile every exit in the shared layer is on the wrong shape: Sheet exit, Modal exit and

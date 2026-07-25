@@ -89,7 +89,35 @@ Each returns: file:line | element | JOB | tier the LAW assigns | what it does TO
 3. **The easing gap is NAMING, not tokens** , `thud` (0.7,0,0.84,0) already IS the accelerate/exit curve,
    documented press-only. "Exits use thud" completes the vocabulary with zero new values.
 - [x] D1. `verified:` sha b2542365a , merged into `_plans/motion-audit/RANKED.md` (99 lines, ranks 1-6). Source audits: `motion-audit/PDP_BOOKING.md`, `HOME_SEARCH_INSPO.md`, `PRIMITIVES_SHARED.md`. MERGED. 508 elements audited, ~330 defect rows, 33 WCAG exposures, ranked 1-6 with every row tracing to the law or a cited finding. Far past the owner's "100 or 200".
-- [ ] D2. Fix the WCAG 2.2.2 exposures , Level A, so these lead the list. PARTIAL 2026-07-25: the two
+- [x] D2. `verified:` shas `3a873ae06`, `29a556ba4`, `cf81edfd8`, `a7cd65238`, `7f5faaca3`. CLOSED, and the
+      number it closes at is not the number it opened at, because the audit's count was never measured.
+      **THE TRIAGE THAT ACTUALLY SETTLED IT.** WCAG 2.2.2 binds motion that STARTS AUTOMATICALLY. RANK 1
+      recorded `animate-spin` at 62 sites without checking whether any of them do. All 62 were then
+      classified by hand: **8 AUTOMATIC** (fixed), **50 USER-GATED** behind a click, submit or scroll
+      pagination (out of scope for the automatic clause, left alone by design), 2 dev-only routes, 1
+      component demo whose `loading` prop never toggles, 1 file (`StaffPortfolio.tsx`) imported nowhere in
+      the repo, i.e. dead. That class was overcounted about six-fold.
+      It went the OTHER way on `animate-pulse`: **25 automatic sites**, including the whole `salon/[slug]`
+      route-level skeleton, seven dashboard loaders, `WalkInBand`, and both `walk-in-pay` states. That is
+      precisely the class no offender list contained.
+      ALSO FIXED: BentoBusiness's five simultaneous loops live on `/business` + `/fuer-salons` (an earlier
+      audit had filed it "not mounted" by reasoning from the homepage alone), `SalonWalkInPanel`'s ping,
+      `resend-link`'s lockout spinner (deleted, it was fabricated feedback on a disabled button),
+      `animate-shimmer` + `.skeleton-shimmer` bounded at the utility, `queue/[token]`'s ping and
+      `.walkin-ring-pulse` (box-shadow to transform/opacity), `RefundCaseView`'s ping.
+      **CORRECTING MY OWN NOTE:** I cited `inspo:667` as a known fix. It is not one. It renders only when
+      `loading` is true AND items already exist, which only re-fires from the infinite-scroll observer,
+      never on first load. User-gated. Left alone.
+      **THE METHOD CHANGED, and that is the durable part.** Two of BentoBusiness's five loops would have
+      survived a fix built from RANK 1's own list: `animate-pulse` was not in the vocabulary, and the
+      `<Typewriter>` loop had no class and no keyframe at all, just a `setTimeout` chain. No static scan can
+      ever see the second one. So `scripts/check-motion.mjs` (sha `cf81edfd8`) probes at RUNTIME:
+      `npm run check:motion` / `gate:motion` / `check:motion:slow`. Proven both directions on real cases, a
+      classless forever-loop caught and the same loop bounded at 3s passing clean. Its own self-test found a
+      bug in it that would have made it report zero findings forever (observing `document.documentElement`
+      inside an init script throws, because the parser has not created `<html>` yet).
+      GATE PASSES on all six default routes today, with a shrink-only ratchet for anything still open.
+- [x] D2-original-scope. PARTIAL 2026-07-25: the two
       UNCONDITIONAL exposures (`SalonWalkInPanel.tsx` status ping, `resend-link/page.tsx` lockout spinner,
       the latter also fabricated feedback) plus the highest-blast-radius ones (`animate-shimmer` utility in
       `tailwind.config.js`, `.skeleton-shimmer` in `globals.css`, both now 2-3 finite cycles held on their
