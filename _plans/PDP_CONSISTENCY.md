@@ -55,3 +55,33 @@ PROPOSED RULE (owner picks): label follows the JOB, not the surface.
 Only the DATE was unified this turn (one shared helper, six surfaces). The CARD grammar, the summary
 block and the empty state still diverge per surface.
 - [ ] C2a. Extract ONE review-row component + one summary grammar, used by all three.
+
+## MOTION SPEC , MEASURED from the owner's own recording (2026-07-25)
+Owner: "the animation, like, I want more of these type, like in the screen recording, how it is, how it
+moves, THE SPEED OF MOVING. That's how I want animations, like, everywhere... right now it's all just
+static... we have a little bit but it's not really polished."
+Method: the recording is 60fps (1206x2622). Extracted all 309 frames, cropped to the header strip,
+frame-to-frame luma delta, then found the sustained-motion windows above a 3x noise floor.
+RESULT , the reference's motion windows are **83ms and 167ms**.
+
+### THE FINDING THAT MATTERS
+Our DOCUMENTED motion vocabulary is 2-3x SLOWER than the reference:
+  - `_design-system/MOTION.md` locks: 180, 260, 300, 320, 420 (x3), 500, 520 ms
+  - the reference moves in: 83-167ms
+Our CODE is closer than our docs (duration-150 x335, duration-200 x127, duration-[80ms] x35), but the
+documented system a new surface is built against is the slow one. That is a measurable, named cause of
+"it feels static / not polished": not the absence of motion, but motion tuned 2-3x too slow to read as
+responsive. Fast motion reads as the UI keeping up with you; slow motion reads as the UI thinking.
+
+### PROPOSED (owner picks)
+A two-tier vocabulary matching the reference, replacing the 180-520 spread for INTERACTION feedback:
+  - **snap 80-100ms** , state flips that must feel instant (tab switch, chip select, press)
+  - **glide 150-180ms** , things that travel (a title sliding into a bar, a sheet, a card entering)
+  - reserve 300ms+ for a full-screen transition ONLY, never for an in-place state change
+- [ ] M1. Owner confirms the two-tier speed.
+- [ ] M2. CORRECTION: the frosted condensed bar is missing the PICTURE. The X reference puts the profile
+      AVATAR in the condensed bar next to the name; ours shows name + rating only. Add the salon photo.
+- [ ] M3. Motion mockups across surfaces at the measured speed, incl. the Termin/Walk-in tab switch the
+      owner named. "Tons of mockups."
+- [ ] M4. Owner correction to honour throughout: the BOOK BUTTON IS ALWAYS PRESENT, never removed from any
+      surface or state.
