@@ -399,3 +399,18 @@ Five mockup rounds failed before the real work surfaced as a CODE DRIFT SWEEP (t
 | Looks tab | **KILLED (owner 2026-07-21: "wtf is looks")** , the third profile tab was my carry-over, never an owner pick, and rendered as an empty state. Profile = TWO tabs: Gespeichert / Termine. Do not re-propose without an explicit yes. | Removed from the mockup + the running build brief the same hour. |
 | empty states | **REFERENCE-GROUNDED anatomy replaces the grey-disc ritual (owner 2026-07-21: "the empty states thats what i mean... get references more")** , promise headline 18/600 + gesture subline + filled ink CTA + 3D category icon or ghost-preview, on the sunken tray in a living page; NEVER a washed grey Lucide disc. | 12 Mobbin references (Pinterest, Booking, Skyscanner, OpenTable, DoorDash, Peerspace, RTR...) in research/TASTE_EMPTY_STATES.md; 0/12 finished apps use an icon-disc. CLAUDE.md states row amended. |
 | **FLOORS LAW** | **owner-approved "Yes, all 5" (2026-07-21)** , the UNFINISHED_AUDIT verdict: the law had only CEILINGS, so the compliance-optimal screen was the emptiest one ("always looks unfinished and ass", owner). Applied: CLAUDE.md FLOORS LAW block (finished-screen 5-pass, imagery ~1/3 floor, density floor/populated-target, edge-visibility + warmth carrier, deletion-names-what-it-keeps, display anchor >= 28 + two-anchor card + tertiary grey) · LOCKFILE §17 (17.1-17.5) · SOURCE §10.0 · CLAUDE.md contract rows imagery/density/shadow-table · mockup-floors-gate.py (self-tested 4/4, wired). | Evidence: research/UNFINISHED_AUDIT_2026-07-21.md (7 files read, 5 root flaws; "what is NOT broken" section protects the ceilings). Ceilings unchanged , do NOT loosen restraint to compensate. Remaining queued from flaw 5: SOURCE §3 in-place literal rewrite + eyebrow triple-contradiction + §21.5 (banner + LOCKFILE precedence cover the conflict meanwhile). |
+
+## 2026-07-24/25 , WALK-IN: the decisions were shipped but never written down (owner: "in walk in did u write it in design file")
+
+Answer: NO, they were not, and the LOCKFILE actively CONTRADICTED them. Recorded now, from the shipped
+commits, so the next pass cannot re-litigate or revert them by following stale law.
+
+| Decision | Shipped as | Why |
+|---|---|---|
+| A walk-in wait is a **FLOOR**, `ab {n} Min` , never a range, never "ca."/"~" | 45b1d8a8c, then 46cba1e58 purged the last `55-70` literal from dead code | A range makes the customer read the WORST number and leave. The floor is a commitment. **This reverses LOCKFILE section 12(a), which is now amended in place.** |
+| The live-status bar is **decluttered**, with per-service wait chips instead of one lumped hero number | aafde1ffb | The single hero number could not answer "how long for MY service", which is the only question the bar exists to answer. |
+| Exact-position hero WITHOUT a wait range , shipped then **REVERTED** | ff0dceeda shipped, 9a8882c91 reverted | Do not re-propose the position-only hero. It was tried and pulled. |
+| Walk-in mode shows ONE stylist section | owner 2026-07-24, in SalonDetailV3's `!walkinMode` guards | The walk-in panel owns its own "Dein Barber" section, so rendering the browse-profile SalonTeam too was a SECOND stylist section on one screen. |
+
+Standing rule extracted: **a walk-in number states what the salon COMMITS to, not what it fears.** Floor over
+range, per-service over lumped, and never a number the queue data cannot actually support.

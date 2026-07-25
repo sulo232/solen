@@ -238,3 +238,17 @@ The owner approved the redesign and said "don't stop per step" , they expected i
 - [x] X3. RESOLVED BY OWNER 2026-07-25: "keep current" , the existing see-all grammar STANDS, no estate-wide sweep. The only change asked for was positional (X5). The ladder stays as written doctrine for future work. WAS PARTIAL: the ladder is written (CONTROL_ELEVATION.md:124) and `pill-outline` already collapses into `pill` (sha eb62bbffa), so no caller renders the retired look. The FULL estate sweep is deliberately GATED on X4 , applying one grammar everywhere before the owner picks WHICH grammar would just be a second guess.
 - [x] X4. DELIVERED + ANSWERED , owner picked "keep current" over V1/V2/V3, so the mockup did its job (it prevented an unwanted estate-wide restyle). `verified:` /de/dev/seeall?v=1|2|3 all 200, 0 page errors, real German content ("Alle ansehen", "Alle 16 Bewertungen") on real cuts-and-culture data, switcher works. V1 centred pill / V2 top-right link / V3 hybrid-by-intent. sha 43d8263fa. AWAITING OWNER PICK.
 - [x] X5. Reviews "Alle N Bewertungen" moved OUTSIDE the reviews grouped card (owner 2026-07-25). `verified:` live DOM , `#section-reviews` is now a DIV wrapper, the card is its `<section>` child, `card.contains(button) === false`, gap 20px, label "Alle 16 Bewertungen", bg rgb(244,244,245) unchanged, href /de/salon/cuts-and-culture/reviews unchanged, 0 page errors. Gap `mt-5` matches the identical already-shipped card-then-sibling-pill pattern in SalonServices.tsx:118-131.
+
+## ROUND 10 — owner 2026-07-25 (3 asks)
+- [ ] Y1. PDP reviews grammar is APPROVED ("team icons and reviews size everything is good like reviews count pill") but is NOT TRANSFERRED to the full reviews page you land on from "see all". MEASURED DIFF (live, 390px):
+  - chips , PDP: `Alle (7)` + only NON-EMPTY tiers (5, 4). FULL: `5(13) 4(3) 3(0) 2(0) 1(0)` , no Alle chip, and it shows empty tiers.
+  - count , PDP: one 13px grey "16 Bewertungen". FULL: a 15px "16 Bewertungen" AND a separate 13px "(16)" , the count renders TWICE.
+  FIX: the full page adopts the PDP's exact grammar.
+- [ ] Y2. Walk-in: is it written into the design file? ANSWER + fill the gap if thin.
+- [ ] Y3. Salon owner REPLIES to reviews , full DB + backend + UI, run as a loop.
+  **EXISTS-CHECK FIRST (rule 12) , this is NOT greenfield, and there are TWO PARALLEL SYSTEMS:**
+  - System A: `reviews.salon_response` + `reviews.salon_response_at` columns, `PATCH /api/reviews/[id]/respond`, owner UI at `app/[locale]/dashboard/reviews/page.tsx` (handleRespond).
+  - System B: a `review_replies` TABLE (id, review_id, salon_id, reply_text, is_public, created_at) + `POST /api/reviews/reply` + `reviewReplySchema` in lib/validations.ts.
+  - LIVE STATE: **0 of 260 reviews have a salon_response; review_replies has 1 row.** Neither system is in real use.
+  - **AND THE PUBLIC PDP RENDERS NEITHER** , a salon owner can write a reply today and no customer will ever see it. That is the actual bug, not the missing schema.
+  - So the job is UNIFY + WIRE, not build-new: pick ONE system, migrate the other's data, delete the loser (feed REMOVED.md), and render replies on the PDP reviews section AND the full reviews page.
