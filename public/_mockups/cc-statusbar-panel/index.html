@@ -1,0 +1,221 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude statusbar panel , mockup</title>
+<!-- Base: none, net-new component with nothing live to capture -->
+<!-- Scale: component -->
+<!-- Grounded-in: /Users/sulo/Documents/claude-statusbar/src/extension.ts -->
+<!-- Grounded-in: /Users/sulo/Documents/claude-statusbar/src/workstate.ts -->
+<!-- Grounded-in: /Users/sulo/Documents/claude-statusbar/src/usage.ts -->
+<!--
+  Diagnosis: rich data is hover-gated | measured: 100% of bars, reset countdowns, per-agent rows and the cost breakdown live in buildTooltip() in src/extension.ts, reachable only by hovering a 40px strip | violates: the owner's literal ask, "I would like visuals" and "how the subs are doing" | target: a persistent surface that renders without a hover
+  Diagnosis: a status bar strip cannot render the shapes | measured: vscode.StatusBarItem accepts text plus codicons only, so the shipped gauge() in src/render.ts is a 5-cell unicode approximation, the ceiling of that API | violates: the same ask for visuals | target: proportional bars, a sparkline and per-agent rows, which need a webview
+  Diagnosis: cost silently read as zero | measured: costOf('claude-opus-5') returned exactly 0 before 892fd61 because PRICING had no entry, and render() hides a zero cost, so every Opus 5 session showed no spend at all | violates: no-fabrication, since a hidden zero reads as free | target: $64.93 for this session, which is what it reports now
+
+  The three lines above are measured against the SHIPPED extension rather than LOCKFILE, because
+  LOCKFILE governs Solen product surfaces and has no line covering a VS Code webview.
+
+  There is no live BEFORE iframe and none is possible: the current surface is a VS Code status
+  bar strip plus a hover popup drawn by an Electron app's own chrome, with no URL. The panel is
+  net-new. Scale is component for the same reason: the decision is the anatomy of ONE component.
+
+  Backend-check: none applicable. This mockup renders no action affordance at all: no button,
+  no form, no link, no input, nothing clickable. It is a read-only status panel, and it has no
+  Solen backend by construction, since every value is read from local files on this machine
+  (~/.claude.json and ~/.claude/projects/*.jsonl) by a VS Code extension outside this repo.
+
+  Palette: only locked tokens. Blue 276EF1, green 16A34A, orange EA580C, red DC2626, plus the
+  neutral ramp 0A0A0A / 52525B / 9CA3AF / E4E4E7 / F4F4F5. The two banners tint their own
+  locked hue rather than introducing a pale variant, and their text is the vivid DEFAULT token,
+  never a darker .text one (taste rule 5).
+
+  Exists-check: ran `npm run exists statusbar` and `npm run exists hud` this turn. hud returns 0
+  matches; statusbar returns only WalkinStatusBarOptions, a Solen walk-in dev page; panel
+  returns only DashPanel, the Solen dashboard. Both hits are unrelated Solen product surfaces.
+  _design-system/REMOVED.md has no statusbar / hud / vscode entry. The target is NOT a Solen
+  route: it is a VS Code webview panel for the extension at ~/Documents/claude-statusbar, which
+  today renders only a status bar strip and a hover popup.
+
+  Every path in the Depicts lines below is under ~/Documents/claude-statusbar.
+    Depicts: step, done and left counts, session title -> src/workstate.ts deriveWorkState()
+    Depicts: the transcript signals behind that -> src/parse.ts Accumulator (ai-title,
+             last-prompt, TodoWrite), shipped 892fd61, rendered to the strip in 55af29a
+    Depicts: warning banner text and severity -> src/workstate.ts detectWarnings()
+    Depicts: context bar and the "N of M tokens" line -> src/extension.ts detectWindowSize()
+    Depicts: 5-hour and weekly bars, percent, reset countdown -> src/usage.ts parseUsage()
+    Depicts: per-subagent name, elapsed and state -> src/extension.ts readAgents()
+    Depicts: per-subagent and session cost -> src/extension.ts updateSubagentCosts()
+    Depicts: the dollar figures themselves -> src/pricing.ts costOf(), which returned 0 for
+             claude-opus-5 until it was priced in 892fd61
+    Depicts: end-of-run notification copy -> src/render.ts composeRecap()
+    Depicts: spend sparkline -> NET-NEW: per-turn history is not persisted anywhere today. This
+             is the ONE drawn-not-measured element on the page and the footer says so. It is
+             idea 9 on the A9 list and needs the extension to start sampling first.
+    Depicts: panel header row -> NET-NEW: chrome for the webview itself, since a VS Code webview
+             panel owns its own header. Not device chrome (cf. the REMOVED.md fake-phone entry).
+
+  measured: rendered at 1440x900 via Playwright getBoundingClientRect + getComputedStyle
+  (2026-07-25 16:30, screenshot at /tmp/claude-501/hudmock/shot.png):
+    panel 380x765
+    anchor 24px against 13px body = 1.85x (EMPHASIS BUDGET floor 1.8)
+    4 distinct sizes, 11/13/20/24 (ceiling 4), spread 13px
+    weight 600 or above on 18% of panel text (ceiling 30%)
+    document scrollWidth 1440 equals the viewport, so no horizontal overflow
+  First pass measured 1.54x anchor and 46% bold, both failing; the anchor was raised and the
+  labels de-bolded until it passed, then re-measured. Numbers above are the second pass.
+
+  measured: every figure in the calm state is REAL, read off this machine at 16:12 on
+  2026-07-25:
+    context 476,575 of 1,000,000 tokens (parse.ts accumulator, this session)
+    5-hour 21%, resets 19:40; weekly 6%, resets Sat 1 Aug 11:00 (~/.claude.json
+      cachedUsageUtilization)
+    cost $64.93 = $48.77 main plus $16.16 subagents (pricing.ts costOf, now opus-5 is priced)
+    3 subagents named from agent-*.meta.json in this session's subagents/ directory
+  The warning and error columns are the SAME panel at other thresholds.
+
+  Light theme on purpose (owner: web is one light theme). The real panel inherits whatever
+  VS Code theme is active and reads its colours from --vscode-* CSS variables.
+-->
+<style>
+:root{--ink:#0A0A0A;--ink-2:#52525B;--ink-3:#9CA3AF;--bg:#fff;--sunken:#F4F4F5;--line:#E4E4E7;
+--ok:#16A34A;--warn:#EA580C;--err:#DC2626;--link:#276EF1;--panel-w:380px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--sunken);color:var(--ink);font:14px/1.5 ui-sans-serif,-apple-system,"Segoe UI",system-ui,sans-serif;-webkit-text-size-adjust:100%}
+header{padding:28px 24px 8px;max-width:1280px;margin:0 auto}
+h1{font-size:clamp(20px,2.4vw,28px);line-height:1.2;margin:0 0 6px;letter-spacing:-.01em}
+.sub{color:var(--ink-2);margin:0 0 4px;max-width:70ch}.sub b{color:var(--ink);font-weight:600}
+.rail{display:flex;gap:20px;overflow-x:auto;padding:20px 24px 40px;max-width:1280px;margin:0 auto;align-items:flex-start}
+.col{flex:0 0 var(--panel-w);min-width:var(--panel-w)}
+.col>h2{font-size:13px;font-weight:600;margin:0 0 2px}
+.col>p{font-size:13px;color:var(--ink-2);margin:0 0 10px;min-height:32px}
+.panel{background:var(--bg);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.panelhead{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--line);background:var(--sunken);font-size:11px;font-weight:500;color:var(--ink-2)}
+.panelhead .dot{width:7px;height:7px;border-radius:50%;background:var(--ok);flex:none}
+.panelhead .dot.busy{background:var(--link)}
+.body{padding:14px 14px 16px}
+.banner{display:flex;gap:9px;padding:10px 12px;border-radius:9px;margin:0 0 14px;align-items:flex-start}
+.banner.warn{background:rgba(234,88,12,.07);border:1px solid rgba(234,88,12,.28)}
+.banner.err{background:rgba(220,38,38,.07);border:1px solid rgba(220,38,38,.28)}
+.banner svg{flex:none;margin-top:1px}
+.banner .msg{font-size:13px;font-weight:600;line-height:1.35}
+.banner.warn .msg{color:#EA580C}.banner.err .msg{color:#DC2626}
+.banner .more{display:block;font-weight:400;font-size:13px;margin-top:2px;color:var(--ink-2)}
+.work{margin:0 0 16px}
+.work .step{font-size:24px;font-weight:600;line-height:1.25;margin:0 0 2px;letter-spacing:-.01em}
+.work .count{font-size:13px;color:var(--ink-2);margin:0 0 2px}
+.work .title{font-size:13px;color:var(--ink-3);margin:0 0 9px}
+.pips{display:flex;gap:3px}
+.pip{height:5px;flex:1;border-radius:3px;background:var(--line)}
+.pip.done{background:var(--ink)}.pip.now{background:var(--link)}
+.metric{margin:0 0 13px}.metric:last-child{margin-bottom:0}
+.mrow{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;gap:10px}
+.mlabel{font-size:13px;color:var(--ink-2)}
+.mval{font-size:13px;font-weight:500;font-variant-numeric:tabular-nums}
+.bar{height:6px;border-radius:4px;background:var(--sunken);overflow:hidden}
+.bar>i{display:block;height:100%;border-radius:4px;background:var(--ink)}
+.bar>i.ok{background:var(--ok)}.bar>i.warn{background:var(--warn)}.bar>i.err{background:var(--err)}
+.mfoot{font-size:11px;color:var(--ink-3);margin-top:4px}
+.rule{height:1px;background:var(--line);margin:16px 0}
+.sechead{font-size:11px;font-weight:500;color:var(--ink-3);margin:0 0 9px;letter-spacing:.04em}
+.spark{display:flex;align-items:flex-end;gap:2px;height:34px;margin-bottom:5px}
+.spark i{flex:1;background:var(--link);opacity:.75;border-radius:1px 1px 0 0}
+.agent{display:flex;gap:9px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--line)}
+.agent:first-of-type{border-top:0}
+.astate{width:7px;height:7px;border-radius:50%;margin-top:6px;flex:none;background:var(--ok)}
+.astate.run{background:var(--link)}
+.aname{font-size:13px;font-weight:600;line-height:1.35}
+.ameta{font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.cost{margin-left:auto;font-size:13px;font-weight:400;font-variant-numeric:tabular-nums;white-space:nowrap}
+.total{display:flex;justify-content:space-between;align-items:baseline;padding-top:11px;border-top:1px solid var(--line);margin-top:4px}
+.total .t{font-size:13px;color:var(--ink-2)}
+.total .v{font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.toast{margin-top:14px;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:11px 12px;display:flex;gap:9px;align-items:flex-start;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.toast .tick{width:17px;height:17px;border-radius:50%;background:var(--ok);flex:none;display:grid;place-items:center;margin-top:1px}
+.toast p{margin:0;font-size:13px;line-height:1.45}
+.toast small{display:block;color:var(--ink-3);font-size:11px;margin-top:3px}
+footer{max-width:1280px;margin:0 auto;padding:0 24px 44px;color:var(--ink-2);font-size:13px}
+footer p{max-width:78ch}
+code{background:var(--sunken);padding:1px 5px;border-radius:4px;font-size:13px}
+</style></head><body>
+<header>
+<h1>The panel, in the three states that matter</h1>
+<p class="sub">Same panel, same layout. Only the numbers change. The first column is <b>real data read off this machine at 16:12 today</b>; the other two are the same panel at thresholds you have not hit yet, so you can see the colour escalate before it happens for real.</p>
+<p class="sub">Nothing here names a tool, a file, or a command.</p>
+</header>
+<div class="rail">
+
+<div class="col"><h2>Calm</h2><p>Where you actually are right now.</p>
+<div class="panel"><div class="panelhead"><span class="dot busy"></span> CLAUDE</div><div class="body">
+<div class="work">
+<p class="step">Rendering the work status</p>
+<p class="count">Step 5 of 7</p>
+<p class="title">Improve VS Code cloud editor UX with status and analytics</p>
+<div class="pips"><i class="pip done"></i><i class="pip done"></i><i class="pip done"></i><i class="pip done"></i><i class="pip now"></i><i class="pip"></i><i class="pip"></i></div>
+</div>
+<div class="metric"><div class="mrow"><span class="mlabel">Context</span><span class="mval">48%</span></div>
+<div class="bar"><i class="ok" style="width:47.7%"></i></div><div class="mfoot">476,575 of 1,000,000 tokens, window auto-detected</div></div>
+<div class="metric"><div class="mrow"><span class="mlabel">5-hour limit</span><span class="mval">21%</span></div>
+<div class="bar"><i class="ok" style="width:21%"></i></div><div class="mfoot">resets in 3h 28m, at 19:40</div></div>
+<div class="metric"><div class="mrow"><span class="mlabel">Weekly limit</span><span class="mval">6%</span></div>
+<div class="bar"><i class="ok" style="width:6%"></i></div><div class="mfoot">resets Saturday 1 August, 11:00</div></div>
+<div class="rule"></div><p class="sechead">SPEND, LAST 20 TURNS</p>
+<div class="spark"><i style="height:22%"></i><i style="height:15%"></i><i style="height:41%"></i><i style="height:30%"></i><i style="height:58%"></i><i style="height:36%"></i><i style="height:27%"></i><i style="height:72%"></i><i style="height:49%"></i><i style="height:33%"></i><i style="height:88%"></i><i style="height:61%"></i><i style="height:44%"></i><i style="height:70%"></i><i style="height:52%"></i><i style="height:96%"></i><i style="height:38%"></i><i style="height:64%"></i><i style="height:29%"></i><i style="height:55%"></i></div>
+<div class="mfoot">Opus 5, one million token context</div>
+<div class="rule"></div><p class="sechead">SUBAGENTS</p>
+<div class="agent"><span class="astate run"></span><span><span class="aname">Round 2B work status and recap</span><br><span class="ameta">running, 8m 42s</span></span><span class="cost">$4.10</span></div>
+<div class="agent"><span class="astate"></span><span><span class="aname">Round 2A data layer and rejected item</span><br><span class="ameta">done, 8m 42s</span></span><span class="cost">$6.31</span></div>
+<div class="agent"><span class="astate"></span><span><span class="aname">Build P1 usage and insight extension</span><br><span class="ameta">done, 8m 29s</span></span><span class="cost">$5.75</span></div>
+<div class="total"><span class="t">Session total</span><span class="v">$64.93</span></div>
+</div></div></div>
+
+<div class="col"><h2>Something needs you</h2><p>A step has hung and the context is filling. Amber, not red: nothing is lost yet.</p>
+<div class="panel"><div class="panelhead"><span class="dot busy"></span> CLAUDE</div><div class="body">
+<div class="banner warn"><svg class="lucide lucide-triangle-alert" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#EA580C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+<span class="msg">A step has been running for 6m 20s<span class="more">and 1 more: context is 84% full</span></span></div>
+<div class="work">
+<p class="step">Rendering the work status</p>
+<p class="count">Step 5 of 7</p>
+<p class="title">Improve VS Code cloud editor UX with status and analytics</p>
+<div class="pips"><i class="pip done"></i><i class="pip done"></i><i class="pip done"></i><i class="pip done"></i><i class="pip now"></i><i class="pip"></i><i class="pip"></i></div>
+</div>
+<div class="metric"><div class="mrow"><span class="mlabel">Context</span><span class="mval">84%</span></div>
+<div class="bar"><i class="warn" style="width:84%"></i></div><div class="mfoot">840,000 of 1,000,000 tokens, compaction is close</div></div>
+<div class="metric"><div class="mrow"><span class="mlabel">5-hour limit</span><span class="mval">63%</span></div>
+<div class="bar"><i class="ok" style="width:63%"></i></div><div class="mfoot">resets in 1h 12m, at 19:40</div></div>
+<div class="metric"><div class="mrow"><span class="mlabel">Weekly limit</span><span class="mval">11%</span></div>
+<div class="bar"><i class="ok" style="width:11%"></i></div><div class="mfoot">resets Saturday 1 August, 11:00</div></div>
+<div class="rule"></div><p class="sechead">SUBAGENTS</p>
+<div class="agent"><span class="astate run"></span><span><span class="aname">Round 2B work status and recap</span><br><span class="ameta">running 6m 20s, no output yet</span></span><span class="cost">$7.40</span></div>
+<div class="agent"><span class="astate"></span><span><span class="aname">Round 2A data layer and rejected item</span><br><span class="ameta">done, 8m 42s</span></span><span class="cost">$6.31</span></div>
+<div class="total"><span class="t">Session total</span><span class="v">$71.40</span></div>
+</div></div></div>
+
+<div class="col"><h2>About to stop</h2><p>The 5-hour limit is nearly spent. Red, because hitting this one ends the work.</p>
+<div class="panel"><div class="panelhead"><span class="dot"></span> CLAUDE</div><div class="body">
+<div class="banner err"><svg class="lucide lucide-circle-alert" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+<span class="msg">5-hour limit is 96% used<span class="more">resets in 34 minutes, at 19:40</span></span></div>
+<div class="work">
+<p class="step">Waiting</p>
+<p class="count">Step 5 of 7, 2 steps left</p>
+<div class="pips"><i class="pip done"></i><i class="pip done"></i><i class="pip done"></i><i class="pip done"></i><i class="pip done"></i><i class="pip"></i><i class="pip"></i></div>
+</div>
+<div class="metric"><div class="mrow"><span class="mlabel">Context</span><span class="mval">52%</span></div>
+<div class="bar"><i class="ok" style="width:52%"></i></div><div class="mfoot">520,000 of 1,000,000 tokens</div></div>
+<div class="metric"><div class="mrow"><span class="mlabel">5-hour limit</span><span class="mval">96%</span></div>
+<div class="bar"><i class="err" style="width:96%"></i></div><div class="mfoot">resets in 34m, at 19:40</div></div>
+<div class="metric"><div class="mrow"><span class="mlabel">Weekly limit</span><span class="mval">38%</span></div>
+<div class="bar"><i class="ok" style="width:38%"></i></div><div class="mfoot">resets Saturday 1 August, 11:00</div></div>
+<div class="rule"></div><p class="sechead">SUBAGENTS</p>
+<div class="agent"><span class="astate"></span><span><span class="aname">Round 2B work status and recap</span><br><span class="ameta">done, 11m 04s</span></span><span class="cost">$9.12</span></div>
+<div class="total"><span class="t">Session total</span><span class="v">$88.20</span></div>
+<div class="toast"><span class="tick"><svg class="lucide lucide-check" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+<p>Stopped after 11m 4s with 5 of 7 steps done, 2 steps left. Used $9.12 across 1 subagent.<small>This is the notification, not part of the panel.</small></p></div>
+</div></div></div>
+
+</div>
+<footer>
+<p><b>What is real and what is not.</b> Every number in the calm column was read off this machine at 16:12 today by the code that already ships: context and cost from the transcript parser, the two limits from <code>~/.claude.json</code>, the subagent names and durations from this session's own metadata. The warning and error columns are the identical panel with the numbers moved past their thresholds, so you can judge the colour escalation without waiting to hit it. The spend sparkline is the one shape here drawn rather than measured, because per-turn history is not persisted yet; that is idea 9 on the list, and it only starts collecting the day it is switched on.</p>
+<p><b>Why it reads this way.</b> The step you are on is the biggest text in the panel because it is the thing you actually want at a glance. Limits sit under it as bars rather than numbers because a bar answers "how close am I" without you doing arithmetic. Warnings take the top slot and push everything down, because a warning you have to scroll to is not a warning. The subagent rows carry a name, an elapsed time and a cost, and nothing else. No tool names anywhere.</p>
+<p><b>Measured, not eyeballed.</b> Rendered at 1440x900 and measured: the anchor is 1.85x the body text (the range law floor is 1.8), four distinct type sizes (ceiling four), and 18% of the panel's text carries weight 600 or above (ceiling 30%). The first pass failed two of those at 1.54x and 46%, so the anchor was raised and the labels de-bolded until it passed.</p>
+<p><b>Light on purpose.</b> The real panel inherits your active VS Code theme through its <code>--vscode-*</code> variables, so it will match whatever you are using. This mockup is light because that is the house rule for anything rendered in a browser.</p>
+</footer>
+</body></html>
