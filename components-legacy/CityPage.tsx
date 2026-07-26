@@ -107,11 +107,14 @@ export default function CityPage({ city, locale, initialCategory = undefined, ci
 
   return (
     <main className="min-h-screen bg-white">
-      {/* City header — V3-D263 (W4, 2026-05-27): s-amber → s-ink-2 (eyebrow per LOCKFILE §2); s-coral chip → TabPill ink-fill pattern */}
+      {/* City header, V3-D263 (W4, 2026-05-27): s-amber to s-ink-2 (eyebrow per LOCKFILE §2); s-coral chip to TabPill ink-fill pattern.
+          Caps removed 2026-07-26 (no-caps gate, project CLAUDE.md taste rule #10): normal case,
+          12px, weight 600, tracking dropped (house replacement for a label that loses caps). */}
+      {/* mockup-ok: saloncard-before-after/index.html, owner-approved 2026-07-26 */}
       <section className="max-w-5xl mx-auto px-4 pt-12 pb-8">
         <div className="flex items-center gap-2 mb-2">
           <MapPin size={16} className="text-s-ink-2" />
-          <span className="font-body text-[12px] font-bold uppercase tracking-[0.16em] text-s-ink-2">
+          <span className="font-body text-[12px] font-semibold text-s-ink-2">
             {cityName}
           </span>
         </div>
@@ -124,12 +127,17 @@ export default function CityPage({ city, locale, initialCategory = undefined, ci
         </p>
       </section>
 
-      {/* Category filter chips — V3-D263: TabPill pattern (LOCKFILE §5): active = ink-fill + white, inactive = white + hairline */}
+      {/* Category filter chips, V3-D263: TabPill pattern (LOCKFILE §5): active = ink-fill + white, inactive = white + hairline.
+          All-caps transform removed 2026-07-26 (no-caps gate, project CLAUDE.md taste rule #10):
+          text-sm (14px) kept, the caps transform + tracking dropped, weight raised to 600 to
+          hold legibility without it. Active-state fill color is a separate, pre-existing axis
+          left untouched this pass (out of scope, caps-only change). */}
+      {/* mockup-ok: saloncard-before-after/index.html, owner-approved 2026-07-26 */}
       <section className="max-w-5xl mx-auto px-4 pb-6">
         <div className="flex gap-2 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
           <Link
             href={`/${locale}/${city}`}
-            className={`shrink-0 flex items-center px-4 py-2 rounded-pill text-sm font-heading uppercase tracking-[.04em] transition-[transform,filter,border-color,background-color] duration-150 ${
+            className={`shrink-0 flex items-center px-4 py-2 rounded-pill text-sm font-heading font-semibold transition-[transform,filter,border-color,background-color] duration-150 ${
               activeCategory === null
                 ? "bg-s-ink text-white"
                 : "bg-white border border-s-border text-s-ink-2 hover:border-s-ink"
@@ -141,7 +149,7 @@ export default function CityPage({ city, locale, initialCategory = undefined, ci
             <Link
               key={key}
               href={`/${locale}/${city}/${key}`}
-              className={`shrink-0 flex items-center px-4 py-2 rounded-pill text-sm font-heading uppercase tracking-[.04em] transition-[transform,filter,border-color,background-color] duration-150 ${
+              className={`shrink-0 flex items-center px-4 py-2 rounded-pill text-sm font-heading font-semibold transition-[transform,filter,border-color,background-color] duration-150 ${
                 activeCategory === key
                   ? "bg-s-ink text-white"
                   : "bg-white border border-s-border text-s-ink-2 hover:border-s-ink"
