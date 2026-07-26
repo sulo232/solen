@@ -237,12 +237,30 @@ When the user says "I pasted in the screenshot folder", "see the screenshot fold
 Walk top down; higher wins. Latest DATED owner decision wins; "supersedes X" kills X everywhere, even where X still appears verbatim in an older doc or memory.
 
 1. The owner's live, literal, latest ask (a live rejection outranks an earlier approval)
-2. Hooks and gates (a deny message is an instruction, not an obstacle)
-3. _design-system/LOCKFILE.md frozen literals
-4. This file's pinned blocks (taste rules, design contract, binary triggers, exists protocol)
-5. _design-system/TASTE_LOG.md dated decisions
-6. Memory feedback files
-7. Global ~/.claude/CLAUDE.md rules, together with the ~/.claude system docs it points to (LAW_SYSTEM.md, LOOP_SYSTEM.md, MODEL_ROUTING.md, REPORT_SYSTEM.md, REGRESSION_SYSTEM.md, CONTEXT_SYSTEM.md, FABLE_DNA.md) , same tier, the doctrine layer for cross-project behavior
-8. Generic checklists (uiux-audit) and legacy _rules/* (anything palette, Figma, Vercel, or push flavored there is history) (_rules cleaned 2026-07-07; if push/Vercel/Figma/palette-flavored text ever resurfaces there, it is history, never law)
+2. **STATUTORY AND SAFETY FLOORS** (added 2026-07-27). A named legal or safety minimum is not a
+   taste axis and cannot be outranked by one. Members, and this list is closed until the owner
+   extends it: WCAG 2.2 level A and AA on any published customer surface; Swiss nFADP and, for EU
+   data subjects, GDPR, in particular consent and the special-category handling that allergy and
+   treatment notes fall under; the Swiss Price Indication Ordinance (PBV) total-price rule; and
+   anything the Terms of Service represent to a user as true.
+   **Why this tier exists, the case that created it:** the owner rejected focus rings three times
+   on looks, and the estate implemented that as `outline: none` on every link, button and tabbable
+   element sitewide, with no substitute. A taste rejection had silently deleted WCAG 2.4.7, and
+   nothing in the chain could catch it because there was no tier that said a statutory floor
+   outranks a taste preference. Same shape as the A3-photo-lock versus FLOORS-LAW-2 collision:
+   two owner decisions, no arbitration rule.
+   **How it resolves, and it is not "the law wins, ignore the owner":** when a taste decision and a
+   floor collide, you do NOT silently override the taste call and you do NOT silently drop the
+   floor. You SURFACE the collision, name both sides with dates, and propose the treatment that
+   satisfies the floor while honouring the taste intent. The focus case: the owner objected to the
+   RING, not to keyboard users knowing where they are, so the answer is a non-ring focus treatment,
+   shown for approval, not a restored ring and not nothing.
+3. Hooks and gates (a deny message is an instruction, not an obstacle)
+4. _design-system/LOCKFILE.md frozen literals
+5. This file's pinned blocks (taste rules, design contract, binary triggers, exists protocol)
+6. _design-system/TASTE_LOG.md dated decisions
+7. Memory feedback files
+8. Global ~/.claude/CLAUDE.md rules, together with the ~/.claude system docs it points to (LAW_SYSTEM.md, LOOP_SYSTEM.md, MODEL_ROUTING.md, REPORT_SYSTEM.md, REGRESSION_SYSTEM.md, CONTEXT_SYSTEM.md, FABLE_DNA.md) , same tier, the doctrine layer for cross-project behavior
+9. Generic checklists (uiux-audit) and legacy _rules/* (anything palette, Figma, Vercel, or push flavored there is history) (_rules cleaned 2026-07-07; if push/Vercel/Figma/palette-flavored text ever resurfaces there, it is history, never law)
 
 Full reasoning procedure: the fable-reasoning skill, section 6.
