@@ -63,7 +63,7 @@ export default function SearchAutocomplete({ query, onSelect, onSalonSelect }: S
               type="button"
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => onSelect(term)}
-              className="flex w-full items-center gap-3 rounded-lg px-1.5 py-2 text-left transition-colors duration-150 hover:bg-s-bg-sunken"
+              className="flex w-full items-center gap-3 rounded-lg px-1.5 py-2 text-left transition-[colors,transform] duration-150 hover:bg-s-bg-sunken active:scale-[0.98] active:duration-[80ms]"
             >
               {thumb ? (
                 <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-[12px] bg-s-bg-sunken">
@@ -88,7 +88,7 @@ export default function SearchAutocomplete({ query, onSelect, onSalonSelect }: S
               type="button"
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => onSalonSelect(s.slug)}
-              className="flex w-full items-center gap-3 rounded-lg px-1.5 py-2 text-left transition-colors duration-150 hover:bg-s-bg-sunken"
+              className="flex w-full items-center gap-3 rounded-lg px-1.5 py-2 text-left transition-[colors,transform] duration-150 hover:bg-s-bg-sunken active:scale-[0.98] active:duration-[80ms]"
             >
               {s.cover_image ? (
                 <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-[12px] bg-s-bg-sunken">
@@ -119,7 +119,7 @@ export default function SearchAutocomplete({ query, onSelect, onSalonSelect }: S
         type="button"
         onMouseDown={(e) => e.preventDefault()}
         onClick={() => onSelect(q)}
-        className="mt-0.5 flex w-full items-center gap-3 rounded-lg px-1.5 py-2.5 text-left transition-colors duration-150 hover:bg-s-bg-sunken"
+        className="mt-0.5 flex w-full items-center gap-3 rounded-lg px-1.5 py-2.5 text-left transition-[colors,transform] duration-150 hover:bg-s-bg-sunken active:scale-[0.98] active:duration-[80ms]"
       >
         <Search size={16} className="shrink-0 text-s-ink-2" aria-hidden />
         <span className="truncate text-[15px] text-s-ink-2">Suche nach „<span className="font-semibold text-s-ink">{q}</span>"</span>

@@ -143,7 +143,7 @@ export default function TikTokPlayer({ videoId, title, aspect, tiktokUrl }: { vi
                 onClick={togglePlay}
                 aria-label={playing ? "Pause" : "Play"}
                 style={FROST_GLASS}
-                className="grid h-11 w-11 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95"
+                className="grid h-11 w-11 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95 active:duration-[80ms]"
               >
                 {playing ? <Pause size={19} fill="currentColor" /> : <Play size={19} fill="currentColor" className="ml-0.5" />}
               </button>
@@ -155,7 +155,7 @@ export default function TikTokPlayer({ videoId, title, aspect, tiktokUrl }: { vi
                   onClick={(e) => e.stopPropagation()}
                   aria-label="View on TikTok"
                   style={FROST_GLASS}
-                  className="grid h-11 place-items-center rounded-full px-4 text-[12.5px] font-semibold tracking-[-0.01em] text-s-ink transition-transform duration-150 active:scale-95"
+                  className="grid h-11 place-items-center rounded-full px-4 text-[12.5px] font-semibold tracking-[-0.01em] text-s-ink transition-transform duration-150 active:scale-95 active:duration-[80ms]"
                 >
                   TikTok
                 </a>
@@ -167,7 +167,7 @@ export default function TikTokPlayer({ videoId, title, aspect, tiktokUrl }: { vi
               onClick={toggleMute}
               aria-label={muted ? "Unmute" : "Mute"}
               style={FROST_GLASS}
-              className="grid h-11 w-11 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95"
+              className="grid h-11 w-11 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95 active:duration-[80ms]"
             >
               {muted ? <VolumeX size={19} /> : <Volume2 size={19} />}
             </button>

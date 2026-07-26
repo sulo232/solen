@@ -53,7 +53,7 @@ export default function SavedCollectionPage() {
         <button
           onClick={() => router.push(`/${locale}/inspo/saved`)}
           aria-label="Zurück"
-          className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-s-border text-s-ink transition-transform duration-150 active:scale-95"
+          className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-s-border text-s-ink transition-transform duration-150 active:scale-95 active:duration-[80ms]"
         >
           <ArrowLeft size={18} />
         </button>

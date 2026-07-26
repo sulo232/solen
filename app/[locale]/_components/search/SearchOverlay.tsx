@@ -515,7 +515,7 @@ export function SearchOverlay({
 
   const collapsedRow = (s: Step) => (
     <button key={s} onClick={() => openStep(s)}
-      className="flex h-14 w-full items-center justify-between rounded-[20px] bg-white px-4 text-left shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
+      className="flex h-14 w-full items-center justify-between rounded-[20px] bg-white px-4 text-left shadow-[0_16px_48px_rgba(10,10,10,0.10)] transition-transform active:scale-[0.98] active:duration-[80ms]">
       <span className="text-[14px] font-medium text-s-ink-2">{stepMeta[s].label}</span>
       <span className={`truncate pl-3 text-[14px] ${stepMeta[s].value ? "font-semibold text-s-ink" : "text-s-ink-3"}`}>
         {stepMeta[s].value || stepMeta[s].placeholder}
@@ -527,7 +527,7 @@ export function SearchOverlay({
     <div className="flex h-12 items-center gap-2.5 rounded-[16px] border border-s-border bg-white px-4">
       {inputFocused ? (
         <button onClick={() => { setInputFocused(false); collapse(); }} aria-label={backTxt}
-          className="grid h-6 w-6 shrink-0 place-items-center text-s-ink">
+          className="grid h-6 w-6 shrink-0 place-items-center text-s-ink transition-transform active:scale-[0.94] active:duration-[80ms]">
           <ArrowLeft size={20} strokeWidth={2} />
         </button>
       ) : (
@@ -552,7 +552,7 @@ export function SearchOverlay({
         className="min-w-0 flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[15px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:outline-none" />
       {serviceQ.length > 0 && (
         <button onClick={() => { setServiceQ(""); serviceRef.current?.focus(); }}
-          aria-label="Eingabe loeschen" className="shrink-0 text-s-ink-3">
+          aria-label="Eingabe loeschen" className="shrink-0 text-s-ink-3 transition-transform active:scale-[0.94] active:duration-[80ms]">
           <X size={18} strokeWidth={2.2} />
         </button>
       )}
@@ -778,7 +778,7 @@ export function SearchOverlay({
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.3, ease: EASE }} />,
 
         <motion.button key="closeX" onClick={close} aria-label={closeTxt}
-          className="fixed right-4 top-[max(14px,env(safe-area-inset-top))] z-[102] grid h-9 w-9 place-items-center rounded-full border border-s-border bg-white text-s-ink"
+          className="fixed right-4 top-[max(14px,env(safe-area-inset-top))] z-[102] grid h-9 w-9 place-items-center rounded-full border border-s-border bg-white text-s-ink transition-transform active:scale-[0.94] active:duration-[80ms]"
           style={{ opacity: xOpacity }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
           <X size={17} strokeWidth={2.2} />
         </motion.button>,
@@ -871,11 +871,11 @@ export function SearchOverlay({
                               </p>
                               <div className="flex items-center gap-1">
                                 <button onClick={() => setMonthOffset((o) => Math.max(0, o - 1))} disabled={monthOffset <= 0} aria-label="Vorheriger Monat"
-                                  className="grid h-9 w-9 place-items-center rounded-full text-s-ink hover:bg-s-bg-sunken disabled:opacity-25">
+                                  className="grid h-9 w-9 place-items-center rounded-full text-s-ink transition-transform hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms] disabled:opacity-25">
                                   <ChevronLeft size={20} strokeWidth={2} />
                                 </button>
                                 <button onClick={() => setMonthOffset((o) => Math.min(maxMonthOffset, o + 1))} disabled={monthOffset >= maxMonthOffset} aria-label="Naechster Monat"
-                                  className="grid h-9 w-9 place-items-center rounded-full text-s-ink hover:bg-s-bg-sunken disabled:opacity-25">
+                                  className="grid h-9 w-9 place-items-center rounded-full text-s-ink transition-transform hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms] disabled:opacity-25">
                                   <ChevronRight size={20} strokeWidth={2} />
                                 </button>
                               </div>
@@ -910,7 +910,7 @@ export function SearchOverlay({
                                     const picked = zeitPeriod === urlVal;
                                     return (
                                       <button key={label} onClick={() => setZeitPeriod((cur) => cur === urlVal ? "" : urlVal)}
-                                        className={`shrink-0 rounded-full border px-4 py-2 text-[13px] font-medium transition-colors ${picked ? "border-s-accent bg-s-accent text-white" /* selected-ok: period chip */ : "border-s-border text-s-ink-2 hover:bg-s-bg-sunken"}`}>
+                                        className={`shrink-0 rounded-full border px-4 py-2 text-[13px] font-medium transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] ${picked ? "border-s-accent bg-s-accent text-white" /* selected-ok: period chip */ : "border-s-border text-s-ink-2 hover:bg-s-bg-sunken"}`}>
                                         {label}
                                       </button>
                                     );
@@ -925,7 +925,7 @@ export function SearchOverlay({
                             {/* selected-ok: blue fill for date/slot chips (design contract) */}
                             {flexDates.map((dd) => (
                               <button key={dd} onClick={() => { setDateLabel(dd); setIsoDate(""); setSelKey(null); }}
-                                className={`rounded-2xl border py-4 text-center text-[14px] font-medium transition-colors ${dateLabel === dd ? "border-s-accent bg-s-accent font-semibold text-white" /* selected-ok: flex date chip */ : "border-s-border text-s-ink-2 hover:bg-s-bg-sunken"}`}>
+                                className={`rounded-2xl border py-4 text-center text-[14px] font-medium transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] ${dateLabel === dd ? "border-s-accent bg-s-accent font-semibold text-white" /* selected-ok: flex date chip */ : "border-s-border text-s-ink-2 hover:bg-s-bg-sunken"}`}>
                                 {dd}
                               </button>
                             ))}
@@ -1048,7 +1048,7 @@ function LookCard({ image, title, onClick }: { image: string; title: string; onC
 // `primary` weights the raw-query row above the similar terms. Not a grey pill.
 function AutocompleteRow({ label, primary, onClick }: { label: string; primary?: boolean; onClick: () => void }) {
   return (
-    <button onClick={onClick} className="flex w-full items-center gap-3 py-2.5 text-left">
+    <button onClick={onClick} className="flex w-full items-center gap-3 py-2.5 text-left transition-transform active:scale-[0.98] active:duration-[80ms]">
       <Search size={16} strokeWidth={2} className="shrink-0 text-s-ink-3" />
       <span className={`min-w-0 flex-1 truncate text-[14px] text-s-ink ${primary ? "font-semibold" : "font-medium"}`}>{label}</span>
       <ArrowUpLeft size={15} strokeWidth={2} className="shrink-0 text-s-ink-3" />
@@ -1082,7 +1082,7 @@ function MonthGrid({ monthDate, now, windowEnd, selKey, onPick }: {
               <span className="grid h-9 w-9 place-items-center text-[14px] text-s-ink-3/35">{d}</span>
             ) : (
               <button onClick={() => onPick(key, `${d}. ${monthLong}`)}
-                className={`grid h-9 w-9 place-items-center rounded-full text-[14px] transition-colors ${selected ? "bg-s-accent font-bold text-white" /* selected-ok: date cell */ : isToday ? "font-bold text-s-accent" : "font-medium text-s-ink hover:bg-s-bg-sunken"}`}>
+                className={`grid h-9 w-9 place-items-center rounded-full text-[14px] transition-[colors,transform] active:scale-[0.94] active:duration-[80ms] ${selected ? "bg-s-accent font-bold text-white" /* selected-ok: date cell */ : isToday ? "font-bold text-s-accent" : "font-medium text-s-ink hover:bg-s-bg-sunken"}`}>
                 {d}
               </button>
             )}
@@ -1102,7 +1102,7 @@ function SuggestRow({ name, sub, Icon, img, onClick, onRemove }: {
 }) {
   return (
     <div className="flex w-full items-center gap-3.5 rounded-2xl pr-1 hover:bg-s-bg-sunken">
-      <button onClick={onClick} className="flex min-w-0 flex-1 items-center gap-3.5 py-2.5 text-left">
+      <button onClick={onClick} className="flex min-w-0 flex-1 items-center gap-3.5 py-2.5 text-left transition-transform active:scale-[0.98] active:duration-[80ms]">
         {img ? (
           <img src={img} alt="" className="h-12 w-12 shrink-0 object-contain" />
         ) : (
@@ -1116,7 +1116,7 @@ function SuggestRow({ name, sub, Icon, img, onClick, onRemove }: {
         </span>
       </button>
       {onRemove && (
-        <button onClick={onRemove} aria-label="Entfernen" className="grid h-8 w-8 shrink-0 place-items-center text-s-ink-3">
+        <button onClick={onRemove} aria-label="Entfernen" className="grid h-8 w-8 shrink-0 place-items-center text-s-ink-3 transition-transform active:scale-[0.94] active:duration-[80ms]">
           <X size={17} strokeWidth={2} />
         </button>
       )}

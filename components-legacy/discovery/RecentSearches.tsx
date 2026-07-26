@@ -123,7 +123,7 @@ export default function RecentSearches({ onSelect }: RecentSearchesProps) {
               type="button"
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => onSelect(term)}
-              className="flex min-w-0 flex-1 items-center gap-3 rounded-lg px-1.5 py-2 text-left transition-colors duration-150 hover:bg-s-bg-sunken"
+              className="flex min-w-0 flex-1 items-center gap-3 rounded-lg px-1.5 py-2 text-left transition-[colors,transform] duration-150 hover:bg-s-bg-sunken active:scale-[0.98] active:duration-[80ms]"
             >
               {thumb ? (
                 <span className="relative h-[52px] w-[52px] shrink-0 overflow-hidden rounded-[14px] bg-s-bg-sunken">
@@ -141,7 +141,7 @@ export default function RecentSearches({ onSelect }: RecentSearchesProps) {
               aria-label={`„${term}" entfernen`}
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => remove(term)}
-              className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-s-ink-3 transition-colors duration-150 hover:text-s-ink"
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-s-ink-3 transition-[colors,transform] duration-150 hover:text-s-ink active:scale-[0.94] active:duration-[80ms]"
             >
               <X size={18} />
             </button>

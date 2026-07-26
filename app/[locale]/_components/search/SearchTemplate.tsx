@@ -2352,7 +2352,7 @@ function ErrorState({
         className={cn(
           "mt-5 inline-flex items-center gap-2 rounded-btn bg-s-ink px-5 py-2.5",
           "font-body text-[14px] font-semibold text-white",
-          "transition-colors duration-150 hover:bg-black",
+          "transition-[colors,transform] duration-150 hover:bg-black active:scale-[0.97] active:duration-[80ms]",
           "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
         )}
       >

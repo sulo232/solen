@@ -59,14 +59,14 @@ export default function FilterDrawer(props: FilterDrawerProps) {
       <button
         onClick={() => setOpen(true)}
         aria-label={t("open_filters")}
-        className="relative z-10 grid h-10 w-10 shrink-0 place-items-center rounded-[14px] border border-s-border bg-white text-s-ink-2 transition-colors duration-150 hover:text-s-ink"
+        className="relative z-10 grid h-10 w-10 shrink-0 place-items-center rounded-[14px] border border-s-border bg-white text-s-ink-2 transition-[colors,transform] duration-150 hover:text-s-ink active:scale-[0.94] active:duration-[80ms]"
       >
         <SlidersHorizontal size={18} />
       </button>
 
       {open && (
         <div role="dialog" aria-modal="true" aria-label={t("filter_label")} className="fixed inset-0 z-50 flex items-end">
-          <div className="absolute inset-0 bg-s-ink/40 backdrop-blur-[6px] animate-in fade-in duration-200" onClick={() => setOpen(false)} />
+          <div className="absolute inset-0 bg-s-ink/40 backdrop-blur-[6px] animate-in fade-in duration-300" onClick={() => setOpen(false)} />
           <div className="relative flex max-h-[82vh] w-full flex-col rounded-t-[26px] bg-white shadow-elevation-3 animate-in slide-in-from-bottom duration-300">
             {/* Grabber */}
             <div className="mx-auto mt-2.5 h-1 w-[38px] rounded-full bg-s-border" />
@@ -74,7 +74,7 @@ export default function FilterDrawer(props: FilterDrawerProps) {
             {/* Header: title · circled ✕ */}
             <div className="flex items-center justify-between px-5 pb-1 pt-3">
               <p className="font-heading text-[18px] font-bold tracking-[-0.02em] text-s-ink">{t("filter_label")}</p>
-              <button onClick={() => setOpen(false)} aria-label={t("close")} className="grid h-[34px] w-[34px] place-items-center rounded-full border border-s-border bg-white text-s-ink transition-colors duration-150 hover:bg-s-bg-sunken">
+              <button onClick={() => setOpen(false)} aria-label={t("close")} className="grid h-[34px] w-[34px] place-items-center rounded-full border border-s-border bg-white text-s-ink transition-[colors,transform] duration-150 hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms]">
                 <X size={15} />
               </button>
             </div>
@@ -107,14 +107,14 @@ export default function FilterDrawer(props: FilterDrawerProps) {
                       type="button"
                       onClick={() => { props.onReset(); setOpen(false); }}
                       aria-label={t("reset")}
-                      className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border bg-white text-s-ink transition-colors duration-150 hover:bg-s-bg-sunken"
+                      className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border bg-white text-s-ink transition-[colors,transform] duration-150 hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms]"
                     >
                       <RotateCcw size={18} />
                     </button>
                   )}
                   <button
                     onClick={() => setOpen(false)}
-                    className="h-11 flex-1 rounded-pill bg-s-ink font-heading text-[15px] font-bold text-white transition-transform duration-150 active:scale-[0.97]"
+                    className="h-11 flex-1 rounded-pill bg-s-ink font-heading text-[15px] font-bold text-white transition-transform duration-150 active:scale-[0.97] active:duration-[80ms]"
                   >
                     {t("apply")}
                   </button>

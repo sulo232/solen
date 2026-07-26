@@ -175,7 +175,7 @@ export default function NearbyMap({
     <a
       href={href}
       aria-label={ariaLabel}
-      className="relative mt-1 block h-[156px] overflow-hidden rounded-card border border-s-border bg-s-bg-sunken transition-transform duration-200 ease-glide active:scale-[0.97]"
+      className="relative mt-1 block h-[156px] overflow-hidden rounded-card border border-s-border bg-s-bg-sunken transition-transform duration-200 ease-glide active:scale-[0.97] active:duration-[80ms]"
     >
       {/* h-full, NOT `absolute inset-0`: mapbox-gl.css sets `.mapboxgl-map { position: relative }`
           on this node once the map mounts, which beats the absolute utility and collapses the

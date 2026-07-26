@@ -66,7 +66,7 @@ export default function BoardDetailPage() {
         <button
           onClick={() => router.back()}
           aria-label="Zurück"
-          className="absolute left-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-black/30 text-white backdrop-blur-sm transition-transform duration-150 active:scale-95"
+          className="absolute left-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-black/30 text-white backdrop-blur-sm transition-transform duration-150 active:scale-95 active:duration-[80ms]"
         >
           <ArrowLeft size={18} />
         </button>

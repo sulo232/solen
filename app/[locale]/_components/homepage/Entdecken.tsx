@@ -191,12 +191,12 @@ export default function Entdecken() {
                 key={look.slug}
                 href={`/${locale}/inspo/${look.slug}`}
                 aria-label={`${look.styleName} – TikTok-Inspo`}
-                className="group relative flex flex-col shrink-0 snap-center w-[44vw] max-w-[200px] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-4 focus-visible:rounded-[16px]"
+                className="group relative flex flex-col shrink-0 snap-center w-[44vw] max-w-[200px] transition-transform active:scale-[0.97] active:duration-[80ms] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-4 focus-visible:rounded-[16px]"
               >
                 <div
                   className={cn(
                     "relative w-full aspect-[9/16] rounded-[16px] overflow-hidden origin-center",
-                    "transition-transform duration-[250ms] ease-glide",
+                    "transition-transform duration-150 ease-glide",
                     // V3-D163: dim/scroll-zoom removed. Cards stay scale-1 +
                     // opacity-1 always; only desktop hover bumps the active
                     // card up. Mobile = flat, no observer.
@@ -297,7 +297,7 @@ export default function Entdecken() {
                   <div
                     className={cn(
                       "absolute bottom-2 left-2 right-2",
-                      "opacity-100 md:opacity-0 group-hover:md:opacity-100 transition-opacity duration-200",
+                      "opacity-100 md:opacity-0 group-hover:md:opacity-100 transition-opacity duration-150",
                     )}
                   >
                     <div
@@ -389,20 +389,20 @@ export default function Entdecken() {
           <Link
             href={`/${locale}/inspo`}
             aria-label="Alle Looks entdecken"
-            className="group relative block shrink-0 snap-center w-[44vw] max-w-[200px] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-4 focus-visible:rounded-[16px]"
+            className="group relative block shrink-0 snap-center w-[44vw] max-w-[200px] transition-transform active:scale-[0.97] active:duration-[80ms] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-4 focus-visible:rounded-[16px]"
           >
             <div
               className={cn(
                 "flex h-full w-full origin-center flex-col items-center justify-center rounded-[16px] p-6 text-center",
                 "border-2 border-dashed border-s-ink/30 bg-white",
-                "transition-[transform,border-color] duration-[250ms] ease-glide",
+                "transition-[transform,border-color] duration-150 ease-glide",
                 "md:group-hover:scale-[1.03] md:group-hover:z-10 md:group-hover:border-s-ink",
               )}
             >
               <div
                 className={cn(
                   "grid h-12 w-12 place-items-center rounded-full bg-s-ink text-white mb-4",
-                  "transition-transform duration-[250ms] ease-glide",
+                  "transition-transform duration-150 ease-glide",
                   "md:group-hover:scale-110",
                 )}
               >

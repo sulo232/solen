@@ -1,6 +1,6 @@
 # Press-tier animation checker
 
-Generated: 2026-07-26T15:59:08.072Z
+Generated: 2026-07-26T16:20:02.200Z
 Files scanned: 608  Roots: app, components, components-legacy
 
 Static source scan (no browser) for the class of press control whose active:scale- cannot
@@ -8,7 +8,7 @@ actually animate because its own transition-property list doesn't include transf
 the file header of scripts/check-press.mjs for the full reasoning and the SAFE DIRECTION policy
 (unresolved dynamic content -> UNCERTAIN, never DEAD).
 
-Totals (excl. /dev/ unless --include-dev): DEAD=0  NO-TRANSITION=4  OFF-LADDER=42  UNCERTAIN=9  OK=239  DEV-SKIPPED=40
+Totals (excl. /dev/ unless --include-dev): DEAD=0  NO-TRANSITION=4  OFF-LADDER=42  UNCERTAIN=12  OK=259  DEV-SKIPPED=40
 
 ---
 ### DEAD (blocking) (0)
@@ -67,7 +67,7 @@ none found
 - `components-legacy/discovery/TikTokPlayer.tsx:170` - scale: active:scale-95 - transition: transition-transform
 - `components-legacy/loyalty/HeroStampCard.tsx:49` - scale: active:scale-[0.99] - transition: transition-[transform]
 
-### UNCERTAIN (report-only, never blocks --gate) (9)
+### UNCERTAIN (report-only, never blocks --gate) (12)
 
 - `app/[locale]/_components/homepage/MobileCategoriesRow.tsx:96` - scale: group-active:scale-[0.97] - transition: transition-[transform,box-shadow]
 - `app/[locale]/_components/homepage/SalonCard.tsx:373` - scale: active:scale-[0.97] - transition: transition-transform
@@ -75,6 +75,9 @@ none found
 - `app/[locale]/_components/primitives/BackButton.tsx:34` - scale: active:scale-[0.94] - transition: transition-[transform,background-color]
 - `app/[locale]/_components/primitives/PillToggle.tsx:63` - scale: active:scale-[0.97] - transition: transition-[colors,transform]
 - `app/[locale]/_components/salon/SalonProducts.tsx:308` - scale: active:scale-[0.94] - transition: transition-[colors,transform]
+- `app/[locale]/_components/search/SearchOverlay.tsx:913` - scale: active:scale-[0.97] - transition: transition-[colors,transform]
+- `app/[locale]/_components/search/SearchOverlay.tsx:928` - scale: active:scale-[0.97] - transition: transition-[colors,transform]
+- `app/[locale]/_components/search/SearchOverlay.tsx:1085` - scale: active:scale-[0.94] - transition: transition-[colors,transform]
 - `components-legacy/refund/UpchargeApproveView.tsx:529` - scale: active:scale-[0.985] - transition: (none)
 - `components-legacy/salon/SalonModeToggle.tsx:41` - scale: active:scale-[0.98] - transition: transition-[colors,transform]
 - `components-legacy/ui/interactive-hover-button.tsx:18` - scale: active:scale-[0.97] - transition: transition-[transform,filter]

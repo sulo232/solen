@@ -208,7 +208,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
       fill
       priority
       sizes="(max-width: 480px) 100vw, 480px"
-      className="object-cover animate-in fade-in duration-500"
+      className="object-cover animate-in fade-in duration-300"
     />
   ) : (
     <div className="absolute inset-0 grid place-items-center text-sm text-white/30">{t.noMedia}</div>
@@ -236,7 +236,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
             aria-label={t.play}
             className="absolute inset-0 z-[3] grid place-items-center"
           >
-            <span style={FROST_GLASS} className="grid h-[64px] w-[64px] place-items-center rounded-full transition-transform duration-150 active:scale-95">
+            <span style={FROST_GLASS} className="grid h-[64px] w-[64px] place-items-center rounded-full transition-transform duration-150 active:scale-95 active:duration-[80ms]">
               <Play size={28} className="ml-0.5 text-s-ink" fill="currentColor" />
             </span>
           </button>
@@ -252,7 +252,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
             onClick={() => router.push(`/${locale}/inspo`)}
             aria-label={t.back}
             style={FROST_GLASS}
-            className="grid h-11 w-11 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95"
+            className="grid h-11 w-11 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95 active:duration-[80ms]"
           >
             <ArrowLeft size={18} />
           </button>
@@ -262,7 +262,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
             aria-label={heroSaved ? t.saved : t.save}
             aria-pressed={heroSaved}
             style={FROST_GLASS}
-            className="grid h-11 w-11 place-items-center rounded-full transition-transform duration-150 active:scale-95"
+            className="grid h-11 w-11 place-items-center rounded-full transition-transform duration-150 active:scale-95 active:duration-[80ms]"
           >
             <Heart
               key={String(heroSaved)}
@@ -280,9 +280,9 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
           clean image. Mirrors the locked sheet physics (backdrop blur + rounded-t + slide-in-from-bottom). */}
       {playing && videoId && playVariant === "sheet" && (
         <div className="fixed inset-0 z-[60] flex items-end" role="dialog" aria-modal="true" aria-label={item.style_name || "TikTok"}>
-          <div className="absolute inset-0 bg-s-ink/60 backdrop-blur-[6px] animate-in fade-in duration-200" onClick={closePlayer} />
+          <div className="absolute inset-0 bg-s-ink/60 backdrop-blur-[6px] animate-in fade-in duration-300" onClick={closePlayer} />
           <div className="relative w-full overflow-hidden rounded-t-[22px] bg-black shadow-elevation-3 animate-in slide-in-from-bottom duration-300">
-            <button type="button" onClick={closePlayer} aria-label={t.back} style={FROST_GLASS} className="absolute right-3 top-3 z-10 grid h-11 w-11 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95">
+            <button type="button" onClick={closePlayer} aria-label={t.back} style={FROST_GLASS} className="absolute right-3 top-3 z-10 grid h-11 w-11 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95 active:duration-[80ms]">
               <X size={18} />
             </button>
             <div className="relative w-full" style={{ aspectRatio: videoAspect ?? "9 / 16", maxHeight: "82vh" }}>
@@ -294,8 +294,8 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
 
       {/* FULLSCREEN player variant (?play=fullscreen) — takes over the screen like opening a reel; tap X to return. */}
       {playing && videoId && playVariant === "fullscreen" && (
-        <div className="fixed inset-0 z-[60] bg-black animate-in fade-in duration-200" role="dialog" aria-modal="true" aria-label={item.style_name || "TikTok"}>
-          <button type="button" onClick={closePlayer} aria-label={t.back} style={{ ...FROST_GLASS, top: "calc(env(safe-area-inset-top, 0px) + 14px)" }} className="absolute right-4 z-10 grid h-10 w-10 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95">
+        <div className="fixed inset-0 z-[60] bg-black animate-in fade-in duration-300" role="dialog" aria-modal="true" aria-label={item.style_name || "TikTok"}>
+          <button type="button" onClick={closePlayer} aria-label={t.back} style={{ ...FROST_GLASS, top: "calc(env(safe-area-inset-top, 0px) + 14px)" }} className="absolute right-4 z-10 grid h-10 w-10 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95 active:duration-[80ms]">
             <X size={18} />
           </button>
           <TikTokPlayer videoId={videoId} title={item.style_name ?? undefined} aspect={videoAspect ?? undefined} tiktokUrl={item.tiktok_url ?? undefined} />
@@ -303,7 +303,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
       )}
 
       {/* ─── Sheet (pulled over the hero, App-Store style) ─── */}
-      <div className="relative z-[5] mt-0 bg-white px-[18px] pt-5 pb-9 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="relative z-[5] mt-0 bg-white px-[18px] pt-5 pb-9 animate-in fade-in slide-in-from-bottom-4 duration-300">
 
         {/* Creator pill (owner: "username as a pill under the video") + date. The pill links to the creator's TikTok
             (attribution); neutral chip styling per the design system, not a blue text link. */}
@@ -350,7 +350,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
               className="mt-2 inline-flex items-center gap-1 text-[13.5px] font-medium text-s-accent"
             >
               {descOpen ? t.less : t.more}
-              <ChevronDown size={15} className={`transition-transform duration-200 ${descOpen ? "rotate-180" : ""}`} />
+              <ChevronDown size={15} className={`transition-transform duration-150 ${descOpen ? "rotate-180" : ""}`} />
             </button>
           </div>
         )}
@@ -365,7 +365,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
               className="flex w-full items-center justify-between px-0.5 py-4"
             >
               <span className="font-heading text-[15px] font-semibold tracking-[-0.01em] text-s-ink">{t.details}</span>
-              <ChevronDown size={18} className={`text-s-ink-3 transition-transform duration-200 ${detailsOpen ? "rotate-180" : ""}`} />
+              <ChevronDown size={18} className={`text-s-ink-3 transition-transform duration-150 ${detailsOpen ? "rotate-180" : ""}`} />
             </button>
             {detailsOpen && (
               <div className="pb-2">

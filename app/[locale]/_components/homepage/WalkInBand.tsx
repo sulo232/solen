@@ -117,7 +117,7 @@ export default function WalkInBand() {
                     <a
                       key={s.id}
                       href={`/${locale}/salon/${s.slug}`}
-                      className={`${single ? "w-full" : "flex-[0_0_42%]"} min-w-0 snap-start rounded-[13px] border border-s-border bg-white p-3 transition-transform duration-200 ease-glide active:scale-[0.98]`}
+                      className={`${single ? "w-full" : "flex-[0_0_42%]"} min-w-0 snap-start rounded-[13px] border border-s-border bg-white p-3 transition-transform duration-200 ease-glide active:scale-[0.98] active:duration-[80ms]`}
                     >
                       {/* R1 "located" (owner pick 2026-06-29): wait-range hero + "bis frei", then
                           name + rating (gold star is the separator), then address + queue on their OWN
@@ -154,7 +154,7 @@ export default function WalkInBand() {
           {/* CTA */}
           <a
             href={`/${locale}/barbershop`}
-            className="mt-4 flex items-center justify-center gap-1.5 rounded-[13px] border border-s-border bg-white px-4 py-3 font-heading text-[14px] font-bold text-s-ink transition-[background-color,transform] duration-200 ease-glide hover:bg-s-bg-sunken active:scale-[0.97]"
+            className="mt-4 flex items-center justify-center gap-1.5 rounded-[13px] border border-s-border bg-white px-4 py-3 font-heading text-[14px] font-bold text-s-ink transition-[background-color,transform] duration-200 ease-glide hover:bg-s-bg-sunken active:scale-[0.97] active:duration-[80ms]"
           >
             Alle Walk-ins
             <ArrowRight size={16} />
