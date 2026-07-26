@@ -31,7 +31,7 @@ import type { SalonDetail, TabKey, OpenStatus, DayKey } from "./_shared";
 import { postalToCity } from "./_shared";
 import { usePostHog } from "posthog-js/react";
 import { trackSalonView } from "@/components-legacy/RecentlyViewed";
-import { generateSalonSchema } from "@/lib/seo";
+import { generateSalonSchema, safeJsonLd } from "@/lib/seo";
 
 // B4 load audit (2026-07-04, finding #2): click-triggered overlays, loaded only
 // when opened (same dynamic() pattern as SalonTeam.tsx:12's StaffProfilePage).
@@ -171,17 +171,20 @@ export function SalonDetailV3({
   // computeOpenStatus() again here (hydration fix, see page.tsx).
   const salonOpen = openStatus.isOpen;
 
-  // V3-D344 (2026-05-28): JSON-LD structured data — parity with legacy salon
+  // V3-D344 (2026-05-28): JSON-LD structured data, parity with legacy salon
   // render (generateSalonSchema). Required before V3 became the default so salon
-  // pages keep their SEO structured data. Hardened vs the legacy version: escape
-  // `<` to `<` so a salon name containing "</script>" can't break out of the
-  // script tag (XSS-safe; standard Next.js JSON-LD sanitization).
+  // pages keep their SEO structured data.
+  // A4-jsonld-escape (2026-07-27, supersedes the ad hoc `<` -> < replace
+  // this line used to do inline): now routed through the shared safeJsonLd
+  // helper (lib/seo.ts) so every JSON-LD site escapes `<`, `>` AND `&`
+  // consistently, not just `<`, so a salon name containing "</script>" can't
+  // break out of the script tag (XSS-safe, standard JSON-LD sanitization).
   // SalonDetail is a structural superset of the fields generateSalonSchema reads
   // (the schema only touches name/address/rating/photos). Cast matches legacy
-  // behavior — same runtime object the legacy JsonLd component passed.
-  const salonJsonLd = JSON.stringify(
+  // behavior, same runtime object the legacy JsonLd component passed.
+  const salonJsonLd = safeJsonLd(
     generateSalonSchema(salon as unknown as Parameters<typeof generateSalonSchema>[0], locale)
-  ).replace(/</g, "\\u003c");
+  );
 
   return (
     // V2-D53.3 fix: pt was meant to push content below the (then-believed-fixed)

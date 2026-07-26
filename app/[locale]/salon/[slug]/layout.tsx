@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { cache } from "react";
 import { createServerSupabaseClient } from "@/lib/supabase";
-import { buildAlternates, generateBreadcrumbSchema } from "@/lib/seo";
+import { buildAlternates, generateBreadcrumbSchema, safeJsonLd } from "@/lib/seo";
 import { postalToCity } from "@/app/[locale]/_components/salon/_shared";
 
 const CATEGORY_LABELS: Record<string, Record<string, string>> = {
@@ -133,9 +133,12 @@ export default async function SalonLayout({
 
   return (
     <>
+      {/* A4-jsonld-escape (2026-07-27): breadcrumb's last item name is
+          salon?.name, a DB-sourced value editable by the salon owner from
+          their own dashboard. safeJsonLd escapes </script> breakout. */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumb) }}
       />
       {children}
     </>

@@ -1,5 +1,21 @@
 import type { Salon, SalonCategory } from "./types";
 
+/* ─── JSON-LD safe serialization (A4-jsonld-escape, 2026-07-27) ───
+ * JSON.stringify does NOT escape `<`, `>`, or `&`. A JSON-LD payload built
+ * from a DB-sourced or user-editable value (a salon name, edited from the
+ * salon owner's own dashboard) can therefore break out of the
+ * `<script type="application/ld+json">` tag it's injected into via
+ * dangerouslySetInnerHTML if the value contains "</script>". There is no
+ * CSP to catch it. Use this at every JSON-LD site that carries a
+ * DB-sourced or user-editable value; compile-time-literal-only payloads
+ * (static copy, translation strings) don't need it. */
+export function safeJsonLd(data: unknown): string {
+  return JSON.stringify(data)
+    .replace(/&/g, "\\u0026")
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e");
+}
+
 /* ─── BreadcrumbList schema ─── */
 
 interface BreadcrumbItem {
