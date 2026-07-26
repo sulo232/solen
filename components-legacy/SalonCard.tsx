@@ -50,6 +50,16 @@ interface SalonCardProps {
   photos?: string[];
 }
 
+const CATEGORY_ICONS: Record<string, LucideIcon> = {
+  coiffeur: Scissors,
+  hair: Scissors,
+  barber: Scissors,
+  barbershop: Scissors,
+  nails: Gem,
+  spa: Sparkles,
+  massage: Sparkles,
+};
+
 const CAT_COLOURS: Record<string, { bg: string; text: string }> = {
   coiffeur:   { bg: "rgba(243,168,100,.12)",  text: "#7A4A00" },
   barbershop: { bg: "rgba(74,30,60,.12)",    text: "#4A1E3C" },
@@ -102,13 +112,18 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
         href={href}
         className="flex items-center gap-3 p-3 rounded-card bg-white border border-s-border group"
       >
-        {/* A3 LOCKED 2026-05-03: photos killed pre-launch — solid category color + Anton name only */}
+        {/* A3 LOCKED 2026-05-03: photos killed pre-launch, solid category color + Anton name only.
+            SUPERSEDED 2026-07-26 for the default-variant cover below (owner approval of the
+            saloncard-before-after mockup, FLOORS LAW 2 outranks the 2026-05-03 lock per the
+            precedence chain). This compact variant (dashboard settings preview only, not a
+            customer-facing surface) keeps the solid-color cover unchanged, out of scope for
+            that pass, so ImageFallback is still correct here. */}
         <div className="relative w-16 h-16 rounded-input overflow-hidden shrink-0">
           <ImageFallback category={salon.categories?.[0]} salonName={salon.name} className="absolute inset-0" />
         </div>
         <div className="min-w-0">
-          {/* Q26: Anton uppercase for card name */}
-          <p className="font-heading text-sm uppercase text-s-ink truncate leading-[1.05]" style={{ letterSpacing: "0.01em" }}>{salon.name}</p>
+          {/* Q26 uppercase caps removed 2026-07-26: no-caps gate (project CLAUDE.md taste rule #10) */}
+          <p className="font-heading text-sm text-s-ink truncate leading-[1.05]" style={{ letterSpacing: "0.01em" }}>{salon.name}</p>
           <p className="text-xs text-s-ink-2 font-body truncate">{salon.address}</p>
           {(salon.average_rating > 0 || salon.review_count > 0) ? (
             <div className="flex items-center gap-1 mt-0.5">
@@ -149,18 +164,46 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
       )}
 
       <Link href={href} className="block w-full h-full">
-        {/* Cover — A3 LOCKED 2026-05-03: photos killed pre-launch. Always render
-            solid category color + Anton uppercase salon name (locked card pattern,
+        {/* Cover, A3 LOCKED 2026-05-03: photos killed pre-launch. Always render
+            solid category color, salon name label (locked card pattern,
             ref public/solen-coral.html:225-245, 847-865). Photo carousel state
             (allPhotos/photoIndex/scrollContainerRef) intentionally left orphan
-            in case we restore opt-in photo support later. */}
+            in case we restore opt-in photo support later.
+            SUPERSEDED 2026-07-26 (owner approval of the saloncard-before-after mockup,
+            _design-system/captures/principles/saloncard-before-after/index.html; this A3 lock
+            and FLOORS LAW 2 (2026-07-21, roughly >= 1/3 photographic area per browse viewport)
+            directly contradicted each other on this exact slot, and the later, later-approved
+            decision wins per the CLAUDE.md precedence chain): photos are ON. allPhotos (built
+            above from cover_photo_url + gallery_urls + the photos prop, previously built and
+            then ignored) now renders here, which is why the carousel state was left in place.
+            The 8/28 salons with no cover_photo_url get the LOCKFILE-specified fallback, sunken
+            bg + category icon + initial, never a bare grey box and never the old 47px placeholder
+            again. See _design-system/TASTE_LOG.md 2026-07-26 for the full record. */}
         {/* mockup-ok: CARD_REDESIGN_2026-07-13 (C1, approved card-redesign.html #c11): aspect-square -> aspect-[5/4] */}
         <div className="relative w-full aspect-[5/4] overflow-hidden rounded-[16px] gpu">
-          <ImageFallback
-            category={salon.categories?.[0]}
-            salonName={salon.name}
-            className="absolute inset-0"
-          />
+          {allPhotos.length > 0 ? (
+            <Image
+              src={allPhotos[photoIndex] ?? allPhotos[0]}
+              alt={salon.name}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className="object-cover"
+              placeholder="blur"
+              blurDataURL={BLUR_PLACEHOLDER}
+            />
+          ) : (
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-s-bg-sunken">
+              {(() => {
+                const CategoryIcon = CATEGORY_ICONS[(salon.categories?.[0] ?? "").toLowerCase()] ?? Scissors;
+                return <CategoryIcon className="w-8 h-8 text-s-ink-2" strokeWidth={1.5} aria-hidden />;
+              })()}
+              {salon.name?.trim()?.[0] && (
+                <span className="font-heading text-s-ink-2 text-[15px]" aria-hidden>
+                  {salon.name.trim()[0]}
+                </span>
+              )}
+            </div>
+          )}
 
           {/* Phase 2.1 — Priority badge system via SalonBadge */}
           <div className="absolute top-2 left-2 z-[2]">
@@ -259,9 +302,11 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
         {/* ── Info Section — Roadmap 02 Typography Matrix ─────────────────────── */}
         {/* DESIGN_SPEC §3.1: content padding 14px 16px 16px, gap 4px */}
         <div className="flex flex-col gap-1" style={{ padding: "14px 16px 16px" }}>
-          {/* Line 1: Name + Rating (right-aligned, Airbnb pattern) — Q26 Anton uppercase */}
+          {/* Line 1: Name + Rating (right-aligned, Airbnb pattern). Q26 caps removed 2026-07-26
+              (no-caps gate, project CLAUDE.md taste rule #10) */}
+          {/* mockup-ok: saloncard-before-after/index.html, owner-approved 2026-07-26 */}
           <div className="flex items-start justify-between gap-2">
-            <h3 className="font-heading text-s-ink text-[15px] uppercase leading-[1.1] truncate" style={{ letterSpacing: "0.01em" }}>
+            <h3 className="font-heading text-s-ink text-[15px] leading-[1.1] truncate">
               {salon.name}
             </h3>
             {salon.average_rating > 0 ? (
