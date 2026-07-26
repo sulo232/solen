@@ -8,14 +8,31 @@
 -- Functional flags (accepts_online_payment, instant_booking_enabled) are intentionally
 -- NOT touched here — those gate real behaviour, not cosmetic facets.
 
-update salons set
-  wheelchair_accessible = abs(hashtext(id::text || 'wheel'))   % 100 < 45,
-  near_public_transport = abs(hashtext(id::text || 'transit')) % 100 < 70,
-  kid_friendly          = abs(hashtext(id::text || 'kid'))     % 100 < 40,
-  pet_friendly          = abs(hashtext(id::text || 'pet'))     % 100 < 30,
-  wifi_friendly         = abs(hashtext(id::text || 'wifi'))    % 100 < 78,
-  lgbtq_friendly        = abs(hashtext(id::text || 'lgbtq'))   % 100 < 45,
-  woman_owned           = abs(hashtext(id::text || 'woman'))   % 100 < 42,
-  family_owned          = abs(hashtext(id::text || 'family'))  % 100 < 38,
-  student_discount      = abs(hashtext(id::text || 'student')) % 100 < 50
-where is_active;
+-- NEUTRALIZED 2026-07-26 (A16-A17 data-integrity pass): the update below is
+-- disabled on replay, do not re-enable it. Three of these nine "cosmetic
+-- facets" are not cosmetic: wheelchair_accessible is an accessibility claim,
+-- lgbtq_friendly and woman_owned are identity claims about a real business.
+-- Setting them from abs(hashtext(id::text || salt)) % 100 < N means this
+-- migration INVENTS those claims out of a hash, with no source of truth
+-- behind them. The live database currently shows 0 true across all nine
+-- columns on all 20 active salons, so this UPDATE never actually ran
+-- against production data, it is not live today. But a migration replay
+-- (a restore drill, a fresh environment, a `supabase db reset`) would
+-- execute it and fabricate accessibility and identity data about real
+-- salons. Per house rule (never edit a historical migration's effect
+-- casually, never delete it), the statement is commented out in place
+-- rather than rewritten or removed. If salon amenity facets are wanted
+-- again, seed them from a real source (owner-entered profile data), never
+-- from a hash. See _rules/LESSONS_LEARNED.md for the full writeup.
+--
+-- update salons set
+--   wheelchair_accessible = abs(hashtext(id::text || 'wheel'))   % 100 < 45,
+--   near_public_transport = abs(hashtext(id::text || 'transit')) % 100 < 70,
+--   kid_friendly          = abs(hashtext(id::text || 'kid'))     % 100 < 40,
+--   pet_friendly          = abs(hashtext(id::text || 'pet'))     % 100 < 30,
+--   wifi_friendly         = abs(hashtext(id::text || 'wifi'))    % 100 < 78,
+--   lgbtq_friendly        = abs(hashtext(id::text || 'lgbtq'))   % 100 < 45,
+--   woman_owned           = abs(hashtext(id::text || 'woman'))   % 100 < 42,
+--   family_owned          = abs(hashtext(id::text || 'family'))  % 100 < 38,
+--   student_discount      = abs(hashtext(id::text || 'student')) % 100 < 50
+-- where is_active;

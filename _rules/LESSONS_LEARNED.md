@@ -478,3 +478,27 @@ Copying UI from a component file into a mockup reproduced a discount badge that 
   pass cases including backticked and fenced URLs). ARM IT WITH:
   `bash ~/.claude/pending-hooks/arm-link-verified-gate.sh` from a non-sandboxed shell; the same
   script also arms link-verified-gate.py.
+
+### A "cosmetic facet" seed migration fabricated accessibility and identity data
+- **Date**: 2026-07-26
+- **File(s)**: supabase/migrations/20260530_seed_salon_amenities.sql
+- **Match**: wheelchair_accessible, lgbtq_friendly, woman_owned, hashtext, amenity, cosmetic facet, seed migration
+- **What happened**: This migration set nine boolean columns on every active salon from
+  `abs(hashtext(id::text || salt)) % 100 < N`, calling them "cosmetic facets" in its own header.
+  Three of the nine are not cosmetic: `wheelchair_accessible` is an accessibility claim,
+  `lgbtq_friendly` and `woman_owned` are identity claims about a real business. The live DB shows 0
+  true across all nine columns on all 20 active salons (verified 2026-07-26 via
+  `execute_sql`), so the UPDATE never actually ran against live data, it sat inert. But a migration
+  replay (a restore drill, a fresh environment, a `supabase db reset`) would run it and invent
+  those claims from a hash with no source of truth behind it.
+- **Why it happened**: Grouping a real accessibility flag and two identity flags in with genuinely
+  decorative ones (wifi, pet-friendly, student discount) under one "cosmetic" label made a
+  hash-seed pattern look safe to apply to all nine, when it should only ever apply to the truly
+  decorative ones.
+- **Fix / What to do instead**: Never derive an accessibility or identity claim about a real
+  business from a hash or any synthetic hashtext hash. Those need a real source (owner-entered
+  profile data) or they stay unset. The migration's UPDATE is now commented out in place (with a
+  dated block explaining why) rather than deleted or rewritten, per the never-edit-a-historical-
+  migration's-effect rule. Before writing any new seed migration that touches a boolean/enum flag,
+  check by name whether that flag is a decorative facet or an accessibility/identity/eligibility
+  claim, only decorative facets may be hash-seeded.
