@@ -180,7 +180,7 @@ function BundleCard({ bundle, slug, locale }: { bundle: Bundle; slug: string; lo
             sticky "Termin buchen"; sibling Buchen buttons are neutral outline, not bg-s-ink. */}
         <Link
           href={bookingHref}
-          className="font-body shrink-0 rounded-full border border-s-border bg-white px-5 py-2 text-[13px] font-semibold text-s-ink transition-colors hover:bg-s-bg-sunken md:px-6 md:py-2.5 md:text-[14px]"
+          className="font-body shrink-0 rounded-full border border-s-border bg-white px-5 py-2 text-[13px] font-semibold text-s-ink transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.97] active:duration-[80ms] active:ease-glide md:px-6 md:py-2.5 md:text-[14px]"
         >
           {t("bundlesBook")}
         </Link>

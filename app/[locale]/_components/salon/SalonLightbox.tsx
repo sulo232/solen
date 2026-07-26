@@ -124,7 +124,7 @@ export function SalonLightbox({
           type="button"
           aria-label="Schließen"
           onClick={onClose}
-          className="grid h-10 w-10 place-items-center rounded-full bg-white/10 text-white backdrop-blur-md transition-colors hover:bg-white/20"
+          className="grid h-10 w-10 place-items-center rounded-full bg-white/10 text-white backdrop-blur-md transition-[colors,transform] hover:bg-white/20 active:scale-[0.94] active:duration-[80ms] active:ease-glide"
         >
           <X size={20} />
         </button>
@@ -144,7 +144,7 @@ export function SalonLightbox({
             type="button"
             aria-label="Vorheriges Foto"
             onClick={prev}
-            className="absolute left-1 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-white backdrop-blur-md transition-colors hover:bg-white/20 md:left-4 md:h-11 md:w-11"
+            className="absolute left-1 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-white backdrop-blur-md transition-[colors,transform] hover:bg-white/20 active:scale-[0.94] active:duration-[80ms] active:ease-glide md:left-4 md:h-11 md:w-11"
           >
             <ChevronLeft size={20} className="md:hidden" />
             <ChevronLeft size={22} className="hidden md:block" />
@@ -163,7 +163,7 @@ export function SalonLightbox({
             type="button"
             aria-label="Nächstes Foto"
             onClick={next}
-            className="absolute right-1 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-white backdrop-blur-md transition-colors hover:bg-white/20 md:right-4 md:h-11 md:w-11"
+            className="absolute right-1 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-white backdrop-blur-md transition-[colors,transform] hover:bg-white/20 active:scale-[0.94] active:duration-[80ms] active:ease-glide md:right-4 md:h-11 md:w-11"
           >
             <ChevronRight size={20} className="md:hidden" />
             <ChevronRight size={22} className="hidden md:block" />

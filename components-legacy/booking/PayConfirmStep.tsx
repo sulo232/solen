@@ -714,7 +714,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
             type="button"
             onClick={handleConfirm}
             disabled={isSubmitting}
-            className="w-full inline-flex items-center justify-center gap-2 min-h-[52px] px-5 rounded-full bg-s-ink text-white font-body text-[15px] font-semibold transition-[transform,filter] duration-150 hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full inline-flex items-center justify-center gap-2 min-h-[52px] px-5 rounded-full bg-s-ink text-white font-body text-[15px] font-semibold transition-[transform,filter] duration-150 hover:brightness-[1.06] active:scale-[0.97] active:duration-[80ms] active:ease-glide disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting && <Spinner size="sm" invert />}
             {paymentMode === 'at_salon'

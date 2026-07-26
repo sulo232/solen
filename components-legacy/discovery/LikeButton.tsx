@@ -101,7 +101,7 @@ export default function LikeButton({
       className="group grid h-11 w-11 place-items-center bg-transparent p-0 focus-visible:rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-s-ink"
     >
       {variant === "bare" ? (
-        <span className="grid place-items-center transition-transform duration-200 ease-glide group-hover:scale-110 group-active:scale-[0.95]">
+        <span className="grid place-items-center transition-transform duration-200 ease-glide group-hover:scale-110 group-active:scale-[0.94] group-active:duration-[80ms]">
           {heart(22, 2)}
         </span>
       ) : (

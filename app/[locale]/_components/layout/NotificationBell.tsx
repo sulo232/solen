@@ -39,7 +39,7 @@ export default function NotificationBell({ hidden }: { hidden?: boolean }) {
       href={`/${locale}/notifications`}
       aria-label={unread > 0 ? `Benachrichtigungen, ${unread} ungelesen` : "Benachrichtigungen"}
       className={cn(
-        "relative grid h-10 w-10 place-items-center text-s-ink transition-opacity duration-200",
+        "relative grid h-10 w-10 place-items-center text-s-ink transition-[opacity,transform] duration-150 ease-snap active:scale-[0.94] active:duration-[80ms] active:ease-glide",
         hidden && "opacity-0 pointer-events-none",
       )}
     >

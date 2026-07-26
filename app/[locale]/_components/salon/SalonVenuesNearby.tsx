@@ -157,7 +157,7 @@ export function SalonVenuesNearby({
             onClick={() => scroll("left")}
             disabled={!canScrollLeft}
             aria-label="Vorherige"
-            className="grid h-10 w-10 place-items-center rounded-full border border-s-border bg-white transition-opacity hover:bg-s-bg-sunken disabled:opacity-30"
+            className="grid h-10 w-10 place-items-center rounded-full border border-s-border bg-white transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms] active:ease-glide disabled:opacity-30"
           >
             <ChevronLeft size={16} className="text-s-ink" />
           </button>
@@ -166,7 +166,7 @@ export function SalonVenuesNearby({
             onClick={() => scroll("right")}
             disabled={!canScrollRight}
             aria-label="Nächste"
-            className="grid h-10 w-10 place-items-center rounded-full border border-s-border bg-white transition-opacity hover:bg-s-bg-sunken disabled:opacity-30"
+            className="grid h-10 w-10 place-items-center rounded-full border border-s-border bg-white transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms] active:ease-glide disabled:opacity-30"
           >
             <ChevronRight size={16} className="text-s-ink" />
           </button>

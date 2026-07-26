@@ -227,7 +227,7 @@ export function SalonProducts({
                 type="button"
                 onClick={startCheckout}
                 disabled={phase === "loading"}
-                className="mt-4 flex h-11 w-full items-center justify-center rounded-full bg-s-ink font-body text-[15px] font-semibold text-white transition-[filter] hover:brightness-[1.06] disabled:opacity-50"
+                className="mt-4 flex h-11 w-full items-center justify-center rounded-full bg-s-ink font-body text-[15px] font-semibold text-white transition-[filter,transform] hover:brightness-[1.06] active:scale-[0.97] active:duration-[80ms] active:ease-glide disabled:opacity-50"
               >
                 {t("productsCheckout")}
               </button>
@@ -305,7 +305,7 @@ function ProductRow({
           disabled={soldOut}
           aria-pressed={selected}
           aria-label={addLabel}
-          className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+          className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border transition-[colors,transform] active:scale-[0.94] active:duration-[80ms] active:ease-glide disabled:cursor-not-allowed disabled:opacity-50 ${
             selected
               ? "border-s-border bg-s-bg-sunken text-s-ink"
               : "border-s-border bg-white text-s-ink hover:bg-s-bg-sunken"

@@ -108,11 +108,11 @@ export default async function SettingsPage({ params }: { params: Promise<{ local
         {/* Sign out, quiet text row (form POST so it works without client JS; same
             pattern as /profile's footer sign-out). */}
         <form action="/api/auth/logout" method="post">
-          <button type="submit" className="block w-full border-0 bg-white px-4 py-[14px] text-left font-body text-[15px] font-medium text-s-error">
+          <button type="submit" className="block w-full border-0 bg-white px-4 py-[14px] text-left font-body text-[15px] font-medium text-s-error transition-transform duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide">
             {t("signOut")}
           </button>
         </form>
-        <Link href={p("/delete")} className="block w-full bg-white px-4 py-[14px] text-[15px] font-medium text-s-error">
+        <Link href={p("/delete")} className="block w-full bg-white px-4 py-[14px] text-[15px] font-medium text-s-error transition-transform duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide">
           {t("hubDeleteAccount")}
         </Link>
 
@@ -137,7 +137,7 @@ function Hairline() {
 
 function Row({ href, icon: Icon, label, sub, value }: { href: string; icon: LucideIcon; label: string; sub?: string; value?: string }) {
   return (
-    <Link href={href} className="flex items-center gap-[14px] bg-white px-4 py-[13px]">
+    <Link href={href} className="flex items-center gap-[14px] bg-white px-4 py-[13px] transition-transform duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide">
       <Icon size={22} strokeWidth={1.9} className="shrink-0 text-s-ink" aria-hidden />
       <span className="min-w-0 flex-1">
         <span className="block text-[15px] font-medium text-s-ink">{label}</span>
@@ -157,7 +157,7 @@ function Row({ href, icon: Icon, label, sub, value }: { href: string; icon: Luci
 // `srow2(label, href, '', EXT)` treatment for the Support section).
 function ExternalRow({ href, label }: { href: string; label: string }) {
   return (
-    <Link href={href} className="flex items-center gap-[14px] bg-white px-4 py-[13px]">
+    <Link href={href} className="flex items-center gap-[14px] bg-white px-4 py-[13px] transition-transform duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide">
       <span className="min-w-0 flex-1 text-[15px] font-medium text-s-ink">{label}</span>
       <ArrowUpRight size={16} className="shrink-0 text-s-ink-3" aria-hidden />
     </Link>
@@ -187,10 +187,10 @@ function IdentityBlock({ locale, name, avatarSrc, subtitle, viewLabel, editLabel
         </div>
       </div>
       <div className="mt-[14px] flex gap-[10px]">
-        <Link href={`/${locale}/profile`} className="flex-1 rounded-full border border-s-border bg-white py-[11px] text-center text-[14px] font-semibold text-s-ink">
+        <Link href={`/${locale}/profile`} className="flex-1 rounded-full border border-s-border bg-white py-[11px] text-center text-[14px] font-semibold text-s-ink transition-transform duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide">
           {viewLabel}
         </Link>
-        <Link href={`/${locale}/profile/edit`} className="flex-1 rounded-full border border-s-border bg-white py-[11px] text-center text-[14px] font-semibold text-s-ink">
+        <Link href={`/${locale}/profile/edit`} className="flex-1 rounded-full border border-s-border bg-white py-[11px] text-center text-[14px] font-semibold text-s-ink transition-transform duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide">
           {editLabel}
         </Link>
       </div>

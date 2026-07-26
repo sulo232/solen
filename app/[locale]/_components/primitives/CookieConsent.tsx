@@ -438,7 +438,7 @@ function CookieSettingsModal({ isOpen, onOpenChange }: CookieSettingsModalProps)
             "font-body font-semibold text-[14px] text-s-ink",
             "bg-s-bg-base border border-s-border cursor-pointer",
             "px-5 py-3 rounded-full",
-            "hover:bg-s-bg-sunken transition-colors",
+            "hover:bg-s-bg-sunken transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide",
           )}
         >
           Abbrechen
@@ -450,7 +450,7 @@ function CookieSettingsModal({ isOpen, onOpenChange }: CookieSettingsModalProps)
             "font-body font-semibold text-[14px] text-white",
             "bg-s-ink border-0 cursor-pointer",
             "px-5 py-3 rounded-full",
-            "hover:bg-black transition-colors",
+            "hover:bg-black transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide",
           )}
         >
           Auswahl speichern

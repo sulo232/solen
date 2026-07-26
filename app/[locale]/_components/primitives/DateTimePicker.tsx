@@ -311,7 +311,7 @@ function DayStrip({
             onClick={() => onChange(d)}
             className={cn(
               "shrink-0 w-[72px] rounded-2xl border py-3 flex flex-col items-center gap-0.5",
-              "transition-colors duration-150 ease-snap",
+              "transition-[colors,transform] duration-150 ease-snap active:scale-[0.98] active:duration-[80ms] active:ease-glide",
               selected
                 ? selectedTone === "accent"
                   ? "bg-s-accent border-s-accent text-white"
@@ -335,7 +335,7 @@ function DayStrip({
         className={cn(
           "shrink-0 w-[72px] rounded-2xl border border-s-border bg-s-bg-base",
           "flex flex-col items-center justify-center gap-1 text-s-ink-2",
-          "transition-colors duration-150 ease-snap hover:border-s-ink/30 hover:text-s-ink",
+          "transition-[colors,transform] duration-150 ease-snap hover:border-s-ink/30 hover:text-s-ink active:scale-[0.98] active:duration-[80ms] active:ease-glide",
         )}
       >
         <CalIcon className="h-5 w-5" strokeWidth={2} />
@@ -391,7 +391,7 @@ function SolenCalendar({ value, onChange, minValue, maxValue, isDateUnavailable,
             className={cn(
               "flex items-center justify-center w-9 h-9",
               "bg-transparent border-0 text-s-ink-2 cursor-pointer",
-              "rounded-md transition-colors duration-150 ease-snap",
+              "rounded-md transition-[colors,transform] duration-150 ease-snap active:scale-[0.94] active:duration-[80ms] active:ease-glide",
               "hover:text-s-ink hover:bg-s-bg-sunken",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               "data-[disabled]:opacity-30 data-[disabled]:cursor-not-allowed",
@@ -405,7 +405,7 @@ function SolenCalendar({ value, onChange, minValue, maxValue, isDateUnavailable,
             className={cn(
               "flex items-center justify-center w-9 h-9",
               "bg-transparent border-0 text-s-ink-2 cursor-pointer",
-              "rounded-md transition-colors duration-150 ease-snap",
+              "rounded-md transition-[colors,transform] duration-150 ease-snap active:scale-[0.94] active:duration-[80ms] active:ease-glide",
               "hover:text-s-ink hover:bg-s-bg-sunken",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               "data-[disabled]:opacity-30 data-[disabled]:cursor-not-allowed",
@@ -575,7 +575,7 @@ function TimeSlotList({ slots, value, onChange, isLoading, isDateSelected, label
                 className={cn(
                   "px-3.5 py-2.5 rounded-full",
                   "font-body font-semibold text-[14px]",
-                  "border transition-colors duration-150 ease-snap",
+                  "border transition-[colors,transform] duration-150 ease-snap active:scale-[0.98] active:duration-[80ms] active:ease-glide",
                   "tabular-nums cursor-pointer",
                   "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
                   value === slot.time
@@ -652,7 +652,7 @@ const DEFAULT_RANGE_LABELS: DateRangeLabels = { to: "bis" };
 const RANGE_NAV_BTN = cn(
   "flex items-center justify-center w-9 h-9",
   "bg-transparent border-0 text-s-ink-2 cursor-pointer",
-  "rounded-md transition-colors duration-150 ease-snap",
+  "rounded-md transition-[colors,transform] duration-150 ease-snap active:scale-[0.94] active:duration-[80ms] active:ease-glide",
   "hover:text-s-ink hover:bg-s-bg-sunken",
   "data-[disabled]:opacity-30 data-[disabled]:cursor-not-allowed",
 );

@@ -258,7 +258,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
   if (variant === "suggest") {
     const line = address ?? city ?? null;
     return (
-      <Link href={href} className="group flex items-stretch gap-3 rounded-card border border-s-border bg-white p-3 active:scale-[0.99]">
+      <Link href={href} className="group flex items-stretch gap-3 rounded-card border border-s-border bg-white p-3 transition-transform duration-150 active:scale-[0.99] active:duration-[80ms] active:ease-glide">
         {/* mockup-ok: DS-4 nested-radius formula (LOCKFILE:428-431, locked law, not new
             design). Outer rounded-card=16, gap=p-3=12, inner = 16-12 = 4 (was rounded-[12px],
             the exact bulge case LOCKFILE:430 calls out). */}

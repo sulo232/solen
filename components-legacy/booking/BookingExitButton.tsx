@@ -40,7 +40,7 @@ export default function BookingExitButton({ slug }: { slug: string }) {
         type="button"
         onClick={handleX}
         aria-label={t('exit')}
-        className="grid h-11 w-11 shrink-0 place-items-center rounded-full transition-colors hover:bg-s-bg-sunken"
+        className="grid h-11 w-11 shrink-0 place-items-center rounded-full transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms] active:ease-glide"
       >
         <X size={20} className="text-s-ink" />
       </button>
@@ -65,7 +65,7 @@ export default function BookingExitButton({ slug }: { slug: string }) {
                 type="button"
                 onClick={() => setConfirming(false)}
                 aria-label={t('cancel')}
-                className="grid h-11 w-11 place-items-center rounded-full transition-colors hover:bg-s-bg-sunken"
+                className="grid h-11 w-11 place-items-center rounded-full transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms] active:ease-glide"
               >
                 <X size={20} className="text-s-ink" />
               </button>
@@ -80,14 +80,14 @@ export default function BookingExitButton({ slug }: { slug: string }) {
               <button
                 type="button"
                 onClick={() => setConfirming(false)}
-                className="flex-1 rounded-btn border border-s-border bg-white py-3.5 font-heading text-[15px] font-semibold text-s-ink transition-colors hover:border-s-ink/30"
+                className="flex-1 rounded-btn border border-s-border bg-white py-3.5 font-heading text-[15px] font-semibold text-s-ink transition-[colors,transform] hover:border-s-ink/30 active:scale-[0.98] active:duration-[80ms] active:ease-glide"
               >
                 {t('cancel')}
               </button>
               <button
                 type="button"
                 onClick={() => router.replace(exitTo)}
-                className="flex-1 rounded-btn bg-s-ink py-3.5 font-heading text-[15px] font-semibold text-white transition-[filter] hover:brightness-[1.06]"
+                className="flex-1 rounded-btn bg-s-ink py-3.5 font-heading text-[15px] font-semibold text-white transition-[filter,transform] hover:brightness-[1.06] active:scale-[0.97] active:duration-[80ms] active:ease-glide"
               >
                 {t('exit')}
               </button>

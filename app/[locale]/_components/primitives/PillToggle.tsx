@@ -64,6 +64,7 @@ export const PillToggle = React.forwardRef<HTMLButtonElement, PillToggleProps>(
           "font-body text-[13px] leading-none",
           "px-3.5 py-2 rounded-full",
           "border transition-colors duration-150 ease-snap",
+          "active:scale-[0.97] active:duration-[80ms] active:ease-glide",
           "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
           active
             ? "bg-s-bg-sunken text-s-ink border-s-border font-semibold"

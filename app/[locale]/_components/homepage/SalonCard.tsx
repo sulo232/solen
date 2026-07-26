@@ -396,7 +396,7 @@ export function SalonCard({
         "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:rounded-[14px]",
         // V2-D43 (Emil polish): scale(0.94) → scale(0.97) per Emil's subtle range
         // (0.95-0.98). 0.94 felt too jumpy for content cards.
-        "active:scale-[0.97] active:duration-[80ms] active:ease-glide",
+        "transition-transform duration-150 active:scale-[0.97] active:duration-[80ms] active:ease-glide",
         className,
       )}
     >

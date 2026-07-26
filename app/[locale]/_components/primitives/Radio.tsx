@@ -57,7 +57,7 @@ export const Radio = React.forwardRef<HTMLInputElement, RadioProps>(
             "transition-colors duration-150 ease-snap",
             "peer-checked:border-s-ink",
             "peer-focus-visible:outline-2 peer-focus-visible:outline-s-ink peer-focus-visible:outline-offset-2",
-            "group-active:scale-[0.94] [&]:transition-transform",
+            "group-active:scale-[0.94] [&]:transition-transform group-active:duration-[80ms] group-active:ease-glide",
           )}
         >
           {/* Inner dot — 8px brand-teal, fades in 150ms */}

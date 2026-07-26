@@ -241,7 +241,7 @@ export default function SalonReviews({
         <Link
           href={`/${locale}/salon/${salonSlug}#section-reviews`}
           aria-label="Zurück"
-          className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border bg-white transition-colors hover:bg-s-bg-sunken"
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border bg-white transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms] active:ease-glide"
         >
           <ArrowLeft size={20} strokeWidth={2.1} aria-hidden className="text-s-ink" />
         </Link>
@@ -322,7 +322,7 @@ export default function SalonReviews({
               <button
                 type="button"
                 onClick={() => setSortSheetOpen(true)}
-                className="flex h-11 items-center gap-1.5 rounded-full border border-s-border bg-white px-4 font-body text-[13px] font-semibold text-s-ink shadow-whisper transition active:scale-[0.98]"
+                className="flex h-11 items-center gap-1.5 rounded-full border border-s-border bg-white px-4 font-body text-[13px] font-semibold text-s-ink shadow-whisper transition active:scale-[0.98] active:duration-[80ms] active:ease-glide"
               >
                 {sortLabel}
                 <ChevronDown size={16} className="text-s-ink-2" />
@@ -380,7 +380,7 @@ export default function SalonReviews({
                             onClick={() => handleFlagReview(rev.id)}
                             aria-label={t("flagReview")}
                             title={t("flagReview")}
-                            className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-s-ink-3 transition-colors duration-150 hover:bg-s-bg-sunken hover:text-s-ink-2"
+                            className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-s-ink-3 transition-[colors,transform] duration-150 hover:bg-s-bg-sunken hover:text-s-ink-2 active:scale-[0.94] active:duration-[80ms] active:ease-glide"
                           >
                             <Flag size={15} aria-hidden />
                           </button>
@@ -401,7 +401,7 @@ export default function SalonReviews({
                         {needsTruncation && (
                           <button
                             onClick={() => toggleExpanded(rev.id)}
-                            className="ml-1 font-medium text-s-accent"
+                            className="ml-1 font-medium text-s-accent transition-transform duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide"
                           >
                             {isExpanded ? t("readLess") : t("readMore")}
                           </button>
@@ -432,7 +432,7 @@ export default function SalonReviews({
                               <div className="flex gap-2 mt-2 justify-end">
                                 <button
                                   onClick={() => setFlaggingReviewId(null)}
-                                  className="text-xs text-s-ink-3 hover:text-s-ink-2 font-heading px-3 py-1.5 transition-colors duration-150"
+                                  className="text-xs text-s-ink-3 hover:text-s-ink-2 font-heading px-3 py-1.5 transition-[colors,transform] duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide"
                                 >
                                   {t("flagCancel")}
                                 </button>
@@ -440,7 +440,7 @@ export default function SalonReviews({
                                 <button
                                   onClick={submitFlag}
                                   disabled={flagLoading || flagReason.trim().length < 5}
-                                  className="text-xs text-white font-body font-semibold px-4 py-1.5 rounded-btn bg-s-ink hover:brightness-[1.06] disabled:opacity-50 transition-[transform,filter] duration-150"
+                                  className="text-xs text-white font-body font-semibold px-4 py-1.5 rounded-btn bg-s-ink hover:brightness-[1.06] disabled:opacity-50 transition-[transform,filter] duration-150 active:scale-[0.97] active:duration-[80ms] active:ease-glide"
                                 >
                                   {flagLoading ? "…" : t("flagSubmit")}
                                 </button>
@@ -461,7 +461,7 @@ export default function SalonReviews({
                           <button
                             key={photo.id}
                             onClick={() => onLightbox?.(photo.photo_url)}
-                            className="relative w-16 h-16 rounded-[12px] overflow-hidden bg-s-bg-surface hover:bg-s-bg-sunken active:scale-[0.97] transition-[transform,background-color] duration-150 shrink-0"
+                            className="relative w-16 h-16 rounded-[12px] overflow-hidden bg-s-bg-surface hover:bg-s-bg-sunken active:scale-[0.97] active:duration-[80ms] active:ease-glide transition-[transform,background-color] duration-150 shrink-0"
                             aria-label={t("enlargePhoto")}
                           >
                             <Image src={photo.photo_url} alt="" fill className="object-cover" sizes="64px" />
@@ -500,7 +500,7 @@ export default function SalonReviews({
               <button
                 onClick={handleShowMore}
                 disabled={loadingMore}
-                className="mt-4 w-full py-2.5 border border-s-border rounded-btn text-sm text-s-ink-2 hover:border-s-ink/[0.18] hover:text-s-ink/80 active:scale-[0.97] transition-[border-color,color,transform] duration-150 disabled:opacity-50"
+                className="mt-4 w-full py-2.5 border border-s-border rounded-btn text-sm text-s-ink-2 hover:border-s-ink/[0.18] hover:text-s-ink/80 active:scale-[0.97] active:duration-[80ms] active:ease-glide transition-[border-color,color,transform] duration-150 disabled:opacity-50"
               >
                 {t("showMoreReviews")}
               </button>

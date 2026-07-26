@@ -70,7 +70,7 @@ export default async function SalonTeamPage({
         <Link
           href={`/${locale}/salon/${slug}#section-team`}
           aria-label="Zurück"
-          className="grid h-11 w-11 place-items-center rounded-full border border-s-border bg-white transition-colors hover:bg-s-bg-sunken"
+          className="grid h-11 w-11 place-items-center rounded-full border border-s-border bg-white transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms] active:ease-glide"
         >
           <ArrowLeft size={20} strokeWidth={2.1} aria-hidden className="text-s-ink" />
         </Link>
@@ -90,7 +90,7 @@ export default async function SalonTeamPage({
             </div>
             <Link
               href={bookHref()}
-              className="inline-flex h-11 shrink-0 items-center rounded-full border border-s-border bg-white px-5 font-body text-[14px] font-semibold text-s-ink shadow-whisper transition-colors active:scale-[0.97] active:duration-[80ms] hover:bg-s-bg-sunken"
+              className="inline-flex h-11 shrink-0 items-center rounded-full border border-s-border bg-white px-5 font-body text-[14px] font-semibold text-s-ink shadow-whisper transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide hover:bg-s-bg-sunken"
             >
               {tStep("choose")}
             </Link>
@@ -174,7 +174,7 @@ function TeamCard({
 
         <Link
           href={bookHref(member.id)}
-          className="inline-flex h-11 shrink-0 items-center rounded-full border border-s-border bg-white px-5 font-body text-[14px] font-semibold text-s-ink shadow-whisper transition-colors active:scale-[0.97] active:duration-[80ms] hover:bg-s-bg-sunken"
+          className="inline-flex h-11 shrink-0 items-center rounded-full border border-s-border bg-white px-5 font-body text-[14px] font-semibold text-s-ink shadow-whisper transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide hover:bg-s-bg-sunken"
         >
           {chooseLabel}
         </Link>

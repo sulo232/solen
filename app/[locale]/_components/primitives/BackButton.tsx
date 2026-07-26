@@ -32,7 +32,7 @@ export const BackButton = React.forwardRef<HTMLButtonElement, BackButtonProps>(
         aria-label={label}
         style={variant === "glass" ? FROST_GLASS : undefined}
         className={cn(
-          "grid h-10 w-10 place-items-center rounded-full transition-[transform,background-color] duration-150 active:scale-[0.94]",
+          "grid h-10 w-10 place-items-center rounded-full transition-[transform,background-color] duration-150 active:scale-[0.94] active:duration-[80ms] active:ease-glide",
           variant === "flat" && "border border-s-border bg-white hover:bg-s-bg-sunken",
           className,
         )}

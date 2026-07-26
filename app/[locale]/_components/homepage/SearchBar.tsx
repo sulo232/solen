@@ -418,7 +418,7 @@ export function SearchBar() {
               type="button"
               onClick={() => setActive(null)}
               aria-label="Schliessen"
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink-3 transition-colors hover:bg-s-bg-sunken hover:text-s-ink"
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink-3 transition-[colors,transform] hover:bg-s-bg-sunken hover:text-s-ink active:scale-[0.94] active:duration-[80ms] active:ease-glide"
             >
               <X size={18} />
             </button>
@@ -456,7 +456,7 @@ export function SearchBar() {
                             setActive("stadt");
                           }}
                           className={cn(
-                            "inline-flex items-center gap-2 rounded-full border px-3.5 py-2 font-body text-[14px] font-medium transition-colors",
+                            "inline-flex items-center gap-2 rounded-full border px-3.5 py-2 font-body text-[14px] font-medium transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide",
                             isPicked
                               ? "border-s-ink bg-s-ink text-white"
                               : "border-s-border bg-white text-s-ink-2 hover:border-s-ink hover:text-s-ink",
@@ -502,7 +502,7 @@ export function SearchBar() {
                       setStadt("Aktueller Standort");
                       setActive("zeit");
                     }}
-                    className="mt-5 flex w-full items-center gap-3 rounded-2xl border border-s-border bg-white px-4 py-3 transition-colors hover:bg-s-bg-sunken"
+                    className="mt-5 flex w-full items-center gap-3 rounded-2xl border border-s-border bg-white px-4 py-3 transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.98] active:duration-[80ms] active:ease-glide"
                   >
                     <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-s-ink text-white">
                       <Navigation size={16} strokeWidth={2.5} />
@@ -521,7 +521,7 @@ export function SearchBar() {
                           setStadt(c);
                           setActive("zeit");
                         }}
-                        className="rounded-full border border-s-border bg-white px-4 py-2 font-body text-[14px] font-medium text-s-ink-2 transition-colors hover:border-s-ink hover:text-s-ink"
+                        className="rounded-full border border-s-border bg-white px-4 py-2 font-body text-[14px] font-medium text-s-ink-2 transition-[colors,transform] hover:border-s-ink hover:text-s-ink active:scale-[0.98] active:duration-[80ms] active:ease-glide"
                       >
                         {c}
                       </button>
@@ -571,7 +571,7 @@ export function SearchBar() {
                               setZeitPeriod(isPicked ? "" : p.value);
                             }}
                             className={cn(
-                              "inline-flex items-center gap-2 rounded-full border px-3.5 py-2 font-body text-[14px] font-medium transition-colors",
+                              "inline-flex items-center gap-2 rounded-full border px-3.5 py-2 font-body text-[14px] font-medium transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide",
                               isPicked
                                 ? "border-s-ink bg-s-ink text-white"
                                 : "border-s-border bg-white text-s-ink-2 hover:border-s-ink hover:text-s-ink",
@@ -605,7 +605,7 @@ export function SearchBar() {
               }}
               // RANGE_LAW A5 (2026-07-25): font-semibold -> font-medium. A reset link
               // is a label, not a commit action, keep weight on "Termine finden" only.
-              className="font-body text-[14px] font-medium text-s-ink-3 underline-offset-2 px-3 py-2 hover:text-s-ink transition-colors"
+              className="font-body text-[14px] font-medium text-s-ink-3 underline-offset-2 px-3 py-2 hover:text-s-ink transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide"
             >
               Zurücksetzen
             </button>
@@ -620,7 +620,7 @@ export function SearchBar() {
               // CTA-size bucket as "Termine finden" instead of adding a 6th size.
               // mockup-ok: task-directed weight/size demotion (RANGE_LAW A5/A6, owner
               // "go apply evrth" on /dev/flatness Demo 1's emphasis-inflation fix).
-              className="font-body shrink-0 rounded-full border-0 bg-s-ink px-6 py-3 text-[15px] font-medium text-white transition-colors hover:bg-black"
+              className="font-body shrink-0 rounded-full border-0 bg-s-ink px-6 py-3 text-[15px] font-medium text-white transition-[colors,transform] hover:bg-black active:scale-[0.97] active:duration-[80ms] active:ease-glide"
             >
               Suchen
             </button>
@@ -688,8 +688,8 @@ function CollapsedRow({
         // twin-control rule (styling repeated same-purpose controls differently is
         // drift). No token in the ladder matches 6px, so this stays arbitrary.
         "rounded-[6px] bg-white border border-s-border h-[46px] px-[14px]",
-        "transition-[background,border-color] duration-150 ease-glide",
-        "hover:bg-s-bg-sunken",
+        "transition-[background,border-color,transform] duration-150 ease-glide", // mockup-ok: motion-only, adds transform to the property list + a press scale, no resting-appearance change
+        "hover:bg-s-bg-sunken active:scale-[0.98] active:duration-[80ms]",
         "md:flex-1 md:rounded-full md:border-0 md:p-[11px_22px] md:hover:bg-s-bg-sunken",
       )}
     >

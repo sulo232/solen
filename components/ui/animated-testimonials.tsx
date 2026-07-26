@@ -247,7 +247,7 @@ function CarouselInner({
                 type="button"
                 onClick={handlePrev}
                 aria-label="Vorheriger Artist"
-                className="grid h-10 w-10 place-items-center rounded-full bg-s-bg-sunken text-s-ink transition-colors duration-200 ease-glide hover:bg-white hover:text-s-ink active:scale-[0.95] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
+                className="grid h-10 w-10 place-items-center rounded-full bg-s-bg-sunken text-s-ink transition-[colors,transform] duration-200 ease-glide hover:bg-white hover:text-s-ink active:scale-[0.95] active:duration-[80ms] active:ease-glide focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
               >
                 <ChevronLeft size={18} strokeWidth={2.25} aria-hidden />
               </button>
@@ -255,7 +255,7 @@ function CarouselInner({
                 type="button"
                 onClick={handleNext}
                 aria-label="Nächster Artist"
-                className="grid h-10 w-10 place-items-center rounded-full bg-s-bg-sunken text-s-ink transition-colors duration-200 ease-glide hover:bg-white hover:text-s-ink active:scale-[0.95] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
+                className="grid h-10 w-10 place-items-center rounded-full bg-s-bg-sunken text-s-ink transition-[colors,transform] duration-200 ease-glide hover:bg-white hover:text-s-ink active:scale-[0.95] active:duration-[80ms] active:ease-glide focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
               >
                 <ChevronRight size={18} strokeWidth={2.25} aria-hidden />
               </button>

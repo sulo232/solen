@@ -258,7 +258,7 @@ function ReviewCard({ review, salonName, locale }: { review: Review; salonName?:
             <button
               type="button"
               onClick={() => setShowFull(true)}
-              className="font-body mt-1 text-[13px] font-medium text-s-accent transition-opacity hover:opacity-80"
+              className="font-body mt-1 text-[13px] font-medium text-s-accent transition-[opacity,transform] hover:opacity-80 active:scale-[0.98] active:duration-[80ms] active:ease-glide"
             >
               Mehr lesen
             </button>

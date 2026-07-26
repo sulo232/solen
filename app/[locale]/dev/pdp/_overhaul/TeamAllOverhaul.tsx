@@ -63,7 +63,7 @@ export function TeamAllOverhaul({
             </div>
             <Link
               href={bookHref()}
-              className="inline-flex h-11 shrink-0 items-center rounded-full border border-s-border bg-white px-5 font-body text-[14px] font-semibold text-s-ink shadow-whisper transition-colors active:scale-[0.97] active:duration-[80ms] hover:bg-s-bg-sunken"
+              className="inline-flex h-11 shrink-0 items-center rounded-full border border-s-border bg-white px-5 font-body text-[14px] font-semibold text-s-ink shadow-whisper transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide hover:bg-s-bg-sunken"
             >
               Select
             </Link>
@@ -135,7 +135,7 @@ function TeamAllCard({
 
         <Link
           href={bookHref(member.id)}
-          className="inline-flex h-11 shrink-0 items-center rounded-full border border-s-border bg-white px-5 font-body text-[14px] font-semibold text-s-ink shadow-whisper transition-colors active:scale-[0.97] active:duration-[80ms] hover:bg-s-bg-sunken"
+          className="inline-flex h-11 shrink-0 items-center rounded-full border border-s-border bg-white px-5 font-body text-[14px] font-semibold text-s-ink shadow-whisper transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide hover:bg-s-bg-sunken"
         >
           Select
         </Link>

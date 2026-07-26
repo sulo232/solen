@@ -159,7 +159,7 @@ export function SalonImageGallery({
           type="button"
           aria-label="Zurück"
           onClick={onClose}
-          className="-ml-1 grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink transition-transform active:scale-95"
+          className="-ml-1 grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink transition-transform active:scale-95 active:duration-[80ms] active:ease-glide"
         >
           <ArrowLeft size={20} strokeWidth={2.2} aria-hidden />
         </button>
@@ -226,7 +226,7 @@ export function SalonImageGallery({
                   key={u}
                   type="button"
                   onClick={() => openLb(filteredSalonPhotos, i)}
-                  className="relative aspect-square overflow-hidden rounded-md bg-s-bg-sunken transition-transform hover:scale-[0.99] active:scale-[0.98] md:rounded-lg"
+                  className="relative aspect-square overflow-hidden rounded-md bg-s-bg-sunken transition-transform hover:scale-[0.99] active:scale-[0.98] active:duration-[80ms] active:ease-glide md:rounded-lg"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={u} alt={`${salonName} – ${i + 1}`} className="h-full w-full object-cover" loading="lazy" /> {/* em-dash-ok */}
@@ -244,7 +244,7 @@ export function SalonImageGallery({
                   onClick={() => openLb(activePhotos, i)}
                   // ig4 (owner-approved 2026-07-16): object-top (was center) on the square
                   // grid so a portrait crop keeps the face/wrists, not the feet.
-                  className="aspect-square w-full cursor-pointer rounded-xl bg-s-bg-sunken object-cover object-top"
+                  className="aspect-square w-full cursor-pointer rounded-xl bg-s-bg-sunken object-cover object-top transition-transform duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide"
                   loading="lazy"
                 />
               ))}

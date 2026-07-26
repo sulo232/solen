@@ -123,7 +123,7 @@ export function MapSalonDetail({
       <button
         type="button"
         onClick={onBack}
-        className="mb-3 inline-flex items-center gap-1 rounded-full border border-s-border bg-white px-3 py-1.5 text-[12.5px] font-medium text-s-ink active:scale-95"
+        className="mb-3 inline-flex items-center gap-1 rounded-full border border-s-border bg-white px-3 py-1.5 text-[12.5px] font-medium text-s-ink transition-transform duration-150 active:scale-95 active:duration-[80ms] active:ease-glide"
       >
         <ChevronLeft size={15} strokeWidth={2.2} aria-hidden /> {backLabel}
       </button>

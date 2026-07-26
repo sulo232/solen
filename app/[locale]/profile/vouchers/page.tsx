@@ -150,7 +150,7 @@ export default function VouchersPage() {
             action={
               <Link
                 href={`/${locale}/vouchers`}
-                className="inline-flex items-center gap-2 rounded-full bg-s-ink px-5 py-3 text-[14px] font-semibold text-white transition-[filter] duration-150 hover:brightness-[1.06] active:scale-[0.98]"
+                className="inline-flex items-center gap-2 rounded-full bg-s-ink px-5 py-3 text-[14px] font-semibold text-white transition-[filter,transform] duration-150 hover:brightness-[1.06] active:scale-[0.98] active:duration-[80ms] active:ease-glide"
               >
                 {t("buyNew")}
               </Link>

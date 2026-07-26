@@ -38,7 +38,7 @@ export default function SalonModeToggle({
             type="button"
             onClick={() => onChange(key)}
             aria-pressed={active}
-            className={`flex flex-1 items-center justify-center gap-2 h-11 rounded-btn font-heading text-[15px] transition-colors duration-150 ${
+            className={`flex flex-1 items-center justify-center gap-2 h-11 rounded-btn font-heading text-[15px] transition-[colors,transform] duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide ${
               active ? "bg-white text-s-ink font-semibold shadow-[0_1px_3px_rgba(0,0,0,.12)]" : "text-s-ink-2 font-medium"
             }`}
           >

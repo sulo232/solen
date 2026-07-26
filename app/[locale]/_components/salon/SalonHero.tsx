@@ -201,7 +201,7 @@ function DesktopGallery({
       <button
         type="button"
         onClick={onOpenGallery}
-        className="relative block aspect-[16/7] w-full overflow-hidden rounded-none bg-s-bg-sunken"
+        className="relative block aspect-[16/7] w-full overflow-hidden rounded-none bg-s-bg-sunken transition-transform duration-150 active:scale-[0.99] active:duration-[80ms] active:ease-glide"
       >
         <Image src={photos[0]} alt={salonName} fill sizes="(max-width: 1180px) 100vw, 1180px" className="object-cover" priority /> {/* copy-ok */}
       </button>
@@ -216,7 +216,7 @@ function DesktopGallery({
             key={u}
             type="button"
             onClick={onOpenGallery}
-            className="relative overflow-hidden bg-s-bg-sunken"
+            className="relative overflow-hidden bg-s-bg-sunken transition-transform duration-150 active:scale-[0.99] active:duration-[80ms] active:ease-glide"
           >
             <Image src={u} alt={`${salonName} – Foto ${i + 1}`} fill sizes="(max-width: 1180px) 50vw, 590px" className="object-cover" priority={i === 0} /> {/* copy-ok em-dash-ok */}
           </button>
@@ -231,21 +231,21 @@ function DesktopGallery({
       <button
         type="button"
         onClick={onOpenGallery}
-        className={cn("relative col-span-2 row-span-2 overflow-hidden bg-s-bg-sunken")}
+        className={cn("relative col-span-2 row-span-2 overflow-hidden bg-s-bg-sunken transition-transform duration-150 active:scale-[0.99] active:duration-[80ms] active:ease-glide")}
       >
         <Image src={photos[0]} alt={salonName} fill sizes="(max-width: 1180px) 66vw, 786px" className="object-cover" priority /> {/* copy-ok */}
       </button>
       <button
         type="button"
         onClick={onOpenGallery}
-        className="relative overflow-hidden bg-s-bg-sunken"
+        className="relative overflow-hidden bg-s-bg-sunken transition-transform duration-150 active:scale-[0.99] active:duration-[80ms] active:ease-glide"
       >
         <Image src={photos[1]} alt={`${salonName} – Foto 2`} fill sizes="(max-width: 1180px) 33vw, 393px" className="object-cover" /> {/* copy-ok em-dash-ok */}
       </button>
       <button
         type="button"
         onClick={onOpenGallery}
-        className="relative overflow-hidden bg-s-bg-sunken"
+        className="relative overflow-hidden bg-s-bg-sunken transition-transform duration-150 active:scale-[0.99] active:duration-[80ms] active:ease-glide"
       >
         <Image src={photos[2]} alt={`${salonName} – Foto 3`} fill sizes="(max-width: 1180px) 33vw, 393px" className="object-cover" /> {/* copy-ok em-dash-ok */}
         {photos.length > 3 && (
@@ -254,7 +254,7 @@ function DesktopGallery({
               e.stopPropagation();
               onOpenGallery();
             }}
-            className="font-body absolute bottom-3 right-3 z-[1] rounded-full bg-white/95 px-3 py-1.5 text-[12px] font-semibold text-s-ink shadow-md"
+            className="font-body absolute bottom-3 right-3 z-[1] rounded-full bg-white/95 px-3 py-1.5 text-[12px] font-semibold text-s-ink shadow-md transition-transform duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide"
           >
             Alle Fotos ansehen
           </span>

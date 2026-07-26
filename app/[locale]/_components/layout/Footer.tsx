@@ -131,7 +131,7 @@ export default function Footer({ locale }: { locale: string }) {
                   // (owner-approved law, TASTE_LOG.md:187 2026-07-15). Was rounded-[10px]
                   // (off-ladder), not nested (flex row, no padding parent), a 2px change on a
                   // 36px button is a trivially-snappable notation fix.
-                  className="grid h-9 w-9 place-items-center rounded-xl bg-s-bg-sunken text-s-ink-3 transition-colors duration-200 ease-glide hover:bg-s-ink hover:text-white"
+                  className="grid h-9 w-9 place-items-center rounded-xl bg-s-bg-sunken text-s-ink-3 transition-[colors,transform] duration-150 ease-glide hover:bg-s-ink hover:text-white active:scale-[0.94] active:duration-[80ms]"
                 >
                   <Icon size={16} aria-hidden />
                 </a>
@@ -244,7 +244,7 @@ function NewsletterForm() {
         type="submit"
         aria-label="Abonnieren"
         disabled={status === "loading"}
-        className="absolute right-[6px] top-[6px] grid h-9 w-9 place-items-center rounded-[6px] bg-s-ink text-white transition-transform duration-200 ease-glide active:scale-95 disabled:opacity-60"
+        className="absolute right-[6px] top-[6px] grid h-9 w-9 place-items-center rounded-[6px] bg-s-ink text-white transition-transform duration-200 ease-glide active:scale-95 active:duration-[80ms] disabled:opacity-60"
       >
         <ChevronRight size={18} aria-hidden />
       </button>

@@ -181,7 +181,7 @@ export default function BookingWizard({ services, staffList, salon, staffService
             type="button"
             onClick={handleBack}
             aria-label={t('back')}
-            className="-ml-1 grid h-10 w-10 place-items-center rounded-full transition-colors hover:bg-s-ink/5"
+            className="-ml-1 grid h-10 w-10 place-items-center rounded-full transition-[colors,transform] hover:bg-s-ink/5 active:scale-[0.94] active:duration-[80ms] active:ease-glide"
           >
             <ArrowLeft size={22} strokeWidth={2.2} className="text-s-ink" />
           </button>
@@ -196,7 +196,7 @@ export default function BookingWizard({ services, staffList, salon, staffService
               else router.push(`/${locale}/salon/${salon.slug}`);
             }}
             aria-label={t('back')}
-            className="-ml-1 grid h-10 w-10 place-items-center rounded-full transition-colors hover:bg-s-ink/5"
+            className="-ml-1 grid h-10 w-10 place-items-center rounded-full transition-[colors,transform] hover:bg-s-ink/5 active:scale-[0.94] active:duration-[80ms] active:ease-glide"
           >
             <ArrowLeft size={22} strokeWidth={2.2} className="text-s-ink" />
           </button>

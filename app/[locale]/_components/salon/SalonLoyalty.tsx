@@ -69,7 +69,7 @@ export function SalonLoyalty() {
                 type="button"
                 onClick={() => setOpenIdx(isOpen ? null : i)}
                 aria-expanded={isOpen}
-                className="font-body group flex w-full items-center gap-4 rounded-2xl border border-s-border bg-white p-5 text-left transition-shadow hover:shadow-elevation-2 md:p-6"
+                className="font-body group flex w-full items-center gap-4 rounded-2xl border border-s-border bg-white p-5 text-left transition-[box-shadow,transform] hover:shadow-elevation-2 active:scale-[0.99] active:duration-[80ms] active:ease-glide md:p-6"
               >
                 <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white md:h-12 md:w-12">
                   <Icon size={20} strokeWidth={2} className="text-s-ink" />
@@ -86,7 +86,7 @@ export function SalonLoyalty() {
                   size={16}
                   strokeWidth={2.5}
                   className={cn(
-                    "shrink-0 text-s-ink-3 transition-transform duration-200",
+                    "shrink-0 text-s-ink-3 transition-transform duration-150",
                     isOpen && "rotate-90"
                   )}
                 />

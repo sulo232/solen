@@ -131,7 +131,7 @@ export function SalonSidebar({
           type="button"
           onClick={scrollToReviews}
           // 2026-05-30: links → saturated blue (s-accent), no underline (user direction; reverses V3-D335).
-          className="font-body text-[18px] font-medium leading-none text-s-accent transition-colors hover:text-s-accent-deep md:text-[20px]"
+          className="font-body text-[18px] font-medium leading-none text-s-accent transition-[colors,transform] hover:text-s-accent-deep active:scale-[0.98] active:duration-[80ms] active:ease-glide md:text-[20px]"
         >
           ({salon.review_count.toLocaleString("de-CH")})
         </button>
@@ -140,7 +140,7 @@ export function SalonSidebar({
       {/* 3. Primary CTA — match Fresha: ink bg + white text + 48 height + 999 radius */}
       <Link
         href={bookingHref}
-        className="font-body mt-5 inline-flex w-full items-center justify-center rounded-full bg-s-ink py-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-black active:bg-black"
+        className="font-body mt-5 inline-flex w-full items-center justify-center rounded-full bg-s-ink py-3.5 text-[15px] font-semibold text-white transition-[colors,transform] hover:bg-black active:bg-black active:scale-[0.97] active:duration-[80ms] active:ease-glide"
       >
         Termin buchen
       </Link>
@@ -153,7 +153,7 @@ export function SalonSidebar({
       <button
         type="button"
         onClick={() => setShowHours((v) => !v)}
-        className="font-body -mx-2 flex w-[calc(100%+1rem)] items-center gap-2 rounded-lg px-2 py-1.5 text-left text-[15px] transition-colors hover:bg-s-bg-sunken"
+        className="font-body -mx-2 flex w-[calc(100%+1rem)] items-center gap-2 rounded-lg px-2 py-1.5 text-left text-[15px] transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.98] active:duration-[80ms] active:ease-glide"
         aria-expanded={showHours}
       >
         <StatusInline isOpen={status.isOpen} label={status.label} />
@@ -162,7 +162,7 @@ export function SalonSidebar({
             size={15}
             strokeWidth={2.25}
             className={cn(
-              "ml-auto shrink-0 text-s-ink-3 transition-transform duration-200",
+              "ml-auto shrink-0 text-s-ink-3 transition-transform duration-150",
               showHours && "rotate-180",
             )}
           />
@@ -201,7 +201,7 @@ export function SalonSidebar({
             target="_blank"
             rel="noreferrer noopener"
             // Owner 2026-06-12: map/directions links are BLUE (Fresha uses accent here).
-            className="font-medium text-s-accent transition-opacity hover:opacity-80"
+            className="font-medium text-s-accent transition-[opacity,transform] hover:opacity-80 active:scale-[0.98] active:duration-[80ms] active:ease-glide"
           >
             Route
           </a>

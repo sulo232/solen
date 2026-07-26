@@ -213,7 +213,7 @@ export default function SalonWalkInPanel({
               type="button"
               onClick={() => setInfoOpen(true)}
               aria-label={l.howTitle}
-              className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-s-ink-2 transition hover:text-s-ink active:scale-90"
+              className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-s-ink-2 transition hover:text-s-ink active:scale-[0.94] active:duration-[80ms] active:ease-glide"
             >
               <Info className="h-[15px] w-[15px]" />
             </button>
@@ -323,7 +323,7 @@ export default function SalonWalkInPanel({
           <div className="w-full max-w-sm rounded-3xl bg-white p-6 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.4)]" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-start justify-between gap-4">
               <h3 className="font-display text-[17px] font-bold tracking-[-.01em] text-s-ink">{l.howTitle}</h3>
-              <button type="button" onClick={() => setInfoOpen(false)} aria-label={l.close} className="-mr-1 -mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-full text-s-ink-3 transition active:scale-90">
+              <button type="button" onClick={() => setInfoOpen(false)} aria-label={l.close} className="-mr-1 -mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-full text-s-ink-3 transition active:scale-[0.94] active:duration-[80ms] active:ease-glide">
                 <X size={20} />
               </button>
             </div>

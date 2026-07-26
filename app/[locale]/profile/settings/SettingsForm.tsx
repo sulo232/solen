@@ -298,7 +298,7 @@ export default function SettingsForm({
         </div>
 
         <button type="submit" disabled={saving}
-          className="w-full h-12 rounded-btn bg-s-ink text-white text-[15px] font-medium tracking-[-0.005em] flex items-center justify-center gap-2 transition-opacity duration-200 disabled:opacity-50 active:scale-[0.97]">
+          className="w-full h-12 rounded-btn bg-s-ink text-white text-[15px] font-medium tracking-[-0.005em] flex items-center justify-center gap-2 transition-[opacity,transform] duration-200 disabled:opacity-50 active:scale-[0.97] active:duration-[80ms] active:ease-glide">
           {saving && <span aria-hidden className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />}
           {t("saveProfile")}
         </button>
@@ -330,7 +330,7 @@ export default function SettingsForm({
         </div>
 
         <button type="submit" disabled={saving}
-          className="w-full h-12 rounded-btn bg-s-ink text-white text-[15px] font-medium tracking-[-0.005em] flex items-center justify-center gap-2 transition-opacity duration-200 disabled:opacity-50 active:scale-[0.97]">
+          className="w-full h-12 rounded-btn bg-s-ink text-white text-[15px] font-medium tracking-[-0.005em] flex items-center justify-center gap-2 transition-[opacity,transform] duration-200 disabled:opacity-50 active:scale-[0.97] active:duration-[80ms] active:ease-glide">
           {saving && <span aria-hidden className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />}
           {t("saveProfile")}
         </button>
@@ -375,7 +375,7 @@ export default function SettingsForm({
         </div>
 
         <button type="submit" disabled={saving}
-          className="w-full h-12 rounded-btn bg-s-ink text-white text-[15px] font-medium tracking-[-0.005em] flex items-center justify-center gap-2 transition-opacity duration-200 disabled:opacity-50 active:scale-[0.97]">
+          className="w-full h-12 rounded-btn bg-s-ink text-white text-[15px] font-medium tracking-[-0.005em] flex items-center justify-center gap-2 transition-[opacity,transform] duration-200 disabled:opacity-50 active:scale-[0.97] active:duration-[80ms] active:ease-glide">
           {saving && <span aria-hidden className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />}
           {t("saveProfile")}
         </button>
@@ -396,7 +396,7 @@ export default function SettingsForm({
         </div>
 
         <button type="submit" disabled={saving}
-          className="w-full h-12 rounded-btn bg-s-ink text-white text-[15px] font-medium tracking-[-0.005em] flex items-center justify-center gap-2 transition-opacity duration-200 disabled:opacity-50 active:scale-[0.97]">
+          className="w-full h-12 rounded-btn bg-s-ink text-white text-[15px] font-medium tracking-[-0.005em] flex items-center justify-center gap-2 transition-[opacity,transform] duration-200 disabled:opacity-50 active:scale-[0.97] active:duration-[80ms] active:ease-glide">
           {saving && <span aria-hidden className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />}
           {t("saveProfile")}
         </button>
@@ -486,7 +486,7 @@ export default function SettingsForm({
         </section>
 
         <button type="submit" disabled={saving}
-          className="w-full h-12 rounded-btn bg-s-ink text-white text-[15px] font-medium tracking-[-0.005em] flex items-center justify-center gap-2 transition-opacity duration-200 disabled:opacity-50 active:scale-[0.97]">
+          className="w-full h-12 rounded-btn bg-s-ink text-white text-[15px] font-medium tracking-[-0.005em] flex items-center justify-center gap-2 transition-[opacity,transform] duration-200 disabled:opacity-50 active:scale-[0.97] active:duration-[80ms] active:ease-glide">
           {saving && <span aria-hidden className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />}
           {t("saveProfile")}
         </button>

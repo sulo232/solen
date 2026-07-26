@@ -89,7 +89,7 @@ export function SalonTeam({
             key={s.id}
             type="button"
             onClick={() => openProfile(s.id)}
-            className="group w-[104px] shrink-0 snap-start text-left md:w-[112px]"
+            className="group w-[104px] shrink-0 snap-start text-left transition-transform duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide md:w-[112px]"
           >
             <TeamMember member={s} />
           </button>
@@ -128,7 +128,7 @@ function TeamMember({
           without touching that shipped primitive, so this renders the avatar WITHOUT it
           and layers its own bigger pill on top, same -bottom-1 centered anchor as the
           primitive's own badge. Avatar itself stays 88px. */}
-      <div className="relative transition-transform duration-200 group-hover:scale-[1.04]">
+      <div className="relative transition-transform duration-150 group-hover:scale-[1.04]">
         <Avatar src={member.avatar_url} name={member.name} size={88} />
         {showRating && (
           <span className="absolute -bottom-1 left-1/2 inline-flex h-6 -translate-x-1/2 items-center gap-1 whitespace-nowrap rounded-full border border-s-border bg-white px-2.5 text-[14px] font-semibold leading-none tabular-nums text-s-ink shadow-elevation-1">

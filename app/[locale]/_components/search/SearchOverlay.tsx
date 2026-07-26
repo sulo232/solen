@@ -645,7 +645,7 @@ export function SearchOverlay({
               </div>
               <button
                 onClick={() => handleSubmit()}
-                className="mt-2 flex w-full items-center justify-center gap-1 py-2 text-[13px] font-semibold text-s-ink active:scale-[0.98]"
+                className="mt-2 flex w-full items-center justify-center gap-1 py-2 text-[13px] font-semibold text-s-ink transition-transform duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide"
               >
                 {seeAllResultsTxt} <ChevronRight size={15} strokeWidth={2.2} />
               </button>
@@ -763,7 +763,7 @@ export function SearchOverlay({
   const footerInner = (
     <div className="flex items-center justify-between px-5 pb-[max(14px,env(safe-area-inset-bottom))] pt-3">
       <button onClick={reset} className="text-[14px] font-semibold text-s-ink underline-offset-4 hover:underline">{resetTxt}</button>
-      <button onClick={handleSubmit} className="flex items-center gap-2 rounded-full bg-s-ink px-6 py-3 font-heading text-[15px] font-bold text-white active:scale-[0.98]" /* selected-ok: primary commit CTA */>
+      <button onClick={handleSubmit} className="flex items-center gap-2 rounded-full bg-s-ink px-6 py-3 font-heading text-[15px] font-bold text-white transition-transform duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide" /* selected-ok: primary commit CTA */>
         <Search size={16} strokeWidth={2.2} />{submitTxt}
       </button>
     </div>
@@ -1035,7 +1035,7 @@ function CategoryPillsRow({ active, onSelect, ariaLabel }: { active: string; onS
 // ItemCard's natural-aspect masonry). No heart here , owner picked the name-below card.
 function LookCard({ image, title, onClick }: { image: string; title: string; onClick: () => void }) {
   return (
-    <button onClick={onClick} aria-label={title} className="group flex w-full flex-col gap-1.5 text-left active:scale-[0.99]">
+    <button onClick={onClick} aria-label={title} className="group flex w-full flex-col gap-1.5 text-left transition-transform duration-150 active:scale-[0.99] active:duration-[80ms] active:ease-glide">
       <span className="block w-full overflow-hidden rounded-[14px] bg-s-bg-sunken" style={{ aspectRatio: "3 / 4" }}>
         {image ? <img src={image} alt="" loading="lazy" className="h-full w-full object-cover" /> : null}
       </span>

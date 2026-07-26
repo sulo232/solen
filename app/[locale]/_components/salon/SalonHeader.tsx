@@ -110,7 +110,7 @@ export function SalonHeader({
                 type="button"
                 onClick={scrollToReviews}
                 aria-label={`${salon.review_count} Bewertungen anzeigen`}
-                className="text-s-accent transition-opacity hover:opacity-80"
+                className="text-s-accent transition-[opacity,transform] hover:opacity-80 active:scale-[0.98] active:duration-[80ms] active:ease-glide"
               >
                 ({salon.review_count.toLocaleString("de-CH")})
               </button>
@@ -121,7 +121,7 @@ export function SalonHeader({
               type="button"
               onClick={scrollToHours}
               aria-label="Öffnungszeiten anzeigen"
-              className="block text-left transition-opacity hover:opacity-80"
+              className="block text-left transition-[opacity,transform] hover:opacity-80 active:scale-[0.98] active:duration-[80ms] active:ease-glide"
             >
               <StatusInline isOpen={status.isOpen} label={status.label} size="md" />
             </button>
@@ -131,7 +131,7 @@ export function SalonHeader({
               type="button"
               onClick={scrollToLocation}
               aria-label="Standort anzeigen"
-              className="inline-flex items-center gap-1 text-left text-s-ink-2 transition-colors hover:text-s-ink"
+              className="inline-flex items-center gap-1 text-left text-s-ink-2 transition-[colors,transform] hover:text-s-ink active:scale-[0.98] active:duration-[80ms] active:ease-glide"
             >
               <MapPin size={14} className="shrink-0 text-s-ink-3" strokeWidth={2} />
               {fullAddress}
@@ -149,7 +149,7 @@ export function SalonHeader({
             type="button"
             aria-label="Salon teilen"
             onClick={() => shareOrCopy(salon.name, window.location.href)}
-            className="grid h-11 w-11 place-items-center rounded-full border border-s-border bg-white transition-transform hover:scale-105 active:scale-95"
+            className="grid h-11 w-11 place-items-center rounded-full border border-s-border bg-white transition-transform hover:scale-105 active:scale-95 active:duration-[80ms] active:ease-glide"
           >
             <Share size={18} strokeWidth={2.1} className="text-s-ink" aria-hidden />
           </button>

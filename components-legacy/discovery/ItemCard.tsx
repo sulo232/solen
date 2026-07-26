@@ -50,7 +50,7 @@ export default memo(function ItemCard({
   const isSalon = item.source === "salon" || item.content_type === "salon";
 
   return (
-    <div onClick={onClick} className="group w-full cursor-pointer">
+    <div onClick={onClick} className="group w-full cursor-pointer transition-transform duration-150 active:scale-[0.97] active:duration-[80ms] active:ease-glide">
       <div
         className="relative w-full overflow-hidden rounded-2xl bg-s-bg-sunken"
         style={{ aspectRatio: aspect }}

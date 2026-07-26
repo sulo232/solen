@@ -45,7 +45,7 @@ export function SalonBuy({
         </div>
         <Link
           href={href}
-          className="font-body shrink-0 rounded-full border border-s-ink bg-white px-5 py-2 text-[13px] font-semibold text-s-ink transition-colors hover:bg-s-ink hover:text-white"
+          className="font-body shrink-0 rounded-full border border-s-ink bg-white px-5 py-2 text-[13px] font-semibold text-s-ink transition-[colors,transform] hover:bg-s-ink hover:text-white active:scale-[0.97] active:duration-[80ms] active:ease-glide"
         >
           Kaufen
         </Link>

@@ -59,7 +59,7 @@ export function SeeAllButton({
     // text+chevron for the stylist/Team see-all per owner 2026-07-19. pill-outline is
     // DEPRECATED (CTA ladder, 2026-07-24) and resolves to the same "pill" branch below, it no
     // longer renders its old bordered look.
-    "text-[14px] font-semibold text-s-ink transition-colors",
+    "text-[14px] font-semibold text-s-ink transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide",
     variant === "link"
       ? "inline-flex items-center gap-0.5"
       : "rounded-full font-body inline-flex items-center bg-s-bg-sunken px-8 py-3 hover:bg-s-border md:px-10 md:py-3.5 md:text-[15px]",

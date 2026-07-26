@@ -180,7 +180,7 @@ export function SalonStickyTabNav({
             type="button"
             aria-label="Zurück"
             onClick={() => router.back()}
-            className="-ml-1 grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink transition-transform active:scale-95"
+            className="-ml-1 grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink transition-transform active:scale-95 active:duration-[80ms] active:ease-glide"
           >
             <ArrowLeft size={20} strokeWidth={2.2} aria-hidden />
           </button>
@@ -197,7 +197,7 @@ export function SalonStickyTabNav({
             type="button"
             aria-label="Salon teilen"
             onClick={shareSalon}
-            className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink transition-transform active:scale-95"
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink transition-transform active:scale-95 active:duration-[80ms] active:ease-glide"
           >
             <Share size={18} strokeWidth={2.1} aria-hidden />
           </button>
@@ -214,7 +214,7 @@ export function SalonStickyTabNav({
               // selected state" lock (active = 600 ink + underline, inactive = 400 ink-2)
               // instead of every tab being unconditionally font-semibold.
               className={cn(
-                "font-body relative shrink-0 py-3.5 text-[14px] transition-colors md:py-4",
+                "font-body relative shrink-0 py-3.5 text-[14px] transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide md:py-4",
                 activeTab === t.key
                   ? "font-semibold text-s-ink"
                   : "font-normal text-s-ink-3 hover:text-s-ink"

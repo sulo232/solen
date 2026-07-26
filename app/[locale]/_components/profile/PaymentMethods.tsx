@@ -149,7 +149,7 @@ function AddCardForm({ confirmLabel, errorFallback, onSuccess }: { confirmLabel:
         type="button"
         onClick={handleSubmit}
         disabled={!stripe || submitting}
-        className="flex h-12 w-full items-center justify-center gap-2 rounded-btn bg-s-ink text-[15px] font-medium tracking-[-0.005em] text-white transition-opacity duration-200 disabled:opacity-50 active:scale-[0.97]"
+        className="flex h-12 w-full items-center justify-center gap-2 rounded-btn bg-s-ink text-[15px] font-medium tracking-[-0.005em] text-white transition-[opacity,transform] duration-200 disabled:opacity-50 active:scale-[0.97] active:duration-[80ms] active:ease-glide"
       >
         {submitting && <Spinner size="sm" invert />}
         {confirmLabel}
@@ -236,7 +236,7 @@ export default function PaymentMethods() {
         type="button"
         onClick={openAddCard}
         disabled={creatingIntent}
-        className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-btn bg-s-ink text-[15px] font-medium tracking-[-0.005em] text-white transition-opacity duration-200 disabled:opacity-50 active:scale-[0.97]"
+        className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-btn bg-s-ink text-[15px] font-medium tracking-[-0.005em] text-white transition-[opacity,transform] duration-200 disabled:opacity-50 active:scale-[0.97] active:duration-[80ms] active:ease-glide"
       >
         {creatingIntent ? <Spinner size="sm" invert /> : <Plus size={18} strokeWidth={2.4} aria-hidden />}
         {t("payAddCard")}

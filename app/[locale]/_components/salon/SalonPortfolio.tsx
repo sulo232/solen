@@ -117,7 +117,7 @@ function UniformGrid({ urls, onOpen }: { urls: string[]; onOpen: (i: number) => 
             key={u}
             type="button"
             onClick={() => onOpen(i)}
-            className="relative aspect-square overflow-hidden rounded-md bg-s-bg-sunken transition-transform hover:scale-[0.99] active:scale-[0.98] md:rounded-lg"
+            className="relative aspect-square overflow-hidden rounded-md bg-s-bg-sunken transition-transform hover:scale-[0.99] active:scale-[0.98] active:duration-[80ms] active:ease-glide md:rounded-lg"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={u} alt="" className="h-full w-full object-cover" loading="lazy" />

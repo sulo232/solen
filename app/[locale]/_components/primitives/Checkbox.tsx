@@ -75,7 +75,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
             "transition-colors duration-150 ease-snap",
             "peer-checked:bg-s-ink peer-checked:border-s-ink",
             "peer-focus-visible:outline-2 peer-focus-visible:outline-s-ink peer-focus-visible:outline-offset-2",
-            "group-active:scale-[0.92] [&]:transition-transform",
+            "group-active:scale-[0.92] [&]:transition-transform group-active:duration-[80ms] group-active:ease-glide",
             indeterminate && "!bg-s-ink !border-s-ink",
           )}
         >
@@ -85,7 +85,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
             <Check
               className={cn(
                 "w-[14px] h-[14px] text-white",
-                "transition-transform duration-300 ease-spring",
+                "transition-transform duration-150 ease-spring",
                 checked ? "scale-100" : "scale-0",
               )}
               strokeWidth={2.5}
