@@ -900,6 +900,10 @@ export const adminNailGenerateSchema = z.object({
 
 export const bookingCancelSchema = z.object({
   reason: z.string().max(500).optional(),
+  // Added 2026-07-27 (A9-email-locale): a guest canceller has no profiles row to resolve a
+  // locale from, so the locale-prefixed page they are on threads its own locale through here
+  // for the guest-branch cancellation email (falls back to "de" server-side if omitted).
+  locale: z.enum(["de", "en", "fr", "it"]).optional(),
 });
 
 // "cancelled" retired (audit finding #15, 2026-07-09): PATCH /api/bookings/[id] used to also

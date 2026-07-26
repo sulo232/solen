@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
-import { sendEmail } from "@/lib/email";
+import { sendEmail, platformBirthdayEmail, type EmailLocale } from "@/lib/email";
 import { getServerEnv } from "@/lib/env";
 import { withCronRun } from "@/lib/cron-run";
 import { runWithConcurrency } from "@/lib/concurrency";
@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
   // date_of_birth column is DATE type, extract month and day
   const { data: profiles } = await admin
     .from("profiles")
-    .select("id, display_name, date_of_birth, staff_salon_id, email")
+    .select("id, display_name, date_of_birth, staff_salon_id, email, locale")
     .not("date_of_birth", "is", null);
 
   const birthdayProfiles = (profiles ?? []).filter((p) => {
@@ -66,17 +66,13 @@ export async function GET(req: NextRequest) {
   // Concurrency-capped sends (cap 5): one recipient's failure never blocks the rest,
   // never one unbounded Promise.all over emails, never fully serial.
   const sendResults = await runWithConcurrency(tasks, 5, async (profile) => {
-    await sendEmail({
-      to: profile.email as string,
-      subject: `Alles Gute zum Geburtstag, ${profile.display_name ?? ""}! 🎂`,
-      html: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center">
-<h2 style="color:#C05038">Happy Birthday!</h2>
-<p>Liebe/r ${profile.display_name ?? "Kunde/in"},</p>
-<p>Wir wünschen dir alles Gute zum Geburtstag! 🎉</p>
-<p>Als kleines Geschenk haben wir eine Überraschung für dich.</p>
-<p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:#C05038;color:#fff;border-radius:8px;text-decoration:none">Jetzt entdecken →</a></p>
-</div>`,
-    });
+    // A9-email-locale (2026-07-27): each recipient's own profile.locale, was hardcoded German.
+    const profileLocale = (profile.locale as EmailLocale) ?? "de";
+    await sendEmail(platformBirthdayEmail(
+      profile.email as string,
+      { customerName: profile.display_name ?? "" },
+      profileLocale
+    ));
     return profile;
   });
 

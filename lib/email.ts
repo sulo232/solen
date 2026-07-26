@@ -745,3 +745,233 @@ export function tosUpdateNotification(
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
+
+// ---------------------------------------------------------------------------
+// Waitlist: a slot just freed up (cancellation)
+// ---------------------------------------------------------------------------
+// Added 2026-07-27 (A9-email-locale): was a raw inline German-only sendEmail() call in
+// app/api/bookings/[id]/cancel/route.ts, moved here so it goes through the same locale
+// mechanism as every other transactional email.
+
+// ---------------------------------------------------------------------------
+// Review posted (to salon owner) / review replied (to reviewer)
+// ---------------------------------------------------------------------------
+// Added 2026-07-27 (A9-email-locale): app/api/notify/review-posted and review-replied inlined
+// raw German-only HTML directly in the route (bypassing the whole locale mechanism). Moved
+// here so both go through the same subjects/bodies-by-locale pattern as every other email.
+
+export function reviewPostedEmail(
+  to: string,
+  vars: { salon: string; rating: number; comment?: string },
+  locale: EmailLocale = "de"
+): EmailPayload {
+  const starText: Record<EmailLocale, string> = {
+    de: vars.rating === 1 ? "1 Stern" : `${vars.rating} Sternen`,
+    en: vars.rating === 1 ? "1 star" : `${vars.rating} stars`,
+    fr: vars.rating === 1 ? "1 étoile" : `${vars.rating} étoiles`,
+    it: vars.rating === 1 ? "1 stella" : `${vars.rating} stelle`,
+  };
+  const subjects: Record<EmailLocale, string> = {
+    de: `Neue Bewertung für ${vars.salon}`,
+    en: `New review for ${vars.salon}`,
+    fr: `Nouvel avis pour ${vars.salon}`,
+    it: `Nuova recensione per ${vars.salon}`,
+  };
+  const commentHtml = vars.comment ? `<blockquote>"${escapeHtml(vars.comment)}"</blockquote>` : "";
+  const ctas: Record<EmailLocale, string> = {
+    de: "Bewertungen im Dashboard ansehen",
+    en: "View reviews in dashboard",
+    fr: "Voir les avis dans le tableau de bord",
+    it: "Visualizza recensioni nella dashboard",
+  };
+  const bodies: Record<EmailLocale, string> = {
+    de: `<h3>Neue Kundenbewertung</h3><p>Dein Salon <strong>${vars.salon}</strong> hat eine neue Bewertung mit ${starText.de} erhalten.</p>${commentHtml}<p><a href="https://solen.ch/de/dashboard/reviews" style="display:inline-block;padding:10px 20px;background:#F25C54;color:#fff;text-decoration:none;border-radius:8px;margin-top:20px;">${ctas.de}</a></p>`,
+    en: `<h3>New customer review</h3><p>Your salon <strong>${vars.salon}</strong> received a new review with ${starText.en}.</p>${commentHtml}<p><a href="https://solen.ch/en/dashboard/reviews" style="display:inline-block;padding:10px 20px;background:#F25C54;color:#fff;text-decoration:none;border-radius:8px;margin-top:20px;">${ctas.en}</a></p>`,
+    fr: `<h3>Nouvel avis client</h3><p>Votre salon <strong>${vars.salon}</strong> a reçu un nouvel avis avec ${starText.fr}.</p>${commentHtml}<p><a href="https://solen.ch/fr/dashboard/reviews" style="display:inline-block;padding:10px 20px;background:#F25C54;color:#fff;text-decoration:none;border-radius:8px;margin-top:20px;">${ctas.fr}</a></p>`,
+    it: `<h3>Nuova recensione cliente</h3><p>Il tuo salone <strong>${vars.salon}</strong> ha ricevuto una nuova recensione con ${starText.it}.</p>${commentHtml}<p><a href="https://solen.ch/it/dashboard/reviews" style="display:inline-block;padding:10px 20px;background:#F25C54;color:#fff;text-decoration:none;border-radius:8px;margin-top:20px;">${ctas.it}</a></p>`,
+  };
+  return { to, subject: subjects[locale], html: bodies[locale] };
+}
+
+export function reviewRepliedEmail(
+  to: string,
+  vars: { salon: string; salonSlug: string; replyText: string },
+  locale: EmailLocale = "de"
+): EmailPayload {
+  const subjects: Record<EmailLocale, string> = {
+    de: `${vars.salon} hat auf deine Bewertung geantwortet`,
+    en: `${vars.salon} replied to your review`,
+    fr: `${vars.salon} a répondu à votre avis`,
+    it: `${vars.salon} ha risposto alla tua recensione`,
+  };
+  const ctas: Record<EmailLocale, string> = {
+    de: "Zum Salon Profil",
+    en: "Go to salon profile",
+    fr: "Voir le profil du salon",
+    it: "Vai al profilo del salone",
+  };
+  const bodies: Record<EmailLocale, string> = {
+    de: `<h3>Antwort auf deine Bewertung</h3><p>Der Salon <strong>${vars.salon}</strong> hat auf deine Bewertung geantwortet:</p><blockquote style="border-left: 4px solid #F25C54; padding-left: 12px; margin-left: 0; color: #555;">${escapeHtml(vars.replyText)}</blockquote><p><a href="https://solen.ch/de/salon/${vars.salonSlug}" style="display:inline-block;padding:10px 20px;background:#F25C54;color:#fff;text-decoration:none;border-radius:8px;margin-top:20px;">${ctas.de}</a></p>`,
+    en: `<h3>Reply to your review</h3><p>The salon <strong>${vars.salon}</strong> replied to your review:</p><blockquote style="border-left: 4px solid #F25C54; padding-left: 12px; margin-left: 0; color: #555;">${escapeHtml(vars.replyText)}</blockquote><p><a href="https://solen.ch/en/salon/${vars.salonSlug}" style="display:inline-block;padding:10px 20px;background:#F25C54;color:#fff;text-decoration:none;border-radius:8px;margin-top:20px;">${ctas.en}</a></p>`,
+    fr: `<h3>Réponse à votre avis</h3><p>Le salon <strong>${vars.salon}</strong> a répondu à votre avis :</p><blockquote style="border-left: 4px solid #F25C54; padding-left: 12px; margin-left: 0; color: #555;">${escapeHtml(vars.replyText)}</blockquote><p><a href="https://solen.ch/fr/salon/${vars.salonSlug}" style="display:inline-block;padding:10px 20px;background:#F25C54;color:#fff;text-decoration:none;border-radius:8px;margin-top:20px;">${ctas.fr}</a></p>`,
+    it: `<h3>Risposta alla tua recensione</h3><p>Il salone <strong>${vars.salon}</strong> ha risposto alla tua recensione:</p><blockquote style="border-left: 4px solid #F25C54; padding-left: 12px; margin-left: 0; color: #555;">${escapeHtml(vars.replyText)}</blockquote><p><a href="https://solen.ch/it/salon/${vars.salonSlug}" style="display:inline-block;padding:10px 20px;background:#F25C54;color:#fff;text-decoration:none;border-radius:8px;margin-top:20px;">${ctas.it}</a></p>`,
+  };
+  return { to, subject: subjects[locale], html: bodies[locale] };
+}
+
+// ---------------------------------------------------------------------------
+// Directory claim verification code
+// ---------------------------------------------------------------------------
+// Added 2026-07-27 (A9-email-locale): app/api/directory/[id]/claim inlined raw German-only
+// HTML directly (no locale mechanism, no caller yet threading a locale). Moved here so the
+// route can accept an optional locale (defaults "de") instead of being permanently stuck.
+
+export function directoryClaimCode(
+  to: string,
+  vars: { salonName: string; code: string },
+  locale: EmailLocale = "de"
+): EmailPayload {
+  const subjects: Record<EmailLocale, string> = {
+    de: `Ihr Bestätigungscode für solen.ch: ${vars.code}`,
+    en: `Your solen.ch verification code: ${vars.code}`,
+    fr: `Votre code de vérification solen.ch : ${vars.code}`,
+    it: `Il tuo codice di verifica solen.ch: ${vars.code}`,
+  };
+  const bodies: Record<EmailLocale, string> = {
+    de: `<p>Guten Tag,</p><p>Sie haben beantragt, den Salon <strong>${vars.salonName}</strong> auf solen.ch zu beanspruchen.</p><p>Ihr Bestätigungscode lautet: <strong style="font-size:24px;letter-spacing:4px">${vars.code}</strong></p><p>Der Code ist 15 Minuten gültig.</p><p>Falls Sie diese Anfrage nicht gestellt haben, können Sie diese E-Mail ignorieren.</p><p>Das solen.ch Team</p>`,
+    en: `<p>Hello,</p><p>You requested to claim the salon <strong>${vars.salonName}</strong> on solen.ch.</p><p>Your verification code is: <strong style="font-size:24px;letter-spacing:4px">${vars.code}</strong></p><p>The code is valid for 15 minutes.</p><p>If you did not request this, you can ignore this email.</p><p>The solen.ch team</p>`,
+    fr: `<p>Bonjour,</p><p>Vous avez demandé à revendiquer le salon <strong>${vars.salonName}</strong> sur solen.ch.</p><p>Votre code de vérification est : <strong style="font-size:24px;letter-spacing:4px">${vars.code}</strong></p><p>Le code est valable 15 minutes.</p><p>Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet e-mail.</p><p>L'équipe solen.ch</p>`,
+    it: `<p>Buongiorno,</p><p>Hai richiesto di rivendicare il salone <strong>${vars.salonName}</strong> su solen.ch.</p><p>Il tuo codice di verifica è: <strong style="font-size:24px;letter-spacing:4px">${vars.code}</strong></p><p>Il codice è valido per 15 minuti.</p><p>Se non hai richiesto tu questa operazione, puoi ignorare questa email.</p><p>Il team solen.ch</p>`,
+  };
+  return { to, subject: subjects[locale], html: bodies[locale] };
+}
+
+// ---------------------------------------------------------------------------
+// Staff invite
+// ---------------------------------------------------------------------------
+// Added 2026-07-27 (A9-email-locale): app/api/staff/invite inlined raw German-only HTML with
+// a hardcoded /de/staff/accept link, regardless of the inviting salon's own working language.
+
+export function staffInviteEmail(
+  to: string,
+  vars: { salonName: string; staffName?: string; inviteUrl: string },
+  locale: EmailLocale = "de"
+): EmailPayload {
+  const greeting: Record<EmailLocale, string> = {
+    de: `Hallo${vars.staffName ? ` ${escapeHtml(vars.staffName)}` : ""},`,
+    en: `Hello${vars.staffName ? ` ${escapeHtml(vars.staffName)}` : ""},`,
+    fr: `Bonjour${vars.staffName ? ` ${escapeHtml(vars.staffName)}` : ""},`,
+    it: `Ciao${vars.staffName ? ` ${escapeHtml(vars.staffName)}` : ""},`,
+  };
+  const subjects: Record<EmailLocale, string> = {
+    de: `Einladung als Mitarbeiter bei ${vars.salonName} - solen.ch`,
+    en: `Invitation to join ${vars.salonName} - solen.ch`,
+    fr: `Invitation à rejoindre ${vars.salonName} - solen.ch`,
+    it: `Invito a unirti a ${vars.salonName} - solen.ch`,
+  };
+  const invite: Record<EmailLocale, string> = {
+    de: `<strong>${escapeHtml(vars.salonName)}</strong> lädt dich ein, als Mitarbeiter auf solen.ch beizutreten.`,
+    en: `<strong>${escapeHtml(vars.salonName)}</strong> is inviting you to join solen.ch as staff.`,
+    fr: `<strong>${escapeHtml(vars.salonName)}</strong> vous invite à rejoindre solen.ch en tant que membre du personnel.`,
+    it: `<strong>${escapeHtml(vars.salonName)}</strong> ti invita a unirti a solen.ch come membro dello staff.`,
+  };
+  const ctas: Record<EmailLocale, string> = {
+    de: "Einladung annehmen →",
+    en: "Accept invitation →",
+    fr: "Accepter l'invitation →",
+    it: "Accetta l'invito →",
+  };
+  const expiry: Record<EmailLocale, string> = {
+    de: "Dieser Link ist 7 Tage gültig.",
+    en: "This link is valid for 7 days.",
+    fr: "Ce lien est valable 7 jours.",
+    it: "Questo link è valido per 7 giorni.",
+  };
+  const bodies: Record<EmailLocale, string> = {
+    de: `<p>${greeting.de}</p><p>${invite.de}</p><p><a href="${vars.inviteUrl}" style="display:inline-block;padding:12px 24px;background:#C05038;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;">${ctas.de}</a></p><p style="color:#999;font-size:12px;">${expiry.de}</p>`,
+    en: `<p>${greeting.en}</p><p>${invite.en}</p><p><a href="${vars.inviteUrl}" style="display:inline-block;padding:12px 24px;background:#C05038;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;">${ctas.en}</a></p><p style="color:#999;font-size:12px;">${expiry.en}</p>`,
+    fr: `<p>${greeting.fr}</p><p>${invite.fr}</p><p><a href="${vars.inviteUrl}" style="display:inline-block;padding:12px 24px;background:#C05038;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;">${ctas.fr}</a></p><p style="color:#999;font-size:12px;">${expiry.fr}</p>`,
+    it: `<p>${greeting.it}</p><p>${invite.it}</p><p><a href="${vars.inviteUrl}" style="display:inline-block;padding:12px 24px;background:#C05038;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;">${ctas.it}</a></p><p style="color:#999;font-size:12px;">${expiry.it}</p>`,
+  };
+  return { to, subject: subjects[locale], html: bodies[locale] };
+}
+
+// ---------------------------------------------------------------------------
+// Platform-wide birthday message (no specific salon, cron/birthday-messages)
+// ---------------------------------------------------------------------------
+// Added 2026-07-27 (A9-email-locale): distinct from birthdayEmail() above (that one is
+// triggered per-salon and names the salon). This is the platform-wide daily cron message
+// (was raw German-only HTML with no locale mechanism inline in the route).
+
+export function platformBirthdayEmail(
+  to: string,
+  vars: { customerName: string },
+  locale: EmailLocale = "de"
+): EmailPayload {
+  const subjects: Record<EmailLocale, string> = {
+    de: `Alles Gute zum Geburtstag, ${vars.customerName}! 🎂`,
+    en: `Happy Birthday, ${vars.customerName}! 🎂`,
+    fr: `Joyeux anniversaire, ${vars.customerName} ! 🎂`,
+    it: `Buon compleanno, ${vars.customerName}! 🎂`,
+  };
+  const heading: Record<EmailLocale, string> = { de: "Happy Birthday!", en: "Happy Birthday!", fr: "Joyeux anniversaire !", it: "Buon compleanno!" };
+  const cta: Record<EmailLocale, string> = { de: "Jetzt entdecken →", en: "Discover now →", fr: "Découvrir maintenant →", it: "Scopri ora →" };
+  const bodies: Record<EmailLocale, string> = {
+    de: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center"><h2 style="color:#C05038">${heading.de}</h2><p>Liebe/r ${vars.customerName || "Kunde/in"},</p><p>Wir wünschen dir alles Gute zum Geburtstag! 🎉</p><p>Als kleines Geschenk haben wir eine Überraschung für dich.</p><p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:#C05038;color:#fff;border-radius:8px;text-decoration:none">${cta.de}</a></p></div>`,
+    en: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center"><h2 style="color:#C05038">${heading.en}</h2><p>Dear ${vars.customerName || "customer"},</p><p>We wish you a wonderful birthday! 🎉</p><p>As a little gift, we have a surprise for you.</p><p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:#C05038;color:#fff;border-radius:8px;text-decoration:none">${cta.en}</a></p></div>`,
+    fr: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center"><h2 style="color:#C05038">${heading.fr}</h2><p>Cher/chère ${vars.customerName || "client(e)"},</p><p>Nous vous souhaitons un merveilleux anniversaire ! 🎉</p><p>Nous avons une petite surprise pour vous.</p><p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:#C05038;color:#fff;border-radius:8px;text-decoration:none">${cta.fr}</a></p></div>`,
+    it: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center"><h2 style="color:#C05038">${heading.it}</h2><p>Caro/a ${vars.customerName || "cliente"},</p><p>Ti auguriamo un felice compleanno! 🎉</p><p>Abbiamo una piccola sorpresa per te.</p><p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:#C05038;color:#fff;border-radius:8px;text-decoration:none">${cta.it}</a></p></div>`,
+  };
+  return { to, subject: subjects[locale], html: bodies[locale] };
+}
+
+// ---------------------------------------------------------------------------
+// Salon gift voucher delivery (distinct table/shape from giftCardDeliveryEmail above)
+// ---------------------------------------------------------------------------
+// Added 2026-07-27 (A9-email-locale): app/api/stripe/webhook/salon-voucher-handler.ts inlined
+// raw German-only HTML + de-CH expiry date (no locale mechanism at all).
+
+export function salonVoucherDeliveryEmail(
+  to: string,
+  vars: { recipientName?: string; salonName: string; amountChf: string; code: string; message?: string; expiresDate: string },
+  locale: EmailLocale = "de"
+): EmailPayload {
+  const msgHtml = vars.message ? `<p style="color:#666;font-style:italic">"${escapeHtml(vars.message)}"</p>` : "";
+  const subjects: Record<EmailLocale, string> = {
+    de: `Du hast einen Gutschein von ${vars.salonName} erhalten!`,
+    en: `You received a voucher from ${vars.salonName}!`,
+    fr: `Vous avez reçu un bon de ${vars.salonName} !`,
+    it: `Hai ricevuto un buono da ${vars.salonName}!`,
+  };
+  const heading: Record<EmailLocale, string> = { de: "Gutschein", en: "Voucher", fr: "Bon cadeau", it: "Buono" };
+  const codeLabel: Record<EmailLocale, string> = { de: "Code", en: "Code", fr: "Code", it: "Codice" };
+  const cta: Record<EmailLocale, string> = { de: "Jetzt einlösen →", en: "Redeem now →", fr: "Utiliser maintenant →", it: "Riscatta ora →" };
+  const validUntil: Record<EmailLocale, string> = { de: "Gültig bis", en: "Valid until", fr: "Valable jusqu'au", it: "Valido fino al" };
+  const bodies: Record<EmailLocale, string> = {
+    de: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center"><h2 style="color:#0A0A0A">${heading.de}</h2><p>Hallo ${vars.recipientName ?? ""},</p><p>Du hast einen Gutschein für <strong>${vars.salonName}</strong> erhalten!</p><div style="background:#F4F4F5;border-radius:12px;padding:20px;margin:16px 0"><p style="font-size:24px;font-weight:bold;color:#0A0A0A;margin:0">CHF ${vars.amountChf}</p><p style="font-size:14px;color:#999;margin:4px 0 0">${codeLabel.de}: <strong>${vars.code}</strong></p></div>${msgHtml}<p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none">${cta.de}</a></p><p style="font-size:11px;color:#999">${validUntil.de} ${vars.expiresDate}</p></div>`,
+    en: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center"><h2 style="color:#0A0A0A">${heading.en}</h2><p>Hello ${vars.recipientName ?? ""},</p><p>You received a voucher for <strong>${vars.salonName}</strong>!</p><div style="background:#F4F4F5;border-radius:12px;padding:20px;margin:16px 0"><p style="font-size:24px;font-weight:bold;color:#0A0A0A;margin:0">CHF ${vars.amountChf}</p><p style="font-size:14px;color:#999;margin:4px 0 0">${codeLabel.en}: <strong>${vars.code}</strong></p></div>${msgHtml}<p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none">${cta.en}</a></p><p style="font-size:11px;color:#999">${validUntil.en} ${vars.expiresDate}</p></div>`,
+    fr: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center"><h2 style="color:#0A0A0A">${heading.fr}</h2><p>Bonjour ${vars.recipientName ?? ""},</p><p>Vous avez reçu un bon pour <strong>${vars.salonName}</strong> !</p><div style="background:#F4F4F5;border-radius:12px;padding:20px;margin:16px 0"><p style="font-size:24px;font-weight:bold;color:#0A0A0A;margin:0">CHF ${vars.amountChf}</p><p style="font-size:14px;color:#999;margin:4px 0 0">${codeLabel.fr}: <strong>${vars.code}</strong></p></div>${msgHtml}<p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none">${cta.fr}</a></p><p style="font-size:11px;color:#999">${validUntil.fr} ${vars.expiresDate}</p></div>`,
+    it: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center"><h2 style="color:#0A0A0A">${heading.it}</h2><p>Ciao ${vars.recipientName ?? ""},</p><p>Hai ricevuto un buono per <strong>${vars.salonName}</strong>!</p><div style="background:#F4F4F5;border-radius:12px;padding:20px;margin:16px 0"><p style="font-size:24px;font-weight:bold;color:#0A0A0A;margin:0">CHF ${vars.amountChf}</p><p style="font-size:14px;color:#999;margin:4px 0 0">${codeLabel.it}: <strong>${vars.code}</strong></p></div>${msgHtml}<p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none">${cta.it}</a></p><p style="font-size:11px;color:#999">${validUntil.it} ${vars.expiresDate}</p></div>`,
+  };
+  return { to, subject: subjects[locale], html: bodies[locale] };
+}
+
+export function waitlistSlotFreed(
+  to: string,
+  vars: { service: string; salon: string; date: string },
+  locale: EmailLocale = "de"
+): EmailPayload {
+  const subjects: Record<EmailLocale, string> = {
+    de: `Ein Termin ist frei geworden bei ${vars.salon}!`,
+    en: `A slot just opened up at ${vars.salon}!`,
+    fr: `Un créneau vient de se libérer chez ${vars.salon} !`,
+    it: `Si è liberato uno slot presso ${vars.salon}!`,
+  };
+  const bodies: Record<EmailLocale, string> = {
+    de: `<p>Ein Termin für <strong>${vars.service}</strong> am <strong>${vars.date}</strong> ist jetzt verfügbar.</p><p><a href="https://solen.ch">Jetzt buchen →</a></p>`,
+    en: `<p>A slot for <strong>${vars.service}</strong> on <strong>${vars.date}</strong> is now available.</p><p><a href="https://solen.ch">Book now →</a></p>`,
+    fr: `<p>Un créneau pour <strong>${vars.service}</strong> le <strong>${vars.date}</strong> est maintenant disponible.</p><p><a href="https://solen.ch">Réserver maintenant →</a></p>`,
+    it: `<p>Uno slot per <strong>${vars.service}</strong> il <strong>${vars.date}</strong> è ora disponibile.</p><p><a href="https://solen.ch">Prenota ora →</a></p>`,
+  };
+  return { to, subject: subjects[locale], html: bodies[locale] };
+}

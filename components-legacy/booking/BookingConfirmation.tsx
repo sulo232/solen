@@ -306,7 +306,9 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
       const response = await fetch(`/api/bookings/${props.bookingId}/cancel`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
+        // A9-email-locale: thread the page's own locale through so a guest cancel (no
+        // profiles row to resolve locale from server-side) still gets its email in-language.
+        body: JSON.stringify({ locale }),
       });
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));

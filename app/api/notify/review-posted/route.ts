@@ -3,19 +3,11 @@ export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
-import { sendEmail } from "@/lib/email";
+import { sendEmail, reviewPostedEmail } from "@/lib/email";
 import { getServerEnv } from "@/lib/env";
 
 // Internal-only route (invoked server-to-server by app/api/reviews/route.ts).
 // Never public: it sends email as an open relay to any salon owner otherwise.
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
 
 export async function POST(req: NextRequest) {
   try {
@@ -38,26 +30,19 @@ export async function POST(req: NextRequest) {
     if (!review || !review.salons?.owner_id) return NextResponse.json({ error: "not found" }, { status: 404 });
 
     const { data: owner } = await admin.from("profiles")
-      .select("email")
+      .select("email, locale")
       .eq("id", review.salons.owner_id)
       .single();
 
     if (owner?.email) {
-      const starText = review.rating === 1 ? "1 Stern" : `${review.rating} Sternen`;
-      await sendEmail({
-        to: owner.email,
-        subject: `Neue Bewertung für ${review.salons.name}`,
-        html: `
-          <h3>Neue Kundenbewertung</h3>
-          <p>Dein Salon <strong>${review.salons.name}</strong> hat eine neue Bewertung mit ${starText} erhalten.</p>
-          ${review.comment ? `<blockquote>"${escapeHtml(review.comment)}"</blockquote>` : ""}
-          <p>
-            <a href="https://solen.ch/de/dashboard/reviews" style="display:inline-block;padding:10px 20px;background:#F25C54;color:#fff;text-decoration:none;border-radius:8px;margin-top:20px;">
-              Bewertungen im Dashboard ansehen
-            </a>
-          </p>
-        `
-      });
+      // A9-email-locale (2026-07-27): the owner's own profile.locale, was hardcoded German
+      // inline HTML with no locale mechanism at all.
+      const ownerLocale = (owner.locale as "de" | "en" | "fr" | "it") ?? "de";
+      await sendEmail(reviewPostedEmail(
+        owner.email,
+        { salon: review.salons.name, rating: review.rating, comment: review.comment ?? undefined },
+        ownerLocale
+      ));
     }
 
     return NextResponse.json({ ok: true });

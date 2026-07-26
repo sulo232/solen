@@ -5,21 +5,9 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, staffInviteSchema } from "@/lib/validations";
-import { sendEmail } from "@/lib/email";
+import { sendEmail, staffInviteEmail, type EmailLocale } from "@/lib/email";
 import { getActiveSalon } from "@/lib/active-salon";
 import crypto from "crypto";
-
-// Escapes values interpolated into the invite email HTML (staff_name / salon name are
-// caller-controlled or owner-set, sent from the trusted noreply@solen.ch address to any
-// address the caller supplies).
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
 
 // GET /api/staff/invite — List pending invites for the owner's active salon
 export async function GET() {
@@ -96,17 +84,20 @@ export async function POST(req: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  // Send invite email
-  const inviteUrl = `https://www.solen.ch/de/staff/accept?token=${token}`;
+  // Send invite email.
+  // A9-email-locale (2026-07-27): an invited staff member has no profile yet, so the salon
+  // owner's own profile.locale (the salon's working language) resolves the invite + the
+  // link's locale prefix, replacing a hardcoded German subject/body + /de/ link. The
+  // token-in-query-string transport itself is pre-existing and unchanged (out of scope here).
+  const { data: ownerProfile } = await supabase.from("profiles").select("locale").eq("id", user.id).maybeSingle();
+  const inviteLocale = (ownerProfile?.locale as EmailLocale) ?? "de";
+  const inviteUrl = `https://www.solen.ch/${inviteLocale}/staff/accept?token=${token}`;
   try {
-    await sendEmail({
-      to: validated.email,
-      subject: `Einladung als Mitarbeiter bei ${salon.name} — solen.ch`,
-      html: `<p>Hallo${validated.staff_name ? ` ${escapeHtml(validated.staff_name)}` : ""},</p>
-<p><strong>${escapeHtml(salon.name)}</strong> lädt dich ein, als Mitarbeiter auf solen.ch beizutreten.</p>
-<p><a href="${inviteUrl}" style="display:inline-block;padding:12px 24px;background:#C05038;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;">Einladung annehmen →</a></p>
-<p style="color:#999;font-size:12px;">Dieser Link ist 7 Tage gültig.</p>`,
-    });
+    await sendEmail(staffInviteEmail(
+      validated.email,
+      { salonName: salon.name, staffName: validated.staff_name, inviteUrl },
+      inviteLocale
+    ));
   } catch (err) { console.error("[staff/invite] invite email failed:", err); }
 
   return NextResponse.json({ data: { id: invite.id, email: validated.email } }, { status: 201 });

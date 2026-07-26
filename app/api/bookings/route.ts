@@ -607,24 +607,28 @@ export async function POST(request: NextRequest) {
       const admin = createAdminSupabaseClient();
       const { data: ownerProfile } = await admin
         .from("profiles")
-        .select("id")
+        .select("id, locale")
         .eq("id", ownerId)
         .single();
       // Fetch the owner's auth email via admin auth API
       const { data: ownerAuthUser } = await admin.auth.admin.getUserById(ownerId);
       const ownerEmail = ownerAuthUser?.user?.email;
       if (ownerEmail && ownerProfile) {
+        // Fixed 2026-07-27 (A9-email-locale): the owner's own profile.locale is now fetched
+        // (was id-only), replacing the hardcoded "de" default so a non-German salon owner
+        // gets the new-booking notification in their own language.
+        const ownerLocale = (ownerProfile.locale ?? "de") as "de" | "en" | "fr" | "it";
         const ownerEmailData = salonNewBooking(
           ownerEmail,
           {
-            // SP-1: guest has no session email — fall back to the guest name, then "Gast".
+            // SP-1: guest has no session email, fall back to the guest name, then "Gast".
             customerName: user?.email ?? guest_name ?? "Gast",
             service: serviceName,
             date: bookingDate,
             time: bookingTime,
             price,
           },
-          "de" // salon owners use DE by default; profile locale not fetched here
+          ownerLocale
         );
         await sendEmail(ownerEmailData);
       }

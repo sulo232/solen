@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
   // Create first booking if a slot is available
   let firstBooking = null;
   if (firstSlot) {
-    const { data: profile } = await supabase.from("profiles").select("is_first_visit_default").eq("id", user.id).single();
+    const { data: profile } = await supabase.from("profiles").select("is_first_visit_default, locale").eq("id", user.id).single();
     const { data: service } = await supabase.from("services").select("price, name_de").eq("id", service_id).single();
 
     const { data: booking } = await supabase
@@ -101,7 +101,9 @@ export async function POST(request: NextRequest) {
 
       const { data: salon } = await supabase.from("salons").select("name").eq("id", salon_id).single();
       try {
-        await sendEmail(recurringConfirmation(user.email!, { frequency, service: service?.name_de ?? "Service", salon: salon?.name ?? "Salon" }, "de"));
+        // A9-email-locale (2026-07-27): the logged-in booker's own profile.locale, was hardcoded "de".
+        const recurringLocale = (profile?.locale as "de" | "en" | "fr" | "it") ?? "de";
+        await sendEmail(recurringConfirmation(user.email!, { frequency, service: service?.name_de ?? "Service", salon: salon?.name ?? "Salon" }, recurringLocale));
       } catch (err) { console.error("[bookings/recurring] confirmation email failed:", err); }
     }
   }

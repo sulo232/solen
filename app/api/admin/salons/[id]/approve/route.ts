@@ -43,7 +43,10 @@ export async function PATCH(
   const { data: ownerAuth } = await admin.auth.admin.getUserById(salon.owner_id);
   if (ownerAuth?.user?.email) {
     try {
-      await sendEmail(salonApproved(ownerAuth.user.email, { salon: salon.name }));
+      // A9-email-locale (2026-07-27): the owner's own profile.locale, was defaulting to "de".
+      const { data: ownerProfile } = await admin.from("profiles").select("locale").eq("id", salon.owner_id).maybeSingle();
+      const ownerLocale = (ownerProfile?.locale as "de" | "en" | "fr" | "it") ?? "de";
+      await sendEmail(salonApproved(ownerAuth.user.email, { salon: salon.name }, ownerLocale));
     } catch (err) {
       console.error("[admin/salons/approve] approval email failed:", err, { salonId: id });
     }

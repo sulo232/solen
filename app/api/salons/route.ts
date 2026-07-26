@@ -825,7 +825,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Update user profile with onboarding status, TOS tracking, and role upgrade (if applicable)
-    const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
+    const { data: profile } = await admin.from("profiles").select("role, locale").eq("id", user.id).single();
     
     const updateData: Database["public"]["Tables"]["profiles"]["Update"] = {
       onboarding_completed: true,
@@ -842,7 +842,9 @@ export async function POST(request: NextRequest) {
     // Send welcome email (fire-and-forget)
     const ownerEmail = email || user.email;
     if (ownerEmail) {
-      sendEmail(onboardingWelcome(ownerEmail, { salonName: name }, "de")).catch((err) => console.error("[SalonsRoute] failed to send onboarding welcome email:", err));
+      // A9-email-locale (2026-07-27): the new owner's own profile.locale, was hardcoded "de".
+      const ownerLocale = (profile?.locale as "de" | "en" | "fr" | "it") ?? "de";
+      sendEmail(onboardingWelcome(ownerEmail, { salonName: name }, ownerLocale)).catch((err) => console.error("[SalonsRoute] failed to send onboarding welcome email:", err));
     }
 
     return NextResponse.json({ id: salonId, slug });
