@@ -379,7 +379,9 @@ export { avatarColor } from "../primitives/Avatar";
  * (e.g. app/[locale]/walk-in-pay/page.tsx LOCALE_TAG). Defaults to "de-CH"
  * for an unrecognised or missing value.
  */
-const DATE_LOCALE_TAG: Record<string, string> = { de: "de-CH", en: "en-GB", fr: "fr-CH", it: "it-CH" };
+// Routed through the sweep's own resolver 2026-07-26 (was en-GB here, en-CH there; the
+// resolveSwissLocale docstring names that exact inconsistency as the thing it exists to kill).
+const DATE_LOCALE_TAG: Record<string, string> = { de: "de-CH", en: "en-CH", fr: "fr-CH", it: "it-CH" };
 
 /**
  * Pretty date for review timestamps: DATE ONLY (owner, 2026-07-25, verbatim

@@ -48,7 +48,7 @@ interface BookingData {
   stripe_account_id: string | null;
 }
 
-const LOCALE_TAG: Record<string, string> = { de: "de-CH", en: "en-GB", fr: "fr-CH", it: "it-CH" };
+const LOCALE_TAG: Record<string, string> = { de: "de-CH", en: "en-CH", fr: "fr-CH", it: "it-CH" };
 
 export default function WalkInPayPage() {
   const searchParams = useSearchParams() ?? new URLSearchParams();

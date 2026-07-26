@@ -86,7 +86,7 @@ export default function DesignHistoryTimeline({ customerId, salonId, locale = "d
                   {/* Date */}
                   <div className="flex items-center gap-1.5 text-xs text-s-ink/40 mb-1">
                     <Clock size={10} />
-                    {new Date(d.created_at).toLocaleDateString(locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                    {new Date(d.created_at).toLocaleDateString(locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-CH", { day: "numeric", month: "short", year: "numeric" })}
                   </div>
 
                   {/* Badges */}

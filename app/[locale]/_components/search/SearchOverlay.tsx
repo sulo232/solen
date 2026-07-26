@@ -582,7 +582,7 @@ export function SearchOverlay({
       const looks = inspoLooks; // real Inspo-feed looks (rich images), not style-suggest thumbs
       // P13: locale-native "ab CHF X" price, the same tCommon("fromPrice")+formatPrice pattern
       // SalonCard.tsx already uses , no new price-copy invented.
-      const currencyLocale = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-GB";
+      const currencyLocale = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-CH";
 
       return (
         <>
@@ -867,7 +867,7 @@ export function SearchOverlay({
                           <motion.div key="daten" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.18 }}>
                             <div className="mb-2 flex items-center justify-between">
                               <p className="font-heading text-[17px] font-bold capitalize text-s-ink">
-                                {shownMonth.toLocaleDateString(locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : locale === "en" ? "en-GB" : "de-CH", { month: "long" })} {shownMonth.getFullYear()}
+                                {shownMonth.toLocaleDateString(locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : locale === "en" ? "en-CH" : "de-CH", { month: "long" })} {shownMonth.getFullYear()}
                               </p>
                               <div className="flex items-center gap-1">
                                 <button onClick={() => setMonthOffset((o) => Math.max(0, o - 1))} disabled={monthOffset <= 0} aria-label="Vorheriger Monat"
@@ -1062,7 +1062,7 @@ function MonthGrid({ monthDate, now, windowEnd, selKey, onPick, locale }: {
   onPick: (key: string, label: string) => void; locale: string;
 }) {
   const y = monthDate.getFullYear(), m = monthDate.getMonth();
-  const monthLong = monthDate.toLocaleDateString(locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : locale === "en" ? "en-GB" : "de-CH", { month: "long" });
+  const monthLong = monthDate.toLocaleDateString(locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : locale === "en" ? "en-CH" : "de-CH", { month: "long" });
   const cells = buildMonthGrid(monthDate);
   const todayMid = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
   const windowMid = windowEnd.getTime();

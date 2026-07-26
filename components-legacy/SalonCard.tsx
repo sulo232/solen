@@ -332,7 +332,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
 
           {/* Line 3: Price — Q43 tabular numerics + Q43 CHF prefix via formatPrice */}
           {priceToShow != null && (() => {
-            const currencyLocale = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-GB";
+            const currencyLocale = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-CH";
             return (
               <p className="text-sm text-s-ink-2 leading-5 tabular-nums">
                 {tCommon("fromPrice", { price: formatPrice(priceToShow, currencyLocale) })}
@@ -346,14 +346,14 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             const today = new Date(); today.setHours(0, 0, 0, 0);
             const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
             const slotDay = new Date(slot); slotDay.setHours(0, 0, 0, 0);
-            const timeStr = slot.toLocaleTimeString(locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-GB", { hour: "2-digit", minute: "2-digit" });
+            const timeStr = slot.toLocaleTimeString(locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-CH", { hour: "2-digit", minute: "2-digit" });
             let label: string;
             if (slotDay.getTime() === today.getTime()) {
               label = t("nextAppointmentToday", { time: timeStr });
             } else if (slotDay.getTime() === tomorrow.getTime()) {
               label = t("nextAppointmentTomorrow", { time: timeStr });
             } else {
-              const dateStr = slot.toLocaleDateString(locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-GB", { weekday: "short", day: "numeric", month: "short" });
+              const dateStr = slot.toLocaleDateString(locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-CH", { weekday: "short", day: "numeric", month: "short" });
               label = t("nextAppointmentDate", { date: dateStr, time: timeStr });
             }
             return (

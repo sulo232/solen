@@ -163,7 +163,7 @@ function formatDuration(mins?: number | null): string | null {
 function formatSlotTime(iso: string, locale: string): string {
   try {
     return new Date(iso).toLocaleTimeString(
-      locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : locale === "en" ? "en-GB" : "de-CH",
+      locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : locale === "en" ? "en-CH" : "de-CH",
       { hour: "2-digit", minute: "2-digit" },
     );
   } catch {
