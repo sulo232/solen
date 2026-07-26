@@ -171,10 +171,22 @@ that re-measures the rendered page rather than trusting the builder's numbers). 
       5/5: white-only-web, reference-measure, cloudflare-link, link-verified and no-bash-handoff are
       all claimed in law AND wired, and none is flagged. Surfaces at SessionStart, ranked first in
       the worst-items line.
-- [ ] C2. The migrations-are-history principle written where a session will meet it
-- [ ] C3. `_backend-system/LAW.md` exists and freezes the decisions that already have a recommendation
-- [ ] C4. The precedence chain gains a statutory and safety tier
-- [ ] C5. `LAUNCH.md`: what must be true before the first real booking, and what becomes wrong that day
+- [ ] C2. IN FLIGHT, workflow `wf_9dd7fd5d-c6b`. Target `_rules/DB_SCHEMA.md` plus a
+      `_rules/LESSONS_LEARNED.md` entry, so the lessons injector fires on migration edits.
+- [ ] C3. IN FLIGHT, workflow `wf_9dd7fd5d-c6b`. Scoped to LAW.md only, only rows the 15 research
+      files already support, with the omitted topics listed rather than invented.
+- [x] C4. DONE, commit 6e7d703f8. verified: `CLAUDE.md` precedence chain now has 9 tiers with
+      **STATUTORY AND SAFETY FLOORS** inserted at 2, directly under the owner's live ask and above
+      hooks, LOCKFILE and taste. Membership is deliberately closed until the owner extends it:
+      WCAG 2.2 A/AA on published customer surfaces, nFADP and GDPR consent plus special-category
+      handling, the PBV total-price rule, and anything the Terms represent as true.
+      The resolution rule is the important half and it does NOT mean law beats owner: a collision
+      is SURFACED with both dates, and the fix satisfies the floor while honouring the taste
+      intent. The worked example is in the tier text: the owner rejected the RING, not keyboard
+      users knowing where they are, so the answer is a non-ring treatment shown for approval.
+      Chain tail renumbered 3 through 9.
+- [ ] C5. IN FLIGHT, workflow `wf_9dd7fd5d-c6b`. Two sections only, every item re-checked against the
+      repo before it goes in, since several of the source facts were fixed earlier today.
 - [x] C6. DONE, commit 47a34e84a. verified: `grep -c` on `~/.claude/settings.json` returns 1 for
       each of the seven gate names; the four PreToolUse ones sit in the new
       `"matcher": "Write|Edit|MultiEdit"` group at `settings.json:1246`, the three Stop ones in the
@@ -199,7 +211,10 @@ that re-measures the rendered page rather than trusting the builder's numbers). 
 
 ## Batch D , asks that need the OWNER, stated as concrete forks not vague punts
 
-- [ ] D1. Focus indicator: you killed the ring three times. A keyboard user currently gets nothing.
+- [ ] D1. IN FLIGHT, workflow `wf_9dd7fd5d-c6b`. Building ONE non-ring `:focus-visible` treatment
+      (keyboard only, never on mouse), staying inside `no-focus-ring-gate.py` rather than disabling it,
+      with two screenshots as the deliverable: focused via Tab, and nothing via mouse click.
+      This is the worked example of the new precedence tier 2, so it is built and SHOWN, not decided.
       I will implement a NON-ring treatment and show it; you look and keep or kill it.
 - [ ] D2. Salon photography is stock. Two salons share one image. Real photos are a content job
       only you can start.
