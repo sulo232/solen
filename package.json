@@ -17,6 +17,8 @@
     "check:motion": "node scripts/check-motion.mjs",
     "check:motion:slow": "node scripts/check-motion.mjs --slow",
     "gate:motion": "node scripts/check-motion.mjs --gate",
+    "check:press": "node scripts/check-press.mjs",
+    "gate:press": "node scripts/check-press.mjs --gate",
     "test:visual": "playwright test",
     "test:visual:update": "playwright test --update-snapshots",
     "removed": "node scripts/removed.mjs",
