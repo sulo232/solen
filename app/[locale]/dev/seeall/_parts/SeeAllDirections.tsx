@@ -23,6 +23,7 @@ import * as React from "react";
 import { Star } from "lucide-react";
 import { Avatar, PriceFrom, RatingStars, SeeAllButton } from "@/app/[locale]/_components/primitives";
 import type { Review, SalonDetail } from "@/app/[locale]/_components/salon/_shared";
+import { formatNumber } from "@/lib/format";
 
 export type Direction = "1" | "2" | "3";
 
@@ -106,7 +107,7 @@ export function SeeAllDirections({
   const reviewsHref = `/${locale}/salon/${salon.slug}/reviews`;
   // Real product copy (this renders real data, so the label is the product's own German, not
   // mockup chrome): SalonReviews.tsx:192's exact "Alle N Bewertungen" fold-in-the-count pattern.
-  const reviewsCountLabel = `Alle ${salon.review_count.toLocaleString("de-CH")} Bewertungen`;
+  const reviewsCountLabel = `Alle ${formatNumber(salon.review_count, locale)} Bewertungen`;
 
   // Services + Team: pill in V1, link (top-right) in V2 and V3, both always navigate for real
   // (booking flow / team page), matching today's shipped SalonServices/SalonTeam hrefs exactly.

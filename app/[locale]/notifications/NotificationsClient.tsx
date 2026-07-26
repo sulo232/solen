@@ -60,7 +60,8 @@ function relTime(iso: string, locale: string): string {
   if (hours < 24) return rtf.format(-hours, "hour");
   const days = Math.round(hours / 24);
   if (days < 7) return rtf.format(-days, "day");
-  return new Date(iso).toLocaleDateString(locale === "de" ? "de-CH" : locale, { day: "numeric", month: "short" });
+  const tag = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : locale === "en" ? "en-CH" : locale;
+  return new Date(iso).toLocaleDateString(tag, { day: "numeric", month: "short" });
 }
 
 export default function NotificationsClient() {

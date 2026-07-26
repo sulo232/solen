@@ -95,7 +95,7 @@ export default function MyIntakeFormsPage() {
                 </h2>
                 <div className="grid gap-3">
                   {templateForms.map((form) => {
-                    const localeFmt = locale === "de" ? "de-CH" : locale;
+                    const localeFmt = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : locale === "en" ? "en-CH" : locale;
                     const isExpanded = expanded === form.id;
                     const responses = form.responses as Record<string, string>;
 
