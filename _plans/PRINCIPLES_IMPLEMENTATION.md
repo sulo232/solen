@@ -46,13 +46,24 @@ remote, and the enforcing CSP header.
 
 ## Batch A , correctness and safety, no design impact (I own these outright)
 
+**DISPOSITION of every unticked A box: IN FLIGHT, not skipped.** They are executing right now in
+workflow `wf_3a35e42b-1ac` (14 implementation agents across 4 waves, then a read-only reviewer).
+Live evidence as of this write: agents last wrote at 23:57, commit `6c468d458` already landed A3,
+and the harness auto-checkpoint `9ddc076a9` captured in-progress A1/A2/A10 work across
+`app/layout.tsx`, `app/[locale]/layout.tsx`, `middleware.ts`, the four `messages/*.json` and
+`lib/format.ts`. Each box gets ticked with its own commit sha and measured proof when its agent
+returns; none is ticked from this narrative.
+
 - [ ] A1. `<html lang>` reads the active locale instead of hardcoded `de`
 - [ ] A2. The skip link stops being hardcoded German on en/fr/it
 - [ ] A3. Viewport stops disabling pinch zoom (`userScalable:false`, `maximumScale:1` removed)
 - [ ] A4. One shared JSON-LD escape helper, applied at every `dangerouslySetInnerHTML` JSON site
 - [ ] A5. `Content-Security-Policy-Report-Only` added to netlify.toml with the real allowlist
 - [ ] A6. `addressLocality` stops being hardcoded "Basel" for every salon
-- [ ] A7. City x category pages emit canonical + hreflang + x-default
+- [ ] A7. City x category pages: SEO head tags
+  - [ ] A7a. `rel=canonical` emitted
+  - [ ] A7b. `rel=alternate hreflang` emitted for all four locales
+  - [ ] A7c. `hreflang="x-default"` emitted
 - [ ] A8. Category FAQ copy stops being German-only under all four locales
 - [ ] A9. Every `sendEmail` call site passes the recipient's locale instead of defaulting to `de`
 - [ ] A10. `de-CH` literals route through `lib/format` (116 literals, 91 toLocale call sites)
@@ -66,6 +77,10 @@ remote, and the enforcing CSP header.
 
 ## Batch B , the APPROVED design change (mockup signed off, no further asking)
 
+**DISPOSITION: IN FLIGHT** in workflow `wf_222d14bb-84d` (one builder, then an independent verifier
+that re-measures the rendered page rather than trusting the builder's numbers). Agent last wrote at
+23:57. Not parallelised, because parallel agents on frontend work is banned in this estate.
+
 - [ ] B1. SalonCard renders `cover_photo_url` in the 5:4 slot
 - [ ] B2. The A3 lock comment is rewritten to record the 2026-07-26 supersession
 - [ ] B3. `TASTE_LOG.md` gets the dated entry so no session reverts it
@@ -75,7 +90,13 @@ remote, and the enforcing CSP header.
 
 ## Batch C , the law layer (process, not product)
 
-- [x] C1. DONE. A law sentence that CLAIMS a hook enforces is now checked against the settings
+- [x] C1. DONE, commit 47a34e84a. verified: `~/.claude/hooks/system-health-check.py:522` defines
+      `check_law_claims()`, wired at `:591` (build_report), `:625` (total_violations), `:700`
+      (print_full_report section 8), `:741` (worst_items) and `:757` (the SessionStart counts line).
+      Live output, run this turn: `python3 ~/.claude/hooks/system-health-check.py --report` prints
+      "8. LAW CLAIMS ... count: 0" now, and printed count 2 before the gates were armed, naming
+      `~/Documents/solen/CLAUDE.md:67` and `~/Documents/solen/_design-system/REMOVED.md:99`.
+      A law sentence that CLAIMS a hook enforces is now checked against the settings
       files. Built as invariant 8 inside `system-health-check.py` rather than a new hook, because
       LAW_SYSTEM section 6.2 says extend the existing gate rather than wire a second overlapping
       one, and invariant 1 already owns hook wiring. Only flags a line carrying a claim verb
@@ -90,7 +111,14 @@ remote, and the enforcing CSP header.
 - [ ] C3. `_backend-system/LAW.md` exists and freezes the decisions that already have a recommendation
 - [ ] C4. The precedence chain gains a statutory and safety tier
 - [ ] C5. `LAUNCH.md`: what must be true before the first real booking, and what becomes wrong that day
-- [x] C6. DONE. All seven unwired gates armed, and the health check now reports ZERO orphans.
+- [x] C6. DONE, commit 47a34e84a. verified: `grep -c` on `~/.claude/settings.json` returns 1 for
+      each of the seven gate names; the four PreToolUse ones sit in the new
+      `"matcher": "Write|Edit|MultiEdit"` group at `settings.json:1246`, the three Stop ones in the
+      Stop group at `:487`. `~/.claude/hooks/SHELVED.txt:25` now carries `_nonsolen_surface.py` and
+      `_nonsolen_surface_gatetest.py` with the reason. Live output, run this turn:
+      "1. HOOK WIRING / orphaned hook files ...: 0" and "TOTAL VIOLATIONS: 9", against 9 orphans
+      and 20 total before.
+      All seven unwired gates armed, and the health check now reports ZERO orphans.
       Wired to their real events, read out of each file rather than guessed: PreToolUse on
       Write|Edit|MultiEdit for `no-decorative-image-gate`, `emphasis-budget-gate`, `no-italic-ui-gate`,
       `peer-list-ink-cta-gate`; Stop for `flag-instead-of-fix-gate`, `link-relevance-gate`,
