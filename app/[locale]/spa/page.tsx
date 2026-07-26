@@ -62,7 +62,7 @@ export default async function Page({
     { name: "Solen", item: `https://solen.ch/${loc}` },
     { name: "Spa" },
   ]);
-  const faq = generateFaqSchema(CATEGORY_FAQS.spa);
+  const faq = generateFaqSchema(CATEGORY_FAQS.spa[loc] ?? CATEGORY_FAQS.spa.de);
   const filterAvailability = await getFilterAvailability();
   return (
     <>

@@ -63,7 +63,7 @@ export default async function Page({
     { name: "Solen", item: `https://solen.ch/${loc}` },
     { name: "Barbershop" },
   ]);
-  const faq = generateFaqSchema(CATEGORY_FAQS.barbershop);
+  const faq = generateFaqSchema(CATEGORY_FAQS.barbershop[loc] ?? CATEGORY_FAQS.barbershop.de);
   try {
     const supabase = createAdminSupabaseClient();
     const { data: salons } = await supabase
