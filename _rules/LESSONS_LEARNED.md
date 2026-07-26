@@ -457,3 +457,24 @@ Copying UI from a component file into a mockup reproduced a discount badge that 
 - **Trap for the next session**: to test write permission here use `open(p,"r+")` or
   `os.access(p, os.W_OK)`. Append mode `open(p,"a")` returns a FALSE POSITIVE and reports
   read-only paths as writable; that mistake cost a wrong claim in this session's own report.
+
+### Handing a localhost preview link instead of a cloudflare tunnel
+- **Date**: 2026-07-26
+- **File(s)**: .claude/launch.json, public/_research/missing-principles/index.html
+- **Match**: localhost:3210, localhost:3000, preview link, trycloudflare, tunnel
+- **What happened**: The delivery link for a finished page went out as
+  `http://localhost:3210/principles/`. On the owner's phone `localhost` resolves to the phone
+  itself, so that link can never work for them. It is a worse failure than the LAN IP rule 0.5 was
+  written to stop, because a LAN IP at least points at the right machine.
+- **Why it happened**: `lan-ip-preview-gate.py` enforces rule 0.5 and blocks 10.x, 192.168.x and
+  172.16-31.x. It does not match `localhost` or `127.0.0.1`, so the localhost form sailed past
+  every existing link gate (clickable-link, LAN-IP, branch-naming, tunnel-relink).
+- **Fix / What to do instead**: A preview link is a `https://<name>.trycloudflare.com/...` URL, or
+  it is not a preview link. If the tunnel genuinely cannot connect, say so in the same message with
+  cloudflared's own evidence next to the link (its connectivity pre-check, blocked port 7844, or
+  hard_fail=true), because that evidence only exists if you actually ran it. Enforced by
+  `~/.claude/pending-hooks/cloudflare-link-gate.py` (Stop hook, self-tested 12/12: 4 block cases
+  including a vague "the tunnel did not work" excuse and evidence placed too far from the link, 8
+  pass cases including backticked and fenced URLs). ARM IT WITH:
+  `bash ~/.claude/pending-hooks/arm-link-verified-gate.sh` from a non-sandboxed shell; the same
+  script also arms link-verified-gate.py.
