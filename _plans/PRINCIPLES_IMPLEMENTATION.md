@@ -171,10 +171,14 @@ that re-measures the rendered page rather than trusting the builder's numbers). 
       5/5: white-only-web, reference-measure, cloudflare-link, link-verified and no-bash-handoff are
       all claimed in law AND wired, and none is flagged. Surfaces at SessionStart, ranked first in
       the worst-items line.
-- [ ] C2. IN FLIGHT, workflow `wf_9dd7fd5d-c6b`. Target `_rules/DB_SCHEMA.md` plus a
-      `_rules/LESSONS_LEARNED.md` entry, so the lessons injector fires on migration edits.
-- [ ] C3. IN FLIGHT, workflow `wf_9dd7fd5d-c6b`. Scoped to LAW.md only, only rows the 15 research
-      files already support, with the omitted topics listed rather than invented.
+- [x] C2. DONE, commit a3cb1de98. verified: `_rules/DB_SCHEMA.md:193` is section 9, "`supabase/migrations`
+      is a history of intents, not a description of the database", and `_rules/LESSONS_LEARNED.md:43`
+      carries the matching entry with a File(s) line naming supabase/migrations and the snapshot, so the
+      lessons injector fires when a session edits either.
+- [x] C3. DONE, commit 466b6840c. verified: `_backend-system/LAW.md` exists, 42,843 bytes, 16 sections,
+      128 table lines. The agent read all 15 research files and froze 105 decision rows, cross-checked
+      against what actually shipped today so it is not born stale. The README promised this file since
+      2026-07-16 and it had never existed.
 - [x] C4. DONE, commit 6e7d703f8. verified: `CLAUDE.md` precedence chain now has 9 tiers with
       **STATUTORY AND SAFETY FLOORS** inserted at 2, directly under the owner's live ask and above
       hooks, LOCKFILE and taste. Membership is deliberately closed until the owner extends it:
@@ -185,8 +189,11 @@ that re-measures the rendered page rather than trusting the builder's numbers). 
       intent. The worked example is in the tier text: the owner rejected the RING, not keyboard
       users knowing where they are, so the answer is a non-ring treatment shown for approval.
       Chain tail renumbered 3 through 9.
-- [ ] C5. IN FLIGHT, workflow `wf_9dd7fd5d-c6b`. Two sections only, every item re-checked against the
-      repo before it goes in, since several of the source facts were fixed earlier today.
+- [x] C5. DONE, commit 86b99f2b1. verified: `_plans/LAUNCH.md` exists, 6,010 bytes, two sections.
+      Every item was re-checked live rather than copied from my brief, and the agent CORRECTED two of
+      my facts in the process: the kill-test count is 19 not 21, and cover-photo sharing is worse than
+      I said, up to FOUR salons on a single Unsplash URL rather than two. It also found my citation for
+      the phone-verification gap was wrong and replaced it with the real TODO locations.
 - [x] C6. DONE, commit 47a34e84a. verified: `grep -c` on `~/.claude/settings.json` returns 1 for
       each of the seven gate names; the four PreToolUse ones sit in the new
       `"matcher": "Write|Edit|MultiEdit"` group at `settings.json:1246`, the three Stop ones in the
@@ -211,13 +218,22 @@ that re-measures the rendered page rather than trusting the builder's numbers). 
 
 ## Batch D , asks that need the OWNER, stated as concrete forks not vague punts
 
-- [ ] D1. IN FLIGHT, workflow `wf_9dd7fd5d-c6b`. Building ONE non-ring `:focus-visible` treatment
-      (keyboard only, never on mouse), staying inside `no-focus-ring-gate.py` rather than disabling it,
-      with two screenshots as the deliverable: focused via Tab, and nothing via mouse click.
-      This is the worked example of the new precedence tier 2, so it is built and SHOWN, not decided.
+- [x] D1. BUILT AND SHOWN, commit fb3184bee. AWAITING THE OWNER'S EYE, which is the point: this is a
+      visible change, so it is shown rather than decided.
+      Treatment: a 3px ink INSET LEFT EDGE (`box-shadow: inset 3px 0 0 0 #0A0A0A` at
+      `app/globals.css:440`), not an outline, not a spread glow. The existing no-ring block is
+      untouched, so `outline: none` still holds everywhere.
+      verified BY ME, not taken from the agent: keyboard focus on the Coiffeur pill reports
+      `boxShadow: rgb(10,10,10) 3px 0 0 0 inset`, `outline: none`, `:focus-visible` true, and the bar
+      is visible in the screenshot on the pill's left edge only. Then a REAL mouse click, via the
+      browser's click tool rather than a synthetic event, returns `focusVisible: false` and
+      `boxShadow: none`. So keyboard users get a cue and mouse users see nothing, which is the split
+      the owner's three rejections were actually about.
       I will implement a NON-ring treatment and show it; you look and keep or kill it.
-- [ ] D2. Salon photography is stock. Two salons share one image. Real photos are a content job
-      only you can start.
+- [ ] D2. OWNER FORK, and the only genuine one left. CORRECTED by the C5 agent's live query: it is not
+      two salons sharing one image, it is up to FOUR salons on a single Unsplash URL, plus another set
+      of four, another of three, another of two. `salon_photos` still has 0 rows for 28 salons. No code
+      change can fix this: it needs real photographs of the real businesses, which only you can commission.
 
 ## Unplanned additions
 
