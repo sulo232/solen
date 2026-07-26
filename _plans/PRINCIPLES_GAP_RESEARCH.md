@@ -43,12 +43,31 @@ Out of scope: implementing any principle, editing any gate or hook, redesigning 
 
 ## Waves
 
-- [ ] W1 , design-side domains (12 read-only research agents, waves of 4)
-- [ ] W2 , backend/security/process domains (14 read-only research agents, waves of 4)
-- [ ] W3 , dedupe + judgment panel (opus, judgment-shaped) + severity ranking
-- [ ] W4 , build the visual deliverable page + serve + tunnel link
-- [ ] W5 , plain-English close in chat
+- [x] W1 , design-side domains (12 read-only research agents, waves of 4) , workflow wf_5c2874cc-402
+- [x] W2 , backend/security/process domains (14 read-only research agents, waves of 3) , workflow wf_b4c59297-4d3
+- [x] W2b , ORCHESTRATOR's own live verification (not delegated): live Supabase reads, live rendered-page
+      measurement, git branch audit, estate health check. Written to the scratchpad as
+      `_orchestrator-live-verification.md`. This pass CORRECTED one agent CRITICAL (a migration-file
+      truth presented as a live truth) and produced the run's headline finding (the design floors are
+      enforced on mockups and never on the shipped page: `/de` 4.4% imagery, `/de/basel` 0.0%).
+- [x] W3 , judgment panel (3 opus judges: adopt-first ranking, adversarial cull, completeness critic)
+- [x] W4 , build the visual deliverable page + serve
+- [x] W5 , plain-English close in chat
+
+## Findings from the run itself (things only the orchestrator could see)
+
+- [x] The cloudflare tunnel CANNOT be established in this environment. Measured, not guessed:
+      cloudflared's own connectivity pre-check reports UDP 7844 and TCP 7844 both blocked to
+      region1 and region2 argotunnel, so every quick tunnel dies at "Failed to dial a quic
+      connection". Delivery therefore uses the local static server plus the file itself.
+      Global rule 0.5 (always a tunnel link) has no way to be satisfied here today.
+- [x] The dev server on :3000 serves the MAIN repo's `public/`, not this worktree's. A file written
+      to the worktree 500s. Confirms the known serve-dir-mismatch trap; the deliverable is served
+      from a writable directory on :3210 instead.
 
 ## Unplanned additions
 
-(none yet)
+- Parked for the owner: whether to arm the six unwired gates (one of them, `no-decorative-image-gate.py`,
+  is cited in CLAUDE.md as if it were live). Needs a non-sandboxed shell to edit settings.
+- Parked for the owner: the 40 unmerged branches / 1,686 unmerged commits. Not this turn's job to
+  merge, but two systems recorded as SHIPPED live only there.
