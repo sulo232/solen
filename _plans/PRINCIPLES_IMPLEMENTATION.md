@@ -81,12 +81,29 @@ returns; none is ticked from this narrative.
 that re-measures the rendered page rather than trusting the builder's numbers). Agent last wrote at
 23:57. Not parallelised, because parallel agents on frontend work is banned in this estate.
 
-- [ ] B1. SalonCard renders `cover_photo_url` in the 5:4 slot
-- [ ] B2. The A3 lock comment is rewritten to record the 2026-07-26 supersession
-- [ ] B3. `TASTE_LOG.md` gets the dated entry so no session reverts it
-- [ ] B4. All-caps comes off the card name, the category pills and the city eyebrow
-- [ ] B5. The city page's font sizes collapse from 6 to 4
-- [ ] B6. Re-measure the rendered page against the floors and record the numbers
+- [x] B1. DONE, commit 7035105e7. verified: I re-measured the rendered /de/basel myself at 390x844
+      after the agents finished, entrance animations settled: imageryPct **45.4%** against a ~33% floor,
+      20 `<img>` on the page against 0 before. The independent verifier measured 45.35% separately.
+- [x] B2. DONE, commit 7035105e7. verified: `components-legacy/SalonCard.tsx:116` and `:172` both
+      carry a "SUPERSEDED 2026-07-26" block, rewritten in place so the 2026-05-03 history is still
+      walkable rather than deleted.
+- [x] B3. DONE, commit ebeb92d32. verified: `_design-system/TASTE_LOG.md:418` reads
+      "## 2026-07-26 , SalonCard imagery: the A3 photo lock is superseded by FLOORS LAW 2".
+- [x] B4. DONE, commits 7035105e7 and 589eea2d9. verified: my own leaf-node count on the rendered
+      page is **10 uppercase elements, down from 56**. All 10 are `SalonBadge.tsx`'s "Top" and
+      "Walk-in", which the verifier proved untouched via `git log` (last change e97d6906f, predating
+      all three commits) and which is shared with the owner dashboard, so it was correctly left out
+      of a treatment-only pass. Named here rather than quietly counted as done.
+- [x] B5. DONE, commits 7035105e7 and 589eea2d9. verified: my own measurement returns
+      **[25, 15, 14, 12] = 4 sizes**, against [47, 25, 15, 14, 13, 12] = 6 before. The 47px went with
+      the placeholder block. sr-only nodes excluded (the skip link reports 16px behind a
+      `clip: rect(0,0,0,0)`), which the verifier caught independently.
+- [x] B6. DONE. verified: measured twice by two parties. Mine (this turn, animations settled):
+      imagery 45.4%, sizes 4, caps 10, imgs 20. The independent verifier's: imagery 45.35%
+      (149286/329160 px2), sizes 4, caps 10. It also forced the NO-PHOTO branch to render by patching
+      `window.fetch` to strip `cover_photo_url` from a live response (no DB write, no file edit) and
+      confirmed the fallback is sunken bg + Scissors category icon + initial, never a bare grey box.
+      `npx tsc --noEmit` clean, run twice.
 
 ## Batch C , the law layer (process, not product)
 
