@@ -21,15 +21,17 @@ export const metadata: Metadata = {
 // V3-D73 (2026-05-18) — Premium production polish per advanced-UI/UX doc audit.
 // `viewport-fit=cover` enables `env(safe-area-inset-*)` to work edge-to-edge
 // (without it, those values silently no-op on devices with notches/dynamic island).
-// `maximumScale=1 + userScalable=false` locks the structural UI so accidental
-// pinch-zoom or double-tap doesn't break the grid system. Content pinch-zoom on
-// specific elements (photos, maps) still works via touch-action: pinch-zoom on
-// those elements if needed.
+// A3-viewport-zoom (2026-07-26, SUPERSEDES the maximumScale/userScalable lock this
+// comment used to describe): removed `maximumScale=1` and `userScalable=false`.
+// That pair blocked a low-vision user from pinch-zooming the ENTIRE site, WCAG
+// 1.4.4 Resize Text (AA) failure F102. Checked for a component that genuinely
+// needs gesture protection (map/gallery): both mapbox-gl instances
+// (SalonLocation.tsx, NearbyMap.tsx) already run `interactive: false`, mapbox's
+// own touch handling, not the document viewport, so nothing here actually
+// depended on the sitewide lock. None added.
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
   viewportFit: "cover",
   themeColor: "#F4F4F6",
 };
