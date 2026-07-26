@@ -106,6 +106,11 @@ export interface SalonDetail {
   quartier: string;
   address: string;
   postal_code: string;
+  // A6-address-locality (2026-07-27): joined from salons.city_id -> cities.id
+  // so JSON-LD (lib/seo.ts generateSalonSchema) can render the salon's real
+  // city instead of a hardcoded "Basel". Null when a salon has no city set.
+  city_id?: string | null;
+  cities?: { name_de: string; name_en: string; name_fr: string; name_it: string } | null;
   latitude: number;
   longitude: number;
   phone: string | null;

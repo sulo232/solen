@@ -61,7 +61,10 @@ export async function loadSalonDetailWithAccess(
   const { data: salon, error } = await supabase
     .from("salons")
     .select(
-      "id, owner_id, is_active, name, slug, description_de, description_en, about_text_de, about_text_en, about_text_fr, about_text_it, categories, quartier, address, postal_code, latitude, longitude, phone, website_url, instagram_url, tiktok_url, cover_photo_url, gallery_urls, opening_hours, average_rating, review_count, last_minute_discount_percent, accepts_online_payment, free_cancel_hours, booking_confirmation_mode, instant_booking_enabled, pet_friendly, kid_friendly, wheelchair_accessible, near_public_transport, lgbtq_friendly, woman_owned, family_owned, student_discount, wifi_friendly, is_featured, parent_salon_id, walkin_enabled, timezone, verification_warnings, warning_count, frozen_at, frozen_reason"
+      // city_id + cities(...) added for A6-address-locality (2026-07-27): the
+      // salon's real city, joined via the salons.city_id -> cities.id FK, so
+      // lib/seo.ts generateSalonSchema can stop hardcoding "Basel".
+      "id, owner_id, is_active, name, slug, description_de, description_en, about_text_de, about_text_en, about_text_fr, about_text_it, categories, quartier, address, postal_code, city_id, cities(name_de, name_en, name_fr, name_it), latitude, longitude, phone, website_url, instagram_url, tiktok_url, cover_photo_url, gallery_urls, opening_hours, average_rating, review_count, last_minute_discount_percent, accepts_online_payment, free_cancel_hours, booking_confirmation_mode, instant_booking_enabled, pet_friendly, kid_friendly, wheelchair_accessible, near_public_transport, lgbtq_friendly, woman_owned, family_owned, student_discount, wifi_friendly, is_featured, parent_salon_id, walkin_enabled, timezone, verification_warnings, warning_count, frozen_at, frozen_reason"
     )
     .eq(isUuid ? "id" : "slug", slug)
     .single();
