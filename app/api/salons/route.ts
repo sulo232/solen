@@ -693,7 +693,15 @@ export async function POST(request: NextRequest) {
           categories,
           address,
           phone: phone || null,
-          // phone_verified: phone_verified || false, // [FIX] Bypassing schema cache error (defaults to false in DB)
+          // 2026-07-27: corrected comment, the old "[FIX] Bypassing schema cache
+          // error (defaults to false in DB)" was wrong. Checked against the live
+          // information_schema: public.salons has NO phone_verified column at all,
+          // it was never a schema-cache issue. TODO (named dependency, needs an
+          // owner-approved migration): ALTER TABLE public.salons ADD COLUMN
+          // phone_verified boolean NOT NULL DEFAULT false; then uncomment the line
+          // below. See app/api/auth/verify-phone/check/route.ts for the matching
+          // TODO on the OTP-check side (it now returns persisted:false).
+          // phone_verified: phone_verified || false,
           // email: email || user.email || null, // [FIX] Field not in public.salons schema
           cover_photo_url: cover_photo_url || null,
           gallery_urls: gallery_urls?.filter(Boolean) || [],
