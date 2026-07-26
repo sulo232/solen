@@ -3,28 +3,61 @@
 **Owner ask (2026-07-26, verbatim):** "go research me all the missing principle on each design or wherevre yk all the files not only design or how u output stuf or backend security idk all of em its a multi hour research and comparing loop session one u got all the file and analyzed evrth and researched and make me a concrete list one in all details and here on text tell me in plain english and what we should add im expecting 100 or more important stuff concrete okay use subgents alot and also subagents for opinion etc go"
 
 **Close condition (binary, graded):**
-- [ ] C1 , 100+ concrete MISSING-principle items delivered, each with: the principle text ready to paste, why (first principles), evidence the gap bites (file:line or a number), proof of absence (what was searched), where it should live, how it gets enforced.
-- [ ] C2 , every item passes the not-already-covered test (a named search that came back empty, or a named partial with the delta stated).
-- [ ] C3 , coverage spans ALL estate areas, not just design: backend, security, privacy, data, API, performance, observability, testing, marketplace/trust, agent-output/communication, meta/law-system.
-- [ ] C4 , opinion/judgment subagents rank the list (severity x effort) so it is actionable, not a dump.
-- [ ] C5 , deliverable = a SERVED VISUAL PAGE (taste-book grammar) + plain English in chat, same turn. Not a bare markdown file.
-- [ ] C6 , closing report re-reads the original message and ticks every atomic box.
+- [x] C1 , **276 delivered against a target of 100.** 21 critical, 94 high, 111 medium, 50 low.
+      Every item carries: paste-ready principle text, the first-principles why, local evidence,
+      the absence proof, where it should live, and how it would be enforced.
+- [x] C2 , every finding carries an `absence_proof` (the exact greps run) and an `existing_coverage`
+      field that is either "none" or "partial: <file> covers X but does NOT say Y" with the delta named.
+- [x] C3 , 26 topics: 9 design, 4 people/fairness, 8 backend/security/privacy, 3 engineering,
+      2 meta, plus the orchestrator's own reporting list. Not design-only.
+- [x] C4 , three opus judgment passes (adopt-first ranking, adversarial cull, completeness critic).
+- [x] C5 , served visual page at `/principles/` on :3210, repo copy at
+      `public/_research/missing-principles/index.html`. Measured against the estate's own floors:
+      4 font sizes, 2 weights, anchor ratio 1.87, bold share 20.4%, no horizontal overflow,
+      no dark mode, no em-dashes. Plain English delivered in the same turn.
+- [x] C6 , closing report re-reads the original message and ticks every atomic box.
+
+## Delivery record (for the closing report and for any session that resumes this)
+
+- Page (repo copy): `public/_research/missing-principles/index.html`
+- Page (served copy): `/Users/sulo/Documents/solen-mobile/_design-system/captures/principles/index.html`
+  served on port 3210 by the "Mockup delivery (mobile captures)" launch config.
+- Raw research corpus: `_design-system/research/missing-principles-2026-07-26/` (26 JSON files,
+  the digest, the orchestrator's live verification, a README with the method and its honest limits).
+- Local link that works on the owner's own Mac: http://localhost:3210/principles/
+- NO tunnel link is possible this session. Measured, not assumed: cloudflared's connectivity
+  pre-check reports UDP 7844 and TCP 7844 both blocked to region1 and region2 argotunnel, and
+  every quick tunnel dies at "Failed to dial a quic connection: timeout: no recent network
+  activity". Global rule 0.5 cannot be satisfied from this environment.
+- Why not the usual :3000 route: the dev server on 3000 serves the MAIN repo's `public/`, not this
+  worktree's. A probe file written here 500s there. The sandbox cannot write to the main repo's
+  public directory, so delivery moved to a writable directory served on 3210.
 
 ## Atomic asks (from the owner message)
 
-- [ ] A1 , research missing principles for DESIGN
-- [ ] A2 , research missing principles "not only design" , every other file/area in the estate
-- [ ] A3 , research missing principles for HOW I OUTPUT STUFF (communication / reporting / verification)
-- [ ] A4 , research missing principles for BACKEND SECURITY
-- [ ] A5 , "all of em" , the remaining areas (data, API, perf, observability, privacy, testing, marketplace, meta/law)
-- [ ] A6 , get ALL the files first and analyze everything (grounded, not from memory)
-- [ ] A7 , research + COMPARE (against outside state-of-the-art, not just internal opinion)
-- [ ] A8 , multi-hour LOOP session (waves, not one pass)
-- [ ] A9 , one concrete list, in full detail
-- [ ] A10 , plain English here in chat, saying what we should add
-- [ ] A11 , 100+ items, concrete
-- [ ] A12 , use subagents a lot
-- [ ] A13 , use subagents for OPINION too (judgment panel)
+- [x] A1 , DESIGN: 9 topics (colour/tokens, typography, layout/geometry, hierarchy/density,
+      motion, states/forms, imagery/icons, navigation, responsive/desktop) = 88 principles.
+- [x] A2 , "not only design": 17 more topics across people/fairness, backend, engineering and meta.
+- [x] A3 , HOW I OUTPUT STUFF: two independent passes, one research agent (9 findings) and the
+      orchestrator's own list written after reading the whole reporting doctrine (14 findings),
+      deliberately kept separate so the overlap is visible.
+- [x] A4 , BACKEND SECURITY: authz/RLS, input/injection/abuse, secrets/webhooks = 28 principles,
+      plus a live database audit by the main thread.
+- [x] A5 , "all of em": data/money, API contracts, performance, observability, privacy/Swiss law,
+      testing/release, frontend architecture, marketplace trust, SEO/email, the law system itself.
+- [x] A6 , grounded: every agent read the existing law first and proved absence with named greps;
+      the orchestrator additionally queried the live database, measured three rendered routes,
+      and audited git, GitHub and the estate health check.
+- [x] A7 , compared outward: WCAG success criteria by number, OWASP, nFADP and GDPR articles,
+      Swiss PBV price-indication law, Google Web Vitals, Postgres and Stripe docs, named per finding.
+- [x] A8 , multi-hour, in waves: 12 agents in 3 waves, then 14 in 5 waves, then 3 judges. About
+      3 hours 15 minutes wall clock.
+- [x] A9 , one concrete list in full detail: the served page, plus the raw corpus in the repo.
+- [x] A10 , plain English in chat, with what to add.
+- [x] A11 , 276 items against a target of 100, 227 of them verified against real code or live data.
+- [x] A12 , 29 subagents total (26 research + 3 judges).
+- [x] A13 , opinion subagents: three opus judges, deliberately given conflicting jobs so they
+      would disagree (rank it, attack it, find what it missed).
 
 ## Premortem (gate 3, run before dispatch)
 
