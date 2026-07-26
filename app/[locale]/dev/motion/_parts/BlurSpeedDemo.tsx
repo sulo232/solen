@@ -15,12 +15,16 @@
 // for Demo 6, never a fabricated row) + the real `ToggleCircle` row control + a commit CTA in the
 // real ink-pill shape.
 //
-// Column A = 420ms (ENTER RECIPE, `ENTER_DURATION` re-exported verbatim from
-// `primitives/motion.ts`, never re-typed). Column B = 280ms (SPEED LAW reveal) with the IDENTICAL
-// opacity/scale/blur recipe , duration is the ONLY variable between A and B. Column C = 280ms with
-// blur removed, the CONTROL per finding 10 (Chang & Ungar, UIST '93: motion blur buys
-// comprehensibility at speed): if B reads the same as A but C reads worse than B, the blur was
-// doing the work, not the extra 140ms.
+// DECIDED 2026-07-26: the owner picked 280ms with the blur kept. `ENTER_DURATION` in
+// `primitives/motion.ts` is now 0.28s, so Column A can no longer read that constant, it would
+// silently show 280 in both A and B and the comparison would stop being a record of what was
+// actually compared. Column A is pinned to the literal `SUPERSEDED_ENTER_DURATION_S` (0.42,
+// superseded) instead. Column B = 280ms (SPEED LAW reveal, now the LOCKED value) with the
+// IDENTICAL opacity/scale/blur recipe , duration was the ONLY variable between A and B. Column C
+// = 280ms with blur removed, the CONTROL per finding 10 (Chang & Ungar, UIST '93: motion blur
+// buys comprehensibility at speed): B read the same as A while C read worse than B, so the blur
+// was doing the work, not the extra 140ms, which is why the blur stayed and only the duration
+// changed.
 //
 // Replay: each column reuses the exact `useDemoToggle(globalTick)` mechanic every other demo on
 // this page uses (so the page's own "Replay all" flips all three together, same as it flips every
@@ -34,7 +38,7 @@ import { RotateCcw } from "lucide-react";
 import ToggleCircle from "@/components-legacy/booking/ToggleCircle";
 import { PriceFrom } from "@/app/[locale]/_components/primitives";
 import { useDemoToggle } from "./useDemoToggle";
-import { GLIDE_EASE, ENTER_DURATION, SPEED_LAW_REVEAL_S } from "./speeds";
+import { GLIDE_EASE, SPEED_LAW_REVEAL_S, SUPERSEDED_ENTER_DURATION_S } from "./speeds";
 
 export interface DemoService {
   id: string;
@@ -135,11 +139,12 @@ export function BlurSpeedDemo({
         <div className="min-w-0">
           <p className="font-body text-[12px] font-semibold text-s-ink-3">Demo 7</p>
           <h3 className="mt-0.5 font-display text-[17px] font-semibold tracking-[-0.01em] text-s-ink">
-            Enter recipe vs speed law
+            Enter recipe vs speed law , DECIDED: 280ms, blur kept
           </h3>
           <p className="mt-1 font-body text-[13px] leading-[1.4] text-s-ink-2">
             A real booking step entering (title, services, Continue). Same opacity/scale/blur
-            recipe in every column, only the duration, and column C&apos;s blur, differ.
+            recipe in every column, only the duration, and column C&apos;s blur, differ. Column A
+            preserves the superseded 420ms value for the record.
           </p>
         </div>
         <button
@@ -154,15 +159,15 @@ export function BlurSpeedDemo({
 
       <div className="mt-4 space-y-3">
         <StepCard
-          label="420ms (ENTER RECIPE)"
-          durationS={ENTER_DURATION}
+          label="420ms (superseded ENTER RECIPE)"
+          durationS={SUPERSEDED_ENTER_DURATION_S}
           blur
           on={enterRecipe.on}
           onReplay={enterRecipe.toggle}
           services={services}
         />
         <StepCard
-          label="280ms (SPEED LAW reveal)"
+          label="280ms (chosen, SPEED LAW reveal)"
           durationS={SPEED_LAW_REVEAL_S}
           blur
           on={speedLaw.on}
@@ -180,9 +185,9 @@ export function BlurSpeedDemo({
       </div>
 
       <p className="mt-3 font-body text-[12px] leading-[1.4] text-s-ink-2">
-        420ms costs 140ms more than 280ms on every booking step. What the owner is choosing: keep
-        420ms, or move to 280ms with the blur intact. Column C is a control, not a third option ,
-        it shows what 280ms looks like if the blur were also dropped.
+        420ms cost 140ms more than 280ms on every booking step for no perceptibility gain, so the
+        owner picked 280ms with the blur kept (Column B). Column C was the control, not a third
+        option , it showed what 280ms looks like if the blur were also dropped.
       </p>
     </section>
   );

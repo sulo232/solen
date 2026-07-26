@@ -21,7 +21,7 @@
  *   opacity  0    -> 1
  *   scale    0.96 -> 1
  *   filter   blur(8px) -> blur(0px)
- * duration 420ms, ease `glide` cubic-bezier(0.16, 1, 0.3, 1), same token as
+ * duration 280ms, ease `glide` cubic-bezier(0.16, 1, 0.3, 1), same token as
  * `ease-glide` in tailwind.config.js (transitionTimingFunction.glide).
  *
  * Never hand-roll `initial={{opacity:0}} animate={{opacity:1}}` per surface,
@@ -35,8 +35,8 @@ import { useReducedMotion, type Transition, type Variants } from "motion/react";
 /** Locked "glide" ease, cubic-bezier(0.16, 1, 0.3, 1), long-distance smooth, no overshoot. */
 export const GLIDE_EASE = [0.16, 1, 0.3, 1] as const;
 
-/** Locked enter duration, 420ms (MOTION.md "Recommended" tier). */
-export const ENTER_DURATION = 0.42;
+/** Locked enter duration, 280ms (owner pick, Demo 7, 2026-07-26: 280ms with blur kept). */
+export const ENTER_DURATION = 0.28;
 
 const enterTransition: Transition = { duration: ENTER_DURATION, ease: GLIDE_EASE };
 
@@ -129,8 +129,8 @@ export function butterPress(tier: PressTier = "cta"): string {
  * Step-swap tier (owner 2026-07-09: "the transition between the service and
  * to choose the stylist is kinda too much motion"). A WHOLE-SCREEN swap must
  * move LESS than a single card entering, not the same distance, so this is
- * its own gentler tier, not the ENTER RECIPE's 0.96/420ms reused. The ENTER
- * RECIPE itself (0.96 / 8px blur / 420ms) stays LOCKED and is untouched by
+ * its own gentler tier, not the ENTER RECIPE's 0.96/280ms reused. The ENTER
+ * RECIPE itself (0.96 / 8px blur / 280ms) stays LOCKED and is untouched by
  * this, this tier only applies inside `useStepSwapMotion`.
  */
 const STEP_SWAP_SCALE_FROM = 0.99;
@@ -142,7 +142,7 @@ const stepSwapTransition: Transition = { duration: STEP_SWAP_DURATION, ease: GLI
  * an `AnimatePresence`-driven step/screen swap (`initial="enter"
  * animate="center" exit="exit"`). Blur is deliberately OMITTED, same as the
  * ENTER RECIPE would be here, for the reason below, and it is ALSO its own
- * gentler tier, not the ENTER RECIPE's 0.96/420ms: a full-screen swap moving
+ * gentler tier, not the ENTER RECIPE's 0.96/280ms: a full-screen swap moving
  * as far as a small card entering reads as "too much motion" (owner
  * 2026-07-09).
  *

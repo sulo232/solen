@@ -59,7 +59,7 @@ const ANY_ID = "any";
 const cardEnter = (i: number) => ({
   initial: { opacity: 0, scale: 0.96, filter: "blur(8px)" },
   animate: { opacity: 1, scale: 1, filter: "blur(0px)" },
-  transition: { duration: 0.42, ease: GLIDE, delay: i * 0.04 },
+  transition: { duration: 0.28, ease: GLIDE, delay: i * 0.04 },
 });
 
 function RatingLine({ rating, reviews }: { rating: number; reviews: number }) {

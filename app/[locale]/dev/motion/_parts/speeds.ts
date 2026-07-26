@@ -13,14 +13,19 @@ export { GLIDE_EASE, STAGGER_STEP, ENTER_DURATION };
 /**
  * Demo 7 (BlurSpeedDemo.tsx) , the ENTER RECIPE vs SPEED LAW contradiction (MOTION.md line 16 vs
  * line 119, TASTE_MOTION.md finding 3: "that is a side-by-side the owner can feel ... not a
- * question to answer in prose"). `ENTER_DURATION` above (0.42s / 420ms) is the locked ENTER RECIPE
- * value, re-exported verbatim, never re-typed. 280ms is the SPEED LAW's own "reveal" tier
- * (250-300ms) at the specific value the task brief asks the owner to feel against 420ms, a new
- * number this demo introduces on purpose (not re-derived from FAST_TIER/SLOW_TIER above, which
- * serve the unrelated feedback-vs-reveal comparison in demos 1-6).
+ * question to answer in prose"). DECIDED 2026-07-26: the owner picked 280ms with the blur kept,
+ * so `ENTER_DURATION` above is now 0.28s and Column B's value and the chosen value are the same
+ * number. Column A of the demo still needs to show the SUPERSEDED 420ms for the comparison to
+ * remain a meaningful record, so it is pinned to a literal below rather than reading
+ * `ENTER_DURATION` (which would now silently show 280 in both columns).
  */
 export const SPEED_LAW_REVEAL_MS = 280;
 export const SPEED_LAW_REVEAL_S = SPEED_LAW_REVEAL_MS / 1000;
+
+/** Superseded ENTER RECIPE value (owner picked 280ms 2026-07-26), preserved as a literal ONLY
+ * so Demo 7's Column A still renders the pre-decision 420ms for the record. Never import this
+ * anywhere else, real code uses `ENTER_DURATION` (now 0.28s). */
+export const SUPERSEDED_ENTER_DURATION_S = 0.42;
 
 /**
  * THE SPEED LADDER (page section 1). One row per candidate speed, same honest motion (a card
@@ -32,7 +37,7 @@ export const SPEED_LADDER: { ms: number; who: string }[] = [
   { ms: 150, who: "X uses this on 105 elements" },
   { ms: 250, who: "Airbnb uses this on 90 elements" },
   { ms: 300, who: "Airbnb uses this on 102 elements" },
-  { ms: 420, who: "our docs' most-used value (MOTION.md ENTER_RECIPE)" },
+  { ms: 420, who: "superseded MOTION.md ENTER_RECIPE (owner picked 280ms, 2026-07-26)" },
 ];
 
 /**

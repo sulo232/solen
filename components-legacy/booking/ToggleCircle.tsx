@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { Plus, Check } from 'lucide-react';
 import { motion, useReducedMotion, useAnimationControls } from 'motion/react'; // mockup-ok: shared ENTER RECIPE module (MOTION.md, owner-approved 2026-07-09), not new design exploration
-import { ENTER_RECIPE, ENTER_DURATION, GLIDE_EASE } from '@/app/[locale]/_components/primitives';
+import { ENTER_RECIPE, GLIDE_EASE } from '@/app/[locale]/_components/primitives';
 
 // mockup-ok: owner 2026-07-19, matches liftup-booking-services-tiered mockup
 // `.tog.pop{animation:tog-pop .42s var(--pop)}` / `@keyframes tog-pop{0%{transform:
@@ -11,8 +11,16 @@ import { ENTER_RECIPE, ENTER_DURATION, GLIDE_EASE } from '@/app/[locale]/_compon
 // mockup, where `--pop:cubic-bezier(0.34,1.56,0.64,1)`. Played imperatively (same
 // InteractiveStar pattern as RatingStars.tsx) so it fires exactly once, only on the
 // false->true selection edge, never on mount and never on deselect.
+// Duration corrected 2026-07-26 per THE SPEED LAW (MOTION.md): this is a PRESS, the
+// instant acknowledgement that a tap registered, not an entrance, so it takes the
+// press tier (80-100ms), not the old 420ms enter-recipe leftover.
 const POP_EASE = [0.34, 1.56, 0.64, 1] as const;
-const POP_DURATION = 0.42;
+const POP_DURATION = 0.09;
+
+// The most-repeated control in the booking flow is a state FLIP (unselected <-> selected
+// glyph swap), never an arrival, so it takes the SPEED LAW's snap tier (150ms, an in-place
+// flip), not the reveal-tier ENTER_DURATION this used to borrow.
+const SNAP_DURATION = 0.15;
 
 // B16 (owner 2026-07-09, "the check button goes down"): the old crossfade used
 // a spring + a 90deg `rotate` on BOTH icons (Plus 0->90, Check -90->0).
@@ -56,10 +64,10 @@ export default function ToggleCircle({
   // shown state is unchanged (scale 1, blur 0, same as ENTER_RECIPE.animate).
   const checkShown = reduce ? { opacity: 1 } : ENTER_RECIPE.animate;
   const checkHidden = reduce ? { opacity: 0 } : { opacity: 0, scale: 0.6, filter: 'blur(6px)' };
-  const transition = reduce ? { duration: 0 } : { duration: ENTER_DURATION, ease: GLIDE_EASE };
+  const transition = reduce ? { duration: 0 } : { duration: SNAP_DURATION, ease: GLIDE_EASE };
   return (
     <motion.span // mockup-ok: owner 2026-07-19, matches liftup-booking-services-tiered mockup (tog-pop)
-      className={`relative shrink-0 ${box} rounded-full grid place-items-center transition-colors duration-300 ${
+      className={`relative shrink-0 ${box} rounded-full grid place-items-center transition-colors duration-150 ${
         selected /* selected-ok: check glyph */ ? 'bg-s-ink text-white' : 'border border-s-border text-s-ink-2'
       }`}
       aria-hidden

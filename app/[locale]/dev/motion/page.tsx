@@ -58,8 +58,9 @@ export default async function MotionPage({
             documented system (MOTION.md) locks 180 to 520ms, 2 to 3x slower. Seven demos below.
             The first six show the SAME interaction twice: &quot;Today&quot; at the
             documented/shipped speed, &quot;Proposed&quot; at the measured speed. Demo 7 is a
-            different, three-way comparison (THE ENTER RECIPE vs THE SPEED LAW, MOTION.md), with
-            no verdict, since that one is the owner&apos;s call. Tap any Play button to trigger a
+            different, three-way comparison (THE ENTER RECIPE vs THE SPEED LAW, MOTION.md);
+            DECIDED 2026-07-26, the owner picked 280ms with the blur kept, column A stays pinned
+            to the superseded 420ms for the record. Tap any Play button to trigger a
             demo, or &quot;Replay all&quot; above the list to trigger every demo at once. Demoed on
             real data
             for &quot;{salon.name}&quot; and {cardSalons.length} real top-rated salons, loaded live,

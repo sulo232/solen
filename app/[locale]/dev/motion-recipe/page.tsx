@@ -33,7 +33,7 @@ type Intensity = "subtle" | "recommended" | "strong";
 
 const RECIPE: Record<Intensity, { scale: number; blur: number; duration: number; ease: [number, number, number, number]; label: string }> = {
   subtle: { scale: 0.98, blur: 4, duration: 0.32, ease: GLIDE, label: "Subtle" },
-  recommended: { scale: 0.96, blur: 8, duration: 0.42, ease: GLIDE, label: "Recommended" },
+  recommended: { scale: 0.96, blur: 8, duration: 0.28, ease: GLIDE, label: "Recommended" },
   strong: { scale: 0.94, blur: 12, duration: 0.52, ease: GLIDE, label: "Strong" },
 };
 
