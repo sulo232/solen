@@ -93,7 +93,7 @@ export default function FilterBar({
               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handlePillClick(pill); } }}
               className={[
                 'snap-start flex items-center gap-1.5 px-3.5 py-1.5 rounded-pill text-[12px] font-heading whitespace-nowrap shrink-0 cursor-pointer',
-                'transition-colors duration-150 active:scale-[0.97]',
+                'transition-[colors,transform] duration-150 active:scale-[0.97]',
                 motionClass,
                 hoverLift,
                 active

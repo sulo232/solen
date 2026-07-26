@@ -168,7 +168,7 @@ function DropdownMenu({
         onClick={() => setOpen(!open)}
         className={cn(
           "inline-flex items-center gap-1 whitespace-nowrap font-body text-[14px] font-medium text-s-ink-2",
-          "rounded-full px-3 py-2 transition-colors duration-200 ease-glide",
+          "rounded-full px-3 py-2 transition-colors duration-150 ease-glide",
           "hover:bg-s-bg-sunken hover:text-s-ink",
           open && "bg-s-bg-sunken text-s-ink",
           "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
@@ -179,7 +179,7 @@ function DropdownMenu({
           size={14}
           strokeWidth={2.25}
           className={cn(
-            "transition-transform duration-200 ease-glide",
+            "transition-transform duration-150 ease-glide",
             open && "rotate-180",
           )}
           aria-hidden
@@ -602,7 +602,7 @@ export default function Header({ locale }: { locale: string }) {
               // mockup-ok: S3 fix, 40px -> 44px floor, icon glyph size unchanged (approved fixes-refined)
               // mockup-ok: rounded snapped, punch-list geometry sweep, TASTE_LOG.md:187 2026-07-15
               "grid h-11 w-11 shrink-0 place-items-center rounded-input border",
-              "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.94]",
+              "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.94] active:duration-[80ms]",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
               // V3-D101: invert over dark sections.
@@ -626,7 +626,7 @@ export default function Header({ locale }: { locale: string }) {
               // mockup-ok: S3 fix, 40px -> 44px floor, icon glyph size unchanged (approved fixes-refined)
               // mockup-ok: rounded snapped, punch-list geometry sweep, TASTE_LOG.md:187 2026-07-15
               "grid h-11 w-11 shrink-0 place-items-center rounded-input border",
-              "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.94]",
+              "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.94] active:duration-[80ms]",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
               isDark
@@ -724,7 +724,7 @@ export default function Header({ locale }: { locale: string }) {
             href={`/${locale}/about`}
             className={cn(
               "hidden md:inline-flex font-body text-[14px] font-medium text-s-ink-2",
-              "transition-colors duration-200 ease-glide hover:text-s-ink",
+              "transition-colors duration-150 ease-glide hover:text-s-ink",
               // V2-D62 (2026-05-15): same liquid-glass pill bloom as the category chips.
               // Without it the link reads as plain copy and people miss that it's clickable.
               "relative",
@@ -732,7 +732,7 @@ export default function Header({ locale }: { locale: string }) {
               "before:bg-white/30 before:backdrop-blur-[22px] before:backdrop-saturate-[1.7]",
               "before:shadow-[inset_0_1px_0_rgba(255,255,255,0.40),0_1px_3px_rgba(26,18,9,0.08)]",
               "before:scale-[0.6] before:opacity-0 before:content-['']",
-              "before:transition-[transform,opacity] before:duration-[280ms] before:ease-[cubic-bezier(0.4,1.4,0.4,1)]",
+              "before:transition-[transform,opacity] before:duration-150 before:ease-[cubic-bezier(0.4,1.4,0.4,1)]",
               "hover:before:scale-100 hover:before:opacity-100",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:rounded-sm",
             )}
@@ -749,7 +749,7 @@ export default function Header({ locale }: { locale: string }) {
             <Link
               href={`/${locale}/profile`}
               aria-label="Mein Konto"
-              className="relative hidden md:grid place-items-center w-9 h-9 shrink-0 overflow-hidden rounded-full border border-s-border bg-s-bg-sunken text-[13px] font-semibold text-s-ink transition-opacity duration-200 ease-glide hover:opacity-90 focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
+              className="relative hidden md:grid place-items-center w-9 h-9 shrink-0 overflow-hidden rounded-full border border-s-border bg-s-bg-sunken text-[13px] font-semibold text-s-ink transition-opacity duration-150 ease-glide hover:opacity-90 focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
             >
               <span aria-hidden>{accountInitial}</span>
               {avatarUrl ? (
@@ -799,13 +799,13 @@ export default function Header({ locale }: { locale: string }) {
               // V3-D421k (2026-06-06): rounded-SQUARE tile matching the home button.
               // V3-D421L (council 3/3): FLAT - no shadow (CONTROL_ELEVATION rule 3). Tap
               // target 40px; folds with the header on category-route scroll.
-              "md:hidden relative grid h-11 w-11 place-items-center rounded-input border transition-[transform,background-color,border-color] duration-200 ease-glide active:scale-[0.94] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+              "md:hidden relative grid h-11 w-11 place-items-center rounded-input border transition-[transform,background-color,border-color] duration-200 ease-glide active:scale-[0.94] active:duration-[80ms] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               isDark ? "border-white/30 bg-white/10 text-white" : "border-s-border bg-white text-s-ink",
             )}
           >
             <span
               className={cn(
-                "absolute inset-0 grid place-items-center transition-[opacity,transform] duration-[220ms] ease-glide",
+                "absolute inset-0 grid place-items-center transition-[opacity,transform] duration-150 ease-glide",
                 menuOpen ? "opacity-0 rotate-45 scale-[0.7]" : "opacity-100 rotate-0 scale-100",
               )}
               aria-hidden
@@ -815,7 +815,7 @@ export default function Header({ locale }: { locale: string }) {
             </span>
             <span
               className={cn(
-                "absolute inset-0 grid place-items-center transition-[opacity,transform] duration-[220ms] ease-glide",
+                "absolute inset-0 grid place-items-center transition-[opacity,transform] duration-150 ease-glide",
                 menuOpen ? "opacity-100 rotate-0 scale-100" : "opacity-0 -rotate-45 scale-[0.7]",
               )}
               aria-hidden
@@ -863,7 +863,8 @@ export default function Header({ locale }: { locale: string }) {
                     aria-selected={isActive}
                     className={cn(
                       "inline-flex h-10 shrink-0 items-center gap-2 rounded-full border px-4",
-                      "font-body text-[15px] leading-none transition-colors duration-150 ease-glide",
+                      "font-body text-[15px] leading-none transition-[colors,transform] duration-150 ease-glide",
+                      "active:scale-[0.98] active:duration-[80ms]",
                       "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
                       isActive
                         ? "border-s-bg-sunken bg-s-bg-sunken font-semibold text-s-ink"

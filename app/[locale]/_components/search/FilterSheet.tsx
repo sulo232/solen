@@ -611,7 +611,7 @@ export function FilterSheet(props: FilterSheetProps) {
       className={cn(
         "flex-1 rounded-pill border border-s-border bg-white px-6 py-3 text-center",
         "font-body text-[15px] font-medium leading-none tracking-[-0.005em] text-s-ink tabular-nums",
-        "transition-colors duration-150 ease-glide",
+        "transition-[colors,transform] duration-150 ease-glide",
         "hover:bg-s-bg-sunken active:scale-[0.98] active:duration-[80ms]",
       )}
     >

@@ -123,7 +123,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
                   onClick={() => toggleCat(opt.value)}
                   className={[
                     // mockup-ok: hook-enforced no-caps compliance fix (CLAUDE.md rule 10), ported from reviewed commit 37e703762
-                    "flex items-center gap-1.5 px-3 py-2 rounded-pill border text-[12px] font-heading transition-colors active:scale-[0.97]",
+                    "flex items-center gap-1.5 px-3 py-2 rounded-pill border text-[12px] font-heading transition-[colors,transform] active:scale-[0.97]",
                     active
                       ? "bg-s-ink text-white border-s-accent shadow-elevation-2"
                       : "border-s-border text-s-ink-2 hover:border-s-accent/50",

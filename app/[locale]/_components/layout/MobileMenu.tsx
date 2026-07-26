@@ -195,8 +195,8 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                   "border border-s-border bg-s-bg-surface",
                   "py-1.5 pl-1.5 pr-4 font-body text-[14px] font-semibold text-s-ink",
                   "shadow-[0_1px_2px_rgba(0,0,0,0.03)]",
-                  "transition-colors duration-150 ease-glide",
-                  "active:bg-s-bg-sunken",
+                  "transition-[colors,transform] duration-150 ease-glide",
+                  "active:bg-s-bg-sunken active:scale-[0.98] active:duration-[80ms]",
                 )}
               >
                 <span
@@ -224,7 +224,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                         onClick={() => handleCityPick(c.slug)}
                         className={cn(
                           "block w-full px-4 py-3 text-left font-body text-[14px]",
-                          "transition-colors active:bg-s-bg-sunken",
+                          "transition-[colors,transform] active:bg-s-bg-sunken active:scale-[0.98] active:duration-[80ms]",
                           isActive ? "font-bold text-s-ink" : "font-medium text-s-ink",
                         )}
                       >
@@ -250,7 +250,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                   "mb-4 flex items-center justify-between gap-4",
                   "rounded-[16px] bg-s-bg-surface p-4",
                   "shadow-[0_1px_3px_rgba(26,18,9,0.04)]",
-                  "transition-shadow duration-200 ease-glide",
+                  "transition-[box-shadow,transform] duration-200 ease-glide",
                   "hover:shadow-[0_4px_14px_rgba(26,18,9,0.08)]",
                   "active:scale-[0.98] active:duration-[80ms]",
                 )}
@@ -372,7 +372,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                 // V3-D168: padding p-5 → p-4 (tighter Fresha-style row)
                 "rounded-[16px] bg-s-bg-surface p-4",
                 "shadow-[0_1px_3px_rgba(26,18,9,0.04)]",
-                "transition-shadow duration-200 ease-glide",
+                "transition-[box-shadow,transform] duration-200 ease-glide",
                 "hover:shadow-[0_4px_14px_rgba(26,18,9,0.08)]",
                 "active:scale-[0.98] active:duration-[80ms]",
               )}

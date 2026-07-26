@@ -45,7 +45,7 @@ const tabPillVariants = cva(
   cn(
     "inline-flex items-center gap-1.5 shrink-0 select-none whitespace-nowrap",
     "rounded-full font-body",
-    "transition-[color,background-color,border-color,box-shadow] duration-150 ease-glide",
+    "transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-glide",
     "active:scale-[0.97] active:duration-[80ms]",
     "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
   ),

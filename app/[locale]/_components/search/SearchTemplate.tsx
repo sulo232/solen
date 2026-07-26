@@ -1230,6 +1230,7 @@ export default function SearchTemplate({
             aria-haspopup="dialog"
             className={cn(
               "flex w-full cursor-pointer items-center gap-3 rounded-pill border border-s-border bg-white px-3.5 text-left",
+              "transition-transform active:scale-[0.98] active:duration-[80ms]",
               // V3-D421L (council 3/3): FLAT at rest, no resting/hover shadow on white
               // chrome (CONTROL_ELEVATION rule 3). The pill lifts ONLY when pinned, i.e.
               // floating over scrolled content (the one earned shadow, now driven
@@ -1301,7 +1302,7 @@ export default function SearchTemplate({
                 // icon was hover:border-s-ink darkening the circular border to ink (iOS keeps :hover after a
                 // tap = a STUCK ink ring). Locked V3-D450 bans it -> sink the bg instead. Also drop the dead
                 // focus-ring utility (globals.css base already kills the outline; it was invisible anyway).
-                "text-s-ink transition-all duration-300 ease-glide hover:bg-s-bg-sunken",
+                "text-s-ink transition-all duration-150 ease-glide hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms]",
                 "h-11 w-11", // mockup-ok: S3 fix, 36px -> 44px floor (approved fixes-refined); was V3-D421d "map icon stays full size when pinned"
               )}
             >
@@ -1352,7 +1353,7 @@ export default function SearchTemplate({
                 size={16}
                 strokeWidth={2}
                 className={cn(
-                  "absolute transition-all duration-300 ease-glide",
+                  "absolute transition-all duration-150 ease-glide",
                   activeFilterCount > 0
                     ? "scale-50 rotate-90 opacity-0"
                     : "scale-100 rotate-0 opacity-100",
@@ -1362,7 +1363,7 @@ export default function SearchTemplate({
                 size={16}
                 strokeWidth={2.5}
                 className={cn(
-                  "absolute transition-all duration-300 ease-glide",
+                  "absolute transition-all duration-150 ease-glide",
                   activeFilterCount > 0
                     ? "scale-100 rotate-0 opacity-100"
                     : "scale-50 -rotate-90 opacity-0",
@@ -1498,7 +1499,7 @@ export default function SearchTemplate({
                     }}
                     className={cn(
                       "block w-full rounded-[10px] px-3 py-2 text-left",
-                      "font-body text-[14px] transition-colors duration-150",
+                      "font-body text-[14px] transition-[colors,transform] duration-150 active:scale-[0.98] active:duration-[80ms]",
                       opt.value === sort
                         ? "bg-s-bg-sunken font-semibold text-s-ink"
                         : "text-s-ink hover:bg-s-bg-sunken",
@@ -1823,7 +1824,7 @@ export default function SearchTemplate({
                   type="button"
                   onClick={() => setMobileView("list")}
                   aria-label={t("backToList")}
-                  className="-my-2.5 grid h-11 w-8 shrink-0 place-items-center text-s-ink transition-transform active:scale-95"
+                  className="-my-2.5 grid h-11 w-8 shrink-0 place-items-center text-s-ink transition-transform active:scale-95 active:duration-[80ms]"
                 >
                   <ArrowLeft size={20} strokeWidth={2} aria-hidden />
                 </button>
@@ -1832,7 +1833,7 @@ export default function SearchTemplate({
                   onClick={() => openSearchOverlay(false)}
                   aria-label={tChrome("editSearch")}
                   aria-haspopup="dialog"
-                  className="flex min-w-0 flex-1 items-center gap-2.5 text-left"
+                  className="flex min-w-0 flex-1 items-center gap-2.5 text-left transition-transform active:scale-[0.98] active:duration-[80ms]"
                 >
                   <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
                   {/* Two lines (query/category + city), matching the normal bar's content; the pill's
@@ -2193,7 +2194,7 @@ function C1State({
       <button
         type="button"
         onClick={primary.onClick}
-        className="mt-6 flex w-full max-w-xs items-center justify-center gap-2 rounded-btn bg-s-ink px-6 py-3.5 font-body text-[15px] font-semibold text-white transition-colors duration-150 hover:bg-black"
+        className="mt-6 flex w-full max-w-xs items-center justify-center gap-2 rounded-btn bg-s-ink px-6 py-3.5 font-body text-[15px] font-semibold text-white transition-[colors,transform] duration-150 hover:bg-black active:scale-[0.97] active:duration-[80ms]"
       >
         {primary.Icon ? <primary.Icon size={18} strokeWidth={2} /> : null}
         {primary.label}

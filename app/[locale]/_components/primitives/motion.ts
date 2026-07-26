@@ -109,9 +109,18 @@ export function useStaggerVariants(): { container: Variants; item: Variants } {
 
 /**
  * butterPress, the button/row micro-interaction that pairs with the enter
- * recipe (MOTION.md: "Buttons additionally get the butter transition"): bg +
- * transform on `glide` ~180ms, hover lifts 1px, press scales down per the
- * 3-tier press rule (SOURCE section 6): CTA/card 0.97, row 0.98, icon-only 0.94.
+ * recipe (MOTION.md: "Buttons additionally get the butter transition"): the
+ * HOVER lift (1px, plus any bg/border colour a caller varies) is a hover-tier
+ * movement and keeps the base `transition-all duration-[180ms]`. The PRESS is
+ * a different tier (THE SPEED LAW, 80-100ms, Miller 1968) and must not share
+ * the hover duration, so `active:duration-[80ms]` overrides it the moment the
+ * control is pressed. Press scales down per the 3-tier press rule (SOURCE
+ * section 6): CTA/card 0.97, row 0.98, icon-only 0.94. Kept as `transition-all`
+ * rather than narrowed to `transition-transform`: it already includes
+ * `transform` so the press scale animates correctly, and at least one caller
+ * (StaffStep's selected-row `bg-s-bg-sunken`/`bg-white` swap) relies on this
+ * same property list to fade its background colour, so narrowing would drop
+ * that fade.
  */
 export type PressTier = "cta" | "row" | "icon";
 
@@ -122,7 +131,7 @@ const PRESS_SCALE: Record<PressTier, string> = {
 };
 
 export function butterPress(tier: PressTier = "cta"): string {
-  return `transition-all duration-[180ms] ease-glide hover:-translate-y-[1px] ${PRESS_SCALE[tier]}`;
+  return `transition-all duration-[180ms] ease-glide hover:-translate-y-[1px] ${PRESS_SCALE[tier]} active:duration-[80ms]`;
 }
 
 /**

@@ -288,7 +288,7 @@ function CookieBanner() {
             className={cn(
               "shrink-0 grid h-9 w-9 place-items-center rounded-full",
               "bg-white border border-s-border text-s-ink-2 cursor-pointer",
-              "hover:bg-s-bg-sunken hover:text-s-ink transition-colors duration-150 ease-snap",
+              "hover:bg-s-bg-sunken hover:text-s-ink transition-[colors,transform] duration-150 ease-snap",
               "active:scale-95 active:duration-[80ms]",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               "md:hidden",
@@ -322,7 +322,7 @@ function CookieBanner() {
               "flex-1 md:flex-none font-body font-semibold text-[14px] text-s-ink",
               "bg-white border border-s-border cursor-pointer",
               "px-4 py-2.5 md:px-5 md:py-3 rounded-full",
-              "hover:bg-s-bg-sunken transition-colors duration-150 ease-snap",
+              "hover:bg-s-bg-sunken transition-[colors,transform] duration-150 ease-snap",
               "active:scale-[0.97] active:duration-[80ms]",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
             )}
@@ -336,7 +336,7 @@ function CookieBanner() {
               "flex-1 md:flex-none font-body font-semibold text-[14px] text-white",
               "bg-s-ink border-0 cursor-pointer",
               "px-4 py-2.5 md:px-5 md:py-3 rounded-full",
-              "hover:bg-black transition-colors duration-150 ease-snap",
+              "hover:bg-black transition-[colors,transform] duration-150 ease-snap",
               "active:scale-[0.97] active:duration-[80ms]",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
             )}
