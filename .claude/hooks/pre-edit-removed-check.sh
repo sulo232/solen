@@ -62,9 +62,42 @@ LINKS=$(grep -rn "/$SEG\b" "$PROJECT_DIR/app" "$PROJECT_DIR/components" "$PROJEC
 ORPHANED=false; [[ -z "$LINKS" ]] && ORPHANED=true
 
 # (b) REMOVED.md graveyard history for this segment; HIT_STRONG = a removal verb and NOT a keep marker.
+# Each line's format is `keywords | what | why | record` (see the file's own header). The keyword FIELD
+# (everything before the first "|") has NO leading slashes, e.g. line 10 is
+# "- pakete packages package-manager | the entire packages feature ... | owner removed 2026-06-11 ...".
+# (2026-07-26, second pass) A prior fix here required a literal "/" before SEG, which broke the PRIMARY
+# mechanism: it turned "pakete" hits from 3 down to 0, a real hole, because the keyword field almost never
+# has a slash. The actual bug was never the missing slash, it was matching the PROSE after the first "|"
+# (that is where "saved"/"inspo" showed up as ordinary words, and where a nested child route's full path,
+# e.g. /salon/[slug]/barber/[barberSlug], leaked a false hit for "salon"). So the match is now scoped to the
+# keyword field ONLY, token by token (tokens are whitespace-separated): a token counts as a hit when it
+# EQUALS the segment exactly ("pakete" for seg pakete), or when it is a path whose FINAL component equals
+# the segment ("/profile/packages" for seg packages) , never a path PREFIX, and never anything past the
+# first "|". Implemented in awk (not grep) because that per-token compare needs a proper split, not a
+# regex; string equality also sidesteps escaping the bracketed dynamic segments ([slug], [barberSlug]) that
+# show up as ordinary tokens elsewhere in the file.
 HIT=""; HIT_STRONG=""
 if [[ -f "$REMOVED" ]]; then
-  HIT=$(grep -in "[ /\"]$SEG\b" "$REMOVED" 2>/dev/null | head -3 || true)
+  HIT=$(awk -v seg="$SEG" '
+    {
+      bar = index($0, "|")
+      first = (bar > 0) ? substr($0, 1, bar - 1) : $0
+      nf = split(first, toks, /[ \t]+/)
+      lseg = tolower(seg)
+      hit = 0
+      for (i = 1; i <= nf; i++) {
+        tok = toks[i]
+        if (tok == "") continue
+        ltok = tolower(tok)
+        if (ltok == lseg) { hit = 1; break }
+        if (index(tok, "/") > 0) {
+          k = split(tok, comps, "/")
+          if (tolower(comps[k]) == lseg) { hit = 1; break }
+        }
+      }
+      if (hit) print NR ":" $0
+    }
+  ' "$REMOVED" 2>/dev/null | head -3 || true)
   HIT_STRONG=$(printf '%s\n' "$HIT" | grep -iE "remov|delet|kill|never rebuild|do NOT re-?(add|surface|build)" \
                | grep -viE "keep|kept|reviv|do NOT delete|un-?kill|restor|bring(ing)?[ -]back|brought[ -]back|reinstat|un-?delet|re-?enabl" || true)
 fi
