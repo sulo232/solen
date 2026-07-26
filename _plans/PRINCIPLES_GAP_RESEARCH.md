@@ -98,6 +98,18 @@ Out of scope: implementing any principle, editing any gate or hook, redesigning 
       to the worktree 500s. Confirms the known serve-dir-mismatch trap; the deliverable is served
       from a writable directory on :3210 instead.
 
+## Final numbers (verified)
+
+- 276 findings from 26 research topics + 20 net-new principles from judge 3 = **296 principles**.
+- 21 critical, 94 high, 111 medium, 50 low across the research set. 227 of 276 tiered `verified`.
+- Judge 1: 19 do-now, 24 do-next, 20 deferrals each with the number that makes them due.
+- Judge 2: 15 cut, 16 downgraded, 10 merge clusters, recommended absorption rate 12 to 18 now.
+- Judge 3: 9 structural blind spots + 20 principles no domain agent could have found.
+- 29 subagents, 5,637,655 subagent tokens, about 3h20m wall clock.
+- THREE agent findings were wrong on mechanism or liveness and were corrected by live checks
+  (reviews RLS, amenity fabrication, email locale). All three are published on the page rather
+  than deleted.
+
 ## Unplanned additions
 
 - Parked for the owner: whether to arm the six unwired gates (one of them, `no-decorative-image-gate.py`,
