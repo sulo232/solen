@@ -9,12 +9,15 @@ COMMITTED corpus this turn, not from narrative.
       verified: counted from `_design-system/research/missing-principles-2026-07-26/*.json` (27 topic
       files, `_`-prefixed files excluded) at commit `5afd74886`. 276 distinct ids, zero duplicates.
       Plus 20 net-new in `_judge3-gaps.json` -> 296 principles.
-- [~] C2 , **269 of 276 carry an `absence_proof`; 276 of 276 carry `existing_coverage`.** NOT the
-      100 percent I first ticked, and I am recording the real number. The seven with an empty
-      absence_proof, each named so they can be re-checked before adoption:
+- [x] C2 , **276 of 276 carry an `absence_proof`, 276 of 276 carry `existing_coverage`.**
+      It was 269 of 276 when first ticked and I recorded the real number rather than the claim.
+      The seven gaps are now CLOSED, not excused: I ran the absence greps myself for
       `observability-3`, `observability-4`, `observability-5`, `observability-8`,
-      `responsive-desktop-04`, `states-forms-02`, `typography-04`.
-      verified: script over the committed JSON, counts printed this turn.
+      `responsive-desktop-04`, `states-forms-02` and `typography-04`, and wrote each result into
+      the finding, marked as orchestrator-filled so the provenance stays honest.
+      verified: recount over the committed corpus prints 276/276; the greps behind each are quoted
+      in the finding itself (for example `states-forms-02` now cites LOCKFILE:503/554/556 as the
+      only three `toast` hits, none of them a field-error placement rule).
 - [x] C3 , 27 topic files spanning design, people/fairness, backend/security/privacy, engineering
       and meta. verified: `ls _design-system/research/missing-principles-2026-07-26/*.json` at
       commit `5afd74886` lists accessibility, agent-output, api-contracts, authz-rls, color-tokens,
