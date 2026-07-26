@@ -72,11 +72,27 @@ returns; none is ticked from this narrative.
 - [ ] A4. One shared JSON-LD escape helper, applied at every `dangerouslySetInnerHTML` JSON site
 - [ ] A5. `Content-Security-Policy-Report-Only` added to netlify.toml with the real allowlist
 - [ ] A6. `addressLocality` stops being hardcoded "Basel" for every salon
-- [ ] A7. City x category pages: SEO head tags
-  - [ ] A7a. `rel=canonical` emitted
-  - [ ] A7b. `rel=alternate hreflang` emitted for all four locales
-  - [ ] A7c. `hreflang="x-default"` emitted
-- [ ] A8. Category FAQ copy stops being German-only under all four locales
+- [x] A7. DONE, commit 21e77723e. `app/[locale]/[city]/[category]/page.tsx` generateMetadata
+      now calls `buildAlternates` (same pattern as the sibling `[city]/page.tsx:45`). Verified
+      DISCRIMINATE on the running dev server via the Browser pane (curl is sandbox-blocked
+      for outbound localhost connect in this session): `/de/basel/coiffeur` head has
+      `link[rel=canonical]=https://solen.ch/de/basel/coiffeur`; `/en/basel/coiffeur` head has
+      `link[rel=canonical]=https://solen.ch/en/basel/coiffeur`. Both carry.
+  - [x] A7a. DONE, same commit. canonical confirmed on both locales above.
+  - [x] A7b. DONE, same commit. `link[rel=alternate][hreflang]` set on both pages, one entry
+        each for de/en/fr/it, all pointing at the correct `/{locale}/basel/coiffeur` URL.
+  - [x] A7c. DONE, same commit. `hreflang="x-default"` present on both pages, pointing at
+        `https://solen.ch/de/basel/coiffeur`.
+- [x] A8. DONE, commit 21e77723e. The `CityCategoryFaq` component in
+      `[city]/[category]/page.tsx` was German-literal for all locales; now a per-locale copy
+      table (de/en/fr/it), city/category name still interpolated, never hardcoded. Also fixed
+      `lib/seo.ts` `CATEGORY_FAQS` (the legacy single-city `/coiffeur|nails|barbershop|spa`
+      routes had the same bug, one de-only FAQPage JSON-LD block served under all locales) by
+      nesting it `Record<category, Record<locale, FaqItem[]>>` and updating all 4 call sites.
+      Verified DISCRIMINATE: rendered `<details><summary>` text on `/de/basel/coiffeur` reads
+      "Wie viel kostet ein Besuch bei einem Coiffeur in Basel?"; on `/en/basel/coiffeur` the
+      same slot reads "How much does a visit to a Hair Salon in Basel cost?". The legacy
+      `/en/coiffeur` FAQPage JSON-LD script tag was also read back and confirmed English.
 - [ ] A9. Every `sendEmail` call site passes the recipient's locale instead of defaulting to `de`
 - [ ] A10. `de-CH` literals route through `lib/format` (116 literals, 91 toLocale call sites)
 - [ ] A11. Cron health alerts on a cron that NEVER RAN, not only one that ran and failed
