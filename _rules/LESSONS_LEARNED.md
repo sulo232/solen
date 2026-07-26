@@ -40,6 +40,15 @@
 
 ---
 
+### A migration file describes a replay, not the live database
+- **Date**: 2026-07-27
+- **File(s)**: `supabase/migrations`, `_inventory/_db-snapshot.json`
+- **What happened**: Two independent research agents each filed a CRITICAL finding straight off the migration folder. One read `005_reviews_trust.sql:29` (creates a permissive `FOR UPDATE USING (true)` policy) plus `009_verified_reviews_rls.sql:30` (drops a differently-named policy) and concluded the permissive policy survives live; querying `pg_policies` directly showed the `reviews` table has exactly four correctly scoped policies and the permissive one does not exist. The other read `20260530_seed_salon_amenities.sql`, which fabricates nine amenity booleans (including `wheelchair_accessible`) from a hash of the salon id, and reported them as live data; counting live returned 0 true across all 20 active salons; the seed was never applied, or was reverted. A third finding had the same shape one level out: email builders were reported as ignoring their locale parameter from reading the builder source, when all 27 use it correctly and the real defect was at the call sites.
+- **Why it happened**: A migration file reads exactly like a schema description, and nothing about its syntax marks it as historical intent rather than current state. Two migrations naming different policy names on the same table look, on paper, like the earlier one survives; only a live catalog query resolves which policy actually exists. Nothing in this estate ever replays the migration folder onto a clean database, so a replay-only landmine (or a reverted one) is invisible to every check except a direct live query.
+- **Fix / What to do instead**: Any claim about current schema, policy, or data state is made against the LIVE database: a read-only SQL query first (`pg_policies`, `information_schema.columns`, or the Supabase MCP `execute_sql`), then `_inventory/_db-snapshot.json` / `_db-columns.json` as a fast but staleness-prone second check (14 days and 4 tables stale when this was written: 146 recorded vs 150 live tables, and `_db-columns.json` carries column names only, no types), and the migration files LAST, as evidence only about what a replay would produce. State explicitly which question an audit answers: "is this true now" or "would a restore make this true". Full rule: `_rules/DB_SCHEMA.md` section 9.
+
+---
+
 ## Component Architecture
 
 ### Removing a section from the page also removes its sheet/modal

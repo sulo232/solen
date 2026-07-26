@@ -190,3 +190,55 @@ money column. The 34 columns above are existing debt, not a precedent; fixing th
 deliberate migration (each one needs its call sites audited for the unit they assume), not
 something to do opportunistically while touching an unrelated file.
 
+## 9. `supabase/migrations` is a history of intents, not a description of the database
+
+**Written down 2026-07-27 after two independent research agents each filed a CRITICAL finding
+that was a migration-file truth presented as a live-database truth.** The `supabase/migrations`
+folder is a HISTORY: it records what was intended to run, in what order, at what time. It is not,
+and must never be read as, a live description of the current schema, policies, or data. A file
+present in the folder tells you what a fresh replay would produce, nothing about what exists now.
+
+**Any claim about current schema, policy, or data state is made against the LIVE database.**
+Authorities, in order, highest first:
+1. A read-only SQL query against the live project (Supabase MCP `execute_sql`, or `pg_policies` /
+   `information_schema.columns` directly). This is ground truth.
+2. `_inventory/_db-snapshot.json` and `_db-columns.json`. A recent, generated snapshot of the live
+   state, good for a fast check, not a substitute for a query when the finding is load-bearing.
+3. The migration files under `supabase/migrations/`. Last, and evidence only about what a REPLAY
+   would produce, never about what is true now. A later file can rename, drop, or leave untouched
+   a policy the reader assumes an earlier file still controls; the only way to know which survived
+   is to query `pg_policies` (or the equivalent live catalog) directly.
+
+**"Is this true now" and "would a restore make this true" are two different questions.** Every
+audit, finding, or migration-folder read states explicitly which one it is answering. "Migration
+`005_reviews_trust.sql:29` creates a permissive `FOR UPDATE USING (true)` policy" is a true and
+useful sentence about the replay case; it is a false and dangerous sentence if presented as "the
+reviews table currently has a permissive UPDATE policy" without having queried `pg_policies` to
+confirm the later migration that touched the same table didn't drop or replace it. Two ring
+findings in this run made exactly that substitution: a permissive RLS policy read off migration
+`005` and `009` (different policy names, so the drop in `009` looked like it missed the one from
+`005`) turned out not to exist on the live `reviews` table at all, which has exactly four
+correctly scoped policies when queried directly. Nine `wheelchair_accessible`-style amenity
+booleans fabricated from a hash of the salon id in `20260530_seed_salon_amenities.sql` counted 0
+true across all 20 active salons live: the seed was never applied, or was reverted, and the file
+alone gave no way to tell.
+
+**The corollary that makes this dangerous, not just imprecise:** a replay-only landmine (a
+migration whose SQL, if replayed today, would create a bad policy, a fabricated column, a
+permissive default) is invisible to every current check in this estate, because nothing here ever
+replays the migration folder onto a clean database to prove what it would actually produce. There
+is no CI step, no local script, no scheduled job that does this. So a bad statement can sit in
+`supabase/migrations/` indefinitely, contradicted or superseded by later live-only changes (see
+section 7: `apply_migration` writes live and to `schema_migrations` but not to a local file, so
+live and file history already diverge in the other direction too), and nothing will ever flag it
+until someone actually tries a fresh-environment restore. Treat a migration-derived finding as
+provisional until checked against the live catalog, precisely because there is no safety net that
+would catch the gap for you.
+
+**The freshness trap, so "check the snapshot" isn't quietly treated as "check the database":**
+`_db-columns.json` records column NAMES only, no types, no defaults, no constraints, so it cannot
+answer a type or nullability question at all. And the snapshot drifts: as of this writing it was
+14 days stale and undercounted by 4 tables (146 recorded vs 150 live). A snapshot hit is a good
+first pass, never the final word on a load-bearing claim, always confirm with a live query before
+a finding is filed as CRITICAL or a fix is shipped against it.
+
