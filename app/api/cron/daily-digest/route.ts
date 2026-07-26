@@ -12,6 +12,7 @@ import { sendEmail } from "@/lib/email";
 import { getServerEnv } from "@/lib/env";
 import { zurichWallClockToUtc } from "@/lib/time/zurich";
 import { withCronRun } from "@/lib/cron-run";
+import { EXPECTED_CRON_INTERVALS_MS, findOverdueCrons } from "@/lib/cron-heartbeat";
 
 /** Escape the few chars that would break out of an HTML text context. */
 function escapeHtml(s: string): string {
@@ -24,9 +25,11 @@ function escapeHtml(s: string): string {
 // Cron: founder daily digest email. Daily 05:15 UTC (after the 03:00/04:00 UTC batch
 // of daily crons has had time to run, so the cron-health section reflects that night's
 // runs). Composes yesterday's Europe/Zurich day: bookings created, bookings completed,
-// cron_runs failures in the last 24h, and the current pending-reviews backlog. Sends
-// ONE email to ADMIN_EMAIL. Only sections whose query succeeded are rendered, never a
-// fabricated 0.
+// cron_runs failures in the last 24h, crons that are MISSING or STALE against their
+// own schedule (lib/cron-heartbeat.ts, A11-cron-heartbeat 2026-07-27; a cron that
+// never fires writes no cron_runs row and the failures-only section above would miss
+// it), and the current pending-reviews backlog. Sends ONE email to ADMIN_EMAIL. Only
+// sections whose query succeeded are rendered, never a fabricated 0.
 export async function GET(req: NextRequest) {
   const cronSecret = getServerEnv().CRON_SECRET;
   if (!cronSecret) return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
@@ -139,6 +142,43 @@ export async function GET(req: NextRequest) {
       }
     }
 
+    // 5. Cron heartbeat: which crons in EXPECTED_CRON_INTERVALS_MS have NOT
+    // written a cron_runs row within 2x their own scheduled interval. Section 3
+    // above only catches an explicit ok:false row; a cron that never fires
+    // writes no row at all and rendered as "0 cron failures" until this
+    // section existed (the failure this was written for: five straight missed
+    // GitHub Actions runs of this workflow, reported as nothing).
+    {
+      const names = Object.keys(EXPECTED_CRON_INTERVALS_MS);
+      const maxIntervalMs = Math.max(...Object.values(EXPECTED_CRON_INTERVALS_MS));
+      const heartbeatCutoff = new Date(Date.now() - maxIntervalMs * 2).toISOString();
+      const { data: recentRuns, error } = await admin
+        .from("cron_runs")
+        .select("name, ran_at")
+        .in("name", names)
+        .gte("ran_at", heartbeatCutoff)
+        .order("ran_at", { ascending: false });
+      if (error) {
+        console.error("[daily-digest] cron heartbeat query failed:", error.message);
+        errors.push(`cron heartbeat query failed: ${error.message}`);
+      } else {
+        sectionsOk++;
+        const lastRanAtByName: Record<string, string> = {};
+        for (const row of recentRuns ?? []) {
+          if (!lastRanAtByName[row.name]) lastRanAtByName[row.name] = row.ran_at;
+        }
+        const overdue = findOverdueCrons(lastRanAtByName);
+        if (overdue.length === 0) {
+          sections.push(`<li><strong>0</strong> crons overdue (no run within 2x their schedule)</li>`);
+        } else {
+          const items = overdue.map((name) => `<li style="color:#C0362C">${escapeHtml(name)}</li>`).join("");
+          sections.push(
+            `<li><strong>${overdue.length}</strong> cron(s) overdue, missing or stale (no run within 2x schedule):<ul>${items}</ul></li>`,
+          );
+        }
+      }
+    }
+
     if (sections.length > 0) {
       try {
         await sendEmail({
@@ -160,7 +200,7 @@ export async function GET(req: NextRequest) {
     return {
       sent: sections.length > 0 && errors.every((e) => !e.startsWith("sendEmail")),
       sectionsOk,
-      sectionsTotal: 4,
+      sectionsTotal: 5,
       processed: sectionsOk,
       ...(errors.length ? { errors } : {}),
     };
