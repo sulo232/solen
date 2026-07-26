@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Loader2, Check, Save, AlertTriangle } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import ErrorState from "@/components-legacy/ui/ErrorState";
@@ -30,6 +30,7 @@ type SaveState = "idle" | "saving" | "saved" | "error";
 
 export default function CommissionAdminPage() {
   const t = useTranslations("dashboard.commissionAdminPage");
+  const locale = useLocale();
   const [rate, setRate] = useState<number>(15);
   const [loadedRate, setLoadedRate] = useState<number>(15);
   const [loading, setLoading] = useState(true);
@@ -140,15 +141,15 @@ export default function CommissionAdminPage() {
           {/* Live impact preview */}
           <div className="mt-4 overflow-hidden rounded-[13px] border border-s-border">
             <div className="bg-[#fcfcfc] px-4 pb-2 pt-2.5 text-[12px] text-s-ink/40">
-              {t("exampleBooking", { amount: formatCurrency(PREVIEW_BASE_CHF, "de-CH") })}
+              {t("exampleBooking", { amount: formatCurrency(PREVIEW_BASE_CHF, locale) })}
             </div>
             <div className="flex items-center justify-between border-t border-s-border px-4 py-2.5 text-[13.5px]">
               <span className="text-s-ink">{t("solenCommission")}</span>
-              <span className="font-heading font-bold tabular-nums text-s-ink">{formatCurrency(commission, "de-CH")}</span>
+              <span className="font-heading font-bold tabular-nums text-s-ink">{formatCurrency(commission, locale)}</span>
             </div>
             <div className="flex items-center justify-between border-t border-s-border px-4 py-2.5 text-[13.5px]">
               <span className="text-s-ink">{t("salonReceives")}</span>
-              <span className="font-heading font-bold tabular-nums text-s-ink">{formatCurrency(salonGets, "de-CH")}</span>
+              <span className="font-heading font-bold tabular-nums text-s-ink">{formatCurrency(salonGets, locale)}</span>
             </div>
             <div className="px-4 pb-2.5 pt-1 text-[12px] leading-[1.4] text-s-ink/40">
               {t("feeNote")}

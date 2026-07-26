@@ -13,6 +13,7 @@ import {
   DashPanel, DashStatusPill, DashRow, DashLineChart, DashBarChart,
 } from "@/app/[locale]/_components/dashboard/DashboardUI";
 import { cn } from "@/lib/utils";
+import { resolveSwissLocale } from "@/lib/format";
 import type { Booking } from "@/lib/types";
 
 interface DailyPoint { date: string; bookings: number; revenue: number; confirmed: number; cancelled: number }
@@ -86,8 +87,10 @@ const AV_GRADS = [
   "from-[#16A34A] to-[#0E7A37]", "from-[#8B5CF6] to-[#6D28D9]", "from-[#EC4899] to-[#BE185D]",
 ];
 const avGrad = (s: string) => AV_GRADS[[...s].reduce((a, c) => a + c.charCodeAt(0), 0) % AV_GRADS.length];
-const fmtTime = (iso: string) => new Date(iso).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
-const fmtChf = (n: number) => n.toLocaleString("de-CH");
+// locale param added 2026-07-26 (de-CH literal sweep): both were hardcoded de-CH; default
+// keeps prior behavior for any caller that still doesn't pass one.
+const fmtTime = (iso: string, locale: string = "de") => new Date(iso).toLocaleTimeString(resolveSwissLocale(locale), { hour: "2-digit", minute: "2-digit" });
+const fmtChf = (n: number, locale: string = "de") => n.toLocaleString(resolveSwissLocale(locale));
 
 export default function DashboardPage() {
   const locale = useLocale();
@@ -138,7 +141,7 @@ export default function DashboardPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const today = new Date().toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long" });
+  const today = new Date().toLocaleDateString(resolveSwissLocale(locale), { weekday: "long", day: "numeric", month: "long" });
   const prior = stats?.trends_vs_prior;
   const daily = stats?.daily ?? [];
 
@@ -183,7 +186,7 @@ export default function DashboardPage() {
           {/* Mobile stat tiles — same data as the desktop charts, glanceable on small screens */}
           <div className="grid grid-cols-2 gap-2.5 lg:hidden">
             <StatTile label={t("revenue")} delta={prior?.revenue}>
-              <span className="text-[13px] font-semibold text-s-ink-2 mr-1">CHF</span>{fmtChf(Math.round(stats?.total_revenue ?? 0))}
+              <span className="text-[13px] font-semibold text-s-ink-2 mr-1">CHF</span>{fmtChf(Math.round(stats?.total_revenue ?? 0), locale)}
             </StatTile>
             <StatTile label={t("bookings")} delta={prior?.bookings}>{stats?.total_bookings ?? 0}</StatTile>
             <StatTile label={t("newCustomers")} delta={prior?.new_customers}>{stats?.new_customers ?? 0}</StatTile>
@@ -201,7 +204,7 @@ export default function DashboardPage() {
                 <p className="text-[12px] text-s-ink-3 mt-0.5">{t("last7Days")}</p>
               </div>
               <p className="text-[20px] font-semibold tabular-nums tracking-[-0.02em] leading-none text-s-ink">
-                <span className="text-[13px] font-semibold text-s-ink-2 mr-1">CHF</span>{fmtChf(Math.round(stats?.total_revenue ?? 0))}
+                <span className="text-[13px] font-semibold text-s-ink-2 mr-1">CHF</span>{fmtChf(Math.round(stats?.total_revenue ?? 0), locale)}
               </p>
             </div>
             <DashBarChart height={90} data={daily.map((d) => ({ primary: d.revenue }))} primaryClassName="fill-s-accent-bright" />
@@ -224,7 +227,7 @@ export default function DashboardPage() {
                 <span className="text-[12px] text-s-ink-3">{t("thisWeek")}</span>
               </div>
               <p className="text-[34px] font-semibold tracking-[-0.02em] leading-none text-s-ink">
-                <span className="text-[16px] font-semibold text-s-ink-2 mr-1">CHF</span>{fmtChf(Math.round(stats?.total_revenue ?? 0))}
+                <span className="text-[16px] font-semibold text-s-ink-2 mr-1">CHF</span>{fmtChf(Math.round(stats?.total_revenue ?? 0), locale)}
               </p>
               <Delta v={prior?.revenue} compareLabel={t("vsPriorWeek")} className="mt-1.5" />
               <div className="mt-4">
@@ -272,7 +275,7 @@ export default function DashboardPage() {
                 <div>
                   {bookings.slice(0, 6).map((b) => (
                     <DashRow key={b.id} href={`/${locale}/dashboard/bookings`}>
-                      <span className="text-[14px] font-semibold tracking-[-0.01em] text-s-ink w-[52px] shrink-0">{fmtTime(b.starts_at)}</span>
+                      <span className="text-[14px] font-semibold tracking-[-0.01em] text-s-ink w-[52px] shrink-0">{fmtTime(b.starts_at, locale)}</span>
                       <span className={`grid place-items-center w-[30px] h-[30px] rounded-full bg-gradient-to-br ${avGrad(b.customer_name)} text-white text-[12px] font-semibold shrink-0`}>{initials(b.customer_name)}</span>
                       <span className="flex-1 min-w-0">
                         <span className="block text-[15px] font-semibold tracking-[-0.005em] text-s-ink truncate">{b.customer_name}</span>
@@ -319,7 +322,7 @@ export default function DashboardPage() {
                     <DashRow key={m.id}>
                       <span className={`grid place-items-center w-[30px] h-[30px] rounded-full bg-gradient-to-br ${avGrad(m.name)} text-white text-[12px] font-semibold shrink-0`}>{initials(m.name)}</span>
                       <span className="flex-1 text-[15px] font-semibold tracking-[-0.005em] text-s-ink truncate">{m.name}</span>
-                      {m.revenue !== undefined && <span className="text-[13px] font-semibold text-s-ink">CHF {fmtChf(Math.round(m.revenue))}</span>}
+                      {m.revenue !== undefined && <span className="text-[13px] font-semibold text-s-ink">CHF {fmtChf(Math.round(m.revenue), locale)}</span>}
                       {m.bookings !== undefined && <span className="text-[13px] text-s-ink-2 w-14 text-right">{t("bookingsShort", { n: m.bookings })}</span>}
                     </DashRow>
                   ))}

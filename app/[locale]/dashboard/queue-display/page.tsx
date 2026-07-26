@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import LiveQueuePanel from "@/components-legacy/dashboard/barber/LiveQueuePanel";
+import { resolveSwissLocale } from "@/lib/format";
 
 export default function QueueDisplayPage() {
   const locale = useLocale();
@@ -11,7 +12,7 @@ export default function QueueDisplayPage() {
   const [salonId, setSalonId] = useState<string | undefined>();
   const [loading, setLoading] = useState(true);
 
-  const today = new Date().toLocaleDateString("de-CH", {
+  const today = new Date().toLocaleDateString(resolveSwissLocale(locale), {
     weekday: "long",
     day: "numeric",
     month: "long",

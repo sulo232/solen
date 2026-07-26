@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
+import { resolveSwissLocale } from "@/lib/format";
 
 interface Payout {
   id: string;
@@ -139,7 +140,7 @@ export default function SalonEarningsPage() {
                       <tr key={p.id} className="border-t border-s-ink/5 hover:bg-s-bg-surface/60 transition-colors">
                         <td className="px-5 py-4 text-s-ink flex items-center gap-2">
                           <Calendar size={14} className="text-s-ink/30" />
-                          {new Date(p.created_at).toLocaleDateString("de-CH")}
+                          {new Date(p.created_at).toLocaleDateString(resolveSwissLocale(locale))}
                         </td>
                         <td className="px-5 py-4">
                           {getStatusBadge(p.status, t)}
