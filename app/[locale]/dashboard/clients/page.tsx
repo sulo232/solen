@@ -130,7 +130,7 @@ export default function ClientsPage() {
           const active = segmentFilter === s.key;
           return (
             <button key={s.key} onClick={() => setSegmentFilter(s.key)}
-              className={`shrink-0 rounded-full text-[12.5px] font-semibold px-3.5 py-2 whitespace-nowrap transition-colors ${
+              className={`shrink-0 rounded-full text-[12.5px] font-semibold px-3.5 py-2 whitespace-nowrap transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide ${
                 active
                   ? "bg-s-accent-bright/10 text-s-accent-bright border border-transparent"
                   : "bg-white border border-s-border text-s-ink-2"
@@ -173,7 +173,7 @@ export default function ClientsPage() {
               <button
                 key={c.user_id}
                 onClick={() => setSelectedClient(c)}
-                className="w-full border-b border-s-border last:border-b-0 px-3.5 py-3 flex flex-col gap-2 text-left"
+                className="w-full border-b border-s-border last:border-b-0 px-3.5 py-3 flex flex-col gap-2 text-left transition-transform active:scale-[0.98] active:duration-[80ms] active:ease-glide"
               >
                 {/* head row */}
                 <div className="flex items-center gap-3">
@@ -325,7 +325,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
   return (
     <div>
       {/* Header */}
-      <button onClick={onBack} className="flex items-center gap-1 text-sm text-s-ink-2 hover:text-s-ink transition-colors mb-4">
+      <button onClick={onBack} className="flex items-center gap-1 text-sm text-s-ink-2 hover:text-s-ink transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide mb-4">
         <ChevronLeft size={16} /> {t("back")}
       </button>
       <div className="flex items-center gap-3 mb-5">
@@ -359,7 +359,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
       <div className="flex gap-1 mb-5 overflow-x-auto pb-1">
         {TABS.map((t) => (
           <button key={t.key} onClick={() => setTab(t.key)}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${tab === t.key ? "bg-s-ink text-white hover:bg-black" : "bg-white border border-s-border text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"}`}>
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium whitespace-nowrap transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide ${tab === t.key ? "bg-s-ink text-white hover:bg-black" : "bg-white border border-s-border text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"}`}>
             <t.icon size={12} /> {t.label}
           </button>
         ))}
@@ -404,7 +404,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
               className="flex-1 px-3 py-2 text-sm text-s-ink focus:outline-none" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               onKeyDown={(e) => { if (e.key === "Enter") handleAddNote(); }} />
             <button onClick={handleAddNote} disabled={!newNote.trim() || savingNote}
-              className="px-3 py-2 rounded-btn bg-s-ink text-white text-xs font-medium hover:bg-black disabled:opacity-50 transition-colors">
+              className="px-3 py-2 rounded-btn bg-s-ink text-white text-xs font-medium hover:bg-black disabled:opacity-50 transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide">
               {savingNote ? <Spinner size="sm" invert /> : t("save")}
             </button>
           </div>
@@ -437,7 +437,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
               ))}
             </select>
             <button onClick={handleAddTag} disabled={!newTag.trim() || savingTag}
-              className="px-3 py-2 rounded-btn bg-s-ink text-white text-xs font-medium hover:bg-black disabled:opacity-50 transition-colors">
+              className="px-3 py-2 rounded-btn bg-s-ink text-white text-xs font-medium hover:bg-black disabled:opacity-50 transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide">
               {savingTag ? <Spinner size="sm" invert /> : t("add")}
             </button>
           </div>

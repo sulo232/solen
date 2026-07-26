@@ -90,7 +90,7 @@ export default function SetupBanner() {
             {!step.complete && (
               /* mockup-ok: D2 fix, sentence case 13px semibold (approved public/_mockups/fixes-refined) */
               <Link href={`/${locale}/dashboard/setup`}
-                className="text-[13px] font-heading font-semibold text-s-coral">
+                className="text-[13px] font-heading font-semibold text-s-coral transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide">
                 {t("setUp")} →
               </Link>
             )}

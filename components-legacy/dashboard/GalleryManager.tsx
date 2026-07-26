@@ -277,7 +277,7 @@ export default function GalleryManager({
                     <button
                       onClick={() => handleDelete(photo, index)}
                       aria-label={t("gallery_confirm_delete")}
-                      className="bg-white/90 text-red-500 hover:bg-red-500 hover:text-white p-1.5 rounded-md backdrop-blur-[6px] transition-colors"
+                      className="bg-white/90 text-red-500 hover:bg-red-500 hover:text-white p-1.5 rounded-md backdrop-blur-[6px] transition-[colors,transform] active:scale-[0.94] active:duration-[80ms] active:ease-glide"
                     >
                       <Trash2 size={14} />
                     </button>

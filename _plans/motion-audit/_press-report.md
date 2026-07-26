@@ -1,6 +1,6 @@
 # Press-tier animation checker
 
-Generated: 2026-07-26T16:20:02.200Z
+Generated: 2026-07-26T16:52:39.140Z
 Files scanned: 608  Roots: app, components, components-legacy
 
 Static source scan (no browser) for the class of press control whose active:scale- cannot
@@ -8,7 +8,7 @@ actually animate because its own transition-property list doesn't include transf
 the file header of scripts/check-press.mjs for the full reasoning and the SAFE DIRECTION policy
 (unresolved dynamic content -> UNCERTAIN, never DEAD).
 
-Totals (excl. /dev/ unless --include-dev): DEAD=0  NO-TRANSITION=4  OFF-LADDER=42  UNCERTAIN=12  OK=259  DEV-SKIPPED=40
+Totals (excl. /dev/ unless --include-dev): DEAD=0  NO-TRANSITION=4  OFF-LADDER=42  UNCERTAIN=27  OK=338  DEV-SKIPPED=40
 
 ---
 ### DEAD (blocking) (0)
@@ -67,7 +67,7 @@ none found
 - `components-legacy/discovery/TikTokPlayer.tsx:170` - scale: active:scale-95 - transition: transition-transform
 - `components-legacy/loyalty/HeroStampCard.tsx:49` - scale: active:scale-[0.99] - transition: transition-[transform]
 
-### UNCERTAIN (report-only, never blocks --gate) (12)
+### UNCERTAIN (report-only, never blocks --gate) (27)
 
 - `app/[locale]/_components/homepage/MobileCategoriesRow.tsx:96` - scale: group-active:scale-[0.97] - transition: transition-[transform,box-shadow]
 - `app/[locale]/_components/homepage/SalonCard.tsx:373` - scale: active:scale-[0.97] - transition: transition-transform
@@ -78,8 +78,23 @@ none found
 - `app/[locale]/_components/search/SearchOverlay.tsx:913` - scale: active:scale-[0.97] - transition: transition-[colors,transform]
 - `app/[locale]/_components/search/SearchOverlay.tsx:928` - scale: active:scale-[0.97] - transition: transition-[colors,transform]
 - `app/[locale]/_components/search/SearchOverlay.tsx:1085` - scale: active:scale-[0.94] - transition: transition-[colors,transform]
+- `app/[locale]/dashboard/analytics/page.tsx:154` - scale: active:scale-[0.97] - transition: transition-[colors,transform]
+- `app/[locale]/dashboard/analytics/page.tsx:167` - scale: active:scale-[0.97] - transition: transition-[colors,transform]
+- `app/[locale]/dashboard/calendar/page.tsx:866` - scale: active:scale-[0.97] - transition: transition-[colors,transform]
+- `app/[locale]/dashboard/calendar/page.tsx:903` - scale: active:scale-[0.94] - transition: transition-[colors,transform]
+- `app/[locale]/dashboard/calendar/page.tsx:1104` - scale: active:scale-[0.97] - transition: transition-[colors,transform]
+- `app/[locale]/dashboard/clients/page.tsx:133` - scale: active:scale-[0.97] - transition: transition-[colors,transform]
+- `app/[locale]/dashboard/clients/page.tsx:362` - scale: active:scale-[0.97] - transition: transition-[colors,transform]
+- `components-legacy/dashboard/CommandPalette.tsx:157` - scale: active:scale-[0.98] - transition: transition-[colors,transform]
+- `components-legacy/dashboard/DashboardLayout.tsx:296` - scale: active:scale-[0.94] - transition: transition-[colors,transform]
+- `components-legacy/dashboard/DashboardLayout.tsx:310` - scale: active:scale-[0.94] - transition: transition-[colors,transform]
+- `components-legacy/dashboard/DashboardLayout.tsx:363` - scale: active:scale-[0.98] - transition: transition-[colors,transform]
+- `components-legacy/dashboard/DashboardLayout.tsx:386` - scale: active:scale-[0.98] - transition: transition-[colors,transform]
+- `components-legacy/dashboard/DashboardLayout.tsx:405` - scale: active:scale-[0.98] - transition: transition-[colors,transform]
+- `components-legacy/dashboard/SalonSwitcher.tsx:171` - scale: active:scale-[0.98] - transition: transition-[colors,transform]
 - `components-legacy/refund/UpchargeApproveView.tsx:529` - scale: active:scale-[0.985] - transition: (none)
 - `components-legacy/salon/SalonModeToggle.tsx:41` - scale: active:scale-[0.98] - transition: transition-[colors,transform]
+- `components-legacy/ui/ExportButton.tsx:21` - scale: active:scale-[0.97] - transition: transition-[colors,transform]
 - `components-legacy/ui/interactive-hover-button.tsx:18` - scale: active:scale-[0.97] - transition: transition-[transform,filter]
 
 ### DEV-SKIPPED (report-only, run --include-dev to check) (40)

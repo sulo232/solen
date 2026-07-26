@@ -146,7 +146,7 @@ export default function DashboardPage() {
     <DashboardLayout salonName={salonName} salonCategories={salonCategories} unreadCount={unread}>
       <AnimatePresence>
         {showCelebration && (
-          <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.18 }}
+          <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.28 }} /* mockup-ok: retime only, motion-ok: pre-existing entrance retimed to THE SPEED LAW reveal tier, not net-new */
             className="mb-6 rounded-card-lg bg-s-success-bg border border-s-success/20 px-5 py-4 flex items-center gap-3">
             <CheckCircle2 size={20} className="shrink-0 text-s-success" />
             <div>
@@ -167,7 +167,7 @@ export default function DashboardPage() {
         </div>
         <Link
           href={`/${locale}/dashboard/calendar`}
-          className="inline-flex items-center gap-2 shrink-0 whitespace-nowrap rounded-full bg-s-ink px-[18px] py-2.5 text-[15px] font-medium tracking-[-0.005em] text-white transition-colors hover:bg-black"
+          className="inline-flex items-center gap-2 shrink-0 whitespace-nowrap rounded-full bg-s-ink px-[18px] py-2.5 text-[15px] font-medium tracking-[-0.005em] text-white transition-[colors,transform] hover:bg-black active:scale-[0.97] active:duration-[80ms] active:ease-glide"
         >
           <Plus size={17} strokeWidth={2} />{t("createAppointment")}
         </Link>

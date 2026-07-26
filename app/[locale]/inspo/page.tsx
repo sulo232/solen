@@ -457,7 +457,7 @@ function DiscoverPageContent() {
                   type="button"
                   onClick={() => router.push(`/${locale}/inspo/saved`)}
                   aria-label="Gespeichert"
-                  className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-s-border text-s-ink-2 transition-colors duration-150 hover:text-s-ink"
+                  className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-s-border text-s-ink-2 transition-[colors,transform] duration-150 hover:text-s-ink active:scale-[0.94] active:duration-[80ms]"
                 >
                   <Heart size={18} />
                 </button>
@@ -465,7 +465,7 @@ function DiscoverPageContent() {
             </div>
           </div>
           {searchFocused && (
-            <div className="absolute inset-x-0 top-full z-30 mt-2 animate-[inspo-panel-in_.34s_cubic-bezier(.34,1.56,.64,1)] rounded-2xl border border-s-border bg-white p-3 shadow-elevation-2">
+            <div className="absolute inset-x-0 top-full z-30 mt-2 animate-[inspo-panel-in_.28s_cubic-bezier(.34,1.56,.64,1)] rounded-2xl border border-s-border bg-white p-3 shadow-elevation-2">
               {/* V3-D395: typed query → autocomplete suggestion list (matches the mockup); empty → trending pills. */}
               {searchInput.trim() ? (
                 <SearchAutocomplete
@@ -512,7 +512,7 @@ function DiscoverPageContent() {
             // look automatically once that category has content. Selected = a soft grey pill on the LABEL only.
             return (
               <button key={key} type="button" aria-pressed={sel} aria-label={tTabs(key)} onClick={pick}
-                className="flex w-[80px] shrink-0 flex-col items-center gap-1.5">
+                className="flex w-[80px] shrink-0 flex-col items-center gap-1.5 transition-transform duration-150 active:scale-[0.97] active:duration-[80ms] active:ease-glide">
                 {/* Photos stay full brightness (no dim/spotlight) and get NO ring/border/outline , owner reads any of
                     those as the banned focus ring. The selected cue is the soft grey pill on the label below. */}
                 <span className="grid h-[66px] w-full place-items-center overflow-hidden rounded-card">

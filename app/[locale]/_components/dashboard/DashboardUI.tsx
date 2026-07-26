@@ -103,7 +103,7 @@ export function DashPanel({
           {actionLabel && actionHref && (
             <Link
               href={actionHref}
-              className="inline-flex items-center gap-1 text-[13px] font-medium text-s-ink hover:text-s-ink-2 transition-colors"
+              className="inline-flex items-center gap-1 text-[13px] font-medium text-s-ink hover:text-s-ink-2 transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide"
             >
               {actionLabel}
               <ArrowRight size={15} strokeWidth={2} />
@@ -170,8 +170,8 @@ export function DashRow({
   className?: string;
 }) {
   const cls = cn(
-    "flex items-center gap-4 px-5 py-3.5 border-b border-s-border last:border-b-0 transition-colors",
-    href && "hover:bg-s-bg-sunken cursor-pointer",
+    "flex items-center gap-4 px-5 py-3.5 border-b border-s-border last:border-b-0 transition-[colors,transform]",
+    href && "hover:bg-s-bg-sunken cursor-pointer active:scale-[0.98] active:duration-[80ms] active:ease-glide",
     className,
   );
   return href ? <Link href={href} className={cls}>{children}</Link> : <div className={cls}>{children}</div>;
@@ -192,7 +192,7 @@ export function DashQuickAction({
   return (
     <Link
       href={href}
-      className="group flex items-center gap-3.5 rounded-card-lg border border-s-border bg-white p-5 transition-colors hover:bg-s-bg-sunken"
+      className="group flex items-center gap-3.5 rounded-card-lg border border-s-border bg-white p-5 transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.97] active:duration-[80ms] active:ease-glide"
     >
       <span className="grid place-items-center w-[42px] h-[42px] rounded-xl bg-s-bg-sunken text-s-ink shrink-0 transition-colors group-hover:bg-white">
         <Icon size={20} strokeWidth={1.9} />
@@ -228,7 +228,7 @@ export function DashButton({
   className?: string;
 }) {
   const base = cn(
-    "inline-flex items-center justify-center gap-2 rounded-btn font-medium tracking-[-0.005em] transition-colors disabled:opacity-50 disabled:pointer-events-none",
+    "inline-flex items-center justify-center gap-2 rounded-btn font-medium tracking-[-0.005em] transition-[colors,transform] disabled:opacity-50 disabled:pointer-events-none active:scale-[0.97] active:duration-[80ms] active:ease-glide",
     size === "sm" ? "text-[13px] px-3.5 py-2" : "text-[15px] px-[18px] py-2.5",
     variant === "primary" && "bg-s-accent-bright text-white hover:bg-s-accent",
     variant === "secondary" && "bg-white text-s-ink border border-s-border hover:bg-s-bg-sunken",

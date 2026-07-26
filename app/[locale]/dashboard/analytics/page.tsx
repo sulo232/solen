@@ -151,7 +151,7 @@ export default function AnalyticsPage() {
           <button
             onClick={onToggleComparison}
             aria-label={t("compareAria")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-btn border text-[12px] font-heading transition-colors ${showComparison ? "border-s-accent-bright/30 bg-s-accent-bright/10 text-s-accent-bright" : "border-s-border text-s-ink-2 hover:border-s-accent-bright/40 hover:text-s-accent-bright"}`}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-btn border text-[12px] font-heading transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide ${showComparison ? "border-s-accent-bright/30 bg-s-accent-bright/10 text-s-accent-bright" : "border-s-border text-s-ink-2 hover:border-s-accent-bright/40 hover:text-s-accent-bright"}`}
           >
             {showComparison ? <ToggleRight size={13} className="text-s-accent-bright" /> : <ToggleLeft size={13} />}
             {t("compare")}
@@ -164,7 +164,7 @@ export default function AnalyticsPage() {
       <div className="flex gap-1 mb-5 overflow-x-auto pb-1">
         {TABS.map((tabItem) => (
           <button key={tabItem.key} onClick={() => setTab(tabItem.key)}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-btn text-xs font-medium whitespace-nowrap transition-colors ${tab === tabItem.key ? "bg-s-accent-bright/10 text-s-accent-bright" : "bg-white border border-s-border text-s-ink-2 hover:bg-s-bg-sunken"}`}>
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-btn text-xs font-medium whitespace-nowrap transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide ${tab === tabItem.key ? "bg-s-accent-bright/10 text-s-accent-bright" : "bg-white border border-s-border text-s-ink-2 hover:bg-s-bg-sunken"}`}>
             <tabItem.icon size={12} /> {t(tabItem.labelKey)}
           </button>
         ))}

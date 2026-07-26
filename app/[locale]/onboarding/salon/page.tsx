@@ -111,7 +111,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
                 type="button"
                 onClick={() => toggleCat(c.value)}
                 className={[
-                  "px-4 py-2.5 rounded-pill text-[12px] font-heading uppercase tracking-[.06em] border transition-colors active:scale-[0.97]",
+                  "px-4 py-2.5 rounded-pill text-[12px] font-heading uppercase tracking-[.06em] border transition-[colors,transform] active:scale-[0.97]",
                   data.categories.includes(c.value)
                     ? "bg-s-ink text-white border-s-ink shadow-elevation-2"
                     : "border-s-ink/[0.08] text-s-ink-2 hover:border-s-ink/40",

@@ -189,7 +189,7 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
                     <>
                       <button
                         onClick={() => updateStatus(entry.id, "completed")}
-                        className="w-9 h-9 rounded-[10px] grid place-items-center bg-s-success text-white transition-opacity duration-150 hover:opacity-90"
+                        className="w-9 h-9 rounded-[10px] grid place-items-center bg-s-success text-white transition-[opacity,transform] duration-150 hover:opacity-90 active:scale-[0.94] active:duration-[80ms] active:ease-glide"
                         aria-label={t("complete")}
                         title={t("complete")}
                       >
@@ -197,7 +197,7 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
                       </button>
                       <button
                         onClick={() => updateStatus(entry.id, "no_show")}
-                        className="w-9 h-9 rounded-[10px] grid place-items-center bg-s-bg-sunken text-s-ink transition-colors duration-150 hover:bg-s-border"
+                        className="w-9 h-9 rounded-[10px] grid place-items-center bg-s-bg-sunken text-s-ink transition-[colors,transform] duration-150 hover:bg-s-border active:scale-[0.94] active:duration-[80ms] active:ease-glide"
                         aria-label={t("no_show")}
                         title={t("no_show")}
                       >
@@ -208,7 +208,7 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
                     <>
                       <button
                         onClick={() => updateStatus(entry.id, "in_chair")}
-                        className="w-9 h-9 rounded-[10px] grid place-items-center bg-s-ink text-white transition-opacity duration-150 hover:opacity-90"
+                        className="w-9 h-9 rounded-[10px] grid place-items-center bg-s-ink text-white transition-[opacity,transform] duration-150 hover:opacity-90 active:scale-[0.94] active:duration-[80ms] active:ease-glide"
                         aria-label={t("start")}
                         title={t("start")}
                       >
@@ -216,7 +216,7 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
                       </button>
                       <button
                         onClick={() => updateStatus(entry.id, "cancelled")}
-                        className="w-9 h-9 rounded-[10px] grid place-items-center bg-s-bg-sunken text-s-ink transition-colors duration-150 hover:bg-s-border"
+                        className="w-9 h-9 rounded-[10px] grid place-items-center bg-s-bg-sunken text-s-ink transition-[colors,transform] duration-150 hover:bg-s-border active:scale-[0.94] active:duration-[80ms] active:ease-glide"
                         aria-label={t("cancel")}
                         title={t("cancel")}
                       >

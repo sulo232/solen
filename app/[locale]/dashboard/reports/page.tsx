@@ -263,7 +263,7 @@ export default function ReportsAdminPage() {
                     <button
                       onClick={() => handleAction(r, { status: "reviewed" })}
                       disabled={!canReview || busy}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-border text-s-ink-2 text-xs font-medium hover:bg-s-bg-sunken hover:text-s-ink disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-border text-s-ink-2 text-xs font-medium hover:bg-s-bg-sunken hover:text-s-ink disabled:opacity-40 disabled:cursor-not-allowed transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide"
                     >
                       {busy ? <Loader2 size={12} className="animate-spin" /> : <Eye size={12} />}
                       {t("markReviewing")}
@@ -271,7 +271,7 @@ export default function ReportsAdminPage() {
                     <button
                       onClick={() => handleAction(r, { status: "dismissed" })}
                       disabled={!canDismiss || busy}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-border text-s-ink-2 text-xs font-medium hover:bg-s-bg-sunken hover:text-s-ink disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-border text-s-ink-2 text-xs font-medium hover:bg-s-bg-sunken hover:text-s-ink disabled:opacity-40 disabled:cursor-not-allowed transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide"
                     >
                       <X size={12} />
                       {t("dismiss")}
@@ -280,7 +280,7 @@ export default function ReportsAdminPage() {
                       <button
                         onClick={() => handleAction(r, { hide_content: true })}
                         disabled={!canHide || busy}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn bg-s-ink text-white text-xs font-medium hover:bg-black disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn bg-s-ink text-white text-xs font-medium hover:bg-black disabled:opacity-40 disabled:cursor-not-allowed transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide"
                       >
                         <EyeOff size={12} />
                         {r.target?.is_hidden ? t("alreadyHidden") : t("hideContent")}
@@ -296,7 +296,7 @@ export default function ReportsAdminPage() {
             <button
               onClick={() => fetchReports(page + 1, true)}
               disabled={loadingMore}
-              className="mt-4 w-full py-2.5 border border-s-border rounded-btn text-sm text-s-ink-2 hover:border-s-ink/[0.18] hover:text-s-ink/80 transition-colors disabled:opacity-50"
+              className="mt-4 w-full py-2.5 border border-s-border rounded-btn text-sm text-s-ink-2 hover:border-s-ink/[0.18] hover:text-s-ink/80 transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide disabled:opacity-50"
             >
               {loadingMore ? <Loader2 size={14} className="animate-spin mx-auto" /> : t("loadMore")}
             </button>

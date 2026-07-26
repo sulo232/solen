@@ -223,7 +223,7 @@ export default function AdminSandboxPage() {
           <button
             onClick={platformSeed}
             disabled={platformSeeding === "seeding" || seedCities.length === 0}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-[8px] bg-s-amber text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-40"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-[8px] bg-s-amber text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] active:duration-[80ms] active:ease-glide disabled:opacity-40"
           >
             {platformSeeding === "seeding" ? <Loader2 size={11} className="animate-spin" /> : <Plus size={11} />}
             Seed Test-Salons
@@ -231,7 +231,7 @@ export default function AdminSandboxPage() {
           <button
             onClick={platformDelete}
             disabled={platformSeeding === "deleting"}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-[8px] bg-red-50 text-red-500 text-[12px] font-heading uppercase tracking-[.06em] hover:bg-red-100 active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-40"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-[8px] bg-red-50 text-red-500 text-[12px] font-heading uppercase tracking-[.06em] hover:bg-red-100 active:scale-[0.97] transition-[transform,filter] active:duration-[80ms] active:ease-glide disabled:opacity-40"
           >
             {platformSeeding === "deleting" ? <Loader2 size={11} className="animate-spin" /> : <Trash2 size={11} />}
             {t("deleteAll")}
@@ -266,7 +266,7 @@ export default function AdminSandboxPage() {
           </div>
           <button
             onClick={() => setShowCreateForm(!showCreateForm)}
-            className="flex items-center gap-1.5 px-4 py-2 min-h-[44px] rounded-[8px] bg-s-accent text-white text-xs font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
+            className="flex items-center gap-1.5 px-4 py-2 min-h-[44px] rounded-[8px] bg-s-accent text-white text-xs font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] active:duration-[80ms] active:ease-glide"
             aria-label={t("createNew")}
           >
             <Plus size={13} />
@@ -304,7 +304,7 @@ export default function AdminSandboxPage() {
             <button
               onClick={createSalon}
               disabled={creating}
-              className="flex items-center gap-1.5 px-4 py-2 min-h-[44px] rounded-[8px] bg-s-accent text-white text-xs font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-40"
+              className="flex items-center gap-1.5 px-4 py-2 min-h-[44px] rounded-[8px] bg-s-accent text-white text-xs font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] active:duration-[80ms] active:ease-glide disabled:opacity-40"
               aria-label={creating ? t("creating") : t("confirmCreate")}
             >
               {creating ? <Loader2 size={12} className="animate-spin" /> : <FlaskConical size={12} />}

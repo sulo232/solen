@@ -86,7 +86,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
       <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading text-base">{initial ? t('editService') : t('addService')}</h3>
-          <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
+          <button onClick={onClose} className="transition-transform active:scale-[0.94] active:duration-[80ms] active:ease-glide"><X size={18} className="text-s-ink/30" /></button>
         </div>
         <div className="space-y-3 mb-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -195,7 +195,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
               <div className="flex flex-wrap gap-1">
                 {AGE_OPTIONS.map((a) => (
                   <button key={a.value} type="button" onClick={() => toggle("suitable_for", a.value)}
-                    className={["inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-xs font-medium border transition-colors",
+                    className={["inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-xs font-medium border transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide",
                       form.suitable_for.includes(a.value) ? "bg-s-accent-bright/10 text-s-accent-bright border-s-accent-bright/10" : "border-s-border text-s-ink-2"].join(" ")}>
                     {form.suitable_for.includes(a.value) && <Check size={13} strokeWidth={2.6} />}
                     {t(`age_${a.value}`)}
@@ -208,7 +208,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
               <div className="flex flex-wrap gap-1">
                 {GENDER_OPTIONS.map((g) => (
                   <button key={g.value} type="button" onClick={() => toggle("suitable_gender", g.value)}
-                    className={["inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-xs font-medium border transition-colors",
+                    className={["inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-xs font-medium border transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide",
                       form.suitable_gender.includes(g.value) ? "bg-s-accent-bright/10 text-s-accent-bright border-s-accent-bright/10" : "border-s-border text-s-ink-2"].join(" ")}>
                     {form.suitable_gender.includes(g.value) && <Check size={13} strokeWidth={2.6} />}
                     {t(`gender_${g.value}`)}
@@ -227,13 +227,13 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
         <div className="flex gap-2 items-center">
           {initial && onDelete && (
             <button type="button" onClick={() => { onClose(); onDelete(initial); }} aria-label={t('delete')}
-              className="text-s-ink-2 hover:text-s-error transition-colors grid place-items-center px-1.5 py-2.5">
+              className="text-s-ink-2 hover:text-s-error transition-[colors,transform] active:scale-[0.94] active:duration-[80ms] active:ease-glide grid place-items-center px-1.5 py-2.5">
               <Trash2 size={18} />
             </button>
           )}
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2">{t('cancel')}</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 transition-transform active:scale-[0.97] active:duration-[80ms] active:ease-glide">{t('cancel')}</button>
           <button onClick={handleSave} disabled={!form.name_de || loading}
-            className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+            className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 transition-transform active:scale-[0.97] active:duration-[80ms] active:ease-glide">
             {loading && <Spinner size="sm" invert />}{t('save')}
           </button>
         </div>
@@ -446,9 +446,9 @@ export default function ServicesPage() {
             <h3 className="font-heading text-base mb-3">{t('deleteService')}</h3>
             <p className="text-sm text-s-ink-2 mb-4">{t.rich('deleteConfirm', { name: deleteTarget.name_de, b: (chunks) => <strong>{chunks}</strong> })}</p>
             <div className="flex gap-2">
-              <button onClick={() => setDeleteTarget(null)} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2">{t('cancel')}</button>
+              <button onClick={() => setDeleteTarget(null)} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 transition-transform active:scale-[0.97] active:duration-[80ms] active:ease-glide">{t('cancel')}</button>
               <button onClick={handleDelete} disabled={deleteLoading}
-                className="flex-1 py-2.5 rounded-btn bg-s-error text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+                className="flex-1 py-2.5 rounded-btn bg-s-error text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 transition-transform active:scale-[0.97] active:duration-[80ms] active:ease-glide">
                 {deleteLoading && <Spinner size="sm" invert />}{t('delete')}
               </button>
             </div>
@@ -460,11 +460,11 @@ export default function ServicesPage() {
         <h1 className="font-heading text-[26px] font-bold tracking-[-0.02em] text-s-ink leading-none">{t('title')}</h1>
         <div className="flex items-center gap-2">
           <button onClick={() => setImportOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-[12px] border border-s-border text-s-ink-2 text-[13px] font-medium hover:border-s-ink transition-colors">
+            className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-[12px] border border-s-border text-s-ink-2 text-[13px] font-medium hover:border-s-ink transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide">
             <FileUp size={14} /> {t('csvImport')}
           </button>
           <button onClick={() => setAddOpen(true)}
-            className="inline-flex items-center gap-1.5 bg-s-ink text-white font-heading font-semibold text-[13px] rounded-[12px] px-3.5 py-2.5">
+            className="inline-flex items-center gap-1.5 bg-s-ink text-white font-heading font-semibold text-[13px] rounded-[12px] px-3.5 py-2.5 transition-transform active:scale-[0.97] active:duration-[80ms] active:ease-glide">
             <Plus size={15} strokeWidth={2.4} /> {t('add')}
           </button>
         </div>
@@ -510,7 +510,7 @@ export default function ServicesPage() {
                   key={p.key}
                   onClick={() => setCategoryFilter(p.key)}
                   className={[
-                    "shrink-0 px-3.5 py-2 rounded-full text-[12.5px] font-semibold whitespace-nowrap transition-colors border",
+                    "shrink-0 px-3.5 py-2 rounded-full text-[12.5px] font-semibold whitespace-nowrap transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide border",
                     active
                       ? "bg-s-accent-bright/10 text-s-accent-bright border-transparent"
                       : "bg-white border-s-border text-s-ink-2",
@@ -590,9 +590,9 @@ export default function ServicesPage() {
                       aria-checked={s.is_active}
                       aria-label={t('active')}
                       className={`relative w-[38px] h-[23px] rounded-full shrink-0 transition-colors ${s.is_active ? "bg-s-accent-bright" : "bg-s-border"}`}>
-                      <span className={`absolute top-[2.5px] w-[18px] h-[18px] rounded-full bg-white shadow-warm-sm transition-[left] ${s.is_active ? "left-[17px]" : "left-[2.5px]"}`} />
+                      <span className={`absolute top-[2.5px] left-[2.5px] w-[18px] h-[18px] rounded-full bg-white shadow-warm-sm transition-transform ${s.is_active ? "translate-x-[14.5px]" : "translate-x-0"}`} />
                     </button>
-                    <button onClick={() => setEditTarget(s)} aria-label={t('edit')} className="text-s-ink shrink-0 grid place-items-center">
+                    <button onClick={() => setEditTarget(s)} aria-label={t('edit')} className="text-s-ink shrink-0 grid place-items-center transition-transform active:scale-[0.94] active:duration-[80ms] active:ease-glide">
                       <Pencil size={19} />
                     </button>
                   </div>
@@ -630,7 +630,7 @@ export default function ServicesPage() {
           <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-md p-6">
             <div className="flex items-start justify-between mb-4">
               <h3 className="font-heading text-base">{t('csvImport')}</h3>
-              <button onClick={() => setImportOpen(false)}><X size={18} className="text-s-ink/30" /></button>
+              <button onClick={() => setImportOpen(false)} className="transition-transform active:scale-[0.94] active:duration-[80ms] active:ease-glide"><X size={18} className="text-s-ink/30" /></button>
             </div>
             <p className="text-sm text-s-ink-2 mb-4">
               {t('csvImportHelp')}
@@ -656,7 +656,7 @@ export default function ServicesPage() {
               <input type="file" accept=".csv,.txt" required
                 className="w-full px-3 py-2 rounded-btn border border-s-border text-sm mb-4 file:mr-3 file:px-3 file:py-1 file:rounded-btn file:border-0 file:bg-s-accent-bright/10 file:text-s-accent-bright file:font-medium file:text-xs file:cursor-pointer" />
               <button type="submit"
-                className="w-full py-2.5 rounded-btn bg-s-accent-bright text-white text-sm font-medium flex items-center justify-center gap-2">
+                className="w-full py-2.5 rounded-btn bg-s-accent-bright text-white text-sm font-medium flex items-center justify-center gap-2 transition-transform active:scale-[0.97] active:duration-[80ms] active:ease-glide">
                 <Upload size={14} /> {t('importButton')}
               </button>
             </form>

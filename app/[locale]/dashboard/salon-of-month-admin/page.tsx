@@ -238,7 +238,7 @@ export default function SalonOfMonthAdminPage() {
                           type="button"
                           onClick={() => handleSelect(c.id)}
                           disabled={selectingId === c.id}
-                          className="shrink-0 rounded-pill bg-s-ink px-4 py-1.5 font-body text-[13px] font-semibold text-white transition-[filter] duration-150 hover:brightness-[1.06] disabled:cursor-not-allowed disabled:opacity-50"
+                          className="shrink-0 rounded-pill bg-s-ink px-4 py-1.5 font-body text-[13px] font-semibold text-white transition-[filter,transform] duration-150 active:scale-[0.97] active:duration-[80ms] active:ease-glide hover:brightness-[1.06] disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           {selectingId === c.id ? (
                             <Loader2 size={14} className="animate-spin" />

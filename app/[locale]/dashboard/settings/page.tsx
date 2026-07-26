@@ -51,7 +51,7 @@ function HoursEditor({ hours, onChange }: {
           <div key={key} className="flex items-center gap-3">
             <button type="button" onClick={() => toggle(key)}
               // selected-ok: dashboard vibrant skin (LOCKFILE §12.2/§12.4), s-coral retired, s-accent is the locked selected-day fill
-              className={["w-9 text-center text-xs font-medium py-1.5 rounded-btn transition-colors",
+              className={["w-9 text-center text-xs font-medium py-1.5 rounded-btn transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide",
                 h ? "bg-s-accent text-white" : "bg-s-bg-sunken text-s-ink/40"].join(" ")}>
               {DAYS_LABEL[i]}
             </button>
@@ -135,7 +135,7 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
                 type="button"
                 onClick={() => toggleCategory(opt.value)}
                 className={[
-                  "flex items-center gap-1.5 px-3 py-2 rounded-pill border text-[12px] font-heading uppercase tracking-[.06em] transition-colors active:scale-[0.97]",
+                  "flex items-center gap-1.5 px-3 py-2 rounded-pill border text-[12px] font-heading uppercase tracking-[.06em] transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide",
                   active
                     ? "bg-s-accent-bright text-white border-s-accent-bright"
                     : "border-s-ink/[0.08] text-s-ink-2 hover:border-s-accent-bright/50",
@@ -396,7 +396,7 @@ function SmsRemindersTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
 
       <div className="pt-2">
         <button onClick={handleSave} disabled={saving}
-          className="px-4 py-2 bg-s-accent text-white text-sm font-medium rounded-btn hover:brightness-[1.06] transition-colors disabled:opacity-50">
+          className="px-4 py-2 bg-s-accent text-white text-sm font-medium rounded-btn hover:brightness-[1.06] transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide disabled:opacity-50">
           {saving ? t("saving") : saved ? t("saved") : t("save")}
         </button>
       </div>
@@ -457,7 +457,7 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
               type="button"
               onClick={() => setFeeType(opt.id)}
               className={[
-                "w-full min-h-[44px] rounded-[12px] border p-3.5 text-left transition-colors flex items-center gap-3",
+                "w-full min-h-[44px] rounded-[12px] border p-3.5 text-left transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide flex items-center gap-3",
                 feeType === opt.id
                   ? "border-s-accent-bright bg-s-accent-bright/10"
                   : "border-s-border hover:border-s-border",
@@ -578,7 +578,7 @@ function VatRegistrationTab({ salon, onSave }: { salon: Salon; onSave: (d: Parti
               type="button"
               onClick={() => setRegistered(opt.id)}
               className={[
-                "rounded-[12px] border p-3 text-left transition-colors",
+                "rounded-[12px] border p-3 text-left transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide",
                 registered === opt.id
                   ? "border-s-coral bg-s-coral/5"
                   : "border-s-border hover:border-s-border",
@@ -759,7 +759,7 @@ function VacationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
         </button>
         {(start || end) && (
           <button onClick={handleClear} disabled={saving}
-            className="px-4 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 hover:border-s-coral hover:text-s-coral transition-colors">
+            className="px-4 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 hover:border-s-coral hover:text-s-coral transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide">
             {t("deactivate")}
           </button>
         )}
@@ -858,7 +858,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
           <button
             onClick={handleConnect}
             disabled={connectLoading || connectStatus === "loading"}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium hover:brightness-[1.06] transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium hover:brightness-[1.06] transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide disabled:opacity-50"
           >
             {connectLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ExternalLink className="w-3.5 h-3.5" />}
             {connectStatus === "pending" ? t("continueVerification") : t("linkNow")}
@@ -889,7 +889,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
               type="button"
               onClick={() => setPaymentMode(opt.id)}
               className={[
-                "w-full min-h-[44px] rounded-[12px] border p-3.5 text-left transition-colors flex items-center gap-3",
+                "w-full min-h-[44px] rounded-[12px] border p-3.5 text-left transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide flex items-center gap-3",
                 paymentMode === opt.id ? "border-s-accent-bright bg-s-accent-bright/[0.06]" : "border-s-border hover:border-s-border",
               ].join(" ")}
             >
@@ -950,7 +950,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
                 type="button"
                 onClick={() => setNoShowFeeType(opt.id)}
                 className={[
-                  "w-full min-h-[44px] rounded-[12px] border p-3.5 text-left transition-colors flex items-center gap-3",
+                  "w-full min-h-[44px] rounded-[12px] border p-3.5 text-left transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide flex items-center gap-3",
                   charging ? "border-s-surcharge bg-s-surcharge-bg"
                     : selected ? "border-s-accent-bright bg-s-accent-bright/10"
                     : "border-s-border hover:border-s-border",
@@ -1141,7 +1141,7 @@ function SchedulingTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
           {confirmOptions.map((opt) => (
             <button key={opt.id} type="button" onClick={() => setConfirmMode(opt.id)}
               className={[
-                "w-full min-h-[44px] rounded-[12px] border p-3.5 text-left transition-colors flex items-center gap-3",
+                "w-full min-h-[44px] rounded-[12px] border p-3.5 text-left transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide flex items-center gap-3",
                 confirmMode === opt.id ? "border-s-accent-bright bg-s-accent-bright/10" : "border-s-border hover:border-s-border",
               ].join(" ")}>
               <div className={["w-[18px] h-[18px] rounded-full border-2 flex items-center justify-center shrink-0", confirmMode === opt.id ? "border-s-accent-bright" : "border-s-border"].join(" ")}>
@@ -1163,7 +1163,7 @@ function SchedulingTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
           {methodOptions.map((opt) => (
             <button key={opt.id} type="button" onClick={() => setMethod(opt.id)}
               className={[
-                "w-full min-h-[44px] rounded-[12px] border p-3.5 text-left transition-colors flex items-center gap-3",
+                "w-full min-h-[44px] rounded-[12px] border p-3.5 text-left transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide flex items-center gap-3",
                 method === opt.id ? "border-s-accent-bright bg-s-accent-bright/10" : "border-s-border hover:border-s-border",
               ].join(" ")}>
               <div className={["w-[18px] h-[18px] rounded-full border-2 flex items-center justify-center shrink-0", method === opt.id ? "border-s-accent-bright" : "border-s-border"].join(" ")}>
@@ -1192,7 +1192,7 @@ function SchedulingTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
             <button type="button" role="switch" aria-checked={limitEnabled} aria-label={t("dailyLimitToggleAria")}
               onClick={() => setLimitEnabled(!limitEnabled)}
               className={["w-[38px] h-[23px] rounded-full relative transition-colors shrink-0", limitEnabled ? "bg-s-accent-bright" : "bg-s-border"].join(" ")}>
-              <span className={["absolute top-[2.5px] w-[18px] h-[18px] rounded-full bg-white shadow transition-all", limitEnabled ? "left-[17px]" : "left-[2.5px]"].join(" ")} />
+              <span className={["absolute top-[2.5px] left-[2.5px] w-[18px] h-[18px] rounded-full bg-white shadow transition-transform", limitEnabled ? "translate-x-[14.5px]" : "translate-x-0"].join(" ")} />
             </button>
           </div>
         </div>
@@ -1283,7 +1283,7 @@ function CommissionTab({ salon }: { salon: Salon }) {
             <button
               onClick={() => updateCommission(s.id, s.commission_rate)}
               disabled={saving === s.id}
-              className="px-2 py-1 rounded-btn bg-s-coral/10 text-s-coral text-xs font-medium hover:bg-s-coral/20 transition-colors disabled:opacity-50"
+              className="px-2 py-1 rounded-btn bg-s-coral/10 text-s-coral text-xs font-medium hover:bg-s-coral/20 transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide disabled:opacity-50"
             >
               {saving === s.id ? "..." : "OK"}
             </button>

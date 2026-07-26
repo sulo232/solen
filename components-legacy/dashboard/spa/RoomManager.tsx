@@ -266,7 +266,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
               onClick={handleSave}
               disabled={saving || !form.name.trim()}
               aria-label={t("save")}
-              className="flex items-center gap-1.5 px-4 py-1.5 rounded-pill bg-s-accent text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-elevation-2"
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-pill bg-s-accent text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] active:duration-[80ms] active:ease-glide disabled:opacity-50 disabled:cursor-not-allowed shadow-elevation-2"
             >
               <Save size={12} />
               {saving ? t("saving") : t("save")}

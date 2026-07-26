@@ -120,7 +120,7 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
             aria-label={t("cmdPlaceholder")}
             className="flex-1 text-s-ink !border-0 !bg-transparent !min-h-0 !px-0 !text-sm outline-none placeholder:text-s-ink/30"
           />
-          <button onClick={onClose} aria-label={t("close")} className="p-2 rounded-pill hover:bg-s-ink/5:bg-white/5 transition-colors duration-150">
+          <button onClick={onClose} aria-label={t("close")} className="p-2 rounded-pill hover:bg-s-ink/5:bg-white/5 transition-[colors,transform] duration-150 active:scale-[0.94] active:duration-[80ms] active:ease-glide">
             <X size={16} className="text-s-ink/40" />
           </button>
         </div>
@@ -154,7 +154,7 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
                           if (cmd.href) { router.push(cmd.href); onClose(); }
                           if (cmd.action) { cmd.action(); onClose(); }
                         }}
-                        className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors duration-150 ${
+                        className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-[colors,transform] duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide ${
                           active
                             ? "bg-s-coral/[0.06] text-s-coral"
                             : "hover:bg-s-bg-sunken text-s-ink"

@@ -122,7 +122,7 @@ export default function FormulaTab({ customerId }: FormulaTabProps) {
           <div className="flex gap-2">
             <button onClick={() => setShowAdd(false)} className="px-3 py-1.5 rounded-pill border border-s-border text-xs text-s-ink-2">{t("cancel")}</button>
             <button onClick={handleAdd} disabled={!mixFormula.trim() || saving}
-              className="px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-accent text-white text-[12px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 shadow-elevation-2 transition-[transform,filter] duration-150">
+              className="px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-accent text-white text-[12px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 shadow-elevation-2 transition-[transform,filter] active:duration-[80ms] active:ease-glide">
               {saving && <Spinner size="sm" invert />} {t("save")}
             </button>
           </div>

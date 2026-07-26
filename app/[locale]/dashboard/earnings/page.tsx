@@ -158,7 +158,7 @@ export default function SalonEarningsPage() {
                             href={`/api/salon/invoices/${p.id}`} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="inline-flex items-center justify-center p-2 rounded-full hover:bg-s-coral/10 text-s-coral transition-colors"
+                            className="inline-flex items-center justify-center p-2 rounded-full hover:bg-s-coral/10 text-s-coral transition-[colors,transform] active:scale-[0.94] active:duration-[80ms] active:ease-glide"
                             title={t("printInvoice")}
                           >
                             <FileText size={16} />

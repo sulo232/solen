@@ -180,7 +180,7 @@ export default function CommissionAdminPage() {
             onClick={handleSave}
             disabled={state === "saving" || (!dirty && state !== "error")}
             className={[
-              "mt-5 flex h-[50px] w-full items-center justify-center gap-2 rounded-pill font-body text-[14px] font-semibold text-white transition-[filter,background-color] duration-150 disabled:cursor-not-allowed disabled:opacity-50",
+              "mt-5 flex h-[50px] w-full items-center justify-center gap-2 rounded-pill font-body text-[14px] font-semibold text-white transition-[filter,background-color,transform] duration-150 active:scale-[0.97] active:duration-[80ms] active:ease-glide disabled:cursor-not-allowed disabled:opacity-50",
               state === "saving"
                 ? "bg-s-accent"
                 : state === "saved"

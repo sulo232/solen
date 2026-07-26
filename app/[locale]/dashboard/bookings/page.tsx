@@ -89,12 +89,12 @@ function SalonCancelModal({
         <div className="flex items-start justify-between mb-4">
           <h3 className="text-[18px] font-semibold tracking-[-0.01em] text-s-ink">{t("cancelModalTitle")}</h3>
           {/* mockup-ok: a11y touch-target fix (FRONTEND_AUDIT_2026-07-08.md, dash-ops), 18px raised to the locked 44px icon-button spec via a padded hit-area, no visual redesign */}
-          <button onClick={onClose} className="grid place-items-center h-11 w-11 -m-2.5 rounded-full hover:bg-s-bg-sunken transition-colors"><X size={18} className="text-s-ink-2" /></button>
+          <button onClick={onClose} className="grid place-items-center h-11 w-11 -m-2.5 rounded-full hover:bg-s-bg-sunken transition-[colors,transform] active:scale-[0.94] active:duration-[80ms] active:ease-glide"><X size={18} className="text-s-ink-2" /></button>
         </div>
         <p className="text-sm text-s-ink-2 mb-4">{t("cancelModalDescription")}</p>
         <div className="space-y-2 mb-5">
           {CANCEL_REASONS.map((r) => (
-            <label key={r.value} className="flex items-center gap-3 p-3 rounded-xl border border-s-border cursor-pointer hover:border-s-ink transition-colors">
+            <label key={r.value} className="flex items-center gap-3 p-3 rounded-xl border border-s-border cursor-pointer hover:border-s-ink transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide">
               <input type="radio" name="reason" value={r.value} checked={reason === r.value}
                 onChange={() => setReason(r.value)} className="accent-s-ink" />
               <span className="text-sm">{t(r.labelKey)}</span>
@@ -102,9 +102,9 @@ function SalonCancelModal({
           ))}
         </div>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-full border border-s-border text-sm text-s-ink-2 hover:bg-s-bg-sunken transition-colors">{t("cancel")}</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-full border border-s-border text-sm text-s-ink-2 hover:bg-s-bg-sunken transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide">{t("cancel")}</button>
           <button onClick={handleSubmit} disabled={!reason || loading}
-            className="flex-1 py-2.5 rounded-full bg-s-ink text-white text-sm font-medium hover:bg-black disabled:opacity-50 flex items-center justify-center gap-2 transition-colors">
+            className="flex-1 py-2.5 rounded-full bg-s-ink text-white text-sm font-medium hover:bg-black disabled:opacity-50 flex items-center justify-center gap-2 transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide">
             {loading && <Spinner size="sm" invert />}{t("cancelBooking")}
           </button>
         </div>
@@ -155,19 +155,19 @@ function BookingActionSheet({
         <div className="flex flex-col gap-2">
           <button
             onClick={() => onComplete(booking.id)}
-            className="flex items-center justify-center gap-2 w-full min-h-[44px] rounded-xl bg-s-success text-white font-heading font-semibold text-[13.5px] transition-opacity hover:opacity-90"
+            className="flex items-center justify-center gap-2 w-full min-h-[44px] rounded-xl bg-s-success text-white font-heading font-semibold text-[13.5px] transition-[opacity,transform] hover:opacity-90 active:scale-[0.97] active:duration-[80ms] active:ease-glide"
           >
             <Check size={15} strokeWidth={2.4} />{t("complete")}
           </button>
           <button
             onClick={() => onNoShow(booking.id)}
-            className="flex items-center justify-center gap-2 w-full min-h-[44px] rounded-xl bg-white border border-s-border text-s-ink font-heading font-semibold text-[13.5px] transition-colors hover:bg-s-bg-sunken"
+            className="flex items-center justify-center gap-2 w-full min-h-[44px] rounded-xl bg-white border border-s-border text-s-ink font-heading font-semibold text-[13.5px] transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.97] active:duration-[80ms] active:ease-glide"
           >
             <UserX size={15} strokeWidth={2.4} />{t("noShow")}
           </button>
           <button
             onClick={() => onCancel(booking.id)}
-            className="flex items-center justify-center gap-2 w-full min-h-[44px] rounded-xl bg-white border border-s-error/30 text-s-error font-heading font-semibold text-[13.5px] transition-colors hover:bg-s-error/5"
+            className="flex items-center justify-center gap-2 w-full min-h-[44px] rounded-xl bg-white border border-s-error/30 text-s-error font-heading font-semibold text-[13.5px] transition-[colors,transform] hover:bg-s-error/5 active:scale-[0.97] active:duration-[80ms] active:ease-glide"
           >
             <X size={15} strokeWidth={2.4} />{t("cancelBooking")}
           </button>
@@ -282,7 +282,7 @@ export default function BookingsPage() {
           {bookings.map((b) => (
             <div key={b.id} className="border-b border-s-border last:border-b-0 px-3.5 py-3">
               <div
-                className={`flex items-center gap-3${b.status === "confirmed" ? " cursor-pointer" : ""}`}
+                className={`flex items-center gap-3 transition-transform active:duration-[80ms] active:ease-glide${b.status === "confirmed" ? " cursor-pointer active:scale-[0.98]" : ""}`}
                 onClick={b.status === "confirmed" ? () => setActionTarget(b) : undefined}
               >
                 {/* Time */}

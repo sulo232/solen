@@ -137,7 +137,7 @@ export default function AiArtGenerator() {
 
       {/* Generate button */}
       <button onClick={handleGenerate} disabled={generating}
-        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-pill active:scale-[0.97] bg-s-accent text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter] duration-150 disabled:opacity-50">
+        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-pill active:scale-[0.97] bg-s-accent text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter] active:duration-[80ms] active:ease-glide disabled:opacity-50">
         <Wand2 size={16} />
         {generating ? t("generating") : t("generate")}
       </button>

@@ -146,7 +146,7 @@ export default function ActivityFeed({ salonId }: ActivityFeedProps) {
       {events.length > MOBILE_PREVIEW && (
         <button
           onClick={() => setExpanded((e) => !e)}
-          className="mt-2 w-full flex items-center justify-center gap-1 text-[12px] font-heading text-s-ink/35 hover:text-s-coral transition-colors py-1.5 md:hidden"
+          className="mt-2 w-full flex items-center justify-center gap-1 text-[12px] font-heading text-s-ink/35 hover:text-s-coral transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide py-1.5 md:hidden"
           aria-label={expanded ? t("showLess") : t("showMore")}
         >
           <ChevronDown size={11} className={`transition-transform ${expanded ? "rotate-180" : ""}`} />

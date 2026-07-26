@@ -293,7 +293,7 @@ export default function DashboardLayout({
             const active = isActive(href);
             return (
               <Link key={key} href={`/${locale}${href}`} aria-current={active ? "page" : undefined}
-                className={`group relative w-10 h-10 rounded-xl grid place-items-center transition-colors ${active ? "bg-s-border text-s-ink" : "text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"}`}>
+                className={`group relative w-10 h-10 rounded-xl grid place-items-center transition-[colors,transform] active:scale-[0.94] active:duration-[80ms] active:ease-glide ${active ? "bg-s-border text-s-ink" : "text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"}`}>
                 <Icon size={20} strokeWidth={1.9} />
                 {/* messaging unread badge removed — feature off (owner 2026-06-13) */}
                 <span className="pointer-events-none absolute left-[52px] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-s-ink px-2 py-1 text-[12px] font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity z-50">{label}</span>
@@ -307,7 +307,7 @@ export default function DashboardLayout({
                 const active = isActive(href);
                 return (
                   <Link key={key} href={`/${locale}${href}`} aria-current={active ? "page" : undefined}
-                    className={`group relative w-10 h-10 rounded-xl grid place-items-center transition-colors ${active ? "bg-s-border text-s-ink" : "text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"}`}>
+                    className={`group relative w-10 h-10 rounded-xl grid place-items-center transition-[colors,transform] active:scale-[0.94] active:duration-[80ms] active:ease-glide ${active ? "bg-s-border text-s-ink" : "text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"}`}>
                     <Icon size={19} strokeWidth={1.9} />
                     <span className="pointer-events-none absolute left-[52px] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-s-ink px-2 py-1 text-[12px] font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity z-50">{t(key)}</span>
                   </Link>
@@ -316,7 +316,7 @@ export default function DashboardLayout({
             </>
           )}
         </nav>
-        <Link href={`/${locale}`} className="group relative w-10 h-10 rounded-xl grid place-items-center text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink transition-colors mb-1.5">
+        <Link href={`/${locale}`} className="group relative w-10 h-10 rounded-xl grid place-items-center text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink transition-[colors,transform] active:scale-[0.94] active:duration-[80ms] active:ease-glide mb-1.5">
           <span aria-hidden className="text-[17px] leading-none">←</span>
           <span className="pointer-events-none absolute left-[52px] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-s-ink px-2 py-1 text-[12px] font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity z-50">{t("backToSite")}</span>
         </Link>
@@ -335,7 +335,7 @@ export default function DashboardLayout({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.3 }} // mockup-ok: retime only, THE SPEED LAW reveal tier
             className="md:hidden fixed inset-0 z-40 bg-s-ink/40"
             onClick={() => setMobileSidebarOpen(false)}
           >
@@ -343,14 +343,14 @@ export default function DashboardLayout({
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
-              transition={{ duration: 0.15 }}
+              transition={{ duration: 0.3 }} // mockup-ok: retime only, THE SPEED LAW reveal tier
               className="absolute left-0 top-0 h-full w-[300px] max-w-[85vw] bg-white border-r border-s-border flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Salon header */}
               <div className="px-4 py-4 border-b border-s-border flex items-center gap-3">
                 <SalonSwitcher variant="sidebar" fallbackName={salonName ?? fetchedSalonName ?? undefined} />
-                <button onClick={() => setMobileSidebarOpen(false)} aria-label="Menü schließen" className="p-1 -mr-1 text-s-ink-3 hover:text-s-ink transition-colors"><X size={20} /></button>
+                <button onClick={() => setMobileSidebarOpen(false)} aria-label="Menü schließen" className="p-1 -mr-1 text-s-ink-3 hover:text-s-ink transition-[colors,transform] active:scale-[0.94] active:duration-[80ms] active:ease-glide"><X size={20} /></button>
               </div>
 
               {/* Scrollable grouped nav */}
@@ -360,7 +360,7 @@ export default function DashboardLayout({
                     const active = isActive(href);
                     return (
                       <Link key={href} href={`/${locale}${href}`} onClick={() => setMobileSidebarOpen(false)} aria-current={active ? "page" : undefined}
-                        className={`flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium transition-colors ${active ? "bg-s-bg-sunken text-s-ink font-semibold" : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"}`}>
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide ${active ? "bg-s-bg-sunken text-s-ink font-semibold" : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"}`}>
                         <Icon size={20} strokeWidth={1.9} className={active ? "text-s-ink" : "text-s-ink-3"} />
                         <span className="flex-1">{t(key)}</span>
                       </Link>
@@ -383,7 +383,7 @@ export default function DashboardLayout({
                             const active = isActive(href);
                             return (
                               <Link key={key} href={`/${locale}${href}`} onClick={() => setMobileSidebarOpen(false)} aria-current={active ? "page" : undefined}
-                                className={`flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium transition-colors ${active ? "bg-s-bg-sunken text-s-ink font-semibold" : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"}`}>
+                                className={`flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide ${active ? "bg-s-bg-sunken text-s-ink font-semibold" : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"}`}>
                                 <Icon size={20} strokeWidth={1.9} className={active ? "text-s-ink" : "text-s-ink-3"} />
                                 <span className="flex-1">{label}</span>
                                 {/* messaging unread badge removed — feature off (owner 2026-06-13) */}
@@ -402,7 +402,7 @@ export default function DashboardLayout({
                           const active = isActive(href);
                           return (
                             <Link key={href} href={`/${locale}${href}`} onClick={() => setMobileSidebarOpen(false)} aria-current={active ? "page" : undefined}
-                              className={`flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium transition-colors ${active ? "bg-s-bg-sunken text-s-ink font-semibold" : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"}`}>
+                              className={`flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide ${active ? "bg-s-bg-sunken text-s-ink font-semibold" : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"}`}>
                               <Icon size={20} strokeWidth={1.9} className={active ? "text-s-ink" : "text-s-ink-3"} />
                               <span className="flex-1">{t(key)}</span>
                             </Link>
@@ -417,7 +417,7 @@ export default function DashboardLayout({
               {/* Footer */}
               <div className="border-t border-s-border px-2 py-2">
                 <Link href={`/${locale}`} onClick={() => setMobileSidebarOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken transition-colors">
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide">
                   <ArrowLeft size={20} strokeWidth={1.9} className="text-s-ink-3" />
                   <span className="flex-1">{t("backToSite")}</span>
                 </Link>
@@ -435,18 +435,18 @@ export default function DashboardLayout({
             <SalonSwitcher variant="bar" fallbackName={salonName ?? fetchedSalonName ?? undefined} />
           </div>
           <div className="flex-1" />
-          <button onClick={() => setPaletteOpen(true)} aria-label="Suche öffnen (Ctrl+K)" className="w-[38px] h-[38px] rounded-full grid place-items-center text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink transition-colors">
+          <button onClick={() => setPaletteOpen(true)} aria-label="Suche öffnen (Ctrl+K)" className="w-[38px] h-[38px] rounded-full grid place-items-center text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink transition-[colors,transform] active:scale-[0.94] active:duration-[80ms] active:ease-glide">
             <Search size={19} strokeWidth={1.9} />
           </button>
           <NotificationCenter salonId={fetchedSalonId ?? undefined} />
         </div>
         {/* Mobile top bar */}
         <div className="md:hidden sticky top-0 z-20 bg-white border-b border-s-ink/[0.06] px-4 py-3 flex items-center gap-3">
-          <button onClick={() => setMobileSidebarOpen(true)} className="p-1.5 -ml-1.5 text-s-ink-2" aria-label="Menu öffnen">
+          <button onClick={() => setMobileSidebarOpen(true)} className="p-1.5 -ml-1.5 text-s-ink-2 transition-transform active:scale-[0.94] active:duration-[80ms] active:ease-glide" aria-label="Menu öffnen">
             <Menu size={20} />
           </button>
           <div className="flex-1 min-w-0"><SalonSwitcher variant="bar" fallbackName={salonName ?? fetchedSalonName ?? undefined} /></div>
-          <button onClick={() => setPaletteOpen(true)} aria-label="Suche öffnen (Ctrl+K)" className="p-1.5 text-s-ink/40 hover:text-s-ink/70 transition-colors">
+          <button onClick={() => setPaletteOpen(true)} aria-label="Suche öffnen (Ctrl+K)" className="p-1.5 text-s-ink/40 hover:text-s-ink/70 transition-[colors,transform] active:scale-[0.94] active:duration-[80ms] active:ease-glide">
             <Search size={16} />
           </button>
           <NotificationCenter salonId={fetchedSalonId ?? undefined} />
@@ -462,7 +462,7 @@ export default function DashboardLayout({
             <button
               onClick={exitPreview}
               disabled={exitingPreview}
-              className="shrink-0 px-3 py-1.5 rounded-full bg-white border border-s-border hover:bg-s-bg-sunken transition-colors text-[12px] font-medium disabled:opacity-60"
+              className="shrink-0 px-3 py-1.5 rounded-full bg-white border border-s-border hover:bg-s-bg-sunken transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide text-[12px] font-medium disabled:opacity-60"
               aria-label={t("previewExit")}
             >
               {t("previewExit")}
