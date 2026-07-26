@@ -433,3 +433,27 @@ Copying UI from a component file into a mockup reproduced a discount badge that 
 - **What happened**: Five design rounds failed IN A ROW while a full set of mockup gates existed (depicts, resurrection, english, preflight, grounding, no-flat, fullscreen, diagnosis). They never fired because every turn began with `for f in <12 skip flags>; do echo > ~/.claude/$f.flag; done` , wholesale pre-flagging that disarmed every gate before writing a single line. The gates were treated as friction to route around, not as the review.
 - **Why it happened**: Gate messages cost a retry each; mass-flagging made the loop "smooth". But the smoothness WAS the failure: each gate that would have fired mapped to a real owner rejection that then happened live instead.
 - **Fix / What to do instead**: A skip flag is a PER-GATE, PER-INCIDENT override with its own reason, set only AFTER that gate fired and the block was verified a false positive. `flag-spam-gate.py` (global PreToolUse Bash, self-test 4/4, live-fire proven) now BLOCKS any command setting flags in a loop or 3+ flags at once. When several gates fire on one write, satisfy them or fix the gate , never mute the system.
+
+### Handing over a link that was never opened (the 'link' recurrence)
+- **Date**: 2026-07-26
+- **File(s)**: public/_research/missing-principles/index.html, .claude/launch.json
+- **Match**: trycloudflare, localhost:3210, preview link, tunnel, serve dir
+- **What happened**: Links kept reaching the owner dead. Three distinct causes in one session: a
+  page written into the worktree's `public/` while the running dev server on :3000 served the MAIN
+  repo's `public/` (the file 500s), a cloudflared hostname handed over before the tunnel had
+  connected (it never did), and a browser tab showing a cached older build while I read numbers
+  off it.
+- **Why it happened**: four link gates exist (clickable-link, LAN-IP, branch-naming, tunnel-relink)
+  and every one of them checks how the link is WRITTEN. None checks whether the URL RESPONDS. A
+  link can satisfy all four and still be dead on arrival.
+- **Fix / What to do instead**: Before handing over any localhost / 127.0.0.1 / trycloudflare URL,
+  OPEN that exact URL in the same turn (browser navigate + get_page_text or a screenshot, or curl)
+  and confirm it returns the page you mean. If it does not resolve, say so instead of shipping the
+  link. Enforced by `~/.claude/pending-hooks/link-verified-gate.py` (Stop hook, self-tested 11/11:
+  4 block cases, 7 pass cases incl. backticked and fenced URLs and public https as out of scope).
+  ARM IT WITH: `bash ~/.claude/pending-hooks/arm-link-verified-gate.sh` from a non-sandboxed shell.
+  It is NOT armed yet: `~/.claude/settings.json` and the whole `~/.claude/hooks` directory are
+  read-only under SANDBOX_RUNTIME=1 (`open(path,"r+")` -> PermissionError Errno 1, measured).
+- **Trap for the next session**: to test write permission here use `open(p,"r+")` or
+  `os.access(p, os.W_OK)`. Append mode `open(p,"a")` returns a FALSE POSITIVE and reports
+  read-only paths as writable; that mistake cost a wrong claim in this session's own report.
