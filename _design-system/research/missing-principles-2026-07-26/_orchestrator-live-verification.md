@@ -373,3 +373,58 @@ And the corollary, which is the actual danger here: a replay-only landmine is in
 current check, because nothing in this estate ever replays the migration folder onto a clean
 database. The restore drill that would catch it has, by the backup-recovery agent's own finding,
 never been executed end to end.
+
+## 14. THIRD calibration note: right symptom, wrong mechanism (verified 2026-07-26)
+
+The seo-comms agent's CRITICAL says transactional emails "accept a locale argument and silently
+ignore it, always sending German". I checked every builder in `lib/email.ts`:
+
+```
+27 exported builders take a locale parameter. 27 of 27 actually use it
+(subjects[locale] / bodies[locale]). 0 ignore it.
+```
+
+So the stated mechanism is wrong. The SYMPTOM is real, and the cause is one level out, at the
+call sites:
+
+```
+grep -rn "sendEmail(" app lib | grep -v '^lib/email.ts:'   -> 35 call sites
+   of those, passing the literal "de"                       ->  5
+   of those, passing a locale variable                      ->  1
+```
+
+`app/api/bookings/[id]/cancel/route.ts:367` and `app/api/slots/[id]/route.ts:32` both pass `"de"`
+as a literal, and the second also formats the date with `toLocaleDateString("de-CH")`. Every other
+call site relies on the builder's default parameter, which is `"de"`. So on a four-language
+product, one outbound message in thirty-five can be in the recipient's language.
+
+The corrected principle is about the CALL SITE, not the builder: **a locale-aware function called
+without a locale is a defect, not a default. Where a message is addressed to a specific person,
+the locale is resolved from that person's stored preference at the call site and passed
+explicitly; the default parameter exists only for system-to-operator mail.**
+
+Running tally of this run's calibration: three agent findings had a wrong mechanism or a
+wrong liveness claim (reviews RLS, amenity fabrication, email locale), out of 21 criticals and
+276 findings. All three were caught by checking the live system rather than the file the agent
+cited. The symptom was real in all three cases; only one (amenities) turned out to be a
+non-issue today. That is the argument for the report separating what was measured from what was
+reported, and it is why the "if you read nothing else" section of the page contains only things
+the main thread checked itself.
+
+## 15. The four-language product formats everything as Swiss German (verified 2026-07-26)
+
+```
+grep -ro '"de-CH"' app lib components                                   -> 116 literals
+grep -roE 'toLocale(Date|Time)?String\(\s*"[a-z]{2}-[A-Z]{2}"'          ->  91 call sites
+grep -roE 'Intl\.(NumberFormat|DateTimeFormat)\(\s*"[a-z]{2}-[A-Z]{2}"' ->  10 call sites
+ls lib/format*                                                          -> format.ts, format-currency.ts, format-phone.ts
+```
+
+The helper layer exists and is bypassed 100-plus times. A French or Italian visitor sees Swiss
+German date and number formatting throughout, and the same root cause produces the German-only
+transactional email in section 14.
+
+Pairs with the two things that ARE right here, so the picture stays honest: translation coverage
+is 99.5 percent (de 5,687 keys, en 5,676, fr 5,669, it 5,658) and hreflang plus canonical plus
+x-default are correctly emitted on the city pages. The gap is not translation, it is FORMATTING
+and the call sites that never ask which language they are rendering for.

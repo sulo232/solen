@@ -1,0 +1,221 @@
+{
+  "verdict_summary": "Roughly a fifth of this list is a real missing principle; the rest is defect backlog, duplicate coverage, or process machinery a one-person pre-launch team cannot pay for. Three structural errors run through it: (1) about 21 findings prescribe a CI job, but origin/main is 1,604 commits and 66 days behind local main and the GitHub repo contains exactly one workflow file, so none of that CI has ever executed and every one of those rules would be law about a machine that does not exist; (2) at least nine findings are the estate's own already-pinned silent-no-op rule wearing new domain hats, and one of them (api-contracts-03) restates that rule almost verbatim while filing it as missing; (3) two agent CRITICALs were migration-file truths presented as live truths, which the orchestrator caught, and that error class is worth more than either finding. The failure mode of adopting this wholesale is precise and already measured in the owner's own audits: the estate has 164 hooks and 410,091 words in _design-system alone, the owner's own CLAUDE.md admits he does not re-read LOCKFILE before a small edit, and one 7-gate family was skip-flagged 72 times in 6 days. Adding 264 rules to a corpus nobody re-reads is a write-only operation; adding the gates to enforce them converts the skip flag into the normal workflow. The genuinely valuable output of this run is not the rule list, it is five measured facts: CI has never run, the remote is 66 days stale, the shipped browse pages sit at 4.4% and 0.0% imagery against a 33% floor, health data is stored with no consent record, and the ToS promises two things the code does not do.",
+  "cut": [
+    {
+      "id": "accessibility-01",
+      "reason": "REJECTED. This re-proposes a visible focus state on interactive chrome, a decision the owner has killed by name at least three times, once while (the code's own words) furious and repeating himself. The finding's escape hatch ('if a ring stays banned, ONE approved non-ring substitute') is still re-litigating a settled call, and a live gate exists specifically to block it.",
+      "proof": "app/globals.css:377-392 carries the dated owner decisions in the comment itself: 'Owner 2026-07-01 (furious, repeated): NO focus ring on interactive chrome, on ANY device' and 'BELT-AND-SUSPENDERS (owner 2026-07-02, furious repeat)'. The comment already records the exact a11y cost the finding claims to discover: '(a11y note: this drops the WCAG 2.4.7 keyboard focus indicator on chrome, owner call ... and the no-focus-ring-gate blocks re-adding a ring.)'. _design-system/REMOVED.md:34 and :35 are two further dated rejections, :34 ending 'Do NOT re-add a focus ring to THIS input despite the LOCKFILE inputs-get-an-ink-halo rule.' What DOES survive here is a one-line doc fix, not a principle: the CLAUDE.md design-contract focus row still says 'buttons/links: the global 2px ink outline', which globals.css deleted. That contradiction belongs in the merge group on doc-vs-runtime drift, not in a new a11y law."
+    },
+    {
+      "id": "imagery-icons-04",
+      "reason": "ALREADY COVERED. The finding says 'ALREADY: none'. The rule is locked in LOCKFILE. This is 35 unfixed violations of an existing law, which is a defect ticket, not a missing principle.",
+      "proof": "_design-system/LOCKFILE.md:1149: '| **Single image-CDN pipeline** | All images route through `next/image` + Supabase Storage. Mirror Uber's `cn-geo1.uber.com/image-proc` pattern. |'. The agent's own absence-proof grepped the component tree and package.json, not LOCKFILE section 16."
+    },
+    {
+      "id": "responsive-desktop-10",
+      "reason": "WRONG. The proof is false. It claims a grep for window.print and 'Drucken' across app/ returns zero hits and concludes 'no print feature exists yet to test against'. A print feature does exist, on a financial document, and another agent in this same run found it.",
+      "proof": "grep -rn 'window.print' app/ returns app/api/salon/invoices/[payoutId]/route.ts:59: `<button onclick=\"window.print()\" style=\"...background: #C05038...\">Drucken / PDF speichern</button>`. That is the salon commission payout statement. color-tokens-02 cites the same line for the off-palette hex. So print is in scope today, on the one surface where getting it wrong costs a partner relationship, and the finding's own recommendation ('say print is out of scope') would write a false statement into the docs. The real principle is color-tokens-02's (surfaces that generate their own HTML outside the React tree are outside every system), which already covers this file."
+    },
+    {
+      "id": "hierarchy-density-07",
+      "reason": "REJECTED by the estate's own evidence, and the finding quotes the rejection in its own proof. It asks for a measured maximum share of chromatic pixels; the estate's own research file already recorded that no source supports a chroma count or share as a floor or ceiling.",
+      "proof": "The finding's PROOF is verbatim: 'TASTE_RANGE.md NOT-SUPPORTED item 7, verbatim: No evidence that a COUNT of chromatic colours is a floor. FLATNESS_DIAGNOSIS counted 2 on home and 3 on PDP and read it as a symptom... no source states a minimum number of hues a screen needs.' Proposing a number the estate already filed under NOT-SUPPORTED is how an unsourced literal enters the LOCKFILE and then gets enforced for a year. Rule 15 (attach a checkable source or cut the number) applies to the estate's own rules, not only to persuasion stats."
+    },
+    {
+      "id": "secrets-webhooks-09",
+      "reason": "ALREADY COVERED, self-admitted in the finding's own ALREADY field. It is a one-line bug with a known fix sitting in an audit row, filed as a missing principle to fill a quota.",
+      "proof": "The finding's own ALREADY field: 'full: both the research (webhooks.md section 6) and the audit (audit/webhooks.md WEBHOOK-06 row) already name this exact gap with the exact one-line fix. This finding is included here only because...'. Adding a rule that a switch needs a default case, when the missing default is already a numbered audit row with the fix written, buys nothing. Add the default case."
+    },
+    {
+      "id": "input-abuse-05",
+      "reason": "ALREADY COVERED and a duplicate. Same rule as secrets-webhooks-01 (ship CSP report-only, then enforce), from the same source file, in the same run. The finding's own ALREADY field says the analysis is complete.",
+      "proof": "input-abuse-05 ALREADY: 'full analysis already exists and is high quality: security.md section 6 names this the single highest-value gap this file found, gives a concrete rollout plan (report-only first, explicit allowlist...)'. secrets-webhooks-01 ALREADY: 'Full: _backend-system/research/security.md section 6 already researched this exhaustively'. Two agents rediscovered one already-written, already-recommended decision. Keep secrets-webhooks-01 as the single carrier and drop this one; neither is a missing principle, both are an unexecuted decision."
+    },
+    {
+      "id": "accessibility-03",
+      "reason": "DUPLICATE of typography-01. Identical file, identical lines, identical rule (never set userScalable:false / maximumScale<=1 on the root viewport). Two agents, one defect.",
+      "proof": "accessibility-03 PROOF: 'app/layout.tsx:29-32: export const viewport: Viewport = { ..., maximumScale: 1, userScalable: false, viewportFit: \"cover\" }'. typography-01 PROOF: 'app/layout.tsx lines 28-34: export const viewport: Viewport = { width: \"device-width\", initialScale: 1, maximumScale: 1, userScalable: false, ... }'. Keep typography-01 (it also names the SOURCE.md section 16 gap where the rule belongs). Note this is one three-line edit, not a law."
+    },
+    {
+      "id": "api-contracts-03",
+      "reason": "ALREADY COVERED, almost word for word, by the project CLAUDE.md's own pinned Silent no-ops block. The finding's actual delta is enforcement strength (informational reminder versus blocking gate), which is a gate-tuning decision, not a missing principle.",
+      "proof": "Project CLAUDE.md, pinned block 'Silent no-ops': 'Prove behavior, not existence. A filter must DISCRIMINATE (return a correct subset), not just render or return 200. A column must appear in the LIVE snapshot (npm run exists <column>), not merely in a TS type.' That is the rule the finding proposes. The finding's own ALREADY field concedes it: 'the hook exists and correctly names the exact failure mode and the exact three-part proof procedure'. This belongs in merge group A as evidence of scope, not as a new row."
+    },
+    {
+      "id": "orch-output-12",
+      "reason": "ALREADY COVERED. This is a one-word disambiguation of an existing memory file, promoted to a principle. The finding's own proof is that memory/user.md already says the thing and is slightly ambiguous.",
+      "proof": "orch-output-12 PROOF: 'memory/user.md records \"Colloquial shorthand; match register\", which is one sentence and is ambiguous exactly where it matters: match the REGISTER, or match the FORM.' The fix is to edit that sentence to read 'match register, never mirror the shorthand'. Editing an existing memory line is not adopting a principle, and filing it as one inflates the list's count."
+    },
+    {
+      "id": "testing-release-08",
+      "reason": "WRONG PREMISE. It argues that CI validates a `next start` artifact rather than the Netlify-built one. There is no CI. The distinction it draws cannot matter until a workflow actually runs, and building the rule now would encode a comparison between two things, one of which has never executed.",
+      "proof": "gh api repos/sulo232/solen/contents/.github/workflows returns exactly one file, cron-jobs.yml (orchestrator live verification section 11). Locally `ls .github/workflows/` returns five files including quality.yml, which contains the visual job this finding critiques. `gh run list --workflow=quality.yml` returns HTTP 404, 'not found on the default branch'. git rev-list --count origin/main..main = 1604, verified this session. The visual job has produced zero runs ever, against either artifact."
+    },
+    {
+      "id": "layout-geometry-07",
+      "reason": "WRONG. No defect is demonstrated. The proof describes two buttons using standard flex centering and calls the absence of a per-typeface tuning constant the bug, with no measurement showing the text actually sits low. This is a rule invented from a plausible mechanism, which is the exact failure mode the estate bans elsewhere (measure, do not eyeball).",
+      "proof": "layout-geometry-07 PROOF in full: 'The system's two highest-traffic commit buttons (PayConfirmStep.tsx and BookingPaymentForm.tsx, both 52px ink pills) use plain flex items-center with no per-typeface tuning value defined anywhere to check text position against.' There is no measured cap-top or baseline gap, no screenshot, no owner complaint. Compare the estate's own binary trigger: measurement-complaint words fire a live rect measurement BEFORE editing. A rule proposing per-typeface baseline tuning on 164 hooks' worth of existing law, with zero measured pixels behind it, is the definition of a rule that will be skip-flagged."
+    },
+    {
+      "id": "layout-geometry-10",
+      "reason": "ALREADY COVERED, and the finding concedes it. The container padding values are frozen literals in LOCKFILE section 7. A derived ratio rule cannot bind anything the literals do not already bind, and its own proof shows the existing surfaces disagree (1.14x, 1.5x, 2x), so the new rule would immediately need three recorded exceptions.",
+      "proof": "layout-geometry-10 ALREADY: 'partial: the table itself is locked as frozen literals, so the VALUES are law; the delta is the missing rationale/ratio'. Its PROOF enumerates three different existing ratios in the locked table (Page 1.5x/2x, Hero 1.14x, PDP 1.5x, /business 2x, FAQ 2x). A ratio band that three of five locked rows already violate is not a rule, it is a documentation note. Precedence chain tier 3 (LOCKFILE frozen literals) already wins over it."
+    },
+    {
+      "id": "color-tokens-09",
+      "reason": "Fails the list's own ROI test, with no incident behind it. It proposes tracking and capping the total color-token count. No drift, bug, or owner complaint is cited as caused by the count; the cited number (47) is presented as suspicious rather than as harmful.",
+      "proof": "color-tokens-09 ALREADY: 'none for color specifically; the pattern exists for radius/duration/easing'. Its PROOF is a bare count: \"grep -oE '\\\"s-[a-zA-Z0-9-]+\\\"' tailwind.config.js | sort -u | wc -l = 47 distinct top-level tokens today\". Meanwhile law-layer-roi-test, in this same list and marked critical, demands that a new law name 'the specific, counted incidents it would have prevented in the last 90 days'. This finding names zero. The real color-token problem is already covered by color-tokens-06 (17 tokens with zero live usage) which does have evidence; a count ceiling adds a second rule on top of it."
+    },
+    {
+      "id": "ethics-psychology-01",
+      "reason": "ALREADY COVERED, and the existing rule is stricter than the law being cited. Adding a Swiss PBV citation to a rule that already exceeds PBV is a footnote, not a principle. The finding admits this.",
+      "proof": "ethics-psychology-01 ALREADY: 'partial: PSYCHOLOGY.md law 5 and hard line 3 already require total-price-from-step-one as a conversion law, and in spirit it is stricter than PBV's minimum. The gap is that the file never names PBV'. A rule that already binds tighter than the statute does not become more enforceable by naming the statute. If the owner wants the citation for defensibility, it is a one-line edit to PSYCHOLOGY.md law 5, not a new law."
+    },
+    {
+      "id": "ethics-psychology-04",
+      "reason": "ALREADY COVERED, same shape as ethics-psychology-01 and conceded in the same words: the shipped default already satisfies the statute being cited.",
+      "proof": "ethics-psychology-04 ALREADY: 'partial: the current default (marketing off, transactional on) already matches what UWG Art. 3(1)(o) requires, and the same 2026-07-07 audit already separately found the underlying enforcement is broken'. The real defect here is the broken enforcement, which is ethics-psychology-02's consent-flag-has-no-reader finding, which belongs in merge group A. The UWG citation adds a sentence to PSYCHOLOGY.md law 14 and nothing else."
+    }
+  ],
+  "downgrade": [
+    {
+      "id": "imagery-icons-01",
+      "claimed": "high",
+      "correct": "medium, and timed to the first real salon upload",
+      "why": "EXIF/GPS stripping matters when users upload photos. Live database check: salon_photos has 0 rows across all 28 salons, and every cover image that does render is a remote Unsplash URL (orchestrator live verification section 9). There is no user-uploaded photo in the system to leak GPS from. This must land before the first real salon uploads a gallery, which is a launch-blocker slot, not a today slot."
+    },
+    {
+      "id": "imagery-icons-02",
+      "claimed": "high",
+      "correct": "low now, medium at first external onboarding",
+      "why": "Pre-publish moderation for a marketplace with 28 owner-seeded salons, zero real customers, and 0 rows in salon_photos is textbook premature machinery, which is a named failure mode in this estate. A moderation queue with nothing in it is a surface the owner has to maintain for no signal. The honest rule is a trigger, not a build: wire moderation the same week the first non-owner account can upload."
+    },
+    {
+      "id": "imagery-icons-07",
+      "claimed": "medium",
+      "correct": "low",
+      "why": "Same reason as imagery-icons-02. A rights/consent attestation checkbox protects against a third party uploading someone else's photo. There is no third party yet and no photo yet. Merge it into the upload-pipeline work item rather than carrying it as its own principle."
+    },
+    {
+      "id": "input-abuse-03",
+      "claimed": "high",
+      "correct": "high but not currently exploitable, and that distinction must be stated",
+      "why": "The finding is technically correct and the fix is cheap, so keep it. But calling it a 'live stored-XSS vector' overstates today's reality: the injection point is salons.name, editable only by an approved salon owner, and all 28 salons are seeded by the owner himself. Nobody hostile can currently write that column. The correct framing under the pre-launch rule is 'would break the day a third party can edit a salon name', not 'is being exploited'. Same correction applies to input-abuse-01 (multipart CSRF) and input-abuse-02 (magic bytes)."
+    },
+    {
+      "id": "authz-rls-05",
+      "claimed": "high, effort L",
+      "correct": "medium, and only the NEW-call-site half",
+      "why": "It proposes a recurring quarterly sampling audit of 10% of 270 createAdminSupabaseClient call sites, for a solo operator. That is an SRE ritual with no SRE. The half that survives is cheap and forward-looking: every NEW admin-client call site carries a visible ownership assertion immediately before the privileged query. Auditing the existing 270 on a calendar is a process the owner will run once and then skip-flag forever."
+    },
+    {
+      "id": "accessibility-04",
+      "claimed": "high",
+      "correct": "low",
+      "why": "Zero landmarks across 49 dashboard pages used today by zero real salon owners. The argument in the rule ('dashboard staff are real end users') is correct and the fix is cheap, but a high severity here competes for attention with health data stored without consent and a ToS promise the code does not keep. This is launch-hygiene, not a current defect."
+    },
+    {
+      "id": "fe-04",
+      "claimed": "high",
+      "correct": "low until CI exists",
+      "why": "The rule is 'run jscpd in CI alongside the drift-checker'. CI has never executed a single run (origin/main is 1,604 commits behind and hosts one workflow file). A duplication scanner that cannot run is not a gate, and the history it cites (5 manually-found duplicate components) was all caught without it. Blocked on merge group B's prerequisite."
+    },
+    {
+      "id": "fe-05",
+      "claimed": "medium",
+      "correct": "low",
+      "why": "A 400-line file ceiling with an 800-line debt ledger is generic large-team hygiene imported wholesale. The named offender, SearchTemplate.tsx at 2375 lines, is a real problem but it is a refactor ticket with a name, not a rule that needs to bind 422 other files. The estate already has a decomposition backlog mechanism (_tasks/INCOMPLETE_FEATURES.md); use it."
+    },
+    {
+      "id": "testing-release-04",
+      "claimed": "medium",
+      "correct": "low",
+      "why": "A 30-day lifecycle policy for 21 one-off kill-test scripts is housekeeping dressed as law. The scripts cost nothing sitting in scripts/, they are not imported, and the stated harm (a future session might think they still pass) is speculative. Delete them in one commit or leave them; either way it is not a principle."
+    },
+    {
+      "id": "motion-09",
+      "claimed": "low",
+      "correct": "drop",
+      "why": "Device-capability motion tiering (reading hardwareConcurrency/deviceMemory to drop blur and springs) is confidence-tier 'assume' with no measured jank on any device. prefers-reduced-motion is already wired at 11 sites. Adding a second, heuristic motion-degradation path to a system that already has locked motion-22 vocabulary is new surface with no evidence of need."
+    },
+    {
+      "id": "responsive-desktop-05",
+      "claimed": "medium",
+      "correct": "low",
+      "why": "Tablet design intent for a mobile-first Swiss booking product pre-launch. The finding's own proof is that tablet has automated regression screenshots (so drift is caught) and zero documented intent. Documenting 'tablet is a wider mobile' is a one-line note. The same downgrade applies to responsive-desktop-07 (the 1024-1279px zone) and responsive-desktop-09 (pointer vs touch umbrella rule): all three are documentation of existing behavior, not missing law."
+    },
+    {
+      "id": "orch-output-07",
+      "claimed": "medium",
+      "correct": "low, and reframe or drop",
+      "why": "Reporting subagent token cost at the close of every large fan-out sits directly against the owner's own recorded preference (feedback_optimize_for_best_not_cheap: optimize for BEST work; only the commit/push rules are hard constraints). The finding anticipates this and argues cost must be visible in order to be traded off, which is fair, but the practical result is a cost line in every large turn, which reads as the budget-consciousness the owner rejected. If kept, scope it to turns the owner explicitly asks about, not to every fan-out."
+    },
+    {
+      "id": "law-layer-roi-test",
+      "claimed": "critical",
+      "correct": "high",
+      "why": "This is the single most valuable meta-finding in the run and I want it adopted, but it is not critical in the sense the other criticals are: nothing is currently broken for a user because of it. Ranking a governance test at the same level as 'the ToS promises phone verification the code never records' mis-signals what to do first. Adopt it, rank it below the live defects, and note the irony that adopting this list wholesale would itself fail this test."
+    },
+    {
+      "id": "copy-i18n-11",
+      "claimed": "medium",
+      "correct": "low",
+      "why": "Confidence tier is 'assume' and the content is legal interpretation of when 'ab CHF' may prefix a price under Swiss price-display rules, with no cited PBV article text and no owner or lawyer in the loop. Rule 15 applies: attach a named checkable source or soften the claim. Park it as a question for whoever reviews the ToS, do not freeze it as design law."
+    },
+    {
+      "id": "secrets-webhooks-07",
+      "claimed": "medium",
+      "correct": "low",
+      "why": "Stripe Restricted Keys for narrow contexts is correct practice, but its own rule text concedes there is no such narrow context today: every current Stripe path creates charges, manages payouts, or handles Connect. A least-privilege rule with zero call sites to apply to is a note for the first read-only reporting job, not a principle to adopt now."
+    },
+    {
+      "id": "authz-rls-01",
+      "claimed": "critical",
+      "correct": "not a live hole; re-file as the migration-versus-live principle",
+      "why": "Already corrected by the orchestrator's own live query. pg_policies on public.reviews returns exactly four correctly-scoped policies and the permissive USING(true) UPDATE policy does not exist live; across all 150 public tables there are zero bare true write policies and RLS is enabled on 150 of 150. The migration-file half is true, which is why this belongs in merge group C rather than in the critical bucket. Same correction applies to data-money-03, whose fabricated amenity booleans are all false in the live table (0 true across 20 active salons)."
+    }
+  ],
+  "merge": [
+    {
+      "ids": ["api-contracts-03", "ethics-psychology-02", "trust-01-phone-verification-silent-noop", "trust-03-account-warnings-write-only", "observability-1", "copy-i18n-08", "motion-04", "testing-release-01", "testing-release-03", "secrets-webhooks-09"],
+      "merged_principle": "THE SILENT NO-OP RULE APPLIES TO THE MACHINERY, NOT ONLY TO PRODUCT FILTERS. The project's pinned rule already says: prove behavior, not existence; a filter must DISCRIMINATE, not merely render or return 200. Extend that same proof obligation, unchanged in wording, to every other thing in this estate that can look wired and do nothing: a consent or preference toggle must have a proven reader on a real send path; a verification endpoint that returns verified:true must persist the fact in the same request (and the column it writes must exist in the live schema); a table that records a penalty must have a reader that applies the consequence; a cron-health check must distinguish 'ran and failed' from 'never ran'; a gate, lint script or npm check must be proven to fire on a crafted failing input, not merely to exist in package.json; a CI job that can skip its whole body and still report green is a placebo; and every Terms of Service promise about verification, enforcement or consequence needs one end-to-end test that exercises it. One rule, one existing name, one new sentence about scope."
+    },
+    {
+      "ids": ["testing-release-01", "testing-release-02", "testing-release-10", "accessibility-09", "layout-geometry-06", "performance-01", "performance-02", "secrets-webhooks-02", "secrets-webhooks-06", "color-tokens-01", "color-tokens-05", "copy-i18n-01", "copy-i18n-04", "copy-i18n-07", "fe-01", "fe-04"],
+      "merged_principle": "NOTHING MAY BE PRESCRIBED INTO CI UNTIL CI EXISTS ON THE REMOTE DEFAULT BRANCH. Verified this session: origin/main is at 4dd8bc15f (2026-05-21), local main is 1,604 commits ahead, and the GitHub repo's .github/workflows contains exactly one file (cron-jobs.yml); gh run list --workflow=quality.yml returns 404, not found on the default branch, and the five most recent runs of the one deployed workflow all failed in 5 to 7 seconds. Sixteen findings here propose a new CI job (a11y lint, axe target-size, Lighthouse budgets, npm audit ratchet, gitleaks, select(*) ratchet, i18n key parity, jscpd, diff-scoped lint). Every one of them is downstream of a single prerequisite, and adopting them as law before that prerequisite is met writes sixteen false guarantees into the doctrine. The merged principle: any doc sentence claiming a CI guarantee must name the workflow file AND its last green run on the remote default branch, and a health check must assert that the local workflow set equals the remote workflow set. Fix the prerequisite (push, add the missing secrets, confirm one green run), then reconsider the sixteen, most of which will still not be worth their maintenance at 28 salons."
+    },
+    {
+      "ids": ["authz-rls-01", "authz-rls-06", "authz-rls-09", "data-money-03", "data-money-07"],
+      "merged_principle": "THE MIGRATIONS FOLDER IS A HISTORY, NOT A DESCRIPTION OF THE DATABASE, AND THE DIVERGENCE IS THE RISK. Two independent agents in this run reported a CRITICAL that was a migration-file truth presented as a live truth (a permissive reviews UPDATE policy that does not exist live, and hash-fabricated amenity booleans that are false for all 20 active salons). Every claim about current schema, policy or data is made against the live database; the migration folder is evidence only about what a REPLAY would produce. Both questions are legitimate and they are different: 'is this true now' and 'would a restore make this true'. Every audit states which one it answered. The corollary is the actual danger and it subsumes the restore-drill finding: a replay-only landmine is invisible to every check this estate runs, because nothing ever replays the folder onto a clean database. One real restore drill closes both halves at once, so it outranks all four of the RLS-policy-hygiene findings it absorbs."
+    },
+    {
+      "ids": ["hierarchy-density-01", "hierarchy-density-02", "responsive-desktop-01", "imagery-icons-05"],
+      "merged_principle": "EVERY MEASURED DESIGN FLOOR IS ENFORCED AGAINST MOCKUPS AND NEVER AGAINST THE SHIPPED PAGE, AND THAT IS THE WHOLE PROBLEM. Measured live this session at 390x844: /de home is 4.4% imagery against a 33% floor with 7 distinct font sizes against a ceiling of 4 and 42.1% of text at weight >= 600 against a 30% ceiling; /de/basel is 0.0% imagery, zero images of any kind on a 9,325px page, while 20 of 28 salons have a usable cover_photo_url in the database. Meanwhile mockup-floors-gate.py's entire check is the regex `floors:\\s*\\S.{20,}`, that is, the presence of twenty characters after the word 'floors:'. The merged rule replaces four separate proposals (measure the gate instead of grepping for a comment, add a Floors row to SENIOR_SCORECARD, extend the floors to desktop and tablet, reconcile the documented fallback with the shipped component): run check-geometry.mjs --floors-only against the SHIPPED routes on real data as the acceptance condition, at every viewport the estate claims to support, and treat a mockup-only pass as no evidence. Nothing else on this list changes what a customer sees as directly."
+    },
+    {
+      "ids": ["api-contracts-10", "authz-rls-04", "data-money-01", "observability-7", "secrets-webhooks-08", "privacy-compliance-01", "performance-04", "motion-07"],
+      "merged_principle": "RESEARCH IS NOT LAW, AND THIS ESTATE IS PRODUCING RESEARCH FASTER THAN IT FREEZES DECISIONS. Eight findings across six domains say the same thing: _backend-system/ contains 15 research files and 8 audit files, its own README promises LAW.md, RATIONALE.md, AUDIT.md and QUESTIONS.md at the root, and none of those four exist. This is ONE work item (transcribe the existing Decision-candidates tables into one LAW.md, dated, one row per axis) and not eight principles. But it must be adopted together with law-layer-roi-test, because it is the exact shape that finding warns about: writing a sixteenth research topic (privacy) into a folder that has never frozen the first fifteen makes the problem worse, not better. Rule: a topic is done at 'law frozen and backlinked', never at 'research written', and no new research topic starts until the previous one has a LAW.md row."
+    },
+    {
+      "ids": ["gate-mute-forces-rescope", "serial-gate-count-cap", "hook-sprawl-ceiling", "canonical-doc-size-ceiling", "law-layer-roi-test", "gate-retirement-policy", "no-authoring-time-tier-check", "doc-to-gate-drift-reconciliation", "design-regression-not-fed-to-code-regression-system", "memory-consolidation-no-trigger"],
+      "merged_principle": "THE LAW LAYER GETS A BUDGET AND A DECAY PATH, NOT TEN NEW META-RULES. Ten separate governance findings all describe one condition: the estate grows law faster than it retires it, and the excess is discharged through skip flags rather than through decisions. Measured: 164 hooks (134 global, 30 project), 410,091 words in _design-system top-level markdown, LOCKFILE at 19,637 words which the project CLAUDE.md itself says nobody re-reads before a small edit, 13+ PreToolUse gates denying one at a time on a single mockup Write, one 7-gate family skip-flagged 72 times in 6 days, 8 gates sitting on disk unwired while the law text cites one of them (no-decorative-image-gate.py) as if it were live. The single merged rule: every new law names the counted incidents from the last 90 days it would have prevented, its per-session cost, and the existing law it replaces; total wired hooks are capped with one-in-one-out past the current count; any gate skip-flagged more than 10 times in a rolling 7 days is auto-flagged for re-scope or retirement; and any law sentence that names a hook file is reconciled against the settings files by the health check. Adopting the other nine as separate rows would be the failure this rule exists to prevent."
+    },
+    {
+      "ids": ["accessibility-02", "ia-navigation-02", "typography-01"],
+      "merged_principle": "ANYTHING RENDERED ABOVE THE [locale] SEGMENT MUST BE LOCALE-INDEPENDENT BY CONSTRUCTION. Verified live on /en/basel: document.documentElement.lang is 'de' on the English page (app/layout.tsx:39 hardcodes it, above the locale tree), and the skip link still reads 'Zum Inhalt springen'. app/not-found.tsx, the second one, hardcodes German 404 copy with a literal em dash next to the properly i18n'd app/[locale]/not-found.tsx. The root viewport export in the same file disables pinch-zoom for all four languages. One file, one structural rule, four defects: the root layout may contain no locale-dependent string and no user-hostile global (lang, skip link, viewport scalability); anything that must live there reads the locale from the request. A one-line CI grep for hardcoded German and lang= in app/layout.tsx is the check, once CI exists."
+    },
+    {
+      "ids": ["color-tokens-02", "color-tokens-03", "typography-02"],
+      "merged_principle": "THE DESIGN SYSTEM'S REACH STOPS AT THE REACT TREE, AND THREE LIVE SURFACES ARE OUTSIDE IT. The salon payout invoice (app/api/salon/invoices/[payoutId]/route.ts, a document partners print), the transactional email templates (lib/email-templates/*.ts, still rendering pre-B&W-pivot teal #38B2AC and coral #FF6B6B), and lib/email.ts:584 (gift-card codes in font-family:monospace, a retired font by name) all generate their own HTML strings and therefore obey no token, no font law and no contrast check. One rule covers all three: any surface that emits HTML/CSS outside the component tree imports its colors, fonts and numerals from one shared exported constants file mirroring the LOCKFILE table, and the drift checker's scan globs include it. This is worth more than most of the visual findings because these are the only Solen artifacts a partner keeps a copy of."
+    },
+    {
+      "ids": ["orch-output-01", "orch-output-02", "orch-output-03", "orch-output-05", "orch-output-13", "agent-output-1", "agent-output-2", "agent-output-3"],
+      "merged_principle": "A REPORT STATES ITS NEGATIVE SPACE, ITS SAMPLE, AND ITS METHOD, OR IT IS A VIBE. Eight findings across two agents describe one discipline. Merged: every report that claims verification also names what was in scope and deliberately not checked; every claim derived from inspecting a set states how many of how many were inspected and how the sample was chosen ('12 of 357 route handlers across auth, booking and payments', never 'I checked the routes'); every number the assistant produced itself ships with the command that regenerates it and is rounded to the precision that method supports; hedges (should, presumably, likely, probably, I believe) are banned about anything runnable, readable or greppable, replaced by either the check or an explicit 'I did not check this'; and if the load-bearing claim of the turn could not be verified, that goes in the first line, above the work. This run is its own proof: three agents wrote 'every upload route trusts client file.type' having read four or five of them, and two wrote migration-file state as live state. Adopt this as ONE addition to REPORT_SYSTEM section 4, not as eight."
+    },
+    {
+      "ids": ["ia-navigation-01", "ia-navigation-04", "ia-navigation-05", "states-forms-04"],
+      "merged_principle": "IF THE USER CAN GET BACK TO IT, IT LIVES IN THE URL OR IN STORAGE, NEVER ONLY IN MEMORY. Four findings describe one boundary: the booking wizard holds all step state in React context with no popstate guard, /inspo seeds only two of six filter dimensions from searchParams while /search seeds all of them, no page restores scroll position on back-navigation, and multi-step forms lose everything on refresh. The merged rule is the state-ownership half of fe-03 applied to navigation: anything that should be shareable, back-button-safe, or survive a refresh (a filter, an active step, a search query, a selected date, a scroll position) lives in the URL or in per-flow session storage, and a flow that cannot be reconstructed from its URL alone must intercept back and refresh with the same confirmation its explicit exit control already shows. One rule replaces four surface-specific ones and also absorbs ia-navigation-10 (a query param name carries one meaning app-wide)."
+    }
+  ],
+  "bloat_risk": "Concretely: 264 findings at roughly 90 words of paste-ready rule text each is about 24,000 new words, a 6% increase on the 410,091 words already in _design-system top-level markdown (measured this session with wc -w). That number understates the damage, because the binding constraint here is not disk, it is what gets re-read. The project CLAUDE.md says so in its own voice, as the stated reason its ten taste rules were duplicated inline: SOURCE.md and LOCKFILE hold the full system, but they are 80KB+ and I do not re-read them before a small edit, so I drift. Adding 264 rows to a corpus whose own author has documented that he cannot re-read it is a write-only operation, and this run has already added 896KB across 28 JSON files under _design-system/research/ before a single rule was adopted. The gate side is worse and is already measured. The estate has 164 wired hooks (134 global plus 30 project). This estate's own standing policy is that a rule it keeps breaking becomes a hook, not advice, so on past behavior roughly a quarter of adopted rules become gates: 264 findings at a 25% gate rate is +66 hooks, taking the estate to about 230. The current cost of 164 is already documented: the 2026-07-10 governance audit found 13 or more independently-registered PreToolUse gates each denying one at a time on a single mockup Write, and the 2026-07-25 self-audit found one 7-gate family skip-flagged 72 times in 6 days plus finish-autonomously-skip 40 times. Skip-flag pressure scales with the number of gates that can fire on the same action, so a 40% increase in gate count on the same handful of actions plausibly pushes that family past 100 skips a week, at which point touching the flag IS the workflow and the gate enforces nothing. There is a second-order cost that is already visible: 8 gates sit on disk unwired while the law text cites one of them (no-decorative-image-gate.py, written after the owner rejected decorative imagery three times) as though it were live. Every rule added without wiring widens that gap between what the law claims and what runs, and this run found that gap is already the estate's most reliable source of false confidence. RECOMMENDED ABSORPTION RATE: 12 to 18 principles now, roughly 5 to 7 percent of the list, and specifically the ten merged principles above plus the health-data consent gap and the two Terms of Service promises the code does not keep. Zero new gate FILES until origin/main is current and the 8 orphaned gates are either wired or deleted, then strict one-in-one-out. Everything else on this list is a defect backlog, not law: about 60 of these findings are single bugs with a known one-line fix (the JSON-LD escape, the html lang attribute, the viewport meta, the second not-found.tsx, the webhook default case, the monospace voucher code, the raw email in a log line), and filing a bug as a principle is how a law estate reaches 410,000 words while the two most-visited shipped pages sit at 4.4 and 0.0 percent imagery."
+}
