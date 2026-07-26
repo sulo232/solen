@@ -5,6 +5,7 @@ import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, bookingCancellation } from "@/lib/email";
 import { getServerEnv } from "@/lib/env";
 import { withCronRun } from "@/lib/cron-run";
+import { resolveSwissLocale } from "@/lib/format";
 
 export async function GET(req: NextRequest) {
   const cronSecret = getServerEnv().CRON_SECRET;
@@ -56,7 +57,7 @@ export async function GET(req: NextRequest) {
             {
               service: booking.services?.name_de ?? "Service",
               salon: booking.salons?.name ?? "Salon",
-              date: new Date(booking.starts_at).toLocaleDateString("de-CH"),
+              date: new Date(booking.starts_at).toLocaleDateString(resolveSwissLocale(locale)),
             },
             locale
           )
