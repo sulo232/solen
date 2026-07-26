@@ -25,7 +25,15 @@ the owner's word for it was "raggedy". One property is a fade. Three is a materi
 | scale | 0.96 | 1 |
 | blur | `blur(8px)` | `blur(0)` |
 
-- duration **420ms**, ease **`glide` `cubic-bezier(0.16, 1, 0.3, 1)`** (smooth, no overshoot).
+- duration **280ms**, ease **`glide` `cubic-bezier(0.16, 1, 0.3, 1)`** (smooth, no overshoot).
+  **RETIMED 2026-07-26 from 420ms, owner decision, made from the three-column side-by-side at
+  `/de/dev/motion` Demo 7 rather than from prose.** The blur, the 0.96 scale and the curve are UNCHANGED,
+  because the duration was the only thing wrong. Per `research/TASTE_MOTION.md` finding 10 (Chang & Ungar,
+  UIST '93) the BLUR is what buys perceptibility at speed; 420ms had been approved to fix an entrance the
+  owner could not perceive, but the blur was already doing that work, so the extra 140ms was pure latency
+  on every booking step. The demo's third column tested exactly that by removing the blur at 280ms.
+  This resolves the contradiction with THE SPEED LAW below: an entrance is a reveal, and a reveal is
+  250-300ms. Demo 7 keeps a pinned literal 420ms column as the record of what was compared.
 - This is the **Recommended** tier of the three shown at `/dev/motion-recipe`. Subtle (4px/0.98/320ms)
   and Strong (12px/0.94/520ms) exist in that demo only; do not ship them without a new owner call.
 - Buttons additionally get the **butter transition**: bg + transform on `glide` ~180ms, hover
@@ -36,8 +44,12 @@ the owner's word for it was "raggedy". One property is a fade. Three is a materi
 - **Step swap = its own gentler tier** (owner 2026-07-09, "the transition between the service
   and to choose the stylist is kinda too much motion"): opacity + scale **0.99**, **260ms**,
   same `glide` ease, no blur (containing-block reason documented in `useStepSwapMotion`). A
-  full-screen swap must move LESS than a card entering, not the same distance as the 0.96/420ms
-  ENTER RECIPE. The ENTER RECIPE itself stays LOCKED at 0.96 / 8px blur / 420ms, unchanged.
+  full-screen swap must move LESS than a card entering, not the same distance as the 0.96
+  ENTER RECIPE. The ENTER RECIPE stays LOCKED at 0.96 / 8px blur, now at 280ms (retimed 2026-07-26,
+  see above). Note the step swap at 260ms is no longer the notably-gentler tier it was against 420ms;
+  it now sits 20ms from the recipe, so the thing separating them is the SCALE (0.99 vs 0.96) and the
+  absent blur, not the duration. That is still a real difference, but if the swap ever stops reading as
+  gentler, scale is the lever, not time.
 
 **Why blur is non-negotiable:** MOTION.md already records (below) that a subtle opacity-only fade
 was *imperceptible* to the owner and got reverted. Opacity alone is invisible; scale alone reads as
