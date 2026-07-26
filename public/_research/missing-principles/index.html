@@ -141,7 +141,8 @@
   </div>
 
   <nav class="jump">
-    <a href="#lead">Read this first</a>
+    <a href="#shortlist">Start here</a>
+    <a href="#lead">What I measured</a>
     <a href="#corrections">What the research got wrong</a>
     <a href="#design">Design</a>
     <a href="#people">People and fairness</a>
@@ -150,6 +151,62 @@
     <a href="#meta">How I work</a>
     <a href="#panel">The three judges</a>
   </nav>
+
+  <section class="area" id="shortlist" data-area="shortlist">
+    <h2>Start here: the 12 to actually do</h2>
+    <p class="area-note">296 principles were found. Three judges then argued about them, and the
+    honest answer is that you should adopt roughly twelve now, not the list. These are the ones
+    that survived both the ranking pass and the pass whose job was to cut. Everything below this
+    section is reference material for the day you hit that specific problem.</p>
+    <article class="card">
+      <div class="card-head"><span class="chip crit">01</span><span class="card-title">Make the repo real</span></div>
+      <p class="lead-body">Push main and the three missing workflow files. 21 of the findings prescribe a CI job and CI has never run once, so until this lands they are rules about a machine that does not exist. Also make a job that skips its body fail red instead of green.</p>
+    </article>
+    <article class="card">
+      <div class="card-head"><span class="chip crit">02</span><span class="card-title">Alert when a cron does NOT run</span></div>
+      <p class="lead-body">The daily digest only counts crons that ran and failed, so a cron that never fires reads as zero failures. Yours have been failing since 20 July and nothing told you.</p>
+    </article>
+    <article class="card">
+      <div class="card-head"><span class="chip crit">03</span><span class="card-title">The migrations folder is a history, not the database</span></div>
+      <p class="lead-body">Two agents filed a CRITICAL from a migration file that was not true live. Any claim about the database is made against the database, and every audit says which of the two it checked.</p>
+    </article>
+    <article class="card">
+      <div class="card-head"><span class="chip crit">04</span><span class="card-title">Every ToS promise needs a test</span></div>
+      <p class="lead-body">Phone verification writes nothing and the column does not exist. account_warnings has three writers and no reader, so the strikes your Terms promise cannot fire.</p>
+    </article>
+    <article class="card">
+      <div class="card-head"><span class="chip crit">05</span><span class="card-title">Consent record for health data</span></div>
+      <p class="lead-body">Allergies and treatment notes are special-category data under nFADP Art. 5 and GDPR Art. 9. Cheap to add now, a migration against real people's records later.</p>
+    </article>
+    <article class="card">
+      <div class="card-head"><span class="chip crit">06</span><span class="card-title">Escape anything from the database that reaches a script tag</span></div>
+      <p class="lead-body">A salon owner can put a closing script tag in their own salon name and it executes. One shared helper fixes every case.</p>
+    </article>
+    <article class="card">
+      <div class="card-head"><span class="chip crit">07</span><span class="card-title">Ship a Content-Security-Policy</span></div>
+      <p class="lead-body">Report-Only for one deploy, then enforce. It is the one security header netlify.toml is missing and the backstop for the bug above.</p>
+    </article>
+    <article class="card">
+      <div class="card-head"><span class="chip crit">08</span><span class="card-title">Measure the design floors on shipped pages, not mockups</span></div>
+      <p class="lead-body">Home is 4.4 percent imagery, the Basel page is 0.0, against your own 33 percent floor. The PDP passes at 34.7 because it got attention. Nothing measures a real route.</p>
+    </article>
+    <article class="card">
+      <div class="card-head"><span class="chip crit">09</span><span class="card-title">A law that names a hook is checked against settings</span></div>
+      <p class="lead-body">CLAUDE.md says no-decorative-image-gate blocks hardcoded images. It has never been switched on. That gap is the estate's most reliable source of false confidence.</p>
+    </article>
+    <article class="card">
+      <div class="card-head"><span class="chip crit">10</span><span class="card-title">Shipped means reachable from main</span></div>
+      <p class="lead-body">1,686 commits sit on 40 unmerged branches. Two things memory calls SHIPPED live only there.</p>
+    </article>
+    <article class="card">
+      <div class="card-head"><span class="chip crit">11</span><span class="card-title">One money representation</span></div>
+      <p class="lead-body">Bookings are integer Rappen, some other tables are numeric(10,2). Pick one and write it down before a third column copies the wrong one.</p>
+    </article>
+    <article class="card">
+      <div class="card-head"><span class="chip crit">12</span><span class="card-title">Anything above the [locale] segment is locale-independent</span></div>
+      <p class="lead-body">/en/basel serves English text with lang=de and a German skip link, because the root layout sits above the locale.</p>
+    </article>
+  </section>
 
   <section class="area lead" id="lead" data-area="lead">
     <h2>If you read nothing else</h2>
