@@ -6,6 +6,7 @@ import { ShieldCheck, Check, X, MapPin, Mail, Calendar } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
+import { resolveSwissLocale } from "@/lib/format";
 
 interface PendingSalon {
   id: string;
@@ -109,7 +110,7 @@ export default function ApprovalsPage() {
                   )}
                   <div className="flex items-center gap-1.5 text-sm text-s-ink/40">
                     <Calendar size={13} />
-                    <span>{t("registered", { date: new Date(salon.created_at).toLocaleDateString("de-CH") })}</span>
+                    <span>{t("registered", { date: new Date(salon.created_at).toLocaleDateString(resolveSwissLocale(locale)) })}</span>
                   </div>
 
                   {salon.categories.length > 0 && (

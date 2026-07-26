@@ -10,6 +10,7 @@ import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI
 import Spinner from "@/components-legacy/ui/Spinner";
 import EmptyState from "@/components-legacy/ui/EmptyState";
 import { containerVariants, itemVariants } from "@/lib/animations";
+import { resolveSwissLocale } from "@/lib/format";
 
 type StatusFilter = "active" | "pending" | "frozen";
 
@@ -260,7 +261,7 @@ export default function AllSalonsPage() {
                   {/* Right: date */}
                   <div className="text-right shrink-0">
                     <p className="text-[12px] text-s-ink/30">
-                      {new Date(salon.created_at).toLocaleDateString("de-CH", {
+                      {new Date(salon.created_at).toLocaleDateString(resolveSwissLocale(locale), {
                         day: "2-digit",
                         month: "2-digit",
                         year: "numeric",

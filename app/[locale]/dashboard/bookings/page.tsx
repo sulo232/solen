@@ -9,6 +9,7 @@ import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI
 import Spinner from "@/components-legacy/ui/Spinner";
 import ClientTags from "@/components-legacy/chat/ClientTags";
 import { formatCurrency } from "@/lib/format-currency";
+import { resolveSwissLocale } from "@/lib/format";
 import type { Booking, BookingStatus } from "@/lib/types";
 
 interface EnrichedBooking extends Booking {
@@ -144,7 +145,7 @@ function BookingActionSheet({
           </span>
           <div className="min-w-0">
             <p className="font-heading font-bold text-[15px] text-s-ink leading-tight">
-              {booking.customer_name} {new Date(booking.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
+              {booking.customer_name} {new Date(booking.starts_at).toLocaleTimeString(resolveSwissLocale(locale), { hour: "2-digit", minute: "2-digit" })}
             </p>
             <p className="text-[12px] text-s-ink-2 truncate mt-0.5">
               {booking.service_name}{booking.staff_name ? ` ${booking.staff_name}` : ""} {formatCurrency(Number(booking.price_paid), locale)}
@@ -288,10 +289,10 @@ export default function BookingsPage() {
                 {/* Time */}
                 <div className="w-[46px] shrink-0">
                   <p className="font-heading font-bold text-[13.5px] text-s-ink tabular-nums leading-none">
-                    {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
+                    {new Date(b.starts_at).toLocaleTimeString(resolveSwissLocale(locale), { hour: "2-digit", minute: "2-digit" })}
                   </p>
                   <p className="text-[12px] font-semibold text-s-ink-3 tabular-nums mt-1">
-                    {new Date(b.starts_at).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit" })}
+                    {new Date(b.starts_at).toLocaleDateString(resolveSwissLocale(locale), { day: "2-digit", month: "2-digit" })}
                   </p>
                 </div>
                 {/* Avatar */}

@@ -38,8 +38,7 @@ export function formatPrice(amount: number, locale: string = "de-CH"): string {
  * formatNumber(1270, "fr") → "1’270" (fr-CH keeps the Swiss apostrophe grouping)
  */
 export function formatNumber(n: number, locale: string = "de"): string {
-  const resolved = SWISS_DATE_LOCALES[locale] ?? SWISS_DATE_LOCALES[locale.split("-")[0]] ?? "de-CH";
-  return n.toLocaleString(resolved);
+  return n.toLocaleString(resolveSwissLocale(locale));
 }
 
 /**
@@ -86,6 +85,23 @@ const SWISS_DATE_LOCALES: Record<string, string> = {
 };
 
 /**
+ * Resolve an app locale key ("de"/"en"/"fr"/"it", or an already-full BCP-47 tag) to
+ * its Swiss regional Intl tag. Exported (2026-07-26, de-CH literal sweep) so call
+ * sites that need a raw toLocaleDateString/toLocaleTimeString/Intl.NumberFormat tag
+ * (not one of this file's higher-level formatters) share one resolver instead of
+ * re-deriving their own de/en/fr/it ternary, which is how the codebase ended up
+ * with 116 hardcoded "de-CH" literals and inconsistent en-GB/en-CH mappings.
+ *
+ * resolveSwissLocale("fr")     → "fr-CH"
+ * resolveSwissLocale("de-CH")  → "de-CH"
+ * resolveSwissLocale(undefined)→ "de-CH"
+ */
+export function resolveSwissLocale(locale?: string | null): string {
+  if (!locale) return "de-CH";
+  return SWISS_DATE_LOCALES[locale] ?? SWISS_DATE_LOCALES[locale.split("-")[0]] ?? "de-CH";
+}
+
+/**
  * Format an ISO date string (YYYY-MM-DD) as a short weekday + day + month label.
  * The locale param accepts both bare app keys ("de", "fr") and full BCP-47 tags
  * ("de-CH") and maps them to the correct Swiss regional variant so FR/IT users
@@ -98,7 +114,7 @@ const SWISS_DATE_LOCALES: Record<string, string> = {
  */
 export function formatDateLabel(iso: string, locale: string = "de"): string {
   try {
-    const resolved = SWISS_DATE_LOCALES[locale] ?? SWISS_DATE_LOCALES[locale.split("-")[0]] ?? "de-CH";
+    const resolved = resolveSwissLocale(locale);
     return new Intl.DateTimeFormat(resolved, {
       weekday: "short",
       day: "numeric",
@@ -142,7 +158,7 @@ export function nextAvailableSlotLabel(
   if (!earliest) return null;
   // Resolve the caller's locale to its Swiss regional variant (mirrors formatDateLabel above);
   // was hardcoded to "de-CH" here, silently ignoring the `locale` param on FR/IT/EN callers.
-  const resolvedLocale = SWISS_DATE_LOCALES[locale] ?? SWISS_DATE_LOCALES[locale.split("-")[0]] ?? "de-CH";
+  const resolvedLocale = resolveSwissLocale(locale);
   // Use Zurich timezone so late-evening slots are attributed to the correct day.
   // hourCycle forced to h23: Swiss convention is 24h time regardless of UI language.
   const hhmm = earliest.toLocaleTimeString(resolvedLocale, {
