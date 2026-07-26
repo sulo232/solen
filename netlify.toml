@@ -28,6 +28,28 @@
     X-DNS-Prefetch-Control = "on"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(self), payment=(self)"
     Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    # Content-Security-Policy-Report-Only (A5, 2026-07-27): REPORT-ONLY, not enforcing.
+    # An enforcing CSP that is wrong takes the site down; report-only cannot, so this
+    # observes violations while the allowlist gets proven out against real traffic.
+    # Hosts below are each backed by a live import/call in the app, not guessed:
+    #   js.stripe.com / api.stripe.com  - @stripe/stripe-js loadStripe() in
+    #     app/[locale]/_components/profile/PaymentMethods.tsx and
+    #     app/[locale]/_components/tips/TipFlow.tsx
+    #   hooks.stripe.com                - Stripe's own documented 3DS/Elements frame host
+    #   api.mapbox.com / events.mapbox.com - mapbox-gl in
+    #     app/[locale]/_components/salon/SalonLocation.tsx and
+    #     app/[locale]/_components/homepage/NearbyMap.tsx (lib/map-style.ts style host)
+    #   eu.i.posthog.com                - posthog.init api_host in
+    #     components-legacy/PostHogProvider.tsx (client capture, consent-gated)
+    #   *.supabase.co (https + wss)     - lib/supabase-browser.ts NEXT_PUBLIC_SUPABASE_URL;
+    #     wss for the realtime channel() in app/[locale]/dashboard/calendar/page.tsx
+    #   *.tiktokcdn(-us|-eu).com, *.unsplash.com, *.pexels.com, *.googleusercontent.com,
+    #   picsum.photos / *.picsum.photos - remotePatterns in next.config.mjs (next/image
+    #     origins actually configured for this app)
+    # No report-uri/report-to: no CSP report-collection endpoint exists in this repo
+    # (checked app/api for a csp/report route) - pointing at one that 404s is worse
+    # than omitting it, so this ships as browser-console-only until one exists.
+    Content-Security-Policy-Report-Only = "default-src 'self'; script-src 'self' https://js.stripe.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.supabase.co https://*.tiktokcdn.com https://*.tiktokcdn-us.com https://*.tiktokcdn-eu.com https://*.unsplash.com https://*.pexels.com https://picsum.photos https://*.picsum.photos https://*.googleusercontent.com https://api.mapbox.com; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://api.mapbox.com https://events.mapbox.com https://eu.i.posthog.com; frame-src https://js.stripe.com https://hooks.stripe.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'"
 
 [[headers]]
   for = "/api/*"
