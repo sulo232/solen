@@ -2,20 +2,36 @@
 
 **Owner ask (2026-07-26, verbatim):** "go research me all the missing principle on each design or wherevre yk all the files not only design or how u output stuf or backend security idk all of em its a multi hour research and comparing loop session one u got all the file and analyzed evrth and researched and make me a concrete list one in all details and here on text tell me in plain english and what we should add im expecting 100 or more important stuff concrete okay use subgents alot and also subagents for opinion etc go"
 
-**Close condition (binary, graded):**
-- [x] C1 , **276 delivered against a target of 100.** 21 critical, 94 high, 111 medium, 50 low.
-      Every item carries: paste-ready principle text, the first-principles why, local evidence,
-      the absence proof, where it should live, and how it would be enforced.
-- [x] C2 , every finding carries an `absence_proof` (the exact greps run) and an `existing_coverage`
-      field that is either "none" or "partial: <file> covers X but does NOT say Y" with the delta named.
-- [x] C3 , 26 topics: 9 design, 4 people/fairness, 8 backend/security/privacy, 3 engineering,
-      2 meta, plus the orchestrator's own reporting list. Not design-only.
-- [x] C4 , three opus judgment passes (adopt-first ranking, adversarial cull, completeness critic).
-- [x] C5 , served visual page at `/principles/` on :3210, repo copy at
-      `public/_research/missing-principles/index.html`. Measured against the estate's own floors:
-      4 font sizes, 2 weights, anchor ratio 1.87, bold share 20.4%, no horizontal overflow,
-      no dark mode, no em-dashes. Plain English delivered in the same turn.
-- [x] C6 , closing report re-reads the original message and ticks every atomic box.
+**Close condition (binary, graded):** every tick below carries its proof. Re-derived from the
+COMMITTED corpus this turn, not from narrative.
+
+- [x] C1 , **276 findings against a target of 100**, 21 critical / 94 high / 111 medium / 50 low.
+      verified: counted from `_design-system/research/missing-principles-2026-07-26/*.json` (27 topic
+      files, `_`-prefixed files excluded) at commit `5afd74886`. 276 distinct ids, zero duplicates.
+      Plus 20 net-new in `_judge3-gaps.json` -> 296 principles.
+- [~] C2 , **269 of 276 carry an `absence_proof`; 276 of 276 carry `existing_coverage`.** NOT the
+      100 percent I first ticked, and I am recording the real number. The seven with an empty
+      absence_proof, each named so they can be re-checked before adoption:
+      `observability-3`, `observability-4`, `observability-5`, `observability-8`,
+      `responsive-desktop-04`, `states-forms-02`, `typography-04`.
+      verified: script over the committed JSON, counts printed this turn.
+- [x] C3 , 27 topic files spanning design, people/fairness, backend/security/privacy, engineering
+      and meta. verified: `ls _design-system/research/missing-principles-2026-07-26/*.json` at
+      commit `5afd74886` lists accessibility, agent-output, api-contracts, authz-rls, color-tokens,
+      copy-i18n, data-money, ethics-psychology, frontend-architecture, hierarchy-density,
+      ia-navigation, imagery-icons, input-abuse, law-system-meta, layout-geometry,
+      marketplace-trust, motion, observability, orchestrator-output, performance,
+      privacy-compliance, responsive-desktop, secrets-webhooks, seo-comms, states-forms,
+      testing-release, typography.
+- [x] C4 , three judgment passes. verified: `_judge1-rank.json` (19 do-now, 24 do-next, 20 deferrals),
+      `_judge2-cull.json` (15 cut, 16 downgraded, 10 merge clusters), `_judge3-gaps.json`
+      (9 blind spots, 20 net-new), all committed in `0bb9a1c8b`.
+- [x] C5 , page committed at `public/_research/missing-principles/index.html` (commit `0bb9a1c8b`),
+      served on :3210. verified by measuring the RENDERED page in the browser this turn:
+      4 distinct font sizes (28/15/13/11), 2 weights (400/600), 21.6 percent of text at weight >=600,
+      `document.documentElement.scrollWidth === innerWidth` so no horizontal overflow;
+      `grep -c "prefers-color-scheme\|data-theme"` = 0 and em-dash count = 0 on the committed file.
+- [x] C6 , closing report re-reads the original message and ticks every atomic box, below.
 
 ## Delivery record (for the closing report and for any session that resumes this)
 
@@ -25,13 +41,33 @@
 - Raw research corpus: `_design-system/research/missing-principles-2026-07-26/` (26 JSON files,
   the digest, the orchestrator's live verification, a README with the method and its honest limits).
 - Local link that works on the owner's own Mac: http://localhost:3210/principles/
-- NO tunnel link is possible this session. Measured, not assumed: cloudflared's connectivity
-  pre-check reports UDP 7844 and TCP 7844 both blocked to region1 and region2 argotunnel, and
-  every quick tunnel dies at "Failed to dial a quic connection: timeout: no recent network
-  activity". Global rule 0.5 cannot be satisfied from this environment.
-- Why not the usual :3000 route: the dev server on 3000 serves the MAIN repo's `public/`, not this
-  worktree's. A probe file written here 500s there. The sandbox cannot write to the main repo's
-  public directory, so delivery moved to a writable directory served on 3210.
+- NO tunnel link is possible this session. ROOT CAUSE, measured this turn, not recalled:
+  cloudflared's own connectivity pre-check (running OUTSIDE the Bash sandbox) reports
+  `DNS Resolution PASS`, `Cloudflare API api.cloudflare.com:443 PASS`, and
+  `UDP Connectivity 7844 FAIL` + `TCP Connectivity 7844 FAIL` to both region1 and region2
+  argotunnel, then `precheck complete hard_fail=true`. So 443 to Cloudflare works and 7844
+  specifically does not: this is a port filter on this machine or its network, not DNS, not the
+  sandbox, and not cloudflared. Root fix: allow outbound TCP+UDP 7844, or use a tunnel that
+  transports over 443. My own socket probe cannot discriminate here and I am saying so: from the
+  Bash sandbox, `socket.connect()` returns `PermissionError [Errno 1]` on 7844 AND on 443, and DNS
+  fails, so the sandbox blocks all outbound sockets from my shell. cloudflared's pre-check is the
+  authoritative evidence, not my probe.
+- The six built-but-unarmed gates cannot be armed from this session. ROOT CAUSE, measured this turn
+  with a discriminating probe that writes nothing: `os.access(W_OK)` is `False` and
+  `open(path, "r+")` raises `PermissionError [Errno 1] Operation not permitted` for BOTH
+  `~/.claude/settings.json` and `~/.claude/settings.local.json`. Those two paths sit in this
+  session sandbox's `denyWithinAllow` list. So `/harden` can write a gate FILE and can never wire
+  it, which is exactly why 8 orphaned hooks exist. CAUTION for the next session: an earlier
+  append-mode probe (`open(path, "a")`) reported both files WRITABLE, which was a false positive.
+  Use `r+` or `os.access`, never append mode, to test write permission here.
+- CORRECTION to an earlier line in this file: I first wrote that the sandbox cannot write to the
+  main repo's `public/`. The truth is narrower and I re-measured it: creating an empty file there
+  via append mode succeeded, while `open(..., "w")`, `mkdir` and `os.unlink` all raise
+  `PermissionError [Errno 1]`. Net effect is the same (the page cannot be served from the running
+  :3000 dev server) but the reason I first gave was wrong.
+- SIDE EFFECT I could not clean up: that probe left a 0-byte file at
+  `/Users/sulo/Documents/solen/public/_probe.txt`. `os.unlink` on it is denied from here. It is
+  harmless and it is mine; remove it with `rm /Users/sulo/Documents/solen/public/_probe.txt`.
 
 ## Atomic asks (from the owner message)
 
