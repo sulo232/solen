@@ -111,9 +111,7 @@ export async function GET(req: NextRequest) {
             serviceName: services?.name_de ?? services?.name_en ?? "Service",
             salonName: salon?.name ?? "Salon",
             feeCents: result.chargedCents ?? feeCents,
-            dateStr: booking.starts_at
-              ? new Date(booking.starts_at as string).toLocaleDateString("de-CH")
-              : "",
+            date: (booking.starts_at as string | null) ?? new Date().toISOString(),
             logPrefix: "no-show",
           }).catch((err) => console.error(`[no-show] fee notification failed for booking ${booking.id}:`, err));
         }

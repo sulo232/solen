@@ -192,7 +192,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       serviceName,
       salonName: salonRow?.name ?? "Salon",
       feeCents: noShowFeeCaptured,
-      dateStr: new Date().toLocaleDateString("de-CH"),
+      date: new Date(),
       logPrefix: "walkin/queue",
     }).catch((err) => console.error("[walkin/queue PATCH] no-show fee notification failed:", err));
   }

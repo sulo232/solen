@@ -13,6 +13,7 @@ import { pickSlotForAnyStaff, countStaffBookingsOnDay } from "@/lib/bookings/aut
 import { loadPricedBundle } from "@/lib/pricing/bundle";
 import { completeReferralForFirstBooking } from "@/lib/referral/complete-referral";
 import { reportError } from "@/lib/error-report";
+import { resolveSwissLocale } from "@/lib/format";
 import type { Database } from "@/lib/database.types";
 
 export async function GET(request: NextRequest) {
@@ -563,8 +564,8 @@ export async function POST(request: NextRequest) {
   const serviceNameKey = locale === "de" ? "name_de" : "name_en";
   const serviceName = slot.services?.[serviceNameKey] ?? "Service";
   const salonName = slot.salons?.name ?? "Salon";
-  const bookingDate = new Date(slot.starts_at).toLocaleDateString(locale === "de" ? "de-CH" : "en-GB");
-  const bookingTime = new Date(slot.starts_at).toLocaleTimeString(locale === "de" ? "de-CH" : "en-GB", { hour: "2-digit", minute: "2-digit" });
+  const bookingDate = new Date(slot.starts_at).toLocaleDateString(resolveSwissLocale(locale));
+  const bookingTime = new Date(slot.starts_at).toLocaleTimeString(resolveSwissLocale(locale), { hour: "2-digit", minute: "2-digit" });
 
   const customerEmail = user?.email ?? guest_email ?? null;
   if (!isOnlinePay && customerEmail) {

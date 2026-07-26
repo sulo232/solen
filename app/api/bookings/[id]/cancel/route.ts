@@ -10,6 +10,7 @@ import { issueRefund, RefundError } from "@/lib/bookings/issue-refund";
 import { applyCustomerCancelMoney } from "@/lib/bookings/customer-cancel-money";
 import { logAuditEvent } from "@/lib/audit";
 import { applyRateLimit, bookingLimiter, getClientIp } from "@/lib/ratelimit";
+import { resolveSwissLocale } from "@/lib/format";
 import { resolveBookingActor } from "@/lib/bookings/authorize";
 
 // Read-only refund preview for the cancel-confirm sheet (audit #7). Runs the SAME
@@ -334,7 +335,7 @@ export async function POST(
     const { data: actingAuth } = await admin.auth.admin.getUserById(userId);
     actingEmail = actingAuth?.user?.email ?? null;
   }
-  const dateStr = new Date(booking.starts_at).toLocaleDateString("de-CH");
+  const dateStr = new Date(booking.starts_at).toLocaleDateString(resolveSwissLocale(locale));
   const serviceName = booking.services?.name_de ?? "Service";
   const salonName = booking.salons?.name ?? "Salon";
   const customerId = booking.user_id;

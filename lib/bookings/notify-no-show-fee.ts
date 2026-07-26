@@ -48,8 +48,14 @@ export interface NotifyNoShowFeeArgs {
   salonName: string;
   /** The fee actually charged, in integer Rappen. */
   feeCents: number;
-  /** Appointment/visit date for the email body (de-CH formatted by the caller). */
-  dateStr: string;
+  /**
+   * Appointment/visit date for the email body, as a raw Date or ISO string. Formatted
+   * INSIDE this helper against the resolved customer locale (2026-07-26, de-CH literal
+   * sweep: both call sites used to pre-format this with toLocaleDateString("de-CH") before
+   * the locale below was even known, so the amount localized correctly but the date never
+   * did).
+   */
+  date: Date | string;
   /** Caller tag for console.error context, e.g. "no-show" / "walkin/queue". */
   logPrefix: string;
 }
@@ -59,7 +65,7 @@ export interface NotifyNoShowFeeArgs {
  * Never throws meaningfully past the caller's `.catch` — money has already moved.
  */
 export async function notifyNoShowFee(args: NotifyNoShowFeeArgs): Promise<void> {
-  const { admin, userId, guestEmail, serviceName, salonName, feeCents, dateStr, logPrefix } = args;
+  const { admin, userId, guestEmail, serviceName, salonName, feeCents, date, logPrefix } = args;
 
   const { sendNotification } = await import("@/lib/notifications");
 
@@ -71,7 +77,9 @@ export async function notifyNoShowFee(args: NotifyNoShowFeeArgs): Promise<void> 
       .eq("id", userId)
       .single();
     const locale: EmailLocale = (profile?.locale as EmailLocale) ?? "de";
-    const amountStr = formatCurrency(feeCents / 100, LOCALE_BCP47[locale] ?? "de-CH");
+    const bcp47 = LOCALE_BCP47[locale] ?? "de-CH";
+    const amountStr = formatCurrency(feeCents / 100, bcp47);
+    const dateStr = new Date(date).toLocaleDateString(bcp47);
 
     const { data: authUser } = await admin.auth.admin.getUserById(userId);
     const email = authUser?.user?.email;
@@ -96,13 +104,14 @@ export async function notifyNoShowFee(args: NotifyNoShowFeeArgs): Promise<void> 
     return;
   }
   const amountStr = formatCurrency(feeCents / 100, "de-CH"); // no guest profile → de fallback.
+  const guestDateStr = new Date(date).toLocaleDateString("de-CH"); // no guest profile → de fallback.
   const { noShowChargeEmail } = await import("@/lib/email-templates/audit-notifications");
   const { sendEmail } = await import("@/lib/email");
   try {
     await sendEmail(
       noShowChargeEmail(
         guestEmail,
-        { service: serviceName, salonName, date: dateStr, feeAmount: amountStr },
+        { service: serviceName, salonName, date: guestDateStr, feeAmount: amountStr },
         "de",
       ),
     );
