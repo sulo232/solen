@@ -108,6 +108,36 @@ globals.css (motion sheet 22 block); all reduced-motion safe. The rule per situa
 | Anything loading | skeleton SHIMMER, content-shaped (LoadingStates.md) — spinners only INSIDE buttons | `.sk`-style shimmer per grammar |
 | Any close/X | press-collapse, icon tier | inherited from Sheet/Modal primitives (`active:scale-[0.94]`), X size 20 in 44px hit area |
 | Any press | CTA/card 0.97 · row 0.98 · icon 0.94 | `active:scale-[…]` 3-tier |
+
+### WHY the press ladder has exactly those three numbers (measured 2026-07-26)
+They are not three arbitrary values, and knowing that turns "is this scale allowed" from a taste argument
+into an objective test.
+
+A scale press moves an element's EDGE by `size * (1 - scale) / 2`. Because the rungs are applied to
+different-sized controls, they land on roughly the same edge movement. Measured across the live estate on
+390x844, using each element's real rendered box:
+
+| rung | applied to | n | median edge movement |
+|---|---|---|---|
+| 0.94 | icon button, the smallest control | 25 | 1.20px |
+| 0.97 | CTA / card | 80 | 1.34px |
+| 0.98 | row, the widest control | 57 | 1.64px |
+
+So the ladder is approximately a CONSTANT PERCEIVED MOVEMENT rule of roughly 1.1 to 1.6px, not three
+numbers someone picked. A wide row needs a smaller ratio than a small icon to move the same amount. This is
+also why "just use 0.97 everywhere" is wrong: on a 44px icon it would move the edge 0.66px, below noticing,
+and on a full-width row it would move 5.9px, which reads as the row being squashed.
+
+HONEST LIMIT on this measurement: it is a band, not a constant, and the medians shift with which routes are
+sampled because element widths vary. Treat roughly 0.75 to 1.6px as in-band and anything outside it as
+worth a look, not as a hard gate. `npm run check:press` reports off-ladder scales as a WARNING for exactly
+this reason.
+
+OPEN, not guessed: the estate also contains 0.99 (13 uses, large cards), 0.92 (5 uses, Switch/Checkbox/
+SalonCard), 0.985 (6 uses) and 0.95 (2 uses). Under the rule above, 0.99 on a very large surface and 0.92
+on a very small one may be CORRECT extensions of the same law rather than drift, since the ladder simply
+stops short at both ends. 0.985 measured 2.69px, the most movement of any rung, which does look like drift
+from 0.98. Needs an owner call before either normalising them or adding two rungs.
 | Count/badge changes | spring bump | `key={count}` + `.animate-count-bump` |
 | Money value changes | roll/odometer tick | `key={value}` + `.animate-value-roll` |
 | Choice reveals a set (slots, options) | cascade in | container `.slot-cascade`, re-mount with key |
