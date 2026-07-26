@@ -8,6 +8,7 @@ import { trackServerEvent } from "@/lib/posthog-server";
 import { getServerEnv } from "@/lib/env";
 import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
 import { reportError } from "@/lib/error-report";
+import { resolveSwissLocale } from "@/lib/format";
 
 export const runtime = "nodejs";
 
@@ -297,8 +298,7 @@ export async function POST(req: NextRequest) {
           const { data: authUser } = await admin.auth.admin.getUserById(booking.user_id);
           const email = authUser?.user?.email;
           if (email) {
-            const localeMap: Record<string, string> = { de: "de-CH", en: "en-CH", fr: "fr-CH", it: "it-CH" };
-            const bcp47 = localeMap[locale] ?? "de-CH";
+            const bcp47 = resolveSwissLocale(locale);
             const dateStr = new Date(booking.starts_at).toLocaleDateString(bcp47, { weekday: "long", day: "numeric", month: "long" });
             const timeStr = new Date(booking.starts_at).toLocaleTimeString(bcp47, { hour: "2-digit", minute: "2-digit" });
             const serviceName = (booking.services as any)?.[`name_${locale}`] ?? (booking.services as any)?.name_de ?? "Service";
@@ -550,7 +550,7 @@ export async function POST(req: NextRequest) {
           const { data: authUser } = await admin.auth.admin.getUserById(booking.user_id);
           const email = authUser?.user?.email;
           if (email) {
-            const dateStr = new Date(booking.starts_at).toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long" });
+            const dateStr = new Date(booking.starts_at).toLocaleDateString(resolveSwissLocale(locale), { weekday: "long", day: "numeric", month: "long" });
             const serviceName = (booking.services as any)?.name_de ?? "Service";
             const salonName = (booking.salons as any)?.name ?? "Salon";
             await sendEmail(paymentFailedNotification(email, { service: serviceName, salon: salonName, date: dateStr }, locale)).catch((err) => console.error("[StripeWebhook] failed to send payment failure notification:", err));
