@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "motion/react";
 import { TrendingUp, DollarSign, Calendar, ArrowUpRight, Percent, CreditCard, Banknote, Gift, Heart } from "lucide-react";
 import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
@@ -10,7 +9,6 @@ import { useLocale, useTranslations } from "next-intl";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
-import { containerVariants, itemVariants } from "@/lib/animations";
 
 interface DailyRevenue {
   date: string;
@@ -82,12 +80,7 @@ export default function RevenuePage() {
       ) : !data ? (
         <div className="text-center py-20 text-s-ink/30 text-sm">{t("noData")}</div>
       ) : (
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="space-y-5"
-        >
+        <div className="space-y-5">
           {/* KPI cards */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             {[
@@ -138,9 +131,8 @@ export default function RevenuePage() {
                 bg: data.growth_percent >= 0 ? "bg-s-success/5" : "bg-s-error/5",
               },
             ].map((card) => (
-              <motion.div
+              <div
                 key={card.label}
-                variants={itemVariants}
                 className="bg-white rounded-[12px] border border-s-ink/5 p-4 shadow-warm-md"
               >
                 <div className={`w-8 h-8 rounded-btn ${card.bg} flex items-center justify-center mb-3`}>
@@ -148,13 +140,13 @@ export default function RevenuePage() {
                 </div>
                 <p className="data-text font-bold text-xl text-s-ink leading-tight">{card.value}</p>
                 <p className="text-xs text-s-ink/40 mt-0.5">{card.label}</p>
-              </motion.div>
+              </div>
             ))}
           </div>
 
           {/* Revenue chart */}
           {data.daily.length > 0 && (
-            <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md">
+            <div className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md">
               <h2 className="font-heading text-s-ink text-sm mb-4">{t("dailyRevenueTitle")}</h2>
               <ResponsiveContainer width="100%" height={200}>
                 <AreaChart data={data.daily} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
@@ -195,12 +187,12 @@ export default function RevenuePage() {
                   />
                 </AreaChart>
               </ResponsiveContainer>
-            </motion.div>
+            </div>
           )}
 
           {/* Top salons table */}
           {data.top_salons.length > 0 && (
-            <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md overflow-hidden">
+            <div className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md overflow-hidden">
               <div className="px-5 py-4 border-b border-s-ink/5">
                 <h2 className="font-heading text-s-ink text-sm">{t("topSalonsTitle")}</h2>
               </div>
@@ -230,12 +222,12 @@ export default function RevenuePage() {
                   ))}
                 </tbody>
               </table>
-            </motion.div>
+            </div>
           )}
 
           {/* Staff commissions */}
           {data.staff_commissions && data.staff_commissions.length > 0 && (
-            <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md overflow-hidden">
+            <div className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md overflow-hidden">
               <div className="px-5 py-4 border-b border-s-ink/5">
                 <h2 className="font-heading text-s-ink text-sm">{t("staffCommissionsTitle")}</h2>
               </div>
@@ -265,14 +257,14 @@ export default function RevenuePage() {
                   </tbody>
                 </table>
               </div>
-            </motion.div>
+            </div>
           )}
 
           {/* Gift cards & Tips summary */}
           {(data.gift_card_revenue != null || data.tips_total != null) && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {data.gift_card_revenue != null && (
-                <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 p-4 shadow-warm-md flex items-center gap-3">
+                <div className="bg-white rounded-[12px] border border-s-ink/5 p-4 shadow-warm-md flex items-center gap-3">
                   <div className="w-10 h-10 rounded-btn bg-s-coral/5 flex items-center justify-center shrink-0">
                     <Gift size={18} className="text-s-coral" />
                   </div>
@@ -280,10 +272,10 @@ export default function RevenuePage() {
                     <p className="data-text font-bold text-xl text-s-ink">{formatCurrency(data.gift_card_revenue, locale)}</p>
                     <p className="text-xs text-s-ink/40">{t("giftCardRevenue")}</p>
                   </div>
-                </motion.div>
+                </div>
               )}
               {data.tips_total != null && (
-                <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 p-4 shadow-warm-md flex items-center gap-3">
+                <div className="bg-white rounded-[12px] border border-s-ink/5 p-4 shadow-warm-md flex items-center gap-3">
                   <div className="w-10 h-10 rounded-btn bg-s-coral/5 flex items-center justify-center shrink-0">
                     <Heart size={18} className="text-s-coral" />
                   </div>
@@ -291,11 +283,11 @@ export default function RevenuePage() {
                     <p className="data-text font-bold text-xl text-s-ink">{formatCurrency(data.tips_total, locale)}</p>
                     <p className="text-xs text-s-ink/40">{t("tipsReceived")}</p>
                   </div>
-                </motion.div>
+                </div>
               )}
             </div>
           )}
-        </motion.div>
+        </div>
       )}
     </DashboardLayout>
   );
