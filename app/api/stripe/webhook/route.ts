@@ -34,6 +34,7 @@ export async function POST(req: NextRequest) {
     event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
   } catch (err) {
     console.error("[stripe/webhook] Signature verification failed:", err);
+    await reportError("stripe-webhook-signature", err);
     return NextResponse.json({ error: "Webhook signature invalid" }, { status: 400 });
   }
 
@@ -60,6 +61,7 @@ export async function POST(req: NextRequest) {
     }
     // Other DB error (e.g. connection blip). Return 5xx so Stripe retries.
     console.error("[stripe/webhook] failed to claim event:", claimError, { event_id: event.id, type: event.type });
+    await reportError("stripe-webhook-claim", claimError, { eventId: event.id, eventType: event.type });
     return NextResponse.json({ error: "Claim failed" }, { status: 500 });
   }
 
@@ -895,6 +897,16 @@ export async function POST(req: NextRequest) {
           });
         }
       }
+      break;
+    }
+
+    default: {
+      // A Stripe event type reached this handler with no case wired for it, most
+      // likely a newly enabled event in the Stripe Dashboard that this file was
+      // never updated to handle. Without this branch the switch silently fell
+      // through to the closing "received: true" below and the event vanished
+      // with zero log signal, forever, until someone noticed the missing effect.
+      console.warn("[stripe/webhook] Unhandled event type, no-op:", event.type, { event_id: event.id });
       break;
     }
   }
