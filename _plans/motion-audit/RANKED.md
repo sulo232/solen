@@ -69,7 +69,7 @@ B arms a MutationObserver before app code runs and flags anything still mutating
 user input. Proven both directions on real cases. Its own self-test found a bug in it that would have made
 it report zero findings forever. GATE PASSES on all six default routes; the allowlist is shrink-only.
 
-## RANK 2 , the press tier. ~460 rows. The single systemic failure, and it now has a documented cause.
+## RANK 2 , FIXED (`a3916ebc9`, `2add8aeec`, `cb868dc5b`, `8d8ee3acc`): the press tier. ~460 rows.
 THE SPEED LAW's press tier (80-100ms) is the only tier with a named primary source (Miller 1968: "response
 to control activation... no more than 0.1 second"). It is almost nowhere.
   - Dashboard alone: **328 of 363 buttons have no press feedback at all**, and all 35 that do run at 150ms
@@ -102,6 +102,9 @@ sanctioned stagger variants from `primitives/motion.ts` instead of holding a par
 
 ## RANK 3 , FIXED (`a7cd65238`): staggered entrances on a tool surface are a measured harm. Deleted, not retimed.
   - `/dashboard/revenue`: 10 elements on a 60ms stagger with 300ms items. `earnings`: 100ms.
+    NOTE: revenue was reported fixed once before it actually was. It still imported the variants at seven
+    sites and was only caught when a later pass read the file and contradicted the report. Fixed at
+    `9ae5a6098`. Worth remembering that a pass reporting three files done had done two.
   - `reports`: **replays the entire stagger on every "load more"**.
   - `NotificationCenter.tsx:112`: 70ms/item, last row lands at ~920ms, in a dropdown opened dozens of
     times a day.
@@ -134,7 +137,7 @@ STILL OPEN, worst first:
     does not contain at all.
   - `SalonHero.tsx:154` carousel dots, `ServicesStaffStep.tsx:458` accordion, `resend-link:554` countdown.
 
-## RANK 6 , the 420ms ENTER RECIPE contradicts the law. OWNER DECISION, not a fix.
+## RANK 6 , DECIDED + APPLIED (`dbaf2aa65`, `ca3c569d0`): the 420ms ENTER RECIPE vs the law.
 7 rows / 9 code locations, every booking step, on entrances that are not full-screen. ENTER RECIPE is
 owner-approved 2026-07-09; THE SPEED LAW is 2026-07-25 and supersedes the slower spread without naming the
 recipe. The honest question, per TASTE_MOTION: 420ms was approved to fix an entrance the owner could not
@@ -191,3 +194,23 @@ FIX: add "entrances decelerate (`glide`), exits accelerate (`thud`)" to MOTION.m
 5. `BentoCard.tsx` documents a scroll-triggered entrance it does not implement.
 6. Three toggle implementations exist in the dashboard; only `settings:260` is correct, and two of the
    three sit in the same file.
+
+---
+## What is actually left (2026-07-26)
+RANKS 1, 2, 2b, 3, 4, 5, 6 and 7 are closed against shas. Remaining:
+  - **RANK 8** , tier drift and dead vocabulary. 200ms is a de-facto fourth tier with 19 rows, five
+    animations run over 300ms without being full-screen, 36 utilities have zero call sites, and three
+    `AnimatePresence mode="wait"` sites are non-interruptible against hard rule 4.
+  - **RANK 9** , the ~28 rows no rule reaches. These are owner questions and are deliberately not guessed.
+  - **42 OFF-LADDER press scales.** `npm run check:press` reports them as a warning. Measurement in
+    MOTION.md shows the ladder is a constant-perceived-movement rule, so 0.985 (2.69px, the most of any
+    rung) looks like drift while 0.99 on very large cards and 0.92 on very small controls may be correct
+    extensions the ladder simply stops short of. Needs an owner call, not a sweep.
+  - **A known gate residual**: the anti-resurrect gate still blocks `/inspo`, correctly by its own rule,
+    because two graveyard entries carry `inspo` as an exact keyword token while having removed a focus
+    ring and a sort control rather than the route. The gate cannot mechanically tell those apart. The
+    reason-flag escape hatch is the intended path.
+  - **A known checker blind spot**: `check-press.mjs` misses class strings built with `[...].join(" ")`,
+    since its parser treats an unrecognised call as fully dynamic and discards the literal text. That is a
+    false negative, found when a real dead-press site in `onboarding/salon/page.tsx` was fixed without the
+    checker ever having flagged it.
