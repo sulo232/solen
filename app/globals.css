@@ -420,6 +420,27 @@
   }
 }
 
+/* ── D1-focus-visible (2026-07-27): keyboard-only focus cue, still no ring.
+   CLAUDE.md precedence chain tier 2 (statutory/a11y floor): satisfy the WCAG 2.4.7 keyboard-
+   focus-indicator floor WITHOUT reopening the owner's no-ring taste call above (that block is
+   untouched, outline stays none on :focus AND :focus-visible, on all chrome, all devices).
+   Treatment: a 3px ink INSET LEFT EDGE (inset box-shadow, not an outline, not a spread glow
+   halo, so no-focus-ring-gate.py stays satisfied , its own regex was run against this exact
+   rule before commit and found no hit). Fires on :focus-visible ONLY, never plain :focus, and
+   only inside @media (hover: hover) and (pointer: fine) so a mouse click or a touch tap can
+   never show it, matching the touch carve-out immediately above. This is a proposal for owner
+   sign-off, not a redesign of the ring decision: the ring stays dead, this just gives a
+   keyboard/switch user a "you are here" cue the removed ring used to provide. */
+@media (hover: hover) and (pointer: fine) {
+  a:focus-visible,
+  button:focus-visible,
+  [role="button"]:focus-visible,
+  [tabindex]:focus-visible,
+  summary:focus-visible {
+    box-shadow: inset 3px 0 0 0 #0A0A0A; /* drift-ok: s-ink literal, raw CSS focus cue not a Tailwind utility */
+  }
+}
+
 /* ── B.7: Override global coral focus ring inside GuidedSearch sheet ── */
 #gs-sheet input:focus-visible,
 #gs-sheet textarea:focus-visible {
