@@ -140,7 +140,10 @@ export function bookingReschedule(
   };
   const bodies: Record<EmailLocale, string> = {
     de: `<p>Ihre Buchung für ${vars.service} bei ${vars.salon} wurde von ${new Date(vars.oldDate).toLocaleString("de-CH")} auf den ${new Date(vars.newDate).toLocaleString("de-CH")} verschoben.</p>`,
-    en: `<p>Your booking for ${vars.service} at ${vars.salon} has been rescheduled from ${new Date(vars.oldDate).toLocaleString("en-US")} to ${new Date(vars.newDate).toLocaleString("en-US")}.</p>`,
+    // en-CH (not en-US, fixed 2026-07-26 de-CH sweep): every other locale here uses its Swiss
+    // regional variant (de-CH/fr-CH/it-CH); en-US would show US date order + AM/PM to a Swiss
+    // English-locale user, inconsistent with lib/format.ts's SWISS_DATE_LOCALES (en -> en-CH).
+    en: `<p>Your booking for ${vars.service} at ${vars.salon} has been rescheduled from ${new Date(vars.oldDate).toLocaleString("en-CH")} to ${new Date(vars.newDate).toLocaleString("en-CH")}.</p>`,
     fr: `<p>Votre réservation pour ${vars.service} chez ${vars.salon} a été reprogrammée du ${new Date(vars.oldDate).toLocaleString("fr-CH")} au ${new Date(vars.newDate).toLocaleString("fr-CH")}.</p>`,
     it: `<p>La tua prenotazione per ${vars.service} presso ${vars.salon} è stata riprogrammata dal ${new Date(vars.oldDate).toLocaleString("it-CH")} al ${new Date(vars.newDate).toLocaleString("it-CH")}.</p>`,
   };
