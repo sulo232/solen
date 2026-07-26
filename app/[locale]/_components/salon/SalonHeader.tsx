@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useLocale } from "next-intl";
 import { MapPin, Share } from "lucide-react";
 import { RatingStars } from "../primitives";
 import { HeartButton } from "../homepage/HeartButton";
@@ -8,6 +9,7 @@ import { StatusInline } from "./StatusInline";
 import type { SalonDetail, OpenStatus } from "./_shared";
 import { shareOrCopy } from "@/lib/share";
 import ReportButton from "@/components-legacy/discovery/ReportButton";
+import { formatCount } from "@/lib/format";
 
 /**
  * SalonHeader — V3-D232 (2026-05-27, hero austerity strip per Fresha capture).
@@ -54,6 +56,7 @@ export function SalonHeader({
 }) {
   const status = openStatus;
   const fullAddress = salon.address;
+  const locale = useLocale();
 
   // V3-D232: scroll to reviews on (N) click. Same anchor SalonSidebar uses.
   const scrollToReviews = React.useCallback(() => {
@@ -112,7 +115,7 @@ export function SalonHeader({
                 aria-label={`${salon.review_count} Bewertungen anzeigen`}
                 className="text-s-accent transition-[opacity,transform] hover:opacity-80 active:scale-[0.98] active:duration-[80ms] active:ease-glide"
               >
-                ({salon.review_count.toLocaleString("de-CH")})
+                {formatCount(salon.review_count, locale)}
               </button>
             </div>
 

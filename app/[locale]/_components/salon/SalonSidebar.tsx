@@ -12,6 +12,7 @@ import { DAY_KEYS, DAY_LABEL, withDateParam, type DayKey } from "./_shared";
 import { StatusInline } from "./StatusInline";
 import { RatingStars } from "../primitives";
 import { cn } from "@/lib/utils";
+import { formatCount } from "@/lib/format";
 
 /**
  * SalonSidebar — V3-D230 (2026-05-27, austerity strip per real Fresha capture).
@@ -133,7 +134,7 @@ export function SalonSidebar({
           // 2026-05-30: links → saturated blue (s-accent), no underline (user direction; reverses V3-D335).
           className="font-body text-[18px] font-medium leading-none text-s-accent transition-[colors,transform] hover:text-s-accent-deep active:scale-[0.98] active:duration-[80ms] active:ease-glide md:text-[20px]"
         >
-          ({salon.review_count.toLocaleString("de-CH")})
+          {formatCount(salon.review_count, locale)}
         </button>
       </div>
 

@@ -29,13 +29,31 @@ export function formatPrice(amount: number, locale: string = "de-CH"): string {
 }
 
 /**
+ * Locale-aware grouped-number string, no parens (added 2026-07-26 alongside the
+ * de-CH literal sweep so review-count / total-count call sites that don't want
+ * formatCount's parens have one shared resolver instead of re-deriving the Swiss
+ * tag inline). Accepts bare app locale keys ("de", "fr") or a full BCP-47 tag.
+ *
+ * formatNumber(1270)       → "1’270" (de-CH apostrophe grouping)
+ * formatNumber(1270, "fr") → "1’270" (fr-CH keeps the Swiss apostrophe grouping)
+ */
+export function formatNumber(n: number, locale: string = "de"): string {
+  const resolved = SWISS_DATE_LOCALES[locale] ?? SWISS_DATE_LOCALES[locale.split("-")[0]] ?? "de-CH";
+  return n.toLocaleString(resolved);
+}
+
+/**
  * Format a count with parentheses (per Q43 / SOLEN_DESIGN.md §17 voice rule):
  * ratings show count in parens, e.g. "★ 4.8 (127)".
+ * Accepts bare app locale keys ("de", "fr") or a full BCP-47 tag; resolved to the
+ * Swiss regional variant so grouping separators match the active locale (2026-07-26,
+ * was hardcoded "de-CH" and ignored by every call site).
  *
  * formatCount(127) → "(127)"
+ * formatCount(1270, "fr") → "(1'270)" (fr-CH keeps the Swiss apostrophe grouping)
  */
-export function formatCount(n: number): string {
-  return `(${n.toLocaleString("de-CH")})`;
+export function formatCount(n: number, locale: string = "de"): string {
+  return `(${formatNumber(n, locale)})`;
 }
 
 /**
@@ -122,13 +140,18 @@ export function nextAvailableSlotLabel(
     }
   }
   if (!earliest) return null;
+  // Resolve the caller's locale to its Swiss regional variant (mirrors formatDateLabel above);
+  // was hardcoded to "de-CH" here, silently ignoring the `locale` param on FR/IT/EN callers.
+  const resolvedLocale = SWISS_DATE_LOCALES[locale] ?? SWISS_DATE_LOCALES[locale.split("-")[0]] ?? "de-CH";
   // Use Zurich timezone so late-evening slots are attributed to the correct day.
-  const hhmm = earliest.toLocaleTimeString("de-CH", {
+  // hourCycle forced to h23: Swiss convention is 24h time regardless of UI language.
+  const hhmm = earliest.toLocaleTimeString(resolvedLocale, {
     timeZone: "Europe/Zurich",
     hour: "2-digit",
     minute: "2-digit",
+    hourCycle: "h23",
   });
-  const tzFormatter = new Intl.DateTimeFormat("de-CH", { timeZone: "Europe/Zurich", dateStyle: "short" });
+  const tzFormatter = new Intl.DateTimeFormat(resolvedLocale, { timeZone: "Europe/Zurich", dateStyle: "short" });
   const todayStr = tzFormatter.format(new Date());
   const tomorrowDate = new Date();
   tomorrowDate.setDate(tomorrowDate.getDate() + 1);

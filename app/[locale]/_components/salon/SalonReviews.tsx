@@ -4,6 +4,7 @@ import * as React from "react";
 import { Star, MessageSquare } from "lucide-react";
 import type { Review } from "./_shared";
 import { formatReviewDate, publicReply } from "./_shared";
+import { formatNumber } from "@/lib/format";
 import { Avatar, RatingStars, SeeAllButton } from "@/app/[locale]/_components/primitives";
 import { TabPill } from "../primitives/TabPill";
 import { cn } from "@/lib/utils";
@@ -139,7 +140,7 @@ export function SalonReviews({
             {average?.toFixed(1) ?? "-"}
           </span>
           <span className="font-body text-[13px] text-s-ink-3">
-            {count.toLocaleString("de-CH")} {count === 1 ? "Bewertung" : "Bewertungen"}
+            {formatNumber(count, locale)} {count === 1 ? "Bewertung" : "Bewertungen"}
           </span>
         </div>
 
@@ -198,7 +199,7 @@ export function SalonReviews({
               2026-07-25: "outside of the reviews group card"); gap matches SalonServices.tsx's
               established card→SeeAllButton mt-5 (both direct children of a non-card wrapper). */}
           <SeeAllButton
-            label={`Alle ${count.toLocaleString("de-CH")} Bewertungen`}
+            label={`Alle ${formatNumber(count, locale)} Bewertungen`}
             href={`/${locale}/salon/${salonSlug}/reviews`}
           />
         </div>

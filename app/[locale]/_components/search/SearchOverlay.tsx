@@ -867,7 +867,7 @@ export function SearchOverlay({
                           <motion.div key="daten" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.18 }}>
                             <div className="mb-2 flex items-center justify-between">
                               <p className="font-heading text-[17px] font-bold capitalize text-s-ink">
-                                {shownMonth.toLocaleDateString("de-CH", { month: "long" })} {shownMonth.getFullYear()}
+                                {shownMonth.toLocaleDateString(locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : locale === "en" ? "en-GB" : "de-CH", { month: "long" })} {shownMonth.getFullYear()}
                               </p>
                               <div className="flex items-center gap-1">
                                 <button onClick={() => setMonthOffset((o) => Math.max(0, o - 1))} disabled={monthOffset <= 0} aria-label="Vorheriger Monat"
@@ -883,7 +883,7 @@ export function SearchOverlay({
                             <div className="mb-1 grid grid-cols-7 text-center text-[12px] font-medium text-s-ink-3">
                               {WEEKDAYS.map((w, i) => <span key={i}>{w}</span>)}
                             </div>
-                            <MonthGrid monthDate={shownMonth} now={now} windowEnd={windowEnd} selKey={selKey}
+                            <MonthGrid monthDate={shownMonth} now={now} windowEnd={windowEnd} selKey={selKey} locale={locale}
                               onPick={(key, label) => {
                                 if (selKey === key) { setSelKey(null); setIsoDate(""); setDateLabel(""); setZeitPeriod(""); } // tap again = deselect
                                 else { setSelKey(key); setIsoDate(keyToISO(key)); setDateLabel(label); }
@@ -1057,12 +1057,12 @@ function AutocompleteRow({ label, primary, onClick }: { label: string; primary?:
 }
 
 
-function MonthGrid({ monthDate, now, windowEnd, selKey, onPick }: {
+function MonthGrid({ monthDate, now, windowEnd, selKey, onPick, locale }: {
   monthDate: Date; now: Date; windowEnd: Date; selKey: string | null;
-  onPick: (key: string, label: string) => void;
+  onPick: (key: string, label: string) => void; locale: string;
 }) {
   const y = monthDate.getFullYear(), m = monthDate.getMonth();
-  const monthLong = monthDate.toLocaleDateString("de-CH", { month: "long" });
+  const monthLong = monthDate.toLocaleDateString(locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : locale === "en" ? "en-GB" : "de-CH", { month: "long" });
   const cells = buildMonthGrid(monthDate);
   const todayMid = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
   const windowMid = windowEnd.getTime();
