@@ -45,6 +45,9 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
       formData.append("photo_type", photoType);
       const res = await fetch(`/api/clients/${customerId}/photos`, {
         method: "POST",
+        // Required since 962fd4c65 (see ReviewForm.tsx for the why). Without it every client
+        // before/after photo upload from the dashboard 403s.
+        headers: { "x-solen-upload": "1" },
         body: formData,
       });
       if (res.ok) {

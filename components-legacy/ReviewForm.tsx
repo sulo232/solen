@@ -187,6 +187,10 @@ export default function ReviewForm({
         photos.forEach((p) => formData.append("photos", p));
         await fetch(`/api/reviews/${resData.data.id}/photos`, {
           method: "POST",
+          // Required since 962fd4c65: the upload routes reject any multipart POST without this
+          // header, because a plain cross-site <form> cannot set a custom header and the session
+          // cookie alone was enough to submit one. Missing it here 403s every review photo.
+          headers: { "x-solen-upload": "1" },
           body: formData,
         });
       }
