@@ -15,13 +15,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { EmailLocale } from "@/lib/email";
 import { formatCurrency } from "@/lib/format-currency";
-
-const LOCALE_BCP47: Record<EmailLocale, string> = {
-  de: "de-CH",
-  en: "en-CH",
-  fr: "fr-CH",
-  it: "it-CH",
-};
+import { resolveSwissLocale } from "@/lib/format";
 
 /**
  * Send the `refund_processed` notification to a booking's customer.
@@ -80,7 +74,7 @@ export async function notifyRefundProcessed(
     const locale: EmailLocale = (profile?.locale as EmailLocale) ?? "de";
     const serviceName =
       services?.[`name_${locale}`] ?? services?.name_de ?? "Service";
-    const amountStr = formatCurrency(amountCents / 100, LOCALE_BCP47[locale] ?? "de-CH");
+    const amountStr = formatCurrency(amountCents / 100, resolveSwissLocale(locale));
 
     const { data: authUser } = await admin.auth.admin.getUserById(booking.user_id);
     const email = authUser?.user?.email;
@@ -92,7 +86,7 @@ export async function notifyRefundProcessed(
       body: `Eine Rückerstattung in Höhe von ${amountStr} für deine Buchung wurde verarbeitet.`,
       data: { bookingId, amount: amountCents },
       emailParams: email
-        ? { to: email, locale, vars: { service: serviceName, salonName, amount: amountStr, ...vatVars(LOCALE_BCP47[locale] ?? "de-CH") } }
+        ? { to: email, locale, vars: { service: serviceName, salonName, amount: amountStr, ...vatVars(resolveSwissLocale(locale)) } }
         : undefined,
     });
     return;

@@ -22,13 +22,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { EmailLocale } from "@/lib/email";
 import { formatCurrency } from "@/lib/format-currency";
-
-const LOCALE_BCP47: Record<EmailLocale, string> = {
-  de: "de-CH",
-  en: "en-CH",
-  fr: "fr-CH",
-  it: "it-CH",
-};
+import { resolveSwissLocale } from "@/lib/format";
 
 /**
  * Send the `upcharge_charged` notification (in-app + email) to a booking's customer.
@@ -73,7 +67,7 @@ export async function notifyUpchargeCharged(
       .single();
     const locale: EmailLocale = (profile?.locale as EmailLocale) ?? "de";
     const serviceName = services?.[`name_${locale}`] ?? services?.name_de ?? "Service";
-    const amountStr = formatCurrency(amountCents / 100, LOCALE_BCP47[locale] ?? "de-CH");
+    const amountStr = formatCurrency(amountCents / 100, resolveSwissLocale(locale));
 
     const { data: authUser } = await admin.auth.admin.getUserById(booking.user_id);
     const email = authUser?.user?.email;

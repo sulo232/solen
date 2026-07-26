@@ -27,13 +27,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { EmailLocale } from "@/lib/email";
 import { formatCurrency } from "@/lib/format-currency";
-
-const LOCALE_BCP47: Record<EmailLocale, string> = {
-  de: "de-CH",
-  en: "en-CH",
-  fr: "fr-CH",
-  it: "it-CH",
-};
+import { resolveSwissLocale } from "@/lib/format";
 
 export interface NotifyNoShowFeeArgs {
   /** ADMIN (service-role) Supabase client — the same one the caller holds. */
@@ -77,7 +71,7 @@ export async function notifyNoShowFee(args: NotifyNoShowFeeArgs): Promise<void> 
       .eq("id", userId)
       .single();
     const locale: EmailLocale = (profile?.locale as EmailLocale) ?? "de";
-    const bcp47 = LOCALE_BCP47[locale] ?? "de-CH";
+    const bcp47 = resolveSwissLocale(locale);
     const amountStr = formatCurrency(feeCents / 100, bcp47);
     const dateStr = new Date(date).toLocaleDateString(bcp47);
 
