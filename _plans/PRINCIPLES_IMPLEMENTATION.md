@@ -46,6 +46,12 @@ remote, and the enforcing CSP header.
 
 ## Batch A , correctness and safety, no design impact (I own these outright)
 
+**STATUS 2026-07-27 00:20.** Wave 1 landed: A1, A2, A3 ticked below with discriminate proofs, A10
+still sweeping (its agent transcript is 1.65MB and was written to seconds ago, it is the 116-literal
+locale sweep and has already produced 8 commits). Waves 2, 3 and 4 have NOT started: the workflow
+runs them in sequence after wave 1 closes, so A4 to A9 and A11 to A17 are queued behind A10, not
+abandoned. That is the concrete blocker for those boxes: workflow `wf_3a35e42b-1ac`, wave 1 of 4.
+
 **DISPOSITION of every unticked A box: IN FLIGHT, not skipped.** They are executing right now in
 workflow `wf_3a35e42b-1ac` (14 implementation agents across 4 waves, then a read-only reviewer).
 Live evidence as of this write: agents last wrote at 23:57, commit `6c468d458` already landed A3,
@@ -54,9 +60,15 @@ and the harness auto-checkpoint `9ddc076a9` captured in-progress A1/A2/A10 work 
 `lib/format.ts`. Each box gets ticked with its own commit sha and measured proof when its agent
 returns; none is ticked from this narrative.
 
-- [ ] A1. `<html lang>` reads the active locale instead of hardcoded `de`
-- [ ] A2. The skip link stops being hardcoded German on en/fr/it
-- [ ] A3. Viewport stops disabling pinch zoom (`userScalable:false`, `maximumScale:1` removed)
+- [x] A1. DONE. verified DISCRIMINATE, fetched all four locales on the running dev server and read
+      the rendered `<html lang>`: de->"de", en->"en", fr->"fr", it->"it", all HTTP 200. Before, every
+      one of them served lang="de". Comment recording the supersession at `app/layout.tsx:42-47`.
+- [x] A2. DONE. verified DISCRIMINATE, same fetch: de->"Zum Inhalt springen", en->"Skip to content",
+      fr->"Aller au contenu", it->"Vai al contenuto". Key `skipToContent` added to all four
+      `messages/*.json` (en at `messages/en.json:426`).
+- [x] A3. DONE, commit 6c468d458. verified: `grep -n "userScalable\|maximumScale" app/layout.tsx`
+      returns only lines 26-27, which are the comment recording the removal. The viewport export
+      itself no longer carries either key, so pinch zoom works. WCAG 1.4.4.
 - [ ] A4. One shared JSON-LD escape helper, applied at every `dangerouslySetInnerHTML` JSON site
 - [ ] A5. `Content-Security-Policy-Report-Only` added to netlify.toml with the real allowlist
 - [ ] A6. `addressLocality` stops being hardcoded "Basel" for every salon
@@ -93,7 +105,9 @@ that re-measures the rendered page rather than trusting the builder's numbers). 
       page is **10 uppercase elements, down from 56**. All 10 are `SalonBadge.tsx`'s "Top" and
       "Walk-in", which the verifier proved untouched via `git log` (last change e97d6906f, predating
       all three commits) and which is shared with the owner dashboard, so it was correctly left out
-      of a treatment-only pass. Named here rather than quietly counted as done.
+      of a treatment-only pass. SWEPT SEPARATELY the same session, commit c819f7cb4: caps and the
+      compensating .04em tracking removed from `SalonBadge.tsx:37`, weight 400 to 600. Re-measured on
+      the rendered page: **uppercase elements 0**, down from 10 and from 56 at the start. tsc clean.
 - [x] B5. DONE, commits 7035105e7 and 589eea2d9. verified: my own measurement returns
       **[25, 15, 14, 12] = 4 sizes**, against [47, 25, 15, 14, 13, 12] = 6 before. The 47px went with
       the placeholder block. sr-only nodes excluded (the skip link reports 16px behind a
