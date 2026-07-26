@@ -34,7 +34,12 @@ const BADGE_SHADOW = "0 2px 4px rgba(26,18,9,0.15)";
 const BADGE_SHADOW_LIGHT = "0 2px 4px rgba(26,18,9,0.10)";
 
 const BASE_CLASSES =
-  "inline-flex items-center gap-1 font-heading text-[12px] uppercase tracking-[.04em] px-2.5 py-1 rounded-full leading-[1]";
+  // Caps removed 2026-07-26 (project CLAUDE.md taste rule 10, no-caps gate). The tracking went with
+  // them: .04em existed to open up all-caps, and on sentence case it reads as a spacing bug. Weight
+  // steps 400 to 600 to keep the badge's presence without shouting. Last of the 56 uppercase
+  // elements measured on /de/basel; this file is shared with /dashboard/badge-manager, which is why
+  // it was left out of the treatment-only card pass and swept separately.
+  "inline-flex items-center gap-1 font-heading text-[12px] font-semibold px-2.5 py-1 rounded-full leading-[1]";
 
 export default function SalonBadge({ salon, availabilityStatus }: SalonBadgeProps) {
   const now = Date.now();
