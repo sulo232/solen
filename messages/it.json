@@ -406,6 +406,7 @@
   },
   "common": {
     "save": "Salva",
+    "skipToContent": "Vai al contenuto",
     "saving": "Salvataggio...",
     "saved": "Salvato",
     "cancel": "Annulla",

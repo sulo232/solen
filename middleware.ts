@@ -34,6 +34,14 @@ function getLocaleFromRequest(request: NextRequest): string {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // A1-html-lang (2026-07-26): stamp the pathname onto a request header so the root
+  // layout (app/layout.tsx, which sits ABOVE the [locale] segment and has no route
+  // params) can derive the active locale for <html lang>. Mutated in place on the
+  // shared `request.headers` instance so every NextResponse.next({ request }) call
+  // below (CORS pass-through, the Supabase session refresh, the final pass-through)
+  // carries it without touching each call site. Read via headers() in app/layout.tsx.
+  request.headers.set("x-pathname", pathname);
+
   // Skip static files, Next.js internals
   if (
     pathname.startsWith("/_next") ||

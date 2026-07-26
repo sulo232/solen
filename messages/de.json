@@ -423,6 +423,7 @@
   },
   "common": {
     "save": "Speichern",
+    "skipToContent": "Zum Inhalt springen",
     "saving": "Speichern...",
     "saved": "Gespeichert",
     "cancel": "Abbrechen",

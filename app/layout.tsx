@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { ViewTransitions } from "next-view-transitions";
 import { Inter_Tight, Inter } from "next/font/google";
+import { headers } from "next/headers";
+import { locales, defaultLocale } from "@/i18n";
 import "@/app/globals.css";
 
 // Self-hosted via next/font (Next downloads these at build time and serves the
@@ -36,9 +38,17 @@ export const viewport: Viewport = {
   themeColor: "#F4F4F6",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // A1-html-lang (2026-07-26, supersedes the hardcoded lang="de" this comment used to
+  // sit next to): this layout is ABOVE the [locale] route segment (Next.js App Router
+  // allows exactly one <html> tag, so it can't live in app/[locale]/layout.tsx), so it
+  // has no route params. middleware.ts stamps the request pathname onto `x-pathname`;
+  // parse the locale prefix out of that instead of hardcoding German on en/fr/it routes
+  // (WCAG 3.1.1 Level A, verified live: /en/basel was serving lang="de").
+  const pathname = (await headers()).get("x-pathname") ?? "";
+  const locale = locales.find((l) => pathname === `/${l}` || pathname.startsWith(`/${l}/`)) ?? defaultLocale;
   return (
-    <html lang="de" className={`${interTight.variable} ${inter.variable}`} suppressHydrationWarning>
+    <html lang={locale} className={`${interTight.variable} ${inter.variable}`} suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="preload" href="/logo.svg" as="image" type="image/svg+xml" />

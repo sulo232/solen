@@ -423,6 +423,7 @@
   },
   "common": {
     "save": "Save",
+    "skipToContent": "Skip to content",
     "saving": "Saving...",
     "saved": "Saved",
     "cancel": "Cancel",
