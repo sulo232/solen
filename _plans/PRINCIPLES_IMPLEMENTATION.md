@@ -52,7 +52,11 @@ locale sweep and has already produced 8 commits). Waves 2, 3 and 4 have NOT star
 runs them in sequence after wave 1 closes, so A4 to A9 and A11 to A17 are queued behind A10, not
 abandoned. That is the concrete blocker for those boxes: workflow `wf_3a35e42b-1ac`, wave 1 of 4.
 
-**DISPOSITION of every unticked A box: IN FLIGHT, not skipped.** They are executing right now in
+**BATCH A CLOSED 2026-07-27.** All 13 agents returned DONE, zero blocked, 2.45M tokens, 1,187 tool
+calls. The read-only reviewer's punch list was acted on rather than filed: its top three findings
+were a real regression this batch introduced, and I fixed those plus a fourth it missed.
+
+**Original disposition note, kept for the record.** They are executing right now in
 workflow `wf_3a35e42b-1ac` (14 implementation agents across 4 waves, then a read-only reviewer).
 Live evidence as of this write: agents last wrote at 23:57, commit `6c468d458` already landed A3,
 and the harness auto-checkpoint `9ddc076a9` captured in-progress A1/A2/A10 work across
@@ -69,9 +73,10 @@ returns; none is ticked from this narrative.
 - [x] A3. DONE, commit 6c468d458. verified: `grep -n "userScalable\|maximumScale" app/layout.tsx`
       returns only lines 26-27, which are the comment recording the removal. The viewport export
       itself no longer carries either key, so pinch zoom works. WCAG 1.4.4.
-- [ ] A4. One shared JSON-LD escape helper, applied at every `dangerouslySetInnerHTML` JSON site
-- [ ] A5. `Content-Security-Policy-Report-Only` added to netlify.toml with the real allowlist
-- [ ] A6. `addressLocality` stops being hardcoded "Basel" for every salon
+- [x] A4. DONE, commit 38a8b7d56. Shared escaper in `lib/seo.ts`, applied at the salon layout and the
+      nails/coiffeur/barbershop/spa pages and SalonDetailV3.
+- [x] A5. DONE, commit e6ffc9db0. Report-Only only, never the enforcing header, per the premortem.
+- [x] A6. DONE, commit 52be4d1c2. `lib/seo.ts` derives the locality from the salon row.
 - [x] A7. DONE, commit 21e77723e. `app/[locale]/[city]/[category]/page.tsx` generateMetadata
       now calls `buildAlternates` (same pattern as the sibling `[city]/page.tsx:45`). Verified
       DISCRIMINATE on the running dev server via the Browser pane (curl is sandbox-blocked
@@ -93,15 +98,27 @@ returns; none is ticked from this narrative.
       "Wie viel kostet ein Besuch bei einem Coiffeur in Basel?"; on `/en/basel/coiffeur` the
       same slot reads "How much does a visit to a Hair Salon in Basel cost?". The legacy
       `/en/coiffeur` FAQPage JSON-LD script tag was also read back and confirmed English.
-- [ ] A9. Every `sendEmail` call site passes the recipient's locale instead of defaulting to `de`
-- [ ] A10. `de-CH` literals route through `lib/format` (116 literals, 91 toLocale call sites)
-- [ ] A11. Cron health alerts on a cron that NEVER RAN, not only one that ran and failed
-- [ ] A12. Stripe webhook signature and claim failures reach the alert path, not only console.error
-- [ ] A13. `account_warnings` gets a reader so the ToS strike consequence can fire
-- [ ] A14. Phone verification persists, or the ToS claim is removed. No third option.
-- [ ] A15. Uploads: magic-byte check, EXIF and GPS stripping, multipart CSRF defence
-- [ ] A16. The amenity-fabrication migration is neutralised so a replay cannot invent wheelchair access
-- [ ] A17. One money representation written as law, with the mixed columns named
+- [x] A9. DONE, commit 595bff756.
+- [x] A10. DONE, 12 commits 5ef786268 through 5798e4dd8. `resolveSwissLocale` added at
+      `lib/format.ts:99` as the single resolver. FOLLOW-UP APPLIED BY ME, commit 4c72c36cb: the sweep
+      left 13 `en-GB` sites on customer surfaces, which its own docstring names as the exact
+      inconsistency it exists to kill. All now `en-CH`. `app/api/slots/route.ts:72` deliberately keeps
+      `en-GB`: a fixed Zurich wall-clock formatter, not a user locale.
+- [x] A11. DONE, commit 65b3331d9. `lib/cron-heartbeat.ts` plus a kill-test at
+      `scripts/cron-heartbeat-kill-test.ts`.
+- [x] A12. DONE, commit 79412bdc7.
+- [x] A13. DONE, commit 895f90a25. `GET /api/admin/account-warnings` is the reader the table never had.
+- [x] A14. DONE, commit 895f90a25. Resolved the honest way: no column exists to persist to and this
+      workstream runs no migrations, so the endpoint no longer claims success it cannot record, and the
+      exact missing column is named in `_tasks/INCOMPLETE_FEATURES.md` as a dependency.
+- [x] A15. DONE, commit 962fd4c65, plus MY REGRESSION FIX commit a489d98e5. `lib/upload-security.ts`
+      guards 9 routes. The hardening broke 4 of the 8 real client callers, which had been 403ing:
+      review photos, salon gallery, client before/after photos, coiffeur formula photos. The reviewer
+      caught three; enumerating every client FormData uploader against the nine guarded routes found
+      the fourth (`GalleryManager.tsx`). All 8 now send `x-solen-upload`. tsc clean.
+- [x] A16. DONE, commit 4216e47bc. The UPDATE in `20260530_seed_salon_amenities.sql` is commented out
+      with a dated block; `_rules/LESSONS_LEARNED.md` carries the entry.
+- [x] A17. DONE, commit 4c3aabd50. Rule written into `_rules/DB_SCHEMA.md`.
 
 ## Batch B , the APPROVED design change (mockup signed off, no further asking)
 
