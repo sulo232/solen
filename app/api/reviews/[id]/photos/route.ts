@@ -4,9 +4,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
+import { requireUploadHeader, verifyAndStripImage } from "@/lib/upload-security";
 
 // POST /api/reviews/[id]/photos
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  // A15-upload-hardening (2026-07-27): this route authenticates via the ambient Supabase
+  // session cookie (createServerSupabaseClient below), which a cross-site multipart form
+  // POST rides automatically. Require a header only same-origin fetch() code can set.
+  const csrfBlocked = requireUploadHeader(req);
+  if (csrfBlocked) return csrfBlocked;
+
   const { id } = await params;
   const disabled = await checkFeatureEnabled("reviews");
   if (disabled) return disabled;
@@ -50,19 +57,25 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   for (let i = 0; i < Math.min(files.length, 3); i++) {
     const file = files[i];
-    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-      continue;
-    }
     if (file.size > 5 * 1024 * 1024) {
       continue; // Skip files > 5MB
     }
 
-    const ext = file.type.split('/')[1];
-    const path = `${id}/${crypto.randomUUID()}.${ext}`;
+    // A15-upload-hardening (2026-07-27): verify the real bytes (magic-byte format sniff)
+    // instead of trusting the client-supplied file.type, and re-encode, which strips any
+    // EXIF/GPS metadata a customer's phone photo carries before it reaches Storage.
+    let processed;
+    try {
+      processed = await verifyAndStripImage(Buffer.from(await file.arrayBuffer()), ["jpeg", "png", "webp"]);
+    } catch {
+      continue; // not a decodable jpeg/png/webp, skip like the old MIME-allowlist did
+    }
+
+    const path = `${id}/${crypto.randomUUID()}.${processed.ext}`;
 
     const { error: uploadErr } = await supabase.storage
       .from("review-photos")
-      .upload(path, file);
+      .upload(path, processed.buffer, { contentType: processed.contentType });
 
     if (uploadErr) {
       console.error("Photo upload error:", uploadErr);

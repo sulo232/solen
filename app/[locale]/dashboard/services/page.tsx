@@ -171,7 +171,13 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
                     try {
                       const fd = new FormData();
                       fd.append("file", file);
-                      const res = await fetch(`/api/services/${initial.id}/photos`, { method: "POST", body: fd });
+                      // A15-upload-hardening (2026-07-27): required by the route's CSRF
+                      // guard, see lib/upload-security.ts requireUploadHeader.
+                      const res = await fetch(`/api/services/${initial.id}/photos`, {
+                        method: "POST",
+                        headers: { "x-solen-upload": "1" },
+                        body: fd,
+                      });
                       if (res.ok) {
                         const data = (await res.json()).data;
                         setPhotos((prev) => [...prev, data.url]);
@@ -644,7 +650,13 @@ export default function ServicesPage() {
               const fd = new FormData();
               fd.append('file', file);
               fd.append('salon_id', salonId);
-              const res = await fetch('/api/services/import', { method: 'POST', body: fd });
+              // A15-upload-hardening (2026-07-27): required by the route's CSRF guard, see
+              // lib/upload-security.ts requireUploadHeader.
+              const res = await fetch('/api/services/import', {
+                method: 'POST',
+                headers: { 'x-solen-upload': '1' },
+                body: fd,
+              });
               const data = await res.json();
               if (data.success) {
                 setImportOpen(false);

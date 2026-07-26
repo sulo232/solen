@@ -4,12 +4,19 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { requireUploadHeader, verifyAndStripImage } from "@/lib/upload-security";
 
 // POST /api/services/[id]/photos — Upload service photos to service-photos bucket
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // A15-upload-hardening (2026-07-27): this route authenticates via the ambient Supabase
+  // session cookie, which a cross-site multipart form POST rides automatically. Require a
+  // header only same-origin fetch() code can set (see lib/upload-security.ts).
+  const csrfBlocked = requireUploadHeader(req);
+  if (csrfBlocked) return csrfBlocked;
+
   const { id: serviceId } = await params;
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -37,14 +44,6 @@ export async function POST(
   const file = formData.get("file") as File | null;
   if (!file) return NextResponse.json({ error: "File required" }, { status: 400 });
 
-  // MIME allowlist, same shape as app/api/salons/[slug]/gallery/route.ts and
-  // app/api/reviews/[id]/photos/route.ts. Without this, `file.type` is
-  // client-controlled and gets passed straight through as the upload's
-  // Content-Type, letting arbitrary HTML/SVG get hosted on the trusted
-  // *.supabase.co domain via this public bucket.
-  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-    return NextResponse.json({ error: "Only JPEG, PNG, or WebP images are allowed" }, { status: 400 });
-  }
   // Size cap, matching the sibling photo routes (gallery, reviews): one upload must not be able
   // to burn the project's Storage quota (Free tier is 1 GB across every bucket).
   if (file.size > 5 * 1024 * 1024) {
@@ -57,12 +56,23 @@ export async function POST(
     return NextResponse.json({ error: "Maximum of 20 photos allowed." }, { status: 400 });
   }
 
-  const ext = file.name.split(".").pop() ?? "jpg";
-  const path = `${service.salon_id}/${serviceId}/${Date.now()}.${ext}`;
+  // A15-upload-hardening (2026-07-27): the MIME allowlist here used to check only the
+  // client-controlled file.type string then pass it straight through as the upload's
+  // Content-Type, and derived the storage extension from the client-controlled filename.
+  // verifyAndStripImage reads the real magic-byte signature (blocking anything that is not
+  // actually a decodable jpeg/png/webp) and re-encodes, which strips EXIF/GPS metadata.
+  let processed;
+  try {
+    processed = await verifyAndStripImage(Buffer.from(await file.arrayBuffer()), ["jpeg", "png", "webp"]);
+  } catch {
+    return NextResponse.json({ error: "Only JPEG, PNG, or WebP images are allowed" }, { status: 400 });
+  }
+
+  const path = `${service.salon_id}/${serviceId}/${Date.now()}.${processed.ext}`;
 
   const { error: uploadError } = await supabase.storage
     .from("service-photos")
-    .upload(path, file, { contentType: file.type, upsert: false });
+    .upload(path, processed.buffer, { contentType: processed.contentType, upsert: false });
 
   if (uploadError) return NextResponse.json({ error: uploadError.message }, { status: 500 });
 

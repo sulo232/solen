@@ -343,7 +343,13 @@ function ManualUploadTab() {
       const form = new FormData();
       form.append("file", file);
       form.append("category", category);
-      const res = await fetch("/api/admin/discovery/upload", { method: "POST", body: form });
+      // A15-upload-hardening (2026-07-27): required by the route's CSRF guard, see
+      // lib/upload-security.ts requireUploadHeader.
+      const res = await fetch("/api/admin/discovery/upload", {
+        method: "POST",
+        headers: { "x-solen-upload": "1" },
+        body: form,
+      });
       const data = await res.json();
       if (data.id) {
         setUploadedItem(data);

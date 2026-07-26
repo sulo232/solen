@@ -5,6 +5,7 @@ import { checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { validateBody, salonPortfolioCategorySchema } from "@/lib/validations";
 import { isValidPortfolioCategoryForSalon } from "@/lib/portfolio-categories";
+import { verifyAndStripImage } from "@/lib/upload-security";
 import type { Database } from "@/lib/database.types";
 
 const getSupabase = () => createClient<Database>(
@@ -56,6 +57,12 @@ export async function POST(
     const file = formData.get("file") as File;
     const sessionToken = req.headers.get("Authorization")?.split("Bearer ")[1];
 
+    // A15-upload-hardening (2026-07-27): unlike the other 8 formData routes, this one
+    // authenticates via an explicit Authorization: Bearer header, not the ambient session
+    // cookie. A plain HTML form cannot set that header, so a cross-site multipart form post
+    // cannot forge a request here the way it can against a cookie-authenticated route. No
+    // extra CSRF header is needed on this route for that reason; see lib/upload-security.ts
+    // requireUploadHeader for the cookie-authenticated routes that do need it.
     if (!sessionToken) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -99,15 +106,7 @@ export async function POST(
       category = rawCategory;
     }
 
-    // Verify constraints
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-    if (!allowedTypes.includes(file.type)) {
-      return NextResponse.json(
-        { error: "Invalid file type. Only JPG, PNG and WEBP allowed." },
-        { status: 400 }
-      );
-    }
-    
+    // Size cap on the raw upload, before the (more expensive) byte-level decode below.
     if (file.size > 5 * 1024 * 1024) {
       return NextResponse.json(
         { error: "File exceeds 5MB size limit." },
@@ -124,16 +123,33 @@ export async function POST(
       );
     }
 
-    const fileExt = file.name.split(".").pop();
-    const fileName = `${slug}-${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+    // A15-upload-hardening (2026-07-27): the old check only trusted the client-supplied
+    // `file.type` string and derived the storage extension from the client-supplied
+    // filename, neither of which is verified server-side. verifyAndStripImage reads the
+    // real magic-byte signature (rejects anything that is not actually a decodable
+    // jpeg/png/webp, e.g. a renamed .txt) and re-encodes the file, which strips any
+    // EXIF/GPS metadata a salon owner's phone photo might carry.
+    let processed;
+    try {
+      processed = await verifyAndStripImage(Buffer.from(await file.arrayBuffer()), ["jpeg", "png", "webp"]);
+    } catch {
+      return NextResponse.json(
+        { error: "Invalid file type. Only JPG, PNG and WEBP allowed." },
+        { status: 400 }
+      );
+    }
+
+    const fileName = `${slug}-${Date.now()}-${Math.random().toString(36).substring(7)}.${processed.ext}`;
     const filePath = `${slug}/${fileName}`;
 
-    // Upload to Supabase Storage
+    // Upload to Supabase Storage. Uploads the re-encoded (EXIF-stripped) buffer, and sets
+    // contentType from the detected format, not the client-supplied file.type.
     const { data: uploadData, error: uploadError } = await getSupabase().storage
       .from("salon-gallery")
-      .upload(filePath, file, {
+      .upload(filePath, processed.buffer, {
         cacheControl: "3600",
         upsert: false,
+        contentType: processed.contentType,
       });
 
     if (uploadError) {

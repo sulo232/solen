@@ -51,6 +51,9 @@ export default function VerificationPage() {
 
     const res = await fetch("/api/salon/documents", {
       method: "POST",
+      // A15-upload-hardening (2026-07-27): required by the route's CSRF guard, see
+      // lib/upload-security.ts requireUploadHeader.
+      headers: { "x-solen-upload": "1" },
       body: formData,
     });
 

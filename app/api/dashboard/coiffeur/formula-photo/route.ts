@@ -6,10 +6,17 @@ import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkUserBanned } from "@/lib/feature-flags";
 import { getActiveSalon } from "@/lib/active-salon";
 import { clientBelongsToSalon } from "@/lib/verify-salon-client";
+import { requireUploadHeader, verifyAndStripImage } from "@/lib/upload-security";
 
 // POST /api/dashboard/coiffeur/formula-photo
 // FormData fields: file (File), formula_id (string), type ("before"|"after"), client_id? (string)
 export async function POST(req: NextRequest) {
+  // A15-upload-hardening (2026-07-27): this route authenticates via the ambient Supabase
+  // session cookie, which a cross-site multipart form POST rides automatically. Require a
+  // header only same-origin fetch() code can set (see lib/upload-security.ts).
+  const csrfBlocked = requireUploadHeader(req);
+  if (csrfBlocked) return csrfBlocked;
+
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -44,11 +51,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "type must be 'before' or 'after'" }, { status: 400 });
   }
 
-  // Validate file type
-  if (!file.type.startsWith("image/")) {
-    return NextResponse.json({ error: "Only image files are allowed" }, { status: 400 });
-  }
-
   // Max 10 MB
   if (file.size > 10 * 1024 * 1024) {
     return NextResponse.json({ error: "File too large (max 10 MB)" }, { status: 400 });
@@ -62,16 +64,26 @@ export async function POST(req: NextRequest) {
     if (!belongs) return NextResponse.json({ error: "Client not found for this salon" }, { status: 404 });
   }
 
-  const ext = file.name.split(".").pop() ?? "jpg";
-  const storagePath = `${salon.id}/${clientId ?? "unknown"}/${Date.now()}-${type}.${ext}`;
+  // A15-upload-hardening (2026-07-27): the old check only verified `file.type` starts with
+  // "image/", a client-controlled string, and derived the storage extension from the
+  // client-controlled filename. These are before/after client formula photos, so their
+  // EXIF/GPS data is exactly the kind of thing (a client's home address) this route must
+  // never leak into Storage. verifyAndStripImage reads the real magic-byte signature
+  // (blocking anything that is not actually a decodable jpeg/png/webp) and re-encodes,
+  // which strips that metadata.
+  let processed;
+  try {
+    processed = await verifyAndStripImage(Buffer.from(await file.arrayBuffer()), ["jpeg", "png", "webp"]);
+  } catch {
+    return NextResponse.json({ error: "Only JPEG, PNG, or WebP images are allowed" }, { status: 400 });
+  }
 
-  const arrayBuffer = await file.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
+  const storagePath = `${salon.id}/${clientId ?? "unknown"}/${Date.now()}-${type}.${processed.ext}`;
 
   const { error: uploadError } = await admin.storage
     .from("formula-photos")
-    .upload(storagePath, buffer, {
-      contentType: file.type,
+    .upload(storagePath, processed.buffer, {
+      contentType: processed.contentType,
       upsert: false,
     });
 

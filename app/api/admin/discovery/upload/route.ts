@@ -3,8 +3,17 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, discoveryAdminLimiter } from "@/lib/ratelimit";
 import { logAuditEvent } from "@/lib/audit";
+import { requireUploadHeader } from "@/lib/upload-security";
 
 export async function POST(req: NextRequest) {
+  // A15-upload-hardening (2026-07-27): this route authenticates via the ambient Supabase
+  // session cookie, which a cross-site multipart form POST rides automatically. Require a
+  // header only same-origin fetch() code can set (see lib/upload-security.ts). The
+  // magic-byte check and EXIF strip are already covered below: sharp's metadata() call
+  // fails on non-image bytes, and .webp() re-encoding drops all metadata by default.
+  const csrfBlocked = requireUploadHeader(req);
+  if (csrfBlocked) return csrfBlocked;
+
   const disabled = await checkFeatureEnabled("discovery");
   if (disabled) return disabled;
 

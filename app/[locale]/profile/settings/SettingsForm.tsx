@@ -136,7 +136,13 @@ export default function SettingsForm({
       const downscaled = await downscaleAvatar(file);
       const body = new FormData();
       body.append("file", downscaled);
-      const res = await fetch("/api/profile/avatar", { method: "POST", body });
+      // A15-upload-hardening (2026-07-27): required by the route's CSRF guard, see
+      // lib/upload-security.ts requireUploadHeader.
+      const res = await fetch("/api/profile/avatar", {
+        method: "POST",
+        headers: { "x-solen-upload": "1" },
+        body,
+      });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         console.error("[Settings] avatar upload failed:", err?.error ?? res.status);
