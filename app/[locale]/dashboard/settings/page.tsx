@@ -18,6 +18,7 @@ import SalonCard from "@/components-legacy/SalonCard";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { useLocale, useTranslations } from "next-intl";
 import { formatCurrency } from "@/lib/format-currency";
+import { resolveSwissLocale } from "@/lib/format";
 import type { Salon } from "@/lib/types";
 import { parseDate, today, getLocalTimeZone } from "@internationalized/date";
 import { DateTimePickerRange, type DateRangeValue } from "@/app/[locale]/_components/primitives/DateTimePicker";
@@ -632,6 +633,7 @@ function VatRegistrationTab({ salon, onSave }: { salon: Salon; onSave: (d: Parti
 
 function VerificationTab({ salon }: { salon: Salon }) {
   const t = useTranslations("dashboard.settings");
+  const locale = useLocale();
   const [confirming, setConfirming] = useState(false);
 
   const handleVerify = async () => {
@@ -664,7 +666,7 @@ function VerificationTab({ salon }: { salon: Salon }) {
         </div>
       )}
       <div className="bg-s-bg-surface rounded-[12px] px-4 py-3 text-sm text-s-ink-2 space-y-1">
-        <p><span className="font-medium">{t("lastVerification")}</span> {salon.last_verified_at ? new Date(salon.last_verified_at).toLocaleDateString("de-CH") : "–"}</p>
+        <p><span className="font-medium">{t("lastVerification")}</span> {salon.last_verified_at ? new Date(salon.last_verified_at).toLocaleDateString(resolveSwissLocale(locale)) : "–"}</p> {/* em-dash-ok: pre-existing "no data" placeholder, not new copy */}
         <p><span className="font-medium">{t("cancellationPolicyLabel")}</span> {t("cancellationPolicyValue")}</p>
       </div>
     </div>
@@ -677,6 +679,7 @@ function VerificationTab({ salon }: { salon: Salon }) {
 
 function VacationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon>) => Promise<void> }) {
   const t = useTranslations("dashboard.settings");
+  const locale = useLocale();
   const ext = salon as Salon & { vacation_start?: string | null; vacation_end?: string | null };
   const [start, setStart] = useState(ext.vacation_start ?? "");
   const [end, setEnd] = useState(ext.vacation_end ?? "");
@@ -739,7 +742,7 @@ function VacationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
         <div className="bg-s-amber-subtle border border-s-amber/20 rounded-[12px] px-4 py-3 flex items-center gap-3">
           <Palmtree size={16} className="text-s-star shrink-0" />
           <p className="text-sm text-s-star-text">
-            {t("vacationActive", { start: new Date(start).toLocaleDateString("de-CH"), end: new Date(end).toLocaleDateString("de-CH") })}
+            {t("vacationActive", { start: new Date(start).toLocaleDateString(resolveSwissLocale(locale)), end: new Date(end).toLocaleDateString(resolveSwissLocale(locale)) })}
           </p>
         </div>
       )}
@@ -1031,6 +1034,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
 
 function ClosuresTab({ salon }: { salon: Salon }) {
   const t = useTranslations("dashboard.settings");
+  const locale = useLocale();
   const [closures, setClosures] = useState<{ id: string; date: string; reason: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [date, setDate] = useState("");
@@ -1086,7 +1090,7 @@ function ClosuresTab({ salon }: { salon: Salon }) {
           {closures.map((c) => (
             <div key={c.id} className="flex items-center justify-between py-2 px-3 bg-s-bg-surface/50 rounded-btn border border-s-ink/5">
               <div>
-                <span className="text-sm data-text text-s-ink">{new Date(c.date).toLocaleDateString("de-CH")}</span>
+                <span className="text-sm data-text text-s-ink">{new Date(c.date).toLocaleDateString(resolveSwissLocale(locale))}</span>
                 {c.reason && <span className="text-xs text-s-ink/40 ml-2">{c.reason}</span>}
               </div>
               <button onClick={() => removeClosure(c.id)} className="text-s-ink/30 hover:text-s-coral transition-colors">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { motion } from "motion/react";
 import { Star, MessageCircle, Flag } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
@@ -9,6 +9,7 @@ import Spinner from "@/components-legacy/ui/Spinner";
 import EmptyState from "@/components-legacy/ui/EmptyState";
 import ErrorState from "@/components-legacy/ui/ErrorState";
 import { containerVariants, itemVariants } from "@/lib/animations";
+import { resolveSwissLocale } from "@/lib/format";
 import type { ReviewReply } from "@/app/[locale]/_components/salon/_shared";
 
 interface Review {
@@ -49,6 +50,7 @@ function Stars({ rating }: { rating: number }) {
 
 export default function SalonReviewsPage() {
   const t = useTranslations("dashboard.reviewsPage") as any;
+  const locale = useLocale();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   // H2: distinguish a failed fetch (error state + retry) from genuinely-empty (empty state),
@@ -198,7 +200,7 @@ export default function SalonReviewsPage() {
                       <Stars rating={r.rating} />
                     </div>
                     <p className="text-[12px] text-s-ink/30">
-                      {new Date(r.created_at).toLocaleDateString("de-CH", {
+                      {new Date(r.created_at).toLocaleDateString(resolveSwissLocale(locale), {
                         day: "2-digit", month: "2-digit", year: "numeric",
                       })}
                     </p>

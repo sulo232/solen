@@ -10,6 +10,7 @@ import { useLocale, useTranslations } from "next-intl";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
+import { resolveSwissLocale } from "@/lib/format";
 import { containerVariants, itemVariants } from "@/lib/animations";
 
 interface DailyRevenue {
@@ -33,8 +34,10 @@ interface RevenueStats {
   tips_total?: number;
 }
 
-function fmt(n: number) {
-  return n.toLocaleString("de-CH", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+// locale param added 2026-07-26 (de-CH literal sweep); default keeps prior behavior
+// for any caller that still doesn't pass one. (Currently unreferenced in this file.)
+function fmt(n: number, locale: string = "de") {
+  return n.toLocaleString(resolveSwissLocale(locale), { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 export default function RevenuePage() {
@@ -168,7 +171,7 @@ export default function RevenuePage() {
                   <XAxis
                     dataKey="date"
                     tick={{ fontSize: 10, fill: "#1A120950" }}
-                    tickFormatter={(d) => new Date(d).toLocaleDateString("de-CH", { day: "numeric", month: "short" })}
+                    tickFormatter={(d) => new Date(d).toLocaleDateString(resolveSwissLocale(locale), { day: "numeric", month: "short" })}
                     axisLine={false}
                     tickLine={false}
                   />
@@ -181,7 +184,7 @@ export default function RevenuePage() {
                   />
                   <Tooltip
                     formatter={(v: unknown) => [formatCurrency(Number(v), locale), t("chartTooltipRevenue")]}
-                    labelFormatter={(d) => new Date(d).toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long" })}
+                    labelFormatter={(d) => new Date(d).toLocaleDateString(resolveSwissLocale(locale), { weekday: "long", day: "numeric", month: "long" })}
                     contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid #f0f0f0" }}
                   />
                   <Area

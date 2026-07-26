@@ -8,12 +8,13 @@
 // Contract: requested_amount = the EXTRA (new total - already paid), > 0 and <= 50% of paid_amount.
 
 import { useCallback, useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { TrendingUp, Send, ChevronDown } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
 import Spinner from "@/components-legacy/ui/Spinner";
+import { resolveSwissLocale } from "@/lib/format";
 
 interface BookingItem {
   id: string;
@@ -48,11 +49,14 @@ const UP_STATUS_TONE: Record<string, Tone> = {
 };
 
 const chf = (rappen: number | null | undefined) => `CHF ${((rappen ?? 0) / 100).toFixed(2)}`;
-const fmtDate = (iso: string | null | undefined) =>
-  iso ? new Date(iso).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "numeric" }) : "";
+// locale param added 2026-07-26 (de-CH literal sweep); default keeps prior behavior
+// for any caller that still doesn't pass one.
+const fmtDate = (iso: string | null | undefined, locale: string = "de") =>
+  iso ? new Date(iso).toLocaleDateString(resolveSwissLocale(locale), { day: "2-digit", month: "2-digit", year: "numeric" }) : "";
 
 export default function SalonUpchargePage() {
   const t = useTranslations("dashboard.upcharge") as any;
+  const locale = useLocale();
 
   const [salonName, setSalonName] = useState<string | undefined>();
   const [salonCategories, setSalonCategories] = useState<string[] | undefined>();
@@ -164,7 +168,7 @@ export default function SalonUpchargePage() {
                   <span className="min-w-0">
                     <span className="block font-heading font-semibold text-[14px] text-s-ink truncate">{bookingName(b)}</span>
                     <span className="block text-[12px] text-s-ink-2 truncate mt-0.5">
-                      {[svcName(b), fmtDate(b.starts_at)].filter(Boolean).join(" ")}
+                      {[svcName(b), fmtDate(b.starts_at, locale)].filter(Boolean).join(" ")}
                     </span>
                   </span>
                   <span className="font-heading font-bold text-[13.5px] text-s-ink tabular-nums shrink-0">{chf(b.paid_amount)}</span>
@@ -291,7 +295,7 @@ export default function SalonUpchargePage() {
                     <div className="min-w-0">
                       <p className="text-[15px] font-semibold text-s-ink font-heading">{c.customer_name || t("unknown")}</p>
                       <p className="text-[12px] text-s-ink-2 mt-0.5">
-                        {c.reference_code || c.booking_id.slice(0, 8)} {fmtDate(c.created_at)}
+                        {c.reference_code || c.booking_id.slice(0, 8)} {fmtDate(c.created_at, locale)}
                       </p>
                     </div>
                     <div className="flex items-center gap-4 shrink-0">
