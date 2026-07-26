@@ -122,3 +122,71 @@ This keeps `supabase/migrations/` a faithful, re-appliable record of the live sc
 environment, even though the day-to-day apply path (MCP `apply_migration`) does not write local files
 on its own.
 
+## 8. Money representation: integer minor units (Rappen), no exceptions on new columns
+
+**Chosen representation, written down 2026-07-26 (was previously only implied by migration
+comments, never a project rule): every money column is `integer`, storing the amount in Rappen
+(CHF minor units, 1 CHF = 100 Rappen), never `numeric`.** This was already the stated intent for
+`bookings.paid_amount` / `refunded_amount` / `vat_amount` and the `retail_purchases` /
+`package_purchases` tables (their migration headers say "UNIT CONTRACT: integer Rappen
+end-to-end", see `supabase/migrations/20260602100000_purchase_refunds.sql:12`), but it lived only
+in scattered comments, not a rule a session would actually read. Two representations with no
+written rule means the next new money column is a coin flip.
+
+**Why integer Rappen and not `numeric(10,2)`:** float/decimal CHF math accumulates rounding error
+across VAT splits, refunds, and commission cuts; integer minor units make every arithmetic step
+exact and match the unit Stripe itself uses (Stripe amounts are integer minor units). Converting at
+the UI/API boundary via `lib/stripe.ts toRappen()` / `fromRappen()` keeps the DB layer exact and
+pushes the CHF-decimal formatting to display code only.
+
+**Deviation list, current live schema** (checked 2026-07-26 via `information_schema.columns` on
+the live project; 90 columns matched a money-keyword scan of all 146 public tables, of which 58
+are real currency-amount columns after excluding rate/percent/multiplier columns like `vat_rate`,
+`commission_rate`, `commission_percent`, `price_modifier`, `member_commission_waiver_rate`, and
+`late_cancel_fee_percent`, which are not currency amounts and are out of scope for this rule).
+24 of the 58 already follow the integer-Rappen rule (`bookings.paid_amount` / `net_amount` /
+`refunded_amount` / `vat_amount` / `fee_charged_amount`, `retail_purchases.*`,
+`package_purchases.*`, `booking_disputes.requested_amount` / `resolved_amount`, `gift_cards.*`,
+`group_bookings.total_amount`, `retail_sales.*`, `service_packages.price`,
+`staff_services.price_override`, `tips.amount`, `case_events.amount`,
+`discovery_items.price_min` / `price_max`, `nail_retail_products.price`). The other 34 are
+`numeric(x,2)` and deviate from the rule, grouped by table:
+
+| Table | Deviating column(s) | Live type |
+|---|---|---|
+| `bookings` | `deposit_amount`, `estimated_price`, `final_price`, `platform_fee`, `price_paid`, `tier_discount_amount` | `numeric(10,2)` / `numeric(8,2)` |
+| `salon_payouts` | `gross_amount`, `commission_amount`, `net_amount` | `numeric(10,2)` |
+| `price_disputes` | `original_amount`, `requested_amount`, `admin_amount` | `numeric(10,2)` |
+| `salons` | `cancellation_fee_value`, `no_show_deposit_amount`, `no_show_fee_value` | `numeric(8,2)` / `numeric(10,2)` |
+| `vouchers` | `amount`, `remaining_amount` | `numeric(8,2)` |
+| `salon_analytics` | `avg_booking_price`, `total_revenue` | `numeric(10,2)` |
+| `services` | `price` | `numeric(8,2)` |
+| `service_options` | `price` | `numeric(10,2)` |
+| `service_bundles` | `custom_price` | `numeric(8,2)` |
+| `addons` | `price` | `numeric(10,2)` |
+| `availability_slots` | `price_override` | `numeric(8,2)` |
+| `inventory` | `price` | `numeric(10,2)` |
+| `makeup_kit_items` | `cost_per_unit` | `numeric(10,2)` |
+| `sale_line_items` | `price` | `numeric(10,2)` |
+| `sales` | `total` | `numeric(10,2)` |
+| `user_credits` | `amount` | `numeric(10,2)` |
+| `credit_redemptions` | `amount_redeemed` | `numeric` (unscaled) |
+| `voucher_purchases` | `amount_paid` | `numeric(10,2)` |
+| `voucher_redemptions` | `amount_redeemed` | `numeric` (unscaled) |
+| `price_offers` | `amount_chf` | `numeric(10,2)` |
+| `promo_codes` | `min_booking_amount` | `numeric(10,2)` |
+| `referrals` | `reward_amount` | `numeric(10,2)` |
+
+**Correction to a common assumption:** `bookings.platform_fee` is frequently assumed to be integer
+Rappen alongside `paid_amount` / `net_amount` on the same row (migration `068_megabuild_foundation.sql:25` declared it `INTEGER`, but that migration's own money-column block was never
+applied live, per the note in `20260601_refund_appeal_foundation.sql:41`). The live column is
+`numeric(10,2)`. Any code that reads `bookings.paid_amount` and `bookings.platform_fee` in the same
+expression is mixing Rappen and CHF-decimal today; check the actual arithmetic before trusting a
+"they're both Rappen" assumption.
+
+**What to do when writing a new money column:** `integer`, name it `_amount` or `_fee` or similar,
+comment it `-- Rappen` inline (match the existing convention in `20260602100000_purchase_refunds.sql`), and convert at the boundary with `lib/stripe.ts`. Never add a new `numeric(x,2)`
+money column. The 34 columns above are existing debt, not a precedent; fixing them is a separate,
+deliberate migration (each one needs its call sites audited for the unit they assume), not
+something to do opportunistically while touching an unrelated file.
+
