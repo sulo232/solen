@@ -10,6 +10,7 @@ import ErrorState from "@/components-legacy/ui/ErrorState";
 import WalkInModal from "@/components-legacy/dashboard/WalkInModal";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import type { AvailabilitySlot } from "@/lib/types";
+import { resolveSwissLocale } from "@/lib/format";
 
 // ─────────────────────────────────────────
 // Helpers
@@ -271,14 +272,15 @@ interface SlotDetailModalProps {
 
 function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotDetailModalProps) {
   const t = useTranslations("dashboard.calendarPage");
+  const locale = useLocale();
   const [rescheduleMode, setRescheduleMode] = useState(false);
   const [newDate, setNewDate] = useState(slot.starts_at.split("T")[0]);
   const [newTime, setNewTime] = useState(new Date(slot.starts_at).toTimeString().slice(0, 5));
   const [loading, setLoading] = useState(false);
 
   const staffName = staff.find((s) => s.id === slot.staff_member_id)?.name || t("anyStaff");
-  const startTime = new Date(slot.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
-  const endTime = new Date(slot.ends_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
+  const startTime = new Date(slot.starts_at).toLocaleTimeString(resolveSwissLocale(locale), { hour: "2-digit", minute: "2-digit" });
+  const endTime = new Date(slot.ends_at).toLocaleTimeString(resolveSwissLocale(locale), { hour: "2-digit", minute: "2-digit" });
 
   const handleReschedule = async () => {
     setLoading(true);
@@ -327,7 +329,7 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
             <div className="space-y-2 mb-5 text-sm text-s-ink/70">
               <p><span className="text-s-ink/40">{t("statusLabel")}</span> <span className="font-medium">{slot.status === "booked" ? t("statusBooked") : slot.status === "blocked" ? t("statusBlocked") : t("statusFree")}</span></p>
               <p><span className="text-s-ink/40">{t("timeLabel")}</span> {startTime} - {endTime}</p>
-              <p><span className="text-s-ink/40">{t("dateLabel")}</span> {new Date(slot.starts_at).toLocaleDateString("de-CH")}</p>
+              <p><span className="text-s-ink/40">{t("dateLabel")}</span> {new Date(slot.starts_at).toLocaleDateString(resolveSwissLocale(locale))}</p>
               <p><span className="text-s-ink/40">{t("staffDetailLabel")}</span> {staffName}</p>
             </div>
             <div className="flex gap-2">
@@ -701,7 +703,7 @@ export default function CalendarPage() {
             return (
               <div className="rounded-[16px] border border-s-border bg-white p-3 space-y-2">
                 {daySlots.map((s) => {
-                  const time = new Date(s.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
+                  const time = new Date(s.starts_at).toLocaleTimeString(resolveSwissLocale(locale), { hour: "2-digit", minute: "2-digit" });
                   const svc = services.find((sv) => sv.id === s.service_id)?.name;
                   const stf = staff.find((st) => st.id === s.staff_member_id)?.name?.split(" ")[0];
                   const cat = s.service_id ? serviceCategoryMap.get(s.service_id) : undefined;
@@ -729,8 +731,8 @@ export default function CalendarPage() {
           const goNext = () => mobileView === "monat" ? (() => { const d = new Date(currentDate); d.setMonth(d.getMonth() + 1); setCurrentDate(d); })() : goDay(1);
           const goTodayMobile = () => { const t = new Date(); setCurrentDate(t); setWeekStart(startOfWeek(t)); };
           const headerLabel = mobileView === "monat"
-            ? currentDate.toLocaleDateString("de-CH", { month: "long", year: "numeric" })
-            : currentDate.toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long" });
+            ? currentDate.toLocaleDateString(resolveSwissLocale(locale), { month: "long", year: "numeric" })
+            : currentDate.toLocaleDateString(resolveSwissLocale(locale), { weekday: "long", day: "numeric", month: "long" });
 
           // Week strip days (Mon–Sun of the selected week).
           const stripDays = Array.from({ length: 7 }, (_, i) => addDays(startOfWeek(currentDate), i));
@@ -851,10 +853,10 @@ export default function CalendarPage() {
           </button>
           <span className="text-sm font-medium text-s-ink ml-2">
             {viewMode === "day"
-              ? currentDate.toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
+              ? currentDate.toLocaleDateString(resolveSwissLocale(locale), { weekday: "long", day: "numeric", month: "long", year: "numeric" })
               : viewMode === "month"
-              ? currentDate.toLocaleDateString("de-CH", { month: "long", year: "numeric" })
-              : `${weekStart.toLocaleDateString("de-CH", { day: "numeric", month: "long" })} bis ${addDays(weekStart, 6).toLocaleDateString("de-CH", { day: "numeric", month: "long", year: "numeric" })}`
+              ? currentDate.toLocaleDateString(resolveSwissLocale(locale), { month: "long", year: "numeric" })
+              : `${weekStart.toLocaleDateString(resolveSwissLocale(locale), { day: "numeric", month: "long" })} bis ${addDays(weekStart, 6).toLocaleDateString(resolveSwissLocale(locale), { day: "numeric", month: "long", year: "numeric" })}`
             }
           </span>
         </div>

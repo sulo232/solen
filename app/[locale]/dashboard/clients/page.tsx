@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { Search, Tag, StickyNote, ChevronLeft, Calendar, Beaker, Camera, ClipboardList } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
@@ -10,6 +10,7 @@ import Spinner from "@/components-legacy/ui/Spinner";
 import FormulaTab from "@/components-legacy/dashboard/FormulaTab";
 import ClientPhotosTab from "@/components-legacy/dashboard/ClientPhotosTab";
 import IntakeFormTab from "@/components-legacy/dashboard/IntakeFormTab";
+import { resolveSwissLocale } from "@/lib/format";
 
 // ─────────────────────────────────────────
 // Types
@@ -66,6 +67,7 @@ const avGrad = (s: string) => AV_GRADS[[...(s || "")].reduce((a, c) => a + c.cha
 
 export default function ClientsPage() {
   const t = useTranslations("dashboard.clientsPage");
+  const locale = useLocale();
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -202,7 +204,7 @@ export default function ClientsPage() {
                 {/* meta row */}
                 <div className="text-[12.5px] text-s-ink-2 flex gap-1.5 flex-wrap">
                   <span><b className="font-heading font-semibold text-s-ink">{c.total_bookings}</b> {t("appointments")}</span>
-                  {c.last_visit && <span>| {t("lastVisit", { date: new Date(c.last_visit).toLocaleDateString("de-CH") })}</span>}
+                  {c.last_visit && <span>| {t("lastVisit", { date: new Date(c.last_visit).toLocaleDateString(resolveSwissLocale(locale)) })}</span>}
                   {c.total_spent != null && <span>| <b className="font-heading font-semibold text-s-ink">CHF {c.total_spent}</b></span>}
                 </div>
                 {/* tags row */}
@@ -246,6 +248,7 @@ function tagColor(color: string): string {
 
 function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: string; onBack: () => void }) {
   const t = useTranslations("dashboard.clientsPage");
+  const locale = useLocale();
   const [tab, setTab] = useState<DetailTab>("termine");
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [notes, setNotes] = useState<ClientNote[]>([]);
@@ -377,7 +380,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
                   <div>
                     <p className="text-sm font-medium text-s-ink">{b.service_name || t("serviceFallback")}</p>
                     <p className="text-xs text-s-ink/40">
-                      {new Date(b.starts_at).toLocaleDateString("de-CH")} {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
+                      {new Date(b.starts_at).toLocaleDateString(resolveSwissLocale(locale))} {new Date(b.starts_at).toLocaleTimeString(resolveSwissLocale(locale), { hour: "2-digit", minute: "2-digit" })}
                     </p>
                   </div>
                   <div className="text-right flex flex-col items-end">
@@ -416,7 +419,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
                 {notes.map((n) => (
                   <div key={n.id} className="bg-white rounded-2xl border border-s-border p-3">
                     <p className="text-sm text-s-ink">{n.note}</p>
-                    <p className="text-[12px] text-s-ink/20 mt-1">{new Date(n.created_at).toLocaleDateString("de-CH")}</p>
+                    <p className="text-[12px] text-s-ink/20 mt-1">{new Date(n.created_at).toLocaleDateString(resolveSwissLocale(locale))}</p>
                   </div>
                 ))}
               </div>
