@@ -230,10 +230,22 @@ that re-measures the rendered page rather than trusting the builder's numbers). 
       `boxShadow: none`. So keyboard users get a cue and mouse users see nothing, which is the split
       the owner's three rejections were actually about.
       I will implement a NON-ring treatment and show it; you look and keep or kill it.
-- [ ] D2. OWNER FORK, and the only genuine one left. CORRECTED by the C5 agent's live query: it is not
-      two salons sharing one image, it is up to FOUR salons on a single Unsplash URL, plus another set
-      of four, another of three, another of two. `salon_photos` still has 0 rows for 28 salons. No code
-      change can fix this: it needs real photographs of the real businesses, which only you can commission.
+- [ ] D2. Salon photography. Split, because half of it was mine and I had parked the whole thing.
+  - [x] D2a. DONE, the half that is code. Invariant E added to `scripts/check-invariants.mjs`
+        (`npm run check:invariants`), which reads the committed inventory snapshot, never the live
+        database, so it stays offline and deterministic. Live output: "snapshot captured 2026-07-12:
+        salons=28, salon_photos=0" followed by the REPORT line naming the condition and pointing at
+        D2b. Report-only ON PURPOSE and the reason is in the code comment: the snapshot does not carry
+        `cover_photo_url`, so the strict duplicate test still needs a live read. It flips to FAIL the
+        day the snapshot carries the column. This does not solve the content problem and does not
+        pretend to; it makes it impossible to forget and catches a duplicate creeping back after real
+        photos land.
+  - [ ] D2b. OWNER, and the only genuinely open item in this workstream. `salon_photos` has 0 rows for
+        28 salons and every cover is a remote stock URL. CORRECTED by the C5 agent's live query: it is
+        not two salons sharing one image, it is up to FOUR on a single Unsplash URL, plus another set
+        of four, one of three, one of two. A stock photo presented as a named business's premises is a
+        truth problem the no-fabrication rule never covered, because the field is populated and looks
+        fine. No code change reaches this: it needs real photographs of the real businesses.
 
 ## Unplanned additions
 

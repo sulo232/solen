@@ -299,6 +299,65 @@ function checkWorkflowsActuallyRun() {
   report("D. Workflows actually run", pass, lines);
 }
 
+function checkSalonPhotoIntegrity() {
+  // Invariant E (2026-07-27). The imagery floor asks for roughly a third of every browse viewport
+  // to be photographic, and the SalonCard now renders cover_photo_url to satisfy it. That makes the
+  // PHOTO DATA load-bearing, and it is currently not trustworthy: measured this session against the
+  // live database, salon_photos holds 0 rows for 28 salons, every cover is a remote stock URL, and
+  // one Unsplash image is the cover for FOUR different salons (plus another shared by four, one by
+  // three, one by two). A stock photo presented as a named business's premises is a truth problem
+  // the no-fabrication rule never covered, because the field is populated and looks fine.
+  //
+  // This check cannot fix that: only real photographs of the real businesses can, and that is the
+  // owner's to commission (workstream 42, D2b). What it CAN do is make the condition impossible to
+  // forget, and catch the moment a duplicate creeps back in after real photos land.
+  //
+  // Reads the committed inventory snapshot, never the live database, so it stays offline and
+  // deterministic in CI. That is also why it reports rather than fails: the snapshot cannot see
+  // cover_photo_url values today, so the strict duplicate test needs the live read that
+  // scripts/salon-photo-audit does. Wire it to FAIL once the snapshot carries the column.
+  const lines = [];
+  const snapshotPath = join(PROJECT_ROOT, "_inventory", "_db-snapshot.json");
+
+  if (!existsSync(snapshotPath)) {
+    report("E. Salon photo integrity", true, ["SKIP: no _inventory/_db-snapshot.json on disk"]);
+    return;
+  }
+
+  let snap;
+  try {
+    snap = JSON.parse(readFileSync(snapshotPath, "utf8"));
+  } catch (err) {
+    report("E. Salon photo integrity", false, ["FAIL: snapshot is not parseable JSON: " + err.message]);
+    return;
+  }
+
+  const tables = Array.isArray(snap.tables) ? snap.tables : [];
+  const photos = tables.find((t) => t && t.name === "salon_photos");
+  const salons = tables.find((t) => t && t.name === "salons");
+
+  if (!photos || !salons) {
+    report("E. Salon photo integrity", true, ["SKIP: salons or salon_photos missing from the snapshot"]);
+    return;
+  }
+
+  lines.push("snapshot captured " + (snap.capturedAt || "unknown") + ": salons=" + salons.rows + ", salon_photos=" + photos.rows);
+
+  if (photos.rows === 0 && salons.rows > 0) {
+    lines.push(
+      "REPORT: salon_photos is EMPTY for " + salons.rows + " salons, so every card is falling back to " +
+      "salons.cover_photo_url, which is stock imagery shared across several salons. The imagery floor " +
+      "is satisfied by pixels but not by truth. Owner action, workstream 42 D2b: commission real " +
+      "photographs. See _plans/PRINCIPLES_IMPLEMENTATION.md."
+    );
+  } else if (photos.rows > 0) {
+    lines.push("salon_photos has rows: re-run the live duplicate audit before trusting card imagery");
+  }
+
+  // Report-only by design, see the header comment.
+  report("E. Salon photo integrity", true, lines);
+}
+
 // ---------------------------------------------------------------------------
 if (!REPO_ONLY) {
   checkHooksWiredVsDisk();
@@ -306,6 +365,7 @@ if (!REPO_ONLY) {
 }
 checkDocPathsAlive();
 checkWorkflowsActuallyRun();
+checkSalonPhotoIntegrity();
 
 console.log("");
 for (const r of results) {
