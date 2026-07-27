@@ -929,6 +929,22 @@ html {
   display: none;
 }
 
+/* ── Scroll-stable gutter utility (layout-geometry-08) ───────────────
+   A scroll container whose content height is variable (a modal body, a
+   bottom sheet, a sidebar list fed by live data the user can grow - reviews,
+   staff lists, service lists) can cross its own scrolling threshold at
+   runtime. When it does, the browser's scrollbar appears and takes
+   ~15-17px of width from the content box, shifting everything inside
+   sideways. `scrollbar-gutter: stable` reserves that width up front so the
+   appearance/disappearance of the scrollbar never shifts content. Invisible
+   on macOS' overlay scrollbars (which is plausibly most design review here),
+   real on Windows/Linux Chrome and many embedded webviews - add this class
+   alongside `overflow-y-auto` on any such container instead of relying on
+   `overflow-y-auto` alone. See _design-system/LOCKFILE.md section 7. */
+.scroll-stable-gutter {
+  scrollbar-gutter: stable;
+}
+
 /* ── V5 Heart bounce animation ────────────────────────────────────── */
 @keyframes heartBounce {
   0%   { transform: scale(1); }

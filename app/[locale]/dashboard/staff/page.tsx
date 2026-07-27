@@ -155,7 +155,7 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white rounded-2xl shadow-warm-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-warm-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto scroll-stable-gutter">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading text-base text-s-ink">{initial ? t("editTitle") : t("addTitle")}</h3>
           {/* mockup-ok: a11y touch-target fix (FRONTEND_AUDIT_2026-07-08.md, dash-ops), 18px raised to the locked 44px icon-button spec via a padded hit-area, no visual redesign */}

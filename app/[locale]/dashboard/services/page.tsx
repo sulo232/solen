@@ -83,7 +83,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
+      <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-md p-6 overflow-y-auto max-h-[90vh] scroll-stable-gutter">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading text-base">{initial ? t('editService') : t('addService')}</h3>
           <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
