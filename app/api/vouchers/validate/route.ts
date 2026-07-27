@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled } from "@/lib/feature-flags";
 import { applyRateLimit, guestLookupLimiter, getClientIp } from "@/lib/ratelimit";
+import { validateBody, voucherValidateSchema } from "@/lib/validations";
 
 // Every failure branch below (not found, unpaid, redeemed, expired) returns this SAME
 // generic message. Distinct messages per branch turned this public endpoint into an
@@ -22,15 +23,15 @@ export async function POST(req: NextRequest) {
   const rateLimited = await applyRateLimit(guestLookupLimiter, { ip: getClientIp(req) });
   if (rateLimited) return rateLimited;
 
-  const body = await req.json();
-  const { code, salon_id } = body;
-
-  if (!code || !salon_id || typeof code !== "string" || code.trim().length < 4) {
+  const rawBody = await req.json().catch(() => ({}));
+  const { data: validated, error: validationError } = validateBody(voucherValidateSchema, rawBody);
+  if (validationError) {
     return NextResponse.json(
       { error: "Missing code or salon_id", code: "VALIDATION_ERROR" },
       { status: 400 }
     );
   }
+  const { code, salon_id } = validated;
 
   try {
     const supabase = await createServerSupabaseClient();

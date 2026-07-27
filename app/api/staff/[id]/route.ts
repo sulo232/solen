@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { validateBody, staffUpdateSchema } from "@/lib/validations";
 import type { Database } from "@/lib/database.types";
 
 // PATCH /api/staff/[id] — Update a staff member
@@ -29,7 +30,11 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const body = await req.json();
+  const rawBody = await req.json().catch(() => ({}));
+  const { data: body, error: validationError } = validateBody(staffUpdateSchema, rawBody);
+  if (validationError) {
+    return NextResponse.json({ error: validationError.message }, { status: 400 });
+  }
 
   // Build update object from allowed fields. Phantom-column fix: staff_members has no
   // "bio_de"/"bio_en" columns, only a single non-localized "bio" (confirmed against the live
@@ -41,7 +46,10 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   ] as const;
   const update: Database["public"]["Tables"]["staff_members"]["Update"] = {};
   for (const key of allowedFields) {
-    if (key in body) update[key] = body[key];
+    // body is now a validated staffUpdateSchema shape (was an untyped `any` before this
+    // fix); the dynamic key assignment across the allowlist union is still safe since
+    // every key here is one zod already checked the type of.
+    if (key in body) (update as Record<string, unknown>)[key] = (body as Record<string, unknown>)[key];
   }
 
   if (Object.keys(update).length === 0) {

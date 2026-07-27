@@ -6,6 +6,7 @@ import { sendEmail, directoryClaimCode, type EmailLocale } from "@/lib/email";
 import { applyRateLimit, authLimiter, getClientIp } from "@/lib/ratelimit";
 import { Redis } from "@upstash/redis";
 import { getServerEnv } from "@/lib/env";
+import { validateBody, directoryClaimSchema } from "@/lib/validations";
 
 function hashCode(code: string): string {
   return createHash("sha256").update(code).digest("hex");
@@ -46,7 +47,11 @@ export async function POST(
     return NextResponse.json({ error: "This listing has already been claimed" }, { status: 409 });
   }
 
-  const body = await req.json().catch(() => ({}));
+  const rawBody = await req.json().catch(() => ({}));
+  const { data: body, error: validationError } = validateBody(directoryClaimSchema, rawBody);
+  if (validationError) {
+    return NextResponse.json({ error: validationError.message }, { status: 400 });
+  }
   const clientIp = getClientIp(req);
 
   // -- Step 2: Verify code -------------------------------------------------
@@ -143,8 +148,8 @@ export async function POST(
     // A9-email-locale (2026-07-27): the directory entry has no registered profile (unclaimed
     // listing) so there is no locale to resolve from data already in scope; threaded through
     // from the caller (the locale-prefixed claim page) instead, defaulting to "de" if omitted.
-    const VALID_LOCALES: EmailLocale[] = ["de", "en", "fr", "it"];
-    const claimLocale: EmailLocale = VALID_LOCALES.includes(body.locale) ? body.locale : "de";
+    // directoryClaimSchema's locale field is already a validated "de"|"en"|"fr"|"it" enum.
+    const claimLocale: EmailLocale = body.locale ?? "de";
     await sendEmail(directoryClaimCode(entry.email, { salonName: entry.name, code }, claimLocale));
   } catch (err) {
     console.error("[directory/claim] verification code email failed:", err, { listingId: id });

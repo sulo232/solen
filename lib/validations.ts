@@ -23,6 +23,13 @@ export const tosAcceptSchema = z.object({
   version: z.string().min(1).max(100),
 });
 
+// POST /api/profile/accept-tos: a second, separately-named TOS-accept route (field is
+// `tos_version`, not `version`, so it is its own schema rather than a duplicate of the
+// one above). input-abuse-07 (2026-07-27).
+export const profileAcceptTosSchema = z.object({
+  tos_version: z.string().min(1).max(100),
+});
+
 // POST /api/me/consent: mirrors the "necessary, analytics, marketing" shape CookieConsent.tsx
 // already collects client-side, but only `analytics` has a server-side mirror (profiles.
 // analytics_consent) since that is the only category lib/posthog-server.ts gates on.
@@ -1270,8 +1277,14 @@ export const quartierSubscribeSchema = z.object({
   quartier: z.string().min(1).max(100),
 });
 
+// POST /api/directory/[id]/claim is a 2-step flow on the same endpoint: step 1 sends no
+// `code` (mints + emails one), step 2 sends `code` to verify it. Both fields are optional
+// here for that reason; the route itself decides which step ran based on `code`'s presence.
+// input-abuse-07 (2026-07-27): this schema previously used a `claim_code` field name that
+// matched no actual route (dead code), while the real route took `code` unvalidated.
 export const directoryClaimSchema = z.object({
-  claim_code: z.string().min(4).max(20),
+  code: z.string().min(4).max(20).optional(),
+  locale: z.enum(["de", "en", "fr", "it"]).optional(),
 });
 
 export const trackViewSchema = z.object({
@@ -1347,4 +1360,52 @@ export const resendAccessSchema = z
   .refine((d) => (d.email ? 1 : 0) + (d.phone ? 1 : 0) === 1, {
     message: "Provide exactly one of email or phone",
   });
+
+// ─── input-abuse-07 batch (2026-07-27) ────────────────────────────────────────
+// Body schemas for routes that previously hand-rolled an inline check instead of
+// going through validateBody, per _rules/SECURITY_RULES.md Rule S4/S5.
+
+export const voucherValidateSchema = z.object({
+  code: z.string().min(4).max(40),
+  salon_id: uuid,
+});
+
+export const voucherConfirmSchema = z.object({
+  payment_intent_id: z.string().min(1).max(200),
+  voucher_id: uuid,
+});
+
+export const walkinConfirmSchema = z.object({
+  payment_intent_id: z.string().min(1).max(200),
+  token: z.string().min(1).max(500).optional(),
+});
+
+export const servicesReorderSchema = z.object({
+  salon_id: uuid,
+  order: z
+    .array(z.object({ id: uuid, sort_order: z.number().int().min(0) }))
+    .min(1)
+    .max(200),
+});
+
+export const staffUpdateSchema = z.object({
+  name: z.string().min(1).max(200).optional(),
+  avatar_url: z.string().url().max(2000).nullable().optional(),
+  specialties: z.array(z.string().max(100)).max(50).optional(),
+  is_active: z.boolean().optional(),
+  commission_rate: z.number().min(0).max(100).nullable().optional(),
+  languages: z.array(z.string().max(50)).max(20).optional(),
+  instagram_url: z.string().url().max(500).nullable().optional(),
+  years_experience: z.number().int().min(0).max(80).nullable().optional(),
+  permissions: z.record(z.string(), z.unknown()).optional(),
+});
+
+export const reviewFlagSchema = z.object({
+  reason: z.string().min(1).max(500),
+});
+
+export const comingSoonNotifySchema = z.object({
+  email: z.string().email().max(320),
+  feature: z.string().max(64).optional(),
+});
 
