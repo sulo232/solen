@@ -153,21 +153,31 @@ is `salons.gallery_urls` plus `salon_portfolio_images`. My earlier report to the
       where a from-price is legal only if the copy names WHICH offer it buys. Name the service
       on the card, or drop the price from it. Both are visible design changes.
 
-## D. Stock photos must be obviously stock (owner item 3)
+## D. Stock photos (owner item 3) , I MISREAD THIS, corrected 2026-07-27
 
-- [x] D1. Every stock image now carries an "UNSPLASH" badge and a dashed orange edge in
-      dev/preview, renders null in production, and disarms itself per-image as real photos
-      land. Commit `508ab7dc6`. Verified live: 19 of 19 stock images marked, 0 of the other 15
-      images touched.
-- [x] D2. `~/.claude/hooks/stock-photo-gate.py` ARMED, self-tested 19/19. Its Stop half is
-      discriminating rather than a word filter: it reads the live `salon_photos` row count and
-      only fires while that is 0, so it goes quiet by itself the day real photography exists.
+- [x] CORRECTION: the badge is DELETED. Owner, verbatim: *"i dont want any badge bro i know
+      if its stock or not you keep forgetting ee are not livr"*. I read "we need to be easy to
+      acc distinguish cx u keep forgetting" as a request to mark the PRODUCT. It was not. The
+      "u" is me. The owner knows perfectly well which of their own photos are stock; what they
+      are tired of is ME writing and acting as though Solen is live. Removed:
+      `StockPhotoMarker.tsx`, `lib/stock-image.ts` (its only importer, so it became dead code),
+      and the layout mount. Verified zero references remain. Logged in `_design-system/REMOVED.md`
+      so it cannot be re-proposed. Rule 12 also applies and I broke it: a gate for exactly this
+      already existed and was already armed , `~/.claude/hooks/prelaunch-reality-gate.py`, a
+      Stop gate born on 2026-07-17 from the same complaint ("i told you so many fucking times
+      we are not live yet"). I built a UI feature next to a working gate instead of extending it.
+- [x] D2. The enforcement half stands, because that is the part that was actually asked for:
+      `~/.claude/hooks/stock-photo-gate.py`, armed on PreToolUse + Stop, self-tested 19/19. Its
+      Stop half reads the live `salon_photos` row count and blocks a reply of mine that talks
+      about Solen salon photography as real while that count is 0. It is the photography-shaped
+      instance of the same discipline `prelaunch-reality-gate.py` enforces generally. Its
+      PreToolUse half blocks a stock URL being baked into a component, which is FLOORS LAW 2
+      (a hardcoded image src is decoration) and independent of this correction.
 
-**Measured while doing this:** all 20 customer-visible salons have a cover photo, all 20 point
-at images.unsplash.com, and there are only 11 DISTINCT urls among them , 13 salons wear a
-photo that also belongs to another salon, and one image is the cover for four different
-studios. `salons.is_test` is false on all 28 rows, so the marker the estate assumed existed
-flags nothing.
+**Measured while doing this, and still true:** all 20 customer-visible salons have a cover
+photo, all 20 point at images.unsplash.com, and there are only 11 DISTINCT urls among them ,
+13 salons wear a photo that also belongs to another salon, and one image is the cover for four
+different studios. `salons.is_test` is false on all 28 rows.
 
 ## E. Photo rights in the Terms (owner item 5)
 

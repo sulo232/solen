@@ -10,7 +10,6 @@ import { PostHogProvider } from "@/components-legacy/PostHogProvider";
 // portal below is the only mount required.
 import { Toaster } from "./_components/primitives/Toast";
 import WelcomeToast from "./_components/primitives/WelcomeToast";
-import StockPhotoMarker from "./_components/primitives/StockPhotoMarker";
 import Header from "./_components/layout/Header";
 import FooterGate from "./_components/layout/FooterGate";
 import HideInBooking from "./_components/layout/HideInBooking";
@@ -144,12 +143,6 @@ export default async function LocaleLayout({
         <WelcomeToast />
         {/* Mockup 10 offline, as a connectivity banner (see OfflineBanner.md) */}
         <OfflineBanner />
-        {/* Dev/preview only, renders null in production: badges every image that comes
-            from a stock host so a preview is never mistaken for real salon photography
-            (owner 2026-07-27, "we need to be easy to acc distinguish cx u keep forgetting"). */}
-        <StockPhotoMarker
-          enabled={!(process.env.CONTEXT === "production" && process.env.NODE_ENV === "production")}
-        />
       </PostHogProvider>
     </NextIntlClientProvider>
     </MotionProvider>
