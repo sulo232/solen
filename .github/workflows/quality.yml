@@ -93,6 +93,38 @@ jobs:
       - name: "check-i18n-sentinel (copy-i18n-01: no TODO/sentinel keys, identical-to-en ratchet)"
         run: node scripts/check-i18n-sentinel.mjs
 
+  # api-contracts-01/02/05: a ratchet over scripts/api-contracts-census.mjs's three
+  # counts (legacy error shapes, legacy paginated-list success shapes, 201 responses
+  # missing Location). No mass migration of the existing legacy shapes, per
+  # _backend-system/LAW.md section 7; this only fails when a count goes UP, meaning a
+  # new or touched route introduced a NEW instance of a shape LAW.md already retired.
+  contracts-census:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - name: api-contracts-census (ratchet vs baseline)
+        run: |
+          set +e
+          OUTPUT=$(node scripts/api-contracts-census.mjs)
+          set -e
+          echo "$OUTPUT"
+          ERR=$(echo "$OUTPUT" | grep -oE 'RATCHET_LEGACY_ERROR_SHAPES=[0-9]+' | cut -d= -f2)
+          SUC=$(echo "$OUTPUT" | grep -oE 'RATCHET_LEGACY_SUCCESS_SHAPES=[0-9]+' | cut -d= -f2)
+          LOC=$(echo "$OUTPUT" | grep -oE 'RATCHET_MISSING_LOCATION_201=[0-9]+' | cut -d= -f2)
+          BASELINE_ERR=1716
+          BASELINE_SUC=5
+          BASELINE_LOC=44
+          FAIL=0
+          if [ "$ERR" -gt "$BASELINE_ERR" ]; then echo "::error::legacy error-shape count went UP: $ERR > $BASELINE_ERR baseline"; FAIL=1; fi
+          if [ "$SUC" -gt "$BASELINE_SUC" ]; then echo "::error::legacy success-envelope count went UP: $SUC > $BASELINE_SUC baseline"; FAIL=1; fi
+          if [ "$LOC" -gt "$BASELINE_LOC" ]; then echo "::error::201-without-Location count went UP: $LOC > $BASELINE_LOC baseline"; FAIL=1; fi
+          if [ "$FAIL" -eq 1 ]; then exit 1; fi
+
   # testing-release-03: scripts/api-smoke.ts is the mobile-contract tripwire (live-DB
   # zod-shape checks against ~10 GET endpoints, built specifically to catch PostgREST
   # silently swallowing a `.select()` on a renamed/missing column). It only needs the
