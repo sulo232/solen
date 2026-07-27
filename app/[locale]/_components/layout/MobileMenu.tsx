@@ -103,12 +103,18 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
     setCityDropdownOpen(false);
   }, [open]);
 
-  // V3: role-gated "Dashboard" entry — show it for salon owners / linked staff (managers) /
-  // admins so they can reach the operator dashboard from the site menu (same gate the
-  // DashboardLayout itself enforces). Checked via /api/profile when the menu opens — but
-  // only when a client session exists. A signed-out user has no dashboard card anyway, and
-  // gating on getSession() (local cookie read, no network) avoids a guaranteed 401 in the
-  // browser console every time a guest opens the menu.
+  // V3: role-gated "Dashboard" entry - show it for salon owners / admins so they can reach
+  // the operator dashboard from the site menu (same gate the DashboardLayout itself
+  // enforces). Checked via /api/profile when the menu opens, but only when a client
+  // session exists. A signed-out user has no dashboard card anyway, and gating on
+  // getSession() (local cookie read, no network) avoids a guaranteed 401 in the browser
+  // console every time a guest opens the menu.
+  // NOTE (authz-rls-02, 2026-07-27): staff_salon_id was previously included in this gate,
+  // promising a "Dashboard" entry to linked staff accounts. middleware.ts's dashboard guard
+  // only ever allows role === "salon_owner" or "admin" (staff is not a legal profiles.role
+  // value today, see profiles_role_check), so a staff account that clicked this entry was
+  // redirected straight back to the homepage. Do not re-add staff_salon_id here until
+  // middleware.ts actually grants staff a real (even if scoped) dashboard route.
   const [canDash, setCanDash] = React.useState(false);
   React.useEffect(() => {
     if (!open) return;
@@ -122,7 +128,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
           .then((p) => {
             if (cancelled) return;
             setCanDash(
-              !!p && (p.role === "admin" || p.role === "salon_owner" || !!p.salon_id || !!p.staff_salon_id),
+              !!p && (p.role === "admin" || p.role === "salon_owner" || !!p.salon_id),
             );
           });
       })
