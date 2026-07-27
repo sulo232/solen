@@ -72,7 +72,10 @@ export async function POST(req: NextRequest) {
   try {
     processed = await verifyAndStripImage(
       Buffer.from(await file.arrayBuffer()),
-      ["jpeg", "png", "webp", "gif"]
+      ["jpeg", "png", "webp", "gif"],
+      // imagery-icons-06: an avatar never renders above a few hundred px anywhere
+      // in the product; 512 is generous headroom over every current call site.
+      512
     );
   } catch {
     return NextResponse.json({ error: "Only JPEG, PNG, WebP, or GIF images are allowed" }, { status: 400 });

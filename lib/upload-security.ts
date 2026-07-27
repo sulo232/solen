@@ -64,10 +64,20 @@ export interface ProcessedImage {
  * (e.g. avatars): sharp reads a GIF as a single still frame by default, so this
  * function reads with `{ animated: true }` whenever "gif" is in `allowed`, which keeps
  * every frame through the strip-and-re-encode pass instead of collapsing it to one.
+ *
+ * imagery-icons-06 (2026-07-27): the 5MB upload cap was an INPUT ceiling only; nothing
+ * bounded the SERVED weight of a phone photo re-encoded at its original resolution
+ * (a modern phone shoots 4000px+ wide, far past any layout slot this app renders one
+ * in). `maxDimension` resizes the longest edge down to a served-weight-appropriate
+ * cap before the format-specific encode below, `withoutEnlargement` so a source
+ * already smaller than the cap is never upscaled. 2000px covers every current call
+ * site (gallery/review/service/client photos render well under that) with headroom
+ * for a future denser layout; avatars pass a tighter cap at their own call site.
  */
 export async function verifyAndStripImage(
   input: Buffer,
-  allowed: AllowedImageFormat[] = ["jpeg", "png", "webp"]
+  allowed: AllowedImageFormat[] = ["jpeg", "png", "webp"],
+  maxDimension = 2000
 ): Promise<ProcessedImage> {
   const sharp = (await import("sharp")).default;
   const readOpts = allowed.includes("gif")
@@ -81,17 +91,22 @@ export async function verifyAndStripImage(
     throw new Error(`Unsupported or unverifiable image format: ${format ?? "unknown"}`);
   }
 
-  const pipeline = sharp(input, readOpts);
+  const pipeline = sharp(input, readOpts).resize({
+    width: maxDimension,
+    height: maxDimension,
+    fit: "inside",
+    withoutEnlargement: true,
+  });
   let buffer: Buffer;
   switch (format) {
     case "jpeg":
-      buffer = await pipeline.jpeg({ quality: 90 }).toBuffer();
+      buffer = await pipeline.jpeg({ quality: 82 }).toBuffer();
       break;
     case "png":
-      buffer = await pipeline.png().toBuffer();
+      buffer = await pipeline.png({ compressionLevel: 9 }).toBuffer();
       break;
     case "webp":
-      buffer = await pipeline.webp({ quality: 90 }).toBuffer();
+      buffer = await pipeline.webp({ quality: 82 }).toBuffer();
       break;
     case "gif":
       buffer = await pipeline.gif().toBuffer();
