@@ -93,6 +93,19 @@ No state-swap animation — chip should commit instantly to the user's choice. L
 
 ---
 
+## Accessibility contract (accessibility-07, 2026-07-27)
+
+`TabPill` already renders `aria-pressed={active}` (matches `PillToggle`'s filter/segment
+semantics) — correct for what it actually is: a filter chip / segment control, NOT the
+WAI-ARIA "tabs" pattern. **Don't reach for `TabPill` when building content tabs that switch
+which panel is showing** (a tab bar that swaps entirely different content in/out, like
+`ProfileTabs`' Gespeichert/Termine bar) — that needs `role="tablist"`/`role="tab"` +
+`aria-selected`, see [ProfileTabs.md](ProfileTabs.md)'s ARIA contract note. Reach for `TabPill`
+when selecting narrows/filters a list that's still fundamentally the same content (rating
+filter, category filter, sort segment) — `aria-pressed` is right there.
+
+---
+
 ## Provenance
 
 - **V3-D201** (2026-05-26) — created during salon Phase A A7. Replaces inline patterns in 3 files. Layer 1 chrome (soft-grey-fill active per CANON), confirmed against §14.0 decision tree.

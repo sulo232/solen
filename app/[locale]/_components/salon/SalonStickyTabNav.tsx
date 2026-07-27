@@ -209,6 +209,13 @@ export function SalonStickyTabNav({
               key={t.key}
               type="button"
               onClick={() => handleClick(t.key)}
+              // accessibility-07 (2026-07-27): NOT role="tab"/aria-selected, this is a
+              // scroll-spy anchor nav, not a tabs widget, every section stays in the DOM
+              // and reachable by normal scrolling regardless of which tab is "active".
+              // role=tab would wrongly imply the other sections are hidden. aria-current
+              // is the correct ARIA for "which nav item matches the current position"
+              // (same pattern as a table-of-contents highlighting the current section).
+              aria-current={activeTab === t.key ? "true" : undefined}
               // mockup-ok: RANGE LAW A1 (2026-07-25), owner-approved via /dev/flatness
               // ("go apply evrth"). Weight now follows the 2026-07-21 TASTE_LOG "content-tab
               // selected state" lock (active = 600 ink + underline, inactive = 400 ink-2)

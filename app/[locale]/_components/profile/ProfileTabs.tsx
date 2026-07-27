@@ -170,12 +170,16 @@ export default function ProfileTabs({
         </Link>
       </div>
 
-      {/* Content tabs: sanctioned underline treatment, hairline below the row. */}
-      <div className="mt-1.5 flex items-center justify-center gap-6">
-        <TabButton active={tab === "saved"} onClick={() => setTab("saved")}>
+      {/* Content tabs: sanctioned underline treatment, hairline below the row.
+          accessibility-07 (2026-07-27): role=tablist/tab + aria-selected, the WAI-ARIA
+          tabs pattern (not aria-pressed, that's for toggle/filter pills per TabPill).
+          A screen-reader user tabbing through this previously heard "button, Gespeichert"
+          / "button, Termine" with no indication which one was already showing. */}
+      <div role="tablist" aria-label={t("tabSaved") + " / " + t("tileAppointments")} className="mt-1.5 flex items-center justify-center gap-6">
+        <TabButton id="profile-tab-saved" active={tab === "saved"} onClick={() => setTab("saved")}>
           {t("tabSaved")}
         </TabButton>
-        <TabButton active={tab === "appointments"} onClick={() => setTab("appointments")}>
+        <TabButton id="profile-tab-appointments" active={tab === "appointments"} onClick={() => setTab("appointments")}>
           {t("tileAppointments")}
         </TabButton>
       </div>
@@ -210,8 +214,11 @@ export default function ProfileTabs({
         </button>
       </div>
 
-      {/* Tab content: collage grid (Gespeichert) or the rebook list (Termine). */}
-      <div className="mt-4">
+      {/* Tab content: collage grid (Gespeichert) or the rebook list (Termine).
+          accessibility-07: one tabpanel container (the two tab contents are already
+          mutually-exclusive `tab === ... &&` branches, never both in the DOM), labeled
+          by whichever tab is currently active. */}
+      <div id="profile-tabpanel" role="tabpanel" aria-labelledby={tab === "saved" ? "profile-tab-saved" : "profile-tab-appointments"} className="mt-4">
         {tab === "saved" &&
           (visibleSalons.length > 0 ? (
             <div className="grid grid-cols-2 gap-x-2 gap-y-5">
@@ -308,17 +315,24 @@ export default function ProfileTabs({
 }
 
 function TabButton({
+  id,
   active,
   onClick,
   children,
 }: {
+  id: string;
   active: boolean;
   onClick: () => void;
   children: React.ReactNode;
 }) {
   return (
     <button
+      id={id}
       type="button"
+      role="tab"
+      aria-selected={active}
+      aria-controls="profile-tabpanel"
+      tabIndex={active ? 0 : -1}
       onClick={onClick}
       className={cn(
         "relative shrink-0 py-2.5 font-body text-[18px] transition-colors",
