@@ -360,7 +360,7 @@ export default function QueueTrackingPage() {
           >
             {photos.map((u, i) => (
               // eslint-disable-next-line @next/next/no-img-element
-              <img key={i} src={u} alt="" className="h-full w-full shrink-0 snap-center object-cover" />
+              <img key={i} src={u} alt={data.salonName ? `${data.salonName}, Foto ${i + 1}` : `Salonfoto ${i + 1}`} className="h-full w-full shrink-0 snap-center object-cover" />
             ))}
           </div>
         ) : (

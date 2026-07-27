@@ -44,6 +44,9 @@ export interface ProfilePastBookingTile {
   salonSlug: string | null;
   salonName: string;
   salonPhoto: string | null;
+  /** imagery-icons-03 (2026-07-27): salon category label ("Coiffeur" etc), real
+   *  structured metadata for the thumb's alt text, not just the name repeated. */
+  salonCategory: string | null;
   serviceName: string;
   /** Pre-formatted "11. Juni" style (locale month name), never a time (project rule). */
   dateLabel: string;
@@ -56,6 +59,8 @@ export interface ProfileSavedSalonTile {
   /** Cover photo first, then up to 2 gallery photos. Empty = the sunken fallback. */
   photos: string[];
   city: string | null;
+  /** imagery-icons-03 (2026-07-27): salon category label for the collage tile's alt text. */
+  category?: string | null;
 }
 
 export type ProfileSuggestedSalon = ProfileSavedSalonTile;
@@ -224,7 +229,7 @@ export default function ProfileTabs({
             <div className="grid grid-cols-2 gap-x-2 gap-y-5">
               {visibleSalons.map((s) => (
                 <Link key={s.slug} href={p(`/salon/${s.slug}`)} className="min-w-0">
-                  <CollageTile photos={s.photos} aspectClass="aspect-[195/131]" />
+                  <CollageTile photos={s.photos} aspectClass="aspect-[195/131]" name={s.name} category={s.category} />
                   <p className="mt-2 truncate text-[16px] font-semibold text-s-ink">{s.name}</p>
                   {s.city ? <p className="mt-0.5 truncate text-[12px] text-s-ink-2">{s.city}</p> : null}
                 </Link>
@@ -253,11 +258,11 @@ export default function ProfileTabs({
                       aria-label={b.salonName}
                       className="h-14 w-14 flex-none overflow-hidden rounded-[12px] bg-s-bg-sunken"
                     >
-                      <BookingThumb photo={b.salonPhoto} />
+                      <BookingThumb photo={b.salonPhoto} name={b.salonName} category={b.salonCategory} />
                     </Link>
                   ) : (
                     <div className="h-14 w-14 flex-none overflow-hidden rounded-[12px] bg-s-bg-sunken">
-                      <BookingThumb photo={b.salonPhoto} />
+                      <BookingThumb photo={b.salonPhoto} name={b.salonName} category={b.salonCategory} />
                     </div>
                   )}
                   <div className="min-w-0 flex-1">
@@ -302,7 +307,7 @@ export default function ProfileTabs({
           <div className="-mx-4 mt-3 flex gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {suggestedSalons.map((s) => (
               <Link key={s.slug} href={p(`/salon/${s.slug}`)} className="w-[148px] flex-none">
-                <CollageTile photos={s.photos} aspectClass="aspect-[148/101]" />
+                <CollageTile photos={s.photos} aspectClass="aspect-[148/101]" name={s.name} category={s.category} />
                 <p className="mt-2 truncate text-[14px] font-semibold text-s-ink">{s.name}</p>
                 {s.city ? <p className="mt-0.5 truncate text-[12px] text-s-ink-2">{s.city}</p> : null}
               </Link>
@@ -345,10 +350,13 @@ function TabButton({
   );
 }
 
-function BookingThumb({ photo }: { photo: string | null }) {
+function BookingThumb({ photo, name, category }: { photo: string | null; name?: string | null; category?: string | null }) {
+  // accessibility-06: describe WHAT the photo shows (the salon's category), not
+  // just whose it is, since the name is already read as adjacent text (line 264).
+  const alt = category ? (name ? `${name}, ${category}` : category) : name ? `${name}` : "Salonfoto";
   return photo ? (
     // eslint-disable-next-line @next/next/no-img-element -- arbitrary Supabase Storage URL, matches SalonPhotoTile convention
-    <img src={photo} alt="" className="h-full w-full object-cover" />
+    <img src={photo} alt={alt} className="h-full w-full object-cover" />
   ) : (
     <div className="grid h-full w-full place-items-center">
       <Scissors size={18} strokeWidth={1.9} className="text-s-ink-2" aria-hidden />
@@ -359,7 +367,13 @@ function BookingThumb({ photo }: { photo: string | null }) {
 /** Collage tile (mockup-ok, pinterest-ref-solen): main photo left 66%, up to 2 stacked
  *  thumbs right. 1 photo = a plain full-bleed cover. 0 photos = the sunken fallback with
  *  a category icon, never a bare grey box. */
-function CollageTile({ photos, aspectClass }: { photos: string[]; aspectClass: string }) {
+function CollageTile({ photos, aspectClass, name, category }: { photos: string[]; aspectClass: string; name?: string | null; category?: string | null }) {
+  // accessibility-06: describe WHAT the photo shows (the salon's category), not
+  // just whose it is, since the name already renders as adjacent text (lines 228/306).
+  const altFor = (i: number) => {
+    const base = category ? (name ? `${name}, ${category}` : category) : name ? name : "Salonfoto";
+    return `${base}, ${i}/${photos.length}`;
+  };
   if (photos.length === 0) {
     return (
       <div className={cn("flex w-full items-center justify-center overflow-hidden rounded-card bg-s-bg-sunken", aspectClass)}>
@@ -371,7 +385,7 @@ function CollageTile({ photos, aspectClass }: { photos: string[]; aspectClass: s
     return (
       <div className={cn("w-full overflow-hidden rounded-card bg-s-bg-sunken", aspectClass)}>
         {/* eslint-disable-next-line @next/next/no-img-element -- arbitrary Supabase Storage URL */}
-        <img src={photos[0]} alt="" className="h-full w-full object-cover" />
+        <img src={photos[0]} alt={altFor(1)} className="h-full w-full object-cover" />
       </div>
     );
   }
@@ -381,14 +395,14 @@ function CollageTile({ photos, aspectClass }: { photos: string[]; aspectClass: s
     <div className={cn("flex w-full gap-[2px] overflow-hidden rounded-card bg-s-bg-sunken", aspectClass)}>
       <div className={thumbs.length > 0 ? "flex-[0_0_66%]" : "flex-1"}>
         {/* eslint-disable-next-line @next/next/no-img-element -- arbitrary Supabase Storage URL */}
-        <img src={main} alt="" className="h-full w-full object-cover" />
+        <img src={main} alt={altFor(1)} className="h-full w-full object-cover" />
       </div>
       {thumbs.length > 0 && (
         <div className="flex flex-1 flex-col gap-[2px]">
           {thumbs.map((url, i) => (
             <div key={i} className="flex-1">
               {/* eslint-disable-next-line @next/next/no-img-element -- arbitrary Supabase Storage URL */}
-              <img src={url} alt="" className="h-full w-full object-cover" />
+              <img src={url} alt={altFor(i + 2)} className="h-full w-full object-cover" />
             </div>
           ))}
         </div>

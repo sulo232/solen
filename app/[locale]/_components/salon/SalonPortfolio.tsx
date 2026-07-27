@@ -28,6 +28,8 @@ export function SalonPortfolio({
   staff = [],
   onOpen,
   layout = "grid-3",
+  salonName,
+  categoryLabel,
 }: {
   urls: string[];
   /** Fills remaining grid slots (up to TILE_CAP) with real staff portfolio photos
@@ -36,6 +38,13 @@ export function SalonPortfolio({
   staff?: StaffMember[];
   onOpen: (index: number) => void;
   layout?: "grid-3" | "grid-2" | "hero-filmstrip";
+  /** imagery-icons-03 (2026-07-27): threaded through for a real per-tile alt
+   *  (matching SalonImageGallery's accessibility-06 convention) instead of alt="".
+   *  Optional so the /dev reference page still compiles. */
+  salonName?: string;
+  /** accessibility-06: says WHAT the photo shows (the salon's category) rather
+   *  than bare name+index, since this grid has no per-photo category metadata. */
+  categoryLabel?: string | null;
 }) {
   const [staffPhotos, setStaffPhotos] = React.useState<string[]>([]);
   const [loaded, setLoaded] = React.useState(false);
@@ -88,7 +97,7 @@ export function SalonPortfolio({
       </h2>
 
       {/* mockup-ok: 3x3 UniformGrid unconditionally, per the approved fix. */}
-      <UniformGrid urls={combined} onOpen={onOpen} />
+      <UniformGrid urls={combined} onOpen={onOpen} salonName={salonName} categoryLabel={categoryLabel} />
 
       {showFootnote && (
         <p className="mt-3 font-body text-[12px] text-s-ink-2">Zeigt {totalReal} echte Fotos.</p>
@@ -103,7 +112,17 @@ export function SalonPortfolio({
  *
  * Same layout for mobile and desktop — only the gap and tile rounding scale.
  */
-function UniformGrid({ urls, onOpen }: { urls: string[]; onOpen: (i: number) => void }) {
+function UniformGrid({
+  urls,
+  onOpen,
+  salonName,
+  categoryLabel,
+}: {
+  urls: string[];
+  onOpen: (i: number) => void;
+  salonName?: string;
+  categoryLabel?: string | null;
+}) {
   const visible = urls.slice(0, 9);
   const overflow = urls.length - visible.length;
 
@@ -120,7 +139,18 @@ function UniformGrid({ urls, onOpen }: { urls: string[]; onOpen: (i: number) => 
             className="relative aspect-square overflow-hidden rounded-md bg-s-bg-sunken transition-transform hover:scale-[0.99] active:scale-[0.98] active:duration-[80ms] active:ease-glide md:rounded-lg"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={u} alt="" className="h-full w-full object-cover" loading="lazy" />
+            <img
+              src={u}
+              alt={
+                categoryLabel
+                  ? `${salonName ? `${salonName}, ` : ""}${categoryLabel}, ${i + 1}/${visible.length}`
+                  : salonName
+                    ? `${salonName}, ${i + 1}/${visible.length}`
+                    : `Portfoliofoto ${i + 1}`
+              }
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
             {showOverlay && (
               // mockup-ok: owner-specified treatment (2026-07-25, "plus how many are left on
               // the last picture, on the right down"), grounded in the LOCKED FROST_GLASS
