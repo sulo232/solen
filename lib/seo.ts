@@ -1,4 +1,5 @@
 import type { Salon, SalonCategory } from "./types";
+import { defaultLocale } from "./locale-constants";
 
 /* ─── JSON-LD safe serialization (A4-jsonld-escape, 2026-07-27) ───
  * JSON.stringify does NOT escape `<`, `>`, or `&`. A JSON-LD payload built
@@ -192,13 +193,19 @@ export const CATEGORY_FAQS: Record<string, Record<string, FaqItem[]>> = {
 /* ─── Canonical URL + hreflang alternates helper ─── */
 
 export function buildAlternates(path: string, locale?: string) {
-  const loc = locale ?? "de";
+  // seo-comms-12 (2026-07-27): loc's fallback and x-default both used to hardcode the
+  // literal "de" independently of middleware.ts's own defaultLocale import from ./i18n,
+  // so the two files could silently drift apart with no shared source of truth. Now both
+  // read the same constant middleware.ts already uses, turning the invariant (x-default
+  // must equal the crawler-facing default locale) into a structural impossibility to drift
+  // instead of a documentation-only rule.
+  const loc = locale ?? defaultLocale;
   const cleanPath = path ? `/${path}` : "";
   return {
     canonical: `${BASE_URL}/${loc}${cleanPath}`,
     languages: {
       ...Object.fromEntries(LOCALES.map((l) => [l, `${BASE_URL}/${l}${cleanPath}`])),
-      "x-default": `${BASE_URL}/de${cleanPath}`,
+      "x-default": `${BASE_URL}/${defaultLocale}${cleanPath}`,
     },
   };
 }
