@@ -1,4 +1,5 @@
 import { EmailLocale, EmailPayload } from "../email";
+import { EMAIL_COLORS } from "../email-colors";
 
 export function bookingPendingApprovalEmail(to: string, vars: { service: string; customerName: string; date: string; time: string; approvalUrl: string }, locale: EmailLocale = "de"): EmailPayload {
   return {
@@ -53,11 +54,11 @@ export function refundProcessedEmail(to: string, vars: { service: string; salonN
   // booking carried VAT (registered salon). Mirrors variant 3 of the approved receipt mockup.
   const creditNote = vars.net && vars.vat && vars.rate
     ? `<table style="margin-top:12px;border-collapse:collapse;font-size:14px">` +
-      `<tr><td style="padding:3px 24px 3px 0;color:#666">Erstattet (netto)</td><td style="padding:3px 0;text-align:right">${vars.net}</td></tr>` +
-      `<tr><td style="padding:3px 24px 3px 0;color:#666">davon MWST ${vars.rate}%</td><td style="padding:3px 0;text-align:right">${vars.vat}</td></tr>` +
+      `<tr><td style="padding:3px 24px 3px 0;color:${EMAIL_COLORS.ink2}">Erstattet (netto)</td><td style="padding:3px 0;text-align:right">${vars.net}</td></tr>` +
+      `<tr><td style="padding:3px 24px 3px 0;color:${EMAIL_COLORS.ink2}">davon MWST ${vars.rate}%</td><td style="padding:3px 0;text-align:right">${vars.vat}</td></tr>` +
       `<tr><td style="padding:6px 24px 0 0;font-weight:700">Gutschrift gesamt</td><td style="padding:6px 0 0;text-align:right;font-weight:700">${vars.amount}</td></tr>` +
       `</table>` +
-      (vars.vatNumber ? `<p style="margin-top:6px;color:#888;font-size:12px">Gutschrift zu MWST-Nr. ${vars.vatNumber}</p>` : "")
+      (vars.vatNumber ? `<p style="margin-top:6px;color:${EMAIL_COLORS.ink2};font-size:12px">Gutschrift zu MWST-Nr. ${vars.vatNumber}</p>` : "")
     : "";
   return {
     to,
@@ -86,7 +87,7 @@ export function reviewResponseEmail(to: string, vars: { salonName: string; respo
   return {
     to,
     subject: `Antwort auf Ihre Bewertung von ${vars.salonName}`,
-    html: `<p>Hallo,</p><p><strong>${vars.salonName}</strong> hat auf Ihre Bewertung geantwortet:</p><blockquote style="border-left:4px solid #ccc;padding-left:16px">${vars.response}</blockquote><p><a href="${vars.reviewUrl}">Zur Bewertung</a></p>`,
+    html: `<p>Hallo,</p><p><strong>${vars.salonName}</strong> hat auf Ihre Bewertung geantwortet:</p><blockquote style="border-left:4px solid ${EMAIL_COLORS.border};padding-left:16px">${vars.response}</blockquote><p><a href="${vars.reviewUrl}">Zur Bewertung</a></p>`,
   };
 }
 
