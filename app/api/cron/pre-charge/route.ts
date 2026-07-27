@@ -91,7 +91,12 @@ export async function GET(req: NextRequest) {
         );
       }
 
-      await admin
+      // Re-assert status=confirmed (TXN-03 / data-money-02): the Stripe charge above
+      // already succeeded, but the booking may have been cancelled between the SELECT
+      // that found it and this UPDATE (a concurrent cron overlap or a customer
+      // cancellation racing the batch). Confirm the update actually matched a row
+      // before counting it as charged, mirroring app/api/cron/no-show/route.ts.
+      const { data: updatedRows } = await admin
         .from("bookings")
         .update({
           payment_status: "paid",
@@ -99,7 +104,14 @@ export async function GET(req: NextRequest) {
           paid_amount: amountRappen,
           platform_fee: platformFee,
         })
-        .eq("id", booking.id);
+        .eq("id", booking.id)
+        .eq("status", "confirmed")
+        .select("id");
+
+      if (!updatedRows || updatedRows.length === 0) {
+        console.error(`[pre-charge] booking ${booking.id} no longer confirmed after charge (changed between select and update); charged in Stripe but not marked paid, needs reconciliation`);
+        continue;
+      }
 
       charged++;
     } catch (err: any) {
