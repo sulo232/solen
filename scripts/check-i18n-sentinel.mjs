@@ -30,8 +30,11 @@ const SOURCE_LOCALE = "en";
 // 2026-07-27 (copy-i18n-04): fr +1 for Profile.salonsCount, "{count, plural, one {#
 // salon} other {# salons}}" , genuinely identical, French "salon"/"salons" happens
 // to share the English spelling for this word, not an untranslated placeholder.
+// 2026-07-27 (copy-i18n-07): de +1 for salon.topSalon = "Top Salon" in both, added
+// while closing the messages/*.json key-parity gap , German borrows the English
+// word "Top" for this exact badge phrase, so the two locales genuinely coincide.
 const IDENTICAL_BASELINE = {
-  de: 465,
+  de: 466,
   fr: 368,
   it: 220,
 };

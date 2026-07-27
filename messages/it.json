@@ -432,6 +432,7 @@
     "noPast": "Nessun appuntamento passato",
     "noSalonsFound": "Nessun salone trovato",
     "noNailDesigns": "Nessun design unghie trovato",
+    "fromPrice": "da {price}",
     "noNailDesigns_message": "Prova altri filtri o ricontrolla più tardi.",
     "pleaseFill": "Compila tutti i campi",
     "pleaseLogin": "Effettua prima il login",
@@ -785,7 +786,8 @@
         "schedule": "Orari di lavoro",
         "payments": "Pagamenti",
         "go_live": "Pronto!"
-      }
+      },
+      "saveAndContinue": "Salva e continua"
     },
     "profile": {
       "title": "Il tuo salone",
@@ -796,7 +798,10 @@
       "descPlaceholder": "Descrivi il tuo salone per i clienti...",
       "descriptionEn": "Descrizione (EN)",
       "phone": "Telefono",
-      "coverUrl": "URL foto di copertina"
+      "coverUrl": "URL foto di copertina",
+      "categories": "Categorie",
+      "multipleChoice": "(scelta multipla)",
+      "atLeastOneCategory": "È richiesta almeno una categoria."
     },
     "services": {
       "title": "Aggiungi servizi",
@@ -808,6 +813,8 @@
       "namePlaceholder": "es. Taglio uomo",
       "add": "Aggiungi servizio",
       "added": "aggiunto/i",
+      "aiSuggestions": "✨ Suggerimenti IA",
+      "addButton": "Aggiungi",
       "addMoreLater": "Potrai aggiungerne altri in seguito."
     },
     "team": {
@@ -816,12 +823,18 @@
       "sendInvite": "Invia invito",
       "inviteSent": "Invito inviato",
       "firstName": "Nome",
+      "emailLabel": "E-mail *",
+      "nameLabel": "Nome",
+      "errorLabel": "Errore",
       "soloHint": "Lavori da solo/a? Nessun problema — salta questo passaggio. Potrai invitare collaboratori in seguito."
     },
     "hours": {
       "title": "Orari di apertura",
       "subtitle": "Quando è aperto il tuo salone?",
       "closed": "Chiuso",
+      "addBreak": "+ Pausa",
+      "removeBreak": "Rimuovi",
+      "breakLabel": "Pausa",
       "days": {
         "mon": "Lunedì",
         "tue": "Martedì",
@@ -838,6 +851,7 @@
       "description": "Puoi gestire gli orari di lavoro e le pause in qualsiasi momento nella dashboard sotto Calendario. Per impostazione predefinita, il personale eredita gli orari di apertura del salone.",
       "autoConfigured": "Configurato automaticamente",
       "autoConfiguredDesc": "I tuoi orari di apertura vengono utilizzati come orari di lavoro predefiniti.",
+      "applyHours": "Applica orari di apertura",
       "individualHint": "Puoi impostare orari di lavoro individuali per ogni collaboratore dopo la configurazione nella dashboard."
     },
     "payments": {
@@ -887,6 +901,10 @@
     "availableToday": "Disponibile oggi",
     "removeFromFavorites": "Rimuovi dai preferiti",
     "addToFavorites": "Aggiungi ai preferiti",
+    "appointmentsToday": "Prenotato oggi",
+    "topSalon": "Salone Top",
+    "solenTopPick": "Scelta top di Solen",
+    "partOfBrand": "Parte di",
     "bookedTimesThisWeek": "{count}× prenotato questa settimana",
     "nextAppointmentToday": "Prossimo appuntamento: Oggi {time}",
     "nextAppointmentTomorrow": "Prossimo appuntamento: Domani {time}",
@@ -1609,6 +1627,7 @@
       "marketing": "Marketing",
       "analytics": "Statistiche",
       "reviews": "Recensioni",
+      "gallery": "Galleria",
       "posts": "I miei post",
       "nailClients": "Clienti unghie",
       "barberClients": "Clienti barbiere",
@@ -4308,6 +4327,7 @@
     }
   },
   "partner": {
+    "title": "Cresci con Solen",
     "hero_title_1": "Il tuo salone.",
     "hero_title_accent": "Più clienti.",
     "hero_title_2": "Meno fatica.",
@@ -5041,6 +5061,15 @@
   "reviews": {
     "title": "Scrivi una recensione",
     "subtitle": "Condividi la tua esperienza con altri clienti.",
+    "result": "Risultato",
+    "atmosphere": "Atmosfera",
+    "pricePerformance": "Rapporto qualità-prezzo",
+    "new": "Nuovo",
+    "reviewCount": "{count} recensioni",
+    "noReviews": "Ancora nessuna recensione",
+    "verifiedBooking": "Prenotazione verificata",
+    "readMore": "Leggi di più",
+    "readLess": "Leggi meno",
     "please_select_rating": "Seleziona una valutazione",
     "error_saving": "Errore di salvataggio",
     "uploading": "Caricamento foto...",

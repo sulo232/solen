@@ -803,7 +803,8 @@
         "schedule": "Horaires de travail",
         "payments": "Paiements",
         "go_live": "C'est parti !"
-      }
+      },
+      "saveAndContinue": "Enregistrer et continuer"
     },
     "profile": {
       "title": "Votre salon",
@@ -814,7 +815,10 @@
       "descPlaceholder": "Décrivez votre salon pour les clients...",
       "descriptionEn": "Description (EN)",
       "phone": "Téléphone",
-      "coverUrl": "URL de la photo de couverture"
+      "coverUrl": "URL de la photo de couverture",
+      "categories": "Catégories",
+      "multipleChoice": "(choix multiple)",
+      "atLeastOneCategory": "Au moins une catégorie requise."
     },
     "services": {
       "title": "Ajouter des services",
@@ -826,6 +830,8 @@
       "namePlaceholder": "ex. Coupe homme",
       "add": "Ajouter un service",
       "added": "ajouté(s)",
+      "aiSuggestions": "✨ Suggestions IA",
+      "addButton": "Ajouter",
       "addMoreLater": "Vous pourrez en ajouter d'autres plus tard."
     },
     "team": {
@@ -834,12 +840,18 @@
       "sendInvite": "Envoyer l'invitation",
       "inviteSent": "Invitation envoyée",
       "firstName": "Prénom",
+      "emailLabel": "E-mail *",
+      "nameLabel": "Nom",
+      "errorLabel": "Erreur",
       "soloHint": "Vous travaillez seul(e) ? Pas de problème — passez cette étape. Vous pourrez inviter du personnel plus tard."
     },
     "hours": {
       "title": "Horaires d'ouverture",
       "subtitle": "Quand votre salon est-il ouvert ?",
       "closed": "Fermé",
+      "addBreak": "+ Pause",
+      "removeBreak": "Supprimer",
+      "breakLabel": "Pause",
       "days": {
         "mon": "Lundi",
         "tue": "Mardi",
@@ -856,6 +868,7 @@
       "description": "Vous pouvez gérer les horaires de travail et les pauses à tout moment dans le tableau de bord sous Calendrier. Par défaut, le personnel hérite des horaires d'ouverture du salon.",
       "autoConfigured": "Configuré automatiquement",
       "autoConfiguredDesc": "Vos horaires d'ouverture sont utilisés comme horaires de travail par défaut.",
+      "applyHours": "Reprendre les horaires d'ouverture",
       "individualHint": "Vous pouvez définir des horaires individuels par collaborateur après la configuration dans le tableau de bord."
     },
     "payments": {
@@ -905,6 +918,10 @@
     "availableToday": "Disponible aujourd'hui",
     "removeFromFavorites": "Retirer des favoris",
     "addToFavorites": "Ajouter aux favoris",
+    "appointmentsToday": "Réservé aujourd'hui",
+    "topSalon": "Salon Top",
+    "solenTopPick": "Coup de cœur Solen",
+    "partOfBrand": "Fait partie de",
     "bookedTimesThisWeek": "{count}× réservé cette semaine",
     "nextAppointmentToday": "Prochain rendez-vous: Aujourd'hui {time}",
     "nextAppointmentTomorrow": "Prochain rendez-vous: Demain {time}",
@@ -1601,6 +1618,7 @@
       "marketing": "Marketing",
       "analytics": "Statistiques",
       "reviews": "Avis",
+      "gallery": "Galerie",
       "posts": "Mes publications",
       "nailClients": "Clients ongles",
       "barberClients": "Clients barbier",

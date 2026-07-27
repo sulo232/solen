@@ -170,6 +170,8 @@ jobs:
       - run: npm ci
       - name: "check-i18n-sentinel (copy-i18n-01: no TODO/sentinel keys, identical-to-en ratchet)"
         run: node scripts/check-i18n-sentinel.mjs
+      - name: "check-i18n-parity (copy-i18n-07: de.json key set must match en/fr/it.json exactly, hard zero)"
+        run: node scripts/check-i18n-parity.mjs
 
   # secrets-webhooks-10: a repo-wide grep-pattern check that a NEW !==/=== compare
   # against a secret/token/signature/hmac-shaped variable never lands again. The
