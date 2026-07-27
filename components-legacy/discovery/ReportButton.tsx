@@ -64,6 +64,7 @@ const REASON_LABEL_KEY = {
   spam: "reasonSpam",
   fake: "reasonFake",
   ip_violation: "reasonIpViolation",
+  harassment: "reasonHarassment",
   other: "reasonOther",
 } as const satisfies Record<ReportReason, string>;
 
