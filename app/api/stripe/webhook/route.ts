@@ -9,6 +9,7 @@ import { getServerEnv } from "@/lib/env";
 import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
 import { reportError } from "@/lib/error-report";
 import { resolveSwissLocale } from "@/lib/format";
+import type { DisputeStatus } from "@/lib/bookings/dispute-engine";
 
 export const runtime = "nodejs";
 
@@ -729,6 +730,58 @@ export async function POST(req: NextRequest) {
               // single delivery that actually won the CAS and mutated the row.
               ledgerAdjusted = !!claimedRow;
             }
+          }
+        }
+      }
+
+      // trust-11: cross-channel reconciliation. A resolved bank-side chargeback used to
+      // only touch salon_payouts (above); a parallel in-app booking_disputes case for
+      // the SAME booking never learned it happened, so a salon/admin could approve or
+      // reject an in-app refund unaware the money already moved via the bank. Close any
+      // non-terminal refund-direction case for this booking now. CAS on the row's own
+      // current status (mirrors every other transition in this file and in
+      // app/api/bookings/[id]/report.ts), so a retry/redelivery of this same webhook
+      // event is a no-op, and every downstream review-action route (which all gate on
+      // status='open'/'escalated'/etc, never 'closed') naturally refuses a duplicate
+      // approve/reject once this lands.
+      if (disputeBookingId) {
+        const { data: openCase } = await admin
+          .from("booking_disputes")
+          .select("id, status")
+          .eq("booking_id", disputeBookingId)
+          .eq("direction", "refund")
+          .not("status", "in", "(refunded,charged,void,closed,salon_rejected,admin_rejected,resolved,dismissed)")
+          .maybeSingle();
+        if (openCase) {
+          const { error: reconcileErr } = await admin
+            .from("booking_disputes")
+            .update({
+              status: "closed",
+              resolution: `Resolved via bank chargeback (Stripe dispute ${dispute.id}, ${dispute.status}). ${
+                dispute.status === "lost" ? "Salon payout was decremented." : "No ledger change."
+              }`,
+              resolved_at: new Date().toISOString(),
+            })
+            .eq("id", openCase.id)
+            .eq("status", openCase.status) // CAS: still in the status just read
+            .select("id")
+            .maybeSingle();
+          if (reconcileErr) {
+            console.error(
+              "[stripe/webhook] booking_disputes chargeback reconcile failed:",
+              reconcileErr.message,
+              { event_id: event.id, dispute: dispute.id, booking_dispute_id: openCase.id },
+            );
+          } else {
+            const { writeCaseEvent } = await import("@/lib/bookings/dispute-engine");
+            await writeCaseEvent(admin, {
+              disputeId: openCase.id,
+              actorRole: "system",
+              action: "chargeback_reconciled",
+              fromStatus: openCase.status as DisputeStatus,
+              toStatus: "closed",
+              note: `Bank chargeback ${dispute.status} (Stripe dispute ${dispute.id})`,
+            });
           }
         }
       }
