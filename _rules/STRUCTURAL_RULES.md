@@ -204,6 +204,71 @@ Previous V5 spec archived at `_tasks/completed/rules-locked-design-tokens-2026-0
 
 ---
 
+## Rule 48: STATE OWNERSHIP ORDER (fe-03, 2026-07-27)
+
+> **WHY THIS RULE EXISTS**: 296 of 799 `.ts`/`.tsx` files under `app/` are `"use client"` (37%),
+> and 171 files combine `useEffect` with `fetch(` for client-side data loading, against only 190
+> files that call `fetch(` anywhere in the whole tree, meaning almost every fetch call in the
+> codebase is a client-side one, not a server-fetched prop. Rule 42's file-tree template already
+> implies server-fetch-then-pass-props for a BRAND NEW feature page, and it is a real, working
+> pattern on the salon PDP and the booking-wizard shell (both RSC-fetch-then-client-render, see
+> `_docs/FRONTEND.md`) — but nothing generalizes it into a standing rule for EXISTING surfaces,
+> so each new client component re-derives its own fetch/loading/error boilerplate independently
+> instead of reading data the server already fetched.
+
+State picks exactly **one** owner, in this priority order:
+
+1. **URL (`searchParams`)** — anything that should be shareable, back-button-safe, or survive a
+   refresh: a filter, an active tab, a search query, a selected date. Never hold this in
+   component state.
+2. **Server Component prop** — anything known at request time and not re-computed per
+   interaction is fetched ONCE in the nearest Server Component and passed down as a prop. Never
+   re-fetch it client-side with `useEffect` just because the consuming component happens to be
+   `"use client"`.
+3. **Page-scoped Context/reducer** — anything shared by more than two sibling client components
+   on one page (the existing `BookingProvider` pattern, `lib/booking-context.tsx`). Never
+   duplicate the same fetched value across sibling components instead of sharing one source.
+4. **Local `useState`** — everything else.
+
+**The violation to watch for**: a new client component that calls `fetch()` inside `useEffect`
+for data that was ALREADY available on the server at request time. This is a violation unless
+the file states why in a comment (e.g. it genuinely depends on a client-only value like
+geolocation, or data produced by a just-completed client action that the server never saw).
+
+```tsx
+// ❌ VIOLATION — client component re-fetches data the server already had
+"use client";
+function SalonHoursWidget({ salonId }: { salonId: string }) {
+  const [hours, setHours] = useState(null);
+  useEffect(() => {
+    fetch(`/api/salons/${salonId}/hours`).then(r => r.json()).then(setHours);
+  }, [salonId]);
+  // ...
+}
+
+// ✅ CORRECT — server fetches once, passes down as a prop
+// page.tsx (Server Component)
+const salon = await getSalon(slug); // includes opening_hours
+return <SalonHoursWidget hours={salon.opening_hours} />;
+
+// ✅ CORRECT — a client-only value is a stated exception
+"use client";
+function NearbySalons() {
+  // Exception: geolocation is only available client-side, cannot be
+  // fetched server-side at request time.
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition((pos) => fetchNearby(pos.coords));
+  }, []);
+}
+```
+
+This is a checklist item today (part of Rule 40/46's pre-commit review), not yet a lint rule.
+A future gate could flag `useEffect` + `fetch(` in a client component whose parent Server
+Component already has access to the same data, but that needs per-case judgment (is the parent
+actually a Server Component with the data in scope?) that a mechanical grep can't safely make.
+
+---
+
 ## Established Patterns (MANDATORY)
 
 ### Pattern A: Coming Soon Page
@@ -231,6 +296,26 @@ fetch("/api/profile")
     if (!cancelled) router.push(`/${locale}/auth/login`);
   });
 ```
+
+### Pattern B.1: Auth-Required Interrupt Preserves the Destination (ia-navigation-03, 2026-07-27)
+Every place that redirects an unauthenticated user to `/auth/login` because they attempted a
+gated action (heart a look, look up a booking by code, open an intake form, and Pattern B's
+profile fetches) MUST append `?redirect=<the current path>`, URL-encoded, exactly like Pattern
+B above. `components-legacy/auth/SignIn.tsx` already reads it back and validates it's an
+internal relative path before honoring it (open-redirect protection is solved once, centrally).
+
+```tsx
+// CORRECT — any auth-required interrupt, not just profile fetches
+router.push(`/${locale}/auth/login?redirect=${encodeURIComponent(currentPathAndQuery)}`);
+```
+
+A login redirect with no `redirect=` param is acceptable ONLY when the user explicitly
+navigated to a generic auth entry point (a "Log in" menu link), never when their own
+in-context action is what triggered the redirect. This generalizes Pattern B beyond
+`/api/profile` fetches because the same defect (bounce to homepage after login, losing
+the action that prompted it) recurred 3 separate times outside Pattern B's scope: Inspo's
+save-while-logged-out heart, the guest booking lookup's "log in instead" link, and the
+intake-forms page's session check, all fixed in the same pass this rule was written in.
 
 ### Pattern C: Page Transition Crossfade
 Use `PageTransitionWrapper` to add smooth opacity crossfade (200ms) between route navigations.
