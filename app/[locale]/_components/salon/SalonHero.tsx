@@ -197,6 +197,14 @@ function DesktopGallery({
   }
 
   if (photos.length === 1) {
+    // layout-geometry-09: this hero frame (and the 66/33/33 split frames below) still default
+    // to CSS object-position:center (blind center), unlike SalonImageGallery's square grid /
+    // SalonPortfolio's square grid, which both now use the owner-approved object-top crop anchor
+    // (TASTE_LOG.md:326, ig4, 2026-07-16). Hero frames are a different aspect ratio (16:7 / 2:1)
+    // and the single most prominent above-the-fold photo, so generalizing the same object-top
+    // value here without a fresh owner look is a visible imagery-treatment change on the highest-
+    // traffic surface, not a same-shape apply like the two grids above; left as object-cover
+    // (unchanged) pending that decision, flagged instead of silently changed.
     return (
       <button
         type="button"

@@ -110,7 +110,17 @@ export function SalonPortfolio({
  * Strict 3-column square grid per Fresha spec. Up to 9 visible tiles.
  * Last visible tile gets a "+N" overlay if there are more photos beyond.
  *
- * Same layout for mobile and desktop — only the gap and tile rounding scale.
+ * Same layout for mobile and desktop, only the gap and tile rounding scale. (em-dash-ok)
+ *
+ * Last-row rule (layout-geometry-05, named per LOCKFILE's grid-TYPE decision):
+ * when urls.length is not a clean multiple of 3 (e.g. a salon with 4, 5, 7, or
+ * 8 uploaded photos, all under the 9-cap so the "+N" overlay above never
+ * triggers), the final row renders LEFT-ALIGNED with trailing empty grid
+ * cells rather than centered. This is a stated decision, not the unstated
+ * CSS-grid default: it matches Fresha's own reference grid behavior (this
+ * component's STRUCTURE axis, per the file's own "per Fresha spec" comment
+ * above) and Solen's density floor never requires a clean multiple, so a
+ * short last row is expected, not a bug.
  */
 function UniformGrid({
   urls,
@@ -148,7 +158,12 @@ function UniformGrid({
                     ? `${salonName}, ${i + 1}/${visible.length}`
                     : `Portfoliofoto ${i + 1}`
               }
-              className="h-full w-full object-cover"
+              // layout-geometry-09: this is the same square photo grid the ig4 crop-anchor
+              // decision already covers (TASTE_LOG.md:326, owner-approved 2026-07-16: "square
+              // photo grid crops center-top, not blind center"); SalonImageGallery.tsx already
+              // applies object-top for the identical grid shape, this one had drifted to the
+              // CSS default (center) and is now brought back in line, not a new treatment.
+              className="h-full w-full object-cover object-top"
               loading="lazy"
             />
             {showOverlay && (
