@@ -74,6 +74,18 @@ jobs:
       - name: vitest run (money-path unit tests, tests/**/*.test.ts)
         run: npx vitest run
 
+  i18n:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - name: "check-i18n-sentinel (copy-i18n-01: no TODO/sentinel keys, identical-to-en ratchet)"
+        run: node scripts/check-i18n-sentinel.mjs
+
   # E2E booking lifecycle (scripts/e2e-booking.ts, Ring 2 recommendations batch): drives
   # the REAL route handlers (bookings create, booking-pay-intent, cancel) against the live
   # DB's sanctioned test salon (testsalon-7a2dd244) with a real Stripe TEST-mode
