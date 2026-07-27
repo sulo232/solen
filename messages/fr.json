@@ -28,6 +28,7 @@
     "saveProfile": "Enregistrer",
     "savedToast": "Modifications enregistrées",
     "saveError": "Échec de l'enregistrement — réessayez",
+    "sessionExpired": "Ta session a expiré. Reconnecte-toi pour continuer.",
     "emailSentToast": "E-mail de confirmation envoyé — vérifiez votre boîte",
     "avatarUploadError": "Impossible d'envoyer la photo, veuillez réessayer",
     "passwordChangedToast": "Mot de passe mis à jour",

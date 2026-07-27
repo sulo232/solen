@@ -28,6 +28,7 @@
     "saveProfile": "Save changes",
     "savedToast": "Changes saved",
     "saveError": "Couldn't save — please try again",
+    "sessionExpired": "Your session has expired. Please sign in again to continue.",
     "emailSentToast": "Confirmation email sent — check your inbox",
     "avatarUploadError": "Couldn't upload photo, please try again",
     "passwordChangedToast": "Password updated",

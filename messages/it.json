@@ -28,6 +28,7 @@
     "saveProfile": "Salva modifiche",
     "savedToast": "Modifiche salvate",
     "saveError": "Salvataggio non riuscito — riprova",
+    "sessionExpired": "La tua sessione è scaduta. Accedi di nuovo per continuare.",
     "emailSentToast": "Email di conferma inviata — controlla la posta",
     "avatarUploadError": "Impossibile caricare la foto, riprova",
     "passwordChangedToast": "Password aggiornata",

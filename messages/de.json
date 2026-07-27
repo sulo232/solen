@@ -28,6 +28,7 @@
     "saveProfile": "Änderungen speichern",
     "savedToast": "Änderungen gespeichert",
     "saveError": "Speichern fehlgeschlagen — bitte erneut versuchen",
+    "sessionExpired": "Deine Sitzung ist abgelaufen. Bitte melde dich erneut an, um weiterzumachen.",
     "emailSentToast": "Bestätigungsmail gesendet — prüfe dein Postfach",
     "avatarUploadError": "Foto konnte nicht hochgeladen werden, bitte erneut versuchen",
     "passwordChangedToast": "Passwort aktualisiert",

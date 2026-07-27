@@ -10,6 +10,7 @@ import { FieldLabel } from "@/app/[locale]/_components/primitives/FieldLabel";
 import { Avatar } from "@/app/[locale]/_components/primitives/Avatar";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "@/app/[locale]/_components/primitives/Modal";
+import { useSubmitGuard } from "@/lib/hooks/useSubmitGuard";
 import { LOCALES, type SettingsLocale } from "./locales";
 
 // Client-side downscale before the avatar POST (owner spec, 2026-07-20): browsers can decode
@@ -108,6 +109,14 @@ export default function SettingsForm({
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         console.error("[Settings] save failed:", err?.message ?? res.status);
+        // states-forms-08: a 401 mid-form is a session-expiry, not a generic save
+        // failure, name the real cause and send them back to login with a return
+        // path instead of the undifferentiated saveError toast.
+        if (res.status === 401) {
+          toast.error(t("sessionExpired"));
+          router.push(`/${locale}/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`);
+          return;
+        }
         toast.error(t("saveError"));
         return;
       }
@@ -217,8 +226,12 @@ export default function SettingsForm({
   // Type-to-confirm KILLED (owner 2026-07-20): a plain confirm dialog replaces it.
   const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false);
   const [deleting, setDeleting] = React.useState(false);
+  // states-forms-05: account deletion is a non-idempotent write; a synchronous
+  // ref guard (not just the `deleting` state flag) closes the double-tap race.
+  const deleteGuard = useSubmitGuard();
 
   const deleteAccount = async () => {
+    if (!deleteGuard.tryEnter()) return; // a delete is already in flight, drop the duplicate
     setDeleting(true);
     try {
       // The canonical full deletion flow (app/api/profile/request-deletion):
@@ -244,6 +257,7 @@ export default function SettingsForm({
       toast.error(t("saveError"));
       setDeleteConfirmOpen(false);
     } finally {
+      deleteGuard.release();
       setDeleting(false);
     }
   };
