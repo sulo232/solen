@@ -242,3 +242,53 @@ answer a type or nullability question at all. And the snapshot drifts: as of thi
 first pass, never the final word on a load-bearing claim, always confirm with a live query before
 a finding is filed as CRITICAL or a fix is shipped against it.
 
+## 10. Migration lock hygiene: `NOT VALID`/`VALIDATE`, `CONCURRENTLY`, `lock_timeout`
+
+**Written down 2026-07-27 (data-money-04).** A DDL statement takes an `ACCESS EXCLUSIVE` lock for
+its duration; against a table with real rows, a bare `ADD CONSTRAINT ... CHECK`/`NOT NULL` or a
+non-`CONCURRENTLY` `CREATE (UNIQUE) INDEX` blocks every other query on that table for as long as
+the full-table scan takes, and queues behind any long-running query already holding a weaker lock.
+At Solen's current scale this has caused zero incidents (audited 2026-07-16), but the pattern is
+free to apply and expensive to discover you needed only after a migration hangs behind a slow
+query in production.
+
+**The rule, with a stated floor so "premature at our scale" has a number instead of a guess:** for
+any table whose live row count (check via a read-only `execute_sql` count, or the `_inventory`
+snapshot) exceeds **2,000 rows**, a new migration must:
+- Add a `CHECK`/`NOT NULL` constraint as `NOT VALID` first, then `VALIDATE CONSTRAINT` in a
+  follow-up statement (the `VALIDATE` step still scans the table, but takes only a `SHARE UPDATE
+  EXCLUSIVE` lock, which does not block concurrent reads/writes the way the plain form's
+  `ACCESS EXCLUSIVE` does).
+- Add a `CREATE INDEX` as `CREATE INDEX CONCURRENTLY` (a `UNIQUE` index too, same keyword).
+- Precede every DDL statement in the migration with `SET LOCAL lock_timeout = '5s';` so a lock
+  that can't be acquired promptly fails loud instead of queuing invisibly behind other traffic.
+
+Below 2,000 rows the plain form is fine and should not be forced; most of Solen's tables are well
+under this today, so this is a floor for the tables that matter (`bookings`, `profiles`,
+`booking_disputes`, `nail_retail_products`, `promo_codes` and any future high-row-count table), not
+a blanket rule to retrofit everywhere.
+
+**Current state (audited 2026-07-16, migration count re-verified 2026-07-27 at 269 files, three
+more than the audit's 264):** the correct two-step pattern is used in exactly 2 files / 3
+constraints; at least 9 other `ADD CONSTRAINT ... CHECK` statements across 7 files ran as bare
+adds against tables confirmed to hold rows; 0 of 161 `CREATE (UNIQUE) INDEX` statements use
+`CONCURRENTLY`; 0 of 264 files set `lock_timeout` or `statement_timeout`. This is existing debt,
+not something to retrofit opportunistically; the rule binds new migrations going forward.
+
+## 11. Backup coverage: a new table decides its `BACKUP_TABLES` membership at creation time
+
+**Written down 2026-07-27 (data-money-06).** `lib/backup/export.ts`'s `BACKUP_TABLES` is a
+hardcoded array (line 26) that the nightly export backs up; nothing else in the repo references
+it, so it does not grow automatically as the schema grows. As of the 2026-07-16 audit it covered
+24 of the DB's 146 live tables (16%), a deliberate business-critical subset for those 24, not a
+statement about the ~120 tables added since.
+
+**The rule:** any migration that `CREATE TABLE`s a new table holding user-generated content,
+business state, or data not reconstructible from Stripe's own ledger must, in the same change,
+either add the table name to `BACKUP_TABLES` in `lib/backup/export.ts`, or leave a comment in the
+migration explaining why it is exempt (pure cache/derived view, ephemeral analytics, or a table
+Stripe's ledger already makes reconstructible). A backup list that silently falls behind schema
+growth looks complete (the cron still reports success every night) while its real coverage shrinks
+as a fraction of the schema, which is worse than an honestly-incomplete backup because nobody goes
+looking for a gap that isn't reporting an error.
+
