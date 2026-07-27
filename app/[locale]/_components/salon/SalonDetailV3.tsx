@@ -24,6 +24,7 @@ import { SalonOtherLocations } from "./SalonOtherLocations";
 import { SalonVenuesNearby } from "./SalonVenuesNearby";
 import { SalonSidebar } from "./SalonSidebar";
 import { SalonMobileBookBar } from "./SalonMobileBookBar";
+import { SectionErrorBoundary } from "../primitives/SectionErrorBoundary";
 import SalonModeToggle from "@/components-legacy/salon/SalonModeToggle";
 import SalonWalkInPanel from "@/components-legacy/salon/SalonWalkInPanel";
 import { WalkInQueueProvider } from "@/components-legacy/salon/WalkInQueueContext";
@@ -32,6 +33,7 @@ import { postalToCity } from "./_shared";
 import { usePostHog } from "posthog-js/react";
 import { trackSalonView } from "@/components-legacy/RecentlyViewed";
 import { generateSalonSchema, safeJsonLd } from "@/lib/seo";
+import { CATEGORY_LABEL } from "../search/SalonResultCard";
 
 // B4 load audit (2026-07-04, finding #2): click-triggered overlays, loaded only
 // when opened (same dynamic() pattern as SalonTeam.tsx:12's StaffProfilePage).
@@ -268,46 +270,60 @@ export function SalonDetailV3({
             )}
 
             <div className="mt-8 space-y-10 md:mt-10 md:space-y-12">
-              {!walkinMode && <SalonServices services={salon.services} locale={locale} slug={slug} salon={salon} />}
+              {!walkinMode && (
+                <SectionErrorBoundary section="SalonServices">
+                  <SalonServices services={salon.services} locale={locale} slug={slug} salon={salon} />
+                </SectionErrorBoundary>
+              )}
 
             {/* A5 B-3: bundles between services and products (renders null until active bundles load). */}
             {!walkinMode && (
-              <SalonBundles
-                salonId={salon.id}
-                slug={slug}
-                locale={locale}
-                onLoaded={setHasBundles}
-              />
+              <SectionErrorBoundary section="SalonBundles">
+                <SalonBundles
+                  salonId={salon.id}
+                  slug={slug}
+                  locale={locale}
+                  onLoaded={setHasBundles}
+                />
+              </SectionErrorBoundary>
             )}
 
             {/* A5 A-3: retail products after services (renders null until active products load). */}
             {!walkinMode && (
-              <SalonProducts
-                salonId={salon.id}
-                category={primaryCategory}
-                locale={locale}
-                onLoaded={setHasProducts}
-              />
+              <SectionErrorBoundary section="SalonProducts">
+                <SalonProducts
+                  salonId={salon.id}
+                  category={primaryCategory}
+                  locale={locale}
+                  onLoaded={setHasProducts}
+                />
+              </SectionErrorBoundary>
             )}
 
             {/* Termin-only: walk-in has its OWN single selectable stylist section (the deduped
                 "Dein Barber" = #section-team, inside SalonWalkInPanel) per owner 2026-07-24, so
                 rendering browse-profile SalonTeam here too would be a SECOND stylist section. */}
             {!walkinMode && salon.staff.length > 0 && (
-              <SalonTeam staff={salon.staff} salonAverageRating={salon.average_rating} slug={slug} locale={locale} />
+              <SectionErrorBoundary section="SalonTeam">
+                <SalonTeam staff={salon.staff} salonAverageRating={salon.average_rating} slug={slug} locale={locale} />
+              </SectionErrorBoundary>
             )}
 
-            <SalonReviews
-              average={salon.average_rating}
-              count={salon.review_count}
-              reviews={salon.reviews}
-              salonId={salon.id}
-              salonSlug={salon.slug}
-              salonName={salon.name}
-              locale={locale}
-            />
+            <SectionErrorBoundary section="SalonReviews">
+              <SalonReviews
+                average={salon.average_rating}
+                count={salon.review_count}
+                reviews={salon.reviews}
+                salonId={salon.id}
+                salonSlug={salon.slug}
+                salonName={salon.name}
+                locale={locale}
+              />
+            </SectionErrorBoundary>
 
-            <SalonPortfolio urls={salon.gallery_urls ?? []} staff={salon.staff} onOpen={() => openGallery()} />
+            <SectionErrorBoundary section="SalonPortfolio">
+              <SalonPortfolio urls={salon.gallery_urls ?? []} staff={salon.staff} onOpen={() => openGallery()} salonName={salon.name} categoryLabel={CATEGORY_LABEL[primaryCategory] ?? null} />
+            </SectionErrorBoundary>
 
             {/* Mobile + tablet Buy card (gift card) HIDDEN from customers
                 (owner, 2026-06-14) in favour of a Solen-wide loyalty card.
