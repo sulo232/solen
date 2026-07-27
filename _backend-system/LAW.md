@@ -40,6 +40,7 @@ Source: `research/transactions-concurrency.md`.
 | Balance/count operations (credits, vouchers, daily caps): pessimistic, a Postgres advisory lock inside an RPC. Already shipped | T2 mechanic + repo evidence |
 | Any multi-write operation that must succeed or fail together (touches money, balances, or a shared cap): one Postgres function via `.rpc()`, never multiple sequential client-side `.from()` calls, because each PostgREST request is its own transaction, there is no client-side transaction API | T1 (PostgREST's own request-per-transaction model) |
 | N+1 avoidance: PostgREST resource embedding in one `.select()` with an explicit narrow column list, not `*`, not a per-row loop | T1 |
+| Column list discipline (performance-01, added 2026-07-27, closes the enforcement gap the research itself named): the narrow-column-list row above is now a CI ratchet, not prose alone. `npm run select-star:census` (`scripts/select-star-census.mjs`) counts every `select("*")`/`select('*')` under `app/api`, wired as the `select-star-census` job in `.github/workflows/quality.yml`, baseline 107 (today's actual count, no mass migration demanded). A route that genuinely needs every column (an owner-only admin export) is added to `scripts/select-star-allowlist.json` with a one-line reason, never silently exempted | T1 (mechanism) |
 | Data access path: supabase-js/PostgREST only. A raw Postgres driver is not adopted speculatively; if one is ever added it MUST go through Supavisor transaction mode with prepared statements disabled | T1 |
 | Deadlock handling: consistent single-lock-per-function discipline; the day any function needs 2+ locks, write an explicit acquisition order. Rely on Postgres's own detector as the backstop, not as the primary defense | T1 |
 
@@ -162,11 +163,36 @@ Source: `research/security.md`.
 | CSP script policy: explicit domain allowlist first (Stripe.js, Google Maps, PostHog, fonts). Migrate to nonce+strict-dynamic later, once the third-party list is stable and SSR nonce plumbing is worth the effort | CONV / T3 |
 | SSRF DNS-rebinding guard: leave as one-time-resolve for now. Trigger: a new feature lets an anonymous/public (not the current ~28-salon-owner population) user supply a URL the server fetches | T1 (the gap is real) / T3 (the urgency call) |
 | PII encryption: platform-at-rest (Supabase's own) + RLS, no column-level encryption (pgsodium is explicitly being deprecated by Supabase itself, don't reach for it). Trigger: a specific compliance mandate or an incident showing platform-at-rest+RLS was insufficient | T2 (Supabase's own current guidance) |
-| Secrets storage: env vars, Zod-validated (`lib/env.ts`), not a dedicated vault (HashiCorp Vault/AWS Secrets Manager). Add a rotation cadence and confirm GitHub push-protection is enabled (unverified, see "Not yet frozen") | T1 / T3 (scale threshold) |
-| Timing-safe compare: every secret/token/HMAC comparison uses `timingSafeEqual`, including `CRON_SECRET`, no exceptions for "less important" secrets | T1 |
+| Secrets storage: env vars, Zod-validated (`lib/env.ts`), not a dedicated vault (HashiCorp Vault/AWS Secrets Manager). **Rotation cadence IMPLEMENTED 2026-07-27** (secrets-webhooks-04, see the cadence table below); GitHub push-protection status stays unverified, see "Not yet frozen" | T1 / T3 (scale threshold) |
+| Timing-safe compare: every secret/token/HMAC comparison uses `timingSafeEqual` (or the Web-Crypto equivalent for edge-runtime routes), including `CRON_SECRET`, no exceptions for "less important" secrets. **IMPLEMENTED 2026-07-27** (secrets-webhooks-10): `lib/cron-auth.ts`'s `constantTimeStringEqual` fixed all 22 cron routes plus 3 more (admin badges/solen-score, notify internal-secret, walkin tracking_token); `scripts/check-timing-safe-secrets.mjs` gates the pattern in CI at baseline 0 | T1 |
 | Rate-limit fail posture for a NEW limiter: classify explicitly at creation time (fail-closed for enumeration oracles, payment, auth, booking; fail-open for low-value high-volume reads), default to fail-open unless the surface is abuse-prone | T2 |
 
 **Also deferred, with trigger:** a dedicated secrets vault (trigger: team grows past the size where "who can see the Netlify dashboard" is an acceptable access boundary, or a compliance requirement explicitly demands it); a full CSP nonce pipeline (build the allowlist CSP first, evolve to nonces once the third-party script list is stable); automated malware/AV scanning on uploads (fix the more foundational upload gaps first, see file-storage row below); network-level egress firewalling as an SSRF layer (not really configurable on Netlify's managed serverless functions at all, largely inapplicable to the current host, not a scale question).
+
+### 8a. Secret rotation cadence (secrets-webhooks-04, frozen 2026-07-27)
+
+A secret's usefulness to whoever obtains it (a leaked log line, a departing
+team member's local `.env.local` copy, a compromised laptop) never expires on
+its own; only rotating the secret itself ends it. This is the floor, not a
+suggestion, for every server-held secret in `lib/env.ts`'s `serverEnvSchema`
+(`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `SUPABASE_SERVICE_ROLE_KEY`,
+`RESEND_API_KEY`, `CRON_SECRET`, `BOOKING_HMAC_SECRET`, `LOYALTY_HMAC_SECRET`,
+and any secret added to that schema later):
+
+| Trigger | Action |
+|---|---|
+| Any team member with dashboard/secret access (Netlify, Supabase, Stripe, Resend) offboards, or their access scope changes | Rotate every secret that person could read, same day |
+| A secret is suspected or confirmed leaked (see the leak-response runbook, secrets-webhooks-05) | Rotate immediately, out of band from this cadence |
+| No specific trigger fires | Rotate `STRIPE_SECRET_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, and `RESEND_API_KEY` at least annually anyway, since a secret nobody has ever rotated is a secret an old leak (one nobody noticed) is still valid against |
+| `CRON_SECRET`, `BOOKING_HMAC_SECRET`, `LOYALTY_HMAC_SECRET` | Same annual floor; rotating `CRON_SECRET` is a hard simultaneous cutover across every `/api/cron/*` route (no dual-secret grace window today, unlike Stripe's own webhook-secret rotation), so schedule it for a low-traffic window and expect every cron to 401 until the new value is set in both GitHub Actions secrets and Netlify env vars |
+
+"Last rotated" is not yet tracked anywhere machine-readable (this is a
+written cadence, a checklist per the finding's own enforcement tier, not a
+CI gate: rotation is an operational action, not something a static grep can
+verify happened). Extending `_backend-system/CREDENTIAL_EXPIRY.md`
+(secrets-webhooks-03) with a "last rotated" column per secret, checked
+manually against this table's annual floor, is the natural next step if this
+cadence needs a harder enforcement mechanism later.
 
 ---
 
@@ -320,6 +346,30 @@ refund-reporting-window day count (implemented at 14 days, matching the pre-exis
 proposal in `_tasks/REFUND_APPEAL_PLAN.md` section 11, but never explicitly owner-confirmed);
 trust-08's review self-edit/delete policy (whether a customer may edit or delete their own posted
 review at all, and for how long, is a product decision this file cannot make up).
+
+---
+
+## 17. Performance
+
+Source: `_design-system/research/missing-principles-2026-07-26/performance.json` (performance-01
+through performance-10). Not one of the original 15 research topics; added 2026-07-27 once the
+principles sweep found the gap the other 16 sections don't cover: Solen has exactly one
+performance number ever written down (LCP <= 2.5s, LOCKFILE.md) and it binds a manual per-wave
+design check, not the codebase as a whole.
+
+| Decision | Tier |
+|---|---|
+| Column list discipline (performance-01, IMPLEMENTED): see section 2's row, `npm run select-star:census` ratchets `select("*")` under `app/api` at baseline 107 | T1 (mechanism) |
+| Core Web Vitals budget (performance-02, IMPLEMENTED): LCP <= 2.5s, CLS <= 0.1, and Total Blocking Time <= 500ms (the lab proxy for INP, real INP needs field data a CI run can't produce) are asserted by Lighthouse CI (`lighthouserc.js`) against 3 named routes (home, a city/category page, the sanctioned test-salon PDP), wired as the `lighthouse` job in `.github/workflows/quality.yml`. Same secrets-gated skip-green shape as the `visual`/`motion` jobs, so it activates the moment the Supabase secrets are set | T1 (web.dev's own "good" thresholds) |
+| Per-page query-count budget (performance-03): a page/route's data-fetching entry point states, in a one-line comment, the max sequential (non-`Promise.all`'d) DB round trips it makes. More than 3 sequential round trips means parallelize or collapse into one RPC before merging, not after a future sweep finds it. Not automated (a grep-based "consecutive await" heuristic has real false-positive risk on legitimately-dependent queries), a code-review checklist item today | Checklist (reasoned false-positive risk, not gated) |
+| Cache-addition trigger (performance-04): already frozen in section 13's table + deferred-triggers list. The residual gap this closes is PR-facing: `.github/pull_request_template.md` now carries a line requiring the specific measured number (an `EXPLAIN ANALYZE` time or a real p95) that justifies any new cache layer, so the requirement binds a human reviewer or an agent session without this file loaded, not only a Claude session with fable-backend's memory loaded | Checklist (PR template) |
+| N+1 systematic check (performance-06): the current confidence level is a 4-file sample (`audit/transactions-concurrency.md:41`), not a systematic sweep of the ~165 API routes. A full grep-based heuristic (a loop body followed by an awaited `.from(` call) is not adopted as a hard gate, real false-positive risk (not every loop-with-a-query is a bug). The intended enforcement is a recurring quarterly line in `_plans/SWEEP_BACKLOG.md`'s own generation mechanism (a `_plans/` file, owned by the sweep orchestrator, not edited directly here); this row is the frozen decision that line should implement | Checklist (periodic sweep item, pending the orchestrator adding it to `_plans/SWEEP_BACKLOG.md`) |
+| Measured before/after on a perf claim (performance-07): `.github/pull_request_template.md` now carries a line requiring the actual before-number and after-number, with units, on any PR whose description claims a performance improvement. A claimed optimization with no attached number is unverified and gets re-measured before merge, same standard as a correctness fix needing a reproduction | Checklist (PR template) |
+| Bundle-size budget (performance-08): deferred, not yet built. `next.config.mjs` records exactly one deliberate bundle decision ever made (the Phosphor-icons removal); no `@next/bundle-analyzer` dependency, no CI ratchet exists yet. Same ratchet shape as section 2's select-star-census once built: gzipped first-load JS for home/search/PDP tracked against a committed baseline, PR must name what was added if it grows >10% | Deferred, not yet gated (see the deferred-triggers list below) |
+| Per-request DB-time vs handler-time split (performance-09, IMPLEMENTED): `lib/db-timing.ts`'s `createDbTimer()` wraps a route's DB call(s) and logs one line splitting handler-total from DB-total (`[db-timing] <route>: handler=Xms db=Yms (N calls)`), proven to discriminate the two (a unit run showed handler=63.8ms vs db=42.3ms across 2 calls, non-DB overhead visibly isolated). Wired into `GET /api/salons/[slug]` (the PDP's own data source, the literal "PDP feels slow" example this finding names) as the first exemplar. Not yet retrofitted across all ~165 routes, that is fix-while-you're-there on next touch, not a mass migration | T1 (mechanism), retrofit is CONV (per-route, as touched) |
+| Image weight budget (performance-10, PARTIALLY IMPLEMENTED): `next.config.mjs`'s `images.formats` is now pinned to `["image/webp"]`, confirmed live as Next 15.3.8's own current default (`node_modules/next/dist/shared/lib/image-config.js`), no behavior change today, just closes the "a future major bump silently changes it" risk. Quality stays Next's own unset 75 default. The 200KB max-rendered-weight NUMBER itself has no enforced ceiling yet (would need a next-build image-manifest check), still a nice-to-have given the photo count is small (28 salons) | T1 (pinning the format), the byte-ceiling itself is not yet gated |
+
+**Also deferred, with trigger:** a bundle-size CI ratchet (trigger: this section itself names it as the next build-out, not urgent given only one manual bundle decision has ever been needed); a `lib/db-timing.ts` shared wrapper + per-route DB-time logging (trigger: the next "X feels slow" investigation that would otherwise start from zero, retrofit the wrapper onto that route first and expand from there); an automated grep-based N+1 heuristic (trigger: the periodic sweep-backlog reads turn up more than one or two real hits, proving the pattern recurs enough to be worth a noisier automated check); an automated grep-based per-page query-count check (trigger: the checklist item alone is shown, via a recurrence in `SWEEP_BACKLOG.md`, not to be catching a real case); pinning `images.formats`/`quality` in `next.config.mjs` with an enforced byte-weight ceiling (trigger: the photo set grows past a size where "still small" stops being true, or a real slow-LCP complaint traces back to an oversized photo).
 
 ---
 
