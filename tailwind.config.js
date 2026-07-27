@@ -327,7 +327,9 @@ module.exports = {
       },
       transitionProperty: {
         "transform-opacity": "transform, opacity",
-        "shadow-transform": "box-shadow, transform",
+        // "shadow-transform" REMOVED (motion-06, 2026-07-27): bundled box-shadow with transform
+        // under a name implying both are compositor-cheap, box-shadow is not (LOCKFILE SS3.5).
+        // Zero live usages when removed (grep -rn "shadow-transform" app -> 0 hits).
         "colors-shadow": "color, background-color, border-color, box-shadow",
       },
       animation: {

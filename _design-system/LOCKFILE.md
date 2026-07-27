@@ -604,7 +604,13 @@ The matrix above covers rest/hover/pressed/selected/focus/disabled. Two more are
 | Select toggle / scrim swap | 200ms | `snap` |
 | Color / focus ring | 150ms | `snap` |
 
-Animate `transform` + `box-shadow` only (compositor-friendly). Honor §4 anti-patterns (no will-change at rest; gate backdrop-blur on scroll containers).
+Animate `transform`, `opacity`, and `filter` only, compositor-friendly. **`box-shadow` is EXCLUDED**
+(corrected 2026-07-27, motion-06): drawing a shadow is a multi-pass paint operation, not a compositor
+job, so transitioning it repaints every frame, unlike opacity/transform which the compositor handles
+without touching layout or paint (`research/TASTE_MOTION.md` finding 25, sourced from web.dev's
+paint-cost docs). A hover-lift wants the LOOK of a growing shadow, get it by animating a pre-rendered
+shadow layer's opacity plus a `translateY` transform, never `box-shadow` itself. Honor §4 anti-patterns
+(no will-change at rest; gate backdrop-blur on scroll containers).
 
 ### Enforcement (how this survives — anti-drift)
 
@@ -630,6 +636,16 @@ Animate `transform` + `box-shadow` only (compositor-friendly). Honor §4 anti-pa
 "glide":  cubic-bezier(0.16, 1, 0.3, 1)       // long-distance smooth (sheet open)
 "thud":   cubic-bezier(0.7, 0, 0.84, 0)       // press-down feel (button scale)
 ```
+
+**"spring" is TWO DIFFERENT MECHANISMS under one word (disambiguated 2026-07-27, motion-07).**
+The CSS `ease-spring` token above is a FIXED, deterministic bezier curve, no velocity, no
+interruption, used for an in-place flip (toggle, check). A framer-motion `type: "spring"`
+transition (`SPRING_GENTLE` / `SPRING_SNAPPY`, `app/[locale]/_components/primitives/motion.ts`,
+and every gesture-release spring in §16.5.4) is a REAL physics simulation with velocity,
+overshoot, and settle time. Reading `ease-spring` in a `className` and `type:"spring"` in a
+`.tsx` transition object are NOT the same mechanism tuned two ways; do not assume swapping one
+for the other is neutral. (Flagged as a parked, unresolved finding in an earlier audit pass;
+this note is the resolution, not just the flag.)
 
 ### Fresha-measured motion patterns
 
