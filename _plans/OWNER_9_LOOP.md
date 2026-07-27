@@ -64,7 +64,14 @@ and reversible in one line rather than buried in a diff.
       a 200 with an empty array, indistinguishable from sending none. Skips are now counted
       with a reason (too_large / unsupported_format / storage_rejected / db_insert_failed),
       returned to the caller, and all-failed is a 502.
-- [ ] **L4. Empty-photo card: make the CODE match the written rule (option A).** Reasoning: two
+- [x] **L4. RESOLVED BY LOOKING, and there was no fork to pick.** `verified:` the customer card
+      at `components-legacy/SalonCard.tsx:195-205` ALREADY renders the written rule
+      (`bg-s-bg-sunken` + category icon + salon initial). The two "disagreeing variants" are
+      (a) `:122`, inside the `variant === "compact"` branch, a dashboard settings preview the
+      file itself documents as out of scope at `:116-119`, and (b)
+      `components-legacy/RecentlyViewed.tsx:106`, whose component is never rendered , its only
+      importer takes just `trackSalonView` (`SalonDetailV3.tsx:34`). Scope pinned in LOCKFILE
+      so it does not get re-opened. My original plan said: two
       undocumented shipped variants against one written rule is how the next person picks the
       wrong one. Docs that describe reality are worth more than reality bent to match a doc
       nobody chose deliberately.

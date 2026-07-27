@@ -295,12 +295,10 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [ ] `imagery-icons-02` **AWAITING OWNER** OWNER QUESTION: do salon-gallery and review photos get a pre-publish review queue? The cost is somebody's time watching it, which is yours to spend or delegate. , [high/M] No pre-publish moderation for salon-gallery or review photos, unlike Discovery content
 - [x] `imagery-icons-04` **CUT, resolved** a locked LOCKFILE rule already covers it; this is 35 violations of an existing law, not a missing law , [high/M] 35 raw <img> tags on customer surfaces bypass next/image, including the locked global Avatar primitive
 - [x] `imagery-icons-03` **DONE** commit `535095474` , [medium/S] Alt text has no authoring rule and is empty on informative content images
-- [ ] `imagery-icons-05` **AWAITING OWNER** two mutually exclusive options, pick ONE , [medium/S] The documented grey-box fallback and the shipped fallback component describe two different visuals
-  - [ ] **AWAITING OWNER, option A of two** , not work I can do without the pick, because A and
+- [x] `imagery-icons-05` **RESOLVED, and the premise was wrong.** Investigated instead of answered: the customer-facing card ALREADY renders the written rule (`components-legacy/SalonCard.tsx:195-205`, `bg-s-bg-sunken` + category icon + salon initial). The two "disagreeing variants" are (a) the `variant === "compact"` branch at :122, a dashboard settings preview that the file itself documents as deliberately out of scope, and (b) `components-legacy/RecentlyViewed.tsx:106`, whose component is never rendered , its sole importer pulls only `trackSalonView`. So there was no owner fork to pick between; the reading had not separated the variant branches. LOCKFILE now pins the scope and names both, so the next reader does not re-open it. , [medium/S] The documented grey-box fallback and the shipped fallback component describe two different visuals
         B are mutually exclusive and each undoes the other. A: change the code so both
         SalonCard variants render the written rule, sunken
         background + category icon + salon initial. Nothing in the docs changes.
-  - [ ] **AWAITING OWNER, option B of two** , same single question, opposite answer.
         B: pick whichever shipped variant you prefer (the colour block with the full
         name in large type, or the sunken block with just an initial) and rewrite CLAUDE.md:68,
         CLAUDE.md:95 and LOCKFILE.md:1840 to describe it. Nothing in the code changes.

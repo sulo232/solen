@@ -1854,6 +1854,17 @@ Source + evidence: `research/UNFINISHED_AUDIT_2026-07-21.md`. Co-equal with ever
   photographic area; the photo is the largest element of every SalonCard; a missing photo renders the
   spec'd fallback (s-bg-sunken + 3D category icon + salon initial), NEVER a bare grey box, never
   slot-omission. Mockups use real seeded photography. Exempt by name: forms, checkout payment step,
+  SCOPE, pinned 2026-07-27 after imagery-icons-05 was investigated rather than assumed: this
+  fallback binds the CUSTOMER-FACING salon cover. Two other renders exist and neither is a
+  contradiction. (a) `components-legacy/SalonCard.tsx:122` uses the colour-block `ImageFallback`
+  in its `variant === "compact"` branch ONLY, which is the dashboard settings preview, not a
+  customer surface, and the file already says so at :116-119. (b)
+  `components-legacy/RecentlyViewed.tsx:106` also uses it, but that component is never rendered
+  anywhere , its only importer takes the `trackSalonView` helper (`SalonDetailV3.tsx:34`), so
+  that render path is dead. The customer default variant at `SalonCard.tsx:195-205` already
+  renders exactly this rule: `bg-s-bg-sunken` + the category icon + the salon initial.
+  The finding claimed code and docs disagreed three ways. They do not; the reading did not
+  separate the variant branches.
   legal, receipts. **LCP reconciliation (hierarchy-density-09):** the first/largest image satisfying
   this floor (the hero SalonCard photo, the PDP gallery's first photo) carries `next/image`'s
   `priority` prop (no lazy) so meeting the imagery floor does not blow the LCP <=2.5s gate
