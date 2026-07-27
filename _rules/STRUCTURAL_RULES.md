@@ -335,3 +335,86 @@ For destructive or sensitive profile actions, use a dedicated modal component ra
 - Create a separate memo component accepting `open` and `onClose` props
 - Manage modal state in parent component
 - Render modal after all other UI elements to maintain layering
+
+---
+
+## Rule 49: SALON SLUG STABILITY (ia-navigation-06, 2026-07-27)
+
+> **STATUS**: a landmine, not a live defect. `app/api/salons/[slug]/route.ts`'s PATCH handler
+> performs no slug regeneration today, and no salon-name-edit UI exists yet (grepped, no
+> `app/api/dashboard/salon/settings` route, no `salon_slug_redirects`-equivalent table). This
+> rule exists so the FIRST such feature is built correctly instead of 404ing every external
+> reference to a renamed salon on day one.
+
+A salon's slug, once published, is the load-bearing identifier for every customer-facing
+surface: bookmarked PDPs, shared booking links, walk-in queue QR codes, tip-sheet deep links,
+and every review/SEO backlink pointing at `/salon/[slug]`. Before ANY feature ships that lets
+an owner rename their business, the slug question must be answered as one of exactly two options:
+
+1. **Immutable**: the slug never changes once published, full stop (renaming the display name
+   does NOT regenerate the slug), or
+2. **Editable with a redirect trail**: an edit flow writes the OLD slug into a
+   `salon_slug_redirects` table (old_slug, salon_id, created_at) and every request to an old
+   slug serves a 301/`permanentRedirect()` to the current one, forever.
+
+Do not let a `slugify(newName)` default silently regenerate the slug on a name-edit save. This
+is the same principle Rule 32 (`_rules/I18N_ROUTING.md`) already applies to killed discovery
+routes, extended from route-level URLs to entity-level ones. Enforcement: this is a doc-only
+law until a salon-name-edit endpoint exists; that PR must cite this rule and state which of
+the two options it implements before it can merge.
+
+---
+
+## Rule 50: REDIRECT OUTCOME IS A NAMED CHOICE, NOT AN ACCIDENT (ia-navigation-08, 2026-07-27)
+
+> **INCIDENT**: three killed Solen features got three different URL outcomes with no record of
+> why. `app/[locale]/inspo/nails/page.tsx:9` uses `permanentRedirect()` to the new location
+> (matches Rule 32). `app/[locale]/profile/gift-cards/page.tsx:13` uses a plain `redirect()` to
+> a parent page. The Pakete/packages feature (`_design-system/REMOVED.md:29`) has no surviving
+> page anywhere and falls through to the bare 404 chain with zero explicit routing decision ever
+> made for it, just deletion. Rule 32 already mandates `permanentRedirect()`, but only for
+> discovery-category routes; nothing generalized it.
+
+When a route is killed, its outcome is chosen from exactly ONE decision tree, not improvised:
+
+- **(a) The concept moved and still exists under a new URL** -> `permanentRedirect()` (308) to
+  the new location. This is Rule 32's existing case, generalized beyond discovery categories.
+- **(b) The concept is gone but a nearby page is still the right landing spot** -> a plain
+  `redirect()` to that page.
+- **(c) The concept is entirely gone with no landing spot** -> the route is deleted outright and
+  MUST produce the locked 404 page (`app/[locale]/not-found.tsx`, Rule 36), never a bare
+  unstyled Next.js default 404 and never silent fall-through with no record of the choice.
+
+Every `_design-system/REMOVED.md` entry for a route deletion must state which of the three
+outcomes it chose and why, as a required field in the `npm run removed -- ...` template (see
+`_design-system/REMOVED.md`'s entry-format header). Enforcement: the `pre-commit-graveyard.sh`
+hook that already blocks a route deletion without a REMOVED.md line should also require that
+line to name its redirect outcome.
+
+---
+
+## Rule 51: FILE-SIZE / COMPONENT-SIZE CEILING (fe-05, 2026-07-27)
+
+> **WHY THIS RULE EXISTS**: nothing anywhere in the system stated a size ceiling, and the
+> largest files in the tree are 3-6x the size of the next tier down (`SearchTemplate.tsx` at
+> ~2400 lines, `dashboard/settings/page.tsx` at ~1580, `dev/primitives/page.tsx` at ~1300) — the
+> classic shape of a file that started focused and had every subsequent feature bolted onto the
+> same file instead of decomposed. A single file with no stopping point accumulates
+> responsibilities indefinitely, and it gets progressively harder for any agent (bounded context
+> window) to safely edit without regressions.
+
+A page or component file **exceeding 400 lines** must either:
+- be split into named sub-components with single responsibilities (the same way the old
+  1145-line salon-detail monolith was split into `SalonDetailV3.tsx` + 17 colocated section
+  files, each under 200 lines — see that file's own header comment), or
+- carry a one-line comment at the top of the file naming WHY it stays one file (e.g. "this
+  composes N tightly-coupled layout regions that share local state X").
+
+A file **exceeding 800 lines** gets its own line in `_tasks/INCOMPLETE_FEATURES.md` as
+decomposition debt, with an owner and the reason it hasn't been split yet — the same way any
+other incomplete-feature gap is tracked today. Do not silently let an 800+ line file exist with
+no record.
+
+This is a checklist item today (part of Rule 40/46's pre-commit review). A future gate could be
+a simple `wc -l` check in a PreToolUse hook or CI step that WARNS (not blocks, given the existing
+outliers above 800 lines already in the tree) once a file crosses 800.
