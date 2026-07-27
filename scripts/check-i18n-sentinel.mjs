@@ -60,9 +60,23 @@ function loadFlat(locale) {
 let failed = false;
 
 // 1. Hard zero: non-string leaf values (sentinel/TODO markers) in ANY locale.
+//
+// EXCEPT an array of strings, which next-intl supports via t.raw() and which this repo
+// legitimately uses (dashboard.approvalsPage.checklistItems, the admin approval checklist,
+// consumed as a list). Before 2026-07-27 this check rejected it, so the `i18n` job in
+// .github/workflows/quality.yml was RED on all four locale files, permanently. A gate that
+// is always red is a gate everyone learns to scroll past, which is worse than no gate: it
+// would have hidden a real sentinel leaf behind the noise. The sentinel this rule exists to
+// catch is a boolean/number/null marker (`_todo_translate: true`), and that is still a hard
+// zero. An array is only accepted when EVERY element is a non-empty string, so a TODO marker
+// cannot smuggle itself in inside one.
+const isAllowedLeaf = (v) =>
+  typeof v === "string" ||
+  (Array.isArray(v) && v.length > 0 && v.every((x) => typeof x === "string" && x.trim() !== ""));
+
 for (const locale of LOCALES) {
   const flat = loadFlat(locale);
-  const nonString = Object.entries(flat).filter(([, v]) => typeof v !== "string");
+  const nonString = Object.entries(flat).filter(([, v]) => !isAllowedLeaf(v));
   if (nonString.length > 0) {
     failed = true;
     console.error(`\n[FAIL] messages/${locale}.json has ${nonString.length} non-string leaf value(s):`);

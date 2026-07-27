@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Instagram, Facebook, ChevronRight, Check } from "lucide-react";
 import { useState } from "react";
+import LanguageSwitcher from "@/components-legacy/ui/LanguageSwitcher";
 
 /**
  * V3 Footer — variant C "nav hub" (2026-06-05, owner pick).
@@ -57,12 +58,10 @@ const COLUMNS: Array<{ heading: string; items: Array<{ label: string; href: stri
   },
 ];
 
-const LOCALES = [
-  { code: "de", label: "DE" },
-  { code: "en", label: "EN" },
-  { code: "fr", label: "FR" },
-  { code: "it", label: "IT" },
-];
+// LOCALES removed 2026-07-27: the footer's four locale <Link>s were replaced by the shared
+// LanguageSwitcher, which owns the locale list (LOCALE_LABELS in components-legacy/ui/
+// LanguageSwitcher.tsx). Two copies of the list was how the footer could drift from the
+// switcher in the first place.
 
 /** Inline Swiss flag — red rounded square + white cross. Intentional real color
  *  (a national flag is factual, like the rating star keeping its yellow). */
@@ -164,17 +163,14 @@ export default function Footer({ locale }: { locale: string }) {
           <span className="inline-flex items-center gap-1.5">
             © {new Date().getFullYear()} Solen.ch Schweiz <SwissFlag />
           </span>
+          {/* Was a row of <Link href={`/${code}`}>: it discarded the current path and dumped
+              the visitor on that locale's HOMEPAGE, and it never set the NEXT_LOCALE cookie,
+              so the choice did not survive the next navigation. Two of the three reasons
+              "changing lang doesnt rlly work" (owner, 2026-07-27). Same LanguageSwitcher the
+              mobile menu uses: it swaps the locale SEGMENT of the current pathname and writes
+              the cookie, so you stay on the page you were reading. */}
           <div className="flex flex-wrap gap-x-6 gap-y-2">
-            {LOCALES.map((l) => (
-              <Link
-                key={l.code}
-                href={`/${l.code}`}
-                aria-current={l.code === locale ? "true" : undefined}
-                className={l.code === locale ? "text-s-ink" : "transition-colors hover:text-s-ink"}
-              >
-                {l.label}
-              </Link>
-            ))}
+            <LanguageSwitcher locale={locale} />
           </div>
         </div>
       </div>

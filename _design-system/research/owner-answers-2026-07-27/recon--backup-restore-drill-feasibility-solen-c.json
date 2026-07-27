@@ -1,0 +1,183 @@
+{
+  "area": "Backup restore drill feasibility (Solen.ch, Supabase project tocfnsmxmdxkrcmjzzdw)",
+  "summary": "The nightly backup cron has never run once. The `db-backup` job exists in the local `.github/workflows/cron-jobs.yml`, but GitHub's default branch `main` was last pushed 2026-05-21 and its copy of that workflow has no `db-backup` job and no `'45 3 * * *'` schedule; the registered workflow is `disabled_inactivity` with 2,981 failures and 0 successes across 2,984 runs, and production `solen.ch/api/cron/db-backup` returns the HTML catch-all (route not deployed). I listed the live `db-backups` bucket read-only: it contains exactly one folder, `backups/2026-07-11/`, 24 files, 2.72 MB, written 16:39 UTC on the day the feature was built. So the real RPO today is 15 days 22 hours, not the \"daily\" the runbook implies, and it is growing. The 16%-of-tables figure checks out exactly (24 of 146 tables; 2,455 of 14,538 rows). More seriously, a restore into any fresh environment is structurally impossible right now for two independently verified reasons: (1) `profiles` and 10 other live tables have no `CREATE TABLE` anywhere in the 273 migration files, so the runbook's \"provision schema from `supabase/migrations/`\" step dies at file 2 of 273; (2) the backup set carries foreign keys into `auth.users`, which PostgREST cannot see (PGRST205) and which therefore can never be in the export. I proved (2) concretely: 3 of 47 `referrals.referrer_id` values point at auth users that have no `profiles` row, and live `auth.users` has 55 rows against 49 backed-up profiles. A restore is only possible onto a target that already carries the same `auth.users`, which means a `--with-data` Supabase branch, not a fresh project or a local Postgres.",
+  "findings": [
+    {
+      "claim": "The nightly backup cron has never executed. The remote default-branch workflow does not contain the db-backup job at all.",
+      "evidence": "Local `.github/workflows/cron-jobs.yml:15` has `- cron: '45 3 * * *'` and `:183-194` defines `daily-03-45-utc` pinging `/api/cron/db-backup`. Fetched `https://raw.githubusercontent.com/sulo232/solen/main/.github/workflows/cron-jobs.yml` (HTTP 200, 138 lines): zero occurrences of `db-backup`, schedules stop at `'0 11 * * *'`, job list ends at `daily-11-utc`. `api.github.com/repos/sulo232/solen` -> `default_branch: main`, `pushed_at: 2026-05-21T21:12:09Z`, `private: false`. `git rev-list --count origin/main..main` = 1621.",
+      "confidence": "verified",
+      "wired": "dead-code (built, never scheduled)"
+    },
+    {
+      "claim": "The workflow that does exist on GitHub is disabled and has never had a single successful run.",
+      "evidence": "`api.github.com/repos/sulo232/solen/actions/workflows` -> total_count 1, `cron-jobs.yml`, state `disabled_inactivity`, updated 2026-07-20T21:42:17Z. Runs by conclusion: success 0, failure 2981, skipped 0, cancelled 0, of 2984 total. Job listings for the three runs nearest 03:45 UTC (ids 29629624620, 29222460171, 29178689483) show 10 jobs, none named db-backup. Corroborates `_plans/LAUNCH.md:3` and `:1` gate 3.",
+      "confidence": "verified",
+      "wired": "dead-code"
+    },
+    {
+      "claim": "The db-backup route is not deployed to production. Netlify is serving the 2026-05-21 build.",
+      "evidence": "`GET https://solen.ch/api/cron/db-backup` -> HTTP 200, `content-type: text/html`, byte-identical header shape to `GET /api/cron/definitely-not-a-real-route-xyz123` (also 200 text/html). Control: `GET /api/cron/generate-slots` -> HTTP 401, `content-type: application/json`, i.e. that route exists and enforces the bearer at `app/api/cron/db-backup/route.ts:26-28`. The route file was created 2026-07-11, after the last push to main. No side effect: the request never reached the handler.",
+      "confidence": "verified",
+      "wired": "dead-code"
+    },
+    {
+      "claim": "Exactly one backup artifact exists in the live bucket, from 2026-07-11, and it was a manual run, not a cron run.",
+      "evidence": "Read-only `POST /storage/v1/object/list/db-backups` with the service-role key: prefix '' -> 1 entry `backups`; prefix `backups/` -> 1 entry `2026-07-11`; prefix `backups-test/` -> 0 entries. Prefix `backups/2026-07-11` -> 24 objects, 2,783,750 bytes total, all `created_at` between 16:39:12 and 16:39:22 UTC. The scheduled slot is 03:45 UTC (`.github/workflows/cron-jobs.yml:15`), so 16:39 is a hand-run of `runDbBackupExport` (`lib/backup/export.ts:76`). All 24 `BACKUP_TABLES` entries are present; the set difference is empty.",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "Real RPO today is 15 days 22 hours and growing, not the \"daily\" the runbook implies. The runbook's RTO is an admitted estimate.",
+      "evidence": "`_plans/OPS_RUNBOOK.md:16` verbatim: \"RPO = backup cadence (daily on Pro, or PITR window); RTO ~ 1-2h (restore + env repoint + owner `sync`).\" `_plans/OPS_RUNBOOK.md:19` states the export \"runs daily 03:45 UTC via .github/workflows/cron-jobs.yml\" (it does not, see above). `_backend-system/LAW.md:81` sets the target: \"RPO <= 24h (accept, matches current cadence), RTO <= 4h (target, not yet verified by a real drill)\". Only backup: 2026-07-11T16:39Z; today 2026-07-27.",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "The 16%-of-tables figure is exactly right, and row coverage is the same number.",
+      "evidence": "`_inventory/_db-snapshot.json` (capturedAt 2026-07-12) lists 146 public base tables. `lib/backup/export.ts:26-51` `BACKUP_TABLES` has 24 entries, all 24 present in the snapshot, zero phantoms. 24/146 = 16.4%. Row coverage: 2,455 of 14,538 = 16.89%. Excluding the two deliberate omissions (`availability_slots` 9,365 rows, `discovery_items` 1,071, both regenerable per `lib/backup/export.ts:24-25`), coverage is 2,455/4,102 = 59.8%.",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "65 tables with live rows are outside the backup set, including every retail-money table and the money-path audit log.",
+      "evidence": "Computed from `_inventory/_db-snapshot.json` minus `BACKUP_TABLES`. Uncovered with rows > 0 include: `audit_log` 59, `salon_directory` 48, `barber_walkin_queue` 21, `staff_portfolio_images` 12, `retail_sales` 11, `service_addons` 10, `barber_cut_history` 10, `salon_drafts` 8, `booking_disputes` 3, `client_formulas` 3, `nail_client_preferences` 2, `consultation_notes` 2, `intake_form_responses` 2, `wellness_journals` 2, `sales` 1, `sale_line_items` 1, `tips` 1, `package_purchases` 1, `client_notes` 1. The last group is the nFADP special-category cluster named in `_plans/LAUNCH.md:6`.",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "The backup-set staleness the 2026-07-16 audit flagged has grown, not shrunk. Five tables shipped after BACKUP_TABLES was frozen and none were added.",
+      "evidence": "`_backend-system/audit/backup-recovery.md:29` (BACKUP-05) flagged `promo_redemptions` and `salon_of_month_winners`. Re-derived today by grepping `CREATE TABLE` in every migration dated >= 20260711: `cron_runs`, `salon_of_month_winners`, `promo_redemptions` (`supabase/migrations/20260714120000_promo_per_user_cap.sql`), `salon_portfolio_images` (`supabase/migrations/20260725120000_salon_portfolio_images.sql`, new since the audit), `cron_locks` (`supabase/migrations/20260727120000_cron_locks.sql`, new today). None appear in `lib/backup/export.ts:26-51`.",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "BLOCKER 1 for any fresh-environment restore: 11 live tables, including `profiles`, have no CREATE TABLE in any of the 273 migration files. The runbook's schema-reproducibility claim is false as a conclusion.",
+      "evidence": "`_plans/OPS_RUNBOOK.md:15` claims \"A fresh environment can now be provisioned from files.\" Programmatic diff of `_inventory/_db-snapshot.json` against every `create table [if not exists] [public.]<name>` in `supabase/migrations/`: 135 of 146 covered; missing are `profiles` (49 rows, IN the backup set), `salon_clients` (1 row, IN the backup set), `retail_sales`, `sales`, `sale_line_items`, `salon_directory`, `salon_engagement`, `user_salon_affinity`, `partner_leads`, `spa_treatment_outcomes`, `hand_chart_notes`. A permissive `create[^;]{0,60}\\b<name>\\b` search finds only CREATE POLICY for `profiles` and `salon_directory`, and nothing at all for the other 9. `supabase/migrations/002_profiles.sql:1` is `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS display_name TEXT;` with no table guard, so a replay aborts at file 2 of 273.",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "BLOCKER 2, the decisive one: the backup set has foreign keys into `auth.users`, which the export mechanism structurally cannot capture. A fresh empty project cannot accept these rows.",
+      "evidence": "`supabase/migrations/049_referrals.sql:6` `referrer_id uuid NOT NULL REFERENCES auth.users(id)`; same pattern at `20260703150856_credit_redemption_ledger_and_rpcs.sql:14` (user_credits), `20260703103322_voucher_redemption_ledger_and_rpcs.sql:11` (vouchers), `039_loyalty.sql:17` (loyalty_cards). PostgREST cannot see the auth schema: `GET /rest/v1/users` -> 404 PGRST205 \"Could not find the table 'public.users'\", so `runDbBackupExport` (`lib/backup/export.ts:86-89`, `admin.from(table)`) can never export it. Proven on the real artifact: 3 of 47 `referrals.referrer_id` values are absent from `profiles.json`; a read-only `GET /auth/v1/admin/users` count (no PII printed) shows `auth.users` = 55, backup profiles = 49, 6 auth users have no profile, 0 profiles lack an auth user, and all 3 orphan referrer_ids exist in `auth.users`. `supabase/migrations/014_new_schema.sql:61-64` confirms `profiles` is populated by an `AFTER INSERT ON auth.users` trigger, i.e. profiles is downstream of auth.",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "An offline FK rehearsal against the real artifact passes 30 of 34 checkable edges and finds 3 genuine orphans, so this check has proven value before any database is involved.",
+      "evidence": "Downloaded all 24 files read-only and validated every FK edge in the order stated at `_plans/OPS_RUNBOOK.md:24`. All of salons->cities/profiles, services/staff/schedules->salons, bookings->salons/services/profiles, reviews->bookings/salons/profiles, review_replies->reviews, service_categories.parent_id self-ref (61 non-null, 0 orphan) resolve cleanly. Only failure: `referrals.referrer_id` 3 orphans. Four edges are unverifiable from the JSON because the column name differs from the runbook prose (`staff_services.staff_id`, `bookings.staff_id`, `loyalty_cards.customer_id`, `vouchers.user_id` all report NOCOL), which is itself a defect in the runbook's hand-written FK paragraph.",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "PRODUCTION RISK: the Supabase CLI in this repo is linked to production, and `db push` / `db dump` default to that link.",
+      "evidence": "`supabase/.temp/project-ref` = `tocfnsmxmdxkrcmjzzdw` (the prod ref, matching `_plans/OPS_RUNBOOK.md:13`); `supabase/.temp/pooler-url` = `postgresql://postgres.tocfnsmxmdxkrcmjzzdw@aws-1-eu-west-2.pooler.supabase.com:5432/postgres`. `supabase db push --help` -> `--linked  Pushes to the linked project. (default true)`. `supabase db dump --help` -> `--linked  Dumps from the linked project. (default true)`. `supabase db reset --help` -> `--local ... (default true)`, so reset is safe by default but `--linked` is one flag away. These `.temp` files are tracked in git (`git ls-files supabase/.temp/` returns all 8) despite `.gitignore:99`, in a repo where `private: false`.",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "PRODUCTION RISK: the only \"safe\" backup test script writes to the production Storage bucket, not a sandbox.",
+      "evidence": "`scripts/db-backup-kill-test.ts:61-62` builds `backups-test/${Date.now()}` and calls the real `runDbBackupExport`, which uses `createAdminSupabaseClient` (`lib/backup/export.ts:17`, `lib/supabase.ts:78-92`) reading `NEXT_PUBLIC_SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` from `.env.local`, which point at production. Its own header (`scripts/db-backup-kill-test.ts:5-8`) is honest that it \"never touches the real backups/ prefix\", but it does touch the real bucket. Cleanup verified working: the live `backups-test/` prefix is currently empty.",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "PRODUCTION RISK, silent-no-op shaped: restore step 5 says \"verify with npm run smoke\", and as written that verifies production, not the restore target.",
+      "evidence": "`_plans/OPS_RUNBOOK.md:25` step 5. `package.json` scripts: `smoke` -> `tsx scripts/api-smoke.ts`. `scripts/api-smoke.ts:17-18` calls `loadEnvConfig(process.cwd())` then `:31,:38-39` builds clients from `lib/supabase.ts`, which read the same prod URL and keys. Nothing in the script or the runbook step overrides the target. A restore could be completely broken and this step would still report PASS against prod.",
+      "confidence": "verified",
+      "wired": "wired (to the wrong database for this purpose)"
+    },
+    {
+      "claim": "Credentials: the key needed to READ the backup is present; the keys needed to RUN the backup or to reach Postgres directly are absent.",
+      "evidence": "Variable names in `/Users/sulo/Documents/solen/.env.local` (symlinked from the worktree): NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY (new `sb_secret_` format, 41 chars, not a JWT, so Storage needs the `apikey` header not only Bearer), STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY, RESEND_API_KEY, BOOKING_HMAC_SECRET, GIFT_CARD_HMAC_SECRET, GEMINI_API_KEY, GOOGLE_PLACES_API_KEY, NEXT_PUBLIC_MAPBOX_TOKEN, PLATFORM_FEE_PERCENT. ABSENT: CRON_SECRET (so `app/api/cron/db-backup/route.ts:21-22` returns 503 locally; `lib/env.ts:80` marks it `.optional()`), ADMIN_EMAIL, UPSTASH_REDIS_REST_URL/TOKEN, SUPABASE_ACCESS_TOKEN, and any DATABASE_URL / Postgres password. Repo-wide grep for DATABASE_URL / SUPABASE_DB_URL / POSTGRES_URL / postgresql:// over lib, app, scripts, .github finds only two comments (`scripts/ring8-kill-test.ts:9`, `scripts/ring8b-kill-test.ts:19`) stating there is no raw-SQL path and no DATABASE_URL.",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "Tooling: no Docker, no psql/pg_dump, no node Postgres driver. The Supabase CLI is installed but cannot reach the Management API from this sandbox.",
+      "evidence": "`which docker` -> not found. `which psql pg_dump pg_restore` -> none. No `pg` or `postgres` dependency in `package.json`. `supabase --version` -> 2.75.0 at /opt/homebrew/bin/supabase. `supabase branches list` -> `tls: failed to verify certificate: x509: OSStatus -26276` (keychain access denied to the Go binary), while plain `curl https://api.supabase.com/v1/projects` -> 401 and `curl https://<ref>.supabase.co/rest/v1/` -> 401, i.e. the network is fine and only the CLI's cert path is blocked. `~/.supabase` contains only telemetry.json, no token file.",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "Supabase plan facts, fetched live today rather than recalled.",
+      "evidence": "Fetched https://supabase.com/pricing 2026-07-27 (HTTP 200): Free = \"Branching Not included\", \"Automatic backups Not included\", \"Point in time recovery Not included\", \"Limit of 2 active projects\", \"paused after 1 week of inactivity\". Pro = $25/month, \"First project included. Additional projects from $10/mo\", automatic backups \"7 days\", PITR \"$100 per month per 7 days retention\", Branching \"$0.01344 per branch, per hour\".",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "The project is almost certainly on the Free plan, which decides which drill options are even purchasable.",
+      "evidence": "`_plans/OPS_RUNBOOK.md:18` records VERIFIED 2026-07-11 that `pitr_enabled=false` AND \"the platform backups list is EMPTY\". Per the pricing page fetched today, Pro includes 7-day automatic backups with no opt-in, so an empty platform backup list is inconsistent with Pro. `_plans/OPS_RUNBOOK.md:14` still lists the plan tier as an unresolved owner check, and `_backend-system/audit/backup-recovery.md:117` lists it as an open Unknown. I could not re-verify the tier this session: the Supabase MCP server requires authentication that is unavailable here and the CLI's TLS to api.supabase.com is blocked.",
+      "confidence": "inferred",
+      "wired": "n/a"
+    },
+    {
+      "claim": "If the workflow is fixed and runs cleanly, the first successful run deletes the only backup that exists.",
+      "evidence": "`lib/backup/export.ts:21` RETENTION_DAYS = 14 (no rationale comment, the BACKUP-07 gap at `_backend-system/audit/backup-recovery.md:31`). `pruneOldBackups` (`lib/backup/export.ts:143-150`) computes cutoff = now - 14 days and deletes any `YYYY-MM-DD` folder older than it. Today's cutoff is 2026-07-13; the only folder is 2026-07-11. `app/api/cron/db-backup/route.ts:36-39` runs the prune only after a fully clean export, so the very first green run prunes it. Copy `backups/2026-07-11/` out before fixing the cron if that artifact matters.",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "None of the 15 Storage buckets are backed up, including every customer- and salon-photo bucket.",
+      "evidence": "Read-only `GET /storage/v1/bucket` returns 15 buckets: chat-media, client-photos, gift-card-assets, nail-inspo-images, barber-portfolio-images, service-photos, staff-portfolio-images, discovery-images, formula-photos, review-photos, salon-documents, salon-gallery, nail-portfolio-images, db-backups, avatars. `lib/backup/export.ts:26-51` is table rows only; `_backend-system/research/backup-recovery.md:134` states the export \"does not capture constraints, sequences, triggers, RLS policies, or any DDL at all, only rows\", and it captures no objects either.",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "Housekeeping: this recon left a copy of production personal data on local disk.",
+      "evidence": "I downloaded the 24 backup files (2.72 MB, including `profiles.json` 58 KB and `bookings.json` 2.0 MB with guest names, phones and emails) to /private/tmp/claude-501/-Users-sulo-Documents-solen--claude-worktrees-quirky-ellis-ef5559/57967b14-3150-443c-a086-24ec109168b4/scratchpad/bk/ to run the FK rehearsal. Nothing was written to the repo and nothing was written to any database. Delete that directory when done.",
+      "confidence": "verified",
+      "wired": "n/a"
+    }
+  ],
+  "gaps": [
+    {
+      "what": "The backup does not run at all. The `db-backup` job and the `'45 3 * * *'` schedule exist only on unpushed local commits; GitHub's `main` is 1,621 commits and two months behind, and the one registered workflow is `disabled_inactivity` with zero successful runs ever.",
+      "why_it_matters": "Every downstream claim in the runbook, the law file and the audit assumes a nightly artifact that does not exist. The real RPO is 15 days 22 hours and unbounded, not 24 hours. Fixing the drill without fixing this produces a verified restore procedure for a backup nobody is taking.",
+      "size": "S",
+      "existing_thing_to_extend": "`.github/workflows/cron-jobs.yml` (owner pushes main; the workflow also needs re-enabling after `disabled_inactivity`)"
+    },
+    {
+      "what": "`auth.users` is unbackupable by the current mechanism, and the backup set depends on it.",
+      "why_it_matters": "This is why a restore into a fresh project or a local Postgres cannot work today, not as a theory but as an arithmetic fact: 49 profiles rows and 3 referrals rows already have no valid parent outside production. Either the drill target must clone auth (a `--with-data` branch), or the export needs a second path (the GoTrue admin API can enumerate users read-only, as I did for the count) plus an explicit statement that password hashes and identities are out of scope.",
+      "size": "M",
+      "existing_thing_to_extend": "`lib/backup/export.ts` `runDbBackupExport`, plus a new note in `_plans/OPS_RUNBOOK.md:20-26`"
+    },
+    {
+      "what": "Schema is not reproducible from files. 11 live tables, including `profiles` and `salon_clients`, have no CREATE TABLE in the 273 migration files, so the replay aborts at `supabase/migrations/002_profiles.sql:1`.",
+      "why_it_matters": "`_plans/OPS_RUNBOOK.md:15` asserts the opposite and nothing has ever tested it. Restore step 2 is unrunnable as written. Recovering the missing DDL needs either the Postgres password plus Docker (`supabase db dump -s public`) or the dashboard SQL editor, both owner actions.",
+      "size": "M",
+      "existing_thing_to_extend": "`supabase/migrations/` plus the backfill recipe already documented at `_rules/DB_SCHEMA.md` section 7"
+    },
+    {
+      "what": "The runbook's hand-written FK order (`_plans/OPS_RUNBOOK.md:24`) names four columns that do not exist in the exported data: `staff_services.staff_id`, `bookings.staff_id`, `loyalty_cards.customer_id`, `vouchers.user_id` all came back NOCOL against the real JSON.",
+      "why_it_matters": "The whole restore depends on that paragraph being correct, and it is prose with no test behind it. Four of thirty-four edges are already wrong on column name alone. An automated topological order derived from the live catalog (or from `lib/database.types.ts` Relationships) removes the class of error instead of re-proofreading the paragraph.",
+      "size": "M",
+      "existing_thing_to_extend": "`_plans/OPS_RUNBOOK.md:24` and `lib/database.types.ts`"
+    },
+    {
+      "what": "No restore code exists in any form. `find scripts -iname '*restore*'` is empty; `scripts/db-backup-kill-test.ts:7-8` says in its own header that it does not restore.",
+      "why_it_matters": "H1 asks for a real restore. Without a script, a drill is a manual sequence of 24 upserts in a hand-derived order, which is exactly the thing that will not be repeated quarterly and will be wrong under pressure.",
+      "size": "M",
+      "existing_thing_to_extend": "`scripts/db-backup-kill-test.ts` is the right shape to copy: it already loads env, imports the real lib, reports per-scenario PASS/FAIL and exits non-zero"
+    },
+    {
+      "what": "Verification points at the wrong database. `_plans/OPS_RUNBOOK.md:25` step 5 says run `npm run smoke`, and `scripts/api-smoke.ts:17-18` loads `.env.local`, which is production.",
+      "why_it_matters": "This is the repo's signature silent-no-op wearing a different hat: the step that is supposed to prove the restore worked would return PASS regardless. `npm run smoke` needs an explicit target-URL/key override, and the runbook step needs to say so.",
+      "size": "S",
+      "existing_thing_to_extend": "`scripts/api-smoke.ts` and `_plans/OPS_RUNBOOK.md:25`"
+    },
+    {
+      "what": "Backup scope drift has no trigger. Five tables shipped after the list was frozen (`cron_runs`, `salon_of_month_winners`, `promo_redemptions`, `salon_portfolio_images`, `cron_locks`) and none were added; 65 tables with live rows sit outside the set, including `sales`, `sale_line_items`, `tips`, `retail_sales`, `audit_log`, and the health-adjacent `nail_client_preferences` / `consultation_notes` / `client_formulas` / `intake_form_responses` cluster.",
+      "why_it_matters": "`_backend-system/audit/backup-recovery.md:29` flagged this on 2026-07-16 and the gap has grown since, which is evidence that a checklist note will not hold. A migration-time gate comparing `CREATE TABLE` in a new migration against `BACKUP_TABLES` is the mechanism that would.",
+      "size": "S",
+      "existing_thing_to_extend": "`lib/backup/export.ts:26-51` plus a PreToolUse gate alongside the existing `.claude/hooks/migration-fabrication-gate.py`"
+    },
+    {
+      "what": "No Docker, no psql/pg_dump, no node Postgres driver on this machine, and no Postgres password or Supabase PAT anywhere.",
+      "why_it_matters": "Every option that involves a real database is gated on an owner action before an agent can do anything: install Docker Desktop, or produce the DB password, or produce a Supabase access token. Worth knowing before scheduling drill time.",
+      "size": "S",
+      "existing_thing_to_extend": "n/a, environment provisioning"
+    }
+  ],
+  "recommendation": "Run the drill in three ranked tiers, and fix the cron first because the drill validates a mechanism that is currently not running at all.\n\nTIER 0, do this before anything else, ~10 minutes, $0, zero production write surface. Copy `backups/2026-07-11/` out of the bucket to durable storage. It is the only backup that exists and the first clean nightly run will prune it (`lib/backup/export.ts:143-150`, cutoff 14 days, folder is 16 days old). Then get the workflow onto GitHub: push main and re-enable the `disabled_inactivity` workflow, because `.github/workflows/cron-jobs.yml:15,183-194` exists only locally and the remote copy has no `db-backup` job.\n\nTIER 1, the safest drill that proves something real, ~1 hour, $0, no database touched, and it has already found two defects. Write `scripts/restore-rehearsal.ts` modelled on `scripts/db-backup-kill-test.ts` (same env loading, same per-scenario PASS/FAIL report, same non-zero exit). It downloads a date folder read-only from the `db-backups` bucket and asserts, without any target database: every FK value resolves inside the backup set; the FK order in `_plans/OPS_RUNBOOK.md:24` is a valid topological order and names columns that actually exist; every column present in the JSON exists in `_inventory/_db-columns.json`. Running this by hand today already returned 3 orphan `referrals.referrer_id` values and 4 columns named in the runbook that are not in the data. This closes half of H1 honestly: it names the exact blocker, which is what H1 explicitly permits. It does not produce an RTO number, so it does not close H2.\n\nTIER 2, the only option that can produce a real restored database and a measured RTO, requires Pro. `supabase branches create <name> --with-data` is the single option where the restore can succeed, because `--with-data` clones production including `auth.users`, and without that clone 49 `profiles` rows and 3 `referrals` rows have no valid parent. Cost, from the pricing page fetched today, is $0.01344 per branch-hour, so a four-hour drill is about five cents, on top of Pro at $25/month if the project is still Free. Sequence: create the branch, point a copy of `.env.local` at the branch URL and keys, run the restore in FK order against the branch only, run `npm run smoke` with those overridden env vars (not the default, see below), time each step, then `supabase branches delete`. Two named risks: `--with-data` copies production personal data into a second database, which is an nFADP consideration the owner should acknowledge; and branch creation needs a Supabase access token plus a CLI that can reach api.supabase.com, which this sandbox cannot (TLS OSStatus -26276), though plain curl against the Management REST API works from here.\n\nNOT recommended: a fresh second Supabase project (Free allows 2 active projects, so $0) and local Postgres via Docker both start with an empty `auth.users` and a migration replay that dies at `supabase/migrations/002_profiles.sql:1`. They cost the most work and prove the least. Local Postgres additionally needs a Docker Desktop install that does not exist on this machine.\n\nThree things to fix regardless of tier, all one-liners or close. `_plans/OPS_RUNBOOK.md:25` step 5 must say to override `NEXT_PUBLIC_SUPABASE_URL` and the keys before running `npm run smoke`, because `scripts/api-smoke.ts:17-18` loads `.env.local` and would otherwise verify production and pass no matter what the restore did. `_plans/OPS_RUNBOOK.md:15` must stop claiming a fresh environment can be provisioned from files until the 11 missing CREATE TABLEs are backfilled. And `lib/backup/export.ts:26-51` should gain `promo_redemptions` and `salon_portfolio_images` at minimum.\n\nLOUD PRODUCTION WARNINGS for whoever runs this. The Supabase CLI in this working directory is linked to production (`supabase/.temp/project-ref` = tocfnsmxmdxkrcmjzzdw): `supabase db push` and `supabase db dump` both default to `--linked`, so a bare command hits prod. Only one credential exists, the production service-role key, and it holds write plus delete on both the live database and the sole backup bucket. `scripts/db-backup-kill-test.ts` writes into the production Storage bucket, not a sandbox. If you relink the CLI to a different project for the drill, relink it back, because nothing warns you which project you are pointed at."
+}

@@ -1,0 +1,225 @@
+{
+  "area": "Translation / i18n state of the Solen.ch web app (locale catalogue, language switching, hardcoded copy, DB-side locale columns, CI gates, French register)",
+  "summary": "The message catalogue is NOT the problem: messages/{de,en,fr,it}.json are 5703 keys each, perfectly in parity, with essentially zero untranslated values (the only en/de-identical long strings are the word \"Salon\", a Swiss address placeholder, and two ICU plural strings). The problem is everything outside next-intl. (1) Language switching is genuinely broken: the only path-preserving, cookie-setting switcher (components-legacy/ui/LanguageSwitcher.tsx) is mounted in exactly one place, the MobileMenu, whose hamburger trigger is `md:hidden` — so on desktop there is no working switcher at all, only a footer row of `<Link href={`/${code}`}>` that throws you to the target locale's HOMEPAGE and never sets the NEXT_LOCALE cookie. (2) /profile/settings/language lets you pick a language, PATCHes profiles.locale, toasts \"saved\" and calls router.refresh() — the URL keeps the old locale segment so the UI does not change language at all; it only affects emails. (3) 109 TSX files carry 543 hardcoded German user-facing literals outside /dev/, 27 of those files already call t() (that is literally the \"mixed german english\" the owner sees), and the shared booking DateTimePicker primitive ships German defaults that the homepage search bar never overrides. (4) The DB is structurally German/English-only for the content that matters: services.name_*, services.description_*, salons.description_*, service_options.name_*, salon_badges.name_* and nail_dynamic_pricing_rules.label_* have de+en and NO fr/it columns, and 12 read sites hard-code `locale === 'en' ? x_en : x_de`, so French and Italian users get German service names everywhere — while app/[locale]/_components/salon/SalonServices.tsx:172 renders `{service.name_de}` unconditionally, meaning even English users see German service names on the salon PDP. (5) /terms and /privacy render German AND English paragraphs side by side on all four locales with no French or Italian at all. (6) The i18n CI job is RED right now: check-i18n-sentinel.mjs exits 1 on all four locale files.",
+  "findings": [
+    {
+      "claim": "i18n runs on next-intl 3.26.5 with four JSON catalogues. messages/de.json, en.json, fr.json, it.json each hold exactly 5703 flattened keys across 94 top-level namespaces: 5702 string leaves + 1 array leaf. Zero empty strings in any locale. Catalogue sizes: de 261,477 B / en 245,044 / fr 269,552 / it 261,646.",
+      "evidence": "package.json:70 (\"next-intl\": \"^3.26.5\"); next.config.mjs:5 createNextIntlPlugin(\"./i18n.ts\"); i18n.ts:31 `await import(./messages/${locale}.json)`; counted with a flatten script over the 4 files: de/en/fr/it = keys 5703, stringLeaves 5702, nonString 1, emptyString 0",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "`node scripts/check-i18n-parity.mjs` PASSES. Verbatim output: `check-i18n-parity: OK (5703 keys, all 4 locales in sync)` , exit code 0.",
+      "evidence": "ran `node scripts/check-i18n-parity.mjs` in /Users/sulo/Documents/solen/.claude/worktrees/quirky-ellis-ef5559; stdout as quoted, EXIT=0",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "`node scripts/check-i18n-sentinel.mjs` FAILS TODAY, exit 1. It reports `[FAIL] messages/<locale>.json has 1 non-string leaf value(s): dashboard.approvalsPage.checklistItems = [...]` for all four locales. The identical-to-en ratchet itself passes at its baselines: de 466 (baseline 466), fr 368 (368), it 220 (220). This is a FALSE POSITIVE in the gate, not a translation bug: the array is deliberate and is consumed via `t.raw(\"checklistItems\") as string[]`. Net effect: the `i18n` CI job on quality.yml is red on every push and PR, so the gate that is supposed to protect translations is currently noise.",
+      "evidence": "ran `node scripts/check-i18n-sentinel.mjs`, EXIT=1, 4 FAIL blocks; consumer at app/[locale]/dashboard/approvals/page.tsx:92 `{(t.raw(\"checklistItems\") as string[]).map(...)}`; .github/workflows/quality.yml:162-174 job `i18n` runs sentinel then parity with no continue-on-error",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "THE SWITCHER BUG, part 1: the only correct language switcher is mounted on mobile only. components-legacy/ui/LanguageSwitcher.tsx:46-59 `switchLocale()` swaps the locale path segment, writes `document.cookie = NEXT_LOCALE=...`, then router.push + router.refresh. It is imported in exactly ONE file, app/[locale]/_components/layout/MobileMenu.tsx:21, rendered at :336 as variant=\"sheet\". The hamburger that opens MobileMenu is `md:hidden` (Header.tsx:802). The component's \"header\" and \"menu\" variants are dead code , nothing renders them.",
+      "evidence": "grep -rn 'LanguageSwitcher' over app/components/components-legacy returns only MobileMenu.tsx:21,336 and the component's own definition; Header.tsx:802 className starts `md:hidden relative grid h-11 w-11 ...`; Header.tsx:888 <MobileMenu ...>",
+      "confidence": "verified",
+      "wired": "partially-wired"
+    },
+    {
+      "claim": "THE SWITCHER BUG, part 2: on desktop the only language control is the footer row, and it is a plain link to the target locale's HOMEPAGE. app/[locale]/_components/layout/Footer.tsx:168-176 renders `<Link href={`/${l.code}`}>` for de/en/fr/it. It does not preserve the current path and it does not set the NEXT_LOCALE cookie. A user on /en/salon/xyz who clicks FR lands on /fr and loses the page. This is the mechanically exact behaviour behind \"changing lang doesnt rlly work\".",
+      "evidence": "app/[locale]/_components/layout/Footer.tsx:60-65 LOCALES const; :168-176 the <Link href={`/${l.code}`}> map; no document.cookie anywhere in Footer.tsx (grep NEXT_LOCALE returns only middleware.ts, MobileMenu.tsx comment, LanguageSwitcher.tsx)",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "THE SWITCHER BUG, part 3: on /booking, /confirmation, /salon/*/reviews and /salon/*/team the Footer is not rendered at all, so on desktop those screens have ZERO language control (mobile still has the hamburger sheet).",
+      "evidence": "app/[locale]/_components/layout/FooterGate.tsx TASK_STEP_PREFIXES = [\"/booking\", \"/confirmation\"], TASK_STEP_PATTERNS = [/^\\/salon\\/[^/]+\\/reviews(\\/|$)/, /^\\/salon\\/[^/]+\\/team(\\/|$)/], and `if (isTaskStep(withoutLocale)) return null;`",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "SILENT NO-OP: /profile/settings/language changes nothing about the UI language. SettingsForm.tsx:376-404 (section===\"language\") posts through saveProfile (:92-131) which PATCHes /api/profile with `locale: form.locale`, toasts success and calls `router.refresh()`. It never writes the NEXT_LOCALE cookie and never navigates to the new locale prefix, and next-intl resolves the locale from the URL segment, so the page re-renders in the OLD language. The column is genuinely persisted (updateProfileSchema line 157 accepts `locale: z.enum([\"de\",\"en\",\"fr\",\"it\"])`, /api/profile PATCH writes it) and IS read by ~10 email senders , so the control is email-only. The helper text does say so (\"Für E-Mails und Erinnerungen\" / \"Used for emails and reminders\", messages/*.json line 35), but the page is titled \"Sprache\" and sits in Settings, so it reads as the site-language switch and silently is not one.",
+      "evidence": "app/[locale]/profile/settings/SettingsForm.tsx:92-131 (saveProfile: fetch PATCH /api/profile, toast.success, router.refresh, no cookie, no push); :376-404 the language section; lib/validations.ts:157; app/api/profile/route.ts PATCH .update({...validated}); messages/de.json:35 \"localeNote\"",
+      "confidence": "verified",
+      "wired": "partially-wired"
+    },
+    {
+      "claim": "Three different, mutually inconsistent language-switch mechanisms coexist: (a) MobileMenu sheet = path swap + cookie, (b) Footer links = jump to locale homepage, no cookie, (c) Settings page = DB write, no UI effect. Switching via (a) or (b) never updates profiles.locale, so a user who switches the site to English keeps receiving German emails; switching via (c) updates emails but not the site.",
+      "evidence": "LanguageSwitcher.tsx:46-59; Footer.tsx:168-176; SettingsForm.tsx:92-131 , none of the three touches the other two's state",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "The NEXT_LOCALE cookie is nearly inert. middleware.ts:6-32 getLocaleFromRequest reads it, but middleware.ts:84-93 only calls it when the pathname has NO locale prefix. Every internal link in the app is locale-prefixed, so the cookie only affects a bare `/` entry or an external deep link without a prefix.",
+      "evidence": "middleware.ts:9-12 (path check wins), :15-18 (cookie), :84-93 `if (!hasLocale) { const locale = getLocaleFromRequest(request); ... redirect }`",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "HARDCODED GERMAN, THE NUMBER: 109 files, 543 occurrences of user-facing hardcoded German in .tsx under app/, components/, components-legacy/, excluding /dev/ routes, with comments stripped and with the `de:{...}` branch of legitimate inline 4-locale maps excluded. Split: 27 files / 95 occurrences are in files that ALREADY call t() (the literal mixed-language files), 82 files / 448 occurrences are files with no next-intl call at all. 207 files use t() with no German literal detected. By area: legal 7 files/224 occ, customer 72 files/187 occ, partner 7/64, components-legacy 17/47, dashboard 6/21. Including /dev/ playground routes: 119 files / 621 occurrences.",
+      "evidence": "scan over 618 .tsx files; detector = umlaut/ß or a German-only stopword, applied to JSX text nodes and to `prop=\"...\"`/`key: \"...\"` string literals, line-scoped; script kept at /private/tmp/claude-501/-Users-sulo-Documents-solen--claude-worktrees-quirky-ellis-ef5559/57967b14-3150-443c-a086-24ec109168b4/scratchpad/final2.mjs",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "THE 20 WORST FILES BY HARDCODED-GERMAN COUNT (excluding /dev/): 1. app/[locale]/terms/components/TermsContent.tsx 169; 2. app/[locale]/privacy/components/PrivacyContent.tsx 41; 3. app/[locale]/fuer-salons/page.tsx 19; 4. app/[locale]/business/page.tsx 19; 5. components-legacy/dashboard/DashboardLayout.tsx 15; 6. components-legacy/staff/StaffProfilePage.tsx 14; 7. app/[locale]/_components/homepage/BentoBusiness.tsx 12; 8. app/[locale]/_components/primitives/DateTimePicker.tsx 10; 9. app/[locale]/onboarding/OnboardingFlow.tsx 10; 10. app/[locale]/onboarding/salon/page.tsx 8; 11. app/[locale]/_components/layout/Header.tsx 7; 12. app/[locale]/auth/reset-password/page.tsx 7; 13. app/[locale]/_components/homepage/ArtistOfTheMonth.tsx 7; 14. app/[locale]/_components/homepage/WhySolen.tsx 7; 15. app/[locale]/_components/homepage/SearchBar.tsx 6; 16. app/[locale]/onboarding/beautyFields.tsx 6; 17. app/[locale]/profile/stamps/page.tsx 5; 18. app/[locale]/warum-solen/page.tsx 5; 19. app/[locale]/_components/layout/Footer.tsx 5; 20. app/[locale]/_components/salon/SalonLoyalty.tsx 5.",
+      "evidence": "same scan, ranked output; e.g. DateTimePicker.tsx:79-89 DEFAULT_LABELS {morning:\"Vormittag\", afternoon:\"Nachmittag\", evening:\"Abend\", availableTimes:\"Verfügbare Zeiten\", pickDay:\"Wähle einen Tag\", noSlots:\"Keine freien Termine\", moreDates:\"Weitere Daten\"}",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "The shared DateTimePicker primitive ships German defaults and the HOMEPAGE SEARCH never overrides them. app/[locale]/_components/homepage/SearchBar.tsx:550-554 renders <DateTimePicker variant=\"single-date\" value onChange /> with NO `labels` prop, so on /en, /fr, /it the date picker renders \"Vormittag / Nachmittag / Abend / Verfügbare Zeiten / Wähle einen Tag / Keine freien Termine / Voriger Monat / Nächster Monat\". The booking flow and the reschedule sheet DO pass labels, which proves the mechanism works and that the search bar is the miss. The same file also hardcodes the section headings \"Wann?\" (:542) and \"Tageszeit\" (:560) and the chip labels Morgens/Mittags/Nachmittags/Abends (:126-130) plus Maniküre/Pediküre/Färben (:108-116).",
+      "evidence": "app/[locale]/_components/homepage/SearchBar.tsx:550-554 (no labels prop), :542, :560, :108-116, :126-130; contrast components-legacy/booking/DateTimeStep.tsx:208 `labels={{` and components-legacy/booking/RescheduleSheet.tsx:216 `labels={{`; DateTimePicker.tsx:79-89, :390, :404",
+      "confidence": "verified",
+      "wired": "partially-wired"
+    },
+    {
+      "claim": "The global Header renders 22 hardcoded German page titles on EVERY locale. Header.tsx:409-435 builds a TITLES regex table (\"Treueprogramm\", \"Termine\", \"Favoriten\", \"Stempel\", \"Geschenkkarten\", \"Haarprofil\", \"Gutscheine\", \"Formulare\", \"Freunde einladen\", \"Profil bearbeiten\", \"Einstellungen\", \"Persönliche Angaben\", \"Passwort\", \"Zahlungsmethoden\", \"Sprache\", \"Beauty-Profil\", \"Benachrichtigungen\", \"Konto löschen\", \"Profil\", ...). The code comment at :406-408 states this is deliberate: \"Hardcoded de on purpose ... i18n is tracked separately.\" So an English user on /en/profile/favorites sees a German header title above English content.",
+      "evidence": "app/[locale]/_components/layout/Header.tsx:406-408 (comment), :409 const deepPageTitle, :411-435 the TITLES array",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "THE BIGGEST SINGLE MIXED-LANGUAGE SURFACE: the salon PDP service list is German for everyone. app/[locale]/_components/salon/SalonServices.tsx:172 renders `{service.name_de}` with no locale branch at all, and :184 hardcodes the row CTA \"Buchen\". This is the main customer surface (rendered from SalonDetailV3.tsx:275). An English user sees English chrome around a German service list with a German button.",
+      "evidence": "app/[locale]/_components/salon/SalonServices.tsx:172 `{service.name_de}`, :175 formatDurationDE(...), :184 `Buchen`; mounted at app/[locale]/_components/salon/SalonDetailV3.tsx:274-275",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "12 read sites hard-code `locale === 'en' ? x_en : x_de`, which means FRENCH AND ITALIAN FALL BACK TO GERMAN, not to English: app/[locale]/confirmation/page.tsx:109; app/[locale]/_components/search/SearchOverlay.tsx:662; app/api/walkin/salon-info/route.ts:38 and :39; components-legacy/salon/SalonWalkInPanel.tsx:132; components-legacy/booking/PayConfirmStep.tsx:430 and :462; components-legacy/booking/ServiceDetailSheet.tsx:78 and :79; components-legacy/booking/ServicesStaffStep.tsx:128 and :130; components-legacy/staff/StaffProfilePage.tsx:188. Only app/[locale]/inspo/board/[id]/page.tsx:48 handles all four. SalonBundles.tsx:151 is the same two-locale pattern.",
+      "evidence": "grep -rn \"locale === ['\\\"]en['\\\"] ?\" over app/lib/components/components-legacy filtered to lines containing _en or _de returns exactly 13 lines (12 two-locale + 1 four-locale); app/[locale]/_components/salon/SalonBundles.tsx:151 `{locale === \"en\" && s.name_en ? s.name_en : s.name_de}`",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "THE DB IS THE ROOT OF THAT: 15 locale-suffixed column groups exist across 146 live tables; 8 are complete 4/4 and 7 are PARTIAL. The partial ones are exactly the customer-content ones: services.name_* [de,en] MISSING fr,it; services.description_* [de,en] MISSING fr,it; salons.description_* [de,en] MISSING fr,it; service_options.name_* [de,en] MISSING fr,it; salon_badges.name_* [de,en] MISSING fr,it; nail_dynamic_pricing_rules.label_* [de,en] MISSING fr,it; site_content.value_* [de,en,fr] MISSING it. Complete 4/4: cities.name_*, service_categories.name_*, salons.about_text_*, discovery_boards.name_*, discovery_items.name_*/description_*/products_*/salon_script_*. Live row counts affected: 263 services, 28 salons, 6 service_options, 4 salon_badges, 2 pricing rules, 7 site_content.",
+      "evidence": "_inventory/_db-columns.json parsed for /_(de|en|fr|it)$/ column groups across 146 tables; row counts from _inventory/_db-snapshot.json (capturedAt 2026-07-12)",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "salons.about_text_* IS complete 4/4 and IS correctly read per-locale, which proves the intended pattern exists and was simply not applied to services. app/[locale]/_components/salon/SalonAbout.tsx:19-24 does `localized(`about_text_${locale}`) ?? ... ?? salon.about_text_de ?? salon.description_de ?? ...`.",
+      "evidence": "app/[locale]/_components/salon/SalonAbout.tsx:17-24; _inventory/_db-columns.json salons has about_text_de/en/fr/it",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "SILENT NO-OP in core search: the service filter in /api/salons matches German service names only. app/api/salons/route.ts:255-262 builds serviceTask as `.from(\"services\").select(\"salon_id\").ilike(\"name_de\", `%${serviceFilter}%`).eq(\"is_active\", true)`. There is no name_en fallback, and no fr/it column exists to match. A non-German query string passed as ?service= returns an empty salon set even where name_en is populated. By contrast the city resolver on the same route (:242-250) correctly matches name_de/en/fr/it, so the omission is local to the service filter.",
+      "evidence": "app/api/salons/route.ts:261 `.ilike(\"name_de\", `%${serviceFilter}%`)`; :243-249 the city resolver matching all four name_* columns; the route never reads a `locale` search param (grep 'locale' in that file returns only the owner-email block at :836-854)",
+      "confidence": "verified",
+      "wired": "partially-wired"
+    },
+    {
+      "claim": "/terms and /privacy render German AND English simultaneously on all four locales, and have no French or Italian version. TermsContent.tsx defines Section({titleDe,titleEn}) at :446-458 rendering BOTH as h2 + h3, Article at :462-474 rendering `{titleDe} / {titleEn}`, and ParDe/ParEn at :480-496 rendering both paragraphs. Neither TermsContent nor PrivacyContent takes a locale prop (grep 'locale' in TermsContent.tsx = 0 hits). app/[locale]/terms/page.tsx:11 nonetheless advertises hreflang alternates for de/en/fr/it, all serving the same German+English page. These two files alone are 210 of the 543 hardcoded-German occurrences and 105 of the 133 hardcoded-English occurrences on customer surfaces.",
+      "evidence": "app/[locale]/terms/components/TermsContent.tsx:446-496 (Section/Article/ParDe/ParEn); `grep -c locale TermsContent.tsx` = 0; app/[locale]/terms/page.tsx:7-13 metadata.alternates.languages with de/en/fr/it; page.tsx:23,27,39,44-49 more hardcoded DE+EN chrome",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "HARDCODED ENGLISH on customer surfaces: 21 files, 133 occurrences (excluding /dev/ and dashboard). 105 of those 133 are the legal pages' English column (TermsContent 87, PrivacyContent 18). The remaining 28 are scattered: app/[locale]/salon/[slug]/booking/page.tsx:31-32 metadata \"Book your appointment | Solen\" / \"Secure your appointment with just a few clicks.\" on every locale; components-legacy/discovery/SearchBar.tsx:17 placeholder \"Search styles...\" and :61 aria-label \"Clear search\"; app/[locale]/terms/components/TermsSidebar.tsx:9,11,13 mixed \"3. Buchungen / Bookings\" nav labels; plus single hits in Header.tsx, homepage/Hero.tsx, homepage/SearchBar.tsx, homepage/CategoryStack.tsx, app/[locale]/page.tsx, profile/bookings/page.tsx, inspo/[id]/page.tsx, SalonCard.tsx, ReviewForm.tsx, UserPostsSection.tsx, morphing-dialog.tsx.",
+      "evidence": "same scanner with an English stopword detector, German-marker strings excluded, en:{} branches of inline locale maps blanked; totals 85 files/361 occ overall, 21 files/133 occ after excluding /dev/",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "There is a SECOND, parallel i18n system that neither CI gate covers: 22 files carry inline 4-locale `{de:{...},en:{...},fr:{...},it:{...}}` copy objects instead of messages/*.json , app/[locale]/[city]/[category]/page.tsx, _components/layout/CityTopBar.tsx, _components/layout/OfflineBanner.tsx, _components/search/SalonResultCard.tsx, _components/tips/TipFlow.tsx, queue/[token]/page.tsx, salon/[slug]/layout.tsx, walk-in-pay/page.tsx, walk-in-tip/[token]/page.tsx, api/cron/review-prompt/route.ts, components-legacy/barber/WalkInPaymentForm.tsx, booking/BookingPaymentForm.tsx, discovery/DetailPage.tsx, discovery/InlinePrefsPanel.tsx, discovery/PostFromDiscover.tsx, discovery/ProfileSetupModal.tsx, salon/SalonModeToggle.tsx, salon/SalonWalkInPanel.tsx, ui/LanguageSwitcher.tsx, lib/email-templates/audit-notifications.ts, lib/email.ts, lib/format.ts. Two more are de/en only, so fr/it silently get one of those: app/[locale]/staff-invite/page.tsx and lib/portfolio-categories.ts. These files are currently well translated, but check-i18n-parity and check-i18n-sentinel cannot see them, so nothing stops the next one from shipping de-only.",
+      "evidence": "grep -rl 'de:[[:space:]]*{' over app/lib/components/components-legacy intersected with 'it:[[:space:]]*{' = 22 files; the de/en-only complement = 2 files; both gate scripts read only ROOT/messages/<locale>.json (scripts/check-i18n-parity.mjs:39-41, scripts/check-i18n-sentinel.mjs:56-58)",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "WHAT THE GATES CHECK AND MISS. check-i18n-parity.mjs: flattens the 4 JSON files and fails if any key is present in one locale and absent in another (hard zero, both directions). It does NOT look at values at all, so a locale file full of German values passes. check-i18n-sentinel.mjs: (a) hard-zero on any non-string leaf, (b) a per-locale ratchet on the count of strings identical to en.json (baselines de 466 / fr 368 / it 220), failing only when the count goes UP. It does NOT detect a value that is translated-but-wrong, a wrong register, or a German string that merely differs from the English one. NEITHER script scans .tsx source, so 100% of the 543 hardcoded German literals and 100% of the inline locale-map files are invisible to both. Wiring: both run in the `i18n` job of .github/workflows/quality.yml (on push to main + every PR). There is NO pre-commit hook (/Users/sulo/Documents/solen/.git/hooks contains only *.sample). package.json exposes `check:i18n-parity` (line 16) but has NO `check:i18n-sentinel` script , the sentinel is only reachable via the CI step or a direct node invocation.",
+      "evidence": "scripts/check-i18n-parity.mjs whole file (flatten + key-set diff, no value comparison); scripts/check-i18n-sentinel.mjs:60-95 (non-string leaves + IDENTICAL_BASELINE ratchet); .github/workflows/quality.yml:162-174; package.json:16 and absence of a sentinel entry in :5-35; `ls /Users/sulo/Documents/solen/.git/hooks` returns 14 *.sample files and nothing else",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "The missing-key runtime fallback is GERMAN, not English. i18n.ts:40-49 getMessageFallback resolves a MISSING_MESSAGE by looking the dotted path up in messages/de.json and returning the German string; only if that also misses does it render the raw key path. So any future key gap surfaces to an English/French/Italian visitor as German text rather than as a visible error , the failure mode is silent by design.",
+      "evidence": "i18n.ts:32 loads deMessages, :40-49 getMessageFallback returns getNestedString(deMessages, path)",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "FRENCH FORMALITY , the earlier figure of 229 formal vs 46 informal is WRONG on both sides. Correct counts over messages/fr.json (5702 string leaves), with the 147 occurrences of the noun \"rendez-vous\" excluded and Unicode-correct word boundaries: FORMAL 436 tokens across 364 keys (vous 149 + votre 241 + vos 46). INFORMAL 63 tokens across 51 keys (tu 13 + ton 19 + ta 17 + tes 6 + toi 6 + t' 2). Zero keys mix both registers inside one string. Raw \\bvous\\b including \"rendez-vous\" is 324, which is likely where a lower/different earlier number came from.",
+      "evidence": "script at scratchpad/fr3.mjs using (?<![\\p{L}\\p{N}_'’-])WORD(?![\\p{L}\\p{N}_'’-]) with /giu; note an ASCII \\b regex over-counts because \"êtes\" matches \\btes\\b , the naive version returned 464 formal / 86 informal",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "French is the ONLY locale written in the formal register, and it contradicts the brand voice. messages/de.json is overwhelmingly informal: du/dein/dich/dir = 492 tokens across 408 keys vs Sie/Ihre/Ihnen = 22 tokens across 15 keys. messages/it.json is informal-only: tu/tuo/tua/ti = 312 tokens across 287 keys, Lei/Suo/Vostro = 0. messages/fr.json is 436 formal vs 63 informal. The 51 informal French keys are clustered in whole namespaces that were translated by a different hand , resendAccess 14 informal / 0 formal, authRegister 5/0, discoveryFilters 4/0, reviewPrompt 3/0, profileHub 5/2, Profile 5/3 , so French is internally inconsistent too: profileHub.tabAppointmentsEmpty says \"Ton premier rendez-vous t'attend\" while booking.waitlist.successTitle says \"Vous êtes sur la liste\".",
+      "evidence": "scratchpad/reg.mjs over the three catalogues; namespace split and the full 51-key informal list printed by scratchpad/fr3.mjs",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "The message catalogue itself is close to spotless , do not spend effort here. Strings in en/fr/it that carry a German marker AND differ from the German value: 0. Strings identical to their German counterpart: en 466, fr 238, it 179, and only 3 / 5 / 1 of the identical-to-en strings exceed 25 characters (an address placeholder \"Musterstrasse 12, 4051 Basel\" and ICU plural strings around the word \"salon\"). The rest are the word \"Salon\"/\"Salons\"/\"Tag\"/\"Top Salon\", which legitimately coincide.",
+      "evidence": "scratchpad/german.mjs, g2.mjs and g3.mjs over the 4 catalogues",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "i18n adoption by file: 303 .tsx under app/[locale] excluding /dev/, of which 114 import useTranslations/getTranslations. components-legacy: 187 .tsx, 120 use next-intl. components/: 10 .tsx, 0 use next-intl. Combined with the literal scan: 207 files use t() with no German literal detected, 27 use t() and still have German literals, 82 have German literals and no t() at all.",
+      "evidence": "find + grep -rl counts; classification from scratchpad/final2.mjs",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "MINOR: only 2 of 204 page.tsx files under app/[locale] call unstable_setRequestLocale (app/[locale]/layout.tsx:54 and app/[locale]/[city]/[category]/page.tsx:202). In next-intl 3.x that disables per-locale static rendering for the rest. I did not run a build to measure the actual output, so I cannot say what it costs in practice.",
+      "evidence": "grep -rln 'unstable_setRequestLocale' --include='*.tsx' app = 2; find app/[locale] -name page.tsx = 204",
+      "confidence": "inferred",
+      "wired": "partially-wired"
+    },
+    {
+      "claim": "NOT a bug, already fixed: <html lang> is correct per locale. app/layout.tsx:55-58 reads the x-pathname header stamped by middleware.ts:43 and derives the locale, replacing a previously hardcoded lang=\"de\".",
+      "evidence": "app/layout.tsx:49-58; middleware.ts:37-43",
+      "confidence": "verified",
+      "wired": "wired"
+    }
+  ],
+  "gaps": [
+    {
+      "what": "A single language switcher that is reachable on desktop, preserves the current path, sets the NEXT_LOCALE cookie, AND writes profiles.locale for logged-in users.",
+      "why_it_matters": "This is the owner's literal complaint. Today desktop users only get the footer link that dumps them on the locale homepage, and the three existing mechanisms disagree with each other. Everything else in this report is cosmetic next to a switcher that visibly does not work.",
+      "existing_thing_to_extend": "components-legacy/ui/LanguageSwitcher.tsx , switchLocale() at :46-59 already does the path swap + cookie correctly. Mount its \"header\" variant in app/[locale]/_components/layout/Header.tsx next to DesktopCitySelector (:747), replace the Footer.tsx:168-176 <Link> map with it, and add a PATCH /api/profile {locale} call inside switchLocale so the email locale follows the UI.",
+      "size": "S"
+    },
+    {
+      "what": "services.name_fr / name_it / description_fr / description_it (and the same for salons.description_*, service_options.name_*, salon_badges.name_*, nail_dynamic_pricing_rules.label_*, site_content.value_it), plus one shared read helper that resolves <base>_<locale> with a de fallback.",
+      "why_it_matters": "263 service rows and 28 salon rows have no French or Italian text at all, and 12 hardcoded `locale === 'en' ? x_en : x_de` read sites mean fr/it users get German even where a translation could exist. This is the structural half of \"mixed german english\" and no amount of TSX cleanup fixes it.",
+      "existing_thing_to_extend": "The pattern already exists and works: salons.about_text_de/en/fr/it plus the `localized(`about_text_${locale}`)` reader at app/[locale]/_components/salon/SalonAbout.tsx:19-24, and cities.name_* resolved across all four in app/api/salons/route.ts:243-249. Promote that reader into a shared lib helper and point the 12 ternary sites plus SalonServices.tsx:172 and SalonBundles.tsx:151 at it.",
+      "size": "L"
+    },
+    {
+      "what": "French and Italian versions of /terms and /privacy, and a locale-aware renderer for them.",
+      "why_it_matters": "Both pages render German + English together on all four locales while app/[locale]/terms/page.tsx:11 advertises hreflang alternates for fr and it. Beyond looking broken, a privacy notice that an Italian-speaking data subject cannot read is a statutory-floor problem under the precedence chain (nFADP / GDPR transparency), not a taste axis , and PrivacyContent.tsx explicitly lists allergy and treatment notes as processed data.",
+      "existing_thing_to_extend": "app/[locale]/terms/components/TermsContent.tsx:446-496 , the Section/Article/ParDe/ParEn helpers are already a locale-shaped abstraction; change them from \"render both\" to \"render the active locale\" and add fr/it prop slots.",
+      "size": "L"
+    },
+    {
+      "what": "A gate that scans .tsx for hardcoded user-facing German, on the same ratchet model the repo already uses for lint and identical-to-en strings.",
+      "why_it_matters": "Both existing i18n gates read only messages/*.json. 543 German literals across 109 files and 22 inline locale-map files are completely invisible to CI, which is exactly why the drift accumulated. A ratchet (fail when the count goes UP) can land today without fixing all 543 first.",
+      "existing_thing_to_extend": "scripts/check-i18n-sentinel.mjs already implements the ratchet-with-baseline shape; add a third check over .tsx, register it as an npm script (the sentinel currently has none), and add the step to the existing `i18n` job in .github/workflows/quality.yml:162-174.",
+      "size": "M"
+    },
+    {
+      "what": "A decision on French register (vous vs tu) and a pass to make fr.json consistent with it.",
+      "why_it_matters": "German (492 informal vs 22 formal) and Italian (312 informal, 0 formal) are informal; French is 436 formal vs 63 informal. French is speaking to a different person than the rest of the product, and 51 French keys break even from that. This is a brand-voice call only the owner can make.",
+      "existing_thing_to_extend": "messages/fr.json , the 51 informal keys are listed and cluster into whole namespaces (resendAccess 14, authRegister 5, discoveryFilters 4, reviewPrompt 3, profileHub 5, Profile 5), so it is a namespace-by-namespace rewrite, not a scattered one.",
+      "size": "M"
+    },
+    {
+      "what": "A locale-aware service text filter in /api/salons.",
+      "why_it_matters": "app/api/salons/route.ts:261 ILIKEs name_de only. Search by service name is a core browse path and it silently returns an empty set for non-German query terms even where name_en is populated. Classic silent no-op: it returns 200 with zero rows, so nothing looks broken.",
+      "existing_thing_to_extend": "The city resolver 18 lines above it (app/api/salons/route.ts:243-249) already matches all four name_* columns; mirror that with an .or() across the available name columns once fr/it exist.",
+      "size": "S"
+    },
+    {
+      "what": "Fix the currently-red i18n CI job.",
+      "why_it_matters": "check-i18n-sentinel.mjs exits 1 on all four locale files because dashboard.approvalsPage.checklistItems is a legitimate array consumed via t.raw(). A gate that is permanently red is a gate everyone learns to ignore, and it is the only thing standing between the catalogue and untranslated placeholders.",
+      "existing_thing_to_extend": "scripts/check-i18n-sentinel.mjs:63-73 , allow an array-of-strings leaf (or allowlist that one key), keeping the hard zero for booleans/numbers which is what the check was actually written for.",
+      "size": "S"
+    }
+  ],
+  "recommendation": "Do these in this order, because the first one is the owner's actual complaint and costs almost nothing. STEP 1, the switcher (half a day): mount `components-legacy/ui/LanguageSwitcher.tsx` (its `switchLocale` at :46-59 is already correct , path swap + NEXT_LOCALE cookie) in the desktop header at `app/[locale]/_components/layout/Header.tsx` near the DesktopCitySelector on line 747, and replace the `<Link href={`/${l.code}`}>` map at `app/[locale]/_components/layout/Footer.tsx:168-176` with the same component so it stops throwing users to the homepage. Inside `switchLocale`, also fire `PATCH /api/profile {locale}` when a user is logged in, so the site language and the email language stop disagreeing. Then either make `app/[locale]/profile/settings/SettingsForm.tsx:376-404` do a real `router.push` to the new locale prefix, or relabel it to what it actually is (email language) , right now it toasts \"saved\" and changes nothing visible. STEP 2, the top mixed surfaces (one to two days): `app/[locale]/_components/salon/SalonServices.tsx:172` (`{service.name_de}` unconditional) and `:184` (\"Buchen\"), `app/[locale]/_components/homepage/SearchBar.tsx:550-554` (pass a `labels` prop to DateTimePicker exactly as `components-legacy/booking/DateTimeStep.tsx:208` already does) plus its :542/:560/:108-130 literals, and `app/[locale]/_components/layout/Header.tsx:411-435` (the 22 hardcoded German page titles). Those four files are what a user actually sees first. STEP 3, unblock CI and stop the bleeding (half a day): fix `scripts/check-i18n-sentinel.mjs:63-73` to accept an array-of-strings leaf so the `i18n` job in `.github/workflows/quality.yml:162-174` goes green, add an npm script for it (it has none), and add a third ratchet check that greps .tsx for German literals with today's 543 as the baseline. STEP 4, the structural hole (a real project): add `name_fr/name_it/description_fr/description_it` to `services`, `description_fr/it` to `salons`, and the same for service_options / salon_badges / nail_dynamic_pricing_rules / site_content.value_it, then write ONE `localizedField(row, base, locale)` helper modelled on `app/[locale]/_components/salon/SalonAbout.tsx:19-24` and repoint the 12 `locale === 'en' ? x_en : x_de` sites plus `SalonBundles.tsx:151` and `app/api/salons/route.ts:261` at it. STEP 5, owner decisions I cannot make: (a) vous or tu for French , the catalogue is 436 formal vs 63 informal while German and Italian are informal, so one of the three is wrong on brand voice; (b) whether /terms and /privacy get real fr/it versions or drop their fr/it hreflang claims , today they serve German+English on all four locales, which for the privacy notice is a statutory floor question (tier 2 of the precedence chain), not a taste one. Do NOT spend time on messages/*.json: 5703 keys, four locales, full parity, and the only en/de-identical strings of any length are the word \"Salon\" and an address placeholder. The catalogue is the one part of this system that is already finished."
+}

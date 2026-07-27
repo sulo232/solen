@@ -1,0 +1,189 @@
+{
+  "area": "Photo delete/report and salon-side review controls (Solen web)",
+  "summary": "The salon gallery does NOT live in `salon_photos`. That table is dead (0 rows, `salon_id INTEGER` with no FK against UUID `salons.id`, zero code references outside docs/inventory). The live gallery is `salons.gallery_urls` (text[]) plus a newer categorized mirror table `salon_portfolio_images`, both written by one route: `app/api/salons/[slug]/gallery/route.ts`. A salon owner CAN already delete their own photo today (working end to end: button -> route -> storage -> both tables). An admin CANNOT delete any salon photo: the DELETE handler requires `salon.owner_id === user.id` with no admin branch, and nothing under `app/api/admin/**` touches gallery_urls, salon_portfolio_images, or the salon-gallery bucket. Reviews DO support photos (`review_photos` table is live and rendered on the dedicated reviews page), but the upload is a confirmed silent no-op: the `review-photos` bucket has no INSERT policy, the route uploads with the session client, swallows the error with `continue`, and returns 200 `{success:true, photos:[]}`. `/dashboard/review-moderation` is admin-only (middleware-gated), acts on reviews only, and never touches photos. A report button exists and works, but only for `salon` and `review` targets, there is no `photo` target type. There is NO per-salon reviews toggle anywhere: zero grep hits, no column on `salons`, only a global `feature_flags` key.",
+  "findings": [
+    {
+      "claim": "salon_photos is dead. Not the gallery. Do not build moderation on it.",
+      "evidence": "_inventory/_db-snapshot.json (salon_photos rows:0); _inventory/_db-columns.json columns.salon_photos; supabase/migrations/004_salon_photos.sql:3 declares `salon_id INTEGER NOT NULL` with no FK, while salons.id is UUID (014_new_schema.sql); grep -rl salon_photos over *.ts/*.tsx returns only app/[locale]/dev/reports-view/_parts/TargetPreview.tsx (a comment) and lib/database.types.ts. The 2026-07-25 migration says so explicitly: supabase/migrations/20260725120000_salon_portfolio_images.sql:16-21 \"cannot join to the live salons table at all ... Not reused: wrong type, orphaned, unsafe shape\".",
+      "confidence": "verified",
+      "wired": "dead-code"
+    },
+    {
+      "claim": "The real salon gallery is salons.gallery_urls (primary, read everywhere) PLUS salon_portfolio_images (categorized mirror). Any photo mutation must hit BOTH plus storage, or the photo stays visible.",
+      "evidence": "app/api/salons/[slug]/gallery/route.ts:147-153 (storage upload), :168-171 (gallery_urls append), :183-192 (salon_portfolio_images insert, non-fatal). Read sites for gallery_urls: lib/salon-detail.ts:67, app/[locale]/_components/salon/SalonDetailV3.tsx:155, SalonHero.tsx:44, SalonPortfolio.tsx (via :325), app/[locale]/_components/search/SearchTemplate.tsx:1601,1787, SalonResultCard.tsx:87, app/[locale]/profile/page.tsx:90,135,182. salon_portfolio_images read sites: app/[locale]/_components/salon/SalonImageGallery.tsx:96, GalleryManager.tsx:54.",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "A salon owner CAN delete their own gallery photo today. Full path works.",
+      "evidence": "UI trash button components-legacy/dashboard/GalleryManager.tsx:280-286 -> handleDelete :121-145 -> DELETE app/api/salons/[slug]/gallery/route.ts:212; owner gate :231-239 (`salon.owner_id !== user.id` -> 403); storage remove :270-272 with a path-traversal guard :264-266; gallery_urls filtered :284-289; salon_portfolio_images row deleted :299-303. Page mount: app/[locale]/dashboard/gallery/page.tsx:66.",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "An ADMIN cannot delete any salon photo. There is no admin delete path at all.",
+      "evidence": "app/api/salons/[slug]/gallery/route.ts:237 is the only authorization branch and it is owner-only, no `profiles.role === 'admin'` check anywhere in the file (contrast app/api/salons/[slug]/route.ts:61-64 which DOES admit admins). `grep -rn \"gallery_urls|salon_portfolio_images|salon-gallery\" app/api/admin` returns exactly one hit, app/api/admin/seed-test-salons/route.ts:185 (seed writer). `find app/api/admin/salons -type f` = route.ts, [id]/warn, [id]/freeze, [id]/reject, [id]/approve, none photo-related.",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "Reviews DO support photos. review_photos is a live table with 0 rows, rendered on the dedicated reviews page and the paginated API, but deliberately NOT on the PDP inline reviews block.",
+      "evidence": "_inventory/_db-columns.json columns.review_photos = [created_at, id, photo_url, review_id, sort_order]; _db-snapshot.json rows:0, rls:true. Rendered: app/[locale]/salon/[slug]/reviews/page.tsx:91 and :154; app/api/reviews/salon/[salon_id]/route.ts:44,50; app/api/staff/[id]/profile/route.ts:38. Excluded from the PDP by design: lib/salon-detail.ts:100 \"No review_photos embed: only the dedicated reviews page shows photos\" and :103 (select list omits it).",
+      "confidence": "verified",
+      "wired": "partially-wired"
+    },
+    {
+      "claim": "SILENT NO-OP: review photo upload always fails and reports success. The review-photos bucket has no INSERT policy, the route uses the session client, swallows the RLS error, and returns 200 {success:true, photos:[]}.",
+      "evidence": "app/api/reviews/[id]/photos/route.ts:76-78 uploads with `supabase.storage` (session client, built at :21), :80-83 `if (uploadErr) { console.error(...); continue; }`, :100 `return NextResponse.json({ success: true, photos: uploadedRecords })` with uploadedRecords still empty. _backend-system/audit/file-storage.md STOR-12 (row 30 + section 1) queried live pg_policies on 2026-07-16: 19 policies on storage.objects, exactly one for review-photos (`public_read_review_photos`, SELECT), zero INSERT. `grep -rn review-photos supabase/migrations/*.sql` finds only 005_reviews_trust.sql:42-51, which uses the invalid syntax `CREATE POLICY IF NOT EXISTS` (:46) and whose column adds (reviews.photo_url/source/owner_reply/google_review_id, :6-19) are all absent from the live reviews column list, i.e. that migration never applied. review_photos = 0 rows corroborates. Caller: components-legacy/ReviewForm.tsx:183-193 (never checks the response body). I did NOT re-run a live pg_policies query this session.",
+      "confidence": "verified",
+      "wired": "partially-wired"
+    },
+    {
+      "claim": "There is NO delete path for an individual review photo, for anyone. The RLS delete policy exists with zero callers.",
+      "evidence": "app/api/reviews/[id]/photos/route.ts exports POST only (`grep '^export async function'` on every file under app/api/reviews returns: route.ts POST, my-booking GET, eligibility GET, featured GET, salon/[salon_id] GET, [id]/flag POST, [id]/respond PATCH+DELETE, [id]/photos POST). supabase/migrations/051_review_photos.sql:26-33 defines `review_photos_delete_own` with no app caller. The [id]/respond DELETE deletes the SALON'S REPLY, not a photo (app/[locale]/dashboard/reviews/page.tsx:141-146 handleDeleteReply).",
+      "confidence": "verified",
+      "wired": "dead-code"
+    },
+    {
+      "claim": "Admin hide/delete of a review purges the storage objects but leaves the review_photos ROWS behind on hide, so hidden reviews keep dead DB rows pointing at deleted bytes.",
+      "evidence": "app/api/admin/reviews/[id]/route.ts:57-70 (on is_hidden=true, lists and removes review-photos/{id}/* from storage, no review_photos table delete) and :97-110 (same on hard DELETE, where the FK ON DELETE CASCADE in 051_review_photos.sql:6 does clean the rows). The hide branch has no cascade.",
+      "confidence": "verified",
+      "wired": "partially-wired"
+    },
+    {
+      "claim": "/dashboard/review-moderation is ADMIN-ONLY, both at the route and the API, and never touches photos.",
+      "evidence": "middleware.ts:211-220 adminOnlyPaths includes \"/review-moderation\" (and \"/reports\"), :222-230 redirects non-admins to the homepage. Nav entry lives only in ADMIN_NAV: components-legacy/dashboard/DashboardLayout.tsx:48. API re-checks role: app/api/admin/reviews/route.ts:19-21 and app/api/admin/reviews/[id]/route.ts:23-25 (PATCH) and :89-91 (DELETE), all `profile?.role !== 'admin'` -> 403, writes via createAdminSupabaseClient (:51, :93) which bypasses RLS.",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "What review-moderation can change: approve (moderation_status=active + clears is_flagged), hide (moderation_status=removed -> is_hidden=true), hard delete, and write admin_response. Nothing else.",
+      "evidence": "app/[locale]/dashboard/review-moderation/page.tsx:97-107 handleAction, :109-116 handleDelete, :118-128 handleAdminResponse. Server mapping: app/api/admin/reviews/[id]/route.ts:32-45 (moderation_status -> is_hidden, active -> is_flagged=false; removal_reason; admin_response + admin_response_at).",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "The SALON can only reply to and FLAG a review. It cannot hide or delete one. Flagging sets is_flagged + moderation_status='under_review' but does NOT hide the review from customers.",
+      "evidence": "Salon UI: app/[locale]/dashboard/reviews/page.tsx (reply via PATCH /api/reviews/[id]/respond :117, delete own reply :146, flag modal state :68-69). Flag route app/api/reviews/[id]/flag/route.ts:49-58 owner-gates on salons.owner_id, :63-72 writes is_flagged/flag_reason/moderation_status only. The customer read paths filter on is_hidden only (app/api/reviews/salon/[salon_id]/route.ts:48, app/[locale]/salon/[slug]/reviews/page.tsx:96, lib/salon-detail.ts:107), never on is_flagged or moderation_status, so a flagged review stays fully public until an admin acts.",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "A customer report/flag button EXISTS and works, for salon and review targets only. It requires login.",
+      "evidence": "components-legacy/discovery/ReportButton.tsx:132-156 -> POST app/api/reports/route.ts:13 -> content_reports insert :29-35. Mounted at: app/[locale]/_components/salon/SalonReviews.tsx:241 (type=review), SalonHeader.tsx:168 and SalonHero.tsx:134 (type=salon), components-legacy/salon/SalonReviews.tsx:15 (full reviews page). Login bounce: ReportButton.tsx:118-125. i18n keys exist in messages/de.json under `report` (action, modalTitle, targetTypeSalon/Review/User, 6 reasons, ...).",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "There is NO 'photo' report target. The DB CHECK constraint allows only salon | review | user.",
+      "evidence": "supabase/migrations/078_content_reports.sql:4 `CHECK (target_type IN ('salon','review','user'))`; lib/content-reports.ts REPORT_TARGET_TYPES mirrors it; lib/validations.ts:834-839 reportSubmitSchema z.enum(REPORT_TARGET_TYPES); ReportButton.tsx:71-75 TARGET_TYPE_LABEL_KEY has exactly those three. _inventory/_db-columns.json columns.content_reports confirms the live shape (target_id is a bare uuid, polymorphic, no FK, per app/api/admin/reports/route.ts:19).",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "PARTIAL NO-OP in the admin report queue: hide_content only works for review targets. An admin can mark a reported SALON as 'action_taken' with no content action having occurred.",
+      "evidence": "app/api/admin/reports/[id]/route.ts:73-76 rejects hide_content unless target_type==='review'; :80-84 is the only content write in the file. app/[locale]/dashboard/reports/page.tsx:220 canHide and :280-282 render the hide button only for review rows, but the status dropdown lets any row be set to action_taken (:130 handleAction accepts a bare status).",
+      "confidence": "verified",
+      "wired": "partially-wired"
+    },
+    {
+      "claim": "ReportButton has two dead legacy paths: type='item' and type='comment' POST to endpoints that do not exist.",
+      "evidence": "components-legacy/discovery/ReportButton.tsx:99-101 targets /api/discovery/items/[id]/report and /api/discovery/comments/[id]/report; the component's own header comment :24-27 says \"their endpoints ... don't exist yet\". `ls app/api/discovery` confirms no report subroute. Failures are swallowed silently at :109-111. Not currently mounted anywhere (grep of ReportButton usages shows only review/salon types).",
+      "confidence": "verified",
+      "wired": "dead-code"
+    },
+    {
+      "claim": "There is NO per-salon reviews toggle. Zero columns, zero code, zero UI. The only kill switch is a GLOBAL feature flag, and it gates writes only.",
+      "evidence": "`grep -rn \"reviews_enabled|reviewsEnabled|reviews_disabled|show_reviews|allow_reviews|photos_enabled\"` over the whole repo = 0 hits. _inventory/_db-columns.json columns.salons (99 columns) contains no such column. Global flag: lib/feature-flags.ts:4 FeatureKey union includes \"reviews\", checked in app/api/reviews/route.ts:13, app/api/reviews/[id]/photos/route.ts:18, app/api/reviews/[id]/flag/route.ts:12, app/api/admin/reviews/route.ts:9. The public READ path app/api/reviews/salon/[salon_id]/route.ts has no flag check, so flipping the global flag off leaves every existing review still rendering.",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "The salon settings page saves through a hardcoded allowlist. A new toggle column added to the DB but not to that array is written with a 200 OK and silently dropped. This is the exact silent-no-op trap for this feature.",
+      "evidence": "app/[locale]/dashboard/settings/page.tsx:1457-1458 PATCHes /api/salons/{id}. app/api/salons/[slug]/route.ts:72-91 `const allowed = [...]` (27 keys, no review/photo keys), :112-114 copies only allowlisted keys into `updates`, :124-127 writes. The file's own comment :67-71 documents a previous instance of exactly this bug (\"so PaymentsTab's save persists instead of no-op'ing\").",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "RLS: salon_portfolio_images is owner-write / public-read with NO admin policy. review_photos is author-write / public-read with NO admin or salon policy. reviews has NO admin UPDATE policy. Every moderation write in the app therefore depends on the service-role client.",
+      "evidence": "supabase/migrations/20260725120000_salon_portfolio_images.sql:51-65 (select public true; `for all` owner EXISTS on salons.owner_id). supabase/migrations/051_review_photos.sql:15-33 (select public; insert own; delete own). reviews live policy set per _backend-system/audit/authz.md:29 = one UPDATE policy only, `reviews_update_own_48h` (supabase/migrations/029_review_policies.sql:4), plus 014_new_schema.sql:395-399 select/insert and 029:10,14 delete own/admin, insert tightened by 20260709183909_audit_fix_reviews_insert_requires_booking.sql. Admin writes bypass all of this: createAdminSupabaseClient at app/api/admin/reviews/[id]/route.ts:51,93 and the service-role client at app/api/salons/[slug]/gallery/route.ts:11-14.",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "Latent RLS hole worth naming while in this file: reviews_update_own_48h has a USING clause and no WITH CHECK, so Postgres reuses USING as the check. Within 48h the review author can PostgREST-update any column on their own row, including is_hidden, moderation_status, salon_response and admin_response.",
+      "evidence": "supabase/migrations/029_review_policies.sql:4-8 (`FOR UPDATE USING (auth.uid() = user_id AND created_at > now() - interval '48 hours')`, no WITH CHECK, no column grant restriction). _backend-system/audit/authz.md:29 confirms this is the ONE live UPDATE policy on reviews. I read the policy text; I did not test the exploit against the live DB.",
+      "confidence": "inferred",
+      "wired": "wired"
+    },
+    {
+      "claim": "salon_portfolio_images is NOT in the live inventory snapshot and its TypeScript type was hand-written, so its live existence is unproven from repo artifacts.",
+      "evidence": "_inventory/_db-columns.json and _db-snapshot.json both carry capturedAt 2026-07-12 (146 tables) and neither lists salon_portfolio_images; the migration is supabase/migrations/20260725120000_salon_portfolio_images.sql (2026-07-25). lib/database.types.ts:6031 carries the literal comment \"MANUAL addition (2026-07-25)\" above the type block, i.e. types were not regenerated from the live DB. Not in _inventory/SURFACE.json either. I did not query the live DB.",
+      "confidence": "inferred",
+      "wired": "partially-wired"
+    },
+    {
+      "claim": "Every photo upload path in the app, enumerated.",
+      "evidence": "Salon gallery: app/api/salons/[slug]/gallery/route.ts:50 (bucket salon-gallery) <- components-legacy/dashboard/GalleryManager.tsx:83-108 via components-legacy/ui/ImageUpload.tsx uploadFn. Review photos: app/api/reviews/[id]/photos/route.ts:10 (bucket review-photos) <- components-legacy/ReviewForm.tsx:183-193. Client photos: app/api/clients/[id]/photos/route.ts:36 (client-photos) <- ClientPhotosTab. Service photos: app/api/services/[id]/photos/route.ts:10 (service-photos). Coiffeur formula: app/api/dashboard/coiffeur/formula-photo/route.ts:13 (formula-photos) <- FormulaPhotoUpload. Avatar: app/api/profile/avatar/route.ts:40 (avatars). Salon documents: app/api/salon/documents/route.ts:24 (salon-documents). Admin discovery: app/api/admin/discovery/upload/route.ts:48 and staging/route.ts:89 (discovery-images). Staff portfolio: app/api/staff/portfolio/route.ts:11 takes a JSON image_url and does NOT upload, the bytes go direct-to-storage client-side via components-legacy/ui/ImageUpload.tsx:114-127 (bucket prop, no API route in between).",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "Staff portfolio images can be created but never deleted, and the staff nav points at a route that does not exist.",
+      "evidence": "app/api/staff/portfolio/route.ts exports POST only (grep '^export async function' returns one hit at :11). No delete/remove call site for staff_portfolio_images anywhere in app/lib/components-legacy. components-legacy/dashboard/DashboardLayout.tsx STAFF_NAV lists `{ key: \"myPortfolio\", href: \"/dashboard/my-portfolio\" }` but `find app -path \"*my-portfolio*\"` returns nothing.",
+      "confidence": "verified",
+      "wired": "dead-code"
+    }
+  ],
+  "gaps": [
+    {
+      "what": "Admin delete of any salon photo",
+      "why_it_matters": "Directly requested and completely absent. Today the ONLY person who can remove a salon photo is that salon's own owner, so a reported or illegal photo cannot be taken down by the platform at all.",
+      "size": "M",
+      "existing_thing_to_extend": "app/api/salons/[slug]/gallery/route.ts DELETE handler (:212-314). Add an admin branch to the ownership check at :237, mirroring app/api/salons/[slug]/route.ts:61-64 which already admits `profile?.role === 'admin'`. The storage-path guard at :264-266 hardcodes `segs[0] === slug` and stays correct for an admin acting on that salon."
+    },
+    {
+      "what": "A 'photo' report target end to end",
+      "why_it_matters": "\"Anyone can report a photo\" has no target type, no DB value, no schema entry, and no UI mount. content_reports.target_id is already a polymorphic bare UUID with no FK, so the plumbing accepts it, but every taxonomy layer rejects it today.",
+      "size": "M",
+      "existing_thing_to_extend": "Widen the CHECK exactly like supabase/migrations/20260727130000_content_reports_harassment_reason.sql did for reasons; then lib/content-reports.ts REPORT_TARGET_TYPES, lib/validations.ts:834-839, ReportButton.tsx:71-75 TARGET_TYPE_LABEL_KEY, and a `photo` variant mounted in app/[locale]/_components/salon/SalonImageGallery.tsx / SalonPortfolio.tsx. Report the salon_portfolio_images.id (stable) rather than the URL."
+    },
+    {
+      "what": "An admin content action for a reported photo",
+      "why_it_matters": "Without it, the admin queue can mark a photo report 'action_taken' while nothing happens, repeating the existing partial no-op that already affects salon-target reports.",
+      "size": "M",
+      "existing_thing_to_extend": "app/api/admin/reports/[id]/route.ts:73-85, the hide_content branch. Generalize it from review-only to a per-target-type switch, and render the action in app/[locale]/dashboard/reports/page.tsx:220,280-282."
+    },
+    {
+      "what": "Per-salon reviews-enabled toggle (column + allowlist + settings UI + read gate)",
+      "why_it_matters": "Requested and 100% absent. The only existing switch is the global feature_flags 'reviews' key, which kills reviews for the whole marketplace and only gates writes, existing reviews keep rendering.",
+      "size": "M",
+      "existing_thing_to_extend": "New boolean column on salons (default true); add it to the allowlist array at app/api/salons/[slug]/route.ts:72-91 or the save silently no-ops; a toggle in app/[locale]/dashboard/settings/page.tsx (saves via :1457); read gates in lib/salon-detail.ts:102-107, app/api/reviews/salon/[salon_id]/route.ts:41-51, app/[locale]/salon/[slug]/reviews/page.tsx:87-96, and a write gate in app/api/reviews/route.ts alongside the existing checkFeatureEnabled at :13. Decide explicitly whether disabling HIDES existing reviews or only stops new ones."
+    },
+    {
+      "what": "Per-salon review-photos-enabled toggle",
+      "why_it_matters": "Second half of the same ask. Cheap once the reviews toggle exists, but needs its own read gate because photos render on a different surface than the reviews themselves.",
+      "size": "S",
+      "existing_thing_to_extend": "Same column pattern and same allowlist. Write gate in app/api/reviews/[id]/photos/route.ts (next to checkFeatureEnabled at :18); read gates where review_photos is embedded: app/[locale]/salon/[slug]/reviews/page.tsx:91 and app/api/reviews/salon/[salon_id]/route.ts:44."
+    },
+    {
+      "what": "Fix the review-photo upload silent no-op",
+      "why_it_matters": "Shipping a per-salon 'photos on reviews' toggle on top of an upload path that has never once succeeded would make the toggle look wired while changing nothing observable. This must be fixed first or the whole feature is untestable.",
+      "size": "S",
+      "existing_thing_to_extend": "app/api/reviews/[id]/photos/route.ts:76-78. Either add a storage.objects INSERT policy for bucket review-photos scoped to `(storage.foldername(name))[1] = reviews.id AND reviews.user_id = auth.uid()`, matching the salon_owners_upload_* pattern used by 5 other buckets, or swap to createAdminSupabaseClient like app/api/clients/[id]/photos and formula-photo already do. Also stop returning success when uploadedRecords is empty (:100)."
+    },
+    {
+      "what": "Any hidden/moderation state on a photo. Today removal is destructive-only.",
+      "why_it_matters": "Admin removal deletes the storage bytes and both DB rows with no audit trail and no reversal, unlike reviews which have is_hidden + moderation_status + removal_reason. A wrongly-removed photo is unrecoverable, and there is no way to show the salon why their photo went away.",
+      "size": "M",
+      "existing_thing_to_extend": "Add is_hidden / moderation_status / removal_reason to salon_portfolio_images, mirroring the reviews column set. Then the reads at app/[locale]/_components/salon/SalonImageGallery.tsx:96 and GalleryManager.tsx:54 filter on it. Note gallery_urls (text[]) cannot carry per-photo state at all, so a hidden photo must ALSO be pulled from gallery_urls or it keeps rendering on the hero, search cards, and profile."
+    },
+    {
+      "what": "Audit logging on photo moderation",
+      "why_it_matters": "Report triage already logs (logAuditEvent in app/api/admin/reports/[id]/route.ts:96) but the gallery route logs nothing. An admin deleting a salon's photo would leave no record.",
+      "size": "S",
+      "existing_thing_to_extend": "lib/audit.ts logAuditEvent, called the same way as app/api/admin/reports/[id]/route.ts:96-102."
+    }
+  ],
+  "recommendation": "Build on `salon_portfolio_images` + `salons.gallery_urls`, never `salon_photos`. Order matters, and step 0 is non-negotiable: verify `salon_portfolio_images` actually exists live (the inventory snapshot predates its migration and its TS type was hand-written) and refresh `_inventory/_db-columns.json` + `_db-snapshot.json`, otherwise every later step builds on an unproven table. (1) Fix the review-photo upload no-op in `app/api/reviews/[id]/photos/route.ts:76-78,100` first, either a storage INSERT policy for the `review-photos` bucket or a swap to `createAdminSupabaseClient()`, because the \"photos on reviews\" toggle is unverifiable until an upload has ever succeeded. (2) Admin photo delete: add an admin branch to the owner check at `app/api/salons/[slug]/gallery/route.ts:237` (copy the shape from `app/api/salons/[slug]/route.ts:61-64`), keep the existing storage-path guard at `:264-266`, and add `logAuditEvent`. Prefer adding `is_hidden`/`moderation_status`/`removal_reason` to `salon_portfolio_images` so removal is reversible, but note the photo must ALSO be pulled from `salons.gallery_urls` in the same transaction or it keeps rendering on the hero, search cards and profile, that dual source is the single biggest trap in this area. (3) Photo reports: one additive migration widening `content_reports.target_type` to include `'photo'` (same shape as `20260727130000_content_reports_harassment_reason.sql`), then `lib/content-reports.ts`, `lib/validations.ts:834-839`, `components-legacy/discovery/ReportButton.tsx:71-75` plus a photo variant mounted in `app/[locale]/_components/salon/SalonImageGallery.tsx` and `SalonPortfolio.tsx` (report the row id, not the URL), then generalize the `hide_content` branch at `app/api/admin/reports/[id]/route.ts:73-85` past review-only and surface it in `app/[locale]/dashboard/reports/page.tsx:220,280-282`. (4) Per-salon toggles: two boolean columns on `salons` defaulting true, and they MUST be added to the allowlist array at `app/api/salons/[slug]/route.ts:72-91` or the settings save returns 200 and drops them silently, which is this repo's signature failure. UI in `app/[locale]/dashboard/settings/page.tsx` (saves via `:1457`), read gates in `lib/salon-detail.ts:102-107`, `app/api/reviews/salon/[salon_id]/route.ts:41-51`, `app/[locale]/salon/[slug]/reviews/page.tsx:87-96`, write gate next to the existing `checkFeatureEnabled` at `app/api/reviews/route.ts:13`. Two decisions to surface to the owner before building: does disabling reviews HIDE the existing 260 reviews or only block new ones (they are currently public via three separate read paths), and does \"anyone can report\" mean any signed-in user (what `ReportButton.tsx:118-125` does today by bouncing to login) or genuinely logged-out, which `content_reports.reporter_id` and its `auth.role() = 'authenticated'` insert policy (`078_content_reports.sql:18-19`) do not currently allow. Separately, flag the latent RLS issue at `supabase/migrations/029_review_policies.sql:4-8`: `reviews_update_own_48h` has no `WITH CHECK`, so a review author can self-write `is_hidden`/`moderation_status` via PostgREST for 48 hours, which would undercut any moderation UI built above it."
+}

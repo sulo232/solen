@@ -1,0 +1,175 @@
+{
+  "area": "Stock / placeholder imagery: where it lives, what renders it, and how to make it unmistakable in dev",
+  "confirmed_count": 19,
+  "corrections": [
+    {
+      "original_claim": "Live DB: 20 customer-visible salons, 20/20 have a cover_photo_url, 20/20 are images.unsplash.com, only 11 distinct URLs.",
+      "verdict": "CONFIRMED",
+      "truth": "Reproduced exactly with my own read-only PostgREST GET (service-role key from .env.local, which is a symlink to /Users/sulo/Documents/solen/.env.local). 28 rows total; is_active Counter({True:20, False:8}); listed_on_marketplace True on all 28; visible=20; visible with cover=20; cover hosts Counter({'images.unsplash.com': 20}); distinct covers among visible=11.",
+      "evidence": "GET /rest/v1/salons?select=id,name,slug,is_test,is_active,listed_on_marketplace,cover_photo_url,gallery_urls&limit=200 -> HTTP 200, 28 rows"
+    },
+    {
+      "original_claim": "13 of the 20 visible salons share their cover with another salon; one image is the cover for FOUR businesses.",
+      "verdict": "CONFIRMED",
+      "truth": "Byte-identical duplicate groups: 4x photo-1570172619644 -> ['Wax & Glow Basel','Smooth Skin Studio','Lisse Studio','Belle Epil']; 4x photo-1604654894610 -> ['Pink Petal Nails','Nail Lounge Basel','Nail Studio Bliss','La Belle Ongle']; 3x photo-1512290923902 -> ['Glow Lab Basel','Velvet Face','Rouge Studio']; 2x photo-1487412947147 -> ['Muse Beauty Studio','Haarsalon Margot']. Sum = 13.",
+      "evidence": "same live query, grouped by cover_photo_url"
+    },
+    {
+      "original_claim": "gallery_urls is 100% Unsplash: 166 URLs across the 20 visible salons, 174 across all 28, only 37 distinct.",
+      "verdict": "CONFIRMED",
+      "truth": "166 on visible, all_unsplash=True; 174 total, 37 distinct, host Counter({'images.unsplash.com': 174}).",
+      "evidence": "same live query"
+    },
+    {
+      "original_claim": "salon_photos has 0 rows (cited from the 2026-07-12 snapshot).",
+      "verdict": "CONFIRMED",
+      "truth": "True, and stronger than cited: I confirmed it LIVE, not just from the ten-day-old snapshot. GET /rest/v1/salon_photos?select=id with Prefer:count=exact returns content-range */0. The snapshot at _inventory/_db-snapshot.json (capturedAt 2026-07-12) also carries {\"name\":\"salon_photos\",\"rows\":0} and {\"name\":\"salons\",\"rows\":28}.",
+      "evidence": "live GET content-range: */0; _inventory/_db-snapshot.json"
+    },
+    {
+      "original_claim": "salons.is_test is FALSE on all 28 rows; read as a hide-filter by 15+ API routes.",
+      "verdict": "CONFIRMED",
+      "truth": "is_test Counter({False: 28}). I opened all 14 distinct cited file:line pairs and every one says what the claim says (app/api/salons/route.ts:156 '.eq(\"is_test\", false);', by-category:60, similar:35, nearby:58, trending:33, recommendations:35, quartier-counts:14, quartier-featured:13, profile/favorites:52, search/no-results:79, slots/last-minute:31 '.eq(\"salons.is_test\", false)', reviews/featured:34 (JS-side filter), metrics/global:22, salon/retail:34). 38 is_test references across app+lib total.",
+      "evidence": "live query + sed on each cited line"
+    },
+    {
+      "original_claim": "is_test is written only by the admin seeder; the 8 hidden rows are hidden by is_active=false, not is_test.",
+      "verdict": "CONFIRMED",
+      "truth": "app/api/admin/seed-test-salons/route.ts:165 and :196 set is_test:true; app/api/admin/test-salon/route.ts:99 same. All 8 hidden rows ('test' x2, 'E2E Test Salon lgekk50', 'Payload Check Salon d6od9eo', 'E2E Test Salon Fix1 1783293180', 'E2E Test Salon Fix1b 1783293264', 'reviewer-batchA-1783293687', 'reviewer-batchA-gate-1783293787') have is_active=false, listed_on_marketplace=true, is_test=false, cover NULL.",
+      "evidence": "grep -n is_test on both admin routes + live query row dump"
+    },
+    {
+      "original_claim": "No dev/staging/preview banner component exists anywhere in the repo. NODE_ENV is used only to 404 /dev routes and to gate one demo array. All 30 NODE_ENV hits are `if (process.env.NODE_ENV === \"production\") notFound()` in app/[locale]/dev/*, plus useRecentlyViewed.ts:61.",
+      "verdict": "OVERSTATED",
+      "truth": "The banner half is right (I ran the grep: zero hits for DevBanner|dev-banner|DevRibbon|EnvBanner|StagingBanner|PreviewBanner|demo.?banner across app, components, lib). The NODE_ENV enumeration is wrong. There are 72 NODE_ENV hits in app+lib+components, not 30, and 14 of them are outside /dev/: app/api/walkin/pay-intent/route.ts:68, app/api/stripe/booking-pay-intent/route.ts:114, app/api/search/event/route.ts:101, lib/bookings/guest-access.ts:122, lib/ratelimit.ts:266,307, lib/health.ts:92, lib/env.ts:110,251, plus useRecentlyViewed.ts:61. This matters because those non-dev sites are exactly where the codebase documents that NODE_ENV alone is NOT a 'real production' test.",
+      "evidence": "grep -rn NODE_ENV --include=*.ts --include=*.tsx app lib components | wc -l -> 72; same grep | grep -v /dev/ -> 14 lines"
+    },
+    {
+      "original_claim": "No isStock / isSeed / placeholder-detection helper exists in lib or app.",
+      "verdict": "WRONG",
+      "truth": "lib/stock-image.ts EXISTS and is exactly that helper: it exports STOCK_IMAGE_HOSTS (10 hosts, lines 23-34), isStockImageUrl() (line 43, with explicit /_next/image decode handling at line 47) and stockImageProvider() (line 60). The recon's grep missed it because it searched for invented symbol names (isStockPhoto/isSeedData/isPlaceholderImage/STOCK_HOSTS/seedMarker) rather than the concept. Caveat that makes it worse, not better: the file is UNTRACKED (git status shows '?? lib/stock-image.ts', git log returns nothing for it) and has ZERO importers anywhere in app/lib/components/scripts. Its own header at lines 12-16 names three consumers; consumer 1 (StockPhotoMarker) does not exist anywhere on disk, consumer 2 (scripts/check-invariants.mjs) does not import it, consumer 3 is a hook that is only half-wired. This is a textbook silent no-op. Separately, lib/stock-photos.ts is TRACKED and has three real importers (app/api/admin/discovery/smart-import/route.ts:4, search-stock/route.ts:6, bulk-import/route.ts:5) — a stock-search client, not a detector, but it is another thing the recon's grep would never have surfaced.",
+      "evidence": "cat -n lib/stock-image.ts; git status --porcelain; grep -rn 'stock-image' app lib components scripts -> only self-references"
+    },
+    {
+      "original_claim": "next.config.mjs allowlists exactly three stock hosts at :88, :92, :106, :110, mirrored in the CSP at netlify.toml:52.",
+      "verdict": "CONFIRMED",
+      "truth": "Line-exact: :88 '**.unsplash.com', :92 '**.pexels.com', :106 'picsum.photos', :110 '**.picsum.photos'; real hosts at :72 supabase, :76/:80/:84 tiktokcdn, :100 googleusercontent. Two riders the recon missed. (a) netlify.toml:52 is Content-Security-Policy-REPORT-ONLY, so it enforces nothing today. (b) picsum is now dead weight in both lists: its comment at next.config.mjs:102 says 'Remove with the seeded PROOF_SALON_ITEMS', and PROOF_SALON_ITEMS was already removed (app/[locale]/inspo/page.tsx:32 '(Removed PROOF_SALON_ITEMS , the 3 hardcoded picsum salon previews...'), and no live row on any table uses a picsum host.",
+      "evidence": "grep -n on next.config.mjs and netlify.toml; grep -rn PROOF_SALON_ITEMS app lib; live host counters for salons + discovery_items"
+    },
+    {
+      "original_claim": "LIVE, UNGATED hardcoded stock image on a real customer route: app/[locale]/booking/lookup/page.tsx:216-222.",
+      "verdict": "CONFIRMED",
+      "truth": "Verified and reachability-traced, which the recon did not do. Line 215 comment 'right pane , salon photo (desktop split-hero). Decorative, hidden on mobile.'; :216 <aside ... md:block>; :218 src=\"https://images.unsplash.com/photo-1560066984-138dadb4c035?w=900&q=80\"; :220 aria-hidden. It sits inside the branch at :178 `{(view === \"form\" || view === \"sent\") && (`, and :68 sets `const [view, setView] = useState<View>(hasToken ? \"exchanging\" : \"form\")` — so it paints on a bare /booking/lookup visit at md+ width. No env gate of any kind on the path.",
+      "evidence": "sed -n '210,228p' and grep -n for the view state/branch"
+    },
+    {
+      "original_claim": "Two stock literals are properly gated: useRecentlyViewed.ts:32-34 (NODE_ENV) and walk-in-pay/page.tsx:84 (?demo).",
+      "verdict": "CONFIRMED",
+      "truth": "Both gates are real. DEMO array at lines 32-34, consumed only via `: process.env.NODE_ENV !== \"production\" ? DEMO.slice(0, limit) : []` at lines 61-63. walk-in-pay gate is `if (searchParams.get(\"demo\")) {` at :81 with setBooking at :84. One correction of degree: line 84 carries TWO Unsplash URLs (salon_image and barber_avatar), not one.",
+      "evidence": "grep -n NODE_ENV/DEMO on useRecentlyViewed.ts; sed -n '75,95p' walk-in-pay/page.tsx"
+    },
+    {
+      "original_claim": "28 of the 46 Unsplash literals in app/lib code sit in DEAD components that nothing imports.",
+      "verdict": "OVERSTATED",
+      "truth": "The 28-dead half is CONFIRMED exactly and the dead-code proof is solid. ArtistOfTheMonth.tsx: 20 URLs spanning :35 to :112, and app/[locale]/page.tsx:52-56 shows the import commented out with 'ArtistOfTheMonth removed from page composition'. FeaturedStylists.tsx: 4 at :100,:111,:122,:133, import commented at page.tsx:82 with the removal note at :67. lib/category-photos.ts: 4 at :6-9, single importer app/[locale]/_components/landings/CategoryHero.tsx:3, and CategoryHero has ZERO import statements anywhere (I re-ran it: only its own definition, four page.tsx comments saying it was dropped, and a string in lib/editor-prompts.ts:10). No dynamic() import either. The DENOMINATOR is wrong: the real count is 48 occurrences across 47 lines in app+lib+components, not 46. Per file: booking/lookup 1, useRecentlyViewed 3, ArtistOfTheMonth 20, FeaturedStylists 4, dev/pdp/portfolio 6, dev/stylist-directions 3, walk-in-pay 1 line/2 URLs, seed-test-salons 4, lib/stock-image.ts 1, lib/category-photos.ts 4.",
+      "evidence": "grep -rc 'images.unsplash.com' --include=*.ts --include=*.tsx app lib components; grep -rn for each component name"
+    },
+    {
+      "original_claim": "ArtistOfTheMonth.tsx:17 points at stylist_profiles, a table that does not exist.",
+      "verdict": "CONFIRMED",
+      "truth": "Line 17 reads ' *   - Real `stylist_profiles.portrait_url` (currently Unsplash demo)'. Live GET /rest/v1/stylist_profiles?select=id -> HTTP 404 PGRST205 'Could not find the table public.stylist_profiles in the schema cache' (hint suggests public_profiles).",
+      "evidence": "sed -n '15,19p'; live GET"
+    },
+    {
+      "original_claim": "supabase/migrations/003_more_stores.sql targets a table that no longer exists; no migration inserts a cover into salons.",
+      "verdict": "CONFIRMED",
+      "truth": "003_more_stores.sql:1 '-- Add real Basel salons to the stores table', :2 'INSERT INTO stores (name, category, ... photo_url ...)', 11 Unsplash URLs in the file. No table named *store* in the snapshot. And I ran the stronger test myself: `grep -rn 'INSERT INTO salons'` over supabase/migrations returns zero, and of the 10 migrations that mention cover_photo_url none contains an INSERT INTO salons. The live cover values were written outside this repo.",
+      "evidence": "sed on 003_more_stores.sql; grep -c unsplash -> 11; grep over supabase/migrations"
+    },
+    {
+      "original_claim": "The admin seeder is the only in-repo writer of salons.cover_photo_url, and it writes Unsplash.",
+      "verdict": "CONFIRMED",
+      "truth": "Verified by exhaustion, which the recon did not do. Only two code sites assign cover_photo_url: app/api/admin/seed-test-salons/route.ts:54,68,82,96 (the four TEMPLATES, written into salons at :184-185 alongside is_test:true at :165), and app/api/staff/[id]/slug/route.ts:51 — which updates staff_members, not salons (the update object is typed Tables['staff_members']['Update'] at :50 and the write is .from('staff_members').update(update) at :55). So the claim holds for salons.",
+      "evidence": "grep -rn cover_photo_url filtered to assignments across app/lib/scripts; sed -n '30,70p' on the staff slug route"
+    },
+    {
+      "original_claim": "The Inspo/discovery feed is 13.6% Pexels stock; the rest is scraped TikTok CDN.",
+      "verdict": "CONFIRMED",
+      "truth": "My own live read of 1000 of 1071 rows: hosts Counter({'p16-common-sign.tiktokcdn-eu.com':806, 'images.pexels.com':136, 'p19-common-sign.tiktokcdn-eu.com':41, 'p16-common-sign.tiktokcdn-us.com':10, 'p19-common-sign.tiktokcdn-us.com':7}); source Counter({None:847, 'pexels':136, 'tiktok':17}) — identical to the recon's numbers. Schema CHECK constraints confirmed at supabase/migrations/067_discovery.sql:19 and :49.",
+      "evidence": "GET /rest/v1/discovery_items?select=image_url,source&limit=1200, content-range 0-999/1071"
+    },
+    {
+      "original_claim": "The admin UI advertises stock import as a feature in all four locales.",
+      "verdict": "CONFIRMED",
+      "truth": "messages/en.json:3464, de.json:3464, fr.json:3464, it.json:3447 all carry quickImportDesc naming Unsplash. Backed by app/api/admin/discovery/smart-import/route.ts (docblock at :15 'searches Unsplash/Pexels/Pixabay', real call `import { searchStockPhotos } from \"@/lib/stock-photos\"` at :4). .env.example:42 UNSPLASH_ACCESS_KEY= confirmed.",
+      "evidence": "grep -n quickImportDesc messages/*.json; sed on smart-import route"
+    },
+    {
+      "original_claim": "64 mockup files under public/_mockups/ carry stock URLs, spanning 36 distinct Unsplash photo ids.",
+      "verdict": "CONFIRMED",
+      "truth": "Both numbers reproduce exactly with the recon's own grep (unsplash|picsum -> 64 files; 36 distinct photo ids). Widening the pattern to include pexels raises it to 72 files, so 64 is a floor, not the total.",
+      "evidence": "grep -rlniE 'unsplash|picsum' public/_mockups/ | wc -l -> 64; with pexels -> 72; grep -rohE 'images\\.unsplash\\.com/photo-[0-9a-zA-Z-]+' | sort -u | wc -l -> 36"
+    },
+    {
+      "original_claim": "The 12 'real self-hosted' mockup photos p01-p12.jpg do not exist on disk or in git. FOUR mockups reference them and render grey boxes.",
+      "verdict": "OVERSTATED",
+      "truth": "The missing-files half is CONFIRMED: `ls public/_mockups/_assets/salon-photos/` shows README.txt only, and `git ls-files` on that directory returns README.txt only. public/_mockups/_BASE.md:33 does say 'Use `/_mockups/_assets/salon-photos/pNN.jpg` (12 product-seed photos, self-hosted)'. The count is wrong: THREE mockups reference them, not four — public/_mockups/pinterest-ref-copy/index.html, pinterest-ref-solen/index.html, floors-law/index.html. The fourth 'reference' the recon counted is _BASE.md itself, which is the law document, not a mockup.",
+      "evidence": "ls -la and git ls-files on the directory; grep -rln 'salon-photos/p0|salon-photos/p1' public/_mockups/ -> exactly 3 files"
+    },
+    {
+      "original_claim": "check-invariants cites a photo-audit script that was never written, and its own photo invariant is report-only by design; 'the duplication it describes is still exactly true today, ten days later'.",
+      "verdict": "OVERSTATED",
+      "truth": "The mechanical claims are CONFIRMED: scripts/check-invariants.mjs:318 says '// scripts/salon-photo-audit does. Wire it to FAIL once the snapshot carries the column.', `find . -name '*salon-photo*'` outside node_modules returns only the public/_mockups/_assets/salon-photos directory, and checkSalonPhotoIntegrity (function opens at :301) ends at :358 with report(\"E. Salon photo integrity\", true, lines) — hardcoded true, so it can never fail. The FRAMING is wrong. This is not aging scaffolding someone left behind: the whole Invariant E block was committed TODAY, commit 87128e9be dated 2026-07-27, 'Invariant E: make the salon-photo truth problem impossible to forget', and its header comment says 'measured this session'. The 'ten days later' reads as institutional neglect when it is same-day work by this same effort.",
+      "evidence": "git log --format='%h %ad %s' --date=short -- scripts/check-invariants.mjs; sed -n '295,360p'"
+    },
+    {
+      "original_claim": "The no-decorative-image-gate IS wired but cannot catch stock imagery: literal src in .tsx/.jsx only, no stock hostname knowledge.",
+      "verdict": "CONFIRMED",
+      "truth": "Wired at ~/.claude/settings.json line 114 on PreToolUse matcher 'Write|Edit|MultiEdit'. Source confirms the scope limits: UI_FILE = re.compile(r'\\.(tsx|jsx)$') at :39, UI_PATH restricted to (app|components|components-legacy|src) at :40, LITERAL_SRC at :50, BENIGN_SRC at :60. I grepped the whole file for unsplash/pexels/picsum: zero hits. It cannot see .html mockups and cannot see a data-driven URL, which is 100% of the live cover imagery.",
+      "evidence": "grep -n on settings.json and on the gate source"
+    },
+    {
+      "original_claim": "There is NO single component all salon imagery flows through; at least 10 production render sites split across next/image and raw <img>.",
+      "verdict": "CONFIRMED",
+      "truth": "I opened all 15 cited file:line pairs and every one is a real image render on the line stated: SalonResultCard.tsx:240 'src={photoUrl}' and :285 '<Image src={photoUrl} ... sizes=\"70px\"', homepage/SalonCard.tsx:438 'src={photoUrl}', SalonHero.tsx:82 'src={u}', :214/:244 '<Image src={photos[0]}', :229 '<Image src={u}', :251 'photos[1]', :258 'photos[2]', CategoryHeroCarousel.tsx:121 'src={s.cover_photo_url as string}', SalonOtherLocations.tsx:73 'src={sibling.cover_photo_url}', dashboard/all-salons/page.tsx:230, SalonImageGallery.tsx:246 and :266 raw <img>, RecentlyViewedClient.tsx:100 raw <img src={s.cover_photo_url}>.",
+      "evidence": "sed -n on each of the 15 cited lines"
+    },
+    {
+      "original_claim": "Zero production components paint a salon photo via CSS background-image, so an img[src] selector has complete coverage.",
+      "verdict": "CONFIRMED",
+      "truth": "True as scoped. grep -rn backgroundImage over app/components/lib returns 6 hits; the 2 outside /dev/ are CityTopBar.tsx:99 and MobileMenu.tsx:74, both linear-gradient Swiss flags, no photo. Worth naming what the recon's `grep -v /dev/` hid: 4 more backgroundImage sites live under app/[locale]/dev/ (search-model-b/page.tsx:315, bundles-products/page.tsx:78, spec-chip/page.tsx:93 and :123). Those paint gradient placeholders, not stock hosts, so they cause no false negative for a URL-keyed marker — but /dev/ routes ARE reachable in dev, which is the exact environment the marker targets, so 'complete coverage' should be stated as 'complete coverage of stock-hosted imagery', not of all imagery.",
+      "evidence": "grep -rn backgroundImage --include=*.tsx --include=*.ts app components lib -> 6 hits; grep -rn 'url(' in tsx style props -> zero"
+    },
+    {
+      "original_claim": "A CSS attribute selector on the stock hostname works for next/image because the proxy URL keeps the hostname unencoded.",
+      "verdict": "CONFIRMED",
+      "truth": "The captured artifact reproduces character-for-character. public/_mockups/taste-questions/index.html:70 is '.p-spa{background-image:url(/_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1570172619644-dfd03ed5d881%3Fw%3D800%26q%3D80&w=828&q=75)}' — the literal substring 'images.unsplash.com' survives inside the src. next.config.mjs has no custom `loader` and no `unoptimized`, so the default proxy path is what ships.",
+      "evidence": "sed -n '70p' public/_mockups/taste-questions/index.html; grep -n 'loader|unoptimized' next.config.mjs -> only 'images:' at :61"
+    },
+    {
+      "original_claim": "app/layout.tsx is the single root layout and the only <html>/<head> in the app, so one dev-gated <style> there covers every route including /dev previews.",
+      "verdict": "OVERSTATED",
+      "truth": "The <head> half is right and the operative conclusion holds: app/layout.tsx:58 <html lang={locale}>, :59 <head>, :64 </head>, :70 <body>, no 'use client', so it is a server component that can read non-NEXT_PUBLIC env. But it is NOT the only <html> in the app — app/global-error.tsx:16 renders its own '<html lang=\"en\">' (with no <head> at all). An App Router global-error render REPLACES the root layout, so an injected <style> would not apply there. Irrelevant for salon photos in practice; the claim as written is false.",
+      "evidence": "grep -rn '<html' --include=*.tsx app; sed -n '10,25p' app/global-error.tsx"
+    },
+    {
+      "original_claim": "[RECOMMENDATION] add a `process.env.NODE_ENV !== \"production\" && <style ...>` block in app/layout.tsx's <head>.",
+      "verdict": "WRONG",
+      "truth": "This gate is wrong for this codebase's actual deployment. Netlify sets NODE_ENV=production on deploy previews and branch deploys too, so the marker would be INVISIBLE on exactly the preview URLs the owner looks at — the failure the whole task exists to fix. The repo already knows this and says so in three places: lib/env.ts:242-251 ('Netlify sets CONTEXT to production / deploy-preview / branch-deploy, and combined with NODE_ENV this narrows to the one context...'), lib/ratelimit.ts:264-266 ('CONTEXT alone is Netlify-set on deploy previews/branch deploys too, so pairing it with NODE_ENV is the defense-in-depth line'), lib/health.ts:88-92. The correct predicate, matching the estate's own idiom, is `!(process.env.CONTEXT === \"production\" && process.env.NODE_ENV === \"production\")`. It is safe in app/layout.tsx specifically because that file is a server component; the same expression in a client component would read CONTEXT as undefined and mark everywhere.",
+      "evidence": "sed on lib/env.ts:238-258, lib/ratelimit.ts:255-275, lib/health.ts:84-96; head -5 app/layout.tsx confirms no 'use client'"
+    },
+    {
+      "original_claim": "[RECOMMENDATION] 'Then wire the build-time half by finishing the scaffold that already exists' — framing the enforcement layer as absent apart from check-invariants.",
+      "verdict": "WRONG",
+      "truth": "A dedicated gate already exists and is HALF-WIRED, which the recon never found. ~/.claude/hooks/stock-photo-gate.py (9058 bytes, mtime 2026-07-27 16:46) implements two modes on hook_event_name: a PreToolUse mode that denies baking a stock host into production code (STOCK_HOST regex covering unsplash/pexels/picsum/pravatar/placehold/loremflickr/dummyimage, EXEMPT list for _mockups, /dev/, /scripts/, migrations, seed, next.config, lib/stock-photos.ts, lib/category-photos.ts), and a Stop mode that blocks a reply asserting Solen has salon photography while the snapshot says salon_photos has 0 rows. I walked ~/.claude/settings.json programmatically across every hook event: it is registered on Stop ONLY, at hooks/Stop[22]/hooks[2]/command with an empty matcher. There is no PreToolUse registration. I self-tested the file to prove the dead branch is dead code, not broken code: feeding it a PreToolUse payload for app/[locale]/booking/lookup/page.tsx containing an images.unsplash.com URL produces a correct permissionDecision 'deny'; feeding it a public/_mockups path passes silently. The logic works; nothing ever calls it. That is the same failure class the repo's own memory records as reference_gate_wiring_sandbox_block, and it means the one live ungated literal at booking/lookup/page.tsx:218 would still not be blocked if re-added today.",
+      "evidence": "python3 walk over ~/.claude/settings.json hooks tree -> 'FOUND on Stop | matcher=\\'\\'' and nothing on PreToolUse; two self-test invocations of the gate via stdin"
+    },
+    {
+      "original_claim": "[COVERAGE GAP] The recon enumerates salons.cover_photo_url, salons.gallery_urls, salon_photos and discovery_items as the imagery surfaces.",
+      "verdict": "UNVERIFIABLE",
+      "truth": "It missed a live one. staff_members.avatar_url is 65/70 Unsplash and 5 NULL across all 70 rows (staff_members.cover_photo_url is NULL on all 70). That is a second populated stock surface rendering wherever team members appear, and it strengthens rather than weakens the recon's headline: every photograph a customer can see today is stock. It also sharpens the fix choice — a URL-keyed CSS marker picks this up for free, whereas any column-level or table-level flag scoped to `salons` would silently miss it.",
+      "evidence": "paged live GET /rest/v1/staff_members?select=avatar_url,cover_photo_url, content-range 0-69/70"
+    }
+  ],
+  "net_picture": "The recon's factual core holds up under adversarial re-checking. I independently reproduced all 19 of its data and code claims that I marked CONFIRMED, including every live-database number to the digit (20 visible salons, 20/20 Unsplash covers, 11 distinct, 13 sharing, the exact 4x/4x/3x/2x duplicate groups and salon names, 166/174 gallery URLs across 37 distinct, is_test false on all 28 rows, discovery_items at 136 Pexels of 1000 sampled) and every one of roughly 60 cited file:line pairs I opened. Two of its claims turn out stronger than stated: salon_photos is 0 rows LIVE, not just in the ten-day-old snapshot, and the admin seeder really is the only in-repo writer of salons.cover_photo_url (the one other cover_photo_url write, app/api/staff/[id]/slug/route.ts:51, targets staff_members).\n\nSix things are wrong or overstated. The two that change what you should do:\n\nFirst, \"no isStock helper exists\" is now false. lib/stock-image.ts exists, exporting STOCK_IMAGE_HOSTS, isStockImageUrl() and stockImageProvider(). It is untracked (created today) and has ZERO importers. Its header names three consumers: StockPhotoMarker, which exists nowhere on disk; scripts/check-invariants.mjs, which does not import it; and a hook. So the helper is itself the repo's signature failure, a control that looks wired and does nothing.\n\nSecond, and more consequential, the enforcement layer is not absent, it is half-wired. ~/.claude/hooks/stock-photo-gate.py implements a PreToolUse blocker and a Stop blocker in one file, and ~/.claude/settings.json registers it on Stop ONLY (hooks/Stop[22]/hooks[2]). I self-tested the file: its PreToolUse branch correctly denies an unsplash URL baked into app/[locale]/booking/lookup/page.tsx and correctly passes a mockup path. The logic is right; nothing calls it. Registering it on a PreToolUse Write|Edit|MultiEdit matcher is a one-line change and is the highest-value action here, higher than the CSS marker.\n\nThird, the recommended `process.env.NODE_ENV !== \"production\"` gate is wrong for this deployment. Netlify sets NODE_ENV=production on deploy previews and branch deploys, so the marker would be invisible on precisely the preview URLs the owner inspects. The codebase documents this in three places (lib/env.ts:242-251, lib/ratelimit.ts:264-266, lib/health.ts:88-92) and uses `CONTEXT === \"production\" && NODE_ENV === \"production\"` as its real-prod test. Use the negation of that. It is safe in app/layout.tsx because that file is a server component.\n\nThe remaining corrections are smaller. The NODE_ENV survey is wrong (72 hits, 14 outside /dev/, not 30). The Unsplash literal denominator is 48 occurrences across 47 lines, not 46, though the 28-dead subset is exactly right and its dead-code proof is sound. Three mockups reference the missing p01-p12.jpg, not four (the fourth reference is _BASE.md itself). check-invariants' Invariant E is not aging scaffolding; commit 87128e9be landed it today, so \"still true ten days later\" misreads same-day work as neglect. app/layout.tsx is not the only <html> in the app (app/global-error.tsx:16 has its own, with no <head>), though the injection-point conclusion survives.\n\nOne surface the recon never covered: staff_members.avatar_url is 65/70 Unsplash live. That reinforces the headline and argues specifically for the URL-keyed CSS approach over any flag scoped to the salons table, which would miss staff imagery entirely. Two free cleanups fall out of the verification: picsum can be dropped from next.config.mjs:106,110 and the netlify.toml CSP because the PROOF_SALON_ITEMS it was added for are already removed (app/[locale]/inspo/page.tsx:32) and no live row uses it, and netlify.toml:52 is Content-Security-Policy-Report-Only, so it enforces nothing regardless."
+}

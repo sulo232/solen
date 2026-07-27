@@ -14,6 +14,7 @@ import MobileMenu from "./MobileMenu";
 import { Logo } from "@/app/[locale]/_components/primitives";
 import NotificationBell from "./NotificationBell";
 import DesktopCitySelector from "./DesktopCitySelector";
+import LanguageSwitcher from "@/components-legacy/ui/LanguageSwitcher";
 import { getCityName, type CitySlug } from "@/lib/cities";
 import { getPersistedCity, setPersistedCity } from "@/lib/city-cookie";
 import { useActiveCities } from "@/hooks/useActiveCities";
@@ -745,6 +746,17 @@ export default function Header({ locale }: { locale: string }) {
               MobileMenu instead — desktop has no hamburger until login,
               so the city control needs to live inline in the nav. */}
           <DesktopCitySelector locale={locale} />
+          {/* Language, 2026-07-27 (owner: "changing lang doesnt rlly work"). It did not
+              work, and this is why: LanguageSwitcher was mounted in exactly ONE place, the
+              MobileMenu, whose hamburger trigger is md:hidden (:802). So a desktop visitor
+              had no working switcher at all , only the footer's <Link href={`/${code}`}>,
+              which throws you to that locale's HOMEPAGE and never sets the NEXT_LOCALE
+              cookie, so the choice does not survive the next navigation. Same component, no
+              new UI grammar: it sits beside DesktopCitySelector as a second utility control,
+              matching the comment above about why the city control lives inline here. */}
+          <span className="hidden md:inline-flex">
+            <LanguageSwitcher locale={locale} />
+          </span>
           {loggedIn ? (
             <Link
               href={`/${locale}/profile`}

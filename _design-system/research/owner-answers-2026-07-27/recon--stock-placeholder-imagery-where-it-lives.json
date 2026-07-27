@@ -1,0 +1,189 @@
+{
+  "area": "Stock / placeholder imagery: where it lives, what renders it, and how to make it unmistakable in dev",
+  "summary": "Every photograph a customer can see on this site today is Unsplash stock, and nothing in the code or the data says so. I read the live database (read-only GET via PostgREST, service-role key from .env.local, 2026-07-27): all 20 customer-visible salons have a cover_photo_url, all 20 point at images.unsplash.com, and there are only 11 distinct URLs among them, so 13 of the 20 salons are wearing a photo that also belongs to another salon (one image is the cover for four different waxing studios). Their galleries are 166 URLs, also 100% Unsplash. salon_photos has 0 rows. The marker the owner assumed exists does not work: salons.is_test is a real column read as a hide-filter by 15+ API routes, but it is false on all 28 rows, so it flags nothing and currently discriminates nothing. There is no dev-only banner component anywhere in the repo, and no isStock/isSeed helper of any kind. next.config.mjs allowlists exactly three stock hosts (unsplash, pexels, picsum) alongside supabase/tiktok/googleusercontent, so the allowlist itself is a usable definition of \"stock\". Separately: of the 46 hardcoded Unsplash literals in app/lib code, 28 sit in dead components nobody imports, and one (booking/lookup) is live, ungated, and shipped before the gate that would now block it.",
+  "findings": [
+    {
+      "claim": "Live DB: 20 customer-visible salons (is_active ∧ listed_on_marketplace ∧ ¬is_test), 20/20 have a cover_photo_url, 20/20 are images.unsplash.com, only 11 distinct URLs.",
+      "evidence": "Read-only GET ${NEXT_PUBLIC_SUPABASE_URL}/rest/v1/salons?select=id,name,slug,is_test,is_active,listed_on_marketplace,cover_photo_url,gallery_urls&limit=100 → HTTP 200, 28 rows. Output: customer-visible salons: 20 / of those, with cover: 20 / cover on unsplash: 20 / distinct covers among visible: 11",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "13 of the 20 visible salons share their cover photo with another salon. One Unsplash image is the cover for FOUR different businesses.",
+      "evidence": "Same query, duplicate grouping output: 4x photo-1570172619644 → ['Wax & Glow Basel','Smooth Skin Studio','Lisse Studio','Belle Epil']; 4x photo-1604654894610 → ['Pink Petal Nails','Nail Lounge Basel','Nail Studio Bliss','La Belle Ongle']; 3x photo-1512290923902 → ['Glow Lab Basel','Velvet Face','Rouge Studio']; 2x photo-1487412947147 → ['Muse Beauty Studio','Haarsalon Margot']",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "salons.gallery_urls is also 100% Unsplash: 166 URLs across the 20 visible salons (174 across all 28), only 37 distinct, zero non-unsplash hosts.",
+      "evidence": "Same query: 'gallery urls on visible: 166 all unsplash: True'; across all 28: 'total gallery urls: 174 distinct: 37' with host Counter({'images.unsplash.com': 174})",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "salon_photos (the real gallery table) has 0 rows, so every card and PDP falls back to the Unsplash cover/gallery columns.",
+      "evidence": "_inventory/_db-snapshot.json (capturedAt 2026-07-12): {\"name\": \"salon_photos\", \"rows\": 0}, {\"name\": \"salons\", \"rows\": 28}",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "salons.is_test is FALSE on all 28 rows. It is not a seed marker and it currently filters nothing.",
+      "evidence": "Live query: is_test counter: Counter({False: 28}). Read as a filter at app/api/salons/route.ts:156, app/api/salons/by-category/route.ts:60, app/api/salons/similar/route.ts:35, app/api/salons/nearby/route.ts:58, app/api/salons/trending/route.ts:33, app/api/salons/recommendations/route.ts:35,69,90, app/api/salons/quartier-counts/route.ts:14, app/api/salons/quartier-featured/route.ts:13, app/api/profile/favorites/route.ts:52, app/api/search/no-results/route.ts:79, app/api/slots/last-minute/route.ts:31, app/api/reviews/featured/route.ts:34, app/api/metrics/global/route.ts:22, app/api/salon/retail/route.ts:34",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "is_test IS written, but only by the admin seeder, whose salons are hidden. The 8 hidden rows in the live DB are hidden by is_active=false, not by is_test.",
+      "evidence": "app/api/admin/seed-test-salons/route.ts:165 and :196 set is_test: true; app/api/admin/test-salon/route.ts:99 same. Live query: is_active Counter({True: 20, False: 8}); the 8 are named 'test', 'E2E Test Salon lgekk50', 'Payload Check Salon d6od9eo', 'E2E Test Salon Fix1 …', 'reviewer-batchA-…' and all have listed_on_marketplace=true, is_test=false",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "No dev/staging/preview banner component exists anywhere in the repo. NODE_ENV is used only to 404 /dev routes and to gate one demo array.",
+      "evidence": "grep -rniE \"DevBanner|dev-banner|DevRibbon|EnvBanner|StagingBanner|PreviewBanner|demo.?banner\" over app components lib → zero hits. All 30 NODE_ENV hits are `if (process.env.NODE_ENV === \"production\") notFound()` in app/[locale]/dev/*, plus app/[locale]/_components/homepage/useRecentlyViewed.ts:61",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "No isStock / isSeed / placeholder-detection helper exists in lib or app.",
+      "evidence": "grep -rniE \"isStockPhoto|isSeedData|isPlaceholderImage|STOCK_HOSTS|seedMarker\" --include=*.ts --include=*.tsx app lib scripts → zero hits",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "next.config.mjs allowlists exactly three stock-photo hosts, and they are separable from the real hosts by name.",
+      "evidence": "next.config.mjs:88 \"**.unsplash.com\", :92 \"**.pexels.com\", :106 \"picsum.photos\", :110 \"**.picsum.photos\". Real/content hosts in the same list: :70 \"**.supabase.co\", :74/:79/:83 tiktokcdn, :98 \"**.googleusercontent.com\". The picsum entry carries its own comment at :102: \"V3-D389 PROOF-ONLY: placeholder host … Remove with the seeded PROOF_SALON_ITEMS\". Same three hosts repeat in the CSP at netlify.toml:52",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "LIVE, UNGATED hardcoded stock image on a real customer route: the booking-lookup desktop split-hero.",
+      "evidence": "app/[locale]/booking/lookup/page.tsx:216-222 renders <img src=\"https://images.unsplash.com/photo-1560066984-138dadb4c035?w=900&q=80\" aria-hidden> inside an <aside> with no env gate. Comment at :215 calls it \"Decorative\"",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "Two stock literals are properly gated and will not reach production.",
+      "evidence": "app/[locale]/_components/homepage/useRecentlyViewed.ts:32,33,34 (DEMO array) is reached only via the `process.env.NODE_ENV !== \"production\"` branch at :61. app/[locale]/walk-in-pay/page.tsx:84 is inside `if (searchParams.get(\"demo\"))` at :81",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "28 of the 46 Unsplash literals in app/lib code sit in DEAD components that nothing imports.",
+      "evidence": "app/[locale]/_components/homepage/ArtistOfTheMonth.tsx:35-112 (20 URLs) — unmounted, app/[locale]/page.tsx:52-56 says \"ArtistOfTheMonth removed from page composition\" and the import is commented out at :56. app/[locale]/_components/homepage/FeaturedStylists.tsx:100,111,122,133 (4) — app/[locale]/page.tsx:67 \"FeaturedStylists REMOVED from homepage (V3-D436)\", import commented at :82. lib/category-photos.ts:6-9 (4) has exactly one importer, app/[locale]/_components/landings/CategoryHero.tsx:3, and grep for `CategoryHero` across app returns ZERO import statements — the four category routes dropped it, see app/[locale]/coiffeur/page.tsx:100-104 \"CategoryHero + the SEO above/below slots are dropped unconditionally\"",
+      "confidence": "verified",
+      "wired": "dead-code"
+    },
+    {
+      "claim": "ArtistOfTheMonth's header comment points at a table that does not exist.",
+      "evidence": "app/[locale]/_components/homepage/ArtistOfTheMonth.tsx:17 says \"Real `stylist_profiles.portrait_url` (currently Unsplash demo)\". Live GET /rest/v1/stylist_profiles → HTTP 404 PGRST205 \"Could not find the table 'public.stylist_profiles'\". _inventory/_db-columns.json has staff_members / staff_portfolio_images, no stylist_profiles",
+      "confidence": "verified",
+      "wired": "dead-code"
+    },
+    {
+      "claim": "The legacy Unsplash seed migration targets a table that no longer exists, so it is not the source of today's covers.",
+      "evidence": "supabase/migrations/003_more_stores.sql:2 'INSERT INTO stores (… photo_url …)', lines 3-13 carry 11 Unsplash URLs. _inventory/_db-snapshot.json has no table whose name contains 'store' (python filter returned []). No migration in supabase/migrations/ inserts into `salons` with a cover — the live cover values were written directly to the DB, not by any script in this repo",
+      "confidence": "verified",
+      "wired": "dead-code"
+    },
+    {
+      "claim": "The admin seeder is the only in-repo writer of salons.cover_photo_url, and it writes Unsplash.",
+      "evidence": "app/api/admin/seed-test-salons/route.ts:54 cover_photo_url: \"https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&q=80\", :68 photo-1604654894610-df63bc536371, :82 photo-1503951914875-452162b0f3f1, :96 photo-1544161515-4ab6ce6db874 — the four TEMPLATES entries, written with is_test: true at :165",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "The Inspo/discovery feed is 13.6% Pexels stock; the rest is scraped TikTok CDN, not Solen-owned either.",
+      "evidence": "Live GET /rest/v1/discovery_items?select=image_url,source&limit=1200 → 1000 rows sampled of 1071 (snapshot count). image_url hosts: images.pexels.com 136, p16/p19-common-sign.tiktokcdn-eu/us 864. source column: 'pexels' 136, 'tiktok' 17, NULL 847. Schema allows stock by design: supabase/migrations/067_discovery.sql:19 and :49 CHECK (source IN ('unsplash','pexels','pixabay',…))",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "The admin UI advertises stock import as a feature in all four locales.",
+      "evidence": "messages/en.json:3464 \"quickImportDesc\": \"Quick-import stock photos by category from Unsplash.\"; de.json:3464, fr.json:3464, it.json:3447. Backed by app/api/admin/discovery/smart-import/route.ts:15,68. .env.example:42 UNSPLASH_ACCESS_KEY=",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "64 mockup files under public/_mockups/ carry stock URLs, spanning 36 distinct Unsplash photo ids.",
+      "evidence": "grep -rlniE \"unsplash|picsum\" public/_mockups/ | wc -l → 64; grep -rohE \"images\\.unsplash\\.com/photo-[0-9a-zA-Z-]+\" public/_mockups/ | sort -u | wc -l → 36",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "SILENT NO-OP: the 12 'real self-hosted' mockup photos that _BASE.md declares law do not exist on disk or in git. Four mockups reference them and render grey boxes.",
+      "evidence": "ls public/_mockups/_assets/salon-photos → README.txt only (1 entry). git ls-files public/_mockups/_assets/salon-photos/ → README.txt only. README.txt claims '12 self-hosted product seed photos (p01-p12.jpg)'. Referenced by public/_mockups/_BASE.md:33, pinterest-ref-copy/index.html:83-90 (url(/_mockups/_assets/salon-photos/p05.jpg) etc., each with a #F4F4F5 fallback that is what actually paints), pinterest-ref-solen/index.html, floors-law/index.html",
+      "confidence": "verified",
+      "wired": "dead-code"
+    },
+    {
+      "claim": "SILENT NO-OP: check-invariants cites a photo-audit script that was never written, and its own photo invariant is report-only by design.",
+      "evidence": "scripts/check-invariants.mjs:318 \"the strict duplicate test needs the live read that scripts/salon-photo-audit does\". find . -name \"*salon-photo*\" -not -path ./node_modules/* returns only the public/_mockups/_assets/salon-photos directory. checkSalonPhotoIntegrity() ends with report(\"E. Salon photo integrity\", true, lines) — always passes; the header at :302-320 already documents the 4x/4x/3x/2x duplication I independently re-measured live",
+      "confidence": "verified",
+      "wired": "partially-wired"
+    },
+    {
+      "claim": "The no-decorative-image-gate IS wired (contrary to the 2026-07-26 research note), but it cannot catch stock imagery: it matches literal src in .tsx/.jsx only and knows nothing about stock hostnames.",
+      "evidence": "~/.claude/settings.json:114 \"command\": \"python3 /Users/sulo/.claude/hooks/no-decorative-image-gate.py\". Gate source: UI_FILE = re.compile(r\"\\.(tsx|jsx)$\"), UI_PATH restricted to app|components|components-legacy|src, LITERAL_SRC matches only <Image|img src=\"literal\". No unsplash/pexels/picsum pattern anywhere in the file. It therefore ignores every .html mockup and every data-driven Unsplash URL, which is 100% of the live cover imagery",
+      "confidence": "verified",
+      "wired": "partially-wired"
+    },
+    {
+      "claim": "There is NO single component all salon imagery flows through. At least 10 production render sites, split across next/image and raw <img>.",
+      "evidence": "next/image: app/[locale]/_components/search/SalonResultCard.tsx:240 (grid variant) and :285 (row variant), app/[locale]/_components/homepage/SalonCard.tsx:438, app/[locale]/_components/salon/SalonHero.tsx:82,214,229,244,251,258, app/[locale]/_components/search/CategoryHeroCarousel.tsx:121, app/[locale]/_components/salon/SalonOtherLocations.tsx:73, app/[locale]/dashboard/all-salons/page.tsx:230. Raw <img>: app/[locale]/_components/salon/SalonImageGallery.tsx:246,266, app/[locale]/recently-viewed/RecentlyViewedClient.tsx:100, app/[locale]/booking/lookup/page.tsx:218. Closest thing to a funnel is SalonResultCard, fed by SearchTemplate.tsx:1600,1668,1784, CategoryBrowseRails.tsx:110, SalonVenuesNearby.tsx:192, SearchOverlay.tsx:638",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "Zero production components paint a salon photo via CSS background-image, so an img[src] selector has complete coverage of the live render paths.",
+      "evidence": "grep -rn \"backgroundImage\" --include=*.tsx app components lib | grep -v /dev/ returns exactly two hits, app/[locale]/_components/layout/MobileMenu.tsx:74 and app/[locale]/_components/layout/CityTopBar.tsx:99, both `linear-gradient(white, white), linear-gradient(white, white)` (the Swiss flag), no photo",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "A CSS attribute selector on the stock hostname works for next/image too, because next/image's proxy URL keeps the hostname unencoded.",
+      "evidence": "next/image emits /_next/image?url=${encodeURIComponent(src)}&w=..&q=.., and encodeURIComponent leaves dots and alphanumerics untouched. Captured live-page artifact confirming it: public/_mockups/taste-questions/index.html:70 → url(/_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1570172619644-dfd03ed5d881%3Fw%3D800%26q%3D80&w=828&q=75) — the literal string \"images.unsplash.com\" survives inside the src",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "app/layout.tsx is the single root layout and the only <html>/<head> in the app, so one dev-gated <style> there covers every route including /dev previews.",
+      "evidence": "app/layout.tsx:58 <html lang={locale} …>, :59 <head>, :64 </head>, :70 <body>. Comment at :50-51 states \"Next.js App Router allows exactly one <html> tag, so it can't live in app/[locale]/layout.tsx\"",
+      "confidence": "verified",
+      "wired": "wired"
+    }
+  ],
+  "gaps": [
+    {
+      "what": "A machine-readable flag on the data that says 'this photo is stock'. Today the ONLY signal is the hostname in the URL string. salons.is_test exists but is false on all 28 rows, so it carries zero information.",
+      "why_it_matters": "Every downstream consumer (UI, gates, audits, the design-verifier's imagery floor) has to re-derive 'is this real?' by string-matching a hostname. The moment a real salon uploads to Supabase Storage and a seeded one still points at Unsplash, nothing in the schema distinguishes them and the imagery floor keeps scoring against fake content.",
+      "existing_thing_to_extend": "salons.is_test (already a column, already read by 15+ API routes) — or, cheaper and with zero migration, the hostname allowlist already enumerated at next.config.mjs:88-110",
+      "size": "S"
+    },
+    {
+      "what": "Any visual distinction between stock and real imagery in dev/preview. No banner, no ribbon, no filter, no data attribute exists anywhere.",
+      "why_it_matters": "This is the owner's literal complaint. Twenty salon cards render four duplicate Unsplash photos and look exactly like a finished product, which is why the same mistake keeps getting re-made across sessions.",
+      "existing_thing_to_extend": "app/layout.tsx:59-64 (the single <head>) — no new component needed",
+      "size": "S"
+    },
+    {
+      "what": "An enforcement check that FAILS on stock or duplicated salon covers. The scaffold exists but always passes, and the audit script it delegates to was never written.",
+      "why_it_matters": "scripts/check-invariants.mjs already contains the correct diagnosis in prose (lines 302-320) and reports it forever without ever blocking. The duplication it describes is still exactly true today, ten days later.",
+      "existing_thing_to_extend": "scripts/check-invariants.mjs checkSalonPhotoIntegrity() at line 302, plus the npm script check:invariants at package.json:15",
+      "size": "M"
+    },
+    {
+      "what": "The 12 p01-p12.jpg files that public/_mockups/_BASE.md:33 makes law. They are not on disk and not in git; only README.txt is tracked.",
+      "why_it_matters": "Four mockups silently paint #F4F4F5 grey boxes where the base law promises real photos, and the mockup gates that check for _assets/salon-photos see the reference and pass.",
+      "existing_thing_to_extend": "public/_mockups/_assets/salon-photos/ (directory + README already exist)",
+      "size": "S"
+    },
+    {
+      "what": "Cleanup of 28 dead Unsplash literals in three unmounted files, so grep counts stop lying about the size of the problem.",
+      "why_it_matters": "ArtistOfTheMonth.tsx alone contributes 20 of the 46 code hits and renders nowhere. Any future audit that greps for stock URLs will keep re-surfacing dead weight and mis-sizing the real exposure, which is 1 live literal plus 186 database rows.",
+      "existing_thing_to_extend": "_design-system/REMOVED.md graveyard protocol (npm run removed) — these three were already owner-removed from composition, they were just never deleted",
+      "size": "S"
+    }
+  ],
+  "recommendation": "Do the CSS-level marker first, because it is the only option with complete coverage and it touches one file. There is NO single component all salon imagery flows through — I enumerated at least 10 production render sites split across next/image (SalonResultCard.tsx:240,285; homepage/SalonCard.tsx:438; SalonHero.tsx:82,214,229,244,251,258; CategoryHeroCarousel.tsx:121; SalonOtherLocations.tsx:73) and raw <img> (SalonImageGallery.tsx:246,266; RecentlyViewedClient.tsx:100; booking/lookup/page.tsx:218), so a component-level ribbon means ~10 edits and will miss the eleventh. Key off the URL instead, since the URL is the thing that is actually stock. Concretely: in app/layout.tsx, inside the single <head> at line 59-64, add a `process.env.NODE_ENV !== \"production\" && <style …>` block with `img[src*=\"unsplash.com\"],img[srcset*=\"unsplash.com\"],img[src*=\"pexels.com\"],img[srcset*=\"pexels.com\"],img[src*=\"picsum.photos\"],img[srcset*=\"picsum.photos\"]{outline:3px dashed #EA580C;outline-offset:-3px;filter:saturate(.35)}`. This works through next/image because the proxy keeps the hostname unencoded (proved by the captured artifact at public/_mockups/taste-questions/index.html:70), it works for raw <img> directly, it has full coverage because no production component paints a photo via background-image (verified: the only two backgroundImage hits are Swiss-flag gradients), and the constant NODE_ENV comparison is dead-code-eliminated so production rendering is byte-identical. The three hostnames are not invented — they are exactly the stock entries already allowlisted at next.config.mjs:88, :92, :106, :110, so the CSS and the allowlist stay in sync by construction. Then wire the build-time half by finishing the scaffold that already exists: scripts/check-invariants.mjs checkSalonPhotoIntegrity() at line 302 documents this exact problem and then calls report(..., true, ...) so it can never fail, and line 318 delegates the strict test to scripts/salon-photo-audit, which does not exist. Replace that delegation with the live read I ran (GET /rest/v1/salons?select=name,is_active,listed_on_marketplace,is_test,cover_photo_url,gallery_urls) and FAIL on two conditions: any customer-visible salon whose cover host is in the stock set, and any cover URL shared by more than one salon. Do NOT reach for salons.is_test as the marker — it is false on all 28 rows and setting it true on seeded salons would hide them from the marketplace entirely, since 15+ routes use it as a visibility filter (app/api/salons/route.ts:156 and siblings). Two cleanups worth doing in the same pass: delete the one live ungated stock image at app/[locale]/booking/lookup/page.tsx:216-222 (it is decorative and aria-hidden, and it is exactly what ~/.claude/hooks/no-decorative-image-gate.py exists to block — it predates the gate), and either commit the missing p01-p12.jpg into public/_mockups/_assets/salon-photos/ or strike the claim from public/_mockups/_BASE.md:33, because four mockups currently reference files that are not in git and paint grey."
+}
