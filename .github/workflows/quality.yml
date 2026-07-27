@@ -186,3 +186,61 @@ jobs:
         run: npx playwright test
         env:
           BASE_URL: http://localhost:3001
+
+  # WCAG 2.2.2 runtime motion gate (motion-04, scripts/check-motion.mjs --gate). The check
+  # itself is proven (MOTION_LAW.md D2: caught 8 animate-spin + 25 animate-pulse loops a
+  # by-hand audit missed sixfold) but was sitting as a manual `npm run gate:motion` nobody
+  # was forced to run, so a new auto-starting >5s loop got zero automatic scrutiny. Same
+  # build/serve shape as the `visual` job above (real `next build` + `next start`, needs the
+  # Supabase secrets for the DB-backed routes in DEFAULT_ROUTES); skips green while secrets
+  # are absent, same gh secret set one-liners as the e2e job.
+  motion:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: secrets-check
+        id: secrets-check
+        run: |
+          if [ -n "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}" ] && [ -n "${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" ] && [ -n "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" ]; then
+            echo "has-secrets=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has-secrets=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Supabase secrets not set on this repo, skipping the motion job (stays green)."
+          fi
+      - uses: actions/setup-node@v4
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        with:
+          node-version: "22"
+          cache: "npm"
+      - name: npm ci
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        run: npm ci
+      - name: install chromium
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        run: npx playwright install --with-deps chromium
+      - name: next build
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      - name: next start (background) + wait for it
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        run: |
+          npx next start -p 3001 &
+          for i in $(seq 1 30); do
+            if curl -s -o /dev/null "http://localhost:3001"; then echo "server up"; exit 0; fi
+            sleep 2
+          done
+          echo "::error::next start never became reachable"; exit 1
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      - name: gate:motion (WCAG 2.2.2 runtime probe)
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        run: npm run gate:motion
+        env:
+          BASE_URL: http://localhost:3001
