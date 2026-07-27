@@ -227,5 +227,10 @@ After completing ALL phases of any feature roadmap, you MUST perform:
 7. If creating admin-only pages, verify path is in `adminOnlyPaths` in `middleware.ts`
 8. Translations exist in ALL 4 locale files
 9. If SQL migrations are required, add a `RUN MIGRATION FIRST` note at top of roadmap
+10. If the change touches `lib/bookings/**`, `lib/purchases/**`, or `lib/walkin/**` (a
+    money-mutating chokepoint, see `_rules/TESTING.md`), a companion vitest file must
+    exist proving at least one success case and one failure case, OR the change is a
+    non-mutating helper (read-only, notification-only) and that's stated in one line.
+    Silence on this point is not acceptable for a money-path change (testing-release-06).
 
-**A feature is NOT complete until all 9 checks pass.**
+**A feature is NOT complete until all 10 checks pass.**
