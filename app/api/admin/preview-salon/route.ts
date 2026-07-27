@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient, createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { logAuditEvent } from "@/lib/audit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -37,6 +38,8 @@ export async function POST(request: NextRequest) {
   if (!salon) {
     return NextResponse.json({ message: "Not a test salon or not found" }, { status: 404 });
   }
+
+  await logAuditEvent(request, user.id, "preview_salon", "salon", salon_id);
 
   const response = NextResponse.json({ ok: true, salon_name: salon.name });
   response.cookies.set(PREVIEW_COOKIE, salon_id, {
