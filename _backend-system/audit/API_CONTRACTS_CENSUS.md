@@ -6,13 +6,13 @@ extraction over `NextResponse.json(...)` call sites), not a type-checker.
 
 ## Error response shapes (status 400-599)
 
-- **1368** : legacy: error alone
-- **194** : legacy: message+code
+- **1373** : legacy: error alone
+- **196** : legacy: message+code
 - **79** : legacy: error+code
 - **38** : legacy: other
 - **32** : legacy: message alone
 - **5** : legacy: error+code+message combined
-- **1716** total classified call sites
+- **1723** total classified call sites
 
 Canonical target (LAW.md section 7, "Error shape" row): the RFC 9457 subset
 `{type, title, status, detail}`, extension keys (e.g. `code`) allowed. No mass
@@ -89,6 +89,6 @@ three counts against a frozen baseline and fails only if one of them
 INCREASES (a new route introducing a legacy shape or an unlabeled 201), never
 because the pre-existing count is nonzero.
 
-RATCHET_LEGACY_ERROR_SHAPES=1716
+RATCHET_LEGACY_ERROR_SHAPES=1723
 RATCHET_LEGACY_SUCCESS_SHAPES=5
 RATCHET_MISSING_LOCATION_201=44
