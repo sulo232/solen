@@ -1100,6 +1100,8 @@ t("results", { count: salons.length })
 // messages/de.json: "results": "{count, plural, one {# Salon} other {# Salons}}"
 ```
 
+**Never a hardcoded ternary** (`count === 1 ? "Salon" : "Salons"`) as a substitute for the pattern above: it freezes the text in whatever language the author typed and drops the locale's real plural grammar (French treats 0 as singular; German/French/Italian all differ at higher counts). copy-i18n-04 (2026-07-27) found and fixed 7 live instances of this exact anti-pattern (brand/[slug]/page.tsx, FavoritesList.tsx, SalonReviews.tsx, SalonResultCard.tsx, MapSalonDetail.tsx, queue/[token]/page.tsx, behandlungen/[...slug]/*.tsx). **Enforced**: `~/.claude/hooks/copy-lint-gate.py`'s 6th check (`NO-HARDCODED-PLURAL-TERNARY`) blocks any new `.tsx`/`.jsx` edit introducing `=== 1 ? "..."` / `== 1 ? "..."`.
+
 ### §17.5 · Date / time / currency
 
 Use Swiss formats:
