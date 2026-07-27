@@ -194,6 +194,38 @@ verify happened). Extending `_backend-system/CREDENTIAL_EXPIRY.md`
 manually against this table's annual floor, is the natural next step if this
 cadence needs a harder enforcement mechanism later.
 
+### 8b. Leak-response runbook (secrets-webhooks-05, frozen 2026-07-27)
+
+Solen's own documented founding security incident is exposed credentials in
+git (`_rules/SECURITY_RULES.md` line 7, cited by `research/security.md`
+section 10). This is the first-hour runbook for the next time any secret is
+confirmed exposed, so the response is a checklist under pressure, not an
+improvisation. `_plans/OPS_RUNBOOK.md`'s own "Security maintenance" section
+does not cover this today; this is deliberately placed in `LAW.md` instead of
+a new file, since `LAW.md` is the one doc every session is already expected to
+read first.
+
+For every secret class: (1) where to revoke/regenerate, (2) what breaks the
+instant it rotates and the redeploy order that minimizes the break window,
+(3) who/what needs telling, (4) whether a dual-secret transition window
+exists.
+
+| Secret | Revoke/regenerate | What breaks + redeploy order | Who/what to tell | Dual-secret window? |
+|---|---|---|---|---|
+| `STRIPE_SECRET_KEY` | Stripe Dashboard > Developers > API keys > roll key | Every Stripe-touching route breaks the instant the old key is rolled (this is one full-access key used everywhere, secrets-webhooks-07). Set the new key in Netlify env vars FIRST, trigger a redeploy, confirm one test-mode charge succeeds, THEN roll the old key in Stripe (rolling first with no new key live yet is a self-inflicted outage) | Internal only today (no salon-facing Stripe integration exists yet). Note the outage window in whatever the team uses for status if it's customer-visible (an active booking payment mid-flight can fail) | No. Stripe's key roll is an instant hard cutover, not a window |
+| `STRIPE_WEBHOOK_SECRET` | Stripe Dashboard > Developers > Webhooks > the endpoint > roll signing secret | Only `app/api/stripe/webhook/route.ts`'s signature verification breaks; incoming events get retried by Stripe (Stripe's own retry schedule) so a short window is recoverable, unlike the full secret key | Internal only | Yes, Stripe supports a dual-secret verification window on this one specifically (research/webhooks.md section 14); use it, don't hard-cut |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase Dashboard > Project Settings > API > reset service_role key | Every server route using `createAdminSupabaseClient()` (the majority of `app/api/**`) breaks at once. Set the new key in Netlify env vars and redeploy before or immediately after resetting in Supabase; there is no way to sequence this to zero downtime, Supabase's reset is also an instant cutover | Internal only | No |
+| `RESEND_API_KEY` | Resend Dashboard > API Keys > revoke + create | Only outbound transactional email breaks (bookings/reminders/digests silently stop sending, no user-facing error since email failures are logged not surfaced, see `lib/email`'s error handling). Lowest-urgency of this table: rotate on your own schedule once the new key is set | Internal only; check the `cron_runs`/digest logs afterward for a spike in email-send failures during the gap | No |
+| `CRON_SECRET` | Generate a new random value (`openssl rand -base64 32` or equivalent), set in Netlify env vars AND every `.github/workflows/*.yml` secret that references it | ALL 22+ `/api/cron/*` routes 401 simultaneously the instant the value differs between GitHub Actions' secret and Netlify's env var (see section 8a); update BOTH in the same sitting, expect every cron to fail on the runs in between | Internal only, but check `lib/cron-heartbeat.ts`'s overdue-cron detection in the next daily digest to confirm every cron resumed | No, by design (secrets-webhooks-05 names this asymmetry explicitly versus Stripe's webhook secret) |
+| `BOOKING_HMAC_SECRET`, `LOYALTY_HMAC_SECRET` | Generate a new random value, set in Netlify env vars | Any outstanding link/token signed with the OLD secret (a guest booking-access link already emailed, an unscanned loyalty QR) stops validating the instant the new secret is live; there is no re-signing pass, affected users must re-request a fresh link/code | Internal only; a support-facing note ("if a booking link stopped working today, resend it") is reasonable if this secret is ever actually rotated for a real reason rather than the annual floor | No |
+
+The asymmetry the table makes visible on purpose: `CRON_SECRET` is the ONE
+secret with no built-in grace period despite being the most frequently
+rotated by this cadence (shared across every scheduled job), while Stripe's
+webhook secret, rotated far less often, DOES support a graceful dual-secret
+window. This is exactly the kind of detail meant to be read before an
+incident, not discovered during one.
+
 ---
 
 ## 9. Rate limiting
@@ -365,7 +397,7 @@ design check, not the codebase as a whole.
 | Cache-addition trigger (performance-04): already frozen in section 13's table + deferred-triggers list. The residual gap this closes is PR-facing: `.github/pull_request_template.md` now carries a line requiring the specific measured number (an `EXPLAIN ANALYZE` time or a real p95) that justifies any new cache layer, so the requirement binds a human reviewer or an agent session without this file loaded, not only a Claude session with fable-backend's memory loaded | Checklist (PR template) |
 | N+1 systematic check (performance-06): the current confidence level is a 4-file sample (`audit/transactions-concurrency.md:41`), not a systematic sweep of the ~165 API routes. A full grep-based heuristic (a loop body followed by an awaited `.from(` call) is not adopted as a hard gate, real false-positive risk (not every loop-with-a-query is a bug). The intended enforcement is a recurring quarterly line in `_plans/SWEEP_BACKLOG.md`'s own generation mechanism (a `_plans/` file, owned by the sweep orchestrator, not edited directly here); this row is the frozen decision that line should implement | Checklist (periodic sweep item, pending the orchestrator adding it to `_plans/SWEEP_BACKLOG.md`) |
 | Measured before/after on a perf claim (performance-07): `.github/pull_request_template.md` now carries a line requiring the actual before-number and after-number, with units, on any PR whose description claims a performance improvement. A claimed optimization with no attached number is unverified and gets re-measured before merge, same standard as a correctness fix needing a reproduction | Checklist (PR template) |
-| Bundle-size budget (performance-08): deferred, not yet built. `next.config.mjs` records exactly one deliberate bundle decision ever made (the Phosphor-icons removal); no `@next/bundle-analyzer` dependency, no CI ratchet exists yet. Same ratchet shape as section 2's select-star-census once built: gzipped first-load JS for home/search/PDP tracked against a committed baseline, PR must name what was added if it grows >10% | Deferred, not yet gated (see the deferred-triggers list below) |
+| Bundle-size budget (performance-08, PARTIALLY IMPLEMENTED): `@next/bundle-analyzer` is now a devDependency, wired as a no-op-unless-`ANALYZE=true` wrapper in `next.config.mjs` (`npm run build:analyze` opens the treemap), confirmed to load correctly (adds a `webpack` config key only when enabled). The CI RATCHET (gzipped first-load JS for home/search/PDP tracked against a committed baseline) is NOT yet built: it needs a clean `next build` to establish the baseline numbers, and at the time this row was written the repo's `next build` was failing at the type-check step on an unrelated file (`app/api/directory/[id]/claim/route.ts`, a different, uncommitted, in-progress change, not this domain's) not fixable from here. Next step: once the build is green, run `npm run build`, read the "First Load JS" column for the 3 named routes, commit that as the baseline, wire the ratchet job | T2 (mechanism installed), ratchet itself blocked on a clean build |
 | Per-request DB-time vs handler-time split (performance-09, IMPLEMENTED): `lib/db-timing.ts`'s `createDbTimer()` wraps a route's DB call(s) and logs one line splitting handler-total from DB-total (`[db-timing] <route>: handler=Xms db=Yms (N calls)`), proven to discriminate the two (a unit run showed handler=63.8ms vs db=42.3ms across 2 calls, non-DB overhead visibly isolated). Wired into `GET /api/salons/[slug]` (the PDP's own data source, the literal "PDP feels slow" example this finding names) as the first exemplar. Not yet retrofitted across all ~165 routes, that is fix-while-you're-there on next touch, not a mass migration | T1 (mechanism), retrofit is CONV (per-route, as touched) |
 | Image weight budget (performance-10, PARTIALLY IMPLEMENTED): `next.config.mjs`'s `images.formats` is now pinned to `["image/webp"]`, confirmed live as Next 15.3.8's own current default (`node_modules/next/dist/shared/lib/image-config.js`), no behavior change today, just closes the "a future major bump silently changes it" risk. Quality stays Next's own unset 75 default. The 200KB max-rendered-weight NUMBER itself has no enforced ceiling yet (would need a next-build image-manifest check), still a nice-to-have given the photo count is small (28 salons) | T1 (pinning the format), the byte-ceiling itself is not yet gated |
 
