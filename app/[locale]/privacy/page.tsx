@@ -23,7 +23,7 @@ export default async function PrivacyPage() {
             <span className="transition-transform group-hover:-translate-x-1">←</span> Zurück zur Startseite / Back to Home
           </Link>
           <div className="text-xs font-body text-s-ink-2 bg-s-bg-sunken py-1 px-3 rounded-full">
-            Letzte Aktualisierung / Last Updated: 23. März 2026
+            Letzte Aktualisierung / Last Updated: 27. Juli 2026
           </div>
         </div>
       </div>

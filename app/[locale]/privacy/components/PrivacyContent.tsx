@@ -1,3 +1,8 @@
+// privacy-compliance-04: this page is hand-maintained prose, not generated from the
+// schema, so it goes stale silently. Re-check section 2.1 (data inventory) and section
+// 4 (processor transfer basis) whenever a migration adds a note/allergy/skin/hair/health/
+// photo-shaped column to a new table, or adds/changes a third-party processor. Bump the
+// "Letzte Aktualisierung" date below every time the underlying processing actually changed.
 export default function PrivacyContent() {
   return (
     <div className="prose prose-s-ink max-w-none w-full space-y-12">
@@ -15,7 +20,7 @@ export default function PrivacyContent() {
           <ParEn>We collect and process the following categories of personal data:</ParEn>
           <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-s-ink opacity-90">
             <li><strong>Kontodaten / Account Data:</strong> Name, E-Mail-Adresse, Telefonnummer, Profilbild / Name, email address, phone number, profile picture.</li>
-            <li><strong>Buchungsdaten / Booking Data:</strong> Dienstleistungen, Termine, Salonpartner, Kundennotizen, Präferenzen, Allergien / Services, appointments, Salon Partners, client notes, preferences, allergies.</li>
+            <li><strong>Buchungsdaten / Booking Data:</strong> Dienstleistungen, Termine, Salonpartner, Kundennotizen, Präferenzen, Allergien, Beratungs- und Behandlungsnotizen (z.B. Haar-/Hautzustand, Formeln, Sensibilitäten), Vorher-/Nachher-Fotos / Services, appointments, Salon Partners, client notes, preferences, allergies, consultation and treatment notes (e.g. hair/skin condition, formulas, sensitivities), before/after photos.</li>
             <li><strong>Zahlungsdaten / Payment Data:</strong> Transaktionsdetails (verarbeitet von Stripe) / Transaction details (processed by Stripe).</li>
             <li><strong>Nutzungsdaten / Usage Data:</strong> Interaktionen mit der Plattform (verarbeitet von PostHog), IP-Adresse, Gerätetyp, Browserty / Interactions with the platform (processed by PostHog), IP address, device type, browser.</li>
             <li><strong>Kommunikation / Communication:</strong> Chatnachrichten und E-Mails zwischen Nutzern und Plattform / Chat messages and emails between users and platform.</li>
@@ -56,7 +61,7 @@ export default function PrivacyContent() {
                 <tr>
                   <td className="px-4 py-2"><strong>Stripe</strong></td>
                   <td className="px-4 py-2">Zahlungsabwicklung / Payment processing</td>
-                  <td className="px-4 py-2">Global (Stripe Privacy Shield)</td>
+                  <td className="px-4 py-2">Global (EU-US Data Privacy Framework / Standardvertragsklauseln)</td>
                 </tr>
                 <tr>
                   <td className="px-4 py-2"><strong>Supabase</strong></td>
@@ -131,7 +136,7 @@ export default function PrivacyContent() {
         <Article titleDe="8.1 Letzte Aktualisierung und anwendbares Recht" titleEn="8.1 Last Updated and Governing Law">
           <ParDe>Diese Datenschutzerklärung unterliegt <strong>Schweizer Recht</strong>. Solen.ch behält sich das Recht vor, diese Erklärung bei der Einführung neuer Funktionen oder wegen veränderter Rechtslage anzupassen. Vorab registrierte Benutzer werden rechtzeitig informiert.</ParDe>
           <ParEn>This Privacy Policy is governed by <strong>Swiss law</strong>. Solen.ch reserves the right to amend this statement upon introducing new features or due to changes in legislation. Pre-registered users will be informed in due time.</ParEn>
-          <ParDe className="mt-4 font-semibold">Letzte Aktualisierung / Last updated: 23. März 2026</ParDe>
+          <ParDe className="mt-4 font-semibold">Letzte Aktualisierung / Last updated: 27. Juli 2026</ParDe>
         </Article>
       </Section>
     </div>
