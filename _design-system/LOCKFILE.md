@@ -93,7 +93,7 @@ the locked FROST_GLASS/scrim recipes are the only sanctioned alpha uses). Ad-hoc
 
 | Token | Hex | Usage |
 |---|---|---|
-| `s-chart-1` | `#0A0A0A` | Primary chart row (alias of `s-ink` — use for the Solen brand bar in any competitor-comparison chart) |
+| `s-ink` | `#0A0A0A` | Primary chart row (use `s-ink` directly for the Solen brand bar in any competitor-comparison chart; the `s-chart-1` alias was deleted in color-tokens-06, 2026-07-27, zero live callsites) |
 | `s-chart-2` | `#9CA3AF` | Secondary chart row (e.g. main competitor / Treatwell bar in /partner pricing chart) |
 | `s-chart-3` | `#D1D5DB` | Tertiary chart row (e.g. competitor range / "others" bar in /partner pricing chart) |
 
@@ -104,6 +104,20 @@ needs >2 DISTINCT series (not hierarchy), derive hues in OKLCH from `s-accent` �
 hue stepped +25–30 per series (perceptually even, no neon-green-next-to-dull-blue). Customer surfaces
 keep the grey scale above. Legibility rules for every chart: visible axis labels, FLAT bar tops (no
 rounded caps that hide the value), bar count = datum count. "Dribbble-pretty but unreadable" is drift.
+
+**Reference implementation (color-tokens-08, 2026-07-27):** call `chartSeriesColors(n)` from
+`lib/chart-colors.ts`, never hand-compute OKLCH. It fixes L/C from `s-accent` and steps hue 27.5deg
+(the midpoint of the range above) per series. Worked example, `chartSeriesColors(4)`:
+
+| Series | Hex | Role |
+|---|---|---|
+| 1 | `#276EF1` | s-accent itself (hue 261.4deg) |
+| 2 | `#7A57E9` | hue 288.9deg |
+| 3 | `#A743C8` | hue 316.4deg |
+| 4 | `#C53096` | hue 343.9deg |
+
+`lib/chart-colors.ts` also exports `hexToOklch` / `oklchToHex` for any other OKLCH need; its self-test
+round-trips 5 live Solen tokens and re-derives this exact worked example.
 
 ### RETIRED — never use in new code
 
