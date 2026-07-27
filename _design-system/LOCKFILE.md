@@ -430,6 +430,18 @@ nonzero window later, because nothing stated WHEN a new component must reach for
 practitioner convention for comfortable reading is 45-75 characters per line; 68ch keeps a paragraph
 inside that band across the app's type sizes.
 
+**Dashboard scope (responsive-desktop-08, 2026-07-27):** this rule binds the DASHBOARD too, not only
+customer-facing manuscript surfaces. Operator-authored free text (service descriptions, staff bios,
+review-moderation excerpts, refund notes, help-editor/content-editor bodies) reaches the same
+`.prose-measure` utility, rather than inheriting the dashboard's currently-unbounded main container
+width (see the Dashboard content max-width row above). German compounds make an unconstrained line
+worse, not better, on an operator's text field than on a customer's. As of 2026-07-27 this is a QUEUED,
+owner-visible change (any max-width applied to a live dashboard field is a visual change under the
+mockup-first rule): candidate surfaces found by `grep -rln "textarea\|Textarea" app/*/dashboard*/*.tsx`
+include settings, upcharge, help-editor, discovery-admin, content-editor, refunds, approvals,
+discovery-posts, services, reports, reviews. Apply `.prose-measure` to each long-text field discovered
+during the dashboard max-width sweep (LOCKFILE.md Dashboard content row), same turn as that fix.
+
 ### Uppercase application policy (rule A7)
 
 Only TWO roles allow `uppercase` Tailwind class:
@@ -941,6 +953,12 @@ Always German: `Fotos · Über uns · Services · Bewertungen · Portfolio · Tr
 - Salon sticky tab nav: `fixed top-0`, h=~52px, z-[60] (above site header per V3-D206)
 - Sidebar sticky-pinned: `sticky top-24` (24 = 6rem = 96px clearance for site header + breathing room)
 - Scroll-margin for anchor jumps: `scroll-mt-24`
+- CSS mechanic (layout-geometry-03): before adding `overflow-hidden`/`overflow-x-clip`/
+  `overflow-y-auto`/`overflow-scroll` to any ancestor of a `sticky` element, grep its subtree for
+  `sticky` first, that overflow value creates a new containing block and can silently strip the
+  descendant's ability to pin (cost a real fix cycle once, V3-D229). Full writeup and re-verify
+  procedure: `_rules/LESSONS_LEARNED.md` (CSS / Tailwind section). Distinct from the z-index
+  stacking-order rule below, a different failure class.
 
 ### Breakpoints
 
@@ -949,6 +967,19 @@ sm: 640px / md: 768px / lg: 1024px / xl: 1280px / 2xl: 1536px
 ```
 
 Mobile = below md (768). Desktop = md and up. Most components mobile-first.
+
+**Chrome switch-point alignment (responsive-desktop-07, 2026-07-27):** desktop-CHROME decisions (sidebar
+collapse/promotion, nav layout, contact-block placement, any "show the desktop version of this whole
+block" call) must all key off ONE breakpoint, so a browser window between 1024 and 1279px (a common
+unmaximized laptop width) never renders a HALF-promoted hybrid, some chrome already switched to its
+desktop form while a sibling block is still waiting for a later breakpoint. Found live: `DashboardLayout.tsx`
+promotes the sidebar at `md:` (768px) while `SalonContact` hides its mobile block at `lg:` (1024px),
+expecting `SalonSidebar` to carry the desktop replacement, so between 768 and 1024px the page shows desktop
+sidebar chrome next to a mobile contact block whose own desktop replacement hasn't switched on yet. This
+does NOT bind content-reflow decisions (grid column counts, image aspect ratio) which may legitimately vary
+breakpoint by breakpoint; it binds only chrome-level "which whole treatment is showing" switches. Pick one
+value (md or lg) for new chrome components and match whichever the surface's existing siblings already use;
+do not introduce a third switch point.
 
 ### Grid TYPE classification (owner-approved 2026-07-16, "all approves", IG round 1 ig10)
 
@@ -971,6 +1002,76 @@ Rule: if you cannot name the type, you do not know the content shape yet, go loo
 - Photo gallery (3+ photos): 1 big left + 2 stacked right (1+2 layout)
 - Photo gallery (2 photos): 1+1 horizontal split
 - Bento (4-card feature grid): `grid-cols-1 md:grid-cols-2 lg:grid-cols-2`
+
+### Optical overshoot: when a circle must reach for it (layout-geometry-01)
+
+`lib/optical.ts` defines `CIRCLE_OVERSHOOT` (3%) and `opticalCircleSize()`, and `Avatar`'s
+`opticalOvershoot` prop applies it, but a full sweep of every `<Avatar` call site (23 files)
+found zero passing it. The rule: pass `opticalOvershoot` when, and only when, an `Avatar` renders
+as a direct flex/grid sibling of a SQUARE element (a photo tile, an icon chip) at the SAME box
+height, so the two need to read as equal size. Do not add it speculatively where no such sibling
+exists, that reintroduces the drift this row is meant to stop. Enforcement target: extend
+`scripts/check-geometry.mjs`'s asymmetric-pairs class to flag a circle rendered next to an
+equal-box-height square with no overshoot applied, citing `lib/optical.ts` by name; not yet built
+(the script is mid-edit elsewhere this session, deferred, not skipped).
+
+### Mirror-diff for claimed symmetry (layout-geometry-04)
+
+A claimed-mirrored pair (a card's left vs right padding, an icon pair flanking a title, twin
+controls) must pass a reflect-and-diff check: read `getComputedStyle` on both sides, reflect one
+about the candidate vertical axis, and assert the resulting padding/margin/position values match
+within 1px. A failing pair is either a real bug (fix it) or was never meant to be symmetric (say so
+explicitly so it stops being flagged as broken). `check-geometry.mjs`'s existing broken-axis class
+only compares sibling EDGE alignment, never left-vs-right padding/margin symmetry, so this is not
+covered by the shipped checker yet; until it is, `solen-taste-diagnosis`'s measured walk (Step 3.6)
+runs it by hand.
+
+### Checker-to-gate promotion clause (layout-geometry-02)
+
+`scripts/check-geometry.mjs`'s off-grid and broken-axis classes report raw, unfiltered counts
+(1233 / 159 on a 3-route sample) at roughly 1.2% actionable signal; a checker cited at that
+signal-to-noise ratio trains people to ignore it, which is worse than no checker. Rule: no PR,
+mockup, or design-verifier report may cite a RAW `check-geometry.mjs` off-grid/broken-axis count as
+proof of alignment or grid conformance. Only a run with the exclusion rules applied (structural
+false positives: 1px hairlines, text-driven leaf heights, intrinsic image/svg/video dimensions,
+and the nested-radius corner-window logic already coded) counts as evidence. A class graduates from
+report-only to a hard CI gate (`maxFindings=0` wired into `.github/workflows/quality.yml`) only once
+its own exclusion rules are coded into the script itself, not layered on top in a separate triage
+doc. Not yet done for off-grid/broken-axis (the FLOORS section already has a working `--gate` mode
+as the template to copy).
+
+### Scroll containers (layout-geometry-08)
+
+Any scroll container whose content height is variable and can cross its own scrolling threshold (a
+modal body, a bottom sheet, a sidebar list fed by live/growable data such as reviews, staff, or
+service lists) must add the `.scroll-stable-gutter` utility (`app/globals.css`, `scrollbar-gutter:
+stable`) alongside `overflow-y-auto`, not rely on `overflow-y-auto` alone. Without it, a scrollbar
+appearing/disappearing shifts the visible content sideways by roughly 15-17px; invisible on macOS'
+overlay scrollbars, real on Windows/Linux Chrome and many embedded webviews. Applied so far to the
+dashboard staff and service edit modals; extend to any new variable-content scroll container.
+
+### Photo crop anchor (layout-geometry-09)
+
+Every fixed-aspect photo frame states its crop anchor rather than silently taking the CSS default
+(`object-position: center`). The one approved value in the system: a SQUARE photo grid crops
+`object-top` (ig4, owner-approved 2026-07-16, TASTE_LOG.md:326, "square photo grid crops
+center-top, not blind center"), applied on `SalonImageGallery.tsx` and `SalonPortfolio.tsx`'s
+`UniformGrid`. A frame with a DIFFERENT aspect ratio (the PDP hero's `aspect-[16/7]` / 2:1 splits)
+is a different content shape and needs its own owner-reviewed anchor decision before it changes,
+since a visible crop change on the single most prominent above-the-fold customer photo is an
+imagery-treatment call, not a same-shape apply of the existing rule; `SalonHero.tsx` still defaults
+to center pending that decision (flagged in-file, unchanged).
+
+### Grid last-row rule (layout-geometry-05)
+
+A grid classified above as `modular`, fed a dynamic/variable-length collection, names its own
+last-row behavior rather than leaving a partial final row to the unstated CSS-grid default. Default
+for Solen's photo grids (Fresha's own reference behavior, this axis is STRUCTURE per §10): a short
+last row renders LEFT-ALIGNED with trailing empty cells, not centered; `SalonPortfolio.tsx`'s
+`UniformGrid` now states this explicitly for salons whose photo count isn't a clean multiple of 3.
+A component reaching for a different behavior (centered short row, single-column fallback below a
+stated item-count floor) must name that choice in its own doc comment instead of inheriting
+whichever the grid engine happens to render.
 
 ---
 
