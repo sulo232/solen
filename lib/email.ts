@@ -27,10 +27,35 @@ function escapeHtml(s: string): string {
     .replace(/>/g, "&gt;");
 }
 
+// seo-comms-07 (2026-07-27): derive a plain-text alternative from a template's html so
+// Resend's payload always carries both parts, not html-only. A single-part HTML message
+// is a well-documented negative deliverability signal and breaks plain-text/screen-reader
+// clients. Centralized here (sendEmail's one choke point) instead of hand-writing a
+// second copy of every one of the ~60 template bodies, which would be the same
+// information duplicated at high edit-drift risk for close to zero reader benefit over
+// an accurate derivation. `<a href>` links keep their URL in parens so the plain-text
+// reader isn't left with a dead "click here".
+function stripHtmlToText(html: string): string {
+  return html
+    .replace(/<a\s+[^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/gi, "$2 ($1)")
+    .replace(/<\/(p|div|tr|table|blockquote|h[1-6])>/gi, "\n\n")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 export interface EmailPayload {
   to: string;
   subject: string;
   html: string;
+  /** Plain-text alternative. Auto-derived from `html` by sendEmail() when omitted. */
+  text?: string;
 }
 
 /**
@@ -61,6 +86,9 @@ export async function sendEmail(payload: EmailPayload): Promise<void> {
       // declarations of their own and rendered in each client's default font
       // (Times New Roman in classic Outlook) with no brand typeface.
       html: `<div style="font-family:${EMAIL_FONT_STACK};color:${EMAIL_COLORS.ink};font-size:15px;line-height:1.5">${payload.html}</div>`,
+      // seo-comms-07: every send now carries a text/plain part, hand-written when the
+      // template supplied one, else derived from the same html above.
+      text: payload.text ?? stripHtmlToText(payload.html),
     }),
   });
 
