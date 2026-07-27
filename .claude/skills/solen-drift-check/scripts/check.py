@@ -148,6 +148,12 @@ DEFAULT_SCAN_GLOBS = [
     # control-elevation (A14) + the other rules cover it. INFO rules stay non-blocking.
     "components-legacy/**/*.tsx",
     "components/**/*.tsx",
+    # typography-02 (2026-07-27): lib/email*.ts and lib/email-templates/**/*.ts
+    # render raw HTML strings (transactional + lifecycle emails) that carry
+    # font-family declarations same as any .tsx — a live font-family:monospace
+    # violation shipped here undetected because these globs were absent.
+    "lib/email.ts",
+    "lib/email-templates/**/*.ts",
 ]
 
 # Exclusion paths — never scan these.
@@ -249,6 +255,32 @@ HAIRLINE_OPACITY_RE = re.compile(r"(?<!:)\bborder-s-ink/(?:[0-9.]+|\[[0-9.]+\])"
 # is unaffected. This is the one "don't re-open a locked decision" guard wired as
 # a gate rule instead of a doc.
 A18_AVAIL_SIGNAL_RE = re.compile(r"<Clock|\b\d{1,2}:\d{2}\b|heute|morgen|Frei in|nextSlot", re.IGNORECASE)
+
+# A24 — banned font-family (typography-02, 2026-07-27). No font-family drift rule
+# existed at all before this: the finding that named this gap assumed A-something
+# already caught `font-family:monospace`/Geist and just needed wider scan globs to
+# reach lib/email.ts. Re-checked: no such rule existed (grep for "monospace" or
+# "font-family" in this file returned nothing), so the live monospace-code-face
+# violation in lib/email.ts's gift-card email would have kept passing even with
+# the globs widened. Added for real, not just the glob extension.
+FONT_FAMILY_BAN_RE = re.compile(r"font-family\s*:\s*['\"]?(monospace|Geist|JetBrains Mono)\b", re.IGNORECASE)
+
+# A22 — banned font-weight (typography-03, 2026-07-27). LOCKFILE §2 line 276 bans
+# 800/900 ("NEVER 800/extrabold — clumsy"); V3-D317 already swept font-extrabold
+# out of the codebase once, but with no gate the ban re-drifted to 24 live
+# callsites by 2026-07-26. HARD from the start (unlike A7/A8, this ban already
+# has a completed sweep behind it, so there is no legacy backlog to phase in).
+FONT_WEIGHT_BAN_RE = re.compile(r"\bfont-(?:extrabold|black)\b|\bfont-\[(?:800|900)\]\b")
+
+# A23 — non-canonical line-height (typography-04, 2026-07-27). LOCKFILE §2's
+# per-role Scale table names roughly 8 line-height values; a 2026-07-26 sweep
+# found 21 distinct leading-[*] values live (1.35, 1.42, 1.45, 1.08, 1.18, 1.04,
+# 1.02, 0.95 map to no named role). INFO to start, mirroring A7/A8's phase-in —
+# flip to STRICT once _pending-migration.md's queue is swept.
+LEADING_TW_RE = re.compile(r"\bleading-\[([0-9.]+)\]")
+CANONICAL_LEADING = {
+    "1.0", "1", "1.05", "1.1", "1.15", "1.2", "1.25", "1.3", "1.4", "1.55",
+}
 
 # A7-A11 — Type Role Registry + Imagery Pattern Registry (V3-D330, INFORMATIONAL)
 # These are NEW rules added 2026-05-28 per LOCKFILE §1.5 / §2.5 / §11.
@@ -826,6 +858,25 @@ def scan_text(text: str, rel: str, respect_inline_skip: bool = False) -> list[Fi
                 recommendation="Middle-dot `·` is forbidden as a separator (LOCKFILE §2.5 A12, V3-D463). NO separator glyph — use <MetaDot /> (a no-glyph gap) or an em-space (U+2003). Not a `·`, not a `|`.",
             ))
 
+        # A24 — banned font-family (HARD, typography-02 2026-07-27). Codes render
+        # Inter Tight tabular, never a literal monospace face (LOCKFILE §13.4,
+        # V3-D470); Geist and JetBrains Mono are separately retired (LOCKFILE §2).
+        if FONT_FAMILY_BAN_RE.search(line):
+            findings.append(Finding(
+                file=rel, line=ln_no, rule="A24: banned font-family",
+                snippet=line,
+                recommendation="Per LOCKFILE §13.4: codes are NOT a monospace. Use Inter Tight 600-700 + font-variant-numeric:tabular-nums (the .num recipe), or the app font stack for prose. Geist and JetBrains Mono are separately retired.",
+            ))
+
+        # A22 — banned font-weight (HARD, typography-03 2026-07-27). font-extrabold
+        # (800) / font-black (900) / font-[800] / font-[900] are banned outright.
+        if FONT_WEIGHT_BAN_RE.search(line):
+            findings.append(Finding(
+                file=rel, line=ln_no, rule="A22: banned font-weight (800/900)",
+                snippet=line,
+                recommendation="Per LOCKFILE §2: NEVER 800/extrabold or 900/black (\"clumsy\"). app/layout.tsx's Inter Tight weight array only loads 400-700, so this class either renders wrong (browser falls back to 700) or is a no-op. Use font-bold (700).",
+            ))
+
         # A3 — non-canonical durations
         for m in DURATION_TW_NUM_RE.finditer(line):
             n = int(m.group(1))
@@ -1061,6 +1112,16 @@ def scan_text(text: str, rel: str, respect_inline_skip: bool = False) -> list[Fi
                 snippet=line,
                 recommendation="Per CONTROL_ELEVATION.md (V3-D420): white+shadow is reserved for glass-over-photo (FROST_GLASS, lib/frost-glass.ts) and the one ink CTA. A calm control on white / s-bg-sunken casts NO shadow: text -> bg-s-bg-sunken no shadow; icon-only -> bg-white border-s-border no shadow. If this control IS over a photo, ignore (the line scanner can't see the background).",
             ))
+
+        # A23 — non-canonical line-height (INFO, typography-04 2026-07-27).
+        for m in LEADING_TW_RE.finditer(line):
+            val = m.group(1)
+            if val not in CANONICAL_LEADING:
+                findings.append(Finding(
+                    file=rel, line=ln_no, rule="INFO A23: non-canonical line-height",
+                    snippet=line,
+                    recommendation=f"`leading-[{val}]` not in canonical set {sorted(CANONICAL_LEADING)}. Per LOCKFILE §2 Scale table, pick the nearest canonical role line-height.",
+                ))
 
         # ─────────────────────────────────────────────────────────────
         # C1-C7 - anti-hardcode family (2026-06-28).
