@@ -115,6 +115,8 @@ Can I delete this and the design still works? Decorative arrows on swipeable car
 ### 9. Accessibility floor
 Contrast ≥4.5:1 for body text, ≥3:1 for large text and UI components. Tap targets ≥44×44px. Visible focus state on keyboard navigation. Text readable at smallest screen size without zoom. No information conveyed by color alone.
 
+**Reflow (WCAG 2.2 SC 1.4.10, responsive-desktop-06, 2026-07-27):** distinct from the tap-target and small-screen-readability lines above. Every customer page must render with NO horizontal scrolling and no lost content at an effective 320 CSS px width (this is the criterion's own stated equivalent of a desktop user zooming their browser to 400%). `scripts/check-geometry.mjs`'s VIEWPORTS map bottoms out at 375px and Playwright's mobile project is also 375px, so nothing in the toolchain currently checks this specific, legally-referenced width; `npm run check:reflow` (see script) checks it now for the conversion spine.
+
 > Ask: *Could someone with low vision / using only a keyboard / on a small phone still use this? Have I actually checked the contrast or am I guessing?*
 
 ### 8b. Respect layout conventions (and break them intentionally)
