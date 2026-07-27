@@ -26,6 +26,20 @@ ls "app/[locale]/inspo/"
 # nails/ is a pre-existing exception (a category-specific route with its own page.tsx) that predates this rule check; it is not sanctioned by this rule and should not be used as precedent for adding more category routes.
 ```
 
+### Rule 32a: FILTER STATE LIVES IN THE URL (ia-navigation-04, 2026-07-27)
+> **INCIDENT**: `/search`'s `SearchTemplate` reads 15+ filter params (city/service/category/date/period/sort/open_now/instant_bookable/deals/walk_in/min_rating/min_price/max_price/gender/amenities/map/layout) from `searchParams`, proving the team already values shareable filter state. `/inspo`'s progressive drill-down filter (gender/texture/style/cuts) silently regressed on the exact same property: a refresh, a copied link, or the back button lost the selection because it lived in plain `useState` only.
+- Any filter/facet/drill-down selection that changes what a browse/discovery page shows MUST be reflected in the URL via `router.replace` (never `router.push` for a filter tap, that would pile up a back-history entry per keystroke) the moment it is applied, on EVERY browse surface, not just `/search`.
+- Seed the equivalent `useState` from `searchParams.get(...)` on mount, mirroring the write side, so the round trip is complete in both directions.
+- A URL param name reused for a different concept elsewhere in the app is its own defect (see Rule 32b / ia-navigation-10 below); pick a disambiguated name instead of the bare word.
+- **Fixed 2026-07-27**: `app/[locale]/inspo/page.tsx` now seeds and writes `hairGender`/`hairTexture`/`hairStyle`/`tags` (deliberately not the bare `gender`/`texture` the API call still uses internally, to avoid colliding with `/search`'s own `gender` param).
+- Gate: a Playwright check per browse surface that applies a filter, reads `window.location.search`, reloads the page, and asserts the filter UI still shows the applied state.
+
+### Rule 32b: ONE MEANING PER QUERY PARAM NAME (ia-navigation-10, 2026-07-27)
+> **INCIDENT**: `/search` uses `category` to mean a bookable service/taxonomy value (`SearchTemplate.tsx:439`); `/inspo` uses the SAME bare param name `category` to mean one of the fixed `DISCOVERY_CATEGORIES` verticals, a genuinely different taxonomy (project memory already names discovery-categories-vs-salon-categories as a documented split that must never be joined directly). The URL layer never inherited that same discipline.
+- A URL query parameter name carries exactly ONE meaning across the entire app.
+- Once a name is claimed by one route for one concept, no other route may reuse it for a different concept. A second, genuinely distinct concept that needs a similarly-named param gets a feature-scoped or disambiguated name instead (e.g. `hairGender` on `/inspo` vs `gender` on `/search`, added alongside Rule 32a above).
+- Enforcement: checklist item when adding a new `searchParams.get(...)` call; grep the param name across `app/**` first to confirm no other route already claims it for a different meaning.
+
 ### Rule 33: ROUTER REFRESH FOR COOKIE PREFERENCES
 > **INCIDENT**: The language toggle only pushed the URL but did not trigger server-side re-renders, leaving the user with mixed languages.
 - When updating structural user preferences stored in cookies (like language or theme) that affect Server Components, you MUST call `router.refresh()` alongside `router.push(newPath)` to force Next.js to reconstruct the server UI with the new context.
@@ -54,6 +68,9 @@ ls "app/[locale]/inspo/"
 
 ### Rule 36: STYLED LOCALE-AWARE 404 PAGES
 - The `not-found.tsx` component MUST follow the current design system (see `_tasks/SOLEN_DESIGN.md`). Note: the previous Zone 1/2/3/4 language is retired.
+- **There is exactly ONE 404 experience for the whole app** (`app/[locale]/not-found.tsx`, LOCKFILE §15.3). Every `not-found.tsx` in the route tree, including the ROOT `app/not-found.tsx` (which sits above the `[locale]` segment and has no route params or `NextIntlClientProvider` of its own), MUST render that same design, not a hand-rolled, hardcoded variant.
+- **INCIDENT (ia-navigation-02, found 2026-07-26, fixed 2026-07-27)**: `app/not-found.tsx` still shipped the superseded icon-disc layout with hardcoded German copy (an em dash, no `useTranslations`) while `app/[locale]/not-found.tsx` had long since moved to the i18n'd gradient-404. Nothing scanned the app root, so the stale duplicate sat unexamined. Fixed by having the root file derive its locale from the `x-pathname` header (same pattern `app/layout.tsx` uses for `<html lang>`) and render `app/[locale]/not-found.tsx` directly, wrapped in its own `NextIntlClientProvider`, instead of duplicating markup.
+- Enforcement: the drift-checker's route inventory must include `app/not-found.tsx` and every `app/**/not-found.tsx`, not only `app/[locale]/**`; a one-line diff check between any two `not-found.tsx` files in the tree catches a re-drift immediately.
 
 ### Rule 37: FEATURE PROMPT COPY MUST BE TRANSLATED
 - When a feature request includes specific German copy (e.g., "Teile deine Praferenzen"), **NEVER** hardcode it into the component.
