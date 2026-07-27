@@ -12,19 +12,38 @@ import { formatCurrency } from "./format-currency";
 export { formatCurrency };
 
 /**
- * Format a CHF price with `CHF ` prefix (Q43 lock — prefix, not suffix).
+ * Force the Swiss apostrophe/period grouping convention (CLAUDE.md: "Swiss uses an
+ * apostrophe: 1'000") regardless of which locale reaches formatPrice/formatNumber.
+ *
+ * copy-i18n-06 (2026-07-27): de-CH/it-CH/en-CH all apostrophe-group in this runtime's
+ * ICU data, but fr-CH does NOT: it space-groups with a comma decimal (verified via
+ * `(1234567).toLocaleString("fr-CH")` giving "1 234 567", not "1'234'567"). The call
+ * site that correctly threads a per-locale tag into formatPrice (SearchOverlay.tsx)
+ * was therefore silently producing space-grouped French prices next to apostrophe-
+ * grouped counts on the same page. Numbers (unlike dates, which stay locale-native
+ * via resolveSwissLocale below) are formatted identically across all four UI locales.
+ */
+function swissNumberFormat(amount: number, options: Intl.NumberFormatOptions): string {
+  return new Intl.NumberFormat("de-CH", options).format(amount);
+}
+
+/**
+ * Format a CHF price with `CHF ` prefix (Q43 lock, prefix not suffix).
  * Whole-number prices drop the decimals; fractional prices keep two.
+ * The `locale` param is accepted for call-site compatibility but no longer affects
+ * the digit grouping (copy-i18n-06, see swissNumberFormat above).
  *
  * formatPrice(85)        → "CHF 85"
  * formatPrice(85.5)      → "CHF 85.50"
- * formatPrice(85, "fr")  → "CHF 85"
+ * formatPrice(1250, "fr-CH") → "CHF 1'250" (apostrophe, not "1 250")
  */
 export function formatPrice(amount: number, locale: string = "de-CH"): string {
-  const intl = new Intl.NumberFormat(locale, {
+  void locale; // kept for call-site compatibility; grouping is locale-invariant, see swissNumberFormat
+  const intl = swissNumberFormat(amount, {
     style: "decimal",
     minimumFractionDigits: Number.isInteger(amount) ? 0 : 2,
     maximumFractionDigits: 2,
-  }).format(amount);
+  });
   return `CHF ${intl}`;
 }
 
@@ -33,23 +52,27 @@ export function formatPrice(amount: number, locale: string = "de-CH"): string {
  * de-CH literal sweep so review-count / total-count call sites that don't want
  * formatCount's parens have one shared resolver instead of re-deriving the Swiss
  * tag inline). Accepts bare app locale keys ("de", "fr") or a full BCP-47 tag.
+ * The `locale` param no longer affects grouping (copy-i18n-06): every UI locale
+ * shows the same Swiss apostrophe grouping, since fr-CH's real Intl behavior is
+ * space-grouping, not apostrophe.
  *
- * formatNumber(1270)       → "1’270" (de-CH apostrophe grouping)
- * formatNumber(1270, "fr") → "1’270" (fr-CH keeps the Swiss apostrophe grouping)
+ * formatNumber(1270)       → "1'270"
+ * formatNumber(1270, "fr") → "1'270" (forced Swiss apostrophe grouping, not "1 270")
  */
 export function formatNumber(n: number, locale: string = "de"): string {
-  return n.toLocaleString(resolveSwissLocale(locale));
+  void locale; // kept for call-site compatibility; grouping is locale-invariant, see swissNumberFormat
+  return swissNumberFormat(n, {});
 }
 
 /**
  * Format a count with parentheses (per Q43 / SOLEN_DESIGN.md §17 voice rule):
  * ratings show count in parens, e.g. "★ 4.8 (127)".
- * Accepts bare app locale keys ("de", "fr") or a full BCP-47 tag; resolved to the
- * Swiss regional variant so grouping separators match the active locale (2026-07-26,
- * was hardcoded "de-CH" and ignored by every call site).
+ * Accepts bare app locale keys ("de", "fr") or a full BCP-47 tag. Grouping is the
+ * forced Swiss apostrophe convention for every locale (copy-i18n-06, see
+ * swissNumberFormat above); the `locale` param no longer changes the digits.
  *
  * formatCount(127) → "(127)"
- * formatCount(1270, "fr") → "(1'270)" (fr-CH keeps the Swiss apostrophe grouping)
+ * formatCount(1270, "fr") → "(1'270)" (forced apostrophe grouping, not "(1 270)")
  */
 export function formatCount(n: number, locale: string = "de"): string {
   return `(${formatNumber(n, locale)})`;
