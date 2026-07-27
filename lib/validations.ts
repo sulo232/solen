@@ -950,17 +950,27 @@ export const adminPurchaseRefundSchema = purchaseRefundSchema.extend({
 // CHF at the settings boundary (the executor converts to Rappen). percentage fees are
 // capped at 100 (you can never charge more than the customer paid). All fields optional
 // so the PATCH can update a single control; the allowlist in the route filters keys.
+//
+// trust-02 (2026-07-27): ToS §4.2 fixes the LATE-cancellation fee platform-wide at 50%
+// of booking value, and §4.3 lets a salon be MORE LENIENT than §4.1/§4.2 but "not
+// stricter". §4.1's free-cancellation window is 24h; §4.3's own worked example of
+// leniency is "free cancellation up to 2 hours before" i.e. a SMALLER free_cancel_hours
+// is more lenient (less notice required), a LARGER one is stricter (more notice
+// required than the platform promises). So the ceiling is cancellation_fee_value<=50
+// and free_cancel_hours<=24; there is no floor on either (a salon can always be more
+// generous). no_show_fee stays capped at 100 per §4.4, which explicitly charges the
+// full booking value on no-show, a different (and correctly higher) ceiling.
 export const salonPolicyUpdateSchema = z
   .object({
     cancellation_fee_type: z.enum(["free", "flat", "percentage"]).optional(),
     cancellation_fee_value: z.number().min(0).optional(),
     no_show_fee_type: z.enum(["free", "flat", "percentage"]).optional(),
     no_show_fee_value: z.number().min(0).optional(),
-    free_cancel_hours: z.number().int().min(1).max(168).optional(),
+    free_cancel_hours: z.number().int().min(1).max(24).optional(),
   })
   .refine(
-    (d) => d.cancellation_fee_type !== "percentage" || (d.cancellation_fee_value ?? 0) <= 100,
-    { message: "cancellation_fee_value must be <= 100 when type is percentage", path: ["cancellation_fee_value"] },
+    (d) => d.cancellation_fee_type !== "percentage" || (d.cancellation_fee_value ?? 0) <= 50,
+    { message: "cancellation_fee_value must be <= 50 when type is percentage (ToS §4.2 platform ceiling)", path: ["cancellation_fee_value"] },
   )
   .refine(
     (d) => d.no_show_fee_type !== "percentage" || (d.no_show_fee_value ?? 0) <= 100,
