@@ -342,6 +342,7 @@
 - **File(s)**: `components/BookingSuccess.tsx:112`
 - **What happened**: `toLocaleDateString("de-CH")` was hardcoded regardless of the user's locale, showing German date format to English/French/Italian users.
 - **Fix**: Derive `localeCode` from `useLocale()` → `de-CH / fr-CH / it-CH / en-GB`. Apply to all date/time formatting in user-facing components.
+- **copy-i18n-05 (2026-07-27)**: this exact bug recurred at 112 call sites months after the fix above, because the fix was prose-only with no mechanical check. `eslint.config.mjs` now has a `no-restricted-syntax` rule that blocks any literal BCP-47 tag (`de-CH`/`fr-CH`/`it-CH`/`en-CH`) passed directly to `toLocale*String`/`Intl.*Format` outside `lib/format.ts`, so the next occurrence fails lint instead of shipping silently a third time.
 
 ---
 

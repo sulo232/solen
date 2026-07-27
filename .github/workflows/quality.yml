@@ -65,13 +65,24 @@ jobs:
       # the 481 this comment used to say, unrelated drift). BASELINE moves to 539
       # (483 + 56) the same way this ratchet is meant to move on any new check: it
       # only fails a build that makes the count go UP from here.
-      - name: npm run lint (ratchet vs baseline, currently 539 pre-existing errors, 56 of them jsx-a11y from the accessibility-09 lint activation)
+      # copy-i18n-05 (2026-07-27): eslint.config.mjs added a no-restricted-syntax
+      # rule blocking a literal BCP-47 tag ("de-CH" etc) passed directly to
+      # toLocale*String/Intl.*Format outside lib/format.ts (the 112-site hardcode
+      # bug _rules/LESSONS_LEARNED.md already recorded once). Measured freshly at
+      # 541 pre-existing errors (2 above the 539 this comment used to say, unrelated
+      # drift, not this change) before the rule; the rule itself surfaced 23 real
+      # pre-existing violations (dev/search-morph, dev/pdp/_overhaul, the payout
+      # invoice HTML, lib/email.ts, cron SMS reminders, availability/time-slots,
+      # express-rebook, dashboard/today, profile/live-state, notify-no-show-fee,
+      # lib/salon-hours.ts). BASELINE moves to 564 (541 + 23), same ratchet shape:
+      # it only fails a build that makes the count go UP from here.
+      - name: npm run lint (ratchet vs baseline, currently 564 pre-existing errors, 23 of them copy-i18n-05 from the new de-CH-literal rule)
         run: |
           set +e
           npm run lint > lint-output.txt 2>&1
           set -e
           COUNT=$(grep -c "Error:" lint-output.txt || true)
-          BASELINE=539
+          BASELINE=564
           echo "lint error count: $COUNT (baseline: $BASELINE)"
           if [ "$COUNT" -gt "$BASELINE" ]; then
             echo "::error::lint error count went UP: $COUNT > $BASELINE baseline"

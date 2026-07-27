@@ -30,6 +30,41 @@ const eslintConfig = [
   // registers the "jsx-a11y" plugin itself (for its own 6-rule subset), and flat
   // config errors on a plugin being registered twice under the same name.
   { rules: jsxA11y.flatConfigs.recommended.rules },
+  // copy-i18n-05 (2026-07-27): 112 call sites once hardcoded the literal BCP-47 tag
+  // "de-CH" straight into toLocaleDateString/toLocaleTimeString/Intl.*Format, so a
+  // French/Italian/English visitor silently got German date/time formatting. The
+  // sweep fixed the known sites (they now derive the tag from `locale` via a
+  // ternary or a lookup table), but nothing stopped the NEXT hardcode from shipping
+  // -- `_rules/LESSONS_LEARNED.md` already documented this exact bug once and a
+  // later audit re-found it, proof that prose alone doesn't hold. This rule blocks
+  // only the actual failure shape: a bare BCP-47 literal passed DIRECTLY as the
+  // locale argument to a toLocale*String call or `new Intl.*Format(...)`. A literal
+  // that is one branch of a `locale === "de" ? "de-CH" : ...` ternary (the correct,
+  // locale-derived pattern used everywhere else in the app) sits one AST level
+  // deeper (inside the ConditionalExpression) and is NOT a direct child of the call,
+  // so it does not match and is not flagged. lib/format.ts and lib/format-currency.ts
+  // are exempt: they are the one shared place allowed to own the literal tag.
+  {
+    files: ["**/*.ts", "**/*.tsx"],
+    ignores: ["lib/format.ts", "lib/format-currency.ts"],
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector:
+            "CallExpression[callee.property.name=/^(toLocaleDateString|toLocaleTimeString|toLocaleString)$/] > Literal[value=/^(de|fr|it|en)-CH$/]",
+          message:
+            "copy-i18n-05: no literal BCP-47 locale tag (de-CH/fr-CH/it-CH/en-CH) passed directly to toLocale*String. Derive it from the request/UI locale (useLocale()/getLocale()) via a variable, or route through lib/format.ts.",
+        },
+        {
+          selector:
+            "NewExpression[callee.object.name='Intl'][callee.property.name=/^(DateTimeFormat|NumberFormat)$/] > Literal[value=/^(de|fr|it|en)-CH$/]",
+          message:
+            "copy-i18n-05: no literal BCP-47 locale tag passed directly to Intl.DateTimeFormat/NumberFormat. Derive it from the request/UI locale, or route through lib/format.ts.",
+        },
+      ],
+    },
+  },
 ];
 
 export default eslintConfig;
