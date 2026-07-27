@@ -79,6 +79,40 @@ jobs:
             exit 1
           fi
 
+  # secrets-webhooks-02: a dependency-vulnerability scan is only as good as the
+  # last time someone remembered to run it by hand. `npm audit --omit=dev`'s
+  # critical+high count nearly tripled (2 -> 6) in the 10 days between the
+  # research pass on 2026-07-16 and this gate's own re-run on 2026-07-27, with
+  # zero automated signal anywhere in that window. Ratchet, same shape as the
+  # lint job above: ships with the CURRENT critical+high count as BASELINE (a
+  # live CVE already in the lockfile is a real, separate cleanup task, not
+  # something this gate silently fixes) and only fails a build that makes a NEW
+  # one land. Lower BASELINE whenever a dependency bump fixes one.
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - name: "npm audit --omit=dev (ratchet vs baseline, currently 6 critical+high: 1 critical protobufjs via posthog-js's OpenTelemetry exporter, 5 high including next itself pinned below its fix floor)"
+        run: |
+          set +e
+          npm audit --omit=dev --json > audit-output.json 2>audit-output.err
+          set -e
+          COUNT=$(node -e "const d=JSON.parse(require('fs').readFileSync('audit-output.json','utf8')).metadata.vulnerabilities; console.log(d.critical + d.high)")
+          CRITICAL=$(node -e "console.log(JSON.parse(require('fs').readFileSync('audit-output.json','utf8')).metadata.vulnerabilities.critical)")
+          HIGH=$(node -e "console.log(JSON.parse(require('fs').readFileSync('audit-output.json','utf8')).metadata.vulnerabilities.high)")
+          BASELINE=6
+          echo "npm audit critical+high count: $COUNT (critical=$CRITICAL high=$HIGH, baseline: $BASELINE)"
+          if [ "$COUNT" -gt "$BASELINE" ]; then
+            echo "::error::npm audit critical+high count went UP: $COUNT > $BASELINE baseline"
+            npm audit --omit=dev || true
+            exit 1
+          fi
+
   test:
     runs-on: ubuntu-latest
     steps:

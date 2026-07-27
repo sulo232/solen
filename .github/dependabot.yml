@@ -1,0 +1,25 @@
+version: 2
+updates:
+  # secrets-webhooks-02: automatic weekly dependency-update PRs so a fix that
+  # ships upstream reaches Solen within days, not only when someone happens to
+  # re-run `npm audit` by hand. The audit job in quality.yml (a ratchet on
+  # critical+high count) is the DETECTIVE half; this is the PREVENTIVE half,
+  # same split as the secret-scanning finding in this domain.
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    groups:
+      # Batch routine patch/minor bumps into one PR instead of one-per-package
+      # noise; a major bump (next, react, stripe, supabase-js) stays its own PR
+      # since those need a real changelog read before merging.
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
