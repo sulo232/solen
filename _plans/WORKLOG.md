@@ -4,6 +4,31 @@ The newest entry is at the top. Every session that ships real work adds one entr
 
 ---
 
+## 2026-07-27 , weekly design-law improvement pass (workstream #41 LAW, standing loop)
+
+**Auto-triggered.** Harvested 10 dated owner decisions from the week, scanned the ~450KB law corpus for
+contradictions, duplication and staleness, applied 12 safe fixes as 12 commits, and left 5 things that
+need your call. Report: [LAW_IMPROVE_2026-07-27.md](LAW_IMPROVE_2026-07-27.md).
+
+**The finding that matters:** the law did not drift because anyone wrote a wrong rule. It drifted two
+ways. First, decisions landed in the wrong TIER , your 2026-07-19 "make the category pills black" override
+lived only in TASTE_LOG, which outranks nothing, while LOCKFILE and the CLAUDE.md contract row both still
+said "NEVER black/ink", so a reviewer would have reverted your own shipped pill as drift. Second, and
+worse, FOUR files the law cites BY NAME were never on main: they were committed on branch
+claude/taste-rationale-frameworks-37390c, which never merged. That includes the 12 mockup photos _BASE.md
+tells every mockup to use, so floors-law, pinterest-ref-copy and pinterest-ref-solen have been rendering
+BROKEN IMAGES, and the two research docs the FLOORS LAW cites as its own evidence. All restored.
+
+Also fixed: LOCKFILE still told new work to prefer "Jetzt buchen" six days after you retired it; the
+imagery floor was measured at two different viewports inside the same file; CLAUDE.md's type budget had
+silently dropped the weights half of the rule; and LOCKFILE gave two opposite instructions about a card's
+price 1150 lines apart.
+
+**Needs you, not a hook:** the card press-scale contradiction (LOCKFILE says .985, SOURCE says .97, the
+live estate is 222 to 6, and the motion measurement calls .985 drift), card meta at 12 vs 13/14, whether
+blue is allowed on small buttons, the rounded-input token still resolving to 16 while every law file says
+12, and what to do with that stranded branch.
+
 ## 2026-07-25 , weekly estate self-audit run (workstream #17 LAW, standing loop)
 
 **What you asked for (auto-triggered):** the weekly self-audit doctrine , system health, skip ledger, injection diet, mistake themes, lessons-inject verify, design-suggest refresh, doc-vs-gate reconciliation.
