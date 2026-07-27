@@ -95,7 +95,7 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [x] `authz-rls-10` **DONE** commit `805b7fec1` , [low/S] The one admin-impersonation-shaped route writes no audit trail, despite an existing, used audit_log table and 26 other admin routes doing so
 
 ### color-tokens
-- [ ] `color-tokens-01` no commit names this id , [critical/S] Retired-token enforcement list has drifted from the tokens it is supposed to block
+- [x] `color-tokens-01` **DONE** commit `dba01df2d` no commit names this id , [critical/S] Retired-token enforcement list has drifted from the tokens it is supposed to block
 - [x] `color-tokens-02` **DONE** commit `816883449` , [critical/M] Server-rendered, printed financial documents (payout invoices) are entirely outside the token system
 - [x] `color-tokens-03` **DONE** commit `55ff467ac` , [high/M] Transactional emails render in colors from a retired, pre-B&W-pivot brand era with no link to LOCKFILE
 - [x] `color-tokens-05` **DONE** commit `3bad043d7` , [high/L] No automated contrast-ratio check exists anywhere; every WCAG contrast claim in the docs is a one-time manual assertion
@@ -111,8 +111,8 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [x] `copy-i18n-02` **DONE** commit `bfa9f1963` , [high/S] German 'du not Sie' is locked law but has zero enforcement and is already violated 12 times in the live de.json, including inside dashboard chrome
 - [ ] `copy-i18n-03` **QUEUED_FOR_OWNER** visible design change, mockup-first law applies , [high/M] French defaults to formal 'vous', breaking the same warmth rationale that locked German and Italian to informal, with no decision ever recorded
 - [x] `copy-i18n-04` **DONE** commit `128cef36d` , [high/M] ICU plural messages are the documented pattern but at least 9 live customer-facing files hardcode a binary ternary instead, shipping untranslated English or German text to all four locales
-- [ ] `copy-i18n-05` no commit names this id , [high/S] 112 live call sites hardcode the locale tag 'de-CH' in Intl/toLocaleString calls, a bug the codebase already named and fixed once but never gated
-- [ ] `copy-i18n-07` no commit names this id , [high/S] No CI check for translation-key parity across the four locale files; a missing key currently renders the raw dotted key path to the customer
+- [x] `copy-i18n-05` **DONE** commit `a34619d5e` no commit names this id , [high/S] 112 live call sites hardcode the locale tag 'de-CH' in Intl/toLocaleString calls, a bug the codebase already named and fixed once but never gated
+- [x] `copy-i18n-07` **DONE** commit `4f4869e5e` no commit names this id , [high/S] No CI check for translation-key parity across the four locale files; a missing key currently renders the raw dotted key path to the customer
 - [x] `copy-i18n-06` **DONE** commit `5ffe4341e` , [medium/S] Swiss apostrophe thousands-grouping (1'000) silently does not apply to fr-CH in the ICU data the app actually runs on, and nothing documents or guards the exception
 - [x] `copy-i18n-08` **DONE** commit `128cef36d` , [medium/S] The existing hardcoded-string audit script is unwired, always exits 0, and is too narrow to have caught any of the violations found in this pass
 - [x] `copy-i18n-09` **DONE** commit `6145d3c4b` , [medium/S] Copy-length-variance law covers German-vs-English fixed-width containers but not French, and not fixed-HEIGHT single-line buttons
@@ -121,7 +121,7 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 
 ### data-money
 - [x] `data-money-02` **DONE** commit `bae187459` , [critical/S] A blocking money-CAS gate protects only future edits; it never swept existing code, and a live instance of the exact bug it exists to block is still in production
-- [ ] `data-money-03` no commit names this id , [critical/S] A live money-adjacent fabrication bug has sat as an unactioned 'owner decision needed' for 10+ days, with no forcing function and no migration-layer guard against a repeat
+- [x] `data-money-03` **DONE** commit `6705143c4` no commit names this id , [critical/S] A live money-adjacent fabrication bug has sat as an unactioned 'owner decision needed' for 10+ days, with no forcing function and no migration-layer guard against a repeat
 - [ ] `data-money-01` no commit names this id , [high/M] The backend law layer stalled at research; nothing was ever frozen into LAW.md
 - [ ] `data-money-07` **BLOCKED** needs a real database write, which requires the owner's authorisation , [high/M] Restore has never been executed end to end; RTO is an unmeasured guess presented in the runbook as if it were a verified number
 - [x] `data-money-04` **DONE** commit `96ff48e08` , [medium/M] Migration-time lock/concurrency hygiene (NOT VALID+VALIDATE, CREATE INDEX CONCURRENTLY, lock_timeout) is written as law but has zero enforcement and no measured trigger
@@ -147,16 +147,16 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 
 ### marketplace-trust
 - [ ] `trust-01-phone-verification-silent-noop` no commit names this id , [critical/S] Salon phone verification is a silent no-op: promised in the ToS, faked by the code
-- [ ] `trust-02-cancellation-fee-ceiling-unenforced` no commit names this id , [critical/S] Per-salon cancellation/no-show fee has no code ceiling matching the ToS-promised platform cap
+- [x] `trust-02-cancellation-fee-ceiling-unenforced` **DONE** commit `da921250d` no commit names this id , [critical/S] Per-salon cancellation/no-show fee has no code ceiling matching the ToS-promised platform cap
 - [ ] `trust-03-account-warnings-write-only` no commit names this id , [critical/M] account_warnings is write-only: the ToS's promised strike/suspension consequences never fire
-- [ ] `trust-04-no-refund-reporting-window` no commit names this id , [high/S] No refund/appeal reporting window exists in writing or in code, leaving indefinite reopenable liability
-- [ ] `trust-05-onboarding-verification-not-gated` no commit names this id , [high/S] Salon business-identity verification is entirely optional and never gates activation; no written manual-review checklist exists either
-- [ ] `trust-06-no-harassment-safety-report-lane` no commit names this id , [high/S] No differentiated safety/harassment report category exists, so the ToS's 'zero-tolerance, immediate suspension' promise has no trigger
-- [ ] `trust-07-refund-after-payout-clawback-policy` no commit names this id , [medium/S] No written policy for who absorbs a refund shortfall when a salon's Connect balance can't cover the clawback
-- [ ] `trust-08-no-review-edit-delete-by-customer` no commit names this id , [medium/S] No customer-initiated review edit or delete path exists, and no written policy states whether one should
-- [ ] `trust-09-no-review-frequency-cap` no commit names this id , [medium/S] No per-user-per-salon review volume floor: automod catches cross-account bursts but not one account posting many reviews
-- [ ] `trust-10-no-duplicate-listing-check` no commit names this id , [medium/S] No duplicate/fake-listing detection at salon onboarding: no uniqueness check on phone or address
-- [ ] `trust-11-chargeback-app-refund-not-reconciled` no commit names this id , [medium/M] A resolved bank-side chargeback never updates the booking's own payment/dispute state, so an in-app refund appeal for the same booking can proceed unaware
+- [x] `trust-04-no-refund-reporting-window` **DONE** commit `584fc3f7c` no commit names this id , [high/S] No refund/appeal reporting window exists in writing or in code, leaving indefinite reopenable liability
+- [x] `trust-05-onboarding-verification-not-gated` **DONE** commit `be2ef386f` no commit names this id , [high/S] Salon business-identity verification is entirely optional and never gates activation; no written manual-review checklist exists either
+- [x] `trust-06-no-harassment-safety-report-lane` **DONE** commit `9d02471ca` no commit names this id , [high/S] No differentiated safety/harassment report category exists, so the ToS's 'zero-tolerance, immediate suspension' promise has no trigger
+- [x] `trust-07-refund-after-payout-clawback-policy` **DONE** commit `f881ffeb3` no commit names this id , [medium/S] No written policy for who absorbs a refund shortfall when a salon's Connect balance can't cover the clawback
+- [x] `trust-08-no-review-edit-delete-by-customer` **DONE** commit `1fe55a4f6` no commit names this id , [medium/S] No customer-initiated review edit or delete path exists, and no written policy states whether one should
+- [x] `trust-09-no-review-frequency-cap` **DONE** commit `992e22020` no commit names this id , [medium/S] No per-user-per-salon review volume floor: automod catches cross-account bursts but not one account posting many reviews
+- [x] `trust-10-no-duplicate-listing-check` **DONE** commit `b8a3be486` no commit names this id , [medium/S] No duplicate/fake-listing detection at salon onboarding: no uniqueness check on phone or address
+- [x] `trust-11-chargeback-app-refund-not-reconciled` **DONE** commit `f5430aa14` no commit names this id , [medium/M] A resolved bank-side chargeback never updates the booking's own payment/dispute state, so an in-app refund appeal for the same booking can proceed unaware
 
 ### motion
 - [x] `motion-01` **DONE** commit `d8d4abf99` , [critical/M] Interruptibility is a stated rule with no technical contract, and the default framer-motion pattern used on the highest-traffic surface violates it
@@ -195,7 +195,7 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [x] `privacy-compliance-12` **DONE** commit `d8e1e990b` , [low/S] GDPR applies only if Solen actually targets EU data subjects; that determination is never made explicit and the policy currently hedges rather than deciding
 
 ### seo-comms
-- [ ] `seo-comms-04` no commit names this id , [critical/M] Legally and financially significant transactional emails accept a locale argument and silently ignore it, always sending German
+- [x] `seo-comms-04` **DONE** commit `89efcf49c` no commit names this id , [critical/M] Legally and financially significant transactional emails accept a locale argument and silently ignore it, always sending German
 - [ ] `seo-comms-01` no commit names this id , [high/S] The single biggest programmatic SEO surface (city x category) ships with no canonical or hreflang
 - [x] `seo-comms-05` **DONE** commit `a7c9df79b` , [high/M] The customer-facing email/SMS notification toggle is a complete silent no-op: no send path anywhere reads it
 - [x] `seo-comms-08` **DONE** commit `c292ab798` , [high/M] A live outbound email cites a Swiss data-protection legal basis for sending without consent and links to an unsubscribe URL that does not exist
