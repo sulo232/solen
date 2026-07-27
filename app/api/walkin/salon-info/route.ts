@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
+import { localizedField, localizedFieldOrNull } from "@/lib/i18n/localized-field";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -35,8 +36,8 @@ export async function GET(req: NextRequest) {
   // Normalize for the client: pick a localized name + description, coerce price to a number.
   const services = (raw || []).map((s) => ({
     id: s.id,
-    name: (locale === "en" ? s.name_en : s.name_de) || s.name_de || s.name_en || "Service",
-    description: (locale === "en" ? s.description_en : s.description_de) || s.description_de || s.description_en || null,
+    name: localizedField(s as unknown as Record<string, unknown>, "name", locale) || "Service",
+    description: localizedFieldOrNull(s as unknown as Record<string, unknown>, "description", locale),
     price: Number(s.price),
     duration_minutes: s.duration_minutes,
   }));

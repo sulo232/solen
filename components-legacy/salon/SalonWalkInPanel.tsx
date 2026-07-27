@@ -6,6 +6,7 @@ import { Users, Info, X, Check } from "lucide-react";
 import { SelectedCheckBadge } from "@/components-legacy/ui/SelectedCheckBadge";
 import { Avatar } from "@/app/[locale]/_components/primitives";
 import { useWalkInQueue } from "@/components-legacy/salon/WalkInQueueContext";
+import { localizedField } from "@/lib/i18n/localized-field";
 
 interface WalkInService {
   id: string;
@@ -129,7 +130,7 @@ export default function SalonWalkInPanel({
   const [activeCat, setActiveCat] = useState<string>("alle");
   const [showAllServices, setShowAllServices] = useState(false); // Termin-style preview + "Alle ansehen"
 
-  const svcName = (s: WalkInService) => (locale === "en" ? s.name_en : s.name_de) || s.name_de || s.name_en || "Service";
+  const svcName = (s: WalkInService) => localizedField(s as unknown as Record<string, unknown>, "name", locale) || "Service";
 
   // Orange only when the salon's configured capacity is exceeded (stats.busy). Until the
   // dashboard exposes max_walkin_queue, busy is never set → stays green. See _tasks/WALKIN_DASHBOARD_NEEDS.md.

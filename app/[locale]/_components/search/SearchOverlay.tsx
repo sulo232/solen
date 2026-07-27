@@ -55,6 +55,7 @@ import {
 } from "../homepage/useRecentSearches";
 import { useRecentlyViewed } from "../homepage/useRecentlyViewed";
 import { Skeleton } from "@/app/[locale]/_components/primitives";
+import { localizedField } from "@/lib/i18n/localized-field";
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
@@ -659,7 +660,7 @@ export function SearchOverlay({
             <>
               <SectionLabel className="mt-4">{groupServicesTxt}</SectionLabel>
               {results.services.map((sv) => {
-                const label = locale === "en" ? sv.name_en || sv.name_de : sv.name_de;
+                const label = localizedField(sv as unknown as Record<string, unknown>, "name", locale);
                 return (
                   <SuggestRow
                     key={sv.id}

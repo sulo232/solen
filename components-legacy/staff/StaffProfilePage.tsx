@@ -12,6 +12,7 @@ import Spinner from "@/components-legacy/ui/Spinner";
 import StaffReviewsSheet from "@/components-legacy/staff/StaffReviewsSheet";
 import { formatCurrency } from "@/lib/format-currency";
 import { shareOrCopy } from "@/lib/share";
+import { localizedField } from "@/lib/i18n/localized-field";
 
 interface StaffProfile {
   id: string;
@@ -185,7 +186,7 @@ export default function StaffProfilePage({
     .filter(Boolean)
     .join("  ");
   const bookHref = `/${locale}/salon/${salonSlug}/booking?staff=${staff.id}`;
-  const sName = (s: StaffService) => (locale === "en" ? s.name_en : s.name_de);
+  const sName = (s: StaffService) => localizedField(s as unknown as Record<string, unknown>, "name", locale);
   const fmtDate = (iso: string) => formatReviewDate(iso, locale);
 
   const goTo = (t: Tab) => {

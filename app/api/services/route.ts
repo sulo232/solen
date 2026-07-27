@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { validateBody, serviceCreateSchema } from "@/lib/validations";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { translateToLocales } from "@/lib/ai/translate";
 
 // GET /api/services?salon_id=xxx — List services for a salon
 export async function GET(req: NextRequest) {
@@ -53,11 +54,30 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // AUTO-TRANSLATE (owner 2026-07-27: "salon cant rlly translte every service they have").
+  // A salon writes the German name once; French and Italian customers would otherwise read
+  // German forever, because services.name_fr/name_it existed only from this date and nothing
+  // fills them. Three short Gemini calls run in PARALLEL, so this costs one round trip on a
+  // save the owner already waits for. Every failure returns "" and is dropped below, leaving
+  // the column empty so lib/i18n/localized-field.ts falls back to German , the same thing the
+  // customer saw before, never a half-translated row pretending to be finished.
+  // The salon can overwrite any of these later; nothing here is authoritative over their edit.
+  const [nameLocales, descLocales] = await Promise.all([
+    translateToLocales(name_de, "de", "name"),
+    description_de
+      ? translateToLocales(description_de, "de", "description")
+      : Promise.resolve({} as Partial<Record<"de" | "en" | "fr" | "it", string>>),
+  ]);
+
   const { data: service, error } = await admin
     .from("services")
     .insert({
       salon_id,
       name_de,
+      ...(nameLocales.fr ? { name_fr: nameLocales.fr } : {}),
+      ...(nameLocales.it ? { name_it: nameLocales.it } : {}),
+      ...(descLocales.fr ? { description_fr: descLocales.fr } : {}),
+      ...(descLocales.it ? { description_it: descLocales.it } : {}),
       // services.name_en is NOT NULL live. The form sends "" when English is left blank, and
       // "" || null → null → constraint violation. Fall back to the German name (always present)
       // so the EN locale shows the service name instead of the create 500-ing.

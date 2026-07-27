@@ -859,6 +859,8 @@
       "is_active",
       "label_de",
       "label_en",
+      "label_fr",
+      "label_it",
       "price_modifier",
       "rule_type",
       "salon_id",
@@ -1243,7 +1245,9 @@
       "id",
       "is_system",
       "name_de",
-      "name_en"
+      "name_en",
+      "name_fr",
+      "name_it"
     ],
     "salon_clients": [
       "allergies",
@@ -1405,6 +1409,8 @@
       "deposit_percent",
       "description_de",
       "description_en",
+      "description_fr",
+      "description_it",
       "explore_score",
       "facebook_url",
       "family_owned",
@@ -1577,6 +1583,8 @@
       "id",
       "name_de",
       "name_en",
+      "name_fr",
+      "name_it",
       "price",
       "service_id",
       "sort_order"
@@ -1600,6 +1608,8 @@
       "daily_limit_per_staff",
       "description_de",
       "description_en",
+      "description_fr",
+      "description_it",
       "duration_minutes",
       "finishing_minutes",
       "id",
@@ -1607,6 +1617,8 @@
       "material_type",
       "name_de",
       "name_en",
+      "name_fr",
+      "name_it",
       "photo_urls",
       "price",
       "processing_minutes",
@@ -1630,7 +1642,8 @@
       "updated_by",
       "value_de",
       "value_en",
-      "value_fr"
+      "value_fr",
+      "value_it"
     ],
     "sms_reminders": [
       "booking_id",
@@ -1954,5 +1967,5 @@
       "sort_order"
     ]
   },
-  "capturedAt": "2026-07-12 | +salons.reviews_enabled, +salons.review_photos_enabled applied+verified live 2026-07-27 | +salon_portfolio_images (verified live via information_schema 2026-07-27)"
+  "capturedAt": "2026-07-12 | +salons.reviews_enabled, +salons.review_photos_enabled applied+verified live 2026-07-27 | +salon_portfolio_images (verified live via information_schema 2026-07-27) | +13 fr/it locale columns (verified live via information_schema 2026-07-27)"
 }

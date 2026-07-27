@@ -13,6 +13,7 @@ import ServiceDetailSheet from './ServiceDetailSheet';
 import Spinner from '@/components-legacy/ui/Spinner';
 import type { SelectedService } from '@/lib/booking-state';
 import type { StaffMember } from '@/lib/types';
+import { localizedField, localizedFieldOrNull } from "@/lib/i18n/localized-field";
 
 interface Service {
   id: string;
@@ -125,9 +126,9 @@ export default function ServicesStaffStep({
       .filter((a) => a.service_id === serviceId)
       .map((a) => a.addon_service_id);
 
-  const serviceName = (s: Service) => (locale === 'en' ? s.name_en : s.name_de);
+  const serviceName = (s: Service) => localizedField(s as unknown as Record<string, unknown>, 'name', locale);
   const serviceDesc = (s: Service) =>
-    locale === 'en' ? s.description_en : s.description_de;
+    localizedFieldOrNull(s as unknown as Record<string, unknown>, 'description', locale);
   // Text-only duration, no Clock icon (SalonServices.tsx formatDurationDE parity).
   const formatDuration = (mins: number) => `${mins} ${t('minutes')}`;
   // Gender suffix only when a service is restricted to a single gender (Fresha pattern)

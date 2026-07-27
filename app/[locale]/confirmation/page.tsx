@@ -6,6 +6,7 @@ import { formatCurrency } from '@/lib/format-currency';
 import { computeVat } from '@/lib/vat';
 import { verifyAccessToken } from '@/lib/bookings/guest-access';
 import BookingConfirmation from '@/components-legacy/booking/BookingConfirmation';
+import { localizedField } from "@/lib/i18n/localized-field";
 
 interface ConfirmationPageProps {
   params: Promise<{ locale: string }>;
@@ -106,7 +107,7 @@ export default async function ConfirmationPage({
     : booking.staff_members) as any;
 
   const serviceName =
-    (locale === 'en' ? service?.name_en : service?.name_de) || service?.name_de || service?.name_en || '';
+    localizedField(service as Record<string, unknown> | null, 'name', locale);
 
   // Guest access link: the REAL guest-lookup route (?code=&t=) that exchanges the raw token
   // once for an httpOnly cookie. Only build it when we carry both the reference_code and the
