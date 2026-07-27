@@ -29,6 +29,14 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
 
+  // testing-release-07: these are data-driven pages (live salon content), so
+  // a diff can flake for a reason unrelated to the code under test. Policy:
+  // retry twice in CI before declaring a real failure; 0 retries locally so a
+  // dev sees the first failure immediately. A failure that still reproduces
+  // after CI's 2 retries is either a real bug or needs `--update-snapshots`
+  // (a rebaseline), never a silent re-run.
+  retries: process.env.CI ? 2 : 0,
+
   reporter: [["html", { outputFolder: "e2e/visual/report", open: "never" }]],
 
   use: {
