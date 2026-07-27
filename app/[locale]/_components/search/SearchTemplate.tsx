@@ -1453,6 +1453,15 @@ export default function SearchTemplate({
         ) : (
           <span />
         )}
+        {/* accessibility-08 (2026-07-27): a sighted user sees this count update in place on
+            every filter/keystroke; a screen-reader user tabbing the filter controls got total
+            silence and had to manually re-traverse the whole results grid to find out whether
+            anything changed. One persistent sr-only region (same pattern as HeartButton's save
+            announcement) instead of putting aria-live on the visible <p>, which unmounts/
+            remounts across the loading/error/total ternary above and so wouldn't reliably fire. */}
+        <span className="sr-only" aria-live="polite" aria-atomic="true">
+          {!loading && !error && total > 0 ? `${total} ${pluralSalons(total, tx)}` : ""}
+        </span>
         {!loading && !error && total > 0 && (
           <div ref={sortBtnRef} className="relative shrink-0">
             <button

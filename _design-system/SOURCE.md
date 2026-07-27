@@ -1040,7 +1040,7 @@ that owns their real page shell (`EditorPage.tsx`, `gallery/page.tsx`, `queue-di
   <button aria-pressed={isSaved} aria-label={isSaved ? "Gespeichert" : "Speichern"}>
   ```
 - Multi-select uses `aria-pressed` on each option (NOT `aria-selected` which is for listbox patterns)
-- Live regions for dynamic content updates: `<span aria-live="polite">` for save toggles
+- Live regions for dynamic content updates: `<span aria-live="polite">` for save toggles, and (accessibility-08, 2026-07-27) for any result COUNT that re-renders in place on a filter/keystroke change without a page navigation — `SearchTemplate.tsx` now carries a persistent `sr-only` `aria-live="polite"` region mirroring its visible count (not `aria-live` directly on the visible element, since that element unmounts/remounts across a loading/error/total ternary and wouldn't reliably fire), and `FilterSheet.tsx`'s Apply button (whose own label text already carries the live count) carries `aria-live="polite"` directly since focus during filtering usually stays on the toggle/checkbox just touched, not that button.
 - `aria-hidden` on purely decorative SVGs
 
 **Alt text content policy (accessibility-06, 2026-07-27).** A salon/portfolio photo whose entire
