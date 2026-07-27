@@ -549,6 +549,8 @@ export default function WalkInPayPage() {
                 <span className="self-center font-heading text-[15px] font-semibold text-s-ink">{l.total}</span>
                 <span className="font-body text-[22px] font-semibold tabular-nums text-s-ink">{amountStr}</span>
               </div>
+              {/* mockup-ok: content-only fix (hierarchy-density-05), reuses the exact text-[12px] font-medium text-s-ink-2 style already used for the "secure" trust line below the CTA on this same page. Renders an i18n string (cancelPolicy) that already existed in all 4 locale objects but had zero JSX render sites. */}
+              <div className="mt-2 text-[12px] font-medium text-s-ink-2">{l.cancelPolicy}</div>
             </div>
 
             {/* Payment — real Stripe Elements (manual-capture hold). Demo mode skips to the CTA below. */}
