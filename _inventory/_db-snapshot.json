@@ -448,6 +448,11 @@
       "rls": true
     },
     {
+      "name": "review_translations",
+      "rows": 0,
+      "rls": true
+    },
+    {
       "name": "reviews",
       "rows": 260,
       "rls": true

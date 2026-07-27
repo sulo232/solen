@@ -1965,6 +1965,14 @@
       "image_url",
       "salon_id",
       "sort_order"
+    ],
+    "review_translations": [
+      "created_at",
+      "id",
+      "locale",
+      "review_id",
+      "source_locale",
+      "translated"
     ]
   },
   "capturedAt": "2026-07-12 | +salons.reviews_enabled, +salons.review_photos_enabled applied+verified live 2026-07-27 | +salon_portfolio_images (verified live via information_schema 2026-07-27) | +13 fr/it locale columns (verified live via information_schema 2026-07-27)"

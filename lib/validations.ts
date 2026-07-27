@@ -831,6 +831,14 @@ export const flagReviewSchema = z.object({
 // review, or user. Enum values mirror the live content_reports CHECK constraints
 // (supabase/migrations/078_content_reports.sql) via lib/content-reports.ts, the single
 // source of truth for the report taxonomy.
+// POST /api/reviews/translate: on-read translation of review text into one of the four app
+// locales. `ids` is bounded here as well as in the route , an unbounded list would fan out
+// into an unbounded number of model calls, which is the abuse case for this endpoint.
+export const reviewTranslateSchema = z.object({
+  ids: z.array(uuid).min(1).max(20),
+  locale: z.enum(["de", "en", "fr", "it"]),
+});
+
 export const reportSubmitSchema = z.object({
   targetType: z.enum(REPORT_TARGET_TYPES),
   targetId: uuid,

@@ -42,13 +42,36 @@ are the entire remaining job. That bounds the work.
 
 ## Queue, in customer-impact order
 
-- [ ] **S5. Service UPDATE must translate too.** Without it, editing a German name leaves stale
+- [x] **S5.** commit `a803daa60`; `verified:` re-translates only when name_de/description_de
+      changes, and a salon's explicit name_fr/name_it always wins over the machine.
+      **Service UPDATE must translate too.** Without it, editing a German name leaves stale
       French and Italian attached to it, which is worse than none: a wrong translation looks
       authoritative. Re-translate when `name_de`/`description_de` changes, and only then.
-- [ ] **S6. Backfill the existing rows.** 263 services and 28 salon descriptions currently have
+- [x] **S6.** commit `c2ad50605`; `verified:` live SQL after the run , 263 of 264 service rows
+      now carry French and Italian names (the one gap is a row whose German name is empty).
+      Translated per DISTINCT German name: 59 calls instead of 264, and the same service reads
+      identically across salons. **Backfill the existing rows.** 263 services and 28 salon descriptions currently have
       no fr/it at all. This is the single biggest visible change for a French or Italian
       visitor, since every seeded salon is affected.
-- [ ] **S7. Review translation, on-read + cached.** Needs a cache location, a "translated from
+- [x] **S7. DONE and MEASURED.** `verified:` on the live tunnel with three real German
+      reviews, French target , cold 7,726ms translating 3, warm 209ms served from cache
+      (`cached: true`). 37x, which is the entire argument for on-read-plus-cache.
+      Sample: "Jonas hat genau verstanden, was ich wollte" -> "Jonas a exactement compris ce
+      que je voulais".
+      - [x] Cache location: a SEPARATE `review_translations` table, not comment_fr columns on
+            reviews. A machine translation sitting in the same row, in a column that looks
+            like the real one, is how it quietly becomes "what they said". Verified live:
+            6 columns, 2 policies, RLS on. Public read, service-role write only , a client
+            must never be able to author a "translation" of someone else's review.
+      - [x] Endpoint: `POST /api/reviews/translate`, zod-validated (proved: a bad uuid returns
+            400 `ids.0: Invalid UUID`), bounded to 20 ids so one request cannot fan out into
+            unbounded model calls, and it re-checks `is_hidden` so a moderated-away review
+            cannot be translated back into visibility.
+      - [x] A failed translation is NEVER cached: a cached failure is permanent, and showing
+            the original instead is true.
+      - [ ] The "translated from German / show original" affordance in the review list , the
+            data path is proven, the UI is the remaining half.
+      Original plan: **Review translation, on-read + cached.** Needs a cache location, a "translated from
       X" affordance, and the original always reachable.
 - [ ] **S8. The 281 hardcoded German literals across 90 files.** Measured, not estimated.
       Worst: TermsContent (43), PrivacyContent (11), reset-password (9), business (9),

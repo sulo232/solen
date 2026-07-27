@@ -4999,6 +4999,41 @@ export type Database = {
           },
         ]
       }
+      review_translations: {
+        Row: {
+          created_at: string
+          id: string
+          locale: string
+          review_id: string
+          source_locale: string
+          translated: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          locale: string
+          review_id: string
+          source_locale?: string
+          translated: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          locale?: string
+          review_id?: string
+          source_locale?: string
+          translated?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_translations_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       review_photos: {
         Row: {
           created_at: string
