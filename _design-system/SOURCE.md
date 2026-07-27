@@ -343,7 +343,11 @@ The canonical roles. Pick a role; use its exact spec. Don't invent new sizes.
 
 ### Numerics
 
-Use `tabular-nums` on prices, ratings, counts, dates, times so digits don't jitter when values change. Always.
+Use `tabular-nums` on prices, ratings, counts, dates, times so digits don't jitter when values change. Always. The general test (typography-08, 2026-07-27): any numeral that updates live, ticks down, or sits in a repeating column where digits must stay aligned across sibling rows (a countdown timer, a queue-position counter, a dashboard KPI/stat tile, a calendar day grid, a star-rating value) needs `tabular-nums` for the same physical reason codes and prices do, proportional digits have variable per-digit width, so an un-tabular number re-flows its own width on every tick and a column of numbers doesn't stay aligned. This is a behavior test (does the number change, or sit beside a sibling it must align with), not a fixed list of contexts, codes and prices are the worked examples, not the whole rule. See LOCKFILE §13.4 for the code-specific recipe.
+
+### Long-form measure
+
+Any body-copy block whose rendered width would otherwise exceed roughly 75 characters per line (salon descriptions, review text, legal prose, help-center answers, empty-state explanations) uses the shared `.prose-measure` utility (`app/globals.css`, 68ch), not an ad hoc `max-w-*` value or no width constraint at all. Reach for it the moment a new long-form-copy component is built, don't wait for a retrofit pass.
 
 ### Inline emphasis
 
@@ -1082,6 +1086,23 @@ Contrast Checker, or `node scripts/check-contrast.mjs --self-test` (color-tokens
 - `Arrow keys` navigate within composite widgets (when applicable — e.g. radio groups, tab lists)
 - Avoid `tabindex={X}` with positive integers — disrupts natural flow
 
+### §16.7 · Text spacing (WCAG 1.4.12) — typography-09, 2026-07-27
+
+Content must survive a user's stylesheet forcing: line-height to at least 1.5x the font size, paragraph
+spacing to at least 2x the font size, letter spacing to at least 0.12x the font size, and word spacing to
+at least 0.16x the font size. At the 14px body role that is a 21px line-height and a 28px paragraph gap.
+No content may clip, overlap, or lose functionality under these forced values.
+
+Highest-risk pattern: fixed-height containers with clamped or line-clamped text (`line-clamp-*`, a
+fixed-height card, a truncated review preview). These must not clip at forced spacing, if a
+line-clamp block would clip, the container needs to grow with content rather than crop it, or the
+truncation needs to happen at the character/word level (an ellipsis a user can expand) rather than by
+cutting off a now-taller block.
+
+This closes a gap that was already decided and never applied: `RATIONALE.md` line 138 (dated
+2026-07-17) named this exact requirement and its destination ("add to the a11y checklist in SOURCE
+section 16") nine days before this subsection existed.
+
 ### Anti-patterns
 
 - ❌ Using `outline: none` without a replacement focus indicator
@@ -1138,6 +1159,12 @@ Use Swiss formats:
 - Time: 24-hour `14:30`
 - Date: `21. Mai 2026` or `21.05.2026`
 - Relative time: `vor 2 Wochen`, `gestern`, `heute`
+
+### §17.6 · Long unbroken German compound words inside fixed-width, single-line atoms
+
+§17.3's "always allow text to wrap" only works when a string has spaces to break at. A single German compound word has none (`Stornierungsbedingungen`, `Stornierungsrichtlinie`, `Handelsregistereintrag`, `Zahlungsinformationen`, all 20-23 chars, live in `messages/de.json`), so the same overflow failure §17.3 exists to prevent reappears the moment the string is one long word instead of a short phrase, and it hits hardest inside a component that is single-line **by design** (a TabPill, filter chip, category tag, button label, badge) where wrapping the label would break the component's own visual contract.
+
+Rule: any such fixed-width single-line atom sets `overflow-wrap: break-word` on its text, never `hyphens: auto` (German needs correctly placed dictionary breaks to avoid mangling a word like `Stornierungsbedingungen` mid-syllable; the CSS auto-hyphenator does not reliably know German hyphenation points). If the component cannot tolerate a mid-word break either, it must be explicitly exempted with a documented fallback (truncate + a tooltip or the full text on tap), not silently left to overflow its container. Before shipping a new fixed-width chip/pill/tab component, check its longest live `de.json` string against this rule.
 
 ### Anti-patterns
 
