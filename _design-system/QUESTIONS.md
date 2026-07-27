@@ -436,3 +436,13 @@ the whole app. fr/it/en currently see German chips. Fix later as ONE guarded pas
 - C. Get actual legal read (not an agent guess) on whether the PBV cares about the DIRECTION of variance (a floor that can only go UP via surcharge is arguably NOT a legitimate "from" price) before picking A or B.
 **Recommendation:** C first, this turns on a real regulatory reading this codebase cannot resolve by itself (confidence: assume, not verified, per the original research finding); A is the safer default if a decision is needed without legal review, since it never OVERSTATES a floor that surcharges could push above the displayed number.
 **Status:** OPEN, queued for owner (2026-07-27, copy-i18n-11). Not implemented pending the decision; full writeup in `_rules/LEGAL_COPY.md`.
+
+### Q27 — SMS/email reminder window (23.5-24.5h, 0.5-1.5h): parked as a global constant until a real per-salon need shows up (seo-comms-11)
+**Severity:** LOW (deliberately parked, not a bug)
+**SOURCE.md anchor:** N/A
+**Question:** `app/api/cron/sms-reminders/route.ts:44-45` hardcodes the 24h reminder window (`win24hStart`/`win24hEnd`, 23.5h-24.5h before the booking) and the matching 1h window (0.5h-1.5h, line 21 comment) as literal numeric constants, not a `salons.*` column. Whether-to-send-at-all is already a per-salon toggle (`sms_reminder_24h`/`sms_reminder_1h`); only the timing itself is global. Should this become a per-salon or per-category configurable window?
+**Options:**
+- A. Leave it a global constant. At 28 seed salons with no evidence any category wants a different cadence, a settings UI for reminder timing is premature machinery.
+- B. Add a `salons.sms_reminder_window_hours` (or per-category default) column now, ahead of any demonstrated need.
+**Recommendation:** A. This is a scale-discipline call, not a criticism of the current value: build the settings column the moment a salon owner asks for a different window, or once a category (spa/nails with longer service times wanting more notice) or booking-cancellation-due-to-late-reminder complaints appear in support data. Until one of those triggers fires, the global constant is correct, not merely tolerated.
+**Status:** PARKED (2026-07-27, seo-comms-11). No code change; this note names the trigger so the next person who touches sms-reminders/route.ts does not have to re-derive whether the hardcoding was a decision or an oversight.
