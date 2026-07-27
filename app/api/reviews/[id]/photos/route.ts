@@ -54,10 +54,16 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   }
 
   const uploadedRecords: any[] = [];
+  // Every `continue` below silently drops one photo. Before 2026-07-27 the response was
+  // always `{ success: true, photos: [...] }`, so a caller whose photos ALL failed got a
+  // success with an empty array and no way to tell the difference from "you sent none". The
+  // reasons are counted and returned, so the UI can say which photo was dropped and why.
+  const skipped: { index: number; reason: string }[] = [];
 
   for (let i = 0; i < Math.min(files.length, 3); i++) {
     const file = files[i];
     if (file.size > 5 * 1024 * 1024) {
+      skipped.push({ index: i, reason: "too_large" });
       continue; // Skip files > 5MB
     }
 
@@ -68,6 +74,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     try {
       processed = await verifyAndStripImage(Buffer.from(await file.arrayBuffer()), ["jpeg", "png", "webp"]);
     } catch {
+      skipped.push({ index: i, reason: "unsupported_format" });
       continue; // not a decodable jpeg/png/webp, skip like the old MIME-allowlist did
     }
 
@@ -78,7 +85,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       .upload(path, processed.buffer, { contentType: processed.contentType });
 
     if (uploadErr) {
-      console.error("Photo upload error:", uploadErr);
+      console.error("[reviews/photos] storage upload failed:", uploadErr, { reviewId: id, index: i });
+      skipped.push({ index: i, reason: "storage_rejected" });
       continue;
     }
 
@@ -92,10 +100,22 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       sort_order: i
     }).select().single();
 
-    if (!dbErr && record) {
-      uploadedRecords.push(record);
+    if (dbErr || !record) {
+      console.error("[reviews/photos] review_photos insert failed:", dbErr, { reviewId: id, index: i });
+      skipped.push({ index: i, reason: "db_insert_failed" });
+      continue;
     }
+    uploadedRecords.push(record);
   }
 
-  return NextResponse.json({ success: true, photos: uploadedRecords });
+  // success is now about what ACTUALLY landed. All-failed is a 502, not a 200 with an empty
+  // array: the caller uploaded photos and none of them exist, which is a failure however
+  // politely it is worded.
+  if (uploadedRecords.length === 0) {
+    return NextResponse.json(
+      { success: false, photos: [], skipped, error: "No photo could be saved." },
+      { status: 502 },
+    );
+  }
+  return NextResponse.json({ success: true, photos: uploadedRecords, skipped });
 }

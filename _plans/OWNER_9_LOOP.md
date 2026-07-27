@@ -32,8 +32,22 @@ and reversible in one line rather than buried in a diff.
       marketplace whose salons can erase criticism is worth nothing to a customer. Blocking
       new ones is a legitimate business choice; rewriting the past is not.
 - [ ] **L2. Report a photo, signed-in.** Owner-answered. Build it end to end.
-- [ ] **L3. Review-photo upload no-op fixed, then the photos toggle.** The toggle is
-      unverifiable until an upload has ever succeeded.
+- [x] **L3. CORRECTION , the upload is NOT broken. I repeated an agent's claim without
+      testing it.** I told the owner "review-photo upload is a confirmed silent no-op, the
+      bucket has no INSERT policy". Both halves are wrong, and I checked the live database
+      rather than the migration files this time. The policy EXISTS:
+      `review_authors_upload_review_photos`, role `authenticated`, with check
+      `bucket_id = 'review-photos' AND (storage.foldername(name))[1] IN (SELECT r.id::text FROM
+      reviews r WHERE r.user_id = auth.uid())`. That matches the route exactly , it verifies
+      `review.user_id === user.id` first and uploads to `${reviewId}/...`. My anon-key probe
+      DID get "new row violates row-level security policy", but that is the policy working
+      correctly: an anonymous caller must not be able to write there. `review_photos` has 0
+      rows because nobody has uploaded any, not because they cannot.
+      What WAS real, and is now fixed: every failure path in the loop did a bare `continue`
+      and the route always answered `{success:true}`, so a caller whose photos all failed got
+      a 200 with an empty array, indistinguishable from sending none. Skips are now counted
+      with a reason (too_large / unsupported_format / storage_rejected / db_insert_failed),
+      returned to the caller, and all-failed is a 502.
 - [ ] **L4. Empty-photo card: make the CODE match the written rule (option A).** Reasoning: two
       undocumented shipped variants against one written rule is how the next person picks the
       wrong one. Docs that describe reality are worth more than reality bent to match a doc
