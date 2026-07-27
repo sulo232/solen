@@ -282,11 +282,13 @@ export async function POST(request: NextRequest) {
   }
 
   // 2. Get user profile for is_first_visit (logged-in only — a guest has no profile row).
-  let profile: { is_first_visit_default?: boolean | null; locale?: string | null } | null = null;
+  // seo-comms-05: also select notification_email so step 7 below can honor the
+  // customer's own "E-Mail-Benachrichtigungen" toggle before sending the confirmation.
+  let profile: { is_first_visit_default?: boolean | null; locale?: string | null; notification_email?: boolean | null } | null = null;
   if (user) {
     const { data } = await db
       .from("profiles")
-      .select("is_first_visit_default, locale")
+      .select("is_first_visit_default, locale, notification_email")
       .eq("id", user.id)
       .single();
     profile = data;
@@ -568,7 +570,11 @@ export async function POST(request: NextRequest) {
   const bookingTime = new Date(slot.starts_at).toLocaleTimeString(resolveSwissLocale(locale), { hour: "2-digit", minute: "2-digit" });
 
   const customerEmail = user?.email ?? guest_email ?? null;
-  if (!isOnlinePay && customerEmail) {
+  // seo-comms-05: profile.notification_email defaults to true (matches the ?? true fallback
+  // used everywhere else this column is read); a guest has no profile row and always gets
+  // the confirmation, since a guest has no toggle to have set in the first place.
+  const customerWantsEmail = profile?.notification_email !== false;
+  if (!isOnlinePay && customerEmail && customerWantsEmail) {
     try {
       // Price + VAT-inclusive breakdown (registered salon → Netto/MWST/Gesamt + UID; else just
       // the total). slot.salons carries vat_registered/vat_rate/vat_number (selected explicitly above).

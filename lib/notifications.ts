@@ -47,6 +47,20 @@ export type NotificationType =
   | 'voucher_purchased'
   | 'review_prompt';
 
+// seo-comms-05: the notification types the settings-page "E-Mail-Benachrichtigungen"
+// toggle's own sub-label promises to cover (booking confirmations, reminders,
+// cancellations). Every other type (fees, refunds, payouts, account moderation,
+// reviews) always sends regardless of this preference.
+const OPT_OUTABLE_EMAIL_TYPES = new Set<NotificationType>([
+  'booking_confirmed',
+  'booking_pending',
+  'booking_approved',
+  'booking_rejected',
+  'booking_modified',
+  'booking_cancelled_by_customer',
+  'booking_cancelled_by_salon',
+]);
+
 export async function sendNotification(params: {
   userId: string;
   type: NotificationType;
@@ -83,6 +97,26 @@ export async function sendNotification(params: {
 
   // 2. Send email if requested
   if (params.emailParams && params.emailParams.to) {
+    // seo-comms-05 (2026-07-27): profiles.notification_email was written by the settings
+    // page (app/[locale]/profile/settings/notifications/page.tsx, sub-label "Bestätigungen,
+    // Erinnerungen, Stornierungen") and never read by any send path, a complete silent
+    // no-op. Honor it here, the one choke point every booking-lifecycle email goes
+    // through, for exactly the notification types that sub-label promises to cover.
+    // Financial/legal notices (fees, refunds, payouts, account actions, reviews) are
+    // intentionally NOT gated: those are transactional notices about something that
+    // already happened to the user's money or account, not a "would you like updates"
+    // preference (see seo-comms-06's transactional/marketing classification).
+    if (OPT_OUTABLE_EMAIL_TYPES.has(params.type)) {
+      const { data: profile } = await supabaseAdmin
+        .from('profiles')
+        .select('notification_email')
+        .eq('id', params.userId)
+        .maybeSingle();
+      if (profile?.notification_email === false) {
+        return;
+      }
+    }
+
     const { to, locale = 'de', vars } = params.emailParams;
     let emailPayload = null;
 
