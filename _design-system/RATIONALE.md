@@ -115,6 +115,8 @@ The BOUNDARY field (added 2026-07-16 from the round-2 digest's four-part entry t
 
 Two of those are policy questions for the owner (probe 3 in the taste lab): tune s-ink-2 / the on-sunken blue usage, or accept and document the deviation.
 
+**This table is a snapshot, not a re-runnable check (color-tokens-05, 2026-07-27).** `scripts/check-contrast.mjs` computes the same WCAG formula programmatically (`--self-test` reproduces every row above) and can scan a `text-s-*`/`bg-s-*` className pairing in real files for anything under the applicable floor. When a NEW component pairs an existing token against a background or font-size this table never covered, run the script, don't assume the table still applies.
+
 **Documented deliberate departures (record, do not silently "fix"):**
 - **No focus ring on buttons/links** (globals.css:344-404, owner-mandated repeatedly): conflicts with WCAG 2.4.7/2.4.11; inputs keep an ink edge + halo. This is a recorded owner tradeoff (aesthetic calm over keyboard-focus visibility), not an oversight. Residual inconsistency: SalonCard's own Link wrapper still carries a focus-visible outline (SalonCard.tsx:471).
 - **420ms entrance recipe** (MOTION.md:28): above the NN/g 300-400ms comfort band, deliberate premium-feel call (section 7).
