@@ -86,6 +86,40 @@ jobs:
       - name: "check-i18n-sentinel (copy-i18n-01: no TODO/sentinel keys, identical-to-en ratchet)"
         run: node scripts/check-i18n-sentinel.mjs
 
+  # testing-release-03: scripts/api-smoke.ts is the mobile-contract tripwire (live-DB
+  # zod-shape checks against ~10 GET endpoints, built specifically to catch PostgREST
+  # silently swallowing a `.select()` on a renamed/missing column). It only needs the
+  # 3 Supabase secrets already configured on this repo, unlike the `e2e`/`visual` jobs
+  # below, so it activates immediately with no owner action.
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: secrets-check
+        id: secrets-check
+        run: |
+          if [ -n "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" ] && [ -n "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}" ] && [ -n "${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" ]; then
+            echo "has-secrets=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has-secrets=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Supabase secrets not set on this repo, skipping the smoke job (stays green). See .github/workflows/quality.yml's e2e job comment for the gh secret set one-liners."
+          fi
+      - uses: actions/setup-node@v4
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        with:
+          node-version: "22"
+          cache: "npm"
+      - name: npm ci
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        run: npm ci
+      - name: npm run smoke (live-DB zod-shape checks, mobile-contract tripwire)
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        run: npm run smoke
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
   # E2E booking lifecycle (scripts/e2e-booking.ts, Ring 2 recommendations batch): drives
   # the REAL route handlers (bookings create, booking-pay-intent, cancel) against the live
   # DB's sanctioned test salon (testsalon-7a2dd244) with a real Stripe TEST-mode
@@ -107,12 +141,22 @@ jobs:
       - uses: actions/checkout@v4
       - name: secrets-check
         id: secrets-check
+        # testing-release-01: a secrets-gated job that only ever WARNS can stay dark
+        # forever with a permanent green check. GRACE_PERIOD_END gives the owner a
+        # real deadline (set 2 weeks out from the day this was hardened); past it,
+        # the missing secret turns the job red instead of silently passing.
         run: |
           if [ -n "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" ] && [ -n "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}" ] && [ -n "${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" ] && [ -n "${{ secrets.STRIPE_SECRET_KEY }}" ]; then
             echo "has-secrets=true" >> "$GITHUB_OUTPUT"
           else
             echo "has-secrets=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::Live-DB/Stripe secrets not set on this repo, skipping the e2e job (stays green). See the job comment in .github/workflows/quality.yml for the gh secret set one-liners."
+            GRACE_PERIOD_END="2026-08-09"
+            TODAY=$(date -u +%Y-%m-%d)
+            if [[ "$TODAY" > "$GRACE_PERIOD_END" ]]; then
+              echo "::error::STRIPE_SECRET_KEY (and/or the Supabase secrets) still not set on this repo, past the $GRACE_PERIOD_END grace period. This job has been silently reporting SUCCESS while skipping the real e2e-booking test. Run the gh secret set commands in this job's header comment, or explicitly accept the gap by moving GRACE_PERIOD_END forward with a reason."
+              exit 1
+            fi
+            echo "::warning::Live-DB/Stripe secrets not set on this repo, skipping the e2e job (stays green until $GRACE_PERIOD_END). See the job comment in .github/workflows/quality.yml for the gh secret set one-liners."
           fi
       - uses: actions/setup-node@v4
         if: steps.secrets-check.outputs.has-secrets == 'true'
