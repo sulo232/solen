@@ -999,7 +999,17 @@ Same numbering scheme. When a decision changes the design system itself (not jus
 
 ## §16 · Accessibility rules
 
-WCAG 2.1 AA is the floor.
+**WCAG 2.2 level A and AA is the floor** (accessibility-10, 2026-07-27: corrected from "2.1 AA"
+here, which had drifted out of sync with CLAUDE.md's precedence-chain statutory-floors tier
+already naming 2.2 A+AA; one number now, not two). This is also where Solen's legal accessibility
+exposure beyond WCAG-as-taste lives, named explicitly instead of assumed: Switzerland's BehiG
+(Behindertengleichstellungsgesetz) sets eCH-0059/WCAG 2.1 AA as the national standard today, mainly
+binding on federal/public bodies, with a pending revision extending comprehensive private-company
+obligations (accessibility statement, conformance declaration) from 2027; the EU Accessibility Act
+(EN 301 549 / WCAG 2.1 AA baseline) has applied to covered digital services since 28 June 2025 but
+only reaches Solen once it actually offers services to, or targets, EU-domiciled consumers, and its
+microenterprise exemption does not cover e-commerce/booking services regardless of size. Full
+sourcing: `_design-system/research/PSYCH_BUSINESS_IMPACT.md`'s BehiG/EAA rows.
 
 ### §16.1 · Landmarks
 
