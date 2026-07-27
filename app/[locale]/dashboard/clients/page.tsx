@@ -11,6 +11,7 @@ import FormulaTab from "@/components-legacy/dashboard/FormulaTab";
 import ClientPhotosTab from "@/components-legacy/dashboard/ClientPhotosTab";
 import IntakeFormTab from "@/components-legacy/dashboard/IntakeFormTab";
 import { resolveSwissLocale } from "@/lib/format";
+import { avGrad } from "@/lib/avatar-gradients";
 
 // ─────────────────────────────────────────
 // Types
@@ -52,15 +53,6 @@ const initials = (n: string) => {
   const p = (n || "").trim().split(/\s+/);
   return ((p[0]?.[0] ?? "") + (p[1]?.[0] ?? "")).toUpperCase() || "—";
 };
-const AV_GRADS = [
-  "from-[#276EF1] to-[#1B4DCB]",
-  "from-[#F0A868] to-[#C0524A]",
-  "from-[#16A34A] to-[#0E7A37]",
-  "from-[#8B5CF6] to-[#6D28D9]",
-  "from-[#EC4899] to-[#BE185D]",
-];
-const avGrad = (s: string) => AV_GRADS[[...(s || "")].reduce((a, c) => a + c.charCodeAt(0), 0) % AV_GRADS.length];
-
 // ─────────────────────────────────────────
 // Client List
 // ─────────────────────────────────────────

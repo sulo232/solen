@@ -14,6 +14,7 @@ import {
 } from "@/app/[locale]/_components/dashboard/DashboardUI";
 import { cn } from "@/lib/utils";
 import { resolveSwissLocale } from "@/lib/format";
+import { avGrad } from "@/lib/avatar-gradients";
 import type { Booking } from "@/lib/types";
 
 interface DailyPoint { date: string; bookings: number; revenue: number; confirmed: number; cancelled: number }
@@ -81,12 +82,6 @@ const initials = (name: string) => {
   const p = name.trim().split(/\s+/);
   return ((p[0]?.[0] ?? "") + (p[1]?.[0] ?? "")).toUpperCase() || "—";
 };
-// Deterministic avatar gradient (consistent colour per person) — approved mobile skin.
-const AV_GRADS = [
-  "from-[#276EF1] to-[#1B4DCB]", "from-[#F0A868] to-[#C0524A]",
-  "from-[#16A34A] to-[#0E7A37]", "from-[#8B5CF6] to-[#6D28D9]", "from-[#EC4899] to-[#BE185D]",
-];
-const avGrad = (s: string) => AV_GRADS[[...s].reduce((a, c) => a + c.charCodeAt(0), 0) % AV_GRADS.length];
 // locale param added 2026-07-26 (de-CH literal sweep): both were hardcoded de-CH; default
 // keeps prior behavior for any caller that still doesn't pass one.
 const fmtTime = (iso: string, locale: string = "de") => new Date(iso).toLocaleTimeString(resolveSwissLocale(locale), { hour: "2-digit", minute: "2-digit" });

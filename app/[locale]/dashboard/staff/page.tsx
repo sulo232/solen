@@ -7,6 +7,7 @@ import { Plus, Pencil, Trash2, X, ToggleLeft, ToggleRight, Mail, Check, Clock as
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI";
 import Spinner from "@/components-legacy/ui/Spinner";
+import { avGrad } from "@/lib/avatar-gradients";
 import type { StaffMember } from "@/lib/types";
 
 // Initials + deterministic avatar gradient (consistent colour per person), per the approved mobile skin.
@@ -14,11 +15,6 @@ const initials = (n: string) => {
   const p = n.trim().split(/\s+/);
   return ((p[0]?.[0] ?? "") + (p[1]?.[0] ?? "")).toUpperCase() || "—";
 };
-const AV_GRADS = [
-  "from-[#276EF1] to-[#1B4DCB]", "from-[#F0A868] to-[#C0524A]",
-  "from-[#16A34A] to-[#0E7A37]", "from-[#8B5CF6] to-[#6D28D9]", "from-[#EC4899] to-[#BE185D]",
-];
-const avGrad = (s: string) => AV_GRADS[[...s].reduce((a, c) => a + c.charCodeAt(0), 0) % AV_GRADS.length];
 
 // Swiss/Basel-relevant spoken-language set for the staff editor's language picker.
 // Stored lowercase in staff_members.languages, shown uppercase in the UI (matches
