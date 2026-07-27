@@ -140,3 +140,31 @@ if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, 
 if (req.headers.get("x-role") !== "admin") return ...
 ```
 
+### Rule S7: PUBLIC LOOKUP-BY-CODE ENDPOINTS (input-abuse-08, 2026-07-27)
+
+Any endpoint that looks up a resource by a client-supplied code or token and is reachable
+without authentication (gift voucher codes, loyalty/walk-in tokens, referral codes,
+booking reference lookups) MUST:
+
+1. **Exact-match only.** Use `.eq()`, never `.ilike()`/`.like()`. `.ilike()` treats `%`
+   and `_` as wildcards, so an unvalidated code turns the lookup into a binary-search
+   oracle over every real code in the table.
+2. **One identical generic message for every failure branch.** Not found, expired,
+   already redeemed, wrong owner all return the SAME message/status. Distinct messages
+   per branch let an attacker tell "code doesn't exist" apart from "code exists but is
+   unpaid/redeemed/expired" without ever seeing the code's real state.
+3. **A tight IP-keyed rate limiter sized to the token's entropy**, not the general
+   limiter. A 6-digit or short alphanumeric code is brute-forceable within a permissive
+   window.
+
+This pattern already exists correctly, independently re-derived with its own comment,
+in `app/api/referral/validate/route.ts`, `app/api/referral/complete/route.ts`,
+`app/api/bookings/guest-lookup/route.ts`, `app/api/search/event/route.ts`, and
+`app/api/vouchers/validate/route.ts` (the `GENERIC_INVALID_MESSAGE` constant there names
+the exact oracle it closes). Codified here so the next such endpoint (Solen's product
+surface keeps adding vouchers/loyalty/walk-in/referral codes) inherits the rule by
+reading it once, instead of an author re-deriving it from first principles or
+copy-pasting a sibling route's comment. Not gate-able by grep (verifying "every failure
+branch returns the identical message" needs semantic understanding, not a pattern
+match) so this is a code-review checklist item, not an automated check.
+
