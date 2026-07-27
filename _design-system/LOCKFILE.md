@@ -834,6 +834,7 @@ Duration format (German): `"{n} Min."` if <60, `"{h} Std."` if exact hours, `"{h
 - Urgency badge: `"Nur noch {N} heute"` (with lucide `Flame` icon)
 - Featured: `"EMPFOHLEN"` — ONLY in listings, NOT on PDP hero
 - Price line on card: `"ab CHF {N}"` (note: card uses "CHF N" prefix, service-row uses "ab N CHF" suffix — different surfaces, different patterns)
+- **Legal note (copy-i18n-11, 2026-07-27):** this is a TYPOGRAPHY lock only, it does not say when "ab" may prefix a price. See `_rules/LEGAL_COPY.md` for the Swiss price-display (Preisbekanntgabeverordnung) question queued for owner/legal review.
 
 ### Tab nav (PDP sticky)
 
