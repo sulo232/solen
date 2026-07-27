@@ -415,3 +415,13 @@ the whole app. fr/it/en currently see German chips. Fix later as ONE guarded pas
 - B. Distribution-led: 5-bar star histogram + one featured review. NOTE: a code comment says the histogram was dropped per owner , needs an explicit un-drop.
 - C. Featured-voice: one hero review + a chrome-less horizontal peek row.
 **Recommendation:** A — kills both named defects (bare count, too long) with zero re-proposal risk.
+
+### Q25 — French register: `tu` (matching German/Italian) or `vous` (current default)? (copy-i18n-03)
+**Severity:** HIGH (brand-voice decision, touches messages/fr.json site-wide)
+**SOURCE.md anchor:** §18 (Voice register), §20 locked-decisions table
+**Question:** German is locked `du` (informal) "per audience research" (§18) and Italian independently converged the same way (245 informal `tuo/tua/tu` tokens vs 1 formal `Suo`). French never got an explicit decision and defaulted to formal: `messages/fr.json` measures 229 formal (`votre`/`vos`) tokens vs 46 informal (`tu`/`ton`/`ta`/`tes`), the inverse ratio of German and Italian, including on core marketing surfaces (home.hero_title "Votre salon a Bale", home.partner.subtitle). Does the same warmth/distance rationale that locked German and Italian to informal apply to French, or is there a real reason (French `tu` can read more presumptuous to a French-Swiss audience than German `du` does) that French should stay `vous`?
+**Options:**
+- A. Switch French to `tu`, matching German/Italian and the stated warmth rationale (RATIONALE.md:524, "informal address reads warmer and faster; formality signals distance"). Requires a full pass over `messages/fr.json` (5669 leaf keys) converting `votre/vos/vous` to `ton/ta/tes/tu`, the same scale of work as the German du-not-Sie sweep but across the WHOLE file, not a handful of drifted keys.
+- B. Keep French `vous`, decide it is a deliberate, named exception (French-Swiss audience research or a different distance convention), and record that reasoning in §18/§20 so it stops looking like undecided drift.
+**Recommendation:** A, on the evidence (both other non-English locales converged there independently, and the app's own stated rationale for the choice is audience-general, not German-specific) , but this is a real brand-voice call, not a mechanical fix: it changes how ~5,600 French strings sound and is the kind of decision rule 5 (goal, not action) and the verifier-loop's "brand voice needs owner sign-off" carve-out both flag as needing the owner's yes before a site-wide rewrite, not an agent's unilateral judgment call.
+**Status:** OPEN, queued for owner (2026-07-27, copy-i18n-03). Not implemented pending the decision.
