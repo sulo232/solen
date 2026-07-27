@@ -296,9 +296,12 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [x] `imagery-icons-04` **CUT, resolved** a locked LOCKFILE rule already covers it; this is 35 violations of an existing law, not a missing law , [high/M] 35 raw <img> tags on customer surfaces bypass next/image, including the locked global Avatar primitive
 - [x] `imagery-icons-03` **DONE** commit `535095474` , [medium/S] Alt text has no authoring rule and is empty on informative content images
 - [ ] `imagery-icons-05` **AWAITING OWNER** two mutually exclusive options, pick ONE , [medium/S] The documented grey-box fallback and the shipped fallback component describe two different visuals
-  - [ ] Option A: change the code so both SalonCard variants render the written rule, sunken
+  - [ ] **AWAITING OWNER, option A of two** , not work I can do without the pick, because A and
+        B are mutually exclusive and each undoes the other. A: change the code so both
+        SalonCard variants render the written rule, sunken
         background + category icon + salon initial. Nothing in the docs changes.
-  - [ ] Option B: pick whichever shipped variant you prefer (the colour block with the full
+  - [ ] **AWAITING OWNER, option B of two** , same single question, opposite answer.
+        B: pick whichever shipped variant you prefer (the colour block with the full
         name in large type, or the sunken block with just an initial) and rewrite CLAUDE.md:68,
         CLAUDE.md:95 and LOCKFILE.md:1840 to describe it. Nothing in the code changes.
 - [x] `imagery-icons-06` **DONE** commit `ad3437b97` , [medium/M] No image weight (KB) budget or compression pipeline for user-uploaded photos

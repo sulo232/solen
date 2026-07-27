@@ -100,7 +100,7 @@ is `salons.gallery_urls` plus `salon_portfolio_images`. My earlier report to the
 
 ## B. Translation (owner item 1)
 
-- [ ] B1. **DEFERRED BY THE OWNER'S OWN INSTRUCTION**, not by me , they answered item 1 with
+- [ ] B1. **BLOCKED ON THE OWNER'S OWN INSTRUCTION**, not by me , they answered item 1 with
       "yes there is a whole problem with translation we need dedicated session for fixing
       everywhere". Doing a 5,600-string register sweep inside this batch would be exactly the
       silent-detour failure: it would land unreviewed alongside twenty unrelated changes.
@@ -155,7 +155,10 @@ is `salons.gallery_urls` plus `salon_portfolio_images`. My earlier report to the
 
 ## D. Stock photos (owner item 3) , I MISREAD THIS, corrected 2026-07-27
 
-- [x] CORRECTION: the badge is DELETED. Owner, verbatim: *"i dont want any badge bro i know
+- [x] CORRECTION: commit `75ac54bc4`; `verified:` on the live tunnel after the delete , 34
+      images, 0 with data-stock-marked, injected stylesheet absent; `grep -rn StockPhotoMarker
+      app lib components-legacy` returns nothing; `_design-system/REMOVED.md` carries the line.
+      The badge is DELETED. Owner, verbatim: *"i dont want any badge bro i know
       if its stock or not you keep forgetting ee are not livr"*. I read "we need to be easy to
       acc distinguish cx u keep forgetting" as a request to mark the PRODUCT. It was not. The
       "u" is me. The owner knows perfectly well which of their own photos are stock; what they
@@ -166,7 +169,10 @@ is `salons.gallery_urls` plus `salon_portfolio_images`. My earlier report to the
       already existed and was already armed , `~/.claude/hooks/prelaunch-reality-gate.py`, a
       Stop gate born on 2026-07-17 from the same complaint ("i told you so many fucking times
       we are not live yet"). I built a UI feature next to a working gate instead of extending it.
-- [x] D2. The enforcement half stands, because that is the part that was actually asked for:
+- [x] D2. `verified:` read back from both settings files programmatically this turn , 
+      stock-photo-gate.py ARMED on PreToolUse (settings.local.json) and Stop (settings.json),
+      self-test re-run 19/19 after the host-list sync. The enforcement half stands, because
+      that is the part that was actually asked for:
       `~/.claude/hooks/stock-photo-gate.py`, armed on PreToolUse + Stop, self-tested 19/19. Its
       Stop half reads the live `salon_photos` row count and blocks a reply of mine that talks
       about Solen salon photography as real while that count is 0. It is the photography-shaped
