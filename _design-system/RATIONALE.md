@@ -816,6 +816,24 @@ Source: the owner's second research digest (epistemology, Norman, depth/light, t
 
 **Brignull's taxonomy (deceptive.design; term coined 2010):** sneaking, nagging, obstruction (roach motel / hard to cancel), forced action, confirmshaming, comparison prevention, disguised ads, fake scarcity, fake social proof, fake urgency, hidden costs, hidden subscription, preselection, trick wording, visual interference. Gray et al. 2018 compress to five: nagging, obstruction, sneaking, interface interference, forced action. This section exists so reviews can cite refusals by their industry names.
 
+**Every category resolved to a verdict (2026-07-27, closing the ethics-psychology-05 gap: naming a taxonomy without ruling on each entry left 5-6 categories decorative).** A hit in the taxonomy is not enough on its own; the row below is the actual binding ruling and where it lives.
+
+| Category | Verdict | Where ruled |
+|---|---|---|
+| Sneaking / hidden costs | BANNED | PSYCHOLOGY.md hard line 3 (no relative-only price hiding the absolute) + law 5 (total price from step one) |
+| Preselection | BANNED except the stated exception | PSYCHOLOGY.md hard line 2 (no pre-checked paid add-ons/subscriptions); law 2 allows preselecting a free default only |
+| Fake scarcity / fake urgency | BANNED | PSYCHOLOGY.md hard line 1 + hard line 6 (countdown only on live, user-relevant counts) |
+| Fake social proof | BANNED | PSYCHOLOGY.md hard line 1 (no fabricated numbers, counts, or social proof, ever) |
+| Confirmshaming | BANNED | PSYCHOLOGY.md law 10 ("dishonest dismiss copy" is named in the same banned list as invented-stakes loss-framing) |
+| Forced action | BANNED | PSYCHOLOGY.md hard line 5 (no lock/blur wall before delivered value; no forced account before pay) |
+| Obstruction (roach motel / hard to cancel) | BANNED, now a standing hard line | PSYCHOLOGY.md hard line 8 (exit/cancel/unsubscribe parity, added ethics-psychology-06; previously only a one-time 2026-07-16 verified audit finding with no standing rule) |
+| Nagging (repeated re-asks of a declined permission or upsell) | BANNED | ask once per session; a declined permission or upsell prompt does not re-fire without a new user-initiated trigger. No prior ruling existed; recorded here (ethics-psychology-05) |
+| Comparison prevention (inconsistent units, bundling that blocks price/duration comparison) | BANNED | extends PSYCHOLOGY.md law 11 (comparability beats trimming): price + duration render in the same inline unit across every option in a list, never buried in a bundle with no per-item breakout. No prior ruling existed; recorded here (ethics-psychology-05) |
+| Disguised ads / sponsored ranking | BANNED preventively, no feature exists today | PSYCHOLOGY.md hard line 10 (added ethics-psychology-10): a persistent "Gesponsert" label at salon-name weight, never overriding a real safety/quality signal |
+| Hidden subscription (auto-renewal with no prominent pre-purchase disclosure) | NOT YET APPLICABLE, ruling reserved | no membership/auto-renewal feature ships today (PSYCH_RETENTION.md's contested section floats one); the moment it is scoped it must disclose renewal terms before purchase and satisfy hard line 8's exit parity. No prior ruling existed; recorded here (ethics-psychology-05) |
+| Trick wording (double-negative settings copy, ambiguous toggle labels) | BANNED | a toggle label states literally what happens when ON ("SMS-Erinnerungen" not "SMS nicht deaktivieren"); no double negatives in settings copy anywhere. No prior ruling existed; recorded here (ethics-psychology-05) |
+| Visual interference (a decline/dismiss control rendered smaller, lower-contrast, or harder to hit than the accept control) | BANNED | decline and accept controls in the same prompt share the same tap-target floor (44px) and a comparable visual weight; only the fill differs (ink commit vs neutral outline), never size or contrast. No prior ruling existed; recorded here (ethics-psychology-05) |
+
 **Regulatory anchors:** EU DSA Article 25 prohibits interfaces that deceive, manipulate, or materially distort user decisions (recital 67 names dark patterns); California CPRA: consent obtained through dark patterns is not valid consent. BOUNDARY, stated honestly: Solen is Swiss; the DSA binds services offered INTO the EU, and whether that covers Solen is a legal question this file does not settle. The design stance does not depend on the answer: the PSYCHOLOGY.md hard lines (no fake scarcity/urgency/social proof, no confirmshaming, symmetric opt-outs) already refuse the taxonomy, regulation or not.
 
 ## 28. Gap register (judge-flagged 2026-07-16; open queue, owner-gated where marked)

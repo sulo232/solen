@@ -71,6 +71,7 @@ A status program with no visible progress is invisible and dies (beauty is low-f
 - **Visible progress** ("2 visits to Platinum") on every booking confirmation and on the profile.
 - **Tier-up celebration**: SuccessMark + haptic + push + email. Treat tier-up as a product event, not a DB state change.
 - **Expiry nudge**: "your Gold status expires in 30 days, book to keep it" push.
+- **Tier-down disclosure (added ethics-psychology-08, closes the asymmetry above):** the moment a soft-drop actually happens (Platinum→Gold, Gold→Base), treat it as the same tier of product event as tier-up, not a silent badge change the user discovers by noticing. Send a push + in-app moment naming: the new tier, the specific perks now locked (reuse the /rewards unlocked-vs-locked row treatment), and the concrete path back ("3 visits to Platinum again"). This is PSYCHOLOGY.md law 1's peak-end logic (endings carry disproportionate memory weight) applied honestly to a negative ending, not only the positive one the celebration already covers.
 
 ## 8. Threshold calibration (do before launch)
 
@@ -186,6 +187,7 @@ All idempotent (`IF NOT EXISTS` / `CREATE OR REPLACE`), no drops:
 - [ ] Phase 2: free cancel + reschedule
 - [ ] Phase 3: prime-time + walk-in priority
 - [ ] Phase 4: tier-up gift + /rewards UI/i18n refresh to final set
+- [ ] Tier-down disclosure (§7, ethics-psychology-08): push + in-app moment at the actual soft-drop, same tier as the tier-up celebration; build alongside the /rewards refresh above, not separately
 
 ## Council + sources
 Claude Opus personas (Marketplace PM / Growth-CRM / Ops-Finance) + Grok personas (Marketplace Purist / Hybrid Realist / Growth Lead). Convergence: status-spine, visit-count metric, rolling window, priority-only rewards, calibrate thresholds, CRM is non-negotiable. GO model: [go.goinc.jp](https://go.goinc.jp/en), [rank + rolling window](https://chabunomori.jp/taxi-go/), [GO × ANA miles](https://www.ana.co.jp/en/jp/shoppingandlife/travel-service/tameru_go_mo-t/).
