@@ -16,7 +16,7 @@ and I did it while writing in that same plan file that the absorption cap was su
 
 | bucket | count | why |
 |---|---|---|
-| CUT | 15 | judge 2 PROVED these wrong, already covered, or already owner-rejected. Correctness, not appetite. |
+| CUT, resolved by a judgment pass (each with its own reason) | 15 | judge 2 PROVED these wrong, already covered, or already owner-rejected. Correctness, not appetite. |
 | DONE | 21 | genuinely shipped by batches A to D, mapped back to their finding ids |
 | **TODO** | **240** | the loop. 12 critical, 80 high, 106 medium, 42 low. |
 
@@ -52,16 +52,16 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 |---|---|
 | DONE (each with a commit sha or a file:line proof) | 252 |
 | TODO | 0 |
-| QUEUED_FOR_OWNER (visible design change) | 7 |
+| AWAITING OWNER (each line names the exact question) | 7 |
 | BLOCKED | 2 |
-| CUT | 15 |
+| CUT, resolved by a judgment pass (each with its own reason) | 15 |
 
 ## The queue
 
 ### accessibility
-- [ ] `accessibility-01` **CUT** judgment pass proved it wrong, already covered, or already owner-rejected , [critical/M] No visible focus indicator survives on any non-input control, and no substitute was ever mandated
+- [x] `accessibility-01` **CUT, resolved** the owner killed the focus ring three times; a NON-ring substitute was built and shown instead, commit `fb3184bee` , [critical/M] No visible focus indicator survives on any non-input control, and no substitute was ever mandated
 - [x] `accessibility-02` **DONE** commit `aba892236` , [critical/S] <html lang> is hardcoded to German across a de/en/fr/it site
-- [ ] `accessibility-03` **CUT** judgment pass proved it wrong, already covered, or already owner-rejected , [high/S] Viewport meta disables pinch-zoom sitewide
+- [x] `accessibility-03` **CUT, resolved** duplicate of typography-01, same file and lines, fixed once in commit `6c468d458` , [high/S] Viewport meta disables pinch-zoom sitewide
 - [x] `accessibility-04` **DONE** commit `19d66f4ee` , [high/M] The dashboard has no accessibility floor at all: zero landmarks, two-thirds of pages carry zero ARIA
 - [x] `accessibility-05` **DONE** commit `3bad043d7` , [high/M] No contrast-ratio gate exists, and the system has already authorized a sub-threshold grey for informational text
 - [x] `accessibility-09` **DONE** commit `a34619d5e` , [high/M] No automated accessibility lint or scan exists anywhere in a 130-plus-gate estate
@@ -71,7 +71,7 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [x] `accessibility-10` **DONE** commit `beb8590e6` , [low/S] Swiss/EU accessibility legal exposure is named nowhere despite the estate already tracking the adjacent US risk
 
 ### api-contracts
-- [ ] `api-contracts-03` **CUT** judgment pass proved it wrong, already covered, or already owner-rejected , [critical/M] The project's own named #1 backend failure mode has only an informational reminder, never a blocking gate
+- [x] `api-contracts-03` **CUT, resolved** the project CLAUDE.md silent-no-op block already says this almost word for word , [critical/M] The project's own named #1 backend failure mode has only an informational reminder, never a blocking gate
 - [x] `api-contracts-01` **DONE** commit `79427eb60` , [high/M] No canonical error response shape, and nothing enforces the one recommended
 - [x] `api-contracts-02` **DONE** commit `79427eb60` , _backend-system/LAW.md:141 freezes the success envelope no commit names this id , [high/M] No canonical success response envelope either
 - [x] `api-contracts-04` **DONE** commit `223fcce31` , [high/L] Zero automated contract tests exist for any API route's shape, status code, or pagination behavior
@@ -103,13 +103,13 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [x] `color-tokens-04` **DONE** commit `dcbf6ea19` , [medium/M] The same #6B6B6B grey is reachable through four different token names with no naming-grammar rule to prevent it
 - [x] `color-tokens-06` **DONE** commit `dba01df2d` , [medium/S] About a third of the defined color tokens have zero live usage, and nothing ever prunes them
 - [x] `color-tokens-08` **DONE** commit `fee5013bc` , [low/S] The multi-series chart-color formula (OKLCH hue-stepping) is documented in prose with zero reference implementation
-- [ ] `color-tokens-09` **CUT** judgment pass proved it wrong, already covered, or already owner-rejected , [low/S] No ceiling, or even a tracked count, on the total number of color tokens
+- [x] `color-tokens-09` **CUT, resolved** a token-count cap with no incident behind it; fails the estate's own ROI test for a new rule , [low/S] No ceiling, or even a tracked count, on the total number of color tokens
 - [x] `color-tokens-10` **DONE** commit `30acf5e29` , [low/M] No forced-colors / prefers-contrast handling anywhere outside one narrow glass-control note
 
 ### copy-i18n
 - [x] `copy-i18n-01` **DONE** commit `4f4869e5e` , [critical/S] refundFlow namespace (261/264 keys) is English-only in de/fr/it, with a live _todo_translate marker ignored for 7+ weeks
 - [x] `copy-i18n-02` **DONE** commit `bfa9f1963` , [high/S] German 'du not Sie' is locked law but has zero enforcement and is already violated 12 times in the live de.json, including inside dashboard chrome
-- [ ] `copy-i18n-03` **QUEUED_FOR_OWNER** visible design change, mockup-first law applies , [high/M] French defaults to formal 'vous', breaking the same warmth rationale that locked German and Italian to informal, with no decision ever recorded
+- [ ] `copy-i18n-03` **AWAITING OWNER** OWNER QUESTION: keep French formal (vous) as a deliberate exception and write that down, or align it with the informal German and Italian? Measured: fr 229 formal vs 46 informal, de 196 informal vs 12 formal, it 245 vs 1. ~5,600 strings either way. , [high/M] French defaults to formal 'vous', breaking the same warmth rationale that locked German and Italian to informal, with no decision ever recorded
 - [x] `copy-i18n-04` **DONE** commit `128cef36d` , [high/M] ICU plural messages are the documented pattern but at least 9 live customer-facing files hardcode a binary ternary instead, shipping untranslated English or German text to all four locales
 - [x] `copy-i18n-05` **DONE** commit `a34619d5e` no commit names this id , [high/S] 112 live call sites hardcode the locale tag 'de-CH' in Intl/toLocaleString calls, a bug the codebase already named and fixed once but never gated
 - [x] `copy-i18n-07` **DONE** commit `4f4869e5e` no commit names this id , [high/S] No CI check for translation-key parity across the four locale files; a missing key currently renders the raw dotted key path to the customer
@@ -117,13 +117,13 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [x] `copy-i18n-08` **DONE** commit `128cef36d` , [medium/S] The existing hardcoded-string audit script is unwired, always exits 0, and is too narrow to have caught any of the violations found in this pass
 - [x] `copy-i18n-09` **DONE** commit `6145d3c4b` , [medium/S] Copy-length-variance law covers German-vs-English fixed-width containers but not French, and not fixed-HEIGHT single-line buttons
 - [x] `copy-i18n-10` **DONE** commit `dd4f5d531` , [medium/M] No dashboard/salon-owner surface distinguishes 'Solen speaking to the owner' (locked informal du) from 'a template the owner sends to their own customer' (which should plausibly be formal, business-register), so the two registers collide inside single components
-- [ ] `copy-i18n-11` **QUEUED_FOR_OWNER** visible design change, mockup-first law applies , [medium/M] Swiss price-transparency law (Preisbekanntgabeverordnung) is never named as the reason behind the 'ab CHF' pattern, so nothing checks that 'ab' (starting-from) pricing is only used where the service genuinely has variable pricing
+- [ ] `copy-i18n-11` **AWAITING OWNER** OWNER QUESTION: may 'ab CHF' prefix a service that has exactly one price? Analysis in `_rules/LEGAL_COPY.md`; the finding's own confidence is 'assume', so this needs a decision, not a guess. , [medium/M] Swiss price-transparency law (Preisbekanntgabeverordnung) is never named as the reason behind the 'ab CHF' pattern, so nothing checks that 'ab' (starting-from) pricing is only used where the service genuinely has variable pricing
 
 ### data-money
 - [x] `data-money-02` **DONE** commit `bae187459` , [critical/S] A blocking money-CAS gate protects only future edits; it never swept existing code, and a live instance of the exact bug it exists to block is still in production
 - [x] `data-money-03` **DONE** commit `6705143c4` no commit names this id , [critical/S] A live money-adjacent fabrication bug has sat as an unactioned 'owner decision needed' for 10+ days, with no forcing function and no migration-layer guard against a repeat
 - [x] `data-money-01` **DONE** verified: _backend-system/LAW.md section 1, data modeling and storage no commit names this id , [high/M] The backend law layer stalled at research; nothing was ever frozen into LAW.md
-- [ ] `data-money-07` **BLOCKED** needs a real database write, which requires the owner's authorisation , [high/M] Restore has never been executed end to end; RTO is an unmeasured guess presented in the runbook as if it were a verified number
+- [ ] `data-money-07` **BLOCKED** BLOCKED ON OWNER AUTHORISATION: proving a restore means writing real backup data into a throwaway database. No agent here performs a database write without an explicit yes. One authorisation, about an hour, and the runbook's 1-2h recovery figure becomes a measurement instead of a guess. , [high/M] Restore has never been executed end to end; RTO is an unmeasured guess presented in the runbook as if it were a verified number
 - [x] `data-money-04` **DONE** commit `96ff48e08` , [medium/M] Migration-time lock/concurrency hygiene (NOT VALID+VALIDATE, CREATE INDEX CONCURRENTLY, lock_timeout) is written as law but has zero enforcement and no measured trigger
 - [x] `data-money-05` **DONE** commit `4c3aabd50` , [medium/S] Nothing stops a new money column from copying the legacy numeric(x,2) pattern instead of integer minor units
 - [x] `data-money-06` **DONE** commit `96ff48e08` , [medium/S] Backup table coverage (16% of tables) has no rule tying new-table creation to backup-set inclusion, and has not kept pace with schema growth
@@ -178,7 +178,7 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [x] `observability-6` **DONE** verified: no console.* call in app or lib embeds an email or phone field any more no commit names this id , [medium/S] A raw customer email was logged, violating the project's own already-documented PII-in-logs convention
 - [x] `observability-7` **DONE** verified: _backend-system/LAW.md:351-365 section 14, all nine observability axes no commit names this id , [medium/S] The observability research was never frozen into LAW.md; its own Decision-candidates table sits unused
 - [x] `observability-8` **DONE** commit `32e0d5c16` , booking failure-rate SLI added to the daily digest no commit names this id , [medium/S] No SLI is tracked; the org's own research says this is the actual blocker to picking an honest SLO
-- [ ] `observability-9` **BLOCKED** confirmed genuinely absent: `find . -iname '*postmortem*'` returns zero files repo-wide and OPS_RUNBOOK.md has no postmortem section. Writing an incident-response and postmortem discipline is an owner call about process, not a code change no commit names this id , [medium/M] No per-critical-flow incident runbook and no postmortem discipline exists anywhere
+- [ ] `observability-9` **BLOCKED** BLOCKED ON AN OWNER DECISION: verified genuinely absent, `find . -iname '*postmortem*'` returns zero files repo-wide and OPS_RUNBOOK.md has no such section. Writing incident-response and postmortem discipline is a decision about how YOU want to run an incident, not a code change I can make for you. , [medium/M] No per-critical-flow incident runbook and no postmortem discipline exists anywhere
 
 ### privacy-compliance
 - [x] `privacy-compliance-02` **DONE** commit `d8e1e990b` , [critical/S] Self-service data export omits every salon-authored client record, including the most sensitive ones
@@ -218,7 +218,7 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [x] `testing-release-06` **DONE** commit `4a7d5c32a` , [medium/S] The 'done means' checklist that exists (CODE_SAFETY.md Rule 29) is a self-check for an agent, not a release gate before code reaches production
 - [x] `testing-release-09` **DONE** commit `4a7d5c32a` , [medium/M] The good instinct already in the test suite (money-path-only unit tests) is not written down as a rule, so nothing stops a future session from inventing a coverage mandate or skipping a new money function
 - [x] `testing-release-07` **DONE** commit `fbfe9e901` , [low/S] No named flakiness policy for the visual regression suite, and no retries configured
-- [ ] `testing-release-08` **CUT** judgment pass proved it wrong, already covered, or already owner-rejected , [low/M] CI's visual/e2e jobs test a `next start` process inside GitHub Actions, never the actual Netlify-built artifact
+- [x] `testing-release-08` **CUT, resolved** argues CI validates the wrong artifact, but there is no CI to validate anything, so the premise is empty , [low/M] CI's visual/e2e jobs test a `next start` process inside GitHub Actions, never the actual Netlify-built artifact
 - [x] `testing-release-10` **DONE** commit `edc5d22b9` , [low/S] The lint ratchet is frozen at 481 pre-existing errors with no glide path and no review trigger
 
 ### typography
@@ -245,10 +245,10 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [x] `agent-output-9` **DONE** verified: REPORT_SYSTEM.md:131-136, the reviewer-disagreement half of the same clause , [low/M] Reviewer-disagreement handling exists only for multi-model council use, not the default single-reviewer loop
 
 ### ethics-psychology
-- [ ] `ethics-psychology-01` **CUT** judgment pass proved it wrong, already covered, or already owner-rejected , [high/S] Total-price law has no Swiss PBV legal floor, only a UX-conversion framing
+- [x] `ethics-psychology-01` **CUT, resolved** the shipped total-price default already satisfies the statute the finding wanted cited , [high/S] Total-price law has no Swiss PBV legal floor, only a UX-conversion framing
 - [x] `ethics-psychology-02` **DONE** commit `f68872464` , [high/M] A user's stored notification-consent preference has no structural guarantee any sender actually reads it
 - [x] `ethics-psychology-03` **DONE** commit `f68872464` , [high/S] The entire psychology/ethics law layer scopes to customer surfaces only; the salon (B2B) dashboard has zero coverage
-- [ ] `ethics-psychology-04` **CUT** judgment pass proved it wrong, already covered, or already owner-rejected , [high/S] Marketing-notification cadence law states a UX cap, not the Swiss legal opt-in floor beneath it
+- [x] `ethics-psychology-04` **CUT, resolved** same shape as ethics-psychology-01, and the finding concedes it in its own words , [high/S] Marketing-notification cadence law states a UX cap, not the Swiss legal opt-in floor beneath it
 - [x] `ethics-psychology-05` **DONE** commit `8296c7ec0` , [medium/M] Brignull's dark-pattern taxonomy is named as vocabulary only; several categories have no binding Solen rule
 - [x] `ethics-psychology-06` **DONE** commit `f68872464` , [medium/S] Cancellation/exit-parity is a one-time verified audit finding, not a standing law or gate
 - [x] `ethics-psychology-07` **DONE** commit `f68872464` , [medium/S] No policy exists for incentivized, gated, or solicited-only-from-happy-customers reviews
@@ -275,7 +275,7 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [x] `hierarchy-density-04` **DONE** commit `7311b5a68` , SOURCE.md:724-745 the sparse-but-real state no commit names this id , [medium/M] No defined state for SPARSE-BUT-REAL content: the FLOORS LAW binds unconditionally in production even for a legitimately thin new salon
 - [x] `hierarchy-density-06` **DONE** commit `7311b5a68` , CLAUDE.md:54 the dense-screen mirror no commit names this id , [medium/S] No dense-screen mirror of the trapped-dead-space rule: nothing bounds how far a user must scroll past content to reach the primary commit action
 - [x] `hierarchy-density-08` **DONE** commit `7311b5a68` , LOCKFILE.md:1866-1874 §17.5 item 6 no commit names this id , [medium/S] Worst-case content (longest name, longest review, most services) is an optional verifier step, not a FLOORS-LAW gate item, even though several floors can visibly break under it
-- [ ] `hierarchy-density-07` **CUT** judgment pass proved it wrong, already covered, or already owner-rejected , [low/S] Colour has a presence floor and a sparseness ceiling, but no measured budget pair the way type weight does
+- [x] `hierarchy-density-07` **CUT, resolved** TASTE_RANGE.md section 7 already examined a chroma-count floor and deliberately declined it , [low/S] Colour has a presence floor and a sparseness ceiling, but no measured budget pair the way type weight does
 - [x] `hierarchy-density-09` **DONE** commit `7311b5a68` , LOCKFILE.md:1842-1846 the LCP reconciliation no commit names this id , [low/S] The imagery and density floors were never reconciled with the existing LCP <= 2.5s performance gate
 
 ### ia-navigation
@@ -292,12 +292,12 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 
 ### imagery-icons
 - [x] `imagery-icons-01` **DONE** commit `962fd4c65` , [high/M] No EXIF/GPS metadata stripping on any photo upload path
-- [ ] `imagery-icons-02` **QUEUED_FOR_OWNER** visible design change, mockup-first law applies , [high/M] No pre-publish moderation for salon-gallery or review photos, unlike Discovery content
-- [ ] `imagery-icons-04` **CUT** judgment pass proved it wrong, already covered, or already owner-rejected , [high/M] 35 raw <img> tags on customer surfaces bypass next/image, including the locked global Avatar primitive
+- [ ] `imagery-icons-02` **AWAITING OWNER** OWNER QUESTION: do salon-gallery and review photos get a pre-publish review queue? The cost is somebody's time watching it, which is yours to spend or delegate. , [high/M] No pre-publish moderation for salon-gallery or review photos, unlike Discovery content
+- [x] `imagery-icons-04` **CUT, resolved** a locked LOCKFILE rule already covers it; this is 35 violations of an existing law, not a missing law , [high/M] 35 raw <img> tags on customer surfaces bypass next/image, including the locked global Avatar primitive
 - [x] `imagery-icons-03` **DONE** commit `535095474` , [medium/S] Alt text has no authoring rule and is empty on informative content images
-- [ ] `imagery-icons-05` **QUEUED_FOR_OWNER** visible design change, mockup-first law applies , [medium/S] The documented grey-box fallback and the shipped fallback component describe two different visuals
+- [ ] `imagery-icons-05` **AWAITING OWNER** OWNER QUESTION: make the code match the written fallback rule (sunken + category icon + initial), or pick one of the two shipped variants and rewrite the rule to match it? Three descriptions, two implementations today. , [medium/S] The documented grey-box fallback and the shipped fallback component describe two different visuals
 - [x] `imagery-icons-06` **DONE** commit `ad3437b97` , [medium/M] No image weight (KB) budget or compression pipeline for user-uploaded photos
-- [ ] `imagery-icons-07` **QUEUED_FOR_OWNER** visible design change, mockup-first law applies , [medium/S] No rights/consent attestation at photo upload time for salon-gallery or review photos
+- [ ] `imagery-icons-07` **AWAITING OWNER** OWNER QUESTION: what does the upload rights/consent confirmation say, and what do you promise when someone objects? The checkbox is trivial; the promise is policy. , [medium/S] No rights/consent attestation at photo upload time for salon-gallery or review photos
 - [x] `imagery-icons-08` **DONE** commit `73edd9bef` , [low/S] No general face-safe crop rule; the one fix that exists is scoped to a single component
 - [x] `imagery-icons-09` **DONE** commit `73edd9bef` , [low/S] No stated policy for salon-uploaded video, despite the team having already anticipated it
 - [x] `imagery-icons-10` **DONE** commit `73edd9bef` , [low/S] No LQIP/placeholder strategy for below-the-fold photo grids, only an explicit ban for the above-fold hero
@@ -307,7 +307,7 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [x] `input-abuse-02` **DONE** commit `962fd4c65` , [high/S] Every upload route trusts client file.type; zero server-side magic-byte checks exist
 - [x] `input-abuse-03` **DONE** commit `38a8b7d56` , [high/S] Unescaped salon name in breadcrumb JSON-LD is a live stored-XSS vector
 - [x] `input-abuse-04` **DONE** commit `8227cebae` , [high/M] The SSRF guard protects one call site out of at least six that fetch non-hardcoded URLs
-- [ ] `input-abuse-05` **CUT** judgment pass proved it wrong, already covered, or already owner-rejected , [medium/S] CSP is still absent, so the one bug found above (finding 03) has zero backstop
+- [x] `input-abuse-05` **CUT, resolved** duplicate of secrets-webhooks-01 (ship CSP report-only), delivered once in commit `e6ffc9db0` , [medium/S] CSP is still absent, so the one bug found above (finding 03) has zero backstop
 - [x] `input-abuse-06` **DONE** commit `b30ed725f` , [medium/S] AI prompt-injection wrapping is adopted in under half the LLM call sites and is enforced only as a same-session reminder
 - [x] `input-abuse-07` **DONE** commit `8ef6b8c6b` , [medium/M] 22% of mutating routes hand-roll body validation instead of using the shared zod schema path
 - [x] `input-abuse-08` **DONE** commit `186b13b67` , [low/S] The enumeration-oracle defense pattern is correct everywhere but exists only as five independently-repeated code comments, never a named rule
@@ -319,10 +319,10 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [x] `layout-geometry-04` **DONE** commit `de5784e4a` , LOCKFILE.md:1018-1027 mirror-diff for claimed symmetry no commit names this id , [medium/M] No checkable mirror-diff exists for symmetry claims; asymmetric pairs stay a permanent human-eyeball bucket
 - [x] `layout-geometry-05` **DONE** commit `e96018aff` , [medium/S] No law for how a modular grid degrades when its item count isn't a clean multiple of its column count
 - [x] `layout-geometry-06` **DONE** commit `0ace017af` , [medium/M] axe-core target-size is not wired into CI despite Solen already running the exact infrastructure it needs
-- [ ] `layout-geometry-07` **CUT** judgment pass proved it wrong, already covered, or already owner-rejected , [low/S] No law for text vertical-centering by cap-height instead of a font's full line box
+- [x] `layout-geometry-07` **CUT, resolved** no defect demonstrated: standard flex centering described as a missing per-element rule , [low/S] No law for text vertical-centering by cap-height instead of a font's full line box
 - [x] `layout-geometry-08` **DONE** commit `bb17fc551` , [low/S] No scrollbar-gutter law; a scroll container that toggles a scrollbar can shift adjacent content
 - [x] `layout-geometry-09` **DONE** commit `e96018aff` , [low/S] No systemic law for how a fixed-aspect photo frame crops a real upload whose aspect ratio doesn't match
-- [ ] `layout-geometry-10` **CUT** judgment pass proved it wrong, already covered, or already owner-rejected , [low/S] No stated ratio links a container's mobile and desktop padding; each surface picks its own step
+- [x] `layout-geometry-10` **CUT, resolved** container padding values are already frozen literals in LOCKFILE section 7 , [low/S] No stated ratio links a container's mobile and desktop padding; each surface picks its own step
 
 ### orchestrator-output
 - [x] `orch-output-01` **DONE** verified: REPORT_SYSTEM.md:91-94 , the Not checked section is now a required report item , [high/S] A report that claims verification never says what it did NOT check
@@ -338,7 +338,7 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [x] `orch-output-09` **DONE** verified: REPORT_SYSTEM.md:119 , length tracks decisions not effort , [medium/S] Report length tracks work done rather than decisions required
 - [x] `orch-output-10` **DONE** verified: REPORT_SYSTEM.md:149 checklist entry , [medium/S] The question asked can be replaced by the question I think is better
 - [x] `orch-output-11` **DONE** verified: REPORT_SYSTEM.md:149 entry-point line , [medium/S] No single line telling the next session where to start
-- [ ] `orch-output-12` **CUT** judgment pass proved it wrong, already covered, or already owner-rejected , [low/S] Match the owner's brevity, never mirror their shorthand
+- [x] `orch-output-12` **CUT, resolved** a one-word disambiguation of an existing memory file, promoted to a principle , [low/S] Match the owner's brevity, never mirror their shorthand
 
 ### performance
 - [x] `performance-01` **DONE** commit `100fa2e68` , [high/S] No ratchet gate against select(*) over-fetch recurrence
@@ -354,15 +354,15 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 
 ### responsive-desktop
 - [x] `responsive-desktop-01` **DONE** commit `9451c07e6` , [high/M] The FLOORS LAW (imagery third, emphasis budget, display anchor) has no desktop measurement, by explicit hardcoded design
-- [ ] `responsive-desktop-02` **QUEUED_FOR_OWNER** visible design change, mockup-first law applies , [high/S] The operator dashboard has no page-level max-width: content stretches unbounded on wide and ultra-wide monitors
+- [ ] `responsive-desktop-02` **AWAITING OWNER** OWNER QUESTION: cap the dashboard content width on large monitors? Visible change, about five minutes once approved. , [high/S] The operator dashboard has no page-level max-width: content stretches unbounded on wide and ultra-wide monitors
 - [x] `responsive-desktop-03` **DONE** commit `20a3f0ec8` , [high/S] Hover-reveal controls that hide functional actions (not decoration) have no rule requiring a touch/no-hover equivalent, and the dashboard calendar already ships one that is unreachable on touch
 - [x] `responsive-desktop-04` **DONE** commit `7311b5a68` , _design-system/SOURCE.md:65 desktop-considered vs mobile-stretched no commit names this id , [medium/M] No systemic rule for what MUST differ between mobile and desktop information density; desktop treatment is per-component ad hoc
 - [x] `responsive-desktop-05` **DONE** commit `7311b5a68` , _design-system/SOURCE.md:67 tablet design intent no commit names this id , [medium/S] Tablet (768-1024px) has automated regression screenshots but no documented design intent anywhere in the design-law docs
 - [x] `responsive-desktop-06` **DONE** commit `23827f736` , [medium/M] WCAG 2.2 SC 1.4.10 (Reflow, 400% zoom / 320px-equivalent width with no two-dimensional scrolling) is never tested
 - [x] `responsive-desktop-07` **DONE** commit `de5784e4a` , _design-system/LOCKFILE.md:971-980 chrome switch-point alignment no commit names this id , [medium/S] No design case for the narrow-desktop/laptop window zone (roughly 1024-1279px), where component breakpoint choices already disagree with each other
-- [ ] `responsive-desktop-08` **QUEUED_FOR_OWNER** visible design change, mockup-first law applies , [low/S] The 68ch prose-measure cap is applied to select customer pages only; the dashboard's free-text fields and descriptions have no equivalent line-length control
+- [ ] `responsive-desktop-08` **AWAITING OWNER** OWNER QUESTION: apply the 68ch line-length cap to dashboard free text as well? Same five-minute shape as responsive-desktop-02, same visible-change reason for asking. , [low/S] The 68ch prose-measure cap is applied to select customer pages only; the dashboard's free-text fields and descriptions have no equivalent line-length control
 - [x] `responsive-desktop-09` **DONE** commit `20a3f0ec8` , [low/S] No stated rule for a Solen-wide pointer vs touch input distinction beyond ad hoc @media (hover) blocks in one CSS file
-- [ ] `responsive-desktop-10` **CUT** judgment pass proved it wrong, already covered, or already owner-rejected , [low/S] Print styles are entirely absent, with no stated decision that print is out of scope
+- [x] `responsive-desktop-10` **CUT, resolved** the proof is false: a grep for print styles does return hits, so the stated absence is wrong , [low/S] Print styles are entirely absent, with no stated decision that print is out of scope
 
 ### secrets-webhooks
 - [x] `secrets-webhooks-01` **DONE** commit `e6ffc9db0` , [high/M] No Content-Security-Policy header anywhere in the stack
@@ -373,7 +373,7 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [x] `secrets-webhooks-05` **DONE** commit `e04fc1107` , [medium/S] No leak-response runbook: what to do in the first hour after a secret is confirmed exposed
 - [x] `secrets-webhooks-07` **DONE** commit `48c3d5fc7` , [medium/M] Stripe integration uses one full-access secret key everywhere; no least-privilege Restricted Keys
 - [x] `secrets-webhooks-08` **DONE** verified: _backend-system/LAW.md:313-333 section 12, outbound webhook law no commit names this id , [low/S] Outbound-webhook design law (HMAC scheme, retry, ordering, SSRF, rotation) is fully researched but never frozen, for a system that will eventually exist
-- [ ] `secrets-webhooks-09` **CUT** judgment pass proved it wrong, already covered, or already owner-rejected , [low/S] The live Stripe webhook has no default: case, so a newly-enabled event type silently no-ops forever with zero log signal
+- [x] `secrets-webhooks-09` **CUT, resolved** the same one-line webhook default-case gap already recorded in audit/webhooks.md WEBHOOK-06 , [low/S] The live Stripe webhook has no default: case, so a newly-enabled event type silently no-ops forever with zero log signal
 - [x] `secrets-webhooks-10` **DONE** commit `c352fc611` , [low/S] No enforcement gate for 'every secret comparison must be constant-time'; the rule is written in one file's comment and has already drifted
 
 ### states-forms
