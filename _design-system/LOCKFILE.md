@@ -374,6 +374,14 @@ ALL other uppercase usage = drift violation. Sweep target: 733 → ~50-80 legit 
 
 ### Card / list-item text hierarchy (V3-D346, 2026-05-28) — rule A13
 
+> **AMENDED BY NAME by V3-D442, adopted as THE card-emphasis law in §17.4 below (owner-approved FLOORS
+> LAW, 2026-07-21). A card carries TWO ink anchors, name (larger, 600) + price (600, tabular) , size,
+> not colour, marks which one is the anchor.** CLAUDE.md taste rule 5 has carried "(V3-D442, amends
+> A13)" since that decision; this file never said so, and the two rules sat ~1150 lines apart giving
+> flatly opposite instructions. Read the paragraph below as the ONE-anchor original: still correct that
+> filler (category, city, distance, duration, review count, address, open/closed) recedes to `s-ink-2`,
+> now wrong that the PRICE must. The drift-rule A13 flag inherits this amendment.
+
 **Rule:** Inside any repeating card or list item (salon card, stylist card, service row, review item, package card, venue-nearby card, search result), there is **exactly ONE ink anchor**: the entity NAME = `text-s-ink font-medium` (500). It is the only `text-s-ink` element in the item body. **Every other value recedes: all meta = `text-s-ink-2 font-normal`** (grey, 400). Meta = rating value + star, distance, next-slot time, price, duration, review count, address, open/closed text, category label, "ab CHF" amounts.
 
 **Rationale (user, 2026-05-28): "using too bold ... multiple times that destroys my eye."** The failure mode is over-emphasis: a card with the name bold-ink AND the time bold-ink AND the rating bold-ink AND the distance bold-ink has four competing anchors, so the eye has nowhere to rest and the card reads "busy / cheap / AI-generated." Uber's cards (measured `public/_pixel-refs/uber/`) carry exactly ONE darker anchor (the name) and let rating / eta / price sit in calm grey. **Restraint, not loudness.** AESTHETIC axis (Uber contrast model per §10) — it supersedes any per-component instinct to bold a value "so it stands out." Bolding everything bolds nothing.
