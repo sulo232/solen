@@ -4,6 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { capitalize } from "./_shared";
 import { formatQuartier } from "@/lib/basel-neighborhoods";
+import { useTranslations } from "next-intl";
 
 /**
  * mockup-ok: SalonAppCta, 2026-07-24 PORT (ref _overhaul/SalonAppCtaOverhaul.tsx).
@@ -30,6 +31,7 @@ export function SalonAppCta({
   quartier?: string | null;
   variant?: "hero" | "twoTier" | "minimal";
 }) {
+  const t = useTranslations("salonDetail");
   const cityLabel = capitalize(city);
   const quartierLabel = quartier ? formatQuartier(quartier) : null;
   const links = [
@@ -46,7 +48,7 @@ export function SalonAppCta({
   return (
     <section className="border-t border-s-border pt-6">
       <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
-        Weitere Salons entdecken
+        {t("discoverMore")}
       </h2>
       <div className="mt-4 flex flex-wrap gap-2">
         {links.map((l) => (

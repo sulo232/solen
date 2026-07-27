@@ -756,7 +756,9 @@
     "forSalonsTitle": "Per i saloni",
     "forSalonsPartner": "Diventa partner",
     "forSalonsDashboard": "Dashboard",
-    "legalTitle": "Note legali"
+    "legalTitle": "Note legali",
+    "newsletterTitle": "Resta aggiornato",
+    "newsletterSub": "Nuovi saloni, tendenze e consigli. Una volta al mese."
   },
   "cookie": {
     "title": "Utilizziamo i cookie",
@@ -5695,7 +5697,17 @@
     "bundlesBook": "Prenota",
     "bundlesSave": "risparmiati",
     "bundlesError": "Impossibile caricare i pacchetti.",
-    "minutesUnit": "min"
+    "minutesUnit": "min",
+    "additionalInfo": "Informazioni aggiuntive",
+    "reviewsHeading": "Recensioni",
+    "discoverMoreSalons": "Scopri altri saloni",
+    "noReviewsYet": "Ancora nessuna recensione.",
+    "noReviewsInGroup": "Ancora nessuna recensione in questo gruppo.",
+    "allNReviews": "Tutte le {count} recensioni",
+    "showNReviews": "Mostra {count} recensioni",
+    "showOpeningHours": "Mostra gli orari",
+    "contact": "Contatti",
+    "discoverMore": "Scopri altri saloni"
   },
   "comingSoon": {
     "title": "In arrivo",

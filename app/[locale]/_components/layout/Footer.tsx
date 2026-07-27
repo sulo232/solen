@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Instagram, Facebook, ChevronRight, Check } from "lucide-react";
 import { useState } from "react";
 import LanguageSwitcher from "@/components-legacy/ui/LanguageSwitcher";
+import { useTranslations } from "next-intl";
 
 /**
  * V3 Footer — variant C "nav hub" (2026-06-05, owner pick).
@@ -81,6 +82,7 @@ function SwissFlag() {
 }
 
 export default function Footer({ locale }: { locale: string }) {
+  const tFooter = useTranslations("footer");
   const p = `/${locale}`;
 
   return (
@@ -90,10 +92,10 @@ export default function Footer({ locale }: { locale: string }) {
         <div className="mx-auto flex max-w-[1280px] flex-col gap-4 px-5 py-7 md:flex-row md:items-center md:justify-between md:px-8">
           <div>
             <h3 className="font-display text-[17px] font-semibold tracking-tight text-s-ink">
-              Bleib auf dem Laufenden
+              {tFooter("newsletterTitle")}
             </h3>
             <p className="mt-0.5 font-body text-[13px] text-s-ink-2">
-              Neue Salons, Trends und Tipps. Einmal im Monat.
+              {tFooter("newsletterSub")}
             </p>
           </div>
           <NewsletterForm />

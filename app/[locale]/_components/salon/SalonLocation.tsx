@@ -7,6 +7,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import type { Marker as MapboxMarker } from "mapbox-gl";
 import type { SalonDetail } from "./_shared";
 import { SOLEN_MAP_STYLE, toStaticStylePath, applySolenBasemapConfig, SOLEN_BASEMAP_CONFIG } from "@/lib/map-style";
+import { useTranslations } from "next-intl";
 
 /**
  * SalonLocation — V3-D389 (2026-05-31, Fresha 1:1 PDP capture).
@@ -159,6 +160,7 @@ export function SalonLocation({
    *  was explicitly "in-map" design directions, not a card redesign. */
   mapDesign?: "current" | "clean-white" | "ink-glyph" | "sunken";
 }) {
+  const t = useTranslations("salonDetail");
   const hasCoords = Boolean(salon.latitude && salon.longitude);
 
   // Nearest public-transport stop — replaces the old hardcoded `walkTimeMinutes`
@@ -206,7 +208,7 @@ export function SalonLocation({
     return (
       <section id="section-location">
         <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
-          Standort
+          {t("location")}
         </h2>
 
         {canRenderMap && (
@@ -272,7 +274,7 @@ export function SalonLocation({
     return (
       <section id="section-location">
         <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
-          Standort
+          {t("location")}
         </h2>
 
         <div className="mt-5 flex items-center gap-4">
@@ -306,7 +308,7 @@ export function SalonLocation({
   return (
     <section id="section-location">
       <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
-        Standort
+        {t("location")}
       </h2>
 
       {canRenderMap && (

@@ -3,6 +3,7 @@
 import * as React from "react";
 import { ExternalLink, Globe, Instagram, Phone } from "lucide-react";
 import type { SalonDetail } from "./_shared";
+import { useTranslations } from "next-intl";
 
 /**
  * SalonContact — V2-D53.3 fix (2026-05-11) for mobile-vs-desktop info parity.
@@ -18,6 +19,7 @@ import type { SalonDetail } from "./_shared";
  * on which links exist.
  */
 export function SalonContact({ salon }: { salon: SalonDetail }) {
+  const t = useTranslations("salonDetail");
   const hasAny = Boolean(salon.phone || salon.website_url || salon.instagram_url);
   if (!hasAny) return null;
 
@@ -25,7 +27,7 @@ export function SalonContact({ salon }: { salon: SalonDetail }) {
     <section className="lg:hidden">
       {/* V3-D202 (A15): font-body → font-display + Scale B. */}
       <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
-        Kontakt
+        {t("contact")}
       </h2>
 
       <ul className="mt-3 space-y-3">

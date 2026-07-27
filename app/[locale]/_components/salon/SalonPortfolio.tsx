@@ -4,6 +4,7 @@ import * as React from "react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { FROST_GLASS } from "@/lib/frost-glass";
 import type { StaffMember } from "./_shared";
+import { useTranslations } from "next-intl";
 
 const TILE_CAP = 9; // 3 columns x 3 rows
 
@@ -46,6 +47,7 @@ export function SalonPortfolio({
    *  than bare name+index, since this grid has no per-photo category metadata. */
   categoryLabel?: string | null;
 }) {
+  const t = useTranslations("salonDetail");
   const [staffPhotos, setStaffPhotos] = React.useState<string[]>([]);
   const [loaded, setLoaded] = React.useState(false);
 
@@ -90,7 +92,7 @@ export function SalonPortfolio({
       {/* mockup-ok: V3-D202 (A10) heading className is byte-identical to the pre-existing
           shipped markup, font-body → font-display + Scale B. */}
       <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
-        Portfolio
+        {t("portfolio")}
         <span className="ml-2 text-[14px] font-normal text-s-ink-2 md:text-[15px]">
           {totalReal}
         </span>

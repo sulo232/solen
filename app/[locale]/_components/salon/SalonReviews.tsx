@@ -130,7 +130,7 @@ export function SalonReviews({
       >
         {/* V3-D202 (A9): font-body → font-display + Scale B. */}
         <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
-          Bewertungen
+          {t("reviewsHeading")}
         </h2>
 
         {/* mockup-ok: D3 Segmented summary (owner-approved 2026-07-24, _overhaul/reviews/
@@ -154,7 +154,7 @@ export function SalonReviews({
             </p>
           ) : (
             <p className="font-body mt-5 text-[14px] text-s-ink-2">
-              Noch keine Bewertungen.
+              {t("noReviewsYet")}
             </p>
           )
         ) : (
@@ -180,7 +180,7 @@ export function SalonReviews({
 
             <div className="mt-5 flex flex-col">
               {visible.length === 0 ? (
-                <p className="font-body text-[14px] text-s-ink-2">Noch keine Bewertungen in dieser Gruppe.</p>
+                <p className="font-body text-[14px] text-s-ink-2">{t("noReviewsInGroup")}</p>
               ) : (
                 visible.map((r) => (
                   <div key={r.id} className="border-t border-s-border pt-5 first:border-t-0 first:pt-0 [&+&]:mt-5">
@@ -201,7 +201,7 @@ export function SalonReviews({
               2026-07-25: "outside of the reviews group card"); gap matches SalonServices.tsx's
               established card→SeeAllButton mt-5 (both direct children of a non-card wrapper). */}
           <SeeAllButton
-            label={`Alle ${formatNumber(count, locale)} Bewertungen`}
+            label={t("allNReviews", { count: formatNumber(count, locale) })}
             href={`/${locale}/salon/${salonSlug}/reviews`}
           />
         </div>

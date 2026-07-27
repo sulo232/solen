@@ -17,6 +17,7 @@ import {
   Wifi,
 } from "lucide-react";
 import type { SalonDetail } from "./_shared";
+import { useTranslations } from "next-intl";
 
 /**
  * SalonAdditionalInfo — V2-D53.3 (2026-05-11).
@@ -33,6 +34,7 @@ import type { SalonDetail } from "./_shared";
  * Renders nothing if no flags are true.
  */
 export function SalonAdditionalInfo({ salon }: { salon: SalonDetail }) {
+  const t = useTranslations("salonDetail");
   const items: { icon: React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }>; label: string; show: boolean }[] = [
     {
       icon: ShieldCheck,
@@ -69,7 +71,7 @@ export function SalonAdditionalInfo({ salon }: { salon: SalonDetail }) {
     <section>
       {/* V3-D202 (A14): font-body → font-display + Scale B. */}
       <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
-        Zusatzinformationen
+        {t("additionalInfo")}
       </h2>
 
       <ul className="mt-4 space-y-3">

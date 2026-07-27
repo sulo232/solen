@@ -102,7 +102,15 @@ are the entire remaining job. That bounds the work.
       true numbers that contradict each other on screen. Pre-existing, not from this sweep.
       The fix is a product call about what a rating-only salon should show, so it is written
       down rather than guessed at.
-- [ ] **Every PDP section heading is still German on /fr and /it.** Measured on the live French
+- [x] **PDP section headings , DONE.** `verified:` on the live Italian PDP, zero German
+      headings remain: Recensioni, Chi siamo, Posizione, Orari di apertura, Informazioni
+      aggiuntive, Contatti, Scopri altri saloni, Resta aggiornato. French the same pass.
+      SIX of the eight already had a translated key in `salonDetail` sitting unused beside a
+      hardcoded German string; only two were genuinely missing copy. Still German and NOT yet
+      done: the FOOTER COLUMN HEADINGS (Solen / Für Salons / Hilfe / Rechtliches) and their
+      link labels, which live in a module-level COLUMNS constant outside any component, so
+      they need the array restructured rather than a string swapped.
+      Was: **Every PDP section heading is still German on /fr and /it.** Measured on the live French
       PDP: Bewertungen, Über uns, Standort, Öffnungszeiten, Zusatzinformationen, Weitere Salons
       entdecken, Bleib auf dem Laufenden. This is the highest-traffic customer surface in the
       product and it is the next literals batch.
