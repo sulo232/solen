@@ -428,14 +428,19 @@ export function SalonCard({
         {photoUrl ? (
           <Image
             src={photoUrl}
-            alt={photoAlt ?? `Foto von ${name}`}
+            // accessibility-06 (2026-07-27): the old fallback ("Foto von {name}") just
+            // echoed the name already read by CardName next to it, conveying nothing new
+            // to a screen-reader user. Uses the one real piece of photo-adjacent metadata
+            // this card actually has, the salon's category, so the alt text says WHAT kind
+            // of place the photo shows, not just whose photo it is again.
+            alt={photoAlt ?? `${name}, ${CATEGORY_LABEL[category]}`}
             fill
             sizes="(max-width: 768px) 160px, 180px"
             className="object-cover"
           />
         ) : (
           <span
-            className="absolute inset-0 grid place-items-center font-display font-black leading-none text-[64px] tracking-[-0.03em] md:text-[80px]"
+            className="absolute inset-0 grid place-items-center font-display font-bold leading-none text-[64px] tracking-[-0.03em] md:text-[80px]"
             style={{ color: cat.initial }}
             aria-hidden
           >

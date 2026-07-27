@@ -149,6 +149,20 @@ export function SalonImageGallery({
   const activePhotos =
     tab === "salon" ? filteredSalonPhotos : activeStylist ? portfolios[activeStylist] ?? [] : [];
 
+  // accessibility-06: the active stylist's name, so team-portfolio alt text can say WHOSE
+  // work a photo shows instead of alt="" (these are evaluative haircut-result photos, the
+  // exact content 1.1.1 does not let a gallery mark decorative).
+  const activeStylistName = staff.find((s) => s.id === activeStylist)?.name ?? null;
+
+  // accessibility-06 (2026-07-27): url -> category lookup so the grid's alt text can name
+  // WHAT the photo shows (its portfolio category) instead of just a bare index. Real
+  // metadata already fetched into `salonPhotos`, just never threaded through to alt=.
+  const categoryByUrl = React.useMemo(() => {
+    const m = new Map<string, string | null>();
+    for (const p of salonPhotos) m.set(p.url, p.category);
+    return m;
+  }, [salonPhotos]);
+
   const openLb = (photos: string[], i: number) => setLb({ open: true, photos, index: i });
 
   return createPortal(
@@ -229,7 +243,19 @@ export function SalonImageGallery({
                   className="relative aspect-square overflow-hidden rounded-md bg-s-bg-sunken transition-transform hover:scale-[0.99] active:scale-[0.98] active:duration-[80ms] active:ease-glide md:rounded-lg"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={u} alt={`${salonName} – ${i + 1}`} className="h-full w-full object-cover" loading="lazy" /> {/* em-dash-ok */}
+                  <img
+                    src={u}
+                    // accessibility-06: name the portfolio category (Frisur, Farbe, etc.) when
+                    // known, real metadata already fetched into salonPhotos, instead of a bare
+                    // "{salonName} - {index}" that describes nothing about the photo itself.
+                    alt={
+                      categoryByUrl.get(u)
+                        ? `${getPortfolioCategoryLabel(categoryByUrl.get(u)!, locale)}, ${salonName}`
+                        : `${salonName} – ${i + 1}` // em-dash-ok
+                    }
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                  />
                 </button>
               ))}
             </div>
@@ -240,7 +266,9 @@ export function SalonImageGallery({
                 <img
                   key={i}
                   src={u}
-                  alt=""
+                  // accessibility-06: a stylist portfolio photo is evaluative content (past
+                  // haircut/work), never decorative; name whose portfolio it is instead of "".
+                  alt={activeStylistName ? `${activeStylistName}, ${i + 1}` : `${salonName} – ${i + 1}`} // em-dash-ok
                   onClick={() => openLb(activePhotos, i)}
                   // ig4 (owner-approved 2026-07-16): object-top (was center) on the square
                   // grid so a portrait crop keeps the face/wrists, not the feet.

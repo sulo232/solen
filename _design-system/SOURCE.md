@@ -1039,6 +1039,17 @@ that owns their real page shell (`EditorPage.tsx`, `gallery/page.tsx`, `queue-di
 - Live regions for dynamic content updates: `<span aria-live="polite">` for save toggles
 - `aria-hidden` on purely decorative SVGs
 
+**Alt text content policy (accessibility-06, 2026-07-27).** A salon/portfolio photo whose entire
+on-screen purpose is customer evaluation (a haircut result, salon interior, stylist's past work) is
+NEVER `alt=""` and never a bare index (`"{salonName} - {i}"`) or generic filler (`"Foto von
+{name}"`) — those describe nothing a screen-reader user can act on when the whole point of the
+gallery is helping a sighted user judge a hairstyle before booking. Use whatever structured metadata
+already exists (portfolio `category`, the stylist's name) to say WHAT the photo shows, not just whose
+it is: `SalonImageGallery.tsx` now reads its category-labeled photos this way (`getPortfolioCategoryLabel`)
+and names the active stylist for team-tab photos instead of `alt=""`; `SalonCard.tsx`'s fallback names
+the salon's category instead of echoing the name already read by `CardName` next to it. Only chrome,
+pattern, or purely repeated-elsewhere images qualify as decorative under WCAG 1.1.1.
+
 ### §16.4 · Color contrast
 
 | Combination | Ratio | Pass |
