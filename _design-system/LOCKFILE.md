@@ -254,6 +254,10 @@ body:    ["'Inter'", "system-ui", "-apple-system", "sans-serif"]
 **NEVER:** Geist (rejected by user — "no Geist anywhere"), Hanken Grotesk (replaced by Inter, V3-D410), JetBrains Mono / any monospace for codes (rejected V3-D470 2026-06-10 — codes → Inter Tight tabular per §13.4), Peace Sans (retired), Plus Jakarta Sans (retired V3-D189), Bricolage Grotesque (retired V3-D190), system-default-only (must specify family).
 **ACTIVE:** Inter Tight (display/headings + codes-as-tabular) · Inter (body). Two optical cuts of one family — no third face.
 
+### Font loading (never regress) — typography-07, 2026-07-27
+
+Every self-hosted family loads exclusively through `next/font` (never a manual `@font-face`, never a `<link>` to a font CDN), keeps Next's automatic fallback-metric adjustment enabled (the default, never pass `adjustFontFallback:false`), and sets `display: "swap"` explicitly (`app/layout.tsx` lines 3-14 do this correctly today for both families). This combination is what keeps a font swap from causing layout shift: the fallback font is metric-matched to the real font, so nothing reflows when Inter Tight / Inter finish downloading. Stated here as a requirement, not left implicit in the one file that happens to be correct, so a future edit (adding a third family via a plain `<link>`, or disabling the fallback adjustment to "fix" a rendering quirk) has a named rule to check against.
+
 ### Scale (role × size × weight × line-height × tracking)
 
 **V3-D325 (2026-05-27): Uber-aligned scale** — applied to Page H2, Section H2, Subsection H3, body, eyebrow, CTA. All heading weights uniformly 600 EXCEPT Hero H1 (see next note).
@@ -328,9 +332,18 @@ Hierarchy uses **size** + **position** + **tracking** — NOT compound family co
 
 ### The 11 roles
 
+**typography-10 (2026-07-27): Hero H1 mobile floor reconciled.** This table used to give
+`clamp(28,7vw,64)px` while §2's Scale table + its "Common clamp() patterns" code block both give
+`text-[clamp(40px,10vw,64px)]` for the same role, same V3-D327 citation, in the same document. At
+375px mobile, 7vw clamps to the 28px floor, 12px smaller than §2's 40px floor. §2's value is the one
+corroborated twice (the table row AND the literal Tailwind class in the code-pattern block below it),
+so it is canonical; this row is struck through and points there instead of asserting a second,
+disagreeing number. If Hero H1's mobile floor changes, update §2 first and this row second, in the
+same turn, so the two never drift apart again.
+
 | Role | Size (mobile→desktop) | Weight | Case | Tracking | Color | Max/surface |
 |---|---|---|---|---|---|---|
-| **Hero H1** | clamp(28,7vw,64)px | 700 | sentence | -0.02em | `s-ink` | 1 |
+| **Hero H1** | ~~clamp(28,7vw,64)px~~ **superseded, see §2** | 700 | sentence | -0.02em | `s-ink` | 1 |
 | **Hero sub** | clamp(15,4vw,22)px | 400 | sentence | -0.005em | `s-ink-2` | 1 |
 | **Page H2** | clamp(22,2.8vw,26)px | 600 | sentence | -0.015em | `s-ink` | unlimited |
 | **Section H2** | clamp(18,2vw,20)px | 600 | sentence | -0.01em | `s-ink` | unlimited |
@@ -374,9 +387,48 @@ The 11 roles above are the full set; **day-to-day, ~90% of text is just these 6.
 
 Everything else (`.04em`, `.07em`, `.10em`, `.12em`, `.14em`, `.15em`, `.16em`, `.18em`, `.1em`, `.20em`, `.22em` — currently 20 distinct values in use) → drift rule A8 logs to `_pending-migration.md`. Phase 2 sweep collapses callsites onto canonical set.
 
+### Canonical line-height values (rule A23 enforces this set)
+
+```
+1.0    — tight display numerals, single-glyph avatars
+1.05   — Hero H1 tight display
+1.1    — Hero H1 (§2 Scale table)
+1.15   — Page H2 tight
+1.2    — Section H2 / display-type recipe upper bound
+1.25   — Subsection H3
+1.3    — Body large / card title
+1.4    — Body default
+1.55   — Long-form prose (reviews, descriptions, legal)
+```
+
+typography-04 (2026-07-27): line-height had a per-role Scale table (§2 above) but,
+unlike tracking, no pulled-out canonical-values list and no drift rule — a
+2026-07-26 sweep found 21 distinct `leading-[*]` values live (`leading-[1.35]`,
+`leading-[1.42]`, `leading-[1.45]`, `leading-[1.08]`, `leading-[1.18]`,
+`leading-[1.04]`, `leading-[1.02]`, `leading-[0.95]` map to no named role at
+all). Rule **A23** (`.claude/skills/solen-drift-check/scripts/check.py`) now
+flags any `leading-[*]` value outside this set, INFO to start (mirrors A7/A8's
+phase-in) logging to `_pending-migration.md`; flip to STRICT once the sweep
+clears the queue. `leading-none` / `leading-tight` / `leading-snug` /
+`leading-normal` / `leading-relaxed` / `leading-loose` (Tailwind's named
+classes) are unaffected by this rule; only the bracketed arbitrary-value form
+is checked, since the named classes map to fixed values already.
+
 **Display-type recipe (DS-A1, video-audit 2026-06-11):** any text ≥22px takes `-0.02em` tracking +
 line-height 110–120% (`leading-[1.1]`–`leading-tight`) as ONE recipe — no per-page improvising.
 Dashboard surfaces cap at 24px (information density); customer marketing/heroes may go larger.
+
+### Measure (rule: `.prose-measure`, 68ch)
+
+Any body-copy block whose rendered width would otherwise exceed roughly 75 characters per line
+(salon descriptions, review text, legal prose, help-center answers, empty-state explanations) uses
+the shared `.prose-measure` utility (`app/globals.css`, `max-width: 68ch`), not an ad hoc `max-w-*`
+value or no width constraint at all. This binds at the moment a new long-form-copy component is
+built, not only when an existing one is retrofitted (typography-06, 2026-07-27: the cap sat
+"already-approved" per TASTE_LOG before it was applied to SalonAbout — a live PDP surface — some
+nonzero window later, because nothing stated WHEN a new component must reach for it). Baymard /
+practitioner convention for comfortable reading is 45-75 characters per line; 68ch keeps a paragraph
+inside that band across the app's type sizes.
 
 ### Uppercase application policy (rule A7)
 
@@ -1337,6 +1389,10 @@ The booking flow indicator (Service → Zeit → Haare → Bezahlen) and the wal
 
 Owner 2026-06-10 rejected the code font hard: _"the font is not correct about … W-047 … that w thingy the font is different."_ Ticket numbers (`W-047`), voucher/gift codes (`GIFT-7K2M`), booking refs render in **`Inter Tight`, weight 600–700, `font-variant-numeric: tabular-nums`, slight `-0.01em`** — the `.num`/`.mono` mock-kit class now points at Inter Tight, NOT JetBrains Mono. JetBrains Mono is **RETIRED** (see §2 + §1 retired list). Rationale: a mono code-face was a foreign texture against an all-Inter-Tight UI; tabular Inter Tight gives aligned digits + a code feel without the texture clash.
 
+**Rule generalizes beyond codes (typography-08, 2026-07-27).** The `.num` recipe's `tabular-nums` piece is not a codes-only rule, it is the fix for a general behavior: any numeral that updates live, ticks down, or sits in a repeating column where digits must stay aligned across sibling rows (a countdown timer, a queue-position counter, a dashboard KPI/stat tile, a calendar day grid, a star-rating value) needs `font-variant-numeric: tabular-nums` for the identical physical reason, proportional digits are variable-width per glyph, so an un-tabular live number re-flows its own width on every tick. Codes and prices are the worked examples that motivated the rule, not its full scope; a new numeral-displaying component (a countdown, a queue counter, a KPI tile) applies the same test.
+
+**Scope explicitly includes `lib/email.ts` + `lib/email-templates/**/*.ts` (typography-02, 2026-07-27).** These files render raw HTML strings for transactional and lifecycle emails outside the app/components tree; a live `font-family:monospace` violation shipped in the gift-card email's voucher-code span (all 4 locales) because this scope statement never named them and the static drift-checker's scan globs never reached them. Fixed: the gift-card code span now uses the shared `EMAIL_FONT_STACK` (a system-font stack, since email clients cannot load next/font) + `font-weight:700` + `tabular-nums`, matching the `.num` recipe as closely as email HTML allows. `.claude/skills/solen-drift-check/scripts/check.py` now scans `lib/email.ts` + `lib/email-templates/**/*.ts` and hard-flags `font-family:monospace`/Geist/JetBrains Mono anywhere (rule A24).
+
 ### §13.5 — Drift signals (you are violating §13 if…)
 - a chevron / disclosure glyph is anything other than `text-s-ink-3` grey;
 - a decorative row icon is `text-s-accent` blue (blue is only for an icon that IS the tap target);
@@ -1419,6 +1475,114 @@ is a bug, not a design choice.
 don't match." / "Password needs at least 8 characters." — never a generic "Invalid input"/"Error". One
 sentence: the cause, and when not obvious, the fix. Field errors sit UNDER the field (red border + 11.5px
 red line w/ alert icon); banner errors only for whole-form failures (wrong password).
+
+**Enforcement (states-forms-02, added 2026-07-27):** the field-vs-banner split above has caught at
+least one live breach (`app/[locale]/auth/register/page.tsx` toasting single-field age/password
+errors instead of rendering `FieldHelper` under the field, fixed the same day this line was added).
+Any new `toast.error(...)` call whose immediately-preceding check tests ONE named form field
+(length, format, range, a single business-rule on that field) is a rule violation, not a style
+choice — use `FieldHelper tone="error"` under that field instead. `toast.error` stays reserved for
+whole-form / server / network failures (account-exists, 5xx, fetch throw). No static gate exists yet
+for this (see states-forms-02 in `_design-system/research/missing-principles-2026-07-26/states-forms.json`);
+until one does, this is a required code-review check on any diff touching a form's submit handler.
+
+### §14.5 — Validation timing (states-forms-01, added 2026-07-27)
+
+Every form field validates **on blur** (first pass) and, once a field is already showing an error,
+**on every keystroke thereafter** (live-clear, so the error disappears the moment it's fixed). No
+field may show a validation error while the user is still typing into it for the first time (that's
+the premature-validation anti-pattern already named for checkout in
+`_design-system/research/TASTE_CHECKOUT.md` item 10 — this promotes it to every form, not just
+checkout). Submit runs one final full-field validation pass and blocks on any error, but submit is
+never the FIRST time an error may appear if the field was already blurred once.
+Reference implementation: `StepRegister` in `app/[locale]/auth/register/page.tsx` (`ageErrorFor` /
+`passwordErrorFor` + `onBlur` + error-gated `onChange` re-validation).
+**Enforcement:** no static gate (requires interaction simulation) — a design-verifier scorecard row
+for any form: "does an error appear before the field is blurred once?" must be No.
+
+### §14.6 — Autofill + input purpose (states-forms-03, added 2026-07-27)
+
+Every input mapping to a known browser/password-manager autofill category carries the matching
+WHATWG `autocomplete` token: `email`, `current-password` (login), `new-password` (signup/change),
+`name`, `tel`, `bday`, `organization`, `one-time-code`. Every input whose ideal keyboard differs from
+default text carries the matching `inputMode` (`email`, `tel`, `numeric`). This binds hardest on
+`auth/login` (`components-legacy/auth/SignIn.tsx`) and `auth/register`
+(`app/[locale]/auth/register/page.tsx`) — the two forms every account holder must pass through, and
+where a missing token silently kills the password-manager save/fill prompt. This is also WCAG 2.2 SC
+1.3.5 (Identify Input Purpose, Level AA), not just a nicety.
+**Enforcement:** gate `autofill-attr-gate` (static grep on new/edited
+`<input type="email"|"password"|"tel">` literals lacking a sibling `autoComplete=` on the same JSX
+element) — not yet wired (settings.json unwritable from a worktree session); until wired this is a
+code-review check.
+
+### §14.7 — Multi-step state survives a refresh (states-forms-04, added 2026-07-27)
+
+Any wizard/multi-step flow longer than 2 steps must survive an accidental hard refresh or tab close:
+persist step state (sessionStorage/localStorage keyed per-flow), write completed steps to the server
+incrementally (the dashboard setup wizard at `app/[locale]/dashboard/setup/page.tsx` already does
+this — it is the reference pattern), or at minimum warn via `beforeunload` when unsaved multi-step
+progress would be lost silently. The booking wizard's in-memory-only `useReducer`
+(`lib/booking-context.tsx`, documented gap: `_docs/FRONTEND.md:438,451`) and the customer onboarding
+flow (`app/[locale]/onboarding/OnboardingFlow.tsx`) are the two known un-persisted flows; new
+multi-step surfaces must not repeat the pattern.
+**Enforcement:** design-verifier scorecard row for any new multi-step surface; longer-term a shared
+`usePersistedWizardState` hook, registered in `COMPONENT_REGISTRY.md` once built.
+
+### §14.8 — Double-submit guard (states-forms-05, added 2026-07-27)
+
+Any control that triggers a non-idempotent write (create booking, create payment intent, submit a
+review, send a refund request) guards against a double-fire with a synchronous `useRef` lock checked
+and set BEFORE the async call starts — a React state flag (`disabled={loading}`) alone is not
+enough, because it depends on a re-render landing before a fast double-click/double-tap, which is not
+guaranteed. Reference implementation: `chargeRef` in
+`components-legacy/booking/PayConfirmStep.tsx:111-112,217`. Generalized into a shared hook,
+`lib/hooks/useSubmitGuard.ts` (added 2026-07-27): `const guard = useSubmitGuard(); if
+(!guard.tryEnter()) return; try { ... } finally { guard.release(); }`. Live call sites: account
+creation (`app/[locale]/auth/register/page.tsx` `handleSubmit`) and account deletion
+(`app/[locale]/profile/settings/SettingsForm.tsx` `deleteAccount`). Any new financial or write-once
+mutation uses this hook, not a bare state boolean.
+**Enforcement:** not statically gateable (needs semantic understanding of "financial/write-once");
+required code-review check for any new POST-triggering handler on a financial or write-once action.
+
+### §14.9 — Destructive-action confirmation (states-forms-06, added 2026-07-27)
+
+A destructive action that cannot be undone in the same view (delete, cancel, refund, remove) uses the
+shared `Modal` primitive with an explicit two-button confirm/cancel footer stating the specific
+consequence — **never `window.confirm()`**, which cannot be styled, blocks the JS thread, and reads
+as a raw browser dialog. A destructive action that can be trivially undone in place (removing one
+chip from a multi-select before submitting) does not need a blocking dialog at all. Every page
+hand-rolling its own local confirm modal instead of the shared `Modal` primitive is consolidation
+debt to close, not a second acceptable pattern.
+**Enforcement:** gate `no-window-confirm-gate` (static grep blocking new `window.confirm(` in
+`app/**`, `components-legacy/**`) — not yet wired; until wired, a code-review check. One known
+pre-existing call site remains: `app/[locale]/dashboard/reviews/page.tsx` (`deleteReplyConfirm`).
+
+### §14.10 — Undo vs. confirm policy (states-forms-07, added 2026-07-27)
+
+A blocking confirm dialog (§14.9) is reserved for actions that are irreversible, financial, or affect
+another party (refunds, a decline that notifies the other side). A toast-with-undo window is the
+right pattern for actions that are reversible, single-party, and low-cost (unfavoriting, removing a
+draft line item, dismissing a notification) — using a blocking confirm for these dilutes the
+effectiveness of confirmation dialogs everywhere else (NN/g). **Scope note:** `REMOVED.md`'s one
+undo-pattern rejection (booking-request approve/decline morphing to a committed pill with an undo
+window, owner verbatim "The p three, no. P three, I don't want that.") is a rejection of that
+specific morph/collapse motion treatment on that specific salon-owner screen — a decline notifies the
+customer, so it is correctly a confirm case under this policy. It is NOT a blanket rejection of
+undo-as-a-pattern; a future favoriting/unfavoriting or draft-removal undo-toast is not re-litigating
+that decision.
+**Enforcement:** doc-only, not mechanically gateable.
+
+### §14.11 — Error message content (states-forms-09, added 2026-07-27; extends the §19 anti-pattern)
+
+No user-facing error string is a bare category label with no cause and no next step ("Netzwerkfehler",
+"Aktion fehlgeschlagen", "Fehler beim Speichern" with nothing else). Every error string names WHAT
+failed, and either WHY (if known and safe to show) or WHAT TO DO next (retry, check connection,
+contact support). This is the positive template for the anti-pattern SOURCE.md §19 already names
+("Generic 'Network error' toast for everything, distinguish RLS / 4xx / 5xx / network") — that bullet
+banned the pattern but never stated what a compliant message contains; this section is that content
+template, cross-linked here and from SOURCE.md §19.
+**Enforcement:** manual review of new `error-*` / `*Error` i18n keys; a lint proxy (flag error-* keys
+under ~20 characters as likely bare labels) is a plausible cheap follow-up gate, not yet built.
 
 ---
 
