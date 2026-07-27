@@ -40,6 +40,62 @@ export interface CronRunResult {
  * handler completed without throwing and without an `errors` array / an
  * explicit `ok:false`; status 500 otherwise.
  */
+// data-money-08: overlap guard. Two overlapping runs of the SAME cron (a manual
+// workflow_dispatch colliding with a scheduled tick, a GH Actions client timeout
+// that doesn't actually cancel the underlying Netlify function) can interleave
+// writes in ways each cron's own per-row idempotency filter doesn't protect
+// against. `cron_locks` (supabase/migrations/20260727120000_cron_locks.sql) backs
+// an atomic claim: INSERT ... ON CONFLICT DO NOTHING on a unique `name` column is
+// a single-statement CAS enforced by Postgres, which survives PostgREST's
+// connection-pooled architecture (unlike a session-scoped pg_try_advisory_lock).
+// Fail-open by design: if cron_locks doesn't exist yet (migration not applied) or
+// the query errors, log loudly and let the handler run anyway, so this can ship
+// ahead of the migration being applied without breaking any of the 26 crons.
+const LOCK_TTL_MS = 15 * 60 * 1000;
+
+async function tryAcquireCronLock(
+  admin: ReturnType<typeof createAdminSupabaseClient>,
+  name: string,
+): Promise<boolean> {
+  // cron_locks is not yet in lib/database.types.ts (the migration that creates it,
+  // supabase/migrations/20260727120000_cron_locks.sql, has not been applied live
+  // per house rule against running migrations from this session), so the generated
+  // Database type has no row for it. Cast to `any` here only; regenerate
+  // lib/database.types.ts once the migration is applied and drop this cast.
+  const db = admin as any;
+  try {
+    // Clear a stale lock first (a crashed prior run that never released).
+    await db.from("cron_locks").delete().eq("name", name).lt("expires_at", new Date().toISOString());
+    const { error } = await db.from("cron_locks").insert({
+      name,
+      expires_at: new Date(Date.now() + LOCK_TTL_MS).toISOString(),
+    });
+    if (error) {
+      // Unique-violation (23505) means another run currently holds the lock,
+      // which is the expected "skip this run" signal, not a failure.
+      if ((error as { code?: string }).code === "23505") {
+        console.error(`[cron-run] "${name}" already running, skipping this run (overlap guard)`);
+        return false;
+      }
+      // Any other error (table missing, RLS, network) fails OPEN: run anyway.
+      console.error(`[cron-run] "${name}" lock acquire errored, running without overlap guard:`, error.message);
+    }
+    return true;
+  } catch (err) {
+    console.error(`[cron-run] "${name}" lock acquire threw, running without overlap guard:`, err);
+    return true;
+  }
+}
+
+async function releaseCronLock(admin: ReturnType<typeof createAdminSupabaseClient>, name: string): Promise<void> {
+  const db = admin as any; // see cast note in tryAcquireCronLock
+  try {
+    await db.from("cron_locks").delete().eq("name", name);
+  } catch (err) {
+    console.error(`[cron-run] "${name}" lock release threw (will self-expire via TTL):`, err);
+  }
+}
+
 export async function withCronRun(
   name: string,
   handler: () => Promise<CronRunResult | void>,
@@ -47,6 +103,12 @@ export async function withCronRun(
   const startedAt = Date.now();
   let result: CronRunResult = {};
   let threw: unknown = null;
+  const admin = createAdminSupabaseClient();
+
+  const acquired = await tryAcquireCronLock(admin, name);
+  if (!acquired) {
+    return NextResponse.json({ ok: true, skipped: true, reason: "already running (overlap guard)" }, { status: 200 });
+  }
 
   try {
     const handlerResult = await handler();
@@ -60,6 +122,8 @@ export async function withCronRun(
     // the central reportError (console.error already above + a throttled admin
     // alert), so a dead cron is visible without someone querying cron_runs.
     await reportError(`cron:${name}`, err);
+  } finally {
+    await releaseCronLock(admin, name);
   }
 
   const durationMs = Date.now() - startedAt;
@@ -76,7 +140,6 @@ export async function withCronRun(
 
   // Best-effort log, never throws, never blocks or changes the response.
   try {
-    const admin = createAdminSupabaseClient();
     const { error: insertErr } = await admin.from("cron_runs").insert({
       name,
       ok,
