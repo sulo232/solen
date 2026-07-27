@@ -1409,3 +1409,19 @@ export const comingSoonNotifySchema = z.object({
   feature: z.string().max(64).optional(),
 });
 
+export const profileNotificationsMarkReadSchema = z.object({
+  all: z.boolean().optional(),
+  ids: z.array(uuid).min(1).max(100).optional(),
+});
+
+export const profileFavoritesSchema = z.object({
+  salon_id: uuid,
+});
+
+export const lastMinuteSettingsSchema = z.object({
+  salon_id: uuid,
+  enabled: z.boolean().optional(),
+  global_discount_percent: z.number().min(0).max(90).optional(),
+  service_overrides: z.record(z.string(), z.unknown()).optional(),
+});
+

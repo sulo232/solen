@@ -2,6 +2,8 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { validateBody, lastMinuteSettingsSchema } from "@/lib/validations";
+import type { Database } from "@/lib/database.types";
 
 /**
  * GET /api/salon/last-minute-settings?salon_id=...
@@ -83,15 +85,15 @@ export async function GET(req: NextRequest) {
  */
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { salon_id, enabled, global_discount_percent, service_overrides } = body;
-
-    if (!salon_id) {
+    const rawBody = await req.json();
+    const { data: validated, error: validationError } = validateBody(lastMinuteSettingsSchema, rawBody);
+    if (validationError) {
       return NextResponse.json(
         { error: "Missing salon_id" },
         { status: 400 }
       );
     }
+    const { salon_id, enabled, global_discount_percent, service_overrides } = validated;
 
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -121,7 +123,7 @@ export async function POST(req: NextRequest) {
         salon_id,
         enabled: enabled ?? false,
         global_discount_percent: global_discount_percent ?? 10,
-        service_overrides: service_overrides ?? {},
+        service_overrides: (service_overrides ?? {}) as Database["public"]["Tables"]["salon_last_minute_settings"]["Insert"]["service_overrides"],
         updated_at: new Date().toISOString(),
       }, {
         onConflict: "salon_id"
