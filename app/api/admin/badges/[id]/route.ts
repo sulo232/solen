@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 import type { Database } from "@/lib/database.types";
+import { validateBody, adminBadgePatchSchema } from "@/lib/validations";
 
 // PATCH /api/admin/badges/[id] — admin only, update badge
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -19,7 +20,10 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const rateLimited = await applyRateLimit(adminLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
 
-  const body = await req.json();
+  const rawBody = await req.json();
+  const { data: body, error: validationError } = validateBody(adminBadgePatchSchema, rawBody);
+  if (validationError) return NextResponse.json({ error: validationError.message }, { status: 400 });
+
   const updates: Database["public"]["Tables"]["salon_badges"]["Update"] = {};
   for (const key of ["name_de", "name_en", "icon", "color", "bg_color"] as const) {
     if (body[key] !== undefined) updates[key] = body[key];

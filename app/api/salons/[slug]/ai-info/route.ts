@@ -6,6 +6,7 @@ import { applyRateLimit, generalLimiter, getAiDailyLimiter } from "@/lib/ratelim
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { getServerEnv } from "@/lib/env";
 import { wrapUntrustedInput } from "@/lib/ai/untrusted";
+import { validateBody, salonsAiInfoSchema } from "@/lib/validations";
 
 // POST /api/salons/[slug]/ai-info
 // Generate AI suggestions for salon description, atmosphere, expertise.
@@ -54,8 +55,9 @@ export async function POST(
 
   const serviceList = (services ?? []).map((s) => `${s.name_de} (${s.category}, CHF ${s.price})`).join(", ");
 
-  const body = await request.json().catch(() => ({}));
-  const field = body.field ?? "description";
+  const rawBody = await request.json().catch(() => ({}));
+  const { data: validated } = validateBody(salonsAiInfoSchema, rawBody);
+  const field = validated?.field ?? "description";
 
   const prompts: Record<string, string> = {
     description: `Schreibe eine kurze, einladende Beschreibung (max 200 Wörter, Deutsch) für den Salon ${wrapUntrustedInput("Salonname", salon.name)} in Basel (${wrapUntrustedInput("Quartier", salon.quartier)}). Kategorien: ${wrapUntrustedInput("Kategorien", salon.categories.join(", "))}. Services: ${wrapUntrustedInput("Services", serviceList || "noch keine")}.`,

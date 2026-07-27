@@ -1431,6 +1431,26 @@ export const staffScheduleAutoApplySchema = z.object({
 // api-contracts-08: BATCH_KEYS bounds the array length AND the enum, so an unbounded
 // request array (resource-exhaustion vector) is rejected here rather than in the route.
 const DASHBOARD_BATCH_KEYS = ["bookings_today", "revenue_month", "reviews_pending", "walkin_queue", "activity_feed"] as const;
+export const adminContentPutSchema = z.object({
+  value_de: z.string().max(20000).optional(),
+  value_en: z.string().max(20000).optional(),
+  value_fr: z.string().max(20000).optional(),
+  // auto_override is a string override VALUE (see app/api/content/route.ts), not a flag.
+  auto_override: z.string().max(20000).nullable().optional(),
+});
+
+export const adminBadgePatchSchema = z.object({
+  name_de: z.string().min(1).max(60).optional(),
+  name_en: z.string().min(1).max(60).optional(),
+  icon: z.string().min(1).max(60).optional(),
+  color: z.string().min(1).max(60).optional(),
+  bg_color: z.string().min(1).max(60).optional(),
+});
+
+export const salonsAiInfoSchema = z.object({
+  field: z.enum(["description", "atmosphere", "expertise"]).optional(),
+});
+
 export const verifyPhoneSendSchema = z.object({
   phone: z.string().min(6).max(20),
 });
