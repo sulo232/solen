@@ -83,11 +83,11 @@ export default async function Page({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumb) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(faq) }}
       />
       {/* A4-jsonld-escape (2026-07-27): jsonLd carries salon.name/slug read
           straight from the DB. safeJsonLd escapes </script> breakout. */}

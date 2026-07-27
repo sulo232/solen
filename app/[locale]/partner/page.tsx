@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { Store, TrendingUp, Calendar, ArrowRight, Star, Check, ChevronDown, ChevronRight, UserPlus, Settings, Zap, Shield, Lock, CreditCard, Quote, BarChart3, Users, MessageSquare, Clock, Bell, Scissors, Sparkles, Droplets } from "lucide-react";
 import InteractiveHoverButton from "@/components-legacy/ui/interactive-hover-button";
 import PartnerSignupForm from "@/components-legacy/partner/PartnerSignupForm";
+import { safeJsonLd } from "@/lib/seo";
 
 const FEATURES = [
   { icon: Calendar, title: "feat_bookings_title", desc: "feat_bookings_desc", live: true },
@@ -475,7 +476,7 @@ export default function PartnerPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: safeJsonLd({
             "@context": "https://schema.org",
             "@type": "FAQPage",
             mainEntity: FAQ_KEYS.map((key) => ({

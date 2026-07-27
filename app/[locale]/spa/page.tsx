@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import SearchTemplate from "@/app/[locale]/_components/search/SearchTemplate";
 import { createAdminSupabaseClient } from "@/lib/supabase";
-import { buildAlternates, generateBreadcrumbSchema, generateFaqSchema, CATEGORY_FAQS } from "@/lib/seo";
+import { buildAlternates, generateBreadcrumbSchema, generateFaqSchema, CATEGORY_FAQS, safeJsonLd } from "@/lib/seo";
 import { getFilterAvailability } from "@/lib/search/filter-availability";
 
 export async function generateMetadata({
@@ -68,11 +68,11 @@ export default async function Page({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumb) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(faq) }}
       />
       {/* V3-D350 (2026-05-28): unified Airbnb-style search is the default render
           (no flag). CategoryHero + the SEO below slot dropped unconditionally;
