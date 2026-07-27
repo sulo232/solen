@@ -414,3 +414,28 @@ commits, so the next pass cannot re-litigate or revert them by following stale l
 
 Standing rule extracted: **a walk-in number states what the salon COMMITS to, not what it fears.** Floor over
 range, per-service over lumped, and never a number the queue data cannot actually support.
+
+## 2026-07-24 to 07-26 , the motion + consistency week, recorded by the weekly law pass
+
+These are dated owner decisions that were APPLIED in code and written into the file that owns each axis,
+but never entered this log, which is the record of what the founder actually said. Each row POINTS at the
+owning file rather than restating its numbers, so there is exactly one place to update when a value moves.
+
+| Decision | Owner, verbatim | Owning law file | Record |
+|---|---|---|---|
+| **The book label follows the JOB, not the surface.** `Jetzt buchen` is retired into `Termin buchen`; list row `Buchen`, picker row `Auswählen`, walk-in queue `Anstehen`. | "we have so many variations of it, like book... we need consistencies and we don't have that." | LOCKFILE §6 CTAs (amended by the weekly pass, which found it still preferring the retired label) + REMOVED.md | 62f14b274, 2026-07-25 |
+| **Review dates are day-month-year, with no weekday and no time.** Fixed in the one shared helper so every caller inherits it; locale-correct via `Intl`, never hardcoded month names. | "I don't like how the dates, it's so detailed, how many hours and what weekday it is... we need just, like, the sixth June twenty twenty six" | NONE , this log is its only home. It is a copy/format rule with no owning section; if a date-format row is ever added to LOCKFILE §6, move it there and leave a pointer. | a7f0c92e1, 2026-07-25 |
+| **Photo-grid overflow is a SMALL bottom-right badge on the ninth tile**, frost + ink + tabular numerals, non-interactive. NOT the full-tile black scrim with big centred text that shipped before. | "when there's more than nine, that it says plus how many are left on the last picture, on the right down" | COMPONENT_REGISTRY SalonPortfolio row says "+N overlay on last tile", which is true but does not distinguish badge from scrim. This row is the tiebreak. | a7f0c92e1, 2026-07-25 |
+| **THE SPEED LAW** , three tiers, chosen by the JOB not the surface. | "ok approved" (to the two-tier recommendation; the third tier is the press tier it implied) | MOTION.md "THE SPEED LAW" | 2ae07fc45, 2026-07-25 |
+| **The enter recipe retimes 420ms -> 280ms, blur kept.** Picked off a live three-column side-by-side, not off a description. | picked 280ms with the blur intact, in demo 7 | MOTION.md ENTER RECIPE | dbaf2aa65 + ca3c569d0, 2026-07-26 |
+| **Map basemap reads LIGHT**: labels and POI back ON, light-grey buildings, white land. Reverses both the label-strip and the dark-buildings rounds of the same day. | reference image IMG_6693 | LOCKFILE §13 basemap block (already carries the full flag list + the constructor-config mechanism) | 5fa0ae51e, 2026-07-24 |
+
+Two PROCESS decisions from the same week, which are not about any one screen and so have no other home:
+
+- **Speed is decided by a visual the owner FEELS, never by a question.** Verbatim, 2026-07-25: "I'm not
+  really sure about the speed because I'm not used to that, and I don't really know. So don't ask me about
+  that one. SHOW ME A VISUAL so I can visualize." Building the side-by-side IS the answer. This is why the
+  280ms retiming above is a pick off demo 7 rather than a number anyone proposed.
+- **SwiftUI is an IDEA SOURCE, not a target.** Verbatim, 2026-07-25: "we're not gonna use SwiftUI itself,
+  but we're gonna have ideas, and we can copy a few stuff". The law targets web; SwiftUI's vocabulary is
+  mined for concepts, never for APIs.
