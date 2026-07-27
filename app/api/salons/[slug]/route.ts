@@ -7,6 +7,7 @@ import { applyRateLimit, paymentLimiter } from "@/lib/ratelimit";
 import { validateBody, salonPolicyUpdateSchema } from "@/lib/validations";
 import { loadSalonDetailWithAccess } from "@/lib/salon-detail";
 import { salonDetailCacheHeaders } from "@/lib/salons/cache-headers";
+import { createDbTimer } from "@/lib/db-timing";
 import type { Database } from "@/lib/database.types";
 
 // B4 load audit (2026-07-04): the fetch/visibility/join logic that used to live
@@ -19,7 +20,12 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
-  const result = await loadSalonDetailWithAccess(slug);
+  // performance-09: one structured line splitting this route's total handler
+  // time from its DB-call time, so "the PDP feels slow" is diagnosable from
+  // the log alone (query vs render/cold-start) instead of a fresh investigation.
+  const timer = createDbTimer("GET /api/salons/[slug]");
+  const result = await timer.track(() => loadSalonDetailWithAccess(slug));
+  timer.finish();
 
   if (!result) {
     return NextResponse.json({ message: "Salon not found", code: "NOT_FOUND" }, { status: 404 });
