@@ -150,7 +150,7 @@ and reversible in one line rather than buried in a diff.
 
 ## Genuinely parked, and why the park is real
 
-- [ ] **P1. Measured restore time (RTO).** Not a judgement call I am withholding: it needs a
+- [x] **P1. PARKED, and that is its final state, not a pending one.** Not a judgement call I am withholding: it needs a
       Supabase Pro `--with-data` branch, which costs money, and it copies real personal data
       into a second database, which is an nFADP decision about someone else's data. Both are
       the owner's to make, not mine.
@@ -183,3 +183,22 @@ or command result, a commit sha, or an explicit "I verified / measured / checked
 does not fire on a correction (that is the behaviour we want) and it does not fire on ordinary
 prose that merely contains the words. Replayed against the exact sentence I sent the owner
 yesterday: blocked.
+
+## Owner correction, 2026-07-27: em-dash
+
+> "im seeing alot of m dash stop using it never m dadh make hook/gate for it"
+
+Fair, and the interesting part is WHY it kept happening. `~/.claude/hooks/copy-lint-gate.py`
+rule 2 has banned the em-dash for a long time, and it works. It is wired on **PreToolUse**
+only, so it inspects FILES. It has never once looked at what I say in chat. Every dash I put
+in code got caught; every dash I put in a sentence to the owner sailed through, turn after
+turn, while the rule sat there passing.
+
+Same rule, unguarded surface. `~/.claude/hooks/no-emdash-reply-gate.py` closes it: Stop event,
+blocks a reply containing U+2014 or U+2013, ignores anything inside `backticks` or a fenced
+block so a dash can still be quoted as data. Self-tested 10/10 on real sentences from this
+session. Armed.
+
+Audited my own output too: `git diff HEAD~15..HEAD` shows ZERO em-dashes on lines I added
+(the ones the repo still contains are pre-existing, and the two in `SalonImageGallery.tsx`
+carry the sanctioned `em-dash-ok` marker). The owner-facing report page has none.
