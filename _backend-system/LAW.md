@@ -292,6 +292,28 @@ Source: `research/reliability.md`.
 
 ---
 
+## 16. Marketplace trust
+
+Source: `_design-system/research/missing-principles-2026-07-26/marketplace-trust.json` (trust-01
+through trust-11). Not one of the original 15 research topics; added 2026-07-27 once the
+principles sweep found the gap the other 15 don't cover: promises the ToS makes to customers and
+salon partners, and whether the code actually keeps them.
+
+| Decision | Tier |
+|---|---|
+| Post-payout refund clawback (trust-07): when a refund is approved for a booking whose payout already reached the salon's bank account and the salon's Stripe Connect balance can't cover `reverse_transfer`, Solen fronts the shortfall (the refund still completes for the customer via a non-Connect-linked refund path or a manual transfer) and recovers it by deducting from the salon's NEXT payout. Chosen over "queue the refund until the salon's balance recovers" because a customer-facing refund promise cannot depend on an unrelated salon's cash-flow timing, and over "invoice the salon separately" because a payout deduction is the lower-friction collection path Solen already owns (no new AR process). `lib/bookings/issue-refund.ts:214`'s existing catch of the Stripe "insufficient balance" error is where this policy plugs in | CONV (an owner-level business-risk call, not a technical standard; revisit if real volume ever tests it) |
+| Review-volume flagging (trust-09): independent of `lib/automod.ts`'s existing new-account-cluster rules, flag (never auto-hide) more than one review from the same `(user_id, salon_id)` pair inside a rolling 30 days. An established, real account manufacturing repeat "verified" signal for one salon is a distinct fraud shape from coordinated fake accounts and needs its own rule | T3 (reasoned, not externally sourced; revisit the 30-day/1-review threshold if it produces false positives against genuine repeat customers) |
+| Duplicate-listing signal (trust-10): at salon creation, a phone or address match against an existing salon is a soft admin-facing warning on the approval screen (`_backend-system/audit/salon-onboarding.md`), never an automatic reject. `salon_groups` (legitimate multi-location chains) is the reason a hard block is the wrong shape | CONV |
+| Cross-channel dispute reconciliation (trust-11): when a Stripe chargeback (`charge.dispute.closed`) resolves against a booking, the webhook must also write that outcome onto the booking's own dispute state (not only the payout ledger), so a parallel in-app refund/appeal for the same booking can see it happened and refuse a duplicate action | T1 mechanic (double-refund prevention is a straightforward correctness requirement, not a judgment call) |
+
+**Not yet frozen (owner decision required, see the section below for why):** trust-04's exact
+refund-reporting-window day count (implemented at 14 days, matching the pre-existing internal
+proposal in `_tasks/REFUND_APPEAL_PLAN.md` section 11, but never explicitly owner-confirmed);
+trust-08's review self-edit/delete policy (whether a customer may edit or delete their own posted
+review at all, and for how long, is a product decision this file cannot make up).
+
+---
+
 ## Not yet frozen, and why
 
 Topics and rows the research covered but this freeze deliberately does NOT lock, because the research itself names the item as unresolved rather than recommended:
