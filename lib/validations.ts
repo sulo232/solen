@@ -989,7 +989,7 @@ export const salonPolicyUpdateSchema = z
 export const createCaseSchema = z.object({
   reason_code: z.enum([
     'salon_cancelled', 'no_show_salon', 'not_delivered',
-    'wrong_amount', 'double_charge', 'quality', 'other',
+    'wrong_amount', 'double_charge', 'quality', 'harassment', 'other',
   ]),
   description: z.string().min(20, 'Description must be at least 20 characters').max(1000),
   // Rappen; omitted/null with wants_refund=true => full refund of remaining.

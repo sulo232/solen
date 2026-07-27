@@ -66,6 +66,11 @@ export const REPORT_TARGET_TYPES = ["salon", "review", "user"] as const;
 export type ReportTargetType = (typeof REPORT_TARGET_TYPES)[number];
 
 // ─── Reasons ─────────────────────────────────────────────────────────────────
-// Mirrors the DB CHECK constraint on content_reports.reason (078_content_reports.sql:6-8).
-export const REPORT_REASONS = ["inappropriate", "spam", "fake", "ip_violation", "other"] as const;
+// Mirrors the DB CHECK constraint on content_reports.reason, widened by
+// supabase/migrations/20260727_content_reports_harassment_reason.sql (078_content_reports.sql:6-8
+// plus that follow-up). 'harassment' backs ToS section 7.3's "zero tolerance ... immediate
+// account suspension" promise (trust-06): this endpoint already accepts target_type='user',
+// so a salon owner reporting a customer for harassment already routes through here once the
+// migration lands, no new endpoint needed.
+export const REPORT_REASONS = ["inappropriate", "spam", "fake", "ip_violation", "harassment", "other"] as const;
 export type ReportReason = (typeof REPORT_REASONS)[number];

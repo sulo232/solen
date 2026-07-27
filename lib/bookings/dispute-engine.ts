@@ -42,6 +42,11 @@ export type DisputeStatus =
 export type DisputeDirection = "refund" | "upcharge";
 
 // The Section 11 customer reason taxonomy (the unified create endpoint accepts these).
+// trust-06: 'harassment' added 2026-07-27, backing ToS section 7.3's zero-tolerance
+// promise. This column (booking_disputes.reason_code) has no DB CHECK constraint
+// (20260601_refund_appeal_foundation.sql:120, `reason_code text,` unconstrained), so
+// this addition is safe without a migration; the back-compat `issueType` mapping below
+// still only ever emits the CHECK-constrained IssueType values.
 export type ReasonCode =
   | "salon_cancelled"
   | "no_show_salon"
@@ -49,6 +54,7 @@ export type ReasonCode =
   | "wrong_amount"
   | "double_charge"
   | "quality"
+  | "harassment"
   | "other";
 
 export type Eligibility = "eligible" | "discretionary" | "not_eligible";
@@ -90,6 +96,10 @@ export function resolveEligibility(reasonCode: ReasonCode): EligibilityResult {
       return { eligibility: "eligible", fastTrackRecommended: true, issueType: "overcharge" };
     case "quality":
       return { eligibility: "discretionary", fastTrackRecommended: false, issueType: "quality" };
+    case "harassment":
+      // Not a refund-eligibility question, a safety flag: fast-tracked to admin
+      // attention regardless of whether the customer also wants money back.
+      return { eligibility: "discretionary", fastTrackRecommended: true, issueType: "other" };
     case "other":
     default:
       return { eligibility: "not_eligible", fastTrackRecommended: false, issueType: "other" };
