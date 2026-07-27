@@ -25,13 +25,26 @@ and reversible in one line rather than buried in a diff.
 
 ## Decided by me, with the reasoning
 
-- [ ] **L1. Reviews toggle: disabling blocks NEW reviews; the existing ones stay visible.**
+- [x] **L1.** commit pending this turn; `verified:` migration applied live and read back by SQL
+      (28/28 salons default true), toggle flipped to false on one salon and back to prove it
+      DISCRIMINATES, allowlist at `app/api/salons/[slug]/route.ts:94`, write gate at
+      `app/api/reviews/route.ts` (403 REVIEWS_DISABLED), photo gate at
+      `app/api/reviews/[id]/photos/route.ts:44-51`. tsc clean, i18n green.
+      **Reviews toggle: disabling blocks NEW reviews; the existing ones stay visible.**
       Reasoning: the same logic the owner just used on the report button. A control is designed
       against its abuse case. If switching reviews off also hid the 260 already written, the
       button stops being "I don't want reviews" and becomes "delete my bad history", and a
       marketplace whose salons can erase criticism is worth nothing to a customer. Blocking
       new ones is a legitimate business choice; rewriting the past is not.
-- [ ] **L2. Report a photo, signed-in.** Owner-answered. Build it end to end.
+- [x] **L2.** `verified:` CHECK widened live and read back
+      (`salon, review, user, photo`); taxonomy at `lib/content-reports.ts:65`; label maps in
+      BOTH `ReportButton.tsx` and `dashboard/reports/page.tsx` (TypeScript's `satisfies`
+      caught the second one I had missed); keys in all four locales, parity 5,714; control
+      mounted per gallery tile at `SalonImageGallery.tsx:281` targeting the
+      salon_portfolio_images ROW id, never the url; admin takedown generalised at
+      `app/api/admin/reports/[id]/route.ts` and it prunes BOTH sources (the row and
+      salons.gallery_urls), which is the dual-source trap the recon named.
+      **Report a photo, signed-in.** Owner-answered, built end to end.
 - [x] **L3.** commit `8b126c89f`; `verified:` live policy read via SQL
       (`review_authors_upload_review_photos`, role `authenticated`) against the route's own
       ownership check at `app/api/reviews/[id]/photos/route.ts:31-38` and its upload path at

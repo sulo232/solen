@@ -72,6 +72,7 @@ const TARGET_TYPE_LABEL_KEY = {
   salon: "targetTypeSalon",
   review: "targetTypeReview",
   user: "targetTypeUser",
+  photo: "targetTypePhoto",
 } as const satisfies Record<ReportTargetType, string>;
 
 export default function ReportButton({ type, targetId, variant = "subtle" }: ReportButtonProps) {

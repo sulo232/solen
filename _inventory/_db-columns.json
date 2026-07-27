@@ -1944,7 +1944,15 @@
       "skin_condition",
       "staff_member_id",
       "tension_areas"
+    ],
+    "salon_portfolio_images": [
+      "category",
+      "created_at",
+      "id",
+      "image_url",
+      "salon_id",
+      "sort_order"
     ]
   },
-  "capturedAt": "2026-07-12 | +salons.reviews_enabled, +salons.review_photos_enabled applied+verified live 2026-07-27"
+  "capturedAt": "2026-07-12 | +salons.reviews_enabled, +salons.review_photos_enabled applied+verified live 2026-07-27 | +salon_portfolio_images (verified live via information_schema 2026-07-27)"
 }

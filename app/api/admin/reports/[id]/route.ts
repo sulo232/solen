@@ -71,17 +71,56 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
 
   if (validated.hide_content) {
-    if (report.target_type !== "review") {
-      return NextResponse.json({ error: "hide_content only applies to a reported review" }, { status: 400 });
+    // The real content action ALWAYS runs BEFORE the content_reports row is updated: if the
+    // takedown fails, the report must stay exactly as it was, not flip to "resolved" on a
+    // content action that never actually happened.
+    if (report.target_type === "review") {
+      const { error: hideError } = await admin
+        .from("reviews")
+        .update({ is_hidden: true, moderation_status: "removed" })
+        .eq("id", report.target_id);
+      if (hideError) return NextResponse.json({ error: hideError.message }, { status: 500 });
+    } else if (report.target_type === "photo") {
+      // 2026-07-27, added with the 'photo' report target. A salon gallery photo lives in TWO
+      // places and removing it from one leaves it rendering from the other , that dual source
+      // is the single biggest trap in this area. salon_portfolio_images backs the gallery grid;
+      // salons.gallery_urls backs the hero, the search cards and the profile surfaces.
+      const { data: photoRow, error: photoErr } = await admin
+        .from("salon_portfolio_images")
+        .select("salon_id, image_url")
+        .eq("id", report.target_id)
+        .maybeSingle();
+      if (photoErr) return NextResponse.json({ error: photoErr.message }, { status: 500 });
+      if (!photoRow) {
+        return NextResponse.json({ error: "Reported photo no longer exists" }, { status: 404 });
+      }
+
+      const { error: delErr } = await admin
+        .from("salon_portfolio_images")
+        .delete()
+        .eq("id", report.target_id);
+      if (delErr) return NextResponse.json({ error: delErr.message }, { status: 500 });
+
+      const { data: salonRow } = await admin
+        .from("salons").select("gallery_urls").eq("id", photoRow.salon_id).maybeSingle();
+      const remaining = (salonRow?.gallery_urls ?? []).filter((u: string) => u !== photoRow.image_url);
+      if ((salonRow?.gallery_urls ?? []).length !== remaining.length) {
+        const { error: galErr } = await admin
+          .from("salons").update({ gallery_urls: remaining }).eq("id", photoRow.salon_id);
+        // Logged, not fatal: the grid row is already gone, so the takedown partly succeeded and
+        // reverting it would be worse than reporting the leftover.
+        if (galErr) console.error("[admin/reports] gallery_urls prune failed:", galErr, { salonId: photoRow.salon_id });
+      }
+
+      await logAuditEvent(req, user.id, "salon.photo.takedown", "salon", photoRow.salon_id, {
+        via: "content_report", report_id: id, image_url: photoRow.image_url,
+      });
+    } else {
+      return NextResponse.json(
+        { error: `hide_content does not apply to a reported ${report.target_type}` },
+        { status: 400 },
+      );
     }
-    // The real content action runs BEFORE the content_reports row is updated: if hiding
-    // the review fails, the report must stay exactly as it was, not flip to "resolved"
-    // on a content action that never actually happened.
-    const { error: hideError } = await admin
-      .from("reviews")
-      .update({ is_hidden: true, moderation_status: "removed" })
-      .eq("id", report.target_id);
-    if (hideError) return NextResponse.json({ error: hideError.message }, { status: 500 });
   }
 
   const updates: Database["public"]["Tables"]["content_reports"]["Update"] = {

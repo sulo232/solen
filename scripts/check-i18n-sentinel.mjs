@@ -33,9 +33,13 @@ const SOURCE_LOCALE = "en";
 // 2026-07-27 (copy-i18n-07): de +1 for salon.topSalon = "Top Salon" in both, added
 // while closing the messages/*.json key-parity gap , German borrows the English
 // word "Top" for this exact badge phrase, so the two locales genuinely coincide.
+// 2026-07-27 (photo report target): fr +2 for report.targetTypePhoto and the admin
+// dashboard's targetPhoto, both "Photo". French genuinely spells it the same as English, so
+// these are locale-invariant rather than untranslated placeholders , the exact case this
+// baseline exists to absorb. German and Italian took "Foto" and are unchanged.
 const IDENTICAL_BASELINE = {
   de: 466,
-  fr: 368,
+  fr: 370,
   it: 220,
 };
 

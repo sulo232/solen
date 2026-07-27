@@ -74,6 +74,7 @@ const TARGET_TYPE_LABEL_KEY = {
   salon: "targetSalon",
   review: "targetReview",
   user: "targetUser",
+  photo: "targetPhoto",
 } as const satisfies Record<ReportTargetType, string>;
 
 const REASON_LABEL_KEY = {

@@ -62,7 +62,12 @@ export function isLegalReportStatusTransition(from: ReportStatus, to: ReportStat
 
 // ─── Target types ────────────────────────────────────────────────────────────
 // Mirrors the DB CHECK constraint on content_reports.target_type (078_content_reports.sql:4).
-export const REPORT_TARGET_TYPES = ["salon", "review", "user"] as const;
+// 'photo' added 2026-07-27 (owner: "also being able to report pictures"). content_reports
+// .target_id is already a bare polymorphic uuid, so only the taxonomy and the DB CHECK needed
+// widening , see 20260727180000_salon_review_toggles_and_photo_report_target.sql. The reported
+// id is the salon_portfolio_images row id, NOT the URL: a url can change or repeat across
+// salons, a row id cannot.
+export const REPORT_TARGET_TYPES = ["salon", "review", "user", "photo"] as const;
 export type ReportTargetType = (typeof REPORT_TARGET_TYPES)[number];
 
 // ─── Reasons ─────────────────────────────────────────────────────────────────
