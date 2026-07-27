@@ -15,6 +15,7 @@ import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
  */
 
 type BatchKey = "bookings_today" | "revenue_month" | "reviews_pending" | "walkin_queue" | "activity_feed";
+const BATCH_KEYS: readonly BatchKey[] = ["bookings_today", "revenue_month", "reviews_pending", "walkin_queue", "activity_feed"];
 
 export async function POST(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
@@ -26,8 +27,19 @@ export async function POST(request: NextRequest) {
 
   const body = await request.json();
   const { salonId, requests } = body as { salonId: string; requests: BatchKey[] };
-  if (!salonId || !Array.isArray(requests)) {
-    return NextResponse.json({ error: "salonId and requests required" }, { status: 400 });
+  // api-contracts-08: cap the array length (only BATCH_KEYS.length distinct keys
+  // are ever meaningful) and validate every element is a known key, before any
+  // Promise.all fan-out runs against it. An unbounded array here was a
+  // resource-exhaustion vector: nothing stopped a caller from sending an
+  // arbitrarily long `requests` array.
+  if (
+    !salonId ||
+    !Array.isArray(requests) ||
+    requests.length === 0 ||
+    requests.length > BATCH_KEYS.length ||
+    !requests.every((r) => BATCH_KEYS.includes(r))
+  ) {
+    return NextResponse.json({ error: "salonId and a valid, bounded requests array required" }, { status: 400 });
   }
 
   const admin = createAdminSupabaseClient();
