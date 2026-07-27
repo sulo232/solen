@@ -114,21 +114,51 @@ RETIRED_TOKENS = {
     "s-droplet",
     # s-pop removed 2026-07-11: LOCKFILE un-retired it (V3-D424); a live urgency-badge token, not drift.
     "s-cool",
+    # color-tokens-01 (2026-07-27): the rest of the V3-D332 (2026-05-28) "dashboard
+    # rescue" back-compat alias block, same bucket as s-coral above -- LOCKFILE.md's
+    # RETIRED section named s-amber as "PERMANENTLY KILLED... NO alias added" but a
+    # live grep found 19 files still using it (the alias was added one day after the
+    # kill and nobody updated the doc). s-blue/s-plum/s-sand/s-amber-subtle were the
+    # same alias block and were never flagged at all. See LOCKFILE.md's RETIRED
+    # section for the per-token migration target (s-warning/s-accent/s-ink-2/s-bg.sunken).
+    "s-amber",
+    "s-blue",
+    "s-plum",
+    "s-sand",
+    "s-amber-subtle",
     # color-tokens-04 (2026-07-27): s-ink-3 / s-ink-secondary / s-ink-tertiary were
     # THREE extra live spellings of the exact same #6B6B6B hex as s-ink-2. Deleted
     # from tailwind.config.js in the same change; flag any new callsite as drift.
     "s-ink-3",
     "s-ink-secondary",
     "s-ink-tertiary",
-    # Atmosphere family
-    "s-atm-warm",
-    "s-atm-cool",
-    "s-atm-base",
-    # Category family
+    # Atmosphere family (color-tokens-01, 2026-07-27: this used to read s-atm-warm/
+    # s-atm-cool/s-atm-base, three names that never existed in tailwind.config.js --
+    # enforcing nothing. The 5 real historical keys are these, all now DELETED from
+    # tailwind.config.js by color-tokens-06; kept here so a stray old callsite that
+    # copy-pasted the class name still gets flagged even though the token is gone.)
+    "s-atm-cream",
+    "s-atm-terra",
+    "s-atm-sage",
+    "s-atm-bone",
+    "s-atm-butter",
+    # Category family (color-tokens-01, 2026-07-27: the -text variants were missing
+    # too -- tailwind.config.js's own color-tokens-06 comment names all 4 base +
+    # 4 -text tokens as deleted together, but only the 4 base names had been added here)
     "s-cat-coiffeur",
     "s-cat-barbershop",
     "s-cat-nails",
     "s-cat-spa",
+    "s-cat-coiffeur-text",
+    "s-cat-barbershop-text",
+    "s-cat-nails-text",
+    "s-cat-spa-text",
+    # color-tokens-01 (2026-07-27): s-chart-1 and s-amber-text were both DELETED
+    # from tailwind.config.js by color-tokens-06 (zero live callsites) and named
+    # RETIRED in LOCKFILE.md, but neither had ever been added here -- the same
+    # doc/enforcement gap this finding is about, just two more instances of it.
+    "s-chart-1",
+    "s-amber-text",
     # V3-D221 (2026-05-26, overnight Q33 resolution): s-accent family REMOVED
     # from RETIRED. V3-D204 made `s-accent` the LIVE Solen brand accent
     # (royal blue #276EF1). The previous list flagged every legitimate Layer 2

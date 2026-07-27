@@ -173,6 +173,19 @@ jobs:
       - name: "check-i18n-parity (copy-i18n-07: de.json key set must match en/fr/it.json exactly, hard zero)"
         run: node scripts/check-i18n-parity.mjs
 
+  # color-tokens-01 (2026-07-27): a token LOCKFILE.md calls RETIRED is worse than
+  # useless if the drift-checker's RETIRED_TOKENS set doesn't name it too -- it
+  # gives false confidence that enforcement exists. This job parses LOCKFILE.md's
+  # RETIRED section and check.py's RETIRED_TOKENS and fails, naming the exact
+  # token, on any token the doc retires that the checker doesn't enforce. Python
+  # (not Node) because it lives in the solen-drift-check skill alongside check.py.
+  retired-token-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: "check-retired-sync (LOCKFILE.md RETIRED bullets vs check.py RETIRED_TOKENS, hard zero)"
+        run: python3 .claude/skills/solen-drift-check/scripts/check-retired-sync.py
+
   # secrets-webhooks-10: a repo-wide grep-pattern check that a NEW !==/=== compare
   # against a secret/token/signature/hmac-shaped variable never lands again. The
   # project already had the right rule written down as a comment in one file
