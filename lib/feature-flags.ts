@@ -3,12 +3,11 @@ import { NextResponse } from "next/server";
 
 type FeatureKey = "bookings" | "payments" | "messaging" | "reviews" | "registration" | "last_minute" | "maintenance_mode" | "visual_editor" | "nail_features" | "barber_features" | "spa_features" | "discovery" | "dispute_reporting" | "upcharge_requests" | "vouchers" | "salon_of_month" | "referral";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Client-side feature flags (build-time toggles)
-// ─────────────────────────────────────────────────────────────────────────────
-export const CLIENT_FEATURE_FLAGS = {
-  isMassageSpaEnabled: false, // Phase 1: Hide Massage & Spa category
-} as const;
+// testing-release-05: CLIENT_FEATURE_FLAGS (a build-time isMassageSpaEnabled:
+// false toggle) was removed 2026-07-27, dead by name: grep found zero read
+// sites for either the flag or the object itself, only its own definition.
+// See _rules/RELEASE.md's flag-lifecycle section for the removal rule this
+// should have caught earlier.
 
 // ─────────────────────────────────────────────────────────────────────────────
 // In-memory TTL cache for feature_flags reads (Ring 2a, 2026-07-11).
