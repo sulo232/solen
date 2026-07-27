@@ -40,6 +40,15 @@ export async function POST(
   const updateData = {
     frozen_at: new Date().toISOString(),
     frozen_reason: body.reason,
+    // Freezing MUST take the salon dark. Before 2026-07-27 this route wrote only
+    // frozen_at/frozen_reason, and frozen_at is read in exactly three places: an owner
+    // banner on the settings page, the solen-score recalculation, and lib/salon-detail.ts
+    // (which fetches it only to STRIP it for non-owners at :148). It gates nothing. The
+    // customer-visibility gate is is_active (lib/salon-detail.ts:73 returns null without
+    // it) plus listed_on_marketplace in the ~15 listing queries. So a "frozen" salon kept
+    // its PDP live, kept appearing in search, and kept taking new bookings , this route
+    // cancelled the bookings that existed at that instant and then let fresh ones arrive.
+    is_active: false,
   };
 
   const { error } = await admin.from("salons").update(updateData).eq("id", id);

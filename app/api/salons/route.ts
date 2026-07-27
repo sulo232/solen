@@ -714,6 +714,14 @@ export async function POST(request: NextRequest) {
           // cast to the generated Json column type (same pattern as app/api/salon-draft/route.ts).
           opening_hours: (opening_hours || {}) as Json,
           is_active: false, // Pending approval
+          // The admin approvals queue (app/api/admin/salons/route.ts:29) filters
+          // .eq("registration_completed", true), and this signup route is the only real
+          // way a salon is created. Without this line the column stays at its false
+          // default, so a genuinely registered salon never appears in the queue, is never
+          // approved, and POST /api/salon/go-live 403s it forever. Before 2026-07-27 the
+          // ONLY writer of this column was the admin test-salon seeder, which is why the
+          // queue looked fine in testing and was structurally empty in reality.
+          registration_completed: true,
           last_minute_discount_percent: last_minute_discount_percent || 0,
           last_minute_window_hours: last_minute_window_hours || 0,
           latitude: latitude || 47.5596,

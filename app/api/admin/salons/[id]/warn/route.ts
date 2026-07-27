@@ -43,6 +43,9 @@ export async function POST(
   if (freeze) {
     updateData.frozen_at = new Date().toISOString();
     updateData.frozen_reason = body.reason;
+    // Same fix as the freeze route (2026-07-27): frozen_at gates nothing on its own, so
+    // the third-strike auto-freeze was leaving the salon live and bookable.
+    updateData.is_active = false;
   }
 
   const { error } = await admin.from("salons").update(updateData).eq("id", id);

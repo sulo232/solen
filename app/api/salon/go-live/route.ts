@@ -47,9 +47,16 @@ export async function POST(_req: NextRequest) {
   if (rateLimited) return rateLimited;
 
   // Verify ownership and requirements
-  const salon = await getActiveSalon<{ id: string; stripe_account_id: string | null; cover_photo_url: string | null; approved_at: string | null }>(supabase, user.id, "id, stripe_account_id, cover_photo_url, approved_at");
+  const salon = await getActiveSalon<{ id: string; stripe_account_id: string | null; cover_photo_url: string | null; approved_at: string | null; frozen_at: string | null }>(supabase, user.id, "id, stripe_account_id, cover_photo_url, approved_at, frozen_at");
 
   if (!salon) return NextResponse.json({ error: "No salon found" }, { status: 403 });
+  // A frozen salon may not self-reactivate. Freezing now sets is_active=false
+  // (app/api/admin/salons/[id]/freeze/route.ts, 2026-07-27) but leaves approved_at intact,
+  // so without this gate the owner could undo an admin freeze by pressing Go Live. Only an
+  // admin re-approval clears frozen_at.
+  if (salon.frozen_at) {
+    return NextResponse.json({ error: "Der Salon wurde von einem Administrator gesperrt. Bitte kontaktiere den Support." }, { status: 403 });
+  }
   // Admin review gate: an owner may only self-activate a salon that an admin has
   // already approved (salons.approved_at set by PATCH /api/admin/salons/[id]/approve).
   // Without this, an owner could set is_active=true directly with no admin review.

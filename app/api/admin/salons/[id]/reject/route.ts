@@ -37,6 +37,9 @@ export async function PATCH(
   const { error } = await admin.from("salons").update({
     is_active: false,
     rejection_reason: reason,
+    // salons.rejected_at existed with no writer, so a rejection carried a reason but no
+    // timestamp and "when was this rejected" was unanswerable. Paired with approved_at.
+    rejected_at: new Date().toISOString(),
     // Clear the admin-approval marker so a deactivated salon must be RE-approved before
     // its owner can self-activate again via POST /api/salon/go-live (which gates on
     // approved_at). Without this, a once-approved salon keeps a stale approved_at and can

@@ -32,6 +32,12 @@ export async function PATCH(
     approved_at: new Date().toISOString(),
     approved_by: user.id,
     rejection_reason: null,
+    // Approve doubles as the REINSTATE path: there is no unfreeze route, and from
+    // 2026-07-27 freeze sets is_active=false and go-live refuses while frozen_at is set,
+    // so without clearing these a frozen salon could never come back at all.
+    frozen_at: null,
+    frozen_reason: null,
+    rejected_at: null,
   }).eq("id", id);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
