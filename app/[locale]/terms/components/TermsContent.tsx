@@ -390,6 +390,11 @@ export default function TermsContent() {
           <ParEn>solen.ch provides a channel for reporting issues (via the platform or by email to support@solen.ch). solen.ch may assist in resolving clear-cut cases (e.g., refund upon salon cancellation) but is not the decision-maker in complex disputes.</ParEn>
         </Article>
 
+        <Article titleDe="13.1a Meldefrist" titleEn="13.1a Reporting Window">
+          <ParDe>Ein Problem oder eine Rückerstattung muss innerhalb von <strong>14 Tagen</strong> nach dem Termin gemeldet werden. Nach Ablauf dieser Frist kann über die Plattform kein neuer Fall mehr eröffnet werden, ausser bei einer Rückbuchung über die Bank (Chargeback).</ParDe>
+          <ParEn>A problem or refund request must be reported within <strong>14 days</strong> of the appointment. After this period, no new case can be opened via the platform, except in the case of a bank chargeback.</ParEn>
+        </Article>
+
         <Article titleDe="13.2 Schlichtung" titleEn="13.2 Mediation">
           <ParDe>Vor der Einleitung eines Gerichtsverfahrens verpflichten sich die Parteien, eine Schlichtung innerhalb einer Frist von 30 Tagen zu versuchen. Erst nach Ablauf dieser Frist oder nach Scheitern der Schlichtung steht der ordentliche Rechtsweg offen.</ParDe>
           <ParEn>Before initiating court proceedings, the parties commit to attempting mediation within a period of 30 days. Court proceedings may only be initiated after this period has elapsed or after mediation has failed.</ParEn>
