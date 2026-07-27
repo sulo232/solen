@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>What I found out , 27 July</title>
+<!--
+  NOT A MOCKUP. A research report for the owner: three findings in plain English.
+  Nothing here proposes a design.
+  Grounded-in: app/[locale]/_components/salon/SalonServices.tsx , the before/after pair below
+  reproduces that real PDP service row as measured on the live tunnel this turn
+  (90 min, 220 CHF; name 15px/500 ink, duration 13px/400 ink-2, price 14px/600).
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --line:#E4E4E7; --sunken:#F4F4F5;
+    --red:#DC2626; --green:#16A34A; --orange:#EA580C;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:#fff; color:var(--ink);
+    font:400 16px/1.55 -apple-system,BlinkMacSystemFont,"Inter",system-ui,sans-serif;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:28px 20px 72px}
+  h1{font-size:30px;line-height:1.15;letter-spacing:-.02em;font-weight:700;margin:0 0 6px}
+  .sub{color:var(--ink2);font-size:15px;margin:0 0 28px}
+  h2{font-size:21px;letter-spacing:-.01em;font-weight:600;margin:44px 0 4px}
+  .eyebrow{font-size:12px;font-weight:600;color:var(--ink2);margin:0 0 14px}
+  p{margin:0 0 14px}
+  .card{border:1px solid var(--line);border-radius:16px;padding:18px;margin:16px 0}
+  .tray{background:var(--sunken);border-radius:16px;padding:18px 18px 6px;margin:16px 0}
+  .big{font-size:42px;font-weight:700;letter-spacing:-.03em;line-height:1;margin:0 0 2px}
+  .biglabel{font-size:13px;color:var(--ink2);margin:0 0 16px}
+  .row{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 12px}
+  .stat{flex:1 1 150px;border:1px solid var(--line);border-radius:12px;padding:14px}
+  .stat .n{font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+  .stat .l{font-size:12.5px;color:var(--ink2);margin-top:3px}
+  .wr,.ri{border-radius:12px;padding:13px 15px;margin:0 0 10px}
+  .wr{background:#FEF2F2;border:1px solid #FECACA}
+  .ri{background:#F0FDF4;border:1px solid #BBF7D0}
+  .tag{display:inline-block;font-size:11px;font-weight:600;padding:2px 7px;border-radius:5px;margin-bottom:8px}
+  .tag.no{background:var(--red);color:#fff}
+  .tag.yes{background:var(--green);color:#fff}
+  .svc{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+  .svc .nm{font-size:15px;font-weight:500;display:block}
+  .svc .du{font-size:13px;color:var(--ink2);display:block;margin-top:3px}
+  .svc .pr{font-size:15px;font-weight:600;white-space:nowrap}
+  .tier{display:flex;justify-content:space-between;gap:16px;padding:8px 0;border-top:1px solid var(--line)}
+  .tier:first-of-type{border-top:0}
+  .tier .p{font-weight:600}
+  blockquote{
+    margin:0 0 16px;padding:12px 16px;border-left:3px solid var(--ink);
+    background:var(--sunken);border-radius:0 10px 10px 0;font-size:15px
+  }
+  .src{color:var(--ink2);font-size:13px;display:block;margin-top:8px;line-height:1.5}
+  ol,ul{margin:0 0 16px;padding-left:22px}
+  li{margin:0 0 9px}
+  .q{border:1px solid var(--line);border-radius:12px;padding:15px 16px 4px;margin:0 0 12px}
+  .q .qq{font-weight:600;margin:0 0 6px}
+  .q p{font-size:15px;color:var(--ink2)}
+  code{font-family:ui-monospace,"JetBrains Mono",monospace;font-size:13.5px;background:var(--sunken);padding:1px 5px;border-radius:5px}
+  hr{border:0;border-top:1px solid var(--line);margin:40px 0}
+  .foot{color:var(--ink2);font-size:13px;margin-top:40px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>What I found out</h1>
+  <p class="sub">27 July 2026 , the three things you asked me to research, in plain English. No code.</p>
+
+  <div class="tray">
+    <p class="big" style="color:var(--red)">3</p>
+    <p class="biglabel">Answers that turned out worse than the question you asked.</p>
+  </div>
+
+  <hr>
+
+  <h2>1. "ab CHF" is not allowed in Switzerland</h2>
+  <p class="eyebrow">You asked: "2 research whats legal"</p>
+
+  <p>This is not a grey area and not a matter of interpretation. SECO writes it out for
+  exactly your industry, in the information sheet for hairdressers, barbershops, cosmetic
+  institutes and body care dated 1 April 2025:</p>
+
+  <blockquote>
+    <b>"The prices shown are fixed prices. Entries such as &laquo;beard trim: from Fr. 30.&raquo;
+    are not permitted."</b>
+    <span class="src">german-ok , verbatim legal source, SECO Merkblatt 01.04.2025: "Die angegebenen Preise sind fixe Preise. Angaben wie &laquo;Bart schneiden: ab Fr. 30.-&raquo; sind nicht zulaessig."</span>
+  </blockquote>
+
+  <p>The reason sits in Art. 10 para. 1 of the price-disclosure ordinance: for these services
+  the price the customer actually pays must be shown <b>with the offer</b>. Hairdressing is
+  letter a, cosmetics and body care is letter d. Your entire catalogue falls under it.</p>
+
+  <div class="wr">
+    <span class="tag no">BEFORE</span>
+    <div class="svc">
+      <span><span class="nm">Bridal styling</span><span class="du">90 min</span></span>
+      <span class="pr">from 220 CHF</span>
+    </div>
+  </div>
+  <div class="ri">
+    <span class="tag yes">NOW</span>
+    <div class="svc">
+      <span><span class="nm">Bridal styling</span><span class="du">90 min</span></span>
+      <span class="pr">220 CHF</span>
+    </div>
+  </div>
+
+  <p>When a price genuinely varies, the legal way to say so is not "from", it is <b>tiers</b>.
+  SECO gives the example itself:</p>
+  <div class="card">
+    <p style="margin:0 0 10px"><b>Blow-dry</b></p>
+    <div class="tier"><span>Short hair</span><span class="p">CHF 45</span></div>
+    <div class="tier"><span>Medium hair</span><span class="p">CHF 50</span></div>
+    <div class="tier"><span>Long hair</span><span class="p">CHF 55</span></div>
+  </div>
+
+  <p>Two more points that hit you directly. The price has to be <b>on the offer</b>, not only
+  at checkout , that sentence was put into the law in 2022 specifically to overturn a Federal
+  Supreme Court ruling that had said the opposite. And any non-optional fee (reservation,
+  service, processing) must be <b>inside the price you display</b>. That one matters if you
+  ever introduce a booking fee.</p>
+
+  <div class="q">
+    <p class="qq">Now fixed on the cards too</p>
+    <p>The salon card showed a from-price, the cheapest service in that whole salon, without
+    saying which service it was. That is the one condition SECO attaches to a from-price in
+    advertising, so the card now names the service.</p>
+  </div>
+
+  <hr>
+
+  <h2>2. You already have the good clause</h2>
+  <p class="eyebrow">You asked: "cant we incl in the terms n service all pictures uploaded are mine"</p>
+
+  <p>I read the actual terms of Airbnb, Fresha, Uber, Booking.com, Treatwell, Yelp and Google.
+  <b>None of the six takes ownership.</b> All six take a licence, and Uber and Google go out
+  of their way to state that the content stays the user's.</p>
+
+  <p>And your terms <b>already do this</b> , the salon keeps ownership, Solen gets a
+  worldwide, royalty-free licence covering promotional use. That is exactly the industry
+  standard. Under Swiss copyright law "all pictures are mine" would also be partly
+  unenforceable anyway: moral rights cannot be assigned at all.</p>
+
+  <div class="row">
+    <div class="stat"><div class="n">0 of 6</div><div class="l">platforms take ownership</div></div>
+    <div class="stat"><div class="n">6 of 6</div><div class="l">take a licence instead</div></div>
+  </div>
+
+  <p><b>What is actually missing is something else.</b> A salon photo is usually a photo
+  <b>of a client</b> , and she never agreed to anything. Fresha and Treatwell both require
+  the salon to get her consent before uploading, keep a record of it, and delete the photo if
+  she withdraws it. Your terms say nothing about that. That is the real gap.</p>
+
+  <div class="q">
+    <p class="qq">Your decision, the only one left here</p>
+    <p>Not the checkbox , that part is trivial. The question is <b>what you promise</b> when
+    someone in a photo objects. For example "we remove it within 48 hours, no questions
+    asked". That is policy, not code, and it sets your support load.</p>
+  </div>
+
+  <hr>
+
+  <h2>3. There is no plan for the day something breaks</h2>
+  <p class="eyebrow">You answered: "9 yr we need whole principle for that" , now written</p>
+
+  <p>The principle in one sentence: <b>stop the bleeding before you understand it.</b> And
+  write down what is happening while it happens, not afterwards.</p>
+
+  <div class="card">
+    <p style="margin:0 0 10px"><b>The 9pm ladder</b> , the first three steps need no diagnosis</p>
+    <ol style="margin-bottom:0">
+      <li><b>Write the clock.</b> The time, what you saw, and how you found out.</li>
+      <li><b>How bad?</b> Money or data wrong = act now. Core flow dead with no workaround =
+        urgent. Unsure between two levels? Always the higher one, and never debate it during
+        the incident.</li>
+      <li><b>Stop it.</b> Shipped something in the last hour? Netlify, last good build,
+        publish. Otherwise pull the feature flag , live within 30 seconds.</li>
+    </ol>
+  </div>
+
+  <p>Three things in there are specific to you, and are otherwise learned the expensive way:</p>
+  <ul>
+    <li>The kill switch <b>fails open</b> , if Supabase is down, flipping it does nothing.</li>
+    <li><code>maintenance_mode</code> stops writes, <b>not</b> pages.</li>
+    <li><b>Never</b> disable the Stripe webhook. Anything that arrives while it is off is gone
+      forever. An error instead gets retried for three days.</li>
+  </ul>
+
+  <p><b>The uncomfortable part:</b> nothing wakes you. No Sentry, no SMS, no push. The fastest
+  automatic signal is a check every 15 minutes that sends an email. Everything else waits for
+  the 05:15 summary. A problem that starts at 6pm Friday and does not take the whole site down
+  is invisible to you until Saturday morning.</p>
+
+  <div class="q">
+    <p class="qq">Your decision</p>
+    <p>Should anything <b>call you</b>? The cheapest option is a free push channel (ntfy or
+    Pushover) wired next to the alert email you already have, limited to the worst tier. Costs
+    nothing but an afternoon. It also means your phone can wake you, which may be exactly what
+    you don't want.</p>
+  </div>
+
+  <hr>
+
+  <h2>And this is the one that scared me most</h2>
+  <div class="tray">
+    <p class="big" style="color:var(--orange)">1</p>
+    <p class="biglabel">backup exists. From 11 July. That is all of them.</p>
+  </div>
+
+  <p>The nightly backup <b>has never run</b> , not "untested", never. The job exists only on
+  this machine; on GitHub it is switched off, at 2,981 failed attempts and zero successes.
+  Storage holds exactly <b>one</b> folder.</p>
+
+  <p>And that folder was <b>two days past the retention cutoff</b>: the first successful run
+  would have deleted it. I copied all 24 files, 2,450 rows, checking each one parses, to
+  <code>~/solen/backups/db-backup-2026-07-11/</code>.</p>
+
+  <p class="foot">
+    The full research with every source and quote is in the repo under
+    <code>_design-system/research/owner-answers-2026-07-27/</code>. This page is the short version.
+    <br><br>
+    Engineering research, not legal advice. Before launch a Swiss lawyer should look at the
+    salon-card price wording and at the photo-consent wording.
+  </p>
+
+</div>
+</body>
+</html>
