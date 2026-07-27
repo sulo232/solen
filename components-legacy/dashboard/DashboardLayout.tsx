@@ -350,7 +350,7 @@ export default function DashboardLayout({
               {/* Salon header */}
               <div className="px-4 py-4 border-b border-s-border flex items-center gap-3">
                 <SalonSwitcher variant="sidebar" fallbackName={salonName ?? fetchedSalonName ?? undefined} />
-                <button onClick={() => setMobileSidebarOpen(false)} aria-label="Menü schließen" className="p-1 -mr-1 text-s-ink-3 hover:text-s-ink transition-colors"><X size={20} /></button>
+                <button onClick={() => setMobileSidebarOpen(false)} aria-label="Menü schließen" className="p-1 -mr-1 text-s-ink-2 hover:text-s-ink transition-colors"><X size={20} /></button>
               </div>
 
               {/* Scrollable grouped nav */}
@@ -361,7 +361,7 @@ export default function DashboardLayout({
                     return (
                       <Link key={href} href={`/${locale}${href}`} onClick={() => setMobileSidebarOpen(false)} aria-current={active ? "page" : undefined}
                         className={`flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium transition-colors ${active ? "bg-s-bg-sunken text-s-ink font-semibold" : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"}`}>
-                        <Icon size={20} strokeWidth={1.9} className={active ? "text-s-ink" : "text-s-ink-3"} />
+                        <Icon size={20} strokeWidth={1.9} className={active ? "text-s-ink" : "text-s-ink-2"} />
                         <span className="flex-1">{t(key)}</span>
                       </Link>
                     );
@@ -378,13 +378,13 @@ export default function DashboardLayout({
                       if (items.length === 0) return null;
                       return (
                         <div key={groupLabel}>
-                          <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-3 px-3 mt-5 mb-1 first:mt-1">{groupLabel}</p>
+                          <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-2 px-3 mt-5 mb-1 first:mt-1">{groupLabel}</p>
                           {items.map(({ key, href, icon: Icon, label }) => {
                             const active = isActive(href);
                             return (
                               <Link key={key} href={`/${locale}${href}`} onClick={() => setMobileSidebarOpen(false)} aria-current={active ? "page" : undefined}
                                 className={`flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium transition-colors ${active ? "bg-s-bg-sunken text-s-ink font-semibold" : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"}`}>
-                                <Icon size={20} strokeWidth={1.9} className={active ? "text-s-ink" : "text-s-ink-3"} />
+                                <Icon size={20} strokeWidth={1.9} className={active ? "text-s-ink" : "text-s-ink-2"} />
                                 <span className="flex-1">{label}</span>
                                 {/* messaging unread badge removed — feature off (owner 2026-06-13) */}
                               </Link>
@@ -397,13 +397,13 @@ export default function DashboardLayout({
                     {/* Admin */}
                     {role === "admin" && (
                       <div>
-                        <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-3 px-3 mt-5 mb-1">Admin</p>
+                        <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-2 px-3 mt-5 mb-1">Admin</p>
                         {ADMIN_NAV.map(({ key, href, icon: Icon }) => {
                           const active = isActive(href);
                           return (
                             <Link key={href} href={`/${locale}${href}`} onClick={() => setMobileSidebarOpen(false)} aria-current={active ? "page" : undefined}
                               className={`flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium transition-colors ${active ? "bg-s-bg-sunken text-s-ink font-semibold" : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"}`}>
-                              <Icon size={20} strokeWidth={1.9} className={active ? "text-s-ink" : "text-s-ink-3"} />
+                              <Icon size={20} strokeWidth={1.9} className={active ? "text-s-ink" : "text-s-ink-2"} />
                               <span className="flex-1">{t(key)}</span>
                             </Link>
                           );
@@ -418,7 +418,7 @@ export default function DashboardLayout({
               <div className="border-t border-s-border px-2 py-2">
                 <Link href={`/${locale}`} onClick={() => setMobileSidebarOpen(false)}
                   className="flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken transition-colors">
-                  <ArrowLeft size={20} strokeWidth={1.9} className="text-s-ink-3" />
+                  <ArrowLeft size={20} strokeWidth={1.9} className="text-s-ink-2" />
                   <span className="flex-1">{t("backToSite")}</span>
                 </Link>
               </div>

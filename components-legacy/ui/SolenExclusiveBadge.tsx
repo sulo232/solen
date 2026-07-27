@@ -21,7 +21,7 @@ interface SolenExclusiveBadgeProps {
  *
  * V3-D330 (Phase 2 sweep, 2026-05-28): updated for §1.5 Accent Application
  * Rules — decorative text-s-accent is now forbidden. Badge text + Sparkles
- * icon → text-s-ink-3 grey. The badge is semantically a Tag/Status role
+ * icon → text-s-ink-2 grey. The badge is semantically a Tag/Status role
  * ("this feature is Solen-exclusive") — color identity comes from the icon
  * shape (sparkles = special) + uppercase tracking, not from blue hue.
  * Tracking 0.08em is canonical (§2.5).
@@ -39,7 +39,7 @@ export default function SolenExclusiveBadge({
       onMouseLeave={() => setShowTooltip(false)}
       onClick={() => setShowTooltip((v) => !v)}
     >
-      <span className="inline-flex items-center gap-1 text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-3 cursor-help whitespace-nowrap">
+      <span className="inline-flex items-center gap-1 text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-2 cursor-help whitespace-nowrap">
         <Sparkles size={10} aria-hidden />
         Nur bei Solen
       </span>

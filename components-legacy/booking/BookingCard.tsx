@@ -124,12 +124,12 @@ export default function BookingCard({
           </p>
           {booking.salon?.address && (
             <p className="mt-1 flex items-center gap-1.5 text-[13px] text-s-ink-2">
-              <MapPin size={13} className="flex-none text-s-ink-3" />
+              <MapPin size={13} className="flex-none text-s-ink-2" />
               <span className="truncate">{booking.salon.address}</span>
             </p>
           )}
           <p className="mt-1 flex items-center gap-1.5 text-[13px] text-s-ink-2">
-            <Clock size={13} className="flex-none text-s-ink-3" />
+            <Clock size={13} className="flex-none text-s-ink-2" />
             {time}
           </p>
         </div>

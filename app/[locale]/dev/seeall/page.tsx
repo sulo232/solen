@@ -64,7 +64,7 @@ export default async function SeeAllDirectionsPage({
       {/* Review banner, plain English context for the owner, not part of any real PDP. */}
       <div className="border-b border-s-border bg-s-bg-sunken px-4 py-5 md:px-6 md:py-6">
         <div className="mx-auto max-w-[640px]">
-          <p className="font-body text-[12px] font-semibold text-s-ink-3">Solen, /dev/seeall</p>
+          <p className="font-body text-[12px] font-semibold text-s-ink-2">Solen, /dev/seeall</p>
           <h1 className="mt-1 font-display text-[18px] font-semibold tracking-[-0.01em] text-s-ink">
             See-all button, 3 directions, real data for &quot;{salon.name}&quot;
           </h1>
@@ -101,7 +101,7 @@ export default async function SeeAllDirectionsPage({
               <li
                 key={d.key}
                 className={`font-body text-[12px] ${
-                  v === d.key ? "font-semibold text-s-ink" : "text-s-ink-3"
+                  v === d.key ? "font-semibold text-s-ink" : "text-s-ink-2"
                 }`}
               >
                 {d.short}: {d.description}
@@ -119,7 +119,7 @@ export default async function SeeAllDirectionsPage({
       {/* Recommendation, MY chrome (English), not shipped copy. */}
       <div className="mx-auto mt-10 max-w-[640px] px-4 md:px-6">
         <div className="rounded-[16px] border border-s-border bg-s-bg-sunken p-5">
-          <p className="font-body text-[12px] font-semibold text-s-ink-3">Recommendation</p>
+          <p className="font-body text-[12px] font-semibold text-s-ink-2">Recommendation</p>
           <p className="mt-1.5 font-body text-[13.5px] leading-relaxed text-s-ink-2">
             <span className="font-semibold text-s-ink">V1, centred pill, everywhere.</span> The ask
             was for ONE principle, and the CTA ladder in CONTROL_ELEVATION.md independently lands on

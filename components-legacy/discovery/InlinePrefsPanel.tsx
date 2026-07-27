@@ -106,7 +106,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
         className="w-full flex items-center gap-3 px-4 py-3.5 text-left"
       >
         <div className="w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0 bg-s-ink/10">
-          <Sparkles size={14} className="text-s-ink-3" />
+          <Sparkles size={14} className="text-s-ink-2" />
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-heading text-s-ink">{t.banner}</p>
@@ -114,7 +114,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
         </div>
         <div className="flex items-center gap-2 shrink-0">
           {!expanded && (
-            <span className="text-[12px] font-heading uppercase tracking-[.06em] text-s-ink-3">
+            <span className="text-[12px] font-heading uppercase tracking-[.06em] text-s-ink-2">
               {t.expand}
             </span>
           )}

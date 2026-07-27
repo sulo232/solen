@@ -88,7 +88,7 @@ function ReviewsBlock({ reviews, locale }: { reviews: SalonDetail["reviews"]; lo
           {r.comment && (
             <p className="mt-1 font-body text-[13px] leading-relaxed text-s-ink-2">{r.comment}</p>
           )}
-          <p className="mt-1 font-body text-[12px] text-s-ink-3">{formatReviewDate(r.created_at, locale)}</p>
+          <p className="mt-1 font-body text-[12px] text-s-ink-2">{formatReviewDate(r.created_at, locale)}</p>
         </div>
       ))}
     </SectionShell>

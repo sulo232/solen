@@ -183,14 +183,14 @@ export default function ProfileTabs({
 
       {/* Search: real client-side filter over the active tab's items */}
       <label className="mt-4 flex h-11 items-center gap-2.5 rounded-[12px] border border-s-border px-[14px]">
-        <Search size={20} strokeWidth={1.9} className="shrink-0 text-s-ink-3" aria-hidden />
+        <Search size={20} strokeWidth={1.9} className="shrink-0 text-s-ink-2" aria-hidden />
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t("searchPlaceholder")}
           aria-label={t("searchPlaceholder")}
-          className="min-w-0 flex-1 bg-transparent font-body text-[14px] text-s-ink outline-none placeholder:text-s-ink-3"
+          className="min-w-0 flex-1 bg-transparent font-body text-[14px] text-s-ink outline-none placeholder:text-s-ink-2"
         />
       </label>
 
@@ -337,7 +337,7 @@ function BookingThumb({ photo }: { photo: string | null }) {
     <img src={photo} alt="" className="h-full w-full object-cover" />
   ) : (
     <div className="grid h-full w-full place-items-center">
-      <Scissors size={18} strokeWidth={1.9} className="text-s-ink-3" aria-hidden />
+      <Scissors size={18} strokeWidth={1.9} className="text-s-ink-2" aria-hidden />
     </div>
   );
 }
@@ -349,7 +349,7 @@ function CollageTile({ photos, aspectClass }: { photos: string[]; aspectClass: s
   if (photos.length === 0) {
     return (
       <div className={cn("flex w-full items-center justify-center overflow-hidden rounded-card bg-s-bg-sunken", aspectClass)}>
-        <Scissors size={22} strokeWidth={1.9} className="text-s-ink-3" aria-hidden />
+        <Scissors size={22} strokeWidth={1.9} className="text-s-ink-2" aria-hidden />
       </div>
     );
   }

@@ -139,7 +139,7 @@ export function SalonReviews({
           <span className="font-display text-[20px] font-bold leading-none text-s-ink tabular-nums">
             {average?.toFixed(1) ?? "-"}
           </span>
-          <span className="font-body text-[13px] text-s-ink-3">
+          <span className="font-body text-[13px] text-s-ink-2">
             {formatNumber(count, locale)} {count === 1 ? "Bewertung" : "Bewertungen"}
           </span>
         </div>
@@ -147,11 +147,11 @@ export function SalonReviews({
         {all.length === 0 ? (
           // Aggregate without bodies (count > 0) softens to "texts coming"; truly-empty (0) stays.
           count > 0 ? (
-            <p className="font-body mt-5 text-[14px] text-s-ink-3">
+            <p className="font-body mt-5 text-[14px] text-s-ink-2">
               Bewertungstexte folgen.
             </p>
           ) : (
-            <p className="font-body mt-5 text-[14px] text-s-ink-3">
+            <p className="font-body mt-5 text-[14px] text-s-ink-2">
               Noch keine Bewertungen.
             </p>
           )
@@ -178,7 +178,7 @@ export function SalonReviews({
 
             <div className="mt-5 flex flex-col">
               {visible.length === 0 ? (
-                <p className="font-body text-[14px] text-s-ink-3">Noch keine Bewertungen in dieser Gruppe.</p>
+                <p className="font-body text-[14px] text-s-ink-2">Noch keine Bewertungen in dieser Gruppe.</p>
               ) : (
                 visible.map((r) => (
                   <div key={r.id} className="border-t border-s-border pt-5 first:border-t-0 first:pt-0 [&+&]:mt-5">
@@ -229,7 +229,7 @@ function ReviewCard({ review, salonName, locale }: { review: Review; salonName?:
           <div className="font-body truncate text-[16px] font-semibold text-s-ink">
             {displayName ?? "Anonym"}
           </div>
-          <div className="font-body mt-0.5 text-[14px] text-s-ink-3">
+          <div className="font-body mt-0.5 text-[14px] text-s-ink-2">
             {formatReviewDate(review.created_at, locale)}
           </div>
         </div>
@@ -278,7 +278,7 @@ function ReviewCard({ review, salonName, locale }: { review: Review; salonName?:
             {salonName ? `Antwort von ${salonName}` : "Antwort vom Salon"}
           </p>
           <p className="mt-1.5 text-[13px] leading-relaxed text-s-ink-2">{reply.reply_text}</p>
-          <p className="mt-1.5 text-[12px] text-s-ink-3">{formatReviewDate(reply.created_at, locale)}</p>
+          <p className="mt-1.5 text-[12px] text-s-ink-2">{formatReviewDate(reply.created_at, locale)}</p>
         </div>
       )}
     </article>

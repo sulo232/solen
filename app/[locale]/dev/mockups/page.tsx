@@ -46,7 +46,7 @@ export default async function MockupsIndex({ params }: { params: Promise<{ local
   return (
     <main className="min-h-screen bg-white">
       <div className="mx-auto max-w-[560px] px-5 pb-16 pt-8">
-        <p className="text-[12px] font-semibold text-s-ink-3">Solen , mockups index</p>
+        <p className="text-[12px] font-semibold text-s-ink-2">Solen , mockups index</p>
         <h1 className="mt-1 font-heading text-[22px] font-bold text-s-ink">Map, search &amp; checkout mockups</h1>
         <p className="mt-1 text-[13px] text-s-ink-2">One link, tap through to each. Temporary preview , if a link dies the tunnel restarted; ask for the current index link.</p>
 

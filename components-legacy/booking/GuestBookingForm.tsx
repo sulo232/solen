@@ -121,7 +121,7 @@ const GuestBookingForm = forwardRef<GuestBookingFormHandle, GuestBookingFormProp
 
     const inputBase = cn( // mockup-ok: dead-class removal only, base input law already renders this fill/border/radius for type=text/tel/email (V3-D-input-fill-2026-07-17)
       "w-full px-3.5 py-3",
-      "font-body text-[15px] text-s-ink placeholder:text-s-ink-3",
+      "font-body text-[15px] text-s-ink placeholder:text-s-ink-2",
       "transition-[border-color,box-shadow] duration-150 ease-snap appearance-none",
     );
     /* !important: the base input law (globals.css) already out-specifies a plain
@@ -208,7 +208,7 @@ const GuestBookingForm = forwardRef<GuestBookingFormHandle, GuestBookingFormProp
               {errors.phone}
             </p>
           ) : (
-            <p id="guest-phone-hint" className="text-[12px] text-s-ink-3 mt-1.5">
+            <p id="guest-phone-hint" className="text-[12px] text-s-ink-2 mt-1.5">
               {t("phoneHint")}
             </p>
           )}
@@ -222,7 +222,7 @@ const GuestBookingForm = forwardRef<GuestBookingFormHandle, GuestBookingFormProp
           >
             <Mail size={14} className="text-s-ink-2" aria-hidden />
             {t("emailLabel")}
-            <span className="font-normal text-s-ink-3 text-[12px]">| {t("optional")}</span>
+            <span className="font-normal text-s-ink-2 text-[12px]">| {t("optional")}</span>
           </label>
           {/* mockup-ok: dead-class removal only, base input law already renders this fill/border/radius (V3-D-input-fill-2026-07-17) */}
           <input
@@ -250,7 +250,7 @@ const GuestBookingForm = forwardRef<GuestBookingFormHandle, GuestBookingFormProp
               {errors.email}
             </p>
           ) : (
-            <p id="guest-email-hint" className="text-[12px] text-s-ink-3 mt-1.5">
+            <p id="guest-email-hint" className="text-[12px] text-s-ink-2 mt-1.5">
               {t("emailHint")}
             </p>
           )}

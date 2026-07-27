@@ -33,7 +33,7 @@ function chipClass(kind: string): string {
   if (kind === "accent") return `${base} bg-s-ink/[0.07] text-s-ink`;
   if (kind === "success") return `${base} bg-s-success/10 text-s-success`;
   if (kind === "pink") return `${base} bg-[#FF3366]/10 text-[#FF3366]`;
-  return `${base} bg-s-bg-sunken text-s-ink-3`;
+  return `${base} bg-s-bg-sunken text-s-ink-2`;
 }
 
 function LadderNode({
@@ -53,13 +53,13 @@ function LadderNode({
       ? "bg-s-ink/80 text-white"
       : state === "now"
         ? "bg-s-ink text-white"
-        : "bg-s-bg-sunken text-s-ink-3";
+        : "bg-s-bg-sunken text-s-ink-2";
   const labelCls =
     state === "now"
       ? "text-s-ink font-bold"
       : state === "done"
         ? "text-s-ink-2"
-        : "text-s-ink-3";
+        : "text-s-ink-2";
   return (
     <div className="flex flex-col items-center gap-1.5">
       {state === "now" && !reduce ? (
@@ -125,7 +125,7 @@ export default function RewardsView({ status, locale }: { status: LoyaltyStatus;
         <div className="font-display text-[16px] font-bold tracking-[-0.02em] text-s-ink">
           solen<span className="align-top text-[11px] font-extrabold text-s-ink">+</span>
         </div>
-        <p className="relative mt-3.5 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-s-ink-3">
+        <p className="relative mt-3.5 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-s-ink-2">
           {t("yourStatus")}
         </p>
         <div className="relative mt-1 flex items-center gap-2">
@@ -168,13 +168,13 @@ export default function RewardsView({ status, locale }: { status: LoyaltyStatus;
               ? t("toNext", { n: status.toNext, tier: tierLabel(status.nextTier) })
               : t("topTier")}
           </span>
-          <span className="text-[12.5px] tabular-nums text-s-ink-3">
+          <span className="text-[12.5px] tabular-nums text-s-ink-2">
             {status.nextThreshold !== null
               ? t("ofVisits", { n: status.visits, total: status.nextThreshold })
               : t("visitsCount", { n: status.visits })}
           </span>
         </div>
-        <p className="relative mt-2.5 flex items-center gap-1.5 text-[11.5px] text-s-ink-3">
+        <p className="relative mt-2.5 flex items-center gap-1.5 text-[11.5px] text-s-ink-2">
           <Clock size={13} aria-hidden />{" "}
           {status.validThrough
             ? t("validThrough", {
@@ -215,7 +215,7 @@ export default function RewardsView({ status, locale }: { status: LoyaltyStatus;
                   <Check size={13} aria-hidden /> {t("active")}
                 </span>
               ) : (
-                <span className="flex shrink-0 items-center gap-1 text-[11px] font-semibold text-s-ink-3">
+                <span className="flex shrink-0 items-center gap-1 text-[11px] font-semibold text-s-ink-2">
                   <Lock size={12} aria-hidden /> {tierLabel(p.min)}
                 </span>
               )}

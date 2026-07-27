@@ -208,7 +208,7 @@ function ReviewCard({
             />
           ))}
         </div>
-        <span className="shrink-0 font-body text-[12px] font-normal text-s-ink-3 tabular-nums">
+        <span className="shrink-0 font-body text-[12px] font-normal text-s-ink-2 tabular-nums">
           {dateText}
         </span>
       </div>

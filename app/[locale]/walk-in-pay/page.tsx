@@ -391,7 +391,7 @@ export default function WalkInPayPage() {
           <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-[18px] bg-s-warning/10">
             <AlertTriangle size={26} className="text-s-warning" />
           </div>
-          <p className="mb-2 font-heading text-[12px] uppercase tracking-[.20em] text-s-ink-3">{l.errorEyebrow}</p>
+          <p className="mb-2 font-heading text-[12px] uppercase tracking-[.20em] text-s-ink-2">{l.errorEyebrow}</p>
           <p className="font-body text-sm text-s-ink-2">{error ?? l.invalid}</p>
         </motion.div>
       ) : booking ? (
@@ -502,7 +502,7 @@ export default function WalkInPayPage() {
                   <div className="flex items-center gap-1.5">
                     <span className="font-heading text-[15px] font-semibold text-s-ink">{booking.service_name}</span>
                     {booking.service_description && (
-                      <button type="button" onClick={() => setServiceInfoOpen((v) => !v)} aria-label={booking.service_name} className="grid h-5 w-5 shrink-0 place-items-center rounded-full text-s-ink-3 transition active:scale-90">
+                      <button type="button" onClick={() => setServiceInfoOpen((v) => !v)} aria-label={booking.service_name} className="grid h-5 w-5 shrink-0 place-items-center rounded-full text-s-ink-2 transition active:scale-90">
                         <Info size={14} />
                       </button>
                     )}

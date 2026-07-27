@@ -515,7 +515,7 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
 
       {/* Guest preview */}
       <div className="flex items-start gap-2 bg-s-bg-sunken rounded-[12px] px-3.5 py-3">
-        <Eye size={15} className="text-s-ink-3 shrink-0 mt-0.5" />
+        <Eye size={15} className="text-s-ink-2 shrink-0 mt-0.5" />
         <p className="text-xs text-s-ink-2 leading-relaxed">
           <span className="font-semibold text-s-ink">{t("customersSee")}</span> {previewText}
         </p>
@@ -1394,7 +1394,7 @@ function MobileSettingsIndex({
     <div>
       {groups.map((group) => (
         <div key={group.label}>
-          <p className="text-[12px] font-bold uppercase tracking-[0.09em] text-s-ink-3 mt-4 mb-2 first:mt-0">
+          <p className="text-[12px] font-bold uppercase tracking-[0.09em] text-s-ink-2 mt-4 mb-2 first:mt-0">
             {group.label}
           </p>
           <div className="rounded-[16px] border border-s-border bg-white overflow-hidden">
@@ -1410,7 +1410,7 @@ function MobileSettingsIndex({
                   <Icon size={19} className="text-s-ink shrink-0" />
                   <span className="flex-1 font-heading font-semibold text-[14.5px] text-s-ink">{row.label}</span>
                   {row.pill && <DashStatusPill tone={row.pill.tone}>{row.pill.label}</DashStatusPill>}
-                  <ChevronRight size={18} className="text-s-ink-3 shrink-0" />
+                  <ChevronRight size={18} className="text-s-ink-2 shrink-0" />
                 </button>
               );
             })}

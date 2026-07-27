@@ -16,7 +16,7 @@ function PillRow({
 }: { label: string; opts: Choice[]; value: string; onSelect: (v: string) => void }) {
   return (
     <div className="mt-6">
-      <p className="text-[13px] font-semibold text-s-ink-3">{label}</p>
+      <p className="text-[13px] font-semibold text-s-ink-2">{label}</p>
       <div className="mt-2.5 flex flex-wrap gap-2">
         {opts.map((o) => {
           const on = value === o.value;

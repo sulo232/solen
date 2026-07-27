@@ -27,7 +27,7 @@ export default function CheckoutConfirmMockup() {
   return (
     <main className="min-h-screen bg-white">
       <div className="mx-auto max-w-[900px] px-4 pb-16 pt-6">
-        <p className="text-[12px] font-semibold text-s-ink-3">Mockup , checkout confidence (#8)</p>
+        <p className="text-[12px] font-semibold text-s-ink-2">Mockup , checkout confidence (#8)</p>
         <h1 className="mt-1 font-heading text-[19px] font-bold text-s-ink">An honest processing beat, then a receipt you can trust</h1>
         <p className="mt-1 max-w-[640px] text-[13px] text-s-ink-2">The doubt (&ldquo;did I actually pay?&rdquo;) isn&apos;t about time , it&apos;s density. Show the card last-4 + amount + reference, and a real spinner ONLY while Stripe is working (no fake delay).</p>
 
@@ -44,7 +44,7 @@ export default function CheckoutConfirmMockup() {
                 className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-s-ink px-6 py-3.5 text-[15px] font-bold text-white active:scale-[0.98]" /* selected-ok: primary commit CTA (pay) */>
                 {busy ? <><Loader2 size={17} className="animate-spin" /> Processing payment…</> : "Pay CHF 45.00"}
               </button>
-              <p className="mt-2 text-center text-[12px] text-s-ink-3">Tap to toggle the processing state</p>
+              <p className="mt-2 text-center text-[12px] text-s-ink-2">Tap to toggle the processing state</p>
             </Phone>
           </div>
 
@@ -122,7 +122,7 @@ export default function CheckoutConfirmMockup() {
                   <p className="text-[13px] font-bold text-s-ink">Solen</p>
                   <p className="truncate text-[13px] text-s-ink-2">Appointment confirmed , Do 11. Juni, 12:00</p>
                 </div>
-                <span className="shrink-0 text-[12px] text-s-ink-3">now</span>
+                <span className="shrink-0 text-[12px] text-s-ink-2">now</span>
               </div>
 
               {/* the in-app confirmation popup (modal) , unmistakable "you're booked" */}

@@ -266,7 +266,7 @@ export default function SalonReviews({
               {/* mockup-ok: PDP-grammar transfer (owner round 10 Y1) , one grey count,
                   "N Bewertungen" (was a bare "(N)"), reusing the same reviewsCount key the
                   count+sort row below used to duplicate. */}
-              <span className="text-[13px] text-s-ink-3">{t("reviewsCount", { count: reviewCount.toLocaleString("de-CH") })}</span>
+              <span className="text-[13px] text-s-ink-2">{t("reviewsCount", { count: reviewCount.toLocaleString("de-CH") })}</span>
             </div>
 
             {/* mockup-ok: F2 chip filter row (owner-picked direction, REMOVED.md "reviews
@@ -355,7 +355,7 @@ export default function SalonReviews({
                           <div className="truncate text-[15px] font-semibold text-s-ink">
                             {rev.profiles?.display_name ?? "Anonym"}
                           </div>
-                          <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[13px] text-s-ink-3">
+                          <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[13px] text-s-ink-2">
                             <span>
                               {formatReviewDate(rev.created_at, locale)}
                             </span>
@@ -380,7 +380,7 @@ export default function SalonReviews({
                             onClick={() => handleFlagReview(rev.id)}
                             aria-label={t("flagReview")}
                             title={t("flagReview")}
-                            className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-s-ink-3 transition-[colors,transform] duration-150 hover:bg-s-bg-sunken hover:text-s-ink-2 active:scale-[0.94] active:duration-[80ms] active:ease-glide"
+                            className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-s-ink-2 transition-[colors,transform] duration-150 hover:bg-s-bg-sunken hover:text-s-ink-2 active:scale-[0.94] active:duration-[80ms] active:ease-glide"
                           >
                             <Flag size={15} aria-hidden />
                           </button>
@@ -419,7 +419,7 @@ export default function SalonReviews({
                             </p>
                           ) : (
                             <>
-                              <p className="text-[12px] font-heading text-s-ink-3 mb-2">
+                              <p className="text-[12px] font-heading text-s-ink-2 mb-2">
                                 {t("flagReasonLabel")}
                               </p>
                               <textarea
@@ -432,7 +432,7 @@ export default function SalonReviews({
                               <div className="flex gap-2 mt-2 justify-end">
                                 <button
                                   onClick={() => setFlaggingReviewId(null)}
-                                  className="text-xs text-s-ink-3 hover:text-s-ink-2 font-heading px-3 py-1.5 transition-[colors,transform] duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide"
+                                  className="text-xs text-s-ink-2 hover:text-s-ink-2 font-heading px-3 py-1.5 transition-[colors,transform] duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide"
                                 >
                                   {t("flagCancel")}
                                 </button>
@@ -485,7 +485,7 @@ export default function SalonReviews({
                             {salonName ? t("replyFrom", { name: salonName }) : t("salonReplied")}
                           </p>
                           <p className="mt-1.5 text-[13px] leading-relaxed text-s-ink-2">{reply.reply_text}</p>
-                          <p className="mt-1.5 text-[12px] text-s-ink-3">
+                          <p className="mt-1.5 text-[12px] text-s-ink-2">
                             {formatReviewDate(reply.created_at, locale)}
                           </p>
                         </div>

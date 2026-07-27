@@ -43,7 +43,7 @@ export function DirectionDistribution({ average, count, reviews, seeAllHref }: R
               />
             ))}
           </div>
-          <span className="font-body text-[13px] text-s-ink-3">
+          <span className="font-body text-[13px] text-s-ink-2">
             {count.toLocaleString("en-GB")} reviews
           </span>
         </div>

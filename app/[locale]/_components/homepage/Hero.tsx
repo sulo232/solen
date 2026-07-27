@@ -339,7 +339,7 @@ function SearchRow({
       {/* Value column — left-padded so text sits "a little away" from the line */}
       <span
         className={`
-          font-body min-w-0 flex-1 truncate text-base text-s-ink-3 pl-4
+          font-body min-w-0 flex-1 truncate text-base text-s-ink-2 pl-4
           ${isPlaceholder ? "font-normal" : "font-medium"}
         `}
       >

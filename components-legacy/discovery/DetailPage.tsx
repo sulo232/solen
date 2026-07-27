@@ -315,7 +315,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
               <span className="inline-flex items-center rounded-full bg-s-bg-sunken px-3 py-1 text-[12.5px] font-semibold tracking-[-0.01em] text-s-ink">{item.source === "tiktok" ? `@${creator}` : `Foto: ${creator}`}</span>
             )
           )}
-          <span className="inline-flex items-center gap-1.5 text-[12px] text-s-ink-3">
+          <span className="inline-flex items-center gap-1.5 text-[12px] text-s-ink-2">
             <CalendarDays size={13} /> {formatDate(item.created_at, locale)}
           </span>
         </div>
@@ -365,7 +365,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
               className="flex w-full items-center justify-between px-0.5 py-4"
             >
               <span className="font-heading text-[15px] font-semibold tracking-[-0.01em] text-s-ink">{t.details}</span>
-              <ChevronDown size={18} className={`text-s-ink-3 transition-transform duration-200 ${detailsOpen ? "rotate-180" : ""}`} />
+              <ChevronDown size={18} className={`text-s-ink-2 transition-transform duration-200 ${detailsOpen ? "rotate-180" : ""}`} />
             </button>
             {detailsOpen && (
               <div className="pb-2">
@@ -374,7 +374,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
                 {products && <DetailRow k={t.products} v={products} />}
                 {item.cut_guide && (
                   <div className="border-t border-s-border py-2.5">
-                    <p className="mb-1.5 text-[13.5px] text-s-ink-3">{t.cutGuide}</p>
+                    <p className="mb-1.5 text-[13.5px] text-s-ink-2">{t.cutGuide}</p>
                     <p className="m-0 whitespace-pre-line font-mono text-[12.5px] leading-relaxed text-s-ink-2">{item.cut_guide}</p>
                   </div>
                 )}
@@ -460,7 +460,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
 function DetailRow({ k, v }: { k: string; v: string }) {
   return (
     <div className="flex gap-3.5 border-t border-s-border py-2.5 text-[13.5px]">
-      <span className="w-[108px] shrink-0 text-s-ink-3">{k}</span>
+      <span className="w-[108px] shrink-0 text-s-ink-2">{k}</span>
       <span className="flex-1 text-s-ink">{v}</span>
     </div>
   );

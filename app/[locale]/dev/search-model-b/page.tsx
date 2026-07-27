@@ -233,7 +233,7 @@ function SearchBar({ line1, value, onChange }: { line1: string; value: string; o
           onChange={(e) => onChange(e.target.value)}
           placeholder="Balayage, Bart, Maniküre..."
           aria-label="Service suchen"
-          className="block w-full truncate !border-0 !bg-transparent !min-h-0 !p-0 font-body !text-[12.5px] text-s-ink-2 outline-none placeholder:text-s-ink-3 focus:text-s-ink"
+          className="block w-full truncate !border-0 !bg-transparent !min-h-0 !p-0 font-body !text-[12.5px] text-s-ink-2 outline-none placeholder:text-s-ink-2 focus:text-s-ink"
         />
       </span>
       <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-s-border text-s-ink">
@@ -361,7 +361,7 @@ function Screen() {
           replacing the prior version's dominant mono param box. One line, 12px (the
           LOCKFILE §2.5 legibility floor), grey. */}
       <div className="mx-auto w-full max-w-[680px] px-4 pt-2">
-        <p className="truncate font-mono text-[12px] text-s-ink-3">
+        <p className="truncate font-mono text-[12px] text-s-ink-2">
           A2 Model B live: <span className="text-s-ink-2">?category={category}</span>{" "}
           <span className="text-s-ink-2">?q={q.trim() || "(empty)"}</span> -&gt; {composedUrl}
         </p>

@@ -132,7 +132,7 @@ function PriceSlider({
           style={{ left: `${pct}%` }}
         />
       </div>
-      <div className="mt-2 flex justify-between font-body text-[12px] text-s-ink-3">
+      <div className="mt-2 flex justify-between font-body text-[12px] text-s-ink-2">
         <span>CHF {MIN}</span>
         <span>CHF {MAX}+</span>
       </div>
@@ -250,7 +250,7 @@ function RatingBar({
         </motion.div>
       </div>
       {/* Tick labels under the track - one per stop, >= 12px. */}
-      <div className="mt-2 flex justify-between font-body text-[12px] text-s-ink-3">
+      <div className="mt-2 flex justify-between font-body text-[12px] text-s-ink-2">
         {RATING_STOPS.map((s, i) => (
           <span key={i} className={i === idx ? "font-semibold text-s-ink" : undefined}>
             {s == null ? anyLabel : String(s)}

@@ -123,7 +123,7 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
               <span className="font-heading font-semibold text-sm text-s-ink w-9 shrink-0">{DAYS[di]}</span>
               <div className="flex-1 min-w-0 flex gap-1.5 flex-wrap">
                 {dayRules.length === 0 ? (
-                  <span className="text-s-ink-3 text-sm">—</span>
+                  <span className="text-s-ink-2 text-sm">—</span>
                 ) : (
                   dayRules.map((r) => (
                     <button
@@ -175,7 +175,7 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
 
           <div className="grid grid-cols-2 gap-2.5 mb-3.5">
             <div>
-              <label className="block text-[12px] text-s-ink-3 mb-1">{t("from")}</label>
+              <label className="block text-[12px] text-s-ink-2 mb-1">{t("from")}</label>
               <input
                 type="time"
                 value={addStart}
@@ -184,7 +184,7 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
               />
             </div>
             <div>
-              <label className="block text-[12px] text-s-ink-3 mb-1">{t("to")}</label>
+              <label className="block text-[12px] text-s-ink-2 mb-1">{t("to")}</label>
               <input
                 type="time"
                 value={addEnd}
@@ -195,7 +195,7 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
           </div>
 
           <div className="mb-3.5">
-            <label className="block text-[12px] text-s-ink-3 mb-1">{t("discount")}</label>
+            <label className="block text-[12px] text-s-ink-2 mb-1">{t("discount")}</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -223,7 +223,7 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
       )}
 
       {rules.length === 0 && !addOpen && (
-        <p className="text-xs text-s-ink-3 text-center py-3 mt-1">{t("empty")}</p>
+        <p className="text-xs text-s-ink-2 text-center py-3 mt-1">{t("empty")}</p>
       )}
     </div>
   );

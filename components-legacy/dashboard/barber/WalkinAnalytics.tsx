@@ -120,7 +120,7 @@ export default function WalkinAnalytics({ salonId }: WalkinAnalyticsProps) {
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
           {metrics.map((m) => (
             <div key={m.label} className="bg-white rounded-card border border-s-ink/5 p-4">
-              <p className="text-[12px] tracking-[0.2em] uppercase text-s-ink-3 font-heading">
+              <p className="text-[12px] tracking-[0.2em] uppercase text-s-ink-2 font-heading">
                 {m.label}
               </p>
               <p className="text-2xl font-heading text-s-ink data-text mt-1">

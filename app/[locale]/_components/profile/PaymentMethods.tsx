@@ -78,7 +78,7 @@ function CardRow({ method, endsInLabel, validUntilLabel }: { method: PaymentMeth
       </div>
       <div className="min-w-0 flex-1">
         <div className="truncate text-[15px] font-semibold text-s-ink">{name}</div>
-        <div className="mt-px text-[12.5px] text-s-ink-3">
+        <div className="mt-px text-[12.5px] text-s-ink-2">
           {endsInLabel} {method.last4}
           {exp ? `, ${validUntilLabel} ${exp}` : ""}
         </div>

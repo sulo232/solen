@@ -69,7 +69,7 @@ export default async function ReviewsDirectionsPage({
   return (
     <main className="min-h-screen bg-s-bg-sunken px-4 py-10">
       <div className="mx-auto max-w-[460px]">
-        <p className="font-body text-[12px] font-semibold text-s-ink-3">Solen , /dev/pdp/reviews-directions</p>
+        <p className="font-body text-[12px] font-semibold text-s-ink-2">Solen , /dev/pdp/reviews-directions</p>
         <h1 className="mt-1 font-display text-[20px] font-semibold tracking-[-0.01em] text-s-ink">
           Reviews section , 3 redesign directions
         </h1>

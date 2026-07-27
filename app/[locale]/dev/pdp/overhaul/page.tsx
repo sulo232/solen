@@ -40,7 +40,7 @@ export default async function PdpOverhaulPage({
       {/* Review banner , plain English context for the owner, not part of the PDP itself. */}
       <div className="border-b border-s-border bg-s-bg-sunken px-4 py-4 md:px-6">
         <div className="mx-auto max-w-[1180px]">
-          <p className="font-body text-[12px] font-semibold text-s-ink-3">Solen , /dev/pdp/overhaul</p>
+          <p className="font-body text-[12px] font-semibold text-s-ink-2">Solen , /dev/pdp/overhaul</p>
           <h1 className="mt-1 font-display text-[18px] font-semibold tracking-[-0.01em] text-s-ink">
             PDP overhaul , real salon &quot;{salon.name}&quot; ({realPhotoCount} real gallery photos), 5 changes applied
           </h1>
@@ -51,12 +51,12 @@ export default async function PdpOverhaulPage({
             <li>4. Nearby cards are bigger (~1.25 visible at 390px, was ~1.5) and now use the exact homepage SalonCard grammar (5:4 photo, rounded-22, discount pill, heart, name+star row).</li>
             <li>5. The black &quot;book at {salon.name}&quot; hero card is gone (book already lives in the sticky bottom bar + sidebar); only the quiet &quot;Find more&quot; discovery chips remain, now a peer section instead of a hero.</li>
           </ul>
-          <p className="mt-3 font-body text-[12px] text-s-ink-3">
+          <p className="mt-3 font-body text-[12px] text-s-ink-2">
             Deviations from the real page, for review only: analytics/JSON-LD side effects and the
             Book/Walk-in toggle are omitted (book mode only) to keep this diff surgical to the 5
             changes above. Real photos, reviews and nearby data below, live from the database.
           </p>
-          <p className="mt-2 font-body text-[12px] text-s-ink-3">
+          <p className="mt-2 font-body text-[12px] text-s-ink-2">
             Portfolio grid: this default salon (&quot;{FIXTURE_SLUG}&quot;) genuinely only has 6
             uploaded gallery photos, so its 3x3 grid is honestly short (footnote below the grid)
             rather than padded with invented tiles. To review the full 3x3=9 grid with real

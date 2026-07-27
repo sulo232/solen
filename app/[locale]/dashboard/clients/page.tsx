@@ -145,7 +145,7 @@ export default function ClientsPage() {
       </div>
 
       {/* Search */}
-      <div className="flex items-center gap-2 border border-s-border rounded-[14px] px-3.5 py-2.5 text-s-ink-3 mb-4">
+      <div className="flex items-center gap-2 border border-s-border rounded-[14px] px-3.5 py-2.5 text-s-ink-2 mb-4">
         <Search size={17} className="shrink-0" />
         {/* mockup-ok: !important prevents a look change, not a new one. The wrapper div owns
             the visible chrome (border+radius+padding); this input must stay invisible AND
@@ -157,7 +157,7 @@ export default function ClientsPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder={t("searchPlaceholder")}
-          className="flex-1 min-w-0 !border-0 !bg-transparent !min-h-0 !px-0 !text-[13.5px] text-s-ink placeholder:text-s-ink-3 focus:outline-none"
+          className="flex-1 min-w-0 !border-0 !bg-transparent !min-h-0 !px-0 !text-[13.5px] text-s-ink placeholder:text-s-ink-2 focus:outline-none"
         />
       </div>
 

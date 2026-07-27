@@ -50,7 +50,7 @@ export function DirectionSegmented({ average, count, reviews, seeAllHref }: Revi
           {average?.toFixed(1) ?? "-"}
         </span>
         <Star size={16} stroke="none" aria-hidden className="fill-s-star" />
-        <span className="font-body text-[13px] text-s-ink-3">{count} reviews</span>
+        <span className="font-body text-[13px] text-s-ink-2">{count} reviews</span>
       </div>
 
       <div className="mt-5 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -71,7 +71,7 @@ export function DirectionSegmented({ average, count, reviews, seeAllHref }: Revi
 
       <div className="mt-5 flex flex-col">
         {visible.length === 0 ? (
-          <p className="font-body text-[14px] text-s-ink-3">No reviews in this group yet.</p>
+          <p className="font-body text-[14px] text-s-ink-2">No reviews in this group yet.</p>
         ) : (
           visible.map((r) => (
             <div key={r.id} className="border-t border-s-border pt-5 first:border-t-0 first:pt-0 [&+&]:mt-5">

@@ -177,7 +177,7 @@ function Screen() {
           </div>
           <div className="min-h-0 flex-1 overflow-y-auto px-3 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <p className="pb-2 pt-1 text-center text-[13px] text-s-ink-2">19 salons in this area</p>
-            <p className="pb-2 text-center text-[12px] text-s-ink-3">Single tap shows it on the map. Double tap opens the store.</p>
+            <p className="pb-2 text-center text-[12px] text-s-ink-2">Single tap shows it on the map. Double tap opens the store.</p>
             <div className="space-y-1.5">
               {STORES.map((s, i) => (
                 <SheetCard key={s.name} s={s} selected={selected === i} onClick={() => onCardTap(i)} />

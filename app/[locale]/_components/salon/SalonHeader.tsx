@@ -136,7 +136,7 @@ export function SalonHeader({
               aria-label="Standort anzeigen"
               className="inline-flex items-center gap-1 text-left text-s-ink-2 transition-[colors,transform] hover:text-s-ink active:scale-[0.98] active:duration-[80ms] active:ease-glide"
             >
-              <MapPin size={14} className="shrink-0 text-s-ink-3" strokeWidth={2} />
+              <MapPin size={14} className="shrink-0 text-s-ink-2" strokeWidth={2} />
               {fullAddress}
             </button>
           </div>

@@ -92,7 +92,7 @@ export default function NoResultsStatesPage() {
             <div key={c.key}>
               <div className="mb-2">
                 <div className="font-body text-[13px] font-semibold text-s-ink">{c.label}</div>
-                <div className="font-body text-[12px] text-s-ink-3">{c.note}</div>
+                <div className="font-body text-[12px] text-s-ink-2">{c.note}</div>
               </div>
               <div className="overflow-hidden rounded-[28px] border border-s-border bg-white">
                 {c.state}

@@ -21,7 +21,7 @@ export default function MapExtrasMockup() {
   return (
     <main className="min-h-screen bg-white">
       <div className="mx-auto max-w-[460px] px-4 pb-16 pt-6">
-        <p className="text-[12px] font-semibold text-s-ink-3">Mockup , map pin preview + area search (#2 + #1)</p>
+        <p className="text-[12px] font-semibold text-s-ink-2">Mockup , map pin preview + area search (#2 + #1)</p>
         <h1 className="mt-1 font-heading text-[19px] font-bold text-s-ink">Tapping a pin, and the stuck city bar</h1>
 
         {/* #2 STORE PREVIEW */}

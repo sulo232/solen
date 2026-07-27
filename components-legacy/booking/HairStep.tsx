@@ -203,7 +203,7 @@ export default function HairStep({
             placeholder={t("hairNotePlaceholder")}
             className="mt-2 w-full"
           />
-          <p className="mt-1 text-right text-[11.5px] tabular-nums text-s-ink-3">{note.length}/500</p>
+          <p className="mt-1 text-right text-[11.5px] tabular-nums text-s-ink-2">{note.length}/500</p>
         </div>
       </motion.div>
 
@@ -235,7 +235,7 @@ export default function HairStep({
           <button
             type="button"
             onClick={advance}
-            className="mt-2.5 block w-full text-center text-[13.5px] font-medium text-s-ink-3"
+            className="mt-2.5 block w-full text-center text-[13.5px] font-medium text-s-ink-2"
           >
             {t("hairSkip")}
           </button>

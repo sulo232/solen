@@ -72,7 +72,7 @@ export function SalonServices({
     return (
       <section id="section-services">
         <SectionHeader>Services</SectionHeader>
-        <p className="font-body mt-4 text-[14px] text-s-ink-3">
+        <p className="font-body mt-4 text-[14px] text-s-ink-2">
           Dieser Salon hat noch keine Services hinterlegt.
         </p>
       </section>
@@ -171,7 +171,7 @@ function ServiceRow({
         <div className="font-body text-[15px] font-medium text-s-ink md:text-[16px]">
           {service.name_de}
         </div>
-        <div className="font-body mt-1 text-[13px] text-s-ink-3 md:text-[14px]">
+        <div className="font-body mt-1 text-[13px] text-s-ink-2 md:text-[14px]">
           {formatDurationDE(service.duration_minutes)}
         </div>
         <div className="font-body mt-3 text-[14px] text-s-ink md:text-[15px]">

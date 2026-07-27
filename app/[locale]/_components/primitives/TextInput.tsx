@@ -22,7 +22,7 @@ const inputVariants = cva( // mockup-ok: dead-class removal only, base input law
     // here (removed 2026-07-17): globals.css's base input law already renders them with
     // higher specificity than these plain utilities, so re-declaring them here was a lie.
     // The `tone` variants below still own their border-color/ring on top of that base.
-    "placeholder:text-s-ink-3",
+    "placeholder:text-s-ink-2",
     "selection:bg-s-ink/20",
     "transition-[border-color,background-color,box-shadow,color] duration-150 ease-snap",
     "caret-s-brand",
@@ -31,7 +31,7 @@ const inputVariants = cva( // mockup-ok: dead-class removal only, base input law
     // owner flagged (V3-D449). Border tint kept; the single ring comes from globals.
     "focus-visible:border-s-ink focus-visible:bg-s-bg-base",
     // disabled — opacity .5, sunken bg, ink-3 text, not-allowed
-    "disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-s-bg-sunken disabled:text-s-ink-3",
+    "disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-s-bg-sunken disabled:text-s-ink-2",
   ),
   {
     variants: {

@@ -11,7 +11,7 @@ import { EVIDENCE_ROWS } from "./speeds";
 export function EvidenceTable() {
   return (
     <section className="rounded-2xl border border-s-border bg-white p-4">
-      <p className="font-body text-[12px] font-semibold text-s-ink-3">Section 3</p>
+      <p className="font-body text-[12px] font-semibold text-s-ink-2">Section 3</p>
       <h2 className="mt-0.5 font-display text-[18px] font-semibold tracking-[-0.01em] text-s-ink">
         The evidence
       </h2>
@@ -24,9 +24,9 @@ export function EvidenceTable() {
         <table className="w-full min-w-[520px] border-collapse text-left">
           <thead>
             <tr className="border-b border-s-border">
-              <th className="py-2 pr-3 font-body text-[12px] font-semibold text-s-ink-3">Source</th>
-              <th className="py-2 pr-3 font-body text-[12px] font-semibold text-s-ink-3">Speeds observed</th>
-              <th className="py-2 font-body text-[12px] font-semibold text-s-ink-3">Note</th>
+              <th className="py-2 pr-3 font-body text-[12px] font-semibold text-s-ink-2">Source</th>
+              <th className="py-2 pr-3 font-body text-[12px] font-semibold text-s-ink-2">Speeds observed</th>
+              <th className="py-2 font-body text-[12px] font-semibold text-s-ink-2">Note</th>
             </tr>
           </thead>
           <tbody>

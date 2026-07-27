@@ -437,7 +437,7 @@ function AmountChips({
   return (
     <div className="mt-[18px] grid grid-cols-2 gap-3">
       <div className="rounded-[12px] border border-s-border bg-white px-3.5 py-3">
-        <div className="text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink-3">
+        <div className="text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink-2">
           {t("rowPaid")}
         </div>
         <div className="mt-[3px] font-heading text-[17px] font-semibold tabular-nums tracking-[-0.01em] text-s-ink">
@@ -445,7 +445,7 @@ function AmountChips({
         </div>
       </div>
       <div className="rounded-[12px] border border-s-border bg-white px-3.5 py-3">
-        <div className="text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink-3">
+        <div className="text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink-2">
           {t("rowRequested")}
         </div>
         <div className={`mt-[3px] font-heading text-[17px] font-semibold tabular-nums tracking-[-0.01em] ${caseAmountColor(c.status)}`}>
@@ -461,7 +461,7 @@ function AmountChips({
 function ResponseBlock({ label, body }: { label: string; body: string }) {
   return (
     <div className="mt-[18px] rounded-[12px] border border-s-border bg-white px-3.5 py-3.5">
-      <div className="mb-1 text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink-3">
+      <div className="mb-1 text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink-2">
         {label}
       </div>
       <div className="text-[13.5px] leading-[1.45] text-s-ink/80">{body}</div>
@@ -525,10 +525,10 @@ function Timeline({
               <span
                 className={cn(
                   "absolute inset-0 rounded-pill border-2",
-                  n.state === "done" && "border-s-ink-3 bg-s-ink-3",
+                  n.state === "done" && "border-s-ink-2 bg-s-ink-2",
                   n.state === "reject" && "border-s-error bg-s-error",
                   n.state === "current" && (nowIsError ? "border-s-error bg-s-error" : "border-s-accent bg-s-accent"),
-                  n.state === "pending" && "border-s-ink-3 bg-white",
+                  n.state === "pending" && "border-s-ink-2 bg-white",
                 )}
               />
             </span>
@@ -563,7 +563,7 @@ function Timeline({
                       ? "text-s-error"
                       : n.note.tone === "good"
                       ? "text-s-success"
-                      : "text-s-ink-3",
+                      : "text-s-ink-2",
                   )}
                 >
                   {n.note.who}
@@ -779,9 +779,9 @@ function ActionZone({
           value={escNote}
           onChange={(e) => setEscNote(e.target.value.slice(0, ESC_NOTE_MAX))}
           placeholder={t("escFormNotePlaceholder")}
-          className="mt-2 w-full resize-none p-3 font-body text-[13.5px] text-s-ink placeholder:text-s-ink-3" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
+          className="mt-2 w-full resize-none p-3 font-body text-[13.5px] text-s-ink placeholder:text-s-ink-2" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
         />
-        <div className="mt-[-2px] text-right text-[12px] text-s-ink-3">
+        <div className="mt-[-2px] text-right text-[12px] text-s-ink-2">
           {t("charCount", { count: escNote.length, max: ESC_NOTE_MAX })}
         </div>
 
@@ -951,7 +951,7 @@ function ActionInner({
 function ShieldNote({ text }: { text: string }) {
   return (
     <div className="mb-3 flex gap-2 text-[12px] leading-[1.4] text-s-ink-2">
-      <ShieldCheck size={15} className="mt-[1px] flex-shrink-0 text-s-ink-3" aria-hidden />
+      <ShieldCheck size={15} className="mt-[1px] flex-shrink-0 text-s-ink-2" aria-hidden />
       <span>{text}</span>
     </div>
   );

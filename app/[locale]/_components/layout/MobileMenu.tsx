@@ -261,14 +261,14 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                   </span>
                   <span className="min-w-0">
                     <span className="block font-body text-[15px] font-bold text-s-ink">Dashboard</span>
-                    <span className="mt-0.5 block font-body text-[12px] font-medium text-s-ink-3">Salon verwalten</span>
+                    <span className="mt-0.5 block font-body text-[12px] font-medium text-s-ink-2">Salon verwalten</span>
                   </span>
                 </span>
-                <ChevronRight size={18} strokeWidth={2.2} className="shrink-0 text-s-ink-3" aria-hidden />
+                <ChevronRight size={18} strokeWidth={2.2} className="shrink-0 text-s-ink-2" aria-hidden />
               </Link>
             )}
 
-            <p className="mb-2 ml-1 font-body text-[12px] font-semibold uppercase tracking-[0.05em] text-s-ink-3">
+            <p className="mb-2 ml-1 font-body text-[12px] font-semibold uppercase tracking-[0.05em] text-s-ink-2">
               {t("quickAccess")}
             </p>
             <div className="grid grid-cols-2 gap-2.5">
@@ -381,7 +381,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                 <span className="block font-body text-[15px] font-bold text-s-ink">
                   Werde Solen-Partner
                 </span>
-                <span className="mt-0.5 block font-body text-[12px] font-medium text-s-ink-3">
+                <span className="mt-0.5 block font-body text-[12px] font-medium text-s-ink-2">
                   In 60 Sekunden eintragen, kostenlos starten
                 </span>
               </span>
@@ -433,7 +433,7 @@ function MenuRow({
       <ChevronRight
         size={18}
         strokeWidth={2}
-        className={primary ? "text-s-ink" : "text-s-ink-3"}
+        className={primary ? "text-s-ink" : "text-s-ink-2"}
         aria-hidden
       />
     </Link>

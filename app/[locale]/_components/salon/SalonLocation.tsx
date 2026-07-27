@@ -239,7 +239,7 @@ export function SalonLocation({
               <span className="min-w-0">
                 <span className="block truncate font-body text-[14px] font-semibold text-s-ink">{salon.name}</span>
                 <span className="mt-0.5 flex items-center gap-1 text-[12.5px] text-s-ink-2">
-                  <MapPin size={12} className="shrink-0 text-s-ink-3" strokeWidth={2} />
+                  <MapPin size={12} className="shrink-0 text-s-ink-2" strokeWidth={2} />
                   <span className="truncate">{salon.address}</span>
                 </span>
               </span>
@@ -283,7 +283,7 @@ export function SalonLocation({
           )}
           <div className="min-w-0 flex-1 font-body text-[14px]">
             <span className="flex items-start gap-1.5 text-s-ink-2">
-              <MapPin size={14} className="mt-0.5 shrink-0 text-s-ink-3" strokeWidth={2} />
+              <MapPin size={14} className="mt-0.5 shrink-0 text-s-ink-2" strokeWidth={2} />
               <span className="leading-snug">{salon.address}</span>
             </span>
             <a
@@ -318,7 +318,7 @@ export function SalonLocation({
       {/* Street stays plain ink; "Wegbeschreibung" is the link BESIDE it (no blue street). */}
       <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-body text-[14px]">
         <span className="inline-flex items-center gap-1.5 text-s-ink-2">
-          <MapPin size={14} className="shrink-0 text-s-ink-3" strokeWidth={2} />
+          <MapPin size={14} className="shrink-0 text-s-ink-2" strokeWidth={2} />
           {salon.address}
         </span>
         <a
@@ -448,7 +448,7 @@ function TransitChip({
   // "what is this" twice over (glyph + word), not just once.
   return (
     <span className="flex shrink-0 flex-col items-end gap-0.5 text-right">
-      <span className="flex items-center gap-1 text-s-ink-3">
+      <span className="flex items-center gap-1 text-s-ink-2">
         <Icon size={13} strokeWidth={2.25} className="shrink-0" />
         <span className="text-[9.5px] font-bold uppercase tracking-[0.08em]">{transitTypeLabel(stop.type)}</span>
       </span>

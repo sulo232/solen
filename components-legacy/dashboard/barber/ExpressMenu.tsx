@@ -67,7 +67,7 @@ export default function ExpressMenu({ salonId }: ExpressMenuProps) {
   if (loading) {
     return (
       <div className="rounded-[16px] border border-s-border bg-white p-4">
-        <p className="text-sm text-s-ink-3 text-center py-4">
+        <p className="text-sm text-s-ink-2 text-center py-4">
           {t("loading")}
         </p>
       </div>

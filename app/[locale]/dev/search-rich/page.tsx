@@ -24,23 +24,23 @@ const SERVICES = [
 function SearchField() {
   return (
     <div className="mx-4 mt-3 flex items-center gap-3 rounded-[18px] bg-white px-4 py-3 shadow-[0_10px_40px_rgba(10,10,10,0.10)]">
-      <Search size={19} strokeWidth={2} className="text-s-ink-3" />
+      <Search size={19} strokeWidth={2} className="text-s-ink-2" />
       <span className="text-[15px] font-semibold text-s-ink">buzzcut</span>
       <span className="ml-auto h-4 w-px bg-s-border" />
-      <span className="text-[13px] text-s-ink-3">Basel</span>
+      <span className="text-[13px] text-s-ink-2">Basel</span>
     </div>
   );
 }
 
 function Label({ children }: { children: React.ReactNode }) {
-  return <p className="mb-2 mt-5 px-4 text-[12px] font-semibold text-s-ink-3">{children}</p>;
+  return <p className="mb-2 mt-5 px-4 text-[12px] font-semibold text-s-ink-2">{children}</p>;
 }
 
 function LooksStrip() {
   return (
     <div className="flex gap-2 overflow-hidden px-4">
       {[0, 1, 2, 3].map((i) => (
-        <div key={i} className="grid h-24 w-20 shrink-0 place-items-center rounded-[14px] bg-s-bg-sunken text-s-ink-3">
+        <div key={i} className="grid h-24 w-20 shrink-0 place-items-center rounded-[14px] bg-s-bg-sunken text-s-ink-2">
           <Scissors size={20} strokeWidth={1.5} />
         </div>
       ))}
@@ -67,17 +67,17 @@ function V1() {
       <div className="px-4">
         {SALONS.map((s) => (
           <button key={s.name} className="flex w-full items-center gap-3 border-b border-s-border py-3 text-left">
-            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken text-s-ink-3">
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken text-s-ink-2">
               <Scissors size={18} strokeWidth={1.5} />
             </span>
             <span className="min-w-0 flex-1">
               <span className="block truncate text-[14px] font-semibold text-s-ink">{s.name}</span>
-              <span className="flex items-center gap-2 text-[12px] text-s-ink-3">
+              <span className="flex items-center gap-2 text-[12px] text-s-ink-2">
                 <Stars r={s.rating} /> <span>{s.area}</span>
               </span>
             </span>
             <span className="shrink-0 text-[13px] font-semibold text-s-ink">from CHF {s.from}</span>
-            <ChevronRight size={16} className="shrink-0 text-s-ink-3" />
+            <ChevronRight size={16} className="shrink-0 text-s-ink-2" />
           </button>
         ))}
       </div>
@@ -88,7 +88,7 @@ function V1() {
             <Scissors size={18} strokeWidth={1.75} className="shrink-0 text-s-ink-2" />
             <span className="min-w-0 flex-1">
               <span className="block truncate text-[14px] font-semibold text-s-ink">{s.name}</span>
-              <span className="text-[12px] text-s-ink-3">{s.cat}</span>
+              <span className="text-[12px] text-s-ink-2">{s.cat}</span>
             </span>
             <span className="shrink-0 text-[13px] font-semibold text-s-ink">CHF {s.price}</span>
           </button>
@@ -114,9 +114,9 @@ function V2() {
           { label: "Crew cut" },
         ].map((r) => (
           <button key={r.label} className="flex w-full items-center gap-3 border-b border-s-border py-2.5 text-left">
-            <Search size={16} strokeWidth={2} className="shrink-0 text-s-ink-3" />
+            <Search size={16} strokeWidth={2} className="shrink-0 text-s-ink-2" />
             <span className={`flex-1 text-[14px] text-s-ink ${r.primary ? "font-semibold" : "font-medium"}`}>{r.label}</span>
-            <ArrowUpLeft size={15} strokeWidth={2} className="shrink-0 text-s-ink-3" />
+            <ArrowUpLeft size={15} strokeWidth={2} className="shrink-0 text-s-ink-2" />
           </button>
         ))}
       </div>
@@ -125,12 +125,12 @@ function V2() {
       <div className="mt-6 flex flex-col gap-3 px-4">
         {SALONS.map((s) => (
           <button key={s.name} className="flex items-stretch gap-3 rounded-card border border-s-border bg-white p-3 text-left shadow-[0_1px_3px_rgba(10,10,10,0.06)]">
-            <span className="grid h-[70px] w-[70px] shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken text-s-ink-3">
+            <span className="grid h-[70px] w-[70px] shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken text-s-ink-2">
               <Scissors size={22} strokeWidth={1.5} />
             </span>
             <span className="flex min-w-0 flex-1 flex-col justify-center">
               <span className="truncate text-[15px] font-semibold text-s-ink">{s.name}</span>
-              <span className="mt-0.5 flex items-center gap-2 text-[12px] text-s-ink-3">
+              <span className="mt-0.5 flex items-center gap-2 text-[12px] text-s-ink-2">
                 <Stars r={s.rating} />
                 <span className="inline-flex items-center gap-0.5"><MapPin size={11} /> {s.area}</span>
               </span>
@@ -144,10 +144,10 @@ function V2() {
         </button>
       </div>
       {/* Looks: de-emphasized + moved BELOW the bookable content (secondary, smaller tiles). */}
-      <p className="mb-2 mt-6 px-4 text-[12px] font-semibold text-s-ink-3">Looks</p>
+      <p className="mb-2 mt-6 px-4 text-[12px] font-semibold text-s-ink-2">Looks</p>
       <div className="flex gap-2 overflow-hidden px-4">
         {[0, 1, 2, 3, 4].map((i) => (
-          <div key={i} className="grid h-16 w-16 shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken text-s-ink-3">
+          <div key={i} className="grid h-16 w-16 shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken text-s-ink-2">
             <Scissors size={16} strokeWidth={1.5} />
           </div>
         ))}
@@ -179,12 +179,12 @@ function V3() {
       <Label>Top salon</Label>
       <div className="px-4">
         <button className="flex w-full items-center gap-3 rounded-card border border-s-border bg-white p-3 text-left">
-          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken text-s-ink-3">
+          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken text-s-ink-2">
             <Scissors size={18} strokeWidth={1.5} />
           </span>
           <span className="min-w-0 flex-1">
             <span className="block truncate text-[14px] font-semibold text-s-ink">Fade Room</span>
-            <span className="flex items-center gap-2 text-[12px] text-s-ink-3"><Stars r={4.9} /> <span>Gundeli</span></span>
+            <span className="flex items-center gap-2 text-[12px] text-s-ink-2"><Stars r={4.9} /> <span>Gundeli</span></span>
           </span>
           <span className="text-[13px] font-semibold text-s-ink">from CHF 38</span>
         </button>
@@ -226,7 +226,7 @@ export default function SearchRichVariantsPage() {
             <div key={v.key}>
               <div className="mb-2">
                 <div className="font-body text-[13px] font-semibold text-s-ink">{v.label}</div>
-                <div className="font-body text-[12px] text-s-ink-3">{v.note}</div>
+                <div className="font-body text-[12px] text-s-ink-2">{v.note}</div>
               </div>
               <div className="overflow-hidden rounded-[28px] border border-s-border bg-white pb-2">
                 {v.el}

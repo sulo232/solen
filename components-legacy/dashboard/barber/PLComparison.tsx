@@ -80,7 +80,7 @@ export default function PLComparison({ salonId }: PLComparisonProps) {
           <div className="h-[160px] bg-s-bg-sunken rounded-[8px]" />
         </div>
       ) : !stats ? (
-        <p className="text-sm text-s-ink-3 text-center py-6">
+        <p className="text-sm text-s-ink-2 text-center py-6">
           {t("noData")}
         </p>
       ) : (

@@ -44,7 +44,7 @@ type Salon = (typeof SALONS)[number];
 function ServiceRow({ n, d, p }: { n: string; d: string; p: string }) {
   return (
     <div className="flex items-center justify-between gap-3 rounded-xl bg-s-bg-sunken px-3.5 py-2.5 text-[13.5px]">
-      <span className="min-w-0"><span className="block truncate text-s-ink">{n}</span><span className="text-[12px] text-s-ink-3">{d}</span></span>
+      <span className="min-w-0"><span className="block truncate text-s-ink">{n}</span><span className="text-[12px] text-s-ink-2">{d}</span></span>
       <span className="shrink-0 font-semibold tabular-nums text-s-ink">{p}</span>
     </div>
   );
@@ -229,7 +229,7 @@ export default function MapMotionMockup() {
   return (
     <main className="min-h-screen bg-s-bg-sunken py-4">
       <div className="mx-auto w-full max-w-[390px] px-3">
-        <p className="pb-2 text-center text-[12.5px] font-semibold text-s-ink-3">Tap a pin or card. Drag the sheet from the handle OR the pills. Motion is framer-motion.</p>
+        <p className="pb-2 text-center text-[12.5px] font-semibold text-s-ink-2">Tap a pin or card. Drag the sheet from the handle OR the pills. Motion is framer-motion.</p>
         <div className="mb-3 flex items-center justify-center gap-2">
           <span className="inline-flex items-center gap-1 text-[12px] font-semibold text-s-ink-2"><Layers size={13} /> Cluster:</span>
           {[1, 2, 3].map((n) => (

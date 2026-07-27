@@ -167,7 +167,7 @@ export function SalonImageGallery({
           <div className="font-display text-[16px] font-semibold leading-tight tracking-[-0.01em] text-s-ink">
             Galerie
           </div>
-          <div className="truncate font-body text-[12px] text-s-ink-3">{salonName}</div>
+          <div className="truncate font-body text-[12px] text-s-ink-2">{salonName}</div>
         </div>
       </div>
 

@@ -114,7 +114,7 @@ const BreadcrumbEllipsis = ({
     role="presentation"
     aria-hidden="true"
     className={cn(
-      "flex h-9 w-9 items-center justify-center text-s-ink-3",
+      "flex h-9 w-9 items-center justify-center text-s-ink-2",
       className,
     )}
     {...props}

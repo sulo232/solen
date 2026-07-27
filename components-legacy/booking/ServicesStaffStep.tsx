@@ -445,12 +445,12 @@ export default function ServicesStaffStep({
             <ChevronDown
               size={18}
               aria-hidden
-              className={`shrink-0 text-s-ink-3 transition-transform duration-[260ms] ease-glide ${
+              className={`shrink-0 text-s-ink-2 transition-transform duration-[260ms] ease-glide ${
                 isExpanded ? 'rotate-180' : ''
               }`}
             />
           </div>
-          <p className="mt-1 text-[14px] text-s-ink-3 tabular-nums">
+          <p className="mt-1 text-[14px] text-s-ink-2 tabular-nums">
             {formatDuration(service.duration_minutes)}
             {gLabel && <> {gLabel}</>}
           </p>

@@ -291,7 +291,7 @@ export default function ReviewForm({
             type="button"
             onClick={onClose}
             aria-label="Skip"
-            className="absolute top-2.5 right-5 text-[14px] font-medium text-s-ink-3 hover:text-s-ink transition-colors"
+            className="absolute top-2.5 right-5 text-[14px] font-medium text-s-ink-2 hover:text-s-ink transition-colors"
           >
             Skip
           </button>
@@ -325,7 +325,7 @@ export default function ReviewForm({
           {subtitle && (
             <motion.p
               variants={reducedItem}
-              className="mt-1 text-[13px] text-s-ink-3 text-center"
+              className="mt-1 text-[13px] text-s-ink-2 text-center"
             >
               {subtitle}
             </motion.p>
@@ -351,7 +351,7 @@ export default function ReviewForm({
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.2 }}
-                  className="text-[13px] text-s-ink-3"
+                  className="text-[13px] text-s-ink-2"
                 >
                   {t("tap_to_rate")}
                 </motion.span>
@@ -389,7 +389,7 @@ export default function ReviewForm({
                     onChange={(e) => setComment(e.target.value)}
                     rows={3}
                     maxLength={500}
-                    className="w-full resize-none px-[14px] py-[14px] text-[15px] text-s-ink placeholder:text-s-ink-3 focus:outline-none transition-colors duration-150" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
+                    className="w-full resize-none px-[14px] py-[14px] text-[15px] text-s-ink placeholder:text-s-ink-2 focus:outline-none transition-colors duration-150" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
                     style={{ minHeight: "84px" }}
                   />
 
@@ -424,7 +424,7 @@ export default function ReviewForm({
                       {photos.length < 3 && (
                         <label
                           aria-label={t("photos_label")}
-                          className="flex h-[72px] w-full cursor-pointer items-center justify-center rounded-[16px] border border-s-border bg-white text-s-ink-3 transition-colors hover:bg-s-bg-sunken hover:text-s-ink-2"
+                          className="flex h-[72px] w-full cursor-pointer items-center justify-center rounded-[16px] border border-s-border bg-white text-s-ink-2 transition-colors hover:bg-s-bg-sunken hover:text-s-ink-2"
                         >
                           <ImagePlus size={24} strokeWidth={1.75} />
                           <input

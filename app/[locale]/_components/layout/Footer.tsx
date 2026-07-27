@@ -131,7 +131,7 @@ export default function Footer({ locale }: { locale: string }) {
                   // (owner-approved law, TASTE_LOG.md:187 2026-07-15). Was rounded-[10px]
                   // (off-ladder), not nested (flex row, no padding parent), a 2px change on a
                   // 36px button is a trivially-snappable notation fix.
-                  className="grid h-9 w-9 place-items-center rounded-xl bg-s-bg-sunken text-s-ink-3 transition-[colors,transform] duration-150 ease-glide hover:bg-s-ink hover:text-white active:scale-[0.94] active:duration-[80ms]"
+                  className="grid h-9 w-9 place-items-center rounded-xl bg-s-bg-sunken text-s-ink-2 transition-[colors,transform] duration-150 ease-glide hover:bg-s-ink hover:text-white active:scale-[0.94] active:duration-[80ms]"
                 >
                   <Icon size={16} aria-hidden />
                 </a>
@@ -160,7 +160,7 @@ export default function Footer({ locale }: { locale: string }) {
         </div>
 
         {/* ───────────── Legal bar + language row ───────────── */}
-        <div className="mx-auto mt-12 flex max-w-[1280px] flex-col gap-3 border-t border-s-border pt-6 font-body text-[12px] font-bold text-s-ink-3 md:flex-row md:items-center md:justify-between md:gap-8">
+        <div className="mx-auto mt-12 flex max-w-[1280px] flex-col gap-3 border-t border-s-border pt-6 font-body text-[12px] font-bold text-s-ink-2 md:flex-row md:items-center md:justify-between md:gap-8">
           <span className="inline-flex items-center gap-1.5">
             © {new Date().getFullYear()} Solen.ch Schweiz <SwissFlag />
           </span>
@@ -235,7 +235,7 @@ function NewsletterForm() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="deine@email.ch"
-        className="w-full py-[12px] pl-[14px] !pr-[48px] font-body text-[14px] text-s-ink outline-none transition-colors placeholder:text-s-ink-3" // mockup-ok: !important carve-out, base input rule (globals.css, V3-D-input-fill-2026-07-17) out-specifies plain pr-[48px] and collapses right padding to 16px, letting typed text run under the absolute submit button
+        className="w-full py-[12px] pl-[14px] !pr-[48px] font-body text-[14px] text-s-ink outline-none transition-colors placeholder:text-s-ink-2" // mockup-ok: !important carve-out, base input rule (globals.css, V3-D-input-fill-2026-07-17) out-specifies plain pr-[48px] and collapses right padding to 16px, letting typed text run under the absolute submit button
       />
       {/* mockup-ok: DS-4 nested-radius formula (LOCKFILE:428-431, locked law). This
           button sits inset right-6/top-6 inside the input (rounded-[12px]); inner =

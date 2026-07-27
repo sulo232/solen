@@ -25,7 +25,7 @@ export function ReviewPreviewCard({
         <Avatar src={review.authorAvatarUrl} name={review.authorName} size={44} />
         <div className="min-w-0 flex-1">
           <p className="truncate text-[16px] font-semibold text-s-ink">{review.authorName}</p>
-          <p className="mt-0.5 text-[14px] text-s-ink-3">{review.createdAtLabel}</p>
+          <p className="mt-0.5 text-[14px] text-s-ink-2">{review.createdAtLabel}</p>
         </div>
         {onReport && (
           <button
@@ -33,7 +33,7 @@ export function ReviewPreviewCard({
             onClick={onReport}
             aria-label="Report this review"
             title="Report this review"
-            className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-s-ink-3 transition-colors duration-150 hover:bg-s-bg-sunken hover:text-s-ink-2"
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-s-ink-2 transition-colors duration-150 hover:bg-s-bg-sunken hover:text-s-ink-2"
           >
             <Flag size={15} strokeWidth={2.1} aria-hidden />
           </button>
@@ -47,7 +47,7 @@ export function ReviewPreviewCard({
       </p>
 
       {review.isRepresentative && (
-        <p className="mt-2.5 text-[14px] font-semibold text-s-ink-3">
+        <p className="mt-2.5 text-[14px] font-semibold text-s-ink-2">
           Representative example, not live data.
         </p>
       )}

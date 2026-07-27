@@ -78,7 +78,7 @@ export function SalonLoyalty() {
                   <div className="text-[14px] font-semibold text-s-ink md:text-[15px]">
                     {r.title}
                   </div>
-                  <div className="mt-0.5 text-[12px] text-s-ink-3 md:text-[13px]">
+                  <div className="mt-0.5 text-[12px] text-s-ink-2 md:text-[13px]">
                     {r.subtitle}
                   </div>
                 </div>
@@ -86,7 +86,7 @@ export function SalonLoyalty() {
                   size={16}
                   strokeWidth={2.5}
                   className={cn(
-                    "shrink-0 text-s-ink-3 transition-transform duration-150",
+                    "shrink-0 text-s-ink-2 transition-transform duration-150",
                     isOpen && "rotate-90"
                   )}
                 />

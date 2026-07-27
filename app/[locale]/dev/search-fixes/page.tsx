@@ -13,8 +13,8 @@ function LookCard({ name }: { name: string }) {
   return (
     <a className="group flex w-full flex-col gap-2">
       <span className="relative block w-full overflow-hidden rounded-[16px]" style={{ aspectRatio: "3 / 4" }}>
-        <span className="grid h-full w-full place-items-center bg-gradient-to-br from-s-bg-sunken to-s-border/70 text-s-ink-3"><ImageIcon size={20} strokeWidth={1.5} /></span>
-        <span className="absolute right-2 top-2 grid h-8 w-8 place-items-center rounded-full bg-white/75 text-s-ink-3 backdrop-blur-sm"><Heart size={15} /></span>
+        <span className="grid h-full w-full place-items-center bg-gradient-to-br from-s-bg-sunken to-s-border/70 text-s-ink-2"><ImageIcon size={20} strokeWidth={1.5} /></span>
+        <span className="absolute right-2 top-2 grid h-8 w-8 place-items-center rounded-full bg-white/75 text-s-ink-2 backdrop-blur-sm"><Heart size={15} /></span>
       </span>
       <span className="truncate px-0.5 text-[14px] font-semibold text-s-ink">{name}</span>
     </a>
@@ -26,17 +26,17 @@ const Frame = ({ children, h }: { children: React.ReactNode; h: number }) => (
   <div className="relative overflow-hidden rounded-[28px] border border-s-border bg-white" style={{ height: h }}>{children}</div>
 );
 const Cap = ({ t, d }: { t: string; d: string }) => (
-  <div className="mb-2"><div className="text-[13px] font-semibold text-s-ink">{t}</div><div className="text-[12px] text-s-ink-3">{d}</div></div>
+  <div className="mb-2"><div className="text-[13px] font-semibold text-s-ink">{t}</div><div className="text-[12px] text-s-ink-2">{d}</div></div>
 );
 const Field = ({ q }: { q: string }) => (
   <div className="mx-3 mt-3 flex items-center gap-2.5 rounded-[16px] border border-s-ink bg-white px-4 py-3">
-    <Search size={18} strokeWidth={2} className="text-s-ink-3" /><span className="text-[15px] font-medium text-s-ink">{q}</span>
+    <Search size={18} strokeWidth={2} className="text-s-ink-2" /><span className="text-[15px] font-medium text-s-ink">{q}</span>
   </div>
 );
 const Auto = ({ terms }: { terms: string[] }) => (
   <div className="mx-4 mt-1 divide-y divide-s-border">
     {terms.map((t, i) => (
-      <div key={t} className="flex items-center gap-3 py-2.5"><Search size={16} className="shrink-0 text-s-ink-3" /><span className={`min-w-0 flex-1 truncate text-[14px] text-s-ink ${i === 0 ? "font-semibold" : "font-medium"}`}>{t}</span><ArrowUpLeft size={15} className="shrink-0 text-s-ink-3" /></div>
+      <div key={t} className="flex items-center gap-3 py-2.5"><Search size={16} className="shrink-0 text-s-ink-2" /><span className={`min-w-0 flex-1 truncate text-[14px] text-s-ink ${i === 0 ? "font-semibold" : "font-medium"}`}>{t}</span><ArrowUpLeft size={15} className="shrink-0 text-s-ink-2" /></div>
     ))}
   </div>
 );
@@ -44,10 +44,10 @@ const Label = ({ children }: { children: React.ReactNode }) => <p className="mb-
 const SalonRow = () => (
   <div className="px-4">
     <div className="flex items-stretch gap-3 rounded-card border border-s-border bg-white p-3">
-      <span className="grid h-[60px] w-[60px] shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken text-s-ink-3"><Store size={20} strokeWidth={1.5} /></span>
+      <span className="grid h-[60px] w-[60px] shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken text-s-ink-2"><Store size={20} strokeWidth={1.5} /></span>
       <span className="flex min-w-0 flex-1 flex-col justify-center">
         <span className="truncate text-[15px] font-semibold text-s-ink">Old Town Barbers</span>
-        <span className="mt-0.5 flex items-center gap-2 text-[12px] text-s-ink-3"><span className="inline-flex items-center gap-1"><Star size={12} className="fill-s-star text-s-star" /> 4.3</span><span>Basel</span></span>
+        <span className="mt-0.5 flex items-center gap-2 text-[12px] text-s-ink-2"><span className="inline-flex items-center gap-1"><Star size={12} className="fill-s-star text-s-star" /> 4.3</span><span>Basel</span></span>
         <span className="mt-1 text-[13px] font-semibold text-s-ink">from CHF 35</span>
       </span>
       <ArrowRight size={18} className="shrink-0 self-center text-s-ink" />
@@ -78,9 +78,9 @@ const GridVariant = () => (
 const FilledVariant = () => (
   <Frame h={640}>
     <Field q="undercut" /><Auto terms={["undercut", "undercut fade"]} /><Label>Salons</Label><SalonRow /><Label>Looks</Label><Strip w={100} n={5} />
-    <p className="mb-2 mt-8 px-4 text-[12px] font-semibold text-s-ink-3">Zuletzt gesucht</p>
+    <p className="mb-2 mt-8 px-4 text-[12px] font-semibold text-s-ink-2">Zuletzt gesucht</p>
     <div className="mx-4 divide-y divide-s-border">
-      {["fade", "balayage"].map((t) => <div key={t} className="flex items-center gap-3 py-2.5"><Clock size={16} className="text-s-ink-3" /><span className="flex-1 text-[14px] text-s-ink">{t}</span></div>)}
+      {["fade", "balayage"].map((t) => <div key={t} className="flex items-center gap-3 py-2.5"><Clock size={16} className="text-s-ink-2" /><span className="flex-1 text-[14px] text-s-ink">{t}</span></div>)}
     </div>
     <h2 className="mt-8 px-4 font-heading text-[18px] font-bold tracking-[-0.01em] text-s-ink">Beliebte Looks</h2>
     <div className="mt-3"><Grid n={4} /></div>

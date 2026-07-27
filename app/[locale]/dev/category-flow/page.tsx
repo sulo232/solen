@@ -77,7 +77,7 @@ export default function CategoryFlowMockup() {
 
               <p className="mb-2 mt-5 text-[12px] font-semibold text-s-ink-2">Service</p>
               <div className="flex items-center gap-2 rounded-pill border border-s-border bg-white px-3.5 py-3">
-                <Search size={17} className="text-s-ink-2" /><span className="text-[13.5px] text-s-ink-3">e.g. balayage, black hair</span>
+                <Search size={17} className="text-s-ink-2" /><span className="text-[13.5px] text-s-ink-2">e.g. balayage, black hair</span>
               </div>
 
               <div className="mt-5 rounded-xl bg-s-bg-sunken p-3 text-[12.5px] leading-relaxed text-s-ink-2">

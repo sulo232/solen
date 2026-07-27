@@ -423,7 +423,7 @@ function SolenCalendar({ value, onChange, minValue, maxValue, isDateUnavailable,
             <CalendarHeaderCell
               className={cn(
                 "text-center font-body font-semibold text-[12px]",
-                "text-s-ink-3",
+                "text-s-ink-2",
                 "py-1.5",
               )}
             >
@@ -469,9 +469,9 @@ function SolenCalendar({ value, onChange, minValue, maxValue, isDateUnavailable,
                         : "bg-s-ink text-white font-semibold hover:bg-s-ink"),
                     // disabled / unavailable (past dates, salon closed)
                     (isDisabled || isUnavailable) &&
-                      "opacity-30 cursor-not-allowed text-s-ink-3 hover:bg-transparent",
+                      "opacity-30 cursor-not-allowed text-s-ink-2 hover:bg-transparent",
                     // outside current month (prev/next month days)
-                    isOutsideMonth && !isSelected && "opacity-40 text-s-ink-3",
+                    isOutsideMonth && !isSelected && "opacity-40 text-s-ink-2",
                     // focus ring
                     isFocusVisible &&
                       "outline-2 outline outline-s-ink outline-offset-2",
@@ -513,7 +513,7 @@ function TimeSlotList({ slots, value, onChange, isLoading, isDateSelected, label
   if (isLoading) {
     return (
       <div className="flex-1 min-w-[240px] max-w-[360px] bg-s-bg-base border border-s-border rounded-[12px] p-4">
-        <div className="font-body font-semibold text-[12.5px] text-s-ink-3 mb-2">
+        <div className="font-body font-semibold text-[12.5px] text-s-ink-2 mb-2">
           {labels.availableTimes}
         </div>
         <div className="slot-cascade grid grid-cols-4 gap-1.5">
@@ -543,7 +543,7 @@ function TimeSlotList({ slots, value, onChange, isLoading, isDateSelected, label
           <div className="font-semibold text-s-ink text-[15px] mb-1.5">
             {isDateSelected ? labels.noSlots : labels.pickDay}
           </div>
-          <div className="text-[14px] text-s-ink-3">
+          <div className="text-[14px] text-s-ink-2">
             {isDateSelected ? labels.noSlotsHint : labels.pickDayHint}
           </div>
         </div>
@@ -559,7 +559,7 @@ function TimeSlotList({ slots, value, onChange, isLoading, isDateSelected, label
     >
       {groups.map((group) => (
         <div key={group.label} className="mb-4 last:mb-0">
-          <div className="font-body font-semibold text-[12.5px] text-s-ink-3 mb-2">
+          <div className="font-body font-semibold text-[12.5px] text-s-ink-2 mb-2">
             {group.label}
           </div>
           <div className="slot-cascade grid grid-cols-4 gap-1.5">
@@ -766,7 +766,7 @@ function RangeMonthGrid({ monthStart, monthOffset, dl, tz }: RangeMonthGridProps
       <CalendarGrid offset={{ months: monthOffset }} weekdayStyle="short" className="w-full border-collapse">
         <CalendarGridHeader>
           {(day) => (
-            <CalendarHeaderCell className="text-center font-body font-semibold text-[12px] text-s-ink-3 py-1.5">
+            <CalendarHeaderCell className="text-center font-body font-semibold text-[12px] text-s-ink-2 py-1.5">
               {typeof day === "string" ? day.replace(/\.$/, "") : day}
             </CalendarHeaderCell>
           )}
@@ -804,7 +804,7 @@ function RangeMonthGrid({ monthStart, monthOffset, dl, tz }: RangeMonthGridProps
                       (isSelectionStart || isSelectionEnd) &&
                         "bg-s-accent text-white font-semibold hover:bg-s-accent",
                       (isDisabled || isUnavailable) &&
-                        "opacity-30 cursor-not-allowed text-s-ink-3 hover:bg-transparent",
+                        "opacity-30 cursor-not-allowed text-s-ink-2 hover:bg-transparent",
                     )}
                   >
                     {formattedDate}

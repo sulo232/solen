@@ -44,25 +44,25 @@ export function DirectionFeatured({ average, count, reviews, seeAllHref }: Revie
           <span className="block font-display text-[32px] font-semibold leading-none text-s-ink tabular-nums">
             {average?.toFixed(1) ?? "-"}
           </span>
-          <span className="mt-1 block font-body text-[13px] text-s-ink-3">Average</span>
+          <span className="mt-1 block font-body text-[13px] text-s-ink-2">Average</span>
         </div>
         <div>
           <span className="block font-display text-[20px] font-semibold leading-none text-s-ink tabular-nums">
             {count}
           </span>
-          <span className="mt-1 block font-body text-[13px] text-s-ink-3">Reviews</span>
+          <span className="mt-1 block font-body text-[13px] text-s-ink-2">Reviews</span>
         </div>
         <div>
           <span className="block font-display text-[20px] font-semibold leading-none text-s-ink tabular-nums">
             {fiveStarShare}%
           </span>
-          <span className="mt-1 block font-body text-[13px] text-s-ink-3">5-star</span>
+          <span className="mt-1 block font-body text-[13px] text-s-ink-2">5-star</span>
         </div>
       </div>
 
       {featured ? (
         <div className="mt-5 rounded-2xl bg-s-bg-sunken p-4">
-          <Quote size={18} strokeWidth={2} className="text-s-ink-3" aria-hidden />
+          <Quote size={18} strokeWidth={2} className="text-s-ink-2" aria-hidden />
           <p className="mt-2 font-body text-[14px] leading-relaxed text-s-ink">{reviewText(featured)}</p>
           <div className="mt-3 flex items-center gap-3">
             <Avatar
@@ -79,7 +79,7 @@ export function DirectionFeatured({ average, count, reviews, seeAllHref }: Revie
           </div>
         </div>
       ) : (
-        <p className="font-body mt-5 text-[14px] text-s-ink-3">Review text coming soon.</p>
+        <p className="font-body mt-5 text-[14px] text-s-ink-2">Review text coming soon.</p>
       )}
 
       {rest.length > 0 && (

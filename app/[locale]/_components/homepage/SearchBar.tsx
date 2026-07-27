@@ -418,7 +418,7 @@ export function SearchBar() {
               type="button"
               onClick={() => setActive(null)}
               aria-label="Schliessen"
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink-3 transition-[colors,transform] hover:bg-s-bg-sunken hover:text-s-ink active:scale-[0.94] active:duration-[80ms] active:ease-glide"
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink-2 transition-[colors,transform] hover:bg-s-bg-sunken hover:text-s-ink active:scale-[0.94] active:duration-[80ms] active:ease-glide"
             >
               <X size={18} />
             </button>
@@ -441,7 +441,7 @@ export function SearchBar() {
                     placeholder="Was suchst du?"
                     value={service}
                     onChange={(e) => setService(e.target.value)}
-                    className="w-full border-b pb-3 font-display text-[22px] font-bold text-s-ink placeholder:text-s-ink-3 focus:outline-none" // mockup-ok: dead-class removal only, type=text already caught before this change (V3-D-input-fill-2026-07-17)
+                    className="w-full border-b pb-3 font-display text-[22px] font-bold text-s-ink placeholder:text-s-ink-2 focus:outline-none" // mockup-ok: dead-class removal only, type=text already caught before this change (V3-D-input-fill-2026-07-17)
                   />
                   <div className="mt-5 flex flex-wrap gap-2">
                     {SERVICES.map((s) => {
@@ -489,7 +489,7 @@ export function SearchBar() {
                     placeholder="Wo?"
                     value={stadt}
                     onChange={(e) => setStadt(e.target.value)}
-                    className="w-full border-b pb-3 font-display text-[22px] font-bold text-s-ink placeholder:text-s-ink-3 focus:outline-none" // mockup-ok: dead-class removal only, type=text already caught before this change (V3-D-input-fill-2026-07-17)
+                    className="w-full border-b pb-3 font-display text-[22px] font-bold text-s-ink placeholder:text-s-ink-2 focus:outline-none" // mockup-ok: dead-class removal only, type=text already caught before this change (V3-D-input-fill-2026-07-17)
                   />
 
                   {/* V2-D49: primary "current location" row at the top of the
@@ -556,7 +556,7 @@ export function SearchBar() {
                   {/* Period-of-day chips — independent filter from the date.
                       Tapping the same chip twice clears it (toggle behavior). */}
                   <div className="mt-5">
-                    <div className="font-body text-[13px] font-medium text-s-ink-3 mb-2">
+                    <div className="font-body text-[13px] font-medium text-s-ink-2 mb-2">
                       Tageszeit
                     </div>
                     <div className="flex flex-wrap gap-2">
@@ -605,7 +605,7 @@ export function SearchBar() {
               }}
               // RANGE_LAW A5 (2026-07-25): font-semibold -> font-medium. A reset link
               // is a label, not a commit action, keep weight on "Termine finden" only.
-              className="font-body text-[14px] font-medium text-s-ink-3 underline-offset-2 px-3 py-2 hover:text-s-ink transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide"
+              className="font-body text-[14px] font-medium text-s-ink-2 underline-offset-2 px-3 py-2 hover:text-s-ink transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide"
             >
               Zurücksetzen
             </button>
@@ -736,7 +736,7 @@ function SegmentTab({
       className={cn(
         "rounded-full px-3 py-1.5 font-body text-[14px] font-medium transition-colors",
         active && "bg-s-bg-sunken text-s-ink font-semibold",
-        !active && isPlaceholder && "text-s-ink-3 hover:text-s-ink",
+        !active && isPlaceholder && "text-s-ink-2 hover:text-s-ink",
         !active && !isPlaceholder && "text-s-ink hover:bg-s-bg-sunken",
       )}
     >

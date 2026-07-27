@@ -179,7 +179,7 @@ export default function QueueTrackingPage() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-white px-6 text-center">
         <div className="mb-6 grid h-20 w-20 place-items-center rounded-full bg-s-bg-sunken">
-          <TicketX size={34} strokeWidth={1.8} className="text-s-ink-3" aria-hidden />
+          <TicketX size={34} strokeWidth={1.8} className="text-s-ink-2" aria-hidden />
         </div>
         <h1 className="font-heading text-[20px] font-bold text-s-ink">{l.notFound}</h1>
         <p className="mt-1.5 max-w-[300px] text-[14px] leading-relaxed text-s-ink-2">{l.notFoundSub}</p>
@@ -245,7 +245,7 @@ export default function QueueTrackingPage() {
             ))}
           </div>
           {rating > 0 && <div className={`mt-3 font-heading text-[16px] font-bold ${sentiColor}`}>{senti[rating - 1]}</div>}
-          {rating === 0 && <p className="mt-2.5 text-[12.5px] text-s-ink-3">{locale === "en" ? "Tap to rate" : locale === "fr" ? "Touchez pour noter" : locale === "it" ? "Tocca per votare" : "Tippe zum Bewerten"}</p>}
+          {rating === 0 && <p className="mt-2.5 text-[12.5px] text-s-ink-2">{locale === "en" ? "Tap to rate" : locale === "fr" ? "Touchez pour noter" : locale === "it" ? "Tocca per votare" : "Tippe zum Bewerten"}</p>}
 
           {/* >=3 → tip (reuses the real Stripe-wired TipFlow) */}
           {rating >= 3 && (
@@ -262,7 +262,7 @@ export default function QueueTrackingPage() {
                   onClose={() => { void sendReview(ratingRef.current, false); router.push(`/${locale}`); }}
                 />
               </div>
-              <button type="button" onClick={() => exitHome(false)} className="mt-4 text-[13.5px] font-medium text-s-ink-3 transition-colors hover:text-s-ink-2">{l.noTip}</button>
+              <button type="button" onClick={() => exitHome(false)} className="mt-4 text-[13.5px] font-medium text-s-ink-2 transition-colors hover:text-s-ink-2">{l.noTip}</button>
             </>
           )}
 
@@ -274,13 +274,13 @@ export default function QueueTrackingPage() {
                 <div className="mt-1 text-[13px] leading-[1.4] text-s-ink-2">{l.lowSub}</div>
                 <textarea
                   value={feedback} onChange={(e) => setFeedback(e.target.value)} placeholder={l.fbPlaceholder}
-                  className="mt-3 min-h-[74px] w-full resize-none p-3 text-[13.5px] text-s-ink placeholder:text-s-ink-3" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
+                  className="mt-3 min-h-[74px] w-full resize-none p-3 text-[13.5px] text-s-ink placeholder:text-s-ink-2" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
                 />
                 {data.salonSlug && (
                   <Link href={`/${locale}/salon/${data.salonSlug}`} className="mt-3 flex items-center gap-3 rounded-[14px] border border-s-border p-3 transition-transform active:scale-[0.98]">
                     <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-[9px] bg-s-accent-pale text-s-accent"><HelpCircle size={19} /></span>
-                    <div className="flex-1"><div className="text-[13.5px] font-semibold text-s-ink">{l.helpTitle}</div><div className="mt-0.5 text-[11.5px] text-s-ink-3">{l.helpSub}</div></div>
-                    <ChevronRight size={18} className="text-s-ink-3" />
+                    <div className="flex-1"><div className="text-[13.5px] font-semibold text-s-ink">{l.helpTitle}</div><div className="mt-0.5 text-[11.5px] text-s-ink-2">{l.helpSub}</div></div>
+                    <ChevronRight size={18} className="text-s-ink-2" />
                   </Link>
                 )}
               </div>
@@ -288,7 +288,7 @@ export default function QueueTrackingPage() {
                 <button type="button" onClick={() => exitHome(true)} className="flex w-full items-center justify-center gap-2 rounded-full bg-s-accent py-3.5 font-heading text-[14px] font-semibold text-white transition-transform active:scale-[0.98]">
                   <Send size={17} /> {l.fbSend}
                 </button>
-                <button type="button" onClick={() => exitHome(false)} className="mt-3 block w-full text-center text-[13.5px] font-medium text-s-ink-3">{l.skip2}</button>
+                <button type="button" onClick={() => exitHome(false)} className="mt-3 block w-full text-center text-[13.5px] font-medium text-s-ink-2">{l.skip2}</button>
               </div>
             </>
           )}
@@ -302,7 +302,7 @@ export default function QueueTrackingPage() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-white px-6 text-center">
         <div className="mb-6 grid h-20 w-20 place-items-center rounded-full bg-s-bg-sunken">
-          <AlertCircle size={34} strokeWidth={1.8} className="text-s-ink-3" aria-hidden />
+          <AlertCircle size={34} strokeWidth={1.8} className="text-s-ink-2" aria-hidden />
         </div>
         <h1 className="font-heading text-[20px] font-bold text-s-ink">{isCancelled ? l.cancelled : l.noShow}</h1>
         <p className="mt-1.5 max-w-[300px] text-[14px] leading-relaxed text-s-ink-2">{isCancelled ? l.cancelledSub : l.noShowSub}</p>
@@ -438,7 +438,7 @@ export default function QueueTrackingPage() {
                   style={{ transform: `scaleX(${pct / 100})` }}
                 />
               </div>
-              <p className="mt-1.5 text-[12px] tabular-nums text-s-ink-3">
+              <p className="mt-1.5 text-[12px] tabular-nums text-s-ink-2">
                 {elapsedMin} / ~{totalMin} {l.min}
               </p>
             </div>
@@ -458,13 +458,13 @@ export default function QueueTrackingPage() {
                       "flex h-[42px] w-[42px] items-center justify-center rounded-full",
                       st === "done" ? "bg-s-accent text-white" : "",
                       st === "current" ? "bg-white text-s-accent walkin-ring-pulse" : "",
-                      st === "future" ? "bg-s-bg-sunken text-s-ink-3" : "",
+                      st === "future" ? "bg-s-bg-sunken text-s-ink-2" : "",
                     ].join(" ")}
                   >
                     {/* ig9 (owner-approved 2026-07-16): calibrated size-to-stroke table, lib/icon-stroke.ts */}
                     <s.Icon size={18} strokeWidth={strokeForSize(18)} />
                   </div>
-                  <span className={`text-center text-[10.5px] font-semibold leading-[1.2] ${st === "future" ? "text-s-ink-3" : "text-s-ink"}`}>{s.label}</span>
+                  <span className={`text-center text-[10.5px] font-semibold leading-[1.2] ${st === "future" ? "text-s-ink-2" : "text-s-ink"}`}>{s.label}</span>
                 </div>
                 {i < STEPS.length - 1 && (
                   <div className={`mt-[19px] h-[2px] min-w-[8px] flex-1 rounded-full ${lineDone ? "bg-s-accent" : "bg-s-border"}`} />
@@ -511,7 +511,7 @@ export default function QueueTrackingPage() {
                 )}
                 <div>
                   <div className="font-heading text-[15.5px] font-bold text-s-ink">{data.recipientName}</div>
-                  <div className="mt-0.5 flex items-center gap-[5px] text-[12.5px] text-s-ink-3">
+                  <div className="mt-0.5 flex items-center gap-[5px] text-[12.5px] text-s-ink-2">
                     {data.recipientRating != null && (
                       <><Star size={13} className="fill-s-star text-s-star" /><span className="font-heading font-bold tabular-nums text-s-ink">{data.recipientRating.toFixed(1)}</span></>
                     )}
@@ -524,7 +524,7 @@ export default function QueueTrackingPage() {
               <div className={`flex items-center gap-3 ${data.recipientName ? "mt-3.5 border-t border-s-border pt-3.5" : ""}`}>
                 <div className="flex-1">
                   <div className="font-heading text-[14.5px] font-semibold text-s-ink">{data.serviceName}</div>
-                  {data.serviceDuration != null && <div className="mt-0.5 text-[12.5px] text-s-ink-3"><span className="tabular-nums">{data.serviceDuration}</span> {l.min}</div>}
+                  {data.serviceDuration != null && <div className="mt-0.5 text-[12.5px] text-s-ink-2"><span className="tabular-nums">{data.serviceDuration}</span> {l.min}</div>}
                 </div>
                 {data.servicePrice != null && (
                   <span className="font-heading text-[15px] font-bold tabular-nums text-s-ink">CHF {data.servicePrice}</span>
@@ -542,12 +542,12 @@ export default function QueueTrackingPage() {
           >
             <MapPin size={18} className="text-s-ink-2" />
             <div className="flex-1 font-heading text-[14px] font-semibold text-s-ink">{data.salonAddress}</div>
-            <ChevronRight size={18} className="text-s-ink-3" />
+            <ChevronRight size={18} className="text-s-ink-2" />
           </a>
         )}
 
         {/* small, support-only ticket reference */}
-        <div className="mt-[18px] flex items-center justify-center gap-[7px] text-[12px] text-s-ink-3">
+        <div className="mt-[18px] flex items-center justify-center gap-[7px] text-[12px] text-s-ink-2">
           <Ticket size={13} /> {l.ticketNr} <span className="font-heading font-semibold tabular-nums text-s-ink-2">{data.customerName}</span>
         </div>
 

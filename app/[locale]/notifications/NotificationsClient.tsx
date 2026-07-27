@@ -122,7 +122,7 @@ export default function NotificationsClient() {
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline justify-between gap-3">
             <p className={`truncate text-[15px] ${n.read ? "font-medium text-s-ink" : "font-semibold text-s-ink"}`}>{n.title}</p>
-            <span className="shrink-0 text-[12px] text-s-ink-3">{relTime(n.created_at, locale)}</span>
+            <span className="shrink-0 text-[12px] text-s-ink-2">{relTime(n.created_at, locale)}</span>
           </div>
           {/* Owner round-2 (2026-06-11): "too much text" — bodies clamp to ONE line. */}
           <p className="mt-0.5 line-clamp-1 text-[13px] leading-snug text-s-ink-2">{n.body}</p>
@@ -151,7 +151,7 @@ export default function NotificationsClient() {
   const Group = ({ label, list }: { label: string; list: Notification[] }) =>
     list.length === 0 ? null : (
       <section className="mt-5">
-        <h2 className="px-4 text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-3">{label}</h2>
+        <h2 className="px-4 text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-2">{label}</h2>
         <div className="mt-1.5 divide-y divide-s-border">
           {list.map((n) => <Row key={n.id} n={n} />)}
         </div>
@@ -165,7 +165,7 @@ export default function NotificationsClient() {
           <div>
             <h1 className="font-heading text-[20px] font-bold tracking-[-0.01em] text-s-ink">{t("title")}</h1>
             {unread > 0 && (
-              <p className="text-[13px] text-s-ink-3">
+              <p className="text-[13px] text-s-ink-2">
                 <span className="font-semibold text-s-ink">{unread}</span> {t("unread")}
               </p>
             )}

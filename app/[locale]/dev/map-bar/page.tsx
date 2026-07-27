@@ -27,7 +27,7 @@ export default function MapBarMockup() {
   return (
     <main className="min-h-screen bg-white">
       <div className="mx-auto max-w-[460px] px-4 pb-16 pt-6">
-        <p className="text-[12px] font-semibold text-s-ink-3">Mockup , map search bar (#4) , 3 variations</p>
+        <p className="text-[12px] font-semibold text-s-ink-2">Mockup , map search bar (#4) , 3 variations</p>
         <h1 className="mt-1 font-heading text-[19px] font-bold text-s-ink">Same size as the normal bar, back arrow inside</h1>
         <p className="mt-1 text-[13px] text-s-ink-2">All three are full-width, same height + pill as the normal bar, with the back arrow integrated. They differ in how the arrow joins the bar.</p>
 

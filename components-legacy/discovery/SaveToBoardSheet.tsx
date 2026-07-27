@@ -94,7 +94,7 @@ export default function SaveToBoardSheet({ itemId, open, onClose, onSaved }: Pro
         <div className="flex-1 overflow-y-auto px-4 pb-6">
           {creating ? (
             <div className="px-1.5 py-1">
-              <label className="text-[12px] font-heading font-semibold uppercase tracking-[0.05em] text-s-ink-3">Name</label>
+              <label className="text-[12px] font-heading font-semibold uppercase tracking-[0.05em] text-s-ink-2">Name</label>
               <input
                 autoFocus
                 value={newName}
@@ -122,7 +122,7 @@ export default function SaveToBoardSheet({ itemId, open, onClose, onSaved }: Pro
                   <span className="grid h-12 w-12 shrink-0 grid-cols-2 grid-rows-2 gap-px overflow-hidden rounded-[12px] bg-s-bg-sunken">
                     {c.covers && c.covers.length > 0
                       ? c.covers.slice(0, 4).map((src, i) => <img key={i} src={src} alt="" className="h-full w-full object-cover" />)
-                      : <span className="col-span-2 row-span-2 grid place-items-center text-s-ink-3"><Images size={18} /></span>}
+                      : <span className="col-span-2 row-span-2 grid place-items-center text-s-ink-2"><Images size={18} /></span>}
                   </span>
                   <span className="flex min-w-0 flex-1 flex-col">
                     <span className="truncate font-heading text-[15px] font-semibold text-s-ink">{c.name}</span>

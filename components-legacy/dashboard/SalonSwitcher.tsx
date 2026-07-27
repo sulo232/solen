@@ -94,9 +94,9 @@ export default function SalonSwitcher({
           <span className="block font-heading font-semibold text-[15px] tracking-[-0.01em] text-s-ink truncate">
             {activeName}
           </span>
-          {multi && <span className="block text-[12px] text-s-ink-3">Salon wechseln</span>}
+          {multi && <span className="block text-[12px] text-s-ink-2">Salon wechseln</span>}
         </span>
-        {multi && <ChevronsUpDown size={16} className="text-s-ink-3 shrink-0" />}
+        {multi && <ChevronsUpDown size={16} className="text-s-ink-2 shrink-0" />}
       </button>
     ) : (
       <button
@@ -105,7 +105,7 @@ export default function SalonSwitcher({
         aria-label={multi ? "Salon wechseln" : undefined}
       >
         <span className="font-heading text-base truncate text-s-ink">{activeName}</span>
-        {multi && <ChevronsUpDown size={15} className="text-s-ink-3 shrink-0" />}
+        {multi && <ChevronsUpDown size={15} className="text-s-ink-2 shrink-0" />}
       </button>
     );
 
@@ -130,13 +130,13 @@ export default function SalonSwitcher({
               className="w-full sm:max-w-sm bg-white rounded-t-2xl sm:rounded-2xl max-h-[75vh] flex flex-col shadow-[0_-8px_30px_rgba(10,10,10,0.12)]"
             >
               <div className="flex items-center justify-between px-4 pt-4 pb-2">
-                <span className="text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink-3">
+                <span className="text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink-2">
                   Deine Salons {salons.length}
                 </span>
                 <button
                   onClick={() => setOpen(false)}
                   aria-label="Schließen"
-                  className="p-1 -mr-1 text-s-ink-3 hover:text-s-ink"
+                  className="p-1 -mr-1 text-s-ink-2 hover:text-s-ink"
                 >
                   <X size={18} />
                 </button>
@@ -144,7 +144,7 @@ export default function SalonSwitcher({
               {salons.length > 6 && (
                 <div className="px-4 pb-2">
                   <div className="flex items-center gap-2 rounded-xl bg-s-bg-sunken px-3 h-10">
-                    <Search size={15} className="text-s-ink-3" />
+                    <Search size={15} className="text-s-ink-2" />
                     {/* mockup-ok: !important prevents a look change, not a new one. The row
                         owns the visible chrome (bg-s-bg-sunken rounded-xl h-10, a FIXED 40px);
                         this input must stay invisible AND compact inside it, or the widened
@@ -155,7 +155,7 @@ export default function SalonSwitcher({
                       value={q}
                       onChange={(e) => setQ(e.target.value)}
                       placeholder="Salon suchen…"
-                      className="flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[14px] outline-none placeholder:text-s-ink-3"
+                      className="flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[14px] outline-none placeholder:text-s-ink-2"
                     />
                   </div>
                 </div>
@@ -183,12 +183,12 @@ export default function SalonSwitcher({
                         <span className="block font-heading font-semibold text-[14px] text-s-ink truncate">
                           {s.name}
                         </span>
-                        <span className="block text-[12px] text-s-ink-3 truncate">
+                        <span className="block text-[12px] text-s-ink-2 truncate">
                           {catLabel(s.categories)}
                         </span>
                       </span>
                       {switching === s.id ? (
-                        <span className="text-[12px] text-s-ink-3 shrink-0">…</span>
+                        <span className="text-[12px] text-s-ink-2 shrink-0">…</span>
                       ) : isActive ? (
                         <Check size={18} className="text-s-ink shrink-0" />
                       ) : null}

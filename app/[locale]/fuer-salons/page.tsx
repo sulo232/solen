@@ -28,7 +28,7 @@ import PartnerSignupForm from "@/components-legacy/partner/PartnerSignupForm";
  *     weight font-bold → font-semibold.
  *   - Hero overlay eyebrow: text-white/85 STAYS — overlay-on-image is the
  *     documented Hero variant exception (§5 Q25), white reads better on
- *     dark gradient than s-ink-3.
+ *     dark gradient than s-ink-2.
  *   - Eyebrows above sections (Marktplatz, So funktioniert's): accent blue
  *     → ink-3 grey (was text-s-accent decorative — §1.5 forbidden).
  *   - Pricing section h2: clamp(16,1.6vw,18) → Section H2 spec
@@ -253,9 +253,9 @@ export default async function FuerSalonsPage({
             <strong className="font-semibold text-s-ink">1&apos;200+</strong>{" "}
             Schweizer Salons
           </span>
-          <span aria-hidden className="h-1 w-1 rounded-full bg-s-ink-3" />
+          <span aria-hidden className="h-1 w-1 rounded-full bg-s-ink-2" />
           <span>Basel · Zürich · Bern · Lugano</span>
-          <span aria-hidden className="h-1 w-1 rounded-full bg-s-ink-3" />
+          <span aria-hidden className="h-1 w-1 rounded-full bg-s-ink-2" />
           <span className="inline-flex items-center gap-1.5">
             <Star size={12} fill="#FFC32B" stroke="none" aria-hidden />
             <strong className="font-semibold text-s-ink">4.9</strong>

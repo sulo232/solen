@@ -40,7 +40,7 @@ export function DemoCard({
     <section className="rounded-2xl border border-s-border bg-white p-4">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="font-body text-[12px] font-semibold text-s-ink-3">Demo {index}</p>
+          <p className="font-body text-[12px] font-semibold text-s-ink-2">Demo {index}</p>
           <h3 className="mt-0.5 font-display text-[17px] font-semibold tracking-[-0.01em] text-s-ink">
             {title}
           </h3>

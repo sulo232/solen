@@ -390,7 +390,7 @@ function CookieSettingsModal({ isOpen, onOpenChange }: CookieSettingsModalProps)
           <div className="flex items-center justify-between gap-4 py-[14px] border-b border-s-border">
             <div className="flex flex-col">
               <span className="font-body font-semibold text-[15px] text-s-ink">Notwendig</span>
-              <span className="font-body font-normal text-[13px] text-s-ink-3 mt-1">
+              <span className="font-body font-normal text-[13px] text-s-ink-2 mt-1">
                 Auth-Session, Sprachpräferenz, dieser Cookie-Banner selbst. Immer aktiv (legitime
                 Interessen).
               </span>
@@ -401,7 +401,7 @@ function CookieSettingsModal({ isOpen, onOpenChange }: CookieSettingsModalProps)
           <div className="flex items-center justify-between gap-4 py-[14px] border-b border-s-border">
             <div className="flex flex-col">
               <span className="font-body font-semibold text-[15px] text-s-ink">Analyse</span>
-              <span className="font-body font-normal text-[13px] text-s-ink-3 mt-1">
+              <span className="font-body font-normal text-[13px] text-s-ink-2 mt-1">
                 Anonyme Nutzungsstatistiken via PostHog — hilft uns zu verstehen, welche Salons
                 gefunden werden und wo Buchungen abbrechen.
               </span>
@@ -412,7 +412,7 @@ function CookieSettingsModal({ isOpen, onOpenChange }: CookieSettingsModalProps)
           <div className="flex items-center justify-between gap-4 py-[14px]">
             <div className="flex flex-col">
               <span className="font-body font-semibold text-[15px] text-s-ink">Marketing</span>
-              <span className="font-body font-normal text-[13px] text-s-ink-3 mt-1">
+              <span className="font-body font-normal text-[13px] text-s-ink-2 mt-1">
                 Konversions-Tracking + Retargeting (Meta, Google) — damit wir relevante Anzeigen
                 ausspielen und neue Kund:innen erreichen.
               </span>
@@ -421,7 +421,7 @@ function CookieSettingsModal({ isOpen, onOpenChange }: CookieSettingsModalProps)
           </div>
         </div>
 
-        <p className="text-[13px] text-s-ink-3 mt-4">
+        <p className="text-[13px] text-s-ink-2 mt-4">
           Du kannst deine Einstellungen jederzeit über den Footer-Link
           "Cookie-Einstellungen" ändern. Mehr in unserer{" "}
           <a href="/datenschutz" className="text-s-ink hover:text-s-ink transition-colors">

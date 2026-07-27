@@ -114,6 +114,12 @@ RETIRED_TOKENS = {
     "s-droplet",
     # s-pop removed 2026-07-11: LOCKFILE un-retired it (V3-D424); a live urgency-badge token, not drift.
     "s-cool",
+    # color-tokens-04 (2026-07-27): s-ink-3 / s-ink-secondary / s-ink-tertiary were
+    # THREE extra live spellings of the exact same #6B6B6B hex as s-ink-2. Deleted
+    # from tailwind.config.js in the same change; flag any new callsite as drift.
+    "s-ink-3",
+    "s-ink-secondary",
+    "s-ink-tertiary",
     # Atmosphere family
     "s-atm-warm",
     "s-atm-cool",

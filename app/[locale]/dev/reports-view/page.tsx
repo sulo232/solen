@@ -52,7 +52,7 @@ export default async function ReportsViewDevPage({
   return (
     <main className="min-h-screen bg-white pb-24">
       <div className="mx-auto max-w-[900px] px-5 pt-10 md:px-8">
-        <p className="font-body text-[12px] font-semibold text-s-ink-3">Solen, /dev/reports-view</p>
+        <p className="font-body text-[12px] font-semibold text-s-ink-2">Solen, /dev/reports-view</p>
         <h1 className="mt-1 font-display text-[22px] font-bold tracking-[-0.02em] text-s-ink">
           Admin report view, 3 directions
         </h1>

@@ -138,7 +138,7 @@ export function MapSalonDetail({
             className="object-cover"
           />
         ) : (
-          <span className="absolute inset-0 grid place-items-center font-display font-black leading-none text-[64px] tracking-[-0.03em] text-s-ink-3" aria-hidden>
+          <span className="absolute inset-0 grid place-items-center font-display font-black leading-none text-[64px] tracking-[-0.03em] text-s-ink-2" aria-hidden>
             {(salon.name ?? "").trim().charAt(0).toUpperCase() || "?"}
           </span>
         )}
@@ -185,7 +185,7 @@ export function MapSalonDetail({
               >
                 <span className="min-w-0">
                   <span className="block truncate text-s-ink">{svcName}</span>
-                  {dur && <span className="text-[12px] text-s-ink-3">{dur}</span>}
+                  {dur && <span className="text-[12px] text-s-ink-2">{dur}</span>}
                 </span>
                 <span className="shrink-0 font-semibold tabular-nums text-s-ink">{s.price} CHF</span>
               </Link>

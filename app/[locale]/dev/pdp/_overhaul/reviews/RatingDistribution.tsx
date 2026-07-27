@@ -41,7 +41,7 @@ export function RatingDistribution({
             <div className="h-2 flex-1 overflow-hidden rounded-full bg-s-bg-sunken">
               <div className="h-full rounded-full bg-s-ink" style={{ width: `${pct}%` }} />
             </div>
-            <span className="w-6 shrink-0 text-right font-body text-[13px] text-s-ink-3 tabular-nums">
+            <span className="w-6 shrink-0 text-right font-body text-[13px] text-s-ink-2 tabular-nums">
               {count}
             </span>
           </div>

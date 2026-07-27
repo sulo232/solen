@@ -352,7 +352,7 @@ function ArtistProfileDialog({ testimonial }: { testimonial: Testimonial }) {
 
               {testimonial.bio && (
                 <div className="mt-6">
-                  <h4 className="font-body text-[12px] font-bold uppercase tracking-[0.15em] text-s-ink-3">
+                  <h4 className="font-body text-[12px] font-bold uppercase tracking-[0.15em] text-s-ink-2">
                     Über {firstName}
                   </h4>
                   <p className="mt-2 font-body text-[15px] leading-[1.55] text-s-ink-2">
@@ -363,7 +363,7 @@ function ArtistProfileDialog({ testimonial }: { testimonial: Testimonial }) {
 
               {testimonial.specialties && testimonial.specialties.length > 0 && (
                 <div className="mt-6">
-                  <h4 className="font-body text-[12px] font-bold uppercase tracking-[0.15em] text-s-ink-3">
+                  <h4 className="font-body text-[12px] font-bold uppercase tracking-[0.15em] text-s-ink-2">
                     Spezialitäten
                   </h4>
                   <div className="mt-3 flex flex-wrap gap-2">
@@ -381,7 +381,7 @@ function ArtistProfileDialog({ testimonial }: { testimonial: Testimonial }) {
 
               {testimonial.portfolio && testimonial.portfolio.length > 0 && (
                 <div className="mt-6">
-                  <h4 className="font-body text-[12px] font-bold uppercase tracking-[0.15em] text-s-ink-3">
+                  <h4 className="font-body text-[12px] font-bold uppercase tracking-[0.15em] text-s-ink-2">
                     Arbeiten
                   </h4>
                   <div className="mt-3 -mx-6 flex gap-3 overflow-x-auto px-6 pb-2 md:-mx-8 md:px-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -417,7 +417,7 @@ function ArtistProfileDialog({ testimonial }: { testimonial: Testimonial }) {
 
               {testimonial.whySelected && (
                 <div className="mt-6 rounded-[16px] bg-s-bg-sunken p-4">
-                  <h4 className="font-body text-[12px] font-bold uppercase tracking-[0.15em] text-s-ink-3">
+                  <h4 className="font-body text-[12px] font-bold uppercase tracking-[0.15em] text-s-ink-2">
                     Warum Solen-Favorit
                   </h4>
                   <p className="mt-2 font-body text-[14px] leading-[1.55] text-s-ink">

@@ -411,7 +411,7 @@ export default function Entdecken() {
               <h3 className="font-body text-[16px] font-semibold leading-tight text-s-ink">
                 Alle entdecken
               </h3>
-              <p className="mt-2 font-body text-[12px] text-s-ink-3">
+              <p className="mt-2 font-body text-[12px] text-s-ink-2">
                 Lass dich von tausenden Looks inspirieren
               </p>
             </div>

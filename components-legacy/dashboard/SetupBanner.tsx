@@ -70,7 +70,7 @@ export default function SetupBanner() {
             ? "bg-s-success text-white"
             : isCurrent
               ? "bg-s-ink text-white"
-              : "border border-s-ink-3 text-s-ink-2"
+              : "border border-s-ink-2 text-s-ink-2"
         }`;
         const labelClass = `text-xs font-heading flex-1 ${
           step.complete

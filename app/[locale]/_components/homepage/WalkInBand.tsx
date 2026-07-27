@@ -126,7 +126,7 @@ export default function WalkInBand() {
                         {sofort ? "Jetzt frei" : `${s.waitMinutes}-${s.waitMinutesMax} Min`}
                       </div>
                       {!sofort && (
-                        <div className="mt-[3px] font-body text-[12px] font-semibold text-s-ink-3">bis frei</div>
+                        <div className="mt-[3px] font-body text-[12px] font-semibold text-s-ink-2">bis frei</div>
                       )}
                       <div className="mt-2.5 flex items-center gap-2">
                         <span className="truncate font-heading text-[14px] font-bold text-s-ink">{s.name}</span>

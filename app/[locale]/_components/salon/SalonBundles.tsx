@@ -12,7 +12,7 @@
  * (app/[locale]/dev/bundles-products/page.tsx OptionB/BundleCard/IncludedRow):
  *   - BundleCard = rounded-[24px] border-s-border bg-white shadow-whisper, Package icon + name (16/700)
  *   - IncludedRow = service name (14/500) + Clock duration ("N Min", s-ink-2 12px)
- *   - price row = struck summed price (13 s-ink-3 line-through) + bold bundle price (16/700 ink) + pale-green -X% pill
+ *   - price row = struck summed price (13 s-ink-2 line-through) + bold bundle price (16/700 ink) + pale-green -X% pill
  *   - pale-green pill = bg-s-success-bg text-s-success (SalonCard DiscountBadge / project_card_badges recipe), percent mode only
  * Net-new beyond the mockup:
  *   - "Buchen" CTA (ink primary commit) that carries the bundle's services preselected into the booking flow:
@@ -105,7 +105,7 @@ export function SalonBundles({
         <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
           {t("bundlesTitle")}
         </h2>
-        <p className="mt-4 text-[14px] text-s-ink-3">{t("bundlesError")}</p>
+        <p className="mt-4 text-[14px] text-s-ink-2">{t("bundlesError")}</p>
       </section>
     );
   }
@@ -162,7 +162,7 @@ function BundleCard({ bundle, slug, locale }: { bundle: Bundle; slug: string; lo
       <div className="flex items-center justify-between gap-3 border-t border-s-border px-4 py-3.5">
         <div className="flex min-w-0 items-baseline gap-2">
           {showStruck && (
-            <span className="font-body text-[13px] text-s-ink-3 line-through tabular-nums">
+            <span className="font-body text-[13px] text-s-ink-2 line-through tabular-nums">
               {formatCurrency(bundle.sum_price, locale)}
             </span>
           )}

@@ -275,7 +275,7 @@ export default function BookingsPage() {
       {loading ? (
         <div className="flex justify-center py-12"><Spinner size="lg" /></div>
       ) : bookings.length === 0 ? (
-        <div className="text-center py-12 text-s-ink-3">
+        <div className="text-center py-12 text-s-ink-2">
           <p className="text-sm">{t("emptyState")}</p>
         </div>
       ) : (
@@ -291,7 +291,7 @@ export default function BookingsPage() {
                   <p className="font-heading font-bold text-[13.5px] text-s-ink tabular-nums leading-none">
                     {new Date(b.starts_at).toLocaleTimeString(resolveSwissLocale(locale), { hour: "2-digit", minute: "2-digit" })}
                   </p>
-                  <p className="text-[12px] font-semibold text-s-ink-3 tabular-nums mt-1">
+                  <p className="text-[12px] font-semibold text-s-ink-2 tabular-nums mt-1">
                     {new Date(b.starts_at).toLocaleDateString(resolveSwissLocale(locale), { day: "2-digit", month: "2-digit" })}
                   </p>
                 </div>
@@ -306,7 +306,7 @@ export default function BookingsPage() {
                     {b.is_first_visit && (
                       <span className="shrink-0 text-[12px] font-bold px-[7px] py-px rounded-full bg-s-accent-bright/10 text-s-accent-bright">{t("badgeNew")}</span>
                     )}
-                    {b.is_recurring && <RotateCcw size={11} className="shrink-0 text-s-ink-3" aria-label={t("recurring")} />}
+                    {b.is_recurring && <RotateCcw size={11} className="shrink-0 text-s-ink-2" aria-label={t("recurring")} />}
                   </div>
                   <p className="text-[12.5px] text-s-ink-2 truncate mt-0.5">
                     {b.service_name}{b.staff_name ? ` ${b.staff_name}` : ""}

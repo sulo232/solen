@@ -89,7 +89,7 @@ export function D3FullPage({
                   className={reason === r.value ? "bg-s-bg-sunken" : undefined}
                 >
                   <span className="block">{r.label}</span>
-                  <span className="block font-normal text-[14px] text-s-ink-3">{r.hint}</span>
+                  <span className="block font-normal text-[14px] text-s-ink-2">{r.hint}</span>
                 </Radio>
               ))}
             </RadioGroup>

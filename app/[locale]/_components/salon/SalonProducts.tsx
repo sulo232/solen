@@ -121,7 +121,7 @@ export function SalonProducts({
         <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
           {t("products")}
         </h2>
-        <p className="mt-4 text-[14px] text-s-ink-3">{t("productsError")}</p>
+        <p className="mt-4 text-[14px] text-s-ink-2">{t("productsError")}</p>
       </section>
     );
   }
@@ -281,19 +281,19 @@ function ProductRow({
           )}
         </div>
         <div className="min-w-0">
-          <p className={`truncate font-body text-[15px] font-semibold ${soldOut ? "text-s-ink-3" : "text-s-ink"}`}>
+          <p className={`truncate font-body text-[15px] font-semibold ${soldOut ? "text-s-ink-2" : "text-s-ink"}`}>
             {product.name}
           </p>
           {product.description && (
             <p className="mt-0.5 truncate text-[12px] text-s-ink-2">{product.description}</p>
           )}
           {soldOut && (
-            <p className="mt-0.5 text-[12px] font-medium text-s-ink-3">{soldOutLabel}</p>
+            <p className="mt-0.5 text-[12px] font-medium text-s-ink-2">{soldOutLabel}</p>
           )}
         </div>
       </div>
       <div className="flex shrink-0 items-center gap-3 pl-3">
-        <span className={`font-body text-[14px] font-semibold tabular-nums ${soldOut ? "text-s-ink-3" : "text-s-ink"}`}>
+        <span className={`font-body text-[14px] font-semibold tabular-nums ${soldOut ? "text-s-ink-2" : "text-s-ink"}`}>
           {formatCurrency(product.price / 100, locale)}
         </span>
         {/* mockup-ok: A5 R5 close-out nit-2 , icon-only Add per copy-economy rule (icon unambiguous next

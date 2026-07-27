@@ -56,7 +56,7 @@ function Section({
           )}
         </div>
         <h2 className="font-heading text-[17px] font-bold tracking-[-0.01em] text-s-ink">{title}</h2>
-        <p className="mb-6 font-body text-[13px] leading-relaxed text-s-ink-3">{note}</p>
+        <p className="mb-6 font-body text-[13px] leading-relaxed text-s-ink-2">{note}</p>
       </div>
       {/* in-context hero block */}
       <div className="mx-auto max-w-[402px] pt-2">
@@ -74,11 +74,11 @@ export default function HomeSearchDevPage() {
     <main className="min-h-screen bg-white pb-24">
       <div className="px-5 pb-2 pt-8">
         <div className="mx-auto max-w-[344px]">
-          <p className="font-body text-[12px] font-semibold text-s-ink-3">Dev route, not live</p>
+          <p className="font-body text-[12px] font-semibold text-s-ink-2">Dev route, not live</p>
           <h1 className="mt-1 font-heading text-[22px] font-bold tracking-[-0.02em] text-s-ink">
             Home search card, 3 directions
           </h1>
-          <p className="mt-1.5 font-body text-[13px] leading-relaxed text-s-ink-3">
+          <p className="mt-1.5 font-body text-[13px] leading-relaxed text-s-ink-2">
             Fixes: radius to DS token, narrower + separation. View at 402px width.
             The motion lag is a separate code fix (see chat).
           </p>

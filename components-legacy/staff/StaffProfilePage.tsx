@@ -423,7 +423,7 @@ export default function StaffProfilePage({
                       <Avatar src={r.profiles?.avatar_url} name={who} size={40} />
                       <div className="min-w-0">
                         <div className="truncate text-[14px] font-semibold text-s-ink">{who}</div>
-                        <div className="text-[12px] text-s-ink-3">{fmtDate(r.created_at)}</div>
+                        <div className="text-[12px] text-s-ink-2">{fmtDate(r.created_at)}</div>
                       </div>
                     </div>
                     <RatingStars value={r.rating} mode="five" size="md" className="mt-2.5" />

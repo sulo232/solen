@@ -19,7 +19,7 @@ const SALONS = [
 function Field({ q }: { q: string }) {
   return (
     <div className="mx-3 mt-3 flex items-center gap-2.5 rounded-[16px] border border-s-border bg-white px-4 py-3">
-      <Search size={18} strokeWidth={2} className="text-s-ink-3" />
+      <Search size={18} strokeWidth={2} className="text-s-ink-2" />
       <span className="text-[15px] font-medium text-s-ink">{q}</span>
     </div>
   );
@@ -30,9 +30,9 @@ function Auto({ terms }: { terms: string[] }) {
     <div className="mx-4 mt-1 divide-y divide-s-border">
       {terms.map((t, i) => (
         <button key={t} className="flex w-full items-center gap-3 py-2.5 text-left">
-          <Search size={16} strokeWidth={2} className="shrink-0 text-s-ink-3" />
+          <Search size={16} strokeWidth={2} className="shrink-0 text-s-ink-2" />
           <span className={`min-w-0 flex-1 truncate text-[14px] text-s-ink ${i === 0 ? "font-semibold" : "font-medium"}`}>{t}</span>
-          <ArrowUpLeft size={15} strokeWidth={2} className="shrink-0 text-s-ink-3" />
+          <ArrowUpLeft size={15} strokeWidth={2} className="shrink-0 text-s-ink-2" />
         </button>
       ))}
     </div>
@@ -46,12 +46,12 @@ function Label({ children }: { children: React.ReactNode }) {
 function SalonCard({ s }: { s: typeof SALONS[number] }) {
   return (
     <div className="flex items-stretch gap-3 rounded-card border border-s-border bg-white p-3">
-      <span className="grid h-[70px] w-[70px] shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken text-s-ink-3">
+      <span className="grid h-[70px] w-[70px] shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken text-s-ink-2">
         <Store size={22} strokeWidth={1.5} />
       </span>
       <span className="flex min-w-0 flex-1 flex-col justify-center">
         <span className="truncate text-[15px] font-semibold text-s-ink">{s.name}</span>
-        <span className="mt-0.5 flex items-center gap-2 text-[12px] text-s-ink-3">
+        <span className="mt-0.5 flex items-center gap-2 text-[12px] text-s-ink-2">
           <span className="inline-flex shrink-0 items-center gap-1 text-s-ink-2"><Star size={12} className="fill-s-star text-s-star" /> {s.rating.toFixed(1)}</span>
           <span className="inline-flex min-w-0 items-center gap-0.5"><MapPin size={11} className="shrink-0" /> <span className="truncate">{s.area}</span></span>
         </span>
@@ -65,7 +65,7 @@ function SalonCard({ s }: { s: typeof SALONS[number] }) {
 // A representative "photo" tile (neutral; real UI uses the Inspo item image).
 function LookTile({ h }: { h: number }) {
   return (
-    <div className="mb-2 grid w-full place-items-center rounded-[14px] bg-gradient-to-br from-s-bg-sunken to-s-border/60 text-s-ink-3" style={{ height: h }}>
+    <div className="mb-2 grid w-full place-items-center rounded-[14px] bg-gradient-to-br from-s-bg-sunken to-s-border/60 text-s-ink-2" style={{ height: h }}>
       <ImageIcon size={20} strokeWidth={1.5} />
     </div>
   );
@@ -86,7 +86,7 @@ function StoreLed() {
       </div>
       <Label>Looks</Label>
       <div className="flex gap-2 overflow-hidden px-4">
-        {[0, 1].map((i) => <div key={i} className="grid h-16 w-16 shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken text-s-ink-3"><ImageIcon size={16} strokeWidth={1.5} /></div>)}
+        {[0, 1].map((i) => <div key={i} className="grid h-16 w-16 shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken text-s-ink-2"><ImageIcon size={16} strokeWidth={1.5} /></div>)}
       </div>
     </div>
   );
@@ -124,13 +124,13 @@ function CalExpand() {
         <h2 className="mb-3 font-heading text-[24px] font-bold tracking-[-0.02em] text-s-ink">When?</h2>
         <div className="mb-3 flex rounded-full bg-s-bg-sunken p-1 text-[13px]">
           <span className="flex-1 rounded-full bg-white py-2 text-center font-semibold text-s-ink shadow-sm">Dates</span>
-          <span className="flex-1 py-2 text-center font-medium text-s-ink-3">Flexible</span>
+          <span className="flex-1 py-2 text-center font-medium text-s-ink-2">Flexible</span>
         </div>
         <div className="mb-2 flex items-center justify-between">
           <p className="font-heading text-[17px] font-bold text-s-ink">July 2026</p>
-          <div className="flex gap-1 text-s-ink-3"><ChevronLeft size={18} /><ChevronRight size={18} /></div>
+          <div className="flex gap-1 text-s-ink-2"><ChevronLeft size={18} /><ChevronRight size={18} /></div>
         </div>
-        <div className="mb-1 grid grid-cols-7 text-center text-[12px] font-medium text-s-ink-3">
+        <div className="mb-1 grid grid-cols-7 text-center text-[12px] font-medium text-s-ink-2">
           {["M","T","W","T","F","S","S"].map((d, i) => <span key={i}>{d}</span>)}
         </div>
         <div className="grid grid-cols-7 gap-y-0.5">
@@ -152,7 +152,7 @@ function CalExpand() {
           </div>
         </div>
       </div>
-      <p className="mt-3 px-1 text-center text-[12px] text-s-ink-3">
+      <p className="mt-3 px-1 text-center text-[12px] text-s-ink-2">
         {picked ? "Date picked: card grew, time picker popped up." : "No date yet: card hugs the calendar (no dead space). Tap a day."}
       </p>
     </div>
@@ -179,7 +179,7 @@ export default function SearchBalanceMock() {
             <div key={f.key}>
               <div className="mb-2">
                 <div className="font-body text-[13px] font-semibold text-s-ink">{f.label}</div>
-                <div className="font-body text-[12px] text-s-ink-3">{f.note}</div>
+                <div className="font-body text-[12px] text-s-ink-2">{f.note}</div>
               </div>
               <div className="overflow-hidden rounded-[28px] border border-s-border bg-white pb-2">{f.el}</div>
             </div>

@@ -152,7 +152,7 @@ export default function SearchMorphPreviewPage() {
   const serviceSuggestions = (): ReactNode => {
     if (typing) {
       if (loading) return <div className="space-y-2 pt-1">{[0, 1, 2].map((i) => <Skeleton key={i} height={48} rounded={14} />)}</div>;
-      if (!hasResults) return <p className="py-8 text-center text-[14px] text-s-ink-3">Keine Treffer für {serviceQ}</p>;
+      if (!hasResults) return <p className="py-8 text-center text-[14px] text-s-ink-2">Keine Treffer für {serviceQ}</p>;
       return (
         <>
           {results.services.map((s) => (
@@ -223,17 +223,17 @@ export default function SearchMorphPreviewPage() {
           <button onClick={() => { setInputFocused(false); collapse(); }} aria-label="Zurück"
             className="grid h-6 w-6 shrink-0 place-items-center text-s-ink"><ArrowLeft size={20} strokeWidth={2} /></button>
         ) : (
-          <span className="grid h-6 w-6 shrink-0 place-items-center"><Search size={19} strokeWidth={2} className="text-s-ink-3" /></span>
+          <span className="grid h-6 w-6 shrink-0 place-items-center"><Search size={19} strokeWidth={2} className="text-s-ink-2" /></span>
         )}
         {/* mockup-ok: !important preserves the existing look, matches the real SearchOverlay.tsx
             carve-out against the widened base input law (globals.css, 2026-07-17, also sets
             min-height:48px/padding:16px/font-size:16px) (V3-D-input-fill-2026-07-17). */}
         <input ref={ref} value={inputFocused ? q : (isS ? service : city)}
           onFocus={() => { setInputFocused(true); grow(1); }} onChange={(e) => setQ(e.target.value)} placeholder={ph}
-          className="min-w-0 flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[15px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:outline-none" />
+          className="min-w-0 flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[15px] text-s-ink placeholder:text-s-ink-2 focus:outline-none focus-visible:outline-none" />
         {inputFocused && q.length > 0 && (
           <button onClick={() => { setQ(""); ref.current?.focus(); }} aria-label="Eingabe löschen"
-            className="shrink-0 text-s-ink-3"><X size={18} strokeWidth={2.2} /></button>
+            className="shrink-0 text-s-ink-2"><X size={18} strokeWidth={2.2} /></button>
         )}
       </div>
     );
@@ -247,7 +247,7 @@ export default function SearchMorphPreviewPage() {
   const collapsedRow = (s: Step) => (
     <button onClick={() => openStep(s)} className="flex h-14 w-full items-center justify-between rounded-[20px] bg-white px-4 text-left shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
       <span className="text-[14px] font-medium text-s-ink-2">{stepMeta[s].label}</span>
-      <span className={`truncate pl-3 text-[14px] ${stepMeta[s].value ? "font-semibold text-s-ink" : "text-s-ink-3"}`}>{stepMeta[s].value || stepMeta[s].placeholder}</span>
+      <span className={`truncate pl-3 text-[14px] ${stepMeta[s].value ? "font-semibold text-s-ink" : "text-s-ink-2"}`}>{stepMeta[s].value || stepMeta[s].placeholder}</span>
     </button>
   );
   const footerInner = (
@@ -261,10 +261,10 @@ export default function SearchMorphPreviewPage() {
   return (
     <div className="min-h-screen bg-white">
       <div className="mx-auto max-w-[430px] px-5 pt-14">
-        <p className="mb-1.5 text-[13px] font-medium text-s-ink-3">Beauty und Wellness in der ganzen Schweiz</p>
+        <p className="mb-1.5 text-[13px] font-medium text-s-ink-2">Beauty und Wellness in der ganzen Schweiz</p>
         <h1 className="mb-5 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Termine, sofort bestätigt.</h1>
         <button type="button" onClick={() => { setActiveStep("service"); setInputFocused(false); expand.set(0); setOpen(true); }}
-          className="flex w-full items-center gap-2.5 rounded-full border border-s-border bg-white px-5 py-3.5 text-[15px] text-s-ink-3">
+          className="flex w-full items-center gap-2.5 rounded-full border border-s-border bg-white px-5 py-3.5 text-[15px] text-s-ink-2">
           <Search size={18} strokeWidth={2} /> Service, Stadt, Datum
         </button>
         {/* faux homepage behind the overlay , gives the frosted backdrop real content to blur */}
@@ -349,13 +349,13 @@ export default function SearchMorphPreviewPage() {
                     <div key={s} className="mb-2.5 flex min-h-0 flex-1 flex-col overflow-hidden rounded-[20px] bg-white p-4 shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
                       <h2 className="mb-3 shrink-0 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Wo?</h2>
                       <div className="mb-2 flex h-12 shrink-0 items-center gap-2 rounded-[14px] border border-s-border bg-white px-3.5">
-                        <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-3" />
+                        <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
                         {/* mockup-ok: !important preserves the existing look
                             (V3-D-input-fill-2026-07-17). english-ok: placeholder text unchanged,
                             pre-existing German copy mirroring the real German-locale UI. */}
                         <input ref={cityRef} value={cityQ} onChange={(e) => setCityQ(e.target.value)} placeholder="Stadt suchen"
-                          className="min-w-0 flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[15px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:outline-none" />
-                        {cityQ.length > 0 && <button onClick={() => { setCityQ(""); cityRef.current?.focus(); }} aria-label="Eingabe löschen" className="shrink-0 text-s-ink-3"><X size={18} strokeWidth={2.2} /></button>}
+                          className="min-w-0 flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[15px] text-s-ink placeholder:text-s-ink-2 focus:outline-none focus-visible:outline-none" />
+                        {cityQ.length > 0 && <button onClick={() => { setCityQ(""); cityRef.current?.focus(); }} aria-label="Eingabe löschen" className="shrink-0 text-s-ink-2"><X size={18} strokeWidth={2.2} /></button>}
                       </div>
                       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">{cityList()}</div>
                     </div>
@@ -365,8 +365,8 @@ export default function SearchMorphPreviewPage() {
                       <div className="relative mb-3 flex shrink-0 rounded-full bg-s-bg-sunken p-1">
                         <motion.div layout transition={{ duration: reduce ? 0 : 0.28, ease: EASE }}
                           className="absolute inset-y-1 w-[calc(50%-4px)] rounded-full bg-white shadow-sm" style={{ left: dateTab === "daten" ? 4 : "calc(50% + 0px)" }} />
-                        <button onClick={() => setDateTab("daten")} className={`relative z-10 flex-1 rounded-full py-2 text-center text-[13px] transition-colors ${dateTab === "daten" ? "font-semibold text-s-ink" : "font-medium text-s-ink-3"}`}>Daten</button>
-                        <button onClick={() => setDateTab("flexibel")} className={`relative z-10 flex-1 rounded-full py-2 text-center text-[13px] transition-colors ${dateTab === "flexibel" ? "font-semibold text-s-ink" : "font-medium text-s-ink-3"}`}>Flexibel</button>
+                        <button onClick={() => setDateTab("daten")} className={`relative z-10 flex-1 rounded-full py-2 text-center text-[13px] transition-colors ${dateTab === "daten" ? "font-semibold text-s-ink" : "font-medium text-s-ink-2"}`}>Daten</button>
+                        <button onClick={() => setDateTab("flexibel")} className={`relative z-10 flex-1 rounded-full py-2 text-center text-[13px] transition-colors ${dateTab === "flexibel" ? "font-semibold text-s-ink" : "font-medium text-s-ink-2"}`}>Flexibel</button>
                       </div>
                       <div ref={dateScrollRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
                         <AnimatePresence mode="wait" initial={false}>
@@ -382,7 +382,7 @@ export default function SearchMorphPreviewPage() {
                                     className="grid h-9 w-9 place-items-center rounded-full text-s-ink hover:bg-s-bg-sunken disabled:opacity-25"><ChevronRight size={20} strokeWidth={2} /></button>
                                 </div>
                               </div>
-                              <div className="mb-1 grid grid-cols-7 text-center text-[12px] font-medium text-s-ink-3">{WEEKDAYS.map((w, i) => <span key={i}>{w}</span>)}</div>
+                              <div className="mb-1 grid grid-cols-7 text-center text-[12px] font-medium text-s-ink-2">{WEEKDAYS.map((w, i) => <span key={i}>{w}</span>)}</div>
                               <MonthGrid monthDate={shownMonth} now={now} windowEnd={windowEnd} selKey={selKey} hideHeader onPick={(key, label) => { setSelKey(key); setDate(label); setTimeout(() => dateScrollRef.current?.scrollTo({ top: dateScrollRef.current.scrollHeight, behavior: "smooth" }), 300); }} />
                               {/* time-of-day , reveals once a date is picked (CSS max-height = smooth). Default = none (any time); tap a chip to toggle on/off. */}
                               <div className={`overflow-hidden transition-[max-height,opacity] duration-300 ${selKey ? "max-h-32 opacity-100" : "max-h-0 opacity-0"}`}>
@@ -444,7 +444,7 @@ function MonthGrid({ monthDate, now, windowEnd, selKey, onPick, hideHeader }: {
           return (
             <div key={i} className="flex justify-center">
               {disabled ? (
-                <span className="grid h-9 w-9 place-items-center text-[14px] text-s-ink-3/35">{d}</span>
+                <span className="grid h-9 w-9 place-items-center text-[14px] text-s-ink-2/35">{d}</span>
               ) : (
                 <button onClick={() => onPick(key, `${d}. ${monthLong}`)}
                   className={`grid h-9 w-9 place-items-center rounded-full text-[14px] transition-colors ${selected ? "bg-s-accent font-bold text-white" : isToday ? "font-bold text-s-accent" : "font-medium text-s-ink hover:bg-s-bg-sunken"}`}>{d}</button>
@@ -473,11 +473,11 @@ function SuggestRow({ name, sub, Icon, img, tint, onClick, onRemove }: {
         )}
         <span className="min-w-0">
           <span className="block truncate text-[15px] font-semibold text-s-ink">{name}</span>
-          {sub ? <span className="block truncate text-[13px] text-s-ink-3">{sub}</span> : null}
+          {sub ? <span className="block truncate text-[13px] text-s-ink-2">{sub}</span> : null}
         </span>
       </button>
       {onRemove && (
-        <button onClick={onRemove} aria-label="Entfernen" className="grid h-8 w-8 shrink-0 place-items-center text-s-ink-3"><X size={17} strokeWidth={2} /></button>
+        <button onClick={onRemove} aria-label="Entfernen" className="grid h-8 w-8 shrink-0 place-items-center text-s-ink-2"><X size={17} strokeWidth={2} /></button>
       )}
     </div>
   );

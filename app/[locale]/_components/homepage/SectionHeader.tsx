@@ -53,18 +53,18 @@ export function SectionHeader({
 export function SectionMeta({ eyebrow }: { eyebrow: string }) {
   return (
     // V3-D192 (2026-05-26): SectionMeta bullet + text → s-accent (royal blue).
-    //   (historical: was text-s-ink-3 + before:bg-s-ink-3 ink-grey before that.)
+    //   (historical: was text-s-ink-2 + before:bg-s-ink-2 ink-grey before that.)
     // V3-D330: Eyebrow recipe normalized — tracking 0.18em → 0.08em canonical,
     //   weight font-bold → font-semibold.
     // V3-D331 (2026-05-28): dropped the pseudo-element accent-dot prefix
     //   (before-pseudo + rounded-full + accent bg) per LOCKFILE §2.5 Eyebrow decoration policy
-    //   (no leading dot, no leading icon). Color dropped from s-accent → s-ink-3
+    //   (no leading dot, no leading icon). Color dropped from s-accent → s-ink-2
     //   per §1.5 forbidden (decorative accent eyebrow). The eyebrow text label
     //   stays because this primitive renders the "FÜR SALONS" homepage divider —
     //   a magazine-style identity label that earns its eyebrow per §2.5
     //   "max 1 per surface, IF section needs identity label" carve-out.
     <div className="mb-2 px-2 font-body text-[13px] font-semibold uppercase tracking-[0.08em]">
-      <span className="inline-flex items-center gap-2 whitespace-nowrap text-s-ink-3">
+      <span className="inline-flex items-center gap-2 whitespace-nowrap text-s-ink-2">
         {eyebrow}
       </span>
     </div>

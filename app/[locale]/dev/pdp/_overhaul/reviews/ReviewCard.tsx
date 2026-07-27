@@ -41,7 +41,7 @@ export function ReviewCard({
           <div className="font-body truncate text-[14px] font-semibold text-s-ink">
             {displayName ?? "Anonymous"}
           </div>
-          <div className="font-body mt-0.5 text-[13px] text-s-ink-3">
+          <div className="font-body mt-0.5 text-[13px] text-s-ink-2">
             {formatReviewDateEn(review.created_at)}
           </div>
         </div>

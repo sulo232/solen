@@ -51,7 +51,7 @@ export function FieldLabel({
         />
       )}
       {!required && optional && (
-        <span className="font-normal text-[12px] text-s-ink-3 lowercase">
+        <span className="font-normal text-[12px] text-s-ink-2 lowercase">
           optional
         </span>
       )}

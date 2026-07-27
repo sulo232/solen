@@ -490,7 +490,7 @@ export default function ServicesPage() {
       {/* Search + filter pills (mobile parity — render-time filter over fetched services) */}
       {services.length > 0 && (
         <>
-          <div className="flex items-center gap-2 border border-s-border rounded-[14px] px-3.5 py-2.5 text-s-ink-3 mb-3.5">
+          <div className="flex items-center gap-2 border border-s-border rounded-[14px] px-3.5 py-2.5 text-s-ink-2 mb-3.5">
             <Search size={17} className="shrink-0" />
             {/* mockup-ok: !important prevents a look change, not a new one. The wrapper div
                 owns the visible chrome + padding; this input must stay invisible AND compact
@@ -501,7 +501,7 @@ export default function ServicesPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t('searchPlaceholder')}
-              className="flex-1 min-w-0 !border-0 !bg-transparent !min-h-0 !px-0 !text-[13.5px] text-s-ink placeholder:text-s-ink-3 focus:outline-none"
+              className="flex-1 min-w-0 !border-0 !bg-transparent !min-h-0 !px-0 !text-[13.5px] text-s-ink placeholder:text-s-ink-2 focus:outline-none"
             />
           </div>
           <div className="flex gap-2 mb-4 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pb-1">
@@ -535,7 +535,7 @@ export default function ServicesPage() {
       ) : services.length === 0 ? (
         <div className="text-center py-12 text-s-ink/30"><p className="text-sm">{t('emptyNone')}</p></div>
       ) : visibleServices.length === 0 ? (
-        <div className="text-center py-12 text-s-ink-3"><p className="text-sm">{t('emptyFiltered')}</p></div>
+        <div className="text-center py-12 text-s-ink-2"><p className="text-sm">{t('emptyFiltered')}</p></div>
       ) : (
         <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="services-list">
@@ -558,7 +558,7 @@ export default function ServicesPage() {
                   className={`border-b border-s-border last:border-b-0 px-3.5 py-3 transition-colors ${snapshot.isDragging ? "bg-s-bg-sunken shadow-warm-md" : ""}`}>
                   <div className="flex items-center gap-3">
                     <span {...provided.dragHandleProps}
-                      className="cursor-grab active:cursor-grabbing text-s-ink-3 hover:text-s-ink-2 transition-colors shrink-0"
+                      className="cursor-grab active:cursor-grabbing text-s-ink-2 hover:text-s-ink-2 transition-colors shrink-0"
                       aria-label={t('dragHandle')}>
                       <GripVertical size={20} />
                     </span>
@@ -567,9 +567,9 @@ export default function ServicesPage() {
                       className="flex-1 min-w-0 text-left">
                       <div className="flex items-center gap-1.5">
                         <p className="font-heading font-semibold text-[14.5px] text-s-ink truncate">{s.name_de}</p>
-                        <ChevronDown size={15} className={`shrink-0 text-s-ink-3 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
+                        <ChevronDown size={15} className={`shrink-0 text-s-ink-2 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
                       </div>
-                      {s.name_en && <p className="text-[12px] text-s-ink-3 truncate">{s.name_en}</p>}
+                      {s.name_en && <p className="text-[12px] text-s-ink-2 truncate">{s.name_en}</p>}
                       <div className="flex items-center gap-2 mt-1.5">
                         <span className="text-[12px] font-semibold rounded-md px-2 py-0.5 bg-s-bg-sunken text-s-ink-2">{CATEGORY_LABELS[s.category]}</span>
                       <span className="text-[12.5px] text-s-ink-2">{s.duration_minutes} {t('minutesUnit')} <b className="font-heading font-semibold text-s-ink">{formatCurrency(Number(s.price), locale)}</b></span>
@@ -580,7 +580,7 @@ export default function ServicesPage() {
                       // block, not a button, so no dead chevron affordance (TASTE_LOG.md:253).
                       <div className="flex-1 min-w-0 text-left">
                         <p className="font-heading font-semibold text-[14.5px] text-s-ink truncate">{s.name_de}</p>
-                        {s.name_en && <p className="text-[12px] text-s-ink-3 truncate">{s.name_en}</p>}
+                        {s.name_en && <p className="text-[12px] text-s-ink-2 truncate">{s.name_en}</p>}
                         <div className="flex items-center gap-2 mt-1.5">
                           <span className="text-[12px] font-semibold rounded-md px-2 py-0.5 bg-s-bg-sunken text-s-ink-2">{CATEGORY_LABELS[s.category]}</span>
                           <span className="text-[12.5px] text-s-ink-2">{s.duration_minutes} {t('minutesUnit')} <b className="font-heading font-semibold text-s-ink">{formatCurrency(Number(s.price), locale)}</b></span>
@@ -607,7 +607,7 @@ export default function ServicesPage() {
                       <div className="overflow-hidden">
                         <div className="pl-8 pt-2 space-y-1">
                           {s.description_de && <p className="text-[13px] text-s-ink-2 leading-relaxed">{s.description_de}</p>}
-                          {s.description_en && <p className="text-[13px] text-s-ink-3 leading-relaxed">{s.description_en}</p>}
+                          {s.description_en && <p className="text-[13px] text-s-ink-2 leading-relaxed">{s.description_en}</p>}
                           {hasSuitableFor && (
                             <p className="text-[13px] text-s-ink-2">{t('suitableForLabel')}: {s.suitable_for.map((a) => t(`age_${a}`)).join(", ")}</p>
                           )}

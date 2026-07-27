@@ -249,7 +249,7 @@ export default function TipFlow({
                  Reviewer-measured. Every other wrapper-owns-chrome carve-out already pairs
                  !bg-transparent with !border-0 (SearchOverlay.tsx:542,829;
                  ClientSelectorDropdown.tsx:88); this input was the only one missing it. */
-              className="w-full !border-0 !min-h-0 !bg-transparent !px-0 text-[16px] tabular-nums text-s-ink placeholder:text-s-ink-3 focus:outline-none"
+              className="w-full !border-0 !min-h-0 !bg-transparent !px-0 text-[16px] tabular-nums text-s-ink placeholder:text-s-ink-2 focus:outline-none"
             />
           </div>
         )}

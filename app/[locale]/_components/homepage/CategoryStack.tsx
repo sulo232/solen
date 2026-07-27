@@ -106,7 +106,7 @@ export default function CategoryStack() {
                     size={20}
                     strokeWidth={2.25}
                     aria-hidden
-                    className="text-s-ink-3 transition-transform group-hover:translate-x-0.5"
+                    className="text-s-ink-2 transition-transform group-hover:translate-x-0.5"
                   />
                 </Link>
               </li>

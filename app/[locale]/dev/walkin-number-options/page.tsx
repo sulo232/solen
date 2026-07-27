@@ -59,7 +59,7 @@ export default function WalkinNumberOptions() {
       </p>
 
       <div className="mt-6">
-        <p className="mb-2 font-body text-[12px] font-semibold uppercase tracking-wide text-s-ink-3">Now (the range you don&apos;t like)</p>
+        <p className="mb-2 font-body text-[12px] font-semibold uppercase tracking-wide text-s-ink-2">Now (the range you don&apos;t like)</p>
         <Bar wait={<span className="font-display text-[15px] font-semibold tabular-nums tracking-[-.01em]">55&ndash;70 min</span>} />
       </div>
 

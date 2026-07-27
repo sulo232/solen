@@ -699,7 +699,7 @@ export default function CalendarPage() {
           const renderAgenda = (forDate: Date) => {
             const dayIso = ymdLocal(forDate);
             const daySlots = slots.filter((s) => s.starts_at.startsWith(dayIso)).sort((a, b) => a.starts_at.localeCompare(b.starts_at));
-            if (daySlots.length === 0) return <div className="text-center py-12 text-s-ink-3 text-sm">{t("noSlotsThisDay")}</div>;
+            if (daySlots.length === 0) return <div className="text-center py-12 text-s-ink-2 text-sm">{t("noSlotsThisDay")}</div>;
             return (
               <div className="rounded-[16px] border border-s-border bg-white p-3 space-y-2">
                 {daySlots.map((s) => {
@@ -709,12 +709,12 @@ export default function CalendarPage() {
                   const cat = s.service_id ? serviceCategoryMap.get(s.service_id) : undefined;
                   let bg = "bg-[#EAEFFE]", lab = svc ?? t("statusBooked"), labCls = "text-s-ink";
                   let det: string | undefined = stf;
-                  if (s.status === "blocked") { bg = "bg-s-bg-sunken"; lab = t("statusBlocked"); labCls = "text-s-ink-3"; det = undefined; }
+                  if (s.status === "blocked") { bg = "bg-s-bg-sunken"; lab = t("statusBlocked"); labCls = "text-s-ink-2"; det = undefined; }
                   else if (s.status === "available") { bg = "bg-s-success-bg"; lab = t("statusFree"); labCls = "text-s-success"; det = undefined; }
                   else { bg = (cat && CAT_AGENDA_BG[cat]) || "bg-[#EAEFFE]"; }
                   return (
                     <button key={s.id} onClick={() => setDetailSlot(s)} className="w-full flex items-stretch gap-3 text-left">
-                      <span className="font-heading font-semibold text-[12px] text-s-ink-3 w-[40px] shrink-0 pt-3 tabular-nums">{time}</span>
+                      <span className="font-heading font-semibold text-[12px] text-s-ink-2 w-[40px] shrink-0 pt-3 tabular-nums">{time}</span>
                       <span className={`flex-1 rounded-[12px] px-3 py-2.5 min-h-[44px] flex flex-col justify-center ${bg}`}>
                         <span className={`font-heading font-semibold text-[13.5px] ${labCls}`}>{lab}</span>
                         {det && <span className="text-[12px] text-s-ink-2 mt-0.5">{det}</span>}
@@ -769,7 +769,7 @@ export default function CalendarPage() {
                       <button key={i} onClick={() => { setCurrentDate(d); setWeekStart(startOfWeek(d)); }}
                         className={["w-[46px] shrink-0 rounded-[13px] py-2 text-center border transition-colors",
                           on ? "bg-s-ink border-s-ink" : "bg-white border-s-border"].join(" ")}>
-                        <div className={`text-[12px] font-semibold ${on ? "text-white/60" : "text-s-ink-3"}`}>{DAYS_LABEL[i].toUpperCase()}</div>
+                        <div className={`text-[12px] font-semibold ${on ? "text-white/60" : "text-s-ink-2"}`}>{DAYS_LABEL[i].toUpperCase()}</div>
                         <div className={`font-heading font-bold text-[16px] mt-0.5 ${on ? "text-white" : "text-s-ink"}`}>{d.getDate()}</div>
                         {has
                           ? <div className={`w-[5px] h-[5px] rounded-full mx-auto mt-1 ${on ? "bg-white" : "bg-s-accent"}`} />
@@ -789,7 +789,7 @@ export default function CalendarPage() {
                 <div className="rounded-[16px] border border-s-border bg-white p-3.5">
                   <div className="grid grid-cols-7 gap-1">
                     {["M", "D", "M", "D", "F", "S", "S"].map((h, i) => (
-                      <div key={i} className="text-[12px] text-s-ink-3 text-center font-semibold pb-1">{h}</div>
+                      <div key={i} className="text-[12px] text-s-ink-2 text-center font-semibold pb-1">{h}</div>
                     ))}
                     {getMonthCalendarDays(currentDate).map((d, i) => {
                       const dIso = ymdLocal(d);
@@ -801,7 +801,7 @@ export default function CalendarPage() {
                         <button key={i}
                           onClick={() => { setCurrentDate(d); setWeekStart(startOfWeek(d)); setMobileView("tag"); }}
                           className={["aspect-square rounded-[10px] flex flex-col items-center justify-center gap-[3px] font-heading font-semibold text-[12.5px] transition-colors",
-                            today ? "bg-s-ink text-white" : out ? "bg-transparent text-s-ink-3" : "bg-s-bg-sunken text-s-ink"].join(" ")}>
+                            today ? "bg-s-ink text-white" : out ? "bg-transparent text-s-ink-2" : "bg-s-bg-sunken text-s-ink"].join(" ")}>
                           {d.getDate()}
                           <span className="flex gap-[2px] h-1">
                             {Array.from({ length: dots }).map((_, k) => (

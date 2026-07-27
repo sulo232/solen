@@ -39,7 +39,7 @@ export function CaseDetail({
       </div>
 
       <p className="mt-3 text-[14px] leading-relaxed text-s-ink-2">{report.details}</p>
-      <p className="mt-1 font-mono-code text-[12px] text-s-ink-3">{report.reporterRef}</p>
+      <p className="mt-1 font-mono-code text-[12px] text-s-ink-2">{report.reporterRef}</p>
 
       <div className="mt-5">
         <p className="mb-2 text-[12px] font-semibold text-s-ink-2">Reported content</p>

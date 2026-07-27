@@ -70,7 +70,7 @@ export function ReviewsFullFilterList({ reviews }: { reviews: Review[] }) {
       </div>
 
       <div className="mt-5 flex items-center justify-between">
-        <span className="font-body text-[13px] text-s-ink-3">
+        <span className="font-body text-[13px] text-s-ink-2">
           {sorted.length} {sorted.length === 1 ? "review" : "reviews"}
         </span>
         <button
@@ -79,13 +79,13 @@ export function ReviewsFullFilterList({ reviews }: { reviews: Review[] }) {
           className="inline-flex h-11 items-center gap-1 rounded-full border border-s-border bg-white px-4 font-body text-[13px] font-semibold text-s-ink shadow-whisper transition-colors hover:bg-s-bg-sunken"
         >
           {REVIEW_SORT_LABEL[sort]}
-          <ChevronDown size={15} strokeWidth={2.2} aria-hidden className="text-s-ink-3" />
+          <ChevronDown size={15} strokeWidth={2.2} aria-hidden className="text-s-ink-2" />
         </button>
       </div>
 
       <div className="mt-4 flex flex-col">
         {sorted.length === 0 ? (
-          <p className="py-8 text-center font-body text-[14px] text-s-ink-3">
+          <p className="py-8 text-center font-body text-[14px] text-s-ink-2">
             No reviews match this filter.
           </p>
         ) : (

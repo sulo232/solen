@@ -211,10 +211,10 @@ export default function SalonUpchargePage() {
                   onClick={() => setPickerOpen(true)}
                   className="w-full min-h-[44px] mb-4 flex items-center justify-between gap-3 rounded-[12px] border border-s-border bg-white px-3.5 py-3 text-left transition-colors hover:bg-s-bg-sunken"
                 >
-                  <span className={"font-heading font-semibold text-[14px] truncate " + (selected ? "text-s-ink" : "text-s-ink-3")}>
+                  <span className={"font-heading font-semibold text-[14px] truncate " + (selected ? "text-s-ink" : "text-s-ink-2")}>
                     {selected ? `${selected.customer_name || selected.guest_name || selected.reference_code || selected.id.slice(0, 8)} ${svcName(selected)}` : t("selectPlaceholder")}
                   </span>
-                  <ChevronDown className="w-[18px] h-[18px] text-s-ink-3 shrink-0" />
+                  <ChevronDown className="w-[18px] h-[18px] text-s-ink-2 shrink-0" />
                 </button>
               )}
 

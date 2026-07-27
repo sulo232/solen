@@ -240,8 +240,8 @@ function SalonResultCardInner(props: SalonResultCardProps) {
     <span
       className={
         variant === "list"
-          ? "absolute inset-0 grid place-items-center font-display font-black leading-none text-[40px] tracking-[-0.03em] text-s-ink-3"
-          : "absolute inset-0 grid place-items-center font-display font-black leading-none text-[64px] tracking-[-0.03em] text-s-ink-3 md:text-[80px]"
+          ? "absolute inset-0 grid place-items-center font-display font-black leading-none text-[40px] tracking-[-0.03em] text-s-ink-2"
+          : "absolute inset-0 grid place-items-center font-display font-black leading-none text-[64px] tracking-[-0.03em] text-s-ink-2 md:text-[80px]"
       }
       aria-hidden
     >
@@ -266,7 +266,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
           {photoUrl ? (
             <Image src={photoUrl} alt={`Foto von ${name}`} fill sizes="70px" className="object-cover" />
           ) : (
-            <span className="grid h-full w-full place-items-center text-s-ink-3" aria-hidden>
+            <span className="grid h-full w-full place-items-center text-s-ink-2" aria-hidden>
               <Store size={22} strokeWidth={1.5} />
             </span>
           )}
@@ -536,7 +536,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
                       <div key={s.id} className="flex items-center justify-between gap-3 rounded-xl bg-s-bg-sunken px-3.5 py-2.5 text-[13.5px]">
                         <span className="min-w-0">
                           <span className="block truncate text-s-ink">{svcName}</span>
-                          {dur && <span className="text-[12px] text-s-ink-3">{dur}</span>}
+                          {dur && <span className="text-[12px] text-s-ink-2">{dur}</span>}
                         </span>
                         <span className="shrink-0 font-semibold tabular-nums text-s-ink">{s.price} CHF</span>
                       </div>
@@ -640,8 +640,8 @@ function SalonResultCardInner(props: SalonResultCardProps) {
         </div>
 
         {/* Row 2 — grey meta line: category · city · distance.
-            NOTE (V3-D352): the homepage Row 2 uses s-ink-3, but in this B&W config
-            s-ink-2 === s-ink-3 (both the same grey), so CardMeta's baked s-ink-2 already
+            NOTE (V3-D352): the homepage Row 2 uses s-ink-2, but in this B&W config
+            s-ink-2 === s-ink-2 (both the same grey), so CardMeta's baked s-ink-2 already
             matches the homepage exactly - no override / raw div needed. */}
         {metaBits && (
           <CardMeta as="div" className="mt-0.5 truncate text-[12px] leading-[1.35]">

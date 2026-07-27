@@ -25,9 +25,9 @@ const selectVariants = cva(
     "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
     "focus-visible:border-s-ink",
     // disabled
-    "disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-s-bg-sunken disabled:text-s-ink-3",
+    "disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-s-bg-sunken disabled:text-s-ink-2",
     // unstyle the placeholder option in some browsers
-    "[&_option:disabled]:text-s-ink-3",
+    "[&_option:disabled]:text-s-ink-2",
   ),
   {
     variants: {

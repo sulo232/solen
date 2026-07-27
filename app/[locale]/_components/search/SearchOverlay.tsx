@@ -517,7 +517,7 @@ export function SearchOverlay({
     <button key={s} onClick={() => openStep(s)}
       className="flex h-14 w-full items-center justify-between rounded-[20px] bg-white px-4 text-left shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
       <span className="text-[14px] font-medium text-s-ink-2">{stepMeta[s].label}</span>
-      <span className={`truncate pl-3 text-[14px] ${stepMeta[s].value ? "font-semibold text-s-ink" : "text-s-ink-3"}`}>
+      <span className={`truncate pl-3 text-[14px] ${stepMeta[s].value ? "font-semibold text-s-ink" : "text-s-ink-2"}`}>
         {stepMeta[s].value || stepMeta[s].placeholder}
       </span>
     </button>
@@ -532,7 +532,7 @@ export function SearchOverlay({
         </button>
       ) : (
         <span className="grid h-6 w-6 shrink-0 place-items-center">
-          <Search size={19} strokeWidth={2} className="text-s-ink-3" />
+          <Search size={19} strokeWidth={2} className="text-s-ink-2" />
         </span>
       )}
       {/* A2/Model B (2026-07-04): the input ALWAYS binds to `serviceQ` only (never `service`),
@@ -549,10 +549,10 @@ export function SearchOverlay({
         onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleSubmit(); } }}
         enterKeyHint="search"
         placeholder={queryPlaceholderTxt} aria-label={queryPlaceholderTxt}
-        className="min-w-0 flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[15px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:outline-none" />
+        className="min-w-0 flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[15px] text-s-ink placeholder:text-s-ink-2 focus:outline-none focus-visible:outline-none" />
       {serviceQ.length > 0 && (
         <button onClick={() => { setServiceQ(""); serviceRef.current?.focus(); }}
-          aria-label="Eingabe loeschen" className="shrink-0 text-s-ink-3">
+          aria-label="Eingabe loeschen" className="shrink-0 text-s-ink-2">
           <X size={18} strokeWidth={2.2} />
         </button>
       )}
@@ -607,7 +607,7 @@ export function SearchOverlay({
             <>
               <div className="mt-4 flex items-center gap-2">
                 <SectionLabel className="!mb-0">{placesLabelTxt}</SectionLabel>
-                {geoLoading && <Loader2 size={13} strokeWidth={2.2} className="animate-spin text-s-ink-3" aria-hidden />}
+                {geoLoading && <Loader2 size={13} strokeWidth={2.2} className="animate-spin text-s-ink-2" aria-hidden />}
               </div>
               {geoCandidates.map((c) => (
                 <SuggestRow key={`${c.label}|${c.city_slug}`} name={c.label} Icon={MapPin}
@@ -831,14 +831,14 @@ export function SearchOverlay({
                   <div key={s} className="mb-2.5 flex min-h-0 flex-1 flex-col overflow-hidden rounded-[20px] bg-white p-4 shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
                     <h2 className="mb-3 shrink-0 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{locationHeadingTxt}</h2>
                     <div className="mb-2 flex h-12 shrink-0 items-center gap-2 rounded-[14px] border border-s-border bg-white px-3.5">
-                      <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-3" />
+                      <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
                       {/* mockup-ok: !important preserves the existing look, not a new one; same
                           carve-out as the service query input above (V3-D-input-fill-2026-07-17). */}
                       <input ref={cityRef} value={cityQ} onChange={(e) => setCityQ(e.target.value)}
                         placeholder={citySearchPlaceholderTxt} aria-label={citySearchPlaceholderTxt}
-                        className="min-w-0 flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[15px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:outline-none" />
+                        className="min-w-0 flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[15px] text-s-ink placeholder:text-s-ink-2 focus:outline-none focus-visible:outline-none" />
                       {cityQ.length > 0 && (
-                        <button onClick={() => { setCityQ(""); cityRef.current?.focus(); }} aria-label="Eingabe loeschen" className="shrink-0 text-s-ink-3">
+                        <button onClick={() => { setCityQ(""); cityRef.current?.focus(); }} aria-label="Eingabe loeschen" className="shrink-0 text-s-ink-2">
                           <X size={18} strokeWidth={2.2} />
                         </button>
                       )}
@@ -853,11 +853,11 @@ export function SearchOverlay({
                         className="absolute inset-y-1 w-[calc(50%-4px)] rounded-full bg-white shadow-sm"
                         style={{ left: dateTab === "daten" ? 4 : "calc(50% + 0px)" }} />
                       <button onClick={() => setDateTab("daten")}
-                        className={`relative z-10 flex-1 rounded-full py-2 text-center text-[13px] transition-colors ${dateTab === "daten" ? "font-semibold text-s-ink" : "font-medium text-s-ink-3"}`}>
+                        className={`relative z-10 flex-1 rounded-full py-2 text-center text-[13px] transition-colors ${dateTab === "daten" ? "font-semibold text-s-ink" : "font-medium text-s-ink-2"}`}>
                         {tabDatesTxt}
                       </button>
                       <button onClick={() => setDateTab("flexibel")}
-                        className={`relative z-10 flex-1 rounded-full py-2 text-center text-[13px] transition-colors ${dateTab === "flexibel" ? "font-semibold text-s-ink" : "font-medium text-s-ink-3"}`}>
+                        className={`relative z-10 flex-1 rounded-full py-2 text-center text-[13px] transition-colors ${dateTab === "flexibel" ? "font-semibold text-s-ink" : "font-medium text-s-ink-2"}`}>
                         {tabFlexibleTxt}
                       </button>
                     </div>
@@ -880,7 +880,7 @@ export function SearchOverlay({
                                 </button>
                               </div>
                             </div>
-                            <div className="mb-1 grid grid-cols-7 text-center text-[12px] font-medium text-s-ink-3">
+                            <div className="mb-1 grid grid-cols-7 text-center text-[12px] font-medium text-s-ink-2">
                               {WEEKDAYS.map((w, i) => <span key={i}>{w}</span>)}
                             </div>
                             <MonthGrid monthDate={shownMonth} now={now} windowEnd={windowEnd} selKey={selKey} locale={locale}
@@ -1049,9 +1049,9 @@ function LookCard({ image, title, onClick }: { image: string; title: string; onC
 function AutocompleteRow({ label, primary, onClick }: { label: string; primary?: boolean; onClick: () => void }) {
   return (
     <button onClick={onClick} className="flex w-full items-center gap-3 py-2.5 text-left">
-      <Search size={16} strokeWidth={2} className="shrink-0 text-s-ink-3" />
+      <Search size={16} strokeWidth={2} className="shrink-0 text-s-ink-2" />
       <span className={`min-w-0 flex-1 truncate text-[14px] text-s-ink ${primary ? "font-semibold" : "font-medium"}`}>{label}</span>
-      <ArrowUpLeft size={15} strokeWidth={2} className="shrink-0 text-s-ink-3" />
+      <ArrowUpLeft size={15} strokeWidth={2} className="shrink-0 text-s-ink-2" />
     </button>
   );
 }
@@ -1079,7 +1079,7 @@ function MonthGrid({ monthDate, now, windowEnd, selKey, onPick, locale }: {
         return (
           <div key={i} className="flex justify-center">
             {disabled ? (
-              <span className="grid h-9 w-9 place-items-center text-[14px] text-s-ink-3/35">{d}</span>
+              <span className="grid h-9 w-9 place-items-center text-[14px] text-s-ink-2/35">{d}</span>
             ) : (
               <button onClick={() => onPick(key, `${d}. ${monthLong}`)}
                 className={`grid h-9 w-9 place-items-center rounded-full text-[14px] transition-colors ${selected ? "bg-s-accent font-bold text-white" /* selected-ok: date cell */ : isToday ? "font-bold text-s-accent" : "font-medium text-s-ink hover:bg-s-bg-sunken"}`}>
@@ -1112,11 +1112,11 @@ function SuggestRow({ name, sub, Icon, img, onClick, onRemove }: {
         )}
         <span className="min-w-0">
           <span className="block truncate text-[15px] font-semibold text-s-ink">{name}</span>
-          {sub ? <span className="block truncate text-[13px] text-s-ink-3">{sub}</span> : null}
+          {sub ? <span className="block truncate text-[13px] text-s-ink-2">{sub}</span> : null}
         </span>
       </button>
       {onRemove && (
-        <button onClick={onRemove} aria-label="Entfernen" className="grid h-8 w-8 shrink-0 place-items-center text-s-ink-3">
+        <button onClick={onRemove} aria-label="Entfernen" className="grid h-8 w-8 shrink-0 place-items-center text-s-ink-2">
           <X size={17} strokeWidth={2} />
         </button>
       )}

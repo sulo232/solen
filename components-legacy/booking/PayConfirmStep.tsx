@@ -514,7 +514,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
         contactName.trim() && contactPhone.replace(/\D/g, '').length >= 9 && !editingContact ? (
           <div className="rounded-input border border-s-border bg-s-bg-surface p-4">
             <div className="flex items-center gap-3">
-              <UserRound size={18} strokeWidth={2} className="shrink-0 text-s-ink-3" aria-hidden />
+              <UserRound size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" aria-hidden />
               <div className="min-w-0 flex-1">
                 <p className="font-body text-[14.5px] font-semibold text-s-ink">{contactName}</p>
                 <p className="font-body mt-px text-[13px] text-s-ink-2">{contactPhone}</p>
@@ -532,7 +532,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
           <div className="rounded-input border border-s-border bg-s-bg-surface p-4">
             {contactName.trim() && !editingContact ? (
               <div className="flex items-center gap-3">
-                <UserRound size={18} strokeWidth={2} className="shrink-0 text-s-ink-3" aria-hidden />
+                <UserRound size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" aria-hidden />
                 <p className="font-body text-[14.5px] font-semibold text-s-ink">{contactName}</p>
               </div>
             ) : (
@@ -555,7 +555,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
               aria-label={tp('contactPhone')}
               className="mt-3 w-full"
             />
-            <p className="font-body mt-1.5 text-[12px] text-s-ink-3">{tp('contactHint')}</p>
+            <p className="font-body mt-1.5 text-[12px] text-s-ink-2">{tp('contactHint')}</p>
           </div>
         )
       )}

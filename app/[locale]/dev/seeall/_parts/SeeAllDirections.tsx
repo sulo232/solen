@@ -73,7 +73,7 @@ function Section({
         {topRight}
       </div>
       {/* V3-only annotation, MY chrome (English), never uppercase/tracked per the mockup copy rules. */}
-      {intentNote && <p className="mt-1 font-body text-[12px] text-s-ink-3">{intentNote}</p>}
+      {intentNote && <p className="mt-1 font-body text-[12px] text-s-ink-2">{intentNote}</p>}
       <div className="mt-5">{children}</div>
       {bottomCenter && <div className="mt-6 flex justify-center">{bottomCenter}</div>}
     </section>
@@ -140,14 +140,14 @@ export function SeeAllDirections({
         intentNote={direction === "3" ? "Navigates to the booking flow." : undefined}
       >
         {services.length === 0 ? (
-          <p className="font-body text-[14px] text-s-ink-3">This salon has no services yet.</p>
+          <p className="font-body text-[14px] text-s-ink-2">This salon has no services yet.</p>
         ) : (
           <ul className="divide-y divide-s-border overflow-hidden rounded-[16px] border border-s-border">
             {services.map((s) => (
               <li key={s.id} className="flex items-center justify-between gap-4 px-4 py-3.5">
                 <div className="min-w-0 flex-1">
                   <div className="truncate font-body text-[15px] font-semibold text-s-ink">{s.name_de}</div>
-                  <div className="mt-1 font-body text-[13px] text-s-ink-3">
+                  <div className="mt-1 font-body text-[13px] text-s-ink-2">
                     {formatDurationDE(s.duration_minutes)}
                   </div>
                 </div>
@@ -168,7 +168,7 @@ export function SeeAllDirections({
         intentNote={direction === "3" ? "Navigates to the team page." : undefined}
       >
         {team.length === 0 ? (
-          <p className="font-body text-[14px] text-s-ink-3">This salon has no team members yet.</p>
+          <p className="font-body text-[14px] text-s-ink-2">This salon has no team members yet.</p>
         ) : (
           <div className="flex gap-5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {team.map((m) => {
@@ -198,7 +198,7 @@ export function SeeAllDirections({
         intentNote={direction === "3" ? "Expands in place, same page, no navigation." : undefined}
       >
         {visibleReviews.length === 0 ? (
-          <p className="font-body text-[14px] text-s-ink-3">No reviews yet.</p>
+          <p className="font-body text-[14px] text-s-ink-2">No reviews yet.</p>
         ) : (
           <div className="flex flex-col">
             {visibleReviews.map((r) => {

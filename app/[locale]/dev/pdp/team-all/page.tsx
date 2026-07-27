@@ -32,7 +32,7 @@ export default async function TeamAllPage({
     <div className="min-h-screen bg-white">
       <div className="border-b border-s-border bg-s-bg-sunken px-4 py-4 md:px-6">
         <div className="mx-auto max-w-[720px]">
-          <p className="font-body text-[12px] font-semibold text-s-ink-3">Solen , /dev/pdp/team-all</p>
+          <p className="font-body text-[12px] font-semibold text-s-ink-2">Solen , /dev/pdp/team-all</p>
           <h2 className="mt-1 font-display text-[18px] font-semibold tracking-[-0.01em] text-s-ink">
             Team &quot;see all&quot; (T5/T6/T7) , real staff for &quot;{salon.name}&quot;
           </h2>

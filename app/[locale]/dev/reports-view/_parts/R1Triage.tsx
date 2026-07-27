@@ -52,12 +52,12 @@ function Row({
           <span className="block truncate text-[15px] font-semibold text-s-ink">{reasonLabel(report.reason)}</span>
           <span className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5">
             <TargetTypeTag type={report.targetType} />
-            <span className="font-mono-code text-[12px] text-s-ink-3">{report.reporterRef}</span>
+            <span className="font-mono-code text-[12px] text-s-ink-2">{report.reporterRef}</span>
             <AgeLabel minutes={report.ageMinutes} status={report.status} />
           </span>
         </span>
         <StatusChip status={report.status} className="mt-0.5" />
-        <Chevron size={16} strokeWidth={2} className="mt-1.5 shrink-0 text-s-ink-3" aria-hidden />
+        <Chevron size={16} strokeWidth={2} className="mt-1.5 shrink-0 text-s-ink-2" aria-hidden />
       </button>
       {open && (
         <div className="border-t border-s-border bg-s-bg-sunken/50 px-4 py-4">

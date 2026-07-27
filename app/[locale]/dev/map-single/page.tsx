@@ -86,7 +86,7 @@ function Head() {
 function ServiceRow({ n, d, p }: { n: string; d: string; p: string }) {
   return (
     <div className="flex items-center justify-between gap-3 rounded-xl bg-s-bg-sunken px-3.5 py-2.5 text-[13.5px]">
-      <span className="min-w-0"><span className="block truncate text-s-ink">{n}</span><span className="text-[12px] text-s-ink-3">{d}</span></span>
+      <span className="min-w-0"><span className="block truncate text-s-ink">{n}</span><span className="text-[12px] text-s-ink-2">{d}</span></span>
       <span className="shrink-0 font-semibold tabular-nums text-s-ink">{p}</span>
     </div>
   );
@@ -117,7 +117,7 @@ function Sheet2() {
       <p className="mt-2 flex items-center gap-1.5 text-[13px] text-s-ink-2"><Clock size={14} /> {SALON.hours}</p>
       <button className="mt-2.5 flex w-full items-center justify-between gap-2 rounded-xl border border-s-border px-3.5 py-2.5 text-left active:bg-s-bg-sunken">
         <span className="flex items-center gap-1.5 text-[13.5px] text-s-ink"><Star size={14} className="fill-s-star text-s-star" strokeWidth={0} /> <span className="font-semibold">{SALON.rating}</span> <span className="text-s-ink-2">{SALON.count} reviews</span></span>
-        <ChevronRight size={16} className="text-s-ink-3" />
+        <ChevronRight size={16} className="text-s-ink-2" />
       </button>
       <div className="mt-2.5 space-y-1.5">{SALON.services.slice(0, 4).map(([n, d, p]) => <ServiceRow key={n} n={n} d={d} p={p} />)}</div>
       <ViewStore />
@@ -202,7 +202,7 @@ export default function MapSingleMockup() {
   return (
     <main className="min-h-screen bg-s-bg-sunken py-4">
       <div className="mx-auto w-full max-w-[390px] px-3">
-        <p className="pb-1 text-center text-[12px] font-semibold text-s-ink-3">Tap a pin, the bottom sheet becomes that salon. Pick a direction.</p>
+        <p className="pb-1 text-center text-[12px] font-semibold text-s-ink-2">Tap a pin, the bottom sheet becomes that salon. Pick a direction.</p>
         <div className="flex justify-center gap-2 pb-3">
           {[1, 2, 3].map((n) => (
             <button

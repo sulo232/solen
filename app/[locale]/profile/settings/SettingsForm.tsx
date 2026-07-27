@@ -285,7 +285,7 @@ export default function SettingsForm({
           <Field label={tp("bio")} htmlFor="bio" optional>
             <textarea id="bio" rows={3} maxLength={500} value={form.bio}
               onChange={(e) => set("bio", e.target.value)}
-              className={cn("block w-full font-body font-normal text-[16px] text-s-ink px-4 py-3 placeholder:text-s-ink-3 transition-colors duration-150", WHITE_INPUT)} />
+              className={cn("block w-full font-body font-normal text-[16px] text-s-ink px-4 py-3 placeholder:text-s-ink-2 transition-colors duration-150", WHITE_INPUT)} />
           </Field>
           <Field label={t("changeEmail")} htmlFor="new_email">
             <div className="flex gap-2">
@@ -457,7 +457,7 @@ export default function SettingsForm({
                 (LOCKFILE V3-D449, no double ring), so both are dead (V3-D-input-fill-2026-07-17). */}
             <textarea id="bio" rows={3} maxLength={500} value={form.bio}
               onChange={(e) => set("bio", e.target.value)}
-              className="block w-full font-body font-normal text-[16px] text-s-ink px-4 py-3 placeholder:text-s-ink-3 transition-colors duration-150" />
+              className="block w-full font-body font-normal text-[16px] text-s-ink px-4 py-3 placeholder:text-s-ink-2 transition-colors duration-150" />
           </Field>
           <div className="space-y-1.5">
             <FieldLabel>{tp("language")}</FieldLabel>

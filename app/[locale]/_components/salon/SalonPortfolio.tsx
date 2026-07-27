@@ -82,7 +82,7 @@ export function SalonPortfolio({
           shipped markup, font-body → font-display + Scale B. */}
       <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
         Portfolio
-        <span className="ml-2 text-[14px] font-normal text-s-ink-3 md:text-[15px]">
+        <span className="ml-2 text-[14px] font-normal text-s-ink-2 md:text-[15px]">
           {totalReal}
         </span>
       </h2>
@@ -91,7 +91,7 @@ export function SalonPortfolio({
       <UniformGrid urls={combined} onOpen={onOpen} />
 
       {showFootnote && (
-        <p className="mt-3 font-body text-[12px] text-s-ink-3">Zeigt {totalReal} echte Fotos.</p>
+        <p className="mt-3 font-body text-[12px] text-s-ink-2">Zeigt {totalReal} echte Fotos.</p>
       )}
     </section>
   );

@@ -46,7 +46,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 function RowShell({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="rounded-card border border-s-border bg-white p-4">
-      <p className="mb-3 text-[12px] font-semibold text-s-ink-3">{title}</p>
+      <p className="mb-3 text-[12px] font-semibold text-s-ink-2">{title}</p>
       <div className="grid grid-cols-2 gap-4">{children}</div>
     </div>
   );
@@ -64,10 +64,10 @@ function BeforeCard({ replayKey }: { replayKey: number }) {
     >
       <div className="mb-2 aspect-[3/2] w-full rounded-xl bg-s-bg-sunken" />
       <p className="truncate text-[14px] font-semibold text-s-ink">Sample service</p>
-      <div className="mt-1 flex items-center gap-1 text-[12px] text-s-ink-3">
+      <div className="mt-1 flex items-center gap-1 text-[12px] text-s-ink-2">
         <Star size={12} className="fill-s-star text-s-star" />
         <span>4.9</span>
-        <span className="text-s-ink-3">Sample Street 1</span>
+        <span className="text-s-ink-2">Sample Street 1</span>
       </div>
     </motion.div>
   );
@@ -85,10 +85,10 @@ function AfterCard({ replayKey, intensity }: { replayKey: number; intensity: Int
     >
       <div className="mb-2 aspect-[3/2] w-full rounded-xl bg-s-bg-sunken" />
       <p className="truncate text-[14px] font-semibold text-s-ink">Sample service</p>
-      <div className="mt-1 flex items-center gap-1 text-[12px] text-s-ink-3">
+      <div className="mt-1 flex items-center gap-1 text-[12px] text-s-ink-2">
         <Star size={12} className="fill-s-star text-s-star" />
         <span>4.9</span>
-        <span className="text-s-ink-3">Sample Street 1</span>
+        <span className="text-s-ink-2">Sample Street 1</span>
       </div>
     </motion.div>
   );
@@ -104,7 +104,7 @@ function BeforeAccordion({ replayKey }: { replayKey: number }) {
         className="flex w-full items-center justify-between text-left"
       >
         <span className="text-[14px] font-semibold text-s-ink">Haircut & styling</span>
-        <Plus size={18} className={`text-s-ink-3 ${open ? "rotate-45" : ""}`} />
+        <Plus size={18} className={`text-s-ink-2 ${open ? "rotate-45" : ""}`} />
       </button>
       {open && (
         <div className="mt-3 rounded-xl bg-s-bg-sunken p-3 text-[13px] text-s-ink-2">
@@ -129,7 +129,7 @@ function AfterAccordion({ replayKey, intensity }: { replayKey: number; intensity
           animate={{ rotate: open ? 45 : 0 }}
           transition={{ duration: 0.18, ease: GLIDE }}
         >
-          <Plus size={18} className="text-s-ink-3" />
+          <Plus size={18} className="text-s-ink-2" />
         </motion.span>
       </button>
       <AnimatePresence initial={false}>
@@ -162,7 +162,7 @@ function BeforeSheet({ replayKey }: { replayKey: number }) {
       className="rounded-card border border-s-border bg-white p-4 shadow-elevation-2"
     >
       <p className="text-[14px] font-semibold text-s-ink">Booking confirmed</p>
-      <p className="mt-1 text-[12px] text-s-ink-3">Sample note for the panel.</p>
+      <p className="mt-1 text-[12px] text-s-ink-2">Sample note for the panel.</p>
     </motion.div>
   );
 }
@@ -178,7 +178,7 @@ function AfterSheet({ replayKey, intensity }: { replayKey: number; intensity: In
       className="rounded-card border border-s-border bg-white p-4 shadow-elevation-2"
     >
       <p className="text-[14px] font-semibold text-s-ink">Booking confirmed</p>
-      <p className="mt-1 text-[12px] text-s-ink-3">Sample note for the panel.</p>
+      <p className="mt-1 text-[12px] text-s-ink-2">Sample note for the panel.</p>
     </motion.div>
   );
 }
@@ -210,9 +210,9 @@ export default function MotionRecipePage() {
     <div className="mx-auto max-w-[1000px] px-4 py-10">
       <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-[12px] font-semibold text-s-ink-3">Dev / motion recipe</p>
+          <p className="text-[12px] font-semibold text-s-ink-2">Dev / motion recipe</p>
           <h1 className="mt-1 text-[22px] font-bold text-s-ink">Enter animation: before vs after</h1>
-          <p className="mt-2 max-w-[560px] text-[13px] text-s-ink-3">
+          <p className="mt-2 max-w-[560px] text-[13px] text-s-ink-2">
             Before uses opacity only, matching the current booking flow components. After adds blur,
             scale and opacity together on the glide easing. This demo intentionally keeps moving
             regardless of reduced-motion settings so the comparison stays visible, the real components
@@ -236,7 +236,7 @@ export default function MotionRecipePage() {
             className={`rounded-full px-4 py-2 text-[13px] transition-colors duration-150 ease-glide ${
               intensity === key
                 ? "bg-s-bg-sunken font-semibold text-s-ink"
-                : "text-s-ink-3 hover:text-s-ink-2"
+                : "text-s-ink-2 hover:text-s-ink-2"
             }`}
           >
             {RECIPE[key].label}
@@ -268,7 +268,7 @@ export default function MotionRecipePage() {
         </RowShell>
 
         <div className="rounded-card border border-s-border bg-white p-4">
-          <p className="mb-3 text-[12px] font-semibold text-s-ink-3">4. Button press and hover</p>
+          <p className="mb-3 text-[12px] font-semibold text-s-ink-2">4. Button press and hover</p>
           <div className="grid grid-cols-2 gap-4">
             <BeforeButton />
             <AfterButton />
@@ -276,13 +276,13 @@ export default function MotionRecipePage() {
         </div>
       </div>
 
-      <p className="mt-8 flex items-center gap-2 text-[12px] text-s-ink-3">
-        <Scissors size={13} className="text-s-ink-3" />
+      <p className="mt-8 flex items-center gap-2 text-[12px] text-s-ink-2">
+        <Scissors size={13} className="text-s-ink-2" />
         This demo intentionally ignores prefers-reduced-motion so the comparison stays visible; real
         booking components will respect it.
       </p>
-      <p className="mt-2 flex items-center gap-2 text-[12px] text-s-ink-3">
-        <MapPin size={13} className="text-s-ink-3" />
+      <p className="mt-2 flex items-center gap-2 text-[12px] text-s-ink-2">
+        <MapPin size={13} className="text-s-ink-2" />
         Placeholder content only, not wired to live salon data.
       </p>
     </div>

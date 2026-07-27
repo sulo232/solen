@@ -42,7 +42,7 @@ const AMENITIES = [["Wi-Fi", Wifi], ["Card", CreditCard], ["Parking", Car]] as c
 function ServiceRow({ n, d, p }: { n: string; d: string; p: string }) {
   return (
     <div className="flex items-center justify-between gap-3 rounded-xl bg-s-bg-sunken px-3.5 py-2.5 text-[13.5px]">
-      <span className="min-w-0"><span className="block truncate text-s-ink">{n}</span><span className="text-[12px] text-s-ink-3">{d}</span></span>
+      <span className="min-w-0"><span className="block truncate text-s-ink">{n}</span><span className="text-[12px] text-s-ink-2">{d}</span></span>
       <span className="shrink-0 font-semibold tabular-nums text-s-ink">{p}</span>
     </div>
   );
@@ -193,7 +193,7 @@ function Screen() {
               )}
 
               <span className="mt-3 block text-[13.5px] font-semibold text-s-accent">View store</span>
-              {!isFull && <p className="mt-2 text-center text-[12px] text-s-ink-3">Drag up for more. Drag down for all salons.</p>}
+              {!isFull && <p className="mt-2 text-center text-[12px] text-s-ink-2">Drag up for more. Drag down for all salons.</p>}
             </>
           ) : null}
         </div>
@@ -210,7 +210,7 @@ export default function MapBehaviorMockup() {
   return (
     <main className="min-h-screen bg-s-bg-sunken py-4">
       <div className="mx-auto w-full max-w-[390px] px-3">
-        <p className="pb-2 text-center text-[12.5px] font-semibold text-s-ink-3">Tap a pin or a card. Drag the sheet up for full, down for all salons.</p>
+        <p className="pb-2 text-center text-[12.5px] font-semibold text-s-ink-2">Tap a pin or a card. Drag the sheet up for full, down for all salons.</p>
         <Screen />
       </div>
     </main>

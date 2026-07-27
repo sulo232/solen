@@ -217,7 +217,7 @@ export function SalonStickyTabNav({
                 "font-body relative shrink-0 py-3.5 text-[14px] transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide md:py-4",
                 activeTab === t.key
                   ? "font-semibold text-s-ink"
-                  : "font-normal text-s-ink-3 hover:text-s-ink"
+                  : "font-normal text-s-ink-2 hover:text-s-ink"
               )}
             >
               {t.label}

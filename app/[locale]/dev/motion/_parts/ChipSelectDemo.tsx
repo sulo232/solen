@@ -43,7 +43,7 @@ function ChipRow({
             />
           )}
           <TabPill active={false} variant="ghost" onClick={() => onSelect(i)} className="relative z-10 bg-transparent">
-            <span className={active === i ? "text-s-ink font-semibold" : "text-s-ink-3 font-medium"}>{label}</span>
+            <span className={active === i ? "text-s-ink font-semibold" : "text-s-ink-2 font-medium"}>{label}</span>
           </TabPill>
         </div>
       ))}

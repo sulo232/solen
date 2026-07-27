@@ -41,7 +41,7 @@ function FilteredList({ reviews }: { reviews: Review[] }) {
   return (
     <div className="mt-5 flex flex-col">
       {reviews.length === 0 ? (
-        <p className="py-8 text-center font-body text-[14px] text-s-ink-3">No reviews match this filter.</p>
+        <p className="py-8 text-center font-body text-[14px] text-s-ink-2">No reviews match this filter.</p>
       ) : (
         reviews.map((r) => (
           <div key={r.id} className="border-t border-s-border pt-5 first:border-t-0 first:pt-0 [&+&]:mt-5">
@@ -86,7 +86,7 @@ export function FilterStarWeighted({ reviews }: { reviews: Review[] }) {
                 <span className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-s-bg-sunken">
                   <span className="block h-full rounded-full bg-s-star" style={{ width: `${pct}%` }} />
                 </span>
-                <span className="w-6 shrink-0 text-right font-body text-[13px] text-s-ink-3 tabular-nums">
+                <span className="w-6 shrink-0 text-right font-body text-[13px] text-s-ink-2 tabular-nums">
                   {count}
                 </span>
               </span>
@@ -94,7 +94,7 @@ export function FilterStarWeighted({ reviews }: { reviews: Review[] }) {
           );
         })}
       </div>
-      <p className="mt-3 font-body text-[13px] text-s-ink-3">
+      <p className="mt-3 font-body text-[13px] text-s-ink-2">
         {filtered.length} {filtered.length === 1 ? "review" : "reviews"}
       </p>
       <FilteredList reviews={filtered} />
@@ -129,7 +129,7 @@ export function FilterChips({ reviews }: { reviews: Review[] }) {
           );
         })}
       </div>
-      <p className="mt-4 font-body text-[13px] text-s-ink-3">
+      <p className="mt-4 font-body text-[13px] text-s-ink-2">
         {filtered.length} {filtered.length === 1 ? "review" : "reviews"}
       </p>
       <FilteredList reviews={filtered} />
@@ -177,14 +177,14 @@ export function FilterLedger({ reviews }: { reviews: Review[] }) {
               <span className="h-px min-w-0 flex-1 bg-s-border" />
               <span
                 className={`w-8 shrink-0 text-right font-body text-[13px] tabular-nums ${
-                  isSelected ? "font-semibold text-s-ink" : "text-s-ink-3"
+                  isSelected ? "font-semibold text-s-ink" : "text-s-ink-2"
                 }`}
               >
                 {pct}%
               </span>
               <span
                 className={`w-6 shrink-0 text-right font-body text-[13px] tabular-nums ${
-                  isSelected ? "font-semibold text-s-ink" : "text-s-ink-3"
+                  isSelected ? "font-semibold text-s-ink" : "text-s-ink-2"
                 }`}
               >
                 {count}
@@ -193,7 +193,7 @@ export function FilterLedger({ reviews }: { reviews: Review[] }) {
           );
         })}
       </div>
-      <p className="mt-3 font-body text-[13px] text-s-ink-3">
+      <p className="mt-3 font-body text-[13px] text-s-ink-2">
         {filtered.length} {filtered.length === 1 ? "review" : "reviews"}
       </p>
       <FilteredList reviews={filtered} />

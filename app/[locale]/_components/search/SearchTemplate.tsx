@@ -1269,11 +1269,11 @@ export default function SearchTemplate({
                 )}
               >
                 {date ? formatDateLabel(date, locale) : null}
-                {date ? <span className="text-s-ink-3"> </span> : null}
+                {date ? <span className="text-s-ink-2"> </span> : null}
                 {cityName}
                 {period && (
                   <>
-                    <span className="text-s-ink-3"> </span>
+                    <span className="text-s-ink-2"> </span>
                     {periodLabel(period, tx)}
                   </>
                 )}

@@ -96,7 +96,7 @@ const tabPillVariants = cva(
       // ghost + inactive = bare, low-emphasis
       {
         variant: "ghost", tone: "inactive",
-        className: "bg-transparent text-s-ink-3 hover:text-s-ink",
+        className: "bg-transparent text-s-ink-2 hover:text-s-ink",
       },
     ],
     defaultVariants: { variant: "outline", tone: "inactive", size: "sm" },

@@ -113,9 +113,19 @@ rounded caps that hide the value), bar count = datum count. "Dribbble-pretty but
 - `s-atm-*` family (warm / cool / cream / terra / sage / bone / butter)
 - `s-cat-*` family (coiffeur / barbershop / nails / spa — and their `-text` variants)
 - `s-love` family (replaced by `--heart-active` for save, `s-error` for error)
+- `s-ink-3`, `s-ink-secondary`, `s-ink-tertiary` — **COLLAPSED V3-color-tokens-04 (2026-07-27):** all three were live spellings of the exact same `#6B6B6B` hex as `s-ink-2`, with zero semantic difference. Every callsite now reads `s-ink-2`; the extra keys are deleted from `tailwind.config.js`, not just commented.
 - `Geist` — **REJECTED 2026-05-30** ("no Geist anywhere"); V3-D317 swap reverted. `Hanken Grotesk` — **REPLACED by `Inter` V3-D410 (2026-05-31)**. `JetBrains Mono` — **RETIRED 2026-06-10 (V3-D470)** for codes (owner: "the W-047 font is different"); codes now Inter Tight tabular (§13.4). Active type = Inter Tight + Inter only. See §2.
 
 Drift-check `RETIRED_TOKENS` list flags any new usage.
+
+### Token naming grammar (color-tokens-04, 2026-07-27)
+
+A token variant (secondary / hover / deep / muted) is spelled exactly ONE way per token
+family: either a nested Tailwind object key (`s-ink.secondary`) or a flat hyphen-suffix
+sibling token (`s-ink-2`) — never both for the same hex. When a variant is renamed or
+collapsed onto another value, the old spelling is deleted from `tailwind.config.js` in
+the same change, not left defined as a second live name nobody uses on purpose. One value,
+one name — a future recolor only has to find and edit that one name.
 
 ---
 

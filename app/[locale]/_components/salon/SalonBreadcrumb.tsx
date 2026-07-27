@@ -68,7 +68,7 @@ export function SalonBreadcrumb({ salon, locale }: { salon: SalonDetail; locale:
   return (
     <nav
       aria-label="Breadcrumb"
-      className="font-body hidden items-center gap-1.5 text-[13px] text-s-ink-3 md:flex"
+      className="font-body hidden items-center gap-1.5 text-[13px] text-s-ink-2 md:flex"
     >
       {segments.map((seg, i) => (
         <React.Fragment key={seg.href}>
@@ -78,7 +78,7 @@ export function SalonBreadcrumb({ salon, locale }: { salon: SalonDetail; locale:
           >
             {seg.label}
           </Link>
-          <ChevronRight size={12} strokeWidth={2} className="text-s-ink-3/60" />
+          <ChevronRight size={12} strokeWidth={2} className="text-s-ink-2/60" />
         </React.Fragment>
       ))}
       <span className="truncate text-s-ink">{salon.name}</span>

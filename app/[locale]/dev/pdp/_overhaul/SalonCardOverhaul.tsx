@@ -210,7 +210,7 @@ export function SalonCardOverhaul({
           </CardMeta>
         </div>
 
-        <div className="font-body text-[12px] font-normal leading-[1.35] text-s-ink-3 truncate">
+        <div className="font-body text-[12px] font-normal leading-[1.35] text-s-ink-2 truncate">
           {CATEGORY_LABEL[category]}
         </div>
 

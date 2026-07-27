@@ -42,7 +42,7 @@ export default function PartnerPage() {
 
           {/* Left — Text + CTA */}
           <div className="text-center lg:text-left">
-            <p className="text-[12px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-3 mb-3">
+            <p className="text-[12px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-3">
               {t("for_owners")}
             </p>
             <h1 className="font-heading text-[clamp(26px,7vw,30px)] md:text-[46px] font-semibold text-s-ink mb-4 leading-[1.0] tracking-[-0.03em]">
@@ -193,7 +193,7 @@ export default function PartnerPage() {
                 <p className="text-sm text-s-ink-2 mb-2">
                   {t("hiw_step1_desc")}
                 </p>
-                <span className="inline-block text-[12px] font-heading uppercase tracking-[.12em] text-s-ink-3 px-3 py-1.5 rounded-pill bg-s-bg-sunken">
+                <span className="inline-block text-[12px] font-heading uppercase tracking-[.12em] text-s-ink-2 px-3 py-1.5 rounded-pill bg-s-bg-sunken">
                   {t("hiw_step1_time")}
                 </span>
               </div>
@@ -213,7 +213,7 @@ export default function PartnerPage() {
                 <p className="text-sm text-s-ink-2 mb-2">
                   {t("hiw_step2_desc")}
                 </p>
-                <span className="inline-block text-[12px] font-heading uppercase tracking-[.12em] text-s-ink-3 px-3 py-1.5 rounded-pill bg-s-bg-sunken">
+                <span className="inline-block text-[12px] font-heading uppercase tracking-[.12em] text-s-ink-2 px-3 py-1.5 rounded-pill bg-s-bg-sunken">
                   {t("hiw_step2_time")}
                 </span>
               </div>

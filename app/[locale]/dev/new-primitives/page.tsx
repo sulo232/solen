@@ -21,7 +21,7 @@ export default function NewPrimitivesDemo() {
     <div className="mx-auto max-w-[640px] p-6 space-y-12">
       <header className="border-b border-s-border pb-6">
         {/* V3-D331: dropped pseudo-element accent dot + accent color per LOCKFILE §2.5. */}
-        <p className="font-body text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-3">
+        <p className="font-body text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-2">
           Wave 1 Agent D
         </p>
         <h1 className="mt-2 font-display text-[clamp(22px,2.8vw,26px)] font-semibold leading-[1.0] tracking-[-0.03em] text-s-ink">
@@ -97,7 +97,7 @@ export default function NewPrimitivesDemo() {
         <div className="mt-4 space-y-6">
           {/* SalonCard skeleton */}
           <div>
-            <p className="mb-2 font-body text-[12px] font-medium uppercase tracking-[0.1em] text-s-ink-3">
+            <p className="mb-2 font-body text-[12px] font-medium uppercase tracking-[0.1em] text-s-ink-2">
               SalonCard skeleton
             </p>
             <div className="flex gap-3">
@@ -114,7 +114,7 @@ export default function NewPrimitivesDemo() {
 
           {/* Avatar + text rows */}
           <div>
-            <p className="mb-2 font-body text-[12px] font-medium uppercase tracking-[0.1em] text-s-ink-3">
+            <p className="mb-2 font-body text-[12px] font-medium uppercase tracking-[0.1em] text-s-ink-2">
               List item skeleton
             </p>
             <div className="space-y-3">
@@ -179,7 +179,7 @@ export default function NewPrimitivesDemo() {
         </p>
         <div className="space-y-5">
           <div>
-            <p className="mb-2 font-body text-[12px] font-medium uppercase tracking-[0.1em] text-s-ink-3">
+            <p className="mb-2 font-body text-[12px] font-medium uppercase tracking-[0.1em] text-s-ink-2">
               variant=outline, size=sm (default — filter rows)
             </p>
             <div className="flex flex-wrap gap-2">
@@ -191,7 +191,7 @@ export default function NewPrimitivesDemo() {
             </div>
           </div>
           <div>
-            <p className="mb-2 font-body text-[12px] font-medium uppercase tracking-[0.1em] text-s-ink-3">
+            <p className="mb-2 font-body text-[12px] font-medium uppercase tracking-[0.1em] text-s-ink-2">
               variant=outline, size=md (sticky segment)
             </p>
             <div className="flex flex-wrap gap-2">
@@ -203,7 +203,7 @@ export default function NewPrimitivesDemo() {
             </div>
           </div>
           <div>
-            <p className="mb-2 font-body text-[12px] font-medium uppercase tracking-[0.1em] text-s-ink-3">
+            <p className="mb-2 font-body text-[12px] font-medium uppercase tracking-[0.1em] text-s-ink-2">
               variant=ghost (inside styled chrome)
             </p>
             <div className="flex flex-wrap gap-1 rounded-full bg-s-bg-sunken p-1">
@@ -218,7 +218,7 @@ export default function NewPrimitivesDemo() {
       </section>
 
       <footer className="border-t border-s-border pt-6">
-        <p className="font-body text-[12px] font-normal leading-[1.5] text-s-ink-3">
+        <p className="font-body text-[12px] font-normal leading-[1.5] text-s-ink-2">
           To delete this page: <code className="rounded bg-s-bg-sunken px-1.5 py-0.5 text-[12px]">app/[locale]/dev/new-primitives/page.tsx</code>.
           The primitives themselves live in <code className="rounded bg-s-bg-sunken px-1.5 py-0.5 text-[12px]">app/[locale]/_components/primitives/</code>.
         </p>

@@ -12,7 +12,7 @@ const Frame = ({ children }: { children: React.ReactNode }) => (
   <div className="overflow-hidden rounded-[28px] border border-s-border bg-white p-4" style={{ minHeight: 300 }}>{children}</div>
 );
 const Cap = ({ t, d }: { t: string; d: string }) => (
-  <div className="mb-2"><div className="text-[13px] font-semibold text-s-ink">{t}</div><div className="text-[12px] text-s-ink-3">{d}</div></div>
+  <div className="mb-2"><div className="text-[13px] font-semibold text-s-ink">{t}</div><div className="text-[12px] text-s-ink-2">{d}</div></div>
 );
 
 // V1: current , flat grey pill chips
@@ -34,7 +34,7 @@ function V2() {
       <div className="-mx-1 flex gap-2.5 overflow-hidden px-1">
         {TRENDS.slice(0, 5).map((t) => (
           <div key={t} className="flex w-[92px] shrink-0 flex-col gap-1.5">
-            <div className="grid h-[104px] w-full place-items-center overflow-hidden rounded-[14px] bg-gradient-to-br from-s-bg-sunken to-s-border/70 text-s-ink-3"><ImageIcon size={20} strokeWidth={1.5} /></div>
+            <div className="grid h-[104px] w-full place-items-center overflow-hidden rounded-[14px] bg-gradient-to-br from-s-bg-sunken to-s-border/70 text-s-ink-2"><ImageIcon size={20} strokeWidth={1.5} /></div>
             <span className="truncate px-0.5 text-[13px] font-semibold text-s-ink">{t}</span>
           </div>
         ))}
@@ -50,7 +50,7 @@ function V3() {
       <div className="divide-y divide-s-border">
         {TRENDS.slice(0, 5).map((t, i) => (
           <button key={t} className="flex w-full items-center gap-3 py-2.5 text-left">
-            <span className="w-4 shrink-0 font-heading text-[15px] font-bold tabular-nums text-s-ink-3">{i + 1}</span>
+            <span className="w-4 shrink-0 font-heading text-[15px] font-bold tabular-nums text-s-ink-2">{i + 1}</span>
             <span className="min-w-0 flex-1 truncate text-[14px] font-semibold text-s-ink">{t}</span>
             <ArrowUpRight size={16} className="shrink-0 text-s-accent" />
           </button>
