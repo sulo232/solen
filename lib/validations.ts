@@ -1153,6 +1153,11 @@ export const serviceCreateSchema = z.object({
   duration_minutes: z.number().int().min(5).max(480),
   price: z.number().min(0).max(100000),
   description_de: z.string().max(1000).optional(),
+  // fr/it added 2026-07-27 alongside the DB columns. name_fr/name_it were already here; their
+  // description siblings were not, so a salon could correct a machine-translated NAME but not a
+  // machine-translated DESCRIPTION. A human must always be able to overwrite the machine.
+  description_fr: z.string().max(1000).optional(),
+  description_it: z.string().max(1000).optional(),
   buffer_minutes: z.number().int().min(0).max(120).optional(),
   processing_minutes: z.number().int().min(0).max(120).optional(),
   finishing_minutes: z.number().int().min(0).max(120).optional(),
