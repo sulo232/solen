@@ -94,7 +94,7 @@ the locked FROST_GLASS/scrim recipes are the only sanctioned alpha uses). Ad-hoc
 | Token | Hex | Usage |
 |---|---|---|
 | `s-chart-1` | `#0A0A0A` | Primary chart row (alias of `s-ink` — use for the Solen brand bar in any competitor-comparison chart) |
-| `s-chart-2` | `#9CA3AF` | Secondary chart row (e.g. main competitor / Treatwell bar in /partner pricing chart) |
+| `s-chart-2` | `#9CA3AF` | Secondary chart row (e.g. main competitor / Treatwell bar in /partner pricing chart) **PLUS, since the owner-approved FLOORS LAW of 2026-07-21 (§17.4 below), the reinstated TERTIARY TEXT grey: chevrons, placeholders, timestamps, hints. NON-load-bearing text ONLY , forbidden on any copy the user has to read to decide.** This row previously named only the chart role, so the text role read as an undefined token. |
 | `s-chart-3` | `#D1D5DB` | Tertiary chart row (e.g. competitor range / "others" bar in /partner pricing chart) |
 
 **Why discrete tokens (not opacity-modifier):** opacity-modifier-on-ink-2 (`bg-s-ink-2/40` / `bg-s-ink-2/30`) is a smell — it conflates hierarchy with transparency. Discrete chart-grey tokens make data-vis intent explicit + readable to drift-checker. Use this scale ONLY for bar/line/area charts (NOT for general UI grey).
