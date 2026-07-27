@@ -79,6 +79,29 @@ jobs:
             exit 1
           fi
 
+  # fe-01: the repo-wide `lint` ratchet above only guarantees the TOTAL error
+  # count never goes up. It does not guarantee NEW code is clean, because a PR
+  # can add 5 fresh `any`s in file A while an unrelated PR removes 5 in file B,
+  # and both pass individually -- that laundering is exactly why BASELINE above
+  # sat frozen for months. This job runs ESLint ONLY against files changed since
+  # the merge-base with main (scripts/lint-diff-scoped.mjs) and fails on ANY
+  # occurrence of @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars,
+  # or @next/next/no-html-link-for-pages in those changed lines -- zero baseline,
+  # no exception. Paydown schedule for the repo-wide 539: _rules/LINT_DEBT.md.
+  lint-diff-scoped:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - name: lint-diff-scoped (hard zero on changed lines, no baseline)
+        run: node scripts/lint-diff-scoped.mjs
+
   # secrets-webhooks-02: a dependency-vulnerability scan is only as good as the
   # last time someone remembered to run it by hand. `npm audit --omit=dev`'s
   # critical+high count nearly tripled (2 -> 6) in the 10 days between the
