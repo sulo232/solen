@@ -129,7 +129,11 @@ export default function AllSalonsPage() {
         await fetch(`/api/admin/salons/${salon.id}/reject`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ reason: "Vom Admin eingefroren" }),
+          // Was the hardcoded German "Vom Admin eingefroren". This string is not internal:
+          // it lands in salons.rejection_reason and is shown back to the salon owner, so it
+          // was rendering German to a French or Italian operator. (council hardcode lens,
+          // 2026-07-27)
+          body: JSON.stringify({ reason: t("adminFreezeReason") }),
         });
       }
       setConfirmTarget(null);

@@ -2470,7 +2470,8 @@
       "activateTitle": "Salon aktivieren",
       "freezeTitle": "Salon einfrieren",
       "activateMessage": "Salon \"{name}\" aktivieren? Der Salon wird für Kunden sichtbar.",
-      "freezeMessage": "Bist du sicher? Der Salon \"{name}\" wird für Kunden nicht mehr sichtbar."
+      "freezeMessage": "Bist du sicher? Der Salon \"{name}\" wird für Kunden nicht mehr sichtbar.",
+      "adminFreezeReason": "Vom Admin eingefroren"
     },
     "allUsersPage": {
       "title": "Alle Nutzer",
@@ -6391,5 +6392,18 @@
     "confirmedDescription": "{email} wurde von zukünftigen E-Mails abgemeldet.",
     "invalidEmail": "Keine gültige E-Mail-Adresse angegeben.",
     "errorDescription": "Die Abmeldung konnte nicht verarbeitet werden. Bitte versuche es später erneut oder kontaktiere support@solen.ch."
+  },
+  "api": {
+    "goLive": {
+      "frozen": "Der Salon wurde von einem Administrator gesperrt. Bitte kontaktiere den Support.",
+      "pendingApproval": "Der Salon wartet noch auf die Freigabe durch einen Administrator.",
+      "stripeRequired": "Stripe Connect muss zuerst vollständig eingerichtet werden (KYC, Bankkonto).",
+      "coverPhotoRequired": "Ein Titelbild ist erforderlich.",
+      "serviceRequired": "Mindestens ein Service muss aktiv sein."
+    },
+    "salonRejected": {
+      "title": "Salon abgelehnt",
+      "body": "Dein Salon {salon} wurde leider nicht genehmigt. Grund: {reason}"
+    }
   }
 }

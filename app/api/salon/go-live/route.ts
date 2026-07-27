@@ -50,25 +50,39 @@ export async function POST(_req: NextRequest) {
   const salon = await getActiveSalon<{ id: string; stripe_account_id: string | null; cover_photo_url: string | null; approved_at: string | null; frozen_at: string | null }>(supabase, user.id, "id, stripe_account_id, cover_photo_url, approved_at, frozen_at");
 
   if (!salon) return NextResponse.json({ error: "No salon found" }, { status: 403 });
+
+  // Every rejection below used to be a hardcoded German sentence, so a French or Italian
+  // salon owner pressing Go Live got told why in a language they may not read (council
+  // hardcode lens, 2026-07-27; one of the five was added by this same batch, so this fixes
+  // my own instance and its four neighbours rather than leaving the route half-translated).
+  // Resolved LAZILY, inside the helper, so the happy path pays no extra query at all , only
+  // a request that is about to fail reads profiles.locale.
+  type GoLiveErrorKey =
+    | "frozen"
+    | "pendingApproval"
+    | "stripeRequired"
+    | "coverPhotoRequired"
+    | "serviceRequired";
+  const denied = async (key: GoLiveErrorKey, status: number) => {
+    const { data: profile } = await supabase
+      .from("profiles").select("locale").eq("id", user.id).maybeSingle();
+    const locale = (profile?.locale as "de" | "en" | "fr" | "it") ?? "de";
+    const { getTranslations } = await import("next-intl/server");
+    const t = await getTranslations({ locale, namespace: "api.goLive" });
+    return NextResponse.json({ error: t(key) }, { status });
+  };
+
   // A frozen salon may not self-reactivate. Freezing now sets is_active=false
   // (app/api/admin/salons/[id]/freeze/route.ts, 2026-07-27) but leaves approved_at intact,
   // so without this gate the owner could undo an admin freeze by pressing Go Live. Only an
   // admin re-approval clears frozen_at.
-  if (salon.frozen_at) {
-    return NextResponse.json({ error: "Der Salon wurde von einem Administrator gesperrt. Bitte kontaktiere den Support." }, { status: 403 });
-  }
+  if (salon.frozen_at) return denied("frozen", 403);
   // Admin review gate: an owner may only self-activate a salon that an admin has
   // already approved (salons.approved_at set by PATCH /api/admin/salons/[id]/approve).
   // Without this, an owner could set is_active=true directly with no admin review.
-  if (!salon.approved_at) {
-    return NextResponse.json({ error: "Der Salon wartet noch auf die Freigabe durch einen Administrator." }, { status: 403 });
-  }
-  if (!(await isStripeReady(salon.stripe_account_id))) {
-    return NextResponse.json({ error: "Stripe Connect muss zuerst vollständig eingerichtet werden (KYC, Bankkonto)." }, { status: 400 });
-  }
-  if (!salon.cover_photo_url) {
-    return NextResponse.json({ error: "Ein Titelbild ist erforderlich." }, { status: 400 });
-  }
+  if (!salon.approved_at) return denied("pendingApproval", 403);
+  if (!(await isStripeReady(salon.stripe_account_id))) return denied("stripeRequired", 400);
+  if (!salon.cover_photo_url) return denied("coverPhotoRequired", 400);
 
   const { count: serviceCount } = await supabase
     .from("services")
@@ -76,9 +90,7 @@ export async function POST(_req: NextRequest) {
     .eq("salon_id", salon.id)
     .eq("is_active", true);
 
-  if ((serviceCount ?? 0) < 1) {
-    return NextResponse.json({ error: "Mindestens ein Service muss aktiv sein." }, { status: 400 });
-  }
+  if ((serviceCount ?? 0) < 1) return denied("serviceRequired", 400);
 
   // cas-ok: is_active flip is idempotent (setting true twice is a no-op, no lost-money race);
   // pre-existing update, unchanged by this port (item 2 scope is the serviceCount gate above)

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
-import { issueRefund, RefundError } from "@/lib/bookings/issue-refund";
+import { cancelAndRefundSalonBookings } from "@/lib/bookings/suspend-salon";
 import { logAuditEvent } from "@/lib/audit";
 import { validateBody, adminSalonActionReasonSchema } from "@/lib/validations";
 
@@ -54,52 +54,10 @@ export async function POST(
   const { error } = await admin.from("salons").update(updateData).eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  // Batch cancel pending and confirmed bookings. paid_amount / refunded_amount are
-  // integer Rappen — used to refund the full REMAINING balance per booking.
-  const { data: activeBookings } = await admin
-    .from("bookings")
-    .select("id, slot_id, paid_amount, refunded_amount")
-    .eq("salon_id", id)
-    .in("status", ["pending_approval", "confirmed"]);
-
-  for (const b of activeBookings ?? []) {
-    await admin.from("bookings").update({
-      status: "cancelled",
-      cancellation_reason: "admin_salon_suspension",
-      cancelled_at: new Date().toISOString()
-    }).eq("id", b.id);
-
-    // Refund the full remaining balance through the single refund chokepoint
-    // (REFUND_APPEAL_PLAN §10b#3) — issueRefund resolves the payment_intent_id,
-    // runs the CAS write on the admin client, and is the only place that calls
-    // Stripe refunds. Tolerant of per-booking failure: log and continue so one
-    // bad refund never aborts the whole freeze. amounts are integer Rappen.
-    const remaining = (b.paid_amount ?? 0) - (b.refunded_amount ?? 0);
-    if (remaining > 0) {
-      try {
-        await issueRefund({
-          db: admin,
-          source: "booking",
-          id: b.id,
-          amountCents: remaining,
-          actor: "admin",
-          reason: `admin froze salon (${body.reason})`,
-        });
-      } catch (e) {
-        // NO_PAYMENT (no payment_intent_id), NO_PAID_AMOUNT, STRIPE_FAILED, etc. —
-        // non-fatal; the cancellation above already stands.
-        if (e instanceof RefundError) {
-          console.error(`[freeze] issueRefund skipped for booking ${b.id} (${e.code}):`, e.message);
-        } else {
-          console.error("[freeze] issueRefund threw for booking", b.id, e);
-        }
-      }
-    }
-
-    if (b.slot_id) {
-      await admin.from("availability_slots").update({ status: "available", booked_by: null, booking_id: null }).eq("id", b.slot_id);
-    }
-  }
+  // Cancel + refund every live booking, via the shared helper so the third-strike
+  // auto-freeze in warn/route.ts runs the identical path (council security lens,
+  // 2026-07-27: warn deactivated the salon but skipped this, orphaning paid bookings).
+  const suspendResult = await cancelAndRefundSalonBookings(admin, id, body.reason, "freeze");
 
   await admin.from("account_actions").insert({
     salon_id: id,
@@ -108,7 +66,7 @@ export async function POST(
     admin_id: user.id,
   });
 
-  await logAuditEvent(req, user.id, "salon.freeze", "salon", id, { salon_name: salon.name });
+  await logAuditEvent(req, user.id, "salon.freeze", "salon", id, { salon_name: salon.name, ...suspendResult });
 
   return NextResponse.json({ ok: true });
 }

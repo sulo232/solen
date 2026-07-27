@@ -2470,7 +2470,8 @@
       "activateTitle": "Activate salon",
       "freezeTitle": "Freeze salon",
       "activateMessage": "Activate salon \"{name}\"? It will become visible to customers.",
-      "freezeMessage": "Are you sure? Salon \"{name}\" will no longer be visible to customers."
+      "freezeMessage": "Are you sure? Salon \"{name}\" will no longer be visible to customers.",
+      "adminFreezeReason": "Frozen by admin"
     },
     "allUsersPage": {
       "title": "All users",
@@ -6391,5 +6392,18 @@
     "confirmedDescription": "{email} has been unsubscribed from future emails.",
     "invalidEmail": "No valid email address was provided.",
     "errorDescription": "Your unsubscribe request could not be processed. Please try again later or contact support@solen.ch."
+  },
+  "api": {
+    "goLive": {
+      "frozen": "This salon has been suspended by an administrator. Please contact support.",
+      "pendingApproval": "The salon is still waiting for administrator approval.",
+      "stripeRequired": "Stripe Connect must be fully set up first (KYC, bank account).",
+      "coverPhotoRequired": "A cover photo is required.",
+      "serviceRequired": "At least one service must be active."
+    },
+    "salonRejected": {
+      "title": "Salon rejected",
+      "body": "Your salon {salon} was unfortunately not approved. Reason: {reason}"
+    }
   }
 }

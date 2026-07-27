@@ -25,12 +25,17 @@ files, 5 adversarial verifications, 3 external research documents).
 
 ## A. Moderation and photo control (owner item 4)
 
-- [x] A1. Recorded: salon gallery photos do NOT get per-photo pre-publish review. Owner:
+- [x] A1. `verified:` recorded here and in the owner-message block at the top of this file;
+      the DECISION is the deliverable, there is no code for a thing deliberately not built.
+      Recorded: salon gallery photos do NOT get per-photo pre-publish review. Owner:
       "ye for salon we dont rlly need". Removal after the fact is the model instead.
 - [x] A2. Admin can remove any salon photo , `app/api/salons/[slug]/gallery/route.ts` DELETE
       gained an admin branch + an audit entry (`salon.photo.takedown`), commit `ff99f4d1c`.
       Before this NOBODY at the platform could take a photo down.
-- [x] A3. Salon can remove their own photos , verified already working end to end for photos
+- [x] A3. `verified:` traced end to end , `components-legacy/dashboard/GalleryManager.tsx:131`
+      (`method: "DELETE"`) -> `app/api/salons/[slug]/gallery/route.ts:213` (the DELETE handler)
+      -> `:254` `const isOwner = salon.owner_id === user.id` -> storage remove + both tables.
+      Salon can remove their own photos , working end to end for photos
       uploaded through the dashboard GalleryManager. **Known defect, filed not fixed:** a
       photo uploaded through the ONBOARDING wizard (a separate direct-to-bucket path) has no
       `salon_portfolio_images` row, so the dashboard grid never renders it and the delete
@@ -39,7 +44,7 @@ files, 5 adversarial verifications, 3 external research documents).
 - [x] A4. Admin approves/disapproves before go-live , the flow existed and was UNREACHABLE.
       `registration_completed` was never written by the real signup path, so the queue matched
       0 rows while 6 salons sat waiting. Commit `e5f4d17b9`.
-- [x] A5. Admin review view made better, partially: the "Edit" button was a silent no-op
+- [x] A5. commit `ff99f4d1c`. Admin review view made better, partially: the "Edit" button was a silent no-op
       (linked to the admin's OWN settings with no salon id) and now opens the salon's
       storefront, and `lib/salon-detail.ts` gained the admin branch its own comment had
       promised, so a PENDING salon's page opens instead of 404ing. Commit `ff99f4d1c`.
@@ -48,21 +53,38 @@ files, 5 adversarial verifications, 3 external research documents).
       are write-only today , `salon_documents` ships status/reviewed_by/reviewed_at/admin_note
       columns that nothing writes, and no admin route reads the table at all. Spec:
       `_design-system/research/owner-answers-2026-07-27/recon--salon-approval-before-go-live-and-admin.json`.
-- [x] A6. Reviews still post immediately , confirmed not regressed. No pre-moderation was
-      added anywhere; `reviews.moderation_status` and the existing `/dashboard/review-moderation`
-      page are after-the-fact tools, unchanged.
-- [ ] A7. Salon can enable/disable reviews , NOT BUILT. Needs a boolean column on `salons`,
+- [x] A6. `verified:` and CORRECTED , my earlier phrasing was too absolute. Nothing I changed
+      touched the review write path (`app/api/reviews/route.ts` is not in this batch's diff), so
+      nothing is regressed. But reviews do NOT post unconditionally: `route.ts:53` calls
+      `checkReview` and `:76` writes `is_hidden: modResult.hidden`, and `lib/automod.ts` hides on
+      profanity (`:38`), a duplicate comment (`:57`), and two suspicious-rating patterns
+      (`:84`, `:110`). That is an automatic filter, not a human pre-publish queue, so the
+      owner's "make it able to post" still holds , but it is worth knowing it exists.
+- [ ] A7. **BLOCKED ON OWNER** , the build is fully specced below and is about half a day, but
+      one answer changes the whole shape, so building on a guess would mean building it twice.
+      THE QUESTION: does disabling reviews HIDE the 260 existing ones, or only block new ones?
+      (They are public through three separate read paths, so "hide" is three more edits.)
+      Salon can enable/disable reviews , NOT BUILT. Needs a boolean column on `salons`,
       the column added to the allowlist at `app/api/salons/[slug]/route.ts:72-91` (or the
       settings save silently drops it, this repo's signature failure), a toggle in the
       dashboard settings page, and read gates in FOUR places (`lib/salon-detail.ts`,
       `app/api/reviews/salon/[salon_id]/route.ts`, the dedicated reviews page, and a write gate
       in `app/api/reviews/route.ts`). **Blocked on one owner decision:** does disabling HIDE
       the 260 existing reviews or only block new ones?
-- [ ] A8. Salon can enable/disable photos on reviews , NOT BUILT, and it is unverifiable
+- [ ] A8. **BLOCKED ON A BUG, not on a decision** , I can build the toggle, but I cannot prove
+      it discriminates, and this repo's rule is that a control must be proven to change
+      behaviour, not merely to render. Fixing the upload no-op needs a storage INSERT policy
+      on the `review-photos` bucket, which is a DB/policy write.
+      Salon can enable/disable photos on reviews , NOT BUILT, and it is unverifiable
       until a prerequisite is fixed: **review-photo upload is a confirmed silent no-op today**
       (`app/api/reviews/[id]/photos/route.ts`, the `review-photos` bucket has no INSERT policy).
       No review photo has ever successfully uploaded, so a toggle over them would gate nothing.
-- [ ] A9. Report a photo , NOT BUILT. `content_reports.target_id` is already a polymorphic
+- [ ] A9. **BLOCKED ON OWNER** , the code is four small edits plus one additive migration, but
+      the answer decides whether a migration to the RLS policy is also needed.
+      THE QUESTION: "anyone can report" = any signed-in user (what the button does today), or
+      genuinely logged-out? `content_reports`' insert policy is `auth.role() = 'authenticated'`,
+      so logged-out reporting needs that policy changed too.
+      Report a photo , NOT BUILT. `content_reports.target_id` is already a polymorphic
       bare UUID so the plumbing accepts it, but every taxonomy layer rejects `'photo'`: the
       CHECK constraint, `lib/content-reports.ts`, `lib/validations.ts`, and `ReportButton.tsx`.
       One additive migration plus four small edits, then generalise the `hide_content` branch
@@ -78,10 +100,22 @@ is `salons.gallery_urls` plus `salon_portfolio_images`. My earlier report to the
 
 ## B. Translation (owner item 1)
 
-- [ ] B1. French aligned to informal , NOT DONE. Measured 436 formal vs 63 informal against
-      German 492/22 and Italian 312/0. It is a ~5,600-string machine sweep and belongs in the
-      dedicated session the owner asked for, not squeezed into this batch.
-- [x] B2. The problem measured with real numbers: the message CATALOGUE is fine (5,704 keys,
+- [ ] B1. **DEFERRED BY THE OWNER'S OWN INSTRUCTION**, not by me , they answered item 1 with
+      "yes there is a whole problem with translation we need dedicated session for fixing
+      everywhere". Doing a 5,600-string register sweep inside this batch would be exactly the
+      silent-detour failure: it would land unreviewed alongside twenty unrelated changes.
+      French aligned to informal , NOT DONE. Re-measured by hand this turn: fr.json carries
+      611 formal tokens (vous/votre/vos) against 68 informal (tu/ton/tes/toi/ta); the research
+      agent's stricter per-key count was 436 vs 63. Either way French is the outlier against
+      German and Italian. Belongs in the dedicated session, and it is the first item in it.
+- [x] B2. `verified:` re-measured by hand this turn , all four locale files flatten to exactly
+      5,704 keys; 187 hardcoded German JSX TEXT literals across 70 files by my own narrow regex
+      (JSX text only), 543 across 109 files by the research agent's wider count (text + title/
+      placeholder/aria-label/alt props); French 611 formal tokens vs 68 informal;
+      `_inventory/_db-columns.json` confirms `services` has only name_de/name_en/description_de/
+      description_en, `salons` only description_de/description_en, `service_options` only
+      name_de/name_en , no fr/it column on any of them.
+      The problem measured with real numbers: the message CATALOGUE is fine (5,704 keys,
       four locales, perfect parity, essentially nothing untranslated). Everything outside
       next-intl is the problem: **543 hardcoded German user-facing literals across 109 TSX
       files**, 27 of which already call `t()` , that is literally the mixed German/English the
@@ -92,7 +126,11 @@ is `salons.gallery_urls` plus `salon_portfolio_images`. My earlier report to the
       `md:hidden`, so desktop had none; the footer links threw you to the locale HOMEPAGE and
       never set the cookie; and the i18n CI job had been RED on all four files, so nothing was
       guarding any of it. Measured after: `/de/coiffeur` -> `/fr/coiffeur`, cookie null -> fr.
-- [x] B4. The gate the owner asked for by name: `~/.claude/hooks/i18n-write-gate.py`, ARMED on
+- [x] B4. `verified:` file exists (8.6 KB) and is registered in BOTH settings files , read back
+      programmatically this turn: PreToolUse in `~/.claude/settings.local.json`, Stop in
+      `~/.claude/settings.json`. Live proof: a synthetic Edit adding `<p>Termin auswählen</p>`
+      to a customer .tsx returns `permissionDecision: deny`.
+      The gate the owner asked for by name: `~/.claude/hooks/i18n-write-gate.py`, ARMED on
       PreToolUse + Stop, self-tested 22/22 with a zero-false-positive audit over 40 real files.
 - [x] B5. Dedicated workstream needed , scoped here, with the four-step order in
       `_design-system/research/owner-answers-2026-07-27/recon--translation-i18n-state-of-the-solen-ch-w.json`.

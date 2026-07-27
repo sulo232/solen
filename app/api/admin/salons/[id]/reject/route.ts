@@ -55,14 +55,25 @@ export async function PATCH(
   const { data: ownerAuth } = await admin.auth.admin.getUserById(salon.owner_id);
   if (ownerAuth?.user?.email) {
     const { sendNotification } = await import("@/lib/notifications");
+    // Localised to the OWNER's own language, not hardcoded German (council hardcode lens,
+    // 2026-07-27). This is the message telling someone their business was rejected, which is
+    // the worst possible one to deliver in a language they may not read. The sibling approve
+    // route already reads profiles.locale for its email; this route now does the same, and
+    // passes it to emailParams too, which it previously left unset (so the email defaulted).
+    const { data: ownerProfile } = await admin
+      .from("profiles").select("locale").eq("id", salon.owner_id).maybeSingle();
+    const ownerLocale = (ownerProfile?.locale as "de" | "en" | "fr" | "it") ?? "de";
+    const { getTranslations } = await import("next-intl/server");
+    const t = await getTranslations({ locale: ownerLocale, namespace: "api.salonRejected" });
     await sendNotification({
       userId: salon.owner_id,
       type: "salon_rejected",
-      title: "Salon abgelehnt",
-      body: `Dein Salon ${salon.name} wurde leider nicht genehmigt. Grund: ${reason}`,
+      title: t("title"),
+      body: t("body", { salon: salon.name, reason }),
       data: { salon_id: id },
       emailParams: {
         to: ownerAuth.user.email,
+        locale: ownerLocale,
         vars: { salon: salon.name, reason }
       }
     });

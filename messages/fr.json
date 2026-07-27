@@ -2470,7 +2470,8 @@
       "activateTitle": "Activer le salon",
       "freezeTitle": "Geler le salon",
       "activateMessage": "Activer le salon \"{name}\" ? Il deviendra visible pour les clients.",
-      "freezeMessage": "Êtes-vous sûr ? Le salon \"{name}\" ne sera plus visible pour les clients."
+      "freezeMessage": "Êtes-vous sûr ? Le salon \"{name}\" ne sera plus visible pour les clients.",
+      "adminFreezeReason": "Gelé par l'administrateur"
     },
     "allUsersPage": {
       "title": "Tous les utilisateurs",
@@ -6391,5 +6392,18 @@
     "confirmedDescription": "{email} a été désabonné des futurs e-mails.",
     "invalidEmail": "Aucune adresse e-mail valide n'a été fournie.",
     "errorDescription": "Ta demande de désinscription n'a pas pu être traitée. Réessaie plus tard ou contacte support@solen.ch."
+  },
+  "api": {
+    "goLive": {
+      "frozen": "Ce salon a été suspendu par un administrateur. Veuillez contacter le support.",
+      "pendingApproval": "Le salon attend encore la validation d'un administrateur.",
+      "stripeRequired": "Stripe Connect doit d'abord être entièrement configuré (KYC, compte bancaire).",
+      "coverPhotoRequired": "Une photo de couverture est requise.",
+      "serviceRequired": "Au moins un service doit être actif."
+    },
+    "salonRejected": {
+      "title": "Salon refusé",
+      "body": "Votre salon {salon} n'a malheureusement pas été approuvé. Motif : {reason}"
+    }
   }
 }

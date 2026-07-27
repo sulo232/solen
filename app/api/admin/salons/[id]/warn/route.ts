@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
+import { cancelAndRefundSalonBookings } from "@/lib/bookings/suspend-salon";
 import { logAuditEvent } from "@/lib/audit";
 import { validateBody, adminSalonActionReasonSchema } from "@/lib/validations";
 
@@ -51,6 +52,16 @@ export async function POST(
   const { error } = await admin.from("salons").update(updateData).eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
+  // A third-strike auto-freeze must do everything a manual freeze does. Adding is_active=false
+  // above without this would deactivate the salon while leaving a customer's confirmed, PAID
+  // booking behind: the salon vanishes from every is_active gate, the booking is never
+  // cancelled, the money is never refunded through the single refund chokepoint, and no cron
+  // sweeps is_active=false salons for orphans. Caught by the council security lens on
+  // 2026-07-27 , the identical half-fixed shape the freeze fix had just diagnosed.
+  const suspendResult = freeze
+    ? await cancelAndRefundSalonBookings(admin, id, body.reason, "warn")
+    : null;
+
   await admin.from("account_actions").insert({
     salon_id: id,
     action_type: 'warning',
@@ -58,7 +69,11 @@ export async function POST(
     admin_id: user.id,
   });
 
-  await logAuditEvent(req, user.id, "salon.warn", "salon", id, { salon_name: salon.name, new_count: newCount });
+  await logAuditEvent(req, user.id, "salon.warn", "salon", id, {
+    salon_name: salon.name,
+    new_count: newCount,
+    ...(suspendResult ?? {}),
+  });
 
   return NextResponse.json({ ok: true, warning_count: newCount, frozen: freeze });
 }
