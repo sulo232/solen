@@ -111,7 +111,24 @@ and reversible in one line rather than buried in a diff.
       queue work for the first REAL salon , it just has nothing to catch up on.
       Left for the owner, not a blocker: those six test rows are litter in `salons` and
       deleting data needs an explicit yes.
-- [ ] **L7. French register sweep (`vous` to `tu`).** The dedicated session, run here as the
+- [x] **L7. ATTEMPTED, MEASURED, AND NOT SHIPPED , the method is wrong, and that finding is
+      the deliverable.** `verified:` `scripts/fr-register-sweep.py` written and run as a dry
+      run; `git diff messages/fr.json` is empty, 391 formal strings unchanged.
+      FIRST, BOTH EARLIER COUNTS WERE WRONG, mine and the research agent's. "rendez-vous" is
+      the French for APPOINTMENT and contains "vous" , the commonest noun in a booking
+      product. It inflated the total to 611 (mine) and 436 (the agent's). Excluding it: 391
+      formal against 55 informal, and ZERO strings mix both registers.
+      SECOND, the sweep produces BROKEN FRENCH. 388 rewrites, at least 103 visibly wrong:
+      "pres de chez vous" -> "pres de chez tu" (needs *toi*), "Que cherchez-vous?" ->
+      "Que cherchez-tu?" (needs *cherches-tu*), "Detendez-vous" -> "Detendez-tu" (needs
+      *Detends-toi*), "Vous pourrez" -> "Tu pourrez" (needs *pourras*), and every imperative
+      comes out as an indicative. Tonic pronouns after a preposition, inversion in questions,
+      reflexive imperatives and future stems each need grammar, not substitution.
+      A French customer reads that as machine output, which is WORSE than being addressed
+      formally. So not shipping it is the correct outcome, not a deferral: the real path is a
+      per-string translation pass with review. The script is kept as the worklist and as the
+      counter-evidence for the next person who proposes find-and-replace.
+      Original plan said: The dedicated session, run here as the
       owner asked.
 - [x] **L8. DONE.** `verified:` new section 8.2a renders in `TermsContent.tsx` in the file's
       existing ParDe/ParEn pattern; `CURRENT_TOS_VERSION` bumped 2026-03-23-v1 ->
