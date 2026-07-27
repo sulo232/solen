@@ -6185,6 +6185,8 @@ export type Database = {
           postal_code: string | null
           quartier: string | null
           registration_completed: boolean | null
+          review_photos_enabled: boolean
+          reviews_enabled: boolean
           rejected_at: string | null
           rejection_reason: string | null
           review_count: number | null
@@ -6291,6 +6293,8 @@ export type Database = {
           postal_code?: string | null
           quartier?: string | null
           registration_completed?: boolean | null
+          review_photos_enabled?: boolean
+          reviews_enabled?: boolean
           rejected_at?: string | null
           rejection_reason?: string | null
           review_count?: number | null
@@ -6397,6 +6401,8 @@ export type Database = {
           postal_code?: string | null
           quartier?: string | null
           registration_completed?: boolean | null
+          review_photos_enabled?: boolean
+          reviews_enabled?: boolean
           rejected_at?: string | null
           rejection_reason?: string | null
           review_count?: number | null
@@ -8913,6 +8919,8 @@ export type Database = {
           postal_code: string | null
           quartier: string | null
           registration_completed: boolean | null
+          review_photos_enabled: boolean
+          reviews_enabled: boolean
           rejected_at: string | null
           rejection_reason: string | null
           review_count: number | null

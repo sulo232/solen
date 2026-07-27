@@ -31,12 +31,24 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   // 1. Verify review ownership
   const { data: review, error: reviewErr } = await supabase
     .from("reviews")
-    .select("user_id")
+    .select("user_id, salon_id")
     .eq("id", id)
     .single();
 
   if (reviewErr || !review) return NextResponse.json({ error: "Review not found" }, { status: 404 });
   if (review.user_id !== user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  // Per-salon photo switch (2026-07-27), the sibling of salons.reviews_enabled. A salon can
+  // accept written reviews but not photos of its work. Blocks NEW uploads only; photos already
+  // attached stay visible, same reasoning as the reviews switch.
+  const { data: photoTarget } = await supabase
+    .from("salons").select("review_photos_enabled").eq("id", review.salon_id).maybeSingle();
+  if (photoTarget?.review_photos_enabled === false) {
+    return NextResponse.json(
+      { error: "This salon does not accept photos on reviews.", code: "REVIEW_PHOTOS_DISABLED" },
+      { status: 403 },
+    );
+  }
 
   let formData;
   try {

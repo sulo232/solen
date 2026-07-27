@@ -45,6 +45,19 @@ export async function POST(request: NextRequest) {
   if (booking.user_id !== user.id) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 403 });
   if (booking.status !== "completed") return NextResponse.json({ message: "Booking is not completed", code: "BOOKING_NOT_COMPLETED" }, { status: 400 });
 
+  // Per-salon review switch (2026-07-27). The global `reviews` feature flag checked at the top
+  // of this handler kills reviews for the WHOLE marketplace; this is the salon's own choice.
+  // It blocks NEW reviews only , the salon's existing ones stay visible, deliberately. See the
+  // column comment on salons.reviews_enabled for why that is not a delete switch.
+  const { data: reviewTarget } = await supabase
+    .from("salons").select("reviews_enabled").eq("id", booking.salon_id).maybeSingle();
+  if (reviewTarget?.reviews_enabled === false) {
+    return NextResponse.json(
+      { message: "This salon is not accepting new reviews.", code: "REVIEWS_DISABLED" },
+      { status: 403 },
+    );
+  }
+
   // Check no existing review
   const { data: existing } = await supabase.from("reviews").select("id").eq("booking_id", booking_id).maybeSingle();
   if (existing) return NextResponse.json({ message: "Already reviewed", code: "REVIEW_EXISTS" }, { status: 409 });

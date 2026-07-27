@@ -32,7 +32,10 @@ and reversible in one line rather than buried in a diff.
       marketplace whose salons can erase criticism is worth nothing to a customer. Blocking
       new ones is a legitimate business choice; rewriting the past is not.
 - [ ] **L2. Report a photo, signed-in.** Owner-answered. Build it end to end.
-- [x] **L3. CORRECTION , the upload is NOT broken. I repeated an agent's claim without
+- [x] **L3.** commit `8b126c89f`; `verified:` live policy read via SQL
+      (`review_authors_upload_review_photos`, role `authenticated`) against the route's own
+      ownership check at `app/api/reviews/[id]/photos/route.ts:31-38` and its upload path at
+      `:75`; tsc clean after the change. **CORRECTION , the upload is NOT broken. I repeated an agent's claim without
       testing it.** I told the owner "review-photo upload is a confirmed silent no-op, the
       bucket has no INSERT policy". Both halves are wrong, and I checked the live database
       rather than the migration files this time. The policy EXISTS:
