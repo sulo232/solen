@@ -24,7 +24,8 @@
     "smoke": "tsx scripts/api-smoke.ts",
     "e2e": "tsx scripts/e2e-booking.ts",
     "contracts:census": "node scripts/api-contracts-census.mjs",
-    "select-star:census": "node scripts/select-star-census.mjs"
+    "select-star:census": "node scripts/select-star-census.mjs",
+    "duplication:census": "node scripts/duplication-census.mjs"
   },
   "dependencies": {
     "@babel/runtime": "^7.23.9",
@@ -93,6 +94,7 @@
     "eslint-config-next": "^15.2.4",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "globals": "^15.15.0",
+    "jscpd": "^5.0.12",
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17",
     "tsx": "^4.23.0",

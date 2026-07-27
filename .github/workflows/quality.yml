@@ -238,6 +238,35 @@ jobs:
             exit 1
           fi
 
+  # fe-04: a structural code-DUPLICATION census (jscpd over app/+components/+
+  # components-legacy/), a distinct failure mode from the solen-drift-check
+  # token-drift gate (that one catches hardcoded hex/spacing/duration; this
+  # one catches repeated LOGIC/JSX). COMPONENT_REGISTRY.md documents at least
+  # 5 confirmed historical duplicate-component incidents (PriceFrom,
+  # SeeAllButton, Avatar, RatingStars, FilterBar), each found only by a human
+  # doing a manual sweep, sometimes long after the duplicate shipped. Same
+  # ratchet shape as the lint/select-star/contracts jobs above: fails only
+  # when the clone count goes UP from baseline.
+  duplication-census:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - name: duplication-census (ratchet vs baseline, currently 67 clones)
+        run: |
+          OUTPUT=$(node scripts/duplication-census.mjs)
+          echo "$OUTPUT"
+          COUNT=$(echo "$OUTPUT" | grep -oE 'RATCHET_DUPLICATION_CLONES=[0-9]+' | cut -d= -f2)
+          BASELINE=67
+          if [ "$COUNT" -gt "$BASELINE" ]; then
+            echo "::error::duplicated-code clone count went UP: $COUNT > $BASELINE baseline. A new block matches 30+ existing lines elsewhere in the tree -- extract it into a shared component/util instead of re-pasting it (see _design-system/COMPONENT_REGISTRY.md for the collapsed-duplicate history this gate exists to prevent recurring)."
+            exit 1
+          fi
+
   # testing-release-03: scripts/api-smoke.ts is the mobile-contract tripwire (live-DB
   # zod-shape checks against ~10 GET endpoints, built specifically to catch PostgREST
   # silently swallowing a `.select()` on a renamed/missing column). It only needs the
