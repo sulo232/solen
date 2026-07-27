@@ -6363,5 +6363,14 @@
   },
   "brandPage": {
     "locationsCount": "{count, plural, one {# emplacement} other {# emplacements}}"
+  },
+  "unsubscribe": {
+    "title": "Se désabonner des e-mails",
+    "description": "Désabonner {email} des futurs e-mails de solen.ch ?",
+    "confirmButton": "Confirmer la désinscription",
+    "confirmedTitle": "Désabonné",
+    "confirmedDescription": "{email} a été désabonné des futurs e-mails.",
+    "invalidEmail": "Aucune adresse e-mail valide n'a été fournie.",
+    "errorDescription": "Ta demande de désinscription n'a pas pu être traitée. Réessaie plus tard ou contacte support@solen.ch."
   }
 }

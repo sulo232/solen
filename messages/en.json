@@ -6371,5 +6371,14 @@
   },
   "brandPage": {
     "locationsCount": "{count, plural, one {# location} other {# locations}}"
+  },
+  "unsubscribe": {
+    "title": "Unsubscribe from emails",
+    "description": "Unsubscribe {email} from future emails from solen.ch?",
+    "confirmButton": "Confirm unsubscribe",
+    "confirmedTitle": "Unsubscribed",
+    "confirmedDescription": "{email} has been unsubscribed from future emails.",
+    "invalidEmail": "No valid email address was provided.",
+    "errorDescription": "Your unsubscribe request could not be processed. Please try again later or contact support@solen.ch."
   }
 }

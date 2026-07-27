@@ -23,6 +23,11 @@ export const tosAcceptSchema = z.object({
   version: z.string().min(1).max(100),
 });
 
+// seo-comms-08: the salon_directory outreach unsubscribe link's own body.
+export const unsubscribeSchema = z.object({
+  email: z.string().email().max(320),
+});
+
 // POST /api/profile/accept-tos: a second, separately-named TOS-accept route (field is
 // `tos_version`, not `version`, so it is its own schema rather than a duplicate of the
 // one above). input-abuse-07 (2026-07-27).

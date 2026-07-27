@@ -6352,5 +6352,14 @@
   },
   "brandPage": {
     "locationsCount": "{count, plural, one {# sede} other {# sedi}}"
+  },
+  "unsubscribe": {
+    "title": "Annulla iscrizione alle email",
+    "description": "Vuoi annullare l'iscrizione di {email} dalle future email di solen.ch?",
+    "confirmButton": "Conferma annullamento",
+    "confirmedTitle": "Iscrizione annullata",
+    "confirmedDescription": "{email} è stata rimossa dalle future email.",
+    "invalidEmail": "Nessun indirizzo email valido fornito.",
+    "errorDescription": "Non è stato possibile elaborare la richiesta. Riprova più tardi o contatta support@solen.ch."
   }
 }

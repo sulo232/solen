@@ -6381,5 +6381,14 @@
   },
   "brandPage": {
     "locationsCount": "{count, plural, one {# Standort} other {# Standorte}}"
+  },
+  "unsubscribe": {
+    "title": "Von E-Mails abmelden",
+    "description": "Möchtest du {email} von zukünftigen E-Mails von solen.ch abmelden?",
+    "confirmButton": "Abmeldung bestätigen",
+    "confirmedTitle": "Abgemeldet",
+    "confirmedDescription": "{email} wurde von zukünftigen E-Mails abgemeldet.",
+    "invalidEmail": "Keine gültige E-Mail-Adresse angegeben.",
+    "errorDescription": "Die Abmeldung konnte nicht verarbeitet werden. Bitte versuche es später erneut oder kontaktiere support@solen.ch."
   }
 }
