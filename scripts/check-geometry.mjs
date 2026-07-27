@@ -145,11 +145,35 @@ const SAMPLE_CAP = 30;
 // OLDER prose in CLAUDE.md's "FLOORS LAW" item 2 still says "375x812" for the
 // imagery floor specifically; the newer, more specific, same-day LOCKFILE
 // citation says 390x844, and that is what the task brief for this script
-// named explicitly, so FLOORS below always uses 390x844, fixed, regardless of
-// --viewport. Flagging the 375x812 vs 390x844 mismatch between the two law
-// docs here rather than silently picking one.
+// named explicitly, so FLOORS defaults to 390x844 when no --viewport is
+// passed, exactly as before this block changed. Flagging the 375x812 vs
+// 390x844 mismatch between the two law docs here rather than silently
+// picking one.
+//
+// responsive-desktop-01 (2026-07-27): the FLOORS pass used to be hardcoded to
+// 390x844 with NO way to run it at tablet/desktop at all, so CLAUDE.md's
+// FLOORS LAW / NEVER-AGAIN floors (imagery %, display anchor px, weight-share
+// %, anchor ratio) were only ever checkable on mobile, silently, with no
+// stated scope limit. FLOORS_VIEWPORTS below makes every viewport runnable
+// (`--floors-only --viewport desktop`); the THRESHOLD NUMBERS (FLOOR_IMAGERY_PCT
+// etc.) are still the mobile-derived LOCKFILE numbers, reused unchanged for
+// tablet/desktop - that reuse is a NAMED, explicit placeholder, not a claim
+// that they were re-measured or re-thresholded for a wider viewport. A photo
+// at a fixed px size is a smaller share of a 1280px-wide viewport than a
+// 390px one, so the desktop FLOORS numbers below are almost certainly too
+// lenient on imagery share and too strict on nothing in particular; an actual
+// re-derivation of desktop/tablet thresholds is a design judgment call for
+// the owner (a visual floor, not a mechanical one) and is OUT OF SCOPE here.
+// Default (no --viewport flag) behavior is UNCHANGED: still fixed 390x844,
+// so the existing FLOORS_ALLOWLIST route+floor entries (measured at 390x844)
+// stay valid.
 // ----------------------------------------------------------------------------
-const FLOORS_VIEWPORT = { width: 390, height: 844 };
+const FLOORS_VIEWPORTS = {
+  mobile: { width: 390, height: 844 },
+  tablet: { width: 768, height: 1024 },
+  desktop: { width: 1280, height: 900 },
+};
+const FLOORS_VIEWPORT = FLOORS_VIEWPORTS.mobile; // default/back-compat, see note above
 
 const FLOOR_IMAGERY_PCT = 33; // F2 - LOCKFILE EMPHASIS BUDGET: "min imagery share, browse/discovery/PDP first viewport: 33%"
 const FLOOR_DISPLAY_ANCHOR_PX = 28; // F6 - LOCKFILE EMPHASIS BUDGET: "min display anchor: 28px" / CLAUDE.md NEVER-AGAIN floor 6
@@ -334,13 +358,16 @@ function parseArgs(argv) {
   const routes = [];
   let baseUrl = process.env.BASE_URL || "http://localhost:3000";
   let viewport = "mobile"; // Solen is mobile-first (CLAUDE.md); default the check to it.
+  let viewportExplicit = false; // responsive-desktop-01: did the caller actually pass --viewport?
   let floorsOnly = false;
   let gate = false; // RANGE LAW G1, 2026-07-25: --gate flips FLOORS from report-only to failing
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === "--base-url") baseUrl = argv[++i];
-    else if (a === "--viewport") viewport = argv[++i];
-    else if (a === "--floors-only") floorsOnly = true;
+    else if (a === "--viewport") {
+      viewport = argv[++i];
+      viewportExplicit = true;
+    } else if (a === "--floors-only") floorsOnly = true;
     else if (a === "--gate") gate = true;
     else if (!a.startsWith("--")) routes.push(a);
   }
@@ -348,7 +375,14 @@ function parseArgs(argv) {
     console.error(`[check-geometry] unknown --viewport "${viewport}", falling back to mobile`);
     viewport = "mobile";
   }
-  return { baseUrl, viewport, floorsOnly, gate, routes: routes.length > 0 ? routes : DEFAULT_ROUTES };
+  return {
+    baseUrl,
+    viewport,
+    viewportExplicit,
+    floorsOnly,
+    gate,
+    routes: routes.length > 0 ? routes : DEFAULT_ROUTES,
+  };
 }
 
 // ----------------------------------------------------------------------------
@@ -1498,13 +1532,21 @@ async function main() {
   selfTestNestedRadiusLogic();
   selfTestFloorsLogic();
 
-  const { baseUrl, viewport, floorsOnly, gate, routes } = parseArgs(process.argv.slice(2));
+  const { baseUrl, viewport, viewportExplicit, floorsOnly, gate, routes } = parseArgs(process.argv.slice(2));
   const vp = VIEWPORTS[viewport];
+  // responsive-desktop-01: only switch the FLOORS viewport away from the
+  // 390x844 default when the caller EXPLICITLY passed --viewport - an
+  // unqualified run (no flag at all) must keep behaving exactly as before.
+  const floorsViewport = viewportExplicit ? FLOORS_VIEWPORTS[viewport] : FLOORS_VIEWPORT;
 
   console.log(`[check-geometry] base=${baseUrl} viewport=${viewport} (${vp.width}x${vp.height}) floorsOnly=${floorsOnly}`);
   console.log(`[check-geometry] routes: ${routes.join(", ")}`);
   console.log(
-    `[check-geometry] FLOORS viewport: ${FLOORS_VIEWPORT.width}x${FLOORS_VIEWPORT.height} (fixed - LOCKFILE EMPHASIS BUDGET, independent of --viewport)`,
+    `[check-geometry] FLOORS viewport: ${floorsViewport.width}x${floorsViewport.height}${
+      viewportExplicit
+        ? " (explicit --viewport override; thresholds are still the mobile-derived LOCKFILE numbers, see FLOORS_VIEWPORTS comment)"
+        : " (default - LOCKFILE EMPHASIS BUDGET 390x844)"
+    }`,
   );
 
   const browser = await launchBrowser();
@@ -1554,12 +1596,13 @@ async function main() {
     }
 
     // -----------------------------------------------------------------
-    // FLOORS pass - always runs (in every mode), always at FLOORS_VIEWPORT
-    // (390x844), its own context so it's independent of --viewport / the
-    // geometry pass above. Same settle sequence as the geometry pass.
+    // FLOORS pass - always runs (in every mode), at floorsViewport (390x844
+    // default, or the explicit --viewport override, see responsive-desktop-01
+    // above), its own context so it's independent of the geometry pass above.
+    // Same settle sequence as the geometry pass.
     // -----------------------------------------------------------------
     {
-      const floorsContext = await browser.newContext({ viewport: FLOORS_VIEWPORT });
+      const floorsContext = await browser.newContext({ viewport: floorsViewport });
       for (const route of routes) {
         const page = await floorsContext.newPage();
         const url = new URL(route, baseUrl).toString();
@@ -1572,8 +1615,8 @@ async function main() {
 
           const exempt = isFloorsImageryExempt(route);
           const floors = await page.evaluate(extractFloors, {
-            viewportWidth: FLOORS_VIEWPORT.width,
-            viewportHeight: FLOORS_VIEWPORT.height,
+            viewportWidth: floorsViewport.width,
+            viewportHeight: floorsViewport.height,
             imageryFloorPct: FLOOR_IMAGERY_PCT,
             displayAnchorFloorPx: FLOOR_DISPLAY_ANCHOR_PX,
             weightThreshold: WEIGHT_SHARE_THRESHOLD,
@@ -1644,7 +1687,7 @@ async function main() {
     );
   }
   headerLines.push(
-    `Totals (floors): ${floorsFailTotal} FAIL / ${floorsCheckedTotal} checks, ${routes.length} route(s), viewport ${FLOORS_VIEWPORT.width}x${FLOORS_VIEWPORT.height}`,
+    `Totals (floors): ${floorsFailTotal} FAIL / ${floorsCheckedTotal} checks, ${routes.length} route(s), viewport ${floorsViewport.width}x${floorsViewport.height}`,
   );
   headerLines.push("", "---", "");
   const header = headerLines.join("\n");
