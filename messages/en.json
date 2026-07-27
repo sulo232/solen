@@ -5108,7 +5108,12 @@
     "testimonial6": "Compare prices, read reviews, book directly — all in one app.",
     "testimonial7": "My colleague recommended Solen — now I use nothing else.",
     "testimonial8": "Even found last-minute deals with discounts. Amazing!",
-    "whatUsersSay": "What our users say"
+    "whatUsersSay": "What our users say",
+    "translatedFrom": "Translated from German",
+    "showOriginal": "Show original",
+    "showTranslation": "Show translation",
+    "replyFrom": "Reply from {salon}",
+    "replyFromSalon": "Reply from the salon"
   },
   "reviewsPage": {
     "metaTitle": "Reviews · Solen",

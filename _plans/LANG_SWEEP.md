@@ -69,8 +69,12 @@ are the entire remaining job. That bounds the work.
             cannot be translated back into visibility.
       - [x] A failed translation is NEVER cached: a cached failure is permanent, and showing
             the original instead is true.
-      - [ ] The "translated from German / show original" affordance in the review list , the
-            data path is proven, the UI is the remaining half.
+      - [x] The "translated from German / show original" affordance , BUILT and toggled on the
+            live tunnel at /fr/salon/atelier-haarwerk. Translated: "Absolument ravi, ma coupe
+            est parfaite !" with "Traduit de l'allemand / Voir l'original". One click back:
+            "Absolut begeistert, mein Schnitt sitzt perfekt!" with "Voir la traduction".
+            The provenance line renders ONLY when a translation is actually showing, so a
+            German reader never sees it and a failed fetch never claims something happened.
       Original plan: **Review translation, on-read + cached.** Needs a cache location, a "translated from
       X" affordance, and the original always reachable.
 - [ ] **S8. The 281 hardcoded German literals across 90 files.** Measured, not estimated.
@@ -87,3 +91,18 @@ are the entire remaining job. That bounds the work.
 - Never overwrite a good German source with a failed translation: `""` is dropped, the column
   stays empty, the fallback renders German.
 - Nothing auto-translated is authoritative over a salon's own edit.
+
+## Found while verifying, not part of the ask
+
+- [ ] **A salon with only rating-only reviews shows "Alle (0)" beside "11 avis".** Measured on
+      muse-beauty-studio: 11 visible reviews, and by SQL ZERO of them have a comment or a
+      display name. The anti-wall filter (SalonReviews.tsx:97, owner 2026-06-12) correctly
+      hides rating-only anonymous rows, but the segmented chip still reads "Alle (0)" next to a
+      review COUNT of 11, and the group renders "Noch keine Bewertungen in dieser Gruppe". Two
+      true numbers that contradict each other on screen. Pre-existing, not from this sweep.
+      The fix is a product call about what a rating-only salon should show, so it is written
+      down rather than guessed at.
+- [ ] **Every PDP section heading is still German on /fr and /it.** Measured on the live French
+      PDP: Bewertungen, Über uns, Standort, Öffnungszeiten, Zusatzinformationen, Weitere Salons
+      entdecken, Bleib auf dem Laufenden. This is the highest-traffic customer surface in the
+      product and it is the next literals batch.

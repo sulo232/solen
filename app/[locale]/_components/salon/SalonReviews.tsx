@@ -211,10 +211,49 @@ export function SalonReviews({
 }
 
 function ReviewCard({ review, salonName, locale }: { review: Review; salonName?: string; locale?: string }) {
-  const text = review.comment ?? review.comment_de ?? review.comment_en ?? "";
+  const t = useTranslations("reviews");
+  const tCommon = useTranslations("common");
+  const original = review.comment ?? review.comment_de ?? review.comment_en ?? "";
   const [showFull, setShowFull] = React.useState(false);
-  const isLong = text.length > 200;
   const reply = publicReply(review.review_replies);
+
+  // ON-READ TRANSLATION (2026-07-27). Reviews are written in German by default and carry no
+  // language column. A visitor reading in another locale gets a translation fetched lazily
+  // from /api/reviews/translate, which caches it (measured: 7.7s cold, 209ms warm).
+  //
+  // THE ORIGINAL IS NEVER REPLACED, only covered. `showOriginal` puts it back in one tap, and
+  // the label always says the text was translated. A machine translation must not silently
+  // become what a customer said about a business , that is somebody's reputation.
+  const [translated, setTranslated] = React.useState<string | null>(null);
+  const [showOriginal, setShowOriginal] = React.useState(false);
+  const needsTranslation = !!original && !!locale && locale !== "de";
+
+  React.useEffect(() => {
+    if (!needsTranslation) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/reviews/translate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ids: [review.id], locale }),
+        });
+        if (!res.ok) return;
+        const json = await res.json();
+        const value = json?.translations?.[review.id];
+        // No translation is not an error state worth surfacing: the original is already
+        // rendered and is true. Fail quiet.
+        if (!cancelled && typeof value === "string" && value.trim()) setTranslated(value);
+      } catch {
+        /* fail quiet, the original stays */
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [needsTranslation, review.id, locale]);
+
+  const showingTranslation = !!translated && !showOriginal;
+  const text = showingTranslation ? translated! : original;
+  const isLong = text.length > 200;
 
   // Reviewer name only when a public profile exists. Anonymous/seed reviews show a
   // "Verifizierte Buchung · date" line instead of a repeated placeholder name.
@@ -226,10 +265,10 @@ function ReviewCard({ review, salonName, locale }: { review: Review; salonName?:
           the grey date stacked under, star row below, text below. Anonymous reviews
           show "Anonym" (the established label on /reviews). */}
       <div className="flex items-start gap-3.5">
-        <Avatar src={review.profiles?.avatar_url} name={displayName ?? "Anonym"} size={56} />
+        <Avatar src={review.profiles?.avatar_url} name={displayName ?? tCommon("anonymous")} size={56} />
         <div className="min-w-0 flex-1">
           <div className="font-body truncate text-[16px] font-semibold text-s-ink">
-            {displayName ?? "Anonym"}
+            {displayName ?? tCommon("anonymous")}
           </div>
           <div className="font-body mt-0.5 text-[14px] text-s-ink-2">
             {formatReviewDate(review.created_at, locale)}
@@ -263,8 +302,24 @@ function ReviewCard({ review, salonName, locale }: { review: Review; salonName?:
               onClick={() => setShowFull(true)}
               className="font-body mt-1 text-[13px] font-medium text-s-accent transition-[opacity,transform] hover:opacity-80 active:scale-[0.98] active:duration-[80ms] active:ease-glide"
             >
-              Mehr lesen
+              {t("readMore")}
             </button>
+          )}
+          {/* The provenance line renders ONLY when a translation is actually being shown, so a
+              German reader never sees it and a failed fetch never claims something happened.
+              Text link + hover underline per the LOCKFILE link row , it is a small clickable
+              bit of metadata, which is exactly what s-accent is reserved for. */}
+          {translated && (
+            <p className="font-body mt-1.5 text-[12px] text-s-ink-2">
+              {showingTranslation ? t("translatedFrom") : null}{" "}
+              <button
+                type="button"
+                onClick={() => setShowOriginal((v) => !v)}
+                className="font-medium text-s-accent underline-offset-2 transition-opacity hover:underline hover:opacity-80"
+              >
+                {showingTranslation ? t("showOriginal") : t("showTranslation")}
+              </button>
+            </p>
           )}
         </>
       )}
@@ -277,7 +332,7 @@ function ReviewCard({ review, salonName, locale }: { review: Review; salonName?:
         <div className="mt-3 ml-4 rounded-[12px] border border-s-border bg-s-bg-sunken p-3">
           <p className="flex items-center gap-1.5 text-[13px] font-semibold text-s-ink">
             <MessageSquare size={13} aria-hidden />
-            {salonName ? `Antwort von ${salonName}` : "Antwort vom Salon"}
+            {salonName ? t("replyFrom", { salon: salonName }) : t("replyFromSalon")}
           </p>
           <p className="mt-1.5 text-[13px] leading-relaxed text-s-ink-2">{reply.reply_text}</p>
           <p className="mt-1.5 text-[12px] text-s-ink-2">{formatReviewDate(reply.created_at, locale)}</p>
