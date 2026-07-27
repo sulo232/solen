@@ -51,6 +51,15 @@ const COPY: Record<string, Copy> = {
   it: { live: "Live", minLeft: "Ancora", min: "min", soon: "Presto tocca a te", aheadLine: "prima di te in coda", youreUp: "Tocca a te!", goToChair: "Vai alla poltrona", whileYouWait: "Mentre aspetti", inspoTitle: "Cerchi ispirazione?", inspoSub: "Sfoglia i lavori e mostra il tuo look preferito direttamente in poltrona.", seeLooks: "Vedi i look", yourBarber: "Il tuo barbiere", directions: "Indicazioni", ticketNr: "N. ticket", st_paid: "Pagato", st_queue: "In coda", st_almost: "Quasi", st_chair: "Tocca a te", done: "Fatto!", doneSub: "Speriamo che il taglio sia perfetto. Già pagato, tutto a posto.", noTip: "Nessuna mancia, grazie", cancelled: "Annullato", cancelledSub: "Questo ticket non è più attivo", noShow: "Numero saltato", noShowSub: "Questo numero è stato chiamato ma non c'era nessuno", notFound: "Ticket non trovato", notFoundSub: "Questo ticket walk-in è scaduto o è già stato usato. Controlla il link o prenota un nuovo posto.", autoUpdate: "Si aggiorna automaticamente", home: "Home", help: "Aiuto", cancel: "Annulla", cancelConfirm: "Annullare e ricevere il rimborso?", keepTicket: "Mantieni il ticket", tip: "Lascia una mancia", ask: "Com'è andato il taglio?", r1: "Scarso", r2: "Così così", r3: "Okay", r4: "Bene", r5: "Eccellente!", lowTitle: "Ci dispiace.", lowSub: "Cosa non è andato? Il tuo feedback va dritto al salone.", fbPlaceholder: "Dicci di più (facoltativo)", helpTitle: "Serve aiuto?", helpSub: "Contatta il salone", fbSend: "Invia feedback", skip2: "Salta" },
 };
 
+// copy-i18n-04 (2026-07-27): the star-rating aria-label was hardcoded German
+// ("Stern"/"Sterne") regardless of locale via an n===1 ternary. Locale-keyed like COPY above.
+const STAR_LABEL: Record<string, (n: number) => string> = {
+  de: (n) => `${n} ${n === 1 ? "Stern" : "Sterne"}`,
+  en: (n) => `${n} ${n === 1 ? "star" : "stars"}`,
+  fr: (n) => `${n} ${n === 1 ? "étoile" : "étoiles"}`,
+  it: (n) => `${n} ${n === 1 ? "stella" : "stelle"}`,
+};
+
 type NodeState = "done" | "current" | "future";
 
 export default function QueueTrackingPage() {
@@ -239,7 +248,7 @@ export default function QueueTrackingPage() {
           {/* interactive stars */}
           <div className="mt-3 flex gap-2">
             {[1, 2, 3, 4, 5].map((n) => (
-              <button key={n} type="button" onClick={() => onRate(n)} aria-label={`${n} ${n === 1 ? "Stern" : "Sterne"}`} className="p-1 transition-transform active:scale-90">
+              <button key={n} type="button" onClick={() => onRate(n)} aria-label={(STAR_LABEL[locale] ?? STAR_LABEL.de)(n)} className="p-1 transition-transform active:scale-90">
                 <Star size={38} className={n <= rating ? "fill-s-star text-s-star" : "fill-s-border text-s-border"} />
               </button>
             ))}

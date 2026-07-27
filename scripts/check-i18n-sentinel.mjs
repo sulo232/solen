@@ -27,9 +27,12 @@ const SOURCE_LOCALE = "en";
 // Baseline identical-to-en counts, measured 2026-07-27 after copy-i18n-01
 // (refundFlow translated). Lower this number as further namespaces get
 // translated; raising it requires a named reason in the PR description.
+// 2026-07-27 (copy-i18n-04): fr +1 for Profile.salonsCount, "{count, plural, one {#
+// salon} other {# salons}}" , genuinely identical, French "salon"/"salons" happens
+// to share the English spelling for this word, not an untranslated placeholder.
 const IDENTICAL_BASELINE = {
   de: 465,
-  fr: 367,
+  fr: 368,
   it: 220,
 };
 

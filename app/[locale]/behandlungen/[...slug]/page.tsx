@@ -172,7 +172,7 @@ export default function TreatmentResultsPage() {
                 </h1>
                 {!loading && (
                   <p className="text-sm text-s-ink-2 mt-1">
-                    {total} {total === 1 ? "Salon" : "Salons"} gefunden
+                    {t("salonsFoundCount", { count: total })}
                   </p>
                 )}
               </div>

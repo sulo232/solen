@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useTranslations } from "next-intl";
 import { Star, MessageSquare } from "lucide-react";
 import type { Review } from "./_shared";
 import { formatReviewDate, publicReply } from "./_shared";
@@ -59,6 +60,7 @@ export function SalonReviews({
    */
   layout?: "stack" | "swipe" | "collapsed";
 }) {
+  const t = useTranslations("salonDetail");
   const [fetched, setFetched] = React.useState<Review[] | null>(null);
 
   React.useEffect(() => {
@@ -140,7 +142,7 @@ export function SalonReviews({
             {average?.toFixed(1) ?? "-"}
           </span>
           <span className="font-body text-[13px] text-s-ink-2">
-            {formatNumber(count, locale)} {count === 1 ? "Bewertung" : "Bewertungen"}
+            {t("reviewsCountPlural", { count })}
           </span>
         </div>
 

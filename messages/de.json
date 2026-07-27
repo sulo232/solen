@@ -3744,6 +3744,7 @@
     "noPastBookings": "Keine vergangenen Termine",
     "favorites": "Favoriten",
     "noFavorites": "Noch keine Favoriten",
+    "salonsCount": "{count, plural, one {# Salon} other {# Salons}}",
     "discoverSalons": "Salons entdecken",
     "removeFromFavorites": "Aus Favoriten entfernen",
     "stampCards": "Deine Stempelkarten",
@@ -4509,7 +4510,8 @@
     "openNow": "Jetzt geöffnet",
     "instantBookable": "Sofort buchbar",
     "deals": "Angebot",
-    "walkIn": "Walk-in"
+    "walkIn": "Walk-in",
+    "salonsFoundCount": "{count, plural, one {# Salon gefunden} other {# Salons gefunden}}"
   },
   "discover": {
     "title": "Inspo",
@@ -5636,6 +5638,7 @@
     "filterBy": "Filtern nach",
     "filterAllCount": "Alle ({count})",
     "reviewsCount": "{count} Bewertungen",
+    "reviewsCountPlural": "{count, plural, one {# Bewertung} other {# Bewertungen}}",
     "sortHighest": "Beste",
     "sortLowest": "Schlechteste",
     "replyFrom": "Antwort von {name}",
@@ -6364,5 +6367,8 @@
     "perk_slots_s": "Beliebte Termine zuerst buchen",
     "perk_angebote48_t": "48 Stunden früher",
     "perk_angebote48_s": "Noch früher an Angebote und Termine"
+  },
+  "brandPage": {
+    "locationsCount": "{count, plural, one {# Standort} other {# Standorte}}"
   }
 }

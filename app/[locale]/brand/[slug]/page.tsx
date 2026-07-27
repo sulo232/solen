@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { MapPin, Star, ExternalLink } from "lucide-react";
 import SalonCard from "@/components-legacy/SalonCard";
@@ -21,6 +22,7 @@ export default function BrandPage() {
   const params = useParams()!;
   const slug = params.slug as string;
   const locale = (params.locale as string) ?? "de";
+  const t = useTranslations("brandPage");
 
   const [group, setGroup] = useState<SalonGroup | null>(null);
   const [salons, setSalons] = useState<SalonCardType[]>([]);
@@ -82,7 +84,7 @@ export default function BrandPage() {
             )}
             <div className="flex items-center gap-4 mt-2">
               <span className="text-xs text-s-ink-2">
-                {salons.length} {salons.length === 1 ? "Standort" : "Standorte"}
+                {t("locationsCount", { count: salons.length })}
               </span>
               {group.website && (
                 <a

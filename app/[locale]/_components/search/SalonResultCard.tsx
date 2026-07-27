@@ -149,14 +149,25 @@ function formatDistance(m?: number | null): string | null {
   return m < 1000 ? `${Math.round(m)} m` : `${(m / 1000).toFixed(1)} km`;
 }
 
-// V3-D376 (2026-05-30): "Std." German hours unit for the featured-service row.
-function formatDuration(mins?: number | null): string | null {
+// V3-D376 (2026-05-30): hours/minutes unit for the featured-service row.
+// copy-i18n-04 (2026-07-27): was hardcoded German ("Std."/"Min.") for every locale;
+// the h===1 ternary was dead code (both branches produced the same string), the real
+// bug was the missing locale switch, same pattern as WALKIN_LABEL above.
+export const DURATION_UNIT: Record<string, { h: string; m: string }> = {
+  de: { h: "Std.", m: "Min." },
+  en: { h: "h", m: "min" },
+  fr: { h: "h", m: "min" },
+  it: { h: "h", m: "min" },
+};
+
+function formatDuration(mins?: number | null, locale: string = "de"): string | null {
   if (!mins || mins <= 0) return null;
-  if (mins < 60) return `${mins} Min.`;
+  const u = DURATION_UNIT[locale] ?? DURATION_UNIT.de;
+  if (mins < 60) return `${mins} ${u.m}`;
   const h = Math.floor(mins / 60);
   const m = mins % 60;
-  const hPart = h === 1 ? "1 Std." : `${h} Std.`;
-  return m === 0 ? hPart : `${hPart} ${m} Min.`;
+  const hPart = `${h} ${u.h}`;
+  return m === 0 ? hPart : `${hPart} ${m} ${u.m}`;
 }
 
 // ISO slot timestamp → "14:30" in the locale's CH formatting.
@@ -531,7 +542,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
                 <div className="mt-2.5 space-y-1.5">
                   {rows.map((s) => {
                     const svcName = (locale === "en" && s.name_en ? s.name_en : s.name_de) ?? "";
-                    const dur = formatDuration(s.duration_minutes);
+                    const dur = formatDuration(s.duration_minutes, locale);
                     return (
                       <div key={s.id} className="flex items-center justify-between gap-3 rounded-xl bg-s-bg-sunken px-3.5 py-2.5 text-[13.5px]">
                         <span className="min-w-0">

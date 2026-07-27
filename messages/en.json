@@ -3734,6 +3734,7 @@
     "noPastBookings": "No past bookings",
     "favorites": "Favorites",
     "noFavorites": "No favorites yet",
+    "salonsCount": "{count, plural, one {# salon} other {# salons}}",
     "discoverSalons": "Discover salons",
     "removeFromFavorites": "Remove from favorites",
     "stampCards": "Your Stamp Cards",
@@ -4499,7 +4500,8 @@
     "openNow": "Open Now",
     "instantBookable": "Instant Bookable",
     "deals": "Deals",
-    "walkIn": "Walk-in"
+    "walkIn": "Walk-in",
+    "salonsFoundCount": "{count, plural, one {# salon found} other {# salons found}}"
   },
   "discover": {
     "title": "Inspo",
@@ -5609,6 +5611,7 @@
     "filterBy": "Filter by",
     "filterAllCount": "All ({count})",
     "reviewsCount": "{count} reviews",
+    "reviewsCountPlural": "{count, plural, one {# review} other {# reviews}}",
     "sortHighest": "Best",
     "sortLowest": "Worst",
     "replyFrom": "Reply from {name}",
@@ -6354,5 +6357,8 @@
     "perk_slots_s": "Book popular times first",
     "perk_angebote48_t": "48-hour head start",
     "perk_angebote48_s": "Even earlier access to offers and slots"
+  },
+  "brandPage": {
+    "locationsCount": "{count, plural, one {# location} other {# locations}}"
   }
 }

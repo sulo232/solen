@@ -13,7 +13,7 @@ import { ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CardName, CardMeta, RatingStars, PriceFrom } from "../primitives";
 import { HeartButton } from "../homepage/HeartButton";
-import { CATEGORY_LABEL, FROM_LABEL, REVIEWS_LABEL } from "./SalonResultCard";
+import { CATEGORY_LABEL, FROM_LABEL, REVIEWS_LABEL, DURATION_UNIT } from "./SalonResultCard";
 import { withDateParam } from "../salon/_shared";
 import type { Salon } from "./SearchTemplate";
 
@@ -49,13 +49,16 @@ function formatDistance(m?: number | null): string | null {
   return m < 1000 ? `${Math.round(m)} m` : `${(m / 1000).toFixed(1)} km`;
 }
 
-function formatDuration(mins?: number | null): string | null {
+// copy-i18n-04 (2026-07-27): was hardcoded German for every locale; now shares
+// SalonResultCard's DURATION_UNIT lookup, same reuse pattern as the labels above.
+function formatDuration(mins?: number | null, locale: string = "de"): string | null {
   if (!mins || mins <= 0) return null;
-  if (mins < 60) return `${mins} Min.`;
+  const u = DURATION_UNIT[locale] ?? DURATION_UNIT.de;
+  if (mins < 60) return `${mins} ${u.m}`;
   const h = Math.floor(mins / 60);
   const m = mins % 60;
-  const hPart = h === 1 ? "1 Std." : `${h} Std.`;
-  return m === 0 ? hPart : `${hPart} ${m} Min.`;
+  const hPart = `${h} ${u.h}`;
+  return m === 0 ? hPart : `${hPart} ${m} ${u.m}`;
 }
 
 function safeCategory(cats: string[] | undefined): string | null {
@@ -176,7 +179,7 @@ export function MapSalonDetail({
         <div className="mt-3 space-y-1.5"> {/* mockup-ok */}
           {visibleRows.map((s) => {
             const svcName = (locale === "en" && s.name_en ? s.name_en : s.name_de) ?? "";
-            const dur = formatDuration(s.duration_minutes);
+            const dur = formatDuration(s.duration_minutes, locale);
             return (
               <Link
                 key={s.id}
