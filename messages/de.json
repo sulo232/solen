@@ -2466,6 +2466,7 @@
       "activate": "Aktivieren",
       "freeze": "Einfrieren",
       "edit": "Bearbeiten",
+      "viewStorefront": "Ansehen",
       "activateTitle": "Salon aktivieren",
       "freezeTitle": "Salon einfrieren",
       "activateMessage": "Salon \"{name}\" aktivieren? Der Salon wird für Kunden sichtbar.",

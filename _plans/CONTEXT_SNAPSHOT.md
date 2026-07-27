@@ -2,19 +2,25 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-07-25T22:33:37 (trigger: auto)
-- branch: main
+- taken: 2026-07-27T16:14:42 (trigger: auto)
+- branch: claude/principles-security-audit-0ae738
 
 ## git
 ```
-29a556ba4 B2B and auth: fix five live WCAG loops, four layout animations, one press value
-3a873ae06 Rank 1: fix the WCAG 2.2.2 failures that were unconditional
-03cf7dd9c Motion plan: cite sha b2542365a on D1
-b2542365a D1: merge the three motion audits into one ranked list
-34155b4ea Motion audit lands (508 elements) and the first hard-rule violations are fixed
+a28d4a13e Dispose every remaining line: 267 closed, 9 open and each names its question
+8d214d7bd checkpoint(auto): 1 uncommitted file(s) at turn end
+3b7ebdd24 Loop closed: 252 of 276 done, 0 TODO. And I was wrong in the other direction too.
+c8f19e749 seo-comms-11: park the SMS reminder window as a named, deliberate decision
+32e0d5c16 observability-8: add booking failure-rate SLI to the daily digest
+```
+```
+M  _plans/PRINCIPLES_LOOP.md
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
+43 | THE LOOP: implement every remaining finding (owner correction) | **ACTIVE** (2026-07-27)
+42 | IMPLEMENT the missing principles (owner approved, full control except big design changes) | **ACTIVE** (2026-07-26)
+41 | MISSING PRINCIPLES research (whole estate: design + backend + security + my output + meta) | **ACTIVE** (2026-07-26)
 40 | MOTION + SHADOW LAW (research-first, then build as a loop) | **ACTIVE** (2026-07-25)
 33 | PDP consistency + motion (dates, reviews system, buttons, portfolio +N, frosted scroll) | **ACTIVE** (2026-07-25)
 31 | Home page overhaul (owner 10-ask dictation) , PIVOTED to whiteness/emptiness fix | **ACTIVE** (2026-07-24)
@@ -40,36 +46,21 @@ b2542365a D1: merge the three motion audits into one ranked list
 36 | Mockup QUALITY system , stop shipping unchecked/unbalanced mockups (owner 2026-07-19, FURIOUS recurrence) | **ACTIVE** (2026-07-19)
 35 | Full frontend sweep , audit every surface vs the design system + mockup improvements (owner 2026-07-19, LOOP) | **ACTIVE** (2026-07-19)
 
-## MOTION_LAW.md
+## PRINCIPLES_LOOP.md
 Open boxes:
-- [ ] D2. Fix the WCAG 2.2.2 exposures , Level A, so these lead the list. PARTIAL 2026-07-25: the two
-- [ ] D3. Resolve the 420ms ENTER RECIPE contradiction with a side-by-side the owner picks from.
-- [ ] D4. Document `thud` as the exit curve, zero new tokens.
+- [ ] `copy-i18n-03` **AWAITING OWNER** OWNER QUESTION: keep French formal (vous) as a deliberate exception and write that down, or align it with the informal German and Italian? Measured: fr 229 formal vs 46 informal, de 196 informal vs 12 formal, it 245 vs 1. ~5,600 strings either way. , [high/M] French defaults to formal 'vous', breaking the same warmth rationale that locked German and Italian to informal, with no decision ever recorded
+- [ ] `copy-i18n-11` **AWAITING OWNER** OWNER QUESTION: may 'ab CHF' prefix a service that has exactly one price? Analysis in `_rules/LEGAL_COPY.md`; the finding's own confidence is 'assume', so this needs a decision, not a guess. , [medium/M] Swiss price-transparency law (Preisbekanntgabeverordnung) is never named as the reason behind the 'ab CHF' pattern, so nothing checks that 'ab' (starting-from) pricing is only used where the service genuinely has variable pricing
+- [ ] `data-money-07` **BLOCKED** BLOCKED ON OWNER AUTHORISATION: proving a restore means writing real backup data into a throwaway database. No agent here performs a database write without an explicit yes. One authorisation, about an hour, and the runbook's 1-2h recovery figure becomes a measurement instead of a guess. , [high/M] Restore has never been executed end to end; RTO is an unmeasured guess presented in the runbook as if it were a verified number
+- [ ] `observability-9` **BLOCKED** BLOCKED ON AN OWNER DECISION: verified genuinely absent, `find . -iname '*postmortem*'` returns zero files repo-wide and OPS_RUNBOOK.md has no such section. Writing incident-response and postmortem discipline is a decision about how YOU want to run an incident, not a code change I can make for you. , [medium/M] No per-critical-flow incident runbook and no postmortem discipline exists anywhere
+- [ ] `imagery-icons-02` **AWAITING OWNER** OWNER QUESTION: do salon-gallery and review photos get a pre-publish review queue? The cost is somebody's time watching it, which is yours to spend or delegate. , [high/M] No pre-publish moderation for salon-gallery or review photos, unlike Discovery content
+- [ ] `imagery-icons-05` **AWAITING OWNER** two mutually exclusive options, pick ONE , [medium/S] The documented grey-box fallback and the shipped fallback component describe two different visuals
+  - [ ] Option A: change the code so both SalonCard variants render the written rule, sunken
+  - [ ] Option B: pick whichever shipped variant you prefer (the colour block with the full
+- [ ] `imagery-icons-07` **AWAITING OWNER** OWNER QUESTION: what does the upload rights/consent confirmation say, and what do you promise when someone objects? The checkbox is trivial; the promise is policy. , [medium/S] No rights/consent attestation at photo upload time for salon-gallery or review photos
+- [ ] `responsive-desktop-02` **AWAITING OWNER** OWNER QUESTION: cap the dashboard content width on large monitors? Visible change, about five minutes once approved. , [high/S] The operator dashboard has no page-level max-width: content stretches unbounded on wide and ultra-wide monitors
+- [ ] `responsive-desktop-08` **AWAITING OWNER** OWNER QUESTION: apply the 68ch line-length cap to dashboard free text as well? Same five-minute shape as responsive-desktop-02, same visible-change reason for asking. , [low/S] The 68ch prose-measure cap is applied to select customer pages only; the dashboard's free-text fields and descriptions have no equivalent line-length control
 
-## PDP_CONSISTENCY.md
+## PRINCIPLES_IMPLEMENTATION.md
 Open boxes:
-- [ ] C2. Reviews SYSTEM: one review-row component + one summary grammar shared by the PDP section, the full reviews page, and the stylist profile page. Audit first, name every divergence, then unify.
-- [ ] C3. BUTTON audit: enumerate every book/select/choose variant in the customer surfaces, then ONE rule per job (mockup, owner picks).
-- [ ] C6. Motion pass beyond C5, kept simple.
-- [ ] C2a. Extract ONE review-row component + one summary grammar, used by all three.
-- [ ] M1. Owner confirms the two-tier speed.
-- [ ] M2. CORRECTION: the frosted condensed bar is missing the PICTURE. The X reference puts the profile
-- [ ] M3. Motion mockups across surfaces at the measured speed, incl. the Termin/Walk-in tab switch the
-- [ ] M4. Owner correction to honour throughout: the BOOK BUTTON IS ALWAYS PRESENT, never removed from any
-
-## HOME_OVERHAUL.md
-Open boxes:
-- [ ] W5. BLOCKED on owner: pick A / B / C (or combo) -> apply the hero imagery + section rhythm to the real Hero + feed, fix the review placeholder, verify + commit.
-- [ ] R2. Get real REFERENCES. BLOCKED (in progress, concrete): the Mobbin reference sweep is a RUNNING background subagent dispatched this turn; its results arrive via a task-notification that re-invokes me. An async agent cannot be force-completed inside this turn , the turn ends here and RESUMES on that notification to finish R2 + R3.
-- [ ] R3. Synthesize council + refs -> GROUNDED LIGHT-photo-hero proposal + re-mock. BLOCKED on R2 (needs the reference results before synthesizing).
-- [ ] 1f. Apply chosen direction to the real card (owner-gated , the mockup-first pause). Atomized:
-  - [ ] 1f-i. Owner picks A / B / C (or a mix) , BLOCKED on owner (the whole point of the phase-1 preview)
-  - [ ] 1f-ii. Apply the picked treatment to `Hero.tsx` wrapper + `SearchBar.tsx` collapsed card (radius + width + separation) , BLOCKED on 1f-i (cannot apply a direction that is not picked yet)
-  - [ ] 1f-iii. Drop the `SearchOverlay.tsx:767` scrim blur to plain dim + verify smoothness with a Playwright video , BLOCKED on 1f-i (ships together with the chosen card)
-  - [ ] 1f-iv. Commit the applied card + post a tunnel link for owner sign-off , BLOCKED on 1f-ii/iii being done
-- [ ] 2. In deiner Nähe , remove the map, keep near-you list + city (BLOCKED on: phase-1 approval, then its own mockup round)
-- [ ] 3. Nähe/section font , identify the drifted font vs the locked family, fix (BLOCKED on: item 2 scope)
-- [ ] 4. Reviews section , diagnose + mockup fix (BLOCKED on: phase-1 approval)
-- [ ] 5. Walk-in section , diagnose + mockup fix (BLOCKED on: phase-1 approval)
-- [ ] 6. Inspo section , diagnose + mockup fix (BLOCKED on: phase-1 approval)
-- [ ] 7. Logo , clarify what's wrong + mockup fix (BLOCKED on: phase-1 approval + owner detail on what's off)
+- [ ] D2. SPLIT: D2a DONE in commit 87128e9be, D2b OPEN and the owner's. Superseded in scope by workstream 43, which is the loop
+  - [ ] D2b. NOT DONE, and it is not mine to do. Real photographs of the 28 real businesses.

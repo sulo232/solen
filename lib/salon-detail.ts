@@ -73,7 +73,18 @@ export async function loadSalonDetailWithAccess(
 
   // Regular users can only see active salons. Owner/Admin can see pending ones.
   const isOwner = user?.id === salon.owner_id;
-  if (!isOwner && !salon.is_active) return null;
+  // The comment above promised an admin branch since this function was written, but the
+  // check was owner-only, so an admin could not open a pending salon's storefront , the
+  // fastest way to judge a signup, and the owner's ask on 2026-07-27 ("as admin we can see
+  // all details n stuff"). One extra query, and only for a signed-in user looking at a
+  // salon that is not theirs and not yet live, so the public path is untouched.
+  let isAdminViewer = false;
+  if (!isOwner && !salon.is_active && user?.id) {
+    const { data: viewerProfile } = await createAdminSupabaseClient()
+      .from("profiles").select("role").eq("id", user.id).maybeSingle();
+    isAdminViewer = viewerProfile?.role === "admin";
+  }
+  if (!isOwner && !isAdminViewer && !salon.is_active) return null;
 
   // Fetch related data in parallel
   const [servicesRes, staffRes, reviewsRes] = await Promise.all([

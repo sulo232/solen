@@ -2466,6 +2466,7 @@
       "activate": "Activer",
       "freeze": "Geler",
       "edit": "Modifier",
+      "viewStorefront": "Voir",
       "activateTitle": "Activer le salon",
       "freezeTitle": "Geler le salon",
       "activateMessage": "Activer le salon \"{name}\" ? Il deviendra visible pour les clients.",

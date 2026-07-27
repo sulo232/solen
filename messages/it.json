@@ -2449,6 +2449,7 @@
       "activate": "Attiva",
       "freeze": "Congela",
       "edit": "Modifica",
+      "viewStorefront": "Vedi",
       "activateTitle": "Attiva salone",
       "freezeTitle": "Congela salone",
       "activateMessage": "Attivare il salone \"{name}\"? Diventerà visibile ai clienti.",

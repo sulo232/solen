@@ -292,12 +292,19 @@ export default function AllSalonsPage() {
                       </button>
                     )}
 
-                    {/* Edit link */}
+                    {/* Open the salon's public storefront. Until 2026-07-27 this linked to
+                        `/${locale}/dashboard/settings` with no salon identifier, so an admin
+                        clicking "Edit" on ANY row landed on their OWN salon's settings page ,
+                        a silent no-op that looked like a working per-row control. There is no
+                        admin-scoped salon editor to link to, so this now goes where the admin
+                        actually needs to look when judging a salon: the storefront itself. */}
                     <a
-                      href={`/${locale}/dashboard/settings`}
+                      href={`/${locale}/salon/${salon.slug}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn bg-s-bg-sunken text-s-ink-2 text-xs font-medium hover:bg-s-border transition-colors"
                     >
-                      {t("edit")} <ExternalLink size={10} />
+                      {t("viewStorefront")} <ExternalLink size={10} />
                     </a>
                   </div>
                 </div>
