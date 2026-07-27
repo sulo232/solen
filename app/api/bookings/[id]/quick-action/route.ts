@@ -100,7 +100,7 @@ export async function GET(
     // branch uses (lib/bookings/customer-cancel-money.ts) so a prepaid booking is refunded
     // base minus fee, matching /api/bookings/[id]/cancel's customer branch exactly. The
     // HMAC token IS the authorization here (same discipline as the read/update above).
-    await applyCustomerCancelMoney(
+    const money = await applyCustomerCancelMoney(
       admin,
       {
         id: bookingId,
@@ -116,6 +116,32 @@ export async function GET(
       booking.salons as any,
       "customer cancelled via one-click email link",
     );
+
+    // observability-3: this route is public and token-gated (a guest booking has no
+    // profiles row, so actor_id must stay null, not a uuid-cast crash into
+    // logAuditEvent's own catch). It is otherwise the SAME money move its sibling
+    // /api/bookings/[id]/cancel already audits (via logAuditEvent) for a logged-in
+    // customer; without this row a one-click refund/fee here left zero trace.
+    // Best-effort: never let a failed audit write mask the cancel that already
+    // committed above.
+    if (money.refundAmount > 0 || money.feeChargeStatus !== "none") {
+      const { error: auditErr } = await admin.from("audit_log").insert({
+        actor_id: null,
+        action: "cancellation_via_quick_action_link",
+        target_type: "booking",
+        target_id: bookingId,
+        metadata: {
+          refund_amount_cents: money.refundAmount,
+          fee_cents: money.feeCents,
+          fee_charge_status: money.feeChargeStatus,
+          fee_charged_cents: money.feeChargedCents,
+          payment_intent_id: money.feeChargePaymentIntentId,
+        },
+      });
+      if (auditErr) {
+        console.error("[quick-action] audit_log write failed after cancel money move:", auditErr.message, { booking_id: bookingId });
+      }
+    }
 
     return NextResponse.json({ result: "cancelled", booking_id: bookingId });
   }

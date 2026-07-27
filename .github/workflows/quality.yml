@@ -103,6 +103,24 @@ jobs:
       - name: "check-i18n-sentinel (copy-i18n-01: no TODO/sentinel keys, identical-to-en ratchet)"
         run: node scripts/check-i18n-sentinel.mjs
 
+  # secrets-webhooks-10: a repo-wide grep-pattern check that a NEW !==/=== compare
+  # against a secret/token/signature/hmac-shaped variable never lands again. The
+  # project already had the right rule written down as a comment in one file
+  # (lib/bookings/guest-access.ts) and it did not travel: 22 cron routes plus 3
+  # other routes were still doing a plain !== on a shared secret until this same
+  # finding fixed them (lib/cron-auth.ts's constantTimeStringEqual). Baseline 0.
+  timing-safe-secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - name: check-timing-safe-secrets (hard zero)
+        run: node scripts/check-timing-safe-secrets.mjs
+
   # api-contracts-01/02/05: a ratchet over scripts/api-contracts-census.mjs's three
   # counts (legacy error shapes, legacy paginated-list success shapes, 201 responses
   # missing Location). No mass migration of the existing legacy shapes, per
@@ -134,6 +152,34 @@ jobs:
           if [ "$SUC" -gt "$BASELINE_SUC" ]; then echo "::error::legacy success-envelope count went UP: $SUC > $BASELINE_SUC baseline"; FAIL=1; fi
           if [ "$LOC" -gt "$BASELINE_LOC" ]; then echo "::error::201-without-Location count went UP: $LOC > $BASELINE_LOC baseline"; FAIL=1; fi
           if [ "$FAIL" -eq 1 ]; then exit 1; fi
+
+  # performance-01: a ratchet over scripts/select-star-census.mjs's count of
+  # select("*")/select('*') under app/api, Solen's single most repeated
+  # over-fetch bug shape (SWEEP_BACKLOG independently found + fixed the same
+  # pattern on 5+ routes). Same ratchet shape as the tsc/lint jobs above: only
+  # fails when a NEW or edited route pushes the count above the baseline. A
+  # route that genuinely needs every column goes in
+  # scripts/select-star-allowlist.json with a one-line reason, not a silent
+  # exemption.
+  select-star-census:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - name: select-star-census (ratchet vs baseline, currently 107)
+        run: |
+          OUTPUT=$(node scripts/select-star-census.mjs)
+          echo "$OUTPUT"
+          COUNT=$(echo "$OUTPUT" | grep -oE 'RATCHET_SELECT_STAR=[0-9]+' | cut -d= -f2)
+          BASELINE=107
+          if [ "$COUNT" -gt "$BASELINE" ]; then
+            echo "::error::select(\"*\") count went UP: $COUNT > $BASELINE baseline. Name explicit columns, or add a one-line reason to scripts/select-star-allowlist.json if this route genuinely needs every column."
+            exit 1
+          fi
 
   # testing-release-03: scripts/api-smoke.ts is the mobile-contract tripwire (live-DB
   # zod-shape checks against ~10 GET endpoints, built specifically to catch PostgREST
@@ -279,6 +325,58 @@ jobs:
         run: npx playwright test
         env:
           BASE_URL: http://localhost:3001
+
+  # performance-02: the LCP <= 2.5s budget LOCKFILE.md already locked (but only as a
+  # manual per-wave verifier-agent step) turned into a numeric, always-on CI check,
+  # plus CLS and an INP lab-proxy (Total Blocking Time) that had no Solen-specific
+  # number at all before this. lighthouserc.js holds the thresholds + the 3 named
+  # routes (home, a city/category page, the sanctioned test-salon PDP). Same
+  # build/serve + secrets-gated skip-green shape as the `visual`/`motion` jobs above.
+  lighthouse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: secrets-check
+        id: secrets-check
+        run: |
+          if [ -n "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}" ] && [ -n "${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" ] && [ -n "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" ]; then
+            echo "has-secrets=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has-secrets=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Supabase secrets not set on this repo, skipping the lighthouse job (stays green)."
+          fi
+      - uses: actions/setup-node@v4
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        with:
+          node-version: "22"
+          cache: "npm"
+      - name: npm ci
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        run: npm ci
+      - name: next build
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      - name: next start (background) + wait for it
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        run: |
+          npx next start -p 3001 &
+          for i in $(seq 1 30); do
+            if curl -s -o /dev/null "http://localhost:3001"; then echo "server up"; exit 0; fi
+            sleep 2
+          done
+          echo "::error::next start never became reachable"; exit 1
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      - name: Lighthouse CI (lighthouserc.js)
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        run: npx lhci autorun
 
   # WCAG 2.2.2 runtime motion gate (motion-04, scripts/check-motion.mjs --gate). The check
   # itself is proven (MOTION_LAW.md D2: caught 8 animate-spin + 25 animate-pulse loops a

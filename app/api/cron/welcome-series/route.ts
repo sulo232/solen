@@ -6,6 +6,7 @@ import { sendEmail } from "@/lib/email";
 import { welcomeDay0, welcomeDay3, welcomeDay7 } from "@/lib/email-templates/welcome-series";
 import type { EmailLocale, EmailPayload } from "@/lib/email";
 import { getServerEnv } from "@/lib/env";
+import { verifyCronSecret } from "@/lib/cron-auth";
 import { withCronRun } from "@/lib/cron-run";
 import { runWithConcurrency } from "@/lib/concurrency";
 
@@ -26,7 +27,7 @@ export async function GET(request: NextRequest) {
   const cronSecret = getServerEnv().CRON_SECRET;
   if (!cronSecret) return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
   const authHeader = request.headers.get("authorization");
-  if (authHeader !== `Bearer ${cronSecret}`) {
+  if (!(await verifyCronSecret(authHeader, cronSecret))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, reviewPostedEmail } from "@/lib/email";
 import { getServerEnv } from "@/lib/env";
+import { constantTimeStringEqual } from "@/lib/cron-auth";
 
 // Internal-only route (invoked server-to-server by app/api/reviews/route.ts).
 // Never public: it sends email as an open relay to any salon owner otherwise.
@@ -12,7 +13,8 @@ import { getServerEnv } from "@/lib/env";
 export async function POST(req: NextRequest) {
   try {
     const cronSecret = getServerEnv().CRON_SECRET;
-    if (!cronSecret || req.headers.get("x-internal-secret") !== cronSecret) {
+    const internalSecret = req.headers.get("x-internal-secret");
+    if (!cronSecret || !internalSecret || !(await constantTimeStringEqual(internalSecret, cronSecret))) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

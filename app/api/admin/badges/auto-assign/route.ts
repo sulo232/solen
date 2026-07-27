@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
 import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
+import { constantTimeStringEqual } from "@/lib/cron-auth";
 
 // POST /api/admin/badges/auto-assign — Auto-assign system badges based on auto_rules
 // Can be called by cron or admin manually
@@ -11,7 +12,7 @@ export async function POST(req: NextRequest) {
   // Verify cron secret or admin auth
   const expectedCronSecret = getServerEnv().CRON_SECRET;
   const cronSecret = req.headers.get("x-cron-secret");
-  const isValidCron = Boolean(expectedCronSecret && cronSecret === expectedCronSecret);
+  const isValidCron = Boolean(expectedCronSecret && cronSecret && (await constantTimeStringEqual(cronSecret, expectedCronSecret)));
 
   if (!isValidCron) {
     // Fall back to admin auth check

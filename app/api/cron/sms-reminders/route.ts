@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendSMS } from "@/lib/sms";
 import { getServerEnv } from "@/lib/env";
+import { verifyCronSecret } from "@/lib/cron-auth";
 import { withCronRun } from "@/lib/cron-run";
 
 // RING 3a: caps a per-item errors[] array so a bad batch never floods cron_runs.
@@ -23,7 +24,7 @@ export async function GET(req: NextRequest) {
   const env = getServerEnv();
   if (!env.CRON_SECRET) return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
   const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${env.CRON_SECRET}`) {
+  if (!(await verifyCronSecret(authHeader, env.CRON_SECRET))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

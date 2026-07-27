@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv, getAppUrl } from "@/lib/env";
+import { verifyCronSecret } from "@/lib/cron-auth";
 import { tipPromptEmail } from "@/lib/email";
 import { sendNotification } from "@/lib/notifications";
 import { withCronRun } from "@/lib/cron-run";
@@ -43,7 +44,7 @@ export async function GET(req: NextRequest) {
   const env = getServerEnv();
   if (!env.CRON_SECRET) return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
   const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${env.CRON_SECRET}`) {
+  if (!(await verifyCronSecret(authHeader, env.CRON_SECRET))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

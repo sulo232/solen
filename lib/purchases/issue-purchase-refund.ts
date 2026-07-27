@@ -60,7 +60,7 @@ async function acquireRefundLock(
     if (acquired) {
       return async () => {
         const current = await r.get(key);
-        if (current === token) await r.del(key);
+        if (current === token) await r.del(key); // drift-ok: internal Redis lock-release compare-and-delete (Redlock safe-unlock), not attacker-facing, no external party ever supplies `current` or `token`
       };
     }
     await new Promise((resolve) => setTimeout(resolve, 500));
