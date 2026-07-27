@@ -11,45 +11,121 @@ data (pre-launch today, real exposure once live). Distinct from `_rules/I18N_ROU
 (translation correctness) and `_design-system/LOCKFILE.md` (visual/typography lock):
 this file is about what a price/claim/label is legally allowed to say, not how it looks.
 
+These are STATUTORY FLOORS, tier 2 of the precedence chain in `CLAUDE.md`. A taste
+decision cannot outrank one. Where a floor and a taste lock collide, surface the collision
+and propose a treatment that satisfies both, never silently drop either.
+
 ---
 
-## "ab CHF {amount}" ("from CHF X") price-line pattern
+## "ab CHF {amount}" ("from CHF X") , ANSWERED 2026-07-27, previously open
 
-**Locked visually** in `_design-system/LOCKFILE.md` (lines ~377, ~798, ~836, ~919) and
-`_rules/SOLEN_PATTERNS.md:23` as a typography/hierarchy pattern: meta text, "ab CHF"
-amounts recede next to the entity name. That lock says nothing about WHEN "ab" may
-legally prefix a price.
+The owner asked (2026-07-27): "2 research whats legal". Researched against the primary
+sources. The previous version of this section stated the question and marked its own
+confidence as "assume". That guess is now replaced by the law.
 
-**The concern (copy-i18n-11, 2026-07-27, confidence: assume, not verified):** Swiss
-price-display law (Preisbekanntgabeverordnung, PBV, enforced by the Preisüberwacher/SECO)
-treats a "from" price as a genuine floor, not a marketing anchor. "Ab CHF 45" should mean
-"the cheapest way to buy this is CHF 45, and some purchases of it cost more", not "this
-costs CHF 45" dressed up to sound like a deal.
+### The rule, in one line
 
-**What the data model actually supports (checked 2026-07-27, `lib/types.ts` `Service`):**
-a `Service` row has ONE flat `price: number`, not a price-tier array (there is no
-hair-length/product-addon variant structure on the row itself). Separately, `PricingRule`
-rows (`weekend_surcharge`, `peak_hour_surcharge`, `holiday_surcharge`, `last_minute_discount`,
-`off_peak_discount`) can move the FINAL charged price up or down from that base price.
+**On the OFFER, "ab CHF X" is NOT permitted for anything Solen sells.** In pure
+ADVERTISING it is tolerated only if the copy names exactly which concrete offer the
+from-price buys.
 
-- `components-legacy/SalonCard.tsx:106,338` uses `salon.min_price` (the cheapest of the
-  salon's MANY services) for its "ab CHF" line. This is uncontroversially correct: a salon
-  genuinely has multiple services at different prices, and the card shows the true floor.
-- `app/[locale]/_components/search/SearchOverlay.tsx:667` shows "ab {price}" (`tCommon("fromPrice")`)
-  for a SINGLE named service's flat `price` in the search-suggestion list, e.g. "Herrenschnitt,
-  ab CHF 45" where CHF 45 is that one service's only listed price. Whether that is legally fine
-  turns on a real interpretive question this codebase cannot answer by itself: do the salon's
-  `PricingRule` surcharges/discounts on that exact service make CHF 45 the genuine floor (a
-  discount can make it cheaper), or does labeling a single-priced service "ab" overstate its
-  price flexibility when in practice surcharges only ever push it UP?
+### Why, with sources
 
-**Not fixed here, on purpose.** This is a legal-interpretation question (what PBV actually
-requires for THIS specific pricing-rule shape), not a mechanical bug: unilaterally rewriting
-customer-facing, revenue-visible price copy on a guess risks getting the compliance question
-wrong in the opposite direction, and risks a visible copy regression (dropping "ab" from every
-service search result) on a guess. Queued for the owner/legal review: does `SearchOverlay.tsx`'s
-per-service "ab" need to be data-gated to "does this service have an applicable discount
-PricingRule" (making a flat, un-discounted, un-surchargeable service just show "CHF 45", no
-"ab"), or is the current uniform "ab" prefix fine because PricingRule-driven variance is close
-enough to a price tier. Whichever way it's decided, add the rule here and cross-reference it
-from the LOCKFILE "ab CHF" rows above.
+**Art. 10 Abs. 1 PBV (SR 942.211, Stand 1. Januar 2025)** requires, for services offered
+to consumers, that "mit dem Angebot stets der tatsächlich zu bezahlende Preis in
+Schweizerfranken" be disclosed, and it names the sectors:
+
+- **lit. a Coiffeurgewerbe** , hairdressers and barbers
+- **lit. d Kosmetische Institute und Körperpflege** , nail salons, body care, spa
+- **lit. e Fitnessinstitute, Schwimmbäder …** , wellness-adjacent facilities
+
+Solen's entire catalogue sits inside that list. There is no category we sell that escapes it.
+
+**SECO's sector information sheet for hairdressers, barbershops, cosmetic institutes and
+body care (01.04.2025)** states the consequence in the exact words, in all three national
+languages: the indicated prices are FIXED prices, and entries such as "Bart schneiden: ab
+Fr. 30.-" or "Epilation: ab Fr. 20.- bis Fr. 50.-" are **nicht zulässig** (FR: "ne sont pas
+admises"; IT: "non sono ammesse").
+
+**SECO's PBV FAQ** answers the hairdressing case directly. Asked whether "Brushing, ab CHF
+43.-" is allowed, the answer is no, because offers must be specified, and it gives the
+legal alternative: split the position into tiers. "Brushing , Kurzhaar: CHF 45.- /
+Mittellanghaar: CHF 50.- / Langhaar: CHF 55.-"
+
+**Art. 11 Abs. 2 PBV** is the mechanism behind that: the disclosure must make clear which
+*Art und Einheit der Dienstleistung*, or which *Verrechnungssätze*, the price refers to.
+So genuinely variable work is expressed as TIERS or as a STATED RATE, never as "from".
+
+### Two further PBV rules that bind Solen specifically
+
+**Art. 10 Abs. 1, the words "mit dem Angebot stets".** Those words were INSERTED by the
+amendment of 25 May 2022, in force 1 July 2022 (AS 2022 343), deliberately reversing BGer
+4A_235/2020 (1 Dec 2020) and 4A_314/2021 (27 Oct 2021), where the Federal Supreme Court had
+held that disclosure shortly before contract conclusion was enough. The Federal Council
+closed that gap by ordinance. **Consequence: the price must be on the offer surface, not
+only at the final checkout step.** Revealing the real price only after a slot is picked
+does not satisfy Art. 10 as it now reads.
+
+**Art. 10 Abs. 2, all-in pricing.** "Überwälzte öffentliche Abgaben … sowie weitere nicht
+frei wählbare Zuschläge jeglicher Art, namentlich für Reservation, Service oder
+Bearbeitung, müssen im Preis enthalten sein." Reservation, service, processing , that is
+literally a booking fee, a service fee and a processing fee. **If Solen ever charges the
+consumer a non-optional booking fee, it must be INSIDE the displayed CHF figure, not added
+at checkout.** Only genuinely optional extras may be shown separately. This one is not a
+copy rule, it is a pricing-architecture constraint, and it should be checked before any
+consumer-side fee is introduced.
+
+### Advertising is a separate regime, and it is narrower than it looks
+
+**Art. 13 Abs. 1 PBV** covers "bezifferte Hinweise auf Preisrahmen oder Preisgrenzen" in
+advertising, which is exactly what a from-price is. SECO's Wegleitung für die Praxis 2025
+(p. 17) sets the condition: when advertising states a minimum price, "muss genau beschrieben
+werden, auf welches konkrete Angebot sich der Ab-Preis bezieht". Their worked example is an
+olive tree advertised "ab CHF 59.-": legal only once the copy says WHAT you get for 59.
+
+So a from-price in advertising is not a free pass. It is allowed only when the reader can
+tell which exact thing costs that.
+
+### What this means for each Solen surface
+
+| Surface | Regime | Verdict |
+|---|---|---|
+| A named service with one price ("Herrenschnitt, ab CHF 45") on the PDP or in search | OFFER (Art. 10/11) | **NOT ALLOWED.** Show the fixed price. If the work genuinely varies, the salon splits it into tiers. |
+| SalonCard "ab CHF 45" = the cheapest of that salon's MANY services | closer to Art. 13 advertising | Allowed ONLY if the copy names which service is at 45. Today it does not. **Needs an owner decision** (see below). |
+| Marketing pages (`/warum-solen` and similar) with illustrative "ab CHF 45" | Art. 13 advertising | Same condition: name the concrete offer, or drop the figure. |
+| The final price at checkout | Art. 10 Abs. 1 + Abs. 2 | Must equal the offer price, with every non-optional fee already inside it. |
+
+### The one open owner decision
+
+The SalonCard from-price is a genuine floor across many services, so it is not a fabricated
+anchor. But it does not say WHICH service costs that, which is the condition SECO attaches
+to advertising from-prices. Two ways to satisfy it, and this is a visible design change, so
+it is the owner's call, not mine:
+
+- **(a) Name the service.** "Herrenschnitt ab CHF 45" instead of "ab CHF 45". Costs one
+  string on the card and makes the claim self-evidently compliant.
+- **(b) Drop the price from the card** and let the price live on the PDP service list,
+  where it is a fixed per-service figure.
+
+### Enforcement
+
+`~/.claude/hooks/legal-price-gate.py` blocks a new "ab"/"from"/"dès"/"da" price prefix on a
+service-offer surface. Escape token `pbv-ok` on the line, for an advertising surface that
+does name its concrete offer.
+
+---
+
+## Sources
+
+- PBV, SR 942.211, consolidated Stand 1. Januar 2025: <https://www.fedlex.admin.ch/eli/cc/1978/2081_2081_2081/de>
+- SECO, Preisbekanntgabe im Coiffeurgewerbe / kosmetische Institute, sheet dated 01.04.2025
+- SECO, PBV FAQ (the "Brushing, ab CHF 43.-" and olive-tree answers)
+- SECO, Wegleitung für die Praxis 2025, p. 17
+- Statutory basis: UWG Art. 16 Abs. 1, 16a, 17, 18, 20
+- BGer 4A_235/2020 (1 Dec 2020) and 4A_314/2021 (27 Oct 2021), reversed by AS 2022 343
+
+Full research with verbatim quotes: `_design-system/research/owner-answers-2026-07-27/swiss-price-law.md`
+
+**This is engineering research, not legal advice.** Before launch, a Swiss lawyer should
+confirm the OFFER-vs-ADVERTISING line for the SalonCard case specifically, because that is
+the one surface where the classification is genuinely arguable.

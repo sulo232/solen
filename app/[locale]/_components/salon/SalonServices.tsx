@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import type { Service, SalonDetail } from "./_shared";
 import { capitalize } from "./_shared";
 import { TabPill } from "../primitives/TabPill";
@@ -143,6 +144,10 @@ function ServiceRow({
   locale: string;
   slug: string;
 }) {
+  // salonDetail.book already exists in all four locale files ("Buchen" / "Book" / "Réserver"
+  // / "Prenota") and is used by the sibling rows on this page. The hardcoded German string
+  // this replaces was shipping "Buchen" to English, French and Italian visitors.
+  const tBook = useTranslations("salonDetail")("book");
   // V3-D227 (2026-05-27, user-paste Fresha service-row spec):
   //   - 3-row stack: name (16/700) / duration grey (14/400 "30 Min.") / price (15/700 "ab N CHF")
   //   - NO description line in the list view (Fresha doesn't show it — keeps density)
@@ -165,24 +170,46 @@ function ServiceRow({
   // bold (the price value, kept per A1) while the "ab" prefix recedes to the div's own
   // (now-normal) inherited weight, its colour (text-s-ink-2 inside PriceFrom) already
   // marks it as a qualifier, not part of the number+currency unit (taste rule 5).
+  // 2026-07-27, two owner asks land on this one row.
+  //
+  // (1) "ab" is GONE from the price, and this is a statutory floor, not a taste change.
+  // Art. 10 Abs. 1 PBV (SR 942.211) requires the actually-payable price with the offer for
+  // Coiffeurgewerbe (lit. a) and kosmetische Institute / Koerperpflege (lit. d), and SECO's
+  // sector sheet of 01.04.2025 says in its own words that prices are FIXED prices and
+  // "Bart schneiden: ab Fr. 30.-" is nicht zulaessig. Their FAQ answers this exact shape
+  // ("Brushing, ab CHF 43.-" , nein, weil die Angebote spezifiziert sein muessen). This row
+  // is a NAMED service with ONE price, so it is the offer, not advertising. The legal way to
+  // express variable work is tiers (Kurzhaar / Mittellang / Langhaar), which is a salon data
+  // decision, not a copy one. PriceFrom already renders a bare price when `label` is omitted,
+  // so the LOCKFILE typography (amount bold via `emphasis`, price recedes next to the name)
+  // is untouched , only the illegal word is removed. Full rule: _rules/LEGAL_COPY.md.
+  //
+  // (2) name_de -> the locale's own column, and "Buchen" -> t(). Owner: "almst everywhere is
+  // either mixed german english". This row was the worst instance on the PDP: it rendered
+  // the German service name to English, French and Italian visitors unconditionally, next to
+  // a hardcoded German button. services has name_de and name_en but no name_fr/name_it yet,
+  // so fr/it still fall back to German , that is the structural DB gap, tracked separately,
+  // and the fallback is now explicit and one-line-fixable instead of hardcoded.
+  const serviceName =
+    (locale === "en" && service.name_en) ? service.name_en : service.name_de;
   const inner = (
     <div className="flex items-center justify-between gap-4">
       <div className="min-w-0 flex-1">
         <div className="font-body text-[15px] font-medium text-s-ink md:text-[16px]">
-          {service.name_de}
+          {serviceName}
         </div>
         <div className="font-body mt-1 text-[13px] text-s-ink-2 md:text-[14px]">
           {formatDurationDE(service.duration_minutes)}
         </div>
         <div className="font-body mt-3 text-[14px] text-s-ink md:text-[15px]">
-          <PriceFrom amount={service.price} label="ab" emphasis />
+          <PriceFrom amount={service.price} emphasis />
         </div>
       </div>
       <Link
         href={`/${locale}/salon/${slug}/booking?service=${service.id}`}
         className="font-body shrink-0 rounded-full border border-s-border bg-white px-5 py-2 text-[13px] font-medium text-s-ink transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.97] active:duration-[80ms] active:ease-glide md:px-6 md:py-2.5 md:text-[14px]"
       >
-        Buchen
+        {tBook}
       </Link>
     </div>
   );
