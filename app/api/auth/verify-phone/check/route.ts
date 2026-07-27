@@ -6,6 +6,7 @@ import { applyRateLimit, authLimiter, getClientIp } from "@/lib/ratelimit";
 import { Redis } from "@upstash/redis";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
+import { validateBody, verifyPhoneCheckSchema } from "@/lib/validations";
 
 const env = getServerEnv();
 const redis = (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN)
@@ -20,10 +21,12 @@ export async function POST(request: NextRequest) {
   if (rateLimited) return rateLimited;
 
   try {
-    const { phone, code } = await request.json();
-    if (!phone || !code) {
+    const rawBody = await request.json();
+    const { data: validated, error: validationError } = validateBody(verifyPhoneCheckSchema, rawBody);
+    if (validationError) {
       return NextResponse.json({ message: "Fehlende Parameter" }, { status: 400 });
     }
+    const { phone, code } = validated;
 
     // Also rate limit on the TARGET phone number, not just the caller IP. IP-only limiting
     // lets an attacker brute-force the 6-digit code for one victim number by rotating IPs; a

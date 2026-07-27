@@ -8,6 +8,7 @@ import { applyRateLimit, authLimiter, getClientIp } from "@/lib/ratelimit";
 import { Redis } from "@upstash/redis";
 import { getServerEnv } from "@/lib/env";
 import crypto from "node:crypto";
+import { validateBody, verifyPhoneSendSchema } from "@/lib/validations";
 
 const env = getServerEnv();
 const redis = (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN)
@@ -22,10 +23,12 @@ export async function POST(request: NextRequest) {
   if (rateLimited) return rateLimited;
 
   try {
-    const { phone } = await request.json();
-    if (!phone || typeof phone !== "string") {
+    const rawBody = await request.json();
+    const { data: validated, error: validationError } = validateBody(verifyPhoneSendSchema, rawBody);
+    if (validationError) {
       return NextResponse.json({ message: "Ungültige Telefonnummer" }, { status: 400 });
     }
+    const { phone } = validated;
 
     // Also rate limit on the TARGET phone number, not just the caller IP. IP-only limiting
     // lets an attacker bomb one victim's phone with OTP SMS by rotating IPs; a normalized

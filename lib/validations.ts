@@ -1431,6 +1431,26 @@ export const staffScheduleAutoApplySchema = z.object({
 // api-contracts-08: BATCH_KEYS bounds the array length AND the enum, so an unbounded
 // request array (resource-exhaustion vector) is rejected here rather than in the route.
 const DASHBOARD_BATCH_KEYS = ["bookings_today", "revenue_month", "reviews_pending", "walkin_queue", "activity_feed"] as const;
+export const verifyPhoneSendSchema = z.object({
+  phone: z.string().min(6).max(20),
+});
+
+export const verifyPhoneCheckSchema = z.object({
+  phone: z.string().min(6).max(20),
+  code: z.string().min(4).max(10),
+});
+
+export const nailHandChartSchema = z.object({
+  clientId: z.string().min(1).max(200),
+  notes: z.record(z.string(), z.unknown()).optional(),
+});
+
+export const nailAiHistoryPatchSchema = z.object({
+  id: uuid,
+  salon_id: uuid,
+  is_saved: z.boolean().optional(),
+});
+
 export const dashboardBatchSchema = z.object({
   salonId: uuid,
   requests: z.array(z.enum(DASHBOARD_BATCH_KEYS)).min(1).max(DASHBOARD_BATCH_KEYS.length),
