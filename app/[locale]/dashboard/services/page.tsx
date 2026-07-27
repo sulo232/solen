@@ -606,8 +606,8 @@ export default function ServicesPage() {
                     <div className={`grid transition-[grid-template-rows,opacity] duration-200 ease-out ${isExpanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
                       <div className="overflow-hidden">
                         <div className="pl-8 pt-2 space-y-1">
-                          {s.description_de && <p className="text-[13px] text-s-ink-2 leading-relaxed">{s.description_de}</p>}
-                          {s.description_en && <p className="text-[13px] text-s-ink-2 leading-relaxed">{s.description_en}</p>}
+                          {s.description_de && <p className="text-[13px] text-s-ink-2 leading-relaxed prose-measure">{s.description_de}</p>}
+                          {s.description_en && <p className="text-[13px] text-s-ink-2 leading-relaxed prose-measure">{s.description_en}</p>}
                           {hasSuitableFor && (
                             <p className="text-[13px] text-s-ink-2">{t('suitableForLabel')}: {s.suitable_for.map((a) => t(`age_${a}`)).join(", ")}</p>
                           )}

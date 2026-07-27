@@ -95,7 +95,7 @@ function ContentField({
           value={currentValue}
           onChange={(e) => setCurrentValue(e.target.value)}
           rows={3}
-          className="w-full px-3 py-2.5 text-sm font-body text-s-ink focus:outline-none resize-y" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
+          className="w-full prose-measure px-3 py-2.5 text-sm font-body text-s-ink focus:outline-none resize-y" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
         />
       ) : (
         <input

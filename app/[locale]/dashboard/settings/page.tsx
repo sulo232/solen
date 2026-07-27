@@ -163,13 +163,13 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
         <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("descriptionDeLabel")}</label>
         <textarea value={form.description_de} onChange={(e) => setForm({ ...form, description_de: e.target.value })}
           rows={3} maxLength={500}
-          className="w-full px-3 py-2 text-sm resize-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
+          className="w-full prose-measure px-3 py-2 text-sm resize-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
       </div>
       <div>
         <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("descriptionEnLabel")}</label>
         <textarea value={form.description_en} onChange={(e) => setForm({ ...form, description_en: e.target.value })}
           rows={2} maxLength={500}
-          className="w-full px-3 py-2 text-sm resize-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
+          className="w-full prose-measure px-3 py-2 text-sm resize-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>

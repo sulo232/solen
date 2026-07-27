@@ -942,7 +942,22 @@ Always German: `Fotos · Über uns · Services · Bewertungen · Portfolio · Tr
 | Hero content | `max-w-[1280px]` | `px-7` | `md:px-8` |
 | Salon PDP grid | `max-w-[1180px]` | `px-4` | `md:px-6` |
 | /business hero | `max-w-[1400px]` | `px-4` | `md:px-8` |
+| **Dashboard content** | `max-w-[1400px]` + `mx-auto` + `w-full` | `px-4` | `sm:px-6` |
 | Search bar (collapsed, desktop) | `md:max-w-[820px]` | — | — |
+<!-- Dashboard content row added 2026-07-27 (owner "6/7 ye fix"), resolving the two dangling
+"see the Dashboard content max-width row above" citations that pointed at a row which had never
+been written. Applied at components-legacy/dashboard/DashboardLayout.tsx:473, the <main> of the
+shell that 44 of the 49 dashboard pages wrap themselves in. MEASURED before: 2136px of content
+at a 2200px viewport with max-width:none. After: 1400px, gutters 368/368 inside the region right
+of the fixed 64px rail. 1400 REUSES the /business hero value rather than adding a fourth
+container width; a dashboard is denser than a customer page, so it takes the widest row the
+system already holds. w-full is mandatory, not decorative: <main> is a flex item in a flex-col
+parent, so width is the cross axis, and CSS Flexbox 9.6 suppresses align-self:stretch as soon as
+a cross-axis margin is auto. The sticky topbar is a SIBLING of <main> and stays viewport-pinned,
+matching the rail. Five pages bypass the shell and are therefore uncapped: editor, messages,
+gallery, setup, queue-display. Of those, gallery is a BUG not a decision (it is missing the whole
+shell including the rail) and is filed separately. -->
+
 | SearchBar (mobile) | `max-w-[540px]` | — | — |
 | FAQ section | `max-w-[820px]` | `px-4` | `md:px-8` |
 

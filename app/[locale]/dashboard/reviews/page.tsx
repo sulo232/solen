@@ -221,7 +221,7 @@ export default function SalonReviewsPage() {
 
               {/* Comment */}
               {r.comment && (
-                <p className="text-sm text-s-ink/70 mb-3">&ldquo;{r.comment}&rdquo;</p>
+                <p className="text-sm text-s-ink/70 mb-3 prose-measure">&ldquo;{r.comment}&rdquo;</p>
               )}
 
               {/* Existing salon response, plus edit/delete (round 10 Y3: create-only before,

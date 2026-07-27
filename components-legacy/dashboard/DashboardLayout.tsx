@@ -470,7 +470,26 @@ export default function DashboardLayout({
           </div>
         )}
 
-        <main className="flex-1 px-4 pt-6 pb-10 sm:px-6 md:py-8">
+        {/* mockup-ok (owner 2026-07-27, "6/7 ye fix"): the operator dashboard had NO
+            page-level width at all , measured 2136px of content at a 2200px viewport, with
+            max-width:none , so on a 27-inch or ultrawide monitor a table row grew about a
+            metre wide and the eye lost the line between the left and right columns. This one
+            element reaches 44 of the 49 dashboard pages; 5 bypass the shell entirely
+            (editor, messages, gallery, setup, queue-display).
+            THREE THINGS IN THIS CLASS STRING ARE LOAD-BEARING:
+            - 1400px REUSES the /business hero width already frozen in LOCKFILE section 7
+              rather than inventing a fourth container width. That table holds 1280 (page
+              outer), 1400 (/business hero) and 1180 (PDP grid); a dashboard is denser than a
+              customer page, so it takes the widest value the system already has.
+            - mx-auto, or the content hugs the 64px rail and dumps every pixel of slack into
+              one right-hand gutter, which looks more broken than no cap at all.
+            - w-full, and this one is mandatory rather than stylistic: <main> is a flex item
+              in a flex-col parent (:431), so width is the CROSS axis, and per CSS Flexbox 9.6
+              align-self:stretch is suppressed the moment a cross-axis margin is auto. Without
+              w-full the mx-auto collapses this to its content width.
+            The sticky topbar (:433) is a SIBLING and stays viewport-pinned, matching the rail,
+            which is also viewport-pinned chrome. Same arrangement Stripe and Fresha use. */}
+        <main className="flex-1 w-full max-w-[1400px] mx-auto px-4 pt-6 pb-10 sm:px-6 md:py-8">
           {children}
         </main>
       </div>
