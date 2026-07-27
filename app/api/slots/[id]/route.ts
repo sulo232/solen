@@ -7,6 +7,7 @@ import { zurichWallClockToUtc } from "@/lib/time/zurich";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { resolveSwissLocale } from "@/lib/format";
 import type { Database } from "@/lib/database.types";
+import { validateBody, slotPatchSchema } from "@/lib/validations";
 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -48,7 +49,9 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const body = await request.json();
+  const rawBody = await request.json();
+  const { data: body, error: validationError } = validateBody(slotPatchSchema, rawBody);
+  if (validationError) return NextResponse.json({ message: validationError.message, code: "VALIDATION_ERROR" }, { status: 400 });
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });

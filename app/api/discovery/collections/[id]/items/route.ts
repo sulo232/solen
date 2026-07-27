@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled } from "@/lib/feature-flags";
 import { applyRateLimit, discoveryLikeLimiter } from "@/lib/ratelimit";
+import { validateBody, discoveryCollectionItemSchema } from "@/lib/validations";
 
 /**
  * Save / unsave a look into a collection (V3-D414, Phase 2).
@@ -33,9 +34,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const rateLimited = await applyRateLimit(discoveryLikeLimiter, { userId });
     if (rateLimited) return rateLimited;
 
-    const body = await req.json().catch(() => ({}));
-    const itemId = (body?.item_id ?? "").toString();
-    if (!itemId) return NextResponse.json({ error: "item_id required" }, { status: 400 });
+    const rawBody = await req.json().catch(() => ({}));
+    const { data: validated, error: validationError } = validateBody(discoveryCollectionItemSchema, rawBody);
+    if (validationError) return NextResponse.json({ error: "item_id required" }, { status: 400 });
+    const itemId = validated.item_id;
 
     const admin = createAdminSupabaseClient();
     if (!(await ownsCollection(admin, id, userId))) return NextResponse.json({ error: "not found" }, { status: 404 });

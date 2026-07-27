@@ -1418,6 +1418,34 @@ export const profileFavoritesSchema = z.object({
   salon_id: uuid,
 });
 
+// PATCH /api/slots/[id]: two accepted body shapes (new drag-and-drop starts_at/ends_at,
+// or legacy date/start_time), plus an optional staff_member_id reassignment.
+export const discoveryCollectionCreateSchema = z.object({
+  name: z.string().trim().min(1).max(60),
+  is_public: z.boolean().optional(),
+});
+
+export const discoveryCollectionPatchSchema = z
+  .object({
+    name: z.string().trim().min(1).max(60).optional(),
+    is_public: z.boolean().optional(),
+  })
+  .refine((d) => d.name !== undefined || d.is_public !== undefined, {
+    message: "Provide name and/or is_public",
+  });
+
+export const discoveryCollectionItemSchema = z.object({
+  item_id: uuid,
+});
+
+export const slotPatchSchema = z.object({
+  starts_at: z.string().datetime({ offset: true }).optional(),
+  ends_at: z.string().datetime({ offset: true }).optional(),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  start_time: z.string().regex(/^\d{1,2}:\d{2}$/).optional(),
+  staff_member_id: uuid.nullable().optional(),
+});
+
 export const lastMinuteSettingsSchema = z.object({
   salon_id: uuid,
   enabled: z.boolean().optional(),

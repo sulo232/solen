@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { validateBody, discoveryCollectionPatchSchema } from "@/lib/validations";
 import type { Database } from "@/lib/database.types";
 
 /**
@@ -72,11 +73,12 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const rateLimited = await applyRateLimit(generalLimiter, { userId });
     if (rateLimited) return rateLimited;
 
-    const body = await req.json().catch(() => ({}));
+    const rawBody = await req.json().catch(() => ({}));
+    const { data: validated, error: validationError } = validateBody(discoveryCollectionPatchSchema, rawBody);
+    if (validationError) return NextResponse.json({ error: "nothing to update" }, { status: 400 });
     const patch: Database["public"]["Tables"]["discovery_collections"]["Update"] = {};
-    if (typeof body?.name === "string") patch.name = body.name.trim().slice(0, 60);
-    if (typeof body?.is_public === "boolean") patch.is_public = body.is_public;
-    if (Object.keys(patch).length === 0) return NextResponse.json({ error: "nothing to update" }, { status: 400 });
+    if (validated.name !== undefined) patch.name = validated.name;
+    if (validated.is_public !== undefined) patch.is_public = validated.is_public;
 
     const admin = createAdminSupabaseClient();
     const { error } = await admin.from("discovery_collections").update(patch).eq("id", id).eq("user_id", userId);
