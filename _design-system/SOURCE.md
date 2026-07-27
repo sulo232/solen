@@ -784,6 +784,7 @@ For mutations (save heart, post review):
 The drift-checker catches LITERAL patterns. It cannot catch:
 - `salonId={salon?.id}` that's syntactically present but `salon` is null at runtime (false negative — passes static, fails real)
 - `onClick={handleClick}` where `handleClick` is defined but is a no-op function
+- **A computed/templated href whose static prefix points at a route that was never built** (ia-navigation-07, 2026-07-27). `_docs/FRONTEND.md:778` and `:2051` document a live instance found by hand: `RefundCaseView` + `UpchargeApproveView` both receive `receiptHref = /[locale]/bookings/[id]`, but there is no `app/[locale]/bookings/[id]/page.tsx`, so the link falls through to the home shell. The drift-checker only greps literal `href="/x"` JSX strings; a prop built from a template literal (`` `/${locale}/bookings/${id}` ``) never matches that pattern even though its static prefix (`/bookings/`) is checkable against the route manifest. Extend `solen-drift-check` to build a route manifest from `app/**/page.tsx` and flag any string-template `href`/`receiptHref`/`redirectTo` prop whose static prefix does not match a manifest entry.
 
 Runtime probes via Playwright catch these. The static checker is one layer; visual/functional verification is another.
 
