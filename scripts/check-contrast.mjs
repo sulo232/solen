@@ -96,6 +96,13 @@ export const TOKEN_HEX = {
   "s-star": "#FFC32B",
   "white": "#FFFFFF",
   "s-bg-sunken": "#F4F4F5",
+  // accessibility-05 (2026-07-27): s-chart-2/3 are chart-only tokens (LOCKFILE §1) that fail
+  // WCAG contrast for TEXT at any size (2.54:1 / 2.31:1 for chart-2, both under even the 3:1
+  // large-text floor). Registered here so the scanner catches a future text-s-chart-2 usage
+  // instead of silently skipping an unknown token (the exact gap this finding closed: the
+  // token that most needed catching was the one missing from this map).
+  "s-chart-2": "#9CA3AF",
+  "s-chart-3": "#D1D5DB",
 };
 
 // ---------------------------------------------------------------------------
@@ -113,6 +120,11 @@ const KNOWN_PAIRS = [
   ["s-brand", "white", 3.30, 0.05],
   ["s-ink-disabled", "white", 1.69, 0.05],
   ["s-star", "white", 1.60, 0.05],
+  // accessibility-05: s-chart-2 fails text contrast at ANY size (under the 3:1 large-text
+  // floor, not just the 4.5:1 normal floor) -- proves the CLAUDE.md/LOCKFILE "reinstated for
+  // non-load-bearing text" authorization was never legal, not just borderline.
+  ["s-chart-2", "white", 2.54, 0.05],
+  ["s-chart-2", "s-bg-sunken", 2.31, 0.05],
 ];
 
 function selfTest() {

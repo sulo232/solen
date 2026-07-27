@@ -1569,8 +1569,11 @@ Source + evidence: `research/UNFINISHED_AUDIT_2026-07-21.md`. Co-equal with ever
 - **§17.4 Card two-anchor rule (V3-D442 adopted as THE card-emphasis law):** TWO ink anchors per card ,
   name (larger, 600) + price (600, tabular); rating value ink-2 beside the yellow star; card titles/H3
   are s-ink, not grey. Display floor: one display anchor >= 28px per customer screen unless the
-  photograph is the focal. Tertiary grey #9CA3AF (s-chart-2) reinstated for NON-load-bearing text only
-  (chevrons, placeholders, timestamps, hints); forbidden on load-bearing copy.
+  photograph is the focal. Tertiary grey #9CA3AF (s-chart-2) is CHART-ONLY (§1 secondary/tertiary
+  data-vis rows), never text of any kind (accessibility-05, 2026-07-27: 2.54:1 on white / 2.31:1 on
+  `s-bg-sunken`, under WCAG 1.4.3 even at the 3:1 large-text floor , no size makes it legal for prose).
+  Chevrons, placeholders, timestamps, hints use `s-ink-2` (5.33:1 / 4.85:1, AA) instead; that token
+  stays forbidden on load-bearing copy.
 - **§17.5 The finished-screen pass (ship condition):** (1) photographic focal present, (2) exactly one
   biggest element, (3) >= 1 tabular/real number, (4) >= 1 semantic-color moment, (5) no dead-grey zone.
   All five = Pass before a customer screen or mockup reaches the owner; mockups carry a `floors:` note

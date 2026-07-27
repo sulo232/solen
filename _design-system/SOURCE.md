@@ -1049,8 +1049,14 @@ that owns their real page shell (`EditorPage.tsx`, `gallery/page.tsx`, `queue-di
 | `outline-s-ink` on white (focus ring) | ~5.8:1 | AA — Q5 resolved |
 | ~~`text-white` on `bg-s-brand #16A34A`~~ | 3.6:1 | **Retired V3-D189** — CTAs use `bg-s-ink` |
 | Pill borders (`rgba(154, 52, 18, 0.22)`) | n/a | Decorative — don't rely on for content |
+| `text-s-chart-2 #9CA3AF` on white | 2.54:1 | **FAIL, even large-text (3:1)** — chart-only (§1 data-vis rows), never text (accessibility-05) |
+| `text-s-chart-2 #9CA3AF` on `bg-s-bg-sunken` | 2.31:1 | **FAIL** — same restriction |
 
-Test all new color pairings before shipping. Tools: WebAIM Contrast Checker.
+Test all new color pairings before shipping, and RECORD the computed ratio in the SAME commit that
+authorizes a token for text use (accessibility-05, 2026-07-27) — a token not re-verified against
+this table is not authorized for prose, no matter what a later rule elsewhere implies. Tools: WebAIM
+Contrast Checker, or `node scripts/check-contrast.mjs --self-test` (color-tokens-05; extend
+`TOKEN_HEX` there when a new token enters text use, self-test its ratio against this table).
 
 ### §16.5 · Touch targets
 
@@ -1217,10 +1223,21 @@ Server components check session; redirect to `/auth/login` with `?from=<current-
 
 Client components use a `useSession` hook (TBD — currently checks done in server components only).
 
+**Session-expiry mid-form (states-forms-08, added 2026-07-27):** until the `useSession` hook above
+ships, any client-side write that can fail on an expired session (a 401, distinct from a validation
+4xx or a network failure) must branch on `res.status === 401` specifically and show a message naming
+that cause ("Deine Sitzung ist abgelaufen…"), not the same generic save-failed toast as every other
+error, then redirect to `/auth/login?redirect=<current-path>` (existing return-path infra, §19.4
+above) so the user lands back where they were after re-auth. Reference implementation: `saveProfile`
+in `app/[locale]/profile/settings/SettingsForm.tsx`. Full draft-value preservation through the
+re-login round trip is still TBD (needs the `useSession` hook or a form-draft persistence layer,
+§14.7 in LOCKFILE.md); the path-return is the interim floor every write-handler should meet now.
+
 ### Anti-patterns
 
 - ❌ Blocking UI on Supabase calls (always optimistic, see §10.4)
-- ❌ Generic "Network error" toast for everything — distinguish RLS / 4xx / 5xx / network
+- ❌ Generic "Network error" toast for everything — distinguish RLS / 4xx / 5xx / network. Positive
+  content template (what failed + why/next-step, states-forms-09): `_design-system/LOCKFILE.md` §14.11.
 - ❌ Silent failure (no console.error, no toast)
 - ❌ Auto-retry without exponential backoff
 
