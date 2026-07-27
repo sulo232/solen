@@ -280,7 +280,7 @@ export async function POST(req: NextRequest) {
         // Send booking confirmation email to customer
         const { data: booking } = await admin
           .from("bookings")
-          .select("user_id, starts_at, paid_amount, vat_amount, net_amount, vat_rate, services(name_de), salons(name, vat_number)")
+          .select("user_id, starts_at, ends_at, paid_amount, vat_amount, net_amount, vat_rate, services(name_de), salons(name, address, vat_number)")
           .eq("id", bookingId)
           .single();
 
@@ -328,6 +328,9 @@ export async function POST(req: NextRequest) {
                 vatNumber: (booking.salons as any)?.vat_number ?? undefined,
               } : {}),
             };
+            // seo-comms-09: same address/manageUrl/ics content floor as the direct
+            // (non-online-pay) confirmation in app/api/bookings/route.ts.
+            const manageUrl = `https://solen.ch/${locale}/profile/bookings`;
             const { sendNotification } = await import("@/lib/notifications");
             await sendNotification({
               userId: booking.user_id,
@@ -338,7 +341,14 @@ export async function POST(req: NextRequest) {
               emailParams: {
                 to: email,
                 locale,
-                vars: { service: serviceName, salon: salonName, date: dateStr, time: timeStr, ...priceVars }
+                vars: {
+                  service: serviceName, salon: salonName, date: dateStr, time: timeStr, ...priceVars,
+                  address: (booking.salons as any)?.address ?? undefined,
+                  manageUrl,
+                  icsStartsAt: booking.starts_at,
+                  icsEndsAt: (booking as any).ends_at,
+                  bookingId,
+                },
               }
             }).catch((err) => console.error(`[StripeWebhook]:${rid} failed to send booking confirmation notification:`, err));
           }

@@ -181,7 +181,7 @@ export async function POST(request: NextRequest) {
   // Kept as ONE string literal (not concatenated) so PostgREST's TS types infer the embedded shape.
   let slotQuery = db
     .from("availability_slots")
-    .select("id, salon_id, service_id, starts_at, ends_at, staff_member_id, price_override, status, salons(id, owner_id, name, auto_assign_method, daily_limit_enabled, daily_limit, online_booking_enabled, vacation_start, vacation_end, payment_mode, booking_confirmation_mode, cancellation_fee_type, cancellation_fee_value, free_cancel_hours, no_show_fee_type, no_show_fee_value, vat_registered, vat_rate, vat_number), services(price, name_de, name_en)")
+    .select("id, salon_id, service_id, starts_at, ends_at, staff_member_id, price_override, status, salons(id, owner_id, name, address, auto_assign_method, daily_limit_enabled, daily_limit, online_booking_enabled, vacation_start, vacation_end, payment_mode, booking_confirmation_mode, cancellation_fee_type, cancellation_fee_value, free_cancel_hours, no_show_fee_type, no_show_fee_value, vat_registered, vat_rate, vat_number), services(price, name_de, name_en)")
     .eq("status", "available");
 
   if (slot_id) {
@@ -584,6 +584,11 @@ export async function POST(request: NextRequest) {
       const evb = salonVat?.vat_registered && grossRappen > 0
         ? computeVat(grossRappen, { registered: true, ratePercent: salonVat.vat_rate ?? 8.1 })
         : null;
+      // seo-comms-09: manage link differs for a logged-in customer (their own bookings
+      // list) vs. a guest (the code-based lookup page, they have no account to log into).
+      const manageUrl = user
+        ? `https://solen.ch/${locale}/profile/bookings`
+        : `https://solen.ch/${locale}/booking/lookup`;
       const emailData = bookingConfirmation(
         customerEmail,
         {
@@ -595,6 +600,11 @@ export async function POST(request: NextRequest) {
             rate: evb.ratePercent % 1 === 0 ? String(evb.ratePercent) : evb.ratePercent.toFixed(1),
             vatNumber: salonVat?.vat_number ?? undefined,
           } : {}),
+          address: (slot.salons as { address?: string } | null)?.address ?? undefined,
+          manageUrl,
+          icsStartsAt: slot.starts_at,
+          icsEndsAt: slot.ends_at,
+          bookingId: booking.id,
         },
         locale
       );

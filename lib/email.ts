@@ -5,6 +5,7 @@
 
 import { getServerEnv } from "@/lib/env";
 import { EMAIL_COLORS } from "@/lib/email-colors";
+import { buildBookingIcs } from "@/lib/ics";
 
 export type EmailLocale = "de" | "en" | "fr" | "it";
 
@@ -56,6 +57,9 @@ export interface EmailPayload {
   html: string;
   /** Plain-text alternative. Auto-derived from `html` by sendEmail() when omitted. */
   text?: string;
+  // seo-comms-09: an optional attachment set, e.g. bookingConfirmation's .ics calendar
+  // file. `content` is base64, matching Resend's own attachments field shape.
+  attachments?: { filename: string; content: string }[];
 }
 
 /**
@@ -89,6 +93,7 @@ export async function sendEmail(payload: EmailPayload): Promise<void> {
       // seo-comms-07: every send now carries a text/plain part, hand-written when the
       // template supplied one, else derived from the same html above.
       text: payload.text ?? stripHtmlToText(payload.html),
+      ...(payload.attachments ? { attachments: payload.attachments } : {}),
     }),
   });
 
@@ -111,6 +116,17 @@ export function bookingConfirmation(
     // Netto/MWST/Gesamt split + the salon's UID; when only `total` is present it shows
     // just the amount; when none are present the email is unchanged (backward-compatible).
     total?: string; net?: string; vat?: string; rate?: string; vatNumber?: string;
+    // seo-comms-09 (2026-07-27): a booking confirmation with no address/manage-link/
+    // calendar-file forces every follow-up action (where do I go, can I cancel, put it
+    // in my calendar) back into a manual app login. All three are optional and
+    // additive: an existing call site that doesn't pass them renders exactly as before.
+    address?: string;
+    manageUrl?: string;
+    // Raw ISO start/end (not the human-formatted `date`/`time` above) + a stable id,
+    // needed to build the .ics VEVENT. Only rendered when all three are present.
+    icsStartsAt?: string;
+    icsEndsAt?: string;
+    bookingId?: string;
   },
   locale: EmailLocale = "de"
 ): EmailPayload {
@@ -144,13 +160,44 @@ export function bookingConfirmation(
     }
   }
 
+  // seo-comms-09: address + manage-link labels, same per-locale shape as PL above.
+  const CL = {
+    de: { address: "Adresse", manage: "Buchung ansehen oder stornieren" },
+    en: { address: "Address", manage: "View or cancel booking" },
+    fr: { address: "Adresse", manage: "Voir ou annuler la réservation" },
+    it: { address: "Indirizzo", manage: "Visualizza o annulla la prenotazione" },
+  }[locale];
+
+  const addressHtml = vars.address
+    ? `<p style="margin-top:12px;font-size:14px;color:${EMAIL_COLORS.ink2}">${CL.address}: ${escapeHtml(vars.address)}</p>`
+    : "";
+  const manageHtml = vars.manageUrl
+    ? `<p style="margin-top:12px"><a href="${vars.manageUrl}">${CL.manage} →</a></p>`
+    : "";
+
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Hallo,</p><p><strong>${vars.service}</strong> bei <strong>${vars.salon}</strong> am ${vars.date} um ${vars.time} Uhr ist bestätigt. Wir freuen uns auf Sie!</p>${priceHtml}<p>solen.ch</p>`,
-    en: `<p>Hello,</p><p><strong>${vars.service}</strong> at <strong>${vars.salon}</strong> on ${vars.date} at ${vars.time} is confirmed. See you there!</p>${priceHtml}<p>solen.ch</p>`,
-    fr: `<p>Bonjour,</p><p><strong>${vars.service}</strong> chez <strong>${vars.salon}</strong> le ${vars.date} à ${vars.time} est confirmé. À bientôt!</p>${priceHtml}<p>solen.ch</p>`,
-    it: `<p>Ciao,</p><p><strong>${vars.service}</strong> presso <strong>${vars.salon}</strong> il ${vars.date} alle ${vars.time} è confermato. A presto!</p>${priceHtml}<p>solen.ch</p>`,
+    de: `<p>Hallo,</p><p><strong>${vars.service}</strong> bei <strong>${vars.salon}</strong> am ${vars.date} um ${vars.time} Uhr ist bestätigt. Wir freuen uns auf Sie!</p>${priceHtml}${addressHtml}${manageHtml}<p>solen.ch</p>`,
+    en: `<p>Hello,</p><p><strong>${vars.service}</strong> at <strong>${vars.salon}</strong> on ${vars.date} at ${vars.time} is confirmed. See you there!</p>${priceHtml}${addressHtml}${manageHtml}<p>solen.ch</p>`,
+    fr: `<p>Bonjour,</p><p><strong>${vars.service}</strong> chez <strong>${vars.salon}</strong> le ${vars.date} à ${vars.time} est confirmé. À bientôt!</p>${priceHtml}${addressHtml}${manageHtml}<p>solen.ch</p>`,
+    it: `<p>Ciao,</p><p><strong>${vars.service}</strong> presso <strong>${vars.salon}</strong> il ${vars.date} alle ${vars.time} è confermato. A presto!</p>${priceHtml}${addressHtml}${manageHtml}<p>solen.ch</p>`,
   };
-  return { to, subject: subjects[locale], html: bodies[locale] };
+
+  // seo-comms-09: attach a .ics calendar file when the caller supplied raw ISO
+  // start/end + a booking id (all three, or none, no partial rendering).
+  let attachments: EmailPayload["attachments"];
+  if (vars.icsStartsAt && vars.icsEndsAt && vars.bookingId) {
+    const ics = buildBookingIcs({
+      uid: vars.bookingId,
+      title: `${vars.service} - ${vars.salon}`,
+      description: `${vars.service} bei ${vars.salon}`,
+      location: vars.address ?? vars.salon,
+      startsAt: vars.icsStartsAt,
+      endsAt: vars.icsEndsAt,
+    });
+    attachments = [{ filename: "termin.ics", content: Buffer.from(ics, "utf-8").toString("base64") }];
+  }
+
+  return { to, subject: subjects[locale], html: bodies[locale], ...(attachments ? { attachments } : {}) };
 }
 
 export function bookingCancellation(
