@@ -84,37 +84,30 @@ module.exports = {
         "s-plum":         "#6B6B6B",  // was secondary highlight → alias to s-ink-2
         "s-sand":         "#F4F4F5",  // cool light grey (alias to s-bg.sunken; reverses warm #F8F5F2)
         "s-amber-subtle": "#FDF6E7",  // was warning pastel bg → alias to s-warning.bg
-        "s-amber-text":   "#906309",  // was warning text → alias to s-warning DEFAULT
+        // color-tokens-06 (2026-07-27): s-amber-text deleted here (was "#906309").
+        // A sitewide grep found ZERO callsites; see LOCKFILE.md RETIRED section.
         // Section tints — values updated to fit Little Amps cream/dusty-blue palette
         // (V3-D120 removed bg-tint usage from homepage; tokens kept for back-compat).
         "s-wasabi":  "#F6EDE3",  // cream — was warm ivory (V3-D119), was green-yellow (V3-D107)
         "s-droplet": "#E8F0F4",  // pale dusty blue — was sea-glass (V3-D119)
-        // Cream — kept for back-compat with non-homepage components that still reference it.
-        // NOT used in the new V3-D107 section rhythm; superseded by s-peach.
-        "s-cream": "#E9DFC8",
+        // color-tokens-06 (2026-07-27): s-cream deleted here (was "#E9DFC8", the
+        // former back-compat cream alias, zero live callsites).
         // V3-D329 (Section A+C+D): conflicting s-accent yellow definition REMOVED.
         // This earlier object literal was being silently overridden by the s-accent
         // royal-blue definition further down (Tailwind config evaluation order: last
         // wins). Now explicit — the only s-accent is the royal blue below at line ~177.
         // To revert to yellow accent: comment that line + uncomment this one.
-        // ── Bright accent (butter) — sparingly, for stat-card highlights ──
-        "s-butter": "#F2D77B",
-        // ── Sage — wellness whisper, never loud ──
+        // color-tokens-06 (2026-07-27): s-butter deleted here (was "#F2D77B",
+        // former bright-accent alias, zero live callsites).
+        // Sage: wellness whisper, never loud.
         "s-sage": { DEFAULT: "#A8B89A", pale: "#D4DDC8" },
-        // ── V3 category colorway tokens — V2-D48 Earthen Wellness mapping ──
-        // V2-D60: cat tile bgs slightly desaturated to stay readable on lighter substrate.
-        // Text colors updated to match new brand-mid + accent-deep values.
-        "s-cat-coiffeur":      "#FFE8D8", "s-cat-coiffeur-text":   "#E0703D", // peach + warm terracotta
-        "s-cat-barbershop":    "#EAE0D0", "s-cat-barbershop-text": "#2A1F18", // bone + ink
-        "s-cat-nails":         "#D4DDC8", "s-cat-nails-text":      "#A04A22", // sage-pale + terra-deep
-        "s-cat-spa":           "#D4F2E0", "s-cat-spa-text":        "#0F6F44", // brand subtle + brand mid (emerald)
-        // ── V3 atmosphere wash colors — Earthen Wellness ──
-        "s-atm-cream":  "#FAF3E6",  // V2-D60: matches new base
-        "s-atm-terra":  "#F0A98C",  // V2-D60: matches new accent-soft (more saturated)
-        "s-atm-sage":   "#D4DDC8",  // wellness whisper (unchanged)
-        "s-atm-bone":   "#EAE0D0",  // V2-D60: matches new sunken
-        "s-atm-butter": "#F2D77B",  // bright accent (unchanged)
-        // ── Ink (text) — V2-D70 cool-grey scale + V3-D73 contrast fix + V3-D87 white-substrate retune ──
+        // color-tokens-06 (2026-07-27): the V3 category colorway family
+        // (s-cat-coiffeur/barbershop/nails/spa + their -text variants) and the V3
+        // atmosphere wash family (s-atm-cream/terra/sage/bone/butter) are deleted
+        // here. Both were the Earthen Wellness palette, already RETIRED in prose
+        // by LOCKFILE.md since the B&W pivot; a sitewide grep found zero live
+        // callsites for any of the 13 tokens across app/components/components-legacy/lib.
+        // Ink (text): V2-D70 cool-grey scale + V3-D73 contrast fix + V3-D87 white-substrate retune ──
         // Per spec: never use pure black (#000000) — causes eye strain. Primary
         // is dark rich charcoal #1A1C19, secondary is medium cool grey #6B7068.
         // V3-D73 (2026-05-18): tertiary darkened #9BA09A → #7A7F78 — calculated
@@ -140,10 +133,11 @@ module.exports = {
         // pattern (`bg-s-ink-2/40` / `bg-s-ink-2/30`) which surfaced as a recipe-smell
         // in W5 /partner pricing comparison. Use these for any bar chart where you
         // need ink (primary brand row) + 2 progressively-muted greys for context.
-        // chart-1 = primary data emphasis (use s-ink directly for THIS — included as alias for chart-row consistency)
+        // Primary data emphasis: use s-ink directly, not a chart alias.
+        // color-tokens-06 (2026-07-27): s-chart-1 deleted here (was "#0A0A0A", an
+        // alias of s-ink with zero live callsites; use s-ink directly instead).
         // chart-2 = secondary contextual row (e.g. main competitor)
         // chart-3 = tertiary contextual row (e.g. competitor range / "others")
-        "s-chart-1": "#0A0A0A",  // alias of s-ink — primary chart row
         "s-chart-2": "#9CA3AF",  // medium grey — secondary chart row
         "s-chart-3": "#D1D5DB",  // light grey — tertiary chart row
         // V2-D70 (2026-05-18): substrate fine-tuned #F8F7F2 → #F9F8F6 (warm pearl /

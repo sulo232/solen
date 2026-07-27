@@ -107,16 +107,30 @@ rounded caps that hide the value), bar count = datum count. "Dribbble-pretty but
 
 ### RETIRED — never use in new code
 
-- `s-coral`, `s-cream`, `s-butter`, `s-sage`, `s-wasabi`, `s-droplet`, `s-cool`
+- `s-coral`, `s-sage`, `s-wasabi`, `s-droplet`, `s-cool` (still defined, back-compat alias or in occasional use). `s-cream`, `s-butter` — **DELETED from `tailwind.config.js` (color-tokens-06, 2026-07-27),** zero live callsites found; RETIRED-in-prose here since before this doc existed but never actually removed until now.
 - ~~`s-pop`~~ — **UN-RETIRED V3-D424 (2026-06-02):** it's a vivid vermilion `#C03001`, actively used as the escalated/urgency badge dot+text (dashboard `DashStatusPill` `urgent` tone). Distinct from `s-surcharge` orange + `s-error` red. Tailwind keeps it ("urgency badges only") — this reconciles the doc with reality.
 - `s-amber` — **PERMANENTLY KILLED V3-D320 (2026-05-27)** per user pick on Q-W7-A. Was an orphan reference rendering invisible. All callsites swept: star/rating context → `s-star` (#FFC32B yellow), warning/alert context → `s-warning` (#F1AE27 amber per LOCKFILE §1 universal-color table). NO alias added — drift-checker will reject any new `s-amber` usage. If you need amber for warnings use `s-warning`; if for rating-yellow use `s-star`.
-- `s-atm-*` family (warm / cool / cream / terra / sage / bone / butter)
-- `s-cat-*` family (coiffeur / barbershop / nails / spa — and their `-text` variants)
+- `s-atm-*` family (warm / cool / cream / terra / sage / bone / butter) — **DELETED from `tailwind.config.js` (color-tokens-06, 2026-07-27)**, zero live callsites.
+- `s-cat-*` family (coiffeur / barbershop / nails / spa, and their `-text` variants) — **DELETED from `tailwind.config.js` (color-tokens-06, 2026-07-27)**, zero live callsites.
+- `s-chart-1` — **DELETED (color-tokens-06, 2026-07-27)**, zero live callsites; it was an alias of `s-ink` anyway, use `s-ink` directly for the primary chart row.
+- `s-amber-text` — **DELETED (color-tokens-06, 2026-07-27)**, zero live callsites.
 - `s-love` family (replaced by `--heart-active` for save, `s-error` for error)
 - `s-ink-3`, `s-ink-secondary`, `s-ink-tertiary` — **COLLAPSED V3-color-tokens-04 (2026-07-27):** all three were live spellings of the exact same `#6B6B6B` hex as `s-ink-2`, with zero semantic difference. Every callsite now reads `s-ink-2`; the extra keys are deleted from `tailwind.config.js`, not just commented.
 - `Geist` — **REJECTED 2026-05-30** ("no Geist anywhere"); V3-D317 swap reverted. `Hanken Grotesk` — **REPLACED by `Inter` V3-D410 (2026-05-31)**. `JetBrains Mono` — **RETIRED 2026-06-10 (V3-D470)** for codes (owner: "the W-047 font is different"); codes now Inter Tight tabular (§13.4). Active type = Inter Tight + Inter only. See §2.
 
 Drift-check `RETIRED_TOKENS` list flags any new usage.
+
+### Prune, don't just retire (color-tokens-06, 2026-07-27)
+
+RETIRED tokens are DELETED from `tailwind.config.js`, not left defined with a comment
+saying "don't use this." A token with zero matches across `app/`, `components/`,
+`components-legacy/`, and `lib/` for two consecutive quarterly design-system audits gets
+removed from the config in the same pass this file marks it RETIRED. A definition that
+nothing renders is not neutral: it is a landmine for the next agent who greps
+`tailwind.config.js`, sees a plausible-sounding name, and assumes it is safe to use. 17
+zero-usage tokens (`s-amber-text`, the `s-atm-*` and `s-cat-*` families, `s-chart-1`,
+`s-cream`, `s-butter`) were found and deleted in this pass; add a token-pruning line item
+to whatever periodic design-system audit runs next.
 
 ### Token naming grammar (color-tokens-04, 2026-07-27)
 
