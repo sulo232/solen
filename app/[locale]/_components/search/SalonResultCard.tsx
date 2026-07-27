@@ -111,6 +111,11 @@ export interface SalonResultCardProps {
    *  main tappable area FOCUSES the salon (calls onSelect(salonId)) instead of navigating
    *  to the PDP. Heart + everything else stays identical. Absent -> unchanged Link behavior. */
   onSelect?: (id: string) => void;
+  /** performance-05: opts this card's photo into next/image's `priority`. Set true
+   *  ONLY on the first card of the first above-the-fold results grid/list (index 0),
+   *  never on every card, or every card competes for preload bandwidth. Defaults to
+   *  false/absent so every existing caller keeps today's lazy-load behavior. */
+  priority?: boolean;
 }
 
 // Exported (V3-D453) so MapSalonDetail.tsx reuses the same category slug->label
@@ -208,6 +213,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
     galleryCount, hasServiceQuery, matchChip,
     walkInWaitMin, walkInQueue,
     onSelect, date,
+    priority,
   } = props;
 
   // GAP #5: carry the searched date onto the PDP link (dropped silently if malformed).
@@ -246,6 +252,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
             : "(max-width: 640px) 50vw, 200px" // copy-ok
       }
       className="object-cover"
+      priority={priority}
     />
   ) : (
     <span

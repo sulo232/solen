@@ -315,6 +315,13 @@ export interface SalonCardProps extends VariantProps<typeof curationVariants> {
    *  classes below (both would survive, source order decides). Every existing caller
    *  passes no widthClassName, so their output is byte-identical to before. */
   widthClassName?: string;
+  /** performance-05: opts this card's photo into next/image's `priority` (eager
+   *  load + preload hint, skips lazy-load's IntersectionObserver wait). Set true
+   *  ONLY on the single card a caller knows renders above-the-fold on first paint
+   *  (e.g. index 0 of the first visible row), never on every card in a rail, or
+   *  every card competes for preload bandwidth and the point is lost. Defaults to
+   *  false/absent so every existing caller keeps today's lazy-load behavior. */
+  priority?: boolean;
 }
 
 export function SalonCard({
@@ -339,6 +346,7 @@ export function SalonCard({
   citySelected,
   className,
   widthClassName,
+  priority,
 }: SalonCardProps) {
   // Locale-prefixed href (2026-06-11): the bare `/salon/x` href relied on the
   // next-intl middleware to guess a locale — which (a) could land on the wrong
@@ -437,6 +445,7 @@ export function SalonCard({
             fill
             sizes="(max-width: 768px) 160px, 180px"
             className="object-cover"
+            priority={priority}
           />
         ) : (
           <span

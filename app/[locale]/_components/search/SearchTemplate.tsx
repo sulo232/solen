@@ -1582,7 +1582,7 @@ export default function SearchTemplate({
                   on mobile too in this mode) so the queue busyness bar/tier is not lost. */}
               {!listLayout && !gridLayout && !walkIn && (
                 <div className="flex flex-col gap-6 md:hidden">
-                  {salons.map((s) => (
+                  {salons.map((s, i) => (
                     <SalonResultCard
                       key={s.id}
                       variant="feed"
@@ -1610,6 +1610,9 @@ export default function SearchTemplate({
                       isSaved={favoriteIds.has(s.id)}
                       salonId={s.id}
                       date={date}
+                      // performance-05: first card of the mobile above-the-fold feed
+                      // is the LCP candidate on a fresh search-results load.
+                      priority={i === 0}
                     />
                   ))}
                 </div>
@@ -1647,7 +1650,7 @@ export default function SearchTemplate({
                         ),
                 )}
               >
-                {salons.map((s) => (
+                {salons.map((s, i) => (
                   <SalonResultCard
                     key={s.id}
                     variant={listLayout ? "list" : gridLayout ? "grid" : "card"}
@@ -1684,6 +1687,9 @@ export default function SearchTemplate({
                     walkInWaitMax={walkinAvail[s.id]?.waitMinutesMax ?? null}
                     walkInQueue={walkinAvail[s.id]?.queueLength ?? null}
                     date={date}
+                    // performance-05: first card of the desktop above-the-fold grid
+                    // is the LCP candidate on a fresh search-results load.
+                    priority={i === 0}
                   />
                 ))}
               </div>
