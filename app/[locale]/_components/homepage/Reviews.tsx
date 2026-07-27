@@ -167,7 +167,7 @@ function ReviewCard({
           so the person anchors. */}
       <div className="relative mb-3 flex items-center gap-2.5">
         <div
-          className="pointer-events-none font-display grid h-10 w-10 shrink-0 place-items-center rounded-full text-[14px] font-black text-s-ink-2 bg-s-bg-sunken"
+          className="pointer-events-none font-display grid h-10 w-10 shrink-0 place-items-center rounded-full text-[14px] font-bold text-s-ink-2 bg-s-bg-sunken"
           aria-hidden
         >
           {review.initials}

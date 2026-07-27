@@ -123,7 +123,7 @@ export default function RewardsView({ status, locale }: { status: LoyaltyStatus;
           +
         </span>
         <div className="font-display text-[16px] font-bold tracking-[-0.02em] text-s-ink">
-          solen<span className="align-top text-[11px] font-extrabold text-s-ink">+</span>
+          solen<span className="align-top text-[11px] font-bold text-s-ink">+</span>
         </div>
         <p className="relative mt-3.5 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-s-ink-2">
           {t("yourStatus")}

@@ -109,7 +109,7 @@ export default function Footer({ locale }: { locale: string }) {
             <Link
               href={p}
               aria-label="Solen Startseite"
-              className="font-display inline-flex items-baseline text-[22px] font-black leading-none tracking-normal text-s-ink"
+              className="font-display inline-flex items-baseline text-[22px] font-bold leading-none tracking-normal text-s-ink"
             >
               Solen
             </Link>

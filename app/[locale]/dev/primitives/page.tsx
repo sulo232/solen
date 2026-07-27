@@ -117,7 +117,7 @@ function PrimitivesDevPageInner() {
             </span>
             <span className="text-s-ink-2">§F.1 2026-05-08 /dev/primitives</span>
           </div>
-          <h1 className="font-display font-black text-[64px] leading-[0.95] tracking-[-0.02em] text-s-ink">
+          <h1 className="font-display font-bold text-[64px] leading-[0.95] tracking-[-0.02em] text-s-ink">
             Form primitives
           </h1>
           <p className="font-body font-normal text-[15px] text-s-ink-2 mt-4 max-w-[720px]">
@@ -1061,7 +1061,7 @@ function Section({
         </span>
         <span className="text-s-ink-2">{meta}</span>
       </div>
-      <h2 className="font-display font-black text-[36px] leading-none tracking-[-0.02em] text-s-ink mb-4">
+      <h2 className="font-display font-bold text-[36px] leading-none tracking-[-0.02em] text-s-ink mb-4">
         {title}
       </h2>
       <div className="mt-8">{children}</div>

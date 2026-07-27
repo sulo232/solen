@@ -9,10 +9,17 @@ import "@/app/globals.css";
 // woff2 from our own origin, /_next/static/media), so they always load with no
 // runtime fetch to fonts.gstatic.com that could fall back to the system font on
 // phone/LAN (the exact failure the old globals.css @import was exposed to).
-// Inter Tight (display/headings) + Inter (body) per V3-D410/V3-D190/rule 8. Inter
-// Tight loads up to 900 so bold headings render at full weight (V3-D190). JetBrains
+// Inter Tight (display/headings) + Inter (body) per V3-D410/V3-D190/rule 8. JetBrains
 // Mono is RETIRED (V3-D470): codes render Inter Tight tabular via .font-mono-code.
-const interTight = Inter_Tight({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800", "900"], variable: "--font-inter-tight", display: "swap" });
+// typography-03 (2026-07-27): weight array trimmed to 400-700. LOCKFILE section 2
+// line 276 bans 800/900 ("NEVER 800/extrabold, clumsy") and V3-D317 already swept
+// font-extrabold out of the codebase once, but loading 800/900 anyway meant every
+// font-face for the banned weights sat downloaded and ready, so the ban kept
+// re-drifting (24 live font-extrabold/font-black callsites found 2026-07-26).
+// Not loading the weight is the enforcement: a font-weight 800/900 request now
+// falls back to the nearest available face (700) per standard CSS font matching,
+// so a stray font-extrabold degrades to bold instead of rendering full black.
+const interTight = Inter_Tight({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-inter-tight", display: "swap" });
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-inter", display: "swap" });
 
 export const metadata: Metadata = {

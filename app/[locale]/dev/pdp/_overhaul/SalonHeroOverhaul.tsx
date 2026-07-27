@@ -85,7 +85,7 @@ export function SalonHeroOverhaul({
           </div>
         ) : (
           <div className="grid aspect-[4/3] w-full place-items-center bg-s-bg-sunken">
-            <span className="font-display text-[120px] font-black text-s-ink-disabled">
+            <span className="font-display text-[120px] font-bold text-s-ink-disabled">
               {salon.name.charAt(0)}
             </span>
           </div>
@@ -166,7 +166,7 @@ function DesktopGallery({
   if (photos.length === 0) {
     return (
       <div className="grid aspect-[16/7] w-full place-items-center bg-s-bg-sunken">
-        <span className="font-display text-[140px] font-black text-s-ink-disabled">
+        <span className="font-display text-[140px] font-bold text-s-ink-disabled">
           {salonName.charAt(0)}
         </span>
       </div>

@@ -251,8 +251,8 @@ function SalonResultCardInner(props: SalonResultCardProps) {
     <span
       className={
         variant === "list"
-          ? "absolute inset-0 grid place-items-center font-display font-black leading-none text-[40px] tracking-[-0.03em] text-s-ink-2"
-          : "absolute inset-0 grid place-items-center font-display font-black leading-none text-[64px] tracking-[-0.03em] text-s-ink-2 md:text-[80px]"
+          ? "absolute inset-0 grid place-items-center font-display font-bold leading-none text-[40px] tracking-[-0.03em] text-s-ink-2"
+          : "absolute inset-0 grid place-items-center font-display font-bold leading-none text-[64px] tracking-[-0.03em] text-s-ink-2 md:text-[80px]"
       }
       aria-hidden
     >

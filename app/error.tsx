@@ -23,7 +23,7 @@ export default function Error({
   return (
     <div className="flex min-h-[70vh] flex-col items-center justify-center px-5 text-center">
       <span
-        className="font-heading text-[clamp(64px,14vw,84px)] font-extrabold leading-none tracking-[-0.04em] bg-gradient-to-b from-s-ink from-30% to-[#BBBBBB] bg-clip-text text-transparent"
+        className="font-heading text-[clamp(64px,14vw,84px)] font-bold leading-none tracking-[-0.04em] bg-gradient-to-b from-s-ink from-30% to-[#BBBBBB] bg-clip-text text-transparent"
         aria-hidden
       >
         Uff.

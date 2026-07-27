@@ -149,7 +149,7 @@ function MagneticDuoCard({ card }: { card: DuoCard }) {
             x: letterX,
             y: letterY,
           }}
-          className="absolute -right-2 -bottom-2 font-display font-black leading-none tracking-[-0.05em]"
+          className="absolute -right-2 -bottom-2 font-display font-bold leading-none tracking-[-0.05em]"
         >
           {card.mark}
         </motion.span>

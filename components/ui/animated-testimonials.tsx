@@ -192,7 +192,7 @@ function CarouselInner({
               transition={{ duration: 0.32, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
               className="pointer-events-none absolute inset-x-4 bottom-4 z-[60] rounded-[20px] border border-white/45 bg-white/35 px-4 py-2.5 shadow-[0_10px_28px_rgba(0,0,0,0.14)] backdrop-blur-xl backdrop-saturate-150"
             >
-              <div className="font-display text-[15px] font-extrabold leading-tight text-s-ink truncate">
+              <div className="font-display text-[15px] font-bold leading-tight text-s-ink truncate">
                 {current.name}
               </div>
               <div className="mt-0.5 font-body text-[12px] font-medium text-s-ink-2 truncate">
@@ -319,7 +319,7 @@ function ArtistProfileDialog({ testimonial }: { testimonial: Testimonial }) {
             />
             <div className="absolute bottom-6 left-6 right-6">
               <h2
-                className="font-display font-extrabold text-white"
+                className="font-display font-bold text-white"
                 style={{
                   fontSize: "clamp(28px, 5vw, 42px)",
                   letterSpacing: "-0.025em",

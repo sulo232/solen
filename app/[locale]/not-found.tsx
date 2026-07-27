@@ -22,7 +22,7 @@ export default function NotFound() {
       <div className="text-center max-w-[500px]">
         <div className="relative inline-block leading-none">
           <span
-            className="font-heading text-[clamp(96px,18vw,120px)] font-extrabold tracking-[-0.05em] bg-gradient-to-b from-s-ink from-30% to-[#BBBBBB] bg-clip-text text-transparent"
+            className="font-heading text-[clamp(96px,18vw,120px)] font-bold tracking-[-0.05em] bg-gradient-to-b from-s-ink from-30% to-[#BBBBBB] bg-clip-text text-transparent"
             aria-hidden
           >
             404

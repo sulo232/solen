@@ -122,7 +122,7 @@ export default function WalkInBand() {
                       {/* R1 "located" (owner pick 2026-06-29): wait-range hero + "bis frei", then
                           name + rating (gold star is the separator), then address + queue on their OWN
                           lines , NO middot between two same-weight metadata bits (taste rule 2). */}
-                      <div className="font-display text-[20px] font-extrabold leading-none tracking-[-0.02em] text-s-success">
+                      <div className="font-display text-[20px] font-bold leading-none tracking-[-0.02em] text-s-success">
                         {sofort ? "Jetzt frei" : `${s.waitMinutes}-${s.waitMinutesMax} Min`}
                       </div>
                       {!sofort && (

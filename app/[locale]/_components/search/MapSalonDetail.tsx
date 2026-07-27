@@ -141,7 +141,7 @@ export function MapSalonDetail({
             className="object-cover"
           />
         ) : (
-          <span className="absolute inset-0 grid place-items-center font-display font-black leading-none text-[64px] tracking-[-0.03em] text-s-ink-2" aria-hidden>
+          <span className="absolute inset-0 grid place-items-center font-display font-bold leading-none text-[64px] tracking-[-0.03em] text-s-ink-2" aria-hidden>
             {(salon.name ?? "").trim().charAt(0).toUpperCase() || "?"}
           </span>
         )}

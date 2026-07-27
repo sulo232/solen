@@ -183,7 +183,7 @@ export function SalonCardOverhaul({
           />
         ) : (
           <span
-            className="absolute inset-0 grid place-items-center font-display font-black leading-none text-[64px] tracking-[-0.03em] md:text-[80px]"
+            className="absolute inset-0 grid place-items-center font-display font-bold leading-none text-[64px] tracking-[-0.03em] md:text-[80px]"
             style={{ color: cat.initial }}
             aria-hidden
           >
