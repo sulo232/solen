@@ -22,43 +22,51 @@ import { useTranslations } from "next-intl";
  *   /ueber-uns /karriere /presse /blog · /fuer-salons /business /partner ·
  *   /help /sicherheit /kontakt · /privacy /terms /impressum · /{locale} homes.
  */
-const COLUMNS: Array<{ heading: string; items: Array<{ label: string; href: string }> }> = [
+// COLUMNS now carries KEYS, not German strings (2026-07-27). It sits at module scope, outside
+// any component, so a hook cannot reach it , the labels are resolved at the render site
+// instead. Owner spotted the consequence: the footer was German on /en too, not just on the
+// locales I had been checking. Every key below already existed or was added in the same pass;
+// none of the copy is new invention.
+const COLUMNS = [
   {
-    heading: "Solen",
+    headingKey: "company",
     items: [
-      { label: "Über uns", href: "/ueber-uns" },
-      { label: "Karriere", href: "/karriere" },
-      { label: "Presse", href: "/presse" },
-      { label: "Blog", href: "/blog" },
+      { labelKey: "aboutUs", href: "/ueber-uns" },
+      { labelKey: "careers", href: "/karriere" },
+      { labelKey: "press", href: "/presse" },
+      { labelKey: "blog", href: "/blog" },
     ],
   },
   {
-    heading: "Für Salons",
+    headingKey: "forSalonsTitle",
     items: [
       // "Partner werden" duplicate row removed 2026-06-11: it pointed at the same
       // /partner route as "Für Salons" (li key={item.href} -> React dup-key error).
-      { label: "Für Salons", href: "/partner" },
-      { label: "Salon-Hilfe", href: "/help" },
+      { labelKey: "forSalons", href: "/partner" },
+      { labelKey: "salonHelp", href: "/help" },
     ],
   },
   {
-    heading: "Hilfe",
+    headingKey: "help",
     items: [
-      { label: "Kund:innen-Hilfe", href: "/help" },
-      { label: "Sicherheit", href: "/sicherheit" },
-      { label: "Kontakt", href: "/kontakt" },
+      { labelKey: "customerHelp", href: "/help" },
+      { labelKey: "safety", href: "/sicherheit" },
+      { labelKey: "contact", href: "/kontakt" },
     ],
   },
   {
-    heading: "Rechtliches",
+    headingKey: "legalTitle",
     items: [
-      { label: "Datenschutz", href: "/privacy" },
-      { label: "AGB", href: "/terms" },
-      { label: "Impressum", href: "/impressum" },
+      { labelKey: "privacy", href: "/privacy" },
+      { labelKey: "agb", href: "/terms" },
+      { labelKey: "impressum", href: "/impressum" },
     ],
   },
-];
-
+  // `as const` is load-bearing: next-intl types t() to the LITERAL union of keys in the
+  // namespace, so a widened `string` fails to compile. That is the type system doing exactly
+  // what it should , a typo in a key is a build error rather than a raw dotted path rendered
+  // to a customer, which is what the old hardcoded German strings could never catch.
+] as const;
 // LOCALES removed 2026-07-27: the footer's four locale <Link>s were replaced by the shared
 // LanguageSwitcher, which owns the locale list (LOCALE_LABELS in components-legacy/ui/
 // LanguageSwitcher.tsx). Two copies of the list was how the footer could drift from the
@@ -115,7 +123,7 @@ export default function Footer({ locale }: { locale: string }) {
               Solen
             </Link>
             <p className="mt-3 max-w-[280px] font-body text-[13px] leading-relaxed text-s-ink-2">
-              Beauty &amp; Wellness Booking für die ganze Schweiz.
+              {tFooter("tagline")}
             </p>
             <div className="mt-5 flex gap-2">
               {[
@@ -142,8 +150,8 @@ export default function Footer({ locale }: { locale: string }) {
 
           {/* Link sections */}
           {COLUMNS.map((col) => (
-            <div key={col.heading}>
-              <h4 className="mb-4 font-body text-[14px] font-bold text-s-ink">{col.heading}</h4>
+            <div key={col.headingKey}>
+              <h4 className="mb-4 font-body text-[14px] font-bold text-s-ink">{tFooter(col.headingKey)}</h4>
               <ul className="flex flex-col gap-3">
                 {col.items.map((item) => (
                   <li key={item.href}>
@@ -151,7 +159,7 @@ export default function Footer({ locale }: { locale: string }) {
                       href={`${p}${item.href}`}
                       className="font-body text-[13px] text-s-ink-2 transition-colors duration-150 hover:text-s-ink"
                     >
-                      {item.label}
+                      {tFooter(item.labelKey)}
                     </Link>
                   </li>
                 ))}

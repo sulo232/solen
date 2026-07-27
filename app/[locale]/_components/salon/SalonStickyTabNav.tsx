@@ -8,6 +8,7 @@ import { HeartButton } from "../homepage/HeartButton";
 import { TAB_SECTIONS, type TabKey, type SalonDetail } from "./_shared";
 import { cn } from "@/lib/utils";
 import { shareOrCopy } from "@/lib/share";
+import { useTranslations } from "next-intl";
 
 /**
  * SalonStickyTabNav — V2-D53.3 (2026-05-11).
@@ -34,6 +35,8 @@ export function SalonStickyTabNav({
   scrollAnchorRef: React.RefObject<HTMLElement | null>;
   salon: SalonDetail;
 }) {
+  const tBack = useTranslations("common");
+  const tr = useTranslations("salonDetail");
   const router = useRouter();
   // V3-D421 (Hero B): share action mirrors SalonHero's, for the mobile scroll-header.
   const shareSalon = React.useCallback(() => {
@@ -178,7 +181,7 @@ export function SalonStickyTabNav({
         <div className="flex items-center gap-3 py-2 md:hidden">
           <button
             type="button"
-            aria-label="Zurück"
+            aria-label={tBack("back")}
             onClick={() => router.back()}
             className="-ml-1 grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink transition-transform active:scale-95 active:duration-[80ms] active:ease-glide"
           >
@@ -227,7 +230,7 @@ export function SalonStickyTabNav({
                   : "font-normal text-s-ink-2 hover:text-s-ink"
               )}
             >
-              {t.label}
+              {tr(t.labelKey)}
               {activeTab === t.key && (
                 <span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-s-ink" />
               )}

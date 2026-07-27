@@ -10,6 +10,7 @@ import type { StaffMember } from "./_shared";
 import { cn } from "@/lib/utils";
 import { getPortfolioCategoriesForSalon, getPortfolioCategoryLabel, PORTFOLIO_CATEGORY_ALL_LABEL, type PortfolioLocale } from "@/lib/portfolio-categories";
 import ReportButton from "@/components-legacy/discovery/ReportButton";
+import { useTranslations } from "next-intl";
 
 /**
  * SalonImageGallery: full-screen photo browser (Fresha "Image gallery" pattern,
@@ -50,6 +51,7 @@ export function SalonImageGallery({
   venuePhotos: string[];
   staff: StaffMember[];
 }) {
+  const tBack = useTranslations("common");
   const locale = useLocale();
   const [tab, setTab] = React.useState<"salon" | "team">("salon");
   const [activeStylist, setActiveStylist] = React.useState<string | null>(null);
@@ -181,7 +183,7 @@ export function SalonImageGallery({
       <div className="flex items-center gap-3 border-b border-s-border px-4 py-3">
         <button
           type="button"
-          aria-label="Zurück"
+          aria-label={tBack("back")}
           onClick={onClose}
           className="-ml-1 grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink transition-transform active:scale-95 active:duration-[80ms] active:ease-glide"
         >

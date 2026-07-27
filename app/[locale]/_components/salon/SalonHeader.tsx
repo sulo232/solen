@@ -10,6 +10,7 @@ import type { SalonDetail, OpenStatus } from "./_shared";
 import { shareOrCopy } from "@/lib/share";
 import ReportButton from "@/components-legacy/discovery/ReportButton";
 import { formatCount } from "@/lib/format";
+import { useTranslations } from "next-intl";
 
 /**
  * SalonHeader — V3-D232 (2026-05-27, hero austerity strip per Fresha capture).
@@ -54,6 +55,7 @@ export function SalonHeader({
    * computeOpenStatus()/new Date() again here. See lib/salon-detail.ts. */
   openStatus: OpenStatus;
 }) {
+  const t = useTranslations("salonDetail");
   const status = openStatus;
   const fullAddress = salon.address;
   const locale = useLocale();
@@ -112,7 +114,7 @@ export function SalonHeader({
               <button
                 type="button"
                 onClick={scrollToReviews}
-                aria-label={`${salon.review_count} Bewertungen anzeigen`}
+                aria-label={t("showNReviews", { count: salon.review_count })}
                 className="text-s-accent transition-[opacity,transform] hover:opacity-80 active:scale-[0.98] active:duration-[80ms] active:ease-glide"
               >
                 {formatCount(salon.review_count, locale)}
@@ -123,7 +125,7 @@ export function SalonHeader({
             <button
               type="button"
               onClick={scrollToHours}
-              aria-label="Öffnungszeiten anzeigen"
+              aria-label={t("showOpeningHours")}
               className="block text-left transition-[opacity,transform] hover:opacity-80 active:scale-[0.98] active:duration-[80ms] active:ease-glide"
             >
               <StatusInline isOpen={status.isOpen} label={status.label} size="md" />
@@ -133,7 +135,7 @@ export function SalonHeader({
             <button
               type="button"
               onClick={scrollToLocation}
-              aria-label="Standort anzeigen"
+              aria-label={t("showLocation")}
               className="inline-flex items-center gap-1 text-left text-s-ink-2 transition-[colors,transform] hover:text-s-ink active:scale-[0.98] active:duration-[80ms] active:ease-glide"
             >
               <MapPin size={14} className="shrink-0 text-s-ink-2" strokeWidth={2} />

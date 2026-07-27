@@ -233,7 +233,7 @@ export function SalonLocation({
               href={directionsHref}
               target="_blank"
               rel="noreferrer noopener"
-              aria-label={`${salon.name}: In Google Maps öffnen`}
+              aria-label={t("openInGoogleMaps", { name: salon.name })}
               className={`absolute inset-x-3 bottom-3 z-10 flex ${
                 transitChipVariant === "inline-pill" ? "items-end" : "items-center"
               } justify-between gap-3 rounded-2xl bg-white p-3.5 shadow-elevation-3 transition-opacity hover:opacity-90`}

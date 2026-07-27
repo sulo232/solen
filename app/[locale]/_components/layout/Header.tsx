@@ -306,7 +306,7 @@ function MobileCityChip({ locale }: { locale: string }) {
       {open && (
         <div
           role="listbox"
-          aria-label="Stadt wählen"
+          aria-label={tCities("select")}
           className="absolute left-1/2 top-full z-50 mt-2 w-[170px] -translate-x-1/2 overflow-hidden rounded-xl border border-s-border bg-white shadow-[0_10px_30px_rgba(0,0,0,0.10)]"
         >
           {activeCities.map((c) => (
@@ -331,6 +331,7 @@ function MobileCityChip({ locale }: { locale: string }) {
 }
 
 export default function Header({ locale }: { locale: string }) {
+  const tSD = useTranslations("salonDetail");
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [scrolled, setScrolled] = React.useState(false);
   // V3-D377 (2026-05-29): category-route header FOLD threshold, kept SEPARATE from
@@ -812,7 +813,7 @@ export default function Header({ locale }: { locale: string }) {
               serves the same entry point, so the header icon was redundant. */}
           <button
             type="button"
-            aria-label={menuOpen ? "Menü schließen" : "Menü öffnen"}
+            aria-label={menuOpen ? tSD("closeMenu") : tSD("openMenu")}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((v) => !v)}
             className={cn(

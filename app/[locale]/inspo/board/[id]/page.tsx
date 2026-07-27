@@ -8,11 +8,13 @@ import ItemCard from "@/components-legacy/discovery/ItemCard";
 import VideoCard from "@/components-legacy/discovery/VideoCard";
 import DiscoveryGridSkeleton from "@/components-legacy/discovery/DiscoveryGridSkeleton";
 import type { DiscoveryItem } from "@/lib/types";
+import { useTranslations } from "next-intl";
 
 // V3-D414: board (collection) detail page. Tapping a Kollektion now opens this — hero cover + description +
 // the board's looks in the same masonry as the feed. Looks come from /api/discovery/boards/[id] (curated pins,
 // no search-logging). Back button returns to the feed.
 export default function BoardDetailPage() {
+  const tBack = useTranslations("common");
   const params = useParams<{ id: string; locale: string }>()!;
   const router = useRouter();
   const id = params.id;
@@ -65,7 +67,7 @@ export default function BoardDetailPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
         <button
           onClick={() => router.back()}
-          aria-label="Zurück"
+          aria-label={tBack("back")}
           className="absolute left-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-black/30 text-white backdrop-blur-sm transition-transform duration-150 active:scale-95"
         >
           <ArrowLeft size={18} />

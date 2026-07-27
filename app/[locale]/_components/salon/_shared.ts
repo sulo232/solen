@@ -428,14 +428,19 @@ export function formatReviewDate(iso: string, locale?: string | null): string {
 // Labels are the German fallback the other tabs use; the section components themselves
 // render fully i18n'd headings via useTranslations("salonDetail"). Both auto-hide when
 // the salon has no active bundles/products (availableSections gating in SalonDetailV3).
+// labelKey resolves against the salonDetail namespace at the render site
+// (SalonStickyTabNav.tsx). The old German `label` strings shipped to every locale , the sticky
+// tab nav said "Bewertungen" on the English PDP, which is what the owner spotted on 2026-07-28.
+// A constant at module scope cannot call a hook, so it carries the KEY and the component
+// resolves it.
 export const TAB_SECTIONS = [
-  { key: "photos", label: "Fotos" },
-  { key: "about", label: "Über uns" },
-  { key: "services", label: "Services" },     // identical in German
-  { key: "bundles", label: "Pakete" },
-  { key: "products", label: "Produkte" },
-  { key: "team", label: "Team" },             // identical in German
-  { key: "reviews", label: "Bewertungen" },
+  { key: "photos", labelKey: "photos" },
+  { key: "about", labelKey: "aboutUs" },
+  { key: "services", labelKey: "services" },
+  { key: "bundles", labelKey: "bundles" },
+  { key: "products", labelKey: "products" },
+  { key: "team", labelKey: "team" },
+  { key: "reviews", labelKey: "reviews" },
 ] as const;
 
 export type TabKey = typeof TAB_SECTIONS[number]["key"];

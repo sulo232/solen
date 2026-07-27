@@ -77,7 +77,22 @@ are the entire remaining job. That bounds the work.
             German reader never sees it and a failed fetch never claims something happened.
       Original plan: **Review translation, on-read + cached.** Needs a cache location, a "translated from
       X" affordance, and the original always reachable.
-- [ ] **S8. The 281 hardcoded German literals across 90 files.** Measured, not estimated.
+- [x] **S8, the customer-facing half , DONE. The owner caught what I had missed: ENGLISH.**
+      I had been checking /fr and /it and calling it a French-and-Italian job, because English
+      service names were already populated so the page LOOKED right. The chrome was not: the
+      footer said Für Salons / Hilfe / Rechtliches on /en, the sticky tab nav said
+      Bewertungen, and every amenity said Sofortbestätigung. `verified:` all three locales now
+      fetch clean , a regex over the served HTML of /en, /fr and /it for twelve German strings
+      returns ZERO hits on each, all 200.
+      Swept: 8 PDP section headings, the 7 sticky-tab labels, 12 amenity labels, the footer's
+      4 column headings + 12 link labels + tagline + newsletter band, and 12 German
+      aria-labels across 8 files.
+      TWO STRUCTURAL FIXES, not string swaps: `COLUMNS` in Footer.tsx and `TAB_SECTIONS` in
+      _shared.ts are module-level constants OUTSIDE any component, so no hook can reach them.
+      Both now carry a labelKey resolved at the render site, with `as const` so next-intl's
+      literal-key union still type-checks , a typo is a build error rather than a raw dotted
+      path shown to a customer, which the hardcoded German could never catch.
+      Was: **The 281 hardcoded German literals across 90 files.** Measured, not estimated.
       Worst: TermsContent (43), PrivacyContent (11), reset-password (9), business (9),
       fuer-salons (9). These render one language to all four audiences.
 - [ ] **S9. /terms and /privacy render German AND English stacked, on all four locales**, while

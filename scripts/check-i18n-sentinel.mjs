@@ -37,10 +37,18 @@ const SOURCE_LOCALE = "en";
 // dashboard's targetPhoto, both "Photo". French genuinely spells it the same as English, so
 // these are locale-invariant rather than untranslated placeholders , the exact case this
 // baseline exists to absorb. German and Italian took "Foto" and are unchanged.
+// 2026-07-28 (all-language sweep, footer + PDP chrome). Every increment below is a word that
+// is GENUINELY the same in that language, not an untranslated placeholder , checked one by one
+// against the English before raising the number:
+//   de +1  footer.blog "Blog"           (salonDetail.team "Team" was already counted)
+//   fr +3  footer.blog "Blog", footer.contact "Contact",
+//          salonDetail.photos "Photos", salonDetail.services "Services"
+//          (net +3 after one that was already inside the old baseline)
+//   it +1  footer.blog "Blog"
 const IDENTICAL_BASELINE = {
-  de: 466,
-  fr: 370,
-  it: 220,
+  de: 467,
+  fr: 373,
+  it: 221,
 };
 
 function flatten(obj, prefix = "") {

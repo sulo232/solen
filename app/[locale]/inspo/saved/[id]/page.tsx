@@ -8,9 +8,11 @@ import ItemCard from "@/components-legacy/discovery/ItemCard";
 import VideoCard from "@/components-legacy/discovery/VideoCard";
 import DiscoveryGridSkeleton from "@/components-legacy/discovery/DiscoveryGridSkeleton";
 import type { DiscoveryItem } from "@/lib/types";
+import { useTranslations } from "next-intl";
 
 // V3-D414 (Phase 2): a saved collection's detail — its looks in the feed masonry. Focused view (own back).
 export default function SavedCollectionPage() {
+  const tBack = useTranslations("common");
   const params = useParams<{ id: string; locale: string }>()!;
   const router = useRouter();
   const id = params.id;
@@ -52,7 +54,7 @@ export default function SavedCollectionPage() {
       <div className="flex items-center gap-3 px-4 pb-3 pt-4">
         <button
           onClick={() => router.push(`/${locale}/inspo/saved`)}
-          aria-label="Zurück"
+          aria-label={tBack("back")}
           className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-s-border text-s-ink transition-transform duration-150 active:scale-95"
         >
           <ArrowLeft size={18} />

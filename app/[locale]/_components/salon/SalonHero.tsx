@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { FROST_GLASS } from "@/lib/frost-glass";
 import { shareOrCopy } from "@/lib/share";
 import ReportButton from "@/components-legacy/discovery/ReportButton";
+import { useTranslations } from "next-intl";
 
 /**
  * SalonHero — V2-D53.3 (2026-05-11).
@@ -40,6 +41,7 @@ export function SalonHero({
   onOpenLightbox: (startIndex: number) => void;
   onOpenGallery: () => void;
 }) {
+  const tBack = useTranslations("common");
   const router = useRouter();
   const photos = salon.gallery_urls?.length
     ? salon.gallery_urls
@@ -104,7 +106,7 @@ export function SalonHero({
             back/share/heart read as one consistent icon group. */}
         <BackButton
           variant="glass"
-          aria-label="Zurück"
+          aria-label={tBack("back")}
           label="Zurück"
           onClick={() => router.back()}
           className="absolute left-4 top-4"

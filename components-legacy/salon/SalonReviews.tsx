@@ -95,6 +95,7 @@ export default function SalonReviews({
   onReviewSubmitted,
   isOwner = false,
 }: SalonReviewsProps) {
+  const tBack = useTranslations("common");
   const t = useTranslations("salonDetail");
   const [reviewSort, setReviewSort] = useState<"newest" | "highest" | "lowest">("newest");
   const [reviewPage, setReviewPage] = useState(1);
@@ -240,7 +241,7 @@ export default function SalonReviews({
       <div className="flex items-center gap-3">
         <Link
           href={`/${locale}/salon/${salonSlug}#section-reviews`}
-          aria-label="Zurück"
+          aria-label={tBack("back")}
           className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border bg-white transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms] active:ease-glide"
         >
           <ArrowLeft size={20} strokeWidth={2.1} aria-hidden className="text-s-ink" />

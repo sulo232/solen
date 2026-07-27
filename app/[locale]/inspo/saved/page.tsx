@@ -8,11 +8,13 @@ import ItemCard from "@/components-legacy/discovery/ItemCard";
 import VideoCard from "@/components-legacy/discovery/VideoCard";
 import DiscoveryGridSkeleton from "@/components-legacy/discovery/DiscoveryGridSkeleton";
 import type { DiscoveryItem } from "@/lib/types";
+import { useTranslations } from "next-intl";
 
 // Gespeichert: a plain, flat grid of the looks you hearted. The named-collections / boards layer was ditched
 // 2026-06-23 (owner: "the heart icon just saves, simple plain") — this IS the whole saved feature now, and where
 // we keep building on saves. Reached from the heart in the Inspo header. Same masonry + cards as the feed.
 export default function SavedPage() {
+  const tBack = useTranslations("common");
   const params = useParams<{ locale: string }>()!;
   const router = useRouter();
   const locale = params.locale;
@@ -63,7 +65,7 @@ export default function SavedPage() {
       <div className="flex items-center gap-3 px-4 pb-3 pt-4">
         <button
           onClick={() => router.push(`/${locale}/inspo`)}
-          aria-label="Zurück"
+          aria-label={tBack("back")}
           className="grid h-10 w-10 place-items-center rounded-full border border-s-border text-s-ink transition-transform duration-150 active:scale-95"
         >
           <ArrowLeft size={18} />
