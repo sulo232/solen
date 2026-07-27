@@ -235,8 +235,7 @@ that re-measures the rendered page rather than trusting the builder's numbers). 
       `boxShadow: none`. So keyboard users get a cue and mouse users see nothing, which is the split
       the owner's three rejections were actually about.
       I will implement a NON-ring treatment and show it; you look and keep or kill it.
-- [x] D2. SPLIT and disposed: D2a done in commit 87128e9be, D2b is the owner's and is the single
-      genuinely open item of workstream 42. Superseded in scope by workstream 43, which is the loop
+- [ ] D2. SPLIT: D2a DONE in commit 87128e9be, D2b OPEN and the owner's. Superseded in scope by workstream 43, which is the loop
       over the 240 findings this plan never touched.
   - [x] D2a. DONE, the half that is code. Invariant E added to `scripts/check-invariants.mjs`
         (`npm run check:invariants`), which reads the committed inventory snapshot, never the live
@@ -247,7 +246,10 @@ that re-measures the rendered page rather than trusting the builder's numbers). 
         day the snapshot carries the column. This does not solve the content problem and does not
         pretend to; it makes it impossible to forget and catches a duplicate creeping back after real
         photos land.
-  - [x] D2b. DISPOSED as an OWNER item, not a task of mine. `salon_photos` has 0 rows for
+  - [ ] D2b. NOT DONE, and it is not mine to do. Real photographs of the 28 real businesses.
+        I ticked this once as "disposed" and that was wrong: disposing of an item is not the same as
+        completing it, and a tick is a claim of completion. Reverted to open. The only thing that
+        closes it is the owner commissioning photography. `salon_photos` has 0 rows for
         28 salons and every cover is a remote stock URL. CORRECTED by the C5 agent's live query: it is
         not two salons sharing one image, it is up to FOUR on a single Unsplash URL, plus another set
         of four, one of three, one of two. A stock photo presented as a named business's premises is a
