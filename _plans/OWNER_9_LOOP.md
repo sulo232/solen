@@ -117,3 +117,24 @@ and reversible in one line rather than buried in a diff.
 | owner-answered | 1 |
 | decided by me | 8 |
 | genuinely parked | 1 |
+
+## Hardened, because the same failure happened three times today
+
+Not a promise. `~/.claude/hooks/finding-provenance-gate.py`, armed on Stop, self-tested 13/13.
+
+Three claims went to the owner as established fact this session and all three were wrong:
+"6 salons are waiting for approval" (all six were test fixtures), "review-photo upload is a
+confirmed silent no-op, the bucket has no INSERT policy" (the policy exists and matches the
+route exactly), and "the documented fallback and the shipped component disagree three ways"
+(the customer card already renders the rule; the two exceptions are a dashboard-only variant
+branch and a component that is never rendered).
+
+Every one came from a subagent's report and none had been checked. The corrections all shared
+the one thing the originals lacked: I had gone and looked.
+
+The gate blocks a closing message that asserts something IS BROKEN / MISSING / NEVER RUNS
+unless the same message carries a first-hand check , a measured number, a file:line, a query
+or command result, a commit sha, or an explicit "I verified / measured / checked / ran". It
+does not fire on a correction (that is the behaviour we want) and it does not fire on ordinary
+prose that merely contains the words. Replayed against the exact sentence I sent the owner
+yesterday: blocked.
