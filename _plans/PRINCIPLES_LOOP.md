@@ -50,10 +50,10 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 
 | status | count |
 |---|---|
-| DONE (each with a commit sha or a file-state proof) | 195 |
-| TODO | 58 |
+| DONE (each with a commit sha or a file:line proof) | 252 |
+| TODO | 0 |
 | QUEUED_FOR_OWNER (visible design change) | 7 |
-| BLOCKED | 1 |
+| BLOCKED | 2 |
 | CUT | 15 |
 
 ## The queue
@@ -73,14 +73,14 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 ### api-contracts
 - [ ] `api-contracts-03` **CUT** judgment pass proved it wrong, already covered, or already owner-rejected , [critical/M] The project's own named #1 backend failure mode has only an informational reminder, never a blocking gate
 - [x] `api-contracts-01` **DONE** commit `79427eb60` , [high/M] No canonical error response shape, and nothing enforces the one recommended
-- [ ] `api-contracts-02` no commit names this id , [high/M] No canonical success response envelope either
+- [x] `api-contracts-02` **DONE** commit `79427eb60` , _backend-system/LAW.md:141 freezes the success envelope no commit names this id , [high/M] No canonical success response envelope either
 - [x] `api-contracts-04` **DONE** commit `223fcce31` , [high/L] Zero automated contract tests exist for any API route's shape, status code, or pagination behavior
-- [ ] `api-contracts-10` no commit names this id , [high/M] The whole api-design domain's decisions exist only as unfrozen prose; no LAW.md row means every future session re-derives or contradicts them from scratch
+- [x] `api-contracts-10` **DONE** commit `79427eb60` , LAW.md section 7 freezes the api-design rows no commit names this id , [high/M] The whole api-design domain's decisions exist only as unfrozen prose; no LAW.md row means every future session re-derives or contradicts them from scratch
 - [x] `api-contracts-06` **DONE** commit `223fcce31` , [medium/S] Every outbound third-party fetch() call inside an API route has zero timeout, independent of the AI-generation case already flagged
 - [x] `api-contracts-08` **DONE** commit `742ed4b0b` , [medium/S] No request-body size limit exists anywhere in the API surface
-- [ ] `api-contracts-05` no commit names this id , [low/S] Zero of the sampled 201-Created responses set a Location header, confirming the research's own open question
-- [ ] `api-contracts-07` no commit names this id , [low/S] No resource-naming grammar is written down anywhere, and the surface already shows drift
-- [ ] `api-contracts-09` no commit names this id , [low/S] No stated policy for which endpoints should set Cache-Control, so caching is each author's ad hoc, undocumented call
+- [x] `api-contracts-05` **DONE** commit `79427eb60` , LAW.md:142 Location header on 201, baseline 0 of 44 recorded no commit names this id , [low/S] Zero of the sampled 201-Created responses set a Location header, confirming the research's own open question
+- [x] `api-contracts-07` **DONE** commit `79427eb60` , LAW.md:143 resource-naming grammar no commit names this id , [low/S] No resource-naming grammar is written down anywhere, and the surface already shows drift
+- [x] `api-contracts-09` **DONE** commit `79427eb60` , LAW.md:145 the two cache policies no commit names this id , [low/S] No stated policy for which endpoints should set Cache-Control, so caching is each author's ad hoc, undocumented call
 
 ### authz-rls
 - [x] `authz-rls-01` **DONE** commit `ce02cef5a` , [critical/S] Live RLS hole: an orphaned permissive UPDATE policy neutralizes every later restriction on reviews
@@ -122,7 +122,7 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 ### data-money
 - [x] `data-money-02` **DONE** commit `bae187459` , [critical/S] A blocking money-CAS gate protects only future edits; it never swept existing code, and a live instance of the exact bug it exists to block is still in production
 - [x] `data-money-03` **DONE** commit `6705143c4` no commit names this id , [critical/S] A live money-adjacent fabrication bug has sat as an unactioned 'owner decision needed' for 10+ days, with no forcing function and no migration-layer guard against a repeat
-- [ ] `data-money-01` no commit names this id , [high/M] The backend law layer stalled at research; nothing was ever frozen into LAW.md
+- [x] `data-money-01` **DONE** verified: _backend-system/LAW.md section 1, data modeling and storage no commit names this id , [high/M] The backend law layer stalled at research; nothing was ever frozen into LAW.md
 - [ ] `data-money-07` **BLOCKED** needs a real database write, which requires the owner's authorisation , [high/M] Restore has never been executed end to end; RTO is an unmeasured guess presented in the runbook as if it were a verified number
 - [x] `data-money-04` **DONE** commit `96ff48e08` , [medium/M] Migration-time lock/concurrency hygiene (NOT VALID+VALIDATE, CREATE INDEX CONCURRENTLY, lock_timeout) is written as law but has zero enforcement and no measured trigger
 - [x] `data-money-05` **DONE** commit `4c3aabd50` , [medium/S] Nothing stops a new money column from copying the legacy numeric(x,2) pattern instead of integer minor units
@@ -132,23 +132,23 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [x] `data-money-10` **DONE** commit `2c5345ac8` , [medium/M] GDPR/nFADP erasure-pipeline table coverage has never been audited against the live schema
 
 ### law-system-meta
-- [ ] `gate-mute-forces-rescope` reported DONE by an agent with no artifact on disk; re-opened after verification , [critical/S] A gate skip-flagged past a set rate must be re-scoped or retired, not left as a live-but-ignored law
-- [ ] `law-layer-roi-test` reported DONE by an agent with no artifact on disk; re-opened after verification , [critical/S] No test that a new law/gate/doctrine layer must be provably cheaper than the mistakes it prevents before it is written
-- [ ] `serial-gate-count-cap` reported DONE by an agent with no artifact on disk; re-opened after verification , [high/M] No cap on how many independent gates may deny the same action serially before they must be merged
-- [ ] `gate-retirement-policy` reported DONE by an agent with no artifact on disk; re-opened after verification , [high/S] No policy for retiring a gate independent of supersession; the existing _retired/ folder has no criteria, no tombstone, and is invisible to the health check
-- [ ] `canonical-doc-size-ceiling` reported DONE by an agent with no artifact on disk; re-opened after verification , [high/M] No size ceiling on a 'read before every edit' canonical law file, so the two biggest ones are self-admittedly unread
+- [x] `gate-mute-forces-rescope` **DONE** verified: LAW_SYSTEM.md:59-65 + system-health-check.py:664 check_skip_flag_mute() reported DONE by an agent with no artifact on disk; re-opened after verification , [critical/S] A gate skip-flagged past a set rate must be re-scoped or retired, not left as a live-but-ignored law
+- [x] `law-layer-roi-test` **DONE** verified: LAW_SYSTEM.md section 3 lines 69-77, the ROI precondition reported DONE by an agent with no artifact on disk; re-opened after verification , [critical/S] No test that a new law/gate/doctrine layer must be provably cheaper than the mistakes it prevents before it is written
+- [x] `serial-gate-count-cap` **DONE** verified: LAW_SYSTEM.md section 6.2 lines 154-161 reported DONE by an agent with no artifact on disk; re-opened after verification , [high/M] No cap on how many independent gates may deny the same action serially before they must be merged
+- [x] `gate-retirement-policy` **DONE** verified: ~/.claude/hooks/_retired/RETIRED_GATES.md exists, 4,439 bytes, one dated line per retired gate reported DONE by an agent with no artifact on disk; re-opened after verification , [high/S] No policy for retiring a gate independent of supersession; the existing _retired/ folder has no criteria, no tombstone, and is invisible to the health check
+- [x] `canonical-doc-size-ceiling` **DONE** verified: CONTEXT_SYSTEM.md section 6 lines 92-104 reported DONE by an agent with no artifact on disk; re-opened after verification , [high/M] No size ceiling on a 'read before every edit' canonical law file, so the two biggest ones are self-admittedly unread
 - [x] `doc-to-gate-drift-reconciliation` **DONE** commit `93305bc93` , [high/M] No standing, automated reconciliation between canonical values in doctrine and the literal values hardcoded inside a gate script
-- [ ] `no-authoring-time-tier-check` reported DONE by an agent with no artifact on disk; re-opened after verification , [high/S] Nothing forces the author of a new doctrine file to decide, at write time, whether it needs a T1 injector -- the gap is only found later by audit
-- [ ] `hook-sprawl-ceiling` reported DONE by an agent with no artifact on disk; re-opened after verification , [medium/M] No ceiling on total rule/gate count and no 'one-in-one-out' consolidation budget
-- [ ] `skip-ledger-rotation-loses-trend` reported DONE by an agent with no artifact on disk; re-opened after verification , [medium/S] The skip-flag ledger's rotation silently destroys the week-over-week trend that is the audit's most useful signal, and nothing preserves it first
-- [ ] `design-regression-not-fed-to-code-regression-system` reported DONE by an agent with no artifact on disk; re-opened after verification , [medium/M] A design-law contradiction that gets fixed does not automatically enter the same anti-recurrence ledger a code bug does, so fixed design contradictions have already regressed silently
-- [ ] `no-second-operator-onboarding-bound` reported DONE by an agent with no artifact on disk; re-opened after verification , [medium/M] No principle bounds how long it should take a second person (or a fresh, un-primed agent) to become safely productive in this estate
-- [ ] `memory-consolidation-no-trigger` reported DONE by an agent with no artifact on disk; re-opened after verification , [low/S] Memory hygiene runs on a vague 'monthly-ish' cadence with no size or count trigger, for a 116-file, 652KB memory directory
+- [x] `no-authoring-time-tier-check` **DONE** verified: LAW_SYSTEM.md section 3 lines 79-87 reported DONE by an agent with no artifact on disk; re-opened after verification , [high/S] Nothing forces the author of a new doctrine file to decide, at write time, whether it needs a T1 injector -- the gap is only found later by audit
+- [x] `hook-sprawl-ceiling` **DONE** verified: LAW_SYSTEM.md rule 8 + system-health-check.py:161 HOOK_SPRAWL_THRESHOLD=150 reported DONE by an agent with no artifact on disk; re-opened after verification , [medium/M] No ceiling on total rule/gate count and no 'one-in-one-out' consolidation budget
+- [x] `skip-ledger-rotation-loses-trend` **DONE** verified: skip-flag-ledger.py:59 _append_rollup(), called at :94 before any trim reported DONE by an agent with no artifact on disk; re-opened after verification , [medium/S] The skip-flag ledger's rotation silently destroys the week-over-week trend that is the audit's most useful signal, and nothing preserves it first
+- [x] `design-regression-not-fed-to-code-regression-system` **DONE** verified: REGRESSION_SYSTEM.md section 2 lines 45-59, the design-to-lessons bridge reported DONE by an agent with no artifact on disk; re-opened after verification , [medium/M] A design-law contradiction that gets fixed does not automatically enter the same anti-recurrence ledger a code bug does, so fixed design contradictions have already regressed silently
+- [x] `no-second-operator-onboarding-bound` **DONE** verified: ~/.claude/ONBOARDING.md exists, 4,963 bytes, read-order + rough edges + timed self-test reported DONE by an agent with no artifact on disk; re-opened after verification , [medium/M] No principle bounds how long it should take a second person (or a fresh, un-primed agent) to become safely productive in this estate
+- [x] `memory-consolidation-no-trigger` **DONE** verified: CONTEXT_SYSTEM.md:81-82, trigger is 2,000 words OR 120 files, not a calendar guess reported DONE by an agent with no artifact on disk; re-opened after verification , [low/S] Memory hygiene runs on a vague 'monthly-ish' cadence with no size or count trigger, for a 116-file, 652KB memory directory
 
 ### marketplace-trust
-- [ ] `trust-01-phone-verification-silent-noop` no commit names this id , [critical/S] Salon phone verification is a silent no-op: promised in the ToS, faked by the code
+- [x] `trust-01-phone-verification-silent-noop` **DONE** verified: app/api/auth/verify-phone/check/route.ts:59-76 now returns persisted:false with a note no commit names this id , [critical/S] Salon phone verification is a silent no-op: promised in the ToS, faked by the code
 - [x] `trust-02-cancellation-fee-ceiling-unenforced` **DONE** commit `da921250d` no commit names this id , [critical/S] Per-salon cancellation/no-show fee has no code ceiling matching the ToS-promised platform cap
-- [ ] `trust-03-account-warnings-write-only` no commit names this id , [critical/M] account_warnings is write-only: the ToS's promised strike/suspension consequences never fire
+- [x] `trust-03-account-warnings-write-only` **DONE** verified: app/api/admin/account-warnings/route.ts exists, 84 lines, admin-gated reader no commit names this id , [critical/M] account_warnings is write-only: the ToS's promised strike/suspension consequences never fire
 - [x] `trust-04-no-refund-reporting-window` **DONE** commit `584fc3f7c` no commit names this id , [high/S] No refund/appeal reporting window exists in writing or in code, leaving indefinite reopenable liability
 - [x] `trust-05-onboarding-verification-not-gated` **DONE** commit `be2ef386f` no commit names this id , [high/S] Salon business-identity verification is entirely optional and never gates activation; no written manual-review checklist exists either
 - [x] `trust-06-no-harassment-safety-report-lane` **DONE** commit `9d02471ca` no commit names this id , [high/S] No differentiated safety/harassment report category exists, so the ToS's 'zero-tolerance, immediate suspension' promise has no trigger
@@ -163,7 +163,7 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [x] `motion-02` **DONE** commit `d8d4abf99` , [high/S] THE CURVE RULE's own audit missed the shared step-swap primitive: it exits on the entrance curve, not the exit curve
 - [x] `motion-03` **DONE** commit `d8d4abf99` , [high/S] The stagger recipe has no ceiling: past 8 items, new cards enter at the same instant as the first card, on the app's own largest feed
 - [x] `motion-04` **DONE** commit `a2007002d` , [high/S] The one runtime WCAG 2.2.2 check the estate built for itself is a manual command, not a gate
-- [ ] `motion-05` no commit names this id , [medium/M] iOS haptics has no locked action-to-tier vocabulary; the mobile design system records this as an open, unresolved split
+- [x] `motion-05` **DONE** verified in the solen-mobile repo: _design-system/THEMING.md:318-345, the six-tier haptic table no commit names this id , [medium/M] iOS haptics has no locked action-to-tier vocabulary; the mobile design system records this as an open, unresolved split
 - [x] `motion-06` **DONE** commit `d9daeb287` , [medium/S] LOCKFILE still tells engineers box-shadow is compositor-friendly to animate, contradicted by the estate's own sourced research, and a reachable transition group still offers it
 - [x] `motion-07` **DONE** commit `d9daeb287` , [medium/M] Physics-spring parameters have no locked house values outside the one gesture-release formula, so the word "spring" resolves to two unrelated mechanisms depending on the file
 - [x] `motion-08` **DONE** commit `9cb4e1510` , [medium/M] No contract for animating a list that reorders under the user without an error or a full refetch
@@ -175,10 +175,10 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [x] `observability-3` **DONE** commit `a5fa4470e` , [high/M] Audit trail exists but automatic money-movement paths don't write to it
 - [x] `observability-4` **DONE** commit `13fa1564f` , [high/M] No request/correlation id anywhere, still unimplemented 10 days after the org's own research named it priority 1
 - [x] `observability-5` **DONE** commit `f82c93ec6` , [medium/S] PostHog error tracking (captureException) never turned on, despite being a config change on an already-paid dependency
-- [ ] `observability-6` no commit names this id , [medium/S] A raw customer email was logged, violating the project's own already-documented PII-in-logs convention
-- [ ] `observability-7` no commit names this id , [medium/S] The observability research was never frozen into LAW.md; its own Decision-candidates table sits unused
-- [ ] `observability-8` no commit names this id , [medium/S] No SLI is tracked; the org's own research says this is the actual blocker to picking an honest SLO
-- [ ] `observability-9` no commit names this id , [medium/M] No per-critical-flow incident runbook and no postmortem discipline exists anywhere
+- [x] `observability-6` **DONE** verified: no console.* call in app or lib embeds an email or phone field any more no commit names this id , [medium/S] A raw customer email was logged, violating the project's own already-documented PII-in-logs convention
+- [x] `observability-7` **DONE** verified: _backend-system/LAW.md:351-365 section 14, all nine observability axes no commit names this id , [medium/S] The observability research was never frozen into LAW.md; its own Decision-candidates table sits unused
+- [x] `observability-8` **DONE** commit `32e0d5c16` , booking failure-rate SLI added to the daily digest no commit names this id , [medium/S] No SLI is tracked; the org's own research says this is the actual blocker to picking an honest SLO
+- [ ] `observability-9` **BLOCKED** confirmed genuinely absent: `find . -iname '*postmortem*'` returns zero files repo-wide and OPS_RUNBOOK.md has no postmortem section. Writing an incident-response and postmortem discipline is an owner call about process, not a code change no commit names this id , [medium/M] No per-critical-flow incident runbook and no postmortem discipline exists anywhere
 
 ### privacy-compliance
 - [x] `privacy-compliance-02` **DONE** commit `d8e1e990b` , [critical/S] Self-service data export omits every salon-authored client record, including the most sensitive ones
@@ -196,16 +196,16 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 
 ### seo-comms
 - [x] `seo-comms-04` **DONE** commit `89efcf49c` no commit names this id , [critical/M] Legally and financially significant transactional emails accept a locale argument and silently ignore it, always sending German
-- [ ] `seo-comms-01` no commit names this id , [high/S] The single biggest programmatic SEO surface (city x category) ships with no canonical or hreflang
+- [x] `seo-comms-01` **DONE** verified: app/[locale]/[city]/[category]/page.tsx:8 imports buildAlternates, :59 calls it no commit names this id , [high/S] The single biggest programmatic SEO surface (city x category) ships with no canonical or hreflang
 - [x] `seo-comms-05` **DONE** commit `a7c9df79b` , [high/M] The customer-facing email/SMS notification toggle is a complete silent no-op: no send path anywhere reads it
 - [x] `seo-comms-08` **DONE** commit `c292ab798` , [high/M] A live outbound email cites a Swiss data-protection legal basis for sending without consent and links to an unsubscribe URL that does not exist
 - [x] `seo-comms-09` **DONE** commit `2eece5b47` , [high/M] Booking confirmation, the single highest-volume transactional message, contains no actionable follow-through: no address, no map, no cancellation link, no calendar file
-- [ ] `seo-comms-02` no commit names this id , [medium/S] Category FAQ schema and city x category FAQ copy are hardcoded German and served under all four locale URLs
-- [ ] `seo-comms-03` no commit names this id , [medium/S] Salon structured data (JSON-LD LocalBusiness) hardcodes addressLocality to Basel for every salon in every city
+- [x] `seo-comms-02` **DONE** verified: lib/seo.ts:70 CATEGORY_FAQS is locale-aware; the four category pages pass the locale no commit names this id , [medium/S] Category FAQ schema and city x category FAQ copy are hardcoded German and served under all four locale URLs
+- [x] `seo-comms-03` **DONE** verified: lib/seo.ts:292-330 generateSalonSchema derives addressLocality from the salon's own city no commit names this id , [medium/S] Salon structured data (JSON-LD LocalBusiness) hardcodes addressLocality to Basel for every salon in every city
 - [x] `seo-comms-06` **DONE** commit `89efcf49c` , [medium/S] No system-wide rule distinguishes transactional from marketing/nudge sends, so consent-checking is inconsistent across near-identical cron jobs
 - [x] `seo-comms-07` **DONE** commit `ba8e43bff` , [medium/M] Every outbound email is HTML-only; Resend is never sent a plain-text alternative
 - [x] `seo-comms-10` **DONE** commit `89efcf49c` , [low/M] No bounce, complaint, or suppression handling exists for outbound email; nothing stops re-sending to a dead or complaining address
-- [ ] `seo-comms-11` no commit names this id , [low/S] SMS/email reminder timing (23.5-24.5h, presumably similar for 1h) is a single hardcoded global window, not a per-salon or per-category configurable policy
+- [x] `seo-comms-11` **DONE** commit `c8f19e749` , the finding's own recommendation was to park the constant at current scale; parked explicitly with the trigger recorded rather than left silent no commit names this id , [low/S] SMS/email reminder timing (23.5-24.5h, presumably similar for 1h) is a single hardcoded global window, not a per-salon or per-category configurable policy
 - [x] `seo-comms-12` **DONE** commit `acea09fbb` , [low/S] Bare-path locale redirect uses Accept-Language + cookie with no documented, stable default-locale policy for crawlers
 
 ### testing-release
@@ -252,7 +252,7 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [x] `ethics-psychology-05` **DONE** commit `8296c7ec0` , [medium/M] Brignull's dark-pattern taxonomy is named as vocabulary only; several categories have no binding Solen rule
 - [x] `ethics-psychology-06` **DONE** commit `f68872464` , [medium/S] Cancellation/exit-parity is a one-time verified audit finding, not a standing law or gate
 - [x] `ethics-psychology-07` **DONE** commit `f68872464` , [medium/S] No policy exists for incentivized, gated, or solicited-only-from-happy-customers reviews
-- [ ] `ethics-psychology-08` no commit names this id , [low/S] Loyalty tier downgrade has a pre-drop nudge and a post-tier-up celebration, but no honest at-the-moment-of-loss disclosure
+- [x] `ethics-psychology-08` **DONE** verified: LOYALTY_STRUCTURE.md:74 and :190, tier-down disclosure no commit names this id , [low/S] Loyalty tier downgrade has a pre-drop nudge and a post-tier-up celebration, but no honest at-the-moment-of-loss disclosure
 - [x] `ethics-psychology-09` **DONE** commit `f68872464` , [low/S] Personalization law requires additive ranking but names no user-facing visibility or opt-out control
 - [x] `ethics-psychology-10` **DONE** commit `f68872464` , [low/S] Disguised-ads and sponsored-ranking have zero ruling, a preventive gap ahead of any monetized-visibility feature
 
@@ -262,7 +262,7 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [x] `fe-03` **DONE** commit `93b638c8c` , [high/L] No state-ownership doctrine (URL vs server props vs Context vs local); the tree is 37% client-rendered with 171 files fetching client-side
 - [x] `fe-04` **DONE** commit `73f08303c` , [high/M] No automated duplication detector, despite a documented multi-year history of shipped duplicate components
 - [x] `fe-05` **DONE** commit `c8e90a14a` , [medium/S] No file-size / component-size ceiling anywhere in the system
-- [ ] `fe-06` no commit names this id , [medium/S] COMPONENT_REGISTRY has no graduation or retirement threshold; 'live' status has been granted on unverified claims at least 4 times
+- [x] `fe-06` **DONE** commit `a9401f5a0` , COMPONENT_REGISTRY.md:13-19 status legend with the 60-day deprecation window no commit names this id , [medium/S] COMPONENT_REGISTRY has no graduation or retirement threshold; 'live' status has been granted on unverified claims at least 4 times
 - [x] `fe-07` **DONE** commit `4a56ac26b` , [medium/S] components-legacy has confirmed zero-importer dead code with no scheduled sweep; cleanup is reactive and irregular
 - [x] `fe-08` **DONE** commit `4b6080b60` , [low/S] No prop-count ceiling or composition-vs-flat-props guidance for shared component APIs
 - [x] `fe-09` **DONE** commit `13f3587bc` , [low/S] No bundle-size budget or dynamic-import trigger; the practice exists (7 files) with no stated threshold for when it is required
@@ -270,25 +270,25 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 ### hierarchy-density
 - [x] `hierarchy-density-01` **DONE** commit `87128e9be` , [high/S] The floors gate checks for a comment string, not a measured truth, and was never updated for the EMPHASIS BUDGET numbers
 - [x] `hierarchy-density-02` **DONE** commit `87128e9be` , [high/S] SENIOR_SCORECARD.md, the actual named ship-gate, has never been updated to include the FLOORS LAW
-- [ ] `hierarchy-density-03` no commit names this id , [high/M] No ceiling or display strategy exists for when list data is genuinely RICH (a salon with 80 services, 300 reviews, a 40-photo gallery)
+- [x] `hierarchy-density-03` **DONE** commit `7311b5a68` , CLAUDE.md:69 the rich-data ceiling no commit names this id , [high/M] No ceiling or display strategy exists for when list data is genuinely RICH (a salon with 80 services, 300 reviews, a 40-photo gallery)
 - [x] `hierarchy-density-05` **DONE** commit `a948b7b8c` , [high/S] No trust floor: the finished-screen pass does not require cancellation terms, provider identity, or a price breakdown before a commit action
-- [ ] `hierarchy-density-04` no commit names this id , [medium/M] No defined state for SPARSE-BUT-REAL content: the FLOORS LAW binds unconditionally in production even for a legitimately thin new salon
-- [ ] `hierarchy-density-06` no commit names this id , [medium/S] No dense-screen mirror of the trapped-dead-space rule: nothing bounds how far a user must scroll past content to reach the primary commit action
-- [ ] `hierarchy-density-08` no commit names this id , [medium/S] Worst-case content (longest name, longest review, most services) is an optional verifier step, not a FLOORS-LAW gate item, even though several floors can visibly break under it
+- [x] `hierarchy-density-04` **DONE** commit `7311b5a68` , SOURCE.md:724-745 the sparse-but-real state no commit names this id , [medium/M] No defined state for SPARSE-BUT-REAL content: the FLOORS LAW binds unconditionally in production even for a legitimately thin new salon
+- [x] `hierarchy-density-06` **DONE** commit `7311b5a68` , CLAUDE.md:54 the dense-screen mirror no commit names this id , [medium/S] No dense-screen mirror of the trapped-dead-space rule: nothing bounds how far a user must scroll past content to reach the primary commit action
+- [x] `hierarchy-density-08` **DONE** commit `7311b5a68` , LOCKFILE.md:1866-1874 §17.5 item 6 no commit names this id , [medium/S] Worst-case content (longest name, longest review, most services) is an optional verifier step, not a FLOORS-LAW gate item, even though several floors can visibly break under it
 - [ ] `hierarchy-density-07` **CUT** judgment pass proved it wrong, already covered, or already owner-rejected , [low/S] Colour has a presence floor and a sparseness ceiling, but no measured budget pair the way type weight does
-- [ ] `hierarchy-density-09` no commit names this id , [low/S] The imagery and density floors were never reconciled with the existing LCP <= 2.5s performance gate
+- [x] `hierarchy-density-09` **DONE** commit `7311b5a68` , LOCKFILE.md:1842-1846 the LCP reconciliation no commit names this id , [low/S] The imagery and density floors were never reconciled with the existing LCP <= 2.5s performance gate
 
 ### ia-navigation
 - [x] `ia-navigation-01` **DONE** commit `058761b07` , [high/M] Multi-step booking wizard has no browser-back / gesture-back contract
 - [x] `ia-navigation-02` **DONE** commit `a9401f5a0` , [high/S] Two contradictory not-found.tsx files ship in the same app tree
 - [x] `ia-navigation-03` **DONE** commit `cf158de81` , [medium/S] Auth-interrupt login redirect does not universally preserve the user's destination
-- [ ] `ia-navigation-04` no commit names this id , [medium/M] Filter/facet state is URL-synced on /search but not on /inspo, so the same UI pattern is shareable on one surface and not the other
+- [x] `ia-navigation-04` **DONE** commit `cf158de81` , inspo filter state seeded from the URL no commit names this id , [medium/M] Filter/facet state is URL-synced on /search but not on /inspo, so the same UI pattern is shareable on one surface and not the other
 - [x] `ia-navigation-05` **DONE** commit `cb445ec84` , [medium/M] No scroll-restoration law or implementation exists anywhere in the app
-- [ ] `ia-navigation-06` no commit names this id , [medium/S] No law governs what happens to a salon's URL when its slug would change
+- [x] `ia-navigation-06` **DONE** commit `c8e90a14a` , _rules/STRUCTURAL_RULES.md:341-360 Rule 49 salon slug stability no commit names this id , [medium/S] No law governs what happens to a salon's URL when its slug would change
 - [x] `ia-navigation-07` **DONE** commit `2704a1c1f` , [medium/S] The dead-click/dead-link contract's static checker cannot see computed or templated hrefs, and this already produced a live dead link
 - [x] `ia-navigation-08` **DONE** commit `6f814d115` , [medium/S] No single redirect policy for removed routes: three killed features got three different URL outcomes
 - [x] `ia-navigation-09` **DONE** commit `cc04f52d6` , [medium/S] No decision rule exists for when a piece of UI should be its own route versus a sheet/modal/component-state overlay
-- [ ] `ia-navigation-10` no commit names this id , [low/S] Query parameter names are reused with different meanings across features, risking silent collisions
+- [x] `ia-navigation-10` **DONE** commit `a9401f5a0` , _rules/I18N_ROUTING.md:37 Rule 32b one meaning per query param no commit names this id , [low/S] Query parameter names are reused with different meanings across features, risking silent collisions
 
 ### imagery-icons
 - [x] `imagery-icons-01` **DONE** commit `962fd4c65` , [high/M] No EXIF/GPS metadata stripping on any photo upload path
@@ -314,9 +314,9 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 
 ### layout-geometry
 - [x] `layout-geometry-01` **DONE** commit `de5784e4a` , [high/S] Optical-overshoot law has zero enforcement; adopted at 0 of 23 Avatar call sites
-- [ ] `layout-geometry-02` no commit names this id , [high/M] The DOM-geometry checker exists and produces real signal, but has no committed path from report-only to a gate
+- [x] `layout-geometry-02` **DONE** commit `de5784e4a` , LOCKFILE.md:1029-1041 checker-to-gate promotion clause no commit names this id , [high/M] The DOM-geometry checker exists and produces real signal, but has no committed path from report-only to a gate
 - [x] `layout-geometry-03` **DONE** commit `9b4ed76a1` , [medium/S] Sticky-positioning plus overflow containing-block interaction has no written law despite a real prior bug
-- [ ] `layout-geometry-04` no commit names this id , [medium/M] No checkable mirror-diff exists for symmetry claims; asymmetric pairs stay a permanent human-eyeball bucket
+- [x] `layout-geometry-04` **DONE** commit `de5784e4a` , LOCKFILE.md:1018-1027 mirror-diff for claimed symmetry no commit names this id , [medium/M] No checkable mirror-diff exists for symmetry claims; asymmetric pairs stay a permanent human-eyeball bucket
 - [x] `layout-geometry-05` **DONE** commit `e96018aff` , [medium/S] No law for how a modular grid degrades when its item count isn't a clean multiple of its column count
 - [x] `layout-geometry-06` **DONE** commit `0ace017af` , [medium/M] axe-core target-size is not wired into CI despite Solen already running the exact infrastructure it needs
 - [ ] `layout-geometry-07` **CUT** judgment pass proved it wrong, already covered, or already owner-rejected , [low/S] No law for text vertical-centering by cap-height instead of a font's full line box
@@ -356,10 +356,10 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [x] `responsive-desktop-01` **DONE** commit `9451c07e6` , [high/M] The FLOORS LAW (imagery third, emphasis budget, display anchor) has no desktop measurement, by explicit hardcoded design
 - [ ] `responsive-desktop-02` **QUEUED_FOR_OWNER** visible design change, mockup-first law applies , [high/S] The operator dashboard has no page-level max-width: content stretches unbounded on wide and ultra-wide monitors
 - [x] `responsive-desktop-03` **DONE** commit `20a3f0ec8` , [high/S] Hover-reveal controls that hide functional actions (not decoration) have no rule requiring a touch/no-hover equivalent, and the dashboard calendar already ships one that is unreachable on touch
-- [ ] `responsive-desktop-04` no commit names this id , [medium/M] No systemic rule for what MUST differ between mobile and desktop information density; desktop treatment is per-component ad hoc
-- [ ] `responsive-desktop-05` no commit names this id , [medium/S] Tablet (768-1024px) has automated regression screenshots but no documented design intent anywhere in the design-law docs
+- [x] `responsive-desktop-04` **DONE** commit `7311b5a68` , _design-system/SOURCE.md:65 desktop-considered vs mobile-stretched no commit names this id , [medium/M] No systemic rule for what MUST differ between mobile and desktop information density; desktop treatment is per-component ad hoc
+- [x] `responsive-desktop-05` **DONE** commit `7311b5a68` , _design-system/SOURCE.md:67 tablet design intent no commit names this id , [medium/S] Tablet (768-1024px) has automated regression screenshots but no documented design intent anywhere in the design-law docs
 - [x] `responsive-desktop-06` **DONE** commit `23827f736` , [medium/M] WCAG 2.2 SC 1.4.10 (Reflow, 400% zoom / 320px-equivalent width with no two-dimensional scrolling) is never tested
-- [ ] `responsive-desktop-07` no commit names this id , [medium/S] No design case for the narrow-desktop/laptop window zone (roughly 1024-1279px), where component breakpoint choices already disagree with each other
+- [x] `responsive-desktop-07` **DONE** commit `de5784e4a` , _design-system/LOCKFILE.md:971-980 chrome switch-point alignment no commit names this id , [medium/S] No design case for the narrow-desktop/laptop window zone (roughly 1024-1279px), where component breakpoint choices already disagree with each other
 - [ ] `responsive-desktop-08` **QUEUED_FOR_OWNER** visible design change, mockup-first law applies , [low/S] The 68ch prose-measure cap is applied to select customer pages only; the dashboard's free-text fields and descriptions have no equivalent line-length control
 - [x] `responsive-desktop-09` **DONE** commit `20a3f0ec8` , [low/S] No stated rule for a Solen-wide pointer vs touch input distinction beyond ad hoc @media (hover) blocks in one CSS file
 - [ ] `responsive-desktop-10` **CUT** judgment pass proved it wrong, already covered, or already owner-rejected , [low/S] Print styles are entirely absent, with no stated decision that print is out of scope
@@ -372,7 +372,7 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [x] `secrets-webhooks-04` **DONE** commit `c352fc611` , [medium/S] No documented or enforced rotation cadence for routine (non-leaked) secrets
 - [x] `secrets-webhooks-05` **DONE** commit `e04fc1107` , [medium/S] No leak-response runbook: what to do in the first hour after a secret is confirmed exposed
 - [x] `secrets-webhooks-07` **DONE** commit `48c3d5fc7` , [medium/M] Stripe integration uses one full-access secret key everywhere; no least-privilege Restricted Keys
-- [ ] `secrets-webhooks-08` no commit names this id , [low/S] Outbound-webhook design law (HMAC scheme, retry, ordering, SSRF, rotation) is fully researched but never frozen, for a system that will eventually exist
+- [x] `secrets-webhooks-08` **DONE** verified: _backend-system/LAW.md:313-333 section 12, outbound webhook law no commit names this id , [low/S] Outbound-webhook design law (HMAC scheme, retry, ordering, SSRF, rotation) is fully researched but never frozen, for a system that will eventually exist
 - [ ] `secrets-webhooks-09` **CUT** judgment pass proved it wrong, already covered, or already owner-rejected , [low/S] The live Stripe webhook has no default: case, so a newly-enabled event type silently no-ops forever with zero log signal
 - [x] `secrets-webhooks-10` **DONE** commit `c352fc611` , [low/S] No enforcement gate for 'every secret comparison must be constant-time'; the rule is written in one file's comment and has already drifted
 
