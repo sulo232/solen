@@ -752,8 +752,19 @@ Subagents may NOT paraphrase. If a captured Fresha spec needs a phrase variation
 
 ### CTAs
 
-- Primary book on PDP / sidebar: `"Jetzt buchen"` (used 2026-05-27+)
-- Primary book on legacy / sticky mobile: `"Termin buchen"` (kept for back-compat surfaces, prefer "Jetzt buchen" on new work)
+**The book label follows the JOB, not the surface (owner 2026-07-25, "we have so many variations of it,
+like book... we need consistencies and we don't have that"). This SUPERSEDES BY NAME the two rows below
+that pinned `"Jetzt buchen"` to the PDP/sidebar and told new work to prefer it. `"Jetzt buchen"` is
+RETIRED and graveyarded (REMOVED.md line "jetzt buchen cta label variant"): it was `"Termin buchen"` with
+an adverb that added nothing. Applied in 62f14b274; only the salon-owner dashboard rebook-nudge copy (a
+different actor) and one transactional email sentence still carry the old phrase, both named exceptions.**
+
+- Page-level book commit (PDP, sidebar, sticky mobile bar, a modal's single ink action): `"Termin buchen"`
+- Row inside a services / bundles list: `"Buchen"` (the list heading already supplies the noun)
+- Picker row (choose one of several): `"Auswählen"`
+- Walk-in queue: `"Anstehen"` (joining a queue is genuinely a different action, not a booking)
+- ~~Primary book on PDP / sidebar: `"Jetzt buchen"` (used 2026-05-27+)~~ , RETIRED 2026-07-25, see above
+- ~~Primary book on legacy / sticky mobile: `"Termin buchen"` (kept for back-compat surfaces, prefer "Jetzt buchen" on new work)~~ , the label is now the rule, not a back-compat fallback
 - Homepage hero CTA: `"Termine finden"`
 - Service-row CTA: `"Buchen"`
 - Buy buttons (gift card / vouchers): `"Kaufen"`
