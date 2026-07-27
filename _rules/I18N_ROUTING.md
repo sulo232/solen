@@ -49,7 +49,8 @@ ls "app/[locale]/inspo/"
 ### Rule 35: FLUID LAYOUTS FOR TEXT CONTAINERS
 - **NEVER** use fixed-width text containers (e.g., `w-48`, `w-64`) that assume English or German word lengths.
 - **ALWAYS** use padding (`p-4`, `px-6`) and allow containers to size fluidly, up to a `max-w-*`.
-- **Reasoning**: German copy is typically 30% longer than English and features extensive compound words. Fixed widths clip translations.
+- **Reasoning**: German AND French copy typically run 15-35% longer than English depending on string length (W3C internationalization text-expansion guidance; no single fixed percentage). This rule is not German-specific: `messages/fr.json` alone has 5669+ leaf strings running through the same fixed-height buttons/pills/chips this rule protects. Fixed widths clip translations in any of the three non-English locales, not only German.
+- **Fixed-HEIGHT single-line controls (copy-i18n-09, 2026-07-27):** fluid WIDTH does not fix a fixed-height, single-line control (the locked `h-11` button/pill/icon-button row, CLAUDE.md design contract). Before shipping a new button/CTA copy key, verify the LONGEST of the four locale strings against the button's max width: either the button grows to two lines gracefully by design, or the string is measured and does not wrap/clip. Checklist item, not (yet) an automated gate: screenshot each locale's longest CTA string at `h-11` as part of the mockup-first / verifier-loop pipeline (project CLAUDE.md rule 9) before marking a new button copy key done.
 
 ### Rule 36: STYLED LOCALE-AWARE 404 PAGES
 - The `not-found.tsx` component MUST follow the current design system (see `_tasks/SOLEN_DESIGN.md`). Note: the previous Zone 1/2/3/4 language is retired.
