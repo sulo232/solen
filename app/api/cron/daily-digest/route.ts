@@ -180,6 +180,55 @@ export async function GET(req: NextRequest) {
       }
     }
 
+    // 6. observability-8: booking failure rate, trended over the last 7 Zurich
+    // days. "Created" and "completed" above are raw counts; neither answers
+    // "how often does a booking actually fail," which _backend-system's own
+    // observability research (section 3) names as the actual missing baseline
+    // before an honest SLO can be picked. A "failed" attempt here = a booking
+    // the system itself auto-cancelled because the customer/salon flow never
+    // completed (abandon-sweep's payment_timeout, pending-timeout's no-response),
+    // not a normal voluntary cancellation by choice. One query, bucketed in JS
+    // since a 28-salon dataset is small enough that a GROUP BY RPC isn't needed yet.
+    {
+      const FAILURE_REASONS = ["abandoned_payment_timeout", "automatic_timeout_no_response"];
+      const sevenDaysAgoStr = new Date(Date.UTC(ty, tm - 1, td - 7)).toISOString().split("T")[0];
+      const windowStart = zurichWallClockToUtc(sevenDaysAgoStr, 0, 0);
+      const { data: recentBookings, error } = await admin
+        .from("bookings")
+        .select("created_at, cancellation_reason")
+        .gte("created_at", windowStart.toISOString())
+        .lt("created_at", dayEnd.toISOString());
+      if (error) {
+        console.error("[daily-digest] booking-failure-rate query failed:", error.message);
+        errors.push(`booking-failure-rate query failed: ${error.message}`);
+      } else {
+        sectionsOk++;
+        const totalByDay = new Map<string, number>();
+        const failedByDay = new Map<string, number>();
+        for (const row of recentBookings ?? []) {
+          if (!row.created_at) continue;
+          const dayKey = new Date(row.created_at).toLocaleDateString("en-CA", { timeZone: "Europe/Zurich" });
+          totalByDay.set(dayKey, (totalByDay.get(dayKey) ?? 0) + 1);
+          if (FAILURE_REASONS.includes(row.cancellation_reason ?? "")) {
+            failedByDay.set(dayKey, (failedByDay.get(dayKey) ?? 0) + 1);
+          }
+        }
+        const dayKeys: string[] = [];
+        for (let i = 6; i >= 0; i--) {
+          dayKeys.push(new Date(Date.UTC(ty, tm - 1, td - i)).toISOString().split("T")[0]);
+        }
+        const items = dayKeys
+          .map((day) => {
+            const total = totalByDay.get(day) ?? 0;
+            const failed = failedByDay.get(day) ?? 0;
+            const pct = total > 0 ? ((failed / total) * 100).toFixed(1) : "0.0";
+            return `<li>${escapeHtml(day)}: <strong>${failed}/${total}</strong> failed (${pct}%)</li>`;
+          })
+          .join("");
+        sections.push(`<li>Booking failure rate, last 7 days:<ul>${items}</ul></li>`);
+      }
+    }
+
     if (sections.length > 0) {
       try {
         await sendEmail({
@@ -201,7 +250,7 @@ export async function GET(req: NextRequest) {
     return {
       sent: sections.length > 0 && errors.every((e) => !e.startsWith("sendEmail")),
       sectionsOk,
-      sectionsTotal: 5,
+      sectionsTotal: 6,
       processed: sectionsOk,
       ...(errors.length ? { errors } : {}),
     };
