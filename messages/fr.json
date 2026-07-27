@@ -2485,7 +2485,15 @@
       "cancel": "Annuler",
       "rejectAndSendEmail": "Refuser et envoyer l'e-mail",
       "approveError": "Échec de la validation. Veuillez réessayer.",
-      "rejectError": "Échec du refus. Veuillez réessayer."
+      "rejectError": "Échec du refus. Veuillez réessayer.",
+      "checklistTitle": "Avant de valider, vérifier :",
+      "checklistItems": [
+        "Le nom et l'adresse correspondent à une vraie entreprise (site web, présence sur un site d'avis, ou entrée au registre du commerce sur zefix.ch)",
+        "Le numéro de téléphone est réel et répond",
+        "L'adresse correspond à un véritable local commercial (Street View)",
+        "Les documents téléchargés (le cas échéant) sont lisibles et correspondent au nom du salon",
+        "Aucun avertissement de doublon affiché ci-dessous"
+      ]
     },
     "badgeManagerPage": {
       "pageTitle": "Gestion des badges",

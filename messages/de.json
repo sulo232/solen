@@ -2503,7 +2503,15 @@
       "cancel": "Abbrechen",
       "rejectAndSendEmail": "Ablehnen & E-Mail senden",
       "approveError": "Genehmigung fehlgeschlagen. Bitte erneut versuchen.",
-      "rejectError": "Ablehnung fehlgeschlagen. Bitte erneut versuchen."
+      "rejectError": "Ablehnung fehlgeschlagen. Bitte erneut versuchen.",
+      "checklistTitle": "Vor der Genehmigung prüfen:",
+      "checklistItems": [
+        "Name + Adresse gehören zu einem echten Geschäft (Website, Bewertungsseite oder Handelsregister-Treffer auf zefix.ch)",
+        "Telefonnummer ist echt und wird beantwortet",
+        "Adresse entspricht einem tatsächlichen Ladenlokal (Street View)",
+        "Hochgeladene Dokumente (falls vorhanden) sind lesbar und passen zum Salonnamen",
+        "Kein Duplikat-Hinweis unten angezeigt"
+      ]
     },
     "badgeManagerPage": {
       "pageTitle": "Badge-Verwaltung",

@@ -2467,7 +2467,15 @@
       "cancel": "Annulla",
       "rejectAndSendEmail": "Rifiuta e invia e-mail",
       "approveError": "Approvazione non riuscita. Riprova.",
-      "rejectError": "Rifiuto non riuscito. Riprova."
+      "rejectError": "Rifiuto non riuscito. Riprova.",
+      "checklistTitle": "Prima di approvare, verificare:",
+      "checklistItems": [
+        "Nome e indirizzo corrispondono a un'attività reale (sito web, presenza su siti di recensioni o riscontro nel registro di commercio su zefix.ch)",
+        "Il numero di telefono è reale e risponde",
+        "L'indirizzo corrisponde a un vero negozio (Street View)",
+        "I documenti caricati (se presenti) sono leggibili e corrispondono al nome del salone",
+        "Nessun avviso di duplicato mostrato sotto"
+      ]
     },
     "badgeManagerPage": {
       "pageTitle": "Gestione badge",

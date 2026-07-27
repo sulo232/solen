@@ -2493,7 +2493,15 @@
       "cancel": "Cancel",
       "rejectAndSendEmail": "Reject & send email",
       "approveError": "Approval failed. Please try again.",
-      "rejectError": "Rejection failed. Please try again."
+      "rejectError": "Rejection failed. Please try again.",
+      "checklistTitle": "Before approving, verify:",
+      "checklistItems": [
+        "Name + address match a real business (a website, review-site presence, or a zefix.ch commercial-register hit)",
+        "Phone number is real and answers a call",
+        "Address resolves to an actual storefront on Street View",
+        "Uploaded documents (if any) are legible and match the salon name",
+        "No duplicate-listing warning shown below"
+      ]
     },
     "badgeManagerPage": {
       "pageTitle": "Badge management",
