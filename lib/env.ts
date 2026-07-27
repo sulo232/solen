@@ -41,6 +41,21 @@ const serverEnvSchema = z.object({
     })
     .optional(),
   STRIPE_WEBHOOK_SECRET: z.string().startsWith("whsec_").optional(),
+  // secrets-webhooks-07: this ONE full-access key is used across every
+  // Stripe-touching route today (webhook handler, payment-intent creation,
+  // Connect transfers, disputes, payouts), so a code-injection bug in ANY one
+  // of those routes has the blast radius of the whole Stripe account. Not
+  // fixed retroactively (would need real Stripe-dashboard provisioning of a
+  // scoped key, an owner action, not a code change); this optional field is
+  // the landing spot for the FIRST narrow-scope route (e.g. a read-only
+  // reporting job) once one exists, so it isn't rejected by this schema. See
+  // LAW.md section 8c for the least-privilege guidance this field backs.
+  STRIPE_RESTRICTED_KEY: z
+    .string()
+    .refine((v) => v.startsWith("rk_live_") || v.startsWith("rk_test_"), {
+      message: "STRIPE_RESTRICTED_KEY must start with rk_live_ or rk_test_",
+    })
+    .optional(),
 
   // ── Resend (email) ────────────────────────────────
   RESEND_API_KEY: z.string().startsWith("re_").optional(),

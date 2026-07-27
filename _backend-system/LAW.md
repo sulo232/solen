@@ -226,6 +226,34 @@ webhook secret, rotated far less often, DOES support a graceful dual-secret
 window. This is exactly the kind of detail meant to be read before an
 incident, not discovered during one.
 
+### 8c. Stripe key scoping (secrets-webhooks-07, frozen 2026-07-27)
+
+One full-access `STRIPE_SECRET_KEY` is used across every Stripe-touching
+route today (the webhook handler, payment-intent creation, Connect
+transfers, disputes, payouts). A code-injection or SSRF-adjacent bug in ANY
+one of those routes has the blast radius of the ENTIRE Stripe account, not
+just the capability that route actually needs.
+
+Decision: the full `sk_live_`/`sk_test_` key stays reserved for the routes
+that genuinely need broad access (the webhook handler reacts to any event
+type; payment-intent/Connect-transfer creation needs write access across
+several resources). Any FUTURE route that only needs a narrow, mostly-read
+slice (a reporting job, a read-only reconciliation script, a new partner
+integration that never creates charges) uses a Stripe Restricted Key
+(`rk_live_`/`rk_test_`) scoped to exactly what it needs, provisioned in the
+Stripe Dashboard under Developers > API keys > Create restricted key.
+`lib/env.ts` now validates an optional `STRIPE_RESTRICTED_KEY` (this session,
+secrets-webhooks-07) so that field exists and is ready the moment a route
+needs it; the actual key itself is NOT provisioned by this freeze, that is
+an owner action in the Stripe Dashboard, not a code change.
+
+**Not yet frozen (owner/provisioning-dependent):** no route needing a
+Restricted Key exists yet, so no key has actually been created. When the
+first such route is built, provision its `rk_` key with only that route's
+required scopes, set it as `STRIPE_RESTRICTED_KEY` (or a route-specific
+named var if more than one narrow-scope route ever exists), and have that
+route import it instead of `STRIPE_SECRET_KEY`.
+
 ---
 
 ## 9. Rate limiting
