@@ -1303,3 +1303,38 @@ select:focus-visible {
     border-color: var(--color-border) !important;
   }
 }
+
+/* Forced-colors mode (Windows/Edge High Contrast). color-tokens-10, 2026-07-27.
+   forced-colors: active fires when the OS has a forced-colors theme on
+   (practically, Windows High Contrast Mode). The browser already remaps most
+   author colors to a small system palette automatically; this block covers
+   the two places that breaks for Solen specifically, without disabling the
+   feature (never a blanket forced-color-adjust: none on the page):
+   1. State signalled by a BACKGROUND FILL ALONE collapses once forced-colors
+      normalizes backgrounds (the "selected = calm grey sunken fill" law,
+      CLAUDE.md taste rule 3). Give any element already marked selected/active
+      via a real ARIA attribute a visible system-color border too, so the
+      distinction survives the remap.
+   2. A semantic color that IS the message (star rating, success check, error
+      state) is exempted from forced-colors, the same carve-out WCAG's own
+      forced-colors guidance recommends for meaningful non-text graphics
+      (color never the sole carrier, RATIONALE.md section 2 T1). */
+@media (forced-colors: active) {
+  [aria-selected="true"],
+  [aria-checked="true"],
+  [aria-current="true"],
+  [aria-current="page"] {
+    border: 1px solid Highlight;
+  }
+
+  .text-s-star,
+  .fill-s-star,
+  .text-s-success,
+  .fill-s-success,
+  .bg-s-success,
+  .text-s-error,
+  .fill-s-error,
+  .bg-s-error {
+    forced-color-adjust: none;
+  }
+}
