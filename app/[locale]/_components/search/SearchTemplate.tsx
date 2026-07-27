@@ -88,6 +88,7 @@ import type { SalonCategory } from "@/lib/types";
 import { getCityName, getCityCoords, slugFromCity, DEFAULT_CITY_SLUG, ALL_CITIES_PARAM, type CitySlug } from "@/lib/cities";
 import { formatDateLabel, nextAvailableSlotLabel } from "@/lib/format";
 import { useActiveCities } from "@/hooks/useActiveCities";
+import { useScrollRestoration } from "@/lib/hooks/useScrollRestoration";
 
 type LucideIcon = React.ComponentType<{ size?: number; strokeWidth?: number }>;
 
@@ -536,6 +537,12 @@ export default function SearchTemplate({
   // Walk-in live availability per salon — only fetched when the walk_in filter is on.
   const [walkinAvail, setWalkinAvail] = React.useState<Record<string, { waitMinutes: number; waitMinutesMax: number; queueLength: number }>>({});
   const [mobileView, setMobileView] = React.useState<"list" | "map">("list");
+
+  // ia-navigation-05: restore the results' scroll position on back-navigation from a
+  // salon PDP, instead of resetting to the top of the list. Covers the default
+  // window-scroll list/grid layout; the map bottom-sheet's own inner scroll container
+  // is a separate scroll context and is out of scope here.
+  useScrollRestoration(!loading && salons.length > 0);
   // V3-D380: mobile map sheet — DRAG the handle to resize (snaps to peek/expanded
   // on release); a plain tap toggles. sheetTopPx = the sheet's viewport top in px
   // (null = the 55% peek default). Pointer events cover touch + mouse.
