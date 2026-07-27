@@ -541,6 +541,23 @@ These are non-negotiable across the system. Drift-checker can flag deviations.
 - ❌ Auto-playing motion (carousel auto-advance, hero zoom) without user input — users hate hijacked attention
 - ❌ Hover lift on touch-only devices — covered by `@media (hover: hover)` if needed (most Tailwind hover utilities handle this automatically)
 
+**Pointer vs touch, the house rule (responsive-desktop-09, 2026-07-27):** the line above and the
+media-first-card line below (§6.7) are both special cases of ONE rule, named here so a new component
+gets checked against the rule instead of each author re-deciding: pointer-fine/hover-hover input gets
+progressive enhancement (hover-lift, hover-reveal decoration, cursor-tracked tilt); pointer-coarse/
+hover-none input gets an ALWAYS-VISIBLE or tap-triggered equivalent for anything FUNCTIONAL. The two
+existing lines cover the decorative case, where losing the effect on touch costs nothing. They do not
+cover a control whose only way to become clickable is a hover reveal starting from `opacity-0` — that
+is a dead click by omission on any touch device, not a graceful degradation, and is a DISTINCT,
+higher-severity case (responsive-desktop-03, 2026-07-27; found live and fixed in
+`app/[locale]/dashboard/calendar/page.tsx`'s slot-delete and add-slot controls, which shipped
+hover-only with no `md:`/pointer gate — contrast the correct pattern already at
+`app/[locale]/_components/homepage/Entdecken.tsx`: `opacity-100 md:opacity-0 group-hover:md:opacity-100`,
+visible by default, hover-hidden only at `md` and up). Rule: any `opacity-0` → `group-hover:opacity-100`
+reveal on an element containing a functional control (`onClick`, a `<button>`, `role="button"`) must be
+gated the same way — visible-by-default, hover-hidden only at `md:` and up — never hover-only with no
+touch fallback.
+
 ### §6.6 · GPU-compositing rules (mobile perf)
 
 Required hints for smooth motion:

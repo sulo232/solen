@@ -256,6 +256,22 @@ HAIRLINE_OPACITY_RE = re.compile(r"(?<!:)\bborder-s-ink/(?:[0-9.]+|\[[0-9.]+\])"
 # a gate rule instead of a doc.
 A18_AVAIL_SIGNAL_RE = re.compile(r"<Clock|\b\d{1,2}:\d{2}\b|heute|morgen|Frei in|nextSlot", re.IGNORECASE)
 
+# A23 — ungated functional hover-reveal (responsive-desktop-03/09, 2026-07-27).
+# `opacity-0` -> `group-hover(/name)?:opacity-100` with no `md:` (or other
+# pointer) gate makes a control PERMANENTLY UNREACHABLE on touch/no-hover input
+# -  a dead click by omission, not the graceful decorative-hover-lift loss
+# SOURCE.md §6.5 already covers. Found live in
+# app/[locale]/dashboard/calendar/page.tsx (slot-delete + add-slot controls);
+# fixed there to `opacity-100 md:opacity-0 group-hover:md:opacity-100` (visible
+# by default, hover-hidden only at md+, see Entdecken.tsx for the source
+# pattern). The negative lookbehind on `opacity-0` and the requirement that
+# `opacity-100` NOT be immediately preceded by `md:` both skip the already-
+# gated form. Decorative-only reveals (no functional marker nearby) are not
+# flagged - scan_text below only raises this when a `<button`, `onClick=`, or
+# `role="button"` marker appears within a small surrounding-line window.
+UNGATED_HOVER_REVEAL_RE = re.compile(r"(?<!md:)\bopacity-0\b[^\"]*\bgroup-hover(?:/[\w-]+)?:opacity-100\b")
+A23_FUNCTIONAL_MARKER_RE = re.compile(r"<button\b|onClick=|role=[\"']button[\"']", re.IGNORECASE)
+
 # A24 — banned font-family (typography-02, 2026-07-27). No font-family drift rule
 # existed at all before this: the finding that named this gap assumed A-something
 # already caught `font-family:monospace`/Geist and just needed wider scan globs to
@@ -960,6 +976,21 @@ def scan_text(text: str, rel: str, respect_inline_skip: bool = False) -> list[Fi
                 snippet=line,
                 recommendation="The green availability pill was REMOVED by the owner (V3-D443). Card availability = plain ink text (Clock + time in text-s-ink). Do not re-add a green pill.",
             ))
+
+        # A23 — ungated functional hover-reveal (responsive-desktop-03/09, 2026-07-27).
+        # Only fires when a functional marker (<button, onClick=, role="button") is
+        # found within a small window around the match - a decorative-only reveal
+        # (SOURCE.md §6.5's already-covered case) is not flagged.
+        if UNGATED_HOVER_REVEAL_RE.search(code_line):
+            window_start = max(0, ln_no - 3)
+            window_end = min(len(all_lines), ln_no + 1)
+            window_text = "\n".join(all_lines[window_start:window_end])
+            if A23_FUNCTIONAL_MARKER_RE.search(window_text):
+                findings.append(Finding(
+                    file=rel, line=ln_no, rule="A23: ungated functional hover-reveal (unreachable on touch)",
+                    snippet=line,
+                    recommendation="`opacity-0` -> `group-hover:opacity-100` with no `md:`/pointer gate makes this control PERMANENTLY UNREACHABLE on touch. Use `opacity-100 md:opacity-0 group-hover:md:opacity-100` (visible by default, hover-hidden only at md+ - see app/[locale]/_components/homepage/Entdecken.tsx). If this reveal is purely decorative (no functional control inside), add `drift-ok`.",
+                ))
 
         # B1 — dead onClick
         if EMPTY_ONCLICK_RE.search(line):

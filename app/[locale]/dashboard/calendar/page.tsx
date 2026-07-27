@@ -950,7 +950,7 @@ export default function CalendarPage() {
                                         title={staffMember ? staffMember.name : undefined}>
                                         {staffMember ? staffMember.name.split(" ")[0] : s.status === "booked" ? t("statusBooked") : s.status === "blocked" ? t("statusBlocked") : t("statusFree")}
                                         <button onClick={(e) => { e.stopPropagation(); deleteSlot(s.id); }}
-                                          className="absolute top-0 right-0 opacity-0 group-hover/slot:opacity-100 p-0.5 text-current"><X size={8} /></button>
+                                          className="absolute top-0 right-0 opacity-100 md:opacity-0 group-hover/slot:md:opacity-100 p-0.5 text-current"><X size={8} /></button>
                                       </div>
                                     )}
                                   </Draggable>
@@ -958,7 +958,7 @@ export default function CalendarPage() {
                               })}
                               {provided.placeholder}
                               {cellSlots.length === 0 && !snapshot.isDraggingOver && (
-                                <div className="opacity-0 group-hover:opacity-100 text-[12px] text-s-coral absolute inset-0 flex items-center justify-center"><Plus size={10} /></div>
+                                <div className="opacity-100 md:opacity-0 group-hover:md:opacity-100 text-[12px] text-s-coral absolute inset-0 flex items-center justify-center"><Plus size={10} /></div>
                               )}
                             </div>
                           )}
@@ -1029,14 +1029,14 @@ export default function CalendarPage() {
                                     style={{ ...dragProvided.draggableProps.style }}>
                                     {s.status === "booked" ? t("statusBooked") : s.status === "blocked" ? t("statusBlocked") : t("statusFree")}
                                     <button onClick={(e) => { e.stopPropagation(); deleteSlot(s.id); }}
-                                      className="absolute top-0 right-0 opacity-0 group-hover/slot:opacity-100 p-0.5 text-current"><X size={8} /></button>
+                                      className="absolute top-0 right-0 opacity-100 md:opacity-0 group-hover/slot:md:opacity-100 p-0.5 text-current"><X size={8} /></button>
                                   </div>
                                 )}
                               </Draggable>
                             ))}
                             {provided.placeholder}
                             {cellSlots.length === 0 && !snapshot.isDraggingOver && (
-                              <div className="opacity-0 group-hover:opacity-100 text-[12px] text-s-coral absolute inset-0 flex items-center justify-center"><Plus size={10} /></div>
+                              <div className="opacity-100 md:opacity-0 group-hover:md:opacity-100 text-[12px] text-s-coral absolute inset-0 flex items-center justify-center"><Plus size={10} /></div>
                             )}
                           </div>
                         )}
