@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { ACTIVE_SALON_COOKIE } from "@/lib/active-salon";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { validateBody, salonsActiveSchema } from "@/lib/validations";
 
 // POST /api/salons/active { salon_id } — set the owner's active salon.
 // Ownership-checked; persists the choice in the `solen_active_salon` cookie that
@@ -16,10 +17,12 @@ export async function POST(req: NextRequest) {
   const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
 
-  const { salon_id } = await req.json().catch(() => ({}));
-  if (!salon_id || typeof salon_id !== "string") {
+  const rawBody = await req.json().catch(() => ({}));
+  const { data: validated, error: validationError } = validateBody(salonsActiveSchema, rawBody);
+  if (validationError) {
     return NextResponse.json({ error: "salon_id required" }, { status: 400 });
   }
+  const { salon_id } = validated;
 
   // Never let a user pin a salon they don't own.
   const { data: owned } = await supabase

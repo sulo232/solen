@@ -1420,6 +1420,37 @@ export const profileFavoritesSchema = z.object({
 
 // PATCH /api/slots/[id]: two accepted body shapes (new drag-and-drop starts_at/ends_at,
 // or legacy date/start_time), plus an optional staff_member_id reassignment.
+export const salonsActiveSchema = z.object({
+  salon_id: uuid,
+});
+
+// Swiss UID / MWST number, loose shape check (structure only, not Mod11 checksum).
+// null or "" clears the field; a non-empty string must match the shape.
+const SWISS_UID_RE = /^CHE-?\d{3}\.?\d{3}\.?\d{3}(\s*(MWST|TVA|IVA|VAT))?$/i;
+export const salonsMinePatchSchema = z.object({
+  about_text_de: z.string().max(5000).optional(),
+  about_text_en: z.string().max(5000).optional(),
+  about_text_fr: z.string().max(5000).optional(),
+  about_text_it: z.string().max(5000).optional(),
+  vat_registered: z.boolean().optional(),
+  vat_number: z
+    .string()
+    .nullable()
+    .refine((v) => v == null || v.trim() === "" || SWISS_UID_RE.test(v.trim()), {
+      message: "Invalid VAT number: expected a Swiss UID like CHE-123.456.789 MWST.",
+    })
+    .optional(),
+});
+
+export const notifyReviewPostedSchema = z.object({
+  review_id: uuid,
+});
+
+export const notifyReviewRepliedSchema = z.object({
+  review_id: uuid,
+  reply_text: z.string().max(2000).optional(),
+});
+
 export const discoveryCollectionCreateSchema = z.object({
   name: z.string().trim().min(1).max(60),
   is_public: z.boolean().optional(),

@@ -6,6 +6,7 @@ import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, reviewRepliedEmail } from "@/lib/email";
 import { getServerEnv } from "@/lib/env";
 import { constantTimeStringEqual } from "@/lib/cron-auth";
+import { validateBody, notifyReviewRepliedSchema } from "@/lib/validations";
 
 // Internal-only route (invoked server-to-server by app/api/reviews/[id]/respond/route.ts).
 // Never public: it sends email as an open relay and would otherwise let anyone
@@ -20,8 +21,10 @@ export async function POST(req: NextRequest) {
     }
 
     const admin = createAdminSupabaseClient();
-    const { review_id, reply_text } = await req.json();
-    if (!review_id) return NextResponse.json({ error: "missing review_id" }, { status: 400 });
+    const rawBody = await req.json();
+    const { data: validated, error: validationError } = validateBody(notifyReviewRepliedSchema, rawBody);
+    if (validationError) return NextResponse.json({ error: "missing review_id" }, { status: 400 });
+    const { review_id, reply_text } = validated;
 
     const { data: review } = await admin.from("reviews")
       .select("*, salons(name, slug), profiles!user_id(email, locale)")
