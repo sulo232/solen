@@ -7,6 +7,7 @@ import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 import { analyzeDiscoveryImage, analyzeDiscoveryTikTok, translateDiscoveryI18n } from "@/lib/ai-vision";
 import { validateBody, adminDiscoveryBackfillSchema } from "@/lib/validations";
 import { getServerEnv } from "@/lib/env";
+import { assertSafeFetchUrl } from "@/lib/security/ssrf-guard";
 
 /**
  * POST /api/admin/discovery/backfill
@@ -126,6 +127,19 @@ export async function POST(req: NextRequest) {
       }
 
       // Test if image is fetchable
+      // input-abuse-04 (2026-07-27): the isTikTok branch above is our own same-origin
+      // proxy route (already SSRF-guarded at app/api/discovery/thumb/[id]/route.ts); the
+      // non-TikTok branch is item.image_url/tiktok_thumbnail_url, a DB column populated by
+      // the import pipeline, so guard it here before the fetch fires.
+      if (!isTikTok) {
+        try {
+          await assertSafeFetchUrl(imageUrl);
+        } catch (guardErr) {
+          results.push({ id: item.id, style_name: null, status: `image_fetch_error: ${String(guardErr)}` });
+          errors++;
+          continue;
+        }
+      }
       let imageRes;
       try {
         imageRes = await fetch(imageUrl, { signal: AbortSignal.timeout(10000) });
