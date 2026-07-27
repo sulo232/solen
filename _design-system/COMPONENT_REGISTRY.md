@@ -213,8 +213,13 @@ _(none currently: registry just initialized 2026-05-26)_
 1. **Step 1 of every agent brief is to print this file's contents.** If you can't recite the existing components, you're about to recreate something.
 2. **Before creating a NEW component:** check above. Use existing if it fits. If close-but-not-quite, EXTEND the existing component (add a variant) instead of forking.
 3. **If a genuine new component is needed:** add a row to "Proposed" first, then build, then move to the appropriate locked section. All in the same turn as writing the `.tsx` + `_design-system/components/<Name>.md`.
-4. **The .md doc is mandatory** (per CLAUDE.md rule). Must include: Purpose, Layer (1/2/3 from §14.0 decision tree), Public API, Visual signature, Motion, Do/Don't, Edge cases, Provenance, Related.
+4. **The .md doc is mandatory** (per CLAUDE.md rule). Must include: Purpose, Layer (1/2/3 from §14.0 decision tree), **Container** (ia-navigation-09, 2026-07-27, see below), Public API, Visual signature, Motion, Do/Don't, Edge cases, Provenance, Related.
 5. **The `Reference:` line is mandatory** in section-level .md docs (e.g., `_design-system/sections/<route>/<section>.md`): point at the Fresha screenshot you measured against.
+6. **Container (ia-navigation-09): route vs sheet/modal is a NAMED decision, not a default.** Before building any multi-step or substantial piece of interactive UI, state in the `.md` doc's Purpose section which it is, and why:
+   - **ROUTE** (deep-linkable, back-button-navigable, indexable, survives refresh): the content is shareable, bookmarkable, or worth returning to directly.
+   - **SHEET/MODAL** (ephemeral, layered over a route, closes to the exact state the route was already in): the content is transient and only makes sense in the context of what it was opened from.
+
+   This project has already made the call correctly more than once but only as scattered, undocumented precedent: reviews are a modal *over* a real route (`_docs/FRONTEND.md:1017`, "(modal over /[locale]/salon/[slug]/reviews)"), and `SalonServicesSheet` was deliberately RETIRED in favor of deep-linking to `/salon/[slug]/booking` (`_design-system/REMOVED.md:86`, "now Alle ansehen deep-links to /salon/[slug]/booking"), both showing a bias toward routes for substantial, resumable content. The booking wizard makes the opposite choice (pure in-memory state, no route per step) for content that is arguably just as substantial. State the choice explicitly so the next multi-step flow doesn't have to reverse-engineer it from precedent.
 
 ---
 
