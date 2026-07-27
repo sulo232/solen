@@ -168,3 +168,31 @@ copy-pasting a sibling route's comment. Not gate-able by grep (verifying "every 
 branch returns the identical message" needs semantic understanding, not a pattern
 match) so this is a code-review checklist item, not an automated check.
 
+### Rule S8: EVERY USER PHOTO/VIDEO UPLOAD ROUTE GOES THROUGH THE SHARED PROCESSOR (imagery-icons-01/06, 2026-07-27)
+
+Any route accepting a user-supplied image file (salon gallery, review photo, service
+photo, client progress photo, avatar, formula photo, salon document) MUST call
+`verifyAndStripImage()` (`lib/upload-security.ts`) before `.storage.from(...).upload()`,
+never write the raw uploaded bytes to Storage directly. One call does three things at
+once: sniffs the REAL format from magic bytes (never trusts the client's `file.type` or
+filename), strips EXIF/GPS/ICC metadata (sharp drops all metadata on re-encode unless
+`.withMetadata()` is called, which this helper never does), and bounds the served weight
+(resizes the longest edge to `maxDimension`, default 2000px, tighter for avatars, before
+encoding). A phone photo carries GPS coordinates and device identifiers by default; a
+salon owner or customer uploading from their own phone can otherwise unknowingly publish
+their home address to a public bucket anyone can download and inspect. Every one of the
+7 current upload routes calls this helper; a new one must too.
+
+### Rule S9: A PUBLIC-READ PHOTO TABLE NEEDS A PRE-PUBLISH MODERATION GATE (imagery-icons-02, 2026-07-27)
+
+`salon_portfolio_images` and `review_photos` currently have no `moderation_status` column
+and no RLS predicate gating what's publicly visible: a POST to the gallery or review-photo
+upload route inserts straight into a public-read table, live the instant it succeeds. This
+is the same trust-and-safety shape Discovery content already solved
+(`app/api/admin/discovery/moderation/route.ts`), just never extended to these two tables.
+**Known, named launch-risk gap, not yet closed**: closing it needs a migration (a
+`moderation_status` column + an RLS predicate on the public SELECT policy so an unmoderated
+row cannot render even if application code forgets to filter it) plus extending the
+Discovery moderation admin page to cover both tables. Full writeup:
+`_design-system/PHOTO_STRATEGY.md` section 6.
+

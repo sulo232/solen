@@ -1234,7 +1234,7 @@ This single test catches 80% of axis-confusion mistakes.
 
 ## §11 — Imagery Pattern Registry (V3-D330, 2026-05-28)
 
-**Rule:** All imagery on Solen surfaces uses one of 5 enumerated patterns + obeys 5 non-negotiable rules. Inspired by measured Uber inventory (`public/_pixel-refs/uber/imagery/UBER-IMAGERY-PATTERN.md` — 116 desktop images across 8 surfaces). Sourced finding: Uber is illustration-first (34%), photo-as-trust-layer (28%), chrome (38%). Zero video. 0px border-radius on every image.
+**Rule:** All imagery on Solen surfaces uses one of 5 enumerated patterns + obeys 6 non-negotiable rules. Inspired by measured Uber inventory (`public/_pixel-refs/uber/imagery/UBER-IMAGERY-PATTERN.md` — 116 desktop images across 8 surfaces). Sourced finding: Uber is illustration-first (34%), photo-as-trust-layer (28%), chrome (38%). Zero video. 0px border-radius on every image.
 
 ### The 5 patterns
 
@@ -1255,6 +1255,7 @@ This single test catches 80% of axis-confusion mistakes.
 | **No `<video>` on marketing surfaces** | Uber's 8 surfaces use zero. Stills + Lottie illustrations only. (Carve-out: `/entdecken` TikTok-stream feature exempt — that's content, not chrome.) |
 | **Single image-CDN pipeline** | All images route through `next/image` + Supabase Storage. Mirror Uber's `cn-geo1.uber.com/image-proc` pattern. |
 | **Same images mobile + desktop, stacked** | Don't hide images on mobile. Crop/resize the same asset. Hero photos resize from 1440×700 desktop → 375×480 mobile (same image, different crop). |
+| **A person-photo forced to a fixed aspect ratio crops face-safe, never blind-center** | A CSS center crop on a portrait source systematically cuts off the top of a person's head, the single most noticeable defect a user spots on a staff or avatar photo. See dedicated subsection below (imagery-icons-08, 2026-07-27). |
 
 ### Text-on-photo scrim recipe (DS-10, video-audit 2026-06-11, owner-approved)
 
@@ -1271,6 +1272,25 @@ background: linear-gradient(180deg, rgba(0,0,0,0) 38%, rgba(0,0,0,.62) 100%);
 - Never a flat full wash (kills the photo), never text on a bare photo (fails on bright uploads, DS-9).
 - Small floating controls over photos keep using `FROST_GLASS` discs (CONTROL_ELEVATION A) — the scrim
   is for text/indicator ZONES, the disc is for tappable CONTROLS.
+
+### Face-safe crop (generalizes TASTE_LOG ig4, imagery-icons-08, 2026-07-27)
+
+TASTE_LOG line 326 (`ig4 dp-crop-bone-shaft-not-joint`, owner-approved) already fixed this in
+ONE place: `SalonImageGallery.tsx`'s uploader grid uses `object-cover object-top` (the code
+comment there notes "was center"), never blind `object-cover` alone. That fix was scoped to its
+own component and never generalized. The rule, generalized: **any photo of a person that is
+force-cropped by aspect ratio uses `object-top` (or a computed focal point), never bare
+`object-cover`'s default center position**, unless the source was already pre-cropped square by
+the uploader. This applies to every person-photo crop in the codebase, not just the one that
+happened to get fixed first: `Avatar.tsx`, `SalonHero.tsx` galleries, `SalonTeam.tsx`'s staff
+carousel, `SalonResultCard.tsx`, `CategoryHeroCarousel.tsx`. **Not yet applied to those
+components** (queued: changing an already-shipped photo's crop position is a visible imagery-
+treatment change on live customer surfaces, so it goes through the mockup-first law like any
+other visual change, not a silent CSS edit). Long-term, a computed focal-point (a simple
+face-detection pass at upload time storing a y-offset) would make this measurable instead of a
+manual `object-position` guess; until then, `object-top` is the default for any NEW person-photo
+crop, and the design-verifier checklist flags a bare `object-cover` on a person-photo component
+as a finding.
 
 ### Sourcing policy (V3-D330)
 
