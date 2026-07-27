@@ -22,6 +22,7 @@ import RecentSearches from "@/components-legacy/discovery/RecentSearches";
 import { Heart } from "lucide-react";
 import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender, FilterPill, ActiveFilter } from "@/lib/types";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
+import { useScrollRestoration } from "@/lib/hooks/useScrollRestoration";
 
 // B4 load audit (2026-07-04, finding #5): admin-only panel, render-gated by isAdmin already ,
 // dynamic-import so its 15.3KB never ships to the non-admin cohort (same dynamic() pattern as
@@ -66,7 +67,23 @@ function DiscoverPageContent() {
   const [search, setSearch] = useState(initialSearch);       // committed query: drives the feed + search logging
   const [searchInput, setSearchInput] = useState(initialSearch);  // V3-D414: live text drives ONLY the dropdown; typing no longer auto-searches/logs
   const [searchFocused, setSearchFocused] = useState(false);
-  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
+  // ia-navigation-04: seed gender/texture/style from the URL the same way category/search
+  // already do, so a shared link, a refresh, or the browser back button restores the exact
+  // filter combo the user was looking at instead of silently resetting it. Named hairGender/
+  // hairTexture/hairStyle (not the bare `gender`/`texture` the API call below still uses
+  // internally) so this never collides with /search's own `gender` param, a different
+  // taxonomy entirely (ia-navigation-10).
+  const initialActiveFilters = (): ActiveFilter[] => {
+    const seeded: ActiveFilter[] = [];
+    const g = searchParams?.get("hairGender");
+    const tx = searchParams?.get("hairTexture");
+    const st = searchParams?.get("hairStyle");
+    if (g) seeded.push({ pillId: "gender", subId: g, label: g });
+    if (tx) seeded.push({ pillId: "texture", subId: tx, label: tx });
+    if (st) seeded.push({ pillId: "style", subId: st, label: st });
+    return seeded;
+  };
+  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>(initialActiveFilters);
   // V3-D407/408 (#22): data-driven quick chips — top style tags from real content, each with a representative
   // photo OF that style (not a generic feed thumbnail). Fetched once; stable across filter taps.
   const [chipTerms, setChipTerms] = useState<{ term: string; thumb: string }[]>([]);
@@ -93,7 +110,11 @@ function DiscoverPageContent() {
   // Progressive drill-down cut TAGS (drill.html L2): selected discovery_items.tags values, threaded into the feed
   // as the `tags` param → discovery_feed(p_tags_any). Multi-select; an array, so it lives in its own state rather
   // than activeFilters (which is single-value-per-pill).
-  const [cuts, setCuts] = useState<string[]>([]);
+  // ia-navigation-04: seeded from the URL's `tags` param on load, same reasoning as activeFilters above.
+  const [cuts, setCuts] = useState<string[]>(() => {
+    const raw = searchParams?.get("tags");
+    return raw ? raw.split(",").filter(Boolean) : [];
+  });
 
   // DNA pre-select source (mockup E): the viewer's saved profile values, used to seed the gender/hair-type pills the
   // first time the sheet opens (only when those filters are still unset, never overrides a manual choice).
@@ -293,6 +314,27 @@ function DiscoverPageContent() {
     fetchItems(1);
   }, [fetchItems]);
 
+  // ia-navigation-04: mirror the filter combo into the URL via router.replace (not push, so
+  // filter taps don't pile up back-history entries) the moment it changes, so a refresh, a
+  // copy-pasted link, or the browser back button shows the same result set the user was
+  // looking at, matching the guarantee /search's SearchTemplate already gives its own filters.
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams?.toString() ?? "");
+    if (category !== "all") params.set("category", category); else params.delete("category");
+    if (search) params.set("search", search); else params.delete("search");
+    if (gender !== "all") params.set("hairGender", gender); else params.delete("hairGender");
+    if (texture) params.set("hairTexture", texture); else params.delete("hairTexture");
+    if (style) params.set("hairStyle", style); else params.delete("hairStyle");
+    if (cuts.length) params.set("tags", cuts.join(",")); else params.delete("tags");
+    const qs = params.toString();
+    router.replace(`/${locale}/inspo${qs ? `?${qs}` : ""}`, { scroll: false });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category, search, gender, texture, style, cuts, locale]);
+
+  // ia-navigation-05: restore the feed's scroll position on back-navigation from an
+  // opened look, instead of resetting to the top of the grid.
+  useScrollRestoration(!loading && items.length > 0);
+
   // Infinite scroll. ig3 (2026-07-16): prefer the keyset cursor from the previous response over
   // incrementing page (avoids the offset-shift-under-concurrent-insert bug). Branches that don't
   // hand back a cursor keep the page/offset fallback, unchanged.
@@ -359,7 +401,12 @@ function DiscoverPageContent() {
     }
   };
   // Heart tapped while signed out → send to login (saving requires an account).
-  const handleAuthRequired = () => router.push(`/${locale}/auth/login`);
+  // ia-navigation-03: carry the redirect param so a successful login returns the
+  // user to this exact Inspo feed/filter state, not the homepage.
+  const handleAuthRequired = () => {
+    const returnTo = typeof window !== "undefined" ? `${window.location.pathname}${window.location.search}` : `/${locale}/inspo`;
+    router.push(`/${locale}/auth/login?redirect=${encodeURIComponent(returnTo)}`);
+  };
 
   // Commit a real (non-empty) search: drive the feed + close the dropdown AND persist the term to localStorage so
   // recent-searches work logged-OUT too (the DB history is per-user/logged-in only). Dedup case-insensitively,

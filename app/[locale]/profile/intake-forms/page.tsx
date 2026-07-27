@@ -45,7 +45,10 @@ export default function MyIntakeFormsPage() {
         const { data: { session } } = await supabase.auth.getSession();
         if (cancelled) return;
         if (!session?.user) {
-          router.push(`/${locale}/auth/login`);
+          // ia-navigation-03: return here after login instead of dropping the
+          // user on the homepage, matching the redirect= convention every
+          // other /profile/* page already uses.
+          router.push(`/${locale}/auth/login?redirect=${encodeURIComponent(`/${locale}/profile/intake-forms`)}`);
           return;
         }
 
