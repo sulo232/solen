@@ -55,11 +55,13 @@ A 3-8 week cycle is below the habit-formation floor (Eyal's own criterion; habit
 SMS reminders cut no-shows in RCTs (21.1%→14.2%, n=161k, consequence-framed copy; neutral copy did nothing); a second closer touch adds more. Rebooking nudges fire off behavioral signals (days-since-visit crossing the service's own median cycle, derived per category from our data), never a hardcoded global interval. Non-transactional pushes cap at 2-3/week; settings split by category (Buchungen ON, Angebote/Inspo OFF by default). Volume, not content, drives opt-outs (46% opt out at 2-5/week).
 
 **15. Personalization is additive, never a silent filter (T2).**
-Boost and label ("Für dich"), keep the full catalog reachable; one behavioral signal predicts intent too weakly to hide inventory. Applies to the dormant service_categories personalization backend and the Inspo feed ranking.
+Boost and label ("Für dich"), keep the full catalog reachable; one behavioral signal predicts intent too weakly to hide inventory. Applies to the dormant service_categories personalization backend and the Inspo feed ranking. Additive-not-filtering solves hidden inventory, not visibility: the user must also be able to tell personalization is active and switch to a neutral, unranked view on request. Ship this control before service_categories personalization reactivates, not after users notice unexplained ranking changes (ethics-psychology-09).
 
 ---
 
 ## Hard lines (the ethics bar, all gate-relevant)
+
+**Scope: every hard line below binds `app/[locale]/dashboard/*` (the salon/business surface) exactly as it binds customer-facing screens, not customer surfaces only.** Solen takes a commission cut of salon revenue (`platform_fee` via Stripe `application_fee_amount`), the same financial-incentive structure these lines exist to constrain on the customer side; a dashboard nudging a salon toward a pre-checked paid upsell or an unguarded review-request tool is the same violation wearing a B2B costume (ethics-psychology-03).
 
 1. No fabricated numbers, counts, urgency, or social proof , ever (existing Solen law; psychology adds the evidence it also backfires commercially).
 2. No pre-checked paid add-ons or subscriptions.
@@ -68,6 +70,9 @@ Boost and label ("Für dich"), keep the full catalog reachable; one behavioral s
 5. No lock/blur walls before delivered value; no forced account before pay.
 6. No dark-pattern countdown on real inventory unless the count is live and user-relevant.
 7. Left-digit pricing (.90/.95 endings) is a VALUES call (conflicts with Swiss round-CHF trust convention); never introduce silently, owner decision only.
+8. No commit-capable flow (booking, notification opt-in, a future membership) may require more taps or steps to exit, cancel, or unsubscribe than it took to commit. Checked on every new commit/cancel-flow diff, not just verified once and assumed to hold (ethics-psychology-06).
+9. No incentivized reviews (a discount, free service, or credit in exchange for a review) and no sentiment-selective review solicitation (requesting reviews only from customers predicted to be happy); every review-request flow, salon-facing or customer-facing, solicits all eligible customers uniformly with no reward mentioned (ethics-psychology-07).
+10. No disguised advertising or sponsored ranking: the moment any paid-visibility or promoted-listing feature ships, a promoted result must carry a persistent "Gesponsert"/"Sponsored" label at the same visual weight as the salon name, must never look like organic ranking, and a paid boost must never outrank a real safety/quality signal (ethics-psychology-10; no such feature exists today, this is preventive).
 
 ## Numbers we must never cite (verified myths, full receipts in the research files)
 
@@ -89,7 +94,8 @@ Boost and label ("Für dich"), keep the full catalog reachable; one behavioral s
 Docs get forgotten as context fills; only mechanical enforcement survives (owner 2026-07-07: "AIs take suggestions but wont do it acc or forget as contexts pack up"). So the laws are enforced at two tiers, not left as prose:
 
 - **Machine-checkable laws , a hard gate.** `.claude/hooks/pre-edit-psychology-gate.py` (PreToolUse on Edit/Write/MultiEdit) BLOCKS a net-new violation of law 6 (a rating rendered with no review count) and law 9 (a hardcoded count literal like "14 Salons"). These were the exact violations the audit found repeated across 5 surfaces. Net-new only, scoped to app/components tsx, fail-open; escape with `psych-ok: <reason>` on the line or `touch .claude/psych-gate-skip.flag`.
-- **Judgment laws , the loop-reviewer psychology lens.** The laws a regex can't check (peak-end warmth, never-start-at-zero, guest-first, comparability, effort-over-delight, loss-framing ethics) are checked by the loop-reviewer on every customer-facing UI diff, in fresh context (not the main thread's fading memory). See `~/.claude/agents/loop-reviewer.md`, "Standing psychology lens".
+- **Consent / notification-preference flags , the same discriminate-the-behavior test as a search filter.** A toggle that renders and saves but is never read by the real send path is a false consent claim, not a cosmetic bug (CLAUDE.md's Silent no-ops section names this category explicitly; caught twice in `sms-reminders` and `barber-smart-reminders`, fixed ethics-psychology-02). Any new consent/preference toggle needs proof every real send path for that channel reads the exact column, the same standard as a computed filter.
+- **Judgment laws , the loop-reviewer psychology lens.** The laws a regex can't check (peak-end warmth, never-start-at-zero, guest-first, comparability, effort-over-delight, loss-framing ethics, exit parity, dashboard scope) are checked by the loop-reviewer on every customer-facing UI diff, in fresh context (not the main thread's fading memory), AND on every `app/[locale]/dashboard/*` diff (the hard-lines scope note above; a dashboard nudge is the same violation in a B2B costume). See `~/.claude/agents/loop-reviewer.md`, "Standing psychology lens".
 
 New machine-checkable law -> extend the gate + self-test (one block, one pass) before wiring. New judgment law -> add a bullet to the reviewer lens.
 
