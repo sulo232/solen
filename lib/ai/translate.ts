@@ -41,7 +41,11 @@ const REGISTER: Record<TranslateLocale, string> = {
  */
 const FIELD_RULE: Record<string, string> = {
   name: "This is a SERVICE NAME on a price list. Keep it a short noun phrase of the same shape and length. Do not add articles, explanations or punctuation.",
-  description: "This is a short description shown to customers. Keep the length within roughly 20 percent of the source.",
+  // Tightened 2026-07-27 after a dry run produced REWRITES rather than translations
+  // ("Urban Barbershop mit praezisen Schnitten" came back as "Barbershop d'excellence").
+  // A translation that drops a fact is worse than no translation: the customer is told
+  // something different, not something less.
+  description: "This is a short description shown to customers. TRANSLATE it, do not summarise, shorten, rewrite or improve it. Every fact in the source must appear in the output: if the source lists what is included, the output lists the same things. Keep the length within 20 percent of the source.",
   about: "This is a salon's own about-us text. Preserve its voice.",
   label: "This is a UI label. Keep it as short as the source.",
 };
