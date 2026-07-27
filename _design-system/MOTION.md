@@ -116,7 +116,7 @@ globals.css (motion sheet 22 block); all reduced-motion safe. The rule per situa
 | Saving/favoriting | pop + 6-particle burst | HeartButton pattern (`.heart-burst` ×6, keyed) |
 | Adding to a cart | fly-dot to the cart anchor | `.cart-fly-dot` + `[data-cart-anchor]` (ServicesStaffStep pattern) |
 | Success peak | SuccessMark + `.celebrate-rise` staggers | never a static check |
-| List first-load | stagger rise-in | `.salon-card-stagger` |
+| List first-load | stagger rise-in, capped at item 8 (motion-03: items 9+ inherit item 8's delay, never 0ms, so a 12-item page never jumps the queue) | `.salon-card-stagger` |
 | People/avatars first in view | wave hello once | `.team-wave` + IntersectionObserver (SalonTeam pattern) |
 | Empty-state icon | breathe | `.animate-breathe` |
 | Toasts | tilt-settle enter | Toast primitive owns it |
@@ -171,6 +171,13 @@ change: a 420ms tab switch reads as the UI thinking, not as the UI keeping up.
 2. **Never animate width, height or top.** Transform, opacity and filter only, so nothing reflows mid-motion.
 3. **`prefers-reduced-motion` applies the END STATE with no animation**, and attaches no scroll listener.
 4. **Interruptible.** A user acting again mid-motion must not be made to wait for the first one to finish.
+   **The technical contract (added 2026-07-27, motion-01):** any `AnimatePresence` wrapping a
+   step-swap, tab-swap, or other frequently-retriggered transition must use `mode="popLayout"`
+   (or unmounted-immediately exits), never `mode="wait"`. `mode="wait"` holds the incoming child
+   off the DOM until the outgoing child's exit animation fully finishes, the literal opposite of
+   this rule. A one-shot, non-retriggerable surface (a confirm modal with nothing to interrupt)
+   may keep `mode="wait"` with a `motion-ok: <reason>` note. Enforced by
+   `~/.claude/hooks/motion-recipe-gate.py` (extended 2026-07-27 to flag net-new `mode="wait"`).
 5. **Repeated actions get the fastest tier that still reads.** Motion the user will see fifty times a
    session must not cost them fifty delays.
 
@@ -188,6 +195,16 @@ shape Material, Microsoft Fluent and Atlassian all specify. It has **one call si
 (`Switch.tsx:98`, a press) and is documented press-only. Meanwhile every exit in the shared layer runs on
 the wrong shape: Sheet exit, Modal exit and Sheet-backdrop exit use `snap`, and Toast exit uses `glide`,
 which is the DECELERATE curve, so a dismissed toast visibly slows down on its way out.
+
+**A fifth site, missed by the first audit (motion-02, found 2026-07-27):** `useStepSwapMotion`
+(`app/[locale]/_components/primitives/motion.ts`), the shared step-swap primitive that
+`BookingWizard.tsx` calls for every step transition in the booking flow, reused ONE `Transition`
+object for both `animate` and `exit`, so every booking step decelerated on the way OUT too. Fixed
+by splitting it into `stepSwapEnterTransition` (`glide`) and `stepSwapExitTransition` (`thud`),
+set per-variant so a variant's own `transition` wins over whatever a call site passes as a prop.
+The durable lesson: a shared enter/exit `Transition` reference is itself the defect pattern behind
+all five sites, not just a coincidence , split enter and exit transitions even when every other
+number (duration, scale) stays identical.
 
 The root cause is that this file had no by-direction rule at all, which is why `glide` accumulated **132
 call sites** doing entrances, presses, colour flips and exits alike. The system defines five decelerate

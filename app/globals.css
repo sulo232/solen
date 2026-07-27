@@ -557,6 +557,11 @@ input.discovery-searchbar {
 .salon-card-stagger > *:nth-child(6) { animation-delay: 250ms; }
 .salon-card-stagger > *:nth-child(7) { animation-delay: 300ms; }
 .salon-card-stagger > *:nth-child(8) { animation-delay: 350ms; }
+/* motion-03: ceiling. Past 8 items the container ran out of enumerated delays and every
+   later child inherited the undeclared default (0ms, same as :nth-child(1)), so a 12-item
+   page (SearchTemplate PAGE_SIZE) entered cards 9-12 simultaneously with card 1, ahead of
+   cards 2-8. Cap every item past the ceiling at the LAST defined delay instead. */
+.salon-card-stagger > *:nth-child(n+9) { animation-delay: 350ms; }
 @media (prefers-reduced-motion: reduce) {
   .salon-card-stagger > * { animation: none; opacity: 1; transform: none; }
 }
