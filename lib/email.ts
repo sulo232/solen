@@ -8,6 +8,17 @@ import { EMAIL_COLORS } from "@/lib/email-colors";
 
 export type EmailLocale = "de" | "en" | "fr" | "it";
 
+// typography-02 (2026-07-27): shared font-family stack for every transactional +
+// lifecycle email. Email clients cannot load next/font's self-hosted Inter Tight /
+// Inter, so this is the closest-available system-font stack (system-ui sans on
+// every platform, never a serif fallback, never monospace). Applied once in
+// sendEmail() so every template builder (lib/email.ts + lib/email-templates/**)
+// gets brand-consistent typography without each one re-declaring it; codes use
+// this same stack + font-weight:700 + tabular-nums (LOCKFILE §13.4's .num
+// recipe) instead of the retired font-family:monospace.
+export const EMAIL_FONT_STACK =
+  "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif";
+
 /** Escape the few chars that would break out of an HTML text context. */
 function escapeHtml(s: string): string {
   return s
@@ -43,7 +54,13 @@ export async function sendEmail(payload: EmailPayload): Promise<void> {
       from: "solen.ch <noreply@solen.ch>",
       to: payload.to,
       subject: payload.subject,
-      html: payload.html,
+      // typography-02: wrap every template's body in the brand font stack here,
+      // the single choke point all ~30 template builders funnel through. Fixes
+      // lib/email-templates/{audit-notifications,booking-notifications,
+      // salon-onboarding,welcome-series}.ts, which had zero font-family
+      // declarations of their own and rendered in each client's default font
+      // (Times New Roman in classic Outlook) with no brand typeface.
+      html: `<div style="font-family:${EMAIL_FONT_STACK};color:${EMAIL_COLORS.ink};font-size:15px;line-height:1.5">${payload.html}</div>`,
     }),
   });
 
@@ -585,10 +602,10 @@ export function giftCardDeliveryEmail(
     it: `${vars.senderName} ti ha inviato una carta regalo!`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Hallo ${vars.recipientName},</p><p><strong>${vars.senderName}</strong> hat dir eine Geschenkkarte im Wert von <strong>${vars.amount}</strong> auf solen.ch geschenkt!</p>${msgHtml}<p style="text-align:center;margin:20px 0"><span style="font-family:monospace;font-size:24px;letter-spacing:3px;background:${EMAIL_COLORS.bgSunken};padding:12px 20px;border-radius:8px;border:2px dashed #0A0A0A;display:inline-block">${vars.code}</span></p><p>Verwende diesen Code bei deiner nächsten Buchung auf <a href="https://solen.ch">solen.ch</a>.</p>`,
-    en: `<p>Hello ${vars.recipientName},</p><p><strong>${vars.senderName}</strong> sent you a gift card worth <strong>${vars.amount}</strong> on solen.ch!</p>${msgHtml}<p style="text-align:center;margin:20px 0"><span style="font-family:monospace;font-size:24px;letter-spacing:3px;background:${EMAIL_COLORS.bgSunken};padding:12px 20px;border-radius:8px;border:2px dashed #0A0A0A;display:inline-block">${vars.code}</span></p><p>Use this code on your next booking at <a href="https://solen.ch">solen.ch</a>.</p>`,
-    fr: `<p>Bonjour ${vars.recipientName},</p><p><strong>${vars.senderName}</strong> vous a offert une carte cadeau d'une valeur de <strong>${vars.amount}</strong> sur solen.ch !</p>${msgHtml}<p style="text-align:center;margin:20px 0"><span style="font-family:monospace;font-size:24px;letter-spacing:3px;background:${EMAIL_COLORS.bgSunken};padding:12px 20px;border-radius:8px;border:2px dashed #0A0A0A;display:inline-block">${vars.code}</span></p><p>Utilisez ce code lors de votre prochaine réservation sur <a href="https://solen.ch">solen.ch</a>.</p>`,
-    it: `<p>Ciao ${vars.recipientName},</p><p><strong>${vars.senderName}</strong> ti ha regalato una carta regalo del valore di <strong>${vars.amount}</strong> su solen.ch!</p>${msgHtml}<p style="text-align:center;margin:20px 0"><span style="font-family:monospace;font-size:24px;letter-spacing:3px;background:${EMAIL_COLORS.bgSunken};padding:12px 20px;border-radius:8px;border:2px dashed #0A0A0A;display:inline-block">${vars.code}</span></p><p>Usa questo codice per la tua prossima prenotazione su <a href="https://solen.ch">solen.ch</a>.</p>`,
+    de: `<p>Hallo ${vars.recipientName},</p><p><strong>${vars.senderName}</strong> hat dir eine Geschenkkarte im Wert von <strong>${vars.amount}</strong> auf solen.ch geschenkt!</p>${msgHtml}<p style="text-align:center;margin:20px 0"><span style="font-family:${EMAIL_FONT_STACK};font-weight:700;font-variant-numeric:tabular-nums;font-size:24px;letter-spacing:3px;background:${EMAIL_COLORS.bgSunken};padding:12px 20px;border-radius:8px;border:2px dashed #0A0A0A;display:inline-block">${vars.code}</span></p><p>Verwende diesen Code bei deiner nächsten Buchung auf <a href="https://solen.ch">solen.ch</a>.</p>`,
+    en: `<p>Hello ${vars.recipientName},</p><p><strong>${vars.senderName}</strong> sent you a gift card worth <strong>${vars.amount}</strong> on solen.ch!</p>${msgHtml}<p style="text-align:center;margin:20px 0"><span style="font-family:${EMAIL_FONT_STACK};font-weight:700;font-variant-numeric:tabular-nums;font-size:24px;letter-spacing:3px;background:${EMAIL_COLORS.bgSunken};padding:12px 20px;border-radius:8px;border:2px dashed #0A0A0A;display:inline-block">${vars.code}</span></p><p>Use this code on your next booking at <a href="https://solen.ch">solen.ch</a>.</p>`,
+    fr: `<p>Bonjour ${vars.recipientName},</p><p><strong>${vars.senderName}</strong> vous a offert une carte cadeau d'une valeur de <strong>${vars.amount}</strong> sur solen.ch !</p>${msgHtml}<p style="text-align:center;margin:20px 0"><span style="font-family:${EMAIL_FONT_STACK};font-weight:700;font-variant-numeric:tabular-nums;font-size:24px;letter-spacing:3px;background:${EMAIL_COLORS.bgSunken};padding:12px 20px;border-radius:8px;border:2px dashed #0A0A0A;display:inline-block">${vars.code}</span></p><p>Utilisez ce code lors de votre prochaine réservation sur <a href="https://solen.ch">solen.ch</a>.</p>`,
+    it: `<p>Ciao ${vars.recipientName},</p><p><strong>${vars.senderName}</strong> ti ha regalato una carta regalo del valore di <strong>${vars.amount}</strong> su solen.ch!</p>${msgHtml}<p style="text-align:center;margin:20px 0"><span style="font-family:${EMAIL_FONT_STACK};font-weight:700;font-variant-numeric:tabular-nums;font-size:24px;letter-spacing:3px;background:${EMAIL_COLORS.bgSunken};padding:12px 20px;border-radius:8px;border:2px dashed #0A0A0A;display:inline-block">${vars.code}</span></p><p>Usa questo codice per la tua prossima prenotazione su <a href="https://solen.ch">solen.ch</a>.</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
