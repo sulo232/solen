@@ -288,7 +288,7 @@ export default function DashboardLayout({
       {/* ── Desktop icon rail (V3-D347 W1 — Fresha structure) ── */}
       <aside className="hidden md:flex fixed left-0 top-0 h-full w-[64px] bg-white border-r border-s-border flex-col items-center py-3 z-30">
         <Link href={`/${locale}/dashboard`} aria-label="Solen" className="w-9 h-9 grid place-items-center text-[20px] font-bold tracking-[-0.04em] text-s-ink mb-2">S</Link>
-        <nav className="flex-1 flex flex-col gap-1 items-center w-full">
+        <nav aria-label="Dashboard-Navigation" className="flex-1 flex flex-col gap-1 items-center w-full">
           {RAIL_NAV.filter((it) => (!("barbershopOnly" in it) || salonCategories?.includes("barbershop")) && (!("adminOnly" in it) || role === "admin")).map(({ key, href, icon: Icon, label }) => {
             const active = isActive(href);
             return (
@@ -354,7 +354,7 @@ export default function DashboardLayout({
               </div>
 
               {/* Scrollable grouped nav */}
-              <nav className="flex-1 overflow-y-auto px-2 py-2">
+              <nav aria-label="Dashboard-Navigation" className="flex-1 overflow-y-auto px-2 py-2">
                 {isStaff ? (
                   STAFF_NAV.map(({ key, href, icon: Icon }) => {
                     const active = isActive(href);

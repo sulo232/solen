@@ -1005,6 +1005,18 @@ Every page MUST have:
 - `<footer>` element for the Footer (already present)
 - `<nav>` element for the MobileMenu and any other nav (currently missing — Q in QUESTIONS)
 
+**This rule is NOT customer-only (accessibility-04, 2026-07-27).** It binds the dashboard the
+same way: salon owners and staff are real end users of a 49-page admin surface, not an exempt
+internal tool. `DashboardLayout.tsx` (`components-legacy/dashboard/`, used by 44 of 49 dashboard
+`page.tsx` files) already wraps its children in `<main>`; both its desktop icon-rail `<nav>` and
+mobile slide-out `<nav>` now carry `aria-label="Dashboard-Navigation"`. The 5 dashboard pages that
+render OUTSIDE `DashboardLayout` (`editor`, `gallery`, `queue-display`, `setup`, plus `messages`
+which is a server redirect with no UI) each got their own root `<main>` landmark at the component
+that owns their real page shell (`EditorPage.tsx`, `gallery/page.tsx`, `queue-display/page.tsx`,
+`SetupWizard.tsx`). Not yet swept: icon-only buttons inside individual dashboard pages missing
+`aria-label` (§16.3 already states the rule; 33 of 49 dashboard `page.tsx` files carry zero
+`aria-*` at all, this needs a dedicated per-page pass, not a landmark-level fix).
+
 ### §16.2 · Focus management
 
 - Every interactive element MUST have `focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2` (or `-offset-4` for rounded corners)

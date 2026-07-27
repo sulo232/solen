@@ -161,7 +161,7 @@ export default function EditorPage() {
   const iframeUrl = window.location.origin + urlPath;
 
   return (
-    <div className="flex flex-col h-screen bg-white">
+    <main className="flex flex-col h-screen bg-white">
       {/* Toolbar */}
       <div className="flex items-center gap-2 px-3 py-2 border-b border-s-border bg-white flex-shrink-0">
         {/* Back */}
@@ -325,6 +325,6 @@ export default function EditorPage() {
           </>
         )}
       </div>
-    </div>
+    </main>
   );
 }

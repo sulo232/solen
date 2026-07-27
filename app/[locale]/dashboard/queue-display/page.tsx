@@ -27,7 +27,7 @@ export default function QueueDisplayPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-white p-6 sm:p-12">
+    <main className="min-h-screen bg-[#0A0A0A] text-white p-6 sm:p-12">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
@@ -70,6 +70,6 @@ export default function QueueDisplayPage() {
           </div>
         )}
       </div>
-    </div>
+    </main>
   );
 }
