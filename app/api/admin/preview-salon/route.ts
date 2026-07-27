@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient, createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { logAuditEvent } from "@/lib/audit";
+import { validateBody, adminPreviewSalonSchema } from "@/lib/validations";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -22,9 +23,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "Forbidden" }, { status: 403 });
   }
 
-  const body = await request.json();
-  const { salon_id } = body ?? {};
-  if (!salon_id) return NextResponse.json({ message: "salon_id required" }, { status: 400 });
+  const rawBody = await request.json();
+  const { data: validated, error: validationError } = validateBody(adminPreviewSalonSchema, rawBody);
+  if (validationError) return NextResponse.json({ message: "salon_id required" }, { status: 400 });
+  const { salon_id } = validated;
 
   // Verify it's a test salon (must have [TEST] prefix)
   const adminClient = createAdminSupabaseClient();

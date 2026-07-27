@@ -1431,6 +1431,44 @@ export const staffScheduleAutoApplySchema = z.object({
 // api-contracts-08: BATCH_KEYS bounds the array length AND the enum, so an unbounded
 // request array (resource-exhaustion vector) is rejected here rather than in the route.
 const DASHBOARD_BATCH_KEYS = ["bookings_today", "revenue_month", "reviews_pending", "walkin_queue", "activity_feed"] as const;
+// Matches DEFAULT_SECTIONS keys in app/api/admin/homepage-sections/route.ts. A partial
+// object is fine (only changed keys need to be sent); an unknown key is rejected rather
+// than silently persisted into platform_settings.value.
+export const adminTestSalonSeedSchema = z.object({
+  salon_id: uuid,
+  feature: z.enum(["walkin_queue", "bookings", "reviews", "reset"]),
+});
+
+export const adminTestSalonCreateSchema = z.object({
+  categories: z.array(z.string().max(30)).max(10).optional(),
+  name: z.string().min(1).max(100).optional(),
+});
+
+export const adminSeedTestSalonsSchema = z.object({
+  cities: z.array(z.string().max(50)).max(20).optional(),
+});
+
+export const adminPreviewSalonSchema = z.object({
+  salon_id: uuid,
+});
+
+export const adminHomepageSectionsSchema = z.object({
+  sections: z
+    .object({
+      quartier: z.boolean().optional(),
+      trending: z.boolean().optional(),
+      nearby: z.boolean().optional(),
+      new_salons: z.boolean().optional(),
+      rebook: z.boolean().optional(),
+      reviews: z.boolean().optional(),
+      last_minute: z.boolean().optional(),
+      featured: z.boolean().optional(),
+      social_proof: z.boolean().optional(),
+      partner_cta: z.boolean().optional(),
+    })
+    .strict(),
+});
+
 export const adminContentPutSchema = z.object({
   value_de: z.string().max(20000).optional(),
   value_en: z.string().max(20000).optional(),

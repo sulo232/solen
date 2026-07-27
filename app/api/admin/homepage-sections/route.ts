@@ -3,6 +3,7 @@ export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
+import { validateBody, adminHomepageSectionsSchema } from "@/lib/validations";
 
 const DEFAULT_SECTIONS: Record<string, boolean> = {
   quartier: false,
@@ -58,12 +59,12 @@ export async function PUT(req: NextRequest) {
   const rateLimited = await applyRateLimit(adminLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
 
-  const body = await req.json();
-  const sections = body.sections;
-
-  if (!sections || typeof sections !== "object") {
-    return NextResponse.json({ error: "Invalid payload — expected { sections: { ... } }" }, { status: 400 });
+  const rawBody = await req.json();
+  const { data: validated, error: validationError } = validateBody(adminHomepageSectionsSchema, rawBody);
+  if (validationError) {
+    return NextResponse.json({ error: validationError.message }, { status: 400 });
   }
+  const { sections } = validated;
 
   const { error } = await admin
     .from("platform_settings")
