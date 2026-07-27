@@ -1122,7 +1122,7 @@ Use Swiss formats:
 ### Voice register
 
 - **Direct** — say what the user can do, not how they should feel
-- **Conversational** — German `du` not `Sie` (per audience research)
+- **Conversational** — German `du` not `Sie` (per audience research), everywhere in `messages/de.json` EXCEPT the `legal.*` and `discovery_tos.*` namespaces, where formal register is the conventional (and here, deliberately kept) register for legal/contract text. **Enforced (copy-i18n-02, 2026-07-27)**: `~/.claude/hooks/copy-lint-gate.py`'s 5th check (`NO-FORMAL-REGISTER-IN-DE`) blocks any Write/Edit to `messages/de.json` that introduces a formal token (`Ihre`/`Ihren`/`Ihrer`/`Ihnen`/`Ihr`/`Sie`) outside those two namespaces. A full sweep on 2026-07-27 found and fixed 17 pre-existing drift instances (dashboard.settings, dashboard.disputes, dashboard.verificationPage, dashboard.messagesPage, discovery.admin, report.\*, common.\*) that had crept in exactly where a formal template read easiest to copy-paste.
 - **Action-oriented** — verbs over nouns where possible ("Termine finden" > "Termin-Suche")
 - **Confident but not boastful** — "Über 1'200 Salons sind dabei" not "Wir haben den besten Service"
 - **Speed-anchored** — references "30 Sekunden" promise where relevant
@@ -1223,7 +1223,7 @@ The running list of "we already decided this, don't re-litigate." If you find yo
 | 80 / 17 surfaces+ink; interactive blue NOT budgeted (the old "3%" accent cap reversed, v2 2026-06-09) | V3-D138 + v2 | This doc §1 |
 | Blue `s-accent` #276EF1 = the HYPERLINK accent, sparse (v3 2026-06-11; the v2 "generous on all tappable" row is RETIRED) | v3 | LOCKFILE §1.5 v3 + SOURCE §1/§2.1 |
 | "Termin in 30 Sekunden" is THE positioning | V3-D86 | This doc §1 |
-| German `du` not `Sie` | (since launch) | This doc §18 |
+| German `du` not `Sie`, except `legal.*`/`discovery_tos.*` which stay formal | (since launch; exception + gate added copy-i18n-02, 2026-07-27) | This doc §18 |
 | `card` radius = 16px | V4 era | This doc §5 |
 | `ease-glide` is the default easing | V2-D16 | This doc §6 |
 | 4 categories on homepage: Coiffeur / Barber / Nails / Karte / Walk-in / Spa | V3-D154 | MobileCategoriesRow.tsx + this doc §21 |
