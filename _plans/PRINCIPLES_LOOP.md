@@ -295,7 +295,12 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [ ] `imagery-icons-02` **AWAITING OWNER** OWNER QUESTION: do salon-gallery and review photos get a pre-publish review queue? The cost is somebody's time watching it, which is yours to spend or delegate. , [high/M] No pre-publish moderation for salon-gallery or review photos, unlike Discovery content
 - [x] `imagery-icons-04` **CUT, resolved** a locked LOCKFILE rule already covers it; this is 35 violations of an existing law, not a missing law , [high/M] 35 raw <img> tags on customer surfaces bypass next/image, including the locked global Avatar primitive
 - [x] `imagery-icons-03` **DONE** commit `535095474` , [medium/S] Alt text has no authoring rule and is empty on informative content images
-- [ ] `imagery-icons-05` **AWAITING OWNER** OWNER QUESTION: make the code match the written fallback rule (sunken + category icon + initial), or pick one of the two shipped variants and rewrite the rule to match it? Three descriptions, two implementations today. , [medium/S] The documented grey-box fallback and the shipped fallback component describe two different visuals
+- [ ] `imagery-icons-05` **AWAITING OWNER** two mutually exclusive options, pick ONE , [medium/S] The documented grey-box fallback and the shipped fallback component describe two different visuals
+  - [ ] Option A: change the code so both SalonCard variants render the written rule, sunken
+        background + category icon + salon initial. Nothing in the docs changes.
+  - [ ] Option B: pick whichever shipped variant you prefer (the colour block with the full
+        name in large type, or the sunken block with just an initial) and rewrite CLAUDE.md:68,
+        CLAUDE.md:95 and LOCKFILE.md:1840 to describe it. Nothing in the code changes.
 - [x] `imagery-icons-06` **DONE** commit `ad3437b97` , [medium/M] No image weight (KB) budget or compression pipeline for user-uploaded photos
 - [ ] `imagery-icons-07` **AWAITING OWNER** OWNER QUESTION: what does the upload rights/consent confirmation say, and what do you promise when someone objects? The checkbox is trivial; the promise is policy. , [medium/S] No rights/consent attestation at photo upload time for salon-gallery or review photos
 - [x] `imagery-icons-08` **DONE** commit `73edd9bef` , [low/S] No general face-safe crop rule; the one fix that exists is scoped to a single component
