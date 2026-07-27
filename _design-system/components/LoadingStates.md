@@ -243,6 +243,41 @@ Spinner = `lucide-react` `Loader2` with `animate-spin`.
 
 ---
 
+## Pattern 6: Live reorder (motion-08 added 2026-07-27)
+
+### When to use
+
+- An already-rendered list's ORDER changes while the surface is visible, with no error and no
+  refetch cycle: a live queue position update (walk-in tracker), a re-sort after a background
+  price/availability change, a realtime rank change on a sortable browse surface. This is a
+  distinct trigger from Pattern 5 (the whole surface's DATA is stale) and from a realtime
+  conflict (something is now wrong, handled by the toast + auto-refresh error path below). The
+  same, still-valid data just moved: neither staleness nor an error, so it gets neither pattern.
+
+### Visual signature
+
+- Measure each item's OLD position, then let it animate (transform only, never width/height/top)
+  to its NEW position over the **snap** tier (150ms, THE SPEED LAW: an in-place state change).
+- The row itself never unmounts and remounts. No skeleton, no re-render flash, no silent
+  teleport to the new slot.
+- A row's own content (e.g. the number inside it) still uses the existing motion-22 "Live
+  position/number updates" departure-board flip (`.animate-num-flip`) for the VALUE changing;
+  this pattern is about the row's DOM POSITION relative to its siblings, a different problem.
+- In framer-motion terms: give the list's items a `layout` prop (or `layoutId` if items can
+  cross container boundaries) so the library computes the FLIP transform itself, rather than a
+  raw re-render that snaps every row to its new slot with no transition.
+
+### Anti-pattern
+
+- ❌ A silent instant reflow (rows just appear in their new slots with no transition), reads as
+  a rendering glitch.
+- ❌ A full list re-render/remount on every rank change, reads as data loss.
+- ❌ Routing a legitimate reorder through the realtime-mismatch error path (toast + 3s
+  auto-refresh) when nothing is actually wrong. That path is for a genuine conflict, not for
+  data that is simply now in a new order.
+
+---
+
 ## Composition: full async surface
 
 A page that does it right:

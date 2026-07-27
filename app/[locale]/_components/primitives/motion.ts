@@ -220,3 +220,33 @@ export function useStepSwapMotion(): { variants: Variants; transition: Transitio
     transition: stepSwapTransition,
   };
 }
+
+/**
+ * useLowMotionCapability (motion-09, 2026-07-27). `prefers-reduced-motion` is a USER'S
+ * explicit request; this is a SEPARATE, cheap device-capability read for a device that
+ * never asked for less motion but genuinely cannot afford the full recipe (blur filter +
+ * scale + a 12-item stagger is real compositor/paint work). THE ENTER RECIPE was tuned
+ * against an iPhone-class capture device; Solen's own positioning (mid-market,
+ * price-sensitive Swiss salons and their customers) does not guarantee that device class
+ * on the customer side.
+ *
+ * Reads `navigator.hardwareConcurrency` and `navigator.deviceMemory` (Chrome/Edge/Android
+ * only, both undefined on Safari/iOS, which is fine, undefined never triggers the low tier)
+ * once, synchronously, on mount. Below 4 logical cores OR below 4GB reported memory, the
+ * expensive tier (blur filter, simultaneous stagger) should be dropped while the CHEAP tier
+ * (opacity/transform press feedback, snap-tier flips) stays. This does NOT replace
+ * `useReducedMotion`, callers combine both: a capable, unbothered device gets the full
+ * recipe; a genuinely low-end device gets a lighter one even if the user never touched an
+ * accessibility setting.
+ *
+ * No call site consumes this yet, it is the shared primitive a first reference
+ * implementation builds against (MOTION.md, sibling section to THE SPEED LAW).
+ */
+export function useLowMotionCapability(): boolean {
+  if (typeof navigator === "undefined") return false;
+  const cores = (navigator as { hardwareConcurrency?: number }).hardwareConcurrency;
+  const memory = (navigator as { deviceMemory?: number }).deviceMemory;
+  if (typeof cores === "number" && cores > 0 && cores < 4) return true;
+  if (typeof memory === "number" && memory > 0 && memory < 4) return true;
+  return false;
+}

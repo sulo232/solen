@@ -112,6 +112,7 @@ globals.css (motion sheet 22 block); all reduced-motion safe. The rule per situa
 | Money value changes | roll/odometer tick | `key={value}` + `.animate-value-roll` |
 | Choice reveals a set (slots, options) | cascade in | container `.slot-cascade`, re-mount with key |
 | Live position/number updates | departure-board flip | `key={n}` + `.animate-num-flip` |
+| Live REORDER (a row's rank changes, same valid data, no error, no refetch) | FLIP transform, snap tier (150ms) | framer-motion `layout` / `layoutId`, LoadingStates.md Pattern 6 |
 | Live status dot (REAL state only) | ping | `animate-ping` twin dot (StatusPill pattern) |
 | Saving/favoriting | pop + 6-particle burst | HeartButton pattern (`.heart-burst` ×6, keyed) |
 | Adding to a cart | fly-dot to the cart anchor | `.cart-fly-dot` + `[data-cart-anchor]` (ServicesStaffStep pattern) |
@@ -218,3 +219,27 @@ Owner-approved 2026-07-25 as a MODEL. The visual it was approved from is `/de/de
 paired demos + the evidence table). The empirical backing is above; the PRINCIPLES backing (where motion
 helps vs hurts, easing, and the shadow/elevation half of the owner's ask) is being researched into
 `research/TASTE_MOTION.md`, and this section gets amended if that research contradicts it.
+
+## Motion scales for DEVICE CAPABILITY, not only user opt-in (added 2026-07-27, motion-09)
+
+`prefers-reduced-motion` is the ONLY motion-scaling lever documented or built anywhere in this file today,
+and it answers a different question than the one below. Reduced-motion is a user's explicit request
+(vestibular sensitivity, "I don't want this"). It says nothing about a device that never asked for less
+motion but genuinely cannot afford THE ENTER RECIPE's full cost: a blur filter, a scale transform, and
+opacity, animated across a 12-item stagger, is real compositor and paint work. THE ENTER RECIPE and THE
+SPEED LAW were both captured and tuned on an iPhone-class UA in a Playwright 390x844 viewport, a
+mid-to-high-end reference device; Solen's own positioning (mid-market, price-sensitive Swiss salons and
+their customers) does not guarantee that device class on the customer side.
+
+**The rule:** on top of `prefers-reduced-motion`, read one coarse, cheap capability signal once per
+session (`navigator.hardwareConcurrency` and `navigator.deviceMemory`, both Chrome/Android-only, both
+`undefined` on Safari/iOS which never trips the low tier) and, below 4 logical cores or 4GB reported
+memory, drop the EXPENSIVE tier (blur on entrance, simultaneous stagger, non-essential spring physics)
+while KEEPING the cheap tier (opacity/transform press feedback, snap-tier state flips). A capable,
+unbothered device keeps the full recipe; a genuinely low-end device gets a lighter one even if the user
+never touched an accessibility setting, so the device adapts on its own instead of the user needing to
+know a system setting exists.
+
+**Shared primitive:** `useLowMotionCapability()`, `app/[locale]/_components/primitives/motion.ts`, sibling
+to `useReducedMotion`. No call site consumes it yet, this is the primitive a first reference
+implementation builds against; candidate for a design-verifier check once one exists.

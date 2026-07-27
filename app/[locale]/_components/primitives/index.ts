@@ -148,4 +148,7 @@ export {
   butterPress,
   type PressTier,
   useStepSwapMotion,
+  SPRING_GENTLE,
+  SPRING_SNAPPY,
+  useLowMotionCapability,
 } from "./motion";
