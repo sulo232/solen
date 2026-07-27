@@ -64,7 +64,11 @@ export async function POST(request: NextRequest) {
         to: phone,
         text: text,
         from: "solen.ch"
-      })
+      }),
+      // api-contracts-06: the caller is waiting synchronously on this SMS
+      // gateway call; a hung request must fail fast, not hold the function's
+      // whole wall-clock budget hostage.
+      signal: AbortSignal.timeout(10000)
     });
 
     if (!response.ok) {

@@ -87,6 +87,11 @@ export async function POST(req: NextRequest) {
         image_size: "square_hd",
         num_images: 1,
       }),
+      // api-contracts-06: bound the outbound call so a hung fal.ai request
+      // can't consume the whole serverless function wall-clock budget. This
+      // is a stopgap timeout guard, not the 202+poll architecture the
+      // reliability research recommends for AI-generation routes long-term.
+      signal: AbortSignal.timeout(25000),
     });
 
     if (!response.ok) {
