@@ -6,6 +6,7 @@ import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 import { validateBody, adminDiscoverySmartImportSchema } from "@/lib/validations";
 import { getServerEnv } from "@/lib/env";
+import { wrapUntrustedInput } from "@/lib/ai/untrusted";
 
 /**
  * POST /api/admin/discovery/smart-import
@@ -57,9 +58,12 @@ export async function POST(req: NextRequest) {
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
+  // input-abuse-06 (2026-07-27): description is an admin-supplied request body field, one
+  // of the trust-boundary categories wrapUntrustedInput exists for (defense in depth even
+  // though this route is admin-gated).
   const queryPrompt = `You are a photo search expert. The user wants to find ${category ?? "hairstyle"} photos.
 
-User's description: "${description}"
+${wrapUntrustedInput("USER_DESCRIPTION", description)}
 
 Generate 5-8 specific, diverse search queries optimized for stock photo APIs (Unsplash, Pexels).
 Each query should be 2-4 words, in English, specific to the visual style described.

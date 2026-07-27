@@ -24,6 +24,9 @@ export async function GET() {
   const masked = key.slice(0, 8) + "..." + key.slice(-4);
 
   try {
+    // input-abuse-06 (2026-07-27): no wrapUntrustedInput here by decision, not a miss.
+    // The only prompt this file ever sends is the compile-time literal below; no
+    // request body, DB value, or other outside-trust-boundary field ever reaches it.
     const genAI = new GoogleGenerativeAI(key);
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     const result = await model.generateContent("Say 'key works' in 2 words");

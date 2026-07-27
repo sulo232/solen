@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import type { SalonCategory } from "@/lib/types";
 import { getServerEnv } from "@/lib/env";
+import { wrapUntrustedInput } from "@/lib/ai/untrusted";
 
 const VALID_CATEGORIES: SalonCategory[] = [
   "coiffeur", "barbershop", "nails", "spa"
@@ -25,7 +26,7 @@ coiffeur, barbershop, nails, spa
 
 If the query is ambiguous or not related to beauty, return "unknown".
 
-Query: "${query}"
+${wrapUntrustedInput("SEARCH_QUERY", query)}
 
 Return ONLY the category word, nothing else.`;
 

@@ -10,6 +10,7 @@ import { validateBody } from "@/lib/validations";
 import { extractSignalsFromHeaders } from "@/lib/ai/recommendations";
 import { getServerEnv } from "@/lib/env";
 import { z } from "zod";
+import { wrapUntrustedInput } from "@/lib/ai/untrusted";
 
 const recommendationRequestSchema = z.object({
   viewedSalonIds: z.array(z.string()).max(10).optional(), // Last 5-10 viewed salons from localStorage
@@ -161,18 +162,25 @@ export async function GET(req: NextRequest) {
       it: "Italian",
     };
 
+    // input-abuse-06 (2026-07-27): location comes from a client-controlled geo header,
+    // and salon name/quartier are salon-owner-editable DB fields, so both trace back
+    // outside Solen's own trust boundary. Fenced as data so an injected instruction in
+    // either one cannot redirect the ranking or the reason text.
+    const untrustedContext = [
+      `User location: ${signals.location || "Basel"}`,
+      `User booking history: ${bookingHistory.length > 0 ? bookingHistory.map((b) => `${b.category} at ${b.salon_name}`).join(", ") : "No history (cold start)"}`,
+      `CANDIDATES (${candidates.length} salons):`,
+      candidates.map((s, idx) => `${idx + 1}. ${s.name} (${s.quartier}, ${s.categories.join("/")}, ${s.average_rating.toFixed(1)} stars from ${s.review_count} reviews)`).join("\n"),
+    ].join("\n");
+
     const systemPrompt = `You are Solen's AI recommendation engine. You MUST rank these salons and provide a 1-sentence reason for EACH recommendation.
 
 OUTPUT LANGUAGE: ${localeMap[locale]}
 
-CONTEXT:
-- User location: ${signals.location || "Basel"}
-- Time of day: ${signals.timeOfDay}
-- Day of week: ${signals.dayOfWeek}
-- User booking history: ${bookingHistory.length > 0 ? bookingHistory.map((b) => `${b.category} at ${b.salon_name}`).join(", ") : "No history (cold start)"}
+Time of day: ${signals.timeOfDay}
+Day of week: ${signals.dayOfWeek}
 
-CANDIDATES (${candidates.length} salons):
-${candidates.map((s, idx) => `${idx + 1}. ${s.name} (${s.quartier}, ${s.categories.join("/")}, ⭐${s.average_rating.toFixed(1)} from ${s.review_count} reviews)`).join("\n")}
+${wrapUntrustedInput("RECOMMENDATION_CONTEXT", untrustedContext)}
 
 INSTRUCTIONS:
 1. Rank the top 3-4 salons based on:
