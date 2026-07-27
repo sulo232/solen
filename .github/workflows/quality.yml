@@ -48,6 +48,13 @@ jobs:
           node-version: "22"
           cache: "npm"
       - run: npm ci
+      # testing-release-10: a ratchet that only ever holds a line and never lowers it
+      # is a permanent debt marker, not a quality gate. Trigger to lower BASELINE:
+      # whenever a change touches a file that already has pre-existing lint errors,
+      # fix those errors as part of that change (fix-while-you're-there) and drop
+      # BASELINE by the count fixed. Compare to the `typecheck` job above, which
+      # DID get driven to a hard 0 in practice; this job's baseline has not moved
+      # since it was created and needs the same treatment.
       - name: npm run lint (ratchet vs baseline, currently 481 pre-existing errors)
         run: |
           set +e
