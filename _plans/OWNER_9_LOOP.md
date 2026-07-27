@@ -150,7 +150,23 @@ and reversible in one line rather than buried in a diff.
 
 ## Genuinely parked, and why the park is real
 
-- [x] **P1. PARKED, and that is its final state, not a pending one.** Not a judgement call I am withholding: it needs a
+- [x] **P1. PARKED, and that is its FINAL disposition, not work left undone.** `verified:` the
+      blocker is measured, not assumed. `_design-system/research/owner-answers-2026-07-27/`
+      `recon--backup-restore-drill-feasibility-solen-c.json` records both halves, and I
+      re-measured BOTH halves myself this session rather than citing the agent, and my own
+      numbers differ from its report:
+      (1) `grep -rl 'CREATE TABLE.*profiles' supabase/migrations/` returns NOTHING across all
+          274 files, while `profiles` holds 49 live rows. The runbook's "provision the schema
+          from supabase/migrations/" step therefore cannot complete at all.
+      (2) SQL against the live database: `auth.users` = 55, `profiles` = 49, `referrals` = 51,
+          and SIX `referrals.referrer_id` values point at an auth user with no `profiles` row
+          (the recon said 3 of 47; the real figure is 6 of 51). Those parents live in
+          `auth.users`, which PostgREST cannot export, so they can never be in a backup. A
+      restore therefore only lands on a target that already carries the same `auth.users`,
+      which means a Supabase Pro `--with-data` branch. That is money, and it copies real
+      personal data into a second database, which is an nFADP call about other people's data.
+      Neither is a judgement I can make for the owner. Closed as parked rather than left open
+      so the ledger stops reading as if I still owe work here. Not a judgement call I am withholding: it needs a
       Supabase Pro `--with-data` branch, which costs money, and it copies real personal data
       into a second database, which is an nFADP decision about someone else's data. Both are
       the owner's to make, not mine.
