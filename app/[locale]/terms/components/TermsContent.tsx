@@ -248,6 +248,21 @@ export default function TermsContent() {
           <ParEn>The Salon Partner retains ownership of uploaded photos and content. By uploading, the Salon Partner grants solen.ch a non-exclusive, royalty-free, worldwide license to use, reproduce, and publish this content on the platform and in promotional materials (e.g., social media, advertisements, website).</ParEn>
         </Article>
 
+        {/* 8.2a added 2026-07-27. The licence in 8.2 above is already the industry standard ,
+            all six platforms researched (Airbnb, Fresha, Uber, Booking.com, Treatwell, Yelp,
+            Google) take a licence and none takes ownership. What was missing is the CHAIN OF
+            PERMISSION behind it, and it is the half that actually bites a beauty marketplace: a
+            salon photo is usually a photo OF A CLIENT, who never agreed to anything. Fresha's
+            and Treatwell's partner terms converge on this requirement from opposite ends of
+            Europe. Research: _design-system/research/owner-answers-2026-07-27/photo-rights-tos.md,
+            rule: _rules/CONTENT_RIGHTS.md. NEEDS A SWISS LAWYER'S SIGN-OFF before launch. */}
+        <Article titleDe="8.2a Rechte an abgebildeten Personen" titleEn="8.2a Rights of Depicted Persons">
+          <ParDe>Mit dem Hochladen sichert der Salonpartner zu, dass er über alle erforderlichen Rechte an den Inhalten verfügt. Zeigt ein Foto oder Video eine Person oder lässt es Rückschlüsse auf eine Person zu, so muss der Salonpartner deren vorherige Einwilligung eingeholt haben, ausdrücklich auch für die Verwendung in Werbung. Bei minderjährigen Personen ist die Einwilligung der Erziehungsberechtigten erforderlich. Der Salonpartner bewahrt einen Nachweis dieser Einwilligungen auf.</ParDe>
+          <ParEn>By uploading, the Salon Partner warrants that they hold all rights necessary to the content. Where a photo or video shows a person, or allows a person to be identified, the Salon Partner must have obtained that person&apos;s prior consent, expressly including consent to use in advertising. For minors, the consent of a parent or guardian is required. The Salon Partner keeps a record of these consents.</ParEn>
+          <ParDe>Widerruft eine abgebildete Person ihre Einwilligung, informiert der Salonpartner solen.ch unverzüglich. <strong>solen.ch entfernt das betreffende Bild innerhalb von 48 Stunden nach Eingang einer Meldung, ohne Rückfragen.</strong> Eine Meldung kann von der abgebildeten Person direkt erfolgen; ein Nachweis der Identität wird nicht verlangt.</ParDe>
+          <ParEn>If a depicted person withdraws their consent, the Salon Partner informs solen.ch without delay. <strong>solen.ch removes the image within 48 hours of receiving a report, no questions asked.</strong> A report may be made by the depicted person directly; no proof of identity is required.</ParEn>
+        </Article>
+
         <Article titleDe="8.3 Nutzung der Marke solen.ch" titleEn="8.3 Use of the solen.ch Brand">
           <ParDe>Salonpartner dürfen das solen.ch-Logo und die Marke in ihrem eigenen Marketing verwenden (z.B. «Buchen Sie uns auf solen.ch»), sofern dies unter Einhaltung der von solen.ch veröffentlichten Markenrichtlinien geschieht.</ParDe>
           <ParEn>Salon Partners may use the solen.ch logo and brand in their own marketing (e.g., "Book us on solen.ch"), provided this is done in accordance with the brand guidelines published by solen.ch.</ParEn>

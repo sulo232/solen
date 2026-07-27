@@ -113,7 +113,20 @@ and reversible in one line rather than buried in a diff.
       deleting data needs an explicit yes.
 - [ ] **L7. French register sweep (`vous` to `tu`).** The dedicated session, run here as the
       owner asked.
-- [ ] **L8. Photo takedown promise: 48 hours, no questions asked.** Reasoning: Fresha and
+- [x] **L8. DONE.** `verified:` new section 8.2a renders in `TermsContent.tsx` in the file's
+      existing ParDe/ParEn pattern; `CURRENT_TOS_VERSION` bumped 2026-03-23-v1 ->
+      2026-07-27-v2; tsc clean. The version bump is load-bearing, not cosmetic:
+      `profiles.tos_accepted_version` records what each user actually agreed to, and
+      `app/api/admin/tos/notify/route.ts:43` already selects everyone whose version differs,
+      so a new promise now correctly asks for a new acceptance instead of being backdated
+      onto people who never saw it.
+      The clause: the uploader WARRANTS they hold the rights; where a photo shows or
+      identifies a person they must have that person's PRIOR consent including for
+      advertising; parental consent for minors; a RECORD kept; and Solen removes a reported
+      image within 48 hours, no questions asked, no proof of identity demanded , that last
+      part deliberately, because demanding ID from someone objecting to their own photo is a
+      second violation. NEEDS A SWISS LAWYER before launch; the wording is engineering
+      research, not legal advice. Original reasoning: Fresha and
       Treatwell both require removal on withdrawal but state no window, which is weaker than a
       number. 48h is short enough to mean something and long enough for one person to honour.
       Written as the default; one line to change if the owner wants a different number.
