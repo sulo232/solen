@@ -75,7 +75,22 @@ and reversible in one line rather than buried in a diff.
       undocumented shipped variants against one written rule is how the next person picks the
       wrong one. Docs that describe reality are worth more than reality bent to match a doc
       nobody chose deliberately.
-- [ ] **L5. SalonCard from-price: name the service.** Not a taste call , SECO permits a
+- [x] **L5. DONE, and it uncovered a worse bug than the one it was about.** `verified:`
+      /api/salons now returns min_price_service_de/_en beside min_price, confirmed live
+      (Old Town Barbers -> 'Augenbrauen' at 15 CHF, Muse Beauty Studio -> 'Kopfhaut-Massage'
+      at 35). Rendered and measured at 390x844 on the live tunnel: zero unqualified
+      from-prices on the page, 'Kopfhaut-Massage ab 35 CHF' on the card, row width 366px, no
+      overflow.
+      THE WORSE BUG: four call sites were feeding avg_price into a prop that renders under a
+      "from" label (`SearchTemplate.tsx` x3, `CategoryBrowseRails.tsx`). An AVERAGE is not a
+      floor , roughly half a salon's services cost LESS than it, so the advertised starting
+      price was one the customer could never actually get. That is a false price, not just an
+      unnamed one. All four now use min_price, which /api/salons had been returning all along;
+      only the TypeScript type was missing it, which is why the cards reached for the average.
+      TRADE-OFF THE OWNER SHOULD SEE: the price line is now longer and visually heavier on a
+      390px card. It fits without overflow, but it competes more than the bare number did. The
+      alternative was dropping the price from the card entirely, which loses information; the
+      law does not permit leaving it unnamed. Original plan said: Not a taste call , SECO permits a
       from-price in advertising ONLY when the copy says which offer it buys.
       CORRECTION to my own estimate: I wrote "the change is one string". It is not. I checked
       the data path. `app/api/salons/route.ts:575` computes `min_price` from a `prices` array,

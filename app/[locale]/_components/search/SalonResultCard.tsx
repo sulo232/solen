@@ -44,6 +44,10 @@ export interface SalonResultCardProps {
   city?: string | null;
   distanceMeters?: number | null;
   priceFromCHF?: number | null;
+  /** Name of the service priceFromCHF belongs to. Art. 13 PBV: an advertised from-price is
+   *  lawful only when the copy names the concrete offer it buys (SECO Wegleitung 2025 p.17).
+   *  Absent -> the bare price renders with no "from" word, which claims less, not more. */
+  priceFromService?: string | null;
   /** V3-D372: review count shown as "(124)" beside the rating - Fresha's category
    *  list shows "N reviews"; Solen keeps it grey/recessive (A13: name stays the one
    *  ink anchor). Hidden when 0/absent. */
@@ -208,7 +212,7 @@ export const REVIEWS_LABEL: Record<string, string> = {
 function SalonResultCardInner(props: SalonResultCardProps) {
   const {
     slug, name, locale, rating, reviewCount, photoUrl, category,
-    city, address, distanceMeters, priceFromCHF, isSaved, salonId,
+    city, address, distanceMeters, priceFromCHF, priceFromService, isSaved, salonId,
     nextSlot, services, variant = "grid", matchQuery,
     galleryCount, hasServiceQuery, matchChip,
     walkInWaitMin, walkInQueue,
@@ -311,7 +315,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
           </CardMeta>
           {priceFromCHF != null && (
             <CardMeta as="div" className="mt-1 text-[13px] leading-[1.35]">
-              <PriceFrom amount={priceFromCHF} label={fromLabel} emphasis />
+              <PriceFrom amount={priceFromCHF} label={priceFromService ? `${priceFromService} ${fromLabel}` : undefined} emphasis />
             </CardMeta>
           )}
         </div>
@@ -356,7 +360,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
             )}
             {priceFromCHF != null && (
               <CardMeta as="div" className="mt-0.5 text-[12.5px] leading-[1.35]">
-                <PriceFrom amount={priceFromCHF} label={fromLabel} emphasis />
+                <PriceFrom amount={priceFromCHF} label={priceFromService ? `${priceFromService} ${fromLabel}` : undefined} emphasis />
               </CardMeta>
             )}
             {nextSlot && (
@@ -428,7 +432,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
                 {priceFromCHF != null && (
                   <>
                     {metaBits ? " " : ""}
-                    <PriceFrom amount={priceFromCHF} label={fromLabel} emphasis />
+                    <PriceFrom amount={priceFromCHF} label={priceFromService ? `${priceFromService} ${fromLabel}` : undefined} emphasis />
                   </>
                 )}
               </CardMeta>
@@ -446,7 +450,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
                 </CardMeta>
                 {priceFromCHF != null && (
                   <CardMeta as="div" className="shrink-0 text-[13px] leading-[1.4]">
-                    <PriceFrom amount={priceFromCHF} label={fromLabel} emphasis />
+                    <PriceFrom amount={priceFromCHF} label={priceFromService ? `${priceFromService} ${fromLabel}` : undefined} emphasis />
                   </CardMeta>
                 )}
               </div>
@@ -586,7 +590,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
               )}
               {priceFromCHF != null && (
                 <CardMeta as="span" className="text-[13.5px] font-semibold text-s-ink">
-                  <PriceFrom amount={priceFromCHF} label={fromLabel} emphasis />
+                  <PriceFrom amount={priceFromCHF} label={priceFromService ? `${priceFromService} ${fromLabel}` : undefined} emphasis />
                 </CardMeta>
               )}
             </div>
@@ -672,7 +676,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
           <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
             {priceFromCHF != null && (
               <CardMeta as="span" className="text-[12px] leading-[1.35]">
-                <PriceFrom amount={priceFromCHF} label={fromLabel} emphasis />
+                <PriceFrom amount={priceFromCHF} label={priceFromService ? `${priceFromService} ${fromLabel}` : undefined} emphasis />
               </CardMeta>
             )}
             {nextSlot && (

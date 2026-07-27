@@ -291,6 +291,11 @@ export interface SalonCardProps extends VariantProps<typeof curationVariants> {
   service?: string;
   /** Variant=service: lowest price (CHF) — renders "ab CHF [price]". */
   priceFromCHF?: number | null;
+  /** Name of the service that priceFromCHF belongs to. Art. 13 PBV: a from-price is lawful
+   *  advertising ONLY when the copy says which concrete offer it buys (SECO Wegleitung 2025
+   *  p.17). Omitted -> the card renders the bare price with no "from", which is the safe
+   *  fallback rather than an unlawful unqualified from-price. */
+  priceFromService?: string | null;
   /** CARD_REDESIGN_2026-07-13 (C2): the availability badge + Row 3 next-slot text
    *  were removed from the converged card. Kept in the interface unused-by-render
    *  so existing callers compile unchanged. */
@@ -339,6 +344,7 @@ export function SalonCard({
   variant,
   service,
   priceFromCHF,
+  priceFromService,
   nextSlotLabel,
   address,
   postalCode,
@@ -526,7 +532,14 @@ export function SalonCard({
             )}
             {priceFromCHF != null && (
               <CardMeta as="span" className="shrink-0 text-[12px] leading-[1.35]">
-                <PriceFrom amount={priceFromCHF} label={fromLabel} />
+                {/* The "from" word only appears when the service it refers to is named. SECO
+                    Wegleitung 2025 p.17: an advertised minimum price must describe the concrete
+                    offer. Without a name we show the bare number instead of an unqualified
+                    from-price, because the bare number claims less, not more. */}
+                <PriceFrom
+                  amount={priceFromCHF}
+                  label={priceFromService ? `${priceFromService} ${fromLabel}` : undefined}
+                />
               </CardMeta>
             )}
           </div>

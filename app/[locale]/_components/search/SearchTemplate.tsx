@@ -156,6 +156,12 @@ type Salon = {
   categories?: string[];
   last_minute_discount_percent?: number | null;
   avg_price?: number | null;
+  // /api/salons has always returned min_price beside avg_price; only the type was
+  // missing it, which is why the cards reached for the average. Its service name came
+  // with it on 2026-07-27 so a from-price can name the offer it buys (PBV Art. 13).
+  min_price?: number | null;
+  min_price_service_de?: string | null;
+  min_price_service_en?: string | null;
   distance_meters?: number | null;
   latitude?: number | null;
   longitude?: number | null;
@@ -1611,7 +1617,12 @@ export default function SearchTemplate({
                       }
                       address={s.address}
                       distanceMeters={s.distance_meters ?? null}
-                      priceFromCHF={s.avg_price ?? null}
+                      // min_price, not avg_price (2026-07-27): this renders under a "from"
+                      // label, and an AVERAGE is not a floor , half the salon's services cost
+                      // less than it, so the advertised starting price was unreachable. PBV
+                      // Art. 13 requires a from-price to be the genuine lower limit.
+                      priceFromCHF={s.min_price ?? null}
+                      priceFromService={locale === "en" ? (s.min_price_service_en ?? s.min_price_service_de ?? null) : (s.min_price_service_de ?? null)}
                       reviewCount={s.review_count ?? null}
                       services={s.services}
                       isSaved={favoriteIds.has(s.id)}
@@ -1682,7 +1693,9 @@ export default function SearchTemplate({
                       (activeCity ? cityName : undefined)
                     }
                     distanceMeters={s.distance_meters ?? null}
-                    priceFromCHF={s.avg_price ?? null}
+                    // min_price, not avg_price , see the note on the sibling card above.
+                    priceFromCHF={s.min_price ?? null}
+                    priceFromService={locale === "en" ? (s.min_price_service_en ?? s.min_price_service_de ?? null) : (s.min_price_service_de ?? null)}
                     // V3-D373 (Fresha-match): review count -> its own "category · N
                     // reviews" line; location is "area, town" (built in city= above).
                     reviewCount={s.review_count ?? null}
@@ -1793,7 +1806,9 @@ export default function SearchTemplate({
             (s.quartier ? s.quartier.charAt(0).toUpperCase() + s.quartier.slice(1) : undefined) ||
             (activeCity ? cityName : undefined),
           distanceMeters: s.distance_meters ?? null,
-          priceFromCHF: s.avg_price ?? null,
+          // min_price, not avg_price , an average under a "from" label is not a floor.
+          priceFromCHF: s.min_price ?? null,
+          priceFromService: locale === "en" ? (s.min_price_service_en ?? s.min_price_service_de ?? null) : (s.min_price_service_de ?? null),
           reviewCount: s.review_count ?? null,
           nextSlot: nextSlotLabel(s.services, locale),
           services: s.services,
