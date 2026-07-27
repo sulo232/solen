@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:analyze": "ANALYZE=true next build",
     "start": "next start",
     "lint": "next lint",
     "inventory": "node scripts/inventory.mjs",
@@ -22,7 +23,8 @@
     "removed": "node scripts/removed.mjs",
     "smoke": "tsx scripts/api-smoke.ts",
     "e2e": "tsx scripts/e2e-booking.ts",
-    "contracts:census": "node scripts/api-contracts-census.mjs"
+    "contracts:census": "node scripts/api-contracts-census.mjs",
+    "select-star:census": "node scripts/select-star-census.mjs"
   },
   "dependencies": {
     "@babel/runtime": "^7.23.9",
@@ -77,6 +79,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",
+    "@next/bundle-analyzer": "^16.2.12",
     "@playwright/test": "^1.59.1",
     "@types/mapbox-gl": "^3.4.1",
     "@types/node": "^20.17.30",
