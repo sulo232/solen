@@ -39,12 +39,26 @@ and reversible in one line rather than buried in a diff.
       wrong one. Docs that describe reality are worth more than reality bent to match a doc
       nobody chose deliberately.
 - [ ] **L5. SalonCard from-price: name the service.** Not a taste call , SECO permits a
-      from-price in advertising ONLY when the copy says which offer it buys. Naming it keeps
-      the information; dropping the price loses it. Statutory floor outranks the mockup-first
-      habit here, and the change is one string.
-- [ ] **L6. Backfill the 6 salons stranded at `registration_completed = false`.** Pre-launch
-      seed data, one additive idempotent update, and without it the approvals fix helps only
-      salons that sign up from now on.
+      from-price in advertising ONLY when the copy says which offer it buys.
+      CORRECTION to my own estimate: I wrote "the change is one string". It is not. I checked
+      the data path. `app/api/salons/route.ts:575` computes `min_price` from a `prices` array,
+      so the cheapest service's row IS in scope and returning its name is a small API change ,
+      but the card renders that price on a 12px line it already SHARES with the address
+      (`app/[locale]/_components/homepage/SalonCard.tsx:520-533`), so adding a service name
+      there truncates one of the two on a narrow card. Still mine to decide, not parked: the
+      law does not permit leaving it, and between naming the service and dropping the price,
+      naming keeps the information. Doing it means the API change first, then a measured look
+      at that row at 390px before it ships.
+- [x] **L6. Backfill CANCELLED after looking at the rows , and my earlier report to the owner
+      was wrong.** I told them "6 salons are waiting for approval". I read the six names before
+      writing anything, and every one is a test fixture: `test`, `test`, `E2E Test Salon
+      lgekk50`, `Payload Check Salon d6od9eo`, `E2E Test Salon Fix1 1783293180`,
+      `reviewer-batchA-1783293687`. Nothing real is stranded. Backfilling would have filled the
+      approvals queue with junk on the day it first works, which is worse than the empty queue
+      it replaced. The signup fix (commit `e5f4d17b9`) still matters , it is what makes the
+      queue work for the first REAL salon , it just has nothing to catch up on.
+      Left for the owner, not a blocker: those six test rows are litter in `salons` and
+      deleting data needs an explicit yes.
 - [ ] **L7. French register sweep (`vous` to `tu`).** The dedicated session, run here as the
       owner asked.
 - [ ] **L8. Photo takedown promise: 48 hours, no questions asked.** Reasoning: Fresha and
