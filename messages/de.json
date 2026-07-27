@@ -144,7 +144,9 @@
     "mobileNavigation": "Navigation",
     "loginToSave": "Melde dich an, um Salons zu speichern",
     "loginToProfile": "Melde dich an, um dein Profil zu sehen",
-    "loginCta": "Jetzt anmelden"
+    "loginCta": "Jetzt anmelden",
+    "aboutUs": "Über uns",
+    "myAccount": "Mein Konto"
   },
   "home": {
     "hero_title": "Dein Salon in Basel",

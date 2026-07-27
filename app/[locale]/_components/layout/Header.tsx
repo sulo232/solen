@@ -238,6 +238,9 @@ function DropdownMenu({
  * DesktopCitySelector. Local to Header (not a shared component → no registry entry).
  */
 function MobileCityChip({ locale }: { locale: string }) {
+  // Its own hook: this is a separate component in the same file, so the Header's tCities is
+  // not in scope here. cities.select already exists in all four locales.
+  const tCities = useTranslations("cities");
   const [mounted, setMounted] = React.useState(false);
   const [city, setCity] = React.useState<CitySlug>("basel");
   const [open, setOpen] = React.useState(false);
@@ -284,7 +287,7 @@ function MobileCityChip({ locale }: { locale: string }) {
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        aria-label="Stadt wählen"
+        aria-label={tCities("select")}
         className={cn(
           "inline-flex items-center gap-1.5 rounded-full px-3 py-2 font-body text-[15px] font-semibold text-s-ink",
           "transition-colors duration-150 ease-glide hover:bg-s-bg-sunken",
@@ -395,6 +398,13 @@ export default function Header({ locale }: { locale: string }) {
   // home icon is redundant on home). Other top-level pages keep the Home icon as a go-home affordance.
   const isHome = !!pathname && /^\/[a-z]{2}\/?$/.test(pathname);
   const tDiscover = useTranslations("discover");
+  // 2026-07-27 language sweep: five German literals in this file rendered German to English,
+  // French and Italian visitors on EVERY page, because the header is global. Four of the five
+  // reuse keys that already existed in all four locales (navigation.login, common.back,
+  // cities.select); only aboutUs and myAccount were genuinely new.
+  const tNav = useTranslations("navigation");
+  const tCommon = useTranslations("common");
+  const tCities = useTranslations("cities");
 
   // Owner 2026-06-11: profile-subpage titles sit BESIDE the back tile (the stacked
   // page h1 below the header read unbalanced). Same slot idea as the V3-D410
@@ -622,7 +632,7 @@ export default function Header({ locale }: { locale: string }) {
               if (typeof window !== "undefined" && window.history.length > 1) router.back();
               else router.push(`/${locale}`);
             }}
-            aria-label="Zurück"
+            aria-label={tCommon("back")}
             className={cn(
               // mockup-ok: S3 fix, 40px -> 44px floor, icon glyph size unchanged (approved fixes-refined)
               // mockup-ok: rounded snapped, punch-list geometry sweep, TASTE_LOG.md:187 2026-07-15
@@ -738,7 +748,7 @@ export default function Header({ locale }: { locale: string }) {
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:rounded-sm",
             )}
           >
-            Über uns
+            {tNav("aboutUs")}
           </Link>
           {/* V3-D157 (2026-05-25): desktop city selector. Sits between
               Über uns and Anmelden so it reads as a utility control (right
@@ -760,7 +770,7 @@ export default function Header({ locale }: { locale: string }) {
           {loggedIn ? (
             <Link
               href={`/${locale}/profile`}
-              aria-label="Mein Konto"
+              aria-label={tNav("myAccount")}
               className="relative hidden md:grid place-items-center w-9 h-9 shrink-0 overflow-hidden rounded-full border border-s-border bg-s-bg-sunken text-[13px] font-semibold text-s-ink transition-opacity duration-200 ease-glide hover:opacity-90 focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
             >
               <span aria-hidden>{accountInitial}</span>
@@ -773,7 +783,7 @@ export default function Header({ locale }: { locale: string }) {
               href={`/${locale}/auth/login`}
               className="hidden md:inline-flex items-center rounded-full bg-s-ink px-5 py-[9px] font-body text-[14px] font-semibold text-white shadow-[0_4px_12px_rgba(4,51,56,0.18)] transition-all duration-200 ease-glide hover:bg-black hover:shadow-[0_6px_16px_rgba(4,51,56,0.24)] active:scale-[0.97] active:duration-[80ms] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
             >
-              Anmelden
+              {tNav("login")}
             </Link>
           )}
           {/* V3-D167 (2026-05-26): notification Bell. Sits LEFT of the

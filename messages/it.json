@@ -144,7 +144,9 @@
     "mobileNavigation": "Navigazione",
     "loginToSave": "Accedi per salvare i saloni",
     "loginToProfile": "Accedi per vedere il tuo profilo",
-    "loginCta": "Accedi ora"
+    "loginCta": "Accedi ora",
+    "aboutUs": "Chi siamo",
+    "myAccount": "Il mio account"
   },
   "home": {
     "hero_title": "Il tuo salone a Basilea",
