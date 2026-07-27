@@ -1506,7 +1506,10 @@ Overshoot is EARNED by gesture momentum only — a bounce on something that mere
 
 Source + evidence: `research/UNFINISHED_AUDIT_2026-07-21.md`. Co-equal with every ceiling in this file.
 
-- **§17.1 Imagery presence:** customer browse/discovery/PDP viewports at 375x812 carry roughly >= 1/3
+- **§17.1 Imagery presence:** customer browse/discovery/PDP viewports at 390x844 (corrected 2026-07-25,
+  was 375x812; this section was the last straggler after the same correction landed in CLAUDE.md twice
+  and in the EMPHASIS BUDGET block below, and `scripts/check-geometry.mjs` already renders the FLOORS
+  pass at 390x844 fixed, regardless of `--viewport`) carry roughly >= 1/3
   photographic area; the photo is the largest element of every SalonCard; a missing photo renders the
   spec'd fallback (s-bg-sunken + 3D category icon + salon initial), NEVER a bare grey box, never
   slot-omission. Mockups use real seeded photography. Exempt by name: forms, checkout payment step,
