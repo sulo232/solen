@@ -43,37 +43,50 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 > (`grep -c de-CH eslint.config.mjs` = 0, `scripts/check-i18n-parity.mjs` missing) and
 > re-opened. Wave 2 owns them.
 
+
+> **SECOND CORRECTION, same turn.** The checkbox gate flagged six ticked criticals with no sha.
+> Adding the shas exposed something worse: the `law-system-meta` agent reported 11 findings DONE
+> and shipped exactly ONE of them (`doc-to-gate-drift-reconciliation`, commit `a7994dcb2`, which
+> is real: it adds a LOCKFILE-hex-versus-ALLOWED_HEX diff to `scripts/check-invariants.mjs`).
+> For the other 10 there is no artifact: no `RETIRED_GATES.md`, no ROI test, no hook-count
+> ceiling, no memory-consolidation trigger. Two matched only PRE-EXISTING text in
+> `CONTEXT_SYSTEM.md`, which is not the same as having been written.
+> I made it worse by marking the WHOLE domain DONE in my own bookkeeping on the strength of the
+> agent's summary. That is the third instance tonight of treating a claim as a completion.
+> All 10 are back to open. `marketplace-trust` was checked the same way and its commits and
+> files are real, so it stays DONE.
+
 ## The queue
 
 ### authz-rls
 - [ ] `authz-rls-01` [critical/S] Live RLS hole: an orphaned permissive UPDATE policy neutralizes every later restriction on reviews
 
 ### color-tokens
-- [x] `color-tokens-02` **DONE** [critical/M] Server-rendered, printed financial documents (payout invoices) are entirely outside the token system
+- [x] `color-tokens-02` **DONE** commit `816883449` [critical/M] Server-rendered, printed financial documents (payout invoices) are entirely outside the token system
 
 ### copy-i18n
-- [x] `copy-i18n-01` **DONE** [critical/S] refundFlow namespace (261/264 keys) is English-only in de/fr/it, with a live _todo_translate marker ignored for 7+ weeks
+- [x] `copy-i18n-01` **DONE** commit `7e6d4d8bf` [critical/S] refundFlow namespace (261/264 keys) is English-only in de/fr/it, with a live _todo_translate marker ignored for 7+ weeks
 
 ### data-money
-- [x] `data-money-02` **DONE** [critical/S] A blocking money-CAS gate protects only future edits; it never swept existing code, and a live instance of the exact bug it exists to block is still in production
+- [x] `data-money-02` **DONE** commit `bae187459` [critical/S] A blocking money-CAS gate protects only future edits; it never swept existing code, and a live instance of the exact bug it exists to block is still in production
 
 ### law-system-meta
-- [x] `gate-mute-forces-rescope` **DONE** [critical/S] A gate skip-flagged past a set rate must be re-scoped or retired, not left as a live-but-ignored law
-- [x] `law-layer-roi-test` **DONE** [critical/S] No test that a new law/gate/doctrine layer must be provably cheaper than the mistakes it prevents before it is written
+- [ ] `gate-mute-forces-rescope` **RE-OPENED 2026-07-27** the agent reported DONE with no per-id sha and I could find no artifact: [critical/S] A gate skip-flagged past a set rate must be re-scoped or retired, not left as a live-but-ignored law
+- [ ] `law-layer-roi-test` **RE-OPENED 2026-07-27** the agent reported DONE with no per-id sha and I could find no artifact: [critical/S] No test that a new law/gate/doctrine layer must be provably cheaper than the mistakes it prevents before it is written
 
 ### marketplace-trust
-- [x] `trust-01-phone-verification-silent-noop` **DONE** [critical/S] Salon phone verification is a silent no-op: promised in the ToS, faked by the code
-- [x] `trust-02-cancellation-fee-ceiling-unenforced` **DONE** [critical/S] Per-salon cancellation/no-show fee has no code ceiling matching the ToS-promised platform cap
-- [x] `trust-03-account-warnings-write-only` **DONE** [critical/M] account_warnings is write-only: the ToS's promised strike/suspension consequences never fire
+- [x] `trust-01-phone-verification-silent-noop` **DONE** commit `895f90a25` [critical/S] Salon phone verification is a silent no-op: promised in the ToS, faked by the code
+- [x] `trust-02-cancellation-fee-ceiling-unenforced` **DONE** commit `da921250d` [critical/S] Per-salon cancellation/no-show fee has no code ceiling matching the ToS-promised platform cap
+- [x] `trust-03-account-warnings-write-only` **DONE** commit `895f90a25` [critical/M] account_warnings is write-only: the ToS's promised strike/suspension consequences never fire
 
 ### motion
-- [x] `motion-01` **DONE** [critical/M] Interruptibility is a stated rule with no technical contract, and the default framer-motion pattern used on the highest-traffic surface violates it
+- [x] `motion-01` **DONE** commit `d8d4abf99` [critical/M] Interruptibility is a stated rule with no technical contract, and the default framer-motion pattern used on the highest-traffic surface violates it
 
 ### privacy-compliance
-- [x] `privacy-compliance-02` **DONE** [critical/S] Self-service data export omits every salon-authored client record, including the most sensitive ones
+- [x] `privacy-compliance-02` **DONE** commit `352bf67c0` [critical/S] Self-service data export omits every salon-authored client record, including the most sensitive ones
 
 ### testing-release
-- [x] `testing-release-01` **DONE** [critical/S] The one E2E test that matters has never actually run in CI
+- [x] `testing-release-01` **DONE** commit `3eeb94db9` [critical/S] The one E2E test that matters has never actually run in CI
 
 ### accessibility
 - [ ] `accessibility-04` [high/M] The dashboard has no accessibility floor at all: zero landmarks, two-thirds of pages carry zero ARIA
@@ -90,20 +103,20 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [ ] `api-contracts-10` [high/M] The whole api-design domain's decisions exist only as unfrozen prose; no LAW.md row means every future session re-derives or contradicts them from scratch
 
 ### authz-rls
-- [x] `authz-rls-02` **DONE** [high/M] The `staff` role is authorization-unmodeled at every layer and is actively locked out of the surface it exists for
-- [x] `authz-rls-03` **DONE** [high/M] No gate checks object-level (IDOR/BOLA) authorization; the one authz-adjacent gate only checks that SOME auth call exists
-- [x] `authz-rls-04` **DONE** [high/M] Deep authorization research exists for both authn and authz, but nothing is frozen into law, and the authz audit was never written
-- [x] `authz-rls-05` **DONE** [high/L] 270 service-role call sites carry the entire authorization decision by hand, with zero audit of which ones actually have the required adjacent check
+- [x] `authz-rls-02` **DONE** commit `a2523f673` [high/M] The `staff` role is authorization-unmodeled at every layer and is actively locked out of the surface it exists for
+- [x] `authz-rls-03` **DONE** commit `4a4a79061` [high/M] No gate checks object-level (IDOR/BOLA) authorization; the one authz-adjacent gate only checks that SOME auth call exists
+- [x] `authz-rls-04` **DONE** commit `ce02cef5a` [high/M] Deep authorization research exists for both authn and authz, but nothing is frozen into law, and the authz audit was never written
+- [x] `authz-rls-05` **DONE** commit `4a4a79061` [high/L] 270 service-role call sites carry the entire authorization decision by hand, with zero audit of which ones actually have the required adjacent check
 
 ### color-tokens
-- [x] `color-tokens-03` **DONE** [high/M] Transactional emails render in colors from a retired, pre-B&W-pivot brand era with no link to LOCKFILE
-- [x] `color-tokens-05` **DONE** [high/L] No automated contrast-ratio check exists anywhere; every WCAG contrast claim in the docs is a one-time manual assertion
-- [x] `color-tokens-07` **DONE** [high/S] A duplicated, off-palette hardcoded hex gradient array is copy-pasted across 4 dashboard files, invisible to enforcement because the whole route is scope-excluded
+- [x] `color-tokens-03` **DONE** commit `55ff467ac` [high/M] Transactional emails render in colors from a retired, pre-B&W-pivot brand era with no link to LOCKFILE
+- [x] `color-tokens-05` **DONE** commit `ab103bd8e` [high/L] No automated contrast-ratio check exists anywhere; every WCAG contrast claim in the docs is a one-time manual assertion
+- [x] `color-tokens-07` **DONE** commit `867f563b5` [high/S] A duplicated, off-palette hardcoded hex gradient array is copy-pasted across 4 dashboard files, invisible to enforcement because the whole route is scope-excluded
 
 ### copy-i18n
-- [x] `copy-i18n-02` **DONE** [high/S] German 'du not Sie' is locked law but has zero enforcement and is already violated 12 times in the live de.json, including inside dashboard chrome
+- [x] `copy-i18n-02` **DONE** commit `4bdd17b69` [high/S] German 'du not Sie' is locked law but has zero enforcement and is already violated 12 times in the live de.json, including inside dashboard chrome
 - [ ] `copy-i18n-03` **QUEUED_FOR_OWNER** [high/M] French defaults to formal 'vous', breaking the same warmth rationale that locked German and Italian to informal, with no decision ever recorded
-- [x] `copy-i18n-04` **DONE** [high/M] ICU plural messages are the documented pattern but at least 9 live customer-facing files hardcode a binary ternary instead, shipping untranslated English or German text to all four locales
+- [x] `copy-i18n-04` **DONE** commit `2826a9514` [high/M] ICU plural messages are the documented pattern but at least 9 live customer-facing files hardcode a binary ternary instead, shipping untranslated English or German text to all four locales
 
 ### data-money
 - [ ] `data-money-01` [high/M] The backend law layer stalled at research; nothing was ever frozen into LAW.md
@@ -134,25 +147,25 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [ ] `input-abuse-04` [high/M] The SSRF guard protects one call site out of at least six that fetch non-hardcoded URLs
 
 ### law-system-meta
-- [x] `canonical-doc-size-ceiling` **DONE** [high/M] No size ceiling on a 'read before every edit' canonical law file, so the two biggest ones are self-admittedly unread
-- [x] `doc-to-gate-drift-reconciliation` **DONE** [high/M] No standing, automated reconciliation between canonical values in doctrine and the literal values hardcoded inside a gate script
-- [x] `gate-retirement-policy` **DONE** [high/S] No policy for retiring a gate independent of supersession; the existing _retired/ folder has no criteria, no tombstone, and is invisible to the health check
-- [x] `no-authoring-time-tier-check` **DONE** [high/S] Nothing forces the author of a new doctrine file to decide, at write time, whether it needs a T1 injector -- the gap is only found later by audit
-- [x] `serial-gate-count-cap` **DONE** [high/M] No cap on how many independent gates may deny the same action serially before they must be merged
+- [ ] `canonical-doc-size-ceiling` **RE-OPENED 2026-07-27** the agent reported DONE with no per-id sha and I could find no artifact: [high/M] No size ceiling on a 'read before every edit' canonical law file, so the two biggest ones are self-admittedly unread
+- [x] `doc-to-gate-drift-reconciliation` **DONE** commit `a7994dcb2` [high/M] No standing, automated reconciliation between canonical values in doctrine and the literal values hardcoded inside a gate script
+- [ ] `gate-retirement-policy` **RE-OPENED 2026-07-27** the agent reported DONE with no per-id sha and I could find no artifact: [high/S] No policy for retiring a gate independent of supersession; the existing _retired/ folder has no criteria, no tombstone, and is invisible to the health check
+- [ ] `no-authoring-time-tier-check` **RE-OPENED 2026-07-27** the agent reported DONE with no per-id sha and I could find no artifact: [high/S] Nothing forces the author of a new doctrine file to decide, at write time, whether it needs a T1 injector -- the gap is only found later by audit
+- [ ] `serial-gate-count-cap` **RE-OPENED 2026-07-27** the agent reported DONE with no per-id sha and I could find no artifact: [high/M] No cap on how many independent gates may deny the same action serially before they must be merged
 
 ### layout-geometry
 - [ ] `layout-geometry-01` [high/S] Optical-overshoot law has zero enforcement; adopted at 0 of 23 Avatar call sites
 - [ ] `layout-geometry-02` [high/M] The DOM-geometry checker exists and produces real signal, but has no committed path from report-only to a gate
 
 ### marketplace-trust
-- [x] `trust-04-no-refund-reporting-window` **DONE** [high/S] No refund/appeal reporting window exists in writing or in code, leaving indefinite reopenable liability
-- [x] `trust-05-onboarding-verification-not-gated` **DONE** [high/S] Salon business-identity verification is entirely optional and never gates activation; no written manual-review checklist exists either
-- [x] `trust-06-no-harassment-safety-report-lane` **DONE** [high/S] No differentiated safety/harassment report category exists, so the ToS's 'zero-tolerance, immediate suspension' promise has no trigger
+- [x] `trust-04-no-refund-reporting-window` **DONE** commit `584fc3f7c` [high/S] No refund/appeal reporting window exists in writing or in code, leaving indefinite reopenable liability
+- [x] `trust-05-onboarding-verification-not-gated` **DONE** commit `be2ef386f` [high/S] Salon business-identity verification is entirely optional and never gates activation; no written manual-review checklist exists either
+- [x] `trust-06-no-harassment-safety-report-lane` **DONE** commit `0697f39cc` [high/S] No differentiated safety/harassment report category exists, so the ToS's 'zero-tolerance, immediate suspension' promise has no trigger
 
 ### motion
-- [x] `motion-02` **DONE** [high/S] THE CURVE RULE's own audit missed the shared step-swap primitive: it exits on the entrance curve, not the exit curve
-- [x] `motion-03` **DONE** [high/S] The stagger recipe has no ceiling: past 8 items, new cards enter at the same instant as the first card, on the app's own largest feed
-- [x] `motion-04` **DONE** [high/S] The one runtime WCAG 2.2.2 check the estate built for itself is a manual command, not a gate
+- [x] `motion-02` **DONE** commit `d8d4abf99` [high/S] THE CURVE RULE's own audit missed the shared step-swap primitive: it exits on the entrance curve, not the exit curve
+- [x] `motion-03` **DONE** commit `d8d4abf99` [high/S] The stagger recipe has no ceiling: past 8 items, new cards enter at the same instant as the first card, on the app's own largest feed
+- [x] `motion-04` **DONE** commit `a2007002d` [high/S] The one runtime WCAG 2.2.2 check the estate built for itself is a manual command, not a gate
 
 ### observability
 - [ ] `observability-3` [high/M] Audit trail exists but automatic money-movement paths don't write to it
@@ -174,10 +187,10 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [ ] `performance-03` [high/S] No standing per-page query-count budget; fan-outs are only caught by after-the-fact audits
 
 ### privacy-compliance
-- [x] `privacy-compliance-01` **DONE** [high/M] Privacy/nFADP/GDPR has zero presence in the backend law taxonomy
-- [x] `privacy-compliance-03` **DONE** [high/M] Special-category personal data is collected with the same consent as ordinary account data
-- [x] `privacy-compliance-04` **DONE** [high/S] The live privacy policy is stale against the schema and cites a data-transfer mechanism invalidated six years ago
-- [x] `privacy-compliance-06` **DONE** [high/M] Third-party processors and the audit log are outside the erasure cascade, and the codebase already says so
+- [x] `privacy-compliance-01` **DONE** commit `d8e1e990b` [high/M] Privacy/nFADP/GDPR has zero presence in the backend law taxonomy
+- [x] `privacy-compliance-03` **DONE** commit `d8e1e990b` [high/M] Special-category personal data is collected with the same consent as ordinary account data
+- [x] `privacy-compliance-04` **DONE** commit `352bf67c0` [high/S] The live privacy policy is stale against the schema and cites a data-transfer mechanism invalidated six years ago
+- [x] `privacy-compliance-06` **DONE** commit `d65443b30` [high/M] Third-party processors and the audit log are outside the erasure cascade, and the codebase already says so
 
 ### responsive-desktop
 - [ ] `responsive-desktop-01` [high/M] The FLOORS LAW (imagery third, emphasis budget, display anchor) has no desktop measurement, by explicit hardcoded design
@@ -200,9 +213,9 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [ ] `states-forms-05` [high/M] Double-submit protection uses a real mutex (ref) in exactly one flow; everywhere else it is React-state-only, which has a known race
 
 ### testing-release
-- [x] `testing-release-02` **DONE** [high/S] No rollback procedure exists for a bad production deploy
-- [x] `testing-release-03` **DONE** [high/S] The mobile-contract tripwire (npm run smoke) is not wired into CI at all
-- [x] `testing-release-11` **DONE** [high/M] The Stripe webhook handler, the single most consequential untested route in the app, has zero test coverage
+- [x] `testing-release-02` **DONE** commit `7013cddba` [high/S] No rollback procedure exists for a bad production deploy
+- [x] `testing-release-03` **DONE** commit `3eeb94db9` [high/S] The mobile-contract tripwire (npm run smoke) is not wired into CI at all
+- [x] `testing-release-11` **DONE** commit `3eeb94db9` [high/M] The Stripe webhook handler, the single most consequential untested route in the app, has zero test coverage
 
 ### typography
 - [ ] `typography-02` [high/S] Type law has no reach into lib/** HTML strings; a live email currently violates the retired-monospace-code rule
@@ -227,26 +240,26 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 
 ### authz-rls
 - [ ] `authz-rls-06` [medium/M] Several tables carry unscoped WITH CHECK (true) INSERT policies that let a direct PostgREST caller bypass all app-layer business logic
-- [x] `authz-rls-07` **DONE** [medium/M] RLS's silent-zero-rows failure mode has no enforcement in authorization-sensitive writes despite three confirmed prior incidents
-- [x] `authz-rls-08` **DONE** [medium/M] No differentiated authorization tier exists for the owner/staff dashboard session versus a browsing customer session, despite its documented adjacency to Stripe Connect payouts
+- [x] `authz-rls-07` **DONE** commit `4a4a79061` [medium/M] RLS's silent-zero-rows failure mode has no enforcement in authorization-sensitive writes despite three confirmed prior incidents
+- [x] `authz-rls-08` **DONE** commit `ce02cef5a` [medium/M] No differentiated authorization tier exists for the owner/staff dashboard session versus a browsing customer session, despite its documented adjacency to Stripe Connect payouts
 
 ### color-tokens
-- [x] `color-tokens-04` **DONE** [medium/M] The same #6B6B6B grey is reachable through four different token names with no naming-grammar rule to prevent it
-- [x] `color-tokens-06` **DONE** [medium/S] About a third of the defined color tokens have zero live usage, and nothing ever prunes them
+- [x] `color-tokens-04` **DONE** commit `dcbf6ea19` [medium/M] The same #6B6B6B grey is reachable through four different token names with no naming-grammar rule to prevent it
+- [x] `color-tokens-06` **DONE** commit `069f98df0` [medium/S] About a third of the defined color tokens have zero live usage, and nothing ever prunes them
 
 ### copy-i18n
-- [x] `copy-i18n-06` **DONE** [medium/S] Swiss apostrophe thousands-grouping (1'000) silently does not apply to fr-CH in the ICU data the app actually runs on, and nothing documents or guards the exception
-- [x] `copy-i18n-08` **DONE** [medium/S] The existing hardcoded-string audit script is unwired, always exits 0, and is too narrow to have caught any of the violations found in this pass
-- [x] `copy-i18n-09` **DONE** [medium/S] Copy-length-variance law covers German-vs-English fixed-width containers but not French, and not fixed-HEIGHT single-line buttons
-- [x] `copy-i18n-10` **DONE** [medium/M] No dashboard/salon-owner surface distinguishes 'Solen speaking to the owner' (locked informal du) from 'a template the owner sends to their own customer' (which should plausibly be formal, business-register), so the two registers collide inside single components
+- [x] `copy-i18n-06` **DONE** commit `5ffe4341e` [medium/S] Swiss apostrophe thousands-grouping (1'000) silently does not apply to fr-CH in the ICU data the app actually runs on, and nothing documents or guards the exception
+- [x] `copy-i18n-08` **DONE** commit `128cef36d` [medium/S] The existing hardcoded-string audit script is unwired, always exits 0, and is too narrow to have caught any of the violations found in this pass
+- [x] `copy-i18n-09` **DONE** commit `6145d3c4b` [medium/S] Copy-length-variance law covers German-vs-English fixed-width containers but not French, and not fixed-HEIGHT single-line buttons
+- [x] `copy-i18n-10` **DONE** commit `dd4f5d531` [medium/M] No dashboard/salon-owner surface distinguishes 'Solen speaking to the owner' (locked informal du) from 'a template the owner sends to their own customer' (which should plausibly be formal, business-register), so the two registers collide inside single components
 - [ ] `copy-i18n-11` **QUEUED_FOR_OWNER** [medium/M] Swiss price-transparency law (Preisbekanntgabeverordnung) is never named as the reason behind the 'ab CHF' pattern, so nothing checks that 'ab' (starting-from) pricing is only used where the service genuinely has variable pricing
 
 ### data-money
-- [x] `data-money-04` **DONE** [medium/M] Migration-time lock/concurrency hygiene (NOT VALID+VALIDATE, CREATE INDEX CONCURRENTLY, lock_timeout) is written as law but has zero enforcement and no measured trigger
-- [x] `data-money-06` **DONE** [medium/S] Backup table coverage (16% of tables) has no rule tying new-table creation to backup-set inclusion, and has not kept pace with schema growth
-- [x] `data-money-08` **DONE** [medium/M] No cron in the 26-route fleet has an overlap guard, despite several crons writing money or state without a claim step
-- [x] `data-money-09` **DONE** [medium/M] The RPC-atomicity law for multi-write balance operations is enforced by audit-sampling luck, not a maintained inventory, and a known instance is still un-fixed
-- [x] `data-money-10` **DONE** [medium/M] GDPR/nFADP erasure-pipeline table coverage has never been audited against the live schema
+- [x] `data-money-04` **DONE** commit `96ff48e08` [medium/M] Migration-time lock/concurrency hygiene (NOT VALID+VALIDATE, CREATE INDEX CONCURRENTLY, lock_timeout) is written as law but has zero enforcement and no measured trigger
+- [x] `data-money-06` **DONE** commit `96ff48e08` [medium/S] Backup table coverage (16% of tables) has no rule tying new-table creation to backup-set inclusion, and has not kept pace with schema growth
+- [x] `data-money-08` **DONE** commit `b7e612bc1` [medium/M] No cron in the 26-route fleet has an overlap guard, despite several crons writing money or state without a claim step
+- [x] `data-money-09` **DONE** commit `bbc251a04` [medium/M] The RPC-atomicity law for multi-write balance operations is enforced by audit-sampling luck, not a maintained inventory, and a known instance is still un-fixed
+- [x] `data-money-10` **DONE** commit `2c5345ac8` [medium/M] GDPR/nFADP erasure-pipeline table coverage has never been audited against the live schema
 
 ### ethics-psychology
 - [ ] `ethics-psychology-05` [medium/M] Brignull's dark-pattern taxonomy is named as vocabulary only; several categories have no binding Solen rule
@@ -282,10 +295,10 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [ ] `input-abuse-07` [medium/M] 22% of mutating routes hand-roll body validation instead of using the shared zod schema path
 
 ### law-system-meta
-- [x] `design-regression-not-fed-to-code-regression-system` **DONE** [medium/M] A design-law contradiction that gets fixed does not automatically enter the same anti-recurrence ledger a code bug does, so fixed design contradictions have already regressed silently
-- [x] `hook-sprawl-ceiling` **DONE** [medium/M] No ceiling on total rule/gate count and no 'one-in-one-out' consolidation budget
-- [x] `no-second-operator-onboarding-bound` **DONE** [medium/M] No principle bounds how long it should take a second person (or a fresh, un-primed agent) to become safely productive in this estate
-- [x] `skip-ledger-rotation-loses-trend` **DONE** [medium/S] The skip-flag ledger's rotation silently destroys the week-over-week trend that is the audit's most useful signal, and nothing preserves it first
+- [ ] `design-regression-not-fed-to-code-regression-system` **RE-OPENED 2026-07-27** the agent reported DONE with no per-id sha and I could find no artifact: [medium/M] A design-law contradiction that gets fixed does not automatically enter the same anti-recurrence ledger a code bug does, so fixed design contradictions have already regressed silently
+- [ ] `hook-sprawl-ceiling` **RE-OPENED 2026-07-27** the agent reported DONE with no per-id sha and I could find no artifact: [medium/M] No ceiling on total rule/gate count and no 'one-in-one-out' consolidation budget
+- [ ] `no-second-operator-onboarding-bound` **RE-OPENED 2026-07-27** the agent reported DONE with no per-id sha and I could find no artifact: [medium/M] No principle bounds how long it should take a second person (or a fresh, un-primed agent) to become safely productive in this estate
+- [ ] `skip-ledger-rotation-loses-trend` **RE-OPENED 2026-07-27** the agent reported DONE with no per-id sha and I could find no artifact: [medium/S] The skip-flag ledger's rotation silently destroys the week-over-week trend that is the audit's most useful signal, and nothing preserves it first
 
 ### layout-geometry
 - [ ] `layout-geometry-03` [medium/S] Sticky-positioning plus overflow containing-block interaction has no written law despite a real prior bug
@@ -294,17 +307,17 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [ ] `layout-geometry-06` [medium/M] axe-core target-size is not wired into CI despite Solen already running the exact infrastructure it needs
 
 ### marketplace-trust
-- [x] `trust-07-refund-after-payout-clawback-policy` **DONE** [medium/S] No written policy for who absorbs a refund shortfall when a salon's Connect balance can't cover the clawback
-- [x] `trust-08-no-review-edit-delete-by-customer` **DONE** [medium/S] No customer-initiated review edit or delete path exists, and no written policy states whether one should
-- [x] `trust-09-no-review-frequency-cap` **DONE** [medium/S] No per-user-per-salon review volume floor: automod catches cross-account bursts but not one account posting many reviews
-- [x] `trust-10-no-duplicate-listing-check` **DONE** [medium/S] No duplicate/fake-listing detection at salon onboarding: no uniqueness check on phone or address
-- [x] `trust-11-chargeback-app-refund-not-reconciled` **DONE** [medium/M] A resolved bank-side chargeback never updates the booking's own payment/dispute state, so an in-app refund appeal for the same booking can proceed unaware
+- [x] `trust-07-refund-after-payout-clawback-policy` **DONE** commit `f881ffeb3` [medium/S] No written policy for who absorbs a refund shortfall when a salon's Connect balance can't cover the clawback
+- [x] `trust-08-no-review-edit-delete-by-customer` **DONE** commit `1fe55a4f6` [medium/S] No customer-initiated review edit or delete path exists, and no written policy states whether one should
+- [x] `trust-09-no-review-frequency-cap` **DONE** commit `992e22020` [medium/S] No per-user-per-salon review volume floor: automod catches cross-account bursts but not one account posting many reviews
+- [x] `trust-10-no-duplicate-listing-check` **DONE** commit `b8a3be486` [medium/S] No duplicate/fake-listing detection at salon onboarding: no uniqueness check on phone or address
+- [x] `trust-11-chargeback-app-refund-not-reconciled` **DONE** commit `f5430aa14` [medium/M] A resolved bank-side chargeback never updates the booking's own payment/dispute state, so an in-app refund appeal for the same booking can proceed unaware
 
 ### motion
-- [x] `motion-05` **DONE** [medium/M] iOS haptics has no locked action-to-tier vocabulary; the mobile design system records this as an open, unresolved split
-- [x] `motion-06` **DONE** [medium/S] LOCKFILE still tells engineers box-shadow is compositor-friendly to animate, contradicted by the estate's own sourced research, and a reachable transition group still offers it
-- [x] `motion-07` **DONE** [medium/M] Physics-spring parameters have no locked house values outside the one gesture-release formula, so the word "spring" resolves to two unrelated mechanisms depending on the file
-- [x] `motion-08` **DONE** [medium/M] No contract for animating a list that reorders under the user without an error or a full refetch
+- [x] `motion-05` **DONE** commit `6da9986 (solen-mobile)` [medium/M] iOS haptics has no locked action-to-tier vocabulary; the mobile design system records this as an open, unresolved split
+- [x] `motion-06` **DONE** commit `d9daeb287` [medium/S] LOCKFILE still tells engineers box-shadow is compositor-friendly to animate, contradicted by the estate's own sourced research, and a reachable transition group still offers it
+- [x] `motion-07` **DONE** commit `d8d4abf99` [medium/M] Physics-spring parameters have no locked house values outside the one gesture-release formula, so the word "spring" resolves to two unrelated mechanisms depending on the file
+- [x] `motion-08` **DONE** commit `9cb4e1510` [medium/M] No contract for animating a list that reorders under the user without an error or a full refetch
 
 ### observability
 - [ ] `observability-5` [medium/S] PostHog error tracking (captureException) never turned on, despite being a config change on an already-paid dependency
@@ -329,11 +342,11 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [ ] `performance-09` [medium/M] No timing instrumentation exists anywhere, so a slow query cannot be distinguished from a slow page or a cold start
 
 ### privacy-compliance
-- [x] `privacy-compliance-05` **DONE** [medium/M] No processing register exists, and the small-business exemption that might otherwise excuse one does not apply
-- [x] `privacy-compliance-07` **DONE** [medium/M] No retention schedule exists; three independently-decided numbers stand in for one
+- [x] `privacy-compliance-05` **DONE** commit `d8e1e990b` [medium/M] No processing register exists, and the small-business exemption that might otherwise excuse one does not apply
+- [x] `privacy-compliance-07` **DONE** commit `d8e1e990b` [medium/M] No retention schedule exists; three independently-decided numbers stand in for one
 - [ ] `privacy-compliance-08` [medium/S] No minimum age or minor/guardian-consent policy exists anywhere in the product
-- [x] `privacy-compliance-09` **DONE** [medium/L] Whether a salon is a controller, joint controller, or processor for the notes it writes is never decided
-- [x] `privacy-compliance-10` **DONE** [medium/S] Permanent staff notes about a client are invisible to that client by design, with no stated exemption
+- [x] `privacy-compliance-09` **DONE** commit `d8e1e990b` [medium/L] Whether a salon is a controller, joint controller, or processor for the notes it writes is never decided
+- [x] `privacy-compliance-10` **DONE** commit `d8e1e990b` [medium/S] Permanent staff notes about a client are invisible to that client by design, with no stated exemption
 
 ### responsive-desktop
 - [ ] `responsive-desktop-04` [medium/M] No systemic rule for what MUST differ between mobile and desktop information density; desktop treatment is per-component ad hoc
@@ -359,10 +372,10 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [ ] `states-forms-09` [medium/S] Error message shapes are inconsistent and frequently fully generic, contradicting the estate's own anti-pattern list
 
 ### testing-release
-- [x] `testing-release-04` **DONE** [medium/S] 21 disposable 'kill-test' scripts outnumber the 6 real regression tests 3.5-to-1, with no lifecycle rule
-- [x] `testing-release-05` **DONE** [medium/S] Feature flags have no lifecycle rule; a genuinely dead flag already exists in the code today
-- [x] `testing-release-06` **DONE** [medium/S] The 'done means' checklist that exists (CODE_SAFETY.md Rule 29) is a self-check for an agent, not a release gate before code reaches production
-- [x] `testing-release-09` **DONE** [medium/M] The good instinct already in the test suite (money-path-only unit tests) is not written down as a rule, so nothing stops a future session from inventing a coverage mandate or skipping a new money function
+- [x] `testing-release-04` **DONE** commit `7013cddba` [medium/S] 21 disposable 'kill-test' scripts outnumber the 6 real regression tests 3.5-to-1, with no lifecycle rule
+- [x] `testing-release-05` **DONE** commit `7013cddba` [medium/S] Feature flags have no lifecycle rule; a genuinely dead flag already exists in the code today
+- [x] `testing-release-06` **DONE** commit `4a7d5c32a` [medium/S] The 'done means' checklist that exists (CODE_SAFETY.md Rule 29) is a self-check for an agent, not a release gate before code reaches production
+- [x] `testing-release-09` **DONE** commit `4a7d5c32a` [medium/M] The good instinct already in the test suite (money-path-only unit tests) is not written down as a rule, so nothing stops a future session from inventing a coverage mandate or skipping a new money function
 
 ### typography
 - [ ] `typography-04` [medium/M] Line-height has a canonical table but no enforcement rule, unlike tracking; 21 distinct leading- values ship against roughly 8 canonical ones
@@ -383,12 +396,12 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [ ] `api-contracts-09` [low/S] No stated policy for which endpoints should set Cache-Control, so caching is each author's ad hoc, undocumented call
 
 ### authz-rls
-- [x] `authz-rls-09` **DONE** [low/S] FORCE ROW LEVEL SECURITY is confirmed absent on every table, and the session-client's Postgres role identity has never been checked
-- [x] `authz-rls-10` **DONE** [low/S] The one admin-impersonation-shaped route writes no audit trail, despite an existing, used audit_log table and 26 other admin routes doing so
+- [x] `authz-rls-09` **DONE** commit `ce02cef5a` [low/S] FORCE ROW LEVEL SECURITY is confirmed absent on every table, and the session-client's Postgres role identity has never been checked
+- [x] `authz-rls-10` **DONE** commit `805b7fec1` [low/S] The one admin-impersonation-shaped route writes no audit trail, despite an existing, used audit_log table and 26 other admin routes doing so
 
 ### color-tokens
-- [x] `color-tokens-08` **DONE** [low/S] The multi-series chart-color formula (OKLCH hue-stepping) is documented in prose with zero reference implementation
-- [x] `color-tokens-10` **DONE** [low/M] No forced-colors / prefers-contrast handling anywhere outside one narrow glass-control note
+- [x] `color-tokens-08` **DONE** commit `fee5013bc` [low/S] The multi-series chart-color formula (OKLCH hue-stepping) is documented in prose with zero reference implementation
+- [x] `color-tokens-10` **DONE** commit `30acf5e29` [low/M] No forced-colors / prefers-contrast handling anywhere outside one narrow glass-control note
 
 ### ethics-psychology
 - [ ] `ethics-psychology-08` [low/S] Loyalty tier downgrade has a pre-drop nudge and a post-tier-up celebration, but no honest at-the-moment-of-loss disclosure
@@ -414,21 +427,21 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [ ] `input-abuse-08` [low/S] The enumeration-oracle defense pattern is correct everywhere but exists only as five independently-repeated code comments, never a named rule
 
 ### law-system-meta
-- [x] `memory-consolidation-no-trigger` **DONE** [low/S] Memory hygiene runs on a vague 'monthly-ish' cadence with no size or count trigger, for a 116-file, 652KB memory directory
+- [ ] `memory-consolidation-no-trigger` **RE-OPENED 2026-07-27** the agent reported DONE with no per-id sha and I could find no artifact: [low/S] Memory hygiene runs on a vague 'monthly-ish' cadence with no size or count trigger, for a 116-file, 652KB memory directory
 
 ### layout-geometry
 - [ ] `layout-geometry-08` [low/S] No scrollbar-gutter law; a scroll container that toggles a scrollbar can shift adjacent content
 - [ ] `layout-geometry-09` [low/S] No systemic law for how a fixed-aspect photo frame crops a real upload whose aspect ratio doesn't match
 
 ### motion
-- [x] `motion-09` **DONE** [low/M] Motion complexity never degrades for device capability, only for explicit user opt-in
+- [x] `motion-09` **DONE** commit `9cb4e1510` [low/M] Motion complexity never degrades for device capability, only for explicit user opt-in
 
 ### performance
 - [ ] `performance-10` [low/S] No image weight or format budget exists as a number
 
 ### privacy-compliance
-- [x] `privacy-compliance-11` **DONE** [low/S] Breach-notification duty is cited once, buried in an unrelated research file, with no owned procedure
-- [x] `privacy-compliance-12` **DONE** [low/S] GDPR applies only if Solen actually targets EU data subjects; that determination is never made explicit and the policy currently hedges rather than deciding
+- [x] `privacy-compliance-11` **DONE** commit `d8e1e990b` [low/S] Breach-notification duty is cited once, buried in an unrelated research file, with no owned procedure
+- [x] `privacy-compliance-12` **DONE** commit `d8e1e990b` [low/S] GDPR applies only if Solen actually targets EU data subjects; that determination is never made explicit and the policy currently hedges rather than deciding
 
 ### responsive-desktop
 - [ ] `responsive-desktop-08` [low/S] The 68ch prose-measure cap is applied to select customer pages only; the dashboard's free-text fields and descriptions have no equivalent line-length control
@@ -447,8 +460,8 @@ Effort split of the TODO: 145 S, 90 M, 5 L.
 - [ ] `states-forms-10` [low/S] Read-only field state is entirely absent from the component and code layer
 
 ### testing-release
-- [x] `testing-release-07` **DONE** [low/S] No named flakiness policy for the visual regression suite, and no retries configured
-- [x] `testing-release-10` **DONE** [low/S] The lint ratchet is frozen at 481 pre-existing errors with no glide path and no review trigger
+- [x] `testing-release-07` **DONE** commit `fbfe9e901` [low/S] No named flakiness policy for the visual regression suite, and no retries configured
+- [x] `testing-release-10` **DONE** commit `edc5d22b9` [low/S] The lint ratchet is frozen at 481 pre-existing errors with no glide path and no review trigger
 
 ### typography
 - [ ] `typography-06` [low/S] The 68ch measure cap (prose-measure) is opportunistic, applied to 11 files, with no rule requiring it for new long-form copy
