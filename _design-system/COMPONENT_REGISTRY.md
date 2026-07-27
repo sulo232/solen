@@ -43,6 +43,22 @@ owner has added `KEEP: <reason>` naming a concrete future call-site before the d
 
 **Universal-components rule (V3-D205).** Every component must render correctly for any salon category (Coiffeur / Barber / Nails / Spa / Massage) without `if category === 'X'` branches. Drift-checker rule B5 flags violations. Parameterize via data, not switches.
 
+**Prop-count ceiling (fe-08, 2026-07-27).** A component's prop interface exceeding roughly 10
+named props (excluding a passthrough `...rest` for native HTML attributes) is a signal to
+decompose BEFORE adding an 11th, not after: either group related props into a single config
+object, or split the component into a composed set (a base + variant-specific wrapper, or
+children slots replacing several content-shaped props). `DateTimePicker.tsx` is the concrete
+reference case this rule was written against: its main export's `DateTimePickerProps` carries 17
+top-level props (`value`, `onChange`, `slots`, `isLoadingSlots`, `minDate`, `maxDate`,
+`isDateDisabled`, `variant`, `selectedTone`, `dateLayout`, `stripDays`, `labels`,
+`emptySlotContent`, `dateLabel`, `timeLabel`, plus `className` and a second exported
+`DateTimePickerRange` living in the same file), already hard to reason about cold, and it only
+grows because it's THE one locked date/time primitive (V3-D445) every future date/time surface is
+required to extend rather than fork. This is a checklist item today (part of the "How to add"
+step above); a future `max-props` custom ESLint rule could enforce a numeric ceiling once agreed,
+but that needs an owner-agreed number first, not a mechanical retrofit onto the 17-prop file that
+already ships.
+
 ---
 
 ## Primitives (cross-route)
