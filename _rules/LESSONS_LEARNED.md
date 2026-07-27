@@ -107,6 +107,12 @@
   ```
   This is already implemented in `GuidedSearch.tsx` — use it as the reference.
 
+### An ancestor `overflow` value other than `visible` can silently strip a descendant's `sticky` pin (layout-geometry-03)
+- **Date**: 2026-07-27
+- **File(s)**: `app/[locale]/_components/salon/SalonDetailV3.tsx:194-201` (the original fix, V3-D229, 2026-05-27)
+- **What happened**: Setting `overflow-hidden` (or `overflow-x-clip` / `overflow-y-auto` / `overflow-scroll`) on ANY ancestor of a `position: sticky` element creates a new containing block for that ancestor's subtree. The sticky descendant's own `sticky`/`top` declaration is untouched, but it silently stops being able to pin against the viewport because it is now scoped to the wrong containing block. On `SalonDetailV3`, the desktop sidebar wrapper had `sticky top-24` but an ancestor carried `overflow-hidden` for an unrelated reason; the sidebar scrolled away with the page instead of staying pinned, hiding the "Termin buchen" CTA.
+- **Fix**: Before adding `overflow-hidden`/`overflow-x-clip`/`overflow-y-auto`/`overflow-scroll` to any container, grep its subtree for a `sticky` descendant (`grep -rln sticky app --include=*.tsx` currently returns 55 files, so the collision surface is wide). If a `sticky` descendant exists, either move the `overflow` rule to a narrower wrapper that does not sit between the sticky element and the viewport, or re-verify after the change that the sticky element still pins. If it stopped pinning, the `overflow` value on the ancestor is the cause, not the `sticky` rule itself. See `_design-system/LOCKFILE.md`'s sticky-header-offset subsection for the separate (and already-locked) z-index/stacking-order rule; that rule is a DIFFERENT failure class from this containing-block trap.
+
 ---
 
 ## i18n
