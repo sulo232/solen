@@ -511,3 +511,9 @@ Copying UI from a component file into a mockup reproduced a discount badge that 
   migration's-effect rule. Before writing any new seed migration that touches a boolean/enum flag,
   check by name whether that flag is a decorative facet or an accessibility/identity/eligibility
   claim, only decorative facets may be hash-seeded.
+- **Enforcement (2026-07-27)**: `.claude/hooks/migration-fabrication-gate.py` blocks a new/edited
+  `supabase/migrations/*.sql` file that writes to a non-test-scoped table using `hashtext(`,
+  `random()`, or `md5(...) %`, unless a `fabricated-data-ok: <owner, date, plan>` comment is
+  present. Self-tested 8/8. Built in a sandboxed worktree session where `.claude/settings.json`
+  is not writable, so it is NOT YET ARMED as a live PreToolUse hook, wire it from a
+  non-sandboxed session before it actually blocks anything.
