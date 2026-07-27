@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { validateBody, staffScheduleAutoApplySchema } from "@/lib/validations";
 
 // POST /api/staff/schedule/auto-apply — Auto-create staff schedules from salon opening hours
 export async function POST(req: NextRequest) {
@@ -13,8 +14,10 @@ export async function POST(req: NextRequest) {
   const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
 
-  const { salon_id } = await req.json();
-  if (!salon_id) return NextResponse.json({ error: "salon_id required" }, { status: 400 });
+  const rawBody = await req.json();
+  const { data: validated, error: validationError } = validateBody(staffScheduleAutoApplySchema, rawBody);
+  if (validationError) return NextResponse.json({ error: "salon_id required" }, { status: 400 });
+  const { salon_id } = validated;
 
   const admin = createAdminSupabaseClient();
 

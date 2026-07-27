@@ -4,6 +4,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { validateBody, dashboardBatchSchema } from "@/lib/validations";
 
 /**
  * Dashboard batch endpoint — runs multiple sub-requests in parallel instead of
@@ -14,8 +15,8 @@ import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
  *   "bookings_today" | "revenue_month" | "reviews_pending" | "walkin_queue" | "activity_feed"
  */
 
-type BatchKey = "bookings_today" | "revenue_month" | "reviews_pending" | "walkin_queue" | "activity_feed";
-const BATCH_KEYS: readonly BatchKey[] = ["bookings_today", "revenue_month", "reviews_pending", "walkin_queue", "activity_feed"];
+// input-abuse-07 (2026-07-27): the key enum + array-length bound now live in
+// lib/validations.ts's dashboardBatchSchema (DASHBOARD_BATCH_KEYS), not here.
 
 export async function POST(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
@@ -25,22 +26,12 @@ export async function POST(request: NextRequest) {
   const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
 
-  const body = await request.json();
-  const { salonId, requests } = body as { salonId: string; requests: BatchKey[] };
-  // api-contracts-08: cap the array length (only BATCH_KEYS.length distinct keys
-  // are ever meaningful) and validate every element is a known key, before any
-  // Promise.all fan-out runs against it. An unbounded array here was a
-  // resource-exhaustion vector: nothing stopped a caller from sending an
-  // arbitrarily long `requests` array.
-  if (
-    !salonId ||
-    !Array.isArray(requests) ||
-    requests.length === 0 ||
-    requests.length > BATCH_KEYS.length ||
-    !requests.every((r) => BATCH_KEYS.includes(r))
-  ) {
+  const rawBody = await request.json();
+  const { data: validated, error: validationError } = validateBody(dashboardBatchSchema, rawBody);
+  if (validationError) {
     return NextResponse.json({ error: "salonId and a valid, bounded requests array required" }, { status: 400 });
   }
+  const { salonId, requests } = validated;
 
   const admin = createAdminSupabaseClient();
 
