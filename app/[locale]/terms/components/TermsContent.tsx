@@ -226,6 +226,9 @@ export default function TermsContent() {
           </ul>
           <ParDe>Salonpartner können Bewertungen zur Moderation melden. solen.ch trifft die endgültige Entscheidung über die Entfernung.</ParDe>
           <ParEn>Salon Partners may flag reviews for moderation. solen.ch makes the final decision on removal.</ParEn>
+          <div className="mt-4" />
+          <ParDe>Eine veröffentlichte Bewertung kann vom Kunden nicht eigenständig bearbeitet oder gelöscht werden. Für eine Korrektur oder Entfernung der eigenen Bewertung kontaktieren Sie support@solen.ch.</ParDe>
+          <ParEn>Once published, a review cannot be self-edited or self-deleted by the Customer. To request a correction or removal of your own review, contact support@solen.ch.</ParEn>
         </Article>
 
         <Article titleDe="7.3 Verhaltensregeln" titleEn="7.3 Code of Conduct">
