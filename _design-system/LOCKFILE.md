@@ -1738,7 +1738,11 @@ Source + evidence: `research/UNFINISHED_AUDIT_2026-07-21.md`. Co-equal with ever
   photographic area; the photo is the largest element of every SalonCard; a missing photo renders the
   spec'd fallback (s-bg-sunken + 3D category icon + salon initial), NEVER a bare grey box, never
   slot-omission. Mockups use real seeded photography. Exempt by name: forms, checkout payment step,
-  legal, receipts.
+  legal, receipts. **LCP reconciliation (hierarchy-density-09):** the first/largest image satisfying
+  this floor (the hero SalonCard photo, the PDP gallery's first photo) carries `next/image`'s
+  `priority` prop (no lazy) so meeting the imagery floor does not blow the LCP <=2.5s gate
+  (`WORK_TYPES.md` Axis-2 per-wave gate); every image below it stays lazy-loaded (next/image default).
+  Satisfying one floor by breaking the other is not a pass.
 - **§17.2 Depth table (supersedes §3 "sparingly" + §3.5 "both fine"):** SalonCard = photo +
   shadow-whisper + NO border · grouped list card = whisper · PDP/booking sidebar card = hairline only ·
   tile on a gray tray = white, no shadow · overlays/sheets/dropdowns = elevation-2/3 · a card carrying
@@ -1759,9 +1763,22 @@ Source + evidence: `research/UNFINISHED_AUDIT_2026-07-21.md`. Co-equal with ever
   Chevrons, placeholders, timestamps, hints use `s-ink-2` (5.33:1 / 4.85:1, AA) instead; that token
   stays forbidden on load-bearing copy.
 - **§17.5 The finished-screen pass (ship condition):** (1) photographic focal present, (2) exactly one
-  biggest element, (3) >= 1 tabular/real number, (4) >= 1 semantic-color moment, (5) no dead-grey zone.
-  All five = Pass before a customer screen or mockup reaches the owner; mockups carry a `floors:` note
-  answering all five.
+  biggest element, (3) >= 1 tabular/real number, (4) >= 1 semantic-color moment, (5) no dead-grey zone,
+  (6) worst-case content holds (hierarchy-density-08): render against a named worst-case fixture
+  (longest real/plausible salon name, a full-length review, a maximally long service name) and confirm
+  the two-ink-anchor card rule, the >= 28px display anchor, and no-truncation-of-load-bearing-copy all
+  still hold, not just the comfortably-sized seed strings. This item is NOT optional the way the
+  generic verifier-loop's "long content (only when in scope)" bullet is , it binds every FLOORS-covered
+  screen. All six = Pass before a customer screen or mockup reaches the owner; mockups carry a
+  `floors:` note answering all six.
+- **§17.6 Trust floor for commit actions (hierarchy-density-05):** any screen carrying a paid commit
+  action (a Bezahlen/pay button, a booking confirmation) passes a sixth, separate Pass/Fail gate before
+  the five/six-question pass matters at all: (1) the total price is broken down (base + surcharge + VAT
+  where applicable), (2) the cancellation/refund term renders in the DOM above the commit button, not
+  merely defined in a labels/i18n object, (3) who the user is booking with (salon/stylist name, not
+  just a category) is visible above the commit action. Case that shipped without it: `app/[locale]/
+  walk-in-pay/page.tsx` defined `cancelPolicy` in all four locale objects with zero JSX render sites,
+  fixed 2026-07-27.
 
 ---
 
@@ -1799,4 +1816,25 @@ must be the screen's largest single element and must show the THING being bought
 
 These are FLOORS, not targets. Nothing here licenses decoration, fake data, or a second ink CTA; the
 existing ceilings (4 sizes, 2 weights, sparse blue, no decorative artifacts) all still bind.
+
+**Enforced by (hierarchy-density-01):** `npm run check:floors` (`scripts/check-geometry.mjs
+--floors-only`) measures every literal in this table on the RENDERED page (imagery share, weight
+share, anchor ratio, elevation steps); report-only today (exit 0), same as the geometry pass it
+extends. `~/.claude/hooks/mockup-floors-gate.py` only checks that a mockup's PR note MENTIONS a
+`floors:` answer, it does not itself measure any of these five numbers , the two are complementary,
+not duplicates.
+
+**VIEWPORT SCOPE (responsive-desktop-01, 2026-07-27): this table is MOBILE-ONLY, named explicitly.** Every
+number above was measured at 390x844 and `scripts/check-geometry.mjs --floors-only` (the enforcing script)
+can now also run at tablet (768x1024) and desktop (1280x900) via `npm run check:floors:tablet` / `check:floors:desktop`,
+but it reuses these SAME mobile numbers at the wider viewports rather than re-derived ones. That reuse is a
+placeholder, not a claim the thresholds transfer: a photo at a fixed px size is a smaller share of a
+1280px-wide viewport than a 390px one, so the desktop imagery-share floor is almost certainly too lenient
+as-is, and the display-anchor/weight-share/anchor-ratio numbers have never been checked against a desktop
+screen at all before this. Re-deriving real desktop/tablet thresholds is a visual/design judgment call for
+the owner (new percentages and px values, not a mechanical fix) and is explicitly OUT OF SCOPE for this
+entry; only the density floor (CLAUDE.md FLOORS LAW 3, `>= 6 desktop` vs `>= 4 mobile`) has an
+owner-approved desktop-specific number today. `check:floors:desktop`/`check:floors:tablet` are report-only
+(no `gate:` variant) for exactly this reason: gating on a threshold nobody has actually approved for that
+viewport would be enforcing a guess.
 

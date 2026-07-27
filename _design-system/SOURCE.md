@@ -62,6 +62,10 @@ Swiss-first beauty & wellness booking marketplace. The "30 Sekunden" claim is th
 - **Locale priority**: German first, then English, then French, then Italian (UI defaults `de`)
 - **Devices**: Mobile-first design (≥75% of expected traffic). Desktop is a secondary surface — every feature must work on mobile before desktop work begins.
 
+**Desktop-considered vs mobile-stretched (responsive-desktop-04, 2026-07-27):** a screen that renders identically at 375px and 1280px except for a wider centered container is NOT "desktop-considered", it is mobile-stretched, and the two must be distinguishable, never left implicit. For any screen with a real desktop layout, name explicitly what changes at `>= lg` (1024px): column count, whether secondary metadata hidden/truncated on mobile becomes visible, and whether a mobile bottom-sheet action promotes to inline/sidebar. Individual components already do this and are the reference examples: `SalonSidebar` (desktop-only contact/hours panel), `SalonHero`'s photo gallery, `SalonBreadcrumb`. Where a screen is intentionally mobile-stretched (owner accepted, not unbuilt), say so in its component doc or a code comment, so silence stops reading as an unmade decision. `WORK_TYPES.md`'s screenshot conditional ("desktop, if route has a desktop layout") should read from a real per-route table (desktop-considered / mobile-stretched-by-design / not-yet-built), not an eyeballed guess at screenshot time.
+
+**Tablet (768-1024px) design intent (responsive-desktop-05, 2026-07-27):** tablet has an automated regression project (`playwright.config.ts`, 768x1024) that catches PIXEL DRIFT but never verifies the tablet render was ever an intentional design choice. Any screen where tablet renders materially differently from both mobile and desktop (not a pure interpolation of the two) must name that layout here or in the relevant component doc, same as mobile/desktop treatments are named. Where tablet is deliberately "just a wider mobile" or "just a narrower desktop", that inheritance is also a stated decision, not a default nobody chose. A regression baseline passing forever is not proof a human ever looked at or approved that layout.
+
 ### The color law — three-layer system (V3-D197, 2026-05-26)
 
 **Supersedes the V3-D192 "80/17/3 + signals" framing.** That model was correct for chrome but didn't account for **semantic UI** — surfaces where color IS the meaning. This caused a recurring bug (Toast V3-D196 patch, would have hit StatusPill / AlertBanner / FormFieldError next). V3-D197 introduces a third layer that codifies the entire class.
@@ -699,6 +703,28 @@ one-line footer naming what is not yet wired. Root cause + evidence:
 `research/UNFINISHED_AUDIT_2026-07-21.md`.
 
 **Every Supabase-backed surface must define all four states.** Card grammar only covers the populated case.
+
+### §10.0a · Sparse-but-real state (hierarchy-density-04)
+
+A fifth case sits between §10.0 (populated) and §10.2 (empty): a production salon page with REAL,
+non-fabricated content that is genuinely thin , a newly onboarded salon with 2 photos and 0 reviews,
+below every §10.0 density number. This is NOT EmptyState (the data is not zero) and it is NOT covered
+by the target-state mockup boundary above (that boundary is scoped to design ARTIFACTS, not to what a
+real production page renders for a real thin salon). It is also not on the exemption list (forms,
+checkout payment, legal, receipts) that the imagery/density floors name.
+
+State plainly which floors still bind and which waive, so no engineer has to invent a special case:
+
+- **Still bind (non-negotiable even when thin):** no-fabrication (never pad with placeholder photos,
+  invented reviews, or a fake count); the missing-photo fallback (`s-bg-sunken` + 3D category icon +
+  salon initial, never a bare grey box); the two-ink-anchor card rule; no dead-grey zone.
+- **Waived (cannot be met honestly with real data):** the >= 5 gallery / >= 3 reviews / >= 6 services
+  COUNTS. A page may legitimately show 2 photos and 0 reviews. Render what exists; do not stretch the
+  layout to fake a floor-sized set.
+- **New requirement this state adds:** below-floor sections get a one-line honest sub-state, not
+  silent omission , e.g. a reviews section with 0 reviews renders "Noch keine Bewertungen" (not the
+  full `EmptyState` component, which is scoped to a whole-page zero-data case) rather than disappearing
+  entirely, so the salon still reads as a real, growing listing rather than a broken one.
 
 ### §10.1 · Loading state
 
