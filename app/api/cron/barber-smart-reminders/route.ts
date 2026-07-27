@@ -72,7 +72,7 @@ export async function GET(req: NextRequest) {
           .in("customer_id", uniqueCustomerIds)
           .eq("note_type", "system")
           .gte("created_at", sevenDaysAgo),
-        admin.from("profiles").select("id, display_name").in("id", uniqueCustomerIds),
+        admin.from("profiles").select("id, display_name, notification_sms").in("id", uniqueCustomerIds),
       ]);
 
     const cutsByCustomer = new Map<string, Date[]>();
@@ -133,7 +133,11 @@ export async function GET(req: NextRequest) {
       });
       remindersCreated++;
 
-      // Send SMS if customer has a phone number
+      // Send SMS if customer has a phone number AND has not turned off SMS
+      // notifications (ethics-psychology-02: a consent toggle that renders
+      // and saves but is never read by the send path is a false consent
+      // claim, not a cosmetic bug).
+      if (profile?.notification_sms === false) continue;
       const { data: authUser } = await admin.auth.admin.getUserById(customerId);
       const phone = authUser?.user?.phone;
       if (phone) {
