@@ -69,31 +69,23 @@ test.describe("conversion spine visual regression", () => {
  * 44px convention is stricter). This block runs it over the same ROUTES this file
  * already walks.
  *
- * NOT WIRED YET: @axe-core/playwright is not a dependency in this repo (confirmed via
- * `grep axe package.json` - absent; `axe-core` itself is present only as someone else's
- * transitive dependency, not usable directly for this). Per the task brief, this was
- * deliberately NOT installed. The block below dynamically imports the package and
- * SKIPS with a clear reason (naming the install command) when it is missing, so it is
- * trivially enable-able: the day a maintainer runs
- *
- *   npm install --save-dev @axe-core/playwright
- *
- * these tests start actually running the target-size audit with zero further code
- * changes. Verified against the real published package (registry inspection, not
- * memory): `AxeBuilder` is both the default and a named export, constructed as
- * `new AxeBuilder({ page })`, with `.withRules(rules)` and `.analyze(): Promise<AxeResults>`.
+ * WIRED (layout-geometry-06, 2026-07-27): @axe-core/playwright is now a devDependency
+ * (package.json), installed via `npm install --save-dev @axe-core/playwright`. This
+ * test now actually runs the target-size audit on every CI `visual` job pass instead
+ * of skipping; the dynamic-import try/catch stays as a defensive guard (never hard-
+ * fails a fresh clone that skipped `npm ci`), not as the primary path.
  */
 test.describe("conversion spine target-size (WCAG 2.5.8)", () => {
   test.describe.configure({ timeout: 120_000 });
 
   for (const r of ROUTES) {
     test(`${r.name} target-size`, async ({ page }, testInfo) => {
-      let AxeBuilder: new (opts: { page: Page }) => { withRules(rules: string | string[]): any; analyze(): Promise<any> };
+      let AxeBuilder: new (opts: { page: Page }) => {
+        withRules(rules: string | string[]): any;
+        exclude(selector: string | string[]): any;
+        analyze(): Promise<any>;
+      };
       try {
-        // @ts-expect-error - @axe-core/playwright is an optional dep, not installed (see
-        // block comment above). Once `npm install --save-dev @axe-core/playwright` runs,
-        // this directive itself starts erroring as "unused" - that is the enable signal,
-        // delete this line and the check is live.
         ({ default: AxeBuilder } = await import("@axe-core/playwright"));
       } catch {
         testInfo.skip(
@@ -109,7 +101,18 @@ test.describe("conversion spine target-size (WCAG 2.5.8)", () => {
       await dismissCookies(page);
       await page.waitForTimeout(600);
 
-      const results = await new AxeBuilder({ page }).withRules(["target-size"]).analyze();
+      // Mapbox's own attribution/logo control (.mapboxgl-ctrl-logo, .mapboxgl-ctrl-attrib) is a
+      // third-party widget whose size and markup Mapbox's own license requires to ship
+      // unmodified (mapbox-gl-js ToS: the wordmark must stay visible, cannot be resized or
+      // hidden), not a Solen layout choice, so it is not fixable by editing our own component.
+      // First real run of this gate (layout-geometry-06, 2026-07-27) caught it on salon-pdp
+      // (88x23px, below the 24x24 floor); excluded here by name rather than silently swallowed,
+      // so the exclusion is visible in a diff, not buried inside a passing green run.
+      const results = await new AxeBuilder({ page })
+        .withRules(["target-size"])
+        .exclude(".mapboxgl-ctrl-logo")
+        .exclude(".mapboxgl-ctrl-attrib")
+        .analyze();
       const violations = results.violations.filter((v: { id: string }) => v.id === "target-size");
 
       // eslint-disable-next-line no-console
