@@ -29,10 +29,17 @@ import { isStockImageUrl, stockImageProvider } from "@/lib/stock-image";
  * rendered DOM catches every image regardless of which component drew it, including
  * next/image's generated <img> and any future one, and touches no production component.
  *
- * SHIPS NOTHING. The whole body is behind `process.env.NODE_ENV === "production"`, which
- * Next inlines at build time, so the production bundle keeps only the empty return. It is
- * therefore not a customer-visible design change: there is no production appearance for a
- * mockup to approve, which is why the style block carries `mockup-ok`.
+ * SHIPS NOTHING IN REAL PRODUCTION, but it MUST still fire in a preview build. The caller
+ * decides, via the `enabled` prop, because a client component cannot read the one env var
+ * that actually distinguishes the two. NODE_ENV alone is WRONG here and the council caught
+ * it: Next's own CLI sets NODE_ENV=production for `next build` AND `next start`, netlify.toml
+ * builds with a bare `npm run build`, and this project's stable phone-preview workflow IS
+ * `next build + next start` , precisely the case this component exists to serve. Gating on
+ * NODE_ENV would have made it dead in the only scenario it was built for. lib/health.ts:92
+ * and lib/ratelimit.ts:266 already use the correct `CONTEXT === "production" && NODE_ENV ===
+ * "production"` double-check for exactly this reason; the layout now applies the same test
+ * server-side and passes the answer down. Since it renders nothing in real production, there
+ * is no customer-visible appearance for a mockup to approve, hence `mockup-ok`.
  *
  * SELF-DISARMING. The badge stops appearing per-image as soon as that image comes from
  * Supabase Storage instead of a stock host, so it fades out on its own as real salon
@@ -43,9 +50,9 @@ import { isStockImageUrl, stockImageProvider } from "@/lib/stock-image";
  * not to focus or selection. The owner's no-ring rule is about focus and selected
  * states on interactive controls; this is a build-time debug marker.
  */
-export default function StockPhotoMarker() {
+export default function StockPhotoMarker({ enabled }: { enabled: boolean }) {
   useEffect(() => {
-    if (process.env.NODE_ENV === "production") return;
+    if (!enabled) return;
 
     const ATTR = "data-stock-marked";
     const WRAP = "data-stock-wrap";
@@ -108,6 +115,11 @@ export default function StockPhotoMarker() {
     const obs = new MutationObserver((records) => {
       for (const r of records) {
         if (r.type === "attributes" && r.target instanceof HTMLImageElement) {
+          // Clear the PARENT's label too, not just the img's own marker. mark() only ever
+          // ADDS a label, so a gallery that swaps src in place (lightbox next-photo) would
+          // keep showing UNSPLASH after moving to a real photo, or keep the wrong provider
+          // name. Contradicted this component's own "self-disarming" claim. (council, 2026-07-27)
+          r.target.parentElement?.removeAttribute(WRAP);
           r.target.removeAttribute(ATTR);
           mark(r.target);
           continue;
@@ -131,7 +143,7 @@ export default function StockPhotoMarker() {
       document.querySelectorAll(`[${ATTR}]`).forEach((el) => el.removeAttribute(ATTR));
       document.querySelectorAll(`[${WRAP}]`).forEach((el) => el.removeAttribute(WRAP));
     };
-  }, []);
+  }, [enabled]);
 
   return null;
 }

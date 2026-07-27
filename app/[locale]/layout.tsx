@@ -147,7 +147,9 @@ export default async function LocaleLayout({
         {/* Dev/preview only, renders null in production: badges every image that comes
             from a stock host so a preview is never mistaken for real salon photography
             (owner 2026-07-27, "we need to be easy to acc distinguish cx u keep forgetting"). */}
-        <StockPhotoMarker />
+        <StockPhotoMarker
+          enabled={!(process.env.CONTEXT === "production" && process.env.NODE_ENV === "production")}
+        />
       </PostHogProvider>
     </NextIntlClientProvider>
     </MotionProvider>

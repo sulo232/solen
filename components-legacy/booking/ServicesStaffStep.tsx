@@ -473,7 +473,13 @@ export default function ServicesStaffStep({
             )}
           </AnimatePresence>
           <div className="mt-3 text-[15px] font-bold text-s-ink">
-            <PriceFrom amount={rowPrice} label={t('from')} />
+            {/* No "ab" prefix: Art. 10 Abs. 1 PBV requires the actually-payable price on a
+                service offer, and SECO's sector sheet of 01.04.2025 says a from-price is nicht
+                zulaessig for Coiffeurgewerbe / kosmetische Institute. This is a named service
+                row inside the BOOKING flow, so it is even more squarely the offer than the PDP
+                row fixed in 6b5861fdf. Found by the council correctness lens, one file away
+                from the fix. Full rule: _rules/LEGAL_COPY.md */}
+            <PriceFrom amount={rowPrice} />
           </div>
         </button>
         <button
