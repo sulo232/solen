@@ -1,6 +1,6 @@
 # Geometry check report
 
-Generated: 2026-07-28T16:46:44.926Z
+Generated: 2026-07-28T17:02:23.007Z
 Base URL: http://localhost:50723  Viewport: mobile (375x812)
 
 Report-only pass (checklist item 1): this script never fails the run. Findings

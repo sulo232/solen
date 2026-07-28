@@ -547,3 +547,65 @@ jobs:
         run: npm run gate:motion
         env:
           BASE_URL: http://localhost:3001
+
+  # FLOORS LAW runtime gate (scripts/check-geometry.mjs --floors-only --gate). Wired
+  # 2026-07-28 for exactly the reason the motion job above was: a proven check sitting as a
+  # manual `npm run gate:floors` nobody was forced to run, so a new floor violation got zero
+  # automatic scrutiny. Measured before wiring: the current default routes produce 5 FAILs
+  # (/de imagery, the PDP weight share at 32.14%, and three on /de/booking/lookup), and every
+  # one is already a reasoned entry in the script's own FLOORS_ALLOWLIST ratchet, so
+  # `gate:floors` EXITS 0 TODAY. That was verified by running it, not assumed. This job
+  # therefore goes green on day one and only ever fails on a NEW, un-allowlisted violation,
+  # which is the property that stops a gate being muted in week two. The allowlist only
+  # shrinks: delete an entry when its surface is fixed, never add one to route around a new
+  # failure. Same build/serve shape as motion, on port 3002 so the two can run concurrently.
+  floors:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: secrets-check
+        id: secrets-check
+        run: |
+          if [ -n "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}" ] && [ -n "${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" ] && [ -n "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" ]; then
+            echo "has-secrets=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has-secrets=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Supabase secrets not set on this repo, skipping the floors job (stays green)."
+          fi
+      - uses: actions/setup-node@v4
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        with:
+          node-version: "22"
+          cache: "npm"
+      - name: npm ci
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        run: npm ci
+      - name: install chromium
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        run: npx playwright install --with-deps chromium
+      - name: next build
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      - name: next start (background) + wait for it
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        run: |
+          npx next start -p 3002 &
+          for i in $(seq 1 30); do
+            if curl -s -o /dev/null "http://localhost:3002"; then echo "server up"; exit 0; fi
+            sleep 2
+          done
+          echo "::error::next start never became reachable"; exit 1
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      - name: gate:floors (FLOORS LAW runtime probe)
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        run: npm run gate:floors
+        env:
+          BASE_URL: http://localhost:3001
