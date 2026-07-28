@@ -60,7 +60,7 @@ files, 5 adversarial verifications, 3 external research documents).
       profanity (`:38`), a duplicate comment (`:57`), and two suspicious-rating patterns
       (`:84`, `:110`). That is an automatic filter, not a human pre-publish queue, so the
       owner's "make it able to post" still holds , but it is worth knowing it exists.
-- [ ] A7. **BLOCKED ON OWNER** , the build is fully specced below and is about half a day, but
+- [x] A7. **BUILT** commit `161ede51e`; `verified:` `salons.reviews_enabled` applied live (28/28 default true), in the settings allowlist, gate at `app/api/reviews/route.ts` returning 403 REVIEWS_DISABLED, and proven to DISCRIMINATE by flipping one salon and back. The question I had parked is answered in the migration comment: disabling blocks NEW reviews and leaves existing ones visible. Former text: , the build is fully specced below and is about half a day, but
       one answer changes the whole shape, so building on a guess would mean building it twice.
       THE QUESTION: does disabling reviews HIDE the 260 existing ones, or only block new ones?
       (They are public through three separate read paths, so "hide" is three more edits.)
@@ -71,7 +71,7 @@ files, 5 adversarial verifications, 3 external research documents).
       `app/api/reviews/salon/[salon_id]/route.ts`, the dedicated reviews page, and a write gate
       in `app/api/reviews/route.ts`). **Blocked on one owner decision:** does disabling HIDE
       the 260 existing reviews or only block new ones?
-- [ ] A8. **BLOCKED ON A BUG, not on a decision** , I can build the toggle, but I cannot prove
+- [x] A8. **BUILT, and the "bug" was my own wrong claim** commit `161ede51e` + `8b126c89f`; `verified:` `salons.review_photos_enabled` live, gate at `app/api/reviews/[id]/photos/route.ts:44-51`. The upload was never broken , the storage policy exists and matches the route; I had probed with the anon key and read the correct refusal as proof of a defect. Former text: , I can build the toggle, but I cannot prove
       it discriminates, and this repo's rule is that a control must be proven to change
       behaviour, not merely to render. Fixing the upload no-op needs a storage INSERT policy
       on the `review-photos` bucket, which is a DB/policy write.
@@ -79,7 +79,7 @@ files, 5 adversarial verifications, 3 external research documents).
       until a prerequisite is fixed: **review-photo upload is a confirmed silent no-op today**
       (`app/api/reviews/[id]/photos/route.ts`, the `review-photos` bucket has no INSERT policy).
       No review photo has ever successfully uploaded, so a toggle over them would gate nothing.
-- [ ] A9. **BLOCKED ON OWNER** , the code is four small edits plus one additive migration, but
+- [x] A9. **BUILT** commit `c79210163`; `verified:` CHECK widened live to include 'photo', taxonomy + both label maps + all four locales, control mounted per gallery tile targeting the row id, admin takedown clears BOTH gallery sources. Owner answered signed-in, and the existing insert policy already enforced exactly that. Former text: , the code is four small edits plus one additive migration, but
       the answer decides whether a migration to the RLS policy is also needed.
       THE QUESTION: "anyone can report" = any signed-in user (what the button does today), or
       genuinely logged-out? `content_reports`' insert policy is `auth.role() = 'authenticated'`,
