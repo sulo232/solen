@@ -5734,7 +5734,8 @@
     "selectCity": "Select city",
     "selectLanguage": "Select language",
     "openMenu": "Open menu",
-    "closeMenu": "Close menu"
+    "closeMenu": "Close menu",
+    "reviewTextsComing": "Written reviews coming soon."
   },
   "comingSoon": {
     "title": "Coming Soon",

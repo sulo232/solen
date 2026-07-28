@@ -5734,7 +5734,8 @@
     "selectCity": "Stadt wählen",
     "selectLanguage": "Sprache wählen",
     "openMenu": "Menü öffnen",
-    "closeMenu": "Menü schliessen"
+    "closeMenu": "Menü schliessen",
+    "reviewTextsComing": "Bewertungstexte folgen."
   },
   "comingSoon": {
     "title": "Kommt bald",

@@ -121,7 +121,19 @@ are the entire remaining job. That bounds the work.
 
 ## Found while verifying, not part of the ask
 
-- [ ] **A salon with only rating-only reviews shows "Alle (0)" beside "11 avis".** Measured on
+- [x] **FIXED, and it was not the product call I said it was.** `verified:` the rendered
+      French section on muse-beauty-studio now reads exactly "Avis | 4.2 | 11 avis | Les avis
+      rédigés arrivent bientôt." No chips, no contradiction. atelier-haarwerk (which has real
+      commented reviews) still shows its tier chips, so the fix discriminates.
+      ROOT CAUSE: the branch was guarded on `all` (every loaded review) instead of `rows`
+      (the ones that actually render after the anti-wall filter). A salon whose reviews are
+      ALL rating-only therefore fell into the else branch and drew the chips anyway. The code
+      ALREADY had the correct answer for this exact case one branch up , "Bewertungstexte
+      folgen." , it was simply unreachable. One word.
+      I had written this down as needing an owner decision. It did not: replacing a
+      self-contradiction with a true sentence is not a taste call, and the owner's anti-wall
+      rule is untouched. The see-all button follows the same variable now.
+      Was: **A salon with only rating-only reviews shows "Alle (0)" beside "11 avis".** Measured on
       muse-beauty-studio: 11 visible reviews, and by SQL ZERO of them have a comment or a
       display name. The anti-wall filter (SalonReviews.tsx:97, owner 2026-06-12) correctly
       hides rating-only anonymous rows, but the segmented chip still reads "Alle (0)" next to a

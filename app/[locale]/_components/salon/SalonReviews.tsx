@@ -146,11 +146,20 @@ export function SalonReviews({
           </span>
         </div>
 
-        {all.length === 0 ? (
+        {/* GUARDED ON `rows`, NOT `all` (fixed 2026-07-28). `all` is every loaded review;
+            `rows` is the ones that actually RENDER after the anti-wall filter drops rating-only
+            anonymous entries (owner 2026-06-12). Guarding on `all` meant a salon whose reviews
+            are ALL rating-only fell into the else branch and drew the tier chips anyway, so the
+            page showed "Alle (0)" directly beneath a count of 11, then "no reviews in this
+            group". Two true numbers contradicting each other on screen. Measured on
+            muse-beauty-studio: 11 reviews, zero with a comment or a display name.
+            The branch below already had the right answer for exactly this case; it was simply
+            unreachable. */}
+        {rows.length === 0 ? (
           // Aggregate without bodies (count > 0) softens to "texts coming"; truly-empty (0) stays.
           count > 0 ? (
             <p className="font-body mt-5 text-[14px] text-s-ink-2">
-              Bewertungstexte folgen.
+              {t("reviewTextsComing")}
             </p>
           ) : (
             <p className="font-body mt-5 text-[14px] text-s-ink-2">
@@ -193,7 +202,7 @@ export function SalonReviews({
         )}
       </section>
 
-      {all.length > 0 && salonSlug && locale && (
+      {rows.length > 0 && salonSlug && locale && (
         <div className="mt-5 flex justify-center">
           {/* mockup-ok: SeeAllButton port, byte-identical pill class string, same instance as
               SalonServices/SalonTeam on this page. Always navigates to the real full reviews
