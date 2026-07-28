@@ -82,6 +82,38 @@ Divergent, and both deliberate: Material makes the trailing chevron **identical*
 
 Every agent received the numbers already in hand and was told to build on them. That bought depth instead of five agents re-deriving the same row pitch, and it makes their output checkable: a claim contradicting a supplied measurement is immediately visible.
 
+## R11. ASK BEFORE YOU LOOP. After it starts, never ask.
+
+**Owner, 2026-07-28:** *"you did not follow my guide either, and you did not ask me questions. I want you to ask me more questions before I actually start to loop. Use the question feature before the loop starts. But after the loop starts, don't ask me because it's autonomous."*
+
+**The case.** Asked to research design principles, I guessed the scope, ran a five-lens loop off my own reading, and shipped an artefact the owner called "twenty sixteen shit". Not one question was asked first. Every wrong assumption was cheap to ask about and expensive to discover: which surface, which references, app-feel versus web-feel, adopt a platform system or improve ours, and what "modern" even meant to him.
+
+**The rule is two-sided and the second half matters as much as the first.**
+
+- **Before a loop starts, asking is mandatory.** A loop is autonomous and expensive; an assumption baked in at the top multiplies through every agent. Use the QUESTION TOOL, not prose. Prose questions make the owner write an essay; the tool lets him pick.
+- **After a loop starts, asking is banned.** The loop is autonomous. Stopping mid-run to ask is the report-and-wait failure this estate already refuses.
+
+Ask about what you are about to ASSUME, not about what you could look up yourself (rule 11 still binds: investigate first, ask only what investigation cannot settle). Good question shapes: which surface and platform, which reference is authoritative, improve versus rebuild, what standard is being aimed at, and what "done" looks like in a checkable form.
+
+Enforced by `~/.claude/hooks/ask-before-loop-gate.py`, PreToolUse on `Workflow`, self-tested 15/15. It blocks a loop launched with no question round, and deliberately does NOT fire on a resume, or when the owner has released it ("go", "continue", "autonomous", "don't ask").
+
+## R12. DATE EVERY PRINCIPLE. Provenance is not recency.
+
+**Owner, 2026-07-28:** *"Did you even look at the timeline of the fucking principles that you're even researching about?"*
+
+The answer was no, and I verified that against this file before writing this rule: **none of R1 to R10 mentions a date, an era, or supersession.** R5 debunks a number with no traceable SOURCE. Nothing asked what YEAR the thinking came from. So the method could certify a rule as well-sourced and current-sounding while the pattern it prescribes had been out of fashion for a decade.
+
+That is exactly what happened. The pass validated contrast maths and type ratios, all genuinely timeless, and then shipped a screen built on a grouped label-left value-right row list, which is a 2013-to-2019 platform pattern. Every rule checked out. The artefact still looked a decade old.
+
+**The rule.** Every principle carries two independent judgements, and one never substitutes for the other:
+
+1. **Provenance:** who says this, is it traceable, is the number invented. (R2, R5, R7 already cover this.)
+2. **Recency:** what year is this thinking from, what has superseded it, and is the source I am citing still the current version of itself.
+
+Date a rule by its CONTENT, not by the date on our own commit. A rule written this morning can be 2014 thinking. Check the upstream's CURRENT release, not the one you remember: on 2026-07-28 I was carrying "iOS 26 Liquid Glass, WWDC 2025" as current while Apple's own resources page was serving **iOS 27** kits. One cycle behind, caught only by opening the page.
+
+Separate **plumbing** from **look**. Contrast maths, touch targets and tap semantics are close to timeless. Surface treatment, container grammar, type scale, depth and motion have an era, and a system with no dated upstream and no update ritual rots invisibly. Say which kind each rule is.
+
 ---
 
 ## The close condition
