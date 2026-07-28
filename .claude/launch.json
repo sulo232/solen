@@ -66,6 +66,30 @@
       "autoPort": false
     },
     {
+      "name": "Readout (static 3055)",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--yes",
+        "serve",
+        "/Users/sulo/Documents/solen/.claude/worktrees/quirky-ellis-ef5559/public",
+        "--no-clipboard",
+        "--listen",
+        "3055"
+      ],
+      "port": 3055,
+      "autoPort": false
+    },
+    {
+      "name": "Tunnel (readout 3055)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:3055 --metrics localhost:20246 --no-autoupdate"
+      ],
+      "port": 20246,
+      "autoPort": false
+    },
+    {
       "name": "Tunnel (dev 3000)",
       "runtimeExecutable": "bash",
       "runtimeArgs": [
