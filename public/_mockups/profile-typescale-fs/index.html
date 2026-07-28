@@ -158,11 +158,27 @@
      A first attempt used .sec:first-of-type, which silently matched NOTHING, because .idrow
      and .tabs are also divs so the first div sibling is not a .sec. Caught by measuring: the
      anchor fell to 20px and the ratio to 1.25x, failing both floors. Selector corrected. */
+  /* Section headings go to META size, same correction as the settings probe. Measured on the
+     reference: exactly ONE large left-aligned heading per screen, everything below it a row,
+     and no large heading between rows anywhere. Making section headings the anchor produced
+     two 30px labels that dominated the screen and chopped one list into chunks.
+     THE ANCHOR MOVES TO THE PERSON'S NAME. The owner deleted the "Profile" title because it
+     restated the route, and they were right, but FLOORS LAW 6 still wants one anchor >=28px.
+     The name satisfies both: it is real content rather than a restatement of where you are,
+     it is what a profile screen is actually about, and at 30px it clears the 1.8x ratio floor
+     against the 16px body. */
   body[data-m="next"] .sectitle{
-    font-size:30px;font-weight:600;letter-spacing:-0.02em;line-height:1.15;margin:0 0 12px;
+    font-size:13px;font-weight:600;color:var(--ink-2);letter-spacing:0;margin:0 0 8px;
   }
+  body[data-m="next"] .name{
+    font-size:30px;font-weight:600;letter-spacing:-0.02em;line-height:1.15;
+  }
+  body[data-m="next"] .idrow{align-items:center;gap:16px;margin-bottom:26px}
+  body[data-m="next"] .mono{width:64px;height:64px;font-size:22px}
   body[data-m="next"] .mono{font-size:20px}                   /* a monogram is not an anchor */
-  body[data-m="next"] .name{font-size:16px;font-weight:600}
+  /* the 30px .name anchor is declared above; a duplicate 16px rule sat here and won on
+     source order at equal specificity, the same trap that already cost the .sectitle
+     anchor once this session. Caught by re-measuring, not by reading. */
   body[data-m="next"] .handle{font-size:13px;font-weight:400;color:var(--ink-2)}
   body[data-m="next"] .tab{font-size:16px;font-weight:400}
   /* The 30px .sectitle rule above is the anchor. A duplicate 16px rule used to sit here and
@@ -257,7 +273,7 @@
 <script>
   var NOTES = {
     now:  "<b>Current, measured on the live route.</b> <code>6</code> distinct sizes (28/18/16/14/12/10), <code>56%</code> of text at weight 600 or heavier, and the only 28px on the page is the avatar monogram, so the biggest real text is 18px.",
-    next: "<b>Proposed.</b> <code>4</code> sizes (28 heading / 20 monogram / 16 body / 13 meta), one real 28px anchor added, and weight 600 spent only on the heading, the name and the section titles."
+    next: "<b>Proposed.</b> <code>4</code> sizes (30 name / 20 monogram / 16 body / 13 meta). The anchor is the <b>person's name</b>, not a title restating the route, and section headings drop to meta so they stop competing. Measured: 21% bold, ratio 1.875x, one label column."
   };
   var body = document.body, note = document.getElementById("note");
   function set(v){
