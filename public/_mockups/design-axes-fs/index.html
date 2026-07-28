@@ -185,8 +185,15 @@
 
     // TYPE. Emphasis moves off 600 onto 500. The anchor is exempted so it stays the one loud
     // thing, which is the whole point of an emphasis budget. Measured here at 16 elements on 600.
+    // SELECTIVE, and the first version was not. It set `[data-ax-body] *{font-weight:500}`, which
+    // pushed BODY text up from 400 and pulled EMPHASIS down from 600, collapsing 200 text elements
+    // from five weights to two. Measured: before 400:106 500:36 600:47 700:10 900:1, after
+    // 500:199 600:1. That is not the reference pattern, it is the destruction of all hierarchy,
+    // and the owner was right that it looked worse than what we ship.
+    // Airbnb's actual shape is body 400, emphasis 500, anchor 600. So only DEMOTE what is already
+    // heavy, and never touch the 400s.
     if (state.type === "a" || state.type === "b") {
-      out.push('[data-ax-body] *{font-weight:500 !important}');
+      out.push('[data-ax-demote]{font-weight:500 !important}');
       out.push('[data-ax-anchor]{font-weight:600 !important}');
     }
     if (state.type === "a" || state.type === "c") {
@@ -208,8 +215,13 @@
     }
 
     // DEPTH. Both options ADD elevation. See the header note for the withdrawn third option.
+    // The Layered value was WRONG on the first pass: I used Airbnb's MODAL shadow
+    // (0 16px 56px rgba(0,0,0,.18)) and applied it to inline furniture, including a 181x44 chip
+    // and a 370x561 block. A modal shadow on an inline card reads heavy and cheap, which is a
+    // large part of why the owner said the current page looked better. Airbnb's own inline tier is
+    // the 2px/8px one; the 56px blur is reserved for things that float above the page.
     if (state.depth === "a") {
-      out.push('[data-ax-card]{box-shadow:0 0 0 1px rgba(0,0,0,.02), 0 6px 8px rgba(0,0,0,.10), 0 16px 56px rgba(0,0,0,.18) !important}');
+      out.push('[data-ax-card]{box-shadow:0 0 0 1px rgba(0,0,0,.02), 0 4px 12px rgba(0,0,0,.08) !important}');
     }
     if (state.depth === "b") {
       out.push('[data-ax-card]{box-shadow:0 2px 8px rgba(0,0,0,.16) !important}');
@@ -238,6 +250,11 @@
         if (nd.nodeType === 3 && nd.textContent.trim().length > 1) { hasText = true; }
       }
       if (hasText && fs > biggestSize) { biggestSize = fs; biggest = e; }
+
+      // Only elements ALREADY carrying heavy weight are candidates for demotion to 500. Body text
+      // at 400 is left completely alone; touching it was the bug that flattened the page.
+      var wNow = parseInt(cs.fontWeight, 10) || 400;
+      if (hasText && wNow >= 600) { e.setAttribute("data-ax-demote", "1"); tagged++; }
 
       if (hasText && e.textContent.trim().length > 90 && fs <= 15) {
         e.setAttribute("data-ax-read", "1"); tagged++;
