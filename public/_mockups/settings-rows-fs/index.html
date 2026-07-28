@@ -109,7 +109,12 @@
   .row .lbl{display:block;font-size:15px;font-weight:500;color:var(--ink)}
   .row .val{margin-right:2px;font-size:13.5px;color:var(--ink-2)}
   .chev{flex:none;width:16px;height:16px;color:var(--chev-now)}
-  .row:active{background:var(--sunken)}
+  /* Press feedback is driven by a JS-toggled .is-pressed class, NOT :active.
+     Measured cause of the dead first version: iOS Safari does not fire :active on a tap
+     unless the element carries a touch listener, and even on desktop :active lives only
+     while the button is held, so a normal tap showed nothing at all. The class is held for
+     450ms so the 220ms transition is actually visible. */
+  .row.is-pressed{background:var(--sunken)}
 
   body[data-mode="now"] .chev{transform:none;transition:none}
 
@@ -117,7 +122,7 @@
     color:var(--ink-2);
     transition:transform 220ms cubic-bezier(.2,.8,.2,1), color 220ms ease;
   }
-  body[data-mode="anim"] .row:active .chev{transform:translateX(4px);color:var(--ink)}
+  body[data-mode="anim"] .row.is-pressed .chev{transform:translateX(6px);color:var(--ink)}
   @media (hover:hover){
     body[data-mode="anim"] .row:hover .chev{transform:translateX(3px)}
   }
@@ -209,6 +214,16 @@
     b.addEventListener("click", function(){ set(b.dataset.m); });
   });
   document.querySelectorAll(".row").forEach(function(r){
+    function press(e){
+      if (e) e.preventDefault();
+      r.classList.remove("is-pressed");
+      void r.offsetWidth;              // restart the transition on a repeat tap
+      r.classList.add("is-pressed");
+      clearTimeout(r._t);
+      r._t = setTimeout(function(){ r.classList.remove("is-pressed"); }, 450);
+    }
+    r.addEventListener("touchstart", press, {passive:false});
+    r.addEventListener("mousedown", press);
     r.addEventListener("click", function(e){ e.preventDefault(); });
   });
   set("now");
