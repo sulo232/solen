@@ -136,6 +136,12 @@
       <button data-ax="depth" data-v="b">One soft</button>
     </div>
     <div class="axis">
+      <b>Icons</b>
+      <button data-ax="icons" data-v="cur" aria-pressed="true">Now</button>
+      <button data-ax="icons" data-v="a">One size</button>
+      <button data-ax="icons" data-v="b">Three roles</button>
+    </div>
+    <div class="axis">
       <b>Screen</b>
       <button data-route="/de/salon/cuts-and-culture" aria-pressed="true">PDP</button>
       <button data-route="/de">Home</button>
@@ -147,6 +153,8 @@
       <span>weights <b id="m-weights">0</b></span>
       <span>bold <b id="m-bold">0</b>%</span>
       <span>anchor <b id="m-ratio">0</b>x</span>
+      <span>icon sizes <b id="m-icons">0</b></span>
+      <span>offset <b id="m-offset">0</b>px</span>
     </div>
   </div>
 </div>
@@ -162,7 +170,7 @@
 
 <script>
   var CHANGE_LABEL = "After: type, lines and depth applied to the real page";
-  var state = { type: "cur", lines: "cur", depth: "cur" };
+  var state = { type: "cur", lines: "cur", depth: "cur", icons: "cur" };
 
   var paneBefore = document.getElementById("pane-before");
   var paneAfter = document.getElementById("pane-after");
@@ -214,6 +222,32 @@
       out.push('[data-ax-rule]{margin-left:8px !important;margin-right:8px !important;border-top-color:#DDDDDD !important}');
     }
 
+    // ICONS. The measured defect: 12 distinct icon sizes in source across 648+ instances
+    // (16:129, 14:120, 18:108, 12:77, 13:75, 20:65, 15:61, 11:34, 22:30, 17:28, 24:24, 19:21)
+    // against Airbnb's ONE. With twelve sizes an icon beside text almost never lands on the same
+    // optical centre twice, which is the inconsistency the owner has been pointing at.
+    // Both variants also force vertical centring, because equal boxes alone do not fix a baseline
+    // that was never centred in the first place.
+    // MEASURED CORRECTION, mid-build: equalising the icon BOX alone moved the size count from 6 to
+    // 1 and left the mean icon-to-text offset at 2.31px, completely unchanged. The offset is not
+    // caused by the icon's size, it is caused by the ROW never centring its children. So the fix
+    // has two halves and the second one is the one that actually moves the number.
+    if (state.icons === "a" || state.icons === "b") {
+      out.push('[data-ax-row]{align-items:center !important}');
+      out.push('[data-ax-icon]{align-self:center !important;vertical-align:middle !important;' +
+               'flex-shrink:0 !important}');
+    }
+    if (state.icons === "a") {
+      // the reference's own answer: one size everywhere
+      out.push('[data-ax-icon]{width:20px !important;height:20px !important;flex-basis:20px !important}');
+    }
+    if (state.icons === "b") {
+      // three named roles instead of twelve accidents: meta, row, nav
+      out.push('[data-ax-icon="meta"]{width:16px !important;height:16px !important;flex-basis:16px !important}');
+      out.push('[data-ax-icon="row"]{width:20px !important;height:20px !important;flex-basis:20px !important}');
+      out.push('[data-ax-icon="nav"]{width:24px !important;height:24px !important;flex-basis:24px !important}');
+    }
+
     // DEPTH. Both options ADD elevation. See the header note for the withdrawn third option.
     // The Layered value was WRONG on the first pass: I used Airbnb's MODAL shadow
     // (0 16px 56px rgba(0,0,0,.18)) and applied it to inline furniture, including a 181x44 chip
@@ -255,6 +289,48 @@
       // at 400 is left completely alone; touching it was the bug that flattened the page.
       var wNow = parseInt(cs.fontWeight, 10) || 400;
       if (hasText && wNow >= 600) { e.setAttribute("data-ax-demote", "1"); tagged++; }
+
+      // Icons get a ROLE from the text they sit beside, not from whatever size they happen to be.
+      // Beside small meta text they are meta, beside body they are a row icon, and a bare icon
+      // with no text next to it is navigation or an action.
+      if (e.tagName === "svg" || e.tagName === "SVG") {
+        var w = r.width;
+        if (w >= 8 && w <= 64) {
+          var near = e.parentElement;
+          var neighbourPx = 0;
+          if (near) {
+            var t = [...near.querySelectorAll("*")].find(function (x) {
+              return x !== e && !x.contains(e) &&
+                [].some.call(x.childNodes, function (n) {
+                  return n.nodeType === 3 && n.textContent.trim().length > 1;
+                });
+            });
+            if (t) { neighbourPx = parseFloat(doc.defaultView.getComputedStyle(t).fontSize) || 0; }
+          }
+          // Walk up to three levels for the neighbouring text, the same way the measurer does.
+          // The first version looked only at the immediate parent, so 46 of 50 icons fell to the
+          // "nav" default and the role split was meaningless. Counting the roles is what exposed it.
+          if (!neighbourPx) {
+            var up = e.parentElement, hops2 = 0;
+            while (up && hops2 < 3 && !neighbourPx) {
+              var t2 = [].filter.call(up.querySelectorAll("*"), function (x) {
+                return x !== e && !x.contains(e) &&
+                  [].some.call(x.childNodes, function (n) {
+                    return n.nodeType === 3 && n.textContent.trim().length > 1;
+                  }) && x.getBoundingClientRect().width > 0;
+              })[0];
+              if (t2) { neighbourPx = parseFloat(doc.defaultView.getComputedStyle(t2).fontSize) || 0; }
+              else { up = up.parentElement; hops2++; }
+            }
+          }
+          var role = "nav";
+          if (neighbourPx > 0) { role = neighbourPx <= 13 ? "meta" : "row"; }
+          e.setAttribute("data-ax-icon", role);
+          // the icon's own row is what has to centre its children
+          if (e.parentElement) { e.parentElement.setAttribute("data-ax-row", "1"); }
+          tagged++;
+        }
+      }
 
       if (hasText && e.textContent.trim().length > 90 && fs <= 15) {
         e.setAttribute("data-ax-read", "1"); tagged++;
@@ -343,6 +419,37 @@
     document.getElementById("m-weights").textContent = String(Object.keys(weights).length);
     document.getElementById("m-bold").textContent = total ? String(Math.round(bold / total * 100)) : "0";
     document.getElementById("m-ratio").textContent = String(ratio);
+
+    // The two numbers that actually describe the owner's complaint: how many distinct icon boxes
+    // are on screen, and how far an icon sits from the optical centre of the text beside it.
+    // Airbnb measures 1 and 1.29px. Our PDP measured 8 and 4.35px.
+    var boxes = {}, offs = [];
+    var icons = doc.querySelectorAll("svg");
+    for (var a = 0; a < icons.length; a++) {
+      var ic = icons[a], ir = ic.getBoundingClientRect();
+      if (ir.width < 8 || ir.width > 64) { continue; }
+      if (ir.top > doc.defaultView.innerHeight || ir.bottom < 0) { continue; }
+      boxes[Math.round(ir.width)] = 1;
+      var par = ic.parentElement, tEl = null, hop = 0;
+      while (par && hop < 3 && !tEl) {
+        tEl = [].filter.call(par.querySelectorAll("*"), function (x) {
+          return x !== ic && !x.contains(ic) &&
+            [].some.call(x.childNodes, function (n) {
+              return n.nodeType === 3 && n.textContent.trim().length > 1;
+            }) && x.getBoundingClientRect().width > 0;
+        })[0];
+        if (!tEl) { par = par.parentElement; hop++; }
+      }
+      if (!tEl) { continue; }
+      var tr = tEl.getBoundingClientRect();
+      var dc = ((ir.top + ir.bottom) / 2) - ((tr.top + tr.bottom) / 2);
+      if (Math.abs(dc) <= 26) { offs.push(Math.abs(dc)); }
+    }
+    var meanOff = offs.length
+      ? Math.round(offs.reduce(function (x, y) { return x + y; }, 0) / offs.length * 100) / 100
+      : 0;
+    document.getElementById("m-icons").textContent = String(Object.keys(boxes).length);
+    document.getElementById("m-offset").textContent = String(meanOff);
   }
 
   var iv = setInterval(function () {

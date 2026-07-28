@@ -92,12 +92,12 @@ no. That's correct. What I'm doing right now. And then I was furious... maybe I 
 outside of the mock up, and generally, that could be the case too. And that's what making stuff
 inconsistent. And I then told you to go research. Right? And then you didn't do that."
 
-- [x] CORRECTION 1: I contradicted a visual observation instead of measuring it. He was right.
-- [x] CORRECTION 2: I was told to research row alignment and did not.
-- [x] CORRECTION 3: the real target is INCONSISTENCY and PACING, not the type ramp. Everything I
+- [x] CORRECTION 1: I contradicted a visual observation instead of measuring it. He was right. `verified:` the measurement table in this file (Solen PDP 8 icon sizes / 4.35px mean vs Airbnb 1 / 1.29px) proves his claim and refutes mine, commit `3e18f0982`. Gate against the behaviour: `~/.claude/hooks/owner-sees-it-measure-it-gate.py`, wired Stop, suite 12/12.
+- [x] CORRECTION 2: I was told to research row alignment and did not. `verified:` the research is now done and recorded in the measurement table below, one identical `getBoundingClientRect` probe run on airbnb.com/rooms/892461288627408577 and on our /de, /de/salon/cuts-and-culture and /de/basel/coiffeur, commit `3e18f0982`.
+- [x] CORRECTION 3: `verified:` commit `691f6105c` records the type-ramp proposal measuring WORSE (200 text elements collapsed from five weights to two) and commit `3e18f0982` records the icon scale as the actual defect. The real target is INCONSISTENCY. Everything I
       measured this session (weights, sizes, shadows, divider colour) was the wrong variable, which
       is why every proposal came out worse than the untouched page.
-- [x] CORRECTION 4: the misalignment is suspected to exist in the PRODUCT, not only in my mockup.
+- [x] CORRECTION 4: confirmed in the PRODUCT, not only in the mockup. `verified:` measured on three separate live product routes, all showing a 24.5px worst offset, plus 12 distinct icon sizes over 648+ instances counted in `app/` and `components/` source. Commit `3e18f0982`. Not only in my mockup,
       Measure it across real surfaces.
 
 
@@ -127,3 +127,32 @@ those were never the variable.
 
 **Verdict: the icon scale is the first thing to fix, and it is a consistency fix, not a taste
 change.** Collapse 12 sizes to a small set of named roles, then re-measure the offsets.
+
+
+### The icon fix, built and measured. Half of it works, half of it does not.
+
+An Icons axis now injects two candidate scales into the real page, and the header carries two live
+counters describing the owner's actual complaint: distinct icon boxes on screen, and mean
+icon-to-text offset.
+
+| state | distinct icon boxes | mean offset |
+|---|---|---|
+| now | **6** | 2.31px |
+| One size (20 everywhere) | **1** | **2.31px** |
+| Three roles (16 meta / 20 row / 24 nav) | **2** | **2.31px** |
+
+**Honest result: the size inconsistency is solved and the alignment offset is not.** Normalising
+the box takes 6 distinct sizes to 1, which is the reference's own answer. It moves the offset by
+nothing at all.
+
+That is a finding rather than a failure, and it corrects my own assumption: the icon-to-text offset
+is NOT caused by icons being different sizes. It is caused by rows that never centre their
+children. Injecting `align-items:center` onto each icon's immediate parent also failed to move it,
+because that parent is frequently a wrapper span rather than the flex row that lays out the icon
+beside the text.
+
+**So the alignment half cannot be fixed by an injected override; it needs the row components
+themselves.** The size half can be swept mechanically and needs no taste decision.
+
+Role split, measured after the tagger was corrected: meta 8, row 38, nav 4. The first tagger read
+only the immediate parent and dumped 46 of 50 icons into "nav"; counting the roles exposed it.
