@@ -37,7 +37,9 @@ All three converged on one shape: **the rules are right, they are written down, 
   | label cap | 11.6 | 12.3 | 6% smaller |
   | arrow / icon | 0.46 | 0.57 | 19% off |
 
-  Everything was undersized and the arrow worst by a distance, which is exactly what "all have diff sizes" describes. Boxes solved so the INK lands on the reference: icon 22 to 24, arrow 16 to 22. `verified:` after, ink 21.9 icon and 7.3 x 12.8 arrow, ratio **0.58 against the reference's 0.57**, one label column, vertical drift **0** against their 1.17.
+  Everything was undersized and the arrow worst by a distance, which is exactly what "all have diff sizes" describes. Boxes solved so the INK lands on the reference: icon 22 to 24, arrow 16 to 22.
+
+  `verified:` sha **`2c28e5737`** (3 files, +40/-5). Precisely, since the two mockups express it differently: `public/_mockups/settings-airbnb-fs/index.html:95` carries `.ico{...width:24px;height:24px...}` and `:111` carries `.chev{...width:22px;height:22px...}`; `public/_mockups/profile-typescale-fs/index.html:120` carries the same `.chev` rule, while its two account icons are inline-styled at `:241` and `:247` (`width:24px;height:24px`) because that file wraps each icon in a `.slot` rather than styling a shared `.ico` class. Re-measured on the live page after the change with `getBBox` ink extents: icon ink **21.9**, arrow ink **7.3 x 12.8**, arrow-to-icon ratio **0.58 against the reference's 0.57**, label column count **1**, vertical centre drift **0** against the reference's 1.17.
 
 ## Outstanding
 - [ ] B3. Owner decision, after B1 and B2 land: arm `gate:floors` in CI. This is the structural fix from A7 and it is the one change that stops the whole class from recurring. It is a decision rather than a chore because arming it will FAIL the build on existing surfaces until they are swept, so the owner has to choose between a red build and a staged allowlist.
