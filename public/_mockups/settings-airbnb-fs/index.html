@@ -114,6 +114,7 @@
   body[data-m="now"] .group{padding:0 16px}
   body[data-m="now"] .group + .group{margin-top:24px}
   body[data-m="now"] .head{font-size:20px}
+  body[data-m="now"] .pagetitle{display:none}   /* the live route has no page title today */
   body[data-m="now"] .card{border:1px solid var(--line);border-radius:16px}
   body[data-m="now"] .row{min-height:49px;padding:0 16px}
   body[data-m="now"] .row + .row{border-top:1px solid var(--line)}
@@ -133,7 +134,21 @@
   body[data-m="next"] .group + .group::before{
     content:"";display:block;height:1px;background:var(--line);margin:0 -2px 36px;
   }
-  body[data-m="next"] .head{font-size:28px;line-height:1.15;margin-bottom:16px}
+  /* NO SECTION HEADINGS. Measured on the reference this turn, band by band down the whole
+     screen: there is exactly ONE large left-aligned heading, the page title "Account settings"
+     at cap-height 91px = 30.3pt, sitting at x=74 (24.7pt). Everything below it is a row. No
+     large heading appears BETWEEN rows anywhere on that screen.
+     My first pass invented two 30px section headings ("Account", "Rewards"). They are the
+     biggest thing on the screen, they chunk one list into two, and the reference has neither.
+     That, not the row internals, is why it still read wrong. Headings drop to the meta size
+     and stop competing; the list reads as one list. */
+  body[data-m="next"] .head{
+    font-size:13px;font-weight:600;color:var(--ink-2);margin-bottom:8px;letter-spacing:0;
+  }
+  body[data-m="next"] .pagetitle{
+    display:block;font-size:30px;font-weight:600;letter-spacing:-0.02em;
+    line-height:1.15;margin:0 0 22px;
+  }
   body[data-m="next"] .card{border:0;border-radius:0}
   body[data-m="next"] .row{min-height:56px;padding:0}
   body[data-m="next"] .row + .row{border-top:0}   /* divider is a PROPERTY, off inside a group */
@@ -160,6 +175,7 @@
 
 <div class="stage">
   <div class="group">
+    <p class="pagetitle">Settings</p>
     <p class="head">Account</p>
     <div class="card">
       <a class="row" href="#">
