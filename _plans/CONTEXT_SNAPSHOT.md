@@ -2,16 +2,16 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-07-28T10:48:20 (trigger: auto)
+- taken: 2026-07-28T20:40:09 (trigger: auto)
 - branch: claude/principles-security-audit-0ae738
 
 ## git
 ```
-cd6e290d6 Close B1: the French question is answered, so there is no sweep left to schedule
-eca0ece06 A real backup ran today, from this Mac, with no deploy
-018632e91 Copy Airbnb on French: they use vous, and so should we. 18 strings were the outliers
-6fad820a0 Seven "open" lines were already shipped. Closing the bookkeeping, not the work
-5c66680f8 "Alle (0)" beside a count of 11 was one wrong variable, not a product decision
+8251fc02a Close the WCAG 2.4.7 gap on touch. Not a decision, a fix I should have made.
+9cb17c8f1 Taste lens, the last of four: a live contrast defect and a wrong citation
+518eafca1 Copy lens: the German register may be wrong, and it is measurable
+890a632ad Floors lens: label the two invented numbers as invented
+7c6c66b29 Contract lens: correct a stale contrast comment, surface a real WCAG collision
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
@@ -45,10 +45,9 @@ eca0ece06 A real backup ran today, from this Mac, with no deploy
 37 | Mockup ROOT-CAUSE + principles (owner 2026-07-19, 5th-round fury: "step back, use subagents") | **ACTIVE** (2026-07-19)
 36 | Mockup QUALITY system , stop shipping unchecked/unbalanced mockups (owner 2026-07-19, FURIOUS recurrence) | **ACTIVE** (2026-07-19)
 35 | Full frontend sweep , audit every surface vs the design system + mockup improvements (owner 2026-07-19, LOOP) | **ACTIVE** (2026-07-19)
-
-## OWNER_ANSWERS_BATCH.md
-Open boxes:
-- [ ] H2. **PARKED BY THE OWNER, 2026-07-28: "3nag not rn park it".** Not blocked, not forgotten , deliberately deferred. Everything needed is written down so it can start cold: the two structural blockers, the Pro-branch requirement, the cost, and the nFADP angle.
+47 | POLISH DIAGNOSIS , why Airbnb reads finished and ours reads unfinished | **ACTIVE** (2026-07-28)
+48 | PRINCIPLE DEEP-RESEARCH , re-test every principle we already have against external evidence | **ACTIVE** (design) + handoff (rest) 2026-07-28
+50 | DESIGN principle deep-research (the rules we ALREADY have) | **ACTIVE** (2026-07-28)
 
 ## PRINCIPLES_LOOP.md
 Open boxes:

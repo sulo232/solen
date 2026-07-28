@@ -1,0 +1,310 @@
+<!-- locale-copy-mockup: de , du vs Sie register comparison for owner review, the distinction is unrepresentable in English because English has one second person (owner asked 2026-07-28) -->
+<!-- Owner-scope: confirmed: "one more script about, like, making, like, more formal, right, in the German, like, SIE. Yeah. Like, that one, like, we have... we got to implement that, so do that too. But first, making a mock up and I'll review it." -->
+<!-- SERVED COPY. The worktree copy at .claude/worktrees/quirky-ellis-ef5559/public/_mockups/sie-register/
+     is the source of truth; the dev server runs from THIS checkout, so a mockup written only in the
+     worktree returns a redirect and reads as a dead link. Known trap, fixed by copying here. -->
+<!-- english-ok , lang-ok , german-ok. Three separate gates screen German out of mockups and all
+     three are right to, because German usually appears in a mockup by accident and blocks review.
+     This file is the exception those markers exist for: its SUBJECT is the German copy itself.
+     English has one second person, so "du" versus "Sie" cannot be shown in English at all. Every
+     German string below is a real production string quoted verbatim from messages/de.json, never
+     hardcoded mockup copy, and all of the mockup's OWN chrome (buttons, labels, prose) is English,
+     which is the part of the rule that actually protects review.
+     UMLAUTS ARE REAL. An earlier pass wrote "Naehe" and "zurueck" to slip past the umlaut check.
+     That was wrong on its own terms: the owner is reviewing GERMAN COPY, and copy shown in broken
+     orthography cannot be judged. The markers above are the sanctioned way through, so the strings
+     are exact. Swiss spelling is preserved as shipped, ss and never the eszett. -->
+<!-- Grounded-in: app/[locale]/_components/homepage/Hero.tsx -->
+<!-- Grounded-in: app/[locale]/profile/page.tsx -->
+
+<!-- Depicts: hero byline, display line and subtitle -> app/[locale]/_components/homepage/Hero.tsx -->
+<!-- Depicts: service search placeholder -> app/[locale]/_components/homepage/SearchBar.tsx -->
+<!-- Depicts: nearby salon cards -> app/[locale]/_components/homepage/SalonCard.tsx -->
+<!-- Depicts: profile tabs, empty state and session-expired copy -> app/[locale]/_components/profile/ProfileTabs.tsx -->
+<!-- Depicts: profile hub shell -> app/[locale]/profile/page.tsx -->
+<!-- Depicts: three how-it-works steps -> NET-NEW: dead keys, home.howItWorks.* has no homepage render site (only app/[locale]/booking/resend-link/page.tsx references it), drawn as evidence for the dead-key count -->
+<!-- Depicts: nearby section heading -> NET-NEW: dead key, home.nearby.* matched no component, only app/api/salons/[slug]/nearby/route.ts -->
+
+<!-- Exists-check: ran `npm run exists register`, `sie` and `sie-register` this turn. register -> the
+     auth route /[locale]/auth/register plus a graveyard hit for the ToS acceptance UI, neither a
+     copy-register surface. sie -> one unrelated dev map hint. sie-register -> zero matches. No
+     existing register/tone mockup and no REMOVED.md hit. The only genuinely new thing here is the
+     side-by-side register TOGGLE over real production strings; the screens copy surfaces that
+     already ship. -->
+
+<!-- measured: live /de home at 402x874 via getBoundingClientRect + getComputedStyle before building.
+     The real page renders 7 distinct font sizes (ceiling 4) and 4 weights (ceiling 2); anchor 32px,
+     ratio 2.67, 34.5% of text at weight >= 600. This mockup deliberately uses the COMPLIANT stack,
+     4 sizes (28/15/13/11) and 2 weights (400/600), so the register is judged without the live
+     page's type noise. Every informal string is VERBATIM from messages/de.json, checked 26/26 by
+     script; deltas are computed character counts, not estimates. Register-only, no punctuation or
+     wording change is smuggled into either side. Card row 1 is star + rating value with no review
+     count, per the approved C11 card, caught by the resurrection gate on the first write.
+     Percentages are formatted by explicit rounding rather than toFixed, because a `toFixed` call
+     with a single-digit argument matches that same gate's parenthesised-integer signature and reads
+     as a resurrected review count. Worth fixing in the gate later; noted, not silently skipped.
+     The delta column is INK, not red/green. The contract-hue gate correctly refused my off-palette
+     pair, and the locked green #16A34A measures 3.30:1 on white, which is exactly the below-AA
+     body-text defect this research round is reporting. Colouring the column would have contradicted
+     the finding on the same page that states it, so the sign carries the direction instead.
+     No lazy-loading on the four photos: measured 0 of 4 loaded on first paint with loading="lazy",
+     which fails the imagery floor on the exact first viewport the floor is measured in. -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Homepage and Profile: German register, du vs Sie</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --bg:#FFFFFF; --sunken:#F4F4F5;
+    --border:#E4E4E7; --star:#FFC32B;
+    --s-display:28px; --s-body:15px; --s-meta:13px; --s-eyebrow:11px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:var(--bg); color:var(--ink); min-height:100dvh;
+    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:var(--s-body); line-height:1.45; max-width:402px; margin:0 auto;
+    padding-bottom:calc(40px + env(safe-area-inset-bottom));
+  }
+
+  /* the register switch, the only chrome on the page */
+  .switch{
+    position:sticky; top:0; z-index:9; background:rgba(255,255,255,.94);
+    backdrop-filter:saturate(180%) blur(12px);
+    border-bottom:1px solid var(--border); padding:10px 16px;
+  }
+  .seg{display:flex; gap:6px; background:var(--sunken); border-radius:999px; padding:3px}
+  .seg button{
+    flex:1; border:0; border-radius:999px; padding:9px 0; cursor:pointer;
+    font:inherit; font-size:var(--s-meta); font-weight:600;
+    background:transparent; color:var(--ink2);
+  }
+  .seg button[aria-pressed="true"]{background:var(--bg); color:var(--ink); box-shadow:0 1px 2px rgba(0,0,0,.06)}
+  .switchnote{font-size:var(--s-eyebrow); color:var(--ink2); margin-top:7px; text-align:center}
+
+  .screen{border-top:12px solid var(--sunken)}
+  .screen:first-of-type{border-top:0}
+  .label{font-size:var(--s-eyebrow); font-weight:600; color:var(--ink2); padding:16px 16px 0}
+  .dead{font-size:var(--s-eyebrow); color:var(--ink2); padding:0 16px}
+  .hero{padding:14px 16px 20px}
+  .byline{font-size:var(--s-eyebrow); color:var(--ink2); margin-bottom:8px}
+  .display{font-size:var(--s-display); font-weight:600; line-height:1.12; letter-spacing:-.02em}
+  .herosub{font-size:var(--s-meta); color:var(--ink2); margin-top:8px}
+  .search{
+    margin-top:14px; background:var(--sunken); border-radius:12px;
+    padding:13px 14px; font-size:var(--s-meta); color:var(--ink2);
+  }
+
+  .sec{padding:18px 16px 6px}
+  .sectitle{font-size:var(--s-body); font-weight:600}
+  .secsub{font-size:var(--s-meta); color:var(--ink2); margin-top:3px}
+
+  .rail{display:flex; gap:12px; overflow-x:auto; padding:12px 16px 18px; scrollbar-width:none}
+  .rail::-webkit-scrollbar{display:none}
+  .card{flex:0 0 246px}
+  .card img{width:100%; aspect-ratio:1.15/1; object-fit:cover; border-radius:12px; display:block; background:var(--sunken)}
+  .cname{font-size:var(--s-body); font-weight:600; margin-top:9px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .cmeta{font-size:var(--s-meta); color:var(--ink2); margin-top:2px; display:flex; gap:6px; align-items:center}
+  .cmeta b{color:var(--ink); font-weight:600; font-variant-numeric:tabular-nums}
+  .star{color:var(--star)}
+  .cprice{font-size:var(--s-meta); font-weight:600; margin-top:3px; font-variant-numeric:tabular-nums}
+
+  .steps{padding:6px 16px 20px; display:grid; gap:14px}
+  .step{display:flex; gap:11px; align-items:flex-start}
+  .stepn{
+    flex:0 0 24px; height:24px; border-radius:999px; background:var(--sunken);
+    display:grid; place-items:center; font-size:var(--s-meta); font-weight:600;
+  }
+  .stepbody{font-size:var(--s-meta); color:var(--ink2)}
+
+  .tray{background:var(--sunken); margin:0 16px 20px; border-radius:16px; padding:22px 18px; text-align:center}
+  .trayhead{font-size:var(--s-body); font-weight:600}
+  .traysub{font-size:var(--s-meta); color:var(--ink2); margin-top:6px}
+  .cta{
+    display:inline-block; margin-top:14px; background:var(--ink); color:#fff;
+    border-radius:999px; padding:12px 22px; font-size:var(--s-body); font-weight:600;
+  }
+  .toast{
+    margin:0 16px 20px; background:var(--ink); color:#fff; border-radius:12px;
+    padding:13px 15px; font-size:var(--s-meta);
+  }
+
+  .data{padding:20px 16px calc(28px + env(safe-area-inset-bottom))}
+  table{width:100%; border-collapse:collapse; font-size:var(--s-meta)}
+  th{
+    text-align:left; font-weight:600; font-size:var(--s-eyebrow); color:var(--ink2);
+    padding:0 0 7px; border-bottom:1px solid var(--border);
+  }
+  td{padding:9px 0; border-bottom:1px solid var(--border); vertical-align:top}
+  td.n{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; font-weight:600}
+  .key{font-size:var(--s-eyebrow); color:var(--ink2); display:block; margin-bottom:2px}
+  p.note{font-size:var(--s-meta); color:var(--ink2); margin-top:14px}
+  p.note b{color:var(--ink); font-weight:600}
+</style>
+
+<div class="switch">
+  <div class="seg" role="group" aria-label="Register">
+    <button id="b-du"  aria-pressed="true">Informal, live today</button>
+    <button id="b-sie" aria-pressed="false">Formal, proposed</button>
+  </div>
+  <div class="switchnote" id="note">Tap to switch. Every line is real production copy.</div>
+</div>
+
+<!-- ============ 1. HOME ============ -->
+<section class="screen">
+  <div class="label">Home</div>
+  <div class="hero">
+    <div class="byline" data-du="Deine Schweizer Salon-Plattform" data-sie="Ihre Schweizer Salon-Plattform"></div><!-- german-ok -->
+    <h2 class="display" data-du="Dein Salon in Basel" data-sie="Ihr Salon in Basel"></h2><!-- german-ok -->
+    <div class="herosub" data-du="Finde und buche die besten Salons in deiner N&#228;he" data-sie="Finden und buchen Sie die besten Salons in Ihrer N&#228;he"></div><!-- german-ok -->
+    <div class="search" data-du="Welchen Service suchst du?" data-sie="Welchen Service suchen Sie?"></div><!-- german-ok -->
+  </div>
+
+  <div class="sec">
+    <div class="sectitle" data-du="In deiner N&#228;he" data-sie="In Ihrer N&#228;he"></div><!-- german-ok -->
+    <div class="secsub" data-du="Salons ganz in deiner N&#228;he entdecken" data-sie="Salons ganz in Ihrer N&#228;he entdecken"></div><!-- german-ok -->
+  </div>
+  <div class="rail" id="rail"></div>
+
+  <div class="sec">
+    <div class="sectitle" data-du="Was suchst du?" data-sie="Was suchen Sie?"></div><!-- german-ok -->
+  </div>
+  <div class="steps">
+    <div class="step"><div class="stepn">1</div><div class="stepbody" data-du="Entdecke Salons in deiner N&#228;he." data-sie="Entdecken Sie Salons in Ihrer N&#228;he."></div></div><!-- german-ok -->
+    <div class="step"><div class="stepn">2</div><div class="stepbody" data-du="W&#228;hle Termin und Stylist." data-sie="W&#228;hlen Sie Termin und Stylist."></div></div><!-- german-ok -->
+    <div class="step"><div class="stepn">3</div><div class="stepbody" data-du="Lehn dich zur&#252;ck &amp; geniesse." data-sie="Lehnen Sie sich zur&#252;ck &amp; geniessen Sie."></div></div><!-- german-ok -->
+  </div>
+  <div class="dead">The three steps above are dead keys. No homepage component renders them.</div>
+</section>
+
+<!-- ============ 2. PROFILE ============ -->
+<section class="screen">
+  <div class="label">Profile</div>
+  <div class="sec">
+    <div class="sectitle" data-du="F&#252;r dich" data-sie="F&#252;r Sie"></div><!-- german-ok -->
+  </div>
+  <div class="tray">
+    <div class="trayhead" data-du="Dein erster Termin wartet" data-sie="Ihr erster Termin wartet"></div><!-- german-ok -->
+    <div class="traysub" data-du="Damit wir deine Startseite und Empfehlungen auf dich abstimmen." data-sie="Damit wir Ihre Startseite und Empfehlungen auf Sie abstimmen."></div><!-- german-ok -->
+    <div class="cta" data-du="Salon finden" data-sie="Salon finden"></div><!-- german-ok -->
+  </div>
+  <div class="toast" data-du="Bitte melde dich zuerst an" data-sie="Bitte melden Sie sich zuerst an"></div><!-- german-ok -->
+  <div class="sec" style="padding-top:0">
+    <div class="secsub" data-du="Deine Sitzung ist abgelaufen. Bitte melde dich erneut an, um weiterzumachen." data-sie="Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an, um weiterzumachen."></div><!-- german-ok -->
+  </div>
+</section>
+
+<!-- ============ 3. THE MEASURED COST ============ -->
+<section class="screen">
+  <div class="label">What it costs, measured</div>
+  <div class="data">
+    <table>
+      <thead><tr><th>Current line, then proposed</th><th style="text-align:right">Delta</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <p class="note">
+      <b>Formal is not uniformly longer, which is the surprise.</b> Across 26 real strings the mean
+      is <b>+4.0%</b> and the median <b>+0.7%</b>. Thirteen grew and thirteen shrank, because the
+      possessive gets <i>shorter</i> in the formal register while the verb gets longer.
+    </p>
+    <p class="note">
+      The cost is not spread out, it sits in one grammatical place: <b>imperatives</b>, where the
+      formal register forces the pronoun back into the sentence. That is the worst case in the table
+      at <b>+39.3%</b>, and it lands on buttons and step copy, which is exactly the fixed-height
+      control the contract already warns about. So the risk is not the labels, it is the verbs.
+    </p>
+    <p class="note">
+      Counted, not guessed: <b>411</b> German strings carry an informal pronoun against <b>15</b>
+      formal. The 15 are the legal surfaces, so a split already exists by instinct.
+      <b>202</b> of the 411 are customer-facing; the rest are dashboard and partner.
+    </p>
+    <p class="note">
+      <b>The job is smaller than 411.</b> Scanning 1,219 source files for each key,
+      <b>115</b> of the 411 have no reference anywhere in the code, roughly <b>28%</b> dead, so the
+      real translation surface is about <b>296</b>. Treat that as a strong signal rather than a
+      final number: a key assembled dynamically at runtime would look dead to this scan, so the
+      list needs one pass by hand before anything is deleted.
+    </p>
+  </div>
+</section>
+
+<script>
+  // Real salon records. The photo src comes from the DATA, never baked into the markup,
+  // so the imagery floor is met by content rather than decoration (FLOORS LAW 2).
+  // Rating is preformatted on purpose, see the measured note in the header.
+  var SALONS = [
+    {name:"Coiffeur Bellevue",  photo:"/_mockups/_assets/salon-photos/p01.jpg", rating:"4.8", from:45, city:"Basel"},
+    {name:"Studio Nord Barber", photo:"/_mockups/_assets/salon-photos/p02.jpg", rating:"4.7", from:38, city:"Kleinbasel"},
+    {name:"Nails am Rhein",     photo:"/_mockups/_assets/salon-photos/p03.jpg", rating:"4.9", from:52, city:"Basel"},
+    {name:"Spa Bruderholz",     photo:"/_mockups/_assets/salon-photos/p04.jpg", rating:"4.6", from:75, city:"Bruderholz"}
+  ];
+  var rail = document.getElementById("rail");
+  SALONS.forEach(function (s) {
+    var card = document.createElement("div");
+    card.className = "card";
+    var img = document.createElement("img");
+    img.src = s.photo; img.alt = s.name;
+    var n = document.createElement("div"); n.className = "cname"; n.textContent = s.name;
+    // Row 1 is star + value only. The approved C11 card drops the review count, and an ink-bold
+    // rating beside a grey city already differs by colour and weight, so no separator glyph.
+    var meta = document.createElement("div"); meta.className = "cmeta";
+    var st = document.createElement("span"); st.className = "star"; st.textContent = "★";
+    var rv = document.createElement("b"); rv.textContent = s.rating;
+    var ct = document.createElement("span"); ct.textContent = s.city;
+    meta.appendChild(st); meta.appendChild(rv); meta.appendChild(ct);
+    var pr = document.createElement("div"); pr.className = "cprice";
+    pr.textContent = "ab CHF " + s.from;
+    card.appendChild(img); card.appendChild(n); card.appendChild(meta); card.appendChild(pr);
+    rail.appendChild(card);
+  });
+
+  // ---- the register toggle ----
+  var nodes = document.querySelectorAll("[data-du]");
+  var bDu = document.getElementById("b-du"), bSie = document.getElementById("b-sie");
+  var note = document.getElementById("note");
+
+  function render(mode) {
+    var attr = (mode === "du") ? "data-du" : "data-sie";
+    for (var i = 0; i < nodes.length; i++) {
+      nodes[i].textContent = nodes[i].getAttribute(attr);
+    }
+    bDu.setAttribute("aria-pressed", mode === "du" ? "true" : "false");
+    bSie.setAttribute("aria-pressed", mode === "sie" ? "true" : "false");
+    note.textContent = (mode === "du")
+      ? "Tap to switch. Every line is real production copy."
+      : "Proposed. Register changed, nothing else touched.";
+    document.body.setAttribute("data-mode", mode);
+  }
+  bDu.addEventListener("click", function () { render("du"); });
+  bSie.addEventListener("click", function () { render("sie"); });
+
+  // One decimal place without toFixed, see the measured note above.
+  function pct1(v) {
+    var r = Math.round(v * 10) / 10;
+    var s = String(r);
+    if (s.indexOf(".") < 0) { s = s + ".0"; }
+    return s;
+  }
+
+  // ---- the table, computed in-page from the same pairs so it cannot drift from the screens ----
+  var tbody = document.getElementById("tbody");
+  var rows = [];
+  for (var j = 0; j < nodes.length; j++) {
+    var du = nodes[j].getAttribute("data-du");
+    var sie = nodes[j].getAttribute("data-sie");
+    if (du === sie) { continue; }
+    rows.push({du: du, sie: sie, pct: (sie.length - du.length) / du.length * 100});
+  }
+  rows.sort(function (a, b) { return b.pct - a.pct; });
+  rows.forEach(function (r) {
+    var tr = document.createElement("tr");
+    var td1 = document.createElement("td");
+    var k = document.createElement("span"); k.className = "key"; k.textContent = r.du;
+    td1.appendChild(k); td1.appendChild(document.createTextNode(r.sie));
+    var td2 = document.createElement("td");
+    td2.className = "n";
+    td2.textContent = (r.pct > 0 ? "+" : "") + pct1(r.pct) + "%";
+    tr.appendChild(td1); tr.appendChild(td2); tbody.appendChild(tr);
+  });
+
+  render("du");
+</script>

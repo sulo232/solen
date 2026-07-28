@@ -1,0 +1,329 @@
+<!-- Owner-scope: confirmed: "by mockup idc ant formal or informal im talking abt the new all design principle what did u even di thn" , the mockup asked for is the NEW DESIGN PRINCIPLES applied to a real screen, not the register comparison. -->
+<!-- Grounded-in: _design-system/LOCKFILE.md -->
+<!-- Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx -->
+<!-- SERVED COPY, dev server runs from this checkout. Worktree source of truth:
+     .claude/worktrees/quirky-ellis-ef5559/public/_mockups/design-principles/ -->
+
+<!-- Depicts: salon card, photo + name + star rating + city + from-price -> app/[locale]/_components/homepage/SalonCard.tsx -->
+<!-- Depicts: grouped list rows with dividers -> app/[locale]/_components/profile/ProfileTabs.tsx -->
+<!-- Depicts: review block with body copy -> app/[locale]/_components/homepage/Reviews.tsx -->
+<!-- Depicts: section heading and sub -> app/[locale]/_components/homepage/SectionHeader.tsx -->
+<!-- Depicts: status chip and inline link on a sunken tray -> NET-NEW: no single component owns this pairing today; it is the exact combination the contrast finding is about, so it is drawn here to make the defect visible rather than described -->
+
+<!-- Exists-check: ran `npm run exists design-principles` this turn, zero matches, and earlier
+     `register` / `sie` / `sie-register`. No existing principles-comparison mockup and no REMOVED.md
+     hit. What is genuinely new here is the BEFORE/AFTER toggle over one screen carrying every
+     principle the research round changed; the screen itself copies components that already ship.
+     NOTE on wording: an earlier draft described a divider as running "edge to edge" and the
+     graveyard gate correctly flagged it, since that phrase names the rejected full-bleed direction.
+     Nothing here proposes full-bleed. The divider inset is described in plain terms instead. -->
+
+<!-- measured: live getBoundingClientRect + getComputedStyle at 402x874 this turn. Card 246px wide,
+     photo ratio 1.150, photo 214px tall, name 15px/600, meta 13px/400, display anchor 28px/600.
+     Separately, the live /de home renders 7 distinct font sizes against a ceiling of 4 and 4
+     weights against a ceiling of 2, anchor 32px at ratio 2.67, 34.5% of visible text at weight
+     >= 600. Those are the numbers the BEFORE column reproduces. Contrast figures come from the sRGB
+     relative-luminance formula against the locked token hexes, derived twice independently and
+     matching to 2dp. The AFTER column is held to 4 sizes and 2 weights, and the on-page counters
+     measure the rendered result rather than asserting it. -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design principles: current versus proposed</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --bg:#FFFFFF; --sunken:#F4F4F5;
+    --border:#E4E4E7; --accent:#276EF1; --star:#FFC32B; --green:#16A34A;
+    --s-display:28px; --s-body:15px; --s-meta:13px; --s-eyebrow:11px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:var(--bg); color:var(--ink); min-height:100dvh;
+    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:var(--s-body); line-height:1.5; max-width:402px; margin:0 auto;
+    padding-bottom:calc(40px + env(safe-area-inset-bottom));
+  }
+
+  .switch{
+    position:sticky; top:0; z-index:9; background:rgba(255,255,255,.94);
+    backdrop-filter:saturate(180%) blur(12px);
+    border-bottom:1px solid var(--border); padding:10px 16px;
+  }
+  .seg{display:flex; gap:6px; background:var(--sunken); border-radius:999px; padding:3px}
+  .seg button{
+    flex:1; border:0; border-radius:999px; padding:9px 0; cursor:pointer;
+    font:inherit; font-size:var(--s-meta); font-weight:600;
+    background:transparent; color:var(--ink2);
+  }
+  .seg button[aria-pressed="true"]{background:var(--bg); color:var(--ink); box-shadow:0 1px 2px rgba(0,0,0,.06)}
+  .switchnote{font-size:var(--s-eyebrow); color:var(--ink2); margin-top:7px; text-align:center}
+
+  .label{font-size:var(--s-eyebrow); font-weight:600; color:var(--ink2); padding:18px 16px 0}
+  .screen{border-top:12px solid var(--sunken)}
+  .screen:first-of-type{border-top:0}
+
+  /* ---------- the demo screen ---------- */
+  .head{padding:12px 16px 4px}
+  .h-anchor{font-weight:600; letter-spacing:-.02em; line-height:1.14}
+  .h-sub{color:var(--ink2); margin-top:5px}
+
+  .rail{display:flex; gap:12px; overflow-x:auto; padding:12px 16px 16px; scrollbar-width:none}
+  .rail::-webkit-scrollbar{display:none}
+  .card{flex:0 0 250px}
+  .card img{width:100%; aspect-ratio:1.15/1; object-fit:cover; border-radius:12px; display:block; background:var(--sunken)}
+  .cname{font-weight:600; margin-top:9px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .cmeta{margin-top:2px; display:flex; gap:6px; align-items:center; color:var(--ink2)}
+  .cmeta b{color:var(--ink); font-weight:600; font-variant-numeric:tabular-nums}
+  .star{color:var(--star)}
+  .cprice{font-weight:600; margin-top:3px; font-variant-numeric:tabular-nums}
+
+  /* the grouped tray: where the contrast defect lives */
+  .tray{background:var(--sunken); margin:4px 16px 18px; border-radius:16px; overflow:hidden}
+  .row{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; position:relative}
+  .row + .row::before{content:""; position:absolute; top:0; height:1px; background:var(--border)}
+  .rowlabel{font-weight:600}
+  .status{font-weight:600}
+  .link{font-weight:600}
+  .chipwrap{display:flex; align-items:center; gap:6px}
+  .dot{width:8px; height:8px; border-radius:999px; background:var(--green); flex:0 0 8px}
+
+  /* the review block: reading copy */
+  .review{padding:2px 16px 20px}
+  .rname{font-weight:600}
+  .rbody{color:var(--ink2); margin-top:5px}
+  .rmeta{color:var(--ink2); margin-top:6px}
+
+  /* ---------- annotations ---------- */
+  .notes{padding:4px 16px 24px}
+  .note{border:1px solid var(--border); border-radius:12px; padding:13px 14px; margin-bottom:10px}
+  .nhead{font-weight:600; font-size:var(--s-meta)}
+  .nbody{font-size:var(--s-meta); color:var(--ink2); margin-top:4px}
+  .nbody b{color:var(--ink); font-weight:600}
+  .metrics{
+    display:flex; border:1px solid var(--border); border-radius:12px; overflow:hidden;
+    margin:0 16px 18px;
+  }
+  .metric{flex:1; padding:12px 10px; text-align:center}
+  .metric + .metric{border-left:1px solid var(--border)}
+  .mv{font-weight:600; font-variant-numeric:tabular-nums; display:block}
+  .mk{font-size:var(--s-eyebrow); color:var(--ink2); display:block; margin-top:2px}
+
+  /* ============ BEFORE ============ */
+  body[data-mode="before"] .h-anchor{font-size:22px}
+  body[data-mode="before"] .h-sub{font-size:15px}
+  body[data-mode="before"] .cname{font-size:14px}
+  body[data-mode="before"] .cmeta{font-size:12px}
+  body[data-mode="before"] .cprice{font-size:14px}
+  body[data-mode="before"] .rowlabel{font-size:14px}
+  body[data-mode="before"] .status{font-size:13px; color:var(--green)}
+  body[data-mode="before"] .link{font-size:13px; color:var(--accent)}
+  body[data-mode="before"] .dot{display:none}
+  body[data-mode="before"] .rname{font-size:14px}
+  body[data-mode="before"] .rbody{font-size:14px}
+  body[data-mode="before"] .rmeta{font-size:12px}
+  body[data-mode="before"] .row + .row::before{left:0; right:0}
+
+  /* ============ AFTER ============
+     Exactly four sizes: 28 anchor / 16 reading / 14 dense / 12 meta.
+     This is where two of the proposals collided and the live counter caught it. Stepping reading
+     copy up to 16 while dense rows sat at 15 produced a FIFTH size and quietly broke the 4-size
+     ceiling, on the very page arguing for that ceiling. The resolution is the one the sources
+     actually support: reading copy 16, dense rows 14, and 15 disappears entirely rather than
+     sitting one pixel away from 14 buying nothing. Counting sizes AND measuring the spread is the
+     existing rule; a 14 and a 15 on one screen is precisely the variety-without-range case it
+     warns about. */
+  body[data-mode="after"] .h-anchor{font-size:28px}
+  body[data-mode="after"] .h-sub{font-size:14px}
+  body[data-mode="after"] .cname{font-size:14px}
+  body[data-mode="after"] .cmeta{font-size:12px}
+  body[data-mode="after"] .cprice{font-size:14px}
+  body[data-mode="after"] .rowlabel{font-size:14px}
+  body[data-mode="after"] .status{font-size:12px; color:var(--ink)}
+  body[data-mode="after"] .dot{display:block}
+  body[data-mode="after"] .link{font-size:12px; color:var(--ink); text-decoration:underline; text-underline-offset:3px}
+  body[data-mode="after"] .rname{font-size:14px}
+  body[data-mode="after"] .rbody{font-size:16px}
+  body[data-mode="after"] .rmeta{font-size:12px}
+  body[data-mode="after"] .row + .row::before{left:16px; right:16px}
+</style>
+
+<div class="switch">
+  <div class="seg" role="group" aria-label="Principles">
+    <button id="b-before" aria-pressed="true">Current rules</button>
+    <button id="b-after"  aria-pressed="false">Proposed</button>
+  </div>
+  <div class="switchnote" id="note">One screen, every principle the research changed.</div>
+</div>
+
+<!-- ================= THE SCREEN ================= -->
+<div class="label">One screen, both ways</div>
+<section class="screen">
+  <div class="head">
+    <div class="h-anchor">Salons in Basel</div>
+    <div class="h-sub">Booked today by people near you</div>
+  </div>
+
+  <div class="rail" id="rail"></div>
+
+  <div class="tray">
+    <div class="row">
+      <span class="rowlabel">Next appointment</span>
+      <span class="chipwrap"><span class="dot"></span><span class="status">Confirmed</span></span>
+    </div>
+    <div class="row">
+      <span class="rowlabel">Payment</span>
+      <span class="link">Manage booking</span>
+    </div>
+    <div class="row">
+      <span class="rowlabel">Cancellation</span>
+      <span class="link">Read the policy</span>
+    </div>
+  </div>
+
+  <div class="review">
+    <div class="rname">Lena M.</div>
+    <div class="rbody">
+      Third time here and the first place that actually listened to what I wanted. The cut has held
+      its shape for six weeks, which has never happened before, and they talked me out of a colour
+      that would have wrecked it.
+    </div>
+    <div class="rmeta">Cut and colour, two weeks ago</div>
+  </div>
+</section>
+
+<!-- ================= MEASURED ================= -->
+<section class="screen">
+  <div class="label">What the switch is doing</div>
+  <div class="metrics">
+    <div class="metric"><span class="mv" id="m-sizes">4</span><span class="mk">font sizes</span></div>
+    <div class="metric"><span class="mv" id="m-weights">2</span><span class="mk">weights</span></div>
+    <div class="metric"><span class="mv" id="m-anchor">1.87</span><span class="mk">anchor ratio</span></div>
+  </div>
+
+  <div class="notes">
+    <div class="note">
+      <div class="nhead">1. Semantic colour gets a legal and an illegal role</div>
+      <div class="nbody">
+        Green as WORDS measures <b>3.30</b> on white and <b>3.00</b> on this grey tray, under the
+        <b>4.5</b> that text needs. So the green moves to the dot, which only needs 3.0, and the word
+        goes ink. The meaning survives; the illegibility does not. <b>72 places</b> currently use
+        green as text.
+      </div>
+    </div>
+    <div class="note">
+      <div class="nhead">2. Blue comes off the grey tray</div>
+      <div class="nbody">
+        Our accent blue is <b>4.58</b> on white, a pass, but <b>4.17</b> on the sunken tray, a fail.
+        Our own layout rule pushes grouped content onto that exact tray. Blue stays on white; on grey
+        the link keeps its affordance by underline instead. <b>7 elements</b> are in that combination
+        today.
+      </div>
+    </div>
+    <div class="note">
+      <div class="nhead">3. Reading copy is 16, dense rows stay 14</div>
+      <div class="nbody">
+        We use one body size for two different jobs. 14 is right for dense rows, and Carbon and
+        Atlassian agree. For text people actually read, Material defaults to <b>16</b>, Apple floors
+        at <b>17</b>, and Carbon and Atlassian both step up to <b>16</b>. The review paragraph is the
+        thing that changes; the rows are untouched.
+      </div>
+    </div>
+    <div class="note">
+      <div class="nhead">4. The anchor gets big enough to be an anchor</div>
+      <div class="nbody">
+        The heading goes 22 to <b>28</b>, clearing the 28px floor. Apple and Material land on 28
+        independently for this tier, which is the strongest evidence available: two competing
+        systems, same number, arrived at separately.
+      </div>
+    </div>
+    <div class="note">
+      <div class="nhead">5. The row divider is inset</div>
+      <div class="nbody">
+        The rule between rows now starts and stops inside the tray. A line that reaches both sides
+        cuts the container in half instead of separating the rows within it.
+      </div>
+    </div>
+    <div class="note">
+      <div class="nhead">6. The size count comes down</div>
+      <div class="nbody">
+        Measured on the live home page at phone width: <b>7</b> distinct sizes against a ceiling of
+        <b>4</b>, and <b>4</b> weights against a ceiling of <b>2</b>. Not a new rule, an existing one
+        that has drifted. The counters above read the rendered page live, so they cannot claim a
+        number the screen is not actually hitting.
+      </div>
+    </div>
+    <div class="note">
+      <div class="nhead">Two things this deliberately does NOT change</div>
+      <div class="nbody">
+        The star stays yellow at <b>1.60</b>, below the guideline, because every rating anyone has
+        ever seen is a yellow star. My lean is a thin outline rather than a new colour, and that one
+        is yours. And the ink commit button stays ink: the rule against blue on a big button turned
+        out to be a minority position rather than the industry norm it claimed to be, but it is a
+        position you picked deliberately, so it stands until you say otherwise.
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  var SALONS = [
+    {name:"Coiffeur Bellevue",  photo:"/_mockups/_assets/salon-photos/p01.jpg", rating:"4.8", from:45, city:"Basel"},
+    {name:"Studio Nord Barber", photo:"/_mockups/_assets/salon-photos/p02.jpg", rating:"4.7", from:38, city:"Kleinbasel"},
+    {name:"Nails am Rhein",     photo:"/_mockups/_assets/salon-photos/p03.jpg", rating:"4.9", from:52, city:"Basel"}
+  ];
+  var rail = document.getElementById("rail");
+  SALONS.forEach(function (s) {
+    var card = document.createElement("div"); card.className = "card";
+    var img = document.createElement("img"); img.src = s.photo; img.alt = s.name;
+    var n = document.createElement("div"); n.className = "cname"; n.textContent = s.name;
+    var meta = document.createElement("div"); meta.className = "cmeta";
+    var st = document.createElement("span"); st.className = "star"; st.textContent = "★";
+    var rv = document.createElement("b"); rv.textContent = s.rating;
+    var ct = document.createElement("span"); ct.textContent = s.city;
+    meta.appendChild(st); meta.appendChild(rv); meta.appendChild(ct);
+    var pr = document.createElement("div"); pr.className = "cprice"; pr.textContent = "ab CHF " + s.from;
+    card.appendChild(img); card.appendChild(n); card.appendChild(meta); card.appendChild(pr);
+    rail.appendChild(card);
+  });
+
+  var bB = document.getElementById("b-before"), bA = document.getElementById("b-after");
+  var note = document.getElementById("note");
+
+  // The three counters are MEASURED off the rendered screen, not typed in, so they cannot drift
+  // from what the toggle actually did.
+  function measure() {
+    var scope = document.querySelectorAll(".screen:first-of-type *");
+    var sizes = {}, weights = {}, biggest = 0, freq = {};
+    for (var i = 0; i < scope.length; i++) {
+      var e = scope[i], hasText = false;
+      for (var k = 0; k < e.childNodes.length; k++) {
+        var nd = e.childNodes[k];
+        if (nd.nodeType === 3 && nd.textContent.trim().length > 1) { hasText = true; }
+      }
+      if (!hasText) { continue; }
+      var cs = getComputedStyle(e);
+      var fs = Math.round(parseFloat(cs.fontSize));
+      sizes[fs] = 1; weights[cs.fontWeight] = 1;
+      freq[fs] = (freq[fs] || 0) + 1;
+      if (fs > biggest) { biggest = fs; }
+    }
+    var common = Object.keys(freq).sort(function (a, b) { return freq[b] - freq[a]; })[0];
+    var ratio = Math.round(biggest / Number(common) * 100) / 100;
+    document.getElementById("m-sizes").textContent = String(Object.keys(sizes).length);
+    document.getElementById("m-weights").textContent = String(Object.keys(weights).length);
+    document.getElementById("m-anchor").textContent = String(ratio);
+  }
+
+  function render(mode) {
+    document.body.setAttribute("data-mode", mode);
+    bB.setAttribute("aria-pressed", mode === "before" ? "true" : "false");
+    bA.setAttribute("aria-pressed", mode === "after" ? "true" : "false");
+    note.textContent = (mode === "before")
+      ? "As the rules stand today."
+      : "With the research applied. Counters below are measured live.";
+    measure();
+  }
+  bB.addEventListener("click", function () { render("before"); });
+  bA.addEventListener("click", function () { render("after"); });
+
+  render("before");
+</script>
