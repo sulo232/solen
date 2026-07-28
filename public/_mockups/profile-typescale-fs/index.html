@@ -91,7 +91,19 @@
     cursor:pointer;-webkit-tap-highlight-color:transparent;background-color:transparent;
   }
   .row.is-pressed{background-color:var(--sunken)}
-  .thumb{flex:none;width:44px;height:44px;border-radius:10px;background:var(--sunken)}
+  /* ONE icon column for the whole screen, so every label starts at the same x.
+     Measured defect: the label started at x=62 on icon rows and x=84 on thumbnail rows, a
+     22px break, because a 44px thumb and a 22px icon both sat flush against the page padding
+     and the text simply began after whatever preceded it. The founder read that as "not
+     aligning with the icons".
+     Measured counterexample: on the reference the label starts within x=194..196 across NINE
+     rows, a 2px spread. They hold one column no matter what sits in it.
+     Fix: a fixed 44px slot. The thumbnail fills it, the 22px icon centres inside it, and the
+     label starts at 26 + 44 + 14 = 84 on every row regardless of type. */
+  .slot{
+    flex:none;width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+  }
+  .thumb{width:44px;height:44px;border-radius:10px;background:var(--sunken)}
   .rt{min-width:0;flex:1}
   .chev{flex:none;width:16px;height:16px;color:var(--ink-2)}
   .badge{
@@ -119,15 +131,31 @@
      UNDER the EMPHASIS BUDGET floor of 1.8x. 16 * 1.8 = 28.8, so the smallest legal step on
      the 4pt scale is 30px, giving 1.875x. The 28px absolute floor in FLOORS LAW 6 was already
      met at 28; the RATIO floor is what 28 quietly failed. */
-  body[data-m="next"] .pagetitle{
-    display:block;font-size:30px;font-weight:600;letter-spacing:-0.02em;
-    line-height:1.15;margin:0 0 18px;
+  /* NO page title in either pane. Owner 2026-07-28: "we dont need this big profile fucking
+     text, people already know that theyre in the profile." It restated the destination the
+     user had just navigated to, which taste rule 2 deletes. Recorded in REMOVED.md.
+     FLOORS LAW 6 still wants one anchor of at least 28px per customer screen, so rather than
+     losing the anchor entirely, the role moves to the FIRST SECTION HEADING, which carries
+     real information (what the section contains) instead of restating the route. 30px, not
+     28px, because at a 16px body 28 is only 1.75x and the ratio floor is 1.8x. */
+  body[data-m="next"] .pagetitle{display:none}
+  /* The anchor moves to the SECTION HEADINGS, all of them, which is also what the reference
+     does: on its listing page both "Where you'll sleep" and "What this place offers" render
+     at the same large size, so multiple large section headings is the reference pattern, not
+     a violation of the one-anchor floor.
+     A first attempt used .sec:first-of-type, which silently matched NOTHING, because .idrow
+     and .tabs are also divs so the first div sibling is not a .sec. Caught by measuring: the
+     anchor fell to 20px and the ratio to 1.25x, failing both floors. Selector corrected. */
+  body[data-m="next"] .sectitle{
+    font-size:30px;font-weight:600;letter-spacing:-0.02em;line-height:1.15;margin:0 0 12px;
   }
   body[data-m="next"] .mono{font-size:20px}                   /* a monogram is not an anchor */
   body[data-m="next"] .name{font-size:16px;font-weight:600}
   body[data-m="next"] .handle{font-size:13px;font-weight:400;color:var(--ink-2)}
   body[data-m="next"] .tab{font-size:16px;font-weight:400}
-  body[data-m="next"] .sectitle{font-size:16px;font-weight:600}
+  /* The 30px .sectitle rule above is the anchor. A duplicate 16px rule used to sit here and
+     silently won on source order, same specificity, which measuring caught: the anchor stayed
+     at 20px (the monogram) and the ratio at 1.25x. Removed rather than fought with !important. */
   body[data-m="next"] .salon{font-size:16px;font-weight:500}
   body[data-m="next"] .meta{font-size:13px;font-weight:400;color:var(--ink-2)}
   body[data-m="next"] .rowlbl{font-size:16px;font-weight:500}
@@ -174,22 +202,22 @@
     <div class="sec">
       <p class="sectitle">Saved</p>
       <a class="row" href="#">
-        <span class="thumb"></span>
+        <span class="slot"><span class="thumb"></span></span>
         <span class="rt"><span class="salon" style="display:block">Cuts &amp; Culture</span><span class="meta">Grossbasel</span></span>
         <svg class="chev lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
       </a>
       <a class="row" href="#">
-        <span class="thumb"></span>
+        <span class="slot"><span class="thumb"></span></span>
         <span class="rt"><span class="salon" style="display:block">Haarsalon Margot</span><span class="meta">Kleinbasel</span></span>
         <svg class="chev lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
       </a>
       <a class="row" href="#">
-        <span class="thumb"></span>
+        <span class="slot"><span class="thumb"></span></span>
         <span class="rt"><span class="salon" style="display:block">Velvet Face</span><span class="meta">St. Johann</span></span>
         <svg class="chev lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
       </a>
       <a class="row" href="#">
-        <span class="thumb"></span>
+        <span class="slot"><span class="thumb"></span></span>
         <span class="rt"><span class="salon" style="display:block">Atelier Haarwerk</span><span class="meta">Grossbasel</span></span>
         <svg class="chev lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
       </a>
@@ -198,13 +226,13 @@
     <div class="sec">
       <p class="sectitle">Account</p>
       <a class="row" href="#">
-        <svg style="flex:none;width:22px;height:22px;color:var(--ink)" class="lucide lucide-calendar" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+        <span class="slot"><svg style="flex:none;width:22px;height:22px;color:var(--ink)" class="lucide lucide-calendar" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg></span>
         <span class="rt"><span class="rowlbl">Appointments</span></span>
         <span class="badge">3</span>
         <svg class="chev lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
       </a>
       <a class="row" href="#">
-        <svg style="flex:none;width:22px;height:22px;color:var(--ink)" class="lucide lucide-settings" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span class="slot"><svg style="flex:none;width:22px;height:22px;color:var(--ink)" class="lucide lucide-settings" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span>
         <span class="rt"><span class="rowlbl">Settings</span></span>
         <svg class="chev lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
       </a>
