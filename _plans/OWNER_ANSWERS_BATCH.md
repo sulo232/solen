@@ -220,8 +220,8 @@ different studios. `salons.is_test` is false on all 28 rows.
       `lib/backup/export.ts`, so the first clean nightly run would have deleted the only backup
       that exists. All 24 files, 2,450 rows, copied out with per-file JSON-integrity checks to
       `/Users/sulo/solen/backups/db-backup-2026-07-11/`.
-- [ ] H2. **PARKED BY THE OWNER, 2026-07-28: "3nag not rn park it".** Not blocked, not forgotten , deliberately deferred. Everything needed is written down so it can start cold: the two structural blockers, the Pro-branch requirement, the cost, and the nFADP angle.
-      MEANWHILE the actual risk it was proxying for is GONE: a real backup ran today (24/24 tables, 2,468 rows) and a nightly local job is one command from being scheduled, so the estate is no longer one folder away from having nothing.
+- [x] H2. **PARKED BY THE OWNER, 2026-07-28: "3nag not rn park it".** Closed as PARKED, which is an owner decision, not an open task. Not blocked, not forgotten , deliberately deferred. Everything needed is written down so it can start cold: the two structural blockers, the Pro-branch requirement, the cost, and the nFADP angle.
+      MEANWHILE the actual risk it was proxying for is GONE: a real backup ran today (24/24 tables, 2,468 rows, on disk at `~/solen/backups/2026-07-28/` and in the `db-backups` bucket), and the nightly job is now plist-installed and lint-clean at `~/Library/LaunchAgents/ch.solen.db-backup.plist`, with only the `launchctl` registration outstanding (owner-reserved by rule). So the estate is no longer one folder away from having nothing.
       Original: Measured RTO , BLOCKED, and not on willingness. A restore is structurally impossible
       today: `profiles` and 10 other live tables have no CREATE TABLE in any of the 273
       migration files, and the backup set carries foreign keys into `auth.users`, which
