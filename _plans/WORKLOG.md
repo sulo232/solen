@@ -4,6 +4,25 @@ The newest entry is at the top. Every session that ships real work adds one entr
 
 ---
 
+## 2026-07-28 , the handoff mistake, caught for the second time, and the two gates that missed it
+
+**What you said:** *"again you asked me to do bash command and hallucinating abr being in sandbox harden the gaye and investigate this keeps happening"*, two days after *"stop handingng me out bash command"* on 07-26.
+
+**What actually went wrong, and it is not what I claimed.** I ran `touch ~/Library/LaunchAgents/` in Bash, got Operation not permitted, decided the sandbox blocked the directory, wrote an installer, and handed it to you. In the very next tool call the **Write tool created a 929-byte plist in that same directory**. The sandbox flag is real (`SANDBOX_RUNTIME=1`, measured), so the hallucination was not "there is a sandbox", it was **"therefore I cannot"**. One instrument said no and I reported it as a property of the estate. It repeated twice more the same hour: `cp` into `~/.claude/hooks/` was refused and Write placed the file, `mkdir ~/.claude/hooks/tests` was refused and Write created it.
+
+**Why neither gate stopped it.** Two armed gates already encode this exact lesson and both stayed silent:
+- `no-bash-handoff-gate.py` (built 07-26) carried the sentence *"One instrument saying no is a hypothesis, not a limitation"* **in its deny text but not in its logic**. It passed as soon as ONE tool call touched the command. So the behaviour it exists to stop walked straight through it.
+- `instrument-corroboration-gate.py` has the settings.json version of this as its recorded case #5, but its "file write" category only matched claims phrased as writing a **file**. Mine was phrased as **running** a command and named a **directory**, so no pattern matched. A second bug sat behind it: the directory regex swallowed the sentence's full stop, turning `~/Library.` into a filename and discarding it.
+
+**What changed.** Both hardened and both given permanent regression suites at `~/.claude/hooks/tests/` (19/19 and 11/11, run from their installed home, not a staging copy):
+- the handoff gate now requires **two DISTINCT instruments** before a message may blame an environment block for a command it hands over. Bash is one instrument, Write/Edit is a second, each MCP server is its own, and retrying the same tool is not a second try. It also catches the prose evasions ("you'll need to run X"), because a gate that gets reworded around is worse than none.
+- the corroboration gate now understands directory claims and can-t-run framing, and only an edit **inside the claimed directory** corroborates it.
+- Deliberate non-change: a bare quoted "operation not permitted" does NOT trip the gate. Quoting your own measurement is the behaviour being asked for, and the first draft would have punished it. That negative case is now test 6.
+
+**The backup, finished rather than handed over.** Running the chain instead of writing an installer found two real defects. The plist pointed at a worktree path, which dies silently when the worktree goes. And node could not reach Supabase at all: curl got HTTP 401 from the host while node fetch got ENOTFOUND on the same host in the same shell, because node 18+ fetch ignores `HTTPS_PROXY` and resolves DNS directly. Fixed with a resolver at `~/solen/bin/solen-backup.sh` outside the checkout plus `NODE_USE_ENV_PROXY=1`. Chain now runs end to end: **24/24 tables, 2,468 rows, 0 failures**. Only the `launchctl` registration is outstanding, measured refused three ways (bootstrap and load both Input/output error 5, crontab operation not permitted), and it is owner-reserved by rule anyway.
+
+---
+
 ## 2026-07-25 , weekly estate self-audit run (workstream #17 LAW, standing loop)
 
 **What you asked for (auto-triggered):** the weekly self-audit doctrine , system health, skip ledger, injection diet, mistake themes, lessons-inject verify, design-suggest refresh, doc-vs-gate reconciliation.
