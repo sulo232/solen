@@ -13,7 +13,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function PrivacyPage() {
+export default async function PrivacyPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   return (
     <div className="min-h-screen bg-white">
       {/* V3-D299: retired s-coral → s-accent (Layer 2 link accent per LOCKFILE §1); s-yellow-subtle/s-yellow undefined → s-warning-bg + s-warning/20 (universal-color warning per LOCKFILE §1 + §0.4); arbitrary s-ink/X opacities → canonical s-ink-2; font-mono → font-body (LOCKFILE §2 — only Inter Tight + Hanken Grotesk) */}
@@ -54,7 +55,19 @@ export default async function PrivacyPage() {
               80ch reading-width cap) replaced with the shared .prose-measure
               utility, same swap already applied to SalonAbout.tsx. */}
           <div className="prose-measure min-w-0 flex-1 pb-24">
-            <PrivacyContent />
+            {/* Same binding-language model as /terms. A PRIVACY NOTICE is the document a data
+                subject relies on to exercise a right, so a machine translation of it is worse
+                than an honest pointer to the version that governs. */}
+            {(locale === "fr" || locale === "it") && (
+              <div className="mb-8 rounded-card border border-s-border bg-s-bg-sunken p-4">
+                <p className="text-sm text-s-ink">
+                  {locale === "fr"
+                    ? "Cette politique de confidentialité fait foi en allemand. Une traduction française n'est pas encore disponible : le texte ci-dessous est la version allemande, qui seule fait foi."
+                    : "Questa informativa sulla privacy fa fede in tedesco. Una traduzione italiana non è ancora disponibile: il testo qui sotto è la versione tedesca, l'unica vincolante."}
+                </p>
+              </div>
+            )}
+            <PrivacyContent locale={locale} />
 
             <div className="mt-16 pt-8 border-t border-s-border">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-sm text-s-ink-2">

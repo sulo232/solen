@@ -95,7 +95,19 @@ are the entire remaining job. That bounds the work.
       Was: **The 281 hardcoded German literals across 90 files.** Measured, not estimated.
       Worst: TermsContent (43), PrivacyContent (11), reset-password (9), business (9),
       fuer-salons (9). These render one language to all four audiences.
-- [ ] **S9. /terms and /privacy render German AND English stacked, on all four locales**, while
+- [x] **S9. DONE, with a deliberate limit.** `verified:` fetched both pages in all four
+      locales. de = German only. en = English only. fr and it = the binding German plus an
+      explicit notice in their own language. Zero pages now stack two languages.
+      THE LIMIT, and it is a choice not an omission: French and Italian readers get the
+      GERMAN text, not a machine translation. Auto-translating binding terms or a privacy
+      notice and publishing them is a legal risk rather than a quality one, and a privacy
+      notice is specifically the document a data subject relies on to exercise a right. The
+      notice names German as the version that governs, which is the standard Swiss pattern
+      and the honest one. Remove the notice per locale the moment a REVIEWED translation of
+      that locale exists , the machinery is already there.
+      The last leak was the inline "German / English" article heading, which put both
+      languages in one line on every locale and survived the paragraph-level fix.
+      Was: **/terms and /privacy render German AND English stacked, on all four locales**, while
       the page advertises hreflang alternates for fr and it. A privacy notice an Italian data
       subject cannot read is a compliance problem, not only an ugly one.
 

@@ -13,7 +13,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function TermsPage() {
+export default async function TermsPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   return (
     <div className="min-h-screen bg-white">
       {/* V3-D300: retired s-coral → s-accent (Layer 2 link accent per LOCKFILE §1); s-yellow-subtle/s-yellow undefined → s-warning-bg + s-warning/20 (universal-color warning per LOCKFILE §1 + §0.4); arbitrary s-ink/X opacities → canonical s-ink-2; font-mono → font-body (LOCKFILE §2) */}
@@ -58,7 +59,23 @@ export default async function TermsPage() {
               80ch reading-width cap) replaced with the shared .prose-measure
               utility, same swap already applied to SalonAbout.tsx. */}
           <div className="prose-measure min-w-0 flex-1 pb-24">
-            <TermsContent />
+            {/* GERMAN IS THE BINDING VERSION. English is a convenience translation that
+                already exists; French and Italian have none, so those readers are shown the
+                binding German with this notice rather than a machine translation dressed as
+                terms. Auto-translating binding legal text and publishing it is a legal risk,
+                not merely a quality one, and a reader is entitled to know which version
+                governs. Remove the notice for a locale the moment a reviewed translation of
+                that locale exists. */}
+            {(locale === "fr" || locale === "it") && (
+              <div className="mb-8 rounded-card border border-s-border bg-s-bg-sunken p-4">
+                <p className="text-sm text-s-ink">
+                  {locale === "fr"
+                    ? "Ces conditions font foi en allemand. Une traduction française n'est pas encore disponible : le texte ci-dessous est la version allemande, qui seule fait foi."
+                    : "Queste condizioni fanno fede in tedesco. Una traduzione italiana non è ancora disponibile: il testo qui sotto è la versione tedesca, l'unica vincolante."}
+                </p>
+              </div>
+            )}
+            <TermsContent locale={locale} />
 
             {/* Footer Area within content */}
             <div className="mt-16 pt-8 border-t border-s-border">

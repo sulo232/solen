@@ -1,4 +1,31 @@
-export default function TermsContent() {
+"use client";
+
+import * as React from "react";
+
+// LOCALE-AWARE RENDERING (2026-07-28). Before this, every visitor in every locale got the
+// German paragraph AND the English one stacked underneath it, on all four locales, while the
+// page advertised hreflang alternates for fr and it. A French reader got two languages, and
+// neither was theirs.
+//
+// THE BINDING-LANGUAGE MODEL, which is the standard Swiss pattern and the honest one here:
+// GERMAN IS BINDING (the company is a Basel-Stadt Einzelunternehmen). English is a convenience
+// translation that already exists and is shown to English readers. French and Italian have no
+// translation yet, so they are shown the BINDING German with an explicit notice rather than a
+// machine translation presented as terms , publishing auto-translated binding legal text is a
+// legal risk, not just a quality one, and a reader deserves to know which version governs.
+//
+// Context rather than a prop so the 67 ParDe/ParEn pairs below need no edit.
+const LocaleCtx = React.createContext<string>("de");
+
+export default function TermsContent({ locale = "de" }: { locale?: string }) {
+  return (
+    <LocaleCtx.Provider value={locale}>
+      <TermsBody />
+    </LocaleCtx.Provider>
+  );
+}
+
+function TermsBody() {
   return (
     <div className="prose prose-s-ink max-w-none w-full space-y-12">
       <Section id="section-1" titleDe="1. Geltungsbereich und Vertragsparteien" titleEn="1. Scope and Contracting Parties">
@@ -458,19 +485,32 @@ export default function TermsContent() {
 // Helper components for consistent layout
 
 // V3-D303: border-s-border → border-s-border (canonical hairline per LOCKFILE §1); muted ink opacities → s-ink-2
+function SectionHeading({ titleDe, titleEn }: { titleDe: string; titleEn: string }) {
+  const locale = React.useContext(LocaleCtx);
+  return (
+    <h2 className="font-display text-xl md:text-2xl font-semibold tracking-tight text-s-ink mb-6">
+      {locale === "en" ? titleEn : titleDe}
+    </h2>
+  );
+}
+
 function Section({ id, titleDe, titleEn, children }: { id: string, titleDe: string, titleEn: string, children: React.ReactNode }) {
   return (
     <section id={id} className="scroll-mt-32 pb-8 border-b border-s-border last:border-0 relative">
-      <h2 className="font-display text-xl md:text-2xl font-semibold tracking-tight text-s-ink mb-1">
-        {titleDe}
-      </h2>
-      <h3 className="font-display text-lg text-s-ink-2 mb-6 italic">
-        {titleEn}
-      </h3>
+      <SectionHeading titleDe={titleDe} titleEn={titleEn} />
       <div className="space-y-8">
         {children}
       </div>
     </section>
+  );
+}
+
+function ArticleHeading({ titleDe, titleEn }: { titleDe: string; titleEn: string }) {
+  const locale = React.useContext(LocaleCtx);
+  return (
+    <h3 className="font-display text-lg font-semibold text-s-ink">
+      {locale === "en" ? (titleEn || titleDe) : titleDe}
+    </h3>
   );
 }
 
@@ -479,10 +519,9 @@ function Article({ titleDe, titleEn, children }: { titleDe: string, titleEn: str
     <div className="space-y-3">
       {(titleDe || titleEn) && (
         <div className="mb-4">
-          <h3 className="font-display text-lg font-semibold text-s-ink">
-            {titleDe}
-            {titleEn && <span className="text-s-ink-2 font-normal ml-2">/ {titleEn}</span>}
-          </h3>
+          {/* One language, not "German / English" jammed into one heading. That inline slash
+              was the last place both languages still appeared on every locale. */}
+          <ArticleHeading titleDe={titleDe} titleEn={titleEn} />
         </div>
       )}
       <div className="space-y-4">
@@ -493,6 +532,10 @@ function Article({ titleDe, titleEn, children }: { titleDe: string, titleEn: str
 }
 
 function ParDe({ children }: { children: React.ReactNode }) {
+  // Shown to everyone EXCEPT an English reader, because German is the binding version and
+  // fr/it have no translation yet. An English reader gets the English paragraph instead.
+  const locale = React.useContext(LocaleCtx);
+  if (locale === "en") return null;
   return (
     <p className="text-sm md:text-base text-s-ink leading-relaxed">
       {children}
@@ -501,11 +544,13 @@ function ParDe({ children }: { children: React.ReactNode }) {
 }
 
 function ParEn({ children }: { children: React.ReactNode }) {
+  // English readers get this as the MAIN text, not as a smaller italic aside under a German
+  // paragraph they cannot read. Everyone else does not see it at all.
+  const locale = React.useContext(LocaleCtx);
+  if (locale !== "en") return null;
   return (
-    <div className="flex items-start gap-3 pl-4 border-l-2 border-s-border mt-2 mb-4">
-      <p className="text-xs md:text-sm text-s-ink-2 italic leading-relaxed">
-        {children}
-      </p>
-    </div>
+    <p className="text-sm md:text-base text-s-ink leading-relaxed">
+      {children}
+    </p>
   );
 }
