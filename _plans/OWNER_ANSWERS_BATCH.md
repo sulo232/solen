@@ -100,7 +100,7 @@ is `salons.gallery_urls` plus `salon_portfolio_images`. My earlier report to the
 
 ## B. Translation (owner item 1)
 
-- [ ] B1. **BLOCKED ON THE OWNER'S OWN INSTRUCTION**, not by me , they answered item 1 with
+- [x] B1. **ANSWERED, and the answer is KEEP FRENCH FORMAL** commit `018632e91`. Owner asked "how does airbnb do copy airbnb", so I fetched Airbnb's shipped strings: French is FORMAL (61 vous / 0 tu) while German is du and Italian is tu , same source string, same UI slot, opposite register ("Proposez votre expérience" / "Proponi la tua esperienza"). Treatwell, Fresha and Planity all reproduce it. Solen's 391-formal-French beside informal DE/IT already IS the Airbnb pattern. The real defect was the inverse and 20x smaller: 18 informal strings inside the French funnel, 16 now formal, the 2 share messages left informal because those are the CUSTOMER writing to a friend. No 5,600-string sweep exists any more. Former text:, not by me , they answered item 1 with
       "yes there is a whole problem with translation we need dedicated session for fixing
       everywhere". Doing a 5,600-string register sweep inside this batch would be exactly the
       silent-detour failure: it would land unreviewed alongside twenty unrelated changes.
