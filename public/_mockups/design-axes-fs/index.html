@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Design axes , live page versus proposed (toggle)</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  Owner-scope: confirmed: "i need mockup for these details idk how the differences look like" +
+  "Mock all three, then I pick" + "mockup". He answered all three visual questions by asking to SEE
+  them, so each option is applied to the REAL page and switched one axis at a time.
+
+  BOTH panes are a live <iframe> of the SAME real route, /de/salon/cuts-and-culture. The proposed
+  pane redraws nothing: it polls contentDocument and INJECTS the change onto the real page.
+  An earlier draft hand-built a sparse copy. The fullscreen gate rejected it, quoting the owner from
+  2026-07-19: "you only made ONE section of the page, i dont even know where it is". It was right.
+
+  I MEASURED OUR OWN PAGE AND IT REFUTED MY OWN DIAGNOSIS. Three of the numbers I had been quoting
+  came from the 2026-07-25 flatness diagnosis and from the /de home, not from this screen, and this
+  screen is in much better shape than I claimed:
+    - bold: I said 86% of visible text at weight >=600. Measured HERE: 17.6% (16 of 91 elements).
+      The 86% is real but it belongs to a different surface on a different date.
+    - dividers: I said 0px inset, full width. Measured HERE: every one of the 12 sits at left:16,
+      width 370 in a 402 viewport, so 16px inset each side, and ZERO run the full width.
+    - anchor: I said 1.57x body. Measured HERE: 30px at 1.88x, clearing both the >=28px floor and
+      the >=1.8x ratio. It is NOT a defect and there is deliberately no diagnosis line for it, so
+      that nobody "fixes" a thing that is already right.
+    - weights: 400 (56), 500 (19), 600 (16). We already use 500. I had said we do not.
+  So the honest delta against Airbnb on THIS page is narrower and more specific than the story I
+  told: the inset is 16 where the reference is 24, we draw 12 rules where the reference draws 6 on
+  a taller page, and we put 16 elements at 600 where the reference puts 7. Type SIZE count is a tie
+  at 9 each, which quietly kills the idea that our 4-size ceiling is what the reference obeys.
+
+  A DEPTH OPTION WAS WITHDRAWN, a finding rather than an omission. I had offered a third depth
+  choice that removed elevation entirely. That direction is already DEAD by owner decision:
+  REMOVED.md:85, reverted 2026-07-18, with the carded tier-card style winning. Asking him to pick
+  something he had already killed was me not reading the graveyard before writing the question. The
+  no-flat gate caught it, three times, and it was right every time. Depth therefore offers Now,
+  Layered and One soft, and BOTH proposals ADD elevation rather than remove any.
+
+  GATE DEADLOCK, recorded rather than hidden: mockup-fullscreen-gate REQUIRES buttons reading Before
+  and After; mockup-depicts-gate's graveyard blocks the adjacent token those labels form, because
+  two retired hand-drawn GALLERY pages were named with it. This file is the opposite shape. The two
+  rules cannot both hold, so the depicts override carries a written reason.
+
+  Grounded-in: app/[locale]/salon/[slug]/page.tsx
+  Grounded-in: _design-system/LOCKFILE.md
+
+  Depicts: the entire real salon PDP -> app/[locale]/salon/[slug]/page.tsx (iframed live, both panes)
+  Depicts: the three-axis switcher -> NET-NEW: a comparison harness, not a product surface
+
+  Exists-check: ran `npm run exists design-axes` this turn, zero matches. REMOVED.md checked and it
+  changed the build, see above.
+
+  Diagnosis: divider inset is short of the reference | measured left:16 width:370 in a 402 viewport, on all 12 dividers of /de/salon/cuts-and-culture, against Airbnb measured 354/402 = 24px each side | violates LOCKFILE.md:536 THE CONTAINER TEST | target 24px each side
+  Diagnosis: too many rules | measured 12 dividers on our PDP, against Airbnb measured 6 on a page over 3,500px tall | violates CLAUDE.md taste rule 2 and FLOORS LAW 5 | target rules between sections only, rows separated by space
+  Diagnosis: emphasis sits on 600 too often | measured 16 elements at weight >=600, 17.6% of visible text, against Airbnb measured 7 elements and 3.1% | violates CLAUDE.md FLOORS LAW 7(a) in spirit, though not its stated 30% number | target emphasis carried at 500, with 600 reserved for the anchor
+  Diagnosis: type size count is double the ceiling | measured 9 distinct sizes (30/22/20/18/16/15/14/13/12) | violates CLAUDE.md NEVER-AGAIN floor 2 (<=4 distinct font sizes) | target: the reference ALSO ships 9, so either hold 4 honestly or revise the ceiling with the reference as the evidence
+
+  measured: live Airbnb PDP at 402x874 (airbnb.com/rooms/892461288627408577) AND our own
+  /de/salon/cuts-and-culture at 402x874, both this turn, both via getBoundingClientRect +
+  getComputedStyle. Airbnb: dividers #DDDDDD 1px, 354/402 so 24px inset, SIX on a 3,500px page; 9
+  sizes; weights 400:259 500:117 600:7 700:5, so 3.1% at 600+; five shadows including
+  rgba(0,0,0,.02) 0 0 0 1px, rgba(0,0,0,.1) 0 6px 8px, rgba(0,0,0,.18) 0 16px 56px. Ours: dividers
+  #E4E4E7 1px at 16px inset, twelve of them; 9 sizes; weights 400:56 500:19 600:16, so 17.6% at
+  600+; anchor 30px at 1.88x; five shadows already, several multi-layer.
+  The header counters measure the REAL injected page, so they cannot drift from the screen.
+
+  type-budget-ok , the counters report the live page under each variant; comparing budgets is the point.
+  english-ok , all chrome is English. The iframed product page is German because the product is.
+-->
+<style>
+  :root{ --ink:#0A0A0A; --ink2:#6B6B6B; --sunken:#F4F4F5; --border:#E4E4E7; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:#fff; color:var(--ink); overflow:hidden; -webkit-text-size-adjust:100%;
+  }
+  .top{
+    position:fixed; top:0; left:0; right:0; z-index:30;
+    background:rgba(255,255,255,.96); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border); padding:8px 12px 9px;
+  }
+  .seg{display:flex; background:var(--sunken); border-radius:999px; padding:3px; margin:0 auto 7px; max-width:320px}
+  .seg button{
+    flex:1; border:0; background:transparent; font:inherit; font-size:13px; font-weight:600;
+    color:var(--ink2); padding:7px 0; border-radius:999px; cursor:pointer;
+  }
+  .seg button.on{background:#fff; color:var(--ink); box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .axes{display:none}
+  body[data-pane="after"] .axes{display:block}
+  .axis{display:flex; align-items:center; gap:5px; margin-bottom:5px}
+  .axis > b{font-size:11px; font-weight:600; color:var(--ink2); width:44px; flex:0 0 44px}
+  .axis button{
+    flex:1; border:1px solid var(--border); background:#fff; color:var(--ink2);
+    border-radius:999px; padding:5px 0; font:inherit; font-size:11px; font-weight:600; cursor:pointer;
+  }
+  .axis button[aria-pressed="true"]{background:var(--sunken); color:var(--ink); border-color:transparent}
+  .live{display:flex; gap:11px; justify-content:center; font-size:11px; color:var(--ink2); margin-top:2px}
+  .live b{color:var(--ink); font-variant-numeric:tabular-nums}
+  .stage{position:fixed; left:0; right:0; bottom:0; top:52px}
+  body[data-pane="after"] .stage{top:150px}
+  .pane{position:absolute; inset:0}
+  .pane.hidden{display:none}
+  iframe{width:100%; height:100%; border:0; display:block}
+</style>
+</head>
+<body data-pane="before">
+
+<div class="top">
+  <div class="seg">
+    <button id="b-before" class="on">Before</button>
+    <button id="b-after">After</button>
+  </div>
+  <div class="axes">
+    <div class="axis">
+      <b>Type</b>
+      <button data-ax="type" data-v="cur" aria-pressed="true">Now</button>
+      <button data-ax="type" data-v="a">Match</button>
+      <button data-ax="type" data-v="b">Weight</button>
+      <button data-ax="type" data-v="c">Sizes</button>
+    </div>
+    <div class="axis">
+      <b>Lines</b>
+      <button data-ax="lines" data-v="cur" aria-pressed="true">Now</button>
+      <button data-ax="lines" data-v="a">Sections</button>
+      <button data-ax="lines" data-v="b">No rules</button>
+      <button data-ax="lines" data-v="c">Inset 24</button>
+    </div>
+    <div class="axis">
+      <b>Depth</b>
+      <button data-ax="depth" data-v="cur" aria-pressed="true">Now</button>
+      <button data-ax="depth" data-v="a">Layered</button>
+      <button data-ax="depth" data-v="b">One soft</button>
+    </div>
+    <div class="live">
+      <span>sizes <b id="m-sizes">0</b></span>
+      <span>weights <b id="m-weights">0</b></span>
+      <span>bold <b id="m-bold">0</b>%</span>
+      <span>anchor <b id="m-ratio">0</b>x</span>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <div class="pane" id="pane-before">
+    <iframe id="f-before" src="/de/salon/cuts-and-culture" title="Live salon page, unchanged"></iframe>
+  </div>
+  <div class="pane hidden" id="pane-after">
+    <iframe id="f-after" src="/de/salon/cuts-and-culture" title="Live salon page, proposed"></iframe>
+  </div>
+</div>
+
+<script>
+  var CHANGE_LABEL = "After: type, lines and depth applied to the real page";
+  var state = { type: "cur", lines: "cur", depth: "cur" };
+
+  var paneBefore = document.getElementById("pane-before");
+  var paneAfter = document.getElementById("pane-after");
+  var bBefore = document.getElementById("b-before");
+  var bAfter = document.getElementById("b-after");
+  var fAfter = document.getElementById("f-after");
+
+  // ---- the injector. Nothing is redrawn; the real document is restyled in place. ----
+  function css() {
+    var out = [];
+
+    // TYPE. Emphasis moves off 600 onto 500. The anchor is exempted so it stays the one loud
+    // thing, which is the whole point of an emphasis budget. Measured here at 16 elements on 600.
+    if (state.type === "a" || state.type === "b") {
+      out.push('[data-ax-body] *{font-weight:500 !important}');
+      out.push('[data-ax-anchor]{font-weight:600 !important}');
+    }
+    if (state.type === "a" || state.type === "c") {
+      out.push('[data-ax-anchor]{font-size:30px !important;line-height:1.14 !important}');
+      out.push('[data-ax-read]{font-size:16px !important}');
+    }
+
+    // LINES. Card elevation is never touched, per the 2026-07-18 revert; only the hairline moves.
+    if (state.lines === "a") {
+      out.push('[data-ax-rule]{border-top-color:transparent !important;border-bottom-color:transparent !important}');
+      out.push('[data-ax-section]{border-top:1px solid #DDDDDD !important;margin-left:24px !important;margin-right:24px !important}');
+    }
+    if (state.lines === "b") {
+      out.push('[data-ax-rule]{border-top-color:transparent !important;border-bottom-color:transparent !important}');
+    }
+    if (state.lines === "c") {
+      // ours measured 16px inset; the reference is 24px. This isolates that 8px delta.
+      out.push('[data-ax-rule]{margin-left:8px !important;margin-right:8px !important;border-top-color:#DDDDDD !important}');
+    }
+
+    // DEPTH. Both options ADD elevation. See the header note for the withdrawn third option.
+    if (state.depth === "a") {
+      out.push('[data-ax-card]{box-shadow:0 0 0 1px rgba(0,0,0,.02), 0 6px 8px rgba(0,0,0,.10), 0 16px 56px rgba(0,0,0,.18) !important}');
+    }
+    if (state.depth === "b") {
+      out.push('[data-ax-card]{box-shadow:0 2px 8px rgba(0,0,0,.16) !important}');
+    }
+    return out.join("\n");
+  }
+
+  // Tag the real page's own elements so the injected CSS has something to hold on to. Runs once.
+  function tag(doc) {
+    var body = doc.body;
+    if (!body) { return 0; }
+    body.setAttribute("data-ax-body", "1");
+
+    var els = doc.querySelectorAll("body *");
+    var biggest = null, biggestSize = 0, tagged = 0;
+
+    for (var i = 0; i < els.length; i++) {
+      var e = els[i];
+      var cs = doc.defaultView.getComputedStyle(e);
+      var fs = parseFloat(cs.fontSize) || 0;
+      var r = e.getBoundingClientRect();
+
+      var hasText = false;
+      for (var k = 0; k < e.childNodes.length; k++) {
+        var nd = e.childNodes[k];
+        if (nd.nodeType === 3 && nd.textContent.trim().length > 1) { hasText = true; }
+      }
+      if (hasText && fs > biggestSize) { biggestSize = fs; biggest = e; }
+
+      if (hasText && e.textContent.trim().length > 90 && fs <= 15) {
+        e.setAttribute("data-ax-read", "1"); tagged++;
+      }
+      var bt = parseFloat(cs.borderTopWidth) || 0;
+      var bb = parseFloat(cs.borderBottomWidth) || 0;
+      if ((bt === 1 || bb === 1) && r.width > 120) {
+        e.setAttribute("data-ax-rule", "1"); tagged++;
+        if (r.width > 320) { e.setAttribute("data-ax-section", "1"); }
+      }
+      var sh = cs.boxShadow;
+      var rad = parseFloat(cs.borderTopLeftRadius) || 0;
+      if ((sh && sh !== "none") || (rad >= 12 && (bt > 0 || bb > 0))) {
+        if (r.width > 120 && r.height > 40) { e.setAttribute("data-ax-card", "1"); tagged++; }
+      }
+    }
+    if (biggest) { biggest.setAttribute("data-ax-anchor", "1"); }
+    return tagged;
+  }
+
+  function applyChange(doc) {
+    if (!doc || !doc.body) { return 0; }
+    // Re-tag whenever the rule/card tags are missing, not just on first run. The tagger reads
+    // getBoundingClientRect, and while the After pane is display:none every rect is 0x0, so a
+    // single tag-once pass silently found zero dividers and zero cards and the Lines and Depth
+    // axes did nothing at all. Caught by counting the tags after the first render.
+    var needsTag = !doc.body.getAttribute("data-sweep-done")
+      || doc.querySelectorAll("[data-ax-rule]").length === 0
+      || doc.querySelectorAll("[data-ax-card]").length === 0;
+    if (needsTag) {
+      var n = tag(doc);
+      if (!n) { return 0; }
+    }
+    if (!doc.body.getAttribute("data-sweep-done")) {
+      doc.body.setAttribute("data-sweep-done", "1");
+
+      var chip = doc.createElement("div");
+      chip.id = "ax-chip";
+      chip.textContent = CHANGE_LABEL;
+      chip.setAttribute("style",
+        "position:fixed;left:8px;bottom:8px;z-index:99999;background:#0A0A0A;color:#fff;" +
+        "font:600 11px/1.3 Inter,system-ui,sans-serif;padding:6px 10px;border-radius:999px;" +
+        "max-width:calc(100% - 16px)");
+      doc.body.appendChild(chip);
+
+      var first = doc.querySelector("[data-ax-anchor]");
+      if (first) { try { first.scrollIntoView({ block: "center" }); } catch (e) {} }
+    }
+
+    var sheet = doc.getElementById("ax-style");
+    if (!sheet) {
+      sheet = doc.createElement("style");
+      sheet.id = "ax-style";
+      doc.head.appendChild(sheet);
+    }
+    sheet.textContent = css();
+    measure(doc);
+    return 1;
+  }
+
+  // Counters read the REAL injected document, so they describe the product page, not a copy.
+  function measure(doc) {
+    if (!doc || !doc.body) { return; }
+    var els = doc.querySelectorAll("body *");
+    var sizes = {}, weights = {}, freq = {}, biggest = 0, total = 0, bold = 0;
+    for (var i = 0; i < els.length; i++) {
+      var e = els[i], hasText = false;
+      for (var k = 0; k < e.childNodes.length; k++) {
+        var nd = e.childNodes[k];
+        if (nd.nodeType === 3 && nd.textContent.trim().length > 1) { hasText = true; }
+      }
+      if (!hasText) { continue; }
+      var r = e.getBoundingClientRect();
+      if (r.top > doc.defaultView.innerHeight || r.bottom < 0) { continue; }
+      var cs = doc.defaultView.getComputedStyle(e);
+      var fs = Math.round(parseFloat(cs.fontSize));
+      var fw = parseInt(cs.fontWeight, 10) || 400;
+      sizes[fs] = 1; weights[fw] = 1; freq[fs] = (freq[fs] || 0) + 1;
+      total += 1;
+      if (fw >= 600) { bold += 1; }
+      if (fs > biggest) { biggest = fs; }
+    }
+    var common = Object.keys(freq).sort(function (a, b) { return freq[b] - freq[a]; })[0];
+    var ratio = common ? Math.round(biggest / Number(common) * 100) / 100 : 0;
+    document.getElementById("m-sizes").textContent = String(Object.keys(sizes).length);
+    document.getElementById("m-weights").textContent = String(Object.keys(weights).length);
+    document.getElementById("m-bold").textContent = total ? String(Math.round(bold / total * 100)) : "0";
+    document.getElementById("m-ratio").textContent = String(ratio);
+  }
+
+  var iv = setInterval(function () {
+    try {
+      var doc = fAfter.contentDocument;
+      if (doc && doc.querySelector("h1,h2,h3")) {
+        if (applyChange(doc) > 0) { clearInterval(iv); }
+      }
+    } catch (e) {}
+  }, 300);
+
+  function reinject() {
+    try {
+      var doc = fAfter.contentDocument;
+      if (doc && doc.body) { applyChange(doc); }
+    } catch (e) {}
+  }
+
+  function showPane(which) {
+    document.body.setAttribute("data-pane", which);
+    var after = which === "after";
+    paneAfter.classList.toggle("hidden", !after);
+    paneBefore.classList.toggle("hidden", after);
+    bAfter.classList.toggle("on", after);
+    bBefore.classList.toggle("on", !after);
+    if (after) { reinject(); }
+  }
+
+  bBefore.addEventListener("click", function () { showPane("before"); });
+  bAfter.addEventListener("click", function () { showPane("after"); });
+
+  var btns = document.querySelectorAll(".axis button");
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].addEventListener("click", function (e) {
+      var t = e.currentTarget;
+      state[t.getAttribute("data-ax")] = t.getAttribute("data-v");
+      var all = document.querySelectorAll(".axis button");
+      for (var j = 0; j < all.length; j++) {
+        var b = all[j];
+        b.setAttribute("aria-pressed",
+          state[b.getAttribute("data-ax")] === b.getAttribute("data-v") ? "true" : "false");
+      }
+      reinject();
+    });
+  }
+</script>
+</body>
+</html>

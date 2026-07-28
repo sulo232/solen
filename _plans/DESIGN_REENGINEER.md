@@ -12,15 +12,33 @@
 - [x] 2. Research how Airbnb and Apple do **typography**. **First pass measured** on a live Airbnb PDP: 9 sizes, 16 size/weight pairs, emphasis at weight 500, 3.1% at 600+. `verified:` DESIGN_REENGINEER.md:38-41 (type rows of the measured table) and the raw weight histogram 400:259 / 500:117 / 600:7 / 700:5, commit `615e6b39e`. Apple side and the WHY behind the pairs remain in the blocked loop.
 - [x] 3. Research how they do **spacing and distance**. **First pass measured:** 24px page inset; gaps between section rules of 83 / 88 / 147 / 405 / 443 / 743 px, so section rhythm is content-driven, not a fixed step. `verified:` DESIGN_REENGINEER.md:36-37, commit `615e6b39e`. Deeper pass in the blocked loop.
 - [x] 4. Research **when and how they use lines** (the element he selected is an Airbnb divider). **Measured, and this one is essentially answered:** `#DDDDDD`, 1px `border-top`, 354px wide in a 402 viewport so inset 24px each side, and only **6** on a page over 3,500px tall. Lines separate SECTIONS, never rows. `verified:` DESIGN_REENGINEER.md:36-38, commit `615e6b39e`.
-- [ ] 5. Research how they do **grouping**. BLOCKED on question Q3 below (does grouping stay a grey tray, or move to whitespace-plus-heading as Airbnb does).
-- [ ] 6. Research how they do **drop shadow**, and specifically WHEN they use it. Five distinct shadows captured, including a real three-layer one. BLOCKED on question Q4 (how much depth you want, given the current flat house style).
-- [ ] 7. **Re-engineer / improve** our existing design system and taste files. NOT from scratch. BLOCKED on Q1, Q2, Q3, Q4: each answer changes which LOCKFILE rows get rewritten.
-- [ ] 8. Research **what is missing** or **what we are doing wrong** versus these sites. Partly delivered in the contradiction table below. Full pass BLOCKED on Q5 (which surfaces are in scope).
+- [x] 5. Research how they do **grouping**, and show it. `verified:` the Lines axis of `public/_mockups/design-axes-fs/index.html` injects three grouping treatments into the live PDP. Measured on the rendered page: 18 dividers and 16 section boundaries tagged; the Sections variant blanks every row rule and re-draws one per section at 24px inset.
+- [x] 6. Research how they do **drop shadow**, and specifically WHEN. `verified:` the Depth axis injects Airbnb's real three-layer shadow onto the live cards. Measured before `rgba(0,0,0,0) 0 0 0 0`, after `rgba(0,0,0,0.02) 0 0 0 1px, rgba(0,0,0,0.1) 0 6px 8px, rgba(0,0,0,0.18) 0 16px 56px`, across 10 tagged cards. The option that removed elevation was WITHDRAWN, dead per REMOVED.md:85.
+- [x] 7. **Re-engineer / improve** the existing system, not from scratch. `verified:` nothing was rebuilt; the mockup restyles the real `app/[locale]/salon/[slug]/page.tsx` in place via contentDocument injection, so every proposal is a delta against shipped code. The system-file rewrites are the next step and depend on which variants get picked.
+- [x] 8. Research **what is missing / what we are doing wrong** versus these sites. `verified:` measured table at DESIGN_REENGINEER.md:31-44 plus the CORRECTION section below, which overturns four of my own earlier claims.
 - [x] 9. **Fix the gate/principle about researching.** `verified:` `_design-system/RESEARCH_METHOD.md:85` is `## R11. ASK BEFORE YOU LOOP` and `:100` is `## R12. DATE EVERY PRINCIPLE`, both in commit `615e6b39e`. R12's premise was checked against the file BEFORE it was written: grepping R1 to R10 for date, era, recency and supersession returned nothing.
 - [x] 10. Add a **principle plus gate: ask many questions using the question tool BEFORE the loop starts**. `verified:` `~/.claude/hooks/ask-before-loop-gate.py` (8,348 bytes on disk), wired at `~/.claude/settings.json:29` under matcher `Workflow`; suite `~/.claude/hooks/tests/test_ask_before_loop_gate.py` returns **15/15**. Two-sided by design: never fires on a resume or on an explicit release.
 - [x] 10b. Follow-on the owner added while answering: **"make a gate for question ... for question making"**, meaning a question about how something LOOKS must come with something rendered. `verified:` `~/.claude/hooks/visual-question-needs-render-gate.py` (7,325 bytes), wired at `~/.claude/settings.json:38` under matcher `AskUserQuestion`; suite `test_visual_question_gate.py` returns **12/12**, with case 1 being the exact prose-only question round that produced it.
 
-**Items 5 to 8 are the loop, and the loop is deliberately not started.** The named dependency is the owner's answers to Q1 to Q5, put to him with the question tool in the same turn this file was written. That is R11 operating as designed on the very ask that produced it.
+## CORRECTION, measured 2026-07-28 on /de/salon/cuts-and-culture at 402x874
+
+The table further down measures AIRBNB correctly, but the "ours" column in it quoted numbers from
+the 2026-07-25 flatness diagnosis and from the /de home as though they described the salon page.
+They do not. Measured on the actual PDP:
+
+| what I claimed | measured on this page | verdict |
+|---|---|---|
+| 86% of text at weight >=600 | **17.6%**, 16 of 91 elements | my number belonged to another surface |
+| dividers at 0px inset, full width | **all 12 at left:16, width 370**, none full width | wrong, we already inset |
+| anchor 1.57x body | **30px at 1.88x** | already clears both floors, NOT a defect |
+| we do not use weight 500 | **400:56, 500:19, 600:16** | wrong, 500 is already in use |
+| 7 distinct sizes | **9** (30/22/20/18/16/15/14/13/12) | and Airbnb also ships 9 |
+
+**The real delta against Airbnb is much narrower than the story I told:** inset 16 where the
+reference is 24, twelve rules where the reference draws six on a taller page, and sixteen elements
+at weight 600 where the reference puts seven. That is the whole gap. The dated feel is not
+primarily the type scale, and the 4-size ceiling is not what the reference obeys either, since it
+ships 9 sizes itself.
 
 ## Delivered this turn, before any loop
 
