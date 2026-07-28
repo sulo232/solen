@@ -1954,7 +1954,7 @@ RENDERED first viewport at 390x844, not on source.
 
 | literal | value | why |
 |---|---|---|
-| max share of visible text at weight >= 600 | **30%** | measured PDP was 86%; above ~30% weight stops being a signal |
+| max share of visible text at weight >= 600 | **30%** | RE-MEASURED 2026-07-28: the PDP now renders **17.6%** (16 of 91 elements on `/de/salon/cuts-and-culture` at 402x874). The 86% that justified this row was measured 2026-07-25 and no longer describes the page, so never quote it as current. The ceiling still stands and the page now passes it comfortably. For calibration, Airbnb's PDP measures **3.1%** (7 of 388), so the honest target is far below 30 rather than just under it. |
 | min anchor-to-body size ratio | **1.8x** | measured PDP was 1.57x; below ~1.8 the step reads as a wobble |
 | min display anchor | **28px** | already law (FLOORS LAW 6); this table sets the RATIO that pairs with it |
 | min imagery share, browse/discovery/PDP first viewport | **33%** | already law (FLOORS LAW 2); measured home was 4.7% |

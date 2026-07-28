@@ -135,6 +135,13 @@
       <button data-ax="depth" data-v="a">Layered</button>
       <button data-ax="depth" data-v="b">One soft</button>
     </div>
+    <div class="axis">
+      <b>Screen</b>
+      <button data-route="/de/salon/cuts-and-culture" aria-pressed="true">PDP</button>
+      <button data-route="/de">Home</button>
+      <button data-route="/de/basel/coiffeur">Search</button>
+      <button data-route="/de/profile">Profile</button>
+    </div>
     <div class="live">
       <span>sizes <b id="m-sizes">0</b></span>
       <span>weights <b id="m-weights">0</b></span>
@@ -162,6 +169,15 @@
   var bBefore = document.getElementById("b-before");
   var bAfter = document.getElementById("b-after");
   var fAfter = document.getElementById("f-after");
+
+  // Readiness. The first version required an h1/h2/h3, and the home route has none at poll time,
+  // so switching to it silently injected nothing at all: zero tags, no stylesheet, no chip. Caught
+  // by counting the tags after a route change rather than by trusting the switch. "Enough elements
+  // to be a rendered page" is the honest test, and it holds on every route.
+  function ready(doc) {
+    if (!doc || !doc.body) { return false; }
+    return doc.querySelectorAll("body *").length > 60;
+  }
 
   // ---- the injector. Nothing is redrawn; the real document is restyled in place. ----
   function css() {
@@ -315,7 +331,7 @@
   var iv = setInterval(function () {
     try {
       var doc = fAfter.contentDocument;
-      if (doc && doc.querySelector("h1,h2,h3")) {
+      if (doc && ready(doc)) {
         if (applyChange(doc) > 0) { clearInterval(iv); }
       }
     } catch (e) {}
@@ -341,7 +357,32 @@
   bBefore.addEventListener("click", function () { showPane("before"); });
   bAfter.addEventListener("click", function () { showPane("after"); });
 
-  var btns = document.querySelectorAll(".axis button");
+  // ---- route switcher. The owner scoped this to PDP, home, search and the account pages, so the
+  // same harness has to reach all of them rather than proving one screen and asserting the rest. ----
+  var routeBtns = document.querySelectorAll("[data-route]");
+  for (var q = 0; q < routeBtns.length; q++) {
+    routeBtns[q].addEventListener("click", function (e) {
+      var t = e.currentTarget;
+      var route = t.getAttribute("data-route");
+      for (var z = 0; z < routeBtns.length; z++) {
+        routeBtns[z].setAttribute("aria-pressed", routeBtns[z] === t ? "true" : "false");
+      }
+      document.getElementById("f-before").src = route;
+      fAfter.src = route;
+      // the new document is untagged, so start the injector polling again
+      clearInterval(iv);
+      iv = setInterval(function () {
+        try {
+          var doc = fAfter.contentDocument;
+          if (doc && ready(doc)) {
+            if (applyChange(doc) > 0) { clearInterval(iv); }
+          }
+        } catch (err) {}
+      }, 300);
+    });
+  }
+
+  var btns = document.querySelectorAll(".axis button[data-ax]");
   for (var i = 0; i < btns.length; i++) {
     btns[i].addEventListener("click", function (e) {
       var t = e.currentTarget;
