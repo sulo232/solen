@@ -533,6 +533,43 @@ One-off campaign-style decorative type → use `style={{}}` inline + `// V3-D{n}
 | grouped list-card | 24px (`rounded-[24px]`) | The **grouped LIST-card grammar for CATEGORY MEMBERS**: `overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper`, rows hairline-divided (`border-t first:border-t-0`). Salon services / Produkte / Pakete / staff / dashboard (owner-confirmed 2026-07-19, "pick whichever the services use"). ONE radius, gate-enforced (`.claude/hooks/card-radius-gate.py`, whisper-only). For a list of DISTINCT ENTITIES (a stylist, a salon) use the individual entity-card below, NOT this. Do NOT confuse with `rounded-card` (16) = FORM/summary card (`shadow-elevation-1`). |
 | individual entity-card | 16px (`rounded-card`) | ONE card per DISTINCT ENTITY (a person/stylist, a salon): `rounded-card border border-s-border bg-white`, FLAT, gap-separated (`SalonResultCard` grammar). Selected = `bg-s-bg-sunken`. Use for the stylist picker, salon result lists , anything where each item is its own entity, NOT a category member. GROUP card = category members in one card; INDIVIDUAL card = one card per entity. Owner 2026-07-19: "stylists are individual not groups." Enforced by `.claude/hooks/entity-card-gate.py`. |
 
+### THE CONTAINER TEST , when a group gets a box at all (owner 2026-07-28)
+
+The two rows above answer **which** card shape to use. They never answered **whether** there
+should be a card, so the estate defaulted to "always", and the owner called it: *"in our design
+system we have like almost always grouping thingy... I do like this proposal better with like
+more space instead of like each one grouping, because it looks like more like a clutter."*
+
+**A container is earned only when it does something whitespace cannot.** Exactly three cases:
+
+1. **It sits on a non-white surface.** On a photo, a tint, or `s-bg-sunken`, whitespace has no
+   boundary to read against, so the group needs its own edge (this is FLOORS LAW 4).
+2. **It is one of several PEER items competing in one scroll.** A list of salons or stylists,
+   where the reader must see where one entity ends and the next begins. That is the
+   individual entity-card row above.
+3. **The container is itself tappable as a unit**, i.e. the whole box navigates somewhere.
+
+**If none of the three apply, use whitespace and an inset hairline. No border, no card.**
+Named surfaces that therefore get NO container: a settings or preferences list, a single-column
+form section, a menu of destinations, an account hub. Every row on those screens goes to the
+same kind of place, so the box is decoration and taste rule 2 deletes it.
+
+**Never both.** A container plus a hairline between every row is doubled chrome: two separate
+devices claiming the same boundary. Pick one. Inside a container, rows may be hairline-divided
+(the grouped list-card grammar above). Outside one, they may not.
+
+**Divider inset, MEASURED not chosen (reference pixel-sample 2026-07-28, four independent
+hairlines across two screenshots, all identical): a content divider is inset `24px` on BOTH
+sides, spanning about 88% of the width.** The only rules permitted to reach the screen borders
+are CHROME boundaries: the nav-bar underline and the sticky-bar top edge. A content hairline
+that touches both borders is a bug, and it is usually the same bug: `border-top` on a
+full-width wrapper sits OUTSIDE that wrapper's padding, so the padding cannot inset it. Put the
+rule on a block child (or a `::before`) so it lives inside the padding box.
+
+**Row rhythm when the box goes away.** Removing borders without adding air just yields cramped
+rows with no boundary, which reads worse than the box did. Measured pairing: list row pitch
+goes to `56px`, content sits `26px` off the edge, and the section heading steps up to `28px`.
+
 ### Nested radius formula (DS-4, video-audit 2026-06-11, owner-approved)
 
 When a rounded element sits INSIDE a rounded container: **inner radius = outer radius − gap.**

@@ -108,8 +108,18 @@
 
   /* ---------- PROPOSED, the three measured changes ---------- */
   body[data-m="next"] .group{padding:0 26px}
-  body[data-m="next"] .group + .group{
-    margin-top:36px;padding-top:36px;border-top:1px solid var(--line);
+  /* The section divider is INSET on both sides, never spanning the whole viewport width.
+     Measured on the reference, four independent hairlines across two screenshots, all
+     identical: 72px at 3x = 24.0pt inset each side, covering 88% of the width. The only
+     rules in the entire reference that reach the screen borders are CHROME boundaries (the
+     nav bar underline and the sticky bar top edge), never content.
+     Implemented as a block child instead of border-top on .group: .group measures 0 to 375
+     at a 375 viewport, so a border on it sits OUTSIDE the 26px padding and reaches the
+     borders, which is exactly the defect the owner caught. A block child sits inside the
+     padding box, and the -2px margin trims 26px to the reference's 24px. */
+  body[data-m="next"] .group + .group{margin-top:36px}
+  body[data-m="next"] .group + .group::before{
+    content:"";display:block;height:1px;background:var(--line);margin:0 -2px 36px;
   }
   body[data-m="next"] .head{font-size:28px;line-height:1.15;margin-bottom:16px}
   body[data-m="next"] .card{border:0;border-radius:0}
