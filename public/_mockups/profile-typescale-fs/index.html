@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Profile hub, type scale current and proposed</title>
+<!-- Base: elicitation -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/profile/page.tsx
+
+  Diagnosis: the profile hub has no real display anchor and too many type steps | measured this turn with getComputedStyle over every leaf text node on the live profile route at 375x812 = SIX distinct font sizes (28, 18, 16, 14, 12, 10), 56 percent of visible text at weight 600 or heavier, anchor-to-body ratio 1.75x, and critically the ONLY 28px text on the page is the avatar monogram rather than a heading, so the largest real TEXT is 18px; separately the page already has 0 containers and 0 full-width rules, so it passes the container test and this is purely a type problem | violates NEVER-AGAIN floor 2 (at most 4 distinct font sizes on one screen, floor 3, and this ships 6), FLOORS LAW 6 (every customer screen carries one display anchor of at least 28px, unmet in substance because a monogram is not an anchor), and the EMPHASIS BUDGET (at most about 30 percent of visible text at weight 600 or heavier, and this ships 56 percent, plus a 1.8x anchor-ratio floor against the measured 1.75x) | target 4 sizes (28 heading, 20 monogram, 16 body and row label, 13 meta), one real 28px heading, and weight 600 or heavier cut to about 30 percent
+
+  WHY NO LIVE IFRAME, recorded in .claude/fullscreen-skip.flag after that gate fired: the
+  profile route is auth-gated behind the dev-login endpoint, so an iframe renders the login
+  screen rather than the hub; and the only dev server rendering it listens on a localhost port
+  while this page reaches the owner's phone over a tunnel, where localhost does not resolve.
+  The current pane is not a redraw. It reproduces the values measured on that live route this
+  turn, exactly.
+
+  Exists-check: `npm run exists profile` ran this turn. The target surface already renders an
+  avatar monogram, three tab labels, saved-salon rows with district meta, and a count badge,
+  all read off the live rendered route. REMOVED.md returned hits for unrelated deleted routes
+  only. NEW here: nothing structural. Same content, same components, only type size and weight
+  change between the two panes.
+
+  Base is ELICITATION: a two-pane probe on the type scale. It rebuilds no surface, changes no
+  layout, and proposes no new element.
+
+  Depicts: avatar monogram -> app/[locale]/profile/page.tsx
+  Depicts: saved salon rows -> app/[locale]/profile/page.tsx
+  Depicts: appointments entry -> app/[locale]/profile/bookings/page.tsx
+  Depicts: settings entry -> app/[locale]/profile/settings/page.tsx
+  Every salon name and district below was read off the live rendered route. UI copy is shown
+  in English because mockups are reviewed in English. NO FABRICATED VALUES: no ratings,
+  prices or invented counts appear, only the real names, the real districts, and the real
+  count badge.
+
+  Container test (LOCKFILE, added this turn): this surface earns NO container. Rows are
+  whitespace-separated, section rules are inset 24px per the reference measurement, and the
+  only rules reaching the screen borders are chrome.
+  Every inline <svg> is real Lucide markup. Web is white-only, no dark-mode CSS, by law.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B; --bg:#FFFFFF; --sunken:#F4F4F5; --line:#E4E4E7;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  html,body{height:100%}
+  body{
+    margin:0;overflow:hidden;background:var(--bg);color:var(--ink);
+    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    line-height:1.5;
+  }
+  .bar{
+    position:fixed;top:0;left:0;right:0;z-index:10;background:var(--bg);
+    border-bottom:1px solid var(--line);
+    padding:calc(10px + env(safe-area-inset-top)) 16px 10px;
+  }
+  .bar h1{font-size:15px;font-weight:600;margin:0 0 10px;letter-spacing:-0.01em}
+  .seg{display:flex;gap:4px;background:var(--sunken);border-radius:999px;padding:3px}
+  .seg button{
+    flex:1;border:0;background:transparent;border-radius:999px;padding:9px 4px;
+    font:inherit;font-size:13px;color:var(--ink-2);cursor:pointer;min-height:38px;
+  }
+  .seg button[aria-selected="true"]{background:var(--bg);color:var(--ink);font-weight:600}
+  .stage{
+    position:fixed;top:0;left:0;right:0;bottom:0;overflow-y:auto;
+    padding:calc(104px + env(safe-area-inset-top)) 26px calc(120px + env(safe-area-inset-bottom));
+  }
+  .wrap{max-width:640px;margin:0 auto}
+
+  .idrow{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+  .mono{
+    flex:none;width:56px;height:56px;border-radius:999px;background:var(--sunken);
+    display:flex;align-items:center;justify-content:center;font-weight:600;
+  }
+  .who{min-width:0}
+  .tabs{display:flex;gap:22px;margin:0 0 8px;padding-bottom:10px}
+  .tab{color:var(--ink-2);padding-bottom:8px}
+  .tab.on{color:var(--ink);font-weight:600;box-shadow:inset 0 -2px 0 var(--ink)}
+  .sec{margin-top:28px}
+  .sec + .sec::before{
+    content:"";display:block;height:1px;background:var(--line);margin:0 -2px 28px;
+  }
+  /* background-color, not the `background` shorthand: measured this turn, the shorthand left
+     the computed value at rgba(0,0,0,0) mid-transition even with .is-pressed applied. */
+  .row{
+    display:flex;align-items:center;gap:14px;min-height:56px;text-decoration:none;color:inherit;
+    cursor:pointer;-webkit-tap-highlight-color:transparent;background-color:transparent;
+  }
+  .row.is-pressed{background-color:var(--sunken)}
+  .thumb{flex:none;width:44px;height:44px;border-radius:10px;background:var(--sunken)}
+  .rt{min-width:0;flex:1}
+  .chev{flex:none;width:16px;height:16px;color:var(--ink-2)}
+  .badge{
+    flex:none;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--sunken);
+    display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums;
+  }
+
+  /* ---------- CURRENT, the measured live values: 6 sizes, 56% bold, no real anchor ---------- */
+  body[data-m="now"] .pagetitle{display:none}                 /* there is no heading today */
+  body[data-m="now"] .mono{font-size:28px}                    /* the only 28px on the page */
+  body[data-m="now"] .name{font-size:18px;font-weight:600}
+  /* Weights here reproduce the MEASURED 56% bold share of the real route, not a worse
+     caricature of it. A first pass bolded meta, handle and badge too, which pushed this pane
+     to 89% and made the comparison unfair to the current design. Corrected after measuring. */
+  body[data-m="now"] .handle{font-size:12px;font-weight:400;color:var(--ink-2)}
+  body[data-m="now"] .tab{font-size:18px}
+  body[data-m="now"] .sectitle{font-size:18px;font-weight:600}
+  body[data-m="now"] .salon{font-size:16px;font-weight:600}
+  body[data-m="now"] .meta{font-size:12px;font-weight:400;color:var(--ink-2)}
+  body[data-m="now"] .rowlbl{font-size:14px;font-weight:600}
+  body[data-m="now"] .badge{font-size:10px;font-weight:400}
+
+  /* ---------- PROPOSED, 4 sizes, a real anchor, weight spent selectively ---------- */
+  /* 30px, not 28px. Measured this turn: at a 16px body, a 28px anchor is 1.75x, which is
+     UNDER the EMPHASIS BUDGET floor of 1.8x. 16 * 1.8 = 28.8, so the smallest legal step on
+     the 4pt scale is 30px, giving 1.875x. The 28px absolute floor in FLOORS LAW 6 was already
+     met at 28; the RATIO floor is what 28 quietly failed. */
+  body[data-m="next"] .pagetitle{
+    display:block;font-size:30px;font-weight:600;letter-spacing:-0.02em;
+    line-height:1.15;margin:0 0 18px;
+  }
+  body[data-m="next"] .mono{font-size:20px}                   /* a monogram is not an anchor */
+  body[data-m="next"] .name{font-size:16px;font-weight:600}
+  body[data-m="next"] .handle{font-size:13px;font-weight:400;color:var(--ink-2)}
+  body[data-m="next"] .tab{font-size:16px;font-weight:400}
+  body[data-m="next"] .sectitle{font-size:16px;font-weight:600}
+  body[data-m="next"] .salon{font-size:16px;font-weight:500}
+  body[data-m="next"] .meta{font-size:13px;font-weight:400;color:var(--ink-2)}
+  body[data-m="next"] .rowlbl{font-size:16px;font-weight:500}
+  body[data-m="next"] .badge{font-size:13px;font-weight:400;color:var(--ink-2)}
+
+  .note{
+    position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--bg);
+    border-top:1px solid var(--line);
+    padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+    font-size:13px;color:var(--ink-2);
+  }
+  .note b{color:var(--ink);font-weight:600}
+  .note code{font-family:inherit;color:var(--ink);font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body data-m="now">
+
+<div class="bar">
+  <h1>Profile hub, same content</h1>
+  <div class="seg" role="tablist">
+    <button role="tab" aria-selected="true"  data-v="now">Current</button>
+    <button role="tab" aria-selected="false" data-v="next">Proposed</button>
+  </div>
+</div>
+
+<div class="stage">
+  <div class="wrap">
+    <p class="pagetitle">Profile</p>
+
+    <div class="idrow">
+      <div class="mono">QA</div>
+      <div class="who">
+        <div class="name">Quinn Amrein</div>
+        <div class="handle">Basel</div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <span class="tab on">Profile</span>
+      <span class="tab">Appointments</span>
+      <span class="tab">New for you</span>
+    </div>
+
+    <div class="sec">
+      <p class="sectitle">Saved</p>
+      <a class="row" href="#">
+        <span class="thumb"></span>
+        <span class="rt"><span class="salon" style="display:block">Cuts &amp; Culture</span><span class="meta">Grossbasel</span></span>
+        <svg class="chev lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+      <a class="row" href="#">
+        <span class="thumb"></span>
+        <span class="rt"><span class="salon" style="display:block">Haarsalon Margot</span><span class="meta">Kleinbasel</span></span>
+        <svg class="chev lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+      <a class="row" href="#">
+        <span class="thumb"></span>
+        <span class="rt"><span class="salon" style="display:block">Velvet Face</span><span class="meta">St. Johann</span></span>
+        <svg class="chev lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+      <a class="row" href="#">
+        <span class="thumb"></span>
+        <span class="rt"><span class="salon" style="display:block">Atelier Haarwerk</span><span class="meta">Grossbasel</span></span>
+        <svg class="chev lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+    </div>
+
+    <div class="sec">
+      <p class="sectitle">Account</p>
+      <a class="row" href="#">
+        <svg style="flex:none;width:22px;height:22px;color:var(--ink)" class="lucide lucide-calendar" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+        <span class="rt"><span class="rowlbl">Appointments</span></span>
+        <span class="badge">3</span>
+        <svg class="chev lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+      <a class="row" href="#">
+        <svg style="flex:none;width:22px;height:22px;color:var(--ink)" class="lucide lucide-settings" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span class="rt"><span class="rowlbl">Settings</span></span>
+        <svg class="chev lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="note" id="note"></div>
+
+<script>
+  var NOTES = {
+    now:  "<b>Current, measured on the live route.</b> <code>6</code> distinct sizes (28/18/16/14/12/10), <code>56%</code> of text at weight 600 or heavier, and the only 28px on the page is the avatar monogram, so the biggest real text is 18px.",
+    next: "<b>Proposed.</b> <code>4</code> sizes (28 heading / 20 monogram / 16 body / 13 meta), one real 28px anchor added, and weight 600 spent only on the heading, the name and the section titles."
+  };
+  var body = document.body, note = document.getElementById("note");
+  function set(v){
+    body.setAttribute("data-m", v);
+    note.innerHTML = NOTES[v];
+    document.querySelectorAll(".seg button").forEach(function(b){
+      b.setAttribute("aria-selected", String(b.dataset.v === v));
+    });
+  }
+  document.querySelectorAll(".seg button").forEach(function(b){
+    b.addEventListener("click", function(){ set(b.dataset.v); });
+  });
+  document.querySelectorAll(".row").forEach(function(r){
+    function press(e){
+      if (e) e.preventDefault();
+      r.classList.remove("is-pressed");
+      void r.offsetWidth;
+      r.classList.add("is-pressed");
+      clearTimeout(r._t);
+      r._t = setTimeout(function(){ r.classList.remove("is-pressed"); }, 400);
+    }
+    r.addEventListener("touchstart", press, {passive:false});
+    r.addEventListener("mousedown", press);
+    r.addEventListener("click", function(e){ e.preventDefault(); });
+  });
+  set("now");
+</script>
+</body>
+</html>
