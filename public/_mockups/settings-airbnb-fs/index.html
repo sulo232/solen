@@ -92,11 +92,23 @@
     transition:min-height 220ms cubic-bezier(.2,.8,.2,1), padding 220ms cubic-bezier(.2,.8,.2,1);
   }
   .row.is-pressed{background:var(--sunken)}
-  .ico{flex:none;width:22px;height:22px;color:var(--ink)}
+  .ico{flex:none;width:24px;height:24px;color:var(--ink)}
   .txt{min-width:0;flex:1}
   .lbl{display:block;font-weight:500;color:var(--ink);font-size:16px}
   .val{font-size:13.5px;color:var(--ink-2)}
-  .chev{flex:none;width:16px;height:16px;color:var(--ink-2)}
+    /* SIZES SOLVED FROM THE REFERENCE, ink to ink, not box to box (owner 2026-07-28:
+     "the icon and text and arrow all have diff sizes nd dont align").
+     The first pass compared our SVG BOXES against the reference's INK and so read the arrow
+     as too big. Measuring glyph ink on both with getBBox reversed the finding:
+        element     ours          reference      delta
+        icon        20.1 x 20.1   20.7 x 22.3    ours 10% shorter
+        arrow        5.3 x  9.3    6.7 x 12.7    ours 27% SMALLER
+        label cap   11.6          12.3           ours 6% smaller
+     Ratio to the icon, which is what the eye reads: arrow/icon was 0.46 against the
+     reference's 0.57, so the arrow was the worst offender by a distance.
+     Boxes solved so the INK lands on the reference: icon 22 -> 24 (ink 21.9),
+     arrow 16 -> 22 (ink 12.8, ratio 0.58 vs 0.57). Label stays 16px. */
+  .chev{flex:none;width:22px;height:22px;color:var(--ink-2)}
 
   /* ---------- CURRENT, the live route's measured values ---------- */
   body[data-m="now"] .group{padding:0 16px}

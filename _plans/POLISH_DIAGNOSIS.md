@@ -28,6 +28,17 @@ All three converged on one shape: **the rules are right, they are written down, 
 - [x] B3. **The chevron verdict: FIX it, do not delete it.** `verified:` the reference keeps its chevrons legible, so deletion is not what produces polish. And once the card goes, the chevron becomes the only remaining signal that a row is tappable, so deleting both leaves thirteen rows of plain text with no affordance, which is the wireframe failure FLOORS LAW exists to stop. The token `#6B6B6B` is intact in `tailwind.config.js`; the spec was right and the render broke it.
 - [x] B4. **The estate-wide mechanism, and this is the biggest find.** `verified:` the invisible chevron is not a one-off. `text-s-ink/<opacity>` is a live authoring pattern in **55 files**, and the illegible band alone is **251 instances**: 13 at `/20`, 102 at `/30`, 136 at `/40`. Composited on white those render **1.57:1, 2.03:1 and 2.71:1**. Every one fails WCAG AA body text (4.5:1) and every one fails even the large-text floor (3:1). The correct token, `s-ink-2` #6B6B6B, is 5.33:1 and passes. So each time someone reaches for `/30` instead of the token, another signal silently vanishes, which is precisely "looks unfinished, everywhere".
 
+- [x] B5. **The element-by-element diff I had skipped.** Owner, correctly: *"did u acc analize all the difference between the mockup u made and airbnb screenshot, like what i can see rn is the icon and text and arrow all have diff sizes nd dont align."* I had measured row pitch, label start and hairline inset, and never diffed icon against text against arrow. Doing it exposed a methodology error first: I was comparing our SVG **boxes** to the reference's **ink**, which read the arrow as too large. Measuring glyph ink on both sides with `getBBox` reversed the finding.
+
+  | element (ink) | ours before | reference | delta |
+  |---|---|---|---|
+  | icon | 20.1 x 20.1 | 20.7 x 22.3 | 10% shorter |
+  | **arrow** | **5.3 x 9.3** | **6.7 x 12.7** | **27% SMALLER** |
+  | label cap | 11.6 | 12.3 | 6% smaller |
+  | arrow / icon | 0.46 | 0.57 | 19% off |
+
+  Everything was undersized and the arrow worst by a distance, which is exactly what "all have diff sizes" describes. Boxes solved so the INK lands on the reference: icon 22 to 24, arrow 16 to 22. `verified:` after, ink 21.9 icon and 7.3 x 12.8 arrow, ratio **0.58 against the reference's 0.57**, one label column, vertical drift **0** against their 1.17.
+
 ## Outstanding
 - [ ] B3. Owner decision, after B1 and B2 land: arm `gate:floors` in CI. This is the structural fix from A7 and it is the one change that stops the whole class from recurring. It is a decision rather than a chore because arming it will FAIL the build on existing surfaces until they are swept, so the owner has to choose between a red build and a staged allowlist.
 
