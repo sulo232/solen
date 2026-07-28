@@ -2,22 +2,22 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-07-27T16:14:42 (trigger: auto)
+- taken: 2026-07-28T10:48:20 (trigger: auto)
 - branch: claude/principles-security-audit-0ae738
 
 ## git
 ```
-a28d4a13e Dispose every remaining line: 267 closed, 9 open and each names its question
-8d214d7bd checkpoint(auto): 1 uncommitted file(s) at turn end
-3b7ebdd24 Loop closed: 252 of 276 done, 0 TODO. And I was wrong in the other direction too.
-c8f19e749 seo-comms-11: park the SMS reminder window as a named, deliberate decision
-32e0d5c16 observability-8: add booking failure-rate SLI to the daily digest
-```
-```
-M  _plans/PRINCIPLES_LOOP.md
+cd6e290d6 Close B1: the French question is answered, so there is no sweep left to schedule
+eca0ece06 A real backup ran today, from this Mac, with no deploy
+018632e91 Copy Airbnb on French: they use vous, and so should we. 18 strings were the outliers
+6fad820a0 Seven "open" lines were already shipped. Closing the bookkeeping, not the work
+5c66680f8 "Alle (0)" beside a count of 11 was one wrong variable, not a product decision
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
+46 | ALL-LANGUAGE SWEEP (de/en/fr/it), running unattended | **ACTIVE** (2026-07-27)
+45 | THE 9, RUN AS A LOOP (owner: "fix each 9 autonomously continuously jst park ones u cant do") | **ACTIVE** (2026-07-27)
+44 | OWNER ANSWERS to the 9 open items (moderation + translation + price law + stock photos + ToS photo rights + dashboard layout + restore drill + incident principle) | **ACTIVE** (2026-07-27)
 43 | THE LOOP: implement every remaining finding (owner correction) | **ACTIVE** (2026-07-27)
 42 | IMPLEMENT the missing principles (owner approved, full control except big design changes) | **ACTIVE** (2026-07-26)
 41 | MISSING PRINCIPLES research (whole estate: design + backend + security + my output + meta) | **ACTIVE** (2026-07-26)
@@ -46,21 +46,10 @@ M  _plans/PRINCIPLES_LOOP.md
 36 | Mockup QUALITY system , stop shipping unchecked/unbalanced mockups (owner 2026-07-19, FURIOUS recurrence) | **ACTIVE** (2026-07-19)
 35 | Full frontend sweep , audit every surface vs the design system + mockup improvements (owner 2026-07-19, LOOP) | **ACTIVE** (2026-07-19)
 
+## OWNER_ANSWERS_BATCH.md
+Open boxes:
+- [ ] H2. **PARKED BY THE OWNER, 2026-07-28: "3nag not rn park it".** Not blocked, not forgotten , deliberately deferred. Everything needed is written down so it can start cold: the two structural blockers, the Pro-branch requirement, the cost, and the nFADP angle.
+
 ## PRINCIPLES_LOOP.md
 Open boxes:
-- [ ] `copy-i18n-03` **AWAITING OWNER** OWNER QUESTION: keep French formal (vous) as a deliberate exception and write that down, or align it with the informal German and Italian? Measured: fr 229 formal vs 46 informal, de 196 informal vs 12 formal, it 245 vs 1. ~5,600 strings either way. , [high/M] French defaults to formal 'vous', breaking the same warmth rationale that locked German and Italian to informal, with no decision ever recorded
-- [ ] `copy-i18n-11` **AWAITING OWNER** OWNER QUESTION: may 'ab CHF' prefix a service that has exactly one price? Analysis in `_rules/LEGAL_COPY.md`; the finding's own confidence is 'assume', so this needs a decision, not a guess. , [medium/M] Swiss price-transparency law (Preisbekanntgabeverordnung) is never named as the reason behind the 'ab CHF' pattern, so nothing checks that 'ab' (starting-from) pricing is only used where the service genuinely has variable pricing
-- [ ] `data-money-07` **BLOCKED** BLOCKED ON OWNER AUTHORISATION: proving a restore means writing real backup data into a throwaway database. No agent here performs a database write without an explicit yes. One authorisation, about an hour, and the runbook's 1-2h recovery figure becomes a measurement instead of a guess. , [high/M] Restore has never been executed end to end; RTO is an unmeasured guess presented in the runbook as if it were a verified number
-- [ ] `observability-9` **BLOCKED** BLOCKED ON AN OWNER DECISION: verified genuinely absent, `find . -iname '*postmortem*'` returns zero files repo-wide and OPS_RUNBOOK.md has no such section. Writing incident-response and postmortem discipline is a decision about how YOU want to run an incident, not a code change I can make for you. , [medium/M] No per-critical-flow incident runbook and no postmortem discipline exists anywhere
 - [ ] `imagery-icons-02` **AWAITING OWNER** OWNER QUESTION: do salon-gallery and review photos get a pre-publish review queue? The cost is somebody's time watching it, which is yours to spend or delegate. , [high/M] No pre-publish moderation for salon-gallery or review photos, unlike Discovery content
-- [ ] `imagery-icons-05` **AWAITING OWNER** two mutually exclusive options, pick ONE , [medium/S] The documented grey-box fallback and the shipped fallback component describe two different visuals
-  - [ ] Option A: change the code so both SalonCard variants render the written rule, sunken
-  - [ ] Option B: pick whichever shipped variant you prefer (the colour block with the full
-- [ ] `imagery-icons-07` **AWAITING OWNER** OWNER QUESTION: what does the upload rights/consent confirmation say, and what do you promise when someone objects? The checkbox is trivial; the promise is policy. , [medium/S] No rights/consent attestation at photo upload time for salon-gallery or review photos
-- [ ] `responsive-desktop-02` **AWAITING OWNER** OWNER QUESTION: cap the dashboard content width on large monitors? Visible change, about five minutes once approved. , [high/S] The operator dashboard has no page-level max-width: content stretches unbounded on wide and ultra-wide monitors
-- [ ] `responsive-desktop-08` **AWAITING OWNER** OWNER QUESTION: apply the 68ch line-length cap to dashboard free text as well? Same five-minute shape as responsive-desktop-02, same visible-change reason for asking. , [low/S] The 68ch prose-measure cap is applied to select customer pages only; the dashboard's free-text fields and descriptions have no equivalent line-length control
-
-## PRINCIPLES_IMPLEMENTATION.md
-Open boxes:
-- [ ] D2. SPLIT: D2a DONE in commit 87128e9be, D2b OPEN and the owner's. Superseded in scope by workstream 43, which is the loop
-  - [ ] D2b. NOT DONE, and it is not mine to do. Real photographs of the 28 real businesses.
