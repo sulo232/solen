@@ -372,7 +372,12 @@
 
 /* ── V3-D189 (2026-05-26, QUESTIONS.md#q5): focus-visible ring teal #043338 → s-ink #0A0A0A.
      Pre-B&W pivot teal is retired; B&W pivot means chrome is ink-only. 2px ink on
-     white = ~5.8:1 contrast (passes WCAG 1.4.11 / 2.4.7 AA Normal). Originally
+     white = 19.80:1 contrast (comfortably clears WCAG 1.4.11's 3:1 non-text floor).
+       CORRECTED 2026-07-28: this said "~5.8:1" from 2026-05-26 until today. That number
+       matched nothing , not s-ink #0A0A0A (19.80:1), not the retired teal #043338
+       (13.67:1). Recomputed from the sRGB relative-luminance formula. The conclusion it
+       supported was right, so no rule changes, but an uncited number in a comment is how
+       a wrong figure gets inherited. Originally
      locked as Q47 2026-05-02; supersedes that. ─ */
 @layer base {
   /* Owner 2026-07-01 (furious, repeated): NO focus ring on interactive chrome, on ANY device.
