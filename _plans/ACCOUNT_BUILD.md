@@ -1,4 +1,16 @@
 <!-- batch: account restructure BUILD (owner 2026-07-21 "build each one as all full loop ima go sleep") -->
+
+> **STATUS: PAUSED since 2026-07-21, not abandoned.** Superseded in priority by the owner's live
+> asks of 2026-07-28 (the polish diagnosis, workstream 47, and the principle deep-research,
+> workstream 48). The open boxes below are REAL and still owed; they are build tasks for the
+> account screens, and none of them is blocked on anything, only on being reached.
+>
+> **Two items below ARE now done by later work and are ticked in place:** the DEEP-RESEARCH
+> principle (now `_design-system/RESEARCH_METHOD.md`) and the dark-mode gate (built and
+> self-tested 5/5 as `~/.claude/hooks/white-only-web-gate.py`).
+>
+> Resume condition: the owner names the account screens again, or workstreams 47 and 48 close.
+> Do NOT silently fold these into another batch, that is how the estate loses asks.
 # Account restructure , autonomous overnight build
 
 ## THE 5-SCREEN REFERENCE MAP (owner 2026-07-21: "i want these all build, think what we acc need to build")
