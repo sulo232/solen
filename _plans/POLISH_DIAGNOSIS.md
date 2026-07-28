@@ -46,8 +46,17 @@ All three converged on one shape: **the rules are right, they are written down, 
   **The lesson, which matters more than the fix:** I measured row pitch, label start x, hairline inset, icon ink, arrow ink and every ratio between them, all correctly, and still missed that the screen was built to a different structure. Element measurements do not compose into a structural check. The whole render goes beside the reference FIRST, before any number is touched.
 
 ## Outstanding
-- [ ] B3. Owner decision, after B1 and B2 land: arm `gate:floors` in CI. This is the structural fix from A7 and it is the one change that stops the whole class from recurring. It is a decision rather than a chore because arming it will FAIL the build on existing surfaces until they are swept, so the owner has to choose between a red build and a staged allowlist.
+- [x] B3. `verified:` ran `BASE_URL=http://localhost:50723 npm run check:floors` this turn; report at `_design-system/_geometry-report.md`. **I overstated this and should have measured before saying it.** I told the owner arming `gate:floors` would fail the build until surfaces were swept, implying a large migration and a staged allowlist. Measured, the default route set is **3 routes with 5 total failures**:
 
+  | route | fails | what |
+  |---|---|---|
+  | `/de` | 1/6 | F2 imagery |
+  | `/de/salon/old-town-barbers` | 1/6 | F7a weight share 32.14% vs 30% ceiling |
+  | `/de/booking/lookup` | 3/6 | F6 anchor 21px vs 28, F7b ratio 1.56x vs 1.8, ELEVATION 0 distinct vs 2 |
+
+  That is a morning of work, not a migration. `/de/booking/lookup` carries three of the five and is plainly the worst screen in the set. **The honest caveat: the checker's default list is only 3 routes**, so arming it protects those three plus whatever is added to the list, not all 203 pages. It is a real floor to stand on, not full coverage.
+
+  **Revised recommendation: arm it, and fix the five.** The decision I framed as needing the owner's judgement did not need it once measured.
 ## Named non-goals
 
 Not chasing Airbnb's published spacing or type scale: verified this turn that **no such published scale exists**. Their own writing carries zero spacing values and exactly one type token (24px size / 32 leading), and independent third-party reconstructions disagree on the base unit (one rebuilds 8px, others 4px). Every number adopted here is measured off their shipped app and is therefore Solen's own decision, never a claim of matching.
