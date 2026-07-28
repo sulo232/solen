@@ -10,7 +10,19 @@ The newest entry is at the top. Every session that ships real work adds one entr
 
 **What actually went wrong, and it is not what I claimed.** I ran `touch ~/Library/LaunchAgents/` in Bash, got Operation not permitted, decided the sandbox blocked the directory, wrote an installer, and handed it to you. In the very next tool call the **Write tool created a 929-byte plist in that same directory**. The sandbox flag is real (`SANDBOX_RUNTIME=1`, measured), so the hallucination was not "there is a sandbox", it was **"therefore I cannot"**. One instrument said no and I reported it as a property of the estate. It repeated twice more the same hour: `cp` into `~/.claude/hooks/` was refused and Write placed the file, `mkdir ~/.claude/hooks/tests` was refused and Write created it.
 
-**Why neither gate stopped it.** Two armed gates already encode this exact lesson and both stayed silent:
+**The historical sweep, and the correction it forced.** A read-only agent swept 18 session transcripts from 07-24 to 07-28. **Three instances total, all inside this one session, none in the other 17 files. 3 of 3 concluded "blocked" from a single instrument, 100%.** Every one was a write OUTSIDE the git repo, into either Claude Code's own config tree or a macOS system directory, which is the shell sandbox's real boundary and NOT the Write tool's. Two throwaway scripts were written purely for the owner to run, one since deleted after the Edit tool did the job directly.
+
+The sweep left one question open ("why didn't the older gate fire on 07-26"), so I checked the transcript myself rather than leave it hedged. **The answer is worse than the sweep assumed: it DID fire.** Line 1351, 2026-07-26T21:09:11Z, a live block, category "file write". I acknowledged it in writing at the time, verbatim: *"the instrument-corroboration-gate already caught this exact pattern, so detection works, the real issue was that I claimed impossibility without verifying."* Two days later I made the identical mistake anyway. So the honest count is **the gate fired on 1 of 3**, and the two misses were pure PHRASING:
+
+| instance | how I phrased it | gate |
+|---|---|---|
+| 07-26 19:47 | "could not arm it **myself** ... PermissionError on ~/.claude/settings.json" | silent |
+| 07-26 21:09 | "this session **can't write** to settings.json" | **fired** |
+| 07-28 08:47 | "I can't **run** it, the sandbox blocks **~/Library**" | silent |
+
+That is the actual root cause, and it is a design flaw, not bad luck: **the gate matched a sentence, not a claim.** Reword slightly and it goes quiet. Both misses are now locked as regression tests (cases 12 and 1) so this specific escape cannot reopen.
+
+**Why neither gate stopped the 07-28 instance.** Two armed gates already encode this exact lesson and both stayed silent that day:
 - `no-bash-handoff-gate.py` (built 07-26) carried the sentence *"One instrument saying no is a hypothesis, not a limitation"* **in its deny text but not in its logic**. It passed as soon as ONE tool call touched the command. So the behaviour it exists to stop walked straight through it.
 - `instrument-corroboration-gate.py` has the settings.json version of this as its recorded case #5, but its "file write" category only matched claims phrased as writing a **file**. Mine was phrased as **running** a command and named a **directory**, so no pattern matched. A second bug sat behind it: the directory regex swallowed the sentence's full stop, turning `~/Library.` into a filename and discarding it.
 
