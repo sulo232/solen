@@ -8,16 +8,18 @@
 
 **Owner, 2026-07-28.** Readback of the asks in his own order:
 
-- [ ] 1. CORRECTION: my "Apple has nothing for web" answer missed the point. He wants an **app-like feel ON web**, which is what Airbnb does. Answer the question he actually asked.
-- [ ] 2. Research how Airbnb and Apple do **typography**.
-- [ ] 3. Research how they do **spacing and distance**.
-- [ ] 4. Research **when and how they use lines** (the element he selected is an Airbnb divider).
-- [ ] 5. Research how they do **grouping**.
-- [ ] 6. Research how they do **drop shadow**, and specifically WHEN they use it.
-- [ ] 7. **Re-engineer / improve** our existing design system and taste files. NOT from scratch.
-- [ ] 8. Research **what is missing** or **what we are doing wrong** versus these sites.
-- [ ] 9. **Fix the gate/principle about researching.** What I did was not correct and I did not follow his guide.
-- [ ] 10. Add a **principle plus gate: ask many questions using the question tool BEFORE the loop starts**. After the loop starts, do not ask, it is autonomous.
+- [x] 1. CORRECTION: my "Apple has nothing for web" answer missed the point. He wants an **app-like feel ON web**, which is what Airbnb does. **Answered:** the correction is that Airbnb does not import a platform system at all. It runs one custom variable family (Airbnb Cereal VF), its own scale and its own shadow set, on the web, and the app-feel comes from execution rather than from Apple's or Google's kit. Measured evidence in the table below. The remaining depth on this rides with items 2 to 8.
+- [x] 2. Research how Airbnb and Apple do **typography**. **First pass measured** on a live Airbnb PDP, table below: 9 sizes, 16 size/weight pairs, emphasis at weight 500, only 3.1% at 600+. Deeper pass (Apple side, and the WHY behind the pairs) is in the blocked loop.
+- [x] 3. Research how they do **spacing and distance**. **First pass measured:** 24px page inset, section gaps of 83 / 88 / 147 / 405 / 443 / 743 px, so section rhythm is content-driven and not a fixed step. Deeper pass in the blocked loop.
+- [x] 4. Research **when and how they use lines** (the element he selected is an Airbnb divider). **Measured and this one is essentially answered:** `#DDDDDD`, 1px, `border-top`, 354px wide in a 402 viewport so inset 24px each side, and only **6** on a page over 3,500px tall. Lines separate SECTIONS, never rows.
+- [ ] 5. Research how they do **grouping**. BLOCKED on question Q3 below (does grouping stay a grey tray, or move to whitespace-plus-heading as Airbnb does).
+- [ ] 6. Research how they do **drop shadow**, and specifically WHEN they use it. Five distinct shadows captured, including a real three-layer one. BLOCKED on question Q4 (how much depth you want, given the current flat house style).
+- [ ] 7. **Re-engineer / improve** our existing design system and taste files. NOT from scratch. BLOCKED on Q1, Q2, Q3, Q4: each answer changes which LOCKFILE rows get rewritten.
+- [ ] 8. Research **what is missing** or **what we are doing wrong** versus these sites. Partly delivered in the contradiction table below. Full pass BLOCKED on Q5 (which surfaces are in scope).
+- [x] 9. **Fix the gate/principle about researching.** `RESEARCH_METHOD.md` gains **R11** and **R12**; R12 verified against the file first, none of R1 to R10 mentioned a date, an era, or supersession.
+- [x] 10. Add a **principle plus gate: ask many questions using the question tool BEFORE the loop starts**. `~/.claude/hooks/ask-before-loop-gate.py`, **15/15**, wired PreToolUse on `Workflow`, settings.json re-read and still valid. Two-sided: never fires on a resume or on an explicit release.
+
+**Items 5 to 8 are the loop, and the loop is deliberately not started.** The named dependency is the owner's answers to Q1 to Q5, put to him with the question tool in the same turn this file was written. That is R11 operating as designed on the very ask that produced it.
 
 ## Delivered this turn, before any loop
 
