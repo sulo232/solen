@@ -4,6 +4,20 @@ The newest entry is at the top. Every session that ships real work adds one entr
 
 ---
 
+## 2026-07-28 (later) , "mockup broken doesnt animate", and the gate for it
+
+**What you said:** the chevron probe did not animate.
+
+**Root cause, and it was not the CSS.** The motion hung off `:active`. iOS Safari never fires `:active` on a tap unless the element carries a touch listener, and on desktop `:active` lives only while the button is held, so an ordinary tap opened a zero-length window. The CSS was syntactically perfect and simply never ran. Fixed with a JS-toggled `.is-pressed` class held 450ms, and the travel went 4px to 6px because 4px did not read on a phone. **Measured on the live page:** the chevron transform goes none, then 2.7px at 30ms, then 6px at 230ms, then back to 0.2px at 580ms, and it darkens to full ink while pressed.
+
+**Why this one stung.** I had measured that page carefully: 11 chevrons in the first viewport, 1.57:1 contrast, 49px rows, every number real and every number static. Then I screenshotted it, confirmed HTTP 200, and shipped. **Static measurement stood in for behavioural measurement**, and a screenshot structurally cannot catch a dead animation.
+
+**Hardened:** `~/.claude/hooks/interaction-proof-gate.py`, a Stop gate. If the turn wrote an HTML file containing `:active`, `:hover`, a transition, an animation or an `addEventListener`, and the closing message hands that page over, the turn must ALSO have dispatched an interaction AND read the result back. Both halves are required by design: clicking without reading proves nothing, and reading without clicking is precisely the static measurement that missed this. **11/11 self-test against the installed file, wired into settings.json Stop, settings re-validated.**
+
+Case 3 of that self-test found a real bug inside the gate itself: a mockup's own source contains the words `transform` and `transition`, so scanning the Write call let the file count as evidence of its own behaviour. Evidence is now counted only from non-write tools, which is the circularity the gate exists to break.
+
+---
+
 ## 2026-07-28 , the handoff mistake, caught for the second time, and the two gates that missed it
 
 **What you said:** *"again you asked me to do bash command and hallucinating abr being in sandbox harden the gaye and investigate this keeps happening"*, two days after *"stop handingng me out bash command"* on 07-26.
