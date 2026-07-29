@@ -211,3 +211,24 @@ scale is not a scale at all: it is 26 individual decisions.
 The audit is complete and mechanical. The only open question is the target set, which the mockup
 puts in front of the owner: one size everywhere, or three named roles (16 meta / 20 row / 24 nav).
 Once picked, the sweep is a single pass over the 795 entries already listed in the JSON.
+
+
+### STOPPED, owner 2026-07-29: "this after so many buttons sh i dont like it stop"
+
+Halted here at his instruction. Recorded so it is not repeated rather than argued with:
+
+**The mockup format was wrong.** I grew a comparison harness into a five-row control panel (Type,
+Lines, Depth, Icons, Screen). Twenty buttons above the screen being judged. A mockup is meant to
+show ONE thing clearly enough to react to; this asked him to operate an instrument and find the
+change himself. I added each axis separately and never looked at the whole thing as an object he
+has to use.
+
+**Nothing here is blocked and nothing needs a decision to be preserved.** What stands on its own:
+- `_design-system/research/ICON_SCALE_AUDIT.json` , 888 icon instances, 26 distinct sizes, 198
+  files, complete and machine-readable. This is the real finding.
+- The measured corrections: our own rows are centred at 0.0px (the offsets I kept quoting were a
+  cookie banner and a form field); our PDP already matches the reference on type sizes, weights and
+  divider inset.
+- Six gates added this session, all self-tested and wired.
+
+NOT resumed without an explicit owner yes.
