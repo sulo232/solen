@@ -50,7 +50,9 @@ close condition, not "the agent said it was done".
 - [x] A10. Saved / favorites , agent `corpus:saved` dispatched
 
 **Verification box:**
-- [x] A-VERIFY. **DONE 2026-07-29.** All 10 `CORPUS.md` exist on disk, each naming its sample size
+- [x] A-VERIFY. **DONE 2026-07-29.** `verified: b0bbf8118` , all 10 files listed with `wc -l` and citation
+      counts before ticking; e.g. `_design-system/sections/search-results/CORPUS.md:1` exists at 196
+      lines with 233 mobbin.com/screens links. All 10 `CORPUS.md` exist on disk, each naming its sample size
       and citing Mobbin urls. Verified by listing the files and counting citations, not by trusting
       the agents' self-reports. 0 agents errored, 0 returned empty. Line counts: booking-datetime
       198, booking-service 419, booking-staff 298, checkout-pay 189, confirmation 171, home-feed
@@ -60,21 +62,31 @@ close condition, not "the agent said it was done".
 
 ### B. Named references that must appear in the corpus
 
-- [x] B1. **Airbnb , COVERED, and it is the deepest lens in the whole sweep.** Present across every
+- [x] B1. `verified: counted across all 16 output files , Airbnb appears in 16/16, 365 mentions,
+      158 lines carrying a cited mobbin screen url. Measurement quoted in AXIS_ALIGNMENT.md §6,
+      my own live addendum at §7.` **Airbnb , COVERED, and it is the deepest lens in the whole sweep.** Present across every
       archetype. The alignment axis pixel-measured 9 Airbnb account rows (worst-case spread 1.0
       preview px, mean 0.39) and that measurement is what settles the row dispute.
-- [x] B2. **SimplyBook.me , BLOCKED, and the blocker is concrete: Mobbin has no screens for it.**
+- [x] B2. `verified: SimplyBook.me appears in 5/16 files, 10 mentions, and exactly ONE line carries
+      a screen url , sections/confirmation/CORPUS.md:23 , which is an ABSENCE statement whose url
+      points at the Fresha screen that came back instead. Zero SimplyBook.me screens exist in the
+      corpus.` **SimplyBook.me , BLOCKED, and the blocker is concrete: Mobbin has no screens for it.**
       Every named search across every agent returned zero on-archetype results for SimplyBook.me.
       This is not an agent skipping work, it is an absence in the corpus. Two ways forward, and I
       am not picking silently: capture it live via `Skill(reference-lock)` against their real
       product, or confirm "simplicity bookings" meant a different product. **Needs one line from
       the owner.** Recorded, not buried.
-- [x] B3. **Beauty and grooming , PARTIAL, and the shortfall is named rather than smoothed over.**
+- [x] B3. `verified: counted across all 16 files. OBSERVED , Fresha 16/16 files, 575 mentions, 235
+      cited screen urls; Square Go 11/16, 95 mentions, 36 cited urls. ABSENT , Booksy 23 mentions /
+      2 url-bearing lines, Treatwell 24/2, Vagaro 18/2, StyleSeat 19/2, Squire 14/2, Mindbody 19/2,
+      and each of those url-bearing lines is an absence statement (confirmation/CORPUS.md:23,
+      home-feed/CORPUS.md:39) whose url points at what returned INSTEAD.` **Beauty and grooming , PARTIAL, and the shortfall is named rather than smoothed over.**
       Observed: **Fresha** and **Square Go**. Returned zero screens: **Booksy, Treatwell, Vagaro,
       StyleSeat, Squire, Mindbody**. So the corpus is strong on marketplace and booking mechanics
       generally and thin on our exact vertical. Every conclusion drawn from a beauty-specific
       pattern carries that caveat in the source file. Same two ways forward as B2.
-- [x] B4. **Modern apps generally , COVERED.** Uber, Revolut, Linear, Stripe, OpenTable, Resy,
+- [x] B4. `verified: cited-screen-url line counts , Uber 71, Resy 51, Calendly 22, Revolut 11,
+      OpenTable 11, Stripe 7, Linear 4. All non-booking or adjacent, all with real screens.` **Modern apps generally , COVERED.** Uber, Revolut, Linear, Stripe, OpenTable, Resy,
       Calendly and others appear across the archetype and axis sweeps, which is where the motion and
       type findings mostly come from.
 
@@ -89,7 +101,8 @@ Also in flight in `wf_9cb73f3c-7c4`, one agent per axis, each writing
 - [x] C4. ALIGNMENT , how things should line up , agent `axis:ALIGNMENT` dispatched
 - [x] C5. FONT , what we should actually use , agent `axis:FONT` dispatched
 
-- [x] C-VERIFY. **DONE 2026-07-29.** All five exist and were opened, not trusted:
+- [x] C-VERIFY. **DONE 2026-07-29.** `verified: b0bbf8118` , all five opened this turn, line counts read
+      from disk, not from the agents' self-reports. All five exist and were opened, not trusted:
       `AXIS_ALIGNMENT.md` 546 lines, `AXIS_COMPONENTS.md` 863, `AXIS_FONT.md` 416, `AXIS_GRID.md`
       446, `AXIS_MOTION.md` 483. Each carries a stated sample and a Solen verdict naming files or
       tokens. ALIGNMENT additionally carries a measured addendum on our own live product (section 7).
