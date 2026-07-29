@@ -527,6 +527,47 @@ checkable. No verdict needed and none invented.
 | 4.6 MOTION | **PARTIAL.** WCAG 2.2.2 verdict done with the statute quoted; the gate re-tested and found non-deterministic; Material's tokens could not be verified. |
 | 4.7 remaining `_rules/*` | **DONE** for `STRUCTURAL_RULES.md`, `CODE_SAFETY.md`, `I18N_ROUTING.md`, `SOLEN_PATTERNS.md`. `DB_SCHEMA.md`, `KEY_FEATURES.md` and `ROADMAP_RULES.md` not verdicted. |
 
+## 4.7b `_rules/DB_SCHEMA.md` section 7, the migration law , KEEP the rule, the estate is 72% out of compliance with it
+
+`_rules/DB_SCHEMA.md:85-124`
+
+**Verdict: KEEP, and it is the best-written rule I have graded this session.** It is the only rule in
+the corpus that predicted its own failure mode in advance, named the mechanism, and shipped a
+recipe. Verbatim: *"this causes local/live drift: the live DB has more applied versions than the repo
+has files for"*, followed by a five-step backfill procedure.
+
+**The prediction came true, and I measured how far.** Live `supabase_migrations.schema_migrations`
+against `supabase/migrations/*.sql`, both read 2026-07-29:
+
+| | count |
+|---|---|
+| live versions applied (all time) | **310** |
+| live versions since 2026-03-26 (the timestamped era) | 283 |
+| local files carrying a 14-digit version prefix | **119** |
+| **live migrations with NO local file** | **205, i.e. 72% of the live set** |
+| local timestamped files with no matching live version | 41 |
+
+By month, the missing ones: 4 in March, 29 in May, **119 in June**, 53 in July. So the 2026-07-11
+backfill this rule describes ("the recipe used in ring 11") clearly ran and helped, and then drift
+resumed immediately, because the recipe is a manual ritual with nothing calling it.
+
+**What this actually costs, stated concretely:** `supabase/migrations/` is not a faithful record of
+the live schema. A fresh environment rebuilt from it would be missing 72% of the changes applied
+since March. The stranded `availability_slots_public_security_invoker` migration I found at the top
+of this file is not an isolated slip, it is the newest of **205**.
+
+**The 41 local-only files are the other half of the same rule's warning**, which says never leave two
+files describing one live migration under two version numbers. Four of them use obviously synthetic
+prefixes (`20260326000000` through `...0003`). Not audited individually this run.
+
+**Recommendation, ranked, each with its cost:** (1) a `npm run check:migrations` drift detector that
+diffs the two sets and prints the gap, cheap and mechanical, and the thing that would have caught
+this months ago; (2) run the existing backfill recipe over the 205, expensive and mostly mechanical,
+one `execute_sql` per version; (3) audit the 41 local-only files for the two-files-one-migration case
+the rule warns about. Lists on disk: `/tmp/claude/missing_migrations.txt`.
+
+---
+
 ## DISPOSITION of the unfinished queue items, 2026-07-29
 
 Not a punt, each carries its blocker or its owner:
