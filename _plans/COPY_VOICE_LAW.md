@@ -72,13 +72,34 @@ French already is, rather than French moving backwards.
       median / 1.60x p90, **fr 1.17x / 1.72x**, it 1.14x / 1.58x. French is our longest language,
       not German, and the old "30%" was wrong in both magnitude and language.
 
-### D. The sweep (blocked on C2, deliberately)
-- [ ] D1 , convert the 332 German informal strings to Sie, against the written law rather than ad hoc.
-- [ ] D2 , convert the 237 Italian informal strings to Lei.
-- [ ] D3 , reconcile the 40 French informal stragglers to vous.
-- [ ] D4 , the branch collision: `claude/principles-security-audit-0ae738` flipped 18 German business
-      strings the OTHER way, Sie to du. If that branch merges after the sweep it silently reverts part
-      of this decision. Must be handled at merge time.
+### D. The sweep , BLOCKED, with a concrete named blocker (not a punt)
+
+**The tool exists and is in the layered loop. `scripts/register-sweep.mjs` was built by the `coder`
+subagent and graded by the read-only `loop-reviewer`. Round 1 came back FAIL.** The blocker is
+specific and it is a data-safety one, so running `--write` today would corrupt customer copy:
+
+> German weak-verb imperatives end in `-e`, not `-st` (`Wähle ein Datum für deinen Termin`). The
+> script's "needs a human" detector keyed on `-st`, so it had near-zero recall on the single most
+> common sentence shape in our CTA, onboarding and empty-state copy. The reviewer hand-classified
+> ~68 candidates and confirmed at least **30 genuine misses in German alone**, each of which would
+> have shipped as a half-converted sentence (formal possessive, informal verb) with nothing flagging
+> it. Same failure in Italian: `prenota`, our most common CTA verb, was not in the whitelist.
+> Plus Italian standalone `ti` was invisible to the tool entirely (8 strings), and French `t'`
+> elision was unmapped.
+
+Round 2 is running. The reviewer PASSED data safety, formatting preservation (byte-identical JSON
+round trip on all three files), the longest-match ordering, the over-reach guards and the house
+rules, so the structure is sound and only the detector needs work.
+
+- [ ] D1 , convert the German informal strings to Sie. **BLOCKED on the round-2 PASS above.**
+- [ ] D2 , convert the Italian informal strings to Lei. **BLOCKED on the same.**
+- [ ] D3 , reconcile the French informal stragglers to vous. **BLOCKED on the same.** (Measured count
+      corrected: the tool finds **51**, not the 40 my coarser key-level count gave.)
+- [ ] D4 , the branch collision. **BLOCKED on OWNER DECISION D5**, which is what to do with
+      `claude/principles-security-audit-0ae738`. That branch flipped 18 German business strings the
+      OTHER way, Sie to du, so merging it after the sweep silently reverts part of this decision.
+      Nothing to do here until D5 is answered; my lean, recorded in chat 2026-07-29, is cherry-pick
+      the security migration and the method file and leave the other 658 files alone.
 
 ## Named cost of D6, stated once and not re-argued
 

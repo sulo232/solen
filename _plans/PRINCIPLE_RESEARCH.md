@@ -527,12 +527,31 @@ checkable. No verdict needed and none invented.
 | 4.6 MOTION | **PARTIAL.** WCAG 2.2.2 verdict done with the statute quoted; the gate re-tested and found non-deterministic; Material's tokens could not be verified. |
 | 4.7 remaining `_rules/*` | **DONE** for `STRUCTURAL_RULES.md`, `CODE_SAFETY.md`, `I18N_ROUTING.md`, `SOLEN_PATTERNS.md`. `DB_SCHEMA.md`, `KEY_FEATURES.md` and `ROADMAP_RULES.md` not verdicted. |
 
+## DISPOSITION of the unfinished queue items, 2026-07-29
+
+Not a punt, each carries its blocker or its owner:
+
+- **4.1, the other 14 backend topics** , NOT BLOCKED, just not reached. The research files are on
+  `main` under `_backend-system/research/` (~900KB, 15 files); what is missing is the verdict pass.
+  This is the largest remaining chunk and the obvious next run.
+- **4.4, the 13 unre-sourced psychology laws** , NOT BLOCKED, not reached. Laws 2 and 11 are done.
+- **4.5 dead-string pass** , NOT BLOCKED. 115 German keys look unreferenced by a crude scan; a manual
+  pass would cut the register sweep by roughly a quarter and should run BEFORE the sweep lands.
+- **4.5 expansion figure** , **DONE 2026-07-29**, measured on our own 5,671 pairs and
+  `_rules/I18N_ROUTING.md` Rule 35 corrected in place. See `_plans/COPY_VOICE_LAW.md` box C5.
+- **4.6 Material duration tokens** , **BLOCKED on tooling.** Three fetch attempts returned
+  JavaScript shells or indirections with no literal values. Next instrument: read the CSS custom
+  properties off an installed `@material/*` package or a rendered Material page, not another fetch.
+- **4.7 `DB_SCHEMA.md`, `KEY_FEATURES.md`, `ROADMAP_RULES.md`** , NOT BLOCKED, not reached.
+- **The register question** , **RESOLVED by the owner 2026-07-29: Sie.** Moved out of this file into
+  its own workstream, `_plans/COPY_VOICE_LAW.md` (index row 43).
+
 ## Owner decisions surfaced (do not resolve these silently)
 
-- **D1** , password minimum 8 (ASVS-compliant) or 15 (NIST-compliant). My lean: stay at 8, turn on
-  the breach check. See 4.2.
-- **D2** , turn on Supabase leaked-password protection. One dashboard toggle, production auth
-  config, so it is the owner's to flip.
+- ~~**D1** , password minimum 8 or 15.~~ **SETTLED 2026-07-29: 8.** `lib/validations.ts:686` already
+  reads `min(8)`, verified, so no code change was needed.
+- ~~**D2** , turn on Supabase leaked-password protection.~~ **OWNER-OWNED 2026-07-29.** He will do it
+  himself by end; cost reason. **Do not raise this again.**
 - **D3** , `staff_ratings_view` -> `security_invoker = true`. Additive and reversible, but it has a
   live caller, so it wants a PDP verification pass alongside.
 - **D4** , `create_group_booking` is a `SECURITY DEFINER` write callable by `anon` over PostgREST.
