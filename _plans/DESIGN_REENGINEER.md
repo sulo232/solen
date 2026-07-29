@@ -232,3 +232,43 @@ has to use.
 - Six gates added this session, all self-tested and wired.
 
 NOT resumed without an explicit owner yes.
+
+
+## PROFILE PAGE AUDIT, owner 2026-07-29: "the profile page is also ultra ass ... doesnt follow our taste nor design system at all"
+
+Measured on the live `/de/profile` at 402x874, signed in, first viewport only, our own markup with
+consent chrome excluded. Graded against our OWN written rules, not against taste.
+
+### FAILS, four of them
+
+| our rule | where | ceiling | measured | verdict |
+|---|---|---|---|---|
+| emphasis budget | CLAUDE.md FLOORS LAW 7(a) | <= 30% at weight >= 600 | **56.7%** (17 of 30 text elements) | **FAIL, nearly double** |
+| distinct font sizes | CLAUDE.md NEVER-AGAIN floor 2 | <= 4 | **7** (28, 18, 16, 15, 14, 13, 12) | **FAIL** |
+| distinct weights | LOCKFILE type budget | <= 2 | **3** (400, 600, 700) | **FAIL** |
+| touch target | locked contract, `h-11` | >= 44px | **36x36 and 40x40** | **FAIL, two of ours** |
+
+**The emphasis number is the headline.** More than half the visible text is bold. That is what makes
+a screen read heavy, flat and undesigned, and it is the single biggest gap between this page and
+the reference, which sits at 3.1%.
+
+**The size spread compounds it.** Four of the seven sizes (12, 13, 14, 15) live within a 3px band.
+That is FLOORS LAW 7(c) exactly: variety without range. It costs consistency and buys no hierarchy.
+
+### PASSES, recorded so they do not get "fixed"
+
+| our rule | measured | verdict |
+|---|---|---|
+| display anchor >= 28px (FLOORS LAW 6) | 28px | PASS |
+| anchor >= 1.8x body (7b) | 2.00x (28 over 14) | PASS |
+| imagery >= roughly 1/3 (FLOORS LAW 2) | 46.7% of the viewport | PASS |
+| radii from the locked set | 12, 16, 24 only | PASS |
+| text contrast, WCAG AA | zero elements below 4.5:1 | PASS |
+| fonts | Inter Tight + Inter | PASS |
+
+### So the owner is right, and specifically right
+
+He said it does not follow the design system. It does not: it breaks four written rules. But the
+break is not everywhere, it is concentrated in TYPE, and above all in weight. Colour, contrast,
+radius, imagery and the anchor are all compliant. Fixing bold alone would move this page more than
+everything else I proposed this week combined.
