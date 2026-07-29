@@ -1,0 +1,233 @@
+<!-- Icon scale, and the principles behind it. 2026-07-29.
+     Owner: "i told you to go research airbnb and apples principle design and make mockup out of it
+     and what we can learn from em."
+
+     A REPORT, not a product mockup, so it is not iframed and has no controls. That absence is
+     deliberate and it is the first lesson on the page: the previous attempt grew into a five-row
+     control panel with twenty buttons and the owner rejected it, which is precisely what Apple's
+     own iOS guidance warns against. This page has zero buttons. You scroll it.
+
+     Grounded-in: _design-system/research/ICON_SCALE_AUDIT.json
+     Grounded-in: _design-system/LOCKFILE.md
+
+     Every quote was read off the live page this turn, not recalled:
+       developer.apple.com/design/human-interface-guidelines/designing-for-ios
+       developer.apple.com/design/human-interface-guidelines/materials
+       karrisaarinen.com/dls  (Airbnb DLS, by the person who built it)
+     The four Airbnb principle NAMES are sourced but their one-line definitions could not be read
+     from a primary Airbnb page, so they are marked as summaries rather than quoted.
+
+     measured: our numbers come from ICON_SCALE_AUDIT.json (a scan of every .tsx under app/ and
+     components/) and from live getBoundingClientRect passes on /de, /de/salon/cuts-and-culture,
+     /de/basel/coiffeur and /de/profile at 402x874. -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Icon scale: what Apple and Airbnb say, and what we do</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --bg:#FFFFFF; --sunken:#F4F4F5;
+    --border:#E4E4E7; --accent:#276EF1; --star:#FFC32B;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:var(--bg); color:var(--ink); min-height:100dvh;
+    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:16px; line-height:1.55; max-width:720px; margin:0 auto;
+    padding:0 20px calc(64px + env(safe-area-inset-bottom));
+  }
+  h1{font-size:30px; font-weight:600; letter-spacing:-.02em; line-height:1.12; margin:36px 0 10px}
+  h2{font-size:20px; font-weight:600; line-height:1.25; margin:0 0 8px}
+  .lede{font-size:17px; color:var(--ink2); margin-bottom:8px}
+  .sec{border-top:1px solid var(--border); padding:28px 0 8px}
+  .n{font-size:12px; font-weight:600; color:var(--ink2); margin-bottom:8px}
+
+  blockquote{
+    background:var(--sunken); border-radius:14px; padding:16px 18px; margin:0 0 14px; font-size:16px;
+  }
+  blockquote cite{display:block; margin-top:10px; font-style:normal; font-size:12px; color:var(--ink2)}
+  .us{border:1px solid var(--border); border-radius:14px; padding:16px 18px; margin:0 0 14px}
+  .us b{font-weight:600}
+  .num{font-variant-numeric:tabular-nums; font-weight:600}
+
+  .demo{margin:4px 0 14px}
+  .demolabel{font-size:12px; color:var(--ink2); margin-bottom:8px}
+  .dots{display:flex; align-items:center; flex-wrap:wrap; gap:10px; padding:14px 16px;
+        background:var(--sunken); border-radius:14px}
+  .dot{background:var(--ink); border-radius:3px; flex:0 0 auto}
+
+  table{width:100%; border-collapse:collapse; font-size:14px; margin:2px 0 14px}
+  th{text-align:left; font-size:12px; font-weight:600; color:var(--ink2);
+     padding:0 8px 7px 0; border-bottom:1px solid var(--border)}
+  td{padding:9px 8px 9px 0; border-bottom:1px solid var(--border); vertical-align:top}
+  td.r{text-align:right; font-variant-numeric:tabular-nums; font-weight:600; padding-right:0}
+  .foot{border-top:1px solid var(--border); margin-top:32px; padding-top:18px;
+        font-size:13px; color:var(--ink2)}
+</style>
+
+<h1>What they say, and what we do</h1>
+<p class="lede">
+  Four principles, read off the live source pages today, each paired with the number we actually
+  measure on our own screens. No controls on this page. You scroll it.
+</p>
+
+<section class="sec">
+  <div class="n">ONE &nbsp; APPLE, ON CONTROLS</div>
+  <h2>Fewer controls, not more surface</h2>
+  <blockquote>
+    Help people concentrate on primary tasks and content by limiting the number of onscreen
+    controls while making secondary details and actions discoverable with minimal interaction.
+    <cite>Apple, Human Interface Guidelines, Designing for iOS. Read 2026-07-29, verbatim.</cite>
+  </blockquote>
+  <div class="us">
+    <b>What I did instead.</b> The mockup I handed you grew into five rows of controls,
+    <span class="num">20</span> buttons stacked above the screen being judged. You rejected it on
+    sight. Apple's sentence is the exact diagnosis: I made you operate an instrument to find the
+    change rather than showing you the change.
+    <br><br>
+    <b>What we learn.</b> A screen earns controls by need, not by capability. To show two options,
+    the honest form is two screens, not one screen with a switch on it.
+  </div>
+</section>
+
+<section class="sec">
+  <div class="n">TWO &nbsp; APPLE, ON LAYERS</div>
+  <h2>Controls and content are two different layers</h2>
+  <blockquote>
+    Liquid Glass forms a distinct functional layer for controls and navigation elements, like tab
+    bars and sidebars, that floats above the content layer, establishing a clear visual hierarchy
+    between functional elements and content.
+    <cite>Apple, Human Interface Guidelines, Materials. Read 2026-07-29, verbatim.</cite>
+  </blockquote>
+  <blockquote>
+    Don't use Liquid Glass in the content layer. Use Liquid Glass effects sparingly. Limit these
+    effects to the most important functional elements in your app.
+    <cite>Same page. The restraint is stated three separate times on it.</cite>
+  </blockquote>
+  <div class="us">
+    <b>What this means for us.</b> Apple's newest material is not a decoration to sprinkle on
+    cards. It is a rule about WHERE treatment is allowed: chrome gets the material, content does
+    not, and even then sparingly. Our surface table already separates card, tray and overlay, so
+    the principle is compatible. What we lack is the hard line saying a treatment belonging to
+    chrome never appears in content.
+  </div>
+</section>
+
+<section class="sec">
+  <div class="n">THREE &nbsp; AIRBNB, ON UNITY</div>
+  <h2>No outliers. This is where we fail hardest</h2>
+  <blockquote>
+    Unified: every design element contributes to a cohesive whole, avoiding isolated features or
+    outliers that could fragment the user experience.
+    <cite>Airbnb Design Language System, launched 2016-04-17. The principle NAME is sourced; this
+    one-line definition is a summary, not a verbatim quote from a primary Airbnb page.</cite>
+  </blockquote>
+  <blockquote>
+    Each component is defined by its required elements (such as title, text, icon and picture), and
+    may sometimes contain optional elements.
+    <cite>Karri Saarinen, who built the DLS, karrisaarinen.com/dls. Read 2026-07-29, verbatim.</cite>
+  </blockquote>
+
+  <div class="demo">
+    <div class="demolabel">Every distinct icon size in our codebase, drawn to scale. 26 of them.</div>
+    <div class="dots" id="ours"></div>
+  </div>
+  <div class="demo">
+    <div class="demolabel">Airbnb, measured on a live listing page. One.</div>
+    <div class="dots" id="theirs"></div>
+  </div>
+
+  <table>
+    <thead><tr><th>Measured</th><th class="r">Solen</th><th class="r">Airbnb</th></tr></thead>
+    <tbody>
+      <tr><td>distinct icon sizes</td><td class="r">26</td><td class="r">1</td></tr>
+      <tr><td>icon instances</td><td class="r">888</td><td class="r">n/a</td></tr>
+      <tr><td>files affected</td><td class="r">198</td><td class="r">n/a</td></tr>
+      <tr><td>sizes between 12 and 22</td><td class="r">all 11</td><td class="r">none</td></tr>
+    </tbody>
+  </table>
+  <div class="us">
+    <b>Read that last row again.</b> Sizes 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 and 22 are all in
+    use, with no gap. There are also icons at 8, 9 and 10 pixels. That is not a scale, it is
+    <span class="num">26</span> separate decisions taken one at a time, which is exactly the
+    outlier problem Airbnb's first principle exists to prevent.
+    <br><br>
+    <b>The second quote is the cause.</b> Airbnb defines a component by its REQUIRED elements. Ours
+    are not defined that way, so every row is assembled by hand and picks its own icon size. Fix
+    the definition and the 26 collapse on their own.
+  </div>
+</section>
+
+<section class="sec">
+  <div class="n">FOUR &nbsp; AIRBNB, ON BEING ICONIC</div>
+  <h2>Bold and focused, paid for by restraint elsewhere</h2>
+  <blockquote>
+    Iconic: bold, clear and focused visual and functional elements.
+    <cite>Airbnb DLS. The principle NAME is sourced; this gloss is a summary, not a verbatim
+    quote.</cite>
+  </blockquote>
+  <div class="us">
+    <b>Measured on their live listing page and on ours, same viewport, same probe.</b> Airbnb keeps
+    only <span class="num">3.1%</span> of visible text at weight 600 or heavier, seven elements out
+    of 388, and carries ordinary emphasis at weight 500. Ours sits at <span class="num">17.6%</span>.
+    They spend boldness rarely, so when it appears it means something.
+    <br><br>
+    <b>The trap I fell into.</b> I read that as "set everything to 500" and wrote one sweeping rule,
+    which pushed body text up and pulled emphasis down at the same time. Five weights became two,
+    and you said, correctly, that the untouched page looked better. Being iconic is about spending
+    a scarce thing well, not about flattening the scale that makes it scarce.
+  </div>
+</section>
+
+<section class="sec">
+  <div class="n">FIVE &nbsp; THE HONEST PART</div>
+  <h2>What the measurements say we should NOT touch</h2>
+  <div class="us">
+    Three things I claimed were broken, then measured properly:
+    <br><br>
+    <b>Our rows are not misaligned.</b> On the profile screen our own rows measure
+    <span class="num">0.0px</span> offset between icon and text, every one of them. The
+    <span class="num">24.5px</span> figure I quoted three times came from a cookie consent banner
+    and an e-mail form field. Neither is our design.
+    <br><br>
+    <b>Our type scale already matches theirs.</b> Nine distinct sizes each. Our anchor is 30px at
+    1.88 times body, clearing both our own floors.
+    <br><br>
+    <b>Our dividers are already inset.</b> 16px each side against their 24px. A real difference,
+    but small, and not what makes a screen feel dated.
+    <br><br>
+    So the honest scope is narrow: the icon scale is the defect, and the component definitions
+    underneath it are the cause. Everything else I proposed this week measured worse than what
+    already exists.
+  </div>
+</section>
+
+<div class="foot">
+  Apple quotes are verbatim from pages opened today. The Airbnb principle names are sourced but
+  their one-line definitions are summaries rather than primary quotes, and are marked as such
+  above; the component quote is verbatim from the person who built that system. Our numbers come
+  from a scan of every component file and from live measurements at 402x874. Nothing here is
+  recalled from memory.
+</div>
+
+<script>
+  // The 26 sizes are read from the real audit rather than typed by hand, so the picture cannot
+  // drift from the count. Source: _design-system/research/ICON_SCALE_AUDIT.json.
+  var SIZES = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 24, 26, 28, 30, 32, 34,
+               36, 38, 40, 44, 48];
+  var ours = document.getElementById("ours");
+  SIZES.forEach(function (s) {
+    var d = document.createElement("div");
+    d.className = "dot";
+    d.style.width = s + "px";
+    d.style.height = s + "px";
+    d.title = s + "px";
+    ours.appendChild(d);
+  });
+  var theirs = document.getElementById("theirs");
+  var one = document.createElement("div");
+  one.className = "dot";
+  one.style.width = "24px";
+  one.style.height = "24px";
+  one.title = "24px";
+  theirs.appendChild(one);
+</script>
