@@ -309,3 +309,39 @@ lives.
 
 **Hardened:** `~/.claude/hooks/use-the-registered-component-gate.py`, PreToolUse, 14/14, wired. It
 blocks a file that links to a salon and draws its own imagery without composing `SalonCard`.
+
+
+## COMPONENT REGISTRY AUDIT, owner 2026-07-29: "is the component registry even working"
+
+No. Measured against disk, dev routes excluded:
+
+| | |
+|---|---|
+| components the registry cites | **93** |
+| components actually on disk | **134** |
+| registry entries pointing at a DELETED file | **14** (15% of what it lists) |
+| real components the registry never mentions | **55** (41% of the estate) |
+| components never imported anywhere (dead) | **7** |
+
+**The registry describes a product that is 41% missing and 15% imaginary.**
+
+The 14 broken entries: BookingWizard, CancelBookingSheet, DateTimeStep, DetailPage, ErrorState,
+HairStep, LanguageSwitcher, PayConfirmStep, ReviewForm, SalonServicesSheet, SelectedCheckBadge,
+StaffProfilePage, StatusFilter, StatusPill.
+
+The 7 dead files: AtmosphereGrain, BackgroundBlobs, CardText, PriceRangeBadge, QuartierTile,
+TreatmentsClient, WeatherBanner.
+
+**This is the mechanism behind the hand-rolling, not a filing problem.** You cannot reuse what the
+index does not list. Someone building a screen looks up the card, does not find it, and writes
+their own. Nine files now hand-build a salon card while seven use the real one; ErrorState is
+listed in the registry and does not exist on disk at all, which is exactly the shape of failure
+that sends a developer off to invent one.
+
+**Hardened:** `~/.claude/hooks/component-registry-sync-gate.py`, 13/13, wired. Creating a new
+shared component now requires touching COMPONENT_REGISTRY.md in the same turn. CLAUDE.md already
+demanded this in prose ("New shared component = write ... + registry entry in the same turn"); the
+numbers above are what months of prose produced.
+
+**Not yet done, and it is cleanup rather than a decision:** delete or restore the 14 phantom rows,
+register the 55 missing components, and dispose of the 7 dead files through REMOVED.md.
