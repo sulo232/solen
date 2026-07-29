@@ -96,19 +96,34 @@ Verified by me, not taken from the agents: de 330 changed / 169 flagged, it 231 
 `git status messages/` clean on a dry run; 0 em-dashes; one import.
 
 - [~] D1 , German. **Round 1 applied and committed (`69fc74d65`): 330 mechanical swaps plus 161
-      hand conjugations.** Verified by me: parses, sweep reports 0 changed, 5686 leaf keys before and
-      after with none added or removed (measured directly on `messages/de.json` both times; this file
-      says 5687 above, a one-off discrepancy I could not reconcile and am flagging rather than
-      silently matching), 0 ICU placeholder mismatches, 0 hits on every broken form worth grepping.
-      **Then graded FAIL by the reviewer, and correctly.** Round 2 done: the named punch list (41
-      pronoun-free bare imperatives minus 4 that turned out to be false positives, i.e. genuinely
-      person-neutral German infinitive-construction instructions or system status/progress labels,
-      not commands; the `resendAccess.hurryGotLink` break; the 5 mixed-register strings; the 2
-      ALL-CAPS case breaks; the `Profile.shareSmsMsg`/`shareWhatsappMsg` sibling), PLUS a second,
-      independent re-derivation of the bare-imperative scan (per "re-derive rather than trust
-      blindly") that found **45 more** unfixed cases beyond the named 41, including 4 round-1
-      leftovers where a pronoun got swapped but the verb didn't. All fixed, all re-verified. Not
-      self-certifying PASS here, that is the reviewer's call, next round decides.
+      hand conjugations.** Round 2 (commit `26c025cf5`): the named 41-item punch list minus 4 false
+      positives, plus 45 more found via independent re-derivation, all fixed and re-verified.
+      **Round 3, this session: the reviewer's 34-ish structural-detector punch list (sibling-mismatch,
+      A through F in their message) applied in full, 39 distinct keys touched** (their count and my
+      literal list-count differ by 5, same shape as the earlier 5686/5687 mismatch, flagging not
+      silently reconciling): the 4 untouched-sibling strings, the 6-item 3-step-widget titles, the
+      10-item marketing/landing batch, the 5 dashboard strings, the 9 booking/profile strings
+      (including switching `categoryPage.loadMore` to the file's own `Mehr laden` infinitive
+      convention instead of Sie-conjugating it, per explicit instruction), and the 5 email
+      placeholders reworked to a person-neutral `max@...` example rather than a `Ihre@` swap, which
+      also resolves the earlier round-1 call on those same 5 strings that this round's reviewer
+      explicitly reversed. Verified: parses; sweep 0 changed; only `de.json` in the diff (39
+      insertions/39 deletions); leaf count 5687 total values (5686 strings + the 1 pre-existing
+      `refundFlow._todo_translate` boolean, which resolves the earlier discrepancy above rather than
+      leaving it open); 0 ICU mismatches; 0 hits on every broken form; the 5 pre-existing `ß`
+      characters and the em-dash count (54) both untouched. **My own honest read, asked for directly
+      this round: I do not believe the file is certifiably clean, and I agree with F1's diagnosis
+      below rather than contradicting it.** I ran my own independent sibling-mismatch pass afterward
+      (same method as F1) and it returned **15 candidates, not zero**; I hand-triaged every one and
+      all 15 are false positives, but of a specific, real shape: system progress/status captions
+      (`Lade...`, `Suche...`, `Erstelle...` used as "Loading.../Searching.../Creating...", not
+      commands) and Noun+Infinitive action-label constructions (`Suche verfeinern` = "refine search",
+      `Suche löschen` = "clear search", same person-neutral pattern as the `Bitte alle Felder
+      ausfüllen` false positive from round 2). That a THIRD independent pass, on a different method
+      again, still lands on the same two false-positive shapes rather than a new genuine defect is
+      weak positive evidence, but 15-candidates-all-false is not the same claim as "no more exist,"
+      for the exact precision-collapse reason F1 names. Not self-certifying PASS; that is what F2 is
+      for.
 - [x] D2 , Italian to Lei. verified: commit `a0423867d`. 231 strings changed, exactly what the tool
       predicted. Checked by me, not by the agent: parses; `node scripts/register-sweep.mjs it`
       reports 0 changed; 5658 leaf keys before and after with 0 added and 0 removed; 0 ICU
@@ -131,7 +146,9 @@ Verified by me, not taken from the agents: de 330 changed / 169 flagged, it 231 
       `salonRegistration.step3.subtitle` "Scegli tra i modelli o crea servizi personalizzati", which
       needs BOTH verbs. Confirmed false or ambiguous: `booking.confirmation.title` "Revisione e
       conferma" and `dashboard.verificationPage.title` "Documenti e verifica" are noun pairs, not
-      commands. List: `/tmp/claude/bare_it.txt`.
+      commands. List: `/tmp/claude/bare_it.txt`. (Checked this round while working the German box:
+      `messages/it.json` is out of my task's explicit scope, German-only, and it is another coder's
+      live file, so I did not open or touch it. Confirmed still correctly open.)
 - [x] D5c , record of the original scan. The pronoun-only blindness that cost
       German 41 strings is not German-specific. Scanned it/fr for
       the same shape: **Italian 18 candidates, French 1.** The French one is a false positive
@@ -248,6 +265,9 @@ improvement. What no round can promise is that it was the last one.
 - [ ] F2 , **OWNER DECISION.** Pick one of the three closures above. My lean: option 1, a human read,
       scoped to the customer-visible surfaces rather than all 5,687 keys, because option 2 is a real
       build for a one-off job and option 3 leaves marketing copy uncertified on a pre-launch product.
+      (Checked this round: this is explicitly the owner's call, not a coder's; nothing for me to
+      execute here, and guessing an answer on the owner's behalf would be worse than leaving it open.
+      Confirmed still correctly open.)
 
 ## Named cost of D6, stated once and not re-argued
 
