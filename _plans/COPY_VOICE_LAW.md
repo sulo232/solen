@@ -210,6 +210,24 @@ Two independent tests, both run 2026-07-29 against `main`:
 The 142-key gap between the two is keys whose leaf collides with some bare identifier, so they may be
 reached dynamically. Take **1,518** as the defensible floor.
 
+**THIRD INSTRUMENT, and it converges.** The original scan I had written off as "timed out twice"
+actually completed in the background and landed after I had already reported the other two. It is
+also the most methodologically sound of the three: it walks **40,931 source files**, resolves the
+**142 `useTranslations`/`getTranslations` namespaces** the code actually declares, and matches a key
+as live if the full key, any dotted suffix, or the leaf-inside-a-declared-namespace appears. Result:
+**1,602 unreferenced, 28%.**
+
+| instrument | method | result |
+|---|---|---|
+| A, ripgrep quoted tokens | 7,971 distinct quoted identifiers | 1,660 (29%) |
+| B, strict leaf | 26,420-word bare-identifier vocabulary | 1,518 (27%) |
+| **C, namespace-aware** | **40,931 files, 142 declared namespaces** | **1,602 (28%)** |
+
+Three independent methods land inside **27 to 29%**, and their namespace breakdowns agree closely too
+(`common` 168/180, `dashboard` 137/145, `barber` 129/133). Convergence across independent instruments
+is the strongest evidence available, so this number is no longer a single measurement. **Roughly
+1,600 of 5,687 German keys are dead.**
+
 Spot-verified by hand, not inferred: `booking.bookingErrorAfterPayment` and `profileHub.nextAppointment`
 appear **nowhere** outside `messages/`, despite `profileHub` being an actively used namespace
 (`app/[locale]/profile/page.tsx:31` and three other call sites). So a live namespace is carrying dead
