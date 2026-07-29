@@ -1,0 +1,523 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction C, pinned intent home feed, salon cards</title>
+
+<!--
+  DIRECTION C , "Pinned intent". Static picture, no interaction, no motion.
+
+  Base: elicitation. This is a side-by-side direction-choice probe, not a treatment mockup of the
+  live home. Owner instruction 2026-07-29, verbatim: "Static images, several options side by side",
+  "Start from the best apps, rebuild the flow", "Our CURRENT home is INPUT, not a constraint. You
+  may reorder, merge or drop bands." Four of these fragments sit on one page, he picks one, and only
+  then does the chosen direction get a normal copy-of-the-real-page treatment mockup. The live
+  BEFORE iframe belongs on that parent comparison page, not inside each direction fragment, which
+  is why the fullscreen before/after format is overridden here (reason on file in the skip flag).
+
+  Grounded-in: _design-system/sections/home-feed/CORPUS.md
+  Grounded-in: app/[locale]/page.tsx
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx
+  Grounded-in: app/[locale]/_components/homepage/MobileCategoriesRow.tsx
+  Grounded-in: app/[locale]/_components/homepage/SectionHeader.tsx
+  Grounded-in: app/[locale]/_components/homepage/HeartButton.tsx
+  Grounded-in: app/[locale]/_components/homepage/Hero.tsx
+  Grounded-in: _design-system/research/AXIS_GRID.md
+  Grounded-in: _design-system/research/AXIS_FONT.md
+
+  Exists-check: app/[locale]/page.tsx already renders Hero.tsx (h1 plus SearchBar, md:min-h-[92dvh],
+  zero photographic pixels), MobileCategoriesRow.tsx (md:hidden, 3-col grid of the six 3D category
+  tiles), FeedZone plus Section plus SectionHeader.tsx (h2, inline chevron, and the tracked all-caps
+  SectionMeta eyebrow), SalonCard.tsx, HeartButton.tsx and WalkInBand.tsx. Commands run 2026-07-29:
+  `npm run exists "home feed"` (0 hits), `npm run exists "pinned appointment"` (0 hits),
+  `npm run exists booking` (hit: app/[locale]/profile/bookings/page.tsx, reused not rebuilt),
+  `npm run exists city` (hit: app/[locale]/_components/layout/CityTopBar.tsx, reused not rebuilt).
+  Everything below composes those existing anatomies. The one thing that is actually new is the
+  pinned appointment card. It renders a BOOKING, not a salon, so it is a different entity and not a
+  second SalonCard anatomy (FLOORS LAW 8 stays satisfied).
+  REMOVED.md hits deliberately NOT re-proposed: homepage hero image (owner, 3rd rejection
+  2026-07-25), full-bleed direction (denied 2026-07-16), "Top bewertet" photo-overlay hero carousel
+  (removed 2026-07-02), Coiffeur.tsx plus FeaturedSalonCarousel.tsx (deleted 2026-06-30, fabricated
+  data), last-minute homepage strip (removed 2026-06-11).
+
+  Diagnosis: home first viewport shows no salon photograph | measured Hero.tsx holds zero Image/src and md:min-h-[92dvh] so the first SalonCard photo sits below the fold, ~0% photographic in the first viewport (CORPUS.md section 7, read from app/[locale]/_components/homepage/Hero.tsx on 2026-07-29) | violates CLAUDE.md FLOORS LAW 2 and the LOCKED design-contract imagery row (>= ~1/3 photographic at 390x844) | target first card row cropped into the first viewport, measured on this render at 390x844 via getBoundingClientRect: first card photo top y=526, 22.4% photographic, up from ~0% today but still SHORT of the 1/3 floor, tradeoff named below
+  Diagnosis: every content section carries a tracked all-caps eyebrow | measured SectionHeader.tsx line 66 ships a 13px semibold all-caps eyebrow class at 0.08em tracking, and 0 of 25 readable corpus headers use one | violates CLAUDE.md copy-economy mockup ban list (tracked all-caps eyebrows) plus the <=4-size type budget it spends a slot against | target no eyebrow, h2 title with an inline chevron only
+  Diagnosis: the home feed carries no pinned commitment band and no real number | measured CORPUS.md section 6 records "Pinned upcoming-booking card: does not exist on the home feed" while 6 of 34 corpus home screens carry one, and CORPUS.md section 7 records the Solen hero carrying no tabular number at all | violates CLAUDE.md FLOORS LAW 1 finished-screen pass item (c), at least one tabular real number | target one pinned appointment card whose 30px anchor is a real time, 14:30, with CHF 89.00 beneath it
+
+  Every path below was confirmed on disk on 2026-07-29 before it was drawn.
+  Depicts: city selector row -> app/[locale]/_components/layout/CityTopBar.tsx (plus lib/city-cookie.ts getPersistedCity and lib/cities.ts CITY_SLUGS)
+  Depicts: search entry -> app/[locale]/_components/homepage/SearchBar.tsx (today it is rendered inside Hero.tsx)
+  Depicts: pinned next-appointment data -> app/[locale]/profile/bookings/page.tsx (the customer bookings list). The pinned CARD itself is NET-NEW: no pinned booking band exists on app/[locale]/page.tsx today, and CORPUS.md section 6 records the same absence
+  Depicts: "View appointment" link target -> app/[locale]/profile/bookings/page.tsx
+  Depicts: category shortcut tiles -> app/[locale]/_components/homepage/MobileCategoriesRow.tsx (same six slugs, same public/icons/categories 3D assets), drawn here as a one-row density variant of that component
+  Depicts: section title plus inline chevron -> app/[locale]/_components/homepage/SectionHeader.tsx (SectionTitle). Its SectionMeta all-caps eyebrow is deliberately NOT drawn
+  Depicts: salon cards -> app/[locale]/_components/homepage/SalonCard.tsx (aspect-[5/4] rounded-[22px] photo, 3-row info stack, mobile width (100vw-44px)/1.5)
+  Depicts: save heart on the photo -> app/[locale]/_components/homepage/HeartButton.tsx
+  Depicts: discount badge -> DiscountBadge inside app/[locale]/_components/homepage/SalonCard.tsx (rounded-[10px], left-2 top-2, mutex with the curation badge)
+  Depicts: missing-photo fallback -> the initial-monogram branch inside app/[locale]/_components/homepage/SalonCard.tsx
+  Depicts: salon photography -> the photoUrl prop of app/[locale]/_components/homepage/SalonCard.tsx, fed here by the 12 self-hosted product seed photos in public/_mockups/_assets/salon-photos
+  Depicts: deliberately NOT drawn -> app/[locale]/_components/homepage/Hero.tsx headline block and app/[locale]/_components/homepage/WalkInBand.tsx, both dropped in this direction
+
+  Deliberate, named deviations from the shipped code, so nobody grades them as drift:
+    1. Copy is ENGLISH. The task brief said German was fine; the owner's dated rule
+       (2026-06-29 / 2026-07-01, reaffirmed 2026-07-13 "mockups always always in
+       english") and the mockup-content gate say otherwise, and the dated owner call wins.
+    2. Rating renders at 12px, not the shipped 13px, so the whole screen holds 4 sizes
+       (12 / 14 / 18 body plus the 30px anchor) instead of 5.
+    3. Card name is weight 600 and card price is weight 400, so the screen holds exactly
+       2 weights. AXIS_FONT.md section 4 plus F8 is the source: one bold moment per row
+       is the name; price, meta and duration default to 400.
+    4. Category strip is a horizontal single row, not the shipped 3x2 grid, which buys back
+       roughly 110px above the fold. Documented density VARIANT of one component, not a
+       second component.
+    5. Page margin is 16px everywhere (Section's px-4), not MobileCategoriesRow's px-6,
+       so every band on this screen shares one left edge.
+    6. Discount badge is pastel #FAD2DA with ink text (taste rule 6 canonical form)
+       rather than the shipped s-love-deep text, which is a non-contract saturated hue.
+    7. WalkInBand is dropped from this direction. The screen's job is "get me to a salon
+       I will book", and the bands below already clear the >=4 section density floor.
+    8. Rating is star plus value with no review count, per the owner-approved C11 card
+       (SalonCard.tsx). The corpus prefers star plus value plus count, 11 of 16. Named so
+       the owner can overrule the dated decision if he wants the count back.
+
+  THE ONE FLOOR THIS DIRECTION MISSES, measured not estimated, so the owner picks with it in
+  hand. Rendered at 390x844 and measured with getBoundingClientRect: the first viewport is
+  22.4% photographic against the FLOORS LAW 2 floor of roughly 1/3. The cause is structural and
+  is the direction itself: the pinned intent card owns 174px of the top, so the first card row
+  starts at y=526 and only a 9px sliver of row two is above the fold. Context, not an excuse:
+  the shipped home is ~0% photographic above the fold and shows no salon at all until you
+  scroll, so this is a large improvement that still does not clear the floor. The only ways to
+  clear it are to cut the category strip (a band 24 of 34 corpus screens carry) or to widen the
+  pinned card's photo into a full-width band, which reads as the hero the owner rejected three
+  times. Both change the direction rather than tune it, so neither was done silently. Directions
+  without a pinned card will score higher here by construction, and that is the real trade being
+  put in front of him.
+
+  floors: (a) photographic focal, yes, nine seeded salon photos. (b) one biggest element,
+  the 30px 14:30 anchor, next largest is 18px. (c) tabular real numbers, 14:30, CHF 89.00,
+  nine prices, nine ratings. (d) semantic colour, the #FFC32B star and the #FAD2DA discount
+  pill. (e) no dead-grey zone, photography starts in the first viewport. (f) worst-case
+  content holds, "Kosmetikstudio Sonnenblick Wiedikon" sits in the fully visible first slot of
+  band 7 and truncates inside its card without breaking the two-anchor rule, and Cut and Fade
+  Oerlikon renders the spec'd missing-photo fallback (sunken tray plus category icon plus
+  initial) in band 6's peek slot instead of a bare grey box.
+  Photo assignment note: the seed pool holds 12 files but only 8 distinct images (p01=p10 salon
+  interior, p02=p08 makeup, p04=p05 facial, p09=p11 hair). Every card that is visible at 390
+  wide gets a distinct image that matches its own category; the duplicates and the weakest
+  matches sit in the third slot of each rail, which is fully cropped out of view at this width.
+  There is NO nail photograph in the pool, which is why Nagelstudio Seefeld sits in a cropped
+  slot with a cosmetics image rather than being shown with a photo of the wrong treatment.
+-->
+
+<style>
+/* ============================================================================
+   Everything is scoped to .dC- so four directions can share one page.
+   ============================================================================ */
+
+.dC-root {
+  /* mockup base: lock iOS text auto-inflation so the phone render matches this one */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  width: 390px;
+  margin: 0;
+  padding: 0 0 32px;
+  background: #FFFFFF;
+  color: #0A0A0A;
+  font-family: "Inter", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.35;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.dC-root *, .dC-root *::before, .dC-root *::after { box-sizing: border-box; }
+.dC-root img { display: block; max-width: 100%; }
+
+/* ---- type roles. 4 sizes total: 12 / 14 / 18 body plus one 30px display anchor.
+        2 weights total: 400 and 600. --------------------------------------- */
+.dC-display  { font-family: "Inter Tight", "Inter", system-ui, sans-serif;
+               font-size: 30px; font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;
+               font-variant-numeric: tabular-nums; }
+.dC-h2       { font-family: "Inter Tight", "Inter", system-ui, sans-serif;
+               font-size: 18px; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; }
+.dC-body     { font-size: 14px; font-weight: 400; }
+.dC-body-em  { font-size: 14px; font-weight: 600; }
+.dC-meta     { font-size: 12px; font-weight: 400; line-height: 1.35; color: #6B6B6B; }
+.dC-num      { font-variant-numeric: tabular-nums; }
+
+.dC-ink   { color: #0A0A0A; }
+.dC-link  { color: #276EF1; }
+
+.dC-pad   { padding-left: 16px; padding-right: 16px; }
+.dC-trunc { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+
+/* ---- band 1: place ------------------------------------------------------- */
+.dC-place { display: flex; align-items: center; gap: 6px; height: 44px; }
+.dC-place-label { font-size: 14px; font-weight: 400; color: #0A0A0A; }
+
+/* ---- band 2: search entry, top zone -------------------------------------- */
+.dC-search {
+  display: flex; align-items: center; gap: 10px;
+  height: 48px;
+  padding: 0 14px;
+  border-radius: 12px;
+  background: #F4F4F5;
+  border: 1px solid #E4E4E7;
+}
+.dC-search-ph { font-size: 14px; font-weight: 400; color: #6B6B6B; }
+
+/* ---- band 3: THE PINNED CARD, the anchor of this direction ---------------- */
+.dC-pin {
+  margin-top: 16px;
+  border-radius: 24px;
+  background: #FFFFFF;
+  /* grouped list card = radius 24 + whisper, and a card carrying elevation drops its border */
+  box-shadow: 0 1px 3px rgba(10,10,10,0.04), 0 10px 28px -14px rgba(10,10,10,0.10);
+  padding: 16px;
+}
+.dC-pin-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.dC-pin-body { display: flex; align-items: center; gap: 14px; margin-top: 12px; }
+.dC-pin-thumb {
+  width: 72px; height: 72px; flex: 0 0 72px;
+  border-radius: 16px; overflow: hidden; background: #F4F4F5;
+}
+.dC-pin-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.dC-pin-stack { min-width: 0; flex: 1; }
+.dC-pin-name { margin-top: 4px; }
+.dC-pin-price { margin-top: 2px; font-size: 12px; font-weight: 400; color: #0A0A0A; }
+.dC-pin-rule { height: 1px; background: #E4E4E7; margin: 14px -16px 0; }
+.dC-pin-action {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 44px; margin-bottom: -10px;
+}
+
+/* ---- band 4: category shortcuts, one row, cropped ------------------------ */
+.dC-cats { display: flex; gap: 12px; padding-left: 16px; }
+.dC-cat {
+  width: 96px; height: 84px; flex: 0 0 96px;
+  border-radius: 16px; background: #F4F4F5;
+  display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+  padding: 10px 6px 8px;
+}
+.dC-cat img { width: 38px; height: 38px; object-fit: contain; }
+.dC-cat-label { font-size: 12px; font-weight: 400; color: #0A0A0A; }
+
+/* ---- bands 5 to 7: titled carousels of salon cards ----------------------- */
+.dC-section { margin-top: 28px; }
+.dC-section-head { display: flex; align-items: center; gap: 4px; margin-bottom: 12px; }
+.dC-rail { display: flex; gap: 12px; padding-left: 16px; }
+.dC-card { width: 231px; flex: 0 0 231px; }
+.dC-photo {
+  position: relative;
+  width: 231px; height: 185px;
+  border-radius: 22px; overflow: hidden;
+  background: #F4F4F5;
+  box-shadow: 0 2px 8px rgba(50,47,44,0.09);
+}
+.dC-photo img { width: 100%; height: 100%; object-fit: cover; }
+.dC-fallback {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  background: #F4F4F5;
+}
+.dC-fallback-initial {
+  font-family: "Inter Tight", "Inter", system-ui, sans-serif;
+  font-size: 30px; font-weight: 600; line-height: 1; color: #6B6B6B;
+}
+.dC-badge {
+  position: absolute; left: 8px; top: 8px;
+  border-radius: 10px;
+  background: #FAD2DA;
+  color: #0A0A0A;
+  font-size: 12px; font-weight: 400;
+  padding: 4px 8px;
+  font-variant-numeric: tabular-nums;
+}
+.dC-heart {
+  position: absolute; right: 8px; top: 8px;
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  filter: drop-shadow(0 1px 3px rgba(10,10,10,0.45));
+}
+.dC-card-text { margin-top: 8px; padding: 0 2px; display: flex; flex-direction: column; gap: 2px; }
+.dC-row1 { display: flex; align-items: baseline; gap: 8px; }
+.dC-name { font-size: 14px; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; color: #0A0A0A; flex: 1; }
+.dC-rating { flex-shrink: 0; display: flex; align-items: center; gap: 3px; font-size: 12px; font-weight: 400; color: #6B6B6B; font-variant-numeric: tabular-nums; }
+.dC-row3 { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.dC-price { flex-shrink: 0; font-size: 12px; font-weight: 400; color: #0A0A0A; font-variant-numeric: tabular-nums; }
+
+/* ---- the note under the fragment ---------------------------------------- */
+.dC-note {
+  box-sizing: border-box;
+  width: 390px;
+  padding: 12px 16px 0;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  font-size: 12px; font-weight: 400; line-height: 1.45;
+  color: #6B6B6B;
+}
+</style>
+
+<div class="dC-root">
+
+  <!-- ===== bands 1 and 2: top zone. Search entry is in the top zone on 29 of 34. ===== -->
+  <div class="dC-pad">
+    <div class="dC-place">
+      <svg class="lucide lucide-map-pin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+      <span class="dC-place-label">Zurich</span>
+      <svg class="lucide lucide-chevron-down" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+
+    <div class="dC-search">
+      <svg class="lucide lucide-search" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+      <span class="dC-search-ph">Treatment, salon or place</span>
+    </div>
+
+    <!-- ===== band 3: the pinned card. 6 of 34 corpus home screens carry one.
+             Present only when a real booking exists. Renders a BOOKING, not a salon. ===== -->
+    <div class="dC-pin">
+      <div class="dC-pin-head">
+        <span class="dC-body-em dC-ink">Your next appointment</span>
+        <span class="dC-meta dC-num">Fri, 31 Jul</span>
+      </div>
+
+      <div class="dC-pin-body">
+        <div class="dC-pin-thumb">
+          <img src="../_assets/salon-photos/p01.jpg" alt="Coiffeur Bellevue, hair salon" width="72" height="72">
+        </div>
+        <div class="dC-pin-stack">
+          <div class="dC-display">14:30</div>
+          <div class="dC-body-em dC-ink dC-trunc dC-pin-name">Coiffeur Bellevue</div>
+          <div class="dC-meta dC-trunc">Cut and blow dry, 45 min</div>
+          <div class="dC-pin-price dC-num">CHF 89.00</div>
+        </div>
+      </div>
+
+      <div class="dC-pin-rule"></div>
+      <div class="dC-pin-action">
+        <span class="dC-body dC-link">View appointment</span>
+        <svg class="lucide lucide-chevron-right" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== band 4: category shortcut strip. 24 of 34. Real 3D tile assets from
+           public/icons/categories, the same six MobileCategoriesRow ships, in one
+           cropped row instead of two grid rows. ===== -->
+  <div class="dC-section">
+    <div class="dC-section-head dC-pad">
+      <span class="dC-h2">Browse by category</span>
+    </div>
+    <div class="dC-cats">
+      <div class="dC-cat"><img src="../../icons/categories/scissors.png" alt="Coiffeur"><span class="dC-cat-label">Coiffeur</span></div>
+      <div class="dC-cat"><img src="../../icons/categories/clippers.png" alt="Barber"><span class="dC-cat-label">Barber</span></div>
+      <div class="dC-cat"><img src="../../icons/categories/nails.png" alt="Nails"><span class="dC-cat-label">Nails</span></div>
+      <div class="dC-cat"><img src="../../icons/categories/map.png" alt="Map"><span class="dC-cat-label">Map</span></div>
+      <div class="dC-cat"><img src="../../icons/categories/walkin.png" alt="Walk-in"><span class="dC-cat-label">Walk-in</span></div>
+      <div class="dC-cat"><img src="../../icons/categories/spa.png" alt="Spa"><span class="dC-cat-label">Spa</span></div>
+    </div>
+  </div>
+
+  <!-- ===== band 5: first carousel. 26 of 34 use titled horizontal carousels.
+           Photo above text on 16 of 19. One badge slot is the ceiling, 0 of 19 carry two. ===== -->
+  <div class="dC-section">
+    <div class="dC-section-head dC-pad">
+      <span class="dC-h2">Popular in Zurich</span>
+      <svg class="lucide lucide-chevron-right" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+    <div class="dC-rail">
+
+      <div class="dC-card">
+        <div class="dC-photo">
+          <img src="../_assets/salon-photos/p01.jpg" alt="Coiffeur Bellevue, hair salon" width="231" height="185">
+          <span class="dC-heart"><svg class="lucide lucide-heart" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.92)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="dC-card-text">
+          <div class="dC-row1">
+            <span class="dC-name dC-trunc">Coiffeur Bellevue</span>
+            <span class="dC-rating"><svg class="lucide lucide-star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</span>
+          </div>
+          <div class="dC-meta dC-trunc">Coiffeur</div>
+          <div class="dC-row3">
+            <span class="dC-meta dC-trunc">Seefeldstrasse 12, 8008 Zurich</span>
+            <span class="dC-price">from CHF 65</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dC-card">
+        <div class="dC-photo">
+          <img src="../_assets/salon-photos/p12.jpg" alt="Studio Nord Hairdesign, hair salon" width="231" height="185">
+          <span class="dC-badge dC-num">&#8722;15%</span>
+          <span class="dC-heart"><svg class="lucide lucide-heart" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.92)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="dC-card-text">
+          <div class="dC-row1">
+            <span class="dC-name dC-trunc">Studio Nord Hairdesign</span>
+            <span class="dC-rating"><svg class="lucide lucide-star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span>
+          </div>
+          <div class="dC-meta dC-trunc">Coiffeur</div>
+          <div class="dC-row3">
+            <span class="dC-meta dC-trunc">Nordstrasse 44, 8037 Zurich</span>
+            <span class="dC-price">from CHF 72</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dC-card">
+        <div class="dC-photo">
+          <img src="../_assets/salon-photos/p09.jpg" alt="Maison Aurel, hair salon" width="231" height="185">
+          <span class="dC-heart"><svg class="lucide lucide-heart" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.92)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="dC-card-text">
+          <div class="dC-row1">
+            <span class="dC-name dC-trunc">Maison Aurel</span>
+            <span class="dC-rating"><svg class="lucide lucide-star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>5.0</span>
+          </div>
+          <div class="dC-meta dC-trunc">Coiffeur</div>
+          <div class="dC-row3">
+            <span class="dC-meta dC-trunc">Rennweg 8, 8001 Zurich</span>
+            <span class="dC-price">from CHF 95</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== band 6: second carousel. Card 2 renders the spec'd missing-photo fallback
+           (sunken tray plus category icon plus initial), placed in the peek slot on purpose so
+           it is actually visible at 390 wide rather than hidden in the cropped third slot. ===== -->
+  <div class="dC-section">
+    <div class="dC-section-head dC-pad">
+      <span class="dC-h2">Barbershops nearby</span>
+      <svg class="lucide lucide-chevron-right" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+    <div class="dC-rail">
+
+      <div class="dC-card">
+        <div class="dC-photo">
+          <img src="../_assets/salon-photos/p03.jpg" alt="Barbier Kreis 4, barbershop" width="231" height="185">
+          <span class="dC-heart"><svg class="lucide lucide-heart" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.92)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="dC-card-text">
+          <div class="dC-row1">
+            <span class="dC-name dC-trunc">Barbier Kreis 4</span>
+            <span class="dC-rating"><svg class="lucide lucide-star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.7</span>
+          </div>
+          <div class="dC-meta dC-trunc">Barbershop</div>
+          <div class="dC-row3">
+            <span class="dC-meta dC-trunc">Langstrasse 91, 8004 Zurich</span>
+            <span class="dC-price">from CHF 45</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dC-card">
+        <div class="dC-photo">
+          <span class="dC-fallback">
+            <svg class="lucide lucide-scissors" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/></svg>
+            <span class="dC-fallback-initial">C</span>
+          </span>
+          <span class="dC-heart"><svg class="lucide lucide-heart" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="dC-card-text">
+          <div class="dC-row1">
+            <span class="dC-name dC-trunc">Cut and Fade Oerlikon</span>
+            <span class="dC-rating"><svg class="lucide lucide-star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.6</span>
+          </div>
+          <div class="dC-meta dC-trunc">Barbershop</div>
+          <div class="dC-row3">
+            <span class="dC-meta dC-trunc">Schaffhauserstrasse 320, 8050 Zurich</span>
+            <span class="dC-price">from CHF 39</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dC-card">
+        <div class="dC-photo">
+          <img src="../_assets/salon-photos/p10.jpg" alt="Herrensalon Enge, barbershop" width="231" height="185">
+          <span class="dC-heart"><svg class="lucide lucide-heart" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.92)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="dC-card-text">
+          <div class="dC-row1">
+            <span class="dC-name dC-trunc">Herrensalon Enge</span>
+            <span class="dC-rating"><svg class="lucide lucide-star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span>
+          </div>
+          <div class="dC-meta dC-trunc">Barbershop</div>
+          <div class="dC-row3">
+            <span class="dC-meta dC-trunc">Bederstrasse 4, 8002 Zurich</span>
+            <span class="dC-price">from CHF 52</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== band 7: third carousel. Card 1 carries the longest plausible salon name, in the
+           fully visible slot, so the worst-case-content floor is provable on the page rather
+           than asserted. ===== -->
+  <div class="dC-section">
+    <div class="dC-section-head dC-pad">
+      <span class="dC-h2">Beauty and nails</span>
+      <svg class="lucide lucide-chevron-right" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+    <div class="dC-rail">
+
+      <div class="dC-card">
+        <div class="dC-photo">
+          <img src="../_assets/salon-photos/p04.jpg" alt="Kosmetikstudio Sonnenblick Wiedikon, beauty salon" width="231" height="185">
+          <span class="dC-heart"><svg class="lucide lucide-heart" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.92)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="dC-card-text">
+          <div class="dC-row1">
+            <span class="dC-name dC-trunc">Kosmetikstudio Sonnenblick Wiedikon</span>
+            <span class="dC-rating"><svg class="lucide lucide-star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.7</span>
+          </div>
+          <div class="dC-meta dC-trunc">Beauty</div>
+          <div class="dC-row3">
+            <span class="dC-meta dC-trunc">Theaterstrasse 6, 8001 Zurich</span>
+            <span class="dC-price">from CHF 110</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dC-card">
+        <div class="dC-photo">
+          <img src="../_assets/salon-photos/p02.jpg" alt="Brow Bar Niederdorf, beauty salon" width="231" height="185">
+          <span class="dC-heart"><svg class="lucide lucide-heart" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.92)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="dC-card-text">
+          <div class="dC-row1">
+            <span class="dC-name dC-trunc">Brow Bar Niederdorf</span>
+            <span class="dC-rating"><svg class="lucide lucide-star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span>
+          </div>
+          <div class="dC-meta dC-trunc">Beauty</div>
+          <div class="dC-row3">
+            <span class="dC-meta dC-trunc">Niederdorfstrasse 29, 8001 Zurich</span>
+            <span class="dC-price">from CHF 35</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dC-card">
+        <div class="dC-photo">
+          <img src="../_assets/salon-photos/p06.jpg" alt="Nagelstudio Seefeld, nail salon" width="231" height="185">
+          <span class="dC-heart"><svg class="lucide lucide-heart" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.92)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="dC-card-text">
+          <div class="dC-row1">
+            <span class="dC-name dC-trunc">Nagelstudio Seefeld</span>
+            <span class="dC-rating"><svg class="lucide lucide-star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</span>
+          </div>
+          <div class="dC-meta dC-trunc">Nails</div>
+          <div class="dC-row3">
+            <span class="dC-meta dC-trunc">Dufourstrasse 21, 8008 Zurich</span>
+            <span class="dC-price">from CHF 58</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<div class="dC-note">Direction C, "Pinned intent": search entry in the top zone (29 of 34), a pinned personal card carrying the real tabular number (6 of 34, the Zocdoc "Up next" shape), a category shortcut strip (24 of 34), then titled horizontal carousels (26 of 34) of photo-above-text provider cards (16 of 19) with at most one overlay badge (0 of 19 carry two). The hero is gone because 0 of 34 corpus home feeds open with a decorative photograph, and no section carries a tracked all-caps eyebrow because 0 of 25 readable headers did.</div>
