@@ -55,15 +55,22 @@ French already is, rather than French moving backwards.
 - [x] B3 , D6 register = Sie recorded.
 
 ### C. The writing law itself
-- [ ] C1 , research the register question properly (Swiss market convention, what comparable Swiss
-      booking/beauty products use, and what the four-language consistency problem costs).
-- [ ] C2 , write `_design-system/COPY_LAW.md`: register per language, sentence shape, capitalisation,
-      punctuation (including the em-dash / en-dash carve-out), numbers, dates, currency, error and
-      empty-state voice, and what a button label may say.
-- [ ] C3 , the FR and IT halves, not just German: `vous` is already the FR norm, `Lei` is absent from
-      IT entirely and must be decided as part of the same law.
-- [ ] C4 , name the enforcement shape for each rule (gate, reviewer lens, or prose only), so the law
-      does not become advice that gets outranked.
+- [x] C1 , register researched. Swiss consumer trend runs toward `du` (Swiss retailers lean informal
+      in advertising; formal suits over-40 and professional-services audiences), so Sie is a
+      deliberate MINORITY position for a services marketplace. Counter-evidence recorded in
+      `COPY_LAW.md` section 1 rather than argued.
+- [x] C2 , `_design-system/COPY_LAW.md` written. 9 sections: register, sentence, warmth-inside-formal,
+      punctuation, numbers/money, per-string-type shapes, translation mechanics, enforcement, open.
+      Commit `a289a2154`.
+- [x] C3 , FR and IT covered in section 1: `vous` confirmed as already-normal (371 of 411), `Lei`
+      named as net-new for Italian with zero existing examples.
+- [x] C4 , enforcement named per rule in section 8. Three rules are wired gates today; the register
+      itself is greppable and becomes a ratchet gate AFTER the sweep, because arming it first would
+      block every existing string.
+- [x] C5 (unplanned, closes a PRINCIPLE_RESEARCH open item) , the expansion figure measured on our
+      own corpus and `_rules/I18N_ROUTING.md` Rule 35 corrected in place. 5,671 pairs: de 1.10x
+      median / 1.60x p90, **fr 1.17x / 1.72x**, it 1.14x / 1.58x. French is our longest language,
+      not German, and the old "30%" was wrong in both magnitude and language.
 
 ### D. The sweep (blocked on C2, deliberately)
 - [ ] D1 , convert the 332 German informal strings to Sie, against the written law rather than ad hoc.

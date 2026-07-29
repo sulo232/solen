@@ -48,7 +48,18 @@ ls "app/[locale]/inspo/"
 ### Rule 35: FLUID LAYOUTS FOR TEXT CONTAINERS
 - **NEVER** use fixed-width text containers (e.g., `w-48`, `w-64`) that assume English or German word lengths.
 - **ALWAYS** use padding (`p-4`, `px-6`) and allow containers to size fluidly, up to a `max-w-*`.
-- **Reasoning**: German copy is typically 30% longer than English and features extensive compound words. Fixed widths clip translations.
+- **Reasoning**: translated copy runs longer than English and German adds compound words. Fixed widths clip translations.
+- **CORRECTED 2026-07-29, measured on our own corpus (5,671 real string pairs across `messages/*.json`), replacing the old "German is typically 30% longer" figure, which was wrong for us AND named the wrong language:**
+
+  | locale | median vs EN | p90 vs EN |
+  |---|---|---|
+  | de | 1.10x | 1.60x |
+  | **fr** | **1.17x** | **1.72x** |
+  | it | 1.14x | 1.58x |
+
+  **French is our longest language, not German**, and the typical case is +10 to +17%, not +30%.
+  **Budget to the p90, roughly 1.7x, and test the FRENCH string when checking whether a control fits.**
+  Full writing law, including register: `_design-system/COPY_LAW.md`.
 
 ### Rule 36: STYLED LOCALE-AWARE 404 PAGES
 - The `not-found.tsx` component MUST follow the current design system (see `_tasks/SOLEN_DESIGN.md`). Note: the previous Zone 1/2/3/4 language is retired.
