@@ -1,0 +1,117 @@
+<!-- The icon principle, applied to a real screen. 2026-07-29.
+     Owner: "make mockup out of it and what we can learn from em."
+
+     TWO SCREENS, NOT ONE SCREEN WITH A SWITCH. That is the lesson from Apple's own sentence,
+     quoted on the companion page: "limiting the number of onscreen controls". The previous attempt
+     was one screen with twenty buttons on it and was rejected. So this has zero controls: the real
+     page as it is now, then the same real page with one change applied, stacked. You scroll from
+     one to the other.
+
+     Grounded-in: _design-system/research/ICON_SCALE_AUDIT.json
+     Grounded-in: app/[locale]/profile/page.tsx
+
+     Both panes are LIVE iframes of the same real route. The second injects exactly one rule set,
+     nothing else, so any difference you see is the icon scale and nothing but the icon scale.
+
+     Diagnosis: icon scale has no scale | measured 26 distinct sizes across 888 instances in 198 files (ICON_SCALE_AUDIT.json), with every value from 12 to 22 in use and no gap, against Airbnb measured at 1 | violates Airbnb DLS principle "Unified" (no outliers) and CLAUDE.md taste rule 9 (ground in the system, do not invent) | target one row size, 20px, with the box normalised so icons stop setting their own scale
+
+     measured: ICON_SCALE_AUDIT.json is a scan of every .tsx under app/ and components/. The live
+     check on /de/profile at 402x874 found 9 visible icons at 6 distinct widths (16, 18, 20, 20, 21,
+     22, 22, 22, 24). Airbnb's live listing page measured 1 distinct box, 24x24, across 12 rows.
+     Also measured and deliberately NOT changed here: our own rows are already centred, 0.0px icon
+     to text offset on every one of them. The 24.5px I previously reported was a cookie banner and
+     a form field, not our design. -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Icon scale applied: the real screen, before and after</title>
+<style>
+  :root{ --ink:#0A0A0A; --ink2:#6B6B6B; --sunken:#F4F4F5; --border:#E4E4E7; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:#fff; color:var(--ink); -webkit-text-size-adjust:100%;
+    max-width:440px; margin:0 auto; padding:0 0 calc(48px + env(safe-area-inset-bottom));
+  }
+  .intro{padding:26px 20px 18px}
+  h1{font-size:26px; font-weight:600; letter-spacing:-.02em; line-height:1.15; margin-bottom:8px}
+  .lede{font-size:15px; color:var(--ink2); line-height:1.55}
+  .lede b{color:var(--ink); font-weight:600}
+
+  .label{
+    padding:18px 20px 8px; font-size:12px; font-weight:600; color:var(--ink2);
+    border-top:1px solid var(--border);
+  }
+  .label span{color:var(--ink)}
+  .frame{
+    height:70vh; margin:0 12px; border-radius:14px; overflow:hidden;
+    border:1px solid var(--border); background:var(--sunken);
+  }
+  iframe{width:100%; height:100%; border:0; display:block}
+  .note{padding:10px 20px 4px; font-size:13px; color:var(--ink2); line-height:1.5}
+  .note b{color:var(--ink); font-weight:600}
+</style>
+
+<div class="intro">
+  <h1>One change, on the real screen</h1>
+  <p class="lede">
+    Your codebase uses <b>26 different icon sizes</b> across 888 places. Airbnb uses <b>one</b>.
+    Below is your live profile screen as it is now, then the same live screen with every icon set
+    to a single size. Nothing else is touched. No buttons on this page: scroll from the first to
+    the second.
+  </p>
+</div>
+
+<div class="label">NOW &nbsp; <span>6 different icon sizes on this screen</span></div>
+<div class="frame"><iframe id="f-now" src="/de/profile" title="Live profile screen, unchanged"></iframe></div>
+<div class="note">
+  Measured live: 16, 18, 20, 20, 21, 22, 22, 22 and 24 pixels. Two of those differ by a single
+  pixel, which nobody can name but everybody can feel.
+</div>
+
+<div class="label">APPLIED &nbsp; <span>one size, 20px</span></div>
+<div class="frame"><iframe id="f-fix" src="/de/profile" title="Live profile screen, icons unified"></iframe></div>
+<div class="note">
+  <b>The only rule injected:</b> every icon box becomes 20 by 20 and stops shrinking. Colour,
+  spacing, type, layout and content are untouched, so any difference is the icon scale alone.
+  <br><br>
+  <b>What this does not fix, honestly.</b> Vertical alignment does not change, because our rows
+  were already centred: 0.0px offset on every one of them. The misalignment I reported earlier was
+  a cookie banner and a form field, not our design.
+</div>
+
+<script>
+  // Inject one rule set into the second pane, and nothing else. Polls because the route is a real
+  // app page that renders after load.
+  var CSS =
+    '[data-icon-unified]{width:20px !important;height:20px !important;' +
+    'min-width:20px !important;min-height:20px !important;flex-shrink:0 !important}';
+
+  function apply(doc) {
+    if (!doc || !doc.body) { return 0; }
+    if (doc.querySelectorAll("body *").length < 60) { return 0; }
+    var icons = doc.querySelectorAll("svg");
+    var n = 0;
+    for (var i = 0; i < icons.length; i++) {
+      var r = icons[i].getBoundingClientRect();
+      if (r.width >= 8 && r.width <= 64) { icons[i].setAttribute("data-icon-unified", "1"); n++; }
+    }
+    if (!n) { return 0; }
+    var s = doc.getElementById("icon-unify-style");
+    if (!s) {
+      s = doc.createElement("style");
+      s.id = "icon-unify-style";
+      doc.head.appendChild(s);
+    }
+    s.textContent = CSS;
+    return n;
+  }
+
+  // Keep applying. The first version cleared its interval on the first success, so every icon that
+  // rendered later was never tagged and kept its own size: the pane went from 6 distinct widths to
+  // 5 instead of to 1, and it looked like the rule had simply failed. Caught by counting the widths
+  // in the pane rather than trusting that the injection "worked".
+  var f = document.getElementById("f-fix");
+  setInterval(function () {
+    try { apply(f.contentDocument); } catch (e) {}
+  }, 400);
+</script>
