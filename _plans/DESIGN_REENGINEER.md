@@ -156,3 +156,31 @@ themselves.** The size half can be swept mechanically and needs no taste decisio
 
 Role split, measured after the tagger was corrected: meta 8, row 38, nav 4. The first tagger read
 only the immediate parent and dumped 46 of 50 icons into "nav"; counting the roles exposed it.
+
+
+### CORRECTION 2, owner 2026-07-29: "the link i gave me ion see any change cz pdl doesnt have icons"
+
+He was right twice over, and both corrections are on me.
+
+**1. I pointed the harness at a screen with almost no icon rows.** The PDP's first viewport carries
+very few icon-plus-text rows, so flipping the Icons axis there changes nothing a person can see.
+The harness now opens on `/de/profile`, where the icon rows actually live, and the change is
+visible: nine icons in the first viewport go from **six distinct widths (16, 18, 20, 20, 21, 22,
+22, 22, 24) to one (20)**.
+
+**2. My "24.5px worst offset" was largely NOT our UI.** Re-measuring `/de/profile` and separating
+our own markup from third-party chrome:
+
+| what | offset |
+|---|---|
+| our own rows (Profil, Profil, QA) | **0.0px, all three** |
+| the cookie consent banner | 10.3px and 8.3px |
+| an e-mail form field | the 24.5px I kept quoting |
+
+**So our rows are already centred.** The alignment claim I built a whole axis around was measuring
+a consent banner and a form input. What IS real, and visible on that screen, is the SIZE spread:
+five different icon widths among five rows (16, 20, 21, 22, 24) where two of them differ by a
+single pixel.
+
+Two claims I had conflated and that are now separated: sizes ARE inconsistent, our rows are NOT
+misaligned. The first is worth fixing and is mechanical. The second was never a defect.
