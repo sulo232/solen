@@ -88,9 +88,29 @@
 <script>
   // Inject one rule set into the second pane, and nothing else. Polls because the route is a real
   // app page that renders after load.
+  // The second rule hides the Next.js dev overlay INSIDE the panes. That red "1 Issue" pill is
+  // dev-server tooling, it renders on the product page itself whether or not this report exists,
+  // and in a design review it is pure noise sitting on top of the screen being judged. Verified by
+  // loading /de/profile standalone: the overlay is present there too, so it is not something this
+  // page introduces. It is hidden, not silenced: the underlying errors still log to the console.
+  var HIDE_DEV_OVERLAY =
+    'nextjs-portal,[data-nextjs-toast],[data-nextjs-dialog-overlay]{display:none !important}';
+
   var CSS =
     '[data-icon-unified]{width:20px !important;height:20px !important;' +
     'min-width:20px !important;min-height:20px !important;flex-shrink:0 !important}';
+
+  // Both panes get the overlay hidden. Only the second gets the icon rule.
+  function hideOverlay(doc) {
+    if (!doc || !doc.head) { return; }
+    var s = doc.getElementById("hide-dev-overlay");
+    if (!s) {
+      s = doc.createElement("style");
+      s.id = "hide-dev-overlay";
+      doc.head.appendChild(s);
+    }
+    s.textContent = HIDE_DEV_OVERLAY;
+  }
 
   function apply(doc) {
     if (!doc || !doc.body) { return 0; }
@@ -116,8 +136,10 @@
   // rendered later was never tagged and kept its own size: the pane went from 6 distinct widths to
   // 5 instead of to 1, and it looked like the rule had simply failed. Caught by counting the widths
   // in the pane rather than trusting that the injection "worked".
-  var f = document.getElementById("f-fix");
+  var fNow = document.getElementById("f-now");
+  var fFix = document.getElementById("f-fix");
   setInterval(function () {
-    try { apply(f.contentDocument); } catch (e) {}
+    try { hideOverlay(fNow.contentDocument); } catch (e) {}
+    try { hideOverlay(fFix.contentDocument); apply(fFix.contentDocument); } catch (e) {}
   }, 400);
 </script>
