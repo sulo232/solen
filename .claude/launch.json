@@ -2,6 +2,16 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "Tunnel (app 50723)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:50723 --metrics localhost:20249 --no-autoupdate"
+      ],
+      "port": 20249,
+      "autoPort": false
+    },
+    {
       "name": "Next.js dev",
       "runtimeExecutable": "npm",
       "runtimeArgs": [

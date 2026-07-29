@@ -1,0 +1,199 @@
+<!-- Base: live iframe of the real route, no screenshot -->
+<!-- Scale: full-page -->
+<!doctype html>
+<!--
+  Exists-check: ran `npm run exists booking`, `BookingWizard`, `ServicesStaffStep`, `DateTimePicker`
+  2026-07-29, ALL HIT. Nothing is created. REMOVED.md: app/[locale]/checkout/page.tsx deleted
+  2026-07-18, not re-proposed. The graveyarded before/after GALLERIES (/dev/audit-fixes,
+  _mockups/customer-overhaul) were multi-finding galleries; this is the single-surface toggle the
+  fullscreen gate mandates, two live iframes of one route.
+
+  DIAGNOSIS MANIFEST, measured on /de/salon/cuts-and-culture/booking at 390x844, leaf text nodes only, getBoundingClientRect + getComputedStyle, 2026-07-29:
+    Diagnosis: no display anchor on the booking step | measured 16.5px largest text on screen | violates FLOORS LAW 6 one display anchor >= 28px | target 28px
+    Diagnosis: anchor to body ratio collapsed | measured 1.1x from 16.5px over 15px body | violates LOCKFILE EMPHASIS BUDGET (b) anchor >= 1.8x body | target 1.87x
+    Diagnosis: emphasis carries no signal | measured 74% of leaf text at weight >= 600 | violates LOCKFILE EMPHASIS BUDGET (a) ceiling 30% | target 30% or lower
+    Diagnosis: size variety without range | measured 5 sizes 13 14 15 16 16.5 a 3.5px spread | violates LOCKFILE EMPHASIS BUDGET (c) count sizes and measure spread | target a 13 to 28px ladder
+    Diagnosis: row satellites centred on the block not the title line | measured +10.0px icon and chevron on two-line rows against 0.0px on one-line rows on /de menu same viewport | violates FLOORS LAW 8 the same thing looks the same everywhere, Airbnb measures 1.0px worst across 9 rows | target 0.0px
+
+  DEPICTS MANIFEST: nothing is drawn. Both panes are live iframes of
+  app/[locale]/salon/[slug]/booking/page.tsx. The second pane INJECTS four changes onto that same
+  real document, so every service, price and name on screen is the real seeded data.
+    Depicts: step title -> the real heading in components-legacy/booking/ServicesStaffStep.tsx
+    Depicts: service rows -> the real rows, ServicesStaffStep.tsx:545 category h3
+    Depicts: commit bar -> ServicesStaffStep.tsx:597, exists today. NET-NEW BEHAVIOUR: hidden until
+      it has a true value (AXIS_MOTION R7). This is the one thing needing the owner's yes.
+
+  Grounded-in: components-legacy/booking/ServicesStaffStep.tsx
+  Grounded-in: components-legacy/booking/BookingWizard.tsx
+  Reference-checked: _design-system/research/AXIS_MOTION.md
+  Reference-checked: _design-system/sections/booking-datetime/CORPUS.md
+
+  Mechanism copied from public/_mockups/sweep-salon-sections/index.html: poll contentDocument,
+  run applyChange(doc), set data-sweep-done, outline what changed, label it, scrollIntoView.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Booking structure and motion</title>
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--line:#E4E4E7;--sunken:#F4F4F5;--accent:#276EF1}
+  *{box-sizing:border-box;-webkit-text-size-adjust:100%}
+  html,body{margin:0;height:100%}
+  body{background:var(--sunken);color:var(--ink);
+       font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:15px}
+  .bar{position:fixed;top:0;left:0;right:0;z-index:100;background:#fff;border-bottom:1px solid var(--line);
+       padding:8px 12px;display:flex;gap:8px;align-items:center}
+  .seg{display:flex;background:var(--sunken);border-radius:99px;padding:2px}
+  .seg button{font:inherit;font-size:13px;font-weight:600;padding:6px 16px;border:0;border-radius:99px;
+              background:none;color:var(--ink2);cursor:pointer;transition:background 150ms,color 150ms}
+  .seg button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.06)}
+  .note{font-size:11.5px;color:var(--ink2);margin-left:auto;text-align:right;line-height:1.35}
+  .stage{position:fixed;top:49px;left:0;right:0;bottom:0;overflow:hidden;background:var(--sunken)}
+  .view{position:absolute;inset:0;display:none}
+  .view.on{display:block}
+  iframe{width:100%;height:100%;border:0;background:#fff;display:block}
+  .status{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:120;background:var(--ink);
+          color:#fff;font-size:12px;padding:7px 14px;border-radius:99px;opacity:0;transition:opacity 200ms;
+          max-width:92vw;text-align:center}
+  .status.on{opacity:1}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="seg" role="group">
+    <button id="bBefore" type="button" aria-pressed="true">Before</button>
+    <button id="bAfter" type="button" aria-pressed="false">After</button>
+  </div>
+  <span class="note">same real route in both panes<br>the second injects 4 changes onto the live page</span>
+</div>
+
+<div class="stage">
+  <div class="view on" id="vBefore">
+    <iframe id="fBefore" src="/de/salon/cuts-and-culture/booking" title="Current booking flow"></iframe>
+  </div>
+  <div class="view" id="vAfter">
+    <iframe id="fAfter" src="/de/salon/cuts-and-culture/booking" title="Booking flow with the change applied"></iframe>
+  </div>
+</div>
+
+<div class="status" id="status"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+let LAST = null;
+function say(t){ const s=$('status'); s.textContent=t; s.classList.add('on');
+  clearTimeout(say._t); say._t=setTimeout(()=>s.classList.remove('on'),3200); }
+
+function applyChange(doc){
+  if (!doc || !doc.body || doc.body.dataset.sweepDone) return false;
+  const win = doc.defaultView;
+
+  const mark = (el,label) => {
+    el.style.outline='2px solid #276EF1'; el.style.outlineOffset='3px';
+    const tag = doc.createElement('span');
+    tag.textContent = label;
+    tag.style.cssText='position:absolute;transform:translateY(-115%);background:#276EF1;color:#fff;'
+      +'font:600 10px/1.4 Inter,sans-serif;padding:2px 6px;border-radius:99px;z-index:9999;white-space:nowrap';
+    if (win.getComputedStyle(el).position === 'static') el.style.position='relative';
+    el.appendChild(tag);
+  };
+
+  // The STEP TITLE, not the widest heading. v1 picked the widest and blew up the category label
+  // "Bart" instead of "Services auswaehlen". Take the topmost heading in the page, in DOM order.
+  const heads=[...doc.querySelectorAll('h1,h2,h3')]
+    .filter(h=>h.innerText.trim() && h.getBoundingClientRect().height>0)
+    .sort((a,b)=>a.getBoundingClientRect().top-b.getBoundingClientRect().top);
+  const anchor=heads[0];
+  let before=0;
+  if(anchor){
+    before=parseFloat(win.getComputedStyle(anchor).fontSize);
+    anchor.style.fontSize='28px'; anchor.style.lineHeight='1.15';
+    anchor.style.letterSpacing='-0.025em'; anchor.style.fontWeight='600';
+    anchor.style.display='block'; anchor.style.marginBottom='10px';
+    mark(anchor,'28px anchor, was '+before+'px');
+  }
+
+  const leaves=[...doc.querySelectorAll('*')].filter(el=>!el.children.length && el.innerText && el.innerText.trim());
+  const boldBefore=leaves.filter(el=>+win.getComputedStyle(el).fontWeight>=600).length;
+  let demoted=0;
+  // Demote only the SMALL bold text: meta, labels, durations, chips. Row NAMES and prices keep
+  // their weight, because they are what the eye is meant to catch. v1 demoted everything at or
+  // under 16px and drove the page to 2% bold against a 30% ceiling, which is the same
+  // over-flattening the owner rejected on 2026-07-29. Emphasis is spent, not abolished.
+  leaves.forEach(el=>{
+    if(el===anchor) return;
+    const cs=win.getComputedStyle(el);
+    if(+cs.fontWeight>=600 && parseFloat(cs.fontSize)<=13){ el.style.fontWeight='500'; demoted++; }
+  });
+  const boldAfter=leaves.filter(el=>+win.getComputedStyle(el).fontWeight>=600).length;
+
+  let rows=0;
+  [...doc.querySelectorAll('a,button,li,div')].forEach(el=>{
+    const cs=win.getComputedStyle(el);
+    if(cs.display!=='flex'||cs.alignItems!=='center') return;
+    const r=el.getBoundingClientRect();
+    if(r.height<44||r.width<200||!el.querySelector('svg')) return;
+    el.style.alignItems='flex-start'; rows++;
+  });
+
+  let hidden=0;
+  [...doc.querySelectorAll('div')].forEach(el=>{
+    const cs=win.getComputedStyle(el);
+    if(cs.position!=='fixed'||parseFloat(cs.bottom)>2) return;
+    if(el.getBoundingClientRect().height<40) return;
+    if(!/CHF|\d/.test(el.innerText.replace(/\s+/g,' '))){
+      el.style.transition='transform 300ms cubic-bezier(.22,1,.36,1)';
+      el.style.transform='translateY(120%)'; hidden++;
+    }
+  });
+
+  doc.body.dataset.sweepDone='1';
+  const pctB=leaves.length?Math.round(boldBefore/leaves.length*100):0;
+  const pctA=leaves.length?Math.round(boldAfter/leaves.length*100):0;
+  LAST={anchorBefore:before,anchorAfter:28,boldBefore:pctB+'%',boldAfter:pctA+'%',
+        demoted:demoted,rowsRealigned:rows,barsHidden:hidden,leaves:leaves.length};
+  say('anchor '+before+' to 28px, bold '+pctB+'% to '+pctA+'%, '+rows+' rows realigned');
+  if(anchor) anchor.scrollIntoView({block:'center'});
+  return true;
+}
+
+// Wait for the booking STEP to have painted, not merely for text to exist. The first version
+// latched on at 40 text leaves with zero headings, ran, and changed nothing: React had not
+// rendered the step yet. Verified by dispatching a click and reading the result back.
+function ready(doc){
+  if(!doc||!doc.body) return false;
+  const heads=[...doc.querySelectorAll('h1,h2,h3')].filter(h=>h.innerText.trim());
+  if(!heads.length) return false;
+  const rows=[...doc.querySelectorAll('button,a')].filter(el=>el.getBoundingClientRect().height>=40);
+  return rows.length>=3;
+}
+let tries=0;
+const poll=setInterval(()=>{
+  tries++;
+  try{
+    const doc=$('fAfter').contentDocument;
+    if(ready(doc)){ if(applyChange(doc)) clearInterval(poll); }
+  }catch(e){ clearInterval(poll); say('cannot reach the page document'); }
+  if(tries>120){ clearInterval(poll); say('the booking step never painted'); }
+},250);
+
+function show(which){
+  const after=which==='after';
+  $('vBefore').classList.toggle('on',!after);
+  $('vAfter').classList.toggle('on',after);
+  $('bBefore').setAttribute('aria-pressed',String(!after));
+  $('bAfter').setAttribute('aria-pressed',String(after));
+  if(after){ try{ const d=$('fAfter').contentDocument;
+    if(ready(d)&&!d.body.dataset.sweepDone) applyChange(d);
+    else if(LAST) say('anchor '+LAST.anchorBefore+' to 28px, bold '+LAST.boldBefore+' to '+LAST.boldAfter);
+    else say('the booking step has not painted yet, give it a second');
+  }catch(e){} }
+}
+$('bBefore').onclick=()=>show('before');
+$('bAfter').onclick=()=>show('after');
+window.__sweep={applyChange,show,get result(){return LAST;}};
+</script>
+</body>
+</html>
