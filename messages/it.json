@@ -3425,7 +3425,7 @@
       "remove": "Rimuovi"
     },
     "errorTitle": "Caricamento non riuscito",
-    "errorMessage": "Controlla la connessione e riprova.",
+    "errorMessage": "Controlli la connessione e riprovi.",
     "errorRetry": "Riprova"
   },
   "discovery_tos": {
@@ -3898,7 +3898,7 @@
     },
     "step3": {
       "title": "I Suoi servizi",
-      "subtitle": "Scegli tra i modelli o crea servizi personalizzati.",
+      "subtitle": "Scelga tra i modelli o crei servizi personalizzati.",
       "templates": "Modelli per le Sue categorie",
       "yourServices": "I Suoi servizi ({count})",
       "editService": "Modifica servizio",
@@ -3986,7 +3986,7 @@
     }
   },
   "imageUpload": {
-    "dropZoneTitle": "Trascina le foto qui o clicca per caricare",
+    "dropZoneTitle": "Trascini le foto qui o clicchi per caricare",
     "dropZoneHint": "JPEG, PNG o WebP · max. {max} MB per file",
     "dropZoneLabel": "Carica foto",
     "remove": "Rimuovi",
@@ -4751,7 +4751,7 @@
       "searchAnyway": "Cerca comunque",
       "searchAnywaySub": "Cerca in tutti i saloni per \"{query}\"",
       "errorTitle": "Qualcosa è andato storto",
-      "errorBody": "Impossibile caricare la ricerca. Controlla la connessione e riprova.",
+      "errorBody": "Impossibile caricare la ricerca. Controlli la connessione e riprovi.",
       "searchHeading": "Cosa cerchi?",
       "locationHeading": "Dove?",
       "dateHeading": "Quando?",
