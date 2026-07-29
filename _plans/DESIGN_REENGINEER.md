@@ -272,3 +272,40 @@ He said it does not follow the design system. It does not: it breaks four writte
 break is not everywhere, it is concentrated in TYPE, and above all in weight. Colour, contrast,
 radius, imagery and the anchor are all compliant. Fixing bold alone would move this page more than
 everything else I proposed this week combined.
+
+
+## THE CAUSE, found 2026-07-29. One sentence.
+
+Owner listed eight separate complaints about the profile screen and then asked the only question
+that matters: *"it's like this reoccurring pattern. Like, what is this? Like, can you actually find
+me the cause of this?"*
+
+**The screen was assembled by hand instead of composed from the components we already own.**
+
+Every complaint on his list is a symptom of that one fact:
+
+| what he saw | what it actually is |
+|---|---|
+| the search bar is the wrong shape | a local `<div>`, not the system's search bar |
+| a search bar here makes no sense | nobody searches their own profile; it was added because it was easy to add |
+| the tabs are too big | local tabs, not the contract's content-tab |
+| back arrow, title, bell, burger AND a settings button | the page adds its own chrome on top of the global header |
+| a red dot for a photo, then "QA" | the avatar fallback, unreviewed |
+| "Sortieren" should be an icon | a local `<button>`, not the system's pill |
+| the card photos have a strange grid | a local three-image collage, not `SalonCard` |
+
+**Measured:** `ProfileTabs.tsx` imports exactly two system components (Avatar, Toast) and
+hand-builds everything else, while the system already owns `SalonCard`, `SearchBar`, `TabPill` and
+`Skeleton`. Across the product, **nine files hand-build their own salon card and seven use the real
+one.** More of the product re-invents that component than uses it.
+
+**Why it feels like a recurring pattern:** because it is one. Every hand-built copy drifts
+separately afterwards, so a new broken thing surfaces on a new screen every time, and each looks
+like an isolated bug. They are all the same bug.
+
+**Why the existing protection missed it:** the exists-check protocol fires on new ROUTES, PAGES and
+MIGRATIONS. It never fired on re-implementing a COMPONENT inline, which is where the drift actually
+lives.
+
+**Hardened:** `~/.claude/hooks/use-the-registered-component-gate.py`, PreToolUse, 14/14, wired. It
+blocks a file that links to a salon and draws its own imagery without composing `SalonCard`.
