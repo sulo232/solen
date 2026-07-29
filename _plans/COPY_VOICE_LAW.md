@@ -130,6 +130,44 @@ verbs, not only pronouns, or it gives a false all-clear.
       Nothing to do here until D5 is answered; my lean, recorded in chat 2026-07-29, is cherry-pick
       the security migration and the method file and leave the other 658 files alone.
 
+## E. The dead-key measurement (was parked as "timed out", now done)
+
+**Result: roughly 27% of the German translation corpus is unreachable from any source file.**
+
+Two independent tests, both run 2026-07-29 against `main`:
+
+| test | method | result |
+|---|---|---|
+| quoted-token | every quoted identifier-like token in `app`, `components`, `lib` (7,971 distinct); a key counts as live if the full key or ANY of its dotted suffixes appears | **1,660 of 5,687 unreferenced (29%)** |
+| strict | the key's LEAF name must appear nowhere in source at all, even unquoted, against a 26,420-word identifier vocabulary | **1,518 dead (27%)** |
+
+The 142-key gap between the two is keys whose leaf collides with some bare identifier, so they may be
+reached dynamically. Take **1,518** as the defensible floor.
+
+Spot-verified by hand, not inferred: `booking.bookingErrorAfterPayment` and `profileHub.nextAppointment`
+appear **nowhere** outside `messages/`, despite `profileHub` being an actively used namespace
+(`app/[locale]/profile/page.tsx:31` and three other call sites). So a live namespace is carrying dead
+keys, which is exactly why a namespace-level check would have missed this.
+
+Worst namespaces: `common` 168, `dashboard` 137, `barber` 129, `ui` 93, `refundFlow` 89,
+`dashboardMakeup` 85, `home` 83, `booking` 78, `dashboardWaxing` 68, `partner` 50.
+
+**Why this matters to the sweep specifically:** more than a quarter of the register-conversion work,
+in all four languages, is being spent on strings no user will ever see. Had this run first, it would
+have cut the job by roughly 27%.
+
+**Known limit, stated rather than papered over:** this is a static test. A key assembled at runtime
+(`t(\`stat${kind}\`)`) looks dead to it. The 142-key gap is the visible part of that risk; there may
+be more. So this list is a strong candidate list, **not** a delete list.
+
+**NOT deleted, and deliberately so.** Removing 1,518 keys across four locale files is a destructive
+change to 6,072 lines, it is irreversible in practice once the translations are gone, and it needs
+the owner to say go. Lists on disk: `/tmp/claude/dead_keys.txt` (1,660) and
+`/tmp/claude/dead_strict.txt` (1,518).
+
+- [x] E1 , measure the dead keys. DONE, two tests, numbers above.
+- [ ] E2 , delete them. **BLOCKED on owner sign-off**, destructive and irreversible.
+
 ## Named cost of D6, stated once and not re-argued
 
 Going formal changes 91% of German customer copy and 100% of Italian, and it is the harder register
