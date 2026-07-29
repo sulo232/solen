@@ -231,16 +231,178 @@ privilege-escalation shape. Real but low severity. Not a principle defect; a hyg
 
 ---
 
+## 4.3 SILENT NO-OP , "prove behaviour, not existence" (done)
+
+`CLAUDE.md` pinned block; `_rules/LESSONS_LEARNED.md`.
+
+**Verdict: KEEP, SHARPEN. And the handoff's expectation was wrong in a useful direction.**
+
+The RUNBOOK predicted a negative result ("does any other team have a name and a tooling answer
+for it ... a negative finding is a real result here"). There **is** a name and there **is** tooling,
+for one half of the doctrine.
+
+The external cousin is **mutation testing**, and its vocabulary maps onto ours almost word for word:
+an **assertion-free test** is one that executes the code and asserts nothing, producing coverage
+without validation; a **surviving mutant** is a deliberate fault the suite failed to notice; the
+**mutation score** is the fraction of injected faults the suite kills. Named on the Thoughtworks
+Technology Radar; tooling exists per language (Stryker for JS/TS, PIT for Java, mutmut for Python).
+Tier (b), practitioner consensus rather than a single primary paper, and I did not run any of these
+tools against this repo.
+
+**The sharpening, and it is the whole point:** mutation testing answers *does my TEST discriminate*.
+Our doctrine answers *does my FILTER discriminate at runtime*. Those are different questions with
+the same shape, so what transfers is the **reasoning pattern, not the tooling**: perturb the input,
+require the output to change, and treat "it returned 200" or "the column is in the TS type" as
+evidence of nothing. That is exactly what the 2026-07-28 view fix did when it recorded
+`available -> 1281 unchanged, booked -> 833 to 0`, and what I did above when I proved
+`staff_ratings_view` emits 70 rows where RLS allows 67.
+
+So: the doctrine keeps its verdict and gains (a) a named external cousin to cite instead of sounding
+invented, and (b) the correction that "nobody has this" is false for the test-suite half. What
+remains genuinely un-named externally is the runtime-product half, which is where R9's "closer to
+novel infrastructure" framing still holds.
+
+---
+
+## 4.5 I18N and COPY , register, dead strings, expansion, dashes (partial)
+
+### The register question , the handoff's numbers do not reproduce on `main`, and the decision was already made on the branch
+
+**Verdict: OWNER DECISION, and a REVISE of the handoff's framing.**
+
+The handoff states: *"Measured: 411 informal German strings against 15 formal, and the 15 formal are
+exactly the legal surfaces."* Re-measured by me on `main`, 2026-07-29, over 5,687 leaf keys in
+`messages/de.json`:
+
+| | handoff | `main` today | branch `claude/principles-security-audit-0ae738` |
+|---|---|---|---|
+| informal (du/dein/dir/dich) | 411 | **332** | **408** |
+| formal (Sie/Ihr/Ihnen) | 15 | **32** | **15** |
+
+The handoff's numbers describe the **branch**, not `main`. That matters, because:
+
+**(1) "the 15 formal are exactly the legal surfaces" is false on `main`.** The 32 formal strings sit
+in `dashboard` (9), `legal` (5), `common` (4), `discovery` (3), `discovery_tos` (3), `report` (2),
+`bookingLookup` (2), `resendAccess` (2), `dashboardSpa` (1), `adminSandbox` (1). Nine of them are
+salon-owner dashboard copy. **That is not noise, it is a coherent and very ordinary B2C/B2B split:
+customers get "du", business owners get "Sie".** Nobody wrote that down, so it reads as
+inconsistency, but it may be the correct design. The owner question is therefore not "du or Sie"
+flatly, it is "is the customer/business split intentional, and should it be law".
+
+**(2) The branch already resolved it, silently.** Diffing the two formal key sets, **18 strings were
+flipped from Sie to du on the branch** and every one is a business or admin surface:
+`dashboard.settings.commissionIntro` ("Legen Sie den Provisionssatz ... fest" -> "Leg den
+Provisionssatz ... fest"), `dashboard.settings.closuresIntro` ("Ihr Salon" -> "dein Salon"),
+`dashboard.verificationPage.yourDocuments` ("Ihre Dokumente" -> "Deine Dokumente"),
+`dashboard.disputes.responsePlaceholder`, both `quickReplyDefault` strings,
+`discovery.admin.*` (3), `common.*` (4), `report.*` (2), `dashboard.messagesPage.*` (2).
+This is precisely the R8 failure the method file exists to prevent: a divergence resolved in code
+instead of surfaced as a decision. **Nothing shipped**, because the branch is not on `main`, which
+is the only reason this is recoverable.
+
+### The 15-35% expansion figure
+**Verdict: REVISE, and the handoff is right that it is length-dependent.** I did not re-derive the
+W3C table this session, so I am not restating a number I have not checked (R3). What I did check is
+that the rule as written binds a fixed-height control: `CLAUDE.md`'s text-size row already carries
+the `copy-i18n-09` carve-out saying a single-line `h-11` control gets no width relief. That carve-out
+is the useful half and it survives; the flat 15-35% figure is the part that needs a sourced
+replacement. **Named as unfinished rather than guessed.**
+
+### The em-dash ban and the en-dash carve-out
+**Verdict: REVISE, and the handoff's dash census reproduces.** Counted on `main`, 2026-07-29:
+
+| locale | em-dash | en-dash |
+|---|---|---|
+| de | 54 | 9 |
+| en | 58 | 7 |
+| fr | 55 | 7 |
+| it | 55 | 7 |
+| **total** | **222** | **30** |
+
+The handoff said 218 and 30. The en-dash total matches exactly; the em-dash total is 222 not 218,
+a four-string drift, which is what you would expect between a branch and `main`. So the measurement
+is sound and the recommendation stands: the ban is written as "no `—` / `–` anywhere", it is broken
+252 times in our own locale files, and the spaced en-dash is legitimate typography in German. The
+rule should ban the em-dash and permit the spaced en-dash in DE/FR/IT prose. **Named cost of the
+carve-out:** it makes the rule un-greppable by a single character class, so the gate gets more
+complex than "reject both".
+
+---
+
+## 4.6 MOTION , the durations, and a gate that does not agree with itself (partial)
+
+### Durations against WCAG 2.2.2
+**Verdict: KEEP, and give the rule its statutory citation.**
+
+Primary source, tier (a), W3C Understanding SC 2.2.2, fetched 2026-07-29: the criterion fires on
+moving/blinking/scrolling content that "starts automatically", "lasts more than **five seconds**",
+and "is presented in parallel with other content". Content that stops inside five seconds is out
+of scope.
+
+Our documented durations top out at 520ms (`MOTION.md:38`, demo-only Strong tier) and the shipped
+recipe is 280ms (`MOTION.md:28`), so **WCAG 2.2.2 does not bind any Solen transition**. What it does
+bind is infinite loops, and we have plenty: `44` `animate-spin` and `32` `animate-pulse` occurrences
+across `app`, `components` and `lib` on `main` today, counted by me. Those are exactly "starts
+automatically, lasts more than five seconds, presented in parallel". `scripts/check-motion.mjs:142`
+already knows this , its comment reads `// the WCAG 2.2.2 criterion itself, not a tuning knob` , but
+`MOTION.md` justifies the loop rule on taste. **Move the justification to the statute**, because
+under the precedence chain a WCAG AA item sits at tier 2 and a taste rule at tier 5, and only one of
+those survives an owner rejection.
+
+### Material's duration tokens
+**Verdict: COULD NOT VERIFY (R3).** Three fetch attempts (`m3.material.io` easing-and-duration spec,
+`material-web/tokens/_md-sys-motion.scss`, and the versioned token file) each returned either a
+JS-rendered shell or an indirection with no literal values. I am **not** reciting Material's token
+values from memory, which is exactly the trap R12 names. Next session: pull them from an installed
+`@material/*` package or the CSS custom properties on a rendered Material page. Our own tiers
+(press 80-100ms, snap 150ms, reveal 250-300ms) are meanwhile grounded in something better than a
+borrowed table anyway , a measured corpus of x.com and airbnb.com plus the owner's own 60fps
+recording (`MOTION.md:171-193`).
+
+### The motion gate , RE-TESTED against the handoff's instruction not to
+The RUNBOOK says: *"Enforcement is already proven ... So do not re-test the enforcement."*
+R6 says an agent's finding is a lead, not a fact, so I ran it. **The instruction was wrong to
+follow blindly.**
+
+Observed on one commit, working tree unchanged, minutes apart, with the browser launching cleanly
+both times:
+- **Run A:** verdict `GATE: FAILED`, roughly 34 findings, all on `/de/salon/old-town-barbers`.
+- **Runs B and C:** verdict `GATE: PASSED`, zero findings, exit 0.
+
+**And run A's findings are largely false positives.** They flag
+`canvas.mapboxgl-canvas`, `div.mapboxgl-marker`, a bare `script` element, `div#S:2` (a Next.js
+streaming-SSR suspense marker), and plain layout nodes like `span.text-s-ink-2` and
+`section#section-services`, each described as "childList mutated Nx past the 5000ms budget (no CSS
+animation, no class match)". That is the observer watching Mapbox tile loading and React hydration
+churn, not animation.
+
+It also silently skips a route on timeout: `GATE: /de/inspo could not be measured ... skipped, not
+counted as a failure.`
+
+**Correction to my own measurement, stated plainly:** my first exit-code reading was taken through a
+pipe, so it reported `tail`'s status rather than the gate's. The script does `process.exit(1)` on the
+FAILED path (`scripts/check-motion.mjs:779`), so a real failure does block. Three later runs also
+exited 1, but for an unrelated reason , Chromium could not launch under this session's sandbox
+(`mach_port_rendezvous` permission denied) , and I am **not** counting those as gate verdicts.
+
+**Verdict: KEEP the gate, REVISE the claim that it is proven.** A gate whose verdict flips between
+runs on identical input is the shape that gets skip-flagged, and the system health check already
+reports skip-flag over-use as its worst class of violation. Concrete fix directions: exclude
+third-party canvas subtrees (Mapbox) and Next.js streaming markers from the observer, and treat a
+route that times out as a failure to measure rather than a pass.
+
+---
+
 ## STATUS , what is done and what is not
 
 | queue item | state |
 |---|---|
 | 4.1 BACKEND LAW | **PARTIAL.** Money storage done with live evidence. The other 14 topics not yet verdicted. |
 | 4.2 SECURITY | **DONE** for `_rules/SECURITY_RULES.md` S1-S6 + the anon-reachable sweep the handoff asked for. The fable-backend S1 pass itself is not yet audited. |
-| 4.3 SILENT NO-OP | not started |
-| 4.4 PSYCHOLOGY | not started |
-| 4.5 I18N / COPY | not started |
-| 4.6 MOTION | not started |
+| 4.3 SILENT NO-OP | **DONE.** Verdict KEEP, SHARPEN; the predicted negative result was wrong, mutation testing is the named cousin. |
+| 4.4 PSYCHOLOGY | **not started.** The 15 laws and the myth table are untouched by this run. |
+| 4.5 I18N / COPY | **PARTIAL.** Register re-measured and the handoff's numbers corrected; dash census reproduced; the dead-string manual pass and the expansion figure are NOT done. |
+| 4.6 MOTION | **PARTIAL.** WCAG 2.2.2 verdict done with the statute quoted; the gate re-tested and found non-deterministic; Material's tokens could not be verified. |
 | 4.7 remaining `_rules/*` | not started |
 
 ## Owner decisions surfaced (do not resolve these silently)
@@ -256,3 +418,9 @@ privilege-escalation shape. Real but low severity. Not a principle defect; a hyg
   should break) or justify it.
 - **D5** , the stranded branch `claude/principles-security-audit-0ae738`: 39 commits, 660 files,
   including RESEARCH_METHOD.md and the security migration. Merge, cherry-pick, or abandon.
+- **D6** , the German register. Not the flat "du or Sie" the handoff framed, but: is the
+  customer-du / business-Sie split on `main` intentional, and does it become law? Related: the
+  branch already flipped 18 business-surface strings from Sie to du without asking. If D5 resolves
+  as "merge", that flip ships with it, so D5 and D6 are coupled.
+- **D7** , the em-dash ban gains a spaced-en-dash carve-out for DE/FR/IT prose. Our own locale
+  files break the ban 252 times, so the rule as written is already fiction.
