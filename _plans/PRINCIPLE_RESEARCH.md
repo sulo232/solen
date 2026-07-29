@@ -393,6 +393,128 @@ route that times out as a failure to measure rather than a pass.
 
 ---
 
+## 4.4 PSYCHOLOGY , `_design-system/PSYCHOLOGY.md` (done)
+
+This is the best-built law file in the estate and it survives the pass. It already tiers every claim
+T1/T2/T3 and already carries a 10-row myth table, which is the exact discipline the rest of the
+corpus lacks. Two of its load-bearing numbers re-verified, two rows to add.
+
+### Law 2, "defaults read as recommendations (d=0.68 meta-analysis)"
+**Verdict: KEEP, SHARPEN.** The number is right and I confirmed it against the source rather than
+repeating it: **Jachimowicz, Duncan, Weber and Johnson (2019), "When and why defaults influence
+decisions: a meta-analysis of default effects", Behavioural Public Policy 3(2), 159-186. 58 studies,
+pooled N = 73,675, d = 0.68, 95% CI 0.53 to 0.83.** Tier (a).
+The sharpening: our file states the bare number with no citation attached, so the next session
+cannot check it without redoing this search. Attach the reference.
+
+### Law 11, "choice overload is a myth at population level (d approximately 0.02)"
+**Verdict: KEEP, with one honest caveat.** Confirmed: **Scheibehenne, Greifeneder and Todd (2010),
+"Can There Ever Be Too Many Options? A Meta-Analytic Review of Choice Overload", Journal of Consumer
+Research 37(3), 409-425. 63 conditions from 50 published and unpublished experiments, N = 5,036,
+mean effect of set size on choice overload essentially zero with high between-study variance.**
+Tier (a). **Caveat (R3):** the sources I read say "virtually zero" and "zero"; I did **not** see the
+specific figure 0.02 stated. The direction and the magnitude are confirmed, the decimal is not.
+Either source the decimal or write "essentially zero".
+
+**Worth recording as convergence, not conflict:** law 11 says do not cap lists on overload grounds,
+group them into 3 to 5 labelled categories instead. FLOORS LAW 3's rich-data ceiling says group
+services by tier and cap an inline gallery once real content passes roughly 3x the floor. Those look
+like they collide and they do not: the floors ceiling is a scannability and render argument, the
+psychology law forbids capping for a *reason that is not true*. Both land on "group, do not truncate".
+
+### The myth table gains two rows
+Both were debunked by the 2026-07-28 design pass and belong here, because this table is the estate's
+single myth register and a debunk that lives only in a design doc will be re-cited by a backend
+session:
+
+| Popular claim | Status | What we may say instead |
+|---|---|---|
+| "White space increases perceived value by up to 300%" | untraceable, has the shape of a fabricated marketing statistic | whitespace aids scanning and grouping; no defensible magnitude |
+| "5 to 10% of a page should be bold" | no study behind it | emphasis loses meaning as its share rises (Nielsen, qualitative); our own 30% ceiling is a house number, not evidence |
+
+### The unaudited half
+The remaining 13 laws were read but not independently re-sourced this run, and the replication status
+of laws 1, 5, 7, 9, 10 and 14 is asserted in the file rather than re-checked by me. **Named as
+unfinished, not quietly counted as done.**
+
+---
+
+## 4.7 THE REST OF `_rules/*` (done for the four unaudited files)
+
+### `_rules/STRUCTURAL_RULES.md` Rule 46 B, "Dark Mode Support , USE CSS VARS FOR GLASS"
+`_rules/STRUCTURAL_RULES.md:149-152`
+
+**Verdict: DROP. It instructs new work to write exactly what a live gate blocks.**
+The rule says to write `text-s-ink dark:text-s-dm-text` and `bg-[--raised] dark:bg-s-dm-surface`.
+Web is a single light theme; the owner rejected dark mode twice (2026-07-16, 2026-07-21) and
+`~/.claude/hooks/white-only-web-gate.py` refuses it. So a session following this rule writes code
+that cannot be committed. Nothing about it is salvageable except the glass-token half.
+
+**I went looking for a live dark-mode leak and there is none. Reporting that plainly rather than
+banking the scare.** `tailwind.config.js:3` has `darkMode` removed, and Tailwind's own v3 docs say
+"By default this uses the `prefers-color-scheme` CSS media feature", so an unset key does **not**
+disable the variant, and 12 `dark:` occurrences in `app`, `components` and `lib` looked like a live
+leak. Checked each one:
+- `QuartierTile.tsx`, `WeatherBanner.tsx`, `BlobBackground.tsx`, `PriceRangeBadge.tsx` carry 8 of
+  the 12, and **none of the four is imported anywhere** in `app`, `components` or `lib`. Dead files.
+- `Logo.tsx:48` and `:73` are JavaScript object keys (`dark: "text-white"`), a variant map, **not**
+  Tailwind `dark:` variants. I nearly counted these and they are not the thing.
+- `lib/editor-prompts.ts:100` is a prompt string listing banned classes.
+
+**So zero live dark-mode CSS renders.** The white-only law is holding in the tree. The defect is that
+the rule file still tells the next session to break it.
+
+**Second finding, free:** those four never-imported components violate `_rules/CODE_SAFETY.md`
+Rule 26, "NO DEAD CODE, every component must be imported and rendered". A rule catching its own
+violation only because I grepped for something else is the argument for the gate, not the prose.
+
+### `_rules/STRUCTURAL_RULES.md` Rule 46 B, "BANNED: `text-black`, raw `bg-white`"
+**Verdict: REVISE, it is half true and half fiction.** Counted on `main`: `text-black` appears
+**0** times, so that half holds perfectly. `bg-white` appears **905** times. A ban broken 905 times
+is not a ban, and it contradicts the design contract directly, where white is roughly 80% of the
+palette by design. Keep the `text-black` ban (use the ink token), delete the `bg-white` ban.
+
+### `_rules/STRUCTURAL_RULES.md` Rule 46 D and E, and `_rules/I18N_ROUTING.md` Rule 36
+**Verdict: REVISE, stale pointer.** All three send you to `_tasks/SOLEN_DESIGN.md` "because the
+system is in flux". That file still exists (5,284 bytes, last touched 2026-06-09) and
+`_rules/CODE_SAFETY.md:3` already carries a tombstone saying it is superseded by
+`_design-system/SOURCE.md` plus `LOCKFILE.md`. Six files still point at it:
+`STRUCTURAL_RULES.md`, `CODE_SAFETY.md`, `I18N_ROUTING.md`, `ROADMAP_RULES.md`, `SOURCE.md`,
+`V2_RECONCILIATION.md`. The tombstone was written once and never propagated, which is the same
+wrong-tier failure the 2026-07-27 pass named.
+
+### `_rules/CODE_SAFETY.md` Rule 11, "return BOTH keys for backwards compatibility"
+`_rules/CODE_SAFETY.md:114-124`
+
+**Verdict: REVISE.** The incident behind it is real (a route returned `{data: profile}` where the
+consumer wanted `profile`). The prescribed fix is not: returning `{ messages: data, items: data,
+data }` permanently doubles a payload, creates three names for one thing, and has no removal path,
+so the aliases accumulate forever. Our own backend research file already covers the correct answer
+under topic 7 (API design: versioning, deprecation policy, RFC 9457 error format). The rule should
+say "grep every consumer and change them together, or version the endpoint", which is what its own
+last bullet already says, and drop the dual-key sample.
+
+### `_rules/CODE_SAFETY.md` Rule 12, "DESIGN SYSTEM , IN FLUX. Don't cite locked palette / fonts / patterns as authoritative"
+**Verdict: DROP.** Flatly false today and dangerous, because it tells a session to ignore the
+LOCKFILE, which sits at precedence tier 4 while `_rules/*` sits at tier 9. The design system has been
+locked since V3-D443 and the whole taste apparatus depends on it being authoritative.
+
+### `_rules/I18N_ROUTING.md` Rule 35, "German copy is typically 30% longer than English"
+**Verdict: REVISE, and we can do better than a citation.** The rule's ACTION (never fix-width a text
+container, size fluidly to a `max-w-*`) is right and stays. The 30% is a single flat number for a
+ratio that is strongly length-dependent, and `CLAUDE.md`'s text-size row already carries the
+`copy-i18n-09` carve-out saying a fixed-height `h-11` control gets no relief from the fluid-container
+fix. **The honest upgrade is to measure our own four-locale corpus rather than cite anyone**, since
+we have 5,687 keys in four languages sitting in `messages/`. Not done this run, named as the next
+concrete step.
+
+### `_rules/SOLEN_PATTERNS.md`
+**Verdict: KEEP as history, not law.** Parts 1 to 3 are already tombstoned. What remains is a Fresha
+adaptation playbook, which is a working note, not a principle, and does not assert anything
+checkable. No verdict needed and none invented.
+
+---
+
 ## STATUS , what is done and what is not
 
 | queue item | state |
@@ -400,10 +522,10 @@ route that times out as a failure to measure rather than a pass.
 | 4.1 BACKEND LAW | **PARTIAL.** Money storage done with live evidence. The other 14 topics not yet verdicted. |
 | 4.2 SECURITY | **DONE** for `_rules/SECURITY_RULES.md` S1-S6 + the anon-reachable sweep the handoff asked for. The fable-backend S1 pass itself is not yet audited. |
 | 4.3 SILENT NO-OP | **DONE.** Verdict KEEP, SHARPEN; the predicted negative result was wrong, mutation testing is the named cousin. |
-| 4.4 PSYCHOLOGY | **not started.** The 15 laws and the myth table are untouched by this run. |
-| 4.5 I18N / COPY | **PARTIAL.** Register re-measured and the handoff's numbers corrected; dash census reproduced; the dead-string manual pass and the expansion figure are NOT done. |
+| 4.4 PSYCHOLOGY | **PARTIAL.** Laws 2 and 11 re-sourced against the original papers; 2 myth rows added. The other 13 laws were read but not independently re-sourced. |
+| 4.5 I18N / COPY | **PARTIAL.** Register re-measured and the handoff's numbers corrected; dash census reproduced; Rule 35's 30% verdicted. The dead-string manual pass and the measured expansion corpus are NOT done. |
 | 4.6 MOTION | **PARTIAL.** WCAG 2.2.2 verdict done with the statute quoted; the gate re-tested and found non-deterministic; Material's tokens could not be verified. |
-| 4.7 remaining `_rules/*` | not started |
+| 4.7 remaining `_rules/*` | **DONE** for `STRUCTURAL_RULES.md`, `CODE_SAFETY.md`, `I18N_ROUTING.md`, `SOLEN_PATTERNS.md`. `DB_SCHEMA.md`, `KEY_FEATURES.md` and `ROADMAP_RULES.md` not verdicted. |
 
 ## Owner decisions surfaced (do not resolve these silently)
 
