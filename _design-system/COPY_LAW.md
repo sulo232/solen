@@ -189,6 +189,15 @@ Stating this per rule, because an unenforced writing rule is advice, and advice 
 A register gate written BEFORE the sweep would block every existing string, so the order is: sweep
 first, then arm the gate as a ratchet so it can only get better.
 
+**When that gate is written, it must match VERBS and not only pronouns.** Learned the expensive way
+on 2026-07-29: `scripts/register-sweep.mjs` was specified around pronouns and possessives, so a
+string like `"Bitte wähle eine Bewertung aus"` contains nothing it matches, never enters the changed
+set, and never appears in its review list. It was invisible by design. **I measured 41 German
+strings in exactly that shape**, every one informal, none of them touched by the first pass. So the
+real German informal set was 330 pronoun-carrying strings PLUS 41 verb-only ones, and every count
+quoted for this job before that measurement, including mine, was an undercount for the same reason.
+A pronoun-only register check gives a false all-clear.
+
 ---
 
 ## 9. OPEN

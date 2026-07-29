@@ -91,10 +91,39 @@ Round 2 is running. The reviewer PASSED data safety, formatting preservation (by
 round trip on all three files), the longest-match ordering, the over-reach guards and the house
 rules, so the structure is sound and only the detector needs work.
 
-- [ ] D1 , convert the German informal strings to Sie. **BLOCKED on the round-2 PASS above.**
-- [ ] D2 , convert the Italian informal strings to Lei. **BLOCKED on the same.**
-- [ ] D3 , reconcile the French informal stragglers to vous. **BLOCKED on the same.** (Measured count
-      corrected: the tool finds **51**, not the 40 my coarser key-level count gave.)
+**UPDATE 2026-07-29, the tool PASSED after three rounds and the sweep is running.**
+Verified by me, not taken from the agents: de 330 changed / 169 flagged, it 231 / 109, fr 51 / 25;
+`git status messages/` clean on a dry run; 0 em-dashes; one import.
+
+- [~] D1 , German. **Round 1 applied and committed (`69fc74d65`): 330 mechanical swaps plus 161
+      hand conjugations.** Verified by me: parses, sweep reports 0 changed, 5687 leaf keys before and
+      after with none added or removed, 0 ICU placeholder mismatches, 0 hits on every broken form
+      worth grepping. **Then graded FAIL by the reviewer, and correctly.** Round 2 running, punch
+      list below.
+- [ ] D2 , Italian to Lei. Coder running.
+- [ ] D3 , French to vous. Coder running. (Measured count corrected: the tool finds **51**, not the
+      40 my coarser key-level count gave.)
+
+### THE FINDING THAT MATTERS, and it invalidates every count quoted for this job including mine
+
+**The sweep only looks at PRONOUNS, so strings carrying an informal VERB and no pronoun were
+invisible to it.** `"Bitte wähle eine Bewertung aus"` contains no `du`, no `dein`, so it never
+entered the changed set and never appeared in the review list. Not a bug in the tool; a hole in how
+the job was specified, mine.
+
+**Measured by me: 41 German strings in that exact shape**, list at `/tmp/claude/bare_imperatives.txt`.
+So the real German informal set was **330 + 41 = 371**, not the 332 this file has been quoting.
+Several are grammatically broken in the shipped file right now, for example
+`ui.searchOverlay.errorBody` reads "Prüf Ihre Verbindung und versuch es nochmal", informal verb next
+to formal possessive, while its near-duplicate `common.errorMessage` was converted correctly.
+
+The reviewer also caught one break the greps could not see, because the pronoun and verb are not
+adjacent: `resendAccess.hurryGotLink`, "Falls Sie ... erhalten hast, nutze diesen". And an ALL-CAPS
+case break where the mechanical `DEIN` to `Ihr` swap dropped the upper case, so the homepage headline
+currently renders "Ihr NÄCHSTER TERMIN WARTET".
+
+**Consequence for the law:** `COPY_LAW.md` section 8 now says any future register gate must match
+verbs, not only pronouns, or it gives a false all-clear.
 - [ ] D4 , the branch collision. **BLOCKED on OWNER DECISION D5**, which is what to do with
       `claude/principles-security-audit-0ae738`. That branch flipped 18 German business strings the
       OTHER way, Sie to du, so merging it after the sweep silently reverts part of this decision.
