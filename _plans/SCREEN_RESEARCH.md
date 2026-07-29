@@ -154,3 +154,36 @@ Also in flight in `wf_9cb73f3c-7c4`, one agent per axis, each writing
 ## Status
 
 Launched 2026-07-29. Corpus phase running as a workflow.
+
+---
+
+## OWNER DIRECTION, 2026-07-29, after rejecting the injected-diff mockup
+
+He said "no not at all do u even know what i want u to do", then answered four questions.
+These four answers govern everything that follows. I got the format wrong twice before this.
+
+| question | his answer |
+|---|---|
+| what a finished screen should be | **Static images, several options side by side.** Rendered pictures of 3 or 4 different directions per screen. NO interaction, NO tap-through prototype. He picks a direction before anything gets built. |
+| how far from what ships today | **Start from the best apps, rebuild the flow.** The corpus anatomy is the target. Our current screen is INPUT, not a constraint. Steps may merge, split, or reorder. |
+| which screen first | **Home.** |
+| how much motion | **"research"** , he wants motion RESEARCHED, not built into these. Motion is a separate deliverable, not part of the static options. |
+
+### What this kills, so it is not attempted a third time
+
+- The injected before/after diff on the live route. Built 2026-07-29, rejected. It restyles the
+  existing structure and therefore cannot show a rebuilt one. `public/_mockups/booking-structure/`
+  stays on disk as a working reference for the injection MECHANISM, but it is not the format.
+- A tap-through animated prototype. He explicitly did not pick that option.
+
+### The next unit of work, stated so a fresh session can start cold
+
+Build **3 or 4 static home-screen directions, side by side, as rendered images**, each derived
+from the measured corpus anatomy in `_design-system/sections/home-feed/CORPUS.md`, not from our
+current home. Anchor facts already measured there: a search entry in the top zone appears in 29 of
+34 screens, a category shortcut strip in 24 of 34, titled sections as horizontal carousels in 26 of
+34, provider card with photo above text in 16 of 19, and a decorative hero photograph in **0 of
+34**, which is the single most useful finding for our home.
+
+Deliver as ONE page showing the options next to each other so he can compare at a glance, with a
+cloudflare tunnel link. Motion is researched separately and is not part of these images.
