@@ -109,14 +109,25 @@ Verified by me, not taken from the agents: de 330 changed / 169 flagged, it 231 
       blindly") that found **45 more** unfixed cases beyond the named 41, including 4 round-1
       leftovers where a pronoun got swapped but the verb didn't. All fixed, all re-verified. Not
       self-certifying PASS here, that is the reviewer's call, next round decides.
-- [ ] D2 , Italian to Lei. Coder running , not mine. My task this round is explicitly German-only
-      (`messages/de.json`, "Do not touch it.json/fr.json/en.json"), so I looked at this box, confirmed
-      it is someone else's active work (`messages/it.json` mtime moved during my own session), and
-      left it untouched rather than either faking completion or reaching into a file I was told not
-      to touch.
-- [ ] D3 , French to vous. Coder running , same as D2: confirmed active elsewhere
-      (`messages/fr.json` moved during my session too), correctly out of my scope, left untouched.
-      (Measured count corrected: the tool finds **51**, not the 40 my coarser key-level count gave.)
+- [x] D2 , Italian to Lei. verified: commit `a0423867d`. 231 strings changed, exactly what the tool
+      predicted. Checked by me, not by the agent: parses; `node scripts/register-sweep.mjs it`
+      reports 0 changed; 5658 leaf keys before and after with 0 added and 0 removed; 0 ICU
+      placeholder mismatches; and zero hits for `Lei hai`, `Lei sei`, `Lei puoi`, `Lei vuoi`,
+      `Lei ti`.
+- [x] D3 , French to vous. verified: same commit `a0423867d`. 51 strings changed (the corrected
+      count; my earlier coarser key-level count said 40). 5669 leaf keys before and after, 0 ICU
+      mismatches, zero hits for `vous as`, `vous es`, `vous peux`, `vous veux`.
+- [ ] D5 , **the German lesson applied to the other two languages, and it found more.** The
+      pronoun-only blindness that cost German 41 strings is not German-specific. Scanned it/fr for
+      the same shape: **Italian 18 candidates, French 1.** The French one is a false positive
+      (`dashboardCoiffeur.metricsAvgDays`, "Jours moy. entre visites", where `entre` is the
+      preposition, not an imperative). Several Italian ones are genuine and shipping informal right
+      now, for example `discovery.errorMessage` "Controlla la connessione e riprova" (needs
+      `Controlli` / `riprovi`), `ui.searchOverlay.errorBody` (same), and
+      `salonRegistration.step3.subtitle` "Scegli tra i modelli o crea servizi personalizzati" (needs
+      `Scelga` / `crei`). Others are noun phrases my regex cannot tell apart from imperatives
+      (`Revisione e conferma`, `Documenti e verifica`, `Accedi o registrati` as a menu label), so the
+      list needs human triage rather than a blind pass. List: `/tmp/claude/bare_it.txt`.
 
 ### THE FINDING THAT MATTERS, and it invalidates every count quoted for this job including mine
 
@@ -181,7 +192,11 @@ change to 6,072 lines, it is irreversible in practice once the translations are 
 the owner to say go. Lists on disk: `/tmp/claude/dead_keys.txt` (1,660) and
 `/tmp/claude/dead_strict.txt` (1,518).
 
-- [x] E1 , measure the dead keys. DONE, two tests, numbers above.
+- [x] E1 , measure the dead keys. verified: commit `89b959eee`; lists written to
+      `/tmp/claude/dead_keys.txt` (1,660) and `/tmp/claude/dead_strict.txt` (1,518); hand spot-checks
+      on `booking.bookingErrorAfterPayment` and `profileHub.nextAppointment` returned zero source
+      hits outside `messages/`, against `app/[locale]/profile/page.tsx:31` proving the namespace
+      itself is live.
 - [ ] E2 , delete them. **BLOCKED on owner sign-off**, destructive and irreversible. (Checked this
       round: still blocked, no sign-off on record, correctly left open; not mine to authorize.)
 
