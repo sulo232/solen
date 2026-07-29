@@ -230,7 +230,7 @@ export default function ProfileTabs({
               {visibleSalons.map((s) => (
                 <Link key={s.slug} href={p(`/salon/${s.slug}`)} className="min-w-0">
                   <CollageTile photos={s.photos} aspectClass="aspect-[195/131]" name={s.name} category={s.category} />
-                  <p className="mt-2 truncate text-[16px] font-semibold text-s-ink">{s.name}</p>
+                  <p className="mt-2 truncate text-[16px] font-medium text-s-ink">{s.name}</p>
                   {s.city ? <p className="mt-0.5 truncate text-[12px] text-s-ink-2">{s.city}</p> : null}
                 </Link>
               ))}
@@ -266,18 +266,18 @@ export default function ProfileTabs({
                     </div>
                   )}
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-[16px] font-semibold text-s-ink">{b.salonName}</p>
+                    <p className="truncate text-[16px] font-medium text-s-ink">{b.salonName}</p>
                     {b.serviceName ? <p className="truncate text-[14px] text-s-ink-2">{b.serviceName}</p> : null}
                     <p className="mt-0.5 flex items-center gap-2.5 text-[12px] text-s-ink-2">
                       <span>{b.dateLabel}</span>
-                      {b.price != null ? <b className="font-semibold text-s-ink">{formatCurrency(b.price, locale)}</b> : null}
+                      {b.price != null ? <b className="font-medium text-s-ink">{formatCurrency(b.price, locale)}</b> : null}
                     </p>
                   </div>
                   <button
                     type="button"
                     onClick={() => handleRebook(b)}
                     disabled={rebookingId === b.id}
-                    className="flex-none text-[14px] font-semibold text-s-ink disabled:opacity-50"
+                    className="flex-none text-[14px] font-medium text-s-ink disabled:opacity-50"
                   >
                     {tb("rebook")}
                   </button>
@@ -301,14 +301,14 @@ export default function ProfileTabs({
           the page never dies into a blank/grey zone. */}
       {suggestedSalons.length > 0 && (
         <section className="mt-8">
-          <h2 className="font-heading text-[18px] font-semibold tracking-[-0.01em] text-s-ink">
+          <h2 className="font-heading text-[18px] font-medium tracking-[-0.01em] text-s-ink">
             {t("discoverySectionTitle")}
           </h2>
           <div className="-mx-4 mt-3 flex gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {suggestedSalons.map((s) => (
               <Link key={s.slug} href={p(`/salon/${s.slug}`)} className="w-[148px] flex-none">
                 <CollageTile photos={s.photos} aspectClass="aspect-[148/101]" name={s.name} category={s.category} />
-                <p className="mt-2 truncate text-[14px] font-semibold text-s-ink">{s.name}</p>
+                <p className="mt-2 truncate text-[14px] font-medium text-s-ink">{s.name}</p>
                 {s.city ? <p className="mt-0.5 truncate text-[12px] text-s-ink-2">{s.city}</p> : null}
               </Link>
             ))}
@@ -435,7 +435,7 @@ function EmptyTray({
         // eslint-disable-next-line @next/next/no-img-element -- local sanctioned 3D category icon asset
         <img src={iconSrc} alt="" className="mx-auto h-16 w-16 object-contain" aria-hidden />
       ) : null}
-      <p className={cn("font-heading text-[18px] font-semibold text-s-ink", iconSrc ? "mt-3" : undefined)}>{title}</p>
+      <p className={cn("font-heading text-[18px] font-medium text-s-ink", iconSrc ? "mt-3" : undefined)}>{title}</p>
       <p className="mt-1 text-[14px] text-s-ink-2">{message}</p>
       {ctaLabel && ctaHref ? (
         <Link
