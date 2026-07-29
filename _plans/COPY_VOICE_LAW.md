@@ -200,6 +200,40 @@ the owner to say go. Lists on disk: `/tmp/claude/dead_keys.txt` (1,660) and
 - [ ] E2 , delete them. **BLOCKED on owner sign-off**, destructive and irreversible. (Checked this
       round: still blocked, no sign-off on record, correctly left open; not mine to authorize.)
 
+## F. ESCALATION , regex cannot certify this file, and that is the finding
+
+**The convergence rule was violated and I am not looping a fourth time on the same method.**
+Round-1 review: 5 blocking items. Round-2 review: **34**. That is not a shrinking tail.
+
+**Why, diagnosed rather than guessed.** Every scan run so far, mine and the coder's, has been a
+**verb-stem list**. Add stems, find a new layer. So I tried a structural detector instead, on the
+theory that a formal sibling next to an informal one is visible without morphology: for each JSON
+object, flag any value with no `Sie`/`Ihr` when a sibling has one, plus any capitalised first word
+ending in `-e`. **It returned 441 candidates and they are overwhelmingly false positives**, because
+German noun phrases are shaped exactly like imperatives to a regex: `Keine Ergebnisse`,
+`Alle ansehen`, `Neue Buchungen`, `Beliebte Salons`. Precision collapsed; recall was never the
+problem.
+
+**The honest conclusion: there is no regex that certifies `messages/de.json` is free of informal
+German.** Distinguishing `Finde` the imperative from `Freunde` the noun needs morphology, not
+pattern matching. What closes this properly is one of:
+1. a native or fluent German read of the ~600 customer-visible strings, which is a person, not a
+   script;
+2. a real morphological analyser (spaCy `de_core_news_sm` + a POS filter for `VERB` with
+   `Person=2|Number=Sing`), which is a new dependency and a genuine build;
+3. accepting the current state, which is materially better than where it started and not certified.
+
+**Where it actually stands, measured:** German began at 332 pronoun-carrying informal strings plus at
+least 41 pronoun-free ones. 330 were mechanically converted, 267 hand-conjugated across two rounds,
+and 34 more are in a third round now. Every round has found real defects and every round has been an
+improvement. What no round can promise is that it was the last one.
+
+- [x] F1 , diagnose why the loop is not converging. verified: sibling detector run this session,
+      441 candidates, dominated by false positives; list at `/tmp/claude/sibling_mismatch.txt`.
+- [ ] F2 , **OWNER DECISION.** Pick one of the three closures above. My lean: option 1, a human read,
+      scoped to the customer-visible surfaces rather than all 5,687 keys, because option 2 is a real
+      build for a one-off job and option 3 leaves marketing copy uncertified on a pre-launch product.
+
 ## Named cost of D6, stated once and not re-argued
 
 Going formal changes 91% of German customer copy and 100% of Italian, and it is the harder register
