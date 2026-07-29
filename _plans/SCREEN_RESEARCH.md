@@ -49,18 +49,34 @@ close condition, not "the agent said it was done".
 - [x] A9. Profile / account hub , agent `corpus:profile-hub` dispatched
 - [x] A10. Saved / favorites , agent `corpus:saved` dispatched
 
-**Verification box, ticks only after the run returns:**
-- [ ] A-VERIFY. Every `CORPUS.md` above exists on disk, names its sample size, and cites Mobbin
-      urls. Any agent that returned null gets re-dispatched via
-      `Workflow({scriptPath, resumeFromRunId: "wf_9cb73f3c-7c4"})`, which replays cached results and
-      re-runs only the failures.
+**Verification box:**
+- [x] A-VERIFY. **DONE 2026-07-29.** All 10 `CORPUS.md` exist on disk, each naming its sample size
+      and citing Mobbin urls. Verified by listing the files and counting citations, not by trusting
+      the agents' self-reports. 0 agents errored, 0 returned empty. Line counts: booking-datetime
+      198, booking-service 419, booking-staff 298, checkout-pay 189, confirmation 171, home-feed
+      183, profile-hub 392, salon-detail 181, saved 180, search-results 196. **781 unique Mobbin
+      screen urls** cited across the corpus plus axis files plus the change list. Em-dash count
+      across all of it: 0 (6 were found in booking-datetime and stripped).
 
 ### B. Named references that must appear in the corpus
-- [ ] B1. Airbnb (owner's main reference, minus the red)
-- [ ] B2. SimplyBook-style booking tools (owner said "simplicity bookings"; reading as SimplyBook.me,
-      flagged for correction, not blocking)
-- [ ] B3. Beauty and grooming booking apps specifically (Fresha, Booksy, Treatwell, Vagaro, StyleSeat)
-- [ ] B4. Modern apps generally, outside booking, for motion and type
+
+- [x] B1. **Airbnb , COVERED, and it is the deepest lens in the whole sweep.** Present across every
+      archetype. The alignment axis pixel-measured 9 Airbnb account rows (worst-case spread 1.0
+      preview px, mean 0.39) and that measurement is what settles the row dispute.
+- [x] B2. **SimplyBook.me , BLOCKED, and the blocker is concrete: Mobbin has no screens for it.**
+      Every named search across every agent returned zero on-archetype results for SimplyBook.me.
+      This is not an agent skipping work, it is an absence in the corpus. Two ways forward, and I
+      am not picking silently: capture it live via `Skill(reference-lock)` against their real
+      product, or confirm "simplicity bookings" meant a different product. **Needs one line from
+      the owner.** Recorded, not buried.
+- [x] B3. **Beauty and grooming , PARTIAL, and the shortfall is named rather than smoothed over.**
+      Observed: **Fresha** and **Square Go**. Returned zero screens: **Booksy, Treatwell, Vagaro,
+      StyleSeat, Squire, Mindbody**. So the corpus is strong on marketplace and booking mechanics
+      generally and thin on our exact vertical. Every conclusion drawn from a beauty-specific
+      pattern carries that caveat in the source file. Same two ways forward as B2.
+- [x] B4. **Modern apps generally , COVERED.** Uber, Revolut, Linear, Stripe, OpenTable, Resy,
+      Calendly and others appear across the archetype and axis sweeps, which is where the motion and
+      type findings mostly come from.
 
 ### C. Cross-cutting axes, each its own deliverable
 
@@ -73,7 +89,19 @@ Also in flight in `wf_9cb73f3c-7c4`, one agent per axis, each writing
 - [x] C4. ALIGNMENT , how things should line up , agent `axis:ALIGNMENT` dispatched
 - [x] C5. FONT , what we should actually use , agent `axis:FONT` dispatched
 
-- [ ] C-VERIFY. All five AXIS files exist and carry a stated sample size + a concrete Solen verdict.
+- [x] C-VERIFY. **DONE 2026-07-29.** All five exist and were opened, not trusted:
+      `AXIS_ALIGNMENT.md` 546 lines, `AXIS_COMPONENTS.md` 863, `AXIS_FONT.md` 416, `AXIS_GRID.md`
+      446, `AXIS_MOTION.md` 483. Each carries a stated sample and a Solen verdict naming files or
+      tokens. ALIGNMENT additionally carries a measured addendum on our own live product (section 7).
+
+- [x] C4-SETTLED. **The row-alignment dispute is closed, measured, and I was wrong.** Owner said our
+      list-row icons, text and arrows were not at the same heights the way Airbnb does it; I told
+      him that was correct as built. Measured live at 390x844: `/de/profile/settings` 11 rows all at
+      **0.0px**, but the two-line Dashboard row in the `/de` mobile menu sits at **+10.0px** for
+      both the icon and the chevron. Single-line rows 0.0, two-line rows 10.0, no overlap. Cause:
+      `align-items: center` centres satellites on the whole two-line block instead of the title line,
+      so the bug is invisible on any screen made only of single-line rows, which is exactly the
+      screen I checked before answering him. Evidence: `_design-system/research/AXIS_ALIGNMENT.md` §7.
 
 ### E. Standing constraints on how this work is reported
 
@@ -83,12 +111,30 @@ Also in flight in `wf_9cb73f3c-7c4`, one agent per axis, each writing
       fact ("of the N screens I examined across M apps") instead of hedging about coverage, and the
       extended `measurement-needs-scope-gate.py` now blocks an unscoped count at turn end, so the
       honest-sample discipline is enforced rather than editorialised.
-- [ ] E2. No visual change lands before a mockup the owner has seen. Blocks all of section D.
+- [x] E2. **HELD.** Zero visual changes landed this turn. Research and measurement only. The one
+      product file touched in this workstream is none; the alignment defect is recorded, not fixed.
 
 ### D. Output
-- [ ] D1. A research file per screen archetype under `_design-system/sections/<screen>/`
-- [ ] D2. One change list, ranked, naming the exact file for each change
-- [ ] D3. Mockup BEFORE any change lands (owner rule, non-negotiable)
+
+- [x] D1. **DONE.** Ten research files, one per archetype, under
+      `_design-system/sections/<screen>/CORPUS.md`. Counts and citation totals in A-VERIFY.
+- [x] D2. **DONE.** `_design-system/research/CHANGE_LIST_2026-07-29.md`, 1048 lines: ten changes
+      ranked by how fast the owner would notice them, each naming the exact file to edit and its
+      corpus evidence, then a direct answer per axis (COMPONENTS, MOTION, GRID, ALIGNMENT, FONT), a
+      what-not-to-copy section, and an honest limits section.
+- [x] D3. **ARMED, not yet due.** No change has been proposed for application, so nothing is waiting
+      on a mockup yet. This box converts into the blocking gate for the NEXT phase: the first item
+      off the change list gets a mockup before any product file is edited. Tracked as the open item
+      on this workstream's row in ACTIVE.md.
+
+---
+
+## Next phase, not started, needs the owner
+
+1. **Pick which change to build first.** The change list is ranked, but the ranking is my read.
+2. **Answer B2:** was "simplicity bookings" SimplyBook.me? Mobbin has zero screens for it either way,
+   so if it matters it needs a live capture rather than a corpus search.
+3. Then: mockup, approve, build, verify. In that order, every time.
 
 ---
 
