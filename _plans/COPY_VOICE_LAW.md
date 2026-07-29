@@ -117,8 +117,23 @@ Verified by me, not taken from the agents: de 330 changed / 169 flagged, it 231 
 - [x] D3 , French to vous. verified: same commit `a0423867d`. 51 strings changed (the corrected
       count; my earlier coarser key-level count said 40). 5669 leaf keys before and after, 0 ICU
       mismatches, zero hits for `vous as`, `vous es`, `vous peux`, `vous veux`.
-- [ ] D5 , **the German lesson applied to the other two languages, and it found more.** The
-      pronoun-only blindness that cost German 41 strings is not German-specific. Scanned it/fr for
+- [x] D5a , **French half: DONE, and the answer is that there is nothing to fix.** verified: scan run
+      this session over `messages/fr.json`, output at `/tmp/claude/bare_fr.txt`, **1 candidate and it
+      is a false positive**: `dashboardCoiffeur.metricsAvgDays`, "Jours moy. entre visites", where
+      `entre` is the preposition "between", not the imperative of `entrer`. French carries no
+      pronoun-free informal verbs. Nothing to change, and the box is closed on that basis rather
+      than left open forever.
+- [ ] D5b , **Italian half: 18 candidates, coder running.** CONCRETE BLOCKER: the fix needs a human
+      Italian read, because a regex cannot separate a third-person imperative from a noun phrase in
+      Italian any more than it can in German, and I proved that failure mode this session (see F1).
+      Confirmed genuine and shipping informal right now: `discovery.errorMessage` "Controlla la
+      connessione e riprova", `ui.searchOverlay.errorBody` (same sentence), and
+      `salonRegistration.step3.subtitle` "Scegli tra i modelli o crea servizi personalizzati", which
+      needs BOTH verbs. Confirmed false or ambiguous: `booking.confirmation.title` "Revisione e
+      conferma" and `dashboard.verificationPage.title` "Documenti e verifica" are noun pairs, not
+      commands. List: `/tmp/claude/bare_it.txt`.
+- [x] D5c , record of the original scan. The pronoun-only blindness that cost
+      German 41 strings is not German-specific. Scanned it/fr for
       the same shape: **Italian 18 candidates, French 1.** The French one is a false positive
       (`dashboardCoiffeur.metricsAvgDays`, "Jours moy. entre visites", where `entre` is the
       preposition, not an imperative). Several Italian ones are genuine and shipping informal right
