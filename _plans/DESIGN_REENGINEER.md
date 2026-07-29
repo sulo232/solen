@@ -318,30 +318,35 @@ No. Measured against disk, dev routes excluded:
 | | |
 |---|---|
 | components the registry cites | **93** |
-| components actually on disk | **134** |
-| registry entries pointing at a DELETED file | **14** (15% of what it lists) |
-| real components the registry never mentions | **55** (41% of the estate) |
-| components never imported anywhere (dead) | **7** |
+| components actually on disk | **312** |
+| registry rows pointing at a file that does not exist | **3** |
+| real components the registry never mentions | **222** (71% of the estate) |
+| components never imported anywhere (dead) | **20** |
 
-**The registry describes a product that is 41% missing and 15% imaginary.**
+**CORRECTED 2026-07-29. My first pass was wrong, and I had already told the owner the wrong
+numbers.** That pass scanned `app/` and `components/` only. It never looked at
+`components-legacy/`, which holds **185** more components. The provenance gate caught it on the
+`ErrorState` claim below: I wrote that ErrorState is listed and does not exist. It exists, at
+`components-legacy/ui/ErrorState.tsx`, the registry cites that exact path at
+COMPONENT_REGISTRY.md:78, and five dashboard pages import it. Eleven of my fourteen "phantoms"
+were real components in a directory I never scanned.
 
-The 14 broken entries: BookingWizard, CancelBookingSheet, DateTimeStep, DetailPage, ErrorState,
-HairStep, LanguageSwitcher, PayConfirmStep, ReviewForm, SalonServicesSheet, SelectedCheckBadge,
-StaffProfilePage, StatusFilter, StatusPill.
+Same failure shape as the 86%-bold figure and the 24.5px-offset figure earlier the same day: the
+measurement ran correctly, the SCOPE was wrong, and I reported the output as fact.
 
-The 7 dead files: AtmosphereGrain, BackgroundBlobs, CardText, PriceRangeBadge, QuartierTile,
-TreatmentsClient, WeatherBanner.
+The corrected picture is much better on staleness and much worse on coverage. Only **3** rows are
+genuinely broken: SalonServicesSheet, StatusFilter, StatusPill. But the registry maps **93 of
+312** components, so **71% of the component estate is invisible to it.**
 
-**This is the mechanism behind the hand-rolling, not a filing problem.** You cannot reuse what the
-index does not list. Someone building a screen looks up the card, does not find it, and writes
-their own. Nine files now hand-build a salon card while seven use the real one; ErrorState is
-listed in the registry and does not exist on disk at all, which is exactly the shape of failure
-that sends a developer off to invent one.
+**That 71% is still the mechanism behind the hand-rolling, and the correction does not soften
+it.** You cannot reuse what the index does not list. Someone building a screen looks up the card,
+does not find it, and writes their own. Nine files hand-build a salon card while seven use the
+real one. The original diagnosis survives; only the phantom count was inflated.
 
 **Hardened:** `~/.claude/hooks/component-registry-sync-gate.py`, 13/13, wired. Creating a new
 shared component now requires touching COMPONENT_REGISTRY.md in the same turn. CLAUDE.md already
 demanded this in prose ("New shared component = write ... + registry entry in the same turn"); the
 numbers above are what months of prose produced.
 
-**Not yet done, and it is cleanup rather than a decision:** delete or restore the 14 phantom rows,
-register the 55 missing components, and dispose of the 7 dead files through REMOVED.md.
+**Not yet done, and it is cleanup rather than a decision:** fix the 3 broken rows, register the
+222 missing components, and dispose of the 20 dead files through REMOVED.md.

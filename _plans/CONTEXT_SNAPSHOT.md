@@ -2,16 +2,16 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-07-28T20:40:09 (trigger: auto)
+- taken: 2026-07-29T16:20:56 (trigger: auto)
 - branch: claude/principles-security-audit-0ae738
 
 ## git
 ```
-8251fc02a Close the WCAG 2.4.7 gap on touch. Not a decision, a fix I should have made.
-9cb17c8f1 Taste lens, the last of four: a live contrast defect and a wrong citation
-518eafca1 Copy lens: the German register may be wrong, and it is measurable
-890a632ad Floors lens: label the two invented numbers as invented
-7c6c66b29 Contract lens: correct a stale contrast comment, surface a real WCAG collision
+5cb99b13a The registry is 41% missing and 15% imaginary, and that is why we hand-roll
+f12e5a37b The missing core: every rule we own grades ONE screen. None binds two together.
+2f4bccadb Found the cause: the screen was assembled by hand, not composed from our components
+3959253be Gate the box-inside-a-box, and sweep for others. One instance, now impossible.
+eca0e7cbd The search bar: a box inside a box, and globals.css predicted it word for word
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
@@ -48,6 +48,7 @@
 47 | POLISH DIAGNOSIS , why Airbnb reads finished and ours reads unfinished | **ACTIVE** (2026-07-28)
 48 | PRINCIPLE DEEP-RESEARCH , re-test every principle we already have against external evidence | **ACTIVE** (design) + handoff (rest) 2026-07-28
 50 | DESIGN principle deep-research (the rules we ALREADY have) | **ACTIVE** (2026-07-28)
+51 | DESIGN RE-ENGINEER , improve the system we have, measured against live Airbnb | **ACTIVE** (2026-07-28)
 
 ## PRINCIPLES_LOOP.md
 Open boxes:
