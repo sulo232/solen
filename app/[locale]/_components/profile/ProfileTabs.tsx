@@ -199,7 +199,20 @@ export default function ProfileTabs({
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t("searchPlaceholder")}
           aria-label={t("searchPlaceholder")}
-          className="min-w-0 flex-1 bg-transparent font-body text-[14px] text-s-ink outline-none placeholder:text-s-ink-2"
+          // mockup-ok: DEFECT REPAIR to the owner's existing 2026-07-17 input decision, not a new
+          // look, so there is nothing to choose between and nothing to approve.
+          // The `!` prefixes are load-bearing. The base rule in globals.css
+          // (`input:not([...10 native types])`) out-specifies plain Tailwind utilities, so an
+          // unprefixed `bg-transparent` LOSES and the input paints its own 48px filled grey box
+          // with a 12px radius INSIDE this 44px bordered pill: two boxes, the taller overhanging
+          // the shorter. Measured on /de/profile at a 402px viewport: wrapper 370x44, input
+          // 310x48, a 4px overhang, which is the doubled outline visible on the screen.
+          // globals.css names this exact failure and its carve-out list verbatim ("Widening this
+          // selector to bare inputs would now win on specificity and paint a second box inside
+          // the wrapper ... protected with Tailwind `!important` prefixes on the specific
+          // instance"). This input was simply missed from that list. Same pattern already ships
+          // at SearchOverlay.tsx:553 and on the dashboard search fields. Do not remove the `!`.
+          className="min-w-0 flex-1 !border-0 !bg-transparent !min-h-0 !px-0 font-body !text-[14px] text-s-ink outline-none placeholder:text-s-ink-2"
         />
       </label>
 
