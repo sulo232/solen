@@ -185,6 +185,31 @@
 <p><strong>My lean: stay at 8 and turn the breach check on instead.</strong> Raising the floor to 15 before launch costs signup completion, and the breach check removes far more real risk per unit of friction than length does.</p>
 </div>
 
+<div class="card">
+<span class="verdict v-keep">KEEP, SHARPEN</span>
+<h3>The psychology laws hold, and this is the best-built file we own</h3>
+<p><code>PSYCHOLOGY.md</code> already tiers every claim and already keeps a myth table. That is exactly the discipline the rest of the corpus is missing, and it is why this file needed the least work.</p>
+<p>I re-sourced its two load-bearing numbers against the original papers instead of repeating them. <strong>Defaults, d = 0.68</strong> is right: Jachimowicz, Duncan, Weber and Johnson 2019, 58 studies, 73,675 people, confidence interval 0.53 to 0.83. <strong>Choice overload is near zero</strong> is right: Scheibehenne, Greifeneder and Todd 2010, 63 conditions, 5,036 people. One caveat I am not glossing over: those sources say "virtually zero", and I never saw the specific 0.02 our file prints. Source the decimal or write "essentially zero".</p>
+<p>Two rows added to the myth table, both debunked by the design pass: the "white space increases perceived value by up to 300%" claim, and the "5 to 10% of a page should be bold" rule. A debunk that lives only in a design document gets re-cited by a backend session.</p>
+</div>
+
+<div class="card">
+<span class="verdict v-rev">DROP</span>
+<h3>A rule file tells new work to write code that a gate blocks</h3>
+<p><code>STRUCTURAL_RULES.md</code> Rule 46 B is titled "Dark Mode Support" and tells you to write <code>dark:text-s-dm-text</code> and <code>dark:bg-s-dm-surface</code>. Web is one light theme, you rejected dark mode twice, and there is a gate that refuses it. A session obeying this rule writes code it cannot commit.</p>
+<p><strong>The scare I did not bank.</strong> Twelve <code>dark:</code> occurrences looked like a live leak, because Tailwind's own docs say an unset <code>darkMode</code> key still fires on the visitor's operating-system setting. So I checked each one. Eight sit in four components that <em>nothing imports</em>. Two are JavaScript object keys, not Tailwind variants at all. One is a prompt string. <strong>Zero render.</strong> The white-only law is holding in the code. Only the rule file is wrong.</p>
+<p>Found by accident on the way: those four never-imported components are themselves a dead-code violation of our own Rule 26.</p>
+</div>
+
+<div class="card">
+<span class="verdict v-rev">REVISE</span>
+<h3>Three more rules that are half fiction</h3>
+<p><strong>"BANNED: <code>text-black</code>, raw <code>bg-white</code>."</strong> Half perfect, half nonsense. <code>text-black</code> appears <strong>0</strong> times. <code>bg-white</code> appears <strong>905</strong> times, and white is roughly 80 percent of the palette by design. A ban broken 905 times is not a ban.</p>
+<p><strong>"The design system is in flux, do not cite the locked palette as authoritative."</strong> This inverts three precedence tiers. The LOCKFILE outranks <code>_rules/</code> by a wide margin and the whole taste apparatus depends on it being authoritative. Drop it.</p>
+<p><strong>Six files still point at <code>_tasks/SOLEN_DESIGN.md</code> as the current design source</strong>, weeks after <code>CODE_SAFETY.md</code> tombstoned it in its own header. The tombstone was written once and never propagated. Same wrong-tier failure the 2026-07-27 pass named.</p>
+<p><strong>"Return both keys for backwards compatibility."</strong> The incident behind it was real. The fix is not: duplicated response keys have no removal path, so they accumulate forever. Our own backend research already covers the right answer under API versioning.</p>
+</div>
+
 <hr>
 
 <h2>What I did not do</h2>
@@ -193,10 +218,10 @@
 <tr><td>Security rules</td><td>done, S1 to S6 plus the sweep</td></tr>
 <tr><td>Backend law</td><td>partial, money storage only. 14 topics untouched</td></tr>
 <tr><td>Silent no-op</td><td>done</td></tr>
-<tr><td>Psychology, the 15 laws</td><td>not started</td></tr>
-<tr><td>i18n and copy</td><td>partial, the dead-string pass is not done</td></tr>
+<tr><td>Psychology, the 15 laws</td><td>partial, 2 laws re-sourced and 2 myth rows added. The other 13 were read, not re-sourced</td></tr>
+<tr><td>i18n and copy</td><td>partial, the dead-string pass and the measured expansion corpus are not done</td></tr>
 <tr><td>Motion</td><td>partial, Material's tokens could not be verified</td></tr>
-<tr><td>The rest of <code>_rules/</code></td><td>not started</td></tr>
+<tr><td>The rest of <code>_rules/</code></td><td>done for four files. <code>DB_SCHEMA</code>, <code>KEY_FEATURES</code> and <code>ROADMAP_RULES</code> not verdicted</td></tr>
 </table></div>
 
 <h2>Seven decisions waiting on you</h2>
