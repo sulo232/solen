@@ -62,14 +62,20 @@
 </div>
 
 <div class="label">NOW &nbsp; <span>6 different icon sizes on this screen</span></div>
-<div class="frame"><iframe id="f-now" src="/de/profile" title="Live profile screen, unchanged"></iframe></div>
+<!-- Both panes go through the dev-only sign-in helper, because /de/profile is auth gated and the
+     owner opening this on his phone has no session: the panes were showing him the LOGIN screen.
+     /api/dev/login mints the seed test account and redirects to `to`. It is hard-gated to
+     NODE_ENV === "development" (app/api/dev/login/route.ts:19) so it cannot exist in production,
+     and its own comments say it already handles the cloudflared host. Verified over the tunnel
+     before wiring it: landed on /de/profile, signed in, 9 icons at 6 distinct sizes. -->
+<div class="frame"><iframe id="f-now" src="/api/dev/login?to=/de/profile" title="Live profile screen, unchanged"></iframe></div>
 <div class="note">
   Measured live: 16, 18, 20, 20, 21, 22, 22, 22 and 24 pixels. Two of those differ by a single
   pixel, which nobody can name but everybody can feel.
 </div>
 
 <div class="label">APPLIED &nbsp; <span>one size, 20px</span></div>
-<div class="frame"><iframe id="f-fix" src="/de/profile" title="Live profile screen, icons unified"></iframe></div>
+<div class="frame"><iframe id="f-fix" src="/api/dev/login?to=/de/profile" title="Live profile screen, icons unified"></iframe></div>
 <div class="note">
   <b>The only rule injected:</b> every icon box becomes 20 by 20 and stops shrinking. Colour,
   spacing, type, layout and content are untouched, so any difference is the icon scale alone.
