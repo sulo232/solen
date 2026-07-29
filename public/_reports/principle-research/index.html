@@ -1,0 +1,215 @@
+<!--
+  Exists-check: net-new vs public/_reports/principles/index.html (that page reports the DESIGN
+  principle pass of 2026-07-28). This page reports the NON-DESIGN pass: backend, security,
+  silent-no-op, i18n, motion. Different corpus, different verdicts, so it gets its own URL rather
+  than overwriting a report that is still the record of the other run.
+  Grounded-in: _plans/PRINCIPLE_RESEARCH.md
+  Every number on this page was measured on 2026-07-29 against the live production database
+  (tocfnsmxmdxkrcmjzzdw) or the main working tree. None is carried from the handoff.
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Principle research, run 1</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --sunken:#F4F4F5; --border:#E4E4E7;
+    --accent:#276EF1; --ok:#16A34A; --warn:#EA580C; --err:#DC2626;
+    color-scheme: light;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:#fff; color:var(--ink);
+    font-family:"Inter","Inter Tight",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:15px; line-height:1.6; -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:880px; margin:0 auto; padding:40px 20px 96px}
+  h1{font-family:"Inter Tight",sans-serif; font-size:32px; line-height:1.2; margin:0 0 8px; font-weight:600; letter-spacing:-0.02em}
+  .sub{color:var(--ink2); font-size:15px; margin:0 0 20px}
+  .meta{color:var(--ink2); font-size:13px; margin:0 0 40px; line-height:1.75}
+  .meta span{display:block}
+  h2{font-family:"Inter Tight",sans-serif; font-size:20px; margin:48px 0 6px; font-weight:600; letter-spacing:-0.01em}
+  h2 .n{color:var(--ink2); font-weight:400}
+  h3{font-size:15px; margin:28px 0 6px; font-weight:600}
+  p{margin:0 0 14px}
+  a{color:var(--accent); text-decoration:none}
+  a:hover{text-decoration:underline}
+  code{font-family:"Inter Tight",ui-monospace,monospace; font-size:13.5px; background:var(--sunken); padding:1px 5px; border-radius:5px; font-variant-numeric:tabular-nums}
+  .card{background:var(--sunken); border-radius:16px; padding:20px 22px; margin:0 0 16px}
+  .card code{background:#fff}
+  .verdict{display:inline-block; font-size:12px; font-weight:600; padding:3px 9px; border-radius:999px; background:#fff; border:1px solid var(--border); margin-bottom:10px}
+  .v-keep{color:var(--ok)} .v-rev{color:var(--warn)} .v-dec{color:var(--accent)} .v-gap{color:var(--err)}
+  .scroller{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:0 0 16px}
+  table{border-collapse:collapse; width:100%; font-size:13.5px; min-width:480px; background:#fff; border-radius:12px; overflow:hidden}
+  th,td{text-align:left; padding:9px 12px; border-bottom:1px solid var(--border); vertical-align:top}
+  tr:last-child td{border-bottom:0}
+  th{font-weight:600; color:var(--ink2); font-size:12px}
+  td.num{font-variant-numeric:tabular-nums; white-space:nowrap}
+  .lede{font-size:16px; border-left:2px solid var(--ink); padding-left:16px; margin:0 0 28px}
+  ol,ul{margin:0 0 14px; padding-left:22px}
+  li{margin-bottom:7px}
+  .quote{border-left:2px solid var(--border); padding-left:14px; color:var(--ink2); margin:0 0 14px; font-size:14px}
+  .tier{color:var(--ink2); font-size:13px}
+  hr{border:0; border-top:1px solid var(--border); margin:56px 0}
+  .foot{color:var(--ink2); font-size:13px}
+</style>
+
+<div class="wrap">
+
+<h1>Principle research, run 1</h1>
+<p class="sub">Taking the rules we already wrote and grading each one against evidence from outside this building.</p>
+<p class="meta">
+  <span>2026-07-29</span>
+  <span>Measured against the live production database and the <code>main</code> working tree.</span>
+  <span>Detail in <code>_plans/PRINCIPLE_RESEARCH.md</code>, commits <code>1571c72b2</code> and <code>6e21f3341</code>.</span>
+</p>
+
+<p class="lede">Most of our engineering law was written from reasoning, not from evidence. This run tested the non-design half. Four rules survived, four need changing, and looking at the live database found two security holes that no rule would have caught, because no rule covers the place they live.</p>
+
+<h2><span class="n">First,</span> the brief I was given was partly wrong</h2>
+
+<p>The handoff told me to read <code>RESEARCH_METHOD.md</code> before starting. It is not on <code>main</code>. It sits on branch <code>claude/principles-security-audit-0ae738</code> with 38 other commits and 660 changed files, none of which have ever merged. That is the second time in three days a file our law cites by name turned out to live on a branch nobody merged.</p>
+
+<p>The same branch holds the migration for yesterday's security fix. <strong>The fix itself is live</strong>, I checked the database directly and <code>availability_slots_public</code> carries <code>security_invoker=true</code> in production. So nothing is exposed. What is missing is the file that records why, which means rebuilding the database from migrations would quietly reopen the hole.</p>
+
+<hr>
+
+<h2>The two live findings</h2>
+
+<div class="card">
+<span class="verdict v-gap">LIVE, anon-readable</span>
+<h3>A second view leaks past row-level security, the same way the first one did</h3>
+<p>Yesterday's fix closed one view. I swept all six. <code>staff_ratings_view</code> still runs as its owner, so it ignores the rule on <code>staff_members</code> that says the public may only see active staff.</p>
+<p>Proven rather than assumed: the view hands out <strong>70</strong> rows. There are <strong>70</strong> staff members, of whom <strong>67</strong> are active. So <strong>3 inactive staff</strong> are visible to anyone with the public key who could not read them directly. Small, and it only exposes an id and an average rating, but it is the identical defect, and Supabase's own security advisor does not flag it, so the linter is not covering us here either.</p>
+</div>
+
+<div class="card">
+<span class="verdict v-gap">LIVE, unauthenticated write</span>
+<h3>Our security rule assumes the API route is the only door. It is not.</h3>
+<p>Rule S1 lists five layers every API route must carry: feature flag, auth, ban check, rate limit, validation. All of that guards <code>/api/*</code>. But we also expose the database directly through PostgREST with the public key, and <code>create_group_booking</code> is a <em>write</em> function that anyone can call at <code>/rest/v1/rpc/create_group_booking</code> without signing in. The app reaches it through a properly guarded route. An attacker does not have to.</p>
+<p class="tier">Two more read functions sit in the same position: <code>search_salons_ranked</code> and <code>search_suggest</code>.</p>
+</div>
+
+<hr>
+
+<h2>Verdicts</h2>
+
+<div class="card">
+<span class="verdict v-keep">KEEP</span>
+<h3>Never trust <code>getSession()</code> for a server-side identity decision</h3>
+<p>Right, and actually followed. I opened every one of the 11 remaining <code>getSession</code> calls against 361 <code>getUser</code> calls, and all 11 sit in browser components where it is legitimate. Zero server-side authorization decisions.</p>
+<p>One staleness note: Supabase's current Next.js docs refresh the token with <code>getClaims</code>, not <code>getUser</code>. We are running <code>supabase-js 2.110.2</code> and <code>ssr 0.12.0</code>, both of which have it. Not a vulnerability, just a network round trip per request we no longer need to pay.</p>
+</div>
+
+<div class="card">
+<span class="verdict v-rev">REVISE</span>
+<h3>"RLS is non-negotiable" says nothing about views, which is exactly where both holes were</h3>
+<p>PostgreSQL's own documentation, quoted directly:</p>
+<p class="quote">"If any of the underlying base relations has row-level security enabled, then by default, the row-level security policies of the view owner are applied ... However, if the view has <code>security_invoker</code> set to <code>true</code>, then the policies and permissions of the invoking user are used instead."</p>
+<p>So a view is invisible to row-level security by default. Every bullet in our rule can be satisfied while a view over the same table hands out everything. The rule needs a views clause.</p>
+<div class="scroller"><table>
+<tr><th>view</th><th>runs as</th><th>anon can read</th></tr>
+<tr><td><code>availability_slots_public</code></td><td>invoker</td><td>yes, fixed 2026-07-28</td></tr>
+<tr><td><code>profile_summaries</code></td><td>invoker</td><td>yes</td></tr>
+<tr><td><code>public_profiles</code></td><td>invoker</td><td>yes</td></tr>
+<tr><td><code>search_zero_results</code></td><td>invoker</td><td>yes</td></tr>
+<tr><td><strong><code>staff_ratings_view</code></strong></td><td><strong>owner</strong></td><td><strong>yes</strong></td></tr>
+<tr><td><code>search_popularity</code></td><td>owner</td><td>no, not granted</td></tr>
+</table></div>
+</div>
+
+<div class="card">
+<span class="verdict v-gap">GAP</span>
+<h3>Breached-password checking is switched off, and this is the rare case where two standards agree</h3>
+<p><strong>NIST SP 800-63B section 3.1.1.2:</strong> verifiers "SHALL compare the prospective secret against a blocklist that contains known commonly used, expected, or compromised passwords."</p>
+<p><strong>OWASP ASVS 5.0, requirement 6.2.12:</strong> "Verify that passwords submitted during account registration or password changes are checked against a set of breached passwords."</p>
+<p>Supabase reports it disabled on our project. When two independent standards converge, our own method file says that is the strongest evidence available. Cost to close: one toggle, no code. It is a production auth setting, so it is yours to flip.</p>
+</div>
+
+<div class="card">
+<span class="verdict v-rev">REVISE</span>
+<h3>"Money is stored as integer minor units, never float"</h3>
+<p>The float ban holds perfectly. I swept all 78 money-shaped columns and there is not one <code>double precision</code> anywhere. Nobody should "fix" that.</p>
+<p>But <code>bookings</code> runs two unit conventions side by side, and the one our principle prescribes is the one almost nothing uses:</p>
+<div class="scroller"><table>
+<tr><th>column</th><th>type</th><th>unit</th><th class="num">rows set, of 964</th></tr>
+<tr><td><code>price_paid</code></td><td>numeric(8,2)</td><td>CHF</td><td class="num">964</td></tr>
+<tr><td><code>platform_fee</code></td><td>numeric(10,2)</td><td>CHF</td><td class="num">964</td></tr>
+<tr><td><code>deposit_amount</code></td><td>numeric(10,2)</td><td>CHF</td><td class="num">964</td></tr>
+<tr><td><code>paid_amount</code></td><td>integer</td><td>Rappen</td><td class="num">9</td></tr>
+<tr><td><code>final_price</code></td><td>numeric(10,2)</td><td>CHF</td><td class="num">0</td></tr>
+<tr><td><code>estimated_price</code>, <code>net_amount</code>, <code>vat_amount</code></td><td>mixed</td><td>mixed</td><td class="num">0</td></tr>
+</table></div>
+<p><strong>I could not find a live error, and I looked.</strong> On all 9 rows where both are set, <code>paid_amount</code> is exactly <code>price_paid</code> times 100. Zero rows carry <code>final_price</code>, so that pair cannot be tested at all. The code that reads them is correct and even says so in a comment: <em>"Fee base in Rappen: paid_amount (Rappen) ?? toRappen(price_paid CHF). NEVER mix units."</em></p>
+<p>The problem is that this comment is the only place the convention is written. No rule file, no database constraint, no gate. A 100x money error is one autocomplete away, on a product that has not taken a real payment yet.</p>
+</div>
+
+<div class="card">
+<span class="verdict v-keep">KEEP, SHARPEN</span>
+<h3>"Prove behaviour, not existence", and the handoff's prediction was wrong</h3>
+<p>I was told to expect a negative result, that nobody else has a name for this. Half wrong. <strong>Mutation testing</strong> is the external cousin and it uses our vocabulary almost word for word: an <em>assertion-free test</em> is a control that runs without validating anything, a <em>surviving mutant</em> is a fault the suite failed to notice.</p>
+<p>What does not transfer is the tooling, because those tools grade a test suite and we are grading runtime behaviour. What transfers is the move: perturb the input, demand the output change. That is exactly what "booked went 833 to 0 while available stayed at 1281" was, and what "the view emits 70 where the rule allows 67" is above.</p>
+</div>
+
+<div class="card">
+<span class="verdict v-dec">OWNER DECISION</span>
+<h3>The German register, which is not the question the handoff asked</h3>
+<p>The handoff said 411 informal against 15 formal, and that the formal ones are exactly the legal pages. Re-measured on <code>main</code>:</p>
+<div class="scroller"><table>
+<tr><th></th><th class="num">handoff said</th><th class="num">main today</th><th class="num">the branch</th></tr>
+<tr><td>informal, du</td><td class="num">411</td><td class="num">332</td><td class="num">408</td></tr>
+<tr><td>formal, Sie</td><td class="num">15</td><td class="num">32</td><td class="num">15</td></tr>
+</table></div>
+<p>The handoff was describing the branch. And on <code>main</code> the formal strings are <em>not</em> the legal pages: nine of the 32 are salon-owner dashboard copy. That is not sloppiness, it is a customer-du and business-Sie split that nobody wrote down. So the question is not "du or Sie", it is <strong>"is the business register meant to be different, and does that become law"</strong>.</p>
+<p>Worth knowing before you answer: the branch already flipped 18 of those business strings from Sie to du without asking, including "Legen Sie den Provisionssatz fest" becoming "Leg den Provisionssatz fest". Nothing shipped, only because the branch never merged. If you merge it, that decision ships with it.</p>
+</div>
+
+<div class="card">
+<span class="verdict v-rev">REVISE</span>
+<h3>The motion gate is not "proven", and I was told not to check</h3>
+<p>The handoff said the enforcement is already proven, so do not re-test it. Our own method says a finding is a lead and not a fact, so I ran it. Same commit, minutes apart, browser launching cleanly both times: one run said FAILED with about 34 findings, two said PASSED with zero.</p>
+<p>The findings it does produce flag a Mapbox canvas, a bare <code>script</code> tag, a Next.js streaming placeholder and plain layout divs, each as "mutated past the 5000ms budget". It is watching page hydration and map tiles, not animation. It also skips a route on timeout and does not count that as a failure.</p>
+<p>Keep the gate, it does real work. Drop the word proven. A gate that disagrees with itself is the kind that ends up permanently skip-flagged.</p>
+</div>
+
+<div class="card">
+<span class="verdict v-keep">KEEP</span>
+<h3>Motion durations, now with the citation they should have had</h3>
+<p>WCAG 2.2.2 fires at <strong>five seconds</strong>. Our slowest documented transition is 520ms and the shipped one is 280ms, so it binds none of them. What it does bind is infinite loops, and <code>main</code> carries <strong>76</strong> of those (44 <code>animate-spin</code>, 32 <code>animate-pulse</code>).</p>
+<p><code>check-motion.mjs</code> already knows this. Its code comment reads "the WCAG 2.2.2 criterion itself, not a tuning knob". But <code>MOTION.md</code> justifies the same rule on taste. Taste sits three precedence tiers below a legal floor, and only one of the two survives being overruled, so the justification should move.</p>
+</div>
+
+<div class="card">
+<span class="verdict v-dec">OWNER DECISION</span>
+<h3>Password minimum: 8 or 15</h3>
+<p>We require 8. <strong>ASVS 5.0, 6.2.1</strong> says at least 8, with 15 strongly recommended, so we pass. <strong>NIST 800-63B</strong> says SHALL be at least 15 without multi-factor, so we fail. Two standards, genuinely divergent, which makes it a decision rather than a fact. NIST is US federal and not law in Switzerland, so this is a quality bar and not a statutory floor.</p>
+<p><strong>My lean: stay at 8 and turn the breach check on instead.</strong> Raising the floor to 15 before launch costs signup completion, and the breach check removes far more real risk per unit of friction than length does.</p>
+</div>
+
+<hr>
+
+<h2>What I did not do</h2>
+<div class="scroller"><table>
+<tr><th>queue item</th><th>state</th></tr>
+<tr><td>Security rules</td><td>done, S1 to S6 plus the sweep</td></tr>
+<tr><td>Backend law</td><td>partial, money storage only. 14 topics untouched</td></tr>
+<tr><td>Silent no-op</td><td>done</td></tr>
+<tr><td>Psychology, the 15 laws</td><td>not started</td></tr>
+<tr><td>i18n and copy</td><td>partial, the dead-string pass is not done</td></tr>
+<tr><td>Motion</td><td>partial, Material's tokens could not be verified</td></tr>
+<tr><td>The rest of <code>_rules/</code></td><td>not started</td></tr>
+</table></div>
+
+<h2>Seven decisions waiting on you</h2>
+<ol>
+<li>Password minimum stays 8, or goes to 15.</li>
+<li>Turn on Supabase leaked-password protection. One toggle.</li>
+<li>Set <code>security_invoker</code> on <code>staff_ratings_view</code>. It has a live caller on the salon page, so it wants a check afterwards.</li>
+<li>Revoke anon execute on <code>create_group_booking</code>. The app calls it through an authenticated route, so nothing should break.</li>
+<li>The stranded branch: merge, cherry-pick, or abandon. 660 files.</li>
+<li>The German register, and whether the business-Sie split becomes law. Coupled to decision 5.</li>
+<li>Let the em-dash ban permit a spaced en-dash in German, French and Italian. Our own locale files break the ban 252 times, so as written it is already fiction.</li>
+</ol>
+
+<p class="foot">Every figure here was produced this session. Two things are recorded as unverified rather than guessed: Material Design's duration tokens, which would not load from three separate sources, and the 15 to 35 percent translation-expansion figure, which needs a real corpus behind it.</p>
+
+</div>
