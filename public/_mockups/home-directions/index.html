@@ -162,6 +162,30 @@ body {
   -webkit-overflow-scrolling: touch;
   scroll-snap-type: x proximity;
 }
+
+/* PHONE FIX, 2026-07-30. The owner opened this on his phone and said "i only see A".
+   MEASURED with getBoundingClientRect on the live page at 390x844, not eyeballed:
+     dA  x=0     onScreenX true
+     dB  x=390   onScreenX false
+     dC  x=780   onScreenX false
+     dD  x=1170  onScreenX false
+     .cmp-rowwrap scrollWidth 1560, clientWidth 390, overflow-x auto
+   Three of four directions sat off screen inside this sideways-scrolling row with nothing
+   on screen saying to swipe. A hidden affordance is a missing affordance. Below 900px the
+   row becomes one column, so all four arrive by scrolling DOWN, the gesture a phone
+   already invites. */
+@media (max-width: 899px) {
+  .cmp-rowwrap { overflow-x: visible; overflow-y: visible; scroll-snap-type: none; }
+  .cmp-row {
+    display: block !important;
+    width: 100% !important;
+    grid-auto-flow: row !important;
+  }
+  .cmp-row > * { width: 100% !important; max-width: 390px; margin-inline: auto; }
+  /* separate the four so a scroll boundary reads as "next direction", not "more of A" */
+  .cmp-row > *:nth-child(even) { margin-bottom: 40px; padding-bottom: 8px;
+                                 border-bottom: 1px solid var(--cmp-line, #E4E4E7); }
+}
 /* A GRID, not a flex row, and that is load-bearing. The four bet sentences wrap
    to different line counts at narrow column widths, so with flex the four phones
    started at four different heights (measured: aligned at 1180 and up, broken at
