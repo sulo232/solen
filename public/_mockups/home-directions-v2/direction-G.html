@@ -1,0 +1,668 @@
+<!--
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx  (card anatomy, the photo-fallback
+  colourway and the rating row are copied from this component, not re-invented), together with
+  app/[locale]/_components/homepage/MobileCategoriesRow.tsx (the existing home category row this
+  direction promotes into the screen's primary instrument),
+  app/[locale]/page.tsx:190 (where that row renders first inside FeedZone),
+  app/[locale]/_components/homepage/searchCategories.ts and lib/constants/categories.ts
+  (CATEGORY_OPTIONS, the canonical SalonCategory taxonomy).
+
+  Depicts: 4-tile category menu -> lib/constants/categories.ts (CATEGORY_OPTIONS holds exactly
+    coiffeur, barbershop, nails, spa; the same four appear in
+    app/[locale]/_components/homepage/searchCategories.ts). Four is the whole taxonomy, so there is
+    no fifth tile on this screen.
+  Depicts: per-category salon count sub-line -> NET-NEW: no read serves this today. The previous
+    count sub-line was DELETED 2026-07-16 as fabricated. searchCategories.ts verbatim: "Count
+    sub-line removed 2026-07-16 (fabricated: the DB had 20 active salons TOTAL vs the 42-salon count
+    this row used to claim for Coiffeur alone). Real per-category counts need a server-side count
+    query threaded into every SearchOverlay mount ... the sub-line may return once that query
+    exists." So the counts drawn here are BLOCKED on that query. 12/7/5/4 is illustrative and sums
+    to the real total; it is the exact element that got deleted last time for being invented.
+  Depicts: the "28 salons" total -> _inventory/_db-snapshot.json, `salons` table, 28 rows, read from
+    the live snapshot rather than a migration file.
+  Depicts: "Search 67 services by name" -> _inventory/_db-snapshot.json, `service_categories` table,
+    67 rows, same snapshot.
+  Depicts: category tiles with no photograph -> app/[locale]/_components/homepage/SalonCard.tsx sets
+    the fallback rule, and the art is the shipped public/icons/categories/nails.png and spa.png,
+    applied here under FLOORS LAW 2. The seed photo set holds 12 files and 8 distinct images and
+    contains ZERO nails photography and ZERO spa photography, so this state is the truth, not a
+    placeholder.
+  Depicts: search exit cell -> app/[locale]/_components/homepage/SearchBar.tsx (with
+    app/[locale]/_components/search/SearchOverlay.tsx behind it), the existing entry control this
+    direction demotes from the top of the screen into one cell below the menu.
+  Depicts: "Open now near Kreis 4" -> app/api/salons/route.ts (`open_now` at :53, resolved by
+    isOpenNow over opening_hours in lib/salon-hours.ts; `lat` and `lng` at :56-57 for the nearby
+    read).
+  Depicts: salon cards -> app/[locale]/_components/homepage/SalonCard.tsx (its CardName, CardMeta,
+    RatingStars and PriceFrom composition).
+  Depicts: rating value with no review count -> app/[locale]/_components/primitives/RatingStars.tsx.
+    SalonCard's `reviewCount` prop exists but is deliberately NOT rendered: CARD_REDESIGN_2026-07-13
+    C11 sets card row 1 to star plus value only. THIS COLLIDES HEAD-ON WITH PSYCHOLOGY.md law 6,
+    which forbids a bare average and requires the count beside it. Two gates, opposite demands, and
+    they cannot both be satisfied on a card. Resolved toward C11 because it is a dated owner-approved
+    card decision about this exact row, marked per line with psych-ok, and surfaced in the closing
+    note for the owner to arbitrate rather than settled quietly here.
+  Depicts: from-price on the card -> app/[locale]/_components/primitives/PriceFrom.tsx, which ships
+    as "ab CHF 85". English "from CHF" here only because this brief mandates English chrome.
+  Depicts: discount pill -> app/[locale]/dev/bundles-products/page.tsx:150, the pale-green pill that
+    actually RENDERS, copied verbatim: rounded-full, bg-s-success-bg #E8F5E9, text-s-success #16A34A,
+    12px semibold tabular, beside the price. Trap worth recording: SalonCard.tsx also carries a
+    warm-red photo-tag version and draft two copied THAT because it was in the component. It is
+    dormant code the owner rejected twice, the resurrection gate caught it, and the memory note was
+    right where the source file was stale. Also honoured: a -0% pill is REMOVED (owner 2026-07-24,
+    meaningless noise), so a pill renders only for a real discount above zero.
+  Depicts: missing-photo card fallback -> app/[locale]/_components/homepage/SalonCard.tsx
+    (cardCategoryColors, every category { bg: "#F4F4F5", initial: "#0A0A0A" }). A real divergence:
+    the component ships a monogram ONLY, while FLOORS LAW 2 and the design-contract imagery row both
+    spec sunken plus category icon plus initial. Drawn per the law because it is the later decision,
+    and flagged here rather than resolved quietly.
+  Depicts: "Show all 28 salons" -> app/[locale]/[city]/[category], the existing search results route.
+
+  Exists-check: `npm run exists` ran eight times for this file: "category tile", "salon card",
+  "discount badge", "service_categories", "categories", "MobileCategoriesRow", "home category row",
+  "rating stars". NOTHING here is new. The category row, the taxonomy, /api/categories, the 3D
+  category art, SalonCard, the RatingStars and PriceFrom primitives and the pale-green discount pill
+  ALL already exist and are REUSED above, not rebuilt. GRAVEYARD HITS: the per-category count
+  sub-line (deleted 2026-07-16, fabricated), the bracketed review count on a card (superseded by
+  C11), the warm-red photo discount tag (rejected twice) and the -0% pill (removed 2026-07-24). All
+  four handled above. The only net-new move is a LAYOUT one: promoting the existing 4-item category
+  row from a chip strip into the screen's primary instrument. No new component, table or route.
+  Stale-doc flag: the pinned taste rule 3 in CLAUDE.md still lists bracketed review counts as a legal
+  blue accent, and the same category is labelled two different ways in two live files. Both are in
+  the closing note.
+  Language: English throughout per the mockup-English rule, including the city, which renders here by
+  its English exonym. Swiss salon and district names keep their real form since the brief permits
+  that by name, so those lines carry a per-line german-ok marker.
+  Measured: no reference image exists for this direction (it is an argument rendered as a screen, not
+  a copy of a reference), so there is nothing to pixel-sample. The rendered numbers at 390 wide are
+  measured with getBoundingClientRect immediately after this file lands and reported in the run
+  summary: font sizes present, weight >= 600 share of first-viewport text, anchor-to-body ratio, and
+  photographic area as a share of the first viewport.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+
+  @font-face {
+    font-family: "InterVar";
+    src: url("/_mockups/_assets/fonts/inter-latin-var.woff2") format("woff2");
+    font-weight: 100 900; font-display: swap; font-style: normal;
+  }
+  @font-face {
+    font-family: "InterTightVar";
+    src: url("/_mockups/_assets/fonts/inter-tight-latin-var.woff2") format("woff2");
+    font-weight: 100 900; font-display: swap; font-style: normal;
+  }
+
+  .dG-page {
+    /* the four sizes, and nothing else: 30 / 20 / 14 / 12 */
+    --dG-s-anchor: 30px;
+    --dG-s-head:   20px;
+    --dG-s-body:   14px;
+    --dG-s-meta:   12px;
+
+    --dG-ink:       #0A0A0A;
+    --dG-ink-2:     #6B6B6B;
+    --dG-sunken:    #F4F4F5;
+    --dG-border:    #E4E4E7;
+    --dG-accent:    #276EF1;
+    --dG-success:   #16A34A;
+    --dG-successbg: #E8F5E9;
+
+    --dG-whisper: 0 1px 3px rgba(10,10,10,0.04), 0 10px 28px -14px rgba(10,10,10,0.10);
+
+    width: 390px;
+    max-width: 100%;
+    margin: 0 auto;
+    background: #FFFFFF;
+    font-family: "InterVar", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--dG-ink);
+    font-size: var(--dG-s-body);
+    line-height: 1.35;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 40px;
+    box-sizing: border-box;
+  }
+  .dG-page *, .dG-page *::before, .dG-page *::after { box-sizing: border-box; }
+  .dG-page img { display: block; max-width: 100%; }
+  .dG-page a { text-decoration: none; color: inherit; }
+
+  /* ── chrome: a wordmark and nothing else. FLOORS LAW 10, every element earns its place
+        against the screen's one job, and an account button does not serve "show what we do". ── */
+  .dG-top {
+    height: 44px;
+    padding: 0 16px;
+    display: flex; align-items: center;
+  }
+  .dG-mark {
+    /* 500, not 600: measured at 390x844 the fold ran 36% of text at weight >= 600, over the
+       ~30% emphasis ceiling. The wordmark and the rating value are the two that had no lock
+       forcing 600, so they gave the budget back. */
+    font-size: var(--dG-s-body);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+
+  /* ── the anchor: one question, and the supply proof under it ── */
+  .dG-anchor { padding: 6px 16px 18px; }
+  .dG-h1 {
+    margin: 0;
+    font-family: "InterTightVar", "InterVar", sans-serif;
+    font-size: var(--dG-s-anchor);
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.022em;
+  }
+  .dG-sub {
+    margin: 8px 0 0;
+    font-size: var(--dG-s-meta);
+    font-weight: 400;
+    color: var(--dG-ink-2);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── THE MENU. Two columns, four real categories, no invented fifth. ── */
+  .dG-grid {
+    padding: 0 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .dG-tile {
+    position: relative;
+    height: 118px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--dG-sunken);
+    display: block;
+  }
+  .dG-tile-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  /* the only legal way to put a label on a photograph in this system: a fade, not a tint block */
+  .dG-tile-fade {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 68%;
+    background: linear-gradient(to top, rgba(10,10,10,0.68) 0%, rgba(10,10,10,0.34) 46%, rgba(10,10,10,0) 100%);
+  }
+  .dG-tile-txt { position: absolute; left: 12px; right: 12px; bottom: 10px; }
+  .dG-tile-name {
+    font-size: var(--dG-s-body);
+    font-weight: 500;           /* 500, not 600: a menu label is not an entity anchor */
+    letter-spacing: -0.008em;
+    color: #FFFFFF;
+  }
+  .dG-tile-count {
+    margin-top: 1px;
+    font-size: var(--dG-s-meta);
+    font-weight: 400;
+    color: rgba(255,255,255,0.86);
+    font-variant-numeric: tabular-nums;
+  }
+  /* FLOORS LAW 2 fallback: no photograph exists for this category in the seed set, so the
+     spec'd fallback renders. Same tile, same text position, different fill. */
+  .dG-tile--none .dG-tile-name  { color: var(--dG-ink); }
+  .dG-tile--none .dG-tile-count { color: var(--dG-ink-2); }
+  .dG-tile-icon {
+    position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+    width: 54px; height: 54px; object-fit: contain;
+  }
+
+  /* ── the exit. One cell, and it admits how much the menu is not showing. ── */
+  .dG-exit {
+    margin: 10px 16px 0;
+    height: 64px;
+    display: flex; align-items: center; gap: 12px;
+    padding: 0 12px;
+    background: #FFFFFF;
+    border: 1px solid var(--dG-border);
+    border-radius: 16px;
+  }
+  .dG-exit-glyph {
+    flex: 0 0 auto;
+    width: 40px; height: 40px; border-radius: 999px;
+    background: var(--dG-sunken);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .dG-exit-txt { flex: 1 1 auto; min-width: 0; }
+  .dG-exit-title { display: block; font-size: var(--dG-s-body); font-weight: 600; letter-spacing: -0.008em; }
+  .dG-exit-sub {
+    display: block;
+    font-size: var(--dG-s-meta); font-weight: 400; color: var(--dG-ink-2);
+    font-variant-numeric: tabular-nums;
+  }
+  .dG-chev { flex: 0 0 auto; color: var(--dG-ink-2); }
+
+  /* ── the receipt: the menu is a claim, the salons are the proof ── */
+  .dG-sec { padding: 30px 16px 12px; }
+  .dG-h2 {
+    margin: 0;
+    font-size: var(--dG-s-head);
+    font-weight: 600;
+    letter-spacing: -0.016em;
+  }
+  .dG-loc {
+    margin: 5px 0 0;
+    font-size: var(--dG-s-meta);
+    font-weight: 400;
+    color: var(--dG-ink-2);
+  }
+  .dG-loc a {
+    color: var(--dG-accent);
+    /* 12px inline text, 44px hit area. Measured: 11px of padding gave 38px and failed the
+       touch-target floor, so 14px it is (16px line box + 28 = 44). */
+    display: inline-block; padding: 14px 6px; margin: -14px 0;
+  }
+
+  .dG-cards {
+    padding: 0 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 12px;
+  }
+  .dG-card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--dG-whisper);   /* elevation, so no border. Never both. */
+  }
+  .dG-shot { position: relative; height: 130px; background: var(--dG-sunken); }
+  .dG-shot img { width: 100%; height: 100%; object-fit: cover; }
+  .dG-shot-none {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  }
+  .dG-shot-none img { width: 42px; height: 42px; object-fit: contain; }
+  .dG-shot-initial {
+    font-size: var(--dG-s-head);
+    font-weight: 600;
+    color: var(--dG-ink);            /* SalonCard cardCategoryColors: #0A0A0A on #F4F4F5 */
+    line-height: 1;
+  }
+  .dG-body { padding: 9px 10px 11px; }
+  .dG-name {
+    font-size: var(--dG-s-body);
+    font-weight: 600;
+    letter-spacing: -0.008em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  /* CARD_REDESIGN_2026-07-13 C11: row 1 is star plus value. No review count.
+     Weight 500: the locked hierarchy row fixes the star's colour and the value's position but
+     never its weight, so this is where the measured emphasis budget got paid, not on the card
+     name (which FLOORS LAW 6 pins at 600). */
+  .dG-rate {
+    margin-top: 3px;
+    display: flex; align-items: center; gap: 4px;
+    font-size: var(--dG-s-meta);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .dG-where {
+    margin-top: 1px;
+    font-size: var(--dG-s-meta);
+    font-weight: 400;
+    color: var(--dG-ink-2);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .dG-priceline {
+    margin-top: 5px;
+    display: flex; align-items: center; justify-content: space-between; gap: 6px;
+  }
+  .dG-price {
+    font-size: var(--dG-s-meta);
+    font-weight: 400;              /* PBV Art. 13 satisfied at the quietest setting we have */
+    color: var(--dG-ink-2);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  /* the pale-green pill that actually renders (dev/bundles-products/page.tsx:150), copied */
+  .dG-off {
+    border-radius: 999px;
+    padding: 4px 10px;
+    background: var(--dG-successbg);
+    color: var(--dG-success);
+    font-size: var(--dG-s-meta);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .dG-all {
+    margin: 16px 16px 0;
+    height: 48px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    border: 1px solid var(--dG-border);
+    border-radius: 16px;
+    font-size: var(--dG-s-body);
+    font-weight: 600;
+    letter-spacing: -0.008em;
+    font-variant-numeric: tabular-nums;
+  }
+  .dG-all .dG-chev { color: var(--dG-ink); }
+
+  /* ── note ── */
+  .dG-note {
+    width: 390px; max-width: 100%; margin: 0 auto;
+    padding: 22px 16px 44px;
+    border-top: 1px solid #E4E4E7;
+    background: #FFFFFF;
+    font-family: "InterVar", -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 12px; line-height: 1.55; color: #0A0A0A;
+    box-sizing: border-box;
+    /* measured: without this the long unbroken file paths below pushed the document to 980px and
+       the whole page scrolled sideways at 390. A note that breaks the screen it is explaining. */
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  .dG-note h3 { margin: 0 0 4px; font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+  .dG-note h4 { margin: 16px 0 3px; font-size: 12px; font-weight: 600; }
+  .dG-note p  { margin: 0 0 8px; color: #3F3F42; }
+  .dG-note ul { margin: 0 0 8px; padding-left: 16px; color: #3F3F42; }
+  .dG-note li { margin: 0 0 4px; }
+  .dG-note b  { font-weight: 600; color: #0A0A0A; }
+  .dG-note code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; }
+</style>
+
+<div class="dG-page">
+
+  <div class="dG-top">
+    <div class="dG-mark">Solen</div>
+  </div>
+
+  <div class="dG-anchor">
+    <h1 class="dG-h1">Which kind<br>of salon?</h1>
+    <p class="dG-sub">28 salons on Solen. These are the four kinds.</p>
+  </div>
+
+  <!-- THE MENU: the four values SalonCategory actually holds. No fifth tile, because a fifth
+       tile would be a category no salon in the database can be filed under. -->
+  <div class="dG-grid">
+
+    <a class="dG-tile" href="#">
+      <img class="dG-tile-img" src="/_mockups/_assets/salon-photos/p04.jpg" alt="">
+      <div class="dG-tile-fade"></div>
+      <div class="dG-tile-txt">
+        <div class="dG-tile-name">Coiffeur</div>
+        <div class="dG-tile-count">12 salons</div>
+      </div>
+    </a>
+
+    <a class="dG-tile" href="#">
+      <img class="dG-tile-img" src="/_mockups/_assets/salon-photos/p03.jpg" alt="">
+      <div class="dG-tile-fade"></div>
+      <div class="dG-tile-txt">
+        <div class="dG-tile-name">Barbershop</div>
+        <div class="dG-tile-count">7 salons</div>
+      </div>
+    </a>
+
+    <!-- no nails photography exists in the seed set: the spec'd fallback, not a wrong photo -->
+    <a class="dG-tile dG-tile--none" href="#">
+      <img class="dG-tile-icon" src="/icons/categories/nails.png" alt="">
+      <div class="dG-tile-txt">
+        <div class="dG-tile-name">Nails</div>
+        <div class="dG-tile-count">5 salons</div>
+      </div>
+    </a>
+
+    <!-- same, for spa. Label taken from SalonCard cardCategoryLabels, not from CATEGORY_OPTIONS,
+         because those two live files disagree on this one category's name. -->
+    <a class="dG-tile dG-tile--none" href="#">
+      <img class="dG-tile-icon" src="/icons/categories/spa.png" alt="">
+      <div class="dG-tile-txt">
+        <div class="dG-tile-name">Spa &amp; Wellness</div>
+        <div class="dG-tile-count">4 salons</div>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- THE EXIT. Hers marks its browse-all tile by swapping the chevron for a magnifier; Goodreads
+       prints how many categories are still hidden. Both, in one cell: the field is here for the
+       people the menu failed, and it says out loud how much the menu is not showing.
+       Icon markup copied from node_modules/lucide-react/dist/esm/icons/search.js -->
+  <a class="dG-exit" href="#">
+    <span class="dG-exit-glyph">
+      <svg class="lucide lucide-search" data-lucide="search" xmlns="http://www.w3.org/2000/svg"
+           width="18" height="18" viewBox="0 0 24 24"
+           fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>
+      </svg>
+    </span>
+    <span class="dG-exit-txt">
+      <span class="dG-exit-title">Something else</span>
+      <span class="dG-exit-sub">Search 67 services by name</span>
+    </span>
+    <svg class="dG-chev lucide lucide-chevron-right" data-lucide="chevron-right"
+         xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m9 18 6-6-6-6"/>
+    </svg>
+  </a>
+
+  <!-- the location we guessed, asserted where it can be checked, never asked for up front -->
+  <div class="dG-sec">
+    <h2 class="dG-h2">Open now near Kreis 4</h2> <!-- german-ok: Swiss district name -->
+    <p class="dG-loc">From your device. <a href="#">Change</a></p>
+  </div>
+
+  <div class="dG-cards">
+
+    <div class="dG-card">
+      <div class="dG-shot"><img src="/_mockups/_assets/salon-photos/p01.jpg" alt=""></div>
+      <div class="dG-body">
+        <div class="dG-name">Coiffeur Langstrasse</div> <!-- german-ok: real salon name -->
+        <div class="dG-rate">
+          <svg class="lucide lucide-star" data-lucide="star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"> <!-- psych-ok: law 6 wants the count beside the average, CARD_REDESIGN_2026-07-13 C11 removes it from the card row. Owner call, argued in the note. -->
+            <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>
+          </svg>
+          <span>4.8</span>
+        </div>
+        <div class="dG-where">Kreis 4, Zurich</div> <!-- german-ok: Swiss district name -->
+        <div class="dG-priceline"><span class="dG-price">from CHF 65</span></div>
+      </div>
+    </div>
+
+    <!-- p12, not p03: the seed set has exactly ONE barbershop photo and the Barbershop category
+         tile above is already using it. Same image in a tile and in the card directly under it
+         reads as a bug, so the barbershop card moved below the fold instead. -->
+    <div class="dG-card">
+      <div class="dG-shot"><img src="/_mockups/_assets/salon-photos/p12.jpg" alt=""></div>
+      <div class="dG-body">
+        <div class="dG-name">Salon Zentral</div> <!-- german-ok: real salon name -->
+        <div class="dG-rate">
+          <svg class="lucide lucide-star" data-lucide="star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"> <!-- psych-ok: C11 removes the review count from the card row; law 6 conflict argued in the note. -->
+            <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>
+          </svg>
+          <span>4.7</span>
+        </div>
+        <div class="dG-where">Kreis 1, Zurich</div> <!-- german-ok: Swiss district name -->
+        <div class="dG-priceline"><span class="dG-price">from CHF 38</span></div>
+      </div>
+    </div>
+
+    <!-- worst-case content: the longest plausible Swiss salon name on the narrowest card -->
+    <div class="dG-card">
+      <div class="dG-shot"><img src="/_mockups/_assets/salon-photos/p09.jpg" alt=""></div>
+      <div class="dG-body">
+        <div class="dG-name">Haarwerkstatt Aussersihl Zurich</div> <!-- german-ok: real salon name -->
+        <div class="dG-rate">
+          <svg class="lucide lucide-star" data-lucide="star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"> <!-- psych-ok: C11 removes the review count from the card row; law 6 conflict argued in the note. -->
+            <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>
+          </svg>
+          <span>4.9</span>
+        </div>
+        <div class="dG-where">Aussersihl, Zurich</div> <!-- german-ok: Swiss district name -->
+        <div class="dG-priceline"><span class="dG-price">from CHF 85</span></div>
+      </div>
+    </div>
+
+    <!-- the missing-photo fallback, rendered live: sunken + the system's own 3D icon + the initial.
+         Also the one badge this screen allows: the pale-green discount pill beside the price. -->
+    <div class="dG-card">
+      <div class="dG-shot">
+        <div class="dG-shot-none">
+          <img src="/icons/categories/nails.png" alt="">
+          <span class="dG-shot-initial">N</span>
+        </div>
+      </div>
+      <div class="dG-body">
+        <div class="dG-name">Nagelstudio Bellevue</div> <!-- german-ok: real salon name -->
+        <div class="dG-rate">
+          <svg class="lucide lucide-star" data-lucide="star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"> <!-- psych-ok: C11 removes the review count from the card row; law 6 conflict argued in the note. -->
+            <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>
+          </svg>
+          <span>4.6</span>
+        </div>
+        <div class="dG-where">Kreis 8, Zurich</div> <!-- german-ok: Swiss district name -->
+        <div class="dG-priceline">
+          <span class="dG-price">from CHF 55</span>
+          <span class="dG-off">&minus;20%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="dG-card">
+      <div class="dG-shot"><img src="/_mockups/_assets/salon-photos/p03.jpg" alt=""></div>
+      <div class="dG-body">
+        <div class="dG-name">Barbershop Josefstrasse</div> <!-- german-ok: real salon name -->
+        <div class="dG-rate">
+          <svg class="lucide lucide-star" data-lucide="star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"> <!-- psych-ok: C11 removes the review count from the card row; law 6 conflict argued in the note. -->
+            <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>
+          </svg>
+          <span>4.9</span>
+        </div>
+        <div class="dG-where">Kreis 5, Zurich</div> <!-- german-ok: Swiss district name -->
+        <div class="dG-priceline"><span class="dG-price">from CHF 42</span></div>
+      </div>
+    </div>
+
+    <div class="dG-card">
+      <div class="dG-shot">
+        <div class="dG-shot-none">
+          <img src="/icons/categories/spa.png" alt="">
+          <span class="dG-shot-initial">S</span>
+        </div>
+      </div>
+      <div class="dG-body">
+        <div class="dG-name">Spa Enge</div> <!-- german-ok: real salon name -->
+        <div class="dG-rate">
+          <svg class="lucide lucide-star" data-lucide="star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"> <!-- psych-ok: C11 removes the review count from the card row; law 6 conflict argued in the note. -->
+            <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>
+          </svg>
+          <span>4.8</span>
+        </div>
+        <div class="dG-where">Enge, Zurich</div> <!-- german-ok: Swiss district name -->
+        <div class="dG-priceline"><span class="dG-price">from CHF 95</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <a class="dG-all" href="#">
+    Show all 28 salons
+    <svg class="dG-chev lucide lucide-chevron-right" data-lucide="chevron-right"
+         xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m9 18 6-6-6-6"/>
+    </svg>
+  </a>
+
+</div>
+
+<div class="dG-note">
+  <h3>Direction G. A menu, not a search.</h3>
+
+  <p><b>The bet.</b> Home's job is to show what we can actually do, as a grid of named categories,
+  because a text field asks the customer to guess a word we already own. Fresha proves this against
+  itself: focus its web search field and the first thing it does is drop a menu of six categories
+  under your cursor. If the field's opening move is to show a menu, the menu can be the field.</p>
+
+  <p><b>What it gives up.</b> A grid cannot say "Saturday morning", and that is the one constraint
+  that decides whether a booking exists at all, so anyone with a time need has to reach the search
+  anyway and the search is now a 64px cell below the menu. It declares a taxonomy, so whatever is not
+  a tile does not exist for a browsing user. It spends the top of the phone on four tiles, which is
+  only affordable because the taxonomy turned out to be four. And it prints category counts, which
+  publishes how thin our thinnest category is: that is the owner's call to make, not a design
+  call.</p>
+
+  <h4>The finding that changed the screen</h4>
+  <p>The taxonomy is <b>four</b>, not six. <code>CATEGORY_OPTIONS</code> in
+  <code>lib/constants/categories.ts</code> is typed to <code>SalonCategory</code> and holds coiffeur,
+  barbershop, nails, spa. A fifth or sixth tile would have been a word no salon in the database can
+  be filed under. That cuts both ways. Against the bet: four words are easy to guess, so the field
+  was not asking much, and a four-item menu is a weaker replacement for a field than a twelve-item
+  one. For the bet: four tiles fit, so the menu can lead and the first salon photographs still reach
+  the first viewport, which is the collision named in WHY_RELATIONS I2 that should have killed this
+  direction outright. It also forced the headline to be honest: this is a menu of shop types, not of
+  things you want done. If the interesting layer is really the 67 rows in
+  <code>service_categories</code>, then the menu should be built from services, and this screen is
+  the sketch of a better version of itself.</p>
+
+  <h4>One collision the owner has to settle</h4>
+  <p>The card's rating row is caught between two live gates that cannot both be obeyed.
+  CARD_REDESIGN_2026-07-13 C11 says row 1 is star plus value only, no review count.
+  <code>PSYCHOLOGY.md</code> law 6 says a star with a bare average is forbidden and the count must sit
+  beside it. Drawn per C11, because C11 is a dated owner decision about this exact row, and marked in
+  the markup rather than silently resolved. Worth saying which side has the better argument on the
+  merits: law 6 does, since 4.8 from three reviews and 4.8 from three hundred are different facts and
+  the card cannot tell them apart. That is a call about honesty, not taste, so it should be yours.</p>
+
+  <h4>What else the gates corrected, in both directions</h4>
+  <p>The per-category count sub-line already existed and was <b>deleted on 2026-07-16 for being
+  fabricated</b>: it claimed 42 salons for Coiffeur while the database held 20 in total. Counts are
+  the load-bearing element of this direction, so they ship only behind the server-side count query
+  that comment asks for. The 28 is real, read from the live snapshot. The 12/7/5/4 split is
+  illustrative, and it is exactly the element that got deleted last time.</p>
+  <p>Draft two "fixed" the discount pill by copying the warm-red photo tag out of
+  <code>SalonCard.tsx</code>, and the resurrection gate blocked it: that code is dormant and the owner
+  rejected it twice. The live treatment is the pale-green pill beside the price. On the discount, the
+  memory note was right and the component file was the stale artefact. Reading source is not proof a
+  treatment renders.</p>
+  <p>Two stale references found on the way: taste rule 3 in CLAUDE.md still lists bracketed review
+  counts as a legal blue accent, and the same category is named "Spa &amp; Wellness" in SalonCard and
+  searchCategories but differently in CATEGORY_OPTIONS. One entity, two names.</p>
+
+  <h4>Two absences the screen refuses to hide</h4>
+  <p>The seed photo set has no nails photography and no spa photography. So those two tiles and two
+  cards render the FLOORS LAW 2 fallback. A menu built out of real inventory shows you where the
+  inventory thins out, which is the honest version of "show off the stores that we have". Worth
+  knowing: the law specs the fallback as sunken plus category icon plus initial, while
+  <code>SalonCard</code> ships a monogram only. Drawn per the law, flagged rather than smoothed.</p>
+  <p>A third asset problem only the render exposed, which no measurement would have caught: the set
+  holds exactly ONE barbershop photo, so the Barbershop tile and the barbershop card were showing the
+  identical image one above the other. The card moved below the fold to break it. That is a patch, not
+  a fix. A menu faced with real photography needs more photography than a feed does, because the same
+  picture now has two jobs on one screen.</p>
+
+  <h4>Where each part came from</h4>
+  <ul>
+    <li><b>Full-photo tiles with the label inside</b> keep the category tile anatomically distinct
+    from the salon card, which puts its text below the photo. Fresha runs the same split: a
+    two-column category grid, and photo-top cards for salons.</li>
+    <li><b>Real counts on the tiles</b> turn an index into proof of supply. Every product that does
+    it prints the thin case too: Airbnb Services renders "5 available" and seven "Coming soon" tiles
+    rather than hiding them, Depop labels two of its four rows with a count of one, Typeform prints
+    "Rewards 1".</li>
+    <li><b>The exit as a member of the grid.</b> Hers demotes search to the eighth tile and marks it
+    by swapping the chevron for a magnifier. Goodreads prints the remainder as "Show 9 more
+    categories" instead of a vague see-all. This cell does both jobs at once.</li>
+    <li><b>Location asserted, never asked.</b> Square Go proves a location it never requested inside
+    a section title; Google Maps writes "Latest in Downtown". So the guess is stated above the cards
+    where it can be checked, with one small blue link to correct it.</li>
+  </ul>
+
+  <h4>Measured, not asserted</h4>
+  <p>Rendered at 390 wide and read with getBoundingClientRect over the first 844px.
+  <b>Four distinct sizes</b> (30, 20, 14, 12), so the ceiling of four is met exactly.
+  <b>Anchor 2.14x body</b>, clearing the 1.8x floor. <b>24% of first-viewport text at weight
+  600</b>, under the ~30% ceiling. Getting there cost two corrections the first render exposed: it
+  measured <b>36%</b>, so the wordmark and the rating value dropped to 500, which are the only two
+  in the fold that no lock pins at 600. A touch target measured <b>38px</b> and is now 44.
+  Geometry: exit cell at y=413, first salon card at y=567, page 1387 tall.</p>
+  <p><b>The floor this direction misses, stated plainly: photographic area is 28% of the first
+  viewport, against the ~1/3 imagery floor.</b> Four photos reach the fold (two category tiles, two
+  card images) and a fifth is cropped at the edge. The gap is structural, not a spacing tweak: half
+  the category tiles have no photography to show, and closing it means either moving the menu below
+  the feed the way Fresha does, or shooting nails and spa work. It should not be closed by adding a
+  decorative image, which is the thing rejected three times.</p>
+  <p>One more conflict, surfaced not smoothed: the price sits at weight 400 in the meta line per this
+  brief, which contradicts FLOORS LAW 6's "price 600 tabular" two-anchor rule. The brief is newer, so
+  it wins here.</p>
+</div>

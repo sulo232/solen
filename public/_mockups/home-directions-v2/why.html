@@ -1,0 +1,84 @@
+<!-- Base: reasoning document, no live route to capture -->
+<!-- Scale: full-page -->
+<!--
+  Exists-check: this page SUMMARISES the five WHY_*.md lenses in _design-system/research/ written
+  2026-07-30. It re-researches nothing and invents no positions; every position and disagreement
+  below is lifted from those files, which carry the mobbin links.
+  Diagnosis: the previous research pass produced frequency counts | measured 0 explanations of WHY
+  in the corpus files, only tallies | violates the owner's 2026-07-30 instruction to explain the
+  concept | target every pattern argued for and against.
+  Depicts: nothing. This is prose, not a UI.
+-->
+<html lang="en">
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Why apps choose what they choose</title>
+<style>
+ :root{--ink:#0A0A0A;--ink2:#6B6B6B;--line:#E4E4E7;--sunken:#F4F4F5;--accent:#276EF1}
+ *{box-sizing:border-box;-webkit-text-size-adjust:100%}
+ body{margin:0;background:#fff;color:var(--ink);
+   font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+   font-size:16px;line-height:1.6}
+ .wrap{max-width:720px;margin:0 auto;padding:28px 20px 90px}
+ h1{font-size:30px;line-height:1.15;letter-spacing:-.025em;font-weight:600;margin:0 0 10px}
+ h2{font-size:21px;letter-spacing:-.02em;font-weight:600;margin:0 0 6px}
+ .lede{font-size:16px;color:var(--ink2);margin:0 0 26px}
+ section{margin:0 0 40px;padding:20px 0 0;border-top:1px solid var(--line)}
+ .src{font-size:13px;color:var(--ink2);margin:0 0 14px}
+ .sub{font-size:14px;color:var(--ink2);margin:0 0 8px}
+ ol.pos{margin:0 0 16px;padding-left:22px}
+ ol.pos li{margin-bottom:9px}
+ .dis{background:var(--sunken);border-radius:16px;padding:14px 16px;font-size:15px;margin:0}
+ .dis b{font-weight:600}
+ ul.rel{padding-left:22px} ul.rel li{margin-bottom:10px}
+ code{font-family:ui-monospace,Menlo,monospace;font-size:13px;background:var(--sunken);
+   padding:1px 5px;border-radius:5px}
+ a.back{display:inline-block;background:var(--ink);color:#fff;text-decoration:none;font-size:14px;
+   font-weight:600;padding:11px 20px;border-radius:99px;margin-top:10px}
+</style></head>
+<body><div class="wrap">
+<h1>Why apps choose what they choose</h1>
+<p class="lede">Four questions, the positions real products take on each, and the strongest
+disagreement found for every one. Nothing here is a frequency count. Where two credible apps do
+opposite things, both are kept, because the answer depends on what you are selling.</p>
+<section>
+<h2>Does home ask you to search, or invite you to browse?</h2>
+<p class="src">From <code>WHY_ENTRY.md</code>, 73 cited screens.</p>
+<p class="sub">The positions real apps take, and what each one has to believe:</p>
+<ol class="pos"><li>The segmented bar. Your query is a tuple, and we would rather you complete it than retract it.</li><li>The collapsed pill. One question at a time, because the phone only has room for one.</li><li>The intent grid. There is no query. There is a menu.</li><li>Search demoted to a utility. A returning user does not type.</li></ol>
+<p class="dis"><b>The strongest disagreement found, both sides standing.</b> It is inside one company, which is why it is the strongest. A cross-brand disagreement leaves product as a confound. This one holds the product, the catalog and the week constant and isolates platform.</p>
+</section><section>
+<h2>What is the card actually selling?</h2>
+<p class="src">From <code>WHY_CURRENCY.md</code>, 86 cited screens.</p>
+<p class="sub">The positions real apps take, and what each one has to believe:</p>
+<ol class="pos"><li>THE ROOM. The card sells a place you will sit in.</li><li>THE PERSON. The card sells a human you are hiring.</li><li>THE WORK. The card sells an outcome, and the person is a credit line.</li><li>THE SLOT. The card sells an hour.</li></ol>
+<p class="dis"><b>The strongest disagreement found, both sides standing.</b> </p>
+</section><section>
+<h2>You rebook every six weeks. A traveller books once a year.</h2>
+<p class="src">From <code>WHY_RETURN.md</code>, 96 cited screens.</p>
+<p class="sub">The positions real apps take, and what each one has to believe:</p>
+<ol class="pos"><li>pin the commitment on home</li><li>give return its own destination, keep home for browse</li><li>put return inside the search instrument</li><li>one screen, section present or absent</li></ol>
+<p class="dis"><b>The strongest disagreement found, both sides standing.</b> ClassPass and Zocdoc. Same problem, opposite screens, both right. They are as close to identical as two products in this sweep get. Both sell an appointment at a physical place with a named human. Both hold the same data: an upcoming reservation with a time and an address. Both have a tab bar with room.</p>
+</section><section>
+<h2>Nine things on the screen, or two?</h2>
+<p class="src">From <code>WHY_DENSITY.md</code>, 53 cited screens.</p>
+<p class="sub">The positions real apps take, and what each one has to believe:</p>
+<ol class="pos"><li>The catalogue index</li><li>The comparison table</li><li>The single-object showcase</li><li>The intent router</li></ol>
+<p class="dis"><b>The strongest disagreement found, both sides standing.</b> Both sell a time slot at a venue. Both are web. Both are credible at scale. Fresha gives its entire first viewport to a headline, a search bar and a counter. Zero venues.</p>
+</section>
+<section>
+<h2>The relations, which nothing in our system had ever written down</h2>
+<p class="sub">Choices that FORCE other choices. Pick the first and you have picked the second.</p>
+<ul class="rel"><li>Put bookable times on the card and the photo shrinks or the card count halves. You pick which. You do not get to skip.</li><li>A large photograph forces fewer columns, which forces title truncation, which quietly removes the name as a comparable field.</li><li>Put a face in the photo slot and density must drop, because a face below thumbnail size stops being a face.</li><li>An editorial title forces a byline, a count or a date onto the section, and prose forces the photograph down to a left-hand thumbnail.</li><li>A category tile carrying a real supply count converts the index from navigation into proof of supply, and commits you to printing the thin numbers.</li><li>A control that displays state forces an edit path, and it forces a SECOND control beside it.</li></ul>
+<p class="sub">Choices that FIGHT, because they want the same space.</p>
+<ul class="rel"><li>A pinned personal block and a photograph-dominant first screen cannot both own the top. But the resolution the corpus actually uses is not &quot;pick one&quot;.</li><li>A category grid above the fold and real inventory in the first viewport cannot both fit on a phone.</li><li>The bottom edge holds exactly one persistent thing.</li><li>Three currencies do not fit on one rail card. And this is the pair with the strongest evidence in the file, because the evidence is a search that failed.</li><li>One entity cannot serve four jobs through one component, and &quot;documented variant&quot; stops being true somewhere before four.</li><li>A fixed-width personal rail and a two-item history cannot both look intentional.</li></ul>
+<p class="src">Full mechanisms in <code>WHY_RELATIONS.md</code>, 86 cited screens.</p>
+</section>
+<section>
+<h2>The two answers that eliminate most of the eight directions</h2>
+<p>Whether home is one screen for both a first-timer and a rebooker, or two screens. And whether the
+photo slot belongs to the salon, the stylist, or the finished work. Those two decisions rule out most
+of the eight on their own, which is why they are worth answering before anything gets built.</p>
+<a class="back" href="./index.html">See the eight directions</a>
+</section>
+</div></body></html>

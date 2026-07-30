@@ -1,0 +1,710 @@
+<title>Direction L, one Solen homepage, the sections know you</title>
+
+<!--
+  DIRECTION L , "One home; the sections know you, the chrome never does."
+  Static picture. No motion, no interaction, no hover state. Width 390.
+
+  Base: elicitation. This is a direction-choice probe rendered as a screen, not a treatment
+  mockup of the live home, so there is no before/after iframe pair inside the fragment. The
+  live BEFORE belongs on the parent comparison page that inlines all of these.
+  Scale: full-page
+
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx
+  Grounded-in: app/[locale]/_components/homepage/RecentlyViewed.tsx
+  Grounded-in: app/[locale]/_components/homepage/SearchBar.tsx
+  Grounded-in: app/[locale]/_components/homepage/SectionHeader.tsx
+  Grounded-in: app/[locale]/_components/homepage/Hero.tsx
+  Grounded-in: app/[locale]/_components/primitives/Logo.tsx
+  Grounded-in: app/[locale]/_components/primitives/PriceFrom.tsx
+  Grounded-in: app/[locale]/_components/primitives/RatingStars.tsx
+  Grounded-in: app/[locale]/_components/primitives/CardText.tsx
+  Grounded-in: _design-system/research/WHY_RETURN.md
+  Grounded-in: _design-system/research/WHY_ENTRY.md
+  Grounded-in: _design-system/research/WHY_RELATIONS.md
+
+  Exists-check: `npm run exists "book again"` returned 0 matches on 2026-07-30, so the band's
+  label is net-new. Everything the band DOES already exists in some form and is reused, not
+  rebuilt: app/[locale]/_components/homepage/RecentlyViewed.tsx already renders a personal
+  section that appears or vanishes on local history and already backfills real top-rated salons
+  when there is none, which IS this bet's mechanism; app/[locale]/_components/homepage/SalonCard.tsx
+  owns the salon anatomy this file composes rather than redraws; SearchBar.tsx owns the entry
+  control; SectionHeader.tsx owns the title plus see-all head; PriceFrom.tsx owns the price
+  grammar; RatingStars.tsx owns the star; CardText.tsx owns the name and meta weights.
+  REMOVED.md hits deliberately NOT re-proposed here: the homepage hero photograph (owner, third
+  rejection 2026-07-25), the denied 2026-07-16 photo takeover direction, the photo-overlay
+  curation carousel (removed 2026-07-02), and the barber walk-in trio from 2026-07-11 whose
+  keyword field is the one graveyard line that touches rebooking. That line is the reason the
+  band's commit action is presented as a proposal and not as a build; see the note at the end.
+
+  Diagnosis: mobile entry control height | measured 250 CSS px, three stacked segments plus an
+  ink submit button, at app/[locale]/_components/homepage/SearchBar.tsx line 100 HEIGHT.mobile.collapsed,
+  read on disk 2026-07-30, consumed at line 265 | violates CLAUDE.md FLOORS LAW 2 imagery presence,
+  roughly one third photographic in the first viewport at 390 by 844, because 250 px of chrome
+  plus the Hero headline block pushes every salon photograph past the fold | target one 48 px row,
+  which is what every phone entry control in the two lens corpora is, one row or absent
+  Diagnosis: the personal section is fixed-width rail cards that cannot look intentional at one
+  item | measured RecentlyViewed.tsx line 110 renders the ScrollRow with no minimum count, so a
+  single history entry ships one 231 px card in a row sized for four | violates CLAUDE.md FLOORS
+  LAW 3 density, a populated list first viewport shows at least four content units plus a cropped
+  next item | target the personal band is a full-width row list, which reads intentional at one
+  item and needs no minimum-count rule
+  Diagnosis: home has one state and one shape for every visitor | measured app/[locale]/page.tsx
+  lines 189 to 213 render Hero then a fixed FeedZone order with exactly one conditional section,
+  RecentlyViewed at line 203, and `npm run exists "upcoming appointment"` returns 0, so a returning
+  customer's outstanding commitment has no render site anywhere on the feed | violates CLAUDE.md
+  FLOORS LAW 10, every element must belong to the screen's job, since the job of a returning
+  customer's home is not the job of a first timer's | target one home whose single band under the
+  search field carries four named states
+
+  Depicts: search entry control -> app/[locale]/_components/homepage/SearchBar.tsx, drawn at its
+    collapsed desktop geometry of one row rather than its 250 px mobile stack
+  Depicts: wordmark -> app/[locale]/_components/primitives/Logo.tsx at size sm, 18 px, no dot
+  Depicts: account control -> app/[locale]/_components/layout/ header account entry, drawn as the
+    same icon in every state on purpose
+  Depicts: headline -> app/[locale]/_components/homepage/Hero.tsx line 199, same clamp anchor,
+    translated, with the greeting line above it and the sub line below it both dropped
+  Depicts: the personal band mechanism -> app/[locale]/_components/homepage/RecentlyViewed.tsx
+    (present or absent on local history, with the real top-rated backfill)
+  Depicts: the band's row anatomy -> app/[locale]/_components/homepage/SalonCard.tsx, drawn as a
+    declared row density of that component, not a second implementation: same three text rows,
+    same sizes, same truncation, row 2 carrying the relationship instead of the category label
+  Depicts: booked-appointment data -> app/[locale]/termine/page.tsx (the customer bookings list).
+    The BAND that pins it is NET-NEW: `npm run exists "upcoming appointment"` returns 0
+  Depicts: one-tap rebook data -> app/api/bookings/express-rebook/route.ts plus
+    bookings.is_express_rebook and bookings.rebooked_from_id, all live with zero customer render
+    site today, which is why this is drawn as a proposal
+  Depicts: salon cards -> app/[locale]/_components/homepage/SalonCard.tsx, aspect 5 by 4 photo at
+    radius 22, three-row info stack, mobile width computed as viewport minus 44 over 1.5
+  Depicts: save heart on the photo -> app/[locale]/_components/homepage/HeartButton.tsx
+  Depicts: star rating -> app/[locale]/_components/primitives/RatingStars.tsx compact mode, star
+    then value, no count, per the dated converged-card decision
+  Depicts: price grammar -> app/[locale]/_components/primitives/PriceFrom.tsx, amount then CHF,
+    with the word from only ever attached to a named service
+  Depicts: section title plus see-all -> app/[locale]/_components/homepage/SectionHeader.tsx SectionTitle
+  Depicts: salon photography -> the photoUrl prop of SalonCard.tsx, fed here by the 12 self-hosted
+    seed photos in public/_mockups/_assets/salon-photos
+  Depicts: deliberately NOT drawn -> app/[locale]/_components/homepage/MobileCategoriesRow.tsx and
+    WalkInBand.tsx and Entdecken.tsx, all of which the live page ships below this point
+
+  Named deviations from the shipped code, so nobody grades them as drift:
+    1. Copy is ENGLISH per the dated mockup rule. Swiss place and salon names stay.
+    2. Asset paths are root-relative. Measured cause, not a preference: the static server drops
+       the trailing slash, so a relative ../ resolves one directory too high and broke 31 photos
+       in the previous round.
+    3. Four type sizes only, 30 / 18 / 14 / 12. The shipped card renders its rating value at 13,
+       which would be a fifth size for one glyph pair, so the rating sits in the 12 bucket.
+    4. Three weights, 400 / 500 / 600. Two is unreachable without breaking a locked primitive:
+       CardText.tsx bakes 500 for a card name and SectionHeader plus Hero use 600.
+    6. The see-all link is 500, not SectionTitle's 600. Measured cause: at 600 this screen's
+       first viewport ran 9 of 24 text elements at weight >= 600, i.e. 37.5 percent, over the
+       roughly 30 percent emphasis ceiling. At 500 it measures 6 of 24, i.e. 25 percent. The
+       arrow plus the ink colour still separate the link from grey meta.
+    5. Fonts are self-hosted from public/_mockups/_assets/fonts so the fragment loads nothing
+       remote. Wordmark and section titles use Inter Tight below 24 px because the shipped Logo
+       and SectionTitle both do.
+-->
+
+<style>
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/_mockups/_assets/fonts/inter-latin-var.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter Tight";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/_mockups/_assets/fonts/inter-tight-latin-var.woff2") format("woff2");
+}
+
+/* ==========================================================================
+   Direction L. Every class is prefixed dL- so it cannot touch a sibling
+   direction when all of them are inlined onto one comparison page.
+   Single light theme. There is no dark-mode rule in this file, on purpose.
+   Tokens are the locked literals: ink #0A0A0A, ink-2 #6B6B6B, hairline
+   #E4E4E7, sunken #F4F4F5, star #FFC32B.
+   ========================================================================== */
+
+.dL-root {
+  --dL-ink: #0A0A0A;
+  --dL-ink-2: #6B6B6B;
+  --dL-line: #E4E4E7;
+  --dL-sunken: #F4F4F5;
+  --dL-star: #FFC32B;
+  --dL-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --dL-display: "Inter Tight", "Inter", system-ui, -apple-system, sans-serif;
+
+  width: 390px;
+  max-width: 100%;
+  margin: 0 auto;
+  background: #fff;
+  color: var(--dL-ink);
+  font-family: var(--dL-body);
+  font-size: 14px;
+  line-height: 1.4;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+.dL-root *, .dL-root *::before, .dL-root *::after { box-sizing: border-box; }
+/* :where keeps the reset at zero specificity, so a dL- class below still wins.
+   Measured cause: written as `.dL-root h1` it outranked .dL-h1 and silently
+   zeroed the headline's own 16px side margin, which put the h1 flush against
+   the left edge on the first render. */
+.dL-root :where(h1, h2, p) { margin: 0; }
+.dL-root img { display: block; }
+
+/* ---- the screen ---- */
+.dL-screen { position: relative; padding-bottom: 8px; }
+
+/* ---- chrome. Identical in every state, which is the whole bet ---- */
+.dL-top {
+  height: 52px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.dL-mark {
+  font-family: var(--dL-display);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--dL-ink);
+}
+.dL-iconbtn {
+  width: 44px;
+  height: 44px;
+  margin-right: -10px;
+  display: grid;
+  place-items: center;
+  color: var(--dL-ink);
+}
+.dL-h1 {
+  margin: 8px 16px 12px;
+  font-family: var(--dL-display);
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--dL-ink);
+}
+.dL-search {
+  margin: 0 16px;
+  height: 48px;
+  padding: 0 14px;
+  border-radius: 12px;
+  background: var(--dL-sunken);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.dL-search span {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--dL-ink-2);
+}
+
+/* ---- THE SLOT. The only thing on this page that knows who you are ---- */
+.dL-slot {
+  margin-top: 12px;
+  padding: 12px 16px 14px;
+  background: var(--dL-sunken);
+}
+.dL-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.dL-h2 {
+  font-family: var(--dL-display);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--dL-ink);
+}
+.dL-seeall {
+  flex: 0 0 auto;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--dL-ink);
+  white-space: nowrap;
+}
+.dL-row {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.dL-thumb {
+  flex: 0 0 auto;
+  width: 72px;
+  height: 72px;
+  border-radius: 12px;
+  object-fit: cover;
+  background: var(--dL-sunken);
+}
+.dL-rowtext { flex: 1 1 auto; min-width: 0; }
+.dL-name {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--dL-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dL-meta {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.35;
+  color: var(--dL-ink-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dL-r1 { display: flex; align-items: baseline; gap: 8px; }
+.dL-r3 { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-top: 2px; }
+.dL-rate {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--dL-ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.dL-num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* the one primary commit on the screen */
+.dL-commit {
+  flex: 0 0 auto;
+  height: 44px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--dL-ink);
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+}
+/* a state where nothing is payable gets the neutral outline tier instead */
+.dL-ghost {
+  flex: 0 0 auto;
+  height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--dL-line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--dL-ink);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* ---- the feed. Identical in every state ---- */
+.dL-sec { padding: 14px 0 2px; }
+.dL-sec > .dL-head { padding: 0 16px; }
+.dL-rail {
+  margin-top: 8px;
+  padding: 0 16px 4px;
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.dL-rail::-webkit-scrollbar { display: none; }
+.dL-card { flex: 0 0 auto; width: 231px; }
+.dL-photo {
+  position: relative;
+  width: 231px;
+  height: 185px;
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--dL-sunken);
+  box-shadow: 0 1px 2px rgba(10, 10, 10, 0.06), 0 6px 16px rgba(10, 10, 10, 0.07);
+}
+.dL-photo img { width: 100%; height: 100%; object-fit: cover; }
+.dL-heart {
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+}
+/* HeartButton.tsx: unsaved heart is an ink stroke at 2.25 with a soft shadow.
+   White is the DARK-photo override only, set by the parent, so a white heart on
+   a light salon photo is not the shipped default. */
+.dL-heart svg { filter: drop-shadow(0 1px 3px rgba(10, 10, 10, 0.35)); }
+.dL-ctext { margin-top: 8px; padding: 0 2px; display: flex; flex-direction: column; gap: 2px; }
+.dL-cont { margin: 10px 16px 0; font-size: 12px; font-weight: 400; color: var(--dL-ink-2); }
+
+/* ---- fold marker. The composer may hide this when it draws its own ---- */
+.dL-fold { position: absolute; left: 0; right: 0; top: 844px; border-top: 1px dashed var(--dL-line); }
+.dL-foldlab { position: absolute; right: 16px; top: 848px; font-size: 12px; font-weight: 400; color: var(--dL-ink-2); }
+
+/* ---- the same page, other people ---- */
+.dL-vars { margin-top: 60px; border-top: 1px solid var(--dL-line); }
+.dL-cap { margin: 14px 16px 0; font-size: 12px; font-weight: 600; color: var(--dL-ink); }
+.dL-capsub { margin: 4px 16px 0; font-size: 12px; font-weight: 400; color: var(--dL-ink-2); }
+.dL-var { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--dL-line); }
+.dL-vlab { margin: 0 16px 10px; font-size: 12px; font-weight: 600; color: var(--dL-ink); }
+.dL-vwhy { margin: 8px 16px 0; font-size: 12px; font-weight: 400; color: var(--dL-ink-2); }
+.dL-crop { height: 132px; overflow: hidden; }
+
+/* ---- note ---- */
+.dL-note {
+  margin-top: 28px;
+  padding: 16px;
+  background: var(--dL-sunken);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--dL-ink);
+}
+.dL-note p { margin: 0 0 10px; }
+.dL-note p:last-child { margin-bottom: 0; }
+.dL-note b { font-weight: 600; }
+</style>
+
+<div class="dL-root">
+
+  <!-- ======================= THE SCREEN ======================= -->
+  <div class="dL-screen">
+
+    <!-- chrome: wordmark, account, headline, search. Byte-identical in all four states.
+         The account control is an icon and never a photo, because an avatar is the chrome
+         knowing you, and the moment the chrome knows you there are two homes again. -->
+    <div class="dL-top">
+      <span class="dL-mark">Solen</span>
+      <span class="dL-iconbtn"><svg class="lucide lucide-circle-user-round" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/><circle cx="12" cy="12" r="10"/></svg></span>
+    </div>
+
+    <h1 class="dL-h1">Appointments, confirmed instantly.</h1>
+
+    <div class="dL-search">
+      <svg class="lucide lucide-search" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+      <span>Salon, service or city</span>
+    </div>
+
+    <!-- ===== THE SLOT: state 1, signed in and has been here before ===== -->
+    <div class="dL-slot">
+      <div class="dL-head">
+        <h2 class="dL-h2">Book again</h2>
+        <span class="dL-seeall">All visits &rarr;</span>
+      </div>
+      <div class="dL-row">
+        <img class="dL-thumb" src="/_mockups/_assets/salon-photos/p09.jpg" alt="Studio Lumen, Coiffeur" width="72" height="72">
+        <div class="dL-rowtext">
+          <div class="dL-r1">
+            <span class="dL-name">Studio Lumen</span>
+            <span class="dL-rate"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span>
+          </div>
+          <div class="dL-meta">Cut and finish with Ana</div>
+          <div class="dL-r3">
+            <span class="dL-meta">Last visit 12.06.</span>
+            <span class="dL-meta dL-num">65 CHF</span>
+          </div>
+        </div>
+        <button class="dL-commit" type="button">Book</button>
+      </div>
+    </div>
+
+    <!-- ===== the feed. Same order, same content, same everything, for everybody ===== -->
+    <div class="dL-sec">
+      <div class="dL-head">
+        <h2 class="dL-h2">Open now near you</h2>
+        <span class="dL-seeall">See all &rarr;</span>
+      </div>
+      <div class="dL-rail">
+
+        <div class="dL-card">
+          <div class="dL-photo">
+            <img src="/_mockups/_assets/salon-photos/p01.jpg" alt="Coiffure Ravel, Coiffeur" width="231" height="185">
+            <span class="dL-heart"><svg class="lucide lucide-heart" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+          </div>
+          <div class="dL-ctext">
+            <div class="dL-r1">
+              <span class="dL-name">Coiffure Ravel</span>
+              <span class="dL-rate"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.7</span>
+            </div>
+            <div class="dL-meta">Coiffeur</div>
+            <div class="dL-r3">
+              <span class="dL-meta">8008 Zurich</span>
+              <span class="dL-meta dL-num">Colour from 165 CHF</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dL-card">
+          <div class="dL-photo">
+            <img src="/_mockups/_assets/salon-photos/p03.jpg" alt="Nord Barbers, Barbershop" width="231" height="185">
+            <span class="dL-heart"><svg class="lucide lucide-heart" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+          </div>
+          <div class="dL-ctext">
+            <div class="dL-r1">
+              <span class="dL-name">Nord Barbers</span>
+              <span class="dL-rate"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.6</span>
+            </div>
+            <div class="dL-meta">Barbershop</div>
+            <div class="dL-r3">
+              <span class="dL-meta">8050 Zurich</span>
+              <span class="dL-meta dL-num">Cut from 42 CHF</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dL-card">
+          <div class="dL-photo">
+            <img src="/_mockups/_assets/salon-photos/p07.jpg" alt="Atelier Nuance, Nails" width="231" height="185">
+            <span class="dL-heart"><svg class="lucide lucide-heart" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+          </div>
+          <div class="dL-ctext">
+            <div class="dL-r1">
+              <span class="dL-name">Atelier Nuance</span>
+              <span class="dL-rate"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span>
+            </div>
+            <div class="dL-meta">Nails</div>
+            <div class="dL-r3">
+              <span class="dL-meta">8003 Zurich</span>
+              <span class="dL-meta dL-num">Gel from 55 CHF</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dL-card">
+          <div class="dL-photo">
+            <img src="/_mockups/_assets/salon-photos/p04.jpg" alt="Maison Pilar, Spa and Wellness" width="231" height="185">
+            <span class="dL-heart"><svg class="lucide lucide-heart" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+          </div>
+          <div class="dL-ctext">
+            <div class="dL-r1">
+              <span class="dL-name">Maison Pilar</span>
+              <span class="dL-rate"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</span>
+            </div>
+            <div class="dL-meta">Spa and Wellness</div>
+            <div class="dL-r3">
+              <span class="dL-meta">8002 Zurich</span>
+              <span class="dL-meta dL-num">Facial from 110 CHF</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="dL-sec">
+      <div class="dL-head">
+        <h2 class="dL-h2">Top rated in Zurich</h2>
+        <span class="dL-seeall">See all &rarr;</span>
+      </div>
+      <div class="dL-rail">
+
+        <div class="dL-card">
+          <div class="dL-photo">
+            <img src="/_mockups/_assets/salon-photos/p11.jpg" alt="Coiffure Bellevue Stadelhoferplatz, Coiffeur" width="231" height="185">
+            <span class="dL-heart"><svg class="lucide lucide-heart" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+          </div>
+          <div class="dL-ctext">
+            <div class="dL-r1">
+              <span class="dL-name">Coiffure Bellevue Stadelhoferplatz</span>
+              <span class="dL-rate"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</span>
+            </div>
+            <div class="dL-meta">Coiffeur</div>
+            <div class="dL-r3">
+              <span class="dL-meta">8001 Zurich</span>
+              <span class="dL-meta dL-num">Cut from 55 CHF</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dL-card">
+          <div class="dL-photo">
+            <img src="/_mockups/_assets/salon-photos/p06.jpg" alt="Studio Serein, Nails" width="231" height="185">
+            <span class="dL-heart"><svg class="lucide lucide-heart" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+          </div>
+          <div class="dL-ctext">
+            <div class="dL-r1">
+              <span class="dL-name">Studio Serein</span>
+              <span class="dL-rate"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</span>
+            </div>
+            <div class="dL-meta">Nails</div>
+            <div class="dL-r3">
+              <span class="dL-meta">8002 Zurich</span>
+              <span class="dL-meta dL-num">Refill from 69 CHF</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dL-card">
+          <div class="dL-photo">
+            <img src="/_mockups/_assets/salon-photos/p10.jpg" alt="Salon Corvo, Coiffeur" width="231" height="185">
+            <span class="dL-heart"><svg class="lucide lucide-heart" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+          </div>
+          <div class="dL-ctext">
+            <div class="dL-r1">
+              <span class="dL-name">Salon Corvo</span>
+              <span class="dL-rate"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span>
+            </div>
+            <div class="dL-meta">Coiffeur</div>
+            <div class="dL-r3">
+              <span class="dL-meta">8048 Zurich</span>
+              <span class="dL-meta dL-num">Cut from 49 CHF</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dL-card">
+          <div class="dL-photo">
+            <img src="/_mockups/_assets/salon-photos/p05.jpg" alt="Casa Verde Spa, Spa and Wellness" width="231" height="185">
+            <span class="dL-heart"><svg class="lucide lucide-heart" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+          </div>
+          <div class="dL-ctext">
+            <div class="dL-r1">
+              <span class="dL-name">Casa Verde Spa</span>
+              <span class="dL-rate"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span>
+            </div>
+            <div class="dL-meta">Spa and Wellness</div>
+            <div class="dL-r3">
+              <span class="dL-meta">8004 Zurich</span>
+              <span class="dL-meta dL-num">Massage from 95 CHF</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <p class="dL-cont">The page continues below with the sections the live home already ships, in the order it already ships them.</p>
+
+    <div class="dL-fold"></div>
+    <span class="dL-foldlab">first viewport ends here, 844</span>
+  </div>
+
+  <!-- ======================= THE SAME PAGE, OTHER PEOPLE ======================= -->
+  <div class="dL-vars">
+    <p class="dL-cap">The same page, three other people.</p>
+    <p class="dL-capsub">Nothing above the band moves. Nothing below it moves. The band is the only slot that reads who you are, and in the last state it is not there at all.</p>
+
+    <!-- state 2 -->
+    <div class="dL-var">
+      <p class="dL-vlab">Signed in, an appointment is coming up</p>
+      <div class="dL-search">
+        <svg class="lucide lucide-search" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+        <span>Salon, service or city</span>
+      </div>
+      <div class="dL-slot">
+        <div class="dL-head">
+          <h2 class="dL-h2">Up next</h2>
+          <span class="dL-seeall">All bookings &rarr;</span>
+        </div>
+        <div class="dL-row">
+          <img class="dL-thumb" src="/_mockups/_assets/salon-photos/p11.jpg" alt="Coiffure Bellevue Stadelhoferplatz, Coiffeur" width="72" height="72">
+          <div class="dL-rowtext">
+            <div class="dL-r1">
+              <span class="dL-name">Coiffure Bellevue Stadelhoferplatz</span>
+              <span class="dL-rate"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</span>
+            </div>
+            <div class="dL-meta">Cut and finish with Luca</div>
+            <div class="dL-r3">
+              <span class="dL-meta">Thu 06.08.</span>
+              <span class="dL-meta dL-num">55 CHF</span>
+            </div>
+          </div>
+          <button class="dL-ghost" type="button">Manage</button>
+        </div>
+      </div>
+      <p class="dL-vwhy">Same band, same row, same three text rows. The button drops to the neutral outline tier because nothing here is payable, so the screen still holds exactly one ink commit and it is not on this state.</p>
+    </div>
+
+    <!-- state 3 -->
+    <div class="dL-var">
+      <p class="dL-vlab">Not signed in, has looked around</p>
+      <div class="dL-search">
+        <svg class="lucide lucide-search" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+        <span>Salon, service or city</span>
+      </div>
+      <div class="dL-slot">
+        <div class="dL-head">
+          <h2 class="dL-h2">Where you left off</h2>
+          <span class="dL-seeall">All visits &rarr;</span>
+        </div>
+        <div class="dL-row">
+          <img class="dL-thumb" src="/_mockups/_assets/salon-photos/p07.jpg" alt="Atelier Nuance, Nails" width="72" height="72">
+          <div class="dL-rowtext">
+            <div class="dL-r1">
+              <span class="dL-name">Atelier Nuance</span>
+              <span class="dL-rate"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span>
+            </div>
+            <div class="dL-meta">Nails</div>
+            <div class="dL-r3">
+              <span class="dL-meta">8003 Zurich</span>
+              <span class="dL-meta dL-num">Gel from 55 CHF</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="dL-vwhy">No account and no booking, so the band falls back to the local view history and carries no button at all, because there is nothing to commit to yet. The trigger for this state is history, not sign-in.</p>
+    </div>
+
+    <!-- state 4 -->
+    <div class="dL-var">
+      <p class="dL-vlab">First visit, nothing to know</p>
+      <div class="dL-search">
+        <svg class="lucide lucide-search" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+        <span>Salon, service or city</span>
+      </div>
+      <div class="dL-crop">
+        <div class="dL-sec">
+          <div class="dL-head">
+            <h2 class="dL-h2">Open now near you</h2>
+            <span class="dL-seeall">See all &rarr;</span>
+          </div>
+          <div class="dL-rail">
+            <div class="dL-card">
+              <div class="dL-photo">
+                <img src="/_mockups/_assets/salon-photos/p01.jpg" alt="Coiffure Ravel, Coiffeur" width="231" height="185">
+                <span class="dL-heart"><svg class="lucide lucide-heart" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+              </div>
+            </div>
+            <div class="dL-card">
+              <div class="dL-photo">
+                <img src="/_mockups/_assets/salon-photos/p03.jpg" alt="Nord Barbers, Barbershop" width="231" height="185">
+                <span class="dL-heart"><svg class="lucide lucide-heart" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="dL-vwhy">The band is gone, not empty. The feed moves up to fill the space, so a first timer gets a shorter page and never a hole where a card they cannot have would have been. This is the state that decides the whole direction, and it is the cheapest one to get wrong.</p>
+    </div>
+  </div>
+
+  <div class="dL-note">
+    <p><b>The bet.</b> There is exactly one home screen for everybody. Personalisation happens in one band under the search field and nowhere else, so a first timer sees a shorter page rather than a different one. Four states, one page: has booked here before, has an appointment coming up, has only looked around, brand new. The chrome above the band and the feed below it are byte-identical in all four.</p>
+
+    <p><b>What the chrome gives up to hold that line.</b> The greeting goes. The live Hero renders a name line above the headline, and a greeting is personalisation sitting in the chrome, which means two homes again the moment it appears. The account control stays an icon and never becomes an avatar photograph, for the same reason. The search field stays a prompt reading Salon, service or city even when the last query is known, so it never becomes a state display. The Hero sub line goes too, because the band needs the vertical space more than a second sentence does.</p>
+
+    <p><b>What the direction gives up, stated plainly.</b> It is the least visible bet of the set in a screenshot, because the top of the page looks the same to every visitor and none of the design effort shows. It permanently forecloses the loud version, where a returning customer gets an account-shaped home with their own numbers on it, so their home can only ever be slightly better than a newcomer's. It multiplies home from one state to four, each of which has to be specified, seeded and graded. It needs a real bookings and history read, so it pays nothing at launch and cannot be faked. And it inherits the failure mode of every conditional section: sparse but present reads as a bug in a way absence never does, which is why the band is a full-width row list and not a fixed-width rail, and why the empty state here is deletion rather than a placeholder.</p>
+
+    <p><b>The one collapse it accepts.</b> The mobile entry control goes from three stacked segments to one row, which drops the visible date field. That field is not decoration: it is the constraint that decides whether a result can exist at all. The trade is deliberate. The row opens the existing overlay, which already owns service, city and date as segment tabs, so the constraint moves one tap away rather than disappearing. If you want the date on the surface, take it from the band's vertical budget and say so, because the fold cannot pay for both.</p>
+
+    <p><b>The findings behind it, read from the lens files rather than re-observed here.</b> WHY_ENTRY bet E3, the only bet in that file held by three independent products, is that the control stays constant while the slot beneath it knows who you are: Zocdoc holds one search field unchanged across three captures of the same screen and swaps the card under it, Airbnb keeps a pill reading Start your search while the abandoned query sits below it as a dismissible card, and Fresha's first home section is Book again with a named salon. WHY_RETURN position D adds the absence half: Expedia's home without a recents row does not read as broken, and the Starbucks home at zero stars simply has no Usuals row. Its third capture is the load-bearing one, recents shown to a signed-out session, which is why state three here is triggered by history and not by sign-in. WHY_RETURN also names the discriminator this direction depends on, that Solen's returning customer returns to a person on a four to eight week cycle rather than to a category, so the band's default content is Book again and not Continue searching. WHY_RELATIONS I1 supplied the shape: the corpus resolution for a personal block competing with a photo-first feed is not to pick one, it is to strip the personal block's photograph down to a left thumbnail, which is what Marriott and Fresha both do and what keeps the imagery floor cheap here.</p>
+
+    <p><b>Measured on this render at 390 by 844 with getBoundingClientRect, not estimated.</b> Photographic area in the first viewport is 41 percent against the roughly one third floor, and it is met by content, two rails of real salon cards pulled up the page, with no decorative photograph anywhere in the file. The first rail's photos sit whole inside the first viewport, 372 to 557. The second rail's start at 671 and the fold takes 12 px off the bottom of them, which is the vertical half of the scroll promise. Four type sizes on the entire screen, 30 and 18 and 14 and 12. The anchor is 30 px at 2.14 times the 14 px body against the 1.8 floor, and it is the only element at its size. Weight 600 lands on 6 of 24 visible text elements, 25 percent against the roughly 30 percent ceiling, and getting there cost a real change: at SectionTitle's shipped 600 the same screen measured 37.5 percent, so the see-all links are 500 here. One ink commit at 70 by 44, touch targets at 44, one semantic colour moment which is the star. The longest salon name is left in on purpose and it does truncate, 225 px of text in a 186 px slot, so the worst-case pass is shown rather than asserted.</p>
+
+    <p><b>One limit of the seed set, named so it is not read as a choice.</b> Every photograph here is a real seeded image, each used once, and each card carries the closest category match in the set. Two cards labelled Nails show a cosmetics bench, because the 12-image seed set holds no nail photography at all, and the two spa cards come from one treatment-room shoot. That is a content gap, not a design decision, and it sits exactly on the open question the currency lens could not close: whether Solen's real photography actually discriminates between one venue and the next. If it does not, the photo is not carrying the decision, and this direction's whole first viewport is spending 41 percent of itself on something that does not.</p>
+
+    <p><b>Blocked on a yes, not smuggled.</b> The band's commit action is a rebook. The backend for it is fully live, an endpoint plus two booking columns plus a nudge cron, with zero customer render site, while REMOVED.md line 68 carries a graveyard line covering a single-tap rebook widget, dated in this file's header comment. That line was written for a narrow reason, an orphan barber component that predated the pay-first walk-in flow, and a narrow reason is still not permission. So this band is drawn as a proposal. If the answer is no, the same band still works with the row as a plain link into the salon page, and the direction survives without its best state.</p>
+  </div>
+
+</div>

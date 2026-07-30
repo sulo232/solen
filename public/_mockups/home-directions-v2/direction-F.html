@@ -1,0 +1,942 @@
+<!--
+  Direction F, "The city has supply". Static picture, 390 x 844 (fold marked).
+  One of several side-by-side home directions. STATIC: no motion, no hover, no transition.
+
+  THE BET, in one sentence: home's job is to prove in the first screen that there are enough real
+  salons near you to make this worth using, so actual salon cards and honest per-category counts are
+  the content, and the search control shrinks to one row.
+
+  psych-ok: every count literal in this file is one of exactly two things, and neither is a
+    fabricated production number. (1) An illustrative TARGET-STATE value in a static picture,
+    disclosed ON the page in the grey wiring box, which is what FLOORS LAW 3's target-state boundary
+    requires. A static HTML fragment has no live data to compute from, and dropping the numbers would
+    delete the entire direction, whose whole thesis IS the count. A build reads them from the exact
+    count the salons endpoint already returns (see the correction under Exists-check). (2) A verbatim
+    quote of another product's screen inside the closing argument prose, always beside a link to the
+    Mobbin capture it was read off. Psychology law 9's target is a number invented to look
+    impressive; every number here is either declared illustrative on the page or attributed to a
+    screen.
+
+  Grounded-in: app/api/salons/route.ts , the endpoint that already serves this page's card list AND,
+               it turns out, its supply number. Line 157 selects with `{ count: "exact" }` and line
+               640 returns `total: count ?? 0` alongside the items. A computed filter resolves
+               matching ids first and constrains with .in() BEFORE .range() specifically so that
+               "count + pagination stay correct" (:337), so the total is already trustworthy under
+               the distance filter this page's "within 5 km" line depends on.
+  Grounded-in: app/[locale]/[city]/page.tsx , the live per-city route the anchor's "Change city",
+               the see-all pill and the "More cities" band all point at. Gated on
+               `cities WHERE is_active` (a live DB gate, 2026-07-04 city-rollout refactor, not a
+               hardcoded slug list) and its metadata title is already literally
+               "Salons in {cityName}", so the per-city framing this page puts on home is the framing
+               that route has always used.
+  Grounded-in: lib/cities.ts , getActiveCities():99, findNearestCity():193, getCityCoords():180.
+               The active-city list and the nearest-city resolution the anchor needs ALREADY EXIST.
+  Grounded-in: _design-system/COMPONENT_REGISTRY.md , SalonCard:128 (locked), SectionTitle:163
+               (locked), PriceFrom:84, ScrollRow/Section/FeedZone:161-166. Read BEFORE drawing, per
+               FLOORS LAW 9 (screens are composed, not drawn): this page composes those shipped
+               anatomies and hand-fakes no component. Nothing here is a new registry entry.
+  Grounded-in: _design-system/research/WHY_DENSITY.md section 6, bet A ("The city has supply")
+  Grounded-in: _design-system/research/WHY_RELATIONS.md F5 (supply counts on category tiles) + T1
+               (a number substitutes for inventory only with provenance)
+  Grounded-in: app/[locale]/page.tsx , the shipped home FeedZone band order at :200-213
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx (photo block 426-427, text rows 505-548)
+  Grounded-in: app/[locale]/_components/homepage/MobileCategoriesRow.tsx:41-48 + :100 (tile anatomy)
+  Grounded-in: app/[locale]/_components/homepage/SectionHeader.tsx:146 (section title 18/600)
+  Grounded-in: app/[locale]/_components/primitives/PriceFrom.tsx:27-33 (price composition)
+  Grounded-in: tailwind.config.js:166 (s-love), :275 (whisper), :279 (elevation-2), :286 (float)
+
+  Exists-check: run 2026-07-30, this turn.
+    `npm run exists "supply count"` = 0 matches. `npm run exists "salon count"` = 0 matches.
+      CORRECTION TO MY OWN FIRST READING, recorded rather than quietly fixed. Those two zeroes made
+      me write that the count was a net-new backend dependency. Then I opened the endpoint and it is
+      not: app/api/salons/route.ts:157 already selects with `{ count: "exact" }` and :640 already
+      returns `total`. The zeroes are a NAMING result, not a capability result. So what is actually
+      missing is narrower and much cheaper than "a new query": a per-category fan-out (four calls
+      with `limit=1`, reading only `total`) and a RENDER SITE on home, which is this mockup. Worth
+      stating plainly because the difference decides whether this direction is a backend project or
+      an afternoon, and I had it wrong in the more expensive direction.
+    `npm run exists "salon card"` = 3 component hits: the live homepage SalonCard, the legacy
+      components-legacy/SalonCard.tsx, and a dev overhaul copy. This file draws the LIVE homepage
+      one's anatomy and proposes no fourth card.
+    `npm run exists "categories row"` = 3 matches, all the same thing: MobileCategoriesRow, mounted
+      at app/[locale]/page.tsx:190 (V3-D143). This file EXTENDS that component (same four salon
+      categories, same 3D icon files, same 1.15:1 tile, same white + shadow-float treatment) by
+      adding a count line and turning the 3x2 grid into one row. It does not introduce a second
+      category index.
+    `npm run exists "home directions"` = 0 matches, so this mockup folder is not duplicating a
+      surface.
+    Graveyard hits read and deliberately NOT re-proposed:
+      REMOVED.md:99 home hero image, owner's THIRD rejection 2026-07-25, verbatim "no other company
+        has just image hard coded baked into a random area ... what we need to do is SHOW OFF THE
+        STORES THAT WE HAVE, not just some random image". This direction has no hero of any kind.
+        It is the direction that takes that sentence most literally: the imagery floor is paid for
+        entirely in salon cards.
+      REMOVED.md:75 the full-bleed direction, denied 2026-07-16. Not used.
+      REMOVED.md:49 the "Top bewertet" photo-overlay hero carousel, removed 2026-07-02. Not used.
+      REMOVED.md:90 the minus-zero-percent discount pill, removed 2026-07-24. The single badge on
+        this page is a real discount, so the pill is legal; no card carries a zero.
+      REMOVED.md:31 makeup and waxing were killed as marketplace CATEGORIES 2026-06-13, and the same
+        line explicitly KEEPS them as services ("a spa can still OFFER waxing/makeup as services").
+        So the category rail here has exactly four members (coiffeur, barbershop, nails, spa) and no
+        fifth, and where a card photo shows a beauty treatment the card's CATEGORY is still one of
+        those four. Nothing here resurrects a killed category.
+      REMOVED.md:104 the big 28-30px "Profile" page title, deleted 2026-07-28 because it restated the
+        destination. The nearest precedent to this page's 28px anchor, so it is worth being explicit:
+        the anchor here is not a page label, it is a checkable claim with a number and a place in it.
+        If it were reduced to the word "Home" it would be exactly the deleted element.
+    The one thing that is actually new: the per-category count under each tile, and the fact that
+    the four counts SUM TO THE ANCHOR. Everything else on this page is shipped anatomy re-composed
+    in a different vertical order, over a total the API already returns.
+
+  floors: (FLOORS LAW 1, the finished-screen pass, all six answered)
+    (a) photographic focal, YES. Seven real seeded salon photos, six of them in the first viewport
+        (four whole, two cropped at the fold). No decoration anywhere: every pixel of photography on
+        this page is a salon's own cover shot, which is how the 2026-07-25 clarification says the
+        imagery floor must be met.
+    (b) exactly ONE element clearly the biggest, YES. The 28px anchor. Nothing else exceeds 18px.
+    (c) a tabular/real number, YES. The anchor, the four category counts, eight prices, eight
+        ratings, four city counts, all tabular-nums.
+    (d) a semantic-color moment, YES. The yellow star on every card, plus the one discount badge in
+        the locked s-love pair.
+    (e) no dead-grey zone, YES. The only grey surfaces are the one search field and the single
+        no-photo fallback tile; everything else is white or photography.
+    (f) worst-case content holds, YES, and it is rendered rather than asserted. Card 6 carries the
+        longest plausible Swiss compound salon name and it truncates in row 1 while still identifying
+        the salon. Card 4's meta row carries the longest category string against the longest district
+        form. The two-ink-anchor rule holds on every card: the NAME is 14px and the price is 12px,
+        so size marks the anchor.
+
+  measured: PIL-measured this session, 2026-07-30, plus source values read with the line cited.
+    THE PHOTOS, measured with PIL rather than assumed, because in a direction whose argument IS the
+    photography the crop behaviour is load-bearing. Native sizes: p01 800x600 (1.333), p02 800x533
+    (1.501), p03 800x533 (1.501), p04 800x533 (1.501), p06 800x523 (1.530), p09 800x534 (1.498),
+    p12 800x534 (1.498). The card photo box computes to exactly 173.0 x 138.4 CSS px at 390 wide
+    ((390 - 32 padding - 12 gutter) / 2, then x 4/5). Every one of the seven is WIDER than 5/4, so
+    `object-fit: cover` trims HEIGHT on all seven and width on none: no salon subject is cropped
+    sideways out of frame, which is the fact that matters when the photo is carrying the argument.
+    THE SOURCE VALUES, read off the shipped files today with the line cited, not eyeballed and not
+    recalled: photo aspect 5/4 and radius 22 and shadow-elevation-2 from SalonCard.tsx:426-427; the
+    8px photo-to-text gap and the 2px stack inset and 2px row gap from SalonCard.tsx:505; name 14px
+    / lh 1.25 / ls -0.01em from SalonCard.tsx:507; category and address rows 12px / lh 1.35 from
+    SalonCard.tsx:521 and :532; section title 18px/600 with ls -0.01em from SectionHeader.tsx:146;
+    tile aspect 1.15/1 and radius 24 (rounded-3xl) and white + shadow-float and icon at 60% of tile
+    width from MobileCategoriesRow.tsx:100-113; input radius 12 and the sunken rest fill from the
+    design contract's focus and radius rows; every hex from tailwind.config.js at the lines above.
+    THE META ROW's grouping is measured against FLOORS LAW 5 rather than punctuated: in-group gap
+    (star to value) 4px, between-group gap (rating to place) 10px, which clears the "between-group
+    >= 2x in-group" floor, so the gap does the separating and there is no separator glyph anywhere
+    on this page.
+    THE RENDER, measured in a browser at 390 x 844 with getBoundingClientRect after the file was
+    written, which is where two defects turned up that the source could not show (both fixed, both
+    named in the CSS at the point of the fix):
+      photographic area above the fold = 38.2% of 390 x 844, clearing the ~1/3 imagery floor, and
+        paid entirely in salon cards with no decorative pixel anywhere;
+      photo box renders 173 x 138, matching the computed 173.0 x 138.4;
+      4 salon cards land wholly above the fold and 2 more crop at it (row 3 starts at y=757, so 87
+        of 138px of those photos show), which is the density floor's ">= 4 units mobile plus a
+        visibly cropped next item" satisfied with room to spare;
+      the first viewport carries 34 text elements at 4 sizes (28 / 18 / 14 / 12) and 2 weights
+        (400 / 600), with 3 of 34 at weight >= 600 = 8.8%, well under the ~30% EMPHASIS BUDGET
+        ceiling and in the same band as the Airbnb calibration AXIS_FONT records;
+      the anchor renders at 28px = 2.0x the 14px card body, clearing the 1.8x floor;
+      12 of 12 images load, so every root-relative path resolves;
+      zero dark-mode blocks; the root itself does not scroll horizontally (scrollWidth 390 =
+        clientWidth). The document reports 980 because a FRAGMENT has no <head> and therefore no
+        viewport meta, which _BASE.md assigns to the composing page, not to this file.
+      Vertical spine, measured: search y=20, anchor y=82, rail y=150, section header y=283,
+        grid y=317, third card row y=757, fold 844, full page 3958 tall.
+    NOT MEASURED, stated so nobody treats it as measured: the Mobbin screens named in the closing
+    note were LOOKED AT as images this session, not read from metadata, but they were not
+    pixel-measured, so no number in this file is claimed to match any of them. What was taken from
+    them is anatomy and ordering only. And this was measured in a desktop browser at a 390 viewport,
+    not on the owner's phone, so _BASE.md's final judge has not run.
+
+  Type budget: 4 sizes (28 / 18 / 14 / 12), 2 weights (400 / 600). Spread 28 to 12; the anchor is
+    2.0x the 14px card body, clearing the 1.8x EMPHASIS BUDGET floor (b). Weight >= 600 is carried
+    by 5 of roughly 48 visible text elements, about 10%, well under the ~30% ceiling (a).
+
+  Depicts: search row -> app/[locale]/_components/homepage/SearchBar.tsx (rendered inside Hero.tsx).
+           DELIBERATELY REDUCED. SearchBar.tsx:100 sets HEIGHT.mobile.collapsed = 250, three stacked
+           segments plus an ink button. This direction collapses that to one 44px row, which is the
+           single largest sacrifice it makes and the thing to argue about. The segmented panel it
+           opens is the shipped SearchOverlay, not redrawn here.
+  Depicts: category rail -> app/[locale]/_components/homepage/MobileCategoriesRow.tsx:41-48 and
+           :100-113. Same four SALON categories and the same icon PNGs under public/icons/categories/.
+           Changed, and both changes are the direction: (1) one horizontal row instead of grid-cols-3
+           (MobileCategoriesRow.tsx:82), which buys back about 90px of the first viewport, and (2) a
+           count line under each label. The two non-category tiles the shipped component carries
+           (Karte, Walk-in) are dropped here on purpose: a count on a map view is meaningless, and
+           counting walk-in salons would double-count barbershops and break the sum audit, which is
+           the whole provenance device.
+  Depicts: the per-tile and per-city counts -> app/api/salons/route.ts:157 + :640, the exact-count
+           `total` the endpoint already returns beside its items. Four calls with `limit=1` reading
+           only `total` produce the whole rail; nothing new has to be written server-side.
+  Depicts: section title + see-all chevron -> app/[locale]/_components/homepage/SectionHeader.tsx:146.
+           Arrow is ink, never blue.
+  Depicts: salon card photo block -> app/[locale]/_components/homepage/SalonCard.tsx:426-427,
+           verbatim geometry (aspect-[5/4], rounded-[22px], shadow-elevation-2).
+  Depicts: save heart -> app/[locale]/_components/homepage/HeartButton.tsx via lib/frost-glass.ts:16-20
+           (80% white, 4px blur, white inner border). Drawn as a 28px disc; the shipped 44px hit box
+           is not visible in a static picture but is what a build would keep.
+  Depicts: discount badge -> app/[locale]/_components/homepage/SalonCard.tsx:238 DiscountBadge.
+           hue-ok: the locked pair, bg s-love.soft over text s-love.deep, both frozen at
+           hue-ok: tailwind.config.js:166; geometry rounded-[10px], top-left, 12px/600. One badge on
+           one card, per the badge ceiling. Not pale green: the green and yellow discount variants
+           were retired by V3-D85-semantic.
+  Depicts: rating -> app/[locale]/_components/homepage/SalonCard.tsx:505-514. Star plus value, NO
+           review count. psych-ok: the psychology law wants a review count beside a star,
+           CARD_REDESIGN_2026-07-13 C11 removed it by dated owner decision, and the shipped component
+           resolves that exact conflict in favour of C11 at SalonCard.tsx:507. This file mirrors the
+           shipped resolution rather than inventing a third answer.
+  Depicts: price -> app/[locale]/_components/primitives/PriceFrom.tsx:27-33, label in ink-2 then
+           "{amount} CHF". The service is NAMED on every card, which is Art. 13 PBV plus SECO
+           Wegleitung 2025 p.17: an advertised minimum price must describe the concrete offer.
+  Depicts: no-photo fallback (card 7) -> app/[locale]/_components/homepage/SalonCard.tsx:456-464
+           (the shipped monogram branch). DIVERGENCE, surfaced rather than smoothed over: the shipped
+           branch fills the tile with `cat.bg` (set at SalonCard.tsx:437) and drops a 64px bold
+           monogram in `cat.initial` on it (:458), with NO category icon. The design contract's
+           imagery row (owner-approved 2026-07-21) and this direction's brief both specify a sunken
+           fill plus a category icon plus the salon initial instead. The contract row is the later
+           dated spec, so this file draws the contract version: sunken fill, the real
+           /icons/categories/nails.png, and the initial as its companion at 18px rather than as the
+           whole tile at 64px. Same radius and same shadow as the seven photo tiles, so the grid
+           stays one anatomy with one fill difference, per FLOORS LAW 8. Flagged because a build
+           would have to reconcile the component with the contract first, and that reconciliation is
+           not this mockup's call.
+  Depicts: the 28px claim line and its provenance sub-line -> NET-NEW as a SURFACE, though not as
+           data: nothing on the shipped homepage states a supply figure (Hero.tsx carries a greeting,
+           not a count), while app/api/salons/route.ts:640 has been returning the number all along.
+           This direction's thesis is simply that home should render it.
+  Depicts: the full-width see-all pill -> app/[locale]/[city]/page.tsx, the live destination. The
+           shipped see-all affordance is SectionHeader.tsx's inline chevron (:217), which this page
+           also uses on the section header; the full-width pill is an additional secondary control at
+           the end of the grid. Neutral outline, so it does not spend the one ink CTA; home carries
+           no commit action.
+  Depicts: the "More cities on Solen" text rows -> app/[locale]/[city]/page.tsx plus
+           lib/cities.ts:99 getActiveCities(). The DESTINATION and the city list are both live; what
+           is net-new is only surfacing them on home, plus the count beside each name. Drawn as plain
+           rows with no photography, which is the cheapest way to extend the supply claim past the
+           user's own city.
+  Depicts: the grey on-page wiring note -> NET-NEW: a mockup instrument, not UI. FLOORS LAW 3's
+           target-state boundary requires a one-line footer naming what is not wired, ON the page.
+
+  NET-NEW, flagged so nobody reads it as a proposed change to the shipped card:
+    1. Card row 1 carries the NAME ALONE and the rating moves down to row 2. Reason, measured, not
+       preferred: at 2 columns the card is 173px wide. Keeping the shipped row 1 (name plus rating
+       on one baseline) leaves the name about 131px, which is roughly 16 characters at 14px, and
+       every one of these eight Swiss names would truncate. WHY_RELATIONS F2 predicted exactly this
+       ("a large photo forces fewer columns, which forces truncation, which removes the name as a
+       comparable field"). Giving row 1 the full width buys about 21 characters and only the
+       deliberately longest name truncates. This is the cost of the 2-column grid, made visible
+       rather than hidden.
+    2. Card name renders at weight 400, not the shipped CardName's 500. Reason: the mockup type
+       budget caps a mockup at 2 weights, 500 would be a third, and it would be spent on nothing.
+       The name still leads by SIZE and by ink colour. This matches the Airbnb calibration in
+       AXIS_FONT.md section 4 (card titles are deliberately not bold). Not a proposed change.
+    3. The see-all button is 14px/600, not the 15px the text-size row specifies for a CTA. Reason:
+       that row governs the ONE primary commit CTA; this is a secondary navigation button (neutral
+       outline, no ink fill, home has no commit action) and 14 is not below the "never <= 13 on a
+       button" floor. 15 would have been a fifth type size.
+    4. Salon names, counts, prices, ratings and districts are illustrative TARGET-STATE values, not
+       a live query, because this is a static picture. FLOORS LAW 3's boundary allows this for a
+       target-state mockup on condition of a one-line footer naming what is not wired: that footer
+       is on the page, not only in this comment. The Zurich districts are geographically correct
+       (Seefeld is Kreis 8, Enge Kreis 2, Wiedikon Kreis 3, Oerlikon Kreis 11, Niederdorf Kreis 1).
+
+  Photography: 7 DISTINCT seeded photos from public/_mockups/_assets/salon-photos with zero repeats,
+    plus one deliberate no-photo fallback. Verified rather than assumed on 2026-07-30: md5 shows
+    p05 is byte-identical to p04, and I then OPENED p08, p10 and p11 and they are visibly the same
+    three pictures as p02, p01 and p09 at different encodings. So the 12 files hold 8 distinct
+    subjects, and the set used here (p01, p02, p03, p04, p06, p09, p12) is 7 of those 8. Subject
+    matches category on every card: salon interior and stylist team and a hair result for coiffeur,
+    a barbershop floor for the barbershop, a facial treatment for spa. The weakest photo in the set
+    is p06, a cosmetics flat lay with no venue and no person in it; it is placed on the last card,
+    below the fold, and it is named here because a photo that does not discriminate between venues
+    is the one unverified assumption this whole direction rests on (WHY_CURRENCY 5c).
+
+  Icons: real Lucide markup, copied out of node_modules/lucide-react/dist/esm/icons (v0.577.0):
+    search.js, chevron-right.js, star.js, heart.js. No path is hand-drawn.
+
+  Paths are ROOT-RELATIVE on purpose. The static server drops the trailing slash, so a relative ../
+    resolves one level too high and broke 31 photos on 2026-07-29.
+
+  Language: English chrome per the dated 2026-07-24 owner rule and the mockup-english gate. Swiss
+    place names and salon names and "Kreis N" stay as they are, and the ampersand rather than the
+    German conjunction is used inside every alt string so the chrome stays English throughout.
+-->
+
+<style>
+/* ==========================================================================
+   Direction F, "The city has supply". 390 wide, fold at 844.
+   Every class is prefixed dF- so several directions can share one page.
+   Single light theme. White and the sunken grey only. No dark-mode block anywhere.
+   ========================================================================== */
+
+.dF-root {
+  /* Locked token literals, scoped to this direction only. */
+  --dF-ink:       #0A0A0A;
+  --dF-ink-2:     #6B6B6B;
+  --dF-border:    #E4E4E7;
+  --dF-sunken:    #F4F4F5;
+  --dF-star:      #FFC32B;  /* hue-ok: locked star token */
+  --dF-accent:    #276EF1;  /* hue-ok: locked s-accent; small clickable bits only, one text link here */
+  --dF-love-soft: #FAD2DA;  /* hue-ok: locked s-love.soft, tailwind.config.js:166 */
+  --dF-love-deep: #A23548;  /* hue-ok: locked s-love.deep, tailwind.config.js:166 */
+
+  /* Inter Tight for display at 24px and up, Inter for body. Never Geist.
+     The font files are loaded by the composing page, not by this fragment:
+     _BASE.md forbids remote dependencies inside a mockup. */
+  --dF-body:    "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --dF-display: "Inter Tight", "Inter", system-ui, -apple-system, sans-serif;
+
+  --dF-elev-2: 0 2px 8px rgba(50,47,44,0.09);                                        /* tailwind.config.js:279 */
+  --dF-float:  0 1px 2px rgba(50,47,44,0.05), 0 4px 12px -6px rgba(50,47,44,0.10);   /* tailwind.config.js:286 */
+
+  width: 390px;
+  background: #FFFFFF;
+  color: var(--dF-ink);
+  font-family: var(--dF-body);
+  font-size: 14px;
+  line-height: 1.4;
+  -webkit-text-size-adjust: 100%;
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 28px;
+}
+.dF-root *, .dF-root *::before, .dF-root *::after { box-sizing: border-box; margin: 0; padding: 0; }
+.dF-root img { display: block; max-width: 100%; }
+.dF-root svg { display: block; }
+
+/* The 844 line. Everything above it is the first viewport, unscrolled.
+   A mockup instrument, not UI: this direction's entire argument is about what
+   fits above this line, so the line has to be visible to read the argument. */
+.dF-fold {
+  position: absolute; left: 0; right: 0; top: 844px; height: 0;
+  border-top: 1px dashed rgba(10,10,10,0.18);
+  z-index: 6; pointer-events: none;
+}
+.dF-fold::after {
+  content: "Fold 844";
+  position: absolute; right: 8px; top: 4px;
+  font-size: 12px; font-weight: 400; color: var(--dF-ink-2);
+}
+
+.dF-pad { padding-left: 16px; padding-right: 16px; }
+
+/* ── 1. The search row. ────────────────────────────────────────────────────
+   ONE row, 44px, the touch floor exactly. This is the direction's largest
+   sacrifice: the shipped mobile SearchBar is 250px of three stacked segments
+   plus an ink button (SearchBar.tsx:100), and F spends that space on cards.
+   Zero query state, so this is the invitation form ("Search ..."), not the
+   summary form. Filled grey at rest, radius 12. */
+.dF-search {
+  margin-top: 12px;
+  display: flex; align-items: center; gap: 10px;
+  height: 44px; padding: 0 14px;
+  background: var(--dF-sunken);
+  border-radius: 12px;
+  color: var(--dF-ink-2);
+}
+.dF-search-ph { font-size: 14px; font-weight: 400; line-height: 1; }
+
+/* ── 2. The claim. ─────────────────────────────────────────────────────────
+   The display anchor IS the supply claim, so the biggest element on the screen
+   is the one sentence the whole direction is betting on. Whole line at 600:
+   emphasising only the number would be the orphan sub-token failure that taste
+   rule 5 names by hand. */
+.dF-claim { margin-top: 18px; }
+.dF-anchor {
+  font-family: var(--dF-display);
+  font-size: 28px; font-weight: 600; line-height: 1.15;
+  letter-spacing: -0.025em;
+  font-variant-numeric: tabular-nums;
+  color: var(--dF-ink);
+}
+/* The provenance line. A number substitutes for inventory only if it is
+   checkable (WHY_RELATIONS T1), so this states the DENOMINATOR: what area the
+   anchor counts. "Change city" is the one blue thing on the page, which is
+   exactly the locked role for blue: a small clickable text link. Nothing
+   punctuates the two: the colour change already is the separator, and the 10px
+   gap is well over the type's own word spacing. */
+.dF-anchor-sub {
+  margin-top: 4px;
+  display: flex; align-items: baseline; gap: 10px;
+  font-size: 12px; font-weight: 400; line-height: 16px;
+}
+.dF-anchor-where { color: var(--dF-ink-2); }
+.dF-anchor-link  { color: var(--dF-accent); }
+
+/* ── 3. The category rail, with real counts. ───────────────────────────────
+   This is WHY_RELATIONS F5 built. Two independent products were looked at this
+   session and both put the count DIRECTLY UNDER the label, smaller and greyer,
+   and both print the thin case rather than hiding it (Airbnb Services, Wolt).
+   Neither makes it a badge.
+   Four tiles, not six: the shipped Karte and Walk-in tiles are dropped because
+   they are not disjoint salon categories, and the sum has to audit. The four
+   counts add up to the anchor above. That is the provenance device: the reader
+   can add the breakdown up and check the claim without leaving the screen.
+   Tile anatomy is the shipped one (1.15:1, radius 24, white, shadow-float, icon
+   at 60% of tile width), not a new one. */
+.dF-cats {
+  margin-top: 16px;
+  display: flex; gap: 8px;
+}
+.dF-cat { flex: 1 1 0; min-width: 0; text-align: center; }
+.dF-cat-tile {
+  width: 100%; aspect-ratio: 1.15 / 1;
+  border-radius: 24px;
+  background: #FFFFFF;
+  box-shadow: var(--dF-float);
+  display: grid; place-items: center;
+}
+.dF-cat-tile img { width: 60%; max-width: 46px; height: auto; object-fit: contain; }
+.dF-cat-label {
+  margin-top: 6px;
+  font-size: 12px; font-weight: 400; line-height: 16px; color: var(--dF-ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.dF-cat-count {
+  margin-top: 2px;
+  font-size: 12px; font-weight: 400; line-height: 16px; color: var(--dF-ink-2);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* ── 4. Section header. ────────────────────────────────────────────────────
+   18px/600 with an inline ink chevron, SectionHeader.tsx:146's treatment.
+   "Nearest to you" is not filler: it states the ORDERING, which tells the
+   reader these eight are the closest of the whole set, and that is the supply
+   argument. No tracked all-caps eyebrow anywhere on this page. */
+.dF-sec {
+  margin-top: 20px;
+  display: flex; align-items: center; gap: 2px; height: 26px;
+}
+.dF-sec-title {
+  font-family: var(--dF-body);              /* 18px is under the Inter Tight floor */
+  font-size: 18px; font-weight: 600; line-height: 26px;
+  letter-spacing: -0.01em; color: var(--dF-ink);
+}
+.dF-sec svg { color: var(--dF-ink); }        /* see-all arrow is ink, never blue */
+
+/* ── 5. The evidence: a 2-column salon grid. ───────────────────────────────
+   Card width = (390 - 32 side padding - 12 gutter) / 2 = 173, photo box
+   173.0 x 138.4, PIL-checked against all seven photos (see measured: above).
+   The 2-column grid is what pays the imagery floor here. It is met by CONTENT,
+   which is the only way the 2026-07-25 clarification allows it to be met: more
+   real salon cards higher up, never a photo whose src is baked into a layout. */
+.dF-grid {
+  margin-top: 8px;
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  column-gap: 12px; row-gap: 20px;
+}
+.dF-card { min-width: 0; }
+
+.dF-photo {
+  position: relative;
+  width: 100%; aspect-ratio: 5 / 4;         /* SalonCard.tsx:426 */
+  border-radius: 22px;                       /* SalonCard.tsx:426 */
+  box-shadow: var(--dF-elev-2);              /* SalonCard.tsx:427 */
+  overflow: hidden;
+  background: var(--dF-sunken);
+}
+.dF-photo img { width: 100%; height: 100%; object-fit: cover; }
+
+/* No-photo fallback: sunken fill, the real category icon, the salon initial.
+   Same radius and same shadow as the seven photo tiles, so the grid is ONE
+   anatomy with one fill difference. Never a bare grey box. See the Depicts
+   line in the header for the divergence from the shipped monogram branch. */
+.dF-photo-fallback {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px;
+}
+/* Icon at 64px, not 40. Measured cause: at 40px in a 173 x 138 tile the icon
+   covered about 7% of the tile and the rendered card read as an EMPTY SLOT
+   beside its seven photographed siblings, which is the spirit of the bare-grey-box
+   failure even though the contract's three ingredients were all present. The
+   contract's imagery row names the ingredients and no sizes, so 64 is inside it,
+   and it is also what the shipped monogram branch was doing right
+   (SalonCard.tsx:458 fills the tile at 64px). Caught by rendering at 390, not
+   by reading the source. */
+.dF-photo-fallback img { width: 64px; height: 64px; object-fit: contain; }
+.dF-fallback-initial {
+  font-family: var(--dF-body);
+  font-size: 18px; font-weight: 600; line-height: 1; color: var(--dF-ink-2);
+}
+
+/* Save heart. lib/frost-glass.ts:16-20 verbatim: 80% white, 4px blur, white
+   inner border, soft shadow. Drawn as the 28px disc; a build keeps the 44px
+   hit box around it. */
+.dF-heart {
+  position: absolute; top: 8px; right: 8px;
+  width: 28px; height: 28px; border-radius: 999px;
+  background: rgba(255,255,255,0.80);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,255,255,0.6);
+  box-shadow: 0 1px 3px rgba(10,10,10,0.10);
+  display: grid; place-items: center;
+  color: var(--dF-ink);
+}
+
+/* The one badge on the page. SalonCard.tsx:238 geometry, locked s-love pair. */
+.dF-badge {
+  position: absolute; top: 8px; left: 8px;
+  border-radius: 10px; padding: 5px 11px;
+  background: var(--dF-love-soft); color: var(--dF-love-deep);
+  font-size: 12px; font-weight: 600; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Text stack. SalonCard.tsx:505: 8px below the photo, 2px inset, 2px row gap. */
+.dF-txt { margin-top: 8px; padding: 0 2px; display: flex; flex-direction: column; gap: 2px; }
+
+/* Row 1, name alone at full card width. See NET-NEW note 1 for the measured
+   reason the rating moved off this row at 173px. */
+.dF-name {
+  font-size: 14px; font-weight: 400; line-height: 1.25; letter-spacing: -0.01em;
+  color: var(--dF-ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+/* Row 2, the rating group then the place group. NO separator glyph anywhere:
+   the grouping is carried by measured gap, per FLOORS LAW 5's requirement that
+   a deletion name what it keeps. In-group gap 4px (star to value), between-group
+   gap 10px (rating to place), which is more than the 2x floor. The star's
+   yellow against ink-2 is the second cue inside the rating group. */
+.dF-meta {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12px; font-weight: 400; line-height: 1.35; color: var(--dF-ink-2);
+  white-space: nowrap; overflow: hidden;
+}
+.dF-meta-rating { display: inline-flex; align-items: center; gap: 4px; flex: 0 0 auto; }
+.dF-meta-star { color: var(--dF-star); }
+.dF-meta-rate { font-variant-numeric: tabular-nums; }
+/* DISTRICT FIRST, category second, and the order is the whole point. Rendered at
+   390 and measured: this row truncates on the two Spa & Wellness cards, and in the
+   first pass (category first) what fell off the end was "Kreis 8". On a screen whose
+   entire argument is "there are salons NEAR YOU", the district is the load-bearing
+   half and the category is the redundant half, because the rail directly above
+   already names all four categories and the photo shows the kind of place. FLOORS
+   LAW 1(f) forbids truncating load-bearing copy, so the fix is not to shorten the
+   shipped CATEGORY_LABEL, it is to put the expendable fact last so truncation eats
+   that one. Same two facts, same row, same shipped label; only the degradation order
+   changed. This was invisible in the source and only showed up in the render. */
+.dF-meta-rest { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+
+/* Row 3, the price. Art. 13 PBV forces it onto the card, so it is here at BODY
+   weight in the meta line and it is never a second anchor: 12px against the
+   name's 14px, so size marks which of the two is the anchor. The service is
+   named because SECO requires a from-price to describe a concrete offer. */
+.dF-price {
+  font-size: 12px; font-weight: 400; line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+  color: var(--dF-ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.dF-price-label { color: var(--dF-ink-2); }
+
+/* ── 6. See-all. Secondary, so neutral outline: not ink, not blue. ─────────
+   Home carries no commit action, so the one ink CTA is not spent here. */
+.dF-seeall {
+  margin-top: 20px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%; height: 48px;
+  background: #FFFFFF; border: 1px solid var(--dF-border);
+  border-radius: 999px;
+  font-size: 14px; font-weight: 600; color: var(--dF-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── 7. The claim past your own city. ─────────────────────────────────────
+   Plain text rows with counts, no photography, which is what OpenTable's web
+   home does at the bottom ("Explore OpenTable", a bare list of city names).
+   Extends the supply proof for the cost of about 190px and zero content ops.
+   The smallest city is printed, for the same reason Airbnb prints its
+   single-provider category rather than hiding it. */
+.dF-cities { margin-top: 28px; }
+.dF-city {
+  display: flex; align-items: center; gap: 8px;
+  height: 48px;
+  border-bottom: 1px solid var(--dF-border);
+}
+.dF-city:last-child { border-bottom: 0; }
+.dF-city-name  { flex: 1 1 auto; min-width: 0; font-size: 14px; font-weight: 400; color: var(--dF-ink);
+                 overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dF-city-count { flex: 0 0 auto; font-size: 12px; font-weight: 400; color: var(--dF-ink-2);
+                 font-variant-numeric: tabular-nums; }
+.dF-city svg   { flex: 0 0 auto; color: var(--dF-ink-2); }
+
+/* ── 8. The on-page wiring disclosure. ────────────────────────────────────
+   FLOORS LAW 3's boundary: a target-state mockup renders full seeded content
+   and names what is not yet wired, in one line, ON the page. */
+.dF-wiring {
+  margin-top: 20px;
+  padding: 12px 14px;
+  background: var(--dF-sunken);
+  border-radius: 12px;
+  font-size: 12px; font-weight: 400; line-height: 1.5; color: var(--dF-ink-2);
+}
+.dF-wiring code { font-family: inherit; }
+
+/* ── The closing note. Reading matter, not part of the 390 screen. ─────── */
+.dF-note {
+  margin: 28px 16px 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--dF-border);
+  font-size: 12px; font-weight: 400; line-height: 1.6; color: var(--dF-ink-2);
+}
+.dF-note h4 { font-size: 12px; font-weight: 600; color: var(--dF-ink); margin-bottom: 4px; }
+.dF-note p { margin-bottom: 12px; }
+.dF-note b { font-weight: 600; color: var(--dF-ink); }
+.dF-note a { color: var(--dF-accent); text-decoration: none; }
+.dF-note ul { margin: 0 0 12px 0; padding-left: 16px; }
+.dF-note li { margin-bottom: 5px; }
+.dF-note code { font-family: inherit; }
+</style>
+
+<div class="dF-root">
+
+  <div class="dF-fold" aria-hidden="true"></div>
+
+  <!-- 1. Search, one row, the exit for someone who already knows what they want. -->
+  <div class="dF-pad">
+    <div class="dF-search">
+      <svg class="lucide lucide-search" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+      <span class="dF-search-ph">Search salons, services, places</span>
+    </div>
+  </div>
+
+  <!-- 2. The claim, and its denominator. -->
+  <!-- psych-ok: target-state count in a static picture, declared illustrative in the on-page wiring box below; a build reads it from the exact total app/api/salons/route.ts:640 already returns. -->
+  <div class="dF-pad dF-claim">
+    <h1 class="dF-anchor">184 salons in Zurich</h1>
+    <div class="dF-anchor-sub">
+      <span class="dF-anchor-where">Within 5 km of Zurich HB</span>
+      <span class="dF-anchor-link">Change city</span>
+    </div>
+  </div>
+
+  <!-- 3. The breakdown that audits the claim: the four counts sum to the anchor. -->
+  <!-- psych-ok: target-state counts in a static picture, declared illustrative in the on-page wiring box below; a build reads each from the exact total app/api/salons/route.ts:640 already returns, one call per category. -->
+  <div class="dF-pad dF-cats">
+    <div class="dF-cat">
+      <div class="dF-cat-tile"><img src="/icons/categories/scissors.png" alt=""></div>
+      <div class="dF-cat-label">Coiffeur</div>
+      <div class="dF-cat-count">112 salons</div>
+    </div>
+    <div class="dF-cat">
+      <div class="dF-cat-tile"><img src="/icons/categories/clippers.png" alt=""></div>
+      <div class="dF-cat-label">Barber</div>
+      <div class="dF-cat-count">41 salons</div>
+    </div>
+    <div class="dF-cat">
+      <div class="dF-cat-tile"><img src="/icons/categories/spa.png" alt=""></div>
+      <div class="dF-cat-label">Spa</div>
+      <div class="dF-cat-count">26 salons</div>
+    </div>
+    <div class="dF-cat">
+      <div class="dF-cat-tile"><img src="/icons/categories/nails.png" alt=""></div>
+      <div class="dF-cat-label">Nails</div>
+      <div class="dF-cat-count">5 salons</div>
+    </div>
+  </div>
+
+  <!-- 4 + 5. The evidence. -->
+  <div class="dF-pad">
+    <div class="dF-sec">
+      <span class="dF-sec-title">Nearest to you</span>
+      <svg class="lucide lucide-chevron-right" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+
+    <div class="dF-grid">
+
+      <!-- card 1 -->
+      <div class="dF-card">
+        <div class="dF-photo">
+          <img src="/_mockups/_assets/salon-photos/p01.jpg" alt="Atelier Bellevue, Coiffeur">
+          <span class="dF-heart"><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="dF-txt">
+          <h3 class="dF-name">Atelier Bellevue</h3>
+          <div class="dF-meta">
+            <span class="dF-meta-rating">
+              <svg class="lucide lucide-star dF-meta-star" width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              <span class="dF-meta-rate">4.9</span>
+            </span>
+            <span class="dF-meta-rest">Kreis 1, Coiffeur</span>
+          </div>
+          <div class="dF-price"><span class="dF-price-label">Cut from</span> 78 CHF</div>
+        </div>
+      </div>
+
+      <!-- card 2 -->
+      <div class="dF-card">
+        <div class="dF-photo">
+          <img src="/_mockups/_assets/salon-photos/p03.jpg" alt="Niederdorf Barbers, Barbershop">
+          <span class="dF-heart"><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="dF-txt">
+          <h3 class="dF-name">Niederdorf Barbers</h3>
+          <div class="dF-meta">
+            <span class="dF-meta-rating">
+              <svg class="lucide lucide-star dF-meta-star" width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              <span class="dF-meta-rate">4.7</span>
+            </span>
+            <span class="dF-meta-rest">Kreis 1, Barbershop</span>
+          </div>
+          <div class="dF-price"><span class="dF-price-label">Cut from</span> 45 CHF</div>
+        </div>
+      </div>
+
+      <!-- card 3, the one badge on the page -->
+      <div class="dF-card">
+        <div class="dF-photo">
+          <img src="/_mockups/_assets/salon-photos/p09.jpg" alt="Haarwerk Enge, Coiffeur">
+          <span class="dF-badge">&minus;20%</span>
+          <span class="dF-heart"><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="dF-txt">
+          <h3 class="dF-name">Haarwerk Enge</h3>
+          <div class="dF-meta">
+            <span class="dF-meta-rating">
+              <svg class="lucide lucide-star dF-meta-star" width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              <span class="dF-meta-rate">4.8</span>
+            </span>
+            <span class="dF-meta-rest">Kreis 2, Coiffeur</span>
+          </div>
+          <div class="dF-price"><span class="dF-price-label">Cut from</span> 69 CHF</div>
+        </div>
+      </div>
+
+      <!-- card 4, longest category string -->
+      <div class="dF-card">
+        <div class="dF-photo">
+          <img src="/_mockups/_assets/salon-photos/p04.jpg" alt="Seefeld Spa, Spa &amp; Wellness">
+          <span class="dF-heart"><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="dF-txt">
+          <h3 class="dF-name">Seefeld Spa</h3>
+          <div class="dF-meta">
+            <span class="dF-meta-rating">
+              <svg class="lucide lucide-star dF-meta-star" width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              <span class="dF-meta-rate">5.0</span>
+            </span>
+            <span class="dF-meta-rest">Kreis 8, Spa &amp; Wellness</span>
+          </div>
+          <div class="dF-price"><span class="dF-price-label">Facial from</span> 120 CHF</div>
+        </div>
+      </div>
+
+      <!-- card 5 -->
+      <div class="dF-card">
+        <div class="dF-photo">
+          <img src="/_mockups/_assets/salon-photos/p12.jpg" alt="Studio Drei Zurich, Coiffeur">
+          <span class="dF-heart"><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="dF-txt">
+          <h3 class="dF-name">Studio Drei Zurich</h3>
+          <div class="dF-meta">
+            <span class="dF-meta-rating">
+              <svg class="lucide lucide-star dF-meta-star" width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              <span class="dF-meta-rate">4.6</span>
+            </span>
+            <span class="dF-meta-rest">Kreis 4, Coiffeur</span>
+          </div>
+          <div class="dF-price"><span class="dF-price-label">Cut from</span> 85 CHF</div>
+        </div>
+      </div>
+
+      <!-- card 6, the deliberate worst-case name: it truncates and still identifies -->
+      <div class="dF-card">
+        <div class="dF-photo">
+          <img src="/_mockups/_assets/salon-photos/p02.jpg" alt="Coiffeur &amp; Kosmetik Wiedikon, Coiffeur">
+          <span class="dF-heart"><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="dF-txt">
+          <h3 class="dF-name">Coiffeur &amp; Kosmetik Wiedikon</h3>
+          <div class="dF-meta">
+            <span class="dF-meta-rating">
+              <svg class="lucide lucide-star dF-meta-star" width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              <span class="dF-meta-rate">4.8</span>
+            </span>
+            <span class="dF-meta-rest">Kreis 3, Coiffeur</span>
+          </div>
+          <div class="dF-price"><span class="dF-price-label">Cut from</span> 72 CHF</div>
+        </div>
+      </div>
+
+      <!-- card 7, the spec'd no-photo fallback. The thinnest category is also the
+           one with the thinnest content, which is the honest pre-launch shape. -->
+      <div class="dF-card">
+        <div class="dF-photo dF-photo-fallback">
+          <img src="/icons/categories/nails.png" alt="">
+          <span class="dF-fallback-initial">N</span>
+          <span class="dF-heart"><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="dF-txt">
+          <h3 class="dF-name">Nagelstudio Loewenstrasse</h3>
+          <div class="dF-meta">
+            <span class="dF-meta-rating">
+              <svg class="lucide lucide-star dF-meta-star" width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              <span class="dF-meta-rate">4.7</span>
+            </span>
+            <span class="dF-meta-rest">Kreis 1, Nails</span>
+          </div>
+          <div class="dF-price"><span class="dF-price-label">Manicure from</span> 55 CHF</div>
+        </div>
+      </div>
+
+      <!-- card 8 -->
+      <div class="dF-card">
+        <div class="dF-photo">
+          <img src="/_mockups/_assets/salon-photos/p06.jpg" alt="Oerlikon Wellness, Spa &amp; Wellness">
+          <span class="dF-heart"><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </div>
+        <div class="dF-txt">
+          <h3 class="dF-name">Oerlikon Wellness</h3>
+          <div class="dF-meta">
+            <span class="dF-meta-rating">
+              <svg class="lucide lucide-star dF-meta-star" width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              <span class="dF-meta-rate">4.9</span>
+            </span>
+            <span class="dF-meta-rest">Kreis 11, Spa &amp; Wellness</span>
+          </div>
+          <div class="dF-price"><span class="dF-price-label">Massage from</span> 95 CHF</div>
+        </div>
+      </div>
+
+    </div><!-- /grid -->
+
+    <!-- psych-ok: target-state count, declared illustrative in the wiring box below; the real value is the exact total app/api/salons/route.ts:640 already returns. -->
+    <div class="dF-seeall">
+      <span>See all 184 in Zurich</span>
+      <svg class="lucide lucide-chevron-right" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+
+    <!-- 7. The claim past your own city. -->
+    <!-- psych-ok: target-state counts in a static picture, declared illustrative in the wiring box below; a build reads each from the exact total app/api/salons/route.ts:640 already returns, one call per city from lib/cities.ts:99. -->
+    <div class="dF-cities">
+      <div class="dF-sec"><span class="dF-sec-title">More cities on Solen</span></div>
+      <div class="dF-city">
+        <span class="dF-city-name">Winterthur</span>
+        <span class="dF-city-count">34 salons</span>
+        <svg class="lucide lucide-chevron-right" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </div>
+      <div class="dF-city">
+        <span class="dF-city-name">Zug</span>
+        <span class="dF-city-count">19 salons</span>
+        <svg class="lucide lucide-chevron-right" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </div>
+      <div class="dF-city">
+        <span class="dF-city-name">Baden</span>
+        <span class="dF-city-count">12 salons</span>
+        <svg class="lucide lucide-chevron-right" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </div>
+      <div class="dF-city">
+        <span class="dF-city-name">Uster</span>
+        <span class="dF-city-count">6 salons</span>
+        <svg class="lucide lucide-chevron-right" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </div>
+    </div>
+
+    <!-- 8. On-page disclosure of what is not wired. -->
+    <div class="dF-wiring">
+      Target-state picture. The counts are illustrative here, but they are not inventions: the salons
+      endpoint already returns an exact total beside its items, so what a build adds is one call per
+      category and per city plus this render site. Salon names, ratings, prices and districts are
+      illustrative. The photography is real seeded salon imagery.
+    </div>
+  </div>
+
+  <!-- ── The argument ─────────────────────────────────────────────────────── -->
+  <!-- psych-ok: every number in the prose below is quoted verbatim from the Mobbin capture linked beside it, read as an image this session. None of it renders as Solen UI. -->
+  <div class="dF-note">
+    <h4>The bet</h4>
+    <p>Home's job is to prove, in the first screen, that there are <b>enough real salons near you</b>
+    to make this worth using. So the content is actual salon cards plus honest per-category counts,
+    and the search control shrinks to one row. It is the direct inverse of direction E: E says show
+    nothing until the query is legal, F says the screen is worthless until it shows real supply.</p>
+
+    <h4>What it gives up</h4>
+    <ul>
+      <li><b>The calm, and the single unambiguous action.</b> The shipped mobile search control is
+      250px of three stacked segments plus an ink button (<code>SearchBar.tsx:100</code>). This
+      direction cuts it to a 44px row. Anyone who arrives knowing exactly what they want is now
+      served slightly worse so that everyone who does not is served much better.</li>
+      <li><b>Editorial and inspiration.</b> Salon-of-the-month, the Inspo band and reviews all move
+      below everything on this page. There is no room above the fold and F does not pretend there is.</li>
+      <li><b>Disclosure control.</b> Real counts mean home publishes how few salons each Swiss
+      category has. This page prints its smallest category and its smallest city in the first screen
+      rather than hiding them. That is the forced consequence of the device and it is a business
+      decision about disclosure, not a design decision, so it is yours (WHY_RELATIONS F5).</li>
+      <li><b>Name comparability at the edges.</b> Two columns costs 173px of card width, so the
+      longest Swiss compound name truncates (card 6). Per WHY_RELATIONS F2, raising the desktop rail
+      from four cards to the six our own density floor asks for makes this worse, so FLOORS LAW 1(f)
+      has to be re-run at the new column count <em>before</em> the count changes, not after.</li>
+      <li><b>The card's shipped row order.</b> At 173px, a name and a rating on one baseline leaves
+      the name about 16 characters, so the rating moved down a row and the named from-price took a
+      row of its own. Measured reason, named in the file header, not a preference.</li>
+    </ul>
+
+    <h4>The lens finding behind it</h4>
+    <p>Three things, and the second is the one I would defend hardest.</p>
+    <p><b>First, the count device is real and it always prints the thin case.</b> Looked at as images
+    this session, not recalled:
+    <a href="https://mobbin.com/screens/49f0730c-6356-476a-b481-b679952db447">Airbnb Services iOS</a>
+    puts the city in its biggest text ("Services in New York City"), then a rail of category tiles
+    each carrying a label and a smaller grey supply line under it, and the smallest of those lines
+    reads <b>"1 available"</b> rather than being suppressed.
+    <a href="https://mobbin.com/screens/74dfcd07-faf1-401c-8bad-5a523b25cef2">Wolt</a> uses the
+    identical anatomy on a photo tile ("Burger" then a grey places count under it) and also prints
+    its smallest numbers. Two further devices show up in the same sweep, and both are
+    query-responsive rather than decorative:
+    <a href="https://mobbin.com/screens/f397bc85-dda6-42d5-8704-f7383b037285">Fresha's search</a>
+    puts a venue count on its own grey row between the query and the cards, and the
+    <a href="https://mobbin.com/screens/670009ef-9680-484b-86b5-325b2100e86c">same screen with a
+    broader query</a> shows a larger one, so the number is measuring something;
+    <a href="https://mobbin.com/screens/bd902e83-ca1b-4ca1-887e-6b83c59f46e3">Swiggy</a> puts it in
+    the section header instead, and
+    <a href="https://mobbin.com/screens/b034ee3e-a010-4b70-b8b0-bf8e8b7f80c6">DoorDash</a> gives it
+    a row of its own beside a Reset control. And
+    <a href="https://mobbin.com/screens/c1f56362-a0ac-4c46-841b-6fea60486249">OpenTable's web home</a>
+    is the shape this page borrows: a hero about a sixth of the viewport high, then immediately five
+    restaurant cards and a cropped sixth, with a demand line printed on the thin rows as well as the
+    busy ones, and grey no-photo placeholders left in place rather than the venue being hidden.</p>
+    <p><b>Second, and this is the argument I did not expect to find: F is the only direction that
+    pays the imagery floor the way the owner said it must be paid.</b> The floor asks for roughly a
+    third of the viewport to be photographic, and the 2026-07-25 rejection says in the owner's own
+    words that it is met by showing off the stores we have and never by an image baked into a layout.
+    Every other way of hitting a third of the viewport with photography involves making something
+    bigger. F hits it by making the count higher, so the photographic area on this page is
+    <em>entirely</em> salons' own cover shots. Direction F does not merely comply with that floor. It
+    is what that floor was asking for.</p>
+    <p><b>Third, the provenance device this page adds, which is not copied from anything above:</b>
+    the four category counts sum to the anchor. WHY_RELATIONS T1 lists four ways a number earns
+    belief (unrounded precision, a freshness stamp, a named source, a stated window), and all four
+    ask the reader to trust something off-screen. A breakdown that adds up to its own total can be
+    audited without leaving the screen, which is strictly better, and it is why the two non-category
+    tiles the shipped component carries (Karte, Walk-in) are dropped here: a walk-in count would
+    double-count barbershops and break the sum.</p>
+
+    <h4>One correction to my own reasoning, since it changes the price of this direction</h4>
+    <p>I first wrote that the supply count was a net-new backend dependency, on the strength of
+    <code>npm run exists "supply count"</code> returning nothing. Then I opened the endpoint. It
+    already selects with an exact count and already returns a total beside its items
+    (<code>app/api/salons/route.ts:157</code> and <code>:640</code>), and its computed-filter path
+    deliberately constrains before paginating so that count stays correct under a distance filter
+    (<code>:337</code>). So the zero was a naming result, not a capability result, and this direction
+    is much cheaper than I first said: one call per category, one per city, and a render site. I had
+    it wrong in the expensive direction and it is worth correcting because it changes whether this is
+    a project or an afternoon.</p>
+
+    <h4>What I could not determine</h4>
+    <p>Whether any of this converts: Mobbin is stills, so every claim above is a mechanism argument
+    and none is a measured outcome. Whether Solen's real seeded photos actually
+    <em>discriminate between venues</em>, which is the single unverified assumption the whole
+    direction rests on, because if the photos do not distinguish one salon from another then more of
+    them is more area and not more evidence (WHY_CURRENCY 5c, still open). And whether the counts
+    are large enough to be worth printing at all: the anchor here is illustrative, and if the real
+    Zurich number turns out to be small then this direction's own headline argues against using it,
+    which is the honest test to run first, and it is now a one-line query rather than a build.</p>
+  </div>
+
+</div>

@@ -1,0 +1,365 @@
+<!-- direction-K , "The rebook rail" , home direction, 390 CSS px, static fragment.
+
+     Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx
+     Grounded-in: app/[locale]/_components/homepage/RecentlyViewed.tsx
+     Grounded-in: app/[locale]/_components/homepage/SearchBar.tsx
+     Grounded-in: app/[locale]/page.tsx
+     Grounded-in: tailwind.config.js
+
+     Depicts: one-row search entry -> app/[locale]/_components/homepage/SearchBar.tsx
+     Depicts: salon feed card, photo 5:4 then name plus rating then category then address plus from-price -> app/[locale]/_components/homepage/SalonCard.tsx
+     Depicts: photo-missing card state, sunken fill plus salon initial -> app/[locale]/_components/homepage/SalonCard.tsx
+     Depicts: See all out of the city feed -> app/[locale]/[city]/[category]/page.tsx
+     Depicts: rebook rail rows, thumb plus name plus last service plus price paid plus last-visit date -> app/[locale]/_components/homepage/RecentlyViewed.tsx
+     Depicts: the rail's data read, which today returns VIEWED salons and would have to return BOOKED salons -> app/[locale]/_components/homepage/useRecentlyViewed.ts
+     Depicts: Book again, the one commit CTA -> app/api/bookings/express-rebook/route.ts
+     Depicts: Book again confirm step -> app/api/bookings/express-rebook/confirm/route.ts
+     Depicts: Next free Thursday, 6 August -> app/api/slots/next-available/route.ts
+     Depicts: the category row, deleted from this direction on purpose and not redrawn -> app/[locale]/_components/homepage/MobileCategoriesRow.tsx
+
+     Backend-check: rebook -> POST app/api/bookings/express-rebook/route.ts:10 plus POST app/api/bookings/express-rebook/confirm/route.ts:10, BOTH EXIST, and they are ALREADY called customer-side at app/[locale]/_components/profile/ProfileTabs.tsx:121 and :138, so putting Book again on home is a THIRD call site, not a new capability; next-free-date -> GET app/api/slots/next-available/route.ts:4 EXISTS and reads availability_slots.starts_at for status available by salon_id, so the line is wirable today, what is NOT verified is a per-stylist variant (the query filters salon, not staff); rebook-rail list -> NONE, needs backend: the live read at app/[locale]/_components/homepage/useRecentlyViewed.ts returns VIEWED salons, so a bookings-history read (salon, last service, amount paid, last date) has to be added; search -> app/[locale]/_components/homepage/SearchBar.tsx EXISTS; bookings.is_express_rebook and bookings.rebooked_from_id -> declared at lib/database.types.ts:931 and supabase/migrations/073_barber_foundation.sql:158, and I could NOT confirm them against _inventory/_db-snapshot.json because that snapshot carries table names and row counts only, no columns, so treat the column-level claim as type-and-migration evidence rather than live-schema evidence.
+
+     Two corrections this file makes to the research it came from, surfaced rather than smoothed
+     over. (1) "express-rebook has zero customer render site" is FALSE: ProfileTabs.tsx calls both
+     endpoints today. Rebooking already ships to customers, on the profile, one tap deep behind a
+     tab. K's claim is therefore narrower and stronger, move the existing action to the surface
+     people open. (2) "the next-free line is unwired" is FALSE: /api/slots/next-available exists.
+     What is still true: components-legacy/barber/ExpressRebook.tsx is a graveyard entry (orphan
+     barber widget, zero importers, deleted 11 July 2026), so promoting rebooking to HOME still
+     needs an explicit owner yes, and the rail's booked-salons read does not exist yet.
+
+     Exists-check: the live /de home renders MobileCategoriesRow FIRST (app/[locale]/page.tsx:200),
+       then feed rows built from SalonCard.tsx, plus RecentlyViewed.tsx (live read plus a
+       real-salon backfill, and no minimum count at line 110).
+       `npm run exists "SalonCard"` -> app/[locale]/_components/homepage/SalonCard.tsx exists, so
+       the feed card here REUSES its anatomy rather than inventing one; it also returns a graveyard
+       hit for the -0% discount badge (owner, 24 July 2026, "a -0% badge is meaningless noise"),
+       which is one reason no card here carries a badge at all.
+       `npm run exists "RecentlyViewed"` -> app/[locale]/_components/homepage/RecentlyViewed.tsx
+       plus useRecentlyViewed.ts exist, so the rail EXTENDS that read rather than adding a new one.
+       `npm run exists "rebook"` -> 11 hits (the two endpoints above, the rebooking-nudge cron,
+       two bookings columns, notification_preferences.rebooking_enabled, the validation schemas,
+       the email helper) plus the one graveyard hit named above. `npm run exists "book again"` and
+       `"home feed"` both return 0. The only net-new surface here is the RETURN BLOCK plus the rail.
+
+     measured: photo 5:4, name left with rating right, category label, address left with
+       "from CHF" right = the anatomy block in SalonCard.tsx (the July 2026 card redesign, C11).
+       shadow whisper copied verbatim from tailwind.config.js:275. Radius 24 grouped list card /
+       16 entity card / 12 input, hairline #E4E4E7, touch 44, name 14, meta 12 = the CLAUDE.md
+       design contract. PIL-measured this session: p01 is 800x600 (1.333), p02/p03/p04/p08 are
+       800x533 (1.501), p07 is 800x800 (1.000), p09 is 800x534 (1.498), so every photo is wider
+       than the 5:4 slot and object-fit cover crops rather than distorts. Also found by hashing:
+       p04.jpg and p05.jpg are byte-identical, so p05 is not used here (two identical photos in
+       one feed reads as a bug). Card width (390 - 32 - 12) / 2 = 173.0, photo height 138.4.
+
+     floors: (a) photographic focal present = 5 real seeded salon photos plus the spec'd
+       photo-missing fallback in the feed, plus 3 rail thumbs, all self-hosted and root-relative
+       at /_mockups/_assets/salon-photos/*.jpg;
+       (b) exactly one biggest = the 28px return anchor, next step down is 18px, a 1.56x gap,
+       and 28/14 = 2.0x body against the 1.8x floor;
+       (c) real tabular numbers = CHF 95, CHF 48, CHF 65, 4.9, 60 min, 12 June;
+       (d) semantic-color moment = availability green #16A34A on the calendar glyph plus star
+       #FFC32B always carrying its ink-2 value companion (the star is 1.60:1 on white, so it
+       never carries meaning alone);
+       (e) no dead-grey zone = white return block with an ink commit, #F4F4F5 rail tray, white
+       photo feed, alternating down the page;
+       (f) worst-case content = "Coiffeur Rosengarten" and "Barbier Niederdorf" are the longest
+       plausible names at the 2-up card width and the rail width; both truncate on row 1 and
+       neither touches the price row or the 28px anchor.
+
+     type-budget: 4 distinct sizes (28 / 18 / 14 / 12) x 2 distinct weights (400 / 600).
+-->
+
+<style>
+.dK-screen{
+  /* 390 device width, full bleed, no drawn phone (no-fake-phone, _BASE.md) */
+  width:390px;margin:0 auto;background:#FFFFFF;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:14px;font-weight:400;line-height:1.35;color:#0A0A0A;
+  -webkit-text-size-adjust:100%;
+}
+.dK-screen *{box-sizing:border-box;margin:0;padding:0}
+.dK-screen svg{display:block;flex:none}
+
+/* ---------- the exit. one row, quiet, and that is all it gets ---------- */
+.dK-top{padding:12px 16px}
+.dK-search{
+  display:flex;align-items:center;gap:10px;height:48px;padding:0 14px;
+  background:#F4F4F5;border-radius:12px;color:#6B6B6B;
+}
+.dK-searchLabel{font-size:14px;color:#6B6B6B}
+
+/* ---------- THE RETURN BLOCK. no photograph, on purpose ---------- */
+.dK-return{padding:4px 16px 20px}
+.dK-kicker{font-size:12px;color:#6B6B6B}
+.dK-anchor{
+  font-family:"Inter Tight",Inter,sans-serif;
+  font-size:28px;font-weight:600;line-height:1.15;letter-spacing:-0.02em;
+  margin-top:6px;
+}
+.dK-repeatRow{
+  display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:8px;
+}
+.dK-repeatWhat{font-size:14px;color:#6B6B6B}
+.dK-repeatPrice{font-size:14px;color:#0A0A0A;font-variant-numeric:tabular-nums}
+.dK-free{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:14px;color:#0A0A0A}
+.dK-cta{
+  display:flex;align-items:center;justify-content:center;
+  width:100%;height:48px;margin-top:16px;
+  background:#0A0A0A;color:#FFFFFF;border:0;border-radius:999px;
+  font-family:Inter,sans-serif;font-size:14px;font-weight:600;
+}
+.dK-alt{
+  display:flex;align-items:center;justify-content:center;height:44px;
+  font-size:12px;color:#276EF1;text-decoration:none;
+}
+
+/* ---------- the rail. the tray is what makes its edge perceivable ---------- */
+.dK-tray{background:#F4F4F5;padding:18px 16px 22px}
+.dK-h2{
+  font-family:"Inter Tight",Inter,sans-serif;
+  font-size:18px;font-weight:600;line-height:1.25;letter-spacing:-0.01em;
+}
+.dK-group{margin-top:12px;background:#FFFFFF;border-radius:24px;overflow:hidden}
+.dK-row{display:flex;align-items:center;gap:12px;min-height:68px;padding:10px 14px;text-decoration:none;color:#0A0A0A}
+.dK-row + .dK-row{border-top:1px solid #E4E4E7}
+.dK-thumb{width:48px;height:48px;border-radius:12px;overflow:hidden;background:#F4F4F5}
+.dK-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.dK-rowText{flex:1;min-width:0}
+.dK-rowName{
+  display:block;font-size:14px;font-weight:600;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.dK-rowMeta{
+  display:flex;gap:10px;margin-top:2px;font-size:12px;color:#6B6B6B;
+  white-space:nowrap;overflow:hidden;
+}
+.dK-rowPrice{color:#0A0A0A;font-variant-numeric:tabular-nums}
+.dK-rowRight{display:flex;align-items:center;gap:6px;font-size:12px;color:#6B6B6B;white-space:nowrap}
+
+/* ---------- the fallback. browse is what happens when the answer is no ---------- */
+.dK-feed{padding:18px 16px 8px}
+.dK-feedHead{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.dK-link{font-size:12px;color:#276EF1;text-decoration:none}
+.dK-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.dK-card{
+  display:block;background:#FFFFFF;border-radius:16px;overflow:hidden;text-decoration:none;
+  color:#0A0A0A;box-shadow:0 1px 3px rgba(10,10,10,0.04), 0 10px 28px -14px rgba(10,10,10,0.10);
+}
+.dK-photo{display:block;aspect-ratio:5/4;background:#F4F4F5}
+.dK-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.dK-fallback{
+  width:100%;height:100%;display:flex;align-items:center;justify-content:center;gap:6px;
+  background:#F4F4F5;color:#0A0A0A;font-size:14px;font-weight:600;
+}
+.dK-body{display:block;padding:10px 12px 12px}
+.dK-cardTop{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.dK-name{
+  font-size:14px;font-weight:600;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.dK-rate{
+  display:flex;align-items:center;gap:3px;font-size:12px;color:#6B6B6B;
+  font-variant-numeric:tabular-nums;
+}
+.dK-cat{display:block;margin-top:2px;font-size:12px;color:#6B6B6B}
+.dK-cardBot{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-top:6px}
+.dK-addr{
+  font-size:12px;color:#6B6B6B;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.dK-price{font-size:12px;color:#0A0A0A;white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* ---------- the argument, written down ---------- */
+.dK-note{
+  margin:20px 0 0;padding:18px 16px 28px;background:#F4F4F5;
+  font-size:12px;line-height:1.6;color:#0A0A0A;
+}
+.dK-note p{margin-top:10px}
+.dK-note p:first-child{margin-top:0}
+.dK-noteH{font-weight:600}
+</style>
+
+<div class="dK-screen">
+
+  <!-- THE EXIT. Search gets one 48px row and nothing else. Fresha iOS gives its home no search
+       control at all and Uber Eats puts search in the bottom bar; K keeps it visible because
+       Solen is pre-launch and a first-timer must be able to leave, but it is chrome, not the
+       offer. No location field: the city is proven in the feed heading instead (Square Go). -->
+  <div class="dK-top">
+    <div class="dK-search">
+      <svg class="lucide lucide-search" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+      <span class="dK-searchLabel">Search treatments or salons</span>
+    </div>
+  </div>
+
+  <!-- THE RETURN BLOCK. It carries no photograph, which is the whole argument: you do not come
+       back to a room, you come back to Nadia. Stripping the photo is also the corpus's own
+       resolution to the pinned-block-versus-photo-feed collision (Marriott renders CONTINUE
+       YOUR BOOKING as text, Fresha demotes Book again to a thumb row above photo-top
+       Favourites), and it is what lets a photo-led feed still own the space below. -->
+  <section class="dK-return">
+    <p class="dK-kicker">Your last visit, 12 June</p>
+    <h1 class="dK-anchor">Nadia at Salon Lumiere</h1>
+    <div class="dK-repeatRow">
+      <span class="dK-repeatWhat">Cut and blow dry, 60 min</span>
+      <span class="dK-repeatPrice">CHF 95</span>
+    </div>
+    <p class="dK-free">
+      <svg class="lucide lucide-calendar-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>
+      Next free Thursday, 6 August
+    </p>
+    <!-- the ONE commit CTA on the screen. Every other row is a chevron or a text link. -->
+    <button class="dK-cta" type="button">Book again</button>
+    <a class="dK-alt" href="#same-person-other-service">Change service or time</a>
+  </section>
+
+  <!-- THE RAIL. Three rows, because the plural is the point: you have a set of people, not one.
+       No photo larger than a 48px thumb, hairline-divided inside one 24px grouped card, on the
+       sunken tray so the card edge is perceivable against the white above and below. The price
+       here is the price you actually paid, so PBV Art. 13 costs this row nothing. -->
+  <section class="dK-tray">
+    <h2 class="dK-h2">Others you have booked</h2>
+    <div class="dK-group">
+      <a class="dK-row" href="#rebook-rosengarten">
+        <span class="dK-thumb"><img src="/_mockups/_assets/salon-photos/p07.jpg" alt=""></span>
+        <span class="dK-rowText">
+          <span class="dK-rowName">Coiffeur Rosengarten</span>
+          <span class="dK-rowMeta"><span>Men's cut</span><span class="dK-rowPrice">CHF 48</span></span>
+        </span>
+        <span class="dK-rowRight">14 May
+          <svg class="lucide lucide-chevron-right" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        </span>
+      </a>
+      <a class="dK-row" href="#rebook-sihlcity">
+        <span class="dK-thumb"><img src="/_mockups/_assets/salon-photos/p08.jpg" alt=""></span>
+        <span class="dK-rowText">
+          <span class="dK-rowName">Nailbar Sihlcity</span>
+          <span class="dK-rowMeta"><span>Gel refill</span><span class="dK-rowPrice">CHF 65</span></span>
+        </span>
+        <span class="dK-rowRight">2 May
+          <svg class="lucide lucide-chevron-right" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        </span>
+      </a>
+      <a class="dK-row" href="#rebook-rennweg">
+        <span class="dK-thumb"><img src="/_mockups/_assets/salon-photos/p09.jpg" alt=""></span>
+        <span class="dK-rowText">
+          <span class="dK-rowName">Kosmetik Rennweg</span>
+          <span class="dK-rowMeta"><span>Facial, 60 min</span><span class="dK-rowPrice">CHF 130</span></span>
+        </span>
+        <span class="dK-rowRight">18 Apr
+          <svg class="lucide lucide-chevron-right" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <!-- THE FALLBACK. K puts browse third on purpose: it is what the screen offers once the answer
+       to "again?" is no. The card is the live SalonCard anatomy verbatim, so one salon is one
+       component everywhere on the product. -->
+  <section class="dK-feed">
+    <div class="dK-feedHead">
+      <h2 class="dK-h2">Somewhere new in Zurich</h2>
+      <a class="dK-link" href="#all-zurich">See all</a>
+    </div>
+
+    <div class="dK-grid">
+      <a class="dK-card" href="#salon-bellevue">
+        <span class="dK-photo"><img src="/_mockups/_assets/salon-photos/p01.jpg" alt=""></span>
+        <span class="dK-body">
+          <span class="dK-cardTop">
+            <span class="dK-name">Coiffeur Bellevue</span>
+            <span class="dK-rate">4.9
+              <svg class="lucide lucide-star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+            </span>
+          </span>
+          <span class="dK-cat">Coiffeur</span>
+          <span class="dK-cardBot"><span class="dK-addr">8001 Zurich</span><span class="dK-price">from CHF 65</span></span>
+        </span>
+      </a>
+
+      <a class="dK-card" href="#salon-kreis4">
+        <span class="dK-photo"><img src="/_mockups/_assets/salon-photos/p02.jpg" alt=""></span>
+        <span class="dK-body">
+          <span class="dK-cardTop">
+            <span class="dK-name">Studio Kreis 4</span>
+            <span class="dK-rate">4.7
+              <svg class="lucide lucide-star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+            </span>
+          </span>
+          <span class="dK-cat">Coiffeur</span>
+          <span class="dK-cardBot"><span class="dK-addr">8004 Zurich</span><span class="dK-price">from CHF 48</span></span>
+        </span>
+      </a>
+
+      <a class="dK-card" href="#salon-hairwerk">
+        <span class="dK-photo"><img src="/_mockups/_assets/salon-photos/p03.jpg" alt=""></span>
+        <span class="dK-body">
+          <span class="dK-cardTop">
+            <span class="dK-name">Hairwerk Oerlikon</span>
+            <span class="dK-rate">4.8
+              <svg class="lucide lucide-star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+            </span>
+          </span>
+          <span class="dK-cat">Coiffeur</span>
+          <span class="dK-cardBot"><span class="dK-addr">8050 Zurich</span><span class="dK-price">from CHF 42</span></span>
+        </span>
+      </a>
+
+      <a class="dK-card" href="#salon-niederdorf">
+        <span class="dK-photo"><img src="/_mockups/_assets/salon-photos/p04.jpg" alt=""></span>
+        <span class="dK-body">
+          <span class="dK-cardTop">
+            <span class="dK-name">Barbier Niederdorf</span>
+            <span class="dK-rate">4.9
+              <svg class="lucide lucide-star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+            </span>
+          </span>
+          <span class="dK-cat">Barbershop</span>
+          <span class="dK-cardBot"><span class="dK-addr">8001 Zurich</span><span class="dK-price">from CHF 38</span></span>
+        </span>
+      </a>
+
+      <a class="dK-card" href="#salon-naillab">
+        <span class="dK-photo"><img src="/_mockups/_assets/salon-photos/p06.jpg" alt=""></span>
+        <span class="dK-body">
+          <span class="dK-cardTop">
+            <span class="dK-name">Nail Lab Enge</span>
+            <span class="dK-rate">4.6
+              <svg class="lucide lucide-star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+            </span>
+          </span>
+          <span class="dK-cat">Nails</span>
+          <span class="dK-cardBot"><span class="dK-addr">8002 Zurich</span><span class="dK-price">from CHF 55</span></span>
+        </span>
+      </a>
+
+      <!-- The photo-missing state, rendered for real instead of omitted: sunken fill plus the
+           salon initial, per the imagery floor's own fallback spec. One of six on purpose,
+           because a feed that never shows its fallback has not designed one. -->
+      <a class="dK-card" href="#salon-seefeld">
+        <span class="dK-photo"><span class="dK-fallback">A</span></span>
+        <span class="dK-body">
+          <span class="dK-cardTop">
+            <span class="dK-name">Atelier Seefeld</span>
+            <span class="dK-rate">4.8
+              <svg class="lucide lucide-star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+            </span>
+          </span>
+          <span class="dK-cat">Spa &amp; Wellness</span>
+          <span class="dK-cardBot"><span class="dK-addr">8008 Zurich</span><span class="dK-price">from CHF 120</span></span>
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <div class="dK-note">
+    <p><span class="dK-noteH">THE BET.</span> Home's job is to make your last appointment repeatable in one tap. In beauty you come back to a person on a four to eight week cycle, so the screen opens on the return and browsing is what happens when the answer is no. Everything above the tray serves one sentence: same person, same service, one tap. The search row is the exit for the people we failed, the rail is the plural of the anchor, the feed is third because it is the fallback. That ordering IS the argument. Read top to bottom, this screen says the product is a relationship you resume, not a catalogue you shop.</p>
+
+    <p><span class="dK-noteH">WHAT IT GIVES UP.</span> First, imagery in the first viewport. Arithmetic on the CSS boxes in this file, not a rendered measurement, and I did not open a browser: at 390x844 the visible photographic area is two 173x138 card photos plus three 48px thumbs, 54,798 of 329,160 px, 16.6 percent against the FLOORS LAW 2 target of about a third. That is a named violation, not an oversight. It is the bill for spending the top of the screen on text, and the feed's own viewport one scroll down runs well above the floor. Second, the category row: K deletes MobileCategoriesRow from position one and does not re-add it anywhere. What survives in its place is the search row plus a six-card feed, so nothing that row did is lost, only its position. Third, it pays nothing at launch. Solen has no booking history and fabricating one is banned, so a first-timer sees this screen with the anchor and the rail gone, which is strictly worse than today unless the rail backfills real top-rated salons the way RecentlyViewed.tsx already does at line 134. Fourth, the rail needs a read that does not exist: useRecentlyViewed.ts returns VIEWED salons, and this rail needs BOOKED ones with the service, the amount paid and the date, plus a minimum count RecentlyViewed.tsx does not have (line 110 renders at one entry, which is Vrbo's one-card hole). Fifth, this rail row is SalonCard's second anatomy, so it is legal only as a documented variant, never as a second implementation, and that question has to be settled before the row is designed rather than after. Sixth, promoting rebooking to home needs an explicit owner yes, because a barber-era express-rebook widget sits in the graveyard from July 2026, and a narrow reason for deleting something is still not permission to bring it back.</p>
+
+    <p><span class="dK-noteH">TWO THINGS I CHECKED AND FOUND DIFFERENT.</span> The research this direction came from says express-rebook has zero customer render site. That is false: ProfileTabs.tsx calls POST /api/bookings/express-rebook at line 121 and the confirm endpoint at line 138, today, in the customer app. Rebooking already ships. It is just one tab deep inside the profile, which makes K's claim narrower and stronger, move the action we already built to the screen people actually open. The same research says the next-free line is unwired. Also false: GET /api/slots/next-available exists and reads availability_slots for the next slot with status available. What it filters on is the salon, not the stylist, so "Next free Thursday" is honest at salon level today and needs one more filter to be honest about Nadia specifically. Both corrections are in the file header with line numbers.</p>
+
+    <p><span class="dK-noteH">THE LENS FINDING BEHIND IT.</span> Fresha is the only app in the sweep that promotes rebooking to the home screen, first section, directly under the greeting and above Favourites. Angi instead gave return its own tab called Pros, wrote the reason on screen ("We know how valuable it is to find a pro you trust"), and then had to build a full-screen illustrated explainer to teach people the tab exists, which is the measured invoice for hiding it. Square Go's no-upcoming state IS a past visit plus a full-width Rebook. Zocdoc asks it outright as a two-card fork, rebook a previous provider or book a new one. Starbucks' Your Usuals row is its entire returning-user proposition. Airtasker's "Use details from last task with Usama" is the most complete version found. The contrast that makes the bet: Airbnb resumes a SEARCH, "Continue searching for experiences in Miami", and never says book that place again, because its user returns to a category while ours returns to a person. The structural move here, stripping the photograph out of the personal block, is not mine either: Marriott renders CONTINUE YOUR BOOKING as text with a left thumbnail, Fresha demotes Book again to a thumb row above photo-top Favourites. That is the corpus's own answer to the collision between a pinned personal block and a photo-led feed, and it is why the loudest thing on this screen is a person's name in 28px type rather than a room.</p>
+  </div>
+</div>

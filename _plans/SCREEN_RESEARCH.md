@@ -210,16 +210,16 @@ is exactly the combining-everything he named.
       `.claude/../workflows/scripts/home-why-derived-wf_a172a45e-0ed.js` which carries the owner's
       correction verbatim and forbids frequency counts by name.` CORRECTION: the research must
       explain WHY, not count WHAT.
-- [~] C7. IN FLIGHT, run `wf_a172a45e-0ed`, Derive phase. **More directions than four.** He asked for this twice. Four was my number, not his. The
+- [x] C7. DONE, `verified: public/_mockups/home-directions-v2/index.html`, 8 directions E to L, run `wf_a172a45e-0ed`, Derive phase. **More directions than four.** He asked for this twice. Four was my number, not his. The
       next round produces more, and they are grouped by the REASONING behind them rather than by
       which app they came from.
 - [x] C8. Reason out each step in the reply. `verified: done in the 2026-07-30 replies, which
       explain why the phone bug happened, why my six invented bets were discarded, why these four
       lenses, why both sides always stand, and why a Relations phase exists.`
-- [~] C9. IN FLIGHT, run `wf_a172a45e-0ed`. The four-answer requirement (problem, cost, which
+- [x] C9. DONE, `verified: 5 WHY_*.md files, 16 positions across 4 lenses, each argued both ways`, run `wf_a172a45e-0ed`. The four-answer requirement (problem, cost, which
       product it suits, where Solen sits) is written into the shared BRIEF of every lens agent, so
       it cannot be skipped per-pattern.
-- [~] C10. IN FLIGHT, run `wf_a172a45e-0ed`, dedicated Relations phase writing
+- [x] C10. DONE, `verified: _design-system/research/WHY_RELATIONS.md, 6 forced pairs with mechanisms`, run `wf_a172a45e-0ed`, dedicated Relations phase writing
       `_design-system/research/WHY_RELATIONS.md`: forced pairs with mechanisms, incompatible pairs,
       only-together pairs, and the single most load-bearing choice.
 
