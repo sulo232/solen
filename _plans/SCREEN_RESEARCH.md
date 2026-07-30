@@ -206,13 +206,28 @@ image; Fresha sells an APPOINTMENT so the price and the time are the product and
 reassurance. Opposite bets. My "photo above text, 16 of 19" erased that distinction entirely, which
 is exactly the combining-everything he named.
 
-- [x] C6. CORRECTION: the research must explain WHY, not count WHAT. Recorded here, queued as the
-      next research unit below.
-- [ ] C7. **More directions than four.** He asked for this twice. Four was my number, not his. The
+- [x] C6. `verified: _plans/SCREEN_RESEARCH.md` this section, plus the run brief at
+      `.claude/../workflows/scripts/home-why-derived-wf_a172a45e-0ed.js` which carries the owner's
+      correction verbatim and forbids frequency counts by name.` CORRECTION: the research must
+      explain WHY, not count WHAT.
+- [~] C7. IN FLIGHT, run `wf_a172a45e-0ed`, Derive phase. **More directions than four.** He asked for this twice. Four was my number, not his. The
       next round produces more, and they are grouped by the REASONING behind them rather than by
       which app they came from.
-- [ ] C8. Reason out each step in the reply, not just hand over the output.
-- [ ] C9. For every pattern: what problem it solves, what it costs, which kind of product it suits,
-      and where Solen sits, since Solen is neither Airbnb nor Fresha.
-- [ ] C10. Name the RELATIONS between patterns, not just the patterns. Which choices force other
-      choices, which pairs are incompatible, which only make sense together.
+- [x] C8. Reason out each step in the reply. `verified: done in the 2026-07-30 replies, which
+      explain why the phone bug happened, why my six invented bets were discarded, why these four
+      lenses, why both sides always stand, and why a Relations phase exists.`
+- [~] C9. IN FLIGHT, run `wf_a172a45e-0ed`. The four-answer requirement (problem, cost, which
+      product it suits, where Solen sits) is written into the shared BRIEF of every lens agent, so
+      it cannot be skipped per-pattern.
+- [~] C10. IN FLIGHT, run `wf_a172a45e-0ed`, dedicated Relations phase writing
+      `_design-system/research/WHY_RELATIONS.md`: forced pairs with mechanisms, incompatible pairs,
+      only-together pairs, and the single most load-bearing choice.
+
+### Status of C7, C9, C10, stated concretely rather than as a pause
+
+All three are IN FLIGHT in workflow run `wf_a172a45e-0ed`, relaunched 2026-07-30 after its first
+attempt returned `API Error: 529 Overloaded` on all 7 agents with zero output. That is an Anthropic
+capacity error, not a script defect, so the response is a retry on the same run id (partial work
+caches) rather than a redesign. They tick when the files exist on disk:
+  `_design-system/research/WHY_ENTRY.md`, `WHY_CURRENCY.md`, `WHY_RETURN.md`, `WHY_DENSITY.md`,
+  `WHY_RELATIONS.md`, and `public/_mockups/home-directions-v2/{why.html,index.html}`.
