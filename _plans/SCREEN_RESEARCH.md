@@ -187,3 +187,32 @@ current home. Anchor facts already measured there: a search entry in the top zon
 
 Deliver as ONE page showing the options next to each other so he can compare at a glance, with a
 cloudflare tunnel link. Motion is researched separately and is not part of these images.
+
+---
+
+## OWNER CORRECTION, 2026-07-30: the research answered the wrong question
+
+Verbatim: *"the whole research, I wanted to do that to actually understand why they're doing this
+instead of this... understand the concept behind each Mobbin, the concept, the principles that
+they're using, what we can learn from if we're already using this and that... I want you to
+actually reason each step that you're taking... I want you guys to show me more direction... I
+think you're just combining everything else. I want you to actually think, and the relations."*
+
+**What I delivered and why it missed.** Frequency counts. "29 of 34 put search in the top zone."
+That says what is COMMON. It says nothing about WHY, cannot be argued with, and cannot be learned
+from. Worse, it flattens every app into one vote, as if Airbnb and Fresha were solving the same
+problem. They are not: Airbnb sells a PLACE so the photograph is the product and the card is mostly
+image; Fresha sells an APPOINTMENT so the price and the time are the product and the photo is only
+reassurance. Opposite bets. My "photo above text, 16 of 19" erased that distinction entirely, which
+is exactly the combining-everything he named.
+
+- [x] C6. CORRECTION: the research must explain WHY, not count WHAT. Recorded here, queued as the
+      next research unit below.
+- [ ] C7. **More directions than four.** He asked for this twice. Four was my number, not his. The
+      next round produces more, and they are grouped by the REASONING behind them rather than by
+      which app they came from.
+- [ ] C8. Reason out each step in the reply, not just hand over the output.
+- [ ] C9. For every pattern: what problem it solves, what it costs, which kind of product it suits,
+      and where Solen sits, since Solen is neither Airbnb nor Fresha.
+- [ ] C10. Name the RELATIONS between patterns, not just the patterns. Which choices force other
+      choices, which pairs are incompatible, which only make sense together.
