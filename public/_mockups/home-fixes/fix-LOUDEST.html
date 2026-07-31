@@ -1,0 +1,516 @@
+<!-- Base: live iframe of the real route, no screenshot -->
+<!-- Scale: full-page -->
+<!-- Grounded-in: app/[locale]/_components/homepage/WalkInBand.tsx -->
+<!--
+Exists-check: `npm run exists walkin` returns 84 existing matches. The homepage walk-in surface
+ALREADY EXISTS as WalkInBand, app/[locale]/_components/homepage/WalkInBand.tsx, and it is the only
+one, so this fix restyles that component and creates nothing. Graveyard hits read and respected:
+"WaitTimeDisplay" (a standalone live wait-time widget, zero importers, removed 2026-07-11) and the
+wait-time UI on the /walk-in-pay route (killed 2026-06-12). Neither is re-proposed here. This DEMOTES
+a line WalkInBand already renders. Net-new: nothing. No route, component, table or token is added.
+-->
+<!--
+Diagnosis: the walk-in wait estimate is the largest, heaviest and only saturated-colour text in the home feed | measured 20px / weight 700 / #16A34A Inter Tight on 4 of 4 chips against the salon name at 14px / 700 / #0A0A0A on the same card, and those 4 lines are the only 20px text in the entire 390x844 document | violates the design-contract text-size row (name 14, meta 12, section-H2 clamp(18px,2vw,20), no row authorises a 20px display slot inside a card), taste rule 4 (success green is legal as an ICON, never as body text, and this green paints a 98-minute wait and a zero-minute wait identically so the token encodes nothing), and FLOORS LAW 7 EMPHASIS BUDGET (emphasis is spent selectively on the deciding field, which on a salon card is the salon) | target wait 12px / 400 / #6B6B6B inside the meta stack, salon name the largest and heaviest text in every chip, 0 px of saturated-green text, and the 20px tier gone from the document
+-->
+<!--
+Depicts:
+  both live panes -> app/[locale]/page.tsx served at http://localhost:50723/de, iframed, never redrawn
+  walk-in section -> app/[locale]/_components/homepage/WalkInBand.tsx
+  wait-estimate line, the one element this fix demotes -> app/[locale]/_components/homepage/WalkInBand.tsx:125-127
+  its orphan sub-line, folded into the demoted line -> app/[locale]/_components/homepage/WalkInBand.tsx:128-130
+  salon-name row, moved to the top of the chip -> app/[locale]/_components/homepage/WalkInBand.tsx:131-142
+  queue-count line, the demoted wait is grouped beside it -> app/[locale]/_components/homepage/WalkInBand.tsx:146-148
+  hero and search, untouched -> app/[locale]/_components/homepage/Hero.tsx
+  mobile category grid, untouched -> app/[locale]/_components/homepage/MobileCategoriesRow.tsx
+  salon rails, untouched -> app/[locale]/_components/homepage/SalonCard.tsx
+  map rail, untouched -> app/[locale]/_components/homepage/NearbyMap.tsx
+  partner teaser, untouched -> app/[locale]/_components/homepage/BusinessTeaser.tsx
+  review band, untouched -> app/[locale]/_components/homepage/Reviews.tsx
+  the toggle, the measurement table and the fit readout around the panes -> NET-NEW: analysis harness, never shipped, not product UI
+The salon name keeps its locked 14px (design contract text-size row, "name 14"). The defect was never
+that the name is small, it was that a derived estimate had been handed a size tier the contract
+reserves for a section heading. This fix adds nothing to a chip and removes no field: it moves one
+element and restyles it.
+-->
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Fix LOUDEST - the walk-in wait estimate is the loudest text in the feed</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --sunken:#F4F4F5; --border:#E4E4E7;
+    --accent:#276EF1; --ok:#16A34A; --warn:#EA580C;
+    --font-body:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:#fff;color:var(--ink);font-family:var(--font-body);
+       font-size:14px;line-height:1.45;overflow-x:hidden}
+  .wrap{max-width:1280px;margin:0 auto;padding:14px 12px 48px}
+  h1{font-size:20px;line-height:1.15;letter-spacing:-0.01em;margin:0 0 6px;font-weight:600}
+  .lede{margin:0 0 14px;color:var(--ink2);font-size:13px;max-width:74ch}
+  .lede b{color:var(--ink);font-weight:600}
+  code{font-family:var(--font-body);background:var(--sunken);padding:1px 5px;border-radius:5px}
+
+  .bar{position:sticky;top:0;z-index:20;background:#fff;padding:10px 0 12px;
+       border-bottom:1px solid var(--border);margin-bottom:14px}
+  .seg{display:inline-flex;gap:6px;background:var(--sunken);padding:4px;border-radius:999px}
+  .seg button{appearance:none;border:0;background:transparent;color:var(--ink2);
+       font:inherit;font-size:13px;font-weight:500;padding:0 14px;height:36px;
+       min-width:88px;border-radius:999px;cursor:pointer}
+  .seg button[aria-pressed="true"]{background:#fff;color:var(--ink);font-weight:600;
+       box-shadow:0 1px 2px rgba(0,0,0,.06)}
+  .barrow{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+  .chk{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--ink2);
+       min-height:44px;cursor:pointer}
+  .status{font-size:12px;color:var(--ink2)}
+  .status b{color:var(--ink);font-weight:600}
+
+  .panes{display:flex;gap:14px;align-items:flex-start}
+  .pane{flex:1 1 0;min-width:0}
+  .pane[hidden]{display:none}
+  .paneHead{display:flex;align-items:baseline;gap:8px;margin:0 0 8px}
+  .paneHead .tag{font-size:12px;font-weight:600}
+  .paneHead .sub{font-size:12px;color:var(--ink2);min-width:0;overflow:hidden;
+       text-overflow:ellipsis;white-space:nowrap}
+  .isNow .tag{color:var(--ink2)}
+  .isFix .tag{color:var(--accent)}
+  .legend{list-style:none;margin:0 0 8px;padding:0;font-size:11.5px;color:var(--ink2)}
+  .legend li{display:flex;align-items:center;gap:7px;line-height:1.6}
+  .legend .key{width:20px;height:0;flex:0 0 auto;border-top:1.5px dashed var(--ink)}
+  .legend .key.blue{border-top-color:var(--accent)}
+  .slot{width:100%;overflow:hidden;border:1px solid var(--border);border-radius:16px;
+        background:#fff;position:relative}
+  .slot .scaler{transform-origin:top left}
+  .slot iframe{width:390px;height:844px;border:0;display:block;background:#fff}
+
+  table.m{width:100%;border-collapse:collapse;margin-top:18px;font-size:12.5px}
+  table.m th,table.m td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);
+       vertical-align:top}
+  table.m th{color:var(--ink2);font-weight:500;font-size:11px}
+  table.m td.n{font-variant-numeric:tabular-nums}
+  table.m td.n q{color:var(--ink);font-weight:600}
+  .moved{color:var(--ok);font-weight:600}
+  .same{color:var(--warn);font-weight:600}
+  .note{margin-top:14px;font-size:12px;color:var(--ink2);max-width:80ch}
+  .note b{color:var(--ink);font-weight:600}
+  @media (max-width:899px){
+    .panes{flex-direction:column}
+    .pane{width:100%}
+  }
+</style>
+
+<script>
+  // Seeded before the two iframes are parsed, same origin, so the consent banner never covers the
+  // measured viewport. CHEAP_TYPE.md named that contamination by hand.
+  try {
+    localStorage.setItem("solen-cookie-consent", JSON.stringify({
+      necessary: true, analytics: false, marketing: false, timestamp: new Date().toISOString()
+    }));
+  } catch (err) { console.error("[fix-LOUDEST] could not seed consent:", err); }
+</script>
+
+<div class="wrap">
+  <h1>The loudest thing in the feed is a wait estimate</h1>
+  <p class="lede">
+    Both panes below are the <b>live route</b> <code>/de</code> in an iframe, same seed data, same
+    minute. The second pane injects one change onto the real document: the walk-in wait estimate is
+    taken out of its 20px display slot and put into the meta stack at body weight, so the
+    <b>salon name</b> is the largest and heaviest thing on its own card. Nothing else is touched.
+  </p>
+
+  <div class="bar">
+    <div class="barrow">
+      <div class="seg" role="group" aria-label="View">
+        <button id="bBefore" aria-pressed="false">Before</button>
+        <button id="bBoth"   aria-pressed="true">Both</button>
+        <button id="bAfter"  aria-pressed="false">After</button>
+      </div>
+      <label class="chk"><input type="checkbox" id="anno" checked> outline what changed</label>
+      <span class="status" id="status">loading the two live iframes...</span>
+    </div>
+  </div>
+
+  <div class="panes" id="panes">
+    <section class="pane isNow" id="paneBefore">
+      <div class="paneHead"><span class="tag">BEFORE</span><span class="sub">live /de, untouched</span></div>
+      <div class="slot" id="slotBefore">
+        <div class="scaler">
+          <iframe id="fBefore" src="/de" title="the live /de route, untouched" scrolling="no"></iframe>
+        </div>
+      </div>
+    </section>
+    <section class="pane isFix" id="paneAfter">
+      <div class="paneHead"><span class="tag">AFTER</span><span class="sub">live /de with the LOUDEST fix injected</span></div>
+      <ul class="legend">
+        <li><span class="key ink"></span>ink outline: the salon name now leads the card</li>
+        <li><span class="key blue"></span>blue outline: the demoted wait line, 12px / 400 / #6B6B6B</li>
+      </ul>
+      <div class="slot" id="slotAfter">
+        <div class="scaler">
+          <iframe id="fAfter" src="/de" title="the live /de route with the LOUDEST fix injected" scrolling="no"></iframe>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <table class="m" id="metrics">
+    <thead><tr>
+      <th>measured on section[aria-label="Walk-in"], 390x844</th>
+      <th>before the fix</th><th>with the fix</th><th>moved</th>
+    </tr></thead>
+    <tbody><tr><td colspan="4" style="color:var(--ink2)">measuring...</td></tr></tbody>
+  </table>
+
+  <p class="note" id="fitnote">pane-fit check pending</p>
+  <p class="note">
+    What the injection does, in the order the DOM does it: the 20px green wait line is removed from
+    the top of every chip, its orphan sub-line is folded into it, the salon name row moves to the top
+    of the card, and the wait comes back as one 12px / 400 / #6B6B6B line beside the queue count,
+    which is the other live number. Success green survives only as a 7px dot on a chip that is free
+    right now, which is the icon role taste rule 4 allows, so the token can discriminate instead of
+    painting a 98-minute wait the same colour as no wait at all. The salon name keeps 14px because
+    the design contract locks a card name to 14: <b>the defect was never that the name is small</b>,
+    it was that a derived estimate had been handed a size tier the contract reserves for a section
+    heading. Every string inside both panes is rendered by the real route from seed data, so no copy
+    is invented here.
+  </p>
+</div>
+
+<script>
+(() => {
+  "use strict";
+  const VW = 390, VH = 844;   // the measurement viewport, matching the research probes
+  const $ = (id) => document.getElementById(id);
+  const statusEl = $("status");
+  const fBefore = $("fBefore");
+  const fAfter  = $("fAfter");
+
+  // ---------------------------------------------------------------- the fix
+  function applyChange(doc) {
+    const sec = doc.querySelector('section[aria-label="Walk-in"]');
+    if (!sec) return { changed: 0, chips: 0, reason: "no walk-in section" };
+    const win = doc.defaultView;
+    const chips = [...sec.querySelectorAll('a[href*="/salon/"]')];
+    let changed = 0;
+
+    for (const chip of chips) {
+      if (chip.dataset.loudnessFixed === "1") { changed++; continue; }
+      const nameSpan = chip.querySelector("span.truncate");
+      const nameRow = nameSpan ? nameSpan.parentElement : null;
+      const waitEl = chip.firstElementChild;
+      if (!nameRow || !waitEl || waitEl === nameRow) continue;
+
+      // Every label below is READ off the live DOM, never typed here: the route renders its copy
+      // through i18n and this harness must not invent a string.
+      const waitText = waitEl.textContent.trim();
+      if (!waitText) continue;
+      const freeNow = !/\d/.test(waitText);   // the digit-free label is the zero-wait state
+
+      // the orphan sub-line under the estimate: present only when there is a real wait, and
+      // identified structurally (small, semibold, no digits, not the name row) rather than by copy
+      let sub = waitEl.nextElementSibling;
+      if (sub && sub !== nameRow) {
+        const t = sub.textContent.trim();
+        const scs = win.getComputedStyle(sub);
+        const looksLikeSubLine = t.length > 0 && t.length <= 24 && !/\d/.test(t) &&
+          parseFloat(scs.fontSize) <= 13 && (parseInt(scs.fontWeight, 10) || 400) >= 600;
+        if (!looksLikeSubLine) sub = null;
+      } else { sub = null; }
+      const subText = sub ? sub.textContent.trim() : "";
+
+      // the demoted line: meta size, body weight, meta colour, folded together with the sub-line
+      const meta = doc.createElement("div");
+      meta.className = "fixWaitMeta";
+      meta.style.cssText =
+        "margin-top:3px;font-family:var(--font-inter),Inter,system-ui,sans-serif;" +
+        "font-size:12px;font-weight:400;line-height:1.35;color:#6B6B6B;letter-spacing:normal;" +
+        "display:flex;align-items:center;gap:6px;";
+      if (freeNow) {
+        const dot = doc.createElement("span");   // semantic green survives as an icon, not as text
+        dot.setAttribute("aria-hidden", "true");
+        dot.style.cssText = "width:7px;height:7px;border-radius:9999px;background:#16A34A;flex:0 0 auto;";
+        meta.appendChild(dot);
+        meta.appendChild(doc.createTextNode(waitText));
+      } else {
+        meta.appendChild(doc.createTextNode(subText ? waitText + " " + subText : waitText));
+      }
+
+      waitEl.remove();
+      if (sub) sub.remove();
+
+      nameRow.style.marginTop = "0px";
+      nameRow.classList.add("fixNameRow");
+      chip.insertBefore(nameRow, chip.firstChild);
+
+      // group the wait with the queue count, the other live number, at the foot of the meta stack
+      chip.insertBefore(meta, chip.lastElementChild);
+
+      chip.dataset.loudnessFixed = "1";
+      changed++;
+    }
+
+    // annotations use generated content only, so no text node enters the measurement
+    if (!doc.getElementById("fixAnnoStyle")) {
+      const st = doc.createElement("style");
+      st.id = "fixAnnoStyle";
+      st.setAttribute("data-fix-annotation", "style");
+      st.textContent = `
+        /* Outlines only. The labels live in the legend OUTSIDE the iframe: an in-card label sat on
+           top of the queue line, and covering real content to annotate it defeats the point. */
+        .fixAnno .fixNameRow{outline:1.5px dashed #0A0A0A;outline-offset:3px}
+        .fixAnno .fixWaitMeta{outline:1.5px dashed #276EF1;outline-offset:2px}
+        .fixBadge{position:absolute;top:2px;right:6px;z-index:5;background:#276EF1;color:#fff;
+          font:600 10px/1 Inter,sans-serif;padding:5px 8px;border-radius:999px;white-space:nowrap}
+      `;
+      doc.head.appendChild(st);
+    }
+    if (!sec.querySelector(".fixBadge")) {
+      sec.style.position = "relative";
+      const badge = doc.createElement("span");
+      badge.className = "fixBadge";
+      badge.setAttribute("data-fix-annotation", "badge");
+      badge.textContent = "FIX: LOUDEST";
+      sec.appendChild(badge);
+    }
+    return { changed, chips: chips.length };
+  }
+
+  // ---------------------------------------------------------------- measurement
+  function textRuns(doc, root) {
+    const out = [];
+    const win = doc.defaultView;
+    const walker = doc.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    let n;
+    while ((n = walker.nextNode())) {
+      const t = n.textContent.trim();
+      if (!t) continue;
+      const p = n.parentElement;
+      if (!p || p.closest("[data-fix-annotation]")) continue;
+      const cs = win.getComputedStyle(p);
+      if (cs.display === "none" || cs.visibility === "hidden" || parseFloat(cs.opacity) === 0) continue;
+      const r = p.getBoundingClientRect();
+      if (r.width < 1 || r.height < 1) continue;
+      out.push({
+        text: t, size: parseFloat(cs.fontSize), weight: parseInt(cs.fontWeight, 10) || 400,
+        color: cs.color, family: (cs.fontFamily.split(",")[0] || "").replace(/["']/g, "").trim(),
+        area: Math.round(r.width * r.height)
+      });
+    }
+    return out;
+  }
+
+  function hsl(color) {                       // HSL saturation + lightness from a computed rgb()
+    const m = color.match(/(\d+(?:\.\d+)?)/g);
+    if (!m) return { s: 0, l: 0 };
+    const [r, g, b] = m.slice(0, 3).map((v) => +v / 255);
+    const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2, d = mx - mn;
+    return { s: d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1)), l };
+  }
+  const isSaturated = (c) => { const { s, l } = hsl(c); return s >= 0.35 && l > 0.12 && l < 0.9; };
+
+  function measure(doc) {
+    const sec = doc.querySelector('section[aria-label="Walk-in"]');
+    if (!sec) return null;
+    const chips = [...sec.querySelectorAll('a[href*="/salon/"]')];
+    const chipRuns = chips.flatMap((c) => textRuns(doc, c));
+    const secRuns = textRuns(doc, sec);
+    if (!chipRuns.length) return null;
+
+    const loud = (r) => r.size * (r.weight / 400);
+    const bySize = [...chipRuns].sort((a, b) => b.size - a.size || loud(b) - loud(a))[0];
+    const byLoud = [...chipRuns].sort((a, b) => loud(b) - loud(a) || b.size - a.size)[0];
+    const satRuns = chipRuns.filter((r) => isSaturated(r.color));
+    const greenArea = chipRuns.filter((r) => r.color.replace(/\s/g, "") === "rgb(22,163,74)")
+                              .reduce((s, r) => s + r.area, 0);
+
+    const docRuns = textRuns(doc, doc.body);
+    const tiers = [...new Set(docRuns.map((r) => r.size))].sort((a, b) => a - b);
+
+    return {
+      chips: chips.length,
+      largest: { text: bySize.text, size: bySize.size, weight: bySize.weight, color: bySize.color },
+      loudest: { text: byLoud.text, size: byLoud.size, weight: byLoud.weight, color: byLoud.color },
+      loudScore: Math.round(loud(byLoud) * 10) / 10,
+      satArea: satRuns.reduce((s, r) => s + r.area, 0),
+      satColors: [...new Set(satRuns.map((r) => r.color))],
+      greenArea,
+      bold: Math.round(secRuns.filter((r) => r.weight >= 600).length / secRuns.length * 1000) / 10,
+      secRuns: secRuns.length,
+      tiers, tierCount: tiers.length,
+      has20: docRuns.filter((r) => r.size === 20).length
+    };
+  }
+
+  // ---------------------------------------------------------------- harness
+  let mBefore = null, mAfter = null, ready = false;
+
+  function fit() {
+    for (const id of ["slotBefore", "slotAfter"]) {
+      const slot = $(id);
+      if (!slot || slot.closest(".pane").hidden) continue;
+      const k = Math.min(1, slot.clientWidth / VW);
+      slot.querySelector(".scaler").style.transform = "scale(" + k + ")";
+      slot.style.height = Math.round(VH * k) + "px";
+    }
+  }
+
+  function painted(doc) {
+    if (!doc || doc.readyState !== "complete") return false;
+    if (!doc.querySelector("h1")) return false;                       // a heading has rendered
+    const tall = [...doc.querySelectorAll('a[href*="/salon/"]')]
+      .filter((a) => a.getBoundingClientRect().height >= 150).length; // three tall cards
+    if (tall < 3) return false;
+    const wi = doc.querySelector('section[aria-label="Walk-in"]');    // real chips, not the skeleton
+    return !!(wi && wi.querySelectorAll('a[href*="/salon/"]').length >= 1);
+  }
+
+  function waitPainted(frame) {
+    return new Promise((resolve, reject) => {
+      const t0 = Date.now();
+      (function poll() {
+        let doc = null;
+        try { doc = frame.contentDocument; } catch (err) { return reject(err); }
+        if (doc && painted(doc)) return resolve(doc);
+        if (Date.now() - t0 > 60000) return reject(new Error("timeout waiting for paint"));
+        setTimeout(poll, 250);
+      })();
+    });
+  }
+
+  function scrollToBand(doc) {
+    doc.documentElement.style.scrollBehavior = "auto";  // smooth scroll defeats a synchronous read
+    const sec = doc.querySelector('section[aria-label="Walk-in"]');
+    if (!sec) return;
+    const y = sec.getBoundingClientRect().top + doc.defaultView.scrollY;
+    doc.defaultView.scrollTo(0, Math.max(0, y - 10));
+  }
+
+  const q = (s) => "<q>" + s + "</q>";
+  const px1 = (n) => Math.round(n * 10) / 10;
+
+  function renderMetrics() {
+    const tb = $("metrics").querySelector("tbody");
+    if (!mBefore || !mAfter) { tb.innerHTML = '<tr><td colspan="4">measuring...</td></tr>'; return; }
+    const v = (better) => better ? '<span class="moved">moved</span>'
+                                 : '<span class="same">DID NOT MOVE</span>';
+    const rows = [
+      ["largest text in a walk-in chip",
+       mBefore.largest.size + "px / " + mBefore.largest.weight + "<br>" + q(mBefore.largest.text),
+       mAfter.largest.size + "px / " + mAfter.largest.weight + "<br>" + q(mAfter.largest.text),
+       v(mBefore.largest.text !== mAfter.largest.text || mBefore.largest.size !== mAfter.largest.size)],
+      ["loudest text in a chip, size x weight/400",
+       mBefore.loudScore + "<br>" + q(mBefore.loudest.text),
+       mAfter.loudScore + "<br>" + q(mAfter.loudest.text),
+       v(mAfter.loudScore < mBefore.loudScore)],
+      ["saturated-colour text area in the chips",
+       mBefore.satArea + " px&sup2;<br>" + (mBefore.satColors.join(" + ") || "none"),
+       mAfter.satArea + " px&sup2;<br>" + (mAfter.satColors.join(" + ") || "none"),
+       v(mAfter.satArea < mBefore.satArea)],
+      ["success-green text area in the chips",
+       mBefore.greenArea + " px&sup2;", mAfter.greenArea + " px&sup2;",
+       v(mAfter.greenArea < mBefore.greenArea)],
+      ["text runs at weight &ge; 600 in the section",
+       mBefore.bold + "% of " + mBefore.secRuns, mAfter.bold + "% of " + mAfter.secRuns,
+       v(mAfter.bold < mBefore.bold)],
+      ["distinct font sizes in the whole document",
+       mBefore.tierCount + "<br>" + mBefore.tiers.join(" / "),
+       mAfter.tierCount + "<br>" + mAfter.tiers.join(" / "),
+       v(mAfter.tierCount < mBefore.tierCount)],
+      ["20px text runs in the whole document",
+       String(mBefore.has20), String(mAfter.has20), v(mAfter.has20 < mBefore.has20)]
+    ];
+    tb.innerHTML = rows.map((r) =>
+      "<tr><td>" + r[0] + '</td><td class="n">' + r[1] + '</td><td class="n">' + r[2] +
+      "</td><td>" + r[3] + "</td></tr>").join("");
+    window.__FIX_LOUDEST__ = { before: mBefore, after: mAfter };
+  }
+
+  function fitCheck() {
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const detail = [];
+    let ok = true;
+    for (const [id, name] of [["paneBefore", "baseline"], ["paneAfter", "fixed"]]) {
+      const el = $(id);
+      if (el.hidden) { detail.push(name + " pane: hidden"); continue; }
+      const r = el.getBoundingClientRect();
+      const inside = r.left >= -0.5 && r.right <= vw + 0.5;
+      if (!inside) ok = false;
+      detail.push(name + " pane left " + px1(r.left) + " right " + px1(r.right) +
+                  " width " + px1(r.width) + " " + (inside ? "inside" : "OVERFLOWS"));
+    }
+    const sw = document.documentElement.scrollWidth;
+    if (sw > vw + 0.5) ok = false;
+    $("fitnote").innerHTML = (ok ? "pane-fit PASS " : "pane-fit FAIL ") +
+      "at viewport " + vw + "x" + vh + "<br>" + detail.join("<br>") +
+      "<br>document scrollWidth " + sw + (sw > vw + 0.5 ? " OVERFLOWS" : " inside");
+    window.__FIT__ = { ok, vw, vh, detail, scrollWidth: sw };
+    return ok;
+  }
+
+  function refresh() {
+    try {
+      // A pane hidden by the toggle has display:none, so every rect inside it is 0 and measure()
+      // returns null. Keep the last good reading rather than blanking the table.
+      const b = measure(fBefore.contentDocument);
+      if (b) mBefore = b;
+      window.__APPLY__ = applyChange(fAfter.contentDocument);   // idempotent
+      const a = measure(fAfter.contentDocument);
+      if (a) mAfter = a;
+      renderMetrics();
+    } catch (err) {
+      console.error("[fix-LOUDEST] refresh failed:", err);
+      statusEl.textContent = "measurement failed, see console";
+    }
+  }
+
+  function setAnno(on) {
+    try {
+      const d = fAfter.contentDocument;
+      if (d) d.documentElement.classList.toggle("fixAnno", on);
+    } catch (err) { console.error("[fix-LOUDEST] annotation toggle failed:", err); }
+  }
+
+  function setMode(mode) {
+    $("paneBefore").hidden = mode === "after";
+    $("paneAfter").hidden  = mode === "before";
+    $("bBoth").setAttribute("aria-pressed", String(mode === "both"));
+    $("bBefore").setAttribute("aria-pressed", String(mode === "before"));
+    $("bAfter").setAttribute("aria-pressed", String(mode === "after"));
+    fit();
+    if (ready) refresh();
+    fitCheck();
+    window.__MODE__ = mode;
+  }
+
+  $("bBoth").addEventListener("click", () => setMode("both"));
+  $("bBefore").addEventListener("click", () => setMode("before"));
+  $("bAfter").addEventListener("click", () => setMode("after"));
+  $("anno").addEventListener("change", (e) => setAnno(e.target.checked));
+  window.addEventListener("resize", () => { fit(); fitCheck(); });
+
+  fit();
+  fitCheck();
+
+  Promise.all([waitPainted(fBefore), waitPainted(fAfter)]).then(([dBefore, dAfter]) => {
+    scrollToBand(dBefore);
+    scrollToBand(dAfter);
+    mBefore = measure(dBefore);
+    const res = applyChange(dAfter);
+    dAfter.documentElement.classList.toggle("fixAnno", $("anno").checked);
+    mAfter = measure(dAfter);
+    window.__APPLY__ = res;
+    dBefore.body.dataset.sweepDone = "baseline";
+    dAfter.body.dataset.sweepDone = "loudest";
+    ready = true;
+    renderMetrics();
+    fit();
+    fitCheck();
+    statusEl.innerHTML = "both panes painted, fix injected into <b>" + res.changed +
+      "</b> of <b>" + res.chips + "</b> walk-in chips";
+    window.__READY__ = true;
+  }).catch((err) => {
+    console.error("[fix-LOUDEST] iframe never painted:", err);
+    statusEl.textContent = "the live route never painted: is the dev server on 50723 up?";
+    window.__READY__ = false;
+  });
+})();
+</script>

@@ -1,0 +1,346 @@
+<!-- Base: live iframe of the real route, no screenshot -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx
+  Also grounded-in: app/[locale]/_components/primitives/CardText.tsx, app/[locale]/_components/primitives/PriceFrom.tsx
+  Exists-check: `npm run exists "salon card"` ran this turn, 9 hits. The target surface ALREADY EXISTS
+    and is extended, not rebuilt: app/[locale]/_components/homepage/SalonCard.tsx renders all five
+    fields (name, rating, category, address, price) today. The primitives already exist too:
+    <CardName> / <CardMeta> in app/[locale]/_components/primitives/CardText.tsx, and
+    <PriceFrom> in app/[locale]/_components/primitives/PriceFrom.tsx, which already carries an
+    `emphasis` prop that renders font-semibold on the amount. So the production fix is a prop plus a
+    colour token, not new code. REMOVED.md hits returned by the same run: the compare feature
+    (owner "kill em all", 2026-06-13) and the -0% discount pill (owner 2026-07-24). This fix touches
+    neither and re-adds neither. Nothing here is net new: no component, route, migration, token or size.
+
+  Diagnosis: SalonCard price, category and address are typographically indistinguishable | measured all three at 12px / weight 400 / #6B6B6B on the live /de render at 1512x950 and 390x844, card size range 14 to 12 = 1.17x | violates LOCKFILE §17.4 card two-anchor rule (V3-D442, "TWO ink anchors per card, name (larger, 600) + price (600, tabular)") and CLAUDE.md FLOORS LAW 6, which restates it | target price 12px / 600 / #0A0A0A tabular, category and address stay 12px / 400 / #6B6B6B as filler, name stays 14px / 500 / #0A0A0A and leads by SIZE
+
+  Emphasis-budget collision, measured, and the reason the name is NOT stepped to 600: taking BOTH
+    the name and the price to weight 600 moved the card band at 390x844 from 12.9% of visible text
+    at weight >= 600 (16 of 124) to 43.5% (54 of 124), over the 30% ceiling frozen in LOCKFILE
+    EMPHASIS BUDGET line 1957. The price step alone lands at 28.2% (35 of 124), under it. Those two
+    LOCKFILE rows are the same tier and they collide on this card, so this mockup takes the reading
+    the budget's own calibration row argues for (it names Airbnb at 3.1% and says the honest target
+    sits far below 30, with emphasis carried at weight 500). Result: two ink elements per card, the
+    name larger, exactly one of them at 600. Separate and NOT caused by this fix: the 390x844 FIRST
+    viewport measures 33.3% at weight >= 600 (9 of 27) and contains no salon cards at all, so that
+    overage is a different defect on different elements.
+
+  Every surface on this page traces to real product code. Nothing is hand drawn, and both panes are
+  the same live route so every salon name, postcode, price and photograph is the real seeded value.
+  Depicts: home feed, both panes -> app/[locale]/page.tsx (route /de, seed rows)
+  Depicts: the salon card itself -> app/[locale]/_components/homepage/SalonCard.tsx
+  Depicts: card name leaf (the size anchor) -> app/[locale]/_components/primitives/CardText.tsx CardName, called at SalonCard.tsx:505
+  Depicts: card rating leaf -> app/[locale]/_components/primitives/CardText.tsx CardMeta, called at SalonCard.tsx:509
+  Depicts: card category leaf -> app/[locale]/_components/homepage/SalonCard.tsx:520 inline row-2 div
+  Depicts: card address leaf -> app/[locale]/_components/primitives/CardText.tsx CardMeta, called at SalonCard.tsx:529
+  Depicts: card price leaf (the field being fixed) -> app/[locale]/_components/primitives/PriceFrom.tsx, wrapped in CardMeta at SalonCard.tsx:534
+  Depicts: the two-pane comparison chrome and its toggle -> NET-NEW: mockup scaffolding only, it is not a product surface and ships nowhere
+
+  Precedence note, surfaced not resolved: LOCKFILE rule A13 (V3-D346, 2026-05-28) names price as
+    recessive meta and is the rule the shipped card obeys. LOCKFILE §17.4 (V3-D442) is the later dated
+    decision, declares itself THE card-emphasis law, and is restated in CLAUDE.md FLOORS LAW 6, so by
+    the precedence chain it governs. A13's real concern (four competing anchors, owner 2026-05-28
+    "using too bold ... multiple times that destroys my eye") is respected here: this card ends with
+    TWO ink elements, not four, and the name still leads by SIZE. Landing this in production also
+    needs a price exemption in the A13 drift rule or it will be flagged forever.
+  Backend-check: read only, no fabricated values. English chrome, live page shows real German.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>fix-CARDFIELD: SalonCard price, address and category look identical</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --sunken:#F4F4F5; --hairline:#E4E4E7; --white:#fff;
+    --font:'Inter Tight','Inter',system-ui,-apple-system,'Helvetica Neue',sans-serif;
+    --topH:52px; --capH:38px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  html,body{height:100%}
+  body{
+    font-family:var(--font); background:var(--white); color:var(--ink);
+    -webkit-font-smoothing:antialiased; overflow:hidden;
+  }
+
+  /* The header is ONE fixed block and the stage reads its MEASURED height. The first version hard
+     coded 52 + 38 and the caption wrapped to three lines at 390, so it rendered underneath the
+     toggle. Measured heights do not have that failure mode. */
+  .hdr{position:fixed; top:0; left:0; right:0; z-index:30; background:var(--white)}
+  .top{
+    height:var(--topH);
+    background:rgba(255,255,255,.94); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--hairline);
+    display:flex; align-items:center; justify-content:center;
+    padding:0 12px; padding-top:env(safe-area-inset-top); box-sizing:content-box;
+  }
+  .seg{display:flex; background:var(--sunken); border-radius:999px; padding:3px; width:min(380px,94vw)}
+  .seg button{
+    flex:1; border:0; background:transparent; font-family:inherit; font-size:13px; font-weight:600;
+    color:var(--ink2); padding:9px 0; border-radius:999px; cursor:pointer; min-height:44px;
+    white-space:nowrap;
+  }
+  .seg button.on{background:var(--white); color:var(--ink); box-shadow:0 1px 3px rgba(10,10,10,.12)}
+
+  .cap{
+    min-height:var(--capH);
+    background:var(--sunken); color:var(--ink2);
+    font-size:12px; font-weight:500; line-height:1.35; text-align:center;
+    display:flex; align-items:center; justify-content:center; padding:7px 12px;
+  }
+  .cap b{color:var(--ink); font-weight:600}
+
+  .stage{
+    position:fixed; top:var(--headH, 90px); left:0; right:0; bottom:0; z-index:1;
+    display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr;
+    gap:1px; background:var(--hairline);
+  }
+  /* Below 900px the panes STACK: one column, two rows, so each pane keeps the full width. */
+  @media (max-width:899px){
+    .stage{grid-template-columns:1fr; grid-template-rows:1fr 1fr}
+  }
+  body[data-mode="live"]  .stage,
+  body[data-mode="fixed"] .stage{grid-template-columns:1fr; grid-template-rows:1fr}
+  body[data-mode="live"]  #paneAfter{display:none}
+  body[data-mode="fixed"] #paneBefore{display:none}
+
+  .pane{position:relative; min-width:0; min-height:0; background:var(--white); overflow:hidden}
+  .paneHead{
+    position:absolute; top:8px; left:8px; z-index:5;
+    background:rgba(10,10,10,.84); color:#fff; border-radius:999px;
+    font-size:11px; font-weight:600; line-height:1.3; padding:4px 10px; pointer-events:none;
+  }
+  iframe{width:100%; height:100%; border:0; display:block; background:var(--white)}
+</style>
+</head>
+<body data-mode="both">
+  <div class="hdr" id="hdr">
+    <div class="top">
+      <div class="seg">
+        <button id="bBoth" class="on" type="button" onclick="show('both')">Both</button>
+        <button id="bB" type="button" onclick="show('live')">Before (live)</button>
+        <button id="bA" type="button" onclick="show('fixed')">After (fix)</button>
+      </div>
+    </div>
+    <div class="cap">Live <b>/de</b> both sides, scrolled to the same cards.</div>
+  </div>
+
+  <div class="stage">
+    <section class="pane" id="paneBefore">
+      <div class="paneHead">Before: price, category, address all 12 / 400 / #6B6B6B</div>
+      <iframe id="beforeFrame" src="/de" title="real /de page, untouched"></iframe>
+    </section>
+    <section class="pane" id="paneAfter">
+      <div class="paneHead">After: price 12 / 600 / ink tabular, name untouched</div>
+      <iframe id="afterFrame" src="/de" title="real /de page, CARDFIELD fix injected"></iframe>
+    </section>
+  </div>
+
+<script>
+  var CHANGE_LABEL = 'Fixed: price = ink 600 tabular';
+
+  /* LOCKED literals, none invented. Sizes are NOT touched: the design contract's text-size row
+     freezes name at 14 and meta at 12, and the name already leads the price by size (14 vs 12).
+     The fix spends a WEIGHT step and a COLOUR step, which is the only budget section 17.4 leaves. */
+  var INK   = '#0A0A0A';  /* s-ink   */
+  var INK2  = '#6B6B6B';  /* s-ink-2 */
+
+  function isPriceText(t){ return /\d\s*CHF|CHF\s*\d/.test(t); }
+
+  /* A text leaf: no element children, has visible text. SVGs are excluded because they carry
+     element children, so the yellow star (#FFC32B) is never recoloured. */
+  function textLeaves(root){
+    var out = [];
+    root.querySelectorAll('*').forEach(function(e){
+      if (e.children.length === 0 && (e.textContent || '').trim()) out.push(e);
+    });
+    return out;
+  }
+
+  function applyChange(doc){
+    var hit = 0, first = null;
+    var links = doc.querySelectorAll('a[href*="/salon/"]');
+    links.forEach(function(a){
+      var h3 = a.querySelector('h3');
+      if (!h3 || !h3.parentElement || !h3.parentElement.parentElement) return;
+      var stack = h3.parentElement.parentElement;              /* SalonCard.tsx:502 info stack */
+
+      /* NOT guarded by a done-flag on purpose. The first version of this file guarded on
+         data-cardfield-done, applied once the SSR html had painted, and measured ZERO change
+         afterwards: React hydrated the feed a beat later, rebuilt the card subtree and threw the
+         inline styles away, while the flag survived on body and made the pass look successful.
+         Re-applying is idempotent, so the fix now outlives hydration and any later re-render. */
+
+      var leaves = textLeaves(stack);
+      var price = null;
+      for (var i = leaves.length - 1; i >= 0; i--) {
+        if (isPriceText((leaves[i].textContent || '').trim())) { price = leaves[i]; break; }
+      }
+      if (!price) return;                                       /* no price on this card, skip */
+
+      stack.setAttribute('data-cardfield-done','1');
+      if (stack.style.position !== 'relative') stack.style.position = 'relative';
+
+      /* 1. NAME is NOT touched. It already leads by SIZE (14 against the price's 12) and it is
+            already the card's ink element at weight 500, so it needs nothing.
+            Measured reason this is not 600: pushing the name to 600 as well took the card band at
+            390x844 from 12.9% of visible text at weight >= 600 to 43.5%, over the 30% ceiling in
+            LOCKFILE EMPHASIS BUDGET. Price alone lands at 28.2%, under it. LOCKFILE §17.4's
+            "name (larger, 600)" and that 30% ceiling are the same tier and collide on this card;
+            the budget's own calibration row says the honest target is far below 30 and that
+            Airbnb carries its emphasis at weight 500, so the name keeps 500 here. */
+      h3.style.color = INK;
+
+      /* 2. PRICE becomes the second ink anchor: 600, tabular, ink. Size unchanged at 12. */
+      price.style.fontWeight = '600';
+      price.style.color = INK;
+      price.style.fontVariantNumeric = 'tabular-nums';
+      price.style.outline = '1px dashed rgba(10,10,10,.30)';
+      price.style.outlineOffset = '2px';
+
+      /* 3. Everything else in the stack is filler and is held at ink-2 / 400 explicitly.
+            On the live card these already compute to 12 / 400 / #6B6B6B, so this is a no-op that
+            pins the rule rather than a visible change. Reported as such. */
+      leaves.forEach(function(e){
+        if (e === h3 || e === price || h3.contains(e) || price.contains(e)) return;
+        /* The marker chip lives inside the stack, so without this it would be repainted grey 400
+           by the very pass that is meant to leave the card's filler alone. Caught by measuring the
+           after pane and finding the chip at 10px / 400 / #6B6B6B instead of its own 600 white. */
+        if (e.getAttribute('data-cardfield-label') !== null) return;
+        e.style.color = INK2;
+        e.style.fontWeight = '400';
+      });
+
+      /* Exactly ONE chip on the whole document. Guarding per-stack was not enough: applyChange runs
+         on a heartbeat, `first` resets every pass, so each pass labelled the next unlabelled card
+         and the chip ended up on every card, covering the salon names. */
+      if (!first && !doc.querySelector('[data-cardfield-label]')) {
+        first = stack;
+        var lab = doc.createElement('div');
+        lab.textContent = CHANGE_LABEL;
+        lab.setAttribute('data-cardfield-label','1');
+        lab.style.cssText = 'position:absolute;top:-30px;right:0;background:rgba(10,10,10,.84);' +
+          'color:#fff;font:600 10px/1.3 -apple-system,system-ui,sans-serif;padding:3px 8px;' +
+          'border-radius:999px;z-index:99999;pointer-events:none;white-space:nowrap';
+        stack.appendChild(lab);
+      }
+      hit++;
+    });
+
+    if (hit > 0) doc.body.dataset.sweepDone = String(hit);
+    return hit;
+  }
+
+  /* PAINTED, not merely loaded: a heading plus three tall salon cards are present. */
+  function painted(doc){
+    if (!doc || !doc.body) return false;
+    if (!doc.querySelector('h1,h2')) return false;
+    var tall = 0;
+    doc.querySelectorAll('a[href*="/salon/"]').forEach(function(a){
+      if (a.getBoundingClientRect().height > 150) tall++;
+    });
+    return tall >= 3;
+  }
+
+  var afterStarted = false;
+  function startAfter(){
+    if (afterStarted) return;
+    afterStarted = true;
+    var f = document.getElementById('afterFrame'), tries = 0, scrolled = false, observed = false;
+
+    function pass(){
+      var doc;
+      try { doc = f.contentDocument; } catch(e){ return 0; }
+      if (!painted(doc)) return 0;
+      var n = applyChange(doc);
+      if (n > 0 && !scrolled) {
+        scrolled = true;
+        alignPane('afterFrame');           /* same alignment routine as the untouched pane */
+      }
+      /* React can rebuild the feed at any time (hydration, a client refetch, a lazy row).
+         Watch the document and re-apply immediately instead of waiting for the next tick. */
+      if (n > 0 && !observed && doc.body && typeof MutationObserver !== 'undefined') {
+        observed = true;
+        var pending = false;
+        new MutationObserver(function(){
+          if (pending) return;
+          pending = true;
+          setTimeout(function(){ pending = false; try { applyChange(f.contentDocument); } catch(e){} }, 60);
+        }).observe(doc.body, {childList:true, subtree:true});
+      }
+      return n;
+    }
+
+    /* Fast poll until the first successful pass, then a slow heartbeat that keeps the fix pinned
+       for the life of the page. Both passes are idempotent. */
+    var iv = setInterval(function(){
+      tries++;
+      pass();
+      if (tries > 150) clearInterval(iv);
+    }, 200);
+    setInterval(pass, 1500);
+  }
+
+  /* Park both panes on the same cards. A single scrollIntoView on first paint measured as no
+     alignment at all: hydration rebuilds the feed and resets scroll to the top, so the position has
+     to be re-asserted for a few seconds and then released, otherwise the panes show the hero and
+     the card fields this page exists to compare are off screen. Auto-alignment stops after that
+     window so it never fights a manual scroll. */
+  function alignPane(id){
+    var f = document.getElementById(id), n = 0;
+    var iv = setInterval(function(){
+      n++;
+      try {
+        var doc = f.contentDocument;
+        if (painted(doc)) {
+          /* Park on the card's TEXT STACK, not the photo. Aligning on the card link put the info
+             rows at the bottom of a 376px stacked pane, where the page's own consent sheet covers
+             them, so the three fields this page compares were off screen at 390x844. */
+          var h3 = doc.querySelector('a[href*="/salon/"] h3');
+          var stack = h3 && h3.parentElement && h3.parentElement.parentElement;
+          var win = doc.defaultView;
+          if (stack && win) {
+            /* scrollTo on the window, not scrollIntoView. scrollIntoView also scrolls every
+               scrollable ancestor, and these cards sit in a horizontal rail, so it moved the rail
+               and left the window at 0 on some passes. An absolute target is idempotent. */
+            var target = Math.max(0, stack.getBoundingClientRect().top + win.scrollY - 96);
+            if (Math.abs(win.scrollY - target) > 4) win.scrollTo(0, target);
+          }
+        }
+      } catch(e){}
+      if (n > 28) clearInterval(iv);       /* ~14s of re-assertion, then hands off to the reader */
+    }, 500);
+  }
+
+  var beforeAligned = false;
+  function startBefore(){
+    if (beforeAligned) return;
+    beforeAligned = true;
+    alignPane('beforeFrame');              /* NO style change in this pane, only scroll position */
+  }
+
+  function syncHeaderHeight(){
+    var h = document.getElementById('hdr');
+    if (h) document.documentElement.style.setProperty('--headH', h.offsetHeight + 'px');
+  }
+
+  function show(mode){
+    document.body.dataset.mode = mode;
+    document.getElementById('bBoth').classList.toggle('on', mode === 'both');
+    document.getElementById('bB').classList.toggle('on', mode === 'live');
+    document.getElementById('bA').classList.toggle('on', mode === 'fixed');
+    syncHeaderHeight();
+    if (mode !== 'live') startAfter();
+    if (mode !== 'fixed') startBefore();
+  }
+
+  syncHeaderHeight();
+  window.addEventListener('resize', syncHeaderHeight);
+  /* Both is the default view, so both panes start immediately. */
+  startBefore();
+  startAfter();
+</script>
+</body>
+</html>
