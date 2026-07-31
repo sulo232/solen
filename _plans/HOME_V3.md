@@ -9,3 +9,38 @@
 - [x] Harden: ~/.claude/hooks/mockup-compose-registered-card-gate.py, 7/7, blocks a mockup that draws a card-shaped unit while naming no registry card. Built because FLOORS LAW 9 existed as prose and the only compose gate watched .tsx, never public/_mockups/. verified: /Users/sulo/.claude/hooks/mockup-compose-registered-card-gate.py, --selftest 7/7, live stdin block confirmed; NOT ARMED, settings.json is unwritable here
 - [ ] BLOCKED, owner call: the German word that replaces "Salon". "Salon" is itself a normal German noun, so this is a copy decision, not a translation. Mockup stays English until answered.
 - [ ] BLOCKED, seed data: the Cities row renders one tile because all 20 seeded stores are in Basel. Needs a second city seeded before that row can be designed properly.
+
+## 2026-07-31 , per-page redesign, the Inspo question
+
+Owner: "we have to redesign each page, make me mockups for each one. For example the Inspo page,
+there's a big design difference between this and that. What should we do about that?"
+
+RECOMMENDATION: do NOT make Inspo look like the rest. Unify the CHROME and the CARD, let the
+content layout differ by job. FLOORS LAW 8 binds an ENTITY to one component, not a whole page to one
+layout, and FLOORS LAW 10 says every element must serve its screen's job. Inspo's job is undirected
+image browsing; the home page's job is picking a store. Masonry is right for one, wrong for the other.
+
+IDENTICAL EVERYWHERE (the inconsistency actually worth fixing):
+- [ ] the search pill, one component, same anatomy on home / search / Inspo
+- [ ] the category pill row, same depth recipe, same no-weight-change-on-select
+- [ ] the store card, SalonCard, wherever a store appears
+- [ ] header and footer
+- [x] the page-to-page transition. verified: 85963d8e2, Header.tsx now imports next-view-transitions
+
+ALLOWED TO DIFFER, and should:
+- [ ] Inspo: vertical masonry of images, no rails
+- [ ] home: horizontal rails of stores
+- [ ] search and category: results grid via SalonResultCard
+
+MOCKUP ORDER, most-used first:
+- [ ] 1. home (in progress, public/_mockups/home-v3/full-a.html)
+- [ ] 2. search and category results
+- [ ] 3. PDP (the one screen the owner already likes, so it is the reference, not a rebuild)
+- [ ] 4. Inspo
+- [ ] 5. booking flow
+- [ ] 6. profile
+
+NAMED COST of this recommendation, so it is not a free lunch: shared chrome sitting on top of two
+different scroll models (horizontal rails vs vertical masonry) can read as a bug rather than a
+decision. The mitigation is that the transition between them must be continuous, which is why the
+view-transition Link landed first.
