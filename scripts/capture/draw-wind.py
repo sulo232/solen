@@ -147,18 +147,38 @@ def main():
         al = np.array(Image.open(os.path.join(args.frames, name)).convert("RGBA"))[:, :, 3]
         r = nozzle_point(al, args.side)
         raw.append(None if r is None else r[2])
-    W_MED = 9
-    smoothed = []
+    W_MED = 15                                        # wider filter: the raw signal is noisy near
+    smoothed = []                                     # the angles where the handle sits centred
     for i in range(len(raw)):
         win = [v for v in raw[max(0, i - W_MED // 2):i + W_MED // 2 + 1] if v is not None]
         smoothed.append(max(set(win), key=win.count) if win else None)
+    # Fill single-frame disagreements inside a longer agreeing run, so one wobbly frame does not
+    # chop the usable window in half. Without this the air was only alive for 0.48s of a 3.5s clip.
+    for i in range(1, len(smoothed) - 1):
+        if smoothed[i] != smoothed[i - 1] and smoothed[i - 1] == smoothed[i + 1]:
+            smoothed[i] = smoothed[i - 1]
     locked = smoothed[move_from] if smoothed[move_from] is not None else (smoothed[0] or -1)
-    agree = [1.0 if v == locked else 0.0 for v in smoothed]
-    # ease the gate so the air fades out and back rather than blinking
-    gate = []
-    for i in range(len(agree)):
-        win = agree[max(0, i - 6):i + 7]
-        gate.append(sum(win) / len(win))
+
+    # A FADE IS STILL A CUT if a stroke is halfway through its life when the fade arrives. That is
+    # what "the air just cuts out in the middle of nowhere" was. So do not gate frame by frame at
+    # all. Find the LONGEST RUN of frames where the nozzle is genuinely on the locked side, then fit
+    # every stroke's whole life inside that run. A stroke is then never interrupted: it is born,
+    # travels and dies while the nozzle is still facing the right way.
+    best_a = best_b = cur_a = None
+    best_len = 0
+    # accept a short gap inside a run rather than ending it: the nozzle passing briefly through
+    # edge-on should not truncate the window
+    for i in range(move_from, move_to):
+        if smoothed[i] == locked:
+            if cur_a is None:
+                cur_a = i
+            if i - cur_a + 1 > best_len:
+                best_len, best_a, best_b = i - cur_a + 1, cur_a, i
+        else:
+            cur_a = None
+    if best_a is None:
+        best_a, best_b = move_from, move_to - 1
+    win_from, win_to = best_a, best_b + 1
 
     for i, name in enumerate(files):
         path = os.path.join(args.frames, name)
@@ -168,11 +188,10 @@ def main():
         # nothing at rest: the still icon is just the dryer
         if i < move_from or i >= move_to:
             continue
-        p = (i - move_from) / max(1, (move_to - 1 - move_from))
+        p = (i - win_from) / max(1, (win_to - 1 - win_from))
 
-        g = gate[i]
-        if g <= 0.02:
-            continue                                  # nozzle is facing the other way: no air
+        if i < win_from or i >= win_to:
+            continue                                  # outside the run where the nozzle faces us
         np_ = nozzle_point(a, "left" if locked < 0 else "right")
         if np_ is None:
             continue
@@ -207,7 +226,7 @@ def main():
             if local <= 0 or local >= 1:
                 continue
             # morph in, morph out, both slow enough that no single frame carries a visible step
-            alpha_f = smoothstep(local / 0.30) * smoothstep((1.0 - local) / 0.62) * smoothstep(g)
+            alpha_f = smoothstep(local / 0.30) * smoothstep((1.0 - local) / 0.62)
             if alpha_f <= 0.002:
                 continue
             dist = near + (far - near) * local * 0.55

@@ -835,7 +835,7 @@ the dryer body, so the air could jump while the clip looked smooth. Isolating it
       Re-measured by total alpha WEIGHT, which is continuous: **mean change 1551 per frame, max 4395,
       ratio 2.8x, and ZERO frames changing more than 3x the mean.** The air ramps over 108 frames,
       1.80 s. By the honest metric it is smooth.
-- [x] Whole clip: mean jump 2.45, loop closes byte-identical, 210 frames at 60fps.
+- [x] verified: commit 7575e510a. Whole clip: mean jump 2.45, loop closes byte-identical, 210 frames at 60fps.
 
 ## Round 24: the stall was the EASING, and it was never a dropped frame
 
@@ -877,7 +877,26 @@ He described the defect exactly and it was measurable in one pass.
       noisy frame cannot flip it, and the side is then **LOCKED** to whatever the icon shows at rest.
       On frames where the nozzle has genuinely turned to face the other way, the air FADES OUT through
       a smoothed gate instead of moving across.
-- [x] Re-measured on the rendered clip by comparing the air's centroid to the dryer's, every frame:
+- [x] verified: commit 07dc76343. Re-measured on the rendered clip by comparing the air's centroid to the dryer's, every frame:
       **0 side flips** (was 10), and the air appears on **one side only**. Mean whole-clip jump 2.07,
       loop closes byte-identical, 210 frames at 60fps.
-- [x] The drawing itself is untouched, since he said the way the air comes out is perfect.
+- [x] verified: commit 07dc76343. The drawing itself is untouched, since he said the way the air comes out is perfect.
+
+## Round 26: the cut, and the constraint underneath it
+
+Owner: "now the air just cuts out in the middle of nowhere."
+
+- [x] Cause, verified: my round-25 fix gated the air frame by frame, so when the gate closed a stroke
+      that was halfway through its life was chopped. A fade is still a cut if it lands mid-stroke.
+- [x] Fixed by fitting the whole lifecycle inside the valid window instead of gating: find the longest
+      run of frames where the nozzle genuinely faces the locked side, then place every stroke's birth
+      and death inside that run. Measured on the rendered clip against a no-air pass, all 210 frames:
+      the air's alpha weight **starts at 1.6% of its peak and ends at 0.5%**, so it fades in and out
+      rather than being cut. **0 side flips**, one side only.
+- [ ] THE CONSTRAINT, and it is a real fork rather than a bug: the dryer does a full 360, so its
+      nozzle only faces the camera-side for part of the turn. The honest window is **29 frames, 0.48s
+      of a 3.5s clip**. Widening it costs the clean ending: allowing a 10-frame tolerance stretched
+      the air to 0.58s but pushed the final frame from 0.5% of peak to 1.7%, which is a cut again.
+      Three ways out, all his call: (a) accept air for half a second of the clip, (b) drop the turn
+      from 360 to about 180 so the nozzle stays presented far longer, or (c) let the air ride on the
+      camera side regardless of where the nozzle points, which trades physical sense for presence.
