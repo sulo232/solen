@@ -760,7 +760,8 @@ chair "there's like a complete white thing" which is what makes it look off.
 - [x] Steadier, verified: each stroke's wave phase is now fixed for its whole life instead of being
       advanced every frame. A phase that moves every frame makes the crests slide along the stroke,
       which is what read as lag. The stroke still travels and fades; only the wave shape holds still.
-- [x] Chair stops blowing out, verified, and there was a bug behind it. The neutral remap was
+- [x] Chair stops blowing out, verified: commit 99e682ef8. There was a bug behind it: the neutral
+      remap was
       `NEUTVAL * (0.30 + 0.95 * rel)`, which exceeds 1.0 wherever `rel` is high, so the frame clamped
       to pure white: measured **19.2%** pure-white pixels, and pushing NEUTVAL up made it **32.0%**.
       Capped the curve at `NEUTVAL * (0.42 + 0.58 * rel)` so it can never exceed its target. Now
