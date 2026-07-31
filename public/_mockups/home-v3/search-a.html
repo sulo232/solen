@@ -406,6 +406,28 @@
   .sa-price { flex: 0 0 auto; font-size: 12px; font-weight: 400; line-height: 1.35; color: #6B6B6B;
     font-variant-numeric: tabular-nums; white-space: nowrap; }
 
+  /* HOME LAYOUT, rendered into the same slot when All is selected. Horizontal rails, one card plus
+     a peek, which is the width formula the shipped SalonCard already uses: (100vw - 44) / 1.5. */
+  /* The list is a centred flex column with 28px padding. A negative margin here made each section
+     WIDER than that container, and align-items:center then pushed it off BOTH edges, which is why
+     the headings were clipped and the first card rendered at a negative x. Sections stretch to the
+     container instead, and the rail bleeds using the list's own padding. */
+  .sa-sec { align-self: stretch; width: 100%; margin: 0 0 24px; }
+  .sa-h2 { font-size: 18px; font-weight: 600; line-height: 24px; letter-spacing: -0.01em;
+    margin: 0 0 10px; }
+  .sa-thin { margin: -6px 0 10px; font-size: 13px; font-weight: 400;
+    line-height: 18px; color: #6B6B6B; }
+  /* NO mandatory snapping here. With it on, the browser snapped each rail to an item on load, so
+     every row started mid-card with its heading clipped out of view. Measured: the first card
+     rendered at a negative x. Proximity snapping keeps the feel without hijacking the start. */
+  .sa-rail { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none;
+    padding: 0 0 4px; scroll-snap-type: x proximity; }
+  .sa-rail::-webkit-scrollbar { display: none; }
+  .sa-railcard { flex: 0 0 auto; width: calc((100vw - 44px) / 1.5); scroll-snap-align: start;
+    cursor: pointer; }
+  .sa-railphoto { display: block; width: 100%; aspect-ratio: 5 / 4; border-radius: 22px;
+    object-fit: cover; background: #F4F4F5; }
+
   .sa-note { margin: 0 16px 24px; padding: 14px; border-radius: 12px; background: #F4F4F5;
     font-size: 14px; font-weight: 400; line-height: 19px; color: #6B6B6B; }
   .sa-note b { color: #0A0A0A; font-weight: 500; }
@@ -620,10 +642,103 @@
   var list = document.getElementById("sa-list");
   var pillLine = document.querySelector(".sa-l1");
 
+  // ===== "ALL" IS THE HOME PAGE, INSIDE THIS PAGE =========================
+  // Owner: "make it so when you click All, the home page pops up. Ditch what you made on the
+  // separate home mockup, it doesn't look right. The search page looks really good and correct."
+  // So there is no second file: one shell, and All renders the home layout in the same slot.
+  // The two layouts are deliberately different components for different jobs, which is what the
+  // registry says: horizontal rails on home, a full-width results list on a category.
+  function railCard(s) {
+    var a = document.createElement("div");
+    a.className = "sa-railcard";
+    a.setAttribute("role", "link");
+    a.setAttribute("tabindex", "0");
+    var im = document.createElement("img");
+    im.className = "sa-railphoto";
+    im.src = s.photo;
+    im.alt = s.name + ", " + CATLABEL[s.cat];
+    im.loading = "lazy";
+    var body = document.createElement("div");
+    body.className = "sa-body";
+    var l1 = document.createElement("div");
+    l1.className = "sa-line";
+    var nm = document.createElement("h3");
+    nm.className = "sa-name";
+    nm.textContent = s.name;
+    var rate = document.createElement("span");
+    rate.className = "sa-rate";
+    var st = document.createElement("span");
+    st.className = "sa-star";
+    st.setAttribute("aria-hidden", "true");
+    st.innerHTML = svgStar();
+    rate.appendChild(st);
+    rate.appendChild(document.createTextNode(Math.round(parseFloat(s.rating) * 10) / 10));
+    l1.appendChild(nm); l1.appendChild(rate);
+    var l2 = document.createElement("div");
+    l2.className = "sa-line";
+    var ad = document.createElement("div");
+    ad.className = "sa-meta2";
+    ad.textContent = CATLABEL[s.cat];
+    var pr = document.createElement("div");
+    pr.className = "sa-price";
+    pr.textContent = s.price + " CHF";
+    l2.appendChild(ad); l2.appendChild(pr);
+    body.appendChild(l1); body.appendChild(l2);
+    a.appendChild(im); a.appendChild(body);
+    return a;
+  }
+
+  function renderHome() {
+    list.innerHTML = "";
+    // No personalised row here: the persona endpoint that would have powered one is on the
+    // removed list, so a row claiming to know his hair would be a promise nothing can keep.
+    var SECTIONS = [
+      { title: "Popular in Basel", rows: STORES.slice(0, 6), note: null },
+      { title: "Walk in today", rows: STORES.filter(function (s) { return s.walkin; }),
+        note: "3 of 20 stores take walk-ins right now." },
+      { title: "Coiffeurs in Basel", rows: STORES.filter(function (s) { return s.cat === "coiffeur"; }),
+        note: null },
+      { title: "Cities", rows: [], note: "Basel is the only city with stores so far." }
+    ];
+    SECTIONS.forEach(function (sec) {
+      var wrap = document.createElement("section");
+      wrap.className = "sa-sec";
+      var h = document.createElement("h2");
+      h.className = "sa-h2";
+      h.textContent = sec.title;
+      wrap.appendChild(h);
+      if (sec.note) {
+        var p = document.createElement("p");
+        p.className = "sa-thin";
+        p.textContent = sec.note;
+        wrap.appendChild(p);
+      }
+      var rail = document.createElement("div");
+      rail.className = "sa-rail";
+      if (sec.rows.length) {
+        sec.rows.forEach(function (s) { rail.appendChild(railCard(s)); });
+      } else {
+        var one = railCard(STORES[2]);
+        one.querySelector(".sa-name").textContent = "Basel";
+        var r = one.querySelector(".sa-rate"); if (r) r.remove();
+        one.querySelector(".sa-meta2").textContent = "20 stores";
+        var pr = one.querySelector(".sa-price"); if (pr) pr.remove();
+        rail.appendChild(one);
+      }
+      wrap.appendChild(rail);
+      list.appendChild(wrap);
+    });
+  }
+
   function renderCategory(slug, label) {
+    if (slug === "home") {
+      renderHome();
+      if (pillLine) pillLine.textContent = "Search stores";
+      return;
+    }
     var rows = STORES;
     if (slug === "walkin") rows = STORES.filter(function (s) { return s.walkin; });
-    else if (slug !== "home" && slug !== "inspo") rows = STORES.filter(function (s) { return s.cat === slug; });
+    else if (slug !== "inspo") rows = STORES.filter(function (s) { return s.cat === slug; });
 
     list.innerHTML = "";
     if (!rows.length) {
