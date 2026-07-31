@@ -748,3 +748,23 @@ compared to the Airbnb".
       **0.0% highlight pixels** with it on. Without it: **36.7%**, up from 33.2, and the upholstery
       holds at #E46734. The frame goes back to chrome, which is where the highlights actually live.
       Trade named honestly: he approved a grey frame earlier, and this is brighter than that.
+
+## Round 20: wind inside the frame, steadier, and the chair stops blowing out to white
+
+Owner: he likes the air itself now. It "goes out of the corner", it is "really laggy", and on the
+chair "there's like a complete white thing" which is what makes it look off.
+
+- [x] Wind stays inside the frame, verified: measured **20 of 75** frames had wind touching the canvas
+      border. The stroke length is now clamped to the room actually left between its start and the
+      edge, with a 6px margin. Re-measured: **0 of 75**.
+- [x] Steadier, verified: each stroke's wave phase is now fixed for its whole life instead of being
+      advanced every frame. A phase that moves every frame makes the crests slide along the stroke,
+      which is what read as lag. The stroke still travels and fades; only the wave shape holds still.
+- [x] Chair stops blowing out, verified, and there was a bug behind it. The neutral remap was
+      `NEUTVAL * (0.30 + 0.95 * rel)`, which exceeds 1.0 wherever `rel` is high, so the frame clamped
+      to pure white: measured **19.2%** pure-white pixels, and pushing NEUTVAL up made it **32.0%**.
+      Capped the curve at `NEUTVAL * (0.42 + 0.58 * rel)` so it can never exceed its target. Now
+      **0.0%** pure white, frame reads #CCCCCC, upholstery holds at #D96535.
+  - Named cost: highlights measure 0.8% on the chair, against 34.7% on the blown version. Killing the
+    white also killed most of the specular. He has asked for both at different times, so this round
+    picks the one he raised last and says so rather than quietly choosing.

@@ -165,16 +165,25 @@ def main():
                 continue
             dist = near + (far - near) * local * 0.55
             row = (k - (args.arcs - 1) / 2)
+            x_start = nx + d * dist
+            # KEEP IT INSIDE THE FRAME. 20 of 75 frames were running the wind off the canvas edge,
+            # which is what he saw going out of the corner. Clamp the length to the room actually
+            # left between the stroke's start and the border, with a small margin.
+            room = (x_start - 6) if d < 0 else (W - 6 - x_start)
+            length = min(W * 0.19 * (0.80 + local * 0.30), max(0.0, room))
+            if length < 12:
+                continue
             wave(
                 od,
-                nx + d * dist,
+                x_start,
                 ny + row * 10.5,
-                W * 0.19 * (0.80 + local * 0.30),      # long and flowing, like his drawing
+                length,
                 5.0,
                 1.5,                                    # about one and a half cycles
                 args.weight,
                 d,
-                k * 0.7,
+                k * 0.7,                                # fixed per stroke: a phase that changes
+                                                        # every frame is what made it look laggy
                 colour,
                 int(245 * alpha_f),
                 1.4,
