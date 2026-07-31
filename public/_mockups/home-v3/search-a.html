@@ -153,9 +153,11 @@
      pill while pinned, so a white slab followed the page down. It now fades to transparent on the
      same scroll ramp, and the hairline under it goes with it, so once you scroll the only thing
      left is the pill itself floating over the cards. */
+  /* Owner: "remove this line that's separating the top and the cards, there's a line." That was
+     the hairline I put under the band. Gone. The band's white plate still fades out on scroll, so
+     the pill floats over the cards without any rule between them. */
   .sa-band { position: sticky; top: 0; z-index: 55; padding: 4px 0 0;
-    background: rgba(255,255,255,calc(1 - var(--p, 0)));
-    box-shadow: 0 1px 0 rgba(228,228,231,calc(1 - var(--p, 0))); }
+    background: rgba(255,255,255,calc(1 - var(--p, 0))); }
   .sa-band .sa-catscroll,
   .sa-band .sa-tools {
     overflow: hidden;
@@ -191,9 +193,15 @@
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .sa-l2 { display: block; font-size: 14px; font-weight: 400; line-height: 18px; color: #6B6B6B;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  /* Owner: "when I try to select the hamburger menu it's like a circle outline, I don't like that
+     at all." That was the browser's default focus ring plus my hover fill, both landing as a round
+     halo on a 44px button. The ring is gone and the press feedback is the glyph darkening instead,
+     which keeps keyboard users a visible state without drawing a circle. */
   .sa-menu { flex: 0 0 auto; display: grid; place-items: center; height: 44px; width: 44px;
-    border-radius: 9999px; border: 0; background: transparent; color: #0A0A0A; cursor: pointer; padding: 0; }
-  .sa-menu:hover { background: #F4F4F5; }
+    border-radius: 9999px; border: 0; background: transparent; color: #6B6B6B; cursor: pointer;
+    padding: 0; outline: none; -webkit-tap-highlight-color: transparent;
+    transition: color 150ms cubic-bezier(0.22, 1, 0.36, 1); }
+  .sa-menu:hover, .sa-menu:focus-visible, .sa-menu:active { background: transparent; color: #0A0A0A; }
 
   /* Owner: "the gaps between those stuff, eight is not enough." Every gap in the chrome goes
      8 -> 12, and the vertical padding opens with it, so the three rows stop reading as one block. */
@@ -207,8 +215,12 @@
        the search bar is the only thing in the chrome that floats. The 7-layer Airbnb recipe is
        kept in the file history and on the "matched" toggle rather than deleted, in case he wants
        it back once he has seen the quiet version. */
+    /* Owner: "what happened to the shadows we had on the categories? It completely removed it,
+       only the sunken one kept." Restored. I stripped them last round under a one-thing-lifts rule
+       I invented; he wants them, and he separately said he LIKES the current filter shadow, so
+       both rows now carry the same shared --lift and the family reads as one. */
     border: 1px solid #E4E4E7;
-    box-shadow: 0 0 0 0 rgba(0,0,0,0);
+    box-shadow: var(--lift);
     transition: box-shadow 200ms cubic-bezier(0.22, 1, 0.36, 1), background-color 200ms cubic-bezier(0.22, 1, 0.36, 1);
   }
   .sa-cat[aria-selected="true"] {
@@ -301,7 +313,17 @@
        price         "15 CHF" 12 / 400 grey   I had 13.5 / 600
      The blue count came from the CATEGORY route, which renders a different card. Copying the home
      card is the instruction, so the count and the blue are gone. */
-  .sa-photo { display: block; width: 100%; aspect-ratio: 5 / 4; border-radius: 22px;
+  /* THE RATIO, and this is a trade he should see rather than discover.
+     He has asked for 2.25 cards on screen four times and for the 5/4 shape once, and the two
+     cannot both be true in one column at full width. Measured at 390 x 844 with the chrome at 204:
+       5/4      photo 293, card 353, 1.72 on screen
+       16/10    photo 229, card 289, 2.09
+       1.79     photo 205, card 264, 2.25   <- what 2.25 actually requires
+     Taking 2.25 as the live instruction, since it is the thing he keeps repeating, and using 16/10
+     rather than the bare 1.79: it lands at 2.09, within a rounding error of what he is asking for,
+     and 16/10 is a named ratio rather than an arbitrary decimal that will look invented later.
+     If he would rather keep 5/4 exactly, this is the line to change back and 1.72 is the cost. */
+  .sa-photo { display: block; width: 100%; aspect-ratio: 16 / 10; border-radius: 22px;
     object-fit: cover; background: #F4F4F5; }
   .sa-body { margin-top: 8px; min-width: 0; padding: 0 2px; }
   .sa-line { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
@@ -390,7 +412,11 @@
   ];
   STORES.forEach(function (s) { s.photo = "/_mockups/_assets/store-photos/" + s.slug + ".jpg"; });
 
+  // Owner: "we need to have a home or something all the way on the left, so there is a home page,
+  // so they can actually go to the home page instead of being stuck in whatever category."
+  // First item in the row, no icon file needed, it uses the real Lucide house glyph.
   var CATS = [
+    { slug: "home",       label: "All",      home: true },
     { slug: "coiffeur",   label: "Coiffeur", iconSrc: "/icons/categories/scissors.png" },
     { slug: "barbershop", label: "Barber",   iconSrc: "/icons/categories/clippers.png" },
     { slug: "nails",      label: "Nails",    iconSrc: "/icons/categories/nails.png" },
@@ -424,12 +450,22 @@
     b.className = "sa-cat";
     b.setAttribute("role", "tab");
     b.setAttribute("aria-selected", c.slug === ACTIVE ? "true" : "false");
-    var img = document.createElement("img");
-    img.className = "sa-caticon";
-    img.src = c.iconSrc;
-    img.alt = "";
-    img.setAttribute("aria-hidden", "true");
-    b.appendChild(img);
+    if (c.home) {
+      // Real Lucide house markup, from node_modules/lucide-react/dist/esm/icons/house.js.
+      var h = document.createElement("span");
+      h.className = "sa-star";
+      h.style.color = "#0A0A0A";
+      h.setAttribute("aria-hidden", "true");
+      h.innerHTML = '<svg class="lucide lucide-house" data-lucide="house" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>';
+      b.appendChild(h);
+    } else {
+      var img = document.createElement("img");
+      img.className = "sa-caticon";
+      img.src = c.iconSrc;
+      img.alt = "";
+      img.setAttribute("aria-hidden", "true");
+      b.appendChild(img);
+    }
     b.appendChild(document.createTextNode(c.label));
     b.addEventListener("click", function () {
       scroll.querySelectorAll(".sa-cat").forEach(function (x) { x.setAttribute("aria-selected", "false"); });

@@ -87,3 +87,22 @@ commit. Then PDP, Inspo, booking, profile.
 - [ ] Cards too big again. BLOCKED ON AN OWNER DECISION, and it is a genuine either/or, not a punt: at full width a 5/4 photo is 293 tall, so the card is 353. The 5/4 shape is ours and he asked for it back; more cards per screen is also his ask. Both cannot hold at full width. The way out is the two-column variant that SalonResultCard already documents for search results, which keeps 5/4 and roughly halves the height. He has previously rejected a grid on HOME, so this needs his yes for SEARCH specifically.
 - [ ] More balanced. Partly addressed by the filter-depth idea (search bar lifts, categories lift, filters recess) but that toggle does not work yet, so the balance question is not settled.
 - [ ] BROKEN: the three filter treatments do not switch. Buttons render and the attribute changes, but sunken keeps a white background instead of the gray fill and minimal keeps the matched shadow. Found by testing, not shipped as done.
+
+## 2026-07-31 , round 5 on the search page, written BEFORE the work
+
+Owner: "you keep forgetting every single stuff, that's where you have a plan feature that you first
+write down everything, but you keep forgetting to do that." Correct. This block is written before
+any edit this turn, not after.
+
+- [ ] Hamburger shows a circle outline when selected or focused. He does not want it.
+- [ ] Cards still too big. He wants 2.25 on screen. MEASURED: card 353, gap 20, chrome 204, so 1.72.
+      2.25 needs a 264 card, so a 205 photo, so a 1.79 ratio instead of 1.25. He has said "keep the
+      aspect ratio" once and "I want 2.25" four times, and the two cannot both hold. Taking 2.25 as
+      the live instruction and saying so out loud rather than choosing quietly again.
+- [ ] Category pill shadows are gone. I stripped them last round under "only one thing lifts" and he
+      wants them back. He also said he LIKES the current filter shadow, so filters stay as they are.
+- [ ] A home control on the far left of the category row, so a user can get out of a category and
+      back to the home page.
+- [ ] Something will not scroll. Needs reproducing before guessing.
+- [ ] Remove the line separating the header from the cards.
+- [ ] HARDEN the plan-first habit. NOT DONE THIS TURN and not claimed: no gate written for it here.
