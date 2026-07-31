@@ -553,7 +553,10 @@ static flourish and drop it entirely from the moving part.
 
 Owner: "the area is not coming from the middle... animate the air."
 
-- [x] The air moves on its own, verified: commit d9c165436. The mesh is ONE primitive with ONE
+- [x] SUPERSEDED by round 14, verified: commit 42da5248d replaced this whole approach. Kept for
+      the record because the finding still holds. The air moved on its own here (commit
+      d9c165436) but as a 3D object, which the owner then named as the failure: "weird robotic
+      arm looking ass air". The mesh is ONE primitive with ONE
       material, so the air cannot be
       picked out by node or material. It CAN be picked out by colour: the ribbons are grey, the body
       is a saturated yellow. New `--air-wave` samples the baked texture at each vertex's UV, marks
@@ -590,4 +593,4 @@ caught light and rotated in 3D, which is exactly why it read as a robot arm rath
 - [x] The resting icon is JUST the dryer, verified: opaque-pixel count across the whole still hold is
       **identical on all 9 frames** (deltas all 0) and equals the dryer alone at 4,925 px, rising to
       5,538 only once the turn starts. So nothing is drawn at rest, which is what he asked for.
-- [x] Loop still closes byte-identical, full 75-frame clip.
+- [x] Loop still closes byte-identical, full 75-frame clip, verified: commit 42da5248d.
