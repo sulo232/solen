@@ -30,7 +30,7 @@ if (!glbPath || !outdirArg) {
   console.error("Usage: node scripts/capture/turntable-render.mjs <model.glb> <outdir> [--frames 51] [--fps 30] [--size 180x162] [--hold-in 6] [--hold-out 12] [--turns 1]");
   process.exit(1);
 }
-const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7, hueShift: null, satMul: 1, valMul: 1, tilt: 0, bob: 0, gloss: 0, neutralVal: null };
+const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7, hueShift: null, satMul: 1, valMul: 1, tilt: 0, bob: 0, gloss: 0, neutralVal: null, puffOffset: '0,0,0', puffInset: 0 };
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
   // ES modules are blocked over file:// by CORS (origin null), so when the outdir sits under
@@ -58,6 +58,14 @@ for (let i = 0; i < argv.length; i++) {
   else if (a === "--puff") opt.puff = argv[++i];                   // emit point "x,y,z" in object space
   else if (a === "--puff-dir") opt.puffDir = argv[++i];            // travel direction "x,y,z"
   else if (a === "--puff-size") opt.puffSize = Number(argv[++i]);
+  // Nudge the emitter in object space after the automatic placement. The auto point sits on the
+  // bounding extreme along the jet axis, which is the mouth PLANE but not necessarily its centre,
+  // so this closes the last few pixels measured off the rendered nozzle.
+  else if (a === "--puff-offset") opt.puffOffset = argv[++i];      // "x,y,z" in object units
+  // Push the emitter back INTO the mouth along the jet axis. The bounding extreme sits on the
+  // outer surface, so a ribbon starting there begins a few pixels clear of the body and reads as
+  // detached. Insetting makes it emerge from inside the nozzle.
+  else if (a === "--puff-inset") opt.puffInset = Number(argv[++i]);
   else if (a === "--puff-count") opt.puffCount = Number(argv[++i]);
   // Recolour the object at render time instead of paying to regenerate it. Only the SATURATED
   // pixels move: chrome, cream and white sit below the saturation floor and are left alone, so a
@@ -289,7 +297,12 @@ function buildWaves(obj) {
   }
   const hs = bb.getSize(new THREE.Vector3()).multiplyScalar(0.5);
   const reach = Math.abs(d.x) * hs.x + Math.abs(d.y) * hs.y + Math.abs(d.z) * hs.z;
-  waveOrigin = new THREE.Vector3(c.x + d.x * reach, c.y + d.y * reach, c.z + d.z * reach);
+  const OFF = ${JSON.stringify(opt.puffOffset.split(",").map(Number))};
+  const INSET = ${opt.puffInset};
+  const r2 = reach - INSET;
+  waveOrigin = new THREE.Vector3(c.x + d.x * r2 + OFF[0],
+                                 c.y + d.y * r2 + OFF[1],
+                                 c.z + d.z * r2 + OFF[2]);
   PUFF_DIR[0] = d.x; PUFF_DIR[1] = d.y; PUFF_DIR[2] = d.z;
   // a frame around the jet axis, so the waves stack across it and wiggle in its plane
   const up = new THREE.Vector3(0, 1, 0);
@@ -328,10 +341,13 @@ function setPuff(p) {
     const lead = m.userData.order * 0.16;
     const local = p <= 0 ? -1 : (p * 1.9 - lead);
     if (local < 0 || local > 1) { m.visible = false; continue; }
-    const travel = PUFF_SIZE * 1.5 * local;
-    m.position.copy(waveOrigin).addScaledVector(dir, travel);
-    const grow = 0.55 + local * 0.75;
-    m.scale.set(grow, grow, grow);
+    // ANCHORED, not launched. Translating the ribbon away from the mouth is what left a visible
+    // gap between the air and the nozzle: measured 4px at the start of its life and 16px by the
+    // end. Keeping the origin pinned to the mouth and growing the ribbon outward instead reads as
+    // air streaming OUT of the dryer rather than a puff drifting near it.
+    m.position.copy(waveOrigin);
+    const reachOut = 0.35 + local * 1.05;
+    m.scale.set(reachOut, 0.7 + local * 0.5, 0.7 + local * 0.5);
     // in fast, out slow, and the whole set fades over the last fifth so the icon comes to rest
     const shape = Math.min(1, local / 0.16) * (1 - local);
     const outro = p > 0.82 ? (1 - p) / 0.18 : 1;

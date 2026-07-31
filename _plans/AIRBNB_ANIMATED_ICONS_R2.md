@@ -466,3 +466,21 @@ until this is added to the `Stop` hooks array:
 ```json
 { "hooks": [ { "type": "command", "command": "python3 $HOME/.claude/hooks/no-unrequested-removal-gate.py" } ] }
 ```
+
+---
+
+# Round 11: the air now leaves the nozzle, measured against the nozzle
+
+Owner: "i want the air but i want the air coming from nozzle bro".
+
+- [x] Z1. Air anchored to the mouth, verified by diffing an air render against a no-air render and
+      comparing the air's pixel span with the nozzle's own.
+  - Before: air spanned x 9-37 while the nozzle mouth sat at x=41, so a **4px gap** at the start of a
+    ribbon's life widening to **16px** by the end, and the air sat **11 to 22px below** the mouth. It
+    read as a puff floating near the dryer.
+  - Three fixes, each measured: `--puff-offset` lifted it onto the mouth's centreline (vertical error
+    11-22px down to 6-9px); the ribbons were changed from LAUNCHED to ANCHORED, so they stay pinned at
+    the mouth and grow outward instead of drifting away; and `--puff-inset` pushes the emitter back
+    INSIDE the nozzle, since the bounding extreme sits on the outer surface.
+  - After: the air now **overlaps** the mouth by 15px, 13px and 8px on the three sampled frames,
+    instead of standing off it. `out/set-dryer.webm` 57,676 bytes, loop closes byte-identical.
