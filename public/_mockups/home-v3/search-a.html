@@ -547,6 +547,22 @@
     width: 88px; aspect-ratio: 1 / 1; border-radius: 14px; }
   .sa-contchev { flex: 0 0 auto; color: #6B6B6B; display: flex; }
 
+  /* ===== THE CARD'S OTHER STATES, folded in from the deleted second page =====
+     Owner: "why do you keep iterating on this mockup, we have another mockup page." Same answer
+     as Inspo: the states belong to THIS card, so they live on this card rather than on a page of
+     their own that will drift from it. The dots under the card cycle them. */
+  .sa-conteyebrow { display: inline-flex; align-items: center; gap: 5px; font-size: 12px;
+    font-weight: 600; margin-bottom: 3px; }
+  .sa-contdot { height: 7px; width: 7px; border-radius: 999px; }
+  .is-ok   { color: #16A34A; } .is-ok   .sa-contdot { background: #16A34A; }
+  .is-warn { color: #EA580C; } .is-warn .sa-contdot { background: #EA580C; }
+  .is-bad  { color: #DC2626; } .is-bad  .sa-contdot { background: #DC2626; }
+  .is-calm { color: #6B6B6B; } .is-calm .sa-contdot { background: #6B6B6B; }
+  .sa-statedots { display: flex; gap: 6px; justify-content: center; margin-top: 10px; }
+  .sa-statedot { height: 7px; width: 7px; border-radius: 999px; border: 0; padding: 0;
+    background: #E4E4E7; cursor: pointer; }
+  .sa-statedot[aria-selected="true"] { background: #0A0A0A; }
+
   .sa-sec { align-self: stretch; width: 100%; margin: 0 0 24px; }
 
   /* ===== RECENTLY VIEWED, the small chip row =============================
@@ -1060,7 +1076,29 @@
   // remove the abc sh and make the A acc big bro." So the B and C branches and the A/B/C picker
   // are deleted, not hidden. A picker that survives the pick is just clutter asking a settled
   // question, and it was rendering inside his home page as three loose grey circles.
+  // Every state the card can be in. One shell, six contents, so it never becomes a second
+  // component. Names, addresses, the 45 CHF cut, the 180 CHF balayage and the 35-49 minute wait
+  // are seeded values. Backend, checked: reschedule, refund and cancel endpoints all EXIST
+  // (app/api/bookings/[id]/{reschedule,refund,cancel}); no customer screen calls reschedule today.
+  // No backend: a live queue position, a refund timeline, a ten-minute hold countdown.
+  var CONT_STATES = [
+    { eyebrow: null, tone: null, title: "Continue searching for Barber",
+      meta: "Basel, 4 shops", photo: "old-town-barbers" },
+    { eyebrow: "Confirmed", tone: "is-ok", title: "Men's cut at Cuts & Culture",
+      meta: "Tomorrow 14:00, Elsaesserstrasse 10", photo: "cuts-and-culture" },
+    { eyebrow: "Live", tone: "is-ok", title: "You are number 3 at Blade & Stone",
+      meta: "35 to 49 min until free", photo: "blade-and-stone" },
+    { eyebrow: "Payment pending", tone: "is-warn", title: "Walk-in at The Fade Factory",
+      meta: "Your spot is held for 10 minutes", photo: "the-fade-factory" },
+    { eyebrow: "Cancelled", tone: "is-bad", title: "Balayage at Haarsalon Margot",
+      meta: "Was Saturday 14:00, cancelled by the salon", photo: "haarsalon-margot" },
+    { eyebrow: "Yesterday", tone: "is-calm", title: "How was your visit to Cuts & Culture?",
+      meta: "Rating takes 10 seconds", photo: "cuts-and-culture" }
+  ];
+  var CONT_STATE = 0;
+
   function continuationCard() {
+    var st = CONT_STATES[CONT_STATE];
     var wrap = document.createElement("div");
     wrap.className = "sa-contwrap";
     var card = document.createElement("button");
@@ -1069,25 +1107,47 @@
 
     var txt = document.createElement("span");
     txt.className = "sa-conttext";
+    if (st.eyebrow) {
+      var eb = document.createElement("span");
+      eb.className = "sa-conteyebrow " + st.tone;
+      eb.innerHTML = '<span class="sa-contdot" aria-hidden="true"></span>' + st.eyebrow;
+      txt.appendChild(eb);
+    }
     var t = document.createElement("span");
     t.className = "sa-conttitle";
-    t.textContent = "Continue searching for Barber";
+    t.textContent = st.title;
     var m = document.createElement("span");
     m.className = "sa-contmeta";
-    m.textContent = "Basel, Sa 2. Aug";
+    m.textContent = st.meta;
     txt.appendChild(t);
     txt.appendChild(m);
 
     var im = document.createElement("img");
     im.className = "sa-contimg";
-    im.src = "/_mockups/_assets/store-photos/old-town-barbers.jpg";
+    im.src = "/_mockups/_assets/store-photos/" + st.photo + ".jpg";
     im.alt = "";
     im.setAttribute("aria-hidden", "true");
 
-    // A: text leads, photo hard right.
     card.appendChild(txt);
     card.appendChild(im);
     wrap.appendChild(card);
+
+    var dots = document.createElement("div");
+    dots.className = "sa-statedots";
+    CONT_STATES.forEach(function (_, i) {
+      var d = document.createElement("button");
+      d.type = "button";
+      d.className = "sa-statedot";
+      d.setAttribute("aria-selected", i === CONT_STATE ? "true" : "false");
+      d.setAttribute("aria-label", "State " + (i + 1));
+      d.addEventListener("click", function (e) {
+        e.stopPropagation();
+        CONT_STATE = i;
+        renderHome();
+      });
+      dots.appendChild(d);
+    });
+    wrap.appendChild(dots);
     return wrap;
   }
 
