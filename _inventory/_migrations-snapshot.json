@@ -1,0 +1,1246 @@
+{
+  "_note": "Live snapshot of supabase_migrations.schema_migrations, project tocfnsmxmdxkrcmjzzdw. Captured read-only via the Supabase MCP execute_sql tool. The DB is never written by the detector; refresh recipe is in the header of scripts/check-migrations.mjs.",
+  "capturedAt": "2026-07-31T00:00:00Z",
+  "versions": [
+    {
+      "version": "20260309115410",
+      "name": "add_owner_reply_to_reviews"
+    },
+    {
+      "version": "20260309130515",
+      "name": "chat_enhancements"
+    },
+    {
+      "version": "20260309131019",
+      "name": "chat_media_storage_policies"
+    },
+    {
+      "version": "20260309142230",
+      "name": "booking_discovery_upgrades"
+    },
+    {
+      "version": "20260309215619",
+      "name": "admin_approval_gallery_queue_schedule"
+    },
+    {
+      "version": "20260310083825",
+      "name": "add_admin_approval_verified_gallery_analytics"
+    },
+    {
+      "version": "20260310184604",
+      "name": "create_error_logs_table"
+    },
+    {
+      "version": "20260310191155",
+      "name": "add_status_to_error_logs"
+    },
+    {
+      "version": "20260312192841",
+      "name": "create_salon_reg_drafts"
+    },
+    {
+      "version": "20260313204941",
+      "name": "012_fix_services_store_id_and_blocked_dates_range"
+    },
+    {
+      "version": "20260315215731",
+      "name": "drop_legacy_schema"
+    },
+    {
+      "version": "20260315215753",
+      "name": "new_schema_part1_profiles_salons"
+    },
+    {
+      "version": "20260315215808",
+      "name": "new_schema_part2_staff_services_slots"
+    },
+    {
+      "version": "20260315215823",
+      "name": "new_schema_part3_bookings_recurring"
+    },
+    {
+      "version": "20260315215842",
+      "name": "new_schema_part4_chat_reviews_preferences"
+    },
+    {
+      "version": "20260315215901",
+      "name": "new_schema_part5_lastminute_function"
+    },
+    {
+      "version": "20260316165434",
+      "name": "015_admin_approval"
+    },
+    {
+      "version": "20260316171144",
+      "name": "016_salon_directory"
+    },
+    {
+      "version": "20260316175022",
+      "name": "017_payments"
+    },
+    {
+      "version": "20260316180029",
+      "name": "018_notification_prefs"
+    },
+    {
+      "version": "20260316181056",
+      "name": "019_chat_calendar"
+    },
+    {
+      "version": "20260319233948",
+      "name": "feature_requests"
+    },
+    {
+      "version": "20260323212447",
+      "name": "076_account_actions"
+    },
+    {
+      "version": "20260323212450",
+      "name": "077_salon_documents"
+    },
+    {
+      "version": "20260323212454",
+      "name": "078_content_reports"
+    },
+    {
+      "version": "20260323212535",
+      "name": "075_booking_confirmation_mode_fix"
+    },
+    {
+      "version": "20260323212623",
+      "name": "075b_salons_enforcement_columns"
+    },
+    {
+      "version": "20260328154211",
+      "name": "20260328_waxing_zone_packages"
+    },
+    {
+      "version": "20260329183130",
+      "name": "add_is_test_to_salons"
+    },
+    {
+      "version": "20260330222502",
+      "name": "salon_postal_code"
+    },
+    {
+      "version": "20260330222508",
+      "name": "solen_score_column"
+    },
+    {
+      "version": "20260510221737",
+      "name": "077_salon_amenities"
+    },
+    {
+      "version": "20260510231255",
+      "name": "078_salon_featured"
+    },
+    {
+      "version": "20260510231300",
+      "name": "079_salon_chain"
+    },
+    {
+      "version": "20260510231311",
+      "name": "080_staff_ratings_view"
+    },
+    {
+      "version": "20260510231315",
+      "name": "081_sibling_salons"
+    },
+    {
+      "version": "20260510235417",
+      "name": "082_salon_wifi"
+    },
+    {
+      "version": "20260511073355",
+      "name": "083_reviews_booking_nullable"
+    },
+    {
+      "version": "20260511074357",
+      "name": "084_profile_summaries_view"
+    },
+    {
+      "version": "20260511092905",
+      "name": "085_services_subcategory"
+    },
+    {
+      "version": "20260516081405",
+      "name": "stripe_webhook_idempotency_table"
+    },
+    {
+      "version": "20260528090650",
+      "name": "create_salon_page_views"
+    },
+    {
+      "version": "20260530094029",
+      "name": "staff_profile_stats"
+    },
+    {
+      "version": "20260530114031",
+      "name": "partner_leads"
+    },
+    {
+      "version": "20260530125023",
+      "name": "add_paid_via_to_bookings"
+    },
+    {
+      "version": "20260530131228",
+      "name": "staff_scheduling_foundation"
+    },
+    {
+      "version": "20260530142018",
+      "name": "barber_foundation_073"
+    },
+    {
+      "version": "20260530145618",
+      "name": "staff_accounts_permissions"
+    },
+    {
+      "version": "20260530164133",
+      "name": "calendar_crm_and_sales"
+    },
+    {
+      "version": "20260530174557",
+      "name": "calendar_slot_client_link"
+    },
+    {
+      "version": "20260531062730",
+      "name": "salon_calendar_color_settings"
+    },
+    {
+      "version": "20260531064907",
+      "name": "walkin_ticket_code"
+    },
+    {
+      "version": "20260531073946",
+      "name": "in_app_notifications_075_apply"
+    },
+    {
+      "version": "20260531080453",
+      "name": "discovery_search_rpc"
+    },
+    {
+      "version": "20260531081558",
+      "name": "discovery_feed_personalized"
+    },
+    {
+      "version": "20260531081809",
+      "name": "discovery_feed_add_creator"
+    },
+    {
+      "version": "20260531083413",
+      "name": "discovery_chip_terms"
+    },
+    {
+      "version": "20260531085059",
+      "name": "discovery_chip_terms_with_thumb"
+    },
+    {
+      "version": "20260531101404",
+      "name": "discovery_trending"
+    },
+    {
+      "version": "20260531181754",
+      "name": "discovery_recent_and_style_suggest"
+    },
+    {
+      "version": "20260601131151",
+      "name": "20260601_refund_appeal_foundation"
+    },
+    {
+      "version": "20260601132922",
+      "name": "salon_payouts"
+    },
+    {
+      "version": "20260601134605",
+      "name": "sp1_bookings_guest_rls"
+    },
+    {
+      "version": "20260602070853",
+      "name": "financial_retention_on_delete"
+    },
+    {
+      "version": "20260602153936",
+      "name": "seed_platform_settings_and_warnings"
+    },
+    {
+      "version": "20260602154015",
+      "name": "vat_mwst_foundation"
+    },
+    {
+      "version": "20260602171825",
+      "name": "walkin_foundations"
+    },
+    {
+      "version": "20260602181139",
+      "name": "tips"
+    },
+    {
+      "version": "20260602181235",
+      "name": "smart_search_marketplace_filter"
+    },
+    {
+      "version": "20260602182721",
+      "name": "walkin_ticket_seq"
+    },
+    {
+      "version": "20260603103539",
+      "name": "add_sort_order_to_services"
+    },
+    {
+      "version": "20260603170458",
+      "name": "drift_apply_vacation_mode"
+    },
+    {
+      "version": "20260603170506",
+      "name": "drift_apply_salon_sms_settings"
+    },
+    {
+      "version": "20260603170515",
+      "name": "drift_apply_payment_modes"
+    },
+    {
+      "version": "20260603170524",
+      "name": "drift_apply_social_media_facebook"
+    },
+    {
+      "version": "20260603170532",
+      "name": "drift_apply_top_pick"
+    },
+    {
+      "version": "20260603170553",
+      "name": "drift_apply_services_buffers"
+    },
+    {
+      "version": "20260603170602",
+      "name": "drift_apply_tos_versioning"
+    },
+    {
+      "version": "20260603170614",
+      "name": "drift_apply_client_notes"
+    },
+    {
+      "version": "20260603170630",
+      "name": "drift_apply_client_tags"
+    },
+    {
+      "version": "20260603170643",
+      "name": "drift_apply_salon_analytics"
+    },
+    {
+      "version": "20260603171619",
+      "name": "drift_apply_services_photo_urls"
+    },
+    {
+      "version": "20260603172053",
+      "name": "drift_salon_analytics_rls"
+    },
+    {
+      "version": "20260603184820",
+      "name": "drift_apply_off_peak_slots"
+    },
+    {
+      "version": "20260603184840",
+      "name": "drift_scheduling_columns"
+    },
+    {
+      "version": "20260603184844",
+      "name": "drift_cancellation_policy_checks"
+    },
+    {
+      "version": "20260603184847",
+      "name": "drift_fix_client_notes_injection"
+    },
+    {
+      "version": "20260603203830",
+      "name": "rls_group_a_private_admin_tables"
+    },
+    {
+      "version": "20260603203923",
+      "name": "rls_group_b_discovery_content"
+    },
+    {
+      "version": "20260603204031",
+      "name": "rls_group_c_discovery_user_tables"
+    },
+    {
+      "version": "20260603204305",
+      "name": "rls_staff_ratings_view_invoker"
+    },
+    {
+      "version": "20260605090001",
+      "name": "review_replies"
+    },
+    {
+      "version": "20260605101506",
+      "name": "m004_salon_photos"
+    },
+    {
+      "version": "20260605101527",
+      "name": "m005_dashboard_upgrades"
+    },
+    {
+      "version": "20260605101540",
+      "name": "m006_bleaching_addons"
+    },
+    {
+      "version": "20260605101553",
+      "name": "m010_push_subscriptions"
+    },
+    {
+      "version": "20260605101618",
+      "name": "m035_favorites"
+    },
+    {
+      "version": "20260605101620",
+      "name": "m036_notification_preferences"
+    },
+    {
+      "version": "20260605101623",
+      "name": "m037_price_offers"
+    },
+    {
+      "version": "20260605101625",
+      "name": "m038_price_disputes"
+    },
+    {
+      "version": "20260605101650",
+      "name": "m039_loyalty"
+    },
+    {
+      "version": "20260605101652",
+      "name": "m043_help_articles"
+    },
+    {
+      "version": "20260605101656",
+      "name": "m044_service_categories"
+    },
+    {
+      "version": "20260605101658",
+      "name": "m045_booking_waitlist"
+    },
+    {
+      "version": "20260605101725",
+      "name": "m048_promo_codes"
+    },
+    {
+      "version": "20260605101727",
+      "name": "m049_referrals"
+    },
+    {
+      "version": "20260605101730",
+      "name": "m050_user_credits"
+    },
+    {
+      "version": "20260605101732",
+      "name": "m053_salon_groups"
+    },
+    {
+      "version": "20260605101734",
+      "name": "m056_chat_templates"
+    },
+    {
+      "version": "20260605101836",
+      "name": "m064_quartier_subscriptions"
+    },
+    {
+      "version": "20260605101839",
+      "name": "m071_megabuild_booking_crm_payments"
+    },
+    {
+      "version": "20260605101858",
+      "name": "m072_nail_foundation"
+    },
+    {
+      "version": "20260605101925",
+      "name": "m080_salon_drafts"
+    },
+    {
+      "version": "20260605101927",
+      "name": "m082_pricing_rules"
+    },
+    {
+      "version": "20260605101931",
+      "name": "m084_voucher_system"
+    },
+    {
+      "version": "20260605102028",
+      "name": "m20260328_coiffeur_dashboard"
+    },
+    {
+      "version": "20260605102030",
+      "name": "m20260328_spa_dashboard"
+    },
+    {
+      "version": "20260605102033",
+      "name": "m20260328_waxing_dashboard"
+    },
+    {
+      "version": "20260605102035",
+      "name": "m20260329_fade_blueprints"
+    },
+    {
+      "version": "20260605102037",
+      "name": "m20260329_makeup_dashboard"
+    },
+    {
+      "version": "20260605102039",
+      "name": "m20260401_gift_vouchers"
+    },
+    {
+      "version": "20260605102046",
+      "name": "m20260402_last_minute_settings"
+    },
+    {
+      "version": "20260605115215",
+      "name": "reseed_044_service_categories_data"
+    },
+    {
+      "version": "20260605115231",
+      "name": "reseed_072_nail_features_flag"
+    },
+    {
+      "version": "20260605115233",
+      "name": "reapply_037_messages_price_offer_check"
+    },
+    {
+      "version": "20260605115236",
+      "name": "add_bookings_group_booking_id_fk"
+    },
+    {
+      "version": "20260606185659",
+      "name": "search_phase0_fts_extensions"
+    },
+    {
+      "version": "20260606190256",
+      "name": "search_phase1_fts_schema"
+    },
+    {
+      "version": "20260606190515",
+      "name": "search_phase1_synonyms"
+    },
+    {
+      "version": "20260606190706",
+      "name": "search_phase1_rpcs"
+    },
+    {
+      "version": "20260606200515",
+      "name": "search_suggest_contract_stylists_geo"
+    },
+    {
+      "version": "20260606201013",
+      "name": "search_phase4_ranking_weights"
+    },
+    {
+      "version": "20260606201404",
+      "name": "search_phase4b_synonym_or_and_guards"
+    },
+    {
+      "version": "20260606204021",
+      "name": "search_phase6_learning_loop"
+    },
+    {
+      "version": "20260606204921",
+      "name": "search_phase5_hybrid_vector_fusion"
+    },
+    {
+      "version": "20260606205451",
+      "name": "search_phase5b_vector_threshold_topk"
+    },
+    {
+      "version": "20260606205746",
+      "name": "search_phase7_advisor_remediation"
+    },
+    {
+      "version": "20260607162346",
+      "name": "add_salons_with_slot_in_hours_rpc"
+    },
+    {
+      "version": "20260608205849",
+      "name": "discovery_chip_terms_distinct"
+    },
+    {
+      "version": "20260609170000",
+      "name": "add_customer_preferences_to_profiles"
+    },
+    {
+      "version": "20260609173644",
+      "name": "fix_vouchers_recipients_rls_auth_email"
+    },
+    {
+      "version": "20260610163327",
+      "name": "walkin_review"
+    },
+    {
+      "version": "20260610224808",
+      "name": "hair_beard_and_booking_customer_note"
+    },
+    {
+      "version": "20260612131427",
+      "name": "waitlist_staff_preference"
+    },
+    {
+      "version": "20260612161058",
+      "name": "review_photos_sort_order"
+    },
+    {
+      "version": "20260613063830",
+      "name": "restore_discovery_toggle_functions"
+    },
+    {
+      "version": "20260614125125",
+      "name": "loyalty_status_rank_phase2"
+    },
+    {
+      "version": "20260614150247",
+      "name": "discovery_items_i18n_script_products"
+    },
+    {
+      "version": "20260614150624",
+      "name": "loyalty_status_window_12mo"
+    },
+    {
+      "version": "20260614165055",
+      "name": "solen_plus_phase1_perks"
+    },
+    {
+      "version": "20260614171811",
+      "name": "current_user_tier_self_only_guard"
+    },
+    {
+      "version": "20260615210401",
+      "name": "nails_retail_pos"
+    },
+    {
+      "version": "20260616062707",
+      "name": "client_notes_allow_reminder_note_types"
+    },
+    {
+      "version": "20260616065309",
+      "name": "spa_treatment_outcomes"
+    },
+    {
+      "version": "20260616070217",
+      "name": "add_staff_member_id_to_spa_treatment_outcomes"
+    },
+    {
+      "version": "20260616184415",
+      "name": "client_formulas_before_after_photos"
+    },
+    {
+      "version": "20260617200719",
+      "name": "expand_retail_category_check_generic"
+    },
+    {
+      "version": "20260623091916",
+      "name": "search_book_attribution_phase1"
+    },
+    {
+      "version": "20260623093530",
+      "name": "user_salon_affinity_phase3"
+    },
+    {
+      "version": "20260623095106",
+      "name": "affinity_signals_v2"
+    },
+    {
+      "version": "20260623101427",
+      "name": "salon_engagement_phase4"
+    },
+    {
+      "version": "20260623104322",
+      "name": "set_customer_persona"
+    },
+    {
+      "version": "20260623124945",
+      "name": "user_style_affinity"
+    },
+    {
+      "version": "20260623161117",
+      "name": "add_uploaded_by_to_discovery_items"
+    },
+    {
+      "version": "20260623161401",
+      "name": "allow_inspo_content_type_discovery_items"
+    },
+    {
+      "version": "20260623200833",
+      "name": "add_bookings_arrived_at"
+    },
+    {
+      "version": "20260623203051",
+      "name": "discovery_chip_terms_per_category"
+    },
+    {
+      "version": "20260623213751",
+      "name": "add_bookings_completed_at"
+    },
+    {
+      "version": "20260623222643",
+      "name": "purchase_refunds_retail_purchases"
+    },
+    {
+      "version": "20260623224212",
+      "name": "perf_add_missing_fk_indexes"
+    },
+    {
+      "version": "20260623224355",
+      "name": "perf_rls_initplan_wrap_auth_calls"
+    },
+    {
+      "version": "20260624064701",
+      "name": "perf_discovery_feed_for_you_join_promote"
+    },
+    {
+      "version": "20260624070907",
+      "name": "security_close_anon_write_holes"
+    },
+    {
+      "version": "20260624071806",
+      "name": "perf_consolidate_permissive_policies"
+    },
+    {
+      "version": "20260624103515",
+      "name": "salon_resubmit_discriminator"
+    },
+    {
+      "version": "20260624200817",
+      "name": "allow_infill_reminder_note_type"
+    },
+    {
+      "version": "20260624214425",
+      "name": "add_deals_enabled_to_notification_preferences"
+    },
+    {
+      "version": "20260625093535",
+      "name": "discovery_feed_add_p_tags_any"
+    },
+    {
+      "version": "20260625101256",
+      "name": "create_hand_chart_notes"
+    },
+    {
+      "version": "20260625101306",
+      "name": "add_promo_columns_to_bookings"
+    },
+    {
+      "version": "20260625101317",
+      "name": "increment_promo_use_fn"
+    },
+    {
+      "version": "20260625101327",
+      "name": "create_off_peak_alert_log"
+    },
+    {
+      "version": "20260625104237",
+      "name": "discovery_items_tags_gin_index"
+    },
+    {
+      "version": "20260628152951",
+      "name": "perf_distribute_all_policies_per_command"
+    },
+    {
+      "version": "20260628153235",
+      "name": "perf_reindex_fks_and_wrap_auth_email"
+    },
+    {
+      "version": "20260628153423",
+      "name": "perf_rls_initplan_wrap_followup"
+    },
+    {
+      "version": "20260630041333",
+      "name": "add_review_attributes"
+    },
+    {
+      "version": "20260630070438",
+      "name": "booking_promo_code"
+    },
+    {
+      "version": "20260630154540",
+      "name": "salons_onboarding_profile_fields"
+    },
+    {
+      "version": "20260630234427",
+      "name": "search_dna_affinity"
+    },
+    {
+      "version": "20260630235122",
+      "name": "search_dna_affinity_catmap"
+    },
+    {
+      "version": "20260701111658",
+      "name": "search_suggest_dedup_services"
+    },
+    {
+      "version": "20260701122712",
+      "name": "search_suggest_salon_from_price"
+    },
+    {
+      "version": "20260701131804",
+      "name": "search_suggest_treatment_from_price"
+    },
+    {
+      "version": "20260701132305",
+      "name": "search_suggest_pricing_token_self_correcting"
+    },
+    {
+      "version": "20260701143744",
+      "name": "search_suggest_prefix_synonym_match"
+    },
+    {
+      "version": "20260701161837",
+      "name": "search_suggest_contains_synonym_match"
+    },
+    {
+      "version": "20260703001317",
+      "name": "backend_harden_face10_searchpath_and_gdpr_trigger"
+    },
+    {
+      "version": "20260703001331",
+      "name": "backend_harden_face10_revoke_internal_trigger_rpc"
+    },
+    {
+      "version": "20260703001417",
+      "name": "backend_harden_face10_revoke_trigger_rpc_from_public"
+    },
+    {
+      "version": "20260703004117",
+      "name": "perf_bookings_composite_indexes"
+    },
+    {
+      "version": "20260703004449",
+      "name": "perf_booking_counts_by_salon_rpc"
+    },
+    {
+      "version": "20260703092317",
+      "name": "perf_salon_client_summary_rpc"
+    },
+    {
+      "version": "20260703095144",
+      "name": "perf_earliest_slots_by_service_rpc"
+    },
+    {
+      "version": "20260703100804",
+      "name": "fix_booking_disputes_status_check_add_resolved_dismissed"
+    },
+    {
+      "version": "20260703100838",
+      "name": "drop_leftover_test_table"
+    },
+    {
+      "version": "20260703101948",
+      "name": "referral_feature_flag_and_reward_setting"
+    },
+    {
+      "version": "20260703102228",
+      "name": "fix_voucher_rls_leak_and_add_flag"
+    },
+    {
+      "version": "20260703102612",
+      "name": "retail_generalize_a5"
+    },
+    {
+      "version": "20260703102642",
+      "name": "service_bundles_a5"
+    },
+    {
+      "version": "20260703103322",
+      "name": "voucher_redemption_ledger_and_rpcs"
+    },
+    {
+      "version": "20260703104222",
+      "name": "retail_stock_rpcs_a5"
+    },
+    {
+      "version": "20260703150856",
+      "name": "credit_redemption_ledger_and_rpcs"
+    },
+    {
+      "version": "20260703151737",
+      "name": "retail_stock_rpcs_lockdown_a5"
+    },
+    {
+      "version": "20260703152129",
+      "name": "referral_credit_double_mint_backstop"
+    },
+    {
+      "version": "20260703161101",
+      "name": "fix_redeem_idempotency"
+    },
+    {
+      "version": "20260703190508",
+      "name": "twint_feature_flag"
+    },
+    {
+      "version": "20260703192258",
+      "name": "gdpr_deletion_columns"
+    },
+    {
+      "version": "20260703200921",
+      "name": "gap_hunt_d3_d5_d8_hardening"
+    },
+    {
+      "version": "20260703202139",
+      "name": "verification_token_and_bell_read_state"
+    },
+    {
+      "version": "20260703205804",
+      "name": "save_service_bundle_rpc_a5"
+    },
+    {
+      "version": "20260703205843",
+      "name": "save_service_bundle_rpc_lockdown_a5"
+    },
+    {
+      "version": "20260705210819",
+      "name": "fix_banned_icon_names_service_categories"
+    },
+    {
+      "version": "20260706083445",
+      "name": "revoke_anon_execute_money_rpcs"
+    },
+    {
+      "version": "20260706083505",
+      "name": "revoke_anon_discovery_persona_rpcs"
+    },
+    {
+      "version": "20260706083518",
+      "name": "restrict_staff_sensitive_cols_and_pin_search_path"
+    },
+    {
+      "version": "20260706083634",
+      "name": "rating_cache_respect_hidden_and_fire_on_update_delete"
+    },
+    {
+      "version": "20260706083815",
+      "name": "revoke_anon_recompute_style_affinity"
+    },
+    {
+      "version": "20260707095749",
+      "name": "security_phase1_profiles_privilege_guard"
+    },
+    {
+      "version": "20260707104202",
+      "name": "security_phase1_gift_cards_select_scope"
+    },
+    {
+      "version": "20260707155609",
+      "name": "bookings_one_active_per_slot"
+    },
+    {
+      "version": "20260707160008",
+      "name": "purge_past_available_slots_fn"
+    },
+    {
+      "version": "20260707161019",
+      "name": "purge_past_available_slots_lockdown"
+    },
+    {
+      "version": "20260707195136",
+      "name": "salons_auto_complete_enabled"
+    },
+    {
+      "version": "20260707195316",
+      "name": "salons_auto_complete_enabled_default_true"
+    },
+    {
+      "version": "20260707210506",
+      "name": "loyalty_seed_migrate_A_to_B_programs"
+    },
+    {
+      "version": "20260707210517",
+      "name": "loyalty_seed_migrate_A_to_B_cards"
+    },
+    {
+      "version": "20260709183706",
+      "name": "audit_fix_reviews_moderation_columns"
+    },
+    {
+      "version": "20260709183852",
+      "name": "audit_fix_discovery_items_rls_restore_v2"
+    },
+    {
+      "version": "20260709183909",
+      "name": "audit_fix_reviews_insert_requires_booking"
+    },
+    {
+      "version": "20260709184153",
+      "name": "audit_fix_group_bookings_rls"
+    },
+    {
+      "version": "20260709184246",
+      "name": "audit_fix_bookings_status_escalation_guard"
+    },
+    {
+      "version": "20260709184658",
+      "name": "audit_fix_create_group_booking_rpc_2"
+    },
+    {
+      "version": "20260709235308",
+      "name": "audit_fix_price_offers_lock_amount"
+    },
+    {
+      "version": "20260710043952",
+      "name": "audit_fix_fee_charge_claim_column"
+    },
+    {
+      "version": "20260710100855",
+      "name": "audit_fix_promo_reserve_at_checkout"
+    },
+    {
+      "version": "20260710103441",
+      "name": "audit_fix_member_discount_reserve"
+    },
+    {
+      "version": "20260710104917",
+      "name": "audit_fix_staff_calendars_rls_deny"
+    },
+    {
+      "version": "20260710114732",
+      "name": "audit_fix_availability_slots_block_reason"
+    },
+    {
+      "version": "20260710143922",
+      "name": "audit_fix_loyalty_tier_uses_actual_charge"
+    },
+    {
+      "version": "20260710143938",
+      "name": "audit_fix_referrals_one_completion_per_user"
+    },
+    {
+      "version": "20260710155420",
+      "name": "audit_fix_service_photos_bucket_mime_allowlist"
+    },
+    {
+      "version": "20260710155541",
+      "name": "audit_fix_referral_code_csprng"
+    },
+    {
+      "version": "20260710162338",
+      "name": "audit_fix_rotate_deterministic_referral_codes"
+    },
+    {
+      "version": "20260710210708",
+      "name": "audit_fix_discovery_images_write_policies_admin_only"
+    },
+    {
+      "version": "20260710225432",
+      "name": "audit_fix_staff_daily_limit_atomic_trigger"
+    },
+    {
+      "version": "20260711082619",
+      "name": "backend_loop_cron_runs_log"
+    },
+    {
+      "version": "20260711094114",
+      "name": "backend_loop_next_available_dates_rpc"
+    },
+    {
+      "version": "20260711120445",
+      "name": "backend_loop_promo_counted_flag"
+    },
+    {
+      "version": "20260711122211",
+      "name": "backend_loop_dispute_lost_marker"
+    },
+    {
+      "version": "20260711161352",
+      "name": "backend_loop_schedule_slot_purge"
+    },
+    {
+      "version": "20260711161553",
+      "name": "backend_loop_db_backups_bucket"
+    },
+    {
+      "version": "20260711201429",
+      "name": "backend_loop_booking_revenue_sum_rpc"
+    },
+    {
+      "version": "20260712104000",
+      "name": "walkin_queue_dedupe_unique"
+    },
+    {
+      "version": "20260713073001",
+      "name": "audit_fix_profile_views_writable_critical"
+    },
+    {
+      "version": "20260713073132",
+      "name": "audit_fix_revoke_anon_promo_reserve_rpcs"
+    },
+    {
+      "version": "20260713073135",
+      "name": "audit_fix_revoke_anon_member_discount_rpcs"
+    },
+    {
+      "version": "20260713073153",
+      "name": "audit_fix_bookings_protected_fields_guard"
+    },
+    {
+      "version": "20260713073156",
+      "name": "audit_fix_next_available_dates_search_path"
+    },
+    {
+      "version": "20260713073201",
+      "name": "perf_discovery_items_rls_initplan"
+    },
+    {
+      "version": "20260713073310",
+      "name": "audit_fix_member_discount_caller_guard"
+    },
+    {
+      "version": "20260713073313",
+      "name": "audit_fix_quick_action_token_single_use"
+    },
+    {
+      "version": "20260713073338",
+      "name": "audit_fix_group_booking_salon_check"
+    },
+    {
+      "version": "20260713073645",
+      "name": "audit_fix_widen_client_notes_system_type"
+    },
+    {
+      "version": "20260713073647",
+      "name": "audit_fix_quartier_drop_public_insert_policy"
+    },
+    {
+      "version": "20260713073734",
+      "name": "audit_fix_slot_hours_zurich_tz"
+    },
+    {
+      "version": "20260713075545",
+      "name": "audit_create_missing_storage_buckets"
+    },
+    {
+      "version": "20260713075654",
+      "name": "audit_c1_availability_slots_public_barrier_view"
+    },
+    {
+      "version": "20260713092451",
+      "name": "audit_create_staff_portfolio_bucket"
+    },
+    {
+      "version": "20260713123302",
+      "name": "c1_flip_availability_slots_owner_only"
+    },
+    {
+      "version": "20260713125159",
+      "name": "audit_fix_chat_media_insert_folder_ownership"
+    },
+    {
+      "version": "20260713142117",
+      "name": "salon_of_month"
+    },
+    {
+      "version": "20260713142253",
+      "name": "gdpr_deletion_completeness"
+    },
+    {
+      "version": "20260714144011",
+      "name": "promo_per_user_cap"
+    },
+    {
+      "version": "20260714144715",
+      "name": "harden_salon_activation_requires_approval"
+    },
+    {
+      "version": "20260714150021",
+      "name": "promo_per_user_cap_fixes"
+    },
+    {
+      "version": "20260714152103",
+      "name": "bookings_remaining_at_salon"
+    },
+    {
+      "version": "20260714160410",
+      "name": "fix_redeem_credit_voucher_advisory_lock"
+    },
+    {
+      "version": "20260714160517",
+      "name": "fix_tips_one_pending_per_target"
+    },
+    {
+      "version": "20260714230441",
+      "name": "add_profiles_analytics_consent"
+    },
+    {
+      "version": "20260716195133",
+      "name": "review_photos_insert_policy"
+    },
+    {
+      "version": "20260716204148",
+      "name": "discovery_feed_keyset_cursor"
+    },
+    {
+      "version": "20260716225317",
+      "name": "backend_law_fix13_storage_mime_allowlists"
+    },
+    {
+      "version": "20260716225526",
+      "name": "wrap_bare_auth_uid_rls_policies"
+    },
+    {
+      "version": "20260717100304",
+      "name": "null_safe_discovery_toggle_guards"
+    },
+    {
+      "version": "20260717183226",
+      "name": "csp_violation_reports"
+    },
+    {
+      "version": "20260717193112",
+      "name": "salon_payouts_full_unique_index"
+    },
+    {
+      "version": "20260717194233",
+      "name": "package_purchases_fks"
+    },
+    {
+      "version": "20260717200120",
+      "name": "bookings_money_column_comments"
+    },
+    {
+      "version": "20260717204133",
+      "name": "walkin_tracking_token_hash"
+    },
+    {
+      "version": "20260718101935",
+      "name": "walkin_tracking_token_nullable_and_null"
+    },
+    {
+      "version": "20260718112658",
+      "name": "fix_availability_slots_public_select_rls"
+    },
+    {
+      "version": "20260718115303",
+      "name": "revoke_trigger_fn_rpc_execute"
+    },
+    {
+      "version": "20260718115845",
+      "name": "scope_public_bucket_listing"
+    },
+    {
+      "version": "20260721150629",
+      "name": "salon_payment_mode_admin_enforce"
+    },
+    {
+      "version": "20260724233941",
+      "name": "salon_portfolio_images"
+    },
+    {
+      "version": "20260727175714",
+      "name": "salon_review_toggles_and_photo_report_target"
+    },
+    {
+      "version": "20260727214621",
+      "name": "add_missing_fr_it_locale_columns"
+    },
+    {
+      "version": "20260727221127",
+      "name": "review_translations_cache"
+    },
+    {
+      "version": "20260728155748",
+      "name": "availability_slots_public_security_invoker"
+    }
+  ]
+}
