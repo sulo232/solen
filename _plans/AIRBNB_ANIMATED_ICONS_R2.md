@@ -320,7 +320,12 @@ recurring problem across every round. Zero credits again.
     around #F2D24F, hsv(0.128, 0.68, 0.95). Hue exact, saturation a shade deeper, value a shade lower.
     Measured on frame 1, 180x162, transparent pixels excluded.
 - [x] U2. Shine, on both icons.
-  - verified, and he was right that this was the root problem. The generated meshes come back almost
+  - verified: commit c8ed58e67 added `--gloss` to `scripts/capture/turntable-render.mjs`
+    (`PMREMGenerator` builds the environment; roughness drops up to 85%, metalness lifts). Measured
+    near-white highlight pixels on frame 1, 180x162, transparent pixels excluded: chair 25.8% and
+    dryer 30.6% at the time of that commit, chair 33.2% after gloss went to 0.85 in 8c85cc46d.
+    Before the flag existed there was effectively no specular at all.
+  - He was right that this was the root problem. The generated meshes come back almost
     fully rough, and a rough material with no environment cannot produce a specular highlight at all,
     so every render was matte no matter what I did to the colour. New `--gloss` flag builds a small
     PMREM environment, drops roughness by up to 85% and lifts metalness, so highlights actually exist.
@@ -328,8 +333,11 @@ recurring problem across every round. Zero credits again.
     dryer**.
 - [x] U3. Chair colour, warmer retro brown-orange, now with shine.
   - verified: `--hue 0.055 --sat-mul 0.78 --val-mul 0.82 --gloss 0.60`, `out/set-barber.webm`.
-- [x] U4. RESOLVED in round 7 below. The diagnosis written here was right and the owner then drew the
-      answer on the page: three curved lines. Sprites out, TubeGeometry in.
+- [x] U4. RESOLVED in round 7.
+  - verified: commit 8c85cc46d. `grep -c SpriteMaterial scripts/capture/turntable-render.mjs` returns
+    0, so the particle system that produced the rejected smoke is gone from the file; `TubeGeometry`
+    and `CatmullRomCurve3` are present in its place. The diagnosis written below was right and the
+    owner then drew the answer on the live page: three curved lines.
   - Original entry kept for the record: THE AIR WAS WRONG AND I DID NOT PRETEND OTHERWISE. Three placements tried this round,
       including a `--puff auto` that plants the emitter on the mesh's own extreme along the jet axis
       and a hand-computed object-space direction that accounts for the 79 degree rest rotation. It
