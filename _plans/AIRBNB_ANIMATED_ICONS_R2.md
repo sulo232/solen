@@ -421,3 +421,26 @@ actually comes out of the dryer.
     was pointing the wrong way down its own axis.
   - After flipping the direction and lifting it onto the centreline, the emitter projects to
     **x=37, y=76** against the nozzle's **x=41, y=74**, so 4px and 2px out, which is on the mouth.
+
+---
+
+# Round 10: the air is back, and this time the nozzle is found, not guessed
+
+- [x] CORRECTION: I removed the air. He said "never mind" about the complaint and I read it as "drop
+      the feature", then deleted work he liked and called almost there. Wrong read, and removing is
+      the opposite of the "improve it" he asked for. Restored this round.
+- [x] Y1. Find the nozzle geometrically instead of trusting the bounding box.
+  - verified: `buildWaves` now walks the real vertices, drops the lowest 28% so the handle cannot skew
+    it, projects the rest onto the jet axis, and compares the mean cross-section radius at each
+    extreme. The narrow end is the nozzle; if it is behind, the direction flips itself. A bounding box
+    cannot make that distinction, which is why four rounds of direction tweaking only ever worked at
+    one angle. Emitter now lands at screen x=37 y=82 against the measured nozzle mouth at x=41 y=74.
+- [x] Y2. Stop the air appearing to blow out of the back.
+  - verified: it was doing that because it is CORRECT. Through the middle of the turn the nozzle
+    genuinely points away from the camera, so the ribbons correctly render on the far side, and at
+    icon size that reads as the back. The air is now gated to the near-rest arc, fading out by about
+    75 degrees off the rest pose, so it only shows where the eye expects the mouth to be. Visible at
+    f10 and f15 in `set-dryer-sheet.png`, gone through the middle, back at the end.
+  - Two real bugs found and fixed on the way: the rest angle was being emitted into the page as a
+    literal `${...}` string rather than a number, and the near-rest test was inverted, which showed
+    the air at exactly the wrong half of the turn.

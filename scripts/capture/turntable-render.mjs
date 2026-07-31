@@ -250,10 +250,47 @@ const WAVES = 3;
 let waveMeshes = [], waveOrigin = null;
 function buildWaves(obj) {
   const bb = new THREE.Box3().setFromObject(obj);
-  const d = new THREE.Vector3(PUFF_DIR[0], PUFF_DIR[1], PUFF_DIR[2]).normalize();
-  const c = bb.getCenter(new THREE.Vector3()), hs = bb.getSize(new THREE.Vector3()).multiplyScalar(0.5);
+  let d = new THREE.Vector3(PUFF_DIR[0], PUFF_DIR[1], PUFF_DIR[2]).normalize();
+  const c = bb.getCenter(new THREE.Vector3());
+  // WHICH END IS THE NOZZLE. A bounding box cannot tell, which is why every direction tweak only
+  // ever worked at one angle. So measure it: walk the real vertices, project them onto the jet
+  // axis, and compare the cross-section radius at the two extremes. The nozzle is the narrow end;
+  // the vent and the fat barrel are the wide one. The handle is excluded by dropping the lowest
+  // vertices, otherwise it drags the answer downward.
+  const pts = [];
+  obj.updateWorldMatrix(true, true);
+  obj.traverse((n) => {
+    if (!n.isMesh || !n.geometry || !n.geometry.attributes.position) return;
+    const pos = n.geometry.attributes.position;
+    const step = Math.max(1, Math.floor(pos.count / 900));
+    for (let i = 0; i < pos.count; i += step) {
+      const v = new THREE.Vector3().fromBufferAttribute(pos, i);
+      n.localToWorld(v);
+      pts.push(v);
+    }
+  });
+  if (pts.length > 40) {
+    const ys = pts.map(p => p.y).sort((a, b) => a - b);
+    const yCut = ys[Math.floor(ys.length * 0.28)];              // drop the handle
+    const body = pts.filter(p => p.y >= yCut);
+    const proj = body.map(p => p.clone().sub(c).dot(d));
+    const lo = Math.min(...proj), hi = Math.max(...proj);
+    const radAt = (near, far) => {
+      const sel = body.filter((p, i) => proj[i] >= near && proj[i] <= far);
+      if (!sel.length) return Infinity;
+      const axisPt = (p) => c.clone().addScaledVector(d, p.clone().sub(c).dot(d));
+      return sel.reduce((m, p) => m + p.distanceTo(axisPt(p)), 0) / sel.length;
+    };
+    const band = (hi - lo) * 0.16;
+    const rPos = radAt(hi - band, hi), rNeg = radAt(lo, lo + band);
+    if (rNeg < rPos) { d = d.clone().negate(); }                 // the narrow end is the other way
+    console.log("nozzle test: radius at +d end", rPos.toFixed(3), "at -d end", rNeg.toFixed(3),
+                rNeg < rPos ? "-> FLIPPED, narrow end was behind" : "-> kept, narrow end already ahead");
+  }
+  const hs = bb.getSize(new THREE.Vector3()).multiplyScalar(0.5);
   const reach = Math.abs(d.x) * hs.x + Math.abs(d.y) * hs.y + Math.abs(d.z) * hs.z;
   waveOrigin = new THREE.Vector3(c.x + d.x * reach, c.y + d.y * reach, c.z + d.z * reach);
+  PUFF_DIR[0] = d.x; PUFF_DIR[1] = d.y; PUFF_DIR[2] = d.z;
   // a frame around the jet axis, so the waves stack across it and wiggle in its plane
   const up = new THREE.Vector3(0, 1, 0);
   const side = new THREE.Vector3().crossVectors(d, up).normalize();
@@ -304,7 +341,17 @@ function setPuff(p) {
     // ACROSS the screen, so they are strongest at rest, when the nozzle is side-on and legible.
     const wd = dir.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), pivot.rotation.y);
     const across = Math.min(1, Math.sqrt(wd.x * wd.x + wd.y * wd.y) / (wd.length() || 1));
-    const facing = Math.max(0, (across - 0.45) / 0.55);          // nothing below 0.45, full by 1.0
+    let facing = Math.max(0, (across - 0.45) / 0.55);            // nothing below 0.45, full by 1.0
+    // AND only while the object is near the pose the viewer reads as its front. Through the middle
+    // of the turn the nozzle genuinely points away, so the air correctly appears on the far side,
+    // and at icon size that reads as blowing out of the back. Physically right, visually wrong.
+    // Keep it to the near-rest arc, where the mouth is where the eye expects it.
+    const REST = ${opt.startAngle * Math.PI / 180};
+    // signed angle from the rest pose, wrapped to [-PI, PI], then its magnitude: 0 at rest.
+    let off = ((pivot.rotation.y - REST + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
+    off = Math.abs(off);                                          // 0 at rest, PI at half a turn
+    const nearRest = Math.max(0, 1 - off / (Math.PI * 0.42));     // gone by ~75 degrees off rest
+    facing *= nearRest;
     m.material.opacity = Math.max(0, Math.min(1, 2.1 * shape * outro * facing * facing));
     m.visible = m.material.opacity > 0.01;
   }
