@@ -666,10 +666,9 @@ completely wrong."
   - The Airbnb capture that started this workstream was measured properly. This half never was,
     because no reference was ever captured for it. I built the air from words.
 
-- [ ] BLOCKED, and this is a real blocker, not a chore I am ducking: I need ONE example of the air he
-      means. A link, a screenshot, a recording, an icon in another app. The moment there is a
-      reference, `Skill(reference-lock)` measures it (frame timing, stroke weight, count, spacing,
-      how it enters and leaves) and the build stops being a guess.
+- [x] UNBLOCKED in round 18: he sent the reference, a hair-dryer line icon, and the build is now made
+      from it rather than from a description. Reading it changed the mark itself: THREE SHORT ARCS,
+      not the long waves I had been drawing for nine rounds.
       Everything else in the set is done and not waiting on him: barber chair approved, dryer body
       colour approved, motion approved, rest state approved, air POSITION approved this round.
 
@@ -690,3 +689,41 @@ Not armed: `~/.claude/settings.json` is read-only from this sandbox. Wiring line
 ```json
 { "hooks": [ { "type": "command", "command": "python3 $HOME/.claude/hooks/no-invented-visual-motif-gate.py" } ] }
 ```
+
+---
+
+# Round 18: HE SENT THE REFERENCE. Building to it instead of to my imagination.
+
+Owner attached a hair-dryer line icon (UI/UX style, gradient squircle) and said: three distinct lines
+coming out of the air, make them 3D rounded, one shoots out at a time rather than all together, they
+travel out smoothly, and they fade as they go. "Morphs in, morphs out."
+
+**What the reference actually shows**, read off the image rather than from memory:
+- **THREE** strokes, not the long wavy squiggles I have been drawing.
+- Each is a SHORT ARC, a shallow C opening back toward the nozzle. Short, not long.
+- They sit OUTSIDE the nozzle with a clear gap, stacked vertically, centred on the nozzle axis.
+- Even weight, matching the icon's own line weight. Even vertical spacing.
+
+That is a different mark from everything I built. I had been drawing long horizontal waves; the
+reference is three short arcs. That alone explains why none of it looked right.
+
+**His motion spec on top of the still:** each arc is born at the nozzle, travels outward, and fades
+out as it goes, one after another rather than as a set. So it is an emitter of short arcs, not three
+persistent lines.
+
+## Atomic asks
+- [x] A1. Three strokes, verified: `--arcs 3`, matching the count in his reference image.
+- [x] A2. Short arcs, verified: each is a shallow C of half-sweep 0.95 rad and radius 5.4 to 9.0px,
+      against the long full-width squiggles of every previous round. This was the single biggest
+      difference between his reference and what I had been drawing.
+- [x] A3. 3D rounded, verified: each arc is drawn in three passes, a darker wider body, the base
+      colour inside it, and a lighter narrower highlight riding just outside the curve, plus round
+      caps. That is what makes a 2D mark read as a tube at icon size.
+- [x] A4. One at a time, verified: each arc is born at `k * (life / arcs)` on the clip's own
+      progress, so they leave in sequence and keep repeating rather than switching on together.
+      Visible in `set-dryer-sheet.png`: one arc at f12, two by f20, three by f28.
+- [x] A5. Travels outward, verified: distance runs from 4.5% to 20% of the frame width across each
+      arc's life, and the radius opens from 5.4 to 9.0px as it goes.
+- [x] A6. Morphs in and out, verified: alpha is a fade-in over the first 22% of an arc's life times
+      a fade-out over the last 45%, so it grows in at the nozzle and dissolves as it travels.
+      Resting icon unchanged: still-hold opaque deltas all 0, loop closes byte-identical.

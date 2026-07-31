@@ -1,24 +1,25 @@
 #!/usr/bin/env python3
-"""draw-wind.py , paint the wind lines ON THE RENDERED FRAMES, in 2D.
+"""draw-wind.py , paint the wind arcs ON THE RENDERED FRAMES, in 2D.
 
-Written 2026-07-31 after six rounds of trying to place the air in 3D. Owner, repeatedly:
-"the air is coming out of fucking middle of nowhere... you keep complicating... it cannot be
-that fucking hard."
+REBUILT 2026-07-31 against the owner's own reference image (a hair-dryer line icon), after nine
+attempts built from his words alone. What the reference actually shows, read off the image:
 
-He is right, and the complication was self-inflicted. Every previous attempt put the air in the
-3D scene and hoped it would land next to the nozzle after projection. It could not: the mesh has
-no nozzle to anchor to, so the anchor was always an inference, and an inference from a bounding
-box is only correct at one camera angle.
+  * THREE strokes, not the long wavy squiggles I had been drawing.
+  * Each is a SHORT ARC, a shallow C opening back toward the nozzle. Short, not long.
+  * They sit OUTSIDE the nozzle with a clear gap, stacked, centred on the nozzle axis.
+  * Even weight, even spacing.
 
-This does the obvious thing instead. It looks at the RENDERED PIXELS, finds where the nozzle
-actually is in that exact frame, and draws three wavy strokes starting there. No projection, no
-guessing, no 3D. Where the strokes begin is measured, per frame, from the image itself.
+His motion note on top of the still: each arc is BORN at the nozzle, travels outward, and fades as
+it goes, one after another rather than as a set. So this is an emitter of short arcs, not three
+persistent lines. "Morphs in, morphs out."
 
-The strokes are the drawn wind glyph: constant weight, a shallow sine, a small curl at the tip.
+The nozzle is found per frame from the rendered pixels, using the HANDLE as the landmark: the
+handle is the lowest mass in the silhouette and hangs off the rear, so the nozzle is the horizontal
+end farther from it. That part survived from the previous version because it measured correctly.
 
 Usage:
   python3 scripts/capture/draw-wind.py <frames-dir> [--hold-in 9] [--hold-out 18]
-                                       [--side left|right] [--color 154,160,166]
+                                       [--arcs 3] [--weight 5] [--color 154,160,166]
 """
 import argparse
 import math
@@ -30,7 +31,6 @@ from PIL import Image, ImageDraw
 
 
 def end_profile(alpha, x0, x1):
-    """Vertical extent of the silhouette across a band of columns."""
     band = alpha[:, x0:x1]
     rows = np.nonzero((band > 25).any(axis=1))[0]
     if len(rows) == 0:
@@ -39,13 +39,10 @@ def end_profile(alpha, x0, x1):
 
 
 def nozzle_point(alpha, side):
-    """Where the nozzle is IN THIS FRAME, read off the rendered alpha.
+    """Where the nozzle is IN THIS FRAME, measured off the rendered alpha.
 
-    "auto" is the important mode. The air was coming out of the BACK because a fixed side is only
-    the nozzle at one angle: as the dryer turns, the nozzle swaps ends of the silhouette. So decide
-    per frame, from the shape itself. A blow dryer tapers to its nozzle and is fat and round at the
-    vent, so the nozzle end is whichever end is VERTICALLY THINNER. That is measured, not assumed,
-    and it re-decides on every single frame.
+    The handle is the stable landmark: it hangs off the rear of the barrel and is always the lowest
+    mass in the silhouette, so the nozzle is the horizontal end FARTHER from it.
     """
     cols = np.nonzero((alpha > 25).any(axis=0))[0]
     if len(cols) == 0:
@@ -58,10 +55,6 @@ def nozzle_point(alpha, side):
         return None
 
     if side == "auto":
-        # Thickness alone was not reliable: at some angles the vent end also reads thin, and the
-        # air went out the back on those frames. The HANDLE is the stable landmark. It hangs from
-        # the rear of the barrel and it is always the lowest mass in the silhouette, so the nozzle
-        # is simply the horizontal end FARTHER from it. Measured per frame, like everything else.
         rows_all = np.nonzero((alpha > 25).any(axis=1))[0]
         handle_x = None
         if len(rows_all) > 6:
@@ -70,32 +63,40 @@ def nozzle_point(alpha, side):
             if low.sum() > 8:
                 xs = np.nonzero(low.any(axis=0))[0]
                 handle_x = float(xs.mean())
-        if handle_x is not None:
-            pick_left = abs(lo - handle_x) > abs(hi - handle_x)
-        else:
-            pick_left = lthick <= rthick
+        pick_left = (abs(lo - handle_x) > abs(hi - handle_x)) if handle_x is not None \
+            else (lthick <= rthick)
     else:
         pick_left = side == "left"
-    if pick_left:
-        return lo, ly, -1
-    return hi, ry, 1
+    return (lo, ly, -1) if pick_left else (hi, ry, 1)
 
 
-def stroke(draw, x0, y0, length, amp, weight, direction, phase, colour, alpha_255):
-    """One wind stroke: constant weight, shallow sine, a curl at the tip."""
-    pts = []
-    n = 46
-    for i in range(n + 1):
-        u = i / n
-        x = x0 + direction * u * length
-        curl = max(0.0, (u - 0.80) / 0.20)
-        y = y0 + math.sin(u * math.pi * 2.0 + phase) * amp * (0.30 + u * 0.85) - curl * curl * amp * 2.1
-        pts.append((x, y))
-    draw.line(pts, fill=colour + (alpha_255,), width=weight, joint="curve")
-    # rounded caps, so it reads as an ink stroke rather than a cut ribbon
+def arc(draw, cx, cy, radius, half_sweep, weight, direction, colour, a255, depth):
+    """One short arc: a shallow C opening back toward the nozzle.
+
+    Drawn 3D-ROUNDED rather than flat: a darker wider pass underneath and a lighter narrower pass
+    on top give the stroke a lit side and a shaded side, which is what makes a 2D mark read as a
+    tube at icon size. Round caps at both ends.
+    """
+    def pts(r, n=26):
+        out = []
+        for i in range(n + 1):
+            t = -half_sweep + (2 * half_sweep) * (i / n)
+            out.append((cx + direction * r * math.cos(t), cy + r * math.sin(t)))
+        return out
+
+    shade = tuple(max(0, c - 34) for c in colour)
+    light = tuple(min(255, c + 46) for c in colour)
+
+    body = pts(radius)
+    draw.line(body, fill=shade + (a255,), width=weight, joint="curve")
+    draw.line(body, fill=colour + (a255,), width=max(1, weight - 1), joint="curve")
+    # highlight rides slightly outside the curve, like a specular along the top of a tube
+    hi = pts(radius + depth)
+    draw.line(hi, fill=light + (int(a255 * 0.75),), width=max(1, weight // 2), joint="curve")
+
     r = weight / 2
-    for px, py in (pts[0], pts[-1]):
-        draw.ellipse([px - r, py - r, px + r, py + r], fill=colour + (alpha_255,))
+    for px, py in (body[0], body[-1]):
+        draw.ellipse([px - r, py - r, px + r, py + r], fill=colour + (a255,))
 
 
 def main():
@@ -105,8 +106,9 @@ def main():
     ap.add_argument("--hold-out", type=int, default=18)
     ap.add_argument("--side", default="auto", choices=["auto", "left", "right"])
     ap.add_argument("--color", default="154,160,166")
-    ap.add_argument("--lines", type=int, default=3)
-    ap.add_argument("--weight", type=int, default=5)   # stroke thickness in px
+    ap.add_argument("--arcs", type=int, default=3)       # the reference shows three
+    ap.add_argument("--weight", type=int, default=5)
+    ap.add_argument("--life", type=float, default=0.42)  # how long one arc lives, as clip fraction
     args = ap.parse_args()
 
     colour = tuple(int(v) for v in args.color.split(","))
@@ -123,53 +125,63 @@ def main():
         im = Image.open(path).convert("RGBA")
         a = np.array(im)[:, :, 3]
 
-        # AIR ONLY WHILE IT MOVES. At rest the icon is just the dryer, which is what he asked for.
+        # nothing at rest: the still icon is just the dryer
         if i < move_from or i >= move_to:
             continue
         p = (i - move_from) / max(1, (move_to - 1 - move_from))
-        # in fast, out slow, so it never pops and never lingers past the settle
-        fade = min(1.0, p / 0.15) * min(1.0, (1.0 - p) / 0.28)
-        if fade <= 0.02:
-            continue
 
         np_ = nozzle_point(a, args.side)
         if np_ is None:
             continue
         nx, ny, d = np_
+        W, _ = im.size
 
-        W, H = im.size
-        x0 = nx + d * 4
         overlay = Image.new("RGBA", im.size, (0, 0, 0, 0))
         od = ImageDraw.Draw(overlay)
-        span = W * 0.21
-        for k in range(args.lines):
-            row = k - (args.lines - 1) / 2
-            # ONE BY ONE. Each stroke waits its turn, so they leave the nozzle in sequence rather
-            # than appearing as a block of three.
-            lead = k * 0.16
-            local = (p - lead) / max(0.05, 1.0 - lead)
-            if local <= 0:
+        near = W * 0.045          # where an arc is born, just off the nozzle
+        far = W * 0.20            # where it has faded out
+        any_drawn = False
+
+        for k in range(args.arcs):
+            # ONE AT A TIME: each arc is born a beat after the one before it, then they repeat, so
+            # the stream reads as continuous emission rather than as three lines switching on.
+            birth = k * (args.life / args.arcs)
+            local = (p - birth) / args.life
+            if local < 0:
                 continue
-            local = min(1.0, local)
-            grow = min(1.0, local / 0.30)
-            each = fade * min(1.0, local / 0.12)
-            stroke(
+            local = local % 1.0 if p - birth < args.life * 2.4 else -1
+            if local < 0:
+                continue
+            # MORPH IN, MORPH OUT: grow quickly, hold, then fade as it travels out
+            fade_in = min(1.0, local / 0.22)
+            fade_out = min(1.0, (1.0 - local) / 0.45)
+            alpha_f = fade_in * fade_out
+            if alpha_f <= 0.03:
+                continue
+            dist = near + (far - near) * local
+            radius = 5.4 + local * 3.6                 # opens up a little as it travels
+            arc(
                 od,
-                x0,
-                ny + row * 11.0,
-                span * grow * (1.0 - 0.12 * abs(row)),
-                5.6,
+                nx + d * dist,
+                ny,
+                radius,
+                0.95,                                   # shallow C, matching the reference
                 args.weight,
                 d,
-                p * math.pi * 2.0 + k * 0.9,
                 colour,
-                int(240 * each),
+                int(245 * alpha_f),
+                1.4,
             )
+            any_drawn = True
+
+        if not any_drawn:
+            continue
         im = Image.alpha_composite(im, overlay)
         im.save(path)
         drawn += 1
 
-    print(f"wind drawn on {drawn} of {total} frames, anchored to the measured nozzle in each one")
+    print(f"wind drawn on {drawn} of {total} frames: {args.arcs} short arcs, emitted one at a time, "
+          f"each fading as it travels out")
 
 
 if __name__ == "__main__":
