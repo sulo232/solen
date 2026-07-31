@@ -2,19 +2,23 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-07-29T16:20:56 (trigger: auto)
+- taken: 2026-07-31T15:47:04 (trigger: manual)
 - branch: claude/principles-security-audit-0ae738
 
 ## git
 ```
-5cb99b13a The registry is 41% missing and 15% imaginary, and that is why we hand-roll
-f12e5a37b The missing core: every rule we own grades ONE screen. None binds two together.
-2f4bccadb Found the cause: the screen was assembled by hand, not composed from our components
-3959253be Gate the box-inside-a-box, and sweep for others. One instance, now impossible.
-eca0e7cbd The search bar: a box inside a box, and globals.css predicted it word for word
+fe678bec3 Home v3: three header directions with real salons, collapse proven by scrolling it
+dca503b0b Harden against the measurement that graded a page which did not exist
+4d1bd13a7 checkpoint(auto): 7 uncommitted file(s) at turn end
+4cb47fa9e Balance floors: a runner for the two measures that survived, and the six that did not
+83c5e3f78 Adversarial round: 6 of 8 balance measures killed, 1 survives, 1 net-new
+```
+```
+M _plans/CONTEXT_SNAPSHOT.md
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
+52 | SCREEN RESEARCH , wide corpus sweep of real booking apps, every screen archetype, then the change list | **ACTIVE** (2026-07-29)
 46 | ALL-LANGUAGE SWEEP (de/en/fr/it), running unattended | **ACTIVE** (2026-07-27)
 45 | THE 9, RUN AS A LOOP (owner: "fix each 9 autonomously continuously jst park ones u cant do") | **ACTIVE** (2026-07-27)
 44 | OWNER ANSWERS to the 9 open items (moderation + translation + price law + stock photos + ToS photo rights + dashboard layout + restore drill + incident principle) | **ACTIVE** (2026-07-27)
@@ -49,7 +53,3 @@ eca0e7cbd The search bar: a box inside a box, and globals.css predicted it word 
 48 | PRINCIPLE DEEP-RESEARCH , re-test every principle we already have against external evidence | **ACTIVE** (design) + handoff (rest) 2026-07-28
 50 | DESIGN principle deep-research (the rules we ALREADY have) | **ACTIVE** (2026-07-28)
 51 | DESIGN RE-ENGINEER , improve the system we have, measured against live Airbnb | **ACTIVE** (2026-07-28)
-
-## PRINCIPLES_LOOP.md
-Open boxes:
-- [ ] `imagery-icons-02` **AWAITING OWNER** OWNER QUESTION: do salon-gallery and review photos get a pre-publish review queue? The cost is somebody's time watching it, which is yours to spend or delegate. , [high/M] No pre-publish moderation for salon-gallery or review photos, unlike Discovery content
