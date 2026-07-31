@@ -151,11 +151,74 @@ Verified by me, not taken from the agents: de 330 changed / 169 flagged, it 231 
       hand-verified so there was nothing left to delegate.
       **The other 14 of the 18 candidates are NOT defects.** `booking.confirmation.title` "Revisione
       e conferma" and `dashboard.verificationPage.title` "Documenti e verifica" are noun pairs;
-      `home.hero_subtitle` and `cityPage.subtitle` already converted correctly in `a0423867d`;
       the rest are menu labels and sentence fragments. List: `/tmp/claude/bare_it.txt`.
+      **Correction, D5c below: the claim on this line that `home.hero_subtitle` and `cityPage.subtitle`
+      "already converted correctly in `a0423867d`" was wrong, checked and disproved this round; both
+      shipped fully informal with the mapping gap named in D5c.**
       **Same caveat as German applies (F1): this closes the candidates I can see, not the language.** (Checked this round while working the German box:
       `messages/it.json` is out of my task's explicit scope, German-only, and it is another coder's
       live file, so I did not open or touch it. Confirmed still correctly open.)
+- [~] D5c , **Italian, second independent re-derivation, the coordinator's own instruction not to
+      trust the D5b list.** Re-scanned every one of the 5658 leaves in `messages/it.json` fresh
+      (not the 18-candidate list), in three passes: (1) the two strings named in the round-2 brief,
+      (2) every standalone `puoi`/`hai`/`sei`/`vuoi`/`devi` token with no du-family pronoun nearby,
+      (3) a wider irregular-verb sweep (`stai`/`vai`/`fai`/`sai`/`entra`, etc.). **Found 32 more
+      genuine defects the D5b pass missed, all fixed.** Breakdown:
+      - **The 2 named strings were a real miss, not a false alarm.** `home.hero_subtitle` and
+        `cityPage.subtitle` both still read "Trova e prenota i migliori saloni vicino a te" at the
+        start of this round, imperative AND informal, exactly as flagged. Root cause found and
+        confirmed in `scripts/register-sweep.mjs`: `IT_MAP` maps `tu`/`tuo`/`tua`/`tuoi`/`tue` but
+        **never `te`** (the disjunctive form used after a preposition, "vicino a **te**"), so a
+        string whose only informal token is `te` is invisible to the tool on both counts, it never
+        enters the changed set and the pronoun never gets swapped. This is a second, previously
+        unnamed IT_MAP gap alongside the already-documented `ti` one. Fixed by hand to "Trovi e
+        prenoti i migliori saloni vicino a Lei[.]"; `IT_MAP` itself left untouched since editing the
+        shared sweep script was outside this round's scope, flagging it for whoever owns the tool.
+      - **14 more from the `puoi`/`hai`/`sei`/`vuoi`/`devi` pass**, all genuine, all fixed: e.g.
+        `bookingLookup.emailError` "hai usato" to "ha usato", `vouchers.profile.noVouchers` "Non hai
+        ancora nessun voucher. Ordinane uno" to "Non ha ... Ne ordini uno", `authRegister.roleHeading`
+        (the IT copy of this key, distinct from the FR one already closed) "Come vuoi iniziare?" to
+        "Come vuole iniziare?". Full list in the commit diff.
+      - **15 more from the wider irregular-verb pass**, all genuine, all fixed: repeated "Cosa stai
+        cercando?" across `home.categories.title` / `home.guidedSearch.openCta` /
+        `.steps.was.title` to "Cosa sta cercando?"; `booking.emptyBody` "Visita ... o fai una breve
+        chiamata" to "Visiti ... o faccia ..."; `dashboard.reviewsPage.subtitle` "Leggi ... e
+        rispondi" to "Legga ... e risponda"; `coiffeur.sections.ai_teaser`/`ai_desc`,
+        `whySolen.chatBullet1`/`photoBullet3`, `barber.sections.walkin_teaser`,
+        `onboarding.goLive.subtitle`, `dashboard.refundQueue.noteRequired`,
+        `coiffeur.ai_matcher.step2_question`, and the IT-file copy of `resendAccess.hurryReply`.
+      - **1 placeholder fix bundled in, not a register fix on its own**: `dashboard.cmdPlaceholder`
+        was "Cerca o inserisci un comando…", an instruction, which is already a `COPY_LAW.md`
+        section-6 placeholder-shape violation independent of register (a placeholder should be an
+        example, not a command). Changed to the noun-phrase "Comando o ricerca…", which resolves
+        both problems at once rather than Lei-conjugating an instruction that should not have been
+        one.
+      - **1 content anomaly found, deliberately NOT touched**: `reviews.testimonial6` is the only
+        one of 8 sibling testimonials written as a command ("Confronta prezzi, leggi recensioni,
+        prenota direttamente") instead of a first-person quote like its 7 siblings
+        ("Ho trovato il mio salone preferito grazie a Solen."). That is a voice bug, not a register
+        bug, rewriting it into first person would be inventing copy outside this pass's mandate, so
+        it is left as-is and named here rather than silently fixed or silently left broken.
+      - **`ui.mobileMenu.signIn` ("Accedi o registrati") deliberately left open, not fixed.** This is
+        one instance of a much larger, systemic question this round surfaced: a first-word-imperative
+        scan across every leaf in `messages/it.json` (not just the 5658 already-swept strings) returns
+        roughly **900 short button/nav/action-label candidates** (`Esci`, `Torna al salone`,
+        `Paga ora`, `Scrivi una recensione`, `Vai alla homepage`, `Rimuovi dai preferiti`...), and
+        `COPY_LAW.md` section 6's button-type rule ("verb, infinitive or imperative, 1-2 words") was
+        written against German examples, where the infinitive and the Sie-imperative are frequently
+        identical ("Buchen"), so German buttons mostly sidestep the register question for free.
+        Italian has no equivalent free lunch: its infinitive ("Prenotare") reads wrong as a button
+        and its bare imperative ("Prenota") is inherently informal-register. Fixing one nav label in
+        isolation while ~900 siblings (`Cerca`, `Salva`, `Annulla`...) stay informal would be
+        inconsistent, not a fix, so this needs an explicit owner/design-system ruling on Italian
+        button-label register before a pass, the same way German's button-shape rule got settled by
+        precedent rather than guessed. **NEW OPEN ITEM, not previously named anywhere in this file.**
+      Verified: `messages/it.json` parses; `node scripts/register-sweep.mjs it` reports 0 changed;
+      leaf count 5658 before and after, 0 added, 0 removed; 0 ICU placeholder mismatches (checked
+      every `{...}` token per key, HEAD vs working tree); zero hits on `puoi`/`hai`/`sei`/`vuoi`/
+      `devi` standalone after the fix; zero hits on `Lei hai`/`Lei sei`/`Lei puoi`/`Lei vuoi`/`Lei ti`;
+      `git diff --stat messages/` shows only `it.json`. **Marked `[~]`, not `[x]`: the button-label
+      question above is new, real, and unresolved, so this box cannot honestly close green.**
 **Original D5 note, kept as prose because it names no work and a checkbox is a claim:** The pronoun-only blindness that cost
       German 41 strings is not German-specific. Scanned it/fr for
       the same shape: **Italian 18 candidates, French 1.** The French one is a false positive

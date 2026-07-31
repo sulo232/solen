@@ -147,7 +147,7 @@
   },
   "home": {
     "hero_title": "Il Suo salone a Basilea",
-    "hero_subtitle": "Trova e prenota i migliori saloni vicino a te",
+    "hero_subtitle": "Trovi e prenoti i migliori saloni vicino a Lei",
     "search_placeholder": "Cerca salone, servizio o città...",
     "services_heading": "Le nostre categorie",
     "no_results": "Nessun salone trovato",
@@ -160,7 +160,7 @@
       "welcome": "Benvenuto {name}",
       "subtitle": "Parrucchiere, barbiere, unghie & spa — prenoti ora nella Sua città.",
       "nextBooking": "Il Suo prossimo appuntamento: {date} presso {salon}",
-      "welcomeBack": "Bentornato — cosa stai cercando oggi?",
+      "welcomeBack": "Bentornato — cosa sta cercando oggi?",
       "bookings": "Prenotazioni",
       "aiTagline": "Coiffeur, Barber, Unghie & Spa vicino a te.",
       "eyebrow": "Piattaforma beauty · Svizzera",
@@ -175,7 +175,7 @@
     },
     "categories": {
       "label": "CATEGORIE",
-      "title": "Cosa stai cercando?",
+      "title": "Cosa sta cercando?",
       "salonsCount": "Saloni",
       "comingSoon": "Presto disponibile",
       "more": "Scopri più categorie"
@@ -307,7 +307,7 @@
       "cityLabel": "Seleziona città"
     },
     "guidedSearch": {
-      "openCta": "Cosa stai cercando?",
+      "openCta": "Cosa sta cercando?",
       "placeholder": "Servizio, salone o città...",
       "close": "Chiudi",
       "back": "Indietro",
@@ -340,7 +340,7 @@
           }
         },
         "was": {
-          "title": "Cosa stai cercando?",
+          "title": "Cosa sta cercando?",
           "searchPlaceholder": "Cerca servizio…",
           "skip": "Qualsiasi / Tutti i servizi",
           "skipSub": "Sfoglia tutte le categorie",
@@ -854,7 +854,7 @@
     },
     "goLive": {
       "title": "Pronto per il lancio!",
-      "subtitle": "Controlla le impostazioni e vai online",
+      "subtitle": "Controlli le impostazioni e vada online",
       "checklist": "Lista di controllo",
       "warning": "Completa almeno il profilo, gli orari di apertura e i servizi.",
       "live": "Il Suo salone è online!",
@@ -903,7 +903,7 @@
     "stepPayment": "Pagamento",
     "bookingAt": "Prenoti il Suo appuntamento presso {salon}",
     "emptyTitle": "Prenotazione online non disponibile",
-    "emptyBody": "Questo salone accetta appuntamenti per telefono o di persona. Visita la pagina del salone o fai una breve chiamata.",
+    "emptyBody": "Questo salone accetta appuntamenti per telefono o di persona. Visiti la pagina del salone o faccia una breve chiamata.",
     "emptyToSalon": "Vai al salone",
     "emptyCallSalon": "Chiama il salone",
     "hairSub": "Per la preparazione. Tutto facoltativo.",
@@ -1323,7 +1323,7 @@
       "customerStatement": "Dichiarazione del cliente",
       "escalatedNote": "Inoltrato a Solen. Solen deciderà.",
       "notePlaceholder": "Risposta al cliente (obbligatoria, min. 10 caratteri)",
-      "noteRequired": "Scrivi una risposta di almeno 10 caratteri.",
+      "noteRequired": "Scriva una risposta di almeno 10 caratteri.",
       "approveFull": "Rimborsa tutto",
       "approvePartial": "Parziale",
       "reject": "Rifiuta",
@@ -1830,7 +1830,7 @@
     "showLess": "Mostra meno",
     "showMore": "Mostra più",
     "moreEvents": "altri eventi",
-    "cmdPlaceholder": "Cerca o inserisci un comando…",
+    "cmdPlaceholder": "Comando o ricerca…",
     "noResults": "Nessun risultato",
     "navigate": "Naviga",
     "close": "Chiudi",
@@ -2132,7 +2132,7 @@
     },
     "reviewsPage": {
       "title": "Recensioni",
-      "subtitle": "Leggi le recensioni dei clienti e rispondi",
+      "subtitle": "Legga le recensioni dei clienti e risponda",
       "emptyTitle": "Nessuna recensione",
       "emptyMessage": "Ancora nessuna recensione dei clienti.",
       "anonymous": "Anonimo",
@@ -3396,7 +3396,7 @@
       "smartSearch": "Ricerca intelligente",
       "tiktokUrls": "URL TikTok",
       "quickImport": "Importazione rapida",
-      "describeLabel": "Descrivi cosa vuoi importare",
+      "describeLabel": "Descriva cosa vuole importare",
       "descriptionPlaceholder": "es. tagli French crop testurizzati per uomini, balayage su capelli scuri...",
       "searchingGemini": "Gemini sta cercando...",
       "smartSearchButton": "Ricerca intelligente",
@@ -3620,7 +3620,7 @@
     "save": "Salva",
     "cancel": "Annulla",
     "sections": {
-      "walkin_teaser": "Nessun appuntamento? Entra direttamente.",
+      "walkin_teaser": "Nessun appuntamento? Entri direttamente.",
       "walkin_desc": "Barbershop con coda — vedi i tempi di attesa in tempo reale",
       "walkin_cta": "Walk-in",
       "filter_fade_type": "Tipo di Fade",
@@ -3905,7 +3905,7 @@
       "customService": "Servizio personalizzato",
       "nameDe": "Nome DE *",
       "translating": "Traduzione automatica…",
-      "translated": "Tradotto automaticamente — puoi modificare le traduzioni.",
+      "translated": "Tradotto automaticamente — può modificare le traduzioni.",
       "category": "Categoria *",
       "selectCategory": "Seleziona…",
       "duration": "Durata",
@@ -3973,7 +3973,7 @@
     },
     "stepPhotos": {
       "title": "Carica foto",
-      "subtitle": "Opzionale · puoi saltare questo passaggio",
+      "subtitle": "Opzionale · può saltare questo passaggio",
       "desc": "Carichi foto del Suo salone — questo aumenta notevolmente il tasso di prenotazione.",
       "hint": "Consigliato: 5+ foto",
       "hintDesc": "I saloni con foto ricevono fino a 3× più prenotazioni. Puoi aggiungere foto in qualsiasi momento nella dashboard.",
@@ -5074,7 +5074,7 @@
   },
   "cityPage": {
     "title": "Saloni a {cityName}",
-    "subtitle": "Trova e prenota i migliori saloni vicino a te.",
+    "subtitle": "Trovi e prenoti i migliori saloni vicino a Lei.",
     "all_categories": "Tutte le categorie"
   },
   "staffPortfolio": {
@@ -5396,7 +5396,7 @@
       "title": "I miei voucher",
       "subtitle": "Voucher totali",
       "buyNew": "Regala un nuovo voucher",
-      "noVouchers": "Non hai ancora nessun voucher. Ordinane uno come regalo!",
+      "noVouchers": "Non ha ancora nessun voucher. Ne ordini uno come regalo!",
       "active": "Voucher attivi",
       "used": "Usati",
       "expired": "Scaduti",
@@ -5409,13 +5409,13 @@
       "error": "Errore nel caricamento dei voucher",
       "retry": "Riprova",
       "creditLabel": "Credito",
-      "emptyBoth": "Non hai ancora voucher o credito."
+      "emptyBoth": "Non ha ancora voucher o credito."
     }
   },
   "coiffeur": {
     "ai_matcher": {
       "step1_question": "Qual è il Suo tipo di capelli?",
-      "step2_question": "Quale servizio stai cercando?",
+      "step2_question": "Quale servizio sta cercando?",
       "step3_question": "Cosa è più importante per te?",
       "option_curly": "Ricci",
       "option_wavy": "Mossi",
@@ -5465,8 +5465,8 @@
       "trending_title": "Tendenze a Basilea",
       "trending_subtitle": "Questi look vengono prenotati in questo momento",
       "trending_cta": "Tutti i look",
-      "ai_teaser": "Non sai quale salon scegliere?",
-      "ai_desc": "Rispondi a 3 brevi domande — ti raccomandiamo il salon giusto per te.",
+      "ai_teaser": "Non sa quale salon scegliere?",
+      "ai_desc": "Risponda a 3 brevi domande — Le raccomandiamo il salon giusto per Lei.",
       "ai_cta": "Raccomandazione IA →"
     }
   },
@@ -5662,7 +5662,7 @@
     "heroCta": "Scopri ora",
     "chatEyebrow": "Comunicazione diretta",
     "chatTitle": "Chatti direttamente con il Suo salone",
-    "chatBullet1": "Chiedi disponibilità, prezzi o richieste speciali",
+    "chatBullet1": "Chieda disponibilità, prezzi o richieste speciali",
     "chatBullet2": "Modelli intelligenti per le domande più frequenti",
     "chatBullet3": "Suggerimenti di risposta AI per i saloni",
     "chatMsg1": "Ciao! Avete un appuntamento domani per un balayage?",
@@ -5673,7 +5673,7 @@
     "photoTitle": "Invia una foto, ottieni un prezzo",
     "photoBullet1": "Carica una foto del look desiderato",
     "photoBullet2": "Ricevi un preventivo personalizzato direttamente in chat",
-    "photoBullet3": "Paga in modo sicuro, tutto nell'app",
+    "photoBullet3": "Paghi in modo sicuro, tutto nell'app",
     "compareEyebrow": "Confronto saloni",
     "compareTitle": "Confronta i saloni fianco a fianco",
     "compareDesc": "Prezzi, recensioni e disponibilità in un colpo d'occhio.",
@@ -5787,10 +5787,10 @@
     "submit": "Inviami il link",
     "loginInstead": "Hai prenotato con un account? Accedi invece",
     "orderError": "Non sembra un numero d'ordine completo. Deve avere 5 caratteri dopo SOL-.",
-    "emailError": "Inserisci l'e-mail che hai usato per prenotare.",
+    "emailError": "Inserisca l'e-mail che ha usato per prenotare.",
     "sentTitle": "Controlli la Sua e-mail",
     "sentBody": "Se una prenotazione corrisponde a quel numero d'ordine, abbiamo inviato un link sicuro a {email}. Lo apra per vedere la Sua prenotazione e richiedere un rimborso.",
-    "sentValidity": "Il link è valido per 30 minuti e apre questa prenotazione una sola volta. Non l'hai ricevuto? Controlla lo spam, poi rinvialo qui sotto.",
+    "sentValidity": "Il link è valido per 30 minuti e apre questa prenotazione una sola volta. Non l'ha ricevuto? Controlli lo spam, poi lo rinvii qui sotto.",
     "resendIn": "Reinvia tra {time}",
     "resend": "Reinvia il link",
     "tryDifferent": "Usa un'altra e-mail o numero d'ordine",
@@ -5835,7 +5835,7 @@
     "emailHint": "Deve corrispondere al contatto della prenotazione.",
     "phoneHint": "Invieremo il link via SMS. Possono essere applicate tariffe standard.",
     "submit": "Invia il mio link di accesso",
-    "findInstead": "Non hai il numero d'ordine?",
+    "findInstead": "Non ha il numero d'ordine?",
     "findInsteadLink": "Trovi la Sua prenotazione",
     "findInsteadByEmail": "Trova invece la mia prenotazione via e-mail",
     "orderError": "Non sembra un numero d'ordine completo. Dovrebbe avere 5 caratteri dopo SOL-.",
@@ -5845,7 +5845,7 @@
     "sentBody": "Se {code} corrisponde a una prenotazione, abbiamo inviato un nuovo link di accesso. È valido per 30 minuti.",
     "sentToLabel": "Inviato a",
     "privacyNote": "Per la Sua sicurezza, mostriamo lo stesso messaggio indipendentemente dal fatto che una prenotazione corrisponda o meno. Solo il contatto reale della prenotazione riceve un link.",
-    "resendMeta": "Non l'hai ricevuto? Controlla lo spam, poi invia di nuovo tra {time}.",
+    "resendMeta": "Non l'ha ricevuto? Controlli lo spam, poi invii di nuovo tra {time}.",
     "resend": "Invia di nuovo il link di accesso",
     "backToBooking": "Torna alla mia prenotazione",
     "limitTitle": "Troppe richieste",
@@ -5854,13 +5854,13 @@
     "countdownHelp": "Puoi richiedere un nuovo link quando il timer raggiunge lo zero.",
     "lockedCta": "Bloccato. Attendi {minutes} min",
     "hurryTitle": "Hai fretta?",
-    "hurryGotLink": "Se hai già ricevuto un link negli ultimi 30 minuti, usa quello. È ancora valido.",
-    "hurryReply": "Ancora bloccato? Rispondi all'e-mail di conferma della prenotazione e il nostro team potrà inviarlo di nuovo manualmente.",
+    "hurryGotLink": "Se ha già ricevuto un link negli ultimi 30 minuti, usi quello. È ancora valido.",
+    "hurryReply": "Ancora bloccato? Risponda all'e-mail di conferma della prenotazione e il nostro team potrà inviarlo di nuovo manualmente.",
     "howItWorks": "Come funziona",
     "step1Title": "Inserisci il numero d'ordine",
     "step1Desc": "Il codice SOL- dalla Sua conferma di prenotazione.",
     "step2Title": "Confermi il Suo contatto",
-    "step2Desc": "L'e-mail o il telefono con cui hai prenotato. Deve corrispondere.",
+    "step2Desc": "L'e-mail o il telefono con cui ha prenotato. Deve corrispondere.",
     "step3Title": "Apri il nuovo link",
     "step3Desc": "Valido per 30 minuti. Da lì può gestire o contestare la Sua prenotazione.",
     "railSecurity": "Non riveliamo mai se una prenotazione esiste e limitiamo le richieste per proteggere la Sua prenotazione. Solo il contatto reale registrato riceve un link.",
@@ -6138,7 +6138,7 @@
     "upNoneBody": "There's no open request on this booking. It may have already been handled."
   },
   "authRegister": {
-    "roleHeading": "Come vuoi iniziare?",
+    "roleHeading": "Come vuole iniziare?",
     "roleSubtitle": "Scegli come usi Solen.",
     "roleCustomerTitle": "Sono un cliente",
     "roleCustomerDesc": "Scopri saloni e prenota appuntamenti",
@@ -6276,8 +6276,8 @@
   },
   "bookingsListUi": {
     "emptyUpcoming": "Prenoti subito il Suo prossimo trattamento",
-    "emptyPast": "Non hai ancora prenotazioni completate",
-    "emptyCancelled": "Non hai ancora prenotazioni annullate"
+    "emptyPast": "Non ha ancora prenotazioni completate",
+    "emptyCancelled": "Non ha ancora prenotazioni annullate"
   },
   "bookingAction": {
     "confirmed": "Appuntamento confermato",
