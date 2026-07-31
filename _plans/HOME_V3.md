@@ -50,3 +50,21 @@ view-transition Link landed first.
 - [ ] CORRECTION: "I told you to fix the repeating thing and a readback. It doesn't include that even though I told you explicitly." I dropped his harden-the-repeat ask out of two consecutive readbacks. The readback is supposed to be the thing that makes a dropped ask visible, and I used it to drop one.
 - [ ] CORRECTION: "I told you to make the mockups, but you did not do that too." Owed: search/category, PDP, Inspo, booking, profile. Zero built.
 - [ ] CORRECTION: "Why do you keep stopping? When I told you to do something, do it. Make a whole gate and hook for that." Three closing messages in a row ended with a fork question about work he had already ordered.
+
+## 2026-07-31 , search mockup, written but BLOCKED at the write
+
+The search/category mockup (public/_mockups/home-v3/search-a.html) is fully authored: composes
+SalonResultCard's DEFAULT variant by line (full-width row, photo left 104 square, hairline kept,
+elevation on the photo), the measured Airbnb pill recipe, real seeded data, no grid, no bold on
+select. It did NOT land.
+
+BLOCKER: mockup-fullscreen-gate requires a live BEFORE iframe of the real route
+(/de/basel/barbershop) plus a Before/After toggle, copying public/_mockups/liftup-home-fs/index.html.
+That is a legitimate requirement, not a false positive: the search page really exists, so a
+hand-built "current" panel would be the redraw the owner rejects.
+
+WHY IT DID NOT GET FIXED THIS TURN: out of context budget to re-emit the file with the iframe
+shell added. Not a decision waiting on the owner. The next session's first action is: copy the
+liftup-home-fs before/after shell, wrap search-a.html's AFTER pane in it, point BEFORE at
+https://card-albums-anne-mood.trycloudflare.com/de/basel/barbershop, write, verify at 390x844,
+commit. Then PDP, Inspo, booking, profile.
