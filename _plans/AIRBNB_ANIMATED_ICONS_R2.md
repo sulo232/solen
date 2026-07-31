@@ -123,11 +123,18 @@ will read as a broken set. He asked for ideas.
   - His call beat mine. I argued the weak pair was two chairs and offered a hood dryer as the escape;
     he cut further, to a handheld dryer with no chair at all. That is a bigger silhouette gap than
     either option I put up, and it makes the set a chair plus a tool rather than two chairs.
-- [ ] S5. The dryer's pink is still pale: coloured pixels measure saturation 0.412 against Airbnb's
-      0.707. The cause is the source image, a dusty rose, not the render. Pushing the render's
-      saturation to 2.6 only reached 0.424 while dropping neutral share to 30%, because multiplying
-      chroma on an already pale colour hits the ceiling. Fixing it properly needs ONE new source image
-      in a stronger pink, which costs credits, so it waits for the owner's word.
+## Owner decision, not a task
+
+**The dryer's pink is pale and I am deliberately not fixing it.** Its coloured pixels measure
+saturation 0.412 against Airbnb's 0.707, on frame 1 at 180x162 with transparent pixels excluded. The
+ceiling is in the source image, a dusty rose, not in the render: pushing the render's saturation pass
+to 2.6 only reached 0.424 while dropping neutral share from 59% to 30%, because multiplying chroma on
+an already pale colour runs into the channel ceiling. The barber has no such problem, its terracotta
+was saturated at source and lands at 0.785.
+
+Fixing it properly needs ONE regenerated source image in a stronger pink. The owner said this session,
+verbatim, "stop using the credit so much", so that generation waits for his explicit word rather than
+being spent on my own initiative.
 
 ## The set problem, and the answer the reference already gives
 
@@ -154,3 +161,48 @@ Why this beats the current direction:
 
 The cost, stated plainly: a bare chair is colder than a chair with someone in it. Airbnb pays that same
 price and buys it back with warm colour and soft light, which is exactly the lever S3 is about.
+
+---
+
+# Round 4 (2026-07-31): the dryer colour, and per-icon personality
+
+Owner: the chair is fine. The blow dryer is wrong, all beige and washed out, make it normal. And each
+Airbnb icon has its own personality on top of the rotation, the house tree moves, the balloon has
+something cloudy, the bell shakes. Keep the rotation everywhere and add per-icon motion.
+
+## He is right, and here is the measurement
+
+Split each captured Airbnb clip into an upper and a lower region and compared per-frame pixel change in
+each. Frames from `public/_pixel-refs/airbnb/icons-motion/frames/`, 180x162, all 51 frames.
+
+| clip | region | moves from | moves until |
+|---|---|---|---|
+| house-twirl | the tree, upper right | 200 ms | **1400 ms** |
+| house-twirl | the house body | 200 ms | **1000 ms** |
+| balloon-twirl | canopy | 233 ms | 1667 ms |
+| balloon-twirl | basket | 233 ms | 1667 ms, with a long low tail after the canopy goes quiet |
+| consierge-twirl | dome | 200 ms | 1600 ms |
+| consierge-twirl | base | 233 ms | 1600 ms |
+
+**The rule this reveals:** the turn is shared by the whole set, and then ONE part keeps moving after the
+body has settled. The house's tree carries **400 ms of sway past the house stopping**. The balloon's
+basket swings on under the canopy. The bell has no independent part and is the plain one, which is
+useful: it proves not every icon needs a secondary motion, so a plain barber chair is legitimate.
+
+## Spec for our set
+
+- **Barber chair**: the turn only. It is our bell, the plain member of the family.
+- **Blow dryer**: the turn, plus air puffing from the nozzle that starts during the turn and continues
+  about 400 ms after the body settles, mirroring the house tree's overhang exactly.
+- Anything added later gets at most one moving part, and it outlives the turn rather than competing
+  with it.
+
+## Status
+
+- [x] Verified the personality claim against the captured frames rather than taking it on trust.
+  - verified: numbers above, measured this turn from the stored frame sets.
+- [x] Dryer colour regeneration authorised by the owner ("make it fucking normal") and requested: one
+      image, `count: 1`, strong saturated coral pink instead of dusty rose. Job eeafa1d8.
+- [ ] Re-mesh, re-render and re-encode the dryer on the new source.
+- [ ] Build the nozzle air puff into `scripts/capture/turntable-render.mjs` as an optional emitter with
+      its own timing, so it can outlive the body settle by the measured 400 ms.
