@@ -159,9 +159,14 @@
      the pill floats over the cards without any rule between them. */
   .sa-band { position: sticky; top: 0; z-index: 55; padding: 4px 0 0;
     background: rgba(255,255,255,calc(1 - var(--p, 0))); }
+  /* overflow-y, NOT the shorthand. `overflow: hidden` here was overriding the overflow-x: auto
+     these rows declare, so the category row could not be swiped sideways at all: measured
+     scrollWidth 791 against clientWidth 390, meaning Spa, Walk-in and Inspo were unreachable.
+     The collapse only ever needed to clip VERTICALLY (that is what max-height animates). */
   .sa-band .sa-catscroll,
   .sa-band .sa-tools {
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
     max-height: calc(70px * (1 - var(--p, 0)));
     opacity: calc(1 - var(--p, 0));
     padding-top: calc(12px * (1 - var(--p, 0)));
@@ -522,8 +527,20 @@
      The default (auto) is correct and always was: the browser routes a sideways drag to the rail
      and a vertical drag to the page, by gesture direction, and keeps pinch-zoom. The lesson is
      that the property was never the problem, so the right amount of it is none. */
-  .sa-rail { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none;
-    padding: 0 0 4px; scroll-snap-type: x proximity; }
+  /* THE ACTUAL CAUSE of "I have to scroll a lot lot to get to the bottom", measured.
+     overflow-x: auto ALONE does not make a horizontal-only scroller. Per the CSS spec, when one
+     overflow axis is not visible, the other computes from visible to AUTO. So every rail was a
+     scroll container in BOTH directions, and the four of them cover 45% of the viewport. A wheel
+     or trackpad gesture over a rail targets the RAIL first, and the browser then has to decide to
+     chain the leftover vertical delta up to the page. That chaining, with scroll-snap on top, is
+     the friction he felt: his own panel logged 1717 wheel events to travel 868px.
+     overflow-y: hidden makes them genuinely horizontal-only, so a vertical gesture goes straight
+     to the page with nothing to chain through.
+     Note this is also why touch-action was the wrong tool earlier: touch-action is not consulted
+     for wheel or trackpad at all, so it could never have fixed the input he actually uses. */
+  .sa-rail { display: flex; gap: 12px; overflow-x: auto; overflow-y: hidden;
+    scrollbar-width: none; padding: 0 0 4px; scroll-snap-type: x proximity;
+    overscroll-behavior-x: contain; }
   .sa-rail::-webkit-scrollbar { display: none; }
   .sa-railcard { flex: 0 0 auto; width: calc((100vw - 44px) / 1.5); scroll-snap-align: start;
     cursor: pointer; }
