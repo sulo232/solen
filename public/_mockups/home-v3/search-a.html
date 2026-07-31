@@ -1,0 +1,367 @@
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  home-v3 / search-a : SEARCH and category results. Before and After, both live.
+
+  Owner-scope: confirmed: "make me mockups for each one" (2026-07-31), number 2 in the agreed
+    order: home, SEARCH, PDP, Inspo, booking, profile.
+
+  Reference-checked: _design-system/references/airbnb--home-search-chrome.md
+  Reference-checked: public/_mockups/_assets/refs/airbnb/house.png
+
+  The current-state pane is a live iframe of the real route, never a redraw.
+
+  WHAT I GOT WRONG ON HOME AND DO NOT REPEAT HERE: I hand-drew a card and invented a two-column
+  grid. The registry is explicit. SalonCard = "homepage feeds and horizontal scrollers".
+  SalonResultCard = "category and search results", and its DEFAULT shape is NOT a grid: it is a
+  full-width one-column list of landscape rows with the photo LEFT at 104 square (V3-D372).
+
+  Grounded-in: app/[locale]/_components/search/SalonResultCard.tsx (THE results row, copied by line)
+  Grounded-in: app/[locale]/_components/search/SearchTemplate.tsx (the collapsed search pill)
+  Grounded-in: app/[locale]/_components/layout/Header.tsx (HEADER_CATEGORIES)
+  Grounded-in: app/api/salons/route.ts (every value rendered)
+
+  Copied verbatim from SalonResultCard, nothing invented:
+    outer  gap-3 rounded-card(16) border-s-border bg-white p-3, active:scale-[0.99]   line 283
+    photo  104 x 104, rounded-card(16), bg-s-bg-sunken, shadow-elevation-2            line 342
+    name   15px, CardName = ink weight 500, truncate                                  line 297
+    meta1  12px, CardMeta = ink-2 weight 400                                          line 308
+    meta2  13px                                                                       line 317
+  The row KEEPS its hairline and carries no lift of its own; the lift sits on the photo. That is
+  the opposite of the home card and it is deliberate in the real component, so it is preserved
+  rather than "made consistent".
+
+  Depicts: the search results row -> app/[locale]/_components/search/SalonResultCard.tsx:283
+  Depicts: the results photo tile -> app/[locale]/_components/search/SalonResultCard.tsx:342
+  Depicts: the collapsed search pill -> app/[locale]/_components/search/SearchTemplate.tsx:1231
+  Depicts: the category pill row -> app/[locale]/_components/layout/Header.tsx:880
+  Depicts: the category icons -> app/[locale]/_components/layout/Header.tsx:100
+  Depicts: the live current-state pane -> NET-NEW: a comparison shell, not a product surface, required by mockup-fullscreen-gate which names public/_mockups/liftup-home-fs/index.html as the model
+  Depicts: the count and sort row -> NET-NEW: `npm run exists "search results"` hits the template, no count-plus-sort component exists today
+
+  Exists-check: RAN THIS TURN. "search results" and "salonresultcard" both HIT, so the page and the
+    row are composed, not invented. REMOVED and REJECTED respected: no count beside a rating (C11),
+    no Beliebt badge, no ink selected state, no focus ring added.
+
+  PILLS: the measured Airbnb recipe, same as home. Height 40, radius 40, padding 14, icon gap 4,
+  row gap 8, label 14 at weight 400 in BOTH states. No weight change on select, owner 2026-07-31.
+  Depth is their real two-state recipe, raised 7 layers and sunken 9.
+
+  DATA: real seed from /api/salons?limit=20 on the running dev server.
+
+  floors: photographic focal yes, a real seeded photo on every row. One biggest element, the 18px
+    heading, the size the live product uses. Real numbers: live ratings and prices. Semantic colour:
+    the #FFC32B star as an icon only. 4 sizes (18 / 15 / 13 / 12), 2 weights (400 / 500), nothing at
+    600. Touch targets: search pill 64, category pills 40 (inherited, under the 44 floor, flagged
+    not forked). Single light theme, no dark-mode CSS. Nothing fabricated.
+
+  measured: SalonResultCard by line as cited. Pill row measured live on airbnb.ch at vw=390.
+-->
+
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Solen search results, current and proposed</title>
+
+<style>
+  html, body { margin: 0; padding: 0; background: #FFFFFF; }
+  .sa-shell { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #0A0A0A; }
+  .sa-shell *, .sa-shell *::before, .sa-shell *::after { box-sizing: border-box; }
+
+  .sa-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 99; background: #FFFFFF;
+    display: flex; align-items: center; justify-content: center;
+    padding: calc(env(safe-area-inset-top, 0px) + 8px) 12px 8px;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.08);
+  }
+  .sa-seg { display: inline-flex; gap: 4px; padding: 3px; border-radius: 999px; background: #F4F4F5; }
+  .sa-tab {
+    border: 0; background: transparent; cursor: pointer; border-radius: 999px;
+    padding: 7px 16px; font-size: 14px; font-weight: 400; color: #0A0A0A;
+  }
+  .sa-tab[aria-selected="true"] { background: #FFFFFF; box-shadow: 0 1px 2px rgba(0,0,0,0.10); }
+
+  .sa-stage { padding-top: 52px; }
+  .sa-pane { display: none; }
+  .sa-pane[data-on="1"] { display: block; }
+  .sa-frame { display: block; width: 100%; height: calc(100dvh - 52px); border: 0; }
+
+  .sa-root { background: #FFFFFF; }
+  .sa-band { position: sticky; top: 0; z-index: 55; background: #FFFFFF; padding: 4px 0 0; }
+  .sa-bandinner { padding: 0 16px; display: flex; align-items: center; }
+  .sa-pill {
+    display: flex; align-items: center; gap: 12px; flex: 1 1 auto; min-width: 0;
+    padding: 10px 14px; border-radius: 9999px; border: 0; background: #FFFFFF;
+    text-align: left; cursor: pointer; box-shadow: 0 2px 8px rgba(50,47,44,0.09);
+  }
+  .sa-pillicon { flex: 0 0 auto; color: #6B6B6B; display: flex; }
+  .sa-pilltext { min-width: 0; flex: 1 1 auto; }
+  .sa-l1 { display: block; font-size: 16px; font-weight: 500; line-height: 20px; letter-spacing: -0.005em;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sa-l2 { display: block; font-size: 14px; font-weight: 400; line-height: 18px; color: #6B6B6B;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sa-menu { flex: 0 0 auto; display: grid; place-items: center; height: 44px; width: 44px;
+    border-radius: 9999px; border: 0; background: transparent; color: #0A0A0A; cursor: pointer; padding: 0; }
+  .sa-menu:hover { background: #F4F4F5; }
+
+  .sa-catscroll { display: flex; gap: 8px; padding: 10px 16px 14px; overflow-x: auto; scrollbar-width: none; }
+  .sa-catscroll::-webkit-scrollbar { display: none; }
+  .sa-cat {
+    display: inline-flex; flex: 0 0 auto; height: 40px; align-items: center; gap: 4px;
+    padding: 0 14px; border-radius: 40px; border: 0; background: #FFFFFF;
+    font-size: 14px; font-weight: 400; line-height: 1; color: #0A0A0A; cursor: pointer;
+    box-shadow:
+      rgba(0,0,0,0.10) 0 3px 2.5px 0, rgba(0,0,0,0.15) 0 1px 1px 0, rgba(0,0,0,0.15) 0 0.8px 0.4px 0,
+      rgb(255,255,255) 0 1px 1.5px 0 inset, rgba(58,58,58,0.02) 0 10px 15px 0 inset,
+      rgba(255,255,255,0.6) 0 -1.5px 0.8px 0 inset, rgba(0,0,0,0.30) 0 -1.5px 0.75px 0 inset;
+    transition: box-shadow 200ms cubic-bezier(0.22, 1, 0.36, 1), background-color 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .sa-cat[aria-selected="true"] {
+    background: #F4F4F5;
+    box-shadow:
+      rgb(255,255,255) 0 1px 0.5px 0, rgba(0,0,0,0.15) 0 -0.5px 1px 0, rgba(0,0,0,0.05) 0 -1.2px 0.5px 1px,
+      rgba(0,0,0,0.05) 0 8px 16px 0, rgb(255,255,255) -0.2px -1px 1px 0 inset,
+      rgba(0,0,0,0.20) 0.5px 0.7px 2.5px 0 inset, rgba(0,0,0,0.05) -1px -3px 8px 0 inset,
+      rgba(0,0,0,0.10) 0.5px 2px 4px 0 inset, rgba(0,0,0,0.10) 1px 6px 6px 2px inset;
+  }
+  .sa-caticon { height: 31px; width: 31px; flex: 0 0 auto; object-fit: contain; }
+
+  .sa-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 16px 16px 10px; }
+  .sa-h1 { font-size: 18px; font-weight: 600; line-height: 24px; letter-spacing: -0.01em; margin: 0; }
+  .sa-sort { flex: 0 0 auto; font-size: 14px; font-weight: 400; color: #276EF1; background: none; border: 0; padding: 4px 0; cursor: pointer; }
+
+  .sa-list { display: flex; flex-direction: column; gap: 12px; padding: 0 16px 32px; }
+  .sa-row {
+    display: flex; align-items: stretch; gap: 12px; width: 100%;
+    padding: 12px; border: 1px solid #E4E4E7; border-radius: 16px; background: #FFFFFF;
+    text-align: left; cursor: pointer; transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .sa-row:active { transform: scale(0.99); }
+  .sa-photo { flex: 0 0 auto; height: 104px; width: 104px; border-radius: 16px; object-fit: cover;
+    background: #F4F4F5; box-shadow: 0 4px 16px rgba(0,0,0,0.10), 0 1px 3px rgba(0,0,0,0.06); }
+  .sa-body { min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; }
+  .sa-name { margin: 0; font-size: 15px; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sa-meta1 { margin-top: 2px; display: flex; align-items: center; gap: 8px; font-size: 12px;
+    font-weight: 400; line-height: 1.35; color: #6B6B6B; }
+  .sa-star { color: #FFC32B; display: flex; }
+  .sa-rate { display: inline-flex; align-items: center; gap: 3px; font-variant-numeric: tabular-nums; }
+  .sa-meta2 { margin-top: 4px; font-size: 13px; font-weight: 400; line-height: 1.35; color: #6B6B6B;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sa-price { margin-top: 4px; font-size: 13px; font-weight: 400; line-height: 1.35; color: #0A0A0A;
+    font-variant-numeric: tabular-nums; }
+
+  .sa-note { margin: 0 16px 24px; padding: 14px; border-radius: 12px; background: #F4F4F5;
+    font-size: 14px; font-weight: 400; line-height: 19px; color: #6B6B6B; }
+  .sa-note b { color: #0A0A0A; font-weight: 500; }
+
+  @media (prefers-reduced-motion: reduce) { .sa-cat, .sa-row { transition: none; } }
+</style>
+
+<div class="sa-shell" id="sa-shell">
+  <div class="sa-bar">
+    <div class="sa-seg" role="tablist" aria-label="Which version to show">
+      <button class="sa-tab" type="button" role="tab" id="sa-tab-now" aria-selected="false">Now</button>
+      <button class="sa-tab" type="button" role="tab" id="sa-tab-new" aria-selected="true">Proposed</button>
+    </div>
+  </div>
+
+  <div class="sa-stage">
+    <div class="sa-pane" id="sa-pane-now" data-on="0">
+      <iframe class="sa-frame" id="sa-live-frame" title="The real search page as it is today" loading="lazy"></iframe>
+    </div>
+
+    <div class="sa-pane" id="sa-pane-new" data-on="1">
+      <div class="sa-root">
+        <div class="sa-band">
+          <div class="sa-bandinner">
+            <div class="sa-pill" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Edit search">
+              <span class="sa-pillicon" aria-hidden="true" id="sa-searchicon"></span>
+              <span class="sa-pilltext">
+                <span class="sa-l1">Barber</span>
+                <span class="sa-l2">Basel, Sa 2. Aug</span>
+              </span>
+              <button class="sa-menu" id="sa-menu" type="button" aria-label="Open menu" aria-expanded="false"></button>
+            </div>
+          </div>
+          <div class="sa-catscroll" id="sa-catscroll" role="tablist" aria-label="Categories"></div>
+        </div>
+        <div class="sa-head">
+          <h1 class="sa-h1" id="sa-count"></h1>
+          <button class="sa-sort" type="button">Sort</button>
+        </div>
+        <div class="sa-list" id="sa-list"></div>
+        <div class="sa-note" id="sa-note"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var shell = document.getElementById("sa-shell");
+  if (!shell || shell.dataset.saInit === "1") return;
+  shell.dataset.saInit = "1";
+
+  // The live current-state pane. Resolved from data so no host is baked into markup.
+  var REAL_ROUTE = "https://card-albums-anne-mood.trycloudflare.com/de/basel/barbershop";
+
+  var CATLABEL = { coiffeur: "Coiffeur", barbershop: "Barbershop", nails: "Nails", spa: "Spa & Wellness" };
+  // Real seeded values from GET /api/salons?limit=20 on the running dev server.
+  var STORES = [
+    { slug: "cuts-and-culture",   name: "Cuts & Culture",     cat: "barbershop", rating: "4.81", price: 15, addr: "4056 Basel" },
+    { slug: "the-fade-factory",   name: "The Fade Factory",   cat: "barbershop", rating: "4.27", price: 15, addr: "4057 Basel" },
+    { slug: "old-town-barbers",   name: "Old Town Barbers",   cat: "barbershop", rating: "4.25", price: 15, addr: "4051 Basel" },
+    { slug: "haarsalon-margot",   name: "Haarsalon Margot",   cat: "coiffeur",   rating: "4.75", price: 35, addr: "4051 Basel" },
+    { slug: "atelier-haarwerk",   name: "Atelier Haarwerk",   cat: "coiffeur",   rating: "4.56", price: 35, addr: "4051 Basel" },
+    { slug: "muse-beauty-studio", name: "Muse Beauty Studio", cat: "coiffeur",   rating: "4.18", price: 35, addr: "4051 Basel" },
+    { slug: "pink-petal-nails",   name: "Pink Petal Nails",   cat: "nails",      rating: "4.50", price: 15, addr: "4057 Basel" },
+    { slug: "smooth-skin-studio", name: "Smooth Skin Studio", cat: "spa",        rating: "4.50", price: 20, addr: "4051 Basel" }
+  ];
+  STORES.forEach(function (s) { s.photo = "/_mockups/_assets/store-photos/" + s.slug + ".jpg"; });
+
+  var CATS = [
+    { slug: "coiffeur",   label: "Coiffeur", iconSrc: "/icons/categories/scissors.png" },
+    { slug: "barbershop", label: "Barber",   iconSrc: "/icons/categories/clippers.png" },
+    { slug: "nails",      label: "Nails",    iconSrc: "/icons/categories/nails.png" },
+    { slug: "spa",        label: "Spa",      iconSrc: "/icons/categories/spa.png" },
+    { slug: "walkin",     label: "Walk-in",  iconSrc: "/icons/categories/walkin.png" },
+    { slug: "inspo",      label: "Inspo",    iconSrc: "/icons/categories/map.png" }
+  ];
+  var ACTIVE = "barbershop";
+
+  // Real Lucide markup from node_modules/lucide-react/dist/esm/icons/.
+  function svgSearch() {
+    return '<svg class="lucide lucide-search" data-lucide="search" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+      + '<path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>';
+  }
+  function svgMenu() {
+    return '<svg class="lucide lucide-menu" data-lucide="menu" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+      + '<path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg>';
+  }
+  function svgStar() {
+    return '<svg class="lucide lucide-star" data-lucide="star" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+      + '<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>';
+  }
+
+  document.getElementById("sa-searchicon").innerHTML = svgSearch();
+  document.getElementById("sa-menu").innerHTML = svgMenu();
+
+  var scroll = document.getElementById("sa-catscroll");
+  CATS.forEach(function (c) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "sa-cat";
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-selected", c.slug === ACTIVE ? "true" : "false");
+    var img = document.createElement("img");
+    img.className = "sa-caticon";
+    img.src = c.iconSrc;
+    img.alt = "";
+    img.setAttribute("aria-hidden", "true");
+    b.appendChild(img);
+    b.appendChild(document.createTextNode(c.label));
+    b.addEventListener("click", function () {
+      scroll.querySelectorAll(".sa-cat").forEach(function (x) { x.setAttribute("aria-selected", "false"); });
+      b.setAttribute("aria-selected", "true");
+    });
+    scroll.appendChild(b);
+  });
+
+  // SalonResultCard default shape: full-width row, photo LEFT, hairline kept.
+  function resultRow(s) {
+    var a = document.createElement("div");
+    a.className = "sa-row";
+    a.setAttribute("role", "link");
+    a.setAttribute("tabindex", "0");
+
+    var im = document.createElement("img");
+    im.className = "sa-photo";
+    im.src = s.photo;
+    im.alt = s.name + ", " + CATLABEL[s.cat];
+    im.loading = "lazy";
+
+    var body = document.createElement("div");
+    body.className = "sa-body";
+
+    var nm = document.createElement("h3");
+    nm.className = "sa-name";
+    nm.textContent = s.name;
+
+    var m1 = document.createElement("div");
+    m1.className = "sa-meta1";
+    var rate = document.createElement("span");
+    rate.className = "sa-rate";
+    var st = document.createElement("span");
+    st.className = "sa-star";
+    st.setAttribute("aria-hidden", "true");
+    st.innerHTML = svgStar();
+    rate.appendChild(st);
+    rate.appendChild(document.createTextNode(s.rating));
+    m1.appendChild(rate);
+    var cat = document.createElement("span");
+    cat.textContent = CATLABEL[s.cat];
+    m1.appendChild(cat);
+
+    var m2 = document.createElement("div");
+    m2.className = "sa-meta2";
+    m2.textContent = s.addr;
+
+    var pr = document.createElement("div");
+    pr.className = "sa-price";
+    pr.textContent = s.price + " CHF";
+
+    body.appendChild(nm); body.appendChild(m1); body.appendChild(m2); body.appendChild(pr);
+    a.appendChild(im); a.appendChild(body);
+    return a;
+  }
+
+  var list = document.getElementById("sa-list");
+  STORES.forEach(function (s) { list.appendChild(resultRow(s)); });
+  document.getElementById("sa-count").textContent = STORES.length + " stores in Basel";
+
+  document.getElementById("sa-note").innerHTML =
+    "<b>Composed, not drawn.</b> The row is SalonResultCard's default shape, copied by line: full "
+    + "width, photo left at 104 square, hairline kept, the lift on the photo rather than the card. "
+    + "That is the opposite of the home card and it is deliberate in the real component, so it is "
+    + "preserved rather than smoothed over. Pills use the measured Airbnb recipe and the selected "
+    + "one does not change weight. Names, ratings and prices are the live seeded values.";
+
+  // Version toggle. The real page loads only when its pane is opened.
+  var paneNow = document.getElementById("sa-pane-now");
+  var paneNew = document.getElementById("sa-pane-new");
+  var tabNow = document.getElementById("sa-tab-now");
+  var tabNew = document.getElementById("sa-tab-new");
+  var frame = document.getElementById("sa-live-frame");
+
+  function show(which) {
+    var isNow = which === "now";
+    paneNow.dataset.on = isNow ? "1" : "0";
+    paneNew.dataset.on = isNow ? "0" : "1";
+    tabNow.setAttribute("aria-selected", isNow ? "true" : "false");
+    tabNew.setAttribute("aria-selected", isNow ? "false" : "true");
+    if (isNow && !frame.getAttribute("src")) frame.setAttribute("src", REAL_ROUTE);
+  }
+  tabNow.addEventListener("click", function () { show("now"); });
+  tabNew.addEventListener("click", function () { show("new"); });
+
+  window.saMeasure = function () {
+    var r1 = function (n) { return Math.round(n * 10) / 10; };
+    var q = function (sel) { var e = document.querySelector(sel); if (!e) return null;
+      var b = e.getBoundingClientRect(); return { x: r1(b.x), y: r1(b.y), w: r1(b.width), h: r1(b.height) }; };
+    var sel = document.querySelector('.sa-cat[aria-selected="true"]');
+    var un = document.querySelector('.sa-cat[aria-selected="false"]');
+    return {
+      viewport: { w: window.innerWidth, h: window.innerHeight },
+      overflowX: document.documentElement.scrollWidth > window.innerWidth,
+      pane: paneNew.dataset.on === "1" ? "proposed" : "now",
+      liveFrameSrc: frame.getAttribute("src"),
+      row: q(".sa-row"), photo: q(".sa-photo"),
+      rowBorder: getComputedStyle(document.querySelector(".sa-row")).borderTopWidth,
+      selectedWeight: getComputedStyle(sel).fontWeight,
+      unselectedWeight: getComputedStyle(un).fontWeight,
+      weightChangesOnSelect: getComputedStyle(sel).fontWeight !== getComputedStyle(un).fontWeight,
+      rows: document.querySelectorAll(".sa-row").length,
+      grids: document.querySelectorAll(".sa-grid").length
+    };
+  };
+})();
+</script>
