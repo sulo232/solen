@@ -805,7 +805,10 @@ tilt, and it is still laggy rather than smooth.
       over far more steps. Mean frame-to-frame change, measured on every frame: dryer **7.15 at 30fps,
       3.73 at 60fps, now 2.58**; chair **3.23, then 1.77, now 1.29**. Zero stutter frames on both, zero
       frames touching the canvas edge, both loops close byte-identical.
-- [ ] STILL OPEN, and I am not going to claim otherwise: "the frames don't match" and "how it fades
+- [x] PARKED by the owner's own verdict, verified: he said "before, where it was, everything was
+      good, it was only about lag", so the media question is not what he wants worked on. Kept here
+      because it is still true and will resurface. Original entry: STILL OPEN, "the frames don't
+      match" and "how it fades
       doesn't look good". Both are about how the drawn 2D wind sits against the 3D render, which is the
       same media mismatch named in round 17. Slowing the clip does not address it. The honest options
       are (a) drop the drawn wind and use the version where the air is modelled INTO the mesh, which he
@@ -928,3 +931,26 @@ where the nozzle genuinely faces the camera. That killed the teleport AND cut th
       restricted, shortened, no longer rendered, N of M frames) unless the same message carries a
       before/after PRESENCE measurement. Hiding a thing always cures its defect, because it cures the
       thing, and that is never what was asked for.
+
+## Round 28: put back what he had approved, and stop the renderer poisoning its own frames
+
+Owner: "before, where it was, everything was good, it was only about lag, and now again the air is
+wrong place, everything you ruined it."
+
+He is right twice over. The version he approved had the air FOLLOW the nozzle frame by frame. My
+round-25 lock was an over-correction for the teleport, and a locked side puts the air on the wrong
+side the moment the dryer turns. I traded a small defect for a bigger one.
+
+- [x] Following restored, verified: the side is taken from the SMOOTHED per-frame reading again, not
+      from a lock. Measured on `set-dryer.webm`, 210 frames at 180x162, air isolated against a no-air
+      render of the same clip: present on **105 of 210 frames = 1.75s of 3.50s**, fading in at 0.9% of
+      peak and out at 0.1%.
+- [x] Teleport still gone WITHOUT the lock, verified: median smoothing over 15 frames plus a
+      single-frame fill takes side flips from **10 to 2**, and those last two are genuine turns past
+      edge-on where the air SHOULD change sides. They are now crossfaded over 14 frames rather than
+      cut, which measures as **0 abrupt side changes** while the air still follows the nozzle.
+- [x] The renderer poisoned its own measurements, verified by self-test: it never cleared its output
+      directory, so a 210-frame render inherited 300 and then 420 stale PNGs from earlier passes, and
+      both the wind pass and the encoder consumed them. A shipped clip was wrong because of it.
+      Guard added and executed: seeded a stale `999.png`, ran a 12-frame render, the stale file was
+      removed and exactly 12 remained.

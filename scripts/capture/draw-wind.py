@@ -166,6 +166,19 @@ def main():
     # behind it is a drawn-icon convention, not a physical claim.
     win_from, win_to = move_from, move_to
 
+    # The air SHOULD change sides when the dryer genuinely turns past edge-on. What it must not do
+    # is teleport. Smoothing alone takes the flips from 10 to 2; these last two are real turns, so
+    # dim the air across them instead of locking it. It thins out as the nozzle swings through and
+    # comes back on the new side, which reads as the jet turning with the dryer rather than jumping.
+    changes = [i for i in range(1, len(smoothed))
+               if smoothed[i] is not None and smoothed[i - 1] is not None
+               and smoothed[i] != smoothed[i - 1]]
+    FADE = 14
+    cross = []
+    for i in range(len(smoothed)):
+        near = min((abs(i - c) for c in changes), default=10 ** 6)
+        cross.append(smoothstep(min(1.0, near / FADE)))
+
     for i, name in enumerate(files):
         path = os.path.join(args.frames, name)
         im = Image.open(path).convert("RGBA")
@@ -178,11 +191,12 @@ def main():
 
         if i < win_from or i >= win_to:
             continue
-        np_ = nozzle_point(a, "left" if locked < 0 else "right")
+        side_now = smoothed[i] if smoothed[i] is not None else locked
+        np_ = nozzle_point(a, "left" if side_now < 0 else "right")
         if np_ is None:
             continue
         nx, ny, d = np_
-        d = locked                                    # never let the side move
+        d = side_now                                  # FOLLOW the nozzle, smoothed, not locked
         W, _ = im.size
 
         overlay = Image.new("RGBA", im.size, (0, 0, 0, 0))
@@ -212,7 +226,7 @@ def main():
             if local <= 0 or local >= 1:
                 continue
             # morph in, morph out, both slow enough that no single frame carries a visible step
-            alpha_f = smoothstep(local / 0.30) * smoothstep((1.0 - local) / 0.62)
+            alpha_f = smoothstep(local / 0.30) * smoothstep((1.0 - local) / 0.62) * cross[i]
             if alpha_f <= 0.002:
                 continue
             dist = near + (far - near) * local * 0.55

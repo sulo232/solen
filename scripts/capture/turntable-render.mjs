@@ -16,7 +16,7 @@
 // Usage: node scripts/capture/turntable-render.mjs <model.glb> <outdir>
 //   [--frames 51] [--fps 30] [--size 180x162] [--hold-in 6] [--hold-out 12] [--turns 1]
 import { chromium } from "playwright";
-import { existsSync, mkdirSync, writeFileSync, copyFileSync } from "node:fs";
+import { existsSync, mkdirSync, writeFileSync, copyFileSync, readdirSync, rmSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -98,6 +98,11 @@ const W = Number(m[1]), H = Number(m[2]);
 
 const outdir = resolve(outdirArg);
 mkdirSync(outdir, { recursive: true });
+// A shorter render must never inherit a longer one's leftovers. It silently lengthens the clip and
+// poisons every measurement taken from the directory afterwards. This bit twice: a 210-frame render
+// sat on top of 300 and then 420 stale files, and both the wind pass and the encoder consumed them,
+// so a shipped clip was wrong.
+for (const f of readdirSync(outdir)) if (f.endsWith(".png")) rmSync(join(outdir, f));
 
 // The four ways a measurement lies: bad status, landed somewhere else, error UI at 200, nothing
 // rendered. All four are refusals, never results.
