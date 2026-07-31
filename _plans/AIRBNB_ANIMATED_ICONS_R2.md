@@ -893,7 +893,9 @@ Owner: "now the air just cuts out in the middle of nowhere."
       and death inside that run. Measured on the rendered clip against a no-air pass, all 210 frames:
       the air's alpha weight **starts at 1.6% of its peak and ends at 0.5%**, so it fades in and out
       rather than being cut. **0 side flips**, one side only.
-- [ ] THE CONSTRAINT, and it is a real fork rather than a bug: the dryer does a full 360, so its
+- [x] SUPERSEDED by round 27, verified: commit d64a1a069 chose option (c), the air rides the locked
+      near side for the whole moving window, and presence went back to 1.82s of 3.50s. Original entry
+      kept: THE CONSTRAINT was a real fork rather than a bug. The dryer does a full 360, so its
       nozzle only faces the camera-side for part of the turn. The honest window is **29 frames, 0.48s
       of a 3.5s clip**. Widening it costs the clean ending: allowing a 10-frame tolerance stretched
       the air to 0.58s but pushed the final frame from 0.5% of peak to 1.7%, which is a cut again.
@@ -916,10 +918,12 @@ where the nozzle genuinely faces the camera. That killed the teleport AND cut th
       clip: **present on 109 of 210 frames = 1.82s of 3.50s**, up from 0.48s. **0 side flips**, one
       side only. Fades in at 0.9% of peak and out at 0.4%, so no cut. Per-frame change mean 1526,
       max 4393, ratio 2.9x.
-- [x] Also found and fixed a real trap: the frames directory was never cleared between runs, so a
+- [x] A real trap found and fixed, verified: commit d64a1a069. The frames directory was never
+      cleared between runs, so a
       210-frame render left 420 files behind from earlier 150 and 75-frame passes, and draw-wind was
       painting onto stale frames. That is why one run reported "241 of 417 frames".
-- [x] HARDENED: `~/.claude/hooks/no-regression-by-fix-gate.py`, self-test **7/7**. It blocks a closing
+- [x] HARDENED, verified: commit d64a1a069, `~/.claude/hooks/no-regression-by-fix-gate.py`,
+      self-test **7/7** executed this turn. It blocks a closing
       message that reports a fix whose mechanism is the thing appearing LESS (only shows during X,
       restricted, shortened, no longer rendered, N of M frames) unless the same message carries a
       before/after PRESENCE measurement. Hiding a thing always cures its defect, because it cures the
