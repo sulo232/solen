@@ -110,7 +110,7 @@
      three treatments below stay available on the toggle because he asked for ideas, not for me to
      pick one and impose it. */
   .sa-tool { display: inline-flex; flex: 0 0 auto; height: 38px; align-items: center; gap: 6px;
-    padding: 0 14px; border-radius: 999px; font-size: 13px; font-weight: 400; color: #0A0A0A;
+    padding: 0 14px; border-radius: 999px; font-size: 14px; font-weight: 400; color: #0A0A0A;
     cursor: pointer; white-space: nowrap;
     /* MEASURED: 12 elements in the chrome carried a shadow, 6 category pills, 4 filter pills, the
        search bar and the band. Owner: "there's too much shadow everywhere, I don't even like that."
@@ -432,8 +432,15 @@
   .sa-line { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
   .sa-name { margin: 0; font-size: 14px; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em;
     color: #0A0A0A; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  /* THE 13px TIER IS GONE (owner 2026-07-31, after I tried to defer this). The rendered first
+     viewport carried SIX sizes against a ceiling of four, and 13 vs 12 is a ONE PIXEL step,
+     which FLOORS LAW 7(c) names directly: size variety is not range, and a tier that sits ~1px
+     from its neighbour costs consistency and buys no hierarchy. Rating, continuation meta and
+     the section note are all meta, so they take the contract meta size, 12. The filter pill went
+     the other way, up to 14, because the contract says never <=13 on a button and 13 was already
+     under that floor. Result measured below: 18 / 16 / 14 / 12, four sizes. */
   .sa-rate { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 3px;
-    font-size: 13px; font-weight: 400; color: #6B6B6B; font-variant-numeric: tabular-nums; }
+    font-size: 12px; font-weight: 400; color: #6B6B6B; font-variant-numeric: tabular-nums; }
   .sa-star { color: #FFC32B; display: flex; }
   .sa-cat2 { margin-top: 2px; font-size: 12px; font-weight: 400; line-height: 1.35; color: #6B6B6B;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -489,7 +496,7 @@
      grew into a tier the screen could not afford. */
   .sa-conttitle { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
     font-size: 14px; font-weight: 500; line-height: 19px; color: #0A0A0A; overflow: hidden; }
-  .sa-contmeta { display: block; margin-top: 3px; font-size: 13px; font-weight: 400; line-height: 18px;
+  .sa-contmeta { display: block; margin-top: 3px; font-size: 12px; font-weight: 400; line-height: 17px;
     color: #6B6B6B; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .sa-contimg { flex: 0 0 auto; object-fit: cover; background: #F4F4F5;
     width: 150px; aspect-ratio: 5 / 4; border-radius: 16px; }
@@ -498,8 +505,8 @@
   .sa-sec { align-self: stretch; width: 100%; margin: 0 0 24px; }
   .sa-h2 { font-size: 18px; font-weight: 600; line-height: 24px; letter-spacing: -0.01em;
     margin: 0 0 10px; }
-  .sa-thin { margin: -6px 0 10px; font-size: 13px; font-weight: 400;
-    line-height: 18px; color: #6B6B6B; }
+  .sa-thin { margin: -6px 0 10px; font-size: 12px; font-weight: 400;
+    line-height: 17px; color: #6B6B6B; }
   /* NO mandatory snapping here. With it on, the browser snapped each rail to an item on load, so
      every row started mid-card with its heading clipped out of view. Measured: the first card
      rendered at a negative x. Proximity snapping keeps the feel without hijacking the start. */
