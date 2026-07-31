@@ -86,7 +86,24 @@ Your purpose is just UI changes. Nothing else. And integrate/wire everything as 
       14px/400, border 0px, background transparent, position relative; 2 overlay spans per pill,
       raised 7 shadow layers, sunken 9; icon 31x31; press fires (transform none -> matrix on
       pointerdown, back after). commit 7a7bac321.
-- [ ] I2. Search bar chrome onto the real header (single centred label, no invented date line).
+- [x] **I2. Search bar chrome onto the real header (single centred label, no invented date line).**
+      verified: `SearchTemplate.tsx` is the real owner of this pill (curl-confirmed: its
+      `rounded-pill` classes render on /de/coiffeur, /de/barbershop, /de/nails, /de/spa,
+      /de/search; ZERO matches on /de). Applied search-a.html's `.sa-pill`/`.sa-band` chrome:
+      constant `shadow-[0_2px_8px_0_rgba(0,0,0,0.07)]` (was 0 at rest, scroll-driven to
+      `0 10px 30px rgba(0,0,0,0.13)`); band bottom padding constant 8px (was 0 at rest,
+      scroll-driven 0->8, collapsed the `useTransform` range to `[8,8]`, mechanism untouched);
+      first line 14px->16px; the date/city second line deleted outright. Padding 10/14,
+      gap 12, radius 9999 (`rounded-pill`), `border-s-border`, `bg-white`, band inner padding
+      16px (`px-4`) already matched the mockup, no change needed. Category-surface label
+      (`activeCategory` lookup) and placeholder (`tChrome("searchPlaceholder")` = "Suchen",
+      real i18n key, not the mockup's English "Start your search") were both already correct,
+      left untouched. **CONTRADICTION SURFACED, not silently resolved:** the task's premise
+      that /de shows this pill "under the category row" is false , /de renders neither
+      `HEADER_CATEGORIES` (route-gated off home by `categorySegment`) nor this pill; home's
+      search UI is the structurally different 3-segment Hero `SearchBar.tsx` (dynamic-island),
+      which the mockup does not model. Nothing invented there; flagged for the next decision.
+      Commit pending (not yet committed by the coder sub-agent, orchestrator to verify + commit).
 - [ ] I3. Home rails: Top on Solen / Nearby / Available this week / per-category Top rows.
 - [ ] I4. Recently viewed row.
 - [ ] I5. Browse-by-looks 4-across picture row.

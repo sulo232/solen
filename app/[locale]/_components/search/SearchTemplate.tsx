@@ -827,7 +827,10 @@ export default function SearchTemplate({
   }, [scrollProgress, reduce]);
   // mockup-ok: same B6 mechanics fix, values below match the prior locked end-states.
   const bandPaddingTop = useTransform(scrollProgress, [0, 1], [4, 12]);
-  const bandPaddingBottom = useTransform(scrollProgress, [0, 1], [0, 8]);
+  // I2 mockup-ok (public/_mockups/home-v3/search-a.html .sa-band, "padding 4px 0 8px"):
+  // bottom was 0 at rest, approved chrome wants a constant 8. Range collapsed to
+  // [8, 8] so the value matches without touching the scrollProgress mechanism itself.
+  const bandPaddingBottom = useTransform(scrollProgress, [0, 1], [8, 8]); // mockup-ok
   const pillShadowOpacity = useTransform(scrollProgress, [0, 1], [0, 0.13]);
   const pillBoxShadow = useTransform(
     pillShadowOpacity,
@@ -1243,22 +1246,23 @@ export default function SearchTemplate({
             aria-haspopup="dialog"
             className={cn(
               "flex w-full cursor-pointer items-center gap-3 rounded-pill border border-s-border bg-white px-3.5 text-left",
-              // V3-D421L (council 3/3): FLAT at rest, no resting/hover shadow on white
-              // chrome (CONTROL_ELEVATION rule 3). The pill lifts ONLY when pinned, i.e.
-              // floating over scrolled content (the one earned shadow, now driven
-              // continuously by the `style.boxShadow` motionValue below, B6 fix).
+              // I2 mockup-ok (public/_mockups/home-v3/search-a.html .sa-pill --lift): the
+              // V3-D421L "flat at rest, lift only when pinned" scroll-driven shadow is
+              // replaced by the approved chrome's constant elevation, so the pill always
+              // carries the same outline + shadow pair (the search bar is "the way in").
+              "shadow-[0_2px_8px_0_rgba(0,0,0,0.07)]", // mockup-ok
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               "py-2.5", // V3-D421d: keep the pinned bar the SAME size as normal (no shrink, owner)
             )}
-            // B6: continuous shadow-opacity morph (replaces the old scrolled &&
-            // "max-md:!shadow-[...]" class toggle) so the float-lift eases in/out
-            // instead of popping on at the old 60px threshold. `scrollProgress` itself
-            // snaps (no ramp) under prefers-reduced-motion, so this style always applies.
-            style={{ boxShadow: pillBoxShadow }}
+            // I2 mockup-ok: dynamic boxShadow style removed, the shadow-[...] class above
+            // now carries the constant approved value. `pillBoxShadow`/`pillShadowOpacity`
+            // stay declared (untouched state per the I2 brief) but are no longer consumed here.
           >
             <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
             <span className="min-w-0 flex-1">
-              <span className="block truncate font-body text-[14px] font-medium text-s-ink">
+              {/* I2 mockup-ok (search-a.html .sa-l1): 14px -> 16px, the approved chrome's
+                  first-line size. */}
+              <span className="block truncate font-body text-[16px] font-medium text-s-ink">
                 {/* A2/Model B (2026-07-04): category + query are independent, so line 1 shows
                     BOTH when both are set, not one clobbering the other. */}
                 {[activeCategory ? CATEGORY_PILLS.find((c) => c.slug === activeCategory)?.label : null, q]
@@ -1274,23 +1278,8 @@ export default function SearchTemplate({
                   {" "}{cityName}
                 </span>
               </span>
-              {/* line 2 collapses on scroll */}
-              <span
-                className={cn(
-                  "block truncate font-body text-[12.5px] text-s-ink-2 overflow-hidden transition-all duration-300 ease-glide",
-                  "max-h-5 opacity-100", // V3-D421d: keep line 2 (city/date) visible when pinned
-                )}
-              >
-                {date ? formatDateLabel(date, locale) : null}
-                {date ? <span className="text-s-ink-2"> </span> : null}
-                {cityName}
-                {period && (
-                  <>
-                    <span className="text-s-ink-2"> </span>
-                    {periodLabel(period, tx)}
-                  </>
-                )}
-              </span>
+              {/* I2 mockup-ok (search-a.html .sa-l2, "THE SECOND LINE MUST GO"): the
+                  date/city subtitle is removed. One line only, per the approved chrome. */}
             </span>
             <span
               role="button"
