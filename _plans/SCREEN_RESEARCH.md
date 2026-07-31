@@ -286,3 +286,21 @@ All seven are IN FLIGHT in workflow run `wf_be365c3b-019`, dispatched 2026-07-31
 Two owner rulings are baked into the brief and must not be re-litigated: home STAYS at /de with the
 landing page at /de/discover, and the landing page is EXEMPT from FLOORS LAW 2's hero ban, his call,
 dated 2026-07-31.
+
+---
+
+## OWNER ASK, 2026-07-31 (later): rebuild home on the Airbnb header structure
+
+- [ ] J1. Header = search bar on TOP, category icons BELOW it (Airbnb structure)
+- [ ] J2. Icons COLLAPSE into the bar as you scroll
+- [ ] J3. Remove "Für dich" and "Top auf Solen" sections
+- [ ] J4. Add "popular in <city>" (Barber in Zurich, etc) from REAL data, not hardcoded
+- [ ] J5. Add a logged-in personal section driven by Hair DNA
+- [ ] J6. Add a cities section
+- [ ] J7. Keep the existing footer
+- [ ] J8. Give IDEAS for where the hamburger menu goes, do not just pick one
+- [ ] J9. Reuse OUR existing search bar design, refreshed with Airbnb-clean shadows
+- [ ] J10. Several directions, not one. Do not invent; ground everything.
+
+Airbnb reference measured from his screenshot: search button 342x56, full-width pill, heavy
+white surface with a soft shadow, category tabs directly beneath, tabs collapse on scroll.
