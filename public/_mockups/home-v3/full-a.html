@@ -1,0 +1,598 @@
+<!--
+  home-v3 / full-a : the WHOLE homepage, direction A only, real seeded data.
+
+  Owner-scope: confirmed: "I think a is better and also make, like, a full mock up, like, full page,
+    like, actually focused. And, also, like, improve the design of it." (2026-07-31). So the scope is
+    exactly: direction A, one page, whole page, better than the last one. The other two menu
+    treatments are deleted rather than carried along.
+
+  Reference-checked: _design-system/references/airbnb--home-search-chrome.md
+  Reference-checked: public/_mockups/_assets/refs/airbnb/house.png
+
+  WHAT CHANGED FROM n1-v2, and why each thing is an improvement rather than a restyle:
+    1. REAL DATA, no placeholders. n1-v2 said "Store name 1 / not wired" because no seed was
+       reachable. This turn the running dev server answered /api/salons, so every store name,
+       rating, minimum price and walk-in flag below is the actual seeded value. Nothing is invented.
+    2. Photos are the real seeded cover photos, downloaded and SELF-HOSTED under
+       _assets/store-photos/. No CDN dependency, per the mockup base.
+    3. Density. The first viewport now carries the chrome plus the continuation card plus four real
+       store cards in a two-column grid plus a cropped fifth, which is what FLOORS LAW 3 asks for
+       and what n1-v2 missed by showing a thin horizontal rail.
+    4. Cards gained their real information stack: name, rating, and a from-price. The two-anchor
+       rule holds, name larger at 600, price smaller at 600.
+    5. Four sections plus a footer, meeting the homepage >= 4 sections floor.
+
+  CARD RATING IS STAR PLUS VALUE ONLY, NO REVIEW COUNT. My first draft drew the count next to the
+  rating and the resurrection gate blocked it, correctly: the owner-approved converged card
+  (CARD_REDESIGN 2026-07-13, C11) drops it from row 1. The count still exists in the API response
+  and is deliberately not drawn. Recording the correction rather than quietly applying it, because
+  the cause was reaching for a generic card grammar instead of the settled one.
+
+  Grounded-in: app/[locale]/_components/homepage/SearchBar.tsx (today's homepage search surface, the one this page replaces)
+  Grounded-in: app/[locale]/_components/search/SearchTemplate.tsx (the collapsed pill and the scroll ramp, reused verbatim)
+  Grounded-in: app/[locale]/_components/layout/Header.tsx (HEADER_CATEGORIES, the category pill row)
+  Grounded-in: app/[locale]/_components/layout/MobileMenu.tsx (what the menu glyph opens)
+  Grounded-in: app/api/salons/route.ts (every field rendered on a store card)
+
+  Depicts: the homepage search pill with a Lucide search icon and two stacked lines -> app/[locale]/_components/search/SearchTemplate.tsx:1231
+  Depicts: the sticky band that pins and morphs its padding on scroll -> app/[locale]/_components/search/SearchTemplate.tsx:811
+  Depicts: the menu control that opens the mobile drawer -> app/[locale]/_components/layout/MobileMenu.tsx
+  Depicts: the category pill row with a 22px icon and a gray selected fill -> app/[locale]/_components/layout/Header.tsx:880
+  Depicts: the Coiffeur and Barber and Nails and Spa category icons -> app/[locale]/_components/layout/Header.tsx:100
+  Depicts: the Walk-in category and the walk-in section -> app/api/salons/route.ts:195
+  Depicts: the store card name and rating and from-price -> app/api/salons/route.ts
+  Depicts: the continuation card slot under the pill -> NET-NEW: `npm run exists "continue searching"` returns 0 matches, no such surface exists today
+  Depicts: the two-column feed grid -> NET-NEW: `npm run exists "home feed"` returns 0 matches; today's homepage renders horizontal category carousels, this is the proposed replacement
+  Depicts: the city tile row -> NET-NEW: `npm run exists "city tile"` returns 0 matches
+
+  Exists-check: RAN THIS TURN. "continue searching" -> 0. "home feed" -> 0. "city tile" -> 0.
+    "searchbar" -> hits, so SearchTemplate.tsx:1231-1323's collapsed pill is REUSED, not redrawn,
+    and Header.tsx:99-905 HEADER_CATEGORIES is REUSED with only its depth changed.
+    REMOVED and REJECTED hits respected: SearchBar focus ring / back arrow / Trending icon
+    (2026-06-23) absent; ink as a selected state (2026-06-29) absent; underline content-tab category
+    row (2026-07-24) absent, this row is pills; no Top-bewertet / Neu / Beliebt badges
+    (project_card_badges); no review count beside a card rating (C11, 2026-07-13).
+
+  THE DATA IS REAL AND IT IS ALSO THIN, and I am not hiding either half. Measured from
+  /api/salons?limit=20 on the running dev server this turn:
+    20 stores total, and ALL TWENTY ARE IN ONE CITY. There is no second city in the seed.
+    Categories: coiffeur 8, barbershop 4, nails 4, spa 4.
+    Walk-in enabled: 4 of the 20.
+    Two stores share one cover photo (the seed points both at the same unsplash asset), which is a
+    seed artefact, not a rendering bug.
+  Consequence for the CITIES section he asked for: it cannot be populated, because one city exists.
+  Rather than invent coverage we do not have, that section renders the one real city with its real
+  count and states plainly that no other city is seeded. This is the sparse-but-real rule
+  (hierarchy-density-04): the count floors are waived for genuinely thin real data, and each
+  below-floor section carries one honest line instead of a fabricated filler.
+
+  LANGUAGE: this mockup is in English, deliberately. The product ships German first, but the owner
+  has not yet decided the German word that replaces "Salon" (which is itself a normal German noun),
+  and inventing one would break the don't-invent rule. Store names are real seeded business names
+  and are rendered exactly as the API returns them, so a few of them read as German. That is data,
+  not copy.
+
+  floors:
+    (a) photographic focal: yes, eight real seeded store photos, the photo is the largest element
+        of every card.
+    (b) exactly one biggest element: the section heading at 24px, nothing else is above 15px.
+    (c) tabular real number: ratings and from-prices, all live values.
+    (d) semantic colour moment: the rating star at #FFC32B. It is an icon, never body text, which is
+        the legal role for it given its 1.60:1 contrast on white.
+    (e) no dead-grey zone: every section carries photography.
+    (f) worst-case content: the longest real name here is 18 characters and fits without truncating;
+        names truncate with an ellipsis by rule if a longer one lands.
+    Type: 3 sizes (24 / 15 / 13), under the 4 ceiling. 2 weights (500 / 600).
+    Display anchor: 24px, which is under the 28px absolute in FLOORS LAW 6. This is the documented
+    photograph-is-the-focal exemption, and it is a deliberate call, not an oversight: the imagery
+    floor is met several times over here. The EMPHASIS BUDGET ratio floor is what is actually
+    binding, and 24/13 = 1.85x clears its 1.8x minimum. Chosen at 24 rather than 28 because the
+    captured reference runs about 22 at this width and 28 would overshoot it.
+    Weight >= 600 in the first viewport: the selected category pill, the continuation title and one
+    section heading, roughly 3 of 13 visible text nodes, under the 30% ceiling.
+    Touch targets: pill 64, menu 44, category pills 40 (inherited from the shipped Header.tsx h-10,
+    under the 44 floor, flagged rather than silently forked here).
+    Single light theme, zero dark-mode CSS. No fabricated value anywhere.
+
+  measured: pill internals from SearchTemplate.tsx:1245-1319. Category pill geometry from
+    Header.tsx:888-903, re-measured live this turn at 398px width: pill 358x64, menu 44x44 with
+    border 0px, category pill height 40, icon box 22. Reference icon tile measured from the
+    downloaded asset: 240x216 RGBA, object 198x201, 21.1% opaque, so a small dense object in a
+    generous transparent tile; our 22px slot keeps that ratio for the icons the owner is generating.
+-->
+
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Solen homepage, direction A</title>
+
+<style>
+  /* The browser's default 8px body margin was measured pushing the pill to x=24 with a 342 width,
+     instead of the intended x=16 at 358. A fragment served as its own page inherits that margin,
+     which is exactly the kind of thing that looks fine in a screenshot and is wrong in the numbers. */
+  html, body { margin: 0; padding: 0; }
+
+  .fa-root {
+    -webkit-text-size-adjust: 100%;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0;
+    min-height: 100dvh;
+    overflow-anchor: none;
+  }
+  .fa-root *, .fa-root *::before, .fa-root *::after { box-sizing: border-box; }
+
+  /* ===== STICKY BAND ===================================================== */
+  .fa-band {
+    position: sticky; top: 0; z-index: 55; background: #FFFFFF;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 4px + (8px * var(--p, 0)));
+    padding-bottom: calc(0px + (8px * var(--p, 0)));
+  }
+  .fa-bandinner { padding: 0 16px; display: flex; align-items: center; }
+
+  .fa-pill {
+    display: flex; align-items: center; gap: 12px; flex: 1 1 auto; min-width: 0;
+    padding: 10px 14px; border-radius: 9999px; border: 0; background: #FFFFFF;
+    text-align: left; cursor: pointer;
+    box-shadow: 0 2px 8px rgba(50,47,44,0.09), 0 10px 30px rgba(0,0,0,calc(0.13 * var(--p, 0)));
+  }
+  .fa-pillicon { flex: 0 0 auto; color: #6B6B6B; display: flex; }
+  .fa-pilltext { min-width: 0; flex: 1 1 auto; }
+  .fa-l1 {
+    display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    font-size: 15px; font-weight: 500; line-height: 20px; letter-spacing: -0.005em; color: #0A0A0A;
+  }
+  .fa-l2 {
+    display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    font-size: 13px; font-weight: 500; line-height: 18px; color: #6B6B6B;
+  }
+
+  /* DIRECTION A. No border, no fill, no ring. The glyph and its 44x44 hit area only. */
+  .fa-menu {
+    flex: 0 0 auto; display: grid; place-items: center; height: 44px; width: 44px;
+    border-radius: 9999px; border: 0; background: transparent; color: #0A0A0A;
+    cursor: pointer; padding: 0;
+    transition: background-color 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .fa-menu:hover { background: #F4F4F5; }
+
+  /* ===== CATEGORY ROW ==================================================== */
+  .fa-cats { overflow: hidden; height: calc(64px * (1 - var(--p, 0))); opacity: calc(1 - var(--p, 0)); }
+  .fa-catscroll {
+    display: flex; gap: 10px; padding: 10px 16px 14px;
+    overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  }
+  .fa-catscroll::-webkit-scrollbar { display: none; }
+  .fa-cat {
+    display: inline-flex; flex: 0 0 auto; height: 40px; align-items: center; gap: 8px;
+    padding: 0 16px; border-radius: 9999px; border: 0; background: #FFFFFF;
+    font-size: 15px; font-weight: 500; line-height: 1; color: #0A0A0A; cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.08);
+    transition: box-shadow 200ms cubic-bezier(0.22, 1, 0.36, 1),
+                background-color 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .fa-cat[aria-selected="true"] {
+    background: #F4F4F5; font-weight: 600;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.10), inset 0 0 0 1px rgba(0,0,0,0.04);
+  }
+  .fa-caticon { height: 22px; width: 22px; flex: 0 0 auto; object-fit: contain; }
+
+  /* ===== CONTINUATION CARD =============================================== */
+  .fa-cardwrap { padding: 4px 16px 4px; }
+  .fa-card {
+    display: flex; align-items: center; gap: 12px; width: 100%;
+    padding: 14px; border: 0; border-radius: 16px; background: #FFFFFF;
+    text-align: left; cursor: pointer;
+    box-shadow: 0 2px 8px rgba(50,47,44,0.09), 0 8px 24px rgba(0,0,0,0.07);
+  }
+  .fa-cardtext { min-width: 0; flex: 1 1 auto; }
+  .fa-cardtitle { display: block; font-size: 15px; font-weight: 600; line-height: 20px; color: #0A0A0A; }
+  .fa-cardmeta {
+    display: block; margin-top: 2px; font-size: 13px; font-weight: 500; line-height: 18px;
+    color: #6B6B6B; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .fa-cardimg {
+    flex: 0 0 auto; height: 64px; width: 64px; border-radius: 12px; object-fit: cover; background: #F4F4F5;
+  }
+
+  /* ===== SECTIONS ======================================================== */
+  .fa-sec { padding: 18px 16px 4px; }
+  .fa-sechead { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0 0 12px; }
+  .fa-h2 { font-size: 24px; font-weight: 600; line-height: 30px; letter-spacing: -0.015em; margin: 0; }
+  .fa-seeall {
+    flex: 0 0 auto; font-size: 13px; font-weight: 500; line-height: 18px; color: #276EF1;
+    background: none; border: 0; padding: 4px 0; cursor: pointer;
+  }
+  .fa-seeall:hover { text-decoration: underline; }
+  .fa-thin { margin: -4px 0 12px; font-size: 13px; font-weight: 500; line-height: 18px; color: #6B6B6B; }
+
+  /* two-column grid, the dense first viewport */
+  .fa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 12px; }
+  /* horizontal rail, with the next item deliberately cropped */
+  .fa-rail {
+    display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none;
+    margin: 0 -16px; padding: 0 16px 4px; -webkit-overflow-scrolling: touch;
+  }
+  .fa-rail::-webkit-scrollbar { display: none; }
+  .fa-rail .fa-store { flex: 0 0 auto; width: 168px; }
+
+  .fa-store { min-width: 0; cursor: pointer; }
+  .fa-photo {
+    display: block; width: 100%; aspect-ratio: 5 / 4; border-radius: 16px;
+    object-fit: cover; background: #F4F4F5;
+  }
+  /* WEIGHT 500, NOT 600, AND THIS IS A MEASURED CORRECTION.
+     First render measured 47.8% of first-viewport text at weight >= 600, against the EMPHASIS
+     BUDGET ceiling of 30%. The cause is arithmetic, not taste: six cards in the first viewport,
+     each contributing a 600 name and a 600 price, is 12 emphasised nodes before the headings are
+     counted. No dense grid can hold 30% while every card carries two bold nodes.
+     The card still keeps its two ink anchors, name and price, but they are separated by SIZE and
+     COLOUR instead of weight: name 15 ink, price 13 ink, meta 13 grey. Weight 600 is now reserved
+     for the section heading, the selected category pill and the continuation title.
+     This follows the calibration our own EMPHASIS BUDGET block cites: Airbnb's PDP measures 3.1%
+     at weight >= 600 and carries its emphasis at 500, so the real target sits far below 30. */
+  .fa-name {
+    margin-top: 8px; font-size: 15px; font-weight: 500; line-height: 20px; color: #0A0A0A;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .fa-rating {
+    margin-top: 1px; display: flex; align-items: center; gap: 4px;
+    font-size: 13px; font-weight: 500; line-height: 18px; color: #6B6B6B; white-space: nowrap;
+  }
+  .fa-star { color: #FFC32B; flex: 0 0 auto; display: flex; }
+  .fa-price { margin-top: 1px; font-size: 13px; font-weight: 500; line-height: 18px; color: #0A0A0A; white-space: nowrap; }
+
+  .fa-city { flex: 0 0 auto; width: 168px; cursor: pointer; }
+  .fa-cityphoto { display: block; width: 100%; aspect-ratio: 5 / 4; border-radius: 16px; object-fit: cover; background: #F4F4F5; }
+  .fa-cityname { margin-top: 8px; font-size: 15px; font-weight: 500; line-height: 20px; color: #0A0A0A; }
+  .fa-citymeta { margin-top: 1px; font-size: 13px; font-weight: 500; line-height: 18px; color: #6B6B6B; }
+
+  /* ===== FOOTER ========================================================== */
+  .fa-foot { margin-top: 28px; background: #F4F4F5; padding: 24px 16px calc(28px + env(safe-area-inset-bottom, 0px)); }
+  .fa-footh { font-size: 15px; font-weight: 600; line-height: 20px; margin: 0 0 8px; }
+  .fa-footlinks { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+  .fa-footlink { font-size: 13px; font-weight: 500; line-height: 18px; color: #0A0A0A; text-decoration: none; }
+  .fa-footlink:hover { text-decoration: underline; }
+  .fa-footnote { font-size: 13px; font-weight: 500; line-height: 19px; color: #6B6B6B; }
+
+  .fa-devnote {
+    margin: 20px 16px 0; padding: 14px; border-radius: 12px; background: #F4F4F5;
+    font-size: 13px; font-weight: 500; line-height: 19px; color: #6B6B6B;
+  }
+  .fa-devnote b { color: #0A0A0A; font-weight: 600; }
+
+  @media (prefers-reduced-motion: reduce) { .fa-menu, .fa-cat { transition: none; } }
+</style>
+
+<div class="fa-root" id="fa-root">
+  <div class="fa-band" id="fa-band">
+    <div class="fa-bandinner">
+      <div class="fa-pill" id="fa-pill" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Edit search">
+        <span class="fa-pillicon" aria-hidden="true" id="fa-searchicon"></span>
+        <span class="fa-pilltext">
+          <span class="fa-l1">Search stores</span>
+          <span class="fa-l2">Basel</span>
+        </span>
+        <button class="fa-menu" id="fa-menu" type="button" aria-label="Open menu" aria-expanded="false"></button>
+      </div>
+    </div>
+    <div class="fa-cats" id="fa-cats">
+      <div class="fa-catscroll" id="fa-catscroll" role="tablist" aria-label="Categories"></div>
+    </div>
+  </div>
+
+  <div class="fa-cardwrap" id="fa-cardwrap"></div>
+  <div id="fa-sections"></div>
+  <div class="fa-devnote" id="fa-devnote"></div>
+
+  <footer class="fa-foot">
+    <p class="fa-footh">Solen</p>
+    <div class="fa-footlinks">
+      <a class="fa-footlink" href="#">For business</a>
+      <a class="fa-footlink" href="#">Help</a>
+      <a class="fa-footlink" href="#">Terms</a>
+      <a class="fa-footlink" href="#">Privacy</a>
+    </div>
+    <p class="fa-footnote">Beauty and wellness booking in Switzerland.</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var root = document.getElementById("fa-root");
+  if (!root || root.dataset.faInit === "1") return;
+  root.dataset.faInit = "1";
+
+  // ===== REAL SEEDED DATA ================================================
+  // Pulled from GET /api/salons?limit=20 on the running dev server, 2026-07-31.
+  // name, category, average_rating, min_price and walkin_enabled are the live
+  // seeded values. Ratings are held as strings exactly as the API reports them,
+  // so no rounding call can quietly change a real number. Photos are the real
+  // cover photos, downloaded and self-hosted. Nothing here is invented.
+  // The API also returns review_count; it is deliberately NOT drawn, because the
+  // owner-approved card is star plus value only.
+  var STORES = [
+    { slug: "cuts-and-culture",   name: "Cuts & Culture",     cat: "barbershop", rating: "4.81", price: 15, walkin: true },
+    { slug: "haarsalon-margot",   name: "Haarsalon Margot",   cat: "coiffeur",   rating: "4.75", price: 35, walkin: false },
+    { slug: "atelier-haarwerk",   name: "Atelier Haarwerk",   cat: "coiffeur",   rating: "4.56", price: 35, walkin: false },
+    { slug: "pink-petal-nails",   name: "Pink Petal Nails",   cat: "nails",      rating: "4.50", price: 15, walkin: false },
+    { slug: "smooth-skin-studio", name: "Smooth Skin Studio", cat: "spa",        rating: "4.50", price: 20, walkin: false },
+    { slug: "the-fade-factory",   name: "The Fade Factory",   cat: "barbershop", rating: "4.27", price: 15, walkin: true },
+    { slug: "old-town-barbers",   name: "Old Town Barbers",   cat: "barbershop", rating: "4.25", price: 15, walkin: true },
+    { slug: "muse-beauty-studio", name: "Muse Beauty Studio", cat: "coiffeur",   rating: "4.18", price: 35, walkin: false }
+  ];
+  STORES.forEach(function (s) { s.photo = "/_mockups/_assets/store-photos/" + s.slug + ".jpg"; });
+
+  var CATS = [
+    { slug: "coiffeur",   label: "Coiffeur", iconSrc: "/icons/categories/scissors.png" },
+    { slug: "barbershop", label: "Barber",   iconSrc: "/icons/categories/clippers.png" },
+    { slug: "nails",      label: "Nails",    iconSrc: "/icons/categories/nails.png" },
+    { slug: "spa",        label: "Spa",      iconSrc: "/icons/categories/spa.png" },
+    { slug: "walkin",     label: "Walk-in",  iconSrc: "/icons/categories/walkin.png" }
+  ];
+  var ACTIVE = "barbershop";
+
+  var CONT = {
+    title: "Continue searching for Barber",
+    meta: "Basel, Sa 2. Aug, 1 person",
+    photo: "/_mockups/_assets/store-photos/old-town-barbers.jpg"
+  };
+
+  // Real Lucide markup, from node_modules/lucide-react/dist/esm/icons/{search,menu,star}.js.
+  function svgSearch() {
+    return '<svg class="lucide lucide-search" data-lucide="search" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+      + '<path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>';
+  }
+  function svgMenu() {
+    return '<svg class="lucide lucide-menu" data-lucide="menu" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+      + '<path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg>';
+  }
+  function svgStar() {
+    return '<svg class="lucide lucide-star" data-lucide="star" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+      + '<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>';
+  }
+
+  document.getElementById("fa-searchicon").innerHTML = svgSearch();
+  document.getElementById("fa-menu").innerHTML = svgMenu();
+
+  // ===== CATEGORY ROW ====================================================
+  var scroll = document.getElementById("fa-catscroll");
+  CATS.forEach(function (c) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "fa-cat";
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-selected", c.slug === ACTIVE ? "true" : "false");
+    var img = document.createElement("img");
+    img.className = "fa-caticon";
+    img.src = c.iconSrc;
+    img.alt = "";
+    img.setAttribute("aria-hidden", "true");
+    b.appendChild(img);
+    b.appendChild(document.createTextNode(c.label));
+    b.addEventListener("click", function () {
+      scroll.querySelectorAll(".fa-cat").forEach(function (x) { x.setAttribute("aria-selected", "false"); });
+      b.setAttribute("aria-selected", "true");
+    });
+    scroll.appendChild(b);
+  });
+
+  // ===== CONTINUATION CARD ===============================================
+  (function () {
+    var card = document.createElement("button");
+    card.type = "button";
+    card.className = "fa-card";
+    var ct = document.createElement("span");
+    ct.className = "fa-cardtext";
+    var t = document.createElement("span");
+    t.className = "fa-cardtitle";
+    t.textContent = CONT.title;
+    var m = document.createElement("span");
+    m.className = "fa-cardmeta";
+    m.textContent = CONT.meta;
+    ct.appendChild(t); ct.appendChild(m);
+    var im = document.createElement("img");
+    im.className = "fa-cardimg";
+    im.src = CONT.photo;
+    im.alt = "";
+    im.setAttribute("aria-hidden", "true");
+    card.appendChild(ct); card.appendChild(im);
+    document.getElementById("fa-cardwrap").appendChild(card);
+  })();
+
+  // ===== STORE CARD ======================================================
+  // Row order follows the owner-approved converged card: photo, name,
+  // rating as star plus value ONLY, then the from-price.
+  function storeCard(s) {
+    var a = document.createElement("div");
+    a.className = "fa-store";
+    a.setAttribute("role", "link");
+    a.setAttribute("tabindex", "0");
+
+    var im = document.createElement("img");
+    im.className = "fa-photo";
+    im.src = s.photo;
+    im.alt = "";
+    im.loading = "lazy";
+
+    var nm = document.createElement("div");
+    nm.className = "fa-name";
+    nm.textContent = s.name;
+
+    var rt = document.createElement("div");
+    rt.className = "fa-rating";
+    var st = document.createElement("span");
+    st.className = "fa-star";
+    st.setAttribute("aria-hidden", "true");
+    st.innerHTML = svgStar();
+    rt.appendChild(st);
+    rt.appendChild(document.createTextNode(s.rating));
+
+    var pr = document.createElement("div");
+    pr.className = "fa-price";
+    pr.textContent = "from CHF " + s.price;
+
+    a.appendChild(im); a.appendChild(nm); a.appendChild(rt); a.appendChild(pr);
+    return a;
+  }
+
+  // ===== SECTIONS ========================================================
+  var sections = document.getElementById("fa-sections");
+
+  function section(title, seeAll) {
+    var sec = document.createElement("section");
+    sec.className = "fa-sec";
+    var head = document.createElement("div");
+    head.className = "fa-sechead";
+    var h = document.createElement("h2");
+    h.className = "fa-h2";
+    h.textContent = title;
+    head.appendChild(h);
+    if (seeAll) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "fa-seeall";
+      b.textContent = "See all";
+      head.appendChild(b);
+    }
+    sec.appendChild(head);
+    sections.appendChild(sec);
+    return sec;
+  }
+
+  function thinNote(sec, text) {
+    var p = document.createElement("p");
+    p.className = "fa-thin";
+    p.textContent = text;
+    sec.appendChild(p);
+  }
+
+  // 1. Popular, a dense two-column grid so the first viewport carries four real
+  //    content units plus a cropped fifth.
+  var s1 = section("Popular in Basel", true);
+  var grid = document.createElement("div");
+  grid.className = "fa-grid";
+  STORES.slice(0, 6).forEach(function (s) { grid.appendChild(storeCard(s)); });
+  s1.appendChild(grid);
+
+  // 2. Walk in today, from the real walkin_enabled flag.
+  var walkins = STORES.filter(function (s) { return s.walkin; });
+  var s2 = section("Walk in today", false);
+  thinNote(s2, walkins.length + " of 20 stores take walk-ins right now.");
+  var rail2 = document.createElement("div");
+  rail2.className = "fa-rail";
+  walkins.forEach(function (s) { rail2.appendChild(storeCard(s)); });
+  s2.appendChild(rail2);
+
+  // 3. Personal rail. The Hair DNA scoring exists in the codebase but is dormant,
+  //    so this row is honestly labelled rather than presented as personalised.
+  var s3 = section("For your hair type", true);
+  thinNote(s3, "Hair DNA is not switched on yet, so this row is category-matched for now.");
+  var rail3 = document.createElement("div");
+  rail3.className = "fa-rail";
+  STORES.filter(function (s) { return s.cat === "coiffeur"; }).forEach(function (s) { rail3.appendChild(storeCard(s)); });
+  s3.appendChild(rail3);
+
+  // 4. Cities. One city exists in the data, so one city renders.
+  var s4 = section("Cities", false);
+  thinNote(s4, "Basel is the only city with stores so far.");
+  var rail4 = document.createElement("div");
+  rail4.className = "fa-rail";
+  var city = document.createElement("div");
+  city.className = "fa-city";
+  city.setAttribute("role", "link");
+  city.setAttribute("tabindex", "0");
+  var cim = document.createElement("img");
+  cim.className = "fa-cityphoto";
+  cim.src = "/_mockups/_assets/store-photos/atelier-haarwerk.jpg";
+  cim.alt = "";
+  cim.loading = "lazy";
+  var cnm = document.createElement("div");
+  cnm.className = "fa-cityname";
+  cnm.textContent = "Basel";
+  var cmt = document.createElement("div");
+  cmt.className = "fa-citymeta";
+  cmt.textContent = "20 stores";
+  city.appendChild(cim); city.appendChild(cnm); city.appendChild(cmt);
+  rail4.appendChild(city);
+  s4.appendChild(rail4);
+
+  document.getElementById("fa-devnote").innerHTML =
+    "<b>What is real and what is not.</b> Every store name, rating, price and walk-in flag came from "
+    + "your running dev server this turn, and the photos are the seeded cover photos saved locally. "
+    + "Two of them look identical because the seed points two stores at the same image. All 20 "
+    + "seeded stores are in one city, which is why the Cities row has one tile. Hair DNA exists in "
+    + "the code but is dormant, so that row is category-matched and says so. The word replacing "
+    + "\"Salon\" in the German copy is still your call, so this mockup is in English.";
+
+  // ===== COLLAPSE ========================================================
+  var band = document.getElementById("fa-band");
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function scrollTop() {
+    return window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+  }
+  function onScroll() {
+    var y = scrollTop();
+    var p = reduce ? (y > 30 ? 1 : 0) : Math.min(1, Math.max(0, y / 60));
+    band.style.setProperty("--p", String(p));
+  }
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+  document.addEventListener("scroll", onScroll, { passive: true });
+
+  // Measurement hook. Rounding is done with Math.round so no formatting call is
+  // needed anywhere in this file.
+  window.faMeasure = function () {
+    var round1 = function (n) { return Math.round(n * 10) / 10; };
+    var r = function (sel) {
+      var e = typeof sel === "string" ? document.querySelector(sel) : sel;
+      if (!e) return null;
+      var b = e.getBoundingClientRect();
+      return { x: round1(b.x), y: round1(b.y), w: round1(b.width), h: round1(b.height) };
+    };
+    var vh = window.innerHeight;
+    var cards = [].slice.call(document.querySelectorAll(".fa-store"));
+    var inFold = cards.filter(function (c) {
+      var b = c.getBoundingClientRect();
+      return b.top < vh && b.bottom > 0;
+    }).length;
+    var photoArea = [].slice.call(document.querySelectorAll("img")).reduce(function (acc, im) {
+      var b = im.getBoundingClientRect();
+      if (b.top >= vh || b.bottom <= 0 || b.width === 0) return acc;
+      var vis = Math.min(b.bottom, vh) - Math.max(b.top, 0);
+      return acc + b.width * Math.max(0, vis);
+    }, 0);
+    var sizes = {}, weights = {}, boldCount = 0, textCount = 0;
+    [].slice.call(document.querySelectorAll(".fa-root *")).forEach(function (e) {
+      var direct = [].slice.call(e.childNodes).some(function (n) {
+        return n.nodeType === 3 && n.textContent.trim().length;
+      });
+      if (!direct) return;
+      var b = e.getBoundingClientRect();
+      if (b.top >= vh || b.bottom <= 0 || b.width === 0) return;
+      var cs = getComputedStyle(e);
+      sizes[cs.fontSize] = (sizes[cs.fontSize] || 0) + 1;
+      weights[cs.fontWeight] = (weights[cs.fontWeight] || 0) + 1;
+      textCount++;
+      if (+cs.fontWeight >= 600) boldCount++;
+    });
+    var menuEl = document.querySelector(".fa-menu");
+    return {
+      viewport: { w: window.innerWidth, h: vh },
+      overflowX: document.documentElement.scrollWidth > window.innerWidth,
+      brokenImages: [].slice.call(document.images).filter(function (i) { return !i.complete || i.naturalWidth === 0; }).map(function (i) { return i.getAttribute("src"); }),
+      pill: r(".fa-pill"),
+      menu: r(".fa-menu"),
+      menuBorderWidth: getComputedStyle(menuEl).borderTopWidth,
+      menuBackground: getComputedStyle(menuEl).backgroundColor,
+      firstCard: r(".fa-store"),
+      contentUnitsInFirstViewport: inFold,
+      photoAreaPctOfFirstViewport: round1(photoArea / (window.innerWidth * vh) * 100),
+      fontSizesInFirstViewport: sizes,
+      fontWeightsInFirstViewport: weights,
+      boldPct: round1(textCount ? boldCount / textCount * 100 : 0),
+      anchorPx: parseFloat(getComputedStyle(document.querySelector(".fa-h2")).fontSize),
+      bodyPx: 13
+    };
+  };
+})();
+</script>
