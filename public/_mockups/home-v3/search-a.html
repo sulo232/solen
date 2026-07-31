@@ -1137,9 +1137,8 @@
     return sec;
   }
 
-  function reviewsSection() {
-    var f = sectionFrame("Bewertungen", "sa-rvrail sa-railbleed");
-    REVIEWS.forEach(function (r) {
+  // Extracted so a category page can build its own review rail from the same card.
+  function reviewCard(r) {
       var c = document.createElement("div");
       c.className = "sa-rvcard";
       var stars = "";
@@ -1151,14 +1150,16 @@
         '<div class="sa-rvtop" style="margin:0"><span class="sa-rvstars">' + stars + '</span>' +
         '<span class="sa-rvdate">' + r.date + '</span></div>' +
         '<p class="sa-rvtext">\u201C' + r.text + '\u201D</p>';
-      f.rail.appendChild(c);
-    });
+      return c;
+  }
+  function reviewsSection() {
+    var f = sectionFrame("Bewertungen", "sa-rvrail sa-railbleed");
+    REVIEWS.forEach(function (r) { f.rail.appendChild(reviewCard(r)); });
     return f.wrap;
   }
 
-  function inspoSection() {
-    var f = sectionFrame("Finde deine Inspiration.", "sa-insrail sa-railbleed");
-    INSPO.forEach(function (p) {
+  // Extracted so Inspo's own rails and the home rail share one card.
+  function inspoCard(p) {
       var c = document.createElement("div");
       c.className = "sa-inscard";
       c.innerHTML =
@@ -1170,8 +1171,11 @@
         '<span class="sa-inschip">' + p.title + '</span></div>' +
         '<div class="sa-insfoot"><span class="sa-insauthor">' + p.who + '</span>' +
         '<span class="sa-insprice">ab CHF ' + p.price + '</span></div>';
-      f.rail.appendChild(c);
-    });
+      return c;
+  }
+  function inspoSection() {
+    var f = sectionFrame("Finde deine Inspiration.", "sa-insrail sa-railbleed");
+    INSPO.forEach(function (p) { f.rail.appendChild(inspoCard(p)); });
     return f.wrap;
   }
 
@@ -1184,6 +1188,7 @@
     // Every salon rail below is the real SectionFrame + SalonCard pair, same title treatment,
     // same arrow, same bleeding rail, same 5:4 photo at radius 22.
     var byRating = STORES.slice().sort(function (a, b) { return Number(b.rating) - Number(a.rating); });
+    function byCat(c) { return byRating.filter(function (s) { return s.cat === c; }); }
 
     var RAILS = [
       { title: "Top auf Solen", rows: byRating.slice(0, 6), note: null },
@@ -1194,7 +1199,13 @@
       { title: "Diese Woche verfügbar",
         rows: byRating.filter(function (s) { return s.online; }).slice(0, 6),
         note: "Alle 20 Salons sind online buchbar. Live-Verfügbarkeit ist noch nicht angebunden, sortiert nach Bewertung." },
-      { title: "Coiffeure in Basel", rows: STORES.filter(function (s) { return s.cat === "coiffeur"; }).slice(0, 6), note: null }
+      // Owner 2026-07-31: "on the home page I'm gonna need you to add carousels of top nails,
+      // barber, and spa, all of that, so it's really everything." One Top rail per real category,
+      // built from the same data and the same card as every other rail.
+      { title: "Top Coiffeure", rows: byCat("coiffeur"), note: null },
+      { title: "Top Barbershops", rows: byCat("barbershop"), note: null },
+      { title: "Top Nagelstudios", rows: byCat("nails"), note: null },
+      { title: "Top Spas", rows: byCat("spa"), note: null }
     ];
 
     RAILS.forEach(function (r) {
@@ -1214,61 +1225,128 @@
   // of bookable rows. That is FLOORS LAW 10 applied honestly: an element belongs to the screen's
   // job, and a price and an address serve the booking job, not the looking job. The chrome stays
   // identical, which is the consistency that actually matters.
+  // ===== INSPO IS HOME-LIKE TOO =============================================
+  // Owner 2026-07-31, mid-turn: "inspo too."
+  // It used to be one masonry of SALON photos, which was wrong twice over: the cells were salon
+  // cover shots rather than inspo posts, and a single undifferentiated wall is the opposite of the
+  // sectioned home page he just asked every other surface to match.
+  //
+  // The groupings are DERIVED FROM REAL VALUES, not invented. The seeded discovery items carry no
+  // category tag, so there is no honest way to split them by "fades" or "long hair"; they do carry
+  // a real starting price, so the bands are by price. Saying which field a grouping came from
+  // matters more here than having more sections.
+  function inspoRail(title, items, note) {
+    if (!items.length) return null;
+    var f = sectionFrame(title, "sa-insrail sa-railbleed");
+    if (note) f.wrap.insertBefore(subline(note), f.rail);
+    items.forEach(function (p) { f.rail.appendChild(inspoCard(p)); });
+    return f.wrap;
+  }
+
   function renderInspo() {
     list.innerHTML = "";
-    var grid = document.createElement("div");
-    grid.className = "sa-inspo";
-    // Deliberately uneven heights: a masonry that renders a perfect grid is just a grid.
-    var TALL = [0, 3, 4, 7];
-    STORES.concat(STORES).forEach(function (s, i) {
-      var cell = document.createElement("div");
-      cell.className = "sa-inspocell" + (TALL.indexOf(i % 8) !== -1 ? " is-tall" : "");
-      cell.setAttribute("role", "link");
-      cell.setAttribute("tabindex", "0");
-      var im = document.createElement("img");
-      im.className = "sa-inspophoto";
-      im.src = s.photo;
-      im.alt = s.name + ", " + CATLABEL[s.cat];
-      im.loading = "lazy";
-      cell.appendChild(im);
-      grid.appendChild(cell);
+    var byPrice = INSPO.slice().sort(function (a, b) { return a.price - b.price; });
+    var cheap = byPrice.filter(function (p) { return p.price < 60; });
+    var mid = byPrice.filter(function (p) { return p.price >= 60 && p.price < 100; });
+    var high = byPrice.filter(function (p) { return p.price >= 100; });
+
+    var blocks = [
+      inspoRail("Für dich", INSPO, null),
+      inspoRail("Unter CHF 60", cheap, cheap.length + " von " + INSPO.length + " Looks starten unter CHF 60."),
+      inspoRail("CHF 60 bis 100", mid, null),
+      inspoRail("Ab CHF 100", high, null)
+    ];
+    blocks.forEach(function (b) { if (b) list.appendChild(b); });
+
+    // A look is only useful if it lands on somewhere to book it, so Inspo carries salon rails and
+    // real reviews like every other surface now.
+    var byRating = STORES.slice().sort(function (a, b) { return Number(b.rating) - Number(a.rating); });
+    var f = sectionFrame("Salons für diese Looks", "sa-rail sa-railbleed");
+    byRating.filter(function (s) { return s.cat === "barbershop" || s.cat === "coiffeur"; })
+      .slice(0, 6).forEach(function (s) { f.rail.appendChild(railCard(s)); });
+    list.appendChild(f.wrap);
+    list.appendChild(reviewsSection());
+  }
+
+  // ===== EVERY CATEGORY PAGE IS NOW HOME-LIKE ===============================
+  // Owner 2026-07-31: "remove the filter icon, no filter pills here in each category, and I want
+  // you to make it like home basically ... on the coiffeur and the barber and stuff, I want you to
+  // make carousels or like tops and stuff."
+  //
+  // MEASURED before changing anything: Coiffeur rendered a 58px filter row above EIGHT flat
+  // .sa-row cards and ZERO sections. And the real /de/coiffeur is SearchTemplate, a filtered flat
+  // list, so there is nothing on the running app to copy this off. That makes it a genuinely new
+  // direction rather than a port, which is worth saying plainly.
+  //
+  // Every rail below is the SAME sectionFrame + railCard pair the home page uses, so a category
+  // page and the home page are now the same object at different densities, not two designs.
+  var CATNAME = { coiffeur: "Coiffeure", barbershop: "Barbershops", nails: "Nagelstudios", spa: "Spas" };
+
+  function categorySections(slug, label) {
+    var mine = STORES.filter(function (s) { return s.cat === slug; });
+    var byRating = mine.slice().sort(function (a, b) { return Number(b.rating) - Number(a.rating); });
+    var out = [];
+
+    out.push({ title: "Top " + (CATNAME[slug] || label), rows: byRating, note: null });
+
+    // Barber is where walk-in lives now that it is not a category pill (owner's earlier ask).
+    // It is the REAL WalkInBand, not a rail, because walk-in cards carry a different shape.
+    if (slug === "barbershop") out.push({ walkin: true });
+
+    out.push({ title: "In der Nähe", rows: mine.slice().reverse(), note: null });
+    out.push({ title: "Diese Woche verfügbar",
+      rows: byRating.filter(function (s) { return s.online; }),
+      note: "Live-Verfügbarkeit ist noch nicht angebunden, sortiert nach Bewertung." });
+
+    // Real reviews, filtered to this category's salons. No fabrication: if none of the seeded
+    // reviews belong to a salon in this category, the section is omitted rather than invented.
+    var names = {};
+    mine.forEach(function (s) { names[s.name] = 1; });
+    var rv = REVIEWS.filter(function (r) { return names[r.salon]; });
+    if (rv.length) out.push({ reviews: rv, title: "Bewertungen" });
+
+    out.push({ inspo: true, title: "Finde deine Inspiration." });
+    return out;
+  }
+
+  function renderSectionList(specs) {
+    specs.forEach(function (sec) {
+      if (sec.walkin) { list.appendChild(walkInBand()); return; }
+      if (sec.reviews) {
+        var rf = sectionFrame(sec.title, "sa-rvrail sa-railbleed");
+        sec.reviews.forEach(function (r) { rf.rail.appendChild(reviewCard(r)); });
+        list.appendChild(rf.wrap); return;
+      }
+      if (sec.inspo) { list.appendChild(inspoSection()); return; }
+      if (!sec.rows.length) return;
+      var f = sectionFrame(sec.title, "sa-rail sa-railbleed");
+      if (sec.note) f.wrap.insertBefore(subline(sec.note), f.rail);
+      sec.rows.forEach(function (s) { f.rail.appendChild(railCard(s)); });
+      list.appendChild(f.wrap);
     });
-    list.appendChild(grid);
   }
 
   function renderCategory(slug, label) {
-    // Owner 2026-07-31: "there is no filter pills in the home page because no category selected."
-    // The row was appended to the band once at init and never toggled, so it rode along on home.
-    // Filters narrow a category. With no category chosen there is nothing to narrow.
-    if (tools) tools.style.display = (slug === "home" || slug === "inspo") ? "none" : "flex";
-
-    if (slug === "home") {
-      renderHome();
-      if (pillLine) pillLine.textContent = "Search stores";
-      return;
-    }
-    if (slug === "inspo") {
-      renderInspo();
-      if (pillLine) pillLine.textContent = "Inspo";
-      return;
-    }
-    var rows = STORES;
-    if (slug === "walkin") rows = STORES.filter(function (s) { return s.walkin; });
-    else if (slug !== "inspo") rows = STORES.filter(function (s) { return s.cat === slug; });
+    // Owner 2026-07-31: "remove the filter icon, no filter pills here in each category."
+    // They are gone everywhere now, not just on home, so this is a hard hide rather than a toggle.
+    if (tools) tools.style.display = "none";
 
     list.innerHTML = "";
-    if (!rows.length) {
+    if (slug === "home") { renderHome(); if (pillLine) pillLine.textContent = "Search stores"; return; }
+    if (slug === "inspo") { renderInspo(); if (pillLine) pillLine.textContent = "Inspo"; return; }
+
+    var mine = STORES.filter(function (s) { return s.cat === slug; });
+    if (!mine.length) {
       var empty = document.createElement("p");
-      empty.className = "sa-meta2";
+      empty.className = "sa-thin";
       empty.style.textAlign = "center";
       empty.style.padding = "24px 0";
-      // No fabricated filler: a category with no seeded store says so.
-      empty.textContent = "No seeded stores in this category yet.";
+      empty.textContent = "Noch keine Salons in dieser Kategorie.";
       list.appendChild(empty);
     } else {
-      rows.forEach(function (s) { list.appendChild(resultRow(s)); });
+      renderSectionList(categorySections(slug, label));
     }
-    if (pillLine) pillLine.textContent = slug === "home" ? "Search stores" : label;
+    if (pillLine) pillLine.textContent = label;
   }
 
   renderCategory(ACTIVE, "Barber");
