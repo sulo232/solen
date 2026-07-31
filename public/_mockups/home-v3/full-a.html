@@ -297,7 +297,20 @@
 </style>
 
 <div class="fa-root" id="fa-root">
+  <!-- CATEGORIES ON TOP, SEARCH BAR UNDERNEATH. Owner 2026-07-31: "what we iterated for so many
+       rounds, the category row is on top and the search bar is on the bottom, underneath it, so
+       you can integrate it."
+       This order was settled on the search page rounds ago and I left the home page on the old
+       one. That is the failure worth naming: a chrome decision settled on one screen has to reach
+       every screen that carries the same chrome, or the two screens drift apart while each one
+       individually passes review. Measured before the change: search bar at y=4, categories at
+       y=68, so the categories sat BELOW.
+       No filter pills here, deliberately: on home no category is selected, so there is nothing to
+       filter and a filter row would be chrome with no job. -->
   <div class="fa-band" id="fa-band">
+    <div class="fa-cats" id="fa-cats">
+      <div class="fa-catscroll" id="fa-catscroll" role="tablist" aria-label="Categories"></div>
+    </div>
     <div class="fa-bandinner">
       <div class="fa-pill" id="fa-pill" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Edit search">
         <span class="fa-pillicon" aria-hidden="true" id="fa-searchicon"></span>
@@ -307,9 +320,6 @@
         </span>
         <button class="fa-menu" id="fa-menu" type="button" aria-label="Open menu" aria-expanded="false"></button>
       </div>
-    </div>
-    <div class="fa-cats" id="fa-cats">
-      <div class="fa-catscroll" id="fa-catscroll" role="tablist" aria-label="Categories"></div>
     </div>
   </div>
 
