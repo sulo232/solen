@@ -128,26 +128,47 @@
   .sa-h1 { font-size: 18px; font-weight: 600; line-height: 24px; letter-spacing: -0.01em; margin: 0; }
   .sa-sort { flex: 0 0 auto; font-size: 14px; font-weight: 400; color: #276EF1; background: none; border: 0; padding: 4px 0; cursor: pointer; }
 
-  .sa-list { display: flex; flex-direction: column; gap: 12px; padding: 0 16px 32px; }
+  /* ===== THE REAL CARD, MEASURED OFF THE LIVE ROUTE, NOT READ OUT OF THE SOURCE =====
+     My first version of this file was wrong in every dimension, and the cause is worth naming:
+     I opened SalonResultCard.tsx, found a comment describing a "card" variant, and built THAT,
+     without ever loading the page. Measured on /de/basel/barbershop at vw=390:
+                        live page              what I had built
+       card             366 wide, 368 tall     366 wide, 130 tall
+       card border      0                      1px hairline
+       card radius      0                      16
+       card padding     0                      12
+       photo            366 x 293 ON TOP       104 x 104 ON THE LEFT
+       photo radius     16                     16
+       name             16px / 500             15px / 500
+       rating           right edge, 14 / 600 ink   inline, 12 / 400 grey
+       review count     rendered, in blue      absent
+       price line       13.5 / 600 grey, right    13 / 400 ink, left
+     The drift ledger warned about this exact substitution earlier in the same session: a compact
+     horizontal thumbnail built in place of the approved full-width photo card. I did it again,
+     because reading a source file feels like checking and is not.
+     NOTE FOR THE OWNER, surfaced rather than resolved silently: the shipped card carries no chrome
+     at all, and a 2026-07-18 record says the flat direction lost to a carded one. Either that
+     record is scoped to the PDP service section, or this card was never brought along. */
+  .sa-list { display: flex; flex-direction: column; gap: 28px; padding: 0 12px 32px; }
   .sa-row {
-    display: flex; align-items: stretch; gap: 12px; width: 100%;
-    padding: 12px; border: 1px solid #E4E4E7; border-radius: 16px; background: #FFFFFF;
+    display: block; width: 100%; padding: 0; border: 0; border-radius: 0; background: transparent;
     text-align: left; cursor: pointer; transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1);
   }
   .sa-row:active { transform: scale(0.99); }
-  .sa-photo { flex: 0 0 auto; height: 104px; width: 104px; border-radius: 16px; object-fit: cover;
-    background: #F4F4F5; box-shadow: 0 4px 16px rgba(0,0,0,0.10), 0 1px 3px rgba(0,0,0,0.06); }
-  .sa-body { min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; }
-  .sa-name { margin: 0; font-size: 15px; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em;
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .sa-meta1 { margin-top: 2px; display: flex; align-items: center; gap: 8px; font-size: 12px;
-    font-weight: 400; line-height: 1.35; color: #6B6B6B; }
+  .sa-photo { display: block; width: 100%; aspect-ratio: 5 / 4; border-radius: 16px;
+    object-fit: cover; background: #F4F4F5; }
+  .sa-body { margin-top: 10px; min-width: 0; }
+  .sa-line { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .sa-name { margin: 0; font-size: 16px; font-weight: 500; line-height: 1.3; letter-spacing: -0.01em;
+    min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sa-rate { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 3px;
+    font-size: 14px; font-weight: 600; color: #0A0A0A; font-variant-numeric: tabular-nums; }
   .sa-star { color: #FFC32B; display: flex; }
-  .sa-rate { display: inline-flex; align-items: center; gap: 3px; font-variant-numeric: tabular-nums; }
-  .sa-meta2 { margin-top: 4px; font-size: 13px; font-weight: 400; line-height: 1.35; color: #6B6B6B;
+  .sa-count { color: #276EF1; }
+  .sa-meta2 { margin-top: 3px; font-size: 13px; font-weight: 400; line-height: 1.35; color: #6B6B6B;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .sa-price { margin-top: 4px; font-size: 13px; font-weight: 400; line-height: 1.35; color: #0A0A0A;
-    font-variant-numeric: tabular-nums; }
+  .sa-price { flex: 0 0 auto; font-size: 13.5px; font-weight: 600; line-height: 1.35; color: #6B6B6B;
+    font-variant-numeric: tabular-nums; white-space: nowrap; }
 
   .sa-note { margin: 0 16px 24px; padding: 14px; border-radius: 12px; background: #F4F4F5;
     font-size: 14px; font-weight: 400; line-height: 19px; color: #6B6B6B; }
@@ -207,14 +228,14 @@
   var CATLABEL = { coiffeur: "Coiffeur", barbershop: "Barbershop", nails: "Nails", spa: "Spa & Wellness" };
   // Real seeded values from GET /api/salons?limit=20 on the running dev server.
   var STORES = [
-    { slug: "cuts-and-culture",   name: "Cuts & Culture",     cat: "barbershop", rating: "4.81", price: 15, addr: "4056 Basel" },
-    { slug: "the-fade-factory",   name: "The Fade Factory",   cat: "barbershop", rating: "4.27", price: 15, addr: "4057 Basel" },
-    { slug: "old-town-barbers",   name: "Old Town Barbers",   cat: "barbershop", rating: "4.25", price: 15, addr: "4051 Basel" },
-    { slug: "haarsalon-margot",   name: "Haarsalon Margot",   cat: "coiffeur",   rating: "4.75", price: 35, addr: "4051 Basel" },
-    { slug: "atelier-haarwerk",   name: "Atelier Haarwerk",   cat: "coiffeur",   rating: "4.56", price: 35, addr: "4051 Basel" },
-    { slug: "muse-beauty-studio", name: "Muse Beauty Studio", cat: "coiffeur",   rating: "4.18", price: 35, addr: "4051 Basel" },
-    { slug: "pink-petal-nails",   name: "Pink Petal Nails",   cat: "nails",      rating: "4.50", price: 15, addr: "4057 Basel" },
-    { slug: "smooth-skin-studio", name: "Smooth Skin Studio", cat: "spa",        rating: "4.50", price: 20, addr: "4051 Basel" }
+    { slug: "cuts-and-culture",   name: "Cuts & Culture",     cat: "barbershop", rating: "4.81", price: 15, reviews: 16, service: "Brows", addr: "Elsaesserstrasse 10" },
+    { slug: "the-fade-factory",   name: "The Fade Factory",   cat: "barbershop", rating: "4.27", price: 15, reviews: 11, service: "Brows", addr: "Hammerstrasse 65" },
+    { slug: "old-town-barbers",   name: "Old Town Barbers",   cat: "barbershop", rating: "4.25", price: 15, reviews: 12, service: "Brows", addr: "Muensterplatz 11" },
+    { slug: "haarsalon-margot",   name: "Haarsalon Margot",   cat: "coiffeur",   rating: "4.75", price: 35, reviews: 16, service: "Scalp massage", addr: "Aeschengraben 18" },
+    { slug: "atelier-haarwerk",   name: "Atelier Haarwerk",   cat: "coiffeur",   rating: "4.56", price: 35, reviews: 25, service: "Scalp massage", addr: "Freie Strasse 12" },
+    { slug: "muse-beauty-studio", name: "Muse Beauty Studio", cat: "coiffeur",   rating: "4.18", price: 35, reviews: 11, service: "Scalp massage", addr: "Ruemelinsplatz 4" },
+    { slug: "pink-petal-nails",   name: "Pink Petal Nails",   cat: "nails",      rating: "4.50", price: 15, reviews: 8,  service: "French", addr: "Klybeckstrasse 30" },
+    { slug: "smooth-skin-studio", name: "Smooth Skin Studio", cat: "spa",        rating: "4.50", price: 20, reviews: 14, service: "Underarms", addr: "Grabenring 8" }
   ];
   STORES.forEach(function (s) { s.photo = "/_mockups/_assets/store-photos/" + s.slug + ".jpg"; });
 
@@ -282,12 +303,13 @@
     var body = document.createElement("div");
     body.className = "sa-body";
 
+    // Row 1: name left, star plus value plus the blue count hard right. Both the position and
+    // the blue are what the live route renders, measured, not chosen.
+    var line1 = document.createElement("div");
+    line1.className = "sa-line";
     var nm = document.createElement("h3");
     nm.className = "sa-name";
     nm.textContent = s.name;
-
-    var m1 = document.createElement("div");
-    m1.className = "sa-meta1";
     var rate = document.createElement("span");
     rate.className = "sa-rate";
     var st = document.createElement("span");
@@ -296,20 +318,32 @@
     st.innerHTML = svgStar();
     rate.appendChild(st);
     rate.appendChild(document.createTextNode(s.rating));
-    m1.appendChild(rate);
-    var cat = document.createElement("span");
-    cat.textContent = CATLABEL[s.cat];
-    m1.appendChild(cat);
+    var cnt = document.createElement("span");
+    cnt.className = "sa-count";
+    cnt.textContent = " " + s.reviews;
+    rate.appendChild(cnt);
+    line1.appendChild(nm);
+    line1.appendChild(rate);
 
+    // Row 2: address.
     var m2 = document.createElement("div");
     m2.className = "sa-meta2";
     m2.textContent = s.addr;
 
+    // Row 3: review count left, the named service and its from-price hard right. The service name
+    // is required next to a from-price under the Swiss price rule, so it is never dropped.
+    var line3 = document.createElement("div");
+    line3.className = "sa-line";
+    var rc = document.createElement("div");
+    rc.className = "sa-meta2";
+    rc.textContent = s.reviews + " reviews";
     var pr = document.createElement("div");
     pr.className = "sa-price";
-    pr.textContent = s.price + " CHF";
+    pr.textContent = s.service + " from " + s.price + " CHF";
+    line3.appendChild(rc);
+    line3.appendChild(pr);
 
-    body.appendChild(nm); body.appendChild(m1); body.appendChild(m2); body.appendChild(pr);
+    body.appendChild(line1); body.appendChild(m2); body.appendChild(line3);
     a.appendChild(im); a.appendChild(body);
     return a;
   }
