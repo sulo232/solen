@@ -229,10 +229,16 @@
     --lift: rgba(0,0,0,0.07) 0 2px 8px 0;
   }
   .sa-pillicon { flex: 0 0 auto; color: #6B6B6B; display: flex; }
-  .sa-pilltext { min-width: 0; flex: 1 1 auto; }
-  .sa-l1 { display: block; font-size: 16px; font-weight: 500; line-height: 20px; letter-spacing: -0.005em;
+  .sa-pilltext { min-width: 0; flex: 0 1 auto; }
+  .sa-l1 { display: block; font-size: 16px; font-weight: 400; line-height: 20px; letter-spacing: -0.005em;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .sa-l2 { display: block; font-size: 14px; font-weight: 400; line-height: 18px; color: #6B6B6B;
+  /* Owner 2026-07-31: "the search bar looks really cluttered ... the Basel Sa 2 Aug dot something,
+     you just even invented that. Remove that and make it Start your search."
+     He is right that it was invented: nothing sets a date, so a fixed "Sa 2. Aug" was a claim the
+     product cannot keep, which is the no-fabricated-data rule. The second line is gone entirely.
+     Airbnb's bar, from his screenshot, is ONE centred line with the magnifier beside the text, so
+     the icon and label are now a centred group rather than an icon rail plus a left-aligned stack. */
+  .sa-l2 { display: none; font-size: 14px; font-weight: 400; line-height: 18px; color: #6B6B6B;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   /* Owner: "when I try to select the hamburger menu it's like a circle outline, I don't like that
      at all." That was the browser's default focus ring plus my hover fill, both landing as a round
@@ -525,11 +531,59 @@
     color: #6B6B6B; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   /* Owner 2026-07-31: "make the image inside square, a four by four." 1:1, was 150x120 (5:4).
      120 square keeps the card at the height his approved screenshot shows. */
+  /* Owner 2026-07-31: "make the card of the continuous searching a little bit smaller, shorter,
+     because right now it is too tall." Measured 146 tall, driven entirely by the 120 photo.
+     Photo to 88 square takes the card to 112, a 23% cut, and 88 is the same square the grouped
+     list rows use so it is not a new number. */
   .sa-contimg { flex: 0 0 auto; object-fit: cover; background: #F4F4F5;
-    width: 120px; aspect-ratio: 1 / 1; border-radius: 16px; }
+    width: 88px; aspect-ratio: 1 / 1; border-radius: 14px; }
   .sa-contchev { flex: 0 0 auto; color: #6B6B6B; display: flex; }
 
   .sa-sec { align-self: stretch; width: 100%; margin: 0 0 24px; }
+
+  /* ===== RECENTLY VIEWED, the small chip row =============================
+     Owner 2026-07-31: "make underneath of this bar, like recently viewed, like if it's stores,
+     like cities, make it like that." Same grammar as the continue card so the two read as one
+     family: a thumbnail, a name, a line of context. Just smaller and horizontal. */
+  .sa-recrail { margin-top: 10px; display: flex; gap: 10px; padding-bottom: 4px;
+    overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+  .sa-recrail::-webkit-scrollbar { display: none; }
+  .sa-rec { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; max-width: 230px;
+    padding: 8px 14px 8px 8px; border-radius: 999px; border: 1px solid #E4E4E7;
+    background: #FFFFFF; cursor: pointer; }
+  .sa-recimg { flex: 0 0 auto; height: 36px; width: 36px; border-radius: 999px;
+    object-fit: cover; background: #F4F4F5; }
+  .sa-recicon { flex: 0 0 auto; display: grid; place-items: center; height: 36px; width: 36px;
+    border-radius: 999px; background: #F4F4F5; color: #0A0A0A; }
+  .sa-rectext { min-width: 0; }
+  .sa-recname { display: block; font-size: 14px; font-weight: 500; color: #0A0A0A;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sa-recmeta { display: block; font-size: 12px; color: #6B6B6B;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* ===== THE SMALL 4-ACROSS TILE ROW =====================================
+     Owner 2026-07-31: "I like a lot of this from Airbnb, the four by four small cards, the one
+     that says explore experiences in Kranj, but we can't really have that. Can you think of
+     something similar so we can integrate it?"
+     What we have that fits that shape is SERVICES: the services table holds 59 distinct active
+     service names with a real salon count and a real starting price each. So the row is "browse by
+     service", which is the same job Airbnb's row does (a taxonomy shortcut under the feed) with
+     data we actually own.
+     ONE DELIBERATE DIFFERENCE FROM THE REFERENCE: Airbnb's tiles are photographic. Ours are not,
+     because no service carries its own imagery, and putting a salon's cover photo under
+     "Balayage" would imply that salon does balayage. So the tile uses the category's own 3D icon
+     on the sunken tray until services have real photos of their own. */
+  .sa-tilerail { margin-top: 10px; display: flex; gap: 12px; padding-bottom: 4px;
+    overflow-x: auto; overflow-y: hidden; scrollbar-width: none; scroll-snap-type: x proximity; }
+  .sa-tilerail::-webkit-scrollbar { display: none; }
+  .sa-tile { flex: 0 0 auto; width: 96px; scroll-snap-align: start; }
+  .sa-tilebox { height: 96px; width: 96px; display: grid; place-items: center;
+    border-radius: 16px; background: #F4F4F5; }
+  .sa-tilebox img { height: 52%; width: 52%; object-fit: contain; }
+  .sa-tilename { margin-top: 8px; font-size: 12px; font-weight: 500; line-height: 1.3;
+    color: #0A0A0A; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+    overflow: hidden; }
+  .sa-tilemeta { margin-top: 2px; font-size: 12px; color: #6B6B6B; }
 
   /* ===== REAL HOME-PAGE SECTION ANATOMY ==================================
      Owner 2026-07-31: "make each section like the real home page Top auf Solen, so it actually
@@ -541,8 +595,13 @@
                      cards flex 0 0 42%, radius 13, hairline, the figure at 20/700 in green
        review card   w 260, min-h 220, radius 16, hairline, elevation-2, 40px initials avatar
        inspo card    w 44vw max 200, photo aspect 9/16 radius 16, scrim, title chip, ab CHF n */
-  .sa-secheadrow { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; }
-  .sa-h2arrow { display: inline-flex; align-items: center; margin-left: 12px; color: #0A0A0A; }
+  /* Owner 2026-07-31: "put the arrow all the way on the right."
+     It was a span INSIDE the h2, so it sat immediately after the last word (measured at x=140 in a
+     358-wide row). Airbnb puts it in a circular button pinned to the right edge, which his
+     screenshot shows on every section header, so the arrow is now a sibling of the heading. */
+  .sa-secheadrow { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .sa-h2arrow { flex: 0 0 auto; display: grid; place-items: center; height: 32px; width: 32px;
+    border-radius: 999px; background: #F4F4F5; color: #0A0A0A; }
   /* The bleed has to survive the rail rules. All three used the padding SHORTHAND, which reset
      padding-left/right to 0, so the first card sat at the screen edge while its heading stayed
      at 16. Each is now axis-specific, and the bleed supplies the horizontal padding. */
@@ -705,8 +764,7 @@
             <div class="sa-pill" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Edit search">
               <span class="sa-pillicon" aria-hidden="true" id="sa-searchicon"></span>
               <span class="sa-pilltext">
-                <span class="sa-l1">Barber</span>
-                <span class="sa-l2">Basel, Sa 2. Aug</span>
+                <span class="sa-l1">Start your search</span>
               </span>
               <button class="sa-menu" id="sa-menu" type="button" aria-label="Open menu" aria-expanded="false"></button>
             </div>
@@ -1053,12 +1111,12 @@
     var h = document.createElement("h2");
     h.className = "sa-h2";
     h.textContent = title;
+    head.appendChild(h);
     var a = document.createElement("span");
     a.className = "sa-h2arrow";
     a.setAttribute("aria-hidden", "true");
     a.innerHTML = svgArrow();
-    h.appendChild(a);
-    head.appendChild(h);
+    head.appendChild(a);
     wrap.appendChild(head);
     var rail = document.createElement("div");
     rail.className = railClass || "sa-rail sa-railbleed";
@@ -1180,9 +1238,82 @@
   }
 
 
+  // Real services, read from the services table this turn: the salon count and the starting price
+  // are both stored values, and the icon is the category the service belongs to.
+  var SERVICES = [
+    { name: "Herrenschnitt",    icon: "clippers", salons: 14, from: 45 },
+    { name: "Kinderschnitt",    icon: "clippers", salons: 11, from: 32 },
+    { name: "Balayage",         icon: "scissors", salons: 9,  from: 180 },
+    { name: "Föhnen & Styling", icon: "scissors", salons: 9,  from: 45 },
+    { name: "Hochsteckfrisur",  icon: "scissors", salons: 9,  from: 95 },
+    { name: "Kopfhaut-Massage", icon: "spa",      salons: 8,  from: 35 },
+    { name: "Coloration",       icon: "scissors", salons: 8,  from: 120 },
+    { name: "Augenbrauen",      icon: "nails",    salons: 8,  from: 15 }
+  ];
+
+  function serviceTileRow() {
+    var f = sectionFrame("Nach Service entdecken", "sa-tilerail sa-railbleed");
+    SERVICES.forEach(function (sv) {
+      var t = document.createElement("div");
+      t.className = "sa-tile";
+      t.setAttribute("role", "link");
+      t.setAttribute("tabindex", "0");
+      t.innerHTML =
+        '<div class="sa-tilebox"><img src="/icons/categories/' + sv.icon + '.png" alt="" aria-hidden="true"></div>' +
+        '<div class="sa-tilename">' + sv.name + '</div>' +
+        '<div class="sa-tilemeta">ab CHF ' + sv.from + '</div>';
+      f.rail.appendChild(t);
+    });
+    return f.wrap;
+  }
+
+  // Owner: "make underneath of this bar, like recently viewed, like if it's stores, like cities."
+  // Cities are in it because the cities table is real, and Basel is the only active one, so the
+  // city chip is honest rather than a list of places with nothing behind them.
+  function recentlyViewed() {
+    var wrap = document.createElement("section");
+    wrap.className = "sa-sec";
+    var head = document.createElement("div");
+    head.className = "sa-secheadrow";
+    var h = document.createElement("h2");
+    h.className = "sa-h2";
+    h.textContent = "Zuletzt angesehen";
+    head.appendChild(h);
+    wrap.appendChild(head);
+
+    var rail = document.createElement("div");
+    rail.className = "sa-recrail sa-railbleed";
+
+    STORES.slice(0, 4).forEach(function (st) {
+      var c = document.createElement("button");
+      c.type = "button";
+      c.className = "sa-rec";
+      c.innerHTML = '<img class="sa-recimg" src="' + st.photo + '" alt="" aria-hidden="true">' +
+        '<span class="sa-rectext"><span class="sa-recname">' + st.name + '</span>' +
+        '<span class="sa-recmeta">' + CATLABEL[st.cat] + ' · ' + st.plz + ' Basel</span></span>';
+      rail.appendChild(c);
+    });
+
+    var city = document.createElement("button");
+    city.type = "button";
+    city.className = "sa-rec";
+    city.innerHTML = '<span class="sa-recicon">' + svgPin() + '</span>' +
+      '<span class="sa-rectext"><span class="sa-recname">Basel</span>' +
+      '<span class="sa-recmeta">' + STORES.length + ' Salons</span></span>';
+    rail.appendChild(city);
+
+    wrap.appendChild(rail);
+    return wrap;
+  }
+
+  function svgPin() {
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>';
+  }
+
   function renderHome() {
     list.innerHTML = "";
     list.appendChild(continuationCard());
+    list.appendChild(recentlyViewed());
 
     // Owner: "make each section like the real home page Top auf Solen, so it actually matches."
     // Every salon rail below is the real SectionFrame + SalonCard pair, same title treatment,
@@ -1215,6 +1346,7 @@
       list.appendChild(f.wrap);
     });
 
+    list.appendChild(serviceTileRow());
     list.appendChild(walkInBand());
     list.appendChild(inspoSection());
     list.appendChild(reviewsSection());
@@ -1332,7 +1464,9 @@
     if (tools) tools.style.display = "none";
 
     list.innerHTML = "";
-    if (slug === "home") { renderHome(); if (pillLine) pillLine.textContent = "Search stores"; return; }
+    // Owner 2026-07-31: "make this search... Start your search. That is the type." Airbnb wording,
+    // and it is honest: on home nothing is searched yet, so the bar states the action.
+    if (slug === "home") { renderHome(); if (pillLine) pillLine.textContent = "Start your search"; return; }
     if (slug === "inspo") { renderInspo(); if (pillLine) pillLine.textContent = "Inspo"; return; }
 
     var mine = STORES.filter(function (s) { return s.cat === slug; });

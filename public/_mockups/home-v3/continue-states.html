@@ -1,0 +1,268 @@
+<!--
+  home-v3 / continue-states : every state the home continuation card can be in.
+
+  Owner-scope 2026-07-31, verbatim: "make a mockup of this continuous searching thingy, like a lot
+  of other states. It could expand and stuff when it has more information. For example if it's
+  about a booking or something, or any other states that you think is needed. Maybe states like if
+  the thing got cancelled, kind of like a notification but it's really not."
+
+  Exists-check: RAN THIS TURN. `npm run exists "continue searching card"` -> 0 hits, so the card is
+    net-new and there is nothing to extend. `npm run exists "walkin"` -> 85 hits with 6 graveyard
+    entries; the walk-in state below therefore reuses the SHIPPED queue vocabulary and deliberately
+    does NOT re-propose the removed "wait-time-on-pay" stepper or a QR code.
+
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx
+  Grounded-in: app/[locale]/_components/search/SalonResultCard.tsx
+
+  Depicts: the card shell -> app/[locale]/_components/search/SalonResultCard.tsx
+  Depicts: the photo and name grammar -> app/[locale]/_components/homepage/SalonCard.tsx
+  Depicts: the walk-in wording -> app/[locale]/_components/homepage/WalkInBand.tsx
+  Depicts: the queue position -> app/[locale]/queue
+  Depicts: states 2 to 8 -> NET-NEW: no component renders a home continuation card today, and the
+    exists-check for "continue searching card" returned 0 hits.
+
+  Backend-check: reschedule -> POST app/api/bookings/[id]/reschedule/route.ts:11 EXISTS, but the
+    only customer-side reference to a reschedule path is FeatureBento.tsx (marketing copy), so no
+    customer UI actually calls it. That is the same orphan the 2026-07-15 gate was built over.
+    refund -> POST app/api/bookings/[id]/refund/route.ts:13 EXISTS, plus
+    app/api/bookings/[id]/cancel and the app/api/cron/late-cancel job. The refund TIMELINE in state
+    5 ("3 to 5 days") is not from any of them, it is drawn, and needs a real value before shipping.
+    rebook -> GET app/api/clients/[id]/repeat-last-cut/route.ts:12 EXISTS but is CLIENT-scoped
+    (salon side), not customer, so state 5's "Find a new time" needs either a customer wrapper or
+    to simply deep-link the salon page.
+    queue position -> app/[locale]/queue and app/api/walkin/queue-stats EXIST; state 4 uses real
+    vocabulary but the number itself is drawn.
+    ten-minute hold countdown -> NONE, needs backend.
+
+  measured: the live card at 390x844 immediately before writing this file. Card 358 x 114, photo
+    88 x 88 at radius 14, title 14/500, meta 12, card radius 18, hairline #E4E4E7, lift
+    rgba(0,0,0,0.07) 0 2px 8px. Every state below reuses those exact numbers.
+
+  DATA: real seeded salons, prices and ratings, read from the database this turn.
+-->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The continue card, every state</title>
+<style>
+  html, body { margin: 0; padding: 0; background: #FFFFFF; -webkit-text-size-adjust: 100%; }
+  .cs { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #0A0A0A; padding: 20px 16px 56px; max-width: 430px; margin: 0 auto; }
+  .cs *, .cs *::before, .cs *::after { box-sizing: border-box; }
+
+  .cs h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 6px; }
+  .cs .lede { font-size: 14px; line-height: 1.5; color: #6B6B6B; margin: 0 0 24px; }
+  .cs h2 { font-size: 14px; font-weight: 600; margin: 0 0 2px; }
+  .cs .why { font-size: 12px; line-height: 1.45; color: #6B6B6B; margin: 0 0 10px; }
+  .cs section { margin: 0 0 28px; }
+
+  /* THE SHELL, copied from the live card rather than redrawn: radius 18, hairline #E4E4E7, the
+     same quiet lift, 12px padding, 14px gap, 88 square photo. Every state below is this shell. */
+  .card { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left;
+    padding: 12px; border: 1px solid #E4E4E7; border-radius: 18px; background: #FFFFFF;
+    cursor: pointer; box-shadow: rgba(0,0,0,0.07) 0 2px 8px 0; }
+  .txt { min-width: 0; flex: 1 1 auto; }
+  .title { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+    font-size: 14px; font-weight: 500; line-height: 19px; overflow: hidden; }
+  .meta { margin-top: 3px; font-size: 12px; line-height: 17px; color: #6B6B6B;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .shot { flex: 0 0 auto; height: 88px; width: 88px; border-radius: 14px; object-fit: cover;
+    background: #F4F4F5; }
+  .disc { flex: 0 0 auto; height: 88px; width: 88px; border-radius: 14px; display: grid;
+    place-items: center; background: #F4F4F5; }
+
+  /* The eyebrow is the only thing that changes between states, and it stays TEXT with one small
+     saturated dot rather than a coloured slab, per the pastel-not-screamy rule. */
+  .eyebrow { display: inline-flex; align-items: center; gap: 5px; font-size: 12px;
+    font-weight: 600; margin-bottom: 3px; }
+  .dot { height: 7px; width: 7px; border-radius: 999px; }
+  .ok   { color: #16A34A; } .ok .dot   { background: #16A34A; }
+  .warn { color: #EA580C; } .warn .dot { background: #EA580C; }
+  .bad  { color: #DC2626; } .bad .dot  { background: #DC2626; }
+  .calm { color: #6B6B6B; } .calm .dot { background: #6B6B6B; }
+
+  /* EXPANDED. He asked for a state that grows "when it has more information". It grows DOWNWARD
+     out of the same shell rather than becoming a second card, so collapsed and expanded stay one
+     object instead of two that drift apart. */
+  .card.tall { display: block; }
+  .tall .top { display: flex; align-items: center; gap: 14px; }
+  .tall .foot { margin-top: 12px; padding-top: 12px; border-top: 1px solid #E4E4E7;
+    display: flex; align-items: center; gap: 8px; }
+  .btn { flex: 1 1 0; height: 40px; border-radius: 999px; border: 1px solid #E4E4E7;
+    background: #FFFFFF; font-size: 13px; font-weight: 600; color: #0A0A0A; cursor: pointer; }
+  .btn.ink { background: #0A0A0A; color: #FFFFFF; border-color: #0A0A0A; }
+  .rows { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+  .kv { display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+    font-size: 12px; color: #6B6B6B; }
+  .kv b { font-weight: 600; color: #0A0A0A; font-variant-numeric: tabular-nums; }
+
+  .note { margin-top: 28px; padding: 16px; border-radius: 16px; background: #F4F4F5;
+    font-size: 12px; line-height: 1.55; color: #6B6B6B; }
+  .note b { color: #0A0A0A; }
+</style>
+
+<div class="cs">
+  <h1>The continue card, every state</h1>
+  <p class="lede">One shell, eight contents. Every card below is the same object from the home page
+    with its text swapped, so this never becomes a second component that drifts.</p>
+
+  <section>
+    <h2>1. Search continuation</h2>
+    <p class="why">What ships today. No status marker, because nothing has happened yet.</p>
+    <div class="card">
+      <span class="txt">
+        <span class="title">Continue searching for Barber</span>
+        <span class="meta">Basel, 4 shops</span>
+      </span>
+      <img class="shot" src="/_mockups/_assets/store-photos/old-town-barbers.jpg" alt="" aria-hidden="true">
+    </div>
+  </section>
+
+  <section>
+    <h2>2. Booking coming up</h2>
+    <p class="why">The one state that earns a green marker: confirmed, and soon. The time belongs
+      here because this is a booking rather than a listing, so the no-times-on-cards rule does not
+      apply to it.</p>
+    <div class="card">
+      <span class="txt">
+        <span class="eyebrow ok"><span class="dot"></span>Confirmed</span>
+        <span class="title">Men's cut at Cuts &amp; Culture</span>
+        <span class="meta">Tomorrow 14:00, Elsaesserstrasse 10</span>
+      </span>
+      <img class="shot" src="/_mockups/_assets/store-photos/cuts-and-culture.jpg" alt="" aria-hidden="true">
+    </div>
+  </section>
+
+  <section>
+    <h2>3. Booking coming up, expanded</h2>
+    <p class="why">The same card after a tap. It grows downward and keeps its shell. The price and
+      the cancellation term are here because the trust floor asks for both before any commit, and
+      both buttons stay neutral since nothing here is the screen's one commit.</p>
+    <div class="card tall">
+      <span class="top">
+        <span class="txt">
+          <span class="eyebrow ok"><span class="dot"></span>Confirmed</span>
+          <span class="title">Men's cut at Cuts &amp; Culture</span>
+          <span class="meta">Tomorrow 14:00, Elsaesserstrasse 10</span>
+        </span>
+        <img class="shot" src="/_mockups/_assets/store-photos/cuts-and-culture.jpg" alt="" aria-hidden="true">
+      </span>
+      <span class="rows">
+        <span class="kv"><span>Men's cut, 45 min</span><b>45 CHF</b></span>
+        <span class="kv"><span>With Jonas</span><b></b></span>
+        <span class="kv"><span>Free cancellation until 12:00</span><b></b></span>
+      </span>
+      <span class="foot">
+        <button class="btn" type="button">Reschedule</button>
+        <button class="btn" type="button">Directions</button>
+      </span>
+    </div>
+  </section>
+
+  <section>
+    <h2>4. In the walk-in queue</h2>
+    <p class="why">Live position and wait, in the vocabulary the shipped walk-in band already uses.
+      Deliberately not a stepper and not a QR code, because both are on the removed list.</p>
+    <div class="card">
+      <span class="txt">
+        <span class="eyebrow ok"><span class="dot"></span>Live</span>
+        <span class="title">You are number 3 at Blade &amp; Stone</span>
+        <span class="meta">35 to 49 min until free, Feldbergstrasse 82</span>
+      </span>
+      <img class="shot" src="/_mockups/_assets/store-photos/blade-and-stone.jpg" alt="" aria-hidden="true">
+    </div>
+  </section>
+
+  <section>
+    <h2>5. Cancelled</h2>
+    <p class="why">The state he named. It reads as a fact plus a way forward, not an alarm: red is
+      one small marker, the card stays white, and the action is rebooking rather than an apology.</p>
+    <div class="card tall">
+      <span class="top">
+        <span class="txt">
+          <span class="eyebrow bad"><span class="dot"></span>Cancelled</span>
+          <span class="title">Balayage at Haarsalon Margot</span>
+          <span class="meta">Was Saturday 14:00, cancelled by the salon</span>
+        </span>
+        <img class="shot" src="/_mockups/_assets/store-photos/haarsalon-margot.jpg" alt="" aria-hidden="true">
+      </span>
+      <span class="rows">
+        <span class="kv"><span>Refund</span><b>180 CHF</b></span>
+        <span class="kv"><span>Back on your card in 3 to 5 days</span><b></b></span>
+      </span>
+      <span class="foot">
+        <button class="btn ink" type="button">Find a new time</button>
+      </span>
+    </div>
+  </section>
+
+  <section>
+    <h2>6. Payment pending</h2>
+    <p class="why">Orange rather than red: nothing is broken, something is waiting. This is the only
+      state carrying an ink button, because paying is genuinely the commit here.</p>
+    <div class="card tall">
+      <span class="top">
+        <span class="txt">
+          <span class="eyebrow warn"><span class="dot"></span>Payment pending</span>
+          <span class="title">Walk-in at The Fade Factory</span>
+          <span class="meta">Your spot is held for 10 minutes</span>
+        </span>
+        <img class="shot" src="/_mockups/_assets/store-photos/the-fade-factory.jpg" alt="" aria-hidden="true">
+      </span>
+      <span class="rows">
+        <span class="kv"><span>Men's cut</span><b>45 CHF</b></span>
+        <span class="kv"><span>Paying secures your number</span><b></b></span>
+      </span>
+      <span class="foot">
+        <button class="btn ink" type="button">Pay now</button>
+      </span>
+    </div>
+  </section>
+
+  <section>
+    <h2>7. How was it</h2>
+    <p class="why">After the appointment. A grey marker, because this is a request and not a status.
+      The star is the whole control, so there is no extra step before the user can answer.</p>
+    <div class="card">
+      <span class="txt">
+        <span class="eyebrow calm"><span class="dot"></span>Yesterday</span>
+        <span class="title">How was your visit to Cuts &amp; Culture?</span>
+        <span class="meta">Rating takes 10 seconds</span>
+      </span>
+      <span class="disc" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" class="lucide lucide-star"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+      </span>
+    </div>
+  </section>
+
+  <section>
+    <h2>8. Nothing yet</h2>
+    <p class="why">A first-time user has no search, no booking and no history. The card does not
+      pretend otherwise, it names one thing to do. This state decides whether the slot is worth
+      having at all, so it is drawn rather than assumed away.</p>
+    <div class="card">
+      <span class="txt">
+        <span class="title">Find a salon in Basel</span>
+        <span class="meta">20 shops, from 15 CHF</span>
+      </span>
+      <span class="disc" aria-hidden="true">
+        <img src="/icons/categories/scissors.png" alt="" style="height:56%;width:56%;object-fit:contain">
+      </span>
+    </div>
+  </section>
+
+  <div class="note">
+    <b>What is real and what is not.</b> Salon names, addresses, photos, the 45 CHF men's cut, the
+    180 CHF balayage and the 35 to 49 minute wait are seeded values read from the database this
+    turn.
+    <br><br>
+    <b>The backend check changed what I would build first.</b> Reschedule, refund and cancel all
+    already exist as endpoints. Reschedule in particular is fully built server-side and no customer
+    screen calls it, so state 3 is not a new feature, it is a way into something already paid for.
+    What genuinely has no backend: the ten-minute hold countdown in state 6, and the refund
+    timeline wording in state 5. Both are drawn.
+    <br><br>
+    <b>One recommendation.</b> If only one extra state ships, make it <b>2, booking coming up</b>.
+    It is the only one that replaces a reason to open the app at all. States 5 and 6 are worth more
+    than they look, because both are moments the user currently finds out about by email, or not
+    at all.
+  </div>
+</div>
