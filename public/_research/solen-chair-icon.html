@@ -87,6 +87,19 @@
     </table>
     </div>
     <p class="meta">Two of these needed a change in the render, which is free. The red needed a new source picture, because no amount of light pulls colour out of a dull texture.</p>
+    <p class="sub">Every figure on this page is measured on frame 1 of each clip at 180x162, with transparent pixels excluded, so the numbers describe the object and not the empty canvas around it.</p>
+    <div class="tbl-wrap" style="margin-top:12px">
+    <table>
+      <tr><th style="width:170px">Clip</th><th>Brightness</th><th>Colour strength</th><th>Red saturation</th><th>Red brightness</th></tr>
+      <tr><td>Airbnb, homes</td><td>0.480</td><td>0.271</td><td>0.928</td><td>0.679</td></tr>
+      <tr><td>Airbnb, experiences</td><td>0.413</td><td>0.731</td><td>0.783</td><td>0.722</td></tr>
+      <tr><td>ours, build 1</td><td>0.309</td><td>0.656</td><td>0.923</td><td>0.568</td></tr>
+      <tr><td>ours, barber bright</td><td>0.616</td><td>0.588</td><td>0.811</td><td>0.909</td></tr>
+      <tr><td>ours, barber calmer</td><td>0.562</td><td>0.599</td><td>0.818</td><td>0.839</td></tr>
+      <tr><td>ours, coiffeur</td><td>0.720</td><td>0.405</td><td>0.550</td><td>0.915</td></tr>
+    </table>
+    </div>
+    <p class="meta">Both barbers are on the page so you can pick. Brighter is further from Airbnb's own level but closer to what you asked for.</p>
   </section>
 
   <section>
@@ -113,7 +126,7 @@
   <section>
     <h2>Still honest about what is not right</h2>
     <ul>
-      <li>The barber now sits brighter than Airbnb, not level with it. That is what you asked for, but say the word and I will bring it down a notch.</li>
+      <li>The coiffeur is still the brightest thing here at 0.72, because pink, cream and white all sit high to begin with. Pulling it down further starts greying the pink, so it stays until you say otherwise.</li>
       <li>No Safari file for either. This Mac's encoder refuses transparent HEVC, so today they play in Chrome and Firefox only.</li>
       <li>Each mesh is reconstructed from one picture, so the back of each chair is guessed and reads softer than the front. Feeding three views fixes it.</li>
       <li>The coiffeur basin is a first attempt at the idea, not a settled design. If you like the direction, the next pass sharpens it.</li>
@@ -129,7 +142,8 @@ const CLIPS = [
   { src: A + "/house-twirl.webm", label: "Airbnb, homes" },
   { src: A + "/balloon-twirl.webm", label: "Airbnb, experiences" },
   { src: A + "/consierge-twirl.webm", label: "Airbnb, services" },
-  { src: S + "/barber-hero.webm", label: "Solen, barber" },
+  { src: S + "/barber-hero.webm", label: "Solen, barber bright" },
+  { src: S + "/barber-calm.webm", label: "Solen, barber calmer" },
   { src: S + "/coiffeur-hero.webm", label: "Solen, coiffeur" }
 ];
 const stage = document.getElementById("stage");
