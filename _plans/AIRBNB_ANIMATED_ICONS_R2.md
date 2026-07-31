@@ -811,3 +811,27 @@ tilt, and it is still laggy rather than smooth.
       are (a) drop the drawn wind and use the version where the air is modelled INTO the mesh, which he
       rejected for looking like a robot arm, or (b) accept a small mismatch, or (c) a reference for the
       fade specifically, the way his icon reference fixed the arc shape in one round.
+
+## Round 23: no, I had not measured the AIR. He asked directly, and the answer was no.
+
+Owner: "Still, the air lags out. Did you look at it frame by frame again or no?"
+
+Honest answer: no. Every smoothness number I had quoted was the WHOLE FRAME, which is dominated by
+the dryer body, so the air could jump while the clip looked smooth. Isolating it changed the picture.
+
+- [x] The air measured on its own, verified: rendered a second no-air pass and diffed frame by frame
+      to isolate just the wind, on all 210 frames. First reading: **3 real jumps**, f73 and f91 each
+      +127px of area, and f158 losing 264px at once.
+- [x] Two causes found and fixed:
+      (1) a `length < 12` guard skipped a stroke entirely until it grew past 12px, then drew it at
+      full 12px in a single frame. That guard, not the ramp, was the birth pop. Lowered to 2px.
+      (2) every stroke's span was `1.0 - birth`, so later strokes were compressed and all three died
+      within four frames at the end, the air falling 434 to 232 to 94 to 0. Every stroke now gets the
+      same life length and finishes inside the window.
+- [x] A CORRECTION to my own measurement, which matters more than the fixes: the remaining "jumps"
+      were an artefact of the RULER. Counting pixels above an alpha threshold steps by construction,
+      because a fading stroke flips its whole footprint from uncounted to counted in one frame.
+      Re-measured by total alpha WEIGHT, which is continuous: **mean change 1551 per frame, max 4395,
+      ratio 2.8x, and ZERO frames changing more than 3x the mean.** The air ramps over 108 frames,
+      1.80 s. By the honest metric it is smooth.
+- [x] Whole clip: mean jump 2.45, loop closes byte-identical, 210 frames at 60fps.

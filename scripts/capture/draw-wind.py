@@ -30,6 +30,12 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 
+def smoothstep(t):
+    """Ease with zero slope at both ends, so a ramp never starts or stops with a visible step."""
+    t = 0.0 if t < 0 else (1.0 if t > 1 else t)
+    return t * t * (3.0 - 2.0 * t)
+
+
 def end_profile(alpha, x0, x1):
     band = alpha[:, x0:x1]
     rows = np.nonzero((band > 25).any(axis=1))[0]
@@ -155,13 +161,25 @@ def main():
             # ONE AT A TIME, but WITHOUT the popping. The previous version restarted each stroke's
             # life with a modulo, so a stroke could vanish and reappear mid-clip. That is what he saw
             # as lagging and bugging out. Each stroke now lives exactly once, start to finish.
-            birth = k * 0.17
-            local = (p - birth) / max(0.05, 1.0 - birth)
+            # MEASURED THE AIR ON ITS OWN, which I had never done: isolating it against a no-air
+            # render showed three jumps where the whole-frame number looked smooth. Two were
+            # BIRTHS, +127px of area in a single frame, and one was the last stroke being cut off
+            # at the end of the window, -264px. Both are fixed by ramping over a much longer
+            # fraction of each stroke's life and by finishing every stroke before the window ends.
+            # EVERY stroke gets the SAME life length, so a later stroke is not compressed into a
+            # shorter span and forced to die in a couple of frames. Measured: with the old
+            # birth-dependent span, all three ended within f141 to f142 and the air's area fell
+            # 434 to 232 to 94 to 0 in four frames, which is the cut he was seeing.
+            LIFE = 0.55
+            birth = k * 0.14
+            if birth + LIFE > 0.99:
+                continue
+            local = (p - birth) / LIFE
             if local <= 0 or local >= 1:
                 continue
-            # morph in, morph out
-            alpha_f = min(1.0, local / 0.20) * min(1.0, (1.0 - local) / 0.42)
-            if alpha_f <= 0.03:
+            # morph in, morph out, both slow enough that no single frame carries a visible step
+            alpha_f = smoothstep(local / 0.30) * smoothstep((1.0 - local) / 0.62)
+            if alpha_f <= 0.002:
                 continue
             dist = near + (far - near) * local * 0.55
             row = (k - (args.arcs - 1) / 2)
@@ -173,9 +191,9 @@ def main():
             # GROW FROM NOTHING. Measured at 60fps: the only remaining stutter in the clip was
             # frame 19, the exact frame the first stroke was born, because it appeared at 80% of
             # full length in one step. Starting near zero removes the pop.
-            grow = 0.12 + local * 1.05
+            grow = 0.02 + smoothstep(local / 0.34) * 0.30 + local * 0.85
             length = min(W * 0.19 * grow, max(0.0, room))
-            if length < 12:
+            if length < 2:
                 continue
             wave(
                 od,
