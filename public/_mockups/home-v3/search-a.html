@@ -702,6 +702,45 @@
     display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; overflow: hidden; }
 
   /* Inspo, the real card */
+  /* ===== THE TWO ROWS THE REAL INSPO PAGE HAS ==============================
+     Owner: "you invented the whole thing. Make it more like the ACTUAL page, because you're
+     gonna forget what's implemented. And put the filters and the for-you thingy in the Inspo
+     mockup so I can actually visualize it, with the same shadow as the other category pages."
+     He is right that I invented: my Inspo tab rendered price-band rails and had NEITHER of the
+     two rows /de/inspo actually ships. Both are copied by measurement below, at vw=375:
+       photo category row  button 80 wide, photo 66 tall radius 16, gap 12, label 12px;
+                           selected label = pill on #F4F4F5 at 600; idle = 500 in #6B6B6B
+       filter chip row     leading 40x40 button radius 14, chips h40 radius 16 padding 0 14,
+                           12px/500 in #6B6B6B, 1px #E4E4E7, gap 12
+     THE ONE DELIBERATE CHANGE, and it is the one he asked for: the real rows are FLAT. Both now
+     carry the same --lift the other category pages' filter pills use, so Inspo's controls sit at
+     the same depth as every other surface instead of being the one flat screen. */
+  /* align-self + width because #sa-list is a CENTERING flex column: without them these rows
+     size to their content and centre, so they overflow BOTH edges and the first item renders
+     off-screen left. Every .sa-sec already declares this; my two new rows did not. */
+  .sa-inscat { align-self: stretch; width: 100%; display: flex; align-items: flex-start; gap: 12px; margin-top: 10px;
+    overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+  .sa-inscat::-webkit-scrollbar { display: none; }
+  .sa-inscatb { flex: 0 0 auto; width: 80px; display: flex; flex-direction: column;
+    align-items: center; gap: 6px; border: 0; background: transparent; padding: 0; cursor: pointer; }
+  .sa-inscatimg { width: 100%; height: 66px; border-radius: 16px; object-fit: cover;
+    background: #F4F4F5; display: block; box-shadow: var(--lift); }
+  .sa-inscatlab { width: 100%; text-align: center; font-size: 12px; font-weight: 500;
+    color: #6B6B6B; }
+  .sa-inscatb[aria-selected="true"] .sa-inscatlab { border-radius: 9999px; background: #F4F4F5;
+    padding: 4px 0; font-weight: 600; color: #0A0A0A; box-shadow: var(--lift); }
+
+  .sa-insfilters { align-self: stretch; width: 100%; display: flex; align-items: center; gap: 12px; margin-top: 12px;
+    overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+  .sa-insfilters::-webkit-scrollbar { display: none; }
+  .sa-insfbtn { flex: 0 0 auto; display: grid; place-items: center; height: 40px; width: 40px;
+    border-radius: 14px; border: 1px solid #E4E4E7; background: #FFFFFF; color: #6B6B6B;
+    cursor: pointer; box-shadow: var(--lift); }
+  .sa-inschipf { flex: 0 0 auto; display: inline-flex; align-items: center; height: 40px;
+    padding: 0 14px; border-radius: 16px; border: 1px solid #E4E4E7; background: #FFFFFF;
+    font-size: 12px; font-weight: 500; color: #6B6B6B; white-space: nowrap; cursor: pointer;
+    box-shadow: var(--lift); }
+
   .sa-insrail { margin-top: 12px; display: flex; gap: 16px; padding-top: 8px; padding-bottom: 8px;
     overflow-x: auto; overflow-y: hidden; scrollbar-width: none; scroll-snap-type: x proximity; }
   .sa-insrail::-webkit-scrollbar { display: none; }
@@ -1467,29 +1506,69 @@
     return f.wrap;
   }
 
+  // The five photo categories the live page ships, with their real thumbnails, and the nine real
+  // filter chips read off /de/inspo this turn. Nothing invented: the labels, the images and the
+  // order are all what the page renders today.
+  var INSPO_CATS = [
+    { label: "For you",  id: "3a601c11-edb4-439b-8f47-9594fb732b05", on: true },
+    { label: "Hair",     id: "a1eeda99-3128-4b0a-a4e0-2d32dae3c560" },
+    { label: "Nails",    id: "5056eb3f-f341-4048-be4b-9b2d64b8bd57" },
+    { label: "Lashes",   id: "8277bd08-d847-495c-b9bb-9d4a47cb45b2" },
+    { label: "Brows",    id: "f7024145-e54a-4d5c-8192-a8ec9ad3a4be" }
+  ];
+  var INSPO_FILTERS = ["Defined Brows", "Glossy Finish", "Full Brows", "Short Hair",
+    "Brow Shaping", "Lash Extensions", "Gel Nails", "Long Hair", "Textured"];
+
   function renderInspo() {
     list.innerHTML = "";
-    var byPrice = INSPO.slice().sort(function (a, b) { return a.price - b.price; });
-    var cheap = byPrice.filter(function (p) { return p.price < 60; });
-    var mid = byPrice.filter(function (p) { return p.price >= 60 && p.price < 100; });
-    var high = byPrice.filter(function (p) { return p.price >= 100; });
 
-    var blocks = [
-      inspoRail("For you", INSPO, null),
-      inspoRail("Under 60 CHF", cheap, null),
-      inspoRail("60 to 100 CHF", mid, null),
-      inspoRail("From 100 CHF", high, null)
-    ];
-    blocks.forEach(function (b) { if (b) list.appendChild(b); });
+    var cats = document.createElement("div");
+    cats.className = "sa-inscat";
+    INSPO_CATS.forEach(function (c) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "sa-inscatb";
+      b.setAttribute("aria-selected", c.on ? "true" : "false");
+      b.innerHTML = '<img class="sa-inscatimg" src="/_mockups/_assets/inspo/' + c.id + '.jpg" alt="" aria-hidden="true">' +
+        '<span class="sa-inscatlab">' + c.label + '</span>';
+      b.addEventListener("click", function () {
+        cats.querySelectorAll(".sa-inscatb").forEach(function (x) { x.setAttribute("aria-selected", "false"); });
+        b.setAttribute("aria-selected", "true");
+      });
+      cats.appendChild(b);
+    });
+    list.appendChild(cats);
 
-    // A look is only useful if it lands on somewhere to book it, so Inspo carries salon rails and
-    // real reviews like every other surface now.
-    var byRating = STORES.slice().sort(function (a, b) { return Number(b.rating) - Number(a.rating); });
-    var f = sectionFrame("Salons for these looks", "sa-rail sa-railbleed");
-    byRating.filter(function (s) { return s.cat === "barbershop" || s.cat === "coiffeur"; })
-      .slice(0, 6).forEach(function (s) { f.rail.appendChild(railCard(s)); });
-    list.appendChild(f.wrap);
-    list.appendChild(reviewsSection());
+    var filters = document.createElement("div");
+    filters.className = "sa-insfilters";
+    var fb = document.createElement("button");
+    fb.type = "button";
+    fb.className = "sa-insfbtn";
+    fb.setAttribute("aria-label", "Open filters");
+    fb.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sliders-horizontal" aria-hidden="true"><path d="M10 5H3"/><path d="M12 19H3"/><path d="M14 3v4"/><path d="M16 17v4"/><path d="M21 12h-9"/><path d="M21 19h-5"/><path d="M21 5h-7"/><path d="M8 10v4"/><path d="M8 12H3"/></svg>';
+    filters.appendChild(fb);
+    INSPO_FILTERS.forEach(function (t) {
+      var c = document.createElement("button");
+      c.type = "button";
+      c.className = "sa-inschipf";
+      c.textContent = t;
+      filters.appendChild(c);
+    });
+    list.appendChild(filters);
+
+    // The feed itself is the real masonry, not rails. My price bands are gone.
+    var grid = document.createElement("div");
+    grid.className = "sa-inspo";
+    var TALL = [0, 3, 4, 7];
+    INSPO.concat(INSPO).forEach(function (p, i) {
+      var cell = document.createElement("div");
+      cell.className = "sa-inspocell" + (TALL.indexOf(i % 8) !== -1 ? " is-tall" : "");
+      cell.setAttribute("role", "link");
+      cell.setAttribute("tabindex", "0");
+      cell.innerHTML = '<img class="sa-inspophoto" src="/_mockups/_assets/inspo/' + p.id + '.jpg" alt="" loading="lazy">';
+      grid.appendChild(cell);
+    });
+    list.appendChild(grid);
   }
 
   // ===== EVERY CATEGORY PAGE IS NOW HOME-LIKE ===============================
