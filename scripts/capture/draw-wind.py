@@ -135,6 +135,31 @@ def main():
     move_from, move_to = args.hold_in, total - args.hold_out
     drawn = 0
 
+    # THE TELEPORT. Deciding the nozzle side independently on each frame let it FLIP: measured 10
+    # flips across 210 frames, including six frames in a row alternating every single frame. That
+    # is the air jumping from one side of the dryer to the other mid-turn.
+    # Fix in two parts. First, smooth the per-frame decision with a median filter so a single noisy
+    # frame cannot flip it. Second, LOCK the side to whatever the icon shows at rest, and simply
+    # fade the air out on the frames where the nozzle has turned to the other side, rather than
+    # moving the air across. The air now only ever appears on one side of the icon.
+    raw = []
+    for name in files:
+        al = np.array(Image.open(os.path.join(args.frames, name)).convert("RGBA"))[:, :, 3]
+        r = nozzle_point(al, args.side)
+        raw.append(None if r is None else r[2])
+    W_MED = 9
+    smoothed = []
+    for i in range(len(raw)):
+        win = [v for v in raw[max(0, i - W_MED // 2):i + W_MED // 2 + 1] if v is not None]
+        smoothed.append(max(set(win), key=win.count) if win else None)
+    locked = smoothed[move_from] if smoothed[move_from] is not None else (smoothed[0] or -1)
+    agree = [1.0 if v == locked else 0.0 for v in smoothed]
+    # ease the gate so the air fades out and back rather than blinking
+    gate = []
+    for i in range(len(agree)):
+        win = agree[max(0, i - 6):i + 7]
+        gate.append(sum(win) / len(win))
+
     for i, name in enumerate(files):
         path = os.path.join(args.frames, name)
         im = Image.open(path).convert("RGBA")
@@ -145,10 +170,14 @@ def main():
             continue
         p = (i - move_from) / max(1, (move_to - 1 - move_from))
 
-        np_ = nozzle_point(a, args.side)
+        g = gate[i]
+        if g <= 0.02:
+            continue                                  # nozzle is facing the other way: no air
+        np_ = nozzle_point(a, "left" if locked < 0 else "right")
         if np_ is None:
             continue
         nx, ny, d = np_
+        d = locked                                    # never let the side move
         W, _ = im.size
 
         overlay = Image.new("RGBA", im.size, (0, 0, 0, 0))
@@ -178,7 +207,7 @@ def main():
             if local <= 0 or local >= 1:
                 continue
             # morph in, morph out, both slow enough that no single frame carries a visible step
-            alpha_f = smoothstep(local / 0.30) * smoothstep((1.0 - local) / 0.62)
+            alpha_f = smoothstep(local / 0.30) * smoothstep((1.0 - local) / 0.62) * smoothstep(g)
             if alpha_f <= 0.002:
                 continue
             dist = near + (far - near) * local * 0.55

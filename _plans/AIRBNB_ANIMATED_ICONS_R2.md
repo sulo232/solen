@@ -861,3 +861,23 @@ finding none, because there were none.
       is unchanged this round.
 - [x] Both clips re-rendered and re-encoded, verified: commit 7575e510a, 210 frames / 60fps / 3.5s,
       loops close byte-identical.
+
+## Round 25: the air was TELEPORTING across the dryer, 10 times
+
+Owner: "the air goes left to right while the blow dryer is turning."
+
+He described the defect exactly and it was measurable in one pass.
+
+- [x] Cause found and counted, verified: `nozzle_point(auto)` re-decided which end was the nozzle on
+      EVERY frame independently, using the handle as the landmark. Running that decision over all 210
+      frames of the dryer clip gave **10 side flips**, including frames 122 to 128 alternating on
+      almost every single frame. Each flip teleports the air from one side of the icon to the other.
+      That is what he saw, and it is also part of what he had been calling lag.
+- [x] Fixed in two parts, verified: the per-frame decision is now median-filtered over 9 frames so one
+      noisy frame cannot flip it, and the side is then **LOCKED** to whatever the icon shows at rest.
+      On frames where the nozzle has genuinely turned to face the other way, the air FADES OUT through
+      a smoothed gate instead of moving across.
+- [x] Re-measured on the rendered clip by comparing the air's centroid to the dryer's, every frame:
+      **0 side flips** (was 10), and the air appears on **one side only**. Mean whole-clip jump 2.07,
+      loop closes byte-identical, 210 frames at 60fps.
+- [x] The drawing itself is untouched, since he said the way the air comes out is perfect.
