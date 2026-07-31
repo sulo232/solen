@@ -444,7 +444,10 @@
      2.25 matters more than 5/4 he will say so, and until he does, 1.72 is the answer. */
   .sa-photo { display: block; width: 100%; aspect-ratio: 5 / 4; border-radius: 22px;
     object-fit: cover; background: #F4F4F5; }
-  .sa-body { margin-top: 8px; min-width: 0; padding: 0 2px; }
+  /* The real card's body, measured on the running app: mt-2, 2px side pad, 2px row gap, and
+     THREE rows, not two. Mine had name+rating then category+price and no postal line at all. */
+  .sa-body { margin-top: 8px; min-width: 0; padding: 0 2px;
+    display: flex; flex-direction: column; gap: 2px; }
   .sa-line { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
   .sa-name { margin: 0; font-size: 14px; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em;
     color: #0A0A0A; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -455,13 +458,19 @@
      the section note are all meta, so they take the contract meta size, 12. The filter pill went
      the other way, up to 14, because the contract says never <=13 on a button and 13 was already
      under that floor. Result measured below: 18 / 16 / 14 / 12, four sizes. */
+  /* 13px, matching the real card. Owner: "make like these cards, everything ... actually like
+     the home page." Measured on the running app: the rating span is 13px tabular with an 11px
+     FILLED star; mine was 12px. */
   .sa-rate { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 3px;
-    font-size: 12px; font-weight: 400; color: #6B6B6B; font-variant-numeric: tabular-nums; }
+    font-size: 13px; font-weight: 400; color: #6B6B6B; font-variant-numeric: tabular-nums; }
   .sa-star { color: #FFC32B; display: flex; }
   .sa-cat2 { margin-top: 2px; font-size: 12px; font-weight: 400; line-height: 1.35; color: #6B6B6B;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .sa-meta2 { font-size: 12px; font-weight: 400; line-height: 1.35; color: #6B6B6B;
     min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sa-placerow { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+  .sa-place { min-width: 0; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis;
+    white-space: nowrap; font-size: 12px; line-height: 1.35; color: #6B6B6B; }
   .sa-price { flex: 0 0 auto; font-size: 12px; font-weight: 400; line-height: 1.35; color: #6B6B6B;
     font-variant-numeric: tabular-nums; white-space: nowrap; }
 
@@ -624,12 +633,7 @@
     white-space: nowrap; font-size: 12px; color: #6B6B6B; }
   .sa-insprice { flex: 0 0 auto; font-size: 12px; font-weight: 600; color: #0A0A0A; }
 
-  /* Honest empty state for a city with no salons yet */
-  .sa-cityempty { display: flex; flex-direction: column; justify-content: center; gap: 6px;
-    flex: 0 0 auto; width: calc((100vw - 44px) / 1.5); min-height: 226px; padding: 16px;
-    border-radius: 22px; border: 1px dashed #E4E4E7; background: #F4F4F5; }
-  .sa-cityname { font-size: 14px; font-weight: 600; color: #0A0A0A; }
-  .sa-citynote { font-size: 12px; color: #6B6B6B; line-height: 1.35; }
+
   .sa-h2 { font-size: 18px; font-weight: 600; line-height: 24px; letter-spacing: -0.01em;
     margin: 0 0 10px; }
   .sa-thin { margin: -6px 0 10px; font-size: 12px; font-weight: 400;
@@ -777,7 +781,10 @@
     { slug: "barbershop", label: "Barber",   iconSrc: "/icons/categories/clippers.png" },
     { slug: "nails",      label: "Nails",    iconSrc: "/icons/categories/nails.png" },
     { slug: "spa",        label: "Spa",      iconSrc: "/icons/categories/spa.png" },
-    { slug: "walkin",     label: "Walk-in",  iconSrc: "/icons/categories/walkin.png" },
+    // Owner 2026-07-31: "remove also the walk in in the category icons." It was never a peer
+    // category: the real grid (MobileCategoriesRow.tsx:47) routes its Walk-in tile to
+    // barbershop?walk_in=true, so it is a FILTER on Barber. Removed here, and the walk-in
+    // treatment moves inside the Barber section per his next ask.
     { slug: "inspo",      label: "Inspo",    iconSrc: "/icons/categories/map.png" }
   ];
   var ACTIVE = "barbershop";
@@ -937,16 +944,22 @@
     rate.appendChild(st);
     rate.appendChild(document.createTextNode(Math.round(parseFloat(s.rating) * 10) / 10));
     l1.appendChild(nm); l1.appendChild(rate);
+    // Owner: "make like these cards, everything, the star icon and also the text below it,
+    // actually like the home page." The real card carries THREE rows and mine carried two: it
+    // had no postal line, and it put the price next to the category instead of next to the place.
     var l2 = document.createElement("div");
-    l2.className = "sa-line";
-    var ad = document.createElement("div");
-    ad.className = "sa-meta2";
-    ad.textContent = CATLABEL[s.cat];
-    var pr = document.createElement("div");
+    l2.className = "sa-meta2";
+    l2.textContent = CATLABEL[s.cat];
+    var l3 = document.createElement("div");
+    l3.className = "sa-placerow";
+    var pl = document.createElement("span");
+    pl.className = "sa-place";
+    pl.textContent = s.plz + " Basel";
+    var pr = document.createElement("span");
     pr.className = "sa-price";
     pr.textContent = s.price + " CHF";
-    l2.appendChild(ad); l2.appendChild(pr);
-    body.appendChild(l1); body.appendChild(l2);
+    l3.appendChild(pl); l3.appendChild(pr);
+    body.appendChild(l1); body.appendChild(l2); body.appendChild(l3);
     a.appendChild(im); a.appendChild(body);
     return a;
   }
@@ -1017,15 +1030,6 @@
     { id: "f5bcaae3-9d70-46a9-ab3c-c2d0c383721c", title: "Cornrow Braids with Low Taper Fade and Defined Beard", who: "Terrion Arnold", price: 140 }
   ];
 
-  // cities table, read this turn: 7 rows, exactly ONE with is_active true.
-  var CITIES = [
-    { name: "Basel",   active: true },
-    { name: "Zürich",  active: false },
-    { name: "Bern",    active: false },
-    { name: "Luzern",  active: false },
-    { name: "Genf",    active: false },
-    { name: "Lausanne", active: false }
-  ];
 
   // Named apart from the existing no-arg svgStar(): declaring a second svgStar hoisted over it
   // and every pre-existing call site started emitting width="undefined", which makes an SVG fall
@@ -1171,28 +1175,6 @@
     return f.wrap;
   }
 
-  function citySection() {
-    var f = sectionFrame("Städte", "sa-rail sa-railbleed");
-    CITIES.forEach(function (city) {
-      if (city.active) {
-        var rows = STORES.slice(0, 3);
-        rows.forEach(function (s) { f.rail.appendChild(railCard(s)); });
-      } else {
-        // ASK 8, and it cannot be built truthfully. cities has 7 rows and exactly ONE is
-        // is_active; all 28 salon rows are Basel. A "Top in Zurich" rail has nothing real to
-        // put in it, and inventing salons is the no-fabrication rule's first line. This renders
-        // the FORMAT with an honest sub-state so the layout is judgable, and the closing report
-        // names the three ways to unblock it.
-        var e = document.createElement("div");
-        e.className = "sa-cityempty";
-        e.innerHTML = '<span class="sa-cityname">Top in ' + city.name + '</span>' +
-          '<span class="sa-citynote">Noch keine Salons. ' + city.name +
-          ' ist in der Städte-Tabelle angelegt, aber nicht aktiv.</span>';
-        f.rail.appendChild(e);
-      }
-    });
-    return f.wrap;
-  }
 
   function renderHome() {
     list.innerHTML = "";
@@ -1225,7 +1207,6 @@
     list.appendChild(walkInBand());
     list.appendChild(inspoSection());
     list.appendChild(reviewsSection());
-    list.appendChild(citySection());
   }
 
   // ===== INSPO ============================================================
