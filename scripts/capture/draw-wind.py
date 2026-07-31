@@ -170,7 +170,11 @@ def main():
             # which is what he saw going out of the corner. Clamp the length to the room actually
             # left between the stroke's start and the border, with a small margin.
             room = (x_start - 6) if d < 0 else (W - 6 - x_start)
-            length = min(W * 0.19 * (0.80 + local * 0.30), max(0.0, room))
+            # GROW FROM NOTHING. Measured at 60fps: the only remaining stutter in the clip was
+            # frame 19, the exact frame the first stroke was born, because it appeared at 80% of
+            # full length in one step. Starting near zero removes the pop.
+            grow = 0.12 + local * 1.05
+            length = min(W * 0.19 * grow, max(0.0, room))
             if length < 12:
                 continue
             wave(
