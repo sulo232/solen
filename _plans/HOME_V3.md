@@ -106,3 +106,26 @@ any edit this turn, not after.
 - [ ] Something will not scroll. Needs reproducing before guessing.
 - [ ] Remove the line separating the header from the cards.
 - [ ] HARDEN the plan-first habit. NOT DONE THIS TURN and not claimed: no gate written for it here.
+
+## 2026-07-31 , owner's standing order: MOCKUPS ONLY, no real code
+
+Owner, verbatim: "Don't implement anything yet in the real home page. Let's make every single
+mockup for every category in the home page and also the inspo. And after we're done with
+everything, then we can start implementing, but not yet."
+
+- [x] Category press motion matched to Airbnb. verified: measured their tab at
+      transform 0.22s cubic-bezier(0.1, 0.9, 0.2, 1) with the two shadow layers cross-fading on
+      opacity over the same curve; mine was 200ms on cubic-bezier(0.22, 1, 0.36, 1), which is the
+      snap he described. Now 220ms on their curve, and the press is a JS-held class rather than
+      :active, because :active gives a zero-length window on a tap. Dispatched a press and read it
+      back: scale 1.0 at 60ms, 0.96 at 180ms, back to 1.0 at 380ms.
+
+- [ ] STANDING ORDER: no edits to any .tsx until every mockup below is built AND he approves.
+- [ ] Mockup: Coiffeur category
+- [ ] Mockup: Barbershop category
+- [ ] Mockup: Nails category
+- [ ] Mockup: Spa category
+- [ ] Mockup: Walk-in category
+- [ ] Mockup: Inspo
+- [ ] Mockup: home page (rebuilt with the settled chrome and card)
+- [ ] Only after all of the above and his explicit yes: implement.

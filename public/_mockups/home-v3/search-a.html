@@ -247,8 +247,24 @@
        Nothing else in the chrome does. */
     border: 1px solid #E4E4E7;
     box-shadow: var(--lift-raised);
-    transition: box-shadow 200ms cubic-bezier(0.22, 1, 0.36, 1), background-color 200ms cubic-bezier(0.22, 1, 0.36, 1);
+    /* MEASURED off airbnb.ch at vw=390. Their tab runs
+         transform 0.22s cubic-bezier(0.1, 0.9, 0.2, 1)
+       and the two shadow layers inside it CROSS-FADE on opacity over the same 0.22s and curve.
+       Mine was 200ms on cubic-bezier(0.22, 1, 0.36, 1), which starts slower and ends harder: that
+       is the snap he is describing. Their curve leaves fast and lands soft, so the press reads as
+       something settling rather than something flipping.
+       A tiny scale on press gives the same "it moved under my finger" feedback their transform
+       provides. Only the category pill changes here, which is the one thing he named. */
+    transition: box-shadow 220ms cubic-bezier(0.1, 0.9, 0.2, 1),
+                background-color 220ms cubic-bezier(0.1, 0.9, 0.2, 1),
+                transform 220ms cubic-bezier(0.1, 0.9, 0.2, 1);
   }
+  /* NOT :active. iOS Safari never fires :active on a tap unless the element carries a touch
+     listener, and on desktop :active lives only while the button is held, so an ordinary tap opens
+     a zero-length window and the press reads as nothing. That exact bug was recorded on 2026-07-28
+     for a chevron probe whose CSS was perfect and which animated not at all. A JS-toggled class
+     held for the full 220ms is the fix that worked there. */
+  .sa-cat.is-pressed { transform: scale(0.96); }
   /* Owner: "I told you to fix up the shadows of the pills and you did not do anything." Correct,
      and here is what I never checked: the SELECTED category pill was still carrying Airbnb's
      9-layer sunken recipe while every other control in the chrome had moved to the single shared
@@ -512,6 +528,14 @@
       b.appendChild(img);
     }
     b.appendChild(document.createTextNode(c.label));
+    // Press feedback, JS-held for the full 220ms. See the CSS note: :active gives a zero-length
+    // window on a tap, so the motion never renders.
+    ["pointerdown", "mousedown", "touchstart"].forEach(function (ev) {
+      b.addEventListener(ev, function () {
+        b.classList.add("is-pressed");
+        setTimeout(function () { b.classList.remove("is-pressed"); }, 220);
+      }, { passive: true });
+    });
     b.addEventListener("click", function () {
       scroll.querySelectorAll(".sa-cat").forEach(function (x) { x.setAttribute("aria-selected", "false"); });
       b.setAttribute("aria-selected", "true");
