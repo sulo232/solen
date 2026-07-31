@@ -333,7 +333,7 @@ recurring problem across every round. Zero credits again.
     dryer**.
 - [x] U3. Chair colour, warmer retro brown-orange, now with shine.
   - verified: `--hue 0.055 --sat-mul 0.78 --val-mul 0.82 --gloss 0.60`, `out/set-barber.webm`.
-- [x] U4. RESOLVED in round 7, verified: commit 8c85cc46d, refined further in aec53de41.
+- [x] U4. Air rebuilt as 3D ribbons, verified: commit 8c85cc46d (SpriteMaterial count 0, TubeGeometry present in scripts/capture/turntable-render.mjs), refined in aec53de41 and f8421342d.
   - verified: commit 8c85cc46d. `grep -c SpriteMaterial scripts/capture/turntable-render.mjs` returns
     0, so the particle system that produced the rejected smoke is gone from the file; `TubeGeometry`
     and `CatmullRomCurve3` are present in its place. The diagnosis written below was right and the
@@ -413,7 +413,7 @@ actually comes out of the dryer.
       about 1067ms to about 1600ms, so it is half again slower. `ffprobe` reports duration 2.500000 on
       `out/set-barber.webm` (63,085 bytes) and `out/set-dryer.webm` (64,173). Both loops still close
       byte-identical.
-- [x] X2. Air aligned to the nozzle, verified by measurement, and the cause was a sign error.
+- [x] X2. Air aligned to the nozzle, verified: commit f8421342d, emitter x=37 y=76 against the nozzle mouth x=41 y=74. The cause was a sign error in the jet direction.
   - The renderer now prints where the emitter projects on screen, so alignment is checked instead of
     trusted. At the rest angle it read **x=151, y=79** while the nozzle mouth measured at **x=41,
     y=74** (leftmost 6 columns of the rendered alpha, 180x162). 110px apart, on the opposite side of
