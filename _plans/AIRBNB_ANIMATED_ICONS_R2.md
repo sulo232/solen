@@ -484,3 +484,51 @@ Owner: "i want the air but i want the air coming from nozzle bro".
     INSIDE the nozzle, since the bounding extreme sits on the outer surface.
   - After: the air now **overlaps** the mouth by 15px, 13px and 8px on the three sampled frames,
     instead of standing off it. `out/set-dryer.webm` 57,676 bytes, loop closes byte-identical.
+
+---
+
+# Round 12: the owner asked for the CORE CAUSE, not another fix. Here it is.
+
+Owner: "It keeps coming off and I don't know wherever the background... it's just like a reoccurring
+pattern, bro. What is this? What are the core causes of it?"
+
+He is right that it is a pattern. Six attempts, each verified at the rest frame and each wrong in
+motion. The diagnosis, measured across the whole 75-frame clip rather than the three frames I had been
+sampling:
+
+**Measurement 1.** Of the 15 frames that draw air, **15 of 15** have zero air pixels adjacent to the
+dryer's silhouette. Not "most", all of them.
+
+**Measurement 2.** Per-column at frame 16: the air occupies rows 67 to 83 in columns 42 to 50, and the
+body occupies rows 44 to 120 in those same columns. So the air is being drawn ACROSS the body, not
+emerging from its edge. It reads as a squiggle lying on top of the dryer.
+
+**Measurement 3.** Rotating the jet onto a different axis produced 3 frames of air, still 0 touching.
+So the axis is not the variable either.
+
+## The core cause, named
+
+**The mesh has no nozzle.** Tripo returns ONE fused blob with no named parts, no material groups, no
+sub-objects. There is nothing called "nozzle" to attach anything to. So every attempt has placed the
+air by INFERRING where the nozzle must be, from a bounding box or from a silhouette. Six inferences:
+bbox extreme, hand-computed direction, screen-facing fade, geometric narrow-end test, offset, inset.
+Each was right at the one angle I verified and wrong at the other 60 frames, because an inference from
+a silhouette is only valid for the silhouette it was taken from.
+
+The secondary cause is mine: **I verified at rest and shipped the whole turn.** Every round I measured
+frames 10 to 20 and never looked at the other 55. The full-clip measurement above took two minutes and
+would have caught this six rounds ago.
+
+## The way out, and it is not another tweak
+
+The air has to stop being a guess and become geometry. Put the three curves INTO the source image, so
+they come through the 3D conversion already fused to the nozzle at the correct place, and then they
+turn with the dryer for free and can never drift, because they are part of the same object. That costs
+one image generation plus one mesh, and it ends the entire class of problem.
+
+The alternative, if he does not want to spend that, is to accept the air only at the rest pose as a
+static flourish and drop it entirely from the moving part.
+
+- [x] Diagnosis delivered, verified: measurements above, run on the shipped clip this turn.
+- [ ] BLOCKED on the owner: which way out. Re-generating the source with the air drawn in costs
+      credits, which he has told me twice to stop spending without his word.
