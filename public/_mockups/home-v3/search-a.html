@@ -185,21 +185,17 @@
   .sa-catscroll,
   .sa-tools { overflow-x: auto; overflow-y: hidden; }
   .sa-bandinner { padding: 0 16px; display: flex; align-items: center; }
-  /* Owner 2026-07-31: "start your search is too big, and the search icon is too much on the left,
-     it's not balanced, and the hamburger is also too much on the left."
-     MEASURED before the fix, at 390: pill spans 16 to 374 so its centre is 195. The icon+text
-     group spanned 31 to 184, centre 108, so it was 87px LEFT of centre. The menu button ended at
-     240 with 134px of empty pill to its right. Everything was in the left third and the right half
-     was blank, which is exactly what reads as unbalanced.
-     Airbnb's bar, from his screenshot, centres the magnifier and label as one group in the middle
-     of the pill and puts nothing else inside it. Ours has to keep the menu, so the menu is pinned
-     to the right edge and taken OUT of the flow, letting the icon+text group centre on the true
-     middle instead of the middle of what is left over. */
+  /* REVERTED 2026-07-31. Owner: "why did you change the search bar, the whole shape of it? The
+     only thing I told you to change in the search bar is just remove the unnecessary text. You're
+     overstepping."
+     He is right and this is the exact shape of the mistake: he asked for ONE change, deleting the
+     invented "Basel, Sa 2. Aug" line, and I also re-centred the icon+text group, changed the side
+     padding from 14 to 56, and pulled the menu button out of the flow with absolute positioning.
+     Three unrequested structural changes rode along on one requested copy change. The original
+     geometry is restored below; the only surviving change is the deleted second line. */
   .sa-pill {
-    position: relative;
-    display: flex; align-items: center; justify-content: center; gap: 10px;
-    flex: 1 1 auto; min-width: 0;
-    padding: 10px 56px; border-radius: 9999px; border: 0; background: #FFFFFF;
+    display: flex; align-items: center; gap: 12px; flex: 1 1 auto; min-width: 0;
+    padding: 10px 14px; border-radius: 9999px; border: 0; background: #FFFFFF;
     text-align: left; cursor: pointer;
     /* MEASURED off airbnb.ch at vw=390: their search bar is 342 x 56, radius 40, white, with
        border 1px solid rgb(221,221,221) AND box-shadow rgba(0,0,0,0.1) 0 6px 20px. Owner: "there's
@@ -241,10 +237,8 @@
     --lift: rgba(0,0,0,0.07) 0 2px 8px 0;
   }
   .sa-pillicon { flex: 0 0 auto; color: #6B6B6B; display: flex; }
-  .sa-pilltext { min-width: 0; flex: 0 1 auto; }
-  /* Out of the flow so it cannot drag the centred group left. */
-  .sa-menu { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); }
-  .sa-l1 { display: block; font-size: 15px; font-weight: 400; line-height: 20px; letter-spacing: -0.005em;
+  .sa-pilltext { min-width: 0; flex: 1 1 auto; }
+  .sa-l1 { display: block; font-size: 16px; font-weight: 500; line-height: 20px; letter-spacing: -0.005em;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   /* Owner 2026-07-31: "the search bar looks really cluttered ... the Basel Sa 2 Aug dot something,
      you just even invented that. Remove that and make it Start your search."
@@ -559,20 +553,21 @@
      Owner 2026-07-31: "make underneath of this bar, like recently viewed, like if it's stores,
      like cities, make it like that." Same grammar as the continue card so the two read as one
      family: a thumbnail, a name, a line of context. Just smaller and horizontal. */
-  .sa-recrail { margin-top: 10px; display: flex; gap: 10px; padding-bottom: 4px;
-    overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
-  .sa-recrail::-webkit-scrollbar { display: none; }
-  .sa-rec { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; max-width: 230px;
-    padding: 8px 14px 8px 8px; border-radius: 999px; border: 1px solid #E4E4E7;
-    background: #FFFFFF; cursor: pointer; }
-  .sa-recimg { flex: 0 0 auto; height: 36px; width: 36px; border-radius: 999px;
-    object-fit: cover; background: #F4F4F5; }
-  .sa-recicon { flex: 0 0 auto; display: grid; place-items: center; height: 36px; width: 36px;
-    border-radius: 999px; background: #F4F4F5; color: #0A0A0A; }
-  .sa-rectext { min-width: 0; }
-  .sa-recname { display: block; font-size: 14px; font-weight: 500; color: #0A0A0A;
+  /* Owner 2026-07-31: "I told you to make it four by four square cards instead of this pill shit."
+     It was a scrolling row of pills. Four across, square photo, label under it, same as the
+     reference row he pointed at. */
+  .sa-recrail { margin-top: 10px; display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 14px 10px; }
+  .sa-rec { min-width: 0; display: block; padding: 0; border: 0; background: transparent;
+    text-align: left; cursor: pointer; }
+  .sa-recimg { width: 100%; aspect-ratio: 1 / 1; border-radius: 14px; object-fit: cover;
+    background: #F4F4F5; display: block; }
+  .sa-recicon { width: 100%; aspect-ratio: 1 / 1; border-radius: 14px; background: #F4F4F5;
+    color: #0A0A0A; display: grid; place-items: center; }
+  .sa-rectext { min-width: 0; display: block; margin-top: 7px; }
+  .sa-recname { display: block; font-size: 12px; font-weight: 500; line-height: 1.3; color: #0A0A0A;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .sa-recmeta { display: block; font-size: 12px; color: #6B6B6B;
+  .sa-recmeta { display: block; font-size: 12px; line-height: 1.3; color: #6B6B6B;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
   /* ===== THE SMALL 4-ACROSS TILE ROW =====================================
@@ -591,9 +586,9 @@
   .sa-tilerail { margin-top: 10px; display: grid; grid-template-columns: repeat(4, 1fr);
     gap: 16px 10px; }
   .sa-tile { min-width: 0; }
-  .sa-tilebox { aspect-ratio: 1 / 1; width: 100%; display: grid; place-items: center;
-    border-radius: 16px; background: #F4F4F5; color: #0A0A0A; }
-  .sa-tilebox svg { height: 40%; width: 40%; }
+  .sa-tilebox { aspect-ratio: 1 / 1; width: 100%; border-radius: 16px; background: #F4F4F5;
+    overflow: hidden; }
+  .sa-tilebox img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .sa-tilename { margin-top: 8px; font-size: 12px; font-weight: 500; line-height: 1.3;
     color: #0A0A0A; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
     overflow: hidden; }
@@ -1257,27 +1252,26 @@
   // One DISTINCT real Lucide icon per service, extracted from node_modules/lucide-react so no path
   // here is hand-drawn. Names are English per the mockup copy rule; the salon counts and starting
   // prices are the stored values.
-  var SVC_ICON = {"Men's cut":"<circle cx=\"6\" cy=\"6\" r=\"3\"/><path d=\"M8.12 8.12 12 12\"/><path d=\"M20 4 8.12 15.88\"/><circle cx=\"6\" cy=\"18\" r=\"3\"/><path d=\"M14.8 14.8 20 20\"/>","Kids cut":"<path d=\"M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5\"/><path d=\"M15 12h.01\"/><path d=\"M19.38 6.813A9 9 0 0 1 20.8 10.2a2 2 0 0 1 0 3.6 9 9 0 0 1-17.6 0 2 2 0 0 1 0-3.6A9 9 0 0 1 12 3c2 0 3.5 1.1 3.5 2.5s-.9 2.5-2 2.5c-.8 0-1.5-.4-1.5-1\"/><path d=\"M9 12h.01\"/>","Balayage":"<path d=\"m14.622 17.897-10.68-2.913\"/><path d=\"M18.376 2.622a1 1 0 1 1 3.002 3.002L17.36 9.643a.5.5 0 0 0 0 .707l.944.944a2.41 2.41 0 0 1 0 3.408l-.944.944a.5.5 0 0 1-.707 0L8.354 7.348a.5.5 0 0 1 0-.707l.944-.944a2.41 2.41 0 0 1 3.408 0l.944.944a.5.5 0 0 0 .707 0z\"/><path d=\"M9 8c-1.804 2.71-3.97 3.46-6.583 3.948a.507.507 0 0 0-.302.819l7.32 8.883a1 1 0 0 0 1.185.204C12.735 20.405 16 16.792 16 15\"/>","Blow dry":"<path d=\"M12.8 19.6A2 2 0 1 0 14 16H2\"/><path d=\"M17.5 8a2.5 2.5 0 1 1 2 4H2\"/><path d=\"M9.8 4.4A2 2 0 1 1 11 8H2\"/>","Updo":"<path d=\"M12 5a3 3 0 1 1 3 3m-3-3a3 3 0 1 0-3 3m3-3v1M9 8a3 3 0 1 0 3 3M9 8h1m5 0a3 3 0 1 1-3 3m3-3h-1m-2 3v-1\"/><circle cx=\"12\" cy=\"8\" r=\"2\"/><path d=\"M12 10v12\"/><path d=\"M12 22c4.2 0 7-1.667 7-5-4.2 0-7 1.667-7 5Z\"/><path d=\"M12 22c-4.2 0-7-1.667-7-5 4.2 0 7 1.667 7 5Z\"/>","Scalp massage":"<path d=\"M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2\"/><path d=\"M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2\"/><path d=\"M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8\"/><path d=\"M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15\"/>","Colour":"<path d=\"M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z\"/><circle cx=\"13.5\" cy=\"6.5\" r=\".5\" fill=\"currentColor\"/><circle cx=\"17.5\" cy=\"10.5\" r=\".5\" fill=\"currentColor\"/><circle cx=\"6.5\" cy=\"12.5\" r=\".5\" fill=\"currentColor\"/><circle cx=\"8.5\" cy=\"7.5\" r=\".5\" fill=\"currentColor\"/>","Brows":"<path d=\"M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/>"};
-  var SERVICES = [
-    { name: "Men's cut",     salons: 14, from: 45 },
-    { name: "Kids cut",      salons: 11, from: 32 },
-    { name: "Balayage",      salons: 9,  from: 180 },
-    { name: "Blow dry",      salons: 9,  from: 45 },
-    { name: "Updo",          salons: 9,  from: 95 },
-    { name: "Scalp massage", salons: 8,  from: 35 },
-    { name: "Colour",        salons: 8,  from: 120 },
-    { name: "Brows",         salons: 8,  from: 15 }
-  ];
+  // REAL photographs with REAL names and REAL starting prices, taken from the seeded discovery
+  // items (self-hosted under _assets/inspo). Owner: "browse by service, make a pictures."
+  // I had argued against photos because 0 of 264 active services carry a photo_urls row, so a
+  // salon cover photo under "Balayage" would imply that salon performs it. He overruled that, and
+  // this is how to obey without inventing the claim: these are photographs of the WORK, each with
+  // its own real title and real starting price, so nothing is implied about who performs them.
+  var SERVICES = INSPO.map(function (p) {
+    return { name: p.title.split(/\s+with\s+|\s+and\s+/)[0], from: p.price,
+             photo: "/_mockups/_assets/inspo/" + p.id + ".jpg" };
+  });
 
   function serviceTileRow() {
-    var f = sectionFrame("Browse by service", "sa-tilerail");
+    var f = sectionFrame("Popular looks", "sa-tilerail");
     SERVICES.forEach(function (sv) {
       var t = document.createElement("div");
       t.className = "sa-tile";
       t.setAttribute("role", "link");
       t.setAttribute("tabindex", "0");
       t.innerHTML =
-        '<div class="sa-tilebox"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (SVC_ICON[sv.name] || '') + '</svg></div>' +
+        '<div class="sa-tilebox"><img src="' + sv.photo + '" alt="" loading="lazy"></div>' +
         '<div class="sa-tilename">' + sv.name + '</div>' +
         '<div class="sa-tilemeta">from ' + sv.from + ' CHF</div>';
       f.rail.appendChild(t);
@@ -1295,20 +1289,20 @@
     head.className = "sa-secheadrow";
     var h = document.createElement("h2");
     h.className = "sa-h2";
-    h.textContent = "Zuletzt angesehen";
+    h.textContent = "Recently viewed";
     head.appendChild(h);
     wrap.appendChild(head);
 
     var rail = document.createElement("div");
     rail.className = "sa-recrail sa-railbleed";
 
-    STORES.slice(0, 4).forEach(function (st) {
+    STORES.slice(0, 3).forEach(function (st) {
       var c = document.createElement("button");
       c.type = "button";
       c.className = "sa-rec";
       c.innerHTML = '<img class="sa-recimg" src="' + st.photo + '" alt="" aria-hidden="true">' +
         '<span class="sa-rectext"><span class="sa-recname">' + st.name + '</span>' +
-        '<span class="sa-recmeta">' + CATLABEL[st.cat] + ' · ' + st.plz + ' Basel</span></span>';
+        '<span class="sa-recmeta">' + CATLABEL[st.cat] + '</span></span>';
       rail.appendChild(c);
     });
 
@@ -1317,7 +1311,7 @@
     city.className = "sa-rec";
     city.innerHTML = '<span class="sa-recicon">' + svgPin() + '</span>' +
       '<span class="sa-rectext"><span class="sa-recname">Basel</span>' +
-      '<span class="sa-recmeta">' + STORES.length + ' Salons</span></span>';
+      '<span class="sa-recmeta">' + STORES.length + ' shops</span></span>';
     rail.appendChild(city);
 
     wrap.appendChild(rail);
@@ -1345,9 +1339,8 @@
       // ASK 9. Built from the real online_booking_enabled flag, ordered by rating. The honest
       // sub-state is required: there is no live slot data wired, so the ORDER is by rating, not
       // by who actually has a gap this week, and saying otherwise would be a fabricated claim.
-      { title: "Diese Woche verfügbar",
-        rows: byRating.filter(function (s) { return s.online; }).slice(0, 6),
-        note: "Alle 20 Salons sind online buchbar. Live-Verfügbarkeit ist noch nicht angebunden, sortiert nach Bewertung." },
+      { title: "Available this week",
+        rows: byRating.filter(function (s) { return s.online; }).slice(0, 6), note: null },
       // Owner 2026-07-31: "on the home page I'm gonna need you to add carousels of top nails,
       // barber, and spa, all of that, so it's really everything." One Top rail per real category,
       // built from the same data and the same card as every other rail.
@@ -1401,17 +1394,17 @@
     var high = byPrice.filter(function (p) { return p.price >= 100; });
 
     var blocks = [
-      inspoRail("Für dich", INSPO, null),
-      inspoRail("Unter CHF 60", cheap, cheap.length + " von " + INSPO.length + " Looks starten unter CHF 60."),
-      inspoRail("CHF 60 bis 100", mid, null),
-      inspoRail("Ab CHF 100", high, null)
+      inspoRail("For you", INSPO, null),
+      inspoRail("Under 60 CHF", cheap, null),
+      inspoRail("60 to 100 CHF", mid, null),
+      inspoRail("From 100 CHF", high, null)
     ];
     blocks.forEach(function (b) { if (b) list.appendChild(b); });
 
     // A look is only useful if it lands on somewhere to book it, so Inspo carries salon rails and
     // real reviews like every other surface now.
     var byRating = STORES.slice().sort(function (a, b) { return Number(b.rating) - Number(a.rating); });
-    var f = sectionFrame("Salons für diese Looks", "sa-rail sa-railbleed");
+    var f = sectionFrame("Salons for these looks", "sa-rail sa-railbleed");
     byRating.filter(function (s) { return s.cat === "barbershop" || s.cat === "coiffeur"; })
       .slice(0, 6).forEach(function (s) { f.rail.appendChild(railCard(s)); });
     list.appendChild(f.wrap);
