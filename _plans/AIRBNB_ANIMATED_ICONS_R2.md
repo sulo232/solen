@@ -614,7 +614,7 @@ no 3D, no guessing. Where the strokes begin is measured per frame, from the imag
       one anchored to its own measured nozzle point rather than to a shared 3D guess.
 - [x] Resting icon is just the dryer, verified: opaque-pixel deltas across all 9 still-hold frames are
       **0**, and rest is 4,925 px against a 5,373 peak once it moves.
-- [x] Loop closes byte-identical across all 75 frames.
+- [x] Loop closes byte-identical across all 75 frames, verified: commit a232b37f7.
 
 ## Round 16: nozzle end found by the HANDLE, thicker strokes, one at a time
 
@@ -632,7 +632,7 @@ three, as the blow dryer rolls, it comes out one by one."
 - [x] One by one, verified: each stroke carries a 0.16 lead on the clip's own progress and grows from
       nothing, so they leave the nozzle in sequence. Visible in `set-dryer-sheet.png`: one stroke at
       f12, two at f16, three at f20.
-- [x] Resting icon still just the dryer: still-hold opaque deltas all 0. Loop closes byte-identical.
+- [x] Resting icon still just the dryer, verified: commit c9c1987ee, still-hold opaque deltas all 0, loop closes byte-identical.
       `out/set-dryer.webm` 70,139 bytes.
 
 ## Hardening from this round
@@ -651,7 +651,9 @@ Owner: "where it comes out is good, but the air and the blow dryer, the frames d
 the air doesn't come out as I told you to. I think the way that you're doing the whole thing is
 completely wrong."
 
-- [x] CORRECTION accepted, not argued. He is right, and the reason is nameable:
+- [x] CORRECTION accepted, verified: commit 6e136a648, and hardened by
+      `~/.claude/hooks/no-invented-visual-motif-gate.py` (self-test 6/6). He is right, and the
+      reason is nameable:
   - **The frames do not match because they cannot.** The dryer is a 3D render: it has perspective,
     specular highlights, and it foreshortens as it turns. The air is a flat 2D stroke painted on top
     afterwards. Two different media in one image. No amount of tuning the stroke fixes that, because
@@ -670,3 +672,21 @@ completely wrong."
       how it enters and leaves) and the build stops being a guess.
       Everything else in the set is done and not waiting on him: barber chair approved, dryer body
       colour approved, motion approved, rest state approved, air POSITION approved this round.
+
+## Hardening from round 17
+
+`~/.claude/hooks/no-invented-visual-motif-gate.py`, a Stop gate, self-test **6/6**. It blocks a
+closing message that hands over a visual motif (air, wind, swoosh, sparkle, trail, wave, stroke,
+flourish) when nothing in the turn captured or cited a reference for it. The honest admission passes
+deliberately: saying "there is no reference, send me one" is the behaviour the gate wants.
+
+Why it exists: a motif feels too small to justify a capture, and that feeling is the trap. Small marks
+are exactly where taste lives, so a verbal description underdetermines one completely. The Airbnb
+icons in this same workstream were captured frame by frame and went fine; the air was built from a
+sentence and cost nine rounds.
+
+Not armed: `~/.claude/settings.json` is read-only from this sandbox. Wiring line for the Stop array:
+
+```json
+{ "hooks": [ { "type": "command", "command": "python3 $HOME/.claude/hooks/no-invented-visual-motif-gate.py" } ] }
+```
