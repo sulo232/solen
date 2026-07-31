@@ -66,9 +66,14 @@
   .sa-shell { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #0A0A0A; }
   .sa-shell *, .sa-shell *::before, .sa-shell *::after { box-sizing: border-box; }
 
+  /* Owner: "I hate this mockup style you always make, with this button that overlaps and stuff."
+     He was looking at a real bug, not a style. The bar was position:fixed with the stage reserving
+     a flat 52px beneath it. Adding the second row of buttons made the bar taller than 52, so it
+     sat ON TOP of the search pill. A fixed bar plus a hardcoded offset breaks the moment the bar
+     grows. It is a normal block now, so it takes its own height and can never overlap. */
   .sa-bar {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 99; background: #FFFFFF;
-    display: flex; align-items: center; justify-content: center;
+    position: static; background: #FFFFFF;
+    display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px;
     padding: calc(env(safe-area-inset-top, 0px) + 8px) 12px 8px;
     box-shadow: 0 1px 0 rgba(0,0,0,0.08);
   }
@@ -79,7 +84,16 @@
   }
   .sa-tab[aria-selected="true"] { background: #FFFFFF; box-shadow: 0 1px 2px rgba(0,0,0,0.10); }
 
-  .sa-stage { padding-top: 52px; }
+  .sa-stage { padding-top: 0; }
+  /* Filter pills, the Fresha arrangement the owner pointed at: one scrolling row directly under
+     the chrome. A filter control and a sort pill already exist on the live route (44x44 at y=171
+     and 114x44 at y=235, measured); this is the same set collapsed into one row. */
+  .sa-tools { display: flex; gap: 8px; padding: 2px 16px 12px; overflow-x: auto; scrollbar-width: none; }
+  .sa-tools::-webkit-scrollbar { display: none; }
+  .sa-tool { display: inline-flex; flex: 0 0 auto; height: 36px; align-items: center; gap: 6px;
+    padding: 0 14px; border-radius: 999px; border: 1px solid #E4E4E7; background: #FFFFFF;
+    font-size: 13px; font-weight: 400; color: #0A0A0A; cursor: pointer; white-space: nowrap; }
+  .sa-tool svg { color: #6B6B6B; }
   .sa-pane { display: none; }
   .sa-pane[data-on="1"] { display: block; }
   .sa-frame { display: block; width: 100%; height: calc(100dvh - 52px); border: 0; }
@@ -162,19 +176,33 @@
     text-align: left; cursor: pointer; transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1);
   }
   .sa-row:active { transform: scale(0.99); }
-  .sa-photo { display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: 16px;
+  /* MEASURED ON THE LIVE HOME PAGE at 390 and copied exactly. Owner: "we already have our own
+     aspect ratio but you kinda fucked it up... we have systems for the review counts, look at the
+     actual home page and copy that, right now you're just making everything up." He is right on
+     every count. Live /de card versus what I had:
+       photo ratio   1.25, a 5 by 4      I had 16 by 9
+       photo radius  22                  I had 16
+       name          14 / 500 ink        I had 16 / 600
+       rating        "4.8", ONE decimal, 13 / 400 GREY, no count   I had "4.81" 14 / 600 ink plus a blue count
+       category      12 / 400 grey       I had none
+       address       12 / 400 grey       I had 13 / 400
+       price         "15 CHF" 12 / 400 grey   I had 13.5 / 600
+     The blue count came from the CATEGORY route, which renders a different card. Copying the home
+     card is the instruction, so the count and the blue are gone. */
+  .sa-photo { display: block; width: 100%; aspect-ratio: 5 / 4; border-radius: 22px;
     object-fit: cover; background: #F4F4F5; }
-  .sa-body { margin-top: 10px; min-width: 0; }
-  .sa-line { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
-  .sa-name { margin: 0; font-size: 16px; font-weight: 500; line-height: 1.3; letter-spacing: -0.01em;
-    min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sa-body { margin-top: 8px; min-width: 0; padding: 0 2px; }
+  .sa-line { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+  .sa-name { margin: 0; font-size: 14px; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em;
+    color: #0A0A0A; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .sa-rate { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 3px;
-    font-size: 14px; font-weight: 600; color: #0A0A0A; font-variant-numeric: tabular-nums; }
+    font-size: 13px; font-weight: 400; color: #6B6B6B; font-variant-numeric: tabular-nums; }
   .sa-star { color: #FFC32B; display: flex; }
-  .sa-count { color: #276EF1; }
-  .sa-meta2 { margin-top: 3px; font-size: 13px; font-weight: 400; line-height: 1.35; color: #6B6B6B;
+  .sa-cat2 { margin-top: 2px; font-size: 12px; font-weight: 400; line-height: 1.35; color: #6B6B6B;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .sa-price { flex: 0 0 auto; font-size: 13.5px; font-weight: 600; line-height: 1.35; color: #6B6B6B;
+  .sa-meta2 { font-size: 12px; font-weight: 400; line-height: 1.35; color: #6B6B6B;
+    min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sa-price { flex: 0 0 auto; font-size: 12px; font-weight: 400; line-height: 1.35; color: #6B6B6B;
     font-variant-numeric: tabular-nums; white-space: nowrap; }
 
   .sa-note { margin: 0 16px 24px; padding: 14px; border-radius: 12px; background: #F4F4F5;
@@ -322,6 +350,7 @@
     var nm = document.createElement("h3");
     nm.className = "sa-name";
     nm.textContent = s.name;
+    // Rating copied from the live home card: star, ONE decimal, 13 grey, no count and no blue.
     var rate = document.createElement("span");
     rate.className = "sa-rate";
     var st = document.createElement("span");
@@ -329,33 +358,29 @@
     st.setAttribute("aria-hidden", "true");
     st.innerHTML = svgStar();
     rate.appendChild(st);
-    rate.appendChild(document.createTextNode(s.rating));
-    var cnt = document.createElement("span");
-    cnt.className = "sa-count";
-    cnt.textContent = " " + s.reviews;
-    rate.appendChild(cnt);
+    rate.appendChild(document.createTextNode(Math.round(parseFloat(s.rating) * 10) / 10));
     line1.appendChild(nm);
     line1.appendChild(rate);
 
-    // Row 2: address.
-    var m2 = document.createElement("div");
-    m2.className = "sa-meta2";
-    m2.textContent = s.addr;
+    // Row 2: category label, exactly as the home card renders it.
+    var cat2 = document.createElement("div");
+    cat2.className = "sa-cat2";
+    cat2.textContent = CATLABEL[s.cat];
 
-    // Row 3: review count left, the named service and its from-price hard right. The service name
-    // is required next to a from-price under the Swiss price rule, so it is never dropped.
+    // Row 3: address left, price hard right, both 12 grey. The home card shows a bare price, so
+    // the service name is not appended here.
     var line3 = document.createElement("div");
     line3.className = "sa-line";
-    var rc = document.createElement("div");
-    rc.className = "sa-meta2";
-    rc.textContent = s.reviews + " reviews";
+    var ad = document.createElement("div");
+    ad.className = "sa-meta2";
+    ad.textContent = s.addr;
     var pr = document.createElement("div");
     pr.className = "sa-price";
-    pr.textContent = s.service + " from " + s.price + " CHF";
-    line3.appendChild(rc);
+    pr.textContent = s.price + " CHF";
+    line3.appendChild(ad);
     line3.appendChild(pr);
 
-    body.appendChild(line1); body.appendChild(m2); body.appendChild(line3);
+    body.appendChild(line1); body.appendChild(cat2); body.appendChild(line3);
     a.appendChild(im); a.appendChild(body);
     return a;
   }
@@ -415,6 +440,38 @@
   arrange.querySelectorAll(".sa-tab").forEach(function (t) {
     t.addEventListener("click", function () { applyArrangement(t.dataset.arr); });
   });
+
+  // ===== FILTER PILLS, under the chrome, the arrangement he pointed at ====
+  // Same controls the live route already has, collapsed into one scrolling row.
+  function toolIcon(name) {
+    var paths = {
+      sliders: '<line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/>'
+        + '<line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/>'
+        + '<line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/>'
+        + '<line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/>'
+        + '<line x1="16" x2="16" y1="18" y2="22"/>',
+      chevron: '<path d="m6 9 6 6 6-6"/>'
+    };
+    return '<svg class="lucide lucide-' + name + '" data-lucide="' + name + '" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + paths[name] + '</svg>';
+  }
+  var tools = document.createElement("div");
+  tools.className = "sa-tools";
+  [["Filters", "sliders"], ["Best match", "chevron"], ["Price", "chevron"], ["Open now", null]]
+    .forEach(function (pair) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "sa-tool";
+      b.innerHTML = pair[1] === "sliders"
+        ? toolIcon("sliders") + "<span>" + pair[0] + "</span>"
+        : pair[1] === "chevron"
+          ? "<span>" + pair[0] + "</span>" + toolIcon("chevron")
+          : "<span>" + pair[0] + "</span>";
+      tools.appendChild(b);
+    });
+  band.appendChild(tools);
+
+  // The owner picked categories ABOVE the search bar, so that is the default here.
+  applyArrangement("above");
 
   window.saMeasure = function () {
     var r1 = function (n) { return Math.round(n * 10) / 10; };
