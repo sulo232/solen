@@ -1,7 +1,15 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
+// Owner 2026-07-31: "when you click services, it goes to the service bit smoothly. It doesn't
+// really look like it's jumping to another page. That's what I want."
+//
+// The plumbing for that was already installed and this file was the one row not using it:
+// next-view-transitions 0.3.5 is a dependency, <ViewTransitions> is mounted at app/layout.tsx:74,
+// and SalonCard.tsx already imports this Link so a card photo can morph into the PDP hero. The
+// header category row imported plain next/link, so every category click was a hard swap with no
+// transition. API-identical to next/link, so nothing else in this file changes.
+import { Link } from "next-view-transitions";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { ChevronDown, Home, Menu, MapPin, X, ArrowLeft } from "lucide-react";
