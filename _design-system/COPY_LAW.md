@@ -128,6 +128,7 @@ Formal address is a pronoun choice, not a personality. These stop Sie from becom
 | type | rule | example, DE formal |
 |---|---|---|
 | button, commit | verb, infinitive or imperative, 1-2 words | `Buchen`, `Bezahlen` |
+| **button label, ITALIAN** | **stays the bare imperative (`Salva`, `Esci`, `Vedi`), NOT `Salvi`/`Esca`.** See the carve-out below. | `Salva modifiche`, `Vedi dettagli` |
 | button, secondary | verb, no politeness padding | `Ändern`, not `Bitte ändern` |
 | link | say the destination, not "hier klicken" | `Buchung verwalten` |
 | section heading | noun phrase, no verb, no colon | `Ihre Termine` |
@@ -136,6 +137,36 @@ Formal address is a pronoun choice, not a personality. These stop Sie from becom
 | toast | outcome only, past tense, no punctuation at the end | `Termin abgesagt` |
 | placeholder | an example, not an instruction | `z. B. Coiffeur Zürich` |
 | aria-label | what the control DOES, not what it looks like | `Termin absagen` |
+
+---
+
+### 6b. THE ITALIAN BUTTON-LABEL CARVE-OUT (added 2026-07-31, and it is a real asymmetry, not an excuse)
+
+**German gets formal button labels for free. Italian does not.** German's infinitive doubles as a
+neutral button label and already reads correctly under Sie: `Speichern`, `Löschen`, `Buchen`. There
+is nothing to convert. Italian has no such freebie. `Salva` is the informal imperative, `Salvare` is
+an infinitive that reads wrong on a button, and `Salvi` is the Lei imperative that reads like the
+interface is addressing you mid-sentence.
+
+**Measured on `messages/it.json`, 2026-07-31:** 4,166 strings are short labels (1 to 3 words, no
+terminal punctuation), and **559** of those begin with a recognisable informal imperative:
+`Esci`, `Vedi`, `Salva`, `Riprova`, `Annulla`, `Modifica`, `Aggiungi`, `Elimina`, `Cerca`, and
+friends. (A subagent estimated roughly 900; I re-counted and it is 559. Recorded so the smaller,
+checked number is what gets quoted.)
+
+**THE RULE: Italian button and nav labels stay in the bare imperative.** They are LABELS, not address.
+Standard Italian UI convention uses the bare imperative on controls even in otherwise-formal
+products, and converting 559 of them to `Salvi` / `Esca` / `Veda` would make the interface read
+worse, not more polite. This is the same judgment already applied to German `categoryPage.loadMore`,
+which was set to the infinitive `Mehr laden` rather than Sie-conjugated.
+
+**Where the register DOES bind in Italian:** full sentences, error messages, empty-state copy,
+onboarding prose, tooltips, and anything addressing the user directly. `Controlli la connessione e
+riprovi` is a sentence and it converts. `Riprova` on a button does not.
+
+**Applied as the default rather than parked, and flagged.** The alternative has no defensible
+version, so waiting on an answer would have blocked the work for nothing. If the owner disagrees,
+the change is 559 mechanical edits and this paragraph is the record of why it was not done.
 
 ---
 
