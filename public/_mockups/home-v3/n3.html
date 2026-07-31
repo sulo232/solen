@@ -45,9 +45,9 @@
     clippers 1.000w/1.000h . map 0.511w/0.731h . nails 0.785/0.941
     scissors 0.821/0.852  . spa 0.734/0.748   . walkin 0.967/0.970
   Rendered at one uniform box size, the map icon would read roughly half the optical
-  size of the clippers icon. Each img therefore gets box = 27 / max(inkfrac) so every
-  icon's INK measures about 27px: clippers 27, map 37, nails 29, scissors 32,
-  spa 36, walkin 28. That is measured normalization, not eyeballing. The real
+  size of the clippers icon. Each img therefore gets box = 25 / max(inkfrac) so every
+  icon's INK measures about 25px: clippers 25, map 34, nails 27, scissors 29,
+  spa 33, walkin 26. That is measured normalization, not eyeballing. The real
   MobileCategoriesRow has an unused `iconClass` override field for exactly this
   and ships with the imbalance, which matters less at tile size than at 30px.
 
@@ -245,14 +245,18 @@
   .dn3-tab[aria-selected="true"] img { opacity: 1; }
   .dn3-tab[aria-selected="true"] .dn3-tab-label { font-weight: 600; } /* selected-ok: content tab, see above */
 
-  /* measured per-icon boxes so every icon's INK reads about 27px (see header note) */
-  .dn3-i-clippers { width: 27px; height: 27px; }
-  .dn3-i-map      { width: 37px; height: 37px; }
-  .dn3-i-nails    { width: 29px; height: 29px; }
-  .dn3-i-scissors { width: 32px; height: 32px; }
-  .dn3-i-spa      { width: 36px; height: 36px; }
-  .dn3-i-walkin   { width: 28px; height: 28px; }
-  .dn3-i-menu     { display: grid; place-items: center; width: 27px; height: 27px; color: currentColor; }
+  /* measured per-icon boxes so every icon's INK reads about 25px (see header note).
+     The target was 27 in round 1 and measured back a 2px label misalignment: the cell's
+     content box is 62 - 8 padding - 2 underline = 52px, and at target 27 the map box
+     came out 37px, so 37 + 3 gap + 14 label = 54 overflowed by 2. At target 25 the
+     tallest box is 34, so 34 + 3 + 14 = 51 fits and every label lands on one line. */
+  .dn3-i-clippers { width: 25px; height: 25px; }
+  .dn3-i-map      { width: 34px; height: 34px; }
+  .dn3-i-nails    { width: 27px; height: 27px; }
+  .dn3-i-scissors { width: 29px; height: 29px; }
+  .dn3-i-spa      { width: 33px; height: 33px; }
+  .dn3-i-walkin   { width: 26px; height: 26px; }
+  .dn3-i-menu     { display: grid; place-items: center; width: 25px; height: 25px; color: currentColor; }
 
   /* ============ page body under the header, so the collapse is testable ============ */
   .dn3-spacer { padding: 0 16px; }
