@@ -159,26 +159,12 @@ def main():
             smoothed[i] = smoothed[i - 1]
     locked = smoothed[move_from] if smoothed[move_from] is not None else (smoothed[0] or -1)
 
-    # A FADE IS STILL A CUT if a stroke is halfway through its life when the fade arrives. That is
-    # what "the air just cuts out in the middle of nowhere" was. So do not gate frame by frame at
-    # all. Find the LONGEST RUN of frames where the nozzle is genuinely on the locked side, then fit
-    # every stroke's whole life inside that run. A stroke is then never interrupted: it is born,
-    # travels and dies while the nozzle is still facing the right way.
-    best_a = best_b = cur_a = None
-    best_len = 0
-    # accept a short gap inside a run rather than ending it: the nozzle passing briefly through
-    # edge-on should not truncate the window
-    for i in range(move_from, move_to):
-        if smoothed[i] == locked:
-            if cur_a is None:
-                cur_a = i
-            if i - cur_a + 1 > best_len:
-                best_len, best_a, best_b = i - cur_a + 1, cur_a, i
-        else:
-            cur_a = None
-    if best_a is None:
-        best_a, best_b = move_from, move_to - 1
-    win_from, win_to = best_a, best_b + 1
+    # Keep the LOCKED SIDE (that is what stopped the teleport) and let the air run for the whole
+    # moving window (that is what keeps it present). Restricting it to the frames where the nozzle
+    # literally faces the camera shrank it to 29 of 210 frames, which reads on screen as removed,
+    # and presence is the part he approved. The air riding the near side while the dryer turns
+    # behind it is a drawn-icon convention, not a physical claim.
+    win_from, win_to = move_from, move_to
 
     for i, name in enumerate(files):
         path = os.path.join(args.frames, name)
@@ -191,7 +177,7 @@ def main():
         p = (i - win_from) / max(1, (win_to - 1 - win_from))
 
         if i < win_from or i >= win_to:
-            continue                                  # outside the run where the nozzle faces us
+            continue
         np_ = nozzle_point(a, "left" if locked < 0 else "right")
         if np_ is None:
             continue
