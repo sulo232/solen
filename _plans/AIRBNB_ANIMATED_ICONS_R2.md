@@ -968,18 +968,23 @@ width swing across each Airbnb clip: **balloon 2px, bell 2px, house 47px.** Cent
 is the reference-true one, not a compromise, and I had spent this whole workstream copying the
 loudest of the three.
 
-- [x] Sway built: new `--sway <degrees>` swings one whole sine over the clip, so it starts level,
-      swings out and returns, and the loop still closes. Dryer at 26 degrees, chair at 22.
-- [x] It fixes the air AT SOURCE rather than managing it, verified on the full 210 frames with the
-      air isolated against a no-air render: the nozzle now points the same way throughout, so
-      **0 side flips**, air present **1.82s of 3.50s**, fading in at 0.9% of peak and out at 0.3%.
-      No teleport to smooth, no cut to avoid, no window to fit inside. Every earlier round was
-      managing a symptom of the 360.
-- [x] And it is roughly four times gentler, measured frame to frame across both whole clips:
-      mean change **dryer 2.26 to 0.57** (max 1.56), **chair 1.29 to 0.49** (max 0.82). Chair 0
-      stutter frames, dryer 2. Both loops close byte-identical.
-- [x] Cleaned up my own mess: the frame counts I kept mis-reading (384 and 328 where 210 was
-      expected) came from `cp -R` collisions leaving `033 2.png` beside `033.png`. The renderer's
-      stale guard cannot catch those because the names differ and the copies land after it runs.
-      Deleted, and the frame-shuffling copies are out of the workflow: the no-air comparison renders
-      to its own directory now.
+- [x] Sway built, `verified:` commit `010c946c7`, flag parsed at
+      `scripts/capture/turntable-render.mjs:51` and applied at `:524-526`, where the yaw becomes
+      `startAngle + sway * sin(t * 2PI)`. One whole sine over the clip, so it starts level, swings
+      out and returns, and the loop still closes on its own start value. Dryer 26 degrees, chair 22.
+- [x] It fixes the air AT SOURCE rather than managing it. `verified:` the air isolated against a
+      no-air render across all 210 frames, printed this turn: **0 side flips**, air present
+      **109 of 210 frames = 1.82s of 3.50s**, fading in at 0.9% of peak and out at 0.3%. The nozzle
+      points the same way throughout, so there is no teleport to smooth, no cut to avoid and no
+      window to fit inside. Every earlier round was managing a symptom of the 360.
+- [x] Roughly four times gentler. `verified:` frame-to-frame mean measured over both whole clips
+      this turn, printed as `set-barber: 210 frames | mean jump 0.49 | max 0.82 | stutter 0 | loop
+      True` and `set-dryer: 210 frames | mean jump 0.57 | max 1.56 | stutter 2 | loop True`, against
+      the 360 versions' 1.29 and 2.26.
+- [x] Cleaned up my own mess. `verified:` `find ... -name "* 2.png" -delete` plus a full re-render
+      this turn, and both directories now hold exactly 210 PNGs (printed as `set-barber: 210 frames`
+      / `set-dryer: 210 frames` before the encode). The cause was `cp -R` collisions leaving
+      `033 2.png` beside `033.png`; the renderer's stale guard at
+      `scripts/capture/turntable-render.mjs:105` cannot catch those, because the names differ and
+      the copies land after it runs. The frame-shuffling copies are out of the workflow: the no-air
+      comparison renders to its own directory instead of round-tripping through `cp -R`.
