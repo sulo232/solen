@@ -179,7 +179,9 @@ const key = new THREE.DirectionalLight(0xffffff, 1.9 * ${opt.lift}); key.positio
 const fill = new THREE.DirectionalLight(0xffffff, 0.75 * ${opt.lift}); fill.position.set(-3.0, 1.4, 1.6); scene.add(fill);
 const rim = new THREE.DirectionalLight(0xffffff, 0.5 * ${opt.lift}); rim.position.set(-1.0, 2.0, -3.2); scene.add(rim);
 
-const pivot = new THREE.Group();      // the object spins on this, around world Y
+const pivot = new THREE.Group();
+const pivotHolder = new THREE.Group();
+scene.add(pivotHolder);      // the object spins on this, around world Y
 scene.add(pivot);
 const camera = new THREE.PerspectiveCamera(28, W / H, 0.1, 100);
 
@@ -303,141 +305,90 @@ new GLTFLoader().load("./model.glb", (gltf) => {
   camera.lookAt(0, 0, 0);
   if (PUFF) {
     buildWaves(obj);
-    window.__emitterScreen = () => {
-      const v = waveOrigin.clone();
-      pivot.localToWorld(v);
-      v.project(camera);
-      return { x: Math.round((v.x + 1) / 2 * W), y: Math.round((1 - v.y) / 2 * H) };
-    };
   }
   window.__ready = true;
 }, undefined, (e) => { window.__error = String((e && e.message) || e); });
 
 
-// ---- secondary motion: three wave ribbons at the nozzle ---------------------------------
-// The owner drew this: three distinct curved lines leaving the mouth of the dryer. Modelled as
-// real tube geometry, not sprites, because soft alpha sprites always read as smoke and he
-// rejected exactly that. Tubes catch the scene light, so they read as 3D like the icon does.
-// They live UNDER the pivot, so the air turns with the dryer.
+// ---- secondary motion: three DRAWN wind lines ------------------------------------------
+// Rebuilt 2026-07-31 after the owner: "not this weird fucking robotic arm looking ass air, but
+// like those wavy airs... research on how it's drawn". The convention he means is the drawn wind
+// glyph: two or three horizontal strokes carrying a shallow sine, of constant weight, each ending
+// in a small curl. It is a 2D mark, not a 3D object, which is why the tube version read as a
+// robot arm: a tube has volume and catches light, a drawn line does not.
+//
+// So these are FLAT camera-facing strips living in the SCENE, not under the pivot. They do not
+// rotate with the dryer, because a drawn mark never turns edge-on. And they appear only while the
+// icon is MOVING, so the resting icon is just the dryer, tilted, exactly as asked.
 const PUFF = ${opt.puff ? '"' + opt.puff + '"' : "null"};
 const PUFF_DIR = ${JSON.stringify(opt.puffDir.split(",").map(Number))};
 const PUFF_SIZE = ${opt.puffSize};
 const WAVES = 3;
-let waveMeshes = [], waveOrigin = null;
+let windLines = [], windAnchor = new THREE.Vector3();
+
 function buildWaves(obj) {
+  // anchor at the object's own extreme along the jet axis: the nozzle end
   const bb = new THREE.Box3().setFromObject(obj);
-  let d = new THREE.Vector3(PUFF_DIR[0], PUFF_DIR[1], PUFF_DIR[2]).normalize();
+  const d = new THREE.Vector3(PUFF_DIR[0], PUFF_DIR[1], PUFF_DIR[2]).normalize();
   const c = bb.getCenter(new THREE.Vector3());
-  // WHICH END IS THE NOZZLE. A bounding box cannot tell, which is why every direction tweak only
-  // ever worked at one angle. So measure it: walk the real vertices, project them onto the jet
-  // axis, and compare the cross-section radius at the two extremes. The nozzle is the narrow end;
-  // the vent and the fat barrel are the wide one. The handle is excluded by dropping the lowest
-  // vertices, otherwise it drags the answer downward.
-  const pts = [];
-  obj.updateWorldMatrix(true, true);
-  obj.traverse((n) => {
-    if (!n.isMesh || !n.geometry || !n.geometry.attributes.position) return;
-    const pos = n.geometry.attributes.position;
-    const step = Math.max(1, Math.floor(pos.count / 900));
-    for (let i = 0; i < pos.count; i += step) {
-      const v = new THREE.Vector3().fromBufferAttribute(pos, i);
-      n.localToWorld(v);
-      pts.push(v);
-    }
-  });
-  if (pts.length > 40) {
-    const ys = pts.map(p => p.y).sort((a, b) => a - b);
-    const yCut = ys[Math.floor(ys.length * 0.28)];              // drop the handle
-    const body = pts.filter(p => p.y >= yCut);
-    const proj = body.map(p => p.clone().sub(c).dot(d));
-    const lo = Math.min(...proj), hi = Math.max(...proj);
-    const radAt = (near, far) => {
-      const sel = body.filter((p, i) => proj[i] >= near && proj[i] <= far);
-      if (!sel.length) return Infinity;
-      const axisPt = (p) => c.clone().addScaledVector(d, p.clone().sub(c).dot(d));
-      return sel.reduce((m, p) => m + p.distanceTo(axisPt(p)), 0) / sel.length;
-    };
-    const band = (hi - lo) * 0.16;
-    const rPos = radAt(hi - band, hi), rNeg = radAt(lo, lo + band);
-    if (rNeg < rPos) { d = d.clone().negate(); }                 // the narrow end is the other way
-    console.log("nozzle test: radius at +d end", rPos.toFixed(3), "at -d end", rNeg.toFixed(3),
-                rNeg < rPos ? "-> FLIPPED, narrow end was behind" : "-> kept, narrow end already ahead");
-  }
   const hs = bb.getSize(new THREE.Vector3()).multiplyScalar(0.5);
   const reach = Math.abs(d.x) * hs.x + Math.abs(d.y) * hs.y + Math.abs(d.z) * hs.z;
-  const OFF = ${JSON.stringify(opt.puffOffset.split(",").map(Number))};
-  const INSET = ${opt.puffInset};
-  const r2 = reach - INSET;
-  waveOrigin = new THREE.Vector3(c.x + d.x * r2 + OFF[0],
-                                 c.y + d.y * r2 + OFF[1],
-                                 c.z + d.z * r2 + OFF[2]);
-  PUFF_DIR[0] = d.x; PUFF_DIR[1] = d.y; PUFF_DIR[2] = d.z;
-  // a frame around the jet axis, so the waves stack across it and wiggle in its plane
-  const up = new THREE.Vector3(0, 1, 0);
-  const side = new THREE.Vector3().crossVectors(d, up).normalize();
-  if (side.lengthSq() < 1e-6) side.set(0, 0, 1);
-  const across = new THREE.Vector3().crossVectors(side, d).normalize();
-  const mat = new THREE.MeshStandardMaterial({ color: 0x9AA0A6, roughness: 0.30, metalness: 0.05,
-                                               transparent: true, opacity: 1 });
+  windAnchor = new THREE.Vector3(c.x + d.x * reach, c.y + d.y * reach, c.z + d.z * reach);
+
+  const mat = new THREE.MeshBasicMaterial({
+    color: 0x9AA0A6, transparent: true, opacity: 1, side: THREE.DoubleSide, depthWrite: false,
+  });
   for (let w = 0; w < WAVES; w++) {
-    const pts = [];
-    const span = PUFF_SIZE * 4.4;
-    const offset = (w - (WAVES - 1) / 2) * PUFF_SIZE * 1.25;   // stack them across the jet
-    for (let i = 0; i <= 26; i++) {
-      const u = i / 26;
-      const wig = Math.sin(u * Math.PI * 3.1) * PUFF_SIZE * 0.62 * (0.35 + u * 0.9);
-      pts.push(new THREE.Vector3()
-        .addScaledVector(d, u * span)
-        .addScaledVector(across, offset + wig)
-        .addScaledVector(side, wig * 0.25));
+    // A stroke of CONSTANT weight following a shallow sine, with a curl at the tip. Built as a
+    // ribbon in the XY plane so it always reads as a drawn line.
+    const len = PUFF_SIZE * (5.4 - w * 0.5);
+    const half = PUFF_SIZE * 0.115;                 // constant stroke weight
+    const N = 48;
+    const pos = [], idx = [];
+    for (let i = 0; i <= N; i++) {
+      const u = i / N;
+      const x = u * len;
+      // shallow sine, plus a curl that only bites at the very end
+      const curl = Math.max(0, (u - 0.78) / 0.22);
+      const y = Math.sin(u * Math.PI * 2.1) * PUFF_SIZE * 0.30 * (0.35 + u * 0.9)
+              - curl * curl * PUFF_SIZE * 0.85;
+      pos.push(x, y + half, 0, x, y - half, 0);
+      if (i < N) {
+        const a = i * 2;
+        idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2);
+      }
     }
-    const curve = new THREE.CatmullRomCurve3(pts);
-    const geo = new THREE.TubeGeometry(curve, 40, PUFF_SIZE * 0.19, 8, false);
-    const m = new THREE.Mesh(geo, mat.clone());
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+    g.setIndex(idx);
+    const m = new THREE.Mesh(g, mat.clone());
     m.userData.order = w;
+    m.userData.row = (w - (WAVES - 1) / 2);          // stack across the jet
     m.visible = false;
-    pivot.add(m);
-    waveMeshes.push(m);
+    scene.add(m);                                     // SCENE, not pivot: it never turns
+    windLines.push(m);
   }
 }
-// p is the air's own progress, 0 before it starts and 1 at the last frame of the clip.
+
+// p is the clip's own progress. The lines exist only while the icon is turning.
 function setPuff(p) {
-  if (!PUFF || !waveMeshes.length) return;
-  const dir = new THREE.Vector3(PUFF_DIR[0], PUFF_DIR[1], PUFF_DIR[2]).normalize();
-  for (const m of waveMeshes) {
-    // one after another, not all at once: each wave starts a beat after the one before it
-    const lead = m.userData.order * 0.16;
-    const local = p <= 0 ? -1 : (p * 1.9 - lead);
+  if (!PUFF || !windLines.length) return;
+  for (const m of windLines) {
+    if (p <= 0 || p >= 1) { m.visible = false; continue; }
+    const lead = m.userData.order * 0.10;
+    const local = p * 1.35 - lead;
     if (local < 0 || local > 1) { m.visible = false; continue; }
-    // ANCHORED, not launched. Translating the ribbon away from the mouth is what left a visible
-    // gap between the air and the nozzle: measured 4px at the start of its life and 16px by the
-    // end. Keeping the origin pinned to the mouth and growing the ribbon outward instead reads as
-    // air streaming OUT of the dryer rather than a puff drifting near it.
-    m.position.copy(waveOrigin);
-    const reachOut = 0.35 + local * 1.05;
-    m.scale.set(reachOut, 0.7 + local * 0.5, 0.7 + local * 0.5);
-    // in fast, out slow, and the whole set fades over the last fifth so the icon comes to rest
-    const shape = Math.min(1, local / 0.16) * (1 - local);
-    const outro = p > 0.82 ? (1 - p) / 0.18 : 1;
-    // THE READABILITY FIX. The ribbons are children of the pivot, so they sweep the whole frame with
-    // the turn, and for half of it the jet points at or away from the camera, where it foreshortens
-    // into a smear that reads as air going everywhere. Fade them by how much of the jet actually lies
-    // ACROSS the screen, so they are strongest at rest, when the nozzle is side-on and legible.
-    const wd = dir.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), pivot.rotation.y);
-    const across = Math.min(1, Math.sqrt(wd.x * wd.x + wd.y * wd.y) / (wd.length() || 1));
-    let facing = Math.max(0, (across - 0.45) / 0.55);            // nothing below 0.45, full by 1.0
-    // AND only while the object is near the pose the viewer reads as its front. Through the middle
-    // of the turn the nozzle genuinely points away, so the air correctly appears on the far side,
-    // and at icon size that reads as blowing out of the back. Physically right, visually wrong.
-    // Keep it to the near-rest arc, where the mouth is where the eye expects it.
-    const REST = ${opt.startAngle * Math.PI / 180};
-    // signed angle from the rest pose, wrapped to [-PI, PI], then its magnitude: 0 at rest.
-    let off = ((pivot.rotation.y - REST + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
-    off = Math.abs(off);                                          // 0 at rest, PI at half a turn
-    const nearRest = Math.max(0, 1 - off / (Math.PI * 0.42));     // gone by ~75 degrees off rest
-    facing *= nearRest;
-    m.material.opacity = Math.max(0, Math.min(1, 2.1 * shape * outro * facing * facing));
-    m.visible = m.material.opacity > 0.01;
+    // sit beside the icon, at the height of the anchor, always facing the camera
+    const a = windAnchor.clone();
+    pivotHolder.localToWorld(a);
+    // sit them OFF THE NOZZLE END, left of the icon, at a size that stays a supporting mark
+    m.position.set(-1.02 - PUFF_SIZE * 1.9, a.y + m.userData.row * PUFF_SIZE * 0.62, 0.45);
+    m.quaternion.copy(camera.quaternion);
+    const s = (0.58 + local * 0.16);
+    m.scale.set(s, s, s);
+    const shape = Math.min(1, local / 0.18) * Math.min(1, (1 - local) / 0.30);
+    m.material.opacity = Math.max(0, Math.min(1, 1.5 * shape));
+    m.visible = m.material.opacity > 0.02;
   }
 }
 window.__SAT = ${opt.sat};
@@ -543,14 +494,6 @@ try {
 }
 const loadErr = await page.evaluate(() => window.__error);
 if (loadErr) { console.error(refusal(url, { reason: "GLTFLoader failed", detail: loadErr })); await browser.close(); process.exit(1); }
-
-if (opt.puff) {
-  // Put the emitter's screen position next to the nozzle's own screen position at REST, so the
-  // alignment is checked rather than assumed. A bounding-box extreme is not always the nozzle.
-  const rest = (opt.startAngle * Math.PI / 180);
-  const probe = await page.evaluate((r) => { window.__renderAt(r, 0, 0); return window.__emitterScreen(); }, rest);
-  console.log(`  emitter projects to screen x=${probe.x} y=${probe.y} at the rest angle`);
-}
 
 const sweep = opt.frames - opt.holdIn - opt.holdOut;
 if (sweep < 2) { console.error("REFUSED: the holds leave no room to turn"); await browser.close(); process.exit(1); }

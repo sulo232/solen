@@ -573,3 +573,21 @@ Owner: "the area is not coming from the middle... animate the air."
       loose**, down from 4, loop closes byte-identical, and the air still moves on its own during the
       still hold (0.52 to 0.62 frame-to-frame where nothing else moves). `out/set-dryer.webm`
       109,544 bytes. He had already said "spend", so this did not wait to be asked again.
+
+## Round 14: the air is a DRAWN mark, and the resting icon is just the dryer
+
+Owner: "I want a static set to be just a blow dryer, tilted a little. But when it rolls, to have air
+coming out. Not this weird robotic arm looking ass air, but those wavy airs... research how it's drawn."
+
+He is describing the drawn WIND GLYPH: two or three horizontal strokes of constant weight carrying a
+shallow sine, each ending in a small curl. That is a 2D mark. Everything I built before had volume,
+caught light and rotated in 3D, which is exactly why it read as a robot arm rather than as air.
+
+- [x] Air rebuilt as drawn wind lines, verified: three flat camera-facing ribbon strokes of CONSTANT
+      weight following a shallow sine with a curl at the tip, `MeshBasicMaterial` so they take no
+      lighting and stay a flat mark. Parented to the SCENE, not to the pivot, because a drawn mark
+      never turns edge-on.
+- [x] The resting icon is JUST the dryer, verified: opaque-pixel count across the whole still hold is
+      **identical on all 9 frames** (deltas all 0) and equals the dryer alone at 4,925 px, rising to
+      5,538 only once the turn starts. So nothing is drawn at rest, which is what he asked for.
+- [x] Loop still closes byte-identical, full 75-frame clip.
