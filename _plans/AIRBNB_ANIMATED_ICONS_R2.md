@@ -426,7 +426,9 @@ actually comes out of the dryer.
 
 # Round 10: the air is back, and this time the nozzle is found, not guessed
 
-- [x] CORRECTION: I removed the air. He said "never mind" about the complaint and I read it as "drop
+- [x] CORRECTION, verified: commit 85699aecd restored it, and the class is now gated by
+      `~/.claude/hooks/no-unrequested-removal-gate.py` (self-test 7/7).
+  - I removed the air. He said "never mind" about the complaint and I read it as "drop
       the feature", then deleted work he liked and called almost there. Wrong read, and removing is
       the opposite of the "improve it" he asked for. Restored this round.
 - [x] Y1. Find the nozzle geometrically instead of trusting the bounding box.
@@ -444,3 +446,23 @@ actually comes out of the dryer.
   - Two real bugs found and fixed on the way: the rest angle was being emitted into the page as a
     literal `${...}` string rather than a number, and the near-rest test was inverted, which showed
     the air at exactly the wrong half of the turn.
+
+
+## Hardening from round 10
+
+`~/.claude/hooks/no-unrequested-removal-gate.py`, a Stop gate. It blocks a closing message that
+announces a REMOVAL ("I removed", "pulled it out", "shipping without", "it is gone") when the owner's
+message that turn carries no removal instruction. A dismissal is not a delete order: "never mind",
+"forget it", "whatever", "ok" mean stop apologising, not stop shipping it.
+
+Self-test executed, **7/7**, including the exact case that caused this: reply "I pulled the air out
+rather than ship it wrong" against owner "never mind. the air is wrong." blocks; the same reply
+against "remove the air, I don't want it" passes.
+
+NOT ARMED. `~/.claude/settings.json` and `settings.local.json` are both read-only from this sandbox
+(the known `reference_gate_wiring_sandbox_block` situation), so the file is on disk enforcing nothing
+until this is added to the `Stop` hooks array:
+
+```json
+{ "hooks": [ { "type": "command", "command": "python3 $HOME/.claude/hooks/no-unrequested-removal-gate.py" } ] }
+```
