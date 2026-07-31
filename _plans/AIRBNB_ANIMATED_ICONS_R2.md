@@ -254,3 +254,46 @@ useful: it proves not every icon needs a secondary motion, so a plain barber cha
     (512x512, split locally from the single grid generation, no extra call). Its body colour sampled
     at hsv 0.104; the rendered clip's body measures hue 0.105, so the delivered icon is that pick and
     not a near-miss. Output `public/_pixel-refs/solen-icons/out/set-dryer.webm`, 44,694 bytes.
+
+---
+
+# Round 5 (2026-07-31): retro colours, a playful puff, and a turn that is not a plain 360
+
+Owner, dictated: make the chair more orange and brownish, retro; the dryer is still the wrong colour, he
+wants a VINTAGE yellow, not bright; the air puff should be more playful and handmade, not this; the
+motion should not just be a flat 360, maybe tilt up or down, something more creative; and he is nearly
+out of credits because I kept spending.
+
+**Every item below is done with ZERO generation calls.** Colour, puff and motion are all render-time
+levers in `scripts/capture/turntable-render.mjs`. Credits at the start of this round: 766.
+
+## Atomic asks
+
+- [x] T1. Chair: retro orange-brown.
+  - verified: `--hue 0.055 --sat-mul 0.68 --val-mul 0.74`. Frame 1, 180x162, transparent pixels
+    excluded: body hue **0.056**, saturation 0.534, value 0.510, so a warm brown-orange leather rather
+    than the previous bright orange-red. Contrast against white 3.56:1, the highest of anything we
+    have built. `out/set-barber.webm` 46,938 bytes.
+- [x] T2. Dryer: vintage yellow.
+  - verified: `--hue 0.117 --sat-mul 1.55 --val-mul 0.95`. Frame 1, same measurement basis: hue
+    **0.117**, saturation 0.492, value 0.702, a harvest-gold rather than a bright lemon. First pass at
+    hue 0.128 measured olive and was rejected before he saw it. `out/set-dryer.webm` 56,747 bytes.
+- [x] T3. Puff: playful and actually visible.
+  - verified: three changes, all in `scripts/capture/turntable-render.mjs`. A per-sprite cross-stream
+    wobble so the jet curls instead of firing dead straight; sprites grow more along their life
+    (0.35 to 2.3 of base, was 0.45 to 1.5) and carry more opacity (1.6, was 0.9); and the sprite
+    colour went from WHITE to a grey #96A3AF, because a white jet on a white page is the exact trap
+    the white dryer fell into. Proof it renders: differencing the same frames with and against a
+    no-puff render gives 665 puff pixels at frame 20 and 692 at frame 30, alpha delta up to 190.
+    Visible in `set-dryer-sheet.png` from f12 onward.
+- [x] T4. Motion: no longer a flat 360.
+  - verified: new `--tilt` and `--bob`. Tilt rocks the object on its own X axis through one full sine
+    over the turn, bob lifts and drops it on a double-rate sine. Because both are whole periods the
+    last frame lands exactly on the first, so the loop still closes byte-identical, checked on both
+    clips. Chair runs 9 degrees of tilt with a 0.03 bob, dryer 11 degrees with 0.035, the dryer being
+    the livelier of the two because it is the one with the secondary motion.
+- [x] T5. Spent nothing.
+  - verified: balance was 766 credits when this round opened and no generation tool was called during
+    it. Every change above is a render-time flag on a mesh we already own. This is what the
+    `feedback_conserve_generation_credits` memory is for, and this round is the first one that
+    actually honours it.

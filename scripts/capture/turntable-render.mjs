@@ -30,7 +30,7 @@ if (!glbPath || !outdirArg) {
   console.error("Usage: node scripts/capture/turntable-render.mjs <model.glb> <outdir> [--frames 51] [--fps 30] [--size 180x162] [--hold-in 6] [--hold-out 12] [--turns 1]");
   process.exit(1);
 }
-const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7, hueShift: null, satMul: 1, valMul: 1 };
+const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7, hueShift: null, satMul: 1, valMul: 1, tilt: 0, bob: 0 };
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
   // ES modules are blocked over file:// by CORS (origin null), so when the outdir sits under
@@ -65,6 +65,11 @@ for (let i = 0; i < argv.length; i++) {
   else if (a === "--hue") opt.hueShift = Number(argv[++i]);        // target hue 0..1
   else if (a === "--sat-mul") opt.satMul = Number(argv[++i]);
   else if (a === "--val-mul") opt.valMul = Number(argv[++i]);
+  // A flat 360 reads mechanical. The reference never does one thing at a time: the house turns AND
+  // its tree sways. Tilt rocks the object on its own X axis through the turn, so it rises, dips and
+  // comes back level exactly where it started, which keeps the loop closing.
+  else if (a === "--tilt") opt.tilt = Number(argv[++i]);           // peak tilt in degrees
+  else if (a === "--bob") opt.bob = Number(argv[++i]);             // vertical bob, fraction of height
 }
 const m = /^(\d+)x(\d+)$/.exec(opt.size);
 if (!m) { console.error(`bad --size "${opt.size}"`); process.exit(1); }
@@ -201,9 +206,9 @@ if (PUFF) {
   cvs.width = cvs.height = 64;
   const g = cvs.getContext("2d");
   const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
-  grad.addColorStop(0, "rgba(255,255,255,0.85)");
-  grad.addColorStop(0.45, "rgba(255,255,255,0.32)");
-  grad.addColorStop(1, "rgba(255,255,255,0)");
+  grad.addColorStop(0, "rgba(150,163,175,0.95)");
+  grad.addColorStop(0.45, "rgba(156,163,175,0.45)");
+  grad.addColorStop(1, "rgba(156,163,175,0)");
   g.fillStyle = grad; g.fillRect(0, 0, 64, 64);
   const tex = new THREE.CanvasTexture(cvs);
   for (let i = 0; i < PUFF_COUNT; i++) {
@@ -223,14 +228,19 @@ function setPuff(p) {
     // each sprite runs its own loop, offset by its phase, so the stream reads as continuous
     const local = (p * 2.2 + s.userData.phase) % 1;
     const travel = 1.15 * local;
-    s.position.set(PUFF[0] + dir.x * travel, PUFF[1] + dir.y * travel, PUFF[2] + dir.z * travel);
-    const grow = PUFF_SIZE * (0.45 + local * 1.5);
+    // a small cross-stream wobble, different per sprite, so the jet curls instead of firing in a
+    // dead straight line. Derived from the sprite's own phase, so it stays deterministic.
+    const wob = Math.sin(local * 5.2 + s.userData.phase * 6.28) * 0.16 * local;
+    s.position.set(PUFF[0] + dir.x * travel,
+                   PUFF[1] + dir.y * travel + wob,
+                   PUFF[2] + dir.z * travel + wob * 0.5);
+    const grow = PUFF_SIZE * (0.35 + local * 2.3);
     s.scale.set(grow, grow, 1);
     // fade in fast, out slow, and fade the whole stream down over the final fifth of the clip so
     // the icon truly comes to rest instead of being cut mid-jet
     const shape = Math.min(1, local / 0.18) * (1 - local) * (1 - local);
     const outro = p > 0.8 ? (1 - p) / 0.2 : 1;
-    s.material.opacity = 0.9 * shape * outro;
+    s.material.opacity = 1.6 * shape * outro;
     s.visible = s.material.opacity > 0.004;
   }
 }
@@ -239,8 +249,15 @@ window.__SAT = ${opt.sat};
 window.__HUE = ${opt.hueShift === null ? 'null' : opt.hueShift};
 window.__SATMUL = ${opt.satMul};
 window.__VALMUL = ${opt.valMul};
-window.__renderAt = (rad, puffT) => {
+const TILT = ${opt.tilt} * Math.PI / 180;
+const BOB = ${opt.bob};
+window.__renderAt = (rad, puffT, t) => {
   pivot.rotation.y = rad;
+  // One full sine over the turn: level at the start, up, level, down, level at the end. Because it
+  // is a whole period the last frame lands exactly on the first, so the loop still closes.
+  const phase = (t === undefined ? 0 : t) * Math.PI * 2;
+  pivot.rotation.x = TILT * Math.sin(phase);
+  pivot.position.y = BOB * Math.sin(phase * 2);
   setPuff(puffT === undefined ? 0 : puffT);
   renderer.render(scene, camera);
   if (window.__SAT === 1 && window.__HUE === null) return renderer.domElement.toDataURL("image/png");
@@ -338,7 +355,7 @@ for (let f = 0; f < opt.frames; f++) {
   const puffT = opt.puff
     ? (f < opt.holdIn ? 0 : (f - opt.holdIn) / (opt.frames - 1 - opt.holdIn))
     : 0;
-  const dataUrl = await page.evaluate(([r, pt]) => window.__renderAt(r, pt), [rad, puffT]);
+  const dataUrl = await page.evaluate(([r, pt, tt]) => window.__renderAt(r, pt, tt), [rad, puffT, t]);
   writeFileSync(join(outdir, String(f + 1).padStart(3, "0") + ".png"), Buffer.from(dataUrl.split(",")[1], "base64"));
   const stats = await page.evaluate(() => window.__alphaStats());
   if (stats.opaque === 0) emptyFrames++;
