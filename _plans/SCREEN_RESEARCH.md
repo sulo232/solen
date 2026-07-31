@@ -340,6 +340,26 @@ looks weird or the balance and stuff. Balance is the most easiest measure or not
 measure it. Optical centre, visual weight distribution, whitespace symmetry, edge alignment and
 cap-height ratios are all computable from a rendered DOM.
 
-- [ ] L1. Research what visual balance actually IS, computationally, and which measures are real
-- [ ] L2. Measure our own rejected mockup with those measures, to prove they detect what he saw
-- [ ] L3. Wire the ones that work into the floors gate so they run automatically
+- [x] L1. Research what visual balance actually IS, computationally, and which measures are real
+      → 4 lens files: `_design-system/research/BALANCE_WEIGHT.md` (optical centre / visual weight),
+      `BALANCE_ALIGN.md` (rails, near-miss, frame overflow), `BALANCE_LOGO.md` (letterform distance,
+      icon optics), `BALANCE_CLUTTER.md` (chrome share, counting measures). 8 candidate measures
+      built and specified with runnable code.
+- [x] L2. Measure our own rejected mockup with those measures, to prove they detect what he saw
+      → Done, and **they do not**. Adversarial round: `_design-system/research/BALANCE_VERDICT.md`.
+      All 8 measures run at 390x844 against the rejected mockup + 3 standalone variants + `/de` +
+      the salon page he LIKES + the profile page he called "ultra ass" (signed in, via
+      `/api/dev/login`, since signed out it is a login form). **Zero of the four lenses' measures
+      rank the liked screen above the disliked one**; chrome share and rail near-miss are inverted,
+      the rest tie. Only frame overflow survives, as a correctness check (32px slice on the
+      comparison shell, 0 everywhere else), and it is silent on the decisive pair.
+- [x] L3. RESOLVED AS "DO NOT WIRE", not as "wired". Nothing is armed and nothing should be yet.
+      Ticking the wiring itself would be false: the research concluded against it. Reasons, in
+      `BALANCE_VERDICT.md` sections 3 and 5 with the numbers: chrome share would rank the screen he
+      hates as the cleanest of eight; the logo gate grades footer logos 5 viewports below the fold
+      and hands a PASS to any page whose body font falls back to Times; rail near-miss is
+      anti-correlated with his taste. The one measure that DOES order his taste correctly
+      (M8 entity-render divergence, the same salon rendering as a different object on `/de` vs
+      `/de/profile`) is net-new from the adversarial round, validated on n=1 disliked screen, and
+      needs his next few rejections before it earns a gate. Owner decision needed before any wiring;
+      also note a gate built in a sandboxed session is not armed, `settings.json` is unwritable here.
