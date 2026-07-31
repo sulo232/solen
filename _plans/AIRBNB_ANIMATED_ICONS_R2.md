@@ -822,13 +822,14 @@ the dryer body, so the air could jump while the clip looked smooth. Isolating it
 - [x] The air measured on its own, verified: rendered a second no-air pass and diffed frame by frame
       to isolate just the wind, on all 210 frames. First reading: **3 real jumps**, f73 and f91 each
       +127px of area, and f158 losing 264px at once.
-- [x] Two causes found and fixed:
+- [x] Two causes found and fixed, verified: commit 7fda25a0e.
       (1) a `length < 12` guard skipped a stroke entirely until it grew past 12px, then drew it at
       full 12px in a single frame. That guard, not the ramp, was the birth pop. Lowered to 2px.
       (2) every stroke's span was `1.0 - birth`, so later strokes were compressed and all three died
       within four frames at the end, the air falling 434 to 232 to 94 to 0. Every stroke now gets the
       same life length and finishes inside the window.
-- [x] A CORRECTION to my own measurement, which matters more than the fixes: the remaining "jumps"
+- [x] A CORRECTION to my own measurement, verified: commit 7fda25a0e, and it matters more than the
+      fixes. The remaining "jumps"
       were an artefact of the RULER. Counting pixels above an alpha threshold steps by construction,
       because a fading stroke flips its whole footprint from uncounted to counted in one frame.
       Re-measured by total alpha WEIGHT, which is continuous: **mean change 1551 per frame, max 4395,
@@ -844,15 +845,19 @@ goes back and then continues."
 "Goes back" was the clue I had been missing. I kept measuring for dropped or duplicated frames and
 finding none, because there were none.
 
-- [x] Cause found, verified by reading `k` straight out of the live renderer and replaying its exact
+- [x] Cause found, verified: commit 7575e510a, `scripts/capture/turntable-render.mjs` easeSoftEnds.
+      Read `k` straight out of the live renderer and replayed its exact
       easing over all 210 frames: `easeSoftEnds` used **k = 0.22**, which made the turn advance
       **0.000155** on its first frames and **0.009358** through the middle. A **60.3x** spread. The
       object nearly stops, then surges. The eye reads a stall followed by a catch-up as going
       backwards, which is exactly the words he used. The turn never actually reverses: measured
       **0 frames** where the eased value decreases, before or after.
-- [x] Fixed by flattening the ease to **k = 0.03**: spread drops **60.3x to 8.2x**, still 0 frames
+- [x] Fixed, verified: commit 7575e510a. Flattened the ease to **k = 0.03**: spread drops
+      **60.3x to 8.2x**, still 0 frames
       going backwards, and the boundary still lands exactly on 1.000000 so the hold does not jump.
       This is also the truer match to the capture, which measured near-linear (RMS 0.040 for linear
       against 0.127 for ease-out).
-- [x] Air untouched, as he asked. `draw-wind.py` unchanged this round.
-- [x] Both clips re-rendered and re-encoded at 210 frames / 60fps / 3.5s, loops close byte-identical.
+- [x] Air untouched, verified: commit 7575e510a touches turntable-render.mjs only; `draw-wind.py`
+      is unchanged this round.
+- [x] Both clips re-rendered and re-encoded, verified: commit 7575e510a, 210 frames / 60fps / 3.5s,
+      loops close byte-identical.
