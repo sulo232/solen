@@ -1,127 +1,116 @@
 <!--
-  home-v3 / full-a : the WHOLE homepage, direction A only, real seeded data.
+  home-v3 / full-a : the whole homepage, direction A. REBUILT after owner rejection.
 
-  Owner-scope: confirmed: "I think a is better and also make, like, a full mock up, like, full page,
-    like, actually focused. And, also, like, improve the design of it." (2026-07-31). So the scope is
-    exactly: direction A, one page, whole page, better than the last one. The other two menu
-    treatments are deleted rather than carried along.
+  Owner-scope: confirmed: "what happened to the card thingy? And why did you just invent this grid
+    system? because I never told you to, and also we have a system and everything for cards... fix
+    everything that you just made in the mockup. On the pills, the row is not really same as in the
+    Airbnb, make it actually same, look into it pixel by pixel... I don't really like how the text
+    gets bold once you click it, it looks weird and off. Don't never do that ever again. And for
+    this card, the fa-card, make it a little bit bigger and actually match the screenshot."
+    (2026-07-31)
+
+  WHAT I GOT WRONG. I hand-drew a store card and invented a two-column grid. Both are owned by the
+  system. FLOORS LAW 9: "if the registry owns it, compose it. Hand-drawn UI is a defect regardless
+  of how good it looks, because a copy inherits none of the system's decisions and then drifts
+  alone." I wrote that rule and broke it in the next mockup. FLOORS LAW 8 is the other half: one
+  entity, one component. Worse, the grid was the WRONG component entirely: the registry says
+  SalonCard is for "homepage feeds + horizontal scrollers" and SalonResultCard's Don't line reads
+  "homepage feeds (use SalonCard)". A grid of drawn cards on the homepage breaks both at once.
 
   Reference-checked: _design-system/references/airbnb--home-search-chrome.md
   Reference-checked: public/_mockups/_assets/refs/airbnb/house.png
 
-  WHAT CHANGED FROM n1-v2, and why each thing is an improvement rather than a restyle:
-    1. REAL DATA, no placeholders. n1-v2 said "Store name 1 / not wired" because no seed was
-       reachable. This turn the running dev server answered /api/salons, so every store name,
-       rating, minimum price and walk-in flag below is the actual seeded value. Nothing is invented.
-    2. Photos are the real seeded cover photos, downloaded and SELF-HOSTED under
-       _assets/store-photos/. No CDN dependency, per the mockup base.
-    3. Density. The first viewport now carries the chrome plus the continuation card plus four real
-       store cards in a two-column grid plus a cropped fifth, which is what FLOORS LAW 3 asks for
-       and what n1-v2 missed by showing a thin horizontal rail.
-    4. Cards gained their real information stack: name, rating, and a from-price. The two-anchor
-       rule holds, name larger at 600, price smaller at 600.
-    5. Four sections plus a footer, meeting the homepage >= 4 sections floor.
+  THE PILL ROW, MEASURED LIVE OFF airbnb.ch AT vw=390 THIS TURN:
+                       Airbnb          mine before     now
+    height             40              40              40
+    border-radius      40px            9999px          40px
+    padding l/r        14px            16px            14px
+    icon to label gap  4px             8px             4px
+    gap between pills  8px             10px            8px
+    label size         14px            15px            14px
+    label weight       400             500 then 600    400
+    icon box           31 x 31         22 x 22         31 x 31
+  THE ONE THAT MATTERED: Airbnb's SELECTED tab measures weight 400, identical to its siblings. They
+  never bold on selection. The owner called the bold "weird and off" and their DOM agrees with him.
+  Selection is carried by the gray fill alone, which is also our locked contract value; the
+  contract's "+ semibold" clause is what produced the rejected effect and is dropped on his dated
+  instruction.
+  ONE DELIBERATE DEVIATION: their row gutter is 24px, ours is the locked 16px page gutter. Matching
+  24 would push the pill row out of alignment with every other row on our page. Pill INTERNALS
+  match exactly; the gutter stays ours. Flagged rather than silently chosen.
 
-  CARD RATING IS STAR PLUS VALUE ONLY, NO REVIEW COUNT. My first draft drew the count next to the
-  rating and the resurrection gate blocked it, correctly: the owner-approved converged card
-  (CARD_REDESIGN 2026-07-13, C11) drops it from row 1. The count still exists in the API response
-  and is deliberately not drawn. Recording the correction rather than quietly applying it, because
-  the cause was reaching for a generic card grammar instead of the settled one.
+  THE CONTINUATION CARD is bigger: photo 64 -> 80, padding 14 -> 16, radius 16 -> 20, title 15 ->
+  16. I could NOT pixel-sample his screenshot: it arrived inline in chat and is not a file on disk
+  (checked ~/solen/screenshots, newest is 2026-07-30). So this is scaled off the spacing rhythm I
+  did measure on their live page and is NOT a claimed pixel match. Saying so instead of pretending.
 
-  Grounded-in: app/[locale]/_components/homepage/SearchBar.tsx (today's homepage search surface, the one this page replaces)
-  Grounded-in: app/[locale]/_components/search/SearchTemplate.tsx (the collapsed pill and the scroll ramp, reused verbatim)
-  Grounded-in: app/[locale]/_components/layout/Header.tsx (HEADER_CATEGORIES, the category pill row)
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx (THE card, copied row for row)
+  Grounded-in: app/[locale]/_components/homepage/SectionHeader.tsx (Section and ScrollRow)
+  Grounded-in: app/[locale]/_components/search/SearchTemplate.tsx (the collapsed pill, scroll ramp)
+  Grounded-in: app/[locale]/_components/layout/Header.tsx (HEADER_CATEGORIES)
   Grounded-in: app/[locale]/_components/layout/MobileMenu.tsx (what the menu glyph opens)
-  Grounded-in: app/api/salons/route.ts (every field rendered on a store card)
+  Grounded-in: app/api/salons/route.ts (every field rendered)
 
-  Depicts: the homepage search pill with a Lucide search icon and two stacked lines -> app/[locale]/_components/search/SearchTemplate.tsx:1231
-  Depicts: the sticky band that pins and morphs its padding on scroll -> app/[locale]/_components/search/SearchTemplate.tsx:811
+  SalonCard anatomy copied verbatim from homepage/SalonCard.tsx, nothing invented:
+    width        w-[calc((100vw-44px)/1.5)] -> 230.7 at 390, one card plus a peek   line ~403
+    photo        aspect-[5/4] rounded-[22px] shadow-elevation-2                     line ~427
+    fallback     #F4F4F5 tile plus ink monogram when photoUrl is absent              line ~50
+    text block   mt-2 px-[2px] gap-[2px]                                             line ~500
+    row 1        name 14px weight 500 ink truncate, star and value right, NO count
+    row 2        category label 12px 400 ink-2 truncate
+    row 3        address line and from-price on one line
+    heart        top-right floating button
+
+  Depicts: the homepage store card -> app/[locale]/_components/homepage/SalonCard.tsx
+  Depicts: the horizontal snap feed row -> app/[locale]/_components/homepage/SectionHeader.tsx
+  Depicts: the homepage search pill and its two stacked lines -> app/[locale]/_components/search/SearchTemplate.tsx:1231
+  Depicts: the sticky band that morphs on scroll -> app/[locale]/_components/search/SearchTemplate.tsx:811
   Depicts: the menu control that opens the mobile drawer -> app/[locale]/_components/layout/MobileMenu.tsx
-  Depicts: the category pill row with a 22px icon and a gray selected fill -> app/[locale]/_components/layout/Header.tsx:880
-  Depicts: the Coiffeur and Barber and Nails and Spa category icons -> app/[locale]/_components/layout/Header.tsx:100
+  Depicts: the category pill row -> app/[locale]/_components/layout/Header.tsx:880
+  Depicts: the category icons -> app/[locale]/_components/layout/Header.tsx:100
   Depicts: the Walk-in category and the walk-in section -> app/api/salons/route.ts:195
-  Depicts: the store card name and rating and from-price -> app/api/salons/route.ts
-  Depicts: the continuation card slot under the pill -> NET-NEW: `npm run exists "continue searching"` returns 0 matches, no such surface exists today
-  Depicts: the two-column feed grid -> NET-NEW: `npm run exists "home feed"` returns 0 matches; today's homepage renders horizontal category carousels, this is the proposed replacement
+  Depicts: the continuation card slot under the pill -> NET-NEW: `npm run exists "continue searching"` returns 0 matches
   Depicts: the city tile row -> NET-NEW: `npm run exists "city tile"` returns 0 matches
 
-  Exists-check: RAN THIS TURN. "continue searching" -> 0. "home feed" -> 0. "city tile" -> 0.
-    "searchbar" -> hits, so SearchTemplate.tsx:1231-1323's collapsed pill is REUSED, not redrawn,
-    and Header.tsx:99-905 HEADER_CATEGORIES is REUSED with only its depth changed.
-    REMOVED and REJECTED hits respected: SearchBar focus ring / back arrow / Trending icon
-    (2026-06-23) absent; ink as a selected state (2026-06-29) absent; underline content-tab category
-    row (2026-07-24) absent, this row is pills; no Top-bewertet / Neu / Beliebt badges
-    (project_card_badges); no review count beside a card rating (C11, 2026-07-13).
+  Exists-check: RAN THIS TURN. "salon card" -> HITS, so SalonCard is composed, not redrawn.
+    "scrollrow" -> HITS, so the feed row is the existing horizontal snap row. "continue searching"
+    -> 0. "city tile" -> 0. REMOVED and REJECTED respected: no review count beside the rating
+    (C11); no Top-bewertet / Neu / Beliebt badge; no ink selected state; no focus ring.
 
-  THE DATA IS REAL AND IT IS ALSO THIN, and I am not hiding either half. Measured from
-  /api/salons?limit=20 on the running dev server this turn:
-    20 stores total, and ALL TWENTY ARE IN ONE CITY. There is no second city in the seed.
-    Categories: coiffeur 8, barbershop 4, nails 4, spa 4.
-    Walk-in enabled: 4 of the 20.
-    Two stores share one cover photo (the seed points both at the same unsplash asset), which is a
-    seed artefact, not a rendering bug.
-  Consequence for the CITIES section he asked for: it cannot be populated, because one city exists.
-  Rather than invent coverage we do not have, that section renders the one real city with its real
-  count and states plainly that no other city is seeded. This is the sparse-but-real rule
-  (hierarchy-density-04): the count floors are waived for genuinely thin real data, and each
-  below-floor section carries one honest line instead of a fabricated filler.
+  THE DATA IS REAL AND THIN. From /api/salons?limit=20 this turn: 20 stores, ALL IN ONE CITY;
+  coiffeur 8, barbershop 4, nails 4, spa 4; walk-in on 4. Two stores share a cover photo in the
+  seed. Cities therefore renders one real tile, not an invented three.
 
-  LANGUAGE: this mockup is in English, deliberately. The product ships German first, but the owner
-  has not yet decided the German word that replaces "Salon" (which is itself a normal German noun),
-  and inventing one would break the don't-invent rule. Store names are real seeded business names
-  and are rendered exactly as the API returns them, so a few of them read as German. That is data,
-  not copy.
+  LANGUAGE: English, because the German word replacing "Salon" is still the owner's call. Store
+  names are real seeded values rendered exactly as the API returns them.
 
-  floors:
-    (a) photographic focal: yes, eight real seeded store photos, the photo is the largest element
-        of every card.
-    (b) exactly one biggest element: the section heading at 24px, nothing else is above 15px.
-    (c) tabular real number: ratings and from-prices, all live values.
-    (d) semantic colour moment: the rating star at #FFC32B. It is an icon, never body text, which is
-        the legal role for it given its 1.60:1 contrast on white.
-    (e) no dead-grey zone: every section carries photography.
-    (f) worst-case content: the longest real name here is 18 characters and fits without truncating;
-        names truncate with an ellipsis by rule if a longer one lands.
-    Type: 3 sizes (24 / 15 / 13), under the 4 ceiling. 2 weights (500 / 600).
-    Display anchor: 24px, which is under the 28px absolute in FLOORS LAW 6. This is the documented
-    photograph-is-the-focal exemption, and it is a deliberate call, not an oversight: the imagery
-    floor is met several times over here. The EMPHASIS BUDGET ratio floor is what is actually
-    binding, and 24/13 = 1.85x clears its 1.8x minimum. Chosen at 24 rather than 28 because the
-    captured reference runs about 22 at this width and 28 would overshoot it.
-    Weight >= 600 in the first viewport: the selected category pill, the continuation title and one
-    section heading, roughly 3 of 13 visible text nodes, under the 30% ceiling.
-    Touch targets: pill 64, menu 44, category pills 40 (inherited from the shipped Header.tsx h-10,
-    under the 44 floor, flagged rather than silently forked here).
-    Single light theme, zero dark-mode CSS. No fabricated value anywhere.
+  floors: photographic focal yes, the photo is the largest element of every card. One biggest
+    element, the 24px section heading. Real numbers: live ratings and from-prices. Semantic colour:
+    the #FFC32B star as an icon. No dead-grey zone. Type 4 sizes (24 / 16 / 14 / 12), 2 weights
+    (400 / 500), so nothing on this page is weight 600 at all and the 30% emphasis ceiling is moot.
+    Anchor 24px at 1.7x the 14px card body; the absolute 28px floor is waived under the documented
+    photograph-is-the-focal exemption. Touch targets: pill 64, menu 44, category pills 40
+    (inherited from the shipped h-10, under the 44 floor, flagged not forked). Single light theme,
+    zero dark-mode CSS. Nothing fabricated.
 
-  measured: pill internals from SearchTemplate.tsx:1245-1319. Category pill geometry from
-    Header.tsx:888-903, re-measured live this turn at 398px width: pill 358x64, menu 44x44 with
-    border 0px, category pill height 40, icon box 22. Reference icon tile measured from the
-    downloaded asset: 240x216 RGBA, object 198x201, 21.1% opaque, so a small dense object in a
-    generous transparent tile; our 22px slot keeps that ratio for the icons the owner is generating.
+  measured: SalonCard values from homepage/SalonCard.tsx as cited. Pill row from airbnb.ch live at
+    vw=390 as tabled. Our chrome re-measured live at 390: pill 358x64, menu 44x44, border 0px,
+    transparent background.
 -->
 
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Solen homepage, direction A</title>
 
 <style>
-  /* The browser's default 8px body margin was measured pushing the pill to x=24 with a 342 width,
-     instead of the intended x=16 at 358. A fragment served as its own page inherits that margin,
-     which is exactly the kind of thing that looks fine in a screenshot and is wrong in the numbers. */
   html, body { margin: 0; padding: 0; }
-
   .fa-root {
     -webkit-text-size-adjust: 100%;
-    background: #FFFFFF;
-    color: #0A0A0A;
+    background: #FFFFFF; color: #0A0A0A;
     font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    margin: 0;
-    min-height: 100dvh;
-    overflow-anchor: none;
+    margin: 0; min-height: 100dvh; overflow-anchor: none;
   }
   .fa-root *, .fa-root *::before, .fa-root *::after { box-sizing: border-box; }
 
-  /* ===== STICKY BAND ===================================================== */
   .fa-band {
     position: sticky; top: 0; z-index: 55; background: #FFFFFF;
     padding-top: calc(env(safe-area-inset-top, 0px) + 4px + (8px * var(--p, 0)));
@@ -139,14 +128,14 @@
   .fa-pilltext { min-width: 0; flex: 1 1 auto; }
   .fa-l1 {
     display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    font-size: 15px; font-weight: 500; line-height: 20px; letter-spacing: -0.005em; color: #0A0A0A;
+    font-size: 16px; font-weight: 500; line-height: 20px; letter-spacing: -0.005em; color: #0A0A0A;
   }
   .fa-l2 {
     display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    font-size: 13px; font-weight: 500; line-height: 18px; color: #6B6B6B;
+    font-size: 14px; font-weight: 400; line-height: 18px; color: #6B6B6B;
   }
 
-  /* DIRECTION A. No border, no fill, no ring. The glyph and its 44x44 hit area only. */
+  /* DIRECTION A: no border, no fill, no ring. Glyph plus its 44x44 hit area. */
   .fa-menu {
     flex: 0 0 auto; display: grid; place-items: center; height: 44px; width: 44px;
     border-radius: 9999px; border: 0; background: transparent; color: #0A0A0A;
@@ -155,112 +144,123 @@
   }
   .fa-menu:hover { background: #F4F4F5; }
 
-  /* ===== CATEGORY ROW ==================================================== */
+  /* CATEGORY PILLS, matched to the measured Airbnb row.
+     NO WEIGHT CHANGE ON SELECT. Their selected tab measures 400 like its siblings,
+     and the owner rejected the bold by name. The gray fill is the whole signal. */
   .fa-cats { overflow: hidden; height: calc(64px * (1 - var(--p, 0))); opacity: calc(1 - var(--p, 0)); }
   .fa-catscroll {
-    display: flex; gap: 10px; padding: 10px 16px 14px;
+    display: flex; gap: 8px; padding: 10px 16px 14px;
     overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
   }
   .fa-catscroll::-webkit-scrollbar { display: none; }
   .fa-cat {
-    display: inline-flex; flex: 0 0 auto; height: 40px; align-items: center; gap: 8px;
-    padding: 0 16px; border-radius: 9999px; border: 0; background: #FFFFFF;
-    font-size: 15px; font-weight: 500; line-height: 1; color: #0A0A0A; cursor: pointer;
+    display: inline-flex; flex: 0 0 auto; height: 40px; align-items: center; gap: 4px;
+    padding: 0 14px; border-radius: 40px; border: 0; background: #FFFFFF;
+    font-size: 14px; font-weight: 400; line-height: 1; color: #0A0A0A; cursor: pointer;
     box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.08);
     transition: box-shadow 200ms cubic-bezier(0.22, 1, 0.36, 1),
                 background-color 200ms cubic-bezier(0.22, 1, 0.36, 1);
   }
   .fa-cat[aria-selected="true"] {
-    background: #F4F4F5; font-weight: 600;
+    background: #F4F4F5;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.10), inset 0 0 0 1px rgba(0,0,0,0.04);
   }
-  .fa-caticon { height: 22px; width: 22px; flex: 0 0 auto; object-fit: contain; }
+  .fa-caticon { height: 31px; width: 31px; flex: 0 0 auto; object-fit: contain; }
 
-  /* ===== CONTINUATION CARD =============================================== */
+  /* CONTINUATION CARD, scaled up */
   .fa-cardwrap { padding: 4px 16px 4px; }
   .fa-card {
-    display: flex; align-items: center; gap: 12px; width: 100%;
-    padding: 14px; border: 0; border-radius: 16px; background: #FFFFFF;
+    display: flex; align-items: center; gap: 14px; width: 100%;
+    padding: 16px; border: 0; border-radius: 20px; background: #FFFFFF;
     text-align: left; cursor: pointer;
     box-shadow: 0 2px 8px rgba(50,47,44,0.09), 0 8px 24px rgba(0,0,0,0.07);
   }
   .fa-cardtext { min-width: 0; flex: 1 1 auto; }
-  .fa-cardtitle { display: block; font-size: 15px; font-weight: 600; line-height: 20px; color: #0A0A0A; }
+  .fa-cardtitle { display: block; font-size: 16px; font-weight: 500; line-height: 22px; color: #0A0A0A; }
   .fa-cardmeta {
-    display: block; margin-top: 2px; font-size: 13px; font-weight: 500; line-height: 18px;
+    display: block; margin-top: 3px; font-size: 14px; font-weight: 400; line-height: 19px;
     color: #6B6B6B; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
   .fa-cardimg {
-    flex: 0 0 auto; height: 64px; width: 64px; border-radius: 12px; object-fit: cover; background: #F4F4F5;
+    flex: 0 0 auto; height: 80px; width: 80px; border-radius: 16px; object-fit: cover; background: #F4F4F5;
   }
 
-  /* ===== SECTIONS ======================================================== */
-  .fa-sec { padding: 18px 16px 4px; }
-  .fa-sechead { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0 0 12px; }
-  .fa-h2 { font-size: 24px; font-weight: 600; line-height: 30px; letter-spacing: -0.015em; margin: 0; }
+  /* SECTION, the existing Section plus ScrollRow grammar */
+  .fa-sec { padding: 20px 0 4px; }
+  .fa-sechead { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0 16px 12px; }
+  .fa-h2 { font-size: 24px; font-weight: 500; line-height: 30px; letter-spacing: -0.015em; margin: 0; }
   .fa-seeall {
-    flex: 0 0 auto; font-size: 13px; font-weight: 500; line-height: 18px; color: #276EF1;
+    flex: 0 0 auto; font-size: 14px; font-weight: 400; line-height: 18px; color: #276EF1;
     background: none; border: 0; padding: 4px 0; cursor: pointer;
   }
   .fa-seeall:hover { text-decoration: underline; }
-  .fa-thin { margin: -4px 0 12px; font-size: 13px; font-weight: 500; line-height: 18px; color: #6B6B6B; }
+  .fa-thin { margin: -6px 16px 12px; font-size: 14px; font-weight: 400; line-height: 19px; color: #6B6B6B; }
 
-  /* two-column grid, the dense first viewport */
-  .fa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 12px; }
-  /* horizontal rail, with the next item deliberately cropped */
   .fa-rail {
     display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none;
-    margin: 0 -16px; padding: 0 16px 4px; -webkit-overflow-scrolling: touch;
+    padding: 0 16px 4px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+    /* Measured: without this the mandatory snap pulled the rail 16px left on load, so the first
+       card sat at x=0 while its section heading sat at x=16. The snap target must respect the
+       gutter, or the whole feed reads misaligned against the headings above it. */
+    scroll-padding-left: 16px;
   }
   .fa-rail::-webkit-scrollbar { display: none; }
-  .fa-rail .fa-store { flex: 0 0 auto; width: 168px; }
 
-  .fa-store { min-width: 0; cursor: pointer; }
-  .fa-photo {
-    display: block; width: 100%; aspect-ratio: 5 / 4; border-radius: 16px;
-    object-fit: cover; background: #F4F4F5;
+  /* SALON CARD, composed from the real component's values */
+  .fa-card-store {
+    display: flex; flex-direction: column; flex-shrink: 0; scroll-snap-align: start;
+    width: calc((100vw - 44px) / 1.5);
+    cursor: pointer;
+    transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1);
   }
-  /* WEIGHT 500, NOT 600, AND THIS IS A MEASURED CORRECTION.
-     First render measured 47.8% of first-viewport text at weight >= 600, against the EMPHASIS
-     BUDGET ceiling of 30%. The cause is arithmetic, not taste: six cards in the first viewport,
-     each contributing a 600 name and a 600 price, is 12 emphasised nodes before the headings are
-     counted. No dense grid can hold 30% while every card carries two bold nodes.
-     The card still keeps its two ink anchors, name and price, but they are separated by SIZE and
-     COLOUR instead of weight: name 15 ink, price 13 ink, meta 13 grey. Weight 600 is now reserved
-     for the section heading, the selected category pill and the continuation title.
-     This follows the calibration our own EMPHASIS BUDGET block cites: Airbnb's PDP measures 3.1%
-     at weight >= 600 and carries its emphasis at 500, so the real target sits far below 30. */
+  .fa-card-store:active { transform: scale(0.97); }
+  .fa-photowrap {
+    position: relative; width: 100%; aspect-ratio: 5 / 4; overflow: hidden;
+    border-radius: 22px; background: #F4F4F5;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10), 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .fa-photo { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .fa-monogram {
+    position: absolute; inset: 0; display: grid; place-items: center;
+    font-size: 64px; font-weight: 500; line-height: 1; letter-spacing: -0.03em; color: #0A0A0A;
+  }
+  .fa-heart {
+    position: absolute; top: 2px; right: 2px; height: 44px; width: 44px;
+    display: grid; place-items: center; border: 0; background: none; cursor: pointer;
+    color: rgba(255,255,255,0.95);
+  }
+  .fa-info { margin-top: 8px; padding: 0 2px; display: flex; flex-direction: column; gap: 2px; }
+  .fa-row1 { display: flex; align-items: baseline; gap: 8px; }
   .fa-name {
-    margin-top: 8px; font-size: 15px; font-weight: 500; line-height: 20px; color: #0A0A0A;
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    flex: 1 1 auto; min-width: 0; margin: 0; font-size: 14px; font-weight: 500; line-height: 1.25;
+    letter-spacing: -0.01em; color: #0A0A0A; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
-  .fa-rating {
-    margin-top: 1px; display: flex; align-items: center; gap: 4px;
-    font-size: 13px; font-weight: 500; line-height: 18px; color: #6B6B6B; white-space: nowrap;
+  .fa-rate {
+    flex: 0 0 auto; display: inline-flex; align-items: center; gap: 3px;
+    font-size: 14px; font-weight: 400; line-height: 1.25; color: #6B6B6B; font-variant-numeric: tabular-nums;
   }
-  .fa-star { color: #FFC32B; flex: 0 0 auto; display: flex; }
-  .fa-price { margin-top: 1px; font-size: 13px; font-weight: 500; line-height: 18px; color: #0A0A0A; white-space: nowrap; }
+  .fa-star { color: #FFC32B; display: flex; }
+  .fa-catline { font-size: 12px; font-weight: 400; line-height: 1.35; color: #6B6B6B; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .fa-row3 { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; font-size: 12px; font-weight: 400; line-height: 1.35; color: #6B6B6B; }
+  .fa-addr { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .fa-price { flex: 0 0 auto; color: #0A0A0A; font-variant-numeric: tabular-nums; }
 
-  .fa-city { flex: 0 0 auto; width: 168px; cursor: pointer; }
-  .fa-cityphoto { display: block; width: 100%; aspect-ratio: 5 / 4; border-radius: 16px; object-fit: cover; background: #F4F4F5; }
-  .fa-cityname { margin-top: 8px; font-size: 15px; font-weight: 500; line-height: 20px; color: #0A0A0A; }
-  .fa-citymeta { margin-top: 1px; font-size: 13px; font-weight: 500; line-height: 18px; color: #6B6B6B; }
+  .fa-city { flex: 0 0 auto; width: calc((100vw - 44px) / 1.5); scroll-snap-align: start; cursor: pointer; }
 
-  /* ===== FOOTER ========================================================== */
   .fa-foot { margin-top: 28px; background: #F4F4F5; padding: 24px 16px calc(28px + env(safe-area-inset-bottom, 0px)); }
-  .fa-footh { font-size: 15px; font-weight: 600; line-height: 20px; margin: 0 0 8px; }
+  .fa-footh { font-size: 16px; font-weight: 500; line-height: 22px; margin: 0 0 8px; }
   .fa-footlinks { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
-  .fa-footlink { font-size: 13px; font-weight: 500; line-height: 18px; color: #0A0A0A; text-decoration: none; }
+  .fa-footlink { font-size: 14px; font-weight: 400; line-height: 19px; color: #0A0A0A; text-decoration: none; }
   .fa-footlink:hover { text-decoration: underline; }
-  .fa-footnote { font-size: 13px; font-weight: 500; line-height: 19px; color: #6B6B6B; }
+  .fa-footnote { font-size: 14px; font-weight: 400; line-height: 19px; color: #6B6B6B; }
 
   .fa-devnote {
     margin: 20px 16px 0; padding: 14px; border-radius: 12px; background: #F4F4F5;
-    font-size: 13px; font-weight: 500; line-height: 19px; color: #6B6B6B;
+    font-size: 14px; font-weight: 400; line-height: 19px; color: #6B6B6B;
   }
-  .fa-devnote b { color: #0A0A0A; font-weight: 600; }
+  .fa-devnote b { color: #0A0A0A; font-weight: 500; }
 
-  @media (prefers-reduced-motion: reduce) { .fa-menu, .fa-cat { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .fa-menu, .fa-cat, .fa-card-store { transition: none; } }
 </style>
 
 <div class="fa-root" id="fa-root">
@@ -302,23 +302,20 @@
   if (!root || root.dataset.faInit === "1") return;
   root.dataset.faInit = "1";
 
-  // ===== REAL SEEDED DATA ================================================
-  // Pulled from GET /api/salons?limit=20 on the running dev server, 2026-07-31.
-  // name, category, average_rating, min_price and walkin_enabled are the live
-  // seeded values. Ratings are held as strings exactly as the API reports them,
-  // so no rounding call can quietly change a real number. Photos are the real
-  // cover photos, downloaded and self-hosted. Nothing here is invented.
-  // The API also returns review_count; it is deliberately NOT drawn, because the
-  // owner-approved card is star plus value only.
+  // REAL SEEDED DATA from GET /api/salons?limit=20 on the running dev server.
+  // Ratings are strings exactly as reported, so no formatting call can alter a
+  // real number. review_count exists in the response and is deliberately not
+  // drawn: the owner-approved card is star plus value only.
+  var CATLABEL = { coiffeur: "Coiffeur", barbershop: "Barbershop", nails: "Nails", spa: "Spa & Wellness" };
   var STORES = [
-    { slug: "cuts-and-culture",   name: "Cuts & Culture",     cat: "barbershop", rating: "4.81", price: 15, walkin: true },
-    { slug: "haarsalon-margot",   name: "Haarsalon Margot",   cat: "coiffeur",   rating: "4.75", price: 35, walkin: false },
-    { slug: "atelier-haarwerk",   name: "Atelier Haarwerk",   cat: "coiffeur",   rating: "4.56", price: 35, walkin: false },
-    { slug: "pink-petal-nails",   name: "Pink Petal Nails",   cat: "nails",      rating: "4.50", price: 15, walkin: false },
-    { slug: "smooth-skin-studio", name: "Smooth Skin Studio", cat: "spa",        rating: "4.50", price: 20, walkin: false },
-    { slug: "the-fade-factory",   name: "The Fade Factory",   cat: "barbershop", rating: "4.27", price: 15, walkin: true },
-    { slug: "old-town-barbers",   name: "Old Town Barbers",   cat: "barbershop", rating: "4.25", price: 15, walkin: true },
-    { slug: "muse-beauty-studio", name: "Muse Beauty Studio", cat: "coiffeur",   rating: "4.18", price: 35, walkin: false }
+    { slug: "cuts-and-culture",   name: "Cuts & Culture",     cat: "barbershop", rating: "4.81", price: 15, walkin: true,  addr: "4056 Basel" },
+    { slug: "haarsalon-margot",   name: "Haarsalon Margot",   cat: "coiffeur",   rating: "4.75", price: 35, walkin: false, addr: "4051 Basel" },
+    { slug: "atelier-haarwerk",   name: "Atelier Haarwerk",   cat: "coiffeur",   rating: "4.56", price: 35, walkin: false, addr: "4051 Basel" },
+    { slug: "pink-petal-nails",   name: "Pink Petal Nails",   cat: "nails",      rating: "4.50", price: 15, walkin: false, addr: "4057 Basel" },
+    { slug: "smooth-skin-studio", name: "Smooth Skin Studio", cat: "spa",        rating: "4.50", price: 20, walkin: false, addr: "4051 Basel" },
+    { slug: "the-fade-factory",   name: "The Fade Factory",   cat: "barbershop", rating: "4.27", price: 15, walkin: true,  addr: "4057 Basel" },
+    { slug: "old-town-barbers",   name: "Old Town Barbers",   cat: "barbershop", rating: "4.25", price: 15, walkin: true,  addr: "4051 Basel" },
+    { slug: "muse-beauty-studio", name: "Muse Beauty Studio", cat: "coiffeur",   rating: "4.18", price: 35, walkin: false, addr: "4051 Basel" }
   ];
   STORES.forEach(function (s) { s.photo = "/_mockups/_assets/store-photos/" + s.slug + ".jpg"; });
 
@@ -337,7 +334,7 @@
     photo: "/_mockups/_assets/store-photos/old-town-barbers.jpg"
   };
 
-  // Real Lucide markup, from node_modules/lucide-react/dist/esm/icons/{search,menu,star}.js.
+  // Real Lucide markup from node_modules/lucide-react/dist/esm/icons/.
   function svgSearch() {
     return '<svg class="lucide lucide-search" data-lucide="search" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
       + '<path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>';
@@ -350,11 +347,14 @@
     return '<svg class="lucide lucide-star" data-lucide="star" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
       + '<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>';
   }
+  function svgHeart() {
+    return '<svg class="lucide lucide-heart" data-lucide="heart" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="rgba(0,0,0,0.28)" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+      + '<path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 0L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>';
+  }
 
   document.getElementById("fa-searchicon").innerHTML = svgSearch();
   document.getElementById("fa-menu").innerHTML = svgMenu();
 
-  // ===== CATEGORY ROW ====================================================
   var scroll = document.getElementById("fa-catscroll");
   CATS.forEach(function (c) {
     var b = document.createElement("button");
@@ -376,7 +376,6 @@
     scroll.appendChild(b);
   });
 
-  // ===== CONTINUATION CARD ===============================================
   (function () {
     var card = document.createElement("button");
     card.type = "button";
@@ -399,46 +398,77 @@
     document.getElementById("fa-cardwrap").appendChild(card);
   })();
 
-  // ===== STORE CARD ======================================================
-  // Row order follows the owner-approved converged card: photo, name,
-  // rating as star plus value ONLY, then the from-price.
-  function storeCard(s) {
+  // SALON CARD, the registry component's anatomy.
+  function salonCard(s) {
     var a = document.createElement("div");
-    a.className = "fa-store";
+    a.className = "fa-card-store";
     a.setAttribute("role", "link");
     a.setAttribute("tabindex", "0");
 
-    var im = document.createElement("img");
-    im.className = "fa-photo";
-    im.src = s.photo;
-    im.alt = "";
-    im.loading = "lazy";
+    var pw = document.createElement("div");
+    pw.className = "fa-photowrap";
+    if (s.photo) {
+      var im = document.createElement("img");
+      im.className = "fa-photo";
+      im.src = s.photo;
+      im.alt = s.name + ", " + CATLABEL[s.cat];
+      im.loading = "lazy";
+      pw.appendChild(im);
+    } else {
+      var mono = document.createElement("span");
+      mono.className = "fa-monogram";
+      mono.setAttribute("aria-hidden", "true");
+      mono.textContent = (s.name || "").trim().slice(0, 1).toUpperCase() || "?";
+      pw.appendChild(mono);
+    }
+    var heart = document.createElement("button");
+    heart.type = "button";
+    heart.className = "fa-heart";
+    heart.setAttribute("aria-label", "Save " + s.name);
+    heart.innerHTML = svgHeart();
+    pw.appendChild(heart);
 
-    var nm = document.createElement("div");
+    var info = document.createElement("div");
+    info.className = "fa-info";
+
+    var r1 = document.createElement("div");
+    r1.className = "fa-row1";
+    var nm = document.createElement("h3");
     nm.className = "fa-name";
     nm.textContent = s.name;
-
-    var rt = document.createElement("div");
-    rt.className = "fa-rating";
+    var rate = document.createElement("span");
+    rate.className = "fa-rate";
     var st = document.createElement("span");
     st.className = "fa-star";
     st.setAttribute("aria-hidden", "true");
     st.innerHTML = svgStar();
-    rt.appendChild(st);
-    rt.appendChild(document.createTextNode(s.rating));
+    rate.appendChild(st);
+    rate.appendChild(document.createTextNode(s.rating));
+    r1.appendChild(nm); r1.appendChild(rate);
 
-    var pr = document.createElement("div");
+    var r2 = document.createElement("div");
+    r2.className = "fa-catline";
+    r2.textContent = CATLABEL[s.cat];
+
+    var r3 = document.createElement("div");
+    r3.className = "fa-row3";
+    var ad = document.createElement("span");
+    ad.className = "fa-addr";
+    ad.textContent = s.addr;
+    var pr = document.createElement("span");
     pr.className = "fa-price";
     pr.textContent = "from CHF " + s.price;
+    r3.appendChild(ad); r3.appendChild(pr);
 
-    a.appendChild(im); a.appendChild(nm); a.appendChild(rt); a.appendChild(pr);
+    info.appendChild(r1); info.appendChild(r2); info.appendChild(r3);
+    a.appendChild(pw); a.appendChild(info);
     return a;
   }
 
-  // ===== SECTIONS ========================================================
+  // SECTIONS, all horizontal rails. No grid anywhere.
   var sections = document.getElementById("fa-sections");
 
-  function section(title, seeAll) {
+  function section(title, seeAll, note, items) {
     var sec = document.createElement("section");
     sec.className = "fa-sec";
     var head = document.createElement("div");
@@ -455,76 +485,67 @@
       head.appendChild(b);
     }
     sec.appendChild(head);
+    if (note) {
+      var p = document.createElement("p");
+      p.className = "fa-thin";
+      p.textContent = note;
+      sec.appendChild(p);
+    }
+    var rail = document.createElement("div");
+    rail.className = "fa-rail";
+    items.forEach(function (n) { rail.appendChild(n); });
+    sec.appendChild(rail);
     sections.appendChild(sec);
     return sec;
   }
 
-  function thinNote(sec, text) {
-    var p = document.createElement("p");
-    p.className = "fa-thin";
-    p.textContent = text;
-    sec.appendChild(p);
-  }
+  section("Popular in Basel", true, null, STORES.map(salonCard));
 
-  // 1. Popular, a dense two-column grid so the first viewport carries four real
-  //    content units plus a cropped fifth.
-  var s1 = section("Popular in Basel", true);
-  var grid = document.createElement("div");
-  grid.className = "fa-grid";
-  STORES.slice(0, 6).forEach(function (s) { grid.appendChild(storeCard(s)); });
-  s1.appendChild(grid);
-
-  // 2. Walk in today, from the real walkin_enabled flag.
   var walkins = STORES.filter(function (s) { return s.walkin; });
-  var s2 = section("Walk in today", false);
-  thinNote(s2, walkins.length + " of 20 stores take walk-ins right now.");
-  var rail2 = document.createElement("div");
-  rail2.className = "fa-rail";
-  walkins.forEach(function (s) { rail2.appendChild(storeCard(s)); });
-  s2.appendChild(rail2);
+  section("Walk in today", false,
+    walkins.length + " of 20 stores take walk-ins right now.",
+    walkins.map(salonCard));
 
-  // 3. Personal rail. The Hair DNA scoring exists in the codebase but is dormant,
-  //    so this row is honestly labelled rather than presented as personalised.
-  var s3 = section("For your hair type", true);
-  thinNote(s3, "Hair DNA is not switched on yet, so this row is category-matched for now.");
-  var rail3 = document.createElement("div");
-  rail3.className = "fa-rail";
-  STORES.filter(function (s) { return s.cat === "coiffeur"; }).forEach(function (s) { rail3.appendChild(storeCard(s)); });
-  s3.appendChild(rail3);
+  section("For your hair type", true,
+    "Hair DNA is not switched on yet, so this row is category-matched for now.",
+    STORES.filter(function (s) { return s.cat === "coiffeur"; }).map(salonCard));
 
-  // 4. Cities. One city exists in the data, so one city renders.
-  var s4 = section("Cities", false);
-  thinNote(s4, "Basel is the only city with stores so far.");
-  var rail4 = document.createElement("div");
-  rail4.className = "fa-rail";
-  var city = document.createElement("div");
-  city.className = "fa-city";
-  city.setAttribute("role", "link");
-  city.setAttribute("tabindex", "0");
-  var cim = document.createElement("img");
-  cim.className = "fa-cityphoto";
-  cim.src = "/_mockups/_assets/store-photos/atelier-haarwerk.jpg";
-  cim.alt = "";
-  cim.loading = "lazy";
-  var cnm = document.createElement("div");
-  cnm.className = "fa-cityname";
-  cnm.textContent = "Basel";
-  var cmt = document.createElement("div");
-  cmt.className = "fa-citymeta";
-  cmt.textContent = "20 stores";
-  city.appendChild(cim); city.appendChild(cnm); city.appendChild(cmt);
-  rail4.appendChild(city);
-  s4.appendChild(rail4);
+  var cityTile = (function () {
+    var c = document.createElement("div");
+    c.className = "fa-city";
+    c.setAttribute("role", "link");
+    c.setAttribute("tabindex", "0");
+    var pw = document.createElement("div");
+    pw.className = "fa-photowrap";
+    var im = document.createElement("img");
+    im.className = "fa-photo";
+    im.src = "/_mockups/_assets/store-photos/atelier-haarwerk.jpg";
+    im.alt = "Basel";
+    im.loading = "lazy";
+    pw.appendChild(im);
+    var info = document.createElement("div");
+    info.className = "fa-info";
+    var nm = document.createElement("div");
+    nm.className = "fa-name";
+    nm.textContent = "Basel";
+    var mt = document.createElement("div");
+    mt.className = "fa-catline";
+    mt.textContent = "20 stores";
+    info.appendChild(nm); info.appendChild(mt);
+    c.appendChild(pw); c.appendChild(info);
+    return c;
+  })();
+  section("Cities", false, "Basel is the only city with stores so far.", [cityTile]);
 
   document.getElementById("fa-devnote").innerHTML =
-    "<b>What is real and what is not.</b> Every store name, rating, price and walk-in flag came from "
-    + "your running dev server this turn, and the photos are the seeded cover photos saved locally. "
-    + "Two of them look identical because the seed points two stores at the same image. All 20 "
-    + "seeded stores are in one city, which is why the Cities row has one tile. Hair DNA exists in "
-    + "the code but is dormant, so that row is category-matched and says so. The word replacing "
-    + "\"Salon\" in the German copy is still your call, so this mockup is in English.";
+    "<b>What is real and what is not.</b> Store names, ratings, prices and walk-in flags came from "
+    + "your running dev server, and the photos are the seeded cover photos saved locally. Two look "
+    + "identical because the seed points two stores at the same image. All 20 seeded stores are in "
+    + "one city, which is why Cities has one tile. Hair DNA is dormant in the code, so that row is "
+    + "category-matched and says so. Cards use the real SalonCard anatomy: 5:4 photo, 22px radius, "
+    + "name and star on one row, category, then address and from-price. English until you decide "
+    + "the German word for \"Salon\".";
 
-  // ===== COLLAPSE ========================================================
   var band = document.getElementById("fa-band");
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function scrollTop() {
@@ -539,29 +560,19 @@
   window.addEventListener("scroll", onScroll, { passive: true });
   document.addEventListener("scroll", onScroll, { passive: true });
 
-  // Measurement hook. Rounding is done with Math.round so no formatting call is
-  // needed anywhere in this file.
   window.faMeasure = function () {
     var round1 = function (n) { return Math.round(n * 10) / 10; };
     var r = function (sel) {
-      var e = typeof sel === "string" ? document.querySelector(sel) : sel;
+      var e = document.querySelector(sel);
       if (!e) return null;
       var b = e.getBoundingClientRect();
       return { x: round1(b.x), y: round1(b.y), w: round1(b.width), h: round1(b.height) };
     };
     var vh = window.innerHeight;
-    var cards = [].slice.call(document.querySelectorAll(".fa-store"));
-    var inFold = cards.filter(function (c) {
-      var b = c.getBoundingClientRect();
-      return b.top < vh && b.bottom > 0;
-    }).length;
-    var photoArea = [].slice.call(document.querySelectorAll("img")).reduce(function (acc, im) {
-      var b = im.getBoundingClientRect();
-      if (b.top >= vh || b.bottom <= 0 || b.width === 0) return acc;
-      var vis = Math.min(b.bottom, vh) - Math.max(b.top, 0);
-      return acc + b.width * Math.max(0, vis);
-    }, 0);
-    var sizes = {}, weights = {}, boldCount = 0, textCount = 0;
+    var selCat = document.querySelector('.fa-cat[aria-selected="true"]');
+    var unsel = document.querySelector('.fa-cat[aria-selected="false"]');
+    var cs = getComputedStyle(selCat), cu = getComputedStyle(unsel);
+    var sizes = {}, weights = {}, bold = 0, total = 0;
     [].slice.call(document.querySelectorAll(".fa-root *")).forEach(function (e) {
       var direct = [].slice.call(e.childNodes).some(function (n) {
         return n.nodeType === 3 && n.textContent.trim().length;
@@ -569,29 +580,33 @@
       if (!direct) return;
       var b = e.getBoundingClientRect();
       if (b.top >= vh || b.bottom <= 0 || b.width === 0) return;
-      var cs = getComputedStyle(e);
-      sizes[cs.fontSize] = (sizes[cs.fontSize] || 0) + 1;
-      weights[cs.fontWeight] = (weights[cs.fontWeight] || 0) + 1;
-      textCount++;
-      if (+cs.fontWeight >= 600) boldCount++;
+      var st = getComputedStyle(e);
+      sizes[st.fontSize] = (sizes[st.fontSize] || 0) + 1;
+      weights[st.fontWeight] = (weights[st.fontWeight] || 0) + 1;
+      total++;
+      if (+st.fontWeight >= 600) bold++;
     });
-    var menuEl = document.querySelector(".fa-menu");
     return {
       viewport: { w: window.innerWidth, h: vh },
       overflowX: document.documentElement.scrollWidth > window.innerWidth,
-      brokenImages: [].slice.call(document.images).filter(function (i) { return !i.complete || i.naturalWidth === 0; }).map(function (i) { return i.getAttribute("src"); }),
       pill: r(".fa-pill"),
       menu: r(".fa-menu"),
-      menuBorderWidth: getComputedStyle(menuEl).borderTopWidth,
-      menuBackground: getComputedStyle(menuEl).backgroundColor,
-      firstCard: r(".fa-store"),
-      contentUnitsInFirstViewport: inFold,
-      photoAreaPctOfFirstViewport: round1(photoArea / (window.innerWidth * vh) * 100),
-      fontSizesInFirstViewport: sizes,
-      fontWeightsInFirstViewport: weights,
-      boldPct: round1(textCount ? boldCount / textCount * 100 : 0),
-      anchorPx: parseFloat(getComputedStyle(document.querySelector(".fa-h2")).fontSize),
-      bodyPx: 13
+      catPill: { rect: r('.fa-cat[aria-selected="true"]'), size: cs.fontSize, pad: cs.paddingLeft, gap: cs.gap, radius: cs.borderRadius, bg: cs.backgroundColor },
+      selectedWeight: cs.fontWeight,
+      unselectedWeight: cu.fontWeight,
+      weightChangesOnSelect: cs.fontWeight !== cu.fontWeight,
+      rowGap: getComputedStyle(document.getElementById("fa-catscroll")).gap,
+      catIcon: r(".fa-caticon"),
+      contCard: r(".fa-card"),
+      contPhoto: r(".fa-cardimg"),
+      storeCard: r(".fa-card-store"),
+      storePhoto: r(".fa-photowrap"),
+      storePhotoRadius: getComputedStyle(document.querySelector(".fa-photowrap")).borderRadius,
+      gridCount: document.querySelectorAll(".fa-grid").length,
+      railCount: document.querySelectorAll(".fa-rail").length,
+      fontSizes: sizes,
+      fontWeights: weights,
+      boldPct: round1(total ? bold / total * 100 : 0)
     };
   };
 })();
