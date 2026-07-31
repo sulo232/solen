@@ -524,3 +524,44 @@ Copying UI from a component file into a mockup reproduced a discount badge that 
   present. Self-tested 8/8. Built in a sandboxed worktree session where `.claude/settings.json`
   is not writable, so it is NOT YET ARMED as a live PreToolUse hook, wire it from a
   non-sandboxed session before it actually blocks anything.
+
+### `touch-action: pan-x` on a horizontal scroller BLOCKS vertical page scroll (I shipped it to 6 elements)
+- **Date**: 2026-07-31
+- **File(s)**: public/_mockups/home-v3/search-a.html
+- **Match**: touch-action, pan-x, cannot scroll, can't scroll, blocked from scrolling, horizontal scroller, rail, scroll-snap
+- **What happened**: The owner said three times he could not scroll a mockup on his phone. Every
+  test available in the browser pane passed: `scrollTo()` moved the page, a real wheel gesture over
+  a rail moved it 0 -> 532, `document.scrollHeight` was 1849 against an 844 viewport. So I
+  diagnosed CSS and put `touch-action: pan-x` on the category row, the filter row and all four
+  section rails, reasoning it would "give those elements the horizontal axis and let vertical pass
+  through to the page". That is not what the property does. `touch-action` declares the COMPLETE
+  set of gestures permitted for a touch that STARTS on the element, so `pan-x` permits horizontal
+  panning and FORBIDS VERTICAL. Those six elements cover most of the screen, so a vertical swipe
+  starting almost anywhere was refused by the browser, by my own rule. Owner, immediately after:
+  "im blocked from scrolling bro". My second attempt, `pan-x pan-y`, permits both scroll axes but
+  silently kills pinch-zoom, which is wrong on a phone mockup.
+- **Why it happened**: Two compounding causes. (1) The property was read as a hint about axis
+  OWNERSHIP rather than a whitelist of PERMITTED gestures. (2) A wheel gesture and `scrollTo()`
+  are not touch, and `touch-action` is only consulted for touch, so the entire local test suite is
+  structurally blind to this bug. A CSS property that only manifests under a real finger cannot be
+  validated by any tool in the browser pane.
+- **Fix / What to do instead**: Do not set `touch-action` on a horizontal scroller. The default
+  (`auto`) already routes a sideways drag to the scroller and a vertical drag to the page by
+  gesture direction, and keeps pinch-zoom. Only reach for `touch-action` to suppress a specific
+  browser gesture you have measured interfering (double-tap zoom on a custom control), never as a
+  scroll "fix". If a scroll complaint cannot be reproduced with a wheel, the cause is not CSS,
+  instrument the owner's device instead of guessing again.
+
+### A static-server 301 to the extensionless path DROPS the query string
+- **Date**: 2026-07-31
+- **File(s)**: public/_mockups/home-v3/search-a.html
+- **Match**: 301, query string, debug=1, mockup link, trycloudflare, extensionless, redirect
+- **What happened**: A diagnostic panel was gated on `?debug=1`. Opening
+  `/_mockups/home-v3/search-a.html?debug=1` 301s to `/_mockups/home-v3/search-a`, and the query is
+  gone after the redirect, so the panel never rendered and the gate silently read as "the feature
+  does not work".
+- **Why it happened**: The extensionless-URL redirect is invisible in normal use, so a query param
+  is assumed to survive a same-origin 301. It does not, here.
+- **Fix / What to do instead**: Gate any mockup debug/variant switch on `location.hash`, which
+  survives the redirect, not on a query param. If a query param is genuinely required, link the
+  extensionless path directly (`/_mockups/<dir>/<name>?x=1`) so no redirect happens.
