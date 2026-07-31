@@ -30,7 +30,7 @@ if (!glbPath || !outdirArg) {
   console.error("Usage: node scripts/capture/turntable-render.mjs <model.glb> <outdir> [--frames 51] [--fps 30] [--size 180x162] [--hold-in 6] [--hold-out 12] [--turns 1]");
   process.exit(1);
 }
-const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7 };
+const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7, hueShift: null, satMul: 1, valMul: 1 };
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
   // ES modules are blocked over file:// by CORS (origin null), so when the outdir sits under
@@ -59,6 +59,12 @@ for (let i = 0; i < argv.length; i++) {
   else if (a === "--puff-dir") opt.puffDir = argv[++i];            // travel direction "x,y,z"
   else if (a === "--puff-size") opt.puffSize = Number(argv[++i]);
   else if (a === "--puff-count") opt.puffCount = Number(argv[++i]);
+  // Recolour the object at render time instead of paying to regenerate it. Only the SATURATED
+  // pixels move: chrome, cream and white sit below the saturation floor and are left alone, so a
+  // body colour can be swapped without touching the metal trim.
+  else if (a === "--hue") opt.hueShift = Number(argv[++i]);        // target hue 0..1
+  else if (a === "--sat-mul") opt.satMul = Number(argv[++i]);
+  else if (a === "--val-mul") opt.valMul = Number(argv[++i]);
 }
 const m = /^(\d+)x(\d+)$/.exec(opt.size);
 if (!m) { console.error(`bad --size "${opt.size}"`); process.exit(1); }
@@ -230,19 +236,42 @@ function setPuff(p) {
 }
 
 window.__SAT = ${opt.sat};
+window.__HUE = ${opt.hueShift === null ? 'null' : opt.hueShift};
+window.__SATMUL = ${opt.satMul};
+window.__VALMUL = ${opt.valMul};
 window.__renderAt = (rad, puffT) => {
   pivot.rotation.y = rad;
   setPuff(puffT === undefined ? 0 : puffT);
   renderer.render(scene, camera);
-  if (window.__SAT === 1) return renderer.domElement.toDataURL("image/png");
+  if (window.__SAT === 1 && window.__HUE === null) return renderer.domElement.toDataURL("image/png");
   // Lift saturation on the colour channels only. Alpha is copied through untouched, so the
   // transparent edge never gets a halo.
   const c = renderer.domElement, g = document.createElement("canvas");
   g.width = c.width; g.height = c.height;
   const ctx = g.getContext("2d"); ctx.drawImage(c, 0, 0);
   const img = ctx.getImageData(0, 0, g.width, g.height), d = img.data, k = window.__SAT;
+  const HUE = window.__HUE, SM = window.__SATMUL, VM = window.__VALMUL;
   for (let i = 0; i < d.length; i += 4) {
     if (d[i + 3] === 0) continue;
+    if (HUE !== null) {
+      // rgb -> hsv, retarget the hue of coloured pixels only, hsv -> rgb
+      const r0 = d[i] / 255, g0 = d[i + 1] / 255, b0 = d[i + 2] / 255;
+      const mx = Math.max(r0, g0, b0), mn = Math.min(r0, g0, b0), df = mx - mn;
+      const sat = mx === 0 ? 0 : df / mx;
+      if (sat >= 0.22) {
+        const S = Math.max(0, Math.min(1, sat * SM)), V = Math.max(0, Math.min(1, mx * VM));
+        const h6 = HUE * 6, ii = Math.floor(h6), f = h6 - ii;
+        const pv = V * (1 - S), q = V * (1 - S * f), t = V * (1 - S * (1 - f));
+        let R, G, B;
+        if (ii % 6 === 0) { R = V; G = t; B = pv; }
+        else if (ii % 6 === 1) { R = q; G = V; B = pv; }
+        else if (ii % 6 === 2) { R = pv; G = V; B = t; }
+        else if (ii % 6 === 3) { R = pv; G = q; B = V; }
+        else if (ii % 6 === 4) { R = t; G = pv; B = V; }
+        else { R = V; G = pv; B = q; }
+        d[i] = R * 255; d[i + 1] = G * 255; d[i + 2] = B * 255;
+      }
+    }
     const l = 0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2];
     d[i]     = Math.max(0, Math.min(255, l + (d[i]     - l) * k));
     d[i + 1] = Math.max(0, Math.min(255, l + (d[i + 1] - l) * k));
