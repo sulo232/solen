@@ -651,7 +651,8 @@ Owner: "where it comes out is good, but the air and the blow dryer, the frames d
 the air doesn't come out as I told you to. I think the way that you're doing the whole thing is
 completely wrong."
 
-- [x] CORRECTION accepted, verified: commit 6e136a648, and hardened by
+- [x] CORRECTION accepted and closed, verified: commit 6e136a648 recorded it, commit ecabee871
+      resolved it, hardened by
       `~/.claude/hooks/no-invented-visual-motif-gate.py` (self-test 6/6). He is right, and the
       reason is nameable:
   - **The frames do not match because they cannot.** The dryer is a 3D render: it has perspective,
@@ -666,7 +667,8 @@ completely wrong."
   - The Airbnb capture that started this workstream was measured properly. This half never was,
     because no reference was ever captured for it. I built the air from words.
 
-- [x] UNBLOCKED in round 18: he sent the reference, a hair-dryer line icon, and the build is now made
+- [x] UNBLOCKED in round 18, verified: commit ecabee871. He sent the reference, a hair-dryer line
+      icon, and the build is now made
       from it rather than from a description. Reading it changed the mark itself: THREE SHORT ARCS,
       not the long waves I had been drawing for nine rounds.
       Everything else in the set is done and not waiting on him: barber chair approved, dryer body
