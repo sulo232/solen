@@ -328,7 +328,9 @@ recurring problem across every round. Zero credits again.
     dryer**.
 - [x] U3. Chair colour, warmer retro brown-orange, now with shine.
   - verified: `--hue 0.055 --sat-mul 0.78 --val-mul 0.82 --gloss 0.60`, `out/set-barber.webm`.
-- [ ] U4. THE AIR IS STILL WRONG AND I AM NOT PRETENDING OTHERWISE. Three placements tried this round,
+- [x] U4. RESOLVED in round 7 below. The diagnosis written here was right and the owner then drew the
+      answer on the page: three curved lines. Sprites out, TubeGeometry in.
+  - Original entry kept for the record: THE AIR WAS WRONG AND I DID NOT PRETEND OTHERWISE. Three placements tried this round,
       including a `--puff auto` that plants the emitter on the mesh's own extreme along the jet axis
       and a hand-computed object-space direction that accounts for the 79 degree rest rotation. It
       still reads as grey wisps beside the body rather than a jet from the nozzle.
@@ -340,3 +342,30 @@ recurring problem across every round. Zero credits again.
       companion motion is a solid shape and not a particle haze.
       **Shipped without it** rather than shipping the version he already rejected. `out/set-dryer.webm`
       is 39,543 bytes and carries the colour, the shine and the tilt.
+
+---
+
+# Round 7 (2026-07-31): he drew the air
+
+Owner, annotating the live page in red: he likes the dryer now, the shine landed. The air should be
+THREE distinct curved wavy lines coming out of the nozzle, which he drew on the screenshot, rendered
+grey and in 3D rather than as smoke. The barber chair should go more orange, more orange-brown, with
+more shine. And the waves should blow out one after another as the dryer turns.
+
+- [x] V1. Three curved 3D wave ribbons at the nozzle, grey.
+  - verified: the sprite system is gone (`SpriteMaterial` no longer appears in
+    `scripts/capture/turntable-render.mjs`). The air is now real `TubeGeometry` swept along a
+    CatmullRom sine curve, three ribbons stacked across the jet axis, `MeshStandardMaterial` in a
+    neutral #9AA0A6 so it catches the same scene light as the icon and reads 3D rather than as smoke.
+    Emitter is placed on the mesh's own extreme along the jet axis, so it leaves the nozzle mouth.
+    Visible in `set-dryer-sheet.png` from f8 through f32; alpha coverage rises 16.9% to 20.2%.
+- [x] V2. They emit one after another.
+  - verified: each ribbon carries an `order` and starts 0.16 of the air's own timeline after the one
+    before it, so the three leave the nozzle in sequence instead of together. Loop still closes
+    byte-identical on both clips.
+- [x] V3. Barber chair: more orange, more shine.
+  - verified: body now reads **#D76537**, hue 0.048 at saturation 0.743, against the previous
+    brown-only 0.056 at 0.534, so it is meaningfully more orange while staying orange-BROWN rather
+    than returning to the rejected bright red. Gloss raised to 0.85: near-white highlight pixels
+    **33.2%**, up from 25.8 last round and from effectively zero before gloss existed. Measured on
+    frame 1, 180x162, transparent pixels excluded. `out/set-barber.webm` 49,494 bytes.

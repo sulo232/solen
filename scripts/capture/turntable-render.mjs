@@ -221,73 +221,75 @@ new GLTFLoader().load("./model.glb", (gltf) => {
   const dist = margin * Math.max(radius / Math.tan(vFov / 2), radius / Math.tan(hFov / 2));
   camera.position.set(0, radius * 0.42, dist);           // a touch above eye level, like the reference
   camera.lookAt(0, 0, 0);
-  // "auto": put the emitter ON the nozzle, at the object's own extreme along the jet direction, so
-  // the air leaves the mouth of the dryer instead of appearing out of empty space beside it.
-  if (PUFF === "auto") {
-    const bb = new THREE.Box3().setFromObject(obj);
-    const d = new THREE.Vector3(PUFF_DIR[0], PUFF_DIR[1], PUFF_DIR[2]).normalize();
-    const c = bb.getCenter(new THREE.Vector3()), hs = bb.getSize(new THREE.Vector3()).multiplyScalar(0.5);
-    const reach = Math.abs(d.x) * hs.x + Math.abs(d.y) * hs.y + Math.abs(d.z) * hs.z;
-    PUFF = [c.x + d.x * reach * 0.98, c.y + d.y * reach * 0.98, c.z + d.z * reach * 0.98];
-    console.log("puff emitter placed at", PUFF.map(v => v.toFixed(3)).join(","));
-  }
+  if (PUFF) buildWaves(obj);
   window.__ready = true;
 }, undefined, (e) => { window.__error = String((e && e.message) || e); });
 
 
-// ---- secondary motion: the nozzle puff -------------------------------------------------
-// Sprites live UNDER the pivot, so they turn with the object exactly as a real jet of air would.
-// Every value is derived from the frame index, never from a clock or a random draw, so two runs of
-// the same command produce byte-identical frames.
-let PUFF = ${opt.puff && opt.puff !== "auto" ? JSON.stringify(opt.puff.split(",").map(Number)) : (opt.puff === "auto" ? '"auto"' : "null")};
+// ---- secondary motion: three wave ribbons at the nozzle ---------------------------------
+// The owner drew this: three distinct curved lines leaving the mouth of the dryer. Modelled as
+// real tube geometry, not sprites, because soft alpha sprites always read as smoke and he
+// rejected exactly that. Tubes catch the scene light, so they read as 3D like the icon does.
+// They live UNDER the pivot, so the air turns with the dryer.
+const PUFF = ${opt.puff ? '"' + opt.puff + '"' : "null"};
 const PUFF_DIR = ${JSON.stringify(opt.puffDir.split(",").map(Number))};
 const PUFF_SIZE = ${opt.puffSize};
-const PUFF_COUNT = ${opt.puffCount};
-let puffSprites = [];
-if (PUFF) {
-  const cvs = document.createElement("canvas");
-  cvs.width = cvs.height = 64;
-  const g = cvs.getContext("2d");
-  const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
-  grad.addColorStop(0, "rgba(150,163,175,0.95)");
-  grad.addColorStop(0.45, "rgba(156,163,175,0.45)");
-  grad.addColorStop(1, "rgba(156,163,175,0)");
-  g.fillStyle = grad; g.fillRect(0, 0, 64, 64);
-  const tex = new THREE.CanvasTexture(cvs);
-  for (let i = 0; i < PUFF_COUNT; i++) {
-    const m = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false }));
-    m.userData.phase = i / PUFF_COUNT;
+const WAVES = 3;
+let waveMeshes = [], waveOrigin = null;
+function buildWaves(obj) {
+  const bb = new THREE.Box3().setFromObject(obj);
+  const d = new THREE.Vector3(PUFF_DIR[0], PUFF_DIR[1], PUFF_DIR[2]).normalize();
+  const c = bb.getCenter(new THREE.Vector3()), hs = bb.getSize(new THREE.Vector3()).multiplyScalar(0.5);
+  const reach = Math.abs(d.x) * hs.x + Math.abs(d.y) * hs.y + Math.abs(d.z) * hs.z;
+  waveOrigin = new THREE.Vector3(c.x + d.x * reach, c.y + d.y * reach, c.z + d.z * reach);
+  // a frame around the jet axis, so the waves stack across it and wiggle in its plane
+  const up = new THREE.Vector3(0, 1, 0);
+  const side = new THREE.Vector3().crossVectors(d, up).normalize();
+  if (side.lengthSq() < 1e-6) side.set(0, 0, 1);
+  const across = new THREE.Vector3().crossVectors(side, d).normalize();
+  const mat = new THREE.MeshStandardMaterial({ color: 0x9AA0A6, roughness: 0.30, metalness: 0.05,
+                                               transparent: true, opacity: 1 });
+  for (let w = 0; w < WAVES; w++) {
+    const pts = [];
+    const span = PUFF_SIZE * 4.4;
+    const offset = (w - (WAVES - 1) / 2) * PUFF_SIZE * 1.25;   // stack them across the jet
+    for (let i = 0; i <= 26; i++) {
+      const u = i / 26;
+      const wig = Math.sin(u * Math.PI * 3.1) * PUFF_SIZE * 0.62 * (0.35 + u * 0.9);
+      pts.push(new THREE.Vector3()
+        .addScaledVector(d, u * span)
+        .addScaledVector(across, offset + wig)
+        .addScaledVector(side, wig * 0.25));
+    }
+    const curve = new THREE.CatmullRomCurve3(pts);
+    const geo = new THREE.TubeGeometry(curve, 40, PUFF_SIZE * 0.19, 8, false);
+    const m = new THREE.Mesh(geo, mat.clone());
+    m.userData.order = w;
     m.visible = false;
     pivot.add(m);
-    puffSprites.push(m);
+    waveMeshes.push(m);
   }
 }
-// p is the puff's own progress, 0 before it starts and 1 at the last frame of the clip.
+// p is the air's own progress, 0 before it starts and 1 at the last frame of the clip.
 function setPuff(p) {
-  if (!PUFF) return;
+  if (!PUFF || !waveMeshes.length) return;
   const dir = new THREE.Vector3(PUFF_DIR[0], PUFF_DIR[1], PUFF_DIR[2]).normalize();
-  for (const s of puffSprites) {
-    if (p <= 0) { s.visible = false; continue; }
-    // each sprite runs its own loop, offset by its phase, so the stream reads as continuous
-    const local = (p * 2.2 + s.userData.phase) % 1;
-    const travel = 1.15 * local;
-    // a small cross-stream wobble, different per sprite, so the jet curls instead of firing in a
-    // dead straight line. Derived from the sprite's own phase, so it stays deterministic.
-    const wob = Math.sin(local * 5.2 + s.userData.phase * 6.28) * 0.16 * local;
-    s.position.set(PUFF[0] + dir.x * travel,
-                   PUFF[1] + dir.y * travel + wob,
-                   PUFF[2] + dir.z * travel + wob * 0.5);
-    const grow = PUFF_SIZE * (0.35 + local * 2.3);
-    s.scale.set(grow, grow, 1);
-    // fade in fast, out slow, and fade the whole stream down over the final fifth of the clip so
-    // the icon truly comes to rest instead of being cut mid-jet
-    const shape = Math.min(1, local / 0.18) * (1 - local) * (1 - local);
-    const outro = p > 0.8 ? (1 - p) / 0.2 : 1;
-    s.material.opacity = 1.6 * shape * outro;
-    s.visible = s.material.opacity > 0.004;
+  for (const m of waveMeshes) {
+    // one after another, not all at once: each wave starts a beat after the one before it
+    const lead = m.userData.order * 0.16;
+    const local = p <= 0 ? -1 : (p * 1.9 - lead);
+    if (local < 0 || local > 1) { m.visible = false; continue; }
+    const travel = PUFF_SIZE * 1.5 * local;
+    m.position.copy(waveOrigin).addScaledVector(dir, travel);
+    const grow = 0.55 + local * 0.75;
+    m.scale.set(grow, grow, grow);
+    // in fast, out slow, and the whole set fades over the last fifth so the icon comes to rest
+    const shape = Math.min(1, local / 0.16) * (1 - local);
+    const outro = p > 0.82 ? (1 - p) / 0.18 : 1;
+    m.material.opacity = Math.max(0, Math.min(1, 2.1 * shape * outro));
+    m.visible = m.material.opacity > 0.01;
   }
 }
-
 window.__SAT = ${opt.sat};
 window.__HUE = ${opt.hueShift === null ? 'null' : opt.hueShift};
 window.__SATMUL = ${opt.satMul};
