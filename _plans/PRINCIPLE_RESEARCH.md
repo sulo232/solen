@@ -566,6 +566,21 @@ this months ago; (2) run the existing backfill recipe over the 205, expensive an
 one `execute_sql` per version; (3) audit the 41 local-only files for the two-files-one-migration case
 the rule warns about. Lists on disk: `/tmp/claude/missing_migrations.txt`.
 
+**IN PROGRESS 2026-07-31, and NOT handed to the owner as a chore.** All three recommendations are
+dispatched to a `coder` subagent: build `scripts/check-migrations.mjs` plus `check:migrations` and
+`gate:migrations` npm scripts, then backfill newest-first starting with
+`20260728155748_availability_slots_public_security_invoker`, the security fix that currently exists
+only inside the database.
+
+**Why this is mine and not the owner's, stated because I had it in the wrong column:** backfilling a
+migration file only READS `supabase_migrations.schema_migrations` and WRITES a local `.sql`. It does
+not touch the live schema, it is fully reversible, and it needs no credential the estate does not
+already hold. Listing it as an owner decision was a punt. The genuinely owner-only part is narrow:
+whether to also cherry-pick or merge the stranded branch, which is a git-history call with taste in it.
+
+**Constraint carried into the brief:** never `apply_migration`, never `db push`, never `db reset`.
+Read and write files only. A partial backfill with an honest count beats a claimed-complete one.
+
 ---
 
 ## DISPOSITION of the unfinished queue items, 2026-07-29
