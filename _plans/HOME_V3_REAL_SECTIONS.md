@@ -5,12 +5,12 @@ Standing order still in force: **mockups only, nothing lands in a .tsx yet.**
 
 ## Atomic asks
 
-- [x] **1. Continue-search card: align its width to the search bar.**
-  - [x] 1a. Measured the gap: search pill spans 16 -> 374 (w 358); the card spans 28 -> 362 (w 334). 12px out on each side, which is what his red marks point at.
-  - [x] 1b. Root cause: `#sa-list` carried `padding: 12px 28px 32px` while the band uses 16. Set the list gutter to 16 so every section shares the search bar's edges.
-- [x] **2. Continue-card image square (he said "four by four" = 1:1).** Was 150x120 (5:4).
-- [x] **3. Delete the mockup's own "Walk in today" rail completely.**
-  - [x] 3a. Graveyard line filed, since this is an owner deletion.
+- [x] **1. Continue-search card: align its width to the search bar.** verified: both render 16 -> 374 on the home state at 390x844 (753edfb60).
+  - [x] 1a. Measured the gap: search pill spans 16 -> 374 (w 358); the card spans 28 -> 362 (w 334). 12px out on each side, which is what his red marks point at. verified: getBoundingClientRect on .sa-pill and .sa-cont, home state, 390x844.
+  - [x] 1b. Root cause: `#sa-list` carried `padding: 12px 28px 32px` while the band uses 16. Set the list gutter to 16 so every section shares the search bar's edges. verified: search-a.html:409 `padding: 12px 16px 32px`.
+- [x] **2. Continue-card image square (he said "four by four" = 1:1).** Was 150x120 (5:4). verified: search-a.html:520 `width: 120px; aspect-ratio: 1 / 1`, renders 120x120.
+- [x] **3. Delete the mockup's own "Walk in today" rail completely.** verified: 0 render sites left; the only remaining match in search-a.html is the comment at :1074 explaining the deletion.
+  - [x] 3a. Graveyard line filed, since this is an owner deletion. verified: _design-system/REMOVED.md:108.
 - [x] **4. Replace it with the REAL walk-in section** (`WalkInBand`): 52px sunken icon tile, 18/700 title, subline, green Live dot, 42%-width bordered cards with the green `70-98 Min` figure, `bis frei`, name + star + blue count, address, `N vor dir`, then the `Alle Walk-ins` button.
 - [x] **5. Add the real Reviews section** (`Bewertungen`): 260px cards, min-height 220, initials avatar, name, salon chip, date, 5 stars, quoted text. Real seeded reviews.
 - [x] **6. Add the real Inspo section** (`Finde deine Inspiration.`): 9:16 photo cards, gradient scrim, title chip, author, `ab CHF n`. Real thumbnails, self-hosted.
