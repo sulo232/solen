@@ -10,8 +10,8 @@ await page.waitForTimeout(3000);
 const els = await page.evaluate(() => document.body.querySelectorAll("*").length);
 if (els < 40) { console.log("REFUSED nothing rendered"); process.exit(1); }
 
-for (const idx of [3, 0]) {                       // 3 = the Solen chair, 0 = an Airbnb control
-  const cell = page.locator("#stage .cell").nth(idx);
+for (const idx of [0, 1]) {                       // 3 = the Solen chair, 0 = an Airbnb control
+  const cell = page.locator("#set .cell").nth(idx);
   const name = await cell.locator("video").evaluate(v => { v.pause(); v.currentTime = 0; return v.src.split("/").pop(); });
   const before = await cell.locator("video").evaluate(v => +v.currentTime.toFixed(3));
   await cell.click();                              // a REAL trusted click, not a synthetic event

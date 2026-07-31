@@ -20,7 +20,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Barber and coiffeur icons, round 2</title>
+<title>The Solen icon set: barber chair and blow dryer</title>
 <style>
   :root { --ink:#0A0A0A; --ink-2:#5A5A5F; --ink-3:#9CA3AF; --bg:#FFFFFF; --sunken:#F4F4F5; --line:#E4E4E7; --accent:#276EF1; }
   * { box-sizing:border-box; }
@@ -73,9 +73,11 @@
 <body>
 <div class="wrap">
 
-  <p class="meta">Round 2, 31 July 2026</p>
-  <h1>Brighter, more vivid, facing front, and a coiffeur that is not the same chair</h1>
-  <p class="lead sub">All five are playing for real. Three are Airbnb's own files, two were built here. Click any of them to replay.</p>
+  <p class="meta">Round 3, 31 July 2026</p>
+  <h1>Two objects, no people: the barber chair and the blow dryer</h1>
+  <p class="lead sub">The set as you called it: barber is the chair, salon is a blow dryer. No people in either, which is also how Airbnb's own set works. Click any icon to replay it.</p>
+    <div class="tray" style="margin-bottom:24px"><div class="row" id="set"></div></div>
+    <p class="sub">Below, the earlier versions and Airbnb's originals, kept for comparison.</p>
 
   <section>
     <div class="tray"><div class="row" id="stage"></div></div>
@@ -175,6 +177,20 @@ const CLIPS = [
   { src: S + "/barber-calm.webm", label: "Solen, barber calmer" },
   { src: S + "/coiffeur-hero.webm", label: "Solen, coiffeur" }
 ];
+const SET = [
+  { src: S + "/set-barber.webm", png: S + "/set-barber.apng", label: "Barber", sub: "the chair, empty" },
+  { src: S + "/set-dryer.webm", png: S + "/set-dryer.apng", label: "Salon", sub: "the blow dryer" }
+];
+const setEl = document.getElementById("set");
+SET.forEach(function (c) {
+  const d = document.createElement("div");
+  d.className = "cell";
+  d.innerHTML = '<video muted playsinline preload="auto" src="' + c.src + '"></video>'
+    + '<div class="nm">' + c.label + '</div><div class="dur">' + c.sub + '</div>';
+  const v = d.querySelector("video");
+  d.addEventListener("click", function () { v.currentTime = 0; v.play(); });
+  setEl.appendChild(d);
+});
 const stage = document.getElementById("stage");
 CLIPS.forEach(function (c) {
   const d = document.createElement("div");
@@ -186,7 +202,7 @@ CLIPS.forEach(function (c) {
   stage.appendChild(d);
 });
 const apng = document.getElementById("apng");
-[["barber-calm", "barber, APNG in any browser"], ["coiffeur-hero", "coiffeur, APNG in any browser"]].forEach(function (p) {
+[["set-barber", "barber, APNG in any browser"], ["set-dryer", "salon, APNG in any browser"]].forEach(function (p) {
   const f = document.createElement("figure");
   f.style.cursor = "pointer";
   f.innerHTML = '<img width="112" height="100" src="' + S + "/" + p[0] + '.apng" alt="' + p[0] + '">'
@@ -196,8 +212,8 @@ const apng = document.getElementById("apng");
   apng.appendChild(f);
 });
 const tiny = document.getElementById("tiny");
-[["barber-hero", "barber, 72px"], ["coiffeur-hero", "coiffeur, 72px"],
- ["barber-hero", "barber, 44px"], ["coiffeur-hero", "coiffeur, 44px"]].forEach(function (p, i) {
+[["set-barber", "barber, 72px"], ["set-dryer", "salon, 72px"],
+ ["set-barber", "barber, 44px"], ["set-dryer", "salon, 44px"]].forEach(function (p, i) {
   const px = i < 2 ? 72 : 44;
   const f = document.createElement("figure");
   f.innerHTML = '<video muted playsinline preload="auto" width="' + px + '" height="' + Math.round(px * 0.9)

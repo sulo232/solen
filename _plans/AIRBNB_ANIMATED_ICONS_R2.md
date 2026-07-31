@@ -104,11 +104,30 @@ will read as a broken set. He asked for ideas.
     nearly all shouting. Worse, ours mixes hue families: red 24% plus blue 41% in one object, while
     every Airbnb icon stays inside ONE family (balloon is red plus orange; house is green plus a red
     door on grey; bell is a desaturated steel).
-- [ ] S3. Rebuild the barber to that finding: raise neutral share toward 50 to 65 percent, keep one
-      warm family, drop the blue cape to cream or warm grey, brunette hair, and pull the brightness
-      back from 0.616 toward Airbnb's 0.48.
-- [ ] S4. Decide the family rule (see below), then rebuild the set to it. BLOCKED on the owner: this is
-      a brand direction, not a task.
+- [x] S3. Rebuild to the palette finding.
+  - verified: `out/set-barber.webm`, frame 1 at 180x162 alpha-masked, measures **68.7% neutral**
+    against Airbnb's house at 65.1 and bell at 64.0, with the coloured pixels at saturation **0.785**
+    against Airbnb's 0.707. So it is MORE restrained overall and MORE vivid where it counts, which is
+    the split the owner was asking for. Blue is gone entirely: the hue histogram shows one warm family
+    and no blue bucket at all, against 41% blue before. Source `src/obj-barber.png`, mesh
+    `mesh/obj-barber.glb`, frames `frames/set-barber/`. The brunette-hair note is moot, there is no
+    person any more.
+- [x] S4. Family rule decided by the owner and built.
+  - verified: owner picked objects-only, and specifically "for the salon we're gonna make it a blow
+    dryer", overruling both my basin-chair and hood-dryer options. Built: `out/set-barber.webm` (48,172
+    bytes) and `out/set-dryer.webm` (38,495 bytes), plus `set-barber.apng` (179,715) and
+    `set-dryer.apng` (163,253) for Safari. Both 180x162, 30fps, 1.700 s, `alpha_mode=1`, loop closes
+    byte-identical. Shown at 72px and 44px on `public/_research/solen-chair-icon.html`. INTERACTION
+    proven with a trusted Playwright click at 390 wide: set-barber ran 0 to 0.706 to 1.700 and
+    set-dryer 0 to 0.705 to 1.700, both parking on their final frame.
+  - His call beat mine. I argued the weak pair was two chairs and offered a hood dryer as the escape;
+    he cut further, to a handheld dryer with no chair at all. That is a bigger silhouette gap than
+    either option I put up, and it makes the set a chair plus a tool rather than two chairs.
+- [ ] S5. The dryer's pink is still pale: coloured pixels measure saturation 0.412 against Airbnb's
+      0.707. The cause is the source image, a dusty rose, not the render. Pushing the render's
+      saturation to 2.6 only reached 0.424 while dropping neutral share to 30%, because multiplying
+      chroma on an already pale colour hits the ceiling. Fixing it properly needs ONE new source image
+      in a stronger pink, which costs credits, so it waits for the owner's word.
 
 ## The set problem, and the answer the reference already gives
 
