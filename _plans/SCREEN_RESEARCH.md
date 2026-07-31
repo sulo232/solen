@@ -327,3 +327,19 @@ white surface with a soft shadow, category tabs directly beneath, tabs collapse 
 itself the defect. 7 are currently disabled by skip flags, 37 share one blind spot, and gate
 satisfaction consumes more of a turn than the work does. Each gate was locally correct; the
 aggregate is not. I would argue for merging or deleting roughly half.
+
+---
+
+## OWNER CORRECTION, 2026-07-31: balance IS measurable and I claimed it was not
+
+He pushed back on my line that gates catch "the sloppy 60%" and the rest needs taste:
+*"I believe it's all math or not. You said sixty percent. But you can actually measure, like, logo
+looks weird or the balance and stuff. Balance is the most easiest measure or not."*
+
+**He is right and my claim was a hedge, not a finding.** I said "not measurable" without trying to
+measure it. Optical centre, visual weight distribution, whitespace symmetry, edge alignment and
+cap-height ratios are all computable from a rendered DOM.
+
+- [ ] L1. Research what visual balance actually IS, computationally, and which measures are real
+- [ ] L2. Measure our own rejected mockup with those measures, to prove they detect what he saw
+- [ ] L3. Wire the ones that work into the floors gate so they run automatically
