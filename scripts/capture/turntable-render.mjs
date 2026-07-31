@@ -286,7 +286,14 @@ function setPuff(p) {
     // in fast, out slow, and the whole set fades over the last fifth so the icon comes to rest
     const shape = Math.min(1, local / 0.16) * (1 - local);
     const outro = p > 0.82 ? (1 - p) / 0.18 : 1;
-    m.material.opacity = Math.max(0, Math.min(1, 2.1 * shape * outro));
+    // THE READABILITY FIX. The ribbons are children of the pivot, so they sweep the whole frame with
+    // the turn, and for half of it the jet points at or away from the camera, where it foreshortens
+    // into a smear that reads as air going everywhere. Fade them by how much of the jet actually lies
+    // ACROSS the screen, so they are strongest at rest, when the nozzle is side-on and legible.
+    const wd = dir.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), pivot.rotation.y);
+    const across = Math.min(1, Math.sqrt(wd.x * wd.x + wd.y * wd.y) / (wd.length() || 1));
+    const facing = Math.max(0, (across - 0.45) / 0.55);          // nothing below 0.45, full by 1.0
+    m.material.opacity = Math.max(0, Math.min(1, 2.1 * shape * outro * facing * facing));
     m.visible = m.material.opacity > 0.01;
   }
 }

@@ -377,3 +377,26 @@ more shine. And the waves should blow out one after another as the dryer turns.
     than returning to the rejected bright red. Gloss raised to 0.85: near-white highlight pixels
     **33.2%**, up from 25.8 last round and from effectively zero before gloss existed. Measured on
     frame 1, 180x162, transparent pixels excluded. `out/set-barber.webm` 49,494 bytes.
+
+---
+
+# Round 8 (2026-07-31): make the air readable, and flatten the chair's turn
+
+Owner: he likes the dryer, but the air "is just going everywhere", you cannot really see it. And the
+barber chair should be a plain straight 360, not the up and down thing, which does not look right on it.
+
+- [x] W1. Air is legible now.
+  - verified: root cause named. The ribbons are children of the pivot, so they swept the entire frame
+    with the turn, and through roughly half of it the jet pointed at or away from the camera, where it
+    foreshortens into a smear. That is the "going everywhere" he saw. Fix in
+    `scripts/capture/turntable-render.mjs`: the ribbons now fade by how much of the jet actually lies
+    ACROSS the screen, computed per frame from the jet direction rotated by the pivot's own Y angle,
+    zero below 0.45 of across-ness and full at 1.0, squared for a sharper falloff. So the air is
+    strongest exactly at rest, where the nozzle is side-on and readable, and gone while the dryer
+    faces the camera. Visible at f8, f12, f16 and f24 in `set-dryer-sheet.png`, absent at f28 and f32.
+    Loop still closes byte-identical. `out/set-dryer.webm` 47,269 bytes.
+- [x] W2. Barber chair is a plain straight 360.
+  - verified: rendered with `--tilt 0 --bob 0`. Measured the alpha centroid's vertical position across
+    all 51 frames: it now varies by **5.87px**, and what remains is the silhouette changing shape as
+    the chair turns, not the object rising and falling. `out/set-barber.webm` 47,527 bytes, loop closes
+    byte-identical. The dryer KEEPS its tilt, because he said he likes it there.
