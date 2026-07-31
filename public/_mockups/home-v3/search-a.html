@@ -157,22 +157,33 @@
   /* Owner: "remove this line that's separating the top and the cards, there's a line." That was
      the hairline I put under the band. Gone. The band's white plate still fades out on scroll, so
      the pill floats over the cards without any rule between them. */
-  .sa-band { position: sticky; top: 0; z-index: 55; padding: 4px 0 0;
-    background: rgba(255,255,255,calc(1 - var(--p, 0))); }
+  /* SIMPLIFIED 2026-07-31. Owner: "still same bro ur overcomplicating sh", and he was right.
+     The old version ran a scroll listener that wrote a CSS variable on EVERY scroll event, and
+     that variable drove max-height, padding and opacity on two rows inside a STICKY element. So
+     every one of his scroll events forced a layout pass on pinned content. His own panel logged
+     1542 scroll events in one session. That is textbook scroll jank, and it was all mine.
+     There is no JavaScript on scroll now. The band is a normal block, the search row pins with
+     one line of CSS, and the category and filter rows simply scroll away like any other content.
+     Same result he asked for, "when you scroll, the only search bar is there", none of the cost. */
+  /* The band now contains ONLY the search pill, and it is the sticky element. The category row
+     and the filter row are siblings of it, so they scroll away like ordinary content and the pill
+     pins on its own. That is the whole "only the search bar survives the scroll" behaviour, in one
+     declaration, with no JavaScript.
+     Why the previous attempt failed: .sa-bandinner was made sticky while still nested inside
+     .sa-band, and a sticky element can only travel inside its PARENT's box. That box was 140px
+     tall, so the pill unpinned after 140px and rode the page down. Measured: its top read -930
+     once the page had scrolled 1000. Sticky needs a tall parent, so the pill's parent has to be
+     the page. */
+  .sa-band { position: sticky; top: 0; z-index: 55; background: #FFFFFF; padding: 4px 0 8px; }
   /* overflow-y, NOT the shorthand. `overflow: hidden` here was overriding the overflow-x: auto
      these rows declare, so the category row could not be swiped sideways at all: measured
      scrollWidth 791 against clientWidth 390, meaning Spa, Walk-in and Inspo were unreachable.
      The collapse only ever needed to clip VERTICALLY (that is what max-height animates). */
-  .sa-band .sa-catscroll,
-  .sa-band .sa-tools {
-    overflow-x: auto;
-    overflow-y: hidden;
-    max-height: calc(70px * (1 - var(--p, 0)));
-    opacity: calc(1 - var(--p, 0));
-    padding-top: calc(12px * (1 - var(--p, 0)));
-    padding-bottom: calc(16px * (1 - var(--p, 0)));
-    transition: none;
-  }
+  /* overflow-y, NOT the shorthand: `overflow: hidden` was overriding the overflow-x: auto these
+     rows declare, so the category row could not be swiped sideways at all (measured scrollWidth
+     791 vs clientWidth 390, so Spa, Walk-in and Inspo were unreachable). */
+  .sa-catscroll,
+  .sa-tools { overflow-x: auto; overflow-y: hidden; }
   .sa-bandinner { padding: 0 16px; display: flex; align-items: center; }
   .sa-pill {
     display: flex; align-items: center; gap: 12px; flex: 1 1 auto; min-width: 0;
@@ -1016,11 +1027,13 @@
   var catrow = document.getElementById("sa-catscroll");
   var arrange = document.getElementById("sa-arrange");
 
+  // The category row is a SIBLING of the sticky band, not a child of it, so it scrolls away
+  // while the search pill stays. Owner settled this arrangement: categories on top, search bar
+  // underneath. The above/below/none toggle it used to carry is gone with the comparison chrome.
   function applyArrangement(mode) {
     catrow.style.display = mode === "none" ? "none" : "flex";
-    if (mode === "above") band.insertBefore(catrow, bandinner);
-    else band.appendChild(catrow);
-    arrange.querySelectorAll(".sa-tab").forEach(function (t) {
+    band.parentNode.insertBefore(catrow, band);
+    if (arrange) arrange.querySelectorAll(".sa-tab").forEach(function (t) {
       t.setAttribute("aria-selected", t.dataset.arr === mode ? "true" : "false");
     });
   }
@@ -1055,7 +1068,8 @@
           : "<span>" + pair[0] + "</span>";
       tools.appendChild(b);
     });
-  band.appendChild(tools);
+  // Filters sit BELOW the sticky band, as its sibling, so they scroll away too.
+  band.parentNode.insertBefore(tools, band.nextSibling);
 
   // Three filter treatments, switchable, because he asked for ideas rather than one answer.
   var root = document.querySelector(".sa-root");
@@ -1092,19 +1106,13 @@
 
   // ===== ONLY THE SEARCH BAR SURVIVES THE SCROLL =========================
   // Owner: "when you scroll down it's all gonna be fucked up. Make it so the only search bar when
-  // you scroll, the only search bar is there."
-  // There was NO scroll handler in this file at all. It was lost in an earlier edit, which is why
-  // --p sat at 0 forever and all three rows followed the page down. Not a CSS bug: the code that
-  // drives the CSS had gone missing. Continuous 0..60 ramp, the same one SearchTemplate uses.
-  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  function onScroll() {
-    var y = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
-    var p = reduce ? (y > 30 ? 1 : 0) : Math.min(1, Math.max(0, y / 60));
-    band.style.setProperty("--p", String(p));
-  }
-  onScroll();
-  window.addEventListener("scroll", onScroll, { passive: true });
-  document.addEventListener("scroll", onScroll, { passive: true });
+  // you scroll, the only search bar is there." Still true, and now it costs nothing: the whole
+  // behaviour is `.sa-bandinner { position: sticky; top: 0 }` in the stylesheet.
+  // The scroll handler that used to live here is DELETED, along with its `reduce` flag and the
+  // --p variable it drove. It fired on every scroll event and wrote a variable that animated
+  // max-height, padding and opacity on two rows INSIDE a sticky element, forcing a layout pass
+  // per event. His panel logged 1542 scroll events in one session. Owner: "ur overcomplicating
+  // sh". Sticky positioning was always the one-line version of this.
 
   window.saMeasure = function () {
     var r1 = function (n) { return Math.round(n * 10) / 10; };
