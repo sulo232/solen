@@ -406,7 +406,7 @@
      Backing off to 28, which is a normal page gutter rather than a moat: card 334, photo 267,
      card height 327, about 1.83 on screen. Between the two extremes he has now rejected. */
   .sa-list { display: flex; flex-direction: column; align-items: center; gap: 16px;
-    padding: 12px 28px 32px; background: #FFFFFF; }
+    padding: 12px 16px 32px; background: #FFFFFF; }
   .sa-row { width: 100%; }
   .sa-row {
     display: block; width: 100%; padding: 0; border: 0; border-radius: 0; background: transparent;
@@ -514,11 +514,122 @@
     font-size: 14px; font-weight: 500; line-height: 19px; color: #0A0A0A; overflow: hidden; }
   .sa-contmeta { display: block; margin-top: 3px; font-size: 12px; font-weight: 400; line-height: 17px;
     color: #6B6B6B; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  /* Owner 2026-07-31: "make the image inside square, a four by four." 1:1, was 150x120 (5:4).
+     120 square keeps the card at the height his approved screenshot shows. */
   .sa-contimg { flex: 0 0 auto; object-fit: cover; background: #F4F4F5;
-    width: 150px; aspect-ratio: 5 / 4; border-radius: 16px; }
+    width: 120px; aspect-ratio: 1 / 1; border-radius: 16px; }
   .sa-contchev { flex: 0 0 auto; color: #6B6B6B; display: flex; }
 
   .sa-sec { align-self: stretch; width: 100%; margin: 0 0 24px; }
+
+  /* ===== REAL HOME-PAGE SECTION ANATOMY ==================================
+     Owner 2026-07-31: "make each section like the real home page Top auf Solen, so it actually
+     matches." Copied off the running app at vw=405, not from source and not from memory:
+       SectionFrame  h2 clamp(18px,2vw,20px) / 600 / -0.01em, with an arrow link inside the h2
+       rail          mt-1, gap 12, -mx bleed so the next card crops (the scroll promise)
+       salon card    w = (100vw - 44px) / 1.5, photo aspect 5/4 radius 22 shadow-elevation-2
+       WalkInBand    its OWN frame: 52px sunken icon tile, h2 18/700, subline, green Live dot,
+                     cards flex 0 0 42%, radius 13, hairline, the figure at 20/700 in green
+       review card   w 260, min-h 220, radius 16, hairline, elevation-2, 40px initials avatar
+       inspo card    w 44vw max 200, photo aspect 9/16 radius 16, scrim, title chip, ab CHF n */
+  .sa-secheadrow { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; }
+  .sa-h2arrow { display: inline-flex; align-items: center; margin-left: 12px; color: #0A0A0A; }
+  /* The bleed has to survive the rail rules. All three used the padding SHORTHAND, which reset
+     padding-left/right to 0, so the first card sat at the screen edge while its heading stayed
+     at 16. Each is now axis-specific, and the bleed supplies the horizontal padding. */
+  /* scroll-padding-left is the missing half of the bleed, and the real app has it (scroll-pl-3).
+     Without it a snap-align:start card snaps flush to the CONTAINER edge, which sits 16px left of
+     the gutter, so the browser auto-scrolls the rail by 16 on load and the first card lands at 0
+     while its heading stays at 16. Measured scrollLeft was exactly 16 on both snapping rails. */
+  .sa-railbleed { margin-left: -16px; margin-right: -16px; padding-left: 16px; padding-right: 16px;
+    scroll-padding-left: 16px; }
+
+  /* Walk-in band, the real one */
+  .sa-wi { align-self: stretch; width: 100%; margin: 0 0 24px; }
+  .sa-wihead { display: flex; align-items: center; gap: 14px; }
+  .sa-witile { display: grid; place-items: center; height: 52px; width: 52px; flex: 0 0 auto;
+    border-radius: 15px; background: #F4F4F5; }
+  .sa-witile img { height: 66%; width: 66%; object-fit: contain; }
+  .sa-wititle { font-size: 18px; font-weight: 700; line-height: 1.05; letter-spacing: -0.01em;
+    color: #0A0A0A; margin: 0; }
+  .sa-wisub { margin: 4px 0 0; font-size: 12px; line-height: 1.3; color: #6B6B6B; }
+  .sa-wilive { margin-top: 4px; display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 700; color: #0A0A0A; }
+  .sa-widot { height: 7px; width: 7px; border-radius: 999px; background: #16A34A; }
+  .sa-wirail { margin-top: 16px; margin-right: -16px; display: flex; gap: 12px; padding-bottom: 4px;
+    overflow-x: auto; overflow-y: hidden; scrollbar-width: none; scroll-snap-type: x proximity; }
+  .sa-wirail::-webkit-scrollbar { display: none; }
+  .sa-wicard { flex: 0 0 42%; min-width: 0; scroll-snap-align: start; border-radius: 13px;
+    border: 1px solid #E4E4E7; background: #FFFFFF; padding: 12px; }
+  .sa-wimin { font-size: 20px; font-weight: 700; line-height: 1; letter-spacing: -0.02em;
+    color: #16A34A; }
+  .sa-witill { margin-top: 3px; font-size: 12px; font-weight: 600; color: #6B6B6B; }
+  .sa-winamerow { margin-top: 10px; display: flex; align-items: center; gap: 8px; }
+  .sa-winame { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis;
+    white-space: nowrap; font-size: 14px; font-weight: 700; color: #0A0A0A; }
+  .sa-wirate { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 4px;
+    font-size: 12px; font-weight: 600; color: #6B6B6B; }
+  /* The star keeps its hue. It inherited the grey rating colour through currentColor, and taste
+     rule 4 is explicit: never monochrome a semantic element to stay on brand. */
+  .sa-wirate svg { color: #FFC32B; }
+  .sa-wicount { color: #276EF1; }
+  .sa-wiaddr { margin-top: 6px; font-size: 12px; color: #6B6B6B; overflow: hidden;
+    text-overflow: ellipsis; white-space: nowrap; }
+  .sa-wiahead { margin-top: 4px; font-size: 12px; color: #6B6B6B; }
+  .sa-wiall { margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; height: 48px; border-radius: 13px; border: 1px solid #E4E4E7; background: #FFFFFF;
+    font-size: 14px; font-weight: 700; color: #0A0A0A; cursor: pointer; }
+
+  /* Reviews, the real card */
+  .sa-rvrail { margin-top: 4px; display: flex; gap: 12px; padding-top: 4px; padding-bottom: 4px;
+    overflow-x: auto; overflow-y: hidden; scrollbar-width: none; scroll-snap-type: x proximity; }
+  .sa-rvrail::-webkit-scrollbar { display: none; }
+  .sa-rvcard { flex: 0 0 auto; width: 260px; min-height: 200px; display: flex; flex-direction: column;
+    scroll-snap-align: start; border-radius: 16px; border: 1px solid #E4E4E7; background: #FFFFFF;
+    padding: 16px; box-shadow: var(--lift); }
+  .sa-rvtop { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .sa-rvav { display: grid; place-items: center; height: 40px; width: 40px; flex: 0 0 auto;
+    border-radius: 999px; background: #F4F4F5; font-size: 14px; font-weight: 700; color: #6B6B6B; }
+  /* Both stack. As inline spans they rendered as "Luca MCuts & Culture" on one line. */
+  .sa-rvwho { display: block; font-size: 14px; font-weight: 600; color: #0A0A0A;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sa-rvsalon { display: block; margin-top: 2px; font-size: 12px; color: #6B6B6B; overflow: hidden;
+    text-overflow: ellipsis; white-space: nowrap; }
+  .sa-rvstars { display: flex; gap: 2px; color: #FFC32B; }
+  .sa-rvdate { margin-left: auto; font-size: 12px; color: #6B6B6B; }
+  .sa-rvtext { margin-top: 10px; font-size: 14px; line-height: 1.45; color: #0A0A0A;
+    display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; overflow: hidden; }
+
+  /* Inspo, the real card */
+  .sa-insrail { margin-top: 12px; display: flex; gap: 16px; padding-top: 8px; padding-bottom: 8px;
+    overflow-x: auto; overflow-y: hidden; scrollbar-width: none; scroll-snap-type: x proximity; }
+  .sa-insrail::-webkit-scrollbar { display: none; }
+  .sa-inscard { position: relative; flex: 0 0 auto; width: 44vw; max-width: 200px;
+    display: flex; flex-direction: column; scroll-snap-align: center; }
+  .sa-insshot { position: relative; width: 100%; aspect-ratio: 9 / 16; border-radius: 16px;
+    overflow: hidden; background: #1A1F2B; }
+  .sa-insshot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .sa-insscrim { position: absolute; inset: auto 0 0 0; height: 55%;
+    background: linear-gradient(to top, rgba(0,0,0,0.72), rgba(0,0,0,0)); }
+  .sa-insbadge { position: absolute; top: 10px; left: 10px; padding: 4px 8px; border-radius: 8px;
+    background: rgba(10,10,10,0.72); color: #FFFFFF; font-size: 12px; font-weight: 600; }
+  .sa-insheart { position: absolute; top: 8px; right: 8px; height: 32px; width: 32px;
+    display: grid; place-items: center; border-radius: 999px; background: rgba(255,255,255,0.92);
+    color: #0A0A0A; }
+  .sa-inschip { position: absolute; left: 10px; right: 10px; bottom: 10px; padding: 8px 10px;
+    border-radius: 10px; background: rgba(255,255,255,0.94); color: #0A0A0A;
+    font-size: 12px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sa-insfoot { margin-top: 8px; display: flex; align-items: baseline; gap: 8px; }
+  .sa-insauthor { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis;
+    white-space: nowrap; font-size: 12px; color: #6B6B6B; }
+  .sa-insprice { flex: 0 0 auto; font-size: 12px; font-weight: 600; color: #0A0A0A; }
+
+  /* Honest empty state for a city with no salons yet */
+  .sa-cityempty { display: flex; flex-direction: column; justify-content: center; gap: 6px;
+    flex: 0 0 auto; width: calc((100vw - 44px) / 1.5); min-height: 226px; padding: 16px;
+    border-radius: 22px; border: 1px dashed #E4E4E7; background: #F4F4F5; }
+  .sa-cityname { font-size: 14px; font-weight: 600; color: #0A0A0A; }
+  .sa-citynote { font-size: 12px; color: #6B6B6B; line-height: 1.35; }
   .sa-h2 { font-size: 18px; font-weight: 600; line-height: 24px; letter-spacing: -0.01em;
     margin: 0 0 10px; }
   .sa-thin { margin: -6px 0 10px; font-size: 12px; font-weight: 400;
@@ -550,7 +661,7 @@
      Note this is also why touch-action was the wrong tool earlier: touch-action is not consulted
      for wheel or trackpad at all, so it could never have fixed the input he actually uses. */
   .sa-rail { display: flex; gap: 12px; overflow-x: auto; overflow-y: hidden;
-    scrollbar-width: none; padding: 0 0 4px; scroll-snap-type: x proximity;
+    scrollbar-width: none; padding-bottom: 4px; scroll-snap-type: x proximity;
     overscroll-behavior-x: contain; }
   .sa-rail::-webkit-scrollbar { display: none; }
   .sa-railcard { flex: 0 0 auto; width: calc((100vw - 44px) / 1.5); scroll-snap-align: start;
@@ -626,27 +737,30 @@
   // a measured 0px of scrollable height. He also said "eight stuff is not enough" turns ago.
   // Prices are the cheapest ACTIVE service per salon; ratings and review counts are stored
   // values. Nothing here is invented.
+  // All 20 seeded, listed, active salons carrying a real cover photo, pulled from the salons
+  // table this turn. Prices are the cheapest ACTIVE service. plz/addr/rating/reviews and the
+  // walkin/instant/online flags are stored values. Nothing invented.
   var STORES = [
-    { slug: "salon-lumiere",         name: "Salon Lumière",         cat: "coiffeur",    rating: "4.4", price: 35,  reviews: 15,  addr: "Spalenvorstadt 22" },
-    { slug: "la-belle-ongle",        name: "La Belle Ongle",        cat: "nails",       rating: "4.1", price: 15,  reviews: 15,  addr: "Barfüsserplatz 6" },
-    { slug: "the-fade-factory",      name: "The Fade Factory",      cat: "barbershop",  rating: "4.3", price: 15,  reviews: 11,  addr: "Hammerstrasse 65" },
-    { slug: "haarsalon-margot",      name: "Haarsalon Margot",      cat: "coiffeur",    rating: "4.8", price: 35,  reviews: 16,  addr: "Aeschengraben 18" },
-    { slug: "smooth-skin-studio",    name: "Smooth Skin Studio",    cat: "spa",         rating: "4.5", price: 20,  reviews: 14,  addr: "Grabenring 8" },
-    { slug: "belle-epil",            name: "Belle Epil",            cat: "spa",         rating: "4.3", price: 20,  reviews: 8,   addr: "Burgfelderstrasse 55" },
-    { slug: "pink-petal-nails",      name: "Pink Petal Nails",      cat: "nails",       rating: "4.5", price: 15,  reviews: 8,   addr: "Klybeckstrasse 30" },
-    { slug: "nail-lounge-basel",     name: "Nail Lounge Basel",     cat: "nails",       rating: "4.5", price: 15,  reviews: 10,  addr: "Missionsstrasse 40" },
-    { slug: "muse-beauty-studio",    name: "Muse Beauty Studio",    cat: "coiffeur",    rating: "4.2", price: 35,  reviews: 11,  addr: "Rümelinsplatz 4" },
-    { slug: "cuts-and-culture",      name: "Cuts & Culture",        cat: "barbershop",  rating: "4.8", price: 15,  reviews: 16,  addr: "Elsässerstrasse 10" },
-    { slug: "old-town-barbers",      name: "Old Town Barbers",      cat: "barbershop",  rating: "4.3", price: 15,  reviews: 12,  addr: "Münsterplatz 11" },
-    { slug: "studio-schnittkunst",   name: "Studio Schnittkunst",   cat: "coiffeur",    rating: "4.2", price: 35,  reviews: 10,  addr: "Güterstrasse 115" },
-    { slug: "velvet-face",           name: "Velvet Face",           cat: "coiffeur",    rating: "4.6", price: 35,  reviews: 7,   addr: "Erlenmattstrasse 35" },
-    { slug: "rouge-studio",          name: "Rouge Studio",          cat: "coiffeur",    rating: "4.2", price: 35,  reviews: 15,  addr: "Tellplatz 7" },
-    { slug: "lisse-studio",          name: "Lisse Studio",          cat: "spa",         rating: "4.5", price: 20,  reviews: 13,  addr: "Dornacherstrasse 192" },
-    { slug: "atelier-haarwerk",      name: "Atelier Haarwerk",      cat: "coiffeur",    rating: "4.6", price: 35,  reviews: 25,  addr: "Freie Strasse 12" },
-    { slug: "wax-and-glow-basel",    name: "Wax & Glow Basel",      cat: "spa",         rating: "4.5", price: 20,  reviews: 11,  addr: "Schwarzwaldallee 50" },
-    { slug: "blade-and-stone",       name: "Blade & Stone",         cat: "barbershop",  rating: "4.4", price: 15,  reviews: 11,  addr: "Feldbergstrasse 82" },
-    { slug: "nail-studio-bliss",     name: "Nail Studio Bliss",     cat: "nails",       rating: "4.5", price: 15,  reviews: 13,  addr: "Steinenvorstadt 5" },
-    { slug: "glow-lab-basel",        name: "Glow Lab Basel",        cat: "coiffeur",    rating: "4.5", price: 35,  reviews: 10,  addr: "Steinenberg 14" }
+    { slug: "salon-lumiere", name: "Salon Lumière", cat: "coiffeur", rating: "4.4", reviews: 15, price: 35, plz: "4051", addr: "Spalenvorstadt 22", walkin: false, instant: false, online: true },
+    { slug: "la-belle-ongle", name: "La Belle Ongle", cat: "nails", rating: "4.1", reviews: 15, price: 15, plz: "4051", addr: "Barfüsserplatz 6", walkin: false, instant: false, online: true },
+    { slug: "the-fade-factory", name: "The Fade Factory", cat: "barbershop", rating: "4.3", reviews: 11, price: 15, plz: "4058", addr: "Hammerstrasse 65", walkin: true, instant: false, online: true },
+    { slug: "haarsalon-margot", name: "Haarsalon Margot", cat: "coiffeur", rating: "4.8", reviews: 16, price: 35, plz: "4051", addr: "Aeschengraben 18", walkin: false, instant: false, online: true },
+    { slug: "smooth-skin-studio", name: "Smooth Skin Studio", cat: "spa", rating: "4.5", reviews: 14, price: 20, plz: "4052", addr: "Grabenring 8", walkin: false, instant: false, online: true },
+    { slug: "belle-epil", name: "Belle Epil", cat: "spa", rating: "4.3", reviews: 8, price: 20, plz: "4055", addr: "Burgfelderstrasse 55", walkin: false, instant: false, online: true },
+    { slug: "pink-petal-nails", name: "Pink Petal Nails", cat: "nails", rating: "4.5", reviews: 8, price: 15, plz: "4057", addr: "Klybeckstrasse 30", walkin: false, instant: false, online: true },
+    { slug: "nail-lounge-basel", name: "Nail Lounge Basel", cat: "nails", rating: "4.5", reviews: 10, price: 15, plz: "4055", addr: "Missionsstrasse 40", walkin: false, instant: false, online: true },
+    { slug: "muse-beauty-studio", name: "Muse Beauty Studio", cat: "coiffeur", rating: "4.2", reviews: 11, price: 35, plz: "4001", addr: "Rümelinsplatz 4", walkin: false, instant: false, online: true },
+    { slug: "cuts-and-culture", name: "Cuts & Culture", cat: "barbershop", rating: "4.8", reviews: 16, price: 15, plz: "4056", addr: "Elsässerstrasse 10", walkin: true, instant: false, online: true },
+    { slug: "old-town-barbers", name: "Old Town Barbers", cat: "barbershop", rating: "4.3", reviews: 12, price: 15, plz: "4051", addr: "Münsterplatz 11", walkin: true, instant: false, online: true },
+    { slug: "studio-schnittkunst", name: "Studio Schnittkunst", cat: "coiffeur", rating: "4.2", reviews: 10, price: 35, plz: "4053", addr: "Güterstrasse 115", walkin: false, instant: false, online: true },
+    { slug: "velvet-face", name: "Velvet Face", cat: "coiffeur", rating: "4.6", reviews: 7, price: 35, plz: "4058", addr: "Erlenmattstrasse 35", walkin: false, instant: false, online: true },
+    { slug: "rouge-studio", name: "Rouge Studio", cat: "coiffeur", rating: "4.2", reviews: 15, price: 35, plz: "4059", addr: "Tellplatz 7", walkin: false, instant: false, online: true },
+    { slug: "lisse-studio", name: "Lisse Studio", cat: "spa", rating: "4.5", reviews: 13, price: 20, plz: "4053", addr: "Dornacherstrasse 192", walkin: false, instant: false, online: true },
+    { slug: "atelier-haarwerk", name: "Atelier Haarwerk", cat: "coiffeur", rating: "4.6", reviews: 25, price: 35, plz: "4001", addr: "Freie Strasse 12", walkin: false, instant: true, online: true },
+    { slug: "wax-and-glow-basel", name: "Wax & Glow Basel", cat: "spa", rating: "4.5", reviews: 11, price: 20, plz: "4058", addr: "Schwarzwaldallee 50", walkin: false, instant: false, online: true },
+    { slug: "blade-and-stone", name: "Blade & Stone", cat: "barbershop", rating: "4.4", reviews: 11, price: 15, plz: "4057", addr: "Feldbergstrasse 82", walkin: true, instant: false, online: true },
+    { slug: "nail-studio-bliss", name: "Nail Studio Bliss", cat: "nails", rating: "4.5", reviews: 13, price: 15, plz: "4051", addr: "Steinenvorstadt 5", walkin: false, instant: false, online: true },
+    { slug: "glow-lab-basel", name: "Glow Lab Basel", cat: "coiffeur", rating: "4.5", reviews: 10, price: 35, plz: "4051", addr: "Steinenberg 14", walkin: false, instant: false, online: true }
   ];
   STORES.forEach(function (s) { s.photo = "/_mockups/_assets/store-photos/" + s.slug + ".jpg"; });
   // walkin_enabled, read from /api/salons?limit=20 on the running dev server. Four of the twenty
@@ -876,51 +990,242 @@
     return wrap;
   }
 
+  // ===== REAL REVIEWS, read off the running app =============================
+  // Owner: "add this review section ... on the real home page, like in the mockup."
+  // Text, names, salon and dates are the seeded reviews the live /de renders. Not written by me.
+  var REVIEWS = [
+    { who: "Luca M", ini: "LM", salon: "Cuts & Culture",    date: "11. Juni 2026", stars: 5,
+      text: "Jonas hat genau verstanden, was ich wollte. Bester Fade seit langem." },
+    { who: "David K", ini: "DK", salon: "Cuts & Culture",   date: "9. Juni 2026", stars: 5,
+      text: "Kurzfristig einen Termin bekommen, super freundliches Team. Komme wieder." },
+    { who: "Samir B", ini: "SB", salon: "Cuts & Culture",   date: "6. Juni 2026", stars: 4,
+      text: "Schnitt top, musste aber trotz Termin kurz warten. Sonst alles gut." },
+    { who: "Anonym",  ini: "A",  salon: "Nail Studio Bliss", date: "6. Juni 2026", stars: 5,
+      text: "Mega zufrieden. Die Naegel sehen fantastisch aus und halten super lange." },
+    { who: "Nico W",  ini: "NW", salon: "Cuts & Culture",   date: "3. Juni 2026", stars: 5,
+      text: "Walk-in probiert und es lief genau wie versprochen. Zahlen, hingehen, dran sein." }
+  ];
+
+  // ===== REAL INSPO, the same six the live feed renders ======================
+  // Thumbnails downloaded from the running app and self-hosted, per _BASE.md (no remote deps).
+  var INSPO = [
+    { id: "a1eeda99-3128-4b0a-a4e0-2d32dae3c560", title: "Sleek Blunt Bob with Golden Ombre and Middle Part", who: "Minenhle Ntanzi", price: 300 },
+    { id: "1a11b89d-5583-41f4-a233-e1579275144f", title: "Textured Curly Top with Low Drop Skin Fade and Defined Fringe", who: "yourbarbermarco", price: 55 },
+    { id: "364edd9f-3483-4894-910c-cec7aa25face", title: "Natural Curly Top with Tapered Sides", who: "muneeb", price: 50 },
+    { id: "b99a7617-fa43-4830-9cf1-d5302bca5139", title: "High Taper Skin Fade with Short Textured Top and Sculpted Full Beard", who: "Yash Patel", price: 75 },
+    { id: "30726a27-1a2b-4df6-86c1-9b3ab249dedc", title: "Textured Fringe with High Skin Fade and Blended Beard", who: "tuffthebarber", price: 55 },
+    { id: "f5bcaae3-9d70-46a9-ab3c-c2d0c383721c", title: "Cornrow Braids with Low Taper Fade and Defined Beard", who: "Terrion Arnold", price: 140 }
+  ];
+
+  // cities table, read this turn: 7 rows, exactly ONE with is_active true.
+  var CITIES = [
+    { name: "Basel",   active: true },
+    { name: "Zürich",  active: false },
+    { name: "Bern",    active: false },
+    { name: "Luzern",  active: false },
+    { name: "Genf",    active: false },
+    { name: "Lausanne", active: false }
+  ];
+
+  // Named apart from the existing no-arg svgStar(): declaring a second svgStar hoisted over it
+  // and every pre-existing call site started emitting width="undefined", which makes an SVG fall
+  // back to 300x150 and blew each salon card from 226px to 512px tall.
+  function svgStarSized(px) {
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="' + px + '" height="' + px + '" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M11.5 2.3a.5.5 0 0 1 .9 0l2.4 5 5.4.8a.5.5 0 0 1 .3.9l-3.9 3.8.9 5.4a.5.5 0 0 1-.7.5L12 16.8l-4.8 2.5a.5.5 0 0 1-.7-.5l.9-5.4-3.9-3.8a.5.5 0 0 1 .3-.9l5.4-.8z"/></svg>';
+  }
+  function svgArrow() {
+    return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
+  }
+  function svgHeart() {
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>';
+  }
+
+  // The real SectionFrame: title, an arrow link inside the heading, then a bleeding rail.
+  function sectionFrame(title, railClass) {
+    var wrap = document.createElement("section");
+    wrap.className = "sa-sec";
+    var head = document.createElement("div");
+    head.className = "sa-secheadrow";
+    var h = document.createElement("h2");
+    h.className = "sa-h2";
+    h.textContent = title;
+    var a = document.createElement("span");
+    a.className = "sa-h2arrow";
+    a.setAttribute("aria-hidden", "true");
+    a.innerHTML = svgArrow();
+    h.appendChild(a);
+    head.appendChild(h);
+    wrap.appendChild(head);
+    var rail = document.createElement("div");
+    rail.className = railClass || "sa-rail sa-railbleed";
+    wrap.appendChild(rail);
+    return { wrap: wrap, rail: rail };
+  }
+
+  function subline(text) {
+    var p = document.createElement("p");
+    p.className = "sa-thin";
+    p.textContent = text;
+    return p;
+  }
+
+  // ===== THE REAL WALK-IN BAND ==============================================
+  // Owner: "remove this walking thingy ... instead of that, add in this real walk in section."
+  // The mockup's own "Walk in today" rail is deleted. This is WalkInBand's anatomy, measured off
+  // the running app: 52px sunken icon tile, 18/700 title, subline, green Live dot, cards at
+  // flex 0 0 42% with the wait figure at 20/700 in green, then the Alle Walk-ins button.
+  // The wait ranges and queue positions are the ones the live band renders for these salons.
+  var WAIT = {
+    "cuts-and-culture": { mins: "70-98 Min", ahead: 4 },
+    "blade-and-stone":  { mins: "35-49 Min", ahead: 3 },
+    "the-fade-factory": { mins: "70-98 Min", ahead: 5 },
+    "old-town-barbers": { mins: "35-49 Min", ahead: 2 }
+  };
+  function walkInBand() {
+    var rows = STORES.filter(function (s) { return s.walkin; });
+    var sec = document.createElement("section");
+    sec.className = "sa-wi";
+
+    var head = document.createElement("div");
+    head.className = "sa-wihead";
+    var tile = document.createElement("span");
+    tile.className = "sa-witile";
+    tile.innerHTML = '<img src="/icons/categories/walkin.png" alt="" aria-hidden="true">';
+    var txt = document.createElement("div");
+    var t = document.createElement("h2");
+    t.className = "sa-wititle";
+    t.textContent = "Walk-in";
+    var sub = document.createElement("p");
+    sub.className = "sa-wisub";
+    sub.textContent = "Ohne Termin. Sieh die Wartezeit und sichere dir deinen Platz.";
+    var live = document.createElement("span");
+    live.className = "sa-wilive";
+    live.innerHTML = '<span class="sa-widot" aria-hidden="true"></span>Live';
+    txt.appendChild(t); txt.appendChild(sub); txt.appendChild(live);
+    head.appendChild(tile); head.appendChild(txt);
+    sec.appendChild(head);
+
+    var rail = document.createElement("div");
+    rail.className = "sa-wirail";
+    rows.forEach(function (s) {
+      var w = WAIT[s.slug] || { mins: "-", ahead: 0 };
+      var c = document.createElement("a");
+      c.className = "sa-wicard";
+      c.setAttribute("role", "link");
+      c.setAttribute("tabindex", "0");
+      c.innerHTML =
+        '<div class="sa-wimin">' + w.mins + '</div>' +
+        '<div class="sa-witill">bis frei</div>' +
+        '<div class="sa-winamerow"><span class="sa-winame">' + s.name + '</span>' +
+        '<span class="sa-wirate">' + svgStarSized(11) + s.rating +
+        ' <span class="sa-wicount">(' + s.reviews + ')</span></span></div>' +
+        '<div class="sa-wiaddr">' + s.addr + ', Basel</div>' +
+        '<div class="sa-wiahead">' + w.ahead + ' vor dir</div>';
+      rail.appendChild(c);
+    });
+    sec.appendChild(rail);
+
+    var all = document.createElement("button");
+    all.type = "button";
+    all.className = "sa-wiall";
+    all.innerHTML = 'Alle Walk-ins ' + svgArrow();
+    sec.appendChild(all);
+    return sec;
+  }
+
+  function reviewsSection() {
+    var f = sectionFrame("Bewertungen", "sa-rvrail sa-railbleed");
+    REVIEWS.forEach(function (r) {
+      var c = document.createElement("div");
+      c.className = "sa-rvcard";
+      var stars = "";
+      for (var i = 0; i < r.stars; i++) stars += svgStarSized(13);
+      c.innerHTML =
+        '<div class="sa-rvtop"><span class="sa-rvav">' + r.ini + '</span>' +
+        '<span style="min-width:0;flex:1 1 auto"><span class="sa-rvwho">' + r.who + '</span>' +
+        '<span class="sa-rvsalon">' + r.salon + '</span></span></div>' +
+        '<div class="sa-rvtop" style="margin:0"><span class="sa-rvstars">' + stars + '</span>' +
+        '<span class="sa-rvdate">' + r.date + '</span></div>' +
+        '<p class="sa-rvtext">\u201C' + r.text + '\u201D</p>';
+      f.rail.appendChild(c);
+    });
+    return f.wrap;
+  }
+
+  function inspoSection() {
+    var f = sectionFrame("Finde deine Inspiration.", "sa-insrail sa-railbleed");
+    INSPO.forEach(function (p) {
+      var c = document.createElement("div");
+      c.className = "sa-inscard";
+      c.innerHTML =
+        '<div class="sa-insshot">' +
+        '<img src="/_mockups/_assets/inspo/' + p.id + '.jpg" alt="" loading="lazy">' +
+        '<span class="sa-insscrim" aria-hidden="true"></span>' +
+        '<span class="sa-insbadge">TikTok</span>' +
+        '<span class="sa-insheart" aria-hidden="true">' + svgHeart() + '</span>' +
+        '<span class="sa-inschip">' + p.title + '</span></div>' +
+        '<div class="sa-insfoot"><span class="sa-insauthor">' + p.who + '</span>' +
+        '<span class="sa-insprice">ab CHF ' + p.price + '</span></div>';
+      f.rail.appendChild(c);
+    });
+    return f.wrap;
+  }
+
+  function citySection() {
+    var f = sectionFrame("Städte", "sa-rail sa-railbleed");
+    CITIES.forEach(function (city) {
+      if (city.active) {
+        var rows = STORES.slice(0, 3);
+        rows.forEach(function (s) { f.rail.appendChild(railCard(s)); });
+      } else {
+        // ASK 8, and it cannot be built truthfully. cities has 7 rows and exactly ONE is
+        // is_active; all 28 salon rows are Basel. A "Top in Zurich" rail has nothing real to
+        // put in it, and inventing salons is the no-fabrication rule's first line. This renders
+        // the FORMAT with an honest sub-state so the layout is judgable, and the closing report
+        // names the three ways to unblock it.
+        var e = document.createElement("div");
+        e.className = "sa-cityempty";
+        e.innerHTML = '<span class="sa-cityname">Top in ' + city.name + '</span>' +
+          '<span class="sa-citynote">Noch keine Salons. ' + city.name +
+          ' ist in der Städte-Tabelle angelegt, aber nicht aktiv.</span>';
+        f.rail.appendChild(e);
+      }
+    });
+    return f.wrap;
+  }
+
   function renderHome() {
     list.innerHTML = "";
     list.appendChild(continuationCard());
-    // No personalised row here: the persona endpoint that would have powered one is on the
-    // removed list, so a row claiming to know his hair would be a promise nothing can keep.
-    var SECTIONS = [
-      { title: "Popular in Basel", rows: STORES.slice(0, 6), note: null },
-      // Counted from the data, never typed. The hardcoded "3 of 20" went stale the moment the
-      // store list grew from 8 to 20 and a fourth walk-in salon came with it, which is exactly
-      // the fabricated-number failure the taste rules ban.
-      { title: "Walk in today", rows: STORES.filter(function (s) { return s.walkin; }),
-        note: STORES.filter(function (s) { return s.walkin; }).length
-          + " of " + STORES.length + " stores take walk-ins right now." },
-      { title: "Coiffeurs in Basel", rows: STORES.filter(function (s) { return s.cat === "coiffeur"; }),
-        note: null },
-      { title: "Cities", rows: [], note: "Basel is the only city with stores so far." }
+
+    // Owner: "make each section like the real home page Top auf Solen, so it actually matches."
+    // Every salon rail below is the real SectionFrame + SalonCard pair, same title treatment,
+    // same arrow, same bleeding rail, same 5:4 photo at radius 22.
+    var byRating = STORES.slice().sort(function (a, b) { return Number(b.rating) - Number(a.rating); });
+
+    var RAILS = [
+      { title: "Top auf Solen", rows: byRating.slice(0, 6), note: null },
+      { title: "In der Nähe", rows: STORES.slice(0, 6), note: null },
+      // ASK 9. Built from the real online_booking_enabled flag, ordered by rating. The honest
+      // sub-state is required: there is no live slot data wired, so the ORDER is by rating, not
+      // by who actually has a gap this week, and saying otherwise would be a fabricated claim.
+      { title: "Diese Woche verfügbar",
+        rows: byRating.filter(function (s) { return s.online; }).slice(0, 6),
+        note: "Alle 20 Salons sind online buchbar. Live-Verfügbarkeit ist noch nicht angebunden, sortiert nach Bewertung." },
+      { title: "Coiffeure in Basel", rows: STORES.filter(function (s) { return s.cat === "coiffeur"; }).slice(0, 6), note: null }
     ];
-    SECTIONS.forEach(function (sec) {
-      var wrap = document.createElement("section");
-      wrap.className = "sa-sec";
-      var h = document.createElement("h2");
-      h.className = "sa-h2";
-      h.textContent = sec.title;
-      wrap.appendChild(h);
-      if (sec.note) {
-        var p = document.createElement("p");
-        p.className = "sa-thin";
-        p.textContent = sec.note;
-        wrap.appendChild(p);
-      }
-      var rail = document.createElement("div");
-      rail.className = "sa-rail";
-      if (sec.rows.length) {
-        sec.rows.forEach(function (s) { rail.appendChild(railCard(s)); });
-      } else {
-        var one = railCard(STORES[2]);
-        one.querySelector(".sa-name").textContent = "Basel";
-        var r = one.querySelector(".sa-rate"); if (r) r.remove();
-        one.querySelector(".sa-meta2").textContent = "20 stores";
-        var pr = one.querySelector(".sa-price"); if (pr) pr.remove();
-        rail.appendChild(one);
-      }
-      wrap.appendChild(rail);
-      list.appendChild(wrap);
+
+    RAILS.forEach(function (r) {
+      var f = sectionFrame(r.title, "sa-rail sa-railbleed");
+      if (r.note) f.wrap.insertBefore(subline(r.note), f.rail);
+      r.rows.forEach(function (s) { f.rail.appendChild(railCard(s)); });
+      list.appendChild(f.wrap);
     });
+
+    list.appendChild(walkInBand());
+    list.appendChild(inspoSection());
+    list.appendChild(reviewsSection());
+    list.appendChild(citySection());
   }
 
   // ===== INSPO ============================================================
