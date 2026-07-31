@@ -985,6 +985,6 @@ loudest of the three.
       this turn, and both directories now hold exactly 210 PNGs (printed as `set-barber: 210 frames`
       / `set-dryer: 210 frames` before the encode). The cause was `cp -R` collisions leaving
       `033 2.png` beside `033.png`; the renderer's stale guard at
-      `scripts/capture/turntable-render.mjs:105` cannot catch those, because the names differ and
+      `scripts/capture/turntable-render.mjs:112` cannot catch those, because the names differ and
       the copies land after it runs. The frame-shuffling copies are out of the workflow: the no-air
       comparison renders to its own directory instead of round-tripping through `cp -R`.
