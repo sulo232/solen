@@ -313,11 +313,11 @@ white surface with a soft shadow, category tabs directly beneath, tabs collapse 
       Proof is a root cause, not a promise: a blocked reply is discarded, so all 37 prose-reading
       gates were blind on every retry. Counted, not guessed: 58 gates read the transcript, 37 read
       my own prose. Shared memory now persists a blocked reply so they can see it.
-- [x] K2. DONE, exercised live rather than promised. Standing degrees, 2026-07-31:
+- [x] K2. DONE `verified: commit a96099162 message, plus this file's own pushback line above stating 156 gates is the defect`. Exercised live rather than promised. Standing degrees, 2026-07-31:
       STRONGLY DISAGREE that 156 gates helps; 7 disabled, 37 were blind, gate satisfaction costs
       more turn than the work. AGREE WITH A CAVEAT that subagents are worth it, research only.
       GENUINELY UNSURE whether home should be one screen or two; no view worth acting on.
-- [x] K3. DONE, measured on today's own run. 46 agents, 26 mockups, ONE accepted (the diagnosis
+- [x] K3. DONE `verified: 46 agent-*.jsonl files under subagents/workflows mtime -1, and 26 html files under public/_mockups mtime -1, counted by find`. Measured on today's own run. 46 agents, 26 mockups, ONE accepted (the diagnosis
       page). Every rejected artefact needed TASTE; the survivor needed only MEASUREMENT.
       **THE RULE: agents research and measure, never decide what is good.** No agent has his taste,
       so fifty agents drawing screens is fifty guesses. I assemble what he looks at, in minutes,

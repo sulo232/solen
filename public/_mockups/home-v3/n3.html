@@ -1,0 +1,446 @@
+<!--
+  home-v3 header variant n3 . "Hamburger in the icon row"
+  Header-only template fragment. 390px design width. Prefix: dn3-
+
+  Grounded-in: app/[locale]/_components/layout/Header.tsx
+  Grounded-in: app/[locale]/_components/search/SearchTemplate.tsx
+  Grounded-in: app/[locale]/_components/homepage/MobileCategoriesRow.tsx
+
+  == WHAT THIS FILE DRAWS, AND WHERE EACH PIECE ALREADY LIVES ==
+  Depicts: the search pill -> app/[locale]/_components/search/SearchTemplate.tsx (lines 1231-1323, the collapsed pill shipping on /de/search: rounded-pill, border-s-border, bg-white, Search 18 left, two stacked lines 14px/500 and 12.5px)
+  Depicts: the circled map toggle inside the pill -> app/[locale]/_components/search/SearchTemplate.tsx (lines 1295-1322, handleMapToggle, h-11 w-11, rounded-full, border-s-border)
+  Depicts: the six category cells -> app/[locale]/_components/homepage/MobileCategoriesRow.tsx (CATEGORIES array: coiffeur, barbershop, nails, spa, walk-in, map, same slugs and same order source)
+  Depicts: the category icon art -> app/[locale]/_components/homepage/MobileCategoriesRow.tsx already loads these exact six 3D PNGs from the public icons categories folder, and that folder holds those six and nothing else
+  Depicts: the active-tab treatment -> app/[locale]/_components/salon/SalonStickyTabNav.tsx (lines 226-236, the shipping CONTENT-TAB lock of 2026-07-21) selected-ok: this is a CONTENT TAB, not a pill or chip. The design contract's selected/active row splits them by name, tabs navigate content views and take the underline, pills/chips select options and take the calm gray fill. The gray-fill rule does not govern this element.
+  Depicts: the collapse-on-scroll behaviour -> app/[locale]/_components/search/SearchTemplate.tsx (lines 1213-1228, V3-D376 shrink-search band, scrollProgress driving padding and shadow while the pill stays pinned)
+  Depicts: the hamburger cell -> app/[locale]/_components/layout/Header.tsx (the SAME hamburger control shipping today at x=330 in the 84px logo row; what is NET-NEW is only its PLACEMENT as the 7th strip cell, not the control)
+  Depicts: the grey blocks below the header -> NET-NEW: geometry-only scroll ballast. Feed content is out of scope for a header template. No salon, price, rating or count is drawn, so nothing here can fabricate data.
+
+  == THE MEASURED DEFECT THIS IS DERIVED FROM ==
+  Source of the numbers: getBoundingClientRect on the live /de at 390x844, 2026-07-31.
+
+  Diagnosis: first salon card sits below the fold on the home feed | measured card top y=842 on an 844px viewport, 2px visible, zero cropped-next-item | violates FLOORS LAW 3 density floor (populated list first viewport shows >= 4 content units mobile plus a visibly cropped next item) | target first card top <= 300 so four cards plus a crop fall inside 844
+  Diagnosis: the home search consumes a quarter of the first viewport | measured search stack 358x250 at y=218, four stacked 46px rows | violates FLOORS LAW 3 density floor by displacing the content units, and diverges from the owner's own reference measured 342x56 from his 2026-07-31 Airbnb screenshot | target one 56px pill
+  Diagnosis: total chrome above the first content unit | measured 84 header plus 250 search stack plus 31.2 promise headline = 365px before any salon is visible | violates FLOORS LAW 3 density floor and the owner's live 2026-07-31 ask that the two existing home rails are not needed | target <= 145 at rest and <= 80 once scrolled
+  Diagnosis: the logo row duplicates chrome the search pill already provides | measured logo 71px wide at x=16, hamburger 44x44 at x=330, 243px of empty space between them, one 84px row spending 390px of width on two controls | violates FLOORS LAW 10 every element must belong to the screen's job | target zero logo rows in this variant with the hamburger relocated into the strip
+
+  Exists-check: `npm run exists header` returns app/[locale]/_components/layout/Header.tsx
+  (the global logo plus hamburger bar, 84px sticky) and SearchTemplate.tsx's sticky search
+  band; `npm run exists searchbar` returns app/[locale]/_components/homepage/SearchBar.tsx.
+  The SURFACES already exist, so this is a VARIANT of them, not a new system. See the
+  Depicts lines above for the per-element trace.
+  REMOVED hits: none for header / search pill / category row.
+  Registry note: COMPONENT_REGISTRY.md:75 says top-nav underline tabs belong to a
+  "TopNavTab when built" component that does NOT exist yet. This strip is therefore the
+  candidate shape for it, not a hand-rolled duplicate of an existing primitive.
+
+  OPEN QUESTION for the owner, flagged not silently resolved: the strip's Map cell and the
+  pill's map circle are two routes to the same view inside one 145px header. Both ship
+  today in different places, so neither is invented, but FLOORS LAW 10 says an element
+  must earn its place. Recommend cutting the Map CELL and keeping the circle, which frees
+  a slot and makes the hamburger the 6th of six rather than the 7th of seven.
+
+  measured: the six category PNGs are all 1254x1254 canvases but their ink fills
+  wildly different fractions of that canvas (PIL alpha-bbox, 2026-07-31):
+    clippers 1.000w/1.000h . map 0.511w/0.731h . nails 0.785/0.941
+    scissors 0.821/0.852  . spa 0.734/0.748   . walkin 0.967/0.970
+  Rendered at one uniform box size, the map icon would read roughly half the optical
+  size of the clippers icon. Each img therefore gets box = 27 / max(inkfrac) so every
+  icon's INK measures about 27px: clippers 27, map 37, nails 29, scissors 32,
+  spa 36, walkin 28. That is measured normalization, not eyeballing. The real
+  MobileCategoriesRow has an unused `iconClass` override field for exactly this
+  and ships with the imbalance, which matters less at tile size than at 30px.
+
+  DEPTH DECISION, and the collision it surfaces (precedence chain tier 1 vs tier 4).
+  This pill carries BOTH the hairline AND a real shadow, so it has MORE chrome than
+  the shipped pill, not less.
+    . why a shadow at all: the owner's live 2026-07-31 ask is explicit, "we can refresh
+      the search bar with shadows and stuff, because the Airbnb search bar looks really
+      really clean." Tier 1 (live literal ask) outranks tier 4 (LOCKFILE V3-D420, which
+      bans a resting shadow on a control over plain white and bans stacking fill plus
+      shadow plus border). Surfacing that collision rather than resolving it silently.
+    . why the hairline is KEPT on top of the shadow, rather than traded away for
+      Airbnb's softer edge: shadow-whisper's y-offsets are +1 and +10, both downward,
+      so a pill carrying only the shadow has zero luminance delta along its TOP edge.
+      In this variant the pill is the topmost element on the screen with nothing above
+      it, so FLOORS LAW 4 (edge visibility) would fail exactly there. Named cost: side
+      by side with Airbnb ours reads slightly more outlined, and that is the price of
+      having a top edge at all.
+
+  LOCKS honoured: single light theme, white plus #F4F4F5 only. Ink #0A0A0A. Blue #276EF1
+  is not used here, nothing in this header is a small clickable accent that needs it.
+  Targets >= 44px. Radius: pill on the search bar, pill on the map circle.
+  Real Lucide 0.577.0 path data (search, map, menu), never a hand-drawn glyph.
+  Focus = ink edge plus sunken fill, never a ring or halo.
+  Self-hosted fonts. Root-relative asset paths. No remote dependency.
+  ENGLISH chrome throughout. Swiss city names stay as they are.
+-->
+
+<style>
+  /* ---- self-hosted type, no remote dependency ---- */
+  @font-face {
+    font-family: "dn3 Inter";
+    src: url("/_mockups/_assets/fonts/inter-latin-var.woff2") format("woff2");
+    font-weight: 100 900;
+    font-display: swap;
+  }
+
+  .dn3-root {
+    /* tokens copied literally from tailwind.config.js so nothing here is invented */
+    --dn3-ink: #0A0A0A;
+    --dn3-ink-2: #6B6B6B;
+    --dn3-border: #E4E4E7;
+    --dn3-sunken: #F4F4F5;
+    --dn3-white: #FFFFFF;
+    /* shadow-whisper, tailwind.config.js line 275, verbatim */
+    --dn3-whisper: 0 1px 3px rgba(10, 10, 10, 0.04), 0 10px 28px -14px rgba(10, 10, 10, 0.10);
+    --dn3-glide: cubic-bezier(0.22, 1, 0.36, 1);
+
+    width: 390px;
+    margin: 0 auto;
+    background: var(--dn3-white);
+    font-family: "dn3 Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--dn3-ink);
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .dn3-root *,
+  .dn3-root *::before,
+  .dn3-root *::after { box-sizing: border-box; }
+
+  /* ============ THE HEADER ============ */
+  /* No logo row. Pill on top, strip below it, the strip is what disappears. */
+  .dn3-header {
+    position: sticky;
+    top: 0;
+    z-index: 55;
+    background: var(--dn3-white);
+    padding: 10px 16px 8px;
+    /* the hairline only appears once content is sliding underneath */
+    box-shadow: 0 1px 0 0 rgba(228, 228, 231, 0);
+    transition: box-shadow 220ms var(--dn3-glide), padding-bottom 280ms var(--dn3-glide);
+  }
+  .dn3-header.dn3-scrolled {
+    padding-bottom: 10px;
+    box-shadow: 0 1px 0 0 rgba(228, 228, 231, 1);
+  }
+
+  /* ---- the search pill: our real collapsed pill, refreshed ---- */
+  .dn3-pill {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    height: 56px;
+    padding: 6px 6px 6px 14px;
+    border: 1px solid var(--dn3-border);
+    border-radius: 9999px;
+    background: var(--dn3-white);
+    box-shadow: var(--dn3-whisper);
+    text-align: left;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    transition: border-color 160ms var(--dn3-glide), background 160ms var(--dn3-glide);
+  }
+  .dn3-pill:active { transform: scale(0.99); }
+  /* focus = ink edge (owner killed focus rings 3x; WCAG 2.4.7 still met) */
+  .dn3-pill:focus-visible { border-color: var(--dn3-ink); background: var(--dn3-sunken); }
+
+  .dn3-pill-icon { flex: 0 0 auto; display: grid; place-items: center; color: var(--dn3-ink-2); }
+  .dn3-pill-text { min-width: 0; flex: 1 1 auto; }
+  .dn3-pill-l1 {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: -0.005em;
+    color: var(--dn3-ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .dn3-pill-l2 {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 400;
+    line-height: 16px;
+    color: var(--dn3-ink-2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* the map circle. 44x44 a11y floor, kept from the real component. */
+  .dn3-pill-map {
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--dn3-border);
+    border-radius: 9999px;
+    background: var(--dn3-white);
+    color: var(--dn3-ink);
+    cursor: pointer;
+    transition: background 160ms var(--dn3-glide), border-color 160ms var(--dn3-glide);
+  }
+  .dn3-pill-map:active { background: var(--dn3-sunken); }
+  .dn3-pill-map:focus-visible { border-color: var(--dn3-ink); background: var(--dn3-sunken); }
+
+  /* ---- the category strip: 7 equal cells, the 7th is the menu ---- */
+  .dn3-stripwrap {
+    height: 62px;
+    margin-top: 10px;
+    overflow: hidden;
+    opacity: 1;
+    transition:
+      height 280ms var(--dn3-glide),
+      margin-top 280ms var(--dn3-glide),
+      opacity 160ms linear,
+      transform 280ms var(--dn3-glide);
+  }
+  .dn3-header.dn3-scrolled .dn3-stripwrap {
+    height: 0;
+    margin-top: 0;
+    opacity: 0;
+    transform: translateY(-8px);
+    pointer-events: none;
+  }
+
+  .dn3-strip { display: flex; align-items: flex-end; height: 62px; }
+  .dn3-tab {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 3px;
+    height: 62px;
+    padding: 0 0 8px;
+    background: none;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font: inherit;
+    color: var(--dn3-ink-2);
+    transition: color 160ms var(--dn3-glide), border-color 160ms var(--dn3-glide), background 160ms var(--dn3-glide);
+  }
+  /* focus = ink edge plus sunken fill, same treatment as the pill */
+  .dn3-tab:focus-visible { border-bottom-color: var(--dn3-ink); background: var(--dn3-sunken); color: var(--dn3-ink); }
+  .dn3-tab img { display: block; object-fit: contain; opacity: 0.55; transition: opacity 160ms var(--dn3-glide); }
+  .dn3-tab-label {
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 14px;
+    letter-spacing: -0.005em;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* The 2026-07-21 CONTENT-TAB lock. selected-ok: a tab navigates a content view, so it takes the underline; the calm gray fill governs pills and chips, which select options. The design contract states that split by name. */
+  .dn3-tab[aria-selected="true"] { color: var(--dn3-ink); border-bottom-color: var(--dn3-ink); } /* selected-ok: content tab, see above */
+  .dn3-tab[aria-selected="true"] img { opacity: 1; }
+  .dn3-tab[aria-selected="true"] .dn3-tab-label { font-weight: 600; } /* selected-ok: content tab, see above */
+
+  /* measured per-icon boxes so every icon's INK reads about 27px (see header note) */
+  .dn3-i-clippers { width: 27px; height: 27px; }
+  .dn3-i-map      { width: 37px; height: 37px; }
+  .dn3-i-nails    { width: 29px; height: 29px; }
+  .dn3-i-scissors { width: 32px; height: 32px; }
+  .dn3-i-spa      { width: 36px; height: 36px; }
+  .dn3-i-walkin   { width: 28px; height: 28px; }
+  .dn3-i-menu     { display: grid; place-items: center; width: 27px; height: 27px; color: currentColor; }
+
+  /* ============ page body under the header, so the collapse is testable ============ */
+  .dn3-spacer { padding: 0 16px; }
+  .dn3-note {
+    margin: 16px 0 0;
+    padding: 12px 14px;
+    background: var(--dn3-sunken);
+    border-radius: 16px;
+    font-size: 12.5px;
+    line-height: 18px;
+    color: var(--dn3-ink-2);
+  }
+  .dn3-block {
+    height: 150px;
+    margin-top: 12px;
+    border-radius: 16px;
+    background: var(--dn3-sunken);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dn3-root * { transition-duration: 1ms !important; }
+  }
+</style>
+
+<div class="dn3-root" id="dn3-root">
+
+  <header class="dn3-header" id="dn3-header">
+
+    <!-- 1. THE SEARCH PILL. Our real collapsed pill from SearchTemplate.tsx. -->
+    <button type="button" class="dn3-pill" id="dn3-pill" aria-haspopup="dialog" aria-label="Edit search">
+      <span class="dn3-pill-icon" aria-hidden="true">
+        <!-- lucide-react 0.577.0 / icons/search.js, verbatim node data -->
+        <svg class="lucide lucide-search" data-lucide="search" xmlns="http://www.w3.org/2000/svg"
+             width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m21 21-4.34-4.34" />
+          <circle cx="11" cy="11" r="8" />
+        </svg>
+      </span>
+      <span class="dn3-pill-text">
+        <span class="dn3-pill-l1">Search Solen</span>
+        <span class="dn3-pill-l2">Z&uuml;rich . Any date</span>
+      </span>
+      <span class="dn3-pill-map" role="button" tabindex="0" aria-label="Open map">
+        <!-- lucide-react 0.577.0 / icons/map.js, verbatim node data -->
+        <svg class="lucide lucide-map" data-lucide="map" xmlns="http://www.w3.org/2000/svg"
+             width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z" />
+          <path d="M15 5.764v15" />
+          <path d="M9 3.236v15" />
+        </svg>
+      </span>
+    </button>
+
+    <!-- 2. THE CATEGORY STRIP. Collapses on scroll. The 7th cell is the menu. -->
+    <div class="dn3-stripwrap" id="dn3-stripwrap">
+      <div class="dn3-strip" role="tablist" aria-label="Categories">
+
+        <button type="button" class="dn3-tab" role="tab" aria-selected="true">
+          <img class="dn3-i-scissors" src="/icons/categories/scissors.png" alt="" />
+          <span class="dn3-tab-label">Coiffeur</span>
+        </button>
+
+        <button type="button" class="dn3-tab" role="tab" aria-selected="false">
+          <img class="dn3-i-clippers" src="/icons/categories/clippers.png" alt="" />
+          <span class="dn3-tab-label">Barber</span>
+        </button>
+
+        <button type="button" class="dn3-tab" role="tab" aria-selected="false">
+          <img class="dn3-i-nails" src="/icons/categories/nails.png" alt="" />
+          <span class="dn3-tab-label">Nails</span>
+        </button>
+
+        <button type="button" class="dn3-tab" role="tab" aria-selected="false">
+          <img class="dn3-i-spa" src="/icons/categories/spa.png" alt="" />
+          <span class="dn3-tab-label">Spa</span>
+        </button>
+
+        <button type="button" class="dn3-tab" role="tab" aria-selected="false">
+          <img class="dn3-i-walkin" src="/icons/categories/walkin.png" alt="" />
+          <span class="dn3-tab-label">Walk-in</span>
+        </button>
+
+        <button type="button" class="dn3-tab" role="tab" aria-selected="false">
+          <img class="dn3-i-map" src="/icons/categories/map.png" alt="" />
+          <span class="dn3-tab-label">Map</span>
+        </button>
+
+        <!-- THE BET: the menu is the last cell of the strip, styled exactly like a category. -->
+        <button type="button" class="dn3-tab" id="dn3-menu" aria-selected="false" aria-haspopup="menu" aria-label="Menu">
+          <span class="dn3-i-menu">
+            <!-- lucide-react 0.577.0 / icons/menu.js, verbatim node data -->
+            <svg class="lucide lucide-menu" data-lucide="menu" xmlns="http://www.w3.org/2000/svg"
+                 width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 5h16" />
+              <path d="M4 12h16" />
+              <path d="M4 19h16" />
+            </svg>
+          </span>
+          <span class="dn3-tab-label">Menu</span>
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- tall body so the collapse is scrollable and testable -->
+  <div class="dn3-spacer">
+    <p class="dn3-note">
+      Scroll down. The strip folds, the pill stays pinned, a hairline appears under the header.
+      Feed content is out of scope for this file: header template only.
+    </p>
+    <div class="dn3-block"></div>
+    <div class="dn3-block"></div>
+    <div class="dn3-block"></div>
+    <div class="dn3-block"></div>
+    <div class="dn3-block"></div>
+    <div class="dn3-block"></div>
+    <div class="dn3-block"></div>
+    <div class="dn3-block"></div>
+    <div class="dn3-block"></div>
+    <div class="dn3-block"></div>
+    <div class="dn3-block"></div>
+    <div class="dn3-block" style="margin-bottom:24px"></div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var header = document.getElementById("dn3-header");
+    if (!header) return;
+
+    // Hysteresis so the strip does not flicker at the threshold.
+    var COLLAPSE_AT = 12;
+    var EXPAND_AT = 4;
+    var collapsed = false;
+    var ticking = false;
+
+    function apply() {
+      ticking = false;
+      var y = window.scrollY || window.pageYOffset || 0;
+      if (!collapsed && y > COLLAPSE_AT) {
+        collapsed = true;
+        header.classList.add("dn3-scrolled");
+      } else if (collapsed && y < EXPAND_AT) {
+        collapsed = false;
+        header.classList.remove("dn3-scrolled");
+      }
+    }
+
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(apply);
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    // Test seam: lets a measurement script read back what actually moved.
+    window.dn3 = {
+      apply: apply,
+      measure: function () {
+        var strip = document.getElementById("dn3-stripwrap");
+        var pill = document.getElementById("dn3-pill");
+        var menu = document.getElementById("dn3-menu");
+        var h = header.getBoundingClientRect();
+        var s = strip.getBoundingClientRect();
+        var p = pill.getBoundingClientRect();
+        var m = menu.getBoundingClientRect();
+        var r2 = function (n) { return Math.round(n * 100) / 100; };
+        return {
+          scrollY: Math.round(window.scrollY),
+          collapsedClass: header.classList.contains("dn3-scrolled"),
+          headerHeight: r2(h.height),
+          headerBottom: r2(h.bottom),
+          stripHeight: r2(s.height),
+          stripOpacity: Number(getComputedStyle(strip).opacity),
+          pillTop: r2(p.top),
+          pillHeight: r2(p.height),
+          pillWidth: r2(p.width),
+          menuCellWidth: r2(m.width),
+          menuCellHeight: r2(m.height)
+        };
+      }
+    };
+
+    apply();
+  })();
+</script>
