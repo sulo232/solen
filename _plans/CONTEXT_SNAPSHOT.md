@@ -2,19 +2,19 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-07-31T15:47:04 (trigger: manual)
+- taken: 2026-07-31T19:29:07 (trigger: auto)
 - branch: claude/principles-security-audit-0ae738
 
 ## git
 ```
-fe678bec3 Home v3: three header directions with real salons, collapse proven by scrolling it
-dca503b0b Harden against the measurement that graded a page which did not exist
-4d1bd13a7 checkpoint(auto): 7 uncommitted file(s) at turn end
-4cb47fa9e Balance floors: a runner for the two measures that survived, and the six that did not
-83c5e3f78 Adversarial round: 6 of 8 balance measures killed, 1 survives, 1 net-new
+065345c98 Category pill: copy Airbnb's STRUCTURE, not just its values. The double line is gone.
+923b5cfed Add evidence to the deletion checkbox
+ec90eb78b Pill second line fixed on the unselected state; continuation card back with 3 shapes
+f117b2718 Inspo built: the queue is empty
+4831091e1 Home is now a state of the search page, not a second file
 ```
 ```
-M _plans/CONTEXT_SNAPSHOT.md
+M public/_mockups/home-v3/search-a.html
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
