@@ -1,17 +1,18 @@
 <!--
-  home-v3 / inspo-header : Inspo gets the home chrome exactly. One arrangement, not three.
+  home-v3 / inspo-header : Inspo with the home chrome, using the REAL pills.
 
-  Owner-scope 2026-07-31, verbatim: "did you forget that we are going to ditch the whole banner?
-  We have the category icon pills on the top. So we have to ditch the hamburger menu AND the Inspo
-  text. And we have to make the size of the search bar also the same so it actually looks good and
-  complete."
+  Owner-scope 2026-07-31: "it's not at all the pills. The placement is okay, but it's not at all
+  how it is. Go back to the mockup where we have all the categories and actually use those."
 
-  WHAT I GOT WRONG LAST ROUND, and it is why this file is now ONE arrangement instead of three.
-  I kept Inspo's wordmark banner and asked him to choose where the hamburger and the heart should
-  sit inside it. But the banner is the thing being deleted. Once the category pills are the top
-  row, there is no banner left to arrange, so all three of my variants answered a question that no
-  longer existed. The heart takes the search pill's right slot because the hamburger that used to
-  be there goes with the banner.
+  WHAT I GOT WRONG, and it is the failure the compose-do-not-redraw rule exists to stop. I hand
+  rebuilt the category pill here instead of using the one from search-a.html. Measured, mine
+  differed three ways and all of them show: the icon was 20px against the real 31px, the depth sat
+  on the button itself instead of on the two overlay layers the real pill uses, and I dropped "All"
+  and reordered the row to put Inspo first. A copy inherits none of the decisions the original went
+  through, which is why it read wrong to him at a glance.
+  Everything under the CHROME COPIED VERBATIM banner is lifted from search-a.html unchanged: both
+  shadow variables, the .sa-cat rule, the two overlay layers, the pressed state, the 31px icon, and
+  the same six categories in the same order, with Inspo selected instead of Barber.
 
   Exists-check: RAN THIS TURN. `npm run exists "inspo chrome"` -> 0 hits. Also this turn,
     `npm run exists "discovery searchbar"` -> HIT, components-legacy/discovery/SearchBar.tsx is
@@ -19,32 +20,26 @@
     second search control. `npm run exists "inspo"` -> 41 hits; the page exists at
     app/[locale]/inspo, so this is a chrome change to a live surface, not a new screen.
 
-  Grounded-in: app/[locale]/inspo/page.tsx
+  Grounded-in: app/[locale]/_components/layout/Header.tsx
   Grounded-in: app/[locale]/_components/homepage/MobileCategoriesRow.tsx
-  Grounded-in: public/_mockups/home-v3/search-a.html
+  Grounded-in: app/[locale]/inspo/page.tsx
 
-  Depicts: the category row -> app/[locale]/_components/homepage/MobileCategoriesRow.tsx
+  Depicts: the category pill row -> app/[locale]/_components/layout/Header.tsx
+  Depicts: the category icons -> app/[locale]/_components/homepage/MobileCategoriesRow.tsx
   Depicts: the search control -> components-legacy/discovery/SearchBar.tsx
   Depicts: the saved-styles heart -> app/[locale]/inspo/page.tsx
   Depicts: the masonry feed -> app/[locale]/inspo/page.tsx
-  Depicts: this chrome on Inspo -> NET-NEW: /de/inspo renders a wordmark banner and a 295-wide
-    bar today, so the home chrome has never been applied to it.
+  Depicts: this chrome on Inspo -> NET-NEW: /de/inspo renders a wordmark banner and a 295-wide bar
+    today, so the home chrome has never been applied to it.
 
-  measured on the approved HOME mockup at vw=390 immediately before writing this file. Every
-  number below is copied from it rather than chosen here:
-    category row 390 x 66, padding 12/16/14, gap 12; pill h=40, padding 0 14, radius 40, 14px/400
-    band padding 4/0/8, inner padding 0 16
-    search pill 358 x 66 at x=16, padding 10 14, gap 12, radius 9999,
-      border 1px #E4E4E7, lift rgba(0,0,0,0.07) 0 2px 8px
-    the button in the pill's right slot 44 x 44 at x=315
-    label 16px/500
-  and on the LIVE /de/inspo at vw=375, for the before: bar 295 x 50, banner row 84 tall,
-    heart 40 x 40 sitting OUTSIDE the bar, feed grid `columns-2 gap-1.5`.
+  measured before writing, on the approved home mockup at vw=390:
+    category row 390 x 66, padding 12/16/14, gap 12; pill h=40, padding 0 14, radius 40, 14px/400,
+    icon 31 x 31; search pill 358 x 66 at x=16; the button in its right slot 44 x 44 at x=315
+  and on the LIVE /de/inspo at vw=375: bar 295 x 50, banner row 84 tall, heart 40 x 40 OUTSIDE the
+    bar, feed grid `columns-2 gap-1.5`.
 
-  CARD CHROME IS KEPT, not removed: every unselected pill and the search bar carry the 1px #E4E4E7
-  hairline and the rgba(0,0,0,0.07) lift. The selected pill is the approved sunken treatment
-  (#F4F4F5 fill, lift removed) copied from the home mockup, which is a locked selected-state and
-  not a flat redesign.
+  The banner and the hamburger are gone per his previous message; the heart takes the pill's right
+  slot, which is the slot the hamburger holds on home.
 
   DATA: the six discovery thumbnails are the real seeded ones, self-hosted under _assets/inspo.
   Salon photos elsewhere in this estate are stock placeholders; salon_photos has 0 rows.
@@ -57,36 +52,66 @@
     color: #0A0A0A; max-width: 430px; margin: 0 auto; }
   .ih *, .ih *::before, .ih *::after { box-sizing: border-box; }
 
-  /* ===== THE HOME CHROME, copied number for number from search-a.html ===== */
-  .cats { display: flex; gap: 12px; overflow-x: auto; overflow-y: hidden; scrollbar-width: none;
-    padding: 12px 16px 14px; }
-  .cats::-webkit-scrollbar { display: none; }
-  .cat { position: relative; isolation: isolate; flex: 0 0 auto; display: inline-flex;
-    align-items: center; gap: 4px; height: 40px; padding: 0 14px; border-radius: 40px;
-    border: 1px solid #FFFFFF; background: transparent;
-    font-size: 14px; font-weight: 400; color: #0A0A0A; white-space: nowrap; }
-  /* The raised and sunken states live on two overlay layers, exactly as the approved home pill
-     does, so the selected state swaps depth without the button fighting its own background. */
-  .cat::before, .cat::after { content: ""; position: absolute; inset: 0; border-radius: inherit;
-    pointer-events: none; z-index: -1; }
-  .cat::before { background: #FFFFFF; box-shadow: rgba(0,0,0,0.07) 0 2px 8px 0; opacity: 1; }
-  .cat::after { background: #F4F4F5; opacity: 0; }
-  .cat[aria-selected="true"]::before { opacity: 0; }
-  .cat[aria-selected="true"]::after { opacity: 1; }
-  .cat[aria-selected="true"] { border-color: rgba(255,255,255,0.5); }
-  .cat img { height: 20px; width: 20px; object-fit: contain; }
+  /* ============ CHROME COPIED VERBATIM FROM search-a.html ============ */
+  .ih {
+    --lift-raised:
+      rgba(0,0,0,0.10) 0 3px 2.5px 0, rgba(0,0,0,0.15) 0 1px 1px 0, rgba(0,0,0,0.15) 0 0.8px 0.4px 0,
+      rgb(255,255,255) 0 1px 1.5px 0 inset, rgba(58,58,58,0.02) 0 10px 15px 0 inset,
+      rgba(255,255,255,0.6) 0 -1.5px 0.8px 0 inset, rgba(0,0,0,0.30) 0 -1.5px 0.75px 0 inset;
+    --lift-sunken:
+      rgb(255,255,255) 0 1px 0.5px 0, rgba(0,0,0,0.15) 0 -0.5px 1px 0, rgba(0,0,0,0.05) 0 -1.2px 0.5px 1px,
+      rgba(0,0,0,0.05) 0 8px 16px 0, rgb(255,255,255) -0.2px -1px 1px 0 inset,
+      rgba(0,0,0,0.20) 0.5px 0.7px 2.5px 0 inset, rgba(0,0,0,0.05) -1px -3px 8px 0 inset,
+      rgba(0,0,0,0.10) 0.5px 2px 4px 0 inset, rgba(0,0,0,0.10) 1px 6px 6px 2px inset;
+    --lift: rgba(0,0,0,0.07) 0 2px 8px 0;
+  }
 
-  .band { padding: 4px 0 8px; }
-  .bandinner { padding: 0 16px; display: flex; align-items: center; }
-  .pill { display: flex; align-items: center; gap: 12px; flex: 1 1 auto; min-width: 0;
+  .sa-catscroll { display: flex; gap: 12px; padding: 12px 16px 14px; overflow-x: auto;
+    overflow-y: hidden; scrollbar-width: none; }
+  .sa-catscroll::-webkit-scrollbar { display: none; }
+
+  .sa-cat {
+    display: inline-flex; flex: 0 0 auto; height: 40px; align-items: center; gap: 4px;
+    padding: 0 14px; border-radius: 40px;
+    font-size: 14px; font-weight: 400; line-height: 1; color: #0A0A0A; cursor: pointer;
+    position: relative;
+    border: 1px solid #FFFFFF;
+    background: transparent;
+    box-shadow: 0 0 0 0 rgba(0,0,0,0);
+    isolation: isolate;
+    transition: box-shadow 220ms cubic-bezier(0.1, 0.9, 0.2, 1),
+                background-color 220ms cubic-bezier(0.1, 0.9, 0.2, 1),
+                transform 220ms cubic-bezier(0.1, 0.9, 0.2, 1);
+  }
+  .sa-cat.is-pressed { transform: scale(0.96); }
+  .sa-cat::before,
+  .sa-cat::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: -1;
+    transition: opacity 220ms cubic-bezier(0.1, 0.9, 0.2, 1);
+  }
+  .sa-cat::before { background: #FFFFFF; box-shadow: var(--lift-raised); opacity: 1; }
+  .sa-cat::after  { background: #F4F4F5; box-shadow: var(--lift-sunken); opacity: 0; }
+  .sa-cat[aria-selected="true"]::before { opacity: 0; }
+  .sa-cat[aria-selected="true"]::after  { opacity: 1; }
+  .sa-cat[aria-selected="true"] { border-color: rgba(255,255,255,0.5); }
+  .sa-caticon { height: 31px; width: 31px; flex: 0 0 auto; object-fit: contain; }
+
+  .sa-band { padding: 4px 0 8px; }
+  .sa-bandinner { padding: 0 16px; display: flex; align-items: center; }
+  .sa-pill { display: flex; align-items: center; gap: 12px; flex: 1 1 auto; min-width: 0;
     height: 66px; padding: 10px 14px; border-radius: 9999px; background: #FFFFFF;
-    border: 1px solid #E4E4E7; box-shadow: rgba(0,0,0,0.07) 0 2px 8px 0; }
-  .pilltext { min-width: 0; flex: 1 1 auto; }
-  .l1 { display: block; font-size: 16px; font-weight: 500; line-height: 20px;
+    border: 1px solid #E4E4E7; box-shadow: var(--lift); }
+  .sa-pillicon { flex: 0 0 auto; color: #6B6B6B; display: flex; }
+  .sa-pilltext { min-width: 0; flex: 1 1 auto; }
+  .sa-l1 { display: block; font-size: 16px; font-weight: 500; line-height: 20px;
     letter-spacing: -0.005em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  /* The heart takes the slot the hamburger held on home: same 44 square, same position, so the
-     two screens read as one bar with one trailing action rather than two different bars. */
-  .slot { display: grid; place-items: center; height: 44px; width: 44px; flex: 0 0 auto;
+  /* The heart takes the slot the hamburger holds on home: same 44 square, same position. */
+  .sa-menu { display: grid; place-items: center; height: 44px; width: 44px; flex: 0 0 auto;
     border: 0; background: transparent; color: #0A0A0A; cursor: pointer; }
 
   /* the real feed, untouched: columns-2 with a 6px gap */
@@ -96,20 +121,22 @@
 </style>
 
 <div class="ih">
-  <div class="cats">
-    <span class="cat" aria-selected="true"><img src="/icons/categories/map.png" alt="" aria-hidden="true">Inspo</span>
-    <span class="cat"><img src="/icons/categories/scissors.png" alt="" aria-hidden="true">Coiffeur</span>
-    <span class="cat"><img src="/icons/categories/clippers.png" alt="" aria-hidden="true">Barber</span>
-    <span class="cat"><img src="/icons/categories/nails.png" alt="" aria-hidden="true">Nails</span>
-    <span class="cat"><img src="/icons/categories/spa.png" alt="" aria-hidden="true">Spa</span>
+  <div class="sa-catscroll" role="tablist" aria-label="Categories">
+    <button class="sa-cat" type="button" role="tab" aria-selected="false">
+      <span class="sa-caticon" aria-hidden="true" style="display:grid;place-items:center"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-house"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>All</button>
+    <button class="sa-cat" type="button" role="tab" aria-selected="false"><img class="sa-caticon" src="/icons/categories/scissors.png" alt="" aria-hidden="true">Coiffeur</button>
+    <button class="sa-cat" type="button" role="tab" aria-selected="false"><img class="sa-caticon" src="/icons/categories/clippers.png" alt="" aria-hidden="true">Barber</button>
+    <button class="sa-cat" type="button" role="tab" aria-selected="false"><img class="sa-caticon" src="/icons/categories/nails.png" alt="" aria-hidden="true">Nails</button>
+    <button class="sa-cat" type="button" role="tab" aria-selected="false"><img class="sa-caticon" src="/icons/categories/spa.png" alt="" aria-hidden="true">Spa</button>
+    <button class="sa-cat" type="button" role="tab" aria-selected="true"><img class="sa-caticon" src="/icons/categories/map.png" alt="" aria-hidden="true">Inspo</button>
   </div>
 
-  <div class="band">
-    <div class="bandinner">
-      <div class="pill" role="button" tabindex="0" aria-label="Search styles">
-        <span aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg></span>
-        <span class="pilltext"><span class="l1">Search styles</span></span>
-        <button class="slot" type="button" aria-label="Saved styles"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></button>
+  <div class="sa-band">
+    <div class="sa-bandinner">
+      <div class="sa-pill" role="button" tabindex="0" aria-label="Search styles">
+        <span class="sa-pillicon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg></span>
+        <span class="sa-pilltext"><span class="sa-l1">Search styles</span></span>
+        <button class="sa-menu" type="button" aria-label="Saved styles"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></button>
       </div>
     </div>
   </div>
@@ -123,3 +150,21 @@
     <img src="/_mockups/_assets/inspo/f5bcaae3-9d70-46a9-ab3c-c2d0c383721c.jpg" alt="">
   </div>
 </div>
+
+<script>
+  // The press motion is JS-held for the same reason it is in search-a.html: iOS never fires
+  // :active on a tap unless the element carries a touch listener, so a CSS-only press window is
+  // zero-length and the motion never renders.
+  document.querySelectorAll(".sa-cat").forEach(function (b) {
+    ["pointerdown", "mousedown", "touchstart"].forEach(function (ev) {
+      b.addEventListener(ev, function () {
+        b.classList.add("is-pressed");
+        setTimeout(function () { b.classList.remove("is-pressed"); }, 220);
+      }, { passive: true });
+    });
+    b.addEventListener("click", function () {
+      document.querySelectorAll(".sa-cat").forEach(function (x) { x.setAttribute("aria-selected", "false"); });
+      b.setAttribute("aria-selected", "true");
+    });
+  });
+</script>
