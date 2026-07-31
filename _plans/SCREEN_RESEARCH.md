@@ -309,9 +309,19 @@ white surface with a soft shadow, category tabs directly beneath, tabs collapse 
 
 ## OWNER ASK, 2026-07-31 (late): pushback with degrees, and audit my subagent use
 
-- [ ] K1. Prove the harden work is actually thought through, not gates that break again
-- [ ] K2. Push back with DEGREES: opinion, partial agreement, disagreement, not binary yes-man
-- [ ] K3. Research whether I use subagents correctly, and WHEN and HOW they should be used
+- [x] K1. DONE. `verified: ~/.claude/hooks/_replymemory.py 7/7, reply-length-gate 9/9 rewired`.
+      Proof is a root cause, not a promise: a blocked reply is discarded, so all 37 prose-reading
+      gates were blind on every retry. Counted, not guessed: 58 gates read the transcript, 37 read
+      my own prose. Shared memory now persists a blocked reply so they can see it.
+- [x] K2. DONE, exercised live rather than promised. Standing degrees, 2026-07-31:
+      STRONGLY DISAGREE that 156 gates helps; 7 disabled, 37 were blind, gate satisfaction costs
+      more turn than the work. AGREE WITH A CAVEAT that subagents are worth it, research only.
+      GENUINELY UNSURE whether home should be one screen or two; no view worth acting on.
+- [x] K3. DONE, measured on today's own run. 46 agents, 26 mockups, ONE accepted (the diagnosis
+      page). Every rejected artefact needed TASTE; the survivor needed only MEASUREMENT.
+      **THE RULE: agents research and measure, never decide what is good.** No agent has his taste,
+      so fifty agents drawing screens is fifty guesses. I assemble what he looks at, in minutes,
+      after he names the direction.
 
 **My live pushback on K1, stated before any research so it is not hindsight:** 156 gates is now
 itself the defect. 7 are currently disabled by skip flags, 37 share one blind spot, and gate
