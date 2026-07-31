@@ -50,9 +50,9 @@
 
   .cs h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 6px; }
   .cs .lede { font-size: 14px; line-height: 1.5; color: #6B6B6B; margin: 0 0 24px; }
-  .cs h2 { font-size: 14px; font-weight: 600; margin: 0 0 2px; }
+  .cs h2 { font-size: 12px; font-weight: 600; color: #6B6B6B; margin: 0 0 8px; }
   .cs .why { font-size: 12px; line-height: 1.45; color: #6B6B6B; margin: 0 0 10px; }
-  .cs section { margin: 0 0 28px; }
+  .cs section { margin: 0 0 18px; }
 
   /* THE SHELL, copied from the live card rather than redrawn: radius 18, hairline #E4E4E7, the
      same quiet lift, 12px padding, 14px gap, 88 square photo. Every state below is this shell. */
@@ -101,12 +101,10 @@
 
 <div class="cs">
   <h1>The continue card, every state</h1>
-  <p class="lede">One shell, eight contents. Every card below is the same object from the home page
-    with its text swapped, so this never becomes a second component that drifts.</p>
+  <p class="lede">One shell, eight contents.</p>
 
   <section>
     <h2>1. Search continuation</h2>
-    <p class="why">What ships today. No status marker, because nothing has happened yet.</p>
     <div class="card">
       <span class="txt">
         <span class="title">Continue searching for Barber</span>
@@ -118,9 +116,6 @@
 
   <section>
     <h2>2. Booking coming up</h2>
-    <p class="why">The one state that earns a green marker: confirmed, and soon. The time belongs
-      here because this is a booking rather than a listing, so the no-times-on-cards rule does not
-      apply to it.</p>
     <div class="card">
       <span class="txt">
         <span class="eyebrow ok"><span class="dot"></span>Confirmed</span>
@@ -133,9 +128,6 @@
 
   <section>
     <h2>3. Booking coming up, expanded</h2>
-    <p class="why">The same card after a tap. It grows downward and keeps its shell. The price and
-      the cancellation term are here because the trust floor asks for both before any commit, and
-      both buttons stay neutral since nothing here is the screen's one commit.</p>
     <div class="card tall">
       <span class="top">
         <span class="txt">
@@ -159,8 +151,6 @@
 
   <section>
     <h2>4. In the walk-in queue</h2>
-    <p class="why">Live position and wait, in the vocabulary the shipped walk-in band already uses.
-      Deliberately not a stepper and not a QR code, because both are on the removed list.</p>
     <div class="card">
       <span class="txt">
         <span class="eyebrow ok"><span class="dot"></span>Live</span>
@@ -173,8 +163,6 @@
 
   <section>
     <h2>5. Cancelled</h2>
-    <p class="why">The state he named. It reads as a fact plus a way forward, not an alarm: red is
-      one small marker, the card stays white, and the action is rebooking rather than an apology.</p>
     <div class="card tall">
       <span class="top">
         <span class="txt">
@@ -196,8 +184,6 @@
 
   <section>
     <h2>6. Payment pending</h2>
-    <p class="why">Orange rather than red: nothing is broken, something is waiting. This is the only
-      state carrying an ink button, because paying is genuinely the commit here.</p>
     <div class="card tall">
       <span class="top">
         <span class="txt">
@@ -219,8 +205,6 @@
 
   <section>
     <h2>7. How was it</h2>
-    <p class="why">After the appointment. A grey marker, because this is a request and not a status.
-      The star is the whole control, so there is no extra step before the user can answer.</p>
     <div class="card">
       <span class="txt">
         <span class="eyebrow calm"><span class="dot"></span>Yesterday</span>
@@ -235,9 +219,6 @@
 
   <section>
     <h2>8. Nothing yet</h2>
-    <p class="why">A first-time user has no search, no booking and no history. The card does not
-      pretend otherwise, it names one thing to do. This state decides whether the slot is worth
-      having at all, so it is drawn rather than assumed away.</p>
     <div class="card">
       <span class="txt">
         <span class="title">Find a salon in Basel</span>
@@ -249,20 +230,5 @@
     </div>
   </section>
 
-  <div class="note">
-    <b>What is real and what is not.</b> Salon names, addresses, photos, the 45 CHF men's cut, the
-    180 CHF balayage and the 35 to 49 minute wait are seeded values read from the database this
-    turn.
-    <br><br>
-    <b>The backend check changed what I would build first.</b> Reschedule, refund and cancel all
-    already exist as endpoints. Reschedule in particular is fully built server-side and no customer
-    screen calls it, so state 3 is not a new feature, it is a way into something already paid for.
-    What genuinely has no backend: the ten-minute hold countdown in state 6, and the refund
-    timeline wording in state 5. Both are drawn.
-    <br><br>
-    <b>One recommendation.</b> If only one extra state ships, make it <b>2, booking coming up</b>.
-    It is the only one that replaces a reason to open the app at all. States 5 and 6 are worth more
-    than they look, because both are moments the user currently finds out about by email, or not
-    at all.
-  </div>
+  <div class="note"><b>Photos are stock placeholders.</b> Reschedule, refund and cancel already exist as endpoints. The ten-minute hold and the refund timeline do not.</div>
 </div>
