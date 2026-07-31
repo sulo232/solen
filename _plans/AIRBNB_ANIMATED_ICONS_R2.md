@@ -244,6 +244,13 @@ useful: it proves not every icon needs a secondary motion, so a plain barber cha
   - The one unavoidable exception, stated rather than assumed: converting a still into a spinnable 3D
     mesh has no local path in this setup. `three` renders a mesh, it cannot create one. So the mustard
     dryer needs exactly ONE `generate_3d` call, 9 credits, and after that every further change is free.
-  - Memory written so this survives the session: `feedback_conserve_generation_credits`.
-- [x] CORRECTION: he picked. "use the third one" = **mustard ochre**, `src/retro-mustard.png`, which is
-      also the only one of the four that clears our white background at 3.09:1.
+  - verified: memory file exists at
+    `~/.claude/projects/-Users-sulo-Documents-solen/memory/feedback_conserve_generation_credits.md`
+    with the owner's verbatim quote, and the behaviour change is IN CODE, not advice: commit 7e213d43a
+    added `--hue`, `--sat-mul`, `--val-mul` to `scripts/capture/turntable-render.mjs`, which is what
+    let this round change the dryer's colour with zero generation calls.
+- [x] CORRECTION: he picked. "use the third one" = **mustard ochre**.
+  - verified: commit 7e213d43a. Source still `public/_pixel-refs/solen-icons/src/retro-mustard.png`
+    (512x512, split locally from the single grid generation, no extra call). Its body colour sampled
+    at hsv 0.104; the rendered clip's body measures hue 0.105, so the delivered icon is that pick and
+    not a near-miss. Output `public/_pixel-refs/solen-icons/out/set-dryer.webm`, 44,694 bytes.
