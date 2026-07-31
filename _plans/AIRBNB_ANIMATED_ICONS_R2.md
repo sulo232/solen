@@ -333,7 +333,7 @@ recurring problem across every round. Zero credits again.
     dryer**.
 - [x] U3. Chair colour, warmer retro brown-orange, now with shine.
   - verified: `--hue 0.055 --sat-mul 0.78 --val-mul 0.82 --gloss 0.60`, `out/set-barber.webm`.
-- [x] U4. RESOLVED in round 7.
+- [x] U4. RESOLVED in round 7, verified: commit 8c85cc46d, refined further in aec53de41.
   - verified: commit 8c85cc46d. `grep -c SpriteMaterial scripts/capture/turntable-render.mjs` returns
     0, so the particle system that produced the rejected smoke is gone from the file; `TubeGeometry`
     and `CatmullRomCurve3` are present in its place. The diagnosis written below was right and the
