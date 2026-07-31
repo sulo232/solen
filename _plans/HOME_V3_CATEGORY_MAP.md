@@ -66,3 +66,26 @@ mockup rule, with a recommendation. Not one synthesized answer.
 - **Hard constraint from the graveyard:** "map floating popup store preview over map" is REMOVED
   (owner 2026-07-02, "invented UI, the reference uses the BOTTOM SHEET"). A floating preview card
   over the map should not come back; a floating button is a different thing.
+
+## IMPLEMENTATION PHASE (owner lifted the mockups-only hold, 2026-07-31)
+
+Owner verbatim: "start implementing everything to the actual home page, like, everything, that we
+made. But don't touch the actual components in there [Inspo] because we already have a system.
+Your purpose is just UI changes. Nothing else. And integrate/wire everything as a loop."
+
+- [x] **I0. Remove the white pill border** (the partial white line). verified: computed borderWidth
+      0px on both selected and unselected states; graveyard filed (commit 29c11b15e).
+- [x] **I1. Category pill treatment onto the real Header.tsx.** verified BY ME on /de/coiffeur at
+      390x844, not on the subagent's report: 4 pills, h40, radius 40px, padding 0 14, gap 4,
+      14px/400, border 0px, background transparent, position relative; 2 overlay spans per pill,
+      raised 7 shadow layers, sunken 9; icon 31x31; press fires (transform none -> matrix on
+      pointerdown, back after). commit 7a7bac321.
+- [ ] I2. Search bar chrome onto the real header (single centred label, no invented date line).
+- [ ] I3. Home rails: Top on Solen / Nearby / Available this week / per-category Top rows.
+- [ ] I4. Recently viewed row.
+- [ ] I5. Browse-by-looks 4-across picture row.
+- [ ] I6. Walk-in band placement inside the Barber category page.
+- [ ] I7. Continue card + its six states.
+- [ ] I8. Inspo chrome, UI ONLY. Do not touch DiscoverPageContent's logic, ranking or data.
+
+Each lands as its own commit, verified on the real route at 390x844 before the next starts.
