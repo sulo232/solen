@@ -120,3 +120,37 @@ expect for the claim that this reflects the underlying camera move.
 - Mobile web at 390 px was not captured.
 - The LottieFiles MCP returned HTTP 403 on every call this session, so no cross-check against published
   Lottie files was possible.
+
+---
+
+## Solen icon set: LOCKED values (owner-approved 2026-07-31)
+
+The owner approved these by name. Do not re-open them without him saying so.
+
+| element | value | how it was set |
+|---|---|---|
+| **Barber chair upholstery** | **`#D76537`**, hsv(0.048, 0.742, 0.843) | Owner verbatim: "I like the orange, the color exactly. The color I like exactly, the orange brownish type, the color is perfect to write it down." 62% of the object's visible pixels. |
+| Barber chair frame | `#A8A8A8`, a flat mid grey, sat 0.000 | Owner: the cream "is not really right... make it gray, actually". Was `#FFFAF6` at value 1.000. |
+| Blow dryer body | `#EBC23D`, hsv(0.128, 0.740, 0.922) | Matched to the yellow swatch he pasted, around `#F2D24F`. |
+| Clip length | 2500 ms, 75 frames at 30fps, 300ms still in / 600ms still out | Owner asked for the turn to slow down from the original 1700ms. |
+| Barber motion | plain 360, no tilt, no bob | Owner: "just make it a normal straight 360 instead of this going up and down thingy on the barber". |
+| Dryer motion | 360 plus an 11 degree tilt and a 0.035 bob | Owner: "on the blow dry, I like it". |
+| Shine | `--gloss` 0.85 chair, 0.55 dryer; roughly 33% and 31% highlight pixels | Owner named matte as the recurring problem across every round. |
+| Air / puff | **NOT SHIPPED.** See the note below. | |
+
+All colour figures are measured on frame 1 of the rendered clip at 180x162, with transparent pixels
+excluded, so they describe the object rather than the canvas.
+
+### The air: four attempts, still wrong, currently removed
+
+Attempted as soft alpha sprites (read as smoke, rejected), then as 3D tube ribbons (right technique,
+owner drew it), then faded by screen-facing so it stopped sweeping the frame, then with the jet
+direction flipped after measuring that the emitter projected to screen x=151 while the nozzle mouth
+measured x=41. That flip put it on the mouth at rest but the owner then saw it leaving from the BACK
+during the turn, which the flip caused. It is removed from the shipped clip rather than shipped wrong.
+
+Next attempt should not tweak the direction again. The emitter is derived from the mesh's bounding-box
+extreme along the jet axis, and a bounding box has no idea which end is the nozzle, so on a shape that
+is long in both directions it can only ever be right at one angle. The fix is to find the nozzle
+geometrically (the small circular opening) or to author the ribbons as part of the source image so
+they come through the mesh already attached.

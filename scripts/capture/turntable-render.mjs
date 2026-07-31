@@ -30,7 +30,7 @@ if (!glbPath || !outdirArg) {
   console.error("Usage: node scripts/capture/turntable-render.mjs <model.glb> <outdir> [--frames 51] [--fps 30] [--size 180x162] [--hold-in 6] [--hold-out 12] [--turns 1]");
   process.exit(1);
 }
-const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7, hueShift: null, satMul: 1, valMul: 1, tilt: 0, bob: 0, gloss: 0 };
+const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7, hueShift: null, satMul: 1, valMul: 1, tilt: 0, bob: 0, gloss: 0, neutralVal: null };
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
   // ES modules are blocked over file:// by CORS (origin null), so when the outdir sits under
@@ -74,6 +74,10 @@ for (let i = 0; i < argv.length; i++) {
   // read as objects under a light rather than as flat colour. Generated meshes come back almost fully
   // rough, so without this every render looks washed out no matter what the colour is.
   else if (a === "--gloss") opt.gloss = Number(argv[++i]);          // 0 = leave as authored, 1 = glossy
+  // The counterpart to --hue. --hue only moves pixels ABOVE the saturation floor, which is the
+  // upholstery; this moves the ones BELOW it, which is the frame. Lets a cream frame become grey
+  // without touching an approved colour sitting right next to it.
+  else if (a === "--neutral-val") opt.neutralVal = Number(argv[++i]);  // target value 0..1 for the frame
 }
 const m = /^(\d+)x(\d+)$/.exec(opt.size);
 if (!m) { console.error(`bad --size "${opt.size}"`); process.exit(1); }
@@ -309,6 +313,7 @@ window.__SAT = ${opt.sat};
 window.__HUE = ${opt.hueShift === null ? 'null' : opt.hueShift};
 window.__SATMUL = ${opt.satMul};
 window.__VALMUL = ${opt.valMul};
+window.__NEUTVAL = ${opt.neutralVal === null ? 'null' : opt.neutralVal};
 const TILT = ${opt.tilt} * Math.PI / 180;
 const BOB = ${opt.bob};
 window.__renderAt = (rad, puffT, t) => {
@@ -320,7 +325,7 @@ window.__renderAt = (rad, puffT, t) => {
   pivot.position.y = BOB * Math.sin(phase * 2);
   setPuff(puffT === undefined ? 0 : puffT);
   renderer.render(scene, camera);
-  if (window.__SAT === 1 && window.__HUE === null) return renderer.domElement.toDataURL("image/png");
+  if (window.__SAT === 1 && window.__HUE === null && window.__NEUTVAL === null) return renderer.domElement.toDataURL("image/png");
   // Lift saturation on the colour channels only. Alpha is copied through untouched, so the
   // transparent edge never gets a halo.
   const c = renderer.domElement, g = document.createElement("canvas");
@@ -335,6 +340,13 @@ window.__renderAt = (rad, puffT, t) => {
       const r0 = d[i] / 255, g0 = d[i + 1] / 255, b0 = d[i + 2] / 255;
       const mx = Math.max(r0, g0, b0), mn = Math.min(r0, g0, b0), df = mx - mn;
       const sat = mx === 0 ? 0 : df / mx;
+      if (sat < 0.22 && window.__NEUTVAL !== null) {
+        // drive the frame toward a flat grey at the target value, keeping its own shading relief so
+        // it still reads as a lit 3D object rather than as a paper cut-out
+        const rel = mx > 0 ? mx : 0;
+        const V = Math.max(0, Math.min(1, window.__NEUTVAL * (0.72 + 0.34 * rel))) * 255;
+        d[i] = V; d[i + 1] = V; d[i + 2] = V;
+      }
       if (sat >= 0.22) {
         const S = Math.max(0, Math.min(1, sat * SM)), V = Math.max(0, Math.min(1, mx * VM));
         const h6 = HUE * 6, ii = Math.floor(h6), f = h6 - ii;
