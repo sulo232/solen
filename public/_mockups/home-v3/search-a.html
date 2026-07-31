@@ -1111,48 +1111,63 @@
   };
 })();
 
-  // ===== SCROLL DIAGNOSTIC, ?debug=1 ONLY ==================================
-  // Three rounds of "I cannot scroll" and three wrong fixes, because every test I can run
-  // (scrollTo, a wheel gesture, computed styles) passes on my machine. His phone is the only
-  // place the bug exists, so this reads HIS device and puts the numbers on HIS screen.
-  // Triggered by the HASH (#debug), not a query string: this static server 301s '/search-a.html'
-  // to '/search-a' and DROPS the query in the process, so ?debug=1 never survived the redirect.
-  // Renders nothing without it, so the mockup is unchanged otherwise.
+  // ===== SCROLL DIAGNOSTIC, #debug ONLY ===================================
+  // v2. v1 only listened for TOUCH, and it came back "0 starts, 0 moves", which cannot
+  // distinguish "nothing reached the page" from "he scrolled with a trackpad and I was not
+  // listening for that". Same mistake shape as the touch-action bug: I instrumented the input I
+  // assumed he was using. This listens for EVERY way a page can be scrolled and records the
+  // furthest the page ever got, so a scroll that happens and snaps back still shows up.
   if (/debug/.test(location.hash) || /[?&]debug=1/.test(location.search)) {
     var dbg = document.createElement("div");
     dbg.setAttribute("style",
-      "position:fixed;left:8px;right:8px;bottom:8px;z-index:99999;background:#0A0A0A;color:#fff;" +
-      "font:12px/1.45 ui-monospace,Menlo,monospace;padding:10px 12px;border-radius:12px;" +
-      "white-space:pre-wrap;pointer-events:none;opacity:0.94");
+      "position:fixed;left:6px;right:6px;top:6px;z-index:99999;background:#0A0A0A;color:#fff;" +
+      "font:11px/1.4 ui-monospace,Menlo,monospace;padding:8px 10px;border-radius:10px;" +
+      "white-space:pre-wrap;pointer-events:none;opacity:0.95");
     document.body.appendChild(dbg);
-    var touches = 0, moves = 0, lastDY = 0, maxDY = 0, defaultPrevented = "no";
-    document.addEventListener("touchstart", function () { touches++; }, { passive: true });
-    document.addEventListener("touchmove", function (e) {
-      moves++;
-      if (e.touches && e.touches.length) {
-        lastDY = Math.round(e.touches[0].clientY);
-        maxDY = Math.max(maxDY, Math.abs(lastDY));
-      }
-      if (e.defaultPrevented) defaultPrevented = "YES <- something is cancelling the swipe";
-    }, { passive: true });
+
+    var ev = { touchstart: 0, touchmove: 0, wheel: 0, pointerdown: 0, pointermove: 0, scroll: 0 };
+    var cancelled = "no";
+    var maxY = 0;
+    Object.keys(ev).forEach(function (name) {
+      window.addEventListener(name, function (e) {
+        ev[name]++;
+        if (e.cancelable && e.defaultPrevented) cancelled = "YES on " + name;
+        if (window.scrollY > maxY) maxY = Math.round(window.scrollY);
+      }, { passive: true, capture: true });
+    });
+
+    // What is actually under the finger at the middle of the screen? If it is not part of the
+    // page, something is covering it, and THAT is the whole bug.
+    function topEl() {
+      var e = document.elementFromPoint(window.innerWidth / 2, window.innerHeight / 2);
+      if (!e) return "nothing";
+      return (e.tagName.toLowerCase() + (e.className && typeof e.className === "string"
+        ? "." + e.className.split(" ")[0] : ""));
+    }
+
     function paint() {
       var de = document.documentElement;
       var maxScroll = de.scrollHeight - window.innerHeight;
+      var anyInput = ev.touchstart + ev.wheel + ev.pointerdown;
       dbg.textContent =
-        "viewport   " + window.innerWidth + " x " + window.innerHeight +
-        "  dpr " + (window.devicePixelRatio || 1) + "\n" +
-        "page       " + de.scrollHeight + " tall, so " + maxScroll + "px of scroll available\n" +
-        "scrolled   " + Math.round(window.scrollY) + "\n" +
-        "touches    " + touches + " starts, " + moves + " moves, last finger Y " + lastDY + "\n" +
-        "cancelled  " + defaultPrevented + "\n" +
-        "verdict    " +
-          (maxScroll <= 0 ? "PAGE IS ONE SCREEN, nothing to scroll"
-           : touches === 0 ? "swipe up and down now, this line will change"
-           : moves === 0 ? "finger lands but never moves: SOMETHING IS ON TOP OF THE PAGE"
-           : window.scrollY === 0 && moves > 8 ? "swipes arrive, page refuses to move"
-           : "scrolling works here");
+        "viewport  " + window.innerWidth + "x" + window.innerHeight +
+          "  dpr" + (window.devicePixelRatio || 1) +
+          "  touch:" + ("ontouchstart" in window ? "yes" : "NO") + "\n" +
+        "page      " + de.scrollHeight + " tall, " + maxScroll + "px scrollable\n" +
+        "scrollY   now " + Math.round(window.scrollY) + ", furthest ever " + maxY + "\n" +
+        "input     touch " + ev.touchstart + "/" + ev.touchmove +
+          "  wheel " + ev.wheel + "  pointer " + ev.pointerdown + "/" + ev.pointermove + "\n" +
+        "scrollEv  " + ev.scroll + "   cancelled " + cancelled + "\n" +
+        "under you " + topEl() + "\n" +
+        "VERDICT   " +
+          (maxScroll <= 0 ? "page is one screen, nothing to scroll"
+           : anyInput === 0 ? "swipe now. if this stays 0 after swiping, NOTHING reaches the page"
+           : maxY > 0 ? "the page DOES scroll (reached " + maxY + ")"
+           : cancelled !== "no" ? "input arrives but is being CANCELLED"
+           : "input arrives, page refuses to move");
       requestAnimationFrame(paint);
     }
     paint();
   }
+
 </script>
