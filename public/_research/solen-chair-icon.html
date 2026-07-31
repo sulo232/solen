@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<!--
+  REFERENCE-BUILD COMPARISON, not a product mockup. It changes no Solen surface and draws no Solen
+  screen, so it lives in public/_research/ rather than public/_mockups/.
+
+  Grounded-in: _design-system/references/airbnb--animated-icons.md
+  Grounded-in: public/_pixel-refs/solen-icons/out/chair-pop-twirl.webm
+  Grounded-in: public/_pixel-refs/airbnb/icons-motion/webm/house-twirl.webm
+  Reference-checked: public/_pixel-refs/airbnb/icons-motion/frame-metrics.json
+  Reference-checked: public/_pixel-refs/solen-icons/chair-pop-twirl-sheet.png
+
+  Exists-check: npm run exists "animated icon" -> 0 hits, Solen has no animated-icon system.
+  Depicts: the Airbnb clips -> public/_pixel-refs/airbnb/icons-motion/webm/*.webm (captured 2026-07-31)
+  Depicts: the Solen clips -> public/_pixel-refs/solen-icons/out/*.webm (built 2026-07-31 by
+           scripts/capture/turntable-render.mjs + scripts/capture/encode-alpha-icon.sh)
+  Depicts: the frame strips -> public/_pixel-refs/solen-icons/*-sheet.png
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Solen barber chair icon, first build</title>
+<style>
+  :root { --ink:#0A0A0A; --ink-2:#5A5A5F; --ink-3:#9CA3AF; --bg:#FFFFFF; --sunken:#F4F4F5; --line:#E4E4E7; --accent:#276EF1; }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif; font-size:14px; line-height:1.55; }
+  .wrap { max-width:1000px; margin:0 auto; padding:36px 20px 72px; }
+  h1 { font-family:"Inter Tight",Inter,sans-serif; font-size:28px; line-height:1.15; font-weight:600; margin:0 0 12px; letter-spacing:-0.02em; }
+  h2 { font-family:"Inter Tight",Inter,sans-serif; font-size:18px; font-weight:600; margin:0 0 12px; }
+  p { margin:0 0 12px; max-width:72ch; }
+  .sub { color:var(--ink-2); }
+  .lead { font-size:18px; line-height:1.5; max-width:64ch; }
+  .meta { font-size:12px; color:var(--ink-2); }
+  section { margin:0 0 40px; }
+  hr { border:0; border-top:1px solid var(--line); margin:32px 0; }
+  .tray { background:var(--sunken); border-radius:24px; padding:24px; }
+  .row { display:flex; flex-wrap:wrap; gap:12px; }
+  .cell { background:#FFFFFF; border-radius:16px; padding:16px 14px 12px; width:190px; display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer; }
+  .cell video { width:112px; height:100px; display:block; }
+  .cell .nm { font-size:14px; font-weight:600; text-align:center; }
+  .cell .dur { font-size:12px; color:var(--ink-3); text-align:center; font-variant-numeric:tabular-nums; }
+  table { border-collapse:collapse; width:100%; font-size:12px; font-variant-numeric:tabular-nums; }
+  th,td { text-align:left; padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--ink-2); font-weight:400; }
+  .tbl-wrap { overflow-x:auto; }
+  .scroll { overflow-x:auto; border:1px solid var(--line); border-radius:16px; }
+  .scroll img { display:block; min-width:1560px; width:1560px; }
+  .cap { font-size:12px; color:var(--ink-2); margin:0 0 6px; }
+  .cap b { color:var(--ink); font-weight:600; }
+  code { font-family:"JetBrains Mono",ui-monospace,monospace; font-size:12px; background:var(--sunken); padding:1px 5px; border-radius:6px; }
+  ul { margin:0 0 12px; padding-left:18px; max-width:72ch; }
+  li { margin:0 0 6px; }
+  .note { background:var(--sunken); border-radius:16px; padding:16px 18px; max-width:72ch; }
+  a { color:var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta">Build 1, 31 July 2026</p>
+  <h1>The Solen barber chair, next to the real Airbnb icons</h1>
+  <p class="lead sub">All of these are playing for real. The three on the left are Airbnb's own files. The two on the right were built here today, to the numbers measured off theirs.</p>
+
+  <section>
+    <h2>Click any of them to replay</h2>
+    <div class="tray"><div class="row" id="stage"></div></div>
+    <p class="meta" style="margin-top:12px">Every clip plays once and stops on its last frame, which is the icon at rest.</p>
+  </section>
+
+  <section>
+    <h2>Does it match the reference</h2>
+    <div class="tbl-wrap">
+    <table>
+      <tr><th style="width:210px">Measured</th><th>Airbnb</th><th>Solen chair</th></tr>
+      <tr><td>Format</td><td>VP9 WebM, <code>alpha_mode=1</code></td><td>VP9 WebM, <code>alpha_mode=1</code></td></tr>
+      <tr><td>Size</td><td>180 x 162</td><td>180 x 162</td></tr>
+      <tr><td>Frame rate and length</td><td>30fps, 1.700 s, 51 frames</td><td>30fps, 1.700 s, 51 frames</td></tr>
+      <tr><td>Still hold at the start</td><td>200 ms</td><td>200 ms</td></tr>
+      <tr><td>Still hold at the end</td><td>433 ms</td><td>400 ms</td></tr>
+      <tr><td>Last frame equals the first</td><td>yes</td><td>yes, byte identical</td></tr>
+      <tr><td>File size</td><td>37 to 124 KB</td><td>62 KB</td></tr>
+      <tr><td>Easing</td><td>near linear, soft ends</td><td>near linear, soft ends</td></tr>
+      <tr><td>Safari HEVC fallback</td><td>ships one</td><td><strong>not built.</strong> This Mac's encoder refuses the alpha session, so Safari has no file yet</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Colour, before and after your note</h2>
+    <p>You said the first one read dry and muted. Measured across the visible pixels, average colour saturation went from <strong>0.33 to 0.66</strong>, so it is exactly twice as saturated now, and still short of neon.</p>
+    <div class="row" id="compare"></div>
+  </section>
+
+  <section>
+    <h2>Every frame of the turn</h2>
+    <p class="cap"><b>chair-pop-twirl</b> 1.700 s, every 4th frame</p>
+    <div class="scroll"><img src="/_pixel-refs/solen-icons/chair-pop-twirl-sheet.png" alt="Solen chair turn, frame strip"></div>
+  </section>
+
+  <section>
+    <h2>About the built in animate feature</h2>
+    <div class="note">
+      <p style="margin:0">It exists, but it cannot make this turn. That feature rigs a humanoid skeleton and plays a canned body clip from a 678 action library, things like walk, idle, wave, dance. Our subject is a person fused to a chair, which is not a biped, and a search of the library for turn, rotate or spin returned nothing usable. The spin here comes from a camera moving around the object, which is also why the last frame lands exactly on the first. A body animation could still be useful later for a different icon, for example a stylist gesture.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>What is honestly still rough</h2>
+    <ul>
+      <li>The mesh is reconstructed from one image, so the back of the chair is guessed and reads softer than the front. Feeding 2 to 4 views would fix it.</li>
+      <li>No Safari file yet, so today this would only play in Chrome and Firefox.</li>
+      <li>This is one icon. A set needs the same treatment for the other categories, and they should share a palette and a camera height.</li>
+      <li>Nothing is wired into any Solen screen. That is a separate step and it goes through the normal mockup approval first.</li>
+    </ul>
+  </section>
+
+</div>
+<script>
+const A = "/_pixel-refs/airbnb/icons-motion/webm";
+const S = "/_pixel-refs/solen-icons/out";
+const CLIPS = [
+  { src: A + "/house-twirl.webm", label: "Airbnb, homes", dur: "1.700 s" },
+  { src: A + "/balloon-twirl.webm", label: "Airbnb, experiences", dur: "1.700 s" },
+  { src: A + "/consierge-twirl.webm", label: "Airbnb, services", dur: "1.700 s" },
+  { src: S + "/chair-pop-twirl.webm", label: "Solen, barber chair", dur: "1.700 s" },
+  { src: S + "/chair-twirl.webm", label: "Solen, first muted try", dur: "1.700 s" }
+];
+const stage = document.getElementById("stage");
+CLIPS.forEach(function (c) {
+  const d = document.createElement("div");
+  d.className = "cell";
+  d.innerHTML = '<video muted playsinline preload="auto" src="' + c.src + '"></video>'
+    + '<div class="nm">' + c.label + '</div><div class="dur">' + c.dur + '</div>';
+  const v = d.querySelector("video");
+  d.addEventListener("click", function () { v.currentTime = 0; v.play(); });
+  stage.appendChild(d);
+});
+window.addEventListener("load", function () {
+  Array.prototype.slice.call(stage.querySelectorAll("video")).forEach(function (v, i) {
+    setTimeout(function () { v.play(); }, i * 150);
+  });
+});
+const cmp = document.getElementById("compare");
+[["chair-twirl", "muted, saturation 0.33"], ["chair-pop-twirl", "now, saturation 0.66"]].forEach(function (p) {
+  const d = document.createElement("div");
+  d.className = "cell";
+  d.style.background = "var(--sunken)";
+  d.innerHTML = '<video muted playsinline preload="auto" loop src="' + S + "/" + p[0] + '.webm"></video>'
+    + '<div class="nm">' + p[1] + '</div>';
+  const v = d.querySelector("video");
+  d.addEventListener("click", function () { v.currentTime = 0; v.play(); });
+  cmp.appendChild(d);
+});
+</script>
+</body>
+</html>
