@@ -271,8 +271,14 @@
      --lift. Measured: the selected pill had 9 shadow layers, the filter pill 1, so the one pill he
      looks at most was the odd one out. It now uses the same --lift as everything else, and the
      gray fill alone says selected, which is what the design contract locks anyway. */
+  /* THE TWO LINES. Owner: "once it's pressed it looks like it has two lines."
+     Measured: their tab carries border 1px solid rgba(255,255,255,0.5), a translucent WHITE edge
+     that disappears into the fill and lets the inset shadow draw the only visible boundary. Mine
+     kept the grey #E4E4E7 hairline underneath the 9-layer sunken shadow, so the grey line and the
+     dark inset edge sat next to each other and read as two rings. Their border, exactly. */
   .sa-cat[aria-selected="true"] {
     background: #F4F4F5;
+    border-color: rgba(255,255,255,0.5);
     box-shadow: var(--lift-sunken);
   }
   .sa-caticon { height: 31px; width: 31px; flex: 0 0 auto; object-fit: contain; }
