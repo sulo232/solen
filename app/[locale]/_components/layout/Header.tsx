@@ -885,12 +885,36 @@ export default function Header({ locale }: { locale: string }) {
                     role="tab"
                     aria-selected={isActive}
                     className={cn(
-                      "inline-flex h-10 shrink-0 items-center gap-2 rounded-full border px-4",
-                      "font-body text-[15px] leading-none transition-colors duration-150 ease-glide",
+                      // mockup-ok: public/_mockups/home-v3/full-a.html, owner 2026-07-31 "you can
+                      // actually kinda start implementing design on the real home page, just the
+                      // search bar and the pill".
+                      // Border dropped because the pill now carries elevation, and the design
+                      // contract's shadow row says a control carrying elevation drops its border,
+                      // never both. font-normal is set here so BOTH states share one weight.
+                      "inline-flex h-10 shrink-0 items-center gap-2 rounded-full px-4", // mockup-ok
+                      "font-body text-[15px] font-normal leading-none", // mockup-ok
+                      "transition-[box-shadow,background-color] duration-200 ease-glide", // mockup-ok
                       "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
-                      isActive
-                        ? "border-s-bg-sunken bg-s-bg-sunken font-semibold text-s-ink"
-                        : "border-s-border bg-white font-medium text-s-ink",
+                      // NO WEIGHT CHANGE ON SELECT. Owner 2026-07-31: "I don't really like how the
+                      // text gets bold once you click it, it looks so weird and off. Don't never
+                      // do that shit ever again." Measured on airbnb.ch at vw=390 the same day:
+                      // their SELECTED tab renders font-weight 400, identical to its unselected
+                      // siblings. They never change weight on selection. So font-semibold leaves
+                      // the active branch; the sunken fill is the whole selection signal, which is
+                      // what the design contract locked anyway (selected = bg-s-bg-sunken +
+                      // text-s-ink). The contract's trailing "+ semibold" clause is the part he
+                      // rejected, and this line is the dated supersession of it.
+                      //
+                      // DEPTH, copied verbatim off airbnb.ch at vw=390. Their shadow does not live
+                      // on the pill: it lives on two absolutely-positioned overlay spans inside it
+                      // that cross-fade by opacity between a raised and a sunken state. Reading
+                      // the pill element alone comes back empty, which is exactly how I got this
+                      // wrong twice and filled the gap with an invented 2-layer shadow he
+                      // rejected. Raised: 7 layers, 3 inset. Sunken: 9 layers, 5 inset. The inset
+                      // layers produce the moulded edge a plain drop shadow cannot fake.
+                      isActive // mockup-ok
+                        ? "bg-s-bg-sunken text-s-ink shadow-[rgb(255,255,255)_0_1px_0.5px_0,rgba(0,0,0,0.15)_0_-0.5px_1px_0,rgba(0,0,0,0.05)_0_-1.2px_0.5px_1px,rgba(0,0,0,0.05)_0_8px_16px_0,rgb(255,255,255)_-0.2px_-1px_1px_0_inset,rgba(0,0,0,0.2)_0.5px_0.7px_2.5px_0_inset,rgba(0,0,0,0.05)_-1px_-3px_8px_0_inset,rgba(0,0,0,0.1)_0.5px_2px_4px_0_inset,rgba(0,0,0,0.1)_1px_6px_6px_2px_inset]" // mockup-ok
+                        : "bg-white text-s-ink shadow-[rgba(0,0,0,0.1)_0_3px_2.5px_0,rgba(0,0,0,0.15)_0_1px_1px_0,rgba(0,0,0,0.15)_0_0.8px_0.4px_0,rgb(255,255,255)_0_1px_1.5px_0_inset,rgba(58,58,58,0.02)_0_10px_15px_0_inset,rgba(255,255,255,0.6)_0_-1.5px_0.8px_0_inset,rgba(0,0,0,0.3)_0_-1.5px_0.75px_0_inset]", // mockup-ok
                     )}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
