@@ -779,13 +779,16 @@ was never looked at.
 
 - [x] Every frame measured, verified: commit below. Frame-to-frame change computed on ALL frames of
       both clips, plus a stutter test (a frame whose jump exceeds 2.2x both its neighbours).
-- [x] The lag had a measurable cause and it was not a stutter. At 30fps there were ZERO stutter frames,
+- [x] The lag's cause, verified: commit abbbf5bd1. It was not a stutter. At 30fps there were ZERO
+      stutter frames,
       so nothing was hitching. The problem was the size of the move itself: the dryer's mean
       frame-to-frame change was **7.15** against the chair's 3.23 on the same 180x162 canvas. Too much
       happening between frames reads as lag even when the spacing is perfectly even.
-- [x] Fixed by halving the step: rendered at **60fps**, 150 frames over the same 2.5s. Dryer mean jump
+- [x] Halved the step, verified: commit abbbf5bd1, rendered at **60fps**, 150 frames over the same
+      2.5s. Dryer mean jump
       **7.15 to 3.73**, chair **3.23 to 1.77**.
-- [x] The one real discontinuity, found only by looking at every frame: frame 19 at 60fps, the exact
+- [x] The one real discontinuity, verified: commit abbbf5bd1, found only by looking at every frame.
+      Frame 19 at 60fps, the exact
       frame the first wind stroke was born, jumping 1.01 against neighbours of 0.00 and 0.27, because
       the stroke appeared at 80% of full length in a single step. Strokes now grow from 12%.
       Re-measured: **0 stutter frames**, 0 frames touching the canvas edge, loop closes byte-identical.
