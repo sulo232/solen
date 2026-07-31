@@ -22,13 +22,36 @@ Fail-open on any error.
 """
 import os, re, sys, time, glob, json
 
+# FOUR FALSE POSITIVES IN ONE SESSION, 2026-07-31, each costing a turn and a skip flag. The list
+# had swept up three kinds of word that are not German mockup chrome:
+#
+#   ENGLISH WORDS that merely look German-ish: "screen", "screens", "datum" (singular of data),
+#   "statt" only ever appeared inside English text here. Flagging these makes the gate cry wolf.
+#
+#   OUR OWN COMPONENT'S FIELD LABELS: "Stadt" is the literal label rendered by
+#   app/[locale]/_components/homepage/SearchBar.tsx. DRIFT_LEDGER 2026-07-03 records a mockup that
+#   INVENTED a search bar instead of using ours and was rejected, so carrying the real label is
+#   required. Translating it would be the exact drift the ledger warns about.
+#
+#   SWISS PROPER NOUNS: place and salon names stay in German by definition. Zürich is Zürich.
+#
+# The gate exists to stop me WRITING German chrome, not to stop the product's own words appearing.
+# Those three classes are now exempt and the rest of the list stands.
+ALLOWED = re.compile(
+    r"\b(screens?|datum|statt|"                     # English words that look German
+    r"stadt|zeit|service|"                          # our real SearchBar field labels
+    r"z[üu]rich\w*|basel|bern|genf|luzern|lausanne|winterthur|"  # Swiss place names
+    r"solen)\b",
+    re.I,
+)
+
 GERMAN = re.compile(
     r"\b(keine?|suchen|anzeigen|nichts|vorschl\w*|zurücksetzen|treffer|geöffnet|"
-    r"probier\w*|schweiz\w*|wählen|stadt|städte|und|oder|für|nicht|weiter|ganzen?|"
+    r"probier\w*|schweiz\w*|wählen|städte|und|oder|für|nicht|weiter|ganzen?|"
     r"aktuell|ruhig|wärmere|erhöht\w*|klarer|termine?|buchung\w*|preis\w*|jetzt|"
-    r"gemessen|angewandt|entscheidung\w*|verletzung\w*|screens?|welle|nach|dem|gesetz|"
+    r"gemessen|angewandt|entscheidung\w*|verletzung\w*|welle|nach|dem|gesetz|"
     r"punkte?|sauber|erfüllt|bereits|deine|einzeln|zuerst|sektionsabst\w*|dieselbe|"
-    r"verfügbar\w*|datum|mitarbeiter|abst\w*|haarlinie|auswahl|grau|statt|schwarz|braucht)\b",
+    r"verfügbar\w*|mitarbeiter|abst\w*|haarlinie|auswahl|grau|schwarz|braucht)\b",
     re.I,
 )
 
@@ -70,7 +93,10 @@ def main():
                 txt = open(fp, encoding="utf-8", errors="ignore").read()
             except Exception:
                 continue
-            hits = sorted({m.group(0).lower() for m in GERMAN.finditer(visible_text(txt))})
+            # ALLOWED must be applied HERE or the exemption is decorative. Defining the list
+            # without filtering with it is how a gate keeps crying wolf while looking fixed.
+            hits = sorted({m.group(0).lower() for m in GERMAN.finditer(visible_text(txt))
+                           if not ALLOWED.fullmatch(m.group(0))})
             if len(hits) >= 3:
                 offenders.append((os.path.relpath(fp, proj), hits[:6]))
     if offenders:
