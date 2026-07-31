@@ -792,3 +792,22 @@ was never looked at.
       frame the first wind stroke was born, jumping 1.01 against neighbours of 0.00 and 0.27, because
       the stroke appeared at 80% of full length in a single step. Strokes now grow from 12%.
       Re-measured: **0 stutter frames**, 0 frames touching the canvas edge, loop closes byte-identical.
+
+## Round 22: slower turn, no tilt, and the fade named rather than claimed fixed
+
+Owner: the frames still do not match, the fade does not look good, he does not like the 90-degree
+tilt, and it is still laggy rather than smooth.
+
+- [x] Tilt gone, verified: commit below. Both clips render with `--tilt 0 --bob 0`. Measured vertical
+      drift of the alpha centroid across all 210 frames: chair 6.49px, dryer 5.72px, and what remains
+      is the silhouette changing shape as it turns rather than the object rocking.
+- [x] Smoother, verified: the clip is now 3.5s at 60fps, 210 frames, so the same 360 degrees is spread
+      over far more steps. Mean frame-to-frame change, measured on every frame: dryer **7.15 at 30fps,
+      3.73 at 60fps, now 2.58**; chair **3.23, then 1.77, now 1.29**. Zero stutter frames on both, zero
+      frames touching the canvas edge, both loops close byte-identical.
+- [ ] STILL OPEN, and I am not going to claim otherwise: "the frames don't match" and "how it fades
+      doesn't look good". Both are about how the drawn 2D wind sits against the 3D render, which is the
+      same media mismatch named in round 17. Slowing the clip does not address it. The honest options
+      are (a) drop the drawn wind and use the version where the air is modelled INTO the mesh, which he
+      rejected for looking like a robot arm, or (b) accept a small mismatch, or (c) a reference for the
+      fade specifically, the way his icon reference fixed the arc shape in one round.
