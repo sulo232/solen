@@ -30,7 +30,7 @@ if (!glbPath || !outdirArg) {
   console.error("Usage: node scripts/capture/turntable-render.mjs <model.glb> <outdir> [--frames 51] [--fps 30] [--size 180x162] [--hold-in 6] [--hold-out 12] [--turns 1]");
   process.exit(1);
 }
-const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null };
+const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0 };
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
   // ES modules are blocked over file:// by CORS (origin null), so when the outdir sits under
@@ -42,6 +42,15 @@ for (let i = 0; i < argv.length; i++) {
   else if (a === "--hold-in") opt.holdIn = Number(argv[++i]);
   else if (a === "--hold-out") opt.holdOut = Number(argv[++i]);
   else if (a === "--turns") opt.turns = Number(argv[++i]);
+  // Which angle the clip RESTS on. Measured, not guessed: pick the frame where the subject
+  // reads most front-on, then pass its rotation here so frame 1 and frame 51 both land there.
+  else if (a === "--start-angle") opt.startAngle = Number(argv[++i]);
+  else if (a === "--exposure") opt.exposure = Number(argv[++i]);   // tone-mapping exposure
+  else if (a === "--lift") opt.lift = Number(argv[++i]);           // multiplies every light
+  // ACES filmic crushes saturation in the highlights, which is exactly what made a bright red
+  // read washed out. "none" keeps the colour and is what an icon wants.
+  else if (a === "--tonemap") opt.tonemap = argv[++i];             // aces | linear | none
+  else if (a === "--sat") opt.sat = Number(argv[++i]);             // final saturation multiplier
 }
 const m = /^(\d+)x(\d+)$/.exec(opt.size);
 if (!m) { console.error(`bad --size "${opt.size}"`); process.exit(1); }
@@ -117,18 +126,18 @@ renderer.setPixelRatio(1);
 renderer.setSize(W, H, false);
 renderer.setClearColor(0x000000, 0);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.05;
+renderer.toneMapping = ${opt.tonemap === 'none' ? 'THREE.NoToneMapping' : opt.tonemap === 'linear' ? 'THREE.LinearToneMapping' : 'THREE.ACESFilmicToneMapping'};
+renderer.toneMappingExposure = ${opt.exposure};
 renderer.domElement.id = "stage";
 document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
 scene.background = null;
 // Soft, even studio light: gentle top key, no hard floor shadow, matching the reference read.
-scene.add(new THREE.HemisphereLight(0xffffff, 0xdad7d2, 2.1));
-const key = new THREE.DirectionalLight(0xffffff, 1.9); key.position.set(2.4, 4.0, 3.0); scene.add(key);
-const fill = new THREE.DirectionalLight(0xffffff, 0.75); fill.position.set(-3.0, 1.4, 1.6); scene.add(fill);
-const rim = new THREE.DirectionalLight(0xffffff, 0.5); rim.position.set(-1.0, 2.0, -3.2); scene.add(rim);
+scene.add(new THREE.HemisphereLight(0xffffff, 0xdad7d2, 2.1 * ${opt.lift}));
+const key = new THREE.DirectionalLight(0xffffff, 1.9 * ${opt.lift}); key.position.set(2.4, 4.0, 3.0); scene.add(key);
+const fill = new THREE.DirectionalLight(0xffffff, 0.75 * ${opt.lift}); fill.position.set(-3.0, 1.4, 1.6); scene.add(fill);
+const rim = new THREE.DirectionalLight(0xffffff, 0.5 * ${opt.lift}); rim.position.set(-1.0, 2.0, -3.2); scene.add(rim);
 
 const pivot = new THREE.Group();      // the object spins on this, around world Y
 scene.add(pivot);
@@ -163,10 +172,26 @@ new GLTFLoader().load("./model.glb", (gltf) => {
   window.__ready = true;
 }, undefined, (e) => { window.__error = String((e && e.message) || e); });
 
+window.__SAT = ${opt.sat};
 window.__renderAt = (rad) => {
   pivot.rotation.y = rad;
   renderer.render(scene, camera);
-  return renderer.domElement.toDataURL("image/png");
+  if (window.__SAT === 1) return renderer.domElement.toDataURL("image/png");
+  // Lift saturation on the colour channels only. Alpha is copied through untouched, so the
+  // transparent edge never gets a halo.
+  const c = renderer.domElement, g = document.createElement("canvas");
+  g.width = c.width; g.height = c.height;
+  const ctx = g.getContext("2d"); ctx.drawImage(c, 0, 0);
+  const img = ctx.getImageData(0, 0, g.width, g.height), d = img.data, k = window.__SAT;
+  for (let i = 0; i < d.length; i += 4) {
+    if (d[i + 3] === 0) continue;
+    const l = 0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2];
+    d[i]     = Math.max(0, Math.min(255, l + (d[i]     - l) * k));
+    d[i + 1] = Math.max(0, Math.min(255, l + (d[i + 1] - l) * k));
+    d[i + 2] = Math.max(0, Math.min(255, l + (d[i + 2] - l) * k));
+  }
+  ctx.putImageData(img, 0, 0);
+  return g.toDataURL("image/png");
 };
 window.__alphaStats = () => {
   const c = renderer.domElement, g = document.createElement("canvas");
@@ -220,7 +245,7 @@ for (let f = 0; f < opt.frames; f++) {
   if (f < opt.holdIn) t = 0;
   else if (f >= opt.frames - opt.holdOut) t = 1;
   else t = easeSoftEnds((f - opt.holdIn) / (sweep - 1));
-  const rad = t * opt.turns * Math.PI * 2;
+  const rad = (opt.startAngle * Math.PI / 180) + t * opt.turns * Math.PI * 2;
   const dataUrl = await page.evaluate((r) => window.__renderAt(r), rad);
   writeFileSync(join(outdir, String(f + 1).padStart(3, "0") + ".png"), Buffer.from(dataUrl.split(",")[1], "base64"));
   const stats = await page.evaluate(() => window.__alphaStats());
