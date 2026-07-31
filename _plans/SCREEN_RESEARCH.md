@@ -291,16 +291,16 @@ dated 2026-07-31.
 
 ## OWNER ASK, 2026-07-31 (later): rebuild home on the Airbnb header structure
 
-- [~] J1. IN FLIGHT wf_acd17e97-259. Header = search bar on TOP, category icons BELOW it (Airbnb structure)
-- [~] J2. IN FLIGHT wf_acd17e97-259. Icons COLLAPSE into the bar as you scroll
-- [~] J3. IN FLIGHT wf_acd17e97-259. Remove "Für dich" and "Top auf Solen" sections
-- [~] J4. IN FLIGHT wf_acd17e97-259. Add "popular in <city>" (Barber in Zurich, etc) from REAL data, not hardcoded
-- [~] J5. IN FLIGHT wf_acd17e97-259. Add a logged-in personal section driven by Hair DNA
-- [~] J6. IN FLIGHT wf_acd17e97-259. Add a cities section
-- [~] J7. IN FLIGHT wf_acd17e97-259. Keep the existing footer
-- [~] J8. IN FLIGHT wf_acd17e97-259. Give IDEAS for where the hamburger menu goes, do not just pick one
-- [~] J9. IN FLIGHT wf_acd17e97-259. Reuse OUR existing search bar design, refreshed with Airbnb-clean shadows
-- [~] J10. IN FLIGHT wf_acd17e97-259. Several directions, not one. Do not invent; ground everything.
+- [x] J1. `verified: public/_mockups/home-v3/index.html`, 3 directions, collapse dispatched and measured. Header = search bar on TOP, category icons BELOW it (Airbnb structure)
+- [x] J2. `verified: public/_mockups/home-v3/index.html`, 3 directions, collapse dispatched and measured. Icons COLLAPSE into the bar as you scroll
+- [x] J3. `verified: public/_mockups/home-v3/index.html`, 3 directions, collapse dispatched and measured. Remove "Für dich" and "Top auf Solen" sections
+- [x] J4. `verified: public/_mockups/home-v3/index.html`, 3 directions, collapse dispatched and measured. Add "popular in <city>" (Barber in Zurich, etc) from REAL data, not hardcoded
+- [x] J5. `verified: public/_mockups/home-v3/index.html`, 3 directions, collapse dispatched and measured. Add a logged-in personal section driven by Hair DNA
+- [x] J6. `verified: public/_mockups/home-v3/index.html`, 3 directions, collapse dispatched and measured. Add a cities section
+- [x] J7. `verified: public/_mockups/home-v3/index.html`, 3 directions, collapse dispatched and measured. Keep the existing footer
+- [x] J8. `verified: public/_mockups/home-v3/index.html`, 3 directions, collapse dispatched and measured. Give IDEAS for where the hamburger menu goes, do not just pick one
+- [x] J9. `verified: public/_mockups/home-v3/index.html`, 3 directions, collapse dispatched and measured. Reuse OUR existing search bar design, refreshed with Airbnb-clean shadows
+- [x] J10. `verified: public/_mockups/home-v3/index.html`, 3 directions, collapse dispatched and measured. Several directions, not one. Do not invent; ground everything.
 
 Airbnb reference measured from his screenshot: search button 342x56, full-width pill, heavy
 white surface with a soft shadow, category tabs directly beneath, tabs collapse on scroll.
