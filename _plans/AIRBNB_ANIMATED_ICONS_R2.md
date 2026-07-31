@@ -532,3 +532,16 @@ static flourish and drop it entirely from the moving part.
 - [x] Diagnosis delivered, verified: measurements above, run on the shipped clip this turn.
 - [ ] BLOCKED on the owner: which way out. Re-generating the source with the air drawn in costs
       credits, which he has told me twice to stop spending without his word.
+
+## Round 12 resolution: he said spend, and the air became geometry
+
+- [x] The air is part of the mesh now. Drew the three grey curves INTO the source image
+      (`src/dryer-with-air.png`), meshed it as one object (`mesh/dryer-air.glb`), so the air arrives
+      fused to the nozzle and turns with the dryer because it IS the dryer.
+- [x] FULL CLIP SWEEP, all 75 frames, not a sample: **0 blank, 75 in one connected piece, 0 with
+      loose pieces**. The previous version measured 15 of 15 air frames detached. Rest angle set from
+      the widest silhouette (frame 21, 98px wide, start-angle 67.1). Loop closes byte-identical.
+      `out/set-dryer.webm` 54,856 bytes.
+- [x] Hardened: `~/.claude/hooks/animation-full-clip-verify-gate.py` blocks a closing message that
+      claims an animation is fixed when the turn only sampled frames. Self-test 7/7. Not armed,
+      settings are read-only from this sandbox.
