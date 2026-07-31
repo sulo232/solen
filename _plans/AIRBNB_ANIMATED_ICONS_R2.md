@@ -305,3 +305,38 @@ levers in `scripts/capture/turntable-render.mjs`. Credits at the start of this r
     it. Every change above is a render-time flag on a mesh we already own. This is what the
     `feedback_conserve_generation_credits` memory is for, and this round is the first one that
     actually honours it.
+
+---
+
+# Round 6 (2026-07-31): his exact yellow, shine, and the air I got wrong
+
+Owner, with a colour swatch attached: the dryer must be THAT yellow; the air should not look like real
+smoke, it should be 3D, and it is not even coming out of the mouth of the dryer, it appears from
+nowhere; and the whole set is too MATTE, Airbnb's have shine and ours have none, which he named as the
+recurring problem across every round. Zero credits again.
+
+- [x] U1. The yellow from his swatch.
+  - verified: body now reads **#EBC23D**, hsv(0.128, 0.740, 0.922), against the swatch's golden yellow
+    around #F2D24F, hsv(0.128, 0.68, 0.95). Hue exact, saturation a shade deeper, value a shade lower.
+    Measured on frame 1, 180x162, transparent pixels excluded.
+- [x] U2. Shine, on both icons.
+  - verified, and he was right that this was the root problem. The generated meshes come back almost
+    fully rough, and a rough material with no environment cannot produce a specular highlight at all,
+    so every render was matte no matter what I did to the colour. New `--gloss` flag builds a small
+    PMREM environment, drops roughness by up to 85% and lifts metalness, so highlights actually exist.
+    Near-white highlight pixels went from effectively none to **25.8% on the chair and 30.6% on the
+    dryer**.
+- [x] U3. Chair colour, warmer retro brown-orange, now with shine.
+  - verified: `--hue 0.055 --sat-mul 0.78 --val-mul 0.82 --gloss 0.60`, `out/set-barber.webm`.
+- [ ] U4. THE AIR IS STILL WRONG AND I AM NOT PRETENDING OTHERWISE. Three placements tried this round,
+      including a `--puff auto` that plants the emitter on the mesh's own extreme along the jet axis
+      and a hand-computed object-space direction that accounts for the 79 degree rest rotation. It
+      still reads as grey wisps beside the body rather than a jet from the nozzle.
+      **Root cause, named:** I built it as a particle system, and he asked for the opposite. Soft
+      alpha sprites will always read as smoke or fog, which is exactly the "weird shit" he rejected.
+      The fix is not another placement tweak, it is a different technique: model the air as two or
+      three CHUNKY 3D shapes, curved ribbon or comma forms in the same clay language as the icon,
+      parented to the nozzle and rotating with it. That matches Airbnb's own vocabulary, where the
+      companion motion is a solid shape and not a particle haze.
+      **Shipped without it** rather than shipping the version he already rejected. `out/set-dryer.webm`
+      is 39,543 bytes and carries the colour, the shine and the tilt.

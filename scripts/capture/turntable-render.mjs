@@ -30,7 +30,7 @@ if (!glbPath || !outdirArg) {
   console.error("Usage: node scripts/capture/turntable-render.mjs <model.glb> <outdir> [--frames 51] [--fps 30] [--size 180x162] [--hold-in 6] [--hold-out 12] [--turns 1]");
   process.exit(1);
 }
-const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7, hueShift: null, satMul: 1, valMul: 1, tilt: 0, bob: 0 };
+const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7, hueShift: null, satMul: 1, valMul: 1, tilt: 0, bob: 0, gloss: 0 };
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
   // ES modules are blocked over file:// by CORS (origin null), so when the outdir sits under
@@ -70,6 +70,10 @@ for (let i = 0; i < argv.length; i++) {
   // comes back level exactly where it started, which keeps the loop closing.
   else if (a === "--tilt") opt.tilt = Number(argv[++i]);           // peak tilt in degrees
   else if (a === "--bob") opt.bob = Number(argv[++i]);             // vertical bob, fraction of height
+  // The reference icons are not matte: they carry real specular highlights, which is what makes them
+  // read as objects under a light rather than as flat colour. Generated meshes come back almost fully
+  // rough, so without this every render looks washed out no matter what the colour is.
+  else if (a === "--gloss") opt.gloss = Number(argv[++i]);          // 0 = leave as authored, 1 = glossy
 }
 const m = /^(\d+)x(\d+)$/.exec(opt.size);
 if (!m) { console.error(`bad --size "${opt.size}"`); process.exit(1); }
@@ -176,6 +180,35 @@ new GLTFLoader().load("./model.glb", (gltf) => {
   const s = 2 / maxDim;
   obj.scale.setScalar(s);
   obj.position.set(-centre.x * s, -centre.y * s, -centre.z * s);
+  const GLOSS = ${opt.gloss};
+  if (GLOSS > 0) {
+    // An environment is what a specular highlight actually reflects. Without one, lowering roughness
+    // buys nothing, which is why "make it shinier" fails if you only touch the material.
+    const pm = new THREE.PMREMGenerator(renderer);
+    const envScene = new THREE.Scene();
+    const top = new THREE.Mesh(
+      new THREE.SphereGeometry(8, 16, 8),
+      new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.BackSide })
+    );
+    envScene.add(top);
+    const key = new THREE.Mesh(
+      new THREE.PlaneGeometry(6, 6),
+      new THREE.MeshBasicMaterial({ color: 0xffffff })
+    );
+    key.position.set(-3, 4, 3); key.lookAt(0, 0, 0);
+    envScene.add(key);
+    scene.environment = pm.fromScene(envScene, 0.04).texture;
+    scene.environmentIntensity = 0.55 + 0.75 * GLOSS;
+    obj.traverse((n) => {
+      if (!n.isMesh || !n.material) return;
+      for (const m of (Array.isArray(n.material) ? n.material : [n.material])) {
+        if (m.roughness !== undefined) m.roughness = Math.max(0.06, (m.roughness ?? 1) * (1 - 0.85 * GLOSS));
+        if (m.metalness !== undefined) m.metalness = Math.min(0.85, (m.metalness ?? 0) + 0.30 * GLOSS);
+        m.envMapIntensity = 0.7 + 1.1 * GLOSS;
+        m.needsUpdate = true;
+      }
+    });
+  }
   pivot.add(obj);
 
   // Frame it: pull back until the scaled bounds fit with margin on every side, at every angle.
@@ -188,6 +221,16 @@ new GLTFLoader().load("./model.glb", (gltf) => {
   const dist = margin * Math.max(radius / Math.tan(vFov / 2), radius / Math.tan(hFov / 2));
   camera.position.set(0, radius * 0.42, dist);           // a touch above eye level, like the reference
   camera.lookAt(0, 0, 0);
+  // "auto": put the emitter ON the nozzle, at the object's own extreme along the jet direction, so
+  // the air leaves the mouth of the dryer instead of appearing out of empty space beside it.
+  if (PUFF === "auto") {
+    const bb = new THREE.Box3().setFromObject(obj);
+    const d = new THREE.Vector3(PUFF_DIR[0], PUFF_DIR[1], PUFF_DIR[2]).normalize();
+    const c = bb.getCenter(new THREE.Vector3()), hs = bb.getSize(new THREE.Vector3()).multiplyScalar(0.5);
+    const reach = Math.abs(d.x) * hs.x + Math.abs(d.y) * hs.y + Math.abs(d.z) * hs.z;
+    PUFF = [c.x + d.x * reach * 0.98, c.y + d.y * reach * 0.98, c.z + d.z * reach * 0.98];
+    console.log("puff emitter placed at", PUFF.map(v => v.toFixed(3)).join(","));
+  }
   window.__ready = true;
 }, undefined, (e) => { window.__error = String((e && e.message) || e); });
 
@@ -196,7 +239,7 @@ new GLTFLoader().load("./model.glb", (gltf) => {
 // Sprites live UNDER the pivot, so they turn with the object exactly as a real jet of air would.
 // Every value is derived from the frame index, never from a clock or a random draw, so two runs of
 // the same command produce byte-identical frames.
-const PUFF = ${opt.puff ? JSON.stringify(opt.puff.split(",").map(Number)) : "null"};
+let PUFF = ${opt.puff && opt.puff !== "auto" ? JSON.stringify(opt.puff.split(",").map(Number)) : (opt.puff === "auto" ? '"auto"' : "null")};
 const PUFF_DIR = ${JSON.stringify(opt.puffDir.split(",").map(Number))};
 const PUFF_SIZE = ${opt.puffSize};
 const PUFF_COUNT = ${opt.puffCount};
