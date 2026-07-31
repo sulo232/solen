@@ -457,25 +457,43 @@
   .sa-inspocell.is-tall .sa-inspophoto { aspect-ratio: 3 / 5; }
 
   /* Continuation card. Same outline-plus-shadow pair as the search bar, so it reads as chrome
-     rather than as a result. Three shapes share one rule set; only the layout differs. */
+     rather than as a result.
+     Owner 2026-07-31: "i told u i chose a remove the abc sh and make the A acc big bro."
+     B and C are gone from the CSS and from the render, and the A/B/C picker with them. One shape,
+     nothing left to pick between.
+     SIZE, measured not eyeballed. Before: card 334 x 98 with a 72 square thumb, sitting beside
+     rail cards measured at 230.7 x 226.2. The continuation card was 43% of a rail card's height,
+     which is exactly why it read small next to them. Now the photo is 150 x 120, which is the
+     SAME LOCKED 5:4 the rail photos use (measured 230.7 x 184.5 = 1.25), so this card joins the
+     grid instead of being a different object. Photo area goes 5,184 -> 18,000 px, 3.5x. Card
+     height 98 -> 144. The type stays where it was, see the title note below for why. */
   .sa-contwrap { align-self: stretch; width: 100%; margin: 0 0 20px; }
-  .sa-cont { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+  .sa-cont { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left;
     padding: 12px; border: 1px solid #E4E4E7; border-radius: 18px; background: #FFFFFF;
     cursor: pointer; box-shadow: var(--lift); }
   .sa-conttext { min-width: 0; flex: 1 1 auto; }
-  .sa-conttitle { display: block; font-size: 15px; font-weight: 500; line-height: 20px; color: #0A0A0A;
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .sa-contmeta { display: block; margin-top: 2px; font-size: 13px; font-weight: 400; line-height: 18px;
+  /* Two things went wrong when I first grew this card, and they have the same fix.
+     (1) The wider photo leaves the text 144px. Measured on the live page with canvas measureText
+     at the real computed font: "Continue searching" is 146.5px at 17px, so it missed by 2.5px and
+     broke after "Continue", and "Barber" fell off the clamp entirely.
+     (2) Bumping the title 15 -> 17 quietly added a FIFTH font size to this screen (18/17/15/13/12)
+     and the ceiling is four.
+     Dropping back fixes both. It goes to 14, not 15, and the census is why: measured on the
+     rendered first viewport this screen carries SIX distinct sizes (18, 16, 15, 14, 13, 12)
+     against a ceiling of four, and 15 was a SINGLETON, one element in the whole viewport. The
+     rail card names directly beneath this card are 14. So 14 costs nothing, removes a whole tier,
+     and makes the continuation title match the names it sits above, which is FLOORS LAW 8: the
+     same kind of thing reads the same way on the same screen.
+     "Continue searching" measures 120.7px at 14, well inside the 144 available.
+     The card is big because the PHOTO is big, which is where size belongs, not because the label
+     grew into a tier the screen could not afford. */
+  .sa-conttitle { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+    font-size: 14px; font-weight: 500; line-height: 19px; color: #0A0A0A; overflow: hidden; }
+  .sa-contmeta { display: block; margin-top: 3px; font-size: 13px; font-weight: 400; line-height: 18px;
     color: #6B6B6B; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .sa-contimg { flex: 0 0 auto; object-fit: cover; background: #F4F4F5; }
-  .sa-cont.is-A .sa-contimg { height: 72px; width: 72px; border-radius: 14px; }
-  .sa-cont.is-B .sa-contimg { height: 56px; width: 56px; border-radius: 9999px; }
-  .sa-cont.is-C .sa-contimg { display: none; }
+  .sa-contimg { flex: 0 0 auto; object-fit: cover; background: #F4F4F5;
+    width: 150px; aspect-ratio: 5 / 4; border-radius: 16px; }
   .sa-contchev { flex: 0 0 auto; color: #6B6B6B; display: flex; }
-  .sa-contseg { display: flex; gap: 6px; justify-content: flex-end; margin-top: 8px; }
-  .sa-conttab { height: 26px; min-width: 30px; border-radius: 999px; border: 1px solid #E4E4E7;
-    background: #FFFFFF; font-size: 12px; font-weight: 400; color: #6B6B6B; cursor: pointer; }
-  .sa-conttab[aria-selected="true"] { background: #F4F4F5; color: #0A0A0A; }
 
   .sa-sec { align-self: stretch; width: 100%; margin: 0 0 24px; }
   .sa-h2 { font-size: 18px; font-weight: 600; line-height: 24px; letter-spacing: -0.01em;
@@ -562,20 +580,39 @@
 
   var CATLABEL = { coiffeur: "Coiffeur", barbershop: "Barbershop", nails: "Nails", spa: "Spa & Wellness" };
   // Real seeded values from GET /api/salons?limit=20 on the running dev server.
+  // ALL 20 seeded, listed, active stores that carry a real cover photo, pulled from the
+  // salons table this turn (28 rows exist; 8 are test/unlisted/photo-less and are excluded).
+  // Owner 2026-07-31 "i cant scroll": the cause was HERE, not in CSS. This list held EIGHT
+  // stores, so Nails and Spa rendered ONE row and the page came out exactly one viewport tall,
+  // a measured 0px of scrollable height. He also said "eight stuff is not enough" turns ago.
+  // Prices are the cheapest ACTIVE service per salon; ratings and review counts are stored
+  // values. Nothing here is invented.
   var STORES = [
-    { slug: "cuts-and-culture",   name: "Cuts & Culture",     cat: "barbershop", rating: "4.81", price: 15, reviews: 16, service: "Brows", addr: "Elsaesserstrasse 10" },
-    { slug: "the-fade-factory",   name: "The Fade Factory",   cat: "barbershop", rating: "4.27", price: 15, reviews: 11, service: "Brows", addr: "Hammerstrasse 65" },
-    { slug: "old-town-barbers",   name: "Old Town Barbers",   cat: "barbershop", rating: "4.25", price: 15, reviews: 12, service: "Brows", addr: "Muensterplatz 11" },
-    { slug: "haarsalon-margot",   name: "Haarsalon Margot",   cat: "coiffeur",   rating: "4.75", price: 35, reviews: 16, service: "Scalp massage", addr: "Aeschengraben 18" },
-    { slug: "atelier-haarwerk",   name: "Atelier Haarwerk",   cat: "coiffeur",   rating: "4.56", price: 35, reviews: 25, service: "Scalp massage", addr: "Freie Strasse 12" },
-    { slug: "muse-beauty-studio", name: "Muse Beauty Studio", cat: "coiffeur",   rating: "4.18", price: 35, reviews: 11, service: "Scalp massage", addr: "Ruemelinsplatz 4" },
-    { slug: "pink-petal-nails",   name: "Pink Petal Nails",   cat: "nails",      rating: "4.50", price: 15, reviews: 8,  service: "French", addr: "Klybeckstrasse 30" },
-    { slug: "smooth-skin-studio", name: "Smooth Skin Studio", cat: "spa",        rating: "4.50", price: 20, reviews: 14, service: "Underarms", addr: "Grabenring 8" }
+    { slug: "salon-lumiere",         name: "Salon Lumière",         cat: "coiffeur",    rating: "4.4", price: 35,  reviews: 15,  addr: "Spalenvorstadt 22" },
+    { slug: "la-belle-ongle",        name: "La Belle Ongle",        cat: "nails",       rating: "4.1", price: 15,  reviews: 15,  addr: "Barfüsserplatz 6" },
+    { slug: "the-fade-factory",      name: "The Fade Factory",      cat: "barbershop",  rating: "4.3", price: 15,  reviews: 11,  addr: "Hammerstrasse 65" },
+    { slug: "haarsalon-margot",      name: "Haarsalon Margot",      cat: "coiffeur",    rating: "4.8", price: 35,  reviews: 16,  addr: "Aeschengraben 18" },
+    { slug: "smooth-skin-studio",    name: "Smooth Skin Studio",    cat: "spa",         rating: "4.5", price: 20,  reviews: 14,  addr: "Grabenring 8" },
+    { slug: "belle-epil",            name: "Belle Epil",            cat: "spa",         rating: "4.3", price: 20,  reviews: 8,   addr: "Burgfelderstrasse 55" },
+    { slug: "pink-petal-nails",      name: "Pink Petal Nails",      cat: "nails",       rating: "4.5", price: 15,  reviews: 8,   addr: "Klybeckstrasse 30" },
+    { slug: "nail-lounge-basel",     name: "Nail Lounge Basel",     cat: "nails",       rating: "4.5", price: 15,  reviews: 10,  addr: "Missionsstrasse 40" },
+    { slug: "muse-beauty-studio",    name: "Muse Beauty Studio",    cat: "coiffeur",    rating: "4.2", price: 35,  reviews: 11,  addr: "Rümelinsplatz 4" },
+    { slug: "cuts-and-culture",      name: "Cuts & Culture",        cat: "barbershop",  rating: "4.8", price: 15,  reviews: 16,  addr: "Elsässerstrasse 10" },
+    { slug: "old-town-barbers",      name: "Old Town Barbers",      cat: "barbershop",  rating: "4.3", price: 15,  reviews: 12,  addr: "Münsterplatz 11" },
+    { slug: "studio-schnittkunst",   name: "Studio Schnittkunst",   cat: "coiffeur",    rating: "4.2", price: 35,  reviews: 10,  addr: "Güterstrasse 115" },
+    { slug: "velvet-face",           name: "Velvet Face",           cat: "coiffeur",    rating: "4.6", price: 35,  reviews: 7,   addr: "Erlenmattstrasse 35" },
+    { slug: "rouge-studio",          name: "Rouge Studio",          cat: "coiffeur",    rating: "4.2", price: 35,  reviews: 15,  addr: "Tellplatz 7" },
+    { slug: "lisse-studio",          name: "Lisse Studio",          cat: "spa",         rating: "4.5", price: 20,  reviews: 13,  addr: "Dornacherstrasse 192" },
+    { slug: "atelier-haarwerk",      name: "Atelier Haarwerk",      cat: "coiffeur",    rating: "4.6", price: 35,  reviews: 25,  addr: "Freie Strasse 12" },
+    { slug: "wax-and-glow-basel",    name: "Wax & Glow Basel",      cat: "spa",         rating: "4.5", price: 20,  reviews: 11,  addr: "Schwarzwaldallee 50" },
+    { slug: "blade-and-stone",       name: "Blade & Stone",         cat: "barbershop",  rating: "4.4", price: 15,  reviews: 11,  addr: "Feldbergstrasse 82" },
+    { slug: "nail-studio-bliss",     name: "Nail Studio Bliss",     cat: "nails",       rating: "4.5", price: 15,  reviews: 13,  addr: "Steinenvorstadt 5" },
+    { slug: "glow-lab-basel",        name: "Glow Lab Basel",        cat: "coiffeur",    rating: "4.5", price: 35,  reviews: 10,  addr: "Steinenberg 14" }
   ];
   STORES.forEach(function (s) { s.photo = "/_mockups/_assets/store-photos/" + s.slug + ".jpg"; });
   // walkin_enabled, read from /api/salons?limit=20 on the running dev server. Four of the twenty
   // are true; three of those four are in this eight-store slice. Real flag, not a guess.
-  var WALKIN = { "cuts-and-culture": 1, "the-fade-factory": 1, "old-town-barbers": 1 };
+  var WALKIN = { "the-fade-factory": 1, "cuts-and-culture": 1, "old-town-barbers": 1, "blade-and-stone": 1 };
   STORES.forEach(function (s) { s.walkin = !!WALKIN[s.slug]; });
 
   // Owner: "we need to have a home or something all the way on the left, so there is a home page,
@@ -761,33 +798,20 @@
     return a;
   }
 
-  // ===== THE CONTINUATION CARD, THREE VARIATIONS ==========================
+  // ===== THE CONTINUATION CARD ============================================
   // Owner: "on All, we have a little card, if they were searching for something and stopped, it
   // asks continue searching for that. We had a mockup for that, put it back. Give it variations."
   // It came from the deleted home mockup, so it is rebuilt here rather than resurrected blind.
-  // Three genuinely different shapes, switchable, because he asked for variations not one answer:
-  //   A  photo right   the original: title, meta, 80px photo hard right
-  //   B  photo left    a 56px round thumb leading, so the card reads as a row not a banner
-  //   C  no photo      title and meta only, with a chevron. The lightest thing that still says
-  //                    "you were in the middle of something"
-  // MY PICK IS B. A is the widest and competes with the first rail's photos directly beneath it,
-  // which is what makes the top of the page feel busy. C is calm but loses the one thing that
-  // makes the card recognisable at a glance, the picture of where he was. B keeps the picture and
-  // costs half the height.
-  // Owner 2026-07-31: "while I'm on the home page, I already selected A. So fix this and make it A."
-  var CONT_VARIANT = "A";
+  // He asked for variations, saw three, and picked one. Owner 2026-07-31: "i told u i chose a
+  // remove the abc sh and make the A acc big bro." So the B and C branches and the A/B/C picker
+  // are deleted, not hidden. A picker that survives the pick is just clutter asking a settled
+  // question, and it was rendering inside his home page as three loose grey circles.
   function continuationCard() {
     var wrap = document.createElement("div");
     wrap.className = "sa-contwrap";
     var card = document.createElement("button");
     card.type = "button";
-    card.className = "sa-cont is-" + CONT_VARIANT;
-
-    var im = document.createElement("img");
-    im.className = "sa-contimg";
-    im.src = "/_mockups/_assets/store-photos/old-town-barbers.jpg";
-    im.alt = "";
-    im.setAttribute("aria-hidden", "true");
+    card.className = "sa-cont";
 
     var txt = document.createElement("span");
     txt.className = "sa-conttext";
@@ -800,30 +824,16 @@
     txt.appendChild(t);
     txt.appendChild(m);
 
-    if (CONT_VARIANT === "B") { card.appendChild(im); card.appendChild(txt); }
-    else if (CONT_VARIANT === "A") { card.appendChild(txt); card.appendChild(im); }
-    else {
-      card.appendChild(txt);
-      var ch = document.createElement("span");
-      ch.className = "sa-contchev";
-      ch.setAttribute("aria-hidden", "true");
-      ch.innerHTML = '<svg class="lucide lucide-chevron-right" data-lucide="chevron-right" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>';
-      card.appendChild(ch);
-    }
-    wrap.appendChild(card);
+    var im = document.createElement("img");
+    im.className = "sa-contimg";
+    im.src = "/_mockups/_assets/store-photos/old-town-barbers.jpg";
+    im.alt = "";
+    im.setAttribute("aria-hidden", "true");
 
-    var seg = document.createElement("div");
-    seg.className = "sa-contseg";
-    ["A", "B", "C"].forEach(function (v) {
-      var b = document.createElement("button");
-      b.type = "button";
-      b.className = "sa-conttab";
-      b.textContent = v;
-      b.setAttribute("aria-selected", v === CONT_VARIANT ? "true" : "false");
-      b.addEventListener("click", function () { CONT_VARIANT = v; renderHome(); });
-      seg.appendChild(b);
-    });
-    wrap.appendChild(seg);
+    // A: text leads, photo hard right.
+    card.appendChild(txt);
+    card.appendChild(im);
+    wrap.appendChild(card);
     return wrap;
   }
 
@@ -834,8 +844,12 @@
     // removed list, so a row claiming to know his hair would be a promise nothing can keep.
     var SECTIONS = [
       { title: "Popular in Basel", rows: STORES.slice(0, 6), note: null },
+      // Counted from the data, never typed. The hardcoded "3 of 20" went stale the moment the
+      // store list grew from 8 to 20 and a fourth walk-in salon came with it, which is exactly
+      // the fabricated-number failure the taste rules ban.
       { title: "Walk in today", rows: STORES.filter(function (s) { return s.walkin; }),
-        note: "3 of 20 stores take walk-ins right now." },
+        note: STORES.filter(function (s) { return s.walkin; }).length
+          + " of " + STORES.length + " stores take walk-ins right now." },
       { title: "Coiffeurs in Basel", rows: STORES.filter(function (s) { return s.cat === "coiffeur"; }),
         note: null },
       { title: "Cities", rows: [], note: "Basel is the only city with stores so far." }
