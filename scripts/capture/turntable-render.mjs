@@ -467,7 +467,12 @@ writeFileSync(join(stage, "index.html"), pageHtml);
 // The turn: still hold, then a near-LINEAR sweep with soft ends, then still hold. The reference
 // measured linear at 0.040 against ease-out at 0.127, so this is a shallow ease, never a snap.
 function easeSoftEnds(t) {
-  const k = 0.22;                                   // fraction of the sweep spent easing
+  // k was 0.22, which made the first frames of the turn advance 0.000155 while the middle advanced
+  // 0.009358: a SIXTY-FOLD difference. The object nearly stops, then surges, and the eye reads that
+  // stall-then-catch-up as lagging and going backwards. It was never a dropped frame.
+  // At 0.03 the ratio is 8.2x, and the captured reference measured NEAR-LINEAR anyway
+  // (RMS 0.040 for linear against 0.127 for ease-out), so a shallow ease is also the truer match.
+  const k = 0.03;                                   // fraction of the sweep spent easing
   if (t < k) return (t * t) / (2 * k * (1 - k));
   if (t > 1 - k) { const u = 1 - t; return 1 - (u * u) / (2 * k * (1 - k)); }
   return (t - k / 2) / (1 - k);

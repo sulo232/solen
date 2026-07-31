@@ -835,3 +835,24 @@ the dryer body, so the air could jump while the clip looked smooth. Isolating it
       ratio 2.8x, and ZERO frames changing more than 3x the mean.** The air ramps over 108 frames,
       1.80 s. By the honest metric it is smooth.
 - [x] Whole clip: mean jump 2.45, loop closes byte-identical, 210 frames at 60fps.
+
+## Round 24: the stall was the EASING, and it was never a dropped frame
+
+Owner: "how the air comes out, that's so perfect, don't change that. But when it rotates, it lags and
+goes back and then continues."
+
+"Goes back" was the clue I had been missing. I kept measuring for dropped or duplicated frames and
+finding none, because there were none.
+
+- [x] Cause found, verified by reading `k` straight out of the live renderer and replaying its exact
+      easing over all 210 frames: `easeSoftEnds` used **k = 0.22**, which made the turn advance
+      **0.000155** on its first frames and **0.009358** through the middle. A **60.3x** spread. The
+      object nearly stops, then surges. The eye reads a stall followed by a catch-up as going
+      backwards, which is exactly the words he used. The turn never actually reverses: measured
+      **0 frames** where the eased value decreases, before or after.
+- [x] Fixed by flattening the ease to **k = 0.03**: spread drops **60.3x to 8.2x**, still 0 frames
+      going backwards, and the boundary still lands exactly on 1.000000 so the hold does not jump.
+      This is also the truer match to the capture, which measured near-linear (RMS 0.040 for linear
+      against 0.127 for ease-out).
+- [x] Air untouched, as he asked. `draw-wind.py` unchanged this round.
+- [x] Both clips re-rendered and re-encoded at 210 frames / 60fps / 3.5s, loops close byte-identical.
