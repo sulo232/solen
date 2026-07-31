@@ -30,7 +30,7 @@ if (!glbPath || !outdirArg) {
   console.error("Usage: node scripts/capture/turntable-render.mjs <model.glb> <outdir> [--frames 51] [--fps 30] [--size 180x162] [--hold-in 6] [--hold-out 12] [--turns 1]");
   process.exit(1);
 }
-const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0 };
+const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7 };
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
   // ES modules are blocked over file:// by CORS (origin null), so when the outdir sits under
@@ -51,6 +51,14 @@ for (let i = 0; i < argv.length; i++) {
   // read washed out. "none" keeps the colour and is what an icon wants.
   else if (a === "--tonemap") opt.tonemap = argv[++i];             // aces | linear | none
   else if (a === "--sat") opt.sat = Number(argv[++i]);             // final saturation multiplier
+  // The secondary motion. Measured on the reference: Airbnb's house body stops at 1000ms while its
+  // tree keeps swaying to 1400ms, so ONE part outlives the turn by about 400ms. At 30fps with the
+  // default 12-frame hold-out that is exactly the tail of the clip, so the puff runs from the start
+  // of the sweep to the last frame and never stops early.
+  else if (a === "--puff") opt.puff = argv[++i];                   // emit point "x,y,z" in object space
+  else if (a === "--puff-dir") opt.puffDir = argv[++i];            // travel direction "x,y,z"
+  else if (a === "--puff-size") opt.puffSize = Number(argv[++i]);
+  else if (a === "--puff-count") opt.puffCount = Number(argv[++i]);
 }
 const m = /^(\d+)x(\d+)$/.exec(opt.size);
 if (!m) { console.error(`bad --size "${opt.size}"`); process.exit(1); }
@@ -172,9 +180,59 @@ new GLTFLoader().load("./model.glb", (gltf) => {
   window.__ready = true;
 }, undefined, (e) => { window.__error = String((e && e.message) || e); });
 
+
+// ---- secondary motion: the nozzle puff -------------------------------------------------
+// Sprites live UNDER the pivot, so they turn with the object exactly as a real jet of air would.
+// Every value is derived from the frame index, never from a clock or a random draw, so two runs of
+// the same command produce byte-identical frames.
+const PUFF = ${opt.puff ? JSON.stringify(opt.puff.split(",").map(Number)) : "null"};
+const PUFF_DIR = ${JSON.stringify(opt.puffDir.split(",").map(Number))};
+const PUFF_SIZE = ${opt.puffSize};
+const PUFF_COUNT = ${opt.puffCount};
+let puffSprites = [];
+if (PUFF) {
+  const cvs = document.createElement("canvas");
+  cvs.width = cvs.height = 64;
+  const g = cvs.getContext("2d");
+  const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+  grad.addColorStop(0, "rgba(255,255,255,0.85)");
+  grad.addColorStop(0.45, "rgba(255,255,255,0.32)");
+  grad.addColorStop(1, "rgba(255,255,255,0)");
+  g.fillStyle = grad; g.fillRect(0, 0, 64, 64);
+  const tex = new THREE.CanvasTexture(cvs);
+  for (let i = 0; i < PUFF_COUNT; i++) {
+    const m = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false }));
+    m.userData.phase = i / PUFF_COUNT;
+    m.visible = false;
+    pivot.add(m);
+    puffSprites.push(m);
+  }
+}
+// p is the puff's own progress, 0 before it starts and 1 at the last frame of the clip.
+function setPuff(p) {
+  if (!PUFF) return;
+  const dir = new THREE.Vector3(PUFF_DIR[0], PUFF_DIR[1], PUFF_DIR[2]).normalize();
+  for (const s of puffSprites) {
+    if (p <= 0) { s.visible = false; continue; }
+    // each sprite runs its own loop, offset by its phase, so the stream reads as continuous
+    const local = (p * 2.2 + s.userData.phase) % 1;
+    const travel = 1.15 * local;
+    s.position.set(PUFF[0] + dir.x * travel, PUFF[1] + dir.y * travel, PUFF[2] + dir.z * travel);
+    const grow = PUFF_SIZE * (0.45 + local * 1.5);
+    s.scale.set(grow, grow, 1);
+    // fade in fast, out slow, and fade the whole stream down over the final fifth of the clip so
+    // the icon truly comes to rest instead of being cut mid-jet
+    const shape = Math.min(1, local / 0.18) * (1 - local) * (1 - local);
+    const outro = p > 0.8 ? (1 - p) / 0.2 : 1;
+    s.material.opacity = 0.9 * shape * outro;
+    s.visible = s.material.opacity > 0.004;
+  }
+}
+
 window.__SAT = ${opt.sat};
-window.__renderAt = (rad) => {
+window.__renderAt = (rad, puffT) => {
   pivot.rotation.y = rad;
+  setPuff(puffT === undefined ? 0 : puffT);
   renderer.render(scene, camera);
   if (window.__SAT === 1) return renderer.domElement.toDataURL("image/png");
   // Lift saturation on the colour channels only. Alpha is copied through untouched, so the
@@ -246,7 +304,12 @@ for (let f = 0; f < opt.frames; f++) {
   else if (f >= opt.frames - opt.holdOut) t = 1;
   else t = easeSoftEnds((f - opt.holdIn) / (sweep - 1));
   const rad = (opt.startAngle * Math.PI / 180) + t * opt.turns * Math.PI * 2;
-  const dataUrl = await page.evaluate((r) => window.__renderAt(r), rad);
+  // The puff opens with the sweep and runs to the LAST frame, so it outlives the body settling by
+  // the hold-out, which at the defaults is the 400ms the reference's tree overhangs its house by.
+  const puffT = opt.puff
+    ? (f < opt.holdIn ? 0 : (f - opt.holdIn) / (opt.frames - 1 - opt.holdIn))
+    : 0;
+  const dataUrl = await page.evaluate(([r, pt]) => window.__renderAt(r, pt), [rad, puffT]);
   writeFileSync(join(outdir, String(f + 1).padStart(3, "0") + ".png"), Buffer.from(dataUrl.split(",")[1], "base64"));
   const stats = await page.evaluate(() => window.__alphaStats());
   if (stats.opaque === 0) emptyFrames++;

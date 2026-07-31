@@ -203,6 +203,19 @@ useful: it proves not every icon needs a secondary motion, so a plain barber cha
   - verified: numbers above, measured this turn from the stored frame sets.
 - [x] Dryer colour regeneration authorised by the owner ("make it fucking normal") and requested: one
       image, `count: 1`, strong saturated coral pink instead of dusty rose. Job eeafa1d8.
-- [ ] Re-mesh, re-render and re-encode the dryer on the new source.
-- [ ] Build the nozzle air puff into `scripts/capture/turntable-render.mjs` as an optional emitter with
-      its own timing, so it can outlive the body settle by the measured 400 ms.
+- [ ] Re-mesh, re-render and re-encode the dryer. BLOCKED, concrete: the owner has four retro
+      colourways in front of him (`src/retro-{butter,beige,mustard,caramel}.png`, split from the one
+      grid generation `src/dryer-retro-grid.png`) and has not picked. Meshing all four is the exact
+      credit overspend he told me to stop, so this waits on one word.
+- [x] Build the nozzle air puff into `scripts/capture/turntable-render.mjs`.
+  - verified: new `--puff x,y,z`, `--puff-dir`, `--puff-size`, `--puff-count` flags. Sprites are
+    children of the pivot so the jet turns with the object, every value is derived from the frame
+    index rather than a clock or a random draw, and `node --check` passes. Test render on the existing
+    dryer mesh into `frames/puff-test/`: alpha coverage rises 16.9% to 17.6% at peak and returns to
+    16.9%, which only happens if the jet is genuinely drawn; the loop still closes byte-identical.
+    Region timing measured on the 180x162 frames, canvas split at x=0.34: the body stops moving at
+    1200 ms while the nozzle lane keeps moving to 1267 ms, so the secondary motion does outlive the
+    body, which is the reference's house-tree relationship.
+  - NOT YET TUNED: at the default emit point the jet is faint, 0.7 percentage points of extra
+    coverage. Placement and strength have to be set against the FINAL mesh, since the emit point is
+    in object space and the mustard dryer is not meshed yet. Tuning is one render, not a rebuild.
