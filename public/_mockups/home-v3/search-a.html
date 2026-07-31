@@ -250,8 +250,19 @@
        and did not carry across to the unselected one, which is the whole scope-creep problem in
        reverse: I fixed one state and left its twin.
        Both states now take their border from Airbnb: white here, translucent white when selected. */
+    /* 1:1 STRUCTURE, not just 1:1 values. This is the thing I kept missing for four rounds.
+       Airbnb does NOT put the shadow on the tab. The tab carries a white border and nothing else,
+       and TWO absolutely-positioned spans sit inside it at inset:0 radius:40, one holding the
+       raised recipe and one the sunken, cross-fading on opacity. I kept copying their VALUES onto
+       my button, which stacks the inset highlights against the button's own border and background
+       and renders as two visible edges. Same numbers, different structure, different result.
+       ::before and ::after below are those two spans. The shadow is not removed, it moves onto
+       them, which is exactly how theirs is built. */
+    position: relative;
     border: 1px solid #FFFFFF;
-    box-shadow: var(--lift-raised);
+    background: transparent;
+    box-shadow: 0 0 0 0 rgba(0,0,0,0);
+    isolation: isolate;
     /* MEASURED off airbnb.ch at vw=390. Their tab runs
          transform 0.22s cubic-bezier(0.1, 0.9, 0.2, 1)
        and the two shadow layers inside it CROSS-FADE on opacity over the same 0.22s and curve.
@@ -270,6 +281,24 @@
      for a chevron probe whose CSS was perfect and which animated not at all. A JS-toggled class
      held for the full 220ms is the fix that worked there. */
   .sa-cat.is-pressed { transform: scale(0.96); }
+
+  /* The two overlay layers, Airbnb's structure. Both sit at inset 0 behind the label and
+     cross-fade on opacity over the same 220ms curve as everything else, so selecting a pill is one
+     shadow dissolving into another rather than a box-shadow swap. */
+  .sa-cat::before,
+  .sa-cat::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: -1;
+    transition: opacity 220ms cubic-bezier(0.1, 0.9, 0.2, 1);
+  }
+  .sa-cat::before { background: #FFFFFF; box-shadow: var(--lift-raised); opacity: 1; }
+  .sa-cat::after  { background: #F4F4F5; box-shadow: var(--lift-sunken); opacity: 0; }
+  .sa-cat[aria-selected="true"]::before { opacity: 0; }
+  .sa-cat[aria-selected="true"]::after  { opacity: 1; }
   /* Owner: "I told you to fix up the shadows of the pills and you did not do anything." Correct,
      and here is what I never checked: the SELECTED category pill was still carrying Airbnb's
      9-layer sunken recipe while every other control in the chrome had moved to the single shared
@@ -281,10 +310,10 @@
      that disappears into the fill and lets the inset shadow draw the only visible boundary. Mine
      kept the grey #E4E4E7 hairline underneath the 9-layer sunken shadow, so the grey line and the
      dark inset edge sat next to each other and read as two rings. Their border, exactly. */
+  /* When a pill is on, the ::after layer cross-fades in and carries the whole treatment, so this
+     rule sets only the border, exactly as Airbnb's own tab does. */
   .sa-cat[aria-selected="true"] {
-    background: #F4F4F5;
     border-color: rgba(255,255,255,0.5);
-    box-shadow: var(--lift-sunken);
   }
   .sa-caticon { height: 31px; width: 31px; flex: 0 0 auto; object-fit: contain; }
 
