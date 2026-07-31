@@ -139,6 +139,6 @@ system rather than several files drifting apart.
 - [x] Home. verified: All renders 4 rails, 0 list rows, headings at x=28, rail card 231 wide.
 - [x] Coiffeur / Barber / Nails / Spa / Walk-in. verified: each returns a different subset (3/3/1/1/3), so the filter discriminates.
 - [x] Inspo. verified: 16 cells, 2 columns, 2 distinct heights, 0 prices, 0 list rows.
-- [x] The standalone home mockup deleted with a graveyard line.
+- [x] The standalone home mockup deleted with a graveyard line. verified: commit 4831091e1; `ls public/_mockups/home-v3/` returns index.html n1-v2.html n1.html search-a.html sections.html, no full-a.html; graveyard line present in _design-system/REMOVED.md.
 - [ ] STILL OPEN, owner decision: the card shape. He has the measured options and has not picked.
 - [ ] STANDING ORDER: no .tsx edits until he approves.
