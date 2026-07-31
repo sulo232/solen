@@ -472,6 +472,10 @@
     { slug: "smooth-skin-studio", name: "Smooth Skin Studio", cat: "spa",        rating: "4.50", price: 20, reviews: 14, service: "Underarms", addr: "Grabenring 8" }
   ];
   STORES.forEach(function (s) { s.photo = "/_mockups/_assets/store-photos/" + s.slug + ".jpg"; });
+  // walkin_enabled, read from /api/salons?limit=20 on the running dev server. Four of the twenty
+  // are true; three of those four are in this eight-store slice. Real flag, not a guess.
+  var WALKIN = { "cuts-and-culture": 1, "the-fade-factory": 1, "old-town-barbers": 1 };
+  STORES.forEach(function (s) { s.walkin = !!WALKIN[s.slug]; });
 
   // Owner: "we need to have a home or something all the way on the left, so there is a home page,
   // so they can actually go to the home page instead of being stuck in whatever category."
@@ -539,6 +543,7 @@
     b.addEventListener("click", function () {
       scroll.querySelectorAll(".sa-cat").forEach(function (x) { x.setAttribute("aria-selected", "false"); });
       b.setAttribute("aria-selected", "true");
+      renderCategory(c.slug, c.label);
     });
     scroll.appendChild(b);
   });
@@ -601,8 +606,35 @@
     return a;
   }
 
+  // ===== EVERY CATEGORY IS THIS PAGE WITH DIFFERENT DATA ==================
+  // Owner: "make every single mockup for every category." Five near-identical files would be five
+  // copies to keep in sync, which is the drift this project keeps paying for. One page that
+  // actually filters gives him every category mockup and proves the filter discriminates instead
+  // of just rendering. Walk-in is a real /api/salons flag, not a category, so it filters on that.
   var list = document.getElementById("sa-list");
-  STORES.forEach(function (s) { list.appendChild(resultRow(s)); });
+  var pillLine = document.querySelector(".sa-l1");
+
+  function renderCategory(slug, label) {
+    var rows = STORES;
+    if (slug === "walkin") rows = STORES.filter(function (s) { return s.walkin; });
+    else if (slug !== "home" && slug !== "inspo") rows = STORES.filter(function (s) { return s.cat === slug; });
+
+    list.innerHTML = "";
+    if (!rows.length) {
+      var empty = document.createElement("p");
+      empty.className = "sa-meta2";
+      empty.style.textAlign = "center";
+      empty.style.padding = "24px 0";
+      // No fabricated filler: a category with no seeded store says so.
+      empty.textContent = "No seeded stores in this category yet.";
+      list.appendChild(empty);
+    } else {
+      rows.forEach(function (s) { list.appendChild(resultRow(s)); });
+    }
+    if (pillLine) pillLine.textContent = slug === "home" ? "Search stores" : label;
+  }
+
+  renderCategory(ACTIVE, "Barber");
 
   document.getElementById("sa-note").innerHTML =
     "<b>Composed, not drawn.</b> The row is SalonResultCard's default shape, copied by line: full "
