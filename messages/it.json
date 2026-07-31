@@ -99,7 +99,7 @@
     "tabSaved": "Salvati",
     "searchPlaceholder": "Cerca",
     "sortLabel": "Ordina",
-    "discoverySectionTitle": "Novità per te",
+    "discoverySectionTitle": "Novità per Lei",
     "tabAppointmentsEmpty": "Il Suo primo appuntamento La aspetta",
     "tabAppointmentsEmptyLead": "Prenota un salone e apparirà qui",
     "tabSavedEmpty": "I Suoi saloni preferiti, tutti in un posto",
@@ -162,7 +162,7 @@
       "nextBooking": "Il Suo prossimo appuntamento: {date} presso {salon}",
       "welcomeBack": "Bentornato — cosa sta cercando oggi?",
       "bookings": "Prenotazioni",
-      "aiTagline": "Coiffeur, Barber, Unghie & Spa vicino a te.",
+      "aiTagline": "Coiffeur, Barber, Unghie & Spa vicino a Lei.",
       "eyebrow": "Piattaforma beauty · Svizzera",
       "sub": "Trovi e prenoti i migliori saloni della Sua città — subito, senza telefonate.",
       "trustRating": "valut. media",
@@ -185,7 +185,7 @@
       "title": "Come funziona",
       "step1": {
         "title": "Trova",
-        "desc": "Scopri i saloni vicino a te."
+        "desc": "Scopri i saloni vicino a Lei."
       },
       "step2": {
         "title": "Prenota",
@@ -208,7 +208,7 @@
       "entdecken": "Scopri",
       "viewAll": "Vedi tutto",
       "emptyTitle": "In crescita",
-      "emptyMessage": "Presto più saloni vicino a te",
+      "emptyMessage": "Presto più saloni vicino a Lei",
       "beliebtInBasel": "Popolare a Basilea",
       "beliebtInZuerich": "Popolare a Zurigo",
       "beliebtInBern": "Popolare a Berna"
@@ -220,8 +220,8 @@
     },
     "nearby": {
       "eyebrow": "Posizione",
-      "title": "Vicino a te",
-      "subtitle": "Scopri saloni vicini a te",
+      "title": "Vicino a Lei",
+      "subtitle": "Scopri saloni vicini a Lei",
       "viewAll": "Vedi tutto"
     },
     "newSalons": {
@@ -281,7 +281,7 @@
       "quartiers_all": "Vedi tutto →"
     },
     "heroCarousel": {
-      "label": "Popolari vicino a te",
+      "label": "Popolari vicino a Lei",
       "empty": "Prossimamente nella Sua città",
       "newBadge": "Nuovo",
       "fromPrice": "Da CHF {amount}",
@@ -378,7 +378,7 @@
       "inspirationText": "Lasciati ispirare da migliaia di stili"
     },
     "map": {
-      "eyebrow": "Vicino a te",
+      "eyebrow": "Vicino a Lei",
       "title": "SALONI SULLA MAPPA",
       "bookCta": "Prenota",
       "openCta": "Apri"
@@ -394,7 +394,7 @@
       "bookings": "Prenotazioni"
     },
     "cities": {
-      "title": "Saloni vicino a te"
+      "title": "Saloni vicino a Lei"
     },
     "testimonials": {
       "title": "Cosa dicono i nostri utenti",
@@ -439,7 +439,7 @@
     "savingToBoard": "Salvataggio…",
     "savedLabel": "Salvato",
     "comingSoon": "Prossimamente",
-    "comingSoonMessage": "Stiamo lavorando per rendere questa categoria disponibile per te.",
+    "comingSoonMessage": "Stiamo lavorando per rendere questa categoria disponibile per Lei.",
     "loadMore": "Carica altro",
     "showAll": "Mostra tutto",
     "today": "Oggi",
@@ -622,7 +622,7 @@
     "addStaff": "Aggiungi collaboratore",
     "editStaff": "Modifica",
     "deleteRequest": "Elimina",
-    "nearYou": "Saloni vicino a te",
+    "nearYou": "Saloni vicino a Lei",
     "loadingPayment": "Errore nel caricamento del pagamento",
     "addCard": "Aggiungi carta",
     "errorAddingCard": "Errore nell'aggiunta della carta.",
@@ -2688,7 +2688,7 @@
       "saved": "Salvato",
       "sectionQuartier": "Scopra il Suo quartiere",
       "sectionTrending": "Di tendenza a Basilea",
-      "sectionNearby": "Vicino a te",
+      "sectionNearby": "Vicino a Lei",
       "sectionNewSalons": "Nuovi saloni",
       "sectionRebook": "Prenotare di nuovo?",
       "sectionReviews": "Carosello recensioni",
@@ -3810,7 +3810,7 @@
     "notifDeals": "Offerte & Promozioni",
     "notifDealsDesc": "Offerte last-minute e speciali",
     "notifNewSalons": "Nuovi saloni",
-    "notifNewSalonsDesc": "Quando nuovi saloni aprono vicino a te",
+    "notifNewSalonsDesc": "Quando nuovi saloni aprono vicino a Lei",
     "comingSoon": "In arrivo",
     "language": "Lingua",
     "save": "Salva",
@@ -4192,7 +4192,7 @@
   },
   "makeup": {
     "coming_soon_title": "Prossimamente",
-    "coming_soon_message": "Stiamo lavorando per rendere questa categoria disponibile per te."
+    "coming_soon_message": "Stiamo lavorando per rendere questa categoria disponibile per Lei."
   },
   "discoveryFilters": {
     "filter_label": "Filtra",
@@ -4214,7 +4214,7 @@
     "sort_for_you": "Per te",
     "sort_new": "Nuovo",
     "sort_popular": "Popolare",
-    "dna_subline": "Già adattato a te. Puoi cambiare tutto.",
+    "dna_subline": "Già adattato a Lei. Può cambiare tutto.",
     "dna_heading_with_length": "Capelli {texture}, {length}",
     "dna_heading_texture_only": "Capelli {texture}",
     "dna_texture_straight": "lisci",
@@ -4918,7 +4918,7 @@
       "sessionsUsed": "{used}/{total} sessioni utilizzate"
     },
     "nearbySalons": {
-      "label": "Vicino a te",
+      "label": "Vicino a Lei",
       "title": "Saloni simili"
     },
     "categoryHero": {
@@ -5318,7 +5318,7 @@
   "categoryHero": {
     "coiffeur": {
       "label": "Parrucchiere",
-      "subtitle": "Trova i migliori parrucchieri vicino a te. Prenota online, conferma immediata.",
+      "subtitle": "Trova i migliori parrucchieri vicino a Lei. Prenota online, conferma immediata.",
       "titleSuffix": "a Basilea",
       "title": "Parrucchieri in Svizzera"
     },
@@ -5336,7 +5336,7 @@
     },
     "spa": {
       "label": "Spa & Massaggi",
-      "subtitle": "Benessere, massaggi e relax vicino a te.",
+      "subtitle": "Benessere, massaggi e relax vicino a Lei.",
       "titleSuffix": "a Basilea",
       "title": "Spa e massaggi in Svizzera"
     },
@@ -5416,7 +5416,7 @@
     "ai_matcher": {
       "step1_question": "Qual è il Suo tipo di capelli?",
       "step2_question": "Quale servizio sta cercando?",
-      "step3_question": "Cosa è più importante per te?",
+      "step3_question": "Cosa è più importante per Lei?",
       "option_curly": "Ricci",
       "option_wavy": "Mossi",
       "option_straight": "Lisci",
@@ -5437,7 +5437,7 @@
       "step_label": "Passo {step} di {total}",
       "next": "Avanti",
       "show_result": "Mostra raccomandazione",
-      "result_heading": "Abbiamo trovato dei salon per te!",
+      "result_heading": "Abbiamo trovato dei salon per Lei!",
       "result_desc": "In base alle Sue risposte Le mostriamo le migliori corrispondenze a Basilea.",
       "result_cta": "Scopri i salon",
       "ai_badge": "Raccomandazione IA",
@@ -5537,7 +5537,7 @@
     "searchNoResults": "Nessun risultato",
     "searchSuggestion": "Prova termini di ricerca diversi o modifica i filtri.",
     "searchTryRemoveFilters": "Reimposta filtri",
-    "searchPopularTitle": "Saloni popolari vicino a te",
+    "searchPopularTitle": "Saloni popolari vicino a Lei",
     "searchTrySuggestions": "Oppure prova:",
     "offersEmpty": "Nessuna offerta al momento",
     "offersEmptyMessage": "Nuove offerte in arrivo. Torna presto!",
@@ -5685,7 +5685,7 @@
     "loyaltyBullet3": "Visualizzi i progressi in qualsiasi momento nel Suo profilo",
     "mapEyebrow": "Mappa dei prezzi",
     "mapTitle": "I prezzi direttamente sulla mappa",
-    "mapBullet1": "Vedi subito quanto costano i saloni vicino a te",
+    "mapBullet1": "Vedi subito quanto costano i saloni vicino a Lei",
     "mapBullet2": "I segnaposto evidenziano i saloni meglio valutati",
     "mapBullet3": "Filtra per quartiere, prezzo e disponibilità",
     "ctaEyebrow": "Il Suo prossimo passo",
