@@ -68,3 +68,12 @@ shell added. Not a decision waiting on the owner. The next session's first actio
 liftup-home-fs before/after shell, wrap search-a.html's AFTER pane in it, point BEFORE at
 https://card-albums-anne-mood.trycloudflare.com/de/basel/barbershop, write, verify at 390x844,
 commit. Then PDP, Inspo, booking, profile.
+
+## 2026-07-31 , search card matched to the live home card
+
+- [x] CORRECTION: "we already have our own aspect ratio but you kinda fucked it up." Photo 16/9 -> 5/4, radius 16 -> 22. verified: 1f02c128b, live /de card measured at 390 = ratio 1.25, radius 22px.
+- [x] CORRECTION: "stop inventing, look at the actual home page and copy that." Every card value copied from the live /de card at 390, not from the source file. verified: 1f02c128b.
+- [x] Review display: was 4.81 at 14/600 ink with a blue count; the live home card shows "4.8" one decimal at 13/400 grey with NO count. Count removed, it came from the category route which uses a different card. verified: 1f02c128b.
+- [x] Overlapping toggle bar: was position:fixed with a flat 52px reservation, so a second button row grew past it and covered the search pill. Now a normal block. verified: bar bottom 96 vs pill top 164 at 390, no overlap.
+- [x] Categories default to ABOVE, the owner's pick. verified: 1f02c128b.
+- [x] Filter pills in one row under the chrome, the Fresha arrangement. verified: 4 pills render at 390.
