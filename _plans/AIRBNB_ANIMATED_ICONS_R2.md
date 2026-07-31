@@ -729,3 +729,22 @@ persistent lines.
 - [x] A6. Morphs in and out, verified: alpha is a fade-in over the first 22% of an arc's life times
       a fade-out over the last 45%, so it grows in at the nozzle and dissolves as it travels.
       Resting icon unchanged: still-hold opaque deltas all 0, loop closes byte-identical.
+
+## Round 19: his red drawing on the page, and the chair's matte problem
+
+Owner annotated the live page in red: a single LONG FLOWING wave, one rise, one dip, one rise. Plus
+"you made a little fucking arrow", "it lags out, it bugs out", and the barber chair "looks too matte
+compared to the Airbnb".
+
+- [x] Long flowing waves, verified: commit below. The short arcs are gone. Three short Cs stacked read
+      as a chevron and a chevron reads as an arrow, which is exactly what he saw. Replaced with one
+      long sine of about 1.5 cycles across roughly a fifth of the frame width, amplitude tapered at
+      both ends by a sine envelope so a stroke eases in and out instead of starting mid-swing.
+- [x] The lag and the bugging, verified: the cause was a modulo in the stroke's life, so a stroke could
+      die and be reborn part-way through the clip, jumping position between frames. Each stroke now
+      lives exactly once, start to finish.
+- [x] Chair shine, verified: gloss raised to 1.0 and the flat neutral pass dropped from the frame,
+      because that pass was compressing the value range and killing the specular outright, measured at
+      **0.0% highlight pixels** with it on. Without it: **36.7%**, up from 33.2, and the upholstery
+      holds at #E46734. The frame goes back to chrome, which is where the highlights actually live.
+      Trade named honestly: he approved a grey frame earlier, and this is brighter than that.

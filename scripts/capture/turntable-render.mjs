@@ -427,7 +427,7 @@ window.__renderAt = (rad, puffT, t, wt) => {
         // drive the frame toward a flat grey at the target value, keeping its own shading relief so
         // it still reads as a lit 3D object rather than as a paper cut-out
         const rel = mx > 0 ? mx : 0;
-        const V = Math.max(0, Math.min(1, window.__NEUTVAL * (0.72 + 0.34 * rel))) * 255;
+        const V = Math.max(0, Math.min(1, window.__NEUTVAL * (0.30 + 0.95 * rel))) * 255;
         d[i] = V; d[i + 1] = V; d[i + 2] = V;
       }
       if (sat >= 0.22) {

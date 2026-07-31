@@ -70,29 +70,38 @@ def nozzle_point(alpha, side):
     return (lo, ly, -1) if pick_left else (hi, ry, 1)
 
 
-def arc(draw, cx, cy, radius, half_sweep, weight, direction, colour, a255, depth):
-    """One short arc: a shallow C opening back toward the nozzle.
+def wave(draw, x0, y0, length, amp, cycles, weight, direction, phase, colour, a255, depth):
+    """One LONG SMOOTH wave, drawn from the owner's own annotation.
 
-    Drawn 3D-ROUNDED rather than flat: a darker wider pass underneath and a lighter narrower pass
-    on top give the stroke a lit side and a shaded side, which is what makes a 2D mark read as a
-    tube at icon size. Round caps at both ends.
+    He drew it on the page in red: a single flowing line that rises, dips and rises again over a
+    generous width. Gentle amplitude, about one and a half cycles, constant weight. Not the short
+    arcs I built from his earlier description, which he then read as "a little arrow": three short
+    Cs stacked up look like a chevron, and a chevron is an arrow.
+
+    Rendered 3D-rounded: a darker wider pass underneath, the base colour inside it, and a lighter
+    narrower highlight riding just above, plus round caps. That is what makes a 2D stroke read as a
+    tube at icon size.
     """
-    def pts(r, n=26):
+    def pts(dy=0.0):
         out = []
+        n = 64
         for i in range(n + 1):
-            t = -half_sweep + (2 * half_sweep) * (i / n)
-            out.append((cx + direction * r * math.cos(t), cy + r * math.sin(t)))
+            u = i / n
+            x = x0 + direction * u * length
+            # taper the amplitude at both ends so the stroke eases in and out instead of starting
+            # mid-swing, which is what made the old version look like it was jumping
+            env = math.sin(math.pi * min(1.0, max(0.0, u))) ** 0.6
+            y = y0 + math.sin(u * math.pi * 2 * cycles + phase) * amp * env + dy
+            out.append((x, y))
         return out
 
     shade = tuple(max(0, c - 34) for c in colour)
     light = tuple(min(255, c + 46) for c in colour)
 
-    body = pts(radius)
+    body = pts()
     draw.line(body, fill=shade + (a255,), width=weight, joint="curve")
     draw.line(body, fill=colour + (a255,), width=max(1, weight - 1), joint="curve")
-    # highlight rides slightly outside the curve, like a specular along the top of a tube
-    hi = pts(radius + depth)
-    draw.line(hi, fill=light + (int(a255 * 0.75),), width=max(1, weight // 2), joint="curve")
+    draw.line(pts(-depth), fill=light + (int(a255 * 0.7),), width=max(1, weight // 2), joint="curve")
 
     r = weight / 2
     for px, py in (body[0], body[-1]):
@@ -106,7 +115,7 @@ def main():
     ap.add_argument("--hold-out", type=int, default=18)
     ap.add_argument("--side", default="auto", choices=["auto", "left", "right"])
     ap.add_argument("--color", default="154,160,166")
-    ap.add_argument("--arcs", type=int, default=3)       # the reference shows three
+    ap.add_argument("--arcs", type=int, default=3)       # three strokes, as he drew
     ap.add_argument("--weight", type=int, default=5)
     ap.add_argument("--life", type=float, default=0.42)  # how long one arc lives, as clip fraction
     args = ap.parse_args()
@@ -143,31 +152,29 @@ def main():
         any_drawn = False
 
         for k in range(args.arcs):
-            # ONE AT A TIME: each arc is born a beat after the one before it, then they repeat, so
-            # the stream reads as continuous emission rather than as three lines switching on.
-            birth = k * (args.life / args.arcs)
-            local = (p - birth) / args.life
-            if local < 0:
+            # ONE AT A TIME, but WITHOUT the popping. The previous version restarted each stroke's
+            # life with a modulo, so a stroke could vanish and reappear mid-clip. That is what he saw
+            # as lagging and bugging out. Each stroke now lives exactly once, start to finish.
+            birth = k * 0.17
+            local = (p - birth) / max(0.05, 1.0 - birth)
+            if local <= 0 or local >= 1:
                 continue
-            local = local % 1.0 if p - birth < args.life * 2.4 else -1
-            if local < 0:
-                continue
-            # MORPH IN, MORPH OUT: grow quickly, hold, then fade as it travels out
-            fade_in = min(1.0, local / 0.22)
-            fade_out = min(1.0, (1.0 - local) / 0.45)
-            alpha_f = fade_in * fade_out
+            # morph in, morph out
+            alpha_f = min(1.0, local / 0.20) * min(1.0, (1.0 - local) / 0.42)
             if alpha_f <= 0.03:
                 continue
-            dist = near + (far - near) * local
-            radius = 5.4 + local * 3.6                 # opens up a little as it travels
-            arc(
+            dist = near + (far - near) * local * 0.55
+            row = (k - (args.arcs - 1) / 2)
+            wave(
                 od,
                 nx + d * dist,
-                ny,
-                radius,
-                0.95,                                   # shallow C, matching the reference
+                ny + row * 10.5,
+                W * 0.19 * (0.80 + local * 0.30),      # long and flowing, like his drawing
+                5.0,
+                1.5,                                    # about one and a half cycles
                 args.weight,
                 d,
+                k * 0.7,
                 colour,
                 int(245 * alpha_f),
                 1.4,
