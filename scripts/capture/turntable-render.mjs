@@ -30,10 +30,13 @@ if (!glbPath || !outdirArg) {
   console.error("Usage: node scripts/capture/turntable-render.mjs <model.glb> <outdir> [--frames 51] [--fps 30] [--size 180x162] [--hold-in 6] [--hold-out 12] [--turns 1]");
   process.exit(1);
 }
-const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1 };
+const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null };
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
-  if (a === "--frames") opt.frames = Number(argv[++i]);
+  // ES modules are blocked over file:// by CORS (origin null), so when the outdir sits under
+  // public/ pass the http URL of the staged page instead. Without this the canvas never mounts.
+  if (a === "--stage-url") opt.stageUrl = argv[++i];
+  else if (a === "--frames") opt.frames = Number(argv[++i]);
   else if (a === "--fps") opt.fps = Number(argv[++i]);
   else if (a === "--size") opt.size = argv[++i];
   else if (a === "--hold-in") opt.holdIn = Number(argv[++i]);
@@ -84,11 +87,17 @@ mkdirSync(stage, { recursive: true });
 const glbAbs = resolve(glbPath);
 if (!existsSync(glbAbs)) { console.error(`REFUSED: model not found: ${glbAbs}`); process.exit(1); }
 copyFileSync(glbAbs, join(stage, "model.glb"));
+// Mirror three's own directory layout. GLTFLoader.js imports '../utils/BufferGeometryUtils.js'
+// and '../utils/SkeletonUtils.js' by relative path, so flattening these into one folder makes the
+// module 404 and fail silently: no canvas, no error, nothing in the console.
+mkdirSync(join(stage, "loaders"), { recursive: true });
+mkdirSync(join(stage, "utils"), { recursive: true });
 for (const [from, to] of [
   [join(ROOT, "node_modules/three/build/three.module.js"), "three.module.js"],
   [join(ROOT, "node_modules/three/build/three.core.js"), "three.core.js"],
-  [join(ROOT, "node_modules/three/examples/jsm/loaders/GLTFLoader.js"), "GLTFLoader.js"],
-  [join(ROOT, "node_modules/three/examples/jsm/utils/BufferGeometryUtils.js"), "BufferGeometryUtils.js"],
+  [join(ROOT, "node_modules/three/examples/jsm/loaders/GLTFLoader.js"), "loaders/GLTFLoader.js"],
+  [join(ROOT, "node_modules/three/examples/jsm/utils/BufferGeometryUtils.js"), "utils/BufferGeometryUtils.js"],
+  [join(ROOT, "node_modules/three/examples/jsm/utils/SkeletonUtils.js"), "utils/SkeletonUtils.js"],
 ]) {
   if (!existsSync(from)) { console.error(`REFUSED: missing three.js file ${from}. Run: npm install three`); process.exit(1); }
   copyFileSync(from, join(stage, to));
@@ -97,9 +106,10 @@ for (const [from, to] of [
 const pageHtml = `<!doctype html><meta charset="utf-8">
 <style>html,body{margin:0;background:transparent}canvas{display:block}</style>
 <script type="importmap">{"imports":{"three":"./three.module.js","three/src/":"./","three/addons/":"./"}}</script>
+<script>window.addEventListener("error",e=>{window.__error=String(e.message||e);});</script>
 <script type="module">
 import * as THREE from "./three.module.js";
-import { GLTFLoader } from "./GLTFLoader.js";
+import { GLTFLoader } from "./loaders/GLTFLoader.js";
 
 const W = ${W}, H = ${H};
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
@@ -184,7 +194,11 @@ const context = await browser.newContext({ viewport: { width: W + 40, height: H 
 const page = await context.newPage();
 page.on("pageerror", (e) => console.error("  page error:", e.message));
 
-const url = "file://" + join(stage, "index.html");
+const url = opt.stageUrl || ("file://" + join(stage, "index.html"));
+if (!opt.stageUrl) {
+  console.warn("note: no --stage-url given, using file://. Chromium blocks ES modules there (origin null),");
+  console.warn("      so serve the outdir over http and pass --stage-url <url>/_stage/index.html.");
+}
 const g = await guardedGoto(page, url, { expectSelector: "canvas#stage" });
 if (!g.ok) { console.error(refusal(url, g)); await browser.close(); process.exit(1); }
 

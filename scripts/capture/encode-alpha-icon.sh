@@ -29,8 +29,9 @@ ffmpeg -hide_banner -loglevel error -y \
 if ffmpeg -hide_banner -encoders 2>/dev/null | grep -q hevc_videotoolbox; then
   ffmpeg -hide_banner -loglevel error -y \
     -framerate "$FPS" -i "$FRAMES/%03d.png" \
-    -c:v hevc_videotoolbox -alpha_quality 0.9 -pix_fmt bgra -tag:v hvc1 -q:v 60 -an \
-    "$OUT/$NAME.mov"
+    -c:v hevc_videotoolbox -allow_sw 1 -alpha_quality 0.9 -pix_fmt bgra -tag:v hvc1 -q:v 60 -an \
+    "$OUT/$NAME.mov" \
+    || echo "note: the Safari .mov encode failed on this machine; the webm still carries the alpha"
 else
   echo "note: hevc_videotoolbox not available, skipped the Safari .mov (the webm still has alpha)"
 fi
