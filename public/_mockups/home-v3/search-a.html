@@ -88,7 +88,7 @@
      the chrome. A filter control and a sort pill already exist on the live route (44x44 at y=171
      and 114x44 at y=235, measured); this is the same set collapsed into one row. */
   .sa-tools { display: flex; gap: 12px; padding: 4px 16px 16px; overflow-x: auto;
-    scrollbar-width: none; touch-action: pan-x; }
+    scrollbar-width: none; }
   .sa-tools::-webkit-scrollbar { display: none; }
   /* THREE FILTER TREATMENTS. Owner: "the filter pills look too flat and don't match the search bar
      and the categories, they use a lot of shadow and it doesn't. Give me ideas."
@@ -231,7 +231,7 @@
   /* Owner: "the gaps between those stuff, eight is not enough." Every gap in the chrome goes
      8 -> 12, and the vertical padding opens with it, so the three rows stop reading as one block. */
   .sa-catscroll { display: flex; gap: 12px; padding: 12px 16px 14px; overflow-x: auto;
-    scrollbar-width: none; touch-action: pan-x; }
+    scrollbar-width: none; }
   .sa-catscroll::-webkit-scrollbar { display: none; }
   .sa-cat {
     display: inline-flex; flex: 0 0 auto; height: 40px; align-items: center; gap: 4px;
@@ -510,16 +510,20 @@
   /* NO mandatory snapping here. With it on, the browser snapped each rail to an item on load, so
      every row started mid-card with its heading clipped out of view. Measured: the first card
      rendered at a negative x. Proximity snapping keeps the feel without hijacking the start. */
-  /* WHY HE COULD NOT SCROLL, and it never showed up in my measurements because I was scrolling
-     with code, not a finger. Programmatic scrollTo always works. A TOUCH does not.
-     On the home state almost every pixel under his thumb belongs to a horizontal scroller: the
-     category row, the filter row, and one rail per section. With touch-action unset, the browser
-     is free to lock a drag to the horizontal axis the moment it starts on one of those, so a
-     vertical swipe gets eaten and the page appears frozen. pan-x tells it these elements own the
-     horizontal axis ONLY, and every vertical swipe passes through to the page.
-     This is why "I can't scroll anywhere" was literally true for him and false for me. */
+  /* NO touch-action here, deliberately, and the reason is a mistake I made twice in a row.
+     He said he could not scroll. The real cause was the DATA (Nails and Spa held one store each,
+     so those pages were exactly one viewport tall and had 0px of scrollable height). Before I
+     found that, I "fixed" it by putting touch-action: pan-x on the category row, the filter row
+     and all four rails. That made it worse: touch-action declares the COMPLETE set of gestures
+     allowed for a touch starting on the element, so pan-x permits horizontal panning and FORBIDS
+     VERTICAL. Those elements cover most of the screen, so I did not unblock his scroll, I blocked
+     it. Owner, right after: "im blocked from scrolling bro". My second attempt, pan-x pan-y, also
+     silently kills pinch-zoom, which he wants on a phone.
+     The default (auto) is correct and always was: the browser routes a sideways drag to the rail
+     and a vertical drag to the page, by gesture direction, and keeps pinch-zoom. The lesson is
+     that the property was never the problem, so the right amount of it is none. */
   .sa-rail { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none;
-    padding: 0 0 4px; scroll-snap-type: x proximity; touch-action: pan-x; }
+    padding: 0 0 4px; scroll-snap-type: x proximity; }
   .sa-rail::-webkit-scrollbar { display: none; }
   .sa-railcard { flex: 0 0 auto; width: calc((100vw - 44px) / 1.5); scroll-snap-align: start;
     cursor: pointer; }
