@@ -362,6 +362,17 @@ export default function Header({ locale }: { locale: string }) {
   // header switches to dark navy with light text. Matches the Hims pattern
   // the user pointed at in IMG_4285 ("header color changes too").
   const [tone, setTone] = React.useState<"light" | "dark">("light");
+  // mockup-ok: public/_mockups/home-v3/search-a.html .sa-cat.is-pressed / the pointerdown handler
+  // beneath it. JS-held press state for the category pill, NOT :active (iOS Safari never fires
+  // :active on a tap unless the element carries a touch listener, so a CSS-only press window is
+  // zero-length). Held for 220ms to match the pill's own transition duration.
+  const [pressedCategory, setPressedCategory] = React.useState<string | null>(null);
+  const handleCategoryPress = (slug: string) => {
+    setPressedCategory(slug);
+    window.setTimeout(() => {
+      setPressedCategory((prev) => (prev === slug ? null : prev));
+    }, 220);
+  };
 
   // V3-D215 (verifier #1): pathname guard — only hide-on-scroll on salon-detail
   // PDPs (path matches `/{locale}/salon/{slug}`). Computed once per render.
@@ -892,44 +903,70 @@ export default function Header({ locale }: { locale: string }) {
                     href={`/${locale}/${c.route}`}
                     role="tab"
                     aria-selected={isActive}
+                    onPointerDown={() => handleCategoryPress(c.slug)}
+                    onMouseDown={() => handleCategoryPress(c.slug)}
+                    onTouchStart={() => handleCategoryPress(c.slug)}
                     className={cn(
-                      // mockup-ok: public/_mockups/home-v3/full-a.html, owner 2026-07-31 "you can
-                      // actually kinda start implementing design on the real home page, just the
-                      // search bar and the pill".
-                      // Border dropped because the pill now carries elevation, and the design
-                      // contract's shadow row says a control carrying elevation drops its border,
-                      // never both. font-normal is set here so BOTH states share one weight.
-                      "inline-flex h-10 shrink-0 items-center gap-2 rounded-full px-4", // mockup-ok
-                      "font-body text-[15px] font-normal leading-none", // mockup-ok
-                      "transition-[box-shadow,background-color] duration-200 ease-glide", // mockup-ok
+                      // mockup-ok: public/_mockups/home-v3/search-a.html .sa-cat. 1:1 STRUCTURE,
+                      // not just 1:1 values: the pill itself carries no fill and no shadow, only
+                      // position + isolation, so it can host two absolutely-positioned overlay
+                      // spans (below) at z-[-1] that hold the actual raised/sunken fills and
+                      // cross-fade on opacity. Border stays fully removed per the owner's last
+                      // pass: a control carrying elevation drops its border, never both.
+                      "relative isolate inline-flex h-10 shrink-0 items-center gap-1 rounded-[40px] px-3.5 bg-transparent", // mockup-ok
+                      "font-body text-[14px] font-normal leading-none text-s-ink", // mockup-ok
+                      "transition-transform duration-[220ms] ease-[cubic-bezier(0.1,0.9,0.2,1)]", // mockup-ok
                       "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
                       // NO WEIGHT CHANGE ON SELECT. Owner 2026-07-31: "I don't really like how the
                       // text gets bold once you click it, it looks so weird and off. Don't never
                       // do that shit ever again." Measured on airbnb.ch at vw=390 the same day:
                       // their SELECTED tab renders font-weight 400, identical to its unselected
-                      // siblings. They never change weight on selection. So font-semibold leaves
-                      // the active branch; the sunken fill is the whole selection signal, which is
+                      // siblings. They never change weight on selection. So font-semibold stays
+                      // out; the fill cross-fade below is the whole selection signal, which is
                       // what the design contract locked anyway (selected = bg-s-bg-sunken +
                       // text-s-ink). The contract's trailing "+ semibold" clause is the part he
                       // rejected, and this line is the dated supersession of it.
                       //
-                      // DEPTH, copied verbatim off airbnb.ch at vw=390. Their shadow does not live
-                      // on the pill: it lives on two absolutely-positioned overlay spans inside it
-                      // that cross-fade by opacity between a raised and a sunken state. Reading
-                      // the pill element alone comes back empty, which is exactly how I got this
-                      // wrong twice and filled the gap with an invented 2-layer shadow he
-                      // rejected. Raised: 7 layers, 3 inset. Sunken: 9 layers, 5 inset. The inset
-                      // layers produce the moulded edge a plain drop shadow cannot fake.
-                      isActive // mockup-ok
-                        ? "bg-s-bg-sunken text-s-ink shadow-[rgb(255,255,255)_0_1px_0.5px_0,rgba(0,0,0,0.15)_0_-0.5px_1px_0,rgba(0,0,0,0.05)_0_-1.2px_0.5px_1px,rgba(0,0,0,0.05)_0_8px_16px_0,rgb(255,255,255)_-0.2px_-1px_1px_0_inset,rgba(0,0,0,0.2)_0.5px_0.7px_2.5px_0_inset,rgba(0,0,0,0.05)_-1px_-3px_8px_0_inset,rgba(0,0,0,0.1)_0.5px_2px_4px_0_inset,rgba(0,0,0,0.1)_1px_6px_6px_2px_inset]" // mockup-ok
-                        : "bg-white text-s-ink shadow-[rgba(0,0,0,0.1)_0_3px_2.5px_0,rgba(0,0,0,0.15)_0_1px_1px_0,rgba(0,0,0,0.15)_0_0.8px_0.4px_0,rgb(255,255,255)_0_1px_1.5px_0_inset,rgba(58,58,58,0.02)_0_10px_15px_0_inset,rgba(255,255,255,0.6)_0_-1.5px_0.8px_0_inset,rgba(0,0,0,0.3)_0_-1.5px_0.75px_0_inset]", // mockup-ok
+                      // Press feedback, JS-held for the full 220ms via handleCategoryPress above.
+                      // A CSS-only press window on an iOS tap with no touch listener is zero-length,
+                      // so a held class is the fix that worked on an earlier chevron probe with the
+                      // identical symptom.
+                      pressedCategory === c.slug && "scale-[0.96]", // mockup-ok
                     )}
                   >
+                    {/* mockup-ok: the two overlay layers, copied 1:1 off search-a.html
+                        .sa-cat::before / .sa-cat::after. They cross-fade on opacity over the same
+                        220ms curve as the press, so selecting a pill is one shadow dissolving into
+                        another rather than a box-shadow swap. Shadow values copied VERBATIM off
+                        the mockup's --lift-raised / --lift-sunken, not retyped or simplified.
+                        Raised: 7 layers, 3 inset. Sunken: 9 layers, 5 inset. */}
+                    <span
+                      aria-hidden
+                      className={cn(
+                        "pointer-events-none absolute inset-0 z-[-1] rounded-[inherit] bg-white transition-opacity duration-[220ms] ease-[cubic-bezier(0.1,0.9,0.2,1)]", // mockup-ok
+                        isActive ? "opacity-0" : "opacity-100", // mockup-ok
+                      )}
+                      style={{
+                        boxShadow:
+                          "rgba(0,0,0,0.10) 0 3px 2.5px 0, rgba(0,0,0,0.15) 0 1px 1px 0, rgba(0,0,0,0.15) 0 0.8px 0.4px 0, rgb(255,255,255) 0 1px 1.5px 0 inset, rgba(58,58,58,0.02) 0 10px 15px 0 inset, rgba(255,255,255,0.6) 0 -1.5px 0.8px 0 inset, rgba(0,0,0,0.30) 0 -1.5px 0.75px 0 inset",
+                      }}
+                    />
+                    <span
+                      aria-hidden
+                      className={cn(
+                        "pointer-events-none absolute inset-0 z-[-1] rounded-[inherit] bg-s-bg-sunken transition-opacity duration-[220ms] ease-[cubic-bezier(0.1,0.9,0.2,1)]", // mockup-ok
+                        isActive ? "opacity-100" : "opacity-0", // mockup-ok
+                      )}
+                      style={{
+                        boxShadow:
+                          "rgb(255,255,255) 0 1px 0.5px 0, rgba(0,0,0,0.15) 0 -0.5px 1px 0, rgba(0,0,0,0.05) 0 -1.2px 0.5px 1px, rgba(0,0,0,0.05) 0 8px 16px 0, rgb(255,255,255) -0.2px -1px 1px 0 inset, rgba(0,0,0,0.20) 0.5px 0.7px 2.5px 0 inset, rgba(0,0,0,0.05) -1px -3px 8px 0 inset, rgba(0,0,0,0.10) 0.5px 2px 4px 0 inset, rgba(0,0,0,0.10) 1px 6px 6px 2px inset",
+                      }}
+                    />
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={c.iconSrc}
                       alt=""
-                      className="h-[22px] w-[22px] shrink-0 object-contain"
+                      className="h-[31px] w-[31px] shrink-0 object-contain"
                       aria-hidden
                     />
                     {c.label}
