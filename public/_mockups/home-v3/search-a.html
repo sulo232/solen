@@ -723,14 +723,13 @@
   .sa-inscat::-webkit-scrollbar { display: none; }
   .sa-inscatb { flex: 0 0 auto; width: 80px; display: flex; flex-direction: column;
     align-items: center; gap: 6px; border: 0; background: transparent; padding: 0; cursor: pointer; }
-  .sa-inscatimg { width: 100%; height: 66px; border-radius: 16px; object-fit: cover;
+  .sa-inscatimg { width: 100%; aspect-ratio: 1 / 1; border-radius: 16px; object-fit: cover;
     background: #F4F4F5; display: block; box-shadow: var(--lift); }
   .sa-inscatlab { width: 100%; text-align: center; font-size: 12px; font-weight: 500;
-    color: #6B6B6B; }
-  .sa-inscatb[aria-selected="true"] .sa-inscatlab { border-radius: 9999px; background: #F4F4F5;
-    padding: 4px 0; font-weight: 600; color: #0A0A0A; box-shadow: var(--lift); }
+    color: #6B6B6B; line-height: 16px; }
+  .sa-inscatb[aria-selected="true"] .sa-inscatlab { font-weight: 600; color: #0A0A0A; }
 
-  .sa-insfilters { align-self: stretch; width: 100%; display: flex; align-items: center; gap: 12px; margin-top: 12px;
+  .sa-insfilters { align-self: stretch; width: 100%; display: flex; align-items: center; gap: 12px; margin-top: 0;
     overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
   .sa-insfilters::-webkit-scrollbar { display: none; }
   .sa-insfbtn { flex: 0 0 auto; display: grid; place-items: center; height: 38px; width: 38px;
