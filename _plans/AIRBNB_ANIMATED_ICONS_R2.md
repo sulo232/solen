@@ -400,3 +400,24 @@ barber chair should be a plain straight 360, not the up and down thing, which do
     all 51 frames: it now varies by **5.87px**, and what remains is the silhouette changing shape as
     the chair turns, not the object rising and falling. `out/set-barber.webm` 47,527 bytes, loop closes
     byte-identical. The dryer KEEPS its tilt, because he said he likes it there.
+
+---
+
+# Round 9 (2026-07-31): slow the turn, and put the air exactly on the nozzle
+
+Owner: the air still does not look right, slow the rotation down, and align it with where the air
+actually comes out of the dryer.
+
+- [x] X1. Rotation slowed, verified: both clips are now 75 frames at 30fps = **2500ms**, up from 51
+      frames / 1700ms, with the holds scaled to match (300ms in, 600ms out). The turn itself went from
+      about 1067ms to about 1600ms, so it is half again slower. `ffprobe` reports duration 2.500000 on
+      `out/set-barber.webm` (63,085 bytes) and `out/set-dryer.webm` (64,173). Both loops still close
+      byte-identical.
+- [x] X2. Air aligned to the nozzle, verified by measurement, and the cause was a sign error.
+  - The renderer now prints where the emitter projects on screen, so alignment is checked instead of
+    trusted. At the rest angle it read **x=151, y=79** while the nozzle mouth measured at **x=41,
+    y=74** (leftmost 6 columns of the rendered alpha, 180x162). 110px apart, on the opposite side of
+    the object. That is the whole reason the air looked like it came from nowhere: the jet direction
+    was pointing the wrong way down its own axis.
+  - After flipping the direction and lifting it onto the centreline, the emitter projects to
+    **x=37, y=76** against the nozzle's **x=41, y=74**, so 4px and 2px out, which is on the mouth.

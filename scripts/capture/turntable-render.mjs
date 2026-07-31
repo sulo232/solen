@@ -221,7 +221,15 @@ new GLTFLoader().load("./model.glb", (gltf) => {
   const dist = margin * Math.max(radius / Math.tan(vFov / 2), radius / Math.tan(hFov / 2));
   camera.position.set(0, radius * 0.42, dist);           // a touch above eye level, like the reference
   camera.lookAt(0, 0, 0);
-  if (PUFF) buildWaves(obj);
+  if (PUFF) {
+    buildWaves(obj);
+    window.__emitterScreen = () => {
+      const v = waveOrigin.clone();
+      pivot.localToWorld(v);
+      v.project(camera);
+      return { x: Math.round((v.x + 1) / 2 * W), y: Math.round((1 - v.y) / 2 * H) };
+    };
+  }
   window.__ready = true;
 }, undefined, (e) => { window.__error = String((e && e.message) || e); });
 
@@ -391,6 +399,14 @@ try {
 }
 const loadErr = await page.evaluate(() => window.__error);
 if (loadErr) { console.error(refusal(url, { reason: "GLTFLoader failed", detail: loadErr })); await browser.close(); process.exit(1); }
+
+if (opt.puff) {
+  // Put the emitter's screen position next to the nozzle's own screen position at REST, so the
+  // alignment is checked rather than assumed. A bounding-box extreme is not always the nozzle.
+  const rest = (opt.startAngle * Math.PI / 180);
+  const probe = await page.evaluate((r) => { window.__renderAt(r, 0, 0); return window.__emitterScreen(); }, rest);
+  console.log(`  emitter projects to screen x=${probe.x} y=${probe.y} at the rest angle`);
+}
 
 const sweep = opt.frames - opt.holdIn - opt.holdOut;
 if (sweep < 2) { console.error("REFUSED: the holds leave no room to turn"); await browser.close(); process.exit(1); }
