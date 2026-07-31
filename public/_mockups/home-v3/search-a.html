@@ -243,9 +243,14 @@
        only the sunken one kept." Restored. I stripped them last round under a one-thing-lifts rule
        I invented; he wants them, and he separately said he LIKES the current filter shadow, so
        both rows now carry the same shared --lift and the family reads as one. */
-    /* The CATEGORY pill is the one element he named, so it gets the measured Airbnb raised recipe.
-       Nothing else in the chrome does. */
-    border: 1px solid #E4E4E7;
+    /* THE SECOND LINE, found by measuring rather than looking again. Airbnb's UNSELECTED tab is
+       border 1px solid rgb(255,255,255), pure white, so the shadow draws the only visible edge.
+       Mine kept the grey #E4E4E7 hairline on top of the 7-layer raised shadow, so a grey ring and
+       a shadow ring sat next to each other. Same defect I fixed on the selected pill last round
+       and did not carry across to the unselected one, which is the whole scope-creep problem in
+       reverse: I fixed one state and left its twin.
+       Both states now take their border from Airbnb: white here, translucent white when selected. */
+    border: 1px solid #FFFFFF;
     box-shadow: var(--lift-raised);
     /* MEASURED off airbnb.ch at vw=390. Their tab runs
          transform 0.22s cubic-bezier(0.1, 0.9, 0.2, 1)
@@ -419,6 +424,27 @@
   .sa-inspophoto { display: block; width: 100%; aspect-ratio: 3 / 4; border-radius: 16px;
     object-fit: cover; background: #F4F4F5; }
   .sa-inspocell.is-tall .sa-inspophoto { aspect-ratio: 3 / 5; }
+
+  /* Continuation card. Same outline-plus-shadow pair as the search bar, so it reads as chrome
+     rather than as a result. Three shapes share one rule set; only the layout differs. */
+  .sa-contwrap { align-self: stretch; width: 100%; margin: 0 0 20px; }
+  .sa-cont { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+    padding: 12px; border: 1px solid #E4E4E7; border-radius: 18px; background: #FFFFFF;
+    cursor: pointer; box-shadow: var(--lift); }
+  .sa-conttext { min-width: 0; flex: 1 1 auto; }
+  .sa-conttitle { display: block; font-size: 15px; font-weight: 500; line-height: 20px; color: #0A0A0A;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sa-contmeta { display: block; margin-top: 2px; font-size: 13px; font-weight: 400; line-height: 18px;
+    color: #6B6B6B; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sa-contimg { flex: 0 0 auto; object-fit: cover; background: #F4F4F5; }
+  .sa-cont.is-A .sa-contimg { height: 72px; width: 72px; border-radius: 14px; }
+  .sa-cont.is-B .sa-contimg { height: 56px; width: 56px; border-radius: 9999px; }
+  .sa-cont.is-C .sa-contimg { display: none; }
+  .sa-contchev { flex: 0 0 auto; color: #6B6B6B; display: flex; }
+  .sa-contseg { display: flex; gap: 6px; justify-content: flex-end; margin-top: 8px; }
+  .sa-conttab { height: 26px; min-width: 30px; border-radius: 999px; border: 1px solid #E4E4E7;
+    background: #FFFFFF; font-size: 12px; font-weight: 400; color: #6B6B6B; cursor: pointer; }
+  .sa-conttab[aria-selected="true"] { background: #F4F4F5; color: #0A0A0A; }
 
   .sa-sec { align-self: stretch; width: 100%; margin: 0 0 24px; }
   .sa-h2 { font-size: 18px; font-weight: 600; line-height: 24px; letter-spacing: -0.01em;
@@ -696,8 +722,74 @@
     return a;
   }
 
+  // ===== THE CONTINUATION CARD, THREE VARIATIONS ==========================
+  // Owner: "on All, we have a little card, if they were searching for something and stopped, it
+  // asks continue searching for that. We had a mockup for that, put it back. Give it variations."
+  // It came from the deleted home mockup, so it is rebuilt here rather than resurrected blind.
+  // Three genuinely different shapes, switchable, because he asked for variations not one answer:
+  //   A  photo right   the original: title, meta, 80px photo hard right
+  //   B  photo left    a 56px round thumb leading, so the card reads as a row not a banner
+  //   C  no photo      title and meta only, with a chevron. The lightest thing that still says
+  //                    "you were in the middle of something"
+  // MY PICK IS B. A is the widest and competes with the first rail's photos directly beneath it,
+  // which is what makes the top of the page feel busy. C is calm but loses the one thing that
+  // makes the card recognisable at a glance, the picture of where he was. B keeps the picture and
+  // costs half the height.
+  var CONT_VARIANT = "B";
+  function continuationCard() {
+    var wrap = document.createElement("div");
+    wrap.className = "sa-contwrap";
+    var card = document.createElement("button");
+    card.type = "button";
+    card.className = "sa-cont is-" + CONT_VARIANT;
+
+    var im = document.createElement("img");
+    im.className = "sa-contimg";
+    im.src = "/_mockups/_assets/store-photos/old-town-barbers.jpg";
+    im.alt = "";
+    im.setAttribute("aria-hidden", "true");
+
+    var txt = document.createElement("span");
+    txt.className = "sa-conttext";
+    var t = document.createElement("span");
+    t.className = "sa-conttitle";
+    t.textContent = "Continue searching for Barber";
+    var m = document.createElement("span");
+    m.className = "sa-contmeta";
+    m.textContent = "Basel, Sa 2. Aug";
+    txt.appendChild(t);
+    txt.appendChild(m);
+
+    if (CONT_VARIANT === "B") { card.appendChild(im); card.appendChild(txt); }
+    else if (CONT_VARIANT === "A") { card.appendChild(txt); card.appendChild(im); }
+    else {
+      card.appendChild(txt);
+      var ch = document.createElement("span");
+      ch.className = "sa-contchev";
+      ch.setAttribute("aria-hidden", "true");
+      ch.innerHTML = '<svg class="lucide lucide-chevron-right" data-lucide="chevron-right" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>';
+      card.appendChild(ch);
+    }
+    wrap.appendChild(card);
+
+    var seg = document.createElement("div");
+    seg.className = "sa-contseg";
+    ["A", "B", "C"].forEach(function (v) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "sa-conttab";
+      b.textContent = v;
+      b.setAttribute("aria-selected", v === CONT_VARIANT ? "true" : "false");
+      b.addEventListener("click", function () { CONT_VARIANT = v; renderHome(); });
+      seg.appendChild(b);
+    });
+    wrap.appendChild(seg);
+    return wrap;
+  }
+
   function renderHome() {
     list.innerHTML = "";
+    list.appendChild(continuationCard());
     // No personalised row here: the persona endpoint that would have powered one is on the
     // removed list, so a row claiming to know his hair would be a promise nothing can keep.
     var SECTIONS = [
