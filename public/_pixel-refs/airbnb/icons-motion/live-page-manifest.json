@@ -1,0 +1,440 @@
+{
+  "capturedAt": "2026-07-31T14:10:30.174Z",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "manifest": [],
+  "pageReports": [
+    {
+      "url": "https://www.airbnb.com/",
+      "guard": {
+        "ok": true,
+        "status": 200,
+        "finalUrl": "https://www.airbnb.com/",
+        "els": 2987
+      },
+      "title": "Airbnb | Vacation rentals, cabins, beach houses, & more",
+      "hosts": [],
+      "anims": [
+        {
+          "name": "opacity-fade-in-op9kak",
+          "playState": "finished",
+          "timing": {
+            "delay": 100,
+            "direction": "normal",
+            "duration": 150,
+            "easing": "linear",
+            "endDelay": 0,
+            "fill": "both",
+            "iterationStart": 0,
+            "iterations": 1
+          },
+          "keyframes": [
+            {
+              "offset": 0,
+              "easing": "cubic-bezier(0, 0, 1, 1)",
+              "composite": "auto",
+              "opacity": "0",
+              "computedOffset": 0
+            },
+            {
+              "offset": 1,
+              "easing": "cubic-bezier(0, 0, 1, 1)",
+              "composite": "auto",
+              "opacity": "1",
+              "computedOffset": 1
+            }
+          ],
+          "target": "span.u4v6jzs atm_mk_stnw88 atm_6i_8vkjn5 atm_fq_idpfg4 atm_e2_194"
+        },
+        {
+          "name": "opacity-fade-in-op9kak",
+          "playState": "finished",
+          "timing": {
+            "delay": 100,
+            "direction": "normal",
+            "duration": 150,
+            "easing": "linear",
+            "endDelay": 0,
+            "fill": "both",
+            "iterationStart": 0,
+            "iterations": 1
+          },
+          "keyframes": [
+            {
+              "offset": 0,
+              "easing": "cubic-bezier(0, 0, 1, 1)",
+              "composite": "auto",
+              "opacity": "0",
+              "computedOffset": 0
+            },
+            {
+              "offset": 1,
+              "easing": "cubic-bezier(0, 0, 1, 1)",
+              "composite": "auto",
+              "opacity": "1",
+              "computedOffset": 1
+            }
+          ],
+          "target": "span.u4v6jzs atm_mk_stnw88 atm_6i_8vkjn5 atm_fq_idpfg4 atm_e2_194"
+        },
+        {
+          "name": "opacity-fade-in-op9kak",
+          "playState": "finished",
+          "timing": {
+            "delay": 100,
+            "direction": "normal",
+            "duration": 150,
+            "easing": "linear",
+            "endDelay": 0,
+            "fill": "both",
+            "iterationStart": 0,
+            "iterations": 1
+          },
+          "keyframes": [
+            {
+              "offset": 0,
+              "easing": "cubic-bezier(0, 0, 1, 1)",
+              "composite": "auto",
+              "opacity": "0",
+              "computedOffset": 0
+            },
+            {
+              "offset": 1,
+              "easing": "cubic-bezier(0, 0, 1, 1)",
+              "composite": "auto",
+              "opacity": "1",
+              "computedOffset": 1
+            }
+          ],
+          "target": "span.u4v6jzs atm_mk_stnw88 atm_6i_8vkjn5 atm_fq_idpfg4 atm_e2_194"
+        },
+        {
+          "name": "slide-up-from-bottom_destination_screen_in-r4t49y",
+          "playState": "finished",
+          "timing": {
+            "delay": 0,
+            "direction": "normal",
+            "duration": 150,
+            "easing": "linear",
+            "endDelay": 0,
+            "fill": "both",
+            "iterationStart": 0,
+            "iterations": 1
+          },
+          "keyframes": [
+            {
+              "offset": 0,
+              "easing": "linear",
+              "composite": "auto",
+              "opacity": "1",
+              "filter": "none",
+              "scale": "1",
+              "translate": "0% 100%",
+              "computedOffset": 0
+            },
+            {
+              "offset": 1,
+              "easing": "linear",
+              "composite": "auto",
+              "opacity": "1",
+              "filter": "none",
+              "scale": "1",
+              "translate": "0% 0%",
+              "computedOffset": 1
+            }
+          ],
+          "target": "div.c5vrlhl atm_mk_1n9t6rb atm_fq_idpfg4 atm_vy_1osqo2v atm_wq_z"
+        }
+      ],
+      "recipes": {
+        "color | 0.25s | cubic-bezier(0.2, 0, 0, 1) | 0s": 1,
+        "opacity | 0.175s | cubic-bezier(0, 0, 1, 1) | 0s": 1,
+        "transform | 0.451754s | linear(0 0%, 0.185572 10%, 0.465306 20%, 0.682334 30%, 0.822325 40%, 0.904974 50%, 0.951289 60%, 0.976364 70%, 0.989612 80%, 0.996485 90%, 1 100%) | 0s": 2,
+        "opacity | 0.15s | cubic-bezier(0, 0, 1, 1) | 0s": 1,
+        "box-shadow, transform, background-color, border-color, color | 0.2s, 0.25s, 0.3s, 0.3s, 0.3s | cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1) | 0s, 0s, 0s, 0s, 0s": 7,
+        "transform | 0.25s | cubic-bezier(0.2, 0, 0, 1) | 0s": 121,
+        "box-shadow, transform | 0.2s, 0.1s | cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1) | 0s, 0s": 29,
+        "clip-path | 0.449123s | linear(0 0%, 0.254842 12.5%, 0.643484 25%, 0.906174 37.5%, 1.0208 50%, 1.04375 62.5%, 1.0303 75%, 1.01197 87.5%, 1 100%) | 0s": 7,
+        "box-shadow, transform, color | 0.2s, 0.1s, 0.1s | cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0, 0, 1, 1) | 0s, 0s, 0.033s": 8,
+        "text-decoration-thickness, box-shadow, background-color | 0.3s, 0.3s, 0.3s | cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1) | 0s, 0s, 0s": 35,
+        "box-shadow | 0.2s | cubic-bezier(0.2, 0, 0, 1) | 0s": 1
+      },
+      "svgCount": 239,
+      "hasLottieLib": false
+    },
+    {
+      "url": "https://www.airbnb.com/host/homes",
+      "guard": {
+        "ok": true,
+        "status": 200,
+        "finalUrl": "https://www.airbnb.com/host/homes",
+        "els": 1654
+      },
+      "title": "Host your home on Airbnb",
+      "hosts": [],
+      "anims": [
+        {
+          "name": "slide-up-from-bottom_destination_screen_in-r4t49y",
+          "playState": "finished",
+          "timing": {
+            "delay": 0,
+            "direction": "normal",
+            "duration": 150,
+            "easing": "linear",
+            "endDelay": 0,
+            "fill": "both",
+            "iterationStart": 0,
+            "iterations": 1
+          },
+          "keyframes": [
+            {
+              "offset": 0,
+              "easing": "linear",
+              "composite": "auto",
+              "opacity": "1",
+              "filter": "none",
+              "scale": "1",
+              "translate": "0% 100%",
+              "computedOffset": 0
+            },
+            {
+              "offset": 1,
+              "easing": "linear",
+              "composite": "auto",
+              "opacity": "1",
+              "filter": "none",
+              "scale": "1",
+              "translate": "0% 0%",
+              "computedOffset": 1
+            }
+          ],
+          "target": "div.c5vrlhl atm_mk_1n9t6rb atm_fq_idpfg4 atm_vy_1osqo2v atm_wq_z"
+        },
+        {
+          "name": "border-fill",
+          "playState": "running",
+          "timing": {
+            "delay": 0,
+            "direction": "alternate",
+            "duration": 1,
+            "easing": "linear",
+            "endDelay": 0,
+            "fill": "forwards",
+            "iterationStart": 0,
+            "iterations": 1
+          },
+          "keyframes": [
+            {
+              "offset": 0,
+              "easing": "linear",
+              "composite": "auto",
+              "borderBottomColor": "rgba(0, 0, 0, 0)",
+              "borderLeftColor": "rgba(0, 0, 0, 0)",
+              "borderRightColor": "rgba(0, 0, 0, 0)",
+              "borderTopColor": "rgba(0, 0, 0, 0)",
+              "computedOffset": 0
+            },
+            {
+              "offset": 1,
+              "easing": "linear",
+              "composite": "auto",
+              "borderBottomColor": "rgba(235, 235, 235, 0.8)",
+              "borderLeftColor": "rgba(235, 235, 235, 0.8)",
+              "borderRightColor": "rgba(235, 235, 235, 0.8)",
+              "borderTopColor": "rgba(235, 235, 235, 0.8)",
+              "computedOffset": 1
+            }
+          ],
+          "target": "header.c15gdd3h atm_lo_1giuacp atm_e2_x43g33 atm_mk_1n9t6rb atm_fq_"
+        },
+        {
+          "name": "stay-length-slider_price_slide_up_wide-3bm2cv",
+          "playState": "finished",
+          "timing": {
+            "delay": 0,
+            "direction": "normal",
+            "duration": 500,
+            "easing": "linear",
+            "endDelay": 0,
+            "fill": "forwards",
+            "iterationStart": 0,
+            "iterations": 1
+          },
+          "keyframes": [
+            {
+              "offset": 0,
+              "easing": "cubic-bezier(0.2, 0, 0, 1)",
+              "composite": "auto",
+              "opacity": "0",
+              "filter": "none",
+              "scale": "1",
+              "translate": "0% 50px",
+              "computedOffset": 0
+            },
+            {
+              "offset": 1,
+              "easing": "cubic-bezier(0.2, 0, 0, 1)",
+              "composite": "auto",
+              "opacity": "1",
+              "filter": "none",
+              "scale": "1",
+              "translate": "0% 0%",
+              "computedOffset": 1
+            }
+          ],
+          "target": "div.p1idat6u atm_gq_cleo16 atm_cs_oxua0z atm_9s_1txwivl atm_fc_1"
+        },
+        {
+          "name": "stay-length-slider_slider_slide_up_wide-cdhjcb",
+          "playState": "finished",
+          "timing": {
+            "delay": 0,
+            "direction": "normal",
+            "duration": 500,
+            "easing": "linear",
+            "endDelay": 0,
+            "fill": "forwards",
+            "iterationStart": 0,
+            "iterations": 1
+          },
+          "keyframes": [
+            {
+              "offset": 0,
+              "easing": "cubic-bezier(0.2, 0, 0, 1)",
+              "composite": "auto",
+              "opacity": "0",
+              "filter": "none",
+              "scale": "1",
+              "translate": "0% 100px",
+              "computedOffset": 0
+            },
+            {
+              "offset": 1,
+              "easing": "cubic-bezier(0.2, 0, 0, 1)",
+              "composite": "auto",
+              "opacity": "1",
+              "filter": "none",
+              "scale": "1",
+              "translate": "0% 0%",
+              "computedOffset": 1
+            }
+          ],
+          "target": "div.s1oznure atm_lk_yh40bf atm_ll_yh40bf atm_gq_1fwxnve atm_j3_1"
+        },
+        {
+          "name": "keyframe_1dr4ubp",
+          "playState": "finished",
+          "timing": {
+            "delay": 0,
+            "direction": "normal",
+            "duration": 500,
+            "easing": "linear",
+            "endDelay": 0,
+            "fill": "forwards",
+            "iterationStart": 0,
+            "iterations": 1
+          },
+          "keyframes": [
+            {
+              "offset": 0,
+              "easing": "cubic-bezier(0.2, 0, 0, 1)",
+              "composite": "auto",
+              "opacity": "0",
+              "transform": "translateY(25px)",
+              "computedOffset": 0
+            },
+            {
+              "offset": 1,
+              "easing": "cubic-bezier(0.2, 0, 0, 1)",
+              "composite": "auto",
+              "opacity": "1",
+              "transform": "translateY(0px)",
+              "computedOffset": 1
+            }
+          ],
+          "target": "div._1p15j9jw"
+        },
+        {
+          "name": null,
+          "playState": "running",
+          "timing": {
+            "delay": 0,
+            "direction": "normal",
+            "duration": "auto",
+            "easing": "linear",
+            "endDelay": 0,
+            "fill": "forwards",
+            "iterationStart": 0,
+            "iterations": 1
+          },
+          "keyframes": [
+            {
+              "offset": null,
+              "easing": "linear",
+              "composite": "auto",
+              "opacity": "1",
+              "computedOffset": 0
+            },
+            {
+              "offset": null,
+              "easing": "linear",
+              "composite": "auto",
+              "opacity": "0",
+              "computedOffset": 1
+            }
+          ],
+          "target": "div.w18xqku4 atm_26_134j9ac b1h12kfr atm_usf153_1uwpwu1 b1qvdkj3"
+        }
+      ],
+      "recipes": {
+        "text-decoration-thickness, box-shadow, background-color | 0.3s, 0.3s, 0.3s | cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1) | 0s, 0s, 0s": 37,
+        "box-shadow | 0.2s | cubic-bezier(0.2, 0, 0, 1) | 0s": 1,
+        "box-shadow, transform | 0.2s, 0.1s | cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1) | 0s, 0s": 31,
+        "color | 0.25s | cubic-bezier(0.2, 0, 0, 1) | 0s": 2,
+        "transform | 0.5s | ease | 0s": 2,
+        "box-shadow, transform, border-color, background-color | 0.2s, 0.1s, 0.3s, 0.3s | cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1) | 0s, 0s, 0s, 0s": 12,
+        "opacity | 2s | ease | 0s": 1,
+        "opacity | 0.15s | linear(0 0%, 0.185572 10%, 0.465306 20%, 0.682334 30%, 0.822325 40%, 0.904974 50%, 0.951289 60%, 0.976364 70%, 0.989612 80%, 0.996485 90%, 1 100%) | 0s": 1,
+        "height | 0.22s | ease-out | 0s": 1,
+        "opacity, visibility | 0.3s, 0.3s | cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1) | 0s, 0s": 4,
+        "filter | 0.25s | ease | 0s": 1,
+        "opacity | 0.2s | linear | 0s": 12,
+        "transform | 0.3s | cubic-bezier(0, 1.52, 0.51, 0.91) | 0s": 1,
+        "transform | 0.15s | ease-out | 0s": 1,
+        "opacity, transform | 0.1s, 0.1s | cubic-bezier(0, 0, 1, 1), cubic-bezier(0.2, 0, 0, 1) | 0s, 0s": 1,
+        "transform | 0.2s | ease | 0s": 20,
+        "transform | 0.2s | cubic-bezier(0.2, 0, 0, 1) | 0s": 20,
+        "background-color, transform, box-shadow | 0.2s, 0.2s, 0.2s | cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1) | 0s, 0s, 0s": 20,
+        "opacity | 0.2s | cubic-bezier(0.2, 0, 0, 1) | 0s": 20,
+        "transform | 0.25s | cubic-bezier(0.2, 0, 0, 1) | 0s": 15,
+        "box-shadow, transform, background-color, border-color, color | 0.2s, 0.25s, 0.3s, 0.3s, 0.3s | cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1) | 0s, 0s, 0s, 0s, 0s": 7
+      },
+      "svgCount": 43,
+      "hasLottieLib": false
+    },
+    {
+      "url": "https://www.airbnb.com/aircover",
+      "guard": {
+        "ok": true,
+        "status": 200,
+        "finalUrl": "https://www.airbnb.com/help/article/3218",
+        "els": 615
+      },
+      "title": "AirCover for guests - Airbnb Help Center",
+      "hosts": [],
+      "anims": [],
+      "recipes": {
+        "box-shadow, transform | 0.2s, 0.1s | cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1) | 0s, 0s": 8,
+        "box-shadow, max-width, min-width | 0.2s | ease | 0s": 1,
+        "transform | 0.25s | cubic-bezier(0.2, 0, 0, 1) | 0s": 11,
+        "text-decoration-thickness, box-shadow, background-color | 0.3s, 0.3s, 0.3s | cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1) | 0s, 0s, 0s": 34,
+        "box-shadow, transform, background-color, border-color, color | 0.2s, 0.25s, 0.3s, 0.3s, 0.3s | cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1), cubic-bezier(0.2, 0, 0, 1) | 0s, 0s, 0s, 0s, 0s": 6
+      },
+      "svgCount": 32,
+      "hasLottieLib": false
+    }
+  ],
+  "refusals": []
+}
