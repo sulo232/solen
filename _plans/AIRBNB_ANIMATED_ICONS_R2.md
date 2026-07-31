@@ -74,3 +74,64 @@ Ranked by how much survives when the icon is 72 pixels wide.
 **Recommendation: 1 plus 2, with 5 riding along.** The object carries the meaning, the colour carries
 the recognition, the hair is a bonus. The person in both stays a smooth featureless clay figure, which
 also sidesteps casting a face, a skin tone or a gender read into a brand mark.
+
+---
+
+# Round 3, owner feedback (2026-07-31, same session)
+
+Owner: the bright barber is too bright; too much primary colour, Airbnb does not use primaries like
+that; the hair clashes with the creams, make it brunette; how do we get Safari to play it; and the big
+one, if barber and coiffeur are both a person in a chair, then spa and inspo and the rest cannot follow
+that pattern (spa would be stones, not another person lying down), so two humans plus a pile of objects
+will read as a broken set. He asked for ideas.
+
+## Atomic asks
+
+- [x] S1. Safari playback.
+  - verified: `out/*.apng` now ship next to the webm, produced by the new APNG step in
+    `scripts/capture/encode-alpha-icon.sh`. barber-calm 182,024 bytes, coiffeur 149,981, both 35 stored
+    frames totalling 1689 ms, real alpha, play once and stop. Measured alternatives, all on the same
+    frame set: WebM VP9 alpha 51,402 bytes but no Safari; HEVC alpha NOT PRODUCIBLE here, the
+    videotoolbox encoder returns `-12908` on four flag combinations; animated WebP 52,794 bytes and
+    would be the best of both, but this machine has no `libwebp` (`img2webp`, `cwebp`, `webpmux` all
+    absent, ffmpeg built without it) and PIL's writer drops the frame durations; ProRes 4444 succeeded
+    at 1,038,456 bytes, which is 20x too big and not a web format. NEXT if the owner wants the small
+    file: `brew install webp`, then one `img2webp` call replaces the APNG at a third of the size.
+- [x] S2. Measure the primary-colour complaint.
+  - verified, and he is right with numbers behind it. Neutral pixel share (saturation under 0.25),
+    frame 1, alpha-masked: Airbnb house **65.4%**, Airbnb bell **64.0%**, Airbnb balloon 1.7%. Ours:
+    barber **13.8%**, coiffeur 34.2%. So Airbnb runs two quiet icons and one loud one, and ours is
+    nearly all shouting. Worse, ours mixes hue families: red 24% plus blue 41% in one object, while
+    every Airbnb icon stays inside ONE family (balloon is red plus orange; house is green plus a red
+    door on grey; bell is a desaturated steel).
+- [ ] S3. Rebuild the barber to that finding: raise neutral share toward 50 to 65 percent, keep one
+      warm family, drop the blue cape to cream or warm grey, brunette hair, and pull the brightness
+      back from 0.616 toward Airbnb's 0.48.
+- [ ] S4. Decide the family rule (see below), then rebuild the set to it. BLOCKED on the owner: this is
+      a brand direction, not a task.
+
+## The set problem, and the answer the reference already gives
+
+The owner's instinct is right and the captured reference settles it: **Airbnb's icon set contains no
+people at all.** A house, a balloon, a bell. Three objects. Nothing else.
+
+That is the rule to copy. One object per category, no humans anywhere:
+
+| category | object |
+|---|---|
+| barber | the barber chair alone, chrome pedestal and leather |
+| coiffeur | the backwash basin chair, or a hood dryer |
+| spa | stacked stones, or a rolled towel with a candle |
+| nails | a polish bottle |
+| inspo | a hand mirror, or a folded lookbook |
+
+Why this beats the current direction:
+- It scales. Every future category has an obvious object; not every category has a plausible person.
+- It removes the casting question permanently. No face, skin tone, hair type or gender read is baked
+  into a brand mark.
+- It reads better small. A chair alone is one silhouette; a chair plus a person is two shapes fighting
+  inside 72 pixels, which is also why the current icons needed a hero-angle hunt to look right at all.
+- It matches the reference exactly, which is the whole point of having captured it.
+
+The cost, stated plainly: a bare chair is colder than a chair with someone in it. Airbnb pays that same
+price and buys it back with warm colour and soft light, which is exactly the lever S3 is about.

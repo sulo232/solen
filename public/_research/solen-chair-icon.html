@@ -57,6 +57,17 @@
   li { margin:0 0 10px; }
   .note { background:var(--sunken); border-radius:16px; padding:16px 18px; max-width:70ch; }
   a { color:var(--accent); }
+  /* Measured at 390: the 180px cells fell to one per row, so six clips became a long scroll,
+     and the 44px pair broke apart onto separate lines, which is exactly the comparison it exists
+     to make. Two per row keeps every pair side by side. */
+  @media (max-width: 560px) {
+    .wrap { padding:28px 16px 56px; }
+    .tray { padding:14px; border-radius:20px; }
+    .row { gap:10px; }
+    .cell { width:calc(50% - 5px); padding:12px 8px 10px; }
+    .cell video { width:92px; height:82px; }
+    .tiny { display:grid; grid-template-columns:1fr 1fr; gap:16px 12px; justify-items:center; }
+  }
 </style>
 </head>
 <body>
@@ -116,6 +127,23 @@
   </section>
 
   <section>
+    <h2>Safari, solved</h2>
+    <p>Safari cannot play a transparent WebM, and Apple's own answer, HEVC with an alpha channel, refuses to encode on this Mac: the hardware encoder returns error 12908 across four different flag combinations. Animated WebP would have been ideal at about 53 KB, but this machine has no libwebp encoder at all.</p>
+    <p>So every icon now also ships as an <strong>APNG</strong>, which carries real transparency, keeps the frame timing, plays once and stops on its last frame, and works in Safari, iOS, Chrome and Firefox alike. The images below are the APNGs, not the videos.</p>
+    <div class="tray"><div class="tiny" id="apng"></div></div>
+    <div class="tbl-wrap" style="margin-top:16px">
+    <table>
+      <tr><th style="width:190px">Format</th><th>Size</th><th>Safari</th><th>Verdict</th></tr>
+      <tr><td>WebM, VP9 with alpha</td><td>51 KB</td><td>no</td><td>what Airbnb ships, best size</td></tr>
+      <tr><td>APNG</td><td>182 KB</td><td>yes</td><td>shipping now as the Safari path</td></tr>
+      <tr><td>Animated WebP</td><td>53 KB (measured once)</td><td>yes</td><td>the best of both, needs <code>brew install webp</code> and then one command</td></tr>
+      <tr><td>HEVC with alpha</td><td>not produced</td><td>yes</td><td>encoder error 12908 on this Mac, four flag combinations tried</td></tr>
+      <tr><td>ProRes 4444</td><td>1,038 KB</td><td>no</td><td>works but twenty times too big and not a web format</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <section>
     <h2>Every frame</h2>
     <p class="cap"><b>barber</b> 1.700 s, every 4th frame</p>
     <div class="scroll"><img src="/_pixel-refs/solen-icons/barber-hero-sheet.png" alt="barber turn, frame strip"></div>
@@ -127,6 +155,7 @@
     <h2>Still honest about what is not right</h2>
     <ul>
       <li>The coiffeur is still the brightest thing here at 0.72, because pink, cream and white all sit high to begin with. Pulling it down further starts greying the pink, so it stays until you say otherwise.</li>
+      <li>Colour balance is the real remaining problem and it is measurable. Airbnb's set is mostly <strong>neutral</strong>: their house is 65 percent neutral pixels and their bell 64 percent, with only the balloon loud at 2 percent. Ours is 14 percent neutral, so nearly the whole object is shouting. Ours also mixes red and blue, two opposite families, while every Airbnb icon stays inside one family. That is the fix for the next pass, not more brightness.</li>
       <li>No Safari file for either. This Mac's encoder refuses transparent HEVC, so today they play in Chrome and Firefox only.</li>
       <li>Each mesh is reconstructed from one picture, so the back of each chair is guessed and reads softer than the front. Feeding three views fixes it.</li>
       <li>The coiffeur basin is a first attempt at the idea, not a settled design. If you like the direction, the next pass sharpens it.</li>
@@ -155,6 +184,16 @@ CLIPS.forEach(function (c) {
   const v = d.querySelector("video");
   d.addEventListener("click", function () { v.currentTime = 0; v.play(); });
   stage.appendChild(d);
+});
+const apng = document.getElementById("apng");
+[["barber-calm", "barber, APNG in any browser"], ["coiffeur-hero", "coiffeur, APNG in any browser"]].forEach(function (p) {
+  const f = document.createElement("figure");
+  f.style.cursor = "pointer";
+  f.innerHTML = '<img width="112" height="100" src="' + S + "/" + p[0] + '.apng" alt="' + p[0] + '">'
+    + '<figcaption>' + p[1] + '</figcaption>';
+  const img = f.querySelector("img");
+  f.addEventListener("click", function () { const b = img.src.split("?")[0]; img.src = b + "?r=" + (window.__r = (window.__r || 0) + 1); });
+  apng.appendChild(f);
 });
 const tiny = document.getElementById("tiny");
 [["barber-hero", "barber, 72px"], ["coiffeur-hero", "coiffeur, 72px"],

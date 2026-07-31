@@ -25,6 +25,25 @@ ffmpeg -hide_banner -loglevel error -y \
   -c:v libvpx-vp9 -pix_fmt yuva420p -b:v 0 -crf 30 -row-mt 1 -an \
   "$OUT/$NAME.webm"
 
+# APNG for Safari. Measured on 2026-07-31: hevc_videotoolbox refuses the alpha session on this Mac
+# (error -12908 across four flag combinations), and ffmpeg here is built without libwebp, so animated
+# WebP is not available either. APNG is the one format that carries real alpha, keeps the frame
+# timings, plays in Safari and iOS as well as Chrome and Firefox, and needs no extra install. It costs
+# about 3.5x the WebM in bytes, which is the honest price of Safari support today.
+python3 - "$FRAMES" "$OUT/$NAME.apng" "$FPS" <<'PYEOF'
+import sys, glob, os
+from PIL import Image
+frames_dir, out, fps = sys.argv[1], sys.argv[2], float(sys.argv[3])
+fs = sorted(glob.glob(os.path.join(frames_dir, "*.png")))
+ims = [Image.open(f).convert("RGBA").quantize(colors=96, method=Image.FASTOCTREE).convert("RGBA") for f in fs]
+ims[0].save(out, save_all=True, append_images=ims[1:], duration=1000.0/fps, loop=1, disposal=2, format="PNG")
+im = Image.open(out)
+total = 0
+for i in range(im.n_frames):
+    im.seek(i); total += im.info.get("duration", 0)
+print(f"{os.path.basename(out)}  frames={im.n_frames} total={round(total)}ms size={os.path.getsize(out)}")
+PYEOF
+
 # HEVC with alpha for Safari. Needs the platform videotoolbox encoder; skipped, not faked, if absent.
 if ffmpeg -hide_banner -encoders 2>/dev/null | grep -q hevc_videotoolbox; then
   ffmpeg -hide_banner -loglevel error -y \
