@@ -25,6 +25,30 @@
       "autoPort": false
     },
     {
+      "name": "Research preview (worktree public 3222)",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--yes",
+        "serve",
+        "public",
+        "--no-clipboard",
+        "--listen",
+        "3222"
+      ],
+      "port": 3222,
+      "autoPort": false
+    },
+    {
+      "name": "Tunnel (research 3222)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:3222 --metrics localhost:20251 --no-autoupdate"
+      ],
+      "port": 20251,
+      "autoPort": false
+    },
+    {
       "name": "Supabase local stack",
       "runtimeExecutable": "supabase",
       "runtimeArgs": [
