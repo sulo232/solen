@@ -206,7 +206,10 @@
       rgba(0,0,0,0.05) 0 8px 16px 0, rgb(255,255,255) -0.2px -1px 1px 0 inset,
       rgba(0,0,0,0.20) 0.5px 0.7px 2.5px 0 inset, rgba(0,0,0,0.05) -1px -3px 8px 0 inset,
       rgba(0,0,0,0.10) 0.5px 2px 4px 0 inset, rgba(0,0,0,0.10) 1px 6px 6px 2px inset;
-    --lift: var(--lift-raised);
+    /* --lift stays the QUIET one, because the search bar and the filter pills were already good
+       and he never asked me to touch them. The Airbnb raised/sunken pair above belongs to the
+       CATEGORY pills only, which is the one thing he actually named. */
+    --lift: rgba(0,0,0,0.07) 0 2px 8px 0;
   }
   .sa-pillicon { flex: 0 0 auto; color: #6B6B6B; display: flex; }
   .sa-pilltext { min-width: 0; flex: 1 1 auto; }
@@ -240,8 +243,10 @@
        only the sunken one kept." Restored. I stripped them last round under a one-thing-lifts rule
        I invented; he wants them, and he separately said he LIKES the current filter shadow, so
        both rows now carry the same shared --lift and the family reads as one. */
+    /* The CATEGORY pill is the one element he named, so it gets the measured Airbnb raised recipe.
+       Nothing else in the chrome does. */
     border: 1px solid #E4E4E7;
-    box-shadow: var(--lift);
+    box-shadow: var(--lift-raised);
     transition: box-shadow 200ms cubic-bezier(0.22, 1, 0.36, 1), background-color 200ms cubic-bezier(0.22, 1, 0.36, 1);
   }
   /* Owner: "I told you to fix up the shadows of the pills and you did not do anything." Correct,
