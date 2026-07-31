@@ -412,6 +412,14 @@
      WIDER than that container, and align-items:center then pushed it off BOTH edges, which is why
      the headings were clipped and the first card rendered at a negative x. Sections stretch to the
      container instead, and the rail bleeds using the list's own padding. */
+  /* Inspo: two columns of photographs, uneven heights, no text. Nothing here is bookable, so
+     nothing here carries a price or an address. */
+  .sa-inspo { align-self: stretch; width: 100%; columns: 2; column-gap: 10px; }
+  .sa-inspocell { break-inside: avoid; margin-bottom: 10px; cursor: pointer; }
+  .sa-inspophoto { display: block; width: 100%; aspect-ratio: 3 / 4; border-radius: 16px;
+    object-fit: cover; background: #F4F4F5; }
+  .sa-inspocell.is-tall .sa-inspophoto { aspect-ratio: 3 / 5; }
+
   .sa-sec { align-self: stretch; width: 100%; margin: 0 0 24px; }
   .sa-h2 { font-size: 18px; font-weight: 600; line-height: 24px; letter-spacing: -0.01em;
     margin: 0 0 10px; }
@@ -730,10 +738,42 @@
     });
   }
 
+  // ===== INSPO ============================================================
+  // Its job is undirected image browsing, so it is a two-column masonry of photographs, not a list
+  // of bookable rows. That is FLOORS LAW 10 applied honestly: an element belongs to the screen's
+  // job, and a price and an address serve the booking job, not the looking job. The chrome stays
+  // identical, which is the consistency that actually matters.
+  function renderInspo() {
+    list.innerHTML = "";
+    var grid = document.createElement("div");
+    grid.className = "sa-inspo";
+    // Deliberately uneven heights: a masonry that renders a perfect grid is just a grid.
+    var TALL = [0, 3, 4, 7];
+    STORES.concat(STORES).forEach(function (s, i) {
+      var cell = document.createElement("div");
+      cell.className = "sa-inspocell" + (TALL.indexOf(i % 8) !== -1 ? " is-tall" : "");
+      cell.setAttribute("role", "link");
+      cell.setAttribute("tabindex", "0");
+      var im = document.createElement("img");
+      im.className = "sa-inspophoto";
+      im.src = s.photo;
+      im.alt = s.name + ", " + CATLABEL[s.cat];
+      im.loading = "lazy";
+      cell.appendChild(im);
+      grid.appendChild(cell);
+    });
+    list.appendChild(grid);
+  }
+
   function renderCategory(slug, label) {
     if (slug === "home") {
       renderHome();
       if (pillLine) pillLine.textContent = "Search stores";
+      return;
+    }
+    if (slug === "inspo") {
+      renderInspo();
+      if (pillLine) pillLine.textContent = "Inspo";
       return;
     }
     var rows = STORES;

@@ -129,3 +129,16 @@ everything, then we can start implementing, but not yet."
 - [ ] Mockup: Inspo
 - [ ] Mockup: home page (rebuilt with the settled chrome and card)
 - [ ] Only after all of the above and his explicit yes: implement.
+
+## 2026-07-31 , queue empty, all mockups built into one shell
+
+Owner: "make it so when you click All, the home page pops up. Ditch whatever you made on the home
+page mockup." One file now carries every surface as a state, so there is one chrome and one card
+system rather than several files drifting apart.
+
+- [x] Home. verified: All renders 4 rails, 0 list rows, headings at x=28, rail card 231 wide.
+- [x] Coiffeur / Barber / Nails / Spa / Walk-in. verified: each returns a different subset (3/3/1/1/3), so the filter discriminates.
+- [x] Inspo. verified: 16 cells, 2 columns, 2 distinct heights, 0 prices, 0 list rows.
+- [x] The standalone home mockup deleted with a graveyard line.
+- [ ] STILL OPEN, owner decision: the card shape. He has the measured options and has not picked.
+- [ ] STANDING ORDER: no .tsx edits until he approves.
