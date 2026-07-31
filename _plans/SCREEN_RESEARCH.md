@@ -231,3 +231,48 @@ capacity error, not a script defect, so the response is a retry on the same run 
 caches) rather than a redesign. They tick when the files exist on disk:
   `_design-system/research/WHY_ENTRY.md`, `WHY_CURRENCY.md`, `WHY_RETURN.md`, `WHY_DENSITY.md`,
   `WHY_RELATIONS.md`, and `public/_mockups/home-directions-v2/{why.html,index.html}`.
+
+---
+
+## OWNER ASK, 2026-07-31: two pages, not one
+
+He wants the single page split in two, and gave the references himself.
+
+- [ ] H1. A real HOME page, airbnb.com shape: search bar at the TOP, not the boxed stack
+- [ ] H2. Remove the promise headline "Termine, sofort bestätigt" from home
+- [ ] H3. Several DISTINCT home directions, not one
+- [ ] H4. A LANDING page, airbnb.com/discover shape, with its imagery treatment and structure
+- [ ] H5. Landing carries the for-business information
+- [ ] H6. Answer his navigation worry in every direction: no bottom bar (he rejected it by name),
+      and logo + hamburger sandwiching a search bar leaves the search too small
+- [ ] H7. Mockups for BOTH pages
+
+**MEASURED on /de at 390x844 before any design, 2026-07-31:**
+
+| element | number |
+|---|---|
+| header height | 84px, sticky, transparent |
+| logo | 28px type, 71px wide, x=16 |
+| hamburger | 44x44, x=330 |
+| gap between logo and burger | **243px** |
+| h1 "Termine, sofort bestätigt." | 31.2px / 700, y=124 |
+| subline | 18px, y=170 |
+| search stack | 358x250, y=218 to y=468, four 46px rows |
+| first salon card | **y=842**, one pixel below an 844px fold |
+
+**His navigation worry is arithmetically correct.** A pill sandwiched between logo and burger gets
+243px minus its own padding. Airbnb does not sandwich: it STACKS, logo row then a full-width search
+row. That is the hypothesis each direction tests differently.
+
+**PREMORTEM, named before dispatch:**
+1. Inventing a search bar instead of cloning the real one. DRIFT_LEDGER 2026-07-03 records exactly
+   this. Every direction must reuse the real `SearchBar` markup, not redraw it.
+2. Shipping a navigation pattern he already rejected. Bottom bar is banned by name; each direction
+   must state its navigation answer explicitly rather than leaving it implied.
+3. **A genuine conflict I will not resolve silently:** he asked for the Airbnb /discover imagery
+   treatment on the LANDING page, and FLOORS LAW 2 forbids a decorative hero (0 of 34 home screens
+   carried one). The floor is scoped to browse/discovery/PDP surfaces. A logged-out landing page is
+   a different animal from a browse feed, so I read the floor as not binding there, but it is the
+   owner's call and it is surfaced rather than assumed.
+
+OUT OF SCOPE: touching any real `.tsx`. These are mockups to pick from.
