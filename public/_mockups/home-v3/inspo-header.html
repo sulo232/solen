@@ -1,0 +1,189 @@
+<!--
+  home-v3 / inspo-header : three ways to give Inspo the new home chrome, without touching the feed.
+
+  Owner-scope 2026-07-31, verbatim: "we don't even have to actually redesign a lot ... I don't
+  really wanna change that much because we already have a whole design system. What we can change
+  is make the whole header match the new home page, and all the categories integrated in one. I
+  only want the search bar to be bigger. But I'm wondering where we should put the hamburger menu,
+  because we already have a heart icon. That's the problem I'm seeing. Can you make me mockups?"
+
+  So the FEED IS NOT TOUCHED. The masonry under each variation is the real one, columns-2 with a
+  6px gap, exactly as /de/inspo renders it. Only the chrome above it moves.
+
+  Exists-check: RAN THIS TURN, three terms. `npm run exists "inspo header"` -> 0 hits, so no header
+    component is being duplicated. `npm run exists "discovery searchbar"` -> HIT,
+    components-legacy/discovery/SearchBar.tsx already exists and is what /de/inspo renders as
+    DiscoverySearchBar, so the bigger bar below is that component RESIZED, not a second search
+    control. `npm run exists "inspo"` -> 41 hits; the page exists at app/[locale]/inspo, so this is
+    a chrome change to a live surface rather than a new screen.
+
+  Grounded-in: app/[locale]/inspo/page.tsx
+  Grounded-in: app/[locale]/_components/layout/Header.tsx
+  Grounded-in: app/[locale]/_components/homepage/MobileCategoriesRow.tsx
+
+  Depicts: the wordmark and burger row -> app/[locale]/_components/layout/Header.tsx
+  Depicts: the search field and heart -> app/[locale]/inspo/page.tsx
+  Depicts: the search control itself -> components-legacy/discovery/SearchBar.tsx
+  Depicts: the category row -> app/[locale]/_components/homepage/MobileCategoriesRow.tsx
+  Depicts: the masonry feed -> app/[locale]/inspo/page.tsx
+  Depicts: the three chrome arrangements -> NET-NEW: this is the question he is asking. No
+    arrangement exists yet that carries categories, a search bar, a burger and a heart together.
+
+  measured on the LIVE /de/inspo at vw=375, immediately before writing this file:
+    header 375 x 84, wordmark "Inspo" 25px/600 at x=16 y=30
+    search input 295 x 50, radius pill, border #E4E4E7, at x=16 y=90
+    heart button 40 x 40, circle, border #E4E4E7, at x=319 y=95
+    feed grid `columns-2 md:columns-3 lg:columns-4 gap-1.5`
+  and on the approved home mockup at vw=390: search pill 358 x 66, category pill h=40 r=40.
+
+  DATA: the six discovery thumbnails are the real seeded ones, self-hosted under _assets/inspo.
+  Salon photos elsewhere in this estate are stock placeholders; salon_photos has 0 rows.
+-->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inspo header, three arrangements</title>
+<style>
+  html, body { margin: 0; padding: 0; background: #FFFFFF; -webkit-text-size-adjust: 100%; }
+  .ih { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #0A0A0A; max-width: 430px; margin: 0 auto; padding: 20px 0 56px; }
+  .ih *, .ih *::before, .ih *::after { box-sizing: border-box; }
+  .ih h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; margin: 0 16px 6px; }
+  .ih .lede { font-size: 14px; line-height: 1.5; color: #6B6B6B; margin: 0 16px 22px; }
+  .ih h2 { font-size: 12px; font-weight: 600; color: #6B6B6B; margin: 0 16px 8px; }
+  .ih .pick { color: #0A0A0A; }
+  .ih section { margin: 0 0 30px; }
+  .frame { border: 1px solid #E4E4E7; border-radius: 20px; overflow: hidden; margin: 0 16px; }
+
+  /* every piece below is copied from one of the two real surfaces, nothing redrawn */
+  .wordrow { display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px 10px; }
+  .word { font-size: 25px; font-weight: 600; line-height: 1; }
+  .circ { display: grid; place-items: center; height: 44px; width: 44px; border-radius: 999px;
+    border: 1px solid #E4E4E7; background: #FFFFFF; color: #0A0A0A; flex: 0 0 auto; }
+
+  .cats { display: flex; gap: 12px; overflow-x: auto; overflow-y: hidden; scrollbar-width: none;
+    padding: 4px 16px 12px; }
+  .cats::-webkit-scrollbar { display: none; }
+  .cat { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; height: 40px;
+    padding: 0 14px; border-radius: 40px; border: 1px solid #E4E4E7; background: #FFFFFF;
+    font-size: 14px; font-weight: 400; color: #0A0A0A; white-space: nowrap; }
+  .cat[aria-selected="true"] { background: #F4F4F5; border-color: #F4F4F5; }
+
+  /* "I only want the search bar to be bigger." The live Inspo field is 295 x 50; the home pill he
+     already approved is 358 x 66. Every variation uses the HOME size rather than a third number
+     invented here. */
+  .searchrow { display: flex; align-items: center; gap: 10px; padding: 0 16px 14px; }
+  .pill { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 12px;
+    height: 66px; padding: 10px 14px; border-radius: 9999px; background: #FFFFFF;
+    border: 1px solid #E4E4E7; box-shadow: rgba(0,0,0,0.07) 0 2px 8px 0; }
+  .pilltxt { font-size: 16px; font-weight: 500; color: #0A0A0A; }
+  .pill .circ { border: 0; height: 40px; width: 40px; margin-left: auto; }
+
+  /* the real feed, untouched */
+  .feed { columns: 2; column-gap: 6px; padding: 6px; background: #FFFFFF; }
+  .feed img { width: 100%; display: block; border-radius: 10px; margin: 0 0 6px;
+    break-inside: avoid; background: #F4F4F5; }
+
+  .note { margin: 26px 16px 0; padding: 16px; border-radius: 16px; background: #F4F4F5;
+    font-size: 12px; line-height: 1.55; color: #6B6B6B; }
+  .note b { color: #0A0A0A; }
+</style>
+
+<div class="ih">
+  <h1>Inspo header, three arrangements</h1>
+  <p class="lede">The feed is untouched in all three. Only the chrome above it moves.</p>
+
+  <section>
+    <h2><span class="pick">A. Heart joins the category row</span> &mdash; my pick</h2>
+    <div class="frame">
+      <div class="wordrow">
+        <span class="word">Inspo</span>
+        <span class="circ" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg></span>
+      </div>
+      <div class="cats">
+        <span class="cat" aria-selected="true"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>Saved</span>
+        <span class="cat">All</span>
+        <span class="cat">Hair</span>
+        <span class="cat">Barber</span>
+        <span class="cat">Nails</span>
+      </div>
+      <div class="searchrow">
+        <span class="pill"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg><span class="pilltxt">Search styles</span></span>
+      </div>
+      <div class="feed">
+        <img src="/_mockups/_assets/inspo/a1eeda99-3128-4b0a-a4e0-2d32dae3c560.jpg" alt="">
+        <img src="/_mockups/_assets/inspo/364edd9f-3483-4894-910c-cec7aa25face.jpg" alt="">
+        <img src="/_mockups/_assets/inspo/1a11b89d-5583-41f4-a233-e1579275144f.jpg" alt="">
+        <img src="/_mockups/_assets/inspo/b99a7617-fa43-4830-9cf1-d5302bca5139.jpg" alt="">
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>B. Heart stays beside the search bar</h2>
+    <div class="frame">
+      <div class="wordrow">
+        <span class="word">Inspo</span>
+        <span class="circ" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg></span>
+      </div>
+      <div class="cats">
+        <span class="cat" aria-selected="true">All</span>
+        <span class="cat">Hair</span>
+        <span class="cat">Barber</span>
+        <span class="cat">Nails</span>
+        <span class="cat">Spa</span>
+      </div>
+      <div class="searchrow">
+        <span class="pill"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg><span class="pilltxt">Search styles</span></span>
+        <span class="circ" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+      </div>
+      <div class="feed">
+        <img src="/_mockups/_assets/inspo/a1eeda99-3128-4b0a-a4e0-2d32dae3c560.jpg" alt="">
+        <img src="/_mockups/_assets/inspo/364edd9f-3483-4894-910c-cec7aa25face.jpg" alt="">
+        <img src="/_mockups/_assets/inspo/1a11b89d-5583-41f4-a233-e1579275144f.jpg" alt="">
+        <img src="/_mockups/_assets/inspo/b99a7617-fa43-4830-9cf1-d5302bca5139.jpg" alt="">
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>C. Heart inside the bar, burger keeps the wordmark row</h2>
+    <div class="frame">
+      <div class="wordrow">
+        <span class="word">Inspo</span>
+        <span class="circ" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg></span>
+      </div>
+      <div class="cats">
+        <span class="cat" aria-selected="true">All</span>
+        <span class="cat">Hair</span>
+        <span class="cat">Barber</span>
+        <span class="cat">Nails</span>
+        <span class="cat">Spa</span>
+      </div>
+      <div class="searchrow">
+        <span class="pill"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg><span class="pilltxt">Search styles</span>
+          <span class="circ" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        </span>
+      </div>
+      <div class="feed">
+        <img src="/_mockups/_assets/inspo/a1eeda99-3128-4b0a-a4e0-2d32dae3c560.jpg" alt="">
+        <img src="/_mockups/_assets/inspo/364edd9f-3483-4894-910c-cec7aa25face.jpg" alt="">
+        <img src="/_mockups/_assets/inspo/1a11b89d-5583-41f4-a233-e1579275144f.jpg" alt="">
+        <img src="/_mockups/_assets/inspo/b99a7617-fa43-4830-9cf1-d5302bca5139.jpg" alt="">
+      </div>
+    </div>
+  </section>
+
+  <div class="note">
+    <b>Why A.</b> The heart is a destination, not a control. It goes somewhere, the way a category
+    pill does. Putting it first in that row says so in one move, and it leaves the search bar the
+    full width you asked for with nothing competing inside it.
+    <br><br>
+    <b>Why not B.</b> It keeps the heart obvious, but it takes about 50px off the search bar, which
+    is the opposite of the one thing you asked for.
+    <br><br>
+    <b>Why not C.</b> Home puts the burger in exactly that slot. A different icon in the same place
+    on the next screen is the inconsistency the rest of this work has been removing.
+    <br><br>
+    <b>Unchanged in all three:</b> the feed, its masonry, and the discovery ranking behind it.
+  </div>
+</div>
