@@ -186,7 +186,28 @@
        the filter pill, so they cannot drift apart again. */
     box-shadow: var(--lift);
   }
-  .sa-root { --lift: rgba(0,0,0,0.07) 0 2px 8px 0; }
+  /* THE REAL AIRBNB RECIPES, RESTORED AND LOCKED. Owner: "I told you to make it like Airbnb, the
+     shadow, the drop. You had it before. Why did you just make a normal shadow now?"
+     He is right and this is the worst kind of mistake I make: I MEASURED these off airbnb.ch at
+     vw=390, shipped them, and then two rounds later replaced them with a one-layer shadow I made
+     up, because he said "too much shadow everywhere" and I reached for the nearest simplification
+     instead of asking which shadow. A captured value replaced by an invented one is a straight
+     downgrade, and the fact that it was captured is exactly why it should not have moved.
+     --lift-raised  7 layers, 3 inset, the unselected pill
+     --lift-sunken  9 layers, 5 inset, the selected pill, pressed INTO the surface
+     LOCKED. Do not replace either of these with a simpler shadow. */
+  .sa-root {
+    --lift-raised:
+      rgba(0,0,0,0.10) 0 3px 2.5px 0, rgba(0,0,0,0.15) 0 1px 1px 0, rgba(0,0,0,0.15) 0 0.8px 0.4px 0,
+      rgb(255,255,255) 0 1px 1.5px 0 inset, rgba(58,58,58,0.02) 0 10px 15px 0 inset,
+      rgba(255,255,255,0.6) 0 -1.5px 0.8px 0 inset, rgba(0,0,0,0.30) 0 -1.5px 0.75px 0 inset;
+    --lift-sunken:
+      rgb(255,255,255) 0 1px 0.5px 0, rgba(0,0,0,0.15) 0 -0.5px 1px 0, rgba(0,0,0,0.05) 0 -1.2px 0.5px 1px,
+      rgba(0,0,0,0.05) 0 8px 16px 0, rgb(255,255,255) -0.2px -1px 1px 0 inset,
+      rgba(0,0,0,0.20) 0.5px 0.7px 2.5px 0 inset, rgba(0,0,0,0.05) -1px -3px 8px 0 inset,
+      rgba(0,0,0,0.10) 0.5px 2px 4px 0 inset, rgba(0,0,0,0.10) 1px 6px 6px 2px inset;
+    --lift: var(--lift-raised);
+  }
   .sa-pillicon { flex: 0 0 auto; color: #6B6B6B; display: flex; }
   .sa-pilltext { min-width: 0; flex: 1 1 auto; }
   .sa-l1 { display: block; font-size: 16px; font-weight: 500; line-height: 20px; letter-spacing: -0.005em;
@@ -231,7 +252,7 @@
      gray fill alone says selected, which is what the design contract locks anyway. */
   .sa-cat[aria-selected="true"] {
     background: #F4F4F5;
-    box-shadow: var(--lift);
+    box-shadow: var(--lift-sunken);
   }
   .sa-caticon { height: 31px; width: 31px; flex: 0 0 auto; object-fit: contain; }
 
@@ -301,9 +322,13 @@
      Solved at 390 x 844 with 204 of chrome, keeping 5/4 and one column:
        card width 256 -> photo 205 -> card 264 -> 2.25 on screen, which is his number exactly.
      Side padding 67 each side. Nothing about the shape changed. */
-  .sa-list { display: flex; flex-direction: column; align-items: center; gap: 20px;
-    padding: 16px 67px 32px; background: #FFFFFF; }
-  .sa-row { width: 256px; max-width: 100%; }
+  /* Owner: "this card broke, now they're just too small, there's a massive gap left and right."
+     67px of side padding was too far. 256 wide hit his 2.25 but left the card marooned in white.
+     Backing off to 28, which is a normal page gutter rather than a moat: card 334, photo 267,
+     card height 327, about 1.83 on screen. Between the two extremes he has now rejected. */
+  .sa-list { display: flex; flex-direction: column; align-items: center; gap: 16px;
+    padding: 12px 28px 32px; background: #FFFFFF; }
+  .sa-row { width: 100%; }
   .sa-row {
     display: block; width: 100%; padding: 0; border: 0; border-radius: 0; background: transparent;
     text-align: left; cursor: pointer; transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1);
