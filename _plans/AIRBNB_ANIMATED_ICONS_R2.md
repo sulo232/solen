@@ -642,3 +642,31 @@ in a session, it blocks a closing message that claims success without naming a r
 that the turn removed complexity. Born from the seven-attempt air saga, where each attempt added a
 knob and none questioned the premise. Self-test 6/6. Not armed: settings are read-only from this
 sandbox, so it needs one line in the Stop hooks array.
+
+---
+
+# Round 17: he is right that the whole approach is wrong. Stopping.
+
+Owner: "where it comes out is good, but the air and the blow dryer, the frames doesn't match, and also
+the air doesn't come out as I told you to. I think the way that you're doing the whole thing is
+completely wrong."
+
+- [x] CORRECTION accepted, not argued. He is right, and the reason is nameable:
+  - **The frames do not match because they cannot.** The dryer is a 3D render: it has perspective,
+    specular highlights, and it foreshortens as it turns. The air is a flat 2D stroke painted on top
+    afterwards. Two different media in one image. No amount of tuning the stroke fixes that, because
+    the mismatch IS the technique.
+  - **Every version so far has been my interpretation of his words**, never a copy of a thing that
+    exists. Nine attempts: 3D sprites, 3D tubes, tubes with a facing fade, a narrow-end test, an
+    offset, an inset, a vertex-colour wave, camera-facing strips, and now a 2D overlay. Each was a
+    different guess at "wavy air". The pattern is not that I keep choosing badly; it is that I keep
+    choosing at all, from a description, when the reference-lock rule exists precisely to stop that.
+  - The Airbnb capture that started this workstream was measured properly. This half never was,
+    because no reference was ever captured for it. I built the air from words.
+
+- [ ] BLOCKED, and this is a real blocker, not a chore I am ducking: I need ONE example of the air he
+      means. A link, a screenshot, a recording, an icon in another app. The moment there is a
+      reference, `Skill(reference-lock)` measures it (frame timing, stroke weight, count, spacing,
+      how it enters and leaves) and the build stops being a guess.
+      Everything else in the set is done and not waiting on him: barber chair approved, dryer body
+      colour approved, motion approved, rest state approved, air POSITION approved this round.
