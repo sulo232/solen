@@ -77,3 +77,13 @@ commit. Then PDP, Inspo, booking, profile.
 - [x] Overlapping toggle bar: was position:fixed with a flat 52px reservation, so a second button row grew past it and covered the search pill. Now a normal block. verified: bar bottom 96 vs pill top 164 at 390, no overlap.
 - [x] Categories default to ABOVE, the owner's pick. verified: 1f02c128b.
 - [x] Filter pills in one row under the chrome, the Fresha arrangement. verified: 4 pills render at 390.
+
+## 2026-07-31 , search chrome round 2
+
+- [x] Something overlaps, fix it. The filter row bottom sat past the section heading below it. verified: 73d9b74df, filters end at 322 and the first card starts at 322 at vw=390, flush.
+- [x] Search bar shadow deeper, like Airbnb. verified: 73d9b74df, copied rgba(0,0,0,0.1) 0 6px 20px measured off airbnb.ch at 390; mine had been rgba(50,47,44,0.09) 0 2px 8px.
+- [x] Kill the store count and the Sort button. verified: 73d9b74df, both absent in the DOM; graveyard line filed the same turn.
+- [x] Category icons stay as they are, owner approved them.
+- [ ] Cards too big again. BLOCKED ON AN OWNER DECISION, and it is a genuine either/or, not a punt: at full width a 5/4 photo is 293 tall, so the card is 353. The 5/4 shape is ours and he asked for it back; more cards per screen is also his ask. Both cannot hold at full width. The way out is the two-column variant that SalonResultCard already documents for search results, which keeps 5/4 and roughly halves the height. He has previously rejected a grid on HOME, so this needs his yes for SEARCH specifically.
+- [ ] More balanced. Partly addressed by the filter-depth idea (search bar lifts, categories lift, filters recess) but that toggle does not work yet, so the balance question is not settled.
+- [ ] BROKEN: the three filter treatments do not switch. Buttons render and the attribute changes, but sunken keeps a white background instead of the gray fill and minimal keeps the matched shadow. Found by testing, not shipped as done.
