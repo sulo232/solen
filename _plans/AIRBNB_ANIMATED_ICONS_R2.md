@@ -949,7 +949,9 @@ side the moment the dryer turns. I traded a small defect for a bigger one.
       single-frame fill takes side flips from **10 to 2**, and those last two are genuine turns past
       edge-on where the air SHOULD change sides. They are now crossfaded over 14 frames rather than
       cut, which measures as **0 abrupt side changes** while the air still follows the nozzle.
-- [x] The renderer poisoned its own measurements, verified by self-test: it never cleared its output
+- [x] The renderer poisoned its own measurements, verified: commit cfa17d2ff,
+      `scripts/capture/turntable-render.mjs:105`, self-test executed this turn. It never cleared
+      its output
       directory, so a 210-frame render inherited 300 and then 420 stale PNGs from earlier passes, and
       both the wind pass and the encoder consumed them. A shipped clip was wrong because of it.
       Guard added and executed: seeded a stale `999.png`, ran a 12-frame render, the stale file was
