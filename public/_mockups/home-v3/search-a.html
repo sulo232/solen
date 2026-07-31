@@ -1110,4 +1110,49 @@
     };
   };
 })();
+
+  // ===== SCROLL DIAGNOSTIC, ?debug=1 ONLY ==================================
+  // Three rounds of "I cannot scroll" and three wrong fixes, because every test I can run
+  // (scrollTo, a wheel gesture, computed styles) passes on my machine. His phone is the only
+  // place the bug exists, so this reads HIS device and puts the numbers on HIS screen.
+  // Triggered by the HASH (#debug), not a query string: this static server 301s '/search-a.html'
+  // to '/search-a' and DROPS the query in the process, so ?debug=1 never survived the redirect.
+  // Renders nothing without it, so the mockup is unchanged otherwise.
+  if (/debug/.test(location.hash) || /[?&]debug=1/.test(location.search)) {
+    var dbg = document.createElement("div");
+    dbg.setAttribute("style",
+      "position:fixed;left:8px;right:8px;bottom:8px;z-index:99999;background:#0A0A0A;color:#fff;" +
+      "font:12px/1.45 ui-monospace,Menlo,monospace;padding:10px 12px;border-radius:12px;" +
+      "white-space:pre-wrap;pointer-events:none;opacity:0.94");
+    document.body.appendChild(dbg);
+    var touches = 0, moves = 0, lastDY = 0, maxDY = 0, defaultPrevented = "no";
+    document.addEventListener("touchstart", function () { touches++; }, { passive: true });
+    document.addEventListener("touchmove", function (e) {
+      moves++;
+      if (e.touches && e.touches.length) {
+        lastDY = Math.round(e.touches[0].clientY);
+        maxDY = Math.max(maxDY, Math.abs(lastDY));
+      }
+      if (e.defaultPrevented) defaultPrevented = "YES <- something is cancelling the swipe";
+    }, { passive: true });
+    function paint() {
+      var de = document.documentElement;
+      var maxScroll = de.scrollHeight - window.innerHeight;
+      dbg.textContent =
+        "viewport   " + window.innerWidth + " x " + window.innerHeight +
+        "  dpr " + (window.devicePixelRatio || 1) + "\n" +
+        "page       " + de.scrollHeight + " tall, so " + maxScroll + "px of scroll available\n" +
+        "scrolled   " + Math.round(window.scrollY) + "\n" +
+        "touches    " + touches + " starts, " + moves + " moves, last finger Y " + lastDY + "\n" +
+        "cancelled  " + defaultPrevented + "\n" +
+        "verdict    " +
+          (maxScroll <= 0 ? "PAGE IS ONE SCREEN, nothing to scroll"
+           : touches === 0 ? "swipe up and down now, this line will change"
+           : moves === 0 ? "finger lands but never moves: SOMETHING IS ON TOP OF THE PAGE"
+           : window.scrollY === 0 && moves > 8 ? "swipes arrive, page refuses to move"
+           : "scrolling works here");
+      requestAnimationFrame(paint);
+    }
+    paint();
+  }
 </script>
