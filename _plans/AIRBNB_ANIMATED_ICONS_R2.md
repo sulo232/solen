@@ -545,3 +545,23 @@ static flourish and drop it entirely from the moving part.
 - [x] Hardened: `~/.claude/hooks/animation-full-clip-verify-gate.py` blocks a closing message that
       claims an animation is fixed when the turn only sampled frames. Self-test 7/7. Not armed,
       settings are read-only from this sandbox.
+
+## Round 13: the air itself animates
+
+Owner: "the area is not coming from the middle... animate the air."
+
+- [x] The air moves on its own. The mesh is ONE primitive with ONE material, so the air cannot be
+      picked out by node or material. It CAN be picked out by colour: the ribbons are grey, the body
+      is a saturated yellow. New `--air-wave` samples the baked texture at each vertex's UV, marks
+      every vertex under 0.18 saturation as air, and waves only those, so the air flows while the
+      dryer stays rigid.
+  - verified, and the discriminating test is the still hold, where the object does not rotate at all:
+    frame-to-frame change was **0.000** before and is **0.53 to 0.62** now. That change can only be
+    the air, because nothing else is moving in those frames.
+  - The wave completes a whole number of cycles across the clip, so the loop still closes
+    byte-identical. First attempt at amplitude 0.055 tore the ribbons off the body in 37 of 75 frames;
+    0.020 left 11; the shipped 0.011 leaves **4 of 75**, and those 4 are the sharpest side-on angles.
+  - FULL CLIP SWEEP, all 75: 0 blank, 71 in one connected piece, 4 with a detached tip.
+- [ ] STILL OPEN: the air is not centred on the nozzle. It sits high and to one side because that is
+      how it was drawn in the source image. Fixing it properly means re-drawing the source with the
+      three curves centred on the nozzle axis, which is one more generation.

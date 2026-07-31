@@ -30,7 +30,7 @@ if (!glbPath || !outdirArg) {
   console.error("Usage: node scripts/capture/turntable-render.mjs <model.glb> <outdir> [--frames 51] [--fps 30] [--size 180x162] [--hold-in 6] [--hold-out 12] [--turns 1]");
   process.exit(1);
 }
-const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7, hueShift: null, satMul: 1, valMul: 1, tilt: 0, bob: 0, gloss: 0, neutralVal: null, puffOffset: '0,0,0', puffInset: 0 };
+const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7, hueShift: null, satMul: 1, valMul: 1, tilt: 0, bob: 0, gloss: 0, neutralVal: null, puffOffset: '0,0,0', puffInset: 0, airWave: 0 };
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
   // ES modules are blocked over file:// by CORS (origin null), so when the outdir sits under
@@ -66,6 +66,11 @@ for (let i = 0; i < argv.length; i++) {
   // outer surface, so a ribbon starting there begins a few pixels clear of the body and reads as
   // detached. Insetting makes it emerge from inside the nozzle.
   else if (a === "--puff-inset") opt.puffInset = Number(argv[++i]);
+  // Animate the air that is FUSED into the mesh. Tripo returns one mesh, one primitive, one
+  // material, so the air cannot be picked out by node or by material. It can be picked out by
+  // COLOUR: the ribbons are grey and the dryer is yellow. Classify each vertex by sampling the
+  // texture at its UV, then wave only those vertices, so the air flows while the body stays rigid.
+  else if (a === "--air-wave") opt.airWave = Number(argv[++i]);    // 0 = off, ~1 = lively
   else if (a === "--puff-count") opt.puffCount = Number(argv[++i]);
   // Recolour the object at render time instead of paying to regenerate it. Only the SATURATED
   // pixels move: chrome, cream and white sit below the saturation floor and are left alone, so a
@@ -192,6 +197,69 @@ new GLTFLoader().load("./model.glb", (gltf) => {
   const s = 2 / maxDim;
   obj.scale.setScalar(s);
   obj.position.set(-centre.x * s, -centre.y * s, -centre.z * s);
+  // classify vertices as AIR (grey) or BODY (coloured), by sampling the baked texture
+  const AIR_WAVE = ${opt.airWave};
+  if (AIR_WAVE > 0) {
+    obj.traverse((n) => {
+      if (!n.isMesh || !n.geometry || !n.material || !n.material.map) return;
+      const tex = n.material.map, img = tex.image;
+      if (!img) return;
+      const cw = img.width, chh = img.height;
+      const cv = document.createElement("canvas");
+      cv.width = cw; cv.height = chh;
+      const cx = cv.getContext("2d", { willReadFrequently: true });
+      cx.drawImage(img, 0, 0);
+      const px = cx.getImageData(0, 0, cw, chh).data;
+      const g = n.geometry, pos = g.attributes.position, uv = g.attributes.uv;
+      if (!uv) return;
+      const isAir = new Float32Array(pos.count);
+      let airCount = 0;
+      for (let i = 0; i < pos.count; i++) {
+        const u = uv.getX(i), v = uv.getY(i);
+        const sx = Math.min(cw - 1, Math.max(0, Math.round(u * (cw - 1))));
+        const sy = Math.min(chh - 1, Math.max(0, Math.round((1 - v) * (chh - 1))));
+        const o = (sy * cw + sx) * 4;
+        const r = px[o] / 255, gg = px[o + 1] / 255, b = px[o + 2] / 255;
+        const mx = Math.max(r, gg, b), mn = Math.min(r, gg, b);
+        const sat = mx === 0 ? 0 : (mx - mn) / mx;
+        // grey = low saturation. The body is a saturated yellow, the air is neutral.
+        const air = sat < 0.18 ? 1 : 0;
+        isAir[i] = air;
+        airCount += air;
+      }
+      g.setAttribute("aAir", new THREE.BufferAttribute(isAir, 1));
+      g.userData.basePos = pos.array.slice();
+      g.userData.airCount = airCount;
+      console.log("air vertices:", airCount, "of", pos.count);
+    });
+  }
+  window.__waveAir = (t) => {
+    if (AIR_WAVE <= 0) return;
+    obj.traverse((n) => {
+      if (!n.isMesh || !n.geometry) return;
+      const g = n.geometry, a = g.getAttribute("aAir"), base = g.userData.basePos;
+      if (!a || !base) return;
+      const pos = g.attributes.position, arr = pos.array;
+      for (let i = 0; i < pos.count; i++) {
+        const w = a.getX(i);
+        if (w === 0) {
+          arr[i * 3] = base[i * 3]; arr[i * 3 + 1] = base[i * 3 + 1]; arr[i * 3 + 2] = base[i * 3 + 2];
+          continue;
+        }
+        const bx = base[i * 3], by = base[i * 3 + 1], bz = base[i * 3 + 2];
+        // travel a wave along the ribbon: phase from the vertex's own position so the whole
+        // stream ripples outward rather than wobbling as one lump
+        const cyc = 2;                       // whole cycles across the clip, so it seams
+        const ph = (bx + bz) * 5.2 - ((t * cyc) % 1) * Math.PI * 2;
+        const amp = AIR_WAVE * 0.011;
+        arr[i * 3] = bx;
+        arr[i * 3 + 1] = by + Math.sin(ph) * amp;
+        arr[i * 3 + 2] = bz + Math.cos(ph * 0.8) * amp * 0.6;
+      }
+      pos.needsUpdate = true;
+      g.computeVertexNormals();
+    });
+  };
   const GLOSS = ${opt.gloss};
   if (GLOSS > 0) {
     // An environment is what a specular highlight actually reflects. Without one, lowering roughness
@@ -379,12 +447,13 @@ window.__VALMUL = ${opt.valMul};
 window.__NEUTVAL = ${opt.neutralVal === null ? 'null' : opt.neutralVal};
 const TILT = ${opt.tilt} * Math.PI / 180;
 const BOB = ${opt.bob};
-window.__renderAt = (rad, puffT, t) => {
+window.__renderAt = (rad, puffT, t, wt) => {
   pivot.rotation.y = rad;
   // One full sine over the turn: level at the start, up, level, down, level at the end. Because it
   // is a whole period the last frame lands exactly on the first, so the loop still closes.
   const phase = (t === undefined ? 0 : t) * Math.PI * 2;
   pivot.rotation.x = TILT * Math.sin(phase);
+  if (window.__waveAir) window.__waveAir(wt === undefined ? 0 : wt);
   pivot.position.y = BOB * Math.sin(phase * 2);
   setPuff(puffT === undefined ? 0 : puffT);
   renderer.render(scene, camera);
@@ -498,7 +567,8 @@ for (let f = 0; f < opt.frames; f++) {
   const puffT = opt.puff
     ? (f < opt.holdIn ? 0 : (f - opt.holdIn) / (opt.frames - 1 - opt.holdIn))
     : 0;
-  const dataUrl = await page.evaluate(([r, pt, tt]) => window.__renderAt(r, pt, tt), [rad, puffT, t]);
+  const waveT = f / (opt.frames - 1);   // runs across the WHOLE clip, holds included
+  const dataUrl = await page.evaluate(([r, pt, tt, wt]) => window.__renderAt(r, pt, tt, wt), [rad, puffT, t, waveT]);
   writeFileSync(join(outdir, String(f + 1).padStart(3, "0") + ".png"), Buffer.from(dataUrl.split(",")[1], "base64"));
   const stats = await page.evaluate(() => window.__alphaStats());
   if (stats.opaque === 0) emptyFrames++;
