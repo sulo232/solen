@@ -12,10 +12,34 @@ The literal order narrowed this turn to research only. The build half is below a
 ## Atomic asks, this turn's scope (research)
 
 - [x] A1. Research Airbnb's icon animation frame by frame, from the real thing.
+  - verified: commit a6d6795bb. 411 RGBA frames decoded by ffmpeg into
+    `public/_pixel-refs/airbnb/icons-motion/frames/<clip>/NNN.png`; per-frame alpha geometry in
+    `frame-metrics.json` (produced by `analyze.py`), alpha-masked per-frame motion energy in
+    `motion-energy.json` (`energy.py`), 9 contact sheets in `sheets/` (`sheets.py`).
 - [x] A2. Capture the actual assets rather than describing them from memory.
+  - verified: commit a6d6795bb. 9 real files at `public/_pixel-refs/airbnb/icons-motion/webm/*.webm`,
+    downloaded from `a0.muscache.com/videos/search-bar-icons/webm/`. ffprobe on them returns
+    `codec_name=vp9`, tag `alpha_mode=1`, 180x162, `r_frame_rate=30/1`. The HEVC `.mov` variant was
+    fetched and probed too (51 frames, same dimensions). Live-page evidence in `live-page-manifest.json`.
 - [x] A3. Write a durable spec and arm the reference lock.
+  - verified: commit 29becd151, `_design-system/references/airbnb--animated-icons.md` (Identity,
+    Philosophy, Measured, Port map, Conflicts, Known limits). Lock armed at
+    `~/.claude/state/active-ref-299044ad.json`, written by the reference-lock step 4 snippet.
 - [x] A4. Deliver it as a served visual page, not a markdown file.
+  - verified: commit 29becd151, `public/_research/airbnb-icon-motion.html`, served on port 3222 from
+    this worktree. Live readback in the running page: 9/9 videos `readyState` 4, 9/9 frame strips
+    loaded at 1170x190, 9 timing rows, 3 timeline segments. INTERACTION dispatched and read back:
+    a synthetic `click` on the third cell drove `house-selected.webm` from `currentTime` 0 to 0.396
+    to 0.766 and left it `paused` on its final frame, which is the Airbnb behaviour reproduced.
 - [x] A5. Establish what generation route is actually available (the dictated "six field MCP" reading).
+  - verified: `lottiefiles` MCP returns HTTP 403 on `search_animations` and `get_popular_animations`
+    (3 calls). `lottiefiles-creator` MCP responds (`get_rules` returned its layer-ordering contract).
+    Higgsfield MCP is connected and answered live: `models_explore(type:'3d')` lists
+    `tripo_h3_1_image_to_3d`, `image_to_3d` (Meshy), `sam_3_3d`, `hunyuan3d_v3_image_to_3d`;
+    `generate_3d(get_cost:true)` returns 9 credits; `balance` returns 1000 credits on a plus plan.
+    Local encode capability confirmed: `ffmpeg -h encoder=libvpx-vp9` lists `yuva420p`, so we can
+    write the same alpha WebM Airbnb ships. `three` is NOT installed in this repo (`require` throws),
+    so the turntable renderer is the one genuinely missing piece.
 
 ### A5, what was found
 
