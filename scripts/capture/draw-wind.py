@@ -29,26 +29,56 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 
+def end_profile(alpha, x0, x1):
+    """Vertical extent of the silhouette across a band of columns."""
+    band = alpha[:, x0:x1]
+    rows = np.nonzero((band > 25).any(axis=1))[0]
+    if len(rows) == 0:
+        return None, None
+    return int(rows.mean()), int(rows.max() - rows.min())
+
+
 def nozzle_point(alpha, side):
     """Where the nozzle is IN THIS FRAME, read off the rendered alpha.
 
-    The nozzle is the extreme of the silhouette on the side the dryer points. Take the outermost
-    few columns and use the vertical centre of the material there: that is the mouth, measured,
-    not assumed.
+    "auto" is the important mode. The air was coming out of the BACK because a fixed side is only
+    the nozzle at one angle: as the dryer turns, the nozzle swaps ends of the silhouette. So decide
+    per frame, from the shape itself. A blow dryer tapers to its nozzle and is fat and round at the
+    vent, so the nozzle end is whichever end is VERTICALLY THINNER. That is measured, not assumed,
+    and it re-decides on every single frame.
     """
     cols = np.nonzero((alpha > 25).any(axis=0))[0]
     if len(cols) == 0:
         return None
-    if side == "left":
-        x0 = cols.min()
-        band = alpha[:, x0:x0 + 7]
-    else:
-        x0 = cols.max()
-        band = alpha[:, max(0, x0 - 6):x0 + 1]
-    rows = np.nonzero((band > 25).any(axis=1))[0]
-    if len(rows) == 0:
+    lo, hi = int(cols.min()), int(cols.max())
+    band = max(4, (hi - lo) // 7)
+    ly, lthick = end_profile(alpha, lo, lo + band)
+    ry, rthick = end_profile(alpha, hi - band + 1, hi + 1)
+    if ly is None or ry is None:
         return None
-    return int(x0), int(rows.mean())
+
+    if side == "auto":
+        # Thickness alone was not reliable: at some angles the vent end also reads thin, and the
+        # air went out the back on those frames. The HANDLE is the stable landmark. It hangs from
+        # the rear of the barrel and it is always the lowest mass in the silhouette, so the nozzle
+        # is simply the horizontal end FARTHER from it. Measured per frame, like everything else.
+        rows_all = np.nonzero((alpha > 25).any(axis=1))[0]
+        handle_x = None
+        if len(rows_all) > 6:
+            cut = rows_all.min() + int((rows_all.max() - rows_all.min()) * 0.72)
+            low = alpha[cut:, :] > 25
+            if low.sum() > 8:
+                xs = np.nonzero(low.any(axis=0))[0]
+                handle_x = float(xs.mean())
+        if handle_x is not None:
+            pick_left = abs(lo - handle_x) > abs(hi - handle_x)
+        else:
+            pick_left = lthick <= rthick
+    else:
+        pick_left = side == "left"
+    if pick_left:
+        return lo, ly, -1
+    return hi, ry, 1
 
 
 def stroke(draw, x0, y0, length, amp, weight, direction, phase, colour, alpha_255):
@@ -73,9 +103,10 @@ def main():
     ap.add_argument("frames")
     ap.add_argument("--hold-in", type=int, default=9)
     ap.add_argument("--hold-out", type=int, default=18)
-    ap.add_argument("--side", default="left", choices=["left", "right"])
+    ap.add_argument("--side", default="auto", choices=["auto", "left", "right"])
     ap.add_argument("--color", default="154,160,166")
     ap.add_argument("--lines", type=int, default=3)
+    ap.add_argument("--weight", type=int, default=5)   # stroke thickness in px
     args = ap.parse_args()
 
     colour = tuple(int(v) for v in args.color.split(","))
@@ -104,28 +135,35 @@ def main():
         np_ = nozzle_point(a, args.side)
         if np_ is None:
             continue
-        nx, ny = np_
+        nx, ny, d = np_
 
         W, H = im.size
-        gap = 5
-        d = -1 if args.side == "left" else 1
-        x0 = nx + d * gap
+        x0 = nx + d * 4
         overlay = Image.new("RGBA", im.size, (0, 0, 0, 0))
         od = ImageDraw.Draw(overlay)
-        span = W * 0.20
+        span = W * 0.21
         for k in range(args.lines):
             row = k - (args.lines - 1) / 2
+            # ONE BY ONE. Each stroke waits its turn, so they leave the nozzle in sequence rather
+            # than appearing as a block of three.
+            lead = k * 0.16
+            local = (p - lead) / max(0.05, 1.0 - lead)
+            if local <= 0:
+                continue
+            local = min(1.0, local)
+            grow = min(1.0, local / 0.30)
+            each = fade * min(1.0, local / 0.12)
             stroke(
                 od,
                 x0,
-                ny + row * 9.5,
-                span * (1.0 - 0.13 * abs(row)),
-                5.2,
-                3,
+                ny + row * 11.0,
+                span * grow * (1.0 - 0.12 * abs(row)),
+                5.6,
+                args.weight,
                 d,
                 p * math.pi * 2.0 + k * 0.9,
                 colour,
-                int(235 * fade),
+                int(240 * each),
             )
         im = Image.alpha_composite(im, overlay)
         im.save(path)

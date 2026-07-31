@@ -615,3 +615,30 @@ no 3D, no guessing. Where the strokes begin is measured per frame, from the imag
 - [x] Resting icon is just the dryer, verified: opaque-pixel deltas across all 9 still-hold frames are
       **0**, and rest is 4,925 px against a 5,373 peak once it moves.
 - [x] Loop closes byte-identical across all 75 frames.
+
+## Round 16: nozzle end found by the HANDLE, thicker strokes, one at a time
+
+Owner: "the air starts from the back of the blow dryer... I want the air thicker... and one, two,
+three, as the blow dryer rolls, it comes out one by one."
+
+- [x] Air leaves the NOZZLE end on every frame, verified: the first auto rule picked whichever end was
+      vertically thinner, which fails at the angles where the vent end also reads thin, and those were
+      exactly the frames where it came out of the back. Replaced with a stable landmark: the HANDLE.
+      It hangs from the rear of the barrel and is always the lowest mass in the silhouette, so the
+      nozzle is simply the horizontal end FARTHER from it. Measured per frame from the rendered
+      pixels, re-decided on all 75.
+- [x] Thicker, verified: stroke weight is now a flag, `--weight`, shipped at 5px against the previous
+      3px, with rounded caps so it reads as ink.
+- [x] One by one, verified: each stroke carries a 0.16 lead on the clip's own progress and grows from
+      nothing, so they leave the nozzle in sequence. Visible in `set-dryer-sheet.png`: one stroke at
+      f12, two at f16, three at f20.
+- [x] Resting icon still just the dryer: still-hold opaque deltas all 0. Loop closes byte-identical.
+      `out/set-dryer.webm` 70,139 bytes.
+
+## Hardening from this round
+
+`~/.claude/hooks/repeat-fix-simplify-gate.py`, a Stop gate. From the THIRD attempt at the same defect
+in a session, it blocks a closing message that claims success without naming a root cause or showing
+that the turn removed complexity. Born from the seven-attempt air saga, where each attempt added a
+knob and none questioned the premise. Self-test 6/6. Not armed: settings are read-only from this
+sandbox, so it needs one line in the Stop hooks array.
