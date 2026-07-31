@@ -594,3 +594,24 @@ caught light and rotated in 3D, which is exactly why it read as a robot arm rath
       **identical on all 9 frames** (deltas all 0) and equals the dryer alone at 4,925 px, rising to
       5,538 only once the turn starts. So nothing is drawn at rest, which is what he asked for.
 - [x] Loop still closes byte-identical, full 75-frame clip, verified: commit 42da5248d.
+
+## Round 15: stop putting the air in 3D. Draw it on the picture.
+
+Owner: "the air is coming out of fucking middle of nowhere... you keep complicating... it cannot be
+that fucking hard." He was right on all three counts.
+
+**The complication was self-inflicted.** Every attempt so far put the air in the 3D SCENE and hoped it
+would land beside the nozzle once projected to screen. It never could, because the mesh has no nozzle
+to anchor to, so the anchor was always an inference from a bounding box, and a bounding box is only
+right at one camera angle. Seven attempts, all the same mistake wearing different clothes.
+
+**The simple thing, done:** `scripts/capture/draw-wind.py` reads the RENDERED PIXELS of each frame,
+finds where the nozzle actually is in that exact frame (outermost columns of the silhouette, vertical
+centre of the material there), and draws three wind strokes starting from that point. No projection,
+no 3D, no guessing. Where the strokes begin is measured per frame, from the image itself.
+
+- [x] Air starts at the nozzle in every frame, verified: commit below. 46 of 75 frames carry wind, each
+      one anchored to its own measured nozzle point rather than to a shared 3D guess.
+- [x] Resting icon is just the dryer, verified: opaque-pixel deltas across all 9 still-hold frames are
+      **0**, and rest is 4,925 px against a 5,373 peak once it moves.
+- [x] Loop closes byte-identical across all 75 frames.
