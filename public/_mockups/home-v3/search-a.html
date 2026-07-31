@@ -190,6 +190,11 @@
       <button class="sa-tab" type="button" role="tab" id="sa-tab-now" aria-selected="false">Now</button>
       <button class="sa-tab" type="button" role="tab" id="sa-tab-new" aria-selected="true">Proposed</button>
     </div>
+    <div class="sa-seg" id="sa-arrange" role="tablist" aria-label="Where the categories sit">
+      <button class="sa-tab" type="button" role="tab" data-arr="above" aria-selected="false">Cats above</button>
+      <button class="sa-tab" type="button" role="tab" data-arr="below" aria-selected="true">Below</button>
+      <button class="sa-tab" type="button" role="tab" data-arr="none" aria-selected="false">None</button>
+    </div>
   </div>
 
   <div class="sa-stage">
@@ -383,6 +388,33 @@
   }
   tabNow.addEventListener("click", function () { show("now"); });
   tabNew.addEventListener("click", function () { show("new"); });
+
+  // ===== WHERE THE CATEGORY ROW SITS =====================================
+  // Owner 2026-07-31: "what if we put the category icon above the search bar? What do you think?"
+  // Three arrangements on the SAME page so only one variable moves.
+  //
+  // MY PICK IS BELOW, and the cost of ABOVE is one a still image hides: the category row COLLAPSES
+  // on scroll. With it above the pill, folding it drags the search bar UP the screen, so the one
+  // control the user is reaching for moves under their thumb mid-gesture. With it below, the pill
+  // is pinned at the very top and never moves while the row folds away beneath it. ABOVE also
+  // starts the search bar about 64px lower on arrival, and the search bar is the thing he set out
+  // to make more prominent. Drawn fully anyway so he judges it, not a strawman of it.
+  var band = document.querySelector(".sa-band");
+  var bandinner = document.querySelector(".sa-bandinner");
+  var catrow = document.getElementById("sa-catscroll");
+  var arrange = document.getElementById("sa-arrange");
+
+  function applyArrangement(mode) {
+    catrow.style.display = mode === "none" ? "none" : "flex";
+    if (mode === "above") band.insertBefore(catrow, bandinner);
+    else band.appendChild(catrow);
+    arrange.querySelectorAll(".sa-tab").forEach(function (t) {
+      t.setAttribute("aria-selected", t.dataset.arr === mode ? "true" : "false");
+    });
+  }
+  arrange.querySelectorAll(".sa-tab").forEach(function (t) {
+    t.addEventListener("click", function () { applyArrangement(t.dataset.arr); });
+  });
 
   window.saMeasure = function () {
     var r1 = function (n) { return Math.round(n * 10) / 10; };
