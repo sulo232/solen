@@ -30,7 +30,7 @@ if (!glbPath || !outdirArg) {
   console.error("Usage: node scripts/capture/turntable-render.mjs <model.glb> <outdir> [--frames 51] [--fps 30] [--size 180x162] [--hold-in 6] [--hold-out 12] [--turns 1]");
   process.exit(1);
 }
-const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7, hueShift: null, satMul: 1, valMul: 1, tilt: 0, bob: 0, gloss: 0, neutralVal: null, puffOffset: '0,0,0', puffInset: 0, airWave: 0 };
+const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7, hueShift: null, satMul: 1, valMul: 1, tilt: 0, bob: 0, gloss: 0, neutralVal: null, puffOffset: '0,0,0', puffInset: 0, airWave: 0, sway: 0 };
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
   // ES modules are blocked over file:// by CORS (origin null), so when the outdir sits under
@@ -42,6 +42,13 @@ for (let i = 0; i < argv.length; i++) {
   else if (a === "--hold-in") opt.holdIn = Number(argv[++i]);
   else if (a === "--hold-out") opt.holdOut = Number(argv[++i]);
   else if (a === "--turns") opt.turns = Number(argv[++i]);
+  // SWAY instead of a full turn. Measured on the captured reference: Airbnb's balloon changes its
+  // silhouette width by 2px and drifts 3.4px across its whole clip, and the bell by 2px and 2.3px.
+  // Only the house does a big swing, 47px and 30px. So two of their three icons barely move at all,
+  // and the gentle option is the reference-true one rather than a compromise. A sway also keeps the
+  // nozzle pointing the same way the whole time, which removes the air's teleport and its cut at the
+  // source instead of managing them.
+  else if (a === "--sway") opt.sway = Number(argv[++i]);           // peak yaw in degrees
   // Which angle the clip RESTS on. Measured, not guessed: pick the frame where the subject
   // reads most front-on, then pass its rotation here so frame 1 and frame 51 both land there.
   else if (a === "--start-angle") opt.startAngle = Number(argv[++i]);
@@ -514,7 +521,10 @@ for (let f = 0; f < opt.frames; f++) {
   if (f < opt.holdIn) t = 0;
   else if (f >= opt.frames - opt.holdOut) t = 1;
   else t = easeSoftEnds((f - opt.holdIn) / (sweep - 1));
-  const rad = (opt.startAngle * Math.PI / 180) + t * opt.turns * Math.PI * 2;
+  const rad = opt.sway > 0
+    // one whole sine over the clip: starts level, swings out, comes back, so the loop still closes
+    ? (opt.startAngle * Math.PI / 180) + (opt.sway * Math.PI / 180) * Math.sin(t * Math.PI * 2)
+    : (opt.startAngle * Math.PI / 180) + t * opt.turns * Math.PI * 2;
   // The puff opens with the sweep and runs to the LAST frame, so it outlives the body settling by
   // the hold-out, which at the defaults is the 400ms the reference's tree overhangs its house by.
   const puffT = opt.puff
