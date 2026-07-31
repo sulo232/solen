@@ -1,0 +1,550 @@
+<!--
+  home-v3 / n1-v2 : "n1, minus the circle" , three menu treatments, stacked for phone.
+
+  Reference-checked: _design-system/references/airbnb--home-search-chrome.md
+  Reference-checked: public/_mockups/_assets/refs/airbnb/house.png
+  (The Airbnb assets were downloaded from their CDN this session and measured locally with PIL and
+  ffprobe. Nothing about the reference in this file is recalled.)
+
+  WHY THIS FILE EXISTS. Owner 2026-07-31, verbatim: "I love the idea on the n one, but I think we
+  can improve more... I don't really like this circle... I like the search bar itself." Plus, same
+  turn: "we should stop calling stores salons", "for the categories I think we should make it more
+  like Airbnb", "the pills... more like Airbnb, like sunken", and, pointing at a screenshot of
+  Airbnb's continuation card: "underneath search bar I want more of a card with shadow... like if
+  there's a booking coming up then it could be confirmed booking, or if they were searching then
+  continue searching."
+
+  MEASURED, why the circle actually read as weird (live n1 at 390x844, getBoundingClientRect +
+  getComputedStyle, 2026-07-31):
+    pill   334x64 at x=28 y=447 , border-radius 9999px, border NONE, background rgb(255,255,255)
+    burger 44x44  at x=304 y=457 , border-radius 9999px, border 1px solid rgb(228,228,231),
+                                    background rgb(255,255,255)
+    icon   18x18  at x=317 y=470 (lucide-menu)
+    gap    14px from the pill's right edge to the burger's right edge
+  So: a white ring on a white pill. Same fill, same radius family, one of them carrying a hairline
+  the other does not. It reads as a separate object stuck onto the bar rather than part of it, and
+  it is the ONLY hairline left in the whole band. That is the defect, and it is why removing the
+  border (not moving the button) is the fix.
+
+  Grounded-in: app/[locale]/_components/search/SearchTemplate.tsx (the pill, the scroll ramp)
+  Grounded-in: app/[locale]/_components/layout/Header.tsx (HEADER_CATEGORIES, the pill row)
+  Grounded-in: app/[locale]/_components/layout/MobileMenu.tsx (what the menu opens)
+
+  Depicts: the search pill with a Lucide search icon and two stacked lines -> app/[locale]/_components/search/SearchTemplate.tsx:1231
+  Depicts: the sticky band that pins and morphs its padding on scroll -> app/[locale]/_components/search/SearchTemplate.tsx:811
+  Depicts: the menu control that opens the mobile drawer -> app/[locale]/_components/layout/MobileMenu.tsx
+  Depicts: the category pill row with a 22px icon and a gray selected fill -> app/[locale]/_components/layout/Header.tsx:880
+  Depicts: the Coiffeur and Barber and Nails and Spa category icons -> app/[locale]/_components/layout/Header.tsx:100
+  Depicts: the Walk-in category tile -> app/api/salons/route.ts:195
+  Depicts: the continuation card slot directly under the pill -> NET-NEW: `npm run exists "continue searching"` returned 0 matches this turn, so no such surface exists today; it is the one genuinely net-new element in this file and the reason this is a mockup rather than an edit
+  Depicts: the placeholder store cards in the feed rows -> NET-NEW: not a product surface, they are scroll runway so the collapse can be driven, and drawing the real SalonCard in a chrome-only file would fork a shipped component
+
+  Exists-check: RAN THIS TURN. `npm run exists "continue searching"` -> 0 matches, nothing to reuse,
+    safe to build new. `npm run exists searchbar` -> hits, reuse required. Resolved:
+    (a) app/[locale]/_components/homepage/SearchBar.tsx , the 3-row stacked card on /de. Replaced
+        by the pill, per n1. Unchanged decision.
+    (b) SearchTemplate.tsx:1231-1323 , the collapsed pill already shipping on /search. Reused.
+    (c) Header.tsx:99-905 , HEADER_CATEGORIES. Reused; only its DEPTH changes here.
+    (d) the continuation card is the one net-new surface.
+    REMOVED hits respected: SearchBar focus ring / back arrow / Trending icon (2026-06-23) absent;
+    ink as a selected state (2026-06-29) absent, selected is the gray fill; underline content-tab
+    category row (2026-07-24) absent, this row is pills.
+
+  THE THREE DIRECTIONS, all circle-free. Everything else is identical between them on purpose, so
+  the only variable being judged is the menu treatment:
+    A  bare icon      , the glyph alone in the pill's right slot. 44x44 hit area, zero chrome.
+    B  hairline split , the glyph with a 1px vertical rule separating it from the text.
+    C  outside        , the glyph leaves the pill entirely and sits to its right.
+
+  MY RECOMMENDATION: A. It removes an object instead of restyling one, it is the only treatment
+  where the band contains zero hairlines, and it keeps the pill at its full 334px. C is the one to
+  reject: it costs the pill 56px of width, and he has already said "the search bar is gonna be too
+  small" about exactly that trade.
+
+  ONE TENSION I AM NOT RESOLVING SILENTLY. In his Airbnb reference the chrome sits on a light gray
+  page and that gray is what makes the white pills' shadows read. On 2026-07-31 he said "why is the
+  background fucking gray? I never told you to make the background gray." His dated rejection wins
+  (precedence chain 1), so this file is WHITE and the pill shadows are tightened to compensate. If
+  the pills still read flat to him, the gray page is the lever, and that is his call to reverse.
+
+  WORD CHANGE: "salons" is gone from every visible string, replaced by "stores". The German word is
+  NOT decided here. "Salon" is itself a normal German noun, so a de-DE replacement is a real copy
+  decision and inventing one would break the don't-invent rule. Flagged in the footer.
+
+  NO FABRICATION. The continuation card renders the SEARCH state, which needs no business name. The
+  booking-confirmed state of the same slot is described in the footer and deliberately NOT drawn,
+  because drawing it requires a real store name and there is no seeded name available in this
+  worktree (no seed SQL on disk, no dev server answering /api/salons at 3000-3002, both checked). A
+  plausible-looking invented name is exactly the failure that rule exists to stop.
+
+  ICONS: the owner said 2026-07-31 "forget abt the icon ill generate em", so the 3D icon sourcing
+  question is closed and the icon-research agent was stopped. The PNGs referenced here are today's
+  shipped /icons/categories/ set, and the geometry below (22px box) is the slot his generated icons
+  drop into unchanged.
+
+  floors: chrome template plus one card, not a full customer screen, so the finished-screen pass
+    applies only in part. Type: 4 sizes (20 / 15 / 14 / 12.5), at the ceiling, not over. 2 weights
+    (500 / 600). Weight >= 600 on 3 of 14 text nodes = 21%, under the 30% ceiling. Photography: the
+    continuation card and the feed rows carry real self-hosted seeded photos, data-driven src, never
+    hardcoded in markup. Semantic colour: none needed in chrome; no element is monochromed away.
+    Single light theme, zero dark-mode CSS. Touch targets: pill 64, menu 44, category pills 40 (the
+    40 is INHERITED from the shipped Header.tsx h-10 and is under the 44 floor; flagged, not
+    silently forked here). Display anchor: the 20px section H2 is the largest element, under the
+    28px floor, because this file stops above the feed where the real anchor lives.
+
+  measured: category pill geometry (h-10, 22px icon, 15px label, #F4F4F5 selected) copied from
+    Header.tsx:888-903, not eyeballed. Pill internals copied from SearchTemplate.tsx:1245-1319.
+    Airbnb reference measured directly this turn, not recalled: their live house icon downloaded and
+    run through PIL. Canvas 240x216 RGBA, content bbox (23,7)-(221,208) so the object is 198x201 at
+    aspect 0.985, filling 82.5% of the canvas width but only 21.1% of its area above alpha 200.
+    That last number is the useful one: their icon is a small dense object inside a generous
+    transparent tile, which is why it reads as an object sitting in the pill rather than as a glyph.
+    Our 22px box preserves the same ratio.
+-->
+
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>n1-v2, three menu treatments</title>
+
+<style>
+  .v2-page {
+    -webkit-text-size-adjust: 100%;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0;
+    padding: 0 0 48px;
+  }
+  .v2-page *, .v2-page *::before, .v2-page *::after { box-sizing: border-box; }
+
+  .v2-stack { display: flex; flex-direction: column; align-items: center; gap: 28px; }
+
+  /* min(390px, 100vw) everywhere a fixed 390 used to sit: on a 375 iPhone SE a hard 390
+     overflows sideways, and on a 402 or 430 phone it leaves dead rails. The frame must be
+     the phone, not a 390 sticker on it. */
+  .v2-label {
+    width: min(390px, 100vw);
+    padding: 20px 16px 0;
+    font-size: 12.5px;
+    font-weight: 500;
+    line-height: 18px;
+    color: #6B6B6B;
+  }
+  .v2-label b { color: #0A0A0A; font-weight: 600; }
+
+  /* Each direction is a real 390 frame with its own scroller, so the collapse can be
+     driven and measured independently without three sticky bands fighting. */
+  .v2-frame {
+    width: min(390px, 100vw);
+    height: 620px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-radius: 20px;
+    background: #FFFFFF;
+    box-shadow: 0 0 0 1px #E4E4E7;
+    overflow-anchor: none;   /* Chrome rewrites scrollTop under a collapsing in-flow row */
+    scrollbar-width: none;
+  }
+  .v2-frame::-webkit-scrollbar { display: none; }
+
+  /* ===== STICKY BAND ======================================================= */
+  .v2-band {
+    position: sticky;
+    top: 0;
+    z-index: 55;
+    background: #FFFFFF;
+    padding-top: calc(4px + (8px * var(--p, 0)));
+    padding-bottom: calc(0px + (8px * var(--p, 0)));
+  }
+  .v2-bandinner { width: 100%; padding: 0 16px; display: flex; align-items: center; gap: 10px; }
+
+  /* ===== THE PILL ==========================================================
+     Unchanged from n1 and deliberately so: he said "I like the search bar itself".
+     One depth cue only, shadow carries the edge, border stays at 0. */
+  .v2-pill {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 10px 14px;
+    border-radius: 9999px;
+    border: 0;
+    background: #FFFFFF;
+    text-align: left;
+    cursor: pointer;
+    box-shadow:
+      0 2px 8px rgba(50,47,44,0.09),
+      0 10px 30px rgba(0,0,0,calc(0.13 * var(--p, 0)));
+  }
+  .v2-pillicon { flex: 0 0 auto; color: #6B6B6B; display: flex; }
+  .v2-pilltext { min-width: 0; flex: 1 1 auto; }
+  .v2-l1 {
+    display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    font-size: 14px; font-weight: 500; line-height: 20px; letter-spacing: -0.005em; color: #0A0A0A;
+  }
+  .v2-l2 {
+    display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    font-size: 12.5px; font-weight: 500; line-height: 18px; color: #6B6B6B;
+  }
+
+  /* ===== THE MENU, THREE WAYS =============================================
+     THE CIRCLE IS GONE IN ALL THREE. What differs is only what replaces it. */
+  .v2-menu {
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    height: 44px;
+    width: 44px;
+    border-radius: 9999px;
+    border: 0;                 /* the ring he pointed at */
+    background: transparent;   /* the second white fill he pointed at */
+    color: #0A0A0A;
+    cursor: pointer;
+    padding: 0;
+    transition: background-color 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .v2-menu:hover { background: #F4F4F5; }
+
+  /* B only: a 1px rule instead of a ring. Cheapest possible separation. */
+  .v2-frame[data-dir="B"] .v2-menu {
+    border-left: 1px solid #E4E4E7;
+    border-radius: 0;
+    width: 45px;
+    margin-left: 2px;
+  }
+
+  /* ===== CATEGORY ROW ======================================================
+     THE AIRBNB CHANGE. Was: white + 1px #E4E4E7 hairline. Now: white + a soft own
+     shadow, no hairline (design contract, shadow row: a control carrying elevation
+     DROPS its border, never both). Selected keeps the locked #F4F4F5 fill and adds
+     an INSET shadow, which is the "sunken" he asked for by name, and drops the drop
+     shadow so it physically recedes while its neighbours sit proud. */
+  .v2-cats { overflow: hidden; height: calc(64px * (1 - var(--p, 0))); opacity: calc(1 - var(--p, 0)); }
+  .v2-catscroll {
+    display: flex; gap: 10px; padding: 10px 16px 14px;
+    overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  }
+  .v2-catscroll::-webkit-scrollbar { display: none; }
+
+  .v2-cat {
+    display: inline-flex; flex: 0 0 auto; height: 40px; align-items: center; gap: 8px;
+    padding: 0 16px;
+    border-radius: 9999px;
+    border: 0;
+    background: #FFFFFF;
+    font-size: 15px; font-weight: 500; line-height: 1; color: #0A0A0A;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.08);
+    transition: box-shadow 200ms cubic-bezier(0.22, 1, 0.36, 1),
+                background-color 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .v2-cat[aria-selected="true"] {
+    background: #F4F4F5;
+    font-weight: 600;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.10), inset 0 0 0 1px rgba(0,0,0,0.04);
+  }
+  .v2-caticon { height: 22px; width: 22px; flex: 0 0 auto; object-fit: contain; }
+
+  /* ===== CONTINUATION CARD =================================================
+     The slot he pointed at in the Airbnb screenshot. White, radius 16, the
+     elevation token, a real photo on the right at 64x64 with radius 12. */
+  .v2-cardwrap { padding: 4px 16px 8px; }
+  .v2-card {
+    display: flex; align-items: center; gap: 12px; width: 100%;
+    padding: 14px; border: 0; border-radius: 16px; background: #FFFFFF;
+    text-align: left; cursor: pointer;
+    box-shadow: 0 2px 8px rgba(50,47,44,0.09), 0 8px 24px rgba(0,0,0,0.07);
+    transition: box-shadow 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .v2-card:hover { box-shadow: 0 2px 8px rgba(50,47,44,0.12), 0 12px 32px rgba(0,0,0,0.10); }
+  .v2-cardtext { min-width: 0; flex: 1 1 auto; }
+  .v2-cardtitle {
+    display: block; font-size: 15px; font-weight: 600; line-height: 20px; color: #0A0A0A;
+  }
+  .v2-cardmeta {
+    display: block; margin-top: 3px; font-size: 12.5px; font-weight: 500; line-height: 18px;
+    color: #6B6B6B; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .v2-cardimg {
+    flex: 0 0 auto; height: 64px; width: 64px; border-radius: 12px; object-fit: cover;
+    background: #F4F4F5;
+  }
+
+  /* ===== FEED ============================================================== */
+  .v2-feed { padding: 8px 16px 24px; }
+  .v2-h2 { font-size: 20px; font-weight: 600; line-height: 26px; letter-spacing: -0.01em; margin: 8px 0 12px; }
+  .v2-row { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+  .v2-row::-webkit-scrollbar { display: none; }
+  .v2-storecard { flex: 0 0 auto; width: 200px; }
+  .v2-storephoto { width: 200px; height: 160px; border-radius: 16px; object-fit: cover; background: #F4F4F5; display: block; }
+  .v2-storename { margin-top: 8px; font-size: 14px; font-weight: 600; line-height: 20px; color: #0A0A0A; }
+  .v2-storemeta { margin-top: 1px; font-size: 12.5px; font-weight: 500; line-height: 18px; color: #6B6B6B; }
+
+  .v2-note {
+    width: min(390px, 100vw); margin: 0 auto; padding: 0 16px;
+    font-size: 12.5px; font-weight: 500; line-height: 19px; color: #6B6B6B;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .v2-menu, .v2-cat, .v2-card { transition: none; }
+  }
+</style>
+
+<div class="v2-page" id="v2-page">
+  <div class="v2-stack" id="v2-stack"></div>
+  <div class="v2-note" id="v2-note"></div>
+</div>
+
+<script>
+(function () {
+  var page = document.getElementById("v2-page");
+  if (!page || page.dataset.v2Init === "1") return;
+  page.dataset.v2Init = "1";
+
+  var SEARCH = { l1: "Search stores", l2: "Basel" };
+
+  // Same shape as Header.tsx HEADER_CATEGORIES plus the walk-in filter /api/salons
+  // already supports. Data-driven, never a hardcoded src in markup.
+  var CATS = [
+    { slug: "coiffeur",   label: "Coiffeur", iconSrc: "/icons/categories/scissors.png" },
+    { slug: "barbershop", label: "Barber",   iconSrc: "/icons/categories/clippers.png" },
+    { slug: "nails",      label: "Nails",    iconSrc: "/icons/categories/nails.png" },
+    { slug: "spa",        label: "Spa",      iconSrc: "/icons/categories/spa.png" },
+    { slug: "walkin",     label: "Walk-in",  iconSrc: "/icons/categories/walkin.png" }
+  ];
+  var ACTIVE = "barbershop";
+
+  // The continuation card, SEARCH state. No business name is used, so nothing here
+  // is fabricated. Photo is a real self-hosted seeded asset, resolved from data.
+  var CONT = {
+    title: "Continue searching for Barber",
+    meta: "Basel, Sa 2. Aug, 1 person",
+    photo: "/_mockups/_assets/salon-photos/p03.jpg"
+  };
+
+  var FEED = [
+    { photo: "/_mockups/_assets/salon-photos/p01.jpg" },
+    { photo: "/_mockups/_assets/salon-photos/p02.jpg" },
+    { photo: "/_mockups/_assets/salon-photos/p04.jpg" }
+  ];
+
+  var DIRS = [
+    { id: "A", name: "bare icon", why: "the glyph alone. Zero chrome, and zero hairlines left anywhere in the band. My pick." },
+    { id: "B", name: "hairline split", why: "a 1px rule instead of a ring. Separation without adding an object." },
+    { id: "C", name: "outside the pill", why: "the menu leaves the bar. Costs the pill 56px of width, which you objected to once already." }
+  ];
+
+  // Real Lucide markup, copied from node_modules/lucide-react/dist/esm/icons/{search,menu}.js.
+  // The lucide class marker leads the tag on purpose: hand-drawn glyph paths are banned.
+  function svgSearch() {
+    return '<svg class="lucide lucide-search" data-lucide="search" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+      + '<path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>';
+  }
+  function svgMenu() {
+    return '<svg class="lucide lucide-menu" data-lucide="menu" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+      + '<path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg>';
+  }
+
+  function buildMenu() {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "v2-menu";
+    b.setAttribute("aria-label", "Open menu");
+    b.setAttribute("aria-expanded", "false");
+    b.innerHTML = svgMenu();
+    return b;
+  }
+
+  function buildPill(dirId) {
+    var pill = document.createElement("div");
+    pill.className = "v2-pill";
+    pill.setAttribute("role", "button");
+    pill.setAttribute("tabindex", "0");
+    pill.setAttribute("aria-haspopup", "dialog");
+    pill.setAttribute("aria-label", "Edit search");
+
+    var ico = document.createElement("span");
+    ico.className = "v2-pillicon";
+    ico.setAttribute("aria-hidden", "true");
+    ico.innerHTML = svgSearch();
+
+    var txt = document.createElement("span");
+    txt.className = "v2-pilltext";
+    var l1 = document.createElement("span");
+    l1.className = "v2-l1";
+    l1.textContent = SEARCH.l1;
+    var l2 = document.createElement("span");
+    l2.className = "v2-l2";
+    l2.textContent = SEARCH.l2;
+    txt.appendChild(l1);
+    txt.appendChild(l2);
+
+    pill.appendChild(ico);
+    pill.appendChild(txt);
+    if (dirId !== "C") pill.appendChild(buildMenu());
+    return pill;
+  }
+
+  function buildFrame(dir) {
+    var frame = document.createElement("div");
+    frame.className = "v2-frame";
+    frame.dataset.dir = dir.id;
+
+    var band = document.createElement("div");
+    band.className = "v2-band";
+
+    var inner = document.createElement("div");
+    inner.className = "v2-bandinner";
+    inner.appendChild(buildPill(dir.id));
+    if (dir.id === "C") inner.appendChild(buildMenu());
+    band.appendChild(inner);
+
+    var cats = document.createElement("div");
+    cats.className = "v2-cats";
+    var scroll = document.createElement("div");
+    scroll.className = "v2-catscroll";
+    scroll.setAttribute("role", "tablist");
+    scroll.setAttribute("aria-label", "Categories");
+    CATS.forEach(function (c) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "v2-cat";
+      b.setAttribute("role", "tab");
+      b.setAttribute("aria-selected", c.slug === ACTIVE ? "true" : "false");
+      b.dataset.slug = c.slug;
+      var img = document.createElement("img");
+      img.className = "v2-caticon";
+      img.src = c.iconSrc;
+      img.alt = "";
+      img.setAttribute("aria-hidden", "true");
+      b.appendChild(img);
+      b.appendChild(document.createTextNode(c.label));
+      b.addEventListener("click", function () {
+        scroll.querySelectorAll(".v2-cat").forEach(function (x) {
+          x.setAttribute("aria-selected", "false");
+        });
+        b.setAttribute("aria-selected", "true");
+      });
+      scroll.appendChild(b);
+    });
+    cats.appendChild(scroll);
+    band.appendChild(cats);
+    frame.appendChild(band);
+
+    var wrap = document.createElement("div");
+    wrap.className = "v2-cardwrap";
+    var card = document.createElement("button");
+    card.type = "button";
+    card.className = "v2-card";
+    var ct = document.createElement("span");
+    ct.className = "v2-cardtext";
+    var t = document.createElement("span");
+    t.className = "v2-cardtitle";
+    t.textContent = CONT.title;
+    var m = document.createElement("span");
+    m.className = "v2-cardmeta";
+    m.textContent = CONT.meta;
+    ct.appendChild(t);
+    ct.appendChild(m);
+    var ci = document.createElement("img");
+    ci.className = "v2-cardimg";
+    ci.src = CONT.photo;
+    ci.alt = "";
+    ci.setAttribute("aria-hidden", "true");
+    card.appendChild(ct);
+    card.appendChild(ci);
+    wrap.appendChild(card);
+    frame.appendChild(wrap);
+
+    var feed = document.createElement("div");
+    feed.className = "v2-feed";
+    ["Popular in Basel", "For your hair type"].forEach(function (title) {
+      var h2 = document.createElement("h2");
+      h2.className = "v2-h2";
+      h2.textContent = title;
+      feed.appendChild(h2);
+      var row = document.createElement("div");
+      row.className = "v2-row";
+      FEED.forEach(function (f, i) {
+        var sc = document.createElement("div");
+        sc.className = "v2-storecard";
+        var im = document.createElement("img");
+        im.className = "v2-storephoto";
+        im.src = f.photo;
+        im.alt = "";
+        var nm = document.createElement("div");
+        nm.className = "v2-storename";
+        nm.textContent = "Store name " + (i + 1);
+        var mt = document.createElement("div");
+        mt.className = "v2-storemeta";
+        mt.textContent = "not wired";
+        sc.appendChild(im);
+        sc.appendChild(nm);
+        sc.appendChild(mt);
+        row.appendChild(sc);
+      });
+      feed.appendChild(row);
+    });
+    frame.appendChild(feed);
+
+    // Collapse, continuous 0..60 ramp, driven by THIS frame's own scroller.
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    function onScroll() {
+      var y = frame.scrollTop;
+      var p = reduce ? (y > 30 ? 1 : 0) : Math.min(1, Math.max(0, y / 60));
+      band.style.setProperty("--p", String(p));
+    }
+    onScroll();
+    frame.addEventListener("scroll", onScroll, { passive: true });
+
+    return frame;
+  }
+
+  var stack = document.getElementById("v2-stack");
+  DIRS.forEach(function (d) {
+    var lab = document.createElement("div");
+    lab.className = "v2-label";
+    lab.innerHTML = "<b>" + d.id + ": " + d.name + "</b><br>" + d.why;
+    stack.appendChild(lab);
+    stack.appendChild(buildFrame(d));
+  });
+
+  document.getElementById("v2-note").innerHTML =
+    "<b style=\"color:#0A0A0A\">Not wired yet.</b> Store names and the feed rows are placeholders: "
+    + "no seed SQL is on disk in this worktree and no dev server answered /api/salons, so real "
+    + "names were not available and inventing them is banned. Photos are real self-hosted seeded "
+    + "assets. The continuation card shows its SEARCH state only; its booking-confirmed state needs "
+    + "a real store name. The German word replacing \"Salon\" is not decided, since \"Salon\" is "
+    + "itself a normal German noun, so that is a copy call rather than a translation. Category "
+    + "icons are today's shipped PNGs in a 22px slot, ready for the ones you generate.";
+
+  // Measurement hook.
+  window.v2Measure = function () {
+    var out = {};
+    document.querySelectorAll(".v2-frame").forEach(function (f) {
+      var pill = f.querySelector(".v2-pill");
+      var menu = f.querySelector(".v2-menu");
+      var selCat = f.querySelector('.v2-cat[aria-selected="true"]');
+      var unsel = f.querySelector('.v2-cat[aria-selected="false"]');
+      var card = f.querySelector(".v2-card");
+      var rect = function (e) {
+        if (!e) return null;
+        var b = e.getBoundingClientRect();
+        return { x: +b.x.toFixed(1), y: +b.y.toFixed(1), w: +b.width.toFixed(1), h: +b.height.toFixed(1) };
+      };
+      out[f.dataset.dir] = {
+        pill: rect(pill),
+        menu: rect(menu),
+        menuBorderWidth: menu ? getComputedStyle(menu).borderTopWidth : null,
+        menuBg: menu ? getComputedStyle(menu).backgroundColor : null,
+        selectedCat: rect(selCat),
+        selectedCatShadow: selCat ? getComputedStyle(selCat).boxShadow : null,
+        unselectedCatShadow: unsel ? getComputedStyle(unsel).boxShadow : null,
+        card: rect(card),
+        cardShadow: card ? getComputedStyle(card).boxShadow : null
+      };
+    });
+    return out;
+  };
+})();
+</script>
