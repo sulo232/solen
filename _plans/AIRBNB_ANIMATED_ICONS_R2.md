@@ -473,8 +473,8 @@ until this is added to the `Stop` hooks array:
 
 Owner: "i want the air but i want the air coming from nozzle bro".
 
-- [x] Z1. Air anchored to the mouth, verified by diffing an air render against a no-air render and
-      comparing the air's pixel span with the nozzle's own.
+- [x] Z1. Air anchored to the mouth, verified: commit 5b5f736d7. Diffed an air render against a
+      no-air render and compared the air's pixel span with the nozzle's own.
   - Before: air spanned x 9-37 while the nozzle mouth sat at x=41, so a **4px gap** at the start of a
     ribbon's life widening to **16px** by the end, and the air sat **11 to 22px below** the mouth. It
     read as a puff floating near the dryer.
