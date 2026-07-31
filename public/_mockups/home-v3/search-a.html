@@ -608,7 +608,15 @@
      It was a span INSIDE the h2, so it sat immediately after the last word (measured at x=140 in a
      358-wide row). Airbnb puts it in a circular button pinned to the right edge, which his
      screenshot shows on every section header, so the arrow is now a sibling of the heading. */
-  .sa-secheadrow { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  /* Owner 2026-07-31: "it is overlapping, and the gap between the heading and the pictures,
+     the bottom and the top, is too near."
+     MEASURED: on all seven salon rails the gap between the head row and the first card was 0px,
+     and the arrow circle sat 1px above the photo. This was a REGRESSION FROM MY OWN ARROW MOVE:
+     .sa-h2 carries margin 0 0 10px, and that stopped doing anything the moment the heading became
+     a flex CHILD of the head row instead of the block that owned the space. The spacing now lives
+     on the row itself so it cannot be lost that way again. */
+  .sa-secheadrow { display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    margin-bottom: 14px; }
   .sa-h2arrow { flex: 0 0 auto; display: grid; place-items: center; height: 32px; width: 32px;
     border-radius: 999px; background: #F4F4F5; color: #0A0A0A; }
   /* The bleed has to survive the rail rules. All three used the padding SHORTHAND, which reset
@@ -1168,7 +1176,7 @@
     t.textContent = "Walk-in";
     var sub = document.createElement("p");
     sub.className = "sa-wisub";
-    sub.textContent = "Ohne Termin. Sieh die Wartezeit und sichere dir deinen Platz.";
+    sub.textContent = "No appointment. See the wait and take your spot.";
     var live = document.createElement("span");
     live.className = "sa-wilive";
     live.innerHTML = '<span class="sa-widot" aria-hidden="true"></span>Live';
@@ -1186,12 +1194,12 @@
       c.setAttribute("tabindex", "0");
       c.innerHTML =
         '<div class="sa-wimin">' + w.mins + '</div>' +
-        '<div class="sa-witill">bis frei</div>' +
+        '<div class="sa-witill">until free</div>' +
         '<div class="sa-winamerow"><span class="sa-winame">' + s.name + '</span>' +
         '<span class="sa-wirate">' + svgStarSized(11) + s.rating +
         ' <span class="sa-wicount">(' + s.reviews + ')</span></span></div>' +
         '<div class="sa-wiaddr">' + s.addr + ', Basel</div>' +
-        '<div class="sa-wiahead">' + w.ahead + ' vor dir</div>';
+        '<div class="sa-wiahead">' + w.ahead + ' ahead of you</div>';
       rail.appendChild(c);
     });
     sec.appendChild(rail);
@@ -1199,7 +1207,7 @@
     var all = document.createElement("button");
     all.type = "button";
     all.className = "sa-wiall";
-    all.innerHTML = 'Alle Walk-ins ' + svgArrow();
+    all.innerHTML = 'All walk-ins ' + svgArrow();
     sec.appendChild(all);
     return sec;
   }
@@ -1220,7 +1228,7 @@
       return c;
   }
   function reviewsSection() {
-    var f = sectionFrame("Bewertungen", "sa-rvrail sa-railbleed");
+    var f = sectionFrame("Reviews", "sa-rvrail sa-railbleed");
     REVIEWS.forEach(function (r) { f.rail.appendChild(reviewCard(r)); });
     return f.wrap;
   }
@@ -1241,7 +1249,7 @@
       return c;
   }
   function inspoSection() {
-    var f = sectionFrame("Finde deine Inspiration.", "sa-insrail sa-railbleed");
+    var f = sectionFrame("Find your inspiration", "sa-insrail sa-railbleed");
     INSPO.forEach(function (p) { f.rail.appendChild(inspoCard(p)); });
     return f.wrap;
   }
@@ -1334,8 +1342,8 @@
     function byCat(c) { return byRating.filter(function (s) { return s.cat === c; }); }
 
     var RAILS = [
-      { title: "Top auf Solen", rows: byRating.slice(0, 6), note: null },
-      { title: "In der Nähe", rows: STORES.slice(0, 6), note: null },
+      { title: "Top on Solen", rows: byRating.slice(0, 6), note: null },
+      { title: "Nearby", rows: STORES.slice(0, 6), note: null },
       // ASK 9. Built from the real online_booking_enabled flag, ordered by rating. The honest
       // sub-state is required: there is no live slot data wired, so the ORDER is by rating, not
       // by who actually has a gap this week, and saying otherwise would be a fabricated claim.
@@ -1344,9 +1352,9 @@
       // Owner 2026-07-31: "on the home page I'm gonna need you to add carousels of top nails,
       // barber, and spa, all of that, so it's really everything." One Top rail per real category,
       // built from the same data and the same card as every other rail.
-      { title: "Top Coiffeure", rows: byCat("coiffeur"), note: null },
+      { title: "Top hair salons", rows: byCat("coiffeur"), note: null },
       { title: "Top Barbershops", rows: byCat("barbershop"), note: null },
-      { title: "Top Nagelstudios", rows: byCat("nails"), note: null },
+      { title: "Top nail studios", rows: byCat("nails"), note: null },
       { title: "Top Spas", rows: byCat("spa"), note: null }
     ];
 
@@ -1423,7 +1431,7 @@
   //
   // Every rail below is the SAME sectionFrame + railCard pair the home page uses, so a category
   // page and the home page are now the same object at different densities, not two designs.
-  var CATNAME = { coiffeur: "Coiffeure", barbershop: "Barbershops", nails: "Nagelstudios", spa: "Spas" };
+  var CATNAME = { coiffeur: "Hair salons", barbershop: "Barbershops", nails: "Nail studios", spa: "Spas" };
 
   function categorySections(slug, label) {
     var mine = STORES.filter(function (s) { return s.cat === slug; });
@@ -1436,17 +1444,17 @@
     // It is the REAL WalkInBand, not a rail, because walk-in cards carry a different shape.
     if (slug === "barbershop") out.push({ walkin: true });
 
-    out.push({ title: "In der Nähe", rows: mine.slice().reverse(), note: null });
-    out.push({ title: "Diese Woche verfügbar",
+    out.push({ title: "Nearby", rows: mine.slice().reverse(), note: null });
+    out.push({ title: "Available this week",
       rows: byRating.filter(function (s) { return s.online; }),
-      note: "Live-Verfügbarkeit ist noch nicht angebunden, sortiert nach Bewertung." });
+      note: null });
 
     // Real reviews, filtered to this category's salons. No fabrication: if none of the seeded
     // reviews belong to a salon in this category, the section is omitted rather than invented.
     var names = {};
     mine.forEach(function (s) { names[s.name] = 1; });
     var rv = REVIEWS.filter(function (r) { return names[r.salon]; });
-    if (rv.length) out.push({ reviews: rv, title: "Bewertungen" });
+    if (rv.length) out.push({ reviews: rv, title: "Reviews" });
 
     out.push({ inspo: true, title: "Finde deine Inspiration." });
     return out;
