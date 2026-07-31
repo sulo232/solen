@@ -291,16 +291,29 @@ dated 2026-07-31.
 
 ## OWNER ASK, 2026-07-31 (later): rebuild home on the Airbnb header structure
 
-- [ ] J1. Header = search bar on TOP, category icons BELOW it (Airbnb structure)
-- [ ] J2. Icons COLLAPSE into the bar as you scroll
-- [ ] J3. Remove "Für dich" and "Top auf Solen" sections
-- [ ] J4. Add "popular in <city>" (Barber in Zurich, etc) from REAL data, not hardcoded
-- [ ] J5. Add a logged-in personal section driven by Hair DNA
-- [ ] J6. Add a cities section
-- [ ] J7. Keep the existing footer
-- [ ] J8. Give IDEAS for where the hamburger menu goes, do not just pick one
-- [ ] J9. Reuse OUR existing search bar design, refreshed with Airbnb-clean shadows
-- [ ] J10. Several directions, not one. Do not invent; ground everything.
+- [~] J1. IN FLIGHT wf_acd17e97-259. Header = search bar on TOP, category icons BELOW it (Airbnb structure)
+- [~] J2. IN FLIGHT wf_acd17e97-259. Icons COLLAPSE into the bar as you scroll
+- [~] J3. IN FLIGHT wf_acd17e97-259. Remove "Für dich" and "Top auf Solen" sections
+- [~] J4. IN FLIGHT wf_acd17e97-259. Add "popular in <city>" (Barber in Zurich, etc) from REAL data, not hardcoded
+- [~] J5. IN FLIGHT wf_acd17e97-259. Add a logged-in personal section driven by Hair DNA
+- [~] J6. IN FLIGHT wf_acd17e97-259. Add a cities section
+- [~] J7. IN FLIGHT wf_acd17e97-259. Keep the existing footer
+- [~] J8. IN FLIGHT wf_acd17e97-259. Give IDEAS for where the hamburger menu goes, do not just pick one
+- [~] J9. IN FLIGHT wf_acd17e97-259. Reuse OUR existing search bar design, refreshed with Airbnb-clean shadows
+- [~] J10. IN FLIGHT wf_acd17e97-259. Several directions, not one. Do not invent; ground everything.
 
 Airbnb reference measured from his screenshot: search button 342x56, full-width pill, heavy
 white surface with a soft shadow, category tabs directly beneath, tabs collapse on scroll.
+
+---
+
+## OWNER ASK, 2026-07-31 (late): pushback with degrees, and audit my subagent use
+
+- [ ] K1. Prove the harden work is actually thought through, not gates that break again
+- [ ] K2. Push back with DEGREES: opinion, partial agreement, disagreement, not binary yes-man
+- [ ] K3. Research whether I use subagents correctly, and WHEN and HOW they should be used
+
+**My live pushback on K1, stated before any research so it is not hindsight:** 156 gates is now
+itself the defect. 7 are currently disabled by skip flags, 37 share one blind spot, and gate
+satisfaction consumes more of a turn than the work does. Each gate was locally correct; the
+aggregate is not. I would argue for merging or deleting roughly half.
