@@ -149,13 +149,20 @@
      NOTE FOR THE OWNER, surfaced rather than resolved silently: the shipped card carries no chrome
      at all, and a 2026-07-18 record says the flat direction lost to a carded one. Either that
      record is scoped to the PDP service section, or this card was never brought along. */
-  .sa-list { display: flex; flex-direction: column; gap: 28px; padding: 0 12px 32px; }
+  /* Diagnosis: only 1.55 store cards fit the first screen | measured 1.55 at 390x844 on this page,
+     card 365 tall with a 293 photo and a 28 gap under 236 of chrome | violates FLOORS LAW 3, a
+     populated list first viewport must show several content units plus a cropped next item, and
+     the owner's Fresha reference shows 2.25 | target >= 2 plus a crop.
+     Photo 5/4 -> 16/9 and gap 28 -> 16 takes it to about 2.05. Reaching 2.25 exactly needs a
+     roughly 2.15 photo, which is nearly a letterbox strip and costs the photo its job. Stopping at
+     16/9 is MY call and he can overrule it. */
+  .sa-list { display: flex; flex-direction: column; gap: 16px; padding: 0 12px 32px; }
   .sa-row {
     display: block; width: 100%; padding: 0; border: 0; border-radius: 0; background: transparent;
     text-align: left; cursor: pointer; transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1);
   }
   .sa-row:active { transform: scale(0.99); }
-  .sa-photo { display: block; width: 100%; aspect-ratio: 5 / 4; border-radius: 16px;
+  .sa-photo { display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: 16px;
     object-fit: cover; background: #F4F4F5; }
   .sa-body { margin-top: 10px; min-width: 0; }
   .sa-line { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
