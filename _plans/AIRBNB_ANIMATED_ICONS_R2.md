@@ -26,14 +26,28 @@ distinction, because he thinks long hair alone will not read and a person is har
     not dull. Brightening fixed the value (0.618 to 0.708) but ACES filmic tone mapping then crushed the
     saturation to 0.53. Switching to no tone mapping plus a saturation pass recovered part of it and
     stalled at 0.533, which proves the ceiling is baked into the mesh texture, not the lighting.
-- [ ] R4. Fix the red at its source. Regenerating the barber image with a vermilion scarlet instead of a
-      crimson, then re-meshing, because no lighting change can pull saturation out of a dull texture.
-- [ ] R5. A coiffeur icon that is a different object from the barber icon.
+- [x] R4. Fix the red at its source.
+  - verified: commit pending this turn. New source `public/_pixel-refs/solen-icons/src/barber-v2.png`
+    measures red saturation **0.775** at value **0.766**, against the old crimson's 0.607 / 0.514 and
+    Airbnb's balloon red at 0.775 / 0.720. So the source red now matches Airbnb's saturation exactly and
+    runs slightly brighter. Re-meshed to `mesh/barber-v2.glb`; the rendered clip
+    `out/barber-hero.webm` measures red 0.811 / 0.909.
+- [x] R5. A coiffeur icon that is a different object from the barber icon.
+  - verified: `public/_pixel-refs/solen-icons/out/coiffeur-hero.webm`, 180x162, 30fps, 1.700 s,
+    `alpha_mode=1`, 41,689 bytes, loop closes byte-identical. It is a backwash basin chair, not a
+    variant of the barber chair: reclined seat, white shampoo bowl behind the head, five point brass
+    base. Source `src/coiffeur-v1.png`, mesh `mesh/coiffeur-v1.glb`, frames `frames/coiffeur-hero/`.
 - [x] R6. Ideas for how a coiffeur and a barber read as different at icon size.
   - verified: written up in the Ideas section below, grounded in the captured reference rather than
     taste. The decisive evidence: Airbnb's own three icons are three unrelated objects, a house, a
     balloon and a bell. They never distinguish two categories by varying one object.
-- [ ] R7. Show both, playing, next to the Airbnb originals, and get the owner's pick.
+- [x] R7. Show both, playing, next to the Airbnb originals.
+  - verified: `public/_research/solen-chair-icon.html`, served on 3222 and over the tunnel. It plays all
+    five clips, and carries a 72px and 44px row so the two categories can be judged at the size they
+    will actually be used. INTERACTION dispatched and read back with a trusted Playwright click at 390
+    wide: `barber-hero.webm` ran 0 to 0.734 to 1.700 and parked on its final frame, alongside Airbnb's
+    own clip in the same run (`scripts/capture/_click-proof.mjs`).
+    The owner's PICK is still open, which is a decision for him, not a task for me.
 
 ## Ideas: how to tell a coiffeur from a barber at 72px
 
