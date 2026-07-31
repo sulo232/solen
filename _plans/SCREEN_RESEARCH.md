@@ -238,14 +238,14 @@ caches) rather than a redesign. They tick when the files exist on disk:
 
 He wants the single page split in two, and gave the references himself.
 
-- [ ] H1. A real HOME page, airbnb.com shape: search bar at the TOP, not the boxed stack
-- [ ] H2. Remove the promise headline "Termine, sofort bestätigt" from home
-- [ ] H3. Several DISTINCT home directions, not one
-- [ ] H4. A LANDING page, airbnb.com/discover shape, with its imagery treatment and structure
-- [ ] H5. Landing carries the for-business information
-- [ ] H6. Answer his navigation worry in every direction: no bottom bar (he rejected it by name),
-      and logo + hamburger sandwiching a search bar leaves the search too small
-- [ ] H7. Mockups for BOTH pages
+- [~] H1. IN FLIGHT, run `wf_be365c3b-019`, 4 home agents dispatched. HOME stays /de per his ruling.
+- [~] H2. IN FLIGHT, same run. Removal is a hard requirement in every home agent's brief, not a suggestion.
+- [~] H3. IN FLIGHT, 4 directions: hA stacked, hB collapsed pill, hC search-owns-the-bar, hD category-led.
+- [~] H4. IN FLIGHT, 3 landing agents. Route /de/discover per his ruling; hero exempt per his ruling.
+- [~] H5. IN FLIGHT, required in all 3 landing briefs; lC makes it structural rather than a footer block.
+- [~] H6. IN FLIGHT. The 243px measurement is in the shared brief and each direction must STATE its
+      navigation answer in its own note; a direction that leaves it implied is defined as failed.
+- [~] H7. IN FLIGHT, compose agent writes home.html and landing.html, cross-linked.
 
 **MEASURED on /de at 390x844 before any design, 2026-07-31:**
 
@@ -276,3 +276,13 @@ row. That is the hypothesis each direction tests differently.
    owner's call and it is surfaced rather than assumed.
 
 OUT OF SCOPE: touching any real `.tsx`. These are mockups to pick from.
+
+### H1 to H7 status, concretely rather than as a pause
+
+All seven are IN FLIGHT in workflow run `wf_be365c3b-019`, dispatched 2026-07-31: 4 home agents,
+3 landing agents, 1 compose agent. They tick when the files exist on disk:
+  `public/_mockups/home-landing-split/{hA,hB,hC,hD,lA,lB,lC}.html` plus `home.html` and
+  `landing.html`.
+Two owner rulings are baked into the brief and must not be re-litigated: home STAYS at /de with the
+landing page at /de/discover, and the landing page is EXEMPT from FLOORS LAW 2's hero ban, his call,
+dated 2026-07-31.
