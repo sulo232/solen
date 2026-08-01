@@ -158,7 +158,7 @@ the hook should not have fired on a scoped sub-task).
 
 Each lands as its own commit, verified on the real route at 390x844 before the next starts.
 
-- [x] **I2's own CONTRADICTION, now resolved (2026-08-01, separate dispatch: "why is homepage
+- [x] **I2's own CONTRADICTION, resolved. verified: /de mobile now renders category pills then the search pill (measured 390x844: row 32-98, pill top 106), and the pill carries ONE text line. Commits cdb3391dc and 46a3ed064.** Original note (2026-08-01, separate dispatch: "why is homepage
       still that bro").** I2 above flagged that `/de` rendered neither `HEADER_CATEGORIES` (gated
       off home by `categorySegment`) nor the search pill, home's search UI stayed the old 3-segment
       Hero `SearchBar.tsx`. This dispatch's literal task WAS that gap: `Header.tsx`'s
