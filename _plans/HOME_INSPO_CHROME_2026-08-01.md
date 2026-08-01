@@ -121,3 +121,54 @@ https://admission-integrated-achieved-assumption.trycloudflare.com
       typecheck, both passed, and the word was still on the homepage. Opening the page is what
       found it, the same way opening the page is what found the two database strings.
 
+---
+
+# MEASURED 2026-08-01, after "you need to fucking measure that, why are you fucking asking me"
+
+He was right. Three boxes above were handed back to him as questions when a browser answered
+all three. Measured now, on the live page at 390x844, cookie banner dismissed first (it shifts
+the layout, which is why an earlier reading put the hamburger at y=117 and this one puts the
+search text at y=61).
+
+## H4 , THE DIVIDER. Found. It is above the footer, and it is three things stacked.
+Page is 4691px tall. At **y=3810** the newsletter strip renders
+`border-b border-s-border bg-s-bg-sunken`, 170px tall. It sits inside a wrapper that is
+**`bg-white/45 backdrop-blur-[22px]`**, i.e. a milky translucent layer, and directly beneath it
+at **y=3980** the footer flips hard to `bg-white`.
+So the "weird divider / sheep thingy" is a **hairline + a hard grey-to-white flip, seen through a
+45% white blur**. That is why it reads as a washed-out seam rather than a section change. Visible
+in `scratchpad/m-bottom-92.png`. It also breaks FLOORS LAW 4 (edge visibility): the boundary is
+neither a clean sunken tray nor a hairline, it is both at once through a blur.
+
+## H1 , THE STICKY BAR. Measured, and the finding inverts the ask.
+Scrolled to y=1200 and re-read every fixed/sticky element. **Exactly one thing pins: `<header>`,
+102px tall.** The category pills and the search pill are NOT in it and scroll away.
+And the header is **`bg-transparent`**. So today 102px of EMPTY, INVISIBLE chrome is pinned to the
+top of every scroll while the two controls a user actually wants pinned scroll off screen.
+That is the whole complaint, and it is not "add sticky", it is "the sticky region is holding the
+wrong thing".
+
+## H6 , THE DEAD SEARCH TAP. Root cause found, and it is the same bug as H1.
+The search pill IS correctly wrapped in `<a href="/de/search">`. Clicking its centre navigated to
+**`/de/coiffeur`**, not to search. Reason: with the cookie banner gone the search text sits at
+**y=61**, which is INSIDE the transparent 102px `z-50` sticky header. The header has no background
+so nothing looks wrong, but it is on top, so the tap lands on the category row behind it instead
+of the link underneath.
+So H6 is not a wiring bug and the earlier note guessing that was wrong. **The transparent sticky
+header is eating taps meant for the search bar.** Fixing H1's stacking fixes H6 for free.
+
+## H8 , menu padding = 64px on the panel itself (already recorded above).
+## H7 , zero close controls in the open menu (already recorded above).
+
+---
+
+# HARDENED THIS TURN
+
+`~/.claude/hooks/measure-dont-ask-gate.py`, self-test **13/13**, blocks a closing message that
+asks the owner a question whose answer is a position, size, count, colour, or which-element.
+Exempts what is genuinely his: taste forks, product and money policy, a word's connotation,
+approving a mockup, credentials, destructive ops. Also exempts a question that ships a rendered
+artifact with it, and one that names what was measured and why it was not decisive.
+NOT ARMED YET (`~/.claude/settings.json` is not writable from here);
+`python3 ~/.claude/hooks/wire-pending-gates.py` from a normal shell picks it up with the rest.
+
