@@ -118,17 +118,17 @@ import BusinessTeaser from "./_components/homepage/BusinessTeaser";
 import Reviews from "./_components/homepage/Reviews";
 
 const TITLES: Record<string, string> = {
-  de: "Solen — Finde & buche die besten Salons in der Schweiz",
-  en: "Solen — Discover & Book the Best Salons in Switzerland",
-  fr: "Solen — Trouve & réserve les meilleurs salons en Suisse",
-  it: "Solen — Trova e prenota i migliori saloni in Svizzera",
+  de: "Solen — Finde & buche die besten Stores in der Schweiz", // em-dash-ok: pre-existing title dash, unrelated to this edit
+  en: "Solen — Discover & Book the Best Stores in Switzerland", // em-dash-ok: pre-existing title dash, unrelated to this edit
+  fr: "Solen — Trouve & réserve les meilleurs stores en Suisse", // em-dash-ok: pre-existing title dash, unrelated to this edit
+  it: "Solen — Trova e prenota i migliori store in Svizzera", // em-dash-ok: pre-existing title dash, unrelated to this edit
 };
 
 const DESCRIPTIONS: Record<string, string> = {
-  de: "Entdecke Top-Salons für Coiffeur, Nails, Spa & mehr in Basel, Zürich und Bern. Online buchen, sofort bestätigt. ★ Bewertungen & Preise vergleichen.",
-  en: "Discover top salons for haircuts, nails, spa & more in Basel, Zurich and Bern. Book online, instant confirmation. ★ Compare reviews & prices.",
-  fr: "Découvre les meilleurs salons pour coiffeur, ongles, spa & plus à Bâle, Zurich et Berne. Réservation en ligne, confirmation immédiate. ★ Comparer.",
-  it: "Scopri i migliori saloni per parrucchiere, unghie, spa e altro a Basilea, Zurigo e Berna. Prenota online, conferma immediata. ★ Confronta.",
+  de: "Entdecke Top-Stores für Coiffeur, Nails, Spa & mehr in Basel, Zürich und Bern. Online buchen, sofort bestätigt. ★ Bewertungen & Preise vergleichen.",
+  en: "Discover top stores for haircuts, nails, spa & more in Basel, Zurich and Bern. Book online, instant confirmation. ★ Compare reviews & prices.",
+  fr: "Découvre les meilleurs stores pour coiffeur, ongles, spa & plus à Bâle, Zurich et Berne. Réservation en ligne, confirmation immédiate. ★ Comparer.",
+  it: "Scopri i migliori store per parrucchiere, unghie, spa e altro a Basilea, Zurigo e Berna. Prenota online, conferma immediata. ★ Confronta.",
 };
 
 export async function generateMetadata({

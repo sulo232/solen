@@ -45,10 +45,10 @@ const TITLES: Record<string, string> = {
 };
 
 const DESCRIPTIONS: Record<string, string> = {
-  de: "Werde Solen-Partner. Über 1'200 Schweizer Salons nutzen Solen für sofortige Bestätigungen, Direkt-Chat, einen vollen Kalender und tiefere Insights. In 60 Sekunden anmelden.",
-  en: "Become a Solen partner. Over 1,200 Swiss salons use Solen for instant bookings, direct chat, a full calendar, and deeper insights. Sign up in 60 seconds.",
-  fr: "Devenez partenaire Solen. Plus de 1 200 salons suisses utilisent Solen.",
-  it: "Diventa partner di Solen. Oltre 1.200 saloni svizzeri usano Solen.",
+  de: "Werde Solen-Partner. Über 1'200 Schweizer Stores nutzen Solen für sofortige Bestätigungen, Direkt-Chat, einen vollen Kalender und tiefere Insights. In 60 Sekunden anmelden.",
+  en: "Become a Solen partner. Over 1,200 Swiss stores use Solen for instant bookings, direct chat, a full calendar, and deeper insights. Sign up in 60 seconds.",
+  fr: "Devenez partenaire Solen. Plus de 1 200 stores suisses utilisent Solen.",
+  it: "Diventa partner di Solen. Oltre 1.200 store svizzeri usano Solen.",
 };
 
 export async function generateMetadata({
@@ -76,7 +76,7 @@ export async function generateMetadata({
           url: "/illustrations/business/business-hero.png",
           width: 1672,
           height: 941,
-          alt: "Solen für Salons — Modern beauty salon at golden hour",
+          alt: "Solen für Stores — Modern beauty store at golden hour", // em-dash-ok: pre-existing, unrelated to this edit
         },
       ],
     },
@@ -96,7 +96,7 @@ const STEPS = [
   {
     n: "01",
     title: "Anmelden",
-    copy: "60 Sekunden Formular. Name, Salon, Stadt — fertig.",
+    copy: "60 Sekunden Formular. Name, Store, Stadt — fertig.", // em-dash-ok: pre-existing, unrelated to this edit
   },
   {
     n: "02",
@@ -131,7 +131,7 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "Kann ich meine bestehende Kalender-Software importieren?",
-    a: "Ja. Wir unterstützen Imports aus den gängigen Schweizer Salon-Systemen. Sprich uns nach der Anmeldung an.",
+    a: "Ja. Wir unterstützen Imports aus den gängigen Schweizer Store-Systemen. Sprich uns nach der Anmeldung an.",
   },
   {
     q: "Wer kümmert sich um Zahlungen?",
@@ -169,7 +169,7 @@ export default async function BusinessPage() {
             <div className="relative aspect-[4/5] w-full md:aspect-[16/9]">
               <Image
                 src="/illustrations/business/business-hero.png"
-                alt="Modernes Hairsalon-Interieur bei goldener Stunde — eine Salonbesitzerin steht am Empfangstresen, im Hintergrund eine Stylistin bei der Arbeit mit einer Kundin."
+                alt="Modernes Hairstore-Interieur bei goldener Stunde — eine Store-Besitzerin steht am Empfangstresen, im Hintergrund eine Stylistin bei der Arbeit mit einer Kundin." // em-dash-ok: pre-existing, unrelated to this edit
                 fill
                 priority
                 sizes="(max-width: 768px) 100vw, (max-width: 1400px) 100vw, 1400px"
@@ -189,14 +189,14 @@ export default async function BusinessPage() {
                   call for the same reason. */}
               <div className="absolute inset-x-0 bottom-0 p-5 md:bottom-0 md:left-0 md:right-auto md:max-w-[640px] md:p-12 lg:p-16">
                 <p className="mb-3 font-body text-[12px] font-bold uppercase tracking-[0.16em] text-white/85">
-                  Für Salons
+                  Für Stores
                 </p>
                 <h1 className="font-display text-[clamp(26px,7vw,30px)] font-semibold leading-[1.0] tracking-[-0.03em] text-white">
                   Solen für<br />dein Geschäft.
                 </h1>
                 <p className="mt-4 max-w-[460px] font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.4] tracking-[-0.025em] text-white/85">
                   Mehr Buchungen, weniger Aufwand. Vier Werkzeuge, eine Plattform.
-                  Über 1&apos;200 Salons buchen schon mit Solen.
+                  Über 1&apos;200 Stores buchen schon mit Solen.
                 </p>
                 <div className="mt-6 flex flex-wrap items-center gap-3 md:mt-8">
                   <Link
@@ -230,7 +230,7 @@ export default async function BusinessPage() {
       >
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-center font-body text-[13px] font-medium text-s-ink-2 md:gap-x-10 md:text-[14px]">
           {/* mockup-ok: fabrication fix (FRONTEND_AUDIT_2026-07-08.md), text-only removal of an unwired count, no visual redesign */}
-          <span>Schweizer Salons</span>
+          <span>Schweizer Stores</span>
           <span aria-hidden className="h-1 w-1 rounded-full bg-s-ink-2" />
           <span>Basel · Zürich · Bern · Lugano</span>
           {/* mockup-ok: fabrication fix (FRONTEND_AUDIT_2026-07-08.md), removed the unwired
@@ -284,7 +284,7 @@ export default async function BusinessPage() {
               Du musst nicht akquirieren.
             </h2>
             <p className="mt-5 max-w-[460px] font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.55] text-s-ink-2">
-              Über 1&apos;200 Schweizer Salons sind auf solen.ch sichtbar. Jeden Tag suchen Tausende Kund:innen nach Terminen — in Basel, Zürich, Bern, Lugano.
+              Über 1&apos;200 Schweizer Stores sind auf solen.ch sichtbar. Jeden Tag suchen Tausende Kund:innen nach Terminen — in Basel, Zürich, Bern, Lugano. {/* em-dash-ok: pre-existing, unrelated to this edit */}
             </p>
             <Link
               href="/"

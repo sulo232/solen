@@ -36,13 +36,13 @@ function TermsBody() {
         </Article>
         
         <Article titleDe="1.2 Gegenstand" titleEn="1.2 Subject Matter">
-          <ParDe>solen.ch ist ein zweiseitiger Online-Marktplatz, der Kunden («Kunden») mit Beauty- und Wellness-Salons («Salonpartner») in der Region Basel verbindet. solen.ch ermöglicht die Buchung, Bezahlung und Bewertung von Dienstleistungen.</ParDe>
-          <ParEn>solen.ch is a two-sided online marketplace connecting customers ("Customers") with beauty and wellness salons ("Salon Partners") in the Basel region. solen.ch facilitates the booking, payment, and review of services.</ParEn>
+          <ParDe>solen.ch ist ein zweiseitiger Online-Marktplatz, der Kunden («Kunden») mit Beauty- und Wellness-Stores («Store-Partner») in der Region Basel verbindet. solen.ch ermöglicht die Buchung, Bezahlung und Bewertung von Dienstleistungen.</ParDe>
+          <ParEn>solen.ch is a two-sided online marketplace connecting customers ("Customers") with beauty and wellness stores ("Store Partners") in the Basel region. solen.ch facilitates the booking, payment, and review of services.</ParEn>
         </Article>
 
         <Article titleDe="1.3 Rechtsstellung von solen.ch" titleEn="1.3 Legal Status of solen.ch">
-          <ParDe>solen.ch fungiert als Zahlungsabwickler (Merchant of Record). Dies bedeutet, dass solen.ch Zahlungen von Kunden entgegennimmt und nach Abzug der Plattformgebühr an die Salonpartner auszahlt. solen.ch ist jedoch <strong>nicht</strong> der Erbringer der gebuchten Dienstleistungen. Der Dienstleistungsvertrag besteht ausschliesslich zwischen dem Kunden und dem Salonpartner.</ParDe>
-          <ParEn>solen.ch acts as the Merchant of Record. This means solen.ch collects payments from Customers and, after deducting the platform commission, pays out to Salon Partners. However, solen.ch is <strong>not</strong> the provider of the booked services. The service contract exists exclusively between the Customer and the Salon Partner.</ParEn>
+          <ParDe>solen.ch fungiert als Zahlungsabwickler (Merchant of Record). Dies bedeutet, dass solen.ch Zahlungen von Kunden entgegennimmt und nach Abzug der Plattformgebühr an die Store-Partner auszahlt. solen.ch ist jedoch <strong>nicht</strong> der Erbringer der gebuchten Dienstleistungen. Der Dienstleistungsvertrag besteht ausschliesslich zwischen dem Kunden und dem Store-Partner.</ParDe>
+          <ParEn>solen.ch acts as the Merchant of Record. This means solen.ch collects payments from Customers and, after deducting the platform commission, pays out to Store Partners. However, solen.ch is <strong>not</strong> the provider of the booked services. The service contract exists exclusively between the Customer and the Store Partner.</ParEn>
         </Article>
 
         <Article titleDe="1.4 Annahme der AGB" titleEn="1.4 Acceptance of Terms">
@@ -62,20 +62,20 @@ function TermsBody() {
           <ParEn>solen.ch offers the following account types:</ParEn>
           <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-s-ink opacity-90">
             <li><strong>Kundenkonto (Customer Account):</strong> Für Personen, die Dienstleistungen buchen möchten. / For individuals who wish to book services.</li>
-            <li><strong>Salonpartner-Konto (Salon Partner Account):</strong> Für Unternehmen, die ihre Dienstleistungen auf solen.ch anbieten möchten. / For businesses that wish to offer their services on solen.ch.</li>
-            <li><strong>Mitarbeiterkonto (Staff Account):</strong> Für Mitarbeitende eines Salonpartners, die vom Saloninhaber eingeladen werden. / For employees of a Salon Partner, invited by the salon owner.</li>
+            <li><strong>Store-Partner-Konto (Store Partner Account):</strong> Für Unternehmen, die ihre Dienstleistungen auf solen.ch anbieten möchten. / For businesses that wish to offer their services on solen.ch.</li>
+            <li><strong>Mitarbeiterkonto (Staff Account):</strong> Für Mitarbeitende eines Store-Partners, die vom Store-Inhaber eingeladen werden. / For employees of a Store Partner, invited by the store owner.</li>
             <li><strong>Administratorkonto (Admin Account):</strong> Für die interne Verwaltung der Plattform durch solen.ch. / For internal platform management by solen.ch.</li>
           </ul>
         </Article>
 
         <Article titleDe="2.3 Getrennte E-Mail-Adressen" titleEn="2.3 Separate Email Addresses">
-          <ParDe>Es ist nicht gestattet, dieselbe E-Mail-Adresse für ein Kundenkonto und ein Salonpartner-Konto zu verwenden. Für jeden Kontotyp ist eine separate E-Mail-Adresse erforderlich.</ParDe>
-          <ParEn>It is not permitted to use the same email address for both a Customer account and a Salon Partner account. A separate email address is required for each account type.</ParEn>
+          <ParDe>Es ist nicht gestattet, dieselbe E-Mail-Adresse für ein Kundenkonto und ein Store-Partner-Konto zu verwenden. Für jeden Kontotyp ist eine separate E-Mail-Adresse erforderlich.</ParDe>
+          <ParEn>It is not permitted to use the same email address for both a Customer account and a Store Partner account. A separate email address is required for each account type.</ParEn>
         </Article>
 
-        <Article titleDe="2.4 Verifizierung für Salonpartner" titleEn="2.4 Verification for Salon Partners">
-          <ParDe>Salonpartner müssen vor der Freischaltung ihres Kontos ihre E-Mail-Adresse und Telefonnummer verifizieren. solen.ch behält sich das Recht vor, jederzeit zusätzliche Nachweise anzufordern, einschliesslich, aber nicht beschränkt auf Handelsregistereintrag, Gewerbebewilligung, Berufszertifikate oder Adressnachweis.</ParDe>
-          <ParEn>Salon Partners must verify their email address and phone number before their account is activated. solen.ch reserves the right to request additional documentation at any time, including but not limited to commercial register entries, trade licenses, professional certifications, or proof of address.</ParEn>
+        <Article titleDe="2.4 Verifizierung für Store-Partner" titleEn="2.4 Verification for Store Partners">
+          <ParDe>Store-Partner müssen vor der Freischaltung ihres Kontos ihre E-Mail-Adresse und Telefonnummer verifizieren. solen.ch behält sich das Recht vor, jederzeit zusätzliche Nachweise anzufordern, einschliesslich, aber nicht beschränkt auf Handelsregistereintrag, Gewerbebewilligung, Berufszertifikate oder Adressnachweis.</ParDe>
+          <ParEn>Store Partners must verify their email address and phone number before their account is activated. solen.ch reserves the right to request additional documentation at any time, including but not limited to commercial register entries, trade licenses, professional certifications, or proof of address.</ParEn>
         </Article>
 
         <Article titleDe="2.5 Kontoinformationen" titleEn="2.5 Account Information">
@@ -86,11 +86,11 @@ function TermsBody() {
 
       <Section id="section-3" titleDe="3. Buchungen" titleEn="3. Bookings">
         <Article titleDe="3.1 Buchungsbestätigung" titleEn="3.1 Booking Confirmation">
-          <ParDe>Die Buchungsbestätigung hängt von den Einstellungen des jeweiligen Salonpartners ab:</ParDe>
-          <ParEn>Booking confirmation depends on the settings of the respective Salon Partner:</ParEn>
+          <ParDe>Die Buchungsbestätigung hängt von den Einstellungen des jeweiligen Store-Partners ab:</ParDe>
+          <ParEn>Booking confirmation depends on the settings of the respective Store Partner:</ParEn>
           <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-s-ink opacity-90">
             <li><strong>Sofortige Bestätigung (Instant Confirmation):</strong> Die Buchung wird automatisch bestätigt, sobald die Zahlung erfolgreich ist. / The booking is automatically confirmed once payment succeeds.</li>
-            <li><strong>Bestätigung durch den Salon (Salon Approval):</strong> Die Buchung bleibt bis zur Bestätigung durch den Salonpartner im Status «ausstehend». / The booking remains in "pending" status until confirmed by the Salon Partner.</li>
+            <li><strong>Bestätigung durch den Store (Store Approval):</strong> Die Buchung bleibt bis zur Bestätigung durch den Store-Partner im Status «ausstehend». / The booking remains in "pending" status until confirmed by the Store Partner.</li>
           </ul>
         </Article>
 
@@ -99,14 +99,14 @@ function TermsBody() {
           <ParEn>Customers may modify a booking (e.g., time or service) free of charge up to <strong>24 hours before the appointment</strong>. Modifications within 24 hours of the appointment are not possible.</ParEn>
         </Article>
 
-        <Article titleDe="3.3 Stornierung durch den Salonpartner" titleEn="3.3 Cancellation by Salon Partner">
-          <ParDe>Storniert ein Salonpartner eine bestätigte Buchung, erhält der Kunde automatisch eine vollständige Rückerstattung. Der Salonpartner erhält eine Verwarnung. Bei 3 oder mehr Stornierungen innerhalb von 30 Tagen wird das Konto des Salonpartners einer Überprüfung unterzogen, die zu einer Verwarnung, Herabstufung oder Sperrung führen kann.</ParDe>
-          <ParEn>If a Salon Partner cancels a confirmed booking, the Customer automatically receives a full refund. The Salon Partner receives a warning. In the event of 3 or more cancellations within 30 days, the Salon Partner's account will be subject to review, which may result in a warning, demotion, or suspension.</ParEn>
+        <Article titleDe="3.3 Stornierung durch den Store-Partner" titleEn="3.3 Cancellation by Store Partner">
+          <ParDe>Storniert ein Store-Partner eine bestätigte Buchung, erhält der Kunde automatisch eine vollständige Rückerstattung. Der Store-Partner erhält eine Verwarnung. Bei 3 oder mehr Stornierungen innerhalb von 30 Tagen wird das Konto des Store-Partners einer Überprüfung unterzogen, die zu einer Verwarnung, Herabstufung oder Sperrung führen kann.</ParDe>
+          <ParEn>If a Store Partner cancels a confirmed booking, the Customer automatically receives a full refund. The Store Partner receives a warning. In the event of 3 or more cancellations within 30 days, the Store Partner's account will be subject to review, which may result in a warning, demotion, or suspension.</ParEn>
         </Article>
 
         <Article titleDe="3.4 Verfügbarkeitsanzeige" titleEn="3.4 Availability Display">
-          <ParDe>Die auf solen.ch angezeigten Verfügbarkeiten entsprechen möglicherweise nicht in Echtzeit dem aktuellen Status des Salonpartners. solen.ch übernimmt keine Gewähr für die Richtigkeit oder Aktualität der angezeigten Verfügbarkeiten.</ParDe>
-          <ParEn>Availability displayed on solen.ch may not reflect the real-time status of the Salon Partner. solen.ch makes no guarantees regarding the accuracy or timeliness of displayed availability.</ParEn>
+          <ParDe>Die auf solen.ch angezeigten Verfügbarkeiten entsprechen möglicherweise nicht in Echtzeit dem aktuellen Status des Store-Partners. solen.ch übernimmt keine Gewähr für die Richtigkeit oder Aktualität der angezeigten Verfügbarkeiten.</ParDe>
+          <ParEn>Availability displayed on solen.ch may not reflect the real-time status of the Store Partner. solen.ch makes no guarantees regarding the accuracy or timeliness of displayed availability.</ParEn>
         </Article>
       </Section>
 
@@ -121,14 +121,14 @@ function TermsBody() {
           <ParEn>If a booking is cancelled less than 24 hours before the appointment, a fee of <strong>50% of the booking value</strong> will be charged. The remaining amount will be refunded to the Customer. This fee is set platform-wide by solen.ch.</ParEn>
         </Article>
 
-        <Article titleDe="4.3 Kulanzregelung der Salonpartner" titleEn="4.3 Salon Partner Leniency">
-          <ParDe>Salonpartner können im Rahmen der Plattformregeln kulantere Stornierungsbedingungen anbieten (z.B. kostenlose Stornierung bis 2 Stunden vor dem Termin). Die Bedingungen dürfen jedoch nicht strenger sein als die Plattformstandards gemäss Abschnitt 4.1 und 4.2.</ParDe>
-          <ParEn>Salon Partners may offer more lenient cancellation terms within the platform rules (e.g., free cancellation up to 2 hours before the appointment). However, terms may not be stricter than the platform standards set out in Sections 4.1 and 4.2.</ParEn>
+        <Article titleDe="4.3 Kulanzregelung der Store-Partner" titleEn="4.3 Store Partner Leniency">
+          <ParDe>Store-Partner können im Rahmen der Plattformregeln kulantere Stornierungsbedingungen anbieten (z.B. kostenlose Stornierung bis 2 Stunden vor dem Termin). Die Bedingungen dürfen jedoch nicht strenger sein als die Plattformstandards gemäss Abschnitt 4.1 und 4.2.</ParDe>
+          <ParEn>Store Partners may offer more lenient cancellation terms within the platform rules (e.g., free cancellation up to 2 hours before the appointment). However, terms may not be stricter than the platform standards set out in Sections 4.1 and 4.2.</ParEn>
         </Article>
 
         <Article titleDe="4.4 Nichterscheinen (No-Show)" titleEn="4.4 No-Show">
-          <ParDe>Erscheint ein Kunde nicht zum gebuchten Termin und hat nicht storniert, gilt dies als Nichterscheinen. In diesem Fall wird der <strong>volle Buchungswert</strong> dem Kunden belastet und nach Abzug der Plattformgebühr an den Salonpartner ausbezahlt.</ParDe>
-          <ParEn>If a Customer fails to appear for a booked appointment without cancelling, this is considered a no-show. In this case, the <strong>full booking value</strong> will be charged to the Customer and, after deduction of the platform commission, paid out to the Salon Partner.</ParEn>
+          <ParDe>Erscheint ein Kunde nicht zum gebuchten Termin und hat nicht storniert, gilt dies als Nichterscheinen. In diesem Fall wird der <strong>volle Buchungswert</strong> dem Kunden belastet und nach Abzug der Plattformgebühr an den Store-Partner ausbezahlt.</ParDe>
+          <ParEn>If a Customer fails to appear for a booked appointment without cancelling, this is considered a no-show. In this case, the <strong>full booking value</strong> will be charged to the Customer and, after deduction of the platform commission, paid out to the Store Partner.</ParEn>
           
           <p className="mt-4 font-semibold text-s-ink text-sm md:text-base">Wiederholtes Nichterscheinen / Repeated No-Shows:</p>
           <ul className="list-disc pl-5 space-y-1 mt-2 text-sm md:text-base text-s-ink opacity-90">
@@ -151,8 +151,8 @@ function TermsBody() {
             <li>Kreditkarten (Visa, Mastercard) / Credit cards (Visa, Mastercard)</li>
             <li>Apple Pay / Google Pay</li>
           </ul>
-          <ParDe>Barzahlung im Salon ist über solen.ch nicht möglich.</ParDe>
-          <ParEn>Cash payment at the salon is not available through solen.ch.</ParEn>
+          <ParDe>Barzahlung im Store ist über solen.ch nicht möglich.</ParDe>
+          <ParEn>Cash payment at the store is not available through solen.ch.</ParEn>
         </Article>
 
         <Article titleDe="5.2 Zahlungsabwicklung" titleEn="5.2 Payment Processing">
@@ -161,21 +161,21 @@ function TermsBody() {
         </Article>
 
         <Article titleDe="5.3 Plattformgebühr" titleEn="5.3 Platform Commission">
-          <ParDe>solen.ch erhebt eine Provision von <strong>15 %</strong> auf den Wert jeder abgeschlossenen Buchung. Diese Gebühr wird vor der Auszahlung an den Salonpartner abgezogen. Es fallen keine Listungs- oder Abonnementgebühren an. solen.ch behält sich das Recht vor, die Provisionshöhe mit angemessener Vorankündigung gemäss Abschnitt 11 zu ändern.</ParDe>
-          <ParEn>solen.ch charges a commission of <strong>15%</strong> on the value of each completed booking. This fee is deducted before payout to the Salon Partner. There are no listing or subscription fees. solen.ch reserves the right to adjust the commission rate with reasonable notice in accordance with Section 11.</ParEn>
+          <ParDe>solen.ch erhebt eine Provision von <strong>15 %</strong> auf den Wert jeder abgeschlossenen Buchung. Diese Gebühr wird vor der Auszahlung an den Store-Partner abgezogen. Es fallen keine Listungs- oder Abonnementgebühren an. solen.ch behält sich das Recht vor, die Provisionshöhe mit angemessener Vorankündigung gemäss Abschnitt 11 zu ändern.</ParDe>
+          <ParEn>solen.ch charges a commission of <strong>15%</strong> on the value of each completed booking. This fee is deducted before payout to the Store Partner. There are no listing or subscription fees. solen.ch reserves the right to adjust the commission rate with reasonable notice in accordance with Section 11.</ParEn>
         </Article>
 
-        <Article titleDe="5.4 Auszahlungen an Salonpartner" titleEn="5.4 Payouts to Salon Partners">
+        <Article titleDe="5.4 Auszahlungen an Store-Partner" titleEn="5.4 Payouts to Store Partners">
           <ParDe>Auszahlungen erfolgen wöchentlich per Banküberweisung (jeweils montags für die abgeschlossenen Buchungen der Vorwoche). Nach Abschluss einer Buchung wird eine Haltefrist von 7 Tagen eingehalten, bevor die Mittel für die Auszahlung freigegeben werden.</ParDe>
           <ParEn>Payouts are made weekly by bank transfer (every Monday for the previous week's completed bookings). A hold period of 7 days is applied after a booking is completed before funds are released for payout.</ParEn>
           <div className="mt-4" />
-          <ParDe>solen.ch stellt den Salonpartnern für jeden Auszahlungszeitraum eine Rechnung aus, die die Bruttobuchungen, die abgezogene Provision und den Nettobetrag ausweist.</ParDe>
-          <ParEn>solen.ch will issue invoices to Salon Partners for each payout cycle, detailing gross bookings, commission deducted, and net payout amount.</ParEn>
+          <ParDe>solen.ch stellt den Store-Partnern für jeden Auszahlungszeitraum eine Rechnung aus, die die Bruttobuchungen, die abgezogene Provision und den Nettobetrag ausweist.</ParDe>
+          <ParEn>solen.ch will issue invoices to Store Partners for each payout cycle, detailing gross bookings, commission deducted, and net payout amount.</ParEn>
         </Article>
 
         <Article titleDe="5.5 Rückerstattungen" titleEn="5.5 Refunds">
           <ul className="list-disc pl-5 space-y-3 text-sm md:text-base text-s-ink opacity-90 pb-2">
-            <li><strong>Stornierung durch den Salonpartner:</strong> Vollständige Rückerstattung an den Kunden. solen.ch trägt die anfallenden Stripe-Bearbeitungsgebühren. / <strong>Salon Partner cancellation:</strong> Full refund to Customer. solen.ch absorbs the Stripe processing fees.</li>
+            <li><strong>Stornierung durch den Store-Partner:</strong> Vollständige Rückerstattung an den Kunden. solen.ch trägt die anfallenden Stripe-Bearbeitungsgebühren. / <strong>Store Partner cancellation:</strong> Full refund to Customer. solen.ch absorbs the Stripe processing fees.</li>
             <li><strong>Kostenlose Stornierung durch den Kunden (&gt;24h):</strong> Vollständige Rückerstattung. solen.ch trägt die Bearbeitungsgebühren. / <strong>Free cancellation by Customer (&gt;24h):</strong> Full refund. solen.ch absorbs the processing fees.</li>
             <li><strong>Verspätete Stornierung durch den Kunden (&lt;24h):</strong> 50 % werden einbehalten; 50 % werden erstattet. / <strong>Late cancellation by Customer (&lt;24h):</strong> 50% is retained; 50% is refunded.</li>
             <li><strong>Nichterscheinen des Kunden:</strong> Keine Rückerstattung. / <strong>Customer no-show:</strong> No refund.</li>
@@ -183,30 +183,30 @@ function TermsBody() {
         </Article>
       </Section>
 
-      <Section id="section-6" titleDe="6. Pflichten der Salonpartner" titleEn="6. Salon Partner Obligations">
+      <Section id="section-6" titleDe="6. Pflichten der Store-Partner" titleEn="6. Store Partner Obligations">
         <Article titleDe="6.1 Dienstleistungserbringung" titleEn="6.1 Service Delivery">
-          <ParDe>Der Salonpartner ist allein verantwortlich für die Erbringung der gebuchten Dienstleistungen, einschliesslich deren Qualität, Sicherheit und Konformität mit geltendem Recht. solen.ch ist zu keinem Zeitpunkt Partei des Dienstleistungsvertrages zwischen Kunde und Salonpartner.</ParDe>
-          <ParEn>The Salon Partner is solely responsible for the delivery of booked services, including their quality, safety, and compliance with applicable law. solen.ch is at no time a party to the service contract between Customer and Salon Partner.</ParEn>
+          <ParDe>Der Store-Partner ist allein verantwortlich für die Erbringung der gebuchten Dienstleistungen, einschliesslich deren Qualität, Sicherheit und Konformität mit geltendem Recht. solen.ch ist zu keinem Zeitpunkt Partei des Dienstleistungsvertrages zwischen Kunde und Store-Partner.</ParDe>
+          <ParEn>The Store Partner is solely responsible for the delivery of booked services, including their quality, safety, and compliance with applicable law. solen.ch is at no time a party to the service contract between Customer and Store Partner.</ParEn>
         </Article>
 
         <Article titleDe="6.2 Berufszertifikate und Lizenzen" titleEn="6.2 Professional Certifications and Licenses">
-          <ParDe>solen.ch empfiehlt Salonpartnern nachdrücklich, über die für ihre Dienstleistungen relevanten Berufszertifikate und Bewilligungen zu verfügen (z.B. Coiffeur-Fachausweis, Kosmetikerinnen-Diplom, Hygienezertifikate). Nachweise sind derzeit für die Freischaltung nicht zwingend erforderlich, solen.ch behält sich jedoch das Recht vor, jederzeit Nachweise anzufordern und den Zugang zur Plattform bei Nichtvorlage einzuschränken.</ParDe>
-          <ParEn>solen.ch strongly encourages Salon Partners to hold relevant professional certifications and permits for their services (e.g., hairdressing qualifications, cosmetology diplomas, hygiene certificates). Proof is currently not mandatory for activation, but solen.ch reserves the right to request documentation at any time and to restrict platform access if documentation is not provided.</ParEn>
+          <ParDe>solen.ch empfiehlt Store-Partnern nachdrücklich, über die für ihre Dienstleistungen relevanten Berufszertifikate und Bewilligungen zu verfügen (z.B. Coiffeur-Fachausweis, Kosmetikerinnen-Diplom, Hygienezertifikate). Nachweise sind derzeit für die Freischaltung nicht zwingend erforderlich, solen.ch behält sich jedoch das Recht vor, jederzeit Nachweise anzufordern und den Zugang zur Plattform bei Nichtvorlage einzuschränken.</ParDe>
+          <ParEn>solen.ch strongly encourages Store Partners to hold relevant professional certifications and permits for their services (e.g., hairdressing qualifications, cosmetology diplomas, hygiene certificates). Proof is currently not mandatory for activation, but solen.ch reserves the right to request documentation at any time and to restrict platform access if documentation is not provided.</ParEn>
         </Article>
 
         <Article titleDe="6.3 Haftpflichtversicherung" titleEn="6.3 Liability Insurance">
-          <ParDe>solen.ch empfiehlt Salonpartnern nachdrücklich, eine Berufshaftpflichtversicherung (Haftpflichtversicherung) abzuschliessen. solen.ch übernimmt keine Haftung für Salonpartner, die nicht über eine angemessene Versicherung verfügen.</ParDe>
-          <ParEn>solen.ch strongly recommends that Salon Partners maintain professional liability insurance (Haftpflichtversicherung). solen.ch accepts no liability for Salon Partners who do not carry adequate insurance.</ParEn>
+          <ParDe>solen.ch empfiehlt Store-Partnern nachdrücklich, eine Berufshaftpflichtversicherung (Haftpflichtversicherung) abzuschliessen. solen.ch übernimmt keine Haftung für Store-Partner, die nicht über eine angemessene Versicherung verfügen.</ParDe>
+          <ParEn>solen.ch strongly recommends that Store Partners maintain professional liability insurance (Haftpflichtversicherung). solen.ch accepts no liability for Store Partners who do not carry adequate insurance.</ParEn>
         </Article>
 
         <Article titleDe="6.4 Haftung für Schäden" titleEn="6.4 Liability for Harm">
-          <ParDe>Für Schäden, die einem Kunden im Zusammenhang mit einer Dienstleistung entstehen (z.B. allergische Reaktionen, Verletzungen, fehlerhafte Behandlungen), haftet ausschliesslich der Salonpartner. solen.ch als Plattformbetreiberin übernimmt keinerlei Haftung für die Qualität, Sicherheit oder das Ergebnis von Dienstleistungen, die über die Plattform gebucht werden.</ParDe>
-          <ParEn>The Salon Partner bears sole liability for any harm caused to a Customer in connection with a service (e.g., allergic reactions, injuries, faulty treatments). solen.ch as the platform operator accepts no liability whatsoever for the quality, safety, or outcome of services booked through the platform.</ParEn>
+          <ParDe>Für Schäden, die einem Kunden im Zusammenhang mit einer Dienstleistung entstehen (z.B. allergische Reaktionen, Verletzungen, fehlerhafte Behandlungen), haftet ausschliesslich der Store-Partner. solen.ch als Plattformbetreiberin übernimmt keinerlei Haftung für die Qualität, Sicherheit oder das Ergebnis von Dienstleistungen, die über die Plattform gebucht werden.</ParDe>
+          <ParEn>The Store Partner bears sole liability for any harm caused to a Customer in connection with a service (e.g., allergic reactions, injuries, faulty treatments). solen.ch as the platform operator accepts no liability whatsoever for the quality, safety, or outcome of services booked through the platform.</ParEn>
         </Article>
 
         <Article titleDe="6.5 Inhaltsrichtlinien" titleEn="6.5 Content Guidelines">
-          <ParDe>Salonpartner dürfen eigene Fotos hochladen und Preise in CHF festlegen. Es gelten folgende Regeln:</ParDe>
-          <ParEn>Salon Partners may upload their own photos and set prices in CHF. The following rules apply:</ParEn>
+          <ParDe>Store-Partner dürfen eigene Fotos hochladen und Preise in CHF festlegen. Es gelten folgende Regeln:</ParDe>
+          <ParEn>Store Partners may upload their own photos and set prices in CHF. The following rules apply:</ParEn>
           <ul className="list-disc pl-5 my-2 space-y-1 text-sm md:text-base text-s-ink opacity-90">
             <li>Keine Verwendung von Stockfotos, die als eigene Arbeiten dargestellt werden / No use of stock photos presented as own work</li>
             <li>Keine irreführenden Vorher-Nachher-Bilder / No misleading before-and-after images</li>
@@ -223,7 +223,7 @@ function TermsBody() {
           <ParDe>Bei wiederholten negativen Bewertungen oder Beschwerden behält sich solen.ch folgende abgestufte Massnahmen vor:</ParDe>
           <ParEn>In the event of repeated negative reviews or complaints, solen.ch reserves the right to take the following tiered measures:</ParEn>
           <ol className="list-decimal pl-5 my-2 space-y-1 text-sm md:text-base text-s-ink opacity-90">
-            <li><strong>Verwarnung</strong> — schriftliche Benachrichtigung an den Salonpartner / <strong>Warning</strong> — written notification to Salon Partner</li>
+            <li><strong>Verwarnung</strong> — schriftliche Benachrichtigung an den Store-Partner / <strong>Warning</strong> — written notification to Store Partner</li>
             <li><strong>Herabstufung</strong> — reduzierte Sichtbarkeit in den Suchergebnissen / <strong>Demotion</strong> — reduced visibility in search results</li>
             <li><strong>Sperrung</strong> — vorübergehende Deaktivierung des Kontos bis zur Klärung / <strong>Suspension</strong> — temporary deactivation of account pending review</li>
             <li><strong>Entfernung</strong> — dauerhafte Entfernung von der Plattform / <strong>Removal</strong> — permanent removal from the platform</li>
@@ -251,16 +251,16 @@ function TermsBody() {
             <li>Hassrede, persönliche Angriffe oder Drohungen enthalten / containing hate speech, personal attacks, or threats</li>
             <li>offensichtlich Spam sind / clearly spam</li>
           </ul>
-          <ParDe>Salonpartner können Bewertungen zur Moderation melden. solen.ch trifft die endgültige Entscheidung über die Entfernung.</ParDe>
-          <ParEn>Salon Partners may flag reviews for moderation. solen.ch makes the final decision on removal.</ParEn>
+          <ParDe>Store-Partner können Bewertungen zur Moderation melden. solen.ch trifft die endgültige Entscheidung über die Entfernung.</ParDe>
+          <ParEn>Store Partners may flag reviews for moderation. solen.ch makes the final decision on removal.</ParEn>
           <div className="mt-4" />
           <ParDe>Eine veröffentlichte Bewertung kann vom Kunden nicht eigenständig bearbeitet oder gelöscht werden. Für eine Korrektur oder Entfernung der eigenen Bewertung kontaktieren Sie support@solen.ch.</ParDe>
           <ParEn>Once published, a review cannot be self-edited or self-deleted by the Customer. To request a correction or removal of your own review, contact support@solen.ch.</ParEn>
         </Article>
 
         <Article titleDe="7.3 Verhaltensregeln" titleEn="7.3 Code of Conduct">
-          <ParDe>solen.ch verfolgt eine Null-Toleranz-Politik gegenüber missbräuchlichem Verhalten von Kunden gegenüber Salonpersonal. Belästigung, Diskriminierung, Drohungen oder beleidigendes Verhalten führen zur sofortigen Kontosperrung.</ParDe>
-          <ParEn>solen.ch maintains a zero-tolerance policy for abusive behavior by Customers toward salon staff. Harassment, discrimination, threats, or abusive conduct will result in immediate account suspension.</ParEn>
+          <ParDe>solen.ch verfolgt eine Null-Toleranz-Politik gegenüber missbräuchlichem Verhalten von Kunden gegenüber Store-Personal. Belästigung, Diskriminierung, Drohungen oder beleidigendes Verhalten führen zur sofortigen Kontosperrung.</ParDe>
+          <ParEn>solen.ch maintains a zero-tolerance policy for abusive behavior by Customers toward store staff. Harassment, discrimination, threats, or abusive conduct will result in immediate account suspension.</ParEn>
         </Article>
       </Section>
 
@@ -270,9 +270,9 @@ function TermsBody() {
           <ParEn>All content on the solen.ch platform (including design, logo, text, software, and graphics) is the property of solen.ch or its licensors and is protected by copyright.</ParEn>
         </Article>
 
-        <Article titleDe="8.2 Von Salonpartnern hochgeladene Inhalte" titleEn="8.2 Content Uploaded by Salon Partners">
-          <ParDe>Der Salonpartner behält das Eigentum an hochgeladenen Fotos und Inhalten. Durch das Hochladen gewährt der Salonpartner solen.ch eine nicht-exklusive, lizenzgebührenfreie, weltweite Lizenz zur Nutzung, Vervielfältigung und Veröffentlichung dieser Inhalte auf der Plattform sowie in Werbematerialien (z.B. soziale Medien, Anzeigen, Website).</ParDe>
-          <ParEn>The Salon Partner retains ownership of uploaded photos and content. By uploading, the Salon Partner grants solen.ch a non-exclusive, royalty-free, worldwide license to use, reproduce, and publish this content on the platform and in promotional materials (e.g., social media, advertisements, website).</ParEn>
+        <Article titleDe="8.2 Von Store-Partnern hochgeladene Inhalte" titleEn="8.2 Content Uploaded by Store Partners">
+          <ParDe>Der Store-Partner behält das Eigentum an hochgeladenen Fotos und Inhalten. Durch das Hochladen gewährt der Store-Partner solen.ch eine nicht-exklusive, lizenzgebührenfreie, weltweite Lizenz zur Nutzung, Vervielfältigung und Veröffentlichung dieser Inhalte auf der Plattform sowie in Werbematerialien (z.B. soziale Medien, Anzeigen, Website).</ParDe>
+          <ParEn>The Store Partner retains ownership of uploaded photos and content. By uploading, the Store Partner grants solen.ch a non-exclusive, royalty-free, worldwide license to use, reproduce, and publish this content on the platform and in promotional materials (e.g., social media, advertisements, website).</ParEn>
         </Article>
 
         {/* 8.2a added 2026-07-27. The licence in 8.2 above is already the industry standard ,
@@ -284,15 +284,15 @@ function TermsBody() {
             Europe. Research: _design-system/research/owner-answers-2026-07-27/photo-rights-tos.md,
             rule: _rules/CONTENT_RIGHTS.md. NEEDS A SWISS LAWYER'S SIGN-OFF before launch. */}
         <Article titleDe="8.2a Rechte an abgebildeten Personen" titleEn="8.2a Rights of Depicted Persons">
-          <ParDe>Mit dem Hochladen sichert der Salonpartner zu, dass er über alle erforderlichen Rechte an den Inhalten verfügt. Zeigt ein Foto oder Video eine Person oder lässt es Rückschlüsse auf eine Person zu, so muss der Salonpartner deren vorherige Einwilligung eingeholt haben, ausdrücklich auch für die Verwendung in Werbung. Bei minderjährigen Personen ist die Einwilligung der Erziehungsberechtigten erforderlich. Der Salonpartner bewahrt einen Nachweis dieser Einwilligungen auf.</ParDe>
-          <ParEn>By uploading, the Salon Partner warrants that they hold all rights necessary to the content. Where a photo or video shows a person, or allows a person to be identified, the Salon Partner must have obtained that person&apos;s prior consent, expressly including consent to use in advertising. For minors, the consent of a parent or guardian is required. The Salon Partner keeps a record of these consents.</ParEn>
-          <ParDe>Widerruft eine abgebildete Person ihre Einwilligung, informiert der Salonpartner solen.ch unverzüglich. <strong>solen.ch entfernt das betreffende Bild innerhalb von 48 Stunden nach Eingang einer Meldung, ohne Rückfragen.</strong> Eine Meldung kann von der abgebildeten Person direkt erfolgen; ein Nachweis der Identität wird nicht verlangt.</ParDe>
-          <ParEn>If a depicted person withdraws their consent, the Salon Partner informs solen.ch without delay. <strong>solen.ch removes the image within 48 hours of receiving a report, no questions asked.</strong> A report may be made by the depicted person directly; no proof of identity is required.</ParEn>
+          <ParDe>Mit dem Hochladen sichert der Store-Partner zu, dass er über alle erforderlichen Rechte an den Inhalten verfügt. Zeigt ein Foto oder Video eine Person oder lässt es Rückschlüsse auf eine Person zu, so muss der Store-Partner deren vorherige Einwilligung eingeholt haben, ausdrücklich auch für die Verwendung in Werbung. Bei minderjährigen Personen ist die Einwilligung der Erziehungsberechtigten erforderlich. Der Store-Partner bewahrt einen Nachweis dieser Einwilligungen auf.</ParDe>
+          <ParEn>By uploading, the Store Partner warrants that they hold all rights necessary to the content. Where a photo or video shows a person, or allows a person to be identified, the Store Partner must have obtained that person&apos;s prior consent, expressly including consent to use in advertising. For minors, the consent of a parent or guardian is required. The Store Partner keeps a record of these consents.</ParEn>
+          <ParDe>Widerruft eine abgebildete Person ihre Einwilligung, informiert der Store-Partner solen.ch unverzüglich. <strong>solen.ch entfernt das betreffende Bild innerhalb von 48 Stunden nach Eingang einer Meldung, ohne Rückfragen.</strong> Eine Meldung kann von der abgebildeten Person direkt erfolgen; ein Nachweis der Identität wird nicht verlangt.</ParDe>
+          <ParEn>If a depicted person withdraws their consent, the Store Partner informs solen.ch without delay. <strong>solen.ch removes the image within 48 hours of receiving a report, no questions asked.</strong> A report may be made by the depicted person directly; no proof of identity is required.</ParEn>
         </Article>
 
         <Article titleDe="8.3 Nutzung der Marke solen.ch" titleEn="8.3 Use of the solen.ch Brand">
-          <ParDe>Salonpartner dürfen das solen.ch-Logo und die Marke in ihrem eigenen Marketing verwenden (z.B. «Buchen Sie uns auf solen.ch»), sofern dies unter Einhaltung der von solen.ch veröffentlichten Markenrichtlinien geschieht.</ParDe>
-          <ParEn>Salon Partners may use the solen.ch logo and brand in their own marketing (e.g., "Book us on solen.ch"), provided this is done in accordance with the brand guidelines published by solen.ch.</ParEn>
+          <ParDe>Store-Partner dürfen das solen.ch-Logo und die Marke in ihrem eigenen Marketing verwenden (z.B. «Buchen Sie uns auf solen.ch»), sofern dies unter Einhaltung der von solen.ch veröffentlichten Markenrichtlinien geschieht.</ParDe>
+          <ParEn>Store Partners may use the solen.ch logo and brand in their own marketing (e.g., "Book us on solen.ch"), provided this is done in accordance with the brand guidelines published by solen.ch.</ParEn>
         </Article>
 
         <Article titleDe="8.4 Nutzung von Bewertungen" titleEn="8.4 Use of Reviews">
@@ -348,8 +348,8 @@ function TermsBody() {
 
       <Section id="section-10" titleDe="10. Haftung und Haftungsausschluss" titleEn="10. Liability and Disclaimers">
         <Article titleDe="10.1 Haftungsausschluss für Dienstleistungsqualität" titleEn="10.1 Disclaimer of Service Quality">
-          <ParDe>solen.ch ist ein Marktplatz und übernimmt keinerlei Haftung für die Qualität, Sicherheit oder das Ergebnis von Dienstleistungen, die von Salonpartnern über die Plattform erbracht werden. Sämtliche Ansprüche im Zusammenhang mit Dienstleistungen sind direkt an den jeweiligen Salonpartner zu richten.</ParDe>
-          <ParEn>solen.ch is a marketplace and accepts no liability for the quality, safety, or outcome of services provided by Salon Partners through the platform. All claims relating to services must be directed to the respective Salon Partner.</ParEn>
+          <ParDe>solen.ch ist ein Marktplatz und übernimmt keinerlei Haftung für die Qualität, Sicherheit oder das Ergebnis von Dienstleistungen, die von Store-Partnern über die Plattform erbracht werden. Sämtliche Ansprüche im Zusammenhang mit Dienstleistungen sind direkt an den jeweiligen Store-Partner zu richten.</ParDe>
+          <ParEn>solen.ch is a marketplace and accepts no liability for the quality, safety, or outcome of services provided by Store Partners through the platform. All claims relating to services must be directed to the respective Store Partner.</ParEn>
         </Article>
 
         <Article titleDe="10.2 Haftungsausschluss für Plattformverfügbarkeit" titleEn="10.2 Disclaimer of Platform Availability">
@@ -357,9 +357,9 @@ function TermsBody() {
           <ParEn>solen.ch strives for high platform availability but cannot guarantee uninterrupted operation. solen.ch is not liable for losses arising from platform outages, technical disruptions, lost bookings, or data loss. Force majeure events (including but not limited to natural disasters, cyberattacks, government orders, and third-party service outages) relieve solen.ch of any performance obligations.</ParEn>
         </Article>
 
-        <Article titleDe="10.3 Freistellung durch Salonpartner" titleEn="10.3 Indemnification by Salon Partners">
-          <ParDe>Der Salonpartner stellt solen.ch, deren Inhaber und Mitarbeitende von sämtlichen Ansprüchen, Forderungen und Schäden frei, die aus der Erbringung von Dienstleistungen durch den Salonpartner an Kunden entstehen.</ParDe>
-          <ParEn>The Salon Partner shall indemnify and hold harmless solen.ch, its owner, and its employees from all claims, demands, and damages arising from the Salon Partner's provision of services to Customers.</ParEn>
+        <Article titleDe="10.3 Freistellung durch Store-Partner" titleEn="10.3 Indemnification by Store Partners">
+          <ParDe>Der Store-Partner stellt solen.ch, deren Inhaber und Mitarbeitende von sämtlichen Ansprüchen, Forderungen und Schäden frei, die aus der Erbringung von Dienstleistungen durch den Store-Partner an Kunden entstehen.</ParDe>
+          <ParEn>The Store Partner shall indemnify and hold harmless solen.ch, its owner, and its employees from all claims, demands, and damages arising from the Store Partner's provision of services to Customers.</ParEn>
         </Article>
       </Section>
 
@@ -397,7 +397,7 @@ function TermsBody() {
             <li>Betrug oder betrügerische Aktivitäten / Fraud or fraudulent activity</li>
             <li>Gefälschte Bewertungen / Fake reviews</li>
             <li>Wiederholtes Nichterscheinen (siehe Abschnitt 4.4) / Repeated no-shows (see Section 4.4)</li>
-            <li>Missbräuchliches Verhalten gegenüber Kunden oder Salonpersonal / Abusive behavior toward Customers or salon staff</li>
+            <li>Missbräuchliches Verhalten gegenüber Kunden oder Store-Personal / Abusive behavior toward Customers or store staff</li>
             <li>Angebot illegaler Dienstleistungen / Offering illegal services</li>
             <li>Nichtzahlung von Plattformgebühren / Non-payment of platform fees</li>
             <li>Inaktivität von mehr als 12 Monaten / Inactivity exceeding 12 months</li>
@@ -419,8 +419,8 @@ function TermsBody() {
         </Article>
 
         <Article titleDe="12.3 Auswirkungen auf laufende Buchungen" titleEn="12.3 Effect on Pending Bookings">
-          <ParDe>Bei Sperrung oder Deaktivierung eines Salonpartner-Kontos:</ParDe>
-          <ParEn>Upon suspension or deactivation of a Salon Partner account:</ParEn>
+          <ParDe>Bei Sperrung oder Deaktivierung eines Store-Partner-Kontos:</ParDe>
+          <ParEn>Upon suspension or deactivation of a Store Partner account:</ParEn>
           <ul className="list-disc pl-5 my-2 space-y-1 text-sm md:text-base text-s-ink opacity-90">
             <li>Alle ausstehenden und bestätigten Buchungen werden automatisch storniert. / All pending and confirmed bookings are automatically cancelled.</li>
             <li>Betroffene Kunden erhalten eine vollständige Rückerstattung. / Affected Customers receive a full refund.</li>
@@ -430,9 +430,9 @@ function TermsBody() {
       </Section>
 
       <Section id="section-13" titleDe="13. Streitbeilegung und anwendbares Recht" titleEn="13. Dispute Resolution and Governing Law">
-        <Article titleDe="13.1 Streitigkeiten zwischen Kunden und Salonpartnern" titleEn="13.1 Disputes Between Customers and Salon Partners">
-          <ParDe>solen.ch stellt einen Kanal zur Meldung von Problemen zur Verfügung (über die Plattform oder per E-Mail an support@solen.ch). solen.ch kann bei der Klärung eindeutiger Fälle helfen (z.B. Rückerstattung bei Stornierung durch den Salon), ist jedoch nicht Entscheidungsinstanz bei komplexen Streitigkeiten.</ParDe>
-          <ParEn>solen.ch provides a channel for reporting issues (via the platform or by email to support@solen.ch). solen.ch may assist in resolving clear-cut cases (e.g., refund upon salon cancellation) but is not the decision-maker in complex disputes.</ParEn>
+        <Article titleDe="13.1 Streitigkeiten zwischen Kunden und Store-Partnern" titleEn="13.1 Disputes Between Customers and Store Partners">
+          <ParDe>solen.ch stellt einen Kanal zur Meldung von Problemen zur Verfügung (über die Plattform oder per E-Mail an support@solen.ch). solen.ch kann bei der Klärung eindeutiger Fälle helfen (z.B. Rückerstattung bei Stornierung durch den Store), ist jedoch nicht Entscheidungsinstanz bei komplexen Streitigkeiten.</ParDe>
+          <ParEn>solen.ch provides a channel for reporting issues (via the platform or by email to support@solen.ch). solen.ch may assist in resolving clear-cut cases (e.g., refund upon store cancellation) but is not the decision-maker in complex disputes.</ParEn>
         </Article>
 
         <Article titleDe="13.1a Meldefrist" titleEn="13.1a Reporting Window">
