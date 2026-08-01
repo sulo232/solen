@@ -224,3 +224,16 @@ Each lands as its own commit, verified on the real route at 390x844 before the n
       silently building five unscoped features off a mechanical gate.
 
 Each lands as its own commit, verified on the real route at 390x844 before the next starts.
+
+**Hook conflict, third occurrence (2026-08-01, same shape as the two rounds above).** This
+dispatch's literal task was three narrow home-reconciliation items against
+`public/_mockups/home-v3/search-a.html` (hide `MobileCategoriesRow` below md, add the Inspo pill
+to `HEADER_CATEGORIES`, hide `BusinessTeaser` below md), all delivered, verified live at 390x844.
+The dispatch's OWN hard constraints explicitly forbade touching the Walk-in band or the
+Inspiration section ("Do NOT touch the Walk-in band, the Inspiration section, Beliebte Looks, or
+the continue card slot") , which is precisely I6 (Walk-in band placement inside Barber) and I8
+(Inspo chrome). I7 (continue card) was independently named in the same dispatch as "unbuilt,
+separately queued", i.e. the orchestrator already knows it is open and chose not to hand it to
+this dispatch. So all three remaining unticked boxes (I6, I7, I8) sit outside this turn's literal
+order, same as the prior two rounds. Not silently building them; left open for the orchestrator to
+route as their own dispatches.

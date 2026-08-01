@@ -73,7 +73,15 @@ export default function MobileCategoriesRow({
     // cadence. Own inner bottom pad is already py-2 (8), same as Section's, so
     // only the outer margin needed to move: 8 (own py-2) + 16 (mb-4) + 8 (next
     // Section's py-2 top) = 32 CSS visible gap on mobile.
-    <section aria-label="Kategorien" className="relative z-[1] mb-4 md:hidden">
+    // 2026-08-01 (home-v3 mockup reconciliation, public/_mockups/home-v3/search-a.html): the
+    // mockup's home state has no tile grid at all, Walk-in now has its own dedicated band further
+    // down the same page (WalkInBand.tsx, unaffected by this change) so it is not stranded. Karte
+    // stays reachable via Nearby.tsx's own "Karte öffnen" map teaser + SearchTemplate's map FAB;
+    // it loses this one direct entry point, see page.tsx's I1 comment for the full note. Was
+    // `md:hidden` (mobile-only, already invisible on desktop); now `hidden` outright so desktop
+    // stays exactly as it was (never rendered there) and mobile matches it. Component kept intact,
+    // not deleted, for revert.
+    <section aria-label="Kategorien" className="relative z-[1] mb-4 hidden">
       <div className="mx-auto max-w-[1280px] px-6 py-2">
         <h2 className="mb-3 font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.25] tracking-[-0.01em] text-s-ink">
           Für dich

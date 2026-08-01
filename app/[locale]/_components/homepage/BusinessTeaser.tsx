@@ -30,7 +30,10 @@ export default function BusinessTeaser() {
   return (
     <section
       aria-label="Solen für Salons"
-      className="mx-auto max-w-[1280px] px-4 py-12 md:px-8 md:py-20"
+      // 2026-08-01 (home-v3 mockup, public/_mockups/home-v3/search-a.html): the mockup's home
+      // state has no "Solen für dein Geschäft" section. Hidden below md; desktop keeps it
+      // (component not deleted, only the mobile render).
+      className="mx-auto hidden max-w-[1280px] px-4 py-12 md:block md:px-8 md:py-20"
     >
       <div className="grid grid-cols-1 gap-7 md:grid-cols-2 md:items-center md:gap-12 lg:gap-16">
         {/* V3-D166 (2026-05-26): real illustration removed per user —

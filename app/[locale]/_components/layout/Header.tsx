@@ -114,6 +114,9 @@ const HEADER_CATEGORIES: { slug: string; route: string; label: string; iconSrc?:
   { slug: "barbershop", route: "barbershop", label: "Barber", iconSrc: "/icons/categories/clippers.png" },
   { slug: "nails", route: "nails", label: "Nails", iconSrc: "/icons/categories/nails.png" },
   { slug: "spa", route: "spa", label: "Spa", iconSrc: "/icons/categories/spa.png" },
+  // 2026-08-01 (home-v3 mockup, search-a.html:915): last pill, same icon-treatment (31x31 PNG,
+  // no restyle). Mockup reuses the existing map.png rather than a new asset; matched literally.
+  { slug: "inspo", route: "inspo", label: "Inspo", iconSrc: "/icons/categories/map.png" },
 ];
 
 /**
