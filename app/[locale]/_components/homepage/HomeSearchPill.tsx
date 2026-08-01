@@ -135,9 +135,12 @@ export default function HomeSearchPill({
             type="button"
             aria-label={tSD("openMenu")}
             onClick={() => window.dispatchEvent(new CustomEvent("solen:open-menu"))}
+            // mockup-ok , not a new design choice. Owner 2026-08-01, repeating an earlier call:
+            // "the hamburger menu why is it like circled? I told you that you don't want it
+            // circled in the search bar, just make it bare". Ring removed, 44px hit area kept.
             className={cn(
-              "grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border",
-              "text-s-ink transition-all duration-300 ease-glide hover:bg-s-bg-sunken",
+              "grid h-11 w-11 shrink-0 place-items-center", // mockup-ok
+              "text-s-ink transition-all duration-300 ease-glide hover:text-s-ink-2", // mockup-ok
             )}
           >
             <Menu size={16} strokeWidth={2} aria-hidden />
