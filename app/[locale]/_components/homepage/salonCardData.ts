@@ -165,6 +165,30 @@ export async function getNearbyTeaserCount(): Promise<number | null> {
 }
 
 /**
+ * I4 (home rails reconciliation, RecentlyViewedTiles.tsx's city cell): count of active salons in
+ * Basel, the only active city right now (_plans/HOME_V3_CATEGORY_MAP.md ask 1/1b: the Städte row
+ * was removed precisely because Basel is the sole real city and a list of empty cities would be
+ * dishonest). Same postal-code-prefix heuristic postalToCity() (../salon/_shared.ts) already uses
+ * site-wide to bridge a salon to a city label ("4" -> Basel), not a new city-matching mechanism.
+ * head/count query, no rows fetched, same shape as getNearbyTeaserCount above. Null on error, so
+ * the caller can render a count-free label instead of a fabricated number.
+ */
+export async function getBaselShopCount(): Promise<number | null> {
+  const supabase = await createServerSupabaseClient();
+  const { count, error } = await supabase
+    .from("salons")
+    .select("id", { count: "exact", head: true })
+    .eq("is_active", true)
+    .like("postal_code", "4%");
+
+  if (error) {
+    console.error("[salonCardData] getBaselShopCount fetch failed:", error);
+    return null;
+  }
+  return count ?? null;
+}
+
+/**
  * I3 (home rails reconciliation): real salon ids with a live `status='available'`
  * booking slot inside the next 7 days, ordered by rating desc, for the homepage
  * "Available this week" rail. Same 7-day bound + membership test as

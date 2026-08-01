@@ -37,7 +37,15 @@ import {
   getNearbyTeaserCount,
   getAvailableThisWeekSalonIds,
   getTopSalonIdsByCategory,
+  getBaselShopCount,
 } from "./_components/homepage/salonCardData";
+// I4/I5 (2026-08-01, home rails reconciliation with public/_mockups/home-v3/search-a.html): the
+// mockup's 4-across "Recently viewed" tile grid (real localStorage view history, city cell) and
+// "Popular looks" photo tile grid (real seeded discovery items with a real price). Both compose
+// existing Section/SectionFrame/SectionTitle primitives; neither touches the existing
+// RecentlyViewed.tsx rail or Entdecken.tsx (this task's own no-touch list).
+import RecentlyViewedTiles from "./_components/homepage/RecentlyViewedTiles";
+import PopularLooks from "./_components/homepage/PopularLooks";
 // Salon of the Month (2026-07-13): real editorial pick from the admin picker
 // (dashboard/salon-of-month-admin -> salon_of_month_winners table), gated on
 // the salon_of_month feature_flags toggle. Server component, renders null
@@ -183,11 +191,14 @@ export default async function Page({
   // availableThisWeekIds (AvailableThisWeek's real 7-day slot rail) and
   // topByCategory (TopCategoryRails' four per-category rails) join the same
   // parallel batch, same reasoning.
-  const [topSalonIds, nearbyCount, availableThisWeekIds, topByCategory] = await Promise.all([
+  // I4 (2026-08-01): baselShopCount joins the same parallel batch, same reasoning as the I3 ids
+  // above , RecentlyViewedTiles' city cell needs a real active-salon count, never a fabricated one.
+  const [topSalonIds, nearbyCount, availableThisWeekIds, topByCategory, baselShopCount] = await Promise.all([
     getTopSalonIds(4),
     getNearbyTeaserCount(),
     getAvailableThisWeekSalonIds(10),
     getTopSalonIdsByCategory(10),
+    getBaselShopCount(),
   ]);
   // One combined batch fetch (2 bulk Supabase queries inside
   // getSalonCardDataMap, not one per salon) for every real salon id the
@@ -218,12 +229,19 @@ export default async function Page({
         <MobileCategoriesRow />
         <SalonOfMonth locale={locale} />
         <ForYouSalonRows salonData={salonCardData} />
+        {/* I4: real localStorage view-history tile row, search-a.html's own position (directly
+            above the "Top on Solen" rail RecentlyViewed.tsx's fallback title renders below). Builds
+            nothing when there is no real history , never a fabricated substitute. */}
+        <RecentlyViewedTiles baselShopCount={baselShopCount} />
         <RecentlyViewed salonData={salonCardData} topSalonIds={topSalonIds} />
         <Nearby salonData={salonCardData} nearbyCount={nearbyCount} />
         {/* I3 (2026-08-01, home rails reconciliation with search-a.html): real 7-day slot
             availability, then the four per-category Top rails, both self-hiding on thin data. */}
         <AvailableThisWeek salonData={salonCardData} salonIds={availableThisWeekIds} />
         <TopCategoryRails salonData={salonCardData} idsByCategory={topByCategory} />
+        {/* I5: real seeded discovery photo tiles with a real starting price, search-a.html's own
+            position (after the rails, before Walk-in). */}
+        <PopularLooks />
         <WalkInBand />
         {/* FeaturedStylists pulled (V3-D436) — its cards linked to a
             non-existent /stylist/[slug] route and its demo data has no salon

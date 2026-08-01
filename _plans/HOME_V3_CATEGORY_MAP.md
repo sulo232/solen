@@ -141,8 +141,43 @@ Your purpose is just UI changes. Nothing else. And integrate/wire everything as 
       (`_design-system/COMPONENT_REGISTRY.md`, `components/AvailableThisWeek.md`,
       `components/TopCategoryRails.md`). Commit pending (not committed by the coder sub-agent per
       this dispatch's "do not commit" instruction; orchestrator to verify + commit).
-- [ ] I4. Recently viewed row.
-- [ ] I5. Browse-by-looks 4-across picture row.
+- [x] **I4. Recently viewed row.** verified: real localStorage view history only, no fabrication.
+      Found + fixed a real silent no-op along the way: `trackSalonView`
+      (`components-legacy/RecentlyViewed.tsx`, the only live write site, called from
+      `SalonDetailV3.tsx` on every `/salon/[slug]` mount) wrote to `"solen_recently_viewed"`
+      (underscore) with `{categories[], cover_photo_url}`, while BOTH real readers
+      (`RecentlyViewed.tsx`, `useRecentlyViewed.ts`) read `"solen.recently-viewed"` (dot+hyphen)
+      keyed off `{category, photoUrl}` , real view history was silently invisible to every reader,
+      always, so the homepage "Zuletzt angesehen" branch could never fire before this fix. Fixed
+      the key + added the two correctly-shaped fields (via `safeCategory`). New component
+      `RecentlyViewedTiles.tsx`: a 4-across square-tile grid (photo/name/category meta, no
+      rating/price/border, distinct anatomy from the existing SalonCard rail per the mockup), reads
+      the fixed storage directly, renders NOTHING with zero real history (no curated substitute).
+      Trailing city cell = real `getBaselShopCount()` (`salonCardData.ts`, new). Playwright-verified
+      live at 390x844 (`card-albums-anne-mood.trycloudflare.com`): visited a real salon PDP (writes
+      the real entry), then `/de` rendered "Zuletzt angesehen" with the real Muse Beauty Studio tile
+      (real photo, "Coiffeur" label) + a "Basel / 20 Salons" city cell (20 matches the live
+      `/api/salons?city=basel` total independently). `npx tsc --noEmit`: 0 errors project-wide.
+      Registry + doc written same turn (`COMPONENT_REGISTRY.md`, `components/RecentlyViewedTiles.md`).
+      Files: `components-legacy/RecentlyViewed.tsx` (bugfix), `homepage/salonCardData.ts` (+
+      `getBaselShopCount`), `homepage/RecentlyViewedTiles.tsx` (new), `page.tsx` (wired directly
+      before the existing `RecentlyViewed` rail). Not committed per this dispatch's own instruction.
+- [x] **I5. Browse-by-looks 4-across picture row.** verified: real seeded discovery photographs,
+      real titles, real starting prices, NOT service icons (owner's explicit override for this
+      dispatch of the mockup's own earlier icon direction). New hook `usePopularLooks.ts` (sibling of
+      `useInspoLooks.ts`/`useForYouLooks.ts`, same `/api/discovery/feed?category=hair` source
+      `Entdecken.tsx` already pulls from , task instruction "same place... already pulls from"), the
+      one addition being `price_min`; a look with no resolvable price or image is dropped, never
+      shown with an invented/omitted price. New component `PopularLooks.tsx`: 4-across grid, Skeleton
+      loading state (design contract's `states` row), self-hides below 2 resolved looks. Playwright-
+      verified live at 390x844: "Beliebte Looks" renders 8 real tiles across 2 rows ("Sleek Blunt Bob
+      with..." ab CHF 300, "Textured Curly Top..." ab CHF 55, etc., matching the live
+      `/api/discovery/feed` payload byte-for-byte), all 16 on-page discovery `<img>`s (8 here + 8 in
+      Entdecken) confirmed `naturalWidth` > 0 via the `/api/discovery/thumb/{id}` proxy (curl-verified
+      200/image/jpeg). `npx tsc --noEmit`: 0 errors project-wide. Registry + doc written same turn
+      (`COMPONENT_REGISTRY.md`, `components/PopularLooks.md`). Files: `homepage/usePopularLooks.ts`
+      (new), `homepage/PopularLooks.tsx` (new), `page.tsx` (wired directly after `TopCategoryRails`,
+      before `WalkInBand`). Not committed per this dispatch's own instruction.
 - [ ] I6. Walk-in band placement inside the Barber category page.
 - [ ] I7. Continue card + its six states.
 - [ ] I8. Inspo chrome, UI ONLY. Do not touch DiscoverPageContent's logic, ranking or data.

@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { motion } from "motion/react";
 import ImageFallback from "@/components-legacy/ui/ImageFallback";
 import { RatingStars } from "@/app/[locale]/_components/primitives";
+import { safeCategory } from "@/app/[locale]/_components/salon/_shared";
 
 interface RecentSalon {
   id: string;
@@ -16,9 +17,24 @@ interface RecentSalon {
   average_rating: number;
   categories: string[];
   viewedAt: number;
+  /** Single-category bridge (safeCategory) + photo alias, so this entry validates against
+   *  the REAL homepage readers (RecentlyViewed.tsx / useRecentlyViewed.ts), which both key
+   *  off `category` (singular) + `photoUrl`, not this file's own `categories[]` / `cover_photo_url`.
+   *  Bug found + fixed 2026-08-01 (I4 dispatch): this file's STORAGE_KEY also didn't match the
+   *  key either reader uses, so a real visit's write was invisible to both, silently, every time.
+   *  See the STORAGE_KEY fix directly below for the other half of the same bug. */
+  category: string;
+  photoUrl: string | null;
 }
 
-const STORAGE_KEY = "solen_recently_viewed";
+// BUG FIX 2026-08-01 (I4 dispatch): was "solen_recently_viewed" (underscore), while BOTH real
+// readers (app/[locale]/_components/homepage/RecentlyViewed.tsx and useRecentlyViewed.ts) read
+// "solen.recently-viewed" (dot + hyphen). trackSalonView is the ONLY live call site touching this
+// key (getRecentlyViewed + the default export below have zero importers, confirmed via
+// `grep -rn "from \"@/components-legacy/RecentlyViewed\""`), so every real salon-page visit was
+// writing to a key nothing ever read, a silent no-op: the homepage "Zuletzt angesehen" branch
+// could never fire, it always fell back to "Top auf Solen" regardless of real view history.
+const STORAGE_KEY = "solen.recently-viewed";
 const MAX_ITEMS = 5;
 
 /** Read recently viewed salons from localStorage — safe to call outside useEffect only with SSR guard */
@@ -52,6 +68,9 @@ export function trackSalonView(salon: {
       average_rating: salon.average_rating ?? 0,
       categories: salon.categories ?? [],
       viewedAt: Date.now(),
+      // The two fields the real readers actually key off (see the interface comment above).
+      category: safeCategory(salon.categories),
+      photoUrl: salon.cover_photo_url ?? null,
     };
     const updated = [entry, ...filtered].slice(0, MAX_ITEMS);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
