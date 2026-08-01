@@ -104,7 +104,7 @@ Your purpose is just UI changes. Nothing else. And integrate/wire everything as 
       search UI is the structurally different 3-segment Hero `SearchBar.tsx` (dynamic-island),
       which the mockup does not model. Nothing invented there; flagged for the next decision.
       Commit pending (not yet committed by the coder sub-agent, orchestrator to verify + commit).
-- [x] **OWNER DECISIONS 2026-08-01, both unblocked:** (a) "remove cz we made it carousel right did
+- [x] **OWNER DECISIONS 2026-08-01, both unblocked.** verified: filter row computes to "mx-auto hidden w-full max-w-[680px] px-4 md:block" and renders 0x0 on /de/coiffeur at 390x844; search pill renders one text line with date=2026-08-02 in the URL. Commits b4bec32a6 and 493ddfd17. (a) "remove cz we made it carousel right did
       u forget" , the filter pills come OFF the category pages, because those pages are now
       carousels/home-like and a filter row belongs to a flat result list, not a set of rails.
       (b) "sarch bar stays deleted" , the second line stays gone even though it carried the live

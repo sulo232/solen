@@ -1448,10 +1448,15 @@ export default function SearchTemplate({
         <CategoryBrowseRails salons={salons} locale={locale} category={activeCategory} />
       )}
 
-      {/* Result count row — count LEFT, sort dropdown RIGHT (Airbnb/Fresha
+      {/* Result count row, count LEFT, sort dropdown RIGHT (Airbnb/Fresha
           pattern). V3-D350: sort moved here from the (removed) chip strip so the
-          Uber icon row stays clean; sorting still fully works via the dropdown. */}
-      <div className="mx-auto flex w-full max-w-[1280px] items-center justify-between gap-3 px-4 pt-5 md:px-6">
+          Uber icon row stays clean; sorting still fully works via the dropdown.
+          Owner (2026-08-01, category-rails ask): "we don't need this how many
+          stores there is and also the sort button", hidden on MOBILE only,
+          same hidden/md: pattern as the filter row above; desktop unchanged.
+          Sort state/logic is untouched, the dropdown just isn't rendered on
+          mobile (no bespoke mobile sort entry point was asked for). */}
+      <div className="mx-auto hidden w-full max-w-[1280px] items-center justify-between gap-3 px-4 pt-5 md:flex md:px-6">
         {loading ? (
           <div
             className="h-4 w-44 rounded bg-s-bg-sunken skeleton-shimmer"

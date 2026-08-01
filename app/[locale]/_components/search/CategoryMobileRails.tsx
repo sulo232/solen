@@ -22,6 +22,13 @@ import { ArrowRight } from "lucide-react";
 import { ScrollRow } from "../homepage/SectionHeader";
 import { SalonCard, type SalonCardProps } from "../homepage/SalonCard";
 import { TITLES, pick } from "./CategoryBrowseRails";
+// postalToCity reuse (rule 12, don't re-declare): the same postal-code -> city lookup
+// salonCardData.ts already uses to feed the homepage Nearby rail's SalonCard `city` prop
+// (a working surface). A rail's `cityName` prop is one page-level value (the active city
+// filter, or "Schweizweit" on a countrywide category route); it is wrong per-card the
+// moment two salons in the same rail sit in different cities, so each card derives its
+// own city from ITS postal_code instead of inheriting the page's.
+import { postalToCity } from "../salon/_shared";
 
 /**
  * CategoryMobileRails , owner 2026-08-01 ("remove cz we made it carousel right did u forget"):
@@ -116,7 +123,12 @@ function Rail({
             variant="availability"
             priceFromCHF={s.min_price ?? undefined}
             postalCode={s.postal_code ?? undefined}
-            city={cityName}
+            // Per-salon city from its own postal_code (postalToCity), not the page-level
+            // cityName ("4051 Schweizweit" bug: every card showed the countrywide fallback
+            // instead of its own city). cityName kept as the fallback for the rare salon
+            // with no postal_code, so that case still shows an honest, locale-correct label
+            // instead of postalToCity's own hardcoded-German "der Schweiz" default.
+            city={s.postal_code ? postalToCity(s.postal_code) : cityName}
             isSaved={favoriteIds.has(s.id)}
           />
         ))}
