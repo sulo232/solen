@@ -4,6 +4,52 @@ The newest entry is at the top. Every session that ships real work adds one entr
 
 ---
 
+## 2026-08-01 , weekly estate self-audit run (workstream #17 LAW, standing loop)
+
+**Auto-triggered.** The eight doctrine steps: system health, skip ledger, injection diet, mistake
+themes, lessons-inject verify, design-suggest refresh, doc-vs-gate reconciliation, report.
+Full report: [SELF_AUDIT_2026-08-01.md](SELF_AUDIT_2026-08-01.md). Health check 37 -> 34.
+
+**The finding that matters, and it is uncomfortable:** last week's audit named "the sandbox cannot
+arm a gate" as a structural class and built `wire-pending-gates.sh` to contain it. This week
+**19 gates were sitting on disk enforcing nothing** , 17 written on 07-31, one on 08-01, 18 of them
+with green self-tests , and that containment tool **could not have caught a single one**. It carried
+a hardcoded list of 5 names, so run today it would have printed "nothing to do, all four already
+wired". Worse, it could not run under the sandbox at all: its logic lived in a bash heredoc, and the
+sandbox refuses the heredoc temp file. The tool built for the sandbox problem was unusable inside the
+sandbox, and nobody found out because it was written and shelved without being executed there.
+
+Both fixed. The logic moved to `wire-pending-gates.py` (no heredoc), and it now DISCOVERS orphans
+using the same rule the health checker uses to find them, reads each gate's hook event and matcher
+from the gate's own header, refuses to guess when the header is unreadable, and runs each gate's
+self-test before wiring it. Self-test 14/14, including two cases that must REFUSE. A live dry-run
+resolves all 19 with nothing left ambiguous. **It still needs one command from a normal shell**,
+because this session cannot write settings.json either , that is P0 in the report.
+
+Also fixed: `tunnel-health-preflight.py` was the only prompt hook with no relevance gate and no
+per-session decay , 360 bytes injected on literally every message, including "ok continue" on a
+backend task, and the same 360 again on the second message of the same session while every sibling
+hook halved or went silent. Last week's audit said the injection diet passed; for this hook that was
+wrong, and the report says so rather than quietly restating it. Now gated (fires on visual/link-shaped
+prompts, or when a preview link is plausibly live), self-test 10/10, verified live at 0 bytes on
+"ok continue" and 361 on "show me the mockup again". And the health checker's law-claim invariant had
+a blind spot: it only knew two hook directories while the project has three, so a doc claiming
+`visual-deliverable-gate.py` enforces something could never be checked. That one was under-reporting,
+which is the worse direction for a monitor.
+
+**Needs you, not a hook:** run the wiring command (19 gates); decide on the mockup gate family, which
+was skipped 58 times in 7 days and is worse for the third pass running; and answer the drift-gate
+literal gaps, which have now been measured and reported identically three weeks in a row , `s-amber`
+in particular is a law-claim breach, since LOCKFILE says in prose that the checker rejects it, the
+checker does not, and there are 26 live usages. Also worth a decision before running P0: arming the
+19 takes wired hooks from 183 to 202 against a ceiling of 150.
+
+**One thing closed with no action:** `finish-autonomously-skip.flag` was flagged last week at 40
+skips in 6 days. It is now 2 in the last 7 with no change to the gate, so the burst was tied to one
+workstream, not a mis-tuned trigger. Recorded so it does not get re-opened.
+
+---
+
 ## 2026-07-27 , weekly design-law improvement pass (workstream #41 LAW, standing loop)
 
 **Auto-triggered.** Harvested 10 dated owner decisions from the week, scanned the ~450KB law corpus for
