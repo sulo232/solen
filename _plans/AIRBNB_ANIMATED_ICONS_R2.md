@@ -988,3 +988,33 @@ loudest of the three.
       `scripts/capture/turntable-render.mjs:112` cannot catch those, because the names differ and
       the copies land after it runs. The frame-shuffling copies are out of the workflow: the no-air
       comparison renders to its own directory instead of round-tripping through `cp -R`.
+
+## Round 30: "still looks wierd", and this time I looked at the pixels instead of the plan
+
+No cause named, so I built contact sheets of both clips and zoomed the air at 7x. The chair was
+fine. The dryer's air was wrong on three counts, all measurable, all found by isolating the air
+against a fresh no-air render of the same 210 frames rather than eyeballing the composite.
+
+| | before | after | why it read as weird |
+|---|---|---|---|
+| gap, air to nozzle | 6 / 10 / 18 px (min / median / max) | **1 / 1 / 1 px** | it never touched the dryer, on 98 of 98 frames that drew it |
+| detached frames | **98 of 98** | **0 of 98** | he asked for this by name: "i want the air coming from nozzle bro" |
+| stroke bbox | 25 x 22, aspect 1.09 | **36 x 22, aspect 1.64** | a square squiggle, not the long flowing wave he drew in red |
+| air brightness | 0.708 vs body 0.898 | **0.834** | darker than the object it leaves, so it read as metal hardware |
+| edges | aliased, hard steps | **4x supersampled** | a jagged 2D stroke beside a smooth 3D render is two media in one icon |
+
+- [x] Detachment fixed at the cause, `verified:` `scripts/capture/draw-wind.py:207-213`. Two bugs,
+      not one: `near = W*0.045` started every stroke 8px clear of the silhouette, and `dist` grew
+      with the stroke's life so the START point drifted outward as it aged. Both now 0, the tail
+      sits on the mouth and only the head travels, via `length`. Measured after: gap 1px flat on
+      all 98 air frames, 0 detached.
+- [x] The grey-staple look fixed, `verified:` the overlay is now drawn at 4x and resampled with
+      LANCZOS in `draw-wind.py`. PIL has no antialiasing, so on a 180px canvas the sine came out as
+      a hard staircase; next to a 3D render where every edge is smooth, that is what made it read
+      as a pasted-on metal squiggle rather than air.
+- [x] Long and shallow instead of square, `verified:` reach `W*0.19 -> W*0.30` and amplitude
+      `5.0 -> 4.2` in the same emission block. Aspect measured 1.09 to 1.64.
+- [x] Nothing else regressed, `verified:` whole clip, 210 frames: 0 side flips, one side
+      throughout, air present 98 frames = 1.63s of 3.50s, fades in at 7.9% of peak and out at
+      10.1%, mean frame jump 0.78 (the 360 version was 2.26), 2 stutter frames, loop closes
+      byte-identical. Encoded webm carries 210 frames at 180x162 with `alpha_mode=1`.

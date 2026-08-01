@@ -199,10 +199,22 @@ def main():
         d = side_now                                  # FOLLOW the nozzle, smoothed, not locked
         W, _ = im.size
 
-        overlay = Image.new("RGBA", im.size, (0, 0, 0, 0))
+        # SUPERSAMPLE. PIL draws lines with no antialiasing, and on a 180px canvas that turned a
+        # smooth sine into a hard-edged staircase. Beside a 3D render whose every edge is smooth,
+        # a jagged 2D stroke reads as a different medium: the grey zigzag looked like a metal
+        # staple pasted on rather than air. Drawing at 4x and resampling down antialiases it, so it
+        # reads as the rounded tube `wave()` already tries to shade it as.
+        SS = 4
+        overlay = Image.new("RGBA", (im.size[0] * SS, im.size[1] * SS), (0, 0, 0, 0))
         od = ImageDraw.Draw(overlay)
-        near = W * 0.045          # where an arc is born, just off the nozzle
-        far = W * 0.20            # where it has faded out
+        # MEASURED, not guessed: isolating the air against a no-air render of the same 210 frames
+        # showed the stroke touching the body on ZERO of the 98 frames that drew it, gap 6px at the
+        # best frame and 18px at the worst. Two causes, both here. First this `near` offset started
+        # every stroke 8px clear of the silhouette. Second `dist` grew with the stroke's life, so
+        # the START point drifted outward as it aged instead of the stroke growing from a fixed
+        # mouth. He has asked for this by name: "i want the air coming from nozzle bro".
+        near = 0.0                # the tail sits ON the nozzle mouth
+        far = 0.0                 # and stays there; only the HEAD travels, via `length`
         any_drawn = False
 
         for k in range(args.arcs):
@@ -229,7 +241,7 @@ def main():
             alpha_f = smoothstep(local / 0.30) * smoothstep((1.0 - local) / 0.62) * cross[i]
             if alpha_f <= 0.002:
                 continue
-            dist = near + (far - near) * local * 0.55
+            dist = near + (far - near) * local * 0.55   # both 0 now: the tail does not drift
             row = (k - (args.arcs - 1) / 2)
             x_start = nx + d * dist
             # KEEP IT INSIDE THE FRAME. 20 of 75 frames were running the wind off the canvas edge,
@@ -240,28 +252,33 @@ def main():
             # frame 19, the exact frame the first stroke was born, because it appeared at 80% of
             # full length in one step. Starting near zero removes the pop.
             grow = 0.02 + smoothstep(local / 0.34) * 0.30 + local * 0.85
-            length = min(W * 0.19 * grow, max(0.0, room))
+            # LONG AND SHALLOW, which is what he drew in red over the mockup. Measured, the stroke
+            # was landing at a 25x23px bounding box, so aspect 1.09: a square squiggle, not a
+            # stream. The reference mark is wide and flat. Widening the reach does that, and the
+            # `room` clamp still keeps it inside the canvas.
+            length = min(W * 0.30 * grow, max(0.0, room))
             if length < 2:
                 continue
             wave(
                 od,
-                x_start,
-                ny + row * 10.5,
-                length,
-                5.0,
+                x_start * SS,
+                (ny + row * 10.5) * SS,
+                length * SS,
+                4.2 * SS,                               # shallower, so a longer stroke still flows
                 1.5,                                    # about one and a half cycles
-                args.weight,
+                max(1, round(args.weight * SS * 0.82)),  # a hair thinner once it is antialiased
                 d,
                 k * 0.7,                                # fixed per stroke: a phase that changes
                                                         # every frame is what made it look laggy
                 colour,
                 int(245 * alpha_f),
-                1.4,
+                1.4 * SS,
             )
             any_drawn = True
 
         if not any_drawn:
             continue
+        overlay = overlay.resize(im.size, Image.LANCZOS)
         im = Image.alpha_composite(im, overlay)
         im.save(path)
         drawn += 1
