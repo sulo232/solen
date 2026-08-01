@@ -504,9 +504,11 @@ function DiscoverPageContent() {
                   type="button"
                   onClick={() => router.push(`/${locale}/inspo/saved`)}
                   aria-label="Gespeichert"
-                  /* mockup-ok: h-11/w-11 + 16px glyph = HomeSearchPill's trailing circle 1:1, so the
-                     Inspo bar and the home bar are the same control, not two sizes of one idea. */
-                  className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border text-s-ink-2 transition-colors duration-150 hover:text-s-ink"
+                  /* mockup-ok: h-11/w-11 + 16px glyph = HomeSearchPill's trailing control 1:1, so the
+                     Inspo bar and the home bar are the same control, not two sizes of one idea.
+                     FIX D (2026-08-01, owner "the circle thingy is in other categories"): bare,
+                     no circle, matching the same fix at HomeSearchPill.tsx's heart button. */
+                  className="grid h-11 w-11 shrink-0 place-items-center text-s-ink-2 transition-colors duration-150 hover:text-s-ink"
                 >
                   <Heart size={16} strokeWidth={2} />
                 </button>

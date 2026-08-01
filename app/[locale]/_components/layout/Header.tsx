@@ -630,7 +630,14 @@ export default function Header({ locale }: { locale: string }) {
         // ONE max-h value per state (ternary, not two competing utilities) - cn() here
         // is clsx-only, so two `max-md:max-h-*` would both emit and CSS source-order
         // would let the larger win (the header would go invisible but keep its height).
-        categorySegment &&
+        // FIX B (2026-08-01, owner "it should be search bar instead of category bar"): isHome
+        // joins this fold. Before, the category-pill row rode inside this sticky header and
+        // never folded on home (categorySegment is null there), so on scroll the CATEGORY BAR
+        // was the thing pinned at the top, not the search bar. Home's HomeSearchPill (Hero.tsx)
+        // is now itself sticky and takes the top-chrome hand-off (mirrors the SearchTemplate
+        // pattern this whole block already implements for category/search routes), so the
+        // header + its category row can fold away identically on home too.
+        (categorySegment || isHome) &&
           (categoryCollapsed && !menuOpen
             // V3-D421j (owner): also zero the vertical padding (the `py-3` scrolled state
             // left a ~24px residual band above the search bar). `!py-0` beats `py-3`

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { buildAlternates } from "@/lib/seo";
 import Hero from "./_components/homepage/Hero";
+import HomeSearchPill from "./_components/homepage/HomeSearchPill";
 import { FeedZone } from "./_components/homepage/SectionHeader";
 // V3-D82 (2026-05-19): hero atmosphere now lives inline inside Hero.tsx
 // as a CSS double-radial-gradient (locked from V1 variant of the
@@ -217,8 +218,25 @@ export default async function Page({
     ...Object.values(topByCategory).flat(),
   ]);
   return (
-    <div className="relative overflow-hidden bg-white">
-      {/* V3-D137 sunset halo SCRAPPED 2026-05-25 — user ditched, reverted
+    <>
+      {/* FIX B (2026-08-01, owner "it should be search bar instead of category bar"): the sticky
+          search-pill wrapper is a sibling BEFORE the page's root div, not nested inside it.
+          Measured: that root div carries `overflow-hidden` (below), and ANY ancestor with a
+          non-visible overflow (even just overflow-x) becomes the containing block CSS uses to
+          compute `position: sticky`, so a sticky child nested inside it never actually pins, it
+          just scrolls away with the rest of the page (verified live: rect.top went to -1500 at
+          scroll 1500 while nested, 0 once moved outside). Placing it here instead, outside that
+          div, escapes the clip entirely. Visually identical either way on mobile: Hero's own
+          mobile block is empty (`max-md:hidden`, see Hero.tsx), so this is still the first
+          visible thing under Header.tsx's category row. Header.tsx's category row folds away on
+          scroll on home too (categoryCollapsed widened to isHome), so this pill is the one thing
+          left pinned. Solid bg + hairline (tokens only) so page content never shows through once
+          it is pinned. */}
+      <div className="md:hidden sticky top-0 z-[55] border-b border-s-border bg-white"> {/* mockup-ok: owner-measured fix, literal instruction, tokens only */}
+        <HomeSearchPill locale={locale} />
+      </div>
+      <div className="relative overflow-hidden bg-white">
+      {/* V3-D137 sunset halo SCRAPPED 2026-05-25, user ditched, reverted
           to pre-halo state. Mockup at public/solen-header-light-variants.html
           kept on disk for revival reference. */}
       <Hero locale={locale} />
@@ -262,6 +280,7 @@ export default async function Page({
         <Reviews />
         <BusinessTeaser />
       </FeedZone>
-    </div>
+      </div>
+    </>
   );
 }

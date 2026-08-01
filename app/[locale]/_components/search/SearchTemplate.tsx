@@ -772,6 +772,20 @@ export default function SearchTemplate({
   // mobile that means "open the full-screen map view" (mobileView state); on
   // desktop the `mapOpen` derivation above already opens the split panel from the
   // same param. Fire once on mount so a later filter change can't re-trigger it.
+  // FIX C (2026-08-01, owner repeating "the search bar doesn't work"): arriving here from the
+  // home pill used to land on a page whose query input is still inside a CLOSED overlay, so the
+  // tap read as dead , you navigate, and nothing pops up. The home pill now appends `?compose=1`
+  // to say "this user came here to TYPE", and that opens the overlay WITH the keyboard.
+  // This does not change the in-page bar at line ~1251, which still opens without focus on
+  // purpose so an already-applied search stays readable behind the overlay.
+  const composeApplied = React.useRef(false);
+  React.useEffect(() => {
+    if (composeApplied.current) return;
+    if (searchParams.get("compose") !== "1") return;
+    composeApplied.current = true;
+    openSearchOverlay(true);
+  }, [searchParams, openSearchOverlay]);
+
   const viewMapApplied = React.useRef(false);
   React.useEffect(() => {
     if (viewMapApplied.current) return;
@@ -1323,12 +1337,11 @@ export default function SearchTemplate({
                 }
               }}
               className={cn(
-                "md:hidden grid shrink-0 place-items-center rounded-full border border-s-border",
-                // mockup-ok + owner-requested (2026-07-02): the "ring on hover" the owner sees on the map
-                // icon was hover:border-s-ink darkening the circular border to ink (iOS keeps :hover after a
-                // tap = a STUCK ink ring). Locked V3-D450 bans it -> sink the bg instead. Also drop the dead
-                // focus-ring utility (globals.css base already kills the outline; it was invisible anyway).
-                "text-s-ink transition-all duration-300 ease-glide hover:bg-s-bg-sunken",
+                // FIX D (2026-08-01, owner "the circle thingy is in other categories", repeating
+                // the same call already applied to HomeSearchPill.tsx's trailing hamburger): bare,
+                // no circle, no border. Hover moves from a bg fill to a text-tone change.
+                "md:hidden grid shrink-0 place-items-center", // mockup-ok
+                "text-s-ink transition-all duration-300 ease-glide hover:text-s-ink-2", // mockup-ok
                 "h-11 w-11", // mockup-ok: S3 fix, 36px -> 44px floor (approved fixes-refined); was V3-D421d "map icon stays full size when pinned"
               )}
             >

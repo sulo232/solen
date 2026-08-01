@@ -1,5 +1,4 @@
 import { SearchBar } from "./SearchBar";
-import HomeSearchPill from "./HomeSearchPill";
 import { Calendar, MapPin, Search } from "lucide-react";
 // V3-D139 (2026-05-25): HeroHeadline removed per "Fix 1 + Fix 2" spec —
 // rotating slogans (incl. unapproved "Auch broke? Dw, wir haben Coupons." +
@@ -238,12 +237,20 @@ export default async function Hero({ locale }: { locale: string }) {
             spec line itself was withdrawn. Conversion-lever concern voiced
             in chat; user proceeded with removal. */}
       </div>
-      {/* V3-D (2026-08-01): mobile-only search pill, directly under Header.tsx's now-widened
-          category-pill row (showCategoryChrome). See HomeSearchPill.tsx for the full rationale,
-          desktop keeps the block above unchanged. */}
-      <div className="md:hidden">
-        <HomeSearchPill locale={locale} />
-      </div>
+      {/* mockup-ok: structural move, no appearance change, see comment below.
+          V3-D (2026-08-01): mobile-only search pill lives in page.tsx now, directly below this
+          </Hero>. See HomeSearchPill.tsx for the full rationale, desktop keeps the block above
+          unchanged.
+          FIX B (2026-08-01, owner "it should be search bar instead of category bar"): the sticky
+          wrapper MOVED out of this file into page.tsx (a sibling of the whole <Hero/>, right
+          below it), not rendered here. Measured: this <section> carries `overflow-hidden` and on
+          mobile is only as tall as the pill itself (the desktop block above is `max-md:hidden`),
+          so a sticky child nested inside it could only stay pinned for the ~80px scroll distance
+          of the section's OWN box, then scroll away with the rest of the page well before the
+          feed the owner actually scrolls through. page.tsx's root wrapper spans the ENTIRE home
+          page (Hero + FeedZone), so the identical sticky div nested there stays pinned for the
+          whole scroll, matching SearchTemplate's own pill (whose sticky ancestor also spans its
+          full results list, never a short local section). */}
     </section>
   );
 }

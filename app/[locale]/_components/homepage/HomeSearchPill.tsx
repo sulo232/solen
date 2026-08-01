@@ -41,12 +41,12 @@ import { cn } from "@/lib/utils";
  *      keyboard-focus cue in `globals.css` (D1-focus-visible, a 3px ink inset-left-edge
  *      box-shadow, not an outline ring), so an explicit class here would be the double-cue
  *      V3-D449 already bans, and `no-focus-ring-gate.py` blocks the outline-ring form anyway.
- * Not sticky (unlike SearchTemplate's pill): the category-page pill is pinned because the
- * Header folds away underneath it once scrolled (see Header.tsx's `categoryCollapsed` fold,
- * deliberately NOT widened to home, see the comment above the category-tab row in Header.tsx).
- * Home's category-pill row stays permanently visible instead, so pinning this pill too would
- * make both fight for the same `top:0` slot. This pill scrolls away with the rest of the feed,
- * same as every other homepage section.
+ * FIX B (2026-08-01, owner "it should be search bar instead of category bar", supersedes the
+ * "not sticky" call this comment used to make): the wrapping div in Hero.tsx is now
+ * `sticky top-0 z-[55]`, matching SearchTemplate's own pill. Header.tsx's `categoryCollapsed`
+ * fold is widened to `isHome` too, so the header + its category row fold away on scroll on the
+ * home route exactly like they already did on category/search routes, and THIS pill takes the
+ * top-chrome hand-off instead of the category row staying pinned.
  *
  * Copy: `tChrome("searchPlaceholder")` is the SAME `ui.searchChrome` key SearchTemplate.tsx
  * falls back to when no category/query is set (`[activeCategory, q].filter(Boolean).join(" ")
@@ -106,7 +106,11 @@ export default function HomeSearchPill({
           </button>
         ) : (
           <Link
-            href={`/${locale}/search`}
+            // FIX C (2026-08-01): `?compose=1` tells SearchTemplate this user arrived here to
+            // TYPE, so it opens the query overlay with the keyboard instead of landing them on
+            // a page whose input is still behind a closed overlay. Owner: "the search bar
+            // doesn't work" , it navigated, then nothing popped up.
+            href={`/${locale}/search?compose=1`}
             aria-label={tChrome("editSearch")}
             className="flex min-w-0 flex-1 items-center gap-3"
           >
@@ -120,9 +124,13 @@ export default function HomeSearchPill({
           <Link
             href={`/${locale}/inspo/saved`}
             aria-label={tCommon("savedLabel")}
+            // FIX D (2026-08-01, owner repeating the hamburger call: "the circle thingy is in
+            // other categories"): the heart lives in the same search-bar trailing-slot family as
+            // the hamburger below, bare treatment, no circle. mockup-ok, matches the already-
+            // landed hamburger fix at this file's own menu button just below.
             className={cn(
-              "grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border",
-              "text-s-ink transition-all duration-300 ease-glide hover:bg-s-bg-sunken",
+              "grid h-11 w-11 shrink-0 place-items-center", // mockup-ok
+              "text-s-ink transition-all duration-300 ease-glide hover:text-s-ink-2", // mockup-ok
             )}
           >
             <Heart size={16} strokeWidth={2} aria-hidden />

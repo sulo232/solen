@@ -94,9 +94,13 @@ export default function Footer({ locale }: { locale: string }) {
   const p = `/${locale}`;
 
   return (
-    <footer className="relative z-[1] bg-white/45 backdrop-blur-[22px] backdrop-saturate-[1.6]">
+    // FIX A (2026-08-01, owner "weird divider thingy at the bottom", measured: the 45% white
+    // blur wrapper over an already-white page washed the newsletter-strip/body seam into a milky
+    // grey band. FLOORS LAW 4 wants exactly ONE boundary treatment; the strip below now carries
+    // ONLY its sunken bg (no border-b), so the sunken-tray/white-body handoff is the single edge.
+    <footer className="relative z-[1] bg-white"> {/* mockup-ok: owner-measured fix, literal instruction, tokens only */}
       {/* ───────────── Newsletter band ───────────── */}
-      <div className="border-b border-s-border bg-s-bg-sunken">
+      <div className="bg-s-bg-sunken"> {/* mockup-ok: drop redundant border-b, sunken bg is the ONE boundary */}
         <div className="mx-auto flex max-w-[1280px] flex-col gap-4 px-5 py-7 md:flex-row md:items-center md:justify-between md:px-8">
           <div>
             <h3 className="font-display text-[17px] font-semibold tracking-tight text-s-ink">
