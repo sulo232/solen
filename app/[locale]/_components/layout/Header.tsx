@@ -104,7 +104,12 @@ type CategorySearchSegment = (typeof CATEGORY_SEARCH_SEGMENTS)[number];
 // slot (between the logo and the hamburger) at the top of category routes - per
 // repeated user request ("the red box"). Mirrors SearchTemplate's CATEGORY_PILLS
 // (coiffeur / barbershop / nails / spa; icons under /public/icons/categories).
-const HEADER_CATEGORIES: { slug: string; route: string; label: string; iconSrc: string }[] = [
+// "home" entry, first and pinned (mockup public/_mockups/home-v3/search-a.html:902-906,
+// owner: "we need to have a home or something all the way on the left, so there is a
+// home page, so they can actually go to the home page instead of being stuck in
+// whatever category"). No PNG exists for it, it renders the real Lucide house glyph.
+const HEADER_CATEGORIES: { slug: string; route: string; label: string; iconSrc?: string; home?: boolean }[] = [
+  { slug: "home", route: "", label: "All", home: true },
   { slug: "coiffeur", route: "coiffeur", label: "Coiffeur", iconSrc: "/icons/categories/scissors.png" },
   { slug: "barbershop", route: "barbershop", label: "Barber", iconSrc: "/icons/categories/clippers.png" },
   { slug: "nails", route: "nails", label: "Nails", iconSrc: "/icons/categories/nails.png" },
@@ -889,18 +894,18 @@ export default function Header({ locale }: { locale: string }) {
               maskImage: "linear-gradient(90deg, #000 90%, transparent)",
             }}
           >
-            {[...HEADER_CATEGORIES]
-              .sort(
-                (a, b) =>
-                  (a.slug === categorySegment ? 0 : 1) -
-                  (b.slug === categorySegment ? 0 : 1),
-              )
+            {HEADER_CATEGORIES
+              // No .sort() to the front here (was here, removed): an entity that appears on
+              // more than one screen must render the same way on each, so a row that
+              // reshuffles the active pill to the front puts the same pill in a different
+              // place every time, which is the cross-screen inconsistency FLOORS LAW 8 exists
+              // to stop. Literal array order, always.
               .map((c) => {
-                const isActive = c.slug === categorySegment;
+                const isActive = c.home ? isHome : c.slug === categorySegment;
                 return (
                   <Link
                     key={c.slug}
-                    href={`/${locale}/${c.route}`}
+                    href={c.home ? `/${locale}` : `/${locale}/${c.route}`}
                     role="tab"
                     aria-selected={isActive}
                     onPointerDown={() => handleCategoryPress(c.slug)}
@@ -962,13 +967,26 @@ export default function Header({ locale }: { locale: string }) {
                           "rgb(255,255,255) 0 1px 0.5px 0, rgba(0,0,0,0.15) 0 -0.5px 1px 0, rgba(0,0,0,0.05) 0 -1.2px 0.5px 1px, rgba(0,0,0,0.05) 0 8px 16px 0, rgb(255,255,255) -0.2px -1px 1px 0 inset, rgba(0,0,0,0.20) 0.5px 0.7px 2.5px 0 inset, rgba(0,0,0,0.05) -1px -3px 8px 0 inset, rgba(0,0,0,0.10) 0.5px 2px 4px 0 inset, rgba(0,0,0,0.10) 1px 6px 6px 2px inset",
                       }}
                     />
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={c.iconSrc}
-                      alt=""
-                      className="h-[31px] w-[31px] shrink-0 object-contain"
-                      aria-hidden
-                    />
+                    {c.home ? (
+                      // Lucide house glyph, not a PNG (mockup search-a.html:906,944-949).
+                      // lucide-react's `Home` export IS house.js under the hood, same glyph
+                      // the mockup inlines. Boxed to 31x31, the same footprint as the PNG
+                      // category icons beside it, so the row's icons stay one size.
+                      <span
+                        aria-hidden
+                        className="grid h-[31px] w-[31px] shrink-0 place-items-center"
+                      >
+                        <Home size={24} strokeWidth={strokeForSize(24)} />
+                      </span>
+                    ) : (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={c.iconSrc}
+                        alt=""
+                        className="h-[31px] w-[31px] shrink-0 object-contain"
+                        aria-hidden
+                      />
+                    )}
                     {c.label}
                   </Link>
                 );
