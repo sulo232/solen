@@ -513,6 +513,18 @@ export default function Header({ locale }: { locale: string }) {
     );
   }, [menuOpen]);
 
+  // V3-D (2026-08-01): the search pill's trailing button (SearchTemplate.tsx) now opens
+  // this same MobileMenu instead of the map, since the top-row hamburger that used to own
+  // that job is hidden on mobile category/search routes (see the max-md:hidden row above).
+  // SearchTemplate has no access to this component's local `menuOpen` state, so it fires a
+  // window event the same way `solen:menu-state` is already broadcast OUT of this file, just
+  // in the opposite direction.
+  React.useEffect(() => {
+    const onOpenMenu = () => setMenuOpen(true);
+    window.addEventListener("solen:open-menu", onOpenMenu);
+    return () => window.removeEventListener("solen:open-menu", onOpenMenu);
+  }, []);
+
   const isDark = tone === "dark";
 
   // V3-D378 (2026-05-30): header auth-awareness. Signed-in users see an account
@@ -592,7 +604,22 @@ export default function Header({ locale }: { locale: string }) {
           !menuOpen && (scrolled || isDark) ? "blur(14px) saturate(1.4)" : undefined,
       }}
     >
-      <div className="mx-auto flex max-w-[1280px] items-center gap-2.5 px-4 md:gap-6 md:px-8">
+      <div
+        className={cn(
+          "mx-auto flex max-w-[1280px] items-center gap-2.5 px-4 md:gap-6 md:px-8",
+          // Owner 2026-08-01 ("we removed the home button and the hamburger menu from the top
+          // and we put the hamburger where the map view is, did you forget bro, look in the
+          // mockup"): on a category/search route this row sits directly above the category-pill
+          // row below, and the approved chrome (public/_mockups/home-v3/search-a.html .sa-root)
+          // has NO utility row there at all, the hamburger moved into the search pill's trailing
+          // slot instead (SearchTemplate.tsx). Hidden on mobile only (`max-md:hidden`), same
+          // hidden/md: pattern used for the filter row + count row in SearchTemplate.tsx; markup
+          // and every handler stay intact, desktop (md+) is untouched. Scoped to categorySegment,
+          // not global, non-category mobile routes (home, deep pages) keep this row, it is their
+          // only nav chrome and the mockup does not cover them.
+          categorySegment && "max-md:hidden",
+        )}
+      >
         {/* Logo, V3-D171 (2026-05-26): fades out when menu opens so the
             mobile menu sheet has a clean top edge. opacity-0 +
             pointer-events-none keeps the flex layout intact (hamburger
