@@ -123,7 +123,9 @@ def main():
     ap.add_argument("--color", default="154,160,166")
     ap.add_argument("--arcs", type=int, default=3)       # three strokes, as he drew
     ap.add_argument("--weight", type=int, default=5)
-    ap.add_argument("--life", type=float, default=0.42)  # how long one arc lives, as clip fraction
+    # how long one arc lives, as a fraction of the moving window. Shorter than it was, so that
+    # `arcs` of them spaced across the window reach its end instead of stopping three quarters in.
+    ap.add_argument("--life", type=float, default=0.38)
     args = ap.parse_args()
 
     colour = tuple(int(v) for v in args.color.split(","))
@@ -218,15 +220,25 @@ def main():
             # shorter span and forced to die in a couple of frames. Measured: with the old
             # birth-dependent span, all three ended within f141 to f142 and the air's area fell
             # 434 to 232 to 94 to 0 in four frames, which is the cut he was seeing.
-            LIFE = 0.55
-            birth = k * 0.14
-            if birth + LIFE > 0.99:
+            # HOW IT LEAVES, rebuilt 2026-08-01. Owner: "when it fumes out is good but when it
+            # goes away is ass". Measured on the whole clip with the air isolated against a no-air
+            # render, and he is right twice over. First the tail: the last stroke died at frame 127
+            # of 210, leaving 82 frames, 1.37s of a 3.5s clip, with the dryer running and nothing
+            # coming out. Second the manner of dying: the final twelve air frames measured
+            # 20 18 17 15 14 12 11 10 9 5 5 4 percent of peak, a long limp drift down to almost
+            # nothing before it stopped. It evaporated instead of finishing.
+            # So: shorter lives, more of them, spaced to reach the end of the moving window, and a
+            # firmer out-ramp. The IN-ramp is deliberately unchanged in absolute time (0.43 of a
+            # 0.38 life is the same 0.16 of the window that 0.30 of a 0.55 life was), because he
+            # said the way it comes out is the part that works.
+            LIFE = args.life
+            birth = k * ((1.0 - LIFE) / max(1, args.arcs - 1))
+            if birth + LIFE > 1.001:
                 continue
             local = (p - birth) / LIFE
             if local <= 0 or local >= 1:
                 continue
-            # morph in, morph out, both slow enough that no single frame carries a visible step
-            alpha_f = smoothstep(local / 0.30) * smoothstep((1.0 - local) / 0.62) * cross[i]
+            alpha_f = smoothstep(local / 0.43) * smoothstep((1.0 - local) / 0.55) * cross[i]
             if alpha_f <= 0.002:
                 continue
             dist = near + (far - near) * local * 0.55
