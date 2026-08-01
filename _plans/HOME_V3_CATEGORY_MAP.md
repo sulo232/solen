@@ -322,5 +322,17 @@ de 372, en 382, fr 374, it 375 = **1503 strings**. Keys are NOT renamed (a key r
       so "Trouvez les meilleurs stores" reads as "find the best blinds". Executed his literal order
       (fr uses "store") and flagged it in the closing report. One word from him reverts fr to
       "salon" or switches it to "boutique".
-- [ ] R3. Non-JSON surfaces: any "Salon" baked into a .tsx literal rather than a translation key.
-      Not yet counted. Run after R1 lands so the two sweeps do not collide on the same files.
+- [x] R3. Non-JSON surfaces MEASURED. Roots scanned, named in full: `app/`, `components/`,
+      `components-legacy/` (the only three .tsx roots; `ls -d` confirms no fourth). After stripping
+      import paths, identifier strings and `SalonCard`-style component names: **600 hardcoded
+      user-facing literals** carrying the noun, i.e. copy that never went through next-intl at all.
+      Concentration: TermsContent.tsx 81, walk-in-pay 48, dashboard/settings 14, dev/map-motion 13,
+      dev/pdp 12+10, RefundCaseView 11, SalonImageGallery 11, page.tsx 10, business 10.
+      (The first grep here returned a false 0 because `--include=*.tsx` was unquoted and zsh tried
+      to glob it , the exact bug already recorded in the Ask-11 section of this file. Quoted, it
+      returns 752 raw / 600 after filtering.)
+- [ ] R4. **CARVE-OUT, do not blind-rename: `TermsContent.tsx` (81 hits) is the Terms of Service.**
+      "Salon" is a DEFINED TERM in a contract the user accepted; swapping the defined party name
+      throughout is a legal edit, not a copy sweep, and the precedence chain puts "anything the ToS
+      represents to a user as true" at tier 2, above taste. Same caution for `walk-in-pay` (48),
+      which renders cancellation/refund terms. Needs the owner's explicit yes before touching.
