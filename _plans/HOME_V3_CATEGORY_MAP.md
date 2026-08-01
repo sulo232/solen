@@ -330,8 +330,9 @@ repo (`ls messages/` = exactly those four). User-facing VALUES containing "salon
 de 372, en 382, fr 374, it 375 = **1503 strings**. Keys are NOT renamed (a key rename breaks every
 `useTranslations` call site); values only.
 
-- [ ] R1. NOT DONE , the sweep agent is still running and nothing has been written to any locale
-      file yet. `git status` shows no change under `messages/`. This box was ticked on "dispatched",
+- [ ] R1. WRITTEN TO DISK, NOT COMMITTED, so it stays open. 1431 values changed across the four
+      locale files (de 354 / en 364 / fr 356 / it 357); `npx tsc --noEmit` exit 0; keys verified
+      unrenamed. Ticks when it is COMMITTED and rendered. Full state: `_plans/HANDOFF_2026-08-01.md`. This box was ticked on "dispatched",
       which is not the same as landed; dispatching is not evidence. Re-tick only with the per-locale
       changed-count, 5 before/after examples, and a commit sha.
       DE + EN + FR + IT value sweep dispatched to a coder with per-locale word forms, German
@@ -355,7 +356,11 @@ de 372, en 382, fr 374, it 375 = **1503 strings**. Keys are NOT renamed (a key r
       (The first grep here returned a false 0 because `--include=*.tsx` was unquoted and zsh tried
       to glob it , the exact bug already recorded in the Ask-11 section of this file. Quoted, it
       returns 752 raw / 600 after filtering.)
-- [ ] R4. `TermsContent.tsx` (81) + `walk-in-pay` (48) + the remaining .tsx literals.
+- [ ] R4. PARTIAL: 131 of 600 .tsx literals done, agent stopped mid-edit on the owner's
+      "stop all running tasks". TermsContent.tsx IS complete and internally consistent (108 Store /
+      1 salon, the survivor being a code comment). `walk-in-pay` is HALF done (28 of 48 left) and is
+      the priority, a half-renamed paid-commit screen is worse than either end state.
+      `TermsContent.tsx` (81) + `walk-in-pay` (48) + the remaining .tsx literals.
       **I first parked this as a legal blocker and that was wrong, corrected here rather than left
       standing:** I argued "Salon" is a defined term in a contract users accepted, so renaming the
       party is a tier-2 statutory edit. But Solen is PRE-LAUNCH with no real customers
