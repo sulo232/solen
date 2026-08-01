@@ -157,3 +157,35 @@ here for the orchestrator to route (either dispatch I4-I8 as their own I3-shaped
 the hook should not have fired on a scoped sub-task).
 
 Each lands as its own commit, verified on the real route at 390x844 before the next starts.
+
+- [x] **I2's own CONTRADICTION, now resolved (2026-08-01, separate dispatch: "why is homepage
+      still that bro").** I2 above flagged that `/de` rendered neither `HEADER_CATEGORIES` (gated
+      off home by `categorySegment`) nor the search pill, home's search UI stayed the old 3-segment
+      Hero `SearchBar.tsx`. This dispatch's literal task WAS that gap: `Header.tsx`'s
+      `categorySegment` gates were widened to a new `showCategoryChrome = isHome || !!categorySegment`
+      (mobile-only CSS classes, desktop untouched), and a new `HomeSearchPill.tsx` composes the
+      SAME pill classes `SearchTemplate.tsx` already renders, mounted from `Hero.tsx` mobile-only
+      (`md:hidden`), with the old 3-field hero wrapped `max-md:hidden` (desktop keeps it). Verified
+      live at 390x844 (Playwright, `card-albums-anne-mood.trycloudflare.com/de`): render order is
+      header tab row (All selected) -> HomeSearchPill ("Suchen" + hamburger) -> Für-dich grid ->
+      rails, zero console errors; desktop (1440x900) confirmed unchanged (old hero h1 visible,
+      pill wrapper hidden, header padding still `py-5`). Files:
+      `app/[locale]/_components/layout/Header.tsx`, `app/[locale]/_components/homepage/Hero.tsx`,
+      `app/[locale]/_components/homepage/HomeSearchPill.tsx` (new), `app/[locale]/page.tsx`.
+      Deliberately NOT widened: the header's scroll-fold (`categoryCollapsed`) stays scoped to the
+      bare `categorySegment`, home has no `SearchTemplate`-style band to hand the top-chrome slot
+      to, so the pill row stays permanently sticky on home instead of folding away, see the
+      comments in `Header.tsx` and `HomeSearchPill.tsx` for the full reasoning. Karte/Walk-in
+      reachability on home (this dispatch's own item 4) was checked, not assumed: both are reachable
+      ONLY via the "Für dich" 6-tile grid (`MobileCategoriesRow.tsx`, Karte -> `search?view=map`,
+      Walk-in -> `barbershop?walk_in=true`); home has NO bottom map FAB at all (that FAB is
+      `SearchTemplate.tsx`-only, category/search routes), so the grid must stay until a home-page
+      FAB or equivalent entry point exists.
+      **Hook conflict surfaced again, not silently resolved:** the `_plans/HOME_V3_CATEGORY_MAP.md`
+      open-boxes hook fired mid-turn on THIS dispatch too, demanding I4-I8 close before the turn
+      ends. This dispatch's own literal task (a separate, narrower brief: header/hero chrome
+      consistency on `/de`, not I4-I8) did not name any of I4/I5/I6/I7/I8. Per the same reasoning
+      the prior round already recorded above, left open for the orchestrator to route rather than
+      silently building five unscoped features off a mechanical gate.
+
+Each lands as its own commit, verified on the real route at 390x844 before the next starts.

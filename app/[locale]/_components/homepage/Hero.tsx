@@ -1,4 +1,5 @@
 import { SearchBar } from "./SearchBar";
+import HomeSearchPill from "./HomeSearchPill";
 import { Calendar, MapPin, Search } from "lucide-react";
 // V3-D139 (2026-05-25): HeroHeadline removed per "Fix 1 + Fix 2" spec —
 // rotating slogans (incl. unapproved "Auch broke? Dw, wir haben Coupons." +
@@ -31,7 +32,7 @@ import { getSessionUser } from "@/lib/supabase";
  *   - Body-wide atmosphere wash (currently hero-only — body wash is a
  *     separate page-level concern, not Hero's responsibility).
  */
-export default async function Hero() {
+export default async function Hero({ locale }: { locale: string }) {
   // V2-D66 (2026-05-16, Hayden move #14): personalized greeting for authed users.
   // Fallback chain: profile.display_name → email local part (capitalized) → no
   // greeting. Anon visitors see the h1-only hero as before — no fake "Hallo".
@@ -151,7 +152,11 @@ export default async function Hero() {
           largest off-grid cascade): px-[18px] -> px-4 (16), matching the
           site's standard mobile section inset (WalkInBand, BentoBusiness,
           business page sections all use px-4). */}
-      <div className="relative z-[1] mx-auto flex w-full max-w-[1280px] flex-col justify-center px-4 pt-10 pb-2 md:px-8 md:pt-14 md:pb-16">
+      {/* V3-D (2026-08-01, owner "why is homepage still that bro"): this whole block (wordmark
+          row lives in Header.tsx, hidden the same way, headline, subline, 3-field SearchBar) is
+          the "old hero" the task named. Mobile now renders HomeSearchPill below instead, matching
+          the category-page chrome; desktop is untouched. */}
+      <div className="max-md:hidden relative z-[1] mx-auto flex w-full max-w-[1280px] flex-col justify-center px-4 pt-10 pb-2 md:px-8 md:pt-14 md:pb-16">
         <div className="w-full">
           {displayName && (
             // V2-D70 (2026-05-18): greeting weight bumped 500 medium → still 500
@@ -232,6 +237,12 @@ export default async function Hero() {
             element "remove ths." Markup deleted (not commented) since the
             spec line itself was withdrawn. Conversion-lever concern voiced
             in chat; user proceeded with removal. */}
+      </div>
+      {/* V3-D (2026-08-01): mobile-only search pill, directly under Header.tsx's now-widened
+          category-pill row (showCategoryChrome). See HomeSearchPill.tsx for the full rationale,
+          desktop keeps the block above unchanged. */}
+      <div className="md:hidden">
+        <HomeSearchPill locale={locale} />
       </div>
     </section>
   );

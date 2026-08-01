@@ -204,7 +204,7 @@ export default async function Page({
       {/* V3-D137 sunset halo SCRAPPED 2026-05-25 — user ditched, reverted
           to pre-halo state. Mockup at public/solen-header-light-variants.html
           kept on disk for revival reference. */}
-      <Hero />
+      <Hero locale={locale} />
       {/* V3-D143 (2026-05-25): MobileCategoriesRow moved INSIDE FeedZone
           to fix the 8px overlap where the rising-panel's negative margin
           (-mt-6/-mt-8, designed for Hero-overlap) was eating into the

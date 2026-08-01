@@ -422,6 +422,14 @@ export default function Header({ locale }: { locale: string }) {
   // Owner 2026-06-29 (council-confirmed): on the HOMEPAGE the far-left slot shows the Solen logo (the
   // home icon is redundant on home). Other top-level pages keep the Home icon as a go-home affordance.
   const isHome = !!pathname && /^\/[a-z]{2}\/?$/.test(pathname);
+  // V3-D (2026-08-01, owner "why is homepage still that bro"): the home route now renders the
+  // SAME mobile category-chrome as the category/search routes (the All pill selected via
+  // HEADER_CATEGORIES' `home` entry above), so it opts into every MOBILE-ONLY categorySegment
+  // gate below (the utility-row hide, the category-pill tab row). `categorySegment` itself
+  // stays scoped to the CATEGORY_SEARCH_SEGMENTS union , it still drives the MobileCityChip
+  // branch untouched here, and the header's non-breakpoint-scoped `pt-5 pb-1` padding below is
+  // widened separately with an explicit `max-md:` guard so desktop home stays `py-5`.
+  const showCategoryChrome = isHome || !!categorySegment;
   const tDiscover = useTranslations("discover");
   // 2026-07-27 language sweep: five German literals in this file rendered German to English,
   // French and Italian visitors on EVERY page, because the header is global. Four of the five
@@ -563,7 +571,16 @@ export default function Header({ locale }: { locale: string }) {
         // tighten the BOTTOM (pb-1) so the in-page search bar tucks right under the
         // category bar - the 20px py-5 bottom was the real "gap too big" (user). Other
         // routes + scrolled state unchanged.
-        scrolled || isDark ? "py-3" : categorySegment ? "pt-5 pb-1" : "py-5",
+        scrolled || isDark
+          ? "py-3"
+          : categorySegment
+            ? "pt-5 pb-1"
+            // V3-D (2026-08-01): home gets the SAME mobile tuck as a category route (the
+            // pill row now renders right below it), but desktop must stay `py-5` unchanged ,
+            // hence the `max-md:` guard instead of widening the bare classes above.
+            : isHome
+              ? "py-5 max-md:pt-5 max-md:pb-1"
+              : "py-5",
         // V3-D352: with the mobile menu open, the header goes fully transparent (no
         // frosted band, no shadow) so the menu reads as one clean full-screen sheet
         // from the top - only the X floats in the corner. Checked first so its bg wins.
@@ -614,10 +631,13 @@ export default function Header({ locale }: { locale: string }) {
           // has NO utility row there at all, the hamburger moved into the search pill's trailing
           // slot instead (SearchTemplate.tsx). Hidden on mobile only (`max-md:hidden`), same
           // hidden/md: pattern used for the filter row + count row in SearchTemplate.tsx; markup
-          // and every handler stay intact, desktop (md+) is untouched. Scoped to categorySegment,
-          // not global, non-category mobile routes (home, deep pages) keep this row, it is their
-          // only nav chrome and the mockup does not cover them.
-          categorySegment && "max-md:hidden",
+          // and every handler stay intact, desktop (md+) is untouched.
+          // V3-D (2026-08-01, owner "why is homepage still that bro"): widened from bare
+          // categorySegment to showCategoryChrome, the home route now composes the identical
+          // chrome (its own search pill's trailing slot owns the hamburger, see
+          // HomeSearchPill.tsx), so this row is hidden there too. Deep pages (profile, PDP, etc.)
+          // still keep this row, it remains their only nav chrome.
+          showCategoryChrome && "max-md:hidden",
         )}
       >
         {/* Logo, V3-D171 (2026-05-26): fades out when menu opens so the
@@ -902,9 +922,16 @@ export default function Header({ locale }: { locale: string }) {
       </div>
       {/* V3-D421k: category-tab row, full-width scrollable pills on their OWN row
           below the utility row (home · city · menu). Mobile only (desktop uses the
-          dropdown nav). Right-edge fade signals "more categories scroll". Folds away
-          with the whole header on scroll (the header's max-h collapse). */}
-      {categorySegment && (
+          dropdown nav). Right-edge fade signals "more categories scroll". On a category/search
+          route this folds away with the whole header on scroll (the header's max-h collapse,
+          gated on the bare `categorySegment` above, deliberately NOT widened).
+          V3-D (2026-08-01): on home this row now renders too (`showCategoryChrome`), but stays
+          permanently sticky instead of folding: the home page has no SearchTemplate-style search
+          band to hand the top-chrome slot off to, so collapsing it here would leave mobile
+          scroll with no top chrome at all. A persistent category switcher while scrolling the
+          long home feed is the reasonable outcome, not a bug, flagged for the reviewer as an
+          intentional deviation from the category-route fold behavior. */}
+      {showCategoryChrome && (
         <div
           className={cn(
             "md:hidden mx-auto mt-3 max-w-[1280px] px-4",
@@ -914,7 +941,7 @@ export default function Header({ locale }: { locale: string }) {
           <div
             role="tablist"
             aria-label="Kategorien"
-            className="flex items-center gap-2 overflow-x-auto scrollbar-none"
+            className="flex items-center gap-3 overflow-x-auto scrollbar-none pt-3 pb-3.5"
             style={{
               scrollbarWidth: "none",
               WebkitMaskImage: "linear-gradient(90deg, #000 90%, transparent)",
