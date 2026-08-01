@@ -1018,3 +1018,31 @@ against a fresh no-air render of the same 210 frames rather than eyeballing the 
       throughout, air present 98 frames = 1.63s of 3.50s, fades in at 7.9% of peak and out at
       10.1%, mean frame jump 0.78 (the 360 version was 2.26), 2 stutter frames, loop closes
       byte-identical. Encoded webm carries 210 frames at 180x162 with `alpha_mode=1`.
+
+## Round 32: where they actually land, measured on the running homepage
+
+"ok next". Before spending more credits I checked where these icons are meant to live, and the
+answer changes the brief.
+
+- [x] They are wired nowhere, `verified:` `npm run exists "animated icon"` returns 0 matches and
+      `grep -rn "set-dryer\|set-barber\|solen-icons" app components lib` returns nothing. They exist
+      only as files under `public/_pixel-refs/solen-icons/out/`.
+- [x] Their destination is the homepage category row, `verified:`
+      `app/[locale]/_components/homepage/MobileCategoriesRow.tsx:43-48`, six tiles: coiffeur
+      (scissors.png), barbershop (clippers.png), nails, map, walk-in, spa. Our chair maps to
+      barbershop and our dryer to coiffeur, so the set is 2 of 6.
+- [x] **THE SIZE PROBLEM**, `verified:` measured on the running dev server at :3001, route `/de`,
+      viewport 390x844, via getBoundingClientRect on the rendered `<img>` elements: tile 106x92,
+      **icon box 49x49**. We authored at 180x162 and judged every round of this session at two to
+      four times the size the product will use. Swapping the two clips into the live DOM at that
+      exact size confirms they render, and confirms the detail does not survive: air pixels in one
+      frame 304 to 33 (11% survives), stroke 5px to 1.4px, bob 6.0px to 1.6px.
+- [x] Safari path re-checked, `verified:` `hevc_videotoolbox` still fails with -12908, and it is not
+      the frame size: a synthetic 192x176 (16-multiple) source fails identically. `brew install
+      webp` cannot write its cache from this sandbox, so no animated WebP either. APNG remains the
+      only alpha path for Safari and it is heavy: 60fps 1377KB, 30fps 698KB, 20fps 469KB for the
+      dryer. Six of those is megabytes on the surface that matters most.
+
+**BLOCKING, needs the owner:** whether to re-author for 49px (simplify the silhouette, drop or
+greatly thicken the air, since 11% of it survives), and whether to spend credits on the remaining
+four objects. Both are cost decisions and neither is mine to make.
