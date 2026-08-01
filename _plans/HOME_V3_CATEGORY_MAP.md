@@ -417,8 +417,22 @@ de 372, en 382, fr 374, it 375 = **1503 strings**. Keys are NOT renamed (a key r
       This is separable from the product decision: the UI can say Store everywhere while the
       `<title>`/description keeps Salon, because metadata is addressed to a search engine and the UI
       is addressed to the user. **Recommendation: leave all SEO metadata on "Salon", rename UI copy
-      only.** Related and NOT touched: `/fuer-salons` and `/salon/[slug]` are URL paths; renaming a
-      live route breaks inbound links and is a separate decision again.
+      only.** The cost of that recommendation, named rather than buried: the browser tab and the
+      Google snippet will say Salon while the page says Store, and a user sees that mismatch every
+      time they bookmark or share a link. Smaller cost than losing the query, but not free.
+      Related and NOT touched: `/fuer-salons` and `/salon/[slug]` are URL paths; renaming a live
+      route breaks inbound links and is a separate decision again.
+- [ ] R6. **Sample business names vs example email domains, pick ONE rule.** The sweep treated these
+      two inconsistently and both are defensible, so it needs a word rather than a guess.
+      Renamed: `Salon Lumière` -> `Store Lumière` (`_components/homepage/searchFeatured.ts:52`,
+      `_components/homepage/forYouSalons.ts:50`), and `Salon Maria`
+      (`_components/business/MarketplaceVisual.tsx:37`) is still un-renamed, so those two illustrative
+      names already disagree with each other. Left alone: the four
+      `salonRegistration.step1.emailPlaceholder` values (`dein@salon.ch`, `your@salon.ch`,
+      `votre@salon.ch`, it equivalent). **Recommendation: revert the sample business names to "Salon
+      X" and leave the email placeholders as-is**, on the grounds that both are illustrations of what
+      a real Swiss business is called, and real ones are called Salon something. Renaming them
+      invents a naming convention no customer of ours actually uses.
       **I first parked this as a legal blocker and that was wrong, corrected here rather than left
       standing:** I argued "Salon" is a defined term in a contract users accepted, so renaming the
       party is a tier-2 statutory edit. But Solen is PRE-LAUNCH with no real customers
