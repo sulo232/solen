@@ -111,7 +111,7 @@ export default function SalonRegister() {
                 size keeps the leading-dot motif but reads as soft caption. */}
             {/* V3-D331: dropped pseudo-element dot + accent color per LOCKFILE §2.5. Eyebrow text alone. */}
             <span className="mb-3 inline-flex items-center gap-2 font-body text-[14px] font-medium text-s-ink-2">
-              Für Salons
+              Für Stores
             </span>
             {/* V3-D330: font-black 900 → font-bold 700 per §2 Geist weight scale ("NEVER 800/900 — Geist 800 is heavy + clumsy"). Stars orange #F3A864 → s-star #FFC32B yellow per universal-color rule (rating = yellow). */}
             <h2 className="font-display text-[clamp(26px,7vw,30px)] font-bold leading-[1.0] tracking-normal text-s-ink">
