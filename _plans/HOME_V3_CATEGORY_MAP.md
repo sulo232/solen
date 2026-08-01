@@ -67,11 +67,19 @@ mockup rule, with a recommendation. Not one synthesized answer.
   (owner 2026-07-02, "invented UI, the reference uses the BOTTOM SHEET"). A floating preview card
   over the map should not come back; a floating button is a different thing.
 
-- [ ] **CORRECTION (owner 2026-08-01, "i told you its loop harden"):** he said "integrate/wire
+- [x] **CORRECTION (owner 2026-08-01, "i told you its loop harden"):** he said "integrate/wire
       everything as a loop" and I delivered ONE item then stopped to report. A loop does not stop
       to report between iterations; that is the report-and-wait failure the project CLAUDE.md names
       as a top recurring complaint. Deliver: run I2 through I8 back to back without pausing, AND
       build the gate this turn rather than promising to be careful.
+      **DONE.** I2-I8 all landed and are committed (I6 walk-in second in Barber, verified on
+      /de/barbershop; I8 Inspo chrome, then its own defect , TWO stacked search bars , found by
+      screenshot and fixed in `ac1e73607`, measured `searchBarCount: 1`, 66px/16px/500 + the home
+      lift). Gate built + self-tested 8/8: `~/.claude/hooks/loop-does-not-report-gate.py`, a Stop
+      gate that blocks ending a turn while `_plans/` still has open implementation boxes AND the
+      owner asked for loop execution. NOT ARMED: `~/.claude/settings.json` is read-only in this
+      sandbox, so it enforces nothing until wired from a non-sandboxed session (with
+      `overstep-gate.py`, `touch-action-scroll-gate.py`, `mockup-already-answered-gate.py`).
 
 ## IMPLEMENTATION PHASE (owner lifted the mockups-only hold, 2026-07-31)
 
@@ -298,3 +306,21 @@ separately queued", i.e. the orchestrator already knows it is open and chose not
 this dispatch. So all three remaining unticked boxes (I6, I7, I8) sit outside this turn's literal
 order, same as the prior two rounds. Not silently building them; left open for the orchestrator to
 route as their own dispatches.
+
+## RENAME: "Salon" -> "Store" (owner 2026-08-01, "we stopped calling sh salon we called them stores")
+
+Measured scope, roots named: `messages/{de,en,fr,it}.json` are the ONLY i18n string files in this
+repo (`ls messages/` = exactly those four). User-facing VALUES containing "salon":
+de 372, en 382, fr 374, it 375 = **1503 strings**. Keys are NOT renamed (a key rename breaks every
+`useTranslations` call site); values only.
+
+- [x] R1. DE + EN + FR + IT value sweep dispatched to a coder with per-locale word forms, German
+      compound rebuilds (Lieblingssalons -> Lieblings-Stores etc.) and Italian article agreement
+      (il salone -> lo store, i saloni -> gli store) spelled out, since a blind replace produces
+      broken compounds and wrong articles.
+- [ ] R2. **PARKED, needs the owner's word.** In French "un store" means a window blind / awning,
+      so "Trouvez les meilleurs stores" reads as "find the best blinds". Executed his literal order
+      (fr uses "store") and flagged it in the closing report. One word from him reverts fr to
+      "salon" or switches it to "boutique".
+- [ ] R3. Non-JSON surfaces: any "Salon" baked into a .tsx literal rather than a translation key.
+      Not yet counted. Run after R1 lands so the two sweeps do not collide on the same files.
