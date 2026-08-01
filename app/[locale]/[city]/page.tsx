@@ -44,8 +44,8 @@ export async function generateMetadata({ params }: Props) {
   const cityName = getCityName(city, locale, row);
   const alternates = buildAlternates(city, locale);
   return {
-    title: `Salons in ${cityName} | Solen`,
-    description: `Finde die besten Salons in ${cityName}. Coiffeur, Barber, Nails & mehr, jetzt buchen auf Solen.`,
+    title: `Stores in ${cityName} | Solen`,
+    description: `Finde die besten Stores in ${cityName}. Coiffeur, Barber, Nails & mehr, jetzt buchen auf Solen.`,
     alternates,
   };
 }

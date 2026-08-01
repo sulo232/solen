@@ -113,8 +113,8 @@ export default function Nearby({
         <NearbyMap
           salons={mapSalons}
           href={`/${locale}/search?view=map`}
-          ariaLabel="Salons in der Nähe auf der Karte ansehen"
-          countLabel={nearbyCount != null ? `${nearbyCount} Salons in der Nähe` : "Karte öffnen"}
+          ariaLabel="Stores in der Nähe auf der Karte ansehen"
+          countLabel={nearbyCount != null ? `${nearbyCount} Stores in der Nähe` : "Karte öffnen"}
         />
         <ScrollRow ref={scrollRef}>
         {entries.map((e) => (

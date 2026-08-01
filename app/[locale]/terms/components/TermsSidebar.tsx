@@ -9,7 +9,7 @@ export const sections = [
   { id: "section-3", title: "3. Buchungen / Bookings" },
   { id: "section-4", title: "4. Stornierung / Cancellation" },
   { id: "section-5", title: "5. Zahlungen / Payments" },
-  { id: "section-6", title: "6. Salonpartner / Salon Partners" },
+  { id: "section-6", title: "6. Store-Partner / Store Partners" },
   { id: "section-7", title: "7. Kunden / Customers" },
   { id: "section-8", title: "8. Geistiges Eigentum / IP" },
   { id: "section-9", title: "9. Datenschutz / Privacy" },

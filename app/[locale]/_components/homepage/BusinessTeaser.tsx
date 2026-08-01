@@ -29,7 +29,7 @@ import { ArrowRight, ImageIcon } from "lucide-react";
 export default function BusinessTeaser() {
   return (
     <section
-      aria-label="Solen für Salons"
+      aria-label="Solen für Stores"
       // 2026-08-01 (home-v3 mockup, public/_mockups/home-v3/search-a.html): the mockup's home
       // state has no "Solen für dein Geschäft" section. Hidden below md; desktop keeps it
       // (component not deleted, only the mobile render).
@@ -59,7 +59,7 @@ export default function BusinessTeaser() {
             right grid cell, vertically centered with the image. */}
         <div>
           <p className="font-body text-[13px] font-semibold text-s-ink-2">
-            Für Salons
+            Für Stores
           </p>
           {/* V3-D193 (2026-05-26): Page H2 weight 900 → 800 per "too bold" sweep.
               Tracking widened -0.035 → -0.03em. V3-D190 size kept. */}
@@ -73,7 +73,7 @@ export default function BusinessTeaser() {
           {/* V3-D220 (2026-05-26, /business rebuild): dropped md:text-[17px] step (out of Scale B).
               Use clamp(14,3.5vw,16) hero-sub spec from SOURCE.md §3. */}
           <p className="mt-5 max-w-[460px] font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.55] text-s-ink-2">
-            Mehr Buchungen, weniger Aufwand, für dein Salon-Team.
+            Mehr Buchungen, weniger Aufwand, für dein Store-Team.
           </p>
           <Link
             href="/partner"

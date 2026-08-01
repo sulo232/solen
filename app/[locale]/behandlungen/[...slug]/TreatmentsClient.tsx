@@ -192,7 +192,7 @@ export default function TreatmentsClient() {
               <div className="mt-12">
                 <EmptyState
                   icon={Search}
-                  title="Keine Salons gefunden"
+                  title="Keine Stores gefunden"
                   message="Versuche eine andere Kategorie oder ändere die Filter."
                   illustration="no-results"
                 />

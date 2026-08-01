@@ -34,7 +34,7 @@ const CARDS: FauxCard[] = [
     tint: "bg-s-ink/[0.06]",
   },
   {
-    name: "Salon Maria",
+    name: "Store Maria",
     meta: "Limmatquai 88",
     city: "Zürich",
     rating: "4.8",

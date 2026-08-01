@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Sicherheit — Solen",
-  description: "Wie Solen dich schützt: sichere Zahlungen über Stripe, geprüfte Salons, Melde-Funktion.",
+  description: "Wie Solen dich schützt: sichere Zahlungen über Stripe, geprüfte Stores, Melde-Funktion.",
 };
 
 export default async function SicherheitPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -33,10 +33,10 @@ export default async function SicherheitPage({ params }: { params: Promise<{ loc
 
           <section>
             <h2 className="font-display text-s-ink text-lg font-semibold mb-3 pb-2 border-b border-s-border">
-              Geprüfte Salons
+              Geprüfte Stores
             </h2>
             <p className="text-sm text-s-ink-2 leading-relaxed">
-              Neue Salons werden vor der Freischaltung geprüft, bevor sie auf Solen
+              Neue Stores werden vor der Freischaltung geprüft, bevor sie auf Solen
               buchbar sind.
             </p>
           </section>

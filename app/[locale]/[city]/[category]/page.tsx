@@ -21,7 +21,7 @@ type Params = {
 const CATEGORIES = ["coiffeur", "nails", "barbershop", "spa"] as const;
 
 const CATEGORY_NAMES: Record<string, Record<string, string>> = {
-  coiffeur: { de: "Coiffeur", en: "Hair Salon", fr: "Coiffeur", it: "Parrucchiere" },
+  coiffeur: { de: "Coiffeur", en: "Hair Store", fr: "Coiffeur", it: "Parrucchiere" },
   nails: { de: "Nagelstudio", en: "Nails", fr: "Ongles", it: "Unghie" },
   barbershop: { de: "Barbershop", en: "Barbershop", fr: "Barbershop", it: "Barbershop" },
   spa: { de: "Spa", en: "Spa", fr: "Spa", it: "Spa" },
@@ -95,7 +95,7 @@ const CITY_CATEGORY_FAQ_COPY: Record<
     items: (cityName, categoryName) => [
       {
         q: `Wie viel kostet ein Besuch bei einem ${categoryName} in ${cityName}?`,
-        a: "Die Preise variieren je nach Salon und Service. Nutze unsere Filterfunktion um Salons nach Preisbereich zu vergleichen.",
+        a: "Die Preise variieren je nach Store und Service. Nutze unsere Filterfunktion um Stores nach Preisbereich zu vergleichen.",
       },
       {
         q: `Wie finde ich den besten ${categoryName} in ${cityName}?`,
@@ -103,7 +103,7 @@ const CITY_CATEGORY_FAQ_COPY: Record<
       },
       {
         q: "Kann ich online einen Termin buchen?",
-        a: "Ja. Alle Salons auf Solen ermöglichen Online-Buchungen.",
+        a: "Ja. Alle Stores auf Solen ermöglichen Online-Buchungen.",
       },
     ],
   },
@@ -112,7 +112,7 @@ const CITY_CATEGORY_FAQ_COPY: Record<
     items: (cityName, categoryName) => [
       {
         q: `How much does a visit to a ${categoryName} in ${cityName} cost?`,
-        a: "Prices vary by salon and service. Use our filter to compare salons by price range.",
+        a: "Prices vary by store and service. Use our filter to compare stores by price range.",
       },
       {
         q: `How do I find the best ${categoryName} in ${cityName}?`,
@@ -120,7 +120,7 @@ const CITY_CATEGORY_FAQ_COPY: Record<
       },
       {
         q: "Can I book an appointment online?",
-        a: "Yes. Every salon on Solen supports online booking.",
+        a: "Yes. Every store on Solen supports online booking.",
       },
     ],
   },
@@ -129,7 +129,7 @@ const CITY_CATEGORY_FAQ_COPY: Record<
     items: (cityName, categoryName) => [
       {
         q: `Combien coûte une visite chez un ${categoryName} à ${cityName}?`,
-        a: "Les prix varient selon le salon et le service. Utilise notre filtre pour comparer les salons par fourchette de prix.",
+        a: "Les prix varient selon le store et le service. Utilise notre filtre pour comparer les stores par fourchette de prix.",
       },
       {
         q: `Comment trouver le meilleur ${categoryName} à ${cityName}?`,
@@ -137,7 +137,7 @@ const CITY_CATEGORY_FAQ_COPY: Record<
       },
       {
         q: "Puis-je réserver un rendez-vous en ligne?",
-        a: "Oui. Tous les salons sur Solen permettent la réservation en ligne.",
+        a: "Oui. Tous les stores sur Solen permettent la réservation en ligne.",
       },
     ],
   },
@@ -146,7 +146,7 @@ const CITY_CATEGORY_FAQ_COPY: Record<
     items: (cityName, categoryName) => [
       {
         q: `Quanto costa una visita da un ${categoryName} a ${cityName}?`,
-        a: "I prezzi variano in base al salone e al servizio. Usa il nostro filtro per confrontare i saloni per fascia di prezzo.",
+        a: "I prezzi variano in base allo store e al servizio. Usa il nostro filtro per confrontare gli store per fascia di prezzo.",
       },
       {
         q: `Come trovo il miglior ${categoryName} a ${cityName}?`,
@@ -154,7 +154,7 @@ const CITY_CATEGORY_FAQ_COPY: Record<
       },
       {
         q: "Posso prenotare un appuntamento online?",
-        a: "Sì. Tutti i saloni su Solen permettono la prenotazione online.",
+        a: "Sì. Tutti gli store su Solen permettono la prenotazione online.",
       },
     ],
   },
