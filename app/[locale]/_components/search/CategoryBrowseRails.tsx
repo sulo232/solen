@@ -62,7 +62,9 @@ export type RailSalon = {
 
 // Per-locale rail titles (inline-record pattern, mirrors Header SEARCH_PLACEHOLDER).
 // German umlauts allowed (matches homepage "In der Nähe"); no ß, no em-dash.
-const TITLES = {
+// Exported: CategoryMobileRails.tsx (the mobile 3-rail set, owner 2026-08-01) reuses the
+// `nearby` / `soon` copy here rather than re-declaring the same locale strings a second time.
+export const TITLES = {
   top: { de: "Top auf Solen", en: "Top on Solen", fr: "Top sur Solen", it: "Top su Solen" },
   deals: { de: "Angebote", en: "Deals", fr: "Offres", it: "Offerte" },
   nearby: { de: "In der Nähe", en: "Nearby", fr: "À proximité", it: "Nelle vicinanze" },
@@ -71,7 +73,7 @@ const TITLES = {
   color: { de: "Coloration", en: "Color", fr: "Coloration", it: "Colore" },
 } as const;
 
-const pick = (rec: Record<string, string>, locale: string) => rec[locale] ?? rec.de;
+export const pick = (rec: Record<string, string>, locale: string) => rec[locale] ?? rec.de;
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 

@@ -84,6 +84,7 @@ import { cn } from "@/lib/utils";
 import { SalonResultCard } from "./SalonResultCard";
 import { MapSalonDetail } from "./MapSalonDetail";
 import { CategoryBrowseRails } from "./CategoryBrowseRails";
+import { CategoryMobileRails } from "./CategoryMobileRails";
 import type { SalonCategory } from "@/lib/types";
 import { getCityName, getCityCoords, slugFromCity, DEFAULT_CITY_SLUG, ALL_CITIES_PARAM, type CitySlug } from "@/lib/cities";
 import { formatDateLabel, nextAvailableSlotLabel } from "@/lib/format";
@@ -153,6 +154,10 @@ type Salon = {
   gallery_urls?: string[] | null;
   address?: string;
   city?: string;
+  // Real column (lib/salons/public-columns.ts SALON_PUBLIC_COLS), already returned by
+  // /api/salons; only the local type was missing it. Feeds CategoryMobileRails' "<postcode>
+  // <city>" Row 3 (owner 2026-08-01 mobile-rails ask).
+  postal_code?: string | null;
   categories?: string[];
   last_minute_discount_percent?: number | null;
   avg_price?: number | null;
@@ -1066,6 +1071,9 @@ export default function SearchTemplate({
   // city outside the static CITIES fallback (e.g. Luzern) still shows its real name.
   const activeCityRow = activeCity ? activeCities.find((c) => c.slug === activeCity) : undefined;
   const cityName = activeCity ? getCityName(activeCity, locale, activeCityRow) : t("countrywide");
+  // CategoryMobileRails' "Top <Category>" rail title , reuses the same CATEGORY_PILLS label
+  // the filter pills / header pills already render (e.g. "Coiffeur"), not new copy.
+  const categoryLabel = CATEGORY_PILLS.find((p) => p.slug === activeCategory)?.label ?? "";
   const sortLabel =
     SORT_OPTIONS.find((s) => s.value === sort)?.label ?? t("sort_rating");
   // V3-D451: title of the FOCUSED filter sheet (the category whose pill opened it).
@@ -1318,8 +1326,13 @@ export default function SearchTemplate({
 
       {/* CHROME row: filter chips + Fuer-dich. The search band moved OUT (above) so it
           can stay pinned over the full results list; this container holds the rest of
-          the in-page chrome, centered + constrained (max-w-[680px]). */}
-      <div className="mx-auto w-full max-w-[680px] px-4">
+          the in-page chrome, centered + constrained (max-w-[680px]).
+          Owner 2026-08-01 ("remove cz we made it carousel right did u forget"): hidden on
+          MOBILE only, desktop untouched. A filter row belongs to a flat result list, not to
+          the carousels the mobile category page now renders (CategoryMobileRails below); the
+          filter STATE/logic stays fully intact (URL params, FilterSheet, activeFilterCount),
+          only this row stops rendering under 768px. */}
+      <div className="mx-auto hidden w-full max-w-[680px] px-4 md:block">
         {/* D. Filter chips row + pinned round filter button. Selected chips turn
             ink + show a check AND sort to the LEFT (active group, thin divider,
             then inactive). The round SlidersHorizontal button is pinned right,
@@ -1581,47 +1594,64 @@ export default function SearchTemplate({
                   grid below is untouched. Escape hatches (?layout=list / ?layout=grid)
                   keep their existing behavior on every breakpoint (skip the feed).
                   walk_in stays on the "card" variant (desktop-grid block below, shown
-                  on mobile too in this mode) so the queue busyness bar/tier is not lost. */}
+                  on mobile too in this mode) so the queue busyness bar/tier is not lost.
+                  Owner 2026-08-01 ("remove cz we made it carousel right did u forget"): on a
+                  CATEGORY route (activeCategory set), this flat feed is replaced by
+                  CategoryMobileRails (Top <Category> / Nearby / Available this week). /search
+                  (no activeCategory) keeps this exact flat feed unchanged. */}
               {!listLayout && !gridLayout && !walkIn && (
-                <div className="flex flex-col gap-6 md:hidden">
-                  {salons.map((s, i) => (
-                    <SalonResultCard
-                      key={s.id}
-                      variant="feed"
-                      slug={s.slug}
-                      name={s.name}
+                <div className="md:hidden">
+                  {activeCategory ? (
+                    <CategoryMobileRails
+                      salons={salons}
                       locale={locale}
-                      rating={s.average_rating}
-                      photoUrl={s.cover_photo_url ?? undefined}
-                      galleryCount={s.gallery_urls?.length ?? 0}
-                      hasServiceQuery={q.length > 0}
-                      matchChip={q.length > 0 ? matchChipLabel(s, q, tx) : null}
-                      category={activeCategory ? undefined : safeCategory(s.categories)}
-                      city={
-                        s.address ||
-                        (s.quartier
-                          ? s.quartier.charAt(0).toUpperCase() + s.quartier.slice(1)
-                          : undefined) ||
-                        (activeCity ? cityName : undefined)
-                      }
-                      address={s.address}
-                      distanceMeters={s.distance_meters ?? null}
-                      // min_price, not avg_price (2026-07-27): this renders under a "from"
-                      // label, and an AVERAGE is not a floor , half the salon's services cost
-                      // less than it, so the advertised starting price was unreachable. PBV
-                      // Art. 13 requires a from-price to be the genuine lower limit.
-                      priceFromCHF={s.min_price ?? null}
-                      priceFromService={locale === "en" ? (s.min_price_service_en ?? s.min_price_service_de ?? null) : (s.min_price_service_de ?? null)}
-                      reviewCount={s.review_count ?? null}
-                      services={s.services}
-                      isSaved={favoriteIds.has(s.id)}
-                      salonId={s.id}
-                      date={date}
-                      // performance-05: first card of the mobile above-the-fold feed
-                      // is the LCP candidate on a fresh search-results load.
-                      priority={i === 0}
+                      category={activeCategory}
+                      categoryLabel={categoryLabel}
+                      cityName={cityName}
+                      favoriteIds={favoriteIds}
                     />
-                  ))}
+                  ) : (
+                    <div className="flex flex-col gap-6">
+                      {salons.map((s, i) => (
+                        <SalonResultCard
+                          key={s.id}
+                          variant="feed"
+                          slug={s.slug}
+                          name={s.name}
+                          locale={locale}
+                          rating={s.average_rating}
+                          photoUrl={s.cover_photo_url ?? undefined}
+                          galleryCount={s.gallery_urls?.length ?? 0}
+                          hasServiceQuery={q.length > 0}
+                          matchChip={q.length > 0 ? matchChipLabel(s, q, tx) : null}
+                          category={safeCategory(s.categories)}
+                          city={
+                            s.address ||
+                            (s.quartier
+                              ? s.quartier.charAt(0).toUpperCase() + s.quartier.slice(1)
+                              : undefined) ||
+                            (activeCity ? cityName : undefined)
+                          }
+                          address={s.address}
+                          distanceMeters={s.distance_meters ?? null}
+                          // min_price, not avg_price (2026-07-27): this renders under a "from"
+                          // label, and an AVERAGE is not a floor , half the salon's services cost
+                          // less than it, so the advertised starting price was unreachable. PBV
+                          // Art. 13 requires a from-price to be the genuine lower limit.
+                          priceFromCHF={s.min_price ?? null}
+                          priceFromService={locale === "en" ? (s.min_price_service_en ?? s.min_price_service_de ?? null) : (s.min_price_service_de ?? null)}
+                          reviewCount={s.review_count ?? null}
+                          services={s.services}
+                          isSaved={favoriteIds.has(s.id)}
+                          salonId={s.id}
+                          date={date}
+                          // performance-05: first card of the mobile above-the-fold feed
+                          // is the LCP candidate on a fresh search-results load.
+                          priority={i === 0}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
 

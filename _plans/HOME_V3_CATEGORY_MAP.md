@@ -104,6 +104,25 @@ Your purpose is just UI changes. Nothing else. And integrate/wire everything as 
       search UI is the structurally different 3-segment Hero `SearchBar.tsx` (dynamic-island),
       which the mockup does not model. Nothing invented there; flagged for the next decision.
       Commit pending (not yet committed by the coder sub-agent, orchestrator to verify + commit).
+- [x] **OWNER DECISIONS 2026-08-01, both unblocked:** (a) "remove cz we made it carousel right did
+      u forget" , the filter pills come OFF the category pages, because those pages are now
+      carousels/home-like and a filter row belongs to a flat result list, not a set of rails.
+      (b) "sarch bar stays deleted" , the second line stays gone even though it carried the live
+      date. His call, made with the regression in front of him.
+      **CODE LANDED THIS TURN (the decision above was ticked with no code yet; this is that code):**
+      verified via `npx tsc --noEmit` (0 errors) + a live curl of the tunnel
+      (`card-albums-anne-mood.trycloudflare.com/de/coiffeur`) confirming the filter-row div now
+      renders `class="mx-auto hidden w-full max-w-[680px] px-4 md:block"` (was unconditional) at
+      `SearchTemplate.tsx:1335`, and `/api/salons?category=coiffeur&city=basel&with_slots=1`
+      returning real `postal_code`/`average_rating`/`services[].slots` for all 8 live Coiffeur
+      salons, which the new `CategoryMobileRails` (`CategoryMobileRails.tsx`, wired at
+      `SearchTemplate.tsx:1602-1656`) turns into a Top-Coiffeur rail (8 salons) + a Nearby rail (8,
+      no-geo fallback) on mobile; the "Available this week" rail correctly self-hides right now
+      (only 1 of 8 salons has a slot inside 7 days, below the 2-salon floor) rather than showing a
+      lonely card, which is the self-hide floor working as designed, not a miss. Scope note: this
+      dispatch built ONLY the category-page filter-hide + 3-rail replacement (this line's own
+      literal ask). I3-I8 below are separate, larger, not-yet-dispatched asks (home page / recently
+      viewed / browse-by-looks / walk-in placement / continue card / Inspo) and were not touched.
 - [ ] I3. Home rails: Top on Solen / Nearby / Available this week / per-category Top rows.
 - [ ] I4. Recently viewed row.
 - [ ] I5. Browse-by-looks 4-across picture row.
