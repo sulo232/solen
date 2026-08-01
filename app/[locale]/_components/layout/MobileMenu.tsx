@@ -15,6 +15,7 @@ import {
   LogIn,
   Info,
   LayoutDashboard,
+  X,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
@@ -83,6 +84,11 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
   const t = useTranslations("ui.mobileMenu");
   // V3-D378 (2026-05-30): account row label when signed in (reuses navigation.account).
   const tNav = useTranslations("navigation");
+  // FIX 2 (2026-08-01, no-close-control bug): reuses the SAME "salonDetail.closeMenu" key
+  // Header.tsx already uses for its own hamburger-to-X aria-label (searched for an existing
+  // close/schliessen key before adding one, per house rules; verified present in all four
+  // locales, no new i18n key added).
+  const tSD = useTranslations("salonDetail");
   // V3-D157 (2026-05-25): city selector state. Reads persisted city when the
   // menu opens (not on first mount — the menu may render before the user has
   // any cookie). Reload on change matches CityTopBar's existing behavior so
@@ -182,7 +188,14 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
             // top edge → tighter, less wasted vertical space.
             // V3-D352: pt-20 -> pt-16. Header is transparent while the menu is open
             // (only the X floats top-right), so content can sit higher / more balanced.
-            "pt-16 pb-16 px-5",
+            // FIX 3 (2026-08-01): pt-16 (64px) was clearance for HEADER'S hamburger-to-X
+            // button, which is now hidden on mobile on every categorySegment/showCategoryChrome
+            // route (Header.tsx's utility row gets `max-md:hidden` there, 2026-08-01 owner
+            // change), so that clearance reasoning no longer holds and the panel's own first
+            // item (the city pill) was sitting at y=64 with nothing above it. This panel now
+            // owns its own close X (FIX 2, in the same row as the city pill below), so pt only
+            // needs to clear the safe-area inset, not a phantom 64px button.
+            "pt-[max(16px,env(safe-area-inset-top))] pb-16 px-5",
             "[-webkit-overflow-scrolling:touch]",
           )}
         >
@@ -190,30 +203,37 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
             {/* ─── City selector (V3-D168) — h2 "Stadt" removed V3-D171
                 per user "remove the stadt thing no need". The flag-chip
                 button is self-evident; the label was noise. */}
-            <div className="mb-5">
-              <button
-                type="button"
-                onClick={() => setCityDropdownOpen((v) => !v)}
-                aria-expanded={cityDropdownOpen}
-                aria-haspopup="listbox"
-                className={cn(
-                  "inline-flex items-center gap-2 rounded-full",
-                  "border border-s-border bg-s-bg-surface",
-                  "py-1.5 pl-1.5 pr-4 font-body text-[14px] font-semibold text-s-ink",
-                  "shadow-[0_1px_2px_rgba(0,0,0,0.03)]",
-                  "transition-colors duration-150 ease-glide",
-                  "active:bg-s-bg-sunken",
-                )}
-              >
-                <span
-                  aria-hidden
-                  className="block h-6 w-6 shrink-0 rounded-full"
-                  style={swissFlagStyle}
-                />
-                <span>{getCityName(currentCity, locale, activeCities.find((c) => c.slug === currentCity))}</span>
-              </button>
+            {/* FIX 2 (2026-08-01): the close X now shares this row (right side), the
+                panel's own reading-order top, instead of depending on Header.tsx's
+                hamburger-to-X (hidden on mobile for every showCategoryChrome route, see
+                the FIX 3 note on the panel's pt above, which is why this menu had no
+                visible way to close). Anatomy per project CLAUDE.md copy-economy rule 5:
+                a 38px circled X, bordered circle, white background, never a bare X. */}
+            <div className="mb-5 flex items-center justify-between gap-3">
+              <div className="relative min-w-0">
+                <button
+                  type="button"
+                  onClick={() => setCityDropdownOpen((v) => !v)}
+                  aria-expanded={cityDropdownOpen}
+                  aria-haspopup="listbox"
+                  className={cn(
+                    "inline-flex items-center gap-2 rounded-full",
+                    "border border-s-border bg-s-bg-surface",
+                    "py-1.5 pl-1.5 pr-4 font-body text-[14px] font-semibold text-s-ink",
+                    "shadow-[0_1px_2px_rgba(0,0,0,0.03)]",
+                    "transition-colors duration-150 ease-glide",
+                    "active:bg-s-bg-sunken",
+                  )}
+                >
+                  <span
+                    aria-hidden
+                    className="block h-6 w-6 shrink-0 rounded-full"
+                    style={swissFlagStyle}
+                  />
+                  <span>{getCityName(currentCity, locale, activeCities.find((c) => c.slug === currentCity))}</span>
+                </button>
 
-              {cityDropdownOpen && (
+                {cityDropdownOpen && (
                 <div
                   role="listbox"
                   aria-label="Stadt wählen"
@@ -240,6 +260,21 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                   })}
                 </div>
               )}
+              </div>
+
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label={tSD("closeMenu")}
+                className={cn(
+                  "grid h-[38px] w-[38px] shrink-0 place-items-center rounded-full",
+                  "border border-s-border bg-white text-s-ink",
+                  "transition-transform duration-150 ease-glide active:scale-[0.94] active:duration-[80ms]",
+                  "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+                )}
+              >
+                <X size={19} strokeWidth={2} aria-hidden />
+              </button>
             </div>
 
             {/* ─── Schnellzugriff (V3-D354, Variant B per user pick): a 2x2

@@ -545,6 +545,17 @@ export default function Header({ locale }: { locale: string }) {
 
   const isDark = tone === "dark";
 
+  // FIX 1 (2026-08-01, transparent-header tap-swallow bug): the header's OWN box should only
+  // capture pointer events across its full padding box when it is actually painting a visible
+  // background. Mirrors the bg ternary a few lines below exactly, so the two never disagree.
+  // When the header is transparent (top of a light page, not scrolled, not dark, not mid
+  // menu-toggle) its empty vertical padding must let taps fall through to whatever real,
+  // visible page content sits underneath it, instead of swallowing the tap itself (measured:
+  // the home search pill's <a href="/de/search"> sat at y=61, under the header's 102px
+  // z-50 band, and every tap there navigated to /de/coiffeur, the header's own hit-area,
+  // not the pill).
+  const headerHasBg = !menuOpen && (isDark || scrolled);
+
   // V3-D378 (2026-05-30): header auth-awareness. Signed-in users see an account
   // avatar (→ /profile) where the "Anmelden" CTA sits; signed-out keep the CTA.
   // Client-side session detection mirrors BottomTabBar's proven pattern (no change
@@ -632,11 +643,20 @@ export default function Header({ locale }: { locale: string }) {
       style={{
         WebkitBackdropFilter:
           !menuOpen && (scrolled || isDark) ? "blur(14px) saturate(1.4)" : undefined,
+        // FIX 1: inline so it always wins over the tailwind class cascade (no ordering
+        // ambiguity between "pointer-events-none"/"-auto" utilities). The two direct
+        // children below opt back INTO pointer-events themselves, so every real control
+        // stays clickable; only the header's own empty padding stops intercepting taps.
+        // isSalonDetail+hiddenForSalonNav already carries its own "pointer-events-none"
+        // class (the header is translated fully off-screen there) - keep that case in
+        // explicit agreement instead of letting this inline style silently override it.
+        pointerEvents:
+          isSalonDetail && hiddenForSalonNav ? "none" : headerHasBg ? undefined : "none",
       }}
     >
       <div
         className={cn(
-          "mx-auto flex max-w-[1280px] items-center gap-2.5 px-4 md:gap-6 md:px-8",
+          "pointer-events-auto mx-auto flex max-w-[1280px] items-center gap-2.5 px-4 md:gap-6 md:px-8",
           // Owner 2026-08-01 ("we removed the home button and the hamburger menu from the top
           // and we put the hamburger where the map view is, did you forget bro, look in the
           // mockup"): on a category/search route this row sits directly above the category-pill
@@ -948,7 +968,12 @@ export default function Header({ locale }: { locale: string }) {
         <div
           className={cn(
             "md:hidden mx-auto mt-3 max-w-[1280px] px-4",
-            menuOpen && "pointer-events-none opacity-0",
+            // FIX 1: exactly one pointer-events-* class ever applies here (never both at
+            // once), so there is no tailwind cascade-order ambiguity. This div is a DIRECT
+            // child of <header>, whose own box can be pointer-events:none (inline style
+            // above) when transparent, so the non-menuOpen branch needs its own explicit
+            // "auto" rather than relying on inheritance.
+            menuOpen ? "pointer-events-none opacity-0" : "pointer-events-auto",
           )}
         >
           <div
