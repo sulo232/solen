@@ -330,11 +330,26 @@ repo (`ls messages/` = exactly those four). User-facing VALUES containing "salon
 de 372, en 382, fr 374, it 375 = **1503 strings**. Keys are NOT renamed (a key rename breaks every
 `useTranslations` call site); values only.
 
-- [ ] R1. WRITTEN TO DISK, NOT COMMITTED, so it stays open. 1431 values changed across the four
-      locale files (de 354 / en 364 / fr 356 / it 357); `npx tsc --noEmit` exit 0; keys verified
-      unrenamed. Ticks when it is COMMITTED and rendered. Full state: `_plans/HANDOFF_2026-08-01.md`. This box was ticked on "dispatched",
-      which is not the same as landed; dispatching is not evidence. Re-tick only with the per-locale
-      changed-count, 5 before/after examples, and a commit sha.
+- [ ] R1. **COMMITTED (the handoff said otherwise and was stale). sha `a53dc3b10`**, an auto-checkpoint
+      commit titled "checkpoint(auto): 11 uncommitted file(s) at turn end", not a deliberate one, so
+      the message carries none of the evidence below and should be amended before this branch merges.
+      Re-measured 2026-08-01 from the committed tree, not recalled: values that CHANGED per locale
+      (diffed against parent `277586145`) de 353 / en 363 / fr 355 / it 356 = **1427**. Values still
+      containing the standalone word, with ICU `{salon}` argument names masked: de 1 / en 1 / fr 1 /
+      it 0, and all three survivors are the same email placeholder key
+      (`salonRegistration.step1.emailPlaceholder` = `dein@salon.ch` / `your@salon.ch` /
+      `votre@salon.ch`), which is an example domain, not copy. `npx tsc --noEmit` re-run this session:
+      **exit 0, zero output.**
+      **Still open for ONE reason only: not rendered.** And rendering is blocked, not skipped, this
+      session cannot start a dev server at all: `next dev` fails `listen() EPERM` on both `0.0.0.0:3000`
+      and `127.0.0.1:3100` under the sandbox, and no `preview_start` tool is exposed here. Needs a
+      normal shell.
+      **The overflow risk the handoff predicted is measured and it is nearly nil.** Max string growth
+      per locale: **en +0, fr +0, de +1 char (9 strings), it +2 chars (81 strings)**. "Store" and
+      "Salon" are both 5 characters, so the only growth is the German hyphenated compounds
+      (`Saloninfo` -> `Store-Info`) and the Italian article agreement (`dei salon` -> `degli store`).
+      A 1-2 character delta is not a CTA-row overflow risk; the render is still owed, but expect it
+      to confirm rather than to find breakage.
       DE + EN + FR + IT value sweep dispatched to a coder with per-locale word forms, German
       compound rebuilds (Lieblingssalons -> Lieblings-Stores etc.) and Italian article agreement
       (il salone -> lo store, i saloni -> gli store) spelled out, since a blind replace produces
@@ -343,6 +358,20 @@ de 372, en 382, fr 374, it 375 = **1503 strings**. Keys are NOT renamed (a key r
       so "Trouvez les meilleurs stores" reads as "find the best blinds". Executed his literal order
       (fr uses "store") and flagged it in the closing report. One word from him reverts fr to
       "salon" or switches it to "boutique".
+      Verified 2026-08-01: `messages/fr.json` now contains **367** occurrences of the word, and the
+      hardcoded French in `walk-in-pay/page.tsx:310` reads `Montrez ce code au store` and
+      `Voir le store`, so the reading really is "show this code at the blind".
+- [ ] R2b. **The English category label changed MEANING, and it is a defect, not a preference.**
+      Verified 2026-08-01: `messages/en.json` carries **"Hair Store" at 5 sites** (lines 124, 412,
+      4480, 4993, 5384), from `navigation.coiffeur` / `breadcrumb.coiffeur` and the nails hero. In
+      English a hair store SELLS hair products; it does not cut hair. The mechanical per-locale rule
+      produced a real meaning drift in exactly one locale, because de/fr use "Coiffeur" and it uses
+      "Parrucchiere" and none of those ever contained the word.
+      It has also gone INTERNALLY inconsistent: the hardcoded `.tsx` metadata at
+      `salon/[slug]/layout.tsx:9` and `[city]/[category]/page.tsx:24` still say **"Hair Salon"**, so
+      the same label renders both ways depending on which file emits it.
+      **Recommendation: revert the EN category labels to "Hair Salon" / "Nail Salon" and keep "Store"
+      as the word for the business entity.** A category name and an entity noun are different jobs.
 - [x] R3. **verified:** commit `d81d0a139`. Command run this turn, quoted so it is reproducible:
       `grep -rnoE '>[^<>{]*[Ss]alons?[^<>{]*<|"[^"]*[Ss]alons?[^"]*"' --include="*.tsx" app
       components components-legacy` = 752 raw, 600 after stripping import paths and identifiers.
@@ -356,11 +385,40 @@ de 372, en 382, fr 374, it 375 = **1503 strings**. Keys are NOT renamed (a key r
       (The first grep here returned a false 0 because `--include=*.tsx` was unquoted and zsh tried
       to glob it , the exact bug already recorded in the Ask-11 section of this file. Quoted, it
       returns 752 raw / 600 after filtering.)
-- [ ] R4. PARTIAL: 131 of 600 .tsx literals done, agent stopped mid-edit on the owner's
-      "stop all running tasks". TermsContent.tsx IS complete and internally consistent (108 Store /
-      1 salon, the survivor being a code comment). `walk-in-pay` is HALF done (28 of 48 left) and is
-      the priority, a half-renamed paid-commit screen is worse than either end state.
-      `TermsContent.tsx` (81) + `walk-in-pay` (48) + the remaining .tsx literals.
+- [ ] R4. **RE-MEASURED 2026-08-01, and both numbers this box inherited were wrong. The remainder is
+      67, not 469.** The old counts (600 total / 469 left / walk-in-pay "28 of 48") came from a grep
+      that could not tell copy from code, so it counted `salon_id`, `salon.name`,
+      `/api/walkin/salon-info` and PostgREST select strings as user-facing literals. Re-run with a
+      filter that keeps only string literals that are prose, and drops identifiers, property access,
+      `console.*` log strings, `app/api/**` server strings and `/dev/` routes:
+      **67 user-facing copy occurrences across 36 files.** Script:
+      `scratchpad/count4.py` (regex `(?<![A-Za-z0-9_\-$])[Ss]alons?(?![A-Za-z0-9_\-.(\[])` inside
+      quoted literals).
+      **`walk-in-pay/page.tsx` is NOT half done, its copy is COMPLETE in all four locales** , the
+      `de`/`en`/`fr`/`it` label objects at lines 308-311 carry zero occurrences of the old noun
+      (`salonEyebrow: "Store"`, `showInStore`, `chooseAnotherSalon: "Anderen Store wählen"`, and so
+      on). The 72 raw grep hits in that file are all identifiers and two code comments. The "worst
+      state, a half-renamed paid-commit screen" the handoff flagged as top priority **does not
+      exist.** Nothing to do there.
+      Where the real 67 sit: **roughly 35 of them are SEO `<title>` / meta-description strings**
+      (`app/layout.tsx`, `search/page.tsx`, `coiffeur/page.tsx`, `nails/page.tsx`, `[city]/page.tsx`,
+      `[city]/[category]/page.tsx`, `salon/[slug]/layout.tsx`, `ueber-uns`, `kontakt`, `sicherheit`,
+      `fuer-salons`), which is a strategy question and not a mechanical rename , see R5. The other
+      ~32 are ordinary UI copy ("Salon teilen" x3, "Keine Salons gefunden" x2, "Salons in der Nähe",
+      "Für Salons", the `Salon Lumière` / `Salon Maria` sample-business names) and those ARE
+      mechanical, once R2 and R5 are answered.
+- [ ] R5. **NEW BLOCKER FOUND 2026-08-01, needs the owner. Renaming the SEO metadata costs organic
+      search, and nothing in this workstream had priced that.** "Salon" is not only our word for the
+      entity, it is the word Swiss users type into Google: "coiffeur salon basel", "nail salon
+      zürich". Roughly 35 of the 67 remaining occurrences are page `<title>` and
+      `<meta name="description">` values, i.e. exactly the strings that decide whether we rank for
+      that query. Changing `Salons in Basel | solen.ch` to `Stores in Basel | solen.ch` targets a
+      phrase with no search demand. Nobody googles "beauty store Basel".
+      This is separable from the product decision: the UI can say Store everywhere while the
+      `<title>`/description keeps Salon, because metadata is addressed to a search engine and the UI
+      is addressed to the user. **Recommendation: leave all SEO metadata on "Salon", rename UI copy
+      only.** Related and NOT touched: `/fuer-salons` and `/salon/[slug]` are URL paths; renaming a
+      live route breaks inbound links and is a separate decision again.
       **I first parked this as a legal blocker and that was wrong, corrected here rather than left
       standing:** I argued "Salon" is a defined term in a contract users accepted, so renaming the
       party is a tier-2 statutory edit. But Solen is PRE-LAUNCH with no real customers
