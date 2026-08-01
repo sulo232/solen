@@ -29,6 +29,10 @@
 
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { postalToCity, safeCategory, type SalonCardCategory } from "../salon/_shared";
+// reinvent-ok: SALON_CATEGORY_SLUGS is the CANONICAL category-slug source (lib/validations.ts,
+// the same enum safeCategory() above validates against) - reused here rather than a new
+// inline ["coiffeur","barbershop","nails","spa"] array, per the owner's reinvent-data rule.
+import { SALON_CATEGORY_SLUGS } from "@/lib/validations";
 
 export interface SalonCardData {
   /** Salon name. Only null if the salon id wasn't found in the salons table. */
@@ -158,4 +162,85 @@ export async function getNearbyTeaserCount(): Promise<number | null> {
     return null;
   }
   return count ?? null;
+}
+
+/**
+ * I3 (home rails reconciliation): real salon ids with a live `status='available'`
+ * booking slot inside the next 7 days, ordered by rating desc, for the homepage
+ * "Available this week" rail. Same 7-day bound + membership test as
+ * CategoryMobileRails.tsx's own per-category "Available this week" rail
+ * (`salons_with_slot_in_hours` RPC, already granted to anon/authenticated/
+ * service_role, migration 20260607182403_add_salons_with_slot_in_hours_rpc.sql),
+ * just scoped across every category instead of one route. The RPC returns
+ * DISTINCT salon_ids with a real slot in the window; no per-service slot label
+ * is fetched because this rail only needs membership + rating order, not a
+ * "next slot" caption. Returns [] on any error, so the caller self-hides.
+ */
+export async function getAvailableThisWeekSalonIds(limit: number): Promise<string[]> {
+  const supabase = await createServerSupabaseClient();
+  const now = new Date();
+  const weekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+  const { data: slotRows, error: slotError } = await supabase.rpc("salons_with_slot_in_hours", {
+    p_start_hour: 0,
+    p_end_hour: 24,
+    p_from: now.toISOString(),
+    p_to: weekFromNow.toISOString(),
+  });
+  if (slotError) {
+    console.error("[salonCardData] getAvailableThisWeekSalonIds RPC failed:", slotError);
+    return [];
+  }
+  const ids = [...new Set((slotRows ?? []).map((row) => row.salon_id))];
+  if (ids.length === 0) return [];
+
+  const { data, error } = await supabase
+    .from("salons")
+    .select("id")
+    .eq("is_active", true)
+    .in("id", ids)
+    .order("average_rating", { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error("[salonCardData] getAvailableThisWeekSalonIds salons fetch failed:", error);
+    return [];
+  }
+  return (data ?? []).map((row) => row.id as string);
+}
+
+/**
+ * I3 (home rails reconciliation): top-rated salon ids per category, for the
+ * homepage's four "Top <Category>" rails. Same shape as CategoryMobileRails.tsx's
+ * own `top` calc (average_rating != null, sorted desc, no review-count floor ,
+ * unlike getTopSalonIds' cross-category "Top auf Solen" fallback above, which
+ * does apply an 8-review floor), just computed for all 4 categories in one query
+ * instead of one API call per category route. A salon carrying more than one
+ * category (e.g. coiffeur + barbershop) can legally appear in more than one
+ * rail, same as the real per-category rails already do. Returns an
+ * all-empty-arrays map on error, so every rail self-hides rather than crashing.
+ */
+export async function getTopSalonIdsByCategory(limit: number): Promise<Record<SalonCardCategory, string[]>> {
+  const result: Record<SalonCardCategory, string[]> = { coiffeur: [], barbershop: [], nails: [], spa: [] };
+  const supabase = await createServerSupabaseClient();
+  const { data, error } = await supabase
+    .from("salons")
+    .select("id, categories, average_rating")
+    .eq("is_active", true)
+    .not("average_rating", "is", null)
+    .order("average_rating", { ascending: false })
+    .limit(500);
+
+  if (error) {
+    console.error("[salonCardData] getTopSalonIdsByCategory fetch failed:", error);
+    return result;
+  }
+  for (const row of data ?? []) {
+    const cats = (row.categories as string[] | null) ?? [];
+    for (const cat of SALON_CATEGORY_SLUGS as SalonCardCategory[]) {
+      if (cats.includes(cat) && result[cat].length < limit) {
+        result[cat].push(row.id as string);
+      }
+    }
+  }
+  return result;
 }

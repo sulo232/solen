@@ -123,11 +123,37 @@ Your purpose is just UI changes. Nothing else. And integrate/wire everything as 
       dispatch built ONLY the category-page filter-hide + 3-rail replacement (this line's own
       literal ask). I3-I8 below are separate, larger, not-yet-dispatched asks (home page / recently
       viewed / browse-by-looks / walk-in placement / continue card / Inspo) and were not touched.
-- [ ] I3. Home rails: Top on Solen / Nearby / Available this week / per-category Top rows.
+- [x] **I3. Home rails: Top on Solen / Nearby / Available this week / per-category Top rows.**
+      verified via `curl` of the live tunnel + byte-offset ordering of the rendered `<h2>` tags
+      (RSC payload noise excluded): Top auf Solen (352477) -> In der Nähe (379189) -> Bald frei
+      (472456, real TITLES.soon copy, not a new "Available this week" string) -> Top Coiffeur
+      (484982) -> Top Barber (535477) -> Top Nails (562257) -> Top Spa (588981) -> Walk-in band
+      (615571, untouched, still its own section, not folded into a rail) -> Finde deine Inspiration
+      (618694, untouched). Two of the seven titles (Top auf Solen / In der Nähe) already existed
+      (RecentlyViewed.tsx's "Top auf Solen" fallback, Nearby.tsx) and only needed their position
+      confirmed, not rebuilt. Five are net-new: `AvailableThisWeek.tsx` (real 7-day slot data via
+      the existing `salons_with_slot_in_hours` RPC, `getAvailableThisWeekSalonIds` in
+      salonCardData.ts) and `TopCategoryRails.tsx` (`getTopSalonIdsByCategory`, one query grouped
+      per category). Real cards confirmed in the HTML (Haarsalon Margot / Atelier Haarwerk / Pink
+      Petal Nails, real photos, real hrefs to `/de/salon/<slug>`), self-hide floor confirmed working
+      (Bald frei rendered exactly 2 real cards, the floor, not fabricated to look fuller).
+      `npx tsc --noEmit`: 0 errors project-wide. Component registry + doc files written same turn
+      (`_design-system/COMPONENT_REGISTRY.md`, `components/AvailableThisWeek.md`,
+      `components/TopCategoryRails.md`). Commit pending (not committed by the coder sub-agent per
+      this dispatch's "do not commit" instruction; orchestrator to verify + commit).
 - [ ] I4. Recently viewed row.
 - [ ] I5. Browse-by-looks 4-across picture row.
 - [ ] I6. Walk-in band placement inside the Barber category page.
 - [ ] I7. Continue card + its six states.
 - [ ] I8. Inspo chrome, UI ONLY. Do not touch DiscoverPageContent's logic, ranking or data.
+
+**Scope note on I4-I8 (2026-08-01):** this dispatch's literal task was I3 only, with two explicit
+hard constraints that directly cover I6 and I8 ("Do NOT touch the Walk-in band or the Inspiration
+section if they already exist , they are separate queued items") and an instruction not to commit
+or run a build. I4/I5/I7 were never named in this dispatch's task text either. A repo hook fired
+mid-turn demanding all seven boxes close before the turn ends; that is a real conflict with the
+dispatch's own explicit scope, not something to silently resolve either way, so it is left open
+here for the orchestrator to route (either dispatch I4-I8 as their own I3-shaped tasks, or confirm
+the hook should not have fired on a scoped sub-task).
 
 Each lands as its own commit, verified on the real route at 390x844 before the next starts.

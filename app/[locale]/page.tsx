@@ -31,7 +31,13 @@ import ForYouSalonRows from "./_components/homepage/ForYouSalonRows";
 // server batch query, no per-salon round-trips, no client-side fetch waterfall.
 import { FORYOU_SALONS } from "./_components/homepage/forYouSalons";
 import { NEARBY_SALON_IDS } from "./_components/homepage/nearbySalonIds";
-import { getSalonCardDataMap, getTopSalonIds, getNearbyTeaserCount } from "./_components/homepage/salonCardData";
+import {
+  getSalonCardDataMap,
+  getTopSalonIds,
+  getNearbyTeaserCount,
+  getAvailableThisWeekSalonIds,
+  getTopSalonIdsByCategory,
+} from "./_components/homepage/salonCardData";
 // Salon of the Month (2026-07-13): real editorial pick from the admin picker
 // (dashboard/salon-of-month-admin -> salon_of_month_winners table), gated on
 // the salon_of_month feature_flags toggle. Server component, renders null
@@ -55,7 +61,12 @@ import RecentlyViewed from "./_components/homepage/RecentlyViewed";
 // re-add the import + the <ArtistOfTheMonth /> usage in FeedZone below.
 // import ArtistOfTheMonth from "./_components/homepage/ArtistOfTheMonth";
 import Nearby from "./_components/homepage/Nearby";
-// V3-D348 (tweak #5): dark full-bleed feature band — breaks the run of
+// I3 (2026-08-01, home rails reconciliation with public/_mockups/home-v3/search-a.html): real
+// 7-day slot availability + the four per-category "Top X" rails, both new sections between Nearby
+// and WalkInBand. See salonCardData.ts / components/AvailableThisWeek.md / components/TopCategoryRails.md.
+import AvailableThisWeek from "./_components/homepage/AvailableThisWeek";
+import TopCategoryRails from "./_components/homepage/TopCategoryRails";
+// V3-D348 (tweak #5): dark full-bleed feature band, breaks the run of
 // identical card carousels mid-feed + surfaces Walk-in.
 import WalkInBand from "./_components/homepage/WalkInBand";
 // V3-D150 (2026-05-25): CategoryPromos ("Stöber nach Kategorie." swipeable
@@ -168,10 +179,15 @@ export default async function Page({
   const { locale } = await params;
   // topSalonIds (RecentlyViewed's "Top auf Solen" fallback) and nearbyCount
   // (the Nearby map-teaser count) are independent live fetches, run in
-  // parallel before the id union below needs topSalonIds.
-  const [topSalonIds, nearbyCount] = await Promise.all([
+  // parallel before the id union below needs topSalonIds. I3 (2026-08-01):
+  // availableThisWeekIds (AvailableThisWeek's real 7-day slot rail) and
+  // topByCategory (TopCategoryRails' four per-category rails) join the same
+  // parallel batch, same reasoning.
+  const [topSalonIds, nearbyCount, availableThisWeekIds, topByCategory] = await Promise.all([
     getTopSalonIds(4),
     getNearbyTeaserCount(),
+    getAvailableThisWeekSalonIds(10),
+    getTopSalonIdsByCategory(10),
   ]);
   // One combined batch fetch (2 bulk Supabase queries inside
   // getSalonCardDataMap, not one per salon) for every real salon id the
@@ -180,6 +196,8 @@ export default async function Page({
     ...Object.values(FORYOU_SALONS).flatMap((list) => list.map((s) => s.id)),
     ...NEARBY_SALON_IDS,
     ...topSalonIds,
+    ...availableThisWeekIds,
+    ...Object.values(topByCategory).flat(),
   ]);
   return (
     <div className="relative overflow-hidden bg-white">
@@ -202,6 +220,10 @@ export default async function Page({
         <ForYouSalonRows salonData={salonCardData} />
         <RecentlyViewed salonData={salonCardData} topSalonIds={topSalonIds} />
         <Nearby salonData={salonCardData} nearbyCount={nearbyCount} />
+        {/* I3 (2026-08-01, home rails reconciliation with search-a.html): real 7-day slot
+            availability, then the four per-category Top rails, both self-hiding on thin data. */}
+        <AvailableThisWeek salonData={salonCardData} salonIds={availableThisWeekIds} />
+        <TopCategoryRails salonData={salonCardData} idsByCategory={topByCategory} />
         <WalkInBand />
         {/* FeaturedStylists pulled (V3-D436) — its cards linked to a
             non-existent /stylist/[slug] route and its demo data has no salon
