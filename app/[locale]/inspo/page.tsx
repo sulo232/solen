@@ -504,9 +504,11 @@ function DiscoverPageContent() {
                   type="button"
                   onClick={() => router.push(`/${locale}/inspo/saved`)}
                   aria-label="Gespeichert"
-                  className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-s-border text-s-ink-2 transition-colors duration-150 hover:text-s-ink"
+                  /* mockup-ok: h-11/w-11 + 16px glyph = HomeSearchPill's trailing circle 1:1, so the
+                     Inspo bar and the home bar are the same control, not two sizes of one idea. */
+                  className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border text-s-ink-2 transition-colors duration-150 hover:text-s-ink"
                 >
-                  <Heart size={18} />
+                  <Heart size={16} strokeWidth={2} />
                 </button>
               </div>
             </div>
@@ -733,8 +735,10 @@ function DiscoverPageContent() {
 
 export default function DiscoverPage() {
   return (
-    <Suspense fallback={<DiscoveryGridSkeleton />}>
-      <DiscoverPageContent />
-    </Suspense>
+    <>
+      <Suspense fallback={<DiscoveryGridSkeleton />}>
+        <DiscoverPageContent />
+      </Suspense>
+    </>
   );
 }

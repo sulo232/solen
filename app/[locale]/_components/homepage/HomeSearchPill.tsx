@@ -12,7 +12,7 @@
 "use client";
 
 import { Link } from "next-view-transitions";
-import { Menu, Search } from "lucide-react";
+import { Heart, Menu, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
@@ -52,10 +52,37 @@ import { cn } from "@/lib/utils";
  * falls back to when no category/query is set (`[activeCategory, q].filter(Boolean).join(" ")
  * || tChrome("searchPlaceholder")`); home has neither, so it resolves to the identical string
  * ("Suchen" / "Search" / "Rechercher" / "Cerca") without any new i18n key.
+ *
+ * I8 (2026-08-01, search-a.html's Inspo tab, `setPillSlot("saved")`): two optional props let
+ * `/inspo` compose this SAME pill instead of hand-rolling a second one (graveyard hit,
+ * `npm run exists homepage`: the deleted `inspo-header.html` mockup page tried exactly that and
+ * was rejected, "we already have another mockup page", REMOVED.md). `label` overrides the
+ * placeholder text (Inspo passes the real `discover.searchPlaceholder` key, "Styles
+ * suchen..."/"Search styles...", not a new string). `trailing="saved"` swaps the hamburger for a
+ * heart linking to `/{locale}/inspo/saved`, matching the mockup's ONE surface with a saved
+ * destination. `onActivate`, when provided, replaces the main body's `<Link href="/search">`
+ * with a `<button>` (Inspo's own search lives in-page via `DiscoverySearchBar`, so tapping this
+ * pill must not navigate away to the unrelated salon-search route; Home's own behavior is
+ * unchanged when `onActivate` is omitted).
  */
-export default function HomeSearchPill({ locale }: { locale: string }) {
+export default function HomeSearchPill({
+  locale,
+  label,
+  trailing = "menu",
+  onActivate,
+}: {
+  locale: string;
+  label?: string;
+  trailing?: "menu" | "saved";
+  onActivate?: () => void;
+}) {
   const tChrome = useTranslations("ui.searchChrome");
   const tSD = useTranslations("salonDetail");
+  // common.savedLabel ("Gespeichert"/"Saved"/"Enregistré"/"Salvato") is the closest existing key
+  // for the saved-heart's aria-label; discover's own namespace has no dedicated aria string, and
+  // DiscoverPageContent's own heart button (page.tsx) hardcodes "Gespeichert" un-i18n'd, which
+  // this does not copy.
+  const tCommon = useTranslations("common");
 
   return (
     <div className="mx-auto w-full max-w-[680px] px-4 pt-1 pb-2">
@@ -65,30 +92,57 @@ export default function HomeSearchPill({ locale }: { locale: string }) {
           "shadow-[0_2px_8px_0_rgba(0,0,0,0.07)]", // mockup-ok: SearchTemplate.tsx pill, resting state, copied 1:1
         )}
       >
-        <Link
-          href={`/${locale}/search`}
-          aria-label={tChrome("editSearch")}
-          className="flex min-w-0 flex-1 items-center gap-3"
-        >
-          <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" aria-hidden />
-          <span className="block min-w-0 flex-1 truncate font-body text-[16px] font-medium text-s-ink">
-            {tChrome("searchPlaceholder")}
-          </span>
-        </Link>
-        {/* Trailing hamburger, matching SearchTemplate.tsx's mobile trailing slot: fires the
-            shared `solen:open-menu` window event Header.tsx listens for, opening the same
-            MobileMenu the removed top-row hamburger used to open (city selector included). */}
-        <button
-          type="button"
-          aria-label={tSD("openMenu")}
-          onClick={() => window.dispatchEvent(new CustomEvent("solen:open-menu"))}
-          className={cn(
-            "grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border",
-            "text-s-ink transition-all duration-300 ease-glide hover:bg-s-bg-sunken",
-          )}
-        >
-          <Menu size={16} strokeWidth={2} aria-hidden />
-        </button>
+        {onActivate ? (
+          <button
+            type="button"
+            onClick={onActivate}
+            aria-label={tChrome("editSearch")}
+            className="flex min-w-0 flex-1 items-center gap-3 text-left"
+          >
+            <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" aria-hidden />
+            <span className="block min-w-0 flex-1 truncate font-body text-[16px] font-medium text-s-ink">
+              {label ?? tChrome("searchPlaceholder")}
+            </span>
+          </button>
+        ) : (
+          <Link
+            href={`/${locale}/search`}
+            aria-label={tChrome("editSearch")}
+            className="flex min-w-0 flex-1 items-center gap-3"
+          >
+            <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" aria-hidden />
+            <span className="block min-w-0 flex-1 truncate font-body text-[16px] font-medium text-s-ink">
+              {label ?? tChrome("searchPlaceholder")}
+            </span>
+          </Link>
+        )}
+        {trailing === "saved" ? (
+          <Link
+            href={`/${locale}/inspo/saved`}
+            aria-label={tCommon("savedLabel")}
+            className={cn(
+              "grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border",
+              "text-s-ink transition-all duration-300 ease-glide hover:bg-s-bg-sunken",
+            )}
+          >
+            <Heart size={16} strokeWidth={2} aria-hidden />
+          </Link>
+        ) : (
+          // Trailing hamburger, matching SearchTemplate.tsx's mobile trailing slot: fires the
+          // shared `solen:open-menu` window event Header.tsx listens for, opening the same
+          // MobileMenu the removed top-row hamburger used to open (city selector included).
+          <button
+            type="button"
+            aria-label={tSD("openMenu")}
+            onClick={() => window.dispatchEvent(new CustomEvent("solen:open-menu"))}
+            className={cn(
+              "grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border",
+              "text-s-ink transition-all duration-300 ease-glide hover:bg-s-bg-sunken",
+            )}
+          >
+            <Menu size={16} strokeWidth={2} aria-hidden />
+          </button>
+        )}
       </div>
     </div>
   );

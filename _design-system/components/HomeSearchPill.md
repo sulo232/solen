@@ -43,13 +43,32 @@ task asked to reuse: "reuse that component or its markup") and gives it home-app
 ## Public API
 
 ```ts
-export default function HomeSearchPill({ locale }: { locale: string }): JSX.Element;
+export default function HomeSearchPill({
+  locale,
+  label,
+  trailing,
+  onActivate,
+}: {
+  locale: string;
+  /** Overrides the placeholder text. Home omits this (falls back to `ui.searchChrome.searchPlaceholder`,
+   *  "Suchen"). I8: /inspo passes `discover.searchPlaceholder` ("Styles suchen..."/"Search styles..."). */
+  label?: string;
+  /** "menu" (default, the hamburger, fires `solen:open-menu`) or "saved" (a heart, links to
+   *  `/{locale}/inspo/saved`). I8: /inspo is the one caller that passes "saved". */
+  trailing?: "menu" | "saved";
+  /** When set, the main body becomes a `<button onClick={onActivate}>` instead of a
+   *  `<Link href="/{locale}/search">`. I8: /inspo passes this to scroll its own in-page search
+   *  into view rather than navigate away to the unrelated salon-search route; Home omits it and
+   *  keeps the original `<Link>` behavior unchanged. */
+  onActivate?: () => void;
+}): JSX.Element;
 ```
 
 Client component (`"use client"`, uses `useTranslations` + a `window.dispatchEvent` click handler).
 No `md:` gating inside the file, the call site (`Hero.tsx`) wraps it in a `md:hidden` sibling next
 to the `max-md:hidden` desktop hero block, mirroring FLOORS LAW 8 ("the same thing looks the same
-everywhere") between the home and category-route pill treatments.
+everywhere") between the home and category-route pill treatments. `/inspo` (`app/[locale]/inspo/page.tsx`)
+mounts a second, differently-configured instance the same way, mobile-only, above `DiscoverPageContent`.
 
 ---
 
@@ -83,8 +102,9 @@ SearchTemplate's trailing slot both already use. No new i18n keys in any locale.
 
 ## Use for / Don't reuse for
 
-**Use:** the mobile homepage only, directly under the Header's category-pill row (mounted from
-`Hero.tsx`).
+**Use:** the mobile homepage, directly under the Header's category-pill row (mounted from
+`Hero.tsx`); the mobile `/inspo` route, directly above `DiscoverPageContent` (mounted from
+`inspo/page.tsx`'s outer `DiscoverPage` wrapper, `trailing="saved"` + `onActivate`, I8).
 
 **Don't reuse for:** category/search routes (those already render the real `SearchTemplate` pill,
 importing this instead would be a regression), any desktop viewport, any route that needs the real

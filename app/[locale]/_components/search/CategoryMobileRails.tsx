@@ -22,6 +22,13 @@ import { ArrowRight } from "lucide-react";
 import { ScrollRow } from "../homepage/SectionHeader";
 import { SalonCard, type SalonCardProps } from "../homepage/SalonCard";
 import { TITLES, pick } from "./CategoryBrowseRails";
+// I6 (2026-08-01, home rails reconciliation with public/_mockups/home-v3/search-a.html
+// categorySections(): "Barber is where walk-in lives now that it is not a category pill"): the
+// real, already-shipped WalkInBand (homepage/WalkInBand.tsx) composed in, not rebuilt , same
+// component the home page renders. It self-hides on zero walk-in salons (own `if (!loading &&
+// (!salons || salons.length === 0)) return null` gate), so no extra empty-state handling needed
+// here.
+import WalkInBand from "../homepage/WalkInBand";
 // postalToCity reuse (rule 12, don't re-declare): the same postal-code -> city lookup
 // salonCardData.ts already uses to feed the homepage Nearby rail's SalonCard `city` prop
 // (a working surface). A rail's `cityName` prop is one page-level value (the active city
@@ -208,6 +215,10 @@ export function CategoryMobileRails({
         cityName={cityName}
         favoriteIds={favoriteIds}
       />
+      {/* I6: Walk-in, second section on Barber ONLY (mockup categorySections(): "Top Barbershops,
+          Walk-in, Nearby, Available this week..."). The real WalkInBand fetches its own data and
+          renders null with zero walk-in salons, so this never ships an empty shell. */}
+      {category === "barbershop" && <WalkInBand />} {/* drift-ok: walk-in is genuinely barbershop-only (queue feature), same precedent as SearchTemplate.tsx:507's walk_in pill, not a styling branch */}
       <Rail
         title={pick(TITLES.nearby, locale)}
         salons={nearby}

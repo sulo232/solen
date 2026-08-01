@@ -432,7 +432,14 @@ export default function Header({ locale }: { locale: string }) {
   // stays scoped to the CATEGORY_SEARCH_SEGMENTS union , it still drives the MobileCityChip
   // branch untouched here, and the header's non-breakpoint-scoped `pt-5 pb-1` padding below is
   // widened separately with an explicit `max-md:` guard so desktop home stays `py-5`.
-  const showCategoryChrome = isHome || !!categorySegment;
+  // I8 (2026-08-01, search-a.html's Inspo tab: the pill row + search pill are the SAME chrome on
+  // every category, "All" and Inspo alike). `isDiscover` (bare /inspo route) joins the OR here,
+  // deliberately NOT folded into `categorySegment` itself: categorySegment also drives the
+  // header's scroll-collapse-to-nothing fold (further down, gated on the bare `categorySegment`
+  // variable, intentionally not widened), which hands the top-chrome slot off to a SearchTemplate
+  // sticky search band. /inspo has no SearchTemplate mounted, so folding the header there would
+  // leave mobile scroll with no chrome at all, same reasoning already recorded for `isHome` above.
+  const showCategoryChrome = isHome || !!categorySegment || isDiscover;
   const tDiscover = useTranslations("discover");
   // 2026-07-27 language sweep: five German literals in this file rendered German to English,
   // French and Italian visitors on EVERY page, because the header is global. Four of the five
@@ -581,7 +588,10 @@ export default function Header({ locale }: { locale: string }) {
             // V3-D (2026-08-01): home gets the SAME mobile tuck as a category route (the
             // pill row now renders right below it), but desktop must stay `py-5` unchanged ,
             // hence the `max-md:` guard instead of widening the bare classes above.
-            : isHome
+            // I8: /inspo joins isHome here (same mobile tuck, same desktop py-5), so its
+            // category-pill row sits at the same gap under the header as every other
+            // showCategoryChrome route instead of falling through to the untucked default.
+            : isHome || isDiscover
               ? "py-5 max-md:pt-5 max-md:pb-1"
               : "py-5",
         // V3-D352: with the mobile menu open, the header goes fully transparent (no
@@ -958,7 +968,12 @@ export default function Header({ locale }: { locale: string }) {
               // place every time, which is the cross-screen inconsistency FLOORS LAW 8 exists
               // to stop. Literal array order, always.
               .map((c) => {
-                const isActive = c.home ? isHome : c.slug === categorySegment;
+                // I8: "inspo" is deliberately outside CATEGORY_SEARCH_SEGMENTS (that union also
+                // drives category/search-route-only behavior, see the showCategoryChrome comment
+                // above), so categorySegment never equals "inspo". isDiscover is the real
+                // /inspo-route check; without this branch the Inspo pill could never show
+                // selected on its own page.
+                const isActive = c.home ? isHome : c.slug === "inspo" ? isDiscover : c.slug === categorySegment;
                 return (
                   <Link
                     key={c.slug}

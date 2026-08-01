@@ -16,9 +16,15 @@ checked: SectionHeader.md, SalonCard.md (homepage) — neither covers a 3-rail m
 **New:** 2026-08-01, owner: "remove cz we made it carousel right did u forget" (the filter row comes off
 mobile category pages because they are carousels now, not a flat filterable list).
 **Source of truth:** `public/_mockups/home-v3/search-a.html`, `categorySections()` / `railCard()` /
-`sectionFrame()` — first three sections only (Top / Nearby / Available this week). The mockup also builds
-a walk-in band, a reviews rail and an Inspo section for a category page; those are a separate, not-yet-
-scoped ask and are NOT built here.
+`sectionFrame()`: Top / Walk-in (Barber only) / Nearby / Available this week. The mockup also builds a
+reviews rail and an Inspo section for a category page; those are a separate, not-yet-scoped ask and are
+NOT built here.
+**I6 (2026-08-01):** the real `homepage/WalkInBand.tsx` composed in as the SECOND section, Barber
+(`barbershop`) only, matches the mockup's `categorySections()`: "Barber is where walk-in lives now that
+it is not a category pill." `drift-ok`'d against the no-category-branch rule (B5) on the same precedent
+already used at `SearchTemplate.tsx:507`'s `walk_in` filter pill: walk-in is a real barbershop-only
+feature (the queue table), not a styling branch. WalkInBand fetches its own data and self-hides on zero
+walk-in salons, so this never ships an empty shell on the other three categories or on a thin Barber day.
 
 ---
 
@@ -30,18 +36,20 @@ already renders the 2-4 col `SalonResultCard` grid, unaffected by this component
 
 ---
 
-## The three rails (in render order)
+## The rails (in render order)
 
-Each rail is a filtered/sorted **view of the same `salons` array** SearchTemplate already fetched — no
+Each rail is a filtered/sorted **view of the same `salons` array** SearchTemplate already fetched, no
 extra network. A `<Rail>` sub-component self-hides any slice with **< 2 salons** (same floor
 `CategoryBrowseRails` uses), so an empty rail never renders. If the Top rail itself can't populate (< 2
-rated salons), the whole component returns null.
+rated salons), the whole component returns null. Walk-in (Barber only) is not a `<Rail>`, it's the real
+`WalkInBand`, which owns its own data fetch and self-hide gate.
 
 | # | Title | Slice logic |
 |---|---|---|
 | 1 | `Top ${categoryLabel}` (e.g. "Top Coiffeur") | `average_rating != null`, sorted desc, top 10. **Outer gate:** if this has < 2, the whole component returns null. |
-| 2 | Nearby (`TITLES.nearby`, imported) | sorted by `distance_meters` asc **when present**; otherwise the same city/category-scoped pool already fetched (no-geo fallback, identical to `CategoryBrowseRails`' own "In der Nähe" rail). |
-| 3 | Available this week (`TITLES.soon`, imported — the closest existing shipped copy; see i18n note below) | salons with a real upcoming slot (`services[].slots`) inside the next 7 days, sorted by soonest. Bounded to 7 days, unlike `CategoryBrowseRails`' unbounded "Bald frei", so the section's own claim stays true. |
+| 2 | Walk-in (Barber only, I6) | The real `homepage/WalkInBand.tsx`, gated `category === "barbershop"`. Own fetch (`GET /api/walkin/nearby`), own self-hide on zero walk-in salons. |
+| 3 | Nearby (`TITLES.nearby`, imported) | sorted by `distance_meters` asc **when present**; otherwise the same city/category-scoped pool already fetched (no-geo fallback, identical to `CategoryBrowseRails`' own "In der Nähe" rail). |
+| 4 | Available this week (`TITLES.soon`, imported — the closest existing shipped copy; see i18n note below) | salons with a real upcoming slot (`services[].slots`) inside the next 7 days, sorted by soonest. Bounded to 7 days, unlike `CategoryBrowseRails`' unbounded "Bald frei", so the section's own claim stays true. |
 
 Per-card fields passed to the real `SalonCard`: `rating`, `reviewCount`, `photoUrl`, `priceFromCHF` =
 `min_price` (not `avg_price` — PBV Art. 13, same rule the rest of the app already follows),

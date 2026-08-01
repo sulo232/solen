@@ -2,22 +2,34 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-07-31T19:29:07 (trigger: auto)
+- taken: 2026-08-01T19:32:14 (trigger: auto)
 - branch: claude/principles-security-audit-0ae738
 
 ## git
 ```
-065345c98 Category pill: copy Airbnb's STRUCTURE, not just its values. The double line is gone.
-923b5cfed Add evidence to the deletion checkbox
-ec90eb78b Pill second line fixed on the unselected state; continuation card back with 3 shapes
-f117b2718 Inspo built: the queue is empty
-4831091e1 Home is now a state of the search page, not a second file
+5354b0ec2 Home matches the mockup: grid out, Inspo pill in, teaser off mobile
+888c1dd1e I4 and I5, plus a real silent no-op found on the way
+b547aec3d Evidence on the I2-contradiction box: measured, with commit shas
+46a3ed064 Home gets the mockup chrome, and the clipped category row is fixed
+cdb3391dc I3: home page section list reconciled with the mockup
 ```
 ```
-M public/_mockups/home-v3/search-a.html
+M _design-system/COMPONENT_REGISTRY.md
+ M _design-system/components/CategoryMobileRails.md
+ M _design-system/components/HomeSearchPill.md
+ M _plans/HOME_V3_CATEGORY_MAP.md
+ M app/[locale]/_components/homepage/HomeSearchPill.tsx
+ M app/[locale]/_components/layout/Header.tsx
+ M app/[locale]/_components/search/CategoryMobileRails.tsx
+ M app/[locale]/inspo/page.tsx
+ M app/[locale]/page.tsx
+?? _design-system/components/ContinueCard.md
+?? app/[locale]/_components/homepage/ContinueCard.tsx
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
+54 | HOME V3 , cities out, cards matched to real, category 3D grid + floating map, walk-in inside Barber, Inspo | **ACTIVE** (2026-07-31)
+53 | HOME V3 mockup rebuilt from the REAL home page sections (owner 10-ask dictation + 4 annotated shots) | **ACTIVE** (2026-07-31)
 52 | SCREEN RESEARCH , wide corpus sweep of real booking apps, every screen archetype, then the change list | **ACTIVE** (2026-07-29)
 46 | ALL-LANGUAGE SWEEP (de/en/fr/it), running unattended | **ACTIVE** (2026-07-27)
 45 | THE 9, RUN AS A LOOP (owner: "fix each 9 autonomously continuously jst park ones u cant do") | **ACTIVE** (2026-07-27)
@@ -53,3 +65,7 @@ M public/_mockups/home-v3/search-a.html
 48 | PRINCIPLE DEEP-RESEARCH , re-test every principle we already have against external evidence | **ACTIVE** (design) + handoff (rest) 2026-07-28
 50 | DESIGN principle deep-research (the rules we ALREADY have) | **ACTIVE** (2026-07-28)
 51 | DESIGN RE-ENGINEER , improve the system we have, measured against live Airbnb | **ACTIVE** (2026-07-28)
+
+## HOME_V3_CATEGORY_MAP.md
+Open boxes:
+- [ ] **CORRECTION (owner 2026-08-01, "i told you its loop harden"):** he said "integrate/wire

@@ -46,6 +46,12 @@ import {
 // RecentlyViewed.tsx rail or Entdecken.tsx (this task's own no-touch list).
 import RecentlyViewedTiles from "./_components/homepage/RecentlyViewedTiles";
 import PopularLooks from "./_components/homepage/PopularLooks";
+// I7 (2026-08-01, home rails reconciliation with public/_mockups/home-v3/search-a.html
+// continuationCard()): the home's FIRST element, mounted ahead of MobileCategoriesRow per the
+// mockup's own render order (continuationCard() is appended to #sa-list before recentlyViewed()
+// and every rail; MobileCategoriesRow has no mockup equivalent to defer to). Self-hides to null
+// with no real state to show. See components/ContinueCard.md for the per-state real-data audit.
+import ContinueCard from "./_components/homepage/ContinueCard";
 // Salon of the Month (2026-07-13): real editorial pick from the admin picker
 // (dashboard/salon-of-month-admin -> salon_of_month_winners table), gated on
 // the salon_of_month feature_flags toggle. Server component, renders null
@@ -226,6 +232,10 @@ export default async function Page({
         {/* ForYouGreeting ("Willkommen zurück, {name}") removed 2026-06-04:
             redundant with the hero's "Hallo, {name}" — two name-greetings on
             one page. Hero greeting is the single greeting now. */}
+        {/* I7: the home's first element (search-a.html continuationCard()). Self-hides to
+            nothing for a logged-out visitor with no persisted search. Mounted ahead of
+            MobileCategoriesRow, matching the mockup's own render order. */}
+        <ContinueCard />
         <MobileCategoriesRow />
         <SalonOfMonth locale={locale} />
         <ForYouSalonRows salonData={salonCardData} />

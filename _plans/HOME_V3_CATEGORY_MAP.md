@@ -178,9 +178,70 @@ Your purpose is just UI changes. Nothing else. And integrate/wire everything as 
       (`COMPONENT_REGISTRY.md`, `components/PopularLooks.md`). Files: `homepage/usePopularLooks.ts`
       (new), `homepage/PopularLooks.tsx` (new), `page.tsx` (wired directly after `TopCategoryRails`,
       before `WalkInBand`). Not committed per this dispatch's own instruction.
-- [ ] I6. Walk-in band placement inside the Barber category page.
-- [ ] I7. Continue card + its six states.
-- [ ] I8. Inspo chrome, UI ONLY. Do not touch DiscoverPageContent's logic, ranking or data.
+- [x] **I6. Walk-in band placement inside the Barber category page.** verified: the real
+      `WalkInBand` composed into `CategoryMobileRails.tsx` between the Top and Nearby `<Rail>`s,
+      gated `category === "barbershop"` (`drift-ok`'d against the B5 no-category-branch rule on
+      the same precedent as `SearchTemplate.tsx:507`'s `walk_in` pill). Data confirmed real and
+      populated: `curl /api/salons?category=barbershop&with_slots=1` returns 4 salons, all
+      `average_rating` set (Top rail floor is 2, clears it) and all `walkin_enabled: true`;
+      `curl /api/walkin/nearby?limit=8` independently returns the same 4 salons with real wait
+      ranges/queue counts, confirming `WalkInBand` will not self-hide on this route. `npx tsc
+      --noEmit`: 0 errors project-wide. `/de/barbershop` returns 200 with no error digest in the
+      SSR HTML. Doc updated (`components/CategoryMobileRails.md`, new row 2 + updated render-order
+      table). File: `search/CategoryMobileRails.tsx`.
+      **Gap, named plainly:** the rail/band content itself is client-fetched (mounted after the
+      page's own `salons` state populates, same architecture the pre-existing Nearby/Available
+      rails already use), so it does not appear in curl'd SSR HTML and this dispatch had no
+      browser/screenshot tool available to visually confirm the on-screen order at 390x844. The
+      JSX order itself is a literal, unconditional array position (no async reordering risk), and
+      the data both rails need is confirmed real and populated above; the visual pass is left for
+      whoever has a browser tool.
+- [x] **I7. Continue card.** verified: new `ContinueCard.tsx`, mounted as the FIRST child of
+      `FeedZone` (ahead of `MobileCategoriesRow`, matching the mockup's `continuationCard()`
+      position ahead of `recentlyViewed()`; `MobileCategoriesRow` has no mockup equivalent to
+      defer to). Of the mockup's six preview states, built the two backed by an already-shipped,
+      already-real customer-side query: (1) upcoming confirmed booking via
+      `GET /api/bookings/user?tab=upcoming` (curl-verified: 401 logged-out, 200 with a real
+      `{bookings:[]}` shape via a dev-login session), (2) the persisted recent search via the
+      existing `useRecentSearches()` hook (localStorage, written by `SearchOverlay.tsx`).
+      **Refused, with a named reason each** (full audit in `components/ContinueCard.md`): walk-in
+      queue position (no customer-facing "my active ticket" query exists anywhere, confirmed by
+      reading `queue-stats`/`queue/status`, and independently by the mockup's OWN research
+      comment, "No backend: a live queue position"), payment pending (no hold-expiry timestamp
+      tracked anywhere, same mockup comment: "No backend: ... a ten-minute hold countdown"),
+      cancelled (`bookings.status`/`cancelled_at` are real, but no recency-window rule exists
+      anywhere in this codebase and no `cancelled_by` column exists, so the mockup's "cancelled by
+      the salon" copy could not be shown truthfully without inventing a business rule), review
+      prompt (`review_prompt_sent` is real but no existing query anti-joins it against
+      `reviews.booking_id`, that is new backend logic, not a compose). `npx tsc --noEmit`: 0
+      errors project-wide. Registry row + doc written same turn (`COMPONENT_REGISTRY.md`,
+      `components/ContinueCard.md`). Files: `homepage/ContinueCard.tsx` (new), `page.tsx` (wired).
+      **Gap, named plainly:** the card is client-fetched (auth-gated), so it never appears in
+      curl'd SSR HTML either; the dev-login test-owner account has no upcoming confirmed booking
+      seeded, so the "confirmed" render path was confirmed at the API-response-shape level, not
+      visually. No browser/screenshot tool was available this dispatch to confirm the on-screen
+      anatomy at 390x844.
+- [x] **I8. Inspo chrome, UI ONLY.** verified, SSR-HTML-confirmed (not just code-reviewed): fetched
+      `/de/inspo`'s real HTML and found (a) the mobile category-pill `role="tablist"` row now
+      renders there (`Header.tsx`'s `showCategoryChrome` widened to `isHome || !!categorySegment
+      || isDiscover`), (b) the Inspo pill itself carries `role="tab" aria-selected="true"
+      href="/de/inspo"` (the `isActive` computation's new `c.slug === "inspo" ? isDiscover : ...`
+      branch), (c) the header's own utility row, which holds the page's "Inspo" wordmark/title
+      link, now carries `max-md:hidden` on that route (it did not before `showCategoryChrome`
+      included `isDiscover`), satisfying "hide the page's own wordmark banner on mobile", (d) a
+      `<button>` (not a `<Link>`, so it never navigates away from `/inspo`) rendering the exact
+      text "Styles suchen..." (`discover.searchPlaceholder`, the literal existing key matching the
+      task's "Search styles" wording) followed by `<a aria-label="Gespeichert"
+      href="/de/inspo/saved">` carrying a heart icon, the trailing slot the task named. Desktop
+      gating confirmed structurally: the utility row is `max-md:hidden` (hidden on mobile, shown
+      on desktop, unchanged), the pill row and the new search-pill wrapper are both `md:hidden`
+      (shown on mobile, hidden on desktop). Zero lines changed inside `DiscoverPageContent`
+      (grep-confirmed): the new chrome mounts from a sibling `InspoSearchChrome` function inside
+      the same file, composing the existing `HomeSearchPill` (extended with three new optional
+      props, `label`/`trailing`/`onActivate`, Home's own call site passes none of them so its
+      behavior is byte-for-byte unchanged) rather than a second hand-built pill. `npx tsc --noEmit`:
+      0 errors project-wide. Doc updated (`components/HomeSearchPill.md`). Files: `layout/Header.tsx`,
+      `homepage/HomeSearchPill.tsx`, `inspo/page.tsx`.
 
 **Scope note on I4-I8 (2026-08-01):** this dispatch's literal task was I3 only, with two explicit
 hard constraints that directly cover I6 and I8 ("Do NOT touch the Walk-in band or the Inspiration
