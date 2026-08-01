@@ -584,6 +584,21 @@ export default function Header({ locale }: { locale: string }) {
       data-tone={tone}
       className={cn(
         "sticky top-0 left-0 right-0 z-50 transition-all duration-300 ease-glide",
+        // OVERRIDE 2026-08-01 (owner, live and literal, repeated ask: "why is the category
+        // pills still sticky? What the fuck are you doing bro? No."): measured at scroll 0,
+        // TWO things were position:sticky at once, this header (carrying the category-pill
+        // row below) AND the search pill's own sticky wrapper (HomeSearchPill.tsx /
+        // SearchTemplate.tsx). The category row itself has now moved OUT of this element
+        // (rendered as a plain, non-sticky sibling right after </header>, see below), so on
+        // every route that shows it (home / category-search / inspo) this header box carries
+        // no mobile content at all (the utility row is already max-md:hidden on those routes,
+        // see showCategoryChrome below). Forcing it to plain flow on mobile there removes the
+        // SECOND sticky element entirely, leaving the search pill as the only thing that pins,
+        // literally what was asked. `!` wins over the base "sticky" utility above regardless of
+        // Tailwind's internal class order (same pattern as FIX 1's `!py-0` a few lines down).
+        // Desktop is untouched (no separate search-pill stickiness there), and every OTHER
+        // route (profile, PDP, etc., showCategoryChrome false) keeps the normal sticky header.
+        showCategoryChrome && "max-md:!static",
         // V3-D354: vertical padding is decoupled from menuOpen so opening the menu
         // never shifts the header height. Before, the menuOpen branch forced py-3
         // over the top-state py-5, so the hamburger -> X box jumped up ~8px on open.
@@ -960,26 +975,31 @@ export default function Header({ locale }: { locale: string }) {
           </button>
         </div>
       </div>
+    </header>
       {/* V3-D421k: category-tab row, full-width scrollable pills on their OWN row
-          below the utility row (home · city · menu). Mobile only (desktop uses the
-          dropdown nav). Right-edge fade signals "more categories scroll". On a category/search
-          route this folds away with the whole header on scroll (the header's max-h collapse,
-          gated on the bare `categorySegment` above, deliberately NOT widened).
-          V3-D (2026-08-01): on home this row now renders too (`showCategoryChrome`), but stays
-          permanently sticky instead of folding: the home page has no SearchTemplate-style search
-          band to hand the top-chrome slot off to, so collapsing it here would leave mobile
-          scroll with no top chrome at all. A persistent category switcher while scrolling the
-          long home feed is the reasonable outcome, not a bug, flagged for the reviewer as an
-          intentional deviation from the category-route fold behavior. */}
+          below the utility row (home, city, menu). Mobile only (desktop uses the
+          dropdown nav). Right-edge fade signals "more categories scroll".
+          OVERRIDE 2026-08-01 (owner, live and literal, "why is the category pills still
+          sticky? What the fuck are you doing bro? No."): this row used to render INSIDE the
+          sticky header above, so it stayed pinned to the top through the whole 0-60px
+          pre-collapse scroll window, which IS being sticky regardless of the eventual fold.
+          It is now a plain, non-sticky SIBLING of the header instead, rendered in normal
+          document flow, so it scrolls away with the page from the very first pixel of
+          scroll like any other content. The header itself is forced to position:static on
+          mobile for every route that shows this row (see the
+          `showCategoryChrome && "max-md:!static"` class on the header above), so there is
+          exactly one pinned element left on these routes: the search pill
+          (HomeSearchPill.tsx / SearchTemplate.tsx's own sticky top-0). This supersedes both
+          the old "folds away with the whole header" note and the "home stays permanently
+          sticky, intentional deviation" note this comment used to carry, neither applies
+          now that the row does not pin at all. */}
       {showCategoryChrome && (
         <div
           className={cn(
             "md:hidden mx-auto mt-3 max-w-[1280px] px-4",
-            // FIX 1: exactly one pointer-events-* class ever applies here (never both at
-            // once), so there is no tailwind cascade-order ambiguity. This div is a DIRECT
-            // child of <header>, whose own box can be pointer-events:none (inline style
-            // above) when transparent, so the non-menuOpen branch needs its own explicit
-            // "auto" rather than relying on inheritance.
+            // This row is no longer a child of the sticky header (moved out per the
+            // override above), so there is no ancestor pointer-events:none box to opt back
+            // into, but the menuOpen-hide behavior it always had stays unchanged.
             menuOpen ? "pointer-events-none opacity-0" : "pointer-events-auto",
           )}
         >
@@ -1098,7 +1118,6 @@ export default function Header({ locale }: { locale: string }) {
           </div>
         </div>
       )}
-    </header>
     <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} locale={locale} loggedIn={loggedIn} />
     </>
   );

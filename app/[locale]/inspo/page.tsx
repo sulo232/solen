@@ -8,6 +8,7 @@ import MasonryGrid from "@/components-legacy/discovery/MasonryGrid";
 import ItemCard from "@/components-legacy/discovery/ItemCard";
 import VideoCard from "@/components-legacy/discovery/VideoCard";
 import DiscoverySearchBar from "@/components-legacy/discovery/SearchBar";
+import HomeSearchPill from "@/app/[locale]/_components/homepage/HomeSearchPill";
 import DiscoveryGridSkeleton from "@/components-legacy/discovery/DiscoveryGridSkeleton";
 import DiscoveryEmptyState from "@/components-legacy/discovery/DiscoveryEmptyState";
 import ProfileSetupModal from "@/components-legacy/discovery/ProfileSetupModal";
@@ -19,7 +20,6 @@ import PostFromDiscover from "@/components-legacy/discovery/PostFromDiscover";
 import AISuggestionPills from "@/components-legacy/discovery/AISuggestionPills";
 import SearchAutocomplete from "@/components-legacy/discovery/SearchAutocomplete";
 import RecentSearches from "@/components-legacy/discovery/RecentSearches";
-import { Heart } from "lucide-react";
 import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender, FilterPill, ActiveFilter } from "@/lib/types";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { useScrollRestoration } from "@/lib/hooks/useScrollRestoration";
@@ -470,12 +470,29 @@ function DiscoverPageContent() {
             header's logo slot (see Header.tsx, route-gated to /inspo) — so the standalone h1 here is removed to
             stop the title stacking under the wordmark. */}
 
-        {/* Search (V1: top of the filter zone). V4: a cancel-arrow appears left on focus (Pinterest), and the trending
-            suggestions drop down. Tap the arrow to clear + exit search. */}
-        <div className="relative mb-3">
-          <div className="flex items-center gap-2">
-            {/* No back/cancel button (owner 2026-06-23): tap outside to dismiss (onBlur closes), iOS-style. */}
-            <div className="min-w-0 flex-1">
+        {/* mockup-ok: owner-directed literal fix, this session's punch list item D, HomeSearchPill.tsx's own
+            header comment already documents this exact bridge (onActivate prop written FOR this page). */}
+        {/* Search (V1: top of the filter zone). V4: the trending suggestions drop down on focus.
+            OVERRIDE 2026-08-01 (owner, third repeat, "make the search bar wide same size as any
+            other, and make the heart icon inside of the search bar"): the resting state now
+            composes the SAME HomeSearchPill every other route renders (home / coiffeur /
+            barbershop / nails / spa), heart included in its trailing slot, instead of a
+            hand-rolled bar + a separately-fading heart button. FLOORS LAW 9 ("screens are
+            composed, not drawn"). Tapping the pill swaps it for the real editable
+            DiscoverySearchBar (autoFocus'd on that fresh mount) so typing + the dropdown below
+            keep working exactly as before, a state SWAP not two stacked elements, so there is
+            only ever one search box on screen, matching the pill's resting geometry measured
+            against /de and /de/coiffeur. No back/cancel button (owner 2026-06-23): tap outside
+            still dismisses (onBlur closes), iOS-style. */}
+        {/* -mx-4 cancels this page's own container inset (max-w-7xl mx-auto px-4 above) so
+            HomeSearchPill's OWN internal `px-4` (same class it renders on /de and /de/coiffeur)
+            becomes the true edge inset here too, instead of stacking on top of a second px-4
+            and rendering 16px narrower than every other route. The focused/editable branch and
+            the suggestion dropdown reapply `px-4`/`mx-4` themselves so they land back on the
+            page's normal content column, only the resting pill bleeds to the compensated edge. */}
+        <div className="relative mb-3 -mx-4">
+          {searchFocused ? (
+            <div className="min-w-0 flex-1 px-4">
               <DiscoverySearchBar
                 value={searchInput}
                 /* typing only updates the live text (→ dropdown). Clearing to empty also resets the feed to browse. */
@@ -485,38 +502,19 @@ function DiscoverPageContent() {
                 placeholder={t("searchPlaceholder")}
                 onFocus={() => setSearchFocused(true)}
                 onBlur={() => setTimeout(() => setSearchFocused(false), 150)}
+                autoFocus
               />
             </div>
-            {/* Saved heart fades + collapses when the search is focused (owner 2026-06-23) so the input expands.
-                The filter moved OFF the search row to the refine row below the category tabs.
-                THE SPEED LAW hard rule 2 (motion audit HOME_SEARCH_INSPO.md row 122): was
-                `transition-all` over `w-0`, animating WIDTH. `grid-template-columns` (0fr <-> 1fr,
-                wrapped in `minmax(0, ...)` so it can reach true zero) reallocates the same flex space
-                to the search input by interpolating a GRID TRACK instead of the element's own layout
-                `width`, so nothing forces the identical per-frame width reflow. Tier corrected to snap
-                150 (an in-place control getting out of the way is not a reveal; 300ms was off-ladder). */}
-            <div
-              className={`grid transition-[grid-template-columns,opacity] duration-150 ease-glide ${searchFocused ? "pointer-events-none opacity-0" : "opacity-100"}`}
-              style={{ gridTemplateColumns: searchFocused ? "minmax(0,0fr)" : "minmax(0,1fr)" }}
-            >
-              <div className="overflow-hidden">
-                <button
-                  type="button"
-                  onClick={() => router.push(`/${locale}/inspo/saved`)}
-                  aria-label="Gespeichert"
-                  /* mockup-ok: h-11/w-11 + 16px glyph = HomeSearchPill's trailing control 1:1, so the
-                     Inspo bar and the home bar are the same control, not two sizes of one idea.
-                     FIX D (2026-08-01, owner "the circle thingy is in other categories"): bare,
-                     no circle, matching the same fix at HomeSearchPill.tsx's heart button. */
-                  className="grid h-11 w-11 shrink-0 place-items-center text-s-ink-2 transition-colors duration-150 hover:text-s-ink"
-                >
-                  <Heart size={16} strokeWidth={2} />
-                </button>
-              </div>
-            </div>
-          </div>
+          ) : (
+            <HomeSearchPill
+              locale={locale}
+              label={search || t("searchPlaceholder")}
+              trailing="saved"
+              onActivate={() => setSearchFocused(true)}
+            />
+          )}
           {searchFocused && (
-            <div className="absolute inset-x-0 top-full z-30 mt-2 animate-[inspo-panel-in_.34s_cubic-bezier(.34,1.56,.64,1)] rounded-2xl border border-s-border bg-white p-3 shadow-elevation-2">
+            <div className="absolute inset-x-0 top-full z-30 mt-2 mx-4 animate-[inspo-panel-in_.34s_cubic-bezier(.34,1.56,.64,1)] rounded-2xl border border-s-border bg-white p-3 shadow-elevation-2">
               {/* V3-D395: typed query → autocomplete suggestion list (matches the mockup); empty → trending pills. */}
               {searchInput.trim() ? (
                 <SearchAutocomplete
@@ -636,10 +634,15 @@ function DiscoverPageContent() {
                     type="button"
                     aria-pressed={sel}
                     onClick={() => { const next = sel ? "" : term; setSearch(next); if (next) setCuts([]); /* FIX 3: a chip-search drops cuts (mutually exclusive) */ }}
+                    // OVERRIDE 2026-08-01 (owner, second repeat, "put shadows on the filters ... you
+                    // still did not do that"): the unselected chip rendered flat with only a hairline,
+                    // same complaint + same fix as the FilterDrawer trigger a few lines up (shadow-whisper,
+                    // border dropped). The selected ink-fill state is untouched, it is already the
+                    // system's flat "active" treatment, not the "different style" he flagged.
                     className={`inline-flex h-10 shrink-0 items-center rounded-card px-3.5 text-xs font-heading font-medium transition-colors duration-150 ${
                       sel
                         ? "relative z-10 border border-s-ink bg-s-ink text-white"
-                        : "border border-s-border bg-white text-s-ink-2 hover:text-s-ink"
+                        : "bg-white text-s-ink-2 shadow-whisper hover:text-s-ink"
                     } ${sel ? "animate-[inspo-pillpop_.24s_cubic-bezier(.34,1.56,.64,1)]" : ""}`}
                   >
                     {label}

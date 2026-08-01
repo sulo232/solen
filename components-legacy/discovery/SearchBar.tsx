@@ -12,9 +12,13 @@ interface SearchBarProps {
   /** V3-D414: fires on Enter with the current text — the page commits THIS to the feed query. Typing alone
       (onChange) only drives the dropdown; it no longer searches or logs partial terms. */
   onSubmit?: (value: string) => void;
+  /** 2026-08-01 (Inspo tap-to-edit): this bar now only mounts once the resting HomeSearchPill
+      is tapped (page.tsx), so a fresh mount needs to grab the keyboard itself, the native
+      "autoFocus" HTML attribute does that on mount, no ref plumbing needed. */
+  autoFocus?: boolean;
 }
 
-export default function DiscoverySearchBar({ value, onChange, placeholder = "Search styles...", onFocus, onBlur, onSubmit }: SearchBarProps) {
+export default function DiscoverySearchBar({ value, onChange, placeholder = "Search styles...", onFocus, onBlur, onSubmit, autoFocus }: SearchBarProps) {
   const [local, setLocal] = useState(value);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -38,6 +42,7 @@ export default function DiscoverySearchBar({ value, onChange, placeholder = "Sea
       <input
         type="search"
         value={local}
+        autoFocus={autoFocus}
         onChange={(e) => handleChange(e.target.value)}
         onFocus={onFocus}
         onBlur={onBlur}

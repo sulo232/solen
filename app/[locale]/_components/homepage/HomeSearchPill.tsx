@@ -105,11 +105,21 @@ export default function HomeSearchPill({
             </span>
           </button>
         ) : (
-          <Link
-            // FIX C (2026-08-01): `?compose=1` tells SearchTemplate this user arrived here to
-            // TYPE, so it opens the query overlay with the keyboard instead of landing them on
-            // a page whose input is still behind a closed overlay. Owner: "the search bar
-            // doesn't work" , it navigated, then nothing popped up.
+          <a
+            // FIX C, corrected twice. `?compose=1` tells SearchTemplate this user arrived to
+            // TYPE, so it opens the query composer focused instead of landing them on a page
+            // whose input is still behind a closed overlay. Owner, third repeat: "when you
+            // click, it still doesn't fucking open."
+            // Deliberately a plain <a>, NOT the `next-view-transitions` Link the rest of this
+            // file uses. Measured 2026-08-02, three runs each: a HARD load of
+            // /de/search?compose=1 opens the composer every time (scrim z-100 + panel z-101,
+            // input focused); the SOFT navigation this Link performed left activeElement on
+            // BODY with no scrim, 3 out of 3, both with flushSync and with plain state. The
+            // route change is wrapped in `document.startViewTransition`, and the mount-time
+            // effect that reads `compose` does not survive that window.
+            // The cost, named rather than hidden: this is a full document load, so it is
+            // slower than a client transition. A search box that opens beats a fast one that
+            // does nothing. If the view-transition timing is ever fixed, revert to Link.
             href={`/${locale}/search?compose=1`}
             aria-label={tChrome("editSearch")}
             className="flex min-w-0 flex-1 items-center gap-3"
@@ -118,7 +128,7 @@ export default function HomeSearchPill({
             <span className="block min-w-0 flex-1 truncate font-body text-[16px] font-medium text-s-ink">
               {label ?? tChrome("searchPlaceholder")}
             </span>
-          </Link>
+          </a>
         )}
         {trailing === "saved" ? (
           <Link

@@ -301,13 +301,11 @@ export function FeedZone({
         // More breathing room above the tile grid.
         // V3-D323 (2026-05-27): user "make the underneath thing lower too" —
         // second bump per follow-up. 64→80 mobile / 48→64 desktop.
-        // V3-D326 (2026-05-27): "unbalanced" after Uber type-scale B sweep —
-        // 80px above an 18-20px section h2 = 4× ratio, dominates the title.
-        // Drop to mt-12 mobile / mt-8 desktop (48/32px) — ratio settles ~2.5×.
-        "mt-12 md:mt-8",
-        "rounded-t-[28px] md:rounded-t-[40px]",
+        // V3-D326 (2026-05-27): "unbalanced" after Uber type-scale B sweep,
+        // 80px above an 18-20px section h2 = 4x ratio, dominates the title.
+        // Drop to mt-12 mobile / mt-8 desktop (48/32px), ratio settles ~2.5x.
         // V2-D67-fu17 (2026-05-17): reverted V2-D67-fu15 tint per user "ditch ts".
-        // Back to V2-D65 transparent FeedZone — atmosphere reads at full chroma
+        // Back to V2-D65 transparent FeedZone, atmosphere reads at full chroma
         // below the cards. Shadow RGB kept as ink.
         // RANGE_LAW A-shadow (2026-07-25): border-white/40 was written when this panel
         // overlapped a COLORED Hero (V3-D145 comment above); the B&W pivot made Hero and
@@ -319,8 +317,18 @@ export function FeedZone({
         // and direction left untouched, it still reads as the panel rising over Hero.
         // mockup-ok: task-directed edge-visibility fix (RANGE_LAW / FLOORS LAW 4c), a
         // token-only border-color swap, no radius/shadow/layout value changed.
-        "border-t border-s-border",
-        "shadow-[0_-12px_32px_rgba(26,18,9,0.04)] md:shadow-[0_-16px_40px_rgba(26,18,9,0.05)]",
+        //
+        // OVERRIDE 2026-08-01 (owner, live and literal, precedence chain tier 1 beats every
+        // decision above): "there's like a little sheet right between the search bar and shit
+        // right in the home page. Remove that shit." Measured: the rounded-t + hairline-top +
+        // upward shadow this block has carried since V2-D41 IS the visible "sheet" seam he is
+        // pointing at (search pill bottom y=172, this panel's rounded/hairlined top edge at
+        // y=229). All three of the previous decisions (V3-D145 negative-margin removal,
+        // RANGE_LAW A-shadow's hairline swap, the rising-panel edge itself) are superseded HERE,
+        // not deleted from history, superseded. Content now runs straight out of the search bar:
+        // no rounded top, no top hairline, no upward shadow. Gap closed to one small even value
+        // (mt-3, 12px) instead of the old 48/32 split that read as "floating below the bar".
+        "mt-3",
         // V2-D49n-fu7 (2026-05-10): bottom padding cut from pb-12/20 → pb-4/6
         // so the FeedZone's glass panel flows right into the footer instead
         // of leaving a 96px cream gap.

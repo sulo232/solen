@@ -783,8 +783,31 @@ export default function SearchTemplate({
     if (composeApplied.current) return;
     if (searchParams.get("compose") !== "1") return;
     composeApplied.current = true;
-    openSearchOverlay(true);
-  }, [searchParams, openSearchOverlay]);
+    // FIX 2026-08-01 (owner, third repeat, "when you click, it still doesn't fucking open"):
+    // calling `openSearchOverlay(true)` (which runs `flushSync`) directly inside THIS effect
+    // threw "flushSync was called from inside a lifecycle method. React cannot flush when
+    // React is already rendering" in the console on every load, because this effect can fire
+    // while React is still mid-flush for the initial mount's OWN passive effects (this page
+    // is reached via a client navigation from the home pill, landing inside a Suspense
+    // boundary). React's own fix, named in that warning: move the flushSync call to a real
+    // scheduler task. `setTimeout(0)` (not a microtask, which can still land inside the same
+    // flush) guarantees this runs in a fresh task, after React has fully finished committing,
+    // so flushSync is safe and `searchOverlayOpen` actually flips. Confirmed live: without
+    // this, `searchOverlayOpen` never became true at all (no scrim, activeElement stayed
+    // BODY); the console error was not cosmetic; it meant the whole state update was dropped.
+    // CORRECTED 2026-08-02. The setTimeout+flushSync version above worked on a HARD load of
+    // /search?compose=1 and silently did nothing on the SOFT navigation from the home pill,
+    // which is the only path a real user takes. Measured: direct load opened the overlay
+    // (scrim z-100 + panel z-101 present); three consecutive taps from /de left activeElement
+    // on BODY with no scrim. The home pill navigates through `next-view-transitions`, whose
+    // Link wraps the route change in `document.startViewTransition`, so a flushSync scheduled
+    // into that window is dropped along with the state update.
+    // Plain state, no flushSync, no scheduler games. Focus is handed to the overlay's own
+    // `autoFocusSearch` path, which owns the input and can focus it once it has actually
+    // mounted, instead of this component reaching for a ref that does not exist yet.
+    setAutoFocusSearch(true);
+    setSearchOverlayOpen(true);
+  }, [searchParams]);
 
   const viewMapApplied = React.useRef(false);
   React.useEffect(() => {

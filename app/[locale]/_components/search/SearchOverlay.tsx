@@ -291,8 +291,23 @@ export function SearchOverlay({
         setInputFocused(false);
       }
     }
+    // FIX 2026-08-01 (owner, third repeat, "when you click, it still doesn't fucking open"):
+    // this component returns `null` on its very first render (`if (!mounted) return null` below,
+    // the standard SSR-safe-portal pattern), and only paints the real JSX, including the
+    // `<input ref={serviceRef}>` a few hundred lines down, on the SECOND render once the
+    // `mounted` effect flips true. This effect used to depend on `[open]` only, so when this
+    // overlay is opened WITH the keyboard (SearchTemplate's `?compose=1` handling,
+    // `openSearchOverlay(true)`), it already carries `open === true` on that very first,
+    // pre-mounted render, meaning this block DOES run then, but `serviceRef.current` is still
+    // null (the input hasn't been rendered yet) so the rAF focus silently no-ops. By the time
+    // `mounted` flips true and the input actually exists in the DOM, `open` has not changed
+    // value across the two renders, so a `[open]`-only dependency array never re-fires this
+    // effect and the focus call never runs again. Confirmed live: `document.activeElement` was
+    // BODY after the tap. Adding `mounted` to the dependency array makes this effect re-run the
+    // moment the real DOM exists, which is exactly when `serviceRef.current` first becomes a
+    // real node worth calling `.focus()` on.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
+  }, [open, mounted]);
 
   const now = React.useMemo(() => new Date(), []);
   const windowEnd = React.useMemo(() => new Date(now.getFullYear(), now.getMonth(), now.getDate() + 42), [now]);
