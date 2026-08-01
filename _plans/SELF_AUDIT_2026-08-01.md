@@ -18,14 +18,14 @@ Health check: **37 -> 34** violations this pass.
 
 ## Audit steps , atomic checkboxes (the 8 doctrine steps, one box each)
 
-- [x] 1. `system-health-check.py --report`, list every violation
-- [x] 2. Read `~/.claude/state/skip-flag-ledger.log`, flag gates being skip-flagged into silence
-- [x] 3. Profile UserPromptSubmit injection sizes, flag anything off the once-per-session diet
-- [x] 4. Read `mistake-themes-global.json`, list warning-tier themes (2 sessions / 14 days)
-- [x] 5. Verify the newest 5 `_rules/LESSONS_LEARNED.md` entries parse against `lessons-ledger-inject.py`
-- [x] 6. design-suggest gather+record only (refresh `SUGGESTIONS.md`, no chips)
-- [x] 7. DOC-VS-GATE reconciliation (drift-gate literals vs LOCKFILE §1-3; phantom gate names in prose)
-- [x] 8. Write this report + `ACTIVE.md` row + WORKLOG entry + commit `_plans`
+- [x] 1. `system-health-check.py --report`, list every violation , verified: ran it, 37 before / 34 after, full table in §1
+- [x] 2. Read `~/.claude/state/skip-flag-ledger.log`, flag gates being skip-flagged into silence , verified: read all 686 lines of that file and counted by flag name over 7d and 30d, table in §2; the flagged gate is `mockup-preflight-skip.flag` at 46/7d
+- [x] 3. Profile UserPromptSubmit injection sizes, flag anything off the once-per-session diet , verified: piped payloads through all 20 wired hooks, byte table in §3; one violation found and fixed (`~/.claude/hooks/tunnel-health-preflight.py`, relevance gate + self-test 10/10)
+- [x] 4. Read `mistake-themes-global.json`, list warning-tier themes (2 sessions / 14 days) , verified: parsed the file, 7 themes at tier, table in §4
+- [x] 5. Verify the newest 5 `_rules/LESSONS_LEARNED.md` entries parse against `lessons-ledger-inject.py` , verified: parsed the live ledger through the hook's own `parse_entries()` (51/51 parse) and piped a real Edit payload per entry, 5/5 INJECT, probe table in §5
+- [x] 6. design-suggest gather+record only (refresh `SUGGESTIONS.md`, no chips) , verified: `_design-system/SUGGESTIONS.md` now carries a `## 2026-08-01 weekly self-audit refresh` section; left UNCOMMITTED on purpose, the pass's scope guard says commit `_plans` only
+- [x] 7. DOC-VS-GATE reconciliation (drift-gate literals vs LOCKFILE §1-3; phantom gate names in prose) , verified: compared `.claude/skills/solen-drift-check/scripts/check.py:38-74` (ALLOWED_HEX), `:92-98` (RETIRED_EASINGS), `:105` (CANONICAL_DURATIONS_MS), `:108-124` (RETIRED_TOKENS) against `_design-system/LOCKFILE.md` §1/§3/§4; findings in §7a-§7b
+- [x] 8. Write this report + `ACTIVE.md` row + WORKLOG entry + commit `_plans` , verified: commit **1a31928a2** (`_plans/ACTIVE.md:40` row updated, `_plans/WORKLOG.md:7` entry added, this file created)
 
 ---
 
