@@ -121,7 +121,7 @@
     "home": "Home",
     "discover": "Inspo",
     "barbershop": "Barbershop",
-    "coiffeur": "Hair Store",
+    "coiffeur": "Hair Salon",
     "nails": "Nails",
     "spa": "Spa",
     "makeup": "Makeup",
@@ -409,7 +409,7 @@
   },
   "breadcrumb": {
     "back": "Back",
-    "coiffeur": "Hair Store",
+    "coiffeur": "Hair Salon",
     "barbershop": "Barbershop",
     "nails": "Nails",
     "spa": "Spa",
@@ -3538,7 +3538,7 @@
     "inspo_select_count": "Select {count} images",
     "allergy_warning": "Allergy Notice",
     "allergy_severe": "Severe Allergy",
-    "allergy_against": "Allergy to {allergies} — please inform the nail store",
+    "allergy_against": "Allergy to {allergies} — please inform the nail salon",
     "station_available": "{available} of {total} stations available",
     "tier_artist": "{tier} Nail Artist",
     "portfolio": "Portfolio",
@@ -4445,7 +4445,7 @@
     "faq_how_fast_q": "How fast can I go live?",
     "faq_how_fast_a": "In less than 5 minutes. Sign up, add your services, and your store is instantly visible on solen.ch. Our setup wizard guides you through every step.",
     "faq_categories_q": "Which store categories are supported?",
-    "faq_categories_a": "Hair stores, barbershops, nail studios, spa & wellness, makeup and waxing. Each category has specialized features — from nail portfolios to barber queues.",
+    "faq_categories_a": "Hair salons, barbershops, nail studios, spa & wellness, makeup and waxing. Each category has specialized features — from nail portfolios to barber queues.",
     "hiw_title": "How it works",
     "hiw_subtitle": "Online in 3 simple steps",
     "hiw_step1_title": "Register",
@@ -4477,7 +4477,7 @@
     "testimonial_3_initial": "S",
     "cat_title": "For every store category",
     "cat_subtitle": "Specialized features for your industry",
-    "cat_coiffeur_title": "Hair Store",
+    "cat_coiffeur_title": "Hair Salon",
     "cat_coiffeur_desc": "Calendar, styling portfolio and regular client management.",
     "cat_barbershop_title": "Barbershop",
     "cat_barbershop_desc": "Walk-in queue, cut history and men's services.",
@@ -4990,8 +4990,8 @@
     },
     "categoryHero": {
       "coiffeur": {
-        "label": "Hair Store",
-        "subtitle": "The best hair stores in Basel",
+        "label": "Hair Salon",
+        "subtitle": "The best hair salons in Basel",
         "titleSuffix": "in Basel"
       },
       "barbershop": {
@@ -5001,7 +5001,7 @@
       },
       "nails": {
         "label": "Nails",
-        "subtitle": "Nail stores and manicure in Basel",
+        "subtitle": "Nail salons and manicure in Basel",
         "titleSuffix": "in Basel"
       },
       "spa": {
@@ -5381,10 +5381,10 @@
   },
   "categoryHero": {
     "coiffeur": {
-      "label": "Hair Store",
-      "subtitle": "Find the best hair stores near you. Book online, confirmed instantly.",
+      "label": "Hair Salon",
+      "subtitle": "Find the best hair salons near you. Book online, confirmed instantly.",
       "titleSuffix": "in Basel",
-      "title": "Hair stores in Switzerland"
+      "title": "Hair salons in Switzerland"
     },
     "barbershop": {
       "label": "Barbershop",
@@ -5396,7 +5396,7 @@
       "label": "Nails",
       "subtitle": "Manicure, pedicure and nail art. Book online, no waiting.",
       "titleSuffix": "in Basel",
-      "title": "Nail stores in Switzerland"
+      "title": "Nail salons in Switzerland"
     },
     "spa": {
       "label": "Spa & Massage",
