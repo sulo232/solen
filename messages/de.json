@@ -107,7 +107,17 @@
     "tabSavedEmptyLead": "Tippe das Herz auf einem Store",
     "emptyStateCta": "Stores entdecken",
     "noSearchResults": "Keine Ergebnisse",
-    "noSearchResultsLead": "Versuch's mit einem anderen Suchbegriff."
+    "noSearchResultsLead": "Versuch's mit einem anderen Suchbegriff.",
+    "nextAppointmentOn": "Nächster Termin am {date} um {time}",
+    "bookingsRowEmptySub": "Deine Buchungen ansehen",
+    "walletRowEmptySub": "Karte hinzufügen",
+    "walletCardsCount": "{count} Karten gespeichert",
+    "couponsRowActive": "{count} aktiv",
+    "couponsRowEmptySub": "Keine aktiven Gutscheine",
+    "stampsRowActive": "Noch {remaining} bis zur Belohnung",
+    "stampsRowEmptySub": "Sammle deinen ersten Stempel",
+    "haarprofilSub": "Haartyp, Länge, Allergien",
+    "settingsRowSub": "Sprache, Mitteilungen, Datenschutz"
   },
   "cities": {
     "label": "Stadt",
