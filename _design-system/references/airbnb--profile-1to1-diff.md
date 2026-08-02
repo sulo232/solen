@@ -107,3 +107,36 @@ Grounded only in rows above with a stated **target**, nothing invented beyond th
 6. Divider: one `#EBEBEB`-equivalent hairline per group-end only, none between interior rows (divider row)
 7. Row pitch: fixed to a consistent value on no-subline rows, not content-driven (row-height row)
 8. Group eyebrow labels, the row card's border/shadow/radius-24 box, the bottom tab bar's absence, and the collapsing-title mechanism are named as structural deltas but NOT changed , they are either sitewide `Header.tsx` concerns outside this task's file scope, or a dated locked owner decision (bottom nav), or (the eyebrow) a deliberate Solen addition with no reference equivalent to revert to, not an oversight.
+
+---
+
+## ORCHESTRATOR RE-MEASUREMENT 2026-08-03: the label size came off the WRONG SCREEN
+
+Owner: *"still not like it, acc diagnose"*. He is right, and this is the cause.
+
+I PIL-sampled `IMG_6900.PNG` (the Profile ROOT, the screen he is comparing against) myself:
+
+| element | ink cap-height | = cap pt | implied font | what the mockup shipped |
+|---|---|---|---|---|
+| title "Profile" | 51px | **17.0pt** | **~24pt** | **18px** |
+| row label | 45px | **15.0pt** | **~21pt** | **16px** |
+
+**The 11.7pt cap figure everything was built on came from `IMG_6901`/`6902`, the Account SETTINGS
+screen, not from `IMG_6900`, the Profile root.** Those are two different screens with two different
+type scales: settings labels sample at 11.7pt cap, the profile root at 15.0pt. Building the profile
+root off the settings number makes every label ~24% too small, and the title ~25% too small.
+
+This is the measurement-scope error this repo already has a gate for: the measuring was correct,
+the ATTRIBUTION was wrong. A number from the right ruler and the wrong screen.
+
+Second defect, same class: **the Profile root in IMG_6900 has NO back control at all.** It is a tab
+root, its top-left is the bare word "Profile". The 40pt grey circle in the diff table was sampled
+from IMG_6901, a sub-screen, which legitimately has one. The mockup therefore carries a back button
+the reference screen does not have.
+
+- [ ] **D1. Retype the mockup to the ROOT screen's scale:** title 18px -> 24px, row label 16px -> 21px.
+- [ ] **D2. Drop the back control from the profile-root depiction** and re-check what actually sits
+      top-left in IMG_6900 (measured: the title alone) and top-right (measured: one bell).
+- [ ] **D3. Re-audit every other number in this table for the same screen-attribution error.** Row
+      pitch, icon bbox and divider were sampled across several images; each needs its source image
+      named per row, and any row sourced from a settings screen re-taken from IMG_6900.
