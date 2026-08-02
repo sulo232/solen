@@ -366,7 +366,7 @@ function TabButton({
 function BookingThumb({ photo, name, category }: { photo: string | null; name?: string | null; category?: string | null }) {
   // accessibility-06: describe WHAT the photo shows (the salon's category), not
   // just whose it is, since the name is already read as adjacent text (line 264).
-  const alt = category ? (name ? `${name}, ${category}` : category) : name ? `${name}` : "Salonfoto";
+  const alt = category ? (name ? `${name}, ${category}` : category) : name ? `${name}` : "Store-Foto";
   return photo ? (
     // eslint-disable-next-line @next/next/no-img-element -- arbitrary Supabase Storage URL, matches SalonPhotoTile convention
     <img src={photo} alt={alt} className="h-full w-full object-cover" />
@@ -384,7 +384,7 @@ function CollageTile({ photos, aspectClass, name, category }: { photos: string[]
   // accessibility-06: describe WHAT the photo shows (the salon's category), not
   // just whose it is, since the name already renders as adjacent text (lines 228/306).
   const altFor = (i: number) => {
-    const base = category ? (name ? `${name}, ${category}` : category) : name ? name : "Salonfoto";
+    const base = category ? (name ? `${name}, ${category}` : category) : name ? name : "Store-Foto";
     return `${base}, ${i}/${photos.length}`;
   };
   if (photos.length === 0) {

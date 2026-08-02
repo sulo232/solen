@@ -541,7 +541,7 @@ export function JoinUsCard() {
               ))}
             </span>
             <span className="font-body text-[13px] font-normal text-white/70">
- von 1&apos;200+ Salon-Partnern
+ von 1&apos;200+ Store-Partnern
             </span>
           </div>
         </div>
@@ -619,7 +619,7 @@ export function JoinUsCard() {
                   <input
                     type="text"
                     name="salon"
-                    placeholder="Salon-Name"
+                    placeholder="Store-Name"
                     required
                     className="h-11 px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-2 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]" // mockup-ok: dead-class removal only, type=text/email already caught before this change (V3-D-input-fill-2026-07-17)
                   />

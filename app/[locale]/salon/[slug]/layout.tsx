@@ -6,7 +6,7 @@ import { postalToCity } from "@/app/[locale]/_components/salon/_shared";
 
 const CATEGORY_LABELS: Record<string, Record<string, string>> = {
   de: { coiffeur: "Coiffeur", barbershop: "Barbershop", nails: "Nagelstudio", spa: "Spa" },
-  en: { coiffeur: "Hair Store", barbershop: "Barbershop", nails: "Nail Studio", spa: "Spa" },
+  en: { coiffeur: "Hair Salon", barbershop: "Barbershop", nails: "Nail Studio", spa: "Spa" },
   fr: { coiffeur: "Coiffeur", barbershop: "Barbershop", nails: "Store d'ongles", spa: "Spa" },
   it: { coiffeur: "Parrucchiere", barbershop: "Barbiere", nails: "Studio unghie", spa: "Spa" },
 };

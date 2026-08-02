@@ -21,7 +21,7 @@ type Params = {
 const CATEGORIES = ["coiffeur", "nails", "barbershop", "spa"] as const;
 
 const CATEGORY_NAMES: Record<string, Record<string, string>> = {
-  coiffeur: { de: "Coiffeur", en: "Hair Store", fr: "Coiffeur", it: "Parrucchiere" },
+  coiffeur: { de: "Coiffeur", en: "Hair Salon", fr: "Coiffeur", it: "Parrucchiere" },
   nails: { de: "Nagelstudio", en: "Nails", fr: "Ongles", it: "Unghie" },
   barbershop: { de: "Barbershop", en: "Barbershop", fr: "Barbershop", it: "Barbershop" },
   spa: { de: "Spa", en: "Spa", fr: "Spa", it: "Spa" },

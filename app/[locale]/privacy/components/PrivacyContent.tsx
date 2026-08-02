@@ -40,7 +40,7 @@ function PrivacyBody() {
           <ParEn>We collect and process the following categories of personal data:</ParEn>
           <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-s-ink opacity-90">
             <li><strong>Kontodaten / Account Data:</strong> Name, E-Mail-Adresse, Telefonnummer, Profilbild / Name, email address, phone number, profile picture.</li>
-            <li><strong>Buchungsdaten / Booking Data:</strong> Dienstleistungen, Termine, Salonpartner, Kundennotizen, Präferenzen, Allergien, Beratungs- und Behandlungsnotizen (z.B. Haar-/Hautzustand, Formeln, Sensibilitäten), Vorher-/Nachher-Fotos / Services, appointments, Salon Partners, client notes, preferences, allergies, consultation and treatment notes (e.g. hair/skin condition, formulas, sensitivities), before/after photos.</li>
+            <li><strong>Buchungsdaten / Booking Data:</strong> Dienstleistungen, Termine, Store-Partner, Kundennotizen, Präferenzen, Allergien, Beratungs- und Behandlungsnotizen (z.B. Haar-/Hautzustand, Formeln, Sensibilitäten), Vorher-/Nachher-Fotos / Services, appointments, Store Partners, client notes, preferences, allergies, consultation and treatment notes (e.g. hair/skin condition, formulas, sensitivities), before/after photos.</li>
             <li><strong>Zahlungsdaten / Payment Data:</strong> Transaktionsdetails (verarbeitet von Stripe) / Transaction details (processed by Stripe).</li>
             <li><strong>Nutzungsdaten / Usage Data:</strong> Interaktionen mit der Plattform (verarbeitet von PostHog), IP-Adresse, Gerätetyp, Browserty / Interactions with the platform (processed by PostHog), IP address, device type, browser.</li>
             <li><strong>Kommunikation / Communication:</strong> Chatnachrichten und E-Mails zwischen Nutzern und Plattform / Chat messages and emails between users and platform.</li>
@@ -53,7 +53,7 @@ function PrivacyBody() {
           <ParDe>Ihre Daten werden zu folgenden Zwecken verarbeitet:</ParDe>
           <ParEn>Your data is processed for the following purposes:</ParEn>
           <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-s-ink opacity-90">
-            <li><strong>Buchungsabwicklung / Booking Management:</strong> Vermittlung und Verwaltung von Dienstleistungen zwischen Kunden und Salonpartnern. / Facilitating and managing services between Customers and Salon Partners.</li>
+            <li><strong>Buchungsabwicklung / Booking Management:</strong> Vermittlung und Verwaltung von Dienstleistungen zwischen Kunden und Store-Partnern. / Facilitating and managing services between Customers and Store Partners.</li>
             <li><strong>Zahlungsabwicklung / Payment Processing:</strong> Abwicklung der Bezahlung über unseren Zahlungsdienstleister Stripe. / Processing payments via our payment provider Stripe.</li>
             <li><strong>Kundenservice / Customer Support:</strong> Beantwortung von Benutzeranfragen und Beilegung von Streitigkeiten. / Responding to user inquiries and resolving disputes.</li>
             <li><strong>Sicherheit / Security:</strong> Betrugsprävention und Missbrauchsschutz. / Fraud prevention and protection against abuse.</li>

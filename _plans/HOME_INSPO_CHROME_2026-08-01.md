@@ -189,7 +189,18 @@ https://admission-integrated-achieved-assumption.trycloudflare.com
 
 ## D. The big one
 
-- [ ] **H5. Too white, make a new homepage.** Owner: "I don't like that it's just white, make a new homepage".
+- [x] **H5. WITHDRAWN BY THE OWNER 2026-08-02: "i never told u i want to make mockup ignore wtv u
+      thought i said abt homepage". Not an ask. Do not re-open it from this file.**
+      What went wrong on my side, recorded so the shape is visible rather than the incident: this
+      box was written by a different session from a dictation, and I treated the written line as a
+      live instruction. A plan file is a RECORD of what was said, not a standing order, and it goes
+      stale the moment he changes his mind, which is the same failure as the sticky-pills revert
+      earlier this session, where I briefed an agent off a box he had already overruled. Twice in
+      one session, same cause: the plan file outranked the person in my reading order.
+      The mockup that got built anyway is at `public/_mockups/home-v4/less-white.html`. Left on
+      disk (it costs nothing and the measurement work in it is real) but it is NOT a deliverable
+      and must not be offered to him again.
+  > TRAIL, not open work. H5-ORIGINAL. **Too white, make a new homepage.** Owner: "I don't like that it's just white, make a new homepage".
       This is a fork, not a task. It also collides with two live laws that must be named in the
       same breath rather than discovered mid-build: WEB IS ONE LIGHT THEME (no dark mode, rejected
       twice by name), and the imagery floor is satisfied by MORE REAL STORE CONTENT, never by a
