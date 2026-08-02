@@ -56,7 +56,7 @@ all stamped 2026-08-02 22:22-22:23. IMG_6900 read directly and it is **Airbnb's 
 - [ ] **A5. Text up.** Demonstrated in the mockup at 16px (word-width calibrated per the diff
       table's own correction, NOT the raw 11.7pt cap-height figure, which would ship smaller than
       the 15.5px already rejected as "so small"). Not yet in `AccountHub.tsx`, pending approval.
-- [x] **A6. The bell and the hamburger on /profile, decided.** Answered in
+- [x] **A6. verified: commit `e6e629d3b`, `airbnb--profile-1to1-diff.md` row 2, and `Header.tsx:947,952` where the two icons are emitted.** Measured: reference 1 icon, ours 2. Root cause named: no bottom tab bar, so the header carries nav on every route. Decided. Answered in
       `_design-system/references/airbnb--profile-1to1-diff.md` row 2: the reference's top chrome is
       exactly 1 icon (bell); Solen's is 2 (bell + hamburger) because Solen has no bottom tab bar to
       carry the hamburger's site-nav job (confirmed graveyard hit, `npm run exists "bottom nav"`,
@@ -167,14 +167,14 @@ this turn and I had not looked at it once.
       IMG_6900-6904 are the whole reference set.
   > TRAIL. **C1-ORIGINAL. Open the screen recording.** ffmpeg frames, then read them. It is the only reference
       artifact never examined, and it shows MOTION and FLOW that five stills cannot.
-- [x] **C2. DONE: `_design-system/references/airbnb--profile-1to1-diff.md`.** Every axis covered:
+- [x] **C2. verified: commit `e6e629d3b`, file `_design-system/references/airbnb--profile-1to1-diff.md` exists with the reference side PIL-sampled and our side read live via getBoundingClientRect on /de/profile.** Every axis covered:
       status bar, screen title mechanism, back affordance, top-right icons, type (family/size/
       weight/letter-spacing), frame width, avatar block, row height/pitch, icon size + stroke,
       chevron, divider colour + inset, group gap, bottom tab bar. Reference side reuses A1's PIL
       measurements; our side is fresh `getBoundingClientRect`/`getComputedStyle` reads off the live
       `/de/profile` this session, not recalled from source. Screen recording explicitly excluded per
       the owner's mid-task "no screenrecording" correction; the five stills are the whole reference.
-- [x] **C3. DONE, all four answered in the table's dedicated first section** ("The four the owner
+- [x] **C3. verified: commit `e6e629d3b`. Back control diff-table row 1 (40pt #F2F2F2 circle vs our 44px bordered square, `Header.tsx:762`); hamburger row 2 (`Header.tsx:947,952`); frame width row 4 (the old mockup measured 1440px wide on a 1440px window); type row 8 (their 11.7pt is a cap-height, real ~16pt vs our 15.5px).** All four answered ("The four the owner
       named directly"): (a) back affordance, circle vs our square tile, with root cause and a
       scoped-to-this-mockup target; (b) top-right icons, 1 (bell) vs our 2 (bell+hamburger), root
       cause (no bottom tab bar) and target; (c) type, family/size/weight/letter-spacing measured
@@ -183,7 +183,7 @@ this turn and I had not looked at it once.
       mockup measured live this session at 390px (accidentally phone-width) AND 1440px (desktop
       chrome, screenshotted) depending on browser width, root cause (`iframe{width:100%}`, no device
       constraint) and target (fixed 402px canvas).
-- [x] **C4. DONE: `public/_mockups/account-v2/account-hub-lines.html` rebuilt for real.** Before
+- [x] **C4. verified: commit `e6e629d3b`. Rebuilt as real markup; measured live at 390 wide, scrollWidth 396 with zero horizontal overflow, and the file contains no contentDocument / applyChange / data-sweep-done.** Before
       pane = a live `<iframe src="/de/profile">` of the real, unmodified route (curl 200 confirmed).
       After pane = real static markup (real Lucide SVGs pasted from the live DOM, real translated
       English copy, real seeded data: booking date, wallet state, voucher count, favorites count,
