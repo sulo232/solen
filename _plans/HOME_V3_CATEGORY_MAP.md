@@ -336,7 +336,7 @@ de 372, en 382, fr 374, it 375 = **1503 strings**. Keys are NOT renamed (a key r
       improve one commit message. The evidence that message lacks lives here and in
       `_plans/HANDOFF_2026-08-01.md`, which is where anyone looks anyway. Cost of the rebase
       outweighs the benefit.
-- [ ] R1-ORIGINAL (disposed above, kept for the trail). **COMMITTED (the handoff said otherwise and was stale). sha `a53dc3b10`**, an auto-checkpoint
+  > TRAIL, not open work. R1-ORIGINAL (disposed above, kept for the trail). **COMMITTED (the handoff said otherwise and was stale). sha `a53dc3b10`**, an auto-checkpoint
       commit titled "checkpoint(auto): 11 uncommitted file(s) at turn end", not a deliberate one, so
       the message carries none of the evidence below and should be amended before this branch merges.
       Re-measured 2026-08-01 from the committed tree, not recalled: values that CHANGED per locale
@@ -367,7 +367,7 @@ de 372, en 382, fr 374, it 375 = **1503 strings**. Keys are NOT renamed (a key r
       Rule 10: execute the literal order, voice the objection once, do not detour. The objection is
       voiced and recorded here with the exact strings. French stays on `store` unless he says
       otherwise. **This box is not a question any more, it is a logged decision.**
-- [ ] R2-ORIGINAL (decided above, kept for the trail). **PARKED.** In French "un store" means a window blind / awning,
+  > TRAIL, not open work. R2-ORIGINAL (decided above, kept for the trail). **PARKED.** In French "un store" means a window blind / awning,
       so "Trouvez les meilleurs stores" reads as "find the best blinds". Executed his literal order
       (fr uses "store") and flagged it in the closing report. One word from him reverts fr to
       "salon" or switches it to "boutique".
@@ -381,7 +381,7 @@ de 372, en 382, fr 374, it 375 = **1503 strings**. Keys are NOT renamed (a key r
       A second pass was needed because the first missed "Hair stores" (capital word, lowercase
       noun): the patterns were all-caps or all-lower, not case-insensitive. de/fr/it re-checked for
       the same shape, 0 collisions each. `npx tsc --noEmit` exit 0.
-- [ ] R2b-ORIGINAL (fixed above, kept for the trail). **The English category label changed MEANING.**
+  > TRAIL, not open work. R2b-ORIGINAL (fixed above, kept for the trail). **The English category label changed MEANING.**
       Verified 2026-08-01: `messages/en.json` carries **"Hair Store" at 5 sites** (lines 124, 412,
       4480, 4993, 5384), from `navigation.coiffeur` / `breadcrumb.coiffeur` and the nails hero. In
       English a hair store SELLS hair products; it does not cut hair. The mechanical per-locale rule
@@ -434,7 +434,7 @@ de 372, en 382, fr 374, it 375 = **1503 strings**. Keys are NOT renamed (a key r
       salon basel", not "beauty store basel", so metadata is addressed to a search engine while UI
       copy is addressed to the user, and the two are allowed to disagree. Named cost: the browser
       tab reads Salon while the page reads Store.
-- [ ] R5-ORIGINAL (decided above, kept for the trail). Renaming the SEO metadata costs organic
+  > TRAIL, not open work. R5-ORIGINAL (decided above, kept for the trail). Renaming the SEO metadata costs organic
       search, and nothing in this workstream had priced that.** "Salon" is not only our word for the
       entity, it is the word Swiss users type into Google: "coiffeur salon basel", "nail salon
       zürich". Roughly 35 of the 67 remaining occurrences are page `<title>` and
@@ -462,7 +462,7 @@ de 372, en 382, fr 374, it 375 = **1503 strings**. Keys are NOT renamed (a key r
       marketing panel with no DB row behind it, so it was already correct to leave alone, and the
       two no longer disagree. The four `emailPlaceholder` domains stay untouched for the same
       reason: they illustrate a real address a store owner would type.
-- [ ] R6-ORIGINAL (fixed above, kept for the trail). The sweep treated these
+  > TRAIL, not open work. R6-ORIGINAL (fixed above, kept for the trail). The sweep treated these
       two inconsistently and both are defensible, so it needs a word rather than a guess.
       Renamed: `Salon Lumière` -> `Store Lumière` (`_components/homepage/searchFeatured.ts:52`,
       `_components/homepage/forYouSalons.ts:50`), and `Salon Maria`

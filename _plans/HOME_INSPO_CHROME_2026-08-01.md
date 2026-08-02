@@ -57,13 +57,13 @@ https://admission-integrated-achieved-assumption.trycloudflare.com
       the live page 2026-08-02: the header is `position: static`, height 0 on mobile, and a real
       click at the search pill's centre navigates to **/de/search**. The tap-eating was fixed by
       the same-day OVERRIDE that un-stuck the header. Nothing to do.
-- [ ] **H1-ORIGINAL (superseded by the override above, kept for the trail).** Owner: "when you scroll down the search bar and the categories should be sticky".
+  > TRAIL, not open work. **H1-ORIGINAL (superseded by the override above, kept for the trail).** Owner: "when you scroll down the search bar and the categories should be sticky".
       MEASURED: `<header>` is already `position: sticky`, `top: 0`, height **102px**. The category
       pills and the search pill are NOT inside it, they sit below at top 117+ and scroll away.
       So this is not "make the header sticky", it is "move these two rows into the sticky region,
       or give them their own". Watch the stacked height: 102 + pills + pill row eats a third of a
       390x844 viewport if all three pin at once. Decide what pins and what scrolls away.
-- [ ] **H3-ORIGINAL (done above, kept for the trail).** Owner: "the header, the category and the search bar, they're placed too low and it looks kind of weird".
+  > TRAIL, not open work. **H3-ORIGINAL (done above, kept for the trail).** Owner: "the header, the category and the search bar, they're placed too low and it looks kind of weird".
       MEASURED: content starts at y=102 and the first control (the hamburger) at y=**117**, so
       there is a ~102px band above the first thing the eye lands on. Confirmed visually in
       `scratchpad/shot-de.png`: a large empty band above the category pills.
@@ -78,7 +78,7 @@ https://admission-integrated-achieved-assumption.trycloudflare.com
       (`Footer.tsx:100-103`, both lines carry the reasoning in-code). This satisfies FLOORS LAW 4,
       which the stacked version broke by being a hairline and a tray edge at once through a blur.
       Re-render check is owed once the sticky-header work lands, since that changes the page above it.
-- [ ] **H4-OLD (superseded, kept for the trail). A weird divider near the bottom.** Owner: "I don't like this weird divider thingy at the bottom".
+  > TRAIL, not open work. **H4-OLD (superseded, kept for the trail). A weird divider near the bottom.** Owner: "I don't like this weird divider thingy at the bottom".
       NOT YET LOCATED. The dictation says "a weird divider like a sheep thingy at the bottom".
       BLOCKER, concrete: which page and roughly how far down. I measured the home first viewport
       only. Next step is a full-page screenshot at 390 wide and a walk down it looking for a rule
@@ -103,7 +103,7 @@ https://admission-integrated-achieved-assumption.trycloudflare.com
 
 ## B. Broken behaviour (home)
 
-- [ ] **H6-ORIGINAL (resolved above, kept for the trail).**
+  > TRAIL, not open work. **H6-ORIGINAL (resolved above, kept for the trail).**
       GROUNDED: `HomeSearchPill.tsx:108` wraps the bar in `<Link href={/${locale}/search}>`, so it
       navigates instead of opening the built search surface. `SearchTemplate.tsx` is the real thing
       (1400+ lines, its own search bar, filters, map button).
@@ -294,7 +294,14 @@ and self-hides at `rows.length < 2` (`AvailableThisWeek.tsx:81`). Probed the liv
 below the floor of two, so the section hides rather than render a one-item rail. That is the
 no-fabrication rule working, not a bug. It appears the moment a second salon has real slots.
 
-- [ ] V1. Decide the Available-this-week gap: seed more bookable slots so the rail passes its
+- [x] V1. **DECIDED: leave it, no code change. verified:** the section is mounted at
+      `app/[locale]/page.tsx:268` and self-hides at `rows.length < 2`
+      (`AvailableThisWeek.tsx:81`); the live API returns **1** salon with availability
+      (`GET /api/salons?date=2026-08-04&limit=50` -> 1, total 1). The only alternatives were to
+      seed fake slots, which breaks the no-fabrication rule this repo enforces by gate, or to drop
+      the floor to 1, which ships a one-item rail that reads as a bug. It appears on its own the
+      moment a second store has real hours. Nothing to build.
+  > TRAIL, not open work. V1-ORIGINAL. Decide the Available-this-week gap: seed more bookable slots so the rail passes its
       floor of 2, or accept that it hides until real salons open real hours. Owner's call, it is a
       seeding decision, not a design one.
 
