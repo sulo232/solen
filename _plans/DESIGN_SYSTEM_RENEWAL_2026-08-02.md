@@ -29,10 +29,18 @@ all stamped 2026-08-02 22:22-22:23. IMG_6900 read directly and it is **Airbnb's 
 
 ## Atomic asks
 
-- [ ] **A1. MEASURE all five screenshots.** pixel-spec-auto per the binary-trigger rule; PIL
-      pixel-sample directly if detection fails on borderless rows (it will, there are no borders).
-      Deliverable: row height, icon box, icon stroke, label px + weight, chevron px, left inset,
-      group gap, divider colour and inset, all in device points, in a `measured:` block.
+- [x] **A1. MEASURE all five screenshots.** DONE , `_design-system/references/airbnb--profile-list.md`.
+      pixel-spec-auto ran on all 5, failed on all 5 (borderless, as predicted) with FAILED.md as
+      proof; every number after that is direct PIL pixel-sampling with the method named beside it.
+      Scale verified per-image (all 5 are 1206x2622 = 402x874pt @3.0x, not assumed from one file).
+      Found TWO distinct row recipes, not one (icon nav list: 56.0pt pitch exactly, zero divider
+      between rows, one #EBEBEB hairline per group-end, bare untiled icons, 11.7pt label; text
+      detail list: divider after every row, 14.7pt label, black underlined link instead of a
+      chevron, subline on every row). Two divider instances measured #DDDDDD against five at
+      #EBEBEB in structurally identical positions , reported as an unresolved measured
+      inconsistency, not smoothed to one value. "vs ours" table reads AccountHub.tsx live (current
+      state is a bordered `divide-y rounded-[24px]` card with 38px icon tiles, already past the
+      stale placeholder numbers this task started from).
 - [ ] **A2. The box goes.** Rows render on white with no container.
 - [ ] **A3. Lines, not boxes.** A hairline between GROUPS. Confirm from A1 whether Airbnb also
       rules between rows inside a group, and follow the measurement, not my reading of one image.
