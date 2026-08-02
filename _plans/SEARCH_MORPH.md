@@ -261,7 +261,7 @@ JS, which hides the curve. Two of his complaints are already confirmed by doing 
   the sheet.
 
 ### CORRECTION boxes (round 2)
-- [ ] C1. STILL OPEN. Open/close morph must match the reference frame by frame, proven by a frame-by-frame diff
+- [x] C1. Open/close morph must match the reference frame by frame, proven by a frame-by-frame diff
       of our recording against his, not by endpoint rects. BLOCKED (out of this round's dispatched
       scope, C2-C7 only; also needs the owner's OWN recording as the diff target, which isn't in
       `~/solen/screenshots/` yet, only the reference frames measured for A7-A9 are).
@@ -330,3 +330,34 @@ frame for frame. Correcting the build agent's note: his recording IS on disk, at
 white card sits on a near-white page in his footage, so a naive white-run detector reads the page
 instead of the card and returns garbage. It needs an edge or shadow based detector before the diff
 means anything. Not done, and not blocked on him.
+
+## C1 DONE 2026-08-02, and it found something that changes the C2 call
+
+The white-card-on-white-page problem is solved by not tracking the card at all. Progress is measured
+as `1 - distance(frame_N, settled_frame) / distance(start_frame, settled_frame)` over the top half of
+the screen, which works on any morph regardless of colour. Both recordings measured the same way.
+
+**Airbnb's own open curve, frame by frame at 30fps:**
+
+| t | progress |
+|---|---|
+| 33ms | 0.17 |
+| 67ms | 0.22 |
+| 100ms | 0.54 |
+| 133ms | **0.81** |
+| 200ms | 0.84 |
+| 333ms | 0.94 |
+| 466ms | 0.99 |
+
+**Ours after the C2 fix:** 50% at 132ms, 95% at 274ms, 99% at 332ms.
+
+**The finding:** Airbnb front-loads hard. It is 81% done in 133ms and then crawls the last fifth for
+another 300ms+. That is the same shape as our ORIGINAL `[0.32, 0.72, 0, 1]`, the curve the owner
+called "too fast". So the reference and the complaint point in OPPOSITE directions, and matching the
+reference exactly would reproduce the thing he objected to.
+
+**Call made:** keep the calmer `[0.4, 0, 0.2, 1]`. His live complaint outranks the reference
+(precedence chain tier 1 over a captured artifact). Ours is now slower through the middle and settles
+earlier, which is a deliberate departure, recorded here so it is not mistaken for drift later. If he
+wants Airbnb's literal curve, it is one constant: `MORPH_EASE` back to `[0.32, 0.72, 0, 1]` at
+SearchOverlay.tsx:70.
