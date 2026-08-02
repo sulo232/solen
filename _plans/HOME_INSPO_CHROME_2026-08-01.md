@@ -95,7 +95,17 @@ https://admission-integrated-achieved-assumption.trycloudflare.com
       his word: `inspo/page.tsx:509`, `search/SearchTemplate.tsx:1397`, and the `trailing="saved"`
       heart in this same file at line 124.
 
-- [ ] **H2. Switching categories should transition smoothly like Airbnb, not a page load.** Owner: "when you switch between the categories it loads like another page, make it elegant like Airbnb does it, on Airbnb it's really smooth".
+- [ ] **H2. HALF DONE, and the remaining half is mine, not a decision for him.** Commit
+      `f05e91e81` shipped the first half: 3 of 4 category routes (barbershop, nails, spa) had NO
+      `loading.tsx` at all, so tapping them held the old page frozen for the whole wait. All four
+      now share one loading anatomy. Reference captured first per the reference rule, written to
+      `_design-system/references/airbnb--category-switch.md`, including the premise correction that
+      the icon row he described no longer exists on live airbnb.com.
+      STILL OPEN: the measured **360-400ms with zero visual feedback** BEFORE any loading state
+      mounts. A `next-view-transitions` attempt from 2026-07-31 is already in `Header.tsx` and did
+      not resolve it. The reference file lists the remaining options cheapest-first. NOT blocked on
+      him.
+      **Original ask: switching categories should transition smoothly like Airbnb, not a page load.** Owner: "when you switch between the categories it loads like another page, make it elegant like Airbnb does it, on Airbnb it's really smooth".
       Today each category is a route (`/{city}/{category}`), so switching is a full navigation.
       Airbnb's is a client-side content swap with the chrome held still.
       ORDER OF WORK: reference-lock capture FIRST (record the real airbnb.com category switch,
@@ -341,7 +351,13 @@ Two floors this repo already documents are visibly live on that page right now:
   photo with rating + PLZ + price on `/de`. Two anatomies for one entity, which is the exact case
   that floor was written from.
 
-- [ ] V2. Account page needs a decision before any build: `konto-redesign.html` is from June and at
+- [ ] V2. **DECIDED AND IN FLIGHT. Owner 2026-08-02: "konto hub better".** Building
+      `app/[locale]/profile/` to `public/_mockups/restraint/account-hub.html`. The build also
+      discharges two floors that are live violations on that page today: FLOORS LAW 10 (the search
+      bar on your own saved list, which he asked about by name) and FLOORS LAW 8/9 (a store renders
+      as a 3-photo collage there and a single-photo card with rating and price on /de, so the
+      registry component gets composed instead). Ticks when it renders and is committed.
+  > TRAIL, not open work. V2-ORIGINAL. Account page needed a decision before any build: `konto-redesign.html` is from June and at
       least 8 profile mockups exist (`profile-typescale-fs`, `sweep-profile-*`,
       `restraint/account-hub`, `everystate-v2/07-profile`). Which one is canonical? Naming it is the
       owner's call; the two floor violations above are fixable regardless of which he picks.

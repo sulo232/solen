@@ -410,7 +410,26 @@ de 372, en 382, fr 374, it 375 = **1503 strings**. Keys are NOT renamed (a key r
       (The first grep here returned a false 0 because `--include=*.tsx` was unquoted and zsh tried
       to glob it , the exact bug already recorded in the Ask-11 section of this file. Quoted, it
       returns 752 raw / 600 after filtering.)
-- [ ] R4. **IN FLIGHT 2026-08-02, dispatched, not parked.** A coder is renaming the remaining
+- [x] R4. **verified: 8/8 routes 200, 0 "Hair Store" left, tsc exit 0, carve-outs intact.** Landed
+      in `29bb6000c`.
+      **MY BRIEF'S NUMBER WAS WRONG AND THE AGENT CAUGHT IT.** I briefed "67 occurrences across 36
+      files" and pointed at `scratchpad/count4.py`. That script did not exist in this worktree, it
+      was written in another session against `main`, and this branch already carried a full rename
+      (`5983225b2`). Re-run here it found **4**, not 67. Same class of error as the H1 and H5
+      mistakes this session: I took a number off a file instead of measuring the branch I was on.
+      What was ACTUALLY found and fixed, which the stale number would have hidden:
+      - **A live regression of my own fix.** "Hair Salon" had gone back to "Hair Store" in 4 places
+        including `coiffeur/page.tsx:29`'s metadata. My `f5b576275` only fixed `messages/en.json`;
+        the hardcoded .tsx copies were never covered. Reverted, and `grep -riE "hair stores?|nail
+        stores?"` over app + components + components-legacy + messages now returns **0**.
+      - **24 further genuine renames** a quoted-string grep structurally cannot see: hyphenated
+        German compounds (`Salon-Plattform` -> `Store-Plattform`) and bare JSX text
+        (`Dieser Salon hat noch keine Services` -> `Dieser Store ...`), across 20 files.
+      Carve-outs held: `Salon Lumière` still at 2 sites (the real seeded store), `Salon Maria` still
+      in `WhySolen.tsx`. Routes verified by me, not the agent, which could not reach the network
+      from its sandbox: /de, /de/coiffeur, /de/barbershop, /de/nails, /de/spa, /de/inspo,
+      /de/walk-in-pay, /de/terms all 200.
+  > TRAIL, not open work. R4-ORIGINAL. A coder is renaming the remaining
       user-facing `.tsx` copy. Scope changed mid-task on the owner's answer: I had recommended
       leaving the ~35 SEO `<title>`/`<meta description>` strings on "Salon" and he answered "fix",
       so metadata is now IN scope and the agent was re-briefed. Carve-outs that still stand: real
