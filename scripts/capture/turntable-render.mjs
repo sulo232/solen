@@ -514,8 +514,12 @@ window.__renderAt = (rad, puffT, t, wt) => {
   const HUE = window.__HUE, SM = window.__SATMUL, VM = window.__VALMUL;
   for (let i = 0; i < d.length; i += 4) {
     if (d[i + 3] === 0) continue;
-    if (HUE !== null) {
-      // rgb -> hsv, retarget the hue of coloured pixels only, hsv -> rgb
+    // BUG, found 2026-08-02: this whole block used to sit inside the HUE !== null guard, so
+    // --neutral-val silently did nothing unless --hue was also passed. That is why darkening the
+    // spa stones had no effect: they are near-neutral at saturation 0.11, every other lever
+    // (--sat-mul, --val-mul) only touches pixels ABOVE the 0.22 saturation floor by design, and the
+    // one lever meant for them was gated off. Split so each guard covers only its own case.
+    {
       const r0 = d[i] / 255, g0 = d[i + 1] / 255, b0 = d[i + 2] / 255;
       const mx = Math.max(r0, g0, b0), mn = Math.min(r0, g0, b0), df = mx - mn;
       const sat = mx === 0 ? 0 : df / mx;
@@ -526,7 +530,7 @@ window.__renderAt = (rad, puffT, t, wt) => {
         const V = Math.max(0, Math.min(1, window.__NEUTVAL * (0.42 + 0.58 * rel))) * 255;
         d[i] = V; d[i + 1] = V; d[i + 2] = V;
       }
-      if (sat >= 0.22) {
+      if (sat >= 0.22 && HUE !== null) {
         const S = Math.max(0, Math.min(1, sat * SM)), V = Math.max(0, Math.min(1, mx * VM));
         const h6 = HUE * 6, ii = Math.floor(h6), f = h6 - ii;
         const pv = V * (1 - S), q = V * (1 - S * f), t = V * (1 - S * (1 - f));
