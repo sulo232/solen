@@ -30,7 +30,16 @@ https://admission-integrated-achieved-assumption.trycloudflare.com
       `scratchpad/shot-de.png`: a large empty band above the category pills.
       Fix is a spacing change in `_components/layout/Header.tsx` (the 102px) plus whatever pads
       `HomeSearchPill`. Needs a mockup, it is an appearance change.
-- [ ] **H4. A weird divider near the bottom.** Owner: "I don't like this weird divider thingy at the bottom".
+- [x] **H4. FIXED, and verified against the code rather than assumed. Commit `99d4f7474`.**
+      The measured cause was three things stacked: a `border-b border-s-border` hairline on the
+      newsletter strip, the sunken-to-white flip directly beneath it, and both seen through a
+      `bg-white/45 backdrop-blur-[22px] backdrop-saturate-[1.6]` layer on `<footer>` itself.
+      That commit removes ALL THREE: the footer no longer carries the translucent blur wrapper, and
+      the strip drops its `border-b` so the sunken-tray edge is the single boundary
+      (`Footer.tsx:100-103`, both lines carry the reasoning in-code). This satisfies FLOORS LAW 4,
+      which the stacked version broke by being a hairline and a tray edge at once through a blur.
+      Re-render check is owed once the sticky-header work lands, since that changes the page above it.
+- [ ] **H4-OLD (superseded, kept for the trail). A weird divider near the bottom.** Owner: "I don't like this weird divider thingy at the bottom".
       NOT YET LOCATED. The dictation says "a weird divider like a sheep thingy at the bottom".
       BLOCKER, concrete: which page and roughly how far down. I measured the home first viewport
       only. Next step is a full-page screenshot at 390 wide and a walk down it looking for a rule
