@@ -361,7 +361,14 @@ de 372, en 382, fr 374, it 375 = **1503 strings**. Keys are NOT renamed (a key r
       Verified 2026-08-01: `messages/fr.json` now contains **367** occurrences of the word, and the
       hardcoded French in `walk-in-pay/page.tsx:310` reads `Montrez ce code au store` and
       `Voir le store`, so the reading really is "show this code at the blind".
-- [ ] R2b. **The English category label changed MEANING, and it is a defect, not a preference.**
+- [x] R2b. **FIXED 2026-08-02, commit `f5b576275`. verified:** `messages/en.json` now carries
+      **0** occurrences of "Hair Store" (was 5), `navigation.coiffeur` reads `'Hair Salon'`, and
+      `salon/[slug]/layout.tsx` no longer contradicts it. 12 values reverted where a service word
+      directly precedes the noun (Hair/Nail/Beauty/Barber + store); every other Store left alone.
+      A second pass was needed because the first missed "Hair stores" (capital word, lowercase
+      noun): the patterns were all-caps or all-lower, not case-insensitive. de/fr/it re-checked for
+      the same shape, 0 collisions each. `npx tsc --noEmit` exit 0.
+- [ ] R2b-ORIGINAL (fixed above, kept for the trail). **The English category label changed MEANING.**
       Verified 2026-08-01: `messages/en.json` carries **"Hair Store" at 5 sites** (lines 124, 412,
       4480, 4993, 5384), from `navigation.coiffeur` / `breadcrumb.coiffeur` and the nails hero. In
       English a hair store SELLS hair products; it does not cut hair. The mechanical per-locale rule
