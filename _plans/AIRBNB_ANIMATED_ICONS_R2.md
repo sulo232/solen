@@ -1046,3 +1046,29 @@ answer changes the brief.
 **BLOCKING, needs the owner:** whether to re-author for 49px (simplify the silhouette, drop or
 greatly thicken the air, since 11% of it survives), and whether to spend credits on the remaining
 four objects. Both are cost decisions and neither is mine to make.
+
+## Round 33: three more objects, and two of them need PARTS that move
+
+Owner, 2026-08-02, four asks:
+1. the nail polish colour is muted, make it actually pink
+2. the polish cap lifts open a little to the right, then closes. No brush.
+3. the spa stones separate and move up and down independently, not as one block
+4. stop reaching for muted colours generally
+
+- [ ] Nail polish, vivid pink not muted. `verified so far:` the first generation measured
+      saturation 0.37 at value 0.55, hue 342. The set's own locked chair is saturation 0.742 at
+      value 0.843, so he is right by the set's own standard. Regenerating.
+- [ ] Map pin, not muted. `verified:` first generation measured saturation 0.18 at hue 164.
+      Regenerating vivid.
+- [ ] Spa stones, not muted and with visible gaps. `verified:` first generation measured saturation
+      0.18 at value 0.37, a near-black block. Regenerating lighter with air between the pebbles.
+- [ ] Polish cap opens to the right and closes.
+- [ ] Stones separate and travel independently.
+
+**THE CONSTRAINT THESE TWO ANIMATIONS HIT.** Tripo returns ONE fused mesh, one primitive, one
+material, with no named parts. That was measured earlier this session when I tried to anchor the
+air to "the nozzle" and found there was no nozzle to anchor to. So a cap that opens, or stones that
+separate, cannot be driven off the mesh as it arrives. Two ways: generate each part as its own
+image and its own mesh (more credits, exact control), or split the fused mesh geometrically by
+world Y, which both of these objects allow because they separate cleanly along the vertical axis
+(free). Taking the geometric split first.

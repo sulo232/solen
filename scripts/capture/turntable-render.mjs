@@ -30,7 +30,7 @@ if (!glbPath || !outdirArg) {
   console.error("Usage: node scripts/capture/turntable-render.mjs <model.glb> <outdir> [--frames 51] [--fps 30] [--size 180x162] [--hold-in 6] [--hold-out 12] [--turns 1]");
   process.exit(1);
 }
-const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7, hueShift: null, satMul: 1, valMul: 1, tilt: 0, bob: 0, gloss: 0, neutralVal: null, puffOffset: '0,0,0', puffInset: 0, airWave: 0, sway: 0 };
+const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7, hueShift: null, satMul: 1, valMul: 1, tilt: 0, bob: 0, gloss: 0, neutralVal: null, puffOffset: '0,0,0', puffInset: 0, airWave: 0, sway: 0, splitY: [], openDeg: 0, separate: 0 };
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
   // ES modules are blocked over file:// by CORS (origin null), so when the outdir sits under
@@ -49,6 +49,11 @@ for (let i = 0; i < argv.length; i++) {
   // nozzle pointing the same way the whole time, which removes the air's teleport and its cut at the
   // source instead of managing them.
   else if (a === "--sway") opt.sway = Number(argv[++i]);           // peak yaw in degrees
+  // Cut the fused mesh into parts by height, as fractions of the object's own bounding box, so a
+  // lid or a stack can move independently. The generator gives one welded mesh with no named parts.
+  else if (a === "--split-y") opt.splitY = String(argv[++i]).split(",").map(Number).filter(n => n > 0 && n < 1).sort((x, y) => x - y);
+  else if (a === "--open-deg") opt.openDeg = Number(argv[++i]);     // top band tips right by this much
+  else if (a === "--separate") opt.separate = Number(argv[++i]);    // bands rise apart by this much
   // Which angle the clip RESTS on. Measured, not guessed: pick the frame where the subject
   // reads most front-on, then pass its rotation here so frame 1 and frame 51 both land there.
   else if (a === "--start-angle") opt.startAngle = Number(argv[++i]);
@@ -305,6 +310,63 @@ new GLTFLoader().load("./model.glb", (gltf) => {
   }
   pivot.add(obj);
 
+  // SPLIT THE MESH INTO MOVING PARTS.
+  // The generator returns ONE fused mesh with one primitive, one material and no named parts, which
+  // is why the air could never be anchored to "the nozzle" earlier in this workstream: there was no
+  // nozzle to anchor to. But a polish cap and a stack of stones both separate cleanly along the
+  // vertical axis, so a geometric cut by world Y gives real parts without paying for extra meshes.
+  // Each band becomes its own Group, hinged or translated by __PARTS below.
+  if (SPLIT_Y.length) {
+    const src = [];
+    obj.traverse((n) => { if (n.isMesh && n.geometry) src.push(n); });
+    const bb = new THREE.Box3().setFromObject(obj);
+    const y0 = bb.min.y, hgt = Math.max(1e-6, bb.max.y - y0);
+    const cuts = SPLIT_Y.map((f) => y0 + f * hgt);
+    const bandOf = (y) => { let b = 0; while (b < cuts.length && y > cuts[b]) b++; return b; };
+
+    const groups = Array.from({ length: cuts.length + 1 }, () => new THREE.Group());
+    for (const mesh of src) {
+      const g = mesh.geometry.index ? mesh.geometry.toNonIndexed() : mesh.geometry.clone();
+      const pos = g.attributes.position;
+      const tri = pos.count / 3;
+      const buckets = groups.map(() => []);
+      const v = new THREE.Vector3();
+      for (let t = 0; t < tri; t++) {
+        let cy = 0;
+        for (let k = 0; k < 3; k++) { v.fromBufferAttribute(pos, t * 3 + k); mesh.localToWorld(v); cy += v.y; }
+        buckets[bandOf(cy / 3)].push(t);
+      }
+      for (let b = 0; b < groups.length; b++) {
+        if (!buckets[b].length) continue;
+        const ng = new THREE.BufferGeometry();
+        for (const name of Object.keys(g.attributes)) {
+          const a = g.attributes[name], it = a.itemSize;
+          const arr = new a.array.constructor(buckets[b].length * 3 * it);
+          let o = 0;
+          for (const t of buckets[b])
+            for (let k = 0; k < 3; k++)
+              for (let c = 0; c < it; c++) arr[o++] = a.array[(t * 3 + k) * it + c];
+          ng.setAttribute(name, new THREE.BufferAttribute(arr, it));
+        }
+        ng.computeVertexNormals();
+        const part = new THREE.Mesh(ng, mesh.material);
+        mesh.updateWorldMatrix(true, false);
+        part.applyMatrix4(mesh.matrixWorld);
+        groups[b].add(part);
+      }
+      mesh.visible = false;
+    }
+    // Hinge each band at its own cut line, so a rotation opens it like a lid rather than swinging
+    // the whole part around the object's centre.
+    for (let b = 0; b < groups.length; b++) {
+      const hy = b === 0 ? y0 : cuts[b - 1];
+      groups[b].position.y = hy;
+      groups[b].children.forEach((c) => { c.position.y -= hy; });
+      pivot.add(groups[b]);
+      PARTS.push({ group: groups[b], baseY: hy });
+    }
+  }
+
   // Frame it: pull back until the scaled bounds fit with margin on every side, at every angle.
   const fitted = new THREE.Box3().setFromObject(pivot);
   const fs = fitted.getSize(new THREE.Vector3());
@@ -410,6 +472,10 @@ window.__VALMUL = ${opt.valMul};
 window.__NEUTVAL = ${opt.neutralVal === null ? 'null' : opt.neutralVal};
 const TILT = ${opt.tilt} * Math.PI / 180;
 const BOB = ${opt.bob};
+const SPLIT_Y = ${JSON.stringify(opt.splitY)};
+const OPEN_DEG = ${opt.openDeg};
+const SEPARATE = ${opt.separate};
+const PARTS = [];
 window.__renderAt = (rad, puffT, t, wt) => {
   pivot.rotation.y = rad;
   // One full sine over the turn: level at the start, up, level, down, level at the end. Because it
@@ -418,6 +484,24 @@ window.__renderAt = (rad, puffT, t, wt) => {
   pivot.rotation.x = TILT * Math.sin(phase);
   if (window.__waveAir) window.__waveAir(wt === undefined ? 0 : wt);
   pivot.position.y = BOB * Math.sin(phase * 2);
+
+  // The split parts move here. One whole sine over the clip in both cases, so the last frame lands
+  // exactly on the first and the loop still closes.
+  if (PARTS.length) {
+    // ease so the lid and the stones settle rather than stopping dead at the extremes
+    const swell = (1 - Math.cos(phase)) / 2;                 // 0 -> 1 -> 0 across the clip
+    if (OPEN_DEG) {
+      // the TOP band is the lid. Rotating about Z tips it to the right, hinged on its own cut line.
+      const lid = PARTS[PARTS.length - 1];
+      lid.group.rotation.z = -(OPEN_DEG * Math.PI / 180) * swell;
+    }
+    if (SEPARATE) {
+      // every band but the bottom rises, each a little further than the one below, so the stack
+      // opens out instead of travelling as one block
+      for (let i = 1; i < PARTS.length; i++)
+        PARTS[i].group.position.y = PARTS[i].baseY + SEPARATE * i * swell;
+    }
+  }
   setPuff(puffT === undefined ? 0 : puffT);
   renderer.render(scene, camera);
   if (window.__SAT === 1 && window.__HUE === null && window.__NEUTVAL === null) return renderer.domElement.toDataURL("image/png");
