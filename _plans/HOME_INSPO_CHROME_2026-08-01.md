@@ -18,7 +18,10 @@ https://admission-integrated-achieved-assumption.trycloudflare.com
 
 ## A. Chrome geometry + behaviour (home)
 
-- [x] **H1. CLOSED AS ALREADY-DECIDED, AND I ALMOST RE-SHIPPED SOMETHING HE REJECTED. 2026-08-02.**
+- [x] **H1. verified:** revert proved by `grep -c pillsSticky Header.tsx` = **0** and
+      `grep -c "What the fuck are you doing bro" Header.tsx` = **3** (the rejection at
+      `Header.tsx:595` and `:997` is intact). Commit `e616b8a65`.
+      **CLOSED AS ALREADY-DECIDED, AND I ALMOST RE-SHIPPED SOMETHING HE REJECTED. 2026-08-02.**
       I briefed a coder to pin the pills AND the search bar together, straight off this box's own
       wording. It built exactly that, and in doing so DELETED the comment recording the owner's
       rejection of that very thing, one day old, in his own words, at `Header.tsx:595` and `:997`:
@@ -34,14 +37,22 @@ https://admission-integrated-achieved-assumption.trycloudflare.com
       whether the thing it asked for had already been ruled on. The plan file is not the record of
       what he wants, the latest decision is, and that decision was sitting in the file I was
       changing.
-- [x] **H3. FIXED, spacing only. Owner: "the header, the category and the search bar, they're
+- [x] **H3. verified:** `Header.tsx:621` now carries `showCategoryChrome && "max-md:!py-0"`.
+      Measured live at 390x844 after the change: header height **0** (`position: static`), first
+      pill top **12px**, search pill top **103px**, and exactly ONE sticky element on the page.
+      Before: header 24px, first pill 36px. `npx tsc --noEmit` exit 0. Commit `e616b8a65`.
+      **FIXED, spacing only. Owner: "the header, the category and the search bar, they're
       placed too low and it looks kind of weird".** On every route showing the category chrome the
       header's own mobile row is `max-md:hidden`, so on a phone that box rendered nothing and its
       padding was pure empty band. Zeroed on mobile only (`showCategoryChrome && "max-md:!py-0"`),
       desktop untouched.
       Measured live at 390 wide, cookie banner dismissed: **header height 24px -> 0**, first pill
       **top 36px -> 12px**. Search pill at 103. `npx tsc --noEmit` exit 0.
-- [x] **H6. NOT A BUG ANY MORE, and the earlier diagnosis in this file is stale.** This box says a
+- [x] **H6. verified:** a real click at the search pill centre navigates to **`/de/search`**,
+      measured on the live page at 390x844 both at scroll 0 and scrolled to y=1200, not inferred
+      from code. The header that was blamed measures `position: static`, height 0. Commit
+      `e616b8a65`.
+      **NOT A BUG ANY MORE, and the earlier diagnosis in this file is stale.** This box says a
       transparent 102px sticky header eats the tap so search lands on /de/coiffeur. Re-measured on
       the live page 2026-08-02: the header is `position: static`, height 0 on mobile, and a real
       click at the search pill's centre navigates to **/de/search**. The tap-eating was fixed by
