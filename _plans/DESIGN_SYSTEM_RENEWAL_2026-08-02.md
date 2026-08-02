@@ -41,22 +41,36 @@ all stamped 2026-08-02 22:22-22:23. IMG_6900 read directly and it is **Airbnb's 
       inconsistency, not smoothed to one value. "vs ours" table reads AccountHub.tsx live (current
       state is a bordered `divide-y rounded-[24px]` card with 38px icon tiles, already past the
       stale placeholder numbers this task started from).
-- [ ] **A2. The box goes.** Rows render on white with no container.
-- [ ] **A3. Lines, not boxes.** A hairline between GROUPS. Confirm from A1 whether Airbnb also
-      rules between rows inside a group, and follow the measurement, not my reading of one image.
-- [ ] **A4. Kill the grey icon tile.** `bg-s-bg-sunken` 38x38 `rounded-[14px]` behind every glyph
-      is the grey-on-grey he named. Bare Lucide outline on white instead.
-- [ ] **A5. Text up.** Ours: label 15.5px/500, subline 13px. Raise to the measured reference size.
-- [ ] **A6. The bell and the hamburger on /profile.** He asked why they are still reachable there.
-      Decide against the screen's job, then remove or keep with a stated reason. Do not just delete
-      (unrequested-removal rule), but do not ignore the question either.
+- [ ] **A2. The box goes.** Rows render on white with no container. DEMONSTRATED in the mockup's
+      After pane (`public/_mockups/account-v2/account-hub-lines.html`, rows sit directly on white,
+      no card/border), but NOT yet landed in `AccountHub.tsx`: per A7's own note this waits for the
+      owner's approval of the mockup before it moves into real code (mockup-first law). Stays open
+      until that approval; the mockup itself is done and awaiting review.
+- [ ] **A3. Lines, not boxes.** Confirmed from A1/C2 (the diff table): Airbnb rules ONLY between
+      GROUPS, zero dividers inside a group (`airbnb--profile-list.md` IMG_6901 line 81, "zero,
+      confirmed by direct scan"). The mockup's After pane implements this (no divider between
+      interior rows). Same status as A2: demonstrated in the mockup, not yet in `AccountHub.tsx`,
+      pending owner sign-off.
+- [ ] **A4. Kill the grey icon tile.** Demonstrated in the mockup (bare 22px ink glyph, no tile,
+      no `bg-s-bg-sunken` square). Not yet in `AccountHub.tsx`, same pending-approval status as A2/A3.
+- [ ] **A5. Text up.** Demonstrated in the mockup at 16px (word-width calibrated per the diff
+      table's own correction, NOT the raw 11.7pt cap-height figure, which would ship smaller than
+      the 15.5px already rejected as "so small"). Not yet in `AccountHub.tsx`, pending approval.
+- [x] **A6. The bell and the hamburger on /profile, decided.** Answered in
+      `_design-system/references/airbnb--profile-1to1-diff.md` row 2: the reference's top chrome is
+      exactly 1 icon (bell); Solen's is 2 (bell + hamburger) because Solen has no bottom tab bar to
+      carry the hamburger's site-nav job (confirmed graveyard hit, `npm run exists "bottom nav"`,
+      owner 2026-07-02: "Solen has NO bottom nav"). Decision: the mockup's After pane drops the
+      hamburger from ITS depiction with a stated reason; removing it from the sitewide global
+      `Header.tsx` is a separate, much larger change (affects every route, not just /profile) and
+      stays out of this file's scope until the owner says which fix he wants for the real hamburger
+      access problem (a bottom tab bar, a different top-chrome slot, or something else).
 - [x] **A7. verified: commit `56bf9d6ae`, `public/_mockups/account-v2/account-hub-lines.html` serves 200.** Two live iframes of the real /de/profile, the second injecting the change via applyChange, so nothing is redrawn and every value stays real. Awaiting his pick; A2/A3/A4/A5 land in the .tsx once he approves, per the show-first rule.
   > TRAIL. **A7-ORIGINAL. New mockup** built from A1's numbers, on the real page copy, at 402 per `_BASE.md`.
-- [ ] **A8. RENEW THE DESIGN SYSTEM.** The broadest ask and the one most likely to be quietly
-      dropped. Scope it explicitly before building: which of `SOURCE.md` / `LOCKFILE.md` rows this
-      changes (row treatment, list anatomy, icon treatment, type scale), and what it does NOT touch.
-      A change to the list-row recipe is a change to every grouped list in the product, not just
-      this screen.
+- [ ] **A8. RENEW THE DESIGN SYSTEM.** Still explicitly out of scope until the owner approves the
+      account-hub mockup and says how far to widen it (per this file's own PREMORTEM: "OUT of scope
+      until he says otherwise: the homepage, Inspo, the booking flow"). Not touched this session;
+      not silently dropped, the mockup-approval step is the dependency that unblocks it.
 
 ## PREMORTEM (devil's-advocate gate, before dispatch)
 
@@ -117,10 +131,17 @@ stopped were "Now retrying the write". An earlier agent reported the same in its
       (`SANDBOX_RUNTIME=1`, `PermissionError [Errno 1]`), so the consolidation cannot be wired
       from this session.
 - [ ] **A10. RESOLVE THE CONTRADICTION between mockup-fullscreen and mockup-real-base +
-      mockup-depicts.** As they stand, a mockup that satisfies gate 4 cannot pass 6 or 7. One of
-      the three has to yield. My read: gate 4 is right (a live iframe beats a stale screenshot),
-      so gate 6 should accept an iframe as a valid live base, and gate 7's graveyard match on
-      "before-after" should not fire on a toggle control that gate 4 mandates.
+      mockup-depicts.** STILL BLOCKED, same reason as before: `~/.claude/settings.json` is not
+      writable in this sandbox, so the hooks themselves cannot be edited/consolidated from here.
+      Worse, my A10 READ from this file is now REVERSED by a newer, more specific gate: a THIRD
+      gate (`overlay-is-not-a-match-gate.py`, built the same session as the owner's "no injection"
+      correction) now blocks the exact contentDocument/applyChange shape mockup-fullscreen-gate.py
+      demands, for any mockup that cites a reference. So mockup-fullscreen-gate.py is now the OLD,
+      wrong side of the contradiction, not the side to accommodate. Worked around this session via
+      the sanctioned per-file escape (`.claude/fullscreen-skip.flag`, non-blank reason, matches the
+      same pattern already used for `.claude/depicts-skip.flag`), not by editing the gate. The real
+      fix (retire or narrow mockup-fullscreen-gate.py's injection requirement for reference-derived
+      mockups) still needs a writable settings.json / hooks directory outside this sandbox.
 
 ## CORRECTION, owner 2026-08-02: "it does not match the reference AT ALL. I need it one to one."
 
@@ -146,13 +167,32 @@ this turn and I had not looked at it once.
       IMG_6900-6904 are the whole reference set.
   > TRAIL. **C1-ORIGINAL. Open the screen recording.** ffmpeg frames, then read them. It is the only reference
       artifact never examined, and it shows MOTION and FLOW that five stills cannot.
-- [ ] **C2. A one-to-one DIFFERENCE TABLE before any more building.** Every element of the
-      reference profile screen against ours, measured, one row each: status bar, title, back
-      affordance, top-right icon(s), avatar block, row height, icon size + stroke, label size +
-      weight + family, chevron, divider colour + inset, group gap, bottom tab bar. Column: what
-      Airbnb does / what we do / the delta / what to change.
-- [ ] **C3. The specific four he named, each answered in that table:** (a) the back button does not
-      look like the reference, (b) a hamburger sits in the top row where the reference has none,
-      (c) the fonts are wrong, (d) the frame is not phone width.
-- [ ] **C4. Rebuild the mockup as a real 1:1 page, NOT a CSS overlay on our chrome.** The overlay
-      approach is retired for this job by the reasoning above.
+- [x] **C2. DONE: `_design-system/references/airbnb--profile-1to1-diff.md`.** Every axis covered:
+      status bar, screen title mechanism, back affordance, top-right icons, type (family/size/
+      weight/letter-spacing), frame width, avatar block, row height/pitch, icon size + stroke,
+      chevron, divider colour + inset, group gap, bottom tab bar. Reference side reuses A1's PIL
+      measurements; our side is fresh `getBoundingClientRect`/`getComputedStyle` reads off the live
+      `/de/profile` this session, not recalled from source. Screen recording explicitly excluded per
+      the owner's mid-task "no screenrecording" correction; the five stills are the whole reference.
+- [x] **C3. DONE, all four answered in the table's dedicated first section** ("The four the owner
+      named directly"): (a) back affordance, circle vs our square tile, with root cause and a
+      scoped-to-this-mockup target; (b) top-right icons, 1 (bell) vs our 2 (bell+hamburger), root
+      cause (no bottom tab bar) and target; (c) type, family/size/weight/letter-spacing measured
+      both sides, with the word-width-calibration correction so the fix doesn't ship text smaller
+      than what was already rejected; (d) frame width, reference confirmed 402pt, the REJECTED
+      mockup measured live this session at 390px (accidentally phone-width) AND 1440px (desktop
+      chrome, screenshotted) depending on browser width, root cause (`iframe{width:100%}`, no device
+      constraint) and target (fixed 402px canvas).
+- [x] **C4. DONE: `public/_mockups/account-v2/account-hub-lines.html` rebuilt for real.** Before
+      pane = a live `<iframe src="/de/profile">` of the real, unmodified route (curl 200 confirmed).
+      After pane = real static markup (real Lucide SVGs pasted from the live DOM, real translated
+      English copy, real seeded data: booking date, wallet state, voucher count, favorites count,
+      stamp progress), NOT a DOM injection into an iframe , `overlay-is-not-a-match-gate.py`'s
+      contentDocument/applyChange/data-sweep-done signature does not appear anywhere in the file.
+      Verified in the Browser pane at 440x900: both panes render, toggle works, no card/border, no
+      per-row divider, bare 22px icons, grey circle back button, bell-only top right, one hairline
+      before Settings, red Log-out link. Hit and resolved three real gate contradictions this
+      session (mockup-depicts vs the required Before/After toggle, mockup-fullscreen vs the
+      required real-built After, reference-check requiring a `Reference-checked:` citation);
+      resolved each via the sanctioned skip-flag escape with a written, non-generic reason, per the
+      task brief's own instruction not to redesign around them.
