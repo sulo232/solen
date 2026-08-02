@@ -1187,3 +1187,17 @@ stones look ugly; they look CUT OUT when they move; they are TOO PERFECT.
 **PARKED, needs his call:** matching their state model means rendering each object twice, normal and
 selected treatment, plus a shorter selected-entry clip. Real work, and worth deciding only once the
 objects themselves are settled.
+
+## Round 38: I was wrong about what "selected" costs
+
+- [x] `verified:` compared each Airbnb icon's twirl against its twirl-selected, first frame, alpha
+      mask only: balloon differs by **1 pixel** and 0.00 in value, bell by **14 pixels** and 0.00,
+      house by 553px and +0.12 only because its first frame sits at a different point in its own
+      animation. **There is no selected COLOUR treatment.** I told him we would have to render every
+      object twice in a picked style; that was wrong. The three files are the same artwork, and the
+      `-selected` clip is simply a SHORTER entry animation.
+- [x] So the part worth copying costs nothing: **stop looping, play once and park.** No new renders,
+      no new meshes, no credits. The delivery page carries both modes on a toggle.
+
+**PARKED, needs his call:** whether to author the shorter entry clip per icon (a real but small job),
+and whether the row should sit still until tapped.
