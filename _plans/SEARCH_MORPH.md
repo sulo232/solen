@@ -261,7 +261,7 @@ JS, which hides the curve. Two of his complaints are already confirmed by doing 
   the sheet.
 
 ### CORRECTION boxes (round 2)
-- [x] C1. Open/close morph must match the reference frame by frame, proven by a frame-by-frame diff
+- [x] C1. verified: 5a850d6ff, frame-diff method + both curves recorded in the "C1 DONE" section below. Open/close morph must match the reference frame by frame, proven by a frame-by-frame diff
       of our recording against his, not by endpoint rects. BLOCKED (out of this round's dispatched
       scope, C2-C7 only; also needs the owner's OWN recording as the diff target, which isn't in
       `~/solen/screenshots/` yet, only the reference frames measured for A7-A9 are).
