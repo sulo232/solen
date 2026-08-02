@@ -76,7 +76,12 @@ https://admission-integrated-achieved-assumption.trycloudflare.com
       controls exist twice and the invisible one wins a naive selector.
       NEXT STEP, concrete: target the VISIBLE node by filtering on a non-zero bounding box first,
       then tap and record what happens. Do not edit the wiring until that tap is on record.
-- [ ] **H7. Hamburger menu has no close / X.** Owner: "the hamburger menu when you click it, there's no X".
+- [x] **H7. FIXED and VERIFIED LIVE 2026-08-02, not taken from the code comment.** Opened the menu
+      on the running site and read the DOM: **1** close control where the earlier measurement found
+      zero. `aria-label="Menü schliessen"`, **38x38**, `border-radius: 9999px`, i.e. exactly the
+      design-system 38px circled X that CLAUDE.md copy-economy rule 5 mandates, NOT the bare
+      treatment H9 asked for on the search bar. The distinction held.
+- [x] **H7-ORIGINAL. Hamburger menu has no close / X.** Owner: "the hamburger menu when you click it, there's no X".
       The menu opens via a `solen:open-menu` window event
       (`HomeSearchPill.tsx:137` -> `Header.tsx:530`). Need to open it live and check the close
       affordance. Design-system close is the 38px circled X (CLAUDE.md copy-economy 5), so this one
@@ -85,7 +90,11 @@ https://admission-integrated-achieved-assumption.trycloudflare.com
       and a scan for any control whose label or text matches close / schliessen / x returned
       **zero**. Screenshot: `scratchpad/v-h7-menu.png`. He is right, there is no way out of the
       menu except the back gesture.
-- [ ] **H8. Hamburger content sits too low.** Owner: "everything is just too low inside the hamburger menu, fix that".
+- [x] **H8. FIXED and VERIFIED LIVE 2026-08-02.** The menu's first item now renders at
+      **top = 24px**, against the **64px** empty band the earlier measurement recorded. The panel
+      padding is now `pt-[max(16px,env(safe-area-inset-top))]`, so it also respects the notch
+      instead of hard-coding clearance for a header X that no longer sits there.
+- [x] **H8-ORIGINAL. Hamburger content sits too low.** Owner: "everything is just too low inside the hamburger menu, fix that".
       **CONFIRMED LIVE this turn, and it is NOT the same root as H3.** The menu panel starts at
       y=0 but its first item ("Basel") starts at **y=64**, so there is a 64px empty band inside
       the panel itself. Visible in `scratchpad/v-h7-menu.png`. That is a padding on the panel,
