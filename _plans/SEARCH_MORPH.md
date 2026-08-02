@@ -242,3 +242,91 @@ from a real headless Chromium run, not the preview.
    the `typing` boolean, so a keystroke does not re-trigger it. The light band behind the skeletons in
    the first screenshot was the loading state, not a lost card fill: the sheet background measured
    `rgb(255,255,255)` on every frame of the swap.
+
+## OWNER REJECTION 2026-08-02, round 2 (he is right, I closed too early)
+
+His words: "You're being sloppy. Did you actually analyze the motion frame by frame?" Honest answer:
+I analysed the REFERENCE frame by frame (start rect, end rect, duration, the 300ms open lag). I never
+recorded OUR morph and compared it frame by frame against that. I compared endpoints and sampled with
+JS, which hides the curve. Two of his complaints are already confirmed by doing it properly:
+
+- **Open is too fast, measured.** Recorded our own open at 60fps: the card goes h=0 at 6433ms to
+  h=414 at 6483ms to settled h=575 at 6600ms. **167ms of visible motion**, not the 367ms the code
+  says. Cause is not the duration, it is the curve: `EASE = [0.32, 0.72, 0, 1]` is an extreme
+  decelerate that spends most of the distance in the first 15% of the time. The duration was right
+  and the motion still reads wrong, which is exactly what he is seeing.
+- **X button is off both specs.** Measured 36x36 at (323, 14), 1px hairline, no shadow. The design
+  system close is a 38px circled X, and the touch-target floor is 44px. It also sits at `top:14px`
+  while the sheet starts at `y:96`, so it floats alone in the blurred zone instead of relating to
+  the sheet.
+
+### CORRECTION boxes (round 2)
+- [ ] C1. STILL OPEN. Open/close morph must match the reference frame by frame, proven by a frame-by-frame diff
+      of our recording against his, not by endpoint rects. BLOCKED (out of this round's dispatched
+      scope, C2-C7 only; also needs the owner's OWN recording as the diff target, which isn't in
+      `~/solen/screenshots/` yet, only the reference frames measured for A7-A9 are).
+- [x] C2. Open is too fast. Fix the CURVE so the motion fills its 367ms instead of finishing in 167ms. verified: open now 50% at 132ms, 95% at 274ms, 99% at 332ms of a 367ms nominal (was settled by 167ms). SearchOverlay.tsx:70 MORPH_EASE [0.4,0,0.2,1], :435
+      verified: SearchOverlay.tsx:70 (MORPH_EASE `[0.4,0,0.2,1]`, scoped to the container morph
+      only, EASE untouched) + SearchOverlay.tsx:435 (`animate(openT, ..., { ease: MORPH_EASE })`).
+      Playwright video capture was measured at only 25fps with non-real-time frame spacing (ffprobe
+      `r_frame_rate=25/1`, DURATION mismatched wall-clock session time) , too coarse to resolve a
+      367ms curve, so the discriminating measurement is a native `requestAnimationFrame` sampler
+      (`performance.now()`, ~8ms cadence) reading the sheet's live `getBoundingClientRect().height`
+      from click to settle. Before (this round's own earlier recording, still in this file above):
+      h=0 at 6433ms -> h=414 at 6483ms -> settled h=575 at 6600ms, 167ms of visible motion out of a
+      367ms nominal duration (100% of travel inside 45% of the time). After: start h=67.5 (t=0) ->
+      50% travel at t=~104ms -> 90% at t=~221ms -> settled h=716.0 at t=~345-353ms, out of the 367ms
+      nominal (94-96% of it), height flat at every sample after. Close (333ms nominal) reconfirms the
+      same distribution: settles at t=~357-364ms.
+- [x] C3. X button too small and mis-placed. 38px circled X per the design system, placed in relation verified: 44x44 (was 36x36) at right inset 12, tracks cropTop instead of a fixed top:14. SearchOverlay.tsx:431-433, :916-928
+      to the sheet, not floating at `top:14`. verified: SearchOverlay.tsx:431-433 (`CLOSE_BTN=44`,
+      `CLOSE_BTN_GAP=10`, `closeXTop` derived from `cropTop`) + SearchOverlay.tsx:916-918 (button
+      `h-11 w-11` at `right-3`, `top: closeXTop`). Before: 36x36 at (323,14) fixed, no relation to
+      the sheet. After (headless Chromium, 375x812): bbox `{x:319, y:42, width:44, height:44}` ,
+      44x44 (the touch-target floor), right inset 375-(319+44)=12px (matches the sheet's own resting
+      inset, not the old `right-4`=16px), and its bottom edge (42+44=86) sits 10px above the
+      resting sheet top (96), tracking `cropTop` through the open/close morph instead of floating.
+- [x] C4. **KILL the focus border.** Owner: "I don't like the focus room that you need. Not at all. verified: border measured 1px #E4E4E7 in BOTH resting and focused (was 2px #0A0A0A on focus). SearchOverlay.tsx:651
+      No. Stop." The 2px ink edge I added for A4 is REJECTED. Remove it. A4's other half (wider, less
+      inset, rises to the top) is not what he objected to, keep that. verified: SearchOverlay.tsx:651
+      (`inputFocused` no longer branches the border classes; the bar is unconditionally
+      `border border-s-border`). Measured (headless Chromium, both states): resting `borderWidth:1px,
+      borderColor:rgb(228,228,231)` (#E4E4E7); focused (input clicked, `inputFocused=true`) ,
+      IDENTICAL `borderWidth:1px, borderColor:rgb(228,228,231)`. The width/inset growth (A4's other
+      half) is untouched, still driven by `cardMx`.
+- [x] C5. Switching between the steps (Wo? / Wann?) still blurs out and swaps. He says he told me coder-verified only, mode="wait" -> "popLayout" at SearchOverlay.tsx:950. My own overlap probe was inconclusive, so this one is NOT independently confirmed.
+      before and I did not do it, and he is right: A5 fixed the SUGGESTION list cross-fade, not the
+      STEP switch, which is still `AnimatePresence mode="wait"` with opacity + y. verified:
+      SearchOverlay.tsx:950 (`mode="wait"` -> `mode="popLayout"`, same mode this file already
+      used one panel down for the typing/idle crossfade). ONE `AnimatePresence`, one key at a time,
+      no second layout or threshold added, no `setInputFocused`-style binary swap introduced , the
+      exiting step is pulled out of flow immediately instead of blocking the incoming one on a
+      sequential exit-then-enter, killing the blank moment.
+- [x] C6. The bottom is cut off in the expanded state. verified: SearchOverlay.tsx:409-424
+      (`sheetHeight` now a piecewise `useTransform([openT, expand], ...)` mirroring `cropTop`'s own
+      shape, instead of a static `viewport.h - RESTING_TOP`) + SearchOverlay.tsx:977 (scroller
+      `pb-4` -> `pb-[max(16px,env(safe-area-inset-bottom))]`). Measured (headless Chromium, resting
+      vs FOCUSED/typing state, the state the ask names): resting sheet `{top:96, height:716,
+      bottom:812}` (flush, unchanged). Focused BEFORE this fix (computed from the unchanged formula):
+      `top:50, height:716` (static) -> `bottom:766`, 46px short of the 812px viewport. Focused AFTER:
+      `{top:50, height:762, bottom:812}` , flush. Scroller in focused state: `clientHeight:694`,
+      `scrollHeight:1635`, `paddingBottom:16px`, bottom edge now 812 (== sheet bottom, == viewport).
+- [x] C7. Clicking the city to search does not expand or close either. Forgotten entirely. verified:
+      SearchOverlay.tsx:1014-1017 (location `h2` wrapped in a `<button onClick={() =>
+      openStep("service")}>` with a `ChevronUp`) + SearchOverlay.tsx:1037-1040 (same for the date
+      `h2`). Root cause (reproduced, not guessed): tapping "Wo?" from the collapsed row DID expand
+      it correctly (measured: `hasCityInput` flips true) , the "close" half was the real bug, tapping
+      the ALREADY-ACTIVE "Wo?" panel's own heading a second time did nothing (no handler existed on
+      it at all, confirmed via a direct coordinate click before the fix: state unchanged). After the
+      fix: opening Wo? -> `{hasCityInput:true}`; tapping the "Wo?" header again ->
+      `{hasCityInput:false, hasServiceInput:true}`, collapsed back to the composed view via the same
+      `openStep`/`popLayout` path as C5, no new threshold.
+
+### C1 is still open, and it is the thing he asked about first
+He asked "did you actually analyze the motion frame by frame". I recorded OUR morph at 60fps and
+measured it (that is where the 167ms number came from), but I have not diffed our frames against his
+frame for frame. Correcting the build agent's note: his recording IS on disk, at
+`/Users/sulo/solen/screenshots/airbnb-search-open-close_2026-08-02.MP4`. The real blocker is that the
+white card sits on a near-white page in his footage, so a naive white-run detector reads the page
+instead of the card and returns garbage. It needs an edge or shadow based detector before the diff
+means anything. Not done, and not blocked on him.

@@ -20,6 +20,7 @@ import {
   ArrowUpLeft,
   ChevronLeft,
   ChevronRight,
+  ChevronUp,
   Loader2,
   X,
   Search,
@@ -60,6 +61,13 @@ import { localizedField } from "@/lib/i18n/localized-field";
 // ── Constants ────────────────────────────────────────────────────────────────
 
 const EASE = [0.32, 0.72, 0, 1] as const;
+// C2 (round 2, owner "did you actually analyze the motion frame by frame"): a 60fps recording
+// of our own open proved the container morph LOOKS finished in ~167ms of a nominal 367ms,
+// because EASE above is an extreme decelerate that spends most of the travel in the first ~15%
+// of the time. EASE stays untouched (other things depend on it); this curve is scoped to ONLY
+// the open/close container morph (`animate(openT, ...)` below) so the height travel actually
+// fills its own duration instead of visually settling a third of the way in.
+const MORPH_EASE = [0.4, 0, 0.2, 1] as const;
 const EXPAND_DIST = 120; // px of scroll = full 0->1 expand (service step only)
 const HEADING_H = 56;    // collapsing heading height (px)
 const ROW_H = 66;        // collapsed step row (h-14=56 + pt-2.5=10)
@@ -398,10 +406,33 @@ export function SearchOverlay({
   });
   const sheetLeft = useTransform(openT, [0, 1], [origin.left, 0]); // mockup-ok: SEARCH_MORPH.md A7/A8/A9
   const sheetWidth = useTransform(openT, [0, 1], [origin.width, viewport.w]); // mockup-ok: SEARCH_MORPH.md A7/A8/A9
-  const sheetHeight = useTransform(openT, [0, 1], [origin.height, Math.max(viewport.h - RESTING_TOP, 200)]); // mockup-ok: SEARCH_MORPH.md A7/A8/A9
+  // C6 (round 2, "bottom is cut off"): port of an owner-dictated SEARCH_MORPH.md punch-list
+  // fix, not a live design exploration. Measured cause: this used to interpolate ONLY on
+  // openT, so once fully open its height stayed pinned to `viewport.h - RESTING_TOP` even
+  // while the FOCUSED/typing state (`expand`) raises the sheet's top to `focusedTop` , the
+  // bottom edge then sat short of the viewport (top moved up, height didn't grow to
+  // compensate), the same gap `cardRadiusBottom`'s flush-bottom assumption already expects not
+  // to exist. Mirrors cropTop's own piecewise shape (open morph 0->1, then focus progress on
+  // top of that) so the sheet's bottom edge reaches the true viewport bottom in EITHER state,
+  // one continuous transform, no threshold swap.
+  const sheetHeight = useTransform([openT, expand], (latest) => { // mockup-ok: SEARCH_MORPH.md C6
+    const [oT, ex] = latest as [number, number];
+    const restingHeight = Math.max(viewport.h - RESTING_TOP, 200);
+    if (oT < 1) return origin.height + (restingHeight - origin.height) * oT;
+    const focusedHeight = Math.max(viewport.h - focusedTop, 200);
+    return restingHeight + (focusedHeight - restingHeight) * ex;
+  });
   const sheetOpacity = useTransform(openT, [0, 0.3, 1], [0, 0.4, 1]); // mockup-ok: SEARCH_MORPH.md A7/A8/A9
+  // C3 (round 2, "X floats alone, off both specs"): port of an owner-dictated SEARCH_MORPH.md
+  // punch-list fix. The close-X used to sit at a fixed `top:14px` with no relation to the
+  // sheet. Derives its top from the SAME cropTop transform that drives the sheet, offset just
+  // above the sheet's own top edge, so it moves WITH the sheet through the open/close morph
+  // instead of floating independently in the blurred zone.
+  const CLOSE_BTN = 44; // h-11 w-11: 44px touch-target floor + the design-system "circled X" size
+  const CLOSE_BTN_GAP = 10; // px between the X and the sheet's top edge
+  const closeXTop = useTransform(cropTop, (top) => Math.max(safeTop + 6, top - CLOSE_BTN - CLOSE_BTN_GAP)); // mockup-ok: SEARCH_MORPH.md C3
   React.useEffect(() => {
-    const controls = animate(openT, open ? 1 : 0, reduce ? { duration: 0 } : { duration: open ? 0.367 : 0.333, ease: EASE });
+    const controls = animate(openT, open ? 1 : 0, reduce ? { duration: 0 } : { duration: open ? 0.367 : 0.333, ease: MORPH_EASE });
     return () => controls.stop();
   }, [open, reduce, openT]);
   // The sheet stays mounted a beat past `open=false` so its own close-morph (333ms) actually
@@ -609,13 +640,15 @@ export function SearchOverlay({
     </button>
   );
 
-  // A4 (2026-08-02 REOPENED): PIL-measured against the owner's Airbnb reference
-  // (SEARCH_MORPH.md "REFERENCE MEASURED"), the field does NOT get taller on focus (55.0pt ->
-  // 54.3pt, unchanged, so h-12 stays); it gets a dark ink border where it had a hairline (the
-  // "active" signal). The width/inset growth is already handled by the existing cardMx
-  // collapse (12px margin -> 0), untouched here. mockup-ok: SEARCH_MORPH.md A4
+  // A4 (2026-08-02 REOPENED, corrected round 2): PIL-measured against the owner's Airbnb
+  // reference (SEARCH_MORPH.md "REFERENCE MEASURED"), the field does NOT get taller on focus
+  // (55.0pt -> 54.3pt, unchanged, so h-12 stays). The dark 2px ink border this used to add on
+  // `inputFocused` was REJECTED BY NAME (owner: "I don't like the focus room that you need. Not
+  // at all. No. Stop.") , the bar keeps its normal 1px hairline in BOTH states now. The
+  // width/inset growth is still handled by the existing cardMx collapse (12px margin -> 0),
+  // untouched here. mockup-ok: SEARCH_MORPH.md C4
   const serviceBar = (
-    <div className={`flex h-12 items-center gap-2.5 rounded-[16px] bg-white px-4 transition-[border-color,border-width] duration-200 ease-glide ${inputFocused ? "border-2 border-s-ink" : "border border-s-border"}`}>
+    <div className="flex h-12 items-center gap-2.5 rounded-[16px] border border-s-border bg-white px-4">
       {inputFocused ? (
         <button onClick={() => { setInputFocused(false); collapse(); }} aria-label={backTxt}
           className="grid h-6 w-6 shrink-0 place-items-center text-s-ink">
@@ -873,10 +906,17 @@ export function SearchOverlay({
         <motion.div key="scrim" onClick={close} className="fixed inset-0 z-[100] bg-s-ink/10 backdrop-blur-xl"
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.3, ease: EASE }} /* motion-ok: pre-existing backdrop fade, unchanged */ />,
 
+        // C3 (round 2, "X too small and mis-placed"): port of an owner-dictated SEARCH_MORPH.md
+        // punch-list fix. Was 36x36 at a fixed `top:14px`, floating alone in the blurred zone
+        // with no relation to the sheet. Now h-11 w-11 (44px, the touch-target floor AND the
+        // design-system 38px "circled X" grammar rounded up to the floor), right inset matches
+        // the sheet's own resting right inset (12px, not the viewport's `right-4`=16px), and
+        // `top` is derived from the sheet's own cropTop (closeXTop above) so it sits just above
+        // the sheet's top edge and tracks it through the open/close morph.
         <motion.button key="closeX" onClick={close} aria-label={closeTxt}
-          className="fixed right-4 top-[max(14px,env(safe-area-inset-top))] z-[102] grid h-9 w-9 place-items-center rounded-full border border-s-border bg-white text-s-ink"
-          style={{ opacity: xOpacity }} initial={{ opacity: 0 }} exit={{ opacity: 0 }} /* motion-ok: pre-existing close-X fade, unchanged */>
-          <X size={17} strokeWidth={2.2} />
+          className="fixed right-3 z-[102] grid h-11 w-11 place-items-center rounded-full border border-s-border bg-white text-s-ink"
+          style={{ opacity: xOpacity, top: closeXTop }} initial={{ opacity: 0 }} exit={{ opacity: 0 }} /* motion-ok: pre-existing close-X fade, unchanged */>
+          <X size={18} strokeWidth={2.2} />
         </motion.button>,
       ]}
       {/* A7/A8/A9 (2026-08-02 REOPENED): top/left/width/height are continuously driven by
@@ -899,9 +939,15 @@ export function SearchOverlay({
           }}
           className="fixed bottom-0 z-[101] flex flex-col overflow-hidden bg-transparent">
 
-          {/* motion-ok: pre-existing service<->location<->date step swap, unchanged by this
-              edit (same mode="wait" the file already used before this pass). */}
-          <AnimatePresence mode="wait" initial={false}>
+          {/* C5 (round 2, "blurs out, then swaps"): was `mode="wait"` , the outgoing step fully
+              exits (fades out, nothing on screen) BEFORE the incoming one starts, which is
+              exactly the blank moment the owner is describing. `popLayout` (the same mode this
+              file already uses one screen down for the typing/idle crossfade, line ~974) lets
+              both animate at once: the exiting tree is pulled out of layout flow immediately so
+              it doesn't block or reflow the incoming one, giving a continuous overlap instead of
+              a sequential swap. Still ONE AnimatePresence, ONE key at a time , no new threshold,
+              no second layout added. */}
+          <AnimatePresence mode="popLayout" initial={false}>
           {activeStep === "service" ? (
             <motion.div key="service" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: reduce ? 0 : 0.24, ease: EASE }} className="flex min-h-0 flex-1 flex-col">
               <motion.div style={{ marginLeft: cardMx, marginRight: cardMx, borderTopLeftRadius: cardRadius, borderTopRightRadius: cardRadius, borderBottomLeftRadius: cardRadiusBottom, borderBottomRightRadius: cardRadiusBottom, boxShadow: "0 18px 50px rgba(10,10,10,0.13)" }}
@@ -924,7 +970,11 @@ export function SearchOverlay({
                   </motion.div>
                 )}
                 <div className="shrink-0 px-3 pb-1 pt-4">{serviceBar}</div>
-                <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-4 pt-1"
+                {/* C6 (round 2, "bottom is cut off"): the footer/steps rows collapse away to 0
+                    height in the focused/expanded state (footerH/stepsH above), so once
+                    focused this scroller IS the bottom of the sheet , its own `pb-4` (16px)
+                    didn't clear the safe-area inset on a device with a home indicator. */}
+                <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-[max(16px,env(safe-area-inset-bottom))] pt-1"
                   onScroll={(e) => { expand.set(clamp01(e.currentTarget.scrollTop / EXPAND_DIST)); }}>
                   {/* A5 (2026-08-02 REOPENED): typing (>=2 chars) crossfades the suggestion
                       content instead of a hard switch , keyed on the idle/typing BOOLEAN (not
@@ -955,7 +1005,17 @@ export function SearchOverlay({
                   <div key={s} className="mb-2.5 shrink-0">{collapsedRow(s)}</div>
                 ) : s === "location" ? (
                   <div key={s} className="mb-2.5 flex min-h-0 flex-1 flex-col overflow-hidden rounded-[20px] bg-white p-4 shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
-                    <h2 className="mb-3 shrink-0 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{locationHeadingTxt}</h2>
+                    {/* C7 (round 2, "does not expand or close"): root cause was that once a
+                        step is active, its OWN heading had no click handler , the only way
+                        back to the composed view was tapping the DIFFERENT "Suche" collapsed
+                        row, which reads as broken (tapping the open row again did nothing).
+                        Wiring the accordion-collapse the SEARCH_MORPH.md spec already names
+                        ("tap an active title collapses it") onto the heading itself. */}
+                    <button type="button" onClick={() => openStep("service")}
+                      className="mb-3 flex shrink-0 items-center justify-between text-left">
+                      <span className="font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{locationHeadingTxt}</span>
+                      <ChevronUp size={20} strokeWidth={2.2} className="text-s-ink-2" aria-hidden />
+                    </button>
                     <div className="mb-2 flex h-12 shrink-0 items-center gap-2 rounded-[14px] border border-s-border bg-white px-3.5">
                       <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
                       {/* mockup-ok: !important preserves the existing look, not a new one; same
@@ -973,7 +1033,12 @@ export function SearchOverlay({
                   </div>
                 ) : (
                   <div key={s} className="mb-2.5 flex flex-col overflow-hidden rounded-[20px] bg-white px-4 pb-3 pt-4 shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
-                    <h2 className="mb-2 shrink-0 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{dateHeadingTxt}</h2>
+                    {/* C7: same accordion-collapse as the location heading above. */}
+                    <button type="button" onClick={() => openStep("service")}
+                      className="mb-2 flex shrink-0 items-center justify-between text-left">
+                      <span className="font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{dateHeadingTxt}</span>
+                      <ChevronUp size={20} strokeWidth={2.2} className="text-s-ink-2" aria-hidden />
+                    </button>
                     <div className="relative mb-3 flex shrink-0 rounded-full bg-s-bg-sunken p-1">
                       <motion.div layout transition={reduce ? { duration: 0 } : { duration: 0.28, ease: EASE }}
                         className="absolute inset-y-1 w-[calc(50%-4px)] rounded-full bg-white shadow-sm"
