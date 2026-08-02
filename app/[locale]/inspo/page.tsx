@@ -537,53 +537,19 @@ function DiscoverPageContent() {
           )}
         </div>
 
-        {/* MOCKUP (owner direction 2026-06-20): category pills are the FIRST control, in the rounded-box (rounded-card)
-            pill shape. "Alle" = the blended For You default (boards + personalized + all looks below). Tapping a
-            category scopes the feed AND expands that category's sub-style pills (the row beneath). Reuses the canonical
-            DISCOVERY_CATEGORIES list + discover.tabs labels. Selected = a soft grey pill behind the label (the "lil
-            grey" the owner asked back, 2026-06-24); photos stay full brightness; NO ring/border/dim, no blue. */}
-        <div className="mb-3 flex items-start gap-3 overflow-x-auto scrollbar-none -mx-4 px-4">
-          {orderedCategories.map(({ key }) => {
-            const sel = category === key;
-            const meta = categoryMeta[key];
-            const cover = meta && meta.count > 0 ? meta.cover : null;
-            // Tapping the already-selected category again toggles back to "Alle" (owner 2026-06-23: a second tap
-            // should deselect, not no-op). "Alle" itself doesn't toggle off.
-            const pick = () => {
-              const next = category === key && key !== "all" ? "all" : key;
-              // FIX 1(a): also clear the L2 cut tags. Cuts are a HAIR-only taxonomy; without this they stay stuck
-              // and the new category's feed (e.g. Nägel) gets a `tags` overlap filter no item satisfies → empty.
-              setCategory(next as DiscoveryCategory | "all"); setActiveFilters([]); setCuts([]); setSearch(""); setSearchInput("");
-            };
-            // Owner 2026-06-23 (Option C): EVERY category is the SAME tile + label-chip unit, so the row is uniform.
-            // A category with looks shows its own top look as the tile; an empty one (no content yet) shows a neutral
-            // sunken tile , same shape/size, never an illustration / sparkle / mismatched photo. It fills with a real
-            // look automatically once that category has content. Selected = a soft grey pill on the LABEL only.
-            return (
-              <button key={key} type="button" aria-pressed={sel} aria-label={tTabs(key)} onClick={pick}
-                className="flex w-[80px] shrink-0 flex-col items-center gap-1.5">
-                {/* Photos stay full brightness (no dim/spotlight) and get NO ring/border/outline , owner reads any of
-                    those as the banned focus ring. The selected cue is the soft grey pill on the label below. */}
-                <span className="grid h-[66px] w-full place-items-center overflow-hidden rounded-card">
-                  {cover
-                    ? <img src={cover} alt="" className="h-full w-full object-cover" />
-                    : <span className="h-full w-full bg-s-bg-sunken" />}
-                </span>
-                <span className={`w-full text-center font-heading text-[12px] transition-colors duration-150 ${
-                  sel ? "rounded-pill bg-s-bg-sunken py-1 font-semibold text-s-ink" : "font-medium text-s-ink-2"
-                }`}>
-                  {tTabs(key)}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Refine row (owner 2026-06-23): the filter sheet trigger (icon-only) lives here now, OFF the search bar and
-            always available. The quick pills are PER-CATEGORY (hair tags under Haare, nail finishes under Nägel,
-            driven by /api/discovery/chip-terms?category=) and show once a category is picked; "Alle" stays clean
-            (just the filter). Selected pill = ink fill, no ring (owner: no focus ring on selected pills). */}
-        <div className="relative mb-5">
+        {/* mockup-ok: owner-directed literal placement fix (live, dated below), no new visual token, an
+            existing block moved higher on the page.
+            OVERRIDE 2026-08-02 (owner, live and literal, "the filter belongs above the Für dich section"):
+            this row moves ABOVE the category photo row below, superseding the 2026-06-20 council/owner
+            call recorded in TASTE_LOG.md ("category pills are the first control") per the precedence
+            chain's rule 1 (a live, later owner ask outranks an earlier approval). Nothing else about the
+            row changed: same FilterDrawer, same per-category chip fetch/logic, only its position in the
+            page moved. Refine row (owner 2026-06-23 origin): the filter sheet trigger (icon-only) lives
+            here, OFF the search bar and always available. The quick pills are PER-CATEGORY (hair tags
+            under Haare, nail finishes under Nägel, driven by /api/discovery/chip-terms?category=) and show
+            once a category is picked; "Alle" stays clean (just the filter). Selected pill = ink fill, no
+            ring (owner: no focus ring on selected pills). */}
+        <div className="relative mb-3">
             <div className="flex items-center gap-3 overflow-x-auto scrollbar-none -mx-4 px-4">
               <FilterDrawer
                 category={category}
@@ -634,15 +600,20 @@ function DiscoverPageContent() {
                     type="button"
                     aria-pressed={sel}
                     onClick={() => { const next = sel ? "" : term; setSearch(next); if (next) setCuts([]); /* FIX 3: a chip-search drops cuts (mutually exclusive) */ }}
-                    // OVERRIDE 2026-08-01 (owner, second repeat, "put shadows on the filters ... you
-                    // still did not do that"): the unselected chip rendered flat with only a hairline,
-                    // same complaint + same fix as the FilterDrawer trigger a few lines up (shadow-whisper,
-                    // border dropped). The selected ink-fill state is untouched, it is already the
-                    // system's flat "active" treatment, not the "different style" he flagged.
+                    // OVERRIDE 2026-08-02 (owner, THIRD repeat, "why are there no shadows, everything is
+                    // like a whole different style"): the 2026-08-01 shadow-whisper pass still read as
+                    // flat, because home/category's OWN resting white pills (HomeSearchPill.tsx:92,
+                    // ContinueCard.tsx:168, SearchTemplate.tsx:1303) never used shadow-whisper , they
+                    // share one crisper `border-s-border` + `shadow-[0_2px_8px_0_rgba(0,0,0,0.07)]`
+                    // recipe, measured LIVE and identical across all three. Swapped the unselected chip
+                    // to that exact recipe so this row stops disagreeing with the rest of the site
+                    // (FLOORS LAW 8). Selected ink-fill state untouched, not the "different style" he
+                    // flagged. mockup-ok: owner-directed literal fix, values measured off shipped
+                    // components, not invented.
                     className={`inline-flex h-10 shrink-0 items-center rounded-card px-3.5 text-xs font-heading font-medium transition-colors duration-150 ${
                       sel
                         ? "relative z-10 border border-s-ink bg-s-ink text-white"
-                        : "bg-white text-s-ink-2 shadow-whisper hover:text-s-ink"
+                        : "border border-s-border bg-white text-s-ink-2 shadow-[0_2px_8px_0_rgba(0,0,0,0.07)] hover:text-s-ink"
                     } ${sel ? "animate-[inspo-pillpop_.24s_cubic-bezier(.34,1.56,.64,1)]" : ""}`}
                   >
                     {label}
@@ -650,6 +621,55 @@ function DiscoverPageContent() {
                 );
               })}
             </div>
+        </div>
+
+        {/* mockup-ok: this block is the pre-existing category row, moved verbatim (no visual token
+            changed), only its page position moved per the OVERRIDE above.
+            MOCKUP (owner direction 2026-06-20, position superseded 2026-08-02): the rounded-box
+            (rounded-card) pill shape category row. "Alle" = the blended For You default (boards +
+            personalized + all looks below). Tapping a category scopes the feed AND expands that
+            category's sub-style pills (the filter row above). Reuses the canonical DISCOVERY_CATEGORIES
+            list + discover.tabs labels. Selected = a soft grey pill behind the label (the "lil grey" the
+            owner asked back, 2026-06-24); photos stay full brightness; NO ring/border/dim, no blue.
+            mb-5 (was mb-3 when this row sat above the filter row): this row is now LAST of the two
+            swapped rows, so it carries the gap-to-grid the filter row used to own (its own mb-5,
+            unchanged below), keeping the original 12/12/20 rhythm intact rather than compressing the
+            last gap to 12. mockup-ok, a spacing preservation, not a new value. */}
+        <div className="mb-5 flex items-start gap-3 overflow-x-auto scrollbar-none -mx-4 px-4">
+          {orderedCategories.map(({ key }) => {
+            const sel = category === key;
+            const meta = categoryMeta[key];
+            const cover = meta && meta.count > 0 ? meta.cover : null;
+            // Tapping the already-selected category again toggles back to "Alle" (owner 2026-06-23: a second tap
+            // should deselect, not no-op). "Alle" itself doesn't toggle off.
+            const pick = () => {
+              const next = category === key && key !== "all" ? "all" : key;
+              // FIX 1(a): also clear the L2 cut tags. Cuts are a HAIR-only taxonomy; without this they stay stuck
+              // and the new category's feed (e.g. Nägel) gets a `tags` overlap filter no item satisfies → empty.
+              setCategory(next as DiscoveryCategory | "all"); setActiveFilters([]); setCuts([]); setSearch(""); setSearchInput("");
+            };
+            // Owner 2026-06-23 (Option C): EVERY category is the SAME tile + label-chip unit, so the row is uniform.
+            // A category with looks shows its own top look as the tile; an empty one (no content yet) shows a neutral
+            // sunken tile , same shape/size, never an illustration / sparkle / mismatched photo. It fills with a real
+            // look automatically once that category has content. Selected = a soft grey pill on the LABEL only.
+            return (
+              <button key={key} type="button" aria-pressed={sel} aria-label={tTabs(key)} onClick={pick}
+                className="flex w-[80px] shrink-0 flex-col items-center gap-1.5">
+                {/* Photos stay full brightness (no dim/spotlight) and get NO ring/border/outline , owner reads any of
+                    those as the banned focus ring. The selected cue is the soft grey pill on the label below. */}
+                <span className="grid h-[66px] w-full place-items-center overflow-hidden rounded-card">
+                  {cover
+                    ? <img src={cover} alt="" className="h-full w-full object-cover" />
+                    : <span className="h-full w-full bg-s-bg-sunken" />}
+                </span>
+                <span className={`w-full text-center font-heading text-[12px] transition-colors duration-150 ${
+                  sel ? "rounded-pill bg-s-bg-sunken py-1 font-semibold text-s-ink" : "font-medium text-s-ink-2"
+                }`}>
+                  {tTabs(key)}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Inline preferences setup (shown when profile not configured) */}

@@ -141,19 +141,40 @@ https://admission-integrated-achieved-assumption.trycloudflare.com
 
 ## C. Inspo page
 
-- [ ] **H10. Inspo search bar should be LONG, with the heart INSIDE it.**
-      EXISTS-CHECK HIT, and it changes the work: `HomeSearchPill` ALREADY has a `trailing="saved"`
-      variant that renders a Heart inside the pill (`HomeSearchPill.tsx:119-129`). Inspo is not
-      using it, it hand-rolls its own control at `inspo/page.tsx:509`. So this is COMPOSE THE
-      EXISTING COMPONENT, not build a new bar , FLOORS LAW 9 ("screens are composed, not drawn")
-      and the drift ledger's search-bar entries both bind here.
-- [ ] **H11. Inspo filters have no shadows, whole different style.** Owner: "the filter in the inspo, why are there no shadows, everything is like a whole different style".
-      Grade against the ONE surface table in the design contract (SalonCard = photo + whisper +
-      no border; tile on a gray tray = white, no shadow; a card carrying elevation drops its
-      border). Name which row the Inspo filter is supposed to be before restyling it.
-- [ ] **H12. Inspo filter belongs ABOVE the For You section.**
-      Ordering change. Check `project_inspo_progressive_filter` first, the 3-level drill-down has a
-      defined position, so this may be moving a locked element rather than a loose one.
+- [x] **H10. verified ALREADY DONE, not new work this turn.** Live at 390x844: the resting bar is
+      `HomeSearchPill` with `trailing="saved"` (`inspo/page.tsx:509-514`), 358x66, heart at
+      top:113/left:329 which is inside the bar's box (top:88-154, left:16-374). No hand-rolled heart
+      button remains (`InspoSearchChrome` grep = 0 hits). Landed earlier in commit `bb688546b`
+      ("Inspo composes the same pill as home and the category pages now, 358x66 on all three, with
+      the heart inside its bounding box") but never ticked here. Tap-to-edit reconfirmed this turn:
+      clicking the resting label mounts `<input placeholder="Styles suchen...">` and focuses it
+      (`document.activeElement` = that input).
+- [x] **H11. FIXED and verified live 2026-08-02.** Named row: none of the six rows in CLAUDE.md's ONE
+      surface table (SalonCard / grouped-list / PDP-sidebar / gray-tray tile / overlay-sheet / "a card
+      drops its border") literally covers a small standalone pill sitting on plain white, that table
+      enumerates CARD surfaces. The applicable reference is the site's own resting-white-PILL recipe,
+      shared verbatim by `HomeSearchPill.tsx:92`, `ContinueCard.tsx:168` and `SearchTemplate.tsx:1303`
+      (`border border-s-border` + `shadow-[0_2px_8px_0_rgba(0,0,0,0.07)]`), measured live off
+      `HomeSearchPill`'s own bar: border-width 1px, border-color `rgb(228,228,231)` (`#E4E4E7`),
+      box-shadow `rgba(0,0,0,0.07) 0 2px 8px 0`. A prior pass (`bb688546b`, 2026-08-01) had already
+      moved the Inspo `FilterDrawer` trigger + chip row from a bare hairline to `shadow-whisper`, which
+      is why the owner's complaint read as a repeat, `shadow-whisper` is a different, more diffuse
+      recipe than what home/category actually use. Swapped both the trigger
+      (`FilterDrawer.tsx:69-75`) and the unselected chip (`inspo/page.tsx`, chip row) to the exact
+      measured recipe; selected ink-fill chip state untouched. Live after: trigger + all 5 sampled
+      chips report `border-width:1px`, `border-color:rgb(228,228,231)`, `box-shadow: rgba(0,0,0,0.07)
+      0px 2px 8px 0px`. Screenshot confirms a visible shadow under every chip.
+- [x] **H12. FIXED and verified live 2026-08-02.** Checked `project_inspo_progressive_filter` memory
+      first: no position lock there (it specs L0/L1/L2 drill-down levels, not row order). Found the
+      actual lock in `TASTE_LOG.md` ("Inspo home chrome" entry, 2026-06-20 council+owner): "category
+      pills are the first control". Named it rather than silently moving a locked element, and applied
+      the precedence chain's rule 1 (a live, later owner ask outranks an earlier approval): this
+      dispatch's 2026-08-01/08-02 ask is later and supersedes the 2026-06-20 order. Swapped the two
+      JSX blocks in `inspo/page.tsx` (no logic touched, both blocks moved verbatim) and rebalanced
+      each row's own bottom margin (filter row 20px->12px, category row 12px->20px) so the original
+      12/12/20 vertical rhythm survives the reorder instead of compressing the last gap. Measured live:
+      filter row (trigger + chips) now at top:174, "Für dich" now at top:226 (was 174/284 before,
+      i.e. exactly swapped).
 
 ## D. The big one
 

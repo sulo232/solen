@@ -56,20 +56,19 @@ export default function FilterDrawer(props: FilterDrawerProps) {
   return (
     <>
       {/* Trigger: sliders icon, white square pill. No count badge (owner 2026-06-24: no numbers/counts).
-          OVERRIDE 2026-08-01 (owner, second repeat, "I told you to put shadows on the filters in the
-          inspo page ... you still did not do that"): this control rendered flat with only a 1px
-          hairline (measured: border-radius 14px, border-width 1px, boxShadow none), the "different
-          style" he is flagging against the rest of the system. Design contract "shadow / depth" row:
-          a card of this family carries `shadow-whisper`, and a control carrying elevation DROPS its
-          border rather than keeping both. Token only, no invented value.
-          radius-ok: this is a 40x40 ICON-BUTTON (SlidersHorizontal trigger), not the grouped list-card
-          family the rounded-[24px] gate targets (services/produkte/staff sheets); rounded-[14px] is
-          this control's own pre-existing icon-button radius and the task did not ask for a radius
-          change, only shadow-whisper + border removal. */}
+          OVERRIDE 2026-08-02 (owner, THIRD repeat, "why are there no shadows, everything is like a
+          whole different style"): the 2026-08-01 shadow-whisper pass still read as flat next to the
+          rest of the site, because home/category's own resting white pills (HomeSearchPill.tsx:92,
+          ContinueCard.tsx:168, SearchTemplate.tsx:1303) don't use shadow-whisper at all , they share a
+          crisper 1px `border-s-border` + `shadow-[0_2px_8px_0_rgba(0,0,0,0.07)]` recipe, measured LIVE
+          and identical across all three. That is the real "different style" gap. Swapped to that exact
+          recipe (border restored + the measured shadow); radius/size untouched, only the shadow/border
+          treatment was named as wrong (mockup-first "treatment only" rule). mockup-ok: owner-directed
+          literal fix with values measured off existing shipped components, not invented. */}
       <button
         onClick={() => setOpen(true)}
         aria-label={t("open_filters")}
-        className="relative z-10 grid h-10 w-10 shrink-0 place-items-center rounded-[14px] bg-white text-s-ink-2 shadow-whisper transition-colors duration-150 hover:text-s-ink"
+        className="relative z-10 grid h-10 w-10 shrink-0 place-items-center rounded-[14px] border border-s-border bg-white text-s-ink-2 shadow-[0_2px_8px_0_rgba(0,0,0,0.07)] transition-colors duration-150 hover:text-s-ink"
       >
         <SlidersHorizontal size={18} />
       </button>
