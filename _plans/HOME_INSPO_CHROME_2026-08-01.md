@@ -203,8 +203,8 @@ https://admission-integrated-achieved-assumption.trycloudflare.com
       `_design-system/REMOVED.md` ("less white homepage, home-v4, new homepage mockup, too white",
       dated 2026-08-02), so `npm run exists` now returns a REMOVED hit for anyone who tries to
       re-propose it. The built file stays at `public/_mockups/home-v4/less-white.html`.
-      **WITHDRAWN BY THE OWNER 2026-08-02: "i never told u i want to make mockup ignore wtv u
-      thought i said abt homepage". Not an ask. Do not re-open it from this file.**
+      Owner verbatim, 2026-08-02: "i never told u i want to make mockup ignore wtv u
+      thought i said abt homepage". Not an ask. Do not re-open it from this file.
       What went wrong on my side, recorded so the shape is visible rather than the incident: this
       box was written by a different session from a dictation, and I treated the written line as a
       live instruction. A plan file is a RECORD of what was said, not a standing order, and it goes
