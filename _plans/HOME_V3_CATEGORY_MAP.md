@@ -360,7 +360,12 @@ de 372, en 382, fr 374, it 375 = **1503 strings**. Keys are NOT renamed (a key r
       compound rebuilds (Lieblingssalons -> Lieblings-Stores etc.) and Italian article agreement
       (il salone -> lo store, i saloni -> gli store) spelled out, since a blind replace produces
       broken compounds and wrong articles.
-- [x] R2. **CLOSED, HIS ORDER STANDS. Not overridden by me.** I raised the concern before running
+- [x] R2. **verified:** `messages/fr.json` carries **355** values containing `store` and the
+      French UI is live on the running site. Nothing was reverted, which IS the decision here.
+      Commit `7230e9dd1`. Owner reconfirmed 2026-08-02 with a one-word "ok" when the choice was put
+      to him again alongside the window-blind objection, so this is his answer twice, not my
+      inference.
+      **CLOSED, HIS ORDER STANDS. Not overridden by me.** I raised the concern before running
       the sweep and again after: in French `un store` is a window blind, so `Vous avez un store?`
       reads as "do you have a blind?" (367 occurrences in `messages/fr.json`). He gave a literal
       order, "we stopped calling sh salon we called them stores", and did not change it when told.
@@ -405,7 +410,14 @@ de 372, en 382, fr 374, it 375 = **1503 strings**. Keys are NOT renamed (a key r
       (The first grep here returned a false 0 because `--include=*.tsx` was unquoted and zsh tried
       to glob it , the exact bug already recorded in the Ask-11 section of this file. Quoted, it
       returns 752 raw / 600 after filtering.)
-- [ ] R4. **RE-MEASURED 2026-08-01, and both numbers this box inherited were wrong. The remainder is
+- [ ] R4. **IN FLIGHT 2026-08-02, dispatched, not parked.** A coder is renaming the remaining
+      user-facing `.tsx` copy. Scope changed mid-task on the owner's answer: I had recommended
+      leaving the ~35 SEO `<title>`/`<meta description>` strings on "Salon" and he answered "fix",
+      so metadata is now IN scope and the agent was re-briefed. Carve-outs that still stand: real
+      store proper names ("Salon Lumière", a real seeded row), the four email placeholder domains,
+      and the English service categories ("Hair Salon" must NOT regress, commit `f5b576275`).
+      Ticks when the agent reports and the diff is committed.
+      **RE-MEASURED 2026-08-01, and both numbers this box inherited were wrong. The remainder is
       67, not 469.** The old counts (600 total / 469 left / walk-in-pay "28 of 48") came from a grep
       that could not tell copy from code, so it counted `salon_id`, `salon.name`,
       `/api/walkin/salon-info` and PostgREST select strings as user-facing literals. Re-run with a
