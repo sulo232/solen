@@ -402,7 +402,7 @@ function CookieSettingsModal({ isOpen, onOpenChange }: CookieSettingsModalProps)
             <div className="flex flex-col">
               <span className="font-body font-semibold text-[15px] text-s-ink">Analyse</span>
               <span className="font-body font-normal text-[13px] text-s-ink-2 mt-1">
-                Anonyme Nutzungsstatistiken via PostHog — hilft uns zu verstehen, welche Salons
+                Anonyme Nutzungsstatistiken via PostHog — hilft uns zu verstehen, welche Stores
                 gefunden werden und wo Buchungen abbrechen.
               </span>
             </div>

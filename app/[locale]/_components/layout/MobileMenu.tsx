@@ -302,7 +302,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                   </span>
                   <span className="min-w-0">
                     <span className="block font-body text-[15px] font-bold text-s-ink">Dashboard</span>
-                    <span className="mt-0.5 block font-body text-[12px] font-medium text-s-ink-2">Salon verwalten</span>
+                    <span className="mt-0.5 block font-body text-[12px] font-medium text-s-ink-2">Store verwalten</span>
                   </span>
                 </span>
                 <ChevronRight size={18} strokeWidth={2.2} className="shrink-0 text-s-ink-2" aria-hidden />

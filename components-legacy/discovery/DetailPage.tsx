@@ -417,7 +417,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
                 href={seeAllSalonsHref}
                 className="mt-3.5 block w-full rounded-full border border-s-border bg-white py-3 text-center text-[14.5px] font-semibold text-s-ink"
               >
-                {t.seeAll} {salonTotal} Salons
+                {t.seeAll} {salonTotal} Stores
               </Link>
             )}
           </section>

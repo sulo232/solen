@@ -142,7 +142,7 @@ export default function SalonRegister() {
                 </span>
               </div>
               <p className="font-body text-[13px] text-s-ink-2">
-                Über 1&apos;200 Salons buchen schon mit Solen
+                Über 1&apos;200 Stores buchen schon mit Solen
               </p>
             </div>
           </div>
