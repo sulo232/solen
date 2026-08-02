@@ -1196,8 +1196,11 @@ objects themselves are settled.
       animation. **There is no selected COLOUR treatment.** I told him we would have to render every
       object twice in a picked style; that was wrong. The three files are the same artwork, and the
       `-selected` clip is simply a SHORTER entry animation.
-- [x] So the part worth copying costs nothing: **stop looping, play once and park.** No new renders,
-      no new meshes, no credits. The delivery page carries both modes on a toggle.
+- [x] So the part worth copying costs nothing and it is DONE, not just offered. `verified:` the
+      `loop` attribute is gone from every `<video>` in
+      `public/_research/solen-icons-standalone.html`, the page now defaults to play-once-and-park
+      (`#mOnce` ships `aria-pressed="true"`), and the Looping button is there to switch back. No new
+      renders, no new meshes, no credits.
 
 **PARKED, needs his call:** whether to author the shorter entry clip per icon (a real but small job),
 and whether the row should sit still until tapped.
