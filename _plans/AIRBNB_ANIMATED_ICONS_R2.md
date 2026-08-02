@@ -1055,15 +1055,26 @@ Owner, 2026-08-02, four asks:
 3. the spa stones separate and move up and down independently, not as one block
 4. stop reaching for muted colours generally
 
-- [ ] Nail polish, vivid pink not muted. `verified so far:` the first generation measured
-      saturation 0.37 at value 0.55, hue 342. The set's own locked chair is saturation 0.742 at
-      value 0.843, so he is right by the set's own standard. Regenerating.
-- [ ] Map pin, not muted. `verified:` first generation measured saturation 0.18 at hue 164.
-      Regenerating vivid.
-- [ ] Spa stones, not muted and with visible gaps. `verified:` first generation measured saturation
-      0.18 at value 0.37, a near-black block. Regenerating lighter with air between the pebbles.
-- [ ] Polish cap opens to the right and closes.
-- [ ] Stones separate and travel independently.
+- [x] Nail polish, vivid pink not muted, `verified:` shipped clip measures saturation 0.75 at
+      value 0.82, hue 335, against the locked chair's 0.74 / 0.84. Took three tries and the reason
+      is worth writing down: the NEON fault and the MUTED fault were different knobs. Neon was
+      value 0.96 with the hue slid to 312 purple; muted was saturation 0.44. I fixed the neon by
+      dropping saturation, which was the wrong lever and produced the washed one he called out
+      immediately. Value and hue hold the neon down, saturation carries the punch.
+- [x] Map pin DROPPED, owner 2026-08-02: "on the location no we dont need that we dont even use
+      location as inspo icon we need smth new". Mesh and source deleted. He has not named the
+      replacement subject, so that is the one open question.
+- [x] Spa stones, MOTION DONE, COLOUR BLOCKED on a new source image. `verified:` the clip renders
+      210 frames, mean frame jump 0.26, 0 stutter, loop closes. But the mesh came back mauve with
+      acid-green speckles bleeding off the leaf across the UV, and pulling saturation to 0.09 at
+      render time did not shift it, so it is baked into the texture. CONCRETE BLOCKER: needs a
+      regenerated source image with the stones clearly grey and the leaf on its own, then a new
+      mesh. Not a render flag.
+- [x] Polish cap opens to the right and closes, `verified:` hinged at the collar, 26 degrees, one
+      whole sine so the loop closes; rendered and checked across the clip.
+- [x] Stones separate and travel independently, `verified:` each band lifts a little further than
+      the one below via --separate, height swing 5px across the clip, and the frames show the stack
+      opening and closing rather than moving as a block.
 
 **THE CONSTRAINT THESE TWO ANIMATIONS HIT.** Tripo returns ONE fused mesh, one primitive, one
 material, with no named parts. That was measured earlier this session when I tried to anchor the
