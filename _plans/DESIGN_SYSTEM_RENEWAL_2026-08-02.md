@@ -141,7 +141,10 @@ which was the right demand for a treatment sweep and the wrong one for this job.
 22-09-37_1.MP4`, 30MB, stamped 22:09, thirteen minutes before the five screenshots. He named it
 this turn and I had not looked at it once.
 
-- [ ] **C1. Open the screen recording.** ffmpeg frames, then read them. It is the only reference
+- [x] **C1. CANCELLED by the owner 2026-08-02: "no screenrecording".** Not a reference for this
+      work. Agent told mid-task to skip it and discard anything already extracted. The five stills
+      IMG_6900-6904 are the whole reference set.
+  > TRAIL. **C1-ORIGINAL. Open the screen recording.** ffmpeg frames, then read them. It is the only reference
       artifact never examined, and it shows MOTION and FLOW that five stills cannot.
 - [ ] **C2. A one-to-one DIFFERENCE TABLE before any more building.** Every element of the
       reference profile screen against ours, measured, one row each: status bar, title, back
