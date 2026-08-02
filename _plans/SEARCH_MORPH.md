@@ -96,3 +96,50 @@ Owner picked the two: MAP PIN PRICE LABELS + FILTER COUNT.
 
 ## SEARCH WORKSTREAM , all owner asks addressed as of 2026-07-01
 Rich search wired, ported design, map-view search (open/stay/3-together/store-recenter/city-recenter), filters neutral (no blue/ring), map pin labels + filter count smoothed, "Schweizweit" default killed. Only future enhancement parked: geolocation city detection (needs inventory-by-city).
+
+## REOPENED 2026-08-02 , the focus state does nothing (owner, dictated, message cut off mid-sentence)
+
+Owner on `/de/search?compose=1` (his live server, quirky-ellis :50723, branch
+`claude/principles-security-audit-0ae738`): "when I click the search bar, nothing happens, there's
+just the line thingy that flashes... it looks so ass."
+
+### MEASURED root cause (live, 375x812, his code, not guessed)
+The overlay ARRIVES in the end state, so focus has nothing left to animate:
+- `document.activeElement` is already the search input on arrival; the back arrow (renders only when
+  `inputFocused === true`) is already there.
+- `expand` is already 1: heading wrapper `h=0 op=0`, Standort/Datum wrapper `h=0 op=0`, footer
+  wrapper `h=0 op=0`, sheet `top=50px` (the fully-expanded value; resting is 96px).
+- Cause: `?compose=1` -> `openSearchOverlay(true)` -> `autoFocusService=true` -> the open effect runs
+  `setInputFocused(true); grow(1); focus()` (SearchOverlay.tsx open-effect). Tapping the bar then
+  sets state that is already set.
+- SECOND gap, independent: the category pill row is the ONE element never wired to `expand`
+  (`<div className="shrink-0 px-3 pb-2 pt-3">`, no motion style). Measured `h=60 op=1` at `y=50`,
+  which pins the search bar down at `y=126` instead of letting it take the sheet's top slot.
+- THIRD: this branch stripped the press-feedback classes off the bar's controls
+  (`transition-transform active:scale-[0.94]` removed from the back button, the clear-X, the
+  autocomplete rows), so even the tap has no press response.
+
+### Owner asks (atomic , each ends DELIVERED or BLOCKED with a named dependency)
+- [ ] A1. Tapping the search bar produces a visible state change, not only a caret.
+- [ ] A2. On focus, the category pill row collapses away.
+- [ ] A3. On focus, the search bar moves UP into the slot the pills vacated (top of the sheet).
+- [ ] A4. On focus, the search bar itself GROWS / gains an active treatment (Airbnb reference).
+- [ ] A5. Typing (e.g. "wo") transitions with a morph, not a hard switch behind a blur.
+- [ ] A6. Same smoothness for the search bar itself while typing.
+
+### BLOCKED on (named, not vague)
+- B1. The two Airbnb frames saved as files so they can be PIL-measured (reference-measure gate bans
+  building a reference-derived mockup from eyeballed sizes). Owner pasted them inline; needs them in
+  `~/solen/screenshots/`.
+- B2. A 3-second screen recording of the real Airbnb tap. Memory `feedback_search_expand_gesture_linked`
+  records 4+ owner rejections on exactly this interaction when it was built from stills; the follow
+  (gesture-linked, continuous) cannot be read off two static frames.
+- B3. Where the edit lands: this worktree (needs the `.env.local` symlink to run a dev server) vs
+  directly in the owner's live worktree (no merge, but two sessions writing one tree).
+- B4. The owner's message ended mid-sentence at "I'm gonna show the before and after state because".
+
+### Standing law this must not break
+- The expand is ONE continuous transform on ONE DOM tree, gesture/scroll-linked. A binary
+  `setInputFocused(true)` threshold swap between two layouts was rejected 4+ times
+  (`feedback_search_expand_gesture_linked`, hook `pre-edit-gesture-expand-gate.py`).
+- Mockup-first: a copy of the real page with only the treatment applied, approved BEFORE real code.
