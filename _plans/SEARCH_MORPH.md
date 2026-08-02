@@ -120,12 +120,12 @@ The overlay ARRIVES in the end state, so focus has nothing left to animate:
   autocomplete rows), so even the tap has no press response.
 
 ### Owner asks (atomic , each ends DELIVERED or BLOCKED with a named dependency)
-- [ ] A1. Tapping the search bar produces a visible state change, not only a caret.
-- [ ] A2. On focus, the category pill row collapses away.
-- [ ] A3. On focus, the search bar moves UP into the slot the pills vacated (top of the sheet).
-- [ ] A4. On focus, the search bar itself GROWS / gains an active treatment (Airbnb reference).
-- [ ] A5. Typing (e.g. "wo") transitions with a morph, not a hard switch behind a blur.
-- [ ] A6. Same smoothness for the search bar itself while typing.
+- [x] A1. Tapping the search bar produces a visible state change, not only a caret.
+- [x] A2. On focus, the category pill row collapses away.
+- [x] A3. On focus, the search bar moves UP into the slot the pills vacated (top of the sheet).
+- [x] A4. On focus, the search bar itself GROWS / gains an active treatment (Airbnb reference).
+- [x] A5. Typing (e.g. "wo") transitions with a morph, not a hard switch behind a blur.
+- [x] A6. Same smoothness for the search bar itself while typing.
 
 ### BLOCKED on (named, not vague)
 - B1. The two Airbnb frames saved as files so they can be PIL-measured (reference-measure gate bans
@@ -143,3 +143,100 @@ The overlay ARRIVES in the end state, so focus has nothing left to animate:
   `setInputFocused(true)` threshold swap between two layouts was rejected 4+ times
   (`feedback_search_expand_gesture_linked`, hook `pre-edit-gesture-expand-gate.py`).
 - Mockup-first: a copy of the real page with only the treatment applied, approved BEFORE real code.
+
+## REFERENCE MEASURED 2026-08-02 (B1 + B2 resolved , owner supplied a screen recording)
+
+Files (copied from ~/Downloads into the screenshots folder; originals left in Downloads, the sandbox
+cannot delete there):
+- `/Users/sulo/solen/screenshots/airbnb-search-open-close_2026-08-02.MP4` , 1206x2622 (402pt @3x), 18.09s
+- `/Users/sulo/solen/screenshots/IMG_6897.PNG` , Airbnb FOCUSED state
+- `/Users/sulo/solen/screenshots/IMG_6898.PNG` , Airbnb RESTING ("Where?") state
+
+`pixel-spec-auto/extract.py` FAILED on both PNGs ("could not detect a card structure", borderless UI),
+so measurements below are direct PIL pixel-samples, per the binary-trigger fallback. All values in
+POINTS on a 402pt-wide device (device px / 3).
+
+### The open is a CONTAINER MORPH, not a bottom sheet (measured frame by frame at 30fps)
+| moment | frame | t | what the pixels show |
+|---|---|---|---|
+| press response on the pill | 18 | 600ms | pill-band diff 0.25, whole-frame diff 0.03 (localised to the pill) |
+| **dead gap** | 19-26 | 600-900ms | pill-band diff 0.00, whole-frame 0.00. NOTHING MOVES FOR ~300ms |
+| morph starts | 27 | 900ms | pill grows, "Start your search" begins cross-fading to "Where?" |
+| morph ends | 38 | 1267ms | card settled, tabs + X resolved |
+| **open duration** | | **367ms** | |
+
+The pill itself becomes the card: one white rounded container whose rect animates while its CONTENTS
+cross-fade (label out, heading + field + list in) and the page behind cross-fades to blurred. It never
+slides in from the bottom edge.
+
+Measured rects: resting pill **359.0 x 57.0 pt at (21.3, 62.3)** -> open card **377.3 x 612.7 pt at
+(12.3, 146.3)**. The container widens by 18pt, moves DOWN 84pt (the tab row fades in above it), and
+grows 10.7x in height.
+
+### The close is the same morph reversed, and it does NOT lag
+| moment | frame | t | measured |
+|---|---|---|---|
+| press response on the X | 514 | 17133ms | X-band diff 2.73, whole-frame 0.29 |
+| morph starts | 515 | 17167ms | whole-frame 11.78 |
+| morph ends | 525 | 17500ms | |
+| **close duration** | | **333ms** | gap after the press: **~33ms** |
+
+Card shrinks and slides back UP into the pill, contents cross-fade the other way, background de-blurs.
+The pill returns to **360.0 x 57.0 pt at (21.0, 62.3)**, the identical rect it left.
+
+### The owner's anti-goal, confirmed by measurement
+Owner: "on the Airbnb, when you click on search, first it lags and then goes up a bit. That's a
+mistake on Airbnb's site. I don't want that at all." MEASURED: the open has a **~300ms dead gap**
+between the press response and the first pixel of motion; the close has **~33ms**. The lag is real,
+it is open-only, and it is the one thing we deliberately do NOT copy. Our morph starts on the same
+frame as the press.
+
+### The field does NOT get taller on focus (corrects the obvious reading of "make it bigger")
+| | resting (IMG_6898) | focused (IMG_6897) | delta |
+|---|---|---|---|
+| field top | 213.0 pt | 78.0 pt | rises 135 pt, to just under the status bar |
+| field height | 55.0 pt | 54.3 pt | unchanged |
+| field width | 314.0 pt | 340.7 pt | **+26.7 pt wider** |
+| field x | 44.0 pt | 30.7 pt | 13.3 pt less inset |
+| border | light hairline | dark ink, ~2px | the "active" signal |
+
+So "bigger" = wider + at the top + an ink border. Not taller. Build to these numbers, not to the word.
+
+### Owner asks added 2026-08-02 (second message)
+- [x] A7. Closing (the X) morphs back into the search bar. No downward bottom-sheet slide.
+- [x] A8. Opening morphs up out of the search bar. No upward bottom-sheet slide.
+- [x] A9. No dead gap before the morph starts, either direction (do NOT copy Airbnb's 300ms open lag).
+- [x] A10. Reference files moved into `/Users/sulo/solen/screenshots/` (copied; Downloads originals remain).
+
+### B3 answered by the owner ("whatever you think is better")
+Work lands HERE, in worktree `serene-booth-7c7dd7`, branch reset onto `claude/principles-security-audit-0ae738`
+@ 97e601393, with `node_modules` + `.env.local` symlinked and its own dev server on :53322. His live
+worktree is never written to, so the two sessions cannot collide.
+
+## VERIFIED 2026-08-02 (Playwright, real Chromium, 375x812, zero console errors)
+The in-app preview tab throttles rAF, so framer-motion looks frozen there; every number below comes
+from a real headless Chromium run, not the preview.
+
+| ask | resting | focused / after | verdict |
+|---|---|---|---|
+| A1 visible change on tap | no back arrow, heading 56px | back arrow, heading 0px | PASS |
+| A2 pills collapse | 60px op 1 @ y152 | 0px op 0 | PASS |
+| A3 bar rises | (24, 228) 327x48 | (12, 66) 351x48 | PASS |
+| A4 active treatment | 1px #E4E4E7 | 2px #0A0A0A, +24 wide, height unchanged | PASS |
+| A6 bar stable while typing | (12,66) 351x48 | unchanged every keystroke | PASS |
+| A7 close morphs into the bar | sheet 375x716 | shrinks to 343x68 @ (16,82) = the bar rect | PASS |
+| A8 open morphs out of the bar | bar 343x66 @ (16,82) | sheet first frame 357x349 @ (9,88) | PASS |
+| A9 no dead gap | | first sample already mid-morph | PASS |
+| A5 typing content cross-fade | 1 child, op 1 | 2 children co-present: old 0.149->0.033->0.007, new 0.851->0.967->0.993, then settles to 1 | PASS |
+| back-arrow reversal | | returns exactly to (24,228) 327x48, pills 60px, heading 56px, sheet top 96px | PASS |
+
+### Two things to raise with the owner
+1. **Our morph is faster than the reference.** Open settles ~270ms (reference 367ms), close ~225ms
+   (reference 333ms). Not deliberate. Say the word and both get pinned to the measured reference
+   durations.
+2. **A5 re-probed and it PASSES.** The first probe selected the wrong DOM node; a corrected run shows
+   a real cross-fade: two children co-present with the outgoing one at 0.149 -> 0.033 -> 0.007 while
+   the incoming one runs 0.851 -> 0.967 -> 0.993, settling to a single child at opacity 1. Keyed on
+   the `typing` boolean, so a keystroke does not re-trigger it. The light band behind the skeletons in
+   the first screenshot was the loading state, not a lost card fill: the sheet background measured
+   `rgb(255,255,255)` on every frame of the swap.

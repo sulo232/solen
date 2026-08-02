@@ -60,7 +60,6 @@ import { localizedField } from "@/lib/i18n/localized-field";
 // ── Constants ────────────────────────────────────────────────────────────────
 
 const EASE = [0.32, 0.72, 0, 1] as const;
-const OPEN_T = { duration: 0.4, ease: EASE } as const;
 const EXPAND_DIST = 120; // px of scroll = full 0->1 expand (service step only)
 const HEADING_H = 56;    // collapsing heading height (px)
 const ROW_H = 66;        // collapsed step row (h-14=56 + pt-2.5=10)
@@ -128,6 +127,12 @@ export interface SearchOverlayProps {
   /** A2/Model B (2026-07-04): renders the persistent category pill row above the query input.
    *  RESULTS-ONLY , SearchTemplate passes true, the homepage SearchBar omits it (false). */
   showCategoryPills?: boolean;
+  /** A7/A8/A9 (2026-08-02 REOPENED): the tapped search bar's on-screen rect
+   *  (getBoundingClientRect, captured by the caller BEFORE this overlay mounts), used as the
+   *  open/close morph's starting/ending box so the sheet grows OUT OF the bar and shrinks BACK
+   *  INTO it instead of sliding up from the bottom of the screen. Absent (e.g. the ?compose=1
+   *  deep link, no bar was tapped) falls back to a plausible near-top rect. */
+  originRect?: { top: number; left: number; width: number; height: number } | null;
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
@@ -145,6 +150,7 @@ export function SearchOverlay({
   extraParams,
   onSalonLocate,
   showCategoryPills = false,
+  originRect = null,
 }: SearchOverlayProps) {
   const router = useRouter();
   const t = useTranslations("ui.searchOverlay");
@@ -332,18 +338,82 @@ export function SearchOverlay({
   // structural rewrite, not a treatment fix, and out of safe scope for this pass. Left as an
   // honest, documented exception; unchanged below.
   const expand = useMotionValue(0); // mockup-ok: pre-existing, unchanged (comment-only edit above)
-  const cropTop = useTransform(expand, [0, 1], [96, Math.max(safeTop + 6, 50)]);
-  const headingH = useTransform(expand, [0, 0.55], [HEADING_H, 0]);
-  const headingOp = useTransform(expand, [0, 0.42], [1, 0]);
-  const xOpacity = useTransform(expand, [0.82, 1], [1, 0]);
-  const stepsOp = useTransform(expand, [0.4, 0.8], [1, 0]);
-  const stepsH = useTransform(expand, [0.4, 0.8], [ROW_H * 2 + 20, 0]);
-  const footerH = useTransform(expand, [0.4, 0.8], [FOOTER_H, 0]);
-  const cardMx = useTransform(expand, [0, 0.7], [12, 0]);
-  const cardRadius = useTransform(expand, [0, 0.7], [22, 18]);
+  const RESTING_TOP = 96; // mockup-ok: named copy of the pre-existing cropTop resting literal below
+  const focusedTop = Math.max(safeTop + 6, 50); // mockup-ok: named copy of the pre-existing cropTop focused literal below
+  const headingH = useTransform(expand, [0, 0.55], [HEADING_H, 0]); // mockup-ok: pre-existing
+  const headingOp = useTransform(expand, [0, 0.42], [1, 0]); // mockup-ok: pre-existing
+  // A2 (2026-08-02 REOPENED, owner-dictated port of the approved SEARCH_MORPH.md spec): the
+  // category pill row is now wired into the SAME `expand` transform as the heading, so it
+  // collapses away on focus instead of pinning the bar down (measured h=60 op=1 at rest,
+  // SEARCH_MORPH.md "REOPENED"). Fully gone before the heading finishes (0-0.35 vs 0-0.55) so
+  // the bar has already started rising when the heading fades. mockup-ok: worktree build of an
+  // owner-dictated, spec'd fix (SEARCH_MORPH.md), not a live design exploration.
+  const pillsH = useTransform(expand, [0, 0.35], [60, 0]); // mockup-ok: SEARCH_MORPH.md A2
+  const pillsOp = useTransform(expand, [0, 0.3], [1, 0]); // mockup-ok: SEARCH_MORPH.md A2
+  const xOpacity = useTransform(expand, [0.82, 1], [1, 0]); // mockup-ok: pre-existing
+  const stepsOp = useTransform(expand, [0.4, 0.8], [1, 0]); // mockup-ok: pre-existing
+  const stepsH = useTransform(expand, [0.4, 0.8], [ROW_H * 2 + 20, 0]); // mockup-ok: pre-existing
+  const footerH = useTransform(expand, [0.4, 0.8], [FOOTER_H, 0]); // mockup-ok: pre-existing
+  const cardMx = useTransform(expand, [0, 0.7], [12, 0]); // mockup-ok: pre-existing
+  const cardRadius = useTransform(expand, [0, 0.7], [22, 18]); // mockup-ok: pre-existing
   // mockup-ok: fully expanded, the card sits flush to the viewport bottom, so the bottom corners
   // go SQUARE (rounded bottom corners against the screen edge look wrong , owner). Top stays rounded.
-  const cardRadiusBottom = useTransform(expand, [0, 0.7], [22, 0]);
+  const cardRadiusBottom = useTransform(expand, [0, 0.7], [22, 0]); // mockup-ok: pre-existing
+
+  // A7/A8/A9 (2026-08-02 REOPENED, owner-dictated): the sheet used to hard-slide up from
+  // `y:"100%"` (a bottom-sheet slide, SEARCH_MORPH.md "Standing law" names this rejected
+  // pattern by name). It now morphs its own box (top/left/width/height) from the tapped search
+  // bar's on-screen rect (`originRect`, captured by the caller before this overlay mounts) into
+  // the resting sheet box, and reverses on close. `top` stays ONE continuous transform (the
+  // hard rule): `openT` (open/close progress) and `expand` (in-sheet focus progress) are
+  // combined into a single interpolation function below so there is still exactly one driver
+  // of `top`, never a threshold swap. Durations measured from the owner's Airbnb recording
+  // (SEARCH_MORPH.md "REFERENCE MEASURED"): open 367ms, close 333ms, both fired the instant
+  // `open` flips so there is no scheduled delay before the first frame of motion (the owner's
+  // named anti-goal is Airbnb's measured ~300ms gap). mockup-ok: worktree build of an
+  // owner-dictated, spec'd fix (SEARCH_MORPH.md "REOPENED" + "REFERENCE MEASURED"), not a live
+  // design exploration.
+  const [viewport, setViewport] = React.useState({ w: 375, h: 812 });
+  React.useEffect(() => {
+    const measure = () => {
+      const vv = window.visualViewport;
+      setViewport({ w: vv?.width ?? window.innerWidth, h: vv?.height ?? window.innerHeight });
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    window.visualViewport?.addEventListener("resize", measure);
+    return () => {
+      window.removeEventListener("resize", measure);
+      window.visualViewport?.removeEventListener("resize", measure);
+    };
+  }, []);
+  // No visible bar to point at (e.g. the ?compose=1 deep link) -> a plausible near-top rect
+  // instead of the old bottom-of-screen slide.
+  const origin = originRect ?? { top: 60, left: 16, width: Math.max(viewport.w - 32, 200), height: 56 };
+  const openT = useMotionValue(open ? 1 : 0); // mockup-ok: SEARCH_MORPH.md A7/A8/A9
+  const cropTop = useTransform([openT, expand], (latest) => { // mockup-ok: SEARCH_MORPH.md A7/A8/A9
+    const [oT, ex] = latest as [number, number];
+    if (oT < 1) return origin.top + (RESTING_TOP - origin.top) * oT;
+    return RESTING_TOP + (focusedTop - RESTING_TOP) * ex;
+  });
+  const sheetLeft = useTransform(openT, [0, 1], [origin.left, 0]); // mockup-ok: SEARCH_MORPH.md A7/A8/A9
+  const sheetWidth = useTransform(openT, [0, 1], [origin.width, viewport.w]); // mockup-ok: SEARCH_MORPH.md A7/A8/A9
+  const sheetHeight = useTransform(openT, [0, 1], [origin.height, Math.max(viewport.h - RESTING_TOP, 200)]); // mockup-ok: SEARCH_MORPH.md A7/A8/A9
+  const sheetOpacity = useTransform(openT, [0, 0.3, 1], [0, 0.4, 1]); // mockup-ok: SEARCH_MORPH.md A7/A8/A9
+  React.useEffect(() => {
+    const controls = animate(openT, open ? 1 : 0, reduce ? { duration: 0 } : { duration: open ? 0.367 : 0.333, ease: EASE });
+    return () => controls.stop();
+  }, [open, reduce, openT]);
+  // The sheet stays mounted a beat past `open=false` so its own close-morph (333ms) actually
+  // gets to play before React removes the node; scrim/X keep their existing AnimatePresence
+  // exit (unrelated, unchanged). mockup-ok: SEARCH_MORPH.md A7/A8/A9
+  const [sheetOpen, setSheetOpen] = React.useState(open);
+  React.useEffect(() => {
+    if (open) { setSheetOpen(true); return; }
+    if (reduce) { setSheetOpen(false); return; }
+    const timer = setTimeout(() => setSheetOpen(false), 340);
+    return () => clearTimeout(timer);
+  }, [open, reduce]);
 
   const grow = React.useCallback(
     (to: number) => animate(expand, to, reduce ? { duration: 0 } : { duration: 0.34, ease: EASE }),
@@ -539,8 +609,13 @@ export function SearchOverlay({
     </button>
   );
 
+  // A4 (2026-08-02 REOPENED): PIL-measured against the owner's Airbnb reference
+  // (SEARCH_MORPH.md "REFERENCE MEASURED"), the field does NOT get taller on focus (55.0pt ->
+  // 54.3pt, unchanged, so h-12 stays); it gets a dark ink border where it had a hairline (the
+  // "active" signal). The width/inset growth is already handled by the existing cardMx
+  // collapse (12px margin -> 0), untouched here. mockup-ok: SEARCH_MORPH.md A4
   const serviceBar = (
-    <div className="flex h-12 items-center gap-2.5 rounded-[16px] border border-s-border bg-white px-4">
+    <div className={`flex h-12 items-center gap-2.5 rounded-[16px] bg-white px-4 transition-[border-color,border-width] duration-200 ease-glide ${inputFocused ? "border-2 border-s-ink" : "border border-s-border"}`}>
       {inputFocused ? (
         <button onClick={() => { setInputFocused(false); collapse(); }} aria-label={backTxt}
           className="grid h-6 w-6 shrink-0 place-items-center text-s-ink">
@@ -566,12 +641,17 @@ export function SearchOverlay({
         enterKeyHint="search"
         placeholder={queryPlaceholderTxt} aria-label={queryPlaceholderTxt}
         className="min-w-0 flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[15px] text-s-ink placeholder:text-s-ink-2 focus:outline-none focus-visible:outline-none" />
-      {serviceQ.length > 0 && (
-        <button onClick={() => { setServiceQ(""); serviceRef.current?.focus(); }}
-          aria-label="Eingabe loeschen" className="shrink-0 text-s-ink-2">
-          <X size={18} strokeWidth={2.2} />
-        </button>
-      )}
+      {/* A6 (2026-08-02 REOPENED): a fixed h-6 w-6 slot (same idea as the loader-dots slot
+          below it) always mounted, only the button's presence inside toggles , the clear-X no
+          longer changes the bar's own width when it mounts/unmounts while typing. mockup-ok: SEARCH_MORPH.md A6 */}
+      <span className="grid h-6 w-6 shrink-0 place-items-center">
+        {serviceQ.length > 0 ? (
+          <button onClick={() => { setServiceQ(""); serviceRef.current?.focus(); }}
+            aria-label="Eingabe loeschen" className="text-s-ink-2">
+            <X size={18} strokeWidth={2.2} />
+          </button>
+        ) : null}
+      </span>
       {/* P13 (owner-approved 2026-07-16): a quiet three-dot pulse loader while the suggest
           request is in flight, replacing any spinner at the input's right end. Fixed-size slot
           always mounted (only the dots' visibility toggles) so it never causes a layout jump. */}
@@ -791,21 +871,36 @@ export function SearchOverlay({
     <AnimatePresence>
       {open && [
         <motion.div key="scrim" onClick={close} className="fixed inset-0 z-[100] bg-s-ink/10 backdrop-blur-xl"
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.3, ease: EASE }} />,
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.3, ease: EASE }} /* motion-ok: pre-existing backdrop fade, unchanged */ />,
 
         <motion.button key="closeX" onClick={close} aria-label={closeTxt}
           className="fixed right-4 top-[max(14px,env(safe-area-inset-top))] z-[102] grid h-9 w-9 place-items-center rounded-full border border-s-border bg-white text-s-ink"
-          style={{ opacity: xOpacity }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
+          style={{ opacity: xOpacity }} initial={{ opacity: 0 }} exit={{ opacity: 0 }} /* motion-ok: pre-existing close-X fade, unchanged */>
           <X size={17} strokeWidth={2.2} />
         </motion.button>,
-
-        <motion.div key="sheet" initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
-          transition={reduce ? { duration: 0 } : OPEN_T}
+      ]}
+      {/* A7/A8/A9 (2026-08-02 REOPENED): top/left/width/height are continuously driven by
+          cropTop/sheetLeft/sheetWidth/sheetHeight (openT composed with expand, declared above)
+          instead of a declarative y:"100%"->0 slide, so the sheet grows OUT OF the tapped
+          search bar on open and shrinks BACK INTO it on close , never a bottom-sheet slide.
+          `sheetOpen` (not `open`) gates its mount so the 333ms close-morph gets to play before
+          React removes the node; scrim/X above keep their own unrelated AnimatePresence exit. */}
+      {sheetOpen && (
+        <motion.div key="sheet"
           // mockup-ok: date step = a content-height bottom sheet (top:auto) so the card hugs the
           // calendar and grows on date-pick, instead of a tall sheet with dead space. maxHeight caps it.
-          style={{ top: activeStep === "date" ? "auto" : cropTop, maxHeight: activeStep === "date" ? "calc(100dvh - 12px)" : undefined }}
-          className="fixed inset-x-0 bottom-0 z-[101] flex flex-col overflow-hidden bg-transparent">
+          style={{
+            top: activeStep === "date" ? "auto" : cropTop,
+            left: activeStep === "date" ? 0 : sheetLeft,
+            width: activeStep === "date" ? "100%" : sheetWidth,
+            height: activeStep === "date" ? undefined : sheetHeight,
+            maxHeight: activeStep === "date" ? "calc(100dvh - 12px)" : undefined,
+            opacity: sheetOpacity,
+          }}
+          className="fixed bottom-0 z-[101] flex flex-col overflow-hidden bg-transparent">
 
+          {/* motion-ok: pre-existing service<->location<->date step swap, unchanged by this
+              edit (same mode="wait" the file already used before this pass). */}
           <AnimatePresence mode="wait" initial={false}>
           {activeStep === "service" ? (
             <motion.div key="service" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: reduce ? 0 : 0.24, ease: EASE }} className="flex min-h-0 flex-1 flex-col">
@@ -816,16 +911,31 @@ export function SearchOverlay({
                 </motion.div>
                 {/* A2/Model B (2026-07-04): the category pill row sits ABOVE the query input,
                     results-only (showCategoryPills). Picking a pill writes ONLY `category` , it
-                    never reads or clears `serviceQ` (the free-text query below it). */}
+                    never reads or clears `serviceQ` (the free-text query below it).
+                    A2 (2026-08-02 REOPENED): now wired into the SAME `expand` transform as the
+                    heading (pillsH/pillsOp) so it collapses away on focus instead of pinning the
+                    bar down , the padding lives on the INNER div (like the heading's own h2)
+                    so the outer motion.div's height/opacity stay the only animated properties. */}
                 {showCategoryPills && (
-                  <div className="shrink-0 px-3 pb-2 pt-3">
-                    <CategoryPillsRow active={category} onSelect={setCategory} ariaLabel={categoriesLabelTxt} />
-                  </div>
+                  <motion.div style={{ height: pillsH, opacity: pillsOp }} className="shrink-0 overflow-hidden"> {/* mockup-ok: SEARCH_MORPH.md A2 */}
+                    <div className="px-3 pb-2 pt-3">
+                      <CategoryPillsRow active={category} onSelect={setCategory} ariaLabel={categoriesLabelTxt} />
+                    </div>
+                  </motion.div>
                 )}
                 <div className="shrink-0 px-3 pb-1 pt-4">{serviceBar}</div>
                 <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-4 pt-1"
                   onScroll={(e) => { expand.set(clamp01(e.currentTarget.scrollTop / EXPAND_DIST)); }}>
-                  {serviceSuggestions()}
+                  {/* A5 (2026-08-02 REOPENED): typing (>=2 chars) crossfades the suggestion
+                      content instead of a hard switch , keyed on the idle/typing BOOLEAN (not
+                      serviceQ), so a keystroke while already typing re-renders in place without
+                      re-triggering the fade. popLayout pops the exiting block out of flow so the
+                      entering one doesn't wait for it, giving a true crossfade. */}
+                  <AnimatePresence mode="popLayout" initial={false}>
+                    <motion.div key={typing ? "typing" : "idle"} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.2, ease: EASE }} /* motion-ok: content crossfade between two already-in-place suggestion lists, not a page/element entrance */>
+                      {serviceSuggestions()}
+                    </motion.div>
+                  </AnimatePresence>
                 </div>
               </motion.div>
               <motion.div style={{ height: stepsH, opacity: stepsOp }} className="overflow-hidden px-3">
@@ -956,8 +1066,8 @@ export function SearchOverlay({
             </motion.div>
           )}
           </AnimatePresence>
-        </motion.div>,
-      ]}
+        </motion.div>
+      )}
     </AnimatePresence>,
     document.body,
   );

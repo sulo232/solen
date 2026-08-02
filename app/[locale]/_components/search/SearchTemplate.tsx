@@ -758,7 +758,14 @@ export default function SearchTemplate({
   // The main results bar opens without auto-focus so the applied search stays visible (B).
   const searchInputRef = React.useRef<HTMLInputElement>(null);
   const [autoFocusSearch, setAutoFocusSearch] = React.useState(false);
+  // A7/A8/A9 (2026-08-02 REOPENED): the tapped pill's own rect (bigSearchRef), captured
+  // synchronously before the overlay mounts, so it can grow OUT OF the bar instead of
+  // sliding up from the bottom of the screen. Absent (compose deep link, no tap) -> the
+  // overlay falls back to a plausible near-top rect (SearchOverlay.tsx `origin`).
+  const [searchOriginRect, setSearchOriginRect] = React.useState<{ top: number; left: number; width: number; height: number } | null>(null);
   const openSearchOverlay = React.useCallback((withKeyboard: boolean) => {
+    const r = bigSearchRef.current?.getBoundingClientRect();
+    if (r) setSearchOriginRect({ top: r.top, left: r.left, width: r.width, height: r.height });
     if (withKeyboard) {
       flushSync(() => { setAutoFocusSearch(true); setSearchOverlayOpen(true); });
       searchInputRef.current?.focus({ preventScroll: true });
@@ -805,7 +812,13 @@ export default function SearchTemplate({
     // Plain state, no flushSync, no scheduler games. Focus is handed to the overlay's own
     // `autoFocusSearch` path, which owns the input and can focus it once it has actually
     // mounted, instead of this component reaching for a ref that does not exist yet.
-    setAutoFocusSearch(true);
+    // A1 fix (2026-08-02 REOPENED, owner: "when I click the search bar, nothing happens,
+    // there's just the line thingy that flashes"): auto-focusing here made the overlay ARRIVE
+    // in its end state (input already focused, expand already 1), so the user's own tap on the
+    // bar had nothing left to animate. compose=1 now opens the overlay RESTING (pills + heading
+    // visible, no keyboard) so the tap itself drives the focus morph. autoFocusService/
+    // autoFocusSearch stay wired for any other caller that still wants the old behavior.
+    setAutoFocusSearch(false);
     setSearchOverlayOpen(true);
   }, [searchParams]);
 
@@ -2275,6 +2288,7 @@ export default function SearchTemplate({
         initialCity={activeCity ? cityName : ""}
         autoFocusService={autoFocusSearch}
         serviceInputRef={searchInputRef}
+        originRect={searchOriginRect}
         extraParams={mapOpen ? { map: "1" } : undefined}
         // A2/Model B: results/category pages get the persistent category pill row; the
         // homepage hero (SearchBar.tsx) omits this prop (defaults to false).
