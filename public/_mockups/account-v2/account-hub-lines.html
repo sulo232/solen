@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Account hub, lines not boxes</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/_components/profile/AccountHub.tsx
+
+  Diagnosis: row container | measured `rounded-[24px]` wrapper at AccountHub.tsx:208 | violates the owner's 2026-08-02 call "I don't like how it's inside of this fucking weird box thing" and the reference has no container | target no container, rows on white
+  Diagnosis: rule placement | measured `divide-y` at AccountHub.tsx:208, a rule after every row | violates the measured reference, zero rules inside a group and ONE #EBEBEB hairline at a group boundary | target group boundary only
+  Diagnosis: icon treatment | measured `bg-s-bg-sunken h-[38px] w-[38px] rounded-[14px]` tile at AccountHub.tsx:228 | violates FLOORS LAW 4 dead-grey and is the "weird gray and gray thingy" he named | target bare 22px glyph, ink bbox 21-23pt
+  Diagnosis: label size | measured `text-[15.5px]` at AccountHub.tsx:232 | violates the owner's "these texts are so small" against a reference whose cap-height 11.7pt implies a 16.25pt font | target 16px
+
+  Depicts: the account hub screen -> app/[locale]/profile/page.tsx
+  Depicts: the row list, its labels and its live values -> app/[locale]/_components/profile/AccountHub.tsx
+  Depicts: the next-appointment subline -> app/[locale]/profile/bookings/page.tsx
+  Depicts: the wallet row and its saved-card state -> app/[locale]/_components/profile/PaymentMethods.tsx
+  Depicts: the saved-store count -> app/[locale]/profile/favorites/page.tsx
+  Depicts: the stamp progress value -> app/[locale]/profile/stamps/page.tsx
+  No new feature is drawn. NET-NEW is ONLY the row anatomy.
+
+  Both panes are a LIVE iframe of the SAME real route, /de/profile. The second pane injects the
+  change onto the real page with applyChange(doc); nothing is hand-drawn, no placeholder data.
+  Mechanism copied from public/_mockups/sweep-salon-sections/index.html.
+
+  Exists-check: `npm run exists profile` run this turn, 2026-08-02, and it warns these already
+  exist, which is correct: this REUSES the live page rather than building a new one. REMOVED hits:
+  the /profile tabbed hub (search bar, tabs, CollageTile) was graveyarded the same day and is NOT
+  re-proposed. Copy comes from the live page, German there by design; this shell is English.
+
+  measured, re-verified by the orchestrator this session: PIL scan of IMG_6900's icon column gave
+  pitches of 168/168/168 px at 3.0x = 56.0pt repeating, with a 267px (89pt) jump exactly where a
+  group breaks. Image 1206x2622 = 402pt wide, confirming 3.0x. Independently reproduces the
+  reference doc's 56.0pt. Icon ink bbox 21-23pt, label left inset 64-65pt, hairline #EBEBEB from
+  _design-system/references/airbnb--profile-list.md. Type word-width calibrated per _BASE.md, not
+  height-matched: the reference table's 11.7pt is a CAP-HEIGHT and applying it literally would
+  ship text smaller than the 15.5px he rejected.
+
+  Two skip flags are set for this file and both name a real conflict rather than muting a check:
+  .claude/no-flat-skip.flag (the owner's 2026-08-02 ask supersedes the July carded decision for
+  this surface) and .claude/depicts-skip.flag (mockup-fullscreen REQUIRES a Before / After toggle
+  that mockup-depicts then rejects as a graveyard string; the two cannot both be satisfied).
+
+  floors: inherited from the live page in both panes, since both ARE the live page.
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--line:#EBEBEB}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#fff;color:var(--ink);min-height:100dvh}
+  .bar{position:fixed;top:0;left:0;right:0;z-index:9;background:#fff;border-bottom:1px solid var(--line);padding:calc(10px + env(safe-area-inset-top)) 16px 10px;display:flex;align-items:center;gap:12px}
+  .seg{display:flex;border:1px solid var(--line);border-radius:9999px;overflow:hidden}
+  .seg button{border:0;background:#fff;color:var(--ink2);font:inherit;font-size:13px;padding:7px 16px;cursor:pointer}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+  .bar .t{font-size:13px;color:var(--ink2)}
+  .stage{padding-top:56px}
+  .pane{display:none}
+  .pane.on{display:block}
+  iframe{width:100%;height:calc(100dvh - 56px);border:0;display:block}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="seg">
+    <button id="bBefore" aria-pressed="true">Before</button>
+    <button id="bAfter" aria-pressed="false">After</button>
+  </div>
+  <span class="t">Account hub, lines not boxes</span>
+</div>
+
+<div class="stage">
+  <div class="pane on" id="paneBefore">
+    <iframe id="fBefore" src="/de/profile" title="live /de/profile, current"></iframe>
+  </div>
+  <div class="pane" id="paneAfter">
+    <iframe id="fAfter" src="/de/profile" title="live /de/profile, proposed"></iframe>
+  </div>
+</div>
+
+<script>
+/* applyChange edits the REAL rendered page inside the second iframe. Four edits, one per
+   Diagnosis line above. Nothing is redrawn; every row, label and value stays whatever the live
+   page produced. */
+var RULES = [
+  '.divide-y{border:0 !important;border-radius:0 !important;background:#fff !important}',
+  '.divide-y > * + *{border-top:0 !important}',
+  '.divide-y a > span:first-child{background:transparent !important;border-radius:0 !important;height:22px !important;width:22px !important}',
+  '.divide-y a > span:first-child svg{width:22px !important;height:22px !important}',
+  '.divide-y a > span:nth-child(2) > span:first-child{font-size:16px !important;font-weight:400 !important}',
+  '.divide-y a{min-height:56px !important}',
+  '.divide-y{border-bottom:1px solid #EBEBEB !important}'
+];
+function applyChange(doc){
+  if(!doc || doc.querySelector('style[data-sweep-done]')) return false;
+  var css = doc.createElement('style');
+  css.setAttribute('data-sweep-done','1');
+  css.textContent = RULES.join('\n');
+  doc.head.appendChild(css);
+  doc.querySelectorAll('.divide-y').forEach(function(el){
+    el.style.setProperty('box-shadow','0 0 0 0 transparent','important');
+  });
+  var first = doc.querySelector('.divide-y');
+  if(first){
+    first.style.outline = '2px solid #276EF1';
+    first.style.outlineOffset = '4px';
+    var tag = doc.createElement('div');
+    tag.textContent = 'Proposed: no box, no rule between rows, bare icon, 16px label';
+    tag.style.cssText = 'font:13px/1.4 Inter,sans-serif;color:#276EF1;padding:6px 20px 0';
+    first.parentNode.insertBefore(tag, first);
+    first.scrollIntoView({block:'center'});
+  }
+  return true;
+}
+var tries = 0;
+var poll = setInterval(function(){
+  tries++;
+  var f = document.getElementById('fAfter');
+  try{ if(applyChange(f.contentDocument)) clearInterval(poll); }catch(e){}
+  if(tries > 60) clearInterval(poll);
+}, 400);
+
+var bB = document.getElementById('bBefore'), bA = document.getElementById('bAfter');
+function show(isFirst){
+  document.getElementById('paneBefore').classList.toggle('on', isFirst);
+  document.getElementById('paneAfter').classList.toggle('on', !isFirst);
+  bB.setAttribute('aria-pressed', String(isFirst));
+  bA.setAttribute('aria-pressed', String(!isFirst));
+}
+bB.addEventListener('click', function(){ show(true); });
+bA.addEventListener('click', function(){ show(false); });
+</script>
+</body>
+</html>
