@@ -149,7 +149,14 @@ https://admission-integrated-achieved-assumption.trycloudflare.com
       the heart inside its bounding box") but never ticked here. Tap-to-edit reconfirmed this turn:
       clicking the resting label mounts `<input placeholder="Styles suchen...">` and focuses it
       (`document.activeElement` = that input).
-- [x] **H11. FIXED and verified live 2026-08-02.** Named row: none of the six rows in CLAUDE.md's ONE
+- [x] **H11. verified:** commit `d4a2f632c`, `components-legacy/discovery/FilterDrawer.tsx`.
+      Measured on the live page at 390x844 AFTER the change: the filter trigger computes
+      `border-width: 1px`, `border-color: rgb(228,228,231)` (#E4E4E7) and
+      `box-shadow: rgba(0,0,0,0.07) 0px 2px 8px 0px`. BEFORE it was `shadow-whisper`,
+      border-width 0 with a diffuse `rgba(10,10,10,.04) 0 1px 3px, rgba(10,10,10,.1) 0 10px 28px -14px`.
+      The applied recipe is copied from the shipped controls, not invented: `HomeSearchPill.tsx:92`,
+      `ContinueCard.tsx:168`, `SearchTemplate.tsx:1303` all already carry it.
+      **FIXED and verified live 2026-08-02.** Named row: none of the six rows in CLAUDE.md's ONE
       surface table (SalonCard / grouped-list / PDP-sidebar / gray-tray tile / overlay-sheet / "a card
       drops its border") literally covers a small standalone pill sitting on plain white, that table
       enumerates CARD surfaces. The applicable reference is the site's own resting-white-PILL recipe,
@@ -164,7 +171,11 @@ https://admission-integrated-achieved-assumption.trycloudflare.com
       measured recipe; selected ink-fill chip state untouched. Live after: trigger + all 5 sampled
       chips report `border-width:1px`, `border-color:rgb(228,228,231)`, `box-shadow: rgba(0,0,0,0.07)
       0px 2px 8px 0px`. Screenshot confirms a visible shadow under every chip.
-- [x] **H12. FIXED and verified live 2026-08-02.** Checked `project_inspo_progressive_filter` memory
+- [x] **H12. verified:** commit `d4a2f632c`, `app/[locale]/inspo/page.tsx`. Measured live at
+      390x844 AFTER: filter row **top 174**, "Für dich" **top 298**, so the filter leads.
+      BEFORE: category row 174, filter row 284. Masonry unaffected, **22 images** both sides.
+      `npx tsc --noEmit` exit 0.
+      **FIXED and verified live 2026-08-02.** Checked `project_inspo_progressive_filter` memory
       first: no position lock there (it specs L0/L1/L2 drill-down levels, not row order). Found the
       actual lock in `TASTE_LOG.md` ("Inspo home chrome" entry, 2026-06-20 council+owner): "category
       pills are the first control". Named it rather than silently moving a locked element, and applied
