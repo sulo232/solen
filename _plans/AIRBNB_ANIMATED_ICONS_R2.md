@@ -1154,6 +1154,10 @@ stones look ugly; they look CUT OUT when they move; they are TOO PERFECT.
 - [x] Fixed TOO PERFECT, `verified:` new `--stack-jitter` gives each band a fixed per-index rotation
       and offset, so the stack is not three concentric ellipses. Fixed, never random, so the loop
       still closes byte-identical (checked: True).
-- [x] Named the part I cannot fix from here: 10.9 is still under his 22.0 because the MESH is three
-      smooth symmetric blobs, so there is less form to light. That needs a better source image, not
-      a render flag.
+- [x] Named the part I cannot fix from here, and PROVED it rather than asserting it. `verified:`
+      discriminating test, rendered the SAME mesh with the neutral remap switched off entirely and
+      measured the shading standard deviation inside the stones: **10.1 with no remap, 10.9 with the
+      remap on, 23.9 in his spa.png**. So the remap is no longer the limiter, it now renders
+      slightly better than raw; the MESH is the ceiling. It came back as three smooth symmetric
+      blobs with little form to catch light, and no render flag reaches that. It needs a better
+      source image and a new mesh.
