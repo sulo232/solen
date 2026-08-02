@@ -361,3 +361,35 @@ reference exactly would reproduce the thing he objected to.
 earlier, which is a deliberate departure, recorded here so it is not mistaken for drift later. If he
 wants Airbnb's literal curve, it is one constant: `MORPH_EASE` back to `[0.32, 0.72, 0, 1]` at
 SearchOverlay.tsx:70.
+
+## OWNER BUG REPORT 2026-08-02 23:33, round 3 (90s screen recording, he drove it himself)
+
+Recording: `/Users/sulo/solen/screenshots/owner-bugreport_2026-08-02_2333.MP4` (1206x2622, 90.3s).
+His verdict: "just so fucking buggy", "what are you fucking doing", "you need to actually go
+understand it". He is right that I handed him a link without driving the flow myself. That is what
+the test-sweep discipline exists for and I skipped it.
+
+Read off his frames (8fps overview sheet):
+- **5.0s: a fully BLANK WHITE screen** after tapping the search bar.
+- **7.5s to 10s: he is on a DIFFERENT PAGE** (the home feed, "Top auf Solen" / "In der Nähe" / map),
+  not an overlay. At 12.5s to 17.5s his Safari address bar reads `.../de/search?compose=`, which is
+  how he found out a URL he never asked for exists.
+- **55s to 57.5s: overlay chrome drawn ON TOP of the results page**, duplicated and overlapping
+  ("Suchen" pill and "Wo?" row stacked over the feed). This is the "residue" he describes.
+- **37.5s and 60s to 65s:** the card renders small and floating inside a large blurred field, which
+  is not any intended resting state.
+
+### CORRECTION boxes, round 3
+- [ ] R1. Tapping the search bar NAVIGATES to `/search?compose=1` instead of opening in place. He
+      never asked for a second page and does not want one. The home pill is a `<Link>`, so the tap is
+      a route change. Make it open the overlay over the current page, no URL page-swap.
+- [ ] R2. A blank white screen appears mid-transition (his 5.0s frame).
+- [ ] R3. Keyboard behaviour while open is wrong and buggy.
+- [ ] R4. Too snappy now, and it breaks scrolling; the page also reads as zoomed in.
+- [ ] R5. Not morphing smoothly.
+- [ ] R6. Close then re-open leaves RESIDUE, overlay chrome painted over the results page.
+- [ ] R7. Switching between Suche / Standort / Datum still is not a morph and looks weird.
+- [ ] R8. Tapping a store or suggestion inside the open search looks weird.
+- [ ] R9. **Frame-by-frame, on OUR build, not just the reference.** He has now said this twice.
+- [ ] R10. I gave him a link without running the click-everything sweep first. Run it before the
+      next link, and treat that as the close condition, not tsc.
