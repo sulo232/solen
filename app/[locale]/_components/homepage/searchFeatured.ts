@@ -49,7 +49,7 @@ export const FEATURED_SALONS: FeaturedSalon[] = [
   },
   {
     id: "d46e4ae5-8410-4fc9-a2da-43c978bc9477",
-    name: "Store Lumière",
+    name: "Salon Lumière",
     slug: "salon-lumiere",
   },
 ];

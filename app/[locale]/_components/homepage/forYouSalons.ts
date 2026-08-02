@@ -47,7 +47,7 @@ export const FORYOU_SALONS: Record<ForYouCategory, ForYouSalon[]> = {
   coiffeur: [
     { id: "0ed041f9-149b-4241-a09e-d41351be7097", slug: "muse-beauty-studio", name: "Muse Beauty Studio", category: "coiffeur" },
     { id: "e34402f4-2986-4f63-8487-b09645395c65", slug: "glow-lab-basel", name: "Glow Lab Basel", category: "coiffeur" },
-    { id: "d46e4ae5-8410-4fc9-a2da-43c978bc9477", slug: "salon-lumiere", name: "Store Lumière", category: "coiffeur" },
+    { id: "d46e4ae5-8410-4fc9-a2da-43c978bc9477", slug: "salon-lumiere", name: "Salon Lumière", category: "coiffeur" },
   ],
   barbershop: [
     { id: "599bb853-c713-4dae-a3c4-96c6216139c4", slug: "old-town-barbers", name: "Old Town Barbers", category: "barbershop" },
