@@ -121,3 +121,35 @@ stopped were "Now retrying the write". An earlier agent reported the same in its
       the three has to yield. My read: gate 4 is right (a live iframe beats a stale screenshot),
       so gate 6 should accept an iframe as a valid live base, and gate 7's graveyard match on
       "before-after" should not fire on a toggle control that gate 4 mandates.
+
+## CORRECTION, owner 2026-08-02: "it does not match the reference AT ALL. I need it one to one."
+
+His words: *"that is not a fucking phone width... it does not match a screenshot and screen
+recording at all... the back button doesn't look like it. Why is there a fucking hamburger menu
+icon in the notification bar there? Why is the fonts like that? Every single part of it does not
+look like the reference at all. I need you to actually make it one to one. Especially analyzing,
+understanding what we're doing differently and everything, what we need to fix."*
+
+**MY STRUCTURAL MISTAKE, named. I injected CSS onto OUR page.** That approach can only ever change
+what I explicitly override, so everything I did not name stayed ours: the circled back button, the
+bell, the hamburger, the type family, the header layout, the whole chrome. It was guaranteed to
+come out partial no matter how many rules I added. A CSS overlay is a TREATMENT tool; he asked for
+an ANATOMY match. Wrong instrument, and I chose it because a gate demanded a live-iframe base,
+which was the right demand for a treatment sweep and the wrong one for this job.
+
+**I ALSO NEVER OPENED THE SCREEN RECORDING.** `~/Downloads/ScreenRecording_08-02-2026
+22-09-37_1.MP4`, 30MB, stamped 22:09, thirteen minutes before the five screenshots. He named it
+this turn and I had not looked at it once.
+
+- [ ] **C1. Open the screen recording.** ffmpeg frames, then read them. It is the only reference
+      artifact never examined, and it shows MOTION and FLOW that five stills cannot.
+- [ ] **C2. A one-to-one DIFFERENCE TABLE before any more building.** Every element of the
+      reference profile screen against ours, measured, one row each: status bar, title, back
+      affordance, top-right icon(s), avatar block, row height, icon size + stroke, label size +
+      weight + family, chevron, divider colour + inset, group gap, bottom tab bar. Column: what
+      Airbnb does / what we do / the delta / what to change.
+- [ ] **C3. The specific four he named, each answered in that table:** (a) the back button does not
+      look like the reference, (b) a hamburger sits in the top row where the reference has none,
+      (c) the fonts are wrong, (d) the frame is not phone width.
+- [ ] **C4. Rebuild the mockup as a real 1:1 page, NOT a CSS overlay on our chrome.** The overlay
+      approach is retired for this job by the reasoning above.
