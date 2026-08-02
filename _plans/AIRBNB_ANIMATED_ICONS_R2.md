@@ -1083,3 +1083,45 @@ separate, cannot be driven off the mesh as it arrives. Two ways: generate each p
 image and its own mesh (more credits, exact control), or split the fused mesh geometrically by
 world Y, which both of these objects allow because they separate cleanly along the vertical axis
 (free). Taking the geometric split first.
+
+## Round 35: the core cause of the colour churn, and the gate for it
+
+Owner: "go fix it thn tf stop being so lazy investigate the core cause and harden bro".
+
+**THE CORE CAUSE, measured, not asserted.** Colour ate more rounds of this workstream than
+anything else. The chair went dull red, too bright, too primary, vermilion. The dryer went beige,
+white, pink, orange, retro, mustard, and only landed when he attached a swatch. The polish went
+muted 0.37, neon 0.55 at hue 312, washed 0.44, correct. The stones went near-black 0.18, mauve at
+brightness 0.79, correct.
+
+Every one of those was a colour chosen from WORDS. And `public/icons/categories/*.png` has been in
+the repo since **26 July**, six days before this workstream opened, shipped and approved, holding
+the exact colour for the exact same category. When he finally said "go analyse the current nails
+icon and get the pink of that", the match landed within two units on the FIRST attempt: #F07A84
+against his #F27A84.
+
+So this was never taste. It was ORDER OF OPERATIONS. A colour adjective ("vivid", "muted", "not
+neon") is a DIRECTION, not a value, and a direction has to be resolved against an artifact. I kept
+resolving it against my own judgment while the answer sat one PIL call away.
+
+- [x] Gate built and self-tested 9/9: `~/.claude/hooks/sample-dont-pick-colour-gate.py`. Blocks a
+      closing message that sets or changes a colour on a rendered asset when nothing in the turn
+      measured the shipped counterpart. A hex you chose is not a sample; a hex next to the file it
+      came from is. The honest "there is no counterpart" admission passes.
+- [x] A second, real bug found while chasing this, `verified:` the entire neutral-colour remap in
+      `scripts/capture/turntable-render.mjs` was nested inside the `HUE !== null` guard, so
+      `--neutral-val` did nothing at all unless `--hue` was also passed. That is why darkening the
+      stones failed twice: they are near-neutral at saturation 0.11, `--sat-mul` and `--val-mul`
+      only touch pixels above the 0.22 saturation floor by design, and the one lever built for them
+      was switched off. Split so each guard covers its own case.
+- [ ] **ARMING IS BLOCKED AND IT IS NOT A GUESS.** `open('~/.claude/settings.json','a')` returns
+      `[Errno 1] Operation not permitted`, same for `settings.local.json`, measured this turn. So
+      all SEVEN gates from this workstream sit on disk enforcing nothing. `scripts/arm-icon-gates.py`
+      registers them in one run, from a normal terminal. Self-tests re-run this turn and all pass:
+      sample-dont-pick-colour 9/9, no-unrequested-removal 7/7, animation-full-clip-verify 9/9,
+      repeat-fix-simplify 6/6, no-invented-visual-motif 6/6, always-give-link 7/7,
+      no-regression-by-fix 7/7.
+
+Correction on my own earlier probe: I first tested writability with `cp settings.json
+settings.json.probe`, which only proves a NEW file can be created next to it, and reported
+"WRITABLE" off that. The real test is opening the file itself for write. It is denied.
