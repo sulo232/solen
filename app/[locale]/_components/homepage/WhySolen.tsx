@@ -121,7 +121,7 @@ export default function SalonRegister() {
             <p className="mt-5 font-body text-[15px] md:text-[17px] leading-[1.55] text-s-ink-2 max-w-[480px]">
               Mehr Buchungen, weniger Aufwand. Solen bringt die richtigen
               Kund:innen zu dir &mdash; automatisiert, transparent, fair.
-              Schweizer Salon-Plattform Nr. 1 in Basel.
+              Schweizer Store-Plattform Nr. 1 in Basel.
             </p>
 
             <Link

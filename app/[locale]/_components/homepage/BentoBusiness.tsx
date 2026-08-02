@@ -516,7 +516,7 @@ export function JoinUsCard() {
               </MorphingDialogTitle>
               {/* V3-D219: drop md:text-[17px] step (out-of-Scale-B). Use clamp(14,3.5vw,16). */}
               <MorphingDialogSubtitle className="mt-4 max-w-[480px] font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.55] text-white/85">
-                Über 1&apos;200 Salons buchen schon mit Solen. Trag dich in 60
+                Über 1&apos;200 Stores buchen schon mit Solen. Trag dich in 60
                 Sekunden ein — wir melden uns innerhalb von 24 Stunden.
               </MorphingDialogSubtitle>
             </div>
@@ -566,7 +566,7 @@ export function JoinUsCard() {
                   Werde Solen-Partner.
                 </MorphingDialogTitle>
                 <MorphingDialogSubtitle className="mt-4 max-w-[480px] font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.55] text-white/85">
-                  Über 1&apos;200 Salons buchen schon mit Solen. Trag dich in
+                  Über 1&apos;200 Stores buchen schon mit Solen. Trag dich in
                   60 Sekunden ein — wir melden uns innerhalb von 24 Stunden.
                 </MorphingDialogSubtitle>
               </div>
