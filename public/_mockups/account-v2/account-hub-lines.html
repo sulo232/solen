@@ -96,6 +96,12 @@ var RULES = [
 ];
 function applyChange(doc){
   if(!doc || doc.querySelector('style[data-sweep-done]')) return false;
+  /* BUGFIX 2026-08-02, owner: "aftr doesnt change anth". The poll was winning on the iframe's
+     INITIAL about:blank document: it appended the style there, set data-sweep-done, returned true
+     and cleared the interval, and then the real /de/profile load wiped all of it. Measured live:
+     reachable true, divide-y count 4, rows 7, applied FALSE. So do nothing until the real page has
+     actually rendered its rows. */
+  if(!doc.querySelector('.divide-y a')) return false;
   var css = doc.createElement('style');
   css.setAttribute('data-sweep-done','1');
   css.textContent = RULES.join('\n');
