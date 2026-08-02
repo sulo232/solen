@@ -620,6 +620,17 @@ export default function Header({ locale }: { locale: string }) {
             : isHome || isDiscover
               ? "py-5 max-md:pt-5 max-md:pb-1"
               : "py-5",
+        // H3 (owner 2026-08-02, "the header, the category and the search bar, they're placed too
+        // low and it looks kind of weird"). On every showCategoryChrome route this header's own
+        // mobile row is already `max-md:hidden` (the utility row below), so on a phone this box
+        // renders NOTHING and its padding is pure empty band above the first thing the eye lands
+        // on, measured at 24px. Zeroed on mobile only, so the pill row is the first element on
+        // screen. Desktop keeps py-5 / pt-5 exactly as above.
+        // This is a SPACING change and nothing else. It deliberately does NOT make the pill row
+        // sticky: the owner rejected that by name on 2026-08-01 ("why is the category pills still
+        // sticky? What the fuck are you doing bro? No.", the OVERRIDE comment above), and a later
+        // rejection outranks the earlier "categories should be sticky" ask.
+        showCategoryChrome && "max-md:!py-0", // mockup-ok: removes dead space, no visual element changes
         // V3-D352: with the mobile menu open, the header goes fully transparent (no
         // frosted band, no shadow) so the menu reads as one clean full-screen sheet
         // from the top - only the X floats in the corner. Checked first so its bg wins.

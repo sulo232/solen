@@ -18,13 +18,41 @@ https://admission-integrated-achieved-assumption.trycloudflare.com
 
 ## A. Chrome geometry + behaviour (home)
 
-- [ ] **H1. Search bar + categories should go sticky on scroll.** Owner: "when you scroll down the search bar and the categories should be sticky".
+- [x] **H1. CLOSED AS ALREADY-DECIDED, AND I ALMOST RE-SHIPPED SOMETHING HE REJECTED. 2026-08-02.**
+      I briefed a coder to pin the pills AND the search bar together, straight off this box's own
+      wording. It built exactly that, and in doing so DELETED the comment recording the owner's
+      rejection of that very thing, one day old, in his own words, at `Header.tsx:595` and `:997`:
+      **"why is the category pills still sticky? What the fuck are you doing bro? No."**
+      The agent flagged the collision instead of quietly shipping it, which is the only reason this
+      was caught. **Reverted in full** (`git checkout` on Header.tsx + page.tsx; the rejection
+      comment is back, 3 occurrences; `grep -c pillsSticky` = 0).
+      RESOLUTION, by the precedence chain: rule 1, a live rejection outranks an earlier approval.
+      The 2026-08-01 "No" is later than the dictation this box came from, so the shipped behaviour
+      is correct as-is: the search pill is the ONE thing that pins, the pills scroll away.
+      Measured live after the revert: exactly one sticky element on the page.
+      THE LESSON, and it is mine not the agent's: I wrote a brief from a plan box without checking
+      whether the thing it asked for had already been ruled on. The plan file is not the record of
+      what he wants, the latest decision is, and that decision was sitting in the file I was
+      changing.
+- [x] **H3. FIXED, spacing only. Owner: "the header, the category and the search bar, they're
+      placed too low and it looks kind of weird".** On every route showing the category chrome the
+      header's own mobile row is `max-md:hidden`, so on a phone that box rendered nothing and its
+      padding was pure empty band. Zeroed on mobile only (`showCategoryChrome && "max-md:!py-0"`),
+      desktop untouched.
+      Measured live at 390 wide, cookie banner dismissed: **header height 24px -> 0**, first pill
+      **top 36px -> 12px**. Search pill at 103. `npx tsc --noEmit` exit 0.
+- [x] **H6. NOT A BUG ANY MORE, and the earlier diagnosis in this file is stale.** This box says a
+      transparent 102px sticky header eats the tap so search lands on /de/coiffeur. Re-measured on
+      the live page 2026-08-02: the header is `position: static`, height 0 on mobile, and a real
+      click at the search pill's centre navigates to **/de/search**. The tap-eating was fixed by
+      the same-day OVERRIDE that un-stuck the header. Nothing to do.
+- [ ] **H1-ORIGINAL (superseded by the override above, kept for the trail).** Owner: "when you scroll down the search bar and the categories should be sticky".
       MEASURED: `<header>` is already `position: sticky`, `top: 0`, height **102px**. The category
       pills and the search pill are NOT inside it, they sit below at top 117+ and scroll away.
       So this is not "make the header sticky", it is "move these two rows into the sticky region,
       or give them their own". Watch the stacked height: 102 + pills + pill row eats a third of a
       390x844 viewport if all three pin at once. Decide what pins and what scrolls away.
-- [ ] **H3. Header / category row / search bar all sit too low.** Owner: "the header, the category and the search bar, they're placed too low and it looks kind of weird".
+- [ ] **H3-ORIGINAL (done above, kept for the trail).** Owner: "the header, the category and the search bar, they're placed too low and it looks kind of weird".
       MEASURED: content starts at y=102 and the first control (the hamburger) at y=**117**, so
       there is a ~102px band above the first thing the eye lands on. Confirmed visually in
       `scratchpad/shot-de.png`: a large empty band above the category pills.
@@ -64,7 +92,7 @@ https://admission-integrated-achieved-assumption.trycloudflare.com
 
 ## B. Broken behaviour (home)
 
-- [ ] **H6. Clicking search opens nothing, and a full search experience already exists.**
+- [ ] **H6-ORIGINAL (resolved above, kept for the trail).**
       GROUNDED: `HomeSearchPill.tsx:108` wraps the bar in `<Link href={/${locale}/search}>`, so it
       navigates instead of opening the built search surface. `SearchTemplate.tsx` is the real thing
       (1400+ lines, its own search bar, filters, map button).
