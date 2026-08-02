@@ -92,7 +92,19 @@ var RULES = [
   '.divide-y a > span:first-child svg{width:22px !important;height:22px !important}',
   '.divide-y a > span:nth-child(2) > span:first-child{font-size:16px !important;font-weight:400 !important}',
   '.divide-y a{min-height:56px !important}',
-  '.divide-y{border-bottom:1px solid #EBEBEB !important}'
+  '.divide-y{border-bottom:1px solid #EBEBEB !important}',
+  /* LITERAL COPY, owner 2026-08-02: "I told you to literally copy, why is she doing it
+     partially". The first pass changed the box, the rule, the tile and the label size but LEFT
+     the sublines and the group headers, which the reference does not have. Measured on IMG_6900:
+     zero sublines on any of the nine rows, no group header text, icon ink bbox 21-23pt. Going
+     the rest of the way. */
+  '.divide-y a > span:nth-child(2) > span:nth-child(2){display:none !important}',
+  '.divide-y a > span:nth-child(2) > span:last-child:not(:first-child){display:none !important}',
+  '.mx-auto > p{display:none !important}',
+  '.divide-y a > span:first-child{height:28px !important;width:28px !important}',
+  '.divide-y a > span:first-child svg{width:28px !important;height:28px !important;stroke-width:1.6 !important}',
+  '.divide-y a{padding-left:20px !important;padding-right:20px !important}',
+  '.divide-y a > span:nth-child(2){padding-left:20px !important}'
 ];
 function applyChange(doc){
   if(!doc || doc.querySelector('style[data-sweep-done]')) return false;
