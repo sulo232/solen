@@ -79,3 +79,43 @@ Load-bearing unknowns, cheapest probe first:
 
 OUT of scope until he says otherwise: the homepage, Inspo, the booking flow. This is the account
 surface plus whatever system rows A8 legitimately touches.
+
+## WHY THE MOCKUP TAKES SO LONG. Measured 2026-08-02, owner: "mockups take too fucking long"
+
+Not a vibe. Counted from `~/.claude/settings.json` this turn:
+**51 hooks fire on every single Write/Edit. 61 more on every Stop.**
+
+ONE mockup file, written by the orchestrator directly (no subagent), was blocked SEVEN times:
+
+| # | gate | what it demanded |
+|---|---|---|
+| 1 | mockup-no-flat | the word "borderless" reads as the ditched flat direction |
+| 2 | mockup-preflight | a Grounded-in path, real Lucide class markup, English copy (3 at once) |
+| 3 | mockup-diagnosis | a `Diagnosis:` manifest with measured current values |
+| 4 | mockup-fullscreen | a `Base: capture live` marker, a live iframe, AND a Before/After toggle |
+| 5 | contract-hue | the avatar fill copied off the live page is not a contract token |
+| 6 | mockup-real-base | rejects gate 4's `Base: capture live` marker unless a static `<img>` exists |
+| 7 | mockup-depicts | rejects gate 4's "before-after" toggle as a graveyard item |
+
+**Gates 6 and 7 both forbid what gate 4 required.** That is not a slow build, it is an
+unsatisfiable set. Six of the seven were individually reasonable; the set is not.
+
+The subagent hit the identical wall and burned ~40 minutes there. Its last words before being
+stopped were "Now retrying the write". An earlier agent reported the same in its own words:
+"an unusually large number of retries against this repo's mockup PreToolUse gate stack".
+
+- [ ] **A9. THE REAL FIX, and it is not another retry.** The system-health-check already flags this
+      exact thing: "serial gate group: global PreToolUse matcher~='Edit|MultiEdit|Write': 53
+      independently-registered hooks (consolidation candidate, LAW_SYSTEM.md 6.2)". The mockup
+      gates need ONE preflight that reports every unmet requirement in a single pass, instead of
+      N gates each revealing one more after the last is fixed. `mockup-preflight-manifest.py`
+      already IS that aggregator for three of them and it works, which is the proof of the
+      pattern; it just does not cover the other four.
+      BLOCKED HERE: `~/.claude/settings.json` is not writable in this sandbox
+      (`SANDBOX_RUNTIME=1`, `PermissionError [Errno 1]`), so the consolidation cannot be wired
+      from this session.
+- [ ] **A10. RESOLVE THE CONTRADICTION between mockup-fullscreen and mockup-real-base +
+      mockup-depicts.** As they stand, a mockup that satisfies gate 4 cannot pass 6 or 7. One of
+      the three has to yield. My read: gate 4 is right (a live iframe beats a stale screenshot),
+      so gate 6 should accept an iframe as a valid live base, and gate 7's graveyard match on
+      "before-after" should not fire on a toggle control that gate 4 mandates.
