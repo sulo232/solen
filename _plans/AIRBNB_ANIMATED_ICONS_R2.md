@@ -1161,3 +1161,29 @@ stones look ugly; they look CUT OUT when they move; they are TOO PERFECT.
       slightly better than raw; the MESH is the ceiling. It came back as three smooth symmetric
       blobs with little form to catch light, and no render flag reaches that. It needs a better
       source image and a new mesh.
+
+## Round 37: the brush, a real stop, and the answer on Airbnb's states
+
+- [x] Cap tilted further, `verified:` 18 to 20 degrees, and the framing now adds headroom in
+      proportion to the lift (`--open-lift` feeds the camera margin), because the frame was computed
+      on the closed pose and 51 of 210 frames were running off the top edge. Now 0 of 210 clipped
+      and the cap rises 25px instead of 15.
+- [x] The brush, researched not invented, `verified:` read off his own
+      `public/icons/categories/nails.png`: a stem in the POLISH colour hanging from the cap, then
+      bristles that splay WIDER at the tip, the whole thing about as long as the cap. The generated
+      mesh has none because the source picture was a closed bottle, so new `--brush` builds it in
+      the scene and parents it to the lid group, so it lifts out with the cap.
+- [x] A real frozen state, `verified:` measured on all 210 frames, the icons now sit completely
+      still for **0.72s at the start and 1.10s at the end, 1.82s of a 3.50s clip**, up from
+      0.42 + 0.80 = 1.22s. Stutter 0, loops close.
+- [x] **The states question, answered from the capture.** `verified:` counted the files in
+      `public/_pixel-refs/airbnb/icons-motion/frames/`: every Airbnb icon ships as THREE clips, not
+      one. `<name>-twirl` 51 frames, `<name>-selected` SHORTER (house 23, bell 31, balloon 46), and
+      `<name>-twirl-selected` 51. And measured: their held-still frames are 1 at the start and 0 at
+      the end, because they do NOT loop; they play once on mount and park on the last frame. That
+      is why their bar reads still almost all the time. The delivery page now has a toggle so he can
+      compare looping against play-once-and-park directly.
+
+**PARKED, needs his call:** matching their state model means rendering each object twice, normal and
+selected treatment, plus a shorter selected-entry clip. Real work, and worth deciding only once the
+objects themselves are settled.

@@ -30,7 +30,7 @@ if (!glbPath || !outdirArg) {
   console.error("Usage: node scripts/capture/turntable-render.mjs <model.glb> <outdir> [--frames 51] [--fps 30] [--size 180x162] [--hold-in 6] [--hold-out 12] [--turns 1]");
   process.exit(1);
 }
-const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7, hueShift: null, satMul: 1, valMul: 1, tilt: 0, bob: 0, gloss: 0, neutralVal: null, puffOffset: '0,0,0', puffInset: 0, airWave: 0, sway: 0, splitY: [], openDeg: 0, separate: 0, openLift: null, neutralCon: 0.62, jitter: 0 };
+const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7, hueShift: null, satMul: 1, valMul: 1, tilt: 0, bob: 0, gloss: 0, neutralVal: null, puffOffset: '0,0,0', puffInset: 0, airWave: 0, sway: 0, splitY: [], openDeg: 0, separate: 0, openLift: null, neutralCon: 0.62, jitter: 0, brush: null };
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
   // ES modules are blocked over file:// by CORS (origin null), so when the outdir sits under
@@ -66,6 +66,13 @@ for (let i = 0; i < argv.length; i++) {
   // symmetric ellipses, which reads machined rather than balanced by hand. Nudge each band by a
   // fixed amount that varies per index. Fixed, not random, so the loop still closes byte-identical.
   else if (a === "--stack-jitter") opt.jitter = Number(argv[++i]);
+  // The brush that hangs off a polish cap. Owner, 2026-08-02: "where is the brush inside of the
+  // nail cup? It's attached." Read off his shipped public/icons/categories/nails.png: a stem in the
+  // POLISH colour running down from the cap, then bristles that splay wider at the tip, the whole
+  // thing about as long as the cap itself. The generated mesh has no brush because the source
+  // picture showed a closed bottle, so it is built here and parented to the lid.
+  // "length,width,r,g,b" , length and width as fractions of the object height, colour 0-255.
+  else if (a === "--brush") opt.brush = argv[++i];
   // Which angle the clip RESTS on. Measured, not guessed: pick the frame where the subject
   // reads most front-on, then pass its rotation here so frame 1 and frame 51 both land there.
   else if (a === "--start-angle") opt.startAngle = Number(argv[++i]);
@@ -383,6 +390,24 @@ new GLTFLoader().load("./model.glb", (gltf) => {
       }
       pivot.add(groups[b]);
       PARTS.push({ group: groups[b], baseY: hy });
+      // hang the brush off the TOP band, so it lifts out of the bottle with the cap
+      if (BRUSH && b === groups.length - 1) {
+        const [lenF, widF, br, bg2, bb] = BRUSH;
+        const len = lenF * hgt, wid = widF * hgt;
+        const col = new THREE.Color(br / 255, bg2 / 255, bb / 255);
+        const mat = new THREE.MeshStandardMaterial({ color: col, roughness: 0.45, metalness: 0.05 });
+        const bx = new THREE.Group();
+        // the stem: a plain shaft down from the underside of the cap
+        const stem = new THREE.Mesh(new THREE.CylinderGeometry(wid * 0.34, wid * 0.34, len * 0.55, 20), mat);
+        stem.position.y = -len * 0.275;
+        bx.add(stem);
+        // the bristles: a cone that opens OUTWARD toward the tip, which is what his icon shows,
+        // wider at the bottom than where it meets the stem
+        const tip = new THREE.Mesh(new THREE.CylinderGeometry(wid * 0.34, wid, len * 0.45, 24), mat);
+        tip.position.y = -len * 0.55 - len * 0.225;
+        bx.add(tip);
+        groups[b].add(bx);
+      }
     }
   }
 
@@ -395,7 +420,11 @@ new GLTFLoader().load("./model.glb", (gltf) => {
   const radius = Math.max(Math.hypot(fs.x, fs.z) / 2, fs.y / 2);
   const vFov = (camera.fov * Math.PI) / 180;
   const hFov = 2 * Math.atan(Math.tan(vFov / 2) * camera.aspect);
-  const margin = 1.28;
+  // Leave room for a part that TRAVELS. Framing was computed on the closed pose, so a cap that
+  // lifts ran straight off the top: measured 51 of 210 frames clipped at the canvas edge. Adding
+  // the lift distance to the margin keeps the whole gesture inside the frame instead of forcing
+  // the motion to shrink to fit.
+  const margin = 1.28 + (OPEN_LIFT ? Math.abs(OPEN_LIFT[1]) * 2.4 : 0);
   const dist = margin * Math.max(radius / Math.tan(vFov / 2), radius / Math.tan(hFov / 2));
   camera.position.set(0, radius * 0.42, dist);           // a touch above eye level, like the reference
   camera.lookAt(0, 0, 0);
@@ -499,6 +528,7 @@ const SPLIT_Y = ${JSON.stringify(opt.splitY)};
 const OPEN_DEG = ${opt.openDeg};
 const SEPARATE = ${opt.separate};
 const JITTER = ${opt.jitter};
+const BRUSH = ${opt.brush === null ? 'null' : JSON.stringify(opt.brush.split(',').map(Number))};
 const OPEN_LIFT = ${opt.openLift === null ? 'null' : JSON.stringify(opt.openLift.split(',').map(Number))};
 const PARTS = [];
 let OBJ_H = 0;
