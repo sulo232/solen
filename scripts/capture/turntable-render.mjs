@@ -30,7 +30,7 @@ if (!glbPath || !outdirArg) {
   console.error("Usage: node scripts/capture/turntable-render.mjs <model.glb> <outdir> [--frames 51] [--fps 30] [--size 180x162] [--hold-in 6] [--hold-out 12] [--turns 1]");
   process.exit(1);
 }
-const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7, hueShift: null, satMul: 1, valMul: 1, tilt: 0, bob: 0, gloss: 0, neutralVal: null, puffOffset: '0,0,0', puffInset: 0, airWave: 0, sway: 0, splitY: [], openDeg: 0, separate: 0, openLift: null, neutralCon: 0.62, jitter: 0, brush: null };
+const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7, hueShift: null, satMul: 1, valMul: 1, tilt: 0, bob: 0, gloss: 0, neutralVal: null, puffOffset: '0,0,0', puffInset: 0, airWave: 0, sway: 0, splitY: [], openDeg: 0, separate: 0, openLift: null, neutralCon: 0.62, jitter: 0, brush: null, hueMinVal: 0 };
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
   // ES modules are blocked over file:// by CORS (origin null), so when the outdir sits under
@@ -73,6 +73,11 @@ for (let i = 0; i < argv.length; i++) {
   // picture showed a closed bottle, so it is built here and parented to the lid.
   // "length,width,r,g,b" , length and width as fractions of the object height, colour 0-255.
   else if (a === "--brush") opt.brush = argv[++i];
+  // Owner, 2026-08-02: "there is this weird color leak on the lid". Measured: 25.8% of the cap's
+  // pixels sit above the 0.22 saturation floor, so --hue was repainting them the polish pink and
+  // streaking the black lid. The cap is DARK and the bottle is BRIGHT, so brightness is the clean
+  // discriminator: only retarget pixels above this value.
+  else if (a === "--hue-min-val") opt.hueMinVal = Number(argv[++i]);
   // Which angle the clip RESTS on. Measured, not guessed: pick the frame where the subject
   // reads most front-on, then pass its rotation here so frame 1 and frame 51 both land there.
   else if (a === "--start-angle") opt.startAngle = Number(argv[++i]);
@@ -522,6 +527,7 @@ window.__SATMUL = ${opt.satMul};
 window.__VALMUL = ${opt.valMul};
 window.__NEUTVAL = ${opt.neutralVal === null ? 'null' : opt.neutralVal};
 window.__NEUTCON = ${opt.neutralCon};
+window.__HUEMINV = ${opt.hueMinVal};
 const TILT = ${opt.tilt} * Math.PI / 180;
 const BOB = ${opt.bob};
 const SPLIT_Y = ${JSON.stringify(opt.splitY)};
@@ -600,7 +606,16 @@ window.__renderAt = (rad, puffT, t, wt) => {
           window.__NEUTVAL + (rel - 0.80) * window.__NEUTCON)) * 255;
         d[i] = V; d[i + 1] = V; d[i + 2] = V;
       }
-      if (sat >= 0.22 && HUE !== null) {
+      // Below the brightness gate the pixel is not just LEFT ALONE, it is flattened to neutral.
+      // Measured 2026-08-02: the raw mesh, with no hue flag at all, still had 17.6% of its cap
+      // pixels saturated at hue 328, so the pink marbling on the black lid is baked into the
+      // TEXTURE and no amount of gating the retarget removes it. Draining the colour out of the
+      // dark region does.
+      if (window.__HUEMINV > 0 && mx < window.__HUEMINV && sat >= 0.10) {
+        const g2 = mx * 255;
+        d[i] = g2; d[i + 1] = g2; d[i + 2] = g2;
+      }
+      if (sat >= 0.22 && HUE !== null && mx >= window.__HUEMINV) {
         const S = Math.max(0, Math.min(1, sat * SM)), V = Math.max(0, Math.min(1, mx * VM));
         const h6 = HUE * 6, ii = Math.floor(h6), f = h6 - ii;
         const pv = V * (1 - S), q = V * (1 - S * f), t = V * (1 - S * (1 - f));
