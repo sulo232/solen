@@ -174,7 +174,7 @@ this turn and I had not looked at it once.
       measurements; our side is fresh `getBoundingClientRect`/`getComputedStyle` reads off the live
       `/de/profile` this session, not recalled from source. Screen recording explicitly excluded per
       the owner's mid-task "no screenrecording" correction; the five stills are the whole reference.
-- [x] **C3. verified: commit `e6e629d3b`. Back control diff-table row 1 (40pt #F2F2F2 circle vs our 44px bordered square, `Header.tsx:762`); hamburger row 2 (`Header.tsx:947,952`); frame width row 4 (the old mockup measured 1440px wide on a 1440px window); type row 8 (their 11.7pt is a cap-height, real ~16pt vs our 15.5px).** All four answered ("The four the owner
+- [ ] **C3. RE-OPENED 2026-08-03, my own re-measurement invalidated it.** Two of the four answers were sourced from the WRONG SCREEN: the back-control circle and the label size both came from IMG_6901/6902 (Account settings), not IMG_6900 (the Profile root he is comparing against). Root has NO back control and a ~21pt label. Was: commit `e6e629d3b`. Back control diff-table row 1 (40pt #F2F2F2 circle vs our 44px bordered square, `Header.tsx:762`); hamburger row 2 (`Header.tsx:947,952`); frame width row 4 (the old mockup measured 1440px wide on a 1440px window); type row 8 (their 11.7pt is a cap-height, real ~16pt vs our 15.5px).** All four answered ("The four the owner
       named directly"): (a) back affordance, circle vs our square tile, with root cause and a
       scoped-to-this-mockup target; (b) top-right icons, 1 (bell) vs our 2 (bell+hamburger), root
       cause (no bottom tab bar) and target; (c) type, family/size/weight/letter-spacing measured
@@ -183,7 +183,7 @@ this turn and I had not looked at it once.
       mockup measured live this session at 390px (accidentally phone-width) AND 1440px (desktop
       chrome, screenshotted) depending on browser width, root cause (`iframe{width:100%}`, no device
       constraint) and target (fixed 402px canvas).
-- [x] **C4. verified: commit `e6e629d3b`. Rebuilt as real markup; measured live at 390 wide, scrollWidth 396 with zero horizontal overflow, and the file contains no contentDocument / applyChange / data-sweep-done.** Before
+- [ ] **C4. RE-OPENED 2026-08-03.** The rebuild is real markup and that part holds, but it was built on C3's wrong-screen numbers, so it ships an 18px title where the root measures ~24pt, a 16px label where the root measures ~21pt, and a back control the root does not have. Rebuild after D1-D3. Was: commit `e6e629d3b`. Rebuilt as real markup; measured live at 390 wide, scrollWidth 396 with zero horizontal overflow, and the file contains no contentDocument / applyChange / data-sweep-done.** Before
       pane = a live `<iframe src="/de/profile">` of the real, unmodified route (curl 200 confirmed).
       After pane = real static markup (real Lucide SVGs pasted from the live DOM, real translated
       English copy, real seeded data: booking date, wallet state, voucher count, favorites count,
