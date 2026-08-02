@@ -360,7 +360,7 @@ de 372, en 382, fr 374, it 375 = **1503 strings**. Keys are NOT renamed (a key r
       compound rebuilds (Lieblingssalons -> Lieblings-Stores etc.) and Italian article agreement
       (il salone -> lo store, i saloni -> gli store) spelled out, since a blind replace produces
       broken compounds and wrong articles.
-- [x] R2. **verified:** `messages/fr.json` carries **355** values containing `store` and the
+- [x] R2. **verified: commit `7230e9dd1`, `messages/fr.json` = 355 store-values, nothing reverted.** The
       French UI is live on the running site. Nothing was reverted, which IS the decision here.
       Commit `7230e9dd1`. Owner reconfirmed 2026-08-02 with a one-word "ok" when the choice was put
       to him again alongside the window-blind objection, so this is his answer twice, not my

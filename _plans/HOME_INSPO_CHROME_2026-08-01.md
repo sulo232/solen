@@ -189,7 +189,7 @@ https://admission-integrated-achieved-assumption.trycloudflare.com
 
 ## D. The big one
 
-- [x] **H5. verified:** withdrawal recorded in commit `01187352e`, graveyard line filed in
+- [x] **H5. verified: commit `01187352e` + REMOVED.md line dated 2026-08-02.** Withdrawn by the owner. Graveyard line filed in
       `_design-system/REMOVED.md` ("less white homepage, home-v4, new homepage mockup, too white",
       dated 2026-08-02), so `npm run exists` now returns a REMOVED hit for anyone who tries to
       re-propose it. The built file stays at `public/_mockups/home-v4/less-white.html`.
