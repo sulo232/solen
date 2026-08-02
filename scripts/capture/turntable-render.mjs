@@ -30,7 +30,7 @@ if (!glbPath || !outdirArg) {
   console.error("Usage: node scripts/capture/turntable-render.mjs <model.glb> <outdir> [--frames 51] [--fps 30] [--size 180x162] [--hold-in 6] [--hold-out 12] [--turns 1]");
   process.exit(1);
 }
-const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7, hueShift: null, satMul: 1, valMul: 1, tilt: 0, bob: 0, gloss: 0, neutralVal: null, puffOffset: '0,0,0', puffInset: 0, airWave: 0, sway: 0, splitY: [], openDeg: 0, separate: 0 };
+const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7, hueShift: null, satMul: 1, valMul: 1, tilt: 0, bob: 0, gloss: 0, neutralVal: null, puffOffset: '0,0,0', puffInset: 0, airWave: 0, sway: 0, splitY: [], openDeg: 0, separate: 0, openLift: null, neutralCon: 0.62, jitter: 0 };
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
   // ES modules are blocked over file:// by CORS (origin null), so when the outdir sits under
@@ -54,6 +54,18 @@ for (let i = 0; i < argv.length; i++) {
   else if (a === "--split-y") opt.splitY = String(argv[++i]).split(",").map(Number).filter(n => n > 0 && n < 1).sort((x, y) => x - y);
   else if (a === "--open-deg") opt.openDeg = Number(argv[++i]);     // top band tips right by this much
   else if (a === "--separate") opt.separate = Number(argv[++i]);    // bands rise apart by this much
+  // A polish cap is a SCREW cap, not a flip lid. Measured off his own shipped
+  // public/icons/categories/nails.png, which is the approved open state: the cap sits 0.35 of the
+  // icon height across and 0.49 up from the bottle, and only 5.9 degrees off the bottle's own axis.
+  // So it LIFTS CLEAR and stays roughly parallel; it does not hinge. "x,y,deg" as fractions of the
+  // object's height, plus a small tilt.
+  else if (a === "--open-lift") opt.openLift = argv[++i];
+  // How much shading relief survives the neutral remap. Higher keeps the object reading as lit.
+  else if (a === "--neutral-contrast") opt.neutralCon = Number(argv[++i]);
+  // Owner, 2026-08-02: the stones are "too perfect". A generated stack comes back as concentric
+  // symmetric ellipses, which reads machined rather than balanced by hand. Nudge each band by a
+  // fixed amount that varies per index. Fixed, not random, so the loop still closes byte-identical.
+  else if (a === "--stack-jitter") opt.jitter = Number(argv[++i]);
   // Which angle the clip RESTS on. Measured, not guessed: pick the frame where the subject
   // reads most front-on, then pass its rotation here so frame 1 and frame 51 both land there.
   else if (a === "--start-angle") opt.startAngle = Number(argv[++i]);
@@ -362,6 +374,13 @@ new GLTFLoader().load("./model.glb", (gltf) => {
       const hy = b === 0 ? y0 : cuts[b - 1];
       groups[b].position.y = hy;
       groups[b].children.forEach((c) => { c.position.y -= hy; });
+      // the hand-balanced look: a fixed, per-band nudge so the stack is not three concentric
+      // ellipses. Static across the clip, so the loop closes exactly as before.
+      if (JITTER) {
+        const k = [0, 1, -1, 0.6, -0.6][b % 5];
+        groups[b].rotation.z = k * JITTER * 0.10;
+        groups[b].position.x = k * JITTER * 0.06 * (hgt || 1);
+      }
       pivot.add(groups[b]);
       PARTS.push({ group: groups[b], baseY: hy });
     }
@@ -369,6 +388,9 @@ new GLTFLoader().load("./model.glb", (gltf) => {
 
   // Frame it: pull back until the scaled bounds fit with margin on every side, at every angle.
   const fitted = new THREE.Box3().setFromObject(pivot);
+  OBJ_H = fitted.max.y - fitted.min.y;      // the object's own height, so --open-lift can be
+                                            // expressed as a fraction of it rather than in
+                                            // whatever arbitrary scale the mesh arrived in
   const fs = fitted.getSize(new THREE.Vector3());
   const radius = Math.max(Math.hypot(fs.x, fs.z) / 2, fs.y / 2);
   const vFov = (camera.fov * Math.PI) / 180;
@@ -470,12 +492,16 @@ window.__HUE = ${opt.hueShift === null ? 'null' : opt.hueShift};
 window.__SATMUL = ${opt.satMul};
 window.__VALMUL = ${opt.valMul};
 window.__NEUTVAL = ${opt.neutralVal === null ? 'null' : opt.neutralVal};
+window.__NEUTCON = ${opt.neutralCon};
 const TILT = ${opt.tilt} * Math.PI / 180;
 const BOB = ${opt.bob};
 const SPLIT_Y = ${JSON.stringify(opt.splitY)};
 const OPEN_DEG = ${opt.openDeg};
 const SEPARATE = ${opt.separate};
+const JITTER = ${opt.jitter};
+const OPEN_LIFT = ${opt.openLift === null ? 'null' : JSON.stringify(opt.openLift.split(',').map(Number))};
 const PARTS = [];
+let OBJ_H = 0;
 window.__renderAt = (rad, puffT, t, wt) => {
   pivot.rotation.y = rad;
   // One full sine over the turn: level at the start, up, level, down, level at the end. Because it
@@ -494,6 +520,14 @@ window.__renderAt = (rad, puffT, t, wt) => {
       // the TOP band is the lid. Rotating about Z tips it to the right, hinged on its own cut line.
       const lid = PARTS[PARTS.length - 1];
       lid.group.rotation.z = -(OPEN_DEG * Math.PI / 180) * swell;
+    }
+    if (OPEN_LIFT) {
+      // The cap comes AWAY, the way his shipped icon shows it, rather than hinging at the collar.
+      const lid = PARTS[PARTS.length - 1];
+      const span = OBJ_H || 1;
+      lid.group.position.x = OPEN_LIFT[0] * span * swell;
+      lid.group.position.y = lid.baseY + OPEN_LIFT[1] * span * swell;
+      lid.group.rotation.z = -((OPEN_LIFT[2] || 0) * Math.PI / 180) * swell;
     }
     if (SEPARATE) {
       // every band but the bottom rises, each a little further than the one below, so the stack
@@ -524,10 +558,16 @@ window.__renderAt = (rad, puffT, t, wt) => {
       const mx = Math.max(r0, g0, b0), mn = Math.min(r0, g0, b0), df = mx - mn;
       const sat = mx === 0 ? 0 : df / mx;
       if (sat < 0.22 && window.__NEUTVAL !== null) {
-        // drive the frame toward a flat grey at the target value, keeping its own shading relief so
-        // it still reads as a lit 3D object rather than as a paper cut-out
+        // Retarget the LEVEL, keep the RELIEF. The old form multiplied by the target
+        // (NEUTVAL * (0.42 + 0.58*rel)), which at a dark target squeezed the object's whole
+        // lighting range into a band narrower than the 8-bit step. Owner, 2026-08-02: the stones
+        // "look ugly... it just look cut out". Measured on the rendered frame, the shading standard
+        // deviation inside the stones was 2.8 against 22.0 in his own shipped spa.png, 32.4 on our
+        // barber chair and 30.5 on Airbnb's balloon. One flat tone IS a cut-out.
+        // So: shift the midpoint to the target and hold the contrast around it.
         const rel = mx > 0 ? mx : 0;
-        const V = Math.max(0, Math.min(1, window.__NEUTVAL * (0.42 + 0.58 * rel))) * 255;
+        const V = Math.max(0, Math.min(1,
+          window.__NEUTVAL + (rel - 0.80) * window.__NEUTCON)) * 255;
         d[i] = V; d[i + 1] = V; d[i + 2] = V;
       }
       if (sat >= 0.22 && HUE !== null) {

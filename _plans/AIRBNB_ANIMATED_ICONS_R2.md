@@ -1129,3 +1129,31 @@ The Edit TOOL wrote the same path seconds later without complaint. Six gates had
 disk enforcing nothing for a whole session on the strength of that wrong conclusion. One tool
 saying no is a hypothesis; it takes a second instrument to make it a limitation. The
 `no-bash-handoff-gate` caught exactly this and it was right.
+
+## Round 36: the cap lifts instead of hinging, and the stones stop being cut-outs
+
+Owner, four asks: the cap open/close is not right and he wants MORE and told me to research it; the
+stones look ugly; they look CUT OUT when they move; they are TOO PERFECT.
+
+- [x] Researched the cap, `verified:` LottieFiles and IconScout both return 403 from here, so the
+      usable reference was the one already in the repo: his own
+      `public/icons/categories/nails.png`, which IS the approved open state. Measured it with PCA
+      over the dark cap mass against the light bottle mass: the cap sits **0.35 of the icon height
+      across and 0.49 up** from the bottle, and only **5.9 degrees** off the bottle's own axis. So
+      open means the cap is LIFTED CLEAR and stays near-parallel. I had built a flip lid hinged at
+      the collar at 26 degrees with the tail still touching, which is a different object entirely.
+- [x] Rebuilt as a lift, `verified:` new `--open-lift "x,y,deg"` translates the top band and adds a
+      small tilt; rendered at 0.10 across, 0.11 up, 8 degrees. Silhouette top rises 15px over the
+      clip, **0 of 210 frames clipped** at the canvas edge, 0 stutter, loop closes.
+- [x] Found why they looked CUT OUT, `verified:` shading standard deviation inside the stones
+      measured **2.8**, against 22.0 in his own spa.png, 32.4 on our barber chair and 30.5 on
+      Airbnb's balloon. One flat tone IS a cut-out. Cause: the neutral remap multiplied by the
+      target (`NEUTVAL * (0.42 + 0.58*rel)`), which at a dark target squeezes the whole lighting
+      range into a band narrower than the 8-bit step. Changed to shift the midpoint and hold the
+      contrast around it, plus a new `--neutral-contrast`. Now **10.9**.
+- [x] Fixed TOO PERFECT, `verified:` new `--stack-jitter` gives each band a fixed per-index rotation
+      and offset, so the stack is not three concentric ellipses. Fixed, never random, so the loop
+      still closes byte-identical (checked: True).
+- [x] Named the part I cannot fix from here: 10.9 is still under his 22.0 because the MESH is three
+      smooth symmetric blobs, so there is less form to light. That needs a better source image, not
+      a render flag.
