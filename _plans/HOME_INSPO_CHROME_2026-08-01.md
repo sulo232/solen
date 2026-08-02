@@ -172,3 +172,67 @@ artifact with it, and one that names what was measured and why it was not decisi
 NOT ARMED YET (`~/.claude/settings.json` is not writable from here);
 `python3 ~/.claude/hooks/wire-pending-gates.py` from a normal shell picks it up with the rest.
 
+
+## VERIFICATION 2026-08-02, owner asked "verify i made the homepage n acc page acc like the mockups"
+
+**Is the other session's work here?** Yes. Working tree clean, 441 commits ahead of `main`,
+`npx tsc --noEmit` exit 0.
+
+**HOMEPAGE vs `public/_mockups/home-v3/search-a.html` (All tab): 11 of 12 sections MATCH, in the
+mockup's exact order.** Both measured live at 390x844, real page scrolled to force lazy sections.
+
+| mockup | live `/de` |
+|---|---|
+| Recently viewed | Zuletzt, y=236 |
+| Top on Solen | Top auf Solen, y=323 |
+| Nearby | In der Nähe, y=651 |
+| **Available this week** | **ABSENT** |
+| Top hair salons | Top Coiffeur, y=1139 |
+| Top Barbershops | Top Barber, y=1466 |
+| Top nail studios | Top Nails, y=1794 |
+| Top Spas | Top Spa, y=2122 |
+| Popular looks | Beliebte Looks, y=2450 |
+| Walk-in | Walk-in, y=2816 |
+| Find your inspiration | Finde deine Inspiration, y=3155 |
+| Reviews | Bewertungen, y=3579 |
+
+Pills match exactly on both: All / Coiffeur / Barber / Nails / Spa / Inspo, All selected.
+Business teaser + newsletter are correctly absent on mobile (the mockup ends at Reviews).
+
+**The one gap is DATA, not code.** `AvailableThisWeek` IS mounted (`app/[locale]/page.tsx:268`)
+and self-hides at `rows.length < 2` (`AvailableThisWeek.tsx:81`). Probed the live API:
+`GET /api/salons?date=2026-08-04&limit=50` returns **1** salon with availability, total 1. One is
+below the floor of two, so the section hides rather than render a one-item rail. That is the
+no-fabrication rule working, not a bug. It appears the moment a second salon has real slots.
+
+- [ ] V1. Decide the Available-this-week gap: seed more bookable slots so the rail passes its
+      floor of 2, or accept that it hides until real salons open real hours. Owner's call, it is a
+      seeding decision, not a design one.
+
+**ACCOUNT PAGE: NOT REBUILT. The other session never touched it.** `git log -40 --name-only` over
+`profile|konto|account` returns only `profile/favorites`, `profile/looks`, `profile/stamps`, and
+those three appear solely in `5983225b2`, the Salon -> Store copy rename. The last design change to
+`app/[locale]/profile` before that was `cf158de81` on 2026-07-27. So the account page cannot match
+any mockup better than it did a week ago.
+
+Rendered `/de/profile` via `GET /api/dev/login?to=/de/profile`. Live: avatar + initials, a
+Gespeichert/Termine underline-tab split, a search input, a Sortieren pill, three-photo collage
+cards, a "Neu für dich" row. `_mockups/konto-redesign.html` (owner-approved 2026-06-12, `fe92390d8`)
+is a different page entirely: name + email + member-since, a Next-appointment card carrying date,
+service, status, address and total, an Activity grid (Appointments / Favorites / Loyalty / Wallet /
+Gift cards), a More list (Hair profile, Looks, Vouchers, Forms, Invite friends, Settings, Help,
+Sign out), and **no search bar**.
+
+Two floors this repo already documents are visibly live on that page right now:
+- **FLOORS LAW 10**: the profile carries a search bar. That floor exists *because* the owner asked
+  why his own profile has one.
+- **FLOORS LAW 8**: the same salon renders as a 3-photo collage with no price here and as a single
+  photo with rating + PLZ + price on `/de`. Two anatomies for one entity, which is the exact case
+  that floor was written from.
+
+- [ ] V2. Account page needs a decision before any build: `konto-redesign.html` is from June and at
+      least 8 profile mockups exist (`profile-typescale-fs`, `sweep-profile-*`,
+      `restraint/account-hub`, `everystate-v2/07-profile`). Which one is canonical? Naming it is the
+      owner's call; the two floor violations above are fixable regardless of which he picks.
+
+**Debris found:** four `_verify_*.mjs` scripts were committed to the repo root in `086379e46`.
