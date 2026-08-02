@@ -29,7 +29,7 @@ all stamped 2026-08-02 22:22-22:23. IMG_6900 read directly and it is **Airbnb's 
 
 ## Atomic asks
 
-- [x] **A1. MEASURE all five screenshots.** DONE , `_design-system/references/airbnb--profile-list.md`.
+- [x] **A1. verified: commit `013157754`, `_design-system/references/airbnb--profile-list.md` (row pitch at line 47, label cap-height at line 86, subline absence at line 90).** MEASURED all five.
       pixel-spec-auto ran on all 5, failed on all 5 (borderless, as predicted) with FAILED.md as
       proof; every number after that is direct PIL pixel-sampling with the method named beside it.
       Scale verified per-image (all 5 are 1206x2622 = 402x874pt @3.0x, not assumed from one file).
