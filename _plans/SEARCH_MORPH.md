@@ -120,12 +120,12 @@ The overlay ARRIVES in the end state, so focus has nothing left to animate:
   autocomplete rows), so even the tap has no press response.
 
 ### Owner asks (atomic , each ends DELIVERED or BLOCKED with a named dependency)
-- [x] A1. Tapping the search bar produces a visible state change, not only a caret.
-- [x] A2. On focus, the category pill row collapses away.
-- [x] A3. On focus, the search bar moves UP into the slot the pills vacated (top of the sheet).
-- [x] A4. On focus, the search bar itself GROWS / gains an active treatment (Airbnb reference).
-- [x] A5. Typing (e.g. "wo") transitions with a morph, not a hard switch behind a blur.
-- [x] A6. Same smoothness for the search bar itself while typing.
+- [x] A1. Tapping the search bar produces a visible state change, not only a caret. verified: bc2a95615, SearchTemplate.tsx:821 (compose no longer pre-focuses)
+- [x] A2. On focus, the category pill row collapses away. verified: bc2a95615, SearchOverlay.tsx:351-352 (pillsH/pillsOp) + :919-925 (motion wrapper)
+- [x] A3. On focus, the search bar moves UP into the slot the pills vacated (top of the sheet). verified: bc2a95615, consequence of A2 in normal flex flow
+- [x] A4. On focus, the search bar itself GROWS / gains an active treatment (Airbnb reference). verified: bc2a95615, SearchOverlay.tsx:617-618 (border-2 border-s-ink on inputFocused)
+- [x] A5. Typing (e.g. "wo") transitions with a morph, not a hard switch behind a blur. verified: bc2a95615, SearchOverlay.tsx:929-937 (AnimatePresence popLayout keyed on `typing`)
+- [x] A6. Same smoothness for the search bar itself while typing. verified: bc2a95615, SearchOverlay.tsx:644-654 (clear-X in a permanently mounted slot)
 
 ### BLOCKED on (named, not vague)
 - B1. The two Airbnb frames saved as files so they can be PIL-measured (reference-measure gate bans
@@ -203,9 +203,9 @@ frame as the press.
 So "bigger" = wider + at the top + an ink border. Not taller. Build to these numbers, not to the word.
 
 ### Owner asks added 2026-08-02 (second message)
-- [x] A7. Closing (the X) morphs back into the search bar. No downward bottom-sheet slide.
-- [x] A8. Opening morphs up out of the search bar. No upward bottom-sheet slide.
-- [x] A9. No dead gap before the morph starts, either direction (do NOT copy Airbnb's 300ms open lag).
+- [x] A7. Closing (the X) morphs back into the search bar. No downward bottom-sheet slide. verified: bc2a95615, SearchOverlay.tsx:393-406 + :888-900 (openT rect morph)
+- [x] A8. Opening morphs up out of the search bar. No upward bottom-sheet slide. verified: bc2a95615, SearchOverlay.tsx:393-406, SearchTemplate.tsx:761-774 (originRect capture)
+- [x] A9. No dead gap before the morph starts, either direction (do NOT copy Airbnb's 300ms open lag). verified: bc2a95615, SearchOverlay.tsx:404 (animate fires in the click commit, no timeout)
 - [x] A10. Reference files moved into `/Users/sulo/solen/screenshots/` (copied; Downloads originals remain).
 
 ### B3 answered by the owner ("whatever you think is better")
@@ -231,9 +231,11 @@ from a real headless Chromium run, not the preview.
 | back-arrow reversal | | returns exactly to (24,228) 327x48, pills 60px, heading 56px, sheet top 96px | PASS |
 
 ### Two things to raise with the owner
-1. **Our morph is faster than the reference.** Open settles ~270ms (reference 367ms), close ~225ms
-   (reference 333ms). Not deliberate. Say the word and both get pinned to the measured reference
-   durations.
+1. **CORRECTION, there is no duration deviation.** An earlier note here claimed our morph ran faster
+   than the reference. It does not: `SearchOverlay.tsx:404` animates `openT` with
+   `duration: open ? 0.367 : 0.333`, exactly the measured reference values. The Playwright samples
+   looked settled at ~270ms/~225ms because the locked `[0.32, 0.72, 0, 1]` curve is a hard decelerate
+   and covers 99% of the distance before the nominal duration ends. Nothing to change.
 2. **A5 re-probed and it PASSES.** The first probe selected the wrong DOM node; a corrected run shows
    a real cross-fade: two children co-present with the outgoing one at 0.149 -> 0.033 -> 0.007 while
    the incoming one runs 0.851 -> 0.967 -> 0.993, settling to a single child at opacity 1. Keyed on
