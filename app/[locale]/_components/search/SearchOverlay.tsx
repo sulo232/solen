@@ -611,6 +611,15 @@ export function SearchOverlay({
   // by construction, not by two clocks that happen to agree until someone edits one.
   const sheetOpacity = useTransform(openT, [0, 0.35, 1], [0, 0.55, 1]); // mockup-ok: SEARCH_MORPH.md A7/A8/A9
   const scrimOpacity = useTransform(openT, [0, 0.18, 1], [0, 1, 1]); // mockup-ok: SEARCH_MORPH.md R6
+  // H1 (2026-08-03), the root cause of six failed rounds. The scrim was `backdrop-blur-xl`, a
+  // STATIC 24px blur whose only animated property was opacity. A full-strength blur fading in still
+  // reads as the entire screen fogging over at once, so the screen looked open before anything had
+  // moved and the sheet's real growth happened invisibly inside an already-blurred field. Owner:
+  // "it's already all opened, then it just pops up everything." Measured on his recording the page
+  // behind is still clearly readable at +50ms and only reaches full blur around when the card
+  // finishes growing, so the RADIUS itself has to travel, not just the layer's alpha.
+  const scrimBlur = useTransform(openT, (v) => `blur(${(clamp01(v) * 24).toFixed(1)}px)`); // mockup-ok: SEARCH_MORPH.md H1
+  const scrimTint = useTransform(openT, (v) => `rgba(10, 10, 10, ${(clamp01(v) * 0.1).toFixed(3)})`); // mockup-ok: SEARCH_MORPH.md H1
   // C3 (round 2, "X floats alone, off both specs"): port of an owner-dictated SEARCH_MORPH.md
   // punch-list fix. The close-X used to sit at a fixed `top:14px` with no relation to the
   // sheet. Derives its top from the SAME cropTop transform that drives the sheet, offset just
@@ -1387,8 +1396,9 @@ export function SearchOverlay({
               close used to land on the dying overlay (measured: at +120ms `elementFromPoint`
               returned the closing sheet's own collapsed row), which is why re-opening
               immediately after closing did nothing. */}
-          <motion.div key="scrim" onClick={close} className="fixed inset-0 z-[100] bg-s-ink/10 backdrop-blur-xl"
-            style={{ opacity: scrimOpacity, pointerEvents: open ? "auto" : "none" }} /* motion-ok: backdrop fade, now openT-driven */ />
+          {/* mockup-ok: H1, the static blur class is gone and the radius travels with openT. */}
+          <motion.div key="scrim" onClick={close} className="fixed inset-0 z-[100]"
+            style={{ opacity: scrimOpacity, backdropFilter: scrimBlur, WebkitBackdropFilter: scrimBlur, backgroundColor: scrimTint, pointerEvents: open ? "auto" : "none" }} /* mockup-ok: SEARCH_MORPH.md H1 */ />
 
           {/* C3 (round 2, "X too small and mis-placed"): port of an owner-dictated
               SEARCH_MORPH.md punch-list fix. Was 36x36 at a fixed `top:14px`, floating alone in
