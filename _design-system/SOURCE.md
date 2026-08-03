@@ -144,9 +144,11 @@ When adding a new color token to `tailwind.config.js`, both forms MUST be define
 - ❌ Default to ink chrome for components whose color IS their meaning (the recurring Agent D mistake — Toast got patched, but the rule now PREVENTS this for the next 10 components)
 - ❌ Stack semantics: don't use 4 different greens for "success" depending on context. One green per role.
 
-### Voice register (full rules in §18)
+### Voice register (full rules in `COPY_LAW.md`; Solen patterns in §18)
 
-Direct, conversational, action-oriented. German `du` not `Sie`. Speed-anchored copy ("Nur 1 heute", "Termin in 30 Sek."). Avoid sales-y exclamation marks. Never invent claims.
+Direct, action-oriented. **Formal register: `Sie` (de), `Lei` (it), `vous` (fr)** — owner 2026-07-29,
+**supersedes** this line's former "German `du` not `Sie`". Canonical: `_design-system/COPY_LAW.md` §1.
+Speed-anchored copy ("Nur 1 heute", "Termin in 30 Sek."). Avoid sales-y exclamation marks. Never invent claims.
 
 ---
 
@@ -1119,10 +1121,21 @@ Use Swiss formats:
 
 ## §18 · Brand voice / copy
 
+> **SUPERSEDED IN PART, 2026-08-03 (weekly law pass).** The REGISTER half of this section is dead.
+> `_design-system/COPY_LAW.md` §1 (written 2026-07-29) is now the canonical writing law for all four
+> locales and **supersedes** the `du` line below by owner decision, quoted there verbatim: *"make it
+> the Sie instead of the du"*. Applied in code the same week: 330 German strings swapped plus 161
+> conjugated by hand (`69fc74d65`), Italian moved to `Lei` and French reconciled to `vous`
+> (`a0423867d`). Read COPY_LAW.md for register, sentence shape, punctuation, numbers/dates/money,
+> per-string-type shape and translation mechanics; what stays live below is the Solen-specific
+> pattern table and the anti-pattern list, and even those defer to COPY_LAW.md where they disagree.
+
 ### Voice register
 
 - **Direct** — say what the user can do, not how they should feel
-- **Conversational** — German `du` not `Sie` (per audience research)
+- ~~**Conversational** — German `du` not `Sie` (per audience research)~~ **DEAD 2026-07-29** — the
+  owner chose formal `Sie` (de), `Lei` (it), `vous` (fr). See `COPY_LAW.md` §1. Warmth inside the
+  formal register is COPY_LAW.md §3, which exists precisely so formal does not read institutional.
 - **Action-oriented** — verbs over nouns where possible ("Termine finden" > "Termin-Suche")
 - **Confident but not boastful** — "Über 1'200 Salons sind dabei" not "Wir haben den besten Service"
 - **Speed-anchored** — references "30 Sekunden" promise where relevant
