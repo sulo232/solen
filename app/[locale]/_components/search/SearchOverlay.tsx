@@ -1024,6 +1024,7 @@ export function SearchOverlay({
   }, [collapse]);
 
   // i18n (all at top level)
+  const titleTxt                = t("title");
   const searchHeadingTxt        = t("searchHeading");
   const locationHeadingTxt      = t("locationHeading");
   const dateHeadingTxt          = t("dateHeading");
@@ -1087,6 +1088,23 @@ export function SearchOverlay({
     () => [categoryLabel, serviceQ.trim()].filter(Boolean).join(" ") || service,
     [categoryLabel, serviceQ, service],
   );
+
+  // H5 (2026-08-03, the defect that remained after H2 made the card opaque): H2 fixed the
+  // double exposure but left the card's own rect painting NOTHING at t=0, so the growing box
+  // read as a blank white block with no continuity to the bar it grew out of. Measured on our
+  // own build: ink inside the pill's own rect goes from 0.0157 CLOSED to 0.0000 at t=0 and
+  // never returns. His second reference recording (template-matched) keeps the OUTGOING label
+  // alive inside the growing card for roughly its first 70ms, at 60% / 36% / 36% / 15% of its
+  // original contrast at +17 / +33 / +50 / +67ms. `ghostLabelTxt` reuses the SAME string the
+  // collapsed bar already renders (`serviceRowValue`, the composed category+query the pill and
+  // the collapsed step row both show), falling back to `titleTxt`, which is the identical
+  // translation VALUE as `ui.searchChrome.searchPlaceholder` in every locale (both resolve to
+  // "Suchen"/"Search"/"Rechercher"/"Cerca", the exact text the resting home/search pill shows
+  // when nothing is set) , not a new string.
+  const ghostLabelTxt = serviceRowValue || titleTxt;
+  // One continuous range on the ALREADY-EXISTING `openT` value, the same pattern chromeOpacity/
+  // scrimOpacity above already use , not a new duration or easing constant.
+  const ghostLabelOp = useTransform(openT, [0, 0.22], [1, 0]); // mockup-ok: SEARCH_MORPH.md H5
 
   const stepMeta = React.useMemo((): Record<Step, { label: string; value: string; placeholder: string }> => ({
     service:  { label: fieldServiceLabelTxt,  value: serviceRowValue, placeholder: queryPlaceholderTxt     },
@@ -1498,6 +1516,15 @@ export function SearchOverlay({
           <motion.div style={{ height: svcH }} className="shrink-0 overflow-hidden">
             <motion.div style={{ marginLeft: cardMx, marginRight: cardMx, borderTopLeftRadius: cardRadius, borderTopRightRadius: cardRadius, borderBottomLeftRadius: cardRadiusBottom, borderBottomRightRadius: cardRadiusBottom, boxShadow: "0 18px 50px rgba(10,10,10,0.13)" }}
               className="relative h-full overflow-hidden bg-white">
+              {/* H5: the outgoing bar's own label, ghosted INSIDE the now-opaque card at the
+                  spot its icon+text sat, so the growing box carries visual continuity from the
+                  bar it grew out of instead of the erased blank block H2 left behind. Purely a
+                  visual echo of the collapsed bar (aria-hidden, no pointer-events), not a
+                  second control. mockup-ok: SEARCH_MORPH.md H5 */}
+              <motion.div aria-hidden style={{ opacity: ghostLabelOp }} className="pointer-events-none absolute inset-x-0 top-0 flex h-14 items-center gap-2.5 px-4"> {/* mockup-ok: SEARCH_MORPH.md H5 */}
+                <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
+                <span className="truncate font-body text-[16px] font-medium text-s-ink">{ghostLabelTxt}</span>
+              </motion.div> {/* mockup-ok: SEARCH_MORPH.md H5 */}
               <motion.div inert={activeStep !== "service"} style={{ opacity: svcT, pointerEvents: svcBodyHit }} className="absolute inset-0 flex flex-col"> {/* S7: inert when this slot is not the active step */}
                 <motion.div style={{ height: headingH, opacity: headingContentOp }} className="shrink-0 overflow-hidden"> {/* mockup-ok: SEARCH_MORPH.md G1/G2, rises with the container, no stagger */}
                   <h2 className="px-4 pb-1 pt-4 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{searchHeadingTxt}</h2>
