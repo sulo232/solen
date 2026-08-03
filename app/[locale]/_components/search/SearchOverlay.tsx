@@ -626,23 +626,31 @@ export function SearchOverlay({
     return x * s;
   });
 
-  // F1/F2 (2026-08-03, "THE FRAME-BY-FRAME HE ASKED FOR"): content is OUT (opacity 0) for the
-  // whole [0, 0.4] leading range , this is what makes the empty box actually read as empty while
-  // it travels, instead of carrying its full list along from frame one (the owner's named
-  // complaint: "it's all already over there instead of everything fading up"). It stays 0 through
-  // the [0.4, 0.55] gap (the travel window) and only fades IN across [0.55, 1], overlapping the
-  // tail of `containerT`'s own [0, 0.8] on purpose so content starts arriving slightly before the
-  // box's very last settle, the same overlap the reference itself shows (heading ink starts at
-  // 300ms while the card is still finishing its descent to 450-650ms). `contentOp` drives the
-  // heading + category pills (first in the measured stagger); `fieldOp` and `listOp` push their
-  // own "in" start later, matching the measured order (heading, then field, then list , the list
-  // is the slowest of the three, still the least settled of the group). On CLOSE this is the same
-  // continuous function read backward off the same `openT` , no second set of values, no
-  // threshold: content fades out first (as openT drops from 1 through 0.55), then stays hidden
-  // while the box shrinks back.
-  const contentOp = useTransform(openT, [0, 0.4, 0.55, 1], [0, 0, 0, 1]); // mockup-ok: SEARCH_MORPH.md F1/F2, heading + pills
-  const fieldOp = useTransform(openT, [0, 0.4, 0.65, 1], [0, 0, 0, 1]); // mockup-ok: SEARCH_MORPH.md F1/F2, field staggers after heading
-  const listOp = useTransform(openT, [0, 0.4, 0.78, 1], [0, 0, 0, 1]); // mockup-ok: SEARCH_MORPH.md F1/F2, list is the slowest of the three
+  // G1/G2 (2026-08-03 CORRECTION, SEARCH_MORPH.md "CORRECTION 2026-08-03"): the F1/F2 model above
+  // this comment (content pinned at exactly 0 through openT [0, 0.4]/[0, 0.55], only fading in
+  // after) was built off ink density sampled in FIXED SCREEN-SPACE bands while the card was still
+  // moving through them, so at 200/250ms those bands were pointing at parts of the screen the card
+  // had not reached yet and read 0.000 for a reason that had nothing to do with the content's own
+  // opacity. That shipped the OPPOSITE of the reference. A second recording, read frame-by-frame
+  // (not sampled) instead of by ink band, shows the content ghosted from the FIRST frame after the
+  // press: +50ms the old pill label and the new "Where?" + field are already overlaid; +100ms the
+  // whole new content (heading, field, list) is present at LOW opacity; from there it just gets
+  // more opaque. The content is never blank and nothing waits for anything else , ONE simultaneous
+  // move, not three staged phases.
+  // `containerT` is the exact [0, 0.8]-of-`openT` progress that already grows the box (`topFor` /
+  // `sheetHeight` above compute the same ratio inline); driving opacity off the SAME value is "the
+  // same progress value that grows the container" per spec, so the content is guaranteed to be
+  // above zero at every frame the box is still growing (it only clamps to 1 once the box has
+  // settled at openT=0.8, never before).
+  // Chose TOGETHER over a stagger: the reference shows heading + field + list all present already
+  // by +100ms of a 367ms open (27% of the way in), too close together to read as a sequence, and a
+  // staggered order derived from the same ink-band method that produced this bug is not evidence
+  // worth keeping over a plain "together" reading. On CLOSE this is the same continuous function
+  // read backward off the same `openT` , no second set of values, no threshold.
+  const containerT = useTransform(openT, (v) => clamp01(v / 0.8)); // mockup-ok: SEARCH_MORPH.md G1
+  const contentOp = containerT; // heading + category pills, mockup-ok: SEARCH_MORPH.md G1/G2
+  const fieldOp = containerT; // mockup-ok: SEARCH_MORPH.md G1/G2
+  const listOp = containerT; // mockup-ok: SEARCH_MORPH.md G1/G2
   // Combined with the EXISTING focus-fold opacities (headingOp/pillsOp, driven by `expand`) so a
   // single element carries both axes at once , open/close staging and the separate focus fold ,
   // the same multiply pattern `closeXOpacity` above already uses for its own two axes.
@@ -656,8 +664,8 @@ export function SearchOverlay({
   });
   // Same fix, on the footer: `stepsOp` only ever read `expand` (the focus fold), so the
   // Suchen/Zuruecksetzen row was fully opaque and tappable from the same early frame as the
-  // Wo?/Wann? rows above. Multiplied by `listOp` (not `contentOp`) , it's the last, bottom-most
-  // element, so it arrives after the suggestion list per the measured stagger order.
+  // Wo?/Wann? rows above. Multiplied by `listOp`, which post-G1/G2 is the same container
+  // progress as every other content opacity , no stagger, see the correction note above.
   const footerContentOp = useTransform([stepsOp, listOp], (latest) => { // mockup-ok: SEARCH_MORPH.md F1/F2
     const [s, l] = latest as [number, number];
     return s * l;
@@ -739,9 +747,10 @@ export function SearchOverlay({
   // table doesn't name individually but the owner's "it's all already over there" complaint
   // covers as a whole. Multiplied by `contentOp` (NOT `listOp`) , these rows sit structurally
   // beside the heading in the composed view, not after the suggestion list. The SLOT's own white
-  // card shell (`locSlotOp`/`dateSlotOp` below) is deliberately left alone: an empty white card
-  // growing during the travel IS the "empty container travels" phase; only the TEXT inside it
-  // needs to stay dark until the content-in phase.
+  // card shell (`locSlotOp`/`dateSlotOp` below) is deliberately left alone: it belongs to the
+  // container morph, not the content cross-fade. Post-G1/G2, `contentOp` itself is the same
+  // container progress the box grows on, so this text now rises with the box instead of waiting
+  // on a separate "content-in" phase (see the correction note above `containerT`).
   const locFaceOp = useTransform([locFaceOpRaw, contentOp], (latest) => {
     const [f, c] = latest as [number, number];
     return f * c;
@@ -1408,7 +1417,7 @@ export function SearchOverlay({
             <motion.div style={{ marginLeft: cardMx, marginRight: cardMx, borderTopLeftRadius: cardRadius, borderTopRightRadius: cardRadius, borderBottomLeftRadius: cardRadiusBottom, borderBottomRightRadius: cardRadiusBottom, boxShadow: "0 18px 50px rgba(10,10,10,0.13)" }}
               className="relative h-full overflow-hidden bg-white">
               <motion.div inert={activeStep !== "service"} style={{ opacity: svcT, pointerEvents: svcBodyHit }} className="absolute inset-0 flex flex-col"> {/* S7: inert when this slot is not the active step */}
-                <motion.div style={{ height: headingH, opacity: headingContentOp }} className="shrink-0 overflow-hidden"> {/* mockup-ok: SEARCH_MORPH.md F1/F2, heading is first in the measured content stagger */}
+                <motion.div style={{ height: headingH, opacity: headingContentOp }} className="shrink-0 overflow-hidden"> {/* mockup-ok: SEARCH_MORPH.md G1/G2, rises with the container, no stagger */}
                   <h2 className="px-4 pb-1 pt-4 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{searchHeadingTxt}</h2>
                 </motion.div> {/* mockup-ok: SEARCH_MORPH.md F1/F2 */}
                 {/* A2/Model B (2026-07-04): the category pill row sits ABOVE the query input,
@@ -1419,19 +1428,19 @@ export function SearchOverlay({
                     bar down , the padding lives on the INNER div (like the heading's own h2)
                     so the outer motion.div's height/opacity stay the only animated properties. */}
                 {showCategoryPills && (
-                  <motion.div style={{ height: pillsH, opacity: pillsContentOp }} className="shrink-0 overflow-hidden"> {/* mockup-ok: SEARCH_MORPH.md A2/F1/F2 */}
+                  <motion.div style={{ height: pillsH, opacity: pillsContentOp }} className="shrink-0 overflow-hidden"> {/* mockup-ok: SEARCH_MORPH.md A2/G1/G2 */}
                     <div className="px-3 pb-2 pt-3">
                       <CategoryPillsRow active={category} onSelect={setCategory} ariaLabel={categoriesLabelTxt} />
                     </div>
                   </motion.div>
                 )}
-                {/* F1/F2: the field carries its own contentOp so it fades up SLIGHTLY after the
-                    heading, matching the measured order (heading first, field second). Wasn't a
-                    motion element at all before this , content simply rendered at opacity 1 from
-                    frame one, the exact "it's all already over there" complaint. */}
-                <motion.div style={{ opacity: fieldOp }} className="shrink-0 px-3 pb-1 pt-4"> {/* mockup-ok: SEARCH_MORPH.md F1/F2 */}
+                {/* G1/G2: the field carries `fieldOp`, the same container progress as the heading
+                    (no stagger, see the correction note above `containerT`). Wasn't a motion
+                    element at all before F1/F2 , content simply rendered at opacity 1 from frame
+                    one, the exact "it's all already over there" complaint that started this. */}
+                <motion.div style={{ opacity: fieldOp }} className="shrink-0 px-3 pb-1 pt-4"> {/* mockup-ok: SEARCH_MORPH.md G1/G2 */}
                   {serviceBar}
-                </motion.div> {/* mockup-ok: SEARCH_MORPH.md F1/F2 */}
+                </motion.div> {/* mockup-ok: SEARCH_MORPH.md G1/G2 */}
                 {/* C6 (round 2, "bottom is cut off"): the footer/steps rows collapse away to 0
                     height in the focused/expanded state (footerH/stepsH above), so once
                     focused this scroller IS the bottom of the sheet , its own `pb-4` (16px)
@@ -1443,7 +1452,7 @@ export function SearchOverlay({
                     last row can still be scrolled clear of the keys; at kbInset 0 this is
                     byte-identical to the old fixed safe-area padding. */}
                 <motion.div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pt-1"
-                  style={{ opacity: listOp, paddingBottom: kbInset > 0 ? `${kbInset}px` : "max(16px, env(safe-area-inset-bottom))" }} /* mockup-ok: SEARCH_MORPH.md F1/F2, list is the last/slowest of the three in the measured stagger; folds in the pre-existing K4 padding */
+                  style={{ opacity: listOp, paddingBottom: kbInset > 0 ? `${kbInset}px` : "max(16px, env(safe-area-inset-bottom))" }} /* mockup-ok: SEARCH_MORPH.md G1/G2, same container progress as heading/field, no stagger; folds in the pre-existing K4 padding */
                   onScroll={(e) => { scrollExpand.set(clamp01(e.currentTarget.scrollTop / EXPAND_DIST)); }}>
                   {/* A5 (2026-08-02 REOPENED): typing (>=2 chars) crossfades the suggestion
                       content instead of a hard switch , keyed on the idle/typing BOOLEAN (not

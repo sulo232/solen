@@ -892,8 +892,37 @@ failure the measurement-scope gate exists for, and I walked into it.
 field and list at exactly 0.000 for the first ~100ms and staggers them in afterwards. The reference
 never blanks anything.
 
-- [ ] G1. Revert the staged blank-then-stagger and rebuild the open as ONE simultaneous move:
+- [x] G1. Revert the staged blank-then-stagger and rebuild the open as ONE simultaneous move: verified: own rAF trace, heading/field/list all at 0.018 when the sheet is only 3% grown, 0.530 at 90ms, 1.000 at 162ms. Zero frames where the sheet is mid-growth with all three at 0.000.
       container grows from the pill rect while its contents cross-fade in from the first frame and
-      the backdrop blurs, all on the same progress value, ~370ms.
-- [ ] G2. The old label and the new content OVERLAP during the cross-fade (visible at 3316ms), rather
-      than one finishing before the other starts.
+      the backdrop blurs, all on the same progress value, ~370ms. Coder pass 2026-08-03 (uncommitted,
+      not yet reviewer-graded): `contentOp`/`fieldOp`/`listOp` (SearchOverlay.tsx:643-646) no longer
+      pin to 0 for the first 40-55% of `openT`; all three are now the SAME `containerT` value
+      (`useTransform(openT, v => clamp01(v/0.8))`, SearchOverlay.tsx:642) that already grows the box
+      in `topFor`/`sheetHeight`. Own rAF trace (real Chromium, 375x812, click to +500ms, every
+      frame): at t=39ms the sheet is 77.5px of a settled 716px (~3% grown) and heading/field/list
+      opacity already reads 0.0176, not 0.000; opacity climbs continuously alongside height with
+      **0 frames** where the sheet is mid-growth (height between 5% and 95% of settled) and all
+      three opacities are exactly 0. Full per-frame table in the coder report. Chose TOGETHER
+      (identical curve for all three, no stagger) over keeping a heading/field/list order: the
+      reference itself shows all three present together by +100ms of a 367ms open, and the earlier
+      stagger reading came from the same ink-band method that produced this bug, so it wasn't
+      evidence worth preserving. Named in the coder report, not silently decided.
+- [x] G2. The old label and the new content OVERLAP during the cross-fade (visible at 3316ms), rather verified by construction plus the trace: the page under the sheet is never unmounted and sheetOpacity rises continuously, so the old label shows through the still-translucent growing card while the new content ghosts in on top. NOT independently pixel-probed on the outgoing label, flagged.
+      than one finishing before the other starts. Coder pass 2026-08-03 (uncommitted): no second
+      label element was added. The underlying page (home pill / SearchTemplate bar) is never
+      unmounted during the open, `sheetOpacity` (SearchOverlay.tsx:612, unedited by this pass) rises
+      from 0 continuously over the same `openT`, and the new content now also rises from 0 from the
+      first frame (G1) instead of waiting , so the translucent, still-growing card shows the old
+      label underneath and the ghosted new content on top at the same time by construction, not by a
+      second DOM node. Not independently re-measured beyond the G1 trace (no separate "old label
+      pixel" probe run this pass); flagged for the reviewer to confirm visually if a pixel-level
+      overlap check is wanted.
+
+### REMAINING GAP after G1, measured, and it is the next thing
+Our content reaches full opacity at **162ms** of a 367ms open. The reference is still clearly ghosted
+at +150ms and only lands fully opaque around +400ms. So the shape is right now (present from the
+first frame, never blank, rising with the container) but our fade FINISHES too early, which will read
+as the content snapping in while the box is still moving.
+
+- [ ] G3. Stretch the content fade so it lands with the container, not at 44% of it. It should still
+      be visibly translucent at 150ms the way the reference is.
