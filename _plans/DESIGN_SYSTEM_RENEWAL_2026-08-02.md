@@ -222,7 +222,7 @@ acc edit make it acc like it"*
         profile` this turn) and list exactly which fields it edits today.
   - [x] E4b. verified: commit `e11fa9add`, `.edit-link` present on the name row, entering that existing route. No second editor built. Depict the account block as a row/section that ENTERS that route. No second editor.
   - [x] E4c. verified: commit `e11fa9add`, a `Depicts:` line naming app/[locale]/profile/edit/page.tsx is in the file header. Add a `Depicts:` line naming `app/[locale]/profile/edit/page.tsx`.
-  - [ ] E4d. Verify the entry renders at 390x844 and that nothing it offers is a dead affordance
+  - [x] **E4d. verified live at 390x844 on /de/profile/edit: the route renders 5 real fields (avatar file, display_name, bio, new_email, phone) plus a submit button. The Edit link is NOT a dead affordance, everything it implies exists.**  Verify the entry renders at 390x844 and that nothing it offers is a dead affordance
         (every field it advertises must be one `profile/edit` actually has). Today the avatar + name is a
       static block. He wants it to be a section where name, photo and details are actually
       editable. Exists-check first: `/profile/settings` and any existing edit-profile route, so
@@ -236,7 +236,7 @@ wrong-screen error again.
 
 - [x] **D1. verified: commit `e11fa9add`, live at 390x844 on the After pane, computed styles: title 18px -> 24px, row label 12px -> 21px**, against the ~24pt / ~21pt I PIL-measured on IMG_6900. The wrong-screen error is closed.
 - [x] **D2. verified: commit `e11fa9add`, live: `.backcircle` count on the After pane is 0.** Title sits flush top-left, one bell top-right, matching the Profile ROOT rather than a sub-screen.
-- [ ] **E4d. Dead-affordance check still owed.** The Edit link must only advertise fields profile/edit really has. Fields confirmed in E4a; what is NOT yet checked is whether the link's destination renders them for this seed user at 390x844.
+- [x] **E4d. verified live at 390x844 on /de/profile/edit: the route renders 5 real fields (avatar file, display_name, bio, new_email, phone) plus a submit button. The Edit link is NOT a dead affordance, everything it implies exists.**  Dead-affordance check still owed.** The Edit link must only advertise fields profile/edit really has. Fields confirmed in E4a; what is NOT yet checked is whether the link's destination renders them for this seed user at 390x844.
 
 ## QUEUED, owner-decided 2026-08-03: SIX directions, built AFTER the research lands
 
