@@ -1,0 +1,140 @@
+<!--
+  Exists-check: net-new vs public/_reports/principles/index.html (the 2026-07-28 DESIGN principle
+  pass) and public/_reports/principle-research/index.html (the 2026-07-29 NON-design pass). This
+  page reports the WEEKLY DESIGN-LAW improvement run of 2026-08-03: different corpus, different
+  window, its own verdicts, so it gets its own URL rather than overwriting either record.
+
+  Grounded-in: _plans/LAW_IMPROVE_2026-08-03.md
+  Grounded-in: _design-system/LOCKFILE.md
+  Grounded-in: _design-system/SOURCE.md
+  Grounded-in: _design-system/COPY_LAW.md
+
+  Not a UI mockup: this is a report page. It renders no product surface and copies no component,
+  which is why it is grounded in the law files it reports on rather than in a route. Every claim
+  was verified on 2026-08-03 against the working tree, git history, or by running the gate itself
+  with a crafted payload. Nothing is carried from the previous run's report.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>Design law pass, 3 August</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --ink3:#9CA3AF;
+    --bg:#FFFFFF; --sunken:#F4F4F5; --line:#E4E4E7;
+    --red:#DC2626;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:15px; line-height:1.55; letter-spacing:-0.005em;
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:28px 20px 72px}
+  .eyebrow{font-size:12px;font-weight:600;color:var(--ink2);margin:0 0 6px}
+  h1{font-size:30px;line-height:1.15;letter-spacing:-0.02em;font-weight:600;margin:0 0 10px}
+  h2{font-size:19px;line-height:1.25;letter-spacing:-0.01em;font-weight:600;margin:38px 0 10px}
+  p{margin:0 0 14px}
+  .lede{color:var(--ink2)}
+  .stats{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 4px;padding:0;list-style:none}
+  .stats li{background:var(--sunken);border-radius:12px;padding:10px 14px;flex:1 1 90px;min-width:90px}
+  .stats b{display:block;font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.2}
+  .stats span{font-size:12px;color:var(--ink2)}
+  .card{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:16px 16px 4px;margin:0 0 12px}
+  .card h3{font-size:15px;font-weight:600;margin:0 0 8px}
+  .card p{font-size:14px;color:var(--ink2)}
+  .card p strong{color:var(--ink);font-weight:600}
+  .quote{border-left:2px solid var(--line);padding-left:12px;color:var(--ink2);font-size:14px;margin:0 0 14px}
+  .deny{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;background:var(--sunken);
+        border-radius:12px;padding:12px 14px;color:var(--ink);overflow-x:auto;margin:0 0 14px}
+  .deny b{color:var(--red);font-weight:600}
+  ol.q{padding-left:20px;margin:0}
+  ol.q li{margin:0 0 14px;font-size:14px}
+  ol.q b{font-weight:600}
+  ol.q span{color:var(--ink2)}
+  ul.files{list-style:none;padding:0;margin:0 0 14px}
+  ul.files li{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;color:var(--ink2);
+              padding:6px 0;border-bottom:1px solid var(--line)}
+  .note{font-size:13px;color:var(--ink2)}
+  footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="eyebrow">Weekly design-law pass</p>
+  <h1>A gate was still telling German to go back to du</h1>
+  <p class="lede">3 August. Five days after you said the opposite, and it would have looked like the system correcting whoever touched the file next.</p>
+
+  <ul class="stats">
+    <li><b>8</b><span>safe fixes</span></li>
+    <li><b>7</b><span>need you</span></li>
+    <li><b>5</b><span>decisions found</span></li>
+  </ul>
+
+  <h2>What happened</h2>
+  <p>On 29 July you said:</p>
+  <p class="quote">"make it the Sie instead of the du"</p>
+  <p>The strings were swapped, 330 of them, plus 161 conjugated by hand. But one of the automatic checks still had the old rule inside it. I ran it to be sure, and it refused a formal German string. This is what it said back, quoted exactly:</p>
+  <div class="deny"><b>denied</b> &nbsp; "Rewrite with du/dein/deine/dir/dich" <!-- german-ok: verbatim quote of the gate's own deny message, not UI copy --></div>
+  <p>It stayed quiet during the sweep only because that ran through a script, and this check only watches hand edits. The next person editing German by hand would have been told, with authority, to undo your decision.</p>
+  <p><strong>Turned off, not flipped around.</strong> The writing law says the reverse check gets switched on after the Italian half finishes, so switching it on now would block every string not yet converted. Tested five ways: formal passes now, informal still passes, and the other checks in the same file still fire.</p>
+
+  <h2>The rest of the week</h2>
+  <p>This was not a design week. Everything that shipped was writing law, translations, or audits, and you made no new visual decisions. So the value was in what the language decision reached into.</p>
+
+  <div class="card">
+    <h3>The voice file still said the informal form</h3>
+    <p>In two places, in the file anyone opens to look up how we write. Marked dead, pointed at the writing law.</p>
+  </div>
+  <div class="card">
+    <h3>The small label above a section was still defined as capitals</h3>
+    <p>You banned caps on 18 June. The type table still handed new work the capitals recipe, and another check has been blocking it ever since. <strong>65 files still carry it in the code</strong>, which is a separate cleanup.</p>
+  </div>
+  <div class="card">
+    <h3>A table marked "enforced" prescribed a glow</h3>
+    <p>Every focus row said blue ring. You killed rings three times, and a check blocks them. The same table had a selected state your grey rule replaced last June.</p>
+  </div>
+  <div class="card">
+    <h3>Seven pointers led nowhere</h3>
+    <p>Files renamed, files that never existed. Two locked rules cite Uber research that is not on the disk and never was.</p>
+  </div>
+
+  <h2>Seven questions for you</h2>
+  <p class="lede">Two are new. Five I asked last week and they are still open.</p>
+  <ol class="q">
+    <li><b>New. The dash.</b> <span>The writing law says a spaced dash is fine inside German, French and Italian sentences. Three other files and a live check say never. <strong>That carve-out is mine, not yours.</strong> Keep it, or kill it?</span></li>
+    <li><b>New. The small label above a section.</b> <span>Three different sizes written in three places, flagged on 21 July, never answered. Small, medium, or drop it?</span></li>
+    <li><b>The press squash on a card.</b> <span>Two numbers locked in two files. The code uses one of them 71 times.</span></li>
+    <li><b>Small text on a card.</b> <span>One file says smaller, another says bigger. It is on every card on every browse page.</span></li>
+    <li><b>Blue on small buttons.</b> <span>Allowed in one file, forbidden in the one that outranks it.</span></li>
+    <li><b>Input corners.</b> <span>Every written rule says 12. The code still says 16 in 41 places and only looks right by accident.</span></li>
+    <li><b>The stranded branch.</b> <span>33 commits nobody merged. Merge it or bin it?</span></li>
+  </ol>
+
+  <h2>Reading check</h2>
+  <p class="note">Your 29 July message mixed a settled call with a "stop raising this". I logged it as: register is <strong>settled formal</strong> across German, Italian and French, and the leaked-password toggle is <strong>yours to flip, not to be surfaced again</strong>. It will not appear in future passes. If either reading is wrong, tell me and I will correct the record.</p>
+
+  <h2>Files touched</h2>
+  <ul class="files">
+    <li>CLAUDE.md</li>
+    <li>_design-system/LOCKFILE.md</li>
+    <li>_design-system/SOURCE.md</li>
+    <li>_design-system/TASTE_LOG.md</li>
+    <li>_design-system/MOTION.md</li>
+    <li>_plans/LAW_IMPROVE_2026-08-03.md</li>
+    <li>_plans/WORKLOG.md</li>
+    <li>_plans/ACTIVE.md</li>
+    <li>~/.claude/hooks/copy-lint-gate.py</li>
+  </ul>
+  <p class="note">Eight commits, nothing pushed. No locked value changed, nothing deleted, every replaced line struck through and kept.</p>
+
+  <footer>Full written report: _plans/LAW_IMPROVE_2026-08-03.md. Temporary link, it dies when the session stops.</footer>
+
+</div>
+</body>
+</html>
