@@ -940,3 +940,26 @@ the box has landed, and the whole fade is about 1.5x the container's duration.
 
 Ours before G3: content full at 162ms of a 367ms open, about 3.5x too fast. That is the speed
 complaint, and it is the only thing left that the owner had not already named twice.
+
+## ROOT CAUSE FOUND 2026-08-03: it is the BACKDROP, not the sheet
+
+Owner, after looking at the fixed side-by-side: "Airbnb gradually opens. On ours it's already all
+opened, then it just pops up everything." He selected frame 02 (33ms) on both panes.
+
+The DOM geometry is fine and always was. Measured on /de at 375x812, per animation frame:
+`t25 sheet h73 · t39 h144 · t83 h357 · t125 h604 · t195 h716`, and the white card inside it
+`56 -> 496`. The box genuinely grows over ~195ms.
+
+**But the RENDERED frame at 33ms shows a full-screen blurred rectangle.** That is not the sheet. It
+is the scrim, `div.fixed.inset-0.bg-s-ink/10.backdrop-blur-xl`, which covers the entire viewport at
+full size from the first frame. So the thing that reads as "already all opened" is the whole screen
+slamming into blur before anything has moved, and the sheet's real growth happens invisibly inside
+that already-blurred field.
+
+**This is why five timing changes did nothing.** Every one of them adjusted the sheet, its content,
+or their easing. None touched the backdrop. The variable driving the defect was never in the set I
+was tuning, which is exactly what the repeat-fix gate kept warning about.
+
+- [ ] H1. The backdrop must arrive gradually with the sheet, not instantly at full blur. In the
+      reference the page behind is still legible at +50ms and only fully blurred once the card has
+      grown.
