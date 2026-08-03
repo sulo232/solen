@@ -358,7 +358,7 @@ export function SearchOverlay({
       if (initialFocus === "stadt") setActiveStep("location");
       else if (initialFocus === "zeit") setActiveStep("date");
       else setActiveStep("service");
-      expand.set(0);
+      scrollExpand.set(0);
       // Homepage 3-section search: land directly in the focused/typing state so the field
       // shows what you type (inputFocused=true, NOT reset to false), the sheet expands, and
       // we focus the input (autoFocus on the element is the iOS keyboard's best shot; the rAF
@@ -413,7 +413,32 @@ export function SearchOverlay({
   // two-layer/absolutely-positioned overlay rearchitecture of this whole scroll-expand system, a
   // structural rewrite, not a treatment fix, and out of safe scope for this pass. Left as an
   // honest, documented exception; unchanged below.
-  const expand = useMotionValue(0); // mockup-ok: pre-existing, unchanged (comment-only edit above)
+  // K1 (2026-08-03, owner shots IMG_6911 / IMG_6914): with the keyboard up the sheet is 384px on
+  // his device (top 65 = safe-area floor, bottom 449 = the keyboard's top edge), while the
+  // UNFOLDED composer's own fixed chrome is heading 56 + pills 60 + field 68 + Wo? row 76 +
+  // Wann? row 86 + footer 68 = 414px. 414 does not fit in 384, and the one elastic child is the
+  // suggestion list, so it absorbed the whole deficit and measured 0px of content (a 20px box
+  // that is entirely its own padding, 0 rows in view). That is the screenshot: the card ends
+  // right under the field. It is also a DEAD END, because the only control that can raise
+  // `expand` again is scrolling that same list, and a 0px list cannot be scrolled: focus the
+  // field (expand -> 1), scroll the suggestions back to the top (the scroll link writes expand
+  // -> 0), and the composer re-expands into a sheet that has no room for it, with the keyboard
+  // still up and no way back.
+  //
+  // The system already has exactly one answer for "this chrome has to fold away": `expand`.
+  // So the keyboard now drives it too. `scrollExpand` is the driver the FINGER writes (the focus
+  // `grow(1)` and the scroll link), `kbT` is the keyboard's own progress, and `expand` is their
+  // MAX, so the keyboard can only ever raise the fold, never undo what the finger did. Still one
+  // continuous value over ONE DOM tree, never two layouts swapped at a threshold: nothing mounts,
+  // unmounts or re-parents, the same transforms interpolate the same nodes, and `kbT` animates on
+  // the SAME duration/curve `grow` already uses so a keyboard-driven fold and a focus-driven fold
+  // are the same motion. At kbInset 0 `kbT` is 0 and `expand` is byte-identical to what it was.
+  const scrollExpand = useMotionValue(0); // mockup-ok: the pre-existing `expand` value, renamed only
+  const kbT = useMotionValue(0); // mockup-ok: SEARCH_MORPH.md K1, keyboard fold progress
+  const expand = useTransform([scrollExpand, kbT], (latest) => { // mockup-ok: SEARCH_MORPH.md K1
+    const [s, k] = latest as [number, number];
+    return Math.max(s, k);
+  });
   const RESTING_TOP = 96; // mockup-ok: named copy of the pre-existing cropTop resting literal below
   const focusedTop = Math.max(safeTop + 6, 50); // mockup-ok: named copy of the pre-existing cropTop focused literal below
   const headingH = useTransform(expand, [0, 0.55], [HEADING_H, 0]); // mockup-ok: pre-existing
@@ -461,11 +486,22 @@ export function SearchOverlay({
   // under the keyboard and fires `scroll`, not `resize`.
   const [viewport, setViewport] = React.useState({ w: 375, h: 812 });
   const [kbInset, setKbInset] = React.useState(0);
+  // K2 (2026-08-03, IMG_6914's top edge): `position: fixed` is laid out against the LAYOUT
+  // viewport, and iOS scrolls the VISUAL viewport inside it when the keyboard comes up, so a
+  // sheet pinned to layout-y N renders at screen-y N - offsetTop. Reconstructing IMG_6914 from
+  // its own pixels: the Wo? card measures 207pt tall there, which the sheet arithmetic only
+  // produces at kbInset 380 (= a 425px keyboard read through a 45px visual-viewport scroll),
+  // and at that offset the sheet's layout top of 65 renders at screen 20, which is why the
+  // Suche row above the Wo? card is a sliver cut off by the status bar instead of a 56px row.
+  // The BOTTOM edge already survives this (`viewport.h - kbInset` is the keyboard's top edge in
+  // layout coordinates by construction, offset included), so only the top needed the term.
+  const [vvOffset, setVvOffset] = React.useState(0);
   React.useEffect(() => {
     const measure = () => {
       const w = window.innerWidth, h = window.innerHeight;
       setViewport({ w, h });
       const vv = window.visualViewport;
+      setVvOffset(Math.max(0, Math.round(vv?.offsetTop ?? 0)));
       // The band of the layout viewport the visual viewport no longer covers = the keyboard.
       // `* scale` is what keeps a ZOOM from being misread as a keyboard: zooming to 2x halves
       // visualViewport.height for the same screen, and without the scale term this computed a
@@ -487,6 +523,15 @@ export function SearchOverlay({
       window.visualViewport?.removeEventListener("scroll", measure);
     };
   }, []);
+  // K1: the keyboard's own fold progress. Same duration and same curve as `grow`, so the fold
+  // the keyboard triggers and the fold a focus triggers are one motion, and a keyboard that
+  // arrives while `grow(1)` is already running just lands on the value that is already there.
+  // `expand` above takes the MAX of this and the finger's own value, so this can never pull the
+  // sheet back down: releasing the keyboard hands control back to whatever the finger last set.
+  React.useEffect(() => {
+    const controls = animate(kbT, kbInset > 0 ? 1 : 0, reduce ? { duration: 0 } : { duration: 0.34, ease: EASE });
+    return () => controls.stop();
+  }, [kbInset, reduce, kbT]);
   // No visible bar to point at (e.g. the ?compose=1 deep link) -> a plausible near-top rect
   // instead of the old bottom-of-screen slide.
   const origin = React.useMemo(
@@ -507,9 +552,11 @@ export function SearchOverlay({
       const base = oT < 1
         ? origin.top + (RESTING_TOP - origin.top) * oT
         : RESTING_TOP + (focusedTop - RESTING_TOP) * ex;
-      return Math.max(minTop, base - kbInset);
+      // K2: `+ vvOffset` puts the sheet's top where the user actually sees it. It is 0 in every
+      // state without a visual-viewport scroll, so this is identity everywhere else.
+      return Math.max(minTop, base - kbInset) + vvOffset;
     },
-    [origin, focusedTop, minTop, kbInset],
+    [origin, focusedTop, minTop, kbInset, vvOffset],
   );
   const cropTop = useTransform([openT, expand], (latest) => { // mockup-ok: SEARCH_MORPH.md A7/A8/A9
     const [oT, ex] = latest as [number, number];
@@ -723,7 +770,7 @@ export function SearchOverlay({
   }, [open, reduce, openT]);
 
   const grow = React.useCallback(
-    (to: number) => animate(expand, to, reduce ? { duration: 0 } : { duration: 0.34, ease: EASE }),
+    (to: number) => animate(scrollExpand, to, reduce ? { duration: 0 } : { duration: 0.34, ease: EASE }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [reduce],
   );
@@ -795,7 +842,7 @@ export function SearchOverlay({
     navigate(sp);
   }, [push, navigate]);
 
-  const close = React.useCallback(() => { setInputFocused(false); setActiveStep("service"); setServiceQ(""); setCityQ(""); expand.set(0); onClose(); }, [expand, onClose]);
+  const close = React.useCallback(() => { setInputFocused(false); setActiveStep("service"); setServiceQ(""); setCityQ(""); scrollExpand.set(0); onClose(); }, [scrollExpand, onClose]);
   const reset = React.useCallback(() => { setService(""); setCategory(""); setStadt(initialCity); setIsoDate(""); setSelKey(null); setDateLabel(""); setZeitPeriod(""); setServiceQ(""); setCityQ(""); setActiveStep("service"); setInputFocused(false); collapse(); }, [initialCity, collapse]);
 
   // Rich-search taps. searchTerm: run a specific autocomplete term as the query (keeps
@@ -934,7 +981,11 @@ export function SearchOverlay({
   const serviceBar = (
     <div className="flex h-12 items-center gap-2.5 rounded-[16px] border border-s-border bg-white px-4">
       {inputFocused ? (
-        <button onClick={() => { setInputFocused(false); collapse(); }} aria-label={backTxt}
+        // K1: the blur is load-bearing now. The keyboard holds `expand` at 1 (kbT), so a back
+        // tap that only ran `collapse()` would set the finger's own driver to 0 and change
+        // nothing on screen while the keyboard stayed up. Dismissing the field is what this
+        // control means, so it says so instead of relying on the platform to infer it.
+        <button onClick={() => { serviceRef.current?.blur(); setInputFocused(false); collapse(); }} aria-label={backTxt}
           className="grid h-6 w-6 shrink-0 place-items-center text-s-ink">
           <ArrowLeft size={20} strokeWidth={2} />
         </button>
@@ -1306,7 +1357,7 @@ export function SearchOverlay({
                     focused this scroller IS the bottom of the sheet , its own `pb-4` (16px)
                     didn't clear the safe-area inset on a device with a home indicator. */}
                 <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-[max(16px,env(safe-area-inset-bottom))] pt-1"
-                  onScroll={(e) => { expand.set(clamp01(e.currentTarget.scrollTop / EXPAND_DIST)); }}>
+                  onScroll={(e) => { scrollExpand.set(clamp01(e.currentTarget.scrollTop / EXPAND_DIST)); }}>
                   {/* A5 (2026-08-02 REOPENED): typing (>=2 chars) crossfades the suggestion
                       content instead of a hard switch , keyed on the idle/typing BOOLEAN (not
                       serviceQ), so a keystroke while already typing re-renders in place without

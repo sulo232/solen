@@ -640,15 +640,98 @@ so the in-place fix is not disturbed.
 Every defect is in the KEYBOARD-UP state, which none of the previous rounds rendered with a keyboard.
 Files in `/Users/sulo/.claude/uploads/1c4aafb4-f426-493f-b8e6-885ee10cdf1b/`.
 
-- [ ] K1. IMG_6911, search step with the keyboard up: **the suggestion list is completely gone.** The
+- [x] K1. IMG_6911, search step with the keyboard up: **the suggestion list is completely gone.** The verified: adversarial pass, keyboard-up scroller measures 375x402 with 4 rows fully visible where it was 20px with 0 rows. Root cause: fixed chrome totalled 414px inside a 384px sheet, and the elastic list absorbed the whole deficit, which was also a dead end because scrolling that list was the only way to expand and a 0px list cannot scroll. The keyboard now drives the same `expand` a focus drives.
       card ends under the field, then Wo?/Wann?, then a dead blurred band, then the footer on the blur.
-- [ ] K2. IMG_6909 and IMG_6914/6916: content is **hard-clipped mid-row** at the keyboard line. The
+      REPRODUCED at his exact geometry (402x874, safe-area top 59, keyboard 425, all three derived from
+      the shot's own pixels): sheet 65..449, slots [164, 66, 86, 68], suggestion scroller **20px with 0
+      rows in view** (a 20px box that is entirely its own padding), screenshot
+      `_audits/screenshots/kb-before-service.png` reproducing IMG_6911 down to the clipped field.
+      ROOT CAUSE: the sheet is 384px with the keyboard up, and the UNFOLDED composer's own fixed chrome
+      is heading 56 + pills 60 + field 68 + Wo? row 76 + Wann? row 86 + footer 68 = **414px**. 414 does
+      not fit in 384 and the suggestion list is the only elastic child, so it absorbed the entire
+      deficit. It is also a DEAD END: the only control that can raise `expand` again is scrolling that
+      same list, and a 0px list cannot be scrolled. Measured the trap end to end, focus then flick the
+      suggestions back to the top with the keyboard up: list 316px/4 rows -> **20px/0 rows**, stuck.
+      FIXED, SearchOverlay.tsx: the keyboard now drives the SAME `expand` a focus drives. `scrollExpand`
+      is the driver the finger writes (the focus `grow(1)` plus the scroll link), `kbT` is the keyboard's
+      own progress on the same 0.34s/EASE `grow` already uses, and `expand` is their MAX, so the keyboard
+      can only raise the fold and never undo what the finger did. One continuous value over ONE DOM tree,
+      nothing mounts or re-parents, and at kbInset 0 `kbT` is 0 so `expand` is byte-identical to before.
+      MEASURED, his geometry: suggestion scroller **20px -> 316px**, rows in view **0 -> 4** (3 fully
+      visible). Harness 375x812 with a 336px keyboard: **66px -> 402px**, 0 -> 4 fully visible.
+      The dead end is gone: the same flick-back-to-top now holds [384, 0, 0, 0] / 316px / 4 rows.
+      Regression guard, keyboard DOWN, before and after byte-identical: home pill 0 navigations and the
+      URL still /de; pills 60 -> 0 on focus; bar y228 -> y66 and w327 -> w351; bar border
+      `1px rgb(228,228,231)` in BOTH states; close X 44x44 in both; expanded card bottom 812; the scroll
+      link still expands at 320 and collapses back; MORPH_EASE untouched at [0.36, 0.36, 0.1, 1].
+- [ ] K2. IMG_6909 and IMG_6914/6916: content is **hard-clipped mid-row** at the keyboard line. The NOT FIXED, and blocked on K4 rather than on work: a scroller always cuts whatever row sits at its edge, and whether it cuts against a hard white edge or under the keys IS the K4 pick. What changed is that the list being cut is 316px instead of 20px.
       "Coiffeur" row is sliced through; the city list is clipped at BOTH ends with 1-2 cities visible.
-- [ ] K3. A large **dead blurred band** sits between the last card and the footer, and the footer
+      BOTTOM END, the city list, fixed by K1's driver: on the Wo? step at his geometry the city scroller
+      measured **34px, 1 row in view, 0 fully visible** out of 9 cities, and now measures **198px, 3 in
+      view, 2 fully visible**, ending on a real row boundary (`_audits/screenshots/kb-after-wo.png`
+      against `kb-before-wo.png`). Harness 375x812: **120px -> 284px**, 1 -> 4 fully visible.
+      TOP END, the Suche row cut off by the status bar: reconstructing IMG_6914 from its own pixels, its
+      Wo? card is 207pt tall, which the sheet arithmetic only produces at kbInset 380, i.e. a 425px
+      keyboard read through a **45px visual-viewport scroll**. `position: fixed` is laid out against the
+      LAYOUT viewport while iOS scrolls the VISUAL one inside it, so the sheet's top rendered 45px above
+      where it was computed. Measured with offsetTop forced to 45: sheet top in SCREEN coordinates
+      **-39 -> 6**, bottom 431 in both, height 470 -> 425 (the sheet now stops at the keyboard instead of
+      hanging 45px past it). The bottom edge never needed the term: `viewport.h - kbInset` is already the
+      keyboard's top edge in layout coordinates, offset included.
+      NOT DECIDED HERE, it is K4: "bottom lands on a row boundary" vs "content continues under the
+      keyboard" is exactly the choice K4 puts to him, so neither was applied. The service list still cuts
+      whatever row sits at its bottom edge mid-scroll, which is what every scroller does; what is fixed is
+      that the viewport doing the cutting is 316px instead of 20px. Scrolled to the very end the last row
+      clears the keyboard by 23.9px (unchanged before and after), so the "enough bottom padding" half of
+      this box is already satisfied in the shrink geometry. If K4 picks scroll-under, the scroller's
+      bottom padding has to become `kbInset` and that is the change to make then.
+- [x] K3. A large **dead blurred band** sits between the last card and the footer, and the footer verified: adversarial pass, gap from the last card bottom to the footer top measures 0 in every keyboard-up state (was 88px).
       floats on the blur with no surface under it.
-- [ ] K4. Owner choice, mocked not asked: does the list scroll UNDER the keyboard (what the Airbnb
+      MEASURED, last painted card bottom to the sheet's own bottom edge: **88px** in every keyboard-up
+      state (20px of Wann?-slot tail plus a 68px footer with no surface of its own), which is 23% of the
+      384px sheet on his device against 11% of the 778px sheet without a keyboard, which is why the same
+      88px reads as chrome at the screen edge in one state and as a floating band in the other.
+      FIXED by the same K1 driver: the footer folds with the keyboard exactly as it already folds on
+      focus, so the last card's bottom IS the sheet's bottom. **88px -> 0px** at both geometries, in the
+      unfocused, focused and Wo? keyboard-up states. Without a keyboard the 88px band is untouched, so
+      the shipped resting look does not move.
+      COST, named, not a taste call I made: with the keyboard up the Wo? / Wann? rows and the Suchen
+      footer are folded away, so they are not tappable until the keyboard is dismissed (the back arrow now
+      blurs the field explicitly for that reason). That is the same trade the focused service step already
+      shipped, and it is what the Airbnb reference IMG_6917 does, but it does remove a control that was
+      reachable before. Also new and left for him: at expand 1 the Suche slot is full-bleed (cardMx 0)
+      while the Wo? card keeps its 12px inset, so the Wo? step with the keyboard up now shows a full-bleed
+      row above an inset card. Flagged rather than restyled (mockup-first).
+- [ ] K4. Owner choice, mocked not asked: does the list scroll UNDER the keyboard (what the Airbnb Chooser BUILT and rendering (public/_mockups/search-keyboard/index.html, all four combinations verified). AWAITING HIS PICK.
       shot does) or does the sheet shrink to sit above it.
-- [ ] K5. Owner choice, mocked not asked: the field at rest, filled grey vs white with a hairline.
+      MOCKED, which is what this box asks for; the DECISION is still his and is not recorded here.
+      `public/_mockups/search-keyboard/index.html`, a two-axis chooser over ONE DOM tree, the real
+      service step at 375x812 with the keyboard simulated at 336, real seeded content (the three
+      featured salons with their live /api/salons addresses, then the four shipped categories), the
+      real /de home capture blurred behind the scrim. Both keyboard options render and were measured
+      by Playwright on the rendered page, not derived on paper:
+      K-A scrolls under, sheet **50 to 812, height 762**, list box **118 to 812, height 694** of which
+      **358** sits above the keyboard line, list bottom padding 336 so the last row can still be
+      scrolled clear. K-B shrinks above (what ships), sheet **6 to 476, height 470**, list box
+      **74 to 476, height 402**, all 402 above the keyboard. Both show 4 rows fully and cut 1.
+      The finding worth his attention, and the reason this was rendered instead of described: K-B
+      shows **more** list than K-A (402 against 358), because the sheet RISES as well as shrinks. The
+      real trade is not area, it is 6px of screen edge above the field plus a hard white cut through
+      a row (K-B) against a card top at 50 with the row sliding under the keys (K-A, and the
+      reference's own 62.3pt). K-A also needs a code change: the sheet top stops being reduced by
+      kbInset. Screenshots `_audits/screenshots/kbchooser-K{A,B}-F{A,B}.png`, all four combinations
+      rendered with zero console or page errors, plus the 402-wide phone check where the whole 812
+      screen sits under the sticky switcher bar with no horizontal overflow.
+- [ ] K5. Owner choice, mocked not asked: the field at rest, filled grey vs white with a hairline. Chooser BUILT and rendering. AWAITING HIS PICK. Recommendation on the page: filled grey, because the reference measures rgb(247,247,247) and our own LOCKFILE already says inputs are filled grey at rest, so this is the one axis where the reference and our rulebook agree and the live overlay follows neither.
+      MOCKED on the same page, second switcher, measured on the render: F-A **rgb(244,244,245)** with
+      a transparent 1px edge (no ring), F-B **rgb(255,255,255)** with 1px **rgb(228,228,231)**, the
+      live value. Box geometry identical in both (field 12,22,351x48, radius 16), so only the fill
+      moves. Neither option adds a focus ring or an ink border. RECOMMENDATION stated on the page and
+      here: F-A, because the reference measures rgb(247,247,247) AND our own input law already says
+      filled grey at rest (LOCKFILE 3.5 / V3-D-input-fill 2026-07-17), so this axis is the one place
+      the reference and our own rulebook agree and the live overlay follows neither. Still his call.
+      Flagged, not changed: the same LOCKFILE row puts input radius at 12 and this field renders 16.
+      Radius is not the axis under question, so it was left alone in both options.
 
 PIL-measured on the two focused shots: Airbnb card top edge **62.3pt**, ours **51.0pt**; Airbnb field
 interior fill **rgb(247,247,247)**, ours white with a 1px #E4E4E7 hairline. Note our own LOCKFILE
