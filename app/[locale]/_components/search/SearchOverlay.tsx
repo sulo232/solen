@@ -77,6 +77,12 @@ const EASE = [0.32, 0.72, 0, 1] as const;
 // and 95% at 177ms and is the shape he had called too fast; C sits between them at 50% in 90ms and
 // 95% in 233ms, so it starts immediately without finishing early.
 const MORPH_EASE = [0.36, 0.36, 0.1, 1] as const;
+// OPEN_EASE, 2026-08-03. Curve C above was picked from a side-by-side chooser on an abstract box and
+// it stays on the CLOSE, which he judged and which is not the complaint. On the OPEN it front-loads
+// so hard that even at 0.6s the box measured 83% grown at 200ms and finished at 296ms, against the
+// reference's 67% at 200ms still creeping at 600ms. Growth cannot occupy its own duration under a
+// hard decelerate. This is near-even with a soft landing, so the box is still visibly moving late.
+const OPEN_EASE = [0.42, 0.12, 0.4, 1] as const;
 // R4c (2026-08-02 round 3, owner "too snappy, it breaks scrolling"): was 120. The expand
 // reallocates real layout space, so while it runs the scroller's own box grows AND its top
 // edge climbs: measured over the old 120px, the scroller gained 382px of height and its top
@@ -873,7 +879,12 @@ export function SearchOverlay({
       // 0.367 with a front-loaded curve ours was geometrically finished by ~150ms and then sat
       // still for 580ms, which is the "already all opened, then it just pops up everything".
       duration: reduce ? 0 : open ? 0.6 : 0.333,
-      ease: MORPH_EASE,
+      // The OPEN gets an even curve, not MORPH_EASE. Measured after lengthening to 0.6s: the box was
+      // still 83% grown at 200ms and finished at 296ms, because curve C front-loads so hard it eats
+      // most of the duration in the first third. The reference is 67% grown at 200ms and still
+      // creeping at 600ms. An even curve is the only way the growth actually occupies its own time.
+      // Curve C stays on the CLOSE, which he judged and which is not the complaint.
+      ease: open && !reduce ? OPEN_EASE : MORPH_EASE,
       onComplete: () => { if (!cancelled && !open) setSheetOpen(false); },
     });
     // SPEED FIX 2026-08-03, owner: "the speed is nothing like it". Measured on his own recording by
