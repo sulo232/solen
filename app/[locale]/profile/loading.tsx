@@ -23,7 +23,7 @@ function GroupSkeleton({ rows }: { rows: number }) {
   return (
     <div className="mt-[26px]">
       <Skeleton height={12} width={70} rounded={4} className="mb-2 ml-1" />
-      <div className="divide-y divide-s-border rounded-[24px] border border-s-border bg-white">
+      <div className="bg-white">
         {Array.from({ length: rows }).map((_, i) => (
           <RowSkeleton key={i} />
         ))}
@@ -49,7 +49,7 @@ export default function Loading() {
       <GroupSkeleton rows={3} />
 
       {/* Einstellungen card: no group label above it, matches the real render */}
-      <div className="mt-[26px] divide-y divide-s-border rounded-[24px] border border-s-border bg-white">
+      <div className="mt-[26px] bg-white">
         <RowSkeleton />
       </div>
 

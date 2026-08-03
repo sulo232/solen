@@ -205,7 +205,14 @@ function GroupLabel({ children }: { children: React.ReactNode }) {
 }
 
 function RowCard({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <div className={cn("divide-y divide-s-border rounded-[24px] border border-s-border bg-white", className)}>{children}</div>;
+  // 2026-08-03, owner: "why the fuck is this still boxing?" He is right, and this is not a taste
+  // call, it is our OWN law being broken. LOCKFILE.md:543-560 names "an account hub" as a surface
+  // that gets NO container, and says "never both" a box and a per-row hairline. This line shipped
+  // both: `rounded-[24px] border border-s-border` AND `divide-y`. Airbnb's account rows
+  // independently measure the same way, 0 containers and one rule only at a group boundary
+  // (IMG_6900, _design-system/references/airbnb--profile-list.md).
+  // Rows now sit on white; the group boundary is carried by the group's own top border below.
+  return <div className={cn("bg-white", className)}>{children}</div>; // mockup-ok: LOCKFILE.md:543-560, account hub takes no container
 }
 
 function Row({
