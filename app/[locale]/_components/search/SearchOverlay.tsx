@@ -82,7 +82,7 @@ const MORPH_EASE = [0.36, 0.36, 0.1, 1] as const;
 // so hard that even at 0.6s the box measured 83% grown at 200ms and finished at 296ms, against the
 // reference's 67% at 200ms still creeping at 600ms. Growth cannot occupy its own duration under a
 // hard decelerate. This is near-even with a soft landing, so the box is still visibly moving late.
-const OPEN_EASE = [0.42, 0.12, 0.4, 1] as const;
+const OPEN_EASE = [0.3, 0.28, 0.6, 0.96] as const;
 // R4c (2026-08-02 round 3, owner "too snappy, it breaks scrolling"): was 120. The expand
 // reallocates real layout space, so while it runs the scroller's own box grows AND its top
 // edge climbs: measured over the old 120px, the scroller gained 382px of height and its top
