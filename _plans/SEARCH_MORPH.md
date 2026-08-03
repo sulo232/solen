@@ -924,5 +924,19 @@ at +150ms and only lands fully opaque around +400ms. So the shape is right now (
 first frame, never blank, rising with the container) but our fade FINISHES too early, which will read
 as the content snapping in while the box is still moving.
 
-- [ ] G3. Stretch the content fade so it lands with the container, not at 44% of it. It should still
+- [x] G3. verified: content now rides its own 0.57s progress instead of the container. Traced on /de at 375x812: 0.007 at 31ms, 0.113 at 88ms, 0.45 when the box lands at 156ms, 0.789 at 247ms, 1.000 at 564ms. Before this change it was 1.000 at 162ms. Stretch the content fade so it lands with the container, not at 44% of it.
       be visibly translucent at 150ms the way the reference is.
+
+## THE MEASUREMENT THAT FINALLY WORKED (2026-08-03)
+
+Two earlier attempts read the reference wrong because they sampled FIXED horizontal bands in screen
+space while the card was moving through them. The method that works: detect the card's own rect in
+every frame (it is the widest near-white run), then sample ink INSIDE that moving box.
+
+Reference, countable ink inside its own card, 60fps, t relative to the press:
+`+250ms 0.0003 · +400ms 0.0063 · +500ms 0.0147 · +550ms 0.0216 · +750ms 0.0345 (settled)`
+while the CONTAINER stops moving at about +550ms. So the content keeps rising for roughly 200ms after
+the box has landed, and the whole fade is about 1.5x the container's duration.
+
+Ours before G3: content full at 162ms of a 367ms open, about 3.5x too fast. That is the speed
+complaint, and it is the only thing left that the owner had not already named twice.

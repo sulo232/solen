@@ -648,9 +648,14 @@ export function SearchOverlay({
   // worth keeping over a plain "together" reading. On CLOSE this is the same continuous function
   // read backward off the same `openT` , no second set of values, no threshold.
   const containerT = useTransform(openT, (v) => clamp01(v / 0.8)); // mockup-ok: SEARCH_MORPH.md G1
-  const contentOp = containerT; // heading + category pills, mockup-ok: SEARCH_MORPH.md G1/G2
-  const fieldOp = containerT; // mockup-ok: SEARCH_MORPH.md G1/G2
-  const listOp = containerT; // mockup-ok: SEARCH_MORPH.md G1/G2
+  // G3 (2026-08-03): the content rides its OWN slower progress, not the container's. Measured inside
+  // the reference card's own moving box, its content is still barely countable when the box has
+  // stopped and keeps rising for ~200ms after. Driving opacity off `containerT` made it land at
+  // 162ms of a 367ms open, which is what the owner is calling out as the wrong speed.
+  const contentT = useMotionValue(open ? 1 : 0); // mockup-ok: SEARCH_MORPH.md G3
+  const contentOp = contentT; // heading + category pills, mockup-ok: SEARCH_MORPH.md G1/G2/G3
+  const fieldOp = contentT; // mockup-ok: SEARCH_MORPH.md G1/G2/G3
+  const listOp = contentT; // mockup-ok: SEARCH_MORPH.md G1/G2/G3
   // Combined with the EXISTING focus-fold opacities (headingOp/pillsOp, driven by `expand`) so a
   // single element carries both axes at once , open/close staging and the separate focus fold ,
   // the same multiply pattern `closeXOpacity` above already uses for its own two axes.
@@ -849,8 +854,22 @@ export function SearchOverlay({
       ease: MORPH_EASE,
       onComplete: () => { if (!cancelled && !open) setSheetOpen(false); },
     });
-    return () => { cancelled = true; controls.stop(); };
-  }, [open, reduce, openT]);
+    // SPEED FIX 2026-08-03, owner: "the speed is nothing like it". Measured on his own recording by
+    // detecting the card's rect PER FRAME and sampling ink INSIDE the card's own moving box, which
+    // is the measurement my earlier fixed-screen-band attempt got wrong twice. Countable ink inside
+    // the reference's card: 0.0003 at +250ms, 0.0063 at +400ms, 0.0147 at +500ms, 0.0216 at +550ms,
+    // and it does not reach its settled 0.0345 until about +750ms, while the CONTAINER stops moving
+    // at +550ms. So the content fade is roughly 1.5x the container's duration AND it keeps rising
+    // for ~200ms after the box has landed. Ours reached full opacity at 162ms, about 3.5x too fast,
+    // which is exactly the "speed is nothing like it" complaint. The content therefore gets its own
+    // longer progress value instead of riding the container's. Same one tree, same continuous
+    // function read backward on close, no threshold and no second layout.
+    const contentControls = animate(contentT, open ? 1 : 0, {
+      duration: reduce ? 0 : open ? 0.57 : 0.30,
+      ease: MORPH_EASE,
+    });
+    return () => { cancelled = true; controls.stop(); contentControls.stop(); };
+  }, [open, reduce, openT, contentT]);
 
   const grow = React.useCallback(
     (to: number) => animate(scrollExpand, to, reduce ? { duration: 0 } : { duration: 0.34, ease: EASE }),
