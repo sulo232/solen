@@ -782,3 +782,45 @@ He flipped the chooser and answered "k a f b".
   bottom padding (336px measured), not just the one named in the brief, because the city list is
   exactly what his IMG_6914 and IMG_6916 showed clipped and the Wo? step is the one whose own input
   raises that keyboard.
+
+## THE FRAME-BY-FRAME HE ASKED FOR, THREE TIMES, AND I FINALLY DID IT (2026-08-03)
+
+Owner: "how Airbnb does it is completely different from how you're doing it. And I literally gave you
+a screen recording of it, and I told you to look frame by frame, and you didn't do that." He is
+right. Every previous pass measured the container's START RECT, END RECT and DURATION. None of them
+measured WHAT MOVES AND WHEN. That is the whole difference and it is why the open still reads wrong.
+
+Extracted his recording at **120fps, full 1206x2622**, over the open (0.80s to 1.50s), and tracked
+the card's top edge plus the ink density of four horizontal bands (the tab row, the heading, the
+field, the first list rows). Points, 402pt device.
+
+| t | card top | heading ink | field ink | list ink |
+|---|---|---|---|---|
+| 0ms | 64.0 | 0.002 | 0.037 | 0.148 |
+| 100ms | 69.3 | 0.000 | 0.035 | 0.142 |
+| 150ms | 88.7 | 0.000 | 0.000 | 0.029 |
+| **200ms** | **115.0** | **0.000** | **0.000** | **0.000** |
+| **250ms** | **129.0** | **0.000** | **0.000** | **0.000** |
+| 300ms | 137.3 | 0.001 | 0.000 | 0.000 |
+| 350ms | 142.0 | 0.002 | 0.023 | 0.007 |
+| 450ms | 145.3 | 0.006 | 0.025 | 0.020 |
+| 650ms | 146.3 | 0.007 | 0.029 | 0.037 |
+
+**Airbnb's open is THREE STAGED PHASES, not one morph:**
+1. **0 to 150ms, the old content leaves.** The pill's own label and the page behind it fade out while
+   the container only just begins to move.
+2. **150 to 300ms, an EMPTY container travels.** Every ink band reads 0.000 at 200ms and 250ms. What
+   is on screen is a blank white card sliding DOWN into position. Nothing is legible.
+3. **300 to 650ms+, the content fades UP into the settled container**, staggered, heading first, then
+   the field, then the list, and still climbing at 650ms, long after the container stopped at ~400ms.
+
+Two structural facts we got wrong:
+- **The card's top moves DOWN 82pt** (64.0 to 146.3) during the open. Ours moves 14px. The tab row
+  fades in ABOVE the card, which is what pushes it down.
+- **The content is NOT present during the travel.** Ours renders the full list from frame one and
+  carries it along, which is exactly the owner's "it's all already over there instead of everything
+  fading up".
+
+- [ ] F1. Rebuild the open as these three phases: content out, empty container travels down 82pt,
+      content fades up staggered into the settled container.
+- [ ] F2. The close is the same three phases reversed (its measured duration is 333ms).
