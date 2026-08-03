@@ -539,13 +539,15 @@ export function SearchOverlay({
     [originRect, viewport.w],
   );
   const openT = useMotionValue(open ? 1 : 0); // mockup-ok: SEARCH_MORPH.md A7/A8/A9
-  // R3 (2026-08-02 round 3): the keyboard used to be taken out of the sheet's HEIGHT while its
-  // top stayed pinned, and every stolen pixel came out of the one `flex-1` child , the
-  // suggestion/city list (measured: 312px -> 20px on the service step, 360px -> 24px on the
-  // Standort step, i.e. the step whose whole job is typing a city became a 24px slit). The
-  // sheet now RISES by the keyboard inset instead, down to the safe-area floor, so the lost
-  // height is recovered from the top rather than from the list. One function, used by both
-  // `cropTop` and `sheetHeight`, so top and bottom can never disagree.
+  // K-A (2026-08-03, owner picked K-A over K-B at public/_mockups/search-keyboard/index.html,
+  // SEARCH_MORPH.md K4): R3 used to RISE the sheet by the keyboard inset so it shrank to sit
+  // above the keys, which cut whatever row sat on the keyboard line against a hard white edge
+  // (IMG_6909/IMG_6914, K2). K-A keeps the sheet at the height it would have with no keyboard
+  // and lets it run behind the keyboard instead, so a row at that line slides under the keys
+  // rather than terminating on an edge. `topFor` no longer subtracts `kbInset`; only the
+  // suggestion scroller's own bottom padding (below) reads it now, so the last row can still be
+  // scrolled clear of the keys. One function, used by both `cropTop` and `sheetHeight`, so top
+  // and bottom can never disagree.
   const minTop = Math.max(safeTop + 6, 6);
   const topFor = React.useCallback(
     (oT: number, ex: number) => {
@@ -554,9 +556,9 @@ export function SearchOverlay({
         : RESTING_TOP + (focusedTop - RESTING_TOP) * ex;
       // K2: `+ vvOffset` puts the sheet's top where the user actually sees it. It is 0 in every
       // state without a visual-viewport scroll, so this is identity everywhere else.
-      return Math.max(minTop, base - kbInset) + vvOffset;
+      return Math.max(minTop, base) + vvOffset;
     },
-    [origin, focusedTop, minTop, kbInset, vvOffset],
+    [origin, focusedTop, minTop, vvOffset],
   );
   const cropTop = useTransform([openT, expand], (latest) => { // mockup-ok: SEARCH_MORPH.md A7/A8/A9
     const [oT, ex] = latest as [number, number];
@@ -575,10 +577,11 @@ export function SearchOverlay({
   // one continuous transform, no threshold swap.
   const sheetHeight = useTransform([openT, expand], (latest) => { // mockup-ok: SEARCH_MORPH.md C6
     const [oT, ex] = latest as [number, number];
-    // R3: the usable bottom edge is the keyboard's top edge when it is up, the viewport's own
-    // bottom when it is not. Height is always "bottom minus the top `topFor` just returned",
-    // so the sheet's bottom edge lands exactly there in every state.
-    const bottom = viewport.h - kbInset;
+    // K-A: the usable bottom edge is always the viewport's own bottom, keyboard up or not, so
+    // the sheet is never shrunk to sit above the keys (that was K-B, rejected at the K4
+    // chooser). Height is always "bottom minus the top `topFor` just returned", so the sheet's
+    // bottom edge lands exactly there in every state.
+    const bottom = viewport.h;
     if (oT < 1) {
       const restingHeight = Math.max(bottom - topFor(1, ex), 200);
       return origin.height + (restingHeight - origin.height) * oT;
@@ -1355,8 +1358,15 @@ export function SearchOverlay({
                 {/* C6 (round 2, "bottom is cut off"): the footer/steps rows collapse away to 0
                     height in the focused/expanded state (footerH/stepsH above), so once
                     focused this scroller IS the bottom of the sheet , its own `pb-4` (16px)
-                    didn't clear the safe-area inset on a device with a home indicator. */}
-                <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-[max(16px,env(safe-area-inset-bottom))] pt-1"
+                    didn't clear the safe-area inset on a device with a home indicator.
+                    K-A (owner-picked at public/_mockups/search-keyboard/index.html, SEARCH_MORPH.md
+                    K4/K2): the sheet no longer shrinks above the keyboard (above), so a row at the
+                    keyboard line now runs BEHIND the keys instead of stopping on a hard edge. The
+                    scroller's own bottom padding becomes `kbInset` while the keyboard is up so the
+                    last row can still be scrolled clear of the keys; at kbInset 0 this is
+                    byte-identical to the old fixed safe-area padding. */}
+                <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pt-1"
+                  style={{ paddingBottom: kbInset > 0 ? `${kbInset}px` : "max(16px, env(safe-area-inset-bottom))" }} /* mockup-ok: SEARCH_MORPH.md K4 */
                   onScroll={(e) => { scrollExpand.set(clamp01(e.currentTarget.scrollTop / EXPAND_DIST)); }}>
                   {/* A5 (2026-08-02 REOPENED): typing (>=2 chars) crossfades the suggestion
                       content instead of a hard switch , keyed on the idle/typing BOOLEAN (not
@@ -1405,7 +1415,12 @@ export function SearchOverlay({
                         </button>
                       )}
                     </div>
-                    <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">{cityList()}</div>
+                    {/* K4 follow-up (2026-08-03): the city list needs the SAME keyboard inset as the
+                        service list above. Without it the last city cannot be scrolled clear of the
+                        keys, which is exactly what the owner's IMG_6914 and IMG_6916 show, and the
+                        Wo? step is the one step whose own input RAISES that keyboard. */}
+                    <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
+                      style={{ paddingBottom: kbInset > 0 ? `${kbInset}px` : undefined }} /* mockup-ok: SEARCH_MORPH.md K4 */>{cityList()}</div>
               </motion.div>
               <motion.div inert={activeStep === "location"} style={{ opacity: locFaceOp, pointerEvents: locFaceHit }} className="absolute inset-x-0 top-0"> {/* S7 */}
                 {collapsedFace("location")}
@@ -1442,7 +1457,11 @@ export function SearchOverlay({
                         sized slot , with the keyboard up the sheet can be short enough that a
                         6-row month plus the time chips would otherwise be clipped by the card's
                         own overflow-hidden with no way to reach them. */}
-                    <div ref={dateScrollRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+                    {/* K4 follow-up (2026-08-03): same keyboard inset as the other two scrollers, so
+                        the last calendar row and the time chips can be scrolled clear of the keys if
+                        a keyboard is up when this step is reached. */}
+                    <div ref={dateScrollRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
+                      style={{ paddingBottom: kbInset > 0 ? `${kbInset}px` : undefined }} /* mockup-ok: SEARCH_MORPH.md K4 */>
                       <AnimatePresence mode="wait" initial={false}>
                         {dateTab === "daten" ? (
                           <motion.div key="daten" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.18 }}>

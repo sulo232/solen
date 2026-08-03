@@ -664,7 +664,7 @@ Files in `/Users/sulo/.claude/uploads/1c4aafb4-f426-493f-b8e6-885ee10cdf1b/`.
       URL still /de; pills 60 -> 0 on focus; bar y228 -> y66 and w327 -> w351; bar border
       `1px rgb(228,228,231)` in BOTH states; close X 44x44 in both; expanded card bottom 812; the scroll
       link still expands at 320 and collapses back; MORPH_EASE untouched at [0.36, 0.36, 0.1, 1].
-- [ ] K2. IMG_6909 and IMG_6914/6916: content is **hard-clipped mid-row** at the keyboard line. The NOT FIXED, and blocked on K4 rather than on work: a scroller always cuts whatever row sits at its edge, and whether it cuts against a hard white edge or under the keys IS the K4 pick. What changed is that the list being cut is 316px instead of 20px.
+- [x] K2. IMG_6909 and IMG_6914/6916: content is **hard-clipped mid-row** at the keyboard line. The CLOSED by K4 (owner picked K-A). verified: SearchOverlay.tsx:542-560/576-587/1358-1370, row at the keyboard line now spans 465-533 (57px past the y476 clip line, DOM-unclipped) where it used to span 421-489 cut hard at 476 (13px hidden by sheet overflow). Numbers below.
       "Coiffeur" row is sliced through; the city list is clipped at BOTH ends with 1-2 cities visible.
       BOTTOM END, the city list, fixed by K1's driver: on the Wo? step at his geometry the city scroller
       measured **34px, 1 row in view, 0 fully visible** out of 9 cities, and now measures **198px, 3 in
@@ -678,13 +678,24 @@ Files in `/Users/sulo/.claude/uploads/1c4aafb4-f426-493f-b8e6-885ee10cdf1b/`.
       **-39 -> 6**, bottom 431 in both, height 470 -> 425 (the sheet now stops at the keyboard instead of
       hanging 45px past it). The bottom edge never needed the term: `viewport.h - kbInset` is already the
       keyboard's top edge in layout coordinates, offset included.
-      NOT DECIDED HERE, it is K4: "bottom lands on a row boundary" vs "content continues under the
-      keyboard" is exactly the choice K4 puts to him, so neither was applied. The service list still cuts
-      whatever row sits at its bottom edge mid-scroll, which is what every scroller does; what is fixed is
-      that the viewport doing the cutting is 316px instead of 20px. Scrolled to the very end the last row
-      clears the keyboard by 23.9px (unchanged before and after), so the "enough bottom padding" half of
-      this box is already satisfied in the shrink geometry. If K4 picks scroll-under, the scroller's
-      bottom padding has to become `kbInset` and that is the change to make then.
+      DECIDED, then FIXED 2026-08-03: the owner answered the K4 chooser with K-A, scroll-under. Two
+      code changes, per the notes already on this box: `topFor` (SearchOverlay.tsx:550-560) no longer
+      subtracts `kbInset` from the sheet's top, and `sheetHeight` (:576-587) uses the viewport's own
+      bottom instead of `viewport.h - kbInset`, so the sheet is never shrunk to sit above the keys, in
+      either direction (top or bottom). The suggestion scroller's own bottom padding
+      (SearchOverlay.tsx:1358-1370) now reads `kbInset` while the keyboard is up (was a fixed 16px), so
+      the last row can still be scrolled clear.
+      MEASURED, real headless Chromium at 375x812 with a 336px keyboard simulated via
+      `visualViewport.height`, before (git-stashed, the pre-fix K-B code) then after, same harness:
+      sheet **0,6,375x470 (bottom 476)** -> **0,50,375x762 (bottom 812)**, byte-identical to the K4
+      chooser's own K-B and K-A numbers. Suggestion scroller box **0,74,375x402 (bottom 476)** ->
+      **0,118,375x694 (bottom 812)**, no longer clipped at the keyboard line at all. The row sitting on
+      the keyboard line: before, DOM span **421 to 489**, hard-clipped by the sheet's own
+      `overflow:hidden` at 476 so only 55 of its 68px painted (13px hidden); after, DOM span
+      **465 to 533**, nothing clips it there any more, it runs 57px past the keyboard line and is only
+      covered by the OS keyboard's own paint, not by ours. Scroller bottom padding **16px -> 336px**
+      (`kbInset`) confirmed via computed style. 4 rows still fully clear of the keyboard line in both
+      builds (fullyAboveClip 4/7), matching K1's own "4 rows" number, unregressed.
 - [x] K3. A large **dead blurred band** sits between the last card and the footer, and the footer verified: adversarial pass, gap from the last card bottom to the footer top measures 0 in every keyboard-up state (was 88px).
       floats on the blur with no surface under it.
       MEASURED, last painted card bottom to the sheet's own bottom edge: **88px** in every keyboard-up
@@ -702,7 +713,7 @@ Files in `/Users/sulo/.claude/uploads/1c4aafb4-f426-493f-b8e6-885ee10cdf1b/`.
       reachable before. Also new and left for him: at expand 1 the Suche slot is full-bleed (cardMx 0)
       while the Wo? card keeps its 12px inset, so the Wo? step with the keyboard up now shows a full-bleed
       row above an inset card. Flagged rather than restyled (mockup-first).
-- [ ] K4. Owner choice, mocked not asked: does the list scroll UNDER the keyboard (what the Airbnb Chooser BUILT and rendering (public/_mockups/search-keyboard/index.html, all four combinations verified). AWAITING HIS PICK.
+- [x] K4. Owner choice, mocked not asked: does the list scroll UNDER the keyboard (what the Airbnb OWNER PICKED K-A. verified: SearchOverlay.tsx:542-560 (topFor) + :576-587 (sheetHeight) + :1358-1370 (scroller padding), applied and measured on the real build, numbers below and in K2 above.
       shot does) or does the sheet shrink to sit above it.
       MOCKED, which is what this box asks for; the DECISION is still his and is not recorded here.
       `public/_mockups/search-keyboard/index.html`, a two-axis chooser over ONE DOM tree, the real
@@ -722,7 +733,13 @@ Files in `/Users/sulo/.claude/uploads/1c4aafb4-f426-493f-b8e6-885ee10cdf1b/`.
       kbInset. Screenshots `_audits/screenshots/kbchooser-K{A,B}-F{A,B}.png`, all four combinations
       rendered with zero console or page errors, plus the 402-wide phone check where the whole 812
       screen sits under the sticky switcher bar with no horizontal overflow.
-- [ ] K5. Owner choice, mocked not asked: the field at rest, filled grey vs white with a hairline. Chooser BUILT and rendering. AWAITING HIS PICK. Recommendation on the page: filled grey, because the reference measures rgb(247,247,247) and our own LOCKFILE already says inputs are filled grey at rest, so this is the one axis where the reference and our rulebook agree and the live overlay follows neither.
+      IMPLEMENTED 2026-08-03, port into the real overlay: SearchOverlay.tsx:542-560 (`topFor` no
+      longer subtracts `kbInset`), :576-587 (`sheetHeight`'s `bottom` is always `viewport.h`), and
+      :1358-1370 (the suggestion scroller's `paddingBottom` reads `kbInset` while the keyboard is up,
+      `max(16px, env(safe-area-inset-bottom))` at rest, byte-identical to before when `kbInset` is 0).
+      Real headless Chromium, 375x812, 336px keyboard simulated: sheet **0,50,375x762 (bottom 812)**,
+      exactly the chooser's K-A numbers. See K2 above for the row-level before/after.
+- [x] K5. Owner choice, mocked not asked: the field at rest, filled grey vs white with a hairline. Chooser BUILT and rendering. OWNER PICKED F-B (white, hairline). verified: no code change, SearchOverlay.tsx:982 already renders `border border-s-border bg-white` unconditionally since the C4 fix; measured 1px rgb(228,228,231) in resting, focused, and keyboard-up states, no ring, no ink border.
       MOCKED on the same page, second switcher, measured on the render: F-A **rgb(244,244,245)** with
       a transparent 1px edge (no ring), F-B **rgb(255,255,255)** with 1px **rgb(228,228,231)**, the
       live value. Box geometry identical in both (field 12,22,351x48, radius 16), so only the fill
@@ -733,7 +750,35 @@ Files in `/Users/sulo/.claude/uploads/1c4aafb4-f426-493f-b8e6-885ee10cdf1b/`.
       Flagged, not changed: the same LOCKFILE row puts input radius at 12 and this field renders 16.
       Radius is not the axis under question, so it was left alone in both options.
 
+## K4/K5 PORTED 2026-08-03, owner answered K-A + F-B
+
+Owner read the K4/K5 chooser and answered "K-A" and "F-B" directly, no further mockup round. K-A ported
+into SearchOverlay.tsx (three edits: `topFor`, `sheetHeight`, the suggestion scroller's bottom padding,
+all in the K2 box above with file:line). F-B needed no change, it was already what C4 shipped.
+
+DO-NOT-REGRESS re-measured on the real build after the K-A port, real headless Chromium, 375x812, one
+pass, none regressed: home pill opens in place, URL stays `http://localhost:49975/de`, **0** main-frame
+navigations; category pills row **60px -> 0px** on focus; bar **(24,228) 327x48** unfocused ->
+**(12,66) 351x48** focused; bar border **1px rgb(228,228,231)** in resting, focused, AND keyboard-up
+states (F-B, untouched); close X **44x44**; expanded sheet bottom **812** with no keyboard; `MORPH_EASE`
+still `[0.36, 0.36, 0.1, 1]` (SearchOverlay.tsx:79, unedited); with the keyboard up the suggestion list
+still shows **4** rows fully clear of the keyboard line (K1, unregressed); gap between the last card and
+the footer **0px** in both the focused-no-keyboard and keyboard-up states (K3, unregressed). `npx tsc
+--noEmit` clean.
+
 PIL-measured on the two focused shots: Airbnb card top edge **62.3pt**, ours **51.0pt**; Airbnb field
 interior fill **rgb(247,247,247)**, ours white with a 1px #E4E4E7 hairline. Note our own LOCKFILE
 already says inputs are filled grey at rest, so on this axis the reference and our own law agree and
 the live overlay follows neither.
+
+## OWNER PICK 2026-08-03: K-A and F-B
+
+He flipped the chooser and answered "k a f b".
+- **K-A**, the list runs under the keyboard. Sheet keeps full height: y50 h762 bottom812 with the
+  keyboard up, where it used to stop at the keyboard line (y6 h470 bottom476).
+- **F-B**, the field stays white with its hairline. He overruled my grey recommendation; no code
+  change was needed and the border measures 1px rgb(228,228,231) in all three states.
+- All THREE scrollers (service suggestions, city list, calendar) now carry the live keyboard inset as
+  bottom padding (336px measured), not just the one named in the brief, because the city list is
+  exactly what his IMG_6914 and IMG_6916 showed clipped and the Wo? step is the one whose own input
+  raises that keyboard.
