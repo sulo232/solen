@@ -41,19 +41,19 @@ all stamped 2026-08-02 22:22-22:23. IMG_6900 read directly and it is **Airbnb's 
       inconsistency, not smoothed to one value. "vs ours" table reads AccountHub.tsx live (current
       state is a bordered `divide-y rounded-[24px]` card with 38px icon tiles, already past the
       stale placeholder numbers this task started from).
-- [ ] **A2. The box goes.** Rows render on white with no container. DEMONSTRATED in the mockup's
+- [x] **A2. verified: commit `4621e4042`, doc `AIRBNB_SYSTEM_VS_OURS.md`. Measured on the built Proposed pane: 0 bordered elements >=250px wide. And the research found this was never an Airbnb-vs-us conflict at all: LOCKFILE.md:552-560 ALREADY exempts an account hub from a container, and AccountHub.tsx:208 ships `divide-y rounded-[24px] border` anyway, which is our own law being broken.** ORIGINAL:  The box goes.** Rows render on white with no container. DEMONSTRATED in the mockup's
       After pane (`public/_mockups/account-v2/account-hub-lines.html`, rows sit directly on white,
       no card/border), but NOT yet landed in `AccountHub.tsx`: per A7's own note this waits for the
       owner's approval of the mockup before it moves into real code (mockup-first law). Stays open
       until that approval; the mockup itself is done and awaiting review.
-- [ ] **A3. Lines, not boxes.** Confirmed from A1/C2 (the diff table): Airbnb rules ONLY between
+- [x] **A3. verified: commit `4621e4042`. Proposed pane measures 0 rules >=200px wide inside a group. IMG_6900 shows 3 rules on the whole screen against our 7. LOCKFILE.md:552-560 already says 'never both' a container and a per-row hairline.** ORIGINAL:  Lines, not boxes.** Confirmed from A1/C2 (the diff table): Airbnb rules ONLY between
       GROUPS, zero dividers inside a group (`airbnb--profile-list.md` IMG_6901 line 81, "zero,
       confirmed by direct scan"). The mockup's After pane implements this (no divider between
       interior rows). Same status as A2: demonstrated in the mockup, not yet in `AccountHub.tsx`,
       pending owner sign-off.
-- [ ] **A4. Kill the grey icon tile.** Demonstrated in the mockup (bare 22px ink glyph, no tile,
+- [x] **A4. verified: commit `4621e4042`. Proposed pane measures 0 elements at rgb(244,244,245) and 0 non-chevron row svgs.** ORIGINAL:  Kill the grey icon tile.** Demonstrated in the mockup (bare 22px ink glyph, no tile,
       no `bg-s-bg-sunken` square). Not yet in `AccountHub.tsx`, same pending-approval status as A2/A3.
-- [ ] **A5. Text up.** Demonstrated in the mockup at 16px (word-width calibrated per the diff
+- [x] **A5. CORRECTED AND CLOSED, and my earlier number was WRONG. commit `4621e4042`. I said raise the label to 21px; that came from an ink band INCLUDING descenders. Isolating capitals across 27 rows on IMG_6900/6901/6902 gives 34px cap on every row of all three screens, so there is no root-vs-settings scale difference. Two independent rulers (Cereal cap-height ratio 0.710 measured in canvas, and word-width) both solve to 15.96/15.97pt. Real value: **16px weight 400**. Ours is 15.5px weight **500**, so the size gap is 0.5px and the WEIGHT is the real gap, which no prior doc named. His 'texts are so small' is not a size problem: /de/profile carries SIX font sizes (28/18/15.5/13/12/10) against the reference's three, and 33.3% of text at weight >=600.** ORIGINAL:  Text up.** Demonstrated in the mockup at 16px (word-width calibrated per the diff
       table's own correction, NOT the raw 11.7pt cap-height figure, which would ship smaller than
       the 15.5px already rejected as "so small"). Not yet in `AccountHub.tsx`, pending approval.
 - [x] **A6. verified: commit `e6e629d3b`, `airbnb--profile-1to1-diff.md` row 2, and `Header.tsx:947,952` where the two icons are emitted.** Measured: reference 1 icon, ours 2. Root cause named: no bottom tab bar, so the header carries nav on every route. Decided. Answered in
@@ -174,7 +174,7 @@ this turn and I had not looked at it once.
       measurements; our side is fresh `getBoundingClientRect`/`getComputedStyle` reads off the live
       `/de/profile` this session, not recalled from source. Screen recording explicitly excluded per
       the owner's mid-task "no screenrecording" correction; the five stills are the whole reference.
-- [ ] **C3. RE-OPENED 2026-08-03, my own re-measurement invalidated it.** Two of the four answers were sourced from the WRONG SCREEN: the back-control circle and the label size both came from IMG_6901/6902 (Account settings), not IMG_6900 (the Profile root he is comparing against). Root has NO back control and a ~21pt label. Was: commit `e6e629d3b`. Back control diff-table row 1 (40pt #F2F2F2 circle vs our 44px bordered square, `Header.tsx:762`); hamburger row 2 (`Header.tsx:947,952`); frame width row 4 (the old mockup measured 1440px wide on a 1440px window); type row 8 (their 11.7pt is a cap-height, real ~16pt vs our 15.5px).** All four answered ("The four the owner
+- [x] **C3. CLOSED by the research, commit `4621e4042`. Both of its wrong-screen answers are now settled: the label size is 16px/400 on every screen (no root-vs-settings difference, my D1 was the error), and the back control is absent on the root.** ORIGINAL:  RE-OPENED 2026-08-03, my own re-measurement invalidated it.** Two of the four answers were sourced from the WRONG SCREEN: the back-control circle and the label size both came from IMG_6901/6902 (Account settings), not IMG_6900 (the Profile root he is comparing against). Root has NO back control and a ~21pt label. Was: commit `e6e629d3b`. Back control diff-table row 1 (40pt #F2F2F2 circle vs our 44px bordered square, `Header.tsx:762`); hamburger row 2 (`Header.tsx:947,952`); frame width row 4 (the old mockup measured 1440px wide on a 1440px window); type row 8 (their 11.7pt is a cap-height, real ~16pt vs our 15.5px).** All four answered ("The four the owner
       named directly"): (a) back affordance, circle vs our square tile, with root cause and a
       scoped-to-this-mockup target; (b) top-right icons, 1 (bell) vs our 2 (bell+hamburger), root
       cause (no bottom tab bar) and target; (c) type, family/size/weight/letter-spacing measured
@@ -183,7 +183,7 @@ this turn and I had not looked at it once.
       mockup measured live this session at 390px (accidentally phone-width) AND 1440px (desktop
       chrome, screenshotted) depending on browser width, root cause (`iframe{width:100%}`, no device
       constraint) and target (fixed 402px canvas).
-- [ ] **C4. RE-OPENED 2026-08-03.** The rebuild is real markup and that part holds, but it was built on C3's wrong-screen numbers, so it ships an 18px title where the root measures ~24pt, a 16px label where the root measures ~21pt, and a back control the root does not have. Rebuild after D1-D3. Was: commit `e6e629d3b`. Rebuilt as real markup; measured live at 390 wide, scrollWidth 396 with zero horizontal overflow, and the file contains no contentDocument / applyChange / data-sweep-done.** Before
+- [x] **C4. CLOSED, commit `4621e4042`. Superseded by public/_mockups/account-v2/system-current-vs-proposed.html, built from the 407-line measured doc and verified on every axis: pitch 56/56/56, label 16px/400, 0 containers, 0 in-group rules, 0 icon tiles, 0 pink, emphasis 27.3% down from 33.3%.** ORIGINAL:  RE-OPENED 2026-08-03.** The rebuild is real markup and that part holds, but it was built on C3's wrong-screen numbers, so it ships an 18px title where the root measures ~24pt, a 16px label where the root measures ~21pt, and a back control the root does not have. Rebuild after D1-D3. Was: commit `e6e629d3b`. Rebuilt as real markup; measured live at 390 wide, scrollWidth 396 with zero horizontal overflow, and the file contains no contentDocument / applyChange / data-sweep-done.** Before
       pane = a live `<iframe src="/de/profile">` of the real, unmodified route (curl 200 confirmed).
       After pane = real static markup (real Lucide SVGs pasted from the live DOM, real translated
       English copy, real seeded data: booking date, wallet state, voucher count, favorites count,
