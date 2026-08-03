@@ -84,7 +84,7 @@ def verdict(reply, ask):
     """The hits this gate would block on. Pure, so the self-test drives it directly.
 
     Extracted 2026-08-03 (preference audit) without changing behaviour: this gate had no
-    --selftest, which is why it sat orphan , the installer refuses to arm anything unproven
+    --selftest, which is why it sat orphan for eight days , nothing may be armed unproven
     (rule 12.5). Same three conditions main() always applied, in the same order.
     """
     if not reply:

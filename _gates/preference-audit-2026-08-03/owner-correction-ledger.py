@@ -65,6 +65,7 @@ WINDOW_DAYS = 14      # counted toward escalation
 PRUNE_DAYS = 30       # retained on disk
 DETECTOR = os.path.expanduser("~/.claude/hooks/repeat-mistake-detector.py")
 
+
 # ONE vocabulary. Importing the detector's THEMES rather than copying them is the point: a theme
 # added there gains owner-side eyes for free, and the two halves can never drift apart.
 def load_themes():
@@ -256,7 +257,6 @@ if __name__ == "__main__":
         ok = bad = 0
         for label, text, expect in CASES:
             if text is None:
-                got_ok = True                     # asserted structurally below
                 payload = json.dumps({"prompt": "you keep giving me a dead link", "session_id": "x"})
                 import subprocess, tempfile
                 sandbox_ledger = os.path.join(tempfile.mkdtemp(), "ledger.json")
@@ -294,7 +294,8 @@ if __name__ == "__main__":
                 for g in got:
                     per[g] = per.get(g, 0) + 1
         print("corpus messages: %d" % len(msgs))
-        print("flagged as owner corrections: %d (%.0f%%)" % (len(hits), 100 * len(hits) / max(1, len(msgs))))
+        print("flagged as owner corrections: %d (%.0f%%)"
+              % (len(hits), 100 * len(hits) / max(1, len(msgs))))
         print("\nthemes by owner-side count:")
         for k, v in sorted(per.items(), key=lambda kv: -kv[1]):
             print("  %4d  %s" % (v, k))

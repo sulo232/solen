@@ -58,21 +58,28 @@ TTL = 1800
 MEMBER_TIMEOUT = 25          # seconds per member; the health member curls a live URL
 POOL = 10
 
-# The link/preview HANDOFF family. fullbleed-external-link-gate is deliberately NOT here: it is
-# about a UI anchor wrapping a whole surface, a different class that happens to share the word.
+# The link/preview HANDOFF family, each entry "<file>[ <args>]" exactly as settings.json invoked it.
+# The args matter: tunnel-kill-relink-gate is registered TWICE with different modes, --pre on
+# PreToolUse and --stop on Stop, and only the --stop half belongs to this family. Dropping the arg
+# would silently run the wrong mode, which is the kind of quiet breakage a consolidation must not
+# introduce. fullbleed-external-link-gate is deliberately NOT here: it guards a UI anchor wrapping
+# a whole surface, a different class that happens to share the word "link".
 MEMBERS = [
-    "always-give-link-gate.py",      # a visual turn must hand over a link at all
-    "link-gate.py",                  # clickable markdown, not bare, not dead, not blank
-    "lan-ip-preview-gate.py",        # never a LAN IP, it does not reach his phone
-    "cloudflare-link-gate.py",       # never localhost
-    "no-localhost-handoff-gate.py",  # never localhost (sibling of the above)
-    "link-verified-gate.py",         # the link must have been OPENED this turn
-    "link-load-succeeded-gate.py",   # it must have RESPONDED, not merely been tried
-    "promised-visual-health-gate.py",# healthy end to end at send time, not just DNS
-    "link-relevance-gate.py",        # the RIGHT link, not any trycloudflare URL
-    "preview-link-branch-gate.py",   # name the branch/worktree the link serves
-    "tunnel-kill-relink-gate.py",    # a killed tunnel must be relinked, not re-handed
+    "always-give-link-gate.py",         # a visual turn must hand over a link at all
+    "link-gate.py",                     # clickable markdown, not bare, not dead, not blank
+    "lan-ip-preview-gate.py",           # never a LAN IP, it does not reach his phone
+    "cloudflare-link-gate.py",          # never localhost
+    "no-localhost-handoff-gate.py",     # never localhost (sibling of the above)
+    "link-verified-gate.py",            # the link must have been OPENED this turn
+    "link-load-succeeded-gate.py",      # it must have RESPONDED, not merely been tried
+    "promised-visual-health-gate.py",   # healthy end to end at send time, not just DNS
+    "link-relevance-gate.py",           # the RIGHT link, not any trycloudflare URL
+    "preview-link-branch-gate.py",      # name the branch/worktree the link serves
+    "tunnel-kill-relink-gate.py --stop",# a killed tunnel must be relinked, not re-handed
 ]
+
+# link-load-succeeded-gate.py was an ORPHAN before this consolidation , written 2026-08-01 after
+# three dead links in one session, self-tested, and never registered. Listing it here arms it.
 
 HEADER = (
     "LINK-FAMILY GATE , %d requirement(s) on the link you are handing over.\n"
@@ -99,12 +106,13 @@ def check_skip_flag(path, ttl):
 
 def run_member(name, payload):
     """(name, message) if this member wants to block, else None. Never raises."""
-    path = os.path.join(HOOKS, name)
+    parts = name.split()
+    path = os.path.join(HOOKS, parts[0])
     if not os.path.exists(path):
         return None
     try:
         p = subprocess.run(
-            [sys.executable, path],
+            [sys.executable, path] + parts[1:],
             input=payload,
             text=True,
             capture_output=True,
@@ -137,7 +145,7 @@ def compose(blocks):
     parts = [HEADER % (len(blocks), len(MEMBERS))]
     for i, (name, msg) in enumerate(blocks, 1):
         body = "\n".join("   " + ln for ln in msg.splitlines() if ln.strip())
-        parts.append("%d. [%s]\n%s" % (i, name.replace(".py", ""), body))
+        parts.append("%d. [%s]\n%s" % (i, name.split()[0].replace(".py", ""), body))
     return "\n\n".join(parts)
 
 
@@ -184,6 +192,8 @@ if __name__ == "__main__":
              0, ["a.py"], lambda n, p: (_ for _ in ()).throw(RuntimeError("boom"))),
             ("5  a missing member file is skipped",
              0, ["definitely-not-a-real-gate.py"], None),
+            ("6  an entry carrying args still resolves its file",
+             1, ["a.py --stop"], fake({"a.py --stop"})),
         ]
         ok = bad = 0
         for label, expect, members, runner in CASES:
