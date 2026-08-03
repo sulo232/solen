@@ -656,7 +656,16 @@ export function SearchOverlay({
   // staggered order derived from the same ink-band method that produced this bug is not evidence
   // worth keeping over a plain "together" reading. On CLOSE this is the same continuous function
   // read backward off the same `openT` , no second set of values, no threshold.
-  const containerT = useTransform(openT, (v) => clamp01(v / 0.8)); // mockup-ok: SEARCH_MORPH.md G1
+  // COUNCIL FINDING 2026-08-03 (external LLM consult, Opus and Grok independently agreed). Measured
+  // frame by frame on both captures at 375x812/60fps: the reference's card is still growing at
+  // 600ms, adding a THIRD of its final height after the 200ms mark, while ours gained 1px in that
+  // same window and its top locked at frame 3 and never moved again. Six previous attempts all
+  // edited opacity or timing, and every one of those plays out inside a box that had already
+  // finished moving, which is why none of them could read as "opening". The `/ 0.8` here compressed
+  // the geometry into the first 80% of an already short open, so height and top were done by ~150ms.
+  // The container now travels the FULL progress, and that progress runs long (see the duration
+  // below), so the box keeps growing while the text darkens inside it.
+  const containerT = openT; // mockup-ok: SEARCH_MORPH.md G1 + council finding
   // G3 (2026-08-03): the content rides its OWN slower progress, not the container's. Measured inside
   // the reference card's own moving box, its content is still barely countable when the box has
   // stopped and keeps rising for ~200ms after. Driving opacity off `containerT` made it land at
@@ -859,7 +868,11 @@ export function SearchOverlay({
     let cancelled = false;
     if (open) setSheetOpen(true);
     const controls = animate(openT, open ? 1 : 0, {
-      duration: reduce ? 0 : open ? 0.367 : 0.333,
+      // 0.6s open, not 0.367. Measured on his own recording at 60fps: the reference's card height
+      // is still climbing at 600ms (383 at 200ms, 553 at 300ms, 567 at 400ms, 569 at 600ms). At
+      // 0.367 with a front-loaded curve ours was geometrically finished by ~150ms and then sat
+      // still for 580ms, which is the "already all opened, then it just pops up everything".
+      duration: reduce ? 0 : open ? 0.6 : 0.333,
       ease: MORPH_EASE,
       onComplete: () => { if (!cancelled && !open) setSheetOpen(false); },
     });
