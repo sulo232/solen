@@ -158,7 +158,16 @@ Before applying, building, or committing ANY visual / design change: **show the 
 
 ---
 
-## 🪶 Copy economy (owner rules, 2026-06-11)
+## 🪶 Copy economy (owner rules, 2026-06-11) — how MUCH to write
+
+> **HOW to write lives in `_design-system/COPY_LAW.md`** (owner 2026-07-29: *"research everything and
+> make a whole principle about, like, when you're writing something, how to do it"*). Read it before
+> writing any user-facing string in any of the four locales. It owns: **register , formal `Sie` (de),
+> `Lei` (it), `vous` (fr)**, sentence shape, warmth-inside-formal, punctuation, numbers/dates/money,
+> the shape of each string type, translation mechanics, and which rules are gates vs judgment. This
+> block below is unchanged and still governs LENGTH; COPY_LAW **extends** it, replaces nothing in it.
+> (Pointer added 2026-08-03 by the weekly law pass: the writing law had no route from the file that
+> is always in context, which is the same wrong-tier failure the 07-27 pass named.)
 
 1. **Drop words the context already says.** A button inside the reviews list is "Mehr laden", never "Weitere Bewertungen laden" — the user knows they're reviews. Same family: "Zum Kalender hinzufügen" → "Kalender hinzufügen"; a "Kopieren" label next to a copy icon → icon-only. Test: delete each word; if the meaning survives in place, the word was padding.
 2. **Long text truncates with a blue "Mehr lesen".** Reviews/descriptions clamp (~150 chars / 3 lines) with an inline `text-s-accent` "Mehr lesen" that expands in place (Fresha pattern). Never render a wall of text; never a grey/underlined read-more.
