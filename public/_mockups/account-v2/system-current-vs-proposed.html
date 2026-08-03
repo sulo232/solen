@@ -127,7 +127,11 @@
   .seg button{border:0;background:#fff;color:var(--ink-2);font:inherit;font-size:13px;font-weight:600;padding:7px 16px;cursor:pointer}
   .seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
   .bar .t{font-size:13px;color:var(--ink-2)}
-  .stage{position:relative;display:flex;justify-content:center;padding:24px 0 80px}
+  /* `safe center` rather than `center`: the canvas is a fixed 402 and a viewport narrower than
+     that (a 390 test window, a smaller phone) makes plain flex centering overflow on BOTH sides,
+     where the left overflow is unreachable by scrolling. Measured at 390: 402 canvas in a 396
+     container, 3px clipped off each edge. `safe` falls back to flex-start exactly then. */
+  .stage{position:relative;display:flex;justify-content:safe center;padding:24px 0 80px}
   .pane{display:none}
   .pane.on{display:block}
 
@@ -142,9 +146,16 @@
   .note b{display:block;font-size:12px;font-weight:700;color:var(--ink);margin-bottom:3px}
   .note .src{display:block;margin-top:5px;color:var(--ink-2)}
   .note.open{border-color:#F1AE27}
+  /* A note is taller than most sections, so once the rail stacks without overlap a note can end
+     up well below the section it describes. The number is what carries the mapping: the same
+     numeral sits in the left gutter at the section's own y, outside the canvas. */
+  .n{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:9999px;background:var(--ink);color:#fff;font-size:10px;font-weight:700;font-style:normal;margin-right:6px;vertical-align:2px}
+  .marks{position:absolute;left:calc(50% - 233px);top:0;width:24px}
+  .mark{position:absolute;left:0;display:grid;place-items:center;width:22px;height:22px;border-radius:9999px;background:var(--ink);color:#fff;font-size:11px;font-weight:700}
   @media (max-width:1000px){
     .rail{position:static;width:402px;margin:16px auto 0}
     .note{position:static;width:402px;margin-bottom:10px}
+    .marks{display:none}
   }
 
   /* ---------------- PROPOSED PANE, real built markup ---------------- */
@@ -168,7 +179,9 @@
   .ident{display:flex;align-items:center;gap:14px;padding-top:18px}
   .ava{width:60px;height:60px;border-radius:9999px;object-fit:cover;flex-shrink:0}
   .name{font-family:'Inter Tight',sans-serif;font-size:28px;font-weight:700;letter-spacing:normal;color:var(--ink);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .edit{font-size:13px;font-weight:500;color:var(--accent);text-decoration:none;flex-shrink:0;padding:12px 0 12px 8px}
+  /* min-height 44 is the a11y touch floor from the design contract; measured at 39.5px on the
+     first render with padding alone, so the floor is set explicitly rather than inferred. */
+  .edit{display:inline-flex;align-items:center;min-height:44px;font-size:13px;font-weight:500;color:var(--accent);text-decoration:none;flex-shrink:0;padding-left:8px}
 
   /* Group heading. Owner ask: the heading does the separating, so no rule is drawn anywhere on
      this screen. The step it carries is a full weight step, 700 over the rows' 400, plus a colour
@@ -312,6 +325,8 @@
       </div>
     </div>
 
+    <div class="marks" id="marks"></div>
+
     <div class="rail" id="rail">
       <div class="note" data-for="s-hdr">
         <b>Header: no change proposed</b>
@@ -343,7 +358,10 @@
         already names an account hub as a no-container surface and LOCKFILE.md:571 already
         prescribes 56px. OPEN, CONFLICT 1: FLOORS LAW 4 wants grouped content on white to sit on
         the sunken tray, and dropping the card without adding one is the exact shape it forbids.
-        Not decided here.</span>
+        Not decided here. OPEN, copy: the heading and its only row are the same word, "Bookings",
+        because AccountHub.tsx puts the statBookings row inside a statBookings group. That exists
+        today; the stronger heading just makes it loud. The reference has no headings, so it has no
+        answer for it, and renaming either one is a copy call I am not making unprompted.</span>
       </div>
       <div class="note" data-for="s-wallet">
         <b>Label 16px/400, tracking normal</b>
@@ -408,20 +426,38 @@ function show(isCurrent){
 bCur.addEventListener('click', function(){ show(true); });
 bProp.addEventListener('click', function(){ show(false); });
 
-// Align each note to the top of the section it annotates, then push down on overlap. Runs only
-// when the rail is absolutely positioned, i.e. on wide viewports; below 1000px the CSS stacks the
-// notes under the canvas and this is skipped.
+// Number every note, drop a matching numeral in the left gutter at its section's own y, then
+// align the note itself as close to that y as it fits, pushing down only on overlap. Offsets are
+// measured against the rail's own box, not the canvas, because the rail is positioned against the
+// stage and the stage carries 24px of top padding; measuring against the canvas put every note
+// 24px high on the first build. Runs only while the rail is absolutely positioned, i.e. on wide
+// viewports; below 1000px the CSS stacks the notes under the canvas and the gutter is hidden.
 function placeNotes(){
   var rail = document.getElementById('rail');
+  var marks = document.getElementById('marks');
+  var notes = rail ? rail.querySelectorAll('.note') : [];
+  for (var k = 0; k < notes.length; k++){
+    if (!notes[k].querySelector('.n')){
+      var chip = document.createElement('i');
+      chip.className = 'n';
+      chip.textContent = String(k + 1);
+      notes[k].querySelector('b').insertBefore(chip, notes[k].querySelector('b').firstChild);
+    }
+  }
   if (!rail || getComputedStyle(rail).position !== 'absolute') return;
-  var canvas = document.getElementById('canvas');
-  var base = canvas.getBoundingClientRect().top;
+  marks.innerHTML = '';
+  var railTop = rail.getBoundingClientRect().top;
   var bottom = 0;
-  var notes = rail.querySelectorAll('.note');
   for (var i = 0; i < notes.length; i++){
     var target = document.getElementById(notes[i].getAttribute('data-for'));
     if (!target) continue;
-    var want = target.getBoundingClientRect().top - base;
+    var at = target.getBoundingClientRect().top - railTop;
+    var mark = document.createElement('span');
+    mark.className = 'mark';
+    mark.textContent = String(i + 1);
+    mark.style.top = at + 'px';
+    marks.appendChild(mark);
+    var want = at;
     if (want < bottom) want = bottom;
     notes[i].style.top = want + 'px';
     bottom = want + notes[i].offsetHeight + 12;
