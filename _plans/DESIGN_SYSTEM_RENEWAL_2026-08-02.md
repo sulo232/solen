@@ -237,3 +237,32 @@ wrong-screen error again.
 - [x] **D1. verified: commit `e11fa9add`, live at 390x844 on the After pane, computed styles: title 18px -> 24px, row label 12px -> 21px**, against the ~24pt / ~21pt I PIL-measured on IMG_6900. The wrong-screen error is closed.
 - [x] **D2. verified: commit `e11fa9add`, live: `.backcircle` count on the After pane is 0.** Title sits flush top-left, one bell top-right, matching the Profile ROOT rather than a sub-screen.
 - [ ] **E4d. Dead-affordance check still owed.** The Edit link must only advertise fields profile/edit really has. Fields confirmed in E4a; what is NOT yet checked is whether the link's destination renders them for this seed user at 390x844.
+
+## QUEUED, owner-decided 2026-08-03: SIX directions, built AFTER the research lands
+
+He chose "Six directions, add two more" and "Wait for the research to finish".
+Do not start these until workflow `wfw0bw1k9` (12 lenses, confirmed 12 agents running) completes
+and `_design-system/references/AIRBNB_SYSTEM_VS_OURS.md` exists.
+
+- [ ] **F1. Launch a 7-agent workflow: six direction builders in parallel, then one comparison page.**
+      Six genuinely different answers, not one design with tweaks:
+      1. LITERAL, match the reference anatomy exactly even where it costs density
+      2. KEEP-DATA, same anatomy but every row keeps its live value
+      3. TOKENS-ONLY, only type scale / spacing / divider / ink changed, structure untouched
+      4. HYBRID, their rows with our group headings (what he asked for on 08-03, which neither
+         reference screen actually does)
+      5. DENSE, the spacing extreme downward
+      6. ROOMY, the spacing extreme upward
+      Then `directions.html` showing all six side by side at 402pt, each labelled with what it
+      trades, a RECOMMENDATION at the top, and the cost of the recommended one named.
+      Every direction keeps his four standing asks: strong group headings, no pink heart, no row
+      icons, an Edit affordance into the EXISTING app/[locale]/profile/edit/page.tsx.
+
+**Why queued rather than running:** he was asked and chose to wait, so the six get built on final
+numbers instead of the interim table, and there is no rework.
+
+**Known limitation of the running research workflow, stated rather than hidden:** its Synthesize
+and Mockup phases are ONE agent each, which is the exact thing he objected to. I could not fan them
+out because the workflow script directory is not writable from this sandbox
+(`PermissionError [Errno 1]` on the scripts path), so editing-and-resuming was impossible. F1 is
+what corrects it: the mockup stage becomes seven agents instead of one.
