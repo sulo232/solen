@@ -230,11 +230,11 @@ body:    ["'Inter'", "system-ui", "-apple-system", "sans-serif"]
 | **Page H2** (section titles on /business) | 22px | 26px | 600 | 1.2 | -0.015em | display |
 | **Section H2** (homepage / PDP section heading) | 18px | 20px | 600 | 1.25 | -0.01em | display |
 | **Subsection H3** (card name in BentoCard) | 16px | 18px | 600 | 1.3 | -0.01em | display |
-| **Eyebrow** (uppercase small caps over sections) | 11px | 12px | 600 | — | 0.08em | body |
+| **Eyebrow** (small label over sections) | 11px | 12px | 600 | — | 0.08em | body |
 | **Body large** (sub-headlines, lead text) | 14px | 16px | 400 | 1.4 | -0.015em | body |
 | **Body** (default paragraph) | 14px | 15px | 400 | 1.55 | normal | body |
 | **Body small** (meta rows, secondary) | 13px | 14px | 400 | 1.4 | normal | body |
-| **Caption** (tiny labels, badge text) | 11px | 12px | 500 | — | 0.06em (uppercase) | body |
+| **Caption** (tiny labels, badge text) | 11px | 12px | 500 | — | 0.06em (~~uppercase~~ sentence case) | body |
 | **CTA** (button label) | 14px | 15px | 500 | — | -0.005em | body |
 | **Service-row name** | 15px | 16px | 600 | — | — | body |
 | **Service-row duration** | 13px | 14px | 400 | — | — | body |
@@ -252,7 +252,7 @@ Hero sub:     text-[clamp(16px,4vw,22px)]      font-normal leading-[1.3] trackin
 Page H2:      text-[clamp(22px,2.8vw,26px)]    font-semibold leading-[1.2] tracking-[-0.015em]
 Section H2:   text-[clamp(18px,2vw,20px)]      font-semibold leading-[1.25] tracking-[-0.01em]
 Subsection:   text-[clamp(16px,1.6vw,18px)]    font-semibold leading-[1.3] tracking-[-0.01em]
-Eyebrow:      text-[11px] md:text-[12px]       font-semibold uppercase tracking-[0.08em]
+Eyebrow:      text-[11px] md:text-[12px]       font-semibold tracking-[0.08em]      (sentence case , see the NO-CAPS note below)
 Body:         text-[clamp(14px,3.5vw,16px)]    font-normal leading-[1.55]
 ```
 
@@ -340,13 +340,27 @@ Everything else (`.04em`, `.07em`, `.10em`, `.12em`, `.14em`, `.15em`, `.16em`, 
 line-height 110–120% (`leading-[1.1]`–`leading-tight`) as ONE recipe — no per-page improvising.
 Dashboard surfaces cap at 24px (information density); customer marketing/heroes may go larger.
 
-### Uppercase application policy (rule A7)
+### Uppercase application policy (rule A7) — **SUPERSEDED 2026-06-18: uppercase is banned outright**
 
-Only TWO roles allow `uppercase` Tailwind class:
-1. **Eyebrow** — max 1 per surface, semantic role = "what's this section about." Drift rule A7 counts eyebrows per file; >1 = log violation.
-2. **Tag/Status** — semantic states (success / error / warning / urgency / open / closed / new / discount). Small footprint, always paired with a colored bg or icon.
+**Current law (owner, 2026-06-18, emphatic, verbatim): "stop using caps... use them fucking text.
+Never fucking caps lock."** ZERO roles allow uppercase in product UI — not the Eyebrow, not
+Tag/Status. Sentence case everywhere ("Dein Haar", never "DEIN HAAR"). This **supersedes** the
+two-role carve-out preserved below, and it is not advice: `~/.claude/hooks/copy-lint-gate.py`
+(NO-CAPS, merged from `no-caps-gate.py` 2026-07-07) is a wired PreToolUse gate that BLOCKS a
+Tailwind `uppercase` class or `text-transform:uppercase` in any UI/style file. `COPY_LAW.md` §4.4
+states the same rule for copy. A small label stays small, tracked and muted (`s-ink-3`) — it just
+is not uppercased. Recorded here 2026-08-03 by the weekly law pass, because this table was still
+handing new work a recipe a live gate refuses.
 
-ALL other uppercase usage = drift violation. Sweep target: 733 → ~50-80 legit Tag/Status + ~30-50 Eyebrow (one per surface × 30+ surfaces).
+*Superseded text, kept so the reversal is legible:* ~~Only TWO roles allow `uppercase`: (1) Eyebrow,
+max 1 per surface, drift rule A7 counts eyebrows per file, >1 = log violation; (2) Tag/Status,
+semantic states (success / error / warning / urgency / open / closed / new / discount), small
+footprint, always paired with a colored bg or icon. ALL other uppercase usage = drift violation.
+Sweep target: 733 → ~50-80 legit Tag/Status + ~30-50 Eyebrow.~~ What survives from it: **the
+one-eyebrow-per-surface ceiling and the A7 per-file eyebrow count still bind** (a deletion names
+what it keeps, FLOORS LAW 5) — only the uppercasing died. The sweep target is now 0 uppercase, and
+**65 files under `app/` + `components/` still carry `uppercase` as of 2026-08-03**: live code debt,
+not law debt, listed in the 2026-08-03 law-pass report.
 
 ### Eyebrow decoration policy (V3-D331, 2026-05-28) — rule A12
 

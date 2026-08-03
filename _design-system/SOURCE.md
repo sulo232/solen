@@ -1146,7 +1146,10 @@ Use Swiss formats:
 - Section h2s: "Profis in deiner Nähe" (no period)
 - Pills / chips: "Nur 1 heute", "Heute frei" (sentence case, NOT UPPERCASE)
 - Buttons: "Termine finden", "Anmelden"
-- Eyebrows: "FÜR SALONS" — the ONE place UPPERCASE is allowed (BusinessTeaser eyebrow)
+- Eyebrows: sentence case like everything else. ~~"FÜR SALONS" — the ONE place UPPERCASE is allowed
+  (BusinessTeaser eyebrow)~~ **DEAD 2026-06-18** — the owner banned caps outright ("Never fucking
+  caps lock"); `copy-lint-gate.py` blocks the class. **Supersedes** this carve-out. See
+  `LOCKFILE.md` "Uppercase application policy (rule A7)" and `COPY_LAW.md` §4.4.
 
 ### Specific patterns
 
