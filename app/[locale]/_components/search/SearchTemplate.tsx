@@ -785,6 +785,11 @@ export default function SearchTemplate({
   // to say "this user came here to TYPE", and that opens the overlay WITH the keyboard.
   // This does not change the in-page bar at line ~1251, which still opens without focus on
   // purpose so an already-applied search stays readable behind the overlay.
+  // R1 (2026-08-02 round 3, owner: "it must open in place, the URL must not change on tap"):
+  // the home pill NO LONGER produces `?compose=1`. It mounts this same overlay and opens it
+  // over the home page, so nothing about a search tap is a navigation any more. This receiver
+  // stays as a DEEP-LINK entry only (`/de/search?compose=1` opens the composer on arrival);
+  // it is no longer on any tap path, which is what made it a page load in the first place.
   const composeApplied = React.useRef(false);
   React.useEffect(() => {
     if (composeApplied.current) return;

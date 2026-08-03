@@ -68,9 +68,18 @@ const EASE = [0.32, 0.72, 0, 1] as const;
 // the open/close container morph (`animate(openT, ...)` below) so the height travel actually
 // fills its own duration instead of visually settling a third of the way in.
 const MORPH_EASE = [0.4, 0, 0.2, 1] as const;
-const EXPAND_DIST = 120; // px of scroll = full 0->1 expand (service step only)
+// R4c (2026-08-02 round 3, owner "too snappy, it breaks scrolling"): was 120. The expand
+// reallocates real layout space, so while it runs the scroller's own box grows AND its top
+// edge climbs: measured over the old 120px, the scroller gained 382px of height and its top
+// rose 162px, which means content under the finger moved 2.35x faster than the finger and the
+// whole expand was spent inside one flick. The box-top rise (162px) is fixed by the collapsing
+// heading + pills, so the only lever on that ratio is the scroll distance the expand is spread
+// over: (162 + D) / D. At D=320 that is 1.51x instead of 2.35x, and the expand survives a
+// single flick instead of being consumed by it. Stays gesture-linked (never a binary focus
+// threshold, feedback_search_expand_gesture_linked) , one continuous driver, longer runway.
+const EXPAND_DIST = 320; // px of scroll = full 0->1 expand (service step only)
 const HEADING_H = 56;    // collapsing heading height (px)
-const ROW_H = 66;        // collapsed step row (h-14=56 + pt-2.5=10)
+const ROW_H = 66;        // collapsed step row (h-14=56 + pt-2.5=10); see SLOT_COLLAPSED
 const FOOTER_H = 68;     // footer slide-off distance
 
 const WEEKDAYS = ["M", "D", "M", "D", "F", "S", "S"]; // Monday-first de-CH
@@ -360,7 +369,8 @@ export function SearchOverlay({
   const pillsOp = useTransform(expand, [0, 0.3], [1, 0]); // mockup-ok: SEARCH_MORPH.md A2
   const xOpacity = useTransform(expand, [0.82, 1], [1, 0]); // mockup-ok: pre-existing
   const stepsOp = useTransform(expand, [0.4, 0.8], [1, 0]); // mockup-ok: pre-existing
-  const stepsH = useTransform(expand, [0.4, 0.8], [ROW_H * 2 + 20, 0]); // mockup-ok: pre-existing
+  // R7: `stepsH` (one height for BOTH collapsed rows at once) is gone. The rows are separate
+  // slots now, so each carries its own height on the same 0.4-0.8 window (rowLocH/rowDateH).
   const footerH = useTransform(expand, [0.4, 0.8], [FOOTER_H, 0]); // mockup-ok: pre-existing
   const cardMx = useTransform(expand, [0, 0.7], [12, 0]); // mockup-ok: pre-existing
   const cardRadius = useTransform(expand, [0, 0.7], [22, 18]); // mockup-ok: pre-existing
@@ -381,28 +391,70 @@ export function SearchOverlay({
   // named anti-goal is Airbnb's measured ~300ms gap). mockup-ok: worktree build of an
   // owner-dictated, spec'd fix (SEARCH_MORPH.md "REOPENED" + "REFERENCE MEASURED"), not a live
   // design exploration.
+  // R4b/R3 (2026-08-02 round 3): this used to size the sheet off the VISUAL viewport, which
+  // conflates two different things. (1) A pinch/auto zoom shrinks visualViewport, so the sheet
+  // collapsed to a fraction of the screen while the scrim still filled it (measured: at page
+  // scale 2 the sheet rendered 188x310 inside a 375x812 screen). The sheet is
+  // `position: fixed`, which is laid out against the LAYOUT viewport, so its box must come
+  // from `window.innerWidth/innerHeight`. (2) The keyboard is a separate fact: it covers the
+  // BOTTOM of the layout viewport, and is measured here as its own inset rather than by
+  // shrinking the whole viewport. `offsetTop` matters because iOS scrolls the layout viewport
+  // under the keyboard and fires `scroll`, not `resize`.
   const [viewport, setViewport] = React.useState({ w: 375, h: 812 });
+  const [kbInset, setKbInset] = React.useState(0);
   React.useEffect(() => {
     const measure = () => {
+      const w = window.innerWidth, h = window.innerHeight;
+      setViewport({ w, h });
       const vv = window.visualViewport;
-      setViewport({ w: vv?.width ?? window.innerWidth, h: vv?.height ?? window.innerHeight });
+      // The band of the layout viewport the visual viewport no longer covers = the keyboard.
+      // `* scale` is what keeps a ZOOM from being misread as a keyboard: zooming to 2x halves
+      // visualViewport.height for the same screen, and without the scale term this computed a
+      // phantom 406px keyboard and hauled the sheet to the top of the screen (measured before
+      // the term was added: sheet 0,6,375,400 at scale 2 instead of 0,96,375,716). At scale 1
+      // the term is identity, so the keyboard case is unaffected. Sub-pixel noise and a 1-2px
+      // browser-chrome wobble must not read as a keyboard either, hence the 48px floor.
+      const scale = vv?.scale ?? 1;
+      const covered = vv ? Math.round(h - (vv.height + vv.offsetTop) * scale) : 0;
+      setKbInset(covered > 48 ? covered : 0);
     };
     measure();
     window.addEventListener("resize", measure);
     window.visualViewport?.addEventListener("resize", measure);
+    window.visualViewport?.addEventListener("scroll", measure);
     return () => {
       window.removeEventListener("resize", measure);
       window.visualViewport?.removeEventListener("resize", measure);
+      window.visualViewport?.removeEventListener("scroll", measure);
     };
   }, []);
   // No visible bar to point at (e.g. the ?compose=1 deep link) -> a plausible near-top rect
   // instead of the old bottom-of-screen slide.
-  const origin = originRect ?? { top: 60, left: 16, width: Math.max(viewport.w - 32, 200), height: 56 };
+  const origin = React.useMemo(
+    () => originRect ?? { top: 60, left: 16, width: Math.max(viewport.w - 32, 200), height: 56 },
+    [originRect, viewport.w],
+  );
   const openT = useMotionValue(open ? 1 : 0); // mockup-ok: SEARCH_MORPH.md A7/A8/A9
+  // R3 (2026-08-02 round 3): the keyboard used to be taken out of the sheet's HEIGHT while its
+  // top stayed pinned, and every stolen pixel came out of the one `flex-1` child , the
+  // suggestion/city list (measured: 312px -> 20px on the service step, 360px -> 24px on the
+  // Standort step, i.e. the step whose whole job is typing a city became a 24px slit). The
+  // sheet now RISES by the keyboard inset instead, down to the safe-area floor, so the lost
+  // height is recovered from the top rather than from the list. One function, used by both
+  // `cropTop` and `sheetHeight`, so top and bottom can never disagree.
+  const minTop = Math.max(safeTop + 6, 6);
+  const topFor = React.useCallback(
+    (oT: number, ex: number) => {
+      const base = oT < 1
+        ? origin.top + (RESTING_TOP - origin.top) * oT
+        : RESTING_TOP + (focusedTop - RESTING_TOP) * ex;
+      return Math.max(minTop, base - kbInset);
+    },
+    [origin, focusedTop, minTop, kbInset],
+  );
   const cropTop = useTransform([openT, expand], (latest) => { // mockup-ok: SEARCH_MORPH.md A7/A8/A9
     const [oT, ex] = latest as [number, number];
-    if (oT < 1) return origin.top + (RESTING_TOP - origin.top) * oT;
-    return RESTING_TOP + (focusedTop - RESTING_TOP) * ex;
+    return topFor(oT, ex);
   });
   const sheetLeft = useTransform(openT, [0, 1], [origin.left, 0]); // mockup-ok: SEARCH_MORPH.md A7/A8/A9
   const sheetWidth = useTransform(openT, [0, 1], [origin.width, viewport.w]); // mockup-ok: SEARCH_MORPH.md A7/A8/A9
@@ -417,12 +469,25 @@ export function SearchOverlay({
   // one continuous transform, no threshold swap.
   const sheetHeight = useTransform([openT, expand], (latest) => { // mockup-ok: SEARCH_MORPH.md C6
     const [oT, ex] = latest as [number, number];
-    const restingHeight = Math.max(viewport.h - RESTING_TOP, 200);
-    if (oT < 1) return origin.height + (restingHeight - origin.height) * oT;
-    const focusedHeight = Math.max(viewport.h - focusedTop, 200);
-    return restingHeight + (focusedHeight - restingHeight) * ex;
+    // R3: the usable bottom edge is the keyboard's top edge when it is up, the viewport's own
+    // bottom when it is not. Height is always "bottom minus the top `topFor` just returned",
+    // so the sheet's bottom edge lands exactly there in every state.
+    const bottom = viewport.h - kbInset;
+    if (oT < 1) {
+      const restingHeight = Math.max(bottom - topFor(1, ex), 200);
+      return origin.height + (restingHeight - origin.height) * oT;
+    }
+    return Math.max(bottom - topFor(oT, ex), 200);
   });
-  const sheetOpacity = useTransform(openT, [0, 0.3, 1], [0, 0.4, 1]); // mockup-ok: SEARCH_MORPH.md A7/A8/A9
+  // R6 (2026-08-02 round 3, owner bug report): the scrim used to fade on its OWN
+  // AnimatePresence clock while the sheet faded on `openT`. The two curves are not the same
+  // shape, so the sheet's own backdrop died about 4x faster than the sheet: for ~250ms the
+  // white overlay cards and the ink Suchen pill were painted straight onto a sharp, unblurred
+  // results feed and read as duplicated chrome. Both now read the SAME `openT`, on curves
+  // chosen so the scrim is >= the sheet at every value of openT , the blur outlives the sheet
+  // by construction, not by two clocks that happen to agree until someone edits one.
+  const sheetOpacity = useTransform(openT, [0, 0.35, 1], [0, 0.55, 1]); // mockup-ok: SEARCH_MORPH.md A7/A8/A9
+  const scrimOpacity = useTransform(openT, [0, 0.18, 1], [0, 1, 1]); // mockup-ok: SEARCH_MORPH.md R6
   // C3 (round 2, "X floats alone, off both specs"): port of an owner-dictated SEARCH_MORPH.md
   // punch-list fix. The close-X used to sit at a fixed `top:14px` with no relation to the
   // sheet. Derives its top from the SAME cropTop transform that drives the sheet, offset just
@@ -431,20 +496,114 @@ export function SearchOverlay({
   const CLOSE_BTN = 44; // h-11 w-11: 44px touch-target floor + the design-system "circled X" size
   const CLOSE_BTN_GAP = 10; // px between the X and the sheet's top edge
   const closeXTop = useTransform(cropTop, (top) => Math.max(safeTop + 6, top - CLOSE_BTN - CLOSE_BTN_GAP)); // mockup-ok: SEARCH_MORPH.md C3
+  // R6: the X carries BOTH fades at once , its own focus-collapse fade (xOpacity, expand) and
+  // the open/close fade (sheetOpacity, openT) , instead of an independent AnimatePresence exit.
+  const closeXOpacity = useTransform([xOpacity, sheetOpacity], (latest) => { // mockup-ok: SEARCH_MORPH.md R6
+    const [x, s] = latest as [number, number];
+    return x * s;
+  });
+
+  // ── R7: the step change is a morph, not a swap ──────────────────────────────
+  // (2026-08-02 round 3, owner "switching between Suche / Standort / Datum still is not a
+  // morph and looks weird".) It used to be an AnimatePresence crossfade between two
+  // STRUCTURALLY DIFFERENT trees: one painted a single 351x496 white card, the other painted
+  // three 351x56 rows plus a card at a different y. Their white surfaces did not coincide, so
+  // through most of the sheet exactly ONE panel was painting at a fractional opacity and the
+  // blurred page showed through , measured 100% of the sheet below composite alpha 0.98 for
+  // 136ms, worst point 0.372, plus real holes at alpha 0 on the commit frame where popLayout
+  // yanked the outgoing panel to its old absolute rect. Changing AnimatePresence modes cannot
+  // fix that; the two trees are the bug.
+  //
+  // There is now ONE tree: three slots (Suche / Wo? / Wann?) in fixed order plus the footer,
+  // exactly the order both old panels already rendered. Each slot is a persistent white card
+  // whose HEIGHT is a continuous motion value, and whose collapsed face and expanded body
+  // crossfade INSIDE it. Because the white surface belongs to the slot and never fades during
+  // a step change, no point that is white before and after can go translucent in between ,
+  // the wash is gone by construction, not by tuning.
+  //
+  // Sizes are derived, never hardcoded per step: each slot gets its collapsed height plus a
+  // share of the leftover space weighted by its own t. The shares are normalised by their sum,
+  // so the three heights add up to the available space on EVERY frame, including a step change
+  // interrupted mid-flight, which is what keeps a gap from opening between the cards.
+  // service = the bare h-14 row (it sits flush against the sheet's top edge, no gap above it);
+  // location = ROW_H, the row plus its 10px gap; date = the same plus the 20px tail the old
+  // `stepsH` literal carried, so the footer keeps its exact y.
+  const SLOT_COLLAPSED = { service: ROW_H - 10, location: ROW_H, date: ROW_H + 20 };
+  const svcT = useMotionValue(activeStep === "service" ? 1 : 0);
+  const locT = useMotionValue(activeStep === "location" ? 1 : 0);
+  const dateT = useMotionValue(activeStep === "date" ? 1 : 0);
   React.useEffect(() => {
-    const controls = animate(openT, open ? 1 : 0, reduce ? { duration: 0 } : { duration: open ? 0.367 : 0.333, ease: MORPH_EASE });
-    return () => controls.stop();
-  }, [open, reduce, openT]);
-  // The sheet stays mounted a beat past `open=false` so its own close-morph (333ms) actually
-  // gets to play before React removes the node; scrim/X keep their existing AnimatePresence
-  // exit (unrelated, unchanged). mockup-ok: SEARCH_MORPH.md A7/A8/A9
+    const cfg = { duration: reduce ? 0 : 0.3, ease: MORPH_EASE };
+    const runs = [
+      animate(svcT, activeStep === "service" ? 1 : 0, cfg),
+      animate(locT, activeStep === "location" ? 1 : 0, cfg),
+      animate(dateT, activeStep === "date" ? 1 : 0, cfg),
+    ];
+    return () => runs.forEach((r) => r.stop());
+  }, [activeStep, reduce, svcT, locT, dateT]);
+  // The two collapsed rows still fold away on focus, on the same 0.4-0.8 window `stepsH` used.
+  const rowLocH = useTransform(expand, [0.4, 0.8], [SLOT_COLLAPSED.location, 0]);
+  const rowDateH = useTransform(expand, [0.4, 0.8], [SLOT_COLLAPSED.date, 0]);
+  // The gaps around each row are PADDING on a border-box element, so a height of 0 still
+  // renders the padding: measured mid-fix, the fully focused sheet had slot heights
+  // [762, 10, 30, 0] against a 762px sheet, i.e. 40px of leftover sliver overflowing its
+  // bottom. The gaps therefore collapse on the same window as the heights they belong to.
+  const rowGapTop = useTransform(expand, [0.4, 0.8], [10, 0]);
+  const rowGapBottom = useTransform(expand, [0.4, 0.8], [20, 0]);
+  const slotAvail = useTransform([sheetHeight, footerH], (latest) => {
+    const [sh, fh] = latest as [number, number];
+    return sh - fh;
+  });
+  const slotInputs = [slotAvail, svcT, locT, dateT, rowLocH, rowDateH];
+  const slotSizes = (latest: unknown) => {
+    const [avail, s, l, d, cl, cd] = latest as number[];
+    const collapsed = [SLOT_COLLAPSED.service, cl, cd];
+    const weights = [s, l, d];
+    const total = Math.max(weights[0] + weights[1] + weights[2], 0.0001);
+    const surplus = Math.max(avail - (collapsed[0] + collapsed[1] + collapsed[2]), 0);
+    return collapsed.map((c, i) => c + (surplus * weights[i]) / total);
+  };
+  const svcH = useTransform(slotInputs, (l) => slotSizes(l)[0]);
+  const locH = useTransform(slotInputs, (l) => slotSizes(l)[1]);
+  const dateH = useTransform(slotInputs, (l) => slotSizes(l)[2]);
+  const inverse = (v: number) => 1 - v;
+  const svcFaceOp = useTransform(svcT, inverse);
+  const locFaceOp = useTransform(locT, inverse);
+  const dateFaceOp = useTransform(dateT, inverse);
+  const hitWhenOpen = (v: number) => (v > 0.5 ? "auto" : "none");
+  const hitWhenShut = (v: number) => (v > 0.5 ? "none" : "auto");
+  const svcBodyHit = useTransform(svcT, hitWhenOpen), svcFaceHit = useTransform(svcT, hitWhenShut);
+  const locBodyHit = useTransform(locT, hitWhenOpen), locFaceHit = useTransform(locT, hitWhenShut);
+  const dateBodyHit = useTransform(dateT, hitWhenOpen), dateFaceHit = useTransform(dateT, hitWhenShut);
+  // A collapsed row still fades out with the focus expand (what `stepsOp` did); an EXPANDED
+  // slot never does, so a step change alone can never fade a card.
+  const foldOp = (t: number, so: number) => t + (1 - t) * so;
+  const locSlotOp = useTransform([locT, stepsOp], (latest) => {
+    const [t, so] = latest as [number, number];
+    return foldOp(t, so);
+  });
+  const dateSlotOp = useTransform([dateT, stepsOp], (latest) => {
+    const [t, so] = latest as [number, number];
+    return foldOp(t, so);
+  });
+  // R6 (2026-08-02 round 3): ONE lifecycle for the whole overlay. `mounted` used to be two
+  // independent clocks , an AnimatePresence exit owning the scrim and the close-X, and a
+  // `setTimeout(340)` owning the sheet , so the scrim and X unmounted at ~320ms while the
+  // sheet lived to ~370ms, leaving a tail where the overlay chrome had no backdrop and no
+  // close button. The sheet's removal is now the completion of the SAME morph that draws it:
+  // when `openT` finishes its run to 0, the node goes. No timer, no second presence tree, so
+  // the two can no longer drift apart.
   const [sheetOpen, setSheetOpen] = React.useState(open);
   React.useEffect(() => {
-    if (open) { setSheetOpen(true); return; }
-    if (reduce) { setSheetOpen(false); return; }
-    const timer = setTimeout(() => setSheetOpen(false), 340);
-    return () => clearTimeout(timer);
-  }, [open, reduce]);
+    let cancelled = false;
+    if (open) setSheetOpen(true);
+    const controls = animate(openT, open ? 1 : 0, {
+      duration: reduce ? 0 : open ? 0.367 : 0.333,
+      ease: MORPH_EASE,
+      onComplete: () => { if (!cancelled && !open) setSheetOpen(false); },
+    });
+    return () => { cancelled = true; controls.stop(); };
+  }, [open, reduce, openT]);
 
   const grow = React.useCallback(
     (to: number) => animate(expand, to, reduce ? { duration: 0 } : { duration: 0.34, ease: EASE }),
@@ -630,9 +789,13 @@ export function SearchOverlay({
   const visibleRecents = React.useMemo(() => recent.filter((_, i) => !hiddenRecents.has(i)), [recent, hiddenRecents]);
   const filteredCities = React.useMemo(() => SEARCH_CITIES.filter((c) => c.toLowerCase().includes(cityQ.toLowerCase())), [cityQ]);
 
-  const collapsedRow = (s: Step) => (
-    <button key={s} onClick={() => openStep(s)}
-      className="flex h-14 w-full items-center justify-between rounded-[20px] bg-white px-4 text-left shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
+  // R7: the collapsed FACE only. The white fill, radius and shadow moved onto the slot that
+  // owns it (see the slot block above), because that surface has to survive the crossfade , it
+  // is the thing that stops the blurred page showing through mid-morph. Same 56px row, same
+  // type, same tap target as before.
+  const collapsedFace = (s: Step) => (
+    <button type="button" key={s} onClick={() => openStep(s)}
+      className="flex h-14 w-full items-center justify-between px-4 text-left">
       <span className="text-[14px] font-medium text-s-ink-2">{stepMeta[s].label}</span>
       <span className={`truncate pl-3 text-[14px] ${stepMeta[s].value ? "font-semibold text-s-ink" : "text-s-ink-2"}`}>
         {stepMeta[s].value || stepMeta[s].placeholder}
@@ -659,6 +822,14 @@ export function SearchOverlay({
           <Search size={19} strokeWidth={2} className="text-s-ink-2" />
         </span>
       )}
+      {/* R4b (2026-08-02 round 3, owner "it reads zoomed in"): this input computed to 15px.
+          iOS Safari auto-zooms the WHOLE page when a field under 16px takes focus, and
+          app/layout.tsx deliberately ships no `maximum-scale`/`user-scalable` (an a11y decision
+          from 2026-07-26, not to be reversed), so nothing zooms it back. 16px is the platform's
+          no-zoom threshold and is also what the global input law in globals.css already sets ,
+          the `!` carve-out below was overriding it down. The compounding half of that bug (the
+          sheet sizing itself off the shrunken VISUAL viewport, so the zoom collapsed it to a
+          card floating in a blurred field) is fixed at the `viewport` measure above. */}
       {/* A2/Model B (2026-07-04): the input ALWAYS binds to `serviceQ` only (never `service`),
           focused or not , the free-text query and the category (pill row above) are two fully
           independent state slices now, so there's nothing left to swap on focus. */}
@@ -673,7 +844,7 @@ export function SearchOverlay({
         onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleSubmit(); } }}
         enterKeyHint="search"
         placeholder={queryPlaceholderTxt} aria-label={queryPlaceholderTxt}
-        className="min-w-0 flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[15px] text-s-ink placeholder:text-s-ink-2 focus:outline-none focus-visible:outline-none" />
+        className="min-w-0 flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[16px] text-s-ink placeholder:text-s-ink-2 focus:outline-none focus-visible:outline-none" />
       {/* A6 (2026-08-02 REOPENED): a fixed h-6 w-6 slot (same idea as the loader-dots slot
           below it) always mounted, only the button's presence inside toggles , the clear-X no
           longer changes the bar's own width when it mounts/unmounts while typing. mockup-ok: SEARCH_MORPH.md A6 */}
@@ -754,9 +925,17 @@ export function SearchOverlay({
                   // Store tap: mark it selected (fill the search + remember it). On the MAP,
                   // recenter to the pin instead of following the card's Link to the salon page
                   // (capture-phase preventDefault cancels the Link); otherwise the Link opens it.
+                  // R8-1 (2026-08-02 round 3): `close()` used to run ONLY on the map path, so on
+                  // the normal search page a store tap ran no teardown at all , the overlay just
+                  // vanished as a side effect of the route change unmounting its parent.
+                  // Measured: 630ms of nothing moving, then a single frame changing 28% of the
+                  // screen. Every other row in this same list (stylist, look, the primary submit
+                  // row) already closes properly; this one is now the same, so all three row
+                  // types tear down identically instead of three different ways.
                   <div key={s.id} onClickCapture={(e) => {
                     setService(s.name); push({ service: s.name, city: stadt || undefined });
-                    if (onSalonLocate) { e.preventDefault(); e.stopPropagation(); onSalonLocate({ id: s.id, slug: s.slug, name: s.name }); close(); }
+                    if (onSalonLocate) { e.preventDefault(); e.stopPropagation(); onSalonLocate({ id: s.id, slug: s.slug, name: s.name }); }
+                    close();
                   }}>
                     <SalonResultCard
                       variant="suggest"
@@ -901,57 +1080,64 @@ export function SearchOverlay({
   if (!mounted) return null;
 
   return createPortal(
-    <AnimatePresence>
-      {open && [
-        <motion.div key="scrim" onClick={close} className="fixed inset-0 z-[100] bg-s-ink/10 backdrop-blur-xl"
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.3, ease: EASE }} /* motion-ok: pre-existing backdrop fade, unchanged */ />,
-
-        // C3 (round 2, "X too small and mis-placed"): port of an owner-dictated SEARCH_MORPH.md
-        // punch-list fix. Was 36x36 at a fixed `top:14px`, floating alone in the blurred zone
-        // with no relation to the sheet. Now h-11 w-11 (44px, the touch-target floor AND the
-        // design-system 38px "circled X" grammar rounded up to the floor), right inset matches
-        // the sheet's own resting right inset (12px, not the viewport's `right-4`=16px), and
-        // `top` is derived from the sheet's own cropTop (closeXTop above) so it sits just above
-        // the sheet's top edge and tracks it through the open/close morph.
-        <motion.button key="closeX" onClick={close} aria-label={closeTxt}
-          className="fixed right-3 z-[102] grid h-11 w-11 place-items-center rounded-full border border-s-border bg-white text-s-ink"
-          style={{ opacity: xOpacity, top: closeXTop }} initial={{ opacity: 0 }} exit={{ opacity: 0 }} /* motion-ok: pre-existing close-X fade, unchanged */>
-          <X size={18} strokeWidth={2.2} />
-        </motion.button>,
-      ]}
-      {/* A7/A8/A9 (2026-08-02 REOPENED): top/left/width/height are continuously driven by
-          cropTop/sheetLeft/sheetWidth/sheetHeight (openT composed with expand, declared above)
-          instead of a declarative y:"100%"->0 slide, so the sheet grows OUT OF the tapped
-          search bar on open and shrinks BACK INTO it on close , never a bottom-sheet slide.
-          `sheetOpen` (not `open`) gates its mount so the 333ms close-morph gets to play before
-          React removes the node; scrim/X above keep their own unrelated AnimatePresence exit. */}
+    <>
       {sheetOpen && (
-        <motion.div key="sheet"
-          // mockup-ok: date step = a content-height bottom sheet (top:auto) so the card hugs the
-          // calendar and grows on date-pick, instead of a tall sheet with dead space. maxHeight caps it.
-          style={{
-            top: activeStep === "date" ? "auto" : cropTop,
-            left: activeStep === "date" ? 0 : sheetLeft,
-            width: activeStep === "date" ? "100%" : sheetWidth,
-            height: activeStep === "date" ? undefined : sheetHeight,
-            maxHeight: activeStep === "date" ? "calc(100dvh - 12px)" : undefined,
-            opacity: sheetOpacity,
-          }}
-          className="fixed bottom-0 z-[101] flex flex-col overflow-hidden bg-transparent">
+        <>
+          {/* R6: same `sheetOpen` mount and same `openT` driver as the sheet below, so the
+              backdrop can no longer disappear out from under the sheet's own chrome.
+              `pointer-events` is dropped the instant `open` flips false: a tap during the
+              close used to land on the dying overlay (measured: at +120ms `elementFromPoint`
+              returned the closing sheet's own collapsed row), which is why re-opening
+              immediately after closing did nothing. */}
+          <motion.div key="scrim" onClick={close} className="fixed inset-0 z-[100] bg-s-ink/10 backdrop-blur-xl"
+            style={{ opacity: scrimOpacity, pointerEvents: open ? "auto" : "none" }} /* motion-ok: backdrop fade, now openT-driven */ />
 
-          {/* C5 (round 2, "blurs out, then swaps"): was `mode="wait"` , the outgoing step fully
-              exits (fades out, nothing on screen) BEFORE the incoming one starts, which is
-              exactly the blank moment the owner is describing. `popLayout` (the same mode this
-              file already uses one screen down for the typing/idle crossfade, line ~974) lets
-              both animate at once: the exiting tree is pulled out of layout flow immediately so
-              it doesn't block or reflow the incoming one, giving a continuous overlap instead of
-              a sequential swap. Still ONE AnimatePresence, ONE key at a time , no new threshold,
-              no second layout added. */}
-          <AnimatePresence mode="popLayout" initial={false}>
-          {activeStep === "service" ? (
-            <motion.div key="service" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: reduce ? 0 : 0.24, ease: EASE }} className="flex min-h-0 flex-1 flex-col">
-              <motion.div style={{ marginLeft: cardMx, marginRight: cardMx, borderTopLeftRadius: cardRadius, borderTopRightRadius: cardRadius, borderBottomLeftRadius: cardRadiusBottom, borderBottomRightRadius: cardRadiusBottom, boxShadow: "0 18px 50px rgba(10,10,10,0.13)" }}
-                className="flex min-h-0 flex-1 flex-col overflow-hidden bg-white">
+          {/* C3 (round 2, "X too small and mis-placed"): port of an owner-dictated
+              SEARCH_MORPH.md punch-list fix. Was 36x36 at a fixed `top:14px`, floating alone in
+              the blurred zone with no relation to the sheet. Now h-11 w-11 (44px, the
+              touch-target floor AND the design-system 38px "circled X" grammar rounded up to
+              the floor), right inset matches the sheet's own resting right inset (12px, not the
+              viewport's `right-4`=16px), and `top` is derived from the sheet's own cropTop
+              (closeXTop above) so it sits just above the sheet's top edge and tracks it through
+              the open/close morph. R6: `xOpacity` (the focus-collapse fade) is multiplied by
+              the open/close fade so the X leaves WITH the sheet, not on its own clock. */}
+          <motion.button key="closeX" onClick={close} aria-label={closeTxt}
+            className="fixed right-3 z-[102] grid h-11 w-11 place-items-center rounded-full border border-s-border bg-white text-s-ink"
+            style={{ opacity: closeXOpacity, top: closeXTop, pointerEvents: open ? "auto" : "none" }} /* motion-ok: close-X fade, now openT-driven */>
+            <X size={18} strokeWidth={2.2} />
+          </motion.button>
+
+          {/* A7/A8/A9 (2026-08-02 REOPENED): top/left/width/height are continuously driven by
+              cropTop/sheetLeft/sheetWidth/sheetHeight (openT composed with expand, declared
+              above) instead of a declarative y:"100%"->0 slide, so the sheet grows OUT OF the
+              tapped search bar on open and shrinks BACK INTO it on close , never a bottom-sheet
+              slide. Mounted with the scrim and X above under ONE `sheetOpen` gate (R6).
+              R7 (2026-08-02 round 3): the `activeStep === "date"` branch this style block used
+              to carry was dead. It passed `height: undefined`, which does NOT detach the
+              already-attached sheetHeight MotionValue, so framer kept writing the last numeric
+              height every frame and the "content-height bottom sheet" the comment described
+              never existed , measured `top:auto; height:716px`, byte-identical to every other
+              step's box. Removing the branch changes no pixel and leaves one set of properties
+              for every step, which is also the only shape that can be morphed continuously. */}
+          <motion.div key="sheet"
+            style={{
+              top: cropTop,
+              left: sheetLeft,
+              width: sheetWidth,
+              height: sheetHeight,
+              opacity: sheetOpacity,
+              pointerEvents: open ? "auto" : "none",
+            }}
+            className="fixed bottom-0 z-[101] flex flex-col overflow-hidden bg-transparent">
+
+          {/* R7 slot 1 of 3: SUCHE. The white card belongs to the SLOT and never fades, so a
+              step change can never make it translucent; only the collapsed face and the
+              expanded body crossfade inside it. Height comes from `svcH` (see the slot block
+              above), which is where the old `flex-1` used to sit. */}
+          <motion.div style={{ height: svcH }} className="shrink-0 overflow-hidden">
+            <motion.div style={{ marginLeft: cardMx, marginRight: cardMx, borderTopLeftRadius: cardRadius, borderTopRightRadius: cardRadius, borderBottomLeftRadius: cardRadiusBottom, borderBottomRightRadius: cardRadiusBottom, boxShadow: "0 18px 50px rgba(10,10,10,0.13)" }}
+              className="relative h-full overflow-hidden bg-white">
+              <motion.div style={{ opacity: svcT, pointerEvents: svcBodyHit }} className="absolute inset-0 flex flex-col">
                 <motion.div style={{ height: headingH, opacity: headingOp }} className="shrink-0 overflow-hidden">
                   <h2 className="px-4 pb-1 pt-4 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{searchHeadingTxt}</h2>
                 </motion.div>
@@ -988,23 +1174,17 @@ export function SearchOverlay({
                   </AnimatePresence>
                 </div>
               </motion.div>
-              <motion.div style={{ height: stepsH, opacity: stepsOp }} className="overflow-hidden px-3">
-                <div className="pt-2.5">{collapsedRow("location")}</div>
-                <div className="pt-2.5">{collapsedRow("date")}</div>
-              </motion.div>
-              <motion.div style={{ height: footerH, opacity: stepsOp }} className="shrink-0 overflow-hidden">
-                {footerInner}
+              <motion.div style={{ opacity: svcFaceOp, pointerEvents: svcFaceHit }} className="absolute inset-x-0 top-0">
+                {collapsedFace("service")}
               </motion.div>
             </motion.div>
-          ) : (
-            <motion.div key={activeStep} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: reduce ? 0 : 0.26, ease: EASE }}
-              className="flex min-h-0 flex-1 flex-col px-3 pt-3">
-              {STEPS.map((s) =>
-                s !== activeStep ? (
-                  <div key={s} className="mb-2.5 shrink-0">{collapsedRow(s)}</div>
-                ) : s === "location" ? (
-                  <div key={s} className="mb-2.5 flex min-h-0 flex-1 flex-col overflow-hidden rounded-[20px] bg-white p-4 shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
+          </motion.div>
+
+          {/* R7 slot 2 of 3: WO?. `mx-3` is the same 12px inset `cardMx` rests at, so the three
+              cards share one left/right edge in every state. */}
+          <motion.div style={{ height: locH, paddingTop: rowGapTop }} className="shrink-0 overflow-hidden">
+            <motion.div style={{ opacity: locSlotOp }} className="relative mx-3 h-full overflow-hidden rounded-[20px] bg-white shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
+              <motion.div style={{ opacity: locT, pointerEvents: locBodyHit }} className="absolute inset-0 flex flex-col p-4">
                     {/* C7 (round 2, "does not expand or close"): root cause was that once a
                         step is active, its OWN heading had no click handler , the only way
                         back to the composed view was tapping the DIFFERENT "Suche" collapsed
@@ -1022,7 +1202,7 @@ export function SearchOverlay({
                           carve-out as the service query input above (V3-D-input-fill-2026-07-17). */}
                       <input ref={cityRef} value={cityQ} onChange={(e) => setCityQ(e.target.value)}
                         placeholder={citySearchPlaceholderTxt} aria-label={citySearchPlaceholderTxt}
-                        className="min-w-0 flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[15px] text-s-ink placeholder:text-s-ink-2 focus:outline-none focus-visible:outline-none" />
+                        className="min-w-0 flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[16px] text-s-ink placeholder:text-s-ink-2 focus:outline-none focus-visible:outline-none" />
                       {cityQ.length > 0 && (
                         <button onClick={() => { setCityQ(""); cityRef.current?.focus(); }} aria-label="Eingabe loeschen" className="shrink-0 text-s-ink-2">
                           <X size={18} strokeWidth={2.2} />
@@ -1030,9 +1210,19 @@ export function SearchOverlay({
                       )}
                     </div>
                     <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">{cityList()}</div>
-                  </div>
-                ) : (
-                  <div key={s} className="mb-2.5 flex flex-col overflow-hidden rounded-[20px] bg-white px-4 pb-3 pt-4 shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
+              </motion.div>
+              <motion.div style={{ opacity: locFaceOp, pointerEvents: locFaceHit }} className="absolute inset-x-0 top-0">
+                {collapsedFace("location")}
+              </motion.div>
+            </motion.div>
+          </motion.div>
+
+          {/* R7 slot 3 of 3: WANN?. `pb-5` is the 20px tail the old fixed `stepsH` literal
+              (ROW_H * 2 + 20) carried, kept so the footer lands on exactly the same y as
+              before this rewrite. */}
+          <motion.div style={{ height: dateH, paddingTop: rowGapTop, paddingBottom: rowGapBottom }} className="shrink-0 overflow-hidden">
+            <motion.div style={{ opacity: dateSlotOp }} className="relative mx-3 h-full overflow-hidden rounded-[20px] bg-white shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
+              <motion.div style={{ opacity: dateT, pointerEvents: dateBodyHit }} className="absolute inset-0 flex flex-col px-4 pb-3 pt-4">
                     {/* C7: same accordion-collapse as the location heading above. */}
                     <button type="button" onClick={() => openStep("service")}
                       className="mb-2 flex shrink-0 items-center justify-between text-left">
@@ -1052,7 +1242,11 @@ export function SearchOverlay({
                         {tabFlexibleTxt}
                       </button>
                     </div>
-                    <div ref={dateScrollRef} className="overscroll-contain">
+                    {/* R7: the calendar scrolls inside its own card now that the card fills a
+                        sized slot , with the keyboard up the sheet can be short enough that a
+                        6-row month plus the time chips would otherwise be clipped by the card's
+                        own overflow-hidden with no way to reach them. */}
+                    <div ref={dateScrollRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
                       <AnimatePresence mode="wait" initial={false}>
                         {dateTab === "daten" ? (
                           <motion.div key="daten" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.18 }}>
@@ -1124,16 +1318,22 @@ export function SearchOverlay({
                         )}
                       </AnimatePresence>
                     </div>
-                  </div>
-                ),
-              )}
-              <div className="shrink-0">{footerInner}</div>
+              </motion.div>
+              <motion.div style={{ opacity: dateFaceOp, pointerEvents: dateFaceHit }} className="absolute inset-x-0 top-0">
+                {collapsedFace("date")}
+              </motion.div>
             </motion.div>
-          )}
-          </AnimatePresence>
-        </motion.div>
+          </motion.div>
+
+          {/* R7: ONE footer for every step (it used to be duplicated in both panels, at two
+              different heights). It still folds away with the focus expand. */}
+          <motion.div style={{ height: footerH, opacity: stepsOp }} className="shrink-0 overflow-hidden">
+            {footerInner}
+          </motion.div>
+          </motion.div>
+        </>
       )}
-    </AnimatePresence>,
+    </>,
     document.body,
   );
 }

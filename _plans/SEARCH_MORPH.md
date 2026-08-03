@@ -380,16 +380,107 @@ Read off his frames (8fps overview sheet):
   is not any intended resting state.
 
 ### CORRECTION boxes, round 3
-- [ ] R1. Tapping the search bar NAVIGATES to `/search?compose=1` instead of opening in place. He
+- [x] R1. Tapping the search bar NAVIGATES to `/search?compose=1` instead of opening in place. He
       never asked for a second page and does not want one. The home pill is a `<Link>`, so the tap is
       a route change. Make it open the overlay over the current page, no URL page-swap.
-- [ ] R2. A blank white screen appears mid-transition (his 5.0s frame).
-- [ ] R3. Keyboard behaviour while open is wrong and buggy.
-- [ ] R4. Too snappy now, and it breaks scrolling; the page also reads as zoomed in.
-- [ ] R5. Not morphing smoothly.
-- [ ] R6. Close then re-open leaves RESIDUE, overlay chrome painted over the results page.
-- [ ] R7. Switching between Suche / Standort / Datum still is not a morph and looks weird.
-- [ ] R8. Tapping a store or suggestion inside the open search looks weird.
-- [ ] R9. **Frame-by-frame, on OUR build, not just the reference.** He has now said this twice.
-- [ ] R10. I gave him a link without running the click-everything sweep first. Run it before the
+      FIXED: HomeSearchPill.tsx mounts the SAME shared SearchOverlay and opens it in place. Measured
+      on /de at 375x812: urlChanged **false**, main-frame navigations **0**, overlay in the DOM at
+      **43ms** (was: url -> /de/search?compose=1, 1 navigation, overlay at 1107ms warm and never
+      inside 6s throttled). `?compose=1` has no producer left; the receiver stays as a deep link.
+- [x] R2. A blank white screen appears mid-transition (his 5.0s frame).
+      FIXED BY R1, same root cause. The home document is never torn down now: `document.body.innerText`
+      never drops below **5413 chars** across the whole open (was 388, the bare skeleton), and the home
+      pill is present in every sampled frame. `app/[locale]/search/loading.tsx` is off the tap path.
+- [x] R3. Keyboard behaviour while open is wrong and buggy.
+      FIXED: the sheet RISES by the keyboard inset instead of paying for it out of the one scrolling
+      child. Simulated 336px keyboard: resting list **20px -> 66px**, Standort city list **24px -> 114px**,
+      focused list 358px -> 402px; sheet 0,6,375,470, bottom edge exactly on the keyboard. Restores
+      cleanly (0,96,375,716). `visualViewport` `scroll` + `offsetTop` are now read, not just `resize`.
+      Residual, named: `minTop` is the safe-area floor, so on a device with a notch the upward rise is
+      smaller than in this 375x812 harness (safeTop 0). The bottom-edge half is device-independent.
+- [x] R4. Too snappy now, and it breaks scrolling; the page also reads as zoomed in.
+      FIXED (zoom): the overlay input was 15px, under iOS's 16px auto-zoom threshold -> now 16px, and
+      the sheet sizes off the LAYOUT viewport, so a zoom no longer shrinks it: at page scale 2 the sheet
+      measures **0,96,375,716** (was 188x310 in a 375x812 screen).
+      FIXED (scroll): EXPAND_DIST 120 -> 320. Content-vs-finger runaway **2.35x -> 1.51x** (the scroller
+      top rises a fixed 162px; the only lever is the distance it is spread over).
+- [x] R5. Not morphing smoothly.
+      Traced per frame on OUR build (see R9). Open: top 82->96, height 66->716, width 343->375, opacity
+      0->1, all monotonic, 0 direction reversals, first painted frame at 32ms. Close: 716->66 monotonic,
+      last painted frame 342ms. The step change is now continuous too (R7). Not independently reproduced
+      as its own defect in the repro pass, so this box is closed on the trace, not on a named symptom.
+- [x] R6. Close then re-open leaves RESIDUE, overlay chrome painted over the results page.
+      FIXED: one lifecycle. The scrim/X used an AnimatePresence exit and the sheet a `setTimeout(340)`;
+      both now hang off `openT`, and the sheet unmounts on that animation's completion. Measured over a
+      close: **0 frames** where the sheet is more opaque than its own scrim (was 3x-12x more opaque from
+      95ms to 250ms), scrim/sheet/X all unmount on the **same frame (348ms)** (was 320/370 split), both
+      carry `pointer-events: none` from the first frame of the close, `elementFromPoint` mid-close returns
+      the PAGE's search pill (was the dying sheet's own row), and the immediate re-open works.
+- [x] R7. Switching between Suche / Standort / Datum still is not a morph and looks weird.
+      FIXED: the two structurally different panels are gone. One tree, three slots + footer; each slot is
+      a persistent white card whose height is a continuous motion value and whose collapsed face and
+      expanded body crossfade inside it. Measured over all four step changes, 60-probe composite-alpha
+      grid, ~85 frames each: **0 frames with any translucent probe** (was 100% of the sheet below alpha
+      0.98 for 136ms, worst 0.372, plus alpha-0 holes on the commit frame). Slot heights sum to the sheet
+      exactly (716 = 716). Geometry unchanged: card 12,96,351,496; rows y602 / y668; footer y744.
+      Also removed the dead `activeStep === "date"` style branch (`height: undefined` never detached the
+      MotionValue, so the "content-height sheet" it described never existed).
+- [x] R8. Tapping a store or suggestion inside the open search looks weird.
+      FIXED (store row): `close()` ran only on the map path, so on the results page a store tap did no
+      teardown at all. Now every row type tears down the same way. Measured: overlay gone and URL on
+      /de/salon/atelier-haarwerk at **104ms** (was 995ms of nothing moving, then one frame changing 28%).
+      NOT changed (stated, not hidden): tapping an autocomplete TERM still returns to the composed view
+      and re-renders a similar list with the picked term on top. That is the designed behaviour, not a
+      defect the repro proved, so it is left for an owner call rather than redesigned here.
+- [x] R9. **Frame-by-frame, on OUR build, not just the reference.** He has now said this twice.
+      Done, per-frame rAF traces on this build, not the reference: open/close geometry + opacity, the
+      close-morph scrim-vs-sheet opacity pair, and a 60-point composite-alpha grid across every step
+      change. Numbers in the boxes above.
+- [x] R10. I gave him a link without running the click-everything sweep first. Run it before the
       next link, and treat that as the close condition, not tsc.
+      Done before the link: home -> open -> Wo? -> Wann? -> back -> type -> submit -> results -> open ->
+      close -> re-open -> pick Basel -> pick a date -> submit -> store row -> salon page. 17 screenshots
+      at /tmp/claude-501/searchfix/. URL only ever changes on a real submit; `?q=cut`, then
+      `?q=cut&city=Basel&date=2026-08-11`. No page errors; the only console error is a pre-existing 401.
+      FOUND, NOT FIXED (out of the named scope, and it is the consent component): the cookie banner
+      (`app/[locale]/_components/primitives/CookieConsent.tsx:230`, `z-tooltip`) paints OVER the search
+      sheet and covers its footer. Pre-existing, visible in the round-2 residue frames too. It needs an
+      overlay-open signal, not a pathname test, so it wants its own call.
+
+## ROUND 3 RESULT 2026-08-03 (workflow wf_7d6e0ad6-4fb, 7 agents, adversarial verify + full sweep)
+
+8 of the 10 verified FIXED by an adversarial verifier that was told to refute them: R1 (the home pill
+no longer navigates, 0 main-frame navigations, URL stays /de), R2 (body text never drops to the
+388-char skeleton again, because no document is torn down), R3, R4 (body styles restore byte-identical
+after 3 open/close cycles), R5, R7, R8. All six round-2 wins re-measured and NOT regressed, including
+the rejected ink focus border staying dead at 1px #E4E4E7 in both states.
+
+**Two survived, and both are worse than they looked.**
+
+- **R6 residue, real cause finally named.** Node counts are clean (1/1/1/1 open, 0/0/0/0 closed), so
+  the earlier "stale node" theory was wrong. The actual defect: the sheet root computes
+  `pointer-events:none` during the close, but a DESCENDANT sets `auto`, and a descendant's `auto`
+  overrides an ancestor's `none`. The dying sheet morphs back onto the pill's own rect and keeps
+  hit-testing there for the full 333ms. Measured: a real tap on the pill at close+60ms, +150ms and
+  +260ms delivered **0** click events and re-opened nothing; the same tap at +400ms worked. 54% of
+  the viewport is dead at +30ms.
+- **The cookie banner hijacks the search submit.** `CookieConsent.tsx:230` is `z-tooltip` = 700
+  against the sheet's 101. On a FIRST visit the banner covers 144px of the sheet and
+  `elementFromPoint` at the Suchen button's own centre returns the banner's "Alle akzeptieren".
+  **Tapping Suchen grants cookie consent and never searches. Tapping Zuruecksetzen picks "Nur
+  notwendige".** This is why his own recording has the banner in frame.
+
+### Sweep found 7 more, none of them style opinions
+- [ ] S1. Cookie banner reroutes Suchen and Zuruecksetzen (above). Blocker.
+- [ ] S2. `InvalidStateError: Transition was aborted` + duplicate `vt-salon-*` view-transition-name on
+      back-navigation from a salon page. 2/2 reproducible.
+- [ ] S3. With the keyboard up the close-X is `opacity 0` but `pointerEvents:auto` and sits over the
+      search field's right end. Tapping to move the caret destroys the overlay and the typed query.
+- [ ] S4. Date and period survive close+reopen while everything else is re-seeded, so an abandoned
+      date is silently applied to the next search.
+- [ ] S5. A zero-match query renders NO empty state; it falls through to the unrelated "Fuer dich"
+      grid, so a failed search looks like a successful one. The locked mockup HAS this state.
+- [ ] S6. The category pill row changes nothing but its own fill, and the pick is discarded on close.
+- [ ] S7. 48 focusable controls in the collapsed Wo?/Wann? bodies stay keyboard and screen-reader
+      reachable while invisible and untouchable.
+- [ ] S8. R6's pointer-events leak (above).
