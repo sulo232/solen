@@ -786,13 +786,19 @@ export default function Header({ locale }: { locale: string }) {
             className={cn(
               // mockup-ok: S3 fix, 40px -> 44px floor, icon glyph size unchanged (approved fixes-refined)
               // mockup-ok: rounded snapped, punch-list geometry sweep, TASTE_LOG.md:187 2026-07-15
-              "grid h-11 w-11 shrink-0 place-items-center rounded-input border",
+              // 2026-08-03, owner: "why is the fucking back button still like that".
+              // Measured on IMG_6901: their back control is a CIRCLE, 119px = 39.7pt
+              // across, filled #F2F2F2, with NO border, glyph 14.0 x 12.3pt inside.
+              // Ours was a 44px rounded SQUARE with a visible hairline, which is why
+              // it never read like the reference. Circle, tinted fill, no border. The
+              // 44px box stays because the touch-target floor outranks matching 40.
+              "grid h-11 w-11 shrink-0 place-items-center rounded-full border-0", // mockup-ok: airbnb--profile-list.md IMG_6901 back circle, measured
               "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.94]",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
               isDark
                 ? "border-white/30 bg-white/10 text-white hover:bg-white/20"
-                : "border-s-border bg-white text-s-ink hover:border-s-ink",
+                : "bg-[#F2F2F2] text-s-ink hover:bg-s-border", // mockup-ok: measured #F2F2F2 fill, IMG_6901
             )}
           >
             <ArrowLeft size={22} strokeWidth={2.2} aria-hidden />

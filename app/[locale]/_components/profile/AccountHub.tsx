@@ -232,7 +232,11 @@ function Row({
 }) {
   return (
     <Link href={href} className="flex items-center gap-[14px] px-4 py-[15px] transition-transform duration-150 active:scale-[0.99]">
-      <span className="grid h-[38px] w-[38px] shrink-0 place-items-center rounded-[14px] bg-s-bg-sunken text-s-ink">
+      {/* 2026-08-03, owner: "the icon sh remove" and "that weird gray and gray thingy". Measured on
+          IMG_6900: Airbnb's rows carry a BARE glyph, ink bbox 21-23pt, sitting on white with no
+          tile behind it. A 38x38 `bg-s-bg-sunken` square behind every icon is also the dead-grey
+          FLOORS LAW 4 forbids. Tile removed, glyph kept at the reference's own size. */}
+      <span className="grid h-[22px] w-[22px] shrink-0 place-items-center text-s-ink"> {/* mockup-ok: bare glyph, no tile, per airbnb--profile-list.md IMG_6900 */}
         <Icon size={19} strokeWidth={1.9} className={iconClassName} aria-hidden />
       </span>
       <span className="min-w-0 flex-1">
