@@ -862,3 +862,38 @@ settle which one gives. Flagged rather than silently picking a side.
 
 - [ ] F3. OWNER CALL: match the reference's 82pt card-top travel (which moves the accepted focused
       bar position), or keep the accepted bar position (which keeps our travel at ~14px).
+
+## CORRECTION 2026-08-03: my "empty container travels" finding was WRONG, and I built the opposite
+
+He recorded a second reference on purpose (`/Users/sulo/solen/screenshots/airbnb-open-ref_2026-08-03.MP4`,
+60fps). I extracted the open (3283ms to 3650ms, ~370ms) at 60fps and LOOKED at the frames instead of
+only sampling ink bands. What they actually show:
+
+| t | what is on screen |
+|---|---|
+| 3266 | home, sharp, "Start your search" pill |
+| 3316 (+50) | the pill has grown into a card IN PLACE, showing the old label AND the new "Where?" + field ghosted on top of each other, page behind already blurring |
+| 3366 (+100) | card much larger, "Where?" + field + "Recent searches" + Kranj all present at LOW opacity, X appearing |
+| 3416 (+150) | nearly full size, content still ghosted, tab row fading in above |
+| 3466 to 3566 | the same content getting progressively more opaque |
+| 3666 | settled, fully opaque |
+
+**The content is present and ghosted from 50ms onward. It never goes blank.** The open is ONE
+simultaneous move: the container grows out of the pill while its contents cross-fade from the old
+label to the new content and the page behind blurs. Continuous, not staged.
+
+**Why my previous reading was wrong, named plainly.** I measured ink density in FIXED horizontal
+bands in screen space while the card was still moving through them. At 200 and 250ms those bands were
+pointing at parts of the screen the card had not reached yet, so they read 0.000 and I called it "an
+empty container travelling". The measurement was real; the attribution was not. That is the exact
+failure the measurement-scope gate exists for, and I walked into it.
+
+**Consequence: what shipped in d5022fcaa is the OPPOSITE of the reference.** It pins the heading,
+field and list at exactly 0.000 for the first ~100ms and staggers them in afterwards. The reference
+never blanks anything.
+
+- [ ] G1. Revert the staged blank-then-stagger and rebuild the open as ONE simultaneous move:
+      container grows from the pill rect while its contents cross-fade in from the first frame and
+      the backdrop blurs, all on the same progress value, ~370ms.
+- [ ] G2. The old label and the new content OVERLAP during the cross-fade (visible at 3316ms), rather
+      than one finishing before the other starts.
