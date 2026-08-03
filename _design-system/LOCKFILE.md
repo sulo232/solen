@@ -429,7 +429,7 @@ not law debt, listed in the 2026-08-03 law-pass report.
 
 ### Escape hatch
 
-One-off campaign-style decorative type → use `style={{}}` inline + `// V3-D{n}: justification` comment + add to `_design-system/_drift-acks.json`. Same pattern as the `ALLOWED_HEX` allowlist in `check.py`.
+One-off campaign-style decorative type → use `style={{}}` inline + `// V3-D{n}: justification` comment + put **`drift-ok: <reason>` on the same line**. (Pointer corrected 2026-08-03: `_design-system/_drift-acks.json` does not exist and no tool has ever read it , the real acknowledgement mechanism is the inline `drift-ok` marker, honoured by `.claude/skills/solen-drift-check/scripts/check.py:775`, `.claude/hooks/pre-edit-drift-gate.sh` and `.claude/hooks/card-radius-gate.py`. For a hex specifically, the second mechanism is the `ALLOWED_HEX` set in that same `check.py`.)
 
 ---
 

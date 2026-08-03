@@ -30,7 +30,9 @@ When two docs disagree on a value:
 1. **Code wins over docs** (the running app is the ground truth — fix the doc).
 2. **Among docs, this SOURCE.md wins.** It's the most recent, the most complete, the only one designed to be the canonical reference.
 3. **`_rules/SOLEN_UI.md` is orthogonal** — it covers principles, not tokens. If it mentions a specific hex value, prefer this file's value.
-4. **Per-component `.md` files override SOURCE.md only for their own component's specifics** (e.g. SaveHeart's 28px hit-area is documented in `components/SaveHeart.md`, not here). They never override systemic rules (tokens / type / motion / a11y).
+4. **Per-component `.md` files override SOURCE.md only for their own component's specifics** (e.g. SaveHeart's 28px compact variant is documented in `components/HeartButton.md`, not here , pointer
+   corrected 2026-08-03: there is no `components/SaveHeart.md`; `SaveHeart` is a private variant of
+   `HeartButton` and lives in that file's Variants section). They never override systemic rules (tokens / type / motion / a11y).
 5. **Archived files** (`_tasks/archive/*`) are read-only history. Do NOT use as a reference for current state — they describe retired eras.
 
 ### Drift between this doc and code

@@ -55,7 +55,9 @@ the owner's word for it was "raggedy". One property is a fade. Three is a materi
 was *imperceptible* to the owner and got reverted. Opacity alone is invisible; scale alone reads as
 a zoom; blur is what makes the element feel like it resolves into place. Perceptibility is the point.
 
-**Enforced, not advised:** `.claude/hooks/motion-recipe-gate.py` (PreToolUse) BLOCKS a net-new
+**Enforced, not advised:** `~/.claude/hooks/motion-recipe-gate.py` (PreToolUse; path corrected
+2026-08-03 , the gate is GLOBAL, there is no project-local copy, and this line's old
+`.claude/hooks/...` path pointed at nothing) BLOCKS a net-new
 framer-motion entrance in `app/**` or `components*/**` that animates opacity without scale AND blur.
 Legitimate exception (a backdrop/scrim fade, a colour cross-fade): put `motion-ok: <reason>` on the line.
 
