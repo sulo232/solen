@@ -553,6 +553,26 @@ Alternate gray ↔ white down a page for rhythm. **Never** the whole app gray; n
 
 ### State matrix (ENFORCED — every interactive primitive)
 
+> **TWO COLUMNS OF THIS TABLE ARE SUPERSEDED. Read this before copying a cell (noted 2026-08-03,
+> weekly law pass; no value elsewhere in the table changed).**
+>
+> - **`focus` column — DEAD, all rows.** Every cell says `ring-2 s-accent`. The owner killed focus
+>   rings three times (2026-07-01, 2026-07-02, and finally 2026-07-17, verbatim on the input-fill
+>   decision: *"for input decision both a and b2 was the problem i hated that sh"*), and
+>   `~/.claude/hooks/no-focus-ring-gate.py` is wired PreToolUse and BLOCKS any `ring-*` utility in a
+>   UI file. **Current law, which supersedes this column:** inputs get ONE ink edge,
+>   `border-s-ink` (#0A0A0A) + white fill, no halo, set globally in `globals.css`
+>   (`input:focus-visible`, unlayered on purpose) and primitives add no extra `outline`; buttons and
+>   links get the global 2px **ink** `outline`. Same wording as the CLAUDE.md `focus` contract row.
+> - **`selected` column — dead for Card and List row.** `ring-2 s-ink` (Card) and
+>   `bg-s-accent-bg` + accent text (List row) both predate the owner's 2026-06-29 selected/active
+>   law, which this same file already states at §13.1 item 3: every selected state except four named
+>   exceptions is calm GRAY fill `bg-s-bg-sunken` + `text-s-ink` + semibold over white, menu/list
+>   options adding a check. That §13.1 paragraph **supersedes** these two cells; the four exceptions
+>   (the ONE commit button, booking date/slot blue, the avatar `SelectedCheckBadge`, the booking
+>   category pill) are listed there, not here. The Photo chip scrim and the pressed/hover/rest/
+>   disabled columns are unaffected.
+
 | Element | rest | hover | pressed | selected | focus | disabled |
 |---|---|---|---|---|---|---|
 | **Card** | white + `elevation-1` | `translateY(-2px)` + `elevation-2` | `scale(.985)` + `elevation-1` | `ring-2` s-ink + `elevation-2` | `ring-2` s-accent, offset-2 | `opacity .45`, no shadow |
