@@ -164,7 +164,13 @@ export default function AccountHub({
         <Row
           href={p("/profile/favorites")}
           icon={Heart}
-          iconClassName="text-[#FF3366]"
+          // 2026-08-03, owner: "remove pink sh bit looks so out of place", and again on seeing it
+          // survive: "why is heart icon pink n how did u not flag it ever". He is right twice. It
+          // was removed from a MOCKUP and never from this component, so the live page kept it.
+          // Measured on IMG_6900: Airbnb's account rows carry no chromatic icon at all, every glyph
+          // is ink. #FF3366 stays the save-heart token everywhere it means "saved by you"; on a
+          // navigation row it is decoration, and this row is navigation.
+          iconClassName="text-s-ink" // mockup-ok: account-row glyphs are ink, airbnb--profile-list.md IMG_6900
           label={t("tabSaved")}
           sub={tProfile("salonsCount", { count: favoritesCount })}
         />
