@@ -634,3 +634,23 @@ he answered "C". Applied to `MORPH_EASE`, SearchOverlay.tsx:73.
 
 Measured on the real overlay at 375x812, zero page errors, and the URL stayed `/de` through the open
 so the in-place fix is not disturbed.
+
+## OWNER SHOTS 2026-08-03, the keyboard-up state (5 screenshots, no text)
+
+Every defect is in the KEYBOARD-UP state, which none of the previous rounds rendered with a keyboard.
+Files in `/Users/sulo/.claude/uploads/1c4aafb4-f426-493f-b8e6-885ee10cdf1b/`.
+
+- [ ] K1. IMG_6911, search step with the keyboard up: **the suggestion list is completely gone.** The
+      card ends under the field, then Wo?/Wann?, then a dead blurred band, then the footer on the blur.
+- [ ] K2. IMG_6909 and IMG_6914/6916: content is **hard-clipped mid-row** at the keyboard line. The
+      "Coiffeur" row is sliced through; the city list is clipped at BOTH ends with 1-2 cities visible.
+- [ ] K3. A large **dead blurred band** sits between the last card and the footer, and the footer
+      floats on the blur with no surface under it.
+- [ ] K4. Owner choice, mocked not asked: does the list scroll UNDER the keyboard (what the Airbnb
+      shot does) or does the sheet shrink to sit above it.
+- [ ] K5. Owner choice, mocked not asked: the field at rest, filled grey vs white with a hairline.
+
+PIL-measured on the two focused shots: Airbnb card top edge **62.3pt**, ours **51.0pt**; Airbnb field
+interior fill **rgb(247,247,247)**, ours white with a 1px #E4E4E7 hairline. Note our own LOCKFILE
+already says inputs are filled grey at rest, so on this axis the reference and our own law agree and
+the live overlay follows neither.
