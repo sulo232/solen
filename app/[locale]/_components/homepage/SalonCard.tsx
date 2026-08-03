@@ -429,12 +429,22 @@ export function SalonCard({
           "group-hover:-translate-y-[3px] group-hover:scale-[1.015]",
           "group-hover:shadow-elevation-3",
         )}
+        // S2 (2026-08-03): the name is CARRIED here, not APPLIED here. It used to be an inline
+        // `viewTransitionName: vt-salon-${slug}` on every card, and the comment that sat here
+        // claimed a repeated slug merely "falls back to the default cross-fade (harmless)".
+        // Measured on /de: 20 slugs rendered more than once (atelier-haarwerk 4x, glow-lab-basel
+        // 3x, pink-petal-nails 3x, blade-and-stone 3x), and the real browser behaviour is not a
+        // harmless fallback , Chrome logs "Unexpected duplicate view-transition-name: ..." and
+        // ABORTS the whole transition with "InvalidStateError: Transition was aborted"
+        // (reproduced 2/2 on /de -> open overlay -> type "cut" -> tap a card -> history.back()).
+        // A view-transition-name must be unique per document, so no card claims one at rest;
+        // PageTransition.tsx puts it on the ONE card being activated, in the click's capture
+        // phase, before next-view-transitions calls startViewTransition. Exactly one element can
+        // then carry it, so the card the user actually tapped still morphs into the PDP hero
+        // (SalonHero.tsx, same `vt-salon-${slug}`) and no other card can collide with it.
+        data-vt-salon={`vt-salon-${slug}`}
         style={{
           backgroundColor: cat.bg,
-          // 16.3: shared-element name; PDP hero carries the same name. Unique per
-          // slug — if a salon appears twice on one page, the browser skips that
-          // name's morph and falls back to the default cross-fade (harmless).
-          viewTransitionName: `vt-salon-${slug}`,
         }}
       >
         {/* V3-D101 (2026-05-22): stock photos restored per user. Falls back to

@@ -12,7 +12,16 @@ import * as React from "react";
  *
  * Hits `/api/search/suggest?q=X[&city=Y]` (which was already shipping —
  * V2-D51 Phase 1 augmented its response with `address`, `cover_photo_url`
- * fix, and a new `stylists` group).
+ * fix, and a new `stylists` group). `category` is sent too, see below.
+ *
+ * S6 (2026-08-03): `category` was the one param the route already read
+ * (`app/api/search/suggest/route.ts` passes it to the `search_suggest` RPC as
+ * `p_category`, which gates all three groups: `services.category = p_category`,
+ * `salons.categories @> array[p_category]`, and stylists via their salon's
+ * categories) and this hook never sent. That is why the SearchOverlay category
+ * pill row changed nothing but its own fill. Same salon-category taxonomy on
+ * both ends (coiffeur / barbershop / nails / spa, `SALON_CATEGORY_SLUGS`), NOT
+ * the discovery taxonomy, and measured discriminating before wiring.
  */
 
 export type ServiceResult = {
@@ -66,7 +75,7 @@ export type SearchSuggestState = {
 
 export function useSearchSuggest(
   query: string,
-  opts?: { city?: string; debounceMs?: number }
+  opts?: { city?: string; category?: string; debounceMs?: number }
 ): SearchSuggestState {
   const [state, setState] = React.useState<SearchSuggestState>({
     results: EMPTY,
@@ -89,6 +98,7 @@ export function useSearchSuggest(
       try {
         const params = new URLSearchParams({ q: trimmed });
         if (opts?.city) params.set("city", opts.city);
+        if (opts?.category) params.set("category", opts.category);
         const res = await fetch(`/api/search/suggest?${params.toString()}`, {
           signal: ac.signal,
         });
@@ -113,7 +123,7 @@ export function useSearchSuggest(
       clearTimeout(timer);
       ac.abort();
     };
-  }, [query, opts?.city, opts?.debounceMs]);
+  }, [query, opts?.city, opts?.category, opts?.debounceMs]);
 
   return state;
 }

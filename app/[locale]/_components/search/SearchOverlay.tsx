@@ -56,6 +56,9 @@ import {
 } from "../homepage/useRecentSearches";
 import { useRecentlyViewed } from "../homepage/useRecentlyViewed";
 import { Skeleton } from "@/app/[locale]/_components/primitives";
+// S5: the locked shared empty state (design contract "states" row, COMPONENT_REGISTRY),
+// the same one 19 other surfaces import. Not a hand-rolled one-off.
+import EmptyState from "@/components-legacy/ui/EmptyState";
 import { localizedField } from "@/lib/i18n/localized-field";
 
 // ── Constants ────────────────────────────────────────────────────────────────
@@ -201,7 +204,20 @@ export function SearchOverlay({
   const [hiddenRecents, setHiddenRecents] = React.useState<Set<number>>(new Set());
   const { items: _recentlyViewed } = useRecentlyViewed(4); // preserved hook call
 
-  const { results, loading } = useSearchSuggest(open ? serviceQ : "", { city: stadt || undefined });
+  // S6 (2026-08-03, owner decision): a category pill tap FILTERS the list underneath
+  // immediately. `category` is the SAME state slice the pill row already wrote and the
+  // same one buildParams already turns into `?category=` on submit , no second taxonomy,
+  // no second state. The only missing wire was this param: /api/search/suggest already
+  // read `category` and handed it to the search_suggest RPC as `p_category`, but
+  // useSearchSuggest never sent it, which is why the pills changed nothing but their own
+  // fill. Proven to DISCRIMINATE against the live seed before wiring (q=haar: 5 services
+  // across spa+coiffeur unfiltered, 5 coiffeur-only + 2 salons at category=coiffeur,
+  // 1 spa service + 0 salons at category=spa, 0/0/0 at category=nails), so this is a real
+  // subset and not the silent no-op a discovery-vs-salon taxonomy mismatch would produce.
+  const { results, loading } = useSearchSuggest(open ? serviceQ : "", {
+    city: stadt || undefined,
+    category: category || undefined,
+  });
   // B3.3 (_plans/SEARCH_MAP_OVERHAUL.md): street/place -> city pick-list. Restricted server-side
   // to enabled cities; empty candidates just fall through to the other suggestion groups below.
   const { candidates: geoCandidates, loading: geoLoading } = useGeocodeSuggest(open ? serviceQ : "");
@@ -239,24 +255,43 @@ export function SearchOverlay({
   // (SuggestRow only renders `sub` when it is set), so a slow/failed fetch
   // just shows the name until it resolves rather than a wrong address.
   const [featuredAddress, setFeaturedAddress] = React.useState<Record<string, string>>({});
+  // S6 (2026-08-03): the ids this SAME fetch came back with. When a category pill is
+  // active the request also carries `&category=`, which /api/salons already applies as
+  // `.contains("categories", [category])` on the same query builder as the `ids` filter
+  // (route.ts lines 164 + 177), so the server returns the SUBSET of the featured ids that
+  // are actually in that category and the idle "Beliebte Stores" list narrows with the
+  // suggestions instead of contradicting them. Server-side, not a client-side pass over
+  // one page. null = not resolved yet (render the full list rather than flash to empty).
+  const [featuredMatch, setFeaturedMatch] = React.useState<string[] | null>(null);
   React.useEffect(() => {
     if (!open) return;
     let cancelled = false;
-    const ids = FEATURED_SALONS.map((s) => s.id).join(",");
-    fetch(`/api/salons?ids=${encodeURIComponent(ids)}&limit=${FEATURED_SALONS.length}`)
+    const sp = new URLSearchParams({
+      ids: FEATURED_SALONS.map((s) => s.id).join(","),
+      limit: String(FEATURED_SALONS.length),
+    });
+    if (category) sp.set("category", category);
+    fetch(`/api/salons?${sp.toString()}`)
       .then((res) => (res.ok ? res.json() : Promise.reject(new Error(`status ${res.status}`))))
       .then((data: { items?: { id: string; address?: string | null }[] }) => {
         if (cancelled) return;
         const next: Record<string, string> = {};
         for (const item of data.items ?? []) if (item.address) next[item.id] = item.address;
         setFeaturedAddress(next);
+        setFeaturedMatch((data.items ?? []).map((item) => item.id));
       })
       .catch((err) => {
         if (cancelled) return;
         console.error("[SearchOverlay] featured salons address fetch failed:", err);
       });
     return () => { cancelled = true; };
-  }, [open]);
+  }, [open, category]);
+  // Only a RESOLVED category response narrows the list; with no pill active, or before
+  // the first response lands, the full featured list renders exactly as it did before.
+  const featuredVisible = React.useMemo(
+    () => (category && featuredMatch ? FEATURED_SALONS.filter((s) => featuredMatch.includes(s.id)) : FEATURED_SALONS),
+    [category, featuredMatch],
+  );
 
   // iOS-safe body-scroll lock: overflow:hidden alone doesn't lock iOS or preserve position, so
   // the page scrolled under the overlay (opened mid-page) and lost its spot on close, and the
@@ -296,6 +331,24 @@ export function SearchOverlay({
       setCategory(SALON_CATEGORY_SLUGS.includes(initialService.toLowerCase()) ? initialService.toLowerCase() : "");
       setServiceQ(initialQuery);
       setStadt(initialCity);
+      // S4 (2026-08-03): the date family had no re-seed line here while service /
+      // category / query / city all did, so an ABANDONED date outlived the overlay and
+      // was silently applied to the next search. Measured before this fix: set Nails +
+      // Zuerich + 21. August + Abend, close with the X, reopen, and the three collapsed
+      // faces read ["Suche | Service, Store oder Stylist:in", "Wo? | Basel",
+      // "Wann? | 21. August"] , every other row reset, the date did not. There is no
+      // date prop to re-seed FROM (SearchTemplate passes initialService/initialQuery/
+      // initialCity only), so the symmetric value is empty. This lives in the OPEN
+      // effect rather than in close() because close() is only one of the ways the
+      // overlay shuts: Escape calls onClose() directly (see the keydown effect above)
+      // and the parent can flip `open` on its own, while EVERY path has to come back
+      // through here to reopen.
+      setIsoDate("");
+      setSelKey(null);
+      setDateLabel("");
+      setZeitPeriod("");
+      setDateTab("daten");
+      setMonthOffset(0);
       if (initialFocus === "stadt") setActiveStep("location");
       else if (initialFocus === "zeit") setActiveStep("date");
       else setActiveStep("service");
@@ -570,11 +623,48 @@ export function SearchOverlay({
   const svcFaceOp = useTransform(svcT, inverse);
   const locFaceOp = useTransform(locT, inverse);
   const dateFaceOp = useTransform(dateT, inverse);
-  const hitWhenOpen = (v: number) => (v > 0.5 ? "auto" : "none");
-  const hitWhenShut = (v: number) => (v > 0.5 ? "none" : "auto");
-  const svcBodyHit = useTransform(svcT, hitWhenOpen), svcFaceHit = useTransform(svcT, hitWhenShut);
-  const locBodyHit = useTransform(locT, hitWhenOpen), locFaceHit = useTransform(locT, hitWhenShut);
-  const dateBodyHit = useTransform(dateT, hitWhenOpen), dateFaceHit = useTransform(dateT, hitWhenShut);
+  // S8 / R6 (2026-08-03): the sheet root already computed `pointer-events:none` for the whole
+  // close, but CSS does not let an ancestor's `none` win over a descendant's `auto`, and these
+  // six slot layers set `auto` off their own step transform alone. So the dying sheet, which
+  // morphs back down onto the search pill's own rect, kept hit-testing there for the full 333ms.
+  // Measured before: 67.9% of the 375x812 viewport still resolved to the sheet at close+30ms, and
+  // a real tap on the pill at close+78ms / +171ms / +281ms delivered 0 click events and re-opened
+  // nothing, while the same tap at +421ms worked. `hitGate` is set in the effect below, which
+  // React commits in the same pass that flips `open` to false, so every layer goes `none` when the
+  // close STARTS rather than when it finishes. It stays a motion value (not `open ? x : "none"`)
+  // because swapping a motion value for a static string in `style` does not detach the already
+  // attached value, the same trap R7 documented on `height`. No pixel moves: this changes only
+  // which layer answers a hit test, never a size, a position, or an opacity.
+  const hitGate = useMotionValue(open ? 1 : 0); /* mockup-ok: hit-test gate only, SEARCH_MORPH.md S8/R6, no visual change */
+  React.useEffect(() => { hitGate.set(open ? 1 : 0); }, [open, hitGate]);
+  const hitWhenOpen = (latest: number[]) => {
+    const [v, gate] = latest as [number, number];
+    return gate > 0.5 && v > 0.5 ? "auto" : "none";
+  };
+  const hitWhenShut = (latest: number[]) => {
+    const [v, gate] = latest as [number, number];
+    return gate > 0.5 && v <= 0.5 ? "auto" : "none";
+  };
+  const svcBodyHit = useTransform([svcT, hitGate], hitWhenOpen), svcFaceHit = useTransform([svcT, hitGate], hitWhenShut); /* mockup-ok: hit-test gate only, SEARCH_MORPH.md S8/R6 */
+  const locBodyHit = useTransform([locT, hitGate], hitWhenOpen), locFaceHit = useTransform([locT, hitGate], hitWhenShut); /* mockup-ok: hit-test gate only, SEARCH_MORPH.md S8/R6 */
+  const dateBodyHit = useTransform([dateT, hitGate], hitWhenOpen), dateFaceHit = useTransform([dateT, hitGate], hitWhenShut); /* mockup-ok: hit-test gate only, SEARCH_MORPH.md S8/R6 */
+  // S3 (2026-08-03, round 3 audit): the close-X hit-tests off its OWN opacity now, not off
+  // `open` alone. Measured before this line existed: with the keyboard up (visualViewport 476 of
+  // a 812 layout viewport) the X sat at [319,6,44,44] with computed opacity "0" and
+  // pointerEvents "auto", on top of the search field row [12,22,351,48] , so
+  // `elementFromPoint(351,46)` returned the close button, and a real tap at the right end of the
+  // field (the ordinary way to move the caret) destroyed the overlay and the typed query
+  // (measured after the tap: overlay gone, query ""). An invisible control must not be a target.
+  // `hitGate` is folded in rather than writing `open ? closeXHit : "none"`, because swapping a
+  // motion value for a static string in `style` does NOT detach the already-attached value ,
+  // the exact trap S8 documented one block above and R7 documented on `height`. So the R6 fact
+  // (drop hit-testing the instant `open` flips false, so a tap during the 333ms close cannot
+  // land on the dying overlay) is preserved through the gate, not through a ternary that would
+  // silently keep writing "auto" every frame. No pixel moves.
+  const closeXHit = useTransform([closeXOpacity, hitGate], (latest) => { /* mockup-ok: hit-test only, paints nothing */
+    const [o, gate] = latest as [number, number];
+    return gate > 0.5 && o > 0.05 ? "auto" : "none";
+  });
   // A collapsed row still fades out with the focus expand (what `stepsOp` did); an EXPANDED
   // slot never does, so a step change alone can never fade a card.
   const foldOp = (t: number, so: number) => t + (1 - t) * so;
@@ -586,6 +676,27 @@ export function SearchOverlay({
     const [t, so] = latest as [number, number];
     return foldOp(t, so);
   });
+  // S7 (2026-08-03, round 3 audit): `pointer-events:none` hides a control from the FINGER only.
+  // Measured before this block existed, overlay open on the service step: 72 controls were
+  // invisible on screen yet still tabbable and still in the accessibility tree , the entire Wo?
+  // body (its city input and every city row) and the entire Wann? body (29 calendar day cells,
+  // the month arrows, the period chips), all sitting hundreds of px below the viewport inside
+  // their collapsed slots. They cannot be unmounted: the morph is one continuous transform over
+  // ONE DOM tree and every slot has to stay in it. `inert` is exactly that tool , it takes a
+  // still-rendered subtree out of the focus order and out of AT while changing no layout and
+  // painting nothing, so the morph is byte-identical. The same file already uses it on the
+  // collapsed time chips (`inert={!selKey}` in the calendar below), so this is that pattern
+  // applied to the three slots that needed it.
+  //
+  // `rowsFolded` is the one fact the React tree could not already see. `expand` is a MotionValue,
+  // so when the two collapsed rows and the footer fold to zero height on focus, no state knows
+  // and their faces/buttons stay tabbable inside a zero-height overflow-hidden box. It flips at
+  // 0.8, the SAME endpoint rowLocH / rowDateH / footerH already finish folding at, and it drives
+  // nothing but the `inert` attribute , no size, no position, no opacity, so this is not a
+  // second layout threshold.
+  const [rowsFolded, setRowsFolded] = React.useState(false);
+  React.useEffect(() => expand.on("change", (v) => setRowsFolded(v >= 0.8)), [expand]);
+
   // R6 (2026-08-02 round 3): ONE lifecycle for the whole overlay. `mounted` used to be two
   // independent clocks , an AnimatePresence exit owning the scrim and the close-X, and a
   // `setTimeout(340)` owning the sheet , so the scrim and X unmounted at ~320ms while the
@@ -756,6 +867,10 @@ export function SearchOverlay({
   const looksLabelTxt           = t("looksLabel");
   const forYouTxt               = t("forYou");
   const seeAllResultsTxt        = t("seeAllResults");
+  // S5: both strings already existed in messages/{de,en,fr,it}.json under this same
+  // namespace and were unused by any file; no new copy invented. `noMatchBody` takes a
+  // {query} placeholder so it is called at the use site with the live query, not here.
+  const noMatchTitleTxt         = t("noMatchTitle");
 
   const flexDates = React.useMemo(
     () => [todayTxt, tomorrowTxt, flexThisWeekTxt, flexWeekendTxt, flexThisMonthTxt, flexFlexibleTxt],
@@ -880,6 +995,25 @@ export function SearchOverlay({
         .filter((x) => x.toLowerCase() !== qNorm)
         .slice(0, 5);
       const looks = inspoLooks; // real Inspo-feed looks (rich images), not style-suggest thumbs
+      // S5 (2026-08-03): a query that matches NOTHING used to fall straight through to the
+      // "Fuer dich" grid below, which is DNA/popular looks and has nothing to do with the
+      // query, so a failed search rendered as a successful one (measured on "zzzqqq":
+      // suggest returned 0 salons / 0 services / 0 stylists and the sheet still showed 8
+      // brow looks). The LOCKED mockup this file was ported from has the state
+      // (app/[locale]/dev/search-morph/page.tsx:155). Every query-related group is counted,
+      // not just the three suggest groups, so a query with only geocode hits or only
+      // autocomplete completions still shows its rows instead of a false "no results".
+      const nothingMatched =
+        !hasResults && !geoLoading && geoCandidates.length === 0 && acTerms.length === 0 && looks.length === 0;
+      if (nothingMatched) {
+        return (
+          <EmptyState
+            icon={Search}
+            title={noMatchTitleTxt}
+            message={t("noMatchBody", { query: serviceQ.trim() })}
+          />
+        );
+      }
       // P13: locale-native "ab CHF X" price, the same tCommon("fromPrice")+formatPrice pattern
       // SalonCard.tsx already uses , no new price-copy invented.
       const currencyLocale = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-CH";
@@ -1029,11 +1163,16 @@ export function SearchOverlay({
               onClick={() => handleRecentClick(r)} onRemove={() => setHiddenRecents((prev) => new Set([...prev, i]))} />
           ))}
         </>)}
-        <SectionLabel className="mt-3">{storesLabelTxt}</SectionLabel>
-        {/* A Beliebte Store is a specific salon , tapping JUMPS straight to it (marks it selected
-            + opens the store page), it does NOT advance to the location step (owner). */}
-        {FEATURED_SALONS.map((sl) => <SuggestRow key={sl.id} name={sl.name} sub={featuredAddress[sl.id]} Icon={Store}
-          onClick={() => { setService(sl.name); push({ service: sl.name, city: stadt || undefined }); goSalon(sl.id, sl.slug, sl.name); }} />)}
+        {/* S6: the whole section goes when the active category has no featured store in it,
+            rather than leaving a titled empty block (taste log 2026-07-06, data-state
+            filters hide while empty). */}
+        {featuredVisible.length > 0 && (<>
+          <SectionLabel className="mt-3">{storesLabelTxt}</SectionLabel>
+          {/* A Beliebte Store is a specific salon , tapping JUMPS straight to it (marks it selected
+              + opens the store page), it does NOT advance to the location step (owner). */}
+          {featuredVisible.map((sl) => <SuggestRow key={sl.id} name={sl.name} sub={featuredAddress[sl.id]} Icon={Store}
+            onClick={() => { setService(sl.name); push({ service: sl.name, city: stadt || undefined }); goSalon(sl.id, sl.slug, sl.name); }} />)}
+        </>)}
         <SectionLabel className="mt-3">{categoriesLabelTxt}</SectionLabel>
         {/* A2/Model B (2026-07-04): this idle-state category shortcut no longer clears the typed
             query , it only sets `service` (feeds ?category=/?service= via buildParams,
@@ -1103,7 +1242,7 @@ export function SearchOverlay({
               the open/close fade so the X leaves WITH the sheet, not on its own clock. */}
           <motion.button key="closeX" onClick={close} aria-label={closeTxt}
             className="fixed right-3 z-[102] grid h-11 w-11 place-items-center rounded-full border border-s-border bg-white text-s-ink"
-            style={{ opacity: closeXOpacity, top: closeXTop, pointerEvents: open ? "auto" : "none" }} /* motion-ok: close-X fade, now openT-driven */>
+            style={{ opacity: closeXOpacity, top: closeXTop, pointerEvents: closeXHit }} /* motion-ok: close-X fade, now openT-driven; S3: hit-testing tied to its own opacity */>
             <X size={18} strokeWidth={2.2} />
           </motion.button>
 
@@ -1137,7 +1276,7 @@ export function SearchOverlay({
           <motion.div style={{ height: svcH }} className="shrink-0 overflow-hidden">
             <motion.div style={{ marginLeft: cardMx, marginRight: cardMx, borderTopLeftRadius: cardRadius, borderTopRightRadius: cardRadius, borderBottomLeftRadius: cardRadiusBottom, borderBottomRightRadius: cardRadiusBottom, boxShadow: "0 18px 50px rgba(10,10,10,0.13)" }}
               className="relative h-full overflow-hidden bg-white">
-              <motion.div style={{ opacity: svcT, pointerEvents: svcBodyHit }} className="absolute inset-0 flex flex-col">
+              <motion.div inert={activeStep !== "service"} style={{ opacity: svcT, pointerEvents: svcBodyHit }} className="absolute inset-0 flex flex-col"> {/* S7: inert when this slot is not the active step */}
                 <motion.div style={{ height: headingH, opacity: headingOp }} className="shrink-0 overflow-hidden">
                   <h2 className="px-4 pb-1 pt-4 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{searchHeadingTxt}</h2>
                 </motion.div>
@@ -1174,7 +1313,7 @@ export function SearchOverlay({
                   </AnimatePresence>
                 </div>
               </motion.div>
-              <motion.div style={{ opacity: svcFaceOp, pointerEvents: svcFaceHit }} className="absolute inset-x-0 top-0">
+              <motion.div inert={activeStep === "service"} style={{ opacity: svcFaceOp, pointerEvents: svcFaceHit }} className="absolute inset-x-0 top-0"> {/* S7: the collapsed face is gone while the body is up */}
                 {collapsedFace("service")}
               </motion.div>
             </motion.div>
@@ -1183,8 +1322,8 @@ export function SearchOverlay({
           {/* R7 slot 2 of 3: WO?. `mx-3` is the same 12px inset `cardMx` rests at, so the three
               cards share one left/right edge in every state. */}
           <motion.div style={{ height: locH, paddingTop: rowGapTop }} className="shrink-0 overflow-hidden">
-            <motion.div style={{ opacity: locSlotOp }} className="relative mx-3 h-full overflow-hidden rounded-[20px] bg-white shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
-              <motion.div style={{ opacity: locT, pointerEvents: locBodyHit }} className="absolute inset-0 flex flex-col p-4">
+            <motion.div inert={rowsFolded} style={{ opacity: locSlotOp }} className="relative mx-3 h-full overflow-hidden rounded-[20px] bg-white shadow-[0_16px_48px_rgba(10,10,10,0.10)]"> {/* S7: whole slot folded away on focus */}
+              <motion.div inert={activeStep !== "location"} style={{ opacity: locT, pointerEvents: locBodyHit }} className="absolute inset-0 flex flex-col p-4"> {/* S7: city input + city rows out of the tab order when collapsed */}
                     {/* C7 (round 2, "does not expand or close"): root cause was that once a
                         step is active, its OWN heading had no click handler , the only way
                         back to the composed view was tapping the DIFFERENT "Suche" collapsed
@@ -1211,7 +1350,7 @@ export function SearchOverlay({
                     </div>
                     <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">{cityList()}</div>
               </motion.div>
-              <motion.div style={{ opacity: locFaceOp, pointerEvents: locFaceHit }} className="absolute inset-x-0 top-0">
+              <motion.div inert={activeStep === "location"} style={{ opacity: locFaceOp, pointerEvents: locFaceHit }} className="absolute inset-x-0 top-0"> {/* S7 */}
                 {collapsedFace("location")}
               </motion.div>
             </motion.div>
@@ -1221,8 +1360,8 @@ export function SearchOverlay({
               (ROW_H * 2 + 20) carried, kept so the footer lands on exactly the same y as
               before this rewrite. */}
           <motion.div style={{ height: dateH, paddingTop: rowGapTop, paddingBottom: rowGapBottom }} className="shrink-0 overflow-hidden">
-            <motion.div style={{ opacity: dateSlotOp }} className="relative mx-3 h-full overflow-hidden rounded-[20px] bg-white shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
-              <motion.div style={{ opacity: dateT, pointerEvents: dateBodyHit }} className="absolute inset-0 flex flex-col px-4 pb-3 pt-4">
+            <motion.div inert={rowsFolded} style={{ opacity: dateSlotOp }} className="relative mx-3 h-full overflow-hidden rounded-[20px] bg-white shadow-[0_16px_48px_rgba(10,10,10,0.10)]"> {/* S7: whole slot folded away on focus */}
+              <motion.div inert={activeStep !== "date"} style={{ opacity: dateT, pointerEvents: dateBodyHit }} className="absolute inset-0 flex flex-col px-4 pb-3 pt-4"> {/* S7: the 29-31 day cells out of the tab order when collapsed */}
                     {/* C7: same accordion-collapse as the location heading above. */}
                     <button type="button" onClick={() => openStep("service")}
                       className="mb-2 flex shrink-0 items-center justify-between text-left">
@@ -1319,7 +1458,7 @@ export function SearchOverlay({
                       </AnimatePresence>
                     </div>
               </motion.div>
-              <motion.div style={{ opacity: dateFaceOp, pointerEvents: dateFaceHit }} className="absolute inset-x-0 top-0">
+              <motion.div inert={activeStep === "date"} style={{ opacity: dateFaceOp, pointerEvents: dateFaceHit }} className="absolute inset-x-0 top-0"> {/* S7 */}
                 {collapsedFace("date")}
               </motion.div>
             </motion.div>
@@ -1327,7 +1466,7 @@ export function SearchOverlay({
 
           {/* R7: ONE footer for every step (it used to be duplicated in both panels, at two
               different heights). It still folds away with the focus expand. */}
-          <motion.div style={{ height: footerH, opacity: stepsOp }} className="shrink-0 overflow-hidden">
+          <motion.div inert={rowsFolded} style={{ height: footerH, opacity: stepsOp }} className="shrink-0 overflow-hidden"> {/* S7: footer folded away on focus */}
             {footerInner}
           </motion.div>
           </motion.div>

@@ -211,9 +211,38 @@ export function CookieConsentProvider({ children }: { children: React.ReactNode 
    Banner — sticky-bottom strip, mounts when no consent yet
    ================================================================================ */
 
+/**
+ * True while a sheet, modal, or full-screen overlay owns the screen.
+ *
+ * Reuses the ONE signal every overlay in this codebase already sets, the body-scroll lock,
+ * rather than adding a second global: SearchOverlay pins `body{position:fixed;overflow:hidden}`,
+ * MobileMenu / SalonLightbox / SalonImageGallery / SearchTemplate's map overlay set
+ * `body{overflow:hidden}`, and react-aria's Modal + Sheet primitives (usePreventScroll) set
+ * `documentElement{overflow:hidden}`. SalonMobileBookBar.tsx already names this as THE DOM signal
+ * for "an overlay is open" and notes it is an inline style, so a MutationObserver is the only way
+ * to read it declaratively. That is exactly what this does, and it means every current and future
+ * overlay is covered without touching a single overlay component.
+ */
+function useOverlayOwnsScreen(): boolean {
+  const [owned, setOwned] = React.useState(false);
+  React.useEffect(() => {
+    const read = () =>
+      document.body.style.overflow === "hidden" ||
+      document.body.style.position === "fixed" ||
+      document.documentElement.style.overflow === "hidden";
+    setOwned(read());
+    const observer = new MutationObserver(() => setOwned(read()));
+    observer.observe(document.body, { attributes: true, attributeFilter: ["style"] });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["style"] });
+    return () => observer.disconnect();
+  }, []);
+  return owned;
+}
+
 function CookieBanner() {
   const { acceptAll, acceptNecessary, openSettings } = useCookieConsent();
   const pathname = usePathname() ?? "/";
+  const overlayOwnsScreen = useOverlayOwnsScreen();
 
   // Display-only suppression on focused flows: the fixed bottom strip covered the
   // pay CTA on /walk-in-pay, and on the owner /dashboard it overlapped page content
@@ -221,6 +250,18 @@ function CookieBanner() {
   // — analytics stays off (necessary-only) until the user consents on any other page,
   // so this is DSG/GDPR-safe. Mirrors HideInBooking's "no global chrome in self-contained flows" rule.
   if (pathname && (/\/walk-in-pay\/?$/.test(pathname) || /\/dashboard(\/|$)/.test(pathname))) return null;
+
+  // S1 (owner decision 2026-08-03): same display-only suppression while a sheet or modal owns the
+  // screen, and the banner returns the moment that closes. This z-tooltip (700) strip sat over the
+  // search sheet (z-index 101): measured on a first visit at 375x812, the banner box [12,656,351,144]
+  // covered the sheet's own footer, so `document.elementFromPoint` at the Suchen button's centre
+  // (292.5, 779.5) returned the banner's "Alle akzeptieren" and at Zuruecksetzen's centre
+  // (66.5, 779.5) returned "Nur notwendige". A real tap on Suchen therefore GRANTED cookie consent
+  // and never searched. Consent STATE is untouched here exactly as in the route suppression above:
+  // nothing is auto-accepted, nothing is pre-seeded, analytics stays off until the visitor answers
+  // the banner once the overlay is closed, so this stays DSG/GDPR-safe. No search control ever
+  // doubles as a consent button.
+  if (overlayOwnsScreen) return null;
 
   return (
     <div

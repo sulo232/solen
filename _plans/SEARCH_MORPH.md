@@ -409,7 +409,7 @@ Read off his frames (8fps overview sheet):
       0->1, all monotonic, 0 direction reversals, first painted frame at 32ms. Close: 716->66 monotonic,
       last painted frame 342ms. The step change is now continuous too (R7). Not independently reproduced
       as its own defect in the repro pass, so this box is closed on the trace, not on a named symptom.
-- [ ] R6. Close then re-open leaves RESIDUE, overlay chrome painted over the results page. NOT FIXED. The adversarial verifier refuted it: node counts are clean, but the dying sheet keeps hit-testing over the pill for the full 333ms close (a real tap at close+60ms delivered 0 clicks). Re-filed as S8 and being fixed now.
+- [x] R6. Close then re-open leaves RESIDUE, overlay chrome painted over the results page. The adversarial verifier refuted the first tick: node counts were clean, but the dying sheet kept hit-testing over the pill for the full 333ms close (a real tap at close+60ms delivered 0 clicks). Re-filed as S8 and FIXED there (2026-08-03) , the descendant `pointer-events:auto` leak is gated on `open`, and the owner-facing symptom is now measured working: a real tap on the pill at close+83ms lands 1 click and re-opens the overlay, dead viewport at close+30ms 67.9% -> 0.0%. Full numbers on S8's line below.
       FIXED: one lifecycle. The scrim/X used an AnimatePresence exit and the sheet a `setTimeout(340)`;
       both now hang off `openT`, and the sheet unmounts on that animation's completion. Measured over a
       close: **0 frames** where the sheet is more opaque than its own scrim (was 3x-12x more opaque from
@@ -471,16 +471,152 @@ the rejected ink focus border staying dead at 1px #E4E4E7 in both states.
   notwendige".** This is why his own recording has the banner in frame.
 
 ### Sweep found 7 more, none of them style opinions
-- [ ] S1. Cookie banner reroutes Suchen and Zuruecksetzen (above). Blocker.
-- [ ] S2. `InvalidStateError: Transition was aborted` + duplicate `vt-salon-*` view-transition-name on
-      back-navigation from a salon page. 2/2 reproducible.
-- [ ] S3. With the keyboard up the close-X is `opacity 0` but `pointerEvents:auto` and sits over the
+- [x] S1. Cookie banner reroutes Suchen and Zuruecksetzen (above). Blocker. FIXED, CookieConsent.tsx:
+      the banner is display-suppressed while a sheet or modal owns the screen and returns on close,
+      reusing the ONE overlay signal this codebase already has (the body-scroll lock every overlay
+      sets, plus react-aria's `documentElement{overflow:hidden}`), read through a MutationObserver.
+      No new global, no overlay component touched, no auto-accept, nothing pre-seeded. Measured on a
+      FRESH profile with no stored consent at 375x812, before then after:
+      `elementFromPoint` at Suchen's own centre (292.5, 779.5) `button "Alle akzeptieren"` (in the
+      banner) -> `button "Suchen"`; at Zuruecksetzen's centre (66.5, 779.5) `button "Nur notwendige"`
+      -> `button "Zuruecksetzen"`. A REAL tap on Suchen: URL `/de` and consent written
+      `{analytics:true,marketing:true}` -> URL `/de/search` and consent still `null`. Banner box while
+      the sheet is open [12,656,351,144] -> NOT_IN_DOM, and back to [12,656,351,144] after the close;
+      tapping "Alle akzeptieren" there still writes the record, so consent is still required and still
+      answerable.
+- [x] S2. `InvalidStateError: Transition was aborted` + duplicate `vt-salon-*` view-transition-name on
+      back-navigation from a salon page. 2/2 reproducible. FIXED, SalonCard.tsx + PageTransition.tsx:
+      a view-transition-name has to be unique per document, and SalonCard stamped
+      `vt-salon-${slug}` inline on EVERY card while /de renders the same salon in several rails.
+      Measured on /de: 20 slugs duplicated (atelier-haarwerk 4x, glow-lab-basel 3x, pink-petal-nails
+      3x, blade-and-stone 3x). The comment that sat on that line claimed a repeated slug just "falls
+      back to the default cross-fade (harmless)"; that is not what the browser does, it aborts the
+      whole transition. The card now only CARRIES the name, in `data-vt-salon`, and nobody applies it
+      at rest. PageTransition.tsx applies it to the ONE card being activated and strips it from every
+      other card first, so uniqueness is true by construction instead of by hoping no rail repeats a
+      salon. That file is the client node already mounted around every [locale] route and already
+      named for cross-page transitions, so this is not a second global doing the same job
+      (exists-check run first: `npm run exists "view transition"` / `"viewtransition"` /
+      `"shared element"`, no existing owner). Capture phase of `click`, specifically: `document`
+      capture runs strictly before next-view-transitions' own React onClick calls
+      startViewTransition, so the name is in place before the outgoing snapshot; `click` and not
+      `pointerdown`, because a pointerdown that turns into a scroll would leave a card armed with
+      nobody navigating, and because `click` also covers keyboard Enter.
+      Measured on the owner's exact 3-step flow (/de, open the overlay, type "cut", tap the Atelier
+      Haarwerk card, `history.back()`), 2/2 runs before and 2/2 after:
+      duplicate view-transition-names on /de idle 20 -> 0, with the overlay open 20 -> 0;
+      console `Unexpected duplicate view-transition-name: vt-salon-nail-studio-bliss` in both runs
+      -> absent in both; pageerror `Transition was aborted because of invalid state` in both runs ->
+      0 page errors in both. (The 401s still in that console are an unrelated auth-gated fetch,
+      present before and after.)
+      The morph the fix has to KEEP, measured by patching `document.startViewTransition` to snapshot
+      every live view-transition-name at the instant it is called, then tapping a home card:
+      `{root: 1, vt-salon-cuts-and-culture: 1}`. Exactly one element named, and it is the tapped
+      card's own photo box, which is what the PDP hero (SalonHero.tsx, same name) pairs with.
+      Back-navigation now cross-fades instead of throwing: the outgoing PDP carries one name, the
+      incoming home page carries none, so there is nothing to collide with. Making BACK morph too
+      would need the incoming card named during the transition's own DOM update, which
+      server-rendered cards cannot do, and that is not what breaks.
+- [x] S3. With the keyboard up the close-X is `opacity 0` but `pointerEvents:auto` and sits over the
       search field's right end. Tapping to move the caret destroys the overlay and the typed query.
-- [ ] S4. Date and period survive close+reopen while everything else is re-seeded, so an abandoned
-      date is silently applied to the next search.
-- [ ] S5. A zero-match query renders NO empty state; it falls through to the unrelated "Fuer dich"
+      FIXED, SearchOverlay.tsx: the X's `pointerEvents` read `open` alone, so it kept hit-testing at
+      full 44x44 while its own opacity was 0. It now reads `closeXHit`, a transform of its OWN
+      opacity, with S8's `hitGate` folded into the SAME motion value rather than written as
+      `open ? closeXHit : "none"` , swapping a motion value for a static string in `style` does not
+      detach the already-attached value, the exact trap S8 and R7 both documented, so the R6 fact
+      (drop hit-testing the instant `open` flips false, so a tap during the 333ms close cannot land
+      on the dying overlay) survives through the gate instead of through a ternary that would keep
+      writing "auto" every frame.
+      Measured at 375x812 with the keyboard up (visualViewport 476 of an 812 layout viewport), the
+      same state before and after: close-X [319,6,44,44], opacity "0", pointerEvents "auto" ->
+      "none"; `elementFromPoint(351, 46)`, the right end of the field row [12,22,351,48], returned
+      `button[Schliessen]` -> returns the field row itself (`div.flex.h-12`). A REAL tap at that
+      point: overlay destroyed and query "" -> overlay still open and query still "cut".
+- [x] S4. Date and period survive close+reopen while everything else is re-seeded, so an abandoned
+      date is silently applied to the next search. FIXED, SearchOverlay.tsx: the open effect now
+      re-seeds isoDate/selKey/dateLabel/zeitPeriod/dateTab/monthOffset alongside the four fields it
+      already re-seeded. It sits in the OPEN effect, not close(), because Escape calls onClose()
+      directly and the parent can flip `open` itself, so close() is only one of the ways out while
+      every way back in passes through here. Measured, the three collapsed faces:
+      fresh open ["Suche | Service, Store oder Stylist:in", "Wo? | Basel", "Wann? | Jederzeit"];
+      after Nails + Zuerich + 21. August + Abend ["Suche | Nails", "Wo? | Zuerich",
+      "Wann? | 21. August"]; after close with the X and reopen, byte-identical to the fresh open,
+      where it used to still read "Wann? | 21. August". Same result closing with Escape.
+- [x] S5. A zero-match query renders NO empty state; it falls through to the unrelated "Fuer dich"
       grid, so a failed search looks like a successful one. The locked mockup HAS this state.
-- [ ] S6. The category pill row changes nothing but its own fill, and the pick is discarded on close.
-- [ ] S7. 48 focusable controls in the collapsed Wo?/Wann? bodies stay keyboard and screen-reader
-      reachable while invisible and untouchable.
-- [ ] S8. R6's pointer-events leak (above).
+      FIXED, SearchOverlay.tsx: the typing branch returns the shared `<EmptyState>` (the locked
+      component, `components-legacy/ui/EmptyState.tsx`) with the `ui.searchOverlay.noMatchTitle` +
+      `noMatchBody` strings that already shipped in all four locales and were used by no file. No
+      new copy, no new component. The condition counts EVERY query-related group (suggest results,
+      geocode candidates, autocomplete terms, query looks), not only the three suggest groups, so a
+      query with only place or completion hits still renders its rows. Measured on "zzzqqq" (suggest
+      returns 0 salons / 0 services / 0 stylists): sheet innerText now reads "Keine Treffer / Wir
+      konnten nichts zu \"zzzqqq\" finden." with 0 look tiles, where it used to show 8 unrelated
+      "Fuer dich" brow looks. Control, "haar" still renders 17 rows and no empty state.
+- [x] S6. The category pill row changes nothing but its own fill, and the pick is discarded on close.
+      FIXED, useSearchSuggest.ts + SearchOverlay.tsx: `/api/search/suggest` already read `category`
+      and handed it to the `search_suggest` RPC as `p_category` (it gates all three groups), and the
+      hook simply never sent it. The hook takes `category` now and the overlay passes the SAME
+      `category` state the pill row already wrote and `buildParams` already turns into `?category=`,
+      so there is no second taxonomy and no second state. The idle "Beliebte Stores" list narrows on
+      the same tap via `&category=` on the featured `/api/salons?ids=` fetch it was already making
+      (the route applies `.contains("categories", [category])` on the same builder as the ids
+      filter), server-side, and the section hides rather than showing a titled empty block.
+      DISCRIMINATION measured against the live seed, not just "it runs":
+      q=haar, no pill -> 17 rows, services spanning spa + coiffeur;
+      q=haar + Coiffeur -> 17 rows, coiffeur-only services (the spa "Intim-Waxing" row is gone,
+      "Glaetten / Brushing" and "Olaplex Intensivpflege" take its place);
+      q=haar + Nails -> 0 rows and the S5 empty state (API: 0/0/0);
+      idle, no pill -> 15 rows incl. 3 featured stores; idle + Coiffeur -> 15 (all three featured
+      salons ARE coiffeur); idle + Nails -> 12, the three store rows dropped.
+      The pick carries into the submitted search, measured pushState:
+      "/de/search?q=haar&category=coiffeur&city=Basel".
+- [x] S7. 48 focusable controls in the collapsed Wo?/Wann? bodies stay keyboard and screen-reader
+      reachable while invisible and untouchable. FIXED, SearchOverlay.tsx: `pointer-events:none`
+      hides a control from the FINGER only. The slots cannot be unmounted (the morph is one
+      continuous transform over ONE DOM tree and needs every slot in it), so they are `inert`
+      instead , it takes a still-rendered subtree out of the focus order and out of the AT tree
+      while changing no layout and painting nothing, which is the pattern this same file already
+      used on the collapsed time chips (`inert={!selKey}`). Nine attachment points: each slot BODY
+      inert when it is not the active step, each collapsed FACE inert while its body is up, and the
+      two collapsed rows plus the footer inert while they are folded away on focus. That last one
+      needed the only new state in the fix, `rowsFolded`: `expand` is a MotionValue, so nothing in
+      React could see the fold and the faces stayed tabbable inside a zero-height overflow-hidden
+      box. It flips at 0.8, the SAME endpoint rowLocH / rowDateH / footerH already finish folding at,
+      and it drives nothing but the attribute , no size, no position, no opacity, so it is not a
+      second layout threshold.
+      Measured INSIDE the sheet, overlay open on the service step, on the same tree at the same
+      instant (pass A with the fix live; pass B with `inert` stripped at runtime, which is exactly
+      the pre-fix state of that tree): invisible-yet-tabbable controls 61 -> 13, the city input
+      1 -> 0, calendar day cells 29 -> 0. All 13 survivors are content of the ACTIVE step that has
+      merely scrolled out of view (the horizontally scrolled category pills, the suggestion list
+      below the fold); classifying each by `scrollIntoView` and re-hit-testing gives 0 stranded in a
+      collapsed slot. Whole-document control over the same closed/open pair: opening the overlay
+      added +72 invisible-yet-tabbable controls -> +24, the residue being that same scroll-reachable
+      active-step content. `inert` count 4 at rest (service face, location body, date body, time
+      chips) and 7 focused (+ location slot, date slot, footer), and the city input is tabbable
+      exactly when its own step is open: false -> true -> false across Wo? tapped twice.
+- [x] S8. R6's pointer-events leak (above). FIXED, SearchOverlay.tsx: the six slot layers
+      (svc/loc/date body + collapsed face) set `pointer-events:auto` off their own step transform
+      alone, and a descendant's `auto` beats an ancestor's `none`, so the sheet root's
+      `open ? "auto" : "none"` never stopped them. They now read a `hitGate` motion value set in the
+      same React commit that flips `open` false, so hit-testing stops when the close STARTS, not when
+      it ends. Measured before -> after: dead viewport at close+30ms 67.9% (336/495 sample points
+      resolving to the sheet) -> 0.0% (0/495). A REAL CDP tap on the home pill mid-close, delay
+      measured in-page from the close click: +78ms 0 clicks / no reopen -> +83ms 1 click / reopened;
+      +171ms 0 -> +181ms 1 / reopened; +281ms 0 -> +279ms 1 / reopened; +421ms 1 -> +420ms 1, both
+      reopen. Accepted items re-measured and NOT regressed: URL stays /de with 0 main-frame
+      navigations, bar [24,228,327,48] unfocused -> [12,66,351,48] focused, border 1px
+      rgb(228,228,231) in BOTH states, category pill row 60px -> 0 on focus, close X 44x44, expanded
+      sheet [0,50,375,762] so its bottom lands on 812, and Wo? tapped twice opens then closes
+      (location body opacity/pointer-events 0/none -> 1/auto -> 0/none).
+
+### Accepted items re-measured after S2 + S3 + S7 (2026-08-03), none regressed
+Same harness, 375x812, one pass over the live dev server: home pill opens in place with URL
+`http://localhost:53322/de` and **0** main-frame navigations; search bar [24,228,327,48] unfocused ->
+[12,66,351,48] focused (rises 228 -> 66, widens 327 -> 351); bar border `1px rgb(228, 228, 231)` in
+BOTH states, no ink 2px anywhere; category pill row height 60 -> 0 on focus; close X 44x44 in both
+states, its bottom edge 10px above the sheet's top edge at rest and flush (0) once the sheet is
+clamped to the safe-area floor while focused; expanded service card bottom lands on **812**; Wo?
+tapped twice opens then closes, slot heights [496,66,86,68] -> [56,506,86,68] -> [496,66,86,68].
+`npx tsc --noEmit` clean.
