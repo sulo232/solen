@@ -72,7 +72,8 @@
   input[type=range] { flex: 1; min-width: 0; accent-color: #0A0A0A; height: 44px; }
   .t { font-size: 13px; font-variant-numeric: tabular-nums; color: #71717A; min-width: 62px; text-align: right; }
   .speeds { display: flex; gap: 6px; margin-top: 10px; }
-  .speeds button { padding: 8px 14px; font-size: 13px; min-height: 40px; }
+  /* 44px, the design contract's touch-target floor. Measured at 40px on the first render. */
+  .speeds button { padding: 10px 14px; font-size: 13px; min-height: 44px; }
   .speeds button[aria-pressed=true] { background: #0A0A0A; color: #fff; border-color: #0A0A0A; }
   .note { margin-top: 14px; font-size: 12px; color: #71717A; line-height: 1.5; }
 </style>
