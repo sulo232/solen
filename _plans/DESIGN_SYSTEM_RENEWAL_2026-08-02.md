@@ -217,7 +217,13 @@ acc edit make it acc like it"*
       label, divider after every row), rather than the icon-nav list of IMG_6900. Re-read the
       IMG_6904 measurements before building: that recipe rules after EVERY row, which is the
       opposite of the group-only rule we just applied.
-- [ ] **E4. A real profile/account section the user can EDIT.** Today the avatar + name is a
+- [ ] **E4. A real profile/account section the user can EDIT.** Atomized:
+  - [ ] E4a. Read `app/[locale]/profile/edit/page.tsx` (EXISTS, confirmed by `npm run exists
+        profile` this turn) and list exactly which fields it edits today.
+  - [ ] E4b. Depict the account block as a row/section that ENTERS that route. No second editor.
+  - [ ] E4c. Add a `Depicts:` line naming `app/[locale]/profile/edit/page.tsx`.
+  - [ ] E4d. Verify the entry renders at 390x844 and that nothing it offers is a dead affordance
+        (every field it advertises must be one `profile/edit` actually has). Today the avatar + name is a
       static block. He wants it to be a section where name, photo and details are actually
       editable. Exists-check first: `/profile/settings` and any existing edit-profile route, so
       this composes what is there instead of inventing a second editor.
