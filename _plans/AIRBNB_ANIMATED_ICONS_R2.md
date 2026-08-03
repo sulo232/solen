@@ -1240,3 +1240,42 @@ are deleted; his icon is imported and meshing.
 Every single time, `public/icons/categories/<slug>.png` already held the answer, and every single
 time I reached for generation first. The `sample-dont-pick-colour-gate` I built covers COLOUR only.
 It has to cover the whole asset: when a shipped counterpart exists, it is the source, full stop.
+
+## Round 40: external LLM council on the whole approach
+
+Owner asked for outside opinions. Gemini 2.5 Flash, Claude Opus 4.5 and Grok 4 answered (the
+gemini-3-pro-preview model id 404s on this key, so 2.5-flash was used).
+
+**All three say the approach is over-built for the slot.** Grok: "the whole premise is solving the
+wrong problem... category tiles need instant recognition and low weight". Gemini: "fundamentally
+misaligned with the constraints of a mobile-first, Safari-heavy marketplace". Opus: "six animated
+tiles in a row is not six times the delight of one. It's zero."
+
+**Where they agree:**
+- 470KB APNG x 6 on a mobile homepage is not a tradeoff, it is a bug. All three reject it.
+- Play-once-and-park copied from Airbnb is cargo-culting: their bar is ONE persistent element and its
+  motion is a state transition; ours is six equal-rank menu items the user scrolls past.
+- Detail at 49px is largely wasted craft.
+
+**Where Opus disagrees with the other two, and is worth more than them:**
+- Not "89% of pixels lost": at DPR 3 the 49 CSS px slot is 147 device px. What dies at that size is
+  not detail, it is DIRECTION. The wind reads as shimmer with no direction. Sharper than "too small".
+- So keep the CAP LIFT (it changes the silhouette, and silhouette survives downscaling) and kill the
+  STONES SEPARATING and the WIND ARCS (both are interior negative space, which closes first).
+- Amplitude must be authored in DISPLAY pixels, not source pixels. A bob meant to read at 49px needs
+  3 to 4 display px, so about 11 to 15px in the 180-wide source, roughly 2.5x what we have.
+- Two free cuts I can verify: 60fps to 15fps is 210 frames to 53, and authoring at 147x132 instead of
+  180x162 is a third fewer pixels. 52% of our timeline is already identical frames.
+- Do NOT animate-on-tap: on a category row the tap IS navigation, so the animation plays as the view
+  unmounts. This kills the idea I proposed to the owner two rounds ago.
+- Instead: IntersectionObserver, play once on first scroll-into-view, park, never loop, stagger 60 to
+  80ms so six icons read as one gesture.
+
+**One place Opus is wrong about our situation, and it is worth writing down precisely:** he says the
+Safari path is not APNG because Safari has played HEVC-with-alpha since iOS 13. He is right about
+SAFARI and wrong about US. Safari supports it; this machine cannot ENCODE it, measured twice with
+`hevc_videotoolbox` returning -12908 including on a synthetic 16-multiple source. Support and
+encodability are different problems. The fix is an encoder, not a redesign.
+
+**PARKED, owner's call:** the council's collective recommendation is to cut the set down rather than
+finish it. That is a product decision, not mine.
