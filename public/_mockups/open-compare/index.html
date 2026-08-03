@@ -1,0 +1,165 @@
+<!doctype html>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/_components/search/SearchOverlay.tsx
+  Owner-scope: confirmed: "record our open and put it beside yours as two videos, same size, same speed, playing together" then "ok"
+
+  Exists-check: `npm run exists open-compare` and `npm run exists "side by side"` both return 0
+  matches. Nearest existing: public/_mockups/search-curve/index.html (three easing curves on an
+  abstract box) and public/_mockups/search-keyboard/index.html (two keyboard layouts, static).
+  Neither plays real captured frames, neither puts our build beside the owner's own recording.
+  REMOVED.md: no hits. NEW here: only the paired frame scrubber.
+
+  Diagnosis: a diagnostic instrument, not a design proposal. Depicts no product surface, proposes no
+  change. It exists because three measured diagnoses of the SearchOverlay open were each attached to
+  the wrong thing (fixed screen bands sampled while the card moved through them), and the owner asked
+  to look at both clips together instead of reading another number.
+
+  Depicts: left pane Airbnb open -> NET-NEW: not a Solen surface, it is the owner's own screen recording of Airbnb
+  Depicts: right pane our open -> app/[locale]/_components/search/SearchOverlay.tsx
+  Depicts: right pane opener -> app/[locale]/_components/homepage/HomeSearchPill.tsx
+  Depicts: scrubber and speed buttons -> NET-NEW: tool chrome only, no product surface
+
+  Left-pane frames are his own screen recording, /Users/sulo/solen/screenshots/airbnb-open-ref_2026-08-03.MP4,
+  1206x2622 at 60fps, frames 11 to 58 of a 3.10s extract (the press at 3283ms onward), downscaled.
+  Right-pane frames are a Playwright capture of the live build at 375x812, 60fps, frames 272 onward.
+  Both panes are photographic captures of things that already run, at full page scale. Nothing is
+  drawn or redrawn. The captures ARE the page: frames/his_00.jpg and frames/our_00.jpg are rendered
+  below as the static first frame of each pane, and the remaining 46 frames per pane are appended by
+  script so the pair can be played and scrubbed on one clock.
+
+  Fullscreen/iframe carve-out: an iframe of the real route cannot be the BEFORE pane, because the
+  subject is a 48-frame animation at 60fps. An iframe would play its own open on its own clock,
+  unsynced and impossible to step frame by frame beside his recording. Reason also filed at
+  .claude/fullscreen-skip.flag.
+
+  Mockup chrome is English per mockup law; German inside the right-hand frames is real product copy.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<title>Open compare, SearchOverlay</title>
+<style>
+  :root { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #F4F4F5; color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    padding: 12px 12px calc(12px + env(safe-area-inset-bottom));
+  }
+  h1 { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+  .sub { font-size: 13px; color: #71717A; margin-bottom: 12px; line-height: 1.4; }
+  .stage { display: flex; gap: 8px; }
+  .col { flex: 1 1 0; min-width: 0; }
+  .cap { font-size: 12px; font-weight: 600; margin-bottom: 5px; }
+  .cap span { font-weight: 400; color: #71717A; }
+  .shot {
+    position: relative; width: 100%; aspect-ratio: 375 / 812;
+    background: #fff; border-radius: 12px; overflow: hidden;
+    border: 1px solid #E4E4E7;
+  }
+  .shot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none; }
+  .shot img.on { display: block; }
+  .bar { margin-top: 14px; display: flex; align-items: center; gap: 10px; }
+  button {
+    font: inherit; font-size: 14px; font-weight: 600; color: #fff; background: #0A0A0A;
+    border: 0; border-radius: 999px; padding: 11px 20px; min-height: 44px; cursor: pointer;
+  }
+  button.ghost { background: #fff; color: #0A0A0A; border: 1px solid #E4E4E7; }
+  input[type=range] { flex: 1; min-width: 0; accent-color: #0A0A0A; height: 44px; }
+  .t { font-size: 13px; font-variant-numeric: tabular-nums; color: #71717A; min-width: 62px; text-align: right; }
+  .speeds { display: flex; gap: 6px; margin-top: 10px; }
+  .speeds button { padding: 8px 14px; font-size: 13px; min-height: 40px; }
+  .speeds button[aria-pressed=true] { background: #0A0A0A; color: #fff; border-color: #0A0A0A; }
+  .note { margin-top: 14px; font-size: 12px; color: #71717A; line-height: 1.5; }
+</style>
+</head>
+<body>
+<h1>The open, side by side</h1>
+<p class="sub">Both start at the tap. Same size, same speed, same clock. Drag the slider to step through it frame by frame.</p>
+
+<div class="stage">
+  <div class="col">
+    <div class="cap">Airbnb <span>your recording</span></div>
+    <div class="shot" id="his"><img src="frames/his_00.jpg" alt="" class="on"></div>
+  </div>
+  <div class="col">
+    <div class="cap">Ours <span>current build</span></div>
+    <div class="shot" id="our"><img src="frames/our_00.jpg" alt="" class="on"></div>
+  </div>
+</div>
+
+<div class="bar">
+  <button id="play">Play</button>
+  <input type="range" id="scrub" min="0" max="47" value="0" step="1" aria-label="Frame">
+  <div class="t" id="time">0 ms</div>
+</div>
+<div class="speeds">
+  <button class="ghost" data-rate="1" aria-pressed="true">1x</button>
+  <button class="ghost" data-rate="0.25" aria-pressed="false">Quarter speed</button>
+  <button class="ghost" data-rate="0.1" aria-pressed="false">Tenth speed</button>
+</div>
+
+<p class="note">Captured at 60 frames per second, so one step of the slider is about 17 milliseconds. Point at the step where it goes wrong.</p>
+
+<script>
+  var N = 48;
+  var his = document.getElementById('his');
+  var our = document.getElementById('our');
+  for (var i = 1; i < N; i++) {
+    var a = document.createElement('img');
+    a.src = 'frames/his_' + String(i).padStart(2, '0') + '.jpg';
+    a.alt = '';
+    his.appendChild(a);
+    var b = document.createElement('img');
+    b.src = 'frames/our_' + String(i).padStart(2, '0') + '.jpg';
+    b.alt = '';
+    our.appendChild(b);
+  }
+  var scrub = document.getElementById('scrub');
+  var time = document.getElementById('time');
+  var playBtn = document.getElementById('play');
+  var rate = 1, timer = null, idx = 0;
+
+  function show(n) {
+    idx = n;
+    var hi = his.children, oi = our.children;
+    for (var i = 0; i < N; i++) {
+      hi[i].className = (i === n) ? 'on' : '';
+      oi[i].className = (i === n) ? 'on' : '';
+    }
+    scrub.value = n;
+    time.textContent = Math.round(n * 1000 / 60) + ' ms';
+  }
+  scrub.addEventListener('input', function () { stop(); show(+scrub.value); });
+
+  function stop() { if (timer) { clearInterval(timer); timer = null; } playBtn.textContent = 'Play'; }
+  function play() {
+    stop();
+    if (idx >= N - 1) show(0);
+    playBtn.textContent = 'Pause';
+    timer = setInterval(function () {
+      if (idx >= N - 1) { stop(); return; }
+      show(idx + 1);
+    }, (1000 / 60) / rate);
+  }
+  playBtn.addEventListener('click', function () { if (timer) stop(); else play(); });
+
+  var speedBtns = document.querySelectorAll('.speeds button');
+  Array.prototype.forEach.call(speedBtns, function (btn) {
+    btn.addEventListener('click', function () {
+      rate = parseFloat(btn.getAttribute('data-rate'));
+      Array.prototype.forEach.call(speedBtns, function (b) {
+        b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+      });
+      if (timer) play();
+    });
+  });
+
+  show(0);
+</script>
+</body>
+</html>
