@@ -447,6 +447,16 @@ export function SearchOverlay({
   });
   const RESTING_TOP = 96; // mockup-ok: named copy of the pre-existing cropTop resting literal below
   const focusedTop = Math.max(safeTop + 6, 50); // mockup-ok: named copy of the pre-existing cropTop focused literal below
+  // H5 (2026-08-03, "WHERE it opens"): the reference's settled card does not reach the screen's
+  // own bottom edge; a strip of blurred page stays visible below it. Measured directly on
+  // airbnb-open-ref_2026-08-03.MP4 (PIL pixel-sample of the settled "Where?" frame, 402x874pt):
+  // the last solid element on screen, the pink Search button, ends at y824; below that, 50pt
+  // (5.7%) is bare blurred page down to the true screen edge at 874. That refutes the 168pt/19%
+  // figure this round started from (traced to a different, uncounted card boundary) , the real
+  // number is 50/874. Applied as a ratio of `viewport.h` so it scales with device height the same
+  // way the reference figure was derived (cross-device translation precedent: F1's 82pt-of-874pt
+  // travel note above `topFor`).
+  const REST_BOTTOM_MARGIN_RATIO = 50 / 874;
   const headingH = useTransform(expand, [0, 0.55], [HEADING_H, 0]); // mockup-ok: pre-existing
   const headingOp = useTransform(expand, [0, 0.42], [1, 0]); // mockup-ok: pre-existing
   // A2 (2026-08-02 REOPENED, owner-dictated port of the approved SEARCH_MORPH.md spec): the
@@ -595,13 +605,20 @@ export function SearchOverlay({
   // to exist. Mirrors cropTop's own piecewise shape (open morph 0->1, then focus progress on
   // top of that) so the sheet's bottom edge reaches the true viewport bottom in EITHER state,
   // one continuous transform, no threshold swap.
-  const sheetHeight = useTransform([openT, expand], (latest) => { // mockup-ok: SEARCH_MORPH.md C6
+  const sheetHeight = useTransform([openT, expand], (latest) => { // mockup-ok: SEARCH_MORPH.md C6, H5
     const [oT, ex] = latest as [number, number];
     // K-A: the usable bottom edge is always the viewport's own bottom, keyboard up or not, so
     // the sheet is never shrunk to sit above the keys (that was K-B, rejected at the K4
     // chooser). Height is always "bottom minus the top `topFor` just returned", so the sheet's
     // bottom edge lands exactly there in every state.
-    const bottom = viewport.h;
+    // H5: `ex` (expand) already reaches 1 whenever the keyboard is up OR the field is focused
+    // (`expand = max(scrollExpand, kbT)`, above), so gating the margin on `ex` alone keeps the
+    // keyboard-up and focused states flush at the true viewport bottom (K-A, C6, both
+    // DO-NOT-REGRESS) and only opens a gap in the composed, unfocused moment , the exact moment
+    // "OURS settled" was measured at. One continuous value, same `ex` this function already
+    // takes, no new threshold and no new motion value.
+    const restMargin = viewport.h * REST_BOTTOM_MARGIN_RATIO * (1 - ex);
+    const bottom = viewport.h - restMargin;
     if (oT < 1) {
       const restingHeight = Math.max(bottom - topFor(1, ex), 200);
       // H3: same [0, 0.8] window as topFor, so height and top settle on the same frame , never a
