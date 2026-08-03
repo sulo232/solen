@@ -439,3 +439,23 @@ Two PROCESS decisions from the same week, which are not about any one screen and
 - **SwiftUI is an IDEA SOURCE, not a target.** Verbatim, 2026-07-25: "we're not gonna use SwiftUI itself,
   but we're gonna have ideas, and we can copy a few stuff". The law targets web; SwiftUI's vocabulary is
   mined for concepts, never for APIs.
+
+---
+
+## 2026-07-29 to 07-31 , the writing week: register goes formal, and the law that came out of it
+
+Recorded 2026-08-03 by the weekly law pass. Same discipline as the block above: each row POINTS at the
+file that owns the axis instead of restating its values, so there is one place to update when something
+moves. **extends** the 07-24/26 block; supersedes nothing in it.
+
+| Decision | Owner, verbatim | Owning law file | Record |
+|---|---|---|---|
+| **Register goes FORMAL, and it is not only German.** `Sie` (de), `Lei` (it), `vous` (fr). English keeps one register and stays plain. The owner said German; the sweep found the four locales had been contradicting each other the whole time, so the same call settles all three. | *"make it the Sie instead of the du"* | `_design-system/COPY_LAW.md` §1 (register table, the measured starting point, and the counter-evidence that Swiss consumer brands lean the other way , recorded once so it is not re-argued) | 69fc74d65 (de: 330 swapped + 161 hand-conjugated), a0423867d (it -> Lei, fr -> vous), and the round-2/3 sweeps 26c025cf5, c0ce6e64e, 597f4cf33, 9dc798ec8 , 2026-07-29 to 07-31 |
+| **There must be a written law for HOW we write, not just how much.** The Copy economy block governs LENGTH; nothing decided register, sentence shape, punctuation, number/date/money format, or per-string-type voice, and nothing covered French or Italian at all. | *"research everything and make a whole principle about, like, when you're writing something, how to do it and stuff"* | `_design-system/COPY_LAW.md`, 9 sections. It is the canonical WRITING law; `SOURCE.md` §18 is now the Solen-specific pattern table only and defers to it (annotated 2026-08-03) | a289a2154, 2026-07-29 |
+
+**Not an owner decision, flagged here so it is not mistaken for one:** the Italian button-label carve-out
+(`COPY_LAW.md` §6b, 2026-07-31) , Italian buttons and nav labels stay in the bare imperative (`Salva`,
+not `Salvi`) because Italian has no infinitive that works as a neutral label, the way German's does. That
+was applied as the default rather than parked, because the alternative had no defensible version and
+waiting would have blocked the sweep. **It is awaiting a yes or a no**; reversing it is 559 mechanical
+edits and §6b is the record of why it was not done.
