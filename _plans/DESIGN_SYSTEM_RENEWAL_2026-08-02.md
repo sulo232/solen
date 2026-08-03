@@ -196,3 +196,34 @@ this turn and I had not looked at it once.
       required real-built After, reference-check requiring a `Reference-checked:` citation);
       resolved each via the sanctioned skip-flag escape with a written, non-generic reason, per the
       task brief's own instruction not to redesign around them.
+
+## OWNER 2026-08-03: four changes on top of the 1:1 work
+
+Verbatim: *"we need seperation like category text like wallet etc and also remove pink sh bit
+looks so out of place and also the icon sh remove make a profile section or account yk so they can
+acc edit make it acc like it"*
+
+- [ ] **E1. Group separation stays and gets stronger.** He wants the category text ("Wallet",
+      "Buchungen", "Persoenliche Angaben") doing the separating. NOTE this REVERSES the earlier
+      literal-copy pass, which hid the group eyebrows because Airbnb's icon-nav list has none. He
+      has now asked for them by name, so his 2026-08-03 word supersedes that. Do not delete them
+      again.
+- [ ] **E2. Remove the pink heart.** The Saved row's `#FF3366` heart is the only chromatic pixel
+      on the screen and he says it looks out of place. Measured: 1 of 7 rows carries it. It is a
+      LOCKED semantic hue elsewhere (save-heart), so removing it HERE is surface-scoped, not a
+      token change; say so rather than editing the token.
+- [ ] **E3. Remove the row icons.** All of them, not the tile. This lands the screen on Airbnb's
+      OTHER recipe, the text detail list measured in IMG_6904 (no icon on 3 of 4 rows, larger
+      label, divider after every row), rather than the icon-nav list of IMG_6900. Re-read the
+      IMG_6904 measurements before building: that recipe rules after EVERY row, which is the
+      opposite of the group-only rule we just applied.
+- [ ] **E4. A real profile/account section the user can EDIT.** Today the avatar + name is a
+      static block. He wants it to be a section where name, photo and details are actually
+      editable. Exists-check first: `/profile/settings` and any existing edit-profile route, so
+      this composes what is there instead of inventing a second editor.
+
+**The tension to resolve before building, and to state in the mockup:** E1 (keep group headers)
+plus E3 (drop icons) plus the IMG_6904 recipe (rule after every row) is a DIFFERENT anatomy from
+the IMG_6900 one we just built. Both are Airbnb, on different screens. Build to E1-E3 as he asked
+and name which reference screen each decision now comes from, per-row, so this cannot repeat the
+wrong-screen error again.
