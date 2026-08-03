@@ -123,7 +123,7 @@ Drift-check `RETIRED_TOKENS` list flags any new usage.
 
 **Rule:** `s-accent` (any shade — DEFAULT / deep / bright / pale) may only be applied to surfaces in the ALLOWED list. The FORBIDDEN list is enforced by drift-check rule A9.
 
-**Rationale:** Measured Uber inventory + feedback-blue research (`public/_pixel-refs/uber/feedback-blue/UBER-FEEDBACK-BLUE.md` + `UBER-BLUE-INVENTORY.md`) confirms Uber gates DECORATIVE blue tightly. **UPDATE v2 (2026-06-09):** the owner reversed this for INTERACTIVE elements — "use blue a lot for links/clickable stuff." The Uber-minimal-blue evidence still governs NON-interactive decoration (no blue eyebrows / hero spans / decorative dots / body emphasis — that is the "vibrating blue text" complaint), but links, see-all/view-all, active tabs, secondary & ghost buttons, and inline action labels are now blue. Blue marks INTERACTION, not emphasis. (Solen's old failure was painting blue on ~8-12% of pixels via NON-interactive eyebrows / hero spans / decorative dots — that part stays forbidden.)
+**Rationale:** Measured Uber inventory + feedback-blue research (cited as `public/_pixel-refs/uber/feedback-blue/UBER-FEEDBACK-BLUE.md` + `UBER-BLUE-INVENTORY.md`; **flagged 2026-08-03: neither file is on disk , `public/_pixel-refs/uber/` is an empty directory , and neither appears anywhere in git history, so this rationale's evidence is currently unverifiable. The RULE above is unaffected and stays locked; only its citation is dangling**) confirms Uber gates DECORATIVE blue tightly. **UPDATE v2 (2026-06-09):** the owner reversed this for INTERACTIVE elements — "use blue a lot for links/clickable stuff." The Uber-minimal-blue evidence still governs NON-interactive decoration (no blue eyebrows / hero spans / decorative dots / body emphasis — that is the "vibrating blue text" complaint), but links, see-all/view-all, active tabs, secondary & ghost buttons, and inline action labels are now blue. Blue marks INTERACTION, not emphasis. (Solen's old failure was painting blue on ~8-12% of pixels via NON-interactive eyebrows / hero spans / decorative dots — that part stays forbidden.)
 
 ### §1.5.0 — THE COLOR MODEL (V3-D460, 2026-06-09, council + owner-approved) — read first
 
@@ -1180,7 +1180,7 @@ This single test catches 80% of axis-confusion mistakes.
 
 ## §11 — Imagery Pattern Registry (V3-D330, 2026-05-28)
 
-**Rule:** All imagery on Solen surfaces uses one of 5 enumerated patterns + obeys 5 non-negotiable rules. Inspired by measured Uber inventory (`public/_pixel-refs/uber/imagery/UBER-IMAGERY-PATTERN.md` — 116 desktop images across 8 surfaces). Sourced finding: Uber is illustration-first (34%), photo-as-trust-layer (28%), chrome (38%). Zero video. 0px border-radius on every image.
+**Rule:** All imagery on Solen surfaces uses one of 5 enumerated patterns + obeys 5 non-negotiable rules. Inspired by measured Uber inventory (cited as `public/_pixel-refs/uber/imagery/UBER-IMAGERY-PATTERN.md` — 116 desktop images across 8 surfaces; **same 2026-08-03 flag: the file is not on disk and not in git history. The 5 patterns + 5 rules stay locked; the numbers below are quoted from a source no one can currently re-open**). Sourced finding: Uber is illustration-first (34%), photo-as-trust-layer (28%), chrome (38%). Zero video. 0px border-radius on every image.
 
 ### The 5 patterns
 
