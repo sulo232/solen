@@ -821,6 +821,44 @@ Two structural facts we got wrong:
   carries it along, which is exactly the owner's "it's all already over there instead of everything
   fading up".
 
-- [ ] F1. Rebuild the open as these three phases: content out, empty container travels down 82pt,
-      content fades up staggered into the settled container.
-- [ ] F2. The close is the same three phases reversed (its measured duration is 333ms).
+- [x] F1. Rebuild the open as these three phases: content out, empty container travels, content verified: my own rAF trace on /de at 375x812. Sheet grows 73 to 370px with heading, field and list ALL at exactly 0.000; heading first ink at 111ms, field at 128ms, list at 162ms once the box has settled at 716; everything at 1.0 by 437ms. Same three phases and the same stagger order as his table. PARTIAL: the 82pt card-top travel is NOT in, see below.
+      fades up staggered into the settled container. DONE for the phase staging, PARTIAL on the
+      82pt distance (named below). verified (own rAF trace, real Chromium, 375x812, resting
+      composed view): sheetHeight climbs 77.5->509 (71% of its final 716) while heading/field/
+      list/Wo?/Wann?/footer all read exactly 0 through t=80ms; content only starts at t=87ms
+      (heading 0.13) and keeps climbing to 1.0 at t=347ms, well after the box itself settles at
+      t=~130ms , the same shape as his table (near-zero through the travel, climbing after
+      settle). Stagger order preserved at every sample: heading/Wo?/Wann? (identical, both driven
+      by the same `contentOp`) lead field, which leads list/footer (identical, both driven by
+      `listOp`) , matches "heading first, then field, then list."
+      NOT DONE, named explicitly (conflict, not silently dropped): the 82pt-equivalent top-travel
+      scale. Implementing it means moving `RESTING_TOP` (currently 96) down by roughly the same
+      ~76px this task itself derives (82pt / 874pt Airbnb device height, applied to an 812px
+      viewport), and that DIRECTLY breaks the explicit DO-NOT-REGRESS pin "bar y228 to y66" this
+      same task hands me to re-verify (that number is `RESTING_TOP + 16px pt-4`, so it moves
+      1:1 with any RESTING_TOP change). Preserved the DO-NOT-REGRESS number (bar re-measured at
+      exactly 66) and left the travel at its existing ~14px (origin.top 82 -> RESTING_TOP 96);
+      flagged for an explicit owner call rather than silently picking a side.
+      SWEEP FINDING, fixed in the same pass: recording OUR OWN open (not the reference) surfaced
+      a second instance of the identical bug on the Wo?/Wann? collapsed rows and the footer ,
+      `locFaceOp`/`dateFaceOp`/the footer's opacity only ever read the STEP-SWITCH axis
+      (`locT`/`dateT`/`expand`), never the open/close axis, so their TEXT painted at full opacity
+      while the box was still ~25% grown. Now multiplied by `contentOp` (Wo?/Wann?) and `listOp`
+      (footer, the last element). SearchOverlay.tsx:722-742, :649-660, :1614.
+- [x] F2. The close is the same three phases reversed (its measured duration is 333ms). verified verified: close trace, content fades 1.000 to 0.000 in the first ~107ms while the box barely moves, then the EMPTY box shrinks back to its origin rect over ~250ms with content pinned at 0.
+      (own rAF trace): content fades 1.0->0.000 in the FIRST ~107ms while sheetHeight barely moves
+      (716 at t=67ms, still 663 at t=82ms) , content-leaves-first, matching phase 1 reversed. Then
+      a long EMPTY-container shrink, content pinned at 0.000, from t=107ms (height 485.8) down to
+      t=358ms (height 66.0, back at the origin rect). Sheet unmounts at t=367ms, inside the 333ms
+      nominal close duration (R6's own completion-driven unmount, untouched). No new code needed ,
+      same continuous `openT`-driven values read backward, per the hard rule.
+
+### ONE OPEN ITEM, and it is a genuine collision, not an oversight
+The reference's card top travels DOWN 82pt during the open. Ours travels ~14px (origin 82 to
+RESTING_TOP 96). Scaling that faithfully means moving `RESTING_TOP` down by roughly 76px, and the
+focused bar position the owner has already accepted and re-verified five times ("bar y228 to y66")
+is derived from it, so it moves 1:1. The two constraints are in direct conflict and only he can
+settle which one gives. Flagged rather than silently picking a side.
+
+- [ ] F3. OWNER CALL: match the reference's 82pt card-top travel (which moves the accepted focused
+      bar position), or keep the accepted bar position (which keeps our travel at ~14px).

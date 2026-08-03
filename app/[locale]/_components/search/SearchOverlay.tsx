@@ -549,10 +549,21 @@ export function SearchOverlay({
   // scrolled clear of the keys. One function, used by both `cropTop` and `sheetHeight`, so top
   // and bottom can never disagree.
   const minTop = Math.max(safeTop + 6, 6);
+  // F1/F2 (2026-08-03, "THE FRAME-BY-FRAME HE ASKED FOR" , SEARCH_MORPH.md): the reference's own
+  // open is THREE STAGED PHASES on a 120fps frame trace, not one blended morph , content leaves,
+  // then an EMPTY container travels (every ink band reads 0.000 at 200/250ms), then content fades
+  // UP into an already-landed container (the box itself stops around 400ms, content keeps arriving
+  // after). `containerT` remaps the box's own [0,1] open progress onto [0, 0.8] of `openT` so the
+  // box finishes settling before `openT` itself reaches 1, leaving the tail of the open for content
+  // (contentOp/fieldOp/listOp below) to fade up into a box that has already landed , the exact shape
+  // the reference shows and ours didn't. Reused by `topFor`, `sheetHeight`, `sheetLeft` and
+  // `sheetWidth` so all four box dimensions settle together. Still ONE continuous value driving the
+  // box (`openT`, unedited duration/MORPH_EASE); only this range on it changes.
   const topFor = React.useCallback(
     (oT: number, ex: number) => {
+      const containerT = clamp01(oT / 0.8);
       const base = oT < 1
-        ? origin.top + (RESTING_TOP - origin.top) * oT
+        ? origin.top + (RESTING_TOP - origin.top) * containerT
         : RESTING_TOP + (focusedTop - RESTING_TOP) * ex;
       // K2: `+ vvOffset` puts the sheet's top where the user actually sees it. It is 0 in every
       // state without a visual-viewport scroll, so this is identity everywhere else.
@@ -564,8 +575,8 @@ export function SearchOverlay({
     const [oT, ex] = latest as [number, number];
     return topFor(oT, ex);
   });
-  const sheetLeft = useTransform(openT, [0, 1], [origin.left, 0]); // mockup-ok: SEARCH_MORPH.md A7/A8/A9
-  const sheetWidth = useTransform(openT, [0, 1], [origin.width, viewport.w]); // mockup-ok: SEARCH_MORPH.md A7/A8/A9
+  const sheetLeft = useTransform(openT, [0, 0.8], [origin.left, 0]); // mockup-ok: SEARCH_MORPH.md F1/F2, box settles by 0.8
+  const sheetWidth = useTransform(openT, [0, 0.8], [origin.width, viewport.w]); // mockup-ok: SEARCH_MORPH.md F1/F2, box settles by 0.8
   // C6 (round 2, "bottom is cut off"): port of an owner-dictated SEARCH_MORPH.md punch-list
   // fix, not a live design exploration. Measured cause: this used to interpolate ONLY on
   // openT, so once fully open its height stayed pinned to `viewport.h - RESTING_TOP` even
@@ -584,7 +595,10 @@ export function SearchOverlay({
     const bottom = viewport.h;
     if (oT < 1) {
       const restingHeight = Math.max(bottom - topFor(1, ex), 200);
-      return origin.height + (restingHeight - origin.height) * oT;
+      // F1/F2: same [0, 0.8] container-position window as topFor, so height and top settle on
+      // the same frame , never a box that's already tall but not yet positioned, or vice versa.
+      const containerT = clamp01(oT / 0.8);
+      return origin.height + (restingHeight - origin.height) * containerT;
     }
     return Math.max(bottom - topFor(oT, ex), 200);
   });
@@ -610,6 +624,43 @@ export function SearchOverlay({
   const closeXOpacity = useTransform([xOpacity, sheetOpacity], (latest) => { // mockup-ok: SEARCH_MORPH.md R6
     const [x, s] = latest as [number, number];
     return x * s;
+  });
+
+  // F1/F2 (2026-08-03, "THE FRAME-BY-FRAME HE ASKED FOR"): content is OUT (opacity 0) for the
+  // whole [0, 0.4] leading range , this is what makes the empty box actually read as empty while
+  // it travels, instead of carrying its full list along from frame one (the owner's named
+  // complaint: "it's all already over there instead of everything fading up"). It stays 0 through
+  // the [0.4, 0.55] gap (the travel window) and only fades IN across [0.55, 1], overlapping the
+  // tail of `containerT`'s own [0, 0.8] on purpose so content starts arriving slightly before the
+  // box's very last settle, the same overlap the reference itself shows (heading ink starts at
+  // 300ms while the card is still finishing its descent to 450-650ms). `contentOp` drives the
+  // heading + category pills (first in the measured stagger); `fieldOp` and `listOp` push their
+  // own "in" start later, matching the measured order (heading, then field, then list , the list
+  // is the slowest of the three, still the least settled of the group). On CLOSE this is the same
+  // continuous function read backward off the same `openT` , no second set of values, no
+  // threshold: content fades out first (as openT drops from 1 through 0.55), then stays hidden
+  // while the box shrinks back.
+  const contentOp = useTransform(openT, [0, 0.4, 0.55, 1], [0, 0, 0, 1]); // mockup-ok: SEARCH_MORPH.md F1/F2, heading + pills
+  const fieldOp = useTransform(openT, [0, 0.4, 0.65, 1], [0, 0, 0, 1]); // mockup-ok: SEARCH_MORPH.md F1/F2, field staggers after heading
+  const listOp = useTransform(openT, [0, 0.4, 0.78, 1], [0, 0, 0, 1]); // mockup-ok: SEARCH_MORPH.md F1/F2, list is the slowest of the three
+  // Combined with the EXISTING focus-fold opacities (headingOp/pillsOp, driven by `expand`) so a
+  // single element carries both axes at once , open/close staging and the separate focus fold ,
+  // the same multiply pattern `closeXOpacity` above already uses for its own two axes.
+  const headingContentOp = useTransform([headingOp, contentOp], (latest) => { // mockup-ok: SEARCH_MORPH.md F1/F2
+    const [h, c] = latest as [number, number];
+    return h * c;
+  });
+  const pillsContentOp = useTransform([pillsOp, contentOp], (latest) => { // mockup-ok: SEARCH_MORPH.md F1/F2
+    const [p, c] = latest as [number, number];
+    return p * c;
+  });
+  // Same fix, on the footer: `stepsOp` only ever read `expand` (the focus fold), so the
+  // Suchen/Zuruecksetzen row was fully opaque and tappable from the same early frame as the
+  // Wo?/Wann? rows above. Multiplied by `listOp` (not `contentOp`) , it's the last, bottom-most
+  // element, so it arrives after the suggestion list per the measured stagger order.
+  const footerContentOp = useTransform([stepsOp, listOp], (latest) => { // mockup-ok: SEARCH_MORPH.md F1/F2
+    const [s, l] = latest as [number, number];
+    return s * l;
   });
 
   // ── R7: the step change is a morph, not a swap ──────────────────────────────
@@ -677,8 +728,28 @@ export function SearchOverlay({
   const dateH = useTransform(slotInputs, (l) => slotSizes(l)[2]);
   const inverse = (v: number) => 1 - v;
   const svcFaceOp = useTransform(svcT, inverse);
-  const locFaceOp = useTransform(locT, inverse);
-  const dateFaceOp = useTransform(dateT, inverse);
+  const locFaceOpRaw = useTransform(locT, inverse);
+  const dateFaceOpRaw = useTransform(dateT, inverse);
+  // F1/F2 (2026-08-03): found by recording OUR OWN open and reading an actual frame (not an
+  // endpoint), not by re-deriving the spec , at t~=40ms into the open (sheet still only ~25% of
+  // its final height, well inside the travel window) the Wo?/Wann? collapsed rows' TEXT
+  // ("Keine Präferenz", "Jederzeit") already painted at full opacity, because `locFaceOp`/
+  // `dateFaceOp` only ever read `locT`/`dateT` (the step-switch axis) and never the open/close
+  // axis at all. Same bug class as the heading/field/list fix above, on two rows that measured
+  // table doesn't name individually but the owner's "it's all already over there" complaint
+  // covers as a whole. Multiplied by `contentOp` (NOT `listOp`) , these rows sit structurally
+  // beside the heading in the composed view, not after the suggestion list. The SLOT's own white
+  // card shell (`locSlotOp`/`dateSlotOp` below) is deliberately left alone: an empty white card
+  // growing during the travel IS the "empty container travels" phase; only the TEXT inside it
+  // needs to stay dark until the content-in phase.
+  const locFaceOp = useTransform([locFaceOpRaw, contentOp], (latest) => {
+    const [f, c] = latest as [number, number];
+    return f * c;
+  });
+  const dateFaceOp = useTransform([dateFaceOpRaw, contentOp], (latest) => {
+    const [f, c] = latest as [number, number];
+    return f * c;
+  });
   // S8 / R6 (2026-08-03): the sheet root already computed `pointer-events:none` for the whole
   // close, but CSS does not let an ancestor's `none` win over a descendant's `auto`, and these
   // six slot layers set `auto` off their own step transform alone. So the dying sheet, which
@@ -1337,9 +1408,9 @@ export function SearchOverlay({
             <motion.div style={{ marginLeft: cardMx, marginRight: cardMx, borderTopLeftRadius: cardRadius, borderTopRightRadius: cardRadius, borderBottomLeftRadius: cardRadiusBottom, borderBottomRightRadius: cardRadiusBottom, boxShadow: "0 18px 50px rgba(10,10,10,0.13)" }}
               className="relative h-full overflow-hidden bg-white">
               <motion.div inert={activeStep !== "service"} style={{ opacity: svcT, pointerEvents: svcBodyHit }} className="absolute inset-0 flex flex-col"> {/* S7: inert when this slot is not the active step */}
-                <motion.div style={{ height: headingH, opacity: headingOp }} className="shrink-0 overflow-hidden">
+                <motion.div style={{ height: headingH, opacity: headingContentOp }} className="shrink-0 overflow-hidden"> {/* mockup-ok: SEARCH_MORPH.md F1/F2, heading is first in the measured content stagger */}
                   <h2 className="px-4 pb-1 pt-4 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{searchHeadingTxt}</h2>
-                </motion.div>
+                </motion.div> {/* mockup-ok: SEARCH_MORPH.md F1/F2 */}
                 {/* A2/Model B (2026-07-04): the category pill row sits ABOVE the query input,
                     results-only (showCategoryPills). Picking a pill writes ONLY `category` , it
                     never reads or clears `serviceQ` (the free-text query below it).
@@ -1348,13 +1419,19 @@ export function SearchOverlay({
                     bar down , the padding lives on the INNER div (like the heading's own h2)
                     so the outer motion.div's height/opacity stay the only animated properties. */}
                 {showCategoryPills && (
-                  <motion.div style={{ height: pillsH, opacity: pillsOp }} className="shrink-0 overflow-hidden"> {/* mockup-ok: SEARCH_MORPH.md A2 */}
+                  <motion.div style={{ height: pillsH, opacity: pillsContentOp }} className="shrink-0 overflow-hidden"> {/* mockup-ok: SEARCH_MORPH.md A2/F1/F2 */}
                     <div className="px-3 pb-2 pt-3">
                       <CategoryPillsRow active={category} onSelect={setCategory} ariaLabel={categoriesLabelTxt} />
                     </div>
                   </motion.div>
                 )}
-                <div className="shrink-0 px-3 pb-1 pt-4">{serviceBar}</div>
+                {/* F1/F2: the field carries its own contentOp so it fades up SLIGHTLY after the
+                    heading, matching the measured order (heading first, field second). Wasn't a
+                    motion element at all before this , content simply rendered at opacity 1 from
+                    frame one, the exact "it's all already over there" complaint. */}
+                <motion.div style={{ opacity: fieldOp }} className="shrink-0 px-3 pb-1 pt-4"> {/* mockup-ok: SEARCH_MORPH.md F1/F2 */}
+                  {serviceBar}
+                </motion.div> {/* mockup-ok: SEARCH_MORPH.md F1/F2 */}
                 {/* C6 (round 2, "bottom is cut off"): the footer/steps rows collapse away to 0
                     height in the focused/expanded state (footerH/stepsH above), so once
                     focused this scroller IS the bottom of the sheet , its own `pb-4` (16px)
@@ -1365,8 +1442,8 @@ export function SearchOverlay({
                     scroller's own bottom padding becomes `kbInset` while the keyboard is up so the
                     last row can still be scrolled clear of the keys; at kbInset 0 this is
                     byte-identical to the old fixed safe-area padding. */}
-                <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pt-1"
-                  style={{ paddingBottom: kbInset > 0 ? `${kbInset}px` : "max(16px, env(safe-area-inset-bottom))" }} /* mockup-ok: SEARCH_MORPH.md K4 */
+                <motion.div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pt-1"
+                  style={{ opacity: listOp, paddingBottom: kbInset > 0 ? `${kbInset}px` : "max(16px, env(safe-area-inset-bottom))" }} /* mockup-ok: SEARCH_MORPH.md F1/F2, list is the last/slowest of the three in the measured stagger; folds in the pre-existing K4 padding */
                   onScroll={(e) => { scrollExpand.set(clamp01(e.currentTarget.scrollTop / EXPAND_DIST)); }}>
                   {/* A5 (2026-08-02 REOPENED): typing (>=2 chars) crossfades the suggestion
                       content instead of a hard switch , keyed on the idle/typing BOOLEAN (not
@@ -1378,7 +1455,7 @@ export function SearchOverlay({
                       {serviceSuggestions()}
                     </motion.div>
                   </AnimatePresence>
-                </div>
+                </motion.div>
               </motion.div>
               <motion.div inert={activeStep === "service"} style={{ opacity: svcFaceOp, pointerEvents: svcFaceHit }} className="absolute inset-x-0 top-0"> {/* S7: the collapsed face is gone while the body is up */}
                 {collapsedFace("service")}
@@ -1542,7 +1619,7 @@ export function SearchOverlay({
 
           {/* R7: ONE footer for every step (it used to be duplicated in both panels, at two
               different heights). It still folds away with the focus expand. */}
-          <motion.div inert={rowsFolded} style={{ height: footerH, opacity: stepsOp }} className="shrink-0 overflow-hidden"> {/* S7: footer folded away on focus */}
+          <motion.div inert={rowsFolded} style={{ height: footerH, opacity: footerContentOp }} className="shrink-0 overflow-hidden"> {/* S7: footer folded away on focus; F1/F2: also gated on the open/close content phase */}
             {footerInner}
           </motion.div>
           </motion.div>
