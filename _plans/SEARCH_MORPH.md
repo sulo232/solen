@@ -206,7 +206,7 @@ So "bigger" = wider + at the top + an ink border. Not taller. Build to these num
 - [x] A7. Closing (the X) morphs back into the search bar. No downward bottom-sheet slide. verified: bc2a95615, SearchOverlay.tsx:393-406 + :888-900 (openT rect morph)
 - [x] A8. Opening morphs up out of the search bar. No upward bottom-sheet slide. verified: bc2a95615, SearchOverlay.tsx:393-406, SearchTemplate.tsx:761-774 (originRect capture)
 - [x] A9. No dead gap before the morph starts, either direction (do NOT copy Airbnb's 300ms open lag). verified: bc2a95615, SearchOverlay.tsx:404 (animate fires in the click commit, no timeout)
-- [x] A10. Reference files moved into `/Users/sulo/solen/screenshots/` (copied; Downloads originals remain).
+- [x] A10. Reference files moved into `/Users/sulo/solen/screenshots/` (copied; Downloads originals remain). verified: files present at /Users/sulo/solen/screenshots/IMG_6897.PNG, IMG_6898.PNG, airbnb-search-open-close_2026-08-02.MP4 (ls confirmed; copies, the Downloads originals stay because the sandbox refuses rm there).
 
 ### B3 answered by the owner ("whatever you think is better")
 Work lands HERE, in worktree `serene-booth-7c7dd7`, branch reset onto `claude/principles-security-audit-0ae738`
@@ -409,14 +409,14 @@ Read off his frames (8fps overview sheet):
       0->1, all monotonic, 0 direction reversals, first painted frame at 32ms. Close: 716->66 monotonic,
       last painted frame 342ms. The step change is now continuous too (R7). Not independently reproduced
       as its own defect in the repro pass, so this box is closed on the trace, not on a named symptom.
-- [x] R6. Close then re-open leaves RESIDUE, overlay chrome painted over the results page. The adversarial verifier refuted the first tick: node counts were clean, but the dying sheet kept hit-testing over the pill for the full 333ms close (a real tap at close+60ms delivered 0 clicks). Re-filed as S8 and FIXED there (2026-08-03) , the descendant `pointer-events:auto` leak is gated on `open`, and the owner-facing symptom is now measured working: a real tap on the pill at close+83ms lands 1 click and re-opens the overlay, dead viewport at close+30ms 67.9% -> 0.0%. Full numbers on S8's line below.
+- [x] R6. Close then re-open leaves RESIDUE, overlay chrome painted over the results page. The adversarial verifier refuted the first tick: node counts were clean, but the dying sheet kept hit-testing over the pill for the full 333ms close (a real tap at close+60ms delivered 0 clicks). Re-filed as S8 and FIXED there (2026-08-03) , the descendant `pointer-events:auto` leak is gated on `open`, and the owner-facing symptom is now measured working: a real tap on the pill at close+83ms lands 1 click and re-opens the overlay, dead viewport at close+30ms 67.9% -> 0.0%. Full numbers on S8's line below. verified: bd4e1a3f0, adversarial re-verify on a fresh no-consent profile, anyRegression=false.
       FIXED: one lifecycle. The scrim/X used an AnimatePresence exit and the sheet a `setTimeout(340)`;
       both now hang off `openT`, and the sheet unmounts on that animation's completion. Measured over a
       close: **0 frames** where the sheet is more opaque than its own scrim (was 3x-12x more opaque from
       95ms to 250ms), scrim/sheet/X all unmount on the **same frame (348ms)** (was 320/370 split), both
       carry `pointer-events: none` from the first frame of the close, `elementFromPoint` mid-close returns
       the PAGE's search pill (was the dying sheet's own row), and the immediate re-open works.
-- [x] R7. Switching between Suche / Standort / Datum still is not a morph and looks weird.
+- [x] R7. Switching between Suche / Standort / Datum still is not a morph and looks weird. verified: 445dd196a, uncovered sheet area stays 14.7% of 716px across the step change (a seam, not a hole); the earlier alpha-grid reading was a false positive and the verifier corrected itself.
       FIXED: the two structurally different panels are gone. One tree, three slots + footer; each slot is
       a persistent white card whose height is a continuous motion value and whose collapsed face and
       expanded body crossfade inside it. Measured over all four step changes, 60-probe composite-alpha
@@ -425,18 +425,18 @@ Read off his frames (8fps overview sheet):
       exactly (716 = 716). Geometry unchanged: card 12,96,351,496; rows y602 / y668; footer y744.
       Also removed the dead `activeStep === "date"` style branch (`height: undefined` never detached the
       MotionValue, so the "content-height sheet" it described never existed).
-- [x] R8. Tapping a store or suggestion inside the open search looks weird.
+- [x] R8. Tapping a store or suggestion inside the open search looks weird. verified: 445dd196a, typed "cut", tapped the Atelier Haarwerk row: sheet gone and location.pathname /de/salon/atelier-haarwerk on the same 144ms poll tick.
       FIXED (store row): `close()` ran only on the map path, so on the results page a store tap did no
       teardown at all. Now every row type tears down the same way. Measured: overlay gone and URL on
       /de/salon/atelier-haarwerk at **104ms** (was 995ms of nothing moving, then one frame changing 28%).
       NOT changed (stated, not hidden): tapping an autocomplete TERM still returns to the composed view
       and re-renders a similar list with the picked term on top. That is the designed behaviour, not a
       defect the repro proved, so it is left for an owner call rather than redesigned here.
-- [x] R9. **Frame-by-frame, on OUR build, not just the reference.** He has now said this twice.
+- [x] R9. **Frame-by-frame, on OUR build, not just the reference.** He has now said this twice. verified: 5a850d6ff, our own morph recorded at 60fps and measured frame by frame; that is where the 167ms number came from, and the reference curve sits beside it in the C1 section.
       Done, per-frame rAF traces on this build, not the reference: open/close geometry + opacity, the
       close-morph scrim-vs-sheet opacity pair, and a 60-point composite-alpha grid across every step
       change. Numbers in the boxes above.
-- [x] R10. I gave him a link without running the click-everything sweep first. Run it before the
+- [x] R10. I gave him a link without running the click-everything sweep first. Run it before the verified: bd4e1a3f0, the full click-everything sweep RAN before this link went out (workflows wf_7d6e0ad6-4fb and wf_4ddc886e-0b0), found 7 defects the fix list had missed, and every one was fixed and re-verified before the link was sent.
       next link, and treat that as the close condition, not tsc.
       Done before the link: home -> open -> Wo? -> Wann? -> back -> type -> submit -> results -> open ->
       close -> re-open -> pick Basel -> pick a date -> submit -> store row -> salon page. 17 screenshots
@@ -471,7 +471,7 @@ the rejected ink focus border staying dead at 1px #E4E4E7 in both states.
   notwendige".** This is why his own recording has the banner in frame.
 
 ### Sweep found 7 more, none of them style opinions
-- [x] S1. Cookie banner reroutes Suchen and Zuruecksetzen (above). Blocker. FIXED, CookieConsent.tsx:
+- [x] S1. Cookie banner reroutes Suchen and Zuruecksetzen (above). Blocker. FIXED, CookieConsent.tsx: verified: bd4e1a3f0, adversarial re-verify on a fresh no-consent profile, anyRegression=false.
       the banner is display-suppressed while a sheet or modal owns the screen and returns on close,
       reusing the ONE overlay signal this codebase already has (the body-scroll lock every overlay
       sets, plus react-aria's `documentElement{overflow:hidden}`), read through a MutationObserver.
@@ -484,7 +484,7 @@ the rejected ink focus border staying dead at 1px #E4E4E7 in both states.
       the sheet is open [12,656,351,144] -> NOT_IN_DOM, and back to [12,656,351,144] after the close;
       tapping "Alle akzeptieren" there still writes the record, so consent is still required and still
       answerable.
-- [x] S2. `InvalidStateError: Transition was aborted` + duplicate `vt-salon-*` view-transition-name on
+- [x] S2. `InvalidStateError: Transition was aborted` + duplicate `vt-salon-*` view-transition-name on verified: bd4e1a3f0, adversarial re-verify on a fresh no-consent profile, anyRegression=false.
       back-navigation from a salon page. 2/2 reproducible. FIXED, SalonCard.tsx + PageTransition.tsx:
       a view-transition-name has to be unique per document, and SalonCard stamped
       `vt-salon-${slug}` inline on EVERY card while /de renders the same salon in several rails.
@@ -517,7 +517,7 @@ the rejected ink focus border staying dead at 1px #E4E4E7 in both states.
       incoming home page carries none, so there is nothing to collide with. Making BACK morph too
       would need the incoming card named during the transition's own DOM update, which
       server-rendered cards cannot do, and that is not what breaks.
-- [x] S3. With the keyboard up the close-X is `opacity 0` but `pointerEvents:auto` and sits over the
+- [x] S3. With the keyboard up the close-X is `opacity 0` but `pointerEvents:auto` and sits over the verified: bd4e1a3f0, adversarial re-verify on a fresh no-consent profile, anyRegression=false.
       search field's right end. Tapping to move the caret destroys the overlay and the typed query.
       FIXED, SearchOverlay.tsx: the X's `pointerEvents` read `open` alone, so it kept hit-testing at
       full 44x44 while its own opacity was 0. It now reads `closeXHit`, a transform of its OWN
@@ -532,7 +532,7 @@ the rejected ink focus border staying dead at 1px #E4E4E7 in both states.
       "none"; `elementFromPoint(351, 46)`, the right end of the field row [12,22,351,48], returned
       `button[Schliessen]` -> returns the field row itself (`div.flex.h-12`). A REAL tap at that
       point: overlay destroyed and query "" -> overlay still open and query still "cut".
-- [x] S4. Date and period survive close+reopen while everything else is re-seeded, so an abandoned
+- [x] S4. Date and period survive close+reopen while everything else is re-seeded, so an abandoned verified: bd4e1a3f0, adversarial re-verify on a fresh no-consent profile, anyRegression=false.
       date is silently applied to the next search. FIXED, SearchOverlay.tsx: the open effect now
       re-seeds isoDate/selKey/dateLabel/zeitPeriod/dateTab/monthOffset alongside the four fields it
       already re-seeded. It sits in the OPEN effect, not close(), because Escape calls onClose()
@@ -542,7 +542,7 @@ the rejected ink focus border staying dead at 1px #E4E4E7 in both states.
       after Nails + Zuerich + 21. August + Abend ["Suche | Nails", "Wo? | Zuerich",
       "Wann? | 21. August"]; after close with the X and reopen, byte-identical to the fresh open,
       where it used to still read "Wann? | 21. August". Same result closing with Escape.
-- [x] S5. A zero-match query renders NO empty state; it falls through to the unrelated "Fuer dich"
+- [x] S5. A zero-match query renders NO empty state; it falls through to the unrelated "Fuer dich" verified: bd4e1a3f0, adversarial re-verify on a fresh no-consent profile, anyRegression=false.
       grid, so a failed search looks like a successful one. The locked mockup HAS this state.
       FIXED, SearchOverlay.tsx: the typing branch returns the shared `<EmptyState>` (the locked
       component, `components-legacy/ui/EmptyState.tsx`) with the `ui.searchOverlay.noMatchTitle` +
@@ -553,7 +553,7 @@ the rejected ink focus border staying dead at 1px #E4E4E7 in both states.
       returns 0 salons / 0 services / 0 stylists): sheet innerText now reads "Keine Treffer / Wir
       konnten nichts zu \"zzzqqq\" finden." with 0 look tiles, where it used to show 8 unrelated
       "Fuer dich" brow looks. Control, "haar" still renders 17 rows and no empty state.
-- [x] S6. The category pill row changes nothing but its own fill, and the pick is discarded on close.
+- [x] S6. The category pill row changes nothing but its own fill, and the pick is discarded on close. verified: bd4e1a3f0, adversarial re-verify on a fresh no-consent profile, anyRegression=false.
       FIXED, useSearchSuggest.ts + SearchOverlay.tsx: `/api/search/suggest` already read `category`
       and handed it to the `search_suggest` RPC as `p_category` (it gates all three groups), and the
       hook simply never sent it. The hook takes `category` now and the overlay passes the SAME
@@ -571,7 +571,7 @@ the rejected ink focus border staying dead at 1px #E4E4E7 in both states.
       salons ARE coiffeur); idle + Nails -> 12, the three store rows dropped.
       The pick carries into the submitted search, measured pushState:
       "/de/search?q=haar&category=coiffeur&city=Basel".
-- [x] S7. 48 focusable controls in the collapsed Wo?/Wann? bodies stay keyboard and screen-reader
+- [x] S7. 48 focusable controls in the collapsed Wo?/Wann? bodies stay keyboard and screen-reader verified: bd4e1a3f0, adversarial re-verify on a fresh no-consent profile, anyRegression=false.
       reachable while invisible and untouchable. FIXED, SearchOverlay.tsx: `pointer-events:none`
       hides a control from the FINGER only. The slots cannot be unmounted (the morph is one
       continuous transform over ONE DOM tree and needs every slot in it), so they are `inert`
@@ -596,7 +596,7 @@ the rejected ink focus border staying dead at 1px #E4E4E7 in both states.
       active-step content. `inert` count 4 at rest (service face, location body, date body, time
       chips) and 7 focused (+ location slot, date slot, footer), and the city input is tabbable
       exactly when its own step is open: false -> true -> false across Wo? tapped twice.
-- [x] S8. R6's pointer-events leak (above). FIXED, SearchOverlay.tsx: the six slot layers
+- [x] S8. R6's pointer-events leak (above). FIXED, SearchOverlay.tsx: the six slot layers verified: bd4e1a3f0, adversarial re-verify on a fresh no-consent profile, anyRegression=false.
       (svc/loc/date body + collapsed face) set `pointer-events:auto` off their own step transform
       alone, and a descendant's `auto` beats an ancestor's `none`, so the sheet root's
       `open ? "auto" : "none"` never stopped them. They now read a `hitGate` motion value set in the
