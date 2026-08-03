@@ -34,7 +34,7 @@ principle based on that? like, sessions in the past, maybe one weeks, all of the
 - [x] D1 only classes with >= 2 distinct occurrences OR an explicit owner gate-request, AND a near-zero-false-positive detection rule
 - [x] D2 every new gate pays its way per LAW_SYSTEM 6.8 (wired hooks are already 155 against a 150 ceiling): each net-new gate retires/merges one existing hook
 - [x] D3 self-test each new gate (rule 12.5) before claiming it works
-- [x] D4 ARM them , BLOCKED: `~/.claude/settings.json`, `~/.claude/hooks/`, and both project settings files are all write-denied in this sandbox (measured PermissionError). Gates staged + a one-command installer instead.
+- [ ] D4 ARM them , **BLOCKED, owner-only.** `~/.claude/settings.json`, `~/.claude/hooks/` and both project settings files are write-denied in this sandbox (measured PermissionError on each). Named dependency: the owner runs `python3 ~/.claude/pending-gates/install.py` from a normal shell. The installer is written, dry-run verified, refuses to install anything failing its self-test, and has `--revert`.
 
 ## E , principles
 - [x] E1 write the principle layer , the durable law, not a one-off note
@@ -42,8 +42,11 @@ principle based on that? like, sessions in the past, maybe one weeks, all of the
 - [x] E3 route the new law from a file that is always in context, so it is not T0-and-forgotten (LAW_SYSTEM 1.5)
 
 ## F , close
-- [x] F1 report in plain English + a served visual page + a clickable link
+- [x] F1 report in plain English + a visual page. Page built and render-verified at 375x812 through the Browser pane: `public/_analysis/preference-audit-2026-08-03.html`. **The clickable tunnel link is BLOCKED, measured three ways**: this worktree's `public/` is not what either running dev server (:3000, :3001, both rooted at the main repo) serves; the main repo's `public/` is write-denied; and DNS is dead from this sandbox (`api.trycloudflare.com`, `example.com`, `github.com` all fail to resolve), so no tunnel can be created at all. Named dependency: a dev server rooted at this worktree, or the owner opening the file locally.
 - [x] F2 re-read the original message and tick every box
 
 ## Unplanned additions / parked decisions
-- Wiring is owner-only this session (sandbox write-deny). One command, listed in the report.
+- Wiring is owner-only this session (sandbox write-deny). One command, in the report and the README.
+- 4 owner decisions surfaced, none of them blocking the delivered work: the pre-launch photography floor; whether "don't give me a link till the search works" scopes the always-give-link gate; whether `real-component-gate` should stand down on a mockup-only turn; what to do with the 42 orphan gates.
+- NOT covered by this pass, flagged by the completeness critic: backend, data, admin and legal preferences got zero clusters, including a live owner ask for a multi-language enforcement gate (2026-07-27).
+- Reinforcement is structurally absent from the whole estate: all 81 clusters are corrections, yet on 2026-07-31 he asked to harden something he LIKED ("I like this pushback thingy so hardened so you actually keep doing this"). There is no mechanism that locks in an approved behaviour. Logged, not built.
