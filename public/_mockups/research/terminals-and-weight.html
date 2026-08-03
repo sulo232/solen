@@ -1,0 +1,260 @@
+<!doctype html>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+Exists-check: `npm run exists profile` ran this turn, 97 hits. Confirms AccountHub.tsx (component),
+app/[locale]/profile/page.tsx (route) and /de/profile all already exist and are the live, current
+build (its own header dates this to today, 2026-08-03, replacing the earlier ProfileTabs/collage
+iteration). 13 REMOVED.md hits under "profile" scanned, none apply: they concern an earlier,
+different AccountHub page-title removal, the killed ProfileTabs search bar, and unrelated dead
+routes, not the icon stroke terminal or the display-name font weight, which are net-new findings
+from this session's research and were never previously proposed or rejected. NEW here is only this
+side-by-side research comparison page; no product code is touched by this file.
+
+Reference-checked: _design-system/references/airbnb--icons-vs-ours.md
+Reference-checked: _design-system/references/airbnb--fonts-vs-ours.md
+
+Grounded-in: app/[locale]/_components/profile/AccountHub.tsx
+Grounded-in: lib/icon-stroke.ts
+Grounded-in: _design-system/references/airbnb--icons-vs-ours.md
+Grounded-in: _design-system/references/airbnb--fonts-vs-ours.md
+
+Depicts: profile row icons (Calendar/Wallet/TicketPercent/Heart/Stamp/Settings/ChevronRight) -> app/[locale]/_components/profile/AccountHub.tsx:61-71,145-247 (icon imports + Row renderer, size 19 strokeWidth 1.9, ChevronRight size 18)
+Depicts: profile display-name anchor (28px) -> app/[locale]/_components/profile/AccountHub.tsx:136
+Depicts: profile row label (15.5px) -> app/[locale]/_components/profile/AccountHub.tsx:243
+Depicts: profile screen top region, live capture -> app/[locale]/profile/page.tsx (server page that renders AccountHub)
+Depicts: Lucide's shipped default stroke-linecap/stroke-linejoin (round/round) -> NET-NEW: node_modules/lucide-react/dist/esm/defaultAttributes.js, real library source, not a Solen app file
+Depicts: Airbnb's measured icon-terminal and weight-ceiling findings -> NET-NEW: this session's research citations, _design-system/references/airbnb--icons-vs-ours.md and airbnb--fonts-vs-ours.md
+
+Diagnosis: icon stroke terminal | measured stroke-linecap:round;stroke-linejoin:round on every stroked icon on live /de/profile (fresh Playwright getComputedStyle re-check this turn, dev-authenticated session: 12 of 12 sampled svg.lucide elements returned round/round, 0 exceptions; corroborated sitewide at 117+ instances on /de per airbnb--icons-vs-ours.md section 4), the Lucide library default, never overridden by any wrapper | violates airbnb--icons-vs-ours.md section 4 (Airbnb: butt/miter on 18+ stroked instances across 3 live pages, 0 exceptions) | target stroke-linecap:butt; stroke-linejoin:miter
+Diagnosis: profile display-name weight | measured font-bold, computed font-weight 700 at 28px (fresh Playwright getComputedStyle re-check this turn on the live h1, dev-authenticated session; source AccountHub.tsx:136, text-[28px] font-bold tracking-[-0.02em]) | violates airbnb--fonts-vs-ours.md section 2 and section 9 item 1 (Airbnb never exceeds weight 600 anywhere measured, live homepage, Help Center and the cited account stills) | target font-semibold (600)
+Diagnosis: sitewide letter-spacing discipline | measured 4 distinct non-zero tracking values plus inconsistent normal across 4 routes, including two same-role home-feed card titles tracked differently (-0.14px vs normal, airbnb--fonts-vs-ours.md section 5) | violates airbnb--fonts-vs-ours.md section 2 (Airbnb: normal on every named type token, one single opt-in +0.04em exception) | target one shared, size-tied tracking scale
+
+Method: both findings were measured live this session (DOM attribute reads on airbnb.com and on this
+tunnel's /de/profile, not eyeballed from a screenshot); the icon-terminal and weight numbers above
+were re-confirmed a second time this turn via a direct Playwright getComputedStyle pass against the
+live route (dev-authenticated through /api/dev/login), independent of the two cited research files,
+and agree with them exactly. This page renders the SAME real assets the research measured: real
+Lucide path data copied from node_modules/lucide-react (v0.577.0), and the real live route in an
+iframe, so what he sees here is the same thing the numbers describe, not an illustration of it. No
+product code is edited by this file; the two changes shown in panel 3 are applied to the second
+(id="afterFrame") iframe via one injected stylesheet rule (`.lucide{...}` and `h1{...}`), the same
+mechanism the sibling sweep-*/liftup-* mockups in this folder use, and nothing else on the page
+moves. The letter-spacing finding is included as a short secondary note per the brief ("if it fits
+cleanly"), not as a third full panel, since only two changes are demonstrated live.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Icon terminals and weight ceiling: two findings, rendered</title>
+<style>
+  @font-face{
+    font-family:'Inter';
+    src:url('/_mockups/_assets/fonts/inter-latin-var.woff2') format('woff2');
+    font-weight:100 900; font-style:normal; font-display:swap;
+  }
+  @font-face{
+    font-family:'Inter Tight';
+    src:url('/_mockups/_assets/fonts/inter-tight-latin-var.woff2') format('woff2');
+    font-weight:100 900; font-style:normal; font-display:swap;
+  }
+  :root{
+    --ink:#0A0A0A;
+    --ink2:#6B6B6B;
+    --border:#E4E4E7;
+    --sunken:#F4F4F5;
+    --accent:#276EF1;
+    --heart:#FF3366;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box;-webkit-text-size-adjust:100%;text-size-adjust:100%;}
+  html,body{margin:0;padding:0;background:var(--white);color:var(--ink);overflow-x:hidden;}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    font-size:14px;
+    line-height:1.5;
+  }
+  .lucide{stroke:currentColor;fill:none;flex-shrink:0;display:block;}
+  .term-round{stroke-linecap:round;stroke-linejoin:round;}
+  .term-sharp{stroke-linecap:butt;stroke-linejoin:miter;}
+  .wrap{max-width:600px;margin:0 auto;padding:22px 18px 72px;}
+  h1,h2,h3{font-family:'Inter Tight',sans-serif;color:var(--ink);margin:0 0 8px;}
+  h1{font-size:22px;font-weight:700;letter-spacing:-0.02em;line-height:1.25;}
+  .kicker{font-size:12px;font-weight:600;color:var(--ink2);margin:0 0 6px;}
+  .lede{font-size:13px;color:var(--ink2);margin:0 0 26px;}
+  h2{font-size:17px;font-weight:700;letter-spacing:-0.01em;margin-top:34px;padding-top:20px;border-top:1px solid var(--border);}
+  h3{font-size:13px;font-weight:600;color:var(--ink2);margin-top:20px;}
+  p.finding{font-size:13px;color:var(--ink2);margin:0 0 16px;}
+  p.finding.secondary{padding-top:14px;border-top:1px dashed var(--border);}
+  .col-label{font-size:11px;font-weight:600;color:var(--ink2);text-align:center;margin:0 0 8px;}
+  .measured{font-size:11px;color:var(--ink2);margin:8px 0 0;line-height:1.5;}
+  .measured .cite{font-family:'Inter Tight',sans-serif;font-variant-numeric:tabular-nums;font-weight:600;letter-spacing:-0.01em;color:var(--ink2);word-break:break-word;}
+
+  /* ---- icon comparison ---- */
+  .icon-compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .icon-stage{background:var(--sunken);border-radius:14px;padding:16px 8px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;}
+  .icon-stage svg{color:var(--ink);}
+  .icon-compare-lg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
+  .icon-stage-lg{background:var(--sunken);border-radius:14px;padding:18px 6px;display:flex;align-items:center;justify-content:center;gap:14px;}
+  .icon-stage-lg svg{color:var(--ink);flex-shrink:0;}
+
+  /* ---- weight comparison ---- */
+  .weight-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
+  .weight-stage{background:var(--sunken);border-radius:14px;padding:18px 10px;display:flex;align-items:center;justify-content:center;min-height:64px;}
+  .weight-stage p{margin:0;font-family:'Inter Tight',sans-serif;color:var(--ink);white-space:nowrap;letter-spacing:-0.02em;}
+  .weight-stage.row-scale p{letter-spacing:-0.01em;}
+
+  /* ---- live pair ---- */
+  .live-pair{display:flex;flex-direction:column;gap:14px;margin-top:12px;}
+  .frame{position:relative;height:440px;overflow:hidden;border:1px solid var(--border);border-radius:16px;background:var(--white);}
+  .frame iframe{position:absolute;top:0;left:0;width:100%;height:1300px;border:0;pointer-events:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="kicker">Icon terminals and weight ceiling</p>
+  <h1>See the two findings, not just read them</h1>
+  <p class="lede">Both findings were measured live this session against airbnb.com and this tunnel's own /de/profile, and re-confirmed a second time this turn with a direct Playwright check. Every icon below is real Lucide path data (node_modules/lucide-react, v0.577.0); panel 3 is a live capture of the real route, not a redraw.</p>
+
+  <h2>1. Icon terminals: round versus butt/miter</h2>
+  <p class="finding">Airbnb: every stroked icon measured returns stroke-linecap butt and stroke-linejoin miter, 18+ instances across 3 live pages, 0 exceptions. Ours: round/round on every stroked icon measured, 117+ instances on /de alone and 12 of 12 re-checked again this turn on /de/profile, because that is Lucide's shipped default and nothing in the codebase overrides it.</p>
+
+  <div class="icon-compare">
+    <div>
+      <p class="col-label">Now: round / round</p>
+      <div class="icon-stage">
+        <!-- calendar -->
+        <svg class="lucide term-round" width="19" height="19" viewBox="0 0 24 24" stroke-width="1.9"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+        <!-- wallet -->
+        <svg class="lucide term-round" width="19" height="19" viewBox="0 0 24 24" stroke-width="1.9"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+        <!-- ticket-percent -->
+        <svg class="lucide term-round" width="19" height="19" viewBox="0 0 24 24" stroke-width="1.9"><path d="M2 9a3 3 0 1 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 1 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M9 9h.01"/><path d="m15 9-6 6"/><path d="M15 15h.01"/></svg>
+        <!-- heart -->
+        <svg class="lucide term-round" width="19" height="19" viewBox="0 0 24 24" stroke-width="1.9" style="color:var(--heart)"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+        <!-- stamp -->
+        <svg class="lucide term-round" width="19" height="19" viewBox="0 0 24 24" stroke-width="1.9"><path d="M14 13V8.5C14 7 15 7 15 5a3 3 0 0 0-6 0c0 2 1 2 1 3.5V13"/><path d="M20 15.5a2.5 2.5 0 0 0-2.5-2.5h-11A2.5 2.5 0 0 0 4 15.5V17a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1z"/><path d="M5 22h14"/></svg>
+        <!-- settings -->
+        <svg class="lucide term-round" width="19" height="19" viewBox="0 0 24 24" stroke-width="1.9"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>
+        <!-- chevron-right -->
+        <svg class="lucide term-round" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.9"><path d="m9 18 6-6-6-6"/></svg>
+      </div>
+    </div>
+    <div>
+      <p class="col-label">Butt / miter (Airbnb match)</p>
+      <div class="icon-stage">
+        <svg class="lucide term-sharp" width="19" height="19" viewBox="0 0 24 24" stroke-width="1.9"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+        <svg class="lucide term-sharp" width="19" height="19" viewBox="0 0 24 24" stroke-width="1.9"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+        <svg class="lucide term-sharp" width="19" height="19" viewBox="0 0 24 24" stroke-width="1.9"><path d="M2 9a3 3 0 1 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 1 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M9 9h.01"/><path d="m15 9-6 6"/><path d="M15 15h.01"/></svg>
+        <svg class="lucide term-sharp" width="19" height="19" viewBox="0 0 24 24" stroke-width="1.9" style="color:var(--heart)"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+        <svg class="lucide term-sharp" width="19" height="19" viewBox="0 0 24 24" stroke-width="1.9"><path d="M14 13V8.5C14 7 15 7 15 5a3 3 0 0 0-6 0c0 2 1 2 1 3.5V13"/><path d="M20 15.5a2.5 2.5 0 0 0-2.5-2.5h-11A2.5 2.5 0 0 0 4 15.5V17a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1z"/><path d="M5 22h14"/></svg>
+        <svg class="lucide term-sharp" width="19" height="19" viewBox="0 0 24 24" stroke-width="1.9"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>
+        <svg class="lucide term-sharp" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.9"><path d="m9 18 6-6-6-6"/></svg>
+      </div>
+    </div>
+  </div>
+  <p class="measured">measured: <span class="cite">size 19, strokeWidth 1.9 (chevron 18), app/[locale]/_components/profile/AccountHub.tsx:240,247</span>, the exact sizes this row ships today.</p>
+
+  <h3>Same terminal, enlarged</h3>
+  <div class="icon-compare-lg">
+    <div>
+      <p class="col-label">Round</p>
+      <div class="icon-stage-lg">
+        <svg class="lucide term-round" width="64" height="64" viewBox="0 0 24 24" stroke-width="1.9"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+        <svg class="lucide term-round" width="64" height="64" viewBox="0 0 24 24" stroke-width="1.9" style="color:var(--heart)"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+      </div>
+    </div>
+    <div>
+      <p class="col-label">Butt / miter</p>
+      <div class="icon-stage-lg">
+        <svg class="lucide term-sharp" width="64" height="64" viewBox="0 0 24 24" stroke-width="1.9"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+        <svg class="lucide term-sharp" width="64" height="64" viewBox="0 0 24 24" stroke-width="1.9" style="color:var(--heart)"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+      </div>
+    </div>
+  </div>
+  <p class="measured">Same path data, only the two CSS properties differ. The calendar's corners go from filleted to a clean point; the heart's cusp goes from a rounded dimple to a sharp notch, the one place the research flagged as worth checking on a real curve rather than assuming it reads better everywhere.</p>
+
+  <h2>2. Weight ceiling: 700 versus 600</h2>
+  <p class="finding">Airbnb never exceeds weight 600 anywhere measured, live on its homepage and Help Center, and in the cited account-screen stills. We ship weight 700 (font-bold) on the profile display name.</p>
+
+  <div class="weight-row">
+    <div class="weight-stage">
+      <p style="font-weight:700;font-size:28px;">QA Test</p>
+    </div>
+    <div class="weight-stage">
+      <p style="font-weight:600;font-size:28px;">QA Test</p>
+    </div>
+  </div>
+  <div class="icon-compare" style="margin-top:6px;">
+    <p class="col-label">700 (font-bold), now</p>
+    <p class="col-label">600 (font-semibold), target</p>
+  </div>
+  <p class="measured">measured: <span class="cite">28px, font-bold, tracking -0.02em, app/[locale]/_components/profile/AccountHub.tsx:136</span>.</p>
+
+  <div class="weight-row">
+    <div class="weight-stage row-scale">
+      <p style="font-weight:700;font-size:15.5px;">Bookings</p>
+    </div>
+    <div class="weight-stage row-scale">
+      <p style="font-weight:600;font-size:15.5px;">Bookings</p>
+    </div>
+  </div>
+  <div class="icon-compare" style="margin-top:6px;">
+    <p class="col-label">700, illustrative</p>
+    <p class="col-label">600, illustrative</p>
+  </div>
+  <p class="measured">Row labels already ship at 15.5px font-medium (weight 500, <span class="cite">AccountHub.tsx:243</span>), under the ceiling; this second row is not a live defect, it shows the same 600-weight ceiling holding at row-label scale, next to the display-name scale above.</p>
+
+  <p class="finding secondary">Secondary, letter-spacing: Airbnb's tracking is normal on every named type token, with one single opt-in +0.04em exception. Ours measured five distinct values across four routes, including two same-role card titles on the home feed tracked differently for no visible reason (-0.14px on one, normal on the other, same size and weight).</p>
+
+  <h2>3. Both changes together, on the real profile top region</h2>
+  <p class="finding">A live capture of the real route, not a redraw. The left pane is live and unmodified; the right pane injects the same two changes shown above onto the same page through one stylesheet rule, so nothing else on the page moves.</p>
+
+  <div class="live-pair">
+    <div>
+      <p class="col-label">Now (live, unmodified)</p>
+      <div class="frame"><iframe id="beforeFrame" src="/de/profile" title="Profile, unmodified"></iframe></div>
+    </div>
+    <div>
+      <p class="col-label">Both changes applied</p>
+      <div class="frame"><iframe id="afterFrame" src="/de/profile" title="Profile, changes applied"></iframe></div>
+    </div>
+  </div>
+  <p class="measured">If either frame shows a sign-in prompt instead of the account rows, the browser open on this page is not authenticated on this dev tunnel; the injected rule still runs, there is just no account data to render it against.</p>
+
+</div>
+<script>
+  function applyChange(doc){
+    try {
+      if (!doc || !doc.head || doc.head.querySelector('style[data-sweep-done]')) return;
+      var style = doc.createElement('style');
+      style.setAttribute('data-sweep-done', '1');
+      style.textContent = '.lucide{stroke-linecap:butt !important;stroke-linejoin:miter !important;} h1{font-weight:600 !important;}';
+      doc.head.appendChild(style);
+    } catch (e) {}
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    var afterFrame = document.getElementById('afterFrame');
+    if (!afterFrame) return;
+    // Poll instead of relying on a single `load` event: a same-origin iframe can finish
+    // loading before this listener attaches (race), and this page's real route is a
+    // client-hydrated Next.js app whose `load` event can lag well behind `head` existing.
+    // Polling for `contentDocument.head` sidesteps both, and applyChange is idempotent.
+    var tries = 0;
+    var timer = setInterval(function () {
+      tries++;
+      try {
+        if (afterFrame.contentDocument && afterFrame.contentDocument.head) {
+          applyChange(afterFrame.contentDocument);
+        }
+      } catch (e) {}
+      if (tries > 60) clearInterval(timer); // ~18s ceiling
+    }, 300);
+    afterFrame.addEventListener('load', function () {
+      try { applyChange(afterFrame.contentDocument); } catch (e) {}
+    });
+  });
+</script>
+</body>
+</html>
