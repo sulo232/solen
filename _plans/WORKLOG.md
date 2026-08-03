@@ -4,6 +4,22 @@ The newest entry is at the top. Every session that ships real work adds one entr
 
 ---
 
+## 2026-08-03 , weekly design-law improvement pass (workstream #41 LAW, standing loop)
+
+**Auto-triggered.** Harvested 5 dated owner decisions, 7 contradictions open, 5 duplications, **8 safe
+fixes**, 7 owner decisions needed. Full report:
+[LAW_IMPROVE_2026-08-03.md](LAW_IMPROVE_2026-08-03.md). Not a design week , every commit in the window
+was copy-law, i18n or audit work , so the finding is what a language decision did to the design corpus:
+`copy-lint-gate.py` was still **armed and blocking formal German** five days after you chose `Sie`,
+verified by running it (`deny`, "Rewrite with du/dein/deine/dir/dich"), and SOURCE.md still told every
+writer to use `du` in two places. Disarmed (not inverted , COPY_LAW §8 says the reverse gate comes after
+the sweep), self-test 5/5. Also: LOCKFILE's ENFORCED state matrix prescribed a focus ring a wired gate
+blocks, and defined the eyebrow AS uppercase, which you banned on 2026-06-18. Seven commits in the repo,
+one on-disk gate change. Open for you: the en-dash carve-out (mine, not yours), the eyebrow size, and
+the four carried from 07-27.
+
+---
+
 ## 2026-08-01 , weekly estate self-audit run (workstream #17 LAW, standing loop)
 
 **Auto-triggered.** The eight doctrine steps: system health, skip ledger, injection diet, mistake
