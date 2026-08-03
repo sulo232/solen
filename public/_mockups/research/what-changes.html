@@ -1,0 +1,367 @@
+<!doctype html>
+<!-- Base: net-new (this is a text report/summary page, not a redraw of any existing product screen; it describes screens by citing measured numbers and file paths, it renders no UI treatment of its own). -->
+<!-- Scale: full-page (this single document IS the whole page, top to bottom, not a component fragment). -->
+<!--
+Exists-check: `npm run exists "what changes"` and `npm run exists "what-changes"` both ran
+this turn, 0 hits either time. No existing report page covers this. REMOVED.md: not
+applicable, this page describes shipped changes and open questions, it proposes nothing new
+to build. NEW: only this summary page itself.
+
+lang-ok: this report quotes a handful of real shipped German UI strings ("Fur dich", "Nahe")
+as factual evidence of what a live screen renders, not as invented mockup copy. Each quoted
+line also carries its own german-ok marker below.
+
+Reference-checked: _design-system/references/airbnb--profile-list.md
+Reference-checked: _design-system/references/AIRBNB_SYSTEM_VS_OURS.md
+Grounded-in: _design-system/AIRBNB_PROFILE_PRINCIPLES.md
+
+This is a REPORT page, not a product mockup, so it draws nothing new: it only describes
+screens that already exist. Depicts manifest:
+  Depicts: /de/profile account hub rows/icons/back control -> app/[locale]/_components/profile/AccountHub.tsx
+  Depicts: /de/profile bell/hamburger/back control chrome -> app/[locale]/_components/layout/Header.tsx
+  Depicts: /de/profile loading skeleton -> app/[locale]/profile/loading.tsx
+  Depicts: home feed -> app/[locale]/page.tsx
+  Depicts: category page chrome/search/results -> app/[locale]/coiffeur/page.tsx, app/[locale]/_components/search/SearchTemplate.tsx
+  Depicts: Inspo top chrome/filters/grid -> app/[locale]/inspo/page.tsx
+
+Grounded in (research reused wholesale, not redone):
+  _design-system/AIRBNB_PROFILE_PRINCIPLES.md
+  _design-system/references/AIRBNB_SYSTEM_VS_OURS.md
+  _design-system/references/airbnb--profile-list.md
+  _design-system/references/airbnb--profile-1to1-diff.md
+Live numbers on the home feed, the category page and Inspo were measured fresh this pass
+(Playwright, 390x844, dpr 2, https://card-albums-anne-mood.trycloudflare.com), not carried
+over from the sources above, which never measured those three screens.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>What changed after the Airbnb profile principles research</title>
+<style>
+  @font-face{
+    font-family:'Inter';
+    src:url('/_mockups/_assets/fonts/inter-latin-var.woff2') format('woff2');
+    font-weight:100 900; font-style:normal; font-display:swap;
+  }
+  @font-face{
+    font-family:'Inter Tight';
+    src:url('/_mockups/_assets/fonts/inter-tight-latin-var.woff2') format('woff2');
+    font-weight:100 900; font-style:normal; font-display:swap;
+  }
+  :root{
+    --ink:#0A0A0A;
+    --ink2:#6B6B6B;
+    --border:#E4E4E7;
+    --sunken:#F4F4F5;
+    --accent:#276EF1;
+    --green:#16A34A;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box;-webkit-text-size-adjust:100%;text-size-adjust:100%;}
+  html,body{margin:0;padding:0;background:var(--white);color:var(--ink);}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    font-size:16px;
+    line-height:1.55;
+    overflow-x:hidden;
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:28px 20px 96px;}
+  h1,h2,h3{font-family:'Inter Tight',sans-serif;color:var(--ink);margin:0 0 8px;}
+  h1{font-size:26px;font-weight:700;letter-spacing:-0.02em;line-height:1.2;}
+  .kicker{font-size:12px;font-weight:600;color:var(--ink2);margin:0 0 10px;}
+  .lede{font-size:15px;color:var(--ink2);margin:0 0 28px;}
+  h2{font-size:20px;font-weight:700;letter-spacing:-0.01em;margin-top:44px;padding-top:20px;border-top:1px solid var(--border);}
+  h2 .num{color:var(--ink2);font-weight:500;margin-right:6px;}
+  h3{font-size:16px;font-weight:600;margin-top:24px;margin-bottom:4px;}
+  p{margin:0 0 14px;font-size:15px;}
+  .intro-block p{font-size:16px;line-height:1.65;}
+  .card{background:var(--sunken);border-radius:16px;padding:16px 18px;margin:12px 0;}
+  .card + .card{margin-top:10px;}
+  .tag{display:inline-block;font-size:11px;font-weight:600;color:var(--green);background:#DCFCE7;border-radius:4px;padding:2px 8px;margin-bottom:8px;}
+  .row-label{font-size:12px;font-weight:600;color:var(--ink2);margin:0 0 2px;}
+  .row-val{font-size:15px;margin:0 0 12px;}
+  .row-val:last-child{margin-bottom:0;}
+  code, .mono{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;background:var(--sunken);border-radius:4px;padding:1px 5px;word-break:break-word;}
+  .file{font-size:13px;color:var(--ink2);}
+  .why{font-size:14px;color:var(--ink2);margin-top:2px;}
+  .screen-block{border:1px solid var(--border);border-radius:16px;padding:18px;margin:16px 0;}
+  .screen-block h3{margin-top:0;}
+  .col-label{font-size:11px;font-weight:700;letter-spacing:0.02em;color:var(--ink2);margin:16px 0 4px;}
+  .col-label:first-of-type{margin-top:4px;}
+  .metrics{font-size:13px;color:var(--ink2);background:var(--sunken);border-radius:12px;padding:10px 12px;margin:10px 0 0;}
+  .metrics div{margin-bottom:4px;}
+  .metrics div:last-child{margin-bottom:0;}
+  .open-q{border-left:3px solid var(--border);padding-left:14px;margin:18px 0;}
+  .open-q .qnum{font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:2px;}
+  .cost{font-size:14px;margin:4px 0;}
+  .cost b{color:var(--ink);}
+  ul{margin:0 0 14px;padding-left:20px;}
+  li{font-size:15px;margin-bottom:8px;}
+  a{color:var(--accent);text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .links-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .filepath{font-size:12.5px;color:var(--ink2);font-family:'JetBrains Mono',ui-monospace,monospace;white-space:nowrap;}
+  hr.sep{border:none;border-top:1px solid var(--border);margin:36px 0;}
+  .foot{font-size:12px;color:var(--ink2);margin-top:40px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="kicker">SOLEN, RESEARCH SUMMARY, ONE PAGE</p>
+  <h1>What actually changed, and what did not</h1>
+  <p class="lede">
+    The research this answers lives in four files nobody had opened. This page is the same
+    findings, read on a phone, with the file and the reason attached to every line.
+  </p>
+
+  <div class="intro-block">
+    <p>
+      Airbnb's account screen runs on almost no colour: one dark ink for every word, one light
+      grey for the few lines that separate sections, and their pink brand colour shows up in
+      exactly one place, the icon for whichever tab you are currently on at the bottom of the
+      screen. It has no boxes. Every row sits straight on the page with a small, fixed gap to
+      the row below it, and that gap only gets noticeably bigger once, right where one group of
+      options ends and the next one starts. Nothing is made bold or coloured just to look
+      finished, weight and colour are spent on the one thing that is actually the point of the
+      screen and nowhere else.
+    </p>
+  </div>
+
+  <h2><span class="num">1</span>Already done, with proof</h2>
+  <p>
+    Five changes shipped in real code today on <span class="mono">/de/profile</span>, the live
+    page, not a mockup. Every value below is quoted from the file as it stands right now.
+  </p>
+
+  <div class="card">
+    <span class="tag">Shipped</span>
+    <h3 style="margin-top:0">Notification bell</h3>
+    <p class="row-label">WAS</p>
+    <p class="row-val">Rendered on every route, unconditionally.</p>
+    <p class="row-label">NOW</p>
+    <p class="row-val"><span class="mono">{!isAccountHub && &lt;NotificationBell hidden={menuOpen} /&gt;}</span>, hidden on the account hub only.</p>
+    <p class="file">app/[locale]/_components/layout/Header.tsx</p>
+    <p class="why">A bell is a notice about something happening somewhere else. This screen's job is your own account, so a notice about something else does not belong in its own top row.</p>
+  </div>
+
+  <div class="card">
+    <span class="tag">Shipped</span>
+    <h3 style="margin-top:0">Hamburger menu</h3>
+    <p class="row-label">WAS</p>
+    <p class="row-val">A bordered white square button, opening the sitewide menu, on every route.</p>
+    <p class="row-label">NOW</p>
+    <p class="row-val">Hidden on the account hub, gated on the same condition as the bell.</p>
+    <p class="file">app/[locale]/_components/layout/Header.tsx</p>
+    <p class="why">The account hub's own rows (Bookings, Wallet, Settings) already are its navigation. A second button opening a different menu belongs to a different screen's job.</p>
+  </div>
+
+  <div class="card">
+    <span class="tag">Shipped</span>
+    <h3 style="margin-top:0">The row container (the box)</h3>
+    <p class="row-label">WAS</p>
+    <p class="row-val"><span class="mono">divide-y divide-s-border rounded-[24px] border border-s-border</span>: every group of rows sat inside a bordered, rounded box, with a line between every row inside it.</p>
+    <p class="row-label">NOW</p>
+    <p class="row-val"><span class="mono">bg-white</span> only. Rows sit straight on the page: no border, no rounded box, no line between rows in the same group.</p>
+    <p class="file">app/[locale]/_components/profile/AccountHub.tsx (the box), app/[locale]/profile/loading.tsx (the loading skeleton, so the page never flashes the old boxed look for a second before real data arrives)</p>
+    <p class="why">Measured on Airbnb's own screen: zero boxes anywhere. Solen's own written design rules already say an account hub gets no container, and never both a box and a line between every row. This was Solen's own rule being broken, not a new opinion arriving from Airbnb.</p>
+  </div>
+
+  <div class="card">
+    <span class="tag">Shipped</span>
+    <h3 style="margin-top:0">The grey square behind each icon</h3>
+    <p class="row-label">WAS</p>
+    <p class="row-val">A 38x38px filled grey square (<span class="mono">bg-s-bg-sunken rounded-[14px]</span>) sat behind every row icon.</p>
+    <p class="row-label">NOW</p>
+    <p class="row-val">A bare 22x22px icon, nothing behind it.</p>
+    <p class="file">app/[locale]/_components/profile/AccountHub.tsx</p>
+    <p class="why">Airbnb's icons sit bare on white, nothing behind them. The grey square was also breaking Solen's own rule against dead, meaningless grey shapes.</p>
+  </div>
+
+  <div class="card">
+    <span class="tag">Shipped</span>
+    <h3 style="margin-top:0">The back control</h3>
+    <p class="row-label">WAS</p>
+    <p class="row-val">A white, bordered, rounded-square 44x44px button, the same shape used for every icon button on the site.</p>
+    <p class="row-label">NOW</p>
+    <p class="row-val">A filled light grey circle (<span class="mono">#F2F2F2</span>), no border, still 44x44px so it stays easy to tap.</p>
+    <p class="file">app/[locale]/_components/layout/Header.tsx</p>
+    <p class="why">Measured directly off the owner's own reference screenshot: Airbnb's own back control is a filled grey circle, no border. Ours was a bordered square, which is exactly why it never read like the reference.</p>
+  </div>
+
+  <h2><span class="num">2</span>The same research, on three other screens</h2>
+  <p>
+    Nothing above is specific to the account hub. It comes from one shared header component and
+    six general principles, so here is what each one means for the home feed, a category page,
+    and Inspo. Every number below was measured live today, at phone size (390 wide, 844 tall),
+    not carried over from an older note.
+  </p>
+
+  <div class="screen-block">
+    <h3>Home feed &nbsp;<span class="mono">/de</span></h3>
+
+    <p class="col-label">WHAT CHANGES</p>
+    <p>Nothing in the top row. It was already right before this research started.</p>
+
+    <p class="col-label">WHAT STAYS THE SAME</p>
+    <p>One hamburger icon lives inside the search pill. No separate bell, no separate menu button. Measured live: exactly 1 visible menu icon, 0 bell icons, in the first screen.</p>
+
+    <p class="col-label">WHY</p>
+    <p>The home feed's job genuinely is "get to anywhere on the whole site," so folding the site menu into its own search bar is the right place for it, the same underlying idea as Airbnb's own account screen: their icon strip at the bottom of the screen owns that job, so their account screen does not need to repeat it.</p>
+
+    <div class="metrics">
+      <div>Distinct text sizes in the first screen: 6 (12, 12.5, 13, 14, 16, 18px)</div>
+      <div>Share of visible text at bold/semibold weight: 25.5% (13 of 51 elements)</div>
+      <div>Bordered elements in the first screen: 2, the search pill (one tappable control) and the nearby map tile (a photo card)</div>
+    </div>
+
+    <p class="col-label" style="margin-top:16px">STILL TO CHECK, NOT MEASURED THIS PASS</p>
+    <p>Whether a returning user's next booking (when there is one) gets its own bigger, separate spot above the general feed sections, the same way Airbnb gives its one promoted card its own spot above the flat rows. Checking this honestly needs a logged-in test user with a real upcoming booking, which this pass did not fetch.</p>
+  </div>
+
+  <div class="screen-block">
+    <h3>A category page &nbsp;<span class="mono">/de/coiffeur</span></h3>
+
+    <p class="col-label">WHAT CHANGES</p>
+    <p>Nothing. Same result as home.</p>
+
+    <p class="col-label">WHAT STAYS THE SAME</p>
+    <p>Same pattern as home: one hamburger icon inside the search pill, no bell. Only one bordered element found on the whole visible screen, the search pill itself. Every result under it is a real salon card with its own photo and soft shadow, the entity-card treatment already in use everywhere else.</p>
+
+    <p class="col-label">WHY</p>
+    <p>A category page's job is also "browse everything in this category," a whole-site kind of job, so the same reasoning as home applies. And a card that holds one distinct, comparable salon earns its own edge on its own, that was never the account-hub mistake, where identical navigation rows got a box for no reason at all.</p>
+
+    <div class="metrics">
+      <div>Distinct text sizes in the first screen: 5 (12, 13, 14, 16, 18px)</div>
+      <div>Share of visible text at bold/semibold weight: 2.2% (2 of 90 elements)</div>
+      <div>Bordered elements in the first screen: 1, the search pill</div>
+    </div>
+
+    <p class="col-label" style="margin-top:16px">WORTH A NOTE, NOT A VIOLATION</p>
+    <p>2.2% bold is well under any ceiling this project has written down. If anything this screen reads as under-emphasized rather than over. Not a problem today, just worth knowing the number.</p>
+  </div>
+
+  <div class="screen-block">
+    <h3>Inspo &nbsp;<span class="mono">/de/inspo</span></h3>
+
+    <p class="col-label">WHAT CHANGES</p>
+    <p>Nothing shipped here today, but one real gap turned up while measuring, see below.</p>
+
+    <p class="col-label">WHAT STAYS THE SAME</p>
+    <p>The filter panel is a dropdown overlay, which is allowed to have its own edge (an overlay is one of the legitimate boxed cases in Solen's own rules). The category pill row (the first pill active, three unselected pills after it) is neutral white and grey, no colour on the pills that are not active. Both already match Solen's own written rules.</p>
+
+    <p class="col-label">WHY</p>
+    <p>Same reasoning as the other two screens for the pills; overlays are a named exception to the no-box rule because they float above the page rather than sitting inside a plain list.</p>
+
+    <div class="metrics">
+      <div>Distinct text sizes in the first screen: 3 (12, 14, 16px)</div>
+      <div>Share of visible text at bold/semibold weight: 7.7% (1 of 13 elements)</div>
+      <div>Bordered elements in the first screen: 1, the search pill</div>
+    </div>
+
+    <p class="col-label" style="margin-top:16px">A REAL FINDING, NOT A FIX, FROM MEASURING LIVE TODAY</p>
+    <p>
+      On the home feed and the category page, the slot at the right edge of the search pill shows the
+      hamburger icon. On Inspo, that same slot shows a heart/save icon instead, and the hamburger
+      element that exists in the page's own markup measured at zero width and zero height, meaning it
+      never actually appears on screen. So right now, unlike the other two screens, Inspo has no
+      visible way to open the sitewide menu from its own top row. This was not chased further in this
+      pass (it needs its own look at the component, not a guess), it is flagged here so it is not lost.
+    </p>
+
+    <p class="col-label" style="margin-top:16px">STILL TO CHECK, NOT MEASURED THIS PASS</p>
+    <p>Whether any tile in the photo grid, a currently trending look, or one that matches your own saved style, gets its own promoted spot the same way Airbnb reserves one bigger card above its flat rows. The real grid had not finished loading real photos during this pass to check tile by tile.</p>
+  </div>
+
+  <h2><span class="num">3</span>What we are not copying, and why</h2>
+
+  <ul>
+    <li>
+      <strong>The bar of icons at the bottom of every screen.</strong> Airbnb's five-icon bar at
+      the bottom of the screen is their whole site's navigation. Solen does not have one, and the
+      owner turned one down in plain words on a prior date. That is a settled call already on
+      record, not an oversight this research reopens.
+    </li>
+    <li>
+      <strong>Their typeface.</strong> Airbnb's app uses a font of their own called Cereal, which
+      only they can use. Solen uses Inter and Inter Tight everywhere. By coincidence, the row
+      label size on the account hub already lands within half a pixel of the same 16px both
+      systems use, but that is two separate measurements landing close together, not one font
+      copying the other.
+    </li>
+    <li>
+      <strong>Rows with nothing extra written on them.</strong> Airbnb's account rows are pure
+      navigation with no second line of text, because there is nothing live to put under "Get
+      help" or "Legal." Solen's rows carry real, current numbers: your next appointment date, how
+      many stamps remain until a reward, how many vouchers are active. Deleting those to look more
+      like a screen with nothing to show would be hiding real information to chase a look, which
+      is not an actual improvement.
+    </li>
+  </ul>
+
+  <h2><span class="num">4</span>Still open, no call made yet</h2>
+  <p>Five real questions below. Each one names a real cost on both sides. None of them are decided here.</p>
+
+  <div class="open-q">
+    <p class="qnum">1. Plain white rows, or a light grey block behind the group?</p>
+    <p>Rows currently sit on plain white with nothing marking where a group's own edge is.</p>
+    <p class="cost"><b>Cost of adding a grey block:</b> it puts back a visual device right after removing one, and it stops matching what was actually measured on Airbnb's own screen.</p>
+    <p class="cost"><b>Cost of staying plain white:</b> on a small phone screen, a plain list with nothing anchoring it can read as unfinished rather than deliberately calm.</p>
+  </div>
+
+  <div class="open-q">
+    <p class="qnum">2. Match the exact divider grey, or keep Solen's own token?</p>
+    <p>The line between groups is currently Solen's one standard grey (<span class="mono">#E4E4E7</span>), a shade cooler than what was measured on Airbnb (<span class="mono">#EBEBEB</span>).</p>
+    <p class="cost"><b>Cost of switching:</b> that line colour is used as one single value everywhere else in the app, so a one-screen exception breaks the "one colour, every divider" rule.</p>
+    <p class="cost"><b>Cost of keeping it:</b> this one line will never be a pixel-for-pixel match to the reference, though the actual difference is small.</p>
+  </div>
+
+  <div class="open-q">
+    <p class="qnum">3. Soften body text to Airbnb's ink, or keep Solen's own?</p>
+    <p>Solen's text is a near-black (<span class="mono">#0A0A0A</span>); Airbnb's measured ink is a slightly warmer dark grey (<span class="mono">#222222</span>).</p>
+    <p class="cost"><b>Cost of softening:</b> this colour is used for nearly every piece of text and the one main commit button across the whole site, so what looks like a one-screen question is really a sitewide decision.</p>
+    <p class="cost"><b>Cost of keeping it:</b> no accessibility rule forces either value, both read clearly, so there is no rule-based reason to move either way.</p>
+  </div>
+
+  <div class="open-q">
+    <p class="qnum">4. Which side margin actually wins: 20, 23, or 26px?</p>
+    <p>The account hub currently uses 20px of left/right margin. Airbnb measures 24pt, which is about 23px at our phone width. Solen's own separate written design notes already say 26px, on a different page. Three different numbers exist on paper and the account hub currently matches none of them.</p>
+    <p class="cost"><b>Cost of picking any one:</b> low, it is a small and safe change, but someone actually has to choose, because right now the shipped page is using a fourth number that nobody wrote down anywhere.</p>
+  </div>
+
+  <div class="open-q">
+    <p class="qnum">5. Standardize letter-spacing, or leave it alone?</p>
+    <p>Airbnb uses zero letter-spacing adjustment on every single piece of text in its system. The account hub currently renders four different letter-spacing values in one screen, and there is no written rule anywhere in this project covering letter-spacing at all.</p>
+    <p class="cost"><b>Cost of standardizing:</b> minor visual risk, but it is genuinely undecided work, not a broken rule, since no rule exists yet for this axis to check against.</p>
+    <p class="cost"><b>Cost of leaving it:</b> the inconsistency stays invisible to any written check, since nothing is currently watching this axis at all.</p>
+  </div>
+
+  <hr class="sep">
+
+  <h2 style="border-top:none;padding-top:0;margin-top:0"><span class="num">5</span>The underlying research and mockups</h2>
+  <p>Nothing above was re-measured from scratch where a real prior measurement already existed. These are the source files, and the mockups that led to today's shipped changes.</p>
+
+  <div class="row-label" style="margin-top:8px">Research files (not web pages, repo paths for reference)</div>
+  <div class="links-scroll">
+    <p class="filepath">_design-system/AIRBNB_PROFILE_PRINCIPLES.md</p>
+    <p class="filepath">_design-system/references/AIRBNB_SYSTEM_VS_OURS.md</p>
+    <p class="filepath">_design-system/references/airbnb--profile-list.md</p>
+    <p class="filepath">_design-system/references/airbnb--profile-1to1-diff.md</p>
+  </div>
+
+  <div class="row-label" style="margin-top:18px">Mockups that led here (open on your phone)</div>
+  <p><a href="/_mockups/restraint/account-hub.html">restraint/account-hub.html</a>, the owner-approved direction the current row anatomy traces to.</p>
+  <p><a href="/_mockups/account-v2/account-hub-lines.html">account-v2/account-hub-lines.html</a>, the first live-iframe now-comparison of the real page.</p>
+  <p><a href="/_mockups/account-v2/system-current-vs-proposed.html">account-v2/system-current-vs-proposed.html</a>, built straight from the 407-line measured research file.</p>
+  <p><a href="/_mockups/account-v2/overhaul-c-merged.html">account-v2/overhaul-c-merged.html</a>, the merged direction covering the rest of the account hub.</p>
+
+  <p class="foot">
+    Built from research that was already done. Numbers on the home feed, the category page and
+    Inspo were measured fresh for this page; numbers on the account hub are quoted from the four
+    files above and from the current state of the code.
+  </p>
+
+</div>
+</body>
+</html>
