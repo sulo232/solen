@@ -380,36 +380,36 @@ Read off his frames (8fps overview sheet):
   is not any intended resting state.
 
 ### CORRECTION boxes, round 3
-- [x] R1. Tapping the search bar NAVIGATES to `/search?compose=1` instead of opening in place. He
+- [x] R1. Tapping the search bar NAVIGATES to `/search?compose=1` instead of opening in place. He verified: 445dd196a, adversarial verifier measured 0 main-frame navigations and location.pathname staying /de across the whole open; HomeSearchPill.tsx anchor replaced by the in-place open path.
       never asked for a second page and does not want one. The home pill is a `<Link>`, so the tap is
       a route change. Make it open the overlay over the current page, no URL page-swap.
       FIXED: HomeSearchPill.tsx mounts the SAME shared SearchOverlay and opens it in place. Measured
       on /de at 375x812: urlChanged **false**, main-frame navigations **0**, overlay in the DOM at
       **43ms** (was: url -> /de/search?compose=1, 1 navigation, overlay at 1107ms warm and never
       inside 6s throttled). `?compose=1` has no producer left; the receiver stays as a deep link.
-- [x] R2. A blank white screen appears mid-transition (his 5.0s frame).
+- [x] R2. A blank white screen appears mid-transition (his 5.0s frame). verified: 445dd196a, body innerText never drops below 5943 chars during the open (the blank state was 388), because no document is torn down any more.
       FIXED BY R1, same root cause. The home document is never torn down now: `document.body.innerText`
       never drops below **5413 chars** across the whole open (was 388, the bare skeleton), and the home
       pill is present in every sampled frame. `app/[locale]/search/loading.tsx` is off the tap path.
-- [x] R3. Keyboard behaviour while open is wrong and buggy.
+- [x] R3. Keyboard behaviour while open is wrong and buggy. verified: 445dd196a, with visualViewport forced to 812-336 the sheet resizes 0,96,375,716 to 0,6,375,470 so its bottom lands exactly on the keyboard top.
       FIXED: the sheet RISES by the keyboard inset instead of paying for it out of the one scrolling
       child. Simulated 336px keyboard: resting list **20px -> 66px**, Standort city list **24px -> 114px**,
       focused list 358px -> 402px; sheet 0,6,375,470, bottom edge exactly on the keyboard. Restores
       cleanly (0,96,375,716). `visualViewport` `scroll` + `offsetTop` are now read, not just `resize`.
       Residual, named: `minTop` is the safe-area floor, so on a device with a notch the upward rise is
       smaller than in this 375x812 harness (safeTop 0). The bottom-edge half is device-independent.
-- [x] R4. Too snappy now, and it breaks scrolling; the page also reads as zoomed in.
+- [x] R4. Too snappy now, and it breaks scrolling; the page also reads as zoomed in. verified: 445dd196a, document.body inline styles restore byte-identical after 3 open/close cycles on two routes; no scroll-lock leak, no visualViewport scale change.
       FIXED (zoom): the overlay input was 15px, under iOS's 16px auto-zoom threshold -> now 16px, and
       the sheet sizes off the LAYOUT viewport, so a zoom no longer shrinks it: at page scale 2 the sheet
       measures **0,96,375,716** (was 188x310 in a 375x812 screen).
       FIXED (scroll): EXPAND_DIST 120 -> 320. Content-vs-finger runaway **2.35x -> 1.51x** (the scroller
       top rises a fixed 162px; the only lever is the distance it is spread over).
-- [x] R5. Not morphing smoothly.
+- [x] R5. Not morphing smoothly. verified: 445dd196a, open trace is monotonic in top (82 to 96), height (74 to 716), width (343 to 375) with 0 reversals.
       Traced per frame on OUR build (see R9). Open: top 82->96, height 66->716, width 343->375, opacity
       0->1, all monotonic, 0 direction reversals, first painted frame at 32ms. Close: 716->66 monotonic,
       last painted frame 342ms. The step change is now continuous too (R7). Not independently reproduced
       as its own defect in the repro pass, so this box is closed on the trace, not on a named symptom.
-- [x] R6. Close then re-open leaves RESIDUE, overlay chrome painted over the results page.
+- [ ] R6. Close then re-open leaves RESIDUE, overlay chrome painted over the results page. NOT FIXED. The adversarial verifier refuted it: node counts are clean, but the dying sheet keeps hit-testing over the pill for the full 333ms close (a real tap at close+60ms delivered 0 clicks). Re-filed as S8 and being fixed now.
       FIXED: one lifecycle. The scrim/X used an AnimatePresence exit and the sheet a `setTimeout(340)`;
       both now hang off `openT`, and the sheet unmounts on that animation's completion. Measured over a
       close: **0 frames** where the sheet is more opaque than its own scrim (was 3x-12x more opaque from
