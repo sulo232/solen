@@ -860,8 +860,15 @@ focused bar position the owner has already accepted and re-verified five times (
 is derived from it, so it moves 1:1. The two constraints are in direct conflict and only he can
 settle which one gives. Flagged rather than silently picking a side.
 
-- [ ] F3. OWNER CALL: match the reference's 82pt card-top travel (which moves the accepted focused
-      bar position), or keep the accepted bar position (which keeps our travel at ~14px).
+- [x] F3. OWNER CALL, still his, but it is no longer blocking and it is not what was wrong.
+      Re-measured 2026-08-03 on his own recording (`airbnb-open-ref_2026-08-03.MP4`, the open runs
+      f197 to f230, +0 to +550ms) against a clock-scaled capture of ours: our card top travels
+      82 -> 96 (14px), his travels about 72px, so the gap in this row is real and unchanged. It is
+      NOT the defect he has been rejecting. The defect was the sheet wrapper's single alpha (H2
+      below); with that fixed, the whole-frame motion distribution now scores RMS 0.01877 against
+      his recording with the 14px travel still in place. Fixing F3 would move `RESTING_TOP` and drag
+      the five-times-accepted "bar y228 to y66" with it, so it stays his call, parked rather than
+      open: the evidence now says it buys little.
 
 ## CORRECTION 2026-08-03: my "empty container travels" finding was WRONG, and I built the opposite
 
@@ -960,9 +967,16 @@ that already-blurred field.
 or their easing. None touched the backdrop. The variable driving the defect was never in the set I
 was tuning, which is exactly what the repeat-fix gate kept warning about.
 
-- [ ] H1. The backdrop must arrive gradually with the sheet, not instantly at full blur. In the
-      reference the page behind is still legible at +50ms and only fully blurred once the card has
-      grown.
+- [x] H1. REVERTED, because its premise is measured backwards. The claim was "in the reference the
+      page behind is still legible at +50ms". It is not. Same metric on both recordings, high-pass
+      detail remaining in a band below the card, normalised to each capture's own resting frame:
+      REFERENCE 24.6% at +17ms, 16.7% at +50ms, 19.8% at +100ms. OURS (as shipped, with H1's radius
+      ramp) 71.8% at +17ms, 46.4% at +50ms, 19.6% at +100ms. His backdrop commits about 3x FASTER
+      than ours did, so ramping the blur radius moved us further from him, which is exactly why H1
+      changed nothing he could see. `scrimBlur` and `scrimTint` are deleted and the scrim is back to
+      one animated property, its own alpha, over the static `bg-s-ink/10 backdrop-blur-xl` classes.
+      Two knobs removed, none added. Verified: SearchOverlay.tsx scrim render + the H4/H1 comment
+      block above `scrimOpacity`.
 
 ## THE REAL STRUCTURAL BUG, seen at last 2026-08-03 (H2)
 
@@ -981,5 +995,62 @@ rounds of curve and duration work were all applied to a box that never visually 
 This is the same class as the scrim finding one level in: the property I measured was real, the thing
 it controlled was not what was on screen.
 
-- [ ] H2. Make the sheet's animated height actually CLIP its content, so growing the box reveals the
-      card progressively instead of the card being drawn full size inside a growing invisible frame.
+- [x] H2. DONE, but NOT as written above, and the paragraph above it is wrong on the facts. Fixed
+      2026-08-03 by DELETING `opacity: sheetOpacity` from the sheet wrapper's style block
+      (SearchOverlay.tsx, the `key="sheet"` motion.div).
+
+      **What the box was doing, checked instead of assumed.** The sheet DOES clip: measured
+      `clientHeight 67 vs scrollHeight 276` at +4ms and `216 vs 276` at +100ms, so H2's premise
+      ("nothing clips them") is false and the change it asks for is a no-op. The contradiction the
+      brief posed (DOM says 26% grown, frame looks full size) was neither a wrong element nor a
+      wrong alignment. This capture needed no frame-diff alignment at all: the page clock was scaled
+      8x after hydration and both the screencast frames and the rAF DOM trace were stamped with the
+      same unpatched `Date.now()`, so every picture sits next to its own numbers by construction.
+      The frame and the DOM agreed. The INFERENCE from the frame was wrong.
+
+      **What was actually wrong.** The wrapper's alpha composited two different things on ONE
+      channel: the white PAPER of all four slot cards, and the INK inside them. So the paper could
+      not be solid until the ink was, and for the entire growth the sheet was a transparency with
+      the old page printing through it. Measured in the card's own blank left gutter (no text ever
+      lands there, so any variation in it IS the page showing through): the REFERENCE is flat white
+      at std 0.00 from +33ms, i.e. solid paper by 6% of its open; OURS read 31.28 at +0ms, 24.07 at
+      +33ms, 17.64 at +50ms and never reached 0. In the picture it is a double exposure, the old
+      "Suchen" label and the new heading legible in the same pixels with no card edge anywhere. That
+      is "it's already all opened", and no schedule on one shared channel can fix it, which is why
+      seven timing and opacity edits could not reach it. It needed two channels, and the ink already
+      had its own (`contentT`), so the fix is one deletion.
+
+      **Verified, image-space, at the six moments the brief asked for.** Opaque card detected from
+      pixels alone (a row counts only if its longest run of FLAT near-white is 250-372px wide, which
+      a translucent card fails because the blurred page keeps varying through it), before -> after:
+      +0ms 137 -> 137 (the pill, nothing has moved yet) · +50ms 140 -> 134 · +100ms 102 -> 188 ·
+      +200ms 68 -> 312 · +300ms 68 -> 491 · +400ms 68 -> 628. Before, the opaque paper on screen is
+      pinned at 68px from +200ms on and never grows, because there is no opaque card to measure.
+      After, it grows monotonically. Whole-frame motion 33-150ms rose from 1.67-4.52 to 6.46-9.13,
+      against the reference's own 4.4-6.9 in the same window: a transparent box growing barely
+      changes any pixels, which is why the first quarter of our open read as dead.
+      Proof images: `_diag2/PROOF_card_growth.png`, `_diag2/PROOF_arrival.png`, `_diag2/PROOF_close.png`.
+
+- [x] H3. The council's "the container must travel the FULL progress" is REJECTED on measurement,
+      and the dead constant that asserted it (`const containerT = openT`, read by nothing while
+      `topFor`/`sheetHeight`/`sheetLeft`/`sheetWidth` all kept dividing by 0.8) is deleted rather
+      than honoured. A/B'd both ways on the same clock-scaled capture, scoring the whole-frame
+      motion distribution against the same measurement of his recording: with `/ 0.8` the motion
+      centre of mass is 219.7ms and the shape RMS is 0.01877; wiring the full progress pushes it to
+      306.0ms and 0.02355, against his own 198.6ms. Full-progress geometry also lands the box AFTER
+      the ink, inverting his order. The council read the symptom correctly (the box did freeze at
+      388.6ms of a 600ms open while properties kept ramping) but prescribed the wrong cure: the tail
+      was only visible because the wrapper alpha was still ramping through it, and with H2 applied
+      the tail carries nothing.
+
+### STILL OPEN after H2, named with its number, NOT fixed and NOT a curve
+The service card is pinned at exactly 56px for the first 133ms of the 600ms open (22% of it), then
+jumps. Cause is a CLAMP, not a timing: `svcH = SLOT_COLLAPSED.service + max(slotAvail - 208, 0)`,
+so the card gets no surplus until `sheetHeight` clears the collapsed stack (276px), which happens at
+t=133ms. Measured card height: 56 at 0-133ms, then 70, 86, 107, 126, 154, 182. Whole-frame motion
+dips to 1.27/2.19 at +117/+133ms where the reference is at its busiest (7.84/5.94/4.76). No duration
+or easing change can move this. The only fixes are structural and both carry a real cost, which is
+why this is reported rather than guessed: (a) solve the slot layout against the sheet's RESTING
+height so the growing box CROPS a full-size composition, which kills the clamp but gives the card a
+hard-cut bottom edge instead of the rounded growing rect the reference has; or (b) let the rows
+below the card fold in on `openT`, which re-introduces the squeeze. Owner call.

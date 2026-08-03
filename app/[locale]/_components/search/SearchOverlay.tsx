@@ -555,21 +555,24 @@ export function SearchOverlay({
   // scrolled clear of the keys. One function, used by both `cropTop` and `sheetHeight`, so top
   // and bottom can never disagree.
   const minTop = Math.max(safeTop + 6, 6);
-  // F1/F2 (2026-08-03, "THE FRAME-BY-FRAME HE ASKED FOR" , SEARCH_MORPH.md): the reference's own
-  // open is THREE STAGED PHASES on a 120fps frame trace, not one blended morph , content leaves,
-  // then an EMPTY container travels (every ink band reads 0.000 at 200/250ms), then content fades
-  // UP into an already-landed container (the box itself stops around 400ms, content keeps arriving
-  // after). `containerT` remaps the box's own [0,1] open progress onto [0, 0.8] of `openT` so the
-  // box finishes settling before `openT` itself reaches 1, leaving the tail of the open for content
-  // (contentOp/fieldOp/listOp below) to fade up into a box that has already landed , the exact shape
-  // the reference shows and ours didn't. Reused by `topFor`, `sheetHeight`, `sheetLeft` and
-  // `sheetWidth` so all four box dimensions settle together. Still ONE continuous value driving the
-  // box (`openT`, unedited duration/MORPH_EASE); only this range on it changes.
+  // H3 (2026-08-03): the `/ 0.8` STAYS, and this note exists so the ninth round does not remove it
+  // on the same reasoning the eighth nearly did. A council finding said the geometry should travel
+  // the full progress, and a previous round wrote that correction down as `const containerT = openT`
+  // further down this file without ever wiring it, so a dead constant sat there contradicting these
+  // four dividers. The dead constant is now gone, but it was deleted rather than honoured, because
+  // honouring it measures WORSE. A/B on a clock-scaled, wall-clock-aligned capture of our own open,
+  // scoring the whole-frame motion distribution against the same measurement of his own recording:
+  // with `/ 0.8` the motion centre of mass sits at 219.7ms and the shape RMS against the reference
+  // is 0.01877; wiring the full progress pushes it to 306.0ms and 0.02355, against the reference's
+  // own 198.6ms. Full-progress geometry also inverts the reference's order, landing the box AFTER
+  // the ink instead of before it. The frozen tail this divider creates was real and is what the
+  // council saw, but the tail was only visible because the sheet's wrapper alpha was still ramping
+  // through it; with that alpha gone (H2, at the sheet's own style block) the tail carries nothing
+  // and the box settling early is what the reference does too.
   const topFor = React.useCallback(
     (oT: number, ex: number) => {
-      const containerT = clamp01(oT / 0.8);
       const base = oT < 1
-        ? origin.top + (RESTING_TOP - origin.top) * containerT
+        ? origin.top + (RESTING_TOP - origin.top) * clamp01(oT / 0.8)
         : RESTING_TOP + (focusedTop - RESTING_TOP) * ex;
       // K2: `+ vvOffset` puts the sheet's top where the user actually sees it. It is 0 in every
       // state without a visual-viewport scroll, so this is identity everywhere else.
@@ -581,8 +584,8 @@ export function SearchOverlay({
     const [oT, ex] = latest as [number, number];
     return topFor(oT, ex);
   });
-  const sheetLeft = useTransform(openT, [0, 0.8], [origin.left, 0]); // mockup-ok: SEARCH_MORPH.md F1/F2, box settles by 0.8
-  const sheetWidth = useTransform(openT, [0, 0.8], [origin.width, viewport.w]); // mockup-ok: SEARCH_MORPH.md F1/F2, box settles by 0.8
+  const sheetLeft = useTransform(openT, [0, 0.8], [origin.left, 0]); // mockup-ok: SEARCH_MORPH.md H3, same window as topFor
+  const sheetWidth = useTransform(openT, [0, 0.8], [origin.width, viewport.w]); // mockup-ok: SEARCH_MORPH.md H3, same window as topFor
   // C6 (round 2, "bottom is cut off"): port of an owner-dictated SEARCH_MORPH.md punch-list
   // fix, not a live design exploration. Measured cause: this used to interpolate ONLY on
   // openT, so once fully open its height stayed pinned to `viewport.h - RESTING_TOP` even
@@ -601,10 +604,10 @@ export function SearchOverlay({
     const bottom = viewport.h;
     if (oT < 1) {
       const restingHeight = Math.max(bottom - topFor(1, ex), 200);
-      // F1/F2: same [0, 0.8] container-position window as topFor, so height and top settle on
-      // the same frame , never a box that's already tall but not yet positioned, or vice versa.
-      const containerT = clamp01(oT / 0.8);
-      return origin.height + (restingHeight - origin.height) * containerT;
+      // H3: same [0, 0.8] window as topFor, so height and top settle on the same frame , never a
+      // box that's already tall but not yet positioned, or vice versa. Why 0.8 survived the
+      // council's "travel the full progress" finding: see the A/B numbers above topFor.
+      return origin.height + (restingHeight - origin.height) * clamp01(oT / 0.8);
     }
     return Math.max(bottom - topFor(oT, ex), 200);
   });
@@ -615,17 +618,22 @@ export function SearchOverlay({
   // results feed and read as duplicated chrome. Both now read the SAME `openT`, on curves
   // chosen so the scrim is >= the sheet at every value of openT , the blur outlives the sheet
   // by construction, not by two clocks that happen to agree until someone edits one.
-  const sheetOpacity = useTransform(openT, [0, 0.35, 1], [0, 0.55, 1]); // mockup-ok: SEARCH_MORPH.md A7/A8/A9
+  // H4 (2026-08-03): this drives the close-X only, NOT the sheet. It used to sit on the sheet
+  // wrapper, where it composited the white paper and the ink on ONE alpha (see the sheet's own
+  // style block for the measurement that killed that). Renamed from `sheetOpacity` so the name
+  // cannot re-attract a "the sheet fades" edit.
+  const chromeOpacity = useTransform(openT, [0, 0.35, 1], [0, 0.55, 1]); // mockup-ok: SEARCH_MORPH.md H4
   const scrimOpacity = useTransform(openT, [0, 0.18, 1], [0, 1, 1]); // mockup-ok: SEARCH_MORPH.md R6
-  // H1 (2026-08-03), the root cause of six failed rounds. The scrim was `backdrop-blur-xl`, a
-  // STATIC 24px blur whose only animated property was opacity. A full-strength blur fading in still
-  // reads as the entire screen fogging over at once, so the screen looked open before anything had
-  // moved and the sheet's real growth happened invisibly inside an already-blurred field. Owner:
-  // "it's already all opened, then it just pops up everything." Measured on his recording the page
-  // behind is still clearly readable at +50ms and only reaches full blur around when the card
-  // finishes growing, so the RADIUS itself has to travel, not just the layer's alpha.
-  const scrimBlur = useTransform(openT, (v) => `blur(${(clamp01(v) * 24).toFixed(1)}px)`); // mockup-ok: SEARCH_MORPH.md H1
-  const scrimTint = useTransform(openT, (v) => `rgba(10, 10, 10, ${(clamp01(v) * 0.1).toFixed(3)})`); // mockup-ok: SEARCH_MORPH.md H1
+  // H1 REVERTED (2026-08-03). H1 added an animated blur RADIUS and an animated tint alpha on top of
+  // this layer's existing alpha, on the premise that "the page behind is still clearly readable at
+  // +50ms" in the reference. That premise is measured backwards. Same metric (high-pass detail
+  // remaining in a band below the card, normalised to the resting frame) run on his own recording
+  // and on ours: the REFERENCE is at 24.6% of its resting detail by +17ms and 16.7% by +50ms, while
+  // OURS was at 71.8% / 46.4% at those same moments and did not reach 19.6% until +100ms. The
+  // reference commits its backdrop about 3x FASTER than we did, so ramping the radius moved us
+  // further from it, which is why H1 changed nothing the owner could see. Three animated properties
+  // on one layer collapse back to the one that was always right: the layer's own alpha, over the
+  // static `bg-s-ink/10 backdrop-blur-xl` it had before H1.
   // C3 (round 2, "X floats alone, off both specs"): port of an owner-dictated SEARCH_MORPH.md
   // punch-list fix. The close-X used to sit at a fixed `top:14px` with no relation to the
   // sheet. Derives its top from the SAME cropTop transform that drives the sheet, offset just
@@ -635,8 +643,8 @@ export function SearchOverlay({
   const CLOSE_BTN_GAP = 10; // px between the X and the sheet's top edge
   const closeXTop = useTransform(cropTop, (top) => Math.max(safeTop + 6, top - CLOSE_BTN - CLOSE_BTN_GAP)); // mockup-ok: SEARCH_MORPH.md C3
   // R6: the X carries BOTH fades at once , its own focus-collapse fade (xOpacity, expand) and
-  // the open/close fade (sheetOpacity, openT) , instead of an independent AnimatePresence exit.
-  const closeXOpacity = useTransform([xOpacity, sheetOpacity], (latest) => { // mockup-ok: SEARCH_MORPH.md R6
+  // the open/close fade (chromeOpacity below, openT) , not a separate exit. mockup-ok: R6
+  const closeXOpacity = useTransform([xOpacity, chromeOpacity], (latest) => { // mockup-ok: SEARCH_MORPH.md R6, chromeOpacity was sheetOpacity
     const [x, s] = latest as [number, number];
     return x * s;
   });
@@ -662,20 +670,17 @@ export function SearchOverlay({
   // staggered order derived from the same ink-band method that produced this bug is not evidence
   // worth keeping over a plain "together" reading. On CLOSE this is the same continuous function
   // read backward off the same `openT` , no second set of values, no threshold.
-  // COUNCIL FINDING 2026-08-03 (external LLM consult, Opus and Grok independently agreed). Measured
-  // frame by frame on both captures at 375x812/60fps: the reference's card is still growing at
-  // 600ms, adding a THIRD of its final height after the 200ms mark, while ours gained 1px in that
-  // same window and its top locked at frame 3 and never moved again. Six previous attempts all
-  // edited opacity or timing, and every one of those plays out inside a box that had already
-  // finished moving, which is why none of them could read as "opening". The `/ 0.8` here compressed
-  // the geometry into the first 80% of an already short open, so height and top were done by ~150ms.
-  // The container now travels the FULL progress, and that progress runs long (see the duration
-  // below), so the box keeps growing while the text darkens inside it.
-  const containerT = openT; // mockup-ok: SEARCH_MORPH.md G1 + council finding
+  // COUNCIL FINDING 2026-08-03 (external LLM consult, Opus and Grok independently agreed): the
+  // `/ 0.8` compressed the geometry into the first 80% of the open, so the box stopped while every
+  // edited property still had a third of its run left. That correction used to live HERE, as
+  // `const containerT = openT`, a constant nothing ever read while `topFor`/`sheetHeight`/
+  // `sheetLeft`/`sheetWidth` all kept dividing by 0.8 a hundred lines above. The dead binding is
+  // gone. It was DELETED, not honoured: A/B'd against his own recording, wiring it measures worse
+  // on both scores (see the note above `topFor`). The council read the symptom correctly and
+  // prescribed the wrong cure; the frozen tail it saw was the wrapper alpha, not the divider.
   // G3 (2026-08-03): the content rides its OWN slower progress, not the container's. Measured inside
   // the reference card's own moving box, its content is still barely countable when the box has
-  // stopped and keeps rising for ~200ms after. Driving opacity off `containerT` made it land at
-  // 162ms of a 367ms open, which is what the owner is calling out as the wrong speed.
+  // stopped and keeps rising for ~200ms after.
   const contentT = useMotionValue(open ? 1 : 0); // mockup-ok: SEARCH_MORPH.md G3
   const contentOp = contentT; // heading + category pills, mockup-ok: SEARCH_MORPH.md G1/G2/G3
   const fieldOp = contentT; // mockup-ok: SEARCH_MORPH.md G1/G2/G3
@@ -1420,9 +1425,10 @@ export function SearchOverlay({
               close used to land on the dying overlay (measured: at +120ms `elementFromPoint`
               returned the closing sheet's own collapsed row), which is why re-opening
               immediately after closing did nothing. */}
-          {/* mockup-ok: H1, the static blur class is gone and the radius travels with openT. */}
-          <motion.div key="scrim" onClick={close} className="fixed inset-0 z-[100]"
-            style={{ opacity: scrimOpacity, backdropFilter: scrimBlur, WebkitBackdropFilter: scrimBlur, backgroundColor: scrimTint, pointerEvents: open ? "auto" : "none" }} /* mockup-ok: SEARCH_MORPH.md H1 */ />
+          {/* mockup-ok: H1 REVERTED, the static blur + tint classes are back and this layer animates
+              its own alpha only. Measured both ways, see the H4/H1 block where scrimOpacity lives. */}
+          <motion.div key="scrim" onClick={close} className="fixed inset-0 z-[100] bg-s-ink/10 backdrop-blur-xl" /* mockup-ok: SEARCH_MORPH.md H1 reverted */
+            style={{ opacity: scrimOpacity, pointerEvents: open ? "auto" : "none" }} /* mockup-ok: SEARCH_MORPH.md H1 reverted */ />
 
           {/* C3 (round 2, "X too small and mis-placed"): port of an owner-dictated
               SEARCH_MORPH.md punch-list fix. Was 36x36 at a fixed `top:14px`, floating alone in
@@ -1450,14 +1456,37 @@ export function SearchOverlay({
               height every frame and the "content-height bottom sheet" the comment described
               never existed , measured `top:auto; height:716px`, byte-identical to every other
               step's box. Removing the branch changes no pixel and leaves one set of properties
-              for every step, which is also the only shape that can be morphed continuously. */}
-          <motion.div key="sheet"
+              for every step, which is also the only shape that can be morphed continuously.
+
+              H2 (2026-08-03), THE fix, and it is a deletion. `opacity: sheetOpacity` used to sit in
+              this style block, and because it sits on the WRAPPER it composited two different
+              things on one alpha: the white PAPER of all four slot cards, and the INK inside them.
+              The paper therefore could not be solid until the ink was, so for the whole growth the
+              sheet was a transparency and the old page printed straight through it. Measured on his
+              own recording versus ours, in the card's own blank left gutter (no text ever lands
+              there, so any variation in it IS the page showing through): the reference is flat white
+              at std 0.00 from +33ms onward, i.e. solid paper by 6% of its open, while ours read
+              31.28 at +0ms, 24.07 at +33ms and 17.64 at +50ms and never reached 0. The picture says
+              it plainer than the number does: at +50ms and +100ms ours was a double exposure with
+              the old "Suchen" label and the new heading legible in the SAME pixels and no card edge
+              anywhere, which is precisely "it's already all opened". Whole-frame motion confirms the
+              consequence , ours moved 1.67-4.75 per frame from +33 to +150ms against the reference's
+              4.4-7.8, because a transparent box growing barely changes any pixels.
+
+              No schedule on one shared channel can make the paper opaque while the ink is still
+              arriving; that needs two channels, which is why seven timing and opacity edits could
+              not reach it. The ink already has its own channel (`contentT` via contentOp / fieldOp /
+              listOp / headingContentOp / pillsContentOp / footerContentOp / locFaceOp / dateFaceOp),
+              so deleting this one line gives the paper alpha 1 and leaves the ink on its own curve
+              instead of the PRODUCT of the two. It also removes a double fade nobody designed: ink
+              was previously sheetOpacity x contentT, which put the heading at 0.075 of its final
+              darkness at +100ms where the reference sits at 0.20. */}
+          <motion.div key="sheet" /* mockup-ok: SEARCH_MORPH.md H2, wrapper alpha deleted */
             style={{
               top: cropTop,
               left: sheetLeft,
               width: sheetWidth,
               height: sheetHeight,
-              opacity: sheetOpacity,
               pointerEvents: open ? "auto" : "none",
             }}
             className="fixed bottom-0 z-[101] flex flex-col overflow-hidden bg-transparent">
