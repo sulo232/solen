@@ -203,25 +203,25 @@ Verbatim: *"we need seperation like category text like wallet etc and also remov
 looks so out of place and also the icon sh remove make a profile section or account yk so they can
 acc edit make it acc like it"*
 
-- [ ] **E1. Group separation stays and gets stronger.** He wants the category text ("Wallet",
+- [x] **E1. verified live at 390x844: `.grp-label` computes weight 700, colour rgb(10,10,10), was 600 / ink-2.** Group separation stays and gets stronger.** He wants the category text ("Wallet",
       "Buchungen", "Persoenliche Angaben") doing the separating. NOTE this REVERSES the earlier
       literal-copy pass, which hid the group eyebrows because Airbnb's icon-nav list has none. He
       has now asked for them by name, so his 2026-08-03 word supersedes that. Do not delete them
       again.
-- [ ] **E2. Remove the pink heart.** The Saved row's `#FF3366` heart is the only chromatic pixel
+- [x] **E2. verified live: `.lucide-heart` count on the After pane is 0. Surface-scoped, the save-heart token is untouched.** Remove the pink heart. The Saved row's `#FF3366` heart is the only chromatic pixel
       on the screen and he says it looks out of place. Measured: 1 of 7 rows carries it. It is a
       LOCKED semantic hue elsewhere (save-heart), so removing it HERE is surface-scoped, not a
       token change; say so rather than editing the token.
-- [ ] **E3. Remove the row icons.** All of them, not the tile. This lands the screen on Airbnb's
+- [x] **E3. verified live: `.row-ico` count is 0, and the divider moved to every row per the IMG_6904 text-list recipe.** Remove the row icons. All of them, not the tile. This lands the screen on Airbnb's
       OTHER recipe, the text detail list measured in IMG_6904 (no icon on 3 of 4 rows, larger
       label, divider after every row), rather than the icon-nav list of IMG_6900. Re-read the
       IMG_6904 measurements before building: that recipe rules after EVERY row, which is the
       opposite of the group-only rule we just applied.
 - [ ] **E4. A real profile/account section the user can EDIT.** Atomized:
-  - [ ] E4a. Read `app/[locale]/profile/edit/page.tsx` (EXISTS, confirmed by `npm run exists
+  - [x] E4a. verified: profile/edit edits display_name, avatar_url, bio, phone_number, locale, notification_email, notification_sms via SettingsForm section="identity". Read `app/[locale]/profile/edit/page.tsx` (EXISTS, confirmed by `npm run exists
         profile` this turn) and list exactly which fields it edits today.
-  - [ ] E4b. Depict the account block as a row/section that ENTERS that route. No second editor.
-  - [ ] E4c. Add a `Depicts:` line naming `app/[locale]/profile/edit/page.tsx`.
+  - [x] E4b. verified live: `.edit-link` present on the name row, entering that existing route. No second editor built. Depict the account block as a row/section that ENTERS that route. No second editor.
+  - [x] E4c. verified: a `Depicts:` line naming app/[locale]/profile/edit/page.tsx is in the file header. Add a `Depicts:` line naming `app/[locale]/profile/edit/page.tsx`.
   - [ ] E4d. Verify the entry renders at 390x844 and that nothing it offers is a dead affordance
         (every field it advertises must be one `profile/edit` actually has). Today the avatar + name is a
       static block. He wants it to be a section where name, photo and details are actually
@@ -233,3 +233,7 @@ plus E3 (drop icons) plus the IMG_6904 recipe (rule after every row) is a DIFFER
 the IMG_6900 one we just built. Both are Airbnb, on different screens. Build to E1-E3 as he asked
 and name which reference screen each decision now comes from, per-row, so this cannot repeat the
 wrong-screen error again.
+
+- [x] **D1. verified live at 390x844 on the After pane, computed styles: title 18px -> 24px, row label 12px -> 21px**, against the ~24pt / ~21pt I PIL-measured on IMG_6900. The wrong-screen error is closed.
+- [x] **D2. verified live: `.backcircle` count on the After pane is 0.** Title sits flush top-left, one bell top-right, matching the Profile ROOT rather than a sub-screen.
+- [ ] **E4d. Dead-affordance check still owed.** The Edit link must only advertise fields profile/edit really has. Fields confirmed in E4a; what is NOT yet checked is whether the link's destination renders them for this seed user at 390x844.
