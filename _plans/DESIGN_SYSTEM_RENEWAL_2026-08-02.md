@@ -290,13 +290,19 @@ mockup that keeps >=70% of the current screen's labels IN THE SAME ORDER when th
 an overhaul, a rebuild, a renewal, or to change it completely. Reordering, merging, cutting or
 promoting all pass. Not armed: `~/.claude/settings.json` is unwritable here.
 
-- [ ] **G1. Name the account screen's JOB in one sentence** before touching a pixel, then justify
-      every row against it (FLOORS LAW 10). A row that survives only because it exists today does
-      not survive an overhaul.
-- [ ] **G2. Decide per row: keep, merge, promote, demote, cut.** The seven are not a given. Obvious
-      candidates: Vouchers and Wallet are one wallet idea; Stamps and Saved are both "what I have
-      with stores"; Hair profile is the only genuinely personal one and sits sixth.
-- [ ] **G3. Build the overhaul with a DIFFERENT information architecture**, not the same list with
-      new type. The measured Airbnb work is the TASTE input; it was never the structure input.
-- [ ] **G4. Show it against the current screen** so the structural difference is the visible thing,
-      not the divider colour.
+- [x] **G1. verified: `public/_mockups/account-v2/overhaul-c-merged.html`.** Screen's job named in
+      one sentence in the file: "let a signed-in customer reach their next appointment, their
+      money, their places, or themselves, in one tap each, never seven."
+- [x] **G2. verified: same file, G2 comment block.** Per-row decision made and stated: Bookings
+      promoted out (my own read, flagged, not silently folded in); Wallet+Vouchers merged into
+      Wallet; Saved+Stamps merged into My stores; Hair profile+Settings+the identity block merged
+      into About me. Nothing cut, all 8 destinations still reachable (mapping table in the file).
+- [x] **G3. verified: same file.** New architecture built: 1 hero + 3 top-level entries + 1
+      sign-out action, 0 group headings, each entry opening its own sub-screen (in-file view
+      switch, not the same list with new type).
+- [x] **G4. verified: same file, Current/Proposed toggle.** Current pane = live unmodified
+      `<iframe src="/de/profile">`; Proposed pane = the new 3-entry architecture, real built markup.
+      NOTE: this closes G1-G4 specifically (Direction C of the six/many-directions work below); A8
+      (renew the design system beyond this screen), A10 (gate-contradiction fix, blocked on an
+      unwritable settings.json), E4d (dead-affordance check on profile/edit) and F1 (the 7-agent
+      six-direction workflow) are OUT OF SCOPE for this task and were not touched.
