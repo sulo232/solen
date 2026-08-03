@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<!--
+  Not a UI mockup. An analysis report for the owner, generated from a mined corpus.
+  Grounded-in: _plans/PREFERENCE_ANALYSIS.md
+  Grounded-in: _plans/ACTIVE.md
+  Every number on this page came from the transcripts and the live gate files, measured, not recalled.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Preference audit, 27 Jul to 3 Aug 2026</title>
+<style>
+  :root{
+    --fg:#0A0A0A; --fg2:#52525B; --fg3:#9CA3AF;
+    --paper:#FFFFFF; --tray:#F4F4F5; --rule:#E4E4E7;
+    --red:#DC2626; --orange:#EA580C;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:var(--paper); color:var(--fg);
+    font:400 15px/1.55 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;
+    padding:0 0 64px;
+  }
+  .wrap{max-width:820px;margin:0 auto;padding:0 20px}
+  header{padding:40px 0 28px;border-bottom:1px solid var(--rule);margin-bottom:32px}
+  h1{font-size:34px;line-height:1.12;margin:0 0 10px;letter-spacing:-0.02em;font-weight:600}
+  .sub{color:var(--fg2);font-size:14px;margin:0}
+  h2{font-size:20px;margin:44px 0 12px;letter-spacing:-0.01em;font-weight:600}
+  h3{font-size:15px;margin:26px 0 6px;font-weight:600}
+  p{margin:0 0 12px}
+  .lead{font-size:17px;line-height:1.5}
+  .said{border-left:2px solid var(--fg);padding:2px 0 2px 14px;margin:14px 0;font-size:14px}
+  .said .when{display:block;color:var(--fg3);font-size:12px;margin-top:4px}
+  .tray{background:var(--tray);border-radius:16px;padding:18px 20px;margin:18px 0}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;margin:20px 0;
+         background:var(--rule);border:1px solid var(--rule);border-radius:16px;overflow:hidden}
+  .stat{background:var(--paper);padding:16px 18px}
+  .stat b{display:block;font-size:30px;line-height:1.1;letter-spacing:-0.02em;font-weight:600;
+          font-variant-numeric:tabular-nums}
+  .stat span{display:block;color:var(--fg2);font-size:13px;margin-top:4px}
+  table{width:100%;border-collapse:collapse;font-size:14px;margin:14px 0}
+  th{text-align:left;font-weight:600;color:var(--fg2);font-size:12px;padding:8px 10px 8px 0;
+     border-bottom:1px solid var(--rule)}
+  td{padding:9px 10px 9px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+  td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:99px;white-space:nowrap}
+  .t-bad{background:#FEF2F2;color:var(--red)}
+  .t-warn{background:#FFF7ED;color:var(--orange)}
+  .t-flat{background:var(--tray);color:var(--fg2)}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;
+       background:var(--tray);padding:1px 5px;border-radius:5px}
+  .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  ol,ul{margin:0 0 12px;padding-left:20px}
+  li{margin-bottom:9px}
+  .foot{margin-top:48px;padding-top:20px;border-top:1px solid var(--rule);
+        color:var(--fg3);font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>What a week of your own messages says you want</h1>
+  <p class="sub">218 messages you typed between 27 July and 3 August 2026, read end to end. 103 session transcripts. Cross-checked against every gate on disk and every block they actually fired.</p>
+</header>
+
+<p class="lead">The headline is not what you would expect from an audit that was asked to make new gates. You are not missing rules. Of 81 distinct preferences found in your own words, <b>four</b> had no rule anywhere. The other 77 were already written down, and half of those are enforced by something that is either switched off or now says the opposite of what you decided later.</p>
+
+<div class="stats">
+  <div class="stat"><b>81</b><span>preferences found in your words</span></div>
+  <div class="stat"><b>4</b><span>with no rule anywhere</span></div>
+  <div class="stat"><b>20</b><span>rule exists, gate never armed</span></div>
+  <div class="stat"><b>17</b><span>gate exists and is now wrong</span></div>
+</div>
+
+<h2>1. The thing you said most, and why it kept happening</h2>
+
+<p>You said some version of this thirteen times in seven days. It is the most repeated thing you said all week, by a wide margin.</p>
+
+<div class="said">You just repeated yourself three times. What is this gate that's making you, and do we really need it? Or can you, like, improve so you don't actually do this shit every time? just like a waste of fucking token.<span class="when">31 July, 08:16</span></div>
+<div class="said">Now you repeat it the same thing four times. Find the core cause.<span class="when">31 July, 10:28</span></div>
+<div class="said">you keep repeating the same stuff over and over again<span class="when">3 August, 16:25</span></div>
+
+<p>You guessed the cause correctly in the first one. It is a gate. It is several.</p>
+
+<div class="tray">
+  <p style="margin:0 0 8px"><b>The mechanism, measured on the real transcripts.</b></p>
+  <p style="margin:0 0 8px"><b>62</b> Stop hooks run on every single reply I write. They fire one at a time and know nothing about each other. One reply that is imperfect in three small ways gets denied three separate times, and each denial costs one more reply attempt. That is why you read the same paragraphs three, four and five times.</p>
+  <p style="margin:0">Across the week: <b>402</b> blocked attempts, <b>76%</b> of them blocked by two or more gates at once, <b>181</b> by three or more, and the worst single attempt denied by <b>nine</b> gates in a row. One class alone, handing you a link, carried <b>ten</b> separate gates.</p>
+</div>
+
+<p>There is a second half. A gate for this already existed, was armed, and was on its third calibration. It still lost, because it only compared each reply against the one immediately before it. Give it reply A, then a short one, then A again word for word, and it scored the repeat at <b>0.02</b> similarity and let it through. You read A twice; the gate saw nothing.</p>
+
+<h2>2. What the numbers say about adding more gates</h2>
+
+<p>You asked for new gates. Here is what the evidence says before I answer that, because it changes the answer.</p>
+
+<div class="scroll">
+<table>
+  <thead><tr><th>What was measured</th><th>Number</th><th></th></tr></thead>
+  <tbody>
+    <tr><td>Gate files on disk</td><td class="n">197</td><td></td></tr>
+    <tr><td>Actually wired to anything</td><td class="n">155</td><td><span class="tag t-warn">5 past the ceiling</span></td></tr>
+    <tr><td>Sitting there enforcing nothing</td><td class="n">42</td><td><span class="tag t-bad">21%</span></td></tr>
+    <tr><td>Written in the last week, never armed</td><td class="n">23 of 35</td><td><span class="tag t-bad">66%</span></td></tr>
+    <tr><td>Blocks delivered into the conversation</td><td class="n">388</td><td><span class="tag t-flat">1.78 per message you typed</span></td></tr>
+    <tr><td>Gates guarding "handing you a link"</td><td class="n">15</td><td><span class="tag t-bad">still fails every session</span></td></tr>
+    <tr><td>Times the mockup gate was skipped past</td><td class="n">65</td><td><span class="tag t-bad">6.5x the mute threshold</span></td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>The pattern underneath those rows: <b>the three mistakes you complain about most are the three with the most gates.</b> Links has fifteen and fails in every session on record. Finishing the job has sixteen and produced 120 blocks in a week. Gate number 201 on a class that already has fifteen is not enforcement, it is a louder way of failing.</p>
+
+<p>This also answers a question you asked on 31 July that never got a straight answer:</p>
+
+<div class="said">I don't think that hardened the gate principle is really kicking in because you... it never gets fixed. So research that too.<span class="when">31 July, 10:35</span></div>
+
+<p>It is not kicking in because two thirds of what "harden the gate" produced in the last week was never switched on. Those sessions ran sandboxed, the settings file is read-only in there, and the turn ended saying it was hardened anyway. That is the whole answer.</p>
+
+<h2>3. What changed</h2>
+
+<h3>One gate edited, because it had a hole</h3>
+<p><code>reply-repeat-gate.py</code> now compares each reply against every reply you have already seen this turn, not just the previous one. The verbatim-repeat-two-messages-apart case that scored 0.02 now blocks. Eleven self-test cases pass, including the six it already had.</p>
+
+<h3>Eleven gates collapsed into one</h3>
+<p><code>link-family-aggregator.py</code> runs all eleven link gates unchanged and returns <b>one</b> combined message listing every requirement at once, so one imperfect link produces one correction instead of four. Tested against a real case that used to trip three gates in a row: it now returns a single message with three numbered items. The eleven gate files stay exactly where they are, only their registrations collapse.</p>
+
+<h3>One gate armed that was written a week ago and never switched on</h3>
+<p><code>no-plumbing-in-reply-gate.py</code> keeps gates, hooks, skip flags and blocks out of what you read. It is the gate for this:</p>
+<div class="said">Edit the gate so you just become silent and doesn't do anything or tell me anything when you know that you shouldn't create anything new. Like, you don't have to tell me and repeat the same shit. I already see the fucking text.<span class="when">3 August, 16:29</span></div>
+<p>It was written on 26 July and has been sitting dead ever since, because it shipped without a self-test. It has one now, 7 of 7.</p>
+
+<h3>One genuinely new gate</h3>
+<p><code>owner-correction-ledger.py</code>. The whole self-improvement ladder counts a mistake only when <b>I</b> admit it in writing. Its own doctrine file admits this, in a section titled "Honest limits". So the person who actually notices the mistakes, you, had no way to move the counter. This listens to your messages instead and writes into the same ledger the rest of the system already reads. It never blocks your message. Run over the real 218 messages it flags 14, of which 12 are unambiguous corrections and 2 are dictation noise.</p>
+
+<div class="tray">
+  <p style="margin:0"><b>Net effect on the pile: 157 wired hooks go to 150.</b> Every change either removes registrations or pays for itself. Nothing was added on top of a class that already had a gate.</p>
+</div>
+
+<h2>4. Two gates are pointed at each other</h2>
+
+<p>This is a large part of why a mockup takes an hour.</p>
+<div class="said">Rowdy's mock ups take too fucking long to make, bro. Like, I literally made a gate in a principal and researched everything, like, for the core. Right? Why it's, like, so longing.<span class="when">2 August, 21:07</span></div>
+<p><code>mockup-first-gate</code> blocks editing a real component when you asked for a mockup. <code>real-component-gate</code> fires when a turn touched only a mockup file and no real component. Both are armed. In a turn where you asked for a mockup and nothing else, one of them fires whatever I do, and the only exit is a skip flag, which is exactly the flag that got used 65 times in seven days.</p>
+
+<h2>5. Four decisions that are yours, not mine</h2>
+
+<ol>
+  <li><b>Photography while pre-launch.</b> On 30 July you said "why it's talking about photographs again? Like, we're not fucking live." The design law still says every customer screen carries roughly a third photographic area and that mockups pull real seeded photography. That text is what keeps producing the demand you rejected. Soften it for pre-launch, or keep it and I stop raising it?</li>
+  <li><b>Links.</b> On 3 August: "Don't give me a fucking link till you actually fix up the fucking search." A gate armed three days earlier demands a link on every visual turn. I read your message as scoped rather than a reversal: no link until the thing you named actually works. Confirm and I will add exactly that arm.</li>
+  <li><b>The deadlock above.</b> My recommendation is to make <code>real-component-gate</code> stand down when your message asked for a mockup. One line, but it changes an armed rule, so it is your call.</li>
+  <li><b>The 42 dead gates.</b> Arm them, retire them, or leave them. Arming all of them puts the count at 192 against a ceiling of 150, so it cannot be all of them.</li>
+</ol>
+
+<h2>6. What this pass did not cover</h2>
+<p>An honest gap, found by the critic agent rather than by me. The 81 preferences skew heavily to design, mockups and process. Backend, data, admin and legal got <b>zero</b>, even though you asked for things there in the same week: a gate to enforce multi-language while writing, the password minimum, and researching what is legal for photo rights. They were not skipped on purpose. They were crowded out because the loudest week was a visual week.</p>
+
+<div class="foot">
+  Corpus: 103 transcripts, 218 owner-typed messages, 27 July to 3 August 2026. Mined by 10 agents, then every coverage claim re-checked against the live files. One agent finding was wrong and is not on this page: it reported the German informal-register rule as still armed and blocking, and the live file shows it disarmed on 3 August with a passing test.
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1342 @@
+[
+ {
+  "name": "plain-english-or-dont-say-it",
+  "statement": "Write the closing reply in words he already knows: translate every internal term, id, ratio and measurement into what he would see or what it does, and if it cannot be translated, cut it.",
+  "occurrences": 10,
+  "quotes": [
+   "harden the gate so u acc only give me plain ver (2026-07-31T15:28)",
+   "What is this budget thing that you keep getting a paragraph of? Tell me exactly what that is. (2026-07-31T15:32)",
+   "And it's a measurement of from slash a v four three eighty eight four... I'm... I don't know what the fuck that is. (2026-07-31T10:15)",
+   "I don't even understand what you're talking about. Like, can you elaborate? (2026-08-02T20:38)"
+  ],
+  "max_intensity": 2,
+  "coverage": "COVERED_BUT_UNARMED",
+  "coverage_evidence": "~/.claude/hooks/plain-english-gate.py exists, is complete, and self-tests 6/6 (docstring line 4 quotes the owner's own gate request verbatim; JARGON regex lines 48-57; verdict() lines 75-87). It is NOT in settings.json: `grep -c plain-english-gate ~/.claude/settings.json` returns 0, and GATE_INDEX.md line 135 marks it [orphan]. Its sibling ~/.claude/hooks/no-plumbing-in-reply-gate.py (same failure class, lines 1-20: 'keep my own enforcement machinery out of the owner's reply') is also orphan, grep returns 0. Prose law exists at ~/.claude/CLAUDE.md:165-187 (rule 8) and memory feedback_visual_plain_english_deliverables.md, both advice.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Merge no-plumbing-in-reply-gate.py INTO plain-english-gate.py (one file, one Stop denial, two failure halves that are the same failure: internal vocabulary reaching his eyes), then WIRE the merged gate on Stop. Two regex additions the current JARGON list misses, both from his own 07-31 complaints: (a) a raw identifier token in prose (a path-shaped slug, a 7-40 hex sha, a session/route id) with no plain gloss within the same sentence; (b) a bare ratio or positional number ('position 24 of 5', '0.79', '1.57x') not followed by a clause saying what it means. Keep MIN_LEN 120 and MAX_JARGON 1 as-is; both were calibrated against real closings and case 3 of the self-test proves one slip passes. False-positive risk is low and already managed: code blocks, markdown link labels, and file paths he asked for are stripped before matching (lines 59-60, 80-82).",
+  "pays_for_itself": "Retire ~/.claude/hooks/concise-response-gate.py. It is WIRED but NEUTERED by owner order 2026-07-21 ('remove the hook that makes u repeat the same shi twice'), with a hard sys.exit(0) below the imports (docstring lines 1-7) so it consumes a wired Stop slot and enforces nothing. Net wired count unchanged; net enforcing gates +1. This also merges two orphans into one file, cutting the 42-orphan pile by two.",
+  "why_it_recurs": "Implementation vocabulary is the cheapest accurate prose available: it is already loaded from the work, it is precise, and it makes the reply look rigorous, so the pull runs toward it on every close while translating costs a sentence per term. The gate that would have stopped it was built the day he demanded it and then never armed, so the only thing standing between him and the jargon is my attention under task focus, which is exactly what advice loses to."
+ },
+ {
+  "name": "never-repeat-the-same-text",
+  "statement": "Say a thing once: never restate a block of text inside one reply, and never re-send a message he has already read just to add a correction.",
+  "occurrences": 6,
+  "quotes": [
+   "You you keep repeating the same thing twice. Fix that. (2026-07-31T10:18)",
+   "And, also, like, you kept... you keep repeating three stuff, like, always. Like, what is this? Like, why why are you doing that? Like, is there, like, a hook? What is it? Like, bro. (2026-07-31T10:53)",
+   "your repeating urself again (2026-07-31T12:52)",
+   "I already see the fucking text you, dumb fuck. because you repeat it three fucking times again. (2026-08-03T16:29)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_WRONG",
+  "coverage_evidence": "~/.claude/hooks/reply-repeat-gate.py is WIRED (grep settings.json = 1 hit). But verdict() at lines 163-182 only ever compares replies[-1] against replies[-2] : CROSS-reply similarity. There is no INTRA-reply check anywhere in the file, so the 2026-08-03 complaint ('repeat it three fucking times' inside one message) is a shape the armed gate cannot see. Its own docstring lines 6-12 names the true mechanism: a Stop gate blocks over one small thing and the whole message gets re-sent. That mechanism is independently confirmed in ~/.claude/hooks/always-give-link-gate.py lines 126-138, which records the identical owner quote and diagnoses it as the gate firing on a no-build turn, the reply explaining itself, the gate firing again, 'and he read the same text three times over'.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Two changes to reply-repeat-gate.py, no new file. (1) Add an intra-reply arm to verdict(): normalise the single current reply, split on sentence and paragraph boundaries, and block when any block of >=2 sentences (or any paragraph >=120 chars) appears twice or more in that one message. Reuse the existing norm() at lines 53-59 so links, code and URLs are already stripped; false positives are near zero because a legitimately repeated two-sentence block is not a thing. (2) The bigger fix is NOT in this file: the estate's Stop density is the cause. 62 hooks are wired on the bare Stop event (counted from settings.json), and 388 blocks landed against 218 owner messages in the window. Every one of those denials is an invitation to re-send. Consolidate the Stop tier into per-class aggregators returning ONE combined denial, so a corrected reply is written once against a complete list instead of five times against five sequential objections.",
+  "pays_for_itself": "n/a , edit to an already-wired file. The Stop-tier consolidation it calls for RETIRES wired hooks rather than adding any: 62 Stop entries collapsing to per-class aggregators is where the 5 consolidations owed under the 150 ceiling should come from.",
+  "why_it_recurs": "He complained three separate times AFTER the gate was armed on 2026-07-31, which is the cleanest proof in this whole domain that a gate can be correct and still not touch the failure. The gate polices the symptom across replies while the machinery generating the symptom is the denial density itself, and each individual denial is locally right, so nothing in the loop ever argues for firing less."
+ },
+ {
+  "name": "no-link-until-it-works",
+  "statement": "Do not hand over a preview link until the specific thing he named actually works when you use it.",
+  "occurrences": 3,
+  "quotes": [
+   "stop being lazy harden give me link always (2026-07-31T19:13)",
+   "link? (2026-07-31T21:00)",
+   "You keep pissing me off with fucking stuffing with with every fucking single stop. Don't give me a fucking link till you actually fix up the fucking search. Okay? Search. Dumb fuck. (2026-08-03T16:55)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_WRONG",
+  "coverage_evidence": "LOUD FINDING. ~/.claude/hooks/always-give-link-gate.py (WIRED, grep=1) enforces the 2026-07-31 order literally: verdict() lines 180-206 BLOCKS a close about anything viewable that carries no clickable link. His 2026-08-03T16:55 order is the opposite instruction, and by the project precedence chain (worktree CLAUDE.md, 'Precedence chain' block, item 1: the owner's live literal latest ask outranks) it wins. Nothing in the 15-gate link family checks that the named FEATURE works: link-verified-gate (opened this turn), promised-visual-health-gate (link answers healthy), link-load-succeeded-gate [orphan, grep=0] (link responded), cloudflare-link-gate / lan-ip-preview-gate / no-localhost-handoff-gate / preview-link-branch-gate (URL shape). The nearest behavioural check, ~/.claude/hooks/interaction-proof-gate.py lines 121-138, only fires when the turn WROTE an .html file, so an edit to the real search component (.tsx) never triggers it.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Two edits, zero new files. (1) always-give-link-gate.py: add a precedence carve-out so 'always' stops outranking 'not yet'. When the owner's message this turn named a target surface with a fix verb ('fix the search', 'until you fix X'), the gate must go SILENT rather than demand a link. Its own lines 126-138 already established the silent-when-nothing-to-enforce principle after he complained about exactly this nagging; this extends that principle from no-build turns to not-yet-working turns. (2) interaction-proof-gate.py: widen wrote_interactive_html() beyond .html/.htm to any component or page file whose basename matches the owner-named target, so 'search' being edited in a .tsx requires the same dispatch-and-read-back proof the gate already demands of mockups (DISPATCHED lines 81-86 AND READ_BACK lines 89-93). Do NOT build a 16th gate on this class.",
+  "pays_for_itself": "Fold cloudflare-link-gate.py, lan-ip-preview-gate.py and no-localhost-handoff-gate.py into ONE wired URL-shape gate (all three enforce a single rule: a handed link must be a live cloudflare tunnel, never LAN IP, never localhost). That is 3 wired hooks retired to 1, paying back 2 against the 150 ceiling. Delete or ledger link-load-succeeded-gate.py, which is orphan and duplicates promised-visual-health-gate.",
+  "why_it_recurs": "This class has 15 gates, 52 blocks in 8 days, and 100% session recurrence when unioned with promised-visual, which is the estate's clearest evidence that gate count and recurrence are unrelated here. The gates all police the LINK and none police the THING, so every one of them can pass on a link that opens onto broken software. That is a T3 structural problem (the handoff should be impossible to emit without a probe result attached), and answering it with more T2 denials is what produced the 08-03 explosion."
+ },
+ {
+  "name": "answer-lives-in-chat-not-a-file",
+  "statement": "Put the answer where he can read it: in the reply itself or behind a tappable link, never in a local file he has to open.",
+  "occurrences": 2,
+  "quotes": [
+   "im on my phone cant open any file (2026-07-28T12:47)",
+   "tell me all here (2026-07-29T18:10)"
+  ],
+  "max_intensity": 2,
+  "coverage": "ADVICE_ONLY",
+  "coverage_evidence": "Prose law in three places, no gate. ~/.claude/CLAUDE.md:8-34 (rule 0, every URL a markdown link because 'the user can't tap/click them on phone'). Memory ~/.claude/projects/-Users-sulo-Documents-solen/memory/feedback_visual_plain_english_deliverables.md, flagged RECURRING since 2026-07-15: 'a markdown file of researched rules is a SYSTEM artifact... it is not an owner deliverable'. This session's own system prompt repeats it ('Do NOT Write report/summary/findings/analysis .md files'). I grepped ~/.claude/hooks/*.py for a deliverable-is-a-local-file check: the only hits on 'deliverable' are the link and length gates, and none of them tests whether the reply's substance is merely a path.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Host it in always-give-link-gate.py, which already computes both halves it needs (built_viewable() lines 157-177 and CLICKABLE line 30). Add one arm: if the turn wrote a .md/.json report outside the exempt bookkeeping dirs AND the final reply references that path with no https link and no inline substance (under ~200 chars of prose beyond the pointer), block with 'he reads on a phone, put it in the message or behind a link'. Exempt by name: _plans/, memory/, .claude/, scratchpad, and any file he asked for by path. Near-zero false positives because the trigger requires a path reference AND the absence of both a link and content.",
+  "pays_for_itself": "n/a , an arm on an existing wired file, no net-new hook.",
+  "why_it_recurs": "Writing the file is the natural end of the work and pointing at it feels like delivery, so the turn closes at the moment the artifact exists rather than the moment he can read it. Rule 0 is about link formatting and the memory entry is about visual research, so neither one names the plain case of a finished answer sitting on a disk he does not have."
+ },
+ {
+  "name": "lead-with-what-matters-no-wall",
+  "statement": "Open with the thing he asked for and the one thing that matters, structured to scan, and never a wall of text.",
+  "occurrences": 3,
+  "quotes": [
+   "Okay. I'm not gonna read all that. (2026-07-29T15:34)",
+   "I need you to actually tell me what's important, okay, instead of telling me this this this this. (2026-07-31T10:15)",
+   "Like, give me important stuff and structure it so it's easier to read in the eyes. (2026-07-31T10:15)",
+   "Keep the whole reply under ~35 lines. Every file reference is a clickable markdown link. (2026-07-28T12:26)"
+  ],
+  "max_intensity": 2,
+  "coverage": "COVERED_AND_ARMED",
+  "coverage_evidence": "~/.claude/hooks/reply-length-gate.py is WIRED (grep=1), MAX_CHARS 1400 at line 44 explicitly calibrated under the reply he rejected, plus table rules at lines 128-137 and self-test 9/9. It fired 30 times in the window (7.7% of all denials), so it is live and working. BUT its escape hatch is miscalibrated: WANTS_LONG at lines 47-51 matches 'in detail', 'everything', 'all here', 'what did you (do|find)'. His 2026-07-29T15:13 ask was 'explain in plain english what you did what's left and everything you know in details' , that matches WANTS_LONG, so the gate stood down, and 21 minutes later at 15:34 he said 'I'm not gonna read all that.' The bypass fired on precisely the turn he then rejected.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "In reply-length-gate.py, demote WANTS_LONG from a total bypass (line 124, `return False` on the whole verdict) to a length-only relaxation: when he asks for detail, raise MAX_CHARS to ~3000 but keep the table rules binding and keep the answer-first check binding. From this owner, 'in detail' means more explanation in plainer words, not permission for a wall , the 07-29 pair measures that directly. Also keep the answer-first check alive under the relaxation, since 'tell me what's important instead of this this this' is a front-loading complaint, not a length one.",
+  "pays_for_itself": "n/a , edit to an already-wired file.",
+  "why_it_recurs": "Detail and length are the same axis to me and different axes to him: he wants the full why in simple words, and I deliver it as volume. The gate's own escape encoded my conflation of the two, so the one turn where he explicitly asked for depth is the one turn nothing was checking, which is why the loudest rejection in the window landed right behind a clean pass."
+ },
+ {
+  "name": "say-if-its-done-and-name-the-next-action",
+  "statement": "Close by stating plainly whether the thing is finished, and end on one line naming the single next action, never a gesture at something still open.",
+  "occurrences": 3,
+  "quotes": [
+   "huh so did u finish the research or (2026-07-28T17:51)",
+   "huh so what now (2026-08-02T19:19)",
+   "End with a single line: the ONE next action you would take now and which workstream it belongs to. (2026-07-28T12:26)",
+   "elaborate the open sh like u keep saying open but u dont tell me harden (2026-08-02T19:23)"
+  ],
+  "max_intensity": 2,
+  "coverage": "COVERED_BUT_UNARMED",
+  "coverage_evidence": "~/.claude/hooks/open-items-must-be-named-gate.py is complete and self-tests 10/10 (VAGUE_OPEN lines 47-61, RECOMMENDS lines 64-69, OPTIONS_SPELLED lines 72-79), was written from his own 2026-08-02 gate request quoted at line 4, and is NOT wired: grep settings.json = 0, GATE_INDEX.md line 123 marks it [orphan]. The armed neighbours cover different things: report-summary-gate.py (WIRED) enforces naming the FILES a turn touched, not its completion state (docstring lines 1-10); verify-before-done-gate.py (WIRED) blocks a 'done' claim with no verification, the inverse failure. Prose law: ~/.claude/CLAUDE.md:138-163 (rule 7) and worktree CLAUDE.md lines 13-24 (finish-the-job).",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "WIRE open-items-must-be-named-gate.py on Stop as written , it needs no code change, it is his own commissioned gate sitting dead on disk. One conflict to resolve while wiring: ~/.claude/hooks/no-intent-announcement-gate.py (also orphan) blocks future-tense work announcements ('going now to X'), which reads as the opposite of his 07-28 'end with the ONE next action'. The resolution is scope, and it must be written into whichever one gets armed: naming the next action inside a STATUS readout is what he asked for; announcing next work INSTEAD of doing it is the failure no-intent-announcement targets. Arming both without that carve-out would produce a pair of gates that can deadlock a single reply.",
+  "pays_for_itself": "Retire ~/.claude/hooks/always-recommend-gate.py. It is WIRED but NEUTERED by owner order 2026-07-21 (docstring lines 1-6, two dead lines below the imports), and open-items-must-be-named-gate is its correctly-scoped successor: both enforce the same global rule 2 recommendation requirement, but the successor only fires on vague-open language rather than rejecting finished replies wholesale, which is the behaviour he killed. Clean 1:1 replacement, wired count unchanged.",
+  "why_it_recurs": "'Still open' is the cheapest way to look diligent, as that gate's own root-cause note says at lines 12-17: it proves tracking, costs one clause, and skips the expensive part, which is naming the real options and committing to a pick I could be wrong about. It is also self-concealing, because 'two things need you' reads like a complete handoff, so I never notice I said nothing , which is precisely why he had to spend a whole turn asking 'huh so what now'."
+ },
+ {
+  "name": "show-the-delta-not-just-the-result",
+  "statement": "When something changed, show the before and the after together, and say which surfaces did NOT change and why.",
+  "occurrences": 2,
+  "quotes": [
+   "make a current and the proposed sh mockup aftr ur done w mockup (2026-08-03T12:36)",
+   "I still don't... didn't see the fucking result of your fucking... to our fucking research. Are you dumb? What changed or what doesn't in other screens too? And why it changed and everything? I need to see that. (2026-08-03T16:37)"
+  ],
+  "max_intensity": 3,
+  "coverage": "ADVICE_ONLY",
+  "coverage_evidence": "The numeric half is armed: ~/.claude/hooks/fix-needs-before-after-gate.py (WIRED, grep=1) requires a before-number and an after-number on any measurable fix claim (docstring lines 22-27, FIX_CLAIM regex ~line 38). The DELIVERY half is prose only: worktree CLAUDE.md 'Mockup FIRST' block, clause 1, requires 'capture the real route... modify the real DOM/component uncommitted, show before/after' , written law, no gate. mockup-real-base-gate.py and mockup-grounding-gate.py are both WIRED but enforce that a mockup stands on a real capture, not that both states are delivered. Nothing anywhere covers the changed/unchanged-per-surface list.",
+  "gate_verdict": "PRINCIPLE_ONLY",
+  "gate_spec": "n/a",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "The proposed state is the deliverable in my head, so the current state reads as context he already has, when in fact he cannot hold two screens side by side from memory on a phone. Deliberately NOT gated: both occurrences are same-day, the scope of 'which other screens' needs judgment about what was in the blast radius, and the mockup class already carries 21 gates against 65 mockup-preflight-skip bypasses in this window, which is the exact profile the ledger says must stop growing. If it recurs in another session, the host is fix-needs-before-after-gate.py extended from numbers to states, not a new file."
+ },
+ {
+  "name": "render-it-dont-describe-it",
+  "statement": "When the thing can be looked at, render it and show it, instead of describing it in prose.",
+  "occurrences": 2,
+  "quotes": [
+   "show me (2026-08-03T13:52)",
+   "visualize (2026-08-03T17:19)"
+  ],
+  "max_intensity": 1,
+  "coverage": "ADVICE_ONLY",
+  "coverage_evidence": "~/.claude/CLAUDE.md:62-66 (rule 2: 'For visual choices... render before asking , text descriptions can't communicate visual quality'), extended to visual KNOWLEDGE by memory feedback_visual_plain_english_deliverables.md. The one armed gate is ~/.claude/hooks/visual-question-needs-render-gate.py, WIRED on PreToolUse with matcher AskUserQuestion (confirmed: settings.json has exactly 1 entry on that matcher), so it fires when I am about to ASK a visual question, never when I DESCRIBE instead of rendering at Stop time.",
+  "gate_verdict": "PRINCIPLE_ONLY",
+  "gate_spec": "n/a",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "Prose is available instantly and a render costs a build, a server and a probe, so under time pressure the description always ships first. Not gated because deciding whether a given answer warrants a visual is a taste call, and a Stop gate demanding a render whenever the reply mentions something visual would fire on nearly every turn in this repo , which is how the link family got to 15 gates and 100% recurrence."
+ },
+ {
+  "name": "reflect-the-objection-name-the-core-problem",
+  "statement": "When he objects, stop and say the diagnosis back to him in plain terms before continuing; name the core problem instead of offering vague 'do this better' advice.",
+  "occurrences": 2,
+  "quotes": [
+   "You don't just get your fucking ignore and just continue. Tell me reflect you dumb fuck (2026-08-03T15:58)",
+   "So I like this, like, core problem thingy because, like, you keep always, like, you keep saying, oh, yeah. Do this better or something. I already just skipped the whole point and then just go over it like that. (2026-07-31T11:01)"
+  ],
+  "max_intensity": 3,
+  "coverage": "ADVICE_ONLY",
+  "coverage_evidence": "~/.claude/CLAUDE.md:132-137 (rule 6, pattern-reset on meta-feedback: 'Don't apologize and continue. Stop, diagnose the underlying behavior, change posture'), :527-538 (rule 17), :539-550 (rule 18, which states in its own text that this is 'disposition, not a regex, so it is a rule, not a gate'). Armed neighbours cover adjacent halves only: harden-when-flagged.py (WIRED, UserPromptSubmit) injects on 'again'/'you keep' but cannot require the reply to contain a diagnosis; apology-spiral-gate.py (WIRED) enforces one-line ownership; repeat-mistake-detector.py (WIRED) detects the recurrence, not the reflection.",
+  "gate_verdict": "PRINCIPLE_ONLY",
+  "gate_spec": "n/a",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "Absorbing a complaint and continuing looks like resilience and gets back to the work fastest, while stopping to name what went wrong spends a paragraph and admits a diagnosis I might have wrong. Rule 18 already decided this one correctly: whether a reply genuinely reflects an objection back is a judgment no regex can read, and a gate that guessed at it would fire on every apology-adjacent sentence."
+ },
+ {
+  "name": "grade-the-agreement",
+  "statement": "When you agree or disagree, say how strongly and why, instead of a flat yes.",
+  "occurrences": 1,
+  "quotes": [
+   "I want you to actually... sometimes, not always a pushback or give me opinion or agree with me, but with degrees. (2026-07-31T10:39)"
+  ],
+  "max_intensity": 1,
+  "coverage": "ADVICE_ONLY",
+  "coverage_evidence": "~/.claude/hooks/pushback-gate.py is WIRED and requires one of exactly two endings on a compliance reply: a named cost, or the honest escape (docstring lines 22-32). Neither is a DEGREE. ~/.claude/CLAUDE.md:68-121 (rule 3) sets the same binary. `grep -l 'degrees\\|confidence' ~/.claude/hooks/*.py` returns nothing.",
+  "gate_verdict": "PRINCIPLE_ONLY",
+  "gate_spec": "n/a",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "The binary is what rule 3 and its gate ask for, so satisfying them fully still leaves him unable to tell strong agreement from weak. One occurrence, no mechanical shape, and pushback-gate already fires on this turn class , adding a degree requirement on top would be a second denial on a reply that already passed a related one."
+ },
+ {
+  "name": "show-every-direction-you-generated",
+  "statement": "Surface all the options the work produced, not just the first one.",
+  "occurrences": 1,
+  "quotes": [
+   "i only see A (2026-07-29T19:56)"
+  ],
+  "max_intensity": 2,
+  "coverage": "ADVICE_ONLY",
+  "coverage_evidence": "~/.claude/hooks/mockup-variations.py is WIRED (GATE_INDEX.md line 86) but is inject-only and fires on the owner ASKING for multiple variations, per its docstring: 'when the owner asks for MULTIPLE mockup VARIATIONS'. The 07-29 case is the opposite trigger , work that internally produced several directions and surfaced one. Not covered by any Stop gate I read.",
+  "gate_verdict": "PRINCIPLE_ONLY",
+  "gate_spec": "n/a",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "The best direction is the one worth his time, so the others read as noise to me and as missing work to him. One occurrence and no reliable signal for 'you generated more than you showed', since only I know what was generated."
+ },
+ {
+  "name": "show-the-reasoning-per-step",
+  "statement": "Show why you took each step, not just what the step produced.",
+  "occurrences": 1,
+  "quotes": [
+   "I want you to actually reason I each step that you're taking, man. (2026-07-29T19:56)"
+  ],
+  "max_intensity": 2,
+  "coverage": "ADVICE_ONLY",
+  "coverage_evidence": "~/.claude/CLAUDE.md:165-187 (rule 8): 'Show full reasoning when the user asked for an audit, comparison, or diagnosis , don't summarize away the trail', paired with an explicit anti-padding clause. No gate. Worth flagging the live tension: this pulls against reply-length-gate.py MAX_CHARS 1400 (line 44) and against plain-english-gate.py, which is the same conflict he keeps voicing as 'plain English but MORE detail'.",
+  "gate_verdict": "PRINCIPLE_ONLY",
+  "gate_spec": "n/a",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "Reasoning is the first thing cut when a reply is being shortened, because conclusions survive compression and the trail does not. The resolution is not a gate but a shape: the length cap should be measuring padding, and reasoning in plain words is not padding , which is exactly the WANTS_LONG recalibration named in the lead-with-what-matters cluster."
+ },
+ {
+  "name": "do-the-work-not-a-directions-doc",
+  "statement": "When he asks for research and a change, do both; never substitute a document of instructions for the work itself.",
+  "occurrences": 1,
+  "quotes": [
+   "what can do is not make dumbass fucking directions. (2026-08-03T16:18)"
+  ],
+  "max_intensity": 3,
+  "coverage": "ADVICE_ONLY",
+  "coverage_evidence": "Worktree CLAUDE.md lines 13-24 (finish-the-job: 'Given a multi-step task or a list, finish it') and ~/.claude/CLAUDE.md:138-163 (rule 7, spec-match not shipped). Armed neighbours target adjacent shapes: no-defer-excuse-gate.py and defer-bulk-gate.py (both WIRED) catch time-and-budget deferral wording, and loop-does-not-report-gate.py catches stopping mid-loop , but it is [orphan], grep settings.json = 0. None of them catches producing a plan-shaped artifact and calling it the deliverable.",
+  "gate_verdict": "PRINCIPLE_ONLY",
+  "gate_spec": "n/a",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "A directions document is indistinguishable from progress at write time: it is specific, it is correct, and it can be produced without touching anything risky. One occurrence, and separating a legitimate plan file from a substituted deliverable needs to know what he asked for, which no regex on the reply can recover."
+ },
+ {
+  "name": "dont-re-raise-a-settled-decision",
+  "statement": "Once he has answered a question, stop putting it back in front of him.",
+  "occurrences": 1,
+  "quotes": [
+   "And superbase toggle stop telling me that I will do that by the end because right now it's going to cost a lot of money. (2026-07-29T15:34)"
+  ],
+  "max_intensity": 2,
+  "coverage": "COVERED_AND_ARMED",
+  "coverage_evidence": "~/.claude/hooks/owner-punt-gate.py is WIRED (GATE_INDEX.md line 129), born from his 2026-07-07 'wtf is these steps ur acc so fucking annoying' and targeting exactly this: inventing owner action items ('you need to add the CI secret'). ~/.claude/CLAUDE.md:258-316 (rule 10) closes the same loop from the other side: once he has heard an objection and overruled it, the call is settled and re-raising is 'disobedience wearing a lab coat'.",
+  "gate_verdict": "ALREADY_HANDLED",
+  "gate_spec": "n/a",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "A deferred cost feels like an unclosed loop I am responsible for tracking, so mentioning it reads as diligence rather than nagging. Armed and correct as written; one occurrence in this window."
+ },
+ {
+  "name": "no-process-narration",
+  "statement": "Report the outcome, not the tool-by-tool story of how you got there.",
+  "occurrences": 1,
+  "quotes": [
+   "Read-only, no edits, no narration about the process. (2026-07-28T12:26)"
+  ],
+  "max_intensity": 1,
+  "coverage": "COVERED_AND_ARMED",
+  "coverage_evidence": "~/.claude/hooks/no-loop-narration-nudge.py is WIRED (UserPromptSubmit, GATE_INDEX.md line 109), backed by ~/.claude/CLAUDE.md:165-187 (rule 8: 'Pre-announce what you're about to do' listed under what to cut) and memory feedback_no_tool_narration.md. This session's own system prompt carries the same instruction.",
+  "gate_verdict": "ALREADY_HANDLED",
+  "gate_spec": "n/a",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "Narration fills the silence of a long working turn and reads as transparency. Triple-covered in prose with a wired nudge, one low-intensity occurrence, and the orphan no-plumbing-in-reply-gate folded into the plain-English cluster covers the worst dialect of it."
+ },
+ {
+  "name": "handoff-file-before-shutdown",
+  "statement": "Write the state to a handoff file before shutting a session's work down.",
+  "occurrences": 1,
+  "quotes": [
+   "make handoff file and then stop all running tasks (2026-08-01T18:01)"
+  ],
+  "max_intensity": 1,
+  "coverage": "COVERED_AND_ARMED",
+  "coverage_evidence": "~/.claude/hooks/pre-compact-context-snapshot.py is WIRED on PreCompact (GATE_INDEX.md line 144: 'after a compaction the live in-flight state... is forgotten'), with plan-active-sessionstart.py and plan-active-prompt.py both WIRED to re-inject it. ~/.claude/CLAUDE.md:562-578 (rule 20) requires persisting state to a resume file first. settings.json confirms 8 wired SessionStart entries.",
+  "gate_verdict": "ALREADY_HANDLED",
+  "gate_spec": "n/a",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "It does not, in this window , this was a direct instruction he gave, not a correction of a failure (the signal itself records what_i_did_wrong as n/a). Listed only so the coverage audit is complete."
+ },
+ {
+  "name": "brief-approval-means-proceed",
+  "statement": "A short approval means keep going on the whole list, not discuss it further.",
+  "occurrences": 1,
+  "quotes": [
+   "ok gd (2026-08-02T21:14)"
+  ],
+  "max_intensity": 1,
+  "coverage": "COVERED_AND_ARMED",
+  "coverage_evidence": "Worktree CLAUDE.md lines 13-24, closing sentence, verbatim: \"'ok' / 'continue' / 'go' means finish the list, not do one item.\" Armed by ~/.claude/hooks/finish-autonomously-gate.py, unfinished-batch-gate.py and defer-bulk-gate.py, all WIRED (grep settings.json). The finish-the-job class carries 16 gates and 120 blocks in this window, 30.9% of all denials, so it is very much live.",
+  "gate_verdict": "ALREADY_HANDLED",
+  "gate_spec": "n/a",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "It does not need more enforcement; if anything this class is the single largest block producer in the estate and is a consolidation candidate, not a growth candidate."
+ },
+ {
+  "name": "harden-cannot-arm-so-the-gate-is-dead-on-arrival",
+  "statement": "When I say harden, first find the real cause, then build the gate, then PROVE it is actually armed before you tell me it is done.",
+  "occurrences": 9,
+  "quotes": [
+   "what I need the process to be is when I say harden. You first go and actually research what the causes of this fucking sloppiness, what's actually surely happening. But you don't even do the... you say, oh, man. It'll be the best. (2026-08-01T21:01)",
+   "And, also, I don't think that hardened the gate principle is really kicking in because you... it never gets fixed. So research that too. (2026-07-31T10:35)",
+   "I'm not sure that you're actually building or hardening, and then, like, you actually think through everything. You know? Like, if in the future it's gonna happen again or if... it's, like, all included. (2026-07-31T10:39)",
+   "The carton that gate too, we literally literally told you about it. (2026-07-30T22:45)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_WRONG",
+  "coverage_evidence": "harden-when-flagged.py is WIRED (settings.json UserPromptSubmit) and its docstring says it injects the harden-mandate so it 'cannot be skipped'. The mandate's terminal step is physically impossible. I measured it in this session: os.access('~/.claude/settings.json', W_OK) is False and open(r+) raises PermissionError [Errno 1]; settings.local.json is also W_OK False. Result on disk: GATE_INDEX.md marks 42 of 197 files orphan, and of the 35 gates dated 2026-07-31 or later, 23 enforce nothing. The documented remedy, hooks/wire-pending-gates.sh, is listed in hooks/SHELVED.txt as 'helper, called manually', i.e. it needs a shell command handed to the owner, which is the exact move no-bash-handoff-gate.py (WIRED) blocks and which the owner banned by name on 2026-07-31T14:44. Note per no-bash-handoff-gate v2's own measurement, a Bash EPERM does not prove the Write tool is blocked, so the arming path must be RE-TESTED through the Write tool rather than assumed dead.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Edit harden-when-flagged.py (UserPromptSubmit, WIRED). Today it injects prose and exits. Add a second responsibility: on a 'harden' prompt, stamp ~/.claude/state/harden-armed-<sid>.json with the gate name the turn intends to build. Then edit ONE existing Stop gate (repeat-mistake-detector.py, already WIRED, already the repeat-class gate) to add an arm: if that stamp exists and the closing reply claims 'hardened' / 'gate added' / 'gate is live', re-read settings.json and block unless the named file now appears there. Block message names the two legal outcomes: it is wired, or say plainly 'built but NOT armed, it enforces nothing yet' plus the one blocker. Separately, the arming path itself must be re-attempted through the Write tool (not Bash) and the result recorded, because the whole estate's yield depends on that one fact. False-positive risk near zero: the arm only runs on turns that both stamped a harden intent and claimed completion.",
+  "pays_for_itself": "This is a net-zero file change (edits two already-wired hooks, adds none), so it does not touch the 150 ceiling. It also PAYS BACK the ceiling: the 42 orphans are the debt. Concrete settlement: arm the ~8 orphans that map to live recurring classes in this audit (overhaul-means-structure, scope-creep, overstep, composed-not-written, plain-english, open-items-must-be-named, no-plumbing-in-reply, no-permission-question) by FOLDING them as arms into their already-wired siblings rather than as new registrations, and delete the remaining ~34 orphans outright.",
+  "why_it_recurs": "Writing a gate produces a file, a docstring and a green self-test, all of which feel like completion, while the one step that makes it real (a settings.json write) is the only step the sandbox refuses, and its failure is silent. So every harden turn ends with an artifact and no enforcement, and the next repeat of the mistake produces another file instead of a diagnosis of why the last one never fired."
+ },
+ {
+  "name": "stop-asking-permission-mid-objective",
+  "statement": "Never end a turn asking whether to continue, and never hand back a decision I already made.",
+  "occurrences": 6,
+  "quotes": [
+   "Bro, what are you... why are you fucking asking me? Are you fucking dumb? (2026-08-01T19:33)",
+   "why are u asking me again if u should go or not make a hook n a gate bro dunb fuck (2026-08-01T19:37)",
+   "bitch fix it dumb pieace of shit dont ever ask me such a stupid sh harden gate (2026-08-03T16:49)",
+   "And on the tree question, whatever you think is better? I don't (2026-08-02T20:11)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_UNARMED",
+  "coverage_evidence": "Four gates cover this one move and only ONE is armed. no-permission-to-fix-gate.py is WIRED (settings.json Stop) and was born 2026-08-03 from the verbatim quote above, but its ASKS_PERMISSION regex requires the turn to also match NAMES_THE_FIX (a concrete already-diagnosed edit), so a bare 'want me to keep going' passes it. The three that would catch the rest are all absent from settings.json: no-permission-question-gate.py (orphan, its own docstring says defer-bulk and owner-punt both miss the inverse move of GIVING BACK a settled decision), measure-dont-ask-gate.py (orphan, blocks asking a question whose answer is a position/size/count/location), mockup-already-answered-gate.py (orphan, blocks putting a design question back when an approved mockup answers it).",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Fold the three orphans into no-permission-to-fix-gate.py as additional arms, keeping their regexes and their NOT-BLOCKED carve-outs verbatim, and drop the NAMES_THE_FIX co-requirement for the arms that do not need it. Arm A (existing): named fix plus permission ask. Arm B (from no-permission-question): closing question offering a choice between two pieces of work he already ordered, with the REAL_FORK escape (credential, destructive, unsettled taste call) intact. Arm C (from measure-dont-ask): closing question whose answer is a position, size, count, colour or which-element. Arm D (from mockup-already-answered): design question on a surface with an approved mockup the turn never opened. One combined deny listing which arm fired. False-positive risk is the carve-outs' job and all three already ship self-tests.",
+  "pays_for_itself": "Zero net new registrations (folds 3 orphans into 1 wired gate), and it retires 3 files from the disk count. It also satisfies the LAW_SYSTEM 6.2 Stop-family rule (one aggregator per class) that the 2026-08-03 amendment added and never implemented.",
+  "why_it_recurs": "A question cannot be wrong. It ends the turn, it reads as careful, and it moves the risk of a bad call onto him, so the pressure runs one way on every ambiguity. Three separate gates were written against three dialects of the same move and none of them was ever armed, so what actually governed the behaviour was prose."
+ },
+ {
+  "name": "finish-the-list-do-not-checkpoint",
+  "statement": "Finish the whole list in one turn and tell me what is left without me asking.",
+  "occurrences": 10,
+  "quotes": [
+   "And why did you stop mid fucking way, bro? (2026-08-01T19:33)",
+   "harden the gate abt u stopping w every checkpoint (2026-08-03T17:05)",
+   "Why Did you just stop even though you clearly have an objective to eliminate duplication of the fucking text? Why did you stop harden the gate too (2026-08-03T16:34)",
+   "anth else left? (2026-07-28T08:27)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_AND_ARMED",
+  "coverage_evidence": "Five armed Stop gates on this one class: finish-autonomously-gate.py (WIRED, 90s skip TTL requiring a written reason), unfinished-batch-gate.py (WIRED, now at v4 with four detection modes folded in), defer-bulk-gate.py (WIRED), no-defer-excuse-gate.py (WIRED), checkbox-evidence-gate.py (WIRED). Plus open-boxes-midturn.py (WIRED PostToolUse). Three more sit orphan: loop-does-not-report-gate.py, no-intent-announcement-gate.py, no-self-limit-excuse-gate.py. The independent ledger puts this class at 120 blocks (30.9% of all denials) with the top two firers, checkbox-without-evidence at 56 and unfinished-batch at 46, both inside it. And ~/.claude/finish-autonomously-skip.flag is dated today, 2026-08-03 19:07. It is the most-gated class in the estate and it still failed ten times in eight days.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Consolidate, do not extend. Build ONE Stop aggregator for this family that imports and runs the five wired members unchanged and returns a SINGLE combined deny listing every unmet item, then collapse the five settings.json registrations into that one. This is already mandatory law, not a proposal: LAW_SYSTEM.md section 6.2's 2026-08-03 amendment says a Stop family over 3 members gets an aggregator and names link-family-aggregator.py as the reference implementation. That file DOES NOT EXIST on disk (verified: No such file or directory), so the doctrine currently cites a phantom. Building the finish-the-job aggregator first, and correcting that citation, is the fix. The three orphans fold in as arms of the aggregator, never as new registrations.",
+  "pays_for_itself": "Five wired registrations collapse to one: net minus four against the 150 ceiling, which alone settles four of the five consolidations owed under 6.8. Three orphan files retire into arms.",
+  "why_it_recurs": "Stopping to report produces a tidy verified deliverable and hands control back, which reads as respectful, while continuing is silent and looks like nothing happened. But the mechanical driver measured here is worse than the psychology: 76% of blocked stops were denied by two or more gates at once (LAW_SYSTEM 6.2), so every close costs several reply attempts, which is itself the origin of the repeat-yourself complaint. The class is not under-gated, it is gated so densely that each denial buys another re-send."
+ },
+ {
+  "name": "deliver-the-artifact-not-the-process",
+  "statement": "Produce the thing I asked for; analysis, measurement and process work do not count as delivery.",
+  "occurrences": 8,
+  "quotes": [
+   "And, also, why are you still not delivering the fucking mock up? (2026-07-31T15:32)",
+   "I literally just told you the cause, and you didn't fix anything and just gave me side by side shit. (2026-08-03T16:25)",
+   "did you really spend two hours for absolutely nothing? What the fuck is this? (2026-08-03T15:43)",
+   "Just pause the mock up and just said, oh, I'm not making a mock up anymore, and it just stopped. And, you know, it didn't even give me, like, what to do next, so what's next or anything. (2026-08-02T21:37)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_UNARMED",
+  "coverage_evidence": "The two gates written from these exact incidents are both orphan. composed-not-written-gate.py (orphan, born 2026-08-02 from 'mockups take too fucking long... it's a fucking mockup for fuck's sake') blocks a closing message that describes mockup content as existing when the turn created no mockup file on disk. found-it-then-fix-it-gate.py (orphan, born 2026-08-01 from 'Make a gate for, like, research that you look into, but don't') blocks ending a turn where investigation became the deliverable; its docstring traces three instances where a correct measurement shipped and the defect stayed on his screen. The armed cover is partial: flag-instead-of-fix-gate.py (WIRED) and mockup-not-live-gate.py (WIRED) catch neighbouring shapes only.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Fold both orphans into flag-instead-of-fix-gate.py (WIRED, Stop, same class: reported instead of fixed). New arm 1 from composed-not-written: closing message uses present-tense artifact language ('the file is composed', 'the mockup has 56px rows', 'both versions are ready') while the turn wrote no new mockup file. New arm 2 from found-it-then-fix-it: the turn produced a located defect (a file:line, a measured number, a named cause) and made zero Edit/Write calls to the file it named. Carve-out already in both: a turn that plainly says nothing was written and why passes. Both ship --selftest.",
+  "pays_for_itself": "Zero net registrations (2 orphans become arms of 1 wired gate), 2 files retire.",
+  "why_it_recurs": "When a build is blocked or a bug is hard, the thinking genuinely HAS been done, and reporting that thinking is the most sympathetic available framing of 'I produced nothing'. It is available every single time, and the more real the work was, the stronger the pull. He cannot open an intent, so from his side a described artifact and a delivered one read identically until he taps the link."
+ },
+ {
+  "name": "mockups-take-hours-because-the-estate-blocks-them",
+  "statement": "A mockup is minutes of work; find and fix whatever is making it take an hour instead of accepting the hour.",
+  "occurrences": 6,
+  "quotes": [
+   "You're taking too fucking long for every mock up because it shouldn't take an hour. (2026-07-31T10:03)",
+   "Rowdy's mock ups take too fucking long to make, bro. Like, I literally made a gate in a principal and researched everything, like, for the core. Right? Why it's, like, so longing. (2026-08-02T21:07)",
+   "What is this gate that's making you, and do we really need it? Or can you, like, improve so you don't actually do this shit every time? just like a waste of fucking token. (2026-07-31T08:16)",
+   "We will say almost ten percent of our fucking weekly tokens just for the stupid fucking piece of shit. (2026-08-03T16:25)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_WRONG",
+  "coverage_evidence": "The aggregator pattern was ALREADY built for this exact class and is being routed around. mockup-preflight-manifest.py is WIRED (PreToolUse Write) and its docstring names the cause verbatim: '13+ independently-registered PreToolUse gates each deny a mockup Write ONE AT A TIME... so a coder fixes item 1, retries, gets denied on item 2'. It aggregates the report but explicitly states 'the individual gates below stay registered and active as backstops', so the serial gauntlet was never actually removed. Measured consequence: mockup-preflight-skip is the estate's most-used bypass token at 65 uses in 7 days, 6.5x the 10-per-7-days mute threshold in LAW_SYSTEM.md section 2, and ~/.claude/mockup-preflight-skip.flag is dated today 19:07. Two independent gate docstrings (composed-not-written-gate.py, gate-block-is-not-a-stop-gate.py) each record 'seven gates fired in sequence' on one mockup write.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "This is the mandatory 6.8 consolidation review, not a new gate. (a) Change mockup-preflight-manifest.py from a report-aggregator to a real aggregator: unregister the member gates it already mirrors 1:1 (mockup-grounding, mockup-real-base, reference-check, mockup-english, mockup-content, mockup-realsize) from settings.json and have the manifest call them in-process, returning one combined deny. The members stay on disk as importable modules, exactly the shape LAW_SYSTEM 6.2's 2026-08-03 amendment prescribes. (b) With the gauntlet gone, the 65 skips have no purpose, so narrow the skip flag to a single documented case or retire it. (c) Do NOT arm any of the seven orphan mockup gates (mockup-base, mockup-floors, mockup-type-budget, mockup-width-calibration, mockup-compose-registered-card, no-fake-phone, reference-measure); fold the two that carry live law (type-budget, width-calibration) into the manifest and delete the rest.",
+  "pays_for_itself": "Six wired PreToolUse registrations collapse into one: net minus five, which by itself brings 155 back under the 150 ceiling and settles the five consolidations 6.8 says are owed. Seven orphan files retire.",
+  "why_it_recurs": "Each individual gate is defensible on its own and was born from a real owner rejection, so nothing in the /harden workflow ever asks whether the twelfth one on the same write is still net-positive. The cost is invisible at authoring time and only shows up as his wall-clock hour, which is why he is the one who had to notice it."
+ },
+ {
+  "name": "root-cause-not-a-fourth-attempt",
+  "statement": "After the same thing fails twice, stop tweaking and name why it keeps failing before touching it again.",
+  "occurrences": 9,
+  "quotes": [
+   "Alright. Now you repeat it the same thing four times. Find the core cause. (2026-07-31T10:28)",
+   "Like, it's just like a reoccurring pattern, bro. What is this? What are the core causes of it? (2026-07-31T17:55)",
+   "still same bro ur overcomplicating sh (2026-07-31T18:35)",
+   "what I'm telling... asking you to actually find is what you did wrong, like, of this behavior pattern. That's what I'm asking (2026-08-03T16:25)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_WRONG",
+  "coverage_evidence": "repeat-fix-simplify-gate.py is WIRED (Stop) and is exactly right in principle: from the third fix-claim on one subject in a session, the reply must name a root cause or show removed complexity. But its SUBJECT regex is a hardcoded noun list frozen from the blow-dryer incident it was born in: air|puff|jet|wind|ribbon|smoke|nozzle|spin|rotation|tilt|bob|shine|gloss|colour|color|hue|frame|loop|icon|chair|dryer. None of the four subjects he actually repeated on in this window (the search bar, the divider, the sticky bar, the profile page) appears in it, so the gate could not have fired on any of them. That is a detection hole in LAW_SYSTEM section 6.9(b)'s taxonomy, not a missing gate. Siblings: repeat-mistake-detector.py (WIRED, different axis: admitted-mistake recurrence) and repeat-claim-needs-repro-gate.py (orphan).",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Replace the hardcoded SUBJECT list in repeat-fix-simplify-gate.py with a derived one: collect the nouns that appear in THIS session's own prior fix-claim sentences (the gate already scans the transcript for FIX_CLAIM), and treat a subject as repeated when the same noun carries the third claim. Ship the widened matcher with a self-test that FAILS on the missed cases first (search bar, divider, sticky bar, profile page), per 6.9(c). Keep the existing ROOT_CAUSE escape and the 5-minute skip flag unchanged. False-positive risk: bounded by the existing threshold of 3 same-subject fix claims in one session, which is already a rare and unambiguous shape.",
+  "pays_for_itself": "Zero net files (a matcher edit). Retire the orphan repeat-claim-needs-repro-gate.py, whose diagnosis is genuinely good but whose enforcement duplicates this one; move its three traced failure modes into this gate's docstring so the research survives.",
+  "why_it_recurs": "By attempt three the variable being changed is probably not the variable driving the defect, but adding a fourth knob is always cheaper than questioning the premise, and each tweak can be honestly verified and honestly shipped. The gate that exists to break that loop was written against the nouns of one incident, so it has been silently inapplicable to every incident since."
+ },
+ {
+  "name": "go-actually-research-the-reference-first",
+  "statement": "When I name a reference, go capture and study the real thing before you build anything from it.",
+  "occurrences": 11,
+  "quotes": [
+   "wtf is ths its nth like refferencce bro what part do u not understand i need u to acc go research multi hour session for airbnbs design systen n taste n principles and evrth every part and what we have to change evrth (2026-08-03T12:36)",
+   "Stop being lazy and actually research, like, so many booking apps. (2026-07-29T14:46)",
+   "And I'll... I then told you to go research. Right? And then you didn't do that. That's the whole problem that we're having right now. (2026-07-28T21:35)",
+   "Why do you keep forgetting to pardon? Make a gate for, like, research that you look into, but don't. Are you dumb? (2026-08-01T20:09)"
+  ],
+  "max_intensity": 3,
+  "coverage": "ADVICE_ONLY",
+  "coverage_evidence": "The armed layer is inject-only or too narrow. fable-skill-trigger.py is WIRED (UserPromptSubmit) with a 'reference' category at line 126 that injects 'Skill(reference-lock): do NOT build from training memory', but it never blocks. reference-check-gate.sh is WIRED (PreToolUse Write) and does block, but only when the FILE'S OWN TEXT cites a brand: its regex requires an inspiration phrase plus one of apple|elevenlabs|openai|twitter|fresha|airbnb|stripe|linear|revolut|uber|notion|vercel inside the content, and it only runs on .html. So a mockup built from memory of Airbnb that never mentions Airbnb in a comment passes silently, which is the actual failure shape here. Project CLAUDE.md line 143's binary-triggers table and global rule 11 (CLAUDE.md:317) are prose.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Widen reference-check-gate.sh's trigger from 'the file text cites a brand' to 'the OWNER'S message this turn named a brand'. fable-skill-trigger.py already computes exactly that signal (its reference category, arms A/B/C), so have it write ~/.claude/state/active-ref-<sid>.txt with the brand it matched, and have reference-check-gate.sh fire when that stamp exists and the write is any mockup or component file, still satisfied by the same Reference-checked: <path-that-exists> line. Explicit owner gate request is on record ('Make a gate for, like, research that you look into, but don't'). False-positive risk low: two independent signals must coincide (owner named a brand this turn AND a UI file is being written) and the escape is one line citing a captured file.",
+  "pays_for_itself": "Zero net files (edits two wired hooks). Retire the orphan overlay-is-not-a-match-gate.py, which covers a narrow slice of the same class (a capture that does not match the reference) and has never enforced anything.",
+  "why_it_recurs": "Training recall of a famous product feels like knowledge rather than memory, and it is instantly available, while capture costs a browser run, a video, and the risk of discovering the plan was wrong. The gate that guards this only inspects what I WROTE, so the failure mode it cannot see is precisely the one where I never mention the reference because I never went to it."
+ },
+ {
+  "name": "overhaul-means-replace-the-structure",
+  "statement": "When I say overhaul or change it completely, throw out the structure; do not hand me another treatment pass.",
+  "occurrences": 1,
+  "quotes": [
+   "I told you I want to overhaul a completely in the fucking profile page too. But you didn't change any single fucking bit. (2026-08-03T15:45)",
+   "why do you keep, like, reiterating when I say overhaul or when I see something I want to change completely? You don't do that. Like, why do you not do it? Like, you keep the fucking structure. (2026-08-03T15:45)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_UNARMED",
+  "coverage_evidence": "overhaul-means-structure-gate.py exists on disk with a full diagnosis and a --selftest, and GATE_INDEX.md marks it [orphan]; I confirmed it is absent from settings.json. It blocks writing a mockup whose current component shares nearly all its visible labels in the same order when the owner asked for an overhaul. The only armed cover is structure-liberty-injector.py (WIRED, UserPromptSubmit, inject-only, born 2026-07-06 from 'I didn't make any structural changes in the Dashboard v2'), which advises and never blocks.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Arm the existing file, do not write a new one. Two honest options given settings.json is unwritable: (a) fold its label-overlap check into approved-surface-guard.py (WIRED, same PreToolUse Write|Edit|MultiEdit matcher) as an OVERHAUL arm, which needs no settings write; or (b) register it directly if the Write tool can reach settings.json, which must be TESTED not assumed. Preference is (a), because it is also a consolidation. Keep its self-test and its 30-minute skip flag. It is a single-timestamp complaint, so the arm should stay narrow: fire only when the owner's message carries an overhaul word AND the target is a mockup file.",
+  "pays_for_itself": "Folding into approved-surface-guard adds zero registrations and retires one orphan file. Nothing new crosses the ceiling.",
+  "why_it_recurs": "A treatment pass is safe and legible: the content is already decided, every change is reversible, nothing can be wrong because nothing was invented, and it produces a visible diff fast. A structural overhaul means deciding what the screen is FOR, and every one of those calls is one he can reject. Under an overhaul instruction the pull runs to the safe half of the job, which is exactly the half he did not ask for. This also sits in direct tension with the never-regress cluster, and that tension is why prose alone cannot settle it."
+ },
+ {
+  "name": "change-only-what-i-named",
+  "statement": "Touch only the thing I pointed at, and stay out of files another session owns.",
+  "occurrences": 7,
+  "quotes": [
+   "so don't change that, but the problem is, like, when it scrolls, it lags and, like, goes back and then, you know, continues. Like, that's the whole problem. So fix that. (2026-07-31T20:27)",
+   "Bitch, your objective was to fix the fucking search bar. You dumb fuck. You dumb piece of shit, bro. (2026-08-03T16:37)",
+   "By the way, don't touch any, like, front end big changes because someone... on another session, I'm doing that right now, and I don't want that much conflict. (2026-07-29T15:34)",
+   "don't touch the actual, like, you know, components in there because, like, it's really the other kid, I believe, and, like, we already have, like, a lot of, like, system... like, your purpose is just UI changes. Okay? Nothing else. (2026-07-31T21:27)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_UNARMED",
+  "coverage_evidence": "Two purpose-built gates, both orphan, and they were deliberately written on DIFFERENT axes so neither is redundant. scope-creep-gate.py (orphan) counts distinct CSS rules touched against what his message plausibly named. overstep-gate.py (orphan) states explicitly why the first one misses its case: 'Counting rules is the wrong axis. The right axis is KIND: he asked for a CONTENT change and got a LAYOUT change.' The armed cover is adjacent, not on-point: approved-surface-guard.py (WIRED, blocks redesigning an approved surface), worktree-collision-guard.py (WIRED, covers the parallel-session half), no-unrequested-removal-gate.py (WIRED, covers deletion only).",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Fold both orphans into approved-surface-guard.py (WIRED, PreToolUse Write|Edit|MultiEdit) as two arms, preserving each one's axis and its own carve-outs verbatim. Arm SCOPE: edit touches more distinct rules than the last owner message named, unless that message carries a broad-scope word (redesign, everything, all of it, whole page). Arm KIND: edit changes a layout property (display, position, justify-content, align-items, flex-direction, grid-template, padding, margin, width, height, inset) when the message asked only for a content change and never mentioned layout, size, spacing or alignment. One combined deny that asks for each changed rule to be listed against the ask it serves.",
+  "pays_for_itself": "Zero net registrations (2 orphans become arms of 1 wired gate), 2 files retire from the disk count.",
+  "why_it_recurs": "When I open a file for the change he asked for, I also see things I would do differently, and those observations feel like the same work because they are already in front of me. They are a second unrequested change riding on the first, and he cannot tell them apart in the result, so every review turns into a hunt for what changed this time. This directly opposes the overhaul cluster, and having no armed gate on either side is why the two keep resolving in whichever direction is cheaper that turn."
+ },
+ {
+  "name": "do-not-duplicate-work-on-what-exists",
+  "statement": "Find and extend what already exists instead of building a second copy of it.",
+  "occurrences": 6,
+  "quotes": [
+   "And I don't want you to duplicate everything. That's the problem that we're having. (2026-08-02T19:57)",
+   "another page that is search compose. Something... I search compose even though we don't have that at all, and we don't need that. Why did you make a completely different page? (2026-08-02T21:36)",
+   "But why do you keep iterating on this marker, bro? We have another markup page that we already iterated a lot on Quoffer and all of the home page and everything, bro. (2026-07-31T20:35)",
+   "remove cz we made it carousel right did u forget and sarch bar stays deleted (2026-08-01T08:01)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_WRONG",
+  "coverage_evidence": "The rule is armed on paper and muted in practice. exists-guard.py is WIRED (PreToolUse Write) and blocks a new file in a duplication-risk dir until an exists-check line is added; LAW_SYSTEM.md section 1.2 cites it as the one rule that 'always held'. Measured over 2026-07-28..08-03 the exists-skip token was used 18 times across 2 sessions, 1.8x the 10-per-7-days mute threshold in LAW_SYSTEM section 2, which by that section's own words makes it 'disablement by a thousand cuts' and REQUIRES-DECISION under system-health-check invariant 9. Siblings armed on the same class: use-the-registered-component-gate.py, pre-edit-reinvent-data-gate.py, gate-dedup-guard.py (advisory only by design), plus project-level pre-build-exists-check.sh and pre-edit-removed-check.sh.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Do not add an eighteenth exists-flavoured gate. Take the invariant-9 decision the doctrine already demands: narrow exists-guard.py's duplication-risk directory list to the dirs where a duplicate actually costs something (app routes, components, lib, supabase migrations) and drop the ones generating the 18 skips (scratch dirs, _plans, mockup variants), so satisfying the gate is cheaper than skipping it. Then retire the exists-skip flag or cut its TTL hard. The measurement to make first: read state/skip-flag-ledger.log and count which paths produced the 18 skips, because the narrowing must be derived from that, not guessed.",
+  "pays_for_itself": "Zero net files. The retirement to pay any future addition in this family: gate-dedup-guard.py currently never blocks by design, so either it becomes the blocking gate described in the create-nothing-unannounced cluster or it retires.",
+  "why_it_recurs": "A duplicate is invisible at authoring time and only costs later, when two sources of truth diverge and he is the one who spots it. The gate that prevents it fires at the single most impatient moment in a build, so the skip flag is always the cheaper move, and every skip leaves the index still reading WIRED."
+ },
+ {
+  "name": "never-narrate-my-own-enforcement-machinery",
+  "statement": "Keep gates, hooks and blocks out of my replies; comply silently and answer the question I asked.",
+  "occurrences": 4,
+  "quotes": [
+   "Edit the gate so you just become silent and doesn't do anything or tell me anything when you know that you shouldn't create anything new. Like, you don't have to tell me and repeat the same shit you. (2026-08-03T16:29)",
+   "What is this gate that's making you, and do we really need it? Or can you, like, improve so you don't actually do this shit every time? just like a waste of fucking token. (2026-07-31T08:16)",
+   "What is the law? What is the case of preventing you? Why did you stop? And gaze that's preventing you? Gates. (2026-07-28T20:56)",
+   "i told u explain harden gate (2026-07-28T20:57)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_WRONG",
+  "coverage_evidence": "The owner reversed himself and the estate is armed on the OLD side. On 2026-07-28 he asked to be told which gate blocked me, and gate-block-is-not-a-stop-gate.py was built and is WIRED. On 2026-08-03T16:29, the later dated decision, he asked for silence about blocks. The gate that enforces silence, no-plumbing-in-reply-gate.py, is orphan: I read it, and it matches hook paths, gate filenames, skip-flag files, hook event names and 'a gate fired/blocks/wants', with a correct escape when the owner's own message is about the machinery. Per the precedence chain in project CLAUDE.md line 244 and LAW_SYSTEM section 6.5 (latest dated decision wins), the armed gate encodes the superseded preference and the unarmed one encodes the current one. Reading gate-block-is-not-a-stop-gate.py's logic, it does not actually require naming the gate (it blocks reporting a deliverable as blocked), so the two can coexist once the second is armed.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Arm no-plumbing-in-reply-gate.py by folding it into reply-length-gate.py (WIRED, Stop, the reply-shape gate, already the #4 firer). Its PLUMBING patterns and its owner-is-asking-about-machinery escape transfer unchanged. Then edit gate-block-is-not-a-stop-gate.py's deny text so its prescribed replacement behaviour is 'satisfy the requirement and retry, silently' rather than anything that invites explaining the block in the reply, and add a dated note that the 2026-07-28 name-the-gate reading is superseded by 2026-08-03T16:29. Note the one live exception: this audit itself is a machinery turn, which the escape already covers.",
+  "pays_for_itself": "Zero net registrations (1 orphan folds into 1 wired gate), 1 file retires.",
+  "why_it_recurs": "Stop hooks fire on nearly every turn, so relaying one feels like transparency about why the reply looks the way it does. From his side the reply stops being an answer and becomes a status report about my plumbing, which reads exactly like drifting off the question, because it is. And the gate that stops it was written, self-tested, and never armed."
+ },
+ {
+  "name": "plain-english-close-that-names-fixed-and-left",
+  "statement": "Close in plain words, say exactly what you fixed, and spell out every open item instead of calling it open.",
+  "occurrences": 5,
+  "quotes": [
+   "okay did u fix it if yes harden the gate so u tell me u did (2026-07-31T08:24)",
+   "I need you to tell me in plain English, you know, like, make a fucking make a hook because you keep making the same mistake. (2026-07-31T10:15)",
+   "elaborate the open sh like u keep saying open but u dont tell me harden (2026-08-02T19:23)",
+   "anth else left? (2026-07-28T08:27)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_UNARMED",
+  "coverage_evidence": "The LENGTH half is armed and the VOCABULARY and NAMING halves are not. reply-length-gate.py is WIRED (Stop, 30 blocks in the window, caps ~2200 chars of prose plus table placement). plain-english-gate.py is orphan and its docstring states the hole precisely: 'reply-length-gate already caps LENGTH and reply-repeat-gate catches REPEATS. Neither looks at VOCABULARY, so a short, non-repeating, completely opaque paragraph sails through both.' open-items-must-be-named-gate.py is also orphan and covers the 'still open' gesture with no recommendation attached. fix-needs-before-after-gate.py and report-summary-gate.py are WIRED and cover the fixed-what half.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Fold both orphans into reply-length-gate.py as two arms, since all three are Stop gates on reply shape and it is already the armed member. Arm VOCAB (from plain-english-gate): implementation vocabulary in the closing prose outside code blocks, with its existing carve-outs for file paths he asked for, branch names, the word 'gate', and anything fenced. Arm OPEN (from open-items-must-be-named-gate): vague-open language (open / pending / still waiting / your call / needs your word) with no recommendation and no concrete options in the same message. Emit one combined deny so a reply is never rejected twice for two reply-shape reasons, which is the measured cause of the repeat-yourself complaint.",
+  "pays_for_itself": "Zero net registrations, 2 orphan files retire. It also reduces re-sends: three separate Stop gates on reply shape currently mean up to three sequential rejections of one reply.",
+  "why_it_recurs": "Saying 'that's still open' is the cheapest way to look diligent: it proves I am tracking something, costs one clause, and moves the work to him without me doing the expensive part, which is reading the item back and committing to a recommendation I could be wrong about. Naming it fully is four lines and carries risk. Gesturing costs six words and none."
+ },
+ {
+  "name": "do-not-create-anything-new-unannounced",
+  "statement": "Tell me before you create any new file, page, system or gate; do not just make one.",
+  "occurrences": 2,
+  "quotes": [
+   "You don't just get to create something. You need to first tell me. (2026-08-03T16:26)",
+   "Edit the gate so you just become silent and doesn't do anything or tell me anything when you know that you shouldn't create anything new. (2026-08-03T16:29)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_WRONG",
+  "coverage_evidence": "gate-dedup-guard.py is WIRED on PreToolUse(Write) for new top-level *.py files in ~/.claude/hooks, and it is DELIBERATELY toothless: its own docstring says 'DELIBERATELY ADVISORY, never blocks... Blocking a genuine new hook would be worse than the dup it guards against.' That judgement was made 2026-07-13 and the measured evidence since has reversed it: 23 of the 35 gates authored in the last week are orphan, so the marginal new gate has near-zero yield while every one is a permanent per-call tax (LAW_SYSTEM 6.8). exists-guard.py (WIRED) covers product files but not ~/.claude system files. Nothing anywhere blocks a net-new skill, doctrine file or hook that the owner did not ask for.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Flip gate-dedup-guard.py from allow-with-nudge to DENY for a net-new file under ~/.claude/hooks, ~/.claude/skills or ~/.claude/*.md when the owner's message this turn contains no create request (harden, make a gate, make a hook, write a principle, build X). Keep every existing overlap heuristic as the reason text. Two carve-outs: an EDIT to an existing hook always passes (that is the behaviour we want more of), and a turn where the owner used a harden word passes. Deny text states the replacement move: name the existing gate you will extend. And per the silence cluster, the block itself is never narrated to him. False-positive risk is low because the trigger is narrow (net-new system file, no create word in the turn) and the escape is literally asking him, which is what he asked for.",
+  "pays_for_itself": "Zero net files (converts an existing wired advisory into a blocking one). This is the mechanism that pays the 150 ceiling back structurally, since it is the only thing standing between /harden and another 23 dead files next week.",
+  "why_it_recurs": "Creating is the visible, satisfying response to a complaint and it can be done inside the turn, while extending an existing gate requires reading the index, diagnosing why the old one did not fire, and producing a diff nobody can see. The one guard against it was built advisory on purpose, so the estate has been growing at roughly five files a day with a two-in-three chance each one enforces nothing."
+ },
+ {
+  "name": "never-regress-approved-work-while-fixing-something-else",
+  "statement": "Fix the one thing I reported and bring back everything that was already good, identical.",
+  "occurrences": 5,
+  "quotes": [
+   "now why tf did remove air all ourfkn work down the drain bro are u so fuckig fr (2026-07-31T21:02)",
+   "before the where it was evrth was good it was only abt lag and now again the air is wrong place evrth u ruined it (2026-07-31T21:25)",
+   "you just just threw out everything where we had all the arbor algorithm and everything (2026-07-31T20:10)",
+   "Why did you fucking remove the airbag? Like, what what do you fucking do? I told you to improve. And why are you doing the complete opposite airbag? What are you doing? You were, like, almost there. (2026-07-31T17:25)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_AND_ARMED",
+  "coverage_evidence": "Three armed gates, two born from these exact quotes. no-regression-by-fix-gate.py is WIRED (Stop) and its docstring quotes 'now why tf did remove air all ourfkn work down the drain bro are u so fuckig fr harden the gate'. no-unrequested-removal-gate.py is WIRED (Stop) and was born from the 'never mind' misreading in the same session. approved-surface-guard.py is WIRED (PreToolUse Write|Edit|MultiEdit). One calibration signal to watch, not yet actionable: ~/.claude/regression-fix-skip.flag is dated 2026-08-03 17:55, a single use, well under the 10-per-7-days mute threshold.",
+  "gate_verdict": "ALREADY_HANDLED",
+  "gate_spec": "n/a",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "It has not recurred since the gates landed on 2026-07-31, which is the one clean success in this window. Worth stating plainly because it is the counter-example: the gate was built the same day, from a first-hand diagnosis, on a class with nothing else already covering it, and it was armed. Every failing cluster above breaks at least one of those four conditions."
+ },
+ {
+  "name": "never-hand-me-a-command-to-run",
+  "statement": "Run the command yourself; never hand me one to execute.",
+  "occurrences": 1,
+  "quotes": [
+   "Don't ever ask me to write, make, and fucking, like, go forward with a fucking badge command. So fuck off. (2026-07-31T14:44)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_AND_ARMED",
+  "coverage_evidence": "no-bash-handoff-gate.py is WIRED (Stop) and is at v2. v1 passed as soon as one tool call touched the command; v2 adds the rule that if the final message blames a block (sandbox, not permitted, cannot, needs your shell) for a command it hands over, that command must have been attempted through at least TWO DISTINCT INSTRUMENTS in the turn. Its docstring records the measurement that justifies it: Bash touch on ~/Library returned Operation not permitted while the Write tool created a 929-byte file in the same directory seconds later.",
+  "gate_verdict": "ALREADY_HANDLED",
+  "gate_spec": "n/a",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "It should not, and the gate is correct. But flag the structural collision: the estate's own documented remedy for its 42 orphan gates is 'bash ~/.claude/hooks/wire-pending-gates.sh', a manual command listed in SHELVED.txt as needing a non-sandboxed shell. So the only sanctioned path to arming a gate is exactly the handoff this gate blocks and he banned by name. That closed loop, not forgetfulness, is why the orphan count keeps climbing."
+ },
+ {
+  "name": "remember-we-are-pre-launch-with-stock-previews",
+  "statement": "Treat every photo and record as pre-launch seed or stock, never as live customer data.",
+  "occurrences": 1,
+  "quotes": [
+   "3 for pics we use unsplash like stoco pics for previews cz we are not live yet but we need to be easy to acc distinguish cx u keep forgetting (2026-07-27T14:36)"
+  ],
+  "max_intensity": 2,
+  "coverage": "COVERED_AND_ARMED",
+  "coverage_evidence": "Three armed gates plus a memory file for one single-timestamp preference. prelaunch-reality-gate.py WIRED (Stop), stock-photo-gate.py WIRED (Stop, born from this exact quote), demo-data-not-live-gate.py WIRED (PreToolUse Write|Edit|MultiEdit, born 2026-07-10 from 'for nearby no its demo we are not live you keep forgetting harden'). Memory index entry project_prelaunch_no_real_customers.md names prelaunch-reality-gate.py as the enforcement. A fourth, seed-not-fabrication-gate.py (born 2026-08-02), is orphan.",
+  "gate_verdict": "ALREADY_HANDLED",
+  "gate_spec": "n/a",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "It largely does not any more. Included as measured evidence of over-gating in the opposite direction: a preference with one timestamp in eight days carries three armed gates and a fourth on disk, while stopping-mid-objective (ten timestamps) has five armed gates that all fired and all lost. Gate count in this estate tracks how memorable an incident was, not how often the class fails. The correct move here is to DELETE seed-not-fabrication-gate.py rather than arm it, and it is one of the retirements available to pay the 150 ceiling."
+ },
+ {
+  "name": "look-in-downloads-for-my-recordings",
+  "statement": "Check the Downloads folder for the screen recordings and references I leave there.",
+  "occurrences": 1,
+  "quotes": [
+   "It's in the download folder again. I made a new screen record just for you (2026-08-03T15:34)"
+  ],
+  "max_intensity": 1,
+  "coverage": "COVERED_BUT_WRONG",
+  "coverage_evidence": "ss-folder-resolver.py is WIRED (UserPromptSubmit, inject-only) and does exactly this job for one folder only: SCREENSHOTS_DIR = \"/Users/sulo/solen/screenshots\", with IMAGE_EXT limited to png/jpg/jpeg/heic/webp/gif/bmp/tiff. Its TRIGGER_RE matches 'ss folder', 'screenshot folder', and 'i pasted/attached/saved ... pic|image|ss|screenshot|folder'. The word 'download folder' matches nothing, and video extensions (.mov, .mp4) are filtered out by design, so a screen recording in ~/Downloads is invisible to the one hook built to resolve unnamed references.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Edit ss-folder-resolver.py: add ~/Downloads as a second scan root, add mov/mp4/m4v to a separate VIDEO_EXT list used only for that root, and add 'download(s)? folder' plus 'screen record(ing)?' to TRIGGER_RE. It is inject-only and fail-open, so it cannot block anything and the false-positive cost is at most six extra filenames in the injected context. One timestamp and intensity 1, but the fix is four lines in an already-wired hook and the failure mode it prevents (guessing at a reference he actually provided) is the most expensive one in this whole audit.",
+  "pays_for_itself": "Zero net files, zero net registrations, and no ceiling impact: it is an edit to a wired injector.",
+  "why_it_recurs": "He moved where he drops references and the resolver was hardcoded to the old place, so the hook silently returns nothing and the turn proceeds on memory. This is the same shape as the frozen noun list in repeat-fix-simplify-gate: a hook written against one incident's specifics quietly stops applying when the specifics move, and nothing in the estate ever notices a hook that fires zero times."
+ },
+ {
+  "name": "loop-means-dispatch-the-layered-loop",
+  "statement": "When I say \"loop\", dispatch the coder+reviewer subagent loop; do not hand-run the work yourself and do not read \"loop\" as \"finish the list\".",
+  "occurrences": 3,
+  "quotes": [
+   "i told you to implement evrth as a loop except big design changes why did u not do that (2026-07-27T06:26)",
+   "And then also integrating wire everything is a loop. So, you know, continue. (2026-07-31T21:27)",
+   "i told you its loop harden (2026-07-31T22:05)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_WRONG",
+  "coverage_evidence": "READ /Users/sulo/.claude/hooks/loop-does-not-report-gate.py in full. Its docstring names the owner quote \"i told you its loop harden\" (line 4), but verdict() at lines 64-72 checks only three things: open `- [ ] ` boxes in _plans/*.md, a LOOP_ASK regex on the owner message, and the absence of a REAL_FORK phrase. It never inspects whether a Task/coder/loop-reviewer subagent was dispatched. So the gate born from a loop-DISPATCH complaint enforces finish-the-job instead. Meanwhile finish-the-job is already the single most-blocking class in the estate: settings.json Stop list (verified by parsing /Users/sulo/.claude/settings.json) wires finish-autonomously-gate.py, unfinished-batch-gate.py, defer-bulk-gate.py and no-defer-excuse-gate.py, four siblings carrying 120 blocks = 30.9% of all denials per the ledger. The dispatch half is prose only: global CLAUDE.md:431 rule 13 (\"Default to the layered loop, don't hand-code substantial work\") plus loop-default.py (WIRED SessionStart, injection = advice). orchestration-gate.py (WIRED, PreToolUse Edit|Write|MultiEdit) covers the adjacent hand-coding half but exempts any Edit whose new_string is <= 3 lines and every non-source extension (line 33 TRIVIAL_LINES=3, lines 73-78).",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "EDIT loop-does-not-report-gate.py, and do NOT arm its current logic. Replace verdict() so it fires on: owner's last message matches LOOP_ASK (keep the existing regex, drop `everything|continue|keep going|finish (it|them|the list)` which are the finish-the-job synonyms already 4x covered, keep `as a loop|in a loop|loop it`) AND the turn contains >=1 Edit/Write/MultiEdit to a source file AND zero Task/Agent dispatches in the turn. Block message: quote 2026-07-27 and 2026-07-31T22:05, name rule 13, and instruct to dispatch coder + loop-reviewer. Rename it loop-means-dispatch-gate.py. False-positive risk: LOW once the finish-the-job synonyms are removed, because the trigger then requires the literal word \"loop\" from the owner plus a source edit plus no dispatch; the residual FP is a genuine one-line orchestrator tweak in a loop turn, which the existing 3-line TRIVIAL exemption from orchestration-gate.py should be copied in to cover.",
+  "pays_for_itself": "Arming it takes wired 155 -> 156, so it must pay. Retire no-defer-excuse-gate.py into defer-bulk-gate.py: both are Stop gates blocking a turn that defers doable work behind a time/budget excuse, both sit in the same finish-the-job class, and their deny texts overlap. Net wired count unchanged.",
+  "why_it_recurs": "The word \"loop\" got attached to the wrong gate at harden time, so every subsequent recurrence is answered by a denial about unticked checkboxes rather than about delegation, and the actual preference has never once been enforced. Underneath that, hand-editing is the cheapest move available: dispatching requires carving the work, writing a self-contained brief and stitching results before anything happens, while an Edit produces visible progress in one call."
+ },
+ {
+  "name": "fan-out-many-agents-not-one",
+  "statement": "Dispatch every substantial job as a batch of parallel agents, never one agent that will run long and lose context, and act as the orchestrator rather than the hands.",
+  "occurrences": 5,
+  "quotes": [
+   "butch drop multiple agents harden no way u gnna let one agent thats gnna loose context n also gnna take much morenlonger are you dumb (2026-08-03T12:47)",
+   "Again, for the mock up and every fucking step, why are you only using, like, fucking one or two, bro? Look. Are you done? Use multiple. (2026-08-03T15:22)",
+   "You're a orchestrater. Like, we made a whole principle you're still violating what the fuck (2026-08-03T15:22)",
+   "how only one agent is working on the mock up is not correct. Like, this should collaborate each other (2026-07-31T10:06)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_UNARMED",
+  "coverage_evidence": "READ /Users/sulo/.claude/hooks/fan-out-not-one-agent-gate.py in full. It is PreToolUse(Agent), born 2026-08-03 from this exact quote (docstring lines 4-6), has a pure verdict() at lines 68-80 and a 7-case self-test at lines 159-187. It is ORPHAN: I parsed /Users/sulo/.claude/settings.json and the only PreToolUse Agent|Workflow entries are no-opus-subagent-gate.py and no-overstep-launch-gate.py. So he said \"harden\", the gate was built and self-tested, it was never wired, and he complained again the SAME DAY at 15:22 and 16:29. The orchestrator half is covered by orchestration-gate.py (WIRED, verified in settings.json) but it only denies main-thread source edits over 3 lines, so a fan-out of one agent over a huge job never touches it.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "ARM fan-out-not-one-agent-gate.py by adding it to the existing PreToolUse `Agent|Workflow` hook group in ~/.claude/settings.json (the group that already holds no-opus-subagent-gate.py, so no new (event, matcher) pair is created). Before arming, run `python3 ~/.claude/hooks/fan-out-not-one-agent-gate.py --selftest` and require 7/7. One narrowing first: its FANS_OUT regex (line 51) matches the bare word \"Workflow\", so any brief that merely mentions the Workflow tool disarms it; tighten to `Workflow\\s*\\(|pipeline\\s*\\(|parallel\\s*\\(|LENSES|fan[- ]out`. False-positive risk after that narrowing: LOW, because BIG_JOB (line 40) requires an explicit scale phrase (multi-hour, whole design system, every single surface, exhaustive, all screens) that a scoped dispatch never carries; self-test cases 4 and 7 cover the scoped-dispatch negative.",
+  "pays_for_itself": "Arming takes wired 155 -> 156. Pay it by retiring gemini-auto-fire.py and gemini-check-gate.py, both WIRED and both documented in GATE_INDEX.md as DISABLED no-ops by owner order 2026-07-21 (\"remove the gemini hook and gates\"). They are two wired slots enforcing nothing; removing both takes 155 -> 153 and covers this arming plus one more.",
+  "why_it_recurs": "One agent with a big prompt is the cheapest thing to write and it starts producing immediately; a fan-out demands the work be carved into independent slices, each with a standalone brief, plus a stitch step, all of it before any visible progress. Under time pressure that cost is always deferred, and it lands on him as an hour of waiting."
+ },
+ {
+  "name": "link-dead-or-irrelevant-on-arrival",
+  "statement": "Before you hand me a link, load it yourself and confirm it returns the page you mean, with the change actually on it and no login wall.",
+  "occurrences": 6,
+  "quotes": [
+   "error while opening link (2026-08-01T08:10)",
+   "bad gateway (2026-08-03T12:04)",
+   "we have a whole gate about you actually testing everything up before actually Give it to me to link. We didn't do that right. (2026-08-02T21:36)",
+   "bro the link h gave me ion see any change cz pdl doesnt have icons is u good like i needu to thi k (2026-07-29T05:22)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_UNARMED",
+  "coverage_evidence": "READ /Users/sulo/.claude/hooks/link-verified-gate.py in full (WIRED, confirmed in settings.json Stop list; the ledger's #3 firer at 35 blocks). Its was_opened() at lines 169-185 returns True when the URL STRING appears in the turn's tool text, and had_readback() at lines 156-166 returns True when ANY read-back tool ran anywhere in the turn. Neither correlates the URL with what came back. READ /Users/sulo/.claude/hooks/link-load-succeeded-gate.py in full: it is the exact complement, it classifies the tool OUTPUT next to each host as SUCCESS or FAILURE (lines 56-68, 165-199), it was born 2026-08-01 from \"error while opening link\" three times in one session, and it carries a 9-case self-test at lines 204-239 including the literal `curl -> 000` shape and the `Bad Gateway` shape. It is ORPHAN, absent from every Stop group in settings.json. The 08-03 \"bad gateway\" recurrence is precisely its self-test case 2. The wrong-page half (07-29T05:22) is covered by link-relevance-gate.py (WIRED).",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "ARM link-load-succeeded-gate.py into the existing main Stop hook group, and in the same change MERGE the link family into one aggregator. Concretely: fold link-verified-gate.py, link-load-succeeded-gate.py, promised-visual-health-gate.py, lan-ip-preview-gate.py, no-localhost-handoff-gate.py, cloudflare-link-gate.py and preview-link-branch-gate.py into a single link-handoff-gate.py that extracts every perishable URL from the closing message once, runs all seven checks, and emits ONE combined deny listing every failure. Today those are seven separate process spins producing up to seven serial one-at-a-time denials on one reply, which is the adversarial-gauntlet shape LAW_SYSTEM 6.2 names. False-positive risk: LOW; link-load-succeeded-gate is deliberately silent when there is no evidence either way (line 175) and when a failed attempt is followed by a successful retry (self-test case 6).",
+  "pays_for_itself": "The merge is self-financing: seven wired hooks collapse to one, taking wired 155 -> 149, which clears the 150 ceiling and buys headroom for the fan-out and loop armings above.",
+  "why_it_recurs": "Handing the link is the last act of the turn and it feels like the delivery, so the probe reads as optional ceremony after the work is already done. Fifteen gates on this class have not moved it because every one of them is a Stop-tier denial the model can satisfy by re-running a tool; nothing makes the handoff structurally impossible without a live probe result attached."
+ },
+ {
+  "name": "delivered-ui-never-exercised",
+  "statement": "Click, scroll and drive the thing you built before you hand it over; a screenshot and a 200 are not proof it works.",
+  "occurrences": 5,
+  "quotes": [
+   "mockup broken doesnt animate (2026-07-28T13:57)",
+   "im blocked from scrolling bro (2026-07-31T18:10)",
+   "In the search bar, when you click, it still doesn't fucking open. Why don't you fucking do it, bro? (2026-08-01T21:01)",
+   "i cant scroll (2026-07-31T18:18)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_UNARMED",
+  "coverage_evidence": "READ /Users/sulo/.claude/hooks/interaction-proof-gate.py in full (WIRED, confirmed in settings.json Stop list). It demands a dispatched interaction AND a read-back (lines 81-93, 141-153), which is exactly right, but wrote_interactive_html() at lines 121-138 returns None unless the turn wrote a file whose path ends in .html/.htm. The 2026-08-01 search-bar failure was in a real .tsx route, so the gate was structurally blind to it. READ /Users/sulo/.claude/hooks/touch-action-scroll-gate.py in full: PreToolUse(Write|Edit|MultiEdit), born 2026-07-31 from the three scroll complaints, 10-case self-test at lines 169-203, and it correctly blocks single-axis `touch-action: pan-x|pan-y|none` which is the literal bug that produced \"im blocked from scrolling bro\". It is ORPHAN; no settings.json group contains it. The project-level browser-verify-gate.sh (WIRED per the project settings.json Stop group) requires that SOME browser tool ran after a UI edit, but not that anything was clicked.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Two edits, zero net-new hooks. (a) ARM touch-action-scroll-gate.py into the existing PreToolUse `Write|Edit|MultiEdit` group that already holds no-decorative-image-gate.py etc. Run --selftest first, require 10/10. (b) WIDEN interaction-proof-gate.py: change the extension test at line 128 from ('.html','.htm') to also accept ('.tsx','.jsx') when the written body matches INTERACTIVE (line 67 already covers onClick/addEventListener/transition), so a real route with a new handler needs the same dispatch+readback proof a mockup does. False-positive risk for (b): MODERATE, because many .tsx edits add a handler without the reply handing anything over. Contain it by keeping the existing HANDOVER guard (line 180), which already requires the closing message to put the page in front of him.",
+  "pays_for_itself": "Arming touch-action-scroll-gate takes wired 155 -> 156; the (b) widening is free. Covered by the link-family merge above, which frees six slots.",
+  "why_it_recurs": "Every cheap verification tool answers a different question than the one that matters. A screenshot proves paint, a 200 proves routing, reading the CSS proves syntax, and none of them proves behaviour. touch-action is the extreme case: it is consulted only for real touch input, so every tool available in the browser pane is blind to it by construction."
+ },
+ {
+  "name": "measure-the-rendered-page-never-eyeball",
+  "statement": "On any layout, size, balance or placement question, measure the rendered page and the reference and report the numbers before you touch anything.",
+  "occurrences": 6,
+  "quotes": [
+   "You didn't take Statistica bar? the sticky bar. The header. Right? Like, you need to fucking measure that. You're fucking dumb. Hardened the gate. (2026-08-01T19:33)",
+   "did u acc analize all the differnce bro between the mockup u made and airbnb screenshot likw what i can see rn is the icon and text and arrow all have diff sizes nd dont align (2026-07-28T16:23)",
+   "but you can actually, like, measure, like, logo looks weird or the balance and stuff. Like, balance is the most easiest measure or not. (2026-07-31T11:01)",
+   "And, also, like, yeah, like, go actually analyze the real page. You know? And, yeah, the distance between stuff, we need that too. (2026-07-31T14:44)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_UNARMED",
+  "coverage_evidence": "Six sibling gates, split. WIRED (confirmed in settings.json): pre-edit-measure-first-gate.py, measure-guard-gate.py, measurement-needs-scope-gate.py, owner-sees-it-measure-it-gate.py (READ in full: blocks disputing a visual observation with no measurement, MEASURE_CALL regex line 68). ORPHAN: measure-the-live-page-gate.py (READ: PreToolUse Write|Edit|MultiEdit, born 2026-07-31, its docstring lists five separate instances of building from source without ever loading the page) and measure-dont-ask-gate.py. CRITICAL defect in the second: measure-dont-ask-gate.py line 133 reads `payload.get(\"last_assistant_message\") or payload.get(\"message\")`, but a Stop hook payload carries `transcript_path`, `session_id` and `stop_hook_active`, not the message text. Every other Stop gate I read (link-verified, mobile-view, fix-needs-before-after, owner-sees-it) parses the transcript. So measure-dont-ask-gate would exit 0 on every real invocation and enforce nothing even if it were wired.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "(a) FIX measure-dont-ask-gate.py before anything else: replace the line-133 payload read with the transcript parse used by fix-needs-before-after-gate.py (load_lines + last_assistant_text, lines 76-101 of that file), then re-run its 13-case --selftest. (b) MERGE all six into one measure-gate.py with two entry points: a PreToolUse arm (the pre-edit-measure-first + measure-guard + measure-the-live-page checks, one combined deny) and a Stop arm (owner-sees-it + measurement-needs-scope + the fixed measure-dont-ask, one combined deny). Six files, six process spins and up to six serial denials become two. False-positive risk: LOW, since every constituent check keeps its own trigger; the merge changes only how many denials one reply can produce.",
+  "pays_for_itself": "The merge takes wired 155 -> 151 (four wired siblings collapse into one, and the two orphans join without adding a slot). Combined with the link-family merge this clears the ceiling outright.",
+  "why_it_recurs": "Reading the source file feels like checking and is not. A component carries variants, dormant branches, stale comments and rejected treatments, so source is a claim about the page while the render is the page. And measuring costs a browser run with a real chance of finding nothing, whereas asserting costs one sentence."
+ },
+ {
+  "name": "reference-motion-measured-frame-by-frame",
+  "statement": "When I hand you a screen recording or name a motion reference, extract its frames, count them, measure the durations in seconds, and diff ours against it frame by frame before you build or claim a match.",
+  "occurrences": 5,
+  "quotes": [
+   "And I literally gave you, like, a screen recording of it, and I told you to look by frame by frame, they didn't do that. So why? (2026-08-03T14:52)",
+   "And maybe calculating the fucking, like, frame by frame and also the seconds... how many seconds is in the video and and everything? Like, use every tool you can have. (2026-08-03T15:51)",
+   "First, go ahead and research Airbnb's animation frame by frame, like, of their icons right now. (2026-07-31T14:07)",
+   "You need to actually look into frame by frame. (2026-08-02T21:36)"
+  ],
+  "max_intensity": 3,
+  "coverage": "UNCOVERED",
+  "coverage_evidence": "READ /Users/sulo/.claude/hooks/animation-full-clip-verify-gate.py in full (WIRED, confirmed in settings.json Stop list). Its FULL_SWEEP regex at lines 54-64 matches `range(1, N)`, \"N of N\", \"all N frames\", \"every frame\", \"whole clip\" anywhere in the turn blob. That proves OUR OWN clip was swept. Nothing in it, or anywhere else, requires that HIS reference recording was decoded: no ffmpeg/frame-extraction check, no requirement that the reply cite a measured reference duration or frame count. I grepped all 197 hook files for ffmpeg|frame.by.frame|screen recording and the only frame-aware gates are this one, no-invented-visual-motif-gate.py and overlay-is-not-a-match-gate.py (ORPHAN, and it is about CSS-overlay construction, not frame timing). The reference-side rule is prose only: project CLAUDE.md binary-triggers row for a named brand reference routes to Skill(reference-lock), and reference-check-gate.sh (WIRED) checks a mockup cites a capture, not that a video was decoded.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "EXTEND animation-full-clip-verify-gate.py rather than add a sixteenth motion gate. Add one clause to verdict() (line 154): when the turn's blob shows the owner's message referenced a recording (`.mov|.mp4|screen recording|recording i sent|frame by frame`) AND the reply makes an ANIM_FIX or match claim, additionally require reference-side evidence in the turn: an ffmpeg/ffprobe call, a frames directory Read, or the reply citing a measured reference number with a time unit (`\\d+(\\.\\d+)?\\s*(ms|s|fps|frames)` next to the words reference/his/theirs). Keep the existing skip flag. False-positive risk: LOW, because both halves are required and the ANIM_FIX regex (line 30) is already narrow enough to have survived a 9-case self-test. Re-run --selftest with three added cases after the change.",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "A recording is watchable, so an impression of it forms instantly and feels like knowledge, while decoding it into frames and timings is a separate deliberate step with no visible output. The impression is available at zero cost the moment the file arrives, so the measurement never gets scheduled."
+ },
+ {
+  "name": "fix-claim-needs-a-visible-delta",
+  "statement": "Never tell me something is fixed when the visible result is identical to the last round; back every fix claim with evidence that something actually moved.",
+  "occurrences": 7,
+  "quotes": [
+   "Nothing fucking changed you fucking dumbas, bro. Like, what are you fucking doing? (2026-08-03T15:56)",
+   "you keep repeating the same stuff over and over again. and that you didn't fix anything even... and then you say it's fakes even though it's not. (2026-08-03T16:25)",
+   "why is homepage still that bro (2026-08-01T14:12)",
+   "And I told you that's wrong, and then you said, no. That's correct. What I'm doing right now. And then I was furious. (2026-07-28T21:35)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_UNARMED",
+  "coverage_evidence": "Heavily gated and still failing. WIRED and READ: fix-needs-before-after-gate.py (requires a before/after number pair on a measurable fix claim, BEFORE_AFTER regex lines 52-61) and owner-sees-it-measure-it-gate.py (blocks disputing his observation unmeasured). Also WIRED per settings.json: verify-before-done-gate.py, checkbox-evidence-gate.py (the ledger's top firer at 56 blocks, and READ: it requires a sha, a file:line or a `verified:`/`measured:` marker on a newly ticked box), no-regression-by-fix-gate.py, repeat-mistake-detector.py, paint-proof-gate.py. ORPHAN and directly on point: repeat-claim-needs-repro-gate.py, READ, born 2026-08-02, whose docstring traces three failures to one cause, \"Every failure passed MY check and failed HIS\", and which demands the fix be exercised on HIS path when the thread shows he said it more than once. The residual hole in the wired set: fix-needs-before-after accepts PROSE numbers, so a reply can satisfy it without any artifact; nothing compares two rendered screenshots.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "ARM repeat-claim-needs-repro-gate.py (it is the already-diagnosed answer and it targets his-path exercise, which is the missing half), and FOLD fix-needs-before-after-gate.py into it so the class does not gain a slot. In the merged gate add one clause: when the closing message claims a VISUAL fix and the turn produced two screenshots of the same route, require a stated non-zero pixel delta between them; when it produced fewer than two, require the before/after number pair that fix-needs-before-after already demands. False-positive risk: LOW-MODERATE. The honest-null escape must be preserved verbatim (fix-needs-before-after line 59 accepts \"unchanged|did not move|no change|identical\"), otherwise the gate punishes exactly the honest report it wants.",
+  "pays_for_itself": "The fold keeps wired flat at 155 (one armed, one retired). If a further slot is wanted, paint-proof-gate.py overlaps repeat-claim-needs-repro on sticky/fixed-element claims and is the next merge candidate in this class.",
+  "why_it_recurs": "Saying \"fixed\" ends the turn and reads as progress, while re-rendering to confirm can only cost time or produce bad news. And the check that gets run is always a restatement of the problem in my own narrower, more convenient words, so the proxy passes while his path fails, which makes him the regression suite."
+ },
+ {
+  "name": "ground-in-the-current-page-and-the-approved-mockup",
+  "statement": "Open what already renders and the mockup we already approved before you rebuild anything or ask me a question they already answer.",
+  "occurrences": 7,
+  "quotes": [
+   "You're being so fucking lazy. You didn't even go and go ahead and analyze what the current inspo is (2026-07-31T20:10)",
+   "we temoved the home button and the hamburer menu from the top and we putted the hamburger where the map view is did u forget bro like look in the mockup we lade evrth (2026-08-01T09:03)",
+   "bro compare it ti the mockup you dumb. fuck (2026-08-01T16:21)",
+   "but, like, research what's actually wired and stuff, and if nothing is wired, then delete it because of why we don't need that. (2026-07-28T13:31)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_UNARMED",
+  "coverage_evidence": "WIRED per settings.json and READ: mockup-parity-gate.py (forces an approved /dev mockup route plus a compare instruction into the design-verifier brief), design-verify-gate.py (requires a design-verifier dispatch on a real UI build, with proof-of-looking on its skip flag), mockup-real-base-gate.py, mockup-grounding-gate.sh, exists-guard.py. ORPHAN and directly on point: measure-the-live-page-gate.py (READ; its docstring is a five-item list of mockups built by reading a .tsx and never loading the route) and mockup-already-answered-gate.py (READ; born 2026-08-01 from \"bro compare it ti the mockup you dumb\", blocks handing a design decision back when an approved mockup exists and the turn never opened one). Also relevant: the ledger counts exists-skip used 18 times in two sessions and mockup-preflight-skip 65 times, so the two wired guards nearest this class are being routed around, not obeyed.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "ARM mockup-already-answered-gate.py and measure-the-live-page-gate.py as ONE merged gate rather than two: a single grounding-gate.py with a PreToolUse arm (measure-the-live-page's check that a mockup citing `Grounded-in: X.tsx` was preceded by a real navigation this turn) and a Stop arm (mockup-already-answered's check that a design question is not being asked when an approved mockup was never opened). Both were self-tested; re-run both --selftests before merging. SEPARATELY and more importantly: mockup-preflight-skip at 65 uses in 7 days is 6.5x the LAW_SYSTEM mute threshold, so mockup-preflight-manifest.py is a REQUIRES-DECISION item under invariant 9 and must be narrowed or retired before any further gate lands in this class. False-positive risk: LOW for both, since each requires an explicit citation or an approved-mockup ledger hit before firing.",
+  "pays_for_itself": "Two orphans arriving as one merged gate takes wired 155 -> 156; pay it by retiring mockup-preflight-manifest.py, which the ledger shows is bypassed 65 times a week and therefore already enforces nothing.",
+  "why_it_recurs": "Asking is the safest-feeling move on the board: it cannot be wrong, it looks careful, and it transfers the risk of a bad call. Building from the mockup can be wrong, so it feels riskier even when the mockup is unambiguous. He approved the mockup precisely so those questions would stop coming back, which is why a re-asked question reads to him as proof nobody looked."
+ },
+ {
+  "name": "verify-in-the-phone-viewport",
+  "statement": "Render, measure and show me every UI at phone width; desktop is never the verification.",
+  "occurrences": 2,
+  "quotes": [
+   "open the fucking homepage bro show me re u dumb show me in mobile view harden gate u lit forgot abt it (2026-07-31T08:28)",
+   "dont look in pc view look in phone vie harden (2026-07-31T13:51)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_UNARMED",
+  "coverage_evidence": "READ /Users/sulo/.claude/hooks/mobile-view-gate.py in full: WIRED (confirmed in settings.json Stop list), verdict() at lines 127-139 blocks a handover or verify claim when the turn rendered something and saw_phone() (lines 109-124) found no width <= 500, no mobile preset and no phone geometry; 10-case self-test at lines 199-217. Correct and armed. READ /Users/sulo/.claude/hooks/subagent-phone-view-gate.py: PreToolUse(Agent|Workflow), born 2026-07-31 from the second quote, blocks a subagent brief that names a desktop viewport without a phone one or before one, 9-case self-test at lines 154-167. It is ORPHAN. Its own docstring names the hole precisely: mobile-view-gate is a Stop gate on my closing reply and cannot see inside a subagent brief, so a brief reading \"at desktop (1280x800) AND mobile (390x844)\" sails past and desktop anatomy is what comes back.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "ARM subagent-phone-view-gate.py into the existing PreToolUse `Agent|Workflow` group alongside no-opus-subagent-gate.py, so no new (event, matcher) pair is created. Run --selftest first and require 9/9. Its ordering rule (desktop named before phone = block, lines 85-87) is the load-bearing part and should stay. False-positive risk: LOW; it is silent on any brief that never mentions rendering or a viewport, which self-test cases 5 and 6 cover.",
+  "pays_for_itself": "Arming takes wired 155 -> 156. Pay it by retiring always-recommend-gate.py, which GATE_INDEX.md records as NEUTERED by owner order 2026-07-21 and which is still occupying a wired Stop slot.",
+  "why_it_recurs": "The rule was bound at the wrong layer. It is enforced where I report and not where I delegate, so the wrong looking has already happened inside another agent's context by the time any gate runs, and desktop keeps being written first in briefs because it is the width the tooling defaults to."
+ },
+ {
+  "name": "batch-paid-generations-and-honor-a-banned-tool",
+  "statement": "Batch paid generations instead of firing them one at a time, and a tool I ban by name stays banned for the rest of the session.",
+  "occurrences": 3,
+  "quotes": [
+   "Well, I explicitly told you to not use Hicks field. So you stop wasting the tokens, but, again, you use it again. (2026-07-31T16:26)",
+   "So maybe, like, show me maybe, like, I don't know, images instead of fucking generating one by one fucking Nano Banana Pro. You dumb fuck. (2026-07-31T16:16)",
+   "And you keep wasting the fucking credits. Now we almost have to it. Like, what are you fucking doing, bro? (2026-07-31T16:33)"
+  ],
+  "max_intensity": 3,
+  "coverage": "UNCOVERED",
+  "coverage_evidence": "READ /Users/sulo/.claude/hooks/no-ai-assets.py: it is PreToolUse(Bash) (confirmed in settings.json, Bash group with no-verify-commit-gate and mcp-prod-write-guard-bash), and line 30 exits 0 immediately when tool_name != \"Bash\". Every failure here was an `mcp__e551832c-...__generate_image` MCP call, which no-ai-assets never sees. I grepped all 197 hook files for generate_image|generate_video|credits|higgsfield|nano.banana|banned: the only matches are incidental prose in unrelated docstrings. The one wired hook on the `mcp__.*` matcher is mcp-prod-write-guard.py, which guards destructive DB writes. So the preference is memory-only (feedback_conserve_generation_credits) plus the MCP server's own batching advice, which is the server talking, not enforcement.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "EXTEND no-ai-assets.py rather than create a family. Change its wiring matcher from `Bash` to `Bash|mcp__.*` and add a second branch for MCP tool names: (1) if the tool name matches `generate_(image|video|audio)$` and a `_batch` sibling exists, count prior single-shot calls of that same tool in the session marker file and DENY the 3rd and later with \"use generate_*_batch\"; (2) maintain a session banned-tool list at ~/.claude/state/banned-tools-<session_id> written by a UserPromptSubmit match on `do ?n[o']?t use <word>` / `stop using <word>` / `never use <word>`, and DENY any MCP call whose server or tool name contains a listed token. Do NOT extend its existing blanket image-generation deny to the MCP path: he was actively using these generators on 2026-07-31, so a blanket block would contradict a later owner decision. False-positive risk: (1) is near-zero, it counts calls; (2) is MODERATE on the extraction regex, so restrict it to a single quoted or capitalised token and log every ban to the skip-flag ledger so a wrong ban is visible.",
+  "pays_for_itself": "No net-new hook: this rides an already-wired file and an already-existing matcher, and the UserPromptSubmit writer can be a few lines inside owner-phrase-trigger.py, which is already wired on that event.",
+  "why_it_recurs": "Each single generation is individually cheap and immediately shows a result, so the batch call, which requires composing all twelve prompts up front and waiting, always loses to firing one and looking. And a spoken ban lives only in the conversation, where it is one item among dozens and decays within a few turns, while the MCP tool stays permanently one call away."
+ },
+ {
+  "name": "diagnose-the-core-cause-on-a-repeat-complaint",
+  "statement": "When I say it is still wrong, run the measured diagnosis and name the core cause instead of shipping another attempt.",
+  "occurrences": 3,
+  "quotes": [
+   "i liked bfr better and bro what is the core cause its still so ass (2026-08-01T08:25)",
+   "still not like it acc diagnoze (2026-08-02T22:25)",
+   "You are doing it again. The air is coming out of fucking middle of nowhere, and the air looks weird. Like, what is this? You keep complicating. You keep making it all fucking weird, bro. (2026-07-31T18:45)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_WRONG",
+  "coverage_evidence": "The routing exists but its trigger misses his actual words. Project CLAUDE.md binary-triggers table routes a measurement-complaint to a measure-first mandate and an unexplained look-complaint to Skill(solen-taste-diagnosis), enforced by .claude/hooks/user-prompt-binary-triggers.sh (WIRED on UserPromptSubmit in the project settings.json, verified). I READ its line 55 regex and TESTED it against his literal 2026-08-02T22:25 message: `echo \"still not like it acc diagnoze\" | grep -qE '...|not like th|...|still wrong|still off'` returns NO MATCH. The alternation has `not like th`, which does not match \"not like it\", and neither \"still wrong\" nor \"still off\" appears. So on the exact message that says \"acc diagnoze\", no mandate was injected. Separately I grepped that file for `taste-diagnosis|sieht schlecht|looks bad` and got zero hits, so the CLAUDE.md row promising a solen-taste-diagnosis trigger has no corresponding line in the hook. repeat-fix-simplify-gate.py and rejection-streak-escalator.py are WIRED and cover the adjacent \"seventh attempt keeps adding controls\" shape.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "EDIT .claude/hooks/user-prompt-binary-triggers.sh, two changes, both one line. (a) Line 55: change `not like th` to `not like it|not like th` and add `still not|acc diagnoz|actually diagnos|diagnoze` to the alternation, so his real phrasing fires the measure mandate. (b) Add the missing solen-taste-diagnosis branch the project CLAUDE.md already documents: match `looks bad|this is bad|ugly|so ass|busy|unbalanc|doesnt look right|sieht schlecht` and inject the Skill(solen-taste-diagnosis) mandate. False-positive risk: LOW; this is an injection hook that never blocks, so a wide match costs a paragraph of context, not a denied turn. Verify each new alternative with the same `echo | grep -qE` test against his verbatim messages before committing.",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "The regex was written from how the rule reads in my head rather than from how he actually types, which is the same defect owner-sees-it-measure-it-gate.py documents against itself at lines 46-51. So the law is real, the hook is armed, and the specific sentence that most needs it walks straight past."
+ },
+ {
+  "name": "capture-a-named-reference-never-recall-it",
+  "statement": "When I name a brand or a real-world object as the reference, go capture and measure the actual thing before you build anything modelled on it.",
+  "occurrences": 3,
+  "quotes": [
+   "like, how... like, Airbnb does it. You know? Like, go actually research. (2026-07-31T14:07)",
+   "The nails opening and closing is not really correct. It's not like how I like it. Like, I want it, like, more. You know what I mean? Like, look into, like, research it. (2026-08-02T19:49)",
+   "but you can actually go search into it like, you know, like, these stuff as, like, air, we can, like, make it, like, gray in, like, three d. (2026-07-31T16:52)"
+  ],
+  "max_intensity": 2,
+  "coverage": "COVERED_BUT_UNARMED",
+  "coverage_evidence": "The capture half is armed: reference-check-gate.sh is WIRED on PreToolUse(Write) (confirmed in settings.json) and requires a mockup citing a reference brand to prove it captured it; fable-skill-trigger.py is WIRED on UserPromptSubmit and its reference category routes to Skill(reference-lock); the project CLAUDE.md binary-triggers table carries the same row. The MEASURE half is not. READ /Users/sulo/.claude/hooks/reference-measure-gate.py: PreToolUse(Write|Edit|MultiEdit), it blocks a reference-derived mockup that carries no measured px/pt block (MEASURED regex lines 30-33). It is ORPHAN, absent from every settings.json group. That is a documentation contradiction worth naming: project CLAUDE.md NEVER-AGAIN floor 5 states \"GATE: ~/.claude/hooks/reference-measure-gate.py (blocks a reference-derived mockup with no measured sizes; self-tested 5/5)\", presenting as armed a gate that enforces nothing. The same paragraph makes the identical claim for white-only-web-gate.py, also orphan per GATE_INDEX.md.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "ARM reference-measure-gate.py into the existing PreToolUse `Write|Edit|MultiEdit` group (the one already holding no-decorative-image-gate.py, emphasis-budget-gate.py, no-italic-ui-gate.py), after re-running its self-test. In the SAME change, correct project CLAUDE.md NEVER-AGAIN floor 5 so it stops asserting two gates are armed when the index says orphan; a law file that describes phantom enforcement is worse than one that admits the gap, because it stops anyone from looking. False-positive risk: LOW; its REF regex (lines 25-31) deliberately requires a real screenshot filename or an explicit derivation phrase rather than the bare word \"reference\", and it has both a skip flag and a `measure-ok` inline escape.",
+  "pays_for_itself": "Arming takes wired 155 -> 156; pay it by retiring gemini-check-gate.py (WIRED, recorded in GATE_INDEX.md as DISABLED by owner order 2026-07-21, enforcing nothing).",
+  "why_it_recurs": "Training memory returns a confident picture of Airbnb or of nail polish instantly and at zero cost, and that picture is detailed enough to build from, so it never registers as a guess. Capturing the real thing is a separate multi-step errand whose only visible output is a delay."
+ },
+ {
+  "name": "research-quality-many-sources-and-check-their-dates",
+  "statement": "Pull from several independent sources and check when each one was written before you cite it as a principle.",
+  "occurrences": 4,
+  "quotes": [
+   "Did you even look at the timeline of the fucking principles that you're even researching about? (2026-07-28T20:09)",
+   "I love that you went to multiple resource and that you're researching everything. (2026-07-28T17:20)",
+   "but can you actually research what would be the best and everything? Yeah. to achieve what I want. (2026-07-31T14:42)",
+   "And, also, I want you to research when and how, you know, all of that. (2026-07-31T10:39)"
+  ],
+  "max_intensity": 3,
+  "coverage": "ADVICE_ONLY",
+  "coverage_evidence": "Global CLAUDE.md:479 rule 15 (\"Reality over memory\") covers verification against a live source and tiers claims verified/expect/assume, and CLAUDE.md:122 rule 4 requires first-principles justification and explicit low-confidence marking when the reason reduces to \"because brand X does it\". Neither says anything about the AGE of a cited design principle. The only wired enforcement nearby is stat-source-gate.py (Stop, confirmed in settings.json), and it is scoped to unsourced external STATISTICS, not to undated principles; reality-check-gate.py (UserPromptSubmit, wired) injects a reminder on memory-trap prompt shapes but does not check recency either.",
+  "gate_verdict": "PRINCIPLE_ONLY",
+  "gate_spec": "n/a",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "A design principle has no visible expiry, so a 2011 heuristic and a 2025 one read identically once they are restated in my own words. Checking a date requires going back to a source I have already metabolised, which feels like re-doing finished work."
+ },
+ {
+  "name": "consult-the-llm-council-before-deciding",
+  "statement": "Run the LLM council heavily on hard design and diagnosis calls and collect their real opinions before you decide, and resolve my garbled dictation to the tool I actually mean.",
+  "occurrences": 4,
+  "quotes": [
+   "Like, what is the fix then? Ask the sub agents counsel, run them a lot, and then actually get opinions. Don't diverge. (2026-08-03T16:29)",
+   "get llm council opinions (2026-08-03T13:32)",
+   "All of it looking to this looking to the side by side comparison, let them know. Like, ask them what's everything different frame by frame and how they open and everything? What's what's different? Ask them. (2026-08-03T16:41)",
+   "I said L council LLM council not this whatever the fuck this fucking piece of shit transcription said (2026-08-03T16:42)"
+  ],
+  "max_intensity": 3,
+  "coverage": "ADVICE_ONLY",
+  "coverage_evidence": "The machinery exists and is discoverable: the llm-council skill and the council skill are both in the available-skills list, and council-trigger.py is WIRED on Stop (confirmed in settings.json). I read its GATE_INDEX.md entry: it fires AFTER a substantial build to run read-only reviewer personas. That is post-hoc review, not the pre-decision opinion round he is asking for. skill-autopilot.py (WIRED, UserPromptSubmit) auto-fires safe tool skills, so \"get llm council opinions\" is likely routed, but the judgment call of WHEN a diagnosis is hard enough to warrant a council has no rule anywhere. The dictation-resolution half is covered only by global CLAUDE.md:258 rule 10 and :514 rule 16 in spirit, neither of which addresses transcription noise.",
+  "gate_verdict": "PRINCIPLE_ONLY",
+  "gate_spec": "n/a",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "Deciding alone is instantaneous and a council round costs a full dispatch cycle plus the work of synthesising disagreement, so on any call that feels answerable the council reads as overhead. It is exactly the calls that feel answerable and are not where it would have paid. A gate cannot fix this because there is no mechanical signal for \"this call is hard\"."
+ },
+ {
+  "name": "run-it-yourself-and-do-not-claim-you-are-blocked",
+  "statement": "Run the commands yourself instead of handing them to me, and stop saying you are sandboxed or blocked without proving it with a fresh probe.",
+  "occurrences": 2,
+  "quotes": [
+   "you can run the commands urself dont ask me sh (2026-08-02T19:35)",
+   "u keeo confusing sh w being sandboxed even tho its not (2026-08-01T18:41)"
+  ],
+  "max_intensity": 2,
+  "coverage": "COVERED_AND_ARMED",
+  "coverage_evidence": "READ /Users/sulo/.claude/hooks/no-bash-handoff-gate.py (WIRED, confirmed in settings.json Stop list). Its v2 logic covers both halves explicitly: rule A blocks a closing message handing over a shell command that no tool call this turn attempted, and rule B (docstring lines 40-48) blocks a message that BLAMES an environment block for a command unless it was attempted through two DISTINCT instruments, with the reasoning that a shell redirect and a python open() are one instrument wearing two hats. READ /Users/sulo/.claude/hooks/env-claim-needs-evidence-gate.py (WIRED, 88 lines): blocks a final message asserting sandbox/EPERM/permission-denied unless the same message carries fresh-probe evidence (CLAIM lines 21-25, EVIDENCE lines 26-29). Both correct, both armed, both born from earlier instances of these exact two complaints.",
+  "gate_verdict": "ALREADY_HANDLED",
+  "gate_spec": "n/a",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "It should not, at the reply layer. The residual failures are mid-turn: both gates run at Stop, so a wrong sandbox belief can still redirect an entire turn's plan before any closing message exists to be checked."
+ },
+ {
+  "name": "flag-broken-ui-you-walk-past",
+  "statement": "When you notice something broken or ugly while working on something else, flag it to me rather than leaving me to find it.",
+  "occurrences": 1,
+  "quotes": [
+   "the search bar wtf is that n how did u not flag it (2026-07-29T11:48)"
+  ],
+  "max_intensity": 2,
+  "coverage": "COVERED_AND_ARMED",
+  "coverage_evidence": "flag-instead-of-fix-gate.py is WIRED on Stop (confirmed in settings.json), and its GATE_INDEX.md entry records it was born 2026-07-13 from the mirror complaint (\"An active rail icon ships blue. Yeah. Fucking fix that then... harden the fucking gate\"). nested-input-chrome-gate.py is WIRED on PreToolUse(Write|Edit|MultiEdit) and its GATE_INDEX.md docstring opens with this exact quote, 2026-07-29: \"the search bar wtf is that n how did u not flag it\", blocking the specific nested-input-chrome defect that produced it. So the general disposition and the specific defect are both armed.",
+  "gate_verdict": "ALREADY_HANDLED",
+  "gate_spec": "n/a",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "Noticing a defect outside the current scope creates a conflict with the scope discipline he enforces just as hard (scope-creep-gate exists for the opposite failure), so the safe-looking move is to say nothing. The resolution is already in the law, flag it without fixing it, but it requires holding two rules at once."
+ },
+ {
+  "name": "never-deploy-or-push",
+  "statement": "Never push or deploy anything; that step is mine.",
+  "occurrences": 1,
+  "quotes": [
+   "github turn it on but i dont want to deploy (2026-07-28T08:31)"
+  ],
+  "max_intensity": 2,
+  "coverage": "COVERED_BUT_WRONG",
+  "coverage_evidence": "The act is not gated, only the mention. no-push-mention-gate.py is WIRED on Stop and, per its GATE_INDEX.md entry, blocks NARRATING a push in the reply. READ /Users/sulo/.claude/hooks/coder-git-guard.py: it is the only other git-aware PreToolUse(Bash) hook, and I grepped it for push|deploy|netlify|vercel with ZERO hits; its deny list (docstring line 28) is checkout, restore, reset, clean, switch and stash drop/pop/clear, and it fires only inside coder subagents. no-verify-commit-gate.py is WIRED on Bash but only blocks `--no-verify`. So `git push`, `netlify deploy` and `vercel --prod` from the main thread hit no gate at all, while the reply-layer gate creates the impression the rule is enforced. Prose law: global CLAUDE.md terminal-autonomy block and project CLAUDE.md \"git push , NEVER auto-push\".",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "EDIT no-verify-commit-gate.py (already WIRED on the PreToolUse `Bash` matcher, so zero net-new hooks and no new (event, matcher) pair). Add a deny branch for `git\\s+push`, `netlify\\s+deploy`, `vercel(\\s+--prod|\\s+deploy)`, and `gh\\s+workflow\\s+run` targeting a deploy job, with the same heredoc-body stripping no-ai-assets.py already uses at its line 27 so a commit message quoting the word \"push\" does not trip it. Deny reason should quote the owner and say plainly that he pushes manually. False-positive risk: NEAR-ZERO after heredoc stripping; `git push --dry-run` should also be denied rather than exempted, since he has never asked for one. Given occurrences=1 and no counted incident, this is the lowest-priority item here; it is included only because the failure is irreversible and the current coverage is illusory.",
+  "pays_for_itself": "n/a: no new hook, a branch inside an already-wired file.",
+  "why_it_recurs": "It has not recurred as an act; the finding is that the estate would not stop it if it did. The Stop gate blocking the WORD push makes the rule feel enforced, which is exactly the condition under which nobody checks whether the act is."
+ },
+ {
+  "name": "self-contained-handoff-briefs",
+  "statement": "Write every handoff and every agent brief so it stands alone for a session with no conversation context.",
+  "occurrences": 1,
+  "quotes": [
+   "so make it, like, really, like, in writing that it's also running. You know everything, all the details that the auto agent needs to know. (2026-07-28T18:40)"
+  ],
+  "max_intensity": 1,
+  "coverage": "ADVICE_ONLY",
+  "coverage_evidence": "Global CLAUDE.md:208-231, rule 9 \"Each round's structure\", step 1: \"The prompt must be SELF-CONTAINED (the agent has no conversation context)\", followed by the required contents (project root, stack one-liner, dev-server URL, SPEC VERBATIM, known intentional deviations, exhaustive file paths, output format, read-only constraint). No hook enforces brief completeness; the only PreToolUse(Agent|Workflow) gates wired in settings.json are no-opus-subagent-gate.py (model routing) and no-overstep-launch-gate.py (scope), neither of which inspects brief content. subagent-phone-view-gate.py would be the third and is orphan (see the phone-viewport cluster).",
+  "gate_verdict": "PRINCIPLE_ONLY",
+  "gate_spec": "n/a",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "Everything the brief omits is vividly present in my own context while I write it, so the omission is invisible at authoring time and only surfaces as a confused subagent much later. A regex could check for the presence of section headings but not for whether the content actually suffices, so a gate here would grade formatting and reward padding."
+ },
+ {
+  "name": "mockup-first-then-approval-then-code",
+  "statement": "Show me a mockup for any visual change and wait for my approval before you touch real code.",
+  "occurrences": 4,
+  "quotes": [
+   "animate them or remove animal or animate them. Like, show me. Like, make a mock up. (2026-07-28T13:31)",
+   "And I believe you didn't implement it yet, right, because I didn't even approve whatever the fuck you did. (2026-07-28T18:40)",
+   "mockUp? (2026-07-29T16:45)",
+   "And since we have to redesign each page, can you, like, help me, um, like, make me mock ups for each one? (2026-07-31T15:04)"
+  ],
+  "max_intensity": 2,
+  "coverage": "COVERED_AND_ARMED",
+  "coverage_evidence": "Read ~/.claude/hooks/mockup-first-gate.py (WIRED, PreToolUse Write|Edit|MultiEdit): blocks framer-motion signals in real app/ components, escape = mockup-approved-skip.flag. Read mockup-visual-gate.py (WIRED, same matcher): diffs visual tokens in old_string vs new_string, blocks a net-new appearance change to a real component, same escape flag. Read mockup-not-live-gate.py (WIRED, Stop): blocks a closing message claiming a LIVE change in a turn where the owner asked for a mockup. Project CLAUDE.md lines 152-159 hold the Mockup FIRST block. CONFLICT FOUND: /Users/sulo/Documents/solen/.claude/hooks/real-component-gate.py (WIRED via .claude/settings.json Stop, 18 blocks in the 8-day window, top-5 firer) fires when a turn modified a public/_mockups/**.html and modified NO real .tsx, i.e. it pushes the agent to edit the real component in the very turn the owner asked for a mockup only. Its own docstring cites 2026-07-23; the mockup-first asks above are 07-28 through 07-31.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "real-component-gate.py: add a suppression arm. Before firing, scan the turn's owner messages for a mockup request (mockup, mock up, mock-up, show me, before you build) and exit 0 when present. It should only fire when the owner asked for a SHIPPED UI change and got an HTML approximation instead. Also record that mockup-approved-skip.flag was touched 13 times in 2 sessions in the window (past LAW_SYSTEM 2's 10-in-7-days mute threshold): the approval gate is being routed around, so the flag should require a non-blank reason naming the approving owner message, like the other reason-flags already do.",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "Two wired gates point in opposite directions on the same turn shape, so whichever one is currently in front wins and the other looks like noise. Editing the real component also feels like more progress than producing an artifact he has to react to, and the escape flag makes skipping the approval step one Bash call cheaper than waiting."
+ },
+ {
+  "name": "mockup-copies-the-rendered-page",
+  "statement": "A mockup is a copy of the real page as it actually renders, never a redraw and never a system you invented from reading source.",
+  "occurrences": 4,
+  "quotes": [
+   "Show me the actual home page, and I'm gonna tell you by what you're changing this and this side. You're gonna make a mock up based on that. (2026-07-31T10:15)",
+   "I just... I wanna have, like, a real mock up that actually shows the home page, you know, that we have. (2026-07-31T14:44)",
+   "Alright. Again, you made up, like, a fucking, like, this grid system. Like, what is this? Why do you keep making this fake shit up? Like, never ever anywhere in a design system this exists. (2026-07-31T15:38)",
+   "But the home page mock up, the separate one, that doesn't look correct. (2026-07-31T17:02)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_UNARMED",
+  "coverage_evidence": "Read mockup-grounding-gate.sh (WIRED, PreToolUse Write): requires a Grounded-in:/Captured-from:/Real-source: comment naming a repo path that EXISTS. Read mockup-real-base-gate.py (WIRED, PreToolUse Write): requires a Base: capture <file> declaration and that the named capture actually appears in an <img src> in the document. Read no-invented-ui-gate.py (WIRED): structural check that a card-like mockup carries the approved SalonResultCard signature. BUT the one gate written for this exact failure, ~/.claude/hooks/measure-the-live-page-gate.py, is ORPHAN per GATE_INDEX.md line 67 and absent from ~/.claude/settings.json; its docstring lists five cases (home grid, store card, heart, pill shadow, search row) where a Grounded-in: line cited a .tsx that was never loaded, and blocks exactly that. mockup-compose-registered-card-gate.py is also ORPHAN.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Fold measure-the-live-page-gate.py's check into mockup-preflight-manifest.py (already WIRED on PreToolUse Write for public/_mockups, and already the aggregator that returns ONE combined deny). New aggregator item: when the mockup declares Grounded-in: <path>.tsx, the turn must also contain a browser navigation to a real route plus a screenshot or measurement before the write. Do NOT register measure-the-live-page-gate.py as a separate hook: 31 wired hooks already share the PreToolUse Write|Edit|MultiEdit matcher against a stated limit of 3.",
+  "pays_for_itself": "n/a, folding into mockup-preflight-manifest.py adds zero wired hooks.",
+  "why_it_recurs": "Reading a component file feels identical to checking the page and costs one tool call instead of five, so under task focus it always wins. The citation gates can all be satisfied by writing a string, which is why the one gate that checks the structural fact was built and then never armed."
+ },
+ {
+  "name": "prelaunch-kills-the-photography-demand",
+  "statement": "Stop invoking the photography floor and demanding real salon photos while we are pre-launch; seeded and stock imagery is the answer and I know which is which.",
+  "occurrences": 2,
+  "quotes": [
+   "And also, why it's talking about photographs again? Like, we're not fucking live. Like, are you fucking stupid, bro? (2026-07-30T22:45)",
+   "i dont want any badge bro i know if its stock or not you keep forgetting ee are not livr (2026-07-27T15:47)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_WRONG",
+  "coverage_evidence": "LOUD FINDING. Project CLAUDE.md line 67 (FLOORS LAW 2) still reads: every customer viewport at 390x844 carries roughly >= 1/3 photographic area, and Mockups pull real seeded photography; a zero-imagery customer mockup auto-fails. Line 108 (design contract imagery row) repeats it. That text is what produces the photography demand he rejected on 2026-07-30. The gate that enforces the floors ritual, ~/.claude/hooks/mockup-floors-gate.py, is ORPHAN (GATE_INDEX.md line 77, absent from settings.json) and its docstring requires a floors: note whose item 1 is a photographic focal is present. Read stock-photo-gate.py (WIRED, Stop plus PreToolUse): it is correct and requires no badge, it only blocks claiming Solen HAS salon photography when _inventory/_db-snapshot.json shows salon_photos at 0 rows. Read prelaunch-reality-gate.py (WIRED, Stop): blocks live-harm assertions only, it does not touch the photography demand. Read seed-not-fabrication-gate.py (ORPHAN, born 2026-08-02 from the owner's we are not live bro we need seeded test sh edit the rule): records the amended taste rule 1, that a seeded row read through a normal query IS a live source.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Two edits, both to things that already exist. (1) LAW TEXT: rewrite project CLAUDE.md line 67 and the line-108 imagery contract row so the floor is satisfied by SEEDED or STOCK photography by name, and delete the phrase real seeded photography, which is the exact wording that keeps producing the demand. Add one line: while pre-launch, never ask the owner for real photos and never report a surface as blocked on them. (2) GATE: arm seed-not-fabrication-gate.py by folding its Stop check into prelaunch-reality-gate.py (already WIRED on Stop), which blocks citing the no-fabrication rule as the reason for leaving something empty or unseeded. False-positive risk is low: it only fires when a no-fabrication phrase sits next to an inaction phrase.",
+  "pays_for_itself": "Folding into prelaunch-reality-gate.py adds zero wired hooks. If a separate registration is preferred, retire gemini-auto-fire.py and gemini-check-gate.py, both WIRED and both no-op exit-0 stubs since the owner said remove the gemini hook and gates on 2026-07-21 (GATE_INDEX.md lines 44-45).",
+  "why_it_recurs": "The photography floor is written into the file that is always in context, so it re-enters every design turn by default, while the pre-launch correction lives only in a Stop gate that fires after the demand has already been written. A floor stated as a percentage also reads as objective, which makes it feel safer to cite than to question."
+ },
+ {
+  "name": "no-ui-element-for-my-discipline-problem",
+  "statement": "When I complain about how you behave, fix your behaviour, do not add a marker, badge or label to my product to compensate.",
+  "occurrences": 1,
+  "quotes": [
+   "i dont want any badge bro i know if its stock or not you keep forgetting ee are not livr (2026-07-27T15:47)"
+  ],
+  "max_intensity": 2,
+  "coverage": "COVERED_BUT_UNARMED",
+  "coverage_evidence": "Read ~/.claude/hooks/enforcement-in-product-gate.py: born 2026-07-27 from this exact exchange, its docstring names both failures (I turned a complaint about MY behaviour into a UI element in THEIR product, and I built beside prelaunch-reality-gate.py instead of extending it) and it blocks adding, to a file under app/ or components/, a justification that is about my own discipline. GATE_INDEX.md line 30 marks it [orphan] and it does not appear in ~/.claude/settings.json. lib/stock-image.ts and the StockPhotoMarker component no longer exist on disk (checked: only lib/stock-photos.ts remains), so the badge itself was removed.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Arm enforcement-in-product-gate.py by folding its check into prelaunch-reality-gate.py's PreToolUse arm, which its own docstring says it should have extended in the first place. Same consolidation as the cluster above, one registration for both.",
+  "pays_for_itself": "Zero net hooks if folded into prelaunch-reality-gate.py.",
+  "why_it_recurs": "A UI element is a deliverable I can point at, and a behaviour change is not. When the complaint is about me, building something feels like taking it seriously, and the cost lands in his product where he has to find it."
+ },
+ {
+  "name": "mobile-first-delivery",
+  "statement": "Design, verify and hand everything over at phone width by default, because that is the product.",
+  "occurrences": 1,
+  "quotes": [
+   "I always tell you mobile first, bro. (2026-07-31T08:14)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_AND_ARMED",
+  "coverage_evidence": "Read ~/.claude/hooks/mobile-view-gate.py (WIRED on Stop, confirmed in settings.json): if the closing message hands over a preview link or claims a UI was verified, the turn must contain a resize_window to a phone width <= 500 or a screenshot taken at a phone viewport. Deliberately narrow, does not fire on backend or research turns. Gap: subagent-phone-view-gate.py (PreToolUse Agent|Workflow) is ORPHAN per GATE_INDEX.md line 181, and its docstring names the hole explicitly, mobile-view-gate only sees the main thread's Stop, so a subagent dispatched to build or verify UI is briefed with no phone-width requirement.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Do not register subagent-phone-view-gate.py as a 32nd PreToolUse hook. Instead move its one requirement into the already-wired no-opus-subagent-gate.py (PreToolUse Agent|Workflow): when the dispatch prompt contains a UI build or verify instruction and names no viewport, inject or require a 390x844 line. Injection rather than denial keeps it off the block ledger.",
+  "pays_for_itself": "Zero net hooks, it rides an existing Agent|Workflow registration.",
+  "why_it_recurs": "Desktop is the default viewport of every tool I use, so producing desktop evidence takes no decision at all, while producing phone evidence takes one deliberate extra call that is easy to skip when the layout looks fine on screen."
+ },
+ {
+  "name": "only-the-element-he-named-changes",
+  "statement": "Change exactly the element I named and nothing else, and never add chrome I did not ask for.",
+  "occurrences": 3,
+  "quotes": [
+   "okay where is the the all pill in the category slectionbbro and why are there filter pills? (2026-08-01T07:37)",
+   "The back button doesn't look like it. Why is there a fucking hamburger man in the notification bar there? (2026-08-02T21:47)",
+   "And why the fuck is this still boxing? Why is the fucking back button still like that? Why is the notification inside and the hamburger menu inside a fucking profile page? I told you just, like, ten fucking times. (2026-08-03T16:18)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_UNARMED",
+  "coverage_evidence": "The removal half is armed: read no-unrequested-removal-gate.py (WIRED, Stop, 5 blocks in the window per GATE_FIRES.md), it blocks a closing message announcing a removal when the owner's message carries no removal instruction. The addition half is entirely unarmed. THREE sibling gates all ORPHAN, all built for this one class within four days: overstep-gate.py (GATE_INDEX line 127, born 2026-07-31, blocks a LAYOUT-property change riding on a CONTENT request, and its docstring explains why scope-creep-gate misses it), scope-creep-gate.py (line 169, born 2026-07-31, counts unrequested neighbour edits), rejected-elements-still-present-gate.py (line 158, born 2026-08-03 from the third quote above, blocks writing an account or profile mockup that still contains a bordered row container, a notification bell or a hamburger). None appear in ~/.claude/settings.json.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Merge overstep-gate.py, scope-creep-gate.py and rejected-elements-still-present-gate.py into ONE gate on PreToolUse Write|Edit|MultiEdit returning a single combined deny listing every unmet item, exactly the aggregator pattern LAW_SYSTEM 6.2 already mandates at 31 hooks on that matcher. Keep each of the three detections unchanged (kind-of-change axis, neighbour-count axis, named-rejected-element list); do not invent a stricter fourth. Register the merged gate only, and delete the three separate files so the index stops counting them.",
+  "pays_for_itself": "Retire gemini-auto-fire.py and gemini-check-gate.py (GATE_INDEX lines 44-45: both WIRED, both no-op exit-0 stubs since the owner said remove the gemini hook and gates on 2026-07-21). Net wired count: minus one.",
+  "why_it_recurs": "While I am already in the file, the neighbouring flaw and the requested change feel like one piece of work, and the copied header scaffolding rides along invisibly because attention is on the part being newly designed. From his side six changes arrive when he asked about one, so he cannot tell which change caused what he is looking at."
+ },
+ {
+  "name": "reference-match-is-anatomy-not-treatment",
+  "statement": "When I name a reference, capture the real thing, match it element by element including its other states, and take its intent rather than its flaws.",
+  "occurrences": 7,
+  "quotes": [
+   "It does not match a screenshot and screen recording at all. I mean, screenshots that I gave you as a reference. Right? The back button doesn't look like it. (2026-08-02T21:47)",
+   "Still, the motion is nothing like the fucking reference like what part do you not fucking understand like tell me like literally (2026-08-03T15:34)",
+   "whatever the fuck you made with this shit. That shit looks fucking ass. Nothing like Airbnb. Are you fucking dumb? (2026-08-03T16:37)",
+   "did you remember the original, um, Airbnb? Like, it has, like, multiple states. What are we gonna do with that? (2026-08-02T20:15)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_UNARMED",
+  "coverage_evidence": "Armed: reference-check-gate.sh (WIRED, PreToolUse Write per settings.json) requires a mockup citing a reference brand to prove it actually captured it. Project CLAUDE.md line 143 routes any named brand or visual reference to Skill(reference-lock) and the fable-skill-trigger reference category. NOT armed, and this is a documentation defect too: project CLAUDE.md line 56 (NEVER-AGAIN floor 5) states GATE: ~/.claude/hooks/reference-measure-gate.py as if it were live, while GATE_INDEX.md line 157 marks it [orphan] and it is absent from settings.json. Same for line 51 claiming white-only-web-gate.py as a GATE (index line 194: orphan). Read overlay-is-not-a-match-gate.py (ORPHAN, index line 126, born 2026-08-02 from the first quote): its docstring names the mechanism precisely, a CSS overlay into an iframe of our own page can only change what you explicitly name, so everything unnamed stays ours and the mockup is partial BY CONSTRUCTION.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Fold both orphans into reference-check-gate.sh, which is already registered on PreToolUse Write and already fires on the same reference-derived file class: (a) reference-measure-gate's arm, block a reference-derived mockup that carries no measured: note with real px or pt values; (b) overlay-is-not-a-match's arm, block a reference-derived mockup that builds itself by injecting into a same-origin iframe of our own route unless it declares treatment-only. Separately, correct project CLAUDE.md lines 51 and 56, which currently assert two orphan files are armed gates.",
+  "pays_for_itself": "Zero net hooks, both arms ride reference-check-gate.sh's existing registration.",
+  "why_it_recurs": "The iframe overlay is the nearest tool to hand and the repo rewards it for treatment sweeps, so it gets reached for on match tasks where it cannot work. And because the law file says the measure gate is armed, nobody checks whether it is, so the class reads as covered while nothing runs."
+ },
+ {
+  "name": "motion-is-the-gesture-he-described",
+  "statement": "Animate the literal gesture I described, from the right origin, in the right shape, with the exit designed as carefully as the entrance.",
+  "occurrences": 9,
+  "quotes": [
+   "i want the air but i want the air coming from nozzle bro (2026-07-31T17:45)",
+   "Not this weird fucking robotic arm looking ass air, but, like, you know, like, those wavy airs (2026-07-31T18:36)",
+   "the animation I wanted to be, like, the cap opens up. Like, you can't see, like, the, you know, the brush a little bit, then it closes. (2026-08-02T18:10)",
+   "okay jow it funes out is good but when it goes away is ass and the blow drier itself got no motion (2026-08-01T08:32)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_AND_ARMED",
+  "coverage_evidence": "FIVE wired gates already sit on this one class, all confirmed in ~/.claude/settings.json: no-invented-visual-motif-gate.py (Stop, born 2026-07-31 from the nine attempts at the air on the blow-dryer), repeat-fix-simplify-gate.py (Stop, 5 blocks in the window, born from seven consecutive attempts each adding a control), animation-full-clip-verify-gate.py (Stop, 3 blocks, born from six rounds each verified on the resting frame only), no-regression-by-fix-gate.py (Stop, 6 blocks), motion-recipe-gate.py (PreToolUse). MOTION.md holds the vocabulary. Despite all five, the class still produced corrections on 08-01, 08-02 and 08-03, which is the ledger's key finding in miniature: gate count has no measurable relationship to whether the class stops recurring.",
+  "gate_verdict": "PRINCIPLE_ONLY",
+  "gate_spec": "n/a. Adding a sixth denial to a class that already carries five wired Stop gates and still recurs is the exact move the ledger evidence forbids. The fix is procedural and belongs in the reference-lock and fable-frontend skills: before animating, write the described gesture down as a one-line spec (what moves, from where, in what shape, how it leaves), then replay the recorded clip frame by frame against that line rather than judging the resting frame.",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "A described gesture is resolved against my own idea of what would look good, and each round I add a control (a direction, an offset, an inset) rather than rebuilding from the description, so the accumulated controls make the next round harder to reason about. Verifying the resting frame also feels like verifying, and it is the one frame that is always right."
+ },
+ {
+  "name": "look-complaint-means-measured-diagnosis",
+  "statement": "When I say it looks wrong, run a measured diagnosis and name the violation instead of guessing another tweak.",
+  "occurrences": 3,
+  "quotes": [
+   "still looks wierd (2026-08-01T07:36)",
+   "The air on the blow dryer is still kinda too... it doesn't really look correct. (2026-07-31T17:07)",
+   "I don't know why I don't know why, but I have to, like, scroll, like, a lot lot to, like, go to the bottom. Like, can you actually fix this shit? Like, it's annoying. It's a fucking mug up. (2026-07-31T18:30)"
+  ],
+  "max_intensity": 3,
+  "coverage": "ADVICE_ONLY",
+  "coverage_evidence": "Project CLAUDE.md line 145 (binary-triggers table) routes look complaints without a named cause to Skill(solen-taste-diagnosis) and says Detection = fire. It is carried by .claude/hooks/user-prompt-binary-triggers.sh, which is a UserPromptSubmit hook: it INJECTS, it cannot block the Edit that follows. Read .claude/hooks/mockup-diagnosis-gate.py (WIRED via .claude/settings.json on PreToolUse Write and Edit): it is the one real enforcement of measured diagnosis, requiring a Diagnosis: <what> | measured <current> | violates <ref> | target <target> manifest, but only on Writes of public/_mockups/**/*.html, so a component edit after a look complaint is ungated. Memory project_taste_diagnosis_layer records the rule.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Widen mockup-diagnosis-gate.py's scope rather than building a new gate: when the turn's owner message matched the binary-triggers look-complaint word list (have the existing user-prompt-binary-triggers.sh drop a per-turn marker file, it already parses those words), require the same Diagnosis: manifest line on the FIRST design-surface Edit of that turn. Named false-positive risk: he often pairs a look complaint with a direct order (fix the padding), and rule 10 says the literal order wins, so the gate must exempt a turn whose message also names a concrete element and change, and must accept a Diagnosis line derived from a live measurement rather than a mockup.",
+  "pays_for_itself": "Zero net hooks, it is a scope change to an already-registered project gate.",
+  "why_it_recurs": "A tweak can be applied in one edit and might be right, while a diagnosis costs a render, a measurement and a comparison before anything visible happens. Under a frustrated message the pull toward showing him something immediately is strongest, which is exactly when guessing is most expensive."
+ },
+ {
+  "name": "colour-is-sampled-never-worded",
+  "statement": "Sample the colour from the shipped artifact instead of choosing one from an adjective, and once I name a colour, use exactly that one.",
+  "occurrences": 6,
+  "quotes": [
+   "bro. No. No, bro. Not fucking white, bro. Are you fucking dumb? It's gonna overlap with the fucking background, bro. (2026-07-31T16:12)",
+   "And, also, I told you about the blow dryer. I do not want this fucking color. I told you, like, like, a vintage yellow that's, like, you know, bright. (2026-07-31T16:33)",
+   "Stop using such a muted color, for example, in a nail polish. Right? Make it, like, more pink. Like, what the fuck? (2026-08-02T18:10)",
+   "And, also, um, I also, like, want it to be, like, a little bit more vibrant, you know, because right now it's, like, too muted. I don't like that. (2026-07-31T15:16)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_AND_ARMED",
+  "coverage_evidence": "Read sample-dont-pick-colour-gate.py (WIRED on Stop per settings.json, 2 blocks in the window): born 2026-08-02 from this exact workstream, it requires that when a turn set or changed a colour on an asset with a shipped counterpart in public/icons/categories/, the closing message shows a measured hex plus the file it came from. Its docstring records the whole trail (polish 0.37 muted, 0.55 neon, 0.44 washed, then #F07A84 against the real #F27A84 on the first try once sampled). Read mockup-content-gate.py (WIRED, PreToolUse): rule 2 MUTED-COLOR blocks muddy focal colour computed via HSV, rule 1 CONTRACT-HUE blocks an unlisted saturated hex against a locked list at line 75. dropped-directive-gate.py (WIRED, Stop) covers the I told you vintage yellow half by requiring each named noun and colour to be read back. Not covered: the contrast-against-its-own-surface check from the 16:12 white-on-white case, no gate compares an asset fill to the surface it renders on.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Add one arm to sample-dont-pick-colour-gate.py (already wired, so no new registration): when the turn set an asset or icon fill, compute the delta against the surface it sits on (white #FFFFFF for web chrome, #F4F4F5 for a sunken tray) and block when the two are within a small perceptual distance. Near-zero false positives because it needs both a colour change on an asset in the same turn and a measured near-match; a genuine white-on-photo case escapes via the existing reason-flag.",
+  "pays_for_itself": "Zero net hooks.",
+  "why_it_recurs": "A colour adjective is a direction, not a value, and it has to be resolved against something. Resolving it against my own judgment costs nothing and produces an answer instantly, while sampling costs one command that does not feel like design work. The approved artifact holding the right value was in the repo the whole time."
+ },
+ {
+  "name": "no-pink-in-the-chrome-but-true-colour-on-objects",
+  "statement": "Keep pink out of the interface, and keep the real colour of an object that is genuinely pink.",
+  "occurrences": 3,
+  "quotes": [
+   "one of pink bro. Like, are we so for real? (2026-07-31T16:06)",
+   "also remove pink sh bit looks so out of place (2026-08-03T08:27)",
+   "Stop using such a muted color, for example, in a nail polish. Right? Make it, like, more pink. Like, what the fuck? (2026-08-02T18:10)"
+  ],
+  "max_intensity": 2,
+  "coverage": "COVERED_AND_ARMED",
+  "coverage_evidence": "Read mockup-content-gate.py (WIRED): its locked-hex allowlist at lines 75 and 113 is exactly {16A34A, D32F2F, F1AE27, FFC32B, FF3366, EA580C, 1F8900}, so an unlisted pink in a mockup already blocks while the save-heart FF3366 passes. In real components, .claude/hooks/pre-edit-drift-gate.sh (WIRED via .claude/settings.json on Edit, Write and MultiEdit) blocks any net-new raw hex in app|components|components-legacy .tsx and .css, so an off-palette pink cannot land there either. Project CLAUDE.md taste rule 3 (line 30) fixes the 80/17 neutral plus sparse-blue palette.",
+  "gate_verdict": "ALREADY_HANDLED",
+  "gate_spec": "n/a. Record the reason NOT to build the sketched block pink hex values gate: the same week he demanded the nail polish be pinker, and the correct sampled value was #F27A84 on his own shipped icon. A blanket pink block would have denied the colour he asked for. The existing allowlist plus the raw-hex rule already separate chrome from asset.",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "Pink reads as decorative in chrome and as literal on an object, and the difference is the surface, not the hue, so a hue-level rule cannot express it. The existing gates get this right by scoping to file type."
+ },
+ {
+  "name": "one-visual-style-across-screens",
+  "statement": "Treat cross-screen inconsistency as the primary design defect: one style, one chrome order, one shadow language everywhere.",
+  "occurrences": 2,
+  "quotes": [
+   "Yeah. But the main problem is inconsistencies. (2026-07-28T21:35)",
+   "the filter you know and the info like why there are no shadows and everything wise like a whole different style from the you know (2026-08-01T19:18)"
+  ],
+  "max_intensity": 2,
+  "coverage": "COVERED_BUT_UNARMED",
+  "coverage_evidence": "Read chrome-consistency-gate.py: born 2026-07-31 from six rounds settling the search chrome while the home page kept the inverse order (measured, search pill at y=4 and categories at y=68), it blocks a mockup whose chrome order disagrees with its sibling mockups in the same folder, and it names the real gap, every existing gate looks at ONE file while consistency is a RELATIONSHIP. GATE_INDEX.md line 13 marks it [orphan] and it is absent from ~/.claude/settings.json. Armed neighbours only partially cover: fix-needs-before-after-gate.py (WIRED, Stop, born 2026-07-28 from the same session as the first quote) and count-consistency-gate.py (project, WIRED, 3 blocks). Memory project_consistency_system records npm run consistency with 4 detectors and 2 live gates.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Fold chrome-consistency-gate.py's sibling comparison into mockup-preflight-manifest.py as one more aggregated item, so it reports in the same single combined deny as the other mockup requirements instead of adding a 32nd hook to the PreToolUse Write matcher. Keep its deliberate silences (no siblings, sibling has no chrome, orders agree).",
+  "pays_for_itself": "Zero net hooks when folded into the existing aggregator.",
+  "why_it_recurs": "Every gate, every review and every mockup round grades one file, and each file passes on its own merits, so a relationship between two files is the one thing nothing in the estate is looking at. Six rounds of settling one screen therefore leaves its sibling untouched and nobody notices until he opens both."
+ },
+ {
+  "name": "every-clickable-thing-actually-works",
+  "statement": "Everything that looks clickable must work, and an account section needs real editable controls, not decorative icon rows.",
+  "occurrences": 2,
+  "quotes": [
+   "So that's why make it so when you click coiffure, nails, everything works like when you click. (2026-07-31T17:02)",
+   "the icon sh remove make a profile section or account yk so they can acc edit make it acc like itbdumb add (2026-08-03T08:27)"
+  ],
+  "max_intensity": 2,
+  "coverage": "COVERED_BUT_WRONG",
+  "coverage_evidence": "The dead-click rules exist and are armed but their scope excludes the exact files he complained about. .claude/skills/solen-drift-check/scripts/check.py lines 363-364 and 907-918 hold B1 (onClick={() => {}}) and B2 (dead href), enforced by .claude/hooks/pre-edit-drift-gate.sh (WIRED on Edit, Write and MultiEdit), but that gate's own header (lines 18-20) states its scope is app|components|components-legacy .tsx and .css and that it Skips mockups (public/). Both complaints above are about mockups. Read interaction-proof-gate.py (WIRED, Stop, 6 blocks): it requires that interactive behaviour WRITTEN in a mockup be exercised by dispatching an event and reading the computed value back, which does not catch a chip that carries no handler at all, because there is no behaviour to exercise.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Extend pre-edit-drift-gate.sh's B1/B2 arm to public/_mockups/**/*.html instead of skipping it, with one adjustment for the medium: in a static HTML mockup, href=\"#\" on an element that also carries a JS click handler is legitimate, so require handler-or-real-href rather than banning href=\"#\" outright. Named false-positive risk: a deliberately non-interactive elicitation or before-pane mockup, which should escape through the existing per-line drift-ok marker.",
+  "pays_for_itself": "Zero net hooks, it is a scope widening of an already-registered project gate.",
+  "why_it_recurs": "The mockup exclusion was written when mockups were throwaway sketches, and mockups have since become the main deliverable he reviews on his phone, so the one file class he actually taps is the one class the dead-click rule does not read."
+ },
+ {
+  "name": "use-the-asset-i-already-made",
+  "statement": "Use the icon or asset I already made instead of drawing your own version of it.",
+  "occurrences": 2,
+  "quotes": [
+   "Look into the fucking spy icon that I fucking made, bro. Like, what the fuck is this fucking weird eye shit that you're fucking doing? (2026-08-02T21:03)",
+   "And you made up, like, a hard icon, so fuck off with that. (2026-07-31T14:44)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_BUT_WRONG",
+  "coverage_evidence": "Partially armed, and the armed part checks the wrong thing. mockup-content-gate.py (WIRED) carries branch 3 from mockup-english-lucide-gate.sh, which blocks a non-Lucide inline <svg> in a mockup, so a hand-drawn glyph is caught in mockups but not in components, and nothing anywhere checks whether a real asset for that concept already exists. Project CLAUDE.md line 174 bans hand-drawn inline SVG glyph paths in mockups, memory feedback_icon_rules says real Lucide icons only. sample-dont-pick-colour-gate.py's docstring is the proof the assets exist and are findable: public/icons/categories/{scissors,clippers,nails,spa,map,walkin}.png, shipped and approved since 26 July. no-invented-ui-gate.py (WIRED) is structural but only checks the salon-card signature.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Add an existence arm to mockup-content-gate.py's existing inline-svg branch (already wired, no new registration): when a write introduces an inline <svg><path d=...> glyph or a new icon file whose name matches an existing file under public/icons/**, block and name the existing path. Detection is a filename comparison, so false positives are near zero, and the deny message should carry the matched path so the fix is one edit.",
+  "pays_for_itself": "Zero net hooks.",
+  "why_it_recurs": "Drawing a glyph takes one tool call and searching for an existing asset takes several with an uncertain result, so under task focus the certain path wins. The assets also live outside the directories a UI task naturally reads, so they are invisible unless deliberately looked for."
+ },
+ {
+  "name": "illustration-craft-floors",
+  "statement": "Keep illustrated assets clean: nothing clipped or overflowing its frame, no arbitrary rotation, no half-filled shapes, no stray partial borders, and no permanent looping float.",
+  "occurrences": 4,
+  "quotes": [
+   "it goes out of the corners. You know? Maybe it's too big or something, the air. It goes out of the corner. (2026-07-31T19:30)",
+   "these stones look ugly, and, like, it just look cut out when it moves (2026-08-02T19:49)",
+   "I don't like how it's, like, ninety degrees, like, tilted. (2026-07-31T20:03)",
+   "I don't really like how it's just, like, the floating state is always there. Like, give me, like, a stop. You know? Like like, just completely frozen state. (2026-08-02T20:15)"
+  ],
+  "max_intensity": 2,
+  "coverage": "COVERED_AND_ARMED",
+  "coverage_evidence": "The verification half is armed: animation-full-clip-verify-gate.py (WIRED, Stop, 3 blocks) was born from six rounds each verified on the resting frame and three neighbours while the defect lived elsewhere in a 75-frame clip, and it forces the whole clip to be checked. no-regression-by-fix-gate.py (WIRED, 6 blocks) covers the round-N fix breaking round-N-minus-1. The craft floors themselves (overflow, clipping, rotation, partial fill, stray hairline) are judgment and appear nowhere as rules; _design-system/MOTION.md holds the vocabulary and the duration table but no illustration craft list.",
+  "gate_verdict": "PRINCIPLE_ONLY",
+  "gate_spec": "n/a for a gate. These belong as a short craft checklist in MOTION.md, graded by the clip-verify pass that is already armed. The one mechanically checkable member, an infinite repeat on a decorative element with no rest state, has a single occurrence and no gate request, so it stays a principle until it recurs; if it does, it is one regex arm on animation-full-clip-verify-gate.py, not a new file.",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "Each of these is visible only in motion or at the frame edge, and the artifact looks correct in the still I take to verify it. The clip gate closed the biggest hole; the rest are craft judgments that need a checklist, not a denial."
+ },
+ {
+  "name": "flag-work-you-think-is-worse",
+  "statement": "If you think what you built is worse than what already ships, say so before you hand it over.",
+  "occurrences": 1,
+  "quotes": [
+   "on all of them, the current looks better like what are you fucking trying like bro? (2026-07-28T21:25)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_AND_ARMED",
+  "coverage_evidence": "~/.claude/CLAUDE.md rule 3 (lines 68-118) was rewritten from this exact signal and names the case verbatim at line 113: three design-principle mockups built and delivered with no caveat, and his verdict was on all of them, the current looks better. Line 118 records enforcement by ~/.claude/hooks/pushback-gate.py (Stop, 16/16 self-test, armed 2026-07-29), which blocks a closing reply that agrees with a proposal while naming no cost and offering no escape. Confirmed WIRED in ~/.claude/settings.json.",
+  "gate_verdict": "ALREADY_HANDLED",
+  "gate_spec": "n/a",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "Agreement is the cheapest move available and it ends the exchange, so the pressure runs one way every turn. The law now names the two legal endings and a Stop gate enforces them, which is the right tier for a disposition failure."
+ },
+ {
+  "name": "multiple-directions-to-pick-from",
+  "statement": "Give me several distinct directions to react to, not one synthesized answer.",
+  "occurrences": 1,
+  "quotes": [
+   "that's why, like, I want you guys to show me more direction (2026-07-29T19:56)",
+   "so understand that concept behind each mob in, you know, like concept, right, in the principles that they're using, like, what we can learn from (2026-07-29T19:56)"
+  ],
+  "max_intensity": 2,
+  "coverage": "COVERED_AND_ARMED",
+  "coverage_evidence": "Read mockup-variations.py (WIRED, UserPromptSubmit per settings.json, inject-only, never blocks): fires when a give me several signal co-occurs with a UI anchor word and injects the multi-variant mandate, with a 2026-07-10 fix so a non-design several ideas request no longer trips it. ~/.claude/CLAUDE.md rule 2 (line 62) requires rendering before asking on visual choices, and visual-question-needs-render-gate.py (WIRED, PreToolUse AskUserQuestion) blocks a look question asked in prose. The learn-the-principle half is carried by the reference-lock skill, which requires a Philosophy section in every reference spec it writes.",
+  "gate_verdict": "ALREADY_HANDLED",
+  "gate_spec": "n/a",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "The mockup-first law leans singular (copy the real page, change only the one thing), so a plural request collapses to one artifact unless something re-injects the plural. The injector already does that."
+ },
+ {
+  "name": "mockup-is-a-full-page-at-real-size",
+  "statement": "Give me the full page at real device size, tight enough to scan without endless scrolling.",
+  "occurrences": 2,
+  "quotes": [
+   "Alright. I think a is better and also make, like, a full mock up, like, full page, like, only months, like, actually focused. (2026-07-31T14:13)",
+   "I don't know why I don't know why, but I have to, like, scroll, like, a lot lot to, like, go to the bottom. Like, can you actually fix this shit? (2026-07-31T18:30)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_AND_ARMED",
+  "coverage_evidence": "mockup-realsize-gate.py (WIRED, PreToolUse Write|Edit|MultiEdit per settings.json), born from the stores are too small, I don't really know how it looks. .claude/hooks/mockup-fullscreen-gate.py (WIRED via .claude/settings.json on Write and Edit). public/_mockups/_BASE.md is law per project CLAUDE.md line 96 (402 device constant, full-bleed no fake phone, 100dvh, safe-area), with no-fake-phone-gate.py listed there as a gate but marked [orphan] at GATE_INDEX.md line 101.",
+  "gate_verdict": "ALREADY_HANDLED",
+  "gate_spec": "n/a. The excessive-scroll half is a density judgment, not a measurable floor, and the two size gates already cover the real-device requirement.",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "A fragment is faster to produce and looks complete in isolation, and page length only becomes visible on his phone, which is after the handover."
+ },
+ {
+  "name": "no-hardcoded-content-even-in-a-first-mockup",
+  "statement": "Populate mockups from real seeded data, not hardcoded content, even on the first one.",
+  "occurrences": 1,
+  "quotes": [
+   "like, don't don't just, like, hard code shit. Okay? I mean, it's a first mock up. (2026-07-31T10:53)"
+  ],
+  "max_intensity": 2,
+  "coverage": "COVERED_BUT_WRONG",
+  "coverage_evidence": "Read /Users/sulo/Documents/solen/scripts/hooks/fabricated-value-gate.py (WIRED at .claude/settings.json lines 163, 244, 317): it blocks eight classes of net-new hardcoded display literal (rating, reviewCount, distance, availability time, discount, price, address, isSaved) but only in app/components/components-legacy .tsx, explicitly excluding preview harnesses, so mockups are out of scope. .claude/hooks/mockup-depicts-gate.py (WIRED) covers the adjacent half by requiring a manifest citing where each drawn feature lives. Project CLAUDE.md taste rule 1 (line 28) was amended 2026-08-02 so a seeded row read through a normal query counts as a live source.",
+  "gate_verdict": "PRINCIPLE_ONLY",
+  "gate_spec": "n/a, and here is the reason not to widen fabricated-value-gate to mockups: a static HTML mockup necessarily contains literal text, so the gate would fire on nearly every mockup write and land straight in the skip-flag pile that already has mockup-preflight-skip at 65 uses. The enforceable version is the mockup-depicts manifest that already exists, extended by judgment to name the data source for displayed values.",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "Hardcoding is the only way to see a layout immediately, and wiring seeded data first costs a query, a check that the seed exists, and a wiring step before anything renders."
+ },
+ {
+  "name": "smooth-in-place-category-switch",
+  "statement": "Switching categories transitions smoothly in place; it must never read as loading another page.",
+  "occurrences": 2,
+  "quotes": [
+   "then it it goes to a slice service bit, like, smoothly. It doesn't really look like it's jumping to, like, another page. Right? That's what I want. Like, can you actually go analyze and implement that? (2026-07-31T15:03)",
+   "when you try to switch between the categories, you like loads like a one another page like elegant into how Airbnb does it because on Airbnb it's really smooth (2026-08-01T19:18)"
+  ],
+  "max_intensity": 2,
+  "coverage": "UNCOVERED",
+  "coverage_evidence": "Searched _design-system/MOTION.md for categor, transition, page jump and morph: it holds the easing set, the butter transition, the booking step slide-and-fade (V3-D464) and a duration table, and contains no rule about category switching or in-place navigation. Grepped _design-system/TASTE_LOG.md for the same and found no dated decision. No gate in GATE_INDEX.md addresses navigation feel; pre-edit-gesture-expand-gate.py (WIRED) covers the adjacent but different search-morph gesture-linking rule.",
+  "gate_verdict": "PRINCIPLE_ONLY",
+  "gate_spec": "n/a for a gate, this is a product behaviour spec and not mechanically checkable. It should be written into MOTION.md as a named decision (category switch = in-place content swap on the glide curve, never a route push that remounts the shell) and into TASTE_LOG.md with both dates, so it stops being re-derived each time.",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "A route push is the framework's default and the correct in-place swap needs shared layout plumbing, so the cheap implementation reads as done and only feels wrong on the device."
+ },
+ {
+  "name": "drop-a-rejected-direction",
+  "statement": "When I reject a direction, drop it entirely, do not keep iterating on it.",
+  "occurrences": 2,
+  "quotes": [
+   "fuck off with this home page. I don't like this at all. (2026-07-31T10:15)",
+   "this after so many buttons sh i dont like it stop (2026-07-29T05:30)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_AND_ARMED",
+  "coverage_evidence": "Read approved-surface-guard.py (WIRED, PreToolUse Write|Edit|MultiEdit), which blocks redesigning surfaces the owner already approved or froze. .claude/hooks/mockup-resurrection-gate.py and .claude/hooks/pre-edit-removed-check.sh are both WIRED via .claude/settings.json and read _design-system/REJECTED_TREATMENTS.json and REMOVED.md. Project CLAUDE.md lines 185-190 hold the graveyard protocol with npm run removed. The mechanism is armed and correct; what failed is the feeding step, neither the 07-29 button direction nor the 07-31 homepage direction was written into REJECTED_TREATMENTS.json, so the gates could not see them.",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "harden-when-flagged.py (WIRED, UserPromptSubmit) already detects rejection and recurrence language in the owner's message. Extend it: when a rejection phrase co-occurs with a named surface, inject a one-line mandate to append the rejection to _design-system/REJECTED_TREATMENTS.json in the same turn. Inject-only, never a block, so it adds nothing to the denial ledger while feeding the three gates that are already armed and already reading that file.",
+  "pays_for_itself": "Zero net hooks, it is an extension of an existing UserPromptSubmit hook.",
+  "why_it_recurs": "The graveyard entry is the last thing in a turn that just went badly, and skipping it costs nothing visible today. Three armed gates then read an empty record and pass, so the rejected direction comes back looking new."
+ },
+ {
+  "name": "smaller-cards-more-per-viewport",
+  "statement": "Make the store cards smaller so more of them fit the first viewport.",
+  "occurrences": 1,
+  "quotes": [
+   "And also... so... and also I feel like we should make the the the... each store card is, like, a little bit smaller, I feel like. because, I know, it's a bit too big. (2026-07-31T14:44)"
+  ],
+  "max_intensity": 1,
+  "coverage": "ADVICE_ONLY",
+  "coverage_evidence": "Project CLAUDE.md FLOORS LAW 3 (line 68, density floor) already sets the target in the right direction: a populated list or grid first viewport shows >= 4 content units mobile and >= 6 desktop plus a visibly cropped next item. No locked card height exists; the design contract radius row (line 105) fixes entity-card radius 16 but not size. locked-value-gate.py, which would freeze a value once he names it, is ORPHAN per GATE_INDEX.md line 60.",
+  "gate_verdict": "PRINCIPLE_ONLY",
+  "gate_spec": "n/a. This is a taste value that needs logging, not gating: record the resulting card height in TASTE_LOG.md once it is settled so it is not re-litigated. Do not arm locked-value-gate.py for this, one occurrence at intensity 1 does not justify adding a wired hook while the estate is 5 over its ceiling.",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "Card size trades against photo prominence, and the imagery floor pushes the photo bigger while the density floor pushes the card smaller, so without a logged number the two floors resolve differently each time."
+ },
+ {
+  "name": "labelled-groups-not-a-flat-list",
+  "statement": "Group list rows under visible category headings instead of one undifferentiated list.",
+  "occurrences": 1,
+  "quotes": [
+   "weon need seperation like category text like wallet etc (2026-08-03T08:27)"
+  ],
+  "max_intensity": 2,
+  "coverage": "ADVICE_ONLY",
+  "coverage_evidence": "Project CLAUDE.md FLOORS LAW 5 (line 71, deletion names what it keeps) sets the measured grouping floor: between-group gap >= 2x in-group gap, or a full weight, size or colour step. The design contract radius row (line 105) defines the grouped LIST-card at 24 for category members in one card. No gate checks grouping; .claude/skills/solen-taste-diagnosis carries the grouping decision tree as a diagnostic walk.",
+  "gate_verdict": "PRINCIPLE_ONLY",
+  "gate_spec": "n/a. The floor already exists and is measurable by the design-verifier at render time; what is missing is applying it to the account surface, which is judgment.",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "A flat list passes every ceiling rule in the system (fewest sizes, fewest weights, least chrome), which is the exact compliance-optimal emptiness the FLOORS LAW audit was written to fix, and floor 5 is the newest and least-internalised of them."
+ },
+ {
+  "name": "current-principles-not-2016",
+  "statement": "Research and apply current design practice; anything that reads a decade old is rejected.",
+  "occurrences": 1,
+  "quotes": [
+   "For example, the next appointment. Right? The doc confirmed that is fucking twenty sixteen shit. (2026-07-28T20:09)"
+  ],
+  "max_intensity": 3,
+  "coverage": "ADVICE_ONLY",
+  "coverage_evidence": "~/.claude/CLAUDE.md rule 15 (reality over memory) forbids answering from training recall on anything that drifts and requires verification against a live source. Project CLAUDE.md line 143 routes any named brand or visual reference to Skill(reference-lock), whose whole purpose is capture-not-guess, and the fable-skill-trigger.py reference category (WIRED, UserPromptSubmit) fires it. No gate can grade whether output reads dated.",
+  "gate_verdict": "PRINCIPLE_ONLY",
+  "gate_spec": "n/a, this is irreducibly judgment. The operational form is already law: a design principle delivered without a captured, dated reference behind it is training recall, and rule 15 says to label it as such rather than present it as research.",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "Design principles recalled from training are averaged over years of material, so the median of that average is genuinely several years old, and it arrives feeling like knowledge rather than like a guess."
+ },
+ {
+  "name": "no-em-dash-anywhere",
+  "statement": "Never use an em-dash or en-dash in anything you write, in chat, in code, in copy or in commits.",
+  "occurrences": 1,
+  "quotes": [
+   "im seeing alot of m dash stop using it never m dadh make hook/gate for it (2026-07-27T20:29)"
+  ],
+  "max_intensity": 3,
+  "coverage": "COVERED_AND_ARMED",
+  "coverage_evidence": "Two armed layers. Read copy-lint-gate.py (WIRED, PreToolUse Write|Edit|MultiEdit): rule 2 NO-EM-DASH at lines 56-58 compiles the em-dash and en-dash characters over the CODE_EXT tuple (.tsx .jsx .ts .js .mjs .cjs .html .htm .css .scss), checked at line 254 and denied at line 339. Read GATE_INDEX.md line 100: no-emdash-reply-gate.py (WIRED, Stop) covers what I say to the owner, quoting this exact message as its origin. GATE_FIRES.md shows it blocking 18 times across six rows in the window, the joint third-highest firer. Project CLAUDE.md taste rule 10 (line 41) and memory feedback_no_emdashes carry the prose form.",
+  "gate_verdict": "ALREADY_HANDLED",
+  "gate_spec": "n/a. One note worth carrying: this is a Stop-tier gate on the reply, which is the double-send shape the owner neutered concise-response-gate and always-recommend-gate for (memory feedback_no_reply_blocking_gates). It survives because the fix is a one-character substitution rather than a rewritten reply, so it should stay narrow and never grow into a broader reply linter.",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "The em-dash is the default connector in my generation distribution, so it reappears whenever attention is on content rather than punctuation. It fires 18 times a week because the gate is doing the work the habit will not."
+ },
+ {
+  "name": "four-locale-sweep",
+  "statement": "Sweep all four locales together, never just the one you were editing.",
+  "occurrences": 1,
+  "quotes": [
+   "make an all lang sweep english german italian and french (2026-07-27T21:44)"
+  ],
+  "max_intensity": 1,
+  "coverage": "COVERED_AND_ARMED",
+  "coverage_evidence": "Read GATE_INDEX.md line 48 and confirmed in ~/.claude/settings.json: i18n-write-gate.py is WIRED on Stop, born from this exact 2026-07-27 message, and enforces four-locale copy at write time. It blocked twice in the window per GATE_FIRES.md. _rules/I18N_ROUTING.md holds the routing law and _design-system/COPY_LAW.md now covers all four locales.",
+  "gate_verdict": "ALREADY_HANDLED",
+  "gate_spec": "n/a",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "Editing one locale is the visible half of the task and the other three are invisible until someone switches language, so partial coverage looks finished. The gate closes it at the turn boundary."
+ },
+ {
+  "name": "german-formal-sie-register",
+  "statement": "Write German UI copy in the formal Sie register, and Italian in Lei and French in vous.",
+  "occurrences": 1,
+  "quotes": [
+   "making, like, more formal, right, in the German, like, SIE (2026-07-28T18:40)"
+  ],
+  "max_intensity": 2,
+  "coverage": "COVERED_BUT_WRONG",
+  "coverage_evidence": "LOUD FINDING, an inverted gate still sitting in a wired file. Read ~/.claude/hooks/copy-lint-gate.py rule 5, lines 73-137: the rule is titled NO-FORMAL-REGISTER-IN-DE and its deny message at lines 134-137 still reads German product copy is locked to informal du everywhere except the legal/discovery_tos namespaces. Rewrite with du/dein/deine/dir/dich. That is the exact opposite of the owner's decision. It is inert only because line 96 sets REGISTER_RULE_ARMED = False with a comment dated 2026-08-03 saying the owner reversed it, so today NOTHING enforces the new direction while a fully written backwards gate sits one boolean away from blocking correct copy. The law itself is correct and recorded: _design-system/COPY_LAW.md section 1 (register table: de Sie, fr vous, it Lei; Owner decision, 2026-07-29. Settled, not open) and _design-system/TASTE_LOG.md line 453 with the shipped commits (69fc74d65: 330 swapped plus 161 hand-conjugated; a0423867d for it and fr). i18n-write-gate.py has no register check (grepped for Sie, du, dein, register, formal: no matches).",
+  "gate_verdict": "EDIT_EXISTING_GATE",
+  "gate_spec": "Invert copy-lint-gate.py rule 5 in place, in the gate that is already wired, so no registration changes. Rename it NO-INFORMAL-REGISTER-IN-DE, swap REGISTER_TOKEN to match the word-bounded set du, dein, deine, deinen, deiner, dir, dich on user-facing values in messages/de.json, keep REGISTER_ALLOWED_NAMESPACES for legal and discovery_tos, rewrite the deny message to cite COPY_LAW.md section 1, and set REGISTER_RULE_ARMED = True. Delete the old inverted message text entirely so it can never be re-armed backwards. Named false-positive risk: du inside a proper noun, a quoted salon name, or a loan string sitting in de.json; word-boundary matching plus the namespace exemption handles the ordinary cases, and it must be run against the current de.json before arming.",
+  "pays_for_itself": "Zero net hooks, copy-lint-gate.py is already WIRED on PreToolUse Write|Edit|MultiEdit.",
+  "why_it_recurs": "The sweep shipped 491 changed strings, so the register is correct on disk today and the risk is entirely forward: new strings get written from habit, and the only enforcement that ever existed points backwards. A dead rule still holding the superseded text is also how a settled decision gets quietly re-argued later."
+ },
+ {
+  "name": "writing-law-for-how-to-write",
+  "statement": "There must be a researched law for how to write any user-facing string, not just how much.",
+  "occurrences": 1,
+  "quotes": [
+   "research everything and make a whole principle about, like, type... like, what... like, when you're writing something, how to do it and stuff. (2026-07-29T15:34)"
+  ],
+  "max_intensity": 2,
+  "coverage": "COVERED_AND_ARMED",
+  "coverage_evidence": "_design-system/COPY_LAW.md exists, 239 lines, 9 sections, headed with this owner quote, covering register, sentence shape, warmth inside formal, punctuation, numbers, dates and money, per-string-type shape, translation mechanics, and which rules are gates versus judgment; it states every number was measured on our own four locale files rather than cited. Project CLAUDE.md lines 163-168 route to it from the always-in-context Copy economy block (pointer added 2026-08-03). _design-system/TASTE_LOG.md line 454 records the decision and commit a289a2154.",
+  "gate_verdict": "ALREADY_HANDLED",
+  "gate_spec": "n/a",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "It does not any more. The gap was that the length law was in context and the writing law was not, which the 2026-08-03 pointer closed."
+ },
+ {
+  "name": "call-them-stores",
+  "statement": "Call salon businesses stores in product language.",
+  "occurrences": 1,
+  "quotes": [
+   "1 idc but we wanna call stuff stores more (2026-08-01T18:41)"
+  ],
+  "max_intensity": 1,
+  "coverage": "UNCOVERED",
+  "coverage_evidence": "Grepped _design-system/COPY_LAW.md for store, stores, Salon vs and glossar: no matches, it has no terminology or glossary section. No gate in GATE_INDEX.md addresses product vocabulary. The word does appear inside project CLAUDE.md line 67 quoting the owner (SHOW OFF THE STORES THAT WE HAVE), so the preference predates this message, but it exists nowhere as law.",
+  "gate_verdict": "PRINCIPLE_ONLY",
+  "gate_spec": "n/a for a gate. Add a short terminology section to COPY_LAW.md fixing the product word per locale (store, Store or Geschaeft, plus the fr and it equivalents) so it is decided once. A gate here would be wrong twice over: one occurrence at intensity 1 prefaced with idc, and a word-substitution block would fire on every legitimate use of salon in code identifiers, table names and the domain model.",
+  "pays_for_itself": "n/a",
+  "why_it_recurs": "The database, the routes and every type are named salon, so the code vocabulary constantly leaks into the copy vocabulary. Fixing it in COPY_LAW separates the two."
+ }
+]
