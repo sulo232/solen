@@ -907,7 +907,7 @@ never blanks anything.
       reference itself shows all three present together by +100ms of a 367ms open, and the earlier
       stagger reading came from the same ink-band method that produced this bug, so it wasn't
       evidence worth preserving. Named in the coder report, not silently decided.
-- [x] G2. The old label and the new content OVERLAP during the cross-fade (visible at 3316ms), rather verified by construction plus the trace: the page under the sheet is never unmounted and sheetOpacity rises continuously, so the old label shows through the still-translucent growing card while the new content ghosts in on top. NOT independently pixel-probed on the outgoing label, flagged.
+- [x] G2. The old label and the new content OVERLAP during the cross-fade (visible at 3316ms), rather verified: 5189d2382, SearchOverlay.tsx:642-646 (contentOp/fieldOp/listOp now share containerT) plus :612 (sheetOpacity, untouched, already rises continuously). The page under the sheet is never unmounted, so the old label shows through the still-translucent growing card while the new content ghosts in on top. The outgoing label itself was NOT independently pixel-probed.
       than one finishing before the other starts. Coder pass 2026-08-03 (uncommitted): no second
       label element was added. The underlying page (home pill / SearchTemplate bar) is never
       unmounted during the open, `sheetOpacity` (SearchOverlay.tsx:612, unedited by this pass) rises
