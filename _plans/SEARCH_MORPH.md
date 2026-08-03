@@ -620,3 +620,17 @@ states, its bottom edge 10px above the sheet's top edge at rest and flush (0) on
 clamped to the safe-area floor while focused; expanded service card bottom lands on **812**; Wo?
 tapped twice opens then closes, slot heights [496,66,86,68] -> [56,506,86,68] -> [496,66,86,68].
 `npx tsc --noEmit` clean.
+
+## OWNER PICK 2026-08-03: curve C
+
+Shown three curves side by side on the same geometry at `public/_mockups/search-curve/index.html`,
+he answered "C". Applied to `MORPH_EASE`, SearchOverlay.tsx:73.
+
+| | curve | chooser said | measured live after applying |
+|---|---|---|---|
+| A calm (was live) | [0.4, 0, 0.2, 1] | 50% at 128ms, 95% at 266ms | |
+| B Airbnb literal | [0.32, 0.72, 0, 1] | 50% at 59ms, 95% at 177ms | the shape he called too fast |
+| **C between (now live)** | **[0.36, 0.36, 0.1, 1]** | 50% at 90ms, 95% at 233ms | **50% at 102ms, 95% at 244ms, 99% at 310ms** |
+
+Measured on the real overlay at 375x812, zero page errors, and the URL stayed `/de` through the open
+so the in-place fix is not disturbed.

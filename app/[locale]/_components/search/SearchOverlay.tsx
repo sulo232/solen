@@ -70,7 +70,13 @@ const EASE = [0.32, 0.72, 0, 1] as const;
 // of the time. EASE stays untouched (other things depend on it); this curve is scoped to ONLY
 // the open/close container morph (`animate(openT, ...)` below) so the height travel actually
 // fills its own duration instead of visually settling a third of the way in.
-const MORPH_EASE = [0.4, 0, 0.2, 1] as const;
+// OWNER PICK 2026-08-03, curve "C" from the side-by-side chooser
+// (`public/_mockups/search-curve/index.html`). He was shown three on the same geometry and answered
+// "C". Measured on that page: A calm [0.4, 0, 0.2, 1] hits 50% at 128ms and 95% at 266ms; B, the
+// literal Airbnb curve pixel-measured off his own recording, [0.32, 0.72, 0, 1], hits 50% at 59ms
+// and 95% at 177ms and is the shape he had called too fast; C sits between them at 50% in 90ms and
+// 95% in 233ms, so it starts immediately without finishing early.
+const MORPH_EASE = [0.36, 0.36, 0.1, 1] as const;
 // R4c (2026-08-02 round 3, owner "too snappy, it breaks scrolling"): was 120. The expand
 // reallocates real layout space, so while it runs the scroller's own box grows AND its top
 // edge climbs: measured over the old 120px, the scroller gained 382px of height and its top
