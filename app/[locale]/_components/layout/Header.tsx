@@ -425,6 +425,18 @@ export default function Header({ locale }: { locale: string }) {
   // Owner 2026-06-29 (council-confirmed): on the HOMEPAGE the far-left slot shows the Solen logo (the
   // home icon is redundant on home). Other top-level pages keep the Home icon as a go-home affordance.
   const isHome = !!pathname && /^\/[a-z]{2}\/?$/.test(pathname);
+  // 2026-08-03, owner, for about the tenth time: "why is the notification inside and the hamburger
+  // menu inside a fucking profile page? I told you like ten fucking times."
+  // He is right and the cause is structural, not taste. Airbnb's Profile ROOT (IMG_6900, measured)
+  // carries a title plus ONE bell and no hamburger, because their bottom tab bar carries site nav.
+  // We have no tab bar, so `Header.tsx` puts the nav trigger on every route that is not already
+  // exempt by `showCategoryChrome` below (home, any category/search route, /inspo). The account
+  // hub fell into that leftover "deep page" branch purely by omission, never by decision.
+  // The account hub is a DESTINATION, not a browse surface: its own rows are its navigation, so a
+  // second global nav trigger and a notification bell are controls belonging to a different
+  // screen's job (FLOORS LAW 10). Full reasoning and evidence:
+  // _design-system/AIRBNB_PROFILE_PRINCIPLES.md, principle 1.
+  const isAccountHub = !!pathname && /^\/[a-z]{2}\/profile\/?$/.test(pathname);
   // V3-D (2026-08-01, owner "why is homepage still that bro"): the home route now renders the
   // SAME mobile category-chrome as the category/search routes (the All pill selected via
   // HEADER_CATEGORIES' `home` entry above), so it opts into every MOBILE-ONLY categorySegment
@@ -944,10 +956,15 @@ export default function Header({ locale }: { locale: string }) {
               (/notifications) + data source (/api/profile/notifications over the real
               notifications table) now exist. Logged-out renders nothing (no dead control,
               the reason it was removed 2026-06-10). [Bell] [Menu] rhythm per V3-D167. */}
-          <NotificationBell hidden={menuOpen} />
+          {/* Not on the account hub, see `isAccountHub` above: a bell is a notice about something
+              elsewhere, and this screen's job is the account itself. */}
+          {!isAccountHub && <NotificationBell hidden={menuOpen} />}
           {/* V3-D155 (2026-05-25): mobile map icon removed, the Karte tile
               in MobileCategoriesRow ("Für dich" 3×2 grid, position 6) now
               serves the same entry point, so the header icon was redundant. */}
+          {/* Not on the account hub, see `isAccountHub` above: that screen's own rows ARE its
+              navigation, so a second global nav trigger belongs to a different screen's job. */}
+          {!isAccountHub && (
           <button
             type="button"
             aria-label={menuOpen ? tSD("closeMenu") : tSD("openMenu")}
@@ -984,6 +1001,7 @@ export default function Header({ locale }: { locale: string }) {
               <X size={22} strokeWidth={strokeForSize(22)} />
             </span>
           </button>
+          )}
         </div>
       </div>
     </header>
