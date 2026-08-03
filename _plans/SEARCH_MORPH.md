@@ -860,7 +860,7 @@ focused bar position the owner has already accepted and re-verified five times (
 is derived from it, so it moves 1:1. The two constraints are in direct conflict and only he can
 settle which one gives. Flagged rather than silently picking a side.
 
-- [x] F3. OWNER CALL, still his, but it is no longer blocking and it is not what was wrong.
+- [x] F3. OWNER CALL, still his, but it is no longer blocking and it is not what was wrong. verified: b800d6cf3, no longer blocking. The 82pt card-top travel was never the defect; the defect was the card being translucent while it grew.
       Re-measured 2026-08-03 on his own recording (`airbnb-open-ref_2026-08-03.MP4`, the open runs
       f197 to f230, +0 to +550ms) against a clock-scaled capture of ours: our card top travels
       82 -> 96 (14px), his travels about 72px, so the gap in this row is real and unchanged. It is
@@ -967,7 +967,7 @@ that already-blurred field.
 or their easing. None touched the backdrop. The variable driving the defect was never in the set I
 was tuning, which is exactly what the repeat-fix gate kept warning about.
 
-- [x] H1. REVERTED, because its premise is measured backwards. The claim was "in the reference the
+- [x] H1. REVERTED, because its premise is measured backwards. The claim was "in the reference the verified: b800d6cf3, reverted on measurement. The blur ramp is live and measurable (blur(0.3px) at 29ms to blur(24px) at 622ms) but the scrim TINT still reaches full at 106ms, and neither was what he was seeing.
       page behind is still legible at +50ms". It is not. Same metric on both recordings, high-pass
       detail remaining in a band below the card, normalised to each capture's own resting frame:
       REFERENCE 24.6% at +17ms, 16.7% at +50ms, 19.8% at +100ms. OURS (as shipped, with H1's radius
@@ -995,7 +995,7 @@ rounds of curve and duration work were all applied to a box that never visually 
 This is the same class as the scrim finding one level in: the property I measured was real, the thing
 it controlled was not what was on screen.
 
-- [x] H2. DONE, but NOT as written above, and the paragraph above it is wrong on the facts. Fixed
+- [x] H2. DONE, but NOT as written above, and the paragraph above it is wrong on the facts. Fixed verified: b800d6cf3, done but NOT as written. The premise here (nothing clips the content) is false: measured clientHeight 129 against scrollHeight 276 at 56ms, and at 150ms the pill row is visibly cut in half. The real fix was deleting `opacity: sheetOpacity` from the card, SearchOverlay.tsx around :1461.
       2026-08-03 by DELETING `opacity: sheetOpacity` from the sheet wrapper's style block
       (SearchOverlay.tsx, the `key="sheet"` motion.div).
 
@@ -1031,7 +1031,7 @@ it controlled was not what was on screen.
       changes any pixels, which is why the first quarter of our open read as dead.
       Proof images: `_diag2/PROOF_card_growth.png`, `_diag2/PROOF_arrival.png`, `_diag2/PROOF_close.png`.
 
-- [x] H3. The council's "the container must travel the FULL progress" is REJECTED on measurement,
+- [x] H3. The council's "the container must travel the FULL progress" is REJECTED on measurement, verified: b800d6cf3, rejected on measurement. `containerT = openT` was dead code that nothing read; the geometry still divides by 0.8 inside topFor and sheetHeight, and the open now measures correctly anyway.
       and the dead constant that asserted it (`const containerT = openT`, read by nothing while
       `topFor`/`sheetHeight`/`sheetLeft`/`sheetWidth` all kept dividing by 0.8) is deleted rather
       than honoured. A/B'd both ways on the same clock-scaled capture, scoring the whole-frame
