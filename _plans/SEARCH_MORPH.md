@@ -963,3 +963,23 @@ was tuning, which is exactly what the repeat-fix gate kept warning about.
 - [ ] H1. The backdrop must arrive gradually with the sheet, not instantly at full blur. In the
       reference the page behind is still legible at +50ms and only fully blurred once the card has
       grown.
+
+## THE REAL STRUCTURAL BUG, seen at last 2026-08-03 (H2)
+
+Recorded the current build, aligned the frames by diffing against the SETTLED frame (the earlier
+alignments kept locking onto the page's own load, which is why two side-by-sides showed our pane
+doing nothing), and put the pairs next to his.
+
+At 100ms our measured sheet height is 26% of final. **The picture at 100ms shows the ENTIRE overlay
+already laid out at full size, merely translucent**: the heading, the pill row, the field, the Wo?
+and Wann? rows, all in their final positions. His at 100ms is a small card near the pill.
+
+So the element whose height I have been animating is not the element the eye sees. The white card and
+its content render at final size regardless of the wrapper's height, because nothing clips them. Six
+rounds of curve and duration work were all applied to a box that never visually constrained anything.
+
+This is the same class as the scrim finding one level in: the property I measured was real, the thing
+it controlled was not what was on screen.
+
+- [ ] H2. Make the sheet's animated height actually CLIP its content, so growing the box reveals the
+      card progressively instead of the card being drawn full size inside a growing invisible frame.
