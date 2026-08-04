@@ -1054,3 +1054,66 @@ why this is reported rather than guessed: (a) solve the slot layout against the 
 height so the growing box CROPS a full-size composition, which kills the clamp but gives the card a
 hard-cut bottom edge instead of the rounded growing rect the reference has; or (b) let the rows
 below the card fold in on `openT`, which re-introduces the squeeze. Owner call.
+
+## F3 RESOLVED 2026-08-04 (owner: fix the animation, stop asking permission on an already-identified fix)
+
+Applied the parked travel fix: `RESTING_TOP` 96 -> 160, SearchOverlay.tsx:448-457. Reference travel
+62 -> 146 (84pt) on a 402x874 device, scaled by the device-height ratio (812/874 = 0.929) to 78px
+here, landed on the measured home-pill origin (82) + 78 = 160. One constant, no new motion value, no
+new duration or easing, one continuous `topFor`/`sheetHeight` still doing the interpolation.
+
+**Per-frame card top, ours beside the reference's, as a share of each one's own travel:**
+
+| t | ours top | ours share | reference top | reference share |
+|---|---|---|---|---|
+| 0ms | 82.0 | 0% | 64.0 | 0% |
+| 50ms | 88.4 | 8.2% | 66.65 (interp) | 3.2% |
+| 100ms | 98.3 | 20.9% | 69.3 | 6.4% |
+| 200ms | 121.1 | 50.1% | 115.0 | 62.0% |
+| 300ms | 142.1 | 77.1% | 137.3 | 89.1% |
+| 600ms | 160.0 | 100% | 146.05 (interp) | 99.7% |
+
+Ours: real headless Chromium rAF trace, 375x812, home pill click to settle (settles at t~400ms of the
+367ms nominal `openT` duration, matching prior rounds); travel 82 -> 160 = 78px. Reference: the
+existing 120fps frame-by-frame table above (t=0..650ms), travel 64.0 -> 146.3 = 82.3pt (the table's
+own start/end, close to but not identical to the 62/146 headline figures, which come from a separate
+still-frame PIL sample). Shapes are not identical (the reference is more back-loaded through 100ms,
+ours is not) because this fix only moves the ENDPOINT; the curve (`OPEN_EASE`) was left untouched per
+the hard rule against adding a new duration or easing constant.
+
+**The bar's NEW resting numbers, stated plainly:**
+- Resting (unfocused): **(24, 292) 327x48**, was (24, 228) 327x48. The pin moved 1:1 with
+  `RESTING_TOP`, exactly as flagged when this was parked (`RESTING_TOP + 16px pt-4`).
+- Focused: **(12, 66) 351x48**, unchanged. `focusedTop` is a separate literal this edit does not
+  touch, so the state the owner already approved five times over does not move.
+
+**Every DO-NOT-REGRESS item, re-measured on the real build after the fix (real headless Chromium,
+375x812):**
+- Card stays opaque while growing: `getComputedStyle` on the sheet wrapper and the paper element
+  read `opacity: "1"` and `backgroundColor: "rgb(255, 255, 255)"` at all 84 sampled rAF frames across
+  the whole open (H2's fix is a deleted CSS property, untouched by this edit, so this is a structural
+  guarantee, not a curve-dependent one).
+- Outgoing "Suchen" ghost alive early: `ghostLabelOp` (unrelated to `RESTING_TOP`, driven only by
+  `openT` on `[0, 0.22]`) measured via computed opacity at 1.0 at t=0ms, still 0.31 at t=37ms, 0 by
+  t=85ms. A pixel ink-density read on the same fixed pill-rect screen region (fraction of pixels
+  darker than 230/255) gave 0.046 at t=0ms and 0.358 at t=100ms. Neither number set matches this
+  task's cited 0.31-at-0ms/0.21-at-100ms baseline exactly; flagged rather than forced, since the
+  element's own driver was not touched by this change either way.
+- Resting sheet floats above the screen bottom: **46.5px** of blurred page below it (was ~46px,
+  driven by `REST_BOTTOM_MARGIN_RATIO`, independent of `RESTING_TOP`), and flush (bottom 812) both
+  when focused and when a simulated keyboard is up.
+- Home pill opens in place: URL stays `http://localhost:57223/de`, **0** main-frame navigations.
+- Pills row collapses **60px -> 0px** on focus.
+- Bar border **1px rgb(228, 228, 231)** in both resting and focused states, no ring (`outlineWidth`
+  computed at rest is the global 3px focus outline definition, not an applied ring; boxShadow "none").
+- Close X **44x44** in both states (resting y=106, focused y=6, both tracking `cropTop` as before).
+- Keyboard simulated at `visualViewport.height=476` (336px inset): sheet reaches **(0, 50) 375x762**,
+  bottom 812. All three vertical scrollers (service suggestions, city list, calendar), all
+  simultaneously mounted per the R7 one-DOM-tree architecture, read `paddingBottom: 336px`, matching
+  the simulated inset.
+
+`npx tsc --noEmit`: no errors touching SearchOverlay.tsx.
+
+**Not done, named:** the "STILL OPEN after H2" clamp above (service card pinned at 56px for the first
+~133ms) is untouched and is a separate, already-reported structural issue, not a consequence of this
+edit.

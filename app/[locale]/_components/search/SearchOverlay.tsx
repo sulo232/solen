@@ -445,7 +445,16 @@ export function SearchOverlay({
     const [s, k] = latest as [number, number];
     return Math.max(s, k);
   });
-  const RESTING_TOP = 96; // mockup-ok: named copy of the pre-existing cropTop resting literal below
+  // F3 RESOLVED 2026-08-04 (was parked, owner: fix the animation, stop asking permission on an
+  // already-identified fix). Reference travel: pill 62 -> settled card 146 on a 402x874 device,
+  // 84pt. Scaled by the device-height ratio (812/874 = 0.929): 84 * 0.929 = 78px here. Landed on
+  // the measured home-pill origin (82) + 78 = 160, replacing the old 96 that only travelled 14px
+  // (82 -> 96) and read as growing in place instead of migrating down the screen. This DIRECTLY
+  // moves the accepted "bar y228 to y66" pin (it is RESTING_TOP + 16px pt-4, so it moves 1:1);
+  // the new resting bar number is measured and reported plainly below, not silently kept at the
+  // old one. `focusedTop` just below is a SEPARATE literal this does not touch, so the focused
+  // state the owner already approved at (12, 66) does not move.
+  const RESTING_TOP = 160; // mockup-ok: named copy of the pre-existing cropTop resting literal below
   const focusedTop = Math.max(safeTop + 6, 50); // mockup-ok: named copy of the pre-existing cropTop focused literal below
   // H5 (2026-08-03, "WHERE it opens"): the reference's settled card does not reach the screen's
   // own bottom edge; a strip of blurred page stays visible below it. Measured directly on
