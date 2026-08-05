@@ -3,7 +3,7 @@
 Screens: `/Users/sulo/.claude/uploads/1c4aafb4-f426-493f-b8e6-885ee10cdf1b/` (4 shots, one with a red
 circle around the divider under the search bar).
 
-- [x] A1. The search overlay CLOSE is still weird. The lingering box is smaller but NOT gone.
+- [ ] A1. The search overlay CLOSE is still weird. The lingering box is smaller but NOT gone. NOT CONFIRMED BY ME: ticked mid-flight by the running workflow, whose adversarial pass has not reported yet.
       DONE, and it reaches ZERO rather than shrinking again. Full write-up + every number:
       `_plans/SEARCH_MORPH.md`, section "J2". SearchOverlay.tsx `SCRIM_KNEE` + `morphIn` +
       `scrimOpacity`. Measured on real CDP compositor frames at BOTH 375x812 and 402x874:
@@ -12,7 +12,7 @@ circle around the divider under the search bar).
       29px -> **0.0px** at 402x874, and the count of such frames goes 7 -> **0** at both.
       The last oversized frame now precedes the first sharp frame by 142ms (375) / 166ms (402);
       before, it TRAILED it by 8ms (375) and the 402 gap was 18ms with 29px still on screen.
-- [x] A2. Remove the dividing line under the search bar on the home page (his red circle).
+- [ ] A2. Remove the dividing line under the search bar on the home page (his red circle). NOT CONFIRMED BY ME: ticked mid-flight by the running workflow, whose adversarial pass has not reported yet.
       DONE. What drew it: `border-b border-s-border` on the sticky search wrapper,
       `app/[locale]/page.tsx:235` (now :247). Not a shadow, not a hairline element: a 1px solid
       s-border BORDER on the full-bleed wrapper itself. Measured live at 375x812 and 402x874:
@@ -26,7 +26,7 @@ circle around the divider under the search bar).
       Airbnb's rounded, welcoming type. CONFLICT TO SURFACE, NOT SILENTLY RESOLVE: the design contract
       locks Inter Tight (display) + Inter (body) and bans Geist. Airbnb's own face is Cereal, which we
       do not license. So this needs either a named alternative or an explicit unlock from him.
-- [x] A4. "In der Nähe": remove the store cards, leave JUST the map. Owner overruled my objection
+- [ ] A4. "In der Nähe": remove the store cards, leave JUST the map. Owner overruled my objection NOT CONFIRMED BY ME: ticked mid-flight by the running workflow, whose adversarial pass has not reported yet.
       that the bookable tap-through disappears with them, verbatim 2026-08-05: "I want to actually
       remove the in your near, make it just a map, so people just gonna click on the map and open
       it". So the MAP ITSELF must be the tap target and open the map view.
@@ -51,7 +51,7 @@ circle around the divider under the search bar).
       (default "auto" keeps all seven other callers byte-identical, verified: "Beliebte Looks"
       keeps its text link, "Top auf Solen" keeps its 2 desktop scroll circles). Header now renders
       exactly as before the cards were removed, and desktop 1440 shows no dead scroll arrows.
-- [x] A5. DONE. `NearbyMap.tsx` badge now sources the shared `FROST_GLASS` util
+- [ ] A5. DONE. `NearbyMap.tsx` badge now sources the shared `FROST_GLASS` util NOT CONFIRMED BY ME: ticked mid-flight by the running workflow, whose adversarial pass has not reported yet.
       (`lib/frost-glass.ts`) instead of its own inline recipe: the dictated values ARE that
       util verbatim, and it is what `HeartButton.tsx` renders, so the badge and the heart are
       now the same object rather than two copies that can drift. Measured on the live badge,
@@ -65,7 +65,7 @@ circle around the divider under the search bar).
       overlay's treatment (measured from the live heart: `rgba(255,255,255,0.80)`,
       `backdrop-filter: blur(4px)`, `1px solid rgba(255,255,255,0.6)`, `0 1px 3px rgba(0,0,0,0.10)`
       plus an inset white top edge).
-- [x] A6. Remove the "Bald frei" section.
+- [ ] A6. Remove the "Bald frei" section. NOT CONFIRMED BY ME: ticked mid-flight by the running workflow, whose adversarial pass has not reported yet.
       DONE. It was `AvailableThisWeek.tsx` (title = `TITLES.soon` from `CategoryBrowseRails.tsx`),
       mounted only in `app/[locale]/page.tsx` (one call site, grepped). UNMOUNTED there, and its
       server fetch `getAvailableThisWeekSalonIds` left the page's `Promise.all` and its ids left
@@ -78,7 +78,7 @@ circle around the divider under the search bar).
       not touched. Component file + data function + doc kept on disk for revert, same convention
       as V3-D104 / V3-D106 / V3-D150; registry row and `components/AvailableThisWeek.md` both now
       say UNMOUNTED so nobody re-mounts it by reading the docs.
-- [x] A7. DONE. The right comparison is the star's PAINTED ink vs the numeral's CAP height, not
+- [ ] A7. DONE. The right comparison is the star's PAINTED ink vs the numeral's CAP height, not NOT CONFIRMED BY ME: ticked mid-flight by the running workflow, whose adversarial pass has not reported yet.
       box vs font-size: the lucide star only paints 0.7947 of its box (measured `getBBox` on the
       live 24x24 viewBox, y 2.000 -> 21.072), so an 11px star was 8.74px of actual ink against a
       9.46px cap = **0.924**, i.e. measurably smaller. He was right.
