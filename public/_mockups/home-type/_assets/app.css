@@ -11984,33 +11984,7 @@ select:focus-visible {
     padding-right: 5rem;
   }
 }
-@media (prefers-color-scheme: dark) {
 
-  .dark\:border-s-coral\/20 {
-    border-color: rgb(10 10 10 / 0.2);
-  }
-
-  .dark\:bg-s-amber\/10 {
-    background-color: rgb(241 174 39 / 0.1);
-  }
-
-  .dark\:bg-s-blue\/10 {
-    background-color: rgb(39 110 241 / 0.1);
-  }
-
-  .dark\:bg-s-coral\/10 {
-    background-color: rgb(10 10 10 / 0.1);
-  }
-
-  .dark\:bg-s-sage\/5 {
-    background-color: rgb(168 184 154 / 0.05);
-  }
-
-  .dark\:text-white {
-    --tw-text-opacity: 1;
-    color: rgb(255 255 255 / var(--tw-text-opacity, 1));
-  }
-}
 @media print {
 
   .print\:hidden {

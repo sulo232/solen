@@ -3,7 +3,7 @@
 Screens: `/Users/sulo/.claude/uploads/1c4aafb4-f426-493f-b8e6-885ee10cdf1b/` (4 shots, one with a red
 circle around the divider under the search bar).
 
-- [ ] A1. The search overlay CLOSE is still weird. The lingering box is smaller but NOT gone. NOT CONFIRMED BY ME: ticked mid-flight by the running workflow, whose adversarial pass has not reported yet.
+- [x] A1. The search overlay CLOSE is still weird. The lingering box is smaller but NOT gone. verified: adversarial CDP screencast at 375x812 and 402x874, 33 real compositor frames each. Max blank strip past the bar went 25px and 29px to 0.0px; oversized-over-a-legible-page frames went 7 to 0; the ordering flipped from sharp-8.3ms-before-the-box-left to 141.8ms and 166.2ms of clearance. It reaches zero rather than shrinking again.
       DONE, and it reaches ZERO rather than shrinking again. Full write-up + every number:
       `_plans/SEARCH_MORPH.md`, section "J2". SearchOverlay.tsx `SCRIM_KNEE` + `morphIn` +
       `scrimOpacity`. Measured on real CDP compositor frames at BOTH 375x812 and 402x874:
@@ -12,7 +12,7 @@ circle around the divider under the search bar).
       29px -> **0.0px** at 402x874, and the count of such frames goes 7 -> **0** at both.
       The last oversized frame now precedes the first sharp frame by 142ms (375) / 166ms (402);
       before, it TRAILED it by 8ms (375) and the 402 gap was 18ms with 29px still on screen.
-- [ ] A2. Remove the dividing line under the search bar on the home page (his red circle). NOT CONFIRMED BY ME: ticked mid-flight by the running workflow, whose adversarial pass has not reported yet.
+- [x] A2. Remove the dividing line under the search bar on the home page (his red circle). verified: computed style on the sticky wrapper, border-bottom 1px solid rgb(228,228,231) to 0px, at both sizes. Full-viewport-width horizontal edges in the top 400px went 2 to 1; the survivor is the pill own rounded border.
       DONE. What drew it: `border-b border-s-border` on the sticky search wrapper,
       `app/[locale]/page.tsx:235` (now :247). Not a shadow, not a hairline element: a 1px solid
       s-border BORDER on the full-bleed wrapper itself. Measured live at 375x812 and 402x874:
@@ -22,11 +22,11 @@ circle around the divider under the search bar).
       What the screen KEEPS as pinned-chrome boundary: measured at scrollY=600, the pill still
       carries `1px solid s-border` + `rgba(0,0,0,0.07) 0 2px 8px` at 9999px radius, and the feed
       scrolls under it (elementFromPoint just below the bar = the map canvas).
-- [ ] A3. MOCKUPS FIRST, he asked to SEE options ("can you show me different mockups"). Fix the fonts on the home page. He says he never approved them and they are nothing like
+- [ ] A3. MOCKUPS FIRST, he asked to SEE options ("can you show me different mockups"). Fix the fonts on the home page. He says he never approved them and they are nothing like BLOCKED on his call, and A8 now gives him the four directions to answer it with.
       Airbnb's rounded, welcoming type. CONFLICT TO SURFACE, NOT SILENTLY RESOLVE: the design contract
       locks Inter Tight (display) + Inter (body) and bans Geist. Airbnb's own face is Cereal, which we
       do not license. So this needs either a named alternative or an explicit unlock from him.
-- [ ] A4. "In der Nähe": remove the store cards, leave JUST the map. Owner overruled my objection NOT CONFIRMED BY ME: ticked mid-flight by the running workflow, whose adversarial pass has not reported yet.
+- [x] A4. "In der Nähe": remove the store cards, leave JUST the map. Owner overruled my objection verified: salon cards in the section 15 to 0, section height 464.1 to 210.5 at 375 and 478.5 to 210.5 at 402, all 15 markers still on the map. The map already WAS one anchor to /search?view=map, so the tap-through he asked for needed no new wiring.
       that the bookable tap-through disappears with them, verbatim 2026-08-05: "I want to actually
       remove the in your near, make it just a map, so people just gonna click on the map and open
       it". So the MAP ITSELF must be the tap target and open the map view.
@@ -51,7 +51,7 @@ circle around the divider under the search bar).
       (default "auto" keeps all seven other callers byte-identical, verified: "Beliebte Looks"
       keeps its text link, "Top auf Solen" keeps its 2 desktop scroll circles). Header now renders
       exactly as before the cards were removed, and desktop 1440 shows no dead scroll arrows.
-- [ ] A5. DONE. `NearbyMap.tsx` badge now sources the shared `FROST_GLASS` util NOT CONFIRMED BY ME: ticked mid-flight by the running workflow, whose adversarial pass has not reported yet.
+- [x] A5. DONE. `NearbyMap.tsx` badge now sources the shared `FROST_GLASS` util verified: value-by-value computed-style comparison against a live heart on the same page, all 10 properties string-identical at both sizes.
       (`lib/frost-glass.ts`) instead of its own inline recipe: the dictated values ARE that
       util verbatim, and it is what `HeartButton.tsx` renders, so the badge and the heart are
       now the same object rather than two copies that can drift. Measured on the live badge,
@@ -65,7 +65,7 @@ circle around the divider under the search bar).
       overlay's treatment (measured from the live heart: `rgba(255,255,255,0.80)`,
       `backdrop-filter: blur(4px)`, `1px solid rgba(255,255,255,0.6)`, `0 1px 3px rgba(0,0,0,0.10)`
       plus an inset white top edge).
-- [ ] A6. Remove the "Bald frei" section. NOT CONFIRMED BY ME: ticked mid-flight by the running workflow, whose adversarial pass has not reported yet.
+- [x] A6. Remove the "Bald frei" section. verified: absent from body text and from the h2 list at 375x812, 402x874 and 1440x900, and its RPC no longer runs.
       DONE. It was `AvailableThisWeek.tsx` (title = `TITLES.soon` from `CategoryBrowseRails.tsx`),
       mounted only in `app/[locale]/page.tsx` (one call site, grepped). UNMOUNTED there, and its
       server fetch `getAvailableThisWeekSalonIds` left the page's `Promise.all` and its ids left
@@ -78,7 +78,7 @@ circle around the divider under the search bar).
       not touched. Component file + data function + doc kept on disk for revert, same convention
       as V3-D104 / V3-D106 / V3-D150; registry row and `components/AvailableThisWeek.md` both now
       say UNMOUNTED so nobody re-mounts it by reading the docs.
-- [ ] A7. DONE. The right comparison is the star's PAINTED ink vs the numeral's CAP height, not NOT CONFIRMED BY ME: ticked mid-flight by the running workflow, whose adversarial pass has not reported yet.
+- [x] A7. DONE. The right comparison is the star's PAINTED ink vs the numeral's CAP height, not verified: measured the star PAINTED ink against the numeral cap height rather than box against box, which is the comparison that actually reads as matched.
       box vs font-size: the lucide star only paints 0.7947 of its box (measured `getBBox` on the
       live 24x24 viewBox, y 2.000 -> 21.072), so an 11px star was 8.74px of actual ink against a
       9.46px cap = **0.924**, i.e. measurably smaller. He was right.
@@ -96,6 +96,12 @@ circle around the divider under the search bar).
       numeral) measures **0.874**, a worse mismatch than the one he flagged. Out of scope for a
       home-page ask; say the word and it goes to 20px (ink 15.89 / cap 14.55 = 1.09) or 19px (1.04).
 
-- [ ] A8. Build font mockups for A3: the same real home screen rendered in 3 or more type directions,
+- [x] A8. Build font mockups for A3: the same real home screen rendered in 3 or more type directions, verified: da6392208, four directions live at public/_mockups/home-type/index.html, four distinct computed font stacks confirmed loaded, zero remote requests captured.
       behind one switcher, so he picks by looking. Every direction must name a face we can actually
       license. Airbnb's own Cereal is theirs, so it is a target feel and not an option.
+
+## HYGIENE FAIL I CAUSED AND FIXED, 2026-08-05
+The adversarial pass caught a dark-mode block committed on this branch, and it was mine: the font
+chooser froze a copy of the compiled app CSS which carried `@media (prefers-color-scheme: dark)` with
+six `dark:` rules. That is NEVER-AGAIN floor 1, the thing white-only-web-gate exists to stop. Stripped:
+1 dark media block to 0, 6 dark rules to 0.
