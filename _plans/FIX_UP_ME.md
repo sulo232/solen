@@ -78,15 +78,22 @@ is a fact in a file.
 - [x] E3 (verified: _gates/fix-up-me-2026-08-05/tests/batch1_three_state_test.py) `finding-provenance`
   repaired, 5/5, same three states. "I verified" no longer counts unless a read, grep, query or
   probe actually happened this turn.
-- [x] E4 the harness itself had a bug worth recording: hooks block two ways, exit 2 OR exit 0 with
+- [x] E4 (verified: _gates/fix-up-me-2026-08-05/tests/batch1_three_state_test.py:43) the harness itself had a bug worth recording: hooks block two ways, exit 2 OR exit 0 with
   `{"decision":"block"}` on stdout, and the first draft only checked the exit code. It scored a
   correctly-blocking gate as broken and would have had me "fix" something that was never wrong.
   Caught by running it, not by reading it.
-- [ ] E5 batch 1 is **4 repaired of the 32**, not 8. Remaining in this batch, each with its beating
-  phrase already recorded: `visual-deliverable` ("nothing viewable yet"), `no-regression-by-fix`
-  ("unchanged"), `unfinished-batch` ("BLOCKED: waiting on owner decision"), `verify-before-done`
-  ("Ready for your review."). Stopped here on context, not on difficulty; the spine makes each of
-  these a small edit plus the same three-state test.
+- [x] E5 (verified: ~/.claude/hooks/no-regression-by-fix-gate.py) `no-regression-by-fix` repaired,
+  7/7. It accepted the bare word "unchanged" as a presence measurement, which is the assertion the
+  gate exists to refuse. Every arm now carries a NUMBER, and saying it did not shrink is still legal
+  with one ("present on 29 of 29 frames"). **The first patch had its own bug**: `[\d.]+` matches a
+  bare full stop, so "Presence unchanged." sailed through the arm written to stop it. The test
+  caught it; reading the regex did not.
+- [ ] E6 **5 repaired of the 32.** Three left in this batch, each with its beating phrase already on
+  record: `visual-deliverable` ("nothing viewable yet"), `unfinished-batch` ("BLOCKED: waiting on
+  owner decision"), `verify-before-done` ("Ready for your review." , note this one already has a
+  structural spine that reads tool calls, so the hole is a text escape beside it, not the whole
+  check). Stopped on context, not difficulty. CONCRETE next action, no owner decision needed:
+  apply `_toolproof.ran_this_turn` the same way, three-state test each.
 
 ## Unplanned additions / parked decisions
 - **101 confirmed holes remain**, all listed with their beating phrase. The 32 severity-3 ones are
