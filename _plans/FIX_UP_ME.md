@@ -61,6 +61,33 @@ rules, the reporting law, the dispatch method, and the standard of proof.
 - [x] D1 (367137d7b) reported short, in plain words, no paths he cannot use
 - [x] D2 (367137d7b) re-read "i dont want u ti edit sites i want u to refine n fixbup you" , nothing in the product was touched this turn; every edit was to me
 
+## E , batch 1 (owner 2026-08-05 "alr go")
+
+The reusable spine, built first because the defect had one shape in nearly every case: the check
+asked MY PROSE whether the work happened. The transcript already holds the truth , every tool call
+is in it, and the owner's last real message marks where the turn began. So "did I actually run it"
+is a fact in a file.
+
+- [x] E1 (verified: _gates/fix-up-me-2026-08-05/_toolproof.py) `_toolproof.ran_this_turn()` , shared
+  helper, 9/9 self-test. Correctly refuses to count a tool call from BEFORE his last message, and
+  correctly does NOT treat a hook denial or a tool result as the start of a new turn, which would
+  have shrunk the window to nothing and made every caller think no tool ran.
+- [x] E2 (verified: _gates/fix-up-me-2026-08-05/tests/batch1_three_state_test.py) `env-claim-needs-evidence`
+  repaired, 5/5. Three states tested, not two: blocks with nothing behind it, **still blocks with the
+  phrase that used to beat it**, passes when a real probe is in the transcript.
+- [x] E3 (verified: _gates/fix-up-me-2026-08-05/tests/batch1_three_state_test.py) `finding-provenance`
+  repaired, 5/5, same three states. "I verified" no longer counts unless a read, grep, query or
+  probe actually happened this turn.
+- [x] E4 the harness itself had a bug worth recording: hooks block two ways, exit 2 OR exit 0 with
+  `{"decision":"block"}` on stdout, and the first draft only checked the exit code. It scored a
+  correctly-blocking gate as broken and would have had me "fix" something that was never wrong.
+  Caught by running it, not by reading it.
+- [ ] E5 batch 1 is **4 repaired of the 32**, not 8. Remaining in this batch, each with its beating
+  phrase already recorded: `visual-deliverable` ("nothing viewable yet"), `no-regression-by-fix`
+  ("unchanged"), `unfinished-batch` ("BLOCKED: waiting on owner decision"), `verify-before-done`
+  ("Ready for your review."). Stopped here on context, not on difficulty; the spine makes each of
+  these a small edit plus the same three-state test.
+
 ## Unplanned additions / parked decisions
 - **101 confirmed holes remain**, all listed with their beating phrase. The 32 severity-3 ones are
   the queue.
