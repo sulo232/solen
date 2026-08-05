@@ -179,7 +179,11 @@ export default function AccountHub({
           rather than pointed at an invented page. */}
       <GroupLabel>{t("hubPersonal")}</GroupLabel>
       <RowCard>
-        <Row href={p("/profile/haarprofil")} icon={HairGlyph} label={t("haarprofil")} sub={t("haarprofilSub")} />
+        {/* mockup-ok: subline dropped per account-hub-rows.html, approved 2026-08-05 ("i dont
+            think every settings needs explanation"). "Haartyp, Länge, Allergien" only listed
+            what a hair profile contains, so it carried no data the label did not already
+            imply. Copy economy rule 1. The five sublines wired to live data all stay. */}
+        <Row href={p("/profile/haarprofil")} icon={HairGlyph} label={t("haarprofil")} />
         <Row
           href={p("/profile/favorites")}
           icon={Heart}
@@ -207,7 +211,9 @@ export default function AccountHub({
           (/account/messages, /dashboard/messages) are dead redirects back to this same page, not
           a real destination, so per this build's own rule the row is left out. */}
       <RowCard className="mt-[26px]">
-        <Row href={p("/profile/settings")} icon={Settings} label={t("settingsTitle")} sub={t("settingsRowSub")} />
+        {/* mockup-ok: subline dropped, same rule as the hair row above. "Sprache,
+            Mitteilungen, Datenschutz" only listed what settings contains. */}
+        <Row href={p("/profile/settings")} icon={Settings} label={t("settingsTitle")} />
       </RowCard>
 
       {/* ABMELDEN: form POST so it works without client JS, same pattern as
@@ -262,7 +268,12 @@ function Row({
           tile behind it. A 38x38 `bg-s-bg-sunken` square behind every icon is also the dead-grey
           FLOORS LAW 4 forbids. Tile removed, glyph kept at the reference's own size. */}
       <span className="grid h-[22px] w-[22px] shrink-0 place-items-center text-s-ink"> {/* mockup-ok: bare glyph, no tile, per airbnb--profile-list.md IMG_6900 */}
-        <Icon size={19} strokeWidth={1.9} className={iconClassName} aria-hidden />
+        {/* mockup-ok: 19 -> 22 per public/_mockups/improve/account-hub-rows.html, approved
+            2026-08-05 ("icon should be abit bigger"). Not a picked number: the captured
+            reference measures 17.3-22.7pt per account-list glyph
+            (airbnb--profile-list.md:52,83), so 19 sat at the bottom of the band, and the
+            wrapper span above already reserves exactly 22px. */}
+        <Icon size={22} strokeWidth={1.9} className={iconClassName} aria-hidden />
       </span>
       <span className="min-w-0 flex-1">
         <span className="block font-heading text-[15.5px] font-medium tracking-[-0.01em] text-s-ink">{label}</span>
@@ -277,7 +288,10 @@ function Row({
 // Haarprofil's icon in the mockup is a currentColor-masked hair-pattern glyph (a real, existing
 // discovery asset), not a Lucide icon: `/hair-patterns/wavy.png`, confirmed on disk. Rendered as
 // a CSS mask so it inherits `text-s-ink` like every other row icon.
-function HairGlyph({ size = 19, className }: { size?: number; className?: string }) {
+// mockup-ok: default follows the row glyph to 22 (was 19). Row always passes an explicit
+// size, so this changes nothing today, but a stale 19 here is exactly the drift FLOORS LAW 8
+// names: the same glyph rendering one size in one place and another size elsewhere.
+function HairGlyph({ size = 22, className }: { size?: number; className?: string }) {
   return (
     <span
       aria-hidden
