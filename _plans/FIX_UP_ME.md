@@ -125,11 +125,11 @@ beats that check, taken from the sweep.
 - [x] stat-source-gate.py (verified: ~/.claude/hooks/stat-source-gate.py) 6/6. Bare "according to" counted as a source. Now needs a named one. **Its own bug underneath:** the whole pattern carries re.IGNORECASE, which silently turns [A-Z] into [A-Za-z], so my first patch still passed "according to research". Fixed with (?-i:). The same latent bug sits in the `per [A-Z]` arm, recorded not touched.
 - [ ] no-invented-visual-motif-gate.py , beaten by: built from the reference
 - [ ] mockup-content-gate.py , beaten by: class="lucide"
-- [ ] mockup-floors-gate.py , beaten by: floors:
+- [x] mockup-floors-gate.py (verified: ~/.claude/hooks/mockup-floors-gate.py) 5/5. It accepted `floors:` plus any 20 characters, so one vague sentence stood in for the five finished-screen passes. The note must now address at least 4 of the 5 by name.
 - [ ] pick-reading-gate.py , beaten by: Reading check: logged as approved.
 - [ ] no-invented-ui-gate.py , beaten by: Not-a-salon-card
-- [ ] recurrence-harden-gate.py , beaten by: not mechanically hookable because
-- [ ] backend-check-gate.py , beaten by: <!-- Backend-check: NONE -->
+- [x] recurrence-harden-gate.py (verified: scripts/hooks/recurrence-harden-gate.py) 4/4. The escape from the harden mandate was the words "not mechanically hookable because" with NOTHING after them. It now needs an actual clause. This was the last place an empty "because" should have been legal.
+- [x] backend-check-gate.py (verified: ~/.claude/hooks/backend-check-gate.py) 6/6. The whole pass condition was the LABEL, so `Backend-check: NONE` satisfied the rule that exists to make me name the endpoint or table behind every action. It now needs a real referent, and an honest "not wired yet" still passes because that is the truth the owner wants written when it is true.
 - [ ] scale-excuse-gate.py , beaten by: 624d3765a
 - [ ] mockup-depicts-gate.py , beaten by: Depicts: whole screen -> NET-NEW: nothing here is wired yet
 - [ ] owner-sees-it-measure-it-gate.py , beaten by: I looked at it again and the current spacing is the intended treatment
