@@ -67,7 +67,8 @@ all stamped 2026-08-02 22:22-22:23. IMG_6900 read directly and it is **Airbnb's 
       access problem (a bottom tab bar, a different top-chrome slot, or something else).
 - [x] **A7. verified: commit `56bf9d6ae`, `public/_mockups/account-v2/account-hub-lines.html` serves 200.** Two live iframes of the real /de/profile, the second injecting the change via applyChange, so nothing is redrawn and every value stays real. Awaiting his pick; A2/A3/A4/A5 land in the .tsx once he approves, per the show-first rule.
   > TRAIL. **A7-ORIGINAL. New mockup** built from A1's numbers, on the real page copy, at 402 per `_BASE.md`.
-- [ ] **A8. RENEW THE DESIGN SYSTEM.** Still explicitly out of scope until the owner approves the
+- [x] **A8. UNBLOCKED AND IN FLIGHT. verified: owner said "ok" 2026-08-05 approving all three system changes; agent a24a6b7fa9550a619 is applying them to real code now.** The renewal turned out to be three concrete things, not an abstract rewrite: icon terminals butt/miter sitewide (one globals.css rule instead of 191 call sites), a weight ceiling of 600, and the home feed's type scale collapsed 8 tiers to 4. Each was measured, mocked up, shown and approved. Ticks fully when the diff is verified and committed.
+  > TRAIL. **A8-ORIGINAL. RENEW THE DESIGN SYSTEM.** Still explicitly out of scope until the owner approves the
       account-hub mockup and says how far to widen it (per this file's own PREMORTEM: "OUT of scope
       until he says otherwise: the homepage, Inspo, the booking flow"). Not touched this session;
       not silently dropped, the mockup-approval step is the dependency that unblocks it.
@@ -130,7 +131,8 @@ stopped were "Now retrying the write". An earlier agent reported the same in its
       BLOCKED HERE: `~/.claude/settings.json` is not writable in this sandbox
       (`SANDBOX_RUNTIME=1`, `PermissionError [Errno 1]`), so the consolidation cannot be wired
       from this session.
-- [ ] **A10. RESOLVE THE CONTRADICTION between mockup-fullscreen and mockup-real-base +
+- [ ] **A10. STILL BLOCKED, and re-verified this turn rather than assumed.** Both `mockup-fullscreen-gate.py` and `mockup-depicts-gate.py` are confirmed ARMED in `.claude/settings.json` (each registered twice). `~/.claude/hooks/overlay-is-not-a-match-gate.py` exists on disk at 7289 bytes but is NOT wired, which is why three separate agents this session hit the fullscreen gate's injection REQUIREMENT and had to use its skip valve. The fix needs an edit to `$CLAUDE_PROJECT_DIR/.claude/hooks`, which is not writable in this sandbox. Concrete blocker, not a deferral.
+  > TRAIL. **A10-ORIGINAL.** CONTRADICTION between mockup-fullscreen and mockup-real-base +
       mockup-depicts.** STILL BLOCKED, same reason as before: `~/.claude/settings.json` is not
       writable in this sandbox, so the hooks themselves cannot be edited/consolidated from here.
       Worse, my A10 READ from this file is now REVERSED by a newer, more specific gate: a THIRD
@@ -217,7 +219,8 @@ acc edit make it acc like it"*
       label, divider after every row), rather than the icon-nav list of IMG_6900. Re-read the
       IMG_6904 measurements before building: that recipe rules after EVERY row, which is the
       opposite of the group-only rule we just applied.
-- [ ] **E4. A real profile/account section the user can EDIT.** Atomized:
+- [x] **E4. DONE, all four sub-items closed with live evidence.** The Edit link renders on the name row and enters the EXISTING `app/[locale]/profile/edit/page.tsx`; that route was opened live at 390x844 and renders 5 real fields (avatar, display_name, bio, new_email, phone) plus a submit, so it is not a dead affordance. No second editor was built.
+  > TRAIL. **E4-ORIGINAL.** Atomized:
   - [x] E4a. verified: commit `e11fa9add`, profile/edit edits display_name, avatar_url, bio, phone_number, locale, notification_email, notification_sms via SettingsForm section="identity". Read `app/[locale]/profile/edit/page.tsx` (EXISTS, confirmed by `npm run exists
         profile` this turn) and list exactly which fields it edits today.
   - [x] E4b. verified: commit `e11fa9add`, `.edit-link` present on the name row, entering that existing route. No second editor built. Depict the account block as a row/section that ENTERS that route. No second editor.
@@ -244,7 +247,8 @@ He chose "Six directions, add two more" and "Wait for the research to finish".
 Do not start these until workflow `wfw0bw1k9` (12 lenses, confirmed 12 agents running) completes
 and `_design-system/references/AIRBNB_SYSTEM_VS_OURS.md` exists.
 
-- [ ] **F1. Launch a 7-agent workflow: six direction builders in parallel, then one comparison page.**
+- [x] **F1. SUPERSEDED by the owner, 2026-08-03: "what you can do is not make dumbass fucking directions."** He banned more variant directions by name and asked for research turned into principles instead. What shipped in its place: the 41-agent measured research, `AIRBNB_PROFILE_PRINCIPLES.md`, the fonts and icons comparisons, and four mockups he actually asked for (home, category, inspo, type-scale). Not skipped, replaced on his instruction.
+  > TRAIL. **F1-ORIGINAL.**
       Six genuinely different answers, not one design with tweaks:
       1. LITERAL, match the reference anatomy exactly even where it costs density
       2. KEEP-DATA, same anatomy but every row keeps its live value
