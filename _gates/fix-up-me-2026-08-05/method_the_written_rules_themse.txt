@@ -1,0 +1,44 @@
+**Audited:** `/Users/sulo/.claude/CLAUDE.md` (rules 0–20), `/Users/sulo/Documents/solen/.claude/worktrees/preference-analysis-gates-620a8d/CLAUDE.md` (project law). Global = `G:line`, project = `P:line`.
+
+## 1. Rules satisfiable by writing a string (same class as the pushback escape)
+
+**P:66 — FLOORS LAW 1, "A mockup carries a `floors:` note answering all five."** Its gate is `~/.claude/hooks/mockup-floors-gate.py:21`: `FLOORS = re.compile(r"floors:\s*\S.{20,}")`. Twenty-one characters after the word satisfies it. The gate's own docstring (line 11) concedes "the render-time truth is graded by the design-verifier" — i.e. it knowingly checks the label, not the fact. **And it is not wired** (zero hits for `mockup-floors-gate` in `settings.json`), so even the string check never runs. 7 of 22 files in `public/_mockups/` carry the note.
+*Structural fix:* `scripts/check-geometry.mjs` already renders and measures. Make the note machine-emitted (photo area %, largest-element px, % weight ≥600) and have the gate re-render and diff claimed vs measured, blocking on **mismatch**, not on absence.
+
+**P:56 — "cite them in a `measured:` note"**, enforced by `reference-measure-gate.py:82`, which blocks only when a MEASURED regex is absent. Invented numbers pass. *Fix:* require the `spec.md` that `extract.py` writes to exist with an mtime after the reference image, and diff the cited px against it.
+
+**P:194-196 — "every NEW mockup file must contain an `Exists-check:` line."** Writing the line is the compliance. *Fix:* the structural fact already exists one layer up (`npm run exists` ran this turn); require the line to carry that run's hit count.
+
+**G:122-125 — rule 4, "mark it as low-confidence imitation explicitly."** The label *is* the compliance. *Fix:* route to the artifact the project already demands at P:153 — `_design-system/references/<brand>--<surface>.md` written this session by `reference-lock`.
+
+**G:397-398 — rule 12, "say 'I searched A/B/C, found nothing, so this is new'."** Pure string. `exists-guard` matches `page.tsx`/`route.ts`/migration/mockup only (P:9, P:194), so a **new spec `.md` — the exact 2026-06-18 incident that authored rule 12** — is the one artifact class no gate covers. *Fix:* extend the matcher to new `.md` under `_design-system/` and `_tasks/`.
+
+**G:413-429 — rule 12.5** claims "a hook cannot verify you actually ran the test." That is false as written: the observable already exists as the convention `~/.claude/hooks/tests/test_<gate>.py`. Measured: **16 test files against 150 wired hooks.** *Fix:* a SessionStart invariant flagging any `settings.json` registration with no matching `tests/` file.
+
+**G:491-493 — rule 15's "label the assumes as assumes"** is a string; its hedge-word half (G:505-512) is checkable and the file already names the missing gate.
+
+## 2. Pure judgment — cannot be made checkable, keep as prose
+
+G:132-136 (rule 6, pattern-reset), G:539-549 (rule 18, which correctly self-declares "disposition, not a regex"), G:184-186 (rule 8's paragraph heuristic), P:172 and P:175 (copy economy "delete the word / remove the tag" — the counterfactual is unmeasurable), P:40 (taste rule 9, "ground in the system"). These should be labeled judgment in the files so they stop being cited as enforced.
+
+## 3. Contradictions
+
+- **G:22-23 vs G:38-43.** Rule 0's canonical *correct*-link example is `http://172.20.10.2:3000/de` — a LAN IP, which rule 0.5 bans by name as "the wrong answer." The example is what gets copied.
+- **G:192 vs P:143/157/56.** Rule 9: "1-file surgical edit / bug fix: **0 rounds. Open the page, eyeball it.**" Project law: "no eyeballing" (P:143), "Detection = fire" (P:157), "A reference is MEASURED, never eyeballed" (P:56). Precedence (P:251 over P:254) resolves it, but G:192 still reads as a live licence.
+- **G:127-130 vs P:13-24.** Rule 5 orders a goal question *before executing*; the finish-the-job dependency test permits a stop only for a blocking fork, a mockup-needing taste call, or a destructive op. A goal question is none of the three.
+- **P:51 + P:58 vs P:109.** Lines 51 and 58 assert `white-only-web-gate.py` and `reference-measure-gate.py` are wired gates; line 109 says "wire on Write/Edit when settings is writable." Both files exist on disk; **neither is wired** in global or project `settings.json`. Three of the four "GATE:" claims in the NEVER-AGAIN block are false.
+
+## 4. Superseded but still written as live
+
+- **P:92**, the design-contract imagery row, still states the ≥1/3-photographic-area rule with no trace of the 2026-07-25 clarification at P:67 ("NEVER met by adding a hero photo... decoration is rejected by name"). Read alone, the contract row licenses the fix that was rejected three times.
+- **G:118-120** describes `pushback-gate.py` as "16/16 self-test, armed 2026-07-29", and G:92-95 states the honest escape is unconditionally legitimate. The gate on disk is v2 (`pushback-gate.py:161-238`) and caps the escape at 3 per rolling week. Rule 3 must carry the budget or the gate will block a reply that rule 3 calls compliant. (The second bug the same test surfaced is documented at `pushback-gate.py:228-233`: DISSENT was tested before ESCAPE, so the bare words "failure mode" anywhere in a reply satisfied the pre-v2 gate. Fixed.)
+
+## 5. Dead letters
+
+- `mockup-floors-gate.py`, `white-only-web-gate.py`, `reference-measure-gate.py`: on disk, unwired, cited as enforcement.
+- Rule 12.5's self-test: 16 tests / 150 hooks.
+- `LAW_SYSTEM.md:185-191` — the 150-hook ceiling. Unique wired hook files = **150**, registrations = **151**. The mandatory consolidation review before the 151st has not visibly happened; `system-health-check.py:170` can see it.
+- `LAW_SYSTEM.md:162-172` — the Stop-aggregator rule. **55 Stop registrations**, one aggregator (`link-family-aggregator.py`).
+- Rule 2's only enforcement, `always-recommend-gate.py`, is `sys.exit(0)` at line 24 (neutered 2026-07-21 by owner order). Same for `concise-response-gate.py`. Both still registered, so the wired-hook count includes two no-ops.
+
+**Clean:** every document path cited in both CLAUDE.md files resolves on disk (SENIOR_SCORECARD, WORK_TYPES, WAVE_PLAN, TASTE_LOG, COPY_LAW, _BASE.md, INCOMPLETE_FEATURES, QUESTIONS, _inventory/STATUS, solen-styleguide.html) — no phantom references.

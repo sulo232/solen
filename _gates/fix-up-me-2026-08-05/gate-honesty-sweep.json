@@ -1,0 +1,1712 @@
+[
+ {
+  "gate": "pushback-gate.py",
+  "path": "/Users/sulo/.claude/hooks/pushback-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "verdict() (line 214) blocks only when owner text matches PROPOSAL, reply matches AGREEMENT, and the reply matches NEITHER ESCAPE nor DISSENT. DISSENT (line 63) is tested after ESCAPE and its alternation includes the BARE words 'failure mode|trade-off|tradeoff|downside|caveat|drawback' with no determiner and no context requirement. A DISSENT hit returns False unconditionally and, unlike ESCAPE, is NOT counted against the 3-per-week ESCAPE_BUDGET ledger (record_escape at line 259 only fires when ESCAPE matched and DISSENT did not).",
+  "beating_phrase": "caveat",
+  "structural_check": "none. The escape-budget ledger (~/.claude/state/pushback-escape-ledger.json) is a real counter, but it only guards the ESCAPE branch; the DISSENT branch reaches pass with zero state and zero cost.",
+  "severity": 3
+ },
+ {
+  "gate": "measurement-needs-scope-gate.py",
+  "path": "/Users/sulo/.claude/hooks/measurement-needs-scope-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "Blocks (exit 2) only when the final assistant text matches (FIGURE and OURS) or (ENUMERATION and ESTATE), AND neither SCOPE nor ROOTS matches ANYWHERE in the same message (line 174). SCOPE matches literals such as 'first viewport', 'above the fold', 'on the pdp', any /xx/route, any NNNxNNN; ROOTS matches any bare directory token such as 'app/'. Nothing checks that the named scope is where the number actually came from, which is the exact mis-attribution the gate was written for.",
+  "beating_phrase": "first viewport",
+  "structural_check": "none. Every input is the assistant's own closing prose.",
+  "severity": 3
+ },
+ {
+  "gate": "finish-autonomously-gate.py",
+  "path": "/Users/sulo/.claude/hooks/finish-autonomously-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Ten regex arms (CHATTER, TRANSIENT, SOFTDEFER, CHECKPOINT, TEEUP, BATCH-MOCKUP, ANNOUNCE, PARK, NEXTLAUNCH, EARLY) each block ONLY when the pattern matches AND `not is_meta_or_audit_turn(window, hit_start, hit_end)`. That helper (_stopgate_lib.py:167) returns True whenever _META_WORDS matches within 200 chars of the hit, and _META_WORDS includes the bare literals 'the gate', 'this gate', 'the hook', 'this hook'. So one such phrase parked beside the stop language exempts every arm including the final catch-all (early_hit, line 339). Second, independent escape: line 393 bails outright when a frontend file was edited this turn AND the final text contains any PREVIEW substring ('localhost:3000', 'trycloudflare.com'), which skips ANNOUNCE, AUTO-COMMIT, PARK and NEXTLAUNCH.",
+  "beating_phrase": "the gate",
+  "structural_check": "Partial: `git status --porcelain` for uncommitted .ts/.tsx/.css/.sql (line 437) and frontend_edit derived from real Write/Edit tool_use file paths (line 357). Both sit downstream of, or are disarmed by, the text escapes above.",
+  "severity": 3
+ },
+ {
+  "gate": "defer-bulk-gate.py",
+  "path": "/Users/sulo/.claude/hooks/defer-bulk-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "Blocks only when a DEFER phrase appears in the final message AND no GENUINE phrase appears anywhere in it (line 126), AND is_meta_or_audit_turn is False. GENUINE is a flat 23-literal list matched anywhere in the message; one of them cancels any amount of defer language. The meta exemption ('the gate' within 200 chars) also clears it.",
+  "beating_phrase": "needs your decision",
+  "structural_check": "none. Both the trigger and the exemption are patterns over the assistant's own closing text.",
+  "severity": 2
+ },
+ {
+  "gate": "mockup-verify-before-show-gate.py",
+  "path": "/Users/sulo/.claude/hooks/mockup-verify-before-show-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Blocks when the final text contains '/_mockups/' and a mockup .html was Written/Edited this turn and `verified` is False. `verified` is set (line 97) by `if \"getBoundingClientRect\" in inp_s or \"getComputedStyle\" in inp_s` where inp_s is json.dumps of ANY tool_use input in the turn, including the very Write that creates the mockup. Any mockup whose HTML happens to contain that identifier, or any Bash/echo carrying it, self-certifies the measurement.",
+  "beating_phrase": "getBoundingClientRect",
+  "structural_check": "Real spine: a tool_use must exist in the turn transcript, and the mockup edit is detected from the actual file_path. The evidence test is just a substring over that tool's input, so it does not distinguish a measurement from a mention.",
+  "severity": 2
+ },
+ {
+  "gate": "no-bash-handoff-gate.py",
+  "path": "/Users/sulo/.claude/hooks/no-bash-handoff-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Only commands extracted by handed_commands() are judged, and extraction requires one of three shapes: a fence tagged ```bash|sh|shell|zsh, a line STARTING with run/execute, or one of the listed PROSE_HANDOFF lead-ins followed by a backticked command. A handoff in an untagged ``` fence, or introduced with any other wording, yields zero commands and the gate exits before its two-instrument logic ever runs.",
+  "beating_phrase": "Copy this into your terminal:",
+  "structural_check": "Real and strong once triggered: it requires a tool_use in this turn's transcript whose input contains the command's distinctive tokens, and two DISTINCT instruments (Bash vs Write/Edit vs each MCP server) whenever the message blames an environment block.",
+  "severity": 2
+ },
+ {
+  "gate": "mockup-not-live-gate.py",
+  "path": "/Users/sulo/.claude/hooks/mockup-not-live-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "Blocks only when the owner's last message matches 'mockup|renew' AND the final assistant text matches the live_change regex AND does NOT match staged_in_dev (line 45). staged_in_dev is `/dev/|mockup route|in the mockup|dev mockup|dev route` matched anywhere in the reply. Nothing inspects which files were actually edited this turn.",
+  "beating_phrase": "in the mockup",
+  "structural_check": "none. Both halves are regexes over the transcript's last user text and last assistant text; the live edit itself is never looked at.",
+  "severity": 2
+ },
+ {
+  "gate": "emphasis-budget-gate.py",
+  "path": "/Users/sulo/.claude/hooks/emphasis-budget-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "decide() counts weight>=600 Tailwind classes vs text-size classes in the edit's new content and denies at >50% with >=6 weight hits. It returns None immediately (line 110) if JUSTIFIED matches, and JUSTIFIED is `re.compile(r\"emphasis-ok:\", re.IGNORECASE)` , the bare token, no reason text required despite the deny message asking for 'emphasis-ok: <reason>'.",
+  "beating_phrase": "emphasis-ok:",
+  "structural_check": "Real: it parses and counts actual class tokens in the content being written and compares the ratio to a numeric threshold.",
+  "severity": 2
+ },
+ {
+  "gate": "peer-list-ink-cta-gate.py",
+  "path": "/Users/sulo/.claude/hooks/peer-list-ink-cta-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "decide() walks the new content line by line tracking .map() depth and denies on an ink/black fill next to an interactive element inside the iteration. Any line matching JUSTIFIED = `row-ink-ok:` is skipped via `continue` (line 52) before any check , the bare token on the offending line is enough, no reason required.",
+  "beating_phrase": "row-ink-ok:",
+  "structural_check": "Real: brace/paren depth tracking over the actual JSX being written, plus a 3-line interactivity window.",
+  "severity": 2
+ },
+ {
+  "gate": "legal-price-gate.py",
+  "path": "/Users/sulo/.claude/hooks/legal-price-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "hit() denies when FROM_PRICE ('ab/from/d\u00e8s/da' adjacent to CHF/EUR/Fr. or an interpolated {price}) or a literal <PriceFrom label> appears in the new content of a customer file. Every match is skipped if OK_TOKEN 'pbv-ok' appears within 160 chars either side (line 97) , a bare token, no named offer and no reason required.",
+  "beating_phrase": "pbv-ok",
+  "structural_check": "Real: regex over the actual content being written, scoped by real file path and extension.",
+  "severity": 2
+ },
+ {
+  "gate": "mockup-english-gate.py",
+  "path": "/Users/sulo/.claude/hooks/mockup-english-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Exits 2 when a mockup-path write contains an umlaut/\u00df, a STRONG German UI string, or >=2 distinct DE/FR/IT words. EXEMPT (line 56) short-circuits everything: `locale-copy-mockup:\\s*(de|fr|it)` followed by >=12 characters that terminate before '-->'. The 12 characters are unvalidated filler.",
+  "beating_phrase": "<!-- locale-copy-mockup: de register comparison -->",
+  "structural_check": "Real: character-class and word-list detection over the actual content being written to a mockup path.",
+  "severity": 2
+ },
+ {
+  "gate": "no-overstep-launch-gate.py",
+  "path": "/Users/sulo/.claude/hooks/no-overstep-launch-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Denies a Workflow launch only when its declared subject shares >=2 non-stopword tokens with a PAUSED/QUEUED row in the committed _plans/ACTIVE.md and beats the best ACTIVE row by >=2 (line 138). The subject is assembled entirely from assistant-authored text: tool_input.name/description/subagent_type plus name:/description: literals in the script body. A subject worded without the dormant row's nouns scores 0 and passes.",
+  "beating_phrase": "name: 'follow-up cleanup pass'",
+  "structural_check": "Real: `git show HEAD:_plans/ACTIVE.md` , the committed plan, not the working copy , parsed for row status.",
+  "severity": 2
+ },
+ {
+  "gate": "repeat-mistake-detector.py",
+  "path": "/Users/sulo/.claude/hooks/repeat-mistake-detector.py",
+  "verdict": "MIXED",
+  "pass_condition": "Nothing runs unless ADMISSION_RE matches the final assistant text (line 353) and a THEME regex matches within 250 chars of that admission. ADMISSION_RE is a closed list of self-incriminating literals ('you're right', 'my mistake', 'i missed', 'i skipped', 'i apologize', 'i was wrong', 'good catch', 'i keep ', 'fell short', ...). An admission phrased outside that list records no theme, so the ladder never advances and the harden demand never fires.",
+  "beating_phrase": "That slipped past me and it should not have.",
+  "structural_check": "Real and strong once triggered: harden_proof() requires a Write/Edit to a ~/.claude/hooks/*.py in this turn AND a Bash call naming that hook, and it explicitly ignores both stop_hook_active and the skip flag; persistence_proof() requires a real write to a durable file. Durable cross-session ledger of themes.",
+  "severity": 2
+ },
+ {
+  "gate": "pre-edit-measure-first-gate.py",
+  "path": "/Users/sulo/.claude/hooks/pre-edit-measure-first-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Denies a Write/Edit under /dev/search-morph/ or /_mockups/ unless ~/.claude/ss-measured.flag has an mtime younger than 3600s. No written phrase in any deliverable affects it.",
+  "structural_check": "A file mtime on disk. Caveat worth naming: the flag is not a skip flag, it is the primary affirmative pass condition, and it is self-certified , `touch ~/.claude/ss-measured.flag` satisfies it with no measurement performed and nothing correlates it to an extract.py run or a getBoundingClientRect call.",
+  "beating_phrase": "n/a",
+  "severity": 2
+ },
+ {
+  "gate": "approved-surface-guard.py",
+  "path": "/Users/sulo/.claude/hooks/approved-surface-guard.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Denies only when the file path matches /dev/<slug>/, the slug is a line in ~/.claude/state/approved-mockups.txt, and the write is a full Write or an Edit whose new_string exceeds 500 chars , single-call or cumulative per file per session via a JSON state file.",
+  "beating_phrase": "n/a",
+  "structural_check": "Character counts of the actual tool_input, a persisted per-session cumulative ledger, and a real ledger file of approved slugs.",
+  "severity": 1
+ },
+ {
+  "gate": "checkpoint-merge-main.py",
+  "path": "/Users/sulo/.claude/hooks/checkpoint-merge-main.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Blocks the stop only when `git status --porcelain` is dirty and the auto `git commit` returns non-zero with an error that is neither 'nothing to commit' nor a sandbox EPERM. Everything else (merge-to-main) logs and exits 0.",
+  "beating_phrase": "n/a",
+  "structural_check": "Live git: status, worktree list, merge-base ancestry, `npx tsc --noEmit` exit code, fetch refusal.",
+  "severity": 1
+ },
+ {
+  "gate": "no-focus-ring-gate.py",
+  "path": "/Users/sulo/.claude/hooks/no-focus-ring-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Denies when any of eight regexes matches the content being written to a UI-extension file (focus:ring, ring-* utilities, bare `ring` class, focus:outline-N, raw `outline: Npx solid`, spread-only box-shadow halo >=2px, dark focus:border-*, re-enabled -webkit-tap-highlight-color). No justification token exists in the code.",
+  "beating_phrase": "n/a",
+  "structural_check": "Pattern match over the actual CSS/Tailwind being written; a real drop shadow with offset+blur is discriminated from a spread-only halo.",
+  "severity": 1
+ },
+ {
+  "gate": "no-verify-commit-gate.py",
+  "path": "/Users/sulo/.claude/hooks/no-verify-commit-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Denies a Bash call when a `git ... commit` segment carries --no-verify or -n outside quoted spans and before any heredoc, or when a heredoc that writes a non-message source file or runs an interpreter is chained with a commit in one command.",
+  "beating_phrase": "n/a",
+  "structural_check": "Lexical analysis of the actual shell command: heredoc body stripping, per-segment splitting on |;&\\n, quoted-span removal, -F msgfile target resolution.",
+  "severity": 1
+ },
+ {
+  "gate": "worktree-collision-guard.py",
+  "path": "/Users/sulo/.claude/hooks/worktree-collision-guard.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Denies once per session per relative path when a JSONL ledger shows a DIFFERENT worktree wrote the same repo-relative path within 6 hours. Retry of the same edit passes by design (warn-once).",
+  "beating_phrase": "n/a",
+  "structural_check": "A shared append-only edit ledger keyed by worktree id, repo-relative path and timestamp, plus a per-session warned-paths file.",
+  "severity": 1
+ },
+ {
+  "gate": "gemini-auto-fire.py",
+  "path": "/Users/sulo/.claude/hooks/gemini-auto-fire.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Unconditional `sys.exit(0)`. The file is a 7-line disabled stub (owner 2026-07-21 'remove the gemini hook and gates'); the original is at gemini-auto-fire.py.disabled-bak. It is still wired as a PostToolUse hook and enforces nothing.",
+  "beating_phrase": "n/a",
+  "structural_check": "none , verifies nothing. Flagged so it is not counted as live enforcement in the 190.",
+  "severity": 1
+ },
+ {
+  "gate": "post-compact-reverify.py",
+  "path": "/Users/sulo/.claude/hooks/post-compact-reverify.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Never blocks. On SessionStart with source in (compact, resume, clear) it deletes this session's once-per-session injection-state files and prints an additionalContext reminder; otherwise exits 0.",
+  "beating_phrase": "n/a",
+  "structural_check": "The harness-supplied `source` field and real state files on disk. Advisory by design , rule 19 itself is unenforced here.",
+  "severity": 1
+ },
+ {
+  "gate": "session-marker-sweep.py",
+  "path": "/Users/sulo/.claude/hooks/session-marker-sweep.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Never blocks. Deletes marker files older than 48h and *-skip.flag / *-ok.flag files older than 8h, in ~/.claude and the session cwd's .claude.",
+  "beating_phrase": "n/a",
+  "structural_check": "File mtimes on disk. This is the mechanism that keeps skip flags from outliving their session.",
+  "severity": 1
+ },
+ {
+  "gate": "subagent-uiwork-reminder.py",
+  "path": "/Users/sulo/.claude/hooks/subagent-uiwork-reminder.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Never blocks. Emits an additionalContext reminder when the finished subagent's transcript contains a tool_use whose own name is Edit/Write/MultiEdit AND whose own input.file_path is UI-shaped.",
+  "beating_phrase": "n/a",
+  "structural_check": "Per-block structural parse of the subagent transcript (name and file_path correlated inside one block, fixed 2026-07-10). Advisory only , it names a verification duty nothing then checks.",
+  "severity": 1
+ },
+ {
+  "gate": "user-prompt-binary-triggers.sh",
+  "path": "/Users/sulo/Documents/solen/.claude/hooks/user-prompt-binary-triggers.sh",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Always exits 0. Matches five patterns against the OWNER's prompt (not assistant output) and prints trigger instructions into context; also touches ~/.claude/state/visual-ref-<sid>.flag on a reference-image match. It cannot block and nothing verifies the named first tool call ever fires.",
+  "beating_phrase": "n/a",
+  "structural_check": "Pattern match over the user's own prompt plus a real state flag. Worth flagging to the parent: this is the sole mechanical enforcement named in the CLAUDE.md binary-triggers table, and it is an injector, so 'detection = fire' is still advice.",
+  "severity": 1
+ },
+ {
+  "gate": "ask-before-loop-gate.py",
+  "path": "/Users/sulo/.claude/hooks/ask-before-loop-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Fires ONLY when tool_name == \"Workflow\" (Agent/Task fan-outs are never checked at all). Passes if an actual AskUserQuestion tool_use block appears in the transcript after the owner's last typed message, or if the OWNER's own last message matches RELEASE/HARD_RELEASE. Nothing the assistant writes in prose can satisfy it (the docstring says so explicitly).",
+  "beating_phrase": "n/a",
+  "structural_check": "an AskUserQuestion tool_use block present in the transcript within the current turn boundary. Two real bugs, neither string-shaped: (1) is_loop_start() only matches tool_name 'Workflow', so a five-agent Agent/Task fan-out , the exact case in the docstring , never triggers it; (2) last_user_text() does NOT use is_owner_turn(), unlike asked_this_turn(), so a Stop-hook block message delivered as a user-role string containing 'continue'/'proceed'/'do it' reads as an owner release.",
+  "severity": 1
+ },
+ {
+  "gate": "coder-git-guard.py",
+  "path": "/Users/sulo/.claude/hooks/coder-git-guard.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Allows unless the call is Bash AND is_coder_context() is true AND the command text matches a tree-mutating git subcommand (checkout non -b / restore / reset / clean / switch / stash drop|pop|clear). Heredoc bodies are stripped first so a commit message mentioning 'git checkout' is not denied.",
+  "beating_phrase": "n/a",
+  "structural_check": "the actual Bash command being executed, plus the agent-type/env/marker-file evidence that a coder subagent is running. There is no self-report to fake , the command IS the action.",
+  "severity": 1
+ },
+ {
+  "gate": "delegate-media-read-gate.py",
+  "path": "/Users/sulo/.claude/hooks/delegate-media-read-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Allows when the caller is a subagent (agent_id/agent_type/env/transcript shape), or the path is an owner-reference shape (~/solen/screenshots, IMG_<digits>.png, a UUID .png, /public/_mockups/, /_pixel-refs/), or fewer than 5 governed media reads already happened this turn. Only the 5th+ governed media Read in a turn is denied.",
+  "beating_phrase": "n/a",
+  "structural_check": "a real count of prior Read tool_use calls with media file_paths parsed out of the transcript since the last user prompt, plus real path shapes. Nothing is taken on the assistant's word.",
+  "severity": 1
+ },
+ {
+  "gate": "enforcement-in-product-gate.py",
+  "path": "/Users/sulo/.claude/hooks/enforcement-in-product-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "Denies only when the WRITTEN TEXT of an edit to app//components/ code matches a 'somebody keeps forgetting' justification regex, and the token `enforcement-ok` is not within 200 chars of the match. It inspects only the comment wording , the docstring states this outright: \"It fires on the COMMENT, not on the code, on purpose.\" The actual thing it exists to stop (a discipline mechanism shipped as a UI element in the owner's product) is never checked.",
+  "beating_phrase": "enforcement-ok",
+  "structural_check": "none",
+  "severity": 2
+ },
+ {
+  "gate": "fix-needs-before-after-gate.py",
+  "path": "/Users/sulo/.claude/hooks/fix-needs-before-after-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "Reads the last assistant text only. Blocks when FIX_CLAIM (fixed/improved/reduced/aligned/...) AND MEASURABLE (px/size/gap/count/...) both match and BEFORE_AFTER does not. BEFORE_AFTER's 'honest null' alternation is `\\b(unchanged|did not move|didn't move|no change|identical|stayed|same)\\b` , so the single ordinary word `same` anywhere in the message satisfies the entire before/after requirement. No measurement, tool call, or number is ever verified.",
+  "beating_phrase": "same",
+  "structural_check": "none",
+  "severity": 3
+ },
+ {
+  "gate": "gemini-check-gate.py",
+  "path": "/Users/sulo/.claude/hooks/gemini-check-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "Unconditional pass. The entire file after the docstring is `import sys` + `sys.exit(0)` , owner-disabled 2026-07-21 (\"remove the gemini hook and gates\"), left registered so it still counts as a live wired check while enforcing nothing.",
+  "beating_phrase": "(the empty string , any message passes; the body is literally `sys.exit(0)`)",
+  "structural_check": "none",
+  "severity": 1
+ },
+ {
+  "gate": "lessons-ledger-inject.py",
+  "path": "/Users/sulo/.claude/hooks/lessons-ledger-inject.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Never blocks. permissionDecision is hardcoded 'allow' on every path; it only injects advisory text when the edited path tail matches a LESSONS_LEARNED.md entry or an armed active-ref lock exists. Tier-1 by design (blocking promotion goes through /harden).",
+  "beating_phrase": "n/a",
+  "structural_check": "tail-matching the edited file path against parsed _rules/LESSONS_LEARNED.md entries on disk, plus an on-disk active-ref-<hash>.json lock with a 7-day mtime window. Nothing to fake because nothing is gated.",
+  "severity": 1
+ },
+ {
+  "gate": "memory-maintenance-nudge.py",
+  "path": "/Users/sulo/.claude/hooks/memory-maintenance-nudge.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Never blocks (SessionStart additionalContext only). Emits a nudge when a project memory dir has >120 .md files or MEMORY.md is >220 lines, and that dir's per-dir cooldown file is older than 7 days.",
+  "beating_phrase": "n/a",
+  "structural_check": "a real count of *.md files on disk and a real line count of MEMORY.md, against numeric thresholds, with an mtime-based cooldown.",
+  "severity": 1
+ },
+ {
+  "gate": "mockup-first-gate.py",
+  "path": "/Users/sulo/.claude/hooks/mockup-first-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Denies a Write/Edit/MultiEdit to a real .tsx/.jsx under app//components-legacy/ whose new text contains a framer-motion signal. Per LINE, the loop does `if \"mockup-ok\" in ln: continue` , so the token on the same line skips the check for that line. No mockup file, /dev route, or owner approval is ever looked for on disk; the gate cannot tell an approved-mockup port from a live design edit.",
+  "beating_phrase": "mockup-ok",
+  "structural_check": "the target file path is a real customer component and the added text really does contain framer-motion API surface (parsed from the edit payload, not self-reported).",
+  "severity": 2
+ },
+ {
+  "gate": "mockup-parity-gate.py",
+  "path": "/Users/sulo/.claude/hooks/mockup-parity-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Fires only if this turn edited a search/map file (or a file sharing a token with an approved /dev mockup slug) AND a design-verifier Agent was dispatched. It then passes as soon as that verifier's PROMPT TEXT contains a `/dev/<slug>` reference and one COMPARE word (diff|compar|parity|side by side|against the mockup). Whether the verifier actually diffed anything is never checked , the docstring concedes this (\"it can't force the verifier to diff every pixel\"). Dispatching no verifier at all also passes.",
+  "beating_phrase": "diff against the approved mockup at /dev/map-motion",
+  "structural_check": "a real Agent/Task tool_use with subagent_type design-verifier must exist in the turn's transcript, and real Write/Edit tool_uses on matching file paths.",
+  "severity": 2
+ },
+ {
+  "gate": "mockup-visual-gate.py",
+  "path": "/Users/sulo/.claude/hooks/mockup-visual-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Denies an appearance-changing edit to a real component (net add/remove of a VISUAL token between old_string and new_string, comment-stripped). But has_ok() scans the WHOLE new_string / whole Write content for `mockup-ok` and skips that edit entirely , one comment anywhere in a 500-line Write disables the check for the whole file. Like mockup-first-gate, it never verifies that a mockup exists or was approved.",
+  "beating_phrase": "mockup-ok",
+  "structural_check": "a real token-set diff of Tailwind/hex/style-prop visual tokens between the old and new text of the edit, scoped by real file path.",
+  "severity": 2
+ },
+ {
+  "gate": "no-black-selected-gate.py",
+  "path": "/Users/sulo/.claude/hooks/no-black-selected-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Silent for ANY path inside /Documents/solen/ (the project copy owns that repo). Elsewhere it denies a selection-token near bg-s-ink/border-s-ink/bg-s-accent/border-s-accent , unless `selected-ok` OR any EXCLUDE word appears in a +/-60 char window. EXCLUDE contains `\\bbutton\\b` and `\\bbtn\\b`, and selected states are almost always rendered on a <button>, so the ordinary markup that carries the violation also excuses it.",
+  "beating_phrase": "button",
+  "structural_check": "real regex parse of the code being written (selection token co-located with an ink/accent fill, including the const-assigned-class and CSS-rule shapes), on real file extensions.",
+  "severity": 2
+ },
+ {
+  "gate": "no-gemini-key-in-url.py",
+  "path": "/Users/sulo/.claude/hooks/no-gemini-key-in-url.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Denies a .ts/.tsx Write/Edit/MultiEdit whose new content matches `googleapis.com...[?&]key=` or `googleapis.com...key=${`. Passes when the code does not contain that shape (e.g. uses the x-goog-api-key header).",
+  "beating_phrase": "n/a",
+  "structural_check": "the literal code being written. There is no claim-of-fix channel , the artifact itself is inspected. Only real evasion is building the URL by concatenation so the literal never appears, which is code, not a phrase.",
+  "severity": 1
+ },
+ {
+  "gate": "no-permission-to-fix-gate.py",
+  "path": "/Users/sulo/.claude/hooks/no-permission-to-fix-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "100% regex over the last assistant text: blocks only if ASKS_PERMISSION matches AND NAMES_THE_FIX matches AND REAL_FORK does not. REAL_FORK is the free escape , it contains `\\bpush\\b`, `\\bdeploy\\b`, `\\bdelete` and `\\bcredential`, so one unrelated sentence disarms it. Independently, any permission phrasing outside the eight listed idioms never matches at all.",
+  "beating_phrase": "I did not push.",
+  "structural_check": "none",
+  "severity": 3
+ },
+ {
+  "gate": "open-boxes-midturn.py",
+  "path": "/Users/sulo/.claude/hooks/open-boxes-midturn.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Never blocks (PostToolUse additionalContext). Nudges on every 15th Edit/Write/Bash, at most once per 120s, when the ACTIVE workstream detail file linked from _plans/ACTIVE.md still has `- [ ]` lines.",
+  "beating_phrase": "n/a",
+  "structural_check": "a real count of unticked checkbox lines in a file on disk, resolved through _plans/ACTIVE.md's ACTIVE rows, with a per-session counter file. Caveat worth naming: the boxes are markdown the assistant itself writes, so `- [x]` is the whole proof , but since this hook only nudges and never blocks, there is nothing to beat.",
+  "severity": 1
+ },
+ {
+  "gate": "phantom-column-gate.py",
+  "path": "/Users/sulo/.claude/hooks/phantom-column-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Parses `.from(\"t\").select(\"...\")` in the added text and denies any column absent from the live _inventory/_db-columns.json snapshot. But `if ESCAPE.search(content): allow()` runs BEFORE the snapshot check and scans the whole content , so `phantom-ok:` anywhere in the edit disables every column check in that edit. The docstring concedes a bare token with no reason still passes.",
+  "beating_phrase": "// phantom-ok:",
+  "structural_check": "real column tokens parsed out of the PostgREST select list, checked against the live DB column snapshot on disk (not a TS type).",
+  "severity": 2
+ },
+ {
+  "gate": "postgrest-filter-injection-gate.py",
+  "path": "/Users/sulo/.claude/hooks/postgrest-filter-injection-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Traces each `${...}` inside .or()/.ilike()/.like() back to an assignment; denies only a PROVEN raw request source (searchParams.get / await req.json() / params.<x>) with no `.replace(` reassignment in between. `if ESCAPE.search(content): allow()` fires first and scans the whole content, so `filter-ok:` anywhere skips the entire analysis; a bare token with no reason passes by design. Secondary hole: has_sanitizer_assignment() accepts ANY `.replace(` call as sanitization.",
+  "beating_phrase": "// filter-ok:",
+  "structural_check": "a real bracket-aware parse of the filter call argument plus a taint trace of the interpolated identifier back to its assignment in the same content.",
+  "severity": 2
+ },
+ {
+  "gate": "pre-edit-psychology-gate.py",
+  "path": "/Users/sulo/Documents/solen/.claude/hooks/pre-edit-psychology-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Blocks a NET-NEW bare-star render (P1) or a hardcoded count literal like \"14 Salons\" (P2) in app//components *.tsx or a _mockups HTML. line_has_ok() passes if `psych-ok:` appears on the matched line or the line above , bare, no reason required. Separately, P1b's guard is `COUNT_TOKEN.search(text)` over the whole inserted block, so the bare word `review` in any comment satisfies \"a review count is rendered\".",
+  "beating_phrase": "psych-ok:",
+  "structural_check": "real net-new diffing (old_string / prior file content vs new) of the actual JSX and HTML being written, for star-without-count and digit-before-count-noun shapes.",
+  "severity": 2
+ },
+ {
+  "gate": "real-component-gate.py",
+  "path": "/Users/sulo/Documents/solen/.claude/hooks/real-component-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Blocks at Stop only when a public/_mockups/**/*.html (not index.html) has mtime < 900s and NO app|components|components-legacy **/*.tsx has mtime < 900s. Passes the moment any .tsx anywhere in those trees was touched in the last 15 minutes.",
+  "beating_phrase": "n/a",
+  "structural_check": "real filesystem mtimes of mockup HTML vs real component .tsx. Weak but not string-shaped: any unrelated .tsx edit satisfies it, and it cannot tell whether the mockup's change was actually ported.",
+  "severity": 1
+ },
+ {
+  "gate": "reply-length-gate.py",
+  "path": "/Users/sulo/.claude/hooks/reply-length-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Blocks the closing message when prose >1400 chars, or >=2 markdown tables, or a table before the first sentence-ending punctuation. Passes if the OWNER's last message matched WANTS_LONG (contains 'everything', 'in detail', ...). Key escape: CODE_FENCE.sub() strips ```...``` blocks BEFORE counting, and the hook's own self-test case 9 asserts that a 4000-char fenced block PASSES , so the wall of text just moves inside a fence.",
+  "beating_phrase": "```",
+  "structural_check": "a measured character count of the reply's prose and a real count/offset of markdown table blocks, against numeric thresholds; plus a replay counter of blocked attempts this turn.",
+  "severity": 2
+ },
+ {
+  "gate": "sim-auto.py",
+  "path": "/Users/sulo/.claude/hooks/sim-auto.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Never blocks (PostToolUse). After a solen-mobile src/app or src/components .tsx edit, and if `xcrun simctl list devices booted` reports Booted and no capture in the last 10s, it shells out to actually screenshot the simulator to /tmp/sim-auto.png and injects a note to Read it.",
+  "beating_phrase": "n/a",
+  "structural_check": "a real subprocess call to xcrun simctl , the screenshot either exists (returncode 0) or the hook stays silent.",
+  "severity": 1
+ },
+ {
+  "gate": "system-health-check.py",
+  "path": "/Users/sulo/.claude/hooks/system-health-check.py",
+  "verdict": "MIXED",
+  "pass_condition": "Never blocks (SessionStart context line; --report exits 1). Reports 0 violations when every invariant computes clean off disk. Invariant 8 (check_law_claims) is the string-shaped one: a doc line claiming a named hook enforces something is SKIPPED when _HONEST matches , `not wired|unwired|never run/armed/wired|pending|orphan|wire it/on/when|needs arming|built + self-tested|self-tested;`. So an unwired gate keeps its law citation as long as the sentence carries one of those phrases. The project CLAUDE.md theme row already uses exactly this (\"built + self-tested; wire on Write/Edit when settings is writable\") for white-only-web-gate.py.",
+  "beating_phrase": "built + self-tested",
+  "structural_check": "hook files on disk vs the four settings.json files, memory index link resolution, flag mtimes, greps for retired MCP tool names, skill-ref path resolution, ledger date age, gate-profile family call-site greps, skip-flag-ledger use counts, per-matcher hook-group counts.",
+  "severity": 2
+ },
+ {
+  "gate": "verify-before-done-gate.py",
+  "path": "/Users/sulo/.claude/hooks/verify-before-done-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Blocks only when ALL THREE hold: the final text matches CLAIM_RE (fixed|done|fertig|erledigt|verified|confirmed|resolved|behoben|works now|now works|passes) or a checkmark char, a code file was edited this turn, and no evidence tool ran. Two text escapes fully satisfy it: (1) claim completion without a listed word , the estate's own sanctioned closing phrase from CLAUDE.md rule 7 contains none of them, so the gate never fires; (2) is_evidence() counts ANY Agent/Task tool call whose serialized input merely contains the substring \"verify\", regardless of what the subagent did or returned.",
+  "beating_phrase": "Ready for your review.",
+  "structural_check": "real tool_use blocks in this turn's transcript: rendering MCP tools by exact name, npm test/vitest/jest/tsc/playwright/next build in Bash, and a curl or python3/bash invocation that references a path segment of a file actually edited this turn.",
+  "severity": 3
+ },
+ {
+  "gate": "owner-punt-gate.py",
+  "path": "/Users/sulo/.claude/hooks/owner-punt-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "Four arms, all decided on regex/substring matches over the final assistant message alone. Three of them (DBPUNT v3, BACKENDPUNT v4, and the base PUNT list) are killed outright by has_self_done = any(s in low for s in SELF_DONE), where SELF_DONE is a bare substring list containing 'i applied', 'i ran', 'myself', 'already done', 'already set'. The base arm is additionally exempted by has_genuine (substring 'decision', 'your call', 'prefer', 'approve'). Nothing checks a tool call, a file, or an MCP invocation.",
+  "beating_phrase": "I already applied it myself.",
+  "structural_check": "none",
+  "severity": 3
+ },
+ {
+  "gate": "reference-measure-gate.py",
+  "path": "/Users/sulo/.claude/hooks/reference-measure-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "A reference-derived mockup .html passes if its own content matches MEASURED = (measured|PIL|pixel-sampl|getBoundingClientRect|px2pt|spec.md) within 120 chars of a number plus px|pt. The gate reads the string the agent is writing into the file; it never checks that extract.py ran, that a .png was opened, or that any pixel was sampled. The literal token 'measure-ok' anywhere in the content also exits 0 with no reason required.",
+  "beating_phrase": "measured: avatar 26pt, tile 114pt",
+  "structural_check": "none",
+  "severity": 3
+ },
+ {
+  "gate": "sample-dont-pick-colour-gate.py",
+  "path": "/Users/sulo/.claude/hooks/sample-dont-pick-colour-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "Blocks a colour claim on a rendered asset unless SAMPLED matches the turn blob OR the reply, or HEX_WITH_SOURCE (a #RRGGBB within 80 chars of '.png') matches the reply, or ADMITS matches the reply. The turn blob is built by flatten(), which includes the assistant's own text, so every branch is satisfied by prose. SAMPLED's first alternative is the bare substring 'icons/categories/' , naming the path passes, opening it is never required.",
+  "beating_phrase": "sampled from public/icons/categories/nails.png",
+  "structural_check": "none",
+  "severity": 3
+ },
+ {
+  "gate": "copy-the-curve-gate.py",
+  "path": "/Users/sulo/.claude/hooks/copy-the-curve-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "verdict() blocks only when HAND_PICKED matches the reply, REFERENCE_IN_PLAY matches the blob, and neither EXTRACTED (blob) nor DISCLAIMED (reply) matches. flatten() puts the assistant's own reply text into the blob, so EXTRACTED , whose alternatives include the bare token 'per-frame', 'keyframe', 'normalis', 'plateau' , is satisfied by writing one of those words. No ffmpeg run, no frame directory, no measured table is ever checked.",
+  "beating_phrase": "per-frame",
+  "structural_check": "none",
+  "severity": 3
+ },
+ {
+  "gate": "animation-full-clip-verify-gate.py",
+  "path": "/Users/sulo/.claude/hooks/animation-full-clip-verify-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "An animation-fix claim in the reply passes when FULL_SWEEP matches the turn blob, and additionally SMOOTHNESS when the claim mentions smooth/lag/stutter. flatten() includes the assistant's own text in that blob, so FULL_SWEEP's alternatives 'every frame', 'whole clip', 'full-clip', 'all N frames' are met by asserting them. Nothing counts frames, reads a frame directory, or inspects a loop's output.",
+  "beating_phrase": "swept every frame, mean jump measured",
+  "structural_check": "none",
+  "severity": 3
+ },
+ {
+  "gate": "stat-source-gate.py",
+  "path": "/Users/sulo/.claude/hooks/stat-source-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "A persuasion-stat shape in the final message blocks unless SOURCE matches anywhere in the same message, or META matches within 150 chars of the stat. SOURCE accepts the bare phrases 'according to', 'per <Capital>', 'source:', 'cited', or any of the house names (Baymard, Nielsen, McKinsey...). No URL is fetched, no citation is resolved, the attributed house need not have said anything. META additionally accepts 'for example' next to the number, which suppresses the block entirely.",
+  "beating_phrase": "according to",
+  "structural_check": "none",
+  "severity": 3
+ },
+ {
+  "gate": "instrument-corroboration-gate.py",
+  "path": "/Users/sulo/.claude/hooks/instrument-corroboration-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Impossibility-claim arms: corroboration is computed from `blob`, which is built ONLY from tool_use inputs (json.dumps of each input), never from assistant prose , so a real Bash curl / Edit / Write / preview_start call must exist, and used_edit even requires the edit to target the SAME basename or a path inside the SAME directory the claim names. That spine is structural. The LINK-REQUEST arm at the end is not: it clears on `_lr_url`, a regex for a markdown link `](https://...` or any http(s) URL ending in a common TLD inside the final message.",
+  "beating_phrase": "[Open](https://example.com)",
+  "structural_check": "For the five impossibility categories, that a second, different instrument actually ran this turn as a tool call: a curl to the same host, kill -0/lsof/curl localhost, an Edit or Write on the claimed path or inside the claimed directory, a --edge-ip-version 4 retry, or a preview_start call. Weak spot: has_preview_tool also accepts the literal string 'next-server' appearing in any tool input.",
+  "severity": 2
+ },
+ {
+  "gate": "mockup-grounding-gate.sh",
+  "path": "/Users/sulo/.claude/hooks/mockup-grounding-gate.sh",
+  "verdict": "MIXED",
+  "pass_condition": "Arm 1 needs a `Grounded-in:`/`Captured-from:`/`Real-source:`/`Exists-check:` citation whose path EXISTS under the project dir and shares a >=4-char non-generic token with the mockup filename or its <title>/<h1>. Arm 2 (reference-derived mockups) needs only the literal `Owner-scope: confirmed` or `Owner-scope: all-variants` , the quoted owner words are never compared to anything in the transcript, so arm 2 is pure text.",
+  "beating_phrase": "Owner-scope: confirmed: \"yes, that one\"",
+  "structural_check": "Arm 1 only: os.path.exists() on the cited path plus a token-overlap test against the mockup's own filename/title. It proves a relevantly-named file exists, not that it was captured, read, or copied , citing app/[locale]/checkout/page.tsx on a checkout mockup passes with the real page never opened.",
+  "severity": 2
+ },
+ {
+  "gate": "mockup-defer-stop-gate.py",
+  "path": "/Users/sulo/Documents/solen/.claude/hooks/mockup-defer-stop-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Blocks only when the reply matches MOCKUP and DEFER and does NOT match LINK, and no public/_mockups/**/*.htm* file has mtime < 600s. The mtime check is a real fact; the LINK check is a bare regex over the reply text accepting 'trycloudflare.com', '/_mockups/', 'localhost:<port>', '127.0.0.1:<port>' or '/dev/<slug>'. Any of those strings in the message clears the gate with no file written and no URL served.",
+  "beating_phrase": "http://localhost:3000/_mockups/",
+  "structural_check": "A .htm/.html file under public/_mockups/ modified within the last 10 minutes (wrote_recent()).",
+  "severity": 2
+ },
+ {
+  "gate": "no-easy-hide-gate.py",
+  "path": "/Users/sulo/Documents/solen/.claude/hooks/no-easy-hide-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "Exit 0 whenever the COPOUT regex does not match the final assistant message. COPOUT needs the hide/remove verb AND a causal connective AND a customer/user noun AND a see/notice verb inside one clause (or the 'not live yet ... so hide' shape). Nothing checks whether anything was actually hidden, removed, wired, or seeded , the same removal survives untouched if it is described without that clause shape. Separate defect: HIDE_REC is compiled at line 33 and never referenced, so the 'phrased as my pick' arm the docstring implies does not exist.",
+  "beating_phrase": "I removed the block for now; it is dead until the route is wired.",
+  "structural_check": "none",
+  "severity": 2
+ },
+ {
+  "gate": "prelaunch-reality-gate.py",
+  "path": "/Users/sulo/.claude/hooks/prelaunch-reality-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "A LIVE_HARM assertion is defused when HEDGE matches anywhere in a 240-char window either side of it. HEDGE includes bare `\\bwould\\b` and `\\bif\\s+(a|an|any|the|we|it|this)\\b`, both of which occur in ordinary prose, so an unrelated sentence within four lines of the claim launders it while the false live-harm assertion stands. Also note: the message is read from data['last_assistant_message'|'assistant_message'|'message'|'text'] with no transcript_path fallback, unlike the 84 other Stop hooks here; if the Stop payload lacks those keys the gate exits 0 without evaluating anything. I did not verify the live payload shape, so I am not claiming it is inert , five sibling hooks (scale-excuse, repeat-claim-needs-repro, no-intent-announcement, measure-dont-ask, found-it-then-fix-it) share the same read and would share the fate.",
+  "beating_phrase": "would",
+  "structural_check": "none",
+  "severity": 2
+ },
+ {
+  "gate": "browser-verify-gate.sh",
+  "path": "/Users/sulo/Documents/solen/.claude/hooks/browser-verify-gate.sh",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "jq classifies every transcript entry of the current turn into UIEDIT / VERIFY tokens from actual tool_use blocks, then awk requires a VERIFY at or after the first UIEDIT since the last human message. No prose in the reply affects the verdict.",
+  "structural_check": "A real tool call in the transcript: mcp__claude-in-chrome__*, mcp__Claude_Browser__*, mcp__Claude_Preview__*, mcp__playwright__*, a Task with subagent_type design-verifier, or a Bash curl/wget of localhost/127.0.0.1:<port>. Weak spot worth knowing: the Bash arm also matches any command merely containing the word 'playwright', so `Bash(\"cat playwright.config.ts\")` scores as verification.",
+  "beating_phrase": "n/a",
+  "severity": 1
+ },
+ {
+  "gate": "tunnel-kill-relink-gate.py",
+  "path": "/Users/sulo/.claude/hooks/tunnel-kill-relink-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "--stop: with a fresh kill marker on disk, the final message must contain >=1 https://*.trycloudflare.com URL and EVERY such URL must answer 2xx/3xx to a live probe run by the hook itself (curl --max-time 12, then a pure-python TLS HEAD pinned to the Cloudflare edge IP with SNI). A pasted or invented hostname fails the probe and blocks.",
+  "structural_check": "A live HTTP status code from the URL the agent handed over, fetched by the hook at Stop time; plus the PreToolUse marker file stamped from the actual Bash command that killed cloudflared.",
+  "beating_phrase": "n/a",
+  "severity": 1
+ },
+ {
+  "gate": "mcp-prod-write-guard-bash.py",
+  "path": "/Users/sulo/.claude/hooks/mcp-prod-write-guard-bash.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "PreToolUse(Bash), deny-only. It extracts the SQL from the command about to run (-c/--command/--sql quoted args and heredoc bodies) and denies when catastrophic_sql_reason(), imported from the MCP twin, flags it. It inspects the executable payload, not a description of it.",
+  "structural_check": "The parsed SQL text of the actual command being submitted for execution.",
+  "beating_phrase": "n/a",
+  "severity": 1
+ },
+ {
+  "gate": "no-select-star-sensitive.py",
+  "path": "/Users/sulo/.claude/hooks/no-select-star-sensitive.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "PreToolUse(Edit|Write) on app/api/**/route.ts or /lib/**.ts. Denies when the new content contains .select(\"*\") whose nearest preceding .from(\"table\") within 400 chars is in the SENSITIVE set, or a nested `<sensitive_table>(*)` inside a select() body. Pass = the code being written does not contain that shape.",
+  "structural_check": "The source text of the edit being applied, matched against a fixed sensitive-table list.",
+  "beating_phrase": "n/a",
+  "severity": 1
+ },
+ {
+  "gate": "white-only-web-gate.py",
+  "path": "/Users/sulo/.claude/hooks/white-only-web-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "PreToolUse(Write|Edit|MultiEdit) on .html/.htm/.css/.tsx/.jsx under ~/Documents/solen (never solen-mobile). Denies when the new content matches prefers-color-scheme:dark, data-theme=\"dark\", or [data-theme=\"dark\"], unless the literal 'white-only-ok' sits within 60 chars of the hit (the documented inline justification).",
+  "structural_check": "The actual content being written to a Solen web file.",
+  "beating_phrase": "n/a",
+  "severity": 1
+ },
+ {
+  "gate": "no-italic-ui-gate.py",
+  "path": "/Users/sulo/.claude/hooks/no-italic-ui-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "decide() blocks only when the new text adds a real `italic` utility (word-boundary aware, not-italic stripped, italic-ok: lines skipped) to a .tsx/.jsx/.css file under app|components|components-legacy|src, AND the new count exceeds the old count so removals and refactors pass.",
+  "structural_check": "A counted delta of italic utility occurrences between old_string and new_string of the edit being applied.",
+  "beating_phrase": "n/a",
+  "severity": 1
+ },
+ {
+  "gate": "mockup-resurrection-gate.py",
+  "path": "/Users/sulo/Documents/solen/scripts/hooks/mockup-resurrection-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "PreToolUse on any /_mockups/ write. Strips HTML/JS comments so prose about a rejected treatment does not count, then requires every all_of pattern (and one any_of, when present) of a REJECTED_TREATMENTS.json entry to match the RENDERED markup. Pass = the markup does not carry a rejected treatment signature.",
+  "structural_check": "The comment-stripped markup of the mockup being written, matched against the data-driven rejected-treatment signature file.",
+  "beating_phrase": "n/a",
+  "severity": 1
+ },
+ {
+  "gate": "fullbleed-external-link-gate.py",
+  "path": "/Users/sulo/.claude/hooks/fullbleed-external-link-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Stop hook that re-reads every app/**, components/**, components-legacy/** .tsx modified in the last 900s and blocks when an <a> tag whose className contains 'absolute inset-0' has a literal http(s) href, or an href={ident} where the same file declares that identifier as an http string. Nothing in the reply affects it.",
+  "structural_check": "Parsed anchor tags in the on-disk source of files the turn actually touched, with the identifier resolved against its declaration in the same file.",
+  "beating_phrase": "n/a",
+  "severity": 1
+ },
+ {
+  "gate": "pre-component-edit-pixel-spec.sh",
+  "path": "/Users/sulo/Documents/solen/.claude/hooks/pre-component-edit-pixel-spec.sh",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Blocks Edit/Write/MultiEdit on UI component paths while /tmp/pixel-spec-current.json exists, is <1h old and parseable, and <output_dir>/.review-needed still exists. Pass = one of those files is absent or the pointer is stale.",
+  "structural_check": "Two real files on disk written by pixel-spec-auto's extract.py, plus the pointer's timestamp. Honest weakness: the gate clears on `rm .review-needed` and never checks that Read(annotated.png) happened, so the verification it names is unenforced , but that is a bypass by shell action, not by a written phrase.",
+  "beating_phrase": "n/a",
+  "severity": 1
+ },
+ {
+  "gate": "devils-advocate.py",
+  "path": "/Users/sulo/.claude/hooks/devils-advocate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "There is no pass condition. Every path exits 0. On a UserPromptSubmit whose prompt is >=25 chars, is not a notification, and matches BUILDISH, it prints the premortem text once per session (state file) and is silent thereafter. It cannot block, so nothing the assistant writes or omits can fail it , the premortem it mandates is never checked.",
+  "structural_check": "Only the user's own prompt text and a per-session state file. It enforces nothing; it is advice injection counted among the 190 'live checks'.",
+  "beating_phrase": "n/a",
+  "severity": 1
+ },
+ {
+  "gate": "fable-skill-trigger.py",
+  "path": "/Users/sulo/.claude/hooks/fable-skill-trigger.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "No pass condition. Classifies the USER's prompt into six categories by regex and injects the matching Skill() pointer once per category per session, then exits 0. Never blocks, and never verifies that the named skill was actually invoked.",
+  "structural_check": "The user's prompt text plus a per-session category state file. Enforces nothing.",
+  "beating_phrase": "n/a",
+  "severity": 1
+ },
+ {
+  "gate": "multi-ask-decompose.py",
+  "path": "/Users/sulo/.claude/hooks/multi-ask-decompose.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "No pass condition. Counts numbered/bulleted items and and/plus joins in the user's prompt, and on a multi-ask or correction shape injects the decompose mandate (full text once per session). Always exits 0. The atomic-checkbox requirement it states is enforced elsewhere, by unfinished-batch-gate, not here.",
+  "structural_check": "The user's prompt structure (list markers, conjunction count, length) plus a session state file. Enforces nothing itself.",
+  "beating_phrase": "n/a",
+  "severity": 1
+ },
+ {
+  "gate": "plan-active-sessionstart.py",
+  "path": "/Users/sulo/.claude/hooks/plan-active-sessionstart.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "No pass condition. Resolves <project>/_plans/ACTIVE.md by walking up to 4 parent dirs, injects it (capped 6000 chars) as SessionStart context, plus a <48h CONTEXT_SNAPSHOT.md if present; after the first fire in a session it injects a one-line pointer with a counted number of open items. Always exits 0.",
+  "structural_check": "Real files on disk (_plans/ACTIVE.md, _plans/CONTEXT_SNAPSHOT.md) and their mtimes; the open-item count is parsed from the file's own unchecked boxes. Context injection, not enforcement.",
+  "beating_phrase": "n/a",
+  "severity": 1
+ },
+ {
+  "gate": "no-regression-by-fix-gate.py",
+  "path": "/Users/sulo/.claude/hooks/no-regression-by-fix-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "verdict() reads ONLY the final assistant text. If FIX_CLAIM and REDUCTION both match, it passes as soon as PRESENCE_PROOF matches the same reply. PRESENCE_PROOF's last two alternatives are the bare words \\\\bunchanged\\\\b and \\\\bsame (?:length|duration|presence)\\\\b, so a word substitutes for the before/after measurement the gate exists to force. No file, no tool call, no number is ever checked.",
+  "beating_phrase": "unchanged",
+  "structural_check": "none , the entire verdict is three regexes over last_assistant(transcript)",
+  "severity": 3
+ },
+ {
+  "gate": "no-invented-visual-motif-gate.py",
+  "path": "/Users/sulo/.claude/hooks/no-invented-visual-motif-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "Blocks only when MOTIF and BUILT match the reply, ADMITS does not, and REFERENCED does not match `blob`. But flatten() builds blob from assistant TEXT blocks as well as tool_use inputs and tool_results, so the assistant's own prose is searched for its own proof. REFERENCED matches the bare words \\\\bcapture\\\\b / \\\\bcaptured\\\\b and the phrase \\\\bfrom the reference\\\\b, so saying you used a reference is accepted as having used one. ADMITS is a second pure-text pass.",
+  "beating_phrase": "built from the reference",
+  "structural_check": "none that the assistant cannot supply , REFERENCED is searched over a blob that includes the assistant's own reply text, so no tool call is required",
+  "severity": 3
+ },
+ {
+  "gate": "mockup-content-gate.py",
+  "path": "/Users/sulo/.claude/hooks/mockup-content-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Four of five branches are structural (hex parsed to HSV and thresholded, German word superset over comment-stripped content). The real-Lucide branch is not: check_german_html_lucide only inspects lines containing `<svg` and passes the line if re.search(r'class=\"[^\"]*lucide|data-lucide=', line) hits. A hand-drawn path with a lucide class attribute passes, and any path on a following line is never inspected at all. mockup-preflight-manifest.py mirrors the identical regex, so both copies of the icon rule fall to the same string. Per-line escapes hue-ok / muted-ok / german-ok / chart-ok / dataviz-ok / bigtype-ok, plus lang-ok anywhere in the content, kill their branches outright.",
+  "beating_phrase": "class=\"lucide\"",
+  "structural_check": "hex -> colorsys.rgb_to_hsv saturation/value thresholds (real computed measurement); German word-count threshold over comment-stripped file content",
+  "severity": 3
+ },
+ {
+  "gate": "exists-guard.py",
+  "path": "/Users/sulo/.claude/hooks/exists-guard.py",
+  "verdict": "MIXED",
+  "pass_condition": "Line 41: `if re.search(r\"exists[- ]check\", content, re.I): sys.exit(0)` runs BEFORE `git ls-files` is ever called. Writing the affirmation is checked instead of the search it affirms. Absent that string, the gate does real work: git ls-files, concept-token overlap, 2+ distinct tokens or same-directory, then deny with the candidate list.",
+  "beating_phrase": "// exists-check: net-new",
+  "structural_check": "git ls-files token-overlap scan of the real repo with a de-duped shared-token count",
+  "severity": 2
+ },
+ {
+  "gate": "no-defer-excuse-gate.py",
+  "path": "/Users/sulo/.claude/hooks/no-defer-excuse-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Two independent branches. check_root_cause blocks only when BLOCKER and DEFLECT match the final reply and ROOTCAUSE does not, so any unquoted occurrence of `root cause` / `caused by` / `the cause is` clears it , the deny text advertises the phrase itself (\"say 'root cause: ...' explicitly\"). The plan branch reads _plans/*.md from disk (structural) but exempts any offending line matching LEGIT, whose alternatives include the bare words owner, decision and manual. Note strip_quotes_backticks_heredocs runs first, so the phrase must be unquoted and outside backticks.",
+  "beating_phrase": "root cause:",
+  "structural_check": "globs _plans/*.md modified in the last 4h and scans real checklist lines for defer-verb + budget-noun co-occurrence",
+  "severity": 2
+ },
+ {
+  "gate": "mockup-gate.py",
+  "path": "/Users/sulo/.claude/hooks/mockup-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "A solen-mobile real screen edit passes if its repo-relative path appears as a line in solen-mobile/.claude/mockup-approvals.txt. That file is plain text the agent can append to with the same Write tool the gate is guarding, and nothing verifies an owner ever saw a mockup , the approval record is self-issuable. The deny message itself teaches the write (\"Once the owner approves, append '<rel>' to ...\").",
+  "beating_phrase": "src/app/(tabs)/index.tsx",
+  "structural_check": "path scoping (solen-mobile/src/app|src/components, .tsx, not /mocks/) plus membership in an on-disk approvals file",
+  "severity": 2
+ },
+ {
+  "gate": "reference-check-gate.sh",
+  "path": "/Users/sulo/.claude/hooks/reference-check-gate.sh",
+  "verdict": "MIXED",
+  "pass_condition": "For a .html Write that cites a brand as inspiration, it requires `Reference-checked: <path>` AND os.path.exists(proj/path). The existence test is real, but it accepts ANY path that exists in the project , it never checks the file is a capture, an image, recent, or related to the brand named. Pointing it at a file that ships with the repo satisfies it with nothing captured.",
+  "beating_phrase": "Reference-checked: package.json",
+  "structural_check": "os.path.exists() on the cited path, relative to CLAUDE_PROJECT_DIR",
+  "severity": 2
+ },
+ {
+  "gate": "copy-lint-gate.py",
+  "path": "/Users/sulo/.claude/hooks/copy-lint-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Six regex rules over the Write/Edit payload text, each scoped to its own extension tuple. Passes when the added text carries none of: `uppercase`, an em/en dash, a middot/bullet, a bare \"(optional)\"/\"(max. N)\", a `===1 ? \"...\"` ternary. Each rule is defeated per line by its inline ok-token, which needs no reason and is not logged. Also worth flagging: rule 5 (German formal register) is disarmed at line 96, REGISTER_RULE_ARMED = False, so that rule enforces nothing today (deliberate, owner reversed du -> Sie on 2026-07-29).",
+  "beating_phrase": "em-dash-ok",
+  "structural_check": "regex over the literal content being written, per file extension , the artifact is inspected, not a claim about it",
+  "severity": 2
+ },
+ {
+  "gate": "always-recommend-gate.py",
+  "path": "/Users/sulo/.claude/hooks/always-recommend-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "Unconditional pass. Line 24 is a bare `sys.exit(0)` placed above every import-time dependency and all of the logic, so the transcript is never read and nothing can ever block. This is a documented owner order (2026-07-21, \"remove the hook that makes u repeat the same shi twice\"), not a bug , but it is counted among the 190 live checks while enforcing nothing, and it is the ONLY check in the 190 whose name touches the always-recommend rule.",
+  "beating_phrase": "(no phrase required , any reply passes, including an empty one; the exit precedes all logic)",
+  "structural_check": "none , dead code below the exit",
+  "severity": 2
+ },
+ {
+  "gate": "mockup-realsize-gate.py",
+  "path": "/Users/sulo/.claude/hooks/mockup-realsize-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "For a /dev/ or _mockups/ .tsx|.html write, it denies when a feed-grammar signature (\"View store\", \"View N services\", \"matching service\") co-occurs with grid-cols-[234]. Line 44 short-circuits on `if \"realsize-ok\" in body` , a bare substring anywhere in the file, with no reason attached, even though the docstring and deny text both promise `realsize-ok: <why>`.",
+  "beating_phrase": "realsize-ok",
+  "structural_check": "regex co-occurrence of feed-card copy and a multi-column grid class in the written markup",
+  "severity": 2
+ },
+ {
+  "gate": "input-error-consistency-gate.sh",
+  "path": "/Users/sulo/.claude/hooks/input-error-consistency-gate.sh",
+  "verdict": "MIXED",
+  "pass_condition": "Denies a line that has both `<input` and one of border-s-error / border-red- / ring-s-error / ring-red / aria-invalid, in app/_components/components-legacy .tsx outside the TextInput primitive. Any such line carrying `input-ok` is skipped, no reason required.",
+  "beating_phrase": "input-ok",
+  "structural_check": "per-line regex over the written JSX , the raw <input> and its classes are actually inspected",
+  "severity": 1
+ },
+ {
+  "gate": "motion-recipe-gate.py",
+  "path": "/Users/sulo/.claude/hooks/motion-recipe-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Parses initial/animate/whileInView object literals in the added text; an entrance with opacity:0 passes only when `scale` AND (`blur` or `filter`) are present in the same literal. Two further checks (AnimatePresence mode=\"wait\", inline spring stiffness/damping) work the same way. Every branch is waived by `motion-ok:` within a 200-char window of the match , windowed on purpose so one escape cannot blanket an edit, but still a reason-free text token.",
+  "beating_phrase": "motion-ok: cross-fade",
+  "structural_check": "regex parse of the actual framer-motion prop objects being written, checking for required co-present properties",
+  "severity": 1
+ },
+ {
+  "gate": "design-verify-gate.py",
+  "path": "/Users/sulo/.claude/hooks/design-verify-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Fires when this turn wrote a real UI file carrying a visual signal (or git-committed one). Passes only on a tool_use with name Agent/Task and subagent_type=='design-verifier' in the transcript. The skip flag alone is not enough: it additionally requires proof-of-looking , a tool_use whose name matches screenshot/read_page/preview_screenshot/get_screenshot/gif_creator, a Bash gemini-visual-check/screencapture/playwright-screenshot, or a Read of a .png/.jpg. All of these are transcript facts; prose cannot produce them.",
+  "beating_phrase": "n/a",
+  "structural_check": "presence of a design-verifier subagent dispatch, or of a render/screenshot tool call, in this turn's transcript entries",
+  "severity": 1
+ },
+ {
+  "gate": "runnable-claim-gate.py",
+  "path": "/Users/sulo/.claude/hooks/runnable-claim-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "When the final message names a runnable (npm run X, gate:/check:, scripts/*.mjs|sh|py, *.yml) AND makes a behaviour claim, it passes only if some tool call this turn , excluding Write/Edit/MultiEdit/NotebookEdit and excluding narrating `git commit|log|show|status|diff` , has the runnable's token in its serialized input. Both exclusions were self-tested. Real hole, but not a satisfying phrase: the trigger is a fixed BEHAVIOUR_CLAIM vocabulary, so the same unverified claim paraphrased outside that list (e.g. \"gate:floors comes back clean today\") never fires. That dodges the trigger rather than satisfying the check.",
+  "beating_phrase": "n/a",
+  "structural_check": "token match against this turn's non-write, non-narrating tool_use inputs in the transcript",
+  "severity": 1
+ },
+ {
+  "gate": "visual-question-needs-render-gate.py",
+  "path": "/Users/sulo/.claude/hooks/visual-question-needs-render-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "On AskUserQuestion with >=2 distinct visual words in the question/header fields (options prose deliberately excluded after a 2026-07-29 false fire), it passes only if rendered_this_turn() finds a tool_use named get_page_text/read_page/navigate/screenshot/javascript_tool, or a computer call whose input contains \"screenshot\", since the last user message. Writing a file is explicitly not enough. Scope hole worth noting: a visual question phrased with at most one visual noun in the question field never fires , that is trigger evasion, not a pass phrase.",
+  "beating_phrase": "n/a",
+  "structural_check": "render/browser tool_use present in the transcript since the last user text message",
+  "severity": 1
+ },
+ {
+  "gate": "map-style-gate.py",
+  "path": "/Users/sulo/Documents/solen/.claude/hooks/map-style-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "At Stop, globs app/**, components/**, components-legacy/**, lib/** for files modified in the last 900s, reads each from DISK, and blocks if any contains mapbox://styles/, styles/v1/mapbox/, or an inline mapboxgl.StyleSpecification. Pass = the files on disk do not contain those literals. Nothing in the reply text is read.",
+  "beating_phrase": "n/a",
+  "structural_check": "mtime-filtered read of real source files on disk against three literal patterns",
+  "severity": 1
+ },
+ {
+  "gate": "backend-doc-pointer.py",
+  "path": "/Users/sulo/Documents/solen/.claude/hooks/backend-doc-pointer.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "No pass/fail at all , it always exits 0 and never denies. It injects one pointer to _docs/BACKEND.md when the prompt matches a backend vocabulary regex or the edited file_path is under app/api/, supabase/migrations|functions/, or lib/*.ts, at most once per session (marker file in ~/.claude/state). Nothing the assistant writes is graded, and reading the doc is never verified.",
+  "beating_phrase": "n/a",
+  "structural_check": "file-path predicate + prompt regex + per-session marker file; injection only, no verdict",
+  "severity": 1
+ },
+ {
+  "gate": "frontend-doc-pointer.py",
+  "path": "/Users/sulo/Documents/solen/.claude/hooks/frontend-doc-pointer.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Same shape as its backend twin: always exits 0, never blocks. Injects the _docs/FRONTEND.md pointer when the prompt matches flow vocabulary or the file path is a customer-facing .tsx (app/[locale]/ excluding dashboard|dev|api, or components-legacy/<listed dirs>), once per session.",
+  "beating_phrase": "n/a",
+  "structural_check": "file-path predicate + prompt regex + per-session marker file; injection only, no verdict",
+  "severity": 1
+ },
+ {
+  "gate": "owner-phrase-trigger.py",
+  "path": "/Users/sulo/.claude/hooks/owner-phrase-trigger.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Inject-only, always exits 0. Matches the OWNER's prompt (not the assistant's output) against two regexes and injects the test-sweep or design-suggest mandate. There is no verdict to satisfy, and the injected mandate is enforced elsewhere (unfinished-batch-gate), not here.",
+  "beating_phrase": "n/a",
+  "structural_check": "regex over the user prompt text; no pass/fail",
+  "severity": 1
+ },
+ {
+  "gate": "plan-active-prompt.py",
+  "path": "/Users/sulo/.claude/hooks/plan-active-prompt.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Inject-only, always exits 0. Resolves _plans/ACTIVE.md by walking up to 4 parents, counts real unchecked `- [ ]` items or non-DONE index rows from the file, and estimates context tokens from transcript byte size after the last compact_boundary. Every number comes from disk; nothing is graded.",
+  "beating_phrase": "n/a",
+  "structural_check": "reads ACTIVE.md and the transcript file size; counts are measured, not claimed",
+  "severity": 1
+ },
+ {
+  "gate": "pre-compact-context-snapshot.py",
+  "path": "/Users/sulo/.claude/hooks/pre-compact-context-snapshot.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "PreCompact writer, no verdict, always exits 0. Shells out to git for branch/log/status and copies the ACTIVE rows, '## Live context' sections and open checkboxes verbatim out of the real plan files into _plans/CONTEXT_SNAPSHOT.md. It records state, it does not accept or reject anything.",
+  "beating_phrase": "n/a",
+  "structural_check": "git subprocess output plus verbatim reads of _plans/*.md; snapshot only",
+  "severity": 1
+ },
+ {
+  "gate": "preference-inject.py",
+  "path": "/Users/sulo/.claude/hooks/preference-inject.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Advisory only , when it fires it emits permissionDecision \"allow\" with a BETTER: line, so it can never block. Matches ~/.claude/PREFERENCES.md `when: <tool>: <pattern>` entries against the serialized tool_input, once per preference per session.",
+  "beating_phrase": "n/a",
+  "structural_check": "pattern match against the actual tool_input JSON of the pending call; decision is always allow",
+  "severity": 1
+ },
+ {
+  "gate": "ss-folder-resolver.py",
+  "path": "/Users/sulo/.claude/hooks/ss-folder-resolver.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Inject-only, always exits 0. On an unnamed-screenshot prompt with no filename in it, it lists the newest real image files in /Users/sulo/solen/screenshots by mtime and writes a visual-ref state flag. No verdict; whether the agent then reads the file is enforced by other hooks.",
+  "beating_phrase": "n/a",
+  "structural_check": "os.listdir + getmtime over the real screenshots directory, image extensions only",
+  "severity": 1
+ },
+ {
+  "gate": "tunnel-health-preflight.py",
+  "path": "/Users/sulo/.claude/hooks/tunnel-health-preflight.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Advisory, always exits 0 (\"never blocks the prompt\"). When the prompt is visual/link-shaped or a /tmp/cf-*.log was touched in the last 24h, it curls 127.0.0.1:3000, pgreps cloudflared, extracts the newest trycloudflare URL from the log and curls that, then prints a warning if any is down. Real probes, but purely informational , the blocking half of the promised-visual class is link-gate.py at Stop, which is not in this batch.",
+  "beating_phrase": "n/a",
+  "structural_check": "curl HTTP status codes and pgrep process state; measured, but no verdict",
+  "severity": 1
+ },
+ {
+  "gate": "mockup-floors-gate.py",
+  "path": "/Users/sulo/.claude/hooks/mockup-floors-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "The mockup HTML content matches re.compile(r\"floors:\\s*\\S.{20,}\") (line 21), or contains \"geometry-only\". No render, no measurement, no file, no tool call is consulted. The docstring says \"the render-time truth is graded by the design-verifier\" , grep shows design-verify-gate.py contains zero occurrences of \"floors\", so nothing grades the truth. This is the only wired check on the owner-approved FLOORS LAW.",
+  "beating_phrase": "floors: (1) photo focal hero (2) biggest = title (3) real number CHF 45 (4) semantic green (5) no dead grey",
+  "structural_check": "none",
+  "severity": 3
+ },
+ {
+  "gate": "pick-reading-gate.py",
+  "path": "/Users/sulo/.claude/hooks/pick-reading-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Trigger is structural (owner message carries both an approval and a negation token, AND TASTE_LOG.md or REMOVED.md mtime moved since that message). Satisfaction is not: line 107, re.search(\"Reading check:\") against the final reply. It never checks that the ambiguous verbatim was quoted or that a reading was stated, though the deny text demands both. Sole guard , grep for \"Reading check\" across ~/.claude/hooks returns only this file.",
+  "beating_phrase": "Reading check: logged as approved.",
+  "structural_check": "the owner message really does mix approve/negate tokens, and a taste-record file really was written this turn (os.stat mtime)",
+  "severity": 3
+ },
+ {
+  "gate": "link-family-aggregator.py",
+  "path": "/Users/sulo/.claude/hooks/link-family-aggregator.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Every one of 11 member gates, run as a subprocess, returns a code other than 2 (run_member, line 124). BUG, dynamically confirmed: member link-gate.py blocks the estate's way, print({\"decision\":\"block\"}) then sys.exit(0) , 7 block paths, zero sys.exit(2). Fed a transcript that edits app/**/SalonCard.tsx with a link-less reply, link-gate.py emitted a block JSON and returned rc 0; the aggregator returned rc 0 and printed nothing. settings.json registers the aggregator and NOT link-gate.py, so the \"clickable markdown, not bare, not dead\" gate, on the owner's rule-0 complaint, currently enforces nothing at all. Fix: treat a decision:block on stdout as a block, not only rc 2.",
+  "beating_phrase": "n/a",
+  "structural_check": "member subprocess exit codes; members themselves check transcript tool calls and live HTTP responses",
+  "severity": 2
+ },
+ {
+  "gate": "mockup-preflight-manifest.py",
+  "path": "/Users/sulo/.claude/hooks/mockup-preflight-manifest.py",
+  "verdict": "MIXED",
+  "pass_condition": "All 12 sub-checks return None. Real spine: the Grounded-in path must exist on disk AND share a >=4-char token with the mockup filename/title; Exists-check needs npm run exists in the transcript (quote-state machine, heredoc-stripped, so echo decoys fail). Text-only halves: check_owner_scope (line 118) is satisfied by the literal Owner-scope: confirmed: \"...\" with no check the owner ever said it; check_measured (line 416) is satisfied by a bare `touch ~/.claude/ss-measured.flag` with no measurement; check_motion/check_anim_label by `motion-ok:`.",
+  "beating_phrase": "Owner-scope: confirmed: \"make it like the reference\"",
+  "structural_check": "cited grounding path exists on disk and matches the surface; npm run exists genuinely ran this turn",
+  "severity": 2
+ },
+ {
+  "gate": "mobile-view-gate.py",
+  "path": "/Users/sulo/.claude/hooks/mobile-view-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Blocks only when the reply hands over a UI, a render tool ran, and saw_phone() is false. saw_phone (lines 119-123) matches the regex \\b(3[0-9]{2}|4[0-9]{2})\\s*[x,]\\s*(7[0-9]{2}|8[0-9]{2}|9[0-9]{2})\\b in ANY tool input this turn, not just resize_window. Ran its own verdict() with calls [Bash echo \"checked at 390x844\", navigate, screenshot] and a link-handover reply: returns False, no block, with nothing ever rendered at phone width.",
+  "beating_phrase": "390x844",
+  "structural_check": "a render-class tool call (screenshot/navigate/read_page) must exist in this turn's transcript; a real resize_window width <= 500 also passes",
+  "severity": 2
+ },
+ {
+  "gate": "flag-instead-of-fix-gate.py",
+  "path": "/Users/sulo/.claude/hooks/flag-instead-of-fix-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "Blocks only if the final reply contains one of 24 VIOLATION_ACK substrings AND one of 34 PUNT_LEAVE substrings (or matches recommend...leav). Both lists are closed vocabularies over my own prose; nothing checks whether the lock break was fixed. Ran the extracted lists against the phrase below: zero hits on either list, PUNT_RE false. The punt ships and the gate passes.",
+  "beating_phrase": "One item here does not match the locked treatment, so I am parking it for a later pass.",
+  "structural_check": "none",
+  "severity": 2
+ },
+ {
+  "gate": "no-plumbing-in-reply-gate.py",
+  "path": "/Users/sulo/.claude/hooks/no-plumbing-in-reply-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "verdict() (line 83) returns no hits: 10 regexes over the final reply (hook paths, *-gate.py, skip.flag, \"a gate fired\", event names, \"open boxes\"/\"unticked\"). Synonyms are not covered. Ran verdict() on the phrase below: zero hits, so the reply narrates the machinery exactly as banned and passes. Fair caveat: this gate's subject IS the text, so string-matching is not misplaced here , the defect is that the vocabulary is closed.",
+  "beating_phrase": "The enforcement layer flagged an open item on the plan, so I stopped there instead of finishing.",
+  "structural_check": "none",
+  "severity": 2
+ },
+ {
+  "gate": "mockup-width-calibration-gate.py",
+  "path": "/Users/sulo/.claude/hooks/mockup-width-calibration-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "Any of: the literal \"width-cal-ok\" in the content (line 96); no reference marker; fewer than 3 distinct px font-sizes; or both proof regexes present , WIDTHCAL (\"width-calibrat\" near a 2-4 digit number) and FULLDIFF (\"full-diff\"/\"box-diff\" near a digit). Every branch is a string in the file I write. No reference image is opened, no rendered width is measured, no number is compared.",
+  "beating_phrase": "width-cal-ok",
+  "structural_check": "none",
+  "severity": 2
+ },
+ {
+  "gate": "component-registry-sync-gate.py",
+  "path": "/Users/sulo/.claude/hooks/component-registry-sync-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Any of: the literal \"registry-sync-ok\" in the new component's content (line 110); or any tool_use this turn whose serialised input mentions COMPONENT_REGISTRY.md (line 86) , a Read or Grep of the registry counts, an actual registry row is never required.",
+  "beating_phrase": "registry-sync-ok",
+  "structural_check": "a tool call touching COMPONENT_REGISTRY.md exists in this turn's transcript; the target is a genuinely new PascalCase component file not already on disk",
+  "severity": 2
+ },
+ {
+  "gate": "demo-data-not-live-gate.py",
+  "path": "/Users/sulo/.claude/hooks/demo-data-not-live-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Both arms are disarmed by one marker: re.search(\"live-data-ok:\", added) at line 57. With it absent, arm 1 blocks any non-whitelisted homepage key set to true, arm 2 blocks a new const DEMO/FAKE/SAMPLE/MOCK/PLACEHOLDER array in a customer component. The marker is a comment; nothing verifies a real source exists.",
+  "beating_phrase": "live-data-ok: nearby wired to the salons table",
+  "structural_check": "parses the actual edit text for a `key: true` flip against a 3-key real whitelist, and for a fabricated-data const literal in a non-dev, non-mockup customer path",
+  "severity": 2
+ },
+ {
+  "gate": "pre-edit-reinvent-data-gate.py",
+  "path": "/Users/sulo/.claude/hooks/pre-edit-reinvent-data-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "\"reinvent-ok\" anywhere in the file content (line 106) exits 0 unconditionally. Otherwise it blocks only when >=3 canonical Swiss city names, or >=4 beauty-category names, appear as quoted strings inside a real array/object literal.",
+  "beating_phrase": "reinvent-ok",
+  "structural_check": "the quoted tokens in the written code are intersected against the canonical CITY/CAT name sets and must sit inside a bracket literal; canonical definition files are path-whitelisted",
+  "severity": 2
+ },
+ {
+  "gate": "entity-card-gate.py",
+  "path": "/Users/sulo/Documents/solen/.claude/hooks/entity-card-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "No shadow-whisper within 120 chars of overflow-hidden in the added code, or the literal `entity-ok:` within a 320-char window around the match (line 89). The escape needs no true reason, only the token and a colon.",
+  "beating_phrase": "entity-ok: this group card wraps one stylist's own services",
+  "structural_check": "regex over the net-new code for the grouped list-card class signature, scoped to entity-named .tsx files under app/ or components/",
+  "severity": 2
+ },
+ {
+  "gate": "no-blanket-type-override-gate.py",
+  "path": "/Users/sulo/.claude/hooks/no-blanket-type-override-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "No wildcard-terminated CSS selector whose body sets font-weight or font-size (offenders(), line 76), OR the literal \"blanket-type-ok\" anywhere in the payload (line 115). Comments are stripped before matching, so the marker must sit in live text , any string literal or JSX text node carries it.",
+  "beating_phrase": "blanket-type-ok",
+  "structural_check": "parses the written CSS: selector ends in a bare universal AND the declaration block contains font-weight/font-size, with an all-resets allowance",
+  "severity": 2
+ },
+ {
+  "gate": "audit-status.py",
+  "path": "/Users/sulo/.claude/hooks/audit-status.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Everything, unconditionally. The file is 26 lines: a docstring saying RETIRED, then `import sys` and `sys.exit(0)`. It never reads stdin. It is wired to SessionStart and enforces nothing , it is counted in the 190 but is a dead slot, deliberately left in place per its own note.",
+  "beating_phrase": "n/a",
+  "structural_check": "none , retired stub, verifies no fact at all",
+  "severity": 1
+ },
+ {
+  "gate": "harden-when-flagged.py",
+  "path": "/Users/sulo/.claude/hooks/harden-when-flagged.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Always passes , UserPromptSubmit injector, every path ends sys.exit(0) and it emits only additionalContext. There is no satisfaction condition to beat: it matches a recurrence-shaped regex against the OWNER's prompt (not my output) and injects the harden mandate. Nothing later checks whether a hook was actually built, so the mandate itself is unenforced advice.",
+  "beating_phrase": "n/a",
+  "structural_check": "regex over the owner's prompt text plus a per-session state file for dedup; never blocks",
+  "severity": 1
+ },
+ {
+  "gate": "reality-check-gate.py",
+  "path": "/Users/sulo/.claude/hooks/reality-check-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Always passes , inject-only, exits 0 on every path. Worth flagging upward: global rules 15 and 16 both say \"Enforced by the reality-check-gate.py hook\", and this hook cannot enforce anything; it appends a reminder line, once per class per session. The rule text overstates what is wired.",
+  "beating_phrase": "n/a",
+  "structural_check": "MEMORY/EXISTENCE regexes over the owner's prompt plus a session state file; never blocks",
+  "severity": 1
+ },
+ {
+  "gate": "skill-autopilot.py",
+  "path": "/Users/sulo/.claude/hooks/skill-autopilot.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Always passes , injection only, never execution, by design (the safety boundary named in its docstring). Seven prompt-shape regexes against the owner's message inject at most 2 skill pointers per prompt.",
+  "beating_phrase": "n/a",
+  "structural_check": "regexes over the owner's prompt plus a per-session fired-category state file; never blocks",
+  "severity": 1
+ },
+ {
+  "gate": "taste-log-inject.py",
+  "path": "/Users/sulo/.claude/hooks/taste-log-inject.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Always passes , injector on both events. It reads the real _design-system/TASTE_LOG.md off disk, splits it into `## ` blocks, and word-matches each block's `keywords:` line (or heading-derived words) against the prompt or the about-to-be-written file path plus content. It cannot be satisfied by writing anything, and it cannot block anything.",
+  "beating_phrase": "n/a",
+  "structural_check": "reads the actual TASTE_LOG.md from CLAUDE_PROJECT_DIR and matches real block keywords against the real edit payload",
+  "severity": 1
+ },
+ {
+  "gate": "verify-tooling-preflight.py",
+  "path": "/Users/sulo/.claude/hooks/verify-tooling-preflight.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Always allows , explicitly never blocks (\"broken verification tooling is a reason to fix it, not to freeze the turn\"). Its four checks are real facts: os.path.exists on node_modules, .env.local, .next, and pgrep -f cloudflared. Once per session via a state flag.",
+  "beating_phrase": "n/a",
+  "structural_check": "filesystem existence checks and a live pgrep for cloudflared",
+  "severity": 1
+ },
+ {
+  "gate": "reply-repeat-gate.py",
+  "path": "/Users/sulo/.claude/hooks/reply-repeat-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "difflib.SequenceMatcher ratio against every earlier reply in the turn stays under 0.72 (or head-220-char ratio under 0.80), or the reply is under 80 normalised chars. It is a measured value against a threshold, over a persisted shared history (_replymemory) that survives blocked replies. No phrase passes it; only genuinely different prose does. Residual hole is paraphrase, not a token.",
+  "beating_phrase": "n/a",
+  "structural_check": "computed text-similarity ratio vs a threshold, compared against an on-disk history of every reply attempt this turn",
+  "severity": 1
+ },
+ {
+  "gate": "orchestration-gate.py",
+  "path": "/Users/sulo/.claude/hooks/orchestration-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Non-source extension, excluded/exempt path, a truthy agent_type on the payload (a real subagent context, not something I can assert), or an Edit whose new_string is <= 3 lines. No content marker exists. Real loophole, but structural not textual: unlimited hand-coding by splitting work into 3-line Edits, and Write of any .md/.json/.css/.html is always free.",
+  "beating_phrase": "n/a",
+  "structural_check": "harness-supplied agent_type field, file extension/path, and a line count of the actual edit body",
+  "severity": 1
+ },
+ {
+  "gate": "no-getsession-authz-gate.py",
+  "path": "/Users/sulo/Documents/solen/.claude/hooks/no-getsession-authz-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "The written text contains no non-comment line with auth.getSession(), or the file head declares \"use client\", or the path is outside app//lib/, or is not .ts(x). Passing it means not writing the insecure call. Blind spot is structural: a call split across lines (supabase.auth\\n.getSession()) never matches the single-line substring.",
+  "beating_phrase": "n/a",
+  "structural_check": "scans the actual code being written for a live (non-commented) getSession call on a server-side path",
+  "severity": 1
+ },
+ {
+  "gate": "pre-build-exists-check.sh",
+  "path": "/Users/sulo/Documents/solen/.claude/hooks/pre-build-exists-check.sh",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "The file already exists on disk, or is not a duplicate-prone surface, or a Bash tool_use in the last 150 transcript lines matches npm run exists / exists.mjs at an unquoted command position. The mockup arm additionally requires the literal \"Exists-check:\" in the content, but that string alone never satisfies the gate , step 3 still runs. Shallow but real: the keyword passed to npm run exists is never compared to the file being created, and nothing checks the output was read.",
+  "beating_phrase": "n/a",
+  "structural_check": "a real Bash tool call in this turn's transcript, plus on-disk existence of the target file",
+  "severity": 1
+ },
+ {
+  "gate": "no-invented-ui-gate.py",
+  "path": "/Users/sulo/.claude/hooks/no-invented-ui-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "Line 82: exits 0 if is_canonical(t) OR IMPORTS_REAL OR ESCAPE. All three are substring matches on the file text being written: is_canonical = ('aspect-[3/2]' in t) and ('ServiceRow' or 'matching service' or 'View store' in t); ESCAPE = bare regex 'Not-a-salon-card' (no colon, no reason required). Nothing parses an AST, reads disk, or renders. Its own docstring claims 'you cannot satisfy it by adding a comment' and 'This gate checks the STRUCTURE, not a comment' , both are false: an HTML/JSX comment satisfies every branch.",
+  "beating_phrase": "Not-a-salon-card  (bare token anywhere in the file, e.g. {/* Not-a-salon-card */}). Alternative that beats the 'canonical structure' branch instead: {/* aspect-[3/2] View store */}",
+  "structural_check": "none",
+  "severity": 3
+ },
+ {
+  "gate": "recurrence-harden-gate.py",
+  "path": "/Users/sulo/Documents/solen/scripts/hooks/recurrence-harden-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Line 138: returns 0 if NOT_HOOKABLE_PAT matches the final assistant message, BEFORE the enforcement-surface mtime scan runs. Otherwise line 140 checks whether any file under scripts/hooks, .claude/hooks, ~/.claude/hooks, REJECTED_TREATMENTS.json or a settings.json has mtime newer than the owner's recurrence message. The text escape short-circuits the structural arm entirely.",
+  "beating_phrase": "not mechanically hookable because  (regex is case-insensitive and requires nothing after 'because'; e.g. 'This one is not mechanically hookable because it is a judgment call.')",
+  "structural_check": "mtime of any file in the three hooks dirs / REJECTED_TREATMENTS.json / settings.json must be newer than the owner's recurrence message timestamp (real filesystem fact, though a bare `touch` of any hook file satisfies it).",
+  "severity": 3
+ },
+ {
+  "gate": "visual-deliverable-gate.py",
+  "path": "/Users/sulo/Documents/solen/scripts/hooks/visual-deliverable-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "Line 92: returns 0 if LINK_PAT OR ESCAPE_PAT matches the final assistant message , evaluated BEFORE knowledge_written_recently() ever runs. Both arms are pure text: LINK_PAT accepts any string containing 'trycloudflare.com', '/_mockups/', 'localhost:<digits>', '/dev/<slug>', '.png)' or '.png]' with no HTTP probe and no file-exists check; ESCAPE_PAT accepts 'nothing viewable yet' / 'not visualizable because' / 'no visual form'. The mtime disk scan is only the TRIGGER, never a pass condition.",
+  "beating_phrase": "nothing viewable yet  (e.g. 'Large build, nothing viewable yet.') , ships the markdown-only deliverable the gate exists to prevent. The link arm is separately beatable with any dead URL string containing 'trycloudflare.com', though link-gate.py's 200-probe backstops that half; the escape phrase has no backstop.",
+  "structural_check": "none (the os.walk mtime+size scan of _design-system/ decides only whether to evaluate, not whether to pass)",
+  "severity": 3
+ },
+ {
+  "gate": "env-claim-needs-evidence-gate.py",
+  "path": "/Users/sulo/.claude/hooks/env-claim-needs-evidence-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "Line 75: blocks only if CLAIM matches the final message AND EVIDENCE does not. EVIDENCE is a regex over the assistant's own prose: SANDBOX_RUNTIME | probed | re-tested | just tested | live probe | touch <...>.git | env | grep. No transcript tool-call inspection, no check that a probe actually ran this turn. This is the exact failure the gate was built for (owner 2026-07-18 'stop hallucinating ... but u keep saying ts'): asserting an environment block from memory rather than re-measuring.",
+  "beating_phrase": "just tested  (e.g. 'I just tested it , the sandbox denies that write.') , or the bare token SANDBOX_RUNTIME anywhere in the message.",
+  "structural_check": "none",
+  "severity": 3
+ },
+ {
+  "gate": "backend-check-gate.py",
+  "path": "/Users/sulo/.claude/hooks/backend-check-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "Line 64: `if re.search(r\"Backend-check\\s*:\", content, re.I): sys.exit(0)` , the presence of the literal label in the mockup HTML is the entire pass condition, evaluated before the action-affordance scan. Nothing verifies `npm run exists` ran, that the named endpoint/table exists, or that the line has any content after the colon. The docstring is candid that it 'does NOT judge the answer', but it does not force the check to have happened either , only the label.",
+  "beating_phrase": "<!-- Backend-check: NONE -->  (a bare `Backend-check:` with nothing after the colon also passes)",
+  "structural_check": "none",
+  "severity": 3
+ },
+ {
+  "gate": "design-law-integrity-gate.py",
+  "path": "/Users/sulo/.claude/hooks/design-law-integrity-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Line 174 exits 0 if the added text contains 'law-check-ok' OR matches \\bsupersedes?\\b OR 'extends <Word>' , checked BEFORE load_corpus() reads the law files. If none matches, it loads CLAUDE.md + LOCKFILE/SOURCE/TASTE_LOG/RATIONALE/_BASE.md from disk and blocks on token-overlap duplication (>=55% shared normalized tokens with an existing line) or an axis-value contradiction.",
+  "beating_phrase": "law-check-ok: checked, no duplicate  (the bare word `supersedes` anywhere in the addition also fully bypasses, with nothing required to actually be superseded)",
+  "structural_check": "Token-overlap duplication and axis-value contradiction computed against the actual on-disk law corpus (real files, real values for radius/input/touch/hairline/anchor/type-budget).",
+  "severity": 2
+ },
+ {
+  "gate": "money-update-cas-gate.py",
+  "path": "/Users/sulo/.claude/hooks/money-update-cas-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Line 193: `if ESCAPE.search(content): allow()` where ESCAPE = /cas-ok\\s*:/i , this runs before any analysis and disables the whole gate for that write. The docstring states outright: 'A bare `cas-ok:` with no reason still passes the gate'. Otherwise it does real work: a depth-tracking call-chain scanner (skipping strings/comments) checks every .update({...}) and .update(<var>) touching a money/status column for a chained .select(.",
+  "beating_phrase": "// cas-ok:  (no reason required)",
+  "structural_check": "Bracket-depth scan of the actual .update() call chain in the written code, plus resolution of a variable's object literal, to prove a chained .select( exists , cannot be faked by prose, only by the cas-ok token.",
+  "severity": 2
+ },
+ {
+  "gate": "no-decorative-image-gate.py",
+  "path": "/Users/sulo/.claude/hooks/no-decorative-image-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "decide() at line 71: any line containing 'content-image-ok:' is skipped before the src scan; otherwise it flags <Image>/<img> whose src is a string literal (quoted, {\"quoted\"}, or a backtick template with no ${}) in an app|components .tsx, allowing expression srcs. The per-line marker needs no reason despite the message asking for one, and marking every offending line fully bypasses the gate.",
+  "beating_phrase": "{/* content-image-ok: seeded fixture */}  placed on the same line as the hardcoded src",
+  "structural_check": "Real literal-vs-expression discrimination on the JSX src value (a data-driven src like {salon.cover_photo_url} passes, a baked '/hero.jpg' does not) , that half cannot be faked by prose. Separate non-string hole: hoisting the literal to a const and using src={HERO} evades it structurally.",
+  "severity": 2
+ },
+ {
+  "gate": "mockup-fullscreen-gate.py",
+  "path": "/Users/sulo/Documents/solen/.claude/hooks/mockup-fullscreen-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "Lines 100-106: passes when lc.count('<iframe') >= 2 AND ('applychange' or 'data-sweep' or 'contentdocument' in lc) AND ('before' and 'after' in lc) AND ('overflow:hidden' or 'position:fixed' in the space-stripped content). Every condition is a raw substring count over the written HTML , nothing checks the iframe has a src, that the src resolves to a real route, that applyChange is a function, or that anything renders. A hand-drawn Direction A/B redraw carrying one comment passes.",
+  "beating_phrase": "<!-- <iframe <iframe applyChange before after overflow:hidden -->  (one HTML comment satisfies all four conditions simultaneously)",
+  "structural_check": "none",
+  "severity": 2
+ },
+ {
+  "gate": "mockup-real-base-gate.py",
+  "path": "/Users/sulo/.claude/hooks/mockup-real-base-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Needs a `<!-- Base: capture <file> | elicitation | net-new -->` comment AND a `<!-- Scale: full-page|component -->` comment. Only the `capture` branch is then checked mechanically (basename must appear in an <img src>, or a live <iframe src=\"/...\"> is present). Declaring elicitation or net-new skips the capture check entirely with no verification , the docstring admits it: 'Redrawing an existing surface while declaring elicitation/net-new is lying to the gate'.",
+  "beating_phrase": "<!-- Base: net-new --><!-- Scale: full-page -->",
+  "structural_check": "On the capture branch only: the declared screenshot filename must actually appear inside an <img src> in the same document, or a live iframe pointing at a root-relative route must exist. It never stats the capture file, so the img src may name a file that does not exist.",
+  "severity": 2
+ },
+ {
+  "gate": "i18n-write-gate.py",
+  "path": "/Users/sulo/.claude/hooks/i18n-write-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "PreToolUse arm (offending(), line 117): a candidate literal is ignored if the token 'i18n-ok' appears anywhere in the +/-120 characters around it, so one marker suppresses the block. Stop arm (run_stop_parity): if git says messages/ is dirty it actually runs `node scripts/check-i18n-parity.mjs` and blocks on a non-zero exit , a real subprocess and a real exit code.",
+  "beating_phrase": "i18n-ok  (e.g. {/* i18n-ok */} within 120 chars of the hardcoded German literal)",
+  "structural_check": "Stop arm: real `git status --porcelain -- messages` plus the repo's own check-i18n-parity.mjs exit code. PreToolUse arm also does genuine JSX/prop literal parsing with type-noise filtering.",
+  "severity": 2
+ },
+ {
+  "gate": "plaintext-token-at-rest-gate.py",
+  "path": "/Users/sulo/.claude/hooks/plaintext-token-at-rest-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Line 65: `if \"hash\" in line.lower(): continue` , any line containing the substring 'hash' anywhere is skipped before PAT is applied. Otherwise it blocks a plaintext secret column assigned a known raw-token identifier (tracking_token: trackingToken etc). The line-skip is a substring test, not a check that the value is actually hashed.",
+  "beating_phrase": "// hash  appended to the offending line, e.g. `tracking_token: trackingToken, // hash later`",
+  "structural_check": "Real pattern match on the assignment shape in the code being written: a plaintext (non-_hash) secret column keyed to a raw-token identifier. Evadable structurally by renaming the variable, which the regex's fixed RAW list cannot see.",
+  "severity": 2
+ },
+ {
+  "gate": "token-in-url-query-gate.py",
+  "path": "/Users/sulo/.claude/hooks/token-in-url-query-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Line 67: `if \"mapbox\" in line.lower(): continue` , the word anywhere on the line (including a trailing comment) skips the check for that line. Line 69 also skips lines whose first non-space characters are //, *, # or --. Otherwise blocks [?&](token|secret|access_token|...)=${ in the written code.",
+  "beating_phrase": "// mapbox  appended to the offending line, e.g. fetch(`/api/queue/status?token=${t}`) // mapbox",
+  "structural_check": "Real match on the actual URL-construction code being written (query-param token with a ${} interpolation), correctly distinguishing path-capability URLs like /queue/${token}, which pass.",
+  "severity": 2
+ },
+ {
+  "gate": "ai-prompt-untrusted-guard.py",
+  "path": "/Users/sulo/Documents/solen/.claude/hooks/ai-prompt-untrusted-guard.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "Line 56: `if HELPER in new_text: sys.exit(0)` where HELPER = the literal 'wrapUntrustedInput'. The token anywhere in the written text, including a comment, suppresses the reminder; so does the token already existing anywhere in the on-disk file (line 61). Nothing checks that user-controlled values are actually routed through the wrapper. Note it never blocks , it only prints additionalContext , so beating it costs nothing and gains nothing.",
+  "beating_phrase": "wrapUntrustedInput  (e.g. `// no wrapUntrustedInput needed, all inputs are server constants`)",
+  "structural_check": "none",
+  "severity": 1
+ },
+ {
+  "gate": "mockup-base-gate.py",
+  "path": "/Users/sulo/.claude/hooks/mockup-base-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Blocks unless the written HTML actually contains a width=device-width viewport meta, a text-size-adjust:100%/none rule, zero remote http(s)/protocol-relative src|href|url() dependencies, AND real imagery (<img> or url(/...jpg|png|webp)). These are properties of the artifact itself, not claims about it: satisfying each one IS doing the corresponding work.",
+  "beating_phrase": "n/a , partial only: the imagery arm alone is waived by the bare token `geometry-only` anywhere in the file (line 92), which does not satisfy the other three arms.",
+  "structural_check": "The rendered-relevant markup of the file being written: viewport meta present, iOS text-size lock present, no external asset host, at least one real image reference. Also reconstructs the post-edit file from disk for Edit/MultiEdit rather than judging the fragment.",
+  "severity": 1
+ },
+ {
+  "gate": "flag-spam-gate.py",
+  "path": "/Users/sulo/.claude/hooks/flag-spam-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Blocks a Bash command that writes flags inside a for/while loop, or that names >= 3 distinct *.flag paths in one command. The input is the actual command about to run, and the count of distinct flag targets in it is a fact about that command, not a claim.",
+  "beating_phrase": "n/a",
+  "structural_check": "Parses the real tool_input.command: shell-loop-over-flags shapes, and set() cardinality of *.flag path tokens. Evadable only by splitting into separate commands (a real action, not a phrase), which the skip-flag-ledger then logs one by one.",
+  "severity": 1
+ },
+ {
+  "gate": "pre-commit-graveyard.sh",
+  "path": "/Users/sulo/Documents/solen/.claude/hooks/pre-commit-graveyard.sh",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "On a `git commit` Bash command: runs `git diff --cached --name-status -M`, and if any staged DELETION matches a product-surface path, requires _design-system/REMOVED.md to also appear in `git diff --cached --name-only`. Verdict rests entirely on the git index.",
+  "beating_phrase": "n/a",
+  "structural_check": "Staged deletions and staged file list from the real git index (rename-aware via -M). Weakness is not a phrase: the CONTENT of the staged REMOVED.md change is never inspected, so any edit to that file satisfies it.",
+  "severity": 1
+ },
+ {
+  "gate": "pre-edit-removed-check.sh",
+  "path": "/Users/sulo/Documents/solen/.claude/hooks/pre-edit-removed-check.sh",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Only blocks when real evidence says the route is dead: an awk token-scan of the keyword field of _design-system/REMOVED.md yields a removal-verb hit that is not a keep/revive line, OR the route is orphaned (a recursive grep of app|components|components-legacy finds no href/Link/router.push/nav reference to /<segment>) AND has graveyard history. Exits 0 for everything else.",
+  "beating_phrase": "n/a",
+  "structural_check": "Live grep of the repo for inbound links to the route segment, plus a field-scoped awk parse of the on-disk REMOVED.md ledger. Nothing the assistant writes in the edit affects the verdict.",
+  "severity": 1
+ },
+ {
+  "gate": "report-summary-gate.py",
+  "path": "/Users/sulo/.claude/hooks/report-summary-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Collects file_path from the turn's real Edit/Write/MultiEdit/NotebookEdit tool_use blocks in the transcript (bookkeeping paths exempt); if >= 3 distinct files, blocks unless >= 60% of their basenames literally appear in the final message. The required strings are DERIVED from actual tool calls, so there is no fixed phrase , you can only pass by naming the files you really edited.",
+  "beating_phrase": "n/a",
+  "structural_check": "The set of file_path values in this turn's tool_use blocks, matched against the closing text. Self-limiting: after MAX_BLOCKS=2 it emits a systemMessage and lets the turn close, which is a wedge guard rather than a text escape.",
+  "severity": 1
+ },
+ {
+  "gate": "no-push-mention-gate.py",
+  "path": "/Users/sulo/.claude/hooks/no-push-mention-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Reads the final assistant text block from the transcript jsonl, strips `code spans` and quoted spans <= 60 chars, then blocks if PUSH matches (push/pushed/pushing, git push, auto-deploy, deploy*), excluding 'push back'. The regulated object IS the text, so there is no proxy gap , no separable work can be left undone.",
+  "beating_phrase": "n/a , the documented carve-out is wrapping the word in backticks (`push`), which the gate strips by design and its own deny message recommends; the owner still reads the mention.",
+  "structural_check": "The literal final assistant message as recorded in the transcript file, after code-span/quote stripping.",
+  "severity": 1
+ },
+ {
+  "gate": "owner-correction-ledger.py",
+  "path": "/Users/sulo/.claude/hooks/owner-correction-ledger.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Never blocks (UserPromptSubmit, always exit 0). Its input is the OWNER's prompt, not assistant output: a correction marker and a known theme regex must co-occur within 240 characters, with tighter second cues for loose themes, then it writes a session-keyed timestamp into ~/.claude/state/mistake-themes-global.json and injects one line naming the 14-day session count. Nothing the assistant writes can change its behaviour.",
+  "beating_phrase": "n/a",
+  "structural_check": "Owner prompt text plus a persisted, session-deduplicated counter on disk shared with repeat-mistake-detector.py; theme vocabulary imported from that detector rather than copied.",
+  "severity": 1
+ },
+ {
+  "gate": "skip-flag-ledger.py",
+  "path": "/Users/sulo/.claude/hooks/skip-flag-ledger.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Never blocks. On PreToolUse(Bash) it matches `touch ...*.flag` or a `>`/`>>` redirect into a *.flag path in the real command, appends timestamp|session|cwd|command to ~/.claude/state/skip-flag-ledger.log, rolls up into a never-trimmed history file past 800 lines, and prints a systemMessage. Observation only, keyed to the actual command.",
+  "beating_phrase": "n/a",
+  "structural_check": "The real Bash command string and an append-only on-disk ledger. Blind spot is structural, not textual: registered on Bash only, so a flag created via the Write tool is never logged (the docstring says so).",
+  "severity": 1
+ },
+ {
+  "gate": "loop-default.py",
+  "path": "/Users/sulo/.claude/hooks/loop-default.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "No verdict at all. SessionStart injector: writes a per-session marker file and unconditionally prints the layered-loop directive (full text once per session_id, a one-line pointer thereafter), then exit 0. It inspects nothing and can block nothing , it is advice counted among the wired checks, and the estate's own doctrine (feedback_rules_are_hooks, IMPROVE_SYSTEM section 2) says advice is what gets outranked under task focus.",
+  "beating_phrase": "n/a in the usual sense , it is satisfied by writing nothing at all; there is no condition to meet. Ignoring the injected directive entirely produces no signal anywhere.",
+  "structural_check": "none",
+  "severity": 1
+ },
+ {
+  "gate": "concise-response-gate.py",
+  "path": "/Users/sulo/.claude/hooks/concise-response-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "DEAD. Line 26 is a bare `sys.exit(0)` immediately after the imports, before any transcript is read , NEUTERED 2026-07-21 by owner order ('remove the hook that makes u repeat the same shi twice'). The 130 lines below it (prose-word threshold 230, the plain-language jargon arm) never execute. Deliberate and logged in memory feedback_no_reply_blocking_gates, but it is counted as a live check while enforcing nothing.",
+  "beating_phrase": "n/a , any output of any length passes; the check is unreachable code.",
+  "structural_check": "none",
+  "severity": 1
+ },
+ {
+  "gate": "unfinished-batch-gate.py",
+  "path": "/Users/sulo/.claude/hooks/unfinished-batch-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "For every OPEN leaf `- [ ]` in an eligible _plans/*.md: the CHECKBOX LINE ITSELF must contain a DISPOSED word (line 179: BLOCKED|PARKED|WAITING|awaiting|await|for review|owner call|owner pick|owner decision|mockup ready|owner to...) and must NOT contain a VAGUE_PUNT word (line 181: TODO|TBD|later|figure out|investigate later|revisit|eventually). A ticked `- [x]` box is skipped entirely (is_open gate, line 460/482). Nothing outside the markdown file is consulted: no check that a blocker exists, no check that the work behind a tick happened.",
+  "beating_phrase": "BLOCKED: waiting on owner decision",
+  "structural_check": "Real spine exists: it reads plan files off disk, cross-references _plans/ACTIVE.md row status, scans the transcript for readback items and for a DEFER_OFFER shape in the closing message. But every satisfaction path terminates in text the agent itself writes into a .md file.",
+  "severity": 3
+ },
+ {
+  "gate": "scale-excuse-gate.py",
+  "path": "/Users/sulo/.claude/hooks/scale-excuse-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "Blocks only on a 3-way conjunction inside a 400-char window of the final message: SCALE claim + DISMISS + BROKEN marker. Two total escapes, both text: (1) the FIXED regex (line 100-107) is checked MESSAGE-WIDE and exits before any window scan, and its first alternative is `\\b[0-9a-f]{7,40}\\b` , ANY commit sha anywhere in the reply voids the whole gate; (2) keep the dismissal outside the enumerated BROKEN vocabulary. Separately: it reads the message from payload keys last_assistant_message/assistant_message/message/text (line 135) and never opens transcript_path, unlike ~all sibling Stop gates here , if the Stop payload lacks those keys it exits at `if not msg` and never evaluates. I could not verify the live payload shape from disk (no hook payload log exists, no Stop event to observe).",
+  "beating_phrase": "624d3765a",
+  "structural_check": "none",
+  "severity": 3
+ },
+ {
+  "gate": "mockup-depicts-gate.py",
+  "path": "/Users/sulo/Documents/solen/.claude/hooks/mockup-depicts-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "ARM 2 (the gate's own docstring calls it 'the load-bearing arm'): on a full Write the content must contain >=1 `Depicts:` line, and each such line must contain `->` plus a token matching `(app/|components|lib/|api/|\\.tsx|\\.ts\\b|/dashboard|NET-NEW|table\\b)` (lines 137-160). The cited path is NEVER opened, globbed or existence-checked, and `npm run exists` is never verified to have run. On Edit, arm 2 is skipped entirely (is_full_write, line 115). ARM 1 blocks only if the visible copy contains a hyphenated >=8-char keyword from REMOVED.md.",
+  "beating_phrase": "Depicts: whole screen -> NET-NEW: nothing here is wired yet",
+  "structural_check": "ARM 1 is real: it parses _design-system/REMOVED.md off disk and matches its multi-token keywords against the mockup's tag-stripped visible copy. That arm is a prohibition, not a satisfaction , it cannot make the manifest arm mean anything.",
+  "severity": 3
+ },
+ {
+  "gate": "owner-sees-it-measure-it-gate.py",
+  "path": "/Users/sulo/.claude/hooks/owner-sees-it-measure-it-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Blocks only when all three hold: owner's last typed message matches OWNER_OBSERVATION, the closing message matches the DISPUTE vocabulary (lines 56-65: \"that's correct/right/intentional/by design\", \"is aligned\", \"nothing wrong\", \"looks fine to me\", \"working as intended\"...), and no MEASURE_CALL this turn. Wording the same disagreement outside that fixed phrase list passes with nothing measured. Second cheap out: measured_this_turn matches MEASURE_CALL against tool NAME + json.dumps(input) of any tool_use, and the pattern includes the bare word `screenshot` , so any Bash/Read call whose input string contains 'screenshot' registers as a measurement.",
+  "beating_phrase": "I looked at it again and the current spacing is the intended treatment; the rows read as level to me.",
+  "structural_check": "Requires a tool_use in the current turn whose name or serialized input matches getBoundingClientRect|getComputedStyle|javascript_tool|read_page|extract.py|pixel-spec|PIL|Image.open|check-geometry|screenshot. Real tool call required, but its content is unvalidated.",
+  "severity": 3
+ },
+ {
+  "gate": "gate-block-is-not-a-stop-gate.py",
+  "path": "/Users/sulo/.claude/hooks/gate-block-is-not-a-stop-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Blocks only if the final message matches the GAVE_UP vocabulary (lines 45-50: 'is/was not built', 'never landed', 'could not be written/built/created', 'blocked by a gate', 'gates fired/blocked/prevented', 'stalled', 'i got blocked', 'seven gates', 'deadlock') AND a tool_result containing 'GATE'/is_error plus an ESCAPE_OFFERED pattern was seen AND no Write/Edit/MultiEdit followed it. Reporting the same abandonment in any other words passes.",
+  "beating_phrase": "The page never made it to disk, the last write was refused, so there is nothing to look at yet.",
+  "structural_check": "Two real facts: a gate denial with a way-forward must exist in this turn's tool_results, and any Write/Edit/MultiEdit tool_use after it clears the gate (note: ANY file, including an unrelated scratch file, not the denied one).",
+  "severity": 2
+ },
+ {
+  "gate": "interaction-proof-gate.py",
+  "path": "/Users/sulo/.claude/hooks/interaction-proof-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Exits 0 if any NON-write tool call this turn has a serialized input matching DISPATCHED (dispatchEvent|new MouseEvent|.click()|left_click|touchstart|mousedown|pointerdown|\"action\":\"tap\"...) and any non-write call matches READ_BACK (getComputedStyle|transform|matrix(|getBoundingClientRect|classList.contains|offsetWidth|getAnimations). The two halves may come from different calls, and the match is on the input TEXT, not on any result value. A single Bash echo carrying both vocabularies satisfies it. Also passes if the closing message avoids the HANDOVER words.",
+  "beating_phrase": "echo \"dispatchEvent(new MouseEvent('mousedown')); getComputedStyle(el).transform\"",
+  "structural_check": "Real spine: it requires an actual .html write carrying interactive markers this turn, and it deliberately refuses to count Write-tool payloads as their own evidence (the circularity its self-test caught). Evidence must come from a non-write tool call, but that call's content is never validated and no returned value is inspected.",
+  "severity": 2
+ },
+ {
+  "gate": "mockup-type-budget-gate.py",
+  "path": "/Users/sulo/.claude/hooks/mockup-type-budget-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Counts distinct font-size px values and font-weight values in the reconstructed post-edit file (harness <style> and HTML comments stripped) and denies above 4 body sizes / 1 display size / 2 weights. Line 102 short-circuits first: `if \"type-budget-ok\" in text: sys.exit(0)` , the literal token anywhere in the raw content, including inside an HTML comment, before any counting. No reason required, no TTL, and it lives in the file permanently, so one comment disarms the gate for that mockup forever.",
+  "beating_phrase": "<!-- type-budget-ok -->",
+  "structural_check": "Real: reconstructs the post-edit file from disk for Edit/MultiEdit and counts actual declared px sizes and weights against the LOCKFILE budget, with the >=28px display anchor carved out.",
+  "severity": 2
+ },
+ {
+  "gate": "nested-input-chrome-gate.py",
+  "path": "/Users/sulo/.claude/hooks/nested-input-chrome-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Denies when an <input>/<textarea> in the added text carries bg-transparent|border-0|border-none|min-h-0 without a `!` prefix. Line 113 exits first if MARKER (`nested-input-ok`, case-insensitive) appears ANYWHERE in the payload text. The denial message says to add the marker 'with a reason', but the code checks only the token , the reason is decorative.",
+  "beating_phrase": "nested-input-ok",
+  "structural_check": "Real: regex-parses actual <input>/<textarea> tags out of the JSX being written, exempts the 10 native types the globals.css base rule already skips, and strips modifier-scoped utilities (file:/placeholder:/focus:) before matching.",
+  "severity": 2
+ },
+ {
+  "gate": "no-unauth-money-route.py",
+  "path": "/Users/sulo/.claude/hooks/no-unauth-money-route.py",
+  "verdict": "MIXED",
+  "pass_condition": "For a new mutating app/api/**/route.ts, exits 0 if ANY of 13 auth-signal SUBSTRINGS appears anywhere in the file content (line 85: `any(sig in content ...)`) , plain substring containment, no AST, no call-site analysis, no check that the signal is inside the exported handler. A commented-out or dead line containing `applyRateLimit(` or `getUser(` satisfies it with zero auth implemented.",
+  "beating_phrase": "// applyRateLimit(generalLimiter, { ip: getClientIp(req) }) // TODO wire this",
+  "structural_check": "Real: file must be a new Write to app/api/**/route.ts, must export POST/PUT/PATCH/DELETE (MUTATING regex on the real content), with path-segment-anchored webhook/cron/dev exemptions. The 2026-07-10 fix that removed createServerSupabaseClient from the signal list shows this arm is maintained.",
+  "severity": 2
+ },
+ {
+  "gate": "stock-photo-gate.py",
+  "path": "/Users/sulo/.claude/hooks/stock-photo-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Stop arm: only fires when _inventory/_db-snapshot.json reports salon_photos = 0 rows (structural), then exits at line 192 if the ACKNOWLEDGED regex matches ANYWHERE in the reply , a single occurrence of stock|unsplash|placeholder|seed|seeded|pre-launch|not real|stand-in in an unrelated sentence clears a reply that elsewhere asserts real salon photography. PreToolUse arm: denies a stock host baked into production code unless `stock-ok` sits within 150 chars.",
+  "beating_phrase": "seed",
+  "structural_check": "Real and self-retiring: the Stop arm reads the live DB snapshot row count rather than a word list, and goes quiet by itself the day salon_photos is non-zero. The PreToolUse arm regex-matches actual stock hosts in the code being written, host list kept in sync with lib/stock-image.ts.",
+  "severity": 2
+ },
+ {
+  "gate": "plan-first-gate.py",
+  "path": "/Users/sulo/.claude/hooks/plan-first-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Allows a substantive code edit if ANY _plans/**/*.md has an mtime >= this turn's session stamp (plan_touched_since), OR if an ACTIVE/IN-PROGRESS row's detail file carries an open `- [ ]` line sharing any >=4-char non-stopword token with the edited file's PATH (plan_already_covers, keyword overlap only). The plan's CONTENT is never compared to the owner's asks, so one throwaway line into any plan file satisfies 'PLAN before you MOVE'.",
+  "beating_phrase": "- [ ] SalonCard tweaks",
+  "structural_check": "Real: a file mtime on disk after a per-session timestamp stamp, plus parsing of the ACTIVE.md workstream table for status and detail-file links.",
+  "severity": 2
+ },
+ {
+  "gate": "card-radius-gate.py",
+  "path": "/Users/sulo/Documents/solen/.claude/hooks/card-radius-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Denies only when the NET-NEW text of a design-surface .tsx/.jsx edit contains `rounded-[Npx]` with N != 24 within 90 chars of `shadow-whisper`, excluding rounded-t-/rounded-b- sheet corners. Pass = the code being written literally does not contain that class pairing. Documented per-line escape `radius-ok:`/`drift-ok:` within 120 chars (same family as the skip flag).",
+  "beating_phrase": "n/a",
+  "structural_check": "Parses the actual Tailwind class strings in the edit payload; the fact checked is the code that will land on disk.",
+  "severity": 1
+ },
+ {
+  "gate": "fabricated-value-gate.py",
+  "path": "/Users/sulo/Documents/solen/scripts/hooks/fabricated-value-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Blocks when the added text of an app/components .tsx edit introduces a NET-NEW match for F1-F8 (rating: 4.9, reviewCount: N, distance: \"200 m\", availability field with a quoted clock time, discount: N, price: N, address with a digit, isSaved: true) that the old text did not already carry. Every check requires a NUMBER or QUOTED literal, so identifier-fed values pass by construction. Per-line `live-data-ok:` escape.",
+  "beating_phrase": "n/a",
+  "structural_check": "Regex over the literal code being written, diffed per violation-class against the old content; the 15-case selftest asserts both directions (literal blocks, `rating={real?.rating ?? null}` passes).",
+  "severity": 1
+ },
+ {
+  "gate": "council-trigger.py",
+  "path": "/Users/sulo/.claude/hooks/council-trigger.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Allows the stop when: <1 source file written this turn, or <30 added lines counted from the actual Write/Edit payloads, or no changed path matches the backend/security list, or a council already ran. The council check reads the subagent_type FIELD of a Task/Agent tool_use (startswith 'council-' / endswith '-reviewer') or a Workflow scriptPath/name , the code comments record that this was deliberately moved OFF prompt-text substring matching precisely because mentioning 'reviewer' in prose falsely counted as a completed review.",
+  "beating_phrase": "n/a",
+  "structural_check": "Counted added lines from real tool payloads, real changed file paths, and a typed subagent dispatch field in the transcript.",
+  "severity": 1
+ },
+ {
+  "gate": "mcp-prod-write-guard.py",
+  "path": "/Users/sulo/.claude/hooks/mcp-prod-write-guard.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Denies an mcp__ tool call whose query/sql/statement(s) fields contain destructive DDL, a GRANT to anon/public, or a DELETE/UPDATE with no top-level WHERE or an always-true WHERE; or whose tool name is reset_branch/delete_branch/pause_project/restore_project. Pass = the SQL genuinely is not one of those shapes. Comments are stripped, string literals blanked (so a WHERE inside a string cannot fake scoping), statements split on top-level `;`, and WHERE detection walks paren depth.",
+  "beating_phrase": "n/a",
+  "structural_check": "Normalized parse of the actual SQL payload; the known residual (a WHERE that is only a subquery reads as scoped) is documented rather than hidden.",
+  "severity": 1
+ },
+ {
+  "gate": "pre-edit-drift-gate.sh",
+  "path": "/Users/sulo/Documents/solen/.claude/hooks/pre-edit-drift-gate.sh",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Shells the edit's {file_path,new,old} into solen-drift-check/scripts/check.py --gate-stdin, which scans both texts and exits 2 only when `new` carries MORE instances of a hard rule (A1-A6/B1-B5: raw hex, retired tokens, arbitrary color, non-canonical duration, dead click, category branch) than `old` did, per rule by count. C1 secrets block on presence. INFO rules never gate. Per-line `drift-ok:` honoured via respect_inline_skip. Fail-open if jq is missing, check.py is absent, or the checker predates gate-stdin support (verified present in both the main checkout and this worktree, 83269 bytes each).",
+  "beating_phrase": "n/a",
+  "structural_check": "A real scanner over the diff text with per-rule net-new counting; the pass condition is a measured violation count, not a phrase.",
+  "severity": 1
+ },
+ {
+  "gate": "mockup-lang-stop-gate.py",
+  "path": "/Users/sulo/Documents/solen/.claude/hooks/mockup-lang-stop-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Globs public/_mockups/**/*.htm* and **/dev/**/*.tsx|jsx|htm* modified in the last 180 minutes, strips comments/script/style/tags/alt/title, and blocks the stop when >=3 distinct German words remain in the visible chrome of any of them. Pass = the files on disk are actually in English. Its docstring explicitly refuses an in-file marker escape ('the marker is exactly what gets abused'), which is the discipline mockup-type-budget-gate and nested-input-chrome-gate lack.",
+  "beating_phrase": "n/a",
+  "structural_check": "Reads the files from disk by mtime, independent of how they were written , it exists specifically to close the script-write hole that bypassed the PreToolUse version.",
+  "severity": 1
+ },
+ {
+  "gate": "no-emdash-reply-gate.py",
+  "path": "/Users/sulo/.claude/hooks/no-emdash-reply-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Blocks the stop when U+2014 or U+2013 appears in the last assistant text after fenced blocks and inline code spans are blanked. This is a text check, but the text IS the deliverable the rule governs: there is no gap between 'writing the right string' and 'doing the work', so knowing the pattern is compliance, not evasion. Only carve-out: a dash inside backticks, which is the documented data case.",
+  "beating_phrase": "n/a",
+  "structural_check": "Measured property of the artifact itself (the reply), read from the transcript rather than self-reported.",
+  "severity": 1
+ },
+ {
+  "gate": "worklog.py",
+  "path": "/Users/sulo/Documents/solen/.claude/hooks/worklog.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Wired event is SessionStart: it stashes git HEAD and injects the two newest _plans/WORKLOG.md entries as context; no pass condition, it cannot block. Its `stop` mode (same file) blocks only when `git log <session-start-HEAD>..HEAD` is non-empty and `git diff --name-only` over that range does not include _plans/WORKLOG.md.",
+  "beating_phrase": "n/a",
+  "structural_check": "Git commit range and changed-file list, plus a per-session HEAD baseline that deliberately survives /compact and /resume.",
+  "severity": 1
+ },
+ {
+  "gate": "preview-capability-warn.py",
+  "path": "/Users/sulo/.claude/hooks/preview-capability-warn.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Advisory only (permissionDecision allow + reason), once per session, on the first UI-file edit. Fires only when a real socket bind+listen on 127.0.0.1 fails. Nothing the assistant writes affects it.",
+  "beating_phrase": "n/a",
+  "structural_check": "An actual socket(); bind(); listen() attempt , the file's own docstring names this as the anti-superficial design choice, and it holds.",
+  "severity": 1
+ },
+ {
+  "gate": "api-route-discriminate-reminder.py",
+  "path": "/Users/sulo/Documents/solen/.claude/hooks/api-route-discriminate-reminder.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "No pass condition , it always exits 0. PostToolUse injector: when a Write/Edit touches a file whose path ends route.ts|route.js under app/api/, it prints the silent-no-op discriminate checklist as additionalContext, once per file per session via a state marker. It never verifies the two-call discriminate check was actually run.",
+  "beating_phrase": "n/a",
+  "structural_check": "Trigger is the edited file's real path plus a filesystem dedup marker; there is nothing to satisfy, so nothing to fake. Worth recording that the project's #1 backend failure class has advice here and no verdict anywhere in this batch.",
+  "severity": 1
+ },
+ {
+  "gate": "drift-ledger-inject.py",
+  "path": "/Users/sulo/.claude/hooks/drift-ledger-inject.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "No pass condition , inject-only, always exits 0. Matches the owner prompt's words against `keywords:` lines in <CLAUDE_PROJECT_DIR>/_design-system/DRIFT_LEDGER.md and injects up to 3 matching blocks (500-byte cap, per-session per-block dedup). Injects nothing when the project has no ledger.",
+  "beating_phrase": "n/a",
+  "structural_check": "Keyword match against a real file on disk, keyed to the owner's input rather than the assistant's output.",
+  "severity": 1
+ },
+ {
+  "gate": "no-loop-narration-nudge.py",
+  "path": "/Users/sulo/.claude/hooks/no-loop-narration-nudge.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "No pass condition , always exits 0. Injects the quiet-work reminder on every non-notification UserPromptSubmit, full text once then a short form, capped at 5 per session. Its own docstring is honest that a hook cannot police streamed prose, so it is a nudge and not a gate.",
+  "beating_phrase": "n/a",
+  "structural_check": "Per-session counter file; nothing the assistant writes is evaluated.",
+  "severity": 1
+ },
+ {
+  "gate": "rejection-streak-escalator.py",
+  "path": "/Users/sulo/.claude/hooks/rejection-streak-escalator.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "No pass condition , inject-only, never emits a permissionDecision. Increments a per-session counter when the OWNER's prompt matches the REJECTION regex, resets it to 0 on a non-match, and injects the measure-then-council mandate at streak >= 2. Bare 'still'/'again' were removed as standalone triggers, and notification prompts are excluded.",
+  "beating_phrase": "n/a",
+  "structural_check": "A persisted counter over owner input; the assistant's own text cannot influence it in either direction.",
+  "severity": 1
+ },
+ {
+  "gate": "checkbox-evidence-gate.py",
+  "path": "/Users/sulo/.claude/hooks/checkbox-evidence-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "A newly-ticked `- [x]` line in _plans/*.md passes if that line (or one of the next 2 continuation lines) matches EVIDENCE = a 7-40 char hex run, OR a `<name>.<ext>:<digits>` token, OR the literal `verified:`/`proof:`/`measured:`/`confirmed:`; nothing is opened, resolved, or compared against the repo.",
+  "beating_phrase": "verified:",
+  "structural_check": "none - the git diff/untracked scan only decides WHICH lines are examined; satisfaction is 100% a regex on the line the assistant just wrote. A fabricated file:line (`Foo.tsx:999`) and a fake sha both pass, and the docstring's own founding case (`ServicesStaffStep.tsx` never imported the module) would pass today by appending `verified:` to the same false tick.",
+  "severity": 3
+ },
+ {
+  "gate": "finding-provenance-gate.py",
+  "path": "/Users/sulo/.claude/hooks/finding-provenance-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "Fires on a defect assertion near a repo noun in the final message, then exits 0 if EVIDENCE matches ANYWHERE in that same message: the bare words verified/measured/proved, `I checked|ran|read|queried`, any `\\d+/\\d+`, or any comma-grouped number like 2,981.",
+  "beating_phrase": "I verified",
+  "structural_check": "none - the gate never looks at the transcript, so no tool call, query, or file read is required. `\\b\\d+\\s*/\\s*\\d+\\b` means an incidental \"5/5\" or \"19/19\" anywhere in the reply exempts every defect claim in it, and the block text hands over the exact wording: 'or an explicit \"I verified / I measured / I checked / I ran\"'.",
+  "severity": 3
+ },
+ {
+  "gate": "mockup-diagnosis-gate.py",
+  "path": "/Users/sulo/Documents/solen/.claude/hooks/mockup-diagnosis-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "A mockup HTML write passes if it contains >=1 `Diagnosis:` line carrying the substrings measured + violates + target, and the normalized measured-value differs from the normalized target-value.",
+  "beating_phrase": "<!-- Diagnosis: team card | measured rounded-3xl+shadow-float | violates LOCKFILE:427 | target rounded-24+border+shadow-whisper -->",
+  "structural_check": "none - no page is rendered, no value is read back, and the cited LOCKFILE line is never opened or checked to exist. The only real test is cur != tgt, i.e. the invented numbers must merely disagree with each other. The gate exists because the assistant INVENTS instead of measuring, and an invented pair of numbers satisfies it (the quoted phrase is lifted verbatim from the gate's own self-test).",
+  "severity": 3
+ },
+ {
+  "gate": "dropped-directive-gate.py",
+  "path": "/Users/sulo/.claude/hooks/dropped-directive-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "When the owner's message carries correction language plus (noun, colour) pairs, the stop passes if the final reply contains the noun-synonym AND the colour-synonym somewhere in it - anywhere, unordered, not adjacent, no claim of application required.",
+  "beating_phrase": "roads are now gray, tiles white, blue dots",
+  "structural_check": "none - no file, diff, or rendered pixel is inspected; the reply merely has to echo the owner's own vocabulary back. Note the block message prints the winning sentence verbatim ('e.g. roads are now gray, tiles white, blue dots'), so the gate teaches its own bypass. \"the tiles are unchanged and the dots are still blue\" also passes.",
+  "severity": 3
+ },
+ {
+  "gate": "repeat-fix-simplify-gate.py",
+  "path": "/Users/sulo/.claude/hooks/repeat-fix-simplify-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "From the 3rd same-subject fix claim in a session (counted structurally over the transcript's assistant messages), the stop passes if the closing reply matches ROOT_CAUSE - which includes the bare tokens `simpler`, `removed`, `deleted`, `the cause`, and `instead of`.",
+  "beating_phrase": "instead of",
+  "structural_check": "real: it counts prior assistant closing messages that claimed a fix about the same subject noun, from the transcript on disk - that count cannot be faked. But the escape is a two-word English phrase that appears in ordinary technical prose, so the gate is effectively inert; any attempt-3 reply containing \"instead of\" or \"removed\" is waved through with no step-back at all.",
+  "severity": 3
+ },
+ {
+  "gate": "use-the-registered-component-gate.py",
+  "path": "/Users/sulo/.claude/hooks/use-the-registered-component-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "A .tsx/.jsx hand-building a salon card (a <a>/<Link> whose next 24 lines hold /salon/ plus a raw <img>) is blocked - unless the payload text contains the substring \"SalonCard\" anywhere, or the marker `registered-component-ok`.",
+  "beating_phrase": "// TODO: migrate to SalonCard",
+  "structural_check": "real: it parses the written markup for a link+image window, which is an actual code-structure fact and cannot be talked away. The hole is line 72, `if \"SalonCard\" in text: return []` - intended as \"the file composes the real component\", it accepts the bare token in a comment. The gate's own deny text pushes the assistant toward naming SalonCard, so the natural repair-shaped comment permanently silences it while the hand-built card ships.",
+  "severity": 3
+ },
+ {
+  "gate": "paint-proof-gate.py",
+  "path": "/Users/sulo/.claude/hooks/paint-proof-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "A paint/occlusion claim about a fixed/sticky/overlay element blocks only if the turn shows a geometry read AND no PAINT_PROOF match; PAINT_PROOF includes the bare word `screenshot` and any `.png`, matched over the whole turn blob including the assistant's own prose.",
+  "beating_phrase": "screenshot",
+  "structural_check": "real: the turn blob is the transcript since the last user message, so a genuine elementFromPoint eval or screenshot tool call registers as proof. Two holes: (1) the escape is the bare word, so even \"no screenshot needed here\" satisfies the paint proof; (2) the gate returns None when no geometry read is present, so a claim made with NO measurement at all - the worse case - is never examined.",
+  "severity": 2
+ },
+ {
+  "gate": "workstreams-index-guard.py",
+  "path": "/Users/sulo/.claude/hooks/workstreams-index-guard.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "A Write to _plans/ACTIVE.md passes iff the new content contains the literal substring WORKSTREAMS-INDEX; nothing compares the new content against the rows currently in the file.",
+  "beating_phrase": "WORKSTREAMS-INDEX",
+  "structural_check": "none - a single-plan overwrite that drops every existing workstream row passes as long as it carries the marker, which is exactly the clobber the guard was born for ('plans get lost'). The deny message states the bypass outright: 'If you truly mean to rewrite the index, keep the marker line.' Edit/MultiEdit are out of scope by design.",
+  "severity": 2
+ },
+ {
+  "gate": "measure-guard-gate.py",
+  "path": "/Users/sulo/.claude/hooks/measure-guard-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "A scripts/*.mjs that both navigates a browser and prints a verdict is blocked unless GUARDED matches anywhere in the payload: `_measure-guard`, `guardedGoto`, a `.status() >= 4xx` comparison, `response.ok`, or any `.ok()`.",
+  "beating_phrase": "// guardedGoto not needed here, the page is static",
+  "structural_check": "real for the trigger and partly for the escape: `.status() >= 400` is an actual status check in real code. But the token match is not scoped to executable code, so a comment naming guardedGoto, or an unrelated `.ok()` call anywhere in the file, satisfies it - the script can still measure a 500 error page and print VERDICT PASS.",
+  "severity": 2
+ },
+ {
+  "gate": "no-opus-subagent-gate.py",
+  "path": "/Users/sulo/.claude/hooks/no-opus-subagent-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "An Agent/Workflow call whose model contains 'opus' is denied unless the prompt+description text matches JUDGMENT (judge, score, critique, verdict, taste, design review, decide between, or the literal tag [judgment]).",
+  "beating_phrase": "[judgment]",
+  "structural_check": "real: the model field of the actual tool call is read (and 'fable'/'mythos' is denied unconditionally, with no text escape). The routing half is text-only - the deny message says 'or tag the prompt [judgment] if it genuinely is one', so a mechanical build dispatch reaches opus by adding six characters.",
+  "severity": 2
+ },
+ {
+  "gate": "security-antipattern-gate.py",
+  "path": "/Users/sulo/.claude/hooks/security-antipattern-gate.py",
+  "verdict": "MIXED",
+  "pass_condition": "Advisory only (always emits allow). It stays silent when the added text contains any WARNING_MARKER - which includes `never`, `do not`, `don't`, `wrong`, `dangerous`, `no longer`, `deprecated` - anywhere in the same block as the antipattern.",
+  "beating_phrase": "never",
+  "structural_check": "real: it detects concrete constructs (getSession( plus identity markers, DISABLE ROW LEVEL SECURITY, NEXT_PUBLIC_*service_role, admin client in a 'use client' file). The warning-marker suppressor is block-wide, so one ordinary comment such as \"this should never fail\" beside a getSession() identity read silences it. Consequence is capped: it never blocks, and the project's no-getsession-authz-gate blocks the code case.",
+  "severity": 2
+ },
+ {
+  "gate": "mockup-no-flat-gate.py",
+  "path": "/Users/sulo/Documents/solen/.claude/hooks/mockup-no-flat-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "A mockup HTML write is blocked iff its text contains one of ~15 English phrases (flatten, borderless, chrome off, remove the card, de-card, no shadow, `box-shadow: none`, un-card); everything else passes.",
+  "beating_phrase": "var CHANGE_LABEL='After: cleaner section rhythm'; /* border:0; box-shadow:0 0 0 transparent */",
+  "structural_check": "none - the regex reads the mockup's self-description (CHANGE_LABEL, comments), not its rendered treatment. The single style token it does catch, `box-shadow: none`, is trivially expressed as `box-shadow:0 0 0 transparent` or camelCase `boxShadow:'none'` (the hyphen is required to match), so the ditched flat direction ships as long as it is not named.",
+  "severity": 2
+ },
+ {
+  "gate": "no-unrequested-removal-gate.py",
+  "path": "/Users/sulo/.claude/hooks/no-unrequested-removal-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "Blocks only when the final reply matches REMOVAL_CLAIM (I removed/deleted/dropped/pulled, is now gone/disabled, shipping without, left it out) AND the owner's last message matches no removal order; a reply that does not use those verbs is never examined.",
+  "beating_phrase": "The air isn't in the current version.",
+  "structural_check": "none for the assistant's half - no diff, git status, or file read confirms whether anything was actually deleted. There is one unfakeable input (the owner's own last message is parsed from the transcript for a removal order), but it is only consulted after the reply's phrasing has already triggered; a paraphrased removal never reaches it.",
+  "severity": 2
+ },
+ {
+  "gate": "count-consistency-gate.py",
+  "path": "/Users/sulo/Documents/solen/.claude/hooks/count-consistency-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Blocks the stop when any mockup/component file modified in the last 15 min contains #276EF1 or text-s-accent within ~160 chars of a parenthesized number with no intervening `<`; otherwise exits 0.",
+  "beating_phrase": "n/a",
+  "structural_check": "It reads the bytes of files on disk (mtime-filtered) and matches the actual paint tokens next to the actual count markup - the styling IS the thing being regulated, so there is no phrase that makes a bare-accent count pass. Weaknesses are coverage, not satisfiability: an equivalent hex written differently, or a count painted via a variable/class indirection, is not seen.",
+  "severity": 1
+ },
+ {
+  "gate": "no-fake-phone-gate.py",
+  "path": "/Users/sulo/.claude/hooks/no-fake-phone-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Denies a Solen /_mockups/ html write whose post-edit content has a CSS rule combining width 380-440px with border-radius >= 30px, or status-bar chrome markers (island/batt/status-bar/signalbar classes, or a bare >HH:MM< node).",
+  "beating_phrase": "n/a",
+  "structural_check": "It matches measured CSS declarations and real DOM markers in the artifact, and for Edit/MultiEdit it reconstructs the post-edit file from disk rather than trusting the fragment. Evasion needs genuinely different code (width:25rem, border-radius:2rem), not a claim. Worth fixing: the docstring advertises an escape - \"put `real-phone-ok` in the content\" - that is not implemented anywhere in the code; only the skip flag exists.",
+  "severity": 1
+ },
+ {
+  "gate": "pre-edit-gesture-expand-gate.py",
+  "path": "/Users/sulo/.claude/hooks/pre-edit-gesture-expand-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Denies a write under /dev/search-morph/ whose added content has an onWheel/onTouchMove/onScroll handler whose body within 800 chars calls setInputFocused(true); anything else passes.",
+  "beating_phrase": "n/a",
+  "structural_check": "It matches the actual banned wiring construct (JSX handler -> state setter), including new_string inside MultiEdit edits[], so passing requires writing different code, not different prose. Coverage gap only: an addEventListener('wheel', ...) binding, a differently-named setter, or a handler extracted to a helper is not matched.",
+  "severity": 1
+ },
+ {
+  "gate": "no-ai-assets.py",
+  "path": "/Users/sulo/.claude/hooks/no-ai-assets.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Denies a Bash call whose command (heredoc bodies stripped) matches an image-generation signature: dall-e, images/generations, /v1/images, stable-diffusion, midjourney, flux-schnell|dev|pro, gemini-*-image, responseModalities image, or imagen with version/API context.",
+  "beating_phrase": "n/a",
+  "structural_check": "It inspects the literal command about to execute, so the match is close to definitional - there is no sentence that makes a dall-e call pass. Two real gaps, both channel-shaped rather than phrase-shaped: it only fires on tool_name == Bash, so the MCP image-generation tools (generate_image / generate_image_batch) are entirely outside its scope, and a URL assembled from variables evades the literal patterns.",
+  "severity": 1
+ },
+ {
+  "gate": "prompt-suppressor-gate.py",
+  "path": "/Users/sulo/.claude/hooks/prompt-suppressor-gate.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Auto-allows an edit when os.path.realpath of the target sits under a trusted root inside a .claude/{hooks,skills,agents,commands,workflows,projects} segment, ~/.vscode/extensions, or is a top-level ~/.claude/*.md|*.txt; stays silent (modal stands) otherwise.",
+  "beating_phrase": "n/a",
+  "structural_check": "Every decision is a resolved-path fact: realpath collapses .. and symlinks, and settings.json / settings.local.json / .mcp.json / ~/.claude/CLAUDE.md / .git are refused by basename before any allow branch runs, so self-granting always costs a human click. Nothing here can be argued into allowing a path.",
+  "severity": 1
+ },
+ {
+  "gate": "invariants-nudge.py",
+  "path": "/Users/sulo/.claude/hooks/invariants-nudge.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Once per 24h it runs `node scripts/check-invariants.mjs` and prints a heads-up only when the process exit code is non-zero; never blocks anything.",
+  "beating_phrase": "n/a",
+  "structural_check": "Satisfaction is a real subprocess exit code - one of the few checks in this batch whose verdict is produced by executing something rather than by reading text. It also correctly writes the throttle stamp only after the run, so a timeout retries next session instead of going silent for a day.",
+  "severity": 1
+ },
+ {
+  "gate": "gate-dedup-guard.py",
+  "path": "/Users/sulo/.claude/hooks/gate-dedup-guard.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Never blocks: on a Write of a new top-level ~/.claude/hooks/*.py it globs the existing hooks and emits an allow-with-nudge when basename stems or >=2 distinctive tokens overlap; silent otherwise.",
+  "beating_phrase": "n/a",
+  "structural_check": "The overlap test is computed from the actual filenames present on disk plus the new file's own first 40 lines, so the nudge cannot be argued away - though it is advisory by design, so nothing is enforced either way. Naming a duplicate gate with disjoint tokens avoids the nudge, but that is a detection gap in an advisory, not a pass condition being faked.",
+  "severity": 1
+ },
+ {
+  "gate": "plan-first-stamp.py",
+  "path": "/Users/sulo/.claude/hooks/plan-first-stamp.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "No verdict at all - it always exits 0 after writing epoch time to ~/.claude/state/planfirst-<session_id>.stamp plus the legacy global stamp.",
+  "beating_phrase": "n/a",
+  "structural_check": "It produces a real timestamp file (session-keyed, so concurrent worktree sessions no longer stomp each other) that plan-first-gate.py consumes as its structural baseline. It accepts nothing and blocks nothing, so there is nothing here to satisfy with a phrase.",
+  "severity": 1
+ },
+ {
+  "gate": "mockup-variations.py",
+  "path": "/Users/sulo/.claude/hooks/mockup-variations.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Never blocks - on a UserPromptSubmit matching VARIATION + MOCKUP_CTX + UI_ANCHOR it injects a mandate to produce >=3 distinct directions, then exits 0.",
+  "beating_phrase": "n/a",
+  "structural_check": "none in the enforcement sense: it is an injector whose trigger reads the OWNER's prompt (not assistant output), so the assistant cannot beat it by writing anything. Worth recording that the mandate it injects - 3 distinct variations, side by side, clickable - is verified by no check anywhere; producing one synthesized mockup instead has no consequence.",
+  "severity": 1
+ },
+ {
+  "gate": "structure-liberty-injector.py",
+  "path": "/Users/sulo/.claude/hooks/structure-liberty-injector.py",
+  "verdict": "STRUCTURAL",
+  "pass_condition": "Never blocks - on owner rejection/redesign language (strong triggers alone, weak triggers only with a design-context word) it injects the structure-liberty directive plus six standing mockup rules, then exits 0.",
+  "beating_phrase": "n/a",
+  "structural_check": "none in the enforcement sense: trigger is a regex over the OWNER's prompt, so nothing the assistant writes affects it, and it enforces nothing afterward. One robustness defect: `from notification_guard import is_notification_prompt` sits at module top OUTSIDE any try (line 15), so a missing/broken _lib crashes the hook before its own try block - the sibling mockup-variations.py documents this exact bug as fixed on 2026-07-10 and wraps its import; this file never got the fix.",
+  "severity": 1
+ },
+ {
+  "gate": "apology-spiral-gate.py",
+  "path": "/Users/sulo/.claude/hooks/apology-spiral-gate.py",
+  "verdict": "STRING_SATISFIABLE",
+  "pass_condition": "Blocks the final message only when it contains >=2 APOLOGY matches, or 1 plus a STRONG_GROVEL match; a reply with at most one apology phrase and no groveling passes.",
+  "beating_phrase": "That was my mistake, here is the fix.",
+  "structural_check": "none - it is a pure ceiling on words in the reply. The quoted phrase matches zero APOLOGY alternatives (\"my mistake\" is not in the pattern), so it passes, as does a reply with no ownership and no fix at all: rule 17's substantive half (name what went wrong, then give the fix) is unverified. Low severity because the check is close to coextensive with the behaviour it bans - not apologizing twice IS the compliance.",
+  "severity": 1
+ }
+]

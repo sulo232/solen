@@ -1,0 +1,50 @@
+## Verdict: the dispatch method is inverted against its own doctrine, in both directions
+
+### 1. Model routing: 34 of 34 subagents ran on the top tier. Zero were routed.
+
+All four runs record `"defaultModel": "claude-opus-5"`, and every agent transcript's first assistant message carries `model: claude-opus-5`, `effort: xhigh`. Not one `agent()` call in any of the four scripts (`.../2f76318e.../workflows/scripts/*.js`) passes a `model:` option — I grepped all four.
+
+Twelve of those agents are pure bulk extraction: `"Read the ENTIRE file, every record: /private/tmp/claude-501/prefmine/owner_2.md ... extract every signal"` (8 in `wf_abd6cdfa-b45`, 4 in `wf_9dc7d921-10c`). MODEL_ROUTING.md rule 5 assigns that class to **Haiku 4.5**; `feedback_delegate_reading_subagents` says verbatim *"a haiku subagent can view 20 frames and return 5 lines."* The literature-gathering agent (`adb96274e8a7122ef`) is a researcher, sonnet per the workflow stage defaults. The four domain auditors and eight check-sweepers are audit agents, sonnet per rule 4. Genuinely judgment-class, and correctly opus: two, the adversarial critic (`a540c531955d6033a`) and the completeness critic (`a9f26dcccb105b524`).
+
+So roughly 2 of 34 dispatches match the routing table. `feedback_token_context_discipline`'s standing rule , *"default to the cheapest tier/model that fits the change"* , was not applied once.
+
+### 2. The gate that exists to catch exactly this is beaten by omission. Self-tested.
+
+`~/.claude/hooks/no-opus-subagent-gate.py` inspects the Workflow **script text** for `model: '...opus...'` (`MODEL_IN_SCRIPT`), and `check()` opens with `m = (model or "").lower(); if not m: return`. Omitting `model:` inherits the session model and the gate sees nothing. I ran both cases:
+
+- explicit `model: claude-opus-5` + mechanical prompt → **deny** (correct)
+- workflow script with no `model:` + the same mechanical prompt → **exit 0, empty output, allowed**
+
+That is your anti-superficial test landing on a dispatch control: the gate verifies a **string in a script** instead of the **structural fact of which model the run used**. The structural fact was available , it is written into `wf_45f69e7c-d6b.json` as `defaultModel`. Worse, MODEL_ROUTING.md blesses the bypass in its own text: *"omit `model:` to inherit the session model ONLY for stages that genuinely need orchestrator-grade reasoning."* The unenforceable half of the sentence is the half that got used, 34 times.
+
+### 3. Concurrency law broken, and one 870k-token run thrown away.
+
+MODEL_ROUTING: *"concurrency: waves of max 4 (rate-limit law)."* `fix-up-me-wf_071d2726-296.js:69` fans out `[0,1,2,3,4,5,6,7].map(...)` , 8 wide; `wf_abd6cdfa-b45` likewise launched 8 miners at 19:24. `wf_abd6cdfa-b45.json` records `"status": "killed"` after `870741` tokens and 8 opus agents, then was re-run as `owner-preference-mining-v2`. That is a full top-tier fleet's cost for zero retained output, on work doctrine assigns to the cheapest tier.
+
+Recorded cost of the three finished runs: 473,859 + 1,448,740 + 870,741 ≈ **2.79M tokens, 22 agents**, before the in-flight 12-agent run.
+
+### 4. Writer-is-never-reviewer: held inside the workflows, broken outside them , on the only code written today.
+
+Inside: the critics grade output produced by different agent instances (`a9f26` grades the miners' 81 clusters; `a540c` attacks the literature agent's analysis). Held.
+
+Outside is the problem. Four files under `~/.claude/hooks/` were modified today , `pushback-gate.py`, `copy-the-curve-gate.py`, `captured-reference-unread-gate.py`, and `tests/test_pushback.py`. The session's `subagents/` directory contains **only** `workflows/`: no `coder`, no `loop-reviewer`, no `/refine` run, all day. So the main thread hand-wrote gate logic **and its own test**, which is the precise configuration rule 13 and LOOP_SYSTEM.md exist to prevent (*"a model grading its own output is biased toward 'looks good to me'"*). Meanwhile it delegated 34 agents' worth of reading and analysis, which is the half it could have narrowed itself.
+
+The inversion, stated plainly: **the thread delegated the thinking and hand-coded the enforcement.** Doctrine says the opposite.
+
+`feedback_no_parallel_agents_frontend` , no violation. None of today's four runs touched frontend, design, or mockups.
+
+### 5. What the fan-out actually bought
+
+Real, and not reachable alone. The 8-wide sweep classified all 190 live checks: **87 STRUCTURAL, 63 MIXED, 40 STRING_SATISFIABLE**, 32 of the beatable ones at severity 3. Reading 190 hook files in the main thread would have burned the context window that holds the plan.
+
+I verified one finding by execution rather than accepting it: the sweep reports `pushback-gate.py` as STRING_SATISFIABLE with beating phrase `"caveat"`. Confirmed , `pushback-gate.py:67`, the `DISSENT` regex is `r"|failure mode|trade[- ]?off|downside|caveat|drawback"`. The bare word *caveat*, with no cost named after it, satisfies the estate's flagship anti-sycophancy control. Same failure shape as the sentence in your brief, in the same file.
+
+That is the yield. The cost is that it was bought at roughly 5x the routed price (Opus input is 5x Haiku), 8-wide instead of 4, with one whole run discarded.
+
+### 6. The two changes that follow from the evidence
+
+**a. Make the routing gate structural.** It cannot read `model:` from script text, because the compliant-looking script omits it. It must read the resolved model for the dispatch , the same value the runner already writes as `defaultModel` , and deny a mechanical/build prompt resolving to an opus tier whether the tier was declared or inherited. As written, the gate's pass condition is "do not type the word opus", which is a string, not a fact.
+
+**b. Delete the inherit-by-omission clause from MODEL_ROUTING.md**, or require the stage to name its tier explicitly, including when that tier is the session model. An escape hatch whose condition ("stages that genuinely need orchestrator-grade reasoning") is self-assessed by the dispatcher is not a condition.
+
+One caution on my own finding, since it is the kind that flatters the auditor: the 40/63 STRING_SATISFIABLE/MIXED counts are the sweep agents' verdicts, not mine. I executed exactly two , the routing gate's omission bypass and `pushback-gate.py:67` , and both held. The rest are reported, not verified, and the run's own Prove phase had not executed when I wrote this.

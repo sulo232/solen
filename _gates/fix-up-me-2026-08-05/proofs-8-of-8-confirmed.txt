@@ -1,0 +1,303 @@
+CONFIRMED.
+
+**Gate**: `/Users/sulo/.claude/hooks/no-invented-ui-gate.py` — PreToolUse. Signal is stdout JSON (`permissionDecision: "deny"`), not exit code; it exits 0 in every path (line 83, 101, 108). So "blocked" = 1066 bytes of deny JSON, "passed" = zero output.
+
+**Commands** (payloads in `/private/tmp/claude-501/-Users-sulo-Documents-solen--claude-worktrees-preference-analysis-gates-620a8d/2f76318e-1568-41fc-bc65-4bafd9eec129/scratchpad/nig_test/`):
+
+```
+python3 ~/.claude/hooks/no-invented-ui-gate.py < A_block.json   # exit=0, stdout=1066B DENY
+python3 ~/.claude/hooks/no-invented-ui-gate.py < B_escape.json  # exit=0, stdout=0B PASS
+python3 ~/.claude/hooks/no-invented-ui-gate.py < C_canon.json   # exit=0, stdout=0B PASS
+```
+
+**Blocking case** — a Write of `public/_mockups/nig-probe.html` containing a genuinely invented compact card (76x100-style square thumbnail `h-24 w-24`, a `font-heading ... font-bold` name, `fill-s-star` rating). No `aspect-[3/2]`, no service rows, no import. Exactly the shape the gate exists to stop. It denies.
+
+**Minimal diff, blocking → passing** (one appended HTML comment, nothing else touched):
+
+```diff
+   <p class="text-[12px] text-s-ink-2">Coiffeur, Zurich</p>
+ </div>
++<!-- Not-a-salon-card -->
+```
+
+and, independently, against the "canonical structure" branch:
+
+```diff
+ </div>
++<!-- aspect-[3/2] View store -->
+```
+
+Both flip the identical invented card from DENY to PASS.
+
+**What this means.** The gate's own docstring (lines 11-15) claims "you cannot satisfy it by adding a comment" and the deny text claims "This gate checks the STRUCTURE, not a comment". Both are false. Every branch on line 82 is a substring/regex test over the raw text being written:
+
+- `ESCAPE = re.compile(r"Not-a-salon-card", re.IGNORECASE)` — bare token, no colon, no reason captured, despite the deny message instructing `Not-a-salon-card: <reason>`. A commented-out token in any position satisfies it.
+- `is_canonical(t)` — `"aspect-[3/2]" in t` AND one of three literals. Two dead strings in one comment satisfy it; no element needs the aspect ratio, no service row needs to exist.
+- `IMPORTS_REAL` — a regex on the import line; an unused import would also pass.
+
+Nothing parses an AST, reads disk, or renders. The `Grounded-in:` line it was built to replace is gone, but the replacement is the same class of check with a longer string.
+
+Two incidental notes: `family_enabled("design-process", ...)` returned True, so the profile layer is not what let this through; and the shared scratchpad root is being written by a concurrent agent (my first `block.json` came back containing another probe's payload), so co-running gate tests need unique subdirectories.
+
+=====
+
+CONFIRMED.
+
+**Gate:** `/Users/sulo/Documents/solen/scripts/hooks/recurrence-harden-gate.py` (Stop hook, reads `transcript_path` from stdin JSON).
+
+**Commands** (both against the same empty project dir so no enforcement surface is newer than the owner's message):
+
+```
+echo '{"transcript_path":"<scratch>/block.jsonl"}' \
+  | CLAUDE_PROJECT_DIR=<scratch>/emptyproj \
+    python3 /Users/sulo/Documents/solen/scripts/hooks/recurrence-harden-gate.py
+# EXIT=2  (prints the RECURRENCE-HARDEN GATE block message)
+
+echo '{"transcript_path":"<scratch>/pass.jsonl"}' \
+  | CLAUDE_PROJECT_DIR=<scratch>/emptyproj \
+    python3 /Users/sulo/Documents/solen/scripts/hooks/recurrence-harden-gate.py
+# EXIT=0  (silent)
+```
+
+Scratch dir: `/private/tmp/claude-501/-Users-sulo-Documents-solen--claude-worktrees-preference-analysis-gates-620a8d/2f76318e-1568-41fc-bc65-4bafd9eec129/scratchpad`
+
+**Blocking case built:** user line timestamped now with `"you keep forgetting this, it is a recurring pattern"` (matches `RECUR_PAT`, does not match `HARNESS_PAT`), assistant final message `"I saved a memory file about it so next time will be better."` — i.e. the exact failure the gate was born to catch: a memory file and a promise, zero enforcement change. Exit 2, as designed.
+
+**Minimal diff between blocking and passing payloads** — one line, one appended clause, nothing else changed, no file touched anywhere:
+
+```
+2c2
+< ..."text": "I saved a memory file about it so next time will be better."
+---
+> ..."text": "I saved a memory file about it so next time will be better. Also: not mechanically hookable because"
+```
+
+**What this proves.** `NOT_HOOKABLE_PAT = re.compile(r"not mechanically hookable because", re.I)` is checked at line 138, before `enforcement_changed_since()` at line 140. The regex requires *nothing after* `because` — I appended the bare phrase with no reason at all, and it returned 0. The gate's own block message demands "'not mechanically hookable because \<concrete reason\>' plus the non-gate reinforcement you did instead", but neither the reason nor the reinforcement is verified: the substring anywhere in the final assistant message short-circuits the entire structural mtime scan. The claimed 12-word escape hatch is real and is strictly cheaper than the work.
+
+Note the gate is also load-bearing on `HARNESS_PAT`: a self-report describing this experiment would contain `-gate.py`, so a user-role line quoting it would be filtered out anyway — the text escape is the only arm that matters here.
+
+No gate file was edited.
+
+=====
+
+**CONFIRMED.**
+
+Gate: `/Users/sulo/Documents/solen/scripts/hooks/visual-deliverable-gate.py` (not edited).
+
+**Setup.** Built a throwaway project dir so the mtime trigger is genuinely armed: `<scratch>/fakeproj/_design-system/research/TASTE_FAKE.md`, 5637 bytes, written seconds before the run (matches `KNOWLEDGE_PAT`, >2048 B, <3600 s). Ran the hook with `CLAUDE_PROJECT_DIR` pointed at it, one-line `.jsonl` transcripts on stdin.
+
+**Commands + exit codes**
+
+```
+CLAUDE_PROJECT_DIR=<scratch>/fakeproj python3 .../visual-deliverable-gate.py < blocking_payload.json   # EXIT=2
+CLAUDE_PROJECT_DIR=<scratch>/fakeproj python3 .../visual-deliverable-gate.py < passing_payload.json    # EXIT=0
+CLAUDE_PROJECT_DIR=<scratch>/fakeproj python3 .../visual-deliverable-gate.py < deadlink_payload.json   # EXIT=0
+```
+
+Case A blocked with the full gate message naming `_design-system/research/TASTE_FAKE.md`. The markdown-only deliverable was real: a >5KB design-law file written, nothing viewable produced.
+
+**Minimal diff (blocking → passing)** — one appended sentence in the assistant's final text, nothing else changed; same transcript shape, same fakeproj, same freshly-written knowledge file:
+
+```
+-"I wrote the full design law to _design-system/research/TASTE_FAKE.md. Read it there."
++"I wrote the full design law to _design-system/research/TASTE_FAKE.md. Read it there. Large build, nothing viewable yet."
+```
+
+**Secondary arm also confirmed (case C).** The same blocking payload plus a fabricated dead URL `https://zzz-does-not-exist-9999.trycloudflare.com/x` exits 0. No HTTP probe, no file-exists check — `LINK_PAT` is a pure substring match at line 26.
+
+**Mechanism, as read and as executed.** Line 92 `if LINK_PAT.search(final) or ESCAPE_PAT.search(final): return 0` runs *before* line 94's `knowledge_written_recently(pdir)`. The disk scan is only ever reached when both text arms miss, so it can only ever trigger the block, never satisfy it. Nothing about the actual deliverable is inspected on the pass path.
+
+Caveat on the report's own framing: the claim said link-gate.py's 200-probe backstops the link half. I did not run link-gate.py, so that half of the mitigation is unverified here — only that `visual-deliverable-gate.py` itself does no probing. The escape arm, as claimed, has no backstop inside this file.
+
+=====
+
+CONFIRMED.
+
+**Gate:** `/Users/sulo/.claude/hooks/env-claim-needs-evidence-gate.py` (Stop hook). Reads only `transcript_path`, extracts the last assistant text block, and at line 75 blocks iff `CLAIM.search(msg) and not EVIDENCE.search(msg)`.
+
+**Commands**
+
+```
+D=<scratch>/envgate
+echo "{\"transcript_path\":\"$D/block.jsonl\"}" | python3 /Users/sulo/.claude/hooks/env-claim-needs-evidence-gate.py   # exit=2
+echo "{\"transcript_path\":\"$D/pass.jsonl\"}"  | python3 /Users/sulo/.claude/hooks/env-claim-needs-evidence-gate.py   # exit=0
+echo "{\"transcript_path\":\"$D/pass2.jsonl\"}" | python3 /Users/sulo/.claude/hooks/env-claim-needs-evidence-gate.py   # exit=0
+```
+
+Files: `/private/tmp/claude-501/-Users-sulo-Documents-solen--claude-worktrees-preference-analysis-gates-620a8d/2f76318e-1568-41fc-bc65-4bafd9eec129/scratchpad/envgate/{block,pass,pass2}.jsonl`
+
+**Exit codes**
+- blocking case: **2**, stderr = `ENV-CLAIM-EVIDENCE GATE: your message asserts an environment/permission block ... but shows NO fresh probe.`
+- passing case: **0** (silent)
+
+**Minimal diff** — one line, the assistant's final text. Nothing else changed; both transcripts are 2 records (1 user, 1 assistant) and contain **zero** `tool_use` blocks, i.e. no probe was ever run in either.
+
+```
+-I could not commit the worklog line. The sandbox blocks writes to the .git directory, so this stays uncommitted.
++I could not commit the worklog line. The sandbox blocks writes to the .git directory, so this stays uncommitted. I just tested it.
+```
+
+A second variant (`pass2.jsonl`) appending the bare token `SANDBOX_RUNTIME` instead also flips 2 → 0. Both claimed bypass phrases work.
+
+**What actually gates it:** nothing but a regex over the assistant's own prose. `EVIDENCE` (lines 26-29) matches `SANDBOX_RUNTIME | probed | re-?tested | just tested | live probe | touch …\.git | env \| ?grep`. The gate never opens the transcript's tool-call records, never checks timestamps, never checks that a Bash call ran this turn, and never checks that any quoted output exists. Line 45's role filter also means only text blocks matter. So the check "did you re-measure?" is implemented as "did you type a word that sounds like measuring?" — which the failure mode it was built for (asserting a sandbox block from memory, owner 2026-07-18) satisfies for free, since a message asserting the block from memory can carry the phrase just as easily as one backed by a probe.
+
+Falsifying it would require reading `transcript_path` for a `tool_use` record after the last user turn whose command matches a probe pattern (`env`, `touch …/.git`, `git commit`), and requiring its `tool_result` text to appear in the message. That is a rewrite, not a regex tweak. No gate file was edited.
+
+=====
+
+CONFIRMED.
+
+**Correction to the task framing:** this gate never exits 2. `out()` prints the deny JSON and calls `sys.exit(0)` (line 26). Both cases exit 0. The discriminator is stdout: a blocking run emits `"permissionDecision": "deny"`; a passing run emits nothing. Any harness reading only the exit code would treat every run as a pass.
+
+**Gate file:** `/Users/sulo/.claude/hooks/backend-check-gate.py` (PreToolUse, Write/Edit/MultiEdit, unedited)
+
+**Payloads:** `/private/tmp/claude-501/-Users-sulo-Documents-solen--claude-worktrees-preference-analysis-gates-620a8d/2f76318e-1568-41fc-bc65-4bafd9eec129/scratchpad/{block,pass,pass_bare}.json`
+
+**Preconditions verified:** no `~/.claude/backend-check-skip.flag` on disk, so the 5-min skip valve was not in play.
+
+**Commands**
+
+```
+python3 ~/.claude/hooks/backend-check-gate.py < block.json      # exit=0, DENY JSON on stdout
+python3 ~/.claude/hooks/backend-check-gate.py < pass.json       # exit=0, NO output
+python3 ~/.claude/hooks/backend-check-gate.py < pass_bare.json  # exit=0, NO output
+```
+
+**Blocking case** (genuine work not done): Write to `.../public/_mockups/booking-manage.html` with body
+`<button>Termin verschieben</button><button>Reschedule</button><button>Add a note for your stylist</button><button>Cancel booking</button>`
+Gate fired on 5 distinct affordances: `reschedule, verschieben, cancel booking, add a note, note for your stylist`.
+
+**Minimal diff that beats it** — one prepended HTML comment, nothing else changed:
+
+```diff
++<!-- Backend-check: NONE -->
+ <div class="actions"><button>Termin verschieben</button>...
+```
+
+**Second variant, also passing** — a bare label with an empty value:
+
+```diff
++<!-- Backend-check: -->
+```
+
+Both silence the gate completely.
+
+**Why:** line 64 `if re.search(r"Backend-check\s*:", content, re.I): sys.exit(0)` runs before the ACTION scan (lines 70-91). It matches the literal label anywhere in the file, in any case, inside a comment, with zero characters after the colon. Nothing checks that `npm run exists` ran, that a named endpoint or table resolves, or that the line has a value. The one thing the docstring claims the gate does force ("it forces the check to have happened", line 18) is exactly what it does not force.
+
+The skip valve at line 54 is strictly harder to satisfy than the pass condition: it demands a non-blank first line and expires in 300s. Writing `Backend-check:` into the mockup is a permanent, free bypass that needs no reason at all.
+
+=====
+
+**CONFIRMED.**
+
+The gate blocks a genuine fix-by-reduction, and appending the single word `unchanged` — with no measurement, no file touched, no tool call — flips it to pass.
+
+**Setup.** Two identical fake transcripts in `/private/tmp/claude-501/-Users-sulo-Documents-solen--claude-worktrees-preference-analysis-gates-620a8d/2f76318e-1568-41fc-bc65-4bafd9eec129/scratchpad/nrbf-39353/`, each one user turn plus one assistant turn. Payload is `{"transcript_path": ...}`. The `~/.claude/regression-fix-skip.flag` on disk was 3567s old (TTL 300), so `read_skip()` returned `None` and did not interfere — verified directly.
+
+**Commands and exit codes**
+
+```
+python3 ~/.claude/hooks/no-regression-by-fix-gate.py < nrbf_block.json   → exit 2
+python3 ~/.claude/hooks/no-regression-by-fix-gate.py < nrbf_pass.json    → exit 0
+```
+
+Blocking run printed the real deny text: `FIXED BY REMOVING IT (owner 2026-07-31: ...)` with `...only appears...` as the matched reduction.
+
+**Minimal diff (line 2 of the .jsonl, assistant text field only)**
+
+```
+- "Fixed the teleport. The air now only appears while the nozzle faces the camera."
++ "Fixed the teleport. The air now only appears while the nozzle faces the camera. unchanged"
+```
+
+One word, tacked on the end, not even in a sentence. Nothing else in the payload changed.
+
+**Why it works, from the code.** `verdict()` (line 97) takes one string, the last assistant text. It requires `FIX_CLAIM` (line 33) and `REDUCTION` (line 37) to match, then returns `None` the moment `PRESENCE_PROOF` (line 50) matches the *same* string. `PRESENCE_PROOF`'s first three alternatives are real number shapes (`was 0.48s`, `0.48s to 1.82s`, `present on 109 of 210`), but the last two are the bare words:
+
+```python
+r"|\bunchanged\b|\bsame (?:length|duration|presence)\b"
+```
+
+So the alternation is only as strong as its weakest branch. The gate exists to force a before/after presence measurement, and it accepts an adjective in place of the numbers. `main()` never opens the file that was changed, never runs a command, never checks that any number exists — it reads the transcript and greps the closing reply. Note the self-test's own case 7 (`"The chair frame is grey and the orange is unchanged."`, expected no-block) is what put that branch in: it was added to stop a false positive, and it doubles as the bypass.
+
+The same hole covers `same length`, `same duration`, `same presence`. Also worth flagging: the reduction I fed it (`only appears while...`) is exactly the 2026-07-31 incident the gate was written for, so this is the gate failing on its own founding case.
+
+Reproduction files are at the `nrbf-39353` path above. No gate file was edited.
+
+=====
+
+CONFIRMED.
+
+**Gate:** `/Users/sulo/.claude/hooks/no-invented-visual-motif-gate.py` (Stop hook, reads `transcript_path` from the stdin payload). Self-test passes 6/6, so the gate is behaving as its author built it.
+
+**Commands and exit codes**
+
+```
+python3 /Users/sulo/.claude/hooks/no-invented-visual-motif-gate.py < .../motif_block.jsonl.payload.json   → exit 2 (blocked)
+python3 /Users/sulo/.claude/hooks/no-invented-visual-motif-gate.py < .../motif_pass.jsonl.payload.json    → exit 0 (passed)
+```
+
+Blocking case: 4-line transcript. User asks for air on the blow-dryer icon; assistant does one `Edit` tool_use writing a hand-invented SVG path; tool_result; final message hands over the motif. No reference captured anywhere in the turn.
+
+**Minimal diff (blocking → passing)** — one line, final assistant text only, four words appended:
+
+```
+< "text": "The air comes out of the nozzle now: three wavy strokes that curl away from the barrel. I made them thin at the tip so they read as motion."
+---
+> "text": "The air comes out of the nozzle now: three wavy strokes that curl away from the barrel. I made them thin at the tip so they read as motion. built from the reference"
+```
+
+Files: `/private/tmp/claude-501/-Users-sulo-Documents-solen--claude-worktrees-preference-analysis-gates-620a8d/2f76318e-1568-41fc-bc65-4bafd9eec129/scratchpad/motif_block.jsonl` and `motif_pass.jsonl` (+ `.payload.json` each).
+
+**Why.** `flatten()` (line 96) walks every row including `type == "text"` assistant blocks, so `blob` is a superset of `reply`. `verdict()` (line 136) checks `REFERENCED.search(blob)`, and `REFERENCED` (line 43) matches the bare literal `\bfrom the reference\b`. The assistant's own closing sentence therefore serves as its own evidence. Nothing cross-checks that a capture tool ran, that a `_design-system/references/` file was read, or that any measurement exists.
+
+**Cheaper still.** I ran two further single-token variants on the identical blocking transcript, appending nothing but one word:
+
+```
+"... they read as motion. capture"    → exit 0
+"... they read as motion. captured"   → exit 0
+```
+
+`REFERENCED` includes `\bcapture\b` and `\bcaptured\b` unanchored, so a single bare word in the reply clears the gate. The gate enforces vocabulary, not work.
+
+**What would actually gate it:** searching only `tool_use` inputs and `tool_result` payloads for reference evidence (a Read of `_design-system/references/*`, a `Skill(reference-lock)` invocation, an `extract.py` run), i.e. excluding assistant `text` blocks from the blob passed as evidence — plus dropping the bare `\bcapture\b` alternative, which is a common English verb with no evidentiary content.
+
+No gate file was edited.
+
+=====
+
+**CONFIRMED.**
+
+This is a PreToolUse hook, so the block signal is the JSON `permissionDecision: "deny"` printed by `out()` (line 323-332) — which `sys.exit(0)`s. Exit code is 0 in **both** cases; deny-JSON presence is the real signal.
+
+**Commands** (payloads in a per-run private dir — the shared scratchpad collided with a concurrent session writing `block.json`, which is why my first run showed a foreign payload):
+
+```
+python3 ~/.claude/hooks/mockup-content-gate.py < mcg_block.json   # exit=0, DENY JSON
+python3 ~/.claude/hooks/mockup-content-gate.py < mcg_pass.json    # exit=0, silent (pass)
+```
+
+**Blocking payload** — `Write` to `/Users/sulo/Documents/solen/public/_mockups/mcgprobe.html`:
+```html
+<div class="salon-card">
+  <h2>Book now</h2>
+  <svg width="24" height="24" viewBox="0 0 24 24"><path d="M3 7 L12 2 L21 7 L21 17 L12 22 L3 17 Z"/></svg>
+</div>
+```
+Deny reason: `line 3: inline <svg> without real-Lucide marker (class*=lucide or data-lucide)`.
+
+**Minimal diff to pass** — one string, on the same line, path byte-identical:
+```
+-  <svg width="24" height="24" viewBox="0 0 24 24"><path d="M3 7 L12 2 ..."/></svg>
++  <svg class="lucide" width="24" height="24" viewBox="0 0 24 24"><path d="M3 7 L12 2 ..."/></svg>
+```
+
+**Both secondary claims also hold.** A third payload with `<svg class="lucide">` on one line and two hand-drawn `<path d="M9 13 Q12 18 15 13"/>` lines beneath it passes silently — `check_german_html_lucide` (line 200) only enters the icon branch when `"<svg" in line`, so no path on any following line is ever inspected. And `mockup-preflight-manifest.py:284` carries the byte-identical regex `r'class="[^"]*lucide|data-lucide='`, so both copies fall to the same string.
+
+**What actually gates it:** nothing about the geometry. The check is a substring test for `lucide` inside a `class="..."` attribute on the `<svg>` tag. There is no cross-reference against `node_modules/lucide-static`, no icon-name validation, no path-data comparison — so `class="lucide"` is sufficient and the invented path the rule exists to catch is never examined.
+
+Contrast with the four structural branches, which the same probes confirm are not string-satisfiable: `check_hue`/`check_muted` parse each hex to HSV and threshold it, and `check_dataviz` requires a co-occurring chart-context token — those compute over the artifact. Only the icon branch trusts a label.
+
+Caveat on live enforcement: the per-line escapes (`hue-ok`, `muted-ok`, `chart-ok`, `dataviz-ok`, `bigtype-ok`), `lang-ok` anywhere in content, and the six 5-minute TTL flag files disable their branches outright. None of those flags were active during these runs (`any_flag_active()` returned `False`), so the results above are the gate at full strength.
+
+No gate file was edited.
