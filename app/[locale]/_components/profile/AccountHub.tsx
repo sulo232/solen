@@ -133,7 +133,7 @@ export default function AccountHub({
         <p className="mb-3.5 text-[12px] font-semibold text-s-ink-2">{t("hubSectionAccount")}</p>
         <div className="flex items-center gap-3.5">
           <Avatar src={avatarUrl} name={displayName} size={60} />
-          <h1 className="min-w-0 flex-1 truncate font-heading text-[28px] font-bold tracking-[-0.02em] text-s-ink">
+          <h1 className="min-w-0 flex-1 truncate font-heading text-[28px] font-semibold tracking-[-0.02em] text-s-ink">
             {displayName}
           </h1>
         </div>

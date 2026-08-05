@@ -80,16 +80,18 @@ export default function WalkInBand() {
             <div>
               {/* Eyebrow "BARBERSHOP" deleted 2026-06-11 (owner-approved every-state
                   home mockup): tracked-uppercase eyebrows are banned; the H2 + sub carry it. */}
-              <h2 className="font-display text-[18px] font-bold leading-[1.05] tracking-[-0.01em] text-s-ink">
+              <h2 className="font-display text-[18px] font-semibold leading-[1.05] tracking-[-0.01em] text-s-ink">
                 Walk-in
               </h2>
-              <p className="mt-1 font-body text-[13px] leading-[1.3] text-s-ink-2">
+              {/* mockup-ok: 13px -> 12px, owner-approved public/_mockups/improve/type-scale.html
+                  (8 -> 4 type-scale merge). */}
+              <p className="mt-1 font-body text-[12px] leading-[1.3] text-s-ink-2">
                 Ohne Termin. Sieh die Wartezeit und sichere dir deinen Platz.
               </p>
               {/* B "live board" (owner pick 2026-06-29): wait/queue are real-time (GET
                   /api/walkin/nearby), so a "Live" marker is honest signal, not decoration. */}
               {/* mockup-ok: R3 fix, ink label + green dot carries color (approved public/_mockups/home-refined) */}
-              <span className="mt-1 inline-flex items-center gap-1.5 font-body text-[12px] font-bold text-s-ink">
+              <span className="mt-1 inline-flex items-center gap-1.5 font-body text-[12px] font-semibold text-s-ink">
                 <span className="h-[7px] w-[7px] rounded-full bg-s-success" aria-hidden />
                 Live
               </span>
@@ -122,14 +124,14 @@ export default function WalkInBand() {
                       {/* R1 "located" (owner pick 2026-06-29): wait-range hero + "bis frei", then
                           name + rating (gold star is the separator), then address + queue on their OWN
                           lines , NO middot between two same-weight metadata bits (taste rule 2). */}
-                      <div className="font-display text-[20px] font-bold leading-none tracking-[-0.02em] text-s-success">
+                      <div className="font-display text-[20px] font-semibold leading-none tracking-[-0.02em] text-s-success">
                         {sofort ? "Jetzt frei" : `${s.waitMinutes}-${s.waitMinutesMax} Min`}
                       </div>
                       {!sofort && (
                         <div className="mt-[3px] font-body text-[12px] font-semibold text-s-ink-2">bis frei</div>
                       )}
                       <div className="mt-2.5 flex items-center gap-2">
-                        <span className="truncate font-heading text-[14px] font-bold text-s-ink">{s.name}</span>
+                        <span className="truncate font-heading text-[14px] font-semibold text-s-ink">{s.name}</span>
                         {/* B15 (PSYCHOLOGY law 6): reviewCount was already gated on but never
                             printed, a bare rating. Now shows the count it was gated on. mockup-ok */}
                         {s.reviewCount > 0 && (
@@ -154,7 +156,7 @@ export default function WalkInBand() {
           {/* CTA */}
           <a
             href={`/${locale}/barbershop`}
-            className="mt-4 flex items-center justify-center gap-1.5 rounded-[13px] border border-s-border bg-white px-4 py-3 font-heading text-[14px] font-bold text-s-ink transition-[background-color,transform] duration-200 ease-glide hover:bg-s-bg-sunken active:scale-[0.97]"
+            className="mt-4 flex items-center justify-center gap-1.5 rounded-[13px] border border-s-border bg-white px-4 py-3 font-heading text-[14px] font-semibold text-s-ink transition-[background-color,transform] duration-200 ease-glide hover:bg-s-bg-sunken active:scale-[0.97]"
           >
             Alle Walk-ins
             <ArrowRight size={16} />

@@ -132,6 +132,23 @@
     letter-spacing: -0.025em;
   }
 
+  /* ── Icon stroke terminals (2026-08-05, owner ask "go research the fonts and actual icons
+     that they use and what we're doing differently" -> _design-system/references/
+     airbnb--icons-vs-ours.md section 4). Measured: Airbnb ships stroke-linecap:butt +
+     stroke-linejoin:miter on every stroked icon sampled, 18+ instances across 3 live pages,
+     0 exceptions. We shipped stroke-linecap:round + stroke-linejoin:round on 160 of 160
+     visible svg.lucide instances on /de (390x844), purely Lucide's library default
+     (lucide-react/dist/esm/defaultAttributes.js), never overridden anywhere. One rule flips
+     every Lucide icon at once (384 import sites) instead of touching each call site. No glyph
+     is exempted: the one shape flagged as worth a real render check (the heart's inner cusp)
+     was shown both ways in the owner-approved mockup
+     (public/_mockups/research/terminals-and-weight.html) and shipped sharp, same as every
+     other icon. */
+  svg.lucide {
+    stroke-linecap: butt;
+    stroke-linejoin: miter;
+  }
+
   /* ── Global button press feedback ─────────────────────────── */
   @media (hover: hover) and (pointer: fine) {
     button:active,

@@ -100,7 +100,9 @@ export default function HomeSearchPill({
             className="flex min-w-0 flex-1 items-center gap-3 text-left"
           >
             <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" aria-hidden />
-            <span className="block min-w-0 flex-1 truncate font-body text-[16px] font-medium text-s-ink">
+            {/* mockup-ok: 16px -> 14px, owner-approved public/_mockups/improve/type-scale.html
+                (8 -> 4 type-scale merge), the one named real cost of that merge. */}
+            <span className="block min-w-0 flex-1 truncate font-body text-[14px] font-medium text-s-ink">
               {label ?? tChrome("searchPlaceholder")}
             </span>
           </button>
@@ -125,7 +127,9 @@ export default function HomeSearchPill({
             className="flex min-w-0 flex-1 items-center gap-3"
           >
             <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" aria-hidden />
-            <span className="block min-w-0 flex-1 truncate font-body text-[16px] font-medium text-s-ink">
+            {/* mockup-ok: 16px -> 14px, owner-approved public/_mockups/improve/type-scale.html
+                (8 -> 4 type-scale merge), the one named real cost of that merge. */}
+            <span className="block min-w-0 flex-1 truncate font-body text-[14px] font-medium text-s-ink">
               {label ?? tChrome("searchPlaceholder")}
             </span>
           </a>

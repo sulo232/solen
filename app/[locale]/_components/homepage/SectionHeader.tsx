@@ -177,8 +177,8 @@ export function SectionTitle({
               fill="none"
               stroke="currentColor"
               strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
+              strokeLinecap="butt"
+              strokeLinejoin="miter"
               aria-hidden
               className="transition-transform duration-200 ease-glide group-hover:translate-x-0.5"
             >

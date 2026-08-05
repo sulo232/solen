@@ -182,7 +182,9 @@ export default function NearbyMap({
           element to 0px (measured: anchor 398x156 but this node 396x0, markers pushed below the
           clip). An explicit height is immune to that override. */}
       <div ref={holder} className="h-full w-full" aria-hidden />
-      <span className="pointer-events-none absolute bottom-3 left-3 z-[3] inline-flex items-center gap-1.5 rounded-pill bg-white/80 px-3 py-1.5 text-[12.5px] font-semibold text-s-ink shadow-[0_2px_10px_rgba(0,0,0,0.12)] backdrop-blur-md">
+      {/* mockup-ok: 12.5px -> 12px, owner-approved public/_mockups/improve/type-scale.html
+          (8 -> 4 type-scale merge), the only single-instance size on the page. */}
+      <span className="pointer-events-none absolute bottom-3 left-3 z-[3] inline-flex items-center gap-1.5 rounded-pill bg-white/80 px-3 py-1.5 text-[12px] font-semibold text-s-ink shadow-[0_2px_10px_rgba(0,0,0,0.12)] backdrop-blur-md">
         <MapPin size={13} className="text-s-ink" aria-hidden /> {countLabel}
       </span>
     </a>

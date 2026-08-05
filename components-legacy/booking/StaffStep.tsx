@@ -207,7 +207,7 @@ export default function StaffStep({
           >
             {tSel('continue')}
             {/* Continue arrow: chevron by default, shaft draws into a full arrow on hover/press. mockup-ok: owner-approved liftup-booking-services-tiered arrow, unifying it across booking steps (2026-07-19) */}
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="butt" strokeLinejoin="miter" aria-hidden>
               <path d="M4 12h13" className="[stroke-dasharray:14] [stroke-dashoffset:14] transition-[stroke-dashoffset] duration-300 ease-glide group-hover:[stroke-dashoffset:0] group-active:[stroke-dashoffset:0]" /> {/* mockup-ok: liftup-booking-services-tiered */}
               <path d="M13 6l6 6-6 6" className="transition-transform duration-300 ease-glide group-hover:translate-x-0.5 group-active:translate-x-0.5" /> {/* mockup-ok: liftup-booking-services-tiered */}
             </svg>

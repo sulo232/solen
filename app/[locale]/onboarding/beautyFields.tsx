@@ -79,7 +79,7 @@ export const CAT_PATHS: Record<string, React.ReactNode> = {
 
 export function CatIcon({ name }: { name: string }) {
   return (
-    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="butt" strokeLinejoin="miter" aria-hidden>
       {CAT_PATHS[name]}
     </svg>
   );

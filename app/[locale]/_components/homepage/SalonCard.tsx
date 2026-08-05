@@ -506,7 +506,9 @@ export function SalonCard({
             {name}
           </CardName>
           {/* V3-D348: rating meta via <CardMeta> primitive (bakes text-s-ink-2 font-normal). */}
-          <CardMeta className="shrink-0 text-[13px] tabular-nums">
+          {/* mockup-ok: 13px -> 12px, owner-approved public/_mockups/improve/type-scale.html
+              (8 -> 4 type-scale merge); the star + color already carry the distinction. */}
+          <CardMeta className="shrink-0 text-[12px] tabular-nums">
             {rating != null ? (
               // psych-ok: CARD_REDESIGN_2026-07-13 C11 owner-approved converged card drops the review count from Row 1 by explicit dated design decision.
               <RatingStars value={rating} size="sm" />
