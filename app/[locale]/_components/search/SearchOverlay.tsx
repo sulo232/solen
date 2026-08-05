@@ -613,8 +613,10 @@ export function SearchOverlay({
   // `openT` is now RAW NORMALISED WALL-CLOCK progress on the open (the open's `animate` below runs
   // it linear), and `morphT` is the reference's own measured shape applied to it. Every geometry
   // property (top, height, width, left) reads `morphT`; the alpha ramps below (chromeOpacity,
-  // scrimOpacity, ghostLabelOp) keep reading `openT`, which is what makes their windows mean
-  // milliseconds again.
+  // ghostLabelOp) keep reading `openT`, which is what makes their windows mean milliseconds again.
+  // `scrimOpacity` is the one exception (J1 below): it reads `openT` on open (unchanged, still
+  // milliseconds) but `morphT` on close, because the backdrop has to answer to whatever value is
+  // actually painting the box, not to raw time.
   //
   // Why the shape lives HERE and not on `openT` itself: driving `openT` along the samples directly
   // was measured and rejected. It would pull the outgoing "Suchen" ghost's [0, 0.22] window from
@@ -706,12 +708,60 @@ export function SearchOverlay({
   // results feed and read as duplicated chrome. Both now read the SAME `openT`, on curves
   // chosen so the scrim is >= the sheet at every value of openT , the blur outlives the sheet
   // by construction, not by two clocks that happen to agree until someone edits one.
+  // SUPERSEDED on close only, see J1 below `chromeOpacity`: once the box's own geometry moved off
+  // `openT` onto `morphT` (H3), ">= the sheet at every value of openT" stopped being the same claim
+  // as ">= the sheet on screen". J1 re-points the close half of this guarantee at `morphT` instead.
   // H4 (2026-08-03): this drives the close-X only, NOT the sheet. It used to sit on the sheet
   // wrapper, where it composited the white paper and the ink on ONE alpha (see the sheet's own
   // style block for the measurement that killed that). Renamed from `sheetOpacity` so the name
   // cannot re-attract a "the sheet fades" edit.
   const chromeOpacity = useTransform(openT, [0, 0.35, 1], [0, 0.55, 1]); // mockup-ok: SEARCH_MORPH.md H4
-  const scrimOpacity = useTransform(openT, [0, 0.18, 1], [0, 1, 1]); // mockup-ok: SEARCH_MORPH.md R6
+  // J1 (2026-08-05, owner CDP screencast at 402x874, 31 real compositor frames via
+  // `Page.startScreencast`, not a screenshot-poll loop, the exact gap I1 above named as too coarse
+  // for a 333ms close): "the box's white paper outlives the backdrop." R6's own guarantee, ">= the
+  // sheet at every value of openT", went stale the moment H3 moved the box's OWN geometry
+  // (cropTop/sheetLeft/sheetWidth/sheetHeight) off `openT` onto `morphT`, the reference curve,
+  // front-loaded FOR GROWTH, read backward on close. Measured (H3/I1, both already in this file):
+  // `morphT` is still 0.823 open at 100ms of a 333ms close, i.e. it lingers near full size for
+  // roughly the first half of the close then collapses fast at the very end. `scrimOpacity` kept
+  // fading on raw `openT` regardless, so the backdrop cleared to a sharp, interactive page while
+  // the box, still fully opaque paper (H2, protected: no opacity on the card), was still most of
+  // its open size. Measured on the screencast: page fully sharp (map/photos/heart-icon crisp,
+  // cookie banner interactive) by ~358ms; box still painting the full "Wonach suchst du?"
+  // composition at 386ms and 395ms, a >=40ms window with an opaque white surface over an
+  // already-legible page.
+  //
+  // Fix: on CLOSE only, the scrim reads `morphT`, the SAME value the box's own geometry reads,
+  // through the identical [0, 0.18, 1] -> [0, 1, 1] shape R6 already chose for `openT` (same
+  // 0/0.18/1 breakpoints, not a new constant, just re-pointed at the driver that actually paints
+  // the box today). `sheetHeight`/`sheetWidth`/`cropTop` are each exactly LINEAR in `morphT`
+  // through the whole close (`origin.x + (resting.x - origin.x) * oT`, this file's own existing
+  // formulas, unedited), so the box's own size-as-a-fraction-of-its-travel EQUALS `morphT`
+  // directly. A first pass tried reading `morphT` with NO rescale (1:1 identity, "scrim opacity
+  // equals box openness fraction"); measured, that is the WRONG direction: at scrim=0.10 identity
+  // gives morphT=0.10, i.e. a box still 104px tall (a real box, not a pill). The 0.18 DIVISOR is
+  // what makes scrim fall faster than the box's own openness once `morphT` drops under it: scrim
+  // only starts leaving 1.0 once `morphT < 0.18` (box already well down from its peak), and by the
+  // time scrim reads 0.10, `morphT` is 0.10*0.18=0.018 (box 73px, close to the ~66px resting
+  // pill); by scrim=0.05, `morphT` is 0.009 (box 69px). Verified analytically (origin=66px,
+  // peak=444px, both measured constants of this build): divisor 1.0 (identity) leaves 38-76px of
+  // excess box height at scrim 0.05-0.20; divisor 0.18 leaves 3-14px over the same range, an
+  // order of magnitude tighter, which is why the shape R6 already picked for `openT` is kept
+  // rather than replaced.
+  //
+  // The scrim can now only start clearing once the box's own openness fraction has dropped under
+  // 0.18, so the backdrop can never finish clearing before the geometry it exists to cover has
+  // shrunk to near its resting size, re-establishing R6's guarantee against the driver that
+  // actually paints the box today. OPEN is untouched (`open ? openT-branch : morphT-branch`, the
+  // same branch-by-`open` device `contentOp` and `locSlotOp`/`dateSlotOp` already use above, I1):
+  // the fade-IN on open still reads raw `openT` through the exact same [0, 0.18, 1] -> [0, 1, 1]
+  // shape, byte-identical to before, so every open DO-NOT-REGRESS item is unaffected. One
+  // continuous set of motion values over the one scrim node, no threshold, no mount/unmount, no
+  // new duration or easing constant.
+  const scrimOpacity = useTransform([openT, morphT], (latest) => { // mockup-ok: SEARCH_MORPH.md J1
+    const [o, m] = latest as [number, number];
+    return clamp01((open ? o : m) / 0.18);
+  });
   // H1 REVERTED (2026-08-03). H1 added an animated blur RADIUS and an animated tint alpha on top of
   // this layer's existing alpha, on the premise that "the page behind is still clearly readable at
   // +50ms" in the reference. That premise is measured backwards. Same metric (high-pass detail
