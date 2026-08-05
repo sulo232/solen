@@ -77,12 +77,58 @@ const EASE = [0.32, 0.72, 0, 1] as const;
 // and 95% at 177ms and is the shape he had called too fast; C sits between them at 50% in 90ms and
 // 95% in 233ms, so it starts immediately without finishing early.
 const MORPH_EASE = [0.36, 0.36, 0.1, 1] as const;
-// OPEN_EASE, 2026-08-03. Curve C above was picked from a side-by-side chooser on an abstract box and
-// it stays on the CLOSE, which he judged and which is not the complaint. On the OPEN it front-loads
-// so hard that even at 0.6s the box measured 83% grown at 200ms and finished at 296ms, against the
-// reference's 67% at 200ms still creeping at 600ms. Growth cannot occupy its own duration under a
-// hard decelerate. This is near-even with a soft landing, so the box is still visibly moving late.
-const OPEN_EASE = [0.3, 0.28, 0.6, 0.96] as const;
+// OPEN_CURVE, 2026-08-05. This REPLACES the hand-picked `OPEN_EASE` cubic-bezier (deleted, not
+// layered on top of), because eleven rounds proved a bezier anyone chooses cannot be one to one
+// with a real recording. These are the reference's OWN per-frame fractions, measured off
+// `/Users/sulo/solen/screenshots/airbnb-open-ref_2026-08-03.MP4` (1206x2622, device px / 3 = points
+// exactly) by masking luma >= 250, running full 2D connected components, and tracking the card by
+// max IoU against the previous frame. Seeded on the settled frame and tracked BACKWARD to the pill,
+// so the seed is the unambiguous end state rather than a guess about the start. Measured on TRUE
+// source frames with their real PTS, never an fps=60 resample: the clip drops frames at t=3.300 and
+// t=3.625, both inside the open, and a resample would have inserted a fake zero-motion frame at each.
+//
+// t = 0 is the last frame of a 16-frame / 250ms static plateau whose card rect is BYTE-IDENTICAL on
+// all 16 (top 187, bottom 358, left 63, right 1143 device px, zero variance). The departure frame's
+// whole-frame mean absolute luma difference is 1,241x the plateau's worst frame, so the alignment is
+// not a judgement call. This is the trap the earlier rounds paid for twice: aligning on "the first
+// big frame diff" catches the page's own LOAD, and aligning by walking back from the settled frame
+// lands on the END of the motion. The plateau departure is the only one of the three that is the tap.
+//
+// The three properties ride ONE curve: |f_top - f_height| is at most 0.0097 (2.4 device px) and
+// |f_width - f_height| at most 0.0289 (1.5 device px), both inside their own measurement
+// quantisation. So one progress value drives top, height and width, which satisfies the
+// one-continuous-set-of-values rule by construction rather than by discipline. The samples below are
+// the HEIGHT fractions, the finest-grained of the three (1212 device px of travel).
+//
+// Shape, and why no bezier could reach it: the remaining fraction's decay ratio per frame starts at
+// 0.939 (a real ramp-in, zero initial velocity), falls to about 0.80, then HOLDS constant. Constant
+// decay ratio is exponential settling, which is a spring, which is why the tail runs 200ms past the
+// point the motion looks finished. A fixed-duration bezier lands hard at its duration and has no
+// such tail. Sampling the real curve reproduces it without anyone picking a stiffness or a damping.
+//
+// Fidelity of these 20 samples, linearly interpolated back against EVERY measured frame from 0 to
+// 500ms: height RMS 0.00256 of travel, max error 0.00696 (2.81pt); top max error 0.98pt. Two endpoint
+// values are forced rather than measured, named here rather than hidden: at t = 500ms the measured
+// fractions are f_top 0.9960 and f_height 0.9992, and both arrays end at 1.0 so the animation lands
+// exactly. That override is 0.34pt on card top and 0.03pt on height.
+//
+// Everything needed to re-derive these numbers is in this block plus the source MP4 named above.
+// The detector and its per-frame JSON were scratch files and are NOT checked in, so do not go
+// looking for them in `_plans/SEARCH_MORPH.md`: re-run the extraction from the recording instead.
+const OPEN_CURVE_IN = [
+  0, 0.05263, 0.10526, 0.15789, 0.21053, 0.26316, 0.31579, 0.36842, 0.42105, 0.47368,
+  0.52632, 0.57895, 0.63158, 0.68421, 0.73684, 0.78947, 0.84211, 0.89474, 0.94737, 1,
+];
+const OPEN_CURVE = [
+  0, 0.1074, 0.2596, 0.4119, 0.5563, 0.6751, 0.7643, 0.836, 0.8828, 0.9184,
+  0.9462, 0.9617, 0.9737, 0.982, 0.9885, 0.9926, 0.9953, 0.9966, 0.9979, 1,
+];
+// MEASURED, not chosen. 500ms is where all three properties are inside a third of a point of final
+// and never leave (width +308.3ms, top +433.3ms, height +500.0ms). The prior 0.6 came from "height
+// is still climbing at 600ms", which is true but is the last THIRD OF A POINT crawling in, not
+// visible travel. Exact-final-value-never-changes-again is +583ms top / +600ms height; 99%-of-travel
+// is +308/+383/+400ms. Those three answers differ and only this one is the design decision.
+const OPEN_MS = 0.5;
 // R4c (2026-08-02 round 3, owner "too snappy, it breaks scrolling"): was 120. The expand
 // reallocates real layout space, so while it runs the scroller's own box grows AND its top
 // edge climbs: measured over the old 120px, the scroller gained 382px of height and its top
@@ -564,6 +610,19 @@ export function SearchOverlay({
     [originRect, viewport.w],
   );
   const openT = useMotionValue(open ? 1 : 0); // mockup-ok: SEARCH_MORPH.md A7/A8/A9
+  // `openT` is now RAW NORMALISED WALL-CLOCK progress on the open (the open's `animate` below runs
+  // it linear), and `morphT` is the reference's own measured shape applied to it. Every geometry
+  // property (top, height, width, left) reads `morphT`; the alpha ramps below (chromeOpacity,
+  // scrimOpacity, ghostLabelOp) keep reading `openT`, which is what makes their windows mean
+  // milliseconds again.
+  //
+  // Why the shape lives HERE and not on `openT` itself: driving `openT` along the samples directly
+  // was measured and rejected. It would pull the outgoing "Suchen" ghost's [0, 0.22] window from
+  // 114.5ms (today) to 46ms, because `curve(0.092) = 0.22`. The ghost being alive early and gone by
+  // about 100ms is a DO-NOT-REGRESS item. Splitting raw-time from shape keeps the ghost at 110.0ms
+  // AND puts the measured curve on the box. One mapping, monotone, a pure function of `openT`, so
+  // this is still one continuous set of values over one tree: no threshold, no second clock.
+  const morphT = useTransform(openT, OPEN_CURVE_IN, OPEN_CURVE); // mockup-ok: SEARCH_MORPH.md H3, measured reference curve
   // K-A (2026-08-03, owner picked K-A over K-B at public/_mockups/search-keyboard/index.html,
   // SEARCH_MORPH.md K4): R3 used to RISE the sheet by the keyboard inset so it shrank to sit
   // above the keys, which cut whatever row sat on the keyboard line against a hard white edge
@@ -574,24 +633,22 @@ export function SearchOverlay({
   // scrolled clear of the keys. One function, used by both `cropTop` and `sheetHeight`, so top
   // and bottom can never disagree.
   const minTop = Math.max(safeTop + 6, 6);
-  // H3 (2026-08-03): the `/ 0.8` STAYS, and this note exists so the ninth round does not remove it
-  // on the same reasoning the eighth nearly did. A council finding said the geometry should travel
-  // the full progress, and a previous round wrote that correction down as `const containerT = openT`
-  // further down this file without ever wiring it, so a dead constant sat there contradicting these
-  // four dividers. The dead constant is now gone, but it was deleted rather than honoured, because
-  // honouring it measures WORSE. A/B on a clock-scaled, wall-clock-aligned capture of our own open,
-  // scoring the whole-frame motion distribution against the same measurement of his own recording:
-  // with `/ 0.8` the motion centre of mass sits at 219.7ms and the shape RMS against the reference
-  // is 0.01877; wiring the full progress pushes it to 306.0ms and 0.02355, against the reference's
-  // own 198.6ms. Full-progress geometry also inverts the reference's order, landing the box AFTER
-  // the ink instead of before it. The frozen tail this divider creates was real and is what the
-  // council saw, but the tail was only visible because the sheet's wrapper alpha was still ramping
-  // through it; with that alpha gone (H2, at the sheet's own style block) the tail carries nothing
-  // and the box settling early is what the reference does too.
+  // H3 SUPERSEDED (2026-08-05): the `/ 0.8` is GONE, and this note replaces the one that told the
+  // ninth round to keep it. Both of those rounds were right about the OBSERVATION and wrong about
+  // the mechanism. What the divider was really doing was hand-approximating "settles early, then a
+  // long slow tail", because a fixed-duration bezier lands hard at its duration and cannot produce a
+  // tail on its own. That shape is now MEASURED rather than approximated: the reference's own curve
+  // is at 0.9462 by 53% of the duration and 0.9926 by 79%, so the early settle the `/ 0.8` was
+  // faking is intrinsic to `morphT` already. Keeping both would compress the measured curve into 80%
+  // of its own duration, which is precisely the "pick another constant and layer it on top" method
+  // that produced eleven rounds. The A/B that justified the divider was scored in a world where the
+  // only alternative was another bezier; it is not evidence about a sampled curve.
+  //
+  // `oT` here is `morphT` (already shaped), so this function no longer applies any curve of its own.
   const topFor = React.useCallback(
     (oT: number, ex: number) => {
       const base = oT < 1
-        ? origin.top + (RESTING_TOP - origin.top) * clamp01(oT / 0.8)
+        ? origin.top + (RESTING_TOP - origin.top) * oT
         : RESTING_TOP + (focusedTop - RESTING_TOP) * ex;
       // K2: `+ vvOffset` puts the sheet's top where the user actually sees it. It is 0 in every
       // state without a visual-viewport scroll, so this is identity everywhere else.
@@ -599,12 +656,17 @@ export function SearchOverlay({
     },
     [origin, focusedTop, minTop, vvOffset],
   );
-  const cropTop = useTransform([openT, expand], (latest) => { // mockup-ok: SEARCH_MORPH.md A7/A8/A9
+  const cropTop = useTransform([morphT, expand], (latest) => { // mockup-ok: SEARCH_MORPH.md A7/A8/A9
     const [oT, ex] = latest as [number, number];
     return topFor(oT, ex);
   });
-  const sheetLeft = useTransform(openT, [0, 0.8], [origin.left, 0]); // mockup-ok: SEARCH_MORPH.md H3, same window as topFor
-  const sheetWidth = useTransform(openT, [0, 0.8], [origin.width, viewport.w]); // mockup-ok: SEARCH_MORPH.md H3, same window as topFor
+  // Measured on the reference: `left * 2 + width = 402.0` at EVERY frame, to within 0.02pt. The card
+  // is centred throughout and expands symmetrically, so left is not an independent property, it is
+  // derived from width. Ours is centred at both ends too (origin.left with origin.width = w - 32,
+  // then 0 with the full viewport), so driving both off the one `morphT` keeps that identity instead
+  // of animating left on a second curve that could drift out of centre mid-flight.
+  const sheetLeft = useTransform(morphT, [0, 1], [origin.left, 0]); // mockup-ok: SEARCH_MORPH.md H3, measured curve, full travel
+  const sheetWidth = useTransform(morphT, [0, 1], [origin.width, viewport.w]); // mockup-ok: SEARCH_MORPH.md H3, measured curve, full travel
   // C6 (round 2, "bottom is cut off"): port of an owner-dictated SEARCH_MORPH.md punch-list
   // fix, not a live design exploration. Measured cause: this used to interpolate ONLY on
   // openT, so once fully open its height stayed pinned to `viewport.h - RESTING_TOP` even
@@ -614,7 +676,7 @@ export function SearchOverlay({
   // to exist. Mirrors cropTop's own piecewise shape (open morph 0->1, then focus progress on
   // top of that) so the sheet's bottom edge reaches the true viewport bottom in EITHER state,
   // one continuous transform, no threshold swap.
-  const sheetHeight = useTransform([openT, expand], (latest) => { // mockup-ok: SEARCH_MORPH.md C6, H5
+  const sheetHeight = useTransform([morphT, expand], (latest) => { // mockup-ok: SEARCH_MORPH.md C6, H5
     const [oT, ex] = latest as [number, number];
     // K-A: the usable bottom edge is always the viewport's own bottom, keyboard up or not, so
     // the sheet is never shrunk to sit above the keys (that was K-B, rejected at the K4
@@ -630,10 +692,10 @@ export function SearchOverlay({
     const bottom = viewport.h - restMargin;
     if (oT < 1) {
       const restingHeight = Math.max(bottom - topFor(1, ex), 200);
-      // H3: same [0, 0.8] window as topFor, so height and top settle on the same frame , never a
-      // box that's already tall but not yet positioned, or vice versa. Why 0.8 survived the
-      // council's "travel the full progress" finding: see the A/B numbers above topFor.
-      return origin.height + (restingHeight - origin.height) * clamp01(oT / 0.8);
+      // H3 (2026-08-05): `oT` is `morphT`, the same already-shaped value `topFor` just took, so
+      // height and top still settle on the same frame, never a box that is already tall but not yet
+      // positioned. The `/ 0.8` that used to sit here is gone for the reason written above `topFor`.
+      return origin.height + (restingHeight - origin.height) * oT;
     }
     return Math.max(bottom - topFor(oT, ex), 200);
   });
@@ -686,24 +748,18 @@ export function SearchOverlay({
   // whole new content (heading, field, list) is present at LOW opacity; from there it just gets
   // more opaque. The content is never blank and nothing waits for anything else , ONE simultaneous
   // move, not three staged phases.
-  // `containerT` is the exact [0, 0.8]-of-`openT` progress that already grows the box (`topFor` /
-  // `sheetHeight` above compute the same ratio inline); driving opacity off the SAME value is "the
-  // same progress value that grows the container" per spec, so the content is guaranteed to be
-  // above zero at every frame the box is still growing (it only clamps to 1 once the box has
-  // settled at openT=0.8, never before).
   // Chose TOGETHER over a stagger: the reference shows heading + field + list all present already
-  // by +100ms of a 367ms open (27% of the way in), too close together to read as a sequence, and a
-  // staggered order derived from the same ink-band method that produced this bug is not evidence
-  // worth keeping over a plain "together" reading. On CLOSE this is the same continuous function
-  // read backward off the same `openT` , no second set of values, no threshold.
-  // COUNCIL FINDING 2026-08-03 (external LLM consult, Opus and Grok independently agreed): the
-  // `/ 0.8` compressed the geometry into the first 80% of the open, so the box stopped while every
-  // edited property still had a third of its run left. That correction used to live HERE, as
-  // `const containerT = openT`, a constant nothing ever read while `topFor`/`sheetHeight`/
-  // `sheetLeft`/`sheetWidth` all kept dividing by 0.8 a hundred lines above. The dead binding is
-  // gone. It was DELETED, not honoured: A/B'd against his own recording, wiring it measures worse
-  // on both scores (see the note above `topFor`). The council read the symptom correctly and
-  // prescribed the wrong cure; the frozen tail it saw was the wrapper alpha, not the divider.
+  // by +100ms (20% of the way in), too close together to read as a sequence, and a staggered order
+  // derived from the same ink-band method that produced this bug is not evidence worth keeping over
+  // a plain "together" reading. On CLOSE this is the same continuous function read backward off the
+  // same value , no second set of values, no threshold.
+  // COUNCIL FINDING 2026-08-03, now RESOLVED (2026-08-05). The council (Opus and Grok independently)
+  // said the `/ 0.8` compressed the geometry into the first 80% of the open so the box stopped with a
+  // third of its run left. That divider is now gone, but not because the council's cure was adopted:
+  // its cure was "travel the full progress under the same bezier", which A/B'd worse. Both the
+  // divider and the bezier are deleted together, replaced by the reference's sampled curve, which
+  // reaches 0.9462 at 53% and 0.9926 at 79% of its own duration. So the settle-early the council
+  // objected to is real, is what the reference does, and is now measured rather than faked.
   // G3 (2026-08-03): the content rides its OWN slower progress, not the container's. Measured inside
   // the reference card's own moving box, its content is still barely countable when the box has
   // stopped and keeps rising for ~200ms after.
@@ -905,17 +961,25 @@ export function SearchOverlay({
     let cancelled = false;
     if (open) setSheetOpen(true);
     const controls = animate(openT, open ? 1 : 0, {
-      // 0.6s open, not 0.367. Measured on his own recording at 60fps: the reference's card height
-      // is still climbing at 600ms (383 at 200ms, 553 at 300ms, 567 at 400ms, 569 at 600ms). At
-      // 0.367 with a front-loaded curve ours was geometrically finished by ~150ms and then sat
-      // still for 580ms, which is the "already all opened, then it just pops up everything".
-      duration: reduce ? 0 : open ? 0.6 : 0.333,
-      // The OPEN gets an even curve, not MORPH_EASE. Measured after lengthening to 0.6s: the box was
-      // still 83% grown at 200ms and finished at 296ms, because curve C front-loads so hard it eats
-      // most of the duration in the first third. The reference is 67% grown at 200ms and still
-      // creeping at 600ms. An even curve is the only way the growth actually occupies its own time.
-      // Curve C stays on the CLOSE, which he judged and which is not the complaint.
-      ease: open && !reduce ? OPEN_EASE : MORPH_EASE,
+      // OPEN_MS (0.5) is measured, not chosen: see the constant. The prior 0.6 was read off "height
+      // is still climbing at 600ms", which is true but is the last third of a POINT crawling in.
+      duration: reduce ? 0 : open ? OPEN_MS : 0.333,
+      // The open is LINEAR on purpose, and this is the whole method change. Every previous round set
+      // this to a bezier somebody picked, then judged the result and picked a different bezier. No
+      // bezier can be one to one with a real recording, because the reference settles exponentially
+      // (constant per-frame decay ratio, a spring) and a fixed-duration bezier lands hard at its
+      // duration. So the shape is not expressed here at all any more: `openT` carries raw time and
+      // `morphT` carries the reference's own sampled fractions. Deleting the curve from here is what
+      // makes the geometry a copy instead of an approximation.
+      //
+      // The CLOSE keeps MORPH_EASE (curve C, which he judged in the side-by-side chooser, and which
+      // is not the complaint). Named cost, because it is a real change and not a no-op: the close's
+      // composed geometry moves from clamp01(MORPH_EASE(t) / 0.8) to OPEN_CURVE(MORPH_EASE(t)), so
+      // measured at 100ms of the 333ms close the sheet sits at 0.823 of open instead of 0.449. Today's
+      // shape hangs for ~50ms and then snaps; the new one is monotone and smoother. That is a
+      // consequence of deleting the `/ 0.8` rather than a second curve I chose, and the reference
+      // recording is an OPEN, so there is no measured close to copy. Worth his eye on the next pass.
+      ease: open && !reduce ? "linear" : MORPH_EASE,
       onComplete: () => { if (!cancelled && !open) setSheetOpen(false); },
     });
     // SPEED FIX 2026-08-03, owner: "the speed is nothing like it". Measured on his own recording by
