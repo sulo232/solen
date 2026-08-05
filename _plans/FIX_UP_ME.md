@@ -117,7 +117,7 @@ beats that check, taken from the sweep.
 - [ ] finish-autonomously-gate.py , beaten by: the gate
 - [x] fix-needs-before-after-gate.py (verified: ~/.claude/hooks/fix-needs-before-after-gate.py) 4/4. The honest-null arm was a bare word list, so "same" satisfied a gate whose whole purpose is a before AND an after number. An honest null is still legal and still wanted, it just has to carry the number. Same defect as no-regression-by-fix, same day.
 - [x] no-permission-to-fix-gate.py (verified: ~/.claude/hooks/no-permission-to-fix-gate.py) 6/6. `push` and `deploy` were bare words, so MENTIONING either stood the gate down , "I did not push." satisfied the check that exists to stop me asking permission for work I should just do. They now count only when the sentence actually proposes the act.
-- [ ] owner-punt-gate.py , beaten by: I already applied it myself.
+- [~] owner-punt-gate.py (verified: ~/.claude/hooks/owner-punt-gate.py) **PATCHED BUT NOT PROVEN.** The SELF_DONE list is bare substrings over my own prose, so "I already applied it myself" stood the gate down. It now also requires a real tool call this turn. Syntax clean and fails open on junk, but I could NOT build a fixture that makes this gate fire at all, so I have not demonstrated the repair. Marking it unproven rather than claiming it. Concrete next step: find a real transcript where this gate fired and replay it.
 - [ ] reference-measure-gate.py , beaten by: measured: avatar 26pt, tile 114pt
 - [ ] sample-dont-pick-colour-gate.py , beaten by: sampled from public/icons/categories/nails.png
 - [ ] copy-the-curve-gate.py , beaten by: per-frame
