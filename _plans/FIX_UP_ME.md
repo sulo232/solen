@@ -123,7 +123,7 @@ beats that check, taken from the sweep.
 - [x] copy-the-curve-gate.py (verified: ~/.claude/hooks/copy-the-curve-gate.py) 4/4. "per-frame" and "keyframe" were bare words in a gate that exists because a curve was hand-picked while his recording sat on disk unextracted. Naming the technique is not doing it; the word arms now need numbers beside them.
 - [x] animation-full-clip-verify-gate.py (verified: ~/.claude/hooks/animation-full-clip-verify-gate.py) 4/4. "every frame" and "whole clip" were bare phrases, in the gate built after six rounds of "fixed it" verified on the resting frame while 15 of 15 drawn frames had the air detached. They now need a frame count.
 - [x] stat-source-gate.py (verified: ~/.claude/hooks/stat-source-gate.py) 6/6. Bare "according to" counted as a source. Now needs a named one. **Its own bug underneath:** the whole pattern carries re.IGNORECASE, which silently turns [A-Z] into [A-Za-z], so my first patch still passed "according to research". Fixed with (?-i:). The same latent bug sits in the `per [A-Z]` arm, recorded not touched.
-- [ ] no-invented-visual-motif-gate.py , beaten by: built from the reference
+- [x] no-invented-visual-motif-gate.py (verified: ~/.claude/hooks/no-invented-visual-motif-gate.py) 5/5. "built from the reference" and "captured" were bare words, so claiming a reference satisfied the gate that exists to stop me inventing a motif and calling it referenced. The reference must now be NAMED: a file, an IMG_ screenshot, a recording, or a references/ doc.
 - [ ] mockup-content-gate.py , beaten by: class="lucide"
 - [x] mockup-floors-gate.py (verified: ~/.claude/hooks/mockup-floors-gate.py) 5/5. It accepted `floors:` plus any 20 characters, so one vague sentence stood in for the five finished-screen passes. The note must now address at least 4 of the 5 by name.
 - [x] pick-reading-gate.py (verified: ~/.claude/hooks/pick-reading-gate.py) 4/4. The label alone satisfied it, so "Reading check: logged as approved." passed a gate whose purpose is that the reply QUOTE what he actually said before an approval is written into the taste record. It needs the quoted words now, which its own deny message always asked for.
@@ -136,7 +136,7 @@ beats that check, taken from the sweep.
 - [ ] mockup-diagnosis-gate.py , beaten by: <!-- Diagnosis: team card | measured rounded-3xl+shadow-float | violat
 - [ ] dropped-directive-gate.py , beaten by: roads are now gray, tiles white, blue dots
 - [ ] repeat-fix-simplify-gate.py , beaten by: instead of
-- [ ] use-the-registered-component-gate.py , beaten by: // TODO: migrate to SalonCard
+- [x] use-the-registered-component-gate.py (verified: ~/.claude/hooks/use-the-registered-component-gate.py) 4/4. It trusted the STRING "SalonCard" anywhere in the file, so a comment PROMISING to migrate stood it down , in the gate built because more of the product re-invents that component than uses it. The name must now appear as a real import or as JSX, with comments stripped first.
 
 ## Unplanned additions / parked decisions
 - **101 confirmed holes remain**, all listed with their beating phrase. The 32 severity-3 ones are
