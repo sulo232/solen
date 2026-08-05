@@ -129,6 +129,18 @@ const OPEN_CURVE = [
 // visible travel. Exact-final-value-never-changes-again is +583ms top / +600ms height; 99%-of-travel
 // is +308/+383/+400ms. Those three answers differ and only this one is the design decision.
 const OPEN_MS = 0.5;
+// SCRIM_KNEE, 2026-08-05 (J2). R6 picked 0.18 as the `openT` value below which the backdrop starts
+// clearing; it stays that. What is new is that the CLOSE's geometry is now made to FINISH at exactly
+// this value, so one constant states the whole ordering: the box is home before the page comes back.
+// This exists because J1's "hold the scrim up until the box is small" was measured and does not
+// reach zero. Both quantities were monotone in the same driver, so at 375x812 the box's excess
+// height over the resting bar came out at a fixed 97px per unit of scrim opacity: 22px of excess at
+// scrim 0.21, 9px at 0.09, 2px at 0.03. Halving the ratio only rescales that line, it never removes
+// it, because both sides only reach 0 on the same final frame. The only shape with no such frame is
+// one where the geometry lands while the backdrop is still fully up, which is what this constant
+// buys. Read by `morphT` (the close-side rescale) and by `scrimOpacity`, so the two cannot drift
+// apart again the way R6's guarantee silently did when H3 moved the geometry onto `morphT`.
+const SCRIM_KNEE = 0.18;
 // R4c (2026-08-02 round 3, owner "too snappy, it breaks scrolling"): was 120. The expand
 // reallocates real layout space, so while it runs the scroller's own box grows AND its top
 // edge climbs: measured over the old 120px, the scroller gained 382px of height and its top
