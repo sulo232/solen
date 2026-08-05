@@ -133,9 +133,28 @@ export default function AccountHub({
         <p className="mb-3.5 text-[12px] font-semibold text-s-ink-2">{t("hubSectionAccount")}</p>
         <div className="flex items-center gap-3.5">
           <Avatar src={avatarUrl} name={displayName} size={60} />
-          <h1 className="min-w-0 flex-1 truncate font-heading text-[28px] font-semibold tracking-[-0.02em] text-s-ink">
-            {displayName}
-          </h1>
+          <div className="min-w-0 flex-1">
+            {/* mockup-ok: name row unchanged, 28px anchor preserved verbatim from the
+                approved hub (FLOORS LAW 6). Only the wrapper is new, so the link can sit
+                under the name. */}
+            <h1 className="truncate font-heading text-[28px] font-semibold tracking-[-0.02em] text-s-ink">
+              {displayName}
+            </h1>
+            {/* E4 (2026-08-05): the hub had NO route to the editor at all , the box was
+                ticked from inference and grep found zero `profile/edit` references here.
+                mockup-ok: text link, so blue s-accent is the LOCKED treatment for a small
+                clickable bit (design contract "link" row, taste rule 3). Destination is the
+                EXISTING app/[locale]/profile/edit/page.tsx, not a new editor. */}
+            <Link
+              href={p("/profile/edit")}
+              // mockup-ok: `-my-1 py-1` grows the hit box from a measured 17px to 25px to
+              // clear WCAG 2.5.8 Target Size (24px AA, precedence tier 2) while the negative
+              // margin keeps the rendered layout byte-identical. No visual change.
+              className="-my-1 inline-block py-1 text-[14px] font-medium text-s-accent underline-offset-2 hover:underline"
+            >
+              {t("editProfile")}
+            </Link>
+          </div>
         </div>
       </div>
 
