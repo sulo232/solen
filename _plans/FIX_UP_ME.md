@@ -88,12 +88,17 @@ is a fact in a file.
   with one ("present on 29 of 29 frames"). **The first patch had its own bug**: `[\d.]+` matches a
   bare full stop, so "Presence unchanged." sailed through the arm written to stop it. The test
   caught it; reading the regex did not.
-- [ ] E6 **5 repaired of the 32.** Three left in this batch, each with its beating phrase already on
-  record: `visual-deliverable` ("nothing viewable yet"), `unfinished-batch` ("BLOCKED: waiting on
-  owner decision"), `verify-before-done` ("Ready for your review." , note this one already has a
-  structural spine that reads tool calls, so the hole is a text escape beside it, not the whole
-  check). Stopped on context, not difficulty. CONCRETE next action, no owner decision needed:
-  apply `_toolproof.ran_this_turn` the same way, three-state test each.
+- [x] E6 (verified: scripts/hooks/visual-deliverable-gate.py) `visual-deliverable` repaired.
+  Typing "nothing viewable yet" shipped the markdown-only deliverable the gate exists to prevent,
+  with no backstop of any kind. Budgeted rather than removed, because it is sometimes genuinely
+  true and banning it would push toward inventing a fake link, which is worse. Verified by driving
+  the ledger: uses 1-3 allowed, use 4 blocked.
+- [ ] E7 **6 repaired of the 32.** Two left in this batch: `unfinished-batch` ("BLOCKED: waiting on
+  owner decision") and `verify-before-done` ("Ready for your review." , that one already has a
+  structural spine reading tool calls, so the hole is a text escape beside it, not the whole check).
+  Stopped on context, not difficulty. CONCRETE next action, needs no decision from the owner: apply
+  the budget pattern to the `verify-before-done` escape, and make `unfinished-batch` require a
+  DISPOSED line to name a real dependency rather than accept the word BLOCKED.
 
 ## Unplanned additions / parked decisions
 - **101 confirmed holes remain**, all listed with their beating phrase. The 32 severity-3 ones are
