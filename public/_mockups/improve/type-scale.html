@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Home feed type scale, which tiers die (Current/Proposed toggle)</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/page.tsx (FeedZone composition, current 2026-08-01 section order,
+    revalidate=300 server component)
+  Grounded-in: app/[locale]/_components/homepage/SectionHeader.tsx (SectionTitle: the
+    text-[clamp(18px,2vw,20px)] recipe every rail title shares, line 146)
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx (card anatomy: name row, category
+    row, address+price row, lines 505-536; Row 1 is star+value only, no review count, per
+    CARD_REDESIGN_2026-07-13 C11)
+  Grounded-in: app/[locale]/_components/primitives/CardText.tsx (CardName locked 500/text-s-ink,
+    CardMeta locked 400/text-s-ink-2, lines 39-49, "the one ink anchor + recessive grey meta")
+  Grounded-in: app/[locale]/_components/homepage/WalkInBand.tsx (client component, GET
+    /api/walkin/nearby on mount, wait-number at line 125)
+  Grounded-in: app/[locale]/_components/homepage/BusinessTeaser.tsx (line 36, `hidden md:block`,
+    dated 2026-08-01 comment stating the mobile home state carries no business-teaser section)
+  Grounded-in: app/[locale]/_components/homepage/MobileCategoriesRow.tsx (line 84, `hidden`
+    outright, dated 2026-08-01 comment: "now hidden outright so desktop stays exactly as it was")
+  Grounded-in: app/[locale]/_components/homepage/NearbyMap.tsx (12.5px badge, line 185)
+  Grounded-in: app/[locale]/_components/homepage/Entdecken.tsx (11px TikTok badge line 344, 16px
+    CTA-card heading line 411)
+  Grounded-in: app/[locale]/_components/homepage/HomeSearchPill.tsx (16px placeholder, lines
+    103, 128)
+  Also cited: public/_mockups/improve/home.html (the prior round's baseline, built pre-2026-08-01
+    reconciliation, re-measured rather than trusted per this task's own instruction), CLAUDE.md
+    NEVER-AGAIN floor 2 (<=4 sizes/screen) + the EMPHASIS BUDGET block (anchor >= 1.8x body).
+
+  Depicts: sticky search pill -> app/[locale]/_components/homepage/HomeSearchPill.tsx
+  Depicts: section header (H2 + chevron) -> app/[locale]/_components/homepage/SectionHeader.tsx
+  Depicts: salon card anatomy (photo, rating, category, postal+city, price) -> app/[locale]/_components/homepage/SalonCard.tsx
+  Depicts: Nearby map-teaser badge -> app/[locale]/_components/homepage/NearbyMap.tsx
+  Depicts: Walk-in band (header, live chips, CTA) -> app/[locale]/_components/homepage/WalkInBand.tsx (chip rating shown as star+value only, matching SalonCard's own Row 1 convention, not the component's own optional review-count span)
+  Depicts: Entdecken discovery tile + "Discover all" CTA card -> app/[locale]/_components/homepage/Entdecken.tsx
+  Depicts: real seed data (salon names/ratings/categories/postal/price) -> app/[locale]/_components/homepage/salonCardData.ts (read live off /de this session: Cuts & Culture 4.8 Barbershop 4056 Basel from CHF 15, etc, same cards the prior mockup also read)
+  Depicts: Walk-in live wait times -> app/api/walkin/nearby/route.ts (curled live this session: returned Cuts & Culture 70-98 Min queue 4, Blade & Stone 35-49 Min queue 3, both real active rows, not invented)
+  Depicts: decision strip -> NET-NEW: a page-local reporting panel for this task, not a product surface
+
+  Diagnosis: distinct sizes on the /de feed | measured 8 sizes at 390x844 this session (20/18/16/14/13/12.5/12/11px) | violates CLAUDE.md NEVER-AGAIN floor 2 (<=4 sizes/screen) | target 4
+  Diagnosis: naive-count trap A, a desktop-only size that a static scan would wrongly include | measured text-[clamp(25px,4vw,40px)] BusinessTeaser.tsx:68 sits inside `hidden md:block` BusinessTeaser.tsx:36 | violates nothing, this size never paints below the md breakpoint (768px) | target excluded from the 390px count, not one of the 8
+  Diagnosis: naive-count trap B, a fully-hidden section a static scan would wrongly include | measured MobileCategoriesRow.tsx:84 wraps its own 18px h2 plus six 12px tile labels in `hidden` with no md: override at all | violates nothing, the section never paints on any viewport, dated 2026-08-01 | target excluded from the 390px count, not one of the 8
+  Diagnosis: Walk-in wait number, the one dynamic tier a static scan would miss entirely | measured text-[20px] WalkInBand.tsx:125 renders only once GET /api/walkin/nearby resolves client-side | violates floor 2 as a real 8th tier once hydrated, confirmed live this session (curl returned 4 real active walk-in salons) | target kept, not merged, it is the page's one loud number
+  Diagnosis: card rating value | measured text-[13px] SalonCard.tsx:509 (CardMeta) vs its own sibling CardMeta rows at text-[12px] SalonCard.tsx:520,529,534 | violates floor 2, and the star icon plus color already carries the distinction, not the 1px gap | target merge 13px into 12px
+  Diagnosis: Nearby map badge | measured text-[12.5px] NearbyMap.tsx:185, the only single-instance size on the page | violates floor 2 | target merge 12.5px into 12px
+  Diagnosis: Entdecken TikTok attribution badge | measured text-[11px] Entdecken.tsx:344, 7 instances | violates floor 2 | target merge 11px into 12px
+  Diagnosis: search placeholder and Entdecken CTA heading, the one real-cost merge | measured text-[16px] HomeSearchPill.tsx:103,128 and Entdecken.tsx:411 | violates floor 2 | target merge 16px into 14px, cost named in the strip below
+
+  Reference-checked: public/_mockups/improve/home.html, _design-system/references/AIRBNB_SYSTEM_VS_OURS.md, _design-system/AIRBNB_PROFILE_PRINCIPLES.md, CLAUDE.md NEVER-AGAIN floor 2 + EMPHASIS BUDGET block
+
+  Exists-check: app/[locale]/_components/homepage/* (`npm run exists home` run this session ,
+  38 homepage components + 2 API endpoints + 4 dev routes found: SalonCard, SectionHeader,
+  HomeSearchPill, WalkInBand, NearbyMap, Entdecken, BusinessTeaser, MobileCategoriesRow among
+  them). This file measures and merges sizes on those existing components, no new component is
+  proposed.
+
+  toggle: Current = the before-state (live, current /de). Proposed = the after-state (real built
+  markup with the 4-tier scale applied). Internal pane ids/classes use before/after as identifiers;
+  the visible buttons read Current / Proposed per this task's own instruction.
+
+  Fabrication check: every salon name / rating / category / postal code / price on this page was
+  read live off card text on /de this session. Every Walk-in wait time / queue count / address on
+  this page was read from a live curl of GET /api/walkin/nearby this session (Cuts & Culture,
+  Blade & Stone, both real active rows). The Walk-in chip rating is shown as star+value only (no
+  review-count parenthetical), matching SalonCard's own Row 1 convention (CARD_REDESIGN_2026-07-13
+  C11 drops the count), even though WalkInBand.tsx's own live code carries an optional review-count
+  span, so this page reads consistently rather than mixing two rating conventions. Every file:line
+  citation in the Diagnosis lines above was read directly off the current source this session, not
+  carried over from the prior round's home.html (which measured a pre-2026-08-01 page.tsx and is
+  cited above as a stale baseline, not a source of truth). The element counts in the strip below
+  are the literal count of that Tailwind class string in the server-rendered /de HTML this session
+  (curl + a hidden/`md:` audit against each component's own root wrapper, so BusinessTeaser's and
+  MobileCategoriesRow's hidden markup is excluded rather than double-counted). UI copy on this page
+  is translated to English per the mockup-content rule; category labels (Hair Salon, Barbershop,
+  Nails) and street/city names keep their real values, only re-worded from the source's German UI
+  strings. Every card keeps its shadow, its rounded photo corners and its hairline, exactly as
+  shipped; this file changes text-size classes only, nothing structural.
+-->
+<style>
+  @font-face{font-family:'Inter';src:url('/_mockups/_assets/fonts/inter-latin-var.woff2') format('woff2');font-weight:400 700;font-display:swap}
+  @font-face{font-family:'Inter Tight';src:url('/_mockups/_assets/fonts/inter-tight-latin-var.woff2') format('woff2');font-weight:400 700;font-display:swap}
+  :root{
+    --ink:#0A0A0A;--ink-2:#6B6B6B;--border:#E4E4E7;--sunken:#F4F4F5;--white:#FFFFFF;
+    --star:#FFC32B;--success:#16A34A;--accent:#276EF1;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  html,body{height:100%}
+  body{
+    font-family:'Inter',system-ui,-apple-system,sans-serif;background:#fff;color:var(--ink);
+    -webkit-font-smoothing:antialiased;overflow:hidden;
+  }
+  h1,h2,h3{font-family:'Inter Tight',system-ui,-apple-system,sans-serif}
+
+  /* ---- fixed top chrome: decision strip + toggle ---- */
+  .chrome{position:fixed;top:0;left:0;right:0;z-index:30;background:#fff}
+  .strip{max-height:262px;overflow-y:auto;-webkit-overflow-scrolling:touch;border-bottom:1px solid var(--border);padding:12px 14px 8px}
+  .strip h1{font-size:14px;font-weight:600;letter-spacing:-0.01em;margin-bottom:1px}
+  .strip .sub{font-size:11px;line-height:1.4;color:var(--ink-2);margin-bottom:8px}
+  .strow{display:grid;grid-template-columns:38px 1fr auto;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--border)}
+  .strow:first-of-type{border-top:none}
+  .strow .sz{font-family:'Inter Tight',sans-serif;font-size:12px;font-weight:600;color:var(--ink);line-height:1.2}
+  .strow .role{font-size:11px;font-weight:600;color:var(--ink);line-height:1.3}
+  .strow .cnt{font-weight:400;color:var(--ink-2)}
+  .strow .src{margin-top:1px;font-size:10px;line-height:1.35;color:var(--ink-2)}
+  .strow .dest{font-size:10px;font-weight:600;text-align:right;white-space:nowrap;border-radius:999px;padding:3px 7px}
+  .strow .dest.keep{background:var(--sunken);color:var(--ink)}
+  .strow .dest.merge{background:#fff;color:var(--ink-2);border:1px solid var(--border)}
+  .strip .costnote{margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);font-size:10.5px;line-height:1.45;color:var(--ink-2)}
+  .strip .costnote b{color:var(--ink);font-weight:600}
+
+  .seg-wrap{height:50px;display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--border);background:rgba(255,255,255,.96)}
+  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(300px,80vw)}
+  .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:600;color:var(--ink-2);padding:7px 0;border-radius:999px;cursor:pointer}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+
+  .stage{position:fixed;top:312px;left:0;right:0;bottom:0}
+  .pane{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#fff}
+  .pane.hidden{display:none}
+  iframe{width:100%;height:100%;border:0;display:block}
+
+  /* ---- Proposed pane, 4-tier scale: 20 / 18 / 14 / 12 ---- */
+  .wrap{max-width:520px;margin:0 auto;min-height:100%;padding-bottom:40px}
+
+  .search{margin:14px 14px 0;border:1px solid var(--border);border-radius:999px;display:flex;align-items:center;height:56px;padding:0 6px 0 16px;gap:10px}
+  .search .sp{flex:1;font-size:14px;font-weight:500;color:var(--ink)}
+
+  /* section header: unchanged, still text-[clamp(18px,2vw,20px)]/600 */
+  .sh{font-size:18px;font-weight:600;letter-spacing:-0.01em;line-height:1.25;padding:20px 16px 2px;display:flex;align-items:baseline}
+  .sh .all{margin-left:auto;display:inline-flex;align-items:center;color:var(--ink)}
+
+  .row{display:flex;gap:12px;padding:8px 16px 4px;overflow-x:auto;scrollbar-width:none}
+  .row::-webkit-scrollbar{display:none}
+  .card{flex:0 0 44%;max-width:190px}
+  .card .ph{aspect-ratio:5/4;border-radius:22px;overflow:hidden;position:relative;background:var(--sunken)}
+  .card .ph img{width:100%;height:100%;object-fit:cover;display:block}
+  .card .hb{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center}
+  .card .nm-row{margin-top:8px;display:flex;align-items:baseline;gap:8px}
+  .card .nm{font-size:14px;font-weight:500;letter-spacing:-0.01em;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+  /* rating: was 13px (SalonCard.tsx:509), merged into the 12px meta bucket */
+  .card .st{flex-shrink:0;display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:400;color:var(--ink-2)}
+  .card .cat{font-size:12px;color:var(--ink-2);margin-top:2px}
+  .card .meta{margin-top:2px;display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--ink-2)}
+  .card .meta .pr{color:var(--ink-2);flex-shrink:0}
+
+  /* Nearby map teaser: badge was 12.5px (NearbyMap.tsx:185), merged into 12px */
+  .maptile{margin:6px 16px 0;height:156px;border-radius:16px;border:1px solid var(--border);position:relative;overflow:hidden;
+    background-image:radial-gradient(circle at 20% 30%, #EDEDEF 0, #EDEDEF 1px, transparent 1px),
+                      radial-gradient(circle at 60% 65%, #EDEDEF 0, #EDEDEF 1px, transparent 1px),
+                      linear-gradient(#F7F7F8,#F7F7F8);
+    background-size:26px 26px,26px 26px,cover}
+  .maptile .pin{position:absolute;top:44%;left:48%;color:var(--ink)}
+  .maptile .badge{position:absolute;bottom:12px;left:12px;background:rgba(255,255,255,.95);border:1px solid var(--border);border-radius:999px;padding:6px 12px;display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:12px;color:var(--ink)}
+
+  /* Walk-in band: header 18px unchanged, subline was 13px merged to 12px, wait number stays 20px */
+  .wib{margin-top:6px;padding:8px 16px 4px}
+  .wib-head{display:flex;align-items:center;gap:14px}
+  .wib-ic{width:52px;height:52px;border-radius:15px;background:var(--sunken);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .wib-h2{font-size:18px;font-weight:600;letter-spacing:-0.01em;line-height:1.05}
+  .wib-sub{margin-top:4px;font-size:12px;line-height:1.3;color:var(--ink-2)}
+  .wib-live{margin-top:4px;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink)}
+  .dot{width:7px;height:7px;border-radius:999px;background:var(--success)}
+  .chips{margin-top:14px;display:flex;gap:12px;overflow-x:auto;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 68%;min-width:0;border:1px solid var(--border);border-radius:13px;background:#fff;padding:12px}
+  .chip .wait{font-size:20px;font-weight:700;letter-spacing:-0.01em;line-height:1;color:var(--success)}
+  .chip .until{margin-top:3px;font-size:12px;font-weight:600;color:var(--ink-2)}
+  .chip .nmrow{margin-top:9px;display:flex;align-items:center;gap:6px}
+  .chip .nm{font-size:14px;font-weight:700;letter-spacing:-0.01em;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .chip .rt{margin-left:auto;flex-shrink:0;display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:600;color:var(--ink-2)}
+  .chip .addr{margin-top:3px;font-size:12px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .chip .q{margin-top:3px;font-size:12px;color:var(--ink-2)}
+  .wib-cta{margin-top:14px;display:flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--border);border-radius:13px;background:#fff;padding:12px;font-size:14px;font-weight:700;color:var(--ink)}
+
+  /* Entdecken tile: TikTok badge was 11px (Entdecken.tsx:344) merged to 12px;
+     CTA card heading was 16px (Entdecken.tsx:411) merged to 14px */
+  .entrow{display:flex;gap:10px;padding:8px 16px 4px;overflow-x:auto;scrollbar-width:none}
+  .entrow::-webkit-scrollbar{display:none}
+  .look{flex:0 0 132px}
+  .look .ph{aspect-ratio:9/16;border-radius:16px;overflow:hidden;position:relative;background:var(--sunken)}
+  .look .ph img{width:100%;height:100%;object-fit:cover;display:block}
+  .look .badge{position:absolute;top:8px;left:8px;background:rgba(0,0,0,.55);border-radius:999px;padding:3px 8px;font-size:12px;font-weight:600;color:#fff}
+  .look .nm{margin-top:6px;font-size:12px;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cta-look{flex:0 0 132px}
+  .cta-look .ph{aspect-ratio:9/16;border-radius:16px;overflow:hidden;position:relative;background:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:14px;gap:6px}
+  .cta-look .ph h3{font-size:14px;font-weight:600;color:#fff}
+  .cta-look .ph p{font-size:11px;line-height:1.3;color:rgba(255,255,255,.8)}
+
+  .footnote{margin:20px 16px 0;padding:14px;border:1px solid var(--border);border-radius:16px;font-size:12px;line-height:1.5;color:var(--ink-2)}
+  .footnote b{color:var(--ink);font-weight:600}
+
+  svg.lucide{display:block;flex-shrink:0}
+</style>
+</head>
+<body>
+  <div class="chrome">
+    <div class="strip">
+      <h1>Which tiers die, measured this session at 390&times;844</h1>
+      <div class="sub">8 sizes render on the live /de feed today (not the naive 25px/desktop count, see the two trap rows). Proposed collapses this to 4: 20 / 18 / 14 / 12.</div>
+
+      <div class="strow">
+        <div class="sz">20px</div>
+        <div>
+          <div class="role">Walk-in wait number <span class="cnt">2 el, post-hydration</span></div>
+          <div class="src">WalkInBand.tsx:125, only after GET /api/walkin/nearby resolves , confirmed live this session (real active salons)</div>
+        </div>
+        <div class="dest keep">stays</div>
+      </div>
+
+      <div class="strow">
+        <div class="sz">18px</div>
+        <div>
+          <div class="role">Section titles + Walk-in heading <span class="cnt">10 el</span></div>
+          <div class="src">SectionHeader.tsx:146 (9 rails) + WalkInBand.tsx:83</div>
+        </div>
+        <div class="dest keep">stays</div>
+      </div>
+
+      <div class="strow">
+        <div class="sz">16px</div>
+        <div>
+          <div class="role">Search placeholder + Entdecken CTA heading <span class="cnt">2 el</span></div>
+          <div class="src">HomeSearchPill.tsx:103,128 + Entdecken.tsx:411 , the one real-cost merge, see below</div>
+        </div>
+        <div class="dest merge">&rarr; 14px</div>
+      </div>
+
+      <div class="strow">
+        <div class="sz">14px</div>
+        <div>
+          <div class="role">Card names + Walk-in chip names/CTA <span class="cnt">49 el</span></div>
+          <div class="src">SalonCard.tsx:505 (CardName) + WalkInBand.tsx:132,157</div>
+        </div>
+        <div class="dest keep">stays, absorbs 16</div>
+      </div>
+
+      <div class="strow">
+        <div class="sz">13px</div>
+        <div>
+          <div class="role">Card rating value + Walk-in subline <span class="cnt">50 el</span></div>
+          <div class="src">SalonCard.tsx:509 (CardMeta) + WalkInBand.tsx:86</div>
+        </div>
+        <div class="dest merge">&rarr; 12px</div>
+      </div>
+
+      <div class="strow">
+        <div class="sz">12.5px</div>
+        <div>
+          <div class="role">Nearby map badge <span class="cnt">1 el</span></div>
+          <div class="src">NearbyMap.tsx:185, the only single-instance size on the page</div>
+        </div>
+        <div class="dest merge">&rarr; 12px</div>
+      </div>
+
+      <div class="strow">
+        <div class="sz">12px</div>
+        <div>
+          <div class="role">Category, address, price, Live badge, meta <span class="cnt">153 el</span></div>
+          <div class="src">SalonCard.tsx:520,529,534 + WalkInBand.tsx:92,129,144,146 + more</div>
+        </div>
+        <div class="dest keep">stays, absorbs 13/12.5/11</div>
+      </div>
+
+      <div class="strow">
+        <div class="sz">11px</div>
+        <div>
+          <div class="role">Entdecken TikTok attribution badge <span class="cnt">7 el</span></div>
+          <div class="src">Entdecken.tsx:344</div>
+        </div>
+        <div class="dest merge">&rarr; 12px</div>
+      </div>
+
+      <div class="costnote">
+        <b>Cost, named honestly.</b> Three merges (13, 12.5, 11 &rarr; 12) are close to free: the
+        rating value's distinction already comes from the gold star and its color, not its 1px size
+        gap, and the map badge and TikTok badge are single/rare outliers nobody will miss at 12px.
+        The ONE real cost is 16&rarr;14: the search placeholder and the Entdecken CTA card heading
+        both read a shade less commanding. Both keep their affordance a different way (the search
+        pill's border/icon/height, the CTA card's dark photo overlay), so the loss is real but
+        small. The Walk-in wait number (20px) is deliberately spared, it is the page's one dynamic,
+        high-value number and merging it into 18 would mute the one section built to be loud.
+        <br><br>
+        <b>Not fixed here, named so it is not silently dropped:</b> even after this collapse, the
+        surviving anchor (18px) is only 1.5x the dominant body size (12px), short of the EMPHASIS
+        BUDGET's 1.8x ratio floor. Reaching 1.8x needs a bigger anchor somewhere, which pulls the
+        other way from a 4-tier count. Flagging the tension, not resolving it in this file.
+      </div>
+    </div>
+    <div class="seg-wrap">
+      <div class="seg">
+        <button id="tCur" class="on" onclick="show('cur')">Current</button>
+        <button id="tProp" onclick="show('prop')">Proposed</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="pane pane-before" id="pCur"><iframe src="/de" title="live current /de" loading="eager"></iframe></div>
+    <div class="pane pane-after hidden" id="pProp">
+      <div class="wrap">
+
+        <div class="search">
+          <svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg>
+          <span class="sp">Search</span>
+        </div>
+
+        <div class="sh">Top on Solen <span class="all"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></span></div>
+        <div class="row">
+          <div class="card">
+            <div class="ph"><img src="/_mockups/_assets/salon-photos/p01.jpg" alt=""><span class="hb"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg></span></div>
+            <div class="nm-row"><span class="nm">Cuts &amp; Culture</span><span class="st"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>4.8</span></div>
+            <div class="cat">Barbershop</div>
+            <div class="meta"><span>4056 Basel</span><span class="pr">from CHF 15</span></div>
+          </div>
+          <div class="card">
+            <div class="ph"><img src="/_mockups/_assets/salon-photos/p02.jpg" alt=""><span class="hb"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg></span></div>
+            <div class="nm-row"><span class="nm">Haarsalon Margot</span><span class="st"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>4.8</span></div>
+            <div class="cat">Hair Salon</div>
+            <div class="meta"><span>4051 Basel</span><span class="pr">from CHF 35</span></div>
+          </div>
+          <div class="card">
+            <div class="ph"><img src="/_mockups/_assets/salon-photos/p03.jpg" alt=""><span class="hb"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg></span></div>
+            <div class="nm-row"><span class="nm">Atelier Haarwerk</span><span class="st"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>4.6</span></div>
+            <div class="cat">Hair Salon</div>
+            <div class="meta"><span>4001 Basel</span><span class="pr">from CHF 35</span></div>
+          </div>
+          <div class="card">
+            <div class="ph"><img src="/_mockups/_assets/salon-photos/p04.jpg" alt=""><span class="hb"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg></span></div>
+            <div class="nm-row"><span class="nm">Nail Studio Bliss</span><span class="st"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>4.5</span></div>
+            <div class="cat">Nails</div>
+            <div class="meta"><span>4051 Basel</span><span class="pr">from CHF 15</span></div>
+          </div>
+        </div>
+
+        <div class="sh">Nearby <span class="all"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></span></div>
+        <div class="maptile">
+          <span class="pin"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg></span>
+          <span class="badge"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>20 stores nearby</span>
+        </div>
+
+        <div class="row">
+          <div class="card">
+            <div class="ph"><img src="/_mockups/_assets/salon-photos/p02.jpg" alt=""><span class="hb"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg></span></div>
+            <div class="nm-row"><span class="nm">Haarsalon Margot</span><span class="st"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>4.8</span></div>
+            <div class="cat">Hair Salon</div>
+            <div class="meta"><span>4051 Basel</span><span class="pr">from CHF 35</span></div>
+          </div>
+          <div class="card">
+            <div class="ph"><img src="/_mockups/_assets/salon-photos/p03.jpg" alt=""><span class="hb"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg></span></div>
+            <div class="nm-row"><span class="nm">Atelier Haarwerk</span><span class="st"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>4.6</span></div>
+            <div class="cat">Hair Salon</div>
+            <div class="meta"><span>4001 Basel</span><span class="pr">from CHF 35</span></div>
+          </div>
+          <div class="card">
+            <div class="ph"><img src="/_mockups/_assets/salon-photos/p01.jpg" alt=""><span class="hb"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg></span></div>
+            <div class="nm-row"><span class="nm">Cuts &amp; Culture</span><span class="st"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>4.8</span></div>
+            <div class="cat">Barbershop</div>
+            <div class="meta"><span>4056 Basel</span><span class="pr">from CHF 15</span></div>
+          </div>
+        </div>
+
+        <div class="sh">Walk-in</div>
+        <div class="wib">
+          <div class="wib-head">
+            <span class="wib-ic"><img src="/icons/categories/walkin.png" alt="" width="34" height="34" style="width:66%;height:66%;object-fit:contain"></span>
+            <div>
+              <h3 class="wib-h2">Walk-in</h3>
+              <div class="wib-sub">No appointment needed. See the wait and hold your spot.</div>
+              <span class="wib-live"><span class="dot"></span>Live</span>
+            </div>
+          </div>
+          <div class="chips">
+            <div class="chip">
+              <div class="wait">70&ndash;98 min</div>
+              <div class="until">until free</div>
+              <div class="nmrow">
+                <span class="nm">Cuts &amp; Culture</span>
+                <span class="rt"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>4.8</span>
+              </div>
+              <div class="addr">Elsasserstrasse 10, Basel</div>
+              <div class="q">4 ahead of you</div>
+            </div>
+            <div class="chip">
+              <div class="wait">35&ndash;49 min</div>
+              <div class="until">until free</div>
+              <div class="nmrow">
+                <span class="nm">Blade &amp; Stone</span>
+                <span class="rt"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>4.4</span>
+              </div>
+              <div class="addr">Feldbergstrasse 82, Basel</div>
+              <div class="q">3 ahead of you</div>
+            </div>
+          </div>
+          <div class="wib-cta">
+            <span>All walk-ins</span>
+            <svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+          </div>
+        </div>
+
+        <div class="sh">Popular Looks <span class="all"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></span></div>
+        <div class="entrow">
+          <div class="look">
+            <div class="ph">
+              <img src="/_mockups/_assets/salon-photos/p05.jpg" alt="">
+              <span class="badge">TikTok</span>
+            </div>
+            <div class="nm">Cool Hair for Life</div>
+          </div>
+          <div class="look">
+            <div class="ph">
+              <img src="/_mockups/_assets/salon-photos/p06.jpg" alt="">
+              <span class="badge">TikTok</span>
+            </div>
+            <div class="nm">Textured Shag</div>
+          </div>
+          <div class="cta-look">
+            <div class="ph">
+              <h3>Discover all</h3>
+              <p>Get inspired by thousands of looks</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="footnote">
+          <b>Not rebuilt in this Proposed pane, real and unchanged:</b> Available soon, the four
+          Top-category rails (Coiffeur/Barber/Nails/Spa), Reviews and the Business teaser (the last
+          one is hidden below md on the real page anyway, see the trap row above). Each already
+          uses the same SectionTitle/SalonCard components shown here, so the size merge generalizes
+          to them without a separate rebuild. MobileCategoriesRow is not depicted: its live code
+          renders `hidden` outright (MobileCategoriesRow.tsx:84), it is not on the page on any
+          viewport today.
+        </div>
+
+      </div>
+    </div>
+  </div>
+<script>
+function show(w){
+  document.getElementById('pCur').classList.toggle('hidden', w!=='cur');
+  document.getElementById('pProp').classList.toggle('hidden', w!=='prop');
+  document.getElementById('tCur').classList.toggle('on', w==='cur');
+  document.getElementById('tProp').classList.toggle('on', w==='prop');
+}
+</script>
+</body>
+</html>
