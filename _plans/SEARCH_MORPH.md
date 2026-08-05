@@ -1117,3 +1117,123 @@ the hard rule against adding a new duration or easing constant.
 **Not done, named:** the "STILL OPEN after H2" clamp above (service card pinned at 56px for the first
 ~133ms) is untouched and is a separate, already-reported structural issue, not a consequence of this
 edit.
+
+## I1 RESOLVED 2026-08-05 (owner's own phone photo, mid-close, "the card sat there blank")
+
+The photo (his iPhone, 1206x2622 physical / 402x874pt, mid-close): a tall white rounded box with
+the "Suchen" bar drawn at its top and BLANK white paper below running roughly 92pt down, then a
+separate thin blank white strip below that, both floating over the already-restored home page.
+PIL on the PNG itself (not the description): a fully flat `rgb(255,255,255)` run from y=459 to
+y=736 device px (0 variance, no ghosting, nothing painted) at x=950-1000 (inside the card,
+clear of any text column), i.e. 277 device px / 3 = 92.3pt of genuinely empty paper below the
+bar row. Below that, two hairlines (`rgb(240)`/`rgb(239)`, y=736-739 and y=760-763) bracket two
+more flat-white slivers, 19px and 18px device px (6.3pt / 6.0pt) tall, before the page's own grey
+background resumes at y=783.
+
+**Root cause, found in the code, not guessed.** Geometry (`sheetHeight`/`topFor`/`svcH`, all
+composed off `morphT`) and content (`contentOp`/`fieldOp`/`listOp`, off `contentT`) rode TWO
+DIFFERENT clocks on close. `morphT` reshapes the close's raw eased `openT` through the SAME
+`OPEN_CURVE` LUT the open uses, and that curve is front-loaded FOR GROWTH, so read backward for a
+close it lingers near-open for roughly the first half of the close then collapses fast at the
+end. `contentT` ran its own, separately-clocked, more-linear 300ms fade with no such lingering.
+Own numeric trace of the two curves (bezier-evaluated, before touching any code): at 100ms of the
+333ms close `morphT` (the box's own openness fraction) is still 0.823 while `contentT` has
+already fallen to 0.295; at 150ms, 0.395 vs 0.115. So content is nearly gone while the box is
+still most of its size, a fully opaque, blank card, exactly the photo. Live-confirmed on this
+build (real headless Chromium, 375x812, `getComputedStyle` every rAF frame): at t=100ms the box
+is 373px of its 385px open height (97%) while the heading's own computed opacity has already
+fallen to 0.507; at t=200ms the box is still 146px (38%) while opacity is 0.073.
+
+**The second, thin strip was a separate bug, in the SAME family.** `locSlotOp`/`dateSlotOp` (the
+Wo?/Wann? slot cards' own paper) never read the open/close axis at all (a deliberate 2026-08-03
+call, "belongs to the container morph, not the content cross-fade" , correct for slot 1, wrong
+here because these two cards, unlike slot 1, do not have H2's always-opaque-paper guarantee
+paired with a height that reaches exact zero in time). Their height already scales toward 0 with
+`morphT` (`rowLocReserveH`/`rowDateReserveH`), but a card at even a few px of height with
+constant opacity 1 and near-zero content still paints as a hard-edged blank sliver. Measured
+before the fix: at t=150ms the location card is 34.8px tall, opacity 1.000, its own label opacity
+already down to 0.19.
+
+**Fix, two `useTransform` edits, no new motion value, no new duration, no new easing constant
+(SearchOverlay.tsx:766-786, :986-1009):**
+- `contentOp` (feeding `fieldOp`/`listOp`, and via them `headingContentOp`/`pillsContentOp`/
+  `footerContentOp`/`locFaceOp`/`dateFaceOp`) now reads `morphT` directly on CLOSE instead of the
+  independently-clocked `contentT`, so content opacity and box openness can never diverge again ,
+  same value, every frame. OPEN is untouched: `open ? contentT-branch : morphT-branch`, and since
+  `open` stays `true` for the entire open+focus+keyboard interaction, every open-side DO-NOT-
+  REGRESS item below runs through the byte-identical, pre-existing code path.
+- `locSlotOp`/`dateSlotOp` gain `morphT` as a third multiplicative factor, CLOSE ONLY (same
+  `open ?` gate), so these two cards' own paper now fades toward invisible in lockstep with their
+  height on close, instead of staying opaque over a shrinking-but-nonzero sliver. Open keeps the
+  H2-proven always-opaque-while-growing paper (multiplying by `morphT` on open would have
+  reopened H2's own double-exposure bug on these two cards specifically, so it is deliberately
+  scoped to close).
+
+**Why the previous pass could not reproduce it, and what actually caught it this time.** A
+one-shot `page.screenshot()` sampling loop misses a 333ms close almost entirely (a handful of
+calls land wherever JS happens to be free, not on real paint frames) and a worst frame of
+345x95px is consistent with catching only the tail. This pass used CDP `Page.startScreencast`
+(real compositor frames, timestamped, acked as they arrive) plus a continuous `requestAnimationFrame`
+DOM trace reading `getBoundingClientRect`/`getComputedStyle` every frame, at BOTH 375x812 and
+402x874. The bug reproduced identically at both sizes (it is a logic bug, not a device-geometry
+one), which is also why testing only at 402x874 would not have been the missing piece either.
+
+**Worst frame, before -> after, 375x812 (ink = fraction of pixels darker than 230/255 inside the
+card's own detected rect, real screencast frame, real close, not a synthetic sample):**
+
+| | rect (top, h x w) | area | ink |
+|---|---|---|---|
+| BEFORE, t=207.6ms | 98.6, 134.0px tall | 43,662px² | **0.0095** (< 1% dark pixels) |
+| AFTER, t=204.4ms | 98.6, 134.0px tall | 43,662px² | **0.0603** (6.3x more ink, byte-identical box) |
+
+Same-height comparison (holds the confound constant): BEFORE at h=134.0px ink=0.0095; AFTER at
+the SAME h=134.0px ink=0.0603. Largest "essentially blank" (ink<0.03) frame: BEFORE h=162.6px
+(area 53,450px², 2.5x the settled pill height); AFTER h=87.0px (area 27,950px², 1.3x the settled
+pill height, i.e. post-fix the only near-blank frames are the ones already close to pill size,
+which is the invariant's own OK branch). 402x874 shows the same direction (BEFORE largest-blank
+area 43,721px² at h=124.6px vs AFTER 33,604px² at h=96.4px).
+
+**The stronger, code-level proof (not just pixel sampling noise):** the live DOM trace shows
+`getComputedStyle` opacity on the heading wrapper and on the location/date slot cards now
+EQUALS `morphT`'s own fraction at every single sampled frame post-fix (by construction , they
+read the same MotionValue), where before the fix content opacity fell to ~30% of the box's own
+openness fraction at the worst point. This holds for every frame of the close, not just the ones
+a screenshot happened to land on.
+
+**Second white surface below the main one, before -> after:** BEFORE, yes , two flat, fully
+opaque slivers (location + date slot cards) visible for roughly the last 150ms of the close, e.g.
+34.8px tall / opacity 1.000 / label opacity 0.19 at t=150ms. AFTER, no , at the same t=150ms the
+location card's own opacity now reads 0.552 (matches `morphT` exactly), so a 30.9px card renders
+at ~55% opacity with its label ALSO at ~55%, never a hard-edged blank rectangle.
+
+**Every DO-NOT-REGRESS item, re-measured on the real build after the fix (real headless Chromium,
+375x812, warm second open to remove first-load chunk latency from the numbers):**
+- Open geometry unchanged: `slot1` height fraction equals the sheet's own height fraction at
+  EVERY one of 79 sampled frames (byte-identical columns), confirmed both before and after this
+  edit since neither `morphT`, `sheetHeight`, nor `svcH` was touched. Absolute timing: 0.098 at
+  t=44ms, ~0.32 (interpolated) at t=89ms, ~0.82 (interpolated) at t=205ms, against the task's
+  cited 0.09/33ms, 0.37/83ms, 0.86/200ms , consistently ~11-19ms later than cited, a constant
+  offset consistent with Playwright's own click-dispatch overhead in headless automation, not a
+  behavioral change (the underlying code this check exercises is untouched by this edit).
+- Card opaque while growing: slot 1's paper (`getComputedStyle(...).opacity`) reads `"1"` at every
+  sampled frame of both the open and the close, before and after this edit (H2's deletion is
+  untouched).
+- "Suchen" ghost: `ghostLabelOp` computed opacity 1.0 at t=0, still 0.78 at t=44ms, 0 by t=134ms ,
+  gone by ~122-134ms, matching "about 122ms" (this value is untouched by the edit; `ghostLabelOp`
+  reads raw `openT`, never `contentT`/`morphT`).
+- Resting sheet floats **46.45px** above the screen bottom (812 - (160+605.55)); focused sheet
+  reaches **(0,50) 375x762**, bottom 812.
+- Home pill opens in place: URL `http://localhost:57223/de` before and after, **0** navigations.
+- Focused bar **(12,66) 351x48** (exact); resting bar **(24,292) 327x48** (exact, matches F3's
+  own numbers). Border **1px rgb(228,228,231)** in both states, outline "none" (no ring).
+- Close X **44x44** in both states (resting y=106, focused y=6).
+- Keyboard simulated at `visualViewport.height=476` (336px inset, via `Object.defineProperty` +
+  a dispatched `resize` on `window.visualViewport`): sheet reaches **(0,50) 375x762**, bottom 812.
+  All three scrollers (service suggestions, city list, calendar) read `paddingBottom: 336px`.
+- Tapping the bar 80ms into a 333ms close (mid-flight) re-opens it: sheet found, rect
+  `(0,160) 375x605.55`, matching the normal resting geometry.
+
+`npx tsc --noEmit`: exit 0, no errors.
+
+**Not done, named:** the "STILL OPEN after H2" clamp (service card pinned at 56px for the first
+~133ms of the OPEN) is untouched, pre-existing, and unrelated to this close-specific fix.

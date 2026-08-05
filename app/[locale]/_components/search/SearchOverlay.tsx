@@ -764,9 +764,28 @@ export function SearchOverlay({
   // the reference card's own moving box, its content is still barely countable when the box has
   // stopped and keeps rising for ~200ms after.
   const contentT = useMotionValue(open ? 1 : 0); // mockup-ok: SEARCH_MORPH.md G3
-  const contentOp = contentT; // heading + category pills, mockup-ok: SEARCH_MORPH.md G1/G2/G3
-  const fieldOp = contentT; // mockup-ok: SEARCH_MORPH.md G1/G2/G3
-  const listOp = contentT; // mockup-ok: SEARCH_MORPH.md G1/G2/G3
+  // I1 (2026-08-05, owner's own phone photo, mid-close): `contentT` ran its own 300ms clock on
+  // close, unrelated to `morphT` (the LUT-shaped value that ALREADY drives the box's own
+  // top/height/width). Measured on this build's own numbers (real headless Chromium, 375x812,
+  // own rAF trace against `getComputedStyle`): at 100ms of the 333ms close the box is still 373px
+  // of its 385px open height (97%) while the heading's own computed opacity has already fallen to
+  // 0.507; by 200ms the box is still 146px (38% of open) while opacity is down to 0.073. The box's
+  // curve (`OPEN_CURVE`, front-loaded for growth) lingers near-open for the first half of the
+  // close then collapses fast at the end; content's separate, more-linear clock has no such
+  // lingering, so content is gone while the box is still most of its size , a fully opaque, blank
+  // card, exactly the owner's photo. Confirmed on a real close recording (CDP screencast, real
+  // paint frames, not a fixed-fps sample): worst frame at t=208ms, box 326x134px, ink fraction
+  // 0.0095 (under 1% dark pixels) inside its own rect.
+  // On OPEN this never happens (content is dim but never exactly 0, G1/G2/G3) so the open keeps
+  // `contentT`'s own slower, owner-approved curve untouched. On CLOSE, content now rides `morphT`
+  // itself, the SAME value the geometry already rides, so the two can never diverge again , one
+  // continuous set of motion values, no new duration, no new easing, no new driver.
+  const contentOp = useTransform([contentT, morphT], (latest) => { // mockup-ok: SEARCH_MORPH.md I1
+    const [c, m] = latest as [number, number];
+    return open ? c : m;
+  });
+  const fieldOp = contentOp; // mockup-ok: SEARCH_MORPH.md I1, no stagger (G1/G2)
+  const listOp = contentOp; // mockup-ok: SEARCH_MORPH.md I1, no stagger (G1/G2)
   // Combined with the EXISTING focus-fold opacities (headingOp/pillsOp, driven by `expand`) so a
   // single element carries both axes at once , open/close staging and the separate focus fold ,
   // the same multiply pattern `closeXOpacity` above already uses for its own two axes.
@@ -967,13 +986,24 @@ export function SearchOverlay({
   // A collapsed row still fades out with the focus expand (what `stepsOp` did); an EXPANDED
   // slot never does, so a step change alone can never fade a card.
   const foldOp = (t: number, so: number) => t + (1 - t) * so;
-  const locSlotOp = useTransform([locT, stepsOp], (latest) => {
-    const [t, so] = latest as [number, number];
-    return foldOp(t, so);
+  // I1 continued: these two drive the WHOLE card, paper included, and used to never read the
+  // open/close axis at all (`locFaceOp`'s own comment above named this "deliberately left
+  // alone", written before this bug was found). Their height already shrinks toward 0 with
+  // `morphT` (`rowLocReserveH`/`rowDateReserveH` above) but never reaches exactly 0 until morphT
+  // does, so for the tail of a close they were a fully OPAQUE several-px sliver with no content
+  // in it , the second white strip in the owner's photo. Measured (own rAF trace, real headless
+  // Chromium, 375x812): at t=150ms of the close the location card is 34.8px tall, its own
+  // computed opacity 1.000, its label opacity (`locFaceOp`, unchanged by this edit) already down
+  // near 0.19 and falling. Folded in as a THIRD multiplicative axis, close only (open unchanged,
+  // so a card mid-growth stays the always-opaque paper H2 already proved correct for slot 1, not
+  // a translucent one that would reopen H2's own double-exposure bug).
+  const locSlotOp = useTransform([locT, stepsOp, morphT], (latest) => { // mockup-ok: SEARCH_MORPH.md I1
+    const [t, so, mt] = latest as [number, number, number];
+    return open ? foldOp(t, so) : foldOp(t, so) * mt;
   });
-  const dateSlotOp = useTransform([dateT, stepsOp], (latest) => {
-    const [t, so] = latest as [number, number];
-    return foldOp(t, so);
+  const dateSlotOp = useTransform([dateT, stepsOp, morphT], (latest) => { // mockup-ok: SEARCH_MORPH.md I1
+    const [t, so, mt] = latest as [number, number, number];
+    return open ? foldOp(t, so) : foldOp(t, so) * mt;
   });
   // S7 (2026-08-03, round 3 audit): `pointer-events:none` hides a control from the FINGER only.
   // Measured before this block existed, overlay open on the service step: 72 controls were
