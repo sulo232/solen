@@ -1279,3 +1279,29 @@ encodability are different problems. The fix is an encoder, not a redesign.
 
 **PARKED, owner's call:** the council's collective recommendation is to cut the set down rather than
 finish it. That is a product decision, not mine.
+
+## Round 41: what each object ACTUALLY does, researched not invented
+
+Owner: "acc analize whats normal motions except the blow drier yk keep that but othr and i still
+want u to keep fixing spa". Researched each object's real mechanics rather than choosing a motion.
+
+- [x] **Barber chair, `verified:` a real one is a 360-degree swivel on a foot-pumped hydraulic
+      pedestal with a reclining back** (product specs across VEVOR, OmySalon, Artist Hand all list
+      "360 degrees swivel" and "hydraulic pump lever" as the defining mechanics). Ours was doing a
+      22-degree nervous sway, which is not a thing a barber chair does. Now `--sway 62` so it turns
+      to profile and back, plus `--split-y 0.30 --separate -0.030` so the SEAT sinks on the pedestal.
+      210f, mean jump 1.42, 0 stutter, 0 clipped, loop closes.
+- [x] **Nail polish, `verified:` the cap is THREADED.** The patents describe it as a twist-off
+      closure ("any container having a twist-off lid", US20110290080, US8235616). Ours was lifting
+      straight up like a pen lid. New `--twist 150` turns the lid about the bottle's own axis as it
+      comes off and screws it back down, brush following. 210f, mean jump 0.46, 0 stutter.
+- [x] **Spa stones, and THIS is why he kept rejecting it.** Rock-balancing sources put the real
+      motion exactly: "there is a moment, just before a stone settles, when everything in your hands
+      goes still. The wobble slows." Stones do NOT float apart, which is what `--separate` was doing
+      and why it read unnatural three rounds running. New `--wobble 6.5` rocks each band a little
+      further than the one below and slightly later, decaying to still, stones staying in contact.
+      210f, mean jump 0.19, 0 stutter, loop closes.
+- [x] Blow dryer untouched, as instructed.
+
+Sources: barber chair mechanics from retail spec sheets; nail polish closure from the US patents
+above; rock balancing from Wikipedia's Rock balancing article and the physics-of-balance write-ups.

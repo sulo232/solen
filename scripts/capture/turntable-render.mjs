@@ -30,7 +30,7 @@ if (!glbPath || !outdirArg) {
   console.error("Usage: node scripts/capture/turntable-render.mjs <model.glb> <outdir> [--frames 51] [--fps 30] [--size 180x162] [--hold-in 6] [--hold-out 12] [--turns 1]");
   process.exit(1);
 }
-const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7, hueShift: null, satMul: 1, valMul: 1, tilt: 0, bob: 0, gloss: 0, neutralVal: null, puffOffset: '0,0,0', puffInset: 0, airWave: 0, sway: 0, splitY: [], openDeg: 0, separate: 0, openLift: null, neutralCon: 0.62, jitter: 0, brush: null, hueMinVal: 0 };
+const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7, hueShift: null, satMul: 1, valMul: 1, tilt: 0, bob: 0, gloss: 0, neutralVal: null, puffOffset: '0,0,0', puffInset: 0, airWave: 0, sway: 0, splitY: [], openDeg: 0, separate: 0, openLift: null, neutralCon: 0.62, jitter: 0, brush: null, hueMinVal: 0, twist: 0, wobble: 0 };
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
   // ES modules are blocked over file:// by CORS (origin null), so when the outdir sits under
@@ -78,6 +78,14 @@ for (let i = 0; i < argv.length; i++) {
   // streaking the black lid. The cap is DARK and the bottle is BRIGHT, so brightness is the clean
   // discriminator: only retarget pixels above this value.
   else if (a === "--hue-min-val") opt.hueMinVal = Number(argv[++i]);
+  // RESEARCHED MOTION, 2026-08-05. Owner asked what each object's NORMAL motion actually is.
+  // A nail polish cap is THREADED, so it unscrews: it turns about the bottle's own axis as it
+  // comes off. Lifting it straight up is not what the object does.
+  else if (a === "--twist") opt.twist = Number(argv[++i]);      // lid degrees of unscrew
+  // A balanced stone stack does not float apart. The reference on rock balancing puts it exactly:
+  // "there is a moment, just before a stone settles, when everything goes still. The wobble slows."
+  // So the natural motion is a rock that DECAYS into equilibrium, not a separation.
+  else if (a === "--wobble") opt.wobble = Number(argv[++i]);    // peak rock in degrees, decaying
   // Which angle the clip RESTS on. Measured, not guessed: pick the frame where the subject
   // reads most front-on, then pass its rotation here so frame 1 and frame 51 both land there.
   else if (a === "--start-angle") opt.startAngle = Number(argv[++i]);
@@ -535,6 +543,8 @@ const OPEN_DEG = ${opt.openDeg};
 const SEPARATE = ${opt.separate};
 const JITTER = ${opt.jitter};
 const BRUSH = ${opt.brush === null ? 'null' : JSON.stringify(opt.brush.split(',').map(Number))};
+const TWIST = ${opt.twist};
+const WOBBLE = ${opt.wobble};
 const OPEN_LIFT = ${opt.openLift === null ? 'null' : JSON.stringify(opt.openLift.split(',').map(Number))};
 const PARTS = [];
 let OBJ_H = 0;
@@ -564,6 +574,20 @@ window.__renderAt = (rad, puffT, t, wt) => {
       lid.group.position.x = OPEN_LIFT[0] * span * swell;
       lid.group.position.y = lid.baseY + OPEN_LIFT[1] * span * swell;
       lid.group.rotation.z = -((OPEN_LIFT[2] || 0) * Math.PI / 180) * swell;
+      // and it UNSCREWS on the way, because the cap is threaded
+      if (TWIST) lid.group.rotation.y = (TWIST * Math.PI / 180) * swell;
+    }
+    if (WOBBLE) {
+      // Each band rocks a little further than the one below and slightly later, and the whole thing
+      // decays to still by the end, which is what settling looks like. sin(3 turns) inside a
+      // (1 - t) falloff, times the same swell, so it starts still and ends still and the loop closes.
+      for (let i = 1; i < PARTS.length; i++) {
+        const lag = i * 0.10;
+        const decay = Math.max(0, 1 - swell);
+        PARTS[i].group.rotation.z =
+          (WOBBLE * Math.PI / 180) * (i / PARTS.length) *
+          Math.sin((phase * 3) - lag) * swell * (0.35 + 0.65 * decay);
+      }
     }
     if (SEPARATE) {
       // every band but the bottom rises, each a little further than the one below, so the stack
