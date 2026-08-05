@@ -96,29 +96,42 @@
   }
   h1,h2,h3{font-family:'Inter Tight',system-ui,-apple-system,sans-serif}
 
-  /* ---- fixed top chrome: decision strip + toggle ---- */
+  /* ---- fixed top chrome: decision strip + toggle ----
+     Rebuilt 2026-08-05 (owner: "bro sh makes no sence" on the old pixel-table strip).
+     The strip now shows the REAL text at its current and merged size, not a spec table.
+     All pixel values / element counts / file:line citations moved to the HTML comment
+     directly above the markup below; the header comment block (top of file) already
+     carries the full per-tier diagnosis verbatim and is untouched. */
   .chrome{position:fixed;top:0;left:0;right:0;z-index:30;background:#fff}
-  .strip{max-height:262px;overflow-y:auto;-webkit-overflow-scrolling:touch;border-bottom:1px solid var(--border);padding:12px 14px 8px}
-  .strip h1{font-size:14px;font-weight:600;letter-spacing:-0.01em;margin-bottom:1px}
-  .strip .sub{font-size:11px;line-height:1.4;color:var(--ink-2);margin-bottom:8px}
-  .strow{display:grid;grid-template-columns:38px 1fr auto;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--border)}
-  .strow:first-of-type{border-top:none}
-  .strow .sz{font-family:'Inter Tight',sans-serif;font-size:12px;font-weight:600;color:var(--ink);line-height:1.2}
-  .strow .role{font-size:11px;font-weight:600;color:var(--ink);line-height:1.3}
-  .strow .cnt{font-weight:400;color:var(--ink-2)}
-  .strow .src{margin-top:1px;font-size:10px;line-height:1.35;color:var(--ink-2)}
-  .strow .dest{font-size:10px;font-weight:600;text-align:right;white-space:nowrap;border-radius:999px;padding:3px 7px}
-  .strow .dest.keep{background:var(--sunken);color:var(--ink)}
-  .strow .dest.merge{background:#fff;color:var(--ink-2);border:1px solid var(--border)}
-  .strip .costnote{margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);font-size:10.5px;line-height:1.45;color:var(--ink-2)}
-  .strip .costnote b{color:var(--ink);font-weight:600}
+  .strip{max-height:480px;overflow-y:auto;-webkit-overflow-scrolling:touch;border-bottom:1px solid var(--border);padding:14px 16px 12px}
+  .strip h1{font-size:15px;font-weight:600;letter-spacing:-0.01em;line-height:1.4;margin-bottom:14px}
+  .grp{font-size:13px;font-weight:600;color:var(--ink);margin:18px 0 8px}
+  .grp:first-of-type{margin-top:0}
+  .cmp{padding:10px 0;border-top:1px solid var(--border)}
+  .cmp:first-of-type{border-top:none;padding-top:0}
+  .cmp-label{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px}
+  .cmp-pair{display:flex;align-items:stretch;gap:8px}
+  .cmp-box{flex:1;min-width:0;background:var(--sunken);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;justify-content:center}
+  .cmp-box .cmp-word{display:block;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.25}
+  .cmp-box .cmp-word .lucide{vertical-align:-2px;margin-right:3px}
+  .cmp-box .cmp-tag{display:block;margin-top:4px;font-size:10px;font-weight:600;color:var(--ink-2)}
+  .cmp-arrow{flex-shrink:0;align-self:center;color:var(--ink-2)}
+  .cmp-stack .cmp-box{margin-bottom:6px;align-items:flex-start}
+  .cmp-stack .cmp-box:last-child{margin-bottom:0}
+  .cmp-stack .cmp-word{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.35}
+  .costline{margin:14px 0 4px;padding:10px 12px;background:var(--sunken);border-radius:10px;font-size:12px;line-height:1.5;color:var(--ink-2)}
+  .costline b{color:var(--ink);font-weight:600}
+  .stays{display:flex;flex-direction:column;gap:8px}
+  .stays-item{padding:9px 12px;background:var(--sunken);border-radius:10px}
+  .stays-item .stays-word{display:block;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .stays-item .stays-label{display:block;margin-top:3px;font-size:11px;color:var(--ink-2)}
 
   .seg-wrap{height:50px;display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--border);background:rgba(255,255,255,.96)}
   .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(300px,80vw)}
   .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:600;color:var(--ink-2);padding:7px 0;border-radius:999px;cursor:pointer}
   .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
 
-  .stage{position:fixed;top:312px;left:0;right:0;bottom:0}
+  .stage{position:fixed;top:530px;left:0;right:0;bottom:0}
   .pane{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#fff}
   .pane.hidden{display:none}
   iframe{width:100%;height:100%;border:0;display:block}
@@ -197,97 +210,115 @@
 </style>
 </head>
 <body>
+  <!--
+    Decision-strip engineering trail (moved out of the visible UI 2026-08-05, owner: "bro sh
+    makes no sence" on the old pixel-table strip; every reader-facing number/count/path was
+    pulled off screen into this comment, re-verified against current source this session via
+    grep, not carried over stale from the header comment above).
+
+    GETS SMALLER rows (all confirmed live in source this session):
+    - "Search box text": HomeSearchPill.tsx:103,128, font-medium text-s-ink, 16px -> 14px (2 el)
+    - "'Discover all' card heading": Entdecken.tsx:411, font-semibold text-s-ink on a white
+      dashed-border tile (NOT a dark photo tile, corrected from this file's prior draft which
+      had assumed white-on-dark), 16px -> 14px (1 el)
+    - "Star rating number": SalonCard.tsx:509 (CardMeta), 13px -> 12px (part of the 50 el/13px
+      bucket shared with the Walk-in subline below)
+    - "Walk-in status line": WalkInBand.tsx:86, font-body text-s-ink-2, 13px -> 12px
+    - "Nearby map label": NearbyMap.tsx:185, font-semibold text-s-ink pill, 12.5px -> 12px (the
+      only single-instance size on the page)
+
+    STAYS THE SAME tiers (shown once each, real word at its true size):
+    - "Wait time number": WalkInBand.tsx:125, font-display font-bold text-s-success, 20px,
+      2 el post-hydration only (after GET /api/walkin/nearby resolves client-side, confirmed
+      live this session, real active salons), the page's one loud dynamic number, deliberately
+      not touched
+    - "Section titles": SectionHeader.tsx:146, 18px, 10 el (9 rails + the Walk-in heading)
+    - "Salon names": SalonCard.tsx:505 (CardName), 14px, 49 el, absorbs the old 16px search/CTA
+      pair once those merge down
+    - "Everything else" (category/address/price/badges): SalonCard.tsx:520,529,534 +
+      WalkInBand.tsx:92,129,144,146, 12px, 153 el, absorbs the old 13/12.5/11 buckets. The
+      Entdecken TikTok attribution badge (Entdecken.tsx:344, 7 el) also lands in this 12px
+      tier, but its own move is 11px -> 12px, a hair BIGGER, not smaller, so it is deliberately
+      left out of the "gets smaller" rows above rather than misrepresented as a shrink.
+
+    Distinct sizes measured at 390x844 this session: 8 (20/18/16/14/13/12.5/12/11px), collapsing
+    to 4 (20/18/14/12px), per CLAUDE.md NEVER-AGAIN floor 2. Two naive-count traps excluded from
+    the 8 (a desktop-only 40px BusinessTeaser heading under `hidden md:block`, and a fully-hidden
+    MobileCategoriesRow section) per the header comment's Diagnosis lines above, unchanged.
+
+    Tension flagged, not resolved here: even after this collapse the surviving anchor (18px) is
+    1.5x the dominant body size (12px), short of the EMPHASIS BUDGET's 1.8x ratio floor
+    (CLAUDE.md). Reaching 1.8x needs a bigger anchor somewhere, which pulls against a 4-tier
+    count. Out of scope for this strip.
+  -->
   <div class="chrome">
     <div class="strip">
-      <h1>Which tiers die, measured this session at 390&times;844</h1>
-      <div class="sub">8 sizes render on the live /de feed today (not the naive 25px/desktop count, see the two trap rows). Proposed collapses this to 4: 20 / 18 / 14 / 12.</div>
+      <h1>Four text sizes disappear. Here&rsquo;s every place you&rsquo;d notice.</h1>
 
-      <div class="strow">
-        <div class="sz">20px</div>
-        <div>
-          <div class="role">Walk-in wait number <span class="cnt">2 el, post-hydration</span></div>
-          <div class="src">WalkInBand.tsx:125, only after GET /api/walkin/nearby resolves , confirmed live this session (real active salons)</div>
+      <div class="grp">Gets smaller</div>
+
+      <div class="cmp">
+        <div class="cmp-label">Search box text</div>
+        <div class="cmp-pair">
+          <div class="cmp-box"><span class="cmp-word" style="font-size:16px;font-weight:500">Search</span><span class="cmp-tag">now</span></div>
+          <svg class="lucide cmp-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+          <div class="cmp-box"><span class="cmp-word" style="font-size:14px;font-weight:500">Search</span><span class="cmp-tag">new</span></div>
         </div>
-        <div class="dest keep">stays</div>
       </div>
 
-      <div class="strow">
-        <div class="sz">18px</div>
-        <div>
-          <div class="role">Section titles + Walk-in heading <span class="cnt">10 el</span></div>
-          <div class="src">SectionHeader.tsx:146 (9 rails) + WalkInBand.tsx:83</div>
+      <div class="cmp">
+        <div class="cmp-label">&ldquo;Discover all&rdquo; card heading</div>
+        <div class="cmp-pair">
+          <div class="cmp-box"><span class="cmp-word" style="font-size:16px;font-weight:600;font-family:'Inter Tight',sans-serif">Discover all</span><span class="cmp-tag">now</span></div>
+          <svg class="lucide cmp-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+          <div class="cmp-box"><span class="cmp-word" style="font-size:14px;font-weight:600;font-family:'Inter Tight',sans-serif">Discover all</span><span class="cmp-tag">new</span></div>
         </div>
-        <div class="dest keep">stays</div>
       </div>
 
-      <div class="strow">
-        <div class="sz">16px</div>
-        <div>
-          <div class="role">Search placeholder + Entdecken CTA heading <span class="cnt">2 el</span></div>
-          <div class="src">HomeSearchPill.tsx:103,128 + Entdecken.tsx:411 , the one real-cost merge, see below</div>
+      <div class="cmp">
+        <div class="cmp-label">Star rating number</div>
+        <div class="cmp-pair">
+          <div class="cmp-box"><span class="cmp-word" style="font-size:13px;font-weight:400"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>4.8</span><span class="cmp-tag">now</span></div>
+          <svg class="lucide cmp-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+          <div class="cmp-box"><span class="cmp-word" style="font-size:12px;font-weight:400"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>4.8</span><span class="cmp-tag">new</span></div>
         </div>
-        <div class="dest merge">&rarr; 14px</div>
       </div>
 
-      <div class="strow">
-        <div class="sz">14px</div>
-        <div>
-          <div class="role">Card names + Walk-in chip names/CTA <span class="cnt">49 el</span></div>
-          <div class="src">SalonCard.tsx:505 (CardName) + WalkInBand.tsx:132,157</div>
-        </div>
-        <div class="dest keep">stays, absorbs 16</div>
+      <div class="cmp cmp-stack">
+        <div class="cmp-label">Walk-in status line</div>
+        <div class="cmp-box"><span class="cmp-word" style="font-size:13px;font-weight:400">No appointment needed. See the wait and hold your spot.</span><span class="cmp-tag">now</span></div>
+        <div class="cmp-box"><span class="cmp-word" style="font-size:12px;font-weight:400">No appointment needed. See the wait and hold your spot.</span><span class="cmp-tag">new</span></div>
       </div>
 
-      <div class="strow">
-        <div class="sz">13px</div>
-        <div>
-          <div class="role">Card rating value + Walk-in subline <span class="cnt">50 el</span></div>
-          <div class="src">SalonCard.tsx:509 (CardMeta) + WalkInBand.tsx:86</div>
+      <div class="cmp">
+        <div class="cmp-label">Nearby map label</div>
+        <div class="cmp-pair">
+          <div class="cmp-box"><span class="cmp-word" style="font-size:12.5px;font-weight:600">20 stores nearby</span><span class="cmp-tag">now</span></div>
+          <svg class="lucide cmp-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+          <div class="cmp-box"><span class="cmp-word" style="font-size:12px;font-weight:600">20 stores nearby</span><span class="cmp-tag">new</span></div>
         </div>
-        <div class="dest merge">&rarr; 12px</div>
       </div>
 
-      <div class="strow">
-        <div class="sz">12.5px</div>
-        <div>
-          <div class="role">Nearby map badge <span class="cnt">1 el</span></div>
-          <div class="src">NearbyMap.tsx:185, the only single-instance size on the page</div>
-        </div>
-        <div class="dest merge">&rarr; 12px</div>
-      </div>
+      <div class="costline"><b>The one real cost:</b> the search text and the &ldquo;Discover all&rdquo; heading get noticeably smaller. Everything else on this list is barely visible to the eye.</div>
 
-      <div class="strow">
-        <div class="sz">12px</div>
-        <div>
-          <div class="role">Category, address, price, Live badge, meta <span class="cnt">153 el</span></div>
-          <div class="src">SalonCard.tsx:520,529,534 + WalkInBand.tsx:92,129,144,146 + more</div>
+      <div class="grp">Stays the same</div>
+      <div class="stays">
+        <div class="stays-item">
+          <span class="stays-word" style="font-size:20px;font-weight:700;letter-spacing:-0.01em;font-family:'Inter Tight',sans-serif;color:var(--success)">70-98 min</span>
+          <span class="stays-label">wait time number, the loudest number on the page</span>
         </div>
-        <div class="dest keep">stays, absorbs 13/12.5/11</div>
-      </div>
-
-      <div class="strow">
-        <div class="sz">11px</div>
-        <div>
-          <div class="role">Entdecken TikTok attribution badge <span class="cnt">7 el</span></div>
-          <div class="src">Entdecken.tsx:344</div>
+        <div class="stays-item">
+          <span class="stays-word" style="font-size:18px;font-weight:600;letter-spacing:-0.01em;font-family:'Inter Tight',sans-serif">Top on Solen</span>
+          <span class="stays-label">section titles</span>
         </div>
-        <div class="dest merge">&rarr; 12px</div>
-      </div>
-
-      <div class="costnote">
-        <b>Cost, named honestly.</b> Three merges (13, 12.5, 11 &rarr; 12) are close to free: the
-        rating value's distinction already comes from the gold star and its color, not its 1px size
-        gap, and the map badge and TikTok badge are single/rare outliers nobody will miss at 12px.
-        The ONE real cost is 16&rarr;14: the search placeholder and the Entdecken CTA card heading
-        both read a shade less commanding. Both keep their affordance a different way (the search
-        pill's border/icon/height, the CTA card's dark photo overlay), so the loss is real but
-        small. The Walk-in wait number (20px) is deliberately spared, it is the page's one dynamic,
-        high-value number and merging it into 18 would mute the one section built to be loud.
-        <br><br>
-        <b>Not fixed here, named so it is not silently dropped:</b> even after this collapse, the
-        surviving anchor (18px) is only 1.5x the dominant body size (12px), short of the EMPHASIS
-        BUDGET's 1.8x ratio floor. Reaching 1.8x needs a bigger anchor somewhere, which pulls the
-        other way from a 4-tier count. Flagging the tension, not resolving it in this file.
+        <div class="stays-item">
+          <span class="stays-word" style="font-size:14px;font-weight:500">Cuts &amp; Culture</span>
+          <span class="stays-label">salon names</span>
+        </div>
+        <div class="stays-item">
+          <span class="stays-word" style="font-size:12px;font-weight:400;color:var(--ink-2)">from CHF 15</span>
+          <span class="stays-label">everything else: prices, categories, addresses</span>
+        </div>
       </div>
     </div>
     <div class="seg-wrap">
