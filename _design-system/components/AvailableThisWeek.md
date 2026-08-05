@@ -7,6 +7,16 @@ Section/SectionFrame/SectionTitle/ScrollRow/SalonCard, unchanged — no new card
 
 # AvailableThisWeek
 
+> **UNMOUNTED 2026-08-05 (owner A6, "remove the Bald frei section entirely").** This rail no longer
+> renders anywhere. The import and the `<AvailableThisWeek />` line in `app/[locale]/page.tsx` are
+> commented out, and its `getAvailableThisWeekSalonIds` server fetch left the home page's parallel
+> batch with it, so no `salons_with_slot_in_hours` RPC runs for it any more. Measured before removal:
+> 9 real salon cards, section 304.1px tall at 375x812 and 318.5px at 402x874, between "In der Naehe"
+> and "Top Coiffeur". File, data function and this doc are kept on disk for revert (the same
+> convention every earlier homepage removal used). Graveyard line: `_design-system/REMOVED.md`.
+> Everything below describes the component AS BUILT, not as shipped. Do not re-mount without an
+> explicit owner yes.
+
 **File:** [app/[locale]/_components/homepage/AvailableThisWeek.tsx](../../app/[locale]/_components/homepage/AvailableThisWeek.tsx)
 **Layer:** 1 chrome (composes locked homepage rail primitives, adds no new visual tokens)
 **New:** 2026-08-01, task I3 (`_plans/HOME_V3_CATEGORY_MAP.md`): bring the home page's section list in

@@ -626,9 +626,9 @@ export function SearchOverlay({
   // it linear), and `morphT` is the reference's own measured shape applied to it. Every geometry
   // property (top, height, width, left) reads `morphT`; the alpha ramps below (chromeOpacity,
   // ghostLabelOp) keep reading `openT`, which is what makes their windows mean milliseconds again.
-  // `scrimOpacity` is the one exception (J1 below): it reads `openT` on open (unchanged, still
-  // milliseconds) but `morphT` on close, because the backdrop has to answer to whatever value is
-  // actually painting the box, not to raw time.
+  // `scrimOpacity` reads raw `openT` too, on open AND close (J1's close-side branch onto `morphT`
+  // is reverted, see J2 there): the backdrop no longer chases the box, because the box is now
+  // required to finish first.
   //
   // Why the shape lives HERE and not on `openT` itself: driving `openT` along the samples directly
   // was measured and rejected. It would pull the outgoing "Suchen" ghost's [0, 0.22] window from
@@ -636,7 +636,18 @@ export function SearchOverlay({
   // about 100ms is a DO-NOT-REGRESS item. Splitting raw-time from shape keeps the ghost at 110.0ms
   // AND puts the measured curve on the box. One mapping, monotone, a pure function of `openT`, so
   // this is still one continuous set of values over one tree: no threshold, no second clock.
-  const morphT = useTransform(openT, OPEN_CURVE_IN, OPEN_CURVE); // mockup-ok: SEARCH_MORPH.md H3, measured reference curve
+  // J2 (2026-08-05): the CLOSE's geometry finishes at `SCRIM_KNEE` instead of at 0, by rescaling the
+  // input this curve is read with. On OPEN this is the identity (`open` is true for the whole open,
+  // the focus and the keyboard interaction), so `morphT` is byte-identical to before and no open
+  // DO-NOT-REGRESS item can move. On CLOSE the box completes its whole travel (top, height, width,
+  // left, every slot reserve, the content alpha that rides `morphT`) by the time `openT` reaches
+  // 0.18, and the remaining 0.18 of the run belongs to the backdrop alone. Measured cost, stated
+  // rather than buried: mid-close the box is smaller than it used to be at the same instant, about
+  // 41px at the midpoint of the run, because the same travel is spread over 82% of the driver.
+  // That is the change; the leftover box was the price of not making it.
+  const morphIn = useTransform(openT, (v) => // mockup-ok: SEARCH_MORPH.md J2, close-side rescale of an existing curve
+    (open ? v : clamp01((v - SCRIM_KNEE) / (1 - SCRIM_KNEE))));
+  const morphT = useTransform(morphIn, OPEN_CURVE_IN, OPEN_CURVE); // mockup-ok: SEARCH_MORPH.md H3, measured reference curve
   // K-A (2026-08-03, owner picked K-A over K-B at public/_mockups/search-keyboard/index.html,
   // SEARCH_MORPH.md K4): R3 used to RISE the sheet by the keyboard inset so it shrank to sit
   // above the keys, which cut whatever row sat on the keyboard line against a hard white edge
@@ -720,60 +731,36 @@ export function SearchOverlay({
   // results feed and read as duplicated chrome. Both now read the SAME `openT`, on curves
   // chosen so the scrim is >= the sheet at every value of openT , the blur outlives the sheet
   // by construction, not by two clocks that happen to agree until someone edits one.
-  // SUPERSEDED on close only, see J1 below `chromeOpacity`: once the box's own geometry moved off
-  // `openT` onto `morphT` (H3), ">= the sheet at every value of openT" stopped being the same claim
-  // as ">= the sheet on screen". J1 re-points the close half of this guarantee at `morphT` instead.
+  // R6's guarantee stands, and J2 (see `scrimOpacity` below) is what makes it true again. When H3
+  // moved the box's own geometry off `openT` onto `morphT`, ">= the sheet at every value of openT"
+  // stopped being the same claim as ">= the sheet on screen". J1 tried to fix that by moving the
+  // scrim onto `morphT`; J2 reverts that and instead makes the close's geometry LAND at the same
+  // `SCRIM_KNEE` this ramp starts falling at, so both halves are anchored to one shared constant.
   // H4 (2026-08-03): this drives the close-X only, NOT the sheet. It used to sit on the sheet
   // wrapper, where it composited the white paper and the ink on ONE alpha (see the sheet's own
   // style block for the measurement that killed that). Renamed from `sheetOpacity` so the name
   // cannot re-attract a "the sheet fades" edit.
   const chromeOpacity = useTransform(openT, [0, 0.35, 1], [0, 0.55, 1]); // mockup-ok: SEARCH_MORPH.md H4
-  // J1 (2026-08-05, owner CDP screencast at 402x874, 31 real compositor frames via
-  // `Page.startScreencast`, not a screenshot-poll loop, the exact gap I1 above named as too coarse
-  // for a 333ms close): "the box's white paper outlives the backdrop." R6's own guarantee, ">= the
-  // sheet at every value of openT", went stale the moment H3 moved the box's OWN geometry
-  // (cropTop/sheetLeft/sheetWidth/sheetHeight) off `openT` onto `morphT`, the reference curve,
-  // front-loaded FOR GROWTH, read backward on close. Measured (H3/I1, both already in this file):
-  // `morphT` is still 0.823 open at 100ms of a 333ms close, i.e. it lingers near full size for
-  // roughly the first half of the close then collapses fast at the very end. `scrimOpacity` kept
-  // fading on raw `openT` regardless, so the backdrop cleared to a sharp, interactive page while
-  // the box, still fully opaque paper (H2, protected: no opacity on the card), was still most of
-  // its open size. Measured on the screencast: page fully sharp (map/photos/heart-icon crisp,
-  // cookie banner interactive) by ~358ms; box still painting the full "Wonach suchst du?"
-  // composition at 386ms and 395ms, a >=40ms window with an opaque white surface over an
-  // already-legible page.
+  // J1 REVERTED, J2 replaces it (2026-08-05). J1 pointed the close half of the scrim at `morphT`,
+  // the value that actually paints the box, so the backdrop would stay up until the box was small.
+  // That was the right diagnosis and the wrong lever, and it was reported as "roughly halved" on an
+  // analytic model rather than on frames. Measured on real compositor frames at 375x812, the model
+  // understated it: it assumed a 444px open box when this build's resting sheet is 605.55px, so the
+  // excess it predicted at scrim 0.20 was 11.5px and the measured excess at scrim 0.21 was 22px.
+  // The deeper point is that no divisor here can reach zero. Both the scrim and the box's excess
+  // height were monotone functions of the one driver, so they were locked in a straight line
+  // (excess was a fixed 97px per unit of scrim opacity here) and both only hit 0 on the same last
+  // frame. Every intermediate frame therefore had a part-cleared page under a still-oversized white
+  // box, which is exactly the thing the owner kept seeing. Changing the divisor tilts that line; it
+  // cannot delete it.
   //
-  // Fix: on CLOSE only, the scrim reads `morphT`, the SAME value the box's own geometry reads,
-  // through the identical [0, 0.18, 1] -> [0, 1, 1] shape R6 already chose for `openT` (same
-  // 0/0.18/1 breakpoints, not a new constant, just re-pointed at the driver that actually paints
-  // the box today). `sheetHeight`/`sheetWidth`/`cropTop` are each exactly LINEAR in `morphT`
-  // through the whole close (`origin.x + (resting.x - origin.x) * oT`, this file's own existing
-  // formulas, unedited), so the box's own size-as-a-fraction-of-its-travel EQUALS `morphT`
-  // directly. A first pass tried reading `morphT` with NO rescale (1:1 identity, "scrim opacity
-  // equals box openness fraction"); measured, that is the WRONG direction: at scrim=0.10 identity
-  // gives morphT=0.10, i.e. a box still 104px tall (a real box, not a pill). The 0.18 DIVISOR is
-  // what makes scrim fall faster than the box's own openness once `morphT` drops under it: scrim
-  // only starts leaving 1.0 once `morphT < 0.18` (box already well down from its peak), and by the
-  // time scrim reads 0.10, `morphT` is 0.10*0.18=0.018 (box 73px, close to the ~66px resting
-  // pill); by scrim=0.05, `morphT` is 0.009 (box 69px). Verified analytically (origin=66px,
-  // peak=444px, both measured constants of this build): divisor 1.0 (identity) leaves 38-76px of
-  // excess box height at scrim 0.05-0.20; divisor 0.18 leaves 3-14px over the same range, an
-  // order of magnitude tighter, which is why the shape R6 already picked for `openT` is kept
-  // rather than replaced.
-  //
-  // The scrim can now only start clearing once the box's own openness fraction has dropped under
-  // 0.18, so the backdrop can never finish clearing before the geometry it exists to cover has
-  // shrunk to near its resting size, re-establishing R6's guarantee against the driver that
-  // actually paints the box today. OPEN is untouched (`open ? openT-branch : morphT-branch`, the
-  // same branch-by-`open` device `contentOp` and `locSlotOp`/`dateSlotOp` already use above, I1):
-  // the fade-IN on open still reads raw `openT` through the exact same [0, 0.18, 1] -> [0, 1, 1]
-  // shape, byte-identical to before, so every open DO-NOT-REGRESS item is unaffected. One
-  // continuous set of motion values over the one scrim node, no threshold, no mount/unmount, no
-  // new duration or easing constant.
-  const scrimOpacity = useTransform([openT, morphT], (latest) => { // mockup-ok: SEARCH_MORPH.md J1
-    const [o, m] = latest as [number, number];
-    return clamp01((open ? o : m) / 0.18);
-  });
+  // So the compensation is gone and the ORDER is fixed instead, at the geometry (see `morphIn`
+  // above): the box finishes its whole travel at `SCRIM_KNEE`, and only then does this ramp begin
+  // to fall. This line goes back to R6's own single unbranched expression, reading raw `openT`,
+  // identical on open and close, with the literal 0.18 replaced by the shared constant so the
+  // guarantee is now structural instead of a comment that can go stale (which is precisely how R6
+  // broke when H3 moved the geometry onto `morphT`). One motion value, one node, no branch.
+  const scrimOpacity = useTransform(openT, [0, SCRIM_KNEE, 1], [0, 1, 1]); // mockup-ok: SEARCH_MORPH.md R6, J2
   // H1 REVERTED (2026-08-03). H1 added an animated blur RADIUS and an animated tint alpha on top of
   // this layer's existing alpha, on the premise that "the page behind is still clearly readable at
   // +50ms" in the reference. That premise is measured backwards. Same metric (high-pass detail

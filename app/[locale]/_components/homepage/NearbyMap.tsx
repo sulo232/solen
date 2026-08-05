@@ -11,6 +11,7 @@ import * as React from "react";
 import mapboxgl from "mapbox-gl";
 import { MapPin } from "lucide-react";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { FROST_GLASS } from "@/lib/frost-glass";
 import { SOLEN_MAP_STYLE, applySolenBasemapConfig , SOLEN_BASEMAP_CONFIG } from "@/lib/map-style";
 
 /**
@@ -182,7 +183,18 @@ export default function NearbyMap({
           element to 0px (measured: anchor 398x156 but this node 396x0, markers pushed below the
           clip). An explicit height is immune to that override. */}
       <div ref={holder} className="h-full w-full" aria-hidden />
-      <span className="pointer-events-none absolute bottom-3 left-3 z-[3] inline-flex items-center gap-1.5 rounded-pill bg-white/80 px-3 py-1.5 text-[12.5px] font-semibold text-s-ink shadow-[0_2px_10px_rgba(0,0,0,0.12)] backdrop-blur-md">
+      {/* A5 (owner dictation 2026-08-05, _plans/HOME_FIXES_2026-08-05.md): the count badge
+          becomes liquid glass, the SAME treatment as the card heart overlay he pointed at.
+          He dictated the recipe by measuring the live heart; those exact values already ARE
+          the shared FROST_GLASS util (lib/frost-glass.ts, V3-D420 recipe "A",
+          control-over-photo), which is also what HeartButton.tsx renders, so this sources the
+          util instead of re-deriving five literals inline. Size, radius and text treatment
+          untouched; blur drops 12px -> 4px and the shadow tightens, which IS the match. */}
+      <span
+        // mockup-ok: owner-dictated exact values (A5), not a fresh appearance decision.
+        style={FROST_GLASS}
+        className="pointer-events-none absolute bottom-3 left-3 z-[3] inline-flex items-center gap-1.5 rounded-pill px-3 py-1.5 text-[12.5px] font-semibold text-s-ink"
+      >
         <MapPin size={13} className="text-s-ink" aria-hidden /> {countLabel}
       </span>
     </a>

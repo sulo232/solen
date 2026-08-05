@@ -1237,3 +1237,109 @@ at ~55% opacity with its label ALSO at ~55%, never a hard-edged blank rectangle.
 
 **Not done, named:** the "STILL OPEN after H2" clamp (service card pinned at 56px for the first
 ~133ms of the OPEN) is untouched, pre-existing, and unrelated to this close-specific fix.
+
+## J2 RESOLVED 2026-08-05: the leftover box reaches ZERO, and J1's lever could never have got there
+
+Owner, after J1: the close still leaves a box. He is right, and the J1 commit message overstated its
+own result twice, so both corrections are recorded here before the fix.
+
+**Correction 1, J1's number was analytic, not measured, and it understated the defect.** It reported
+"at scrim 0.20, 23.5px of excess becomes 11.5px at 375x812". That arithmetic used a 444px open box.
+This build's resting sheet is **605.55px** at 375x812 (664px at 402x874). Measured on real compositor
+frames, the excess at scrim 0.21 was **22px**, not 11.5px.
+
+**Correction 2, and this is the part that matters: no value of that divisor could ever reach zero.**
+The scrim's alpha and the box's excess height were both monotone functions of the SAME driver, so they
+sat on one straight line. Measured at 375x812, the line was `excess_px = 97.1 x scrim_opacity`:
+22px of excess at scrim 0.21, 9px at 0.09, 2px at 0.03. Both sides only reach 0 on the same final
+frame, so every intermediate frame had a part-cleared page under an oversized white box. Changing the
+divisor tilts that line. It cannot delete it. Eight rounds of tuning one clock against another were
+all inside this same trap.
+
+### What the owner was actually looking at, measured
+
+The ink INSIDE the whole box stayed around 0.018-0.022, which is why earlier passes could call the
+box "not blank" and move on. That average is carried by the bar's own label. Measuring only the strip
+that sticks out PAST the resting bar tells the true story, at 402x874, before the fix:
+
+| t | scrim | excess | strip outside the bar | ink in that strip |
+|---|---|---|---|---|
+| 252ms | 0.279 | 16px | 7,656 px2 | 0.0004 |
+| 261ms | 0.279 | 29px | 12,240 px2 | 0.0057 |
+| 271ms | 0.169 | 19px | 7,308 px2 | 0.0003 |
+| 289ms | 0.087 | 10px | 4,092 px2 | 0.0127 |
+| 307ms | 0.036 | 4px | 1,820 px2 | 0.0000 |
+
+Blank paper, hanging past the bar, over a page that is already 72% to 96% legible. That is the box.
+
+### The fix removes the compensation instead of retuning it
+
+`SCRIM_KNEE = 0.18` is now one shared constant read by both halves. R6 already used 0.18 as the
+`openT` value below which the backdrop starts clearing; the only new thing is that the CLOSE's
+geometry is made to FINISH at exactly that value, via a rescale of the input `morphT` is read with
+(`morphIn`, close-only, identity on open). J1's branched `scrimOpacity` is deleted and that line goes
+back to R6's single unbranched `useTransform(openT, [0, SCRIM_KNEE, 1], [0, 1, 1])`.
+
+So the ordering is now structural, not a race between two ramps: the box completes its whole travel
+while the backdrop is still fully up, and only then does the backdrop begin to clear, with the
+surface already exactly bar-shaped and the "Suchen" ghost label fading in inside it. The invariant
+has no intermediate state left to fail in. This also fixes the stale-guarantee failure mode by
+construction, which is how R6 silently broke when H3 moved the geometry onto `morphT`: both halves
+now read one constant, so they cannot drift apart again.
+
+### Measured, real CDP `Page.startScreencast` compositor frames plus a per-frame rAF DOM trace on the same clock, at BOTH sizes
+
+Method note, because it decided the result: a `page.screenshot()` poll loop cannot resolve a 333ms
+close and already cleared this bug wrongly once. Frames come from `Page.startScreencast` (timestamped,
+acked as they arrive) and the DOM trace reads `getBoundingClientRect`/`getComputedStyle` every rAF
+against the same `Date.now()` epoch, so every picture sits beside its own numbers.
+
+| | 375x812 before | 375x812 after | 402x874 before | 402x874 after |
+|---|---|---|---|---|
+| max excess past the bar, scrim < 0.30 | 25px | **0.0px** | 29px | **0.0px** |
+| frames with an oversized surface over a mostly-legible page | 7 | **0** | 7 | **0** |
+| last frame an oversized surface exists | 322.9ms | **152.2ms** | 307.2ms | **147.5ms** |
+| first frame the page behind is sharp | 314.6ms | 294.0ms | 325.2ms | 313.7ms |
+| ordering | FAIL, sharp 8.3ms BEFORE the box left | **PASS, 141.8ms clear** | 18.0ms | **PASS, 166.2ms clear** |
+
+From 166ms on (402x874) the remaining white surface is `aboveTop 0.0, excessH 0.0` on every single
+frame, i.e. exactly the resting bar's rect, carrying the bar's own ink (0.020-0.025 against the
+settled bar's own 0.0200). Plainly: the leftover reaches ZERO. It does not shrink again.
+
+### DO-NOT-REGRESS, re-measured on the real build
+
+- **The OPEN is untouched.** `morphIn` is the identity while `open` is true, so `morphT` is the same
+  function of `openT` as before. Proven empirically too, both traces interpolated onto one 30ms grid:
+  max |delta| over the whole open is **3.85px of height on a 539px travel (0.7%)**, **0.56px of top**,
+  **0.001 of scrim opacity**, all of it run-to-run frame-scheduling jitter. Settled state identical
+  (h=605.547 y=160 w=375).
+- **No opacity was re-added to the card** (H2, the defect that cost eight rounds). The paper's
+  computed opacity is `"1"` on all 41 close frames at 375x812 AND at 402x874, background
+  `rgb(255,255,255)`, sheet wrapper opacity 1.
+- Resting bar `[24,292,327,48]` at 375, `[24,292,354,48]` at 402; border `1px rgb(228,228,231)` in
+  both, no ring. Close-X `44x44` at both. Settled sheet h=605.55/375 and h=664/402.
+- Mid-flight re-open (tap the bar 80ms into the close) still re-opens and settles correctly at both
+  sizes.
+
+### Named cost, not buried
+
+1. **Mid-close the box is smaller than it used to be at the same instant**, about 41px at the midpoint,
+   because the same travel is now spread over 82% of the driver instead of 100%. That is the trade
+   that buys the zero; the leftover box was the price of not making it.
+2. **The mid-flight re-open's largest single-frame height step grows 40.7px -> 49.4px** (375x812).
+   `morphIn` branches on `open`, so re-opening mid-close switches branch and the box jumps once before
+   it resumes growing. This is the same branch-on-`open` device `contentOp`, `locSlotOp` and
+   `dateSlotOp` already use (I1), and the re-open still lands correctly, but it is a real 8.7px
+   regression on that one path and it is his call whether it matters.
+3. The backdrop now clears over the last 0.18 of the run with the box already home, so the blur is
+   the only thing still moving for roughly the final 150ms. Worth his eye: if that reads as the blur
+   hanging, the lever is this one constant, and lowering it trades blur-tail length back against
+   how early the box lands.
+
+Scratch harnesses (`_closecap.mjs`, `_closean.py`, `_regress.mjs`, `_opentrace.mjs`, `_paper.mjs`)
+were temporary and are deleted from the working tree, same convention as the OPEN_CURVE detector
+above. The method is fully described in this section; re-create them from it rather than looking for
+them. Flagged rather than hidden: two of them WERE swept into commit 139a873c0 by an automatic
+turn-end checkpoint belonging to a different session working this same branch (that commit's own
+message is about the fonts and the map, not about any of this), so they exist in history even though
+nobody intended to check them in.

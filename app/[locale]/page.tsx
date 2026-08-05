@@ -36,7 +36,6 @@ import {
   getSalonCardDataMap,
   getTopSalonIds,
   getNearbyTeaserCount,
-  getAvailableThisWeekSalonIds,
   getTopSalonIdsByCategory,
   getBaselShopCount,
 } from "./_components/homepage/salonCardData";
@@ -79,7 +78,17 @@ import Nearby from "./_components/homepage/Nearby";
 // I3 (2026-08-01, home rails reconciliation with public/_mockups/home-v3/search-a.html): real
 // 7-day slot availability + the four per-category "Top X" rails, both new sections between Nearby
 // and WalkInBand. See salonCardData.ts / components/AvailableThisWeek.md / components/TopCategoryRails.md.
-import AvailableThisWeek from "./_components/homepage/AvailableThisWeek";
+//
+// A6 (owner 2026-08-05, "remove the Bald frei section"): AvailableThisWeek is UNMOUNTED. Measured
+// before: 9 real salon cards, section 304.1px tall at 375 / 318.5px at 402, sitting between Nearby
+// and Top Coiffeur. Its server fetch (getAvailableThisWeekSalonIds, a salons_with_slot_in_hours
+// RPC round trip on every home render) and its ids' contribution to the salonCardData batch went
+// with it, otherwise the query would keep running for a section nobody renders. The component
+// file, its data function, its doc and its registry row stay on disk, the way every earlier
+// homepage removal in this file did (V3-D104 ArtistOfTheMonth, V3-D106 HeroDuo, V3-D150
+// CategoryPromos): re-add the import + the <AvailableThisWeek /> line + the fetch to revive it.
+// Graveyard: _design-system/REMOVED.md.
+// import AvailableThisWeek from "./_components/homepage/AvailableThisWeek";
 import TopCategoryRails from "./_components/homepage/TopCategoryRails";
 // V3-D348 (tweak #5): dark full-bleed feature band, breaks the run of
 // identical card carousels mid-feed + surfaces Walk-in.
@@ -172,7 +181,7 @@ export async function generateMetadata({
  *   2. Hero                      — H1 + sub-line + search form + CTA + trust
  *   3. MobileCategoriesRow       — "Für dich" 3 icon tiles (Coiffeur/Barber/Nails)
  *   4. RecentlyViewed            — falls back to "Top auf Solen" curated list
- *   5. Nearby                    — "In der Nähe" location-based salon cards
+ *   5. Nearby                    - "In der Nähe" map teaser (A4, 2026-08-05: cards removed)
  *   6. FeaturedStylists          — "Lass dich verwöhnen." stylist avatars (resized)
  *   7. CategoryPromos            — "Stöber nach Kategorie." 3 large cat cards
  *   8. Entdecken                 — "Finde deine Inspiration." vertical look cards
@@ -195,15 +204,14 @@ export default async function Page({
   // topSalonIds (RecentlyViewed's "Top auf Solen" fallback) and nearbyCount
   // (the Nearby map-teaser count) are independent live fetches, run in
   // parallel before the id union below needs topSalonIds. I3 (2026-08-01):
-  // availableThisWeekIds (AvailableThisWeek's real 7-day slot rail) and
-  // topByCategory (TopCategoryRails' four per-category rails) join the same
-  // parallel batch, same reasoning.
+  // topByCategory (TopCategoryRails' four per-category rails) joins the same
+  // parallel batch, same reasoning. (A6, 2026-08-05: availableThisWeekIds left this batch with
+  // the "Bald frei" section it fed, see the import-site comment above.)
   // I4 (2026-08-01): baselShopCount joins the same parallel batch, same reasoning as the I3 ids
   // above , RecentlyViewedTiles' city cell needs a real active-salon count, never a fabricated one.
-  const [topSalonIds, nearbyCount, availableThisWeekIds, topByCategory, baselShopCount] = await Promise.all([
+  const [topSalonIds, nearbyCount, topByCategory, baselShopCount] = await Promise.all([
     getTopSalonIds(4),
     getNearbyTeaserCount(),
-    getAvailableThisWeekSalonIds(10),
     getTopSalonIdsByCategory(10),
     getBaselShopCount(),
   ]);
@@ -214,7 +222,6 @@ export default async function Page({
     ...Object.values(FORYOU_SALONS).flatMap((list) => list.map((s) => s.id)),
     ...NEARBY_SALON_IDS,
     ...topSalonIds,
-    ...availableThisWeekIds,
     ...Object.values(topByCategory).flat(),
   ]);
   return (
@@ -230,9 +237,16 @@ export default async function Page({
           mobile block is empty (`max-md:hidden`, see Hero.tsx), so this is still the first
           visible thing under Header.tsx's category row. Header.tsx's category row folds away on
           scroll on home too (categoryCollapsed widened to isHome), so this pill is the one thing
-          left pinned. Solid bg + hairline (tokens only) so page content never shows through once
-          it is pinned. */}
-      <div className="md:hidden sticky top-0 z-[55] border-b border-s-border bg-white"> {/* mockup-ok: owner-measured fix, literal instruction, tokens only */}
+          left pinned. Solid bg (token only) so page content never shows through once it is pinned.
+          A2 (owner 2026-08-05, red circle on his home screenshot, "remove the dividing line under
+          the search bar"): the `border-b border-s-border` this wrapper used to carry is GONE.
+          Measured before: a 1px solid s-border hairline running the full viewport width (375 and
+          402), bottom edge at y=157. It was the only full-width horizontal edge in the top 400px.
+          What the screen KEEPS as the pinned-chrome boundary (FLOORS LAW 5, deletion names what it
+          keeps): the pill's own `border border-s-border` + `shadow-[0_2px_8px_0_rgba(0,0,0,0.07)]`
+          one level in, so the bar still reads as an object over the scrolled feed. The wrapper's
+          opaque white fill is untouched, so nothing shows through. */}
+      <div className="md:hidden sticky top-0 z-[55] bg-white"> {/* mockup-ok: owner-measured fix, literal instruction, tokens only */}
         <HomeSearchPill locale={locale} />
       </div>
       <div className="relative overflow-hidden bg-white">
@@ -262,10 +276,11 @@ export default async function Page({
             nothing when there is no real history , never a fabricated substitute. */}
         <RecentlyViewedTiles baselShopCount={baselShopCount} />
         <RecentlyViewed salonData={salonCardData} topSalonIds={topSalonIds} />
+        {/* A4 (owner 2026-08-05): map only, the SalonCard rail under it is gone. */}
         <Nearby salonData={salonCardData} nearbyCount={nearbyCount} />
-        {/* I3 (2026-08-01, home rails reconciliation with search-a.html): real 7-day slot
-            availability, then the four per-category Top rails, both self-hiding on thin data. */}
-        <AvailableThisWeek salonData={salonCardData} salonIds={availableThisWeekIds} />
+        {/* I3 (2026-08-01, home rails reconciliation with search-a.html): the four per-category
+            Top rails, self-hiding on thin data. The "Bald frei" rail that used to lead this pair
+            is unmounted, A6 above. */}
         <TopCategoryRails salonData={salonCardData} idsByCategory={topByCategory} />
         {/* I5: real seeded discovery photo tiles with a real starting price, search-a.html's own
             position (after the rails, before Walk-in). */}

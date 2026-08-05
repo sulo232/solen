@@ -89,10 +89,25 @@ export function SectionTitle({
   title,
   link,
   scrollRef,
+  linkPlacement = "auto",
 }: {
   title: string;
   link?: { label: string; href: string };
   scrollRef?: React.RefObject<HTMLDivElement | null>;
+  /**
+   * Where the section's `link` is allowed to appear.
+   *   "auto" (default, every pre-2026-08-05 caller): today's behavior, unchanged. Inline chevron
+   *     in the h2, PLUS the right-hand slot (desktop scroll circles when a scrollRef is wired,
+   *     otherwise the "Alle X" text link at every width).
+   *   "inline": inline chevron only, the right-hand slot renders nothing.
+   * Added 2026-08-05 for Nearby, whose card rail was removed (A4). Dropping its `scrollRef` (there
+   * is no row left to scroll, and leaving it would ship two desktop scroll buttons that scroll
+   * nothing) silently promoted the text link into MOBILE, where that section had never shown one:
+   * measured at 402x874, "In der Nähe" went from an invisible `hidden md:flex` slot to a visible
+   * "Alle in deiner Nähe" link, so the row carried the title chevron and a text link to the SAME
+   * href. Additive on purpose: the default keeps all seven other callers byte-identical.
+   */
+  linkPlacement?: "auto" | "inline";
 }) {
   const [canScrollLeft, setCanScrollLeft] = React.useState(false);
   const [canScrollRight, setCanScrollRight] = React.useState(true);
@@ -194,8 +209,9 @@ export function SectionTitle({
 
       {/* V2-D49m: when a scrollRef is wired, render the desktop scroll
           controls. The previous mobile-only right-side arrow is gone (V2-D66)
-          since the inline circled arrow next to the title now serves that role. */}
-      {link && scrollRef ? (
+          since the inline circled arrow next to the title now serves that role.
+          linkPlacement="inline" opts out of this whole slot (see the prop doc). */}
+      {linkPlacement === "inline" ? null : link && scrollRef ? (
         <>
           {/* Desktop — two emerald-on-cream circle scroll buttons */}
           <div className="hidden md:flex shrink-0 items-center gap-2">
