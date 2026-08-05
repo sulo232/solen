@@ -145,14 +145,20 @@ stop. They are what took this session from 8 repairs to 32. What actually burns 
 that fires WRONGLY, because every false positive costs a full turn and buys nothing. Those are the
 ones removed.
 
-- [x] finish-autonomously BATCH-MOCKUP arm , looked back over the last SIX owner messages, so a
+- [x] (d5009f7b9) finish-autonomously BATCH-MOCKUP arm , looked back over the last SIX owner messages, so a
   mockup batch ordered on 19 July kept firing on 5 August across unrelated work. Six false positives
   in one session, every one costing a turn. Only his CURRENT message counts now.
   verified: ~/.claude/hooks/finish-autonomously-gate.py, silent on this turn.
-- [x] mockup-lang-stop-gate , used file mtime as proof of authorship. Creating a git worktree
+- [x] (d5009f7b9) mockup-lang-stop-gate , used file mtime as proof of authorship. Creating a git worktree
   rewrites every file, so a fresh worktree made every mockup look touched and the gate named six
   files this session never opened, on every stop. It asks git now: clean against HEAD means this
   session did not write it. verified: .claude/hooks/mockup-lang-stop-gate.py, silent on this turn.
+
+- [x] (verified: ~/.claude/hooks/no-unrequested-removal-gate.py) no-unrequested-removal , 5/5, and
+  this one is the sharpest of the three. It blocked me for OBEYING him, because his order arrived as
+  "then remive those gates thats maiking u stop" and the pattern only knew "remove". He dictates and
+  types fast; a gate that cannot read his instruction turns his own order into a violation, which is
+  the worst possible failure for a gate whose entire job is respecting what he asked for.
 
 ## Unplanned additions / parked decisions
 - **101 confirmed holes remain**, all listed with their beating phrase. The 32 severity-3 ones are
