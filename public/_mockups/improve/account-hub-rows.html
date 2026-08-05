@@ -1,0 +1,218 @@
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/_components/profile/AccountHub.tsx
+
+  Diagnosis: account-hub row glyph undersized | measured 19x19px on 6 rows and 18x18px on the hair row, live /de/profile at 390x844 via getBoundingClientRect this session | violates _design-system/references/airbnb--profile-list.md:52,83 which records the reference account-list icon ink bbox at 17.3-22.7pt (gear 21.0x22.3pt, shield 22.7pt, bell 22.7pt), putting ours at the BOTTOM of the captured band while AccountHub.tsx:264 already reserves a 22px box (h-[22px] w-[22px]) | target 22px
+  Diagnosis: row sublines that restate their own label | measured 7 of 7 rows carry a 13px rgb(107,107,107) subline, of which 2 contain no data at all, only a restatement of the label they sit under | violates CLAUDE.md copy economy rule 1 ("Drop words the context already says. Test: delete each word; if the meaning survives in place, the word was padding") and taste rule 2 (every element carries information or it gets deleted) | target 5 of 7 rows keep a subline, the 5 wired to live data
+
+  Depicts: the whole account hub screen -> app/[locale]/profile/page.tsx rendering
+    app/[locale]/_components/profile/AccountHub.tsx (NOT redrawn, BOTH panes are live iframes)
+  Depicts: row glyph resize 19px -> 22px -> AccountHub.tsx:265 `<Icon size={19} strokeWidth={1.9} />`
+  Depicts: Bookings row + next-appointment subline -> AccountHub.tsx:110 `bookingsSub`, route /profile/bookings
+  Depicts: Wallet row + saved-card subline -> AccountHub.tsx:116 `walletSub`, route /profile/settings/payment
+  Depicts: Vouchers row + active-count subline -> AccountHub.tsx:124 `couponsSub`, route /profile/vouchers
+  Depicts: Saved row + store-count subline -> AccountHub.tsx `favoritesSub`, route /profile/favorites
+  Depicts: Stamps row + remaining subline and 4/10 -> AccountHub.tsx:126 `stampsSub`, route /profile/stamps
+  Depicts: Hair-profile row, subline DELETED here -> AccountHub.tsx:182 `sub={t("haarprofilSub")}`
+  Depicts: Settings row, subline DELETED here -> AccountHub.tsx:210 `sub={t("settingsRowSub")}`
+  NET-NEW: nothing. This mockup adds no surface; it removes two existing sublines and
+    resizes an existing glyph. Every row above already renders in production today.
+
+  Exists-check: `npm run exists "account hub row icon"` -> 0 matches, so no separate row-icon
+  system exists to reuse. REMOVED.md hits: none for row sublines or icon sizing.
+
+  Owner ask, 2026-08-05 verbatim: "alot better but icon should be abit bigger and i dont
+  think every settings needs explanation"
+
+  floors: (a) photographic focal - N/A, a settings list, exempt by name under the imagery
+  floor; (b) one biggest element - yes, the 28px display name; (c) real number - yes, the
+  stamps count and the active voucher count; (d) semantic colour - yes, the accent edit link;
+  (e) no dead grey zone - rows run the full page; (f) worst-case content - the longest real
+  subline is the next-appointment line already rendering, and it truncates rather than wraps.
+-->
+<title>Account hub rows: bigger glyph, fewer explanations</title>
+<style>
+  :root { --ink:#0A0A0A; --ink2:#6B6B6B; --line:#E4E4E7; --sunken:#F4F4F5; --bar:56px; }
+  * { box-sizing:border-box; }
+  html, body { height:100%; }
+  body { margin:0; overflow:hidden; background:#fff;
+         font:400 15px/1.5 Inter, system-ui, sans-serif; color:var(--ink);
+         -webkit-text-size-adjust:100%; }
+
+  .bar { position:fixed; inset:0 0 auto 0; height:var(--bar); z-index:10;
+         display:flex; align-items:center; gap:12px; padding:0 14px;
+         background:#fff; border-bottom:1px solid var(--line);
+         padding-top:env(safe-area-inset-top); }
+  .bar h1 { margin:0; font:600 15px/1.2 "Inter Tight", Inter, sans-serif;
+            white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+  .seg { margin-left:auto; display:inline-flex; background:var(--sunken);
+         border-radius:999px; padding:3px; flex:0 0 auto; }
+  .seg button { appearance:none; border:0; background:transparent; cursor:pointer;
+                font:500 13px/1 Inter, sans-serif; color:var(--ink2);
+                padding:8px 14px; border-radius:999px; min-height:34px; }
+  .seg button[aria-pressed="true"] { background:#fff; color:var(--ink); font-weight:600;
+                                     box-shadow:0 1px 2px rgba(0,0,0,.06); }
+
+  .stage { position:fixed; inset:var(--bar) 0 0 0; }
+  /* Both frames stay LAID OUT. Toggling with display:none broke the injection: a
+     display:none iframe resolves no computed styles, so the subline match silently
+     found nothing and the sweep marked itself done. Opacity keeps layout live. */
+  .stage iframe { position:absolute; inset:0; width:100%; height:100%; border:0;
+                  display:block; background:#fff; transition:opacity .18s ease; }
+  .stage iframe[data-off="true"] { opacity:0; pointer-events:none; z-index:0; }
+  .stage iframe[data-off="false"] { opacity:1; pointer-events:auto; z-index:1; }
+
+  .why { position:fixed; left:0; right:0; bottom:0; z-index:9;
+         max-height:52vh; overflow-y:auto; background:#fff;
+         border-top:1px solid var(--line); padding:14px 16px 24px;
+         padding-bottom:calc(24px + env(safe-area-inset-bottom));
+         transform:translateY(calc(100% - 46px)); transition:transform .28s ease; }
+  .why[data-open="true"] { transform:translateY(0); }
+  .why h2 { margin:0 0 10px; font:600 14px/1 Inter, sans-serif; cursor:pointer;
+            display:flex; align-items:center; gap:8px; min-height:32px; }
+  .why h2 span { color:var(--ink2); font-weight:400; font-size:13px; }
+  .why p, .why li { color:var(--ink2); font-size:13.5px; margin:6px 0; }
+  .why b { color:var(--ink); }
+  .why ul { margin:6px 0 0; padding-left:18px; }
+  code { font-family:"JetBrains Mono", monospace; font-size:12.5px; }
+</style>
+
+<div class="bar">
+  <h1>Account rows</h1>
+  <div class="seg" role="group" aria-label="Before or after">
+    <button id="bBefore" aria-pressed="true">Now</button>
+    <button id="bAfter" aria-pressed="false">Proposed</button>
+  </div>
+</div>
+
+<div class="stage">
+  <!-- BEFORE: the real route, untouched -->
+  <iframe id="before" src="/de/profile" title="account hub now" data-off="false"></iframe>
+  <!-- AFTER: the SAME real route, change INJECTED onto it after load -->
+  <iframe id="after" src="/de/profile" title="account hub proposed" data-off="true"></iframe>
+</div>
+
+<div class="why" id="why" data-open="false">
+  <h2 id="whyToggle">Why these two changes <span>tap to read</span></h2>
+  <p>
+    <b>Icon size, 19px to 22px.</b> Not a guess. The reference account list measures 17.3 to
+    22.7pt per glyph (gear 22.3, shield 22.7, bell 22.7) in
+    <code>_design-system/references/airbnb--profile-list.md</code>. 22 is the top of that band,
+    and it is already the size of the box this component draws the glyph inside.
+  </p>
+  <p>
+    <b>Which explanations go.</b> The test is whether the second line tells you something the
+    label does not. Five carry real data and stay:
+  </p>
+  <ul>
+    <li><b>Bookings</b>, your next appointment with the date</li>
+    <li><b>Wallet</b>, whether a card is saved</li>
+    <li><b>Vouchers</b>, how many are active</li>
+    <li><b>Saved</b>, how many stores</li>
+    <li><b>Stamps</b>, how many left until the reward</li>
+  </ul>
+  <p>Two are just the label said twice, and those go:</p>
+  <ul>
+    <li><b>Hair profile</b>, a list of what a hair profile contains</li>
+    <li><b>Settings</b>, a list of what settings contains</li>
+  </ul>
+  <p>
+    <b>The cost, so you can weigh it.</b> Those two rows get shorter than the other five, so
+    the list stops being a perfect grid. I think that is the right trade, because an even grid
+    built out of filler is worse than an uneven one built out of facts. If you would rather
+    keep every row the same height, say so and I will leave both lines in and only resize the
+    glyphs.
+  </p>
+</div>
+
+<script>
+  // The AFTER pane is the FULL real page with the change injected in place, never a redraw.
+  const CUT = ["/de/profile/haarprofil", "/de/profile/settings"];
+
+  // IDEMPOTENT AND PERSISTENT ON PURPOSE. The first version latched after one pass and
+  // reported success while showing nothing: it ran before hydration, Next.js then
+  // re-rendered the row subtree from the server HTML and discarded every mutation, but
+  // the done-flag lived on <html> which React never replaces, so the poller stopped.
+  // Now it keeps re-applying and re-checks its own result instead of trusting one run.
+  function applyChange(doc) {
+    const rows = doc.querySelectorAll('a[href*="/profile/"], a[href*="/settings"]');
+    if (!rows.length) return false;                    // page not painted yet, retry
+    let touched = 0;
+    let firstChanged = null;
+
+    rows.forEach((a) => {
+      const svg = a.querySelector("svg");
+      if (svg) {
+        svg.setAttribute("width", "22");
+        svg.setAttribute("height", "22");
+        svg.style.width = "22px";
+        svg.style.height = "22px";
+        touched++;
+        if (!firstChanged) firstChanged = a;
+      }
+      if (CUT.includes(a.getAttribute("href"))) {
+        // Match the subline by POSITION (the second own-text node in the row), not by
+        // computed colour. Colour matching is what failed silently the first time round.
+        [...a.querySelectorAll("*")]
+          .filter((e) => [...e.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()))
+          .slice(1)
+          .forEach((e) => e.remove());
+
+        if (!a.dataset.afterTagged) {
+          a.dataset.afterTagged = "1";
+          a.style.outline = "2px solid #276EF1";
+          a.style.outlineOffset = "2px";
+          a.style.borderRadius = "10px";
+          a.style.position = "relative";
+          const tag = doc.createElement("span");
+          tag.className = "after-tag";
+          tag.textContent = "After: explanation removed";
+          tag.style.cssText =
+            "position:absolute;right:34px;top:6px;font:600 10px/1 Inter,sans-serif;" +
+            "color:#fff;background:#276EF1;padding:4px 7px;border-radius:999px;z-index:2;";
+          a.appendChild(tag);
+        }
+        firstChanged = a;
+      }
+    });
+
+    if (!touched) return false;
+
+    // Verify the change actually STUCK before claiming it did.
+    const probe = doc.querySelector('a[href="/de/profile/settings"] svg');
+    const stuck = probe && Math.round(probe.getBoundingClientRect().width) === 22;
+    if (stuck && !doc.documentElement.dataset.sweepDone) {
+      doc.documentElement.dataset.sweepDone = "true";
+      if (firstChanged) firstChanged.scrollIntoView({ block: "center", behavior: "smooth" });
+    }
+    return false;                                       // never latch, hydration can undo it
+  }
+
+  const after = document.getElementById("after");
+  const before = document.getElementById("before");
+  // Runs for the life of the page. applyChange is idempotent, so re-running is free and
+  // it survives any later re-render rather than losing to it.
+  setInterval(() => {
+    try {
+      const d = after.contentDocument;
+      if (d) applyChange(d);
+    } catch (e) { /* cross-origin, nothing to do */ }
+  }, 350);
+
+  function setMode(next) {
+    const isAfter = next === "after";
+    after.dataset.off = String(!isAfter);
+    before.dataset.off = String(isAfter);
+    document.getElementById("bBefore").setAttribute("aria-pressed", String(!isAfter));
+    document.getElementById("bAfter").setAttribute("aria-pressed", String(isAfter));
+  }
+  document.getElementById("bBefore").addEventListener("click", () => setMode("before"));
+  document.getElementById("bAfter").addEventListener("click", () => setMode("after"));
+
+  const why = document.getElementById("why");
+  document.getElementById("whyToggle").addEventListener("click", () => {
+    why.dataset.open = why.dataset.open === "true" ? "false" : "true";
+  });
+</script>
