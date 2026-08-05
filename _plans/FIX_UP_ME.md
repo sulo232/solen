@@ -113,9 +113,9 @@ Written as boxes on 2026-08-05 because the last stop happened by closing every b
 remainder in prose, where nothing could hold me to it. Each line carries the exact phrase that
 beats that check, taken from the sweep.
 
-- [ ] measurement-needs-scope-gate.py , beaten by: first viewport
+- [x] measurement-needs-scope-gate.py (verified: ~/.claude/hooks/measurement-needs-scope-gate.py) 5/5. "first viewport" named no scope: first viewport of WHAT, at what size. It must now sit next to a surface or a size. The three errors that built this gate were all measurements of the wrong surface, and each could have said "first viewport" truthfully.
 - [ ] finish-autonomously-gate.py , beaten by: the gate
-- [ ] fix-needs-before-after-gate.py , beaten by: same
+- [x] fix-needs-before-after-gate.py (verified: ~/.claude/hooks/fix-needs-before-after-gate.py) 4/4. The honest-null arm was a bare word list, so "same" satisfied a gate whose whole purpose is a before AND an after number. An honest null is still legal and still wanted, it just has to carry the number. Same defect as no-regression-by-fix, same day.
 - [x] no-permission-to-fix-gate.py (verified: ~/.claude/hooks/no-permission-to-fix-gate.py) 6/6. `push` and `deploy` were bare words, so MENTIONING either stood the gate down , "I did not push." satisfied the check that exists to stop me asking permission for work I should just do. They now count only when the sentence actually proposes the act.
 - [ ] owner-punt-gate.py , beaten by: I already applied it myself.
 - [ ] reference-measure-gate.py , beaten by: measured: avatar 26pt, tile 114pt
