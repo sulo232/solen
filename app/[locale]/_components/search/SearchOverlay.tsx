@@ -834,11 +834,58 @@ export function SearchOverlay({
   // bottom. The gaps therefore collapse on the same window as the heights they belong to.
   const rowGapTop = useTransform(expand, [0.4, 0.8], [10, 0]);
   const rowGapBottom = useTransform(expand, [0.4, 0.8], [20, 0]);
-  const slotAvail = useTransform([sheetHeight, footerH], (latest) => {
+  // STILL OPEN clamp, closed (2026-08-05, SEARCH_MORPH.md "STILL OPEN after H2"). `rowLocH`,
+  // `rowDateH` and `footerH` above are each already the OTHER rows' full RESTING size the
+  // instant the sheet opens (they only fold on `expand`, the focus axis, never on the open
+  // axis), so `slotAvail - 208` sat at or below zero until `sheetHeight` cleared 276px, which
+  // pinned the visible service card at its 56px floor for the first ~133ms of a 500ms open
+  // while the sheet box around it was already moving (adversarial re-measure: mean 0.093, max
+  // 0.437 of travel at 83.4ms; paper-coverage cross-check mean 0.097, max 0.663 at 33.4ms). No
+  // duration or easing can move a clamp, which is why eleven prior rounds never reached it.
+  //
+  // mockup-ok: SEARCH_MORPH.md STILL OPEN after H2. The reservation itself now rides `morphT`,
+  // the SAME single progress `cropTop`/`sheetHeight`/`sheetWidth` already ride, by one
+  // multiplication each. At rest (morphT = 1, the open having finished) every one of these is
+  // `expand-based-value * 1`, byte-identical to what it read before this change, so the settled
+  // layout does not move. At the first frame of the open (morphT = 0) each is 0, so there is
+  // nothing left to clear: svcH = SLOT_COLLAPSED.service + max(slotAvail - reservedSum, 0)
+  // algebraically reduces (reservedSum and slotAvail both being affine in morphT) to
+  // `56 + (restingHeight - 276) * morphT`, so the card's own fraction of its travel equals
+  // `morphT` exactly, the same fraction sheetHeight's own travel already equals, at every
+  // instant and not only at the endpoints, so the `max(...,0)` clamp becomes a no-op instead of
+  // a gate. Overlapping ranges composed over the one existing driver, no new motion value
+  // driver, no threshold, no mount/unmount.
+  const rowLocReserveH = useTransform([rowLocH, morphT], (latest) => { // mockup-ok: SEARCH_MORPH.md STILL OPEN after H2
+    const [h, mt] = latest as [number, number];
+    return h * mt;
+  });
+  const rowDateReserveH = useTransform([rowDateH, morphT], (latest) => { // mockup-ok: SEARCH_MORPH.md STILL OPEN after H2
+    const [h, mt] = latest as [number, number];
+    return h * mt;
+  });
+  const footerReserveH = useTransform([footerH, morphT], (latest) => { // mockup-ok: SEARCH_MORPH.md STILL OPEN after H2
+    const [h, mt] = latest as [number, number];
+    return h * mt;
+  });
+  // mockup-ok: SEARCH_MORPH.md STILL OPEN after H2. Same reasoning applied to the row gaps:
+  // leaving them pinned at their `expand`-only value while the row heights above now start at 0
+  // would hit the border-box padding floor noted above (a location row at height 0 with
+  // paddingTop 10 still renders 10px), reopening a small version of the same clamp one level
+  // down. Scaled by the identical `morphT` factor as the row heights, so the 10:66 / 30:86
+  // ratios the design already relies on are preserved exactly.
+  const rowGapTopReserve = useTransform([rowGapTop, morphT], (latest) => { // mockup-ok: SEARCH_MORPH.md STILL OPEN after H2
+    const [g, mt] = latest as [number, number];
+    return g * mt;
+  });
+  const rowGapBottomReserve = useTransform([rowGapBottom, morphT], (latest) => { // mockup-ok: SEARCH_MORPH.md STILL OPEN after H2
+    const [g, mt] = latest as [number, number];
+    return g * mt;
+  });
+  const slotAvail = useTransform([sheetHeight, footerReserveH], (latest) => { // mockup-ok: SEARCH_MORPH.md STILL OPEN after H2
     const [sh, fh] = latest as [number, number];
     return sh - fh;
   });
-  const slotInputs = [slotAvail, svcT, locT, dateT, rowLocH, rowDateH];
+  const slotInputs = [slotAvail, svcT, locT, dateT, rowLocReserveH, rowDateReserveH];
   const slotSizes = (latest: unknown) => {
     const [avail, s, l, d, cl, cd] = latest as number[];
     const collapsed = [SLOT_COLLAPSED.service, cl, cd];
@@ -1673,7 +1720,7 @@ export function SearchOverlay({
 
           {/* R7 slot 2 of 3: WO?. `mx-3` is the same 12px inset `cardMx` rests at, so the three
               cards share one left/right edge in every state. */}
-          <motion.div style={{ height: locH, paddingTop: rowGapTop }} className="shrink-0 overflow-hidden">
+          <motion.div style={{ height: locH, paddingTop: rowGapTopReserve }} className="shrink-0 overflow-hidden"> {/* mockup-ok: SEARCH_MORPH.md STILL OPEN after H2 */}
             <motion.div inert={rowsFolded} style={{ opacity: locSlotOp }} className="relative mx-3 h-full overflow-hidden rounded-[20px] bg-white shadow-[0_16px_48px_rgba(10,10,10,0.10)]"> {/* S7: whole slot folded away on focus */}
               <motion.div inert={activeStep !== "location"} style={{ opacity: locT, pointerEvents: locBodyHit }} className="absolute inset-0 flex flex-col p-4"> {/* S7: city input + city rows out of the tab order when collapsed */}
                     {/* C7 (round 2, "does not expand or close"): root cause was that once a
@@ -1716,7 +1763,7 @@ export function SearchOverlay({
           {/* R7 slot 3 of 3: WANN?. `pb-5` is the 20px tail the old fixed `stepsH` literal
               (ROW_H * 2 + 20) carried, kept so the footer lands on exactly the same y as
               before this rewrite. */}
-          <motion.div style={{ height: dateH, paddingTop: rowGapTop, paddingBottom: rowGapBottom }} className="shrink-0 overflow-hidden">
+          <motion.div style={{ height: dateH, paddingTop: rowGapTopReserve, paddingBottom: rowGapBottomReserve }} className="shrink-0 overflow-hidden"> {/* mockup-ok: SEARCH_MORPH.md STILL OPEN after H2 */}
             <motion.div inert={rowsFolded} style={{ opacity: dateSlotOp }} className="relative mx-3 h-full overflow-hidden rounded-[20px] bg-white shadow-[0_16px_48px_rgba(10,10,10,0.10)]"> {/* S7: whole slot folded away on focus */}
               <motion.div inert={activeStep !== "date"} style={{ opacity: dateT, pointerEvents: dateBodyHit }} className="absolute inset-0 flex flex-col px-4 pb-3 pt-4"> {/* S7: the 29-31 day cells out of the tab order when collapsed */}
                     {/* C7: same accordion-collapse as the location heading above. */}
@@ -1827,7 +1874,7 @@ export function SearchOverlay({
 
           {/* R7: ONE footer for every step (it used to be duplicated in both panels, at two
               different heights). It still folds away with the focus expand. */}
-          <motion.div inert={rowsFolded} style={{ height: footerH, opacity: footerContentOp }} className="shrink-0 overflow-hidden"> {/* S7: footer folded away on focus; F1/F2: also gated on the open/close content phase */}
+          <motion.div inert={rowsFolded} style={{ height: footerReserveH, opacity: footerContentOp }} className="shrink-0 overflow-hidden"> {/* S7: footer folded away on focus; F1/F2: also gated on the open/close content phase; mockup-ok: SEARCH_MORPH.md STILL OPEN after H2 */}
             {footerInner}
           </motion.div>
           </motion.div>
