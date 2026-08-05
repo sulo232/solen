@@ -1290,18 +1290,25 @@ want u to keep fixing spa". Researched each object's real mechanics rather than 
       "360 degrees swivel" and "hydraulic pump lever" as the defining mechanics). Ours was doing a
       22-degree nervous sway, which is not a thing a barber chair does. Now `--sway 62` so it turns
       to profile and back, plus `--split-y 0.30 --separate -0.030` so the SEAT sinks on the pedestal.
-      210f, mean jump 1.42, 0 stutter, 0 clipped, loop closes.
+      210f, mean jump 1.42, 0 stutter, 0 clipped, loop closes. Shipped in commit cb9928e8c;
+      flags live at `scripts/capture/turntable-render.mjs:33` (opt defaults) and the render call is
+      recorded in this file above.
 - [x] **Nail polish, `verified:` the cap is THREADED.** The patents describe it as a twist-off
       closure ("any container having a twist-off lid", US20110290080, US8235616). Ours was lifting
       straight up like a pen lid. New `--twist 150` turns the lid about the bottle's own axis as it
       comes off and screws it back down, brush following. 210f, mean jump 0.46, 0 stutter.
+      `--twist` parsed at `scripts/capture/turntable-render.mjs:66`, applied in the render hook
+      alongside `OPEN_LIFT`. Shipped in commit cb9928e8c.
 - [x] **Spa stones, and THIS is why he kept rejecting it.** Rock-balancing sources put the real
       motion exactly: "there is a moment, just before a stone settles, when everything in your hands
       goes still. The wobble slows." Stones do NOT float apart, which is what `--separate` was doing
       and why it read unnatural three rounds running. New `--wobble 6.5` rocks each band a little
       further than the one below and slightly later, decaying to still, stones staying in contact.
-      210f, mean jump 0.19, 0 stutter, loop closes.
-- [x] Blow dryer untouched, as instructed.
+      210f, mean jump 0.19, 0 stutter, loop closes. `--wobble` parsed at
+      `scripts/capture/turntable-render.mjs:71` and applied as a decaying rock per band. Shipped in
+      commit cb9928e8c.
+- [x] Blow dryer untouched, `verified:` `git show --stat cb9928e8c` lists no file under
+      `frames/set-dryer/` and `out/set-dryer.webm` is unchanged from commit ea9d53daa.
 
 Sources: barber chair mechanics from retail spec sheets; nail polish closure from the US patents
 above; rock balancing from Wikipedia's Rock balancing article and the physics-of-balance write-ups.
