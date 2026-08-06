@@ -722,11 +722,22 @@ export function SearchOverlay({
   // only alternative was another bezier; it is not evidence about a sampled curve.
   //
   // `oT` here is `morphT` (already shaped), so this function no longer applies any curve of its own.
+  // K3 (2026-08-06): the `oT < 1` branch used to interpolate FROM `RESTING_TOP` unconditionally,
+  // as if every close started from the composed/unfocused sheet. A close that actually starts
+  // FOCUSED (`ex` above 0) begins its geometry at `settledTop` below, not at `RESTING_TOP`, so
+  // hardcoding `RESTING_TOP` here made the very first close frame snap from the real starting
+  // top (e.g. `focusedTop`) to `RESTING_TOP` before the measured curve had moved at all , the
+  // owner's captured "collapses bottom-up, top stays near the top of the screen" symptom. Both
+  // branches now share ONE settled-top expression (byte-identical to the old `oT >= 1` branch),
+  // so `oT < 1` interpolates from wherever the sheet actually is, ex included, to `origin.top`.
+  // On the OPEN, `ex` is always 0 until the container finishes growing, so `settledTop` reduces
+  // to the old hardcoded `RESTING_TOP` in every case the open exercises , this is a no-op there.
   const topFor = React.useCallback(
     (oT: number, ex: number) => {
+      const settledTop = RESTING_TOP + (focusedTop - RESTING_TOP) * ex;
       const base = oT < 1
-        ? origin.top + (RESTING_TOP - origin.top) * oT
-        : RESTING_TOP + (focusedTop - RESTING_TOP) * ex;
+        ? origin.top + (settledTop - origin.top) * oT
+        : settledTop;
       // K2: `+ vvOffset` puts the sheet's top where the user actually sees it. It is 0 in every
       // state without a visual-viewport scroll, so this is identity everywhere else.
       return Math.max(minTop, base) + vvOffset;
@@ -1250,7 +1261,14 @@ export function SearchOverlay({
     navigate(sp);
   }, [push, navigate]);
 
-  const close = React.useCallback(() => { setInputFocused(false); setActiveStep("service"); setServiceQ(""); setCityQ(""); scrollExpand.set(0); onClose(); }, [scrollExpand, onClose]);
+  // K3 (2026-08-06): `scrollExpand.set(0)` used to sit here, snapping `ex` to 0 in the SAME
+  // commit `onClose()` starts the close's own animation, so `topFor`/`sheetHeight` immediately
+  // lost the focused state a close might have actually started from. The reset that matters is
+  // "a FRESH open always starts unfocused", which the open effect already does (S4's own
+  // precedent: date fields reset there, not in `close()`, "because close() is only one of the
+  // ways the overlay shuts"). Removing it here leaves `ex` frozen at whatever it was for the
+  // whole close, which is exactly what the fixed `topFor` now needs to read.
+  const close = React.useCallback(() => { setInputFocused(false); setActiveStep("service"); setServiceQ(""); setCityQ(""); onClose(); }, [onClose]);
   const reset = React.useCallback(() => { setService(""); setCategory(""); setStadt(initialCity); setIsoDate(""); setSelKey(null); setDateLabel(""); setZeitPeriod(""); setServiceQ(""); setCityQ(""); setActiveStep("service"); setInputFocused(false); collapse(); }, [initialCity, collapse]);
 
   // Rich-search taps. searchTerm: run a specific autocomplete term as the query (keeps
