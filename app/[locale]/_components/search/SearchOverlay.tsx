@@ -129,18 +129,56 @@ const OPEN_CURVE = [
 // visible travel. Exact-final-value-never-changes-again is +583ms top / +600ms height; 99%-of-travel
 // is +308/+383/+400ms. Those three answers differ and only this one is the design decision.
 const OPEN_MS = 0.5;
-// SCRIM_KNEE, 2026-08-05 (J2). R6 picked 0.18 as the `openT` value below which the backdrop starts
-// clearing; it stays that. What is new is that the CLOSE's geometry is now made to FINISH at exactly
-// this value, so one constant states the whole ordering: the box is home before the page comes back.
-// This exists because J1's "hold the scrim up until the box is small" was measured and does not
-// reach zero. Both quantities were monotone in the same driver, so at 375x812 the box's excess
-// height over the resting bar came out at a fixed 97px per unit of scrim opacity: 22px of excess at
-// scrim 0.21, 9px at 0.09, 2px at 0.03. Halving the ratio only rescales that line, it never removes
-// it, because both sides only reach 0 on the same final frame. The only shape with no such frame is
-// one where the geometry lands while the backdrop is still fully up, which is what this constant
-// buys. Read by `morphT` (the close-side rescale) and by `scrimOpacity`, so the two cannot drift
-// apart again the way R6's guarantee silently did when H3 moved the geometry onto `morphT`.
+// SCRIM_KNEE, 2026-08-05 (J2), OPEN-ONLY as of the K2 close rebuild below. R6 picked 0.18 as the
+// `openT` value below which the backdrop starts clearing on the OPEN; that stays, untouched, because
+// the task that follows is explicit: do not touch the open, it already rides its own measured curve.
+// J2's OTHER idea, rescaling the CLOSE's geometry to finish at this same knee, is DELETED (see K2):
+// it was a chosen divisor, not a measurement, and the owner caught the result ("you just made the
+// closing even faster"). The close now reads its own measured curve (CLOSE_CURVE) instead.
 const SCRIM_KNEE = 0.18;
+// CLOSE_MS / CLOSE_CURVE / CLOSE_SCRIM_CURVE, 2026-08-06 (K2). J2 made the close's box finish its
+// whole travel at SCRIM_KNEE (18% of the run) by rescaling `morphT`'s own input, then let the
+// backdrop alone cover the remaining 82%. Owner: "you just made the closing even faster... now we
+// got another problem". Measured cost at the time: the box shrank in ~150ms of the 333ms close and
+// the blur alone kept moving for the final ~150ms with nothing else on screen changing. That was a
+// chosen divisor, not a copy of anything real.
+//
+// This replaces it with his OWN close, extracted the same way OPEN_CURVE was: masking near-white,
+// tracking the card's own rect frame by frame (device px / 3 = pt exactly), off
+// `/Users/sulo/solen/screenshots/airbnb-open-ref_2026-08-03.MP4`. The clip has exactly one close in
+// it (he taps X from the "Where?" step, ~16.20s-16.59s of the recording); there was no second one to
+// choose between. Plateau evidence: 16 frames from t=15.80s to t=16.20s hold a byte-identical
+// whole-frame diff of 0.00-0.05 (compression noise, not motion) while the card sits at its "Where?"
+// rect (top 141pt, bottom 467pt at 402pt device width); the departure frame (whole-frame diff jumps
+// to 8.28, a 170x step) is the tap. Settle is where the backdrop's own edge energy (a texture-based
+// de-blur proxy, immune to the page background being near-white like the card) stops climbing:
+// t=16.5867s, matching the card's rect independently converging on the SAME static rect this file
+// already measured at rest (359.0 x 57.0pt at 21.3,62.3). Real close duration, measured, not chosen:
+// 16.5867 - 16.2367 = 350ms (replaces the guessed 333ms carried over from a different clip).
+//
+// The finding the task asked for: geometry and backdrop do NOT land together, and the direction J2
+// guessed (geometry first, backdrop trails) was RIGHT, but J2's own numbers were nowhere close. The
+// box is front-loaded (91% of its own travel done by 59% of the 350ms, still visibly easing the last
+// 9% in) while the backdrop is back-loaded (0% moved through 65% of the run, then rushes to 98.5% in
+// the closing 35%, over half of that in the last 10%). Two curves, not one knee.
+const CLOSE_MS = 0.35;
+const CLOSE_CURVE_IN = [
+  0, 0.05263, 0.10526, 0.15789, 0.21053, 0.26316, 0.31579, 0.36842, 0.42105, 0.47368,
+  0.52632, 0.57895, 0.63158, 0.68421, 0.73684, 0.78947, 0.84211, 0.89474, 0.94737, 1,
+];
+// Fraction of the box's OWN close travel completed (0 = departure rect, 1 = settled bar), sampled at
+// the CLOSE_CURVE_IN times above (fraction of the measured 350ms).
+const CLOSE_CURVE = [
+  0, 0.086, 0.2222, 0.3344, 0.4353, 0.5336, 0.613, 0.6727, 0.7354, 0.8052,
+  0.8586, 0.8957, 0.9213, 0.9418, 0.9606, 0.9781, 0.9836, 0.9891, 0.9945, 1,
+];
+// Fraction of the backdrop's own clearing completed, same time samples. Stays at 0 through the first
+// ~65% of the close (the page behind is still fully scrimmed while the box is already mostly home),
+// then clears fast at the end.
+const CLOSE_SCRIM_CURVE = [
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0.0052, 0.0207, 0.051, 0.1113, 0.2555, 0.7207, 1,
+];
 // R4c (2026-08-02 round 3, owner "too snappy, it breaks scrolling"): was 120. The expand
 // reallocates real layout space, so while it runs the scroller's own box grows AND its top
 // edge climbs: measured over the old 120px, the scroller gained 382px of height and its top
@@ -161,6 +199,22 @@ type Step = "service" | "location" | "date";
 const STEPS: Step[] = ["service", "location", "date"];
 
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
+// mockup-ok: SEARCH_MORPH.md K2, dispatched fix, port of an owner-scoped close-morph correction.
+// Linear interpolation through a measured curve (xs/ys, e.g. OPEN_CURVE_IN/OPEN_CURVE or
+// CLOSE_CURVE_IN/CLOSE_CURVE). Same job a fixed-range motion-value curve mapping does for one shape,
+// pulled out as a plain function so ONE motion-value callback can pick between the open shape and
+// the close shape on the static `open` boolean, the same branch-inside-one-value pattern this file
+// already uses for contentOp/locSlotOp/dateSlotOp.
+function lut(x: number, xs: readonly number[], ys: readonly number[]): number {
+  const v = clamp01(x);
+  for (let i = 0; i < xs.length - 1; i++) {
+    if (v <= xs[i + 1]) {
+      const t = (v - xs[i]) / (xs[i + 1] - xs[i]);
+      return ys[i] + (ys[i + 1] - ys[i]) * t;
+    }
+  }
+  return ys[ys.length - 1];
+}
 
 function buildMonthGrid(d: Date): (number | null)[] {
   const y = d.getFullYear(), m = d.getMonth();
@@ -636,18 +690,16 @@ export function SearchOverlay({
   // about 100ms is a DO-NOT-REGRESS item. Splitting raw-time from shape keeps the ghost at 110.0ms
   // AND puts the measured curve on the box. One mapping, monotone, a pure function of `openT`, so
   // this is still one continuous set of values over one tree: no threshold, no second clock.
-  // J2 (2026-08-05): the CLOSE's geometry finishes at `SCRIM_KNEE` instead of at 0, by rescaling the
-  // input this curve is read with. On OPEN this is the identity (`open` is true for the whole open,
-  // the focus and the keyboard interaction), so `morphT` is byte-identical to before and no open
-  // DO-NOT-REGRESS item can move. On CLOSE the box completes its whole travel (top, height, width,
-  // left, every slot reserve, the content alpha that rides `morphT`) by the time `openT` reaches
-  // 0.18, and the remaining 0.18 of the run belongs to the backdrop alone. Measured cost, stated
-  // rather than buried: mid-close the box is smaller than it used to be at the same instant, about
-  // 41px at the midpoint of the run, because the same travel is spread over 82% of the driver.
-  // That is the change; the leftover box was the price of not making it.
-  const morphIn = useTransform(openT, (v) => // mockup-ok: SEARCH_MORPH.md J2, close-side rescale of an existing curve
-    (open ? v : clamp01((v - SCRIM_KNEE) / (1 - SCRIM_KNEE))));
-  const morphT = useTransform(morphIn, OPEN_CURVE_IN, OPEN_CURVE); // mockup-ok: SEARCH_MORPH.md H3, measured reference curve
+  // K2 (2026-08-06): J2's rescale (finish the box's whole travel by `openT === SCRIM_KNEE`, chasing
+  // a knee nobody measured on the close itself) is DELETED, not retuned. `morphT` now reads its own
+  // measured curve per direction, off the SAME raw `openT`, on the SAME branch-on-`open` pattern
+  // `contentOp`/`locSlotOp`/`dateSlotOp` already use: OPEN_CURVE (unchanged, still identity-scaled
+  // on `open`, so no open DO-NOT-REGRESS item can move) and CLOSE_CURVE, his own close, extracted
+  // the same way. `openT` runs 1 -> 0 on close, so `1 - openT` is close-progress (0 at the tap,
+  // 1 at settle) and `1 - lut(...)` turns "fraction of the close travelled" back into "fraction
+  // open", the same 0..1 meaning `topFor`/`sheetHeight`/`sheetWidth` below already expect.
+  const morphT = useTransform(openT, (v) => // mockup-ok: SEARCH_MORPH.md K2, measured close curve
+    (open ? lut(v, OPEN_CURVE_IN, OPEN_CURVE) : 1 - lut(1 - v, CLOSE_CURVE_IN, CLOSE_CURVE)));
   // K-A (2026-08-03, owner picked K-A over K-B at public/_mockups/search-keyboard/index.html,
   // SEARCH_MORPH.md K4): R3 used to RISE the sheet by the keyboard inset so it shrank to sit
   // above the keys, which cut whatever row sat on the keyboard line against a hard white edge
@@ -754,13 +806,18 @@ export function SearchOverlay({
   // box, which is exactly the thing the owner kept seeing. Changing the divisor tilts that line; it
   // cannot delete it.
   //
-  // So the compensation is gone and the ORDER is fixed instead, at the geometry (see `morphIn`
-  // above): the box finishes its whole travel at `SCRIM_KNEE`, and only then does this ramp begin
-  // to fall. This line goes back to R6's own single unbranched expression, reading raw `openT`,
-  // identical on open and close, with the literal 0.18 replaced by the shared constant so the
-  // guarantee is now structural instead of a comment that can go stale (which is precisely how R6
-  // broke when H3 moved the geometry onto `morphT`). One motion value, one node, no branch.
-  const scrimOpacity = useTransform(openT, [0, SCRIM_KNEE, 1], [0, 1, 1]); // mockup-ok: SEARCH_MORPH.md R6, J2
+  // K2 (2026-08-06): J2's fix was ordering by CONSTRUCTION (force the geometry to land at the exact
+  // `openT` value this ramp starts falling from) rather than by measurement, and the owner caught the
+  // result. His own close answers the R6 question directly instead: does the backdrop clear WITH the
+  // box or after it, and by how much. Measured (see CLOSE_SCRIM_CURVE above): the backdrop stays at
+  // 0% cleared through the first ~65% of the close, the box is already ~92% collapsed by then, so R6's
+  // invariant (scrim >= sheet at every value of openT) holds, but now because his own recording says
+  // so, not because one constant forces both halves to meet at it. OPEN keeps R6's original unbranched
+  // `[0, SCRIM_KNEE, 1] -> [0, 1, 1]` ramp, byte-identical (`clamp01(v / SCRIM_KNEE)` is the same
+  // three-point curve written as one expression). CLOSE reads `CLOSE_SCRIM_CURVE` off the SAME `openT`
+  // that already drives `morphT`, same branch-on-`open` pattern, no second clock.
+  const scrimOpacity = useTransform(openT, (v) => // mockup-ok: SEARCH_MORPH.md K2, measured close backdrop curve
+    (open ? clamp01(v / SCRIM_KNEE) : 1 - lut(1 - v, CLOSE_CURVE_IN, CLOSE_SCRIM_CURVE)));
   // H1 REVERTED (2026-08-03). H1 added an animated blur RADIUS and an animated tint alpha on top of
   // this layer's existing alpha, on the premise that "the page behind is still clearly readable at
   // +50ms" in the reference. That premise is measured backwards. Same metric (high-pass detail
@@ -1087,25 +1144,20 @@ export function SearchOverlay({
     let cancelled = false;
     if (open) setSheetOpen(true);
     const controls = animate(openT, open ? 1 : 0, {
-      // OPEN_MS (0.5) is measured, not chosen: see the constant. The prior 0.6 was read off "height
-      // is still climbing at 600ms", which is true but is the last third of a POINT crawling in.
-      duration: reduce ? 0 : open ? OPEN_MS : 0.333,
-      // The open is LINEAR on purpose, and this is the whole method change. Every previous round set
-      // this to a bezier somebody picked, then judged the result and picked a different bezier. No
-      // bezier can be one to one with a real recording, because the reference settles exponentially
-      // (constant per-frame decay ratio, a spring) and a fixed-duration bezier lands hard at its
-      // duration. So the shape is not expressed here at all any more: `openT` carries raw time and
-      // `morphT` carries the reference's own sampled fractions. Deleting the curve from here is what
-      // makes the geometry a copy instead of an approximation.
-      //
-      // The CLOSE keeps MORPH_EASE (curve C, which he judged in the side-by-side chooser, and which
-      // is not the complaint). Named cost, because it is a real change and not a no-op: the close's
-      // composed geometry moves from clamp01(MORPH_EASE(t) / 0.8) to OPEN_CURVE(MORPH_EASE(t)), so
-      // measured at 100ms of the 333ms close the sheet sits at 0.823 of open instead of 0.449. Today's
-      // shape hangs for ~50ms and then snaps; the new one is monotone and smoother. That is a
-      // consequence of deleting the `/ 0.8` rather than a second curve I chose, and the reference
-      // recording is an OPEN, so there is no measured close to copy. Worth his eye on the next pass.
-      ease: open && !reduce ? "linear" : MORPH_EASE,
+      // OPEN_MS (0.5) and CLOSE_MS (0.35) are both measured, not chosen: see the constants. The
+      // open's prior 0.6 was read off "height is still climbing at 600ms", true but the last third
+      // of a POINT crawling in; the close's prior 0.333 was carried over from a DIFFERENT clip
+      // (`airbnb-search-open-close_2026-08-02.MP4`) that was never re-measured against his close on
+      // THIS clip (`airbnb-open-ref_2026-08-03.MP4`, 16.2367s to 16.5867s, see CLOSE_MS above).
+      duration: reduce ? 0 : open ? OPEN_MS : CLOSE_MS,
+      // K2 (2026-08-06): the close is now LINEAR too, for the same reason the open already is. Every
+      // round before this one put the close's shape on a CHOSEN bezier applied to `openT`
+      // (MORPH_EASE, then `clamp01(MORPH_EASE(t) / 0.8)`) and then judged the result and picked a
+      // different bezier , eleven rounds of exactly that on the open before it was fixed the same
+      // way. `openT` now carries raw time on BOTH directions and `morphT` carries each direction's
+      // own sampled fractions (OPEN_CURVE / CLOSE_CURVE). Deleting the curve from here is what makes
+      // the close a copy of his recording instead of another guess at one.
+      ease: "linear",
       onComplete: () => { if (!cancelled && !open) setSheetOpen(false); },
     });
     // SPEED FIX 2026-08-03, owner: "the speed is nothing like it". Measured on his own recording by
