@@ -161,7 +161,17 @@ const SCRIM_KNEE = 0.18;
 // box is front-loaded (91% of its own travel done by 59% of the 350ms, still visibly easing the last
 // 9% in) while the backdrop is back-loaded (0% moved through 65% of the run, then rushes to 98.5% in
 // the closing 35%, over half of that in the last 10%). Two curves, not one knee.
-const CLOSE_MS = 0.35;
+// CORRECTED 2026-08-07, and the correction is mine to own: 350ms came from his card's rect
+// converging to its FINAL value, which is the last sub-pixel of settling, not the moment the thing
+// stops being on screen. Measured both closes side by side at 402x874, counting the rows carrying a
+// wide near-white run, i.e. how much CARD is actually present:
+//   ms      0    33    66   100   133   166   200   233   266   300   333
+//   his   332   230   192   172   128    92    80   (page reads back in)
+//   ours  332   232   208   164   158   138   114   108    84    72    66
+// His card is at bar size by roughly 215ms. Ours did not get there until 333ms, so it hung around
+// for an extra ~120ms after his was gone, which is the lingering he kept reporting. The start
+// matches (230 against 232 at 33ms); the divergence is entirely in how long it takes to leave.
+const CLOSE_MS = 0.22;
 const CLOSE_CURVE_IN = [
   0, 0.05263, 0.10526, 0.15789, 0.21053, 0.26316, 0.31579, 0.36842, 0.42105, 0.47368,
   0.52632, 0.57895, 0.63158, 0.68421, 0.73684, 0.78947, 0.84211, 0.89474, 0.94737, 1,
