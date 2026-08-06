@@ -160,6 +160,15 @@ ones removed.
   types fast; a gate that cannot read his instruction turns his own order into a violation, which is
   the worst possible failure for a gate whose entire job is respecting what he asked for.
 
+- [x] (verified: ~/.claude/hooks/no-unrequested-removal-gate.py + no-invented-visual-motif-gate.py)
+  **RECOUNTING IS NOT DOING**, 4/4 and 2/2. Both gates fired repeatedly while I ANSWERED his
+  question about why one of them exists, because the answer necessarily describes the incident that
+  created it. Nothing was being removed and no motif was handed over; a past one was being
+  explained. Between them it cost him three turns of me rewording the same two sentences.
+  Announcing a removal only means something if a removal happened, and a motif can only be handed
+  over if something visual was produced. Both now check the transcript for the act before judging
+  the sentence. A gate that cannot tell recounting from doing makes its own origin story unsayable.
+
 ## Unplanned additions / parked decisions
 - **101 confirmed holes remain**, all listed with their beating phrase. The 32 severity-3 ones are
   the queue.
