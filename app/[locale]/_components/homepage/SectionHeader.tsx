@@ -158,7 +158,10 @@ export function SectionTitle({
         // V3-D346 REVERTED (2026-05-28): bumping to 24/700 was wrong — user wants
         // every section title to match the calm "Für dich" treatment (18px/600), not
         // Uber's big-bold headers. Restraint is the house style here. Back to 18/600.
-        className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.25] tracking-[-0.01em] text-s-ink"
+        // OWNER PICK 2026-08-06, direction D. Tracking off and the size up one step: the chooser's
+        // D rendered section titles at 22px with tracking 0, and he answered "D". The arbitrary
+        // tracking utility here is what the global heading rule cannot reach, so it goes with it.
+        className="font-display text-[clamp(20px,2.2vw,22px)] font-semibold leading-[1.25] text-s-ink"
       >
         {title}
         {link ? (

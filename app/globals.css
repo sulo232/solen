@@ -129,7 +129,15 @@
     /* 2026-05-30: Inter Tight display, Geist (V3-D317) reverted per user. */
     font-family: var(--font-inter-tight), "Inter Tight", system-ui, -apple-system, sans-serif;
     color: var(--color-heading);
-    letter-spacing: -0.025em;
+    /* OWNER PICK 2026-08-06, direction D from the four-way type chooser
+       (public/_mockups/home-type/index.html), answered with a single "D". He said the home page
+       fonts were "nothing like Airbnb rounded welcome type stuff". D was the direction that KEEPS
+       Inter Tight and attacks the coldness where it actually lives, in the tracking, rather than
+       swapping the typeface. That matters because the face is set once in app/layout.tsx and
+       applies to every screen, so B or C would have moved the PDP, booking and dashboard too, and
+       the font row is frozen in the design contract. Tightened tracking is what reads clipped and
+       technical; at 0 the same face reads open and welcoming. Was -0.025em. */
+    letter-spacing: 0;
   }
 
   /* ── Global button press feedback ─────────────────────────── */

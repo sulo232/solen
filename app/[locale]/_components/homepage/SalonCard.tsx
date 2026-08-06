@@ -512,7 +512,9 @@ export function SalonCard({
       <div className="mt-2 px-[2px] flex flex-col gap-[2px]">
         <div className="flex items-baseline gap-2">
           {/* V3-D348: name anchor via <CardName> primitive (bakes text-s-ink font-medium). */}
-          <CardName as="h3" className="text-[14px] leading-[1.25] tracking-[-0.01em] truncate min-w-0 flex-1">
+          {/* OWNER PICK 2026-08-06, direction D: tracking off, name weight up to 600. The global
+              heading rule cannot reach this arbitrary utility, so the card name carries it here. */}
+          <CardName as="h3" className="text-[14px] font-semibold leading-[1.25] truncate min-w-0 flex-1">
             {name}
           </CardName>
           {/* V3-D348: rating meta via <CardMeta> primitive (bakes text-s-ink-2 font-normal). */}
