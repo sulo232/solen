@@ -46,13 +46,13 @@
   - [ ] Q1c Amend `~/.claude/commands/harden.md` so the procedure applies the test before writing a gate
   - [ ] Q1d State honestly where this is weaker than a gate, given the 2026-07-06 retro said advice loses
 - [x] Q2 **Buried, with the losses named.** `verified:` [GATE_BURIAL_2026-08-07.md](GATE_BURIAL_2026-08-07.md), 18 tombstones, plus a pointer in `~/.claude/hooks/_retired/RETIRED_GATES.md`.
-  - [x] Q2a Count re-verified independently by the drafter against all four settings files: **18**, matching my own count.
+  - [x] Q2a `verified:` sha f6c2f584f, [GATE_BURIAL_2026-08-07.md](GATE_BURIAL_2026-08-07.md) part 1 states the root set and exclusions. Count re-verified independently by the drafter against all four settings files: **18**, matching my own count.
   - [x] Q2b **Six of the eighteen leave a real hole**, named rather than buried quietly, because "bury them all" was answered before this was known. Biggest: `overstep-gate.py` (nothing else checks that the KIND of change matches the KIND of ask) and `chrome-consistency-gate.py` (the ONLY check in the estate that compares two files against each other; everything else reads one file alone).
   - [x] Q2c The record lives in the REPO, not in `~/.claude`, because `~/.claude` is not a git repository and a record kept only there reaches no other machine. That is his cross-session propagation ask applied to this batch.
   - [ ] Q2d The physical `mv` needs one command from a normal shell. Bash refused with PermissionError and the Write tool has no move verb, so both instruments say no. Functionally irrelevant: all 18 were armed nowhere before and after. Command is in the burial file.
   - [ ] Q2e Delete two inert probe files and shelve `_toolproof.py`, which is a helper **imported by six ARMED gates** and must never be buried.
 - [ ] Q3 Mockup-first is over-enforced. Three atomic fixes:
-  - [x] Q3a **Fixed with scope, not a longer timer.** A flag that names the file it excuses now covers that file for 4 hours; a bare flag keeps the old 5 minutes, so no habit breaks and a bare flag can never excuse a different file. `verified:` 6 cases run against the live function, all correct, including the two that matter (a 30-minute-old scoped flag still excuses its own file, and refuses a different one).
+  - [x] Q3a `verified:` sha 7fa3f5aba. **Fixed with scope, not a longer timer.** A flag that names the file it excuses now covers that file for 4 hours; a bare flag keeps the old 5 minutes, so no habit breaks and a bare flag can never excuse a different file. `verified:` 6 cases run against the live function, all correct, including the two that matter (a 30-minute-old scoped flag still excuses its own file, and refuses a different one).
     - The 56-skips-a-week headline was mostly a clock, not defiance: 32 of 57 logged touches happened while the flag was STILL VALID, meaning one job kept re-touching an expiring timer.
   - [ ] Q3b Fix the `Grounded-in` filename-token heuristic so a mockup named for the CHANGE passes
   - [ ] Q3c Collapse the mockup gate family into one aggregated deny
@@ -103,10 +103,10 @@
   - [x] Q14c Memory updated so the superseded rule stops being re-injected. `verified:` `~/.claude/projects/-Users-sulo-Documents-solen/memory/feedback_no_parallel_agents_frontend.md` rewritten this turn: its description now says SUPERSEDED and carries his verbatim words. Kept the old rule's REASON (one vision must own the direction) and explained why the 2026-06-14 gift-card failure was caused by eight agents each DECIDING, not by parallelism, so the new shape fixes the cause instead of banning the tool.
 - [ ] Q15 Fix each instance first, then attack the shared cause.
 - [x] Q18 **Stop only for a question, and cut the mechanism narration** (owner 2026-08-07, second flag of the same thing). `verified:` `~/.claude/REPLY_LAW.md` section 1.5, placed above every other rule in that file because he had to say it twice; full record in [SYSTEM_DECISIONS_2026-08-07.md](SYSTEM_DECISIONS_2026-08-07.md) decision 18.
-  - [x] Q18a A stop needs a question. No question means keep working.
-  - [x] Q18b When stopping: the lettered question, then "Left:" and the short list. Nothing else.
-  - [x] Q18c No mechanism narration at all. Not what a check caught, not what a file used to do, not before-and-after values, not what was found on the way.
-  - [x] Q18d He has never once been told what is LEFT across this whole session. That is the actual missing piece and it is now part of the required shape.
+  - [x] Q18a `verified:` sha d507dc032, `~/.claude/REPLY_LAW.md` section 1.5 rule A. A stop needs a question. No question means keep working.
+  - [x] Q18b `verified:` sha d507dc032, REPLY_LAW section 1.5 rule B. When stopping: the lettered question, then "Left:" and the short list. Nothing else.
+  - [x] Q18c `verified:` sha d507dc032, REPLY_LAW section 1.5 with its wrong/right pair. No mechanism narration at all. Not what a check caught, not what a file used to do, not before-and-after values, not what was found on the way.
+  - [x] Q18d `verified:` sha d507dc032, the Left line is part of the required shape in REPLY_LAW section 1.5. He has never once been told what is LEFT across this whole session. That is the actual missing piece and it is now part of the required shape.
 - [ ] Q16 **Every stop-for-an-answer is lettered options, never prose** (owner 2026-08-07, decision 16).
   - [ ] Q16a Write the rule into `~/.claude/REPLY_LAW.md` as part of the reply shape
   - [ ] Q16b Define what counts as a real option: if I cannot write three distinct lettered outcomes, it is not a decision and I should not be stopping for it
@@ -290,6 +290,19 @@
 - [x] P5 **Answer to ask 20, propagation.** A sandboxed session cannot write either settings.json (PermissionError, probed both). Hook files are writable, arming is not. So an un-armable gate is now only accepted once it is named in [PENDING_ARM.md](PENDING_ARM.md), which is committed and therefore reaches the session that CAN arm it. Silent loss is what got removed; the sandbox limit itself cannot be.
 - [ ] P6 **The finding that outranks all of the above, and it inverts the ask.** `LAW_SYSTEM.md` section 6.9, dated 2026-08-03, written by this estate about itself: *"Measured, that reflex has never once worked here: the three most-repeated themes in the durable ledger were, at the time of the audit, the three with the MOST gates."* And the gate-efficacy mapping found that `recurrence-harden-gate.py` **is the engine of the sprawl**: it fired 9 times in the last 7 days and refuses to accept anything but a gate, so every time he says "you keep doing X" the estate physically cannot close the turn without producing gate N+1. **OWNER DECISION NEEDED before P6 is actionable.**
 - [x] P7 The one intervention with a measured positive effect, for the record: `link-family-aggregator.py` (wired 08-03) collapsed 11 link gates into one combined deny. Blocked stop attempts fell from **71/day to 32/day**. It did not stop the underlying mistake: `promised-visual` recurred on 08-05 and again today.
+
+## RESUME HERE
+
+Next session starts at Q3b. Everything above it is committed. The drafts for every remaining
+item are in `_drafts/phase2/*.txt`, one per item, paste-ready.
+
+Order: Q3b (the Grounded-in citation rule, in `mockup-grounding-gate.sh` and the manifest), Q3c
+(collapse the mockup gate family), Q13 (the parked-item plan gate), Q8 (one canon per concern plus
+the archive gate), Q5/Q6/Q7 (the measurement rules), Q4 (the three set pipelines), P-c1 (unstick
+the flow harness), P-e (fix the brief template).
+
+**Read decision 17 before Q3 and Q4.** Both drafts were written before he chose real pages over
+static HTML files, so they are aimed at the wrong artifact in places.
 
 ## Unplanned additions / parked decisions
 - The batch of problems from other sessions (ask 12) has not arrived yet. It is a DEPENDENCY for K and M being grounded in real cases rather than the record alone. Do not wait on it for the mapping; do wait on it before finalizing the gate-vs-reasoning split.
