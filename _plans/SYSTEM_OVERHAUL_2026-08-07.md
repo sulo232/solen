@@ -87,10 +87,21 @@
   - [ ] Q13a A parked item must be WRITTEN INTO THE PLAN in the same turn
   - [ ] Q13b **Build the plan gate that enforces it** (owner: "we will serve like a plan gate... don't forget about those")
 - [ ] Q14 **I orchestrate design, I do not build it.** Two rules:
-  - [ ] Q14a I write the precise brief and dispatch; I do not hand-build mockups
-  - [ ] Q14b **Fan out MANY design subagents in parallel**, never one at a time. Supersedes `feedback_no_parallel_agents_frontend` for design.
+  - [x] Q14a The pipeline that fires on every UI task now says orchestrate, not build. `verified:` `~/.claude/skills/fable-frontend/SKILL.md` step 5 rewritten. **This was the real leak:** that line still read "One coherent pass; never parallel agents on frontend", and the skill auto-fires at the start of every UI task, so the superseded ban was re-injecting itself every single time. Same failure as the sandbox memory earlier today: written down as fact, therefore re-believed instead of re-checked.
+- [x] Q14a2 The two missing agents exist. `verified:` `~/.claude/agents/mockup-builder.md` (executes ONE variant, one VARY axis, never decides direction, never touches a shared skip flag) and `~/.claude/agents/design-critic.md` (renders at 402x874 and measures; grades COMPLIANCE only, never taste, never picks a winner).
+  - [x] Q14b The fan-out shape is written and its width is reasoned. `verified:` fable-frontend step 5. Directions 3 to 5, one per screen for a flow or family. **Build fans out; critique stays single**, because parallel judges on one scope return contradictory verdicts.
+  - The brief's load-bearing line is **VARY versus FIXED**: exactly one axis is the agent's, everything else is a decision I already made. That is the structural answer to the gift-card failure the old ban was protecting against. Run those eight agents serially and you get the same eight salon-branded cards, just slower, so concurrency was never the cause. Decision authority was.
+  - Honest cost, stated by the drafter and worth keeping: fan-out does not remove work, it moves it earlier. Six briefs need six things measured first, by me, serially. **A thin brief is worse than a serial agent**, because it fans the same wrong assumption out N-wide and faster.
   - [x] Q14c Memory updated so the superseded rule stops being re-injected. `verified:` `~/.claude/projects/-Users-sulo-Documents-solen/memory/feedback_no_parallel_agents_frontend.md` rewritten this turn: its description now says SUPERSEDED and carries his verbatim words. Kept the old rule's REASON (one vision must own the direction) and explained why the 2026-06-14 gift-card failure was caused by eight agents each DECIDING, not by parallelism, so the new shape fixes the cause instead of banning the tool.
 - [ ] Q15 Fix each instance first, then attack the shared cause.
+
+### Parked, surfaced here per decision 13 (owner call, not mine)
+
+- [ ] P-a **How many variants do you actually want side by side?** Capped at 3 to 5 because you compare them on a phone. You set 12 and 40 for research where nobody looks at the output. That cap is reasoned, not asked.
+- [ ] P-b **Should the critic ever say which one is better?** Built so it cannot: it grades compliance, you grade taste. That is the conservative reading of your decision 6. Say if you want a recommendation attached.
+- [ ] P-c **Does the orchestration gate get extended to cover mockups?** It exempts `.html`, which is every one of the 238 mockups, so "you orchestrate, you do not build" is enforced by nothing for the exact artifact you were talking about. Extending it edits an existing gate rather than adding one, but you just froze gate growth, so this is your line to draw.
+- [ ] P-d **`design-verifier`: teach it to render, or retire it for mockups?** It checks mockups with `curl | head -c 50000` and cannot see a single render-time floor it is officially responsible for.
+- [ ] P-e **The 15KB brief template:** repair and scope it to route rebuilds, or retire it? It points at a worktree that no longer exists and tells the verifier to accept a focus ring you have killed three times.
 
 ### B. Agent flow for mockups
 - [x] B1 Document the CURRENT literal flow end to end. **There is no pipeline. There is a prose checklist, 86 gates on a single Write, and me working alone in the main thread.** `verified:` mapping agent `map:agent-mockup-flow`, run wf_5e0543b6-57b, journal.jsonl.
