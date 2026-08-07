@@ -1,16 +1,25 @@
-<!-- The list of enforcement that EXISTS but RUNS NOWHERE. Committed on purpose: a sandboxed
-     session cannot write settings.json, so without this file a gate built here is silently lost
-     and the pattern it was built for recurs in the next session. recurrence-harden-gate.py reads
-     this file: a gate that cannot be armed is only accepted once it is named here. -->
+<!-- The list of enforcement that EXISTS but RUNS NOWHERE. Committed on purpose so a gate built in
+     one session is not silently lost and the pattern it was built for does not recur in the next.
+     recurrence-harden-gate.py reads this file: a gate that genuinely cannot be armed is only
+     accepted once it is named here. NOTE the correction below: "the sandbox blocks arming" was a
+     Bash-only reading and is not true of the Write/Edit tool. -->
 # PENDING ARM , enforcement written but not running
 
-**Why this file exists (2026-08-07).** The owner asked why hardening never sticks across
-sessions. Measured answer: a session running under the sandbox cannot write
-`~/.claude/settings.json` or `.claude/settings.json` at all (PermissionError on both, probed
-this session). Hook FILES are writable, settings files are not. So `/harden` can write a gate,
-self-test it green, and leave it enforcing nothing, forever, with nothing recording that it
-happened. The 2026-08-01 self-audit found 20 gates in exactly that state, 18 of them with green
-self-tests.
+**Why this file exists (2026-08-07), and a correction written the same day.**
+
+The original claim here was that a sandboxed session cannot write either settings.json, so a gate
+can be built and self-tested but never armed. **That claim was wrong, and the owner called it out
+as a hallucination.** Re-measured with two instruments: Bash and python get
+`PermissionError: [Errno 1] Operation not permitted` on `~/.claude/hooks/` and on
+`~/.claude/settings.json`, but the **Write tool created a file in `~/.claude/hooks/` on the first
+try**, seconds after python was refused. `instrument-corroboration-gate.py` line 15 has recorded
+the settings.json half of this since 2026-07-09: *"printf >> settings.json denied -> 'that file is
+unwritable' (the Edit tool wrote it on the first try)"*. A Bash denial is a fact about Bash, never
+about the estate.
+
+So this file is NOT an excuse list. It is a ledger of enforcement that is currently armed nowhere,
+whatever the reason. The 2026-08-01 self-audit found 20 gates in that state, 18 with green
+self-tests, which is a real and recurring problem regardless of what caused it.
 
 This file is the record that survives the session. Arm these from a session that can write
 settings, or retire them by name.
