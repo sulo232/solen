@@ -1321,24 +1321,31 @@ correct target.
 
 - [x] Confirmed the mesh really is from HIS icon, `verified:` re-downloaded job
       03283605-dcb2-47fd-9614-90c0b9fe2a22 and md5'd it against the file on disk. Identical,
-      101ba381fd61197d1072bba0ef98cdcb. That earlier step did land.
+      101ba381fd61197d1072bba0ef98cdcb. That earlier step did land. Mesh at
+      `public/_pixel-refs/solen-icons/mesh/obj-spa.glb`; shipped in commit eb107a485.
 - [x] **GREEN FLECKS, 36 of them, now 0 across all 210 frames.** The leaf's colour was smeared
       down over the stones by the UV unwrap. Brightness could not separate them from the leaf (the
       flecks reach 0.74 and the leaf drops to 0.53) but HEIGHT can, since the leaf only ever sits at
-      the top. New `--desat-below` greys saturated pixels below a fraction of the object.
+      the top. New `--desat-below` parsed at `scripts/capture/turntable-render.mjs:93`, applied in
+      the post-process pixel loop. Shipped in commit eb107a485.
 - [x] **A real ordering bug found while doing it.** The first attempt only moved the flecks 36 to 33.
       Cause: `sat` is read once per pixel, so the later `--hue` retarget keyed off the stale value
       and repainted the green straight back over what had just been greyed. Fixed with a flag.
-      That bug would have silently defeated any future use of this lever too.
+      That bug would have silently defeated any future use of this lever too. The `desatted` flag
+      and the guard on the hue branch are both in commit eb107a485.
 - [x] **Brightness now matches, `verified:`** mean luminance 105.5 to **79.8**, against his 79.4.
-      It had been 40% lighter than his own icon.
+      It had been 40% lighter than his own icon. Both figures are mean luminance over the
+      alpha>180, luminance<180 core of the REST frame (`frames/set-spa/001.png`) against the same
+      measure on `public/icons/categories/spa.png`, edge pixels eroded out. Commit eb107a485.
 - [x] Found and fixed my own wrong lever: I spent three renders pushing `--val-mul` from 0.72 to
       0.50 and the mean moved 105.5 to 104.8, because `--val-mul` sits inside the saturated branch
-      and the stones are near-neutral. `--neutral-val` is the lever that reaches them.
+      and the stones are near-neutral. `--neutral-val` is the lever that reaches them, applied at
+      the `sat < 0.22` branch of the post-process loop in `scripts/capture/turntable-render.mjs`.
 - [x] **A taste lesson worth keeping:** at one point the numbers matched his icon almost exactly
       (mean 69.9 std 28.3 against 74.9 / 25.5) and the render looked WRONG, like glossy black
       obsidian, because I had bought the statistics with hard specular instead of soft form shading.
-      Matching a summary statistic is not matching the look. Dropped gloss 0.85 to 0.22.
+      Matching a summary statistic is not matching the look. Dropped gloss 0.85 to 0.22, shipped in
+      commit eb107a485.
 
 **NAMED CEILING, not fixed:** shading variation is 14.2 against his 30.5. His stones have a strong
 light-top to dark-underside gradient; ours are close to uniform. This is the MESH, not the render:
