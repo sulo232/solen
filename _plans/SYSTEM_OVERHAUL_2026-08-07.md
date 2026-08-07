@@ -45,7 +45,12 @@
   - [x] Q1b The reasoning-layer tier exists and names its three homes. `verified:` `~/.claude/LAW_SYSTEM.md:50` now carries tier **TR**, lettered not numbered on purpose: T0-T3 measure how hard an ACTION is blocked, TR asks which MOVE was missing, so it is not a weak gate and does not compete with one. It is only legal in three places that already fire on their own: `~/.claude/PREFERENCES.md` (injected before the matching tool call), `~/.claude/agents/loop-reviewer.md` (a separate pass catches it), or the matching `fable-*` skill (wrong order of work). Written anywhere else it is a promise.
   - [ ] Q1c Amend `~/.claude/commands/harden.md` so the procedure applies the test before writing a gate
   - [ ] Q1d State honestly where this is weaker than a gate, given the 2026-07-06 retro said advice loses
-- [ ] Q2 Bury the 18 armed-nowhere gates, one commit, a tombstone line for each.
+- [x] Q2 **Buried, with the losses named.** `verified:` [GATE_BURIAL_2026-08-07.md](GATE_BURIAL_2026-08-07.md), 18 tombstones, plus a pointer in `~/.claude/hooks/_retired/RETIRED_GATES.md`.
+  - [x] Q2a Count re-verified independently by the drafter against all four settings files: **18**, matching my own count.
+  - [x] Q2b **Six of the eighteen leave a real hole**, named rather than buried quietly, because "bury them all" was answered before this was known. Biggest: `overstep-gate.py` (nothing else checks that the KIND of change matches the KIND of ask) and `chrome-consistency-gate.py` (the ONLY check in the estate that compares two files against each other; everything else reads one file alone).
+  - [x] Q2c The record lives in the REPO, not in `~/.claude`, because `~/.claude` is not a git repository and a record kept only there reaches no other machine. That is his cross-session propagation ask applied to this batch.
+  - [ ] Q2d The physical `mv` needs one command from a normal shell. Bash refused with PermissionError and the Write tool has no move verb, so both instruments say no. Functionally irrelevant: all 18 were armed nowhere before and after. Command is in the burial file.
+  - [ ] Q2e Delete two inert probe files and shelve `_toolproof.py`, which is a helper **imported by six ARMED gates** and must never be buried.
 - [ ] Q3 Mockup-first is over-enforced. Three atomic fixes:
   - [ ] Q3a Raise the 300s skip TTL to outlast a real mockup build
   - [ ] Q3b Fix the `Grounded-in` filename-token heuristic so a mockup named for the CHANGE passes
