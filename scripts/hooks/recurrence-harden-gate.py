@@ -38,6 +38,29 @@ HARNESS_PAT = re.compile(
     r"CHECKBOX WITHOUT EVIDENCE|UNFINISHED-BATCH|GATE v?\d|[a-z-]+-gate\.py|task-notification)", re.I)
 NOT_HOOKABLE_PAT = re.compile(r"not mechanically hookable because", re.I)
 
+# 2026-08-07, owner: "you tell me this problem, right, and your behavioral problems, but then you
+# don't make any fix, you don't make any hooks, you don't make any gates... that's also something
+# we need a gate for."
+#
+# The original gate fires only when HE names a recurrence. This arm fires when *I* diagnose my own
+# behaviour in the closing message and ship nothing that changes it. That was the whole shape of
+# 2026-08-07: several long, accurate self-diagnoses handed over as prose, with the diagnosis itself
+# presented as the deliverable. A named problem with no enforcement change is a confession, not a
+# fix, and it costs him a turn to discover that.
+#
+# Deliberately narrow so it stays objective: it needs a FIRST-PERSON statement about my own
+# pattern, not any admission of a one-off mistake. "I got that wrong" does not trip it. "I keep
+# doing X" does.
+SELF_DIAGNOSIS_PAT = re.compile(
+    r"\b(i|my)\b[^.\n]{0,60}\b("
+    r"keep (doing|making|writing|sending|treating|reading|stopping|repeating|forgetting)"
+    r"|kept (doing|treating|reading|repeating)"
+    r"|(have|had|has) been (treating|using|reading|doing|writing|sending)"
+    r"|the (loop|pattern|behaviou?r|failure mode) (is|was)"
+    r"|that is (the|my) (pattern|behaviou?r|failure)"
+    r"|root cause (is|was) (me|my|mine)"
+    r")", re.I)
+
 def project_dir():
     return os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()
 
@@ -196,6 +219,27 @@ def main():
     if not tp:
         return 0
     recur_ts, final = scan_transcript(tp)
+
+    # ARM 2 (2026-08-07): I diagnosed my OWN behaviour pattern in the closing message. Same demand
+    # as when he names it, because a named problem with no enforcement change is a confession and
+    # not a fix. Anchored to the last user message rather than to a recurrence flag, since there
+    # may not be one.
+    self_diag = bool(SELF_DIAGNOSIS_PAT.search(final or ""))
+    if not recur_ts and self_diag:
+        last_user_ts = None
+        try:
+            for line in open(tp, encoding="utf-8"):
+                try:
+                    j = json.loads(line)
+                except Exception:
+                    continue
+                m = j.get("message") or {}
+                if m.get("role") == "user" and j.get("timestamp"):
+                    last_user_ts = j["timestamp"]
+        except OSError:
+            pass
+        recur_ts = last_user_ts
+
     if not recur_ts:
         return 0
     since = parse_ts(recur_ts)
