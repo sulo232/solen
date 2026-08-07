@@ -44,3 +44,25 @@ discarding it, and it puts the judgment where it belongs. Recorded because I got
   running. Nine builders dispatched in parallel, which is decision 14 in use on its first day.
 - **The sets session:** *start it now, in parallel*, not later. So Q4 is in the same fan-out as
   everything else rather than parked.
+
+
+## Decision 16, added 2026-08-07 after four turns of prose questions
+
+**Owner verbatim:** *"lets do this if you stop cz u need my answer make an abc or yk like clear sh
+add it to the plan to create ths too"*
+
+**The rule.** If a turn stops because I need his answer, the question is delivered as LETTERED
+OPTIONS, never as prose. A, B, C. One line each. My pick marked. He replies with a letter.
+
+This is not a style preference, it is the difference between a decision he can make in three
+seconds on a phone and one that costs him a turn of typing. He already answers this way and has
+for months: *"1a 2 your pick 3b 4 b 5 no dark mode"* (TASTE_LOG 2026-07-15). The failure was mine,
+writing questions as paragraphs he had to parse and then compose an answer to.
+
+**What counts as an option.** A real fork with a real consequence, not "should I keep going". If I
+cannot write three distinct lettered outcomes, the thing is not a decision and I should not be
+stopping for it.
+
+**Where it binds.** Everywhere a turn ends on an unanswered question: in chat, in a plan file, and
+on any served question page. The Taste-Lab page format already does this correctly; chat replies
+were the gap.
