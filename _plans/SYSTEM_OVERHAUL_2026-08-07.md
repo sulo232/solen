@@ -69,7 +69,14 @@
   - [ ] Q9a Ban self-test scores in a reply ("5/5", "3 of 3 runs")
   - [ ] Q9b Ban the file-touched list
   - [ ] Q9c Ban gate jargon (gate names, hook names, exit codes)
-  - [ ] Q9d **RESEARCH how to write it** (owner: "it's visually unpleasing, so research that"). Not guess. Then write the reply-shape law.
+  - [x] Q9d **RESEARCHED, then written.** `verified:` `~/.claude/REPLY_LAW.md`, 148 lines, plus a pointer as rule 21 in `~/.claude/CLAUDE.md` so it is reachable from the file that is always in context.
+  - The measurement, and I checked its scope myself before believing it: **7,568** session transcripts exist across all 25 solen project dirs; the drafter said 7,574, a six-file difference explained by files written since its scan. Corpus is real.
+  - The finding that matters: **a reply naming three or more files preceded a complaint 33% of the time and praise only 6%.** Five times more common ahead of a complaint. That is the sharpest split of any signal measured.
+  - **Length separated the two groups far less than this estate assumed**, which is decision Q10 in one number. A table separated them not at all, so tables are NOT banned.
+  - External sources are all named and linked (Nielsen Norman on scanning and mobile reading, plainlanguage.gov, the Army's bottom-line-up-front regulation, Gigerenzer on why a percentage fails a non-specialist). No invented statistics.
+  - **Contradiction surfaced:** `report-summary-gate.py` BLOCKS a turn unless the reply names most files it touched, which is the exact thing he said he does not care about at all. His dated decision wins; that gate goes. Queued as Q9e.
+  - **Also found:** `plain-english-gate.py` is on disk wired to nothing, so the gate he asked for by name on 2026-07-31 has never enforced anything.
+- [ ] Q9e Retire `report-summary-gate.py`. It enforces the file list he just banned.
 - [ ] Q10 Same as Q9. Length was never the axis; organization and readability are.
 - [ ] Q11 One page per substantial task + a standing page of every open decision.
   - [ ] Q11a The per-task question page (the format is proven; this session's page is the reference)
