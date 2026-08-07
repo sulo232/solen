@@ -30,7 +30,7 @@ if (!glbPath || !outdirArg) {
   console.error("Usage: node scripts/capture/turntable-render.mjs <model.glb> <outdir> [--frames 51] [--fps 30] [--size 180x162] [--hold-in 6] [--hold-out 12] [--turns 1]");
   process.exit(1);
 }
-const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7, hueShift: null, satMul: 1, valMul: 1, tilt: 0, bob: 0, gloss: 0, neutralVal: null, puffOffset: '0,0,0', puffInset: 0, airWave: 0, sway: 0, splitY: [], openDeg: 0, separate: 0, openLift: null, neutralCon: 0.62, jitter: 0, brush: null, hueMinVal: 0, twist: 0, wobble: 0 };
+const opt = { frames: 51, fps: 30, size: "180x162", holdIn: 6, holdOut: 12, turns: 1, stageUrl: null, startAngle: 0, exposure: 1.05, lift: 1.0, tonemap: 'aces', sat: 1.0, puff: null, puffDir: '-1,0.15,0', puffSize: 0.20, puffCount: 7, hueShift: null, satMul: 1, valMul: 1, tilt: 0, bob: 0, gloss: 0, neutralVal: null, puffOffset: '0,0,0', puffInset: 0, airWave: 0, sway: 0, splitY: [], openDeg: 0, separate: 0, openLift: null, neutralCon: 0.62, jitter: 0, brush: null, hueMinVal: 0, twist: 0, wobble: 0, desatBelow: 0 };
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
   // ES modules are blocked over file:// by CORS (origin null), so when the outdir sits under
@@ -86,6 +86,11 @@ for (let i = 0; i < argv.length; i++) {
   // "there is a moment, just before a stone settles, when everything goes still. The wobble slows."
   // So the natural motion is a rock that DECAYS into equilibrium, not a separation.
   else if (a === "--wobble") opt.wobble = Number(argv[++i]);    // peak rock in degrees, decaying
+  // Kill texture bleed by HEIGHT. The spa mesh has the leaf's green smeared across the stones by the
+  // UV unwrap: 36 stray green pixels below, against 311 in the leaf itself. Brightness cannot
+  // separate them (the speckles reach 0.74 and the leaf drops to 0.53) but height can, because the
+  // leaf is only ever at the top. Desaturate saturated pixels below this fraction of the object.
+  else if (a === "--desat-below") opt.desatBelow = Number(argv[++i]);
   // Which angle the clip RESTS on. Measured, not guessed: pick the frame where the subject
   // reads most front-on, then pass its rotation here so frame 1 and frame 51 both land there.
   else if (a === "--start-angle") opt.startAngle = Number(argv[++i]);
@@ -536,6 +541,7 @@ window.__VALMUL = ${opt.valMul};
 window.__NEUTVAL = ${opt.neutralVal === null ? 'null' : opt.neutralVal};
 window.__NEUTCON = ${opt.neutralCon};
 window.__HUEMINV = ${opt.hueMinVal};
+window.__DESATBELOW = ${opt.desatBelow};
 const TILT = ${opt.tilt} * Math.PI / 180;
 const BOB = ${opt.bob};
 const SPLIT_Y = ${JSON.stringify(opt.splitY)};
@@ -606,6 +612,18 @@ window.__renderAt = (rad, puffT, t, wt) => {
   const ctx = g.getContext("2d"); ctx.drawImage(c, 0, 0);
   const img = ctx.getImageData(0, 0, g.width, g.height), d = img.data, k = window.__SAT;
   const HUE = window.__HUE, SM = window.__SATMUL, VM = window.__VALMUL;
+  // where the object sits vertically on the canvas, so --desat-below can work in object-relative
+  // terms rather than in canvas pixels
+  let yTop = g.height, yBot = 0;
+  if (window.__DESATBELOW > 0) {
+    for (let i = 3; i < d.length; i += 4) {
+      if (d[i] <= 25) continue;
+      const y = Math.floor((i - 3) / 4 / g.width);
+      if (y < yTop) yTop = y;
+      if (y > yBot) yBot = y;
+    }
+  }
+  const span = Math.max(1, yBot - yTop);
   for (let i = 0; i < d.length; i += 4) {
     if (d[i + 3] === 0) continue;
     // BUG, found 2026-08-02: this whole block used to sit inside the HUE !== null guard, so
@@ -617,6 +635,18 @@ window.__renderAt = (rad, puffT, t, wt) => {
       const r0 = d[i] / 255, g0 = d[i + 1] / 255, b0 = d[i + 2] / 255;
       const mx = Math.max(r0, g0, b0), mn = Math.min(r0, g0, b0), df = mx - mn;
       const sat = mx === 0 ? 0 : df / mx;
+      // sat is read once at the top of this pixel, so a later branch that keys off it would
+      // happily repaint what this one just greyed. Measured: without the flag the speckles only
+      // fell 36 to 33, because the --hue retarget below was putting the green straight back.
+      let desatted = false;
+      if (window.__DESATBELOW > 0 && sat >= 0.12) {
+        const y = Math.floor(i / 4 / g.width);
+        if ((y - yTop) / span > window.__DESATBELOW) {
+          const g2 = mx * 255;
+          d[i] = g2; d[i + 1] = g2; d[i + 2] = g2;
+          desatted = true;
+        }
+      }
       if (sat < 0.22 && window.__NEUTVAL !== null) {
         // Retarget the LEVEL, keep the RELIEF. The old form multiplied by the target
         // (NEUTVAL * (0.42 + 0.58*rel)), which at a dark target squeezed the object's whole
@@ -639,7 +669,7 @@ window.__renderAt = (rad, puffT, t, wt) => {
         const g2 = mx * 255;
         d[i] = g2; d[i + 1] = g2; d[i + 2] = g2;
       }
-      if (sat >= 0.22 && HUE !== null && mx >= window.__HUEMINV) {
+      if (!desatted && sat >= 0.22 && HUE !== null && mx >= window.__HUEMINV) {
         const S = Math.max(0, Math.min(1, sat * SM)), V = Math.max(0, Math.min(1, mx * VM));
         const h6 = HUE * 6, ii = Math.floor(h6), f = h6 - ii;
         const pv = V * (1 - S), q = V * (1 - S * f), t = V * (1 - S * (1 - f));

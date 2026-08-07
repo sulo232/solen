@@ -1312,3 +1312,35 @@ want u to keep fixing spa". Researched each object's real mechanics rather than 
 
 Sources: barber chair mechanics from retail spec sheets; nail polish closure from the US patents
 above; rock balancing from Wikipedia's Rock balancing article and the physics-of-balance write-ups.
+
+## Round 42: spa, two more real defects found by comparing against his own icon
+
+Owner: "could u acc keep imrpvoing on the spa icon". Measured the render against
+`public/icons/categories/spa.png`, which is the artwork the mesh was built from, so it is the
+correct target.
+
+- [x] Confirmed the mesh really is from HIS icon, `verified:` re-downloaded job
+      03283605-dcb2-47fd-9614-90c0b9fe2a22 and md5'd it against the file on disk. Identical,
+      101ba381fd61197d1072bba0ef98cdcb. That earlier step did land.
+- [x] **GREEN FLECKS, 36 of them, now 0 across all 210 frames.** The leaf's colour was smeared
+      down over the stones by the UV unwrap. Brightness could not separate them from the leaf (the
+      flecks reach 0.74 and the leaf drops to 0.53) but HEIGHT can, since the leaf only ever sits at
+      the top. New `--desat-below` greys saturated pixels below a fraction of the object.
+- [x] **A real ordering bug found while doing it.** The first attempt only moved the flecks 36 to 33.
+      Cause: `sat` is read once per pixel, so the later `--hue` retarget keyed off the stale value
+      and repainted the green straight back over what had just been greyed. Fixed with a flag.
+      That bug would have silently defeated any future use of this lever too.
+- [x] **Brightness now matches, `verified:`** mean luminance 105.5 to **79.8**, against his 79.4.
+      It had been 40% lighter than his own icon.
+- [x] Found and fixed my own wrong lever: I spent three renders pushing `--val-mul` from 0.72 to
+      0.50 and the mean moved 105.5 to 104.8, because `--val-mul` sits inside the saturated branch
+      and the stones are near-neutral. `--neutral-val` is the lever that reaches them.
+- [x] **A taste lesson worth keeping:** at one point the numbers matched his icon almost exactly
+      (mean 69.9 std 28.3 against 74.9 / 25.5) and the render looked WRONG, like glossy black
+      obsidian, because I had bought the statistics with hard specular instead of soft form shading.
+      Matching a summary statistic is not matching the look. Dropped gloss 0.85 to 0.22.
+
+**NAMED CEILING, not fixed:** shading variation is 14.2 against his 30.5. His stones have a strong
+light-top to dark-underside gradient; ours are close to uniform. This is the MESH, not the render:
+image-to-3D from a flat 2D icon gives a shallow relief with little form to catch light. Raising
+contrast further just amplifies the texture noise instead of creating form.
