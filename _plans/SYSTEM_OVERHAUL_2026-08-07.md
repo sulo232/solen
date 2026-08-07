@@ -132,7 +132,7 @@
 
 ### L. Cross-session propagation
 - [ ] L1 Map every change type to its propagation mechanism and its leak point (hooks, settings.json, project law, memory, skills, agents, session-local state)
-- [x] L2 Count currently-orphaned gates. **48 of 211 global hook files (23%) are on disk and referenced nowhere in settings.json, so they enforce nothing.** `verified:` set difference between `~/.claude/hooks/*.py|*.sh` on disk (211) and the hook filenames appearing in `~/.claude/settings.json` (163 distinct). Armed load per event: PreToolUse 69 hooks / 42 matcher groups, Stop 64 / 22, UserPromptSubmit 18, SessionStart 8, PostToolUse 3, SubagentStop 1, PreCompact 1.
+- [x] L2 Count currently-orphaned gates. **18 of 211 global hooks are armed nowhere.** `verified:` set difference against ALL FOUR settings files, minus the 10 gates dispatched by `link-family-aggregator.py`, minus `SHELVED.txt` and `_retired/RETIRED_GATES.md`. Full list in [PENDING_ARM.md](PENDING_ARM.md). **Correction:** my first count said 48 because it read only `~/.claude/settings.json` and missed `settings.local.json` (12 registrations) plus the aggregator dispatch. That was the same unvalidated-instrument error this whole workstream is about, made while writing about it. Armed load per event: PreToolUse 69 hooks / 42 matcher groups, Stop 64 / 22, UserPromptSubmit 18, SessionStart 8, PostToolUse 3, SubagentStop 1, PreCompact 1.
 - [x] L3 Find every stranded branch carrying unmerged law or system work. **44 branches are ahead of main, holding 2,823 unmerged commits and 298 distinct law/system files that main does not have.** `verified:` `git rev-list --count main..<branch>` over all 90 branches; `git diff --name-only main...<branch>` filtered to `_design-system/ | _rules/ | CLAUDE.md | .claude/hooks/`, deduped = 298 files. Worst offenders: `claude/security-audit-principles-a877df` 512 commits / 159 law files, `claude/principles-security-audit-0ae738` 507 / 167, `claude/quirky-ellis-ef5559` 267 / 107, `claude/backend-analysis-improvements-77f02b` 145 / 42, `claude/context-compact-architecture-5d1ace` 74 / 33. There are also 33 live worktrees.
 - [x] L3b **CORRECTION to the owner's premise (rule 18).** He said a gate does not reach other sessions until it is committed. That is TRUE for project gates and project law (`.claude/hooks/`, 30 files, plus `_design-system/`, `CLAUDE.md`), which need a commit AND a merge to main, and 298 such files are currently stranded. It is FALSE for GLOBAL gates: `~/.claude` **is not a git repository at all** (`git -C ~/.claude rev-parse` = "not a git repository"). Global hooks, skills, agents and the 12 doctrine docs live on the raw filesystem, so they reach every session on this machine the moment they are written, with no commit needed. The real global-layer risk is the opposite one: 211 hooks and all doctrine are unversioned, unreviewable, unrevertable and unbacked-up, and 48 of them are wired to nothing.
 - [ ] L4 Design the session-close protocol: what must be committed, what must be stated
@@ -156,6 +156,30 @@
 ### O. The articulation (ask 16)
 - [ ] O1 State his underlying model back to him in plain English, with the evidence for the reading
 - [ ] O2 He confirms or corrects it, and that becomes the north star for A to N
+
+---
+
+## Third dictation (2026-08-07): asks 18 to 22
+
+**Verbatim:** "this is, like, a recurring problem and stuff, but you don't really flag and just say, no. You just don't do anything. Just continue, like, and you don't make any gates or anything or, like, what should be, like, a fix? But not even, like, a recurring problem, like, if you make a problem, I want you to actually, like, make it so it doesn't happen anymore and other sessions too. We keep forgetting to do that. Like, what should we do about that to, like, add it?"
+
+18. When it recurs, I don't flag it, I just continue
+19. ANY problem I make, not only a recurring one, must be made not to happen again
+20. It has to reach OTHER SESSIONS
+21. "We keep forgetting to do that" is itself the target
+22. What is the mechanism, concretely
+
+### P. The forgetting
+- [x] P1 Exists-check before proposing anything. **The gate he is asking for already exists and is armed:** `scripts/hooks/recurrence-harden-gate.py`, born 2026-07-15 from his own words "you didn't even make a hook or a gate". So does its prompt-side twin `~/.claude/hooks/harden-when-flagged.py`, and `~/.claude/hooks/repeat-mistake-detector.py`, and a durable cross-session ledger. Building a new one would have been the exact duplication failure.
+- [x] P2 The recurrence ledger is real and populated. **13 themes, 46 incidents, keyed per session** `verified:` `~/.claude/state/mistake-themes-global.json`. Top: `promised-visual` **14 sessions** (last: today), `link` 9 (08-03), `measure` 5 (today), `blue-black` 4 (08-05), `guessed` 3, `stopped-early` 3. So detection is NOT the failure. The system has known for months.
+- [x] P3 **Found why hardening does not stick, three measured holes in the gate built to make it stick.** `verified:` read `recurrence-harden-gate.py` line by line.
+  - [x] P3a **Relevance was never checked, and the directories are shared.** It accepted ANY file in `scripts/hooks/`, `.claude/hooks/` or `~/.claude/hooks/` with an mtime later than his message. This repo has **33 live worktrees all sharing `~/.claude/hooks`**, so an unrelated edit in somebody else's session silently satisfied the gate here.
+  - [x] P3b **mtime is not authorship.** Same bug as the two gates fixed earlier today: a worktree checkout restamps everything, and 9 files in `.claude/hooks` carry an identical stamp nobody wrote.
+  - [x] P3c **It never checked the gate was ARMED.** This is the actual answer to "we keep forgetting". A hook file that no settings.json runs enforces nothing, and 18 global hooks are in that state right now. The gate accepted the file and let the turn close, so the pattern returned next session with a dead gate sitting beside it.
+- [x] P4 Fixed all three. `verified:` self-test **7/7**, including the two new cases that matter: "gate built but ARMED NOWHERE" now BLOCKS, and "un-armable session but recorded in PENDING_ARM.md" now PASSES.
+- [x] P5 **Answer to ask 20, propagation.** A sandboxed session cannot write either settings.json (PermissionError, probed both). Hook files are writable, arming is not. So an un-armable gate is now only accepted once it is named in [PENDING_ARM.md](PENDING_ARM.md), which is committed and therefore reaches the session that CAN arm it. Silent loss is what got removed; the sandbox limit itself cannot be.
+- [ ] P6 **The finding that outranks all of the above, and it inverts the ask.** `LAW_SYSTEM.md` section 6.9, dated 2026-08-03, written by this estate about itself: *"Measured, that reflex has never once worked here: the three most-repeated themes in the durable ledger were, at the time of the audit, the three with the MOST gates."* And the gate-efficacy mapping found that `recurrence-harden-gate.py` **is the engine of the sprawl**: it fired 9 times in the last 7 days and refuses to accept anything but a gate, so every time he says "you keep doing X" the estate physically cannot close the turn without producing gate N+1. **OWNER DECISION NEEDED before P6 is actionable.**
+- [x] P7 The one intervention with a measured positive effect, for the record: `link-family-aggregator.py` (wired 08-03) collapsed 11 link gates into one combined deny. Blocked stop attempts fell from **71/day to 32/day**. It did not stop the underlying mistake: `promised-visual` recurred on 08-05 and again today.
 
 ## Unplanned additions / parked decisions
 - The batch of problems from other sessions (ask 12) has not arrived yet. It is a DEPENDENCY for K and M being grounded in real cases rather than the record alone. Do not wait on it for the mapping; do wait on it before finalizing the gate-vs-reasoning split.
