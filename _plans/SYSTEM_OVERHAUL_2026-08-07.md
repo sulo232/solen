@@ -54,7 +54,7 @@
 - [ ] Q3 Mockup-first is over-enforced. Three atomic fixes:
   - [x] Q3a `verified:` sha 7fa3f5aba. **Fixed with scope, not a longer timer.** A flag that names the file it excuses now covers that file for 4 hours; a bare flag keeps the old 5 minutes, so no habit breaks and a bare flag can never excuse a different file. `verified:` 6 cases run against the live function, all correct, including the two that matter (a 30-minute-old scoped flag still excuses its own file, and refuses a different one).
     - The 56-skips-a-week headline was mostly a clock, not defiance: 32 of 57 logged touches happened while the flag was STILL VALID, meaning one job kept re-touching an expiring timer.
-  - [ ] Q3b Fix the `Grounded-in` filename-token heuristic so a mockup named for the CHANGE passes
+  - [x] Q3b **Fixed.** The citation must now resolve to a real file that is not repo plumbing. The filename-token rule is gone: mockups here are named for the CHANGE, so a correct citation routinely shared no token with the file citing it, and 13 of 122 mockups on disk were denied by that rule alone while citing exactly the right file. `verified:` 5 cases run against the live gate: correct-citation-with-no-shared-token now passes, a `package.json` citation still blocks, a citation to a file that does not exist still blocks, a `path.tsx:12-40` line range now passes instead of being punished for precision, and no citation at all still blocks.
   - [ ] Q3c Collapse the mockup gate family into one aggregated deny
 - [ ] Q4 Sets. Owner chose **start it now, in parallel**, not a later session. **DISPATCHED.**
   - [ ] Q4a The FLOW pipeline (extends `_plans/FLOW_HARNESS.md`, stuck at 1 of 12 flows for a month; say why it stalled)
