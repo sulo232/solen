@@ -1,0 +1,485 @@
+<!-- Base: live iframe of the real route, no screenshot -->
+<!-- Scale: full-page -->
+<!--
+  Exists-check: `npm run exists rhythm` returned 0 matches, `npm run exists SectionHeader` and
+    `npm run exists SalonCard` returned the real owners of this spacing,
+    app/[locale]/_components/homepage/SectionHeader.tsx and
+    app/[locale]/_components/homepage/SalonCard.tsx, so this EXTENDS those components' existing
+    declarations instead of building anything new. No graveyard entry in
+    _design-system/REMOVED.md is touched: nothing here adds, removes or restyles a card element,
+    only the vertical distance between blocks that already ship. No new component, route, table
+    or migration is proposed. Prior art read in full first:
+    _design-system/research/CHEAP_SPACE.md sections 2c, 3c and 5, which measured this defect on
+    this route and prescribed these exact targets, and
+    _design-system/research/TASTE_GROUPING.md checklist item 6, which states the law it breaks.
+
+  Diagnosis: the gap binding a salon card photo to its own caption is the same size as the gap separating two unrelated blocks, so proximity groups nothing and the feed reads as loose parts | measured on the live route at 390x844, in-group photo-to-caption 8.00px against heading-to-its-own-body 8.00px and block-to-block 8.00px, a 1.00x ratio, with heading-to-map at 4.00px, a 0.50x ratio | violates FLOORS LAW 5 in CLAUDE.md, a deletion is legal only if the surviving cue passes a measured floor, between-group gap at least 2x the in-group gap, plus the locked design contract spacing row | target heading-to-its-own-body 16px at 2.00x and block-to-block 24px at 3.00x, with photo-to-caption held at 8px
+
+  Grounded-in: app/[locale]/_components/homepage/SectionHeader.tsx
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx
+  Grounded-in: app/[locale]/_components/homepage/NearbyMap.tsx
+  Grounded-in: app/[locale]/_components/homepage/MobileCategoriesRow.tsx
+
+  Depicts: heading to rail gap on the top-salons and reviews rails -> app/[locale]/_components/homepage/SectionHeader.tsx:409 ScrollRow `mt-1 ... py-1`
+  Depicts: heading to map gap in the nearby section -> app/[locale]/_components/homepage/NearbyMap.tsx:178 `relative mt-1 block h-[156px]`
+  Depicts: map to rail gap, the second block in the nearby frame -> app/[locale]/_components/homepage/Nearby.tsx:104-138 SectionFrame + SectionTitle + map + ScrollRow
+  Depicts: heading to category grid on the mobile-only row -> app/[locale]/_components/homepage/MobileCategoriesRow.tsx:78 `h2.mb-3` above `grid-cols-3`
+  Depicts: photo to caption, the in-group unit, held unchanged -> app/[locale]/_components/homepage/SalonCard.tsx:502 `mt-2 px-[2px] flex flex-col gap-[2px]`
+  Depicts: the frame every override lands on -> app/[locale]/_components/homepage/SectionHeader.tsx:378 SectionFrame `px-3 pt-1 pb-2`
+  Depicts: both panes, the whole route -> app/[locale]/page.tsx rendered live at /de, no screenshot and nothing hand drawn
+
+  Not touched, and why: the inspiration tile rail already ships heading to tiles at 20px, 2.50x,
+    and the walk-in band already ships 16px on both of its internal block boundaries, 2.00x. Both
+    clear the floor, so moving them would change a passing number for uniformity alone. The gaps
+    BETWEEN sections, 44 to 103px at 390, are a different axis and are left exactly as shipped.
+
+  Data: both panes are the real route against the real dev server, so every salon, price, photo
+    and review score is live seeded data. Nothing is fabricated and no copy is invented. Section
+    titles in the measurement table are read off the live document at runtime, which is why they
+    render in the site's own language.
+-->
+<title>Home feed rhythm: SectionHeader and SalonCard gaps</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --sunken:#F4F4F5; --hairline:#E4E4E7;
+    --disp:'Inter Tight',system-ui,-apple-system,sans-serif;
+    --body:'Inter',system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100dvh;-webkit-text-size-adjust:100%}
+  /* Flex column, NOT a fixed bar over a `top:104px` stage. The caption wraps to three lines at
+     390, which made the real bar 148px tall while the stage still started at 104, so the bar sat
+     on top of the first pane. A measured overlap, not a hypothetical: the flex column removes the
+     magic number so the stage can never start above the bar at any width or locale length. */
+  body{
+    font-family:var(--body); background:#fff; color:var(--ink);
+    -webkit-font-smoothing:antialiased; overflow:hidden;
+    display:flex; flex-direction:column; height:100dvh;
+  }
+
+  /* ---------- chrome ---------- */
+  .bar{
+    flex:0 0 auto; z-index:30; background:#fff;
+    border-bottom:1px solid var(--hairline);
+    padding:calc(10px + env(safe-area-inset-top,0px)) 12px 10px;
+    display:flex; flex-direction:column; gap:8px; align-items:center;
+  }
+  .seg{display:flex; background:var(--sunken); border-radius:999px; padding:3px; width:min(340px,92vw)}
+  .seg button{
+    flex:1; min-height:38px; border:0; background:transparent; font-family:var(--body);
+    font-size:13px; font-weight:400; color:var(--ink2); border-radius:999px; cursor:pointer;
+  }
+  .seg button.on{background:#fff; color:var(--ink); font-weight:600; box-shadow:0 1px 2px rgba(10,10,10,.10)}
+  .cap{font-size:13px; line-height:1.45; color:var(--ink2); text-align:center; max-width:760px}
+  .cap b{color:var(--ink); font-weight:600}
+
+  /* ---------- stage ---------- */
+  .stage{
+    flex:1 1 auto; min-height:0; position:relative;
+    display:grid; gap:0; background:var(--sunken);
+  }
+  .stage[data-view="before"], .stage[data-view="after"]{grid-template-columns:minmax(0,1fr)}
+  /* The divider is the GRID GAP over a hairline background, not a border on one pane. A border
+     is charged to whichever pane carries it, which rendered the two iframes at 489 and 490 and
+     compared every gap across a 1px width mismatch. A gap is charged to the grid, so the panes
+     stay exactly equal and the comparison is honest. */
+  .stage[data-view="both"]{
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    gap:1px; background:var(--hairline);
+  }
+  @media (max-width:899px){
+    /* below 900px the two panes STACK, one above the other, each full width */
+    .stage[data-view="both"]{
+      grid-template-columns:minmax(0,1fr);
+      grid-template-rows:minmax(0,1fr) minmax(0,1fr);
+    }
+  }
+  .pane{
+    position:relative; min-width:0; min-height:0; overflow:hidden; background:#fff;
+  }
+  .pane.hide{display:none}
+  .tag{
+    position:absolute; top:8px; left:8px; z-index:5;
+    background:rgba(10,10,10,.86); color:#fff; font-family:var(--body);
+    font-size:11px; font-weight:600; line-height:1.3;
+    padding:4px 9px; border-radius:999px; pointer-events:none;
+  }
+  iframe{width:100%; height:100%; border:0; display:block; background:#fff}
+
+  /* ---------- readout ---------- */
+  .readout{
+    position:fixed; left:0; right:0; bottom:0; z-index:25; background:#fff;
+    border-top:1px solid var(--hairline);
+    padding:12px 12px calc(64px + env(safe-area-inset-bottom,0px));
+    max-height:52vh; overflow:auto; display:none;
+  }
+  .readout.on{display:block}
+  .readout h3{font-family:var(--disp); font-size:15px; font-weight:600; margin-bottom:8px}
+  .wrap{overflow-x:auto}
+  table{width:100%; border-collapse:collapse; font-size:12px; min-width:600px}
+  th,td{text-align:left; padding:5px 6px; border-bottom:1px solid var(--hairline); vertical-align:top}
+  th{font-weight:600; color:var(--ink2); font-size:11px}
+  td.n{font-variant-numeric:tabular-nums; white-space:nowrap}
+  .ok{color:#16A34A; font-weight:600}
+  .bad{color:#DC2626; font-weight:600}
+  .foot{margin-top:8px; font-size:11px; line-height:1.6; color:var(--ink2)}
+  .mini{
+    position:fixed; right:12px; bottom:calc(12px + env(safe-area-inset-bottom,0px)); z-index:26;
+    min-height:44px; padding:0 16px; border-radius:999px; border:1px solid var(--hairline);
+    background:#fff; font-family:var(--body); font-size:13px; font-weight:600;
+    color:var(--ink); cursor:pointer;
+  }
+</style>
+
+<div class="bar">
+  <div class="seg">
+    <button id="bB" class="on" onclick="show('before')">Before</button>
+    <button id="bX" onclick="show('both')">Both</button>
+    <button id="bA" onclick="show('after')">After</button>
+  </div>
+  <div class="cap">
+    <b>Rhythm.</b> Every gap is the same gap, so nothing reads as a group. The fix holds photo to
+    caption at 8px, opens heading to its own body to 16px and block to block to 24px. Nothing else moves.
+  </div>
+</div>
+
+<div class="stage" id="stage" data-view="before">
+  <div class="pane" id="paneBefore">
+    <div class="tag">Live route, untouched</div>
+    <iframe id="beforeFrame" src="/de" title="the real route, untouched"></iframe>
+  </div>
+  <div class="pane hide" id="paneAfter">
+    <div class="tag">Live route plus the rhythm fix</div>
+    <iframe id="afterFrame" src="/de" title="the real route with the rhythm fix injected"></iframe>
+  </div>
+</div>
+
+<button class="mini" onclick="toggleReadout()">Measurements</button>
+<div class="readout" id="readout">
+  <h3>Measured gaps, box to box, at this pane width</h3>
+  <div id="readoutBody">Switch the toggle once, then reopen this panel.</div>
+</div>
+
+<script>
+/* ------------------------------------------------------------------
+ * THE FIX, injected onto the real document through contentDocument.
+ * CSS first, so a React re-render cannot silently undo it. Structural
+ * selectors only: no class is invented, every one already ships.
+ * ------------------------------------------------------------------ */
+var DP1 = 1, DP2 = 2;
+
+var FIX_CSS = [
+  /* A. heading to its own rail. ScrollRow carries py-1, four pixels, so mt 4 -> 12 puts the first card 16px below the heading. */
+  'div.pt-1.pb-2 > div.items-baseline + div.mt-1.overflow-x-auto{margin-top:12px !important}',
+  /* B. heading to a non-rail block, the map, which has no inner padding. 4 -> 16.
+     Element-agnostic on purpose: the map renders as an <a>, not a div, so a `div.mt-1`
+     selector here silently matched nothing and the gap never moved. Measured, not assumed. */
+  'div.pt-1.pb-2 > div.items-baseline + .mt-1:not(.overflow-x-auto){margin-top:16px !important}',
+  /* C. block to block inside one section, map to rail. mt 4 -> 20, plus py-1 = 24px to the first card.
+     The middle sibling is the same <a>, hence `*` rather than `div`. `.overflow-hidden` on the frame
+     buys the specificity to outrank rule A, which shares this rule's class count. */
+  'div.pt-1.pb-2.overflow-hidden > div.items-baseline + * + div.mt-1.overflow-x-auto{margin-top:20px !important}',
+  /* D. the mobile category heading to its own grid. 12 -> 16. */
+  'div.px-6.py-2 > h2.mb-3{margin-bottom:16px !important}'
+].join('\n');
+
+/* ---------- measurement, the identical code runs on both panes ---------- */
+function measureDoc(doc){
+  if(!doc || !doc.body) return null;
+  var win = doc.defaultView;
+  var out = { width: win.innerWidth, docHeight: doc.documentElement.scrollHeight, gaps: [] };
+
+  function rect(el){ return el.getBoundingClientRect(); }
+  /* Where the block's first painted content starts, read from the CONTAINER's own content-box
+     edge rather than from a child's rect. The cards carry `salon-card-stagger`, an entrance that
+     translates them, and getBoundingClientRect reports the transform. Probing a child therefore
+     returned a gap 8px too large while the animation was still running, so the same page measured
+     8 or 16 depending purely on when you looked. The container is never animated, so its border +
+     padding edge is the same number before, during and after the entrance. */
+  function firstBoxTop(el){
+    var cs = win.getComputedStyle(el);
+    return rect(el).top + (parseFloat(cs.borderTopWidth) || 0) + (parseFloat(cs.paddingTop) || 0);
+  }
+  function push(name, meaning, a, b){
+    out.gaps.push({ name:name, meaning:meaning, gap:+(b - a).toFixed(DP2) });
+  }
+
+  /* the in-group unit: a salon card photo and its own name / score / price stack */
+  var stack = null, stacks = doc.querySelectorAll('div.mt-2');
+  for(var i=0;i<stacks.length;i++){
+    if(/px-\[2px\]/.test((stacks[i].className||'').toString())){ stack = stacks[i]; break; }
+  }
+  if(stack && stack.previousElementSibling){
+    push('photo to its own caption','in-group', rect(stack.previousElementSibling).bottom, rect(stack).top);
+    if(stack.children.length > 1){
+      push('caption row to caption row','in-group', rect(stack.children[0]).bottom, rect(stack.children[1]).top);
+    }
+  }
+
+  /* every section frame: heading to its own body, then block to block */
+  var frames = doc.querySelectorAll('div.pt-1.pb-2');
+  for(var f=0; f<frames.length; f++){
+    var fr = frames[f];
+    var h = fr.querySelector('h1,h2,h3');
+    if(!h) continue;
+    var title = h.textContent.trim().slice(0,20);
+    var kids = [];
+    for(var k=0;k<fr.children.length;k++){
+      if(!fr.children[k].classList.contains('rhy-band')) kids.push(fr.children[k]);
+    }
+    if(kids.length > 1) push(title + ': heading to its body','between-group', rect(h).bottom, firstBoxTop(kids[1]));
+    if(kids.length > 2) push(title + ': block to block','between-group', rect(kids[1]).bottom, firstBoxTop(kids[2]));
+  }
+
+  /* the mobile-only category grid, which lives outside a section frame */
+  var fh = doc.querySelector('div.px-6.py-2 > h2.mb-3');
+  if(fh && fh.nextElementSibling){
+    push(fh.textContent.trim().slice(0,20) + ': heading to its grid','between-group',
+         rect(fh).bottom, rect(fh.nextElementSibling).top);
+  }
+
+  var unit = null;
+  for(var g=0; g<out.gaps.length; g++){
+    if(out.gaps[g].name.indexOf('photo to') === 0){ unit = out.gaps[g].gap; break; }
+  }
+  out.inGroupUnit = unit;
+  if(unit){
+    out.gaps.forEach(function(x){
+      x.ratio = +(x.gap / unit).toFixed(DP2);
+      x.pass = x.meaning === 'in-group' ? null : (x.ratio >= 2);
+    });
+  }
+  return out;
+}
+
+/* ---------- the change ---------- */
+function applyChange(doc){
+  if(doc.getElementById('rhy-fix')) return 0;
+  var st = doc.createElement('style');
+  st.id = 'rhy-fix';
+  st.textContent = FIX_CSS;
+  (doc.head || doc.documentElement).appendChild(st);
+  var win = doc.defaultView;
+  win.requestAnimationFrame(function(){
+    win.requestAnimationFrame(function(){ drawMarks(doc); });
+  });
+  /* The bands are absolutely positioned from measured rects, so they go stale the moment this
+     pane changes width (switching to the two-pane view halves it). A fixed timeout on the parent
+     lost that race and printed 21px next to a 16px gap. The pane's OWN resize event is the exact
+     moment its layout settled, so redraw from there. */
+  var wt = null;
+  win.addEventListener('resize', function(){
+    clearTimeout(wt);
+    wt = win.setTimeout(function(){ drawMarks(doc); }, 120);
+  });
+  return 1;
+}
+
+/* outline every gap the fix governs, and label it with its measured value */
+function drawMarks(doc){
+  var old = doc.querySelectorAll('.rhy-band');
+  for(var i=0;i<old.length;i++) old[i].parentNode.removeChild(old[i]);
+
+  /* same transform-immune content-box edge the measurement uses, so a label can never
+     disagree with the table it is illustrating */
+  function firstBoxTop(el){
+    var cs = doc.defaultView.getComputedStyle(el);
+    return el.getBoundingClientRect().top + (parseFloat(cs.borderTopWidth) || 0) + (parseFloat(cs.paddingTop) || 0);
+  }
+  function band(container, fromEl, toTop, text){
+    if(!container || !fromEl) return;
+    var win = doc.defaultView;
+    if(win.getComputedStyle(container).position === 'static') container.style.position = 'relative';
+    var cr = container.getBoundingClientRect();
+    var top = fromEl.getBoundingClientRect().bottom - cr.top;
+    var hgt = (toTop - cr.top) - top;
+    if(hgt <= 0.5) return;
+    var b = doc.createElement('div');
+    b.className = 'rhy-band';
+    b.style.cssText =
+      'position:absolute;pointer-events:none;z-index:9998;left:10px;right:10px;' +
+      'top:' + top.toFixed(DP1) + 'px;height:' + hgt.toFixed(DP1) + 'px;' +
+      'background:rgba(10,10,10,.045);border-top:1px dashed rgba(10,10,10,.34);' +
+      'border-bottom:1px dashed rgba(10,10,10,.34);border-radius:3px';
+    var c = doc.createElement('span');
+    c.textContent = text;
+    c.style.cssText =
+      'position:absolute;left:0;top:50%;transform:translateY(-50%);background:#0A0A0A;color:#fff;' +
+      'font:600 11px/1.35 Inter,system-ui,sans-serif;padding:2px 7px;border-radius:999px;white-space:nowrap';
+    b.appendChild(c);
+    container.appendChild(b);
+  }
+
+  var frames = doc.querySelectorAll('div.pt-1.pb-2');
+  for(var f=0; f<frames.length; f++){
+    var fr = frames[f], h = fr.querySelector('h1,h2,h3');
+    if(!h) continue;
+    var kids = [];
+    for(var k=0;k<fr.children.length;k++){
+      if(!fr.children[k].classList.contains('rhy-band')) kids.push(fr.children[k]);
+    }
+    if(kids.length > 1){
+      var t1 = firstBoxTop(kids[1]);
+      band(fr, h, t1, 'heading to its body ' + Math.round(t1 - h.getBoundingClientRect().bottom) + 'px');
+    }
+    if(kids.length > 2){
+      var t2 = firstBoxTop(kids[2]);
+      band(fr, kids[1], t2, 'block to block ' + Math.round(t2 - kids[1].getBoundingClientRect().bottom) + 'px');
+    }
+  }
+  var fh = doc.querySelector('div.px-6.py-2 > h2.mb-3');
+  if(fh && fh.nextElementSibling){
+    var t3 = fh.nextElementSibling.getBoundingClientRect().top;
+    band(fh.parentElement, fh, t3, 'heading to its grid ' + Math.round(t3 - fh.getBoundingClientRect().bottom) + 'px');
+  }
+}
+
+/* ---------- paint gate: a heading plus three tall cards must be present ---------- */
+function isPainted(doc){
+  if(!doc || !doc.body) return false;
+  if(!doc.querySelector('h2')) return false;
+  var cards = doc.querySelectorAll('[class*="snap-start"]'), tall = 0;
+  for(var i=0;i<cards.length;i++){
+    var r = cards[i].getBoundingClientRect();
+    if(r.height > 180 && r.width > 80) tall++;
+    if(tall >= 3) return true;
+  }
+  return false;
+}
+
+var afterStarted = false;
+function startAfter(){
+  if(afterStarted) return;
+  afterStarted = true;
+  var f = document.getElementById('afterFrame'), tries = 0;
+  var iv = setInterval(function(){
+    tries++;
+    try{
+      var doc = f.contentDocument;
+      if(isPainted(doc)){
+        if(applyChange(doc) > 0){
+          doc.body.dataset.sweepDone = '1';
+          clearInterval(iv);
+          setTimeout(renderReadout, 450);
+        }
+      }
+    }catch(e){}
+    if(tries > 150) clearInterval(iv);
+  }, 200);
+}
+
+/* the bands are pixel positioned, so redraw them after any reflow */
+var rt = null;
+addEventListener('resize', function(){
+  clearTimeout(rt);
+  rt = setTimeout(refresh, 220);
+});
+function refresh(){
+  try{
+    var d = document.getElementById('afterFrame').contentDocument;
+    if(d && d.body && d.body.dataset.sweepDone) drawMarks(d);
+  }catch(e){}
+  renderReadout();
+}
+
+/* ---------- view switching ---------- */
+function show(w){
+  var stage = document.getElementById('stage');
+  stage.dataset.view = w;
+  document.getElementById('paneBefore').classList.toggle('hide', w === 'after');
+  document.getElementById('paneAfter').classList.toggle('hide', w === 'before');
+  document.getElementById('bB').classList.toggle('on', w === 'before');
+  document.getElementById('bA').classList.toggle('on', w === 'after');
+  document.getElementById('bX').classList.toggle('on', w === 'both');
+  if(w !== 'before') startAfter();
+  setTimeout(refresh, 280);
+}
+
+/* ---------- readout ---------- */
+/* A hidden pane is display:none, so every rect in it reads 0. Measuring it in that state
+   produced a table of 0px "before" values the moment you switched panes, which is worse than
+   no table. Each pane's last LIVE measurement is cached and reused while it is hidden. */
+var cache = { before:null, after:null };
+/* A hidden iframe keeps a non-zero innerWidth and reports its document as viewport-tall, so
+   width and height are NOT a liveness test: they both pass while every gap inside reads 0.
+   The only honest signal is that the in-group unit was actually found with a real value. */
+function live(m){ return !!(m && m.inGroupUnit > 0); }
+function readBoth(){
+  var b = null, a = null;
+  try{ b = measureDoc(document.getElementById('beforeFrame').contentDocument); }catch(e){}
+  try{ a = measureDoc(document.getElementById('afterFrame').contentDocument); }catch(e){}
+  if(live(b)) cache.before = b; else b = cache.before;
+  if(live(a)) cache.after = a;  else a = cache.after;
+  return { before:b, after:a };
+}
+function renderReadout(){
+  var host = document.getElementById('readoutBody');
+  if(!host) return;
+  var d = readBoth();
+  if(!d.before){ host.textContent = 'The untouched pane has not painted yet.'; return; }
+  var aMap = {};
+  if(d.after) d.after.gaps.forEach(function(g){ aMap[g.name] = g; });
+  var rows = d.before.gaps.map(function(g){
+    var af = aMap[g.name];
+    var moved = af ? (Math.abs(af.gap - g.gap) >= 0.5) : false;
+    var floor = g.meaning === 'in-group'
+      ? 'held'
+      : (af && af.pass ? '<span class="ok">pass</span>' : '<span class="bad">fail</span>');
+    return '<tr>' +
+      '<td>' + g.name + '</td>' +
+      '<td>' + g.meaning + '</td>' +
+      '<td class="n">' + g.gap + 'px</td>' +
+      '<td class="n">' + (af ? af.gap + 'px' : 'n/a') + '</td>' +
+      '<td class="n">' + (g.ratio != null ? g.ratio + 'x' : 'n/a') + '</td>' +
+      '<td class="n">' + (af && af.ratio != null ? af.ratio + 'x' : 'n/a') + '</td>' +
+      '<td class="n">' + floor + '</td>' +
+      '<td class="n">' + (moved ? 'moved' : (g.meaning === 'in-group' ? 'held' : 'no change')) + '</td>' +
+      '</tr>';
+  }).join('');
+  host.innerHTML =
+    '<div class="wrap"><table><thead><tr>' +
+    '<th>relationship</th><th>means</th><th>untouched</th><th>with fix</th>' +
+    '<th>untouched over in-group</th><th>with fix over in-group</th><th>2x floor</th><th>verdict</th>' +
+    '</tr></thead><tbody>' + rows + '</tbody></table></div>' +
+    '<p class="foot">Pane width ' + d.before.width + 'px<br>' +
+    'Document height untouched ' + d.before.docHeight + 'px' +
+    (d.after ? '<br>Document height with fix ' + d.after.docHeight + 'px' : '') + '</p>';
+}
+function toggleReadout(){
+  var r = document.getElementById('readout');
+  r.classList.toggle('on');
+  if(r.classList.contains('on')) renderReadout();
+}
+
+/* ---------- the self check read back by the verifier ---------- */
+window.__rhythm = {
+  measure: readBoth,
+  fits: function(){
+    var out = {
+      innerWidth: innerWidth, innerHeight: innerHeight,
+      view: document.getElementById('stage').dataset.view,
+      bodyScrollWidth: document.body.scrollWidth,
+      docScrollWidth: document.documentElement.scrollWidth,
+      panes: []
+    };
+    ['paneBefore','paneAfter'].forEach(function(id){
+      var el = document.getElementById(id), r = el.getBoundingClientRect();
+      out.panes.push({
+        id:id, visible: !el.classList.contains('hide'),
+        left:+r.left.toFixed(DP2), right:+r.right.toFixed(DP2),
+        top:+r.top.toFixed(DP2), bottom:+r.bottom.toFixed(DP2),
+        width:+r.width.toFixed(DP2), height:+r.height.toFixed(DP2),
+        insideX: r.left >= -0.5 && r.right <= innerWidth + 0.5,
+        insideY: r.top >= -0.5 && r.bottom <= innerHeight + 0.5
+      });
+    });
+    out.allVisiblePanesInside = out.panes.filter(function(p){ return p.visible; })
+      .every(function(p){ return p.insideX && p.insideY; });
+    return out;
+  },
+  sweepDone: function(){
+    try{ return document.getElementById('afterFrame').contentDocument.body.dataset.sweepDone === '1'; }
+    catch(e){ return false; }
+  }
+};
+</script>

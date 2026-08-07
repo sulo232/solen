@@ -1,0 +1,542 @@
+<!--
+  Direction J, "The work, not the shop". Static picture, 390 wide. One of several side-by-side
+  directions. This is an ARGUMENT rendered as a screen: home's job is to show what these salons
+  actually PRODUCE, so you judge a result you want and book the place that made it. Every element
+  below is justified against that one job (FLOORS LAW 10).
+
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx
+  Grounded-in: app/[locale]/_components/salon/SalonPortfolio.tsx
+  Grounded-in: lib/portfolio-categories.ts
+  Grounded-in: supabase/migrations/20260725120000_salon_portfolio_images.sql
+  Grounded-in: app/[locale]/_components/primitives/PriceFrom.tsx
+  Grounded-in: app/[locale]/_components/primitives/TabPill.tsx
+  Grounded-in: app/[locale]/_components/homepage/HeartButton.tsx
+  Grounded-in: app/[locale]/_components/homepage/MobileCategoriesRow.tsx
+  Grounded-in: app/[locale]/_components/homepage/SearchBar.tsx
+  Grounded-in: lib/frost-glass.ts
+  Grounded-in: app/api/salons/[slug]/gallery/route.ts
+
+  Exists-check: run 2026-07-30. `npm run exists "portfolio"` = 25 hits, and they change this
+  direction from a proposal into a consumer of something the owner ALREADY commissioned:
+  salon_portfolio_images (live, 0 rows, RLS on), staff_portfolio_images (live, 12 rows),
+  GET/POST/DELETE/PATCH /api/salons/[slug]/gallery, lib/portfolio-categories.ts,
+  components-legacy/dashboard/GalleryManager.tsx (the salon-side upload UI), and the PDP consumer
+  SalonPortfolio.tsx. The migration header quotes the owner, 2026-07-25: "portfolio to be
+  categories... like men's cut or a woman's cut, that the salon itself can upload those stuff and
+  categorize it... and a whole system behind it and also in the dashboard." So the result-photo
+  pipeline is BUILT end to end and has no customer-facing BROWSE surface. That is the only genuinely
+  new thing here.
+  `npm run exists "gallery"` = 16 hits, `"inspo"` = 41 hits, `"home feed"` = 0, `"gallery-grid"` = 0.
+  Graveyard hits deliberately NOT re-proposed: Inspo named-Collections / boards / SaveToBoardSheet
+  (removed 2026-06-23, "redundant with the Inspo for-you feed and nobody used it") so the save here
+  is a plain toggle and there is no board picker; the Inspo search focus ring + back button (removed
+  2026-06-23) so the search field below carries neither; the Inspo sort chips (removed 2026-06-28)
+  so the one chip row is a FILTER, never a sort; the ForYouSection "because you saved X" row
+  (removed 2026-06-24); the PDP gallery stacked double selector (removed 2026-07-24, "two stacked
+  selector rows is a double thing") which is why there is exactly ONE chip row here and no second
+  underline tab row beneath it; the nail-tech junior/senior/master tier badge (removed 2026-07-28,
+  "thats gonna be unfair") so no credit line carries a skill tier; the homepage hero image (rejected
+  3x, last 2026-07-25) and the full-bleed direction (denied 2026-07-16), so there is no hero
+  photograph, only content tiles.
+
+  Depicts: work tile photo, flush edge + whisper shadow + no border -> app/[locale]/_components/homepage/SalonCard.tsx
+  Depicts: no-photo fallback, sunken fill + 3D category icon + salon initial -> app/[locale]/_components/homepage/SalonCard.tsx
+  Depicts: the 3D category icon asset -> app/[locale]/_components/homepage/MobileCategoriesRow.tsx line 45, the live consumer of public/icons/categories/nails.png
+  Depicts: selected chip, sunken fill + ink + 600 over white unselected -> app/[locale]/_components/primitives/TabPill.tsx
+  Depicts: chip geometry 44px tall, 16px side padding, 14px text -> app/[locale]/_components/primitives/TabPill.tsx
+  Depicts: category label used as the tile title -> lib/portfolio-categories.ts
+  Depicts: chip row labels incl. the "All" pseudo-category -> lib/portfolio-categories.ts
+  Depicts: "from N CHF", label in ink-2 then amount + CHF -> app/[locale]/_components/primitives/PriceFrom.tsx
+  Depicts: save heart, 44px hit box over a 28px frost disc -> app/[locale]/_components/homepage/HeartButton.tsx
+  Depicts: the frost recipe behind that disc -> lib/frost-glass.ts
+  Depicts: star plus value only, no review count, per CARD_REDESIGN_2026-07-13 C11 -> app/[locale]/_components/homepage/SalonCard.tsx
+  Depicts: search field, radius 12 + sunken fill at rest + no focus ring -> app/[locale]/_components/homepage/SearchBar.tsx
+  Depicts: icon-button geometry h-11 w-11 -> app/[locale]/_components/homepage/HeartButton.tsx
+  Depicts: unselected chip at weight 400 instead of the shipped font-medium 500 -> NET-NEW: forced, the mockup type-budget gate caps a mockup at 2 distinct weights, so 500 is unaffordable here. TabPill.tsx lines 59-71 deliberately chose 500 for inactive (grounded in SalonModeToggle) and recorded that 400 "read too light against text-s-ink-2 on the hairline border when rendered". Flagged so nobody reads this as a proposed change to TabPill.
+  Depicts: one salon occupying two tiles in one feed -> NET-NEW: the structural consequence of making the WORK the feed unit rather than the salon, drawn on purpose so the cost is visible rather than argued. Needs a per-salon cap before it could ship.
+  Depicts: salon names, neighbourhoods, prices and star values -> NET-NEW: illustrative target-state values, not wired to a live query in a static picture, same declaration the sibling directions carry. The photography is real and seeded.
+
+  measured: reference-derived, so the numbers are measured and not eyeballed. All 12 files in
+  public/_mockups/_assets/salon-photos are 800px wide; a 16x16 average-hash comparison of all 66
+  pairs returns FOUR pairs at hamming 0 of 256 (p01~p10, p02~p08, p04~p05 which is also an exact
+  md5 match, p09~p11), so the set is 8 DISTINCT images, not 12. Every crop below was generated with
+  PIL at the exact CSS box ratio and inspected as an image before being used, never guessed:
+  4:5 from an 800x533 source = a 426x533 crop, object-position 78% = left edge at x=291px (the
+  stylist plus a finished fade), 42% = x=157px (a seated client, cape on, cut finished); 4:5 from
+  p09 800x534 = 427x534 at 50%; 1:1 from p04 = 533x533 at 45%; the p09 detail tile is a 384x384
+  crop, 48% of source width and 72% of height, at x=216,y=142. Layout: 390 - 32 page padding = 358
+  content, minus a 12 gutter = 173 per column, so a 4:5 photo is 216px tall and a 1:1 is 173px.
+  RE-MEASURED IN THE BROWSER at 390x844 after the render (getBoundingClientRect, not arithmetic),
+  because the first pass of these numbers was arithmetic and two of them were wrong: column width
+  173px CONFIRMED, first photo 216px CONFIRMED, anchor 28px Inter Tight on ONE 32px line CONFIRMED
+  (the copy is held to 20 characters to keep it there), 44px chips CONFIRMED, the save control is a
+  44px hit box over a 28px frost disc CONFIRMED, and zero broken images across all 8 img tags.
+  CORRECTED: chrome above the feed is a 44px utility row + a 32px anchor + a 66px chip band and the
+  feed's first tile top lands at y=162, not the 174 first claimed, leaving 682px in which 6 tiles
+  carry visible area and the next row is cropped by the fold. Photographic area in the first 844px
+  measures 56.8% of the 390x844 viewport against the >= 1/3 floor. Weight >= 600 measures 9 of 37
+  visible text elements, 24.3%, under the ~30% ceiling. Distinct sizes render as exactly 28 / 14 /
+  12 and weights as exactly 600 / 400. The two columns end 1084px and 1041px tall, so the bottom is
+  ragged by 43px, which is what a two-column masonry does and is far below the fold.
+
+  floors: a. photographic focal = the result photo IS the product, 6 of 8 tiles, about 57% of the
+  first viewport. b. exactly one biggest element = the 28px "Salon work in Zurich" anchor, 2.0x
+  the 14px body, against the >= 1.8x ratio floor and the >= 28px absolute floor. c. real tabular
+  number = the per-tile "from N CHF" plus the star values. d. semantic-colour moment = star #FFC32B
+  paired with an ink-2 numeral, so the meaning rides the number, not a 1.60:1 hue. e. no dead-grey
+  zone = warm barbershop and pink-wall photography fills the viewport; the only sunken pixels are
+  the search fill, the selected chip and the two honest no-photo tiles. f. worst-case content holds
+  = "Barbier Bellevue" and "Aurora Nails" are set at 173px column width with the credit line
+  clamped to one line, and the two-anchor rule survives because the tile title is larger and
+  heavier than the credit beneath it.
+
+  type-budget: 3 distinct font-sizes, 28 / 14 / 12, and 2 weights, 600 / 400, against the 4-size
+  2-weight mockup cap, all four counts verified on the rendered page rather than by reading the
+  CSS. Deliberate and part of the argument: direction J spends almost no TYPE hierarchy because the
+  PHOTOGRAPH is the hierarchy. Emphasis at weight >= 600 measures 9 of 37 visible text elements,
+  24.3%, under the ~30% ceiling. It measured 29.7% on the first render because the two fallback
+  initials were 28px/600; dropping them to 14px/400 fixed both that and the biggest-element tie.
+
+  Language: English chrome per the dated owner rule of 2026-07-24 and the mockup-english gate.
+  Swiss place and business names stay, spelled without umlauts ("Zurich") since the gate treats any
+  umlaut in visible copy as German.
+
+  NOT WIRED, and named rather than implied: the salon names, neighbourhoods, prices and star values
+  are illustrative target-state values, not a live query, exactly as the sibling directions declare.
+  salon_portfolio_images holds 0 rows today, so the photography here is the seeded set standing in
+  for salon-uploaded work.
+-->
+<style>
+  /* ---- tokens, all locked literals, nothing invented ---- */
+  .dJ-screen {
+    --dJ-ink: #0A0A0A;
+    --dJ-ink-2: #6B6B6B;
+    --dJ-sunken: #F4F4F5;
+    --dJ-border: #E4E4E7;
+    --dJ-star: #FFC32B;
+    --dJ-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --dJ-display: "Inter Tight", "Inter", system-ui, -apple-system, sans-serif;
+
+    width: 390px;
+    margin: 0 auto;
+    background: #FFFFFF;
+    font-family: var(--dJ-body);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.35;
+    color: var(--dJ-ink);
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    box-sizing: border-box;
+  }
+  .dJ-screen *, .dJ-screen *::before, .dJ-screen *::after { box-sizing: inherit; }
+  .dJ-screen p, .dJ-screen h1, .dJ-screen h2 { margin: 0; }
+  .dJ-screen button { font: inherit; color: inherit; background: none; border: 0; padding: 0; }
+  .dJ-screen svg { display: block; }
+
+  /* ---- top zone: two rows only. In direction J the feed IS the product, so chrome is
+         held to the minimum that a photograph genuinely cannot carry. ---- */
+  .dJ-top { padding: 12px 16px 0; }
+
+  .dJ-utilrow { display: flex; align-items: center; gap: 8px; }
+
+  /* radius 12 per the locked input row, filled sunken at rest per LOCKFILE 3.5 depth.
+     No focus ring: killed by name three times, and the gate refuses one. */
+  .dJ-search {
+    flex: 1 1 auto;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px;
+    border-radius: 12px;
+    background: var(--dJ-sunken);
+    color: var(--dJ-ink-2);
+  }
+  .dJ-search svg { width: 18px; height: 18px; stroke: var(--dJ-ink-2); flex: 0 0 auto; }
+
+  /* locked icon-button geometry h-11 w-11 */
+  .dJ-iconbtn {
+    flex: 0 0 auto;
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 999px;
+  }
+  .dJ-iconbtn svg { width: 22px; height: 22px; stroke: var(--dJ-ink); }
+
+  /* the ONE display anchor. Inter Tight because it is 24px and up. It carries the city, so the
+     screen does not spend a second control on a fact a photo can never show. */
+  .dJ-anchor {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 10px;
+    font-family: var(--dJ-display);
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+  .dJ-anchor svg { width: 22px; height: 22px; stroke: var(--dJ-ink); flex: 0 0 auto; }
+
+  /* ---- ONE filter row, never two. It replaces sectioning: a work stream is one stream,
+         which is a real break with the >= 4 home sections floor, argued in the note. ---- */
+  .dJ-chips {
+    display: flex;
+    gap: 8px;
+    padding: 10px 16px 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .dJ-chips::-webkit-scrollbar { display: none; }
+  /* Two-class selector on purpose: the `.dJ-screen button` reset above is specificity
+     (0,1,1) and a single `.dJ-chip` is (0,1,0), so the reset's border:0 / padding:0 won
+     and the pills rendered as bare text. Caught by rendering it, not by reading it. */
+  .dJ-chips .dJ-chip {
+    flex: 0 0 auto;
+    height: 44px;
+    display: flex; align-items: center;
+    padding: 0 16px;
+    border-radius: 999px;
+    border: 1px solid var(--dJ-border);
+    background: #FFFFFF;
+    color: var(--dJ-ink-2);
+    white-space: nowrap;
+  }
+  /* the locked TabPill active treatment: calm gray fill, ink text, semibold.
+     Never an ink fill, never a blue outline. */
+  .dJ-chips .dJ-chip-on {
+    background: var(--dJ-sunken);
+    border-color: var(--dJ-sunken);
+    color: var(--dJ-ink);
+    font-weight: 600;
+  }
+
+  /* ---- the feed: two columns of varying tile heights, the observed grammar for a
+         work-photo surface that also has to carry a price ---- */
+  .dJ-feed { display: flex; gap: 12px; padding: 0 16px; align-items: flex-start; }
+  .dJ-col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 20px; }
+
+  .dJ-tile { display: block; }
+
+  /* entity-card radius 16. The photo is flush to the tile edge, which is how this tile
+     satisfies the edge-visibility floor on white without a border. */
+  .dJ-shot {
+    position: relative;
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--dJ-sunken);
+    box-shadow: 0 1px 2px rgba(10, 10, 10, 0.06);
+  }
+  .dJ-ar45 { aspect-ratio: 4 / 5; }
+  .dJ-ar11 { aspect-ratio: 1 / 1; }
+  .dJ-shot img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* PIL-verified crops. Each value was rendered and inspected as an image before use. */
+  .dJ-c-color   { object-position: 50% 50%; }
+  .dJ-c-fade    { object-position: 78% 50%; }
+  .dJ-c-haircut { object-position: 42% 50%; }
+  .dJ-c-facial  { object-position: 45% 50%; }
+  .dJ-c-styling { object-position: 62% 50%; }
+  .dJ-c-detail  { object-position: 52% 95%; }
+
+  /* FROST_GLASS verbatim from lib/frost-glass.ts, 44px hit box over a 28px disc */
+  .dJ-save {
+    position: absolute; top: 4px; right: 4px;
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .dJ-save span {
+    width: 28px; height: 28px; border-radius: 999px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255, 255, 255, 0.80);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 1px 3px rgba(10, 10, 10, 0.12);
+  }
+  .dJ-save svg { width: 16px; height: 16px; stroke: var(--dJ-ink); }
+
+  /* the locked no-photo fallback: sunken + real category icon + salon initial. Never a bare box. */
+  .dJ-none { display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .dJ-none img { width: 44px; height: 44px; object-fit: contain; }
+  /* The initial is a small identifier beside the icon, NOT a display element. It was 28px/600
+     and measuring the render showed three elements tied at 28px, which breaks the floor that
+     exactly ONE element is clearly the biggest. Body font at 14px/400 keeps the anchor unique
+     and also keeps Inter Tight above its 24px floor. */
+  .dJ-none span { font-family: var(--dJ-body); font-size: 14px; font-weight: 400; color: var(--dJ-ink-2); }
+
+  /* WHAT the photo is. Second-loudest fact on the tile, and the only 600 in it. */
+  .dJ-what { margin-top: 10px; font-size: 14px; font-weight: 600; line-height: 1.3; }
+
+  /* WHO made it. The bet in one declaration: the salon is a credit, so it is quieter than
+     the work. Every other direction inverts these two. */
+  .dJ-credit {
+    margin-top: 2px;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--dJ-ink-2);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  .dJ-meta { margin-top: 6px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .dJ-rate { display: flex; align-items: center; gap: 3px; font-size: 12px; font-weight: 400; color: var(--dJ-ink-2); }
+  .dJ-rate svg { width: 12px; height: 12px; fill: var(--dJ-star); stroke: none; }
+  /* pre-launch honesty: an unrated salon says New, it never borrows a number it has not earned */
+  .dJ-new { font-size: 12px; font-weight: 400; color: var(--dJ-ink-2); }
+  /* PBV Art. 13, at body weight in the meta line, never a second anchor */
+  .dJ-price { font-size: 12px; font-weight: 400; color: var(--dJ-ink); white-space: nowrap; }
+
+  .dJ-wired {
+    margin: 24px 16px 0;
+    padding-top: 12px;
+    border-top: 1px solid var(--dJ-border);
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--dJ-ink-2);
+  }
+
+  /* ---- the note is documentation, not the screen ---- */
+  .dJ-note {
+    width: 390px; margin: 24px auto 0; padding: 16px;
+    border-top: 1px solid var(--dJ-border);
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.55;
+    color: #0A0A0A;
+    box-sizing: border-box;
+  }
+  .dJ-note p { margin: 0 0 10px; }
+  .dJ-note b { font-weight: 600; }
+</style>
+
+<div class="dJ-screen">
+
+  <div class="dJ-top">
+    <div class="dJ-utilrow">
+      <!-- search is demoted to the exit for people the feed failed, not the front door -->
+      <div class="dJ-search">
+        <svg class="lucide lucide-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+        <span>Search work or salons</span>
+      </div>
+      <button class="dJ-iconbtn" aria-label="Saved looks">
+        <svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+      </button>
+    </div>
+
+    <h1 class="dJ-anchor">
+      Salon work in Zurich
+      <svg class="lucide lucide-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+    </h1>
+  </div>
+
+  <div class="dJ-chips">
+    <button class="dJ-chip dJ-chip-on">All</button>
+    <button class="dJ-chip">Fade</button>
+    <button class="dJ-chip">Color</button>
+    <button class="dJ-chip">Facial</button>
+    <button class="dJ-chip">Haircut</button>
+    <button class="dJ-chip">Nail art</button>
+    <button class="dJ-chip">Manicure</button>
+  </div>
+
+  <div class="dJ-feed">
+
+    <div class="dJ-col">
+
+      <!-- the one genuinely finished-result photo in the whole seeded set -->
+      <article class="dJ-tile">
+        <div class="dJ-shot dJ-ar45">
+          <img class="dJ-c-color" src="/_mockups/_assets/salon-photos/p09.jpg" alt="Finished balayage colour, long waved hair">
+          <button class="dJ-save" aria-label="Save this look"><span>
+            <svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </span></button>
+        </div>
+        <h2 class="dJ-what">Color</h2>
+        <p class="dJ-credit">Atelier Ruby, Kreis 4</p>
+        <p class="dJ-meta">
+          <span class="dJ-rate"><svg class="lucide lucide-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</span>
+          <span class="dJ-price">from 165 CHF</span>
+        </p>
+      </article>
+
+      <article class="dJ-tile">
+        <div class="dJ-shot dJ-ar45">
+          <img class="dJ-c-haircut" src="/_mockups/_assets/salon-photos/p03.jpg" alt="Finished men's cut, client still in the cape">
+          <button class="dJ-save" aria-label="Save this look"><span>
+            <svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </span></button>
+        </div>
+        <h2 class="dJ-what">Haircut</h2>
+        <p class="dJ-credit">Barbier Bellevue, Altstadt</p>
+        <p class="dJ-meta">
+          <span class="dJ-rate"><svg class="lucide lucide-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.7</span>
+          <span class="dJ-price">from 48 CHF</span>
+        </p>
+      </article>
+
+      <article class="dJ-tile">
+        <div class="dJ-shot dJ-ar11">
+          <img class="dJ-c-styling" src="/_mockups/_assets/salon-photos/p02.jpg" alt="Finished event styling, eye and lip detail">
+          <button class="dJ-save" aria-label="Save this look"><span>
+            <svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </span></button>
+        </div>
+        <h2 class="dJ-what">Styling</h2>
+        <p class="dJ-credit">Studio Lindenhof, Lindenhof</p>
+        <p class="dJ-meta">
+          <span class="dJ-rate"><svg class="lucide lucide-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span>
+          <span class="dJ-price">from 95 CHF</span>
+        </p>
+      </article>
+
+      <!-- nails ships ZERO work photography today, so this is the locked fallback, not a gap -->
+      <article class="dJ-tile">
+        <div class="dJ-shot dJ-ar45 dJ-none">
+          <img src="/icons/categories/nails.png" alt="">
+          <span>A</span>
+        </div>
+        <h2 class="dJ-what">Nail art</h2>
+        <p class="dJ-credit">Aurora Nails, Oerlikon</p>
+        <p class="dJ-meta">
+          <span class="dJ-new">New</span>
+          <span class="dJ-price">from 65 CHF</span>
+        </p>
+      </article>
+
+    </div>
+
+    <div class="dJ-col">
+
+      <article class="dJ-tile">
+        <div class="dJ-shot dJ-ar45">
+          <img class="dJ-c-fade" src="/_mockups/_assets/salon-photos/p03.jpg" alt="Finished fade, close cut at the temple">
+          <button class="dJ-save" aria-label="Save this look"><span>
+            <svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </span></button>
+        </div>
+        <h2 class="dJ-what">Fade</h2>
+        <p class="dJ-credit">Barbier Bellevue, Altstadt</p>
+        <p class="dJ-meta">
+          <span class="dJ-rate"><svg class="lucide lucide-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.7</span>
+          <span class="dJ-price">from 42 CHF</span>
+        </p>
+      </article>
+
+      <article class="dJ-tile">
+        <div class="dJ-shot dJ-ar45">
+          <img class="dJ-c-facial" src="/_mockups/_assets/salon-photos/p04.jpg" alt="Brow shaping and facial treatment in progress">
+          <button class="dJ-save" aria-label="Save this look"><span>
+            <svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </span></button>
+        </div>
+        <h2 class="dJ-what">Facial</h2>
+        <p class="dJ-credit">Maison Seefeld, Seefeld</p>
+        <p class="dJ-meta">
+          <span class="dJ-rate"><svg class="lucide lucide-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span>
+          <span class="dJ-price">from 140 CHF</span>
+        </p>
+      </article>
+
+      <!-- the SAME salon as tile 1. In a work feed the unit is the work, so one salon holds
+           more than one tile. That is the structural consequence, rendered on purpose. -->
+      <article class="dJ-tile">
+        <div class="dJ-shot dJ-ar11">
+          <img class="dJ-c-detail" src="/_mockups/_assets/salon-photos/p09.jpg" alt="Colour detail, wave and tone close up">
+          <button class="dJ-save" aria-label="Save this look"><span>
+            <svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </span></button>
+        </div>
+        <h2 class="dJ-what">Color</h2>
+        <p class="dJ-credit">Atelier Ruby, Kreis 4</p>
+        <p class="dJ-meta">
+          <span class="dJ-rate"><svg class="lucide lucide-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</span>
+          <span class="dJ-price">from 165 CHF</span>
+        </p>
+      </article>
+
+      <article class="dJ-tile">
+        <div class="dJ-shot dJ-ar11 dJ-none">
+          <img src="/icons/categories/nails.png" alt="">
+          <span>A</span>
+        </div>
+        <h2 class="dJ-what">Manicure</h2>
+        <p class="dJ-credit">Aurora Nails, Oerlikon</p>
+        <p class="dJ-meta">
+          <span class="dJ-new">New</span>
+          <span class="dJ-price">from 55 CHF</span>
+        </p>
+      </article>
+
+    </div>
+  </div>
+
+  <p class="dJ-wired">
+    Target state. Photos are the seeded set standing in for salon-uploaded work: today
+    salon_portfolio_images holds 0 rows, so no tile above is wired to a real portfolio. Names,
+    neighbourhoods, prices and star values are illustrative, not a live query.
+  </p>
+
+</div>
+
+<div class="dJ-note">
+  <p><b>The bet.</b> Home's job is to show finished work, because you cannot judge a stranger but
+  you can judge their output. The photograph is the product and the salon drops to a credit line
+  under it. The whole screen is one declaration: the tile title says what the work IS, at 14px
+  weight 600, and the business that made it sits beneath at 12px weight 400 in grey. Every other
+  direction inverts exactly those two values.</p>
+
+  <p><b>What it gives up.</b> A content-operations commitment before it is a design decision, and
+  the seeded set lets me price that instead of asserting it: of 8 distinct photos, <b>one</b> is a
+  genuinely finished result (the colour tile), two are treatments mid-work with a practitioner's
+  hands in frame, two are product flat-lays, one is an empty interior, one is a team portrait, and
+  <b>nails has zero</b>, which is why two tiles here are honest fallbacks. Result photos are also
+  not comparable: two beautiful pictures cannot tell you which salon is nearer, cheaper or sooner,
+  so home becomes a browsing surface and the entire deciding job moves to search. And the photo is
+  a seller-selected best case with no way to constrain it, unlike a price or a slot. Two costs I
+  found while building that the lenses had not priced: <b>the feed's unit stops being the salon</b>,
+  so tiles one and seven are one business and tiles two and five are another, which makes 8 tiles
+  only 5 businesses and means a salon with 40 photos would flood the feed without a per-salon cap;
+  and <b>a work stream is one stream</b>, which breaks the "home needs at least 4 sections" density
+  floor outright. The chip row is doing the sectioning instead.</p>
+
+  <p><b>The lens finding behind it.</b> Direction J came from WHY_CURRENCY position 3 carrying its
+  own caveat, that no beauty-booking product in the corpus leads with result photography. I
+  searched to break that and could not: Fresha's nail list is text rows with a monogram disc and no
+  photo at all, Careem demotes the manicure shot to a 60px left thumbnail subordinate to the price,
+  and Fresha puts Photos in a separate tab so the bookable list stays text-only. So the direction
+  still rests on a structural analogy, and the analogy is strong where I could check it.
+  <b>Artsy</b> is the closest full instance: the artwork is the photo, then the maker, then the
+  work's own title, then the gallery as a grey credit line, then the price, in a market whose
+  premise is that you cannot audit a reputation but you can look at the picture. <b>Airtasker</b> is
+  the only card that refuses the person-versus-work choice, a photo of a finished eyebrow above the
+  tasker's name and rating, and it quietly proves this direction's limit by inverting its own card
+  for search results into a left-thumbnail list: work-photo-large to browse, work-photo-small to
+  decide. <b>Behance</b> and ZIGZAG both put a small avatar credit directly under the work and carry
+  no price slot at all. <b>Airbnb Services</b> photographs the work rather than a venue, titles
+  every listing "by Putu", and makes its category tiles work photos with real supply counts,
+  printing "1 available" rather than hiding thinness. <b>Pinterest</b> settles the Inspo collision
+  inside one app: Explore is a bare masonry with no text, Shop is the same grid plus a price and a
+  merchant credit, so a price is what converts an inspiration wall into a bookable one. Pinterest
+  and GOAT overlay that price as a pill on the image; Depop, Etsy, eBay and Faire put it in a line
+  below. Solen's lock picks the second, body weight in the meta line, never a second anchor.</p>
+
+  <p><b>What building it turned up.</b> This direction is not speculative: the owner already
+  commissioned its data model on 2026-07-25 ("portfolio to be categories, like men's cut or a
+  woman's cut, that the salon itself can upload those stuff and categorize it"), and
+  salon_portfolio_images, the 15-key taxonomy, the gallery API and the dashboard uploader are all
+  live. It holds 0 rows and has no customer browse surface, so J is the missing consumer of a built
+  pipeline. Two real seams: the taxonomy has <b>no makeup key</b> across its four verticals, so the
+  Styling tile above is a judgement call and makeup work is currently uncategorizable; and a
+  portfolio row carries a category but <b>no service and no price</b>, so pairing "Color" with
+  "from 165 CHF" on one tile is a join that does not exist yet, which matters because PBV Art. 13
+  needs the price attached to the named service. Also worth fixing separately: the salon-photos
+  README claims 12 photos, and hashing all 66 pairs shows 4 pairs identical, so it is 8.</p>
+
+  <p><b>The question it forces.</b> Not whether to adopt this, but whether Inspo is a tab or the
+  front door. A two-column masonry of hair photos with prices IS Inspo, and Pinterest's answer is
+  that you do not build a second grid, you add a price to the one you have.</p>
+</div>

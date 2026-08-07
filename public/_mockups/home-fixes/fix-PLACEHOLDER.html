@@ -1,0 +1,376 @@
+<!-- Base: live iframe of the real route, no screenshot -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/_components/homepage/BusinessTeaser.tsx
+
+  Exists-check: `npm run exists "BusinessTeaser"` (1 hit, app/[locale]/_components/homepage/BusinessTeaser.tsx, the surface this fix targets), `npm run exists "placeholder"` (7 hits, all dashboard "no data" strings, none on the homepage teaser) and `npm run exists "image fallback"` (ImageFallback at components-legacy/ui/ImageFallback.tsx, plus one graveyard hit). REMOVED.md:99 kills any hardcoded/static hero photo on the homepage (owner 2026-07-25, third rejection), so restoring business-hero-square.png is illegal and is NOT what this does. ImageFallback exists but is the pre-pivot coral A3 pattern and is imported only from components-legacy/*, never on the live /de cards. The one thing that is new here: the contract's own missing-photo anatomy (sunken ground + category icon + initial) applied on /de, where today nothing catches a failed image at all.
+
+  Diagnosis: homepage BusinessTeaser renders the browser image-failed glyph on a bare grey ground | measured 358x358 = 128164px = 38.9% of a 390x844 viewport, fill #F4F4F5 at 1.10:1 against page white, 0px border, glyph svg.lucide-image 56px #6B6B6B | violates FLOORS LAW 2 (photo-first surface NEVER renders a bare grey box; fallback = sunken + category icon + initial) and NEVER-AGAIN floor 4 (no muted focal) and finished-screen pass item e (no dead-grey zone) and FLOORS LAW 4 (edge visibility) | target 0% of the viewport carrying a failed-image glyph, plus a perceivable 1px #E4E4E7 container edge.
+
+  This is a RENDERING BUG on a pre-launch site. Nothing is live, nobody has seen it, no customer was
+  harmed. It is one commit's worth of markup showing the universal "this image failed to load"
+  signal where an image slot was left unfilled.
+
+  Depicts:
+    - the 358x358 grey square    -> app/[locale]/_components/homepage/BusinessTeaser.tsx:42-53
+      (the role="img" div, its class string on line 45, the ImageIcon on lines 47-52)
+    - the aria-label rider fix   -> app/[locale]/_components/homepage/BusinessTeaser.tsx:44
+      (carries a banned dash, and a typo of the brand name)
+    - the salon card photo slot  -> the live /de feed cards, whose img alt is "<Salon>, <Category>"
+    - the icon assets            -> public/icons/categories/*.png, already used by
+      app/[locale]/_components/homepage/MobileCategoriesRow.tsx:43-48, layout/Header.tsx:100-103
+    - the icon-on-sunken chip    -> app/[locale]/_components/homepage/WalkInBand.tsx:71-78
+      (52px tile, radius 15, icon at 66% object-contain). Copied literally, not eyeballed.
+
+  Deviation, stated rather than hidden: the fallback anatomy is "ground + category icon + salon
+  initial". The initial is applied to salon card slots, where a salon actually exists and the letter
+  is read off that card's own alt text. It is NOT applied to the 358x358 square, because that square
+  sits in the partner-marketing teaser and has no salon behind it. Putting a letter there would
+  invent an entity, which taste rule 1 forbids.
+
+  Honest limit: this removes the broken-image CLAIM. It does not remove the grey, because the spec
+  fallback ground IS #F4F4F5. Killing the grey needs one of the two answers named in
+  _design-system/research/WHY_IT_LOOKS_CHEAP.md, a data-driven photo of a real partner salon in the
+  slot, or cutting the square and letting the text run full width. Both are outside this fix.
+
+  Locale note: all copy authored here is English, per the mockup content gate.
+-->
+<title>Fix PLACEHOLDER: the homepage BusinessTeaser failed-image box on /de</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --sunken:#F4F4F5; --hairline:#E4E4E7;
+    --font:'Inter Tight','Inter',system-ui,-apple-system,sans-serif;
+    --paneH:720px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{max-width:100%;overflow-x:hidden}
+  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+  header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);padding:10px 12px}
+  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(340px,100%);margin:0 auto}
+  .seg button{flex:1;min-height:44px;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:600;color:var(--ink2);border-radius:999px;cursor:pointer}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(10,10,10,.12)}
+  .cap{background:var(--sunken);color:var(--ink2);font-size:12px;line-height:1.45;text-align:center;padding:8px 14px;border-bottom:1px solid var(--hairline)}
+  .cap b{color:var(--ink);font-weight:600}
+  .stage{display:flex;gap:14px;justify-content:center;align-items:flex-start;padding:12px}
+  .pane{width:390px;max-width:100%;flex:0 1 390px}
+  .pane.hidden{display:none}
+  .pane h2{font-size:12px;font-weight:600;color:var(--ink2);padding:0 0 6px 2px}
+  .frame{position:relative;height:var(--paneH);border:1px solid var(--hairline);border-radius:16px;overflow:hidden;background:#fff}
+  iframe{width:100%;height:100%;border:0;display:block}
+  @media (max-width:899px){
+    :root{--paneH:620px}
+    .stage{flex-direction:column;align-items:center;padding:12px}
+    .pane{flex:0 0 auto;width:100%;max-width:390px}
+  }
+  footer{padding:14px 16px 40px;color:var(--ink2);font-size:12px;line-height:1.6;max-width:860px;margin:0 auto}
+  footer b{color:var(--ink);font-weight:600}
+  code{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;background:var(--sunken);padding:1px 5px;border-radius:5px;color:var(--ink)}
+</style>
+
+<header>
+  <div class="seg">
+    <button id="bB" class="on" onclick="show('before')">Before (live)</button>
+    <button id="bA" onclick="show('after')">After</button>
+    <button id="bX" onclick="show('both')">Both</button>
+  </div>
+</header>
+
+<div class="cap">
+  <b>After</b> = the same live <code>/de</code>, with only the failed-image treatment injected.
+  Every salon, price and photo in both panes is the real seeded page.
+</div>
+
+<div class="stage">
+  <div id="paneBefore" class="pane">
+    <h2>Before, untouched</h2>
+    <div class="frame"><iframe id="beforeFrame" src="/de" title="live route, untouched"></iframe></div>
+  </div>
+  <div id="paneAfter" class="pane hidden">
+    <h2>After, fix injected</h2>
+    <div class="frame"><iframe id="afterFrame" src="/de" title="live route, fix injected"></iframe></div>
+  </div>
+</div>
+
+<footer>
+  <p><b>What changed.</b> The <code>role="img"</code> square in <code>BusinessTeaser</code> stops
+  rendering the browser's image-failed glyph. It keeps its <code>#F4F4F5</code> ground (that is the
+  spec fallback ground), gains the real category icon on the 52px white chip that
+  <code>WalkInBand</code> already uses, and gains a <code>#E4E4E7</code> hairline so it reads as a
+  deliberate empty slot rather than a hole.</p>
+  <p style="margin-top:8px"><b>Second half.</b> Every image on the page is watched; any that reports
+  <code>naturalWidth === 0</code> gets the full anatomy, sunken ground plus the category icon plus
+  the salon initial, both read off that card's own <code>alt</code> text. On the current render that
+  guard fires <b>zero</b> times, so one card is deliberately pointed at a missing file and labelled,
+  to prove the path is real and not dead code.</p>
+  <p style="margin-top:8px"><b>Pre-launch.</b> Nothing here is live. This is a rendering bug in
+  markup, not an exposure.</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  function round1(n){ return Math.round(n * 10) / 10; }
+  function firstChar(s){ return s.slice(0, 1); }
+  // 8212 = em dash, 8211 = en dash. Built from char codes so neither appears in this file.
+  var BANNED_DASH = new RegExp("[" + String.fromCharCode(8212, 8211) + "]");
+
+  var ICONS = {
+    coiffeur:"/icons/categories/scissors.png", hair:"/icons/categories/scissors.png",
+    barbershop:"/icons/categories/clippers.png", barber:"/icons/categories/clippers.png",
+    nails:"/icons/categories/nails.png", spa:"/icons/categories/spa.png",
+    massage:"/icons/categories/spa.png"
+  };
+  var DEFAULT_ICON = "/icons/categories/scissors.png";
+  function iconFor(cat){
+    cat = (cat || "").toLowerCase().trim();
+    if (ICONS[cat]) return ICONS[cat];
+    for (var k in ICONS) if (ICONS.hasOwnProperty(k) && cat.indexOf(k) > -1) return ICONS[k];
+    return DEFAULT_ICON;
+  }
+
+  // 52px chip, radius 15, icon at 66% object-contain: WalkInBand.tsx:71-78 verbatim.
+  // White here because the ground is already the sunken tray (FLOORS LAW 4, edge visibility).
+  function chip(doc, src){
+    var s = doc.createElement("span");
+    s.setAttribute("style","display:grid;place-items:center;width:52px;height:52px;flex:0 0 52px;border-radius:15px;background:#FFFFFF;box-shadow:0 1px 2px rgba(10,10,10,.06)");
+    var i = doc.createElement("img"); i.src = src; i.alt = "";
+    i.setAttribute("style","width:66%;height:66%;object-fit:contain");
+    s.appendChild(i); return s;
+  }
+  function chipLabel(doc, text){
+    var l = doc.createElement("span"); l.textContent = text;
+    l.setAttribute("style","position:absolute;top:8px;right:8px;z-index:99999;background:rgba(10,10,10,.86);color:#fff;font:600 10px/1.3 -apple-system,system-ui,sans-serif;padding:3px 8px;border-radius:999px");
+    return l;
+  }
+  function outline(el){ el.style.outline = "2px dashed #0A0A0A"; el.style.outlineOffset = "2px"; }
+
+  function bigFailedBoxes(doc){
+    return [].slice.call(doc.querySelectorAll('[role="img"]')).filter(function(e){
+      return e.querySelector("svg.lucide-image") && e.getBoundingClientRect().width > 200;
+    });
+  }
+  function findFailedBox(doc){
+    var treated = doc.querySelector('[data-sweep-fix="A"]');
+    return treated ? treated : (bigFailedBoxes(doc)[0] || null);
+  }
+
+  // Fix A: the shipped 358x358 grey box carrying the image-failed glyph.
+  function fixFailedImageBox(doc){
+    var n = 0;
+    bigFailedBoxes(doc).forEach(function(box){
+      if (box.dataset.sweepFix) return;
+      box.dataset.sweepFix = "A";
+      var glyph = box.querySelector("svg.lucide-image");
+      if (glyph) glyph.parentNode.removeChild(glyph);
+      box.setAttribute("aria-label", "Image slot, hero replacement pending");
+      box.style.border = "1px solid #E4E4E7";
+      box.style.position = "relative";
+      box.appendChild(chip(doc, ICONS.coiffeur));
+      outline(box);
+      box.appendChild(chipLabel(doc, "After: category icon, no failed-image glyph"));
+      n++;
+    });
+    return n;
+  }
+
+  // Fix B: any image reporting naturalWidth === 0. Name and category come from the
+  // card's own alt text, so nothing is invented. Seeded names already start capitalised.
+  function swapToFallback(doc, img, forced){
+    if (img.dataset.sweepFallback) return null;
+    img.dataset.sweepFallback = "1";
+    var parts = (img.getAttribute("alt") || "").split(",");
+    var name = (parts[0] || "").trim();
+    var cat  = (parts[1] || "").trim();
+    var initial = firstChar(name.replace(/[^0-9A-Za-zÀ-ÿ]/g, ""));
+
+    var ph = doc.createElement("div");
+    ph.className = img.className;
+    ph.setAttribute("style", img.getAttribute("style") || "");
+    ph.style.background = "#F4F4F5";
+    ph.style.display = "flex"; ph.style.flexDirection = "column";
+    ph.style.alignItems = "center"; ph.style.justifyContent = "center"; ph.style.gap = "8px";
+    ph.setAttribute("role", "img");
+    ph.setAttribute("aria-label", name ? (name + ", photo unavailable") : "Photo unavailable");
+    ph.dataset.sweepFix = "B";
+    ph.appendChild(chip(doc, iconFor(cat)));
+    if (initial) {
+      var ini = doc.createElement("span"); ini.textContent = initial;
+      ini.setAttribute("style","font:600 14px/1 Inter,system-ui,-apple-system,sans-serif;color:#6B6B6B;letter-spacing:.02em");
+      ph.appendChild(ini);
+    }
+    img.parentNode.insertBefore(ph, img);
+    img.style.display = "none";
+    var host = ph.parentElement;
+    if (host) {
+      if (getComputedStyle(host).position === "static") host.style.position = "relative";
+      outline(host);
+      host.appendChild(chipLabel(doc, forced ? "Forced load failure, fallback shown" : "Fallback shown"));
+    }
+    return ph;
+  }
+
+  function guardImages(doc){
+    var n = 0;
+    [].slice.call(doc.querySelectorAll("img")).forEach(function(img){
+      if (img.dataset.sweepGuard === "1") return;
+      img.dataset.sweepGuard = "1";
+      var forced = img.dataset.sweepForced === "1";
+      img.addEventListener("error", function(){ swapToFallback(doc, img, forced); });
+      if (img.complete && img.naturalWidth === 0) { swapToFallback(doc, img, forced); n++; }
+    });
+    return n;
+  }
+
+  // Break ONE real card image on purpose so the guard visibly fires and is not dead code.
+  // The latch is the RENDERED fallback, not a boolean: React hydration replaces the node
+  // and silently undoes the forced src, and a boolean latch would never re-fire after that.
+  function forceOneFailure(doc){
+    if (doc.querySelector('[data-sweep-fix="B"]')) return 0;
+    var candidates = [].slice.call(doc.querySelectorAll("img")).filter(function(i){
+      var r = i.getBoundingClientRect();
+      return r.width > 120 && r.height > 100 && (i.getAttribute("alt") || "").indexOf(",") > -1
+             && !i.dataset.sweepFallback;
+    });
+    if (!candidates.length) return 0;
+    var img = candidates[Math.min(1, candidates.length - 1)];
+    img.dataset.sweepForced = "1";
+    img.dataset.sweepGuard = "0";
+    img.removeAttribute("srcset"); img.removeAttribute("sizes");
+    img.src = "/_mockups/home-fixes/_deliberately-missing.png";
+    return 1;
+  }
+
+  function applyChange(doc){
+    var a = fixFailedImageBox(doc);
+    forceOneFailure(doc);
+    return a + guardImages(doc);
+  }
+  window.applyChange = applyChange;
+
+  // paint gate: a heading plus three tall cards
+  function painted(doc){
+    if (!doc || !doc.body || !doc.querySelector("h1,h2")) return false;
+    return [].slice.call(doc.querySelectorAll("img")).filter(function(i){
+      return i.getBoundingClientRect().height > 120;
+    }).length >= 3;
+  }
+
+  // Both panes open at the hero, which is nowhere near the box being fixed. Park
+  // each pane on its own copy of that box so the change is the first thing on screen.
+  function scrollFrameToBox(id){
+    try {
+      var doc = document.getElementById(id).contentDocument;
+      var box = findFailedBox(doc);
+      if (box) { box.scrollIntoView({ block: "center" }); return true; }
+    } catch (e) {}
+    return false;
+  }
+
+  var afterBegun = false;
+  function beginAfter(){
+    if (afterBegun) return;
+    afterBegun = true;
+    var f = document.getElementById("afterFrame"), tries = 0;
+    var iv = setInterval(function(){
+      tries++;
+      try {
+        var doc = f.contentDocument;
+        if (painted(doc)) {
+          applyChange(doc);
+          doc.body.dataset.sweepDone = "1";
+          scrollFrameToBox("afterFrame");
+        }
+      } catch (e) {}
+      if (tries > 90) clearInterval(iv);
+    }, 200);
+  }
+
+  var beforeBegun = false;
+  function beginBefore(){
+    if (beforeBegun) return;
+    beforeBegun = true;
+    var f = document.getElementById("beforeFrame"), tries = 0;
+    var iv = setInterval(function(){
+      tries++;
+      try { if (painted(f.contentDocument) && scrollFrameToBox("beforeFrame")) { /* parked */ } } catch (e) {}
+      if (tries > 90) clearInterval(iv);
+    }, 200);
+  }
+  if (document.readyState === "complete") beginBefore();
+  else window.addEventListener("load", beginBefore);
+
+  window.show = function(w){
+    document.getElementById("paneBefore").classList.toggle("hidden", w === "after");
+    document.getElementById("paneAfter").classList.toggle("hidden", w === "before");
+    document.getElementById("bB").classList.toggle("on", w === "before");
+    document.getElementById("bA").classList.toggle("on", w === "after");
+    document.getElementById("bX").classList.toggle("on", w === "both");
+    if (w !== "before") beginAfter();
+  };
+
+  function measureDoc(doc, win){
+    var VA = win.innerWidth * win.innerHeight;
+    var glyphs = [].slice.call(doc.querySelectorAll("svg.lucide-image")).map(function(s){
+      var host = s.closest('[role="img"]') || s.parentElement;
+      var r = host.getBoundingClientRect();
+      return { w: Math.round(r.width), h: Math.round(r.height),
+               pctViewport: round1((r.width * r.height) / VA * 100) };
+    });
+    var box = findFailedBox(doc);
+    var bs = box ? getComputedStyle(box) : null;
+    var br = box ? box.getBoundingClientRect() : null;
+    var imgs = [].slice.call(doc.querySelectorAll("img"));
+    return {
+      viewport: [win.innerWidth, win.innerHeight],
+      failedGlyphCount: glyphs.length,
+      failedGlyphViewportPct: round1(glyphs.reduce(function(a, g){ return a + g.pctViewport; }, 0)),
+      largestFailedGlyphBox: glyphs.sort(function(a, b){ return b.pctViewport - a.pctViewport; })[0] || null,
+      teaserBox: box ? {
+        ariaLabel: box.getAttribute("aria-label"),
+        hasBannedDash: BANNED_DASH.test(box.getAttribute("aria-label") || ""),
+        w: Math.round(br.width), h: Math.round(br.height),
+        pctViewport: round1(br.width * br.height / VA * 100),
+        bg: bs.backgroundColor,
+        borderTop: bs.borderTopWidth + " " + bs.borderTopStyle + " " + bs.borderTopColor,
+        failedGlyphsInside: box.querySelectorAll("svg.lucide-image").length,
+        categoryIcons: box.querySelectorAll('img[src*="/icons/categories/"]').length
+      } : null,
+      imgTotal: imgs.length,
+      imgNaturalWidthZeroUnhandled: imgs.filter(function(i){
+        return i.complete && i.naturalWidth === 0 && !i.dataset.sweepFallback;
+      }).length,
+      imgStillLoading: imgs.filter(function(i){ return !i.complete; }).length,
+      fallbacksRendered: doc.querySelectorAll('[data-sweep-fix="B"]').length,
+      sweepDone: doc.body.dataset.sweepDone === "1"
+    };
+  }
+
+  window.__measure = function(){
+    var out = {};
+    ["before", "after"].forEach(function(k){
+      var f = document.getElementById(k + "Frame");
+      try { out[k] = measureDoc(f.contentDocument, f.contentWindow); }
+      catch (e) { out[k] = { error: String(e) }; }
+    });
+    return out;
+  };
+
+  // Each pane must individually sit INSIDE the viewport, not merely leave the
+  // document non-overflowing. That weaker check missed this exact bug twice.
+  window.__paneFit = function(){
+    var vw = document.documentElement.clientWidth, vh = window.innerHeight;
+    var res = { viewport: [vw, vh], docScrollWidth: document.documentElement.scrollWidth, panes: [] };
+    ["paneBefore", "paneAfter"].forEach(function(id){
+      var el = document.getElementById(id);
+      var visible = !el.classList.contains("hidden");
+      var r = el.getBoundingClientRect();
+      res.panes.push({ id: id, visible: visible,
+        left: Math.round(r.left), right: Math.round(r.right), width: Math.round(r.width),
+        insideViewport: !visible ? null : (r.left >= -0.5 && r.right <= vw + 0.5) });
+    });
+    res.allVisiblePanesInside = res.panes.every(function(p){ return p.insideViewport !== false; });
+    res.noHorizontalOverflow = document.documentElement.scrollWidth <= vw + 0.5;
+    return res;
+  };
+})();
+</script>

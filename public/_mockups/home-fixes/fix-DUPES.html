@@ -1,0 +1,531 @@
+<!-- Base: live iframe of the real route, no screenshot -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx
+
+  Exists-check: `npm run exists "salon photo"` ran this turn. Two hits, both reused rather than
+  duplicated: the DB table `salon_photos` ALREADY EXISTS and holds 0 rows, and the SalonCard photo
+  slot already exists. Nothing new is proposed here, no route, no component, no migration, no table.
+  The existing seam is `salons.cover_photo_url` (lib/salons/public-columns.ts:15) plus the empty
+  `salon_photos` table; the fix is rows in that seam, not code. Graveyard: `_design-system/REMOVED.md`
+  carries "home hero image / decorative static image baked in" (owner's third rejection 2026-07-25)
+  and "stock photo badge / StockPhotoMarker" (owner 2026-07-27, "i dont want any badge bro i know if
+  its stock or not"). Neither is re-proposed: every photograph swapped in below sits in a real salon's
+  existing card slot, none is a decorative hero, and no card is marked as stock in the UI. The C11
+  converged card is respected too: no review count is drawn anywhere on this page.
+
+  Diagnosis: different salons render the identical photograph inside one rail | measured 19 salon
+  photo slots for 16 distinct salons served by 11 distinct photographs, 9 of the 16 salons colliding,
+  worst group = one interior standing in for Glow Lab Basel, Velvet Face and Rouge Studio (3 names,
+  1 photo, 1 rail) | violates taste rule 1 (no fabricated data, a photograph captioned with a salon
+  that is not in it is a fabricated fact) and FLOORS LAW 2 (imagery is satisfied by real salon
+  content, "SHOW OFF THE STORES THAT WE HAVE", never by a stand-in) | target 16 salons served by 16
+  distinct photographs, 0 collisions.
+
+  This is a SEED DATA gap. `salon_photos` has 0 rows and `cover_photo_url` is seeded from a small
+  shared stock pool, so 5 salons wear another salon's photograph. 5 additional seed rows close it.
+  Nothing here is live and no one has seen it.
+
+  Depicts: the card photo slot whose src repeats -> app/[locale]/_components/homepage/SalonCard.tsx (<Image src={photoUrl}>, ~line 443)
+  Depicts: the widest salon rail, where the repeats collide -> app/[locale]/_components/homepage/Nearby.tsx:129 (photoUrl={e.photoUrl})
+  Depicts: the top-picks salon rail above it -> app/[locale]/_components/homepage/ForYouSalonRows.tsx:77 (photoUrl={real?.photoUrl})
+  Depicts: the duplicated value itself -> salons.cover_photo_url, selected in lib/salons/public-columns.ts:15
+  Depicts: the table that would own per-salon photography -> public.salon_photos table (exists today, 0 rows, RLS on)
+  Depicts: the stand-in photographs -> public/_mockups/_assets/salon-photos, self-hosted per _BASE.md, standing in for the shared pool lib/stock-photos.ts serves today
+  Nothing else is drawn. Both panes are the real /de rendered by the real components. The first pane
+  is untouched. The second is the same live document with only the src of 5 <img> elements reassigned.
+  No hand-drawn card, no screenshot, no invented control.
+
+  Stand-in pool honesty: that assets folder holds 12 files but only 8 perceptually distinct
+  photographs, p05=p04, p08=p02, p10=p01, p11=p09 (dHash, Hamming under 7). The same duplication
+  defect, in the mockup assets. Only the 8 distinct files are used, and by root-relative path, because
+  the static server drops the trailing slash so a relative ../ resolves one level too high.
+  Named weakness, because it IS the point rather than an excuse: the pool holds no second nail
+  photograph, so Pink Petal Nails ends up with a beauty-bar flatlay that is less on-category than the
+  nail photo it was previously sharing with Nail Studio Bliss. That is what a pool too small for the
+  salon count looks like. Real seeding gives that salon its own photograph and the question disappears.
+
+  The rail under test is picked at runtime as the rail carrying the most cards, so no locale string is
+  hardcoded here; its heading is read live out of the rendered document.
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Fix DUPES: SalonCard photo reuse</title>
+<style>
+  @font-face{font-family:'Inter';src:url('/_mockups/_assets/fonts/inter-latin-var.woff2') format('woff2');font-weight:100 900;font-display:swap}
+  @font-face{font-family:'Inter Tight';src:url('/_mockups/_assets/fonts/inter-tight-latin-var.woff2') format('woff2');font-weight:100 900;font-display:swap}
+
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --sunken:#F4F4F5; --hairline:#E4E4E7;
+    --ok:#16A34A;
+    --chrome:150px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  html,body{height:100%;overflow:hidden}
+  body{
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    background:#fff;color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .chrome{position:fixed;top:0;left:0;right:0;z-index:20;background:#fff;border-bottom:1px solid var(--hairline)}
+  .bar{display:flex;align-items:center;gap:12px;padding:6px 12px;min-height:56px;flex-wrap:wrap}
+  h1{font-family:'Inter Tight',system-ui,sans-serif;font-size:24px;font-weight:600;line-height:1.15;letter-spacing:-.01em;flex:1 1 auto;min-width:0}
+  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;flex:0 0 auto}
+  .seg button{
+    border:0;background:transparent;font-family:inherit;font-size:15px;font-weight:500;color:var(--ink2);
+    height:44px;padding:0 14px;border-radius:999px;cursor:pointer;white-space:nowrap;
+  }
+  .seg button.on{background:#fff;color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(10,10,10,.10)}
+
+  .readout{
+    background:var(--sunken);border-top:1px solid var(--hairline);
+    font-size:12px;line-height:1.45;font-weight:400;color:var(--ink2);
+    padding:7px 12px;display:flex;gap:2px 20px;flex-wrap:wrap;align-items:baseline;
+    max-height:112px;overflow-y:auto;
+  }
+  .readout b{font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+  .readout .br{flex-basis:100%;height:0}
+
+  .evid{display:flex;align-items:center;gap:10px;padding:5px 12px;border-top:1px solid var(--hairline);overflow-x:auto}
+  .evid .lab{font-size:11px;font-weight:600;color:var(--ink2);white-space:nowrap;flex:0 0 auto;max-width:96px;line-height:1.25}
+  .evid .thumbs{display:flex;gap:6px}
+  .evid figure{width:70px;flex:0 0 auto}
+  .evid img{width:70px;height:38px;object-fit:cover;border-radius:6px;display:block;background:var(--sunken)}
+  .evid figcaption{font-size:11px;line-height:1.25;color:var(--ink);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  .stage{position:fixed;top:var(--chrome);left:0;right:0;bottom:0;display:flex;flex-direction:column}
+  .pane{position:relative;flex:1 1 0;min-height:0;min-width:0;border-top:1px solid var(--hairline);overflow:hidden}
+  .pane:first-child{border-top:0}
+  .pane.hidden{display:none}
+  .pane > .tag{
+    position:absolute;top:8px;left:8px;z-index:5;
+    background:rgba(10,10,10,.86);color:#fff;font-size:11px;font-weight:600;line-height:1;
+    padding:6px 9px;border-radius:999px;pointer-events:none;
+  }
+  iframe{width:100%;height:100%;border:0;display:block;background:#fff}
+
+  @media (min-width:900px){
+    .readout{font-size:13px;max-height:none}
+    .stage{flex-direction:row}
+    .pane{border-top:0;border-left:1px solid var(--hairline)}
+    .pane:first-child{border-left:0}
+  }
+</style>
+
+<div class="chrome">
+  <div class="bar">
+    <h1>One interior, three names</h1>
+    <div class="seg" role="group" aria-label="Compare the two panes">
+      <button id="bB" type="button" onclick="show('before')">Before</button>
+      <button id="bT" type="button" class="on" onclick="show('both')">Both</button>
+      <button id="bA" type="button" onclick="show('after')">After</button>
+    </div>
+  </div>
+  <div class="readout" id="readout">Loading the real page</div>
+  <div class="evid" id="evid" hidden>
+    <div class="lab" id="evidLab">same photo</div>
+    <div class="thumbs" id="evidThumbs"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <div id="paneBefore" class="pane">
+    <span class="tag">Live, untouched</span>
+    <iframe id="beforeFrame" src="/de" title="the real home page, untouched"></iframe>
+  </div>
+  <div id="paneAfter" class="pane">
+    <span class="tag">Same page, 5 photos reassigned</span>
+    <iframe id="afterFrame" src="/de" title="the real home page with the fix injected"></iframe>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  var CHANGE_LABEL = 'reseeded';
+  var FOCUS_SALON = null;   // both rails park on this card so the change is on screen
+
+  /* Stand-in pool. 8 perceptually distinct files out of the 12 in the folder
+     (p05=p04, p08=p02, p10=p01, p11=p09 by dHash). Category keys are read live
+     off the rendered alt text, so nothing locale-specific is hardcoded. */
+  var DIR = '/_mockups/_assets/salon-photos/';
+  var BY_CATEGORY = {
+    'Coiffeur':       ['p12.jpg','p09.jpg','p01.jpg','p03.jpg'],
+    'Barbershop':     ['p03.jpg','p01.jpg'],
+    'Nails':          ['p06.jpg','p07.jpg'],
+    'Spa & Wellness': ['p04.jpg','p02.jpg']
+  };
+  var FALLBACK = ['p01.jpg','p02.jpg','p03.jpg','p04.jpg','p06.jpg','p07.jpg','p09.jpg','p12.jpg'];
+
+  /* ---------- reading the real document ---------- */
+
+  function salonImgs(doc){
+    var out = [], list = doc.querySelectorAll('img'), sy = doc.defaultView ? doc.defaultView.scrollY : 0;
+    for (var i = 0; i < list.length; i++){
+      var im = list[i], r = im.getBoundingClientRect();
+      if (r.width < 60 || r.height < 60) continue;
+      var alt = (im.getAttribute('alt') || '').trim();
+      var comma = alt.indexOf(',');
+      if (comma < 0) continue;                          // SalonCard alt is "Name, Category"
+      var src = decodeURIComponent(im.currentSrc || im.src || '');
+      if (!/unsplash|_mockups\/_assets/.test(src)) continue;
+      out.push({
+        el: im,
+        salon: alt.substring(0, comma).trim(),
+        category: alt.substring(comma + 1).trim(),
+        top: Math.round(r.top + sy)
+      });
+    }
+    return out;
+  }
+
+  function photoKey(im){
+    var raw = decodeURIComponent(im.currentSrc || im.src || '');
+    var local = raw.match(/salon-photos\/(p\d+\.jpg)/);
+    if (local) return 'local:' + local[1];
+    var uns = raw.match(/photo-[0-9a-zA-Z_-]{10,}/);
+    if (uns) return uns[0];
+    return raw.split('?')[0];
+  }
+
+  /* A rail = the set of photo slots sharing one document y. That is how the page
+     actually lays out: every unit in a horizontal rail shares a top. */
+  function rails(doc){
+    var imgs = salonImgs(doc), byTop = {}, sy = doc.defaultView ? doc.defaultView.scrollY : 0;
+    imgs.forEach(function(o){ (byTop[o.top] = byTop[o.top] || []).push(o); });
+    var tops = Object.keys(byTop).map(Number).sort(function(a, b){ return a - b; });
+    var heads = [].slice.call(doc.querySelectorAll('h1,h2,h3')).map(function(h){
+      return { t: (h.textContent || '').trim(), y: h.getBoundingClientRect().top + sy };
+    });
+    return tops.map(function(t){
+      var name = 'rail';
+      for (var i = 0; i < heads.length; i++){
+        if (heads[i].y < t && heads[i].t.length < 40) name = heads[i].t;
+      }
+      return { name: name, top: t, items: byTop[t] };
+    });
+  }
+
+  /* The rail under test is the one carrying the most units. Locale-independent. */
+  function mainRail(doc){
+    var best = null;
+    rails(doc).forEach(function(r){ if (!best || r.items.length > best.items.length) best = r; });
+    return best;
+  }
+
+  function statsFor(items){
+    var salons = {}, byPhoto = {};
+    items.forEach(function(o){
+      var k = photoKey(o.el);
+      salons[o.salon] = 1;
+      byPhoto[k] = byPhoto[k] || {};
+      byPhoto[k][o.salon] = 1;
+    });
+    var groups = Object.keys(byPhoto).map(function(k){
+      return { key: k, salons: Object.keys(byPhoto[k]) };
+    }).sort(function(a, b){ return b.salons.length - a.salons.length; });
+    var colliding = 0, worst = 0;
+    groups.forEach(function(g){
+      if (g.salons.length > 1) colliding += g.salons.length;
+      if (g.salons.length > worst) worst = g.salons.length;
+    });
+    return { slots: items.length, salons: Object.keys(salons).length, photos: groups.length,
+             colliding: colliding, worst: worst, groups: groups };
+  }
+
+  function pageStats(doc){
+    var s = statsFor(salonImgs(doc));
+    var mr = mainRail(doc);
+    if (mr){ s.rail = statsFor(mr.items); s.rail.name = mr.name; }
+    return s;
+  }
+
+  /* ---------- the fix ---------- */
+
+  function applyChange(doc){
+    var all = salonImgs(doc);
+    if (!all.length) return 0;
+
+    /* Which salon owns which photograph: the salon whose FIRST slot appears earliest
+       in document order keeps it. Every other salon on that photograph is reassigned,
+       and reassigned on ALL of its slots, so a salon never ends up wearing two
+       different photographs, which would trade one defect for another. */
+    var owner = {}, order = [], seen = {};
+    all.forEach(function(o){
+      var k = photoKey(o.el);
+      if (!(k in owner)) owner[k] = o.salon;
+      if (!seen[o.salon]){ seen[o.salon] = 1; order.push(o); }
+    });
+
+    var used = {}, assign = {};
+    order.forEach(function(o){
+      var k = photoKey(o.el);
+      if (owner[k] === o.salon) return;                 // this salon keeps its photograph
+      var pool = (BY_CATEGORY[o.category] || []).concat(FALLBACK);
+      for (var i = 0; i < pool.length; i++){
+        if (!used[pool[i]]){ used[pool[i]] = 1; assign[o.salon] = pool[i]; break; }
+      }
+    });
+
+    /* Park both rails on a reassigned pair. Index 0 is visible without horizontal
+       scrolling anyway, so focus the first reassigned slot past it. */
+    var mr0 = mainRail(doc);
+    if (mr0 && !FOCUS_SALON){
+      for (var j = 1; j < mr0.items.length; j++){
+        if (assign[mr0.items[j].salon]){ FOCUS_SALON = mr0.items[j].salon; break; }
+      }
+    }
+
+    var hits = 0;
+    all.forEach(function(o){
+      var file = assign[o.salon];
+      if (!file) return;
+      var im = o.el, want = DIR + file;
+      if (im.getAttribute('src') !== want){
+        im.removeAttribute('srcset');
+        im.removeAttribute('sizes');
+        im.setAttribute('src', want);
+        im.setAttribute('loading', 'eager');   // the rail lazy-loads; a demo must paint
+        im.setAttribute('decoding', 'sync');
+        im.style.objectFit = 'cover';
+      }
+      if (!im.getAttribute('data-sweep-marked')){
+        im.setAttribute('data-sweep-marked', '1');
+        var box = im.parentElement || im;
+        if (!box.style.position) box.style.position = 'relative';
+        box.style.outline = '1.5px solid #0A0A0A';
+        box.style.outlineOffset = '-1.5px';
+        var chip = doc.createElement('span');
+        chip.textContent = CHANGE_LABEL;
+        chip.setAttribute('data-sweep-chip', '1');
+        chip.style.cssText = 'position:absolute;left:6px;bottom:6px;z-index:9;background:rgba(10,10,10,.86);'
+          + 'color:#fff;font:600 10px/1 Inter,system-ui,sans-serif;padding:5px 7px;border-radius:999px;pointer-events:none';
+        box.appendChild(chip);
+        hits++;
+      }
+    });
+    return hits;
+  }
+
+  /* ---------- driving the two frames ---------- */
+
+  function painted(doc){
+    if (!doc || !doc.body) return false;
+    if (!doc.querySelector('h1,h2,h3')) return false;
+    var tall = 0, imgs = doc.querySelectorAll('img');
+    for (var i = 0; i < imgs.length; i++){
+      var r = imgs[i].getBoundingClientRect();
+      if (r.height >= 150 && r.width >= 150) tall++;
+      if (tall >= 3) return true;
+    }
+    return false;
+  }
+
+  function waitPainted(frame, cb){
+    var tries = 0;
+    var iv = setInterval(function(){
+      tries++;
+      var doc = null;
+      try { doc = frame.contentDocument; } catch(e){}
+      if (doc && painted(doc)){ clearInterval(iv); cb(doc); return; }
+      if (tries > 150){ clearInterval(iv); cb(null); }
+    }, 200);
+  }
+
+  /* scrollIntoView gets swallowed by the rail's own horizontal scroller, so compute the
+     absolute document y of the first slot and scrollTo it, leaving room for its heading. */
+  function scrollToRail(doc){
+    var mr = mainRail(doc), win = doc.defaultView;
+    if (!mr || !mr.items.length || !win) return;
+    /* app/globals.css:611 sets scroll-behavior:smooth, so a plain scrollTo starts an
+       animation that the router's restore-to-zero then wins. Force instant. */
+    doc.documentElement.style.scrollBehavior = 'auto';
+    if (doc.body) doc.body.style.scrollBehavior = 'auto';
+    var y = mr.items[0].el.getBoundingClientRect().top + win.scrollY - 54;
+    try { win.scrollTo(0, Math.max(0, y)); } catch(e){}
+    scrollRailX(doc, mr);
+  }
+
+  /* Park the rail's own horizontal scroller on FOCUS_SALON, identically in each pane. */
+  function scrollRailX(doc, mr){
+    if (!FOCUS_SALON || !mr) return;
+    var hit = null;
+    for (var i = 0; i < mr.items.length; i++){
+      if (mr.items[i].salon === FOCUS_SALON){ hit = mr.items[i]; break; }
+    }
+    if (!hit) return;
+    var sc = hit.el.parentElement;
+    while (sc && sc !== doc.body && sc.scrollWidth <= sc.clientWidth + 4) sc = sc.parentElement;
+    if (!sc || sc === doc.body) return;
+    var unit = hit.el.closest('a,article,li') || hit.el;
+    sc.style.scrollBehavior = 'auto';
+    var delta = unit.getBoundingClientRect().left - sc.getBoundingClientRect().left;
+    sc.scrollLeft = Math.max(0, sc.scrollLeft + delta - 14);
+  }
+
+  /* The Next dev-server error/route overlays are tooling chrome injected into BOTH frames,
+     not product render. Suppressed identically in each so the comparison stays symmetric. */
+  function hideDevOverlay(doc){
+    var n = doc.querySelectorAll('nextjs-portal, #__next-build-watcher, [data-nextjs-toast]');
+    for (var i = 0; i < n.length; i++) n[i].style.display = 'none';
+  }
+
+  /* The chrome wraps to different heights per viewport, so the stage top is measured,
+     never assumed. A hardcoded value let the chrome sit on top of the panes. */
+  function syncChrome(){
+    var h = document.querySelector('.chrome').getBoundingClientRect().height;
+    document.documentElement.style.setProperty('--chrome', Math.ceil(h) + 'px');
+  }
+
+  var STATE = { before: null, after: null };
+  var DOCS  = { before: null, after: null };
+
+  function publish(){
+    var out = {};
+    out.before = STATE.before;
+    out.after = STATE.after;
+    window.__DUPES = out;
+  }
+
+  /* Layout settles late: mid-hydration the widest rail briefly wraps into two rows,
+     so a single early reading undercounts it. Re-measure on a timer and on every toggle. */
+  /* A hidden iframe has no layout, so every rect reads 0 and a fresh reading would
+     come back empty. Keep the last valid one instead of blanking the numbers. */
+  function refresh(){
+    var s;
+    if (DOCS.before){
+      hideDevOverlay(DOCS.before);
+      scrollToRail(DOCS.before);
+      s = pageStats(DOCS.before);
+      if (s.slots > 0) STATE.before = s;
+    }
+    if (DOCS.after){
+      hideDevOverlay(DOCS.after);
+      applyChange(DOCS.after);
+      scrollToRail(DOCS.after);
+      s = pageStats(DOCS.after);
+      if (s.slots > 0) STATE.after = s;
+    }
+    paintReadout();
+    publish();
+    syncChrome();
+  }
+
+  function fmt(s){
+    var t = '<b>' + s.salons + '</b> salons on <b>' + s.photos + '</b> photographs, ';
+    t += s.colliding > 0
+      ? '<b>' + s.colliding + '</b> share, worst <b>' + s.worst + '</b> on one photo'
+      : 'none shared';
+    if (s.rail) t += '. Rail <b>' + s.rail.salons + '</b> on <b>' + s.rail.photos + '</b>';
+    return t + '.';
+  }
+
+  function paintReadout(){
+    var el = document.getElementById('readout');
+    if (!STATE.before){ el.textContent = 'Loading the real page'; return; }
+    var html = '<span><b>Untouched</b> ' + fmt(STATE.before) + '</span>';
+    if (STATE.after){
+      html += '<span class="br"></span><span><b>Fixed</b> ' + fmt(STATE.after) + '</span>';
+    }
+    var need = STATE.before.salons - STATE.before.photos;
+    html += '<span class="br"></span><span>Seed gap <b>' + need
+         + '</b> rows. salon_photos holds zero.</span>';
+    el.innerHTML = html;
+  }
+
+  function paintEvidence(doc, s){
+    var worst = null;
+    (s.groups || []).forEach(function(g){ if (!worst && g.salons.length > 1) worst = g; });
+    if (!worst) return;
+    var src = null, all = salonImgs(doc);
+    for (var i = 0; i < all.length; i++){
+      if (photoKey(all[i].el) === worst.key){ src = all[i].el.currentSrc || all[i].el.src; break; }
+    }
+    if (!src) return;
+    var thumbs = document.getElementById('evidThumbs');
+    thumbs.innerHTML = '';
+    worst.salons.forEach(function(name){
+      var f = document.createElement('figure');
+      var im = document.createElement('img'); im.src = src; im.alt = '';
+      var cap = document.createElement('figcaption'); cap.textContent = name;
+      f.appendChild(im); f.appendChild(cap); thumbs.appendChild(f);
+    });
+    document.getElementById('evidLab').textContent = worst.salons.length + ' names, one photo';
+    document.getElementById('evid').hidden = false;
+  }
+
+  /* Pane one: read only, never modified. */
+  waitPainted(document.getElementById('beforeFrame'), function(doc){
+    if (!doc) return;
+    DOCS.before = doc;
+    hideDevOverlay(doc);
+    scrollToRail(doc);
+    setTimeout(function(){
+      hideDevOverlay(doc);
+      scrollToRail(doc);
+      STATE.before = pageStats(doc);
+      paintReadout();
+      paintEvidence(doc, STATE.before);
+      publish();
+    }, 500);
+    setTimeout(refresh, 3000);
+    setTimeout(refresh, 6500);
+  });
+
+  /* Pane two: the same live document, five srcs reassigned. */
+  waitPainted(document.getElementById('afterFrame'), function(doc){
+    if (!doc) return;
+    DOCS.after = doc;
+    hideDevOverlay(doc);
+    applyChange(doc);
+    scrollToRail(doc);
+    var n = 0;
+    var iv = setInterval(function(){          // survive any late hydration pass
+      n++;
+      applyChange(doc);
+      hideDevOverlay(doc);
+      if (n === 2 || n === 8) scrollToRail(doc);
+      if (n >= 12){
+        clearInterval(iv);
+        STATE.after = pageStats(doc);
+        doc.body.dataset.sweepDone = '1';
+        paintReadout();
+        publish();
+        setTimeout(refresh, 2500);
+      }
+    }, 400);
+  });
+
+  /* The router restores scroll to 0 during hydration, which undid a single early
+     scrollTo and left both frames on the hero instead of the rail. Re-assert for 15s,
+     then stop so the reader can scroll the frames themselves. */
+  var ticks = 0;
+  function reassert(doc){
+    if (!doc || !doc.defaultView) return;
+    if (doc.defaultView.scrollY < 40){ scrollToRail(doc); return; }  // 0 is the reset signature
+    if (ticks < 18) scrollRailX(doc, mainRail(doc));  // stop fighting the reader after ~12s
+  }
+  setInterval(function(){
+    ticks++;
+    syncChrome();          // the resize event and ResizeObserver both missed a viewport change
+    reassert(DOCS.before);
+    reassert(DOCS.after);
+  }, 700);
+
+  syncChrome();
+  addEventListener('resize', syncChrome);
+  if (window.ResizeObserver) new ResizeObserver(syncChrome).observe(document.querySelector('.chrome'));
+
+  window.show = function(w){
+    document.getElementById('paneBefore').classList.toggle('hidden', w === 'after');
+    document.getElementById('paneAfter').classList.toggle('hidden', w === 'before');
+    document.getElementById('bB').classList.toggle('on', w === 'before');
+    document.getElementById('bA').classList.toggle('on', w === 'after');
+    document.getElementById('bT').classList.toggle('on', w === 'both');
+    setTimeout(refresh, 350);
+  };
+})();
+</script>

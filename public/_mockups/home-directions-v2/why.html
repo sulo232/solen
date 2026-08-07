@@ -1,0 +1,2034 @@
+<!-- Base: net-new design directions, no live route to capture -->
+<!-- Scale: full-page -->
+<!--
+  why.html , THE REASONING page behind the v2 Solen home directions.
+
+  Grounded-in: _design-system/research/WHY_ENTRY.md
+  Grounded-in: _design-system/research/WHY_CURRENCY.md
+  Grounded-in: _design-system/research/WHY_RETURN.md
+  Grounded-in: _design-system/research/WHY_DENSITY.md
+  Grounded-in: _design-system/research/WHY_RELATIONS.md
+  Grounded-in: _design-system/sections/home-feed/CORPUS.md
+  Grounded-in: app/[locale]/_components/homepage/SearchBar.tsx
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx
+  Grounded-in: app/[locale]/_components/homepage/Hero.tsx
+  Grounded-in: app/[locale]/_components/homepage/RecentlyViewed.tsx
+  Grounded-in: app/[locale]/_components/homepage/MobileCategoriesRow.tsx
+  Grounded-in: app/[locale]/page.tsx
+
+  The five WHY_* files above ARE this page's source: it is their argument rendered for reading, and
+  every Solen-side number below is quoted from them together with the component path it was read
+  off.
+
+  Reference-checked: _design-system/research/WHY_ENTRY.md
+  Reference-checked: _design-system/research/WHY_CURRENCY.md
+  Reference-checked: _design-system/research/WHY_RETURN.md
+  Reference-checked: _design-system/research/WHY_DENSITY.md
+  Reference-checked: _design-system/research/WHY_RELATIONS.md
+  Reference-checked: _design-system/sections/home-feed/CORPUS.md
+  Reference-checked: _design-system/research/AXIS_GRID.md
+  Reference-checked: _design-system/research/AXIS_FONT.md
+
+  Every brand named on this page was CAPTURED, not recalled: 260 distinct Mobbin screens across 59
+  searches, each opened as an IMAGE and described from that image, with the URL for every claim
+  inline in the source files above. Where a brand could not be captured (Booksy, Treatwell,
+  StyleSeat, Vagaro, Squire, Mindbody, Planity, Shortcuts, all absent from Mobbin), the page says so
+  by name and makes no claim about them.
+
+  This page renders ZERO UI. It is prose: no screens, no panels, no images, no components. The
+  manifest below therefore traces each ARGUMENT to the real Solen code that argument is about. The
+  eight screens live in their own direction-X.html files beside this page, each with its own
+  manifest.
+
+  Depicts: E's argument, the three-field query control and its 250 px mobile stack -> app/[locale]/_components/homepage/SearchBar.tsx
+  Depicts: F's argument, per-category supply counts over a real card feed -> app/[locale]/_components/homepage/MobileCategoriesRow.tsx plus the exact count already returned by app/api/salons/route.ts
+  Depicts: G's argument, the category taxonomy promoted to the primary instrument -> lib/constants/categories.ts (CATEGORY_OPTIONS) with app/[locale]/_components/homepage/MobileCategoriesRow.tsx
+  Depicts: H's argument, a bookable day on the browse card -> app/[locale]/_components/homepage/SalonCard.tsx (the nextSlotLabel prop still in the interface, unrendered since 2026-07-13)
+  Depicts: I's argument, the stylist in the photo slot -> app/[locale]/_components/homepage/FeaturedStylists.tsx (built, currently unrendered) with SalonCard.tsx
+  Depicts: J's argument, finished work in the photo slot -> app/[locale]/_components/salon/SalonPortfolio.tsx (the PDP consumer of the live portfolio pipeline)
+  Depicts: K's argument, a rebook rail on home -> app/api/bookings/express-rebook/route.ts (live, zero customer render site) with app/[locale]/_components/homepage/RecentlyViewed.tsx
+  Depicts: L's argument, one home whose personal band appears and vanishes -> app/[locale]/_components/homepage/RecentlyViewed.tsx (already exactly this pattern) with app/[locale]/page.tsx
+  Depicts: the editorial-claim relations F4 and T3 -> app/[locale]/_components/homepage/SalonOfMonth.tsx (a superlative carrying no stated basis)
+  Depicts: the four questions, the positions and the relations themselves -> NET-NEW: this is an argument, not a surface. No document in this estate explained WHY a pattern gets chosen, and a repo-wide grep of _design-system/ for relation vocabulary returns five files, not one of which is a dependency graph.
+
+  LANGUAGE: this page is entirely in English, including the two places where it would have been
+  natural to reach for a German term. The search segments are described as service, city and time
+  rather than by their code identifiers, and the Swiss price-disclosure ordinance is named in
+  English rather than by its German title. Nothing here is a locale string.
+
+  mockup-base-skip, reason written down rather than waved through. This page is PROSE. (a)
+  Self-hosted assets: genuinely satisfied, ZERO remote images, fonts or stylesheets, and the page
+  renders identically with the network off. The gate's REMOTE pattern matches any `href="https://"`,
+  and every one of those here is an outbound CITATION to the Mobbin screen a claim was read off,
+  which the brief requires and which rule 0 requires to be clickable. Removing them would delete the
+  evidence trail, which is the point of the page. (b) Real imagery present: not applicable to a
+  reasoning document; all 66 real seeded salon photographs live on index.html, which passes that
+  gate normally. The viewport meta and the text-size-adjust lock are present regardless.
+
+  fullscreen-skip, same discipline: zero screens and zero UI panels here, so there is no current
+  surface to iframe as a BEFORE and nothing is a from-scratch redraw. The eight actual SCREENS live
+  on index.html beside it.
+
+  Exists-check: run 2026-07-30. `npm run exists "home directions"` = 0, `"why reasoning page"` = 0,
+  `"home feed"` = 0, `"mockup index"` = 0. `npm run exists "direction"` = 10 live hits, all dev
+  comparison pages under app/[locale]/dev/* (the in-app precedent for a side-by-side direction
+  page), plus ONE graveyard line, the photo-hero takeover entry the owner denied 2026-07-16.
+  Honoured: nothing here or on index.html proposes that treatment or a hero photograph (a third
+  rejection, 2026-07-25). EXTENDS _design-system/sections/home-feed/CORPUS.md (84 screens, 44 apps),
+  research/AXIS_GRID.md and AXIS_FONT.md, and the v1 set at public/_mockups/home-directions/.
+  Zero frequency counts are reproduced, because a frequency count is what this page replaces.
+
+  Diagnosis: home opens with no salons | measured 0 salon cards in the first desktop viewport |
+  violates FLOORS LAW 2 imagery presence and FLOORS LAW 3 density | target >= 4 content units
+
+  CORRECTION TO THAT DIAGNOSIS, surfaced rather than silently propagated (rule 18). It is reproduced
+  verbatim because it is what this work was commissioned against, and it is STALE in one respect. It
+  rests on `md:min-h-[92dvh]` on Hero.tsx, cited as live by CORPUS.md section 7. Grepped on disk
+  2026-07-30: that class appears at Hero.tsx:114, :127, :134 and :137 and every one is inside a
+  COMMENT block, with line 137 recording its own removal (V3-D228). The live className carries no
+  min-h at any breakpoint. Computed from source, the desktop hero is about 300 px and the first
+  SalonCard row lands around y=470 to 810 inside a 900 px viewport, so the desktop first viewport
+  very likely DOES contain salon cards. Computed, not rendered; one screenshot at 1440x900 settles
+  it. The MOBILE half is not in doubt: the search card is 250 px (SearchBar.tsx:100) under an h1,
+  and no phone home screen in the 24-app corpus gives search more than one row. WHY_DENSITY 4a and
+  7a caught this independently and are correct; WHY_ENTRY 4a and WHY_RETURN 4c inherited the stale
+  value.
+
+  Focus treatment: NO outline ring and no glow halo (the owner killed focus rings three times).
+  WCAG 2.4.7 is a tier-2 statutory floor and cannot be dropped, so the substitute is a NON-RING
+  treatment: links take a 3px underline at focus, and the one ink CTA inverts. Neither is a ring.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Why apps choose what they choose, the home-feed research</title>
+<style>
+/* ONE LIGHT THEME. No prefers-color-scheme, no data-theme, no dark CSS anywhere.
+   Type budget: FOUR body sizes (19 / 15 / 13 / 12) plus ONE display anchor at 30px,
+   TWO weights (400, 600). The anchor is 2.0x the body, clearing the 1.8x ratio floor
+   and the 28px absolute floor.
+   Colour: blue #276EF1 is 4.58:1 on white and 4.17:1 on the sunken tray, so it is AA
+   on white and FAILS AA on sunken. Every link therefore sits on a white surface. */
+
+:root {
+  --ink: #0A0A0A; --ink-2: #6B6B6B; --line: #E4E4E7; --sunken: #F4F4F5; --white: #FFFFFF;
+  --accent: #276EF1;  /* hue-ok: locked s-accent, links only, on white only */
+  --body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --display: "Inter Tight", "Inter", system-ui, -apple-system, sans-serif;
+  --fs-anchor: 30px; --fs-h2: 19px; --fs-body: 15px; --fs-meta: 13px; --fs-micro: 12px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; max-width: 100%; overflow-x: hidden; }
+/* TWO weights on this page, 400 and 600. Measured on the render at 1512 while this rule was
+   absent: three weights (400 / 600 / 700), because a bold tag outside .w-prose fell back to
+   the browser default of 700. One global rule holds the budget on every block. */
+b, strong { font-weight: 600; }
+body {
+  background: var(--sunken); color: var(--ink);
+  font-family: var(--body); font-size: var(--fs-body); font-weight: 400; line-height: 1.62;
+  -webkit-text-size-adjust: 100%; text-size-adjust: 100%; -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+
+.w-wrap { max-width: 1180px; margin: 0 auto; padding: 0 20px 72px; }
+@media (min-width: 900px) { .w-wrap { padding: 0 40px 96px; } }
+.w-card {
+  background: var(--white); border: 1px solid var(--line); border-radius: 24px;
+  padding: 26px 20px; margin-top: 20px;
+}
+@media (min-width: 900px) { .w-card { padding: 34px 38px; } }
+.w-prose { max-width: 68ch; }
+.w-prose p { margin: 0 0 14px; }
+.w-prose p:last-child { margin-bottom: 0; }
+.w-prose b, .w-prose strong { font-weight: 600; }
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+/* NON-RING focus: a thick underline, never an outline or a halo. */
+a:focus-visible {
+  text-decoration: underline; text-decoration-thickness: 3px;
+  text-underline-offset: 3px; color: var(--ink);
+}
+
+.w-top { padding: 44px 0 4px; }
+.w-eyebrow { font-size: var(--fs-meta); font-weight: 600; color: var(--ink-2); margin: 0 0 8px; }
+h1 {
+  font-family: var(--display); font-size: var(--fs-anchor); font-weight: 600;
+  line-height: 1.12; letter-spacing: -0.026em; margin: 0; max-width: 22ch;
+}
+.w-lede { margin: 16px 0 0; max-width: 66ch; color: var(--ink-2); }
+.w-lede b { color: var(--ink); font-weight: 600; }
+
+.w-sample { margin-top: 22px; }
+.w-sample h2 { margin-top: 0; }
+.w-nums {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  gap: 1px; background: var(--line); border-radius: 14px; overflow: hidden; margin: 0 0 20px;
+}
+.w-num { background: var(--white); padding: 14px 16px; }
+.w-num-v {
+  font-family: var(--display); font-size: var(--fs-h2); font-weight: 600;
+  line-height: 1.1; letter-spacing: -0.02em; display: block; font-variant-numeric: tabular-nums;
+}
+.w-num-l { font-size: var(--fs-micro); color: var(--ink-2); display: block; margin-top: 4px; line-height: 1.45; }
+
+h2 {
+  font-family: var(--display); font-size: var(--fs-h2); font-weight: 600;
+  line-height: 1.25; letter-spacing: -0.018em; margin: 0 0 12px; max-width: 42ch;
+}
+h3 { font-size: var(--fs-body); font-weight: 600; line-height: 1.45; margin: 26px 0 8px; max-width: 56ch; }
+h3:first-child { margin-top: 0; }
+
+.w-qhead { padding: 46px 0 0; }
+.w-qnum {
+  font-family: var(--display); font-size: var(--fs-meta); font-weight: 600;
+  color: var(--ink-2); display: block; margin-bottom: 8px;
+}
+.w-qhead h2 {
+  font-size: var(--fs-anchor); letter-spacing: -0.026em; line-height: 1.14;
+  max-width: 26ch; margin-bottom: 10px;
+}
+.w-qsub { margin: 0; max-width: 66ch; color: var(--ink-2); }
+.w-qsub b { color: var(--ink); font-weight: 600; }
+
+.w-pos { border-top: 1px solid var(--line); padding-top: 22px; margin-top: 22px; }
+.w-pos:first-of-type { border-top: 0; padding-top: 0; margin-top: 0; }
+.w-pos-t { display: flex; gap: 10px; align-items: baseline; margin: 0 0 10px; }
+.w-pos-n {
+  font-family: var(--display); font-size: var(--fs-h2); font-weight: 600;
+  line-height: 1.2; letter-spacing: -0.02em; flex: none;
+}
+.w-pos-name { font-size: var(--fs-body); font-weight: 600; line-height: 1.4; margin: 0; }
+.w-lbl { font-size: var(--fs-micro); font-weight: 600; color: var(--ink-2); }
+.w-bc { max-width: 68ch; }
+.w-bc p { margin: 0 0 12px; }
+.w-bc p:last-child { margin-bottom: 0; }
+
+.w-bcgrid { display: grid; gap: 14px; margin: 14px 0 0; }
+@media (min-width: 760px) { .w-bcgrid { grid-template-columns: 1fr 1fr; gap: 22px; } }
+.w-bcgrid > div { background: var(--sunken); border-radius: 14px; padding: 14px 16px; }
+.w-bcgrid p { margin: 6px 0 0; }
+
+.w-fit {
+  margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line);
+  font-size: var(--fs-meta); color: var(--ink-2); max-width: 74ch;
+}
+.w-fit b { color: var(--ink); font-weight: 600; }
+
+/* the disagreement. BOTH SIDES STANDING, equal weight, no winner. */
+.w-dis { margin-top: 20px; }
+.w-dis-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+.w-tag {
+  display: inline-block; font-size: var(--fs-micro); font-weight: 600; color: var(--ink);
+  background: var(--sunken); border-radius: 999px; padding: 4px 10px; line-height: 1.35;
+}
+.w-sides {
+  display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line);
+  border-radius: 16px; overflow: hidden; margin-top: 16px;
+}
+@media (min-width: 760px) { .w-sides { grid-template-columns: 1fr 1fr; } }
+.w-side { background: var(--white); padding: 18px 18px 20px; }
+.w-side-who { font-size: var(--fs-body); font-weight: 600; line-height: 1.4; margin: 0 0 4px; }
+.w-side-what { font-size: var(--fs-meta); color: var(--ink-2); margin: 0 0 12px; }
+.w-side p { margin: 0 0 10px; }
+.w-side p:last-child { margin-bottom: 0; }
+.w-verdict { margin-top: 16px; background: var(--sunken); border-radius: 14px; padding: 15px 17px; }
+.w-verdict p { margin: 0 0 10px; }
+.w-verdict p:last-child { margin-bottom: 0; }
+
+.w-solen { margin-top: 20px; border: 1px solid var(--ink); border-radius: 18px; padding: 20px 18px; }
+.w-solen h3 { margin-top: 0; }
+code {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--fs-meta); background: var(--sunken); border-radius: 6px; padding: 1px 5px;
+}
+
+.w-rel { margin-top: 18px; }
+.w-rel-k { font-size: var(--fs-meta); font-weight: 600; color: var(--ink-2); margin: 0 0 6px; }
+.w-if { border-top: 1px solid var(--line); padding: 18px 0 0; margin-top: 18px; }
+.w-if:first-of-type { border-top: 0; padding-top: 0; margin-top: 14px; }
+.w-if-id { font-size: var(--fs-micro); font-weight: 600; color: var(--ink-2); display: block; margin-bottom: 4px; }
+.w-if-line { font-size: var(--fs-body); font-weight: 600; line-height: 1.5; margin: 0 0 10px; max-width: 64ch; }
+.w-if-body { max-width: 68ch; color: var(--ink-2); }
+.w-if-body p { margin: 0 0 10px; }
+.w-if-body p:last-child { margin-bottom: 0; }
+.w-if-body b { color: var(--ink); font-weight: 600; }
+
+.w-big { margin-top: 22px; }
+.w-big-claim {
+  font-family: var(--display); font-size: var(--fs-anchor); font-weight: 600;
+  line-height: 1.16; letter-spacing: -0.026em; margin: 0 0 16px; max-width: 28ch;
+}
+.w-list { margin: 14px 0 0; padding: 0; list-style: none; max-width: 68ch; }
+.w-list li { position: relative; padding-left: 26px; margin-bottom: 10px; color: var(--ink-2); }
+.w-list li b { color: var(--ink); font-weight: 600; }
+.w-list li::before {
+  content: ""; position: absolute; left: 8px; top: 11px;
+  width: 5px; height: 5px; border-radius: 999px; background: var(--ink);
+}
+
+.w-open { margin-top: 20px; }
+.w-foot {
+  margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--line);
+  font-size: var(--fs-meta); color: var(--ink-2); max-width: 76ch;
+}
+.w-next {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px;
+  background: var(--ink); color: var(--white); border: 1px solid var(--ink);
+  border-radius: 999px; font-size: var(--fs-body); font-weight: 600; margin-top: 20px;
+}
+.w-next:hover { text-decoration: none; }
+/* NON-RING focus for the ink CTA: it inverts. Unmistakable, and not a ring. */
+.w-next:focus-visible { background: var(--white); color: var(--ink); text-decoration: none; }
+.w-next svg { display: block; flex: none; }
+</style>
+</head>
+<body>
+
+<div class="w-wrap">
+
+  <header class="w-top">
+    <p class="w-eyebrow">Solen home screen, v2 directions, the reasoning</p>
+    <h1>Why apps choose what they choose</h1>
+    <p class="w-lede">
+      Four questions every booking home screen has to answer, the positions real apps take on each,
+      the belief sitting under each position, and what each one costs. <b>Where two credible apps do
+      opposite things, both sides stay standing.</b> Nothing on this page is a count of how many apps
+      do a thing, because a count tells you what is common and cannot tell you why.
+    </p>
+  </header>
+
+  <section class="w-card w-sample">
+    <h2>The sample, stated before any claim</h2>
+    <div class="w-nums">
+      <div class="w-num"><span class="w-num-v">59</span><span class="w-num-l">Mobbin searches, 44 iOS and 15 web, across five sweeps</span></div>
+      <div class="w-num"><span class="w-num-v">260</span><span class="w-num-l">distinct screens cited, from 394 citations; every image was looked at</span></div>
+      <div class="w-num"><span class="w-num-v">2</span><span class="w-num-l">pure beauty-booking apps observable anywhere: Fresha and Square Go</span></div>
+      <div class="w-num"><span class="w-num-v">0</span><span class="w-num-l">engagement, retention or conversion numbers, in any of it</span></div>
+    </div>
+    <div class="w-prose">
+      <p>
+        <b>The beauty sample is two apps, not a category.</b> Booksy, Treatwell, StyleSeat, Vagaro,
+        Squire, Mindbody, Planity and Shortcuts are all absent from Mobbin's corpus, searched by name
+        repeatedly across the five sweeps. So every sentence below of the shape "beauty apps do X" is
+        really a sentence about Fresha, and it is written that way.
+      </p>
+      <p>
+        <b>What compensates is that the adjacent markets are the better evidence anyway.</b> A haircut
+        is structurally closer to hiring a tutor, a caregiver, a physiotherapist or a restaurant table
+        than it is to booking a hotel room, and those are all in the corpus in depth. The single most
+        useful comparison in the whole body of work is Care.com against Airtasker, and neither is a
+        beauty app.
+      </p>
+      <p>
+        <b>Every "buys" and "costs" below is a mechanism argument, not a measured outcome.</b> Mobbin
+        is a screenshot library. No company in it said any of this; each belief is reconstructed from
+        what an app made largest. A mechanism argument is stronger than a frequency count and weaker
+        than a test, and it should be read at exactly that strength.
+      </p>
+      <p>
+        Motion, gesture and transition: <b>nothing</b>. Stills only. And everything about Solen was
+        read off disk on 2026-07-30 with the line cited. Nothing Solen-side was rendered in a browser.
+      </p>
+    </div>
+  </section>
+
+  <div class="w-qhead">
+    <span class="w-qnum">Question one of four</span>
+    <h2>Does the screen ask, or show?</h2>
+    <p class="w-qsub">
+      When somebody arrives, does the product ask them to state what they want, or show them what
+      there is? <b>The real axis is not intent versus curiosity.</b> It is how much of the query the
+      screen forces you to declare before it will show you anything, and who pays for that. And the
+      variable that separates the two camps is <b>population, not mood</b>: asking first answers "who
+      are you and what do you do", showing first answers "welcome back".
+    </p>
+  </div>
+
+  <section class="w-card">
+    <div class="w-pos">
+      <div class="w-pos-t"><span class="w-pos-n">1</span><p class="w-pos-name">The segmented bar</p></div>
+      <div class="w-bc">
+        <p>
+          <span class="w-lbl">THE BELIEF.</span> A booking query is not one string, it is several
+          fields at once, and a result set built from half a query is a promise the product will have
+          to break. So the control names every dimension up front, and every field is a bounded picker
+          rather than a text box, which makes the query valid by construction: there is no typo that
+          returns zero.
+        </p>
+        <p>
+          <a href="https://mobbin.com/screens/7832695b-2761-4f79-aa14-5cefe5a5e7ff">Fresha web</a>
+          ships treatment, location, date and time-of-day. Its fourth field is not an end date, it is
+          "Any time", because an appointment is a point with a preferred window. And
+          <a href="https://mobbin.com/screens/0b68f8e9-3c79-4302-83c6-990eefc611d7">the treatment
+          field's dropdown IS the category list</a>.
+        </p>
+        <div class="w-bcgrid">
+          <div>
+            <span class="w-lbl">WHAT IT BUYS</span>
+            <p>
+              It teaches the query language before you type a character: you now know this product
+              indexes by treatment, place, date and time. It front-loads the constraints that decide
+              whether a result can <i>exist</i> at all, rather than filtering a list you then have to
+              shrink. And it becomes a receipt:
+              <a href="https://mobbin.com/screens/12a7bd21-e941-4249-a033-b61398e9b7f8">Fresha carries
+              the filled bar into the results header</a>, so a user can read and edit their own state
+              without a mental model of which filter they set.
+            </p>
+          </div>
+          <div>
+            <span class="w-lbl">WHAT IT COSTS</span>
+            <p>
+              The whole top zone, and on Fresha web the whole first viewport: the first salon
+              photograph is below the fold in
+              <a href="https://mobbin.com/screens/498008f7-fde7-4581-b70c-c8b5ab1d6904">every</a>
+              <a href="https://mobbin.com/screens/74253218-0063-4799-afef-c0410b371804">single</a>
+              <a href="https://mobbin.com/screens/1be28b10-3d36-4b55-b612-70150c8258a0">capture</a>.
+              Four empty fields read as four decisions, three of which a returning customer already
+              answered six weeks ago. It cannot survive onto a phone unchanged. And it hides the
+              taxonomy: somebody who does not know the word "Barbering" has to open a field to learn
+              that barbering exists.
+            </p>
+          </div>
+        </div>
+        <p style="margin-top:14px">
+          <span class="w-lbl">TWO DETAILS WORTH STEALING.</span>
+          <a href="https://mobbin.com/screens/3a53c974-f926-4279-8696-191d8a753cf9">Airbnb's bar
+          changes arity with its own state</a>: once dates exist, the two date segments collapse into
+          one reading "When: Weekend in June", and the round icon button grows into a labelled Search
+          pill. And
+          <a href="https://mobbin.com/screens/2e5807cb-f0a8-473e-9922-1e662f86a891">Airbnb Experiences
+          ships three segments, not four</a>, because an experience happens on a day and a stay spans
+          a range. <b>The number of fields is dictated by the product's time shape, not by a house
+          style.</b>
+        </p>
+      </div>
+      <p class="w-fit">
+        <b>Suits</b> a product whose query has irreducible dimensions, where a wrong tuple wastes a
+        real search and the visitor may be new enough to need the vocabulary taught.
+        <b>Harms</b> a short-catalogue, high-repeat product: if the same tuple is submitted every six
+        weeks, the bar is a form the user fills out to tell the product something it already knows.
+      </p>
+    </div>
+
+    <div class="w-pos">
+      <div class="w-pos-t"><span class="w-pos-n">2</span><p class="w-pos-name">The collapsed pill, in two sub-species that matter more than the shape they share</p></div>
+      <div class="w-bc">
+        <p>
+          <span class="w-lbl">THE BELIEF.</span> One question at a time, because a phone only has room
+          for one. Behind
+          <a href="https://mobbin.com/screens/2df6111d-0888-47ab-8d35-6a2f20d66eb2">Airbnb's "Start
+          your search" pill</a> is
+          <a href="https://mobbin.com/flows/0fb29365-f327-46b6-9a6d-2dfbb5589716">a stacked
+          accordion</a> holding the same four fields: the answered step collapses to a one-line row
+          with its value right-aligned, the active step is an expanded card, and the unanswered steps
+          wait below. <b>The segmented bar and the accordion are one concept under two space
+          budgets:</b> side by side where width is free, stacked where it is not.
+        </p>
+        <p>
+          <b>2a is a prompt</b> ("Start your search", no state).
+          <b>2b is a summary</b> of the live query:
+          <a href="https://mobbin.com/screens/efc00125-5818-48ae-905d-e64dbe66177a">Fresha iOS packs
+          three values into one pill over a map</a>, the treatment, then "Tomorrow", then a truncated
+          "Current location", and
+          <a href="https://mobbin.com/screens/1f92134a-2b99-4027-ab7f-8f6ff087bdc6">Airbnb's results
+          pill runs two lines</a>, "Homes in New York City" over the dates and the guest count.
+        </p>
+        <p>
+          <b>The rule both apps obey, and it is the useful finding here:</b> the entry control shows
+          the query when a query exists and an invitation when it does not. Airbnb is 2a on home and
+          2b on results. Fresha iOS is 2b from the first tap because it enters through a map that
+          already carries a default query. Neither ever shows an invitation over live state, and
+          neither shows state that is empty.
+        </p>
+      </div>
+      <p class="w-fit">
+        <b>Buys</b> one row instead of a hero, so real content is in the first viewport, plus genuine
+        progressive disclosure: one question on screen means each question gets a real picker instead
+        of a cramped dropdown. <b>Costs</b> a tap before you learn the query language, and in the 2a
+        form it tells a returning user nothing about their own state. <b>Harms</b> a one-dimensional
+        query: a pill concealing a single text field charges a tap for nothing.
+      </p>
+    </div>
+
+    <div class="w-pos">
+      <div class="w-pos-t"><span class="w-pos-n">3</span><p class="w-pos-name">The intent grid. There is no query, there is a menu.</p></div>
+      <div class="w-bc">
+        <p>
+          <span class="w-lbl">THE BELIEF.</span> The catalogue is bounded and nameable, so a text field
+          is the wrong instrument: it asks the user to guess vocabulary the product already owns. Show
+          the vocabulary instead.
+        </p>
+        <p>
+          Look at the order on
+          <a href="https://mobbin.com/screens/89ee891e-17ea-4c5a-b173-eccd95149a21">Square Go</a>: a
+          <b>wordless</b> grey search field first, a magnifier glyph with no placeholder text at all,
+          measured 51 pt, then the headline "Schedule your next appointment", then a grid of 3D
+          category tiles. The field is present, small, and says nothing. And when it
+          <a href="https://mobbin.com/screens/95fc024c-6fbe-4f4c-a28c-13ae851053b3">goes sticky</a>
+          the feed heading reads <b>"Recommended in 94025"</b>. Location was never asked for. It was
+          resolved silently and then <i>proven in the section title</i>, which is a real technique:
+          instead of a location field, a location claim the user can check.
+        </p>
+        <p>
+          <a href="https://mobbin.com/screens/e788da3e-eebd-4810-baa5-72d2705f43b7">Hers has no search
+          field in its first viewport at all</a>: eight goal tiles, and the eighth is "Browse all
+          treatments" carrying the magnifier, so search is demoted to a member of the grid that
+          replaced it. <a href="https://mobbin.com/screens/c3fbecd3-61f9-4a93-bab4-fae45b8998a8">Fresha
+          iOS runs fourteen tiles</a> and no search control on home whatsoever.
+        </p>
+      </div>
+      <p class="w-fit">
+        <b>Buys</b> zero typing, zero vocabulary risk, and merchandising for free, because a tile with
+        a photograph of nails sells the category while it navigates. It also answers the first-timer's
+        actual first question, which is not "where is search" but "what can I even book here".
+        <b>Costs</b> vertical space, and a hard ceiling: <b>nothing in a grid can say "Tuesday evening
+        near the station"</b>. It also silently declares a taxonomy, so whatever is not a tile does
+        not exist for a browsing user. <b>Harms</b> a long-tail catalogue, and any query whose binding
+        constraint is time, which is exactly why Square Go keeps the field, wordless, above the grid.
+      </p>
+    </div>
+
+    <div class="w-pos">
+      <div class="w-pos-t"><span class="w-pos-n">4</span><p class="w-pos-name">Search demoted to a utility. A returning user does not type.</p></div>
+      <div class="w-bc">
+        <p>
+          <span class="w-lbl">THE BELIEF.</span> The query is picked, not written. Typing is the
+          fallback, and a fallback belongs where the thumb rests, not where the eye lands first.
+        </p>
+        <p>
+          <a href="https://mobbin.com/screens/520ada74-77d2-45ce-b42a-cbfaf4566bd9">Uber Eats</a>
+          gives its whole top zone to things that <i>change</i>: a location dropdown, a
+          vertical-switch chip row, a category strip, a filter chip row. Free-text search is a pill
+          inside the <b>bottom tab bar</b>, labelled only "Search", measured 41 pt, and it stays there
+          on every other screen too, so it is chrome rather than content.
+          <a href="https://mobbin.com/screens/756a4205-72b6-4e12-ac24-c7f31f921cfe">Airtasker</a>
+          keeps search on the page and makes it grey and secondary, pushed right of the headline.
+        </p>
+      </div>
+      <p class="w-fit">
+        <b>Buys</b> the whole top zone for content and for the two variables that genuinely move,
+        plus permanent thumb reach instead of a scroll-to-top. <b>Costs</b> discoverability for
+        whoever arrived with a name in their head, a break with platform convention, and most of all
+        it <b>removes the exit</b>, which means the first viewport now has to be good enough to
+        browse. This position is only honest if the feed is genuinely worth reading.
+      </p>
+    </div>
+
+    <p class="w-fit" style="margin-top:22px">
+      <b>The measured spine.</b> Four control heights from downloaded captures:
+      <a href="https://mobbin.com/screens/2df6111d-0888-47ab-8d35-6a2f20d66eb2">Airbnb's pill 55 pt</a>,
+      <a href="https://mobbin.com/screens/89ee891e-17ea-4c5a-b173-eccd95149a21">Square Go's field 51 pt</a>,
+      <a href="https://mobbin.com/screens/520ada74-77d2-45ce-b42a-cbfaf4566bd9">Uber Eats' bottom pill 41 pt</a>,
+      <a href="https://mobbin.com/screens/33f7d0bd-2edc-4768-a4a4-7de2b9b90489">Fresha iOS 0 pt</a>.
+      Every mobile entry control across nineteen iOS home screens is <b>one row or absent</b>. Not one
+      of them shows more than a single row of search chrome.
+    </p>
+  </section>
+
+  <section class="w-card w-dis">
+    <div class="w-dis-head">
+      <span class="w-tag">The strongest disagreement</span>
+      <span class="w-lbl">Both sides stand. No winner is picked.</span>
+    </div>
+    <h2>Fresha against Fresha</h2>
+    <div class="w-prose">
+      <p>
+        This is stronger than any cross-brand pair, because a cross-brand pair leaves the product as
+        a confound. This one holds the company, the catalogue and the week constant and isolates the
+        door.
+      </p>
+    </div>
+    <div class="w-sides">
+      <div class="w-side">
+        <p class="w-side-who">Fresha web is as search-first as a page can be</p>
+        <p class="w-side-what">A full-viewport gradient, a serif headline, the four-segment bar, a live counter, a "Get the app" button, and zero salon photography above the fold.</p>
+        <p>
+          <b>And it is right.</b> A beauty marketplace's web traffic arrives substantially through
+          search engines and salon-shared links, from somebody who may never have heard of the brand.
+          That visitor has to be told what the product <i>is</i> and what it indexes, and a search bar
+          says both things in one object.
+        </p>
+        <p><a href="https://mobbin.com/screens/7832695b-2761-4f79-aa14-5cefe5a5e7ff">See the screen</a></p>
+      </div>
+      <div class="w-side">
+        <p class="w-side-who">Fresha iOS has no search control on home at all</p>
+        <p class="w-side-what">"Hey, John" in a serif, then Book again, then Favourites, then Trending, then a fourteen-tile category grid. Search is a magnifier in the tab bar, and it opens a map.</p>
+        <p>
+          <b>And it is right.</b> The app is on the phone of somebody who already installed it, and
+          whose next action is overwhelmingly "the same place again" or "somewhere I already saved",
+          which is exactly what the first two blocks after the greeting are.
+        </p>
+        <p><a href="https://mobbin.com/screens/781cf27c-6d77-465b-8302-f106505dc691">See the screen</a></p>
+      </div>
+    </div>
+    <div class="w-verdict w-prose">
+      <p>
+        <b>Search-first answers "who are you and what do you do". Browse-first answers "welcome
+        back".</b> They are not competing designs, they are answers to different questions, and
+        Fresha ships both because it receives both questions on different doors. The reasoning is
+        about <i>population</i>, not platform.
+      </p>
+      <p>
+        <b>The honest limit on that reading:</b> the population difference is <i>inferred</i>. Traffic
+        sources were not observed and Mobbin cannot show them. If Fresha's web traffic is mostly
+        returning users then this explanation is wrong and the web hero is simply a legacy landing
+        page. That is the weakest link in this section, and it is also the load-bearing inference in
+        it.
+      </p>
+    </div>
+
+    <h3>A second disagreement on the same axis: how much to reveal at once</h3>
+    <div class="w-prose">
+      <p>
+        <a href="https://mobbin.com/screens/3b03d53a-6614-4054-a34a-0d8ba4213c8e">Zocdoc shows
+        <b>one</b> field</a>, then walks you through three separate full screens: a specialty list, a
+        visit-reason list, a location picker. Airbnb shows <b>four</b> fields and one accordion.
+        <b>The total number of decisions is roughly the same. Zocdoc distributes it across screens;
+        Airbnb concentrates it into one object.</b> Zocdoc's version has lower perceived effort and
+        hidden depth. Airbnb's has higher perceived effort and a visible end.
+      </p>
+      <p>
+        Which is right turns on one thing: <b>can your user abandon?</b> Somebody hunting a
+        dermatologist will finish a three-screen wizard because the need is not optional. Somebody
+        comparing salons on a Tuesday evening will not, and for them a visible end matters more than
+        a gentle start. Neither app is wrong; both are matched to their own abandonment risk, and
+        that will not collapse into a recommendation, because the two products genuinely differ.
+      </p>
+    </div>
+  </section>
+
+  <section class="w-card w-solen">
+    <h3>Where Solen sits on this question</h3>
+    <div class="w-prose">
+      <p>
+        <code>SearchBar.tsx</code> is position 1 with a desktop geometry and a mobile geometry that
+        has <b>no counterpart in the corpus</b>. Three collapsed segments, one for the service, one
+        for the city and one for the time, plus an ink commit button. On desktop it becomes a 60 px
+        pill capped at 820 px and centred, which is precisely the Airbnb-and-Fresha web geometry, and
+        that half is already right. On mobile the same three segments stack, and
+        <code>HEIGHT.mobile.collapsed</code> is <b>250</b> px (<code>SearchBar.tsx:100</code>),
+        roughly <b>4.5x</b> the nearest mobile comparable, on the screen where space is scarcest.
+      </p>
+      <p>
+        That is not an argument that 250 is wrong. It is an argument that 250 is a position nobody
+        else holds, so it should be held deliberately or not at all. <b>And Solen already owns the
+        expansion mechanism</b> (<code>SearchOverlay</code> with segment tabs, imported at
+        <code>SearchBar.tsx:30</code>), so collapsing mobile to one row is a geometry change and not a
+        new system. Per the one rule every app here agrees on, it should collapse to the
+        <b>summary</b> form, not the invitation form.
+      </p>
+      <p>
+        <b>Nothing in this lens argues for a fourth field.</b> The Airbnb Experiences finding and the
+        Fresha finding both say an appointment is a point plus a window, which is exactly what the
+        existing time segment already is. I looked for the argument that we need a fourth and could
+        not find one, which means I may just be agreeing with what ships. Push back if you think date
+        and time should split.
+      </p>
+    </div>
+  </section>
+
+  <div class="w-qhead">
+    <span class="w-qnum">Question two of four</span>
+    <h2>What is the card actually selling?</h2>
+    <p class="w-qsub">
+      Squint at a card until only the biggest thing survives. What is left is the <b>currency</b>, and
+      it is a claim about what the user is deciding on. Four answers came back, and they are not four
+      styles, they are four different theories of the decision.
+    </p>
+  </div>
+
+  <section class="w-card">
+    <div class="w-pos">
+      <div class="w-pos-t"><span class="w-pos-n">1</span><p class="w-pos-name">The room. The card sells a place you will sit in.</p></div>
+      <div class="w-bc">
+        <p>
+          <span class="w-lbl">THE BELIEF.</span> You are about to spend forty-five minutes inside this
+          business, in a chair, with a stranger's hands on you. What you are actually screening for is
+          whether it looks like a place you belong. Price and time are logistics you resolve after
+          that.
+        </p>
+        <p>
+          <a href="https://mobbin.com/screens/612f2a56-4a8c-4d16-bc51-08cca7209937">Fresha's web
+          search card</a> is the complete statement, and it is more interesting than "a salon card":
+          it carries <b>four currencies at once and ranks them by position</b>. The room gets the
+          area, the business gets the title, the price gets a right-aligned column attached to a named
+          service ("Blowout / 30 mins" on the left, "from US$48" on the right), and the hour gets the
+          only colour on the card.
+        </p>
+        <div class="w-bcgrid">
+          <div>
+            <span class="w-lbl">WHAT IT BUYS</span>
+            <p>
+              A photograph is the fastest possible input. It answers a question the user cannot
+              articulate and would not answer honestly in a filter. It also satisfies an imagery floor
+              for free, because the content <i>is</i> the image.
+            </p>
+          </div>
+          <div>
+            <span class="w-lbl">WHAT IT COSTS</span>
+            <p>
+              The photo is the largest element, so it spends more card space than anything else, and
+              it only earns that space if it <b>discriminates</b>. Where every venue in a category
+              photographs the same, the biggest element on the card is carrying no information.
+              <a href="https://mobbin.com/screens/4f9be7f8-db2b-42f4-afdd-900d15e25c8c">Square Go's
+              small "Google" attribution chip</a> is a quiet admission that this is real in this
+              category: they source venue photos from Google Places and label them, which is what you
+              do when the photo is a slot to fill rather than the product. Second cost: a room says
+              nothing about who will be holding the scissors, and in this trade that is the thing that
+              goes wrong.
+            </p>
+          </div>
+        </div>
+      </div>
+      <p class="w-fit">
+        <b>Suits</b> products where the venue is genuinely differentiated and the visit is part of the
+        purchase: spas, restaurants, hotels, studios. <b>Harms</b> products where the practitioner
+        travels to you, and products whose venues are visually interchangeable, because then the card
+        has made its biggest promise with its least informative element.
+      </p>
+    </div>
+
+    <div class="w-pos">
+      <div class="w-pos-t"><span class="w-pos-n">2</span><p class="w-pos-name">The person. The card sells a human you are hiring.</p></div>
+      <div class="w-bc">
+        <p>
+          <span class="w-lbl">THE BELIEF.</span> The outcome is inseparable from who performs it, and
+          you cannot evaluate a stranger's skill from a listing, so what you actually do is a risk
+          assessment on a face. Give the user the face at the largest size the layout allows and let
+          them do the thing they were going to do anyway.
+        </p>
+        <p>
+          <a href="https://mobbin.com/screens/f5a2f425-cc06-4022-ac37-1587cb49d91f">Care.com</a> is
+          the cleanest case: a portrait photograph in the card's photo slot, "Bria G." as the title,
+          then an hourly from-price and an experience line in grey, then a green-check line reading
+          "Hired by 2 neighbors". Note the name form, a first name plus a last initial: identity is
+          partial on purpose.
+          <a href="https://mobbin.com/screens/f7e8ee82-734b-4bcc-93ab-f9ab193a2d6a">Bloom labels its
+          practitioners by <i>temperament</i></a>, "Direct &amp; Empowering" and "Empathetic &amp;
+          Caring", rather than by credentials. For a service where you sit in a chair being talked to
+          for an hour, that is a more honest currency than years of experience, and it is the only
+          instance of it anywhere in the corpus.
+        </p>
+        <p>
+          <span class="w-lbl">AND TWO BEAUTY COUNTER-SIGNALS THAT CUT AGAINST IT.</span>
+          <a href="https://mobbin.com/screens/e598c417-d736-42de-b60e-a14818c75da5">Careem's staff
+          step pre-selects "Auto assign / We'll assign the best professional"</a>, leftmost, over two
+          named, photographed, rated staff. And
+          <a href="https://mobbin.com/screens/e88ff6f4-d9e3-437e-a531-eb1eac0f7f83">Fresha's own Team
+          tab ships initial monograms</a>, A and TK and EL, with no photographs at all, and the
+          load-bearing text is the ROLE ("Junior lash artist", "Esthetician"), not the face. <b>Two of
+          the five beauty products observable anywhere are saying the face is optional and the role is
+          not.</b>
+        </p>
+      </div>
+      <p class="w-fit">
+        <b>Buys</b> the one input a listing cannot fake and the user genuinely wants, and it changes
+        the emotional register of the whole app from a directory of shops to a marketplace of people.
+        <b>Costs</b> photography you do not control and may not have, and Fresha's monograms are the
+        evidence of the failure mode: if faces are the anatomy and the faces are missing, the card
+        degrades to a coloured circle with a letter in it, which is a worse card than a room photo. It
+        also invites appearance-based sorting, which in a beauty market is a real fairness exposure
+        rather than a hypothetical. <b>Harms</b> multi-chair salons with staff turnover, because the
+        card promises a person the business cannot guarantee will be there.
+      </p>
+    </div>
+
+    <div class="w-pos">
+      <div class="w-pos-t"><span class="w-pos-n">3</span><p class="w-pos-name">The work. The card sells an outcome, and the person is a credit line.</p></div>
+      <div class="w-bc">
+        <p>
+          <span class="w-lbl">THE BELIEF.</span> You cannot evaluate a stranger, but you <i>can</i>
+          evaluate their output. A photograph of a finished result is a checkable claim; a photograph
+          of a face is not. So show the result and put the name underneath in small type.
+        </p>
+        <p>
+          <a href="https://mobbin.com/screens/ae12a89f-109e-4786-894b-5cec0a8a0c80">Airtasker's beauty
+          row</a> photographs a finished eyebrow.
+          <a href="https://mobbin.com/screens/d977993c-03cf-4546-9d9d-bf9b84d4999d">Redfin's card
+          photo is a house the agent sold</a>, badged with the sale price: the price shown is the
+          <i>work's</i> price, not the fee.
+          <a href="https://mobbin.com/screens/22cd803c-e6ba-4570-ab71-3d027c94e170">Behance makes the
+          structure literal</a>, where a strip of four work thumbnails IS the card and the person's
+          avatar is a small badge overlapping its bottom edge.
+        </p>
+        <p>
+          <a href="https://mobbin.com/screens/2258df34-4be9-42f5-a410-f2e426d66ee2">Airbnb Services</a>
+          is the extreme, and the most relevant screen in the sweep. Every card's photo is a
+          <b>still life of a tool or material</b>: a gua sha stone on cloth, a dry body brush, a
+          candle beside a loofah. Not a face, not a room. And every title reads "Balinese Soul
+          Purification <b>by Putu</b>", "Chakra balancing and sound healing <b>by Ayu</b>": the
+          practitioner's first name is grammatically inside the product title. <b>The company whose
+          entire design language was built on selling a place changed the subject of the photograph
+          the moment it started selling a service</b>, and it did the trust work with a first name.
+        </p>
+      </div>
+      <p class="w-fit">
+        <b>Buys</b> the only currency that is actually about quality, and the only one that scales
+        emotionally: a wall of good haircuts is aspirational in a way that a wall of shopfronts is
+        not. <b>Costs</b> result photography, per salon, continuously, which is a content-operations
+        commitment and not a design decision, and it is why most booking products do not do this.
+        Second cost, structural: <b>result photos are not comparable.</b> Two beautiful photographs
+        tell you nothing about which is cheaper, nearer or sooner, so a work-first feed is a browsing
+        surface that cannot also be a deciding surface. <b>Harms</b> honesty too: the photo is a best
+        case selected by the seller, and unlike a price or a slot there is no way to constrain it.
+      </p>
+    </div>
+
+    <div class="w-pos">
+      <div class="w-pos-t"><span class="w-pos-n">4</span><p class="w-pos-name">The slot. The card sells an hour.</p></div>
+      <div class="w-bc">
+        <p>
+          <span class="w-lbl">THE BELIEF.</span> The user already decided roughly where and roughly
+          who. What they are fighting is their own calendar. The scarce good is not the service, it is
+          14:30 on Thursday, and whoever surfaces that first wins the booking.
+        </p>
+        <p>
+          <a href="https://mobbin.com/screens/d3b992b9-21dd-43b1-b150-069d768a34e9">Tock demotes the
+          venue photo to a small thumbnail</a> so the card body can hold slot groups under labelled
+          sub-headers.
+          <a href="https://mobbin.com/screens/e4f524c1-e8e3-4e25-bb4c-b736d43c28a1">Resy fills its
+          slot pills blue</a> and lets the price be a band of dollar signs, so the hour is the only
+          colour on the card.
+          <a href="https://mobbin.com/screens/b448f1f5-8a43-4b81-8d00-60a95cf8c0a9">TheFork</a> hangs
+          a green "-30%" chip under each individual time, so the discount reads as a property of the
+          hour.
+        </p>
+        <p>
+          <b>And two apps render a DATE rather than a clock time, which matters here specifically.</b>
+          <a href="https://mobbin.com/screens/45223838-dec4-4f39-99e9-d77f8a403c40">Zocdoc's result
+          rows end in a full-width yellow button reading "Next available: Mon, Jun 8"</a>, by a
+          distance the loudest thing on the row. And
+          <a href="https://mobbin.com/screens/fcc59b0f-0d05-4314-9779-eea0fa5de017">Square Go's search
+          rows carry no venue photo at all</a>: the business name, a prose list of services, then a
+          rating, then <b>"Wed, August 30"</b>, then a distance. Both of the closest analogues to us
+          arrived at a date rather than a clock time on their own.
+        </p>
+      </div>
+      <p class="w-fit">
+        <b>Buys</b> a collapsed funnel: a card that shows an hour is a card you can commit from, so a
+        browse surface becomes a booking surface without adding a screen. <b>Costs</b> three real
+        things. Space, because slots are text and a row of chips takes the vertical room a photo would
+        have used. An <b>honesty liability</b>, because a slot on a browse card is a promise about
+        live inventory and a stale one is discovered at the worst possible moment. And it
+        <b>forecloses browsing</b>, because a screen that asks "which hour" has already assumed you
+        know what you want. <b>Suits</b> the haircut you get every six weeks. <b>Harms</b> first-time
+        high-deliberation purchases, and any product without reliable real-time availability.
+      </p>
+    </div>
+
+    <div class="w-pos">
+      <div class="w-pos-t"><span class="w-pos-n">5</span><p class="w-pos-name">The price. Named as the foil, not as an option.</p></div>
+      <div class="w-bc">
+        <p>
+          This is not one of the four, because in every observed instance an app makes price the
+          largest element only when its sellers are <b>substitutable</b>, and no local salon market is.
+          The evidence is unusually clean:
+          <a href="https://mobbin.com/screens/2bc08d44-af44-4514-84e8-23a31de91eeb">Preply sets "$18"
+          larger than the tutor's name</a>, lists 3,368 tutors, and defaults its sort to <b>"Price:
+          lowest first"</b>. Three thousand interchangeable sellers of a commodity hour, sorted by
+          price, because price is the only axis that discriminates.
+          <a href="https://mobbin.com/screens/260110c8-9645-4c08-bf51-5ac501a0ccb7">World of Hyatt
+          turns the price into a filled blue block overlapping the photo</a>, so the price literally
+          <i>is</i> the button.
+        </p>
+        <p><b>This is the position Solen must not drift into, and naming it is the whole answer to whether a legally forced price is a burden.</b></p>
+      </div>
+    </div>
+
+    <h3>Eight ways the apps that DO show a price keep it from shouting</h3>
+    <div class="w-prose">
+      <p>
+        This is the operationally useful part, because Solen has no choice about presence and total
+        choice about volume. Every one of these was observed.
+      </p>
+    </div>
+    <ul class="w-list">
+      <li><b>Right-align it into a column and attach it to a named service</b>, so it reads as a table cell rather than an offer. <a href="https://mobbin.com/screens/08a2bb0b-62ff-4136-8ea1-aee00e22f71b">Shangri-La's spa goes all the way to a literal two-column table</a> with the headers "Duration" and "Price". A luxury spa deciding that price is data.</li>
+      <li><b>Put it last in the row.</b> <a href="https://mobbin.com/screens/d656849a-d41c-4e50-89c2-99bba047459b">Fresha's iOS service list</a> orders name, duration, description, and only then "from $40" in small grey.</li>
+      <li><b>Give it peers.</b> <a href="https://mobbin.com/screens/3d274f6c-c139-474a-95b9-731cb38afe2b">Alan's confirmation screen</a> is the best instance: three icon rows of identical size and weight, an avatar row for the psychologist, a calendar row for the time, and a banknote row for the fee. <b>A number in a row of numbers stops being an offer and becomes a specification.</b></li>
+      <li><b>Shrink the unit, not the number.</b> <a href="https://mobbin.com/screens/c94e641a-3425-4797-8369-a189a2eb23b1">IHG's compound numeral</a>: a big "327", a small "USD / night".</li>
+      <li><b>Demote it below the CTA.</b> <a href="https://mobbin.com/screens/ed903d4c-3065-4f73-a2f4-f7c6852d3736">Alan's practitioner profile</a> puts a full-width button and then, underneath it, small and grey, the from-price and the free-cancellation window.</li>
+      <li><b>Make it a band, not a point.</b> <a href="https://mobbin.com/screens/bd8cd129-36f7-4a2e-8488-0485e6e73c92">Skillshare's "$20 - $85"</a>. A band refuses to imply a precision the data does not have.</li>
+      <li><b>Prefix it.</b> "from", "From", "Starting at". Universal across Fresha, Square Go, Airbnb Services, Care.com, Airtasker and Peerspace.</li>
+      <li><b>Give the loud treatment to something else.</b> The highest-leverage one and the least obvious. On the Fresha search card the price is not small, it is <i>quiet by comparison</i>, because the time chips are the only coloured elements on the card. <b>Loudness is relative. The cheapest way to stop a price shouting is to hand one other element the colour.</b></li>
+    </ul>
+  </section>
+
+  <section class="w-card w-dis">
+    <div class="w-dis-head">
+      <span class="w-tag">The headline disagreement</span>
+      <span class="w-lbl">Same product category, same week, exact inverses.</span>
+    </div>
+    <h2>Airbnb and Fresha sell the same spa treatment and agree on nothing</h2>
+    <div class="w-sides">
+      <div class="w-side">
+        <p class="w-side-who">Fresha: the room and the hour</p>
+        <p class="w-side-what">Photo of the salon interior. Title is the business. Price right-aligned per named service. Time chips are the only colour on the card.</p>
+        <p>
+          <b>And it is right.</b> Its user is booking maintenance near home: the same blowout, roughly
+          monthly, at a place they will return to. For that user the binding constraint genuinely
+          <i>is</i> the calendar, the venue genuinely <i>is</i> somewhere they will sit repeatedly, and
+          the business name is stable in a way an individual employee is not.
+        </p>
+        <p><a href="https://mobbin.com/screens/612f2a56-4a8c-4d16-bc51-08cca7209937">See the screen</a></p>
+      </div>
+      <div class="w-side">
+        <p class="w-side-who">Airbnb: the sensation and the first name</p>
+        <p class="w-side-what">Photo of a gua sha stone, a body brush, a candle. Title is the service plus a first name. Price is a grey meta line. No time anywhere.</p>
+        <p>
+          <b>And it is right.</b> Its user is a traveller buying a thing they will do once. There is
+          no "my place" to return to, so a photo of a stranger's treatment room reassures nobody. The
+          practitioner's first name is the entire brand, and a still life sells the only thing on
+          offer, which is a sensation. Time chips would be absurd: the question is not "which hour"
+          but "what is this".
+        </p>
+        <p><a href="https://mobbin.com/screens/2258df34-4be9-42f5-a410-f2e426d66ee2">See the screen</a></p>
+      </div>
+    </div>
+    <div class="w-verdict w-prose">
+      <p>
+        <b>Neither is a better card. They are different questions rendered accurately.</b> The lesson
+        is not to choose between them, it is that <b>the currency follows the user's job, not the
+        product category.</b>
+      </p>
+      <p>
+        And Fresha proves the principle <i>against itself</i>:
+        <a href="https://mobbin.com/screens/962315e5-a36e-4a70-ba2d-f2e1d7871be2">on its home feed the
+        same salon renders with a category chip and no price and no time</a>, and on its search page
+        the same salon renders with per-service prices and time chips. One entity, two currencies,
+        chosen by what the user is doing on that surface. That is a documented variant of one
+        component, which is exactly what our own consistency law asks for and rarely gets.
+      </p>
+    </div>
+
+    <h3>The disagreement that matters more for us: Care.com against Airtasker</h3>
+    <div class="w-prose">
+      <p>
+        Both are marketplaces for hiring a local human for an hour. Both show a rating and a
+        from-price. They put opposite things in the photo slot.
+      </p>
+    </div>
+    <div class="w-sides">
+      <div class="w-side">
+        <p class="w-side-who">Care.com puts the face in the photo slot</p>
+        <p>
+          <b>And it is right</b>, because the risk being managed is physical and domestic: this person
+          will be alone in your home with your child. No photograph of a tidy playroom reduces that
+          risk. A face, plus "background checked", plus "Hired by 2 neighbors", is the actual
+          instrument. Price is nearly irrelevant to that decision, which is exactly why it is grey.
+        </p>
+        <p><a href="https://mobbin.com/screens/f5a2f425-cc06-4022-ac37-1587cb49d91f">See the screen</a></p>
+      </div>
+      <div class="w-side">
+        <p class="w-side-who">Airtasker puts the work in the photo slot</p>
+        <p>
+          <b>And it is right</b>, because whether a stranger mounts your TV well is fully visible in a
+          photograph of a mounted TV, and their face tells you nothing. Making the person prominent
+          would be worse than useless: it would invite the user to choose on a signal that does not
+          predict the outcome.
+        </p>
+        <p><a href="https://mobbin.com/screens/a337b9cd-7f48-4658-b41b-020c33ede9db">See the screen</a></p>
+      </div>
+    </div>
+    <div class="w-verdict w-prose">
+      <p>
+        <b>A haircut is genuinely both, and this is the crux.</b> The face is a real risk instrument
+        (they will touch you, and a bad result is visible on your body for six weeks) and the work is
+        a real quality instrument (a photo of their fade tells you more about their fade than their
+        face does).
+      </p>
+      <p>
+        I looked for an app that resolves this and found one structure only:
+        <a href="https://mobbin.com/screens/ae12a89f-109e-4786-894b-5cec0a8a0c80">Airtasker's beauty
+        row</a>, which puts the <b>work</b> in the photo and the <b>person's name first</b> in the
+        text, so the photo does quality and the title does trust. It is the only card in the corpus
+        that refuses the choice, and it is worth stealing on that basis alone.
+      </p>
+    </div>
+  </section>
+
+  <section class="w-card w-solen">
+    <h3>Where Solen sits on this question</h3>
+    <div class="w-prose">
+      <p>
+        Solen takes position 1: the photo is the largest element and its subject is the venue. And the
+        price is already at the quietest setting the type system allows, read off
+        <code>SalonCard.tsx</code> on 2026-07-30: 12 px, greyest token, lightest weight, last row,
+        right-aligned, sharing a line with the address, with the word "from" gated behind a named
+        service because Art. 13 of the price-disclosure ordinance requires a minimum price to describe
+        the concrete offer it buys.
+      </p>
+      <p>
+        <b>That law is an advantage, and the corpus is what makes that arguable rather than
+        consoling.</b> Every serious booking product ends up showing a price anyway: Fresha ships a
+        per-service from-price on its search card on both platforms, plus a Maximum price filter. And
+        what the law forced us to build is <i>the expensive part</i>, a per-service minimum with the
+        service name attached, which is a data-model commitment and is exactly what Fresha's search
+        card is. We were made to build it in year one.
+      </p>
+      <p>
+        <b>What we give up by taking that view</b>, stated so it is not smuggled: the option of a
+        genuinely calm inspiration rail. Fresha's home card is calmer than ours because it carries a
+        category chip where ours carries a price, and calm is not nothing. If the home rails should
+        ever read as pure inspiration, the price is the element in the way, and that would be a legal
+        question about whether a rail counts as a price-disclosure context, not a taste one.
+      </p>
+      <p>
+        <b>The one thing that would change this whole answer, and nobody has measured it:</b> whether
+        Solen's venue photographs actually discriminate between venues. A photo earns the largest slot
+        by discriminating. Airbnb's rooms discriminate enormously; a treehouse is not a loft. If a
+        Basel Coiffeur interior and the Coiffeur two streets away photograph nearly identically, then
+        we have spent the biggest element on the card on something that does not move the decision.
+        That needs a look at the real seeded photo set and a between-venue variance number.
+      </p>
+    </div>
+  </section>
+
+  <div class="w-qhead">
+    <span class="w-qnum">Question three of four</span>
+    <h2>What does home owe somebody who already knows what they want?</h2>
+    <p class="w-qsub">
+      Four positions, and they are genuinely different bets about what "return" <i>is</i>. One product
+      often runs two of them at once, which is itself a finding.
+    </p>
+  </div>
+
+  <section class="w-card">
+    <div class="w-pos">
+      <div class="w-pos-t"><span class="w-pos-n">A</span><p class="w-pos-name">Pin the commitment on home</p></div>
+      <div class="w-bc">
+        <p>
+          <span class="w-lbl">THE BELIEF.</span> A user with an outstanding obligation is usually
+          opening the app <i>about</i> that obligation, so home's job is to close that loop before it
+          offers anything new.
+        </p>
+        <p>
+          <a href="https://mobbin.com/screens/20a3461b-b970-489a-a6fe-09109272e261">Zocdoc</a> is the
+          fullest version: "Hi Alex", a search field, a chip strip, then <b>"Up next"</b> with the
+          date and time as the boldest text on the screen, the doctor's name, the reason, an embedded
+          map tile <b>with the doctor's face as the map pin</b>, and a three-icon action row for phone,
+          calendar and directions. The first browse section is cut off at the fold.
+          <a href="https://mobbin.com/screens/46c0f164-855b-4c19-a06c-7ce6ecec40e7">Starbucks' "Your
+          Usuals"</a>, a row of three circular drink photos each with a "+" baked into the image, is
+          that company's entire returning-user proposition.
+        </p>
+      </div>
+      <p class="w-fit">
+        <b>Buys</b> zero navigation to the thing they would otherwise hunt for, plus somewhere to hang
+        the actions that only exist while a commitment is live: directions, phone, calendar, cancel.
+        <b>Costs</b> the largest single block of first-viewport space. On the Zocdoc screen a returning
+        user sees <b>no browse content at all</b> above the fold, and the same screen shows a
+        first-timer a gap where a card they cannot have would go. <b>Suits</b> imminent, actionable
+        commitments: a delivery arriving in 25 minutes, a dermatologist tomorrow. <b>Harms</b> anything
+        weeks out. A haircut on the 14th of next month does not need a map on your home screen today,
+        and pinning it spends the best slot on the page for 34 of 35 days to answer a question nobody
+        asked.
+      </p>
+    </div>
+
+    <div class="w-pos">
+      <div class="w-pos-t"><span class="w-pos-n">B</span><p class="w-pos-name">Give return its own destination, keep home for browse</p></div>
+      <div class="w-bc">
+        <p>
+          <span class="w-lbl">THE BELIEF.</span> Return is a <i>mode</i>, not a row, and a mode
+          deserves an address. Home is the browse instrument and stays identical for everybody.
+          <a href="https://mobbin.com/screens/7d9f25d6-03d7-4732-b0e7-6a40320c46a4">ClassPass</a> is
+          the cleanest holder: its home opens on "Browse by credits" tiles and mentions the
+          reservation nowhere.
+        </p>
+        <p>
+          <b>And this is where the cost is measurable in cash.</b>
+          <a href="https://mobbin.com/screens/a7a890d8-90d1-4bb5-bbfd-cab6c442e669">Angi built a
+          full-screen illustrated explainer</a> whose only job is to teach people that its "Pros" tab
+          exists: "We know how valuable it is to find a pro you trust. So we've made it easier than
+          ever to work with them again." <b>Nobody builds an onboarding page for something users find
+          on their own.</b> That screen is the invoice for this position.
+        </p>
+      </div>
+      <p class="w-fit">
+        <b>Buys</b> unlimited room for the personal content, one home screen to design and grade
+        instead of two, and a count badge that does the reminding almost free. <b>Costs</b> a tap on
+        the single highest-intent action in the product, plus a discovery problem, plus the dead-end
+        empty destination: of sixteen empty saved-list screens read, <b>fourteen</b> are an
+        illustration, a headline, a subline and a large blank. <b>Suits</b> products where browse is
+        the recurring job every session. <b>Harms</b> products where the personal action IS the
+        dominant action.
+      </p>
+    </div>
+
+    <div class="w-pos">
+      <div class="w-pos-t"><span class="w-pos-n">C</span><p class="w-pos-name">Put return inside the search instrument</p></div>
+      <div class="w-bc">
+        <p>
+          <span class="w-lbl">THE BELIEF.</span> Return is not a separate desire, it is a shortcut
+          through the same funnel, so it belongs where intent is already declared.
+          <a href="https://mobbin.com/screens/58e88acd-c7a4-40f4-98a5-f9a1911dcae5">Uber</a> puts two
+          recent destinations directly under "Where to?" as plain text rows with a clock icon, no
+          photo, no card, no shadow, costing roughly an eighth of the viewport for two entries against
+          Zocdoc's third for one, and "Suggestions" still makes the fold.
+        </p>
+        <p>
+          The most sophisticated version is
+          <a href="https://mobbin.com/screens/642cf656-a82d-4563-94de-73c0e4409661">Fiverr</a>, whose
+          "Pick up where you left off" has a switcher between keep-exploring, saved services, and the
+          user's literal last query. <b>Return modelled as three different memories of the same user,
+          with the user picking which one they are today.</b>
+        </p>
+      </div>
+      <p class="w-fit">
+        <b>Buys</b> almost no home real estate, and it costs a first-timer literally nothing, because
+        an empty dropdown is invisible rather than sad. <b>Costs</b> invisibility in the other
+        direction too: it does no reminding and builds no habit, since nothing about a dropdown teaches
+        a user that the app remembers them. And it <b>cannot carry a commitment</b>: a date, a time and
+        a cancellation window do not belong in a search suggestion. <b>Suits</b> a repeat destination.
+        <b>Harms</b> anything with a live obligation.
+      </p>
+    </div>
+
+    <div class="w-pos">
+      <div class="w-pos-t"><span class="w-pos-n">D</span><p class="w-pos-name">One screen, section present or absent</p></div>
+      <div class="w-bc">
+        <p>
+          <span class="w-lbl">THE BELIEF.</span> Personalisation is a <i>section-level</i> property,
+          never a screen-level one. There is one home; it grows a band when there is history and drops
+          it when there is not.
+        </p>
+        <p>
+          <b>The proof is a clean natural experiment.</b> Expedia's home
+          <a href="https://mobbin.com/screens/3748378f-5b55-4355-b2f4-24dae74830ef">signed in with
+          recents</a> and
+          <a href="https://mobbin.com/screens/9bcef1ce-18dd-4032-b718-25e8157d3a68">the same page with
+          no recents row</a>: identical search box, identical browse grid directly below, one section
+          present in one and absent in the other, and <b>the shorter page does not read as broken</b>,
+          because the browse content closes the gap. Same at Starbucks:
+          <a href="https://mobbin.com/screens/0320a019-4821-47a5-9dd4-fef9c4e1748c">the Gold member's
+          home</a> against
+          <a href="https://mobbin.com/screens/1de86909-1796-41b8-879d-4bfa004772f0">the new member's
+          home with "Your Usuals" simply gone</a>.
+        </p>
+        <p>
+          <span class="w-lbl">A SIDE FINDING WORTH PULLING OUT.</span>
+          <a href="https://mobbin.com/screens/6aabaf3c-e9e3-4dd2-b959-0fcebead17c0">A third Expedia
+          capture shows "Sign in" in the header AND a recent-searches row</a>. So the trigger is
+          <b>history, not authentication</b>. You do not need accounts to have a returning-user
+          surface.
+        </p>
+      </div>
+      <p class="w-fit">
+        <b>Costs</b> the <b>sparse-but-present</b> state, which is the worst of the three: Vrbo's
+        recently-viewed row holds one card and leaves an obvious hole to its right, and HBO Max's "My
+        List" holds two posters on a row sized for seven. <b>Absence is invisible; sparseness reads as
+        a bug.</b> Second cost: the personal content competes with browse on equal visual terms, so a
+        row that looks like every other row does not announce that it is yours, which is precisely the
+        reminding job position A does well and this one gives up.
+      </p>
+    </div>
+  </section>
+
+  <section class="w-card w-dis">
+    <div class="w-dis-head">
+      <span class="w-tag">The strongest disagreement</span>
+      <span class="w-lbl">Same problem, opposite screens, both right.</span>
+    </div>
+    <h2>ClassPass and Zocdoc</h2>
+    <div class="w-prose">
+      <p>
+        They are as close to identical as two products in this sweep get. Both sell an appointment at a
+        physical place with a named human. Both hold the same data: an upcoming reservation with a
+        time and an address. Both have a tab bar with room in it.
+      </p>
+    </div>
+    <div class="w-sides">
+      <div class="w-side">
+        <p class="w-side-who">Zocdoc pins it, twice</p>
+        <p class="w-side-what">Home leads with "Up next" over roughly a third of the first viewport, map tile and phone button, and it also badges an Appointments tab. It spends its best space twice on the same fact.</p>
+        <p>
+          <b>And it is right.</b> A dermatology appointment is scarce, anxious and infrequent. Between
+          booking and attending, the user's open question really is "is it still on, where is it, can I
+          get there", and they will open the app for no other reason. Zocdoc's home is a
+          <b>reassurance instrument</b>, which is why the card carries a map and a phone icon rather
+          than a photo and a price.
+        </p>
+        <p><a href="https://mobbin.com/screens/20a3461b-b970-489a-a6fe-09109272e261">See the screen</a></p>
+      </div>
+      <div class="w-side">
+        <p class="w-side-who">ClassPass refuses to</p>
+        <p class="w-side-what">Home is "For You" and opens literally on three tiles reading under 4, under 6 and under 10 credits. The reservation is one tab away and nothing on home mentions it.</p>
+        <p>
+          <b>And it is right.</b> A ClassPass member holds a monthly credit balance burning down.
+          Their open question, every single session, is "what do I spend credits on this week". The
+          booked class is a solved problem. Its home is a <b>credit-spending instrument</b>.
+        </p>
+        <p><a href="https://mobbin.com/screens/7d9f25d6-03d7-4732-b0e7-6a40320c46a4">See the screen</a></p>
+      </div>
+    </div>
+    <div class="w-verdict w-prose">
+      <p>
+        <b>The discriminator is not taste.</b> It is whether the user's open question on opening the
+        app is <b>"what next"</b> or <b>"is it still on"</b>. Both apps answered that question about
+        their own user and built the screen that answers it. Neither is a better designer.
+      </p>
+    </div>
+
+    <h3>And one convergence that broke when it was tested</h3>
+    <div class="w-prose">
+      <p>
+        I went in believing map-first on the appointment card was a convergence, because Fresha,
+        Zocdoc and ClassPass all do it. A search aimed specifically at breaking that claim broke it:
+        five map-at-top against six map-at-bottom-or-reduced-to-an-icon, and three of those six lead
+        with a photograph instead.
+      </p>
+      <p>
+        <b>So the real pattern is finer and better.</b> The map wins on <b>compact cards embedded in a
+        feed</b>, where one visual slot must answer "can I get there". The photograph wins on a
+        <b>dedicated detail screen</b>, where there is room for both and the map falls to the bottom.
+        The best single artefact in the argument is
+        <a href="https://mobbin.com/screens/69b4e8aa-dad8-478e-942f-135446da3268">Square Go's "10 min
+        to location"</a> line. That is why a map earns a top slot: not decoration, an answer.
+      </p>
+    </div>
+  </section>
+
+  <section class="w-card w-solen">
+    <h3>Where Solen sits on this question</h3>
+    <div class="w-prose">
+      <p>
+        <b>The distinction I would defend hardest: Airbnb's returning user returns to a CATEGORY, and
+        Solen's returns to a PERSON.</b> Airbnb's whole return architecture admits it. It resumes a
+        <i>search</i> (<a href="https://mobbin.com/screens/4f347fd4-5793-41df-a0d9-b29fe02131cc">"Continue
+        searching for experiences in Miami"</a>) and offers "Recently viewed homes", because the
+        specific listing you looked at last year is probably irrelevant now. It never says "book that
+        place again", because almost nobody does. Fresha and Angi admit the opposite: Fresha's first
+        home section is "Book again" with a named salon, and Angi built a tab called Pros and wrote
+        "how valuable it is to find a pro you trust". <b>Beauty return is relationship return.</b>
+      </p>
+      <p>
+        So Solen's returning user is shaped like <b>Uber's</b> in <i>what</i> they want, a specific
+        known destination again, and like <b>Fresha's</b> in <i>where</i> it should appear. Not
+        Airbnb's, and not Zocdoc's.
+      </p>
+      <p>
+        <b>Solen holds position B today by default rather than by decision.</b>
+        <code>npm run exists "upcoming appointment"</code> returns 0: there is no
+        upcoming-appointment component anywhere in the product, and return lives in
+        <code>/profile/*</code>. Meanwhile the express-rebook backend is <i>fully live</i>, endpoints
+        and columns and a nudge cron, with zero customer-facing render site, and a graveyard entry
+        from 11 July 2026 means anything in that neighbourhood is blocked on an explicit yes.
+      </p>
+      <p>
+        <b>The price rule is an advantage here too, not a tax.</b> On a rebook row the price is already
+        known from the last visit, so the row can carry a real historical number with zero fabrication
+        risk. <a href="https://mobbin.com/screens/84ecc10a-5df5-46cb-81cb-0ffd7a8f9cb6">KAYAK pushes
+        that to its conclusion</a> with a live price and a "Price drop / Was $40" badge, which is the
+        strongest argument found for why a personal card deserves its space: <b>it is not a bookmark,
+        it is a change monitor.</b>
+      </p>
+      <p>
+        And <code>RecentlyViewed.tsx</code> already <i>is</i> position D, executed with the
+        minority-correct backfill that only two of sixteen apps bothered with: with no history it falls
+        back to real top-rated salons, relabels its own title, repoints its link, and returns nothing
+        only if the fallback is also empty. Its one missing leg is a <b>minimum count</b>: one stored
+        entry renders the rail, which is Vrbo's one-card hole.
+      </p>
+    </div>
+  </section>
+
+  <div class="w-qhead">
+    <span class="w-qnum">Question four of four</span>
+    <h2>How many things should the first screen show?</h2>
+    <p class="w-qsub">
+      The answer this sweep produced was not the expected one. <b>Density is not a property of a
+      product, it is a property of the decision a single screen is asking for.</b> The same company
+      ships a sparse screen and a dense screen days apart, on purpose, and both are right.
+    </p>
+  </div>
+
+  <section class="w-card">
+    <div class="w-pos">
+      <div class="w-pos-t"><span class="w-pos-n">1</span><p class="w-pos-name">The catalogue index. You know what you want, I just give you the word for it.</p></div>
+      <div class="w-bc">
+        <p>
+          <span class="w-lbl">THE BELIEF.</span> The catalogue is far too large to browse and the
+          user's intent is already formed, so the first screen is a table of contents and the unit of
+          density is <i>nameable categories</i>, not products.
+          <a href="https://mobbin.com/screens/8789caed-0986-44cf-948c-86d12cc257de">Blinkit</a> fits
+          twelve grocery categories plus a cropped thirteenth row in one phone viewport,
+          <a href="https://mobbin.com/screens/c3fbecd3-61f9-4a93-bab4-fae45b8998a8">Fresha</a>
+          fourteen, and <a href="https://mobbin.com/screens/e50e0d66-a329-4176-87a1-c566a1b2acaa">Meituan</a>
+          goes past thirty tappable targets in a single viewport.
+        </p>
+      </div>
+      <p class="w-fit">
+        <b>Buys</b> two-tap reach into a catalogue of any size, and because positions are stable,
+        repeat users navigate by muscle memory and stop reading the labels at all. <b>Costs</b> all
+        persuasion: no desire, no browsing pleasure, no sense of what is good. It also goes
+        <b>rigid</b>, because once users navigate by position, re-ordering the grid is a breaking
+        change. And it needs volume to be honest:
+        <a href="https://mobbin.com/screens/d0da45c2-f9d2-4085-8585-d9e538b9c520">Time2book runs this
+        grammar with two service rows and roughly 40% of the viewport empty</a>, and it reads as a
+        stub rather than a product.
+      </p>
+    </div>
+
+    <div class="w-pos">
+      <div class="w-pos-t"><span class="w-pos-n">2</span><p class="w-pos-name">The comparison table. The kind is settled, one field decides which.</p></div>
+      <div class="w-bc">
+        <p>
+          <span class="w-lbl">THE BELIEF.</span> The user has finished deciding <i>what</i> and is
+          resolving <i>which</i>, and resolution happens by scanning one comparable field down a
+          column. Every pixel that is not that field is friction.
+          <a href="https://mobbin.com/screens/28e4b5b5-ca32-4d79-a91f-70563cbb4442">Booking.com's
+          results row</a> carries fourteen to sixteen discrete elements.
+          <a href="https://mobbin.com/screens/222757f4-74d8-435b-a780-6149bb5fac62">ClassPass is the
+          purest case</a>: seven classes per viewport with <b>zero photography</b>, each row being
+          time, duration, class name, instructor and a spots-left number.
+        </p>
+        <p>
+          <span class="w-lbl">THE MECHANISM, STATED ONCE BECAUSE IT RECURS EVERYWHERE.</span> In every
+          member of this position, <b>the photograph shrinks or vanishes in exact proportion to how
+          many bookable times the row carries.</b> And ClassPass brings the photo back exactly once,
+          full-width, on the
+          <a href="https://mobbin.com/screens/6f1ab7f6-bd06-475b-9d5f-303d59095692">class detail
+          page</a>, at the moment of commitment. That is a theory of what a photo is <i>for</i>: it
+          answers "what will this room feel like", and that question only becomes live once the time is
+          settled.
+        </p>
+      </div>
+      <p class="w-fit">
+        <b>Buys</b> fast confident resolution, and confidence rises with the number of rows visible at
+        once, because a choice made from eight visible options feels checked and a choice from two
+        feels guessed. <b>Costs</b> the photograph, so it can satisfy desire but never create it. And
+        it <b>commoditises the supply side</b>: when eight providers render as eight rows differing
+        only in a number, the user optimises the number, which is exactly what a provider does not
+        want. <b>Harms</b> anything chosen on feel, and any seller whose margin depends on not being
+        comparable.
+      </p>
+    </div>
+
+    <div class="w-pos">
+      <div class="w-pos-t"><span class="w-pos-n">3</span><p class="w-pos-name">The single-object showcase. You cannot be told what this is, you have to see it.</p></div>
+      <div class="w-bc">
+        <p>
+          <span class="w-lbl">THE BELIEF.</span> The product is differentiated and not describable in
+          fields. One unit per viewport, the photo is most of the unit, the text is two lines.
+          <a href="https://mobbin.com/screens/41e035de-eb59-433c-a13a-b2367812536f">Airbnb iOS</a>
+          shows about 1.9 cards;
+          <a href="https://mobbin.com/screens/44be310d-75e0-481c-9e65-1ff4d8868b8a">Resy's Discover
+          feed</a> about 1.2 units.
+        </p>
+        <p>
+          <b>Resy is the honest test of this position, because Resy does not hold it consistently.</b>
+          Its <a href="https://mobbin.com/screens/2fda3e51-e256-4821-be49-f302e344c558">editorial
+          index</a> drops the same content to seven rows per viewport with the photo demoted to a
+          small right-hand square. One hero to set the mood, then a table to make the choice. That is
+          not inconsistency, it is <b>sequencing</b>.
+        </p>
+      </div>
+      <p class="w-fit">
+        <b>Buys</b> desire, brand, and permission to charge more. It is the only position that can make
+        an expensive infrequent purchase feel considered rather than transacted. <b>Costs</b> a
+        viewport of scrolling per item, so a large catalogue becomes unreachable by browsing and search
+        has to carry everything. And it <b>hides the deciding field</b>, which does not remove the
+        decision, it moves it one screen deeper. <b>Harms</b> any product under a price-display
+        obligation, because a two-line body has no room for a price plus the thing the price is for.
+      </p>
+    </div>
+
+    <div class="w-pos">
+      <div class="w-pos-t"><span class="w-pos-n">4</span><p class="w-pos-name">The intent router. Anything I show you before I know where and when you are is noise.</p></div>
+      <div class="w-bc">
+        <p>
+          <span class="w-lbl">THE BELIEF.</span> For location-and-time-bound inventory, no pre-filter
+          list can be relevant, so the honest first screen shows <b>no inventory at all</b> and asks
+          the one question that makes inventory meaningful.
+          <a href="https://mobbin.com/screens/e198244e-83c1-4834-84f4-f7a30cae031f">Booking.com's home
+          genuinely surprised me</a>: the most notoriously dense travel product in the world opens with
+          a hero, a headline, a four-field bar, two promo banners and two recent-search tiles.
+          <b>Zero properties in the first viewport.</b>
+          <a href="https://mobbin.com/screens/27a9c867-8a07-4655-aa4c-0ca943ee329c">Swiggy</a> is the
+          most extreme: three mode tiles and roughly 40% of the viewport deliberately empty, shipped by
+          one of the densest apps in India.
+        </p>
+        <p>
+          <span class="w-lbl">AND ONE DETAIL THAT SAVES THIS POSITION FROM BEING PURELY AESTHETIC.</span>
+          Fresha's hero carries a live number. Six separate captures of the same screen read
+          <b>217,913</b> then <b>320,602</b> then <b>320,692</b> then <b>320,797</b> then
+          <b>320,898</b> then <b>456,602</b> appointments booked today
+          (<a href="https://mobbin.com/screens/74253218-0063-4799-afef-c0410b371804">one</a>,
+          <a href="https://mobbin.com/screens/dee32578-d821-4f80-886e-7f379aac30b3">two</a>,
+          <a href="https://mobbin.com/screens/923e5154-c265-436e-8d2f-2a1c56699a06">the sixth</a>). It
+          is demonstrably wired, not a decorative string. <b>That counter is the one thing on an empty
+          hero that does the job this position otherwise cannot: it proves supply exists without
+          listing any of it.</b>
+        </p>
+      </div>
+      <p class="w-fit">
+        <b>Buys</b> one unambiguous action, zero wrong-city inventory, a clean funnel, and it can never
+        go stale or look thin. <b>Costs</b> teaching the visitor nothing about supply: a first-timer
+        cannot tell whether you have 12 salons or 1,200, and for a marketplace that has not yet earned
+        trust <b>that is the single most important thing the home page could say</b>. <b>Harms</b>
+        pre-launch marketplaces with no brand, and repeat users, for whom the question is already
+        answered and the screen is a toll booth.
+      </p>
+    </div>
+  </section>
+
+  <section class="w-card w-dis">
+    <div class="w-dis-head">
+      <span class="w-tag">Two disagreements</span>
+      <span class="w-lbl">Both sides stand in each.</span>
+    </div>
+    <h2>Fresha web against OpenTable web, and Zocdoc against Plazo</h2>
+    <div class="w-sides">
+      <div class="w-side">
+        <p class="w-side-who">Fresha web: zero venues in the first viewport</p>
+        <p>
+          <b>And it is right.</b> Its catalogue is global and hyper-local at once. A salon 6 km away is
+          useless, and the app has no location until you type one, so any list it renders pre-search is
+          close to random. Fresha also monetises the salon's software subscription rather than the
+          booking, so making salons look substitutable is against its interest. And it replaces the
+          missing inventory with the wired counter, so the screen still proves the marketplace is alive.
+        </p>
+        <p><a href="https://mobbin.com/screens/0b68f8e9-3c79-4302-83c6-990eefc611d7">See the screen</a></p>
+      </div>
+      <div class="w-side">
+        <p class="w-side-who">OpenTable web: 5 restaurants plus a cropped 6th</p>
+        <p>
+          <b>And it is right.</b> OpenTable already has your city and, crucially, your <i>recency</i>:
+          its first band is "Recently viewed". Restaurant intent is impulsive and evening-shaped, so the
+          highest-value thing it can show is a place you already considered with a time you could take
+          right now. And a reservation is <b>free</b>, so the cost of an irrelevant card is one wasted
+          glance rather than a wasted franc.
+        </p>
+        <p><a href="https://mobbin.com/screens/e1886298-cf19-4bc3-9924-620b7621853c">See the screen</a></p>
+      </div>
+    </div>
+    <div class="w-verdict w-prose">
+      <p>
+        <b>The variable that separates them is not taste, it is what the product knows about you when
+        the page loads.</b> OpenTable can be dense because it has history and location. Fresha cannot,
+        so it asks.
+      </p>
+    </div>
+
+    <div class="w-sides" style="margin-top:22px">
+      <div class="w-side">
+        <p class="w-side-who">Zocdoc: one doctor per 0.6 of a viewport</p>
+        <p>
+          <b>And it is right.</b> You will see this dermatologist for years, and the decision is
+          resolved by soft signals that do not compare numerically: does this person look like somebody
+          I can undress in front of, are they close, do 68 people vouch for them. Density would destroy
+          the only fields that matter, <b>because a face at 32 pt stops being a face.</b>
+        </p>
+        <p><a href="https://mobbin.com/screens/3b03d53a-6614-4054-a34a-0d8ba4213c8e">See the screen</a></p>
+      </div>
+      <div class="w-side">
+        <p class="w-side-who">Plazo: ten doctors in the same space</p>
+        <p>
+          <b>And it is right.</b> Its user has a symptom and wants the earliest competent slot. There is
+          exactly one deciding field and it is a time. Ten rows of times resolves that better than one
+          portrait ever could, and rendering the unavailable doctors greyed <b>in place</b> rather than
+          filtering them out tells you the market is thin without lying about it.
+        </p>
+        <p><a href="https://mobbin.com/screens/5ab1ce07-b8cf-4a4f-9761-817a2799ec0f">See the screen</a></p>
+      </div>
+    </div>
+    <div class="w-verdict w-prose">
+      <p>
+        <b>Named mechanism, and it generalises: density is set by whether the decision resolves on ONE
+        comparable field or on an accumulation of non-comparable signals.</b> One field, go dense.
+        Accumulated feel, go sparse. That single sentence predicts every screen in this section
+        correctly, which is why it is worth more than any frequency count.
+      </p>
+    </div>
+
+    <h3>And the strongest evidence in the section is one app, not two</h3>
+    <div class="w-prose">
+      <p>
+        Airbnb against Airbnb, where every confound is removed: same company, same design system, same
+        tab bar, same release. The Homes tab shows about 1.9 large listing cards.
+        <a href="https://mobbin.com/screens/2258df34-4be9-42f5-a410-f2e426d66ee2">Services on web</a>
+        fits ten category tiles plus six provider cards in one viewport. <b>Airbnb roughly tripled its
+        own density the moment it started selling appointments instead of places.</b> And
+        <a href="https://mobbin.com/screens/49f0730c-6356-476a-b481-b679952db447">its iOS tiles print
+        the supply count</a>, including "Massage 1 available": it renders a category holding a single
+        item rather than hiding it, printing the thin number instead of faking a full one.
+      </p>
+    </div>
+  </section>
+
+  <section class="w-card w-solen">
+    <h3>Where Solen sits on this question</h3>
+    <div class="w-prose">
+      <p>
+        Position 4 is what ships today, and it has one specific weakness: <b>Fresha can afford an empty
+        hero because it has a wired counter proving 320,000 bookings happened today. Solen is
+        pre-launch with seed data.</b> It has neither the brand awareness that makes an empty hero
+        legible nor a real number it could honestly print in place of inventory. The position was
+        borrowed without the one element that makes the original work.
+      </p>
+      <p>
+        <b>And the real density defect is a different one, and it is checkable.</b> Read off
+        <code>SalonCard.tsx:404-408</code> together with the rail's 12 px gap: four cards plus three
+        gaps is <i>exactly</i> the container width, so the container divides into exactly 4, 5 or 6
+        cards with nothing left over. <b>There is no cropped next card on desktop at any
+        breakpoint</b>, so the scroll promise is arithmetically impossible above the small breakpoint.
+        And at the medium and large breakpoints the count is 4 and 5, against our own floor of six on
+        desktop.
+      </p>
+      <p>
+        <b>Third, and this is the one that belongs to this lens: the card carries a price and no
+        time.</b> Every appointment product in the sweep that puts a provider on a browse surface
+        either carries a next-available signal or drops the price too. Fresha iOS, OpenTable, Tock,
+        Plazo, Alan, Superpower and ClassPass carry the time; Fresha web home and Square Go carry
+        neither price nor time and are pure discovery. <b>Solen occupies a third position that was not
+        observed in a single app.</b>
+      </p>
+    </div>
+  </section>
+
+  <div class="w-qhead">
+    <span class="w-qnum">The part no document in this estate had</span>
+    <h2>Which of these choices depend on which others</h2>
+    <p class="w-qsub">
+      Every floor in our own design law scopes itself to one screen. A repo-wide search for a rule
+      binding one choice to <i>another</i> returns nothing. So here are the edges. Three kinds, and
+      they are not degrees of the same thing.
+    </p>
+  </div>
+
+  <section class="w-card w-rel">
+    <p class="w-rel-k">FORCED</p>
+    <h2>Choosing X makes Y near-mandatory. You still choose how to pay. You do not choose whether.</h2>
+
+    <div class="w-if">
+      <span class="w-if-id">F1</span>
+      <p class="w-if-line">If a bookable time goes on the card, then either the photo shrinks or the card count halves. There is no third source.</p>
+      <div class="w-if-body">
+        <p>
+          A slot is a tap target, so it cannot be shorter than about 44 pt, and the text rows are
+          already at their floor, so the height comes out of the only elastic element on the card,
+          which is the photograph. Four products pay the same bill in four different currencies on the
+          same data:
+          <a href="https://mobbin.com/screens/36a67cad-df4d-4a52-9e72-1e8b92f02c2a">Tock pays with the
+          photo</a> (a thumbnail, two labelled slot groups, two venues fit),
+          <a href="https://mobbin.com/screens/e4f524c1-e8e3-4e25-bb4c-b736d43c28a1">Resy pays with the
+          count</a> (full photo, pills run off the right edge, about two cards),
+          <a href="https://mobbin.com/screens/b448f1f5-8a43-4b81-8d00-60a95cf8c0a9">TheFork overpays
+          both</a> at roughly 1.2 cards, and
+          <a href="https://mobbin.com/screens/febf2279-5b8c-4bed-a7e8-0b286bfb13e5">Zocdoc pays the
+          maximum</a> at exactly one row per viewport, its day tiles carrying a count of appointments
+          each.
+        </p>
+        <p>
+          <b>For us: our imagery lock makes the photo the largest element of every card, so Tock's
+          payment method is closed, which means a time forces Resy's, fewer cards. And we are already
+          at four columns at the medium breakpoint against our own floor of six. This is why the
+          next-free-day direction and the density floor cannot both be satisfied.</b> Neither lens
+          said that on its own, because each was looking at one axis.
+        </p>
+      </div>
+    </div>
+
+    <div class="w-if">
+      <span class="w-if-id">F2</span>
+      <p class="w-if-line">If the photo gets bigger, then there are fewer columns, then the name truncates, then the name quietly stops being a field you can compare on.</p>
+      <div class="w-if-body">
+        <p>
+          Photo area grows with the square of column width; text does not shrink to compensate, it
+          clips. <a href="https://mobbin.com/screens/aab860ec-aea7-4c96-84a4-b598723a1620">Etsy at four
+          across truncates every single title mid-phrase</a>;
+          <a href="https://mobbin.com/screens/1c42b65b-fd0c-458a-9422-999d830d8984">Faire holds five</a>
+          only because its body is two short lines. <b>Columns and fields-per-card are one decision,
+          taken twice.</b>
+        </p>
+        <p>
+          <b>The consequence nobody wrote down:</b> closing our desktop rail from four cards to the six
+          our own floor asks for makes every long Swiss salon name truncate <i>harder</i>. The
+          worst-case-content gate has to run at the new column count <b>before</b> the count changes,
+          not after.
+        </p>
+      </div>
+    </div>
+
+    <div class="w-if">
+      <span class="w-if-id">F3</span>
+      <p class="w-if-line">If a face goes in the photo slot, then density must drop, because a face below thumbnail size stops being a face and silently becomes a row identifier.</p>
+      <div class="w-if-body">
+        <p>
+          A photograph of a room is read as information and survives being small. A photograph of a
+          person is read as a person, and that reading needs resolution. Shrink it far enough and you
+          are paying for portrait photography and getting an identifier.
+          <a href="https://mobbin.com/screens/e6f07e6d-922e-42a9-becc-d5569c57af51">Care.com holds about
+          two rows per viewport</a>;
+          <a href="https://mobbin.com/screens/b064c399-2564-4693-a24e-4ffecee967a2">Preply about two
+          cards</a>.
+        </p>
+        <p>
+          <b>So "the person, not the premises" is a three-floor change wearing the costume of a
+          one-field change:</b> density, then the desktop column count, then imagery.
+        </p>
+      </div>
+    </div>
+
+    <div class="w-if">
+      <span class="w-if-id">F4</span>
+      <p class="w-if-line">If a section title claims a judgment, then it needs a byline, a count or a date, because a judgment with no owner and no timestamp is unfalsifiable.</p>
+      <div class="w-if-body">
+        <p>
+          Nine products, all of them, and all of them also rotate the photograph to a small left square
+          the moment prose enters, because prose is a horizontal medium.
+          <a href="https://mobbin.com/screens/c9e5dfe1-08fe-407f-986b-f99b421ec2d8">Medium: "List curated
+          by Medium Staff"</a>.
+          <a href="https://mobbin.com/screens/5901878d-8328-4b40-819f-befb3d7a3c41">Swarm carries an
+          author avatar, "Updated August 2025", and "3 places"</a>, all three at once.
+          <a href="https://mobbin.com/screens/0a882b29-83b5-449d-88b0-224e6e26cb55">The Infatuation adds
+          a written line and a date</a>, plus "SORTED BY MOST RECENT" as a header, which is the
+          editorial equivalent of showing your working.
+        </p>
+        <p>
+          <b>The cheap half and the expensive half is the operationally useful part.</b> A count and a
+          date are derivable from data at zero content cost. Prose and a named curator are a
+          content-operations commitment. So this does not force us into publishing, it forces a choice
+          between the derivable tier and dropping the editorial claim. <b>"Salon of the Month" is a
+          superlative with no stated basis, which makes it the section where the cheap tier would do
+          the most work.</b>
+        </p>
+      </div>
+    </div>
+
+    <div class="w-if">
+      <span class="w-if-id">F5</span>
+      <p class="w-if-line">If category tiles carry real supply counts, then the index stops being navigation and becomes proof of supply, and you are committed to printing the thin numbers.</p>
+      <div class="w-if-body">
+        <p>
+          A count is only evidence if it is printed when it is small. An index that shows counts only
+          where they flatter is a billboard, and users detect that fast, because the categories with no
+          number are exactly the ones they wanted. <b>Every app doing this prints the thin case:</b>
+          <a href="https://mobbin.com/screens/841a33b9-2388-4c53-8c36-c3c48829093f">Whatnot's "6
+          Options"</a>,
+          <a href="https://mobbin.com/screens/5b890789-7046-4cd6-8c88-7023df1cce94">Unity's "Templates
+          (1)"</a>,
+          <a href="https://mobbin.com/screens/616be700-dfdd-4948-bc3a-5846b190026b">Alma printing a
+          literal "0"</a>, and
+          <a href="https://mobbin.com/screens/2258df34-4be9-42f5-a410-f2e426d66ee2">Airbnb Services
+          rendering seven "Coming soon" tiles</a> rather than hiding the categories it has not launched.
+          The cheapest version of all is
+          <a href="https://mobbin.com/screens/b064c399-2564-4693-a24e-4ffecee967a2">Preply putting the
+          count in its headline</a>, "100+ Japanese tutors".
+        </p>
+        <p>
+          <b>This is the cheapest honest supply proof available to a pre-launch marketplace, and it
+          needs no invented number. The forced consequence is that it publishes how thin each Swiss
+          category currently is. That is a business decision about disclosure, not a design
+          decision.</b>
+        </p>
+      </div>
+    </div>
+
+    <div class="w-if">
+      <span class="w-if-id">F6</span>
+      <p class="w-if-line">If the entry control displays state, then it needs an in-place edit path AND a second control beside it.</p>
+      <div class="w-if-body">
+        <p>
+          Once the control shows the current query it becomes the only legible place to change it, so
+          without an edit path the state is a dead end. And the fields that make a result <i>exist</i>
+          (what, where, when) are a different set from the fields that <i>shrink</i> a result set
+          (price, sort, venue type). One control cannot be both without becoming a form.
+          <a href="https://mobbin.com/screens/efc00125-5818-48ae-905d-e64dbe66177a">Fresha iOS is the
+          complete case in one screen</a>: a summary pill, then a chip row of "Sort by", "Max price"
+          and "Venue type", then "21 venues nearby", then the cards. Three separate instruments.
+          <a href="https://mobbin.com/screens/e6f07e6d-922e-42a9-becc-d5569c57af51">Care.com asks the
+          money question twice</a>, once in a five-segment bar and once as a rail slider: the bar
+          decides what exists, the rail decides what survives.
+        </p>
+        <p>
+          <b>This is the bill for collapsing our mobile control to the summary form.</b> We already own
+          the edit path. What we do not have is a refiner row on home, and that is not an argument to
+          add one, it is the reason the summary form is not the free option it looks like.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="w-card w-rel">
+    <p class="w-rel-k">INCOMPATIBLE</p>
+    <h2>X and Y want the same scarce resource and there is not enough for both. One wins, or both get degraded into something neither wanted.</h2>
+
+    <div class="w-if">
+      <span class="w-if-id">I1</span>
+      <p class="w-if-line">A pinned personal block and a photo-dominant first screen cannot both own the top. But the resolution the corpus actually uses is not "pick one", it is to strip the personal block's photograph.</p>
+      <div class="w-if-body">
+        <p>
+          <a href="https://mobbin.com/screens/87550d69-834b-45ea-8c84-5b172b304433">Marriott makes
+          "CONTINUE YOUR BOOKING" a text-only row with a chevron and no image at all</a>, and
+          recently-viewed a small left thumbnail.
+          <a href="https://mobbin.com/screens/781cf27c-6d77-465b-8302-f106505dc691">Fresha demotes "Book
+          again" to a thumbnail row</a> sitting above photo-top Favourites. And
+          <a href="https://mobbin.com/screens/e9a169af-e2bf-4220-9ee8-e8747b8537a0">World of Hyatt is the
+          control case</a>: no personal block at all, and its photographic cards land immediately.
+        </p>
+        <p>
+          <b>Our imagery floor is an AREA rule, so a text or thumbnail personal row costs it almost
+          nothing, because it was never going to be a photograph. The incompatibility is between a
+          personal block and a photo-DOMINANT block, not between a personal block and the imagery
+          floor.</b> That is a fourth option both of the individual lenses missed. Its cost, stated so
+          it is not smuggled: it is exactly the second-anatomy-for-one-entity problem, which lands on
+          I5.
+        </p>
+      </div>
+    </div>
+
+    <div class="w-if">
+      <span class="w-if-id">I2</span>
+      <p class="w-if-line">A category grid above the fold and real inventory in the first viewport cannot both fit on a phone. The choice is not grid or inventory, it is which one is first.</p>
+      <div class="w-if-body">
+        <p>
+          <a href="https://mobbin.com/screens/eff48642-a5a0-4fe0-a5d3-c1bf99089968">Expedia</a>,
+          <a href="https://mobbin.com/screens/596abac7-c270-4fbd-94a7-5b2fcc42e3c0">Trip.com</a> and
+          <a href="https://mobbin.com/screens/3314985d-eb8b-4390-b52b-c0696196602b">Rappi</a> all resolve
+          it against inventory. But
+          <a href="https://mobbin.com/screens/c3fbecd3-61f9-4a93-bab4-fae45b8998a8">Fresha's fourteen-tile
+          grid, the largest in the corpus, is the FOURTH section on its screen</a>, after the greeting,
+          Book again, Favourites and Trending. It is not deleted, it is demoted below the fold.
+          <b>The app with the biggest grid puts it fourth. We render ours first.</b>
+        </p>
+      </div>
+    </div>
+
+    <div class="w-if">
+      <span class="w-if-id">I3</span>
+      <p class="w-if-line">The bottom edge holds exactly one persistent thing.</p>
+      <div class="w-if-body">
+        <p>
+          Of ten screens read, five drop the tab bar to hold a commit CTA
+          (<a href="https://mobbin.com/screens/df5422dd-4b57-4285-8af7-edc1ae841542">BlaBlaCar</a>,
+          <a href="https://mobbin.com/screens/b4d62ad7-a0fb-4f9d-8d6f-5f8571ab3f4b">Careem, with the price
+          inside the button</a>,
+          <a href="https://mobbin.com/screens/3b2a949d-f9ff-485e-8bed-3c126ee2409b">KakaoTalk</a>), three
+          keep the tab bar and move the action INTO the card
+          (<a href="https://mobbin.com/screens/2a1a4de1-a142-4fa0-9feb-4a139e565cb6">Peerspace</a>,
+          <a href="https://mobbin.com/screens/78d3131d-1ae2-4b42-af17-e65fcbceaff1">StubHub</a>), and one
+          keeps both only by making the bottom row a non-commit utility row
+          (<a href="https://mobbin.com/screens/0add0d47-0d6e-461f-a276-682f40558201">komoot</a>).
+        </p>
+        <p>
+          <b>Uber Eats can put search in the bottom bar because its home has no commit action. Our PDP
+          has a sticky book bar.</b> So moving search to the bottom on home would make the bottom edge
+          mean "search" on one surface and "commit" on the next, which is our consistency law applied to
+          chrome rather than to cards. That is a cost the entry lens did not price, because the PDP was
+          outside it.
+        </p>
+      </div>
+    </div>
+
+    <div class="w-if">
+      <span class="w-if-id">I4</span>
+      <p class="w-if-line">Three currencies do not fit one rail card. This is the strongest evidence on the page, because the evidence is a search that failed.</p>
+      <div class="w-if-body">
+        <p>
+          I searched specifically for a provider card carrying a photograph, a from-price and bookable
+          times as three peer elements. Ten screens came back and <b>not one of them does it.</b>
+          <a href="https://mobbin.com/screens/3d9c066a-b33c-4fbe-ab06-fe96a70c2b3a">Zocdoc: eight time
+          pills and no price anywhere.</a>
+          <a href="https://mobbin.com/screens/ed903d4c-3065-4f73-a2f4-f7c6852d3736">Alan: the price
+          demoted under the CTA and a day WORD rather than a slot.</a>
+          <a href="https://mobbin.com/screens/b302dc27-ed66-4442-a59e-1e4dc73799b1">Square Go splits them
+          across levels</a>, the time as a sublabel inside the Book button and the price on the service
+          row.
+        </p>
+        <p>
+          The one product that carries all three,
+          <a href="https://mobbin.com/screens/efc00125-5818-48ae-905d-e64dbe66177a">Fresha's search
+          card</a>, manages it by <b>ceasing to be a card and becoming a service table at one unit per
+          viewport.</b>
+        </p>
+        <p>
+          <b>So the real menu is narrower than either lens implied.</b> Our current configuration, a
+          price with no time, was observed in no app. And the configuration we would move <i>to</i>,
+          photo plus price plus time at rail density, is <i>also</i> observed in no app, and this is
+          why. The four honest options are: drop the price on the rail (legally fraught), drop the time
+          (the status quo), split across levels like Square Go, or accept one unit per viewport, which
+          is a search-page density and not a home-rail density.
+        </p>
+      </div>
+    </div>
+
+    <div class="w-if">
+      <span class="w-if-id">I5</span>
+      <p class="w-if-line">One entity cannot serve four jobs through one component, and "documented variant" stops being true somewhere before four.</p>
+      <div class="w-if-body">
+        <p>
+          ClassPass renders the same studio four different ways: a
+          <a href="https://mobbin.com/screens/9ba1ece7-0eef-472a-98e0-c5d1f8504b46">photographic banner
+          running the whole width, with the name set in white on the photo</a>, a
+          <a href="https://mobbin.com/screens/2a759804-b034-48f9-9292-084d53ca4fb0">circular avatar in a
+          horizontal strip</a>, a
+          <a href="https://mobbin.com/screens/f22d5e3d-c68f-49b9-8b1d-bf6261181fad">plain text row with no
+          imagery at all</a>, and a photo-top card on home. Each one is right for its job. But the
+          photograph moves from a full-width banner to a circle to absent, and the name moves from
+          on-photo to under-photo to mid-row. <b>No single component produces that range by prop.</b>
+        </p>
+        <p>
+          <b>So the rebook-rail direction's first question is not "should home rebook". It is "how many
+          anatomies is SalonCard allowed to have", and that has to be answered before the row is
+          designed rather than discovered afterwards.</b>
+        </p>
+      </div>
+    </div>
+
+    <div class="w-if">
+      <span class="w-if-id">I6</span>
+      <p class="w-if-line">A fixed-width personal rail and a two-item history cannot both look intentional.</p>
+      <div class="w-if-body">
+        <p>
+          <a href="https://mobbin.com/screens/cf32643c-18e8-49a9-b7b6-115ca95dee9e">Fresha web ships
+          "Favourites" holding exactly one card in a row sized for four</a>, with three empty columns
+          beside it. <a href="https://mobbin.com/screens/c403da75-8291-4cac-8581-f3fc6670d628">Preply
+          renders one favourite tutor and then an entirely grey screen.</a>
+        </p>
+        <p>
+          <b>The corpus contains exactly one fix:</b>
+          <a href="https://mobbin.com/screens/2a759804-b034-48f9-9292-084d53ca4fb0">ClassPass ends its
+          saved-places strip with a dashed-outline circular "+"</a>, so a three-item strip is never
+          short. It fills the hole with an affordance instead of with content, which costs nothing and
+          fabricates nothing.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="w-card w-rel">
+    <p class="w-rel-k">ONLY-TOGETHER</p>
+    <h2>X is not wrong without Y. It is inert without Y. It occupies space and returns nothing.</h2>
+
+    <div class="w-if">
+      <span class="w-if-id">T1</span>
+      <p class="w-if-line">An inventory-free first viewport is inert without a number that carries its own provenance.</p>
+      <div class="w-if-body">
+        <p>
+          A hero-only viewport makes a claim and gives the visitor no way to check it. A number can
+          substitute for the missing inventory, but only a <i>checkable</i> one, because an
+          unverifiable number is read as copy and copy is exactly what a visitor discounts. Four
+          provenance devices, all observed: <b>unrounded precision</b>
+          (<a href="https://mobbin.com/screens/ab2e4f9d-a021-4913-8c1d-310dcbe5845a">Whop's
+          "$2,857,094,832"</a>, digits nobody writes by hand), <b>a freshness stamp</b>
+          (<a href="https://mobbin.com/screens/6a133906-a7e9-4623-ad43-520a04a4da69">Zillow's "Updated on
+          4/30/2026"</a>), <b>a named source</b>
+          (<a href="https://mobbin.com/screens/5c032e77-cca1-456e-8180-41c589e2849d">Kraken asterisking its
+          claim to Forbes Advisor</a>), and <b>a stated window and denominator</b>
+          (<a href="https://mobbin.com/screens/993f2ab4-bcaa-4e38-b688-ddfb0f1ec36b">Employment Hero's
+          "Based on 199 Service Ratings over the past year"</a>).
+        </p>
+        <p>
+          <b>The control case is the useful one.</b>
+          <a href="https://mobbin.com/screens/1cca17be-744e-4a3e-8d05-9f466f0184bb">Babbel prints "65% of
+          our users are beginners!"</a> with no precision, no source, no window and no denominator. It
+          reads as marketing, and it is the exact shape our own stat rule bans.
+        </p>
+        <p>
+          <b>Pre-launch, we have no provenance-carrying number, so the inventory-free first viewport is
+          unavailable to us as a matter of a missing precondition, not as a matter of taste.</b> The two
+          affordable substitutes are F5's per-category real counts, or Preply's move of putting the count
+          in the headline. <b>Honest negative:</b> a search for a live counter on a marketplace product
+          home returned ten SaaS and marketing landing pages and zero marketplace product surfaces, so
+          Fresha remains a sample of one in its own category, and the rest of the evidence for this
+          pattern comes from a genre with a different honesty standard.
+        </p>
+      </div>
+    </div>
+
+    <div class="w-if">
+      <span class="w-if-id">T2</span>
+      <p class="w-if-line">A segmented bar is inert unless every segment is a real, wired constraint on the result set.</p>
+      <div class="w-if-body">
+        <p>
+          A segment is a promise that the field changes the answer. A field that does not filter costs a
+          tap <i>and</i> teaches a false model of what the product indexes, which is worse than costing a
+          tap. Fresha's four segments each map to something wired, and the field it does <i>not</i> have,
+          price, appears instead as a "Max price" refiner on the search surface.
+        </p>
+        <p>
+          <b>This is our own silent-no-op law arriving from the design side.</b> The arity of the entry
+          control is a claim about the backend, so "how many segments" cannot be decided separately from
+          "which of them actually filters". Our three all discriminate today. The force is prospective: a
+          fourth segment needs the discriminate proof <b>before</b> the design, not after. The entry lens
+          looked for an argument for a fourth field and found none, and this is why that absence is a
+          good thing rather than a gap.
+        </p>
+      </div>
+    </div>
+
+    <div class="w-if">
+      <span class="w-if-id">T3</span>
+      <p class="w-if-line">An editorial title is inert without curation, and the affordable version of curation is to state the selection mechanism rather than claim a curator.</p>
+      <div class="w-if-body">
+        <p>
+          Three tiers. <b>Expensive:</b> a named curator plus prose. <b>Cheap:</b> attribution of the
+          <i>mechanism</i>, which is derivable, as in Vrbo's "Because you viewed vacation homes in
+          Bangkok" or Etsy's "Your recommendations get better as you favorite more things". <b>Free:</b>
+          a count or a date. "Salon of the Month" makes the strongest editorial claim on our home screen
+          with the least support, so it is the one section where the cheap tier would do real work.
+        </p>
+      </div>
+    </div>
+
+    <div class="w-if">
+      <span class="w-if-id">T4</span>
+      <p class="w-if-line">A personal rail needs three things together: a live read, a backfill, and a minimum count. Drop any one and it produces a named, observed failure.</p>
+      <div class="w-if-body">
+        <p>
+          <b>No live read:</b> nothing renders, and fabricating one is banned outright. <b>No
+          backfill:</b> the dead-end empty state, which is fourteen of sixteen empty saved-list screens
+          in the corpus. <b>No minimum count:</b> the sparse rail, which is Fresha web's one-card
+          Favourites and Vrbo's hole.
+        </p>
+        <p>
+          <b>Our own RecentlyViewed has the live read and the backfill and not the minimum count</b>:
+          one entry renders the rail. The return lens went looking for a defect in that component, said
+          it could not find one and might just be agreeing. <b>The defect is the third leg, and it is
+          visible only from the relations view</b>, because the count rule belongs to a different lens
+          than the component does.
+        </p>
+      </div>
+    </div>
+
+    <div class="w-if">
+      <span class="w-if-id">T5</span>
+      <p class="w-if-line">A minimal or wordless entry control is inert unless the location it silently resolved is asserted somewhere checkable.</p>
+      <div class="w-if-body">
+        <p>
+          If the screen never asks where you are, you cannot know that it knows, so "Nearby" is an
+          unverifiable claim and the user has to take the ranking on faith. Square Go's wordless field is
+          paired with a section title reading "Recommended in 94025".
+          <a href="https://mobbin.com/screens/efc00125-5818-48ae-905d-e64dbe66177a">Fresha iOS does both
+          at once</a>: the pill ends in a truncated "Current location" and the list is headed "21 venues
+          nearby".
+        </p>
+        <p>
+          Our <code>Nearby</code> section already receives a count prop and a city bar already exists, so
+          the assertion slot is built. <b>The relation says that if the mobile control ever shrinks, that
+          assertion stops being a nicety and becomes the thing that makes the shrink honest.</b>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="w-qhead">
+    <span class="w-qnum">If you only decide one thing</span>
+    <h2>The choice that decides the most</h2>
+  </div>
+
+  <section class="w-card w-big">
+    <p class="w-big-claim">What the card's largest element is a picture of, and which fact is second-loudest. The currency.</p>
+    <div class="w-prose">
+      <p>
+        <b>The argument is edge count across layers, not importance.</b> Fix the currency and the
+        following eight things stop being open questions:
+      </p>
+    </div>
+    <ul class="w-list">
+      <li><b>Who supplies the photography.</b> Venue shots, staff portraits, or continuous result photography. That is a content-operations commitment, not a design decision.</li>
+      <li><b>Cards per viewport, then cards per row on desktop, then whether the name truncates</b> (F2), then whether the name is still a field you can compare on.</li>
+      <li><b>Whether a real availability read is a prerequisite</b>, and whether the rail is a commit surface or a read surface (F1).</li>
+      <li><b>The entity.</b> Venue or practitioner, which fixes the data model, what a rebook row names, and what the URL is about.</li>
+      <li><b>Whether the surface can decide or only browse</b>, which fixes how much work the entry control has to do, which fixes its arity (T2) and therefore its geometry.</li>
+      <li><b>What must be proven elsewhere</b>, because if the card cannot demonstrate supply then the category index or the headline has to (F5, T1).</li>
+      <li><b>How many anatomies one component must produce</b> (I5), which is what makes or breaks the same-thing-looks-the-same-everywhere law.</li>
+      <li><b>Whether three currencies are attempted at all</b>, which I4 already answers: they do not fit at rail density, so the currency decision is also the decision about what the rail is <i>for</i>.</li>
+    </ul>
+
+    <h3>Why the runner-up loses, stated fairly, because it is genuinely close</h3>
+    <div class="w-prose">
+      <p>
+        The rival is <b>must the first viewport contain real inventory</b>. It decides the entry
+        control's geometry, the hero's height, whether a personal band can pin above the fold, whether
+        the category grid can be first, and the density number. Five edges, which is respectable.
+      </p>
+      <p>
+        <b>It loses because all five are layout edges, and layout is the cheapest thing in this estate
+        to change.</b> <code>Hero.tsx</code> proves it: roughly 120 lines of comment over about 40
+        lines of JSX, documenting six separate revisions of the same vertical rhythm, each one
+        reversible in an afternoon. The currency decision commits photography, a data model, a backend
+        availability read, where a statutory price can sit quietly, and the component graph. <b>Those
+        are not afternoons.</b>
+      </p>
+    </div>
+
+    <h3>The condition that would flip this, named so it is falsifiable</h3>
+    <div class="w-prose">
+      <p>
+        <b>If Solen's venue photographs do not discriminate between venues, the photograph is not
+        carrying the decision, most of the currency question collapses, and the first-viewport question
+        becomes the most load-bearing choice by default.</b> So the single measurement that decides
+        which question matters most is the between-venue photo variance measurement on the real seeded
+        set, and nobody has run it. <b>It is worth more than any further sweep.</b>
+      </p>
+    </div>
+
+    <h3>The sharpest single edge, and why one settled decision was bigger than it looked</h3>
+    <div class="w-prose">
+      <p>
+        The most consequential sub-decision inside the currency is whether a bookable time appears on
+        the card. That row was deleted on 2026-07-13 on card-composition grounds, via an owner-approved
+        mockup, and by the precedence chain that call stands. What F1 and I4 add is that the same
+        decision <i>also</i> settled the photo-versus-count question and bounded the desktop column
+        count, because a card with a time cannot hold six across with a 5:4 photo. <b>It was a currency
+        decision wearing the clothes of a composition decision.</b> That is not an argument to reverse
+        it. It is an argument that if it is ever revisited, the revisit is three floors wide, not one
+        row wide.
+      </p>
+    </div>
+  </section>
+
+  <section class="w-card w-open">
+    <h2>What could not be determined</h2>
+    <ul class="w-list">
+      <li><b>Motion, gesture and transition, entirely.</b> Mobbin returns stills. Nothing about timing, easing, how a pill expands into an accordion, or whether a web bar collapses on scroll. One capture strongly suggests a scroll-collapse; the end state was seen and the trigger was not, so it is not claimed.</li>
+      <li><b>Whether any of this converts.</b> Zero engagement, retention or conversion data anywhere in the sample. Nothing here should be cited as evidence that a pattern moves a number.</li>
+      <li><b>Whether any of these apps tested the choice.</b> Every belief is reconstructed from the artefact, so a deliberate bet and an accident that shipped are indistinguishable from here.</li>
+      <li><b>The pure beauty-booking comparison set is two apps.</b> Booksy and Treatwell would change these documents if they were observable, and they are not. Any future claim about them needs a live capture, not this work.</li>
+      <li><b>Whether a stylist's face on a card increases bookings.</b> No behavioural data anywhere in the corpus.</li>
+      <li><b>Whether Solen's venue photos discriminate between venues.</b> The strongest unverified claim in the whole body of work, and the measurement that decides which question above is the most load-bearing.</li>
+      <li><b>Solen's rendered geometry.</b> Every Solen number here was read from source on 2026-07-30 with the line cited. Nothing was rendered. One screenshot at 390x844 and one at 1440x900 would settle where the fold actually lands, and that is the first step before acting on any of it.</li>
+      <li><b>Where the density switch sits numerically.</b> The variable is nameable (one comparable field versus accumulated feel) and the threshold is not. Nobody in the sample published one, and inventing a number here would repeat a mistake this system has already had to disown once.</li>
+    </ul>
+
+    <h3>Two stale numbers this work corrected rather than inherited</h3>
+    <div class="w-prose">
+      <p>
+        <code>md:min-h-[92dvh]</code> is <b>not</b> in <code>Hero.tsx</code>. It appears four times and
+        every one is inside a comment block, one of which records its own removal. Three documents
+        assert it as live. And <code>HEIGHT.mobile.collapsed</code> is <b>250, not 280</b>; the 280
+        appears twice in the comment history above the constant, which is where it was picked up. The
+        direction of that argument survives at roughly 4.5x instead of 5x. The number does not.
+      </p>
+      <p>
+        <b>Shared root cause, because it is the same failure twice and it will happen again.</b> Both
+        values were read out of comment blocks in files that carry their entire tuning history inline.
+        The live value and six retired values sit in one visual block, and a grep returns all seven.
+        The cheap mitigation for any future sweep: read the constant or the className, never the block
+        above it.
+      </p>
+    </div>
+
+    <p class="w-foot">
+      Source: the five lens files written 2026-07-30 in <code>_design-system/research/</code>, namely
+      WHY_ENTRY, WHY_CURRENCY, WHY_RETURN, WHY_DENSITY and WHY_RELATIONS. Instrument: Mobbin MCP, 59
+      searches across five sweeps, 44 iOS and 15 web. Every screen linked from this page was returned
+      by one of those searches and its image was examined before it was described. Solen-side claims
+      were read off disk on 2026-07-30 with line numbers cited in the source files.
+    </p>
+
+    <a class="w-next" href="./index.html">
+      Now see the eight directions
+      <svg class="lucide lucide-arrow-right" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+    </a>
+  </section>
+
+</div>
+</body>
+</html>

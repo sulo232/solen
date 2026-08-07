@@ -1,0 +1,330 @@
+<!-- Design-principle research round, 2026-07-28. A REPORT, not a mockup: it shows what the research
+     round changed versus what it only found. The owner's question was "I believe you didn't
+     implement it yet, right, because I didn't even approve whatever you did" , so the page is
+     organised by SHIPPED vs PROPOSED, because that is the actual question being asked. -->
+<!-- Grounded-in: _design-system/LOCKFILE.md -->
+<!-- Grounded-in: app/globals.css -->
+<!-- The focus demo below is a copy of the real rule in app/globals.css, not an illustration of it:
+     same selector state, same inset edge, same literal. The contrast figures are computed from the
+     locked token hexes in _design-system/LOCKFILE.md. Nothing on this page is hand-drawn.
+     Eyebrow counts carry NO separator dot: the label is grey and the count is ink, so the colour
+     step already separates them. The copy-lint gate caught a middot here on the first write.
+     Swatch labels are ENGLISH. They were German on the first draft out of habit, which the language
+     gate caught; the German bought nothing here, since the point of each swatch is the colour and
+     its measured ratio, not the wording. The one page where German IS the point is the separate
+     register mockup. -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design research: what changed, what did not</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --bg:#FFFFFF; --sunken:#F4F4F5;
+    --border:#E4E4E7; --accent:#276EF1; --star:#FFC32B; --green:#16A34A;
+    --red:#DC2626; --amber:#F1AE27; --heart:#FF3366;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:var(--bg); color:var(--ink); min-height:100dvh;
+    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:16px; line-height:1.55; max-width:720px; margin:0 auto;
+    padding:0 18px calc(56px + env(safe-area-inset-bottom));
+  }
+  h1{font-size:30px; line-height:1.14; letter-spacing:-.02em; font-weight:600; margin:34px 0 10px}
+  h2{font-size:20px; line-height:1.25; font-weight:600; margin:0 0 4px}
+  h3{font-size:16px; font-weight:600; margin:0 0 4px}
+  p{margin:0 0 12px}
+  .lede{font-size:17px; color:var(--ink2); margin-bottom:26px}
+  .sec{border-top:1px solid var(--border); padding:26px 0 6px}
+  .eyebrow{
+    font-size:12px; font-weight:600; color:var(--ink2); margin-bottom:9px;
+    display:flex; gap:14px;
+  }
+  .count{color:var(--ink)}
+
+  .item{border:1px solid var(--border); border-radius:14px; padding:16px 16px 4px; margin:0 0 14px}
+  .item.ship{background:var(--sunken); border-color:transparent}
+  .path{
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px;
+    color:var(--ink2); margin-bottom:8px; word-break:break-all;
+  }
+  .why{color:var(--ink2); font-size:15px}
+
+  .tag{
+    display:inline-block; font-size:12px; font-weight:600; border-radius:999px;
+    padding:3px 10px; margin-bottom:9px;
+  }
+  .t-ship{background:var(--ink); color:#fff}
+  .t-doc{background:var(--sunken); color:var(--ink)}
+  .t-open{background:#fff; color:var(--ink); border:1px solid var(--ink)}
+
+  table{width:100%; border-collapse:collapse; font-size:14px; margin:6px 0 14px}
+  th{
+    text-align:left; font-size:12px; font-weight:600; color:var(--ink2);
+    padding:0 8px 7px 0; border-bottom:1px solid var(--border);
+  }
+  th.n,td.n{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; padding-right:0}
+  td{padding:10px 8px 10px 0; border-bottom:1px solid var(--border); vertical-align:middle}
+  td.n{font-weight:600}
+  .swatch{font-weight:600; font-size:15px}
+  .on-white{background:#fff; padding:5px 8px; border-radius:6px; display:inline-block}
+  .on-sunken{background:var(--sunken); padding:5px 8px; border-radius:6px; display:inline-block}
+  .verdict{font-size:12px; color:var(--ink2); display:block; margin-top:2px}
+
+  .demo{background:var(--sunken); border-radius:14px; padding:18px; margin:6px 0 14px}
+  .demo button{
+    font:inherit; font-size:15px; font-weight:600; background:#fff; color:var(--ink);
+    border:1px solid var(--border); border-radius:999px; padding:11px 20px; cursor:pointer;
+    outline:none; margin-right:8px;
+  }
+  .demo button:focus-visible{box-shadow:inset 3px 0 0 0 #0A0A0A}
+  .hint{font-size:13px; color:var(--ink2); margin-top:10px}
+
+  .foot{
+    border-top:1px solid var(--border); margin-top:30px; padding-top:18px;
+    font-size:13px; color:var(--ink2);
+  }
+  a{color:var(--accent)}
+  code{
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.9em;
+    background:var(--sunken); padding:1px 5px; border-radius:5px;
+  }
+</style>
+
+<h1>What actually changed</h1>
+<p class="lede">
+  You were nearly right. The research round touched <strong>one</strong> file that a customer would
+  ever see, and it was not a design change you would recognise as one. Everything else is either
+  rule text, which renders nothing, or a finding waiting on you.
+</p>
+
+<!-- ============ A. SHIPPED ============ -->
+<section class="sec">
+  <div class="eyebrow"><span>A , IN THE CODE NOW</span><span class="count">1 file, 2 changes</span></div>
+  <h2>Shipped without asking you</h2>
+  <p class="why">
+    Both are in <code>app/globals.css</code>. I should have flagged the first one before doing it,
+    and I am flagging it now rather than letting you find it.
+  </p>
+
+  <div class="item ship">
+    <span class="tag t-ship">Shipped</span>
+    <h3>The keyboard focus cue now works on phones</h3>
+    <div class="path">app/globals.css , removed a desktop-only media query</div>
+    <p class="why">
+      A cue exists so a keyboard user can see where they are. It was switched on for desktop only,
+      so on a phone or iPad with a keyboard there was nothing at all. <strong>Your no-ring decision
+      is untouched.</strong> Tapping still shows nothing, because a tap cannot trigger this state at
+      all. It only appears for someone tabbing with a real keyboard.
+    </p>
+    <div class="demo">
+      <button>Press Tab to focus me</button>
+      <button>Then Tab again</button>
+      <div class="hint">
+        Tab into these with a keyboard and a thin black edge appears on the left. Tap them on a
+        phone and nothing happens, which is the whole point.
+      </div>
+    </div>
+  </div>
+
+  <div class="item ship">
+    <span class="tag t-ship">Shipped</span>
+    <h3>A wrong number in a comment, corrected</h3>
+    <div class="path">app/globals.css , a code comment only, nothing renders differently</div>
+    <p class="why">
+      A note in the file had claimed a contrast figure of 5.8 since May. The real figure is
+      <strong>19.8</strong>. It matched nothing, not the current colour and not the old one. The
+      conclusion it supported was right anyway, so no rule moved. I changed it because a wrong
+      number sitting in a comment is how a wrong number gets inherited.
+    </p>
+  </div>
+</section>
+
+<!-- ============ B. RULE TEXT ============ -->
+<section class="sec">
+  <div class="eyebrow"><span>B , WORDS IN THE RULEBOOK</span><span class="count">renders nothing</span></div>
+  <h2>Three rules were corrected</h2>
+  <p class="why">
+    These change what the rules SAY, not what the site looks like. No pixel moved. They are here so
+    you can see them, because two of them admit the rulebook was wrong.
+  </p>
+
+  <div class="item">
+    <span class="tag t-doc">Rule text</span>
+    <h3>A rule was citing companies that do the opposite</h3>
+    <p class="why">
+      Our rule "never put blue on a big button" claimed Apple, Airbnb and Fresha as backing. I
+      checked all three. <strong>Apple's own guidance says to limit brand colour TO interactive
+      elements including buttons</strong>, which is the reverse. Airbnb's Reserve button is red.
+      Only Fresha matches us. The rule stays, because you picked it deliberately, but it is now
+      labelled a minority position rather than the industry norm it claimed to be.
+    </p>
+  </div>
+
+  <div class="item">
+    <span class="tag t-doc">Rule text</span>
+    <h3>Two numbers we present as law were invented here</h3>
+    <p class="why">
+      The "at most 30% bold" ceiling has no source. Awkwardly, this system had already thrown out a
+      near-identical claim as folklore, then minted its own version of it the same morning. The rule
+      still does real work so it stays, but it can no longer be cited as evidence. The "1.8x" rule
+      turned out to be our own 28px heading divided by our 16px body, so it is arithmetic, not a
+      discovery.
+    </p>
+  </div>
+
+  <div class="item">
+    <span class="tag t-doc">Rule text</span>
+    <h3>Every semantic colour now has a legal and an illegal use</h3>
+    <p class="why">
+      Our colour rule protected the hues but never said where each one may be used. That gap is the
+      actual defect, and it is what the next section measures.
+    </p>
+  </div>
+</section>
+
+<!-- ============ C. FINDINGS ============ -->
+<section class="sec">
+  <div class="eyebrow"><span>C , FOUND, NOT FIXED</span><span class="count">nothing implemented</span></div>
+  <h2>The live contrast problem</h2>
+  <p class="why">
+    Computed twice, independently, matching to two decimals. Text needs <strong>4.5</strong> to be
+    legible by the accessibility standard; an icon or a shape needs <strong>3.0</strong>. The right
+    column is the same colour on the grey tray our own layout rule promotes as the default list
+    background.
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>Colour and where it is used</th><th class="n">On white</th><th class="n">On grey</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <span class="on-white swatch" style="color:var(--star)">★ 4.8 rating star</span>
+          <span class="verdict">Fails even the shape threshold. Universal convention though, so this one is a judgement call, not a bug.</span>
+        </td>
+        <td class="n">1.60</td><td class="n">1.46</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="on-white swatch" style="color:var(--amber)">Warning</span>
+          <span class="verdict">Fails the shape threshold. Needs an outline or a darker partner when it carries meaning alone.</span>
+        </td>
+        <td class="n">1.94</td><td class="n">1.77</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="on-white swatch" style="color:var(--green)">Confirmed</span>
+          <span class="verdict">Fine as an icon. Below the text threshold as words. <strong>72 places use it as text.</strong></span>
+        </td>
+        <td class="n">3.30</td><td class="n">3.00</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="on-white swatch" style="color:var(--heart)">♥ Saved</span>
+          <span class="verdict">Fine as an icon, not as text.</span>
+        </td>
+        <td class="n">3.55</td><td class="n">3.23</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="on-sunken swatch" style="color:var(--accent)">Manage booking</span>
+          <span class="verdict">Passes on white, <strong>fails on the grey tray</strong>. 7 elements sit in exactly that combination.</span>
+        </td>
+        <td class="n">4.58</td><td class="n">4.17</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="on-sunken swatch" style="color:var(--red)">Error</span>
+          <span class="verdict">Passes on white, <strong>fails on the grey tray</strong>.</span>
+        </td>
+        <td class="n">4.83</td><td class="n">4.39</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="why">
+    Nothing above has been changed. The numbers are written into the rulebook so the next screen
+    cannot repeat it, but the <strong>79 existing places</strong> are untouched and waiting on you.
+  </p>
+
+  <h2 style="margin-top:26px">Other findings, also untouched</h2>
+  <div class="item">
+    <span class="tag t-open">Not done</span>
+    <h3>Body text at 14px is smaller than every major system's reading size</h3>
+    <p class="why">
+      14 is right for dense rows, and Carbon and Atlassian agree. But for things people actually
+      read, reviews and salon descriptions, Material defaults to 16, Apple floors at 17, and both
+      Carbon and Atlassian step up to 16. We use one size for both jobs.
+    </p>
+  </div>
+  <div class="item">
+    <span class="tag t-open">Not done</span>
+    <h3>Our em-dash ban deletes correct German</h3>
+    <p class="why">
+      There are <strong>218 em-dashes and 30 en-dashes</strong> live in the four language files, so
+      the rule is already widely broken. Worse, the spaced en-dash is a legitimate German
+      construction. Banning both strips proper punctuation from our main market. Keep the em-dash
+      ban, carve out the en-dash for German, French and Italian.
+    </p>
+  </div>
+  <div class="item">
+    <span class="tag t-open">Not done</span>
+    <h3>The text-expansion figure understates the risk exactly where it is worst</h3>
+    <p class="why">
+      We plan for 15 to 35% growth when translating. The actual published data is length-dependent:
+      short strings under 10 characters average <strong>200 to 300%</strong>. Short strings are
+      button labels, which is the one place we cannot absorb growth.
+    </p>
+  </div>
+  <div class="item">
+    <span class="tag t-open">Not done</span>
+    <h3>Icon-only buttons rest on a test nobody ran</h3>
+    <p class="why">
+      Our rule allows dropping the label when an icon is "unambiguous". Only three icons are
+      reliably understood without one: home, print, search. Copy, share and report are not among
+      them.
+    </p>
+  </div>
+  <div class="item">
+    <span class="tag t-open">Found while building the mockup</span>
+    <h3>The homepage breaks our own type ceiling right now</h3>
+    <p class="why">
+      Measured live at phone width: the home page renders <strong>7 distinct font sizes</strong>
+      against a ceiling of 4, and <strong>4 weights</strong> against a ceiling of 2. The heading
+      scale itself is fine, 32px at 2.67 times the body. It is the middle of the stack that has
+      drifted.
+    </p>
+  </div>
+</section>
+
+<!-- ============ D. OWNER ============ -->
+<section class="sec">
+  <div class="eyebrow"><span>D , YOUR CALL</span></div>
+  <h2>Two that are genuinely yours</h2>
+  <div class="item">
+    <span class="tag t-open">Waiting on you</span>
+    <h3>German register, informal or formal</h3>
+    <p class="why">
+      Treatwell.ch, your direct competitor in your market, uses the formal register. So do three
+      independent Swiss beauty businesses I checked. We are 411 informal strings against 15 formal,
+      and the 15 formal are exactly the legal pages. There is a separate mockup for this one.
+    </p>
+  </div>
+  <div class="item">
+    <span class="tag t-open">Waiting on you</span>
+    <h3>The rating star</h3>
+    <p class="why">
+      At 1.60 it fails the guideline outright. But Amazon, Google and Airbnb all ship a yellow star
+      on white, so changing it would look wrong to every user who has ever seen a rating. My lean is
+      to keep the star and add a thin outline, which satisfies the threshold without touching the
+      colour anyone recognises.
+    </p>
+  </div>
+</section>
+
+<div class="foot">
+  Every number on this page was computed or counted, not recalled. The contrast figures come from
+  the standard formula and were derived twice independently. The counts of affected elements come
+  from searching the codebase. Where a claim rests on something I could not open myself, it is not
+  on this page.
+</div>

@@ -1,0 +1,524 @@
+<!-- Base: live iframe of the real route, no screenshot -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/_components/homepage/Reviews.tsx
+  Grounded-in: app/[locale]/_components/homepage/NearbyMap.tsx
+
+  Exists-check: `npm run exists reviews` (73 hits), `npm run exists shadow` (3 hits),
+  `npm run exists NearbyMap` (2 hits) and `npm run exists "review card"` (4 hits), run 2026-07-31.
+  The home feed ALREADY renders both surfaces this file touches, so nothing here is new: the review
+  rail is `Reviews` at app/[locale]/_components/homepage/Reviews.tsx, the map and its rating pins are
+  `NearbyMap` at app/[locale]/_components/homepage/NearbyMap.tsx. No new route, component, token,
+  table or migration is proposed. ONE graveyard hit is load-bearing and is answered here by name:
+  REMOVED.md:85, the Model B revert of 2026-07-18, where the owner reverted the direction that
+  stripped card chrome across customer surfaces because the CARDED tier-card style won.
+  THIS FILE TAKES NOTHING AWAY FROM ANY CARD. Every review card keeps its 1px #E4E4E7 hairline on
+  all four sides and stays fully carded. What changes is that the SECOND, duplicate edge mechanism
+  stacked on top of that hairline (elevation-2) stops being drawn, which is what LOCKFILE 17.2
+  requires. Cards carrying chrome before: 6. Cards carrying chrome after: 6. The direction the owner
+  reverted would have made that number 0, and this is not that direction.
+
+  Diagnosis: review cards stack a hairline border AND elevation on the same element | measured 6 of 6 review cards at 390x844 carry 1px #E4E4E7 on all four sides PLUS elevation-2 (0 2px 8px rgba(50,47,44,.09)), and they are the only elements >= 100x60 on the page doing so | violates the design-contract shadow row and LOCKFILE 17.2, "a card carrying elevation DROPS its border, never both", plus LOCKFILE 637, never stack fill + shadow + border at rest | target 0 cards carrying both mechanisms, 6 still carrying one
+  Diagnosis: the map subtree renders a fallback typeface instead of the system one | measured 30 text-bearing elements at 390x844 compute to "Helvetica Neue", Arial, Helvetica, sans-serif, out of 102 nodes in the .mapboxgl-map subtree, inherited from node_modules/mapbox-gl/dist/mapbox-gl.css:1 which opens `.mapboxgl-map{font:12px/20px Helvetica Neue,Arial,Helvetica,sans-serif}`, because the marker element built in NearbyMap.tsx:49-80 carries no font class | violates FLOORS LAW 8, the same thing looks the same everywhere, and the design-contract font row, Inter Tight for display plus Inter for body and nothing else | target 0 elements in a fallback face
+
+  Depicts: review card box, border + elevation stacked -> app/[locale]/_components/homepage/Reviews.tsx:144-146 ("rounded-2xl border" + "border-s-border" + "shadow-elevation-2", with hover:shadow-elevation-3 on line 148)
+  Depicts: map rating pin, the text in the fallback face -> app/[locale]/_components/homepage/NearbyMap.tsx:49-80, markerEl()
+  Depicts: map container that the pins inherit their face from -> app/[locale]/_components/homepage/NearbyMap.tsx, the .mapboxgl-map element
+  Depicts: every other pixel in both panes -> app/[locale]/page.tsx, the untouched live DOM of the real home route, nothing on this page is hand drawn
+
+  What the CODE fix would be, so the injection is never mistaken for the shipped change:
+    1. delete the "shadow-elevation-2" and "hover:shadow-elevation-3" strings from Reviews.tsx.
+       The injection sets the element's own boxShadow property inline, which also outranks the
+       hover class rule, so the After pane shows the hover state corrected as well.
+    2. give the map container and markerEl() the Inter font class in NearbyMap.tsx. The injection
+       uses a scoped stylesheet rule instead, because it cannot re-render React, and because a rule
+       also catches the pins mapbox appends asynchronously after first paint.
+
+  Backend-check: no fabricated values. Both panes are the same real seeded render. The change
+  touches box drawing and font-family only, never a number, a name, a price or a photo.
+  Pre-launch: every row is seed data. Nothing here claims anything was live, shipped or seen.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fix EDGES: Reviews card edge + map typeface</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --sunken:#F4F4F5; --hairline:#E4E4E7;
+    --font:'Inter Tight',Inter,system-ui,-apple-system,sans-serif;
+    --bar:0px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden;-webkit-text-size-adjust:100%}
+  body{
+    font-family:var(--font); background:#fff; color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .bar{
+    position:fixed; top:0; left:0; right:0; z-index:20;
+    background:rgba(255,255,255,.94); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--hairline);
+    padding:8px 12px; padding-top:calc(8px + env(safe-area-inset-top,0px));
+    display:flex; flex-wrap:wrap; align-items:center; gap:8px 10px;
+  }
+  .title{font-size:13px;font-weight:600;letter-spacing:-.01em}
+  .title span{color:var(--ink2);font-weight:400}
+
+  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;gap:2px}
+  /* 44px, the design contract's touch-target floor. Measured at 38 on the first build. */
+  .seg button{
+    border:0;background:transparent;font-family:inherit;font-size:13px;font-weight:600;
+    color:var(--ink2);padding:0 14px;height:44px;min-width:44px;border-radius:999px;cursor:pointer;
+  }
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+
+  .ghost{
+    border:1px solid var(--hairline);background:#fff;font-family:inherit;font-size:12px;
+    font-weight:600;color:var(--ink);height:44px;padding:0 12px;border-radius:999px;cursor:pointer;
+  }
+  .ghost:active{background:var(--sunken)}
+  label.chk{
+    display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--ink2);
+    height:44px;cursor:pointer;
+  }
+  label.chk input{width:16px;height:16px;accent-color:var(--ink)}
+
+  /* The counters live in the PANE HEAD, next to the document they describe, not in one
+     shared strip. Measured 2026-07-31: a shared strip pushed the control bar to 275px, a
+     third of a 390x844 viewport, leaving each stacked pane 284px of the page to show. */
+  .stat{
+    background:#fff;border:1px solid var(--hairline);border-radius:8px;padding:3px 7px;
+    white-space:nowrap;color:var(--ink2);font-variant-numeric:tabular-nums;font-weight:500;
+  }
+  .stat b{color:var(--ink);font-weight:600}
+  .stat.good b{color:#16A34A}
+
+  .stage{position:fixed;left:0;right:0;bottom:0;top:var(--bar);display:flex;flex-direction:row}
+  .pane{flex:1 1 0;min-width:0;min-height:0;position:relative;display:flex;flex-direction:column}
+  .pane.hidden{display:none}
+  .pane + .pane{border-left:1px solid var(--hairline)}
+  .paneHead{
+    flex:0 0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:5px 8px;
+    padding:6px 10px;background:var(--sunken);border-bottom:1px solid var(--hairline);
+    font-size:11px;font-weight:600;color:var(--ink2);
+  }
+  .paneHead .who{color:var(--ink)}
+  .paneHead .dot{width:6px;height:6px;border-radius:999px;background:var(--ink2);flex:0 0 auto}
+  .pane.isAfter .paneHead .dot{background:#16A34A}
+  iframe{flex:1 1 auto;width:100%;border:0;display:block;background:#fff}
+
+  @media (max-width:899px){
+    .stage{flex-direction:column}
+    .pane + .pane{border-left:0;border-top:1px solid var(--hairline)}
+    .title{width:100%}
+  }
+</style>
+</head>
+<body>
+
+<div class="bar" id="bar">
+  <div class="title">Fix EDGES <span>, one edge mechanism per card, one typeface on the page</span></div>
+  <div class="seg">
+    <button id="bB" onclick="show('before')">Before</button>
+    <button id="bT" class="on" onclick="show('both')">Both</button>
+    <button id="bA" onclick="show('after')">After</button>
+  </div>
+  <button class="ghost" onclick="jump('reviews')">Go to review rail</button>
+  <button class="ghost" onclick="jump('map')">Go to map</button>
+  <button class="ghost" onclick="remeasure()">Re-measure</button>
+  <label class="chk"><input type="checkbox" id="mk" checked onchange="markers(this.checked)">markers</label>
+</div>
+
+<div class="stage" id="stage">
+  <div class="pane" id="paneBefore">
+    <div class="paneHead">
+      <span class="dot"></span><span class="who">LEFT, untouched live route</span>
+      <span id="numB" class="stat">measuring</span>
+    </div>
+    <iframe id="beforeFrame" src="http://localhost:50723/de" title="real route, untouched"></iframe>
+  </div>
+  <div class="pane isAfter" id="paneAfter">
+    <div class="paneHead">
+      <span class="dot"></span><span class="who">RIGHT, same route, EDGES change injected</span>
+      <span id="numA" class="stat">measuring</span>
+    </div>
+    <iframe id="afterFrame" src="http://localhost:50723/de" title="real route, EDGES change injected"></iframe>
+  </div>
+</div>
+
+<script>
+/* ------------------------------------------------------------------ *
+ * THE INSTRUMENT
+ * The same two counters run against BOTH documents, so the before number
+ * and the after number can never be produced by different methods.
+ * ------------------------------------------------------------------ */
+
+/* Both iframes are pointed at http://localhost:50723/de by hand, which is correct while this
+   is read on the dev host. If the file is ever served from anywhere else, a tunnel for phone
+   review being the obvious case, that absolute host does not exist on the reader's device and
+   both panes come up blank, and the injection dies too because contentDocument access needs
+   same origin. So: keep the absolute src as the default, and fall back to the root-relative
+   route whenever the page is NOT being served from that host. */
+(function(){
+  if(location.host === 'localhost:50723') return;
+  ['beforeFrame','afterFrame'].forEach(function(id){
+    document.getElementById(id).setAttribute('src', '/de');
+  });
+})();
+
+/* Copied verbatim from getComputedStyle(document.body).fontFamily on the live
+   route, not invented: this is the page's own body stack. */
+var INTER = "Inter, 'Inter Fallback', Inter, system-ui, -apple-system, sans-serif";
+
+function realShadow(s){
+  if(!s || s === 'none') return false;
+  var parts = [], depth = 0, cur = '';
+  for(var i = 0; i < s.length; i++){
+    var c = s[i];
+    if(c === '(') depth++;
+    if(c === ')') depth--;
+    if(c === ',' && depth === 0){ parts.push(cur); cur = ''; } else cur += c;
+  }
+  if(cur.trim()) parts.push(cur);
+  return parts.some(function(p){
+    p = p.trim(); if(!p) return false;
+    /* Tailwind emits two fully transparent ring placeholders in front of every real
+       elevation. Counting those would report three layers on every element. */
+    var m = p.match(/rgba?\(([^)]*)\)/);
+    if(m){
+      var v = m[1].split(',').map(function(x){ return parseFloat(x); });
+      if(v.length > 3 && v[3] === 0) return false;
+    }
+    var nums = p.replace(/rgba?\([^)]*\)/, '').match(/-?[\d.]+px/g) || [];
+    if(nums.length && nums.every(function(n){ return parseFloat(n) === 0; })) return false;
+    return true;
+  });
+}
+
+function fullBorder(cs){
+  return ['Top','Right','Bottom','Left'].every(function(sd){
+    var w = parseFloat(cs['border' + sd + 'Width']) || 0;
+    var st = cs['border' + sd + 'Style'];
+    var col = cs['border' + sd + 'Color'] || '';
+    var m = col.match(/rgba?\(([^)]*)\)/);
+    var a = m ? (m[1].split(',').length > 3 ? parseFloat(m[1].split(',')[3]) : 1) : 1;
+    return w > 0 && st !== 'none' && a > 0;
+  });
+}
+
+/* CARDS carrying BOTH mechanisms. The >= 100x60 floor is what separates a CARD from
+   an over-photo control: the 27 heart buttons (28x28, FROST_GLASS) and the 8 Inspo
+   caption pills (124x28) also pair a border with an elevation, and CHEAP_EDGE verdict
+   11 rules those FINE, because a control sitting on a photograph has to be darker to
+   be perceivable against image noise at all. Those 35 are deliberately out of scope
+   and this file does not touch them. */
+function bothCards(doc){
+  var out = [], view = doc.defaultView;
+  var all = doc.body ? doc.body.querySelectorAll('*') : [];
+  for(var i = 0; i < all.length; i++){
+    var el = all[i], cs = view.getComputedStyle(el);
+    /* display and visibility are excluded. Opacity 0 deliberately is NOT, and that is a
+       measured decision, not an oversight: the review rail sits 2450px down the page and
+       carries a scroll-reveal, so inside a stacked pane roughly 308px tall the reveal never
+       fires and all six target cards report opacity 0 while still carrying both mechanisms
+       in their computed style. Excluding them made this counter read 0 before AND 0 after,
+       which is exactly the shape of a fix that looks finished and has changed nothing.
+       Cross-checked the same minute on the full-height route, where the cards are revealed:
+       both definitions return 6, so including them inflates nothing. */
+    if(cs.display === 'none' || cs.visibility === 'hidden') continue;
+    var r = el.getBoundingClientRect();
+    if(r.width < 100 || r.height < 60) continue;
+    if(fullBorder(cs) && realShadow(cs.boxShadow)) out.push(el);
+  }
+  return out;
+}
+
+/* Text-bearing elements whose FIRST resolved family is a Helvetica fallback.
+   "Text-bearing" = the element owns a non-empty text node, so a wrapper div is
+   never double counted with the <b> inside it. */
+function helvCount(doc){
+  var n = 0, view = doc.defaultView;
+  var all = doc.body ? doc.body.querySelectorAll('*') : [];
+  for(var i = 0; i < all.length; i++){
+    var el = all[i], cs = view.getComputedStyle(el);
+    if(cs.display === 'none' || cs.visibility === 'hidden') continue;
+    var first = (cs.fontFamily || '').toLowerCase().split(',')[0].replace(/["']/g, '').trim();
+    if(first.indexOf('helvetica') !== 0) continue;
+    var own = false;
+    for(var j = 0; j < el.childNodes.length; j++){
+      var nd = el.childNodes[j];
+      if(nd.nodeType === 3 && nd.textContent.trim()){ own = true; break; }
+    }
+    if(own) n++;
+  }
+  return n;
+}
+
+/* PAINT GATE: a heading plus at least three tall chrome-carrying cards.
+   An iframe that has committed a document but not laid it out reports zero of both,
+   and injecting into that produces a change that silently hits nothing. */
+function painted(doc){
+  if(!doc || !doc.body) return false;
+  if(!doc.querySelector('h1')) return false;
+  var view = doc.defaultView, all = doc.body.querySelectorAll('*'), tall = 0;
+  for(var i = 0; i < all.length; i++){
+    var el = all[i], r = el.getBoundingClientRect();
+    if(r.width < 100 || r.height < 60) continue;
+    var cs = view.getComputedStyle(el);
+    if(parseFloat(cs.borderTopLeftRadius) < 8) continue;
+    if(fullBorder(cs) || realShadow(cs.boxShadow)){ tall++; if(tall >= 3) break; }
+  }
+  if(tall < 3) return false;
+  /* AND the three tall cards must be THE CARDS THIS CHANGE TARGETS, not just any three
+     chrome-carrying boxes. Measured 2026-07-31: the loose version above passed on the hero
+     block and the category tiles at roughly one second, while the review rail mounts later
+     at y 2450, so the sweep ran against an empty set, hit zero cards, and then marked
+     itself done. A paint gate that does not wait for the defect set gates nothing. */
+  return bothCards(doc).length >= 3;
+}
+
+/* ------------------------------------------------------------------ *
+ * THE CHANGE. Two edits, nothing else.
+ * ------------------------------------------------------------------ */
+
+/* EDIT 1, factored out because it must be re-runnable. The card KEEPS its 1px #E4E4E7
+   hairline on all four sides, which is edge-visibility route (c) on a white ground, so it
+   is still bounded and still a card. Only the duplicate second mechanism stacked on top of
+   that hairline stops being drawn. Setting the property inline also outranks the
+   hover:shadow-elevation-3 class rule, so the hover state stops re-stacking the pair too.
+   Idempotent: a card already handled no longer carries both mechanisms, so the next pass
+   simply does not see it. Re-running catches anything the page mounts late. */
+function sweepCards(doc){
+  var cards = bothCards(doc), n = 0;
+  cards.forEach(function(el){
+    /* Take the elevation OUT of the card's transition list first. Reviews.tsx:148 declares
+       `transition-[transform,box-shadow] duration-200`, so writing the property starts a
+       200ms transition instead of applying the value. Measured 2026-07-31: inside an iframe
+       whose rAF the preview pane throttles, that transition still reported playState
+       "running" fourteen seconds later and the element kept serving its START value, so the
+       inline write was real (the style attribute read it back correctly) while the computed
+       value never moved. Transform stays transitioned; only the elevation leaves the list. */
+    el.style.transitionProperty = 'transform';
+    el.style.boxShadow = 'none';
+    el.setAttribute('data-fix-edges', 'card');
+    n++;
+  });
+  return n;
+}
+
+function applyChange(doc){
+  var n = sweepCards(doc);
+  if(doc.body.dataset.sweepDone) return n;   /* re-entry: sweep late mounts, inject once */
+
+  /* EDIT 2. One type system. A stylesheet rule rather than a per-element pass, because
+     mapbox appends its pins asynchronously after first paint and a rule catches those
+     too. Only font-family is overridden: mapbox's `font` shorthand also sets 12px/20px,
+     and size and leading belong to the TYPE probe's scope, not this one's. */
+  var st = doc.createElement('style');
+  st.id = 'fix-edges-type';
+  st.textContent = '.mapboxgl-map, .mapboxgl-map *{font-family:' + INTER + ' !important}';
+  doc.head.appendChild(st);
+
+  doc.body.dataset.sweepDone = '1';
+  return n;
+}
+
+/* ------------------------------------------------------------------ *
+ * ANNOTATION. The outline sits OUTSIDE the card (dashed, offset 6) so the marker
+ * can never be mistaken for the edge treatment under review. Untick "markers"
+ * to read the result clean.
+ * ------------------------------------------------------------------ */
+function chip(doc, text){
+  var d = doc.createElement('div');
+  d.className = 'fix-edges-chip';
+  d.textContent = text;
+  /* Bottom-left, inside the card's own empty lower band. Two positions were measured and
+     rejected first: top:8 covered the reviewer's name, and top:-14 (in the margin above the
+     card) was clipped, because the review rail is an overflow-x container and clipping on
+     one axis clips the other. The card's lower band is blank on every seeded review. */
+  d.style.cssText = 'position:absolute;z-index:99999;bottom:8px;left:8px;background:rgba(10,10,10,.86);' +
+    'color:#fff;font:600 10px/1.35 Inter,system-ui,sans-serif;padding:3px 8px;border-radius:999px;' +
+    'pointer-events:none;white-space:nowrap';
+  return d;
+}
+
+function markers(on){
+  var doc = afterDoc(); if(!doc) return;
+  var cards = doc.querySelectorAll('[data-fix-edges="card"]');
+  for(var i = 0; i < cards.length; i++){
+    var el = cards[i];
+    el.style.outline = on ? '2px dashed rgba(10,10,10,.42)' : '';
+    el.style.outlineOffset = on ? '6px' : '';
+    if(on && i === 0 && !el.querySelector('.fix-edges-chip')){
+      if(doc.defaultView.getComputedStyle(el).position === 'static') el.style.position = 'relative';
+      el.appendChild(chip(doc, 'elevation dropped, hairline kept'));
+    }
+  }
+  var map = doc.querySelector('.mapboxgl-map');
+  if(map){
+    var host = map.parentElement || map;
+    if(doc.defaultView.getComputedStyle(host).position === 'static') host.style.position = 'relative';
+    map.style.outline = on ? '2px dashed rgba(10,10,10,.42)' : '';
+    map.style.outlineOffset = on ? '-4px' : '';
+    if(on && !host.querySelector('.fix-edges-chip')) host.appendChild(chip(doc, 'pins: Inter, was a fallback face'));
+  }
+  var chips = doc.querySelectorAll('.fix-edges-chip');
+  for(var k = 0; k < chips.length; k++) chips[k].style.display = on ? '' : 'none';
+}
+
+/* ------------------------------------------------------------------ */
+function frameDoc(id){
+  try{
+    var d = document.getElementById(id).contentDocument;
+    return (d && d.body) ? d : null;
+  }catch(e){ return null; }
+}
+function beforeDoc(){ return frameDoc('beforeFrame'); }
+function afterDoc(){ return frameDoc('afterFrame'); }
+
+var applied = false;
+function startAfter(){
+  var tries = 0;
+  var iv = setInterval(function(){
+    tries++;
+    var doc = afterDoc();
+    if(doc && painted(doc)){
+      if(!applied){
+        applied = true;
+        applyChange(doc);
+        markers(document.getElementById('mk').checked);
+      }
+      clearInterval(iv);
+      /* Land both panes on the section that changed. Without this the owner opens the file
+         at the top of a 4316px page and the six cards under review are 2450px below the
+         fold in a pane a few hundred pixels tall. It also fires the rail's scroll-reveal. */
+      /* Re-sweep AND re-anchor, because sections below the fold mount after the first pass,
+         mapbox appends its pins asynchronously, and late layout shifts push the scroll back
+         toward the top. Each pass is idempotent. */
+      [400, 1500, 4000, 8000].forEach(function(ms){
+        setTimeout(function(){
+          var d = afterDoc();
+          if(d && d.body){
+            applyChange(d);
+            markers(document.getElementById('mk').checked);
+          }
+          jump('reviews');
+        }, ms);
+      });
+    }
+    if(tries > 150) clearInterval(iv);
+  }, 200);
+}
+
+function fill(node, cards, helv){
+  node.className = 'stat' + (cards === 0 && helv === 0 ? ' good' : '');
+  node.innerHTML = 'border AND elevation <b>' + cards + '</b> &nbsp; fallback face <b>' + helv + '</b>';
+}
+function remeasure(){
+  var b = beforeDoc(), a = afterDoc();
+  var nb = document.getElementById('numB'), na = document.getElementById('numA');
+  /* A pane the toggle has hidden is display:none, so every element inside it reports a
+     zero-size rect and both counters would read 0. That is unmeasurable, not fixed, and
+     printing 0 there would be the most misleading number this file could show. */
+  var hidB = document.getElementById('paneBefore').classList.contains('hidden');
+  var hidA = document.getElementById('paneAfter').classList.contains('hidden');
+  if(hidB){ nb.className = 'stat'; nb.textContent = 'hidden, pick Both to measure'; }
+  else if(b && b.body && painted(b)) fill(nb, bothCards(b).length, helvCount(b));
+  else { nb.className = 'stat'; nb.textContent = 'still painting'; }
+  if(hidA){ na.className = 'stat'; na.textContent = 'hidden, pick Both to measure'; }
+  else if(a && a.body && a.body.dataset.sweepDone) fill(na, bothCards(a).length, helvCount(a));
+  else { na.className = 'stat'; na.textContent = 'still painting'; }
+  sizeBar();
+}
+
+/* Anchor the two frames to the same place, so the comparison is honest.
+   The review rail is located STRUCTURALLY (the first card carrying both mechanisms
+   in the untouched pane, the first tagged card in the changed one), never by matching
+   the live page's own copy. */
+function reviewAnchor(doc){
+  var tagged = doc.querySelector('[data-fix-edges="card"]');
+  if(tagged) return tagged;
+  var c = bothCards(doc);
+  return c.length ? c[0] : null;
+}
+function jump(what){
+  [beforeDoc(), afterDoc()].forEach(function(doc){
+    if(!doc || !doc.body) return;
+    var target = (what === 'map') ? doc.querySelector('.mapboxgl-map') : reviewAnchor(doc);
+    if(!target) return;
+    /* scrollTop on documentElement, with scroll-behavior forced to auto first. Measured
+       2026-07-31, three failures in a row before this landed: scrollIntoView walks every
+       scrollable ancestor and the review rail is a horizontal scroll-snap container, so the
+       call spent itself on the rail and left the document at y 16; then scrollTo lost to
+       `html{scroll-behavior:smooth}` in globals.css, because a smooth scroll is driven by
+       rAF and the preview pane throttles rAF inside an iframe, so the animation never
+       advanced past frame one. Setting scrollTop after killing the smooth behaviour is
+       synchronous and cannot be animated away. */
+    try{
+      var view = doc.defaultView;
+      var y = Math.max(0, target.getBoundingClientRect().top + view.scrollY - 90);
+      doc.documentElement.style.scrollBehavior = 'auto';
+      doc.documentElement.scrollTop = y;
+    }catch(e){}
+  });
+  setTimeout(remeasure, 350);
+}
+
+function show(w){
+  document.getElementById('paneBefore').classList.toggle('hidden', w === 'after');
+  document.getElementById('paneAfter').classList.toggle('hidden', w === 'before');
+  document.getElementById('bB').classList.toggle('on', w === 'before');
+  document.getElementById('bA').classList.toggle('on', w === 'after');
+  document.getElementById('bT').classList.toggle('on', w === 'both');
+  if(w !== 'before') startAfter();
+  setTimeout(remeasure, 250);
+}
+
+/* The control bar wraps at 390. Measure it instead of assuming a height, so the stage
+   can never be pushed under it and no pane can be shoved out of the viewport. */
+function sizeBar(){
+  var h = document.getElementById('bar').getBoundingClientRect().height;
+  document.documentElement.style.setProperty('--bar', Math.ceil(h) + 'px');
+}
+/* A ResizeObserver on the bar, not a window resize listener. Measured 2026-07-31: resizing
+   1440 -> 390 -> 1440 left --bar at the tall wrapped value of 157 while the bar had already
+   reflowed to 67, so the stage started 90px below where it should. The observer fires on the
+   box actually changing, which is the real trigger. */
+addEventListener('resize', sizeBar);
+if(window.ResizeObserver){ new ResizeObserver(sizeBar).observe(document.getElementById('bar')); }
+sizeBar();
+startAfter();                 /* the default view shows both panes, so the changed one is live */
+setTimeout(remeasure, 1200);
+setTimeout(remeasure, 3000);
+
+/* Verification helper. Reports EACH pane's OWN rect against the viewport, not the
+   document scroll width, because "the document does not overflow" is the check that
+   missed a pane hanging off the right edge twice already. */
+window.__paneCheck = function(){
+  var vw = innerWidth, vh = innerHeight, out = [];
+  ['paneBefore','paneAfter'].forEach(function(id){
+    var el = document.getElementById(id);
+    var hidden = el.classList.contains('hidden');
+    var r = el.getBoundingClientRect();
+    out.push({
+      pane: id, hidden: hidden,
+      left: Math.round(r.left), right: Math.round(r.right),
+      top: Math.round(r.top), bottom: Math.round(r.bottom),
+      w: Math.round(r.width), h: Math.round(r.height),
+      insideX: r.left >= -0.5 && r.right <= vw + 0.5,
+      insideY: r.top >= -0.5 && r.bottom <= vh + 0.5
+    });
+  });
+  return {
+    viewport: vw + 'x' + vh,
+    docScrollW: document.documentElement.scrollWidth,
+    barH: Math.round(document.getElementById('bar').getBoundingClientRect().height),
+    panes: out
+  };
+};
+</script>
+</body>
+</html>

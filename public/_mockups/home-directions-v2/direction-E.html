@@ -1,0 +1,445 @@
+<!--
+  Grounded-in: app/[locale]/_components/homepage/SearchBar.tsx
+  Grounded-in: app/[locale]/_components/homepage/Hero.tsx
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx
+  Grounded-in: app/[locale]/page.tsx
+  Grounded-in: app/api/salons/route.ts
+  Grounded-in: _design-system/TASTE_LOG.md
+
+  Depicts: three-field query form (Service / City / When + one ink submit) -> app/[locale]/_components/homepage/SearchBar.tsx (segments lines 311-333, HEIGHT.mobile.collapsed 250 at line 100, SearchOverlay at line 30). Re-geometried here, not invented: two rows instead of three.
+  Depicts: display headline sitting above the query control -> app/[locale]/_components/homepage/Hero.tsx (Hero is h1 + SearchBar and nothing else, no Image, no src).
+  Depicts: salon result unit (photo, name, star rating, district, from-price) -> app/[locale]/_components/homepage/SalonCard.tsx (rating row = star + value only per CARD_REDESIGN_2026-07-13 C11; price is row-3 right-aligned 12px s-ink-2).
+  Depicts: -20% discount pill, pale green, in the meta row beside the price -> _design-system/TASTE_LOG.md line 192 plus memory project_card_badges, which is the CURRENT dated decision. Explicitly NOT SalonCard.tsx's DiscountBadge (line 238, bg-s-love-soft rose over the photo, V3-D85): that is dormant code the owner rejected on sight in the 2026-07-15 taste lab and again on mobile. Caught by a gate after I first copied it out of the source, see the note.
+  Depicts: photo-missing fallback (sunken panel + category icon + salon initial) -> app/[locale]/_components/homepage/SalonCard.tsx (monogram fallback map lines 50-53: bg #F4F4F5 + initial #0A0A0A per category; docblock line 35 "falls back to category tile if no photo").
+  Depicts: date-filtered salon list and its match count -> app/api/salons/route.ts (line 55 `date` param for availability filtering, line 157 `.select(selectStr, { count: "exact" })`, line 223 the count-is-identical note). The count EXISTS server-side; what is new is printing it on home.
+  Depicts: "Show 17 more" continuation -> app/api/salons/route.ts (range pagination alongside the exact count). NET-NEW as a home-screen affordance: today home sections link out, they do not page.
+  Depicts: wordmark-only header -> NET-NEW and deliberately minimal. This fragment does not depict the real global header or its account entry point; the note says why they are cut.
+
+  Exists-check: ran `npm run exists "home search"`, `"hero"`, `"salon card"` and `"header"` this turn.
+  The target surface (app/[locale]/page.tsx) ALREADY renders: Hero (h1 + SearchBar), then
+  MobileCategoriesRow, SalonOfMonth, ForYouSalonRows, RecentlyViewed, Nearby, WalkInBand,
+  Entdecken, Reviews, BusinessTeaser. `exists` also surfaced an existing dev surface for this exact
+  question, app/[locale]/dev/home-search/page.tsx + _variants.tsx (HeroHead), plus Hero / HeroDuo /
+  HeroHeadline / HeroSpotlight. So this direction invents NO new system: it re-geometries an
+  existing control and re-orders existing sections.
+  GRAVEYARD + REJECTED hits honoured, nothing here re-proposes them: homepage hero image (owner's
+  THIRD rejection 2026-07-25) - none, no baked src; full-bleed (denied 2026-07-16) - none; search
+  focus ring + back arrow (removed 2026-06-23) - none; ink/black selected state (removed
+  2026-06-29) - the only ink fill is the one commit button; FeaturedSalonCarousel (removed
+  2026-06-30, fabricated demo data) - not re-proposed; SalonCard next-slot row (removed
+  CARD_REDESIGN_2026-07-13 C2) - NOT re-added; card review count in the rating row (dropped
+  CARD_REDESIGN_2026-07-13 C11) - NOT re-added, star + value only on all seven results; rose
+  over-photo discount tag (rejected twice, TASTE_LOG 2026-07-15) - NOT used, the pill is pale green
+  beside the price. Every result container keeps its full chrome: whisper elevation, 16 radius, and
+  a flush photo edge on the sunken tray, per the locked surface table.
+  THE ONE THING THAT IS ACTUALLY NEW: the three declared answers are paired into two rows
+  instead of three, and the h1 + the mobile category grid are spent to pay for it.
+-->
+<style>
+  @font-face{font-family:"InterV";src:url("/_mockups/_assets/fonts/inter-latin-var.woff2") format("woff2");font-weight:100 900;font-display:block;}
+  @font-face{font-family:"InterTightV";src:url("/_mockups/_assets/fonts/inter-tight-latin-var.woff2") format("woff2");font-weight:100 900;font-display:block;}
+
+  .dE-vp,.dE-vp *{box-sizing:border-box;margin:0;padding:0;}
+  .dE-vp{
+    width:390px;margin:0 auto;background:#FFFFFF;
+    font-family:"InterV",-apple-system,system-ui,sans-serif;
+    color:#0A0A0A;-webkit-text-size-adjust:100%;text-size-adjust:100%;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- chrome ---------- */
+  .dE-hdr{height:52px;display:flex;align-items:center;padding:0 16px;}
+  .dE-mark{font-size:15px;font-weight:600;letter-spacing:-0.015em;color:#0A0A0A;}
+
+  /* ---------- 1. THE ASK ---------- */
+  .dE-ask{padding:4px 16px 20px;background:#FFFFFF;}
+  .dE-h1{
+    font-family:"InterTightV",sans-serif;font-size:28px;line-height:34px;
+    font-weight:600;letter-spacing:-0.025em;color:#0A0A0A;
+  }
+  .dE-sub{font-size:12px;line-height:16px;color:#6B6B6B;margin-top:4px;}
+
+  .dE-form{
+    margin-top:16px;background:#FFFFFF;border:1px solid #E4E4E7;
+    border-radius:16px;overflow:hidden;
+  }
+  .dE-row{height:62px;display:flex;align-items:center;padding:0 14px;gap:12px;}
+  .dE-pair{display:flex;border-top:1px solid #E4E4E7;}
+  .dE-cell{
+    flex:1 1 50%;min-width:0;height:62px;display:flex;align-items:center;
+    padding:0 12px 0 14px;gap:10px;
+  }
+  .dE-cell + .dE-cell{border-left:1px solid #E4E4E7;}
+  .dE-ic{flex:0 0 auto;color:#6B6B6B;display:block;}
+  .dE-fld{min-width:0;}
+  .dE-lab{display:block;font-size:12px;line-height:15px;font-weight:500;color:#6B6B6B;}
+  .dE-val{
+    display:block;font-size:15px;line-height:20px;font-weight:500;color:#0A0A0A;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .dE-foot{border-top:1px solid #E4E4E7;padding:12px;}
+  .dE-btn{
+    display:flex;align-items:center;justify-content:center;
+    height:48px;border-radius:999px;background:#0A0A0A;
+    color:#FFFFFF;font-size:15px;line-height:20px;font-weight:600;letter-spacing:-0.005em;
+  }
+
+  /* ---------- 2. THE ANSWER ---------- */
+  .dE-answer{background:#F4F4F5;padding:16px 16px 20px;}
+  .dE-count{font-size:12px;line-height:16px;color:#6B6B6B;margin-bottom:10px;}
+  /* Result container keeps its chrome: white on the sunken tray, whisper elevation, and a
+     flush photo edge. Locked shadow table: SalonCard = photo + whisper, and a container
+     carrying elevation keeps one edge cue rather than wearing two. */
+  .dE-result{
+    background:#FFFFFF;border-radius:16px;overflow:hidden;
+    box-shadow:0 1px 2px rgba(10,10,10,0.04);
+  }
+  .dE-result + .dE-result{margin-top:12px;}
+  .dE-shot{display:block;width:100%;height:239px;object-fit:cover;}
+
+  /* photo-missing fallback: sunken + category icon + salon initial (SalonCard.tsx:50-53
+     is bg #F4F4F5 + initial #0A0A0A), hairlined so it does not merge into the
+     identically-coloured tray (FLOORS LAW 4 edge-visibility) */
+  .dE-nophoto{
+    height:239px;background:#F4F4F5;border-bottom:1px solid #E4E4E7;
+    box-shadow:inset 0 0 0 1px #E4E4E7;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  }
+  .dE-initial{
+    font-family:"InterTightV",sans-serif;font-size:28px;line-height:34px;
+    font-weight:600;color:#0A0A0A;letter-spacing:-0.02em;
+  }
+
+  .dE-body{padding:12px 14px 14px;}
+  .dE-top{display:flex;align-items:baseline;gap:10px;}
+  .dE-name{
+    flex:1 1 auto;min-width:0;font-size:15px;line-height:20px;font-weight:600;
+    color:#0A0A0A;letter-spacing:-0.01em;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  /* rating = star + value only. The review count is NOT here: CARD_REDESIGN_2026-07-13 C11
+     dropped it from Row 1, and a resurrection gate caught a first draft that had it. */
+  .dE-rate{flex:0 0 auto;display:flex;align-items:center;gap:4px;white-space:nowrap;}
+  .dE-rv{font-size:12px;line-height:16px;font-weight:500;color:#0A0A0A;font-variant-numeric:tabular-nums;}
+  .dE-meta{display:flex;align-items:center;gap:8px;margin-top:6px;}
+  .dE-place{flex:1 1 auto;min-width:0;font-size:12px;line-height:16px;color:#6B6B6B;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  /* discount = PALE GREEN pill beside the price (s-success.bg #E8F5E9 + ink), the current
+     dated decision. The rose over-photo tag in the source was rejected twice. */
+  .dE-off{
+    flex:0 0 auto;background:#E8F5E9;color:#0A0A0A;
+    font-size:12px;line-height:16px;font-weight:500;
+    padding:1px 7px;border-radius:999px;font-variant-numeric:tabular-nums;
+  }
+  .dE-price{flex:0 0 auto;font-size:12px;line-height:16px;color:#6B6B6B;font-variant-numeric:tabular-nums;}
+
+  /* ---------- 3. the rest of the answer ---------- */
+  .dE-more{background:#FFFFFF;padding:18px 16px 24px;}
+  .dE-link{font-size:15px;line-height:20px;font-weight:500;color:#276EF1;}
+
+  /* ---------- note ---------- */
+  .dE-note{
+    background:#F4F4F5;border-top:1px solid #E4E4E7;padding:20px 16px 28px;
+    font-size:12px;line-height:18px;color:#0A0A0A;
+  }
+  .dE-note b{font-weight:600;}
+  .dE-note p{margin-top:10px;}
+  .dE-note p:first-child{margin-top:0;}
+  .dE-note code{font-family:"InterV",monospace;color:#6B6B6B;}
+</style>
+
+<div class="dE-vp">
+
+  <header class="dE-hdr">
+    <span class="dE-mark">solen</span>
+  </header>
+
+  <!-- ============ THE ASK. Three answers, before anything is shown. ============ -->
+  <section class="dE-ask">
+    <h1 class="dE-h1">Search what, where, when.</h1>
+    <p class="dE-sub">Then the list is only salons that can take you.</p>
+
+    <div class="dE-form">
+
+      <div class="dE-row">
+        <svg class="lucide lucide-search dE-ic" data-lucide="search" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+        <span class="dE-fld">
+          <span class="dE-lab">Service</span>
+          <span class="dE-val">Coiffeur</span>
+        </span>
+      </div>
+
+      <div class="dE-pair">
+        <div class="dE-cell">
+          <svg class="lucide lucide-map-pin dE-ic" data-lucide="map-pin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+          <span class="dE-fld">
+            <span class="dE-lab">City</span>
+            <span class="dE-val">Zurich</span>
+          </span>
+        </div>
+        <div class="dE-cell">
+          <svg class="lucide lucide-calendar dE-ic" data-lucide="calendar" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+          <span class="dE-fld">
+            <span class="dE-lab">When</span>
+            <span class="dE-val">Sat 2 Aug</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="dE-foot">
+        <span class="dE-btn">Search</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ THE ANSWER. Only what the three answers return. ============ -->
+  <section class="dE-answer">
+
+    <p class="dE-count">24 salons free Sat 2 Aug</p>
+
+    <article class="dE-result">
+      <img class="dE-shot" src="/_mockups/_assets/salon-photos/p01.jpg" alt="Salon Bellevue">
+      <div class="dE-body">
+        <div class="dE-top">
+          <span class="dE-name">Salon Bellevue</span>
+          <span class="dE-rate">
+            <svg class="lucide lucide-star" data-lucide="star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+            <span class="dE-rv">4.9</span>
+          </span>
+        </div>
+        <div class="dE-meta">
+          <span class="dE-place">Kreis 8</span>
+          <span class="dE-price">from CHF 78</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="dE-result">
+      <img class="dE-shot" src="/_mockups/_assets/salon-photos/p03.jpg" alt="Coiffeur Limmat">
+      <div class="dE-body">
+        <div class="dE-top">
+          <span class="dE-name">Coiffeur Limmat</span>
+          <span class="dE-rate">
+            <svg class="lucide lucide-star" data-lucide="star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+            <span class="dE-rv">4.8</span>
+          </span>
+        </div>
+        <div class="dE-meta">
+          <span class="dE-place">Kreis 5</span>
+          <span class="dE-price">from CHF 65</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="dE-result">
+      <img class="dE-shot" src="/_mockups/_assets/salon-photos/p09.jpg" alt="Atelier Weinberg">
+      <div class="dE-body">
+        <div class="dE-top">
+          <span class="dE-name">Atelier Weinberg</span>
+          <span class="dE-rate">
+            <svg class="lucide lucide-star" data-lucide="star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+            <span class="dE-rv">4.7</span>
+          </span>
+        </div>
+        <div class="dE-meta">
+          <span class="dE-place">Kreis 6</span>
+          <span class="dE-price">from CHF 92</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="dE-result">
+      <img class="dE-shot" src="/_mockups/_assets/salon-photos/p02.jpg" alt="Haarwerk Langstrasse">
+      <div class="dE-body">
+        <div class="dE-top">
+          <span class="dE-name">Haarwerk Langstrasse</span>
+          <span class="dE-rate">
+            <svg class="lucide lucide-star" data-lucide="star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+            <span class="dE-rv">4.8</span>
+          </span>
+        </div>
+        <div class="dE-meta">
+          <span class="dE-place">Kreis 4</span>
+          <span class="dE-off">-20%</span>
+          <span class="dE-price">from CHF 59</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="dE-result">
+      <img class="dE-shot" src="/_mockups/_assets/salon-photos/p12.jpg" alt="Haarschneiderei Idaplatz Wiedikon">
+      <div class="dE-body">
+        <div class="dE-top">
+          <span class="dE-name">Haarschneiderei Idaplatz Wiedikon</span>
+          <span class="dE-rate">
+            <svg class="lucide lucide-star" data-lucide="star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+            <span class="dE-rv">4.9</span>
+          </span>
+        </div>
+        <div class="dE-meta">
+          <span class="dE-place">Kreis 3</span>
+          <span class="dE-price">from CHF 71</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="dE-result">
+      <div class="dE-nophoto">
+        <svg class="lucide lucide-scissors" data-lucide="scissors" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/></svg>
+        <span class="dE-initial">S</span>
+      </div>
+      <div class="dE-body">
+        <div class="dE-top">
+          <span class="dE-name">Salon Sihlfeld</span>
+          <span class="dE-rate">
+            <svg class="lucide lucide-star" data-lucide="star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+            <span class="dE-rv">4.6</span>
+          </span>
+        </div>
+        <div class="dE-meta">
+          <span class="dE-place">Kreis 3</span>
+          <span class="dE-price">from CHF 68</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="dE-result">
+      <img class="dE-shot" src="/_mockups/_assets/salon-photos/p04.jpg" alt="Studio Niederdorf">
+      <div class="dE-body">
+        <div class="dE-top">
+          <span class="dE-name">Studio Niederdorf</span>
+          <span class="dE-rate">
+            <svg class="lucide lucide-star" data-lucide="star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+            <span class="dE-rv">4.7</span>
+          </span>
+        </div>
+        <div class="dE-meta">
+          <span class="dE-place">Kreis 1</span>
+          <span class="dE-price">from CHF 85</span>
+        </div>
+      </div>
+    </article>
+
+  </section>
+
+  <div class="dE-more">
+    <span class="dE-link">Show 17 more</span>
+  </div>
+
+  <!-- ============================== NOTE ============================== -->
+  <div class="dE-note">
+    <p><b>Direction E. The query, not the catalogue.</b> Home's job is to get three answers out of
+    you (what, where, when) before it shows you anything, because a salon list built on a guess is a
+    promise we then have to take back. The screen is a form, then the answer to that form. Read top
+    to bottom it is one sentence: you said Coiffeur, in Zurich, on Saturday, so here are the 24
+    salons that can actually take you.</p>
+
+    <p><b>What it gives up.</b> It re-asks a returning customer three questions it already knows the
+    answers to; that cost is permanent and unfixable inside this bet. It makes home a poor browsing
+    surface by design, so all merchandising happens after a search. It <b>deletes the mobile
+    category grid from home</b> (<code>MobileCategoriesRow</code>, currently the first thing under
+    the hero at <code>page.tsx:200</code>) and folds the taxonomy into the Service field, which is
+    exactly Fresha web's mechanism and exactly its named cost: somebody who does not know the word
+    Barbershop now has to open a field to find out barbershops exist. It <b>drops the category tag
+    from every result</b>, because the Service field already declared the category and a tag
+    repeating it is meta that adds no decision (copy economy rule 4). It cuts the save-heart and the
+    account button, which serve browsing and account, not this screen's job. And it cannot go all the
+    way to Fresha's version: Fresha's inventory-free hero is legible only because a wired counter
+    sits under it, and pre-launch Solen has no number it can print honestly, so the form shares the
+    first viewport with real salons instead of owning it.</p>
+
+    <p><b>What it does NOT give up, and what paid for that.</b> The direction was written expecting
+    to sacrifice the first salon photo above the fold permanently. It does not have to. Two cuts buy
+    it back: the h1 shrinks to one line, and City and When pair side by side on one row instead of
+    stacking, on Trip.com's from/to row and Skyscanner's two-date row. The form measures <b>200 px
+    for three fields</b> where <code>SearchBar.tsx:100</code> spends <b>250</b>, so the first salon
+    is complete at 703 px and the second one's photo starts at 715 and is cropped at the 844 fold
+    with 129 px of it showing, which is the scroll promise. The date is the one
+    answer the results cannot show, which is why the quiet count line restates only the date and not
+    the whole tuple.</p>
+
+    <p><b>The lens findings behind it.</b> From WHY_ENTRY position 1 and bet E1: Fresha web's
+    four-segment bar whose treatment dropdown IS the category list and which carries the filled
+    query into the results header as a state receipt; Airbnb web, whose bar changes arity with its
+    own state; and Airbnb Experiences shipping three segments not four, because an experience is a
+    point in time and a stay is a range, which is why the Zeit segment is already the right shape and
+    no fourth field is argued for. New this pass, because the entry corpus contains no phone that
+    gives search more than one row: the population that <i>does</i> hold this bet on a phone is
+    travel, and it resolves the height three different ways. Booking.com and BlaBlaCar flush-stack
+    the fields inside one hairline-divided container with the submit filling the bottom edge, which
+    says the fields are one statement; Vrbo gap-separates them into three outlined pills and pays for
+    it with dead space; Trip.com and Skyscanner pair two fields per row to halve the row count. This
+    screen takes Booking.com's flush stack and Trip.com's pairing, and keeps Vrbo's
+    label-above-value so each row states both its question and its answer. Booking.com also ships
+    its home fields <i>filled</i> rather than as placeholders, which is why this screen shows a live
+    tuple: the form is the state receipt, not a blank to complete. Separately, four apps that show a
+    query <i>and</i> inventory in one phone viewport (Realtor.com, Zillow, Redfin, Trip.com
+    Discover) all print a result count and all print it <b>quiet</b>; every count across ten web
+    captures was small too, so the count here is 12 px and is deliberately not the anchor. Peerspace
+    is the closest analogue found in the sweep: one field, a chip rail, then real venue photos with
+    a from-price badge.</p>
+
+    <p><b>measured:</b> Mobbin iOS captures render at 299 px for a ~390 pt device, 1.304 pt/px
+    (method: research/AXIS_GRID.md section 0), PIL-measured this session. Booking.com Stays form
+    container = 275 px wide = <b>359 pt</b>, 146 px tall = <b>190 pt</b>, three filled value rows
+    plus a flush full-width submit. This screen's form is 358 px at a 390 px width, within 1 pt of
+    it, and 198 px tall, the extra going to the submit's 12 px inset because the design contract
+    locks buttons to a pill and Booking.com's is a flush rectangle. BlaBlaCar = 263 px wide =
+    <b>343 pt</b>, <b>300 pt</b> tall for four rows plus a <b>56 pt</b> submit whose x-range equals
+    the container's exactly, so flush is confirmed rather than assumed; its three-field equivalent
+    works out at 239 pt against this screen's 200 px, which is what the side-by-side pair is worth.
+    Vrbo leaves <b>467 pt</b> (358 px) of trapped white between its last field and its Search
+    button, which is the dead-space failure measured, and is why nothing here gaps the rows.
+    Everything about Solen was read on disk today: <code>SearchBar.tsx:100</code>
+    HEIGHT.mobile.collapsed = 250, <code>:305</code> the stacked flex, <code>:311-333</code> the
+    three segments, <code>:30</code> SearchOverlay, <code>page.tsx:200</code> MobileCategoriesRow
+    first. And this file itself was rendered at 390x844 and measured with getBoundingClientRect
+    rather than trusted: form 358x200, the ask block ending at 354, the first salon spanning 396 to
+    703, the second starting at 715, three type sizes (12 / 15 / 28), 4 of 15 first-viewport text
+    elements at weight 600, and 40.0% of the first viewport photographic. Three numbers in an earlier
+    draft of this note were arithmetic and were 2 to 12 px off; they now carry the measured values.</p>
+
+    <p><b>One mistake worth recording, because it is the failure mode this estate keeps having.</b>
+    I first drew the discount badge as a rose pill over the photo, because that is literally what
+    <code>SalonCard.tsx:238</code> and <code>:241</code> do. A gate stopped it: that DiscountBadge is
+    dormant V3-D85 code that never renders live, and the owner rejected the rose photo tag twice, on
+    mobile and again on sight in the 2026-07-15 taste lab. The current decision is a pale-green pill
+    beside the price, which is what ships here. Source code is not proof a treatment is current, and
+    I needed the gate to tell me that rather than the other way round.</p>
+
+    <p><b>One thing the screenshot caught that the markup did not.</b> The first render put the same
+    photo on two salons twice over. The seeded pool at
+    <code>_mockups/_assets/salon-photos</code> holds twelve files but only about six visually
+    distinct images: p04 and p05 are byte-identical, and p01/p10, p02/p08 and p09/p11 are the same
+    photo re-cropped, which no hash check catches. This screen now uses the six distinct ones plus
+    the fallback for the seventh salon. Two of the six are beauty rather than hair, which is a
+    limit of the pool, not a claim about what a Coiffeur search should return.</p>
+
+    <p><b>floors:</b> (a) photographic focal, six real seeded salon photos plus one spec'd fallback,
+    first viewport <b>40.0%</b>
+    photographic measured, above the ~1/3 floor, and met by salon content not by decoration,
+    with no baked hero. (b) exactly one biggest element, the 28 px headline is the only 28 px thing
+    on the screen. (c) real numbers, CHF prices, ratings and the match count, all tabular. (d)
+    semantic colour, the yellow star with its ink value beside it as the darker companion the
+    contrast rule requires, plus the pale-green discount pill on one salon. (e) no dead-grey zone,
+    the answer sits on the sunken tray with white containers and photography above and below. (f)
+    worst case holds, the fifth salon carries a 33-character name that truncates without breaking
+    the row, and the photo-missing one renders the spec'd fallback rather than omitting the slot.
+    Three type sizes only (28 / 15 / 12), anchor at 1.87x body, four of fifteen first-viewport text
+    elements at weight 600 (27%), one ink commit button, and the single blue accent sits on white
+    because blue on the sunken tray measures 4.17:1 and fails AA.</p>
+
+    <p><b>Target state, named.</b> Not wired today: the match count and the availability behind
+    "free Sat 2 Aug" need the <code>date</code> arm of <code>app/api/salons/route.ts</code> read on
+    home, the discount pill needs a real offer, and the ratings and prices are seed values. The
+    "Show 17 more" continuation is net-new as a home affordance; home sections link out today, they
+    do not page. Deliberately NOT re-added, all caught rather than assumed: a bookable time on the
+    result, because CARD_REDESIGN_2026-07-13 C2 removed the next-slot row and the 2026-06-22 rule
+    bans a clock time on a listing, so the When answer is expressed as a count above the list
+    instead, which is where the four real-estate apps put it anyway; the review count in the rating
+    row, which C11 dropped, so rating is star plus value only; and the rose over-photo discount tag.
+    SalonCard is left alone in every case.</p>
+  </div>
+
+</div>

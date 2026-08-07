@@ -1,0 +1,1227 @@
+<!doctype html>
+<!-- Base: elicitation -->
+<!-- Scale: full-page -->
+<!--
+  WHY "Base: elicitation" AND NOT "capture": nothing on this page is redrawn. Both panes are live
+  iframes of the real route, so the base is the RUNNING page, which is stronger than a screenshot.
+  Not one product pixel is hand drawn here. The only markup this file authors is the toggle bar and
+  the six measured rows under the panes.
+
+  PRE-LAUNCH. Every salon, price, photo and review in both panes is SEED data. Nothing is live,
+  nobody has seen any of this, and none of the six items below is an exposure. Each one is a
+  rendering or seeding gap in the current commit.
+
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx
+  Grounded-in: app/[locale]/_components/homepage/BusinessTeaser.tsx
+  Grounded-in: app/[locale]/_components/homepage/SectionHeader.tsx
+  Grounded-in: app/[locale]/_components/homepage/WalkInBand.tsx
+  Grounded-in: app/[locale]/_components/homepage/Reviews.tsx
+  Grounded-in: app/[locale]/_components/homepage/NearbyMap.tsx
+
+  Exists-check: `npm run exists "home fixes"` (nothing found), `npm run exists "mockup index"`
+  (nothing found), `npm run exists homepage` (30 existing components, every surface below is one of
+  them), `npm run exists "salon card"` (9 hits, SalonCard.tsx is the one this page watches) and
+  `npm run exists "walk-in"` all ran this turn. This file builds NO route, component, migration,
+  table or token. It composes the six sibling probes already in this folder (fix-PLACEHOLDER,
+  fix-DUPES, fix-CARDFIELD, fix-RHYTHM, fix-LOUDEST, fix-EDGES) into one page so the combined result
+  can be judged at once, which is the thing none of the six could show on its own. Graveyard read
+  and respected: REMOVED.md kills a hardcoded hero photo on the homepage (owner 2026-07-25), the
+  stock-photo badge (owner 2026-07-27) and the Model B de-carding direction (owner 2026-07-18).
+  None is re-proposed: no image source is baked into a component, no card is marked as stock in the
+  UI, and every review card keeps its full hairline on all four sides. The C11 converged card is
+  respected too: this page draws no review count anywhere.
+
+  Diagnosis: the partner block renders the browser image-failed glyph on a bare grey ground | measured 1 glyph inside a 358x358 box = 38.9% of a 390x844 viewport, fill #F4F4F5 at 1.10:1 against page white, 0px border | violates FLOORS LAW 2 and NEVER-AGAIN floor 4 | target 0 failed-image glyphs and a perceivable 1px #E4E4E7 edge
+  Diagnosis: different salons render the identical photograph inside one rail | measured 19 photo slots for 16 salons served by 11 photographs, 9 salons colliding, worst group 3 names on 1 interior | violates taste rule 1 and FLOORS LAW 2 | target 16 salons on 16 photographs, 0 colliding
+  Diagnosis: a card's price, address and category are typographically identical | measured all three at 12px / weight 400 / #6B6B6B on 19 of 19 cards | violates LOCKFILE 17.4 two-anchor rule and FLOORS LAW 6 | target price at 12px / 600 / #0A0A0A tabular with the filler held at 12 / 400 / #6B6B6B
+  Diagnosis: the gap binding a photo to its own caption equals the gap separating unrelated blocks | measured in-group 8px against heading-to-body 8px and block-to-block 8px, ratio 1.00x, 5 of 6 relationships under the floor | violates FLOORS LAW 5 | target heading-to-body 16px at 2.00x and block-to-block 24px at 3.00x with the in-group unit held at 8px
+  Diagnosis: the largest, heaviest and only saturated text in the feed is a wait estimate | measured 20px / weight 700 / #16A34A on 4 of 4 walk-in chips against a 14px salon name, 10488 square px of green text | violates the design-contract text-size row, taste rule 4 and FLOORS LAW 7 | target the salon name as the largest text in its own chip and 0 square px of green body text
+  Diagnosis: review cards stack a hairline border AND an elevation, and the map subtree renders a fallback typeface | measured 6 of 6 cards carrying both mechanisms and 30 text-bearing elements resolving to Helvetica | violates the design-contract shadow row, LOCKFILE 17.2 and FLOORS LAW 8 | target 0 cards carrying both mechanisms with all 6 keeping one, and 0 elements in a fallback face
+
+  Depicts: both panes, the whole route -> app/[locale]/page.tsx served live at /de, iframed, never redrawn
+  Depicts: the 358x358 failed-image box -> app/[locale]/_components/homepage/BusinessTeaser.tsx:42-53
+  Depicts: the repeated card photograph -> app/[locale]/_components/homepage/SalonCard.tsx (Image src={photoUrl})
+  Depicts: the value that repeats -> salons.cover_photo_url, selected in lib/salons/public-columns.ts:15
+  Depicts: the table that would own per-salon photography -> public.salon_photos table (exists today, zero rows)
+  Depicts: the card price leaf -> app/[locale]/_components/primitives/PriceFrom.tsx, wrapped at SalonCard.tsx:534
+  Depicts: the card name leaf -> app/[locale]/_components/primitives/CardText.tsx CardName, called at SalonCard.tsx:505
+  Depicts: heading-to-body and block-to-block gaps -> app/[locale]/_components/homepage/SectionHeader.tsx:378 and :409
+  Depicts: the nearby map block and its rating pins -> app/[locale]/_components/homepage/NearbyMap.tsx:49-80 and :178
+  Depicts: the mobile category grid heading gap -> app/[locale]/_components/homepage/MobileCategoriesRow.tsx:78
+  Depicts: the walk-in wait estimate and its chip -> app/[locale]/_components/homepage/WalkInBand.tsx:125-148
+  Depicts: the review card box -> app/[locale]/_components/homepage/Reviews.tsx:144-148
+  Depicts: the stand-in photographs, standing in for the shared pool -> lib/stock-photos.ts (files self-hosted under public/_mockups/_assets/salon-photos per _BASE.md)
+  Depicts: the category icons on the empty slot -> public/icons/categories, already used by app/[locale]/_components/homepage/MobileCategoriesRow.tsx:43-48
+  Depicts: the toggle bar, the six measured rows and the fit readout -> NET-NEW: analysis harness, ships nowhere, not product UI
+
+  Backend-check: read only. No value in either pane is fabricated: every number in the table is
+  measured at runtime by the SAME function running against BOTH documents, so a "now" number and a
+  "fixed" number can never come from different methods. Not one number is typed into the markup.
+
+  ANNOTATION: the markers are an OVERLAY layer, absolutely positioned divs drawn from measured
+  rects, never a style written onto the element being judged. Two reasons, both real. First, the
+  no-focus-ring gate refuses a raw CSS outline, correctly, since the owner has killed rings three
+  times. Second, and more important here, writing a marker onto a measured element contaminates the
+  measurement: a marker drawn as a shadow would make a bordered card carry a border AND an
+  elevation, which is the exact defect the sixth row counts.
+
+  ONE DELIBERATE DIFFERENCE from the sibling fix-PLACEHOLDER probe, stated rather than hidden: that
+  file deliberately breaks one real card image so the naturalWidth zero fallback path is visibly not
+  dead code. This page does NOT force that failure, because this page exists to answer "how does the
+  whole feed look once all six land", and breaking an image on purpose makes the combined answer
+  worse and misleading. The guard is still installed and still fires on any image that genuinely
+  fails. To see the forced proof, open fix-PLACEHOLDER.
+
+  SECOND DIFFERENCE: the card-field pass skips the walk-in band. Measured on the live route, walk-in
+  chips carry no h3 and no price string, so the pass would not have touched them anyway; the skip is
+  belt and braces so those two changes can never fight over one element.
+
+  Locale: all copy authored here is English. Section titles, salon names and prices inside the panes
+  are read live out of the rendered document, which is why they appear in the site's own language.
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Six fixes on the Solen homepage</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --sunken:#F4F4F5; --hairline:#E4E4E7;
+    --accent:#276EF1; --ok:#16A34A;
+    --disp:'Inter Tight','Inter',system-ui,-apple-system,sans-serif;
+    --body:'Inter',system-ui,-apple-system,sans-serif;
+    --rowsH:34vh;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  html,body{height:100%;overflow:hidden}
+  body{
+    font-family:var(--body); background:#fff; color:var(--ink); font-size:13px; line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+    display:flex; flex-direction:column; height:100dvh;
+  }
+
+  /* ---------------- bar ---------------- */
+  .bar{
+    flex:0 0 auto; z-index:30; background:#fff; border-bottom:1px solid var(--hairline);
+    padding:calc(8px + env(safe-area-inset-top,0px)) 12px 8px;
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .barRow{display:flex; align-items:center; gap:6px 12px; flex-wrap:wrap}
+  h1{font-family:var(--disp); font-size:20px; font-weight:600; line-height:1.15;
+     letter-spacing:-.01em; flex:1 1 auto; min-width:0}
+  .seg{display:flex; background:var(--sunken); border-radius:999px; padding:3px; flex:0 0 auto}
+  .seg button{
+    border:0; background:transparent; font-family:inherit; font-size:13px; font-weight:400;
+    color:var(--ink2); height:44px; min-width:68px; padding:0 14px; border-radius:999px;
+    cursor:pointer; white-space:nowrap;
+  }
+  .seg button[aria-pressed="true"]{background:#fff; color:var(--ink); font-weight:600;
+    box-shadow:0 1px 2px rgba(10,10,10,.10)}
+  .ghost{
+    border:1px solid var(--hairline); background:#fff; font-family:inherit; font-size:12px;
+    font-weight:600; color:var(--ink); height:44px; padding:0 14px; border-radius:999px;
+    cursor:pointer; white-space:nowrap;
+  }
+  .ghost:active{background:var(--sunken)}
+  label.chk{display:inline-flex; align-items:center; gap:7px; height:44px; cursor:pointer;
+    font-size:12px; color:var(--ink2)}
+  label.chk input{width:17px; height:17px; accent-color:var(--ink)}
+  .status{font-size:12px; color:var(--ink2); min-width:0; flex:1 1 200px}
+  .status b{color:var(--ink); font-weight:600; font-variant-numeric:tabular-nums}
+
+  /* ---------------- stage ---------------- */
+  .stage{
+    flex:1 1 auto; min-height:0; display:grid; gap:1px; background:var(--hairline);
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr); grid-template-rows:minmax(0,1fr);
+  }
+  .stage[data-mode="before"], .stage[data-mode="after"]{grid-template-columns:minmax(0,1fr)}
+  /* Below 900px the two panes STACK, one above the other, each keeping the full width.
+     The chrome also gets trimmed here, and that is a measured decision rather than tidying: at
+     390x844 the bar came to 169px and the rows panel to 287px, leaving each stacked pane 193px,
+     which is shorter than one salon card. Hiding the status line (the AFTER chip already carries
+     the same count) and taking the rows panel to 30vh returns a single pane to roughly 460px.
+     Two stacked phone-width panes are still cramped, which is why the default at this width is
+     the single fixed pane and the toggle is a flip rather than a split. */
+  @media (max-width:899px){
+    :root{--rowsH:30vh}
+    .stage[data-mode="both"]{
+      grid-template-columns:minmax(0,1fr); grid-template-rows:minmax(0,1fr) minmax(0,1fr);
+    }
+    h1{width:100%}
+    .status{display:none}
+  }
+  .pane{position:relative; min-width:0; min-height:0; overflow:hidden; background:#fff;
+        display:flex; flex-direction:column}
+  .pane[hidden]{display:none}
+  /* Top RIGHT, not top left. Measured: the marker labels are left-aligned to the element they
+     mark, and a mark that starts at the pane's top edge put its label straight on top of this
+     chip. Opposite corners cannot collide. */
+  .tag{
+    position:absolute; top:8px; right:8px; z-index:5; pointer-events:none;
+    background:rgba(10,10,10,.86); color:#fff; font-size:11px; font-weight:600; line-height:1.3;
+    padding:4px 9px; border-radius:999px; max-width:calc(100% - 16px);
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  iframe{flex:1 1 auto; width:100%; border:0; display:block; background:#fff}
+
+  /* ---------------- rows ---------------- */
+  .rows{
+    flex:0 0 auto; max-height:var(--rowsH); overflow-y:auto; background:#fff;
+    border-top:1px solid var(--hairline);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  .rowsHead{
+    display:grid; grid-template-columns:44px minmax(0,1fr) 62px 62px 60px; gap:8px;
+    align-items:center; padding:7px 12px; background:var(--sunken);
+    border-bottom:1px solid var(--hairline);
+    font-size:11px; font-weight:600; color:var(--ink2);
+    position:sticky; top:0; z-index:2;
+  }
+  .rowsHead .tr{text-align:right}
+  .row{
+    display:grid; grid-template-columns:44px minmax(0,1fr) 62px 62px 60px; gap:8px;
+    align-items:center; padding:6px 12px; border-bottom:1px solid var(--hairline);
+  }
+  .row:last-child{border-bottom:0}
+  .sw{display:inline-flex; align-items:center; justify-content:center;
+      width:44px; height:44px; cursor:pointer}
+  .sw input{width:19px; height:19px; accent-color:var(--ink); cursor:pointer}
+  .rowMain{
+    border:0; background:transparent; font-family:inherit; text-align:left; padding:4px 0;
+    min-width:0; min-height:44px; cursor:pointer; color:var(--ink); display:block;
+  }
+  .rowName{display:block; font-size:13px; font-weight:600; line-height:1.3}
+  .rowWhat{display:block; font-size:11px; font-weight:400; color:var(--ink2); line-height:1.35}
+  .num{
+    font-size:13px; font-weight:600; text-align:right; font-variant-numeric:tabular-nums;
+    line-height:1.25; overflow-wrap:anywhere;
+  }
+  .num small{display:block; font-size:11px; font-weight:400; color:var(--ink2)}
+  .now{color:var(--ink2)}
+  .fix{color:var(--ink)}
+  .fix.moved{color:var(--ok)}
+  .fix.off{color:var(--ink2)}
+  .only{
+    border:1px solid var(--hairline); background:#fff; font-family:inherit; font-size:11px;
+    font-weight:600; color:var(--ink); height:44px; width:100%; border-radius:999px; cursor:pointer;
+  }
+  .only:active{background:var(--sunken)}
+  .row[data-on="0"] .rowName{color:var(--ink2)}
+  .foot{padding:8px 12px 12px; font-size:11px; color:var(--ink2); line-height:1.5}
+  .foot b{color:var(--ink); font-weight:600}
+</style>
+
+<script>
+  /* Seeded before either iframe is parsed, same origin, so the page's own consent sheet never
+     covers the region being compared. The key and the shape are read from
+     app/[locale]/_components/primitives/CookieConsent.tsx:30 and its CookieConsentState type. */
+  try {
+    localStorage.setItem("solen-cookie-consent", JSON.stringify({
+      necessary: true, analytics: false, marketing: false, timestamp: new Date().toISOString()
+    }));
+  } catch (err) { console.error("[home-fixes] could not seed consent:", err); }
+</script>
+
+<div class="bar" id="bar">
+  <div class="barRow">
+    <h1>Six fixes on the Solen homepage</h1>
+    <div class="seg" role="group" aria-label="Which pane to show">
+      <button id="mBefore" type="button" aria-pressed="false">Before</button>
+      <button id="mBoth"   type="button" aria-pressed="true">Both</button>
+      <button id="mAfter"  type="button" aria-pressed="false">After</button>
+    </div>
+  </div>
+  <div class="barRow">
+    <button class="ghost" id="allOn"  type="button">All six on</button>
+    <button class="ghost" id="allOff" type="button">All off</button>
+    <label class="chk"><input type="checkbox" id="anno" checked> mark what changed</label>
+    <span class="status" id="status">loading the two live panes</span>
+  </div>
+</div>
+
+<div class="stage" id="stage" data-mode="both">
+  <section class="pane" id="paneBefore">
+    <span class="tag">BEFORE, untouched live route</span>
+    <iframe id="fBefore" src="/de" title="the live home route, untouched"></iframe>
+  </section>
+  <section class="pane" id="paneAfter">
+    <span class="tag" id="tagAfter">AFTER</span>
+    <iframe id="fAfter" src="/de" title="the live home route with the fixes injected"></iframe>
+  </section>
+</div>
+
+<div class="rows" id="rows">
+  <div class="rowsHead">
+    <span>on</span><span>fix</span><span class="tr">now</span><span class="tr">fixed</span><span></span>
+  </div>
+  <div id="rowList"></div>
+  <p class="foot">
+    Both panes are the same live route, same seed rows, same minute. <b>Everything is seed data and
+    nothing is live.</b> Tap a fix name to park both panes on it. Tap <b>only</b> to see that one
+    fix by itself.
+  </p>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  const $ = (id) => document.getElementById(id);
+  const statusEl = $("status");
+  const fBefore = $("fBefore");
+  const fAfter  = $("fAfter");
+
+  /* Locked literals. None invented: every one is a design-contract token. */
+  const INK = "#0A0A0A", INK2 = "#6B6B6B", HAIRLINE = "#E4E4E7", SUNKEN = "#F4F4F5", OK = "#16A34A";
+
+  /* ================================================================
+   * SHARED READERS. The same functions run against BOTH documents, so a
+   * "now" number and a "fixed" number can never be produced by different code.
+   * ================================================================ */
+
+  const rect = (el) => el.getBoundingClientRect();
+  const r1 = (n) => Math.round(n * 10) / 10;
+  const r2 = (n) => Math.round(n * 100) / 100;
+  /* A computed rgb triple is unreadable next to a design token, so print the hex the contract
+     itself uses. Measured, not assumed: the value comes from getComputedStyle either way. */
+  const HEXD = "0123456789ABCDEF";
+  const twoHex = (n) => HEXD[(n >> 4) & 15] + HEXD[n & 15];
+  function hex(color) {
+    const m = (color || "").match(/\d+/g);
+    if (!m || m.length < 3) return color;
+    return "#" + m.slice(0, 3).map((v) => twoHex(+v)).join("");
+  }
+  /* No "% of the viewport" in this row, on purpose, and this is a correction to my own first
+     build rather than an omission. Measured here: the same box reported 135.9% of the pane at a
+     755px-wide pane (a 724px square inside a 510px-tall pane, so the raw ratio exceeds 100 and
+     stops being a share), and 0% once the pane was parked on the salon rail with the box off
+     screen. A number that swings from 0 to 136 with scroll position and pane width is worse than
+     no number. The canonical 38.9% is measured at 390x844 and lives in the header. The row shows
+     the box SIZE, which does not move, and counts the glyph, which is the discriminating fact. */
+
+  function textLeaves(root) {
+    const out = [];
+    root.querySelectorAll("*").forEach((e) => {
+      if (e.children.length === 0 && (e.textContent || "").trim()) out.push(e);
+    });
+    return out;
+  }
+  const isPriceText = (t) => /\d\s*CHF|CHF\s*\d/.test(t);
+
+  function salonImgs(doc) {
+    const out = [], sy = doc.defaultView.scrollY;
+    doc.querySelectorAll("img").forEach((im) => {
+      const r = rect(im);
+      if (r.width < 60 || r.height < 60) return;
+      const alt = (im.getAttribute("alt") || "").trim();
+      const comma = alt.indexOf(",");
+      if (comma < 0) return;                              // the card alt is "Name, Category"
+      const src = decodeURIComponent(im.currentSrc || im.src || "");
+      if (!/unsplash|_mockups\/_assets/.test(src)) return;
+      out.push({ el: im, salon: alt.slice(0, comma).trim(), category: alt.slice(comma + 1).trim(),
+                 top: Math.round(r.top + sy) });
+    });
+    return out;
+  }
+  function photoKey(im) {
+    const raw = decodeURIComponent(im.currentSrc || im.src || "");
+    const local = raw.match(/salon-photos\/(p\d+\.jpg)/);
+    if (local) return "local:" + local[1];
+    const uns = raw.match(/photo-[0-9a-zA-Z_-]{10,}/);
+    if (uns) return uns[0];
+    return raw.split("?")[0];
+  }
+
+  /* A shadow that actually paints. Tailwind emits two fully transparent ring placeholders in
+     front of every real elevation; counting those reports three layers on every element. */
+  function realShadow(s) {
+    if (!s || s === "none") return false;
+    const parts = []; let depth = 0, cur = "";
+    for (const c of s) {
+      if (c === "(") depth++;
+      if (c === ")") depth--;
+      if (c === "," && depth === 0) { parts.push(cur); cur = ""; } else cur += c;
+    }
+    if (cur.trim()) parts.push(cur);
+    return parts.some((p) => {
+      p = p.trim(); if (!p) return false;
+      const m = p.match(/rgba?\(([^)]*)\)/);
+      if (m) { const v = m[1].split(",").map(parseFloat); if (v.length > 3 && v[3] === 0) return false; }
+      const nums = p.replace(/rgba?\([^)]*\)/, "").match(/-?[\d.]+px/g) || [];
+      if (nums.length && nums.every((n) => parseFloat(n) === 0)) return false;
+      return true;
+    });
+  }
+  function fullBorder(cs) {
+    return ["Top", "Right", "Bottom", "Left"].every((sd) => {
+      const w = parseFloat(cs["border" + sd + "Width"]) || 0;
+      const st = cs["border" + sd + "Style"];
+      const col = cs["border" + sd + "Color"] || "";
+      const m = col.match(/rgba?\(([^)]*)\)/);
+      const a = m ? (m[1].split(",").length > 3 ? parseFloat(m[1].split(",")[3]) : 1) : 1;
+      return w > 0 && st !== "none" && a > 0;
+    });
+  }
+
+  function textRuns(doc, root) {
+    const out = [], win = doc.defaultView;
+    const walker = doc.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    let n;
+    while ((n = walker.nextNode())) {
+      const t = n.textContent.trim(); if (!t) continue;
+      const p = n.parentElement; if (!p) continue;
+      const cs = win.getComputedStyle(p);
+      if (cs.display === "none" || cs.visibility === "hidden") continue;
+      const r = rect(p); if (r.width < 1 || r.height < 1) continue;
+      out.push({ text: t, size: parseFloat(cs.fontSize), weight: parseInt(cs.fontWeight, 10) || 400,
+                 color: cs.color, area: Math.round(r.width * r.height) });
+    }
+    return out;
+  }
+
+  /* ================================================================
+   * SIX MEASUREMENTS
+   * ================================================================ */
+
+  function mPhoto(doc, win) {
+    const g = [...doc.querySelectorAll("svg.lucide-image")].map((s) => {
+      const host = s.closest('[role="img"]') || s.parentElement;
+      const r = rect(host);
+      return { w: Math.round(r.width), h: Math.round(r.height), area: r.width * r.height };
+    });
+    const big = g.slice().sort((a, b) => b.area - a.area)[0] || null;
+    return { main: String(g.length),
+             sub: big ? (big.w + "x" + big.h + " dead box") : "no dead box left" };
+  }
+
+  function mDupes(doc) {
+    const all = salonImgs(doc), byPhoto = {}, salons = {};
+    all.forEach((o) => {
+      const k = photoKey(o.el);
+      salons[o.salon] = 1;
+      (byPhoto[k] = byPhoto[k] || {})[o.salon] = 1;
+    });
+    const groups = Object.keys(byPhoto).map((k) => ({ key: k, salons: Object.keys(byPhoto[k]) }))
+                         .sort((a, b) => b.salons.length - a.salons.length);
+    let colliding = 0, worst = 0;
+    groups.forEach((g) => {
+      if (g.salons.length > 1) colliding += g.salons.length;
+      if (g.salons.length > worst) worst = g.salons.length;
+    });
+    return { main: String(colliding),
+             sub: Object.keys(salons).length + " salons on " + groups.length +
+                  " photos, worst " + worst + " on one" };
+  }
+
+  function mCardfield(doc, win) {
+    const sig = (e) => { const c = win.getComputedStyle(e);
+                         return c.fontSize + " / " + c.fontWeight + " / " + hex(c.color); };
+    let cards = 0, identical = 0, priceSig = "";
+    doc.querySelectorAll('a[href*="/salon/"]').forEach((a) => {
+      const h3 = a.querySelector("h3");
+      if (!h3 || !h3.parentElement || !h3.parentElement.parentElement) return;
+      const stack = h3.parentElement.parentElement;
+      const leaves = textLeaves(stack);
+      let price = null;
+      for (let i = leaves.length - 1; i >= 0; i--) {
+        if (isPriceText((leaves[i].textContent || "").trim())) { price = leaves[i]; break; }
+      }
+      if (!price) return;
+      cards++;
+      const ps = sig(price);
+      if (!priceSig) priceSig = ps;
+      const others = leaves.filter((e) => e !== h3 && e !== price && !h3.contains(e) &&
+                                          !price.contains(e) && (e.textContent || "").trim().length > 2);
+      if (others.some((e) => sig(e) === ps)) identical++;
+    });
+    return { main: identical + " of " + cards, sub: "price reads " + (priceSig || "not found") };
+  }
+
+  function mRhythm(doc, win) {
+    /* Read from the CONTAINER's own content-box edge, never from a child's rect: the cards carry
+       an entrance transform and getBoundingClientRect reports it, so probing a child returns a
+       number that changes purely with when you happened to look. */
+    const firstBoxTop = (el) => {
+      const cs = win.getComputedStyle(el);
+      return rect(el).top + (parseFloat(cs.borderTopWidth) || 0) + (parseFloat(cs.paddingTop) || 0);
+    };
+    const gaps = [];
+    let stack = null;
+    doc.querySelectorAll("div.mt-2").forEach((s) => {
+      if (!stack && /px-\[2px\]/.test((s.className || "").toString())) stack = s;
+    });
+    const unit = (stack && stack.previousElementSibling)
+      ? r2(rect(stack).top - rect(stack.previousElementSibling).bottom) : null;
+    doc.querySelectorAll("div.pt-1.pb-2").forEach((fr) => {
+      const h = fr.querySelector("h1,h2,h3");
+      if (!h) return;
+      const kids = [...fr.children];
+      if (kids.length > 1) gaps.push(r2(firstBoxTop(kids[1]) - rect(h).bottom));
+      if (kids.length > 2) gaps.push(r2(firstBoxTop(kids[2]) - rect(kids[1]).bottom));
+    });
+    const fh = doc.querySelector("div.px-6.py-2 > h2.mb-3");
+    if (fh && fh.nextElementSibling) {
+      gaps.push(r2(rect(fh.nextElementSibling).top - rect(fh).bottom));
+    }
+    if (!gaps.length || !unit) return { main: "n/a", sub: "sections not mounted" };
+    const failing = gaps.filter((g) => g / unit < 2).length;
+    return { main: failing + " of " + gaps.length,
+             sub: "unit " + unit + "px, gaps " + Math.min.apply(null, gaps) +
+                  " to " + Math.max.apply(null, gaps) + "px" };
+  }
+
+  function mLoudest(doc) {
+    const sec = doc.querySelector('section[aria-label="Walk-in"]');
+    if (!sec) return { main: "n/a", sub: "band not mounted" };
+    const chips = [...sec.querySelectorAll('a[href*="/salon/"]')];
+    const runs = chips.flatMap((c) => textRuns(doc, c));
+    if (!runs.length) return { main: "n/a", sub: "band not mounted" };
+    const loud = (r) => r.size * (r.weight / 400);
+    const big = runs.slice().sort((a, b) => b.size - a.size || loud(b) - loud(a))[0];
+    const green = runs.filter((r) => r.color.replace(/\s/g, "") === "rgb(22,163,74)")
+                      .reduce((s, r) => s + r.area, 0);
+    return { main: big.size + "px / " + big.weight,
+             sub: '"' + big.text.slice(0, 20) + '", green text ' + green + " sq px" };
+  }
+
+  function mEdges(doc, win) {
+    let both = 0, helv = 0;
+    for (const el of doc.body.querySelectorAll("*")) {
+      if (el.closest("[data-fix-layer]")) continue;      // never measure our own marker layer
+      const cs = win.getComputedStyle(el);
+      if (cs.display === "none" || cs.visibility === "hidden") continue;
+      const r = rect(el);
+      /* opacity 0 is deliberately NOT excluded. The review rail carries a scroll-reveal that
+         never fires inside a short stacked pane, so excluding it reads 0 before AND 0 after,
+         which is the exact shape of a change that looks finished and has moved nothing. */
+      if (r.width >= 100 && r.height >= 60 && fullBorder(cs) && realShadow(cs.boxShadow)) both++;
+      const first = (cs.fontFamily || "").toLowerCase().split(",")[0].replace(/["']/g, "").trim();
+      if (first.indexOf("helvetica") === 0) {
+        let own = false;
+        for (const nd of el.childNodes) if (nd.nodeType === 3 && nd.textContent.trim()) { own = true; break; }
+        if (own) helv++;
+      }
+    }
+    return { main: String(both), sub: helv + " elements in a fallback typeface" };
+  }
+
+  /* ================================================================
+   * SIX CHANGES. Every one is idempotent and latches STRUCTURALLY, never on a
+   * boolean: React reconciles the subtree a beat after the first paint, and a
+   * flag that survives on the wrapper makes a reverted change look applied.
+   * ================================================================ */
+
+  const tag = (el, id) => el.setAttribute("data-fix", id);
+
+  /* ---- 1. the failed-image box ---- */
+  const ICONS = {
+    coiffeur: "/icons/categories/scissors.png", hair: "/icons/categories/scissors.png",
+    barbershop: "/icons/categories/clippers.png", barber: "/icons/categories/clippers.png",
+    nails: "/icons/categories/nails.png", spa: "/icons/categories/spa.png",
+    massage: "/icons/categories/spa.png", wellness: "/icons/categories/spa.png"
+  };
+  function iconFor(cat) {
+    cat = (cat || "").toLowerCase().trim();
+    if (ICONS[cat]) return ICONS[cat];
+    for (const k in ICONS) if (cat.indexOf(k) > -1) return ICONS[k];
+    return "/icons/categories/scissors.png";
+  }
+  /* 52px tile, radius 15, icon at 66% object-contain: WalkInBand.tsx:71-78 verbatim, not eyeballed.
+     White here because the ground is already the sunken tray (FLOORS LAW 4, edge visibility). */
+  function iconTile(doc, src) {
+    const s = doc.createElement("span");
+    s.setAttribute("data-fix-tile", "1");
+    s.setAttribute("style", "display:grid;place-items:center;width:52px;height:52px;flex:0 0 52px;" +
+      "border-radius:15px;background:#FFFFFF;box-shadow:0 1px 2px rgba(10,10,10,.06)");
+    const i = doc.createElement("img");
+    i.src = src; i.alt = "";
+    i.setAttribute("style", "width:66%;height:66%;object-fit:contain");
+    s.appendChild(i);
+    return s;
+  }
+  function swapToFallback(doc, img) {
+    if (img.dataset.fixFallback) return;
+    img.dataset.fixFallback = "1";
+    const parts = (img.getAttribute("alt") || "").split(",");
+    const name = (parts[0] || "").trim(), cat = (parts[1] || "").trim();
+    const initial = name.replace(/[^0-9A-Za-z]/g, "").slice(0, 1);
+    const ph = doc.createElement("div");
+    ph.className = img.className;
+    ph.setAttribute("style", img.getAttribute("style") || "");
+    ph.style.background = SUNKEN;
+    ph.style.display = "flex"; ph.style.flexDirection = "column";
+    ph.style.alignItems = "center"; ph.style.justifyContent = "center"; ph.style.gap = "8px";
+    ph.setAttribute("role", "img");
+    ph.setAttribute("aria-label", name ? (name + ", photo unavailable") : "Photo unavailable");
+    tag(ph, "photo");
+    ph.appendChild(iconTile(doc, iconFor(cat)));
+    if (initial) {
+      const ini = doc.createElement("span");
+      ini.textContent = initial;
+      ini.setAttribute("style", "font:600 14px/1 Inter,system-ui,sans-serif;color:#6B6B6B");
+      ph.appendChild(ini);
+    }
+    img.parentNode.insertBefore(ph, img);
+    img.style.display = "none";
+  }
+  function applyPhoto(doc) {
+    /* Structural latch: the trigger IS the glyph. If React puts the glyph back this sees it and
+       treats it again, which a done-flag on the wrapper could never do. */
+    [...doc.querySelectorAll('[role="img"]')].forEach((box) => {
+      if (!box.querySelector("svg.lucide-image")) return;
+      if (rect(box).width <= 200) return;
+      box.querySelectorAll("svg.lucide-image").forEach((g) => g.parentNode.removeChild(g));
+      box.setAttribute("aria-label", "Image slot, partner photo pending");
+      box.style.border = "1px solid " + HAIRLINE;
+      tag(box, "photo");
+      if (!box.querySelector("[data-fix-tile]")) box.appendChild(iconTile(doc, ICONS.coiffeur));
+    });
+    /* The guard for any image that genuinely fails. No failure is forced here, see the header. */
+    doc.querySelectorAll("img").forEach((img) => {
+      if (img.dataset.fixGuard === "1") return;
+      img.dataset.fixGuard = "1";
+      img.addEventListener("error", () => swapToFallback(doc, img));
+      if (img.complete && img.naturalWidth === 0) swapToFallback(doc, img);
+    });
+  }
+
+  /* ---- 2. one photograph per salon ---- */
+  const DIR = "/_mockups/_assets/salon-photos/";
+  /* 8 perceptually distinct files out of the 12 in the folder (p05=p04, p08=p02, p10=p01,
+     p11=p09 by dHash). Root-relative because the static server drops the trailing slash, so a
+     relative path resolves one level too high. */
+  const BY_CATEGORY = {
+    "Coiffeur": ["p12.jpg", "p09.jpg", "p01.jpg", "p03.jpg"],
+    "Barbershop": ["p03.jpg", "p01.jpg"],
+    "Nails": ["p06.jpg", "p07.jpg"],
+    "Spa & Wellness": ["p04.jpg", "p02.jpg"]
+  };
+  const POOL = ["p01.jpg", "p02.jpg", "p03.jpg", "p04.jpg", "p06.jpg", "p07.jpg", "p09.jpg", "p12.jpg"];
+  function applyDupes(doc) {
+    const all = salonImgs(doc);
+    if (!all.length) return;
+    /* The salon whose FIRST slot appears earliest in document order keeps the photograph. Every
+       other salon on it is reassigned, and reassigned on ALL of its slots, so no salon ends up
+       wearing two different photographs, which would trade one defect for another. */
+    const owner = {}, order = [], seen = {};
+    all.forEach((o) => {
+      const k = photoKey(o.el);
+      if (!(k in owner)) owner[k] = o.salon;
+      if (!seen[o.salon]) { seen[o.salon] = 1; order.push(o); }
+    });
+    const used = {}, assign = {};
+    order.forEach((o) => {
+      const k = photoKey(o.el);
+      if (owner[k] === o.salon) return;
+      const pool = (BY_CATEGORY[o.category] || []).concat(POOL);
+      for (const f of pool) if (!used[f]) { used[f] = 1; assign[o.salon] = f; break; }
+    });
+    all.forEach((o) => {
+      const file = assign[o.salon];
+      if (!file) return;
+      const im = o.el, want = DIR + file;
+      if (im.getAttribute("src") !== want) {
+        im.removeAttribute("srcset"); im.removeAttribute("sizes");
+        im.setAttribute("src", want);
+        im.setAttribute("loading", "eager");    // the rail lazy-loads and a comparison must paint
+        im.setAttribute("decoding", "sync");
+        im.style.objectFit = "cover";
+      }
+      tag(im.parentElement || im, "dupes");
+    });
+  }
+
+  /* ---- 3. the card's second ink anchor ---- */
+  function applyCardfield(doc) {
+    doc.querySelectorAll('a[href*="/salon/"]').forEach((a) => {
+      if (a.closest('section[aria-label="Walk-in"]')) return;   // see header, second difference
+      const h3 = a.querySelector("h3");
+      if (!h3 || !h3.parentElement || !h3.parentElement.parentElement) return;
+      const stack = h3.parentElement.parentElement;
+      const leaves = textLeaves(stack);
+      let price = null;
+      for (let i = leaves.length - 1; i >= 0; i--) {
+        if (isPriceText((leaves[i].textContent || "").trim())) { price = leaves[i]; break; }
+      }
+      if (!price) return;
+      /* No done-flag on purpose: re-applying is idempotent, so this outlives hydration and every
+         later re-render. A flag here measured as a silent revert that still reported success. */
+      h3.style.color = INK;
+      price.style.fontWeight = "600";
+      price.style.color = INK;
+      price.style.fontVariantNumeric = "tabular-nums";
+      tag(price, "cardfield");
+      /* Everything else in the stack is filler and is pinned to ink-2 at body weight. On the live
+         card those already compute to 12 / 400 / #6B6B6B, so this pins the rule rather than
+         moving a pixel, and it is reported as such rather than claimed as a change. */
+      leaves.forEach((e) => {
+        if (e === h3 || e === price || h3.contains(e) || price.contains(e)) return;
+        e.style.color = INK2;
+        e.style.fontWeight = "400";
+      });
+    });
+  }
+
+  /* ---- 4. rhythm ---- */
+  const RHYTHM_CSS = [
+    /* A. heading to its own rail. ScrollRow carries py-1, so mt 4 to 12 puts the first card 16px down. */
+    "div.pt-1.pb-2 > div.items-baseline + div.mt-1.overflow-x-auto{margin-top:12px !important}",
+    /* B. heading to a non-rail block. Element-agnostic on purpose: the map renders as an anchor,
+       not a div, so a `div.mt-1` selector here silently matched nothing and that gap never moved. */
+    "div.pt-1.pb-2 > div.items-baseline + .mt-1:not(.overflow-x-auto){margin-top:16px !important}",
+    /* C. block to block inside one section. `.overflow-hidden` buys the specificity to outrank A. */
+    "div.pt-1.pb-2.overflow-hidden > div.items-baseline + * + div.mt-1.overflow-x-auto{margin-top:20px !important}",
+    /* D. the mobile category heading to its own grid. 12 to 16. */
+    "div.px-6.py-2 > h2.mb-3{margin-bottom:16px !important}"
+  ].join("\n");
+  function applyRhythm(doc) {
+    if (!doc.getElementById("fix-rhythm")) {
+      const st = doc.createElement("style");
+      st.id = "fix-rhythm";
+      st.textContent = RHYTHM_CSS;
+      (doc.head || doc.documentElement).appendChild(st);
+    }
+    doc.querySelectorAll("div.pt-1.pb-2").forEach((fr) => {
+      if (fr.querySelector("h1,h2,h3")) tag(fr, "rhythm");
+    });
+  }
+
+  /* ---- 5. the loudest element ---- */
+  function applyLoudest(doc) {
+    const sec = doc.querySelector('section[aria-label="Walk-in"]');
+    if (!sec) return;
+    sec.querySelectorAll('a[href*="/salon/"]').forEach((c) => {
+      const nameSpan = c.querySelector("span.truncate");
+      const nameRow = nameSpan ? nameSpan.parentElement : null;
+      if (!nameRow) return;
+      /* Structural latch, not a boolean: if the name row is already the chip's first child the
+         work is done. A dataset flag survives React rebuilding the children underneath it, which
+         is how a reverted change keeps reporting itself as applied. */
+      if (c.firstElementChild === nameRow) return;
+      const waitEl = c.firstElementChild;
+      if (!waitEl || waitEl === nameRow) return;
+      const win = doc.defaultView;
+      const waitText = waitEl.textContent.trim();
+      if (!waitText) return;
+      const freeNow = !/\d/.test(waitText);          // the digit-free label is the zero-wait state
+
+      /* the orphan sub-line under the estimate, identified STRUCTURALLY (small, semibold, no
+         digits, not the name row) rather than by matching the page's own copy */
+      let sub = waitEl.nextElementSibling;
+      if (sub && sub !== nameRow) {
+        const t = sub.textContent.trim(), scs = win.getComputedStyle(sub);
+        const looks = t.length > 0 && t.length <= 24 && !/\d/.test(t) &&
+                      parseFloat(scs.fontSize) <= 13 && (parseInt(scs.fontWeight, 10) || 400) >= 600;
+        if (!looks) sub = null;
+      } else sub = null;
+      const subText = sub ? sub.textContent.trim() : "";
+
+      const meta = doc.createElement("div");
+      meta.setAttribute("data-fix-wait", "1");
+      meta.style.cssText = "margin-top:3px;font-family:Inter,system-ui,sans-serif;" +
+        "font-size:12px;font-weight:400;line-height:1.35;color:" + INK2 + ";" +
+        "display:flex;align-items:center;gap:6px";
+      if (freeNow) {
+        const dot = doc.createElement("span");   // semantic green survives as an icon, not as text
+        dot.setAttribute("aria-hidden", "true");
+        dot.style.cssText = "width:7px;height:7px;border-radius:9999px;background:" + OK + ";flex:0 0 auto";
+        meta.appendChild(dot);
+      }
+      meta.appendChild(doc.createTextNode(subText && !freeNow ? waitText + " " + subText : waitText));
+
+      waitEl.remove();
+      if (sub) sub.remove();
+      nameRow.style.marginTop = "0px";
+      tag(nameRow, "loudest");
+      c.insertBefore(nameRow, c.firstChild);
+      c.insertBefore(meta, c.lastElementChild);
+    });
+  }
+
+  /* ---- 6. one edge mechanism per card, one typeface on the page ---- */
+  const INTER_STACK = "Inter, 'Inter Fallback', Inter, system-ui, -apple-system, sans-serif";
+  function applyEdges(doc) {
+    const win = doc.defaultView;
+    for (const el of doc.body.querySelectorAll("*")) {
+      if (el.closest("[data-fix-layer]")) continue;
+      const cs = win.getComputedStyle(el);
+      if (cs.display === "none" || cs.visibility === "hidden") continue;
+      const r = rect(el);
+      if (r.width < 100 || r.height < 60) continue;
+      if (!(fullBorder(cs) && realShadow(cs.boxShadow))) continue;
+      /* Take the elevation OUT of the transition list first. Reviews.tsx:148 declares
+         transition-[transform,box-shadow], so writing the property starts a 200ms transition
+         instead of applying the value, and inside a throttled iframe that transition can still be
+         serving its START value many seconds later. Transform stays transitioned. */
+      el.style.transitionProperty = "transform";
+      el.style.boxShadow = "none";
+      /* Setting it inline also outranks the hover:shadow-elevation-3 rule, so the hover state
+         stops re-stacking the pair too. The card KEEPS its 1px hairline on all four sides: this
+         is not the de-carding direction the owner reverted 2026-07-18. */
+      tag(el, "edges");
+    }
+    if (!doc.getElementById("fix-edges-type")) {
+      /* A stylesheet rule, not a per-element pass, because mapbox appends its pins after first
+         paint. Only font-family is overridden: the mapbox shorthand also sets 12px/20px and the
+         size belongs to a different probe. */
+      const st = doc.createElement("style");
+      st.id = "fix-edges-type";
+      st.textContent = ".mapboxgl-map, .mapboxgl-map *{font-family:" + INTER_STACK + " !important}";
+      (doc.head || doc.documentElement).appendChild(st);
+    }
+    const map = doc.querySelector(".mapboxgl-map");
+    if (map) tag(map, "edges");
+  }
+
+  /* ================================================================
+   * THE SIX, in the order the rows show them.
+   * ================================================================ */
+  const FIXES = [
+    { id: "photo", label: "empty slot, not broken",
+      name: "Broken photo box on the partner block",
+      what: "failed-image icons on the page", apply: applyPhoto, measure: mPhoto,
+      anchor: (d) => [...d.querySelectorAll('[role="img"]')].find((e) => rect(e).width > 200 &&
+                       (e.querySelector("svg.lucide-image") || e.getAttribute("data-fix") === "photo")) },
+    { id: "dupes", label: "its own photo",
+      name: "One photo standing in for three salons",
+      what: "salons wearing another salon's photo", apply: applyDupes, measure: mDupes,
+      anchor: (d) => (salonImgs(d)[0] || {}).el },
+    { id: "cardfield", label: "price = ink anchor",
+      name: "Price, address and category look identical",
+      what: "cards where the price reads as filler", apply: applyCardfield, measure: mCardfield,
+      anchor: (d) => d.querySelector('a[href*="/salon/"] h3') },
+    { id: "rhythm", label: "16 and 24, unit held at 8",
+      name: "Every gap on the page is the same gap",
+      what: "relationships under the 2x grouping floor", apply: applyRhythm, measure: mRhythm,
+      anchor: (d) => d.querySelector("div.pt-1.pb-2") },
+    { id: "loudest", label: "salon leads, wait is meta",
+      name: "A wait estimate is the loudest thing in the feed",
+      what: "largest text inside a walk-in card", apply: applyLoudest, measure: mLoudest,
+      anchor: (d) => d.querySelector('section[aria-label="Walk-in"]') },
+    { id: "edges", label: "one edge, pins Inter",
+      name: "Two edge mechanisms on one card, plus a stray typeface",
+      what: "cards drawing a border AND an elevation", apply: applyEdges, measure: mEdges,
+      anchor: (d) => d.querySelector('[data-fix="edges"]') ||
+                     [...d.body.querySelectorAll("*")].find((el) => {
+                       const r = rect(el); if (r.width < 100 || r.height < 60) return false;
+                       const cs = d.defaultView.getComputedStyle(el);
+                       return fullBorder(cs) && realShadow(cs.boxShadow);
+                     }) }
+  ];
+  const BY_ID = {};
+  FIXES.forEach((f) => { BY_ID[f.id] = f; });
+  /* Application order is NOT display order. Photographs are reassigned before the failed-image
+     guard is installed, so the guard sees final sources; the two type passes run last. */
+  const APPLY_ORDER = ["dupes", "photo", "rhythm", "cardfield", "loudest", "edges"];
+
+  /* ================================================================
+   * MARKERS. An OVERLAY layer drawn from measured rects, so not one style
+   * lands on an element that is also being measured. See the header note.
+   * ================================================================ */
+  function markLayer(doc) {
+    let host = doc.querySelector("[data-fix-layer]");
+    if (!host) {
+      host = doc.createElement("div");
+      host.setAttribute("data-fix-layer", "1");
+      host.style.cssText = "position:absolute;left:0;top:0;width:0;height:0;overflow:visible;" +
+        "pointer-events:none;z-index:2147483000";
+      doc.body.appendChild(host);
+    }
+    return host;
+  }
+  function drawMarks(doc) {
+    const host = markLayer(doc);
+    host.textContent = "";
+    if (!annoOn) return;
+    const hr = rect(host);
+    const seenLabel = {};
+    doc.querySelectorAll("[data-fix]").forEach((el) => {
+      const id = el.getAttribute("data-fix");
+      if (!BY_ID[id]) return;
+      const r = rect(el);
+      if (r.width < 6 || r.height < 6) return;
+      const m = doc.createElement("div");
+      m.setAttribute("data-fix-mark", id);
+      m.style.cssText = "position:absolute;pointer-events:none;" +
+        "border:2px dashed rgba(10,10,10,.45);" +
+        "left:" + (r.left - hr.left - 3) + "px;top:" + (r.top - hr.top - 3) + "px;" +
+        "width:" + (r.width + 6) + "px;height:" + (r.height + 6) + "px";
+      if (!seenLabel[id]) {
+        seenLabel[id] = 1;
+        const lab = doc.createElement("span");
+        lab.textContent = BY_ID[id].label;
+        /* Above the mark when there is room, INSIDE it when there is not. Measured at 390x844:
+           the section-frame mark starts at the very top of the pane, so a label pinned at -22px
+           landed on top of the pane's own AFTER chip and read as noise. */
+        const er = rect(el);
+        const roomAbove = er.top > 26;
+        /* NOT clipped to the mark's own width. Measured: the price leaf is about 60px wide, so a
+           label constrained to it rendered as "pr..." and told the reader nothing. The label
+           overflows instead, and anchors to whichever side keeps it on the pane. */
+        const rightHalf = er.left > el.ownerDocument.defaultView.innerWidth * 0.55;
+        lab.style.cssText = "position:absolute;" + (rightHalf ? "right:4px;" : "left:4px;") +
+          (roomAbove ? "top:-22px;" : "top:4px;") +
+          "background:rgba(10,10,10,.88);color:#fff;" +
+          "font:600 10px/1.4 Inter,system-ui,sans-serif;padding:3px 8px;" +
+          "border-radius:999px;white-space:nowrap";
+        m.appendChild(lab);
+      }
+      host.appendChild(m);
+    });
+  }
+
+  /* ================================================================
+   * HARNESS
+   * ================================================================ */
+  const enabled = new Set(FIXES.map((f) => f.id));
+  let annoOn = true;
+  /* Boot in BOTH regardless of width, then settle to the width's default once each pane has been
+     measured once. Measured defect this fixes: at 390 the default is the single fixed pane, the
+     untouched pane is therefore display:none from the first frame, it never has layout, and the
+     "now" column sat on "reading" forever. The comparison cannot start from a state where half
+     of it is unmeasurable. */
+  const bootMode = window.innerWidth >= 900 ? "both" : "after";
+  let mode = "both";
+  let bootSettled = false;
+  let seq = 0, beat = null;
+  let beforeDoc = null, afterDoc = null;
+  const last = { before: {}, after: {} };     // last LIVE reading, kept while a pane is hidden
+
+  function painted(doc) {
+    if (!doc || !doc.body) return false;
+    if (!doc.querySelector("h1,h2")) return false;
+    let tall = 0;
+    doc.querySelectorAll('a[href*="/salon/"]').forEach((a) => { if (rect(a).height >= 150) tall++; });
+    return tall >= 3;
+  }
+  /* PAINTED is not enough: the review rail mounts near y 2450 and the walk-in band later still,
+     so a change injected at first paint runs against an empty set and marks itself done. The
+     gate is the DEFECT SET being present, not just three tall cards. The relaxed form exists so
+     one slow client fetch cannot wedge the page forever. */
+  function ready(doc, relaxed) {
+    if (!painted(doc)) return false;
+    if (doc.querySelectorAll("div.pt-1.pb-2").length < 3) return false;
+    if (relaxed) return true;
+    return !!doc.querySelector('section[aria-label="Walk-in"] a[href*="/salon/"]');
+  }
+  function waitReady(frame) {
+    return new Promise((resolve, reject) => {
+      const t0 = Date.now();
+      (function poll() {
+        let doc = null;
+        try { doc = frame.contentDocument; } catch (err) { return reject(err); }
+        /* The stale marker is why this cannot resolve on the OLD document: after a reload,
+           contentDocument still points at the previous, fully mounted page for a moment. */
+        const fresh = doc && doc.body && !doc.body.dataset.fixStale;
+        if (fresh && ready(doc, Date.now() - t0 > 15000)) return resolve(doc);
+        if (Date.now() - t0 > 60000) return reject(new Error("timeout waiting for the route"));
+        setTimeout(poll, 200);
+      })();
+    });
+  }
+  /* Walk the whole document once so every lazily mounted section and every scroll-reveal exists
+     before anything is measured or changed. */
+  async function mountAll(doc) {
+    const win = doc.defaultView;
+    doc.documentElement.style.scrollBehavior = "auto";
+    const h = doc.documentElement.scrollHeight;
+    for (let y = 0; y <= h; y += 600) { win.scrollTo(0, y); await new Promise((r) => setTimeout(r, 45)); }
+    win.scrollTo(0, 0);
+    await new Promise((r) => setTimeout(r, 250));
+  }
+
+  function applyEnabled(doc) {
+    APPLY_ORDER.forEach((id) => {
+      if (!enabled.has(id)) return;
+      try { BY_ID[id].apply(doc); }
+      catch (err) { console.error("[home-fixes] " + id + " failed:", err); }
+    });
+  }
+
+  function measureOne(f, doc) {
+    try { return f.measure(doc, doc.defaultView); }
+    catch (err) {
+      console.error("[home-fixes] measuring " + f.id + " failed:", err);
+      return { main: "err", sub: String(err).slice(0, 40) };
+    }
+  }
+  function readPane(frame, store) {
+    let doc = null;
+    try { doc = frame.contentDocument; } catch (err) { return; }
+    if (!doc || !doc.body || !ready(doc, true)) return;
+    /* A pane the toggle has hidden is display:none, so every rect inside it is zero and a fresh
+       reading comes back empty. Keep the last valid one rather than printing zeroes. */
+    if (rect(frame).width < 1) return;
+    FIXES.forEach((f) => { store[f.id] = measureOne(f, doc); });
+  }
+  function refresh() {
+    readPane(fBefore, last.before);
+    readPane(fAfter, last.after);
+    paintRows();
+    settleBoot();
+  }
+  function settleBoot() {
+    if (bootSettled) return;
+    if (!Object.keys(last.before).length || !Object.keys(last.after).length) return;
+    bootSettled = true;
+    if (bootMode !== "both") setMode(bootMode);
+  }
+
+  function paintRows() {
+    FIXES.forEach((f) => {
+      const row = document.querySelector('.row[data-id="' + f.id + '"]');
+      if (!row) return;
+      const on = enabled.has(f.id);
+      row.dataset.on = on ? "1" : "0";
+      const b = last.before[f.id], a = last.after[f.id];
+      const nowEl = row.querySelector(".now"), fixEl = row.querySelector(".fix");
+      nowEl.innerHTML = b ? (b.main + "<small>" + b.sub + "</small>") : "reading";
+      fixEl.innerHTML = a ? (a.main + "<small>" + a.sub + "</small>") : "reading";
+      fixEl.className = "num fix" + (!on ? " off" : (b && a && a.main !== b.main ? " moved" : ""));
+    });
+    $("tagAfter").textContent = "AFTER, " + enabled.size + " of 6 injected";
+  }
+
+  const status = (t) => { statusEl.innerHTML = t; };
+
+  function startBeat(token) {
+    if (beat) clearInterval(beat);
+    beat = setInterval(() => {
+      if (token !== seq) return;
+      let doc = null;
+      try { doc = fAfter.contentDocument; } catch (err) { return; }
+      if (!doc || !doc.body || doc.body.dataset.fixStale || !ready(doc, true)) return;
+      applyEnabled(doc);          // idempotent, so this survives any later React re-render
+      relandIfReset(doc);
+      relandIfReset(beforeDoc);   // both panes, so the two sides never drift apart
+      rememberY();
+      drawMarks(doc);
+      refresh();
+    }, 1600);
+  }
+
+  /* A change to the fix set RELOADS the After pane, then applies the new set to a clean render.
+     Six inverse operations (un-swapping sources, un-moving nodes, restoring inline styles) would
+     each be a place for this page to lie about what is applied. A reload cannot lie. */
+  let rebuildTimer = null;
+  const rebuildAfter = () => { clearTimeout(rebuildTimer); rebuildTimer = setTimeout(doRebuild, 220); };
+
+  function doRebuild() {
+    seq++;
+    const token = seq;
+    status("applying <b>" + enabled.size + "</b> of 6 to the right pane");
+    paintRows();
+    try { const d = fAfter.contentDocument; if (d && d.body) d.body.dataset.fixStale = "1"; }
+    catch (err) {}
+    try { fAfter.contentWindow.location.reload(); }
+    catch (err) { fAfter.setAttribute("src", "/de"); }
+    waitReady(fAfter).then(async (doc) => {
+      if (token !== seq) return;
+      afterDoc = doc;
+      await mountAll(doc);
+      if (token !== seq) return;
+      applyEnabled(doc);
+      drawMarks(doc);
+      doc.body.dataset.sweepDone = String(enabled.size);
+      land(doc);
+      refresh();
+      startBeat(token);
+      status("right pane carries <b>" + enabled.size + "</b> of 6");
+      window.__READY__ = true;
+    }).catch((err) => {
+      console.error("[home-fixes] the route never painted:", err);
+      status("the live route never painted, is the dev server up");
+    });
+  }
+
+  /* Park a document on the salon rail: the densest judgement surface on the page, where the
+     cards, the prices, the photographs and the rhythm all land at once.
+     RE-ASSERTED, not set once. Measured at 390x844: a single scroll landed correctly and both
+     panes were then back at the hero by the time the screenshot was taken, because the router
+     restores scroll to zero during hydration and wins the race. Re-assert only while the pane
+     reads the zero-reset signature, and only for a bounded window, so this never fights the
+     reader once they scroll somewhere themselves. */
+  let landUntil = 0;
+  const land = (doc) => {
+    landUntil = Date.now() + 14000;
+    scrollDocTo(doc, doc.querySelector("div.pt-1.pb-2"), 12);
+  };
+  function relandIfReset(doc) {
+    if (!doc || !doc.defaultView || Date.now() > landUntil) return;
+    if (doc.defaultView.scrollY < 40) scrollDocTo(doc, doc.querySelector("div.pt-1.pb-2"), 12);
+  }
+
+  /* A pane hidden by the toggle is display:none, so it has NO layout: every rect inside it reads
+     zero and a scroll target computes to zero, which is why the hidden pane measured at scrollY 0
+     while the visible one sat at 817. Flipping the toggle would then have compared the hero
+     against the salon rail. So the last live scroll position is remembered, and whichever pane
+     becomes visible is put there. */
+  let lastY = 0;
+  function rememberY() {
+    [[fBefore, beforeDoc], [fAfter, afterDoc]].forEach(([frame, doc]) => {
+      if (!doc || !doc.defaultView) return;
+      if (rect(frame).width < 1) return;                  // no layout, so its scrollY means nothing
+      const y = doc.defaultView.scrollY;
+      if (y > 0) lastY = y;
+    });
+  }
+  function applyY() {
+    [[fBefore, beforeDoc], [fAfter, afterDoc]].forEach(([frame, doc]) => {
+      if (!doc || !doc.defaultView || rect(frame).width < 1) return;
+      if (Math.abs(doc.defaultView.scrollY - lastY) < 4) return;
+      doc.documentElement.style.scrollBehavior = "auto";
+      doc.documentElement.scrollTop = lastY;
+    });
+  }
+  function scrollDocTo(doc, target, pad) {
+    if (!target) return;
+    try {
+      const win = doc.defaultView;
+      /* scrollTop after killing smooth behaviour. scrollIntoView walks every scrollable ancestor
+         and these cards sit in a horizontal rail, so it spends itself on the rail; and
+         globals.css:611 sets scroll-behavior:smooth, which is rAF driven and gets throttled
+         inside an iframe, so a smooth scroll can never arrive. */
+      doc.documentElement.style.scrollBehavior = "auto";
+      doc.documentElement.scrollTop = Math.max(0, rect(target).top + win.scrollY - (pad || 12));
+    } catch (err) { console.error("[home-fixes] scroll failed:", err); }
+  }
+  function jump(id) {
+    [beforeDoc, afterDoc].forEach((doc) => {
+      if (!doc || !doc.body) return;
+      let t = null;
+      try { t = BY_ID[id].anchor(doc); } catch (err) {}
+      scrollDocTo(doc, t, 12);
+    });
+    if (afterDoc) setTimeout(() => drawMarks(afterDoc), 120);
+    setTimeout(refresh, 320);
+  }
+
+  /* ---------------- rows ---------------- */
+  function buildRows() {
+    const host = $("rowList");
+    FIXES.forEach((f) => {
+      const row = document.createElement("div");
+      row.className = "row";
+      row.dataset.id = f.id;
+      row.dataset.on = "1";
+      row.innerHTML =
+        '<label class="sw"><input type="checkbox" checked aria-label="apply this fix"></label>' +
+        '<button class="rowMain" type="button">' +
+          '<span class="rowName"></span><span class="rowWhat"></span>' +
+        '</button>' +
+        '<div class="num now">reading</div><div class="num fix">reading</div>' +
+        '<button class="only" type="button">only</button>';
+      row.querySelector(".rowName").textContent = f.name;
+      row.querySelector(".rowWhat").textContent = f.what;
+      row.querySelector("input").addEventListener("change", (e) => {
+        if (e.target.checked) enabled.add(f.id); else enabled.delete(f.id);
+        rebuildAfter();
+      });
+      row.querySelector(".only").addEventListener("click", () => {
+        enabled.clear(); enabled.add(f.id);
+        syncBoxes(); rebuildAfter(); jump(f.id);
+      });
+      row.querySelector(".rowMain").addEventListener("click", () => jump(f.id));
+      host.appendChild(row);
+    });
+  }
+  function syncBoxes() {
+    FIXES.forEach((f) => {
+      const row = document.querySelector('.row[data-id="' + f.id + '"]');
+      if (row) row.querySelector("input").checked = enabled.has(f.id);
+    });
+  }
+
+  /* ---------------- mode ---------------- */
+  function setMode(m) {
+    mode = m;
+    $("stage").dataset.mode = m;
+    $("paneBefore").hidden = m === "after";
+    $("paneAfter").hidden = m === "before";
+    $("mBefore").setAttribute("aria-pressed", String(m === "before"));
+    $("mBoth").setAttribute("aria-pressed", String(m === "both"));
+    $("mAfter").setAttribute("aria-pressed", String(m === "after"));
+    window.__MODE__ = m;
+    /* Two frames, so the pane that just became visible has real layout before it is scrolled. */
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      applyY();
+      if (afterDoc) drawMarks(afterDoc);
+      refresh();
+    }));
+    setTimeout(() => { applyY(); if (afterDoc) drawMarks(afterDoc); refresh(); }, 320);
+  }
+  $("mBefore").addEventListener("click", () => setMode("before"));
+  $("mBoth").addEventListener("click", () => setMode("both"));
+  $("mAfter").addEventListener("click", () => setMode("after"));
+  $("allOn").addEventListener("click", () => {
+    FIXES.forEach((f) => enabled.add(f.id)); syncBoxes(); rebuildAfter();
+  });
+  $("allOff").addEventListener("click", () => { enabled.clear(); syncBoxes(); rebuildAfter(); });
+  $("anno").addEventListener("change", (e) => {
+    annoOn = e.target.checked;
+    if (afterDoc) drawMarks(afterDoc);
+  });
+  window.addEventListener("resize", () => setTimeout(() => {
+    if (afterDoc) drawMarks(afterDoc);
+    refresh();
+  }, 220));
+
+  /* ---------------- verification helpers, read back by the checker ---------------- */
+  /* Each pane's OWN rect against the viewport, never the document scroll width: "the document
+     does not overflow" is the weaker check that missed a pane hanging off the edge twice. */
+  window.__paneFit = function () {
+    const vw = document.documentElement.clientWidth, vh = window.innerHeight;
+    const cols = getComputedStyle($("stage")).gridTemplateColumns.split(" ").filter(Boolean).length;
+    const out = { viewport: vw + "x" + vh, mode: mode, columns: cols, stacked: cols === 1,
+                  docScrollWidth: document.documentElement.scrollWidth, panes: [] };
+    ["paneBefore", "paneAfter"].forEach((id) => {
+      const el = $(id), r = rect(el);
+      out.panes.push({ id: id, visible: !el.hidden,
+        left: r1(r.left), right: r1(r.right), top: r1(r.top), bottom: r1(r.bottom),
+        width: r1(r.width), height: r1(r.height),
+        insideX: r.left >= -0.5 && r.right <= vw + 0.5,
+        insideY: r.top >= -0.5 && r.bottom <= vh + 0.5 });
+    });
+    out.allVisiblePanesInside = out.panes.filter((p) => p.visible).every((p) => p.insideX && p.insideY);
+    out.noHorizontalOverflow = document.documentElement.scrollWidth <= vw + 0.5;
+    return out;
+  };
+  window.__STATE__ = function () {
+    const rows = {};
+    FIXES.forEach((f) => {
+      rows[f.id] = { now: last.before[f.id] || null, fixed: last.after[f.id] || null,
+                     on: enabled.has(f.id) };
+    });
+    let sweep = null, marks = 0;
+    try {
+      sweep = fAfter.contentDocument.body.dataset.sweepDone;
+      marks = fAfter.contentDocument.querySelectorAll("[data-fix-mark]").length;
+    } catch (err) {}
+    return { mode: mode, enabled: [...enabled], sweepDone: sweep, marks: marks,
+             anno: annoOn, rows: rows };
+  };
+  window.__set = function (ids) {
+    enabled.clear(); (ids || []).forEach((i) => enabled.add(i));
+    syncBoxes(); doRebuild();
+  };
+
+  /* ---------------- boot ---------------- */
+  buildRows();
+  setMode(mode);
+  status("loading the two live panes");
+
+  waitReady(fBefore).then(async (doc) => {
+    beforeDoc = doc;
+    await mountAll(doc);
+    land(doc);
+    refresh();
+    /* Its own re-assertion too, so the untouched pane still lands on the rail even if the
+       changed pane never paints and its heartbeat never starts. */
+    setInterval(() => { relandIfReset(doc); refresh(); }, 1600);
+  }).catch((err) => {
+    console.error("[home-fixes] the untouched pane never painted:", err);
+    status("the live route never painted, is the dev server up");
+  });
+
+  doRebuild();
+})();
+</script>

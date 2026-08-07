@@ -1,0 +1,622 @@
+<!--
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx
+  Grounded-in: app/[locale]/_components/primitives/DateTimePicker.tsx
+
+  Exists-check: /de (app/[locale]/page.tsx) already renders MobileCategoriesRow FIRST
+  (page.tsx:200), then Hero, then the salon rails via SalonCard.tsx (read in full before drawing:
+  photo 5/4, Row 1 name + gold star with NO review count, Row 2 category label, Row 3 address left
+  + PriceFrom right). npm run exists run 2026-07-30: "home direction mockup" 0 hits, "availability"
+  17, "next slot" 0, "opening_hours" 6, "salon sort" 0, "salon card availability day" 0. REMOVED
+  hits: AvailabilityPill + NextSlotText (CARD_REDESIGN_2026-07-13 C2), staff availability-section
+  (2026-06-11), StaffAvailability zombie (2026-07-14), REMOVED.md:85 card-edge revert. NEW: only
+  the cross-salon per-day free count and the soonest-first sort.
+
+  Language: all chrome is ENGLISH. Only the salon NAMES are German or French, because they are
+  real Swiss business names, i.e. data, not copy. Each such line carries a `german-ok` marker.
+
+  How each REMOVED hit is honoured rather than ignored:
+    - AvailabilityPill + NextSlotText, deleted by C2 (SalonCard.tsx:250-253). Re-opened here ON
+      PURPOSE, so this is an owner ask with a mockup, not a build.
+    - "staff verfuegbarkeit availability-section", removed 2026-06-11, reason recorded as
+      "availability lives in the booking date picker".
+    - "barber-slug StaffAvailability resurrection zombie", re-deleted 2026-07-14 because a P2
+      auth-gate on /api/staff/[id]/availability turned its anonymous availability strip into a
+      fabricated "closed all week". That is THE failure mode of this direction; priced in the note
+      below, not glossed.
+    - "availability = plain ink text, NO green pill" (locked contract). Obeyed: the day row is
+      plain ink text carrying no tint of any colour.
+    - REMOVED.md:85, the reverted salon-page treatment whose card edges were stripped away.
+      Honoured: every salon here is a white CARD on the sunken tray carrying the locked whisper
+      elevation, which is the carded tier-card principle the owner kept, not the one he binned.
+
+  Treatment provenance (styling, not drawn features, so deliberately not Depicts lines): card
+  elevation = the `whisper` token at tailwind.config.js:275, value copied verbatim rather than
+  eyeballed. White-card-on-a-sunken-tray = FLOORS LAW 4 edge-visibility, option (a). Every inline
+  svg below is real Lucide markup copied from node_modules/lucide-react/dist/esm/icons: search,
+  sliders-horizontal, star, calendar-check, scissors. No path is hand-drawn.
+
+  Depicts (every surface drawn, traced BEFORE drawing):
+    Depicts: search summary pill -> app/[locale]/_components/search/SearchOverlay.tsx (EXISTS; live mobile ships a stacked segment control, this collapses it to one 44px row)
+    Depicts: filter icon-button -> app/[locale]/_components/search/FilterSheet.tsx (EXISTS)
+    Depicts: day-rail tile geometry -> app/[locale]/_components/primitives/DateTimePicker.tsx:121 (dateLayout="strip", stripDays default 14; composed not redrawn, per V3-D445)
+    Depicts: 3-row card stack, name+star then category then district+price -> app/[locale]/_components/homepage/SalonCard.tsx:502-546 (the exact shipped C11 anatomy)
+    Depicts: per-card next-free-DAY row -> app/[locale]/dev/map-extras/page.tsx:46 (already ships "Available today" at day granularity, its comment says never a clock time on a card)
+    Depicts: the dormant prop that row would fill -> app/[locale]/_components/homepage/SalonCard.tsx:302 (nextSlotLabel, kept unused-by-render by CARD_REDESIGN_2026-07-13 C2)
+    Depicts: per-card "N open" count -> app/api/availability/[salon_id]/route.ts:86 (returns available slots GROUPED BY DATE over availability_slots, a real table, 9365 rows, RLS on)
+    Depicts: day tile reading "closed" -> app/api/availability/unavailable-dates/route.ts (plus fully_booked_dates computed at app/api/availability/[salon_id]/route.ts:84)
+    Depicts: missing-photo fallback -> app/[locale]/_components/homepage/SalonCard.tsx:456-464 (EXISTS but renders the INITIAL ONLY, no category icon; card 6 is drawn to the brief's recipe, so it is one element richer than live)
+    Depicts: cross-salon per-day free count in the rail, "11 free" -> NET-NEW: every availability endpoint is per-salon, no aggregate exists, needs a fan-out or a materialised view
+    Depicts: "Soonest first" ordering -> NET-NEW: npm run exists "salon sort" returns 0, and /api/salons takes a date that HARD-FILTERS availability instead of ranking by it
+-->
+<title>Direction H, the Solen home feed salon card grounded in SalonCard</title>
+
+<style>
+  @font-face {
+    font-family: "dH-Inter";
+    src: url("/_mockups/_assets/fonts/inter-latin-var.woff2") format("woff2");
+    font-weight: 100 900;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "dH-InterTight";
+    src: url("/_mockups/_assets/fonts/inter-tight-latin-var.woff2") format("woff2");
+    font-weight: 100 900;
+    font-display: swap;
+  }
+
+  /* Measured 2026-07-30 at 390x844: the host's default 8px body margin pushed
+     documentElement.scrollWidth to 398 and gave the page a horizontal scroll at exactly the
+     design width. Zeroed here, plus the _BASE.md text-size lock so iOS Safari cannot inflate
+     the type. Not class-scoped because the defect is not class-scoped. */
+  body { margin: 0; }
+  .dH-root { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+  .dH-root {
+    /* Single light theme. White + #F4F4F5 only. No dark mode anywhere. */
+    --dH-ink: #0A0A0A;
+    --dH-ink-2: #6B6B6B;
+    --dH-sunken: #F4F4F5;
+    --dH-hairline: #E4E4E7;
+    /* tailwind.config.js:275 `whisper`, copied verbatim rather than eyeballed. */
+    --dH-whisper: 0 1px 3px rgba(10,10,10,0.04), 0 10px 28px -14px rgba(10,10,10,0.10);
+
+    width: 390px;
+    margin: 0 auto;
+    background: #FFFFFF;
+    font-family: "dH-Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--dH-ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  .dH-root *, .dH-root *::before, .dH-root *::after { box-sizing: border-box; }
+  .dH-root p, .dH-root h1, .dH-root h2, .dH-root h3 { margin: 0; }
+  /* Measured 2026-07-30: the search pill's label was computing to Arial, because a <button>
+     takes the UA font rather than inheriting. Without this the one piece of copy in the top
+     zone renders in the wrong typeface. */
+  .dH-root button { font-family: inherit; }
+
+  /* type scale: exactly 4 sizes (28 / 16 / 14 / 12), exactly 2 weights (400 / 600) */
+  .dH-anchor {
+    font-family: "dH-InterTight", "dH-Inter", sans-serif;
+    font-size: 28px; font-weight: 600; line-height: 1.15; letter-spacing: -0.022em;
+  }
+  .dH-name    { font-size: 16px; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; }
+  .dH-mid     { font-size: 14px; font-weight: 400; line-height: 1.3; }
+  .dH-mid-b   { font-size: 14px; font-weight: 600; line-height: 1.3; }
+  .dH-small   { font-size: 12px; font-weight: 400; line-height: 1.35; }
+  .dH-small-b { font-size: 12px; font-weight: 600; line-height: 1.35; }
+  .dH-quiet   { color: var(--dH-ink-2); }
+  .dH-num     { font-variant-numeric: tabular-nums; }
+  .dH-trunc   { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dH-fixed   { flex: 0 0 auto; }
+
+  /* the white top zone */
+  .dH-chrome { padding: 14px 0 16px; background: #FFFFFF; }
+
+  .dH-entry { display: flex; align-items: center; gap: 10px; padding: 0 16px; }
+  /* WHY_ENTRY position 2b: the control shows the QUERY because a query exists, never an
+     invitation over live state. One row at 44px. It is a button that opens SearchOverlay,
+     so radius = pill. */
+  .dH-search {
+    flex: 1 1 auto; min-width: 0;
+    display: flex; align-items: center; gap: 10px;
+    height: 44px; padding: 0 16px;
+    background: var(--dH-sunken);
+    border: 0; border-radius: 999px;
+    text-align: left; color: var(--dH-ink);
+  }
+  .dH-filter {
+    flex: 0 0 auto; display: grid; place-items: center;
+    width: 44px; height: 44px;
+    background: #FFFFFF;
+    border: 1px solid var(--dH-hairline);
+    border-radius: 999px;
+  }
+
+  .dH-anchor-block { padding: 18px 16px 0; }
+  .dH-sub { margin-top: 4px; }
+
+  /* the day rail. Bleeds right so tile 6 crops: the scroll promise. */
+  .dH-rail { margin-top: 12px; padding-left: 16px; display: flex; gap: 8px; overflow: hidden; }
+  .dH-day {
+    flex: 0 0 60px; width: 60px; height: 66px; padding: 0 6px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+    background: #FFFFFF;
+    border: 1px solid var(--dH-hairline);
+    border-radius: 12px;
+  }
+  /* Locked selected state: #F4F4F5 fill + ink text + semibold. Never a black fill, and not
+     blue: a day rail on a browse surface is a FILTER, and filters are neutral. */
+  .dH-day--on { background: var(--dH-sunken); border-color: var(--dH-sunken); }
+  .dH-day--on .dH-quiet { color: var(--dH-ink); }
+  .dH-day--off { opacity: 0.5; }
+
+  /* the feed. Every salon is a white CARD on the sunken tray, carrying the locked whisper
+     elevation, so its edge is legible twice: tray contrast plus lift. */
+  .dH-feed { background: var(--dH-sunken); padding: 16px; }
+  .dH-feed-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 8px; margin-bottom: 12px;
+  }
+
+  .dH-card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--dH-whisper);
+  }
+  .dH-card + .dH-card { margin-top: 14px; }
+
+  .dH-photo { display: block; width: 100%; height: 200px; object-fit: cover; }
+  /* No photo: sunken fill + category icon + salon initial. Never a bare grey box. */
+  .dH-photo--none {
+    height: 200px; background: var(--dH-sunken);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 6px; color: var(--dH-ink-2);
+  }
+  .dH-initial {
+    font-family: "dH-InterTight", "dH-Inter", sans-serif;
+    font-size: 28px; font-weight: 600; line-height: 1; letter-spacing: -0.02em;
+  }
+
+  .dH-body { padding: 14px; display: flex; flex-direction: column; gap: 2px; }
+  .dH-row1 { display: flex; align-items: baseline; gap: 8px; }
+  .dH-rate { flex: 0 0 auto; display: flex; align-items: center; gap: 4px; }
+  .dH-row3 { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+
+  /* THE BET, rendered. Its own full-width row under a hairline, in the last position, so it
+     reads as the card's conclusion. Loud by position and by repeating down the feed, never
+     by a coloured tint. */
+  .dH-when {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 14px;
+    border-top: 1px solid var(--dH-hairline);
+  }
+  .dH-when-spacer { flex: 1 1 auto; }
+  .dH-ico { flex: 0 0 auto; display: block; }
+
+  /* note */
+  .dH-note {
+    background: #FFFFFF; border-top: 1px solid var(--dH-hairline);
+    padding: 20px 16px 28px;
+    font-size: 12px; font-weight: 400; line-height: 1.55; color: var(--dH-ink-2);
+  }
+  .dH-note h2 { font-size: 14px; font-weight: 600; color: var(--dH-ink); margin-bottom: 6px; }
+  .dH-note h3 { font-size: 12px; font-weight: 600; color: var(--dH-ink); margin: 16px 0 4px; }
+  .dH-note p + p { margin-top: 7px; }
+  .dH-note b { font-weight: 600; color: var(--dH-ink); }
+  .dH-note ul { margin: 4px 0 0; padding-left: 16px; }
+  .dH-note li { margin-bottom: 6px; }
+</style>
+
+<div class="dH-root">
+
+  <!-- the white top zone -->
+  <div class="dH-chrome">
+
+    <div class="dH-entry">
+      <button class="dH-search" type="button">
+        <svg class="dH-ico lucide lucide-search" width="18" height="18" viewBox="0 0 24 24"
+             fill="none" stroke="#6B6B6B" stroke-width="2" stroke-linecap="round"
+             stroke-linejoin="round" aria-hidden="true">
+          <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>
+        </svg>
+        <span class="dH-mid dH-trunc">Haircut in Z&uuml;rich</span>
+      </button>
+      <button class="dH-filter" type="button" aria-label="Filters">
+        <svg class="dH-ico lucide lucide-sliders-horizontal" width="18" height="18"
+             viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M10 5H3"/><path d="M12 19H3"/><path d="M14 3v4"/><path d="M16 17v4"/>
+          <path d="M21 12h-9"/><path d="M21 19h-5"/><path d="M21 5h-7"/><path d="M8 10v4"/>
+          <path d="M8 12H3"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="dH-anchor-block">
+      <h1 class="dH-anchor">Book this week</h1>
+      <p class="dH-small dH-quiet dH-sub">Earliest day you can go</p>
+    </div>
+
+    <!-- Day tiles carrying a real free count: verified in Superpower iOS, which ships
+         "10 slots" / "86 slots" / "103 slots" on exactly this control. Sunday prints
+         "closed" instead of vanishing, matching Zocdoc's grey "No appts" tile, Walmart's
+         five "Full" tiles and Fresha's greyed-out Sun and Mon. -->
+    <div class="dH-rail">
+      <div class="dH-day dH-day--on">
+        <span class="dH-small-b">Thu</span>
+        <span class="dH-mid-b dH-num">30</span>
+        <span class="dH-small-b dH-num">3 free</span>
+      </div>
+      <div class="dH-day">
+        <span class="dH-small dH-quiet">Fri</span>
+        <span class="dH-mid dH-num">31</span>
+        <span class="dH-small dH-quiet dH-num">11 free</span>
+      </div>
+      <div class="dH-day">
+        <span class="dH-small dH-quiet">Sat</span>
+        <span class="dH-mid dH-num">1</span>
+        <span class="dH-small dH-quiet dH-num">6 free</span>
+      </div>
+      <div class="dH-day dH-day--off">
+        <span class="dH-small dH-quiet">Sun</span>
+        <span class="dH-mid dH-num">2</span>
+        <span class="dH-small dH-quiet">closed</span>
+      </div>
+      <div class="dH-day">
+        <span class="dH-small dH-quiet">Mon</span>
+        <span class="dH-mid dH-num">3</span>
+        <span class="dH-small dH-quiet dH-num">14 free</span>
+      </div>
+      <div class="dH-day">
+        <span class="dH-small dH-quiet">Tue</span>
+        <span class="dH-mid dH-num">4</span>
+        <span class="dH-small dH-quiet dH-num">9 free</span>
+      </div>
+      <div class="dH-day">
+        <span class="dH-small dH-quiet">Wed</span>
+        <span class="dH-mid dH-num">5</span>
+        <span class="dH-small dH-quiet dH-num">12 free</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- feed -->
+  <div class="dH-feed">
+
+    <div class="dH-feed-head">
+      <h2 class="dH-mid-b">Soonest first</h2>
+      <span class="dH-small dH-quiet dH-num">24 salons</span>
+    </div>
+
+    <!-- card 1 -->
+    <article class="dH-card">
+      <img class="dH-photo" src="/_mockups/_assets/salon-photos/p01.jpg" alt="Coiffeur">
+      <div class="dH-body">
+        <div class="dH-row1">
+          <h3 class="dH-name dH-trunc">Coiffeur Bellevue</h3><!-- german-ok: salon NAME, data not chrome -->
+          <span class="dH-rate">
+            <svg class="dH-ico lucide lucide-star" width="14" height="14" viewBox="0 0 24 24"
+                 fill="#FFC32B" stroke="none" aria-hidden="true">
+              <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>
+            </svg>
+            <span class="dH-mid dH-quiet dH-num">4.9</span>
+          </span>
+        </div>
+        <p class="dH-small dH-quiet dH-trunc">Coiffeur</p>
+        <div class="dH-row3">
+          <span class="dH-small dH-quiet dH-trunc dH-num">8001 Z&uuml;rich</span>
+          <span class="dH-small dH-quiet dH-num dH-fixed">Haircut from CHF&nbsp;68</span>
+        </div>
+      </div>
+      <div class="dH-when">
+        <svg class="dH-ico lucide lucide-calendar-check" width="16" height="16"
+             viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/>
+          <path d="M3 10h18"/><path d="m9 16 2 2 4-4"/>
+        </svg>
+        <span class="dH-mid-b">Free today</span>
+        <span class="dH-when-spacer"></span>
+        <span class="dH-small dH-quiet dH-num">3 open</span>
+      </div>
+    </article>
+
+    <!-- card 2 -->
+    <article class="dH-card">
+      <img class="dH-photo" src="/_mockups/_assets/salon-photos/p03.jpg" alt="Barbershop">
+      <div class="dH-body">
+        <div class="dH-row1">
+          <h3 class="dH-name dH-trunc">Barbershop Langstrasse</h3><!-- german-ok: salon NAME, data not chrome -->
+          <span class="dH-rate">
+            <svg class="dH-ico lucide lucide-star" width="14" height="14" viewBox="0 0 24 24"
+                 fill="#FFC32B" stroke="none" aria-hidden="true">
+              <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>
+            </svg>
+            <span class="dH-mid dH-quiet dH-num">4.7</span>
+          </span>
+        </div>
+        <p class="dH-small dH-quiet dH-trunc">Barbershop</p>
+        <div class="dH-row3">
+          <span class="dH-small dH-quiet dH-trunc dH-num">8004 Z&uuml;rich</span>
+          <span class="dH-small dH-quiet dH-num dH-fixed">Skin fade from CHF&nbsp;45</span>
+        </div>
+      </div>
+      <div class="dH-when">
+        <svg class="dH-ico lucide lucide-calendar-check" width="16" height="16"
+             viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/>
+          <path d="M3 10h18"/><path d="m9 16 2 2 4-4"/>
+        </svg>
+        <span class="dH-mid-b">Free today</span>
+        <span class="dH-when-spacer"></span>
+        <span class="dH-small dH-quiet dH-num">1 open</span>
+      </div>
+    </article>
+
+    <!-- card 3 -->
+    <article class="dH-card">
+      <img class="dH-photo" src="/_mockups/_assets/salon-photos/p09.jpg" alt="Coiffeur">
+      <div class="dH-body">
+        <div class="dH-row1">
+          <h3 class="dH-name dH-trunc">Studio Nord Haarwerk</h3><!-- german-ok: salon NAME, data not chrome -->
+          <span class="dH-rate">
+            <svg class="dH-ico lucide lucide-star" width="14" height="14" viewBox="0 0 24 24"
+                 fill="#FFC32B" stroke="none" aria-hidden="true">
+              <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>
+            </svg>
+            <span class="dH-mid dH-quiet dH-num">4.8</span>
+          </span>
+        </div>
+        <p class="dH-small dH-quiet dH-trunc">Coiffeur</p>
+        <div class="dH-row3">
+          <span class="dH-small dH-quiet dH-trunc dH-num">8037 Z&uuml;rich</span>
+          <span class="dH-small dH-quiet dH-num dH-fixed">Cut and blow dry from CHF&nbsp;85</span>
+        </div>
+      </div>
+      <div class="dH-when">
+        <svg class="dH-ico lucide lucide-calendar-check" width="16" height="16"
+             viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/>
+          <path d="M3 10h18"/><path d="m9 16 2 2 4-4"/>
+        </svg>
+        <span class="dH-mid-b">Free tomorrow</span>
+        <span class="dH-when-spacer"></span>
+        <span class="dH-small dH-quiet dH-num">5 open</span>
+      </div>
+    </article>
+
+    <!-- card 4 -->
+    <article class="dH-card">
+      <img class="dH-photo" src="/_mockups/_assets/salon-photos/p10.jpg" alt="Coiffeur">
+      <div class="dH-body">
+        <div class="dH-row1">
+          <h3 class="dH-name dH-trunc">Atelier Coiffure Seefeld</h3><!-- german-ok: salon NAME, data not chrome -->
+          <span class="dH-rate">
+            <svg class="dH-ico lucide lucide-star" width="14" height="14" viewBox="0 0 24 24"
+                 fill="#FFC32B" stroke="none" aria-hidden="true">
+              <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>
+            </svg>
+            <span class="dH-mid dH-quiet dH-num">5.0</span>
+          </span>
+        </div>
+        <p class="dH-small dH-quiet dH-trunc">Coiffeur</p>
+        <div class="dH-row3">
+          <span class="dH-small dH-quiet dH-trunc dH-num">8008 Z&uuml;rich</span>
+          <span class="dH-small dH-quiet dH-num dH-fixed">Balayage from CHF&nbsp;190</span>
+        </div>
+      </div>
+      <div class="dH-when">
+        <svg class="dH-ico lucide lucide-calendar-check" width="16" height="16"
+             viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/>
+          <path d="M3 10h18"/><path d="m9 16 2 2 4-4"/>
+        </svg>
+        <span class="dH-mid-b">Free tomorrow</span>
+        <span class="dH-when-spacer"></span>
+        <span class="dH-small dH-quiet dH-num">2 open</span>
+      </div>
+    </article>
+
+    <!-- card 5, worst-case content (FLOORS LAW 1f): the longest plausible Swiss salon name plus
+         a long service name on one row. The name truncates, the price keeps its slot, and the
+         name stays the larger of the card's two ink elements. -->
+    <article class="dH-card">
+      <!-- p04 is a cosmetics treatment, which is the honest photo for this business: its name is
+           a hair salon AND a Kosmetikatelier. Photos are paired to business type, never at random. -->
+      <img class="dH-photo" src="/_mockups/_assets/salon-photos/p04.jpg" alt="Coiffeur and cosmetics">
+      <div class="dH-body">
+        <div class="dH-row1">
+          <h3 class="dH-name dH-trunc">Haarschneiderei Oberdorf und Kosmetikatelier Z&uuml;richberg</h3><!-- german-ok: salon NAME, data not chrome -->
+          <span class="dH-rate">
+            <svg class="dH-ico lucide lucide-star" width="14" height="14" viewBox="0 0 24 24"
+                 fill="#FFC32B" stroke="none" aria-hidden="true">
+              <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>
+            </svg>
+            <span class="dH-mid dH-quiet dH-num">4.6</span>
+          </span>
+        </div>
+        <p class="dH-small dH-quiet dH-trunc">Coiffeur</p>
+        <div class="dH-row3">
+          <span class="dH-small dH-quiet dH-trunc dH-num">8032 Z&uuml;rich</span>
+          <span class="dH-small dH-quiet dH-num dH-fixed">Cut and beard from CHF&nbsp;72</span>
+        </div>
+      </div>
+      <div class="dH-when">
+        <svg class="dH-ico lucide lucide-calendar-check" width="16" height="16"
+             viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/>
+          <path d="M3 10h18"/><path d="m9 16 2 2 4-4"/>
+        </svg>
+        <span class="dH-mid-b">Free Sat 1 Aug</span>
+        <span class="dH-when-spacer"></span>
+        <span class="dH-small dH-quiet dH-num">6 open</span>
+      </div>
+    </article>
+
+    <!-- card 6, missing photo: sunken fill + category icon + salon initial. Never a bare grey
+         box, and never slot-omission. -->
+    <article class="dH-card">
+      <div class="dH-photo--none">
+        <svg class="dH-ico lucide lucide-scissors" width="30" height="30" viewBox="0 0 24 24"
+             fill="none" stroke="#6B6B6B" stroke-width="2" stroke-linecap="round"
+             stroke-linejoin="round" aria-hidden="true">
+          <circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/>
+          <path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/>
+          <path d="M14.8 14.8 20 20"/>
+        </svg>
+        <span class="dH-initial" aria-hidden="true">C</span>
+      </div>
+      <div class="dH-body">
+        <div class="dH-row1">
+          <h3 class="dH-name dH-trunc">Coiffeur Oerlikon Zentrum</h3><!-- german-ok: salon NAME, data not chrome -->
+          <span class="dH-rate">
+            <svg class="dH-ico lucide lucide-star" width="14" height="14" viewBox="0 0 24 24"
+                 fill="#FFC32B" stroke="none" aria-hidden="true">
+              <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>
+            </svg>
+            <span class="dH-mid dH-quiet dH-num">4.8</span>
+          </span>
+        </div>
+        <p class="dH-small dH-quiet dH-trunc">Coiffeur</p>
+        <div class="dH-row3">
+          <span class="dH-small dH-quiet dH-trunc dH-num">8050 Z&uuml;rich</span>
+          <span class="dH-small dH-quiet dH-num dH-fixed">Haircut from CHF&nbsp;59</span>
+        </div>
+      </div>
+      <div class="dH-when">
+        <svg class="dH-ico lucide lucide-calendar-check" width="16" height="16"
+             viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/>
+          <path d="M3 10h18"/><path d="m9 16 2 2 4-4"/>
+        </svg>
+        <span class="dH-mid-b">Free Mon 3 Aug</span>
+        <span class="dH-when-spacer"></span>
+        <span class="dH-small dH-quiet dH-num">6 open</span>
+      </div>
+    </article>
+  </div>
+
+  <!-- note -->
+  <div class="dH-note">
+    <h2>Direction H. The next free day.</h2>
+
+    <p><b>The bet.</b> Home's job is to turn "I need a haircut this week" into a held
+      appointment, so the screen is organised on one axis, <b>when</b>, in two places: a rail
+      that sets the earliest day you are willing to go, and one row per card naming that salon's
+      own soonest bookable day. The feed is sorted soonest first, which is why the day words run
+      down the page as a column: today, today, tomorrow, tomorrow, Sat, Mon. That column is the
+      argument. Nothing here ranks salons by anything except how soon you can sit down.</p>
+
+    <h3>What it gives up</h3>
+    <ul>
+      <li><b>Card count, and there is no way around it.</b> Measured on the render at 390x844,
+        not estimated: each card is <b>328px</b> tall, the feed starts at y=226, and the first
+        viewport holds <b>one complete card plus the whole photo of the second</b>, about 1.6
+        content units against a density floor of 4 on mobile. It cannot be tuned away: the
+        imagery lock makes the photo the largest element, so the day row's 44px cannot come out
+        of the photo the way Tock pays it. It comes out of count. Confirmed rather than assumed,
+        Zocdoc's card carries a week of day tiles and fits <b>one card per viewport</b>.</li>
+      <li><b>Browsing.</b> A screen that asks "when" has assumed you already know "what". Anyone
+        arriving curious rather than committed is served worse here than by any other direction,
+        and the search pill is their only exit.</li>
+      <li><b>The category grid,</b> dropped by name. It is first on the live home today
+        (page.tsx:200), and "now" is the one thing a grid structurally cannot express. Keeping
+        both puts zero inventory in the first viewport.</li>
+      <li><b>An owner-approved deletion, re-opened.</b> CARD_REDESIGN_2026-07-13 C2 removed the
+        next-slot row from this exact card. H puts it back, so this is an ask with a mockup,
+        never a build. The seam survived: <b>nextSlotLabel</b> is still in SalonCardProps at
+        SalonCard.tsx:302, kept unused by render.</li>
+      <li><b>A calm inspiration surface, permanently.</b> Once the sort is availability, a salon
+        with a beautiful room and a three-week wait ranks below a mediocre one with a gap
+        tomorrow. H is honest about that. It is a screen for people in a hurry.</li>
+    </ul>
+
+    <h3>The lens finding behind it</h3>
+    <p>WHY_RELATIONS F1 says a bookable time on a card forces either the photo to shrink or the
+      count to halve, and I4 says no card in ten targeted searches carries photo, price and time
+      as peers. So H does not try. It <b>splits the currency across two levels</b>, the way Square
+      Go does: the week lives in the rail, one day lives on the card, and the price stays quiet in
+      the meta row where PBV needs it and nowhere louder.</p>
+    <p><b>I checked the two claims this rests on and one was described to me wrongly.</b> Zocdoc's
+      day tiles with counts are not at the top of its screen, they are <b>inside each card</b>,
+      and its unavailable days collapse into a single grey tile reading "Today to Tomorrow / No
+      appts". That per-card version is closed to us: a circular avatar can afford a tile strip, a
+      photo-dominant card cannot. The screen-level position used here is <b>Superpower's</b>,
+      whose tiles read "10 slots", "86 slots", "103 slots". Its counts swing by ten times, which
+      is the honest thin case, so Sunday here prints "closed" rather than disappearing.</p>
+    <p><b>The sharpest finding, and it went in H's favour.</b> Every app in the corpus makes
+      availability loud with a coloured fill: Zocdoc yellow tiles, Fresha and Resy filled chips,
+      Careem a green disc. Solen banned that by name twice ("availability = plain ink text, NO
+      green pill", plus the C2 deletion). So H had to buy loudness without colour, and the answer
+      is better than a pill: <b>a full-width row under a hairline, in the last position, repeated
+      down the feed.</b> It also leaves the card's one badge slot free, which a pill would have
+      spent, so a discount pill can still coexist.</p>
+
+    <h3>Three things found in the code, not assumed</h3>
+    <p>1. <b>The graveyard already holds this direction's exact failure.</b> The barber
+      StaffAvailability strip was re-deleted on 2026-07-14 because an auth-gate on
+      /api/staff/[id]/availability turned an anonymous availability read into a fabricated
+      "closed all week". H is an anonymous availability read on the home page, so that is the
+      risk. Verified: <b>/api/availability/[salon_id] has no auth check</b> (no getUser, no
+      session, no 401) and reads availability_slots, a real table with 9365 rows. <b>Not</b>
+      verified: the RLS policy on that table, which is what actually decides whether a logged-out
+      visitor sees slots. That one policy is the go or no-go for H and it needs checking before
+      anyone builds this.</p>
+    <p>2. <b>Two elements here are net-new and this names which.</b> The per-card day and the
+      "N open" count both come straight from /api/availability/[salon_id], which already returns
+      available slots <b>grouped by date</b>. The <b>cross-salon count</b> in the rail ("11 free")
+      exists nowhere: every availability endpoint is per-salon, so the rail needs a fan-out or a
+      materialised view. "Soonest first" is also net-new as a sort. Running exists on "salon
+      sort" returns nothing, and /api/salons takes a date that hard-filters availability rather
+      than ranking by it.</p>
+    <p>3. <b>The precedent for the day row already ships,</b> at
+      app/[locale]/dev/map-extras/page.tsx:46, rendering "Available today" with the comment "day
+      granularity only, never a clock time on a card". It uses a neutral sunken pill and a clock
+      icon. This uses a plain row and a calendar icon instead, because a clock icon on a label
+      that never states a time invites the reader to look for one. Separately: the live
+      missing-photo fallback at SalonCard.tsx:456-464 renders the <b>initial only</b>, with no
+      category icon, so card 6 above is one element richer than what ships today.</p>
+
+    <h3>Two collisions surfaced rather than quietly resolved</h3>
+    <p><b>No day is pre-selected as a hard filter.</b> If the rail filtered to a single day, all
+      six cards would read the same word and the per-card row would carry no information, which
+      is the trap this bet has to avoid. So the rail selects the <b>earliest day you can go</b>
+      and the feed runs from there. That is a behavioural decision inside the bet, and it is
+      yours to make.</p>
+    <p><b>V3-D442 says the name must be the larger of a card's two ink elements,</b> while the bet
+      wants the day to be the loudest thing on the card. Both hold here only because loudness is
+      bought with position: name 16, day 14, and the row carries no tint. If you want the day
+      genuinely bigger than the name, that is an amendment to V3-D442 and should be decided as
+      one.</p>
+
+    <h3>Measured on the render, 390x844, Chromium</h3>
+    <p>Every floor was checked against the rendered page rather than asserted. <b>4</b> distinct
+      font sizes (28 / 16 / 14 / 12) and <b>2</b> weights (400 / 600), inside the type budget.
+      <b>22.2%</b> of first-viewport text at weight 600 (8 of 36), under the 30% ceiling.
+      Anchor <b>28px</b>, exactly <b>2.0x</b> the 14px body, clearing both the 28px floor and the
+      1.8x ratio. Photographic area of the first viewport <b>43.5%</b>, above the one-third
+      imagery floor. Smallest touch target <b>44px</b>. Both self-hosted fonts actually load, and
+      only two families resolve anywhere on the page. The 57-character salon name truncates to
+      one line (282px box against a 440px string) with the price row intact, so the worst-case
+      content check passes.</p>
+    <p><b>Measuring caught two defects that reading the code would not have.</b>
+      documentElement.scrollWidth was <b>398</b>, an 8px horizontal scroll at exactly the design
+      width, caused by the host's default body margin; zeroed. And the search pill's label was
+      computing to <b>Arial</b>, because a button takes the UA font instead of inheriting, so the
+      one piece of copy in the top zone was in the wrong typeface; fixed with
+      font-family: inherit. Both are in the file with a comment naming the measurement.</p>
+
+    <h3>Not determined</h3>
+    <p>Static, so no motion claim, and nothing here is verified on real iOS Safari, only Chromium
+      at 390x844. The RLS policy on availability_slots is unchecked and is the real go or no-go.
+      Whether "1 open" reads as honest scarcity or as pressure is not something a still can
+      settle, and it is the first element to cut if it reads wrong.</p>
+  </div>
+</div>

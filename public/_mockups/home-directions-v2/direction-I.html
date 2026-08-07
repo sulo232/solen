@@ -1,0 +1,732 @@
+<!--
+  DIRECTION I , "The person, not the premises". Static picture, 390x844, no motion.
+
+  THE BET, in one sentence: home's job is to introduce the people who will actually cut your hair,
+  so the photo slot holds the stylist, the title is her name, and the salon is the phrase after it.
+
+  ============================================================================================
+  Grounded-in: public/_mockups/home-directions/direction-A.html , the v1 direction harness this
+               file follows: the .dX-root token block, the 844 fold marker, the footer note.
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx , the card grammar being modified.
+  Grounded-in: app/[locale]/_components/homepage/FeaturedStylists.tsx , the existing (unrendered)
+               person-row component this direction revives and re-geometries.
+  Grounded-in: app/api/staff/featured/route.ts , the live payload every field below comes from.
+  Grounded-in: app/[locale]/_components/salon/SalonTeam.tsx , the shipped person + rating anatomy.
+  Grounded-in: _design-system/sections/home-feed/CORPUS.md , the measured home-feed corpus.
+
+  Exists-check: app/[locale]/_components/homepage/FeaturedStylists.tsx already implements this
+  anatomy and is NOT rendered. Checks run this turn: `npm run exists "stylist"` = 6 hits (that
+  component, the removal note at app/[locale]/page.tsx:67 and :206, the /[locale]/dev/
+  stylist-directions route, profiles.stylist_notes); `npm run exists "staff"` = 99 hits, 7 of them
+  graveyard, the binding one (the staff tier-badge decision, 28 July 2026) read in full and honoured
+  below; `npm run exists "rebook"` = 11 hits, 1 graveyard, read in full, see Backend-check.
+  _design-system/REMOVED.md searched for stylist / staff / featured / rebook: 12 hits read.
+
+  WHY THIS IS NOT A RE-PROPOSAL OF A REJECTED THING, which is the first question this direction
+  has to survive. FeaturedStylists was pulled for a ROUTING defect, not on taste. The reason is
+  written in its own header at FeaturedStylists.tsx:42-49: its cards linked to /stylist/${slug},
+  a route that does not exist, and its DEMO array had no salon slug or staff id, so it could not
+  be repointed at the real /salon/[slug]/staff/[staffId] page without inventing a mapping. The
+  same comment writes down the revival path: rebuild against /api/staff/featured and link to
+  /salon/${salon_slug}/staff/${id}. That endpoint EXISTS and returns exactly what is needed. So
+  this is rule 12 extend-what-exists, not rule 12 duplicate.
+
+  ============================================================================================
+  Backend-check: rebook ("Book again", the single primary commit on this screen) -> POST
+  /api/bookings/express-rebook (app/api/bookings/express-rebook/route.ts) + POST
+  /api/bookings/express-rebook/confirm, EXISTS, and more of it exists than expected:
+    GET  /api/cron/rebooking-nudge             (app/api/cron/rebooking-nudge/route.ts)
+    columns: bookings.staff_member_id, bookings.is_express_rebook, bookings.rebooked_from_id,
+             notification_preferences.rebooking_enabled
+    schemas: expressRebookSchema + expressRebookConfirmSchema (lib/validations.ts)
+    mail:    rebookingNudge (lib/email.ts)
+    A LIVE CUSTOMER CALLER ALREADY EXISTS: app/[locale]/_components/profile/ProfileTabs.tsx:121
+    and :138 fetch both endpoints today. So this button is not a new feature. It is the same
+    two-call pattern surfaced on home instead of buried behind a profile tab. The net-new work is
+    the home-side read that finds the customer's last booking, not the action.
+
+    THE FINDING THAT MATTERS MOST FOR THIS WHOLE DIRECTION: express-rebook is ALREADY
+    PERSON-SCOPED. route.ts:36 selects staff_member_id and joins staff_members(name); route.ts:55
+    filters the candidate slot with .eq("staff_member_id", source.staff_member_id); route.ts:108-109
+    return staffId AND staffName to the client. The endpoint already hunts for the next opening
+    with the SAME STYLIST and already hands the interface her name. The backend already believes
+    the person is the unit of return. Only the UI does not say so. This direction is therefore less
+    of a proposal than it looks: it is the front end catching up with a decision the server made
+    already.
+
+    NULLABLE, so a real state that is NOT drawn here: route.ts:53-55 documents that
+    staff_member_id can be null (and that a null still sends eq.null over the wire). A booking made
+    without picking a stylist has no person to return to, so that row has to fall back to the
+    salon. Named, not designed.
+
+    GRAVEYARD, and it needs your explicit yes: the barber-side one-tap rebook widget in
+    components-legacy was deleted on 11 July 2026 for a NARROW reason (zero importers, walk-in
+    specific, predated the pay-first walk-in flow), not because one-tap rebook was rejected as an
+    idea. A narrow reason is still not permission. Do not build the home rebook row without a yes.
+
+  Backend-check: open a stylist (every card on this screen is a link) -> GET /api/staff/featured
+  (app/api/staff/featured/route.ts), EXISTS. It returns { id, name, avatar_url, specialties,
+  salon_id, salon_name, salon_slug, salon_rating }, which is exactly enough to link to the real
+  /salon/[slug]/staff/[staffId] route that also EXISTS.
+
+  Backend-check: the from-price on each card -> NONE, needs backend. /api/staff/featured returns NO
+  price. PBV Art. 13 requires one on the card, so this direction needs a per-salon minimum-service
+  join that does not exist today. That is real backend work, not a styling change, and it is the
+  second-largest cost of this direction.
+
+  CORRECTION to a sibling research file, surfaced rather than smoothed over:
+    _design-system/research/WHY_RETURN.md states the express-rebook backend has "zero customer
+    render site". Checked today and that is false: ProfileTabs.tsx:121 and :138 call both
+    endpoints. The workstream conclusion that R1/R3 need an owner yes still stands (the graveyard
+    line is the reason, not a missing UI), but the stated evidence for it is wrong.
+
+  ============================================================================================
+  WHAT THE LIVE ENDPOINT DECIDED FOR ME, rather than my taste deciding it:
+    - The only rating in the /api/staff/featured payload is salon_rating (salons.average_rating).
+      There is NO per-staff rating. So the star on these cards sits on the SALON line. I did not
+      pick that to dodge a fairness problem, the data has no other rating to offer.
+    - `specialties` is an array of what she does. That is the compliant substitute for a rank.
+    - avatar_url is nullable, so the no-photo fallback is required, not decorative.
+    - Ranking is `created_at desc`, with a comment in the route saying real featured-score data
+      does not exist yet. So no superlative title is available honestly, and this screen claims
+      nothing about quality in its heading.
+
+  THE OWNER DECISION THAT CUTS AGAINST THIS BET, surfaced rather than buried (REMOVED.md, dated
+  28 July 2026, verbatim): "i dont think we need to always like junior senior something because
+  kinda like make the customer like im not good, theyre just gonna choose, thats gonna be unfair".
+  The junior / senior / master tier badge was killed because ranking staff is unfair to staff.
+  That lands directly here, because a face-forward grid IS a choose-a-person surface. Two
+  consequences, both applied:
+    1. NO tier, seniority or experience label anywhere on these cards. Fresha's own picker ships
+       job-title role labels of exactly the kind that decision killed. This file renders a SERVICE
+       instead ("Colour from CHF 145"), which describes the work, not the worker's rank.
+    2. NO per-person score, per the endpoint above. The rating belongs to the place.
+  A per-person rating is NOT banned by that decision and is already shipping: SalonTeam.tsx:134-137
+  renders Avatar size={88} with the rating BELOW it (Star size={13} stroke="none" fill-s-star, and
+  a comment recording that Fresha puts the rating below the avatar, not on it). So a stylist rating
+  would be legal. It is absent here only because /api/staff/featured has none.
+
+  ============================================================================================
+  Depicts (every element traced, nothing eyeballed):
+  Depicts: card text stack -> app/[locale]/_components/homepage/SalonCard.tsx:502-546, verbatim
+           roles. Row 1 CardName text-[14px] leading-[1.25] tracking-[-0.01em] truncate, ink,
+           font-medium. Row 2 12px text-s-ink-2. Row 3 12px meta plus price. THE ONE CHANGE THIS
+           DIRECTION MAKES: rows 1 and 2 swap. The shipped card puts the salon in row 1 and the
+           category in row 2; this puts the PERSON in row 1 and the salon in row 2, and re-points
+           the photo from the premises to the person. That is the whole bet, expressed as a two-row
+           swap on a component we already own (FLOORS LAW 9, compose, do not redraw).
+  Depicts: from-price -> app/[locale]/_components/homepage/SalonCard.tsx:533-543 plus the PriceFrom
+           primitive. The word "from" appears ONLY with the service named, per SECO Wegleitung 2025
+           p.17 as cited in that file. Hence "Cut from CHF 75", never a bare from-price.
+  Depicts: rating glyph -> app/[locale]/_components/salon/SalonTeam.tsx:137, Star size={13}
+           stroke="none" fill-s-star (#FFC32B).
+  Depicts: no next-slot text -> app/[locale]/_components/homepage/SalonCard.tsx, which carries an
+           explicit comment banning next-slot text anywhere on the card. Honoured: no time and no
+           date appears on any card here.
+  Depicts: rating star with no review count -> app/[locale]/_components/homepage/SalonCard.tsx:507,
+           the psych-ok comment recording the dated owner decision that removed the count.
+  Depicts: search control -> app/[locale]/_components/homepage/SearchBar.tsx, drawn COLLAPSED to
+           one row. It is a button that opens the shipped SearchOverlay, not an input, so it takes
+           the locked button/chip pill radius rather than the input radius 12.
+  Depicts: the two tile boundaries -> the locked surface table plus FLOORS LAW 4 edge-visibility.
+           A PHOTO tile carries shadow-whisper and no border (tailwind.config.js:275 verbatim). A
+           FALLBACK tile carries the #E4E4E7 hairline instead, because the locked table says a card
+           carrying elevation drops its border and never both, and the edge-visibility floor names
+           the hairline as the other legal boundary on white. So the two states use the two
+           different legal boundaries; neither state goes without one.
+  Depicts: no-photo fallback -> app/[locale]/_components/homepage/SalonCard.tsx photo-fallback
+           branch (sunken plus category icon plus initial), plus NET-NEW: the initials here are the
+           PERSON's rather than the salon's, because this card's entity is the person. Same rule,
+           applied to this card's own subject.
+  Depicts: fonts -> app/layout.tsx:22, Inter_Tight plus Inter via next/font, mirrored here as a
+           local @font-face over /_mockups/_assets/fonts/*.woff2. No remote dependency.
+  Depicts: icons -> app/[locale]/_components/salon/SalonTeam.tsx imports this same real Lucide set.
+           The search, scissors and star path data below is copied verbatim out of
+           node_modules/lucide-react/dist/esm/icons/. Nothing hand-drawn.
+
+  measured: face assets PIL-measured this turn, all four are 280x392 (ratio 0.714, portrait).
+  measured: tile geometry, BROWSER-MEASURED with getBoundingClientRect at 390x844, not arithmetic.
+            Served from public/ on :3055 and read off the rendered page:
+              h1                     14..46, fontSize 28px, family resolved to "Inter Tight Var",
+                                     and both webfonts report document.fonts.check = true, so the
+                                     word widths are real and not a system fallback
+              search pill            58..104 (46 tall)
+              "Your stylist" label   118..136
+              that row               144..200 (56 tall), its ink button 116x44
+              grid top               214
+              tile                   172 wide, portrait 172x204, card 268 tall (204 + 8 + 56)
+              row 1                  214..482
+              row 2                  498..767
+              row 3                  starts 783, so 61px of it sits above the 844 line
+            Four cards whole plus a visibly cropped next row, which is the density floor's
+            ">=4 units mobile plus a visibly cropped next item", measured rather than asserted.
+            My pre-render arithmetic said card 271 and grid top 214. The card is 268 (its text
+            block renders 56, not the 59 I predicted) and the grid top only landed on 214 after
+            the body-margin fix below. The numbers above are the measured ones.
+            Two defects the render caught that reading the CSS did not: the UA's default 8px body
+            margin (the page was 398 wide and every element sat 8px low), and the avatar crop.
+  measured: type ladder, read off the rendered page: font-sizes {12, 13, 14, 15, 28} = four body
+            sizes plus one display size, and font-weights {500, 600} = two. Emphasis budget:
+            6 of 34 text elements in the designed surface are weight >= 600, i.e. 17.6%, against
+            the ~30% ceiling. Document scrollWidth 390 after the body reset, so no sideways scroll.
+  measured: reference anatomy, from screens looked at as IMAGES this turn, not from metadata.
+            Portrait-scale person tile in a browse grid WITH a price: Skillshare 1-on-1 sessions
+            (6 across, portrait, name, one grey role line, then the price) and Care.com web tutors
+            (6 across, portrait, abbreviated name, location, "From $45 / hr"). Both put the face at
+            portrait scale AND still carry money, which is the exact combination this direction
+            needs and the reason it is not fantasy. Monogram fallback inside a real grid of real
+            photos: Braintrust ("M", "RM"), Fresha's own professional picker, Skillshare (a
+            wordmark tile among the faces). Closest match to this bet's text order: Wonder's Browse
+            by Chef, the chef's face, the chef's name as the title, then the restaurant demoted to
+            a grey line.
+
+  realsize-ok: the 2-column grid is the ARGUMENT, not a presentation shortcut. A 172px tile is what
+  makes the image a portrait instead of a row identifier; at the shipped 44-88px avatar sizes the
+  face stops being a face and silently becomes a bullet. So this direction cannot be shown
+  full-width without ceasing to be this direction. There are no service rows and no "View store"
+  line on these cards.
+
+  floors: (1) photographic focal = three seeded stylist portraits at 172x204 inside the first
+  viewport, the largest elements on the screen. (2) exactly one biggest element = the photographs
+  are the focal, which FLOORS LAW 6 permits in place of a display anchor; a 28px/600 display anchor
+  is carried anyway by the headline. (3) tabular real numbers = every from-price in CHF and every
+  salon rating value, all tabular-nums. (4) semantic-color moment = the locked star #FFC32B on each
+  salon line, plus the single blue #276EF1 text link. (5) dead-grey zones = none, checked: each
+  fallback tile carries 28px ink initials, a Lucide scissors glyph and a hairline boundary rather
+  than being an empty grey box, and photography shares the viewport with all three of them.
+  (6) worst-case content holds = the longest plausible Zurich salon name ("Coiffeur Salon
+  Zimmermann Oerlikon", 34 characters at 12px, about 211px against a 168px text column) truncates
+  on row 2. That is acceptable HERE and only here: this is the one direction in which the salon is
+  deliberately the subordinate field, so truncation lands on the field the bet already demoted,
+  never on the person's name.
+
+  imagery: photographic area in the first viewport, computed from the declared box sizes and NOT
+  measured in a browser: 3 tiles at 172x204 = 105,264 plus the 56x56 rebook portrait = 108,400 of
+  390x844 = 329,160, so 32.9%. That clears the ~1/3 floor with almost nothing to spare, which is
+  itself a finding: at 2 across, one more fallback tile in the first two rows would fail it.
+
+  KNOWN LIMIT, stated because it changes how the density claim should be read: this fragment draws
+  CONTENT only, no bottom tab bar. With the shipped tab bar taking roughly the last 68px, row 2
+  ends 4px above it and the cropped-row scroll promise is lost. A real implementation has to take
+  about 50px out of the top zone, and the 28px headline is the candidate.
+
+  content-image-ok: every <img> here is a seeded stylist portrait that IS the card's subject. This
+  is the opposite of the hardcoded-hero failure FLOORS LAW 2 exists to stop; there is no banner, no
+  hero and no decorative photograph anywhere in this file.
+
+  Language: English chrome per the owner rule of 24 July 2026. Swiss place and salon names stay, in
+  their English spelling (Zurich) because the mockup-english gate blocks on any umlaut.
+-->
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<style>
+/* ---------------------------------------------------------------------------
+   Direction I. Every class prefixed dI- so the directions can share one page.
+
+   TYPE LADDER, honoured for real and not just to pass the gate. Worth naming:
+   mockup-type-budget-gate.py's designed_surface() strips <style> blocks before
+   counting, so a mockup that declares its typography in CSS (which is every
+   mockup in this folder) is never actually checked. Kept to the law anyway.
+     body sizes, 4 exactly:  15 (CTA) / 14 (name) / 13 (label, search) / 12 (meta)
+     display sizes, 1:       28 (headline, and the fallback initials)
+     weights, 2 exactly:     500 and 600
+   The card name is 500, not 600, for two reasons that agree: it is what
+   CardName ships (font-medium), and putting 600 on six card names would push
+   weight>=600 text past the 30% emphasis ceiling. Name versus meta is separated
+   by a full size step AND a full colour step (ink vs ink-2), which is how the
+   shipped CardName / CardMeta pair already does it.
+   Harness chrome (the 844 fold marker and the footer note) is excluded from the
+   ladder, the same definition the gate uses.
+--------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: "Inter Var";
+  src: url("/_mockups/_assets/fonts/inter-latin-var.woff2") format("woff2");
+  font-weight: 100 900; font-display: swap; font-style: normal;
+}
+@font-face {
+  font-family: "Inter Tight Var";
+  src: url("/_mockups/_assets/fonts/inter-tight-latin-var.woff2") format("woff2");
+  font-weight: 100 900; font-display: swap; font-style: normal;
+}
+
+/* The UA default body margin is 8px, which offset the whole screen by 8 and made
+   the document 398 wide instead of 390. Caught by measuring the rendered page,
+   not by reading the CSS. Zeroed here so the 390 line and the 844 line are real. */
+html, body { margin: 0; padding: 0; }
+
+.dI-root {
+  /* locked tokens only */
+  --dI-ink:     #0A0A0A;
+  --dI-ink-2:   #6B6B6B;
+  --dI-border:  #E4E4E7;
+  --dI-sunken:  #F4F4F5;
+  --dI-star:    #FFC32B;
+  --dI-accent:  #276EF1;
+  --dI-white:   #FFFFFF;
+  --dI-body:    "Inter Var", "Inter", system-ui, -apple-system, sans-serif;
+  --dI-display: "Inter Tight Var", "Inter Tight", "Inter", system-ui, sans-serif;
+  --dI-whisper: 0 1px 3px rgba(10,10,10,0.04), 0 10px 28px -14px rgba(10,10,10,0.10);
+
+  width: 390px;
+  margin: 0 auto;
+  background: var(--dI-white);
+  color: var(--dI-ink);
+  font-family: var(--dI-body);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+.dI-root *, .dI-root *::before, .dI-root *::after { box-sizing: border-box; }
+
+.dI-screen { position: relative; width: 390px; padding: 0 16px; }
+
+/* the 844 line, harness chrome */
+.dI-fold {
+  position: absolute; left: 0; right: 0; top: 844px; height: 0;
+  border-top: 1px dashed rgba(10,10,10,0.28); pointer-events: none;
+}
+.dI-fold::after {
+  content: "844, the first viewport ends here";
+  position: absolute; right: 4px; top: 4px;
+  font-family: var(--dI-body); font-size: 11px; font-weight: 500;
+  color: var(--dI-ink-2);
+}
+
+/* ---------- top zone, 118 tall: 14 + 32 + 12 + 46 + 14 ---------- */
+.dI-top { padding-top: 14px; }
+.dI-h1 {
+  margin: 0;
+  font-family: var(--dI-display);
+  font-size: 28px; font-weight: 600; line-height: 32px;
+  letter-spacing: -0.02em;
+  color: var(--dI-ink);
+}
+.dI-search {
+  margin-top: 12px;
+  height: 46px; border-radius: 999px;
+  background: var(--dI-sunken);
+  display: flex; align-items: center; gap: 8px; padding: 0 16px;
+}
+.dI-search svg { width: 18px; height: 18px; flex: none; color: var(--dI-ink-2); }
+.dI-search span { font-size: 13px; font-weight: 500; color: var(--dI-ink-2); }
+
+/* ---------- your stylist: 14 gap + 18 label + 8 + 56 row = 96 ---------- */
+.dI-again { padding-top: 14px; }
+.dI-label { font-size: 13px; font-weight: 600; line-height: 18px; color: var(--dI-ink); }
+.dI-again-row {
+  margin-top: 8px; height: 56px;
+  display: flex; align-items: center; gap: 12px;
+}
+.dI-again-face {
+  width: 56px; height: 56px; flex: none;
+  border-radius: 999px; object-fit: cover; object-position: center center;
+  display: block; background: var(--dI-sunken);
+}
+.dI-again-txt { min-width: 0; flex: 1 1 auto; }
+.dI-again-name {
+  font-size: 14px; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em;
+  color: var(--dI-ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.dI-again-place {
+  margin-top: 2px;
+  font-size: 12px; font-weight: 500; line-height: 1.35; color: var(--dI-ink-2);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+/* the ONE primary commit action on this screen. CONTROL_ELEVATION: a primary
+   commit is an ink fill, and it sits on white so it earns no elevation. */
+.dI-cta {
+  flex: none; height: 44px; padding: 0 18px;
+  border: 0; border-radius: 999px;
+  background: var(--dI-ink); color: var(--dI-white);
+  font-family: var(--dI-body); font-size: 15px; font-weight: 600;
+  display: inline-flex; align-items: center;
+}
+
+/* ---------- the grid, 2 across, 172 tiles ---------- */
+.dI-grid {
+  margin-top: 14px;
+  display: grid; grid-template-columns: 172px 172px; gap: 16px 14px;
+}
+.dI-card { display: block; text-decoration: none; color: inherit; }
+
+.dI-shot {
+  width: 172px; height: 204px;
+  border-radius: 16px; overflow: hidden;
+  background: var(--dI-sunken);
+  position: relative;
+}
+/* photo tile: carries the whisper elevation, and therefore no border */
+.dI-shot--photo { box-shadow: var(--dI-whisper); }
+.dI-shot img {
+  width: 100%; height: 100%; display: block;
+  object-fit: cover; object-position: center 18%;
+}
+/* fallback tile: carries the hairline boundary instead of the elevation, plus
+   the person's initials and the category glyph. Never an empty grey box. */
+.dI-shot--none {
+  border: 1px solid var(--dI-border);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+}
+.dI-mono {
+  font-family: var(--dI-display);
+  font-size: 28px; font-weight: 600; line-height: 1;
+  letter-spacing: -0.01em; color: var(--dI-ink);
+}
+.dI-shot--none svg { width: 18px; height: 18px; color: var(--dI-ink-2); }
+
+.dI-txt { margin-top: 8px; padding: 0 2px; display: flex; flex-direction: column; gap: 2px; }
+.dI-name {
+  font-size: 14px; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em;
+  color: var(--dI-ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.dI-row2 { display: flex; align-items: baseline; gap: 6px; }
+.dI-place {
+  min-width: 0; flex: 1 1 auto;
+  font-size: 12px; font-weight: 500; line-height: 1.35; color: var(--dI-ink-2);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.dI-rate {
+  flex: none; display: inline-flex; align-items: center; gap: 3px;
+  font-size: 12px; font-weight: 500; line-height: 1.35; color: var(--dI-ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.dI-rate svg { width: 13px; height: 13px; display: block; color: var(--dI-star); }
+.dI-price {
+  font-size: 12px; font-weight: 500; line-height: 1.35; color: var(--dI-ink-2);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* the only blue on the screen: one small text link */
+.dI-seeall {
+  display: inline-block; margin: 18px 0 28px;
+  font-size: 13px; font-weight: 500;
+  color: var(--dI-accent); text-decoration: none;
+}
+
+/* ---------- footer note, harness chrome ---------- */
+.dI-note {
+  margin: 0; padding: 20px 16px 28px;
+  border-top: 1px solid var(--dI-border);
+  background: var(--dI-sunken);
+  font-family: var(--dI-body);
+  font-size: 12.5px; font-weight: 400; line-height: 1.55;
+  color: var(--dI-ink);
+}
+.dI-note h2 {
+  margin: 0 0 8px; font-family: var(--dI-display);
+  font-size: 15px; font-weight: 600; line-height: 1.25;
+}
+.dI-note h3 { margin: 14px 0 4px; font-family: var(--dI-body); font-size: 12.5px; font-weight: 600; }
+.dI-note p { margin: 0 0 8px; }
+.dI-note b { font-weight: 600; }
+</style>
+
+<div class="dI-root">
+  <div class="dI-screen">
+
+    <!-- ============ top zone ============ -->
+    <div class="dI-top">
+      <h1 class="dI-h1">Who cuts your hair</h1>
+
+      <!-- collapsed search: the exit for a user who wants a PLACE, not a person.
+           This direction demotes the salon in the feed, so search is where
+           salon-shaped intent stays first class. Lucide `search`, verbatim. -->
+      <div class="dI-search">
+        <svg class="lucide lucide-search" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m21 21-4.34-4.34" />
+          <circle cx="11" cy="11" r="8" />
+        </svg>
+        <span>Stylists and salons in Zurich</span>
+      </div>
+    </div>
+
+    <!-- ============ your stylist ============
+         Deliberately at IDENTIFIER scale, 56px, while the grid below is at
+         PORTRAIT scale, 172px. That is the variant rule for this component and
+         it is legible rather than arbitrary: a portrait INTRODUCES someone you
+         have not met, an identifier RECOGNISES someone you have. Two anatomies,
+         one stated discriminator, and the cap is two.
+         The name shown here is the staffName the express-rebook endpoint already
+         returns (route.ts:109), not a new field. -->
+    <div class="dI-again">
+      <div class="dI-label">Your stylist</div>
+      <div class="dI-again-row">
+        <!-- content-image-ok: seeded stylist portrait, the subject of the row. Square
+             1:1 headshot crop of _faces/f01.jpg (PIL, box 55,8,245,198 -> 224x224),
+             because a real avatar_url is a square headshot and feeding a 5:7 portrait
+             into a 56px circle rendered a small full figure holding a hairbrush
+             instead of a face. Found by rendering it, not by reading the CSS. -->
+        <img class="dI-again-face" src="/_mockups/home-directions-v2/_faces/f01-avatar.jpg"
+             width="56" height="56" alt="Lena Brunner" />
+        <div class="dI-again-txt">
+          <div class="dI-again-name">Lena Brunner</div>
+          <div class="dI-again-place">Coiffure Bellevue, Zurich</div>
+        </div>
+        <button class="dI-cta" type="button">Book again</button>
+      </div>
+    </div>
+
+    <!-- ============ the grid ============
+         Six stylists. Three carry a seeded portrait, three carry the no-photo
+         fallback. The split is 50/50 on purpose and it is NOT a measurement: I
+         did not check the real avatar_url fill rate on the seeded staff_members
+         rows, and that number decides whether this direction is viable at all.
+         It is named as the top open item in the note. -->
+    <div class="dI-grid">
+
+      <a class="dI-card" href="#">
+        <div class="dI-shot dI-shot--photo">
+          <!-- content-image-ok: seeded stylist portrait, the card's subject -->
+          <img src="/_mockups/home-directions-v2/_faces/f02.jpg" width="172" height="204"
+               alt="Sofia Marchetti" />
+        </div>
+        <div class="dI-txt">
+          <div class="dI-name">Sofia Marchetti</div>
+          <div class="dI-row2">
+            <span class="dI-place">Studio Marchetti</span>
+            <span class="dI-rate">
+              <svg class="lucide lucide-star" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              4.8
+            </span>
+          </div>
+          <div class="dI-price">Colour from CHF 145</div>
+        </div>
+      </a>
+
+      <a class="dI-card" href="#">
+        <div class="dI-shot dI-shot--photo">
+          <!-- content-image-ok: seeded stylist portrait, the card's subject -->
+          <img src="/_mockups/home-directions-v2/_faces/f04.jpg" width="172" height="204"
+               alt="Aylin Yildiz" />
+        </div>
+        <div class="dI-txt">
+          <div class="dI-name">Aylin Yildiz</div>
+          <div class="dI-row2">
+            <span class="dI-place">Barbier Langstrasse</span>
+            <span class="dI-rate">
+              <svg class="lucide lucide-star" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              4.7
+            </span>
+          </div>
+          <div class="dI-price">Cut from CHF 48</div>
+        </div>
+      </a>
+
+      <a class="dI-card" href="#">
+        <div class="dI-shot dI-shot--photo">
+          <!-- content-image-ok: seeded stylist portrait, the card's subject -->
+          <img src="/_mockups/home-directions-v2/_faces/f03.jpg" width="172" height="204"
+               alt="Chiara Ferrari" />
+        </div>
+        <div class="dI-txt">
+          <div class="dI-name">Chiara Ferrari</div>
+          <div class="dI-row2">
+            <span class="dI-place">Coiffure Bellevue</span>
+            <span class="dI-rate">
+              <svg class="lucide lucide-star" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              4.9
+            </span>
+          </div>
+          <div class="dI-price">Balayage from CHF 190</div>
+        </div>
+      </a>
+
+      <!-- no photo. Fresha's own professional picker ships four tiles and not one
+           face; Braintrust and Skillshare do the same inside a real browse grid.
+           So this state is the NORM in this market, not an edge case, which is
+           why it appears inside the first viewport instead of being hidden. -->
+      <a class="dI-card" href="#">
+        <div class="dI-shot dI-shot--none">
+          <span class="dI-mono">NB</span>
+          <svg class="lucide lucide-scissors" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="6" cy="6" r="3" /><path d="M8.12 8.12 12 12" />
+            <path d="M20 4 8.12 15.88" /><circle cx="6" cy="18" r="3" />
+            <path d="M14.8 14.8 20 20" />
+          </svg>
+        </div>
+        <div class="dI-txt">
+          <div class="dI-name">Nadia Bucher</div>
+          <div class="dI-row2">
+            <span class="dI-place">Atelier Seefeld</span>
+            <span class="dI-rate">
+              <svg class="lucide lucide-star" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              4.9
+            </span>
+          </div>
+          <div class="dI-price">Cut from CHF 82</div>
+        </div>
+      </a>
+
+      <a class="dI-card" href="#">
+        <div class="dI-shot dI-shot--none">
+          <span class="dI-mono">ME</span>
+          <svg class="lucide lucide-scissors" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="6" cy="6" r="3" /><path d="M8.12 8.12 12 12" />
+            <path d="M20 4 8.12 15.88" /><circle cx="6" cy="18" r="3" />
+            <path d="M14.8 14.8 20 20" />
+          </svg>
+        </div>
+        <div class="dI-txt">
+          <div class="dI-name">Miriam Egli</div>
+          <div class="dI-row2">
+            <span class="dI-place">Haarwerk Wiedikon</span>
+            <span class="dI-rate">
+              <svg class="lucide lucide-star" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              4.6
+            </span>
+          </div>
+          <div class="dI-price">Cut from CHF 68</div>
+        </div>
+      </a>
+
+      <a class="dI-card" href="#">
+        <div class="dI-shot dI-shot--none">
+          <span class="dI-mono">VH</span>
+          <svg class="lucide lucide-scissors" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="6" cy="6" r="3" /><path d="M8.12 8.12 12 12" />
+            <path d="M20 4 8.12 15.88" /><circle cx="6" cy="18" r="3" />
+            <path d="M14.8 14.8 20 20" />
+          </svg>
+        </div>
+        <div class="dI-txt">
+          <div class="dI-name">Vera Hollenstein</div>
+          <div class="dI-row2">
+            <span class="dI-place">Salon Enge</span>
+            <span class="dI-rate">
+              <svg class="lucide lucide-star" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              4.8
+            </span>
+          </div>
+          <div class="dI-price">Cut from CHF 72</div>
+        </div>
+      </a>
+
+    </div>
+
+    <a class="dI-seeall" href="#">See all stylists</a>
+
+    <div class="dI-fold"></div>
+  </div>
+
+  <!-- ================= footer note ================= -->
+  <div class="dI-note">
+    <h2>Direction I, the person, not the premises</h2>
+
+    <p><b>THE BET.</b> Home's job is to introduce the people who will actually cut your hair. So
+    the photo slot holds the stylist, the title is her name, and the salon is the phrase after it.
+    Mechanically this is the shipped <b>SalonCard with rows 1 and 2 swapped</b> and the photo
+    re-pointed from the premises to the person. Nothing else about the card grammar moves: same
+    three-row stack, same 14 / 12 / 12 sizes, same ink then ink-2 colour step, same from-price with
+    the service named for PBV Art. 13, same ban on any time or date on a card.</p>
+
+    <p>The reason to bet this way is that a haircut is not a room you sit in. It is a decision a
+    specific pair of hands makes about your face for the next six weeks. Every field on the shipped
+    card describes a building. None of them describes the only variable that changes the outcome.</p>
+
+    <h3>WHAT IT GIVES UP, in order of how much it costs</h3>
+
+    <p><b>1. Density, and not on the axis everyone assumes.</b> A face below thumbnail size stops
+    being a face and silently becomes a row identifier, so the tile has to stay at 172px, which
+    forces 2 across. The first-viewport floor still passes (four whole cards plus a cropped row), so
+    the cost is NOT where it was predicted. It lands on <b>desktop</b>, where this grid cannot reach
+    the 6-column floor at portrait scale without dropping to a 3-across rail, and on <b>cards per
+    scroll</b>, which roughly halves. Skillshare and Care.com both run 6 across on web at about
+    110px, which is the honest ceiling for a face.</p>
+
+    <p><b>2. Photography we do not control, and this is the one that can kill it.</b> Three of six
+    tiles here carry no face, and that ratio is a placeholder, not a measurement. Fresha's own
+    professional picker ships four tiles and <b>zero</b> faces: a dark disc reading "A", two lilac
+    discs reading "TK" and "EL", with a plain job-title line carrying all the meaning instead.
+    Braintrust ships "M" and "RM" in the middle of a real browse grid; Skillshare ships a wordmark
+    tile among the portraits. So the fallback is the norm in this market rather than an edge case.
+    If most seeded stylists have no avatar_url, this direction degrades into a grid of initials,
+    which is a worse home screen than the one shipping today.</p>
+
+    <p><b>3. A venue-shaped product, in three places at once.</b> The data model, the URL and the
+    supply pitch to salon owners are all venue-first. Every card here still links through
+    /salon/[slug]/staff/[staffId], so the person remains a child of the place. And the price this
+    direction is legally required to show is not in /api/staff/featured at all, so a per-salon
+    minimum-service join has to be built before this screen can render lawfully.</p>
+
+    <p><b>4. Comparability.</b> Once the card leads with a person, the fields that let you rank two
+    options (place, category, price) all shrink to 12px meta. This becomes a good screen for meeting
+    people and a worse one for deciding between them. Open's Teachers page is the end of that road:
+    sixteen beautiful studio portraits and not one piece of commercial information.</p>
+
+    <p><b>5. Fairness, and this is the objection I would take most seriously.</b> A face-forward
+    grid invites appearance-based selection in a market where that is a legal exposure, not only a
+    taste question. You already ruled next to this on <b>28 July 2026</b>, killing the junior /
+    senior / master tier badge: "theyre just gonna choose, thats gonna be unfair". This file honours
+    that literally, no tier or seniority label anywhere, and a service instead of a rank. But the
+    deeper reading of that sentence is an argument against the whole direction, not only against the
+    badge, and it deserves an answer rather than a workaround.</p>
+
+    <h3>THE LENS FINDING BEHIND IT</h3>
+
+    <p>Square Go's PDP title is literally <b>"Monica Andrea at Salon Cozzolino"</b>, the person
+    first and the salon as a prepositional phrase, and its own search rows are mostly people's
+    names. Fresha's "Venues nearby" row carries <b>Pam Zink, a person, with her face in the photo
+    slot</b> beside salon interiors, inside the same card component, which means that in this market
+    a solo practitioner already IS a venue and the schema is pretending otherwise. Wonder's Browse
+    by Chef is the closest match to this bet's exact text order: the chef's face, the chef's name as
+    the title, then the restaurant demoted to a grey line. Care.com puts the face at full card
+    geometry with "Background Checked" and "Hired by 2 neighbors" and lets the price go grey. Bloom
+    and Tonal both label a practitioner by <b>temperament</b> ("Direct &amp; Empowering",
+    "High-Energy and Engaging") rather than by credential, which is the same instinct your
+    tier-badge decision arrived at independently. Skillshare and Care.com prove the combination this
+    bet needs actually ships: portrait scale <b>and</b> a price on the same tile. And the
+    counter-evidence belongs inside the bet rather than outside it: Careem's staff step pre-selects
+    <b>"Auto assign, we'll assign the best professional"</b> ahead of two named, photographed, rated
+    staff, so the strongest product in this space believes its user does not want to choose a person
+    at all.</p>
+
+    <p>Which is the sharpest thing to say about this direction: the pattern is proven in adjacent
+    human-service markets (teaching, childcare, contract work, wellness) and <b>actively declined by
+    both beauty products we can see</b>. That is not a reason to reject it. It is a reason to know
+    exactly which bet you are making.</p>
+
+    <h3>WHAT THIS SCREEN DROPS THAT OTHER DIRECTIONS KEEP, and why</h3>
+
+    <p>No category shortcut row: a category is a property of a place, and this screen is about
+    people. No save heart on the cards: a frost disc over a portrait covers the one thing the card
+    exists to show, and the card is a single tap target so nothing inside it competes. No city line
+    on the cards: the search control already says Zurich, so repeating it is padding. No section
+    header above the grid: the 28px headline is the section title. No superlative title, because
+    /api/staff/featured ranks by created_at desc today and has no featured-score data, so "top" or
+    "best" would be a fabricated claim. No bottom tab bar drawn, which is a limit of the fragment
+    and is measured in the header comment rather than hidden.</p>
+
+    <h3>THREE THINGS FOR YOU, not decided here</h3>
+
+    <p><b>The measurement that decides this direction</b> is the avatar_url fill rate on the real
+    seeded staff_members rows. High, and this is the strongest direction in the set. Low, and it is
+    the weakest, and no amount of layout fixes that. I did not run it, so the 50/50 split drawn
+    above is an assumption wearing a picture.</p>
+
+    <p><b>The backend already agrees with this bet, which surprised me.</b>
+    /api/bookings/express-rebook selects bookings.staff_member_id, filters the next opening with
+    .eq("staff_member_id", ...) and returns staffName to the client. It already hunts for your next
+    slot <b>with the same stylist</b> and already hands the interface her name. The server decided
+    the person is the unit of return; only the UI never said so. The "Your stylist" row above is not
+    a new feature, it is the same two-call pattern ProfileTabs.tsx:121 already runs, moved onto home.
+    It still needs your explicit yes, because a barber-side one-tap rebook widget was deleted on
+    11 July 2026 and a narrow deletion reason is not permission.</p>
+
+    <p><b>FeaturedStylists is not dead, it is unplugged.</b> The component exists, 298 lines, its
+    anatomy was designed against a real reference on 25 May 2026, and it was pulled on 5 June 2026
+    because its cards pointed at /stylist/[slug], a route that does not exist. Its own header writes
+    down the fix. So Direction I's claim is narrower than it looks: that component had the right
+    <b>entity</b> and the wrong <b>geometry</b>, a 72px identifier inside a scan-and-compare list,
+    and its own comment says so ("this is a SCAN/COMPARE pattern not a discovery pattern"). A person
+    only becomes the product at portrait scale.</p>
+  </div>
+
+</div>

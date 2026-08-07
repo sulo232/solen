@@ -1,0 +1,1039 @@
+<!-- Base: diagnosis page, no live route to capture -->
+<!-- Scale: full-page -->
+<!--
+  home-cheap/index.html , WHY THE HOME PAGE LOOKS CHEAP.
+
+  This page renders ZERO product UI. It is a reading page: the ranked output of four measurement
+  probes run on the live render of /de on 2026-07-30, at 1512x950 and 390x844. It proposes NO
+  layout and offers NO directions to pick between. The owner dropped the previous direction set
+  outright ("Neither, drop the direction set."), so nothing here revives it. It also proposes no
+  treatment of any kind: every mention of a border, a tray or an elevation below is a MEASUREMENT
+  of what the live product already renders. Every card on the real page keeps all of its chrome,
+  and the carded direction that won stays exactly as it is.
+
+  psych-ok: every count on this page (19 slots, 11 photographs, half the businesses, 4 cards in the
+  rail, 0 of 10 measured reference screens) is a MEASUREMENT taken on the live render or read off a
+  reference capture, reported inside a research document. None of it is product copy, none of it is
+  rendered to a customer, and none of it is fabricated: that is the exact opposite of the failure
+  the real-numbers law exists to stop.
+
+  Grounded-in: _design-system/research/CHEAP_TYPE.md
+  Grounded-in: _design-system/research/CHEAP_SPACE.md
+  Grounded-in: _design-system/research/CHEAP_PHOTO.md
+  Grounded-in: _design-system/research/CHEAP_EDGE.md
+  Grounded-in: _design-system/research/WHY_IT_LOOKS_CHEAP.md
+  Grounded-in: _design-system/research/WHY_DENSITY.md
+  Grounded-in: _design-system/research/AXIS_FONT.md
+  Grounded-in: _design-system/research/AXIS_GRID.md
+  Grounded-in: _design-system/sections/home-feed/CORPUS.md
+  Grounded-in: app/[locale]/_components/homepage/BusinessTeaser.tsx
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx
+  Grounded-in: app/[locale]/_components/homepage/SectionHeader.tsx
+  Grounded-in: app/[locale]/_components/homepage/WalkInBand.tsx
+  Grounded-in: app/[locale]/_components/homepage/Reviews.tsx
+  Grounded-in: app/[locale]/_components/homepage/NearbyMap.tsx
+  Grounded-in: app/[locale]/_components/homepage/MobileCategoriesRow.tsx
+
+  DEPICTS MANIFEST. This page DRAWS no product surface at all: it renders prose, one scan table,
+  paired number cells and a tag row. So each line below traces a CLAIM to the real code that claim
+  was measured on, which is the same discipline applied to a document instead of a screen.
+
+  Depicts: the page itself, a written diagnosis with no UI panels -> NET-NEW: no diagnosis page, route or doc exists (npm run exists cheap = 0, diagnosis = 0)
+  Depicts: defect 1, the grey placeholder square and its 56px icon -> app/[locale]/_components/homepage/BusinessTeaser.tsx (the role="img" div, lines 43-49)
+  Depicts: defect 2, salon photo slots and their sources -> lib/stock-photos.ts and lib/category-photos.ts (the pool the seed assigns from)
+  Depicts: defect 3, the salon card's five text fields -> app/[locale]/_components/homepage/SalonCard.tsx:505 and :534, with app/[locale]/_components/primitives/CardText.tsx:39-49 (the primitives that bake the weights)
+  Depicts: defect 4, the four vertical gaps and the section wrapper that declares them -> app/[locale]/_components/homepage/SectionHeader.tsx:378, :409, :474, :478
+  Depicts: defect 5, the two photo-less bands on white -> app/[locale]/_components/homepage/WalkInBand.tsx and app/[locale]/_components/homepage/Reviews.tsx
+  Depicts: defect 6, the green wait figure -> app/[locale]/_components/homepage/WalkInBand.tsx:125
+  Depicts: defect 7, the phone first viewport and its icon grid -> app/[locale]/page.tsx composition with app/[locale]/_components/homepage/MobileCategoriesRow.tsx
+  Depicts: defect 8, the map marker inheriting a fallback face -> app/[locale]/_components/homepage/NearbyMap.tsx:57-59 (marker className, no font class)
+  Depicts: defect 9, the rendered size tiers and the missing scale -> tailwind.config.js (extends no fontSize scale) with the arbitrary text sizes across app/[locale]/_components
+  Depicts: defect 10, the walk-in row as a second card anatomy -> app/[locale]/_components/homepage/WalkInBand.tsx:120-135
+  Depicts: defect 11, the review card carrying two depth mechanisms -> app/[locale]/_components/homepage/Reviews.tsx:144-146
+  Depicts: defect 12, the four-card rail and its container cap -> app/[locale]/page.tsx and the home feed data loader
+  Depicts: defect 13, the content insets and the absent rhythm token -> app/[locale]/_components/homepage/SectionHeader.tsx plus the per-section padding classes
+  Depicts: the already-fine list, 17 measured verdicts -> app/[locale]/_components/homepage/SearchBar.tsx, SalonCard.tsx and NearbyMap.tsx, against the locked values in _design-system/LOCKFILE.md
+  Depicts: the three doc conflicts in the closing section -> _design-system/LOCKFILE.md lines 479, 625 and 1921, as actually wired in app/[locale]/_components/primitives/CardText.tsx and tailwind.config.js
+
+  MEASURED MYSELF before publishing, on the live render at localhost:50723/de, in scripts that
+  assert innerWidth/innerHeight inside the same call that measures. Reproduced exactly: the
+  placeholder (576x576 = 23.1% at 1512x950, 358x358 = 38.9% at 390x844, fill rgb(244,244,245));
+  photo reuse (19 slots, 11 distinct, 42.1%); the card's five fields (14/500/#0A0A0A, 13/400,
+  12/400, 12/400, price 12/400/#6B6B6B) and its zero enclosure; the desktop rail (4 cards, first
+  card starting at x=144, last ending at x=956, rail ending at x=1388, 432px trailing); the walk-in
+  row (528x140); 30 elements on a Helvetica fallback; 10 distinct font sizes in the desktop first
+  viewport including a 13.5px half-step; 0.00% photographic area at 390x844 with the first
+  photograph at document y=875; 6 cards carrying a border AND an elevation at once.
+  CORRECTED against the probe, and the page below carries MY number: the grouping ratio is 1.13x,
+  not 1.00x (photo to its own caption 8.00, map block to the rail below it 9.00, heading to its own
+  rail 8.00, heading to its own map 5.00, all sub-pixel exact), and heading-to-section is therefore
+  0.63x, not 0.50x. The finding is unchanged, the floor is 2.00x.
+
+  Every file:line cited on this page was opened on disk on 2026-07-30 before it was cited here, not
+  quoted from a summary: BusinessTeaser.tsx:43-49, SalonCard.tsx:505/534, SectionHeader.tsx:378/409/
+  474/478, Reviews.tsx:144-146, NearbyMap.tsx:57-59, WalkInBand.tsx:120-135.
+
+  Exists-check: run 2026-07-30. `npm run exists cheap` = 0 matches, `npm run exists diagnosis` = 0
+  matches, `npm run exists "home cheap"` = 0 matches, so no page, route, component or doc in this
+  estate already carries this diagnosis. `npm run exists home` = 20 homepage components plus 3 dev
+  preview routes (app/[locale]/dev/home-fix, home-full, home-search), which are in-app comparison
+  pages and not a written diagnosis, plus graveyard hits. COMPONENT_REGISTRY.md read: this page
+  hand-fakes no product component. EXTENDS the four probes of 2026-07-30 (research/CHEAP_TYPE.md,
+  CHEAP_SPACE.md, CHEAP_PHOTO.md, CHEAP_EDGE.md) and their synthesis (research/WHY_IT_LOOKS_CHEAP.md);
+  this page is those files made readable and adds no new surface. SUPERSEDES
+  public/_mockups/home-directions-v2/ (the eight dropped directions, dead by owner decision
+  2026-07-30) and its why.html argument page. The one net-new thing: a ranked, side-by-side
+  ours-versus-floor reading of the whole page.
+
+  Diagnosis: a grey image placeholder is shipped in the business teaser | measured 576x576 = 23.1% of 1512x950 and 358x358 = 38.9% of 390x844, fill 1.10:1 against the page, live since 2026-05-26 | violates finished-screen pass item (e) no dead-grey zone, NEVER-AGAIN floor 4, FLOORS LAW 2 | target 0 dead-grey pixels
+  Diagnosis: salon photographs are reused across differently named businesses | measured 19 photo slots filled by 11 distinct photographs, 42.1% reuse, half of the distinct businesses colliding, 4 collisions on one screen | violates no named floor, the Inspo rail on the same page is the reference at 8 slots and 8 photographs | target 0% reuse
+  Diagnosis: the salon card's five text fields render as one grey block | measured price 12px/400/#6B6B6B, identical in all three properties to the postcode, card size range 1.17x, name at 500 | violates LOCKFILE 17.4 two ink anchors, name 600 plus price 600 tabular | target name 600 and price 600 ink
+  Diagnosis: three relationships that mean three different things all render at 8 to 9px | measured between-group 9.00 divided by in-group 8.00 = 1.13x, heading to its own map 5.00 = 0.63x | violates FLOORS LAW 5, and the reference band for a heading to its own body is 14.3 to 20.9 pt | target >= 2.00x
+  Diagnosis: the content column is one unbroken white field | measured 97.3% white at 1512x950 and 95.5% at 390x844, the only sunken band is in the footer | violates FLOORS LAW 4, and 8 of 10 measured reference bands give the band its own ground | target alternating ground, sunken tray under every photo-less rail
+  Diagnosis: the loudest text in the feed is a wait estimate in success green | measured 20px/700/#16A34A at 1.67x its own body, the only saturated colour on the page, applied unconditionally | violates taste rule 4 (success is legal as an icon, never as body text), not an accessibility floor, 3.30:1 passes AA at large text | target the entity name or the price carries the emphasis
+  Diagnosis: a phone's first screen contains no photograph at all | measured 0.00% photographic area at 390x844, six 49x49 category icons and zero photographs, first photograph at document y=875 against an 844 fold | violates FLOORS LAW 2 and the design contract imagery row, both written at exactly 390x844 | target ~33%, reachable, the page's best window is 40.59% at y=700
+  Diagnosis: two typefaces render where one is specified | measured 30 text elements computing a Helvetica Neue fallback at 1512x950, about one in ten | violates FLOORS LAW 8, and no reference screen showed a fallback face | target 1 typeface family pair
+  Diagnosis: ten font sizes in one viewport with no range | measured 10 distinct sizes in the desktop first viewport including a 13.5px half-step, 15 on the page, 92.5% of text between 11 and 14px, 267 half-pixel steps in source | violates the <=4 size ceiling and EMPHASIS BUDGET clause (c), references at Fresha 6, Airtasker 4, OpenTable 4 | target <= 4 per screen
+  Diagnosis: one salon renders as two different objects on one screen | measured a 194x220 photo card and, 751px lower, a 528x140 all-text row, walk-in band 0% photographic at both viewports | violates FLOORS LAW 8 and the imagery floor on a browse section | target 1 component with a documented dense variant
+  Diagnosis: the review cards carry a hairline and an elevation at the same time | measured 6 instances at both viewports, 1px #E4E4E7 border plus 0 2px 8px rgba(50,47,44,.09) | violates LOCKFILE 17.2, and 0 of 10 measured reference screens stack both | target 1 depth mechanism, and the reference keeps the hairline
+  Diagnosis: the desktop rail underfills and aims an arrow at empty page | measured 4 cards, last card ending at x=956, rail ending at x=1388, 432px empty at about 29% of viewport width, card 194px at 12.8% of viewport | violates FLOORS LAW 3, and web references sit at 16.1 / 16.7 / 18.5% of viewport width | target >= 6 units plus a cropped next item
+  Diagnosis: four content insets on one desktop page and no section-rhythm token | measured 140 / 144 / 146 / 148 at 1512x950 (2.8% spread), section-gap spread 2.17x desktop and 2.34x phone, 39.5% of spacing off the 4pt scale | violates the design contract spacing row, and references hold section rhythm to 1.00x to 1.12x down one page | target 1 inset and 1 declared section gap
+
+  mockup-base-skip, reason stated rather than waved through. This page is PROSE, not a phone mockup.
+  (a) Self-hosted: genuinely satisfied, there are ZERO remote images, fonts, scripts or stylesheets
+  and the page renders identically with the network off. (b) The real-imagery clause does not apply:
+  a diagnosis document has no product surface to photograph, and the imagery floor it enforces is
+  itself one of the findings below. The viewport meta, the text-size-adjust lock and the 100dvh page
+  height are all present regardless, because the owner reads on a phone.
+
+  fullscreen-skip, same discipline: this page renders ZERO screens and ZERO UI panels, so there is
+  no proposed AFTER to show and nothing here is a from-scratch redraw of a real screen. A live
+  BEFORE iframe would be a thumbnail of the very page the prose measures, which the numbers already
+  describe more precisely. Same reasoning the sibling reasoning page
+  public/_mockups/home-directions-v2/why.html recorded.
+
+  Focus treatment: NO ring and NO glow halo (the owner killed focus rings three times). WCAG 2.4.7 is
+  a tier-2 statutory floor and cannot be dropped, so the substitute is non-ring: a link takes a 3px
+  underline and goes ink at focus.
+
+  Copy: English throughout, no em-dashes anywhere including the quoted evidence. The one German
+  string this diagnosis is about (the placeholder's accessibility label) is DESCRIBED, never
+  reproduced, because reproducing it would import the banned em-dash it contains.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Why home looks cheap, measured</title>
+<style>
+/* ONE LIGHT THEME. No prefers-color-scheme, no data-theme, no dark CSS anywhere on this page.
+   Type budget: THREE sizes (19 / 15 / 12) plus ONE 30px display anchor used once, in the header.
+   TWO weights, 400 and 600. The anchor is 2.0x the body, clearing the 1.8x ratio floor and the
+   28px absolute floor.
+   Colour: ink #0A0A0A, ink-2 #6B6B6B, hairline #E4E4E7, sunken #F4F4F5, white. Two accents, both
+   semantic and both on white only: link blue #276EF1 (4.58:1 on white, AA) and error red #DC2626
+   (4.83:1 on white, AA) for the words "Floor break". Neither is ever placed on the sunken tray,
+   where both fall under AA.
+   Every block on this page is a CARD with a hairline, per the carded direction that won. */
+
+:root {
+  --ink: #0A0A0A; --ink-2: #6B6B6B; --line: #E4E4E7; --sunken: #F4F4F5; --white: #FFFFFF;
+  --accent: #276EF1;   /* hue-ok: locked s-accent, links only, on white only */
+  --break: #DC2626;    /* hue-ok: locked s-error, the floor-break marker, on white only */
+  --body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --display: "Inter Tight", "Inter", system-ui, -apple-system, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --fs-anchor: 30px; --fs-h2: 19px; --fs-body: 15px; --fs-micro: 12px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; max-width: 100%; overflow-x: hidden; }
+b, strong { font-weight: 600; }   /* holds the two-weight budget, a bare bold tag defaults to 700 */
+body {
+  background: var(--sunken); color: var(--ink); min-height: 100dvh;
+  font-family: var(--body); font-size: var(--fs-body); font-weight: 400; line-height: 1.6;
+  -webkit-text-size-adjust: 100%; text-size-adjust: 100%; -webkit-font-smoothing: antialiased;
+}
+
+.c-wrap { max-width: 1060px; margin: 0 auto; padding: 0 16px 64px; }
+@media (min-width: 900px) { .c-wrap { padding: 0 40px 96px; } }
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+a:focus-visible {
+  color: var(--ink); text-decoration: underline;
+  text-decoration-thickness: 3px; text-underline-offset: 3px;
+}
+
+/* ---------- header ---------- */
+.c-top { padding: 40px 0 0; }
+.c-eyebrow { font-size: var(--fs-micro); font-weight: 600; color: var(--ink-2); margin: 0 0 10px; }
+h1 {
+  font-family: var(--display); font-size: var(--fs-anchor); font-weight: 600;
+  line-height: 1.12; letter-spacing: -0.026em; margin: 0; max-width: 20ch;
+}
+.c-answer { margin: 18px 0 0; max-width: 74ch; }
+.c-answer p { margin: 0 0 14px; }
+.c-answer p:last-child { margin-bottom: 0; }
+.c-method {
+  margin: 20px 0 0; padding: 14px 16px; background: var(--white);
+  border: 1px solid var(--line); border-radius: 14px;
+  font-size: var(--fs-micro); color: var(--ink-2); max-width: 78ch; line-height: 1.55;
+}
+.c-method b { color: var(--ink); font-weight: 600; }
+.c-method + .c-method { margin-top: 10px; }
+
+/* ---------- section headings ---------- */
+h2 {
+  font-family: var(--display); font-size: var(--fs-h2); font-weight: 600;
+  line-height: 1.25; letter-spacing: -0.018em; margin: 0 0 12px; max-width: 44ch;
+}
+.c-sechead { padding: 46px 0 14px; }
+.c-sechead h2 { margin-bottom: 6px; }
+.c-sechead p { margin: 0; color: var(--ink-2); font-size: var(--fs-micro); max-width: 72ch; }
+
+/* ---------- at a glance table ---------- */
+.c-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; }
+table.c-tbl {
+  width: 100%; border-collapse: collapse; background: var(--white);
+  border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
+  font-size: var(--fs-micro);
+}
+.c-tbl th {
+  text-align: left; font-weight: 600; color: var(--ink-2); font-size: var(--fs-micro);
+  padding: 12px 14px; border-bottom: 1px solid var(--line); white-space: nowrap;
+}
+.c-tbl td { padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.5; }
+.c-tbl tr:last-child td { border-bottom: 0; }
+.c-tbl .c-n { font-weight: 600; color: var(--ink-2); width: 1%; white-space: nowrap; }
+.c-tbl .c-what { font-size: var(--fs-body); font-weight: 600; line-height: 1.35; }
+.c-tbl .c-ours { color: var(--ink); font-variant-numeric: tabular-nums; }
+.c-tbl .c-ref { color: var(--ink-2); font-variant-numeric: tabular-nums; }
+@media (max-width: 760px) {
+  table.c-tbl, .c-tbl tbody, .c-tbl tr, .c-tbl td { display: block; width: 100%; }
+  .c-tbl thead { display: none; }
+  .c-tbl tr { border-bottom: 1px solid var(--line); padding: 8px 0 12px; }
+  .c-tbl tr:last-child { border-bottom: 0; }
+  .c-tbl td { border-bottom: 0; padding: 3px 14px; display: grid; grid-template-columns: 62px 1fr; gap: 10px; }
+  .c-tbl td::before { content: attr(data-l); font-size: var(--fs-micro); color: var(--ink-2); font-weight: 600; }
+  .c-tbl td.c-n { display: none; }
+}
+
+/* ---------- one defect block ---------- */
+.c-def {
+  background: var(--white); border: 1px solid var(--line); border-radius: 20px;
+  padding: 20px 18px; margin-top: 14px;
+}
+@media (min-width: 900px) { .c-def { padding: 26px 28px; } }
+.c-def-head { display: flex; gap: 12px; align-items: baseline; }
+.c-rank {
+  font-family: var(--display); font-size: var(--fs-h2); font-weight: 600;
+  color: var(--ink-2); line-height: 1.25; flex: none; font-variant-numeric: tabular-nums;
+}
+.c-def h3 {
+  font-family: var(--display); font-size: var(--fs-h2); font-weight: 600;
+  line-height: 1.25; letter-spacing: -0.018em; margin: 0; max-width: 40ch;
+}
+.c-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 0; }
+.c-tag {
+  font-size: var(--fs-micro); font-weight: 600; line-height: 1.35;
+  border-radius: 999px; padding: 4px 10px; background: var(--sunken); color: var(--ink);
+}
+.c-tag.is-break { background: var(--white); border: 1px solid var(--line); color: var(--break); }
+.c-tag.is-gap { background: var(--white); border: 1px solid var(--line); color: var(--ink-2); }
+
+/* the side by side. ours on white, the floor or the reference on the sunken tray. */
+.c-cmp {
+  display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--line);
+  border: 1px solid var(--line); border-radius: 14px; overflow: hidden; margin: 14px 0 0;
+}
+@media (min-width: 620px) { .c-cmp { grid-template-columns: 1fr 1fr; } }
+.c-cell { background: var(--white); padding: 14px 16px; }
+.c-cell.is-ref { background: var(--sunken); }
+.c-k { display: block; font-size: var(--fs-micro); font-weight: 600; color: var(--ink-2); margin-bottom: 6px; }
+.c-v {
+  display: block; font-family: var(--display); font-size: var(--fs-h2); font-weight: 600;
+  line-height: 1.2; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;
+}
+.c-cell.is-ref .c-v { color: var(--ink-2); }
+.c-l { display: block; font-size: var(--fs-micro); color: var(--ink-2); margin-top: 6px; line-height: 1.5; }
+
+.c-body { margin: 14px 0 0; max-width: 76ch; }
+.c-body p { margin: 0 0 10px; }
+.c-body p:last-child { margin-bottom: 0; }
+.c-fix {
+  margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--line);
+  max-width: 78ch; font-size: var(--fs-micro); color: var(--ink-2); line-height: 1.55;
+}
+.c-fix b { color: var(--ink); font-weight: 600; }
+.c-file { margin: 8px 0 0; font-family: var(--mono); font-size: var(--fs-micro); color: var(--ink-2); line-height: 1.6; word-break: break-word; }
+
+/* ---------- already fine ---------- */
+.c-fine {
+  background: var(--white); border: 1px solid var(--line); border-radius: 20px;
+  padding: 20px 18px; margin-top: 14px;
+}
+@media (min-width: 900px) { .c-fine { padding: 26px 28px; } }
+.c-finegrid { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--line); border-radius: 14px; overflow: hidden; border: 1px solid var(--line); }
+@media (min-width: 640px) { .c-finegrid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 980px) { .c-finegrid { grid-template-columns: 1fr 1fr 1fr; } }
+.c-fineitem { background: var(--white); padding: 12px 14px; }
+.c-fineitem .c-fv { display: block; font-family: var(--display); font-size: var(--fs-h2); font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.c-fineitem .c-fl { display: block; font-size: var(--fs-micro); color: var(--ink-2); margin-top: 4px; line-height: 1.45; }
+.c-fineitem .c-fl b { color: var(--ink); font-weight: 600; }
+.c-note { margin: 16px 0 0; background: var(--sunken); border-radius: 14px; padding: 15px 16px; max-width: 82ch; }
+.c-note p { margin: 0; }
+
+/* ---------- footer ---------- */
+.c-foot { margin-top: 14px; background: var(--white); border: 1px solid var(--line); border-radius: 20px; padding: 20px 18px; }
+@media (min-width: 900px) { .c-foot { padding: 26px 28px; } }
+.c-foot ol { margin: 0; padding-left: 20px; max-width: 78ch; }
+.c-foot li { margin: 0 0 10px; }
+.c-foot li:last-child { margin-bottom: 0; }
+.c-small { font-size: var(--fs-micro); color: var(--ink-2); line-height: 1.55; margin: 16px 0 0; }
+.c-small b { color: var(--ink); font-weight: 600; }
+code { font-family: var(--mono); font-size: var(--fs-micro); background: var(--sunken); border-radius: 6px; padding: 1px 5px; }
+</style>
+</head>
+<body>
+<div class="c-wrap">
+
+  <header class="c-top">
+    <p class="c-eyebrow">Diagnosis, 30 July 2026. Measured, not proposed.</p>
+    <h1>Why it looks cheap</h1>
+
+    <div class="c-answer">
+      <p><b>Two literal placeholders are shipped on this page:</b> a 576 x 576 grey box carrying the
+      universal image-failed-to-load icon (38.9% of a phone viewport, live for 65 days), and nineteen
+      salon photo slots filled by eleven photographs, so the same interior appears under three
+      different business names on one screen.</p>
+
+      <p><b>Everything else that reads cheap is one defect repeated on four axes: the page never
+      spends a step to say that two things are different.</b> The card's price, address and category
+      render at identical size, weight and colour. The gap that binds a photo to its own caption is
+      the same 8px as the gap that separates two unrelated blocks. The largest, boldest, only
+      saturated text in the whole feed is a wait estimate, not a salon name.</p>
+
+      <p><b>The layout is mostly right, and your read is mostly right with it.</b> Photo ratio, photo
+      share of card, card gutter, section gap size, hero anchor ratio and a 17-value palette all sit
+      inside or above the measured reference band. So 8 of the 13 defects are pure surface, 2 are
+      content supply that no design change touches, and 3 genuinely need layout to move.</p>
+    </div>
+
+    <p class="c-method">
+      <b>How to read this.</b> Every number was taken with getBoundingClientRect and getComputedStyle
+      on the rendered page at <code>/de</code>, never from source, and every one states its viewport:
+      <b>desktop is 1512 x 950</b>, <b>phone is 390 x 844</b>. Left cell is ours, right cell is the
+      floor we wrote or the reference band we measured. <b>Floor break</b> means a rule in our own
+      system is broken. <b>Taste gap</b> means nothing in our system covers it, so the reference is
+      the only standard. This page diagnoses. It proposes no layout and no treatment.
+    </p>
+    <p class="c-method">
+      <b>One number here disagrees with the research file behind it, and the page carries the newer
+      one.</b> Defect 4 was re-measured sub-pixel before publishing: the grouping ratio is 1.13x, not
+      the 1.00x the probe reported, because the map-to-rail gap is 9.00px and not 8.00px. The floor is
+      2.00x, so the finding does not move. Twelve other headline numbers were re-measured the same way
+      and every one reproduced exactly.
+    </p>
+  </header>
+
+  <section>
+    <div class="c-sechead">
+      <h2>The thirteen, at a glance</h2>
+      <p>Ordered by what a person scrolling notices, which is not the same as severity by our floors.
+      Where the two disagree, the block says so.</p>
+    </div>
+
+    <div class="c-scroll">
+      <table class="c-tbl">
+        <thead>
+          <tr><th>#</th><th>Defect</th><th>Ours</th><th>Floor or reference</th><th>Class</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="c-n">1</td>
+            <td class="c-what" data-l="Defect">Grey image placeholder shipped on the live page</td>
+            <td class="c-ours" data-l="Ours">38.9% of a phone viewport</td>
+            <td class="c-ref" data-l="Floor">0% dead grey</td>
+            <td data-l="Class">Content</td>
+          </tr>
+          <tr>
+            <td class="c-n">2</td>
+            <td class="c-what" data-l="Defect">Nineteen photo slots, eleven photographs</td>
+            <td class="c-ours" data-l="Ours">42.1% reuse</td>
+            <td class="c-ref" data-l="Ref">0% in our own Inspo rail</td>
+            <td data-l="Class">Content</td>
+          </tr>
+          <tr>
+            <td class="c-n">3</td>
+            <td class="c-what" data-l="Defect">The card's five fields are one grey block</td>
+            <td class="c-ours" data-l="Ours">1 anchor, at weight 500</td>
+            <td class="c-ref" data-l="Floor">2 anchors, at 600</td>
+            <td data-l="Class">Surface</td>
+          </tr>
+          <tr>
+            <td class="c-n">4</td>
+            <td class="c-what" data-l="Defect">Three different relationships all at 8 to 9px</td>
+            <td class="c-ours" data-l="Ours">1.13x</td>
+            <td class="c-ref" data-l="Floor">2.00x</td>
+            <td data-l="Class">Surface</td>
+          </tr>
+          <tr>
+            <td class="c-n">5</td>
+            <td class="c-what" data-l="Defect">The content column is one unbroken white field</td>
+            <td class="c-ours" data-l="Ours">97.3% white</td>
+            <td class="c-ref" data-l="Ref">8 of 10 give the band its own ground</td>
+            <td data-l="Class">Surface</td>
+          </tr>
+          <tr>
+            <td class="c-n">6</td>
+            <td class="c-what" data-l="Defect">Loudest text in the feed is a wait estimate</td>
+            <td class="c-ours" data-l="Ours">20px / 700 / green</td>
+            <td class="c-ref" data-l="Ref">Name or price carries it</td>
+            <td data-l="Class">Surface</td>
+          </tr>
+          <tr>
+            <td class="c-n">7</td>
+            <td class="c-what" data-l="Defect">Phone's first screen has no photograph</td>
+            <td class="c-ours" data-l="Ours">0.00%</td>
+            <td class="c-ref" data-l="Floor">~33%</td>
+            <td data-l="Class">Structural</td>
+          </tr>
+          <tr>
+            <td class="c-n">8</td>
+            <td class="c-what" data-l="Defect">Two typefaces render where one is specified</td>
+            <td class="c-ours" data-l="Ours">30 elements on a fallback face</td>
+            <td class="c-ref" data-l="Floor">0</td>
+            <td data-l="Class">Surface</td>
+          </tr>
+          <tr>
+            <td class="c-n">9</td>
+            <td class="c-what" data-l="Defect">Ten font sizes in one viewport, and no range</td>
+            <td class="c-ours" data-l="Ours">10 sizes</td>
+            <td class="c-ref" data-l="Floor">4</td>
+            <td data-l="Class">Surface</td>
+          </tr>
+          <tr>
+            <td class="c-n">10</td>
+            <td class="c-what" data-l="Defect">One salon renders as two different objects</td>
+            <td class="c-ours" data-l="Ours">2 anatomies, 1 screen</td>
+            <td class="c-ref" data-l="Floor">1 component, documented variants</td>
+            <td data-l="Class">Structural</td>
+          </tr>
+          <tr>
+            <td class="c-n">11</td>
+            <td class="c-what" data-l="Defect">Review cards carry a hairline and an elevation</td>
+            <td class="c-ours" data-l="Ours">2 depth mechanisms</td>
+            <td class="c-ref" data-l="Ref">10 of 10 spend exactly 1</td>
+            <td data-l="Class">Surface</td>
+          </tr>
+          <tr>
+            <td class="c-n">12</td>
+            <td class="c-what" data-l="Defect">Desktop rail underfills, arrow aimed at nothing</td>
+            <td class="c-ours" data-l="Ours">4 cards, 432px empty</td>
+            <td class="c-ref" data-l="Floor">6 plus a cropped next item</td>
+            <td data-l="Class">Structural</td>
+          </tr>
+          <tr>
+            <td class="c-n">13</td>
+            <td class="c-what" data-l="Defect">Four content insets, no rhythm token</td>
+            <td class="c-ours" data-l="Ours">4 insets, gaps spread 2.17x</td>
+            <td class="c-ref" data-l="Ref">1 inset, references spread 1.00x to 1.12x</td>
+            <td data-l="Class">Surface</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="c-sechead">
+      <h2>The thirteen, one by one</h2>
+      <p>Each block: what it is in plain English, our number beside the floor or the reference, and
+      one line on what the fix actually is.</p>
+    </div>
+
+    <!-- 1 -->
+    <article class="c-def">
+      <div class="c-def-head">
+        <span class="c-rank">1</span>
+        <h3>A grey image placeholder is shipped on the live page</h3>
+      </div>
+      <div class="c-tags">
+        <span class="c-tag">Content</span>
+        <span class="c-tag is-break">Floor break, three at once</span>
+      </div>
+      <div class="c-cmp">
+        <div class="c-cell">
+          <span class="c-k">Ours</span>
+          <span class="c-v">38.9%</span>
+          <span class="c-l">of a 390 x 844 phone viewport is one grey square (358 x 358). At
+          1512 x 950 it is 576 x 576, or 23.1%. Live since 26 May 2026, which is 65 days.</span>
+        </div>
+        <div class="c-cell is-ref">
+          <span class="c-k">Floor</span>
+          <span class="c-v">0%</span>
+          <span class="c-l">dead grey zone. Finished-screen pass item (e), NEVER-AGAIN floor 4 (no
+          muted focal), FLOORS LAW 2 (a photo-first surface never renders a bare grey box).</span>
+        </div>
+      </div>
+      <div class="c-body">
+        <p>The business teaser holds a square of <code>#F4F4F5</code> with a 56px picture-frame
+        outline icon centred in it. That is the universal browser and operating-system signal for
+        <b>this image failed to load</b>. It is not a neutral empty slot, it is an active claim that
+        the page is broken, and it is the largest non-photographic element anywhere on the page. Its
+        fill is 1.10:1 against the page white, so its own edge is barely perceivable and it reads as a
+        hole rather than as a card.</p>
+      </div>
+      <p class="c-fix"><b>Fix.</b> Put a real partner-salon photograph in that square from data, or
+      cut the square and let the text run full width. Restoring the old baked-in illustration is not
+      available: a hardcoded hero image has been rejected three times and is gated. Same edit, two
+      riders: the accessibility label carries a banned em-dash, and it misspells the brand as "Solon"
+      to every screen reader that reaches it.</p>
+      <p class="c-file">BusinessTeaser.tsx:43-49 in app/[locale]/_components/homepage/</p>
+    </article>
+
+    <!-- 2 -->
+    <article class="c-def">
+      <div class="c-def-head">
+        <span class="c-rank">2</span>
+        <h3>Nineteen salon photo slots are filled by eleven photographs</h3>
+      </div>
+      <div class="c-tags">
+        <span class="c-tag">Content</span>
+        <span class="c-tag is-gap">Taste gap, no floor counts this</span>
+      </div>
+      <div class="c-cmp">
+        <div class="c-cell">
+          <span class="c-k">Ours, the salon rails</span>
+          <span class="c-v">42.1% reuse</span>
+          <span class="c-l">19 slots, 11 distinct photographs. Half of the distinct businesses on the
+          page share a photograph with another one. Four collisions, all visible on one page.</span>
+        </div>
+        <div class="c-cell is-ref">
+          <span class="c-k">Reference, our own Inspo rail</span>
+          <span class="c-v">0% reuse</span>
+          <span class="c-l">8 slots, 8 distinct photographs, on the same page and the same scroll. So
+          this is not a limitation of the product, it is the state of the salon photo pool.</span>
+        </div>
+      </div>
+      <div class="c-body">
+        <p>Scroll the page and the identical salon interior appears under three different business
+        names. This is the brief's own phrase, <b>real content arranged as though it were
+        placeholder</b>, occurring literally, and it is the single most recognisable tell of a
+        marketplace with no supply. No layout change touches it.</p>
+      </div>
+      <div class="c-scroll">
+        <table class="c-tbl">
+          <thead><tr><th>Photograph</th><th>Stands in for</th></tr></thead>
+          <tbody>
+            <tr><td data-l="Photo">photo-1512290923902</td><td data-l="Used by">Glow Lab Basel, Velvet Face, Rouge Studio</td></tr>
+            <tr><td data-l="Photo">photo-1487412947147</td><td data-l="Used by">Haarsalon Margot, Muse Beauty Studio</td></tr>
+            <tr><td data-l="Photo">photo-1604654894610</td><td data-l="Used by">Nail Studio Bliss, Pink Petal Nails</td></tr>
+            <tr><td data-l="Photo">photo-1570172619644</td><td data-l="Used by">Smooth Skin Studio, Wax and Glow Basel</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="c-fix"><b>Fix.</b> Eleven more photographs into the seed set. Zero code, zero layout,
+      zero design decision.</p>
+      <p class="c-file">lib/stock-photos.ts, lib/category-photos.ts and the seed data behind them</p>
+    </article>
+
+    <!-- 3 -->
+    <article class="c-def">
+      <div class="c-def-head">
+        <span class="c-rank">3</span>
+        <h3>The salon card's five fields render as one grey block</h3>
+      </div>
+      <div class="c-tags">
+        <span class="c-tag">Surface</span>
+        <span class="c-tag is-break">Floor break, LOCKFILE 17.4</span>
+      </div>
+      <div class="c-cmp">
+        <div class="c-cell">
+          <span class="c-k">Ours</span>
+          <span class="c-v">1 anchor, at 500</span>
+          <span class="c-l">Price is 12px / weight 400 / <code>#6B6B6B</code>, identical in all three
+          properties to the postcode beside it. Three of five fields are pixel-identical, four of five
+          are grey 400. The card's whole size range is 1.17x.</span>
+        </div>
+        <div class="c-cell is-ref">
+          <span class="c-k">Floor, and the reference agrees</span>
+          <span class="c-v">2 anchors, at 600</span>
+          <span class="c-l">LOCKFILE 17.4: name (larger, 600) plus price (600, tabular). OpenTable's
+          card is also 1.17x internally and Airtasker's is about 1.0x, so flat sizing is normal. Both
+          buy the hierarchy back with a weight step plus a colour step on the deciding field. We buy
+          nothing back.</span>
+        </div>
+      </div>
+      <div class="c-body">
+        <p>On the card the customer actually decides from, the one thing the card exists to answer,
+        what does this cost, carries no emphasis at all. This defect repeats 19 times per page, in the
+        band that carries 29% of all text on the page.</p>
+      </div>
+      <p class="c-fix"><b>Fix, and it is blocked before it is written.</b> Two lines of code, but two
+      live rules contradict each other and the card obeys the older one. LOCKFILE:479 (A13, 28 May)
+      says the price recedes to grey 400. LOCKFILE:1921 (section 17.4, 7 June) says the price is a 600
+      tabular ink anchor, and calls itself the card-emphasis law. 17.4 is later, so it wins by our own
+      precedence chain, but A13 is the one wired into the card primitives and into the drift checker,
+      which would flag a 17.4-compliant card as drift forever. <b>One sentence from you settles
+      it.</b></p>
+      <p class="c-file">SalonCard.tsx:505 and :534 in app/[locale]/_components/homepage/, plus
+      app/[locale]/_components/primitives/CardText.tsx:39-49</p>
+    </article>
+
+    <!-- 4 -->
+    <article class="c-def">
+      <div class="c-def-head">
+        <span class="c-rank">4</span>
+        <h3>Three relationships that mean three different things all render at 8 to 9px</h3>
+      </div>
+      <div class="c-tags">
+        <span class="c-tag">Surface</span>
+        <span class="c-tag is-break">Floor break, FLOORS LAW 5</span>
+      </div>
+      <div class="c-cmp">
+        <div class="c-cell">
+          <span class="c-k">Ours</span>
+          <span class="c-v">1.13x</span>
+          <span class="c-l">Between-group divided by in-group, at 390 x 844, sub-pixel exact. A photo
+          to its own caption is 8.00. The map block to the rail below it is 9.00. A section heading to
+          its own rail is 8.00. A heading to its own map is 5.00, which is 0.63x, so a heading is bound
+          to its section less tightly than a photo is bound to its caption.</span>
+        </div>
+        <div class="c-cell is-ref">
+          <span class="c-k">Floor, and the reference band</span>
+          <span class="c-v">2.00x</span>
+          <span class="c-l">FLOORS LAW 5 requires at least 2x. Reference band for a heading to its own
+          body: 14.3 to 20.9 pt across four measured screens. Three of our four sections sit below the
+          bottom of that band.</span>
+        </div>
+      </div>
+      <div class="c-body">
+        <p>The gap that says <b>this text belongs to this photo</b> is the same size as the gap that
+        says <b>these are two unrelated blocks</b>. Nothing in the vertical spacing tells the eye what
+        groups with what, so a column of real salons reads as a stack of loose parts.</p>
+        <p>It bites here specifically because the salon card carries <b>no enclosure of its own</b>:
+        measured, its container is transparent, its border computes to 0px and it casts no elevation.
+        The one depth cue is a 9%-alpha elevation under the photograph, and the text sits outside it.
+        Proximity is therefore the only grouping signal the card has, and it is set to the value that
+        means unrelated.</p>
+      </div>
+      <p class="c-fix"><b>Fix.</b> Four padding values in one file. Cost is about +56px of scroll at
+      390 on a 4316px document, or +1.3%. One line of later evidence on a settled call, not a reopened
+      argument: the 2026-05-25 decision compressed this to chase a smaller between-section gap, and
+      measured today the between-section gap is still 48 (correct by all four references) while the gap
+      that actually shrank was the one holding a heading to its own content.</p>
+      <p class="c-file">SectionHeader.tsx:378, :409, :474, :478 in app/[locale]/_components/homepage/</p>
+    </article>
+
+    <!-- 5 -->
+    <article class="c-def">
+      <div class="c-def-head">
+        <span class="c-rank">5</span>
+        <h3>The whole content column is one unbroken white field</h3>
+      </div>
+      <div class="c-tags">
+        <span class="c-tag">Surface</span>
+        <span class="c-tag is-break">Floor break, FLOORS LAW 4</span>
+      </div>
+      <div class="c-cmp">
+        <div class="c-cell">
+          <span class="c-k">Ours</span>
+          <span class="c-v">97.3% white</span>
+          <span class="c-l">at 1512 x 950, and 95.5% at 390 x 844, sampled every 20px down the page.
+          Three background bands exist and the only sunken one is in the footer. Photo-less sections
+          are 62.6% of total section height on a phone.</span>
+        </div>
+        <div class="c-cell is-ref">
+          <span class="c-k">Reference</span>
+          <span class="c-v">8 of 10</span>
+          <span class="c-l">measured reference bands give the band its own ground: a tinted band, a
+          filled card, or a dark page. The 2 that keep white on white carry a hairline and nothing
+          else.</span>
+        </div>
+      </div>
+      <div class="c-body">
+        <p>Nothing on this page ever changes background. Two whole sections, the walk-in band and the
+        reviews band, are rails of white cards on a white page with no photograph inside them and no
+        tray underneath them. They have nothing to sit on, so they read as loose rows on a
+        document.</p>
+      </div>
+      <p class="c-fix"><b>Fix.</b> Two sunken wrappers underneath the existing cards, which keep every
+      bit of their chrome. This is the highest ratio of floors closed to lines changed on the whole
+      list: it closes the missing-tray break and the no-alternation break in the same edit.</p>
+      <p class="c-file">WalkInBand.tsx and Reviews.tsx in app/[locale]/_components/homepage/</p>
+    </article>
+
+    <!-- 6 -->
+    <article class="c-def">
+      <div class="c-def-head">
+        <span class="c-rank">6</span>
+        <h3>The loudest text in the feed is a wait estimate, in success green</h3>
+      </div>
+      <div class="c-tags">
+        <span class="c-tag">Surface</span>
+        <span class="c-tag is-gap">Taste gap on emphasis, semantic break, passes AA</span>
+      </div>
+      <div class="c-cmp">
+        <div class="c-cell">
+          <span class="c-k">Ours</span>
+          <span class="c-v">20px / 700 / green</span>
+          <span class="c-l">The queue estimate is 1.67x its own body and is the only saturated colour
+          anywhere on the page. Every salon name on the same screen is 14px grey-ink at weight 500. The
+          green is unconditional, so a 98-minute wait renders in exactly the same success green as an
+          available-right-now slot.</span>
+        </div>
+        <div class="c-cell is-ref">
+          <span class="c-k">Reference</span>
+          <span class="c-v">Name or price</span>
+          <span class="c-l">Both reference apps reserve their loudest treatment for the entity name or
+          the price, never for a derived estimate. Taste rule 4: success green is legal as an icon,
+          never as body text.</span>
+        </div>
+      </div>
+      <div class="c-body">
+        <p>Stated plainly so it is not over-read: <b>this is not an accessibility break</b>. Contrast
+        was computed rather than quoted, 3.30:1, which at 20px / 700 qualifies as WCAG large text and
+        passes AA. It is a meaning problem. The token that means <b>good</b> is spent on a slot rather
+        than on a state, so it encodes nothing.</p>
+      </div>
+      <p class="c-fix"><b>Fix.</b> Either make the colour conditional on a real threshold, so the token
+      starts encoding something, or take the figure to ink.</p>
+      <p class="c-file">WalkInBand.tsx:125 in app/[locale]/_components/homepage/</p>
+    </article>
+
+    <!-- 7 -->
+    <article class="c-def">
+      <div class="c-def-head">
+        <span class="c-rank">7</span>
+        <h3>A phone user's first screen contains no photograph at all</h3>
+      </div>
+      <div class="c-tags">
+        <span class="c-tag">Structural</span>
+        <span class="c-tag is-break">Floor break, FLOORS LAW 2</span>
+      </div>
+      <div class="c-cmp">
+        <div class="c-cell">
+          <span class="c-k">Ours</span>
+          <span class="c-v">0.00%</span>
+          <span class="c-l">photographic area at 390 x 844. The six images in that viewport are all
+          49 x 49 category icons. The first photograph starts at document y=875, which is 31px below
+          the fold. The screen is header 10.0%, hero 50.4%, gap 6.8%, category icon grid 29.7%.</span>
+        </div>
+        <div class="c-cell is-ref">
+          <span class="c-k">Floor</span>
+          <span class="c-v">~33%</span>
+          <span class="c-l">written at exactly 390 x 844, in FLOORS LAW 2 and in the design contract's
+          imagery row. The page can clear it: its best photographic window is 40.59%, at y=700. It just
+          does not clear it where the floor is written.</span>
+        </div>
+      </div>
+      <div class="c-body">
+        <p><b>Ranked 7th and not 1st on purpose.</b> It is a hard floor break, and it is nearly
+        invisible to a person scrolling, because one flick reveals the photography. Ranked by our own
+        rules it would sit near the top. Desktop is not a floor break, because no floor is written at a
+        desktop width, but it is below every web reference at 8.38% (1512 x 950) and 11.76% (1280 x
+        800).</p>
+      </div>
+      <p class="c-fix"><b>Fix, with the arithmetic so nobody guesses.</b> One mobile card row
+      contributes 390 x 185, or 21.9% of the viewport, so 33% needs roughly 1.5 photo bands in view, so
+      the first photo band has to start by about y=500. That is a 375px pull-up. The zero-photo category
+      grid is 251px of those 375.</p>
+      <p class="c-file">app/[locale]/page.tsx composition, with MobileCategoriesRow.tsx in
+      app/[locale]/_components/homepage/</p>
+    </article>
+
+    <!-- 8 -->
+    <article class="c-def">
+      <div class="c-def-head">
+        <span class="c-rank">8</span>
+        <h3>Two typefaces render where one is specified</h3>
+      </div>
+      <div class="c-tags">
+        <span class="c-tag">Surface</span>
+        <span class="c-tag is-break">Floor break, FLOORS LAW 8</span>
+      </div>
+      <div class="c-cmp">
+        <div class="c-cell">
+          <span class="c-k">Ours</span>
+          <span class="c-v">30 elements</span>
+          <span class="c-l">compute a Helvetica Neue fallback at 1512 x 950, which is about one text
+          element in ten, and the same 30 at 390 x 844. Same datum, two renders: a rating at 13px Inter
+          in the card row, and the same rating at 12px Helvetica Neue in the map pin 90px below
+          it.</span>
+        </div>
+        <div class="c-cell is-ref">
+          <span class="c-k">Floor and reference</span>
+          <span class="c-v">0</span>
+          <span class="c-l">FLOORS LAW 8, the same thing looks the same everywhere. No reference screen
+          in the whole corpus showed a system fallback face.</span>
+        </div>
+      </div>
+      <div class="c-body">
+        <p>Cause confirmed on disk, not guessed: the map library's own stylesheet sets a font on the map
+        container, and our marker element carries no font class, so it inherits. A system fallback font
+        is the single most legible signal that a page is unfinished.</p>
+      </div>
+      <p class="c-fix"><b>Fix.</b> One class on one element. This is the cheapest real win on the entire
+      list.</p>
+      <p class="c-file">NearbyMap.tsx:57-59 in app/[locale]/_components/homepage/</p>
+    </article>
+
+    <!-- 9 -->
+    <article class="c-def">
+      <div class="c-def-head">
+        <span class="c-rank">9</span>
+        <h3>Ten font sizes in one viewport, and almost no range</h3>
+      </div>
+      <div class="c-tags">
+        <span class="c-tag">Surface</span>
+        <span class="c-tag is-break">Floor break, the 4-size ceiling</span>
+      </div>
+      <div class="c-cmp">
+        <div class="c-cell">
+          <span class="c-k">Ours</span>
+          <span class="c-v">10 sizes</span>
+          <span class="c-l">in the desktop first viewport (10, 12, 13, 13.5, 14, 15, 16, 20, 28, 44),
+          and 15 across the whole page. 92.5% of all page text sits between 11 and 14px. In source: 42
+          distinct arbitrary pixel sizes, of which 267 occurrences are half-pixel steps.</span>
+        </div>
+        <div class="c-cell is-ref">
+          <span class="c-k">Ceiling and references</span>
+          <span class="c-v">4</span>
+          <span class="c-l">Our own ceiling is 4 per screen. Measured first-viewport tier counts:
+          Fresha 6, Airtasker 4, OpenTable 4.</span>
+        </div>
+      </div>
+      <div class="c-body">
+        <p>A lot of sizes and almost no range. The extra tiers are 13.5 against 13, a 4% difference,
+        which costs a size tier and buys no hierarchy at all.</p>
+        <p><b>Do not "fix" the ratios, they are fine and in places better than the references.</b> Hero
+        anchor 3.67x (Airtasker 3.2, OpenTable 2.8), section header to body 1.67x (OpenTable 1.66),
+        card internal 1.17x (OpenTable 1.17). The count is the outlier, not the range.</p>
+      </div>
+      <p class="c-fix"><b>Fix.</b> A size scale in the Tailwind config plus a sweep. Deleting the
+      half-steps alone takes the page from 15 rendered tiers to about 11 without changing how one pixel
+      looks.</p>
+      <p class="c-file">tailwind.config.js, which currently extends no fontSize scale at all</p>
+    </article>
+
+    <!-- 10 -->
+    <article class="c-def">
+      <div class="c-def-head">
+        <span class="c-rank">10</span>
+        <h3>One salon renders as two different objects on one screen</h3>
+      </div>
+      <div class="c-tags">
+        <span class="c-tag">Structural</span>
+        <span class="c-tag is-break">Floor break, FLOORS LAW 8 and imagery</span>
+      </div>
+      <div class="c-cmp">
+        <div class="c-cell">
+          <span class="c-k">Ours</span>
+          <span class="c-v">2 anatomies</span>
+          <span class="c-l">for one entity, on one screen. The same salon is a 194 x 220 photo card,
+          and 751px lower a 528 x 140 all-text row with a hairline, a green wait figure and no
+          photograph. The walk-in band is 0% photographic at both viewports.</span>
+        </div>
+        <div class="c-cell is-ref">
+          <span class="c-k">Floor</span>
+          <span class="c-v">1 component</span>
+          <span class="c-l">FLOORS LAW 8: an entity that appears on more than one screen renders
+          through the same component. A different density is a documented variant of one component,
+          never a second implementation.</span>
+        </div>
+      </div>
+      <div class="c-body">
+        <p>A copy inherits none of the system's decisions and then drifts alone. That is why this one is
+        classed structural even though it looks like a styling difference: it is a second card, not a
+        differently styled card.</p>
+      </div>
+      <p class="c-fix"><b>Fix.</b> The walk-in row becomes a documented dense variant of the salon card.
+      A component change, not a style change.</p>
+      <p class="c-file">WalkInBand.tsx:120-135 in app/[locale]/_components/homepage/</p>
+    </article>
+
+    <!-- 11 -->
+    <article class="c-def">
+      <div class="c-def-head">
+        <span class="c-rank">11</span>
+        <h3>The review cards carry a hairline and an elevation at the same time</h3>
+      </div>
+      <div class="c-tags">
+        <span class="c-tag">Surface</span>
+        <span class="c-tag is-break">Floor break, LOCKFILE 17.2</span>
+      </div>
+      <div class="c-cmp">
+        <div class="c-cell">
+          <span class="c-k">Ours</span>
+          <span class="c-v">2 mechanisms</span>
+          <span class="c-l">Six cards carry a 1px hairline and a 9%-alpha elevation at rest, at both
+          viewports, on a white card on a white page.</span>
+        </div>
+        <div class="c-cell is-ref">
+          <span class="c-k">Floor and reference</span>
+          <span class="c-v">1 mechanism</span>
+          <span class="c-l">LOCKFILE 17.2: a card carrying elevation keeps one mechanism, never both.
+          Reference: 0 of 10 measured screens stack both, and 10 of 10 spend exactly one, which in
+          every case is the hairline.</span>
+        </div>
+      </div>
+      <div class="c-body">
+        <p>Two depth mechanisms spent where every measured reference spends one. The card keeps all of
+        its chrome either way: this is about which single mechanism carries the edge.</p>
+      </div>
+      <p class="c-fix"><b>Fix.</b> Keep the hairline, which is what every measured reference keeps, and
+      let it carry the edge on its own.</p>
+      <p class="c-file">Reviews.tsx:144-146 in app/[locale]/_components/homepage/</p>
+    </article>
+
+    <!-- 12 -->
+    <article class="c-def">
+      <div class="c-def-head">
+        <span class="c-rank">12</span>
+        <h3>The desktop rail underfills and points an arrow at 432px of empty page</h3>
+      </div>
+      <div class="c-tags">
+        <span class="c-tag">Structural</span>
+        <span class="c-tag is-break">Floor break, FLOORS LAW 3</span>
+      </div>
+      <div class="c-cmp">
+        <div class="c-cell">
+          <span class="c-k">Ours</span>
+          <span class="c-v">4 cards, 432px empty</span>
+          <span class="c-l">at 1512 x 950. The last card ends at x=956 and the rail ends at x=1388, so
+          about 29% of the viewport width is empty page with the section's own scroll-right arrow
+          sitting in it. Separately, the card is 194px at every width from 1280 up, or 12.8% of the
+          viewport.</span>
+        </div>
+        <div class="c-cell is-ref">
+          <span class="c-k">Floor and reference</span>
+          <span class="c-v">6 plus a crop</span>
+          <span class="c-l">FLOORS LAW 3: at least 6 content units on desktop plus a visibly cropped
+          next item. Web references put the card at 16.1 / 16.7 / 18.5% of viewport width, so ours is
+          the narrowest of four.</span>
+        </div>
+      </div>
+      <div class="c-body">
+        <p>Cause corrected against an earlier claim rather than inherited from it: 1512 is already the
+        breakpoint where the grid asks for 6 columns, so <b>the rail underfills because the section
+        holds only four salons</b>, not because the breakpoint ladder is short. Same symptom, different
+        fix. Not reproducible at 390, where the rail shows one full card plus a 131px peek, which is
+        correct.</p>
+      </div>
+      <p class="c-fix"><b>Fix.</b> More salons in that section's query. The container cap only matters if
+      the card width is also meant to move.</p>
+      <p class="c-file">app/[locale]/page.tsx and the home feed data loader</p>
+    </article>
+
+    <!-- 13 -->
+    <article class="c-def">
+      <div class="c-def-head">
+        <span class="c-rank">13</span>
+        <h3>Four content insets on one page, and no section-rhythm token</h3>
+      </div>
+      <div class="c-tags">
+        <span class="c-tag">Surface</span>
+        <span class="c-tag is-gap">Consistency defect plus a design-contract break</span>
+      </div>
+      <div class="c-cmp">
+        <div class="c-cell">
+          <span class="c-k">Ours</span>
+          <span class="c-v">4 insets, 2.17x spread</span>
+          <span class="c-l">Content starts at 140, 144, 146 and 148 from the left at 1512 x 950, a 2.8%
+          spread. Section gaps spread 2.17x on desktop and 2.34x on a phone. 39.5% of rendered spacing
+          sits off the 4pt scale the contract mandates. Phone gutters are a clean 16 everywhere.</span>
+        </div>
+        <div class="c-cell is-ref">
+          <span class="c-k">Reference</span>
+          <span class="c-v">1 inset, 1.00x to 1.12x</span>
+          <span class="c-l">References hold their section rhythm to within 1.12x down a single page,
+          and start their content at one distance from the side.</span>
+        </div>
+      </div>
+      <div class="c-body">
+        <p>The largest vertical separator <b>declared</b> anywhere in the five feed sections is 16px, so
+        every real between-section gap, 44px to 124px, is an accidental sum of six separate
+        declarations. Nobody chose any of them.</p>
+        <p>A 2.8% offset is the worst kind of inconsistency: too small to read as a decision, big enough
+        to read as sloppiness. It is smaller than the 5% case our own grid research already named as the
+        worst example it found, and therefore worse by that argument.</p>
+      </div>
+      <p class="c-fix"><b>Fix.</b> Align four padding values, and declare one section-gap token so the
+      rhythm is chosen instead of summed.</p>
+      <p class="c-file">SectionHeader.tsx in app/[locale]/_components/homepage/, plus the per-section
+      padding classes</p>
+    </article>
+  </section>
+
+  <section>
+    <div class="c-sechead">
+      <h2>Already fine. Do not touch any of this.</h2>
+      <p>Seventeen things that were measured by a probe actively looking for a defect, and verdicted
+      fine. Several are above the reference band, not merely inside it.</p>
+    </div>
+
+    <div class="c-fine">
+      <div class="c-finegrid">
+        <div class="c-fineitem"><span class="c-fv">1216 x 60</span><span class="c-fl"><b>The segmented search bar.</b> White on white with an elevation is exactly the correct edge route, and the 15px CTA clears the never-below-13 rule. Nothing on this page argues with it.</span></div>
+        <div class="c-fineitem"><span class="c-fv">1.250</span><span class="c-fl"><b>Photo aspect ratio.</b> Reference band 1.07 to 1.79. Closer to the middle than to either edge.</span></div>
+        <div class="c-fineitem"><span class="c-fv">19 of 19</span><span class="c-fl"><b>Aspect consistency.</b> Every salon photo at 1.250, every Inspo tile at 0.563, zero within-rail variance. The two ratios are 2.22x apart, which reads as a decision.</span></div>
+        <div class="c-fineitem"><span class="c-fv">70.5%</span><span class="c-fl"><b>Photo as a share of card height</b> (74.3% on a phone). Reference cluster is 50.0 to 63.3%. We are above every one of them. Growing the photo is the wrong lever.</span></div>
+        <div class="c-fineitem"><span class="c-fv">2.74x</span><span class="c-fl"><b>The photo is the card's focal</b> at both viewports, against the next largest element in the card.</span></div>
+        <div class="c-fineitem"><span class="c-fv">59.2%</span><span class="c-fl"><b>Mobile card width</b> as a share of viewport. The widest of three iOS references (56.2, 44.8, 23.1).</span></div>
+        <div class="c-fineitem"><span class="c-fv">12pt</span><span class="c-fl"><b>Card-to-card gutter.</b> Reference band 6.5 to 13.0 pt, and an independent 9-rail sample says 10 to 14. Dead centre of both.</span></div>
+        <div class="c-fineitem"><span class="c-fv">44 / 48 / 52</span><span class="c-fl"><b>Between-section gap size</b> at 390. Reference band 33.9 to 69.1 pt. Inside it. Their consistency is defect 13; their size is not a defect.</span></div>
+        <div class="c-fineitem"><span class="c-fv">16</span><span class="c-fl"><b>Mobile page gutter</b> on the header, the hero, all five feed sections and the footer. One outlier at 24 on a phone-only row.</span></div>
+        <div class="c-fineitem"><span class="c-fv">17 values</span><span class="c-fl"><b>The colour palette.</b> 12 pure chrome, 3 semantic, exactly one decorative use. Better than the reference. Whatever makes this page read cheap, an undisciplined palette is not it.</span></div>
+        <div class="c-fineitem"><span class="c-fv">3.67x</span><span class="c-fl"><b>Hero anchor ratio</b> at 44px on desktop. Floors are 28px and 1.8x, so above both, and above Airtasker 3.2 and OpenTable 2.8.</span></div>
+        <div class="c-fineitem"><span class="c-fv">23 to 25%</span><span class="c-fl"><b>Weight discipline</b> in the first viewport at weight 600 or above, against a ceiling of about 30%. The old 86% figure is stale and must not be re-quoted.</span></div>
+        <div class="c-fineitem"><span class="c-fv">1 mechanism</span><span class="c-fl"><b>The salon card's own depth.</b> An elevation under the photograph, a flush photo edge, and no second mechanism competing with it. Satisfies the edge floor twice over.</span></div>
+        <div class="c-fineitem"><span class="c-fv">27 + 13</span><span class="c-fl"><b>Over-photo controls.</b> Frosted hearts and darker rating pills. A heavier elevation over a photograph is correct, not drift: it has to be darker to be perceivable against image noise.</span></div>
+        <div class="c-fineitem"><span class="c-fv">5 of 5</span><span class="c-fl"><b>Inspo tiles and the map card.</b> Tiles match five of five photo-card references exactly. The map card carries a sunken fill plus a hairline, one mechanism, correct.</span></div>
+        <div class="c-fineitem"><span class="c-fv">4.58:1</span><span class="c-fl"><b>Blue accent usage.</b> Four text elements plus one background, every instance inside a link, AA on white. Sparse and clickable-only, exactly as locked.</span></div>
+        <div class="c-fineitem"><span class="c-fv">0</span><span class="c-fl"><b>Bare grey boxes in card slots.</b> Every card that should carry a photograph carries one. The placeholder in defect 1 is in a marketing section, not in the card fallback path.</span></div>
+      </div>
+
+      <div class="c-note">
+        <p><b>And one thing to actively not build.</b> Our own floor asks for a display anchor of at
+        least 28px, and at least 1.8x body, on every customer screen. Every band below the first one
+        breaks it (largest 20, body 12, ratio 1.67). <b>Do not fix that.</b> None of the three
+        references carries an anchor in its card bands either (1.25x and 1.72x), so 1.67 is normal for a
+        list band. Growing a heading in the feed would manufacture an element that serves no job on that
+        screen, which another of our own floors forbids. This is the second independent request to scope
+        that floor to the hero, the profile page and the confirmation screen.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="c-sechead">
+      <h2>Found while measuring</h2>
+      <p>Surfaced, not edited. Each one currently hands out a wrong number to anyone who reads it.</p>
+    </div>
+    <div class="c-foot">
+      <ol>
+        <li><b>Two locked rules contradict each other on the card price.</b> LOCKFILE:479 says it
+        recedes to grey 400, LOCKFILE:1921 says it is a 600 ink anchor. The later one wins by our
+        precedence chain, the older one is what is wired. This is the blocker on defect 3.</li>
+        <li><b>LOCKFILE:625 publishes the wrong elevation value.</b> It gives a two-layer recipe; both
+        the Tailwind config and the live computed style say single-layer, with a dated reason in the
+        config from 29 June. Anyone reading that table today gets the wrong number.</li>
+        <li><b>The 86%-bold and 1.57x-anchor figures in the flatness diagnosis are stale.</b> Both were
+        re-measured, on the profile page and here. The rule stays useful as a ceiling; the numbers must
+        not be re-quoted as current.</li>
+      </ol>
+      <p class="c-small">
+        Sources, all measured on 30 July 2026 on the rendered page:
+        <code>_design-system/research/CHEAP_TYPE.md</code>, <code>CHEAP_SPACE.md</code>,
+        <code>CHEAP_PHOTO.md</code>, <code>CHEAP_EDGE.md</code>, and the ranked synthesis at
+        <code>_design-system/research/WHY_IT_LOOKS_CHEAP.md</code>. Competitor figures are ratios only,
+        never absolute pixels, because the reference captures are served downscaled.
+      </p>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>
