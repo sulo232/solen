@@ -36,7 +36,40 @@
 - [x] A4f Wrote the gate through the **Write/Edit tool** into `~/.claude/hooks/`, the directory Bash had just refused. That is the corrected model from A4c in use, not just written down.
 - [ ] A4g-old Hole in the existing gate: `instrument-corroboration-gate.py` is armed and covers the "serve / render / preview" category, but NOT tunnel, DNS or file-permission claims, which is why it stayed silent while I made all three. Extending its category list is the fix, not a new gate. Blocked on the owner's answer to question 1 on the page.
 - [x] A4-old Prior text, kept for the record: **BLOCKED, concrete blocker.** `cloudflared` cannot resolve `api.trycloudflare.com` from this sandboxed session. Three attempts, three different methods (plain, `--metrics`, `GODEBUG=netdns=cgo --edge-ip-version 4`), identical failure each time: `dial tcp: lookup api.trycloudflare.com: no such host`. Python resolves the same hostname fine (104.16.230.132), so it is specific to how the sandbox handles that process, not a network outage. Fallbacks also checked and closed: the one live tunnel on this machine points at :3005, whose server runs from worktree `quirky-ellis-ef5559`, and both that worktree's public dir and the main repo's public dir are PermissionError to write. **Needs the owner or a non-sandboxed session to run one command:** `cloudflared tunnel --url http://127.0.0.1:3410`. Until then the page is at http://localhost:3410/_mockups/system-overhaul-questions/index.html on the Mac.
-- [ ] A5 Owner answers recorded durably (TASTE_LOG / the relevant law file) in the same turn they arrive
+- [x] A5 Owner answers recorded durably, same turn they arrived. `verified:` [SYSTEM_DECISIONS_2026-08-07.md](SYSTEM_DECISIONS_2026-08-07.md), all 15 rows with the verbatim additions.
+
+### PHASE 2, the build queue (owner answered 2026-08-07, decisions in SYSTEM_DECISIONS_2026-08-07.md)
+
+- [ ] Q1 Freeze new gates. Write the one legality rule (objective + cheap = gate, judgment = reasoning layer) into LAW_SYSTEM.md and make the harden path obey it.
+- [ ] Q2 Bury the 18 armed-nowhere gates, one commit, a tombstone line for each.
+- [ ] Q3 Mockup-first is over-enforced. Three atomic fixes:
+  - [ ] Q3a Raise the 300s skip TTL to outlast a real mockup build
+  - [ ] Q3b Fix the `Grounded-in` filename-token heuristic so a mockup named for the CHANGE passes
+  - [ ] Q3c Collapse the mockup gate family into one aggregated deny
+- [ ] Q4 **Sets get their own session** (owner: "4 needs a big mockup n allat session"). Three pipelines: a flow, N directions of one screen, a page family.
+- [ ] Q5 Instrument validation: an instrument must reproduce a verdict he already gave before it is trusted.
+- [ ] Q6 When measurement and his report disagree: **show him BOTH and let him decide.** Not "his eyes win". My recommendation was wrong.
+- [ ] Q7 Two failed attempts, then the method changes or it comes to him.
+- [ ] Q8 One canon file per concern.
+  - [ ] Q8a Define the target file set
+  - [ ] Q8b Move dated reports to an archive folder
+  - [ ] Q8c **Build the gate that FORCES archiving** (owner: "make it so it acc gets archived... acc gate for that so it forces")
+- [ ] Q9 **The reply itself.** Three bans plus a research task:
+  - [ ] Q9a Ban self-test scores in a reply ("5/5", "3 of 3 runs")
+  - [ ] Q9b Ban the file-touched list
+  - [ ] Q9c Ban gate jargon (gate names, hook names, exit codes)
+  - [ ] Q9d **RESEARCH how to write it** (owner: "it's visually unpleasing, so research that"). Not guess. Then write the reply-shape law.
+- [ ] Q10 Same as Q9. Length was never the axis; organization and readability are.
+- [ ] Q11 One page per substantial task + a standing page of every open decision. **Never more than one file mentioned.**
+- [ ] Q12 No answer given. I take my own recommendation and flag it: substantial = touches more than one file, or produces anything he will look at.
+- [ ] Q13 Park it, keep going, surface at the end. Plus:
+  - [ ] Q13a A parked item must be WRITTEN INTO THE PLAN in the same turn
+  - [ ] Q13b **Build the plan gate that enforces it** (owner: "we will serve like a plan gate... don't forget about those")
+- [ ] Q14 **I orchestrate design, I do not build it.** Two rules:
+  - [ ] Q14a I write the precise brief and dispatch; I do not hand-build mockups
+  - [ ] Q14b **Fan out MANY design subagents in parallel**, never one at a time. Supersedes `feedback_no_parallel_agents_frontend` for design.
+  - [ ] Q14c Update that memory so the superseded rule stops being re-injected
+- [ ] Q15 Fix each instance first, then attack the shared cause.
 
 ### B. Agent flow for mockups
 - [x] B1 Document the CURRENT literal flow end to end. **There is no pipeline. There is a prose checklist, 86 gates on a single Write, and me working alone in the main thread.** `verified:` mapping agent `map:agent-mockup-flow`, run wf_5e0543b6-57b, journal.jsonl.
