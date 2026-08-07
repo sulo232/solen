@@ -41,8 +41,8 @@
 ### PHASE 2, the build queue (owner answered 2026-08-07, decisions in SYSTEM_DECISIONS_2026-08-07.md)
 
 - [ ] Q1 Freeze new gates. **DISPATCHED**, drafter running in wf_3bc05071-7ad.
-  - [ ] Q1a Write the legality test (objective + cheap, decidable from the artifact alone) into LAW_SYSTEM.md
-  - [ ] Q1b Define the reasoning-layer alternative for judgment-shaped failures, and where it installs so it fires
+  - [x] Q1a The legality test is live in the harden procedure. `verified:` `~/.claude/commands/harden.md` now opens with section 0, six questions, six yes to build a gate. Its boundary is measured, not asserted: the mockup gate family (judgment questions) was skip-flagged 88 times in seven days, while `pre-edit-drift-gate.sh` (does this literal hex appear in this file) offers a skip flag and has never been used once in 425 logged skips. A candidate that sits on the mockup side of that line is not a gate.
+  - [x] Q1b The reasoning-layer tier exists and names its three homes. `verified:` `~/.claude/LAW_SYSTEM.md:50` now carries tier **TR**, lettered not numbered on purpose: T0-T3 measure how hard an ACTION is blocked, TR asks which MOVE was missing, so it is not a weak gate and does not compete with one. It is only legal in three places that already fire on their own: `~/.claude/PREFERENCES.md` (injected before the matching tool call), `~/.claude/agents/loop-reviewer.md` (a separate pass catches it), or the matching `fable-*` skill (wrong order of work). Written anywhere else it is a promise.
   - [ ] Q1c Amend `~/.claude/commands/harden.md` so the procedure applies the test before writing a gate
   - [ ] Q1d State honestly where this is weaker than a gate, given the 2026-07-06 retro said advice loses
 - [ ] Q2 Bury the 18 armed-nowhere gates, one commit, a tombstone line for each.
