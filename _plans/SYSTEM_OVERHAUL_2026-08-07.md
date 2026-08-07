@@ -101,6 +101,11 @@
   - Honest cost, stated by the drafter and worth keeping: fan-out does not remove work, it moves it earlier. Six briefs need six things measured first, by me, serially. **A thin brief is worse than a serial agent**, because it fans the same wrong assumption out N-wide and faster.
   - [x] Q14c Memory updated so the superseded rule stops being re-injected. `verified:` `~/.claude/projects/-Users-sulo-Documents-solen/memory/feedback_no_parallel_agents_frontend.md` rewritten this turn: its description now says SUPERSEDED and carries his verbatim words. Kept the old rule's REASON (one vision must own the direction) and explained why the 2026-06-14 gift-card failure was caused by eight agents each DECIDING, not by parallelism, so the new shape fixes the cause instead of banning the tool.
 - [ ] Q15 Fix each instance first, then attack the shared cause.
+- [x] Q18 **Stop only for a question, and cut the mechanism narration** (owner 2026-08-07, second flag of the same thing). `verified:` `~/.claude/REPLY_LAW.md` section 1.5, placed above every other rule in that file because he had to say it twice; full record in [SYSTEM_DECISIONS_2026-08-07.md](SYSTEM_DECISIONS_2026-08-07.md) decision 18.
+  - [x] Q18a A stop needs a question. No question means keep working.
+  - [x] Q18b When stopping: the lettered question, then "Left:" and the short list. Nothing else.
+  - [x] Q18c No mechanism narration at all. Not what a check caught, not what a file used to do, not before-and-after values, not what was found on the way.
+  - [x] Q18d He has never once been told what is LEFT across this whole session. That is the actual missing piece and it is now part of the required shape.
 - [ ] Q16 **Every stop-for-an-answer is lettered options, never prose** (owner 2026-08-07, decision 16).
   - [ ] Q16a Write the rule into `~/.claude/REPLY_LAW.md` as part of the reply shape
   - [ ] Q16b Define what counts as a real option: if I cannot write three distinct lettered outcomes, it is not a decision and I should not be stopping for it

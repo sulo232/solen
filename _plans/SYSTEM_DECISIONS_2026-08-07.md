@@ -98,3 +98,45 @@ format is what he wants every time I stop.
 A real page needs the dev server running to be seen at all, and when a component is broken the
 mockup breaks with it. A standalone file never breaks and needs nothing. He accepted that trade
 knowingly: he does not want to look at pictures, he wants to tap the thing.
+
+
+## Decision 18: stop only for a question, and cut the mechanism narration
+
+**Owner verbatim, and he flagged it as the second time:** *"if you're gonna take an action to a
+stuff, you don't have to tell me, like, before and after. I didn't need the info... it's just
+confusing to read. Like, the worst one to lose is called [X]. I don't even know what caught the
+layout change. I don't wanna send any of this, it's just unnecessary info... one thing check turned
+up, I don't understand what that even is. What got buried? I don't wanna know. And you don't even
+tell me at the end what's left... if you stop because you have a question, you just tell me the
+question, and tell me what's left. But if you don't have a question, why are you even stopping?"*
+
+### Three rules, and they are stricter than decision 9
+
+1. **No mechanism narration.** Do not explain what a check caught, what a file used to do, what the
+   before and after values were, or what was found on the way. Decision 9 banned self-test scores,
+   file lists and gate jargon. This goes further: the INTERNALS of the work are not reportable at
+   all. He cannot act on "the only check that compares two files" and it costs him a paragraph to
+   discover that.
+2. **A stop needs a question.** If there is no question, there is no reason to stop. Keep working.
+   This is the rule the whole session kept violating: nine turns ended with a status report and no
+   question, which is the "report instead of work" pattern three separate gates already name.
+3. **When there IS a question: the question, lettered, then what is left. Nothing else.** He has
+   never once been told what remained, across the whole session. That is the actual missing piece,
+   and it is one short list.
+
+### The reply shape when stopping, complete
+
+```
+<the question, as lettered options, my pick marked>
+
+Left: <short list of what is not done>
+```
+
+That is the entire message. No summary of what just happened, no what-it-caught, no what-it-cost.
+
+### Why this keeps happening, named so it stops
+
+Reporting the mechanism is the cheapest way to look like the work was thorough. It proves effort
+without risking anything, and it reads as diligence while being pure cost to him: he has to parse
+it, and there is nothing in it he can act on. The honest version of "I was thorough" is that the
+work is done and the queue moved, which the plan file already records.
