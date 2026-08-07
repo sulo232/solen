@@ -36,7 +36,13 @@ RECUR_PAT = re.compile(
 HARNESS_PAT = re.compile(
     r"(Stop hook|hook feedback|hook additional context|hook success|hook error|system-reminder|"
     r"CHECKBOX WITHOUT EVIDENCE|UNFINISHED-BATCH|GATE v?\d|[a-z-]+-gate\.py|task-notification)", re.I)
-NOT_HOOKABLE_PAT = re.compile(r"not mechanically hookable because", re.I)
+# v2, 2026-08-05, fix-up-me sweep. This was satisfied by the words "not mechanically hookable
+# because" with NOTHING after them , the escape from the harden mandate required no reason at all,
+# only the shape of one. It now needs a real clause: at least a few words naming why, and it may
+# not simply trail off. This is the escape from the rule that turns a repeat into a gate, so it is
+# the last place an empty "because" should have been legal.
+NOT_HOOKABLE_PAT = re.compile(
+    r"not mechanically hookable because\s+(?=\S)(?:\w+\W+){3,}", re.I)
 
 def project_dir():
     return os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()

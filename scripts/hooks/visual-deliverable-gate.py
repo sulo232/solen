@@ -89,8 +89,28 @@ def main():
         final = data.get("last_assistant_message") or ""
     if not final:
         return 0  # fail-open: cannot see the message, do not brick
-    if LINK_PAT.search(final) or ESCAPE_PAT.search(final):
+    # v2, 2026-08-05, fix-up-me sweep. Both arms were pure text, and the escape had no backstop at
+    # all: typing "nothing viewable yet" shipped the markdown-only deliverable this gate exists to
+    # prevent. Proven by execution. The escape is now BUDGETED rather than removed , it is
+    # sometimes genuinely true, and banning it would push toward a fake link instead, which is
+    # worse. Free while rare (3 per rolling week), stops counting once it is a habit.
+    if LINK_PAT.search(final):
         return 0
+    if ESCAPE_PAT.search(final):
+        ledger = os.path.expanduser("~/.claude/state/visual-escape-ledger.json")
+        now = time.time()
+        try:
+            used = [t for t in json.load(open(ledger)) if now - t <= 7 * 86400]
+        except Exception:
+            used = []
+        if len(used) < 3:
+            try:
+                os.makedirs(os.path.dirname(ledger), exist_ok=True)
+                json.dump(used + [now], open(ledger, "w"))
+            except Exception:
+                pass
+            return 0
+        # over budget: it has become the exit, not the exception , fall through and block
     hits = knowledge_written_recently(pdir)
     if not hits:
         return 0

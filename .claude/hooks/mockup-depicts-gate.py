@@ -150,10 +150,20 @@ def main():
             for d in depicts:
                 d = d.strip()
                 traced = ("->" in d or "→" in d)
+                # v2, 2026-08-05, fix-up-me sweep. Bare `NET-NEW` satisfied has_ref, so ONE line ,
+                # "Depicts: whole screen -> NET-NEW: nothing here is wired yet" , traced an entire
+                # mockup to nothing and passed. That is the invention this gate exists to catch,
+                # declared out loud and waved through. NET-NEW now needs a real reason after the
+                # colon, and a blanket surface ("whole screen", "everything") is not a surface.
+                surface = re.split(r"->|→", d)[0].strip()
+                blanket = bool(re.match(
+                    r"^(the\s+)?(whole|entire|full|all|everything|screen|page|mockup|it)\b\s*"
+                    r"(screen|page|thing|of it)?\s*$", surface, re.I))
+                netnew_ok = bool(re.search(r"NET-NEW\s*:\s*(?:\w+\W+){2,}", d, re.I))
                 has_ref = bool(
-                    re.search(r"(app/|components|lib/|api/|\.tsx|\.ts\b|/dashboard|NET-NEW|table\b)", d, re.I)
-                )
-                if not traced or not has_ref:
+                    re.search(r"(app/|components|lib/|api/|\.tsx|\.ts\b|/dashboard|table\b)", d, re.I)
+                ) or netnew_ok
+                if not traced or not has_ref or blanket:
                     problems.append(
                         "UNTRACED `Depicts:` line: %r\n"
                         "  Each must be `<surface> -> <real path/route>` or `<surface> -> NET-NEW: <why>`." % d[:120]

@@ -184,3 +184,58 @@ literal lists are in `_plans/SELF_AUDIT_2026-07-25.md`.
   are English prose ("a hard gate", "the ship gate", "an owner gate") or truncation artifacts of the
   matcher itself, not hook filenames. `mockup-depicts-gate` and `no-black-selected-gate.py`, the two
   hits that DO look like filenames, both exist on disk. Same verdict as 2026-07-18.
+
+---
+
+## 2026-08-01 weekly self-audit refresh (gather+record only, no chips)
+
+Verified sources: the drift checker **re-run this pass** (first rerun since 2026-06-12; written to a
+temp path, the committed `_drift-report.md` was left alone since this audit is read-only on product
+files), `MOTION.md`, `TASTE_LOG.md`, `REMOVED.md`, and a direct grep sweep for half-built animation.
+
+**Prior live items:** the 6 from 2026-07-11 are open for the FOURTH consecutive pass, and S1/S3-S7
+above are unchanged. Not re-listed a fourth time. They need an owner approve-or-drop, not another
+restatement , a suggestion that has sat unanswered for three weeks is not a backlog, it is noise in
+the channel this file exists to keep clean.
+
+**Drift, re-measured (the number moved, and it is the first real delta this file has had):**
+
+| | 2026-06-12 report | 2026-08-01 rerun | delta |
+|---|---|---|---|
+| files scanned (strict) | 93 | 92 | -1 |
+| HARD findings (A1-A6 / B1-B5) | 30 | **36** | **+6** |
+| phase-1 INFO (A7-A11) | 1272 | **2123** | **+851** |
+
+The hard total is dominated by two rules, and neither is a taste question:
+- **A21 tracked-uppercase eyebrow x18.** Banned by copy-economy rule 5 (owner 2026-06-11). Nine of the
+  18 are on ONE file, `app/[locale]/partner/page.tsx` (lines 45, 59, 96, 128, 161, 249, 284, 401, 496);
+  the rest are `business/page.tsx:191`, `privacy/components/PrivacySidebar.tsx:97`,
+  `terms/components/TermsSidebar.tsx:109`, `components-legacy/CityPage.tsx:114`, and 5 on the
+  `dev/new-primitives` scratch route (not a customer surface, safe to ignore or delete).
+- **C2 hardcoded solen.ch URL x13.**
+- Plus A20 middle-dot separator x2, A1 hardcoded hex x1, A19 sub-12px text x1, B5 category branch x1.
+
+The **+851 INFO** jump is the finding worth an owner decision: the A7-A11 typography-migration backlog
+nearly doubled in seven weeks while the file count fell. New code is being written against the old type
+conventions faster than the phase-2 sweep retires them. That is a trend, not a defect list.
+
+**Suggestion (new, one only , the channel stays quiet while 6 items are unanswered):**
+
+### 7. De-uppercase the partner landing page , [code] | effort S | no lock
+`app/[locale]/partner/page.tsx` carries **9 of the 18** live tracked-uppercase eyebrows, the single
+densest violation of a rule the owner set by name in 2026-06-11 copy-economy. One file, one mechanical
+treatment (normal-case 13px semibold per the mockup banned-list), no taste question, and it removes
+half the estate's A21 count. Supersedes live item 1 from 2026-07-11 ("Strip tracked-uppercase eyebrows
+from the partner landing page"), which named the same file before the count was measured , fold the
+two, do not carry both.
+
+**MOTION.md:** still exactly 1 open leftover (`MOTION.md:92`, haptics). Confirmed still unbuilt:
+`navigator.vibrate` has **0** occurrences across `app/`, `components/`, `components-legacy/`, `lib/`.
+
+**Animation-leftover sweep , 0 real findings, and the raw greps LIE.** Scanning for the three leftover
+shapes the owner named (a `transition` with no trigger, a framer import never rendered, `initial=`
+without `animate=`) returns 7 and 10 file hits respectively, and **every one is a false positive**:
+`components-legacy/ui/ExpandableTabs.tsx` matches on the comment "CSS transitions only , no
+framer-motion", and all `/profile/settings/*` + `/profile/edit` hits are `SettingsForm`'s plain
+`initial={{...}}` DATA prop, already annotated `mockup-ok: not framer-motion` at the callsite.
+Recorded so the next pass does not re-find them and file six phantom suggestions.

@@ -20,7 +20,7 @@ No in-file marker escape (the marker is exactly what gets abused). Escape only v
 skip flag: echo "<why>" > .claude/mockup-lang-skip.flag (10-min TTL, must be non-empty).
 Fail-open on any error.
 """
-import os, re, sys, time, glob, json
+import os, re, sys, time, glob, json, subprocess
 
 GERMAN = re.compile(
     r"\b(keine?|suchen|anzeigen|nichts|vorschl\w*|zurücksetzen|treffer|geöffnet|"
@@ -67,6 +67,19 @@ def main():
             try:
                 if now - os.path.getmtime(fp) > 180 * 60:
                     continue
+                # v2, 2026-08-05, owner: "remove those gates thats maiking u stop". mtime is not
+                # authorship. Creating a git worktree rewrites every file on disk, so a fresh
+                # worktree made every mockup in the repo look "touched this session" and this gate
+                # named six files the session had never opened, on every single stop. Git knows
+                # the difference: if the file is unmodified against HEAD, this session did not
+                # write it, whatever its timestamp says.
+                try:
+                    _st = subprocess.run(["git", "-C", proj, "status", "--porcelain", "--", fp],
+                                         capture_output=True, text=True, timeout=8)
+                    if _st.returncode == 0 and not _st.stdout.strip():
+                        continue          # clean against HEAD: not this session's work
+                except Exception:
+                    pass                  # git unavailable: fall back to the old mtime behaviour
                 txt = open(fp, encoding="utf-8", errors="ignore").read()
             except Exception:
                 continue

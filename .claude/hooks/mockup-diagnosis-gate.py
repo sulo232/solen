@@ -79,6 +79,20 @@ def main():
             dl = d.lower()
             if not ("measured" in dl and "violates" in dl and "target" in dl):
                 problems.append("INCOMPLETE Diagnosis line (need measured + violates + target): %r" % d[:110].strip())
+            # v2, 2026-08-05, fix-up-me sweep. The three WORDS were the whole test, so a line could
+            # name a class ("rounded-3xl") as its measurement and a section number as its citation
+            # without either being a measured value. A diagnosis is a NUMBER against a LOCKED
+            # NUMBER: require a digit on the measured side and a digit on the target side, which is
+            # what distinguishes a measurement from a description of one.
+            # A digit alone is not a measurement: "rounded-3xl" and "rounded-24" both contain one,
+            # which is how the original beating line got through my first patch. Require a real
+            # VALUE, meaning a number that is not glued into a class name: either carrying a unit,
+            # or standing on its own.
+            elif not (re.search(r"measured[^|]*(?<![\w-])\d+(?:\.\d+)?\s*(?:px|pt|%|rem|em|ms|s|x)?(?![\w-])", d, re.I)
+                      and re.search(r"target[^|]*(?<![\w-])\d+(?:\.\d+)?\s*(?:px|pt|%|rem|em|ms|s|x)?(?![\w-])", d, re.I)):
+                problems.append(
+                    "UNMEASURED Diagnosis line (measured and target must each carry a NUMBER, "
+                    "not a class name or a description): %r" % d[:110].strip())
                 continue
             # no-op check: measured value == target value
             m = re.search(r"measured\s+(.+?)\s*\|\s*violates\s+.+?\|\s*target\s+(.+)$", d, re.I)

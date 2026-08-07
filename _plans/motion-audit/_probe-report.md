@@ -1,6 +1,6 @@
 # Motion probe report , WCAG 2.2.2 (Pause, Stop, Hide, Level A) , mode: NORMAL (settled-state)
 
-Generated: 2026-07-25T21:44:19.384Z
+Generated: 2026-07-29T15:01:49.035Z
 Base URL: http://localhost:3000  Budget: 5000ms  Watch window: 7500ms  Viewport: 390x844  Mode: NORMAL (settled-state)
 
 Runtime probe, not a source scan (see file header for why). Criterion: moving/blinking
@@ -9,7 +9,7 @@ needs a user-facing pause/stop/hide mechanism. prefers-reduced-motion does NOT d
 
 NORMAL MODE: settled-state run, unchanged from before --slow existed. A route still fetching at the budget downgrades to LIVE-DOM-CONDITIONAL (report-only, see file header) rather than failing the gate.
 
-Totals: CSS-LOOP=0  LIVE-DOM=0  LIVE-DOM-CONDITIONAL=3 (report-only)  6 route(s)
+Totals: CSS-LOOP=0  LIVE-DOM=0  LIVE-DOM-CONDITIONAL=0 (report-only)  6 route(s)
 
 ---
 ## /de [mode: NORMAL]
@@ -22,12 +22,11 @@ none found
 
 none found
 
-### LIVE-DOM-CONDITIONAL (2, report-only, route still fetching at the 5000ms budget)
+### LIVE-DOM-CONDITIONAL (0, report-only, route still fetching at the 5000ms budget)
 
-- `div.mt-3.flex` childList , 15x between 6458ms and 6458ms , CONDITIONAL, report-only (route still fetching at the budget mark)
-- `div.-mr-4.md:-mr-6` childList , 6x between 8534ms and 8534ms , CONDITIONAL, report-only (route still fetching at the budget mark)
+none found
 
-input: lastInputAt=1076ms (0 unless the cookie-consent click fired; the probe does not otherwise interact)
+input: lastInputAt=1369ms (0 unless the cookie-consent click fired; the probe does not otherwise interact)
 
 ---
 
@@ -95,9 +94,9 @@ none found
 
 none found
 
-### LIVE-DOM-CONDITIONAL (1, report-only, route still fetching at the 5000ms budget)
+### LIVE-DOM-CONDITIONAL (0, report-only, route still fetching at the 5000ms budget)
 
-- `div.flex.items-center` childList , 9x between 5091ms and 5091ms , CONDITIONAL, report-only (route still fetching at the budget mark)
+none found
 
 input: lastInputAt=0ms (0 unless the cookie-consent click fired; the probe does not otherwise interact)
 
