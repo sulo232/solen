@@ -169,6 +169,17 @@ ones removed.
   over if something visual was produced. Both now check the transcript for the act before judging
   the sentence. A gate that cannot tell recounting from doing makes its own origin story unsayable.
 
+- [x] (verified: ~/.claude/hooks/_stopgate_lib.py) **RECAP IS NOT A CLAIM**, 7/7 + 4/4 + 3/3.
+  He asked "explain in plain english evrth u did and whats parked and the core problem" and THREE
+  gates blocked the answer: one because it described something being switched off, one because it
+  named fixes without before/after numbers, and one for length , when length was the entire
+  request. That gate's own deny message says it steps aside when he asks for the full picture; it
+  was matching the spelling "everything" while he types "evrth". He dictates. The shorthand IS his
+  normal writing, and a gate that only knows the formal spelling does not know him.
+  Fixed once, centrally: `owner_asked_for_a_recap()` in the shared library, wired into all three.
+  THIRD day running that a gate confused RECOUNTING with DOING (the removal and motif gates were
+  the first two), so the distinction now lives in one place instead of being rediscovered per gate.
+
 ## Unplanned additions / parked decisions
 - **101 confirmed holes remain**, all listed with their beating phrase. The 32 severity-3 ones are
   the queue.
