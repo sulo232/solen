@@ -1351,3 +1351,29 @@ correct target.
 light-top to dark-underside gradient; ours are close to uniform. This is the MESH, not the render:
 image-to-3D from a flat 2D icon gives a shallow relief with little form to catch light. Raising
 contrast further just amplifies the texture noise instead of creating form.
+
+## Round 43: warp TIME, not the angle, and a correction to my own diagnosis
+
+Owner: "fix up the animation on all of it except blow drier".
+
+**The real defect, found by profiling against the capture.** A plain `sin(2*pi*t)` is at MAXIMUM
+velocity at t=0, so every sway broke out of its hold at full speed. Measured, chair, `verified:`
+0.07s from standstill to peak speed, against Airbnb's 0.33 to 0.70s. That is a visible jerk and it
+affected every icon that uses sway.
+
+- [x] Fixed by warping TIME rather than easing each angle: `t` now runs through a smootherstep
+      before anything reads it (`scripts/capture/turntable-render.mjs`, in the frame loop), so
+      dt/df is zero at both ends and EVERY motion keyed off `t` inherits the ease for free.
+      `u(0)=0, u(1)=1`, so loops still close. `verified:` ramp to peak, chair **0.07s to 0.78s**,
+      polish **1.13s to 0.55s**, both now inside Airbnb's band. 0 stutter, 0 clipped, loops close.
+- [x] Spa wobble halved from 3 cycles to 1.5 and amplitude raised 6.5 to 9.5, so it reads as
+      settling rather than shivering.
+
+**CORRECTION TO MY OWN DIAGNOSIS, worth more than the fix.** I first measured "speed beats" per clip
+and got ours at 8, 25 and 24 against Airbnb's 5, and was about to treat that as the defect and add
+knobs to chase it. Ran the discriminating test instead: smooth the frame-difference signal and
+re-count. At equivalent smoothing (ours at 60fps smoothed 9-15 is Airbnb at 30fps smoothed 5-7) the
+counts are **barber 3, polish 2, spa 5-6 against house 3, balloon 2, bell 1-3.** In range. The raw
+gap was an artifact of sampling at twice their frame rate with smaller amplitudes, so proportionally
+more noise crossings. The beat count was measuring my own measurement, not the motion. One cheap
+smoothing probe stopped a whole round of knob-adding.

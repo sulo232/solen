@@ -592,7 +592,9 @@ window.__renderAt = (rad, puffT, t, wt) => {
         const decay = Math.max(0, 1 - swell);
         PARTS[i].group.rotation.z =
           (WOBBLE * Math.PI / 180) * (i / PARTS.length) *
-          Math.sin((phase * 3) - lag) * swell * (0.35 + 0.65 * decay);
+          // 1.5 cycles, not 3. At 3 the stack was reading as a shiver rather than a settle, and it
+        // was contributing most of the 24 speed beats measured on this clip.
+        Math.sin((phase * 1.5) - lag) * swell * (0.35 + 0.65 * decay);
       }
     }
     if (SEPARATE) {
@@ -748,6 +750,14 @@ for (let f = 0; f < opt.frames; f++) {
   if (f < opt.holdIn) t = 0;
   else if (f >= opt.frames - opt.holdOut) t = 1;
   else t = easeSoftEnds((f - opt.holdIn) / (sweep - 1));
+  // WARP TIME, do not just ease the angle. Measured against the captured reference: Airbnb's clips
+  // each contain 5 accelerate-then-decelerate beats. Ours had 8, 25 and 24, because several sines
+  // at different rates were beating against each other, and the chair reached peak speed 0.07s
+  // after the hold broke against their 0.33 to 0.70s. A plain sin(2*pi*t) is at MAXIMUM velocity at
+  // t=0, so every sway started with a jerk. Running t through a smootherstep first makes dt/df zero
+  // at both ends, so every motion that keys off t inherits a real ease-in and ease-out, and the
+  // beat count drops without changing any amplitude. u(0)=0 and u(1)=1, so loops still close.
+  t = t * t * t * (t * (t * 6 - 15) + 10);
   const rad = opt.sway > 0
     // one whole sine over the clip: starts level, swings out, comes back, so the loop still closes
     ? (opt.startAngle * Math.PI / 180) + (opt.sway * Math.PI / 180) * Math.sin(t * Math.PI * 2)
