@@ -2,7 +2,7 @@
 # SYSTEM DECISIONS, owner answers to question round 2 (2026-08-07)
 
 Elicited via `public/_mockups/system-overhaul-questions/index.html`, answered in shorthand:
-`1a 2a 3a 4d 5a 6b 7a 8a 9(own) 10(same as 9) 11a 12(no answer) 13a 14(own) 15a`.
+`1a 2a 3a 4d 5a 6b 7a 8a 9(own) 10(same as 9) 11a 12(answered on follow-up) 13a 14(own) 15a`.
 Verbatim additions are quoted, because several answers carry more than the letter.
 
 | # | Decision | Carries |
@@ -18,7 +18,7 @@ Verbatim additions are quoted, because several answers carry more than the lette
 | 9 | **The reply itself is the problem.** Verbatim: *"you just tell me a lot of before and after numbers, block names for untouched file three out of three, passes three out of the... I don't understand any of that. Also, like, which files you touched? I don't care at all. You know, those unnecessary stuff. There's, like, a lot of text and unorganized texting. It's, like, visually, it's, like, unpleasing. So research that."* | Three separate bans: **no self-test scores**, **no file lists**, **no gate jargon**. Plus: the text is UNORGANIZED and VISUALLY UNPLEASING, and the fix is to **research how to write it**, not to guess. |
 | 10 | *"Yeah. That's what just said."* Same complaint as 9. Length was never the real axis. | |
 | 11 | **One page per substantial task, plus a standing page of every open decision.** | *"not more than one file because it's just so annoying. I don't care about how many files it told."* |
-| 12 | No answer given. I take my own recommendation and say so: substantial = touches more than one file, or produces anything he will look at. | Flagged, not assumed silently. |
+| 12 | **ANSWERED on the follow-up: ask only when I would otherwise be GUESSING.** Not scope-based, not time-based. | He rejected my recommendation (more than one file, or anything visual). The bar is whether a wrong assumption would waste the work. Named risk, and it is mine to manage: I often do not notice I am guessing, which is exactly what rule 5 (validate the instrument) and rule 7 (two attempts) are there to catch. |
 | 13 | **Park it, keep going, surface it at the end.** | *"but actually added to the plan. You know? And we will serve, like, a plan gate... don't forget about those."* , a parked item must be WRITTEN INTO THE PLAN, and a gate must enforce that. |
 | 14 | **I ORCHESTRATE design, I do not build it.** Verbatim: *"you're the [one] to orchestrate. You tell us specifically what to do instead of you actually doing it, because for design, for mockup, it's important that you say it because you have more visual context. But the problem is that it takes too long because you only drop like one subagent. That's what I do not want."* | Two rules: (a) I write precise briefs and dispatch, I do not hand-build mockups; (b) **fan out MANY design subagents in parallel, never one at a time.** |
 | 15 | **Fix each instance first, then attack the shared cause.** | |
@@ -36,3 +36,11 @@ context and writes each brief, the subagents execute in parallel rather than dec
 I recommended that his eyes automatically beat the measurement. He rejected that and chose to be
 shown both. That is a better rule than mine: it keeps the measurement as evidence rather than
 discarding it, and it puts the judgment where it belongs. Recorded because I got it wrong.
+
+
+## Follow-up answers, same day
+
+- **Order of the phase-2 work:** *"its a loop"*. No prioritising. Everything runs, and it keeps
+  running. Nine builders dispatched in parallel, which is decision 14 in use on its first day.
+- **The sets session:** *start it now, in parallel*, not later. So Q4 is in the same fan-out as
+  everything else rather than parked.
