@@ -76,7 +76,9 @@
   - External sources are all named and linked (Nielsen Norman on scanning and mobile reading, plainlanguage.gov, the Army's bottom-line-up-front regulation, Gigerenzer on why a percentage fails a non-specialist). No invented statistics.
   - **Contradiction surfaced:** `report-summary-gate.py` BLOCKS a turn unless the reply names most files it touched, which is the exact thing he said he does not care about at all. His dated decision wins; that gate goes. Queued as Q9e.
   - **Also found:** `plain-english-gate.py` is on disk wired to nothing, so the gate he asked for by name on 2026-07-31 has never enforced anything.
-- [ ] Q9e Retire `report-summary-gate.py`. It enforces the file list he just banned.
+- [x] Q9e **Retired `report-summary-gate.py`.** `verified:` unregistered from `~/.claude/settings.json` Stop (63 Stop hooks now, was 64; settings.json re-parsed clean after the edit) and tombstoned in `~/.claude/hooks/_retired/RETIRED_GATES.md`.
+  - This is the first gate retired by OWNER DECISION rather than by folding it into another gate. It was not neutral overhead: it forced into every single message the exact thing measured as the strongest predictor of him disliking a reply.
+  - The trail it existed to protect (what changed and why) lives in the plan files and the commit messages, which is where it belonged.
 - [ ] Q10 Same as Q9. Length was never the axis; organization and readability are.
 - [ ] Q11 One page per substantial task + a standing page of every open decision.
   - [ ] Q11a The per-task question page (the format is proven; this session's page is the reference)
