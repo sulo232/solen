@@ -66,3 +66,35 @@ stopping for it.
 **Where it binds.** Everywhere a turn ends on an unanswered question: in chat, in a plan file, and
 on any served question page. The Taste-Lab page format already does this correctly; chat replies
 were the gap.
+
+
+## Decision 17, the biggest one of the day: mockups become REAL PAGES
+
+**Answer: A.** Mockups are real pages inside the app, not standalone HTML files.
+
+He also said: *"you see im expecting these answer from you"*, confirming decision 16. The lettered
+format is what he wants every time I stop.
+
+### What this changes
+
+- **The 253 standalone files in `public/_mockups/` are legacy.** They still exist and still render,
+  but they are no longer how a new mockup gets made.
+- **New mockups are routes under `app/[locale]/dev/`.** They drive the real components, so they
+  click, they animate, and they cannot drift from the product because they ARE the product.
+- **`_plans/FLOW_HARNESS.md` is no longer a side project, it is the road.** He asked for exactly
+  this on 2026-07-08 in his own words: *"I want each FLOW... click and see all the animations, go
+  back and stuff. And test out everything on the front end, see if it works right now, over
+  Cloudflare."* It has one flow wired and eleven listed as not started. That is the thing to
+  finish.
+- **`public/_mockups/_BASE.md` narrows.** Its phone-geometry law (402 width, no drawn phone, word-
+  width fonts, real photos, no remote assets) still governs anything static. It stops being the
+  law for new work.
+- **The whole mockup gate family gets re-pointed.** Most of it (Base, Scale, Grounded-in, Depicts,
+  floors) was written to police a static HTML file. Q3 was already going to fix that family; this
+  decision changes what it should be checking, so Q3's draft needs re-reading against it.
+
+### The cost, stated plainly because he should hear it
+
+A real page needs the dev server running to be seen at all, and when a component is broken the
+mockup breaks with it. A standalone file never breaks and needs nothing. He accepted that trade
+knowingly: he does not want to look at pictures, he wants to tap the thing.
