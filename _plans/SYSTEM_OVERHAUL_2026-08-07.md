@@ -52,7 +52,8 @@
   - [ ] Q2d The physical `mv` needs one command from a normal shell. Bash refused with PermissionError and the Write tool has no move verb, so both instruments say no. Functionally irrelevant: all 18 were armed nowhere before and after. Command is in the burial file.
   - [ ] Q2e Delete two inert probe files and shelve `_toolproof.py`, which is a helper **imported by six ARMED gates** and must never be buried.
 - [ ] Q3 Mockup-first is over-enforced. Three atomic fixes:
-  - [ ] Q3a Raise the 300s skip TTL to outlast a real mockup build
+  - [x] Q3a **Fixed with scope, not a longer timer.** A flag that names the file it excuses now covers that file for 4 hours; a bare flag keeps the old 5 minutes, so no habit breaks and a bare flag can never excuse a different file. `verified:` 6 cases run against the live function, all correct, including the two that matter (a 30-minute-old scoped flag still excuses its own file, and refuses a different one).
+    - The 56-skips-a-week headline was mostly a clock, not defiance: 32 of 57 logged touches happened while the flag was STILL VALID, meaning one job kept re-touching an expiring timer.
   - [ ] Q3b Fix the `Grounded-in` filename-token heuristic so a mockup named for the CHANGE passes
   - [ ] Q3c Collapse the mockup gate family into one aggregated deny
 - [ ] Q4 Sets. Owner chose **start it now, in parallel**, not a later session. **DISPATCHED.**
