@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>System overhaul, question round 2</title>
+<!-- Base: net-new page in the Taste Lab format the owner approved 2026-07-15; format reused from public/_mockups/taste-questions/index.html rather than reinvented. -->
+<!-- Scale: full-page, 1:1, no device frame. -->
+<!-- Grounded-in: _plans/SYSTEM_OVERHAUL_2026-08-07.md -->
+<!-- Owner-scope: confirmed 2026-08-07, "ask me a lot of questions so you can actually understand" + "first phase you ask me questions, then second phase you execute it as a loop". This IS phase 1. -->
+<!--
+  Depicts: NO product surface is drawn on this page -> NET-NEW: this is a decision form, not a product
+    screen. There is no route, component or table it depicts, so there is nothing to trace to app/ or
+    components/. Every visible element is a question, an option, or a number measured this session.
+  Depicts: page shell and numbered question card -> NET-NEW: layout copied from the approved elicitation
+    page public/_mockups/taste-questions/index.html (2026-07-24), which is itself a mockup, not product code.
+  Depicts: measured-finding panel -> NET-NEW: each panel restates a finding already recorded in
+    _plans/SYSTEM_OVERHAUL_2026-08-07.md this session. No number is invented.
+  Depicts: "Recommended" accent tag -> NET-NEW: the my-pick-per-probe convention from Taste Lab round 1,
+    logged in _design-system/TASTE_LOG.md 2026-07-15.
+  Depicts: answer-shorthand footer -> NET-NEW: the owner's own answer format from that same round
+    ("1a 2 your pick 3b 4 b 5 no dark mode").
+
+  measured: type scale taken from the APPROVED elicitation page, not invented. Parsed
+  public/_mockups/taste-questions/index.html this session: font sizes {28, 18, 14, 12}, weights {600 plus
+  inherited 400}, radii {16, 12}. This page reuses that exact scale, so 4 distinct sizes and 2 weights,
+  inside the type budget. Anchor ratio 28/14 = 2.0x, above the 1.8x EMPHASIS BUDGET floor.
+
+  lang-ok english-ok: elicitation page, English chrome by design (the approved Taste Lab format). No German.
+  Exists-check: `npm run exists` run this turn for question / elicitation / decision / taste-lab. One real
+  hit, public/_mockups/taste-questions/index.html, which asks PRODUCT-TASTE questions (screen fullness,
+  photo treatment, card anatomy). This page asks SYSTEM/PROCESS questions (gate policy, mockup pipeline,
+  reply shape, subagent use), a disjoint set with no overlapping question. Format reused, subject new.
+  No REMOVED.md hit.
+  Diagnosis: measured = 104 numbered owner decisions unanswered across _plans/*.md and 0 surfaces showing
+  them together | violates = the owner's 2026-08-07 two-phase ask (a question round before any build), and
+  the elicitation pattern locked in TASTE_LOG 2026-07-15 | target = 1 page, 15 questions, shorthand answers,
+  every question carrying the measured finding that motivates it.
+  floors: (1) photographic focal = N/A, form surface, exempt by name in the imagery floor (forms, checkout,
+  legal, receipts). (2) biggest element = the 28px title, nothing else is close. (3) real numbers = every
+  question carries measured counts (241 hooks, 18 orphans, 56 mutes, 104 decisions, 64 Stop gates).
+  (4) semantic-colour moment = the accent on each recommended option, amber on the never-answered warning.
+  (5) dead-grey zones = none, white cards on a sunken tray all the way down.
+  psych-ok: no fabricated claims, no invented statistics. Every number is cited to a file read this session.
+  hue-ok: locked tokens only (ink #0A0A0A, ink-2 #52525B, sunken #F4F4F5, hairline #E4E4E7, accent #276EF1,
+  surcharge orange #EA580C). No dark mode.
+  _BASE compliance: viewport, text-size-adjust, full-bleed, no fake phone, no remote assets, no CDN.
+-->
+<style>
+  :root {
+    --ink: #0A0A0A; --ink-2: #52525B; --ink-3: #9CA3AF;
+    --bg: #FFFFFF; --sunken: #F4F4F5; --line: #E4E4E7;
+    --accent: #276EF1; --amber: #EA580C;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--sunken); color: var(--ink);
+    font-family: Inter, 'Inter Tight', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-size: 14px; line-height: 1.6; -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 32px 20px 80px; }
+  header { padding: 8px 0 28px; }
+  h1 {
+    font-family: 'Inter Tight', Inter, sans-serif;
+    font-size: 28px; font-weight: 600; line-height: 1.15; margin-bottom: 12px;
+    letter-spacing: -0.02em;
+  }
+  .lede { color: var(--ink-2); }
+  .how {
+    background: var(--bg); border: 1px solid var(--line); border-radius: 16px;
+    padding: 16px; margin: 20px 0 8px; color: var(--ink-2);
+  }
+  .how b { color: var(--ink); font-weight: 600; }
+  .q {
+    background: var(--bg); border-radius: 16px; padding: 20px;
+    margin: 12px 0; border: 1px solid var(--line);
+  }
+  .qhead { display: flex; gap: 10px; align-items: baseline; margin-bottom: 8px; }
+  .num {
+    font-size: 12px; font-variant-numeric: tabular-nums; font-weight: 600;
+    color: var(--ink-3); min-width: 24px;
+  }
+  .qtitle { font-size: 18px; font-weight: 600; line-height: 1.3; }
+  .found {
+    background: var(--sunken); border-radius: 12px; padding: 12px 14px;
+    color: var(--ink-2); margin: 10px 0 14px;
+  }
+  .found b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+  ul.opts { list-style: none; }
+  ul.opts li { display: flex; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line); }
+  ul.opts li:first-child { border-top: 0; }
+  .let { font-weight: 600; color: var(--ink); min-width: 18px; font-variant-numeric: tabular-nums; }
+  .pick .let { color: var(--accent); }
+  .tag { color: var(--accent); font-weight: 600; white-space: nowrap; }
+  .warn { color: var(--amber); font-weight: 600; }
+  footer {
+    margin-top: 32px; padding: 20px; background: var(--bg);
+    border: 1px solid var(--line); border-radius: 16px; color: var(--ink-2);
+  }
+  footer b { color: var(--ink); font-weight: 600; }
+  @media (max-width: 520px) { .wrap { padding: 20px 14px 64px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Fifteen questions before anything gets built</h1>
+  <p class="lede">Every one comes from something measured today, not from an opinion. Answer in shorthand: <b>1a 2c 3 your pick</b>. Skip any and I take the marked recommendation.</p>
+  <div class="how">
+    <b>Where this came from.</b> Thirteen read-only agents mapped the estate: the mockup flow, research, all 47 design-system files, the recurring-mistake record, measurement trust, reply shape, how questions get asked, the two-phase idea, gate efficacy, cross-session propagation, reasoning-level tools, and subagent use. The blue option is my recommendation.
+  </div>
+</header>
+
+<div class="q">
+  <div class="qhead"><span class="num">1</span><span class="qtitle">The gate reflex itself. Keep it, cap it, or reverse it?</span></div>
+  <div class="found">Your own system already graded this. <b>LAW_SYSTEM.md section 6.9, 2026-08-03:</b> "that reflex has never once worked here: the three most-repeated themes in the durable ledger were, at the time of the audit, the three with the MOST gates." There are <b>241</b> hook files across three directories. The recurrence gate fired <b>9</b> times in seven days and accepts nothing except a new gate, so every complaint mechanically produces gate N+1.</div>
+  <ul class="opts">
+    <li class="pick"><span class="let">a</span><span><span class="tag">Recommended.</span> Freeze new gates. A gate is only legal for something objective and cheap to check (a hex, a dead link, a missing file). Everything judgment-shaped moves to the reasoning layer instead.</span></li>
+    <li><span class="let">b</span><span>Keep making them, but every gate must prove it prevented a recurrence within 30 days or it auto-retires.</span></li>
+    <li><span class="let">c</span><span>Keep the current reflex. It is noisy but it is the only thing that has ever stuck.</span></li>
+    <li><span class="let">d</span><span>Strip it back hard: delete most gates, keep under 30.</span></li>
+  </ul>
+</div>
+
+<div class="q">
+  <div class="qhead"><span class="num">2</span><span class="qtitle">Eighteen gates exist and run nowhere. Arm or bury?</span></div>
+  <div class="found">Checked against all four settings files, minus the ten dispatched by the link aggregator, minus the shelved and retired lists: <b>18 of 211</b> global hooks are referenced by nothing. Some are good ideas (measure the live page, plain English, no scope creep). They are listed in PENDING_ARM.md.</div>
+  <ul class="opts">
+    <li class="pick"><span class="let">a</span><span><span class="tag">Recommended.</span> Bury all 18 by default. Anything genuinely needed comes back through question 1's new rule.</span></li>
+    <li><span class="let">b</span><span>Arm all 18. They were written for real failures.</span></li>
+    <li><span class="let">c</span><span>Go through them one by one with me.</span></li>
+  </ul>
+</div>
+
+<div class="q">
+  <div class="qhead"><span class="num">3</span><span class="qtitle">Mockup-first: over-enforced, or am I routing around it?</span></div>
+  <div class="found"><span class="warn">Asked three weeks running and never answered.</span> The mockup gate family was muted <b>72</b> times, then <b>58</b>, then <b>56</b>. But the count is misleading: the skip timer is <b>300 seconds</b> and a mockup build takes longer, so one job touched the flag <b>4 times in 12 minutes</b>. One logged reason says the gate rejected a correct citation because its filename heuristic could not match a mockup named for the change rather than the component.</div>
+  <ul class="opts">
+    <li class="pick"><span class="let">a</span><span><span class="tag">Recommended.</span> Over-enforced. Fix the timer and the heuristic, collapse the family into one check, and the mute count should fall on its own.</span></li>
+    <li><span class="let">b</span><span>I am routing around it. Make it harder to skip.</span></li>
+    <li><span class="let">c</span><span>Neither. Mockups are just too slow. Cut the required markers down.</span></li>
+  </ul>
+</div>
+
+<div class="q">
+  <div class="qhead"><span class="num">4</span><span class="qtitle">What is a "set"?</span></div>
+  <div class="found">You asked to overhaul how agents make sets. There is <b>no set machinery at all</b>: no template, no folder shape, no compare page, no way to carry one design decision across several screens. The sets that exist (36 files, 29 files, 26 files) were each assembled by hand. I cannot design the pipeline without knowing which of these you mean.</div>
+  <ul class="opts">
+    <li><span class="let">a</span><span>One user flow end to end. Every booking screen, every checkout screen.</span></li>
+    <li><span class="let">b</span><span>Several directions for the same screen, so you can pick.</span></li>
+    <li><span class="let">c</span><span>A page family that has to stay consistent. All list pages, all empty states.</span></li>
+    <li class="pick"><span class="let">d</span><span><span class="tag">Recommended.</span> All three, with a different pipeline each. They need different things.</span></li>
+  </ul>
+</div>
+
+<div class="q">
+  <div class="qhead"><span class="num">5</span><span class="qtitle">Should a measurement have to agree with you before I trust it?</span></div>
+  <div class="found">This is your fourteen-attempt animation, generalised. Nothing in the estate validates an instrument before believing it. Two more cases found today by the same shape: two gates decided "written this turn" from file timestamps and named six files nobody had touched, and a correct pixel measurement off a correct image produced a 31% type error because it measured glyph height.</div>
+  <ul class="opts">
+    <li class="pick"><span class="let">a</span><span><span class="tag">Recommended.</span> Yes. Before a new instrument is trusted it must reproduce a verdict you already gave. If it cannot, it does not get used.</span></li>
+    <li><span class="let">b</span><span>Only for motion and pixel work, where it has burned us.</span></li>
+    <li><span class="let">c</span><span>No, too slow. Just be more careful.</span></li>
+  </ul>
+</div>
+
+<div class="q">
+  <div class="qhead"><span class="num">6</span><span class="qtitle">When your eyes and the number disagree, what is the rule?</span></div>
+  <div class="found">Today there is no rule anywhere in the estate for this case. In practice the number won, fourteen times.</div>
+  <ul class="opts">
+    <li class="pick"><span class="let">a</span><span><span class="tag">Recommended.</span> Your eyes win and the instrument becomes the suspect. I go fix the measurement before touching the code again.</span></li>
+    <li><span class="let">b</span><span>I stop and show you both, and you decide which is wrong.</span></li>
+    <li><span class="let">c</span><span>I re-measure a different way and only act if two independent methods agree.</span></li>
+  </ul>
+</div>
+
+<div class="q">
+  <div class="qhead"><span class="num">7</span><span class="qtitle">After how many failed attempts must I change method, not variable?</span></div>
+  <div class="found">Fourteen attempts, fourteen different variables, no exit condition. There is no rule in the estate that counts attempts.</div>
+  <ul class="opts">
+    <li class="pick"><span class="let">a</span><span><span class="tag">Recommended.</span> Two. The third attempt must change how I am attacking it, or come to you.</span></li>
+    <li><span class="let">b</span><span>Three.</span></li>
+    <li><span class="let">c</span><span>Five, but I have to tell you the count each time.</span></li>
+  </ul>
+</div>
+
+<div class="q">
+  <div class="qhead"><span class="num">8</span><span class="qtitle">The design system: one canon, or a canon plus a library?</span></div>
+  <div class="found">The same rules are written in four places today: CLAUDE.md's pinned blocks, SOURCE.md (<b>90KB</b>), LOCKFILE.md (<b>137KB</b>) and TASTE_LOG.md (<b>49KB</b>), and the copies disagree. Plus 47 files in the folder, many of them dated one-off reports sitting next to live law.</div>
+  <ul class="opts">
+    <li class="pick"><span class="let">a</span><span><span class="tag">Recommended.</span> One canon file per concern (values, components, motion, copy, psychology), everything else a pointer, all dated reports moved to an archive folder.</span></li>
+    <li><span class="let">b</span><span>One single file for everything. Brutal, but nothing can disagree with itself.</span></li>
+    <li><span class="let">c</span><span>Canon plus a separate "why" library, so the reasoning survives without cluttering the law.</span></li>
+  </ul>
+</div>
+
+<div class="q">
+  <div class="qhead"><span class="num">9</span><span class="qtitle">What should the first line of every reply be?</span></div>
+  <div class="found">There are <b>64</b> Stop gates policing my replies. Nine fired on one message today and five of them cited evidence that did not exist. Nothing in the estate states positively what a good reply looks like; it is all prohibitions.</div>
+  <ul class="opts">
+    <li class="pick"><span class="let">a</span><span><span class="tag">Recommended.</span> The thing you asked for. A link, a yes or no, a number. Reasoning after, and only if it changes what you would do.</span></li>
+    <li><span class="let">b</span><span>What changed since your last message, in one line.</span></li>
+    <li><span class="let">c</span><span>What I am about to do and what I need from you.</span></li>
+  </ul>
+</div>
+
+<div class="q">
+  <div class="qhead"><span class="num">10</span><span class="qtitle">How long should a normal reply be?</span></div>
+  <div class="found">The current limit is about <b>1400</b> characters, set by a gate you asked for on 2026-07-31.</div>
+  <ul class="opts">
+    <li class="pick"><span class="let">a</span><span><span class="tag">Recommended.</span> Keep 1400 for normal turns, but let a report you explicitly asked for run long without a fight.</span></li>
+    <li><span class="let">b</span><span>Shorter. Under 600 unless I ask.</span></li>
+    <li><span class="let">c</span><span>Drop the limit. Length was never the real problem, padding was.</span></li>
+  </ul>
+</div>
+
+<div class="q">
+  <div class="qhead"><span class="num">11</span><span class="qtitle">The question round: how many, how often, and where?</span></div>
+  <div class="found">There are <b>104</b> numbered decisions of yours sitting unanswered across the plan files right now, some from June. So the failure was never that I do not ask. It is that answers have nowhere to land and nothing shows them to you together.</div>
+  <ul class="opts">
+    <li class="pick"><span class="let">a</span><span><span class="tag">Recommended.</span> One page like this one per substantial task, plus a standing page of every open decision that never disappears until answered.</span></li>
+    <li><span class="let">b</span><span>Chat only, four at a time, no page.</span></li>
+    <li><span class="let">c</span><span>A page only when there are more than five questions, chat below that.</span></li>
+  </ul>
+</div>
+
+<div class="q">
+  <div class="qhead"><span class="num">12</span><span class="qtitle">What counts as "substantial" enough to trigger a question round?</span></div>
+  <div class="found">You said every substantial task. The word needs a line, or I will draw it wherever is convenient.</div>
+  <ul class="opts">
+    <li class="pick"><span class="let">a</span><span><span class="tag">Recommended.</span> Anything that will touch more than one file, or produce anything you will look at.</span></li>
+    <li><span class="let">b</span><span>Anything I expect to take more than about ten minutes.</span></li>
+    <li><span class="let">c</span><span>Anything where I would otherwise be guessing at something you could tell me in a sentence.</span></li>
+  </ul>
+</div>
+
+<div class="q">
+  <div class="qhead"><span class="num">13</span><span class="qtitle">A new question appears mid-loop. Park it or break the loop?</span></div>
+  <div class="found">Project law says finish the job and do not stop to ask, with three named exceptions. Your new two-phase ask puts a question round in front. These collide only in the middle of a running loop.</div>
+  <ul class="opts">
+    <li class="pick"><span class="let">a</span><span><span class="tag">Recommended.</span> Park it, keep going, and it is the first thing in the closing message. Break only if the remaining work depends on the answer.</span></li>
+    <li><span class="let">b</span><span>Always break. I would rather answer than have you guess.</span></li>
+    <li><span class="let">c</span><span>Never break. Guess, mark the guess clearly, and I will correct it.</span></li>
+  </ul>
+</div>
+
+<div class="q">
+  <div class="qhead"><span class="num">14</span><span class="qtitle">Subagents: how much do you want to see?</span></div>
+  <div class="found">You said you barely see me use them. Today thirteen agents ran across two fan-outs. There is also a standing rule from 2026-06-14 that bans parallel agents for frontend and design work, which collides with a gate written on 2026-08-03 demanding fan-out. That contradiction is live.</div>
+  <ul class="opts">
+    <li class="pick"><span class="let">a</span><span><span class="tag">Recommended.</span> Default to fanning out on anything research or audit shaped, and tell you the count and what each one was for in one line. Lift the frontend ban for read-only work only.</span></li>
+    <li><span class="let">b</span><span>Fan out on everything, including design. Drop the old ban entirely.</span></li>
+    <li><span class="let">c</span><span>Keep the ban. Design by committee is how the last rounds got mushy.</span></li>
+  </ul>
+</div>
+
+<div class="q">
+  <div class="qhead"><span class="num">15</span><span class="qtitle">The batch of problems you are about to send: fix each, or mine the pattern?</span></div>
+  <div class="found">You said you would send many problems from other sessions. How I treat them changes what gets built.</div>
+  <ul class="opts">
+    <li class="pick"><span class="let">a</span><span><span class="tag">Recommended.</span> Both, in that order: fix each concrete instance first so nothing is left broken, then group them and attack the shared cause once.</span></li>
+    <li><span class="let">b</span><span>Only the pattern. The individual instances are already past.</span></li>
+    <li><span class="let">c</span><span>Only the fixes. Patterns are what got us 241 hooks.</span></li>
+  </ul>
+</div>
+
+<footer>
+  <b>Answer however is fastest.</b> "1a 2a 3a 4d 5a 6a 7a 8a 9a 10a 11a 12a 13a 14a 15a" takes every recommendation. Anything you skip, I take the blue one and say so before building.
+</footer>
+</div>
+</body>
+</html>
