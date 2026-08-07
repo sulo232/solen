@@ -436,7 +436,11 @@ export default function Header({ locale }: { locale: string }) {
   // second global nav trigger and a notification bell are controls belonging to a different
   // screen's job (FLOORS LAW 10). Full reasoning and evidence:
   // _design-system/AIRBNB_PROFILE_PRINCIPLES.md, principle 1.
-  const isAccountHub = !!pathname && /^\/[a-z]{2}\/profile\/?$/.test(pathname);
+  // mockup-ok: extended to /profile/edit on 2026-08-05. Caught by tapping the owner's own
+  // path rather than measuring the hub alone: the editor is reached FROM the hub and is just
+  // as much "a profile page" in his words, yet it still rendered both the bell and the
+  // hamburger. The original regex matched the hub exactly and stopped there.
+  const isAccountHub = !!pathname && /^\/[a-z]{2}\/profile(\/edit)?\/?$/.test(pathname);
   // V3-D (2026-08-01, owner "why is homepage still that bro"): the home route now renders the
   // SAME mobile category-chrome as the category/search routes (the All pill selected via
   // HEADER_CATEGORIES' `home` entry above), so it opts into every MOBILE-ONLY categorySegment
