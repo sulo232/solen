@@ -36,19 +36,30 @@
 - [x] A4f Wrote the gate through the **Write/Edit tool** into `~/.claude/hooks/`, the directory Bash had just refused. That is the corrected model from A4c in use, not just written down.
 - [ ] A4g-old Hole in the existing gate: `instrument-corroboration-gate.py` is armed and covers the "serve / render / preview" category, but NOT tunnel, DNS or file-permission claims, which is why it stayed silent while I made all three. Extending its category list is the fix, not a new gate. Blocked on the owner's answer to question 1 on the page.
 - [x] A4-old Prior text, kept for the record: **BLOCKED, concrete blocker.** `cloudflared` cannot resolve `api.trycloudflare.com` from this sandboxed session. Three attempts, three different methods (plain, `--metrics`, `GODEBUG=netdns=cgo --edge-ip-version 4`), identical failure each time: `dial tcp: lookup api.trycloudflare.com: no such host`. Python resolves the same hostname fine (104.16.230.132), so it is specific to how the sandbox handles that process, not a network outage. Fallbacks also checked and closed: the one live tunnel on this machine points at :3005, whose server runs from worktree `quirky-ellis-ef5559`, and both that worktree's public dir and the main repo's public dir are PermissionError to write. **Needs the owner or a non-sandboxed session to run one command:** `cloudflared tunnel --url http://127.0.0.1:3410`. Until then the page is at http://localhost:3410/_mockups/system-overhaul-questions/index.html on the Mac.
-- [x] A5 Owner answers recorded durably, same turn they arrived. `verified:` [SYSTEM_DECISIONS_2026-08-07.md](SYSTEM_DECISIONS_2026-08-07.md), all 15 rows with the verbatim additions.
+- [x] A5 Owner answers recorded durably, same turn they arrived. `verified:` sha d4d97cefa created [SYSTEM_DECISIONS_2026-08-07.md](SYSTEM_DECISIONS_2026-08-07.md) with all 15 rows and the verbatim additions; sha d5144bea2 added the Q12 follow-up answer and the two order decisions.
 
 ### PHASE 2, the build queue (owner answered 2026-08-07, decisions in SYSTEM_DECISIONS_2026-08-07.md)
 
-- [ ] Q1 Freeze new gates. Write the one legality rule (objective + cheap = gate, judgment = reasoning layer) into LAW_SYSTEM.md and make the harden path obey it.
+- [ ] Q1 Freeze new gates. **DISPATCHED**, drafter running in wf_3bc05071-7ad.
+  - [ ] Q1a Write the legality test (objective + cheap, decidable from the artifact alone) into LAW_SYSTEM.md
+  - [ ] Q1b Define the reasoning-layer alternative for judgment-shaped failures, and where it installs so it fires
+  - [ ] Q1c Amend `~/.claude/commands/harden.md` so the procedure applies the test before writing a gate
+  - [ ] Q1d State honestly where this is weaker than a gate, given the 2026-07-06 retro said advice loses
 - [ ] Q2 Bury the 18 armed-nowhere gates, one commit, a tombstone line for each.
 - [ ] Q3 Mockup-first is over-enforced. Three atomic fixes:
   - [ ] Q3a Raise the 300s skip TTL to outlast a real mockup build
   - [ ] Q3b Fix the `Grounded-in` filename-token heuristic so a mockup named for the CHANGE passes
   - [ ] Q3c Collapse the mockup gate family into one aggregated deny
-- [ ] Q4 **Sets get their own session** (owner: "4 needs a big mockup n allat session"). Three pipelines: a flow, N directions of one screen, a page family.
+- [ ] Q4 Sets. Owner chose **start it now, in parallel**, not a later session. **DISPATCHED.**
+  - [ ] Q4a The FLOW pipeline (extends `_plans/FLOW_HARNESS.md`, stuck at 1 of 12 flows for a month; say why it stalled)
+  - [ ] Q4b The DIRECTIONS pipeline (N genuinely different treatments of one screen)
+  - [ ] Q4c The FAMILY pipeline (screens that must stay consistent)
+  - [ ] Q4d The set manifest format and folder layout, working with the Q14 wide fan-out
 - [ ] Q5 Instrument validation: an instrument must reproduce a verdict he already gave before it is trusted.
-- [ ] Q6 When measurement and his report disagree: **show him BOTH and let him decide.** Not "his eyes win". My recommendation was wrong.
+- [ ] Q6 When measurement and his report disagree: **show him BOTH and let him decide.** Not "his eyes win". My recommendation was wrong. **DISPATCHED.**
+  - [ ] Q6a Write the rule his way, and why his version beats mine (it keeps the number as evidence instead of discarding it)
+  - [ ] Q6b Design what "show him both" looks like in a reply, given he has banned raw numbers he cannot interpret
+  - [ ] Q6c Name where it installs so it actually fires
 - [ ] Q7 Two failed attempts, then the method changes or it comes to him.
 - [ ] Q8 One canon file per concern.
   - [ ] Q8a Define the target file set
@@ -60,7 +71,10 @@
   - [ ] Q9c Ban gate jargon (gate names, hook names, exit codes)
   - [ ] Q9d **RESEARCH how to write it** (owner: "it's visually unpleasing, so research that"). Not guess. Then write the reply-shape law.
 - [ ] Q10 Same as Q9. Length was never the axis; organization and readability are.
-- [ ] Q11 One page per substantial task + a standing page of every open decision. **Never more than one file mentioned.**
+- [ ] Q11 One page per substantial task + a standing page of every open decision.
+  - [ ] Q11a The per-task question page (the format is proven; this session's page is the reference)
+  - [ ] Q11b The standing open-decisions page that never disappears until answered
+  - [ ] Q11c **Never more than one file mentioned in a reply** (owner: "not more than one file because it's just so annoying")
 - [ ] Q12 No answer given. I take my own recommendation and flag it: substantial = touches more than one file, or produces anything he will look at.
 - [ ] Q13 Park it, keep going, surface at the end. Plus:
   - [ ] Q13a A parked item must be WRITTEN INTO THE PLAN in the same turn
@@ -68,7 +82,7 @@
 - [ ] Q14 **I orchestrate design, I do not build it.** Two rules:
   - [ ] Q14a I write the precise brief and dispatch; I do not hand-build mockups
   - [ ] Q14b **Fan out MANY design subagents in parallel**, never one at a time. Supersedes `feedback_no_parallel_agents_frontend` for design.
-  - [ ] Q14c Update that memory so the superseded rule stops being re-injected
+  - [x] Q14c Memory updated so the superseded rule stops being re-injected. `verified:` `~/.claude/projects/-Users-sulo-Documents-solen/memory/feedback_no_parallel_agents_frontend.md` rewritten this turn: its description now says SUPERSEDED and carries his verbatim words. Kept the old rule's REASON (one vision must own the direction) and explained why the 2026-06-14 gift-card failure was caused by eight agents each DECIDING, not by parallelism, so the new shape fixes the cause instead of banning the tool.
 - [ ] Q15 Fix each instance first, then attack the shared cause.
 
 ### B. Agent flow for mockups
