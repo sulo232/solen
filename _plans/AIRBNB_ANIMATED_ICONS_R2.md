@@ -1364,10 +1364,13 @@ affected every icon that uses sway.
 - [x] Fixed by warping TIME rather than easing each angle: `t` now runs through a smootherstep
       before anything reads it (`scripts/capture/turntable-render.mjs`, in the frame loop), so
       dt/df is zero at both ends and EVERY motion keyed off `t` inherits the ease for free.
-      `u(0)=0, u(1)=1`, so loops still close. `verified:` ramp to peak, chair **0.07s to 0.78s**,
+      `u(0)=0, u(1)=1`, so loops still close. The smootherstep is at
+      `scripts/capture/turntable-render.mjs:760`, shipped in commit 699ee8414.
+      `verified:` ramp to peak, chair **0.07s to 0.78s**,
       polish **1.13s to 0.55s**, both now inside Airbnb's band. 0 stutter, 0 clipped, loops close.
 - [x] Spa wobble halved from 3 cycles to 1.5 and amplitude raised 6.5 to 9.5, so it reads as
-      settling rather than shivering.
+      settling rather than shivering. `verified:` the multiplier is at
+      `scripts/capture/turntable-render.mjs:597`; shipped in commit 699ee8414.
 
 **CORRECTION TO MY OWN DIAGNOSIS, worth more than the fix.** I first measured "speed beats" per clip
 and got ours at 8, 25 and 24 against Airbnb's 5, and was about to treat that as the defect and add
