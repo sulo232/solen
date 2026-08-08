@@ -478,7 +478,13 @@
 - [ ] U1 Is `/harden` good enough, and rewrite it in plain English
 - [ ] U2 What "harden this" ACTUALLY does, step by step, and whether that is enough
 - [ ] U3 Recurring mistakes: hardening is not working. 10 to 18 rounds on one thing. Do we get a real fix the same day?
-- [ ] U4 The JSON in my output. Fix it.
+- [x] U4 **The JSON in my output: found where it actually comes from, and it was not where he or I assumed.** He filed it against "your output", so I looked there first. `verified: 4e319fb59  ~/.claude/hooks/no-inline-json-command-gate.py:1`
+  - **My REPLIES to him: 0 of 198 contain any raw JSON.** Not the source.
+  - **Gate blocks: they emit JSON, but the harness parses it and shows him plain text.** Verified by looking at how they actually appeared today. Not the source either.
+  - **The shell commands I run, which he SEES: 61 of 1110 carried a raw JSON blob.** That is it. Lines like `echo '{"transcript_path":"/dev/null"}' | python3 gate.py`, sixty one times in one day, to a man who is not an engineer.
+  - Fixed by a narrow guard: an inline JSON object of 40+ characters in a shell command is refused, with the one-line alternative (write it to a file, pipe the file). It exempts JSON in a file, JSON a program prints, and a python heredoc that builds JSON, because none of those put a blob on his screen. Fires on 14 of 1118 real commands, so it is narrow rather than nagging.
+  - **It blocked ME within a minute of being armed**, on the very command adding its own test case, and the fix it demanded took one line.
+  - **It also exposed a real fault in the evaluation layer, the third the layer has found in itself:** it replayed a COMMAND gate over my REPLIES and reported "0 of 198, ENFORCING NOTHING". Right number, wrong question. It now reads the hook's own event header and picks the matching corpus, because a verdict computed against the wrong corpus is precisely the mistake this layer exists to catch.
 - [x] U5 **Fixed, and I was WRONG about the cause in my last message.** I told him it was never switched on. It IS switched on, inside `plan-active-prompt.py`, and the real bug is worse than unwired: **it fired ONCE PER TIER PER SESSION.** It said CONTEXT RED at ~245k early today and then stayed silent for the entire rest of the session while the window kept filling. A one-shot warning on a line you can blow straight through is indistinguishable from not having one.
   - `verified:` ~/.claude/hooks/plan-active-prompt.py:35 and :86. Past RED it now re-fires every 50k and carries the actual number ("~245k in context"). Below RED the once-per-tier behaviour is unchanged, because a working-tier nudge repeating would be noise.
   - Measured over this session's real shape (155k, 199k, 245k, 299k, 310k, 355k): **5 nudges instead of 1.**
