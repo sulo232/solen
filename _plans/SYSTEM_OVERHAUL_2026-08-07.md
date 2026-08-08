@@ -392,6 +392,20 @@
 - [x] K0d2 **NOT half-armed**, which was the whole reason it sat pending for a turn: It needs nine exact edits to settings.json: register the aggregator, remove the eight individual registrations. Arming it while the members stay registered makes every complaint fire TWICE, which is worse than today. Recorded in [PENDING_ARM.md](PENDING_ARM.md) with the member list and the reason it is all-or-nothing. `verified:` sha 5932fb682, ~/.claude/settings.json:585.
 - [ ] K0e **The rest of the Stop chain is the same problem, unfixed:** 64 hooks, 23 of which blocked me in this session alone. The link family and this one are two families out of however many. LAW_SYSTEM 6.2 requires the consolidation and it has now been applied twice.
 
+### U. HIS FIVE ASKS (2026-08-08): fix the harden path itself
+
+**Verbatim:** *"before we start with that, I want to first fix up the hardening gate one. Like, if it's really good enough and also what it actually doesn't [speak] plain English. And secondly, when I tell you harden this gate or make a gate for this, what does it do actually? And is that really enough? And secondly, for recurring mistake, we need to harden stuff on there because it's not working. Like, if we face a problem, we have to make ten rounds or even more eighteen rounds. Do we actually get a fix, like, today? And secondly, the JSON of your output, when to fix up on that. And the third and last, we need to fix up on a context compaction. We had a principle, but I think it got lost somewhere and you stopped using it. Like, when are you gonna compact and stuff too?"*
+
+- [ ] U1 Is `/harden` good enough, and rewrite it in plain English
+- [ ] U2 What "harden this" ACTUALLY does, step by step, and whether that is enough
+- [ ] U3 Recurring mistakes: hardening is not working. 10 to 18 rounds on one thing. Do we get a real fix the same day?
+- [ ] U4 The JSON in my output. Fix it.
+- [ ] U5 Context compaction: the principle exists and I stopped using it. When do I compact?
+
+- [x] U-inv **Investigated all five before answering.**
+  - **U1/U2:** `/harden` exists at `~/.claude/commands/harden.md` and already carries the six-question legality test added under his freeze this morning. Six steps: legality test, pin the mistake, choose the hook event, write it, register it, test it. It is NOT plain English: it is written for me, in estate jargon.
+  - **U5, and this is the real finding: the compaction principle is NOT lost, it is UNARMED.** `~/.claude/CONTEXT_SYSTEM.md` has the full budget table (healthy under 70k, working 70-120k, heavy 120-150k, red over 150k) and three collapse triggers. But `context-budget` is registered **0** times in settings.json. The only thing injecting a tier is `plan-active-prompt.py`, as a side note on an unrelated hook. **The principle was never wired; it has been advice this whole time**, which is exactly the class he keeps naming.
+
 ### T. CORRECTION: I found the class, fixed two, and handed him a MENU instead of finishing (owner 2026-08-08)
 
 **His words:** *"why did u try to get out of the problem... normally you shouldve just went forward with all the edit cz the goal is to make u stop repeating yeah? but no u didnt u stopped, even worse you didnt even tell me next step, make gate or harden em."*
