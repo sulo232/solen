@@ -136,6 +136,10 @@
   - **What went wrong with my own rule:** it made the CLAIM into a subject. Within hours I was writing *"Not claiming that one is fixed"* and *"I'm not asserting this landed"*, which is a paragraph about my posture, not about his thing. Third time today one of my rules manufactured the behaviour it was written to prevent.
   - **The amendment:** never make the claim the subject. Say what is now TRUE, or what is still BROKEN. "Done" is legitimate as a label on a fact, never as an announcement about my confidence in it. Same information, no autobiography, and if there is nothing true to report the line is not needed at all.
   - Edited in place rather than added below, which is what he asked for and also what keeps this file from growing a rule per complaint.
+- [x] Q41 **Repeated the same three-item paragraph two replies running. Measured why the check missed it: 0.25 similarity** `verified:` ~/.claude/hooks/reply-repeat-gate.py:215, threshold 0.85.
+  - **That number settles the argument I had with myself twice today.** Two paragraphs he read as identical share a quarter of their characters. No threshold catches that without firing on everything, which is the second measured proof that text comparison cannot see a reword.
+  - **The real cause is not the gate, it is what I do when blocked.** A gate stopped the reply, I rewrote the whole message with the proof added, and the three-item paragraph came along for the ride. REPLY_LAW 0.9 already says send only the delta, and I broke it under block pressure, which is when it matters.
+  - Not adding a fourth text check. The rule exists and the failure is mine.
 - [ ] Q12 No answer given. I take my own recommendation and flag it: substantial = touches more than one file, or produces anything he will look at.
 - [ ] Q13 Park it, keep going, surface at the end. Plus:
   - [ ] Q13a A parked item must be WRITTEN INTO THE PLAN in the same turn
