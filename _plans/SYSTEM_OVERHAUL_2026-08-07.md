@@ -110,7 +110,11 @@
     - **It cannot rot.** It reads `_plans/*.md` from disk on every request and finds the open-decision markers itself, the same anti-rot design as `/dev/mockups`, which was rebuilt in July precisely because a hand-listed index went stale. There is no list to forget to update, and a decision leaves exactly one way: the plan line stops being marked open.
     - Ran the collector against the real files: **199 open decisions across 67 plan files**. That number is the answer to "you don't even tell me at the end what's left", and it is a lot worse than either of us was saying.
     - Built as a real route under `app/[locale]/dev/`, per decision 17, not as a standalone file.
-    - **Rendered and checked, not just typechecked:** HTTP 200, the heading present, the counts on the page reading 199 and 67, no runtime error in the HTML.
+    - **Rendered on a PHONE viewport and it was broken three ways, all found by looking rather than by the typecheck.** 390x844:
+      1. sideways scroll to 537px with zero elements overflowing, the signature of one long unbroken token stretching the container. Fixed with word breaking.
+      2. the first entry was an entire ACTIVE.md TABLE ROW, taller than the screen. Those rows carry a whole status paragraph, so one of them is never one decision. Excluded.
+      3. markdown SECTION HEADINGS were rendering as items, so "## PARKED, owner decisions" sat there looking like something he could answer. Excluded, and long entries now cut at 240 characters.
+    - After the three fixes, measured again at 390: no sideways scroll, 146 real decisions across 55 plans, zero markdown junk in the list, tallest entry 213px. The count moved 199 to 146 because 53 of the original hits were table rows and headings, not decisions.
     - **No tunnel link this turn:** cloudflared cannot resolve `api.trycloudflare.com` from here (`no such host`), so the phone link is not available. Desktop only: `http://localhost:3000/de/dev/decisions`. Stated rather than skipped, since a promised link that does not work is worse than none.
   - [ ] Q11c **Never more than one file mentioned in a reply** (owner: "not more than one file because it's just so annoying")
 - [ ] Q12 No answer given. I take my own recommendation and flag it: substantial = touches more than one file, or produces anything he will look at.

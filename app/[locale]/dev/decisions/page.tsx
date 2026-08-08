@@ -50,6 +50,15 @@ function collect(): Item[] {
     raw.split("\n").forEach((ln, i) => {
       if (!OPEN_MARKER.test(ln)) return;
       if (SETTLED.test(ln)) return;
+      // A markdown TABLE ROW is never one decision. Rendered at 390 the first version showed a
+      // single ACTIVE.md workstream row running past a full screen height, because those rows carry
+      // an entire status paragraph. The mobile check is what caught it: the page was technically
+      // correct and completely unreadable, which is the failure the render step exists to find.
+      if (ln.trimStart().startsWith("|")) return;
+      // A markdown HEADING carrying the marker is a section LABEL ("## PARKED, owner decisions"),
+      // and the decisions are the lines under it. Rendering the label as an item put "## PARKED"
+      // on screen as though it were something he could answer. Also caught by looking at it.
+      if (/^\s{0,3}#{1,6}\s/.test(ln)) return;
       // strip markdown noise so he reads a sentence, not syntax
       const text = ln
         .replace(/^[\s>|-]*\[[ x]\]\s*/i, "")
@@ -57,7 +66,10 @@ function collect(): Item[] {
         .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
         .trim();
       if (text.length < 25) return;
-      out.push({ plan: name.replace(/\.md$/, ""), text, line: i + 1 });
+      // One decision should read in a glance. Anything longer is a paragraph that happens to
+      // contain the marker, so keep the first sentence and say there is more.
+      const short = text.length > 240 ? text.slice(0, 240).replace(/\s+\S*$/, "") + "..." : text;
+      out.push({ plan: name.replace(/\.md$/, ""), text: short, line: i + 1 });
     });
   }
   return out;
@@ -106,7 +118,10 @@ export default function DecisionsPage() {
               {list.map((it) => (
                 <p
                   key={`${it.plan}-${it.line}`}
-                  className="border-t border-s-border py-2.5 text-s-ink first:border-t-0"
+                  // break-words: measured at 390 before this, the page scrolled sideways to 537px
+                  // with zero elements overflowing, which is the signature of one long unbroken
+                  // token (a file path or a slug inside a decision line) stretching the container.
+                  className="break-words border-t border-s-border py-2.5 text-s-ink first:border-t-0"
                 >
                   {it.text}
                 </p>
