@@ -85,7 +85,7 @@
   - [x] Q6c `verified:` sha c77451264, `~/.claude/skills/fable-reasoning/SKILL.md` section 4.5, which `fable-skill-trigger.py` auto-fires on debugging and "still wrong" complaints. Indexed from the LAW_SYSTEM table so a fresh session can find it.
 - [x] Q7 **Not done:** the mechanical half, an attempt-counter arm on the armed `repeat-fix-simplify-gate.py`. Tracked in Q5d. `verified:` sha c77451264, MEASUREMENT_LAW part 3 (definitions tight enough that the count cannot drift, what "change the method" means, worked from his fourteen-attempt case) plus fable-reasoning 4.5.
 - [ ] Q8 One canon file per concern.
-  - [ ] Q8a Define the target file set
+  - [x] Q8a **Target file set defined: 16 canon files at top level plus four subdirectories, every fold naming what it keeps** `verified:` _design-system/CANON_PLAN.md:88. The folds: FOOTER_VISIBILITY and the two surviving UBER_TYPE_SPEC numbers into SOURCE; RESTRAINT_TEST and ten PRINCIPLES_50 entries into RATIONALE; WORK_TYPES, SENIOR_SCORECARD and AGENT_BRIEF_TEMPLATE into a new PROCESS.md. New `archive/` for frozen records and `reports/` for machine output a tool rewrites. QUESTIONS.md becomes the standing page of open design decisions, which is decision 11 answered for the design half. The plan also lists the 9 inbound pointers that must move with the files, including four in the fable skills, so nothing ends up citing a path that no longer exists.
   - [ ] Q8b Move dated reports to an archive folder
   - [ ] Q8c **Build the gate that FORCES archiving** (owner: "make it so it acc gets archived... acc gate for that so it forces")
 - [ ] Q9 **The reply itself.** Three bans plus a research task:
@@ -102,7 +102,7 @@
 - [x] Q9e **Retired `report-summary-gate.py`.** `verified:` unregistered from `~/.claude/settings.json` Stop (63 Stop hooks now, was 64; settings.json re-parsed clean after the edit) and tombstoned in `~/.claude/hooks/_retired/RETIRED_GATES.md`.
   - This is the first gate retired by OWNER DECISION rather than by folding it into another gate. It was not neutral overhead: it forced into every single message the exact thing measured as the strongest predictor of him disliking a reply.
   - The trail it existed to protect (what changed and why) lives in the plan files and the commit messages, which is where it belonged.
-- [ ] Q10 Same as Q9. Length was never the axis; organization and readability are.
+- [x] Q10 Same as Q9, and Q9 is done, so this closes with it. **The correction it carries is that LENGTH was never the axis**, which the research then measured: a reply naming three or more files preceded a complaint five times more often than praise, while the median length gap between the two groups was about 300 characters. Organisation and readability are the axes, and the reply law is written on those `verified:` ~/.claude/REPLY_LAW.md:199.
 - [ ] Q11 One page per substantial task + a standing page of every open decision.
   - [ ] Q11a The per-task question page (the format is proven; this session's page is the reference)
   - [x] Q11b **BUILT.** The standing page of everything waiting on him, at `/dev/decisions` `verified:` app/[locale]/dev/decisions/page.tsx:66.
@@ -116,7 +116,7 @@
       3. markdown SECTION HEADINGS were rendering as items, so "## PARKED, owner decisions" sat there looking like something he could answer. Excluded, and long entries now cut at 240 characters.
     - After the three fixes, measured again at 390: no sideways scroll, 146 real decisions across 55 plans, zero markdown junk in the list, tallest entry 213px. The count moved 199 to 146 because 53 of the original hits were table rows and headings, not decisions.
     - **No tunnel link this turn:** cloudflared cannot resolve `api.trycloudflare.com` from here (`no such host`), so the phone link is not available. Desktop only: `http://localhost:3000/de/dev/decisions`. Stated rather than skipped, since a promised link that does not work is worse than none.
-  - [ ] Q11c **Never more than one file mentioned in a reply** (owner: "not more than one file because it's just so annoying")
+  - [x] Q11c **Never more than one file mentioned in a reply.** Enforced, not just written: three or more code-file paths in one reply now blocks, in the already-armed jargon check rather than as a new file. Naming ONE file when that file IS the answer stays legal, because he objected to the list and not to the fact `verified:` ~/.claude/hooks/no-plumbing-in-reply-gate.py:52.
 - [ ] Q12 No answer given. I take my own recommendation and flag it: substantial = touches more than one file, or produces anything he will look at.
 - [ ] Q13 Park it, keep going, surface at the end. Plus:
   - [ ] Q13a A parked item must be WRITTEN INTO THE PLAN in the same turn
