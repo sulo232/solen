@@ -80,7 +80,7 @@ The audited root cause of "compliant but unfinished": this system had only CEILI
 
 ## 🔒 Design contract — LOCKED (V3-D443, council-stamped 2026-06-07)
 
-Frozen single-values. Do NOT re-open any row without the owner saying so by name. Visual rulebook: `public/solen-styleguide.html`. Full axes + sweep status: `_design-system/CONSISTENCY_AUDIT.md`.
+Frozen single-values. Do NOT re-open any row without the owner saying so by name. Visual rulebook: `public/solen-styleguide.html`. Full axes + sweep status: `_design-system/archive/CONSISTENCY_AUDIT.md`.
 
 | axis | locked |
 |---|---|
