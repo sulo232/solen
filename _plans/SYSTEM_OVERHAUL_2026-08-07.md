@@ -600,7 +600,20 @@
   - **59 files sit on disk enforcing nothing.** Some are deliberate retirements kept for reversibility, which is right; the rest are the "written, self-tested, never wired" class this estate has flagged in two previous audits and not closed.
   - **120 of 194 carry a skip flag**, and the skip ledger already shows two of them muted more than 14 times in a week, which is the measured version of "a gate that over-fires gets routed around".
   - Read against F8: this is what the ceiling looks like from the inventory side rather than the recurrence side. Adding to 194 is not the lever.
-- [ ] K2 For a 25-gate sample, find the originating incident and check for recurrence AFTER the gate existed. Compute the honest PREVENTED / BYPASSED ratio
+  - [x] K2 **Done, and it is the hardest number in this whole batch: 17 of 19 gates had their own theme recur AFTER the gate existed.** 117 recurrences in total, across gates that were built precisely to stop them. `verified: c308480f6  ~/.claude/state/mistake-themes-global.json`
+    | gate | theme | born | recurrences AFTER it |
+    |---|---|---|---|
+    | mockup-visual-gate | promised a visual | 2026-07-01 | **15** |
+    | link-gate | the link | 2026-07-10 | **11** |
+    | tunnel-kill-relink-gate | the link | 2026-07-20 | **11** |
+    | fullbleed-external-link-gate | the link | 2026-07-23 | 10 |
+    | preview-link-branch-gate | the link | 2026-07-23 | 10 |
+    | pre-edit-measure-first-gate | measurement | 2026-06-30 | 8 |
+    | reference-measure-gate | measurement | 2026-07-21 | 7 |
+    | measure-dont-ask-gate | measurement | 2026-08-01 | 6 |
+    - **Only 2 of 19 have a clean record**, and both are narrow mockup checks on a surface this session never touched, so their zero is topic silence rather than proof.
+    - **The honest limit of this number, stated because the tidy version overstates it:** the ledger counts SESSIONS where he raised the theme, not individual violations, and a gate cannot be blamed for a theme it only partly covers. It does not prove gates make things worse.
+    - **What it does prove is enough:** a gate does not end a theme. Eight separate link gates exist and the link theme recurred 10 times, most recently today. This is F8 again, per gate rather than per theme, and it is the strongest argument in the batch for the evaluation layer over gate number 251.
 - [ ] K3 Catalogue the harm gates have caused (false positives, double-send, neutering, owner frustration)
 - [ ] K4 Quantify the skip-flag hole
 - [ ] K5 Measure the real cost of the 53-hook PreToolUse chain per edit
