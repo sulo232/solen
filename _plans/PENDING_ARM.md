@@ -62,3 +62,33 @@ whole approach: *"that reflex has never once worked here: the three most-repeate
 durable ledger were, at the time of the audit, the three with the MOST gates."* Arming all 18
 would make that worse, not better. The K workstream in
 [SYSTEM_OVERHAUL_2026-08-07.md](SYSTEM_OVERHAUL_2026-08-07.md) decides which of them survive.
+
+
+## evidence-family-aggregator.py , built 2026-08-07, NOT yet armed
+
+**Why it exists.** Owner: *"there is command hooks and gate that's making a repeat. Right? Why are
+you not eliminating that or editing it if it's important thing?"* He is right, and the estate had
+already proved it: `link-family-aggregator.py` measured 402 blocked stop attempts in a week, 76% of
+them blocked by two or more gates at once, worst case nine at once. Collapsing eleven link gates
+into one combined deny took blocked stop attempts from 71 a day to 32. **The gates are the repeat
+machine**, and that fix was applied to one family and no others.
+
+This is the same fix for the second-biggest family. Eight Stop gates all say one thing: you asserted
+something without the proof that makes it true.
+
+- `finding-provenance-gate.py` , a defect asserted with no first-hand check
+- `repeat-claim-needs-repro-gate.py` , a fix claimed without exercising his path
+- `env-claim-needs-evidence-gate.py` , a sandbox or permission block claimed from memory
+- `instrument-corroboration-gate.py` , an impossibility declared on one instrument
+- `measurement-needs-scope-gate.py` , a count or percentage with no stated root set
+- `no-regression-by-fix-gate.py` , a fix whose mechanism is the thing appearing less
+- `owner-sees-it-measure-it-gate.py` , disputing what he SAW without measuring
+- `animation-needs-real-frames-gate.py` , motion reported without frames that could resolve it
+
+**State: file written, self-test 8/8 including a live run over all eight real members. NOT armed.**
+
+**The remaining step is nine exact edits to `~/.claude/settings.json`**: register the aggregator at
+Stop, and remove the eight members' individual registrations. It has to be all nine or none.
+Arming the aggregator while the members stay registered makes every complaint fire TWICE, which is
+worse than today. Bash and python cannot write that file (PermissionError, re-probed today); the
+Edit tool can, and each of the eight is a uniquely matchable object, verified.
