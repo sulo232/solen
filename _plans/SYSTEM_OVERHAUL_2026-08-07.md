@@ -400,9 +400,18 @@
   - **Genuinely retired and still claimed live:** the padding check, the apology check (both unregistered today by his "okay A"), and the files-list check (retired earlier by his own decision, because it forced into every message the single strongest measured predictor of him disliking a reply).
   - **A map that says a gate is live when it is not is worse than no map, because it gets read as evidence.** That is the same defect class as the compaction warning and the impossible number: a record of the world that stopped matching it and nobody re-derived.
   - The genuinely BEHAVIOURAL half is named in the file already: about a dozen items (not-checked, sample-size, precision, entry-point, cost-reporting, discarded-finding, universal-claim-tier, measured-method, general-jargon) have no gate and are marked as advice, with the reasoning that a broad detector over-fires. Today's evidence supports that reasoning.
-- [ ] G2 Confirm the reply-blocking-Stop-gate ban and its exact failure mode (double-send)
-- [ ] G3 Define the reply contract the owner wants (opening, readback, recommendation, evidence, close)
-- [ ] G4 Pick enforcement mechanisms that are actually available given the ban
+- [x] G2 **Confirmed, and today PROVED the mechanism instead of describing it.** The failure mode is the double-send: a Stop gate blocks a reply, **he has already read it**, and I send a rewritten version, so he reads the same thing twice. `verified: ef65757cb  ~/.claude/REPLY_LAW.md:83`
+  - **The law had this exactly backwards and that is what caused it.** It claimed a blocked reply is discarded and never reaches him, cited one line of one gate, and told me to re-send the whole corrected message. I obeyed it and he said "you repeated yourself twice why i thought we fixed this". Grepped the transcript: both copies are in it, 64% identical.
+  - It happened THREE times today. The third time he said "you repeated 3times okay irs getting ridiculous".
+  - So the ban stands and now has a measured reason rather than a remembered one: **any Stop gate that blocks a reply costs him a duplicate unless the retry is a bare delta.**
+- [x] G3 **Defined as seven shapes rather than one contract, because a single generic shape has to be re-derived every time and that is the judgment I kept getting wrong.** `verified: ef65757cb  ~/.claude/REPLY_TEMPLATES.md:1`
+  - Picked from what HE just did, never from what I did, and each fixes a LINE COUNT instead of asking for concision. Opening: the answer. Readback: only on a multi-ask message. Recommendation: required whenever a real fork exists, as lettered OUTCOMES never tasks. Evidence: only when he could notice it. Close: what is open, named with its real options, or absent.
+  - Plus the in-and-out list he asked me to work out rather than be handed: out always are the branch, the files, the commit, tool names, scores, and the order I did things in.
+  - Also banned by name: the promise. "From now on" and "I'll make sure" are gone, because he has heard hundreds and every one expired with the session.
+- [x] G4 **Picked, and the pick changed shape twice today under evidence.** `verified: ef65757cb  ~/.claude/gate-eval.py:1`
+  - Not more blacklists: six went in over one day, one per rejection, each catching a different costume, and there is no end to costumes.
+  - **One positive question instead:** does the reply contain anything he can act on. That catches the seventh costume without ever having enumerated the first six.
+  - **Plus an evaluation layer, which is the mechanism that was actually missing.** A check now has to prove it fires on real messages, catches what he really rejected, and leaves real good replies alone, before it counts as done. Two adversarial readers found ~40 defects in four checks that had all passed their own suites, which is why author-written tests are not an available enforcement mechanism on their own.
 
 ### H. Question system
 - [ ] H1 Reconstruct the approved Taste Lab elicitation format precisely
