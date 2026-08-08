@@ -124,7 +124,7 @@ Frozen single-values. Do NOT re-open any row without the owner saying so by name
 
 **Ship gates:** `_design-system/SENIOR_SCORECARD.md` (5/5 Pass required, customer screens) · `_design-system/WORK_TYPES.md` (6 types, pick before scoping) · `_design-system/WAVE_PLAN.md` (living roadmap W9-W17).
 
-**Other references:** `_design-system/CONTROL_ELEVATION.md` (elevation decision tree: primary→ink, over-photo→frost, calm→flat; read before any button/stepper styling) · `_design-system/MOTION.md` (principles + remaining-work list; read before motion work) · `_design-system/AGENT_BRIEF_TEMPLATE.md` (sub-agent brief format) · `/solen-drift-check` skill (static drift → `_design-system/_drift-report.md`).
+**Other references:** `_design-system/CONTROL_ELEVATION.md` (elevation decision tree: primary→ink, over-photo→frost, calm→flat; read before any button/stepper styling) · `_design-system/MOTION.md` (principles + remaining-work list; read before motion work) · `_design-system/PROCESS.md` (how design work is scoped, briefed and graded; replaced the 240-line brief template on 2026-08-08, which pointed at a deleted worktree and told the verifier to bless a focus ring that three armed gates refuse) · `/solen-drift-check` skill (static drift → `_design-system/_drift-report.md`).
 
 Per-component rules: `_design-system/components/<Name>.md`. Open questions: `_design-system/QUESTIONS.md`. Taste decisions: `_design-system/TASTE_LOG.md` (read before design on a covered surface).
 
