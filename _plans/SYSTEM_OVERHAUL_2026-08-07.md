@@ -315,7 +315,7 @@
   - [x] B2d **No instrument-validation step.** Named by the mapping as a first-class gap, independently of the owner's own diagnosis.
   - [x] B2e **No decay detection.** `everystate-v2/index.html` still loads remote CDN fonts and Lucide, banned since 2026-07-21. A mockup is written once and never checked again.
   - [x] B2f **No role split for design.** There is `coder`, `loop-reviewer`, `design-verifier`. No researcher, no art director, no critic, no set-assembler. Every design judgment lands on the main thread.
-- [ ] B3 Design the replacement flow (blocked on the owner's gate decision in P6 and the set definition in C2)
+- [ ] B3 Design the replacement flow. **Re-scoped 2026-08-08:** the set-definition half is gone with C2. Still waiting on the gate decision in P6.
 - [x] B4 Diagnose the skip-flag problem. **The 56 number is not measuring defiance. It is measuring a five-minute timer against a longer job.**
   - [x] B4a `verified:` TTL is 300 seconds (`mockup-preflight-manifest.py:46`, `mockup-first-gate.py:81`) and a mockup build takes longer, so ONE job re-touches the flag repeatedly. Logged instance: session 57967b14 touched it at 08:38:04, 08:45:27, 08:47:55, 08:50:16, four times in twelve minutes, one build.
   - [x] B4b `verified:` a logged touch reason, 2026-08-03 18:06:42: *"Grounded-in IS present and names the real surface, `app/[locale]/_components/search/SearchOverlay.tsx`. The gate's filename-token heuristic cannot match it."* The flag is being used to get past a FALSE POSITIVE, not to dodge the rule. It fires whenever a mockup is named for the change rather than the component, which is the normal convention in `public/_mockups` (home-fixes, restraint, floors-law).
@@ -327,14 +327,11 @@
   - [x] C1b No set/variant machinery in the mockup base law `verified:` `public/_mockups/_BASE.md` has no set/variant section
   - [x] C1c No set/variant machinery in any skill that applies to Solen routes `verified:` only huashu-design mentions variation, and its own SKILL.md excludes existing Solen routes
   - [x] C1d Variants today are hand-built one-offs `verified:` 32/120 suffixed mockup dirs, no shared spec file among them
-- [ ] PARKED 2026-08-08 · What is a "set"? A: one user FLOW end to end (all booking screens). B: N DIRECTIONS of the same screen to pick between. C: a page FAMILY that must stay consistent (all list pages, all empty states). D: all three, each with its own pipeline. · from: C2, question 1 of round 2, blocking the whole set pipeline · HE SKIPPED IT 2026-08-08 ("i forgot bro skip that"): still open and still blocking the set pipeline, but do NOT re-ask it at him unprompted. It stays on the standing page so he can come to it when he wants. He forgot the context, which is a signal the question was too abstract, not that he does not care: the next time it comes up it should arrive as three real screens he can look at rather than four letters.
 - [x] PARKED 2026-08-08 · Should the 8 mockup checks also watch real dev pages (`app/[locale]/dev/**`)? Since new mockups are real pages now, those checks currently see nothing. Widening them means they police product routes, which is a much bigger blast radius than a mockup file. · from: P-c2b · DROPPED 2026-08-08: not a decision he can judge, and the safe answer (dev routes only) was available without him.
-- [ ] C2 Define what a "set" is. **BLOCKED on owner**, concrete fork below. This is question 1 of round 2.
-  - [ ] C2a Fork A: a set = one user FLOW end to end (e.g. every booking screen)
-  - [ ] C2b Fork B: a set = N design DIRECTIONS of the same screen, to choose between
-  - [ ] C2c Fork C: a set = a page FAMILY that must stay consistent (all list pages, all empty states)
-  - [ ] C2d Fork D: all three, with a different pipeline each
-- [ ] C3 Design the set pipeline (blocked on C2)
+- [x] C2 **REMOVED 2026-08-08 by the owner: "nah remove".** He was asked what a "set" means, said he had forgotten the context, and then said to take the question away rather than park it. It is gone from this plan and from the standing decisions page. `verified: e253500b0  _design-system/REMOVED.md:1`
+  - **Nothing built is lost.** `_design-system/SETS.md` already carries all three pipelines (flow, directions, family) plus the manifest, the fan-out and the consistency check. The only thing the question would have decided is which one the word "set" defaults to when he uses it, and the honest answer is to ask him about the specific screens at the time instead of settling a definition in the abstract.
+  - **Consequence, named rather than left to be discovered:** `C3` and `B3` were both waiting on this. They are not unblocked by removing it, they are re-scoped. Each now waits on a real piece of work he names, not on a definition.
+- [ ] C3 Design the set pipeline. **Re-scoped 2026-08-08 after C2 was removed:** no longer waiting on a definition. It waits on the next real multi-screen job he names, and the pipeline for that shape gets used from `SETS.md`.
 
 ### D. Research flow
 - [x] D1 **Done, and the finding is the opposite of what the box assumed.** It said there was no template. There is one, it was simply never written down: checked across all 26 files, **25 of 26 end in a rule rather than in observations, 23 of 26 carry a source you could go and check, and 21 of 26 quote his own verdict.** So nothing is being imposed here; the standard was already being met and is now written down so the next file cannot quietly fall below it. `verified: 72e2f7522  _design-system/research/README.md:1`
