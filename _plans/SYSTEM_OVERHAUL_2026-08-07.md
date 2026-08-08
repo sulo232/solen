@@ -416,14 +416,29 @@
 ### H. Question system
 - [ ] H1 Reconstruct the approved Taste Lab elicitation format precisely
 - [x] H2 Count the currently-unanswered parked owner decisions across `_plans/`. **718 open/blocked/parked/owner-only mentions across the plan files, of which 104 are explicitly numbered decisions (D1..Dn, Q1..Qn).** `verified:` grep over `_plans/*.md` for `(OPEN|BLOCKED|PARKED|OWNER DECISIONS? NEEDED|owner-only|needs owner|awaiting owner|owner picks|owner to pick)` = 718; numbered-decision pattern = 104. Carried by at least 15 plan files including ACTIVE.md, COPY_VOICE_LAW.md, BACKEND_LAW.md, GAP_FIXES.md, FLOW_HARNESS.md. The question system's failure is not that questions are not asked, it is that 104 asked questions are sitting unanswered with no surface that shows them together.
-- [ ] H3 Define what makes a good question here, from the record of what he answered vs ignored
-- [ ] H4 Define durable recording so a question is never asked twice
+- [x] H3 **Defined from what actually happened today, which gave a clean split.** `verified: eae9b560d  _plans/SYSTEM_OVERHAUL_2026-08-07.md`
+  - **ANSWERED, immediately and without complaint:** "replace the checks or stack them" (he said "okay A"), and the fifteen-question round (he answered "1a 2 a 3 a 4 d..."). Both were **lettered choices about a concrete thing with a real consequence he could picture.**
+  - **NOT ANSWERED:** "what is a set" (he said "i forgot bro skip that", then "nah remove"), and the mockup-check scope (never answered; I took it back myself). Both were **definitions in the abstract, with no screen attached and no visible consequence.**
+  - So the rule: **a question earns his turn when it is a fork with a consequence he can picture, offered as lettered OUTCOMES with my pick.** A question that asks him to settle a definition, or that I could answer myself by looking, does not.
+  - **His own words on why the set one failed: he forgot the context.** That is not indifference, it is a question that arrived with nothing to look at. The fix recorded on that item is that it must come back as three real screens, not four letters.
+- [x] H4 **Defined and already running, in three parts, because a question that lives in a reply dies with the window.** `verified: eae9b560d  app/[locale]/dev/decisions/page.tsx:78`
+  - **Parked:** one line in the plan file, `- [ ] PARKED <date> · <the question> · from: <what raised it>`, enforced by a check that refuses a closing message which parks something without writing it down.
+  - **Surfaced:** that marker puts it on the standing page, which reads the plan files from disk on every load so it cannot rot. `?task=` narrows it to one job.
+  - **Retired:** it leaves that page exactly one way, by the same line gaining `ANSWERED <date>: <his words>` or `DROPPED <date>: <why>`. A REMOVED question additionally gets a graveyard line, which is what stops a future session helpfully re-proposing it. That path was exercised today on the set question.
+  - The failure this exists for, measured: two law passes a week apart asked the same five questions verbatim, and all five were still open.
 
 ### I. Two-phase flow
-- [ ] I1 Map the existing machinery (ask-before-loop-gate.py is the closest, dated 2026-07-28)
-- [ ] I2 Resolve the conflict with "FINISH THE JOB, do not report-and-wait" and the dependency test
-- [ ] I3 Define "substantial"
-- [ ] I4 Define what ends phase 1 and starts phase 2, and what happens if he does not answer
+- [x] I1 **Mapped, and it fired on me today, which is the only proof that counts.** `ask-before-loop-gate` blocks starting a loop with no question asked first, and it blocked a fan-out I tried to launch on the set question. The neighbours: `multi-ask-decompose` (readback + atomic boxes on a multi-ask message), `plan-park-gate` (a parked question must be written down), and the standing decisions page (surfacing). `verified: eae9b560d  ~/.claude/hooks/ask-before-loop-gate.py`
+- [x] I2 **Resolved, and the resolution is already written in the project file: the DEPENDENCY TEST.** A question is a legal stop only when the remaining work DEPENDS on the answer, so continuing would mean building on a guess. Everything else is parked and the work continues. `verified: eae9b560d  CLAUDE.md`
+  - Today gave both sides. The set question was a legal stop by that test, since three pipelines hang off it. The mockup-check scope was NOT, and I had parked it as his anyway; taking it back was the correct move and it is now recorded as one.
+  - **The tie-break when both rules seem to apply: ask only what he can answer and I cannot.** If I could settle it by looking, the dependency test is not satisfied, it is just work I have not done.
+- [x] I3 **Defined by consequence, not by size, because size is what I always guess wrong.** A task is substantial when getting it wrong costs more than one turn to undo: it touches a customer-visible screen, changes something enforced, changes a stored value or schema, or spans more than about three files. Anything else is ordinary work and gets done, not questioned. `verified: eae9b560d  _plans/SYSTEM_OVERHAUL_2026-08-07.md`
+  - The counter-example that sets the floor: today's edits to single checks were NOT substantial by this test, and stopping to ask about each would have been the report-and-wait failure. The set definition WAS, because three pipelines hang off it.
+- [x] I4 **Defined, including the case that actually happened today: he does not answer.** `verified: eae9b560d  _plans/SYSTEM_OVERHAUL_2026-08-07.md`
+  - **Phase 1 ends when every question that passes the dependency test has been asked, in one batch, as lettered outcomes with my pick.** Not one at a time; that is what makes it a phase rather than a series of interruptions.
+  - **Phase 2 starts immediately on everything that does NOT depend on an unanswered question**, which is almost always most of it.
+  - **If he does not answer: park it and carry on, and never re-ask it unprompted.** That is exactly what happened with the set question, and the recorded reason matters more than the parking: he forgot the context, which says the question was badly formed, not that he was ignoring me.
+  - **If the whole batch depends on an unanswered question**, the honest move is to say that in one line and stop. That did not happen today and it is rare by construction, because the dependency test is narrow.
 - [ ] I5 Define what happens to a NEW question that appears mid-loop (park or break)
 
 ### J. Other overhauls
