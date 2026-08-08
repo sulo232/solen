@@ -110,6 +110,8 @@
     - **It cannot rot.** It reads `_plans/*.md` from disk on every request and finds the open-decision markers itself, the same anti-rot design as `/dev/mockups`, which was rebuilt in July precisely because a hand-listed index went stale. There is no list to forget to update, and a decision leaves exactly one way: the plan line stops being marked open.
     - Ran the collector against the real files: **199 open decisions across 67 plan files**. That number is the answer to "you don't even tell me at the end what's left", and it is a lot worse than either of us was saying.
     - Built as a real route under `app/[locale]/dev/`, per decision 17, not as a standalone file.
+    - **Rendered and checked, not just typechecked:** HTTP 200, the heading present, the counts on the page reading 199 and 67, no runtime error in the HTML.
+    - **No tunnel link this turn:** cloudflared cannot resolve `api.trycloudflare.com` from here (`no such host`), so the phone link is not available. Desktop only: `http://localhost:3000/de/dev/decisions`. Stated rather than skipped, since a promised link that does not work is worse than none.
   - [ ] Q11c **Never more than one file mentioned in a reply** (owner: "not more than one file because it's just so annoying")
 - [ ] Q12 No answer given. I take my own recommendation and flag it: substantial = touches more than one file, or produces anything he will look at.
 - [ ] Q13 Park it, keep going, surface at the end. Plus:
