@@ -352,9 +352,14 @@
   - **Which copy wins is already settled and does not need a new rule: LOCKFILE owns frozen literals, and the precedence chain says so.** Duplication is only dangerous where a value exists WITHOUT that owner, so that is what was checked.
   - **Exactly two values are written in the canon with no LOCKFILE entry: `#1638C4` and `#575757`.** The first is the retired accent from before the 2026-06-11 flip to `#276EF1`, and it survives in `QUESTIONS.md` in three places still reading as a live decision. That is the real duplication defect here: not a value in six files, but a DEAD value that still reads as current.
   - Deliberately not swept: rewriting `QUESTIONS.md` history would erase the record of a decision he made. The fix belongs in that file's framing, not in deleting the number, and it is not this box's job.
-- [ ] E3 Target structure for the consolidated canon (one source of truth per concern)
-- [ ] E4 The missing layers, named
-- [ ] E5 Archive plan for the dated history sitting next to live law
+- [x] E3 **The target structure exists AND is enforced, which is the part that makes it real.** One file per concern, and the list is not a document anyone has to remember: it lives inside the check that refuses any new file at the top level. Writing a new one now prints the whole list back with the concern each file owns and the exact `git mv` for where it should go instead. `verified: 1d8455c41  scripts/hooks/canon-archive-gate.py:69`
+  - **A structure that lives only in a plan is a suggestion.** This one caught me twice today, refusing an edit to a stale brief template and refusing a new calibration file until it was added to the list on purpose.
+- [x] E4 **Three named, and all three were already NAMED-BUT-ABSENT, which is worse than missing.** `verified: 1d8455c41  _design-system/PROCESS.md:1`
+  - **`PROCESS.md`**, how design work is briefed and graded. The canon list had pointed at that filename for weeks and the file did not exist, so the check routed people to nothing. Built, replacing a 240-line brief that named a deleted worktree and told the grader to bless a focus ring three gates refuse.
+  - **`INSTRUMENT_CALIBRATION.md`**, what each measuring tool has proved and what it is BLIND to. The measurement law had named that exact path since it was written, pointing at nothing.
+  - **`research/README.md`**, what a research file must contain before it can become a rule. The standard turned out to already exist unwritten: 25 of 26 files end in a rule, 23 of 26 carry a checkable source.
+- [x] E5 **Done and executed, not planned.** 15 dated records moved out of the top level into `archive/`, with an index over them saying what the directory is for, marked frozen: nothing in there is law, and the current answer belongs in the canon file that owns the concern. `verified: 1d8455c41  _design-system/archive/README.md:1`
+  - The result is measurable and was measured under E1: **29 files at the top level, zero orphaned.** The dated history is no longer sitting next to live law where a reader cannot tell them apart.
 - [ ] E6 Mockups for every design change the consolidation implies (owner: "and make mockups")
 
 ### F. Repetition
