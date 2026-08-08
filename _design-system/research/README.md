@@ -48,6 +48,69 @@ retired. `RATIONALE.md` exists for exactly this and points here.
 Named rather than repaired, because repairing them means re-doing the research or asking him, and
 inventing a rule to make a file look complete is the worse outcome by a distance.
 
+## The evidence standard: four tiers, and the label is required
+
+Every claim in a research file carries one of these, in the text, not in someone's head. The tier is
+what tells a reader how hard they may lean on it.
+
+| tier | what it means | what it looks like |
+|---|---|---|
+| **measured** | I ran it and the method is named | "86% of visible text was weight >= 600, measured on the rendered PDP at 390x844" |
+| **sourced** | a named source anyone can go and check | a URL, an app and screen, a dated screenshot path |
+| **his verdict** | he looked and said yes or no, quoted verbatim | *"on all of them, the current looks better"* |
+| **assumed** | reasoned, not checked, and labelled as such | "assumed: this is why it reads flat. Not measured." |
+
+**A number with no tier is the failure this exists to stop.** This estate has debunked several of
+its own recalled statistics (`+2,000% from samples`, `70-90% never change defaults`), and every one
+of them read as authoritative right up until somebody looked for the source. Attach the tier, soften
+to a qualitative claim, or cut the number.
+
+**How much of it is actually enforced, stated plainly:** the `stat-source-gate` blocks an unsourced
+persuasion statistic in a reply to him, and that is the only mechanical part. Inside these files the
+tier is a discipline, not a gate, because deciding whether a source genuinely supports a claim is
+judgment and this estate has learned not to gate judgment. What is enforced is the cheap half: a
+number without any source at all.
+
+## The path from research to law
+
+The full chain, so nobody has to guess where a finding is meant to end up:
+
+1. **Question.** Something looks wrong, or he says it does. The question gets written down before
+   the answer, so the research cannot be shaped to fit a conclusion.
+2. **Research.** A file here. Four tiers above. Ends in a rule, or in one honest line saying nothing
+   should change.
+3. **Add or replace.** The rule either extends an existing rule or contradicts one. **A rule that
+   contradicts an existing one names it and says superseded, or the estate carries both and the
+   older one keeps being followed somewhere.** This is the single most common way law rots here.
+4. **Mockup.** Anything visual goes to him as a real page before it becomes law. He judges the look;
+   the research only ever justifies it.
+5. **His approval**, quoted verbatim into `TASTE_LOG.md` with the date.
+6. **Law.** The rule moves into the canon file that owns its concern, citing this research file. The
+   research file stays here as the evidence and never becomes the law itself.
+
+Steps 4 and 5 are not skippable for anything he will see. Steps 1 to 3 without them produce a rule
+nobody agreed to, which is how a document ends up arguing with his own taste.
+
+## When research goes stale
+
+**Research is about a thing at a moment.** When the thing changes, the finding does not
+automatically stop being true, but it stops being evidence, and the difference matters.
+
+Three ways a file here goes stale, all cheap to check:
+
+- **The surface it measured was redesigned.** A measurement of the salon page from before its
+  rebuild describes a screen that no longer exists.
+- **His verdict was superseded.** A later dated decision in `TASTE_LOG.md` on the same surface
+  outranks anything here, whatever the evidence said.
+- **The instrument was changed.** Same rule as `INSTRUMENT_CALIBRATION.md`: if the tool that
+  produced a number has been edited since, the number drops back to a hint.
+
+**How it is detected, honestly:** by the date in the filename and by reading, not by a gate. A file
+here is dated for exactly this reason. The rule that makes it work is the one in step 6: a law cites
+its research, so when a law is questioned the evidence is one click away and its date is visible.
+There is no automatic staleness check, and inventing one would mean teaching a script when a screen
+counts as redesigned, which is judgment again.
+
 ## Where a file goes when it is done
 
 Dated investigations stay here. If it produced a rule, that rule moves into the canon file that owns
