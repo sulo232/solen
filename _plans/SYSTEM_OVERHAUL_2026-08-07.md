@@ -363,16 +363,31 @@
 - [ ] E6 Mockups for every design change the consolidation implies (owner: "and make mockups")
 
 ### F. Repetition
-- [ ] F1 Ranked recurring-mistake census with counts, dates, and the gate hole for each
+- [x] F1 **Census built from the durable ledger, 14 themes across 53 flagged sessions since 07-10.** Ranked by how many separate sessions he had to raise it, with the number of hooks that mention that theme beside it. `verified: 2117ac256  ~/.claude/state/mistake-themes-global.json`
+  | theme | sessions | first | last | hooks mentioning it |
+  |---|---|---|---|---|
+  | promised a visual and did not deliver it | **14** | 07-10 | 08-07 | 9 |
+  | the link (dead, wrong, LAN, not opened) | **10** | 07-20 | **08-08** | **52** |
+  | measured wrong or not at all | **7** | 07-16 | **08-08** | **80** |
+  | stopped early | 4 | 07-29 | 08-08 | 17 |
+  | guessed instead of checking | 4 | 07-18 | 08-07 | 9 |
+  | blue/black palette | 4 | 07-23 | 08-05 | 11 |
+  | duplicated something that existed | 2 | 07-19 | 08-07 | 10 |
+  | jargon | 1 | 08-08 | 08-08 | 3 |
+  - The gate hole per theme is the last column read against the second: **the two most heavily gated themes in the estate, 52 and 80 hooks, both recurred TODAY.**
 - [x] F2 **Written as law AND now backed by a real record.** An instrument is not evidence until it has reproduced a known answer, and there are three kinds of known answer: a verdict he already gave, a case built so the answer is true by construction, and a physical ceiling. The third was added today after an instrument reported a context size thirteen times larger than any window can hold and I repeated it to him as fact. `verified: 1af9eccb0  _design-system/INSTRUMENT_CALIBRATION.md:1`
 - [x] F3 **His eyes win, and he sees both readings rather than being told the number was right.** The rule is that when the measurement and his verdict disagree, the instrument is blind on that axis until it can reproduce a verdict he already gave, and its readings on that axis mean nothing until then. `verified: 1af9eccb0  ~/.claude/MEASUREMENT_LAW.md:1`
 - [x] F4 **Rule written and the counter is live; it has been reporting all day** ("attempt 8", "attempt 17", "attempt 31"). Two failed attempts and the method changes or it goes to him, rather than a third variable being tweaked. `verified: 1af9eccb0  ~/.claude/hooks/repeat-fix-simplify-gate.py:1`
   - **And it fired on ME this turn, correctly, which is worth recording rather than skipping past.** It called out attempt 8 at the reply problem. The honest reading is that each attempt policed a different SURFACE of one behaviour, and there are unlimited surfaces, so none of them could ever have been the last. Six disguises in one day says the seventh is coming.
   - **The step back it is asking for, named even though it is not built:** every arm so far is a blacklist of ways a reply can be about me. The single positive test underneath is whether the reply contains anything he can act on. That is one check instead of six, and it is a bigger change than a seventh arm, so it is written down rather than bolted on at the end of a long day.
-- [ ] F5 Redundancy inside a single reply (repeating himself in output)
-- [ ] F6 Re-litigating settled decisions (a settled-decision lookup before speaking)
-- [ ] F7 Rebuilding what exists (the exists-check, strengthened)
-- [ ] F8 Honest answer on whether gate-per-mistake has hit its ceiling (215 hooks, 39 wiring violations)
+- [ ] F5 **NOT built, and named honestly rather than ticked.** Redundancy INSIDE one reply (saying the same thing twice in one message) has no check. `reply-repeat-gate` was retired by his "replace, don't stack" decision, and it compared two SEPARATE messages anyway, so it never covered this. Today's word-overlap method would work within a message too, but it has not been done.
+- [x] F6 **Already exists and fired repeatedly today:** the taste-log injector surfaces the dated decisions covering the surface in play, and TASTE_LOG plus the graveyard are the settled-decision lookup. Today it also gained teeth in the other direction: the set question was REMOVED with a graveyard line, which is what stops a future session helpfully re-proposing it. `verified: 2117ac256  _design-system/REMOVED.md:1`
+- [x] F7 **Already live and it blocked ME twice today**, which is better evidence than a design note: once refusing a new canon file until it was added to the list on purpose, once refusing a new `PROCESS.md` until it named what it extends. That second one is the strengthening the box asked for: a new file must declare what it builds on or it does not get written. `verified: 2117ac256  scripts/hooks/canon-archive-gate.py:69`
+- [x] F8 **Honest answer: YES, and today produced the clearest evidence this estate has.** `verified: 2117ac256  ~/.claude/state/mistake-themes-global.json`
+  - **The link theme has 52 hooks touching it and recurred in 10 separate sessions, most recently TODAY. The measurement theme has 80 and recurred in 7, most recently TODAY.** Jargon, with 3 hooks, has recurred once. More gates has not meant less recurrence on the themes that have the most.
+  - **The caveat, because the tidy version overstates it:** causation runs both ways, and those themes are heavily gated BECAUSE they recur. What the numbers do establish is the part that matters: **adding gates has not reduced recurrence where the gates are thickest.**
+  - Today made the mechanism visible rather than merely statistical. Six arms went into one check, one per rejection, each catching a different costume of one habit, and I said out loud one turn before the seventh that a seventh was coming. Costumes have no end.
+  - **What replaced it is not gate 250:** one positive question instead of five bans, and an evaluation layer that asks whether a check is relevant, enough and safe against REAL messages. Two adversarial readers found ~40 defects in four checks, every one of which had passed its own suite. That is the real ceiling: not that gates fail, but that a gate I write and test myself can only ever prove what I already thought of.
 
 ### G. Output system
 - [ ] G1 Map what governs reply shape today
