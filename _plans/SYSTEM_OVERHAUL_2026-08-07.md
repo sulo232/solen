@@ -565,5 +565,19 @@ the flow harness), P-e (fix the brief template).
 **Read decision 17 before Q3 and Q4.** Both drafts were written before he chose real pages over
 static HTML files, so they are aimed at the wrong artifact in places.
 
-## Unplanned additions / parked decisions
+## Unplanned additions
+
+### V , output templates, and his charge that this is all capture and not change (owner dictation 2026-08-08)
+
+Verbatim: *"We have to really eliminate this. Like, we need to make multiple, like, templates of, like, how you should respond, like, output principles. Because I think by now it's just, like, fixing and capturing and not, like, making actual change. And it's, like, a problem that we're facing, I think. So, yeah, can you, like, ask the council also, like, any ideas?"*
+
+- [x] V1 **He is right, and his own repo proves it.** Of every line committed on 2026-08-08, **79% landed in files that only describe** (plans, law, records) and **20% in files that actually run**. Four lines written about the work for every one line of work. `verified: measured across today's commits, files split by extension into runs-vs-describes`
+- [x] V2 Council asked, and the question was written to attack his proposal rather than confirm it. **Grok answered in full; Gemini's answers truncated twice at the API (its thesis came through); the Opus CLI is not installed on this machine, so that seat was empty.** Both that did answer reached the same verdict independently, and it is against his fix. `verified: /private/tmp/claude-501/council_out.json + council4.json`
+- [x] V3 Seven templates built, indexed by what HE just did rather than by what I did. `verified: ~/.claude/REPLY_TEMPLATES.md`
+- [ ] V4 Show them as something he can look at, not a markdown file (memory: deliverables = a served page + plain English, same turn).
+- [x] V5 **Cost named, and both council seats named it harder than I would have.** Grok: *"cargo-cult policy writing... a template adds no new enforcement surface and no new training signal."* Gemini: *"his proposed fix is a guaranteed path to further failure... the estate is drowning in its own capture apparatus."* The mechanism a template would need is for me to reliably classify the situation and pick a shape BEFORE generating, and neither model believes that happens. `verified: council responses on disk`
+- [x] V6 **The clean split, which is the real answer under his ask:** changing something that EXECUTES is actual change; writing something that DESCRIBES is capture. Today's instrument fixes were real change (a counter that can no longer claim a billion behaves differently). The law entries, the plan boxes and most of the commit prose were capture. The 79/20 number says which one dominated.
+- [ ] **V7 THE DECISION THAT IS HIS, because deleting armed checks is hard to reverse.** The only way his templates are not simply capture number 250 is if they REPLACE rather than stack. 8 of the 58 armed reply checks police shape, which is exactly what the 7 templates now own: always-recommend, concise-response, apology-spiral, no-plumbing-in-reply, no-self-limit-excuse, open-items-must-be-named, reply-length, reply-repeat. (2 of the 8 were already neutered by him.) Options and my recommendation go to him in the reply.
+
+ / parked decisions
 - The batch of problems from other sessions (ask 12) has not arrived yet. It is a DEPENDENCY for K and M being grounded in real cases rather than the record alone. Do not wait on it for the mapping; do wait on it before finalizing the gate-vs-reasoning split.
