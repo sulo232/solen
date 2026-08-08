@@ -123,6 +123,10 @@
   - **The conclusion, and it is not comfortable: no text check can catch this.** Character comparison catches a copy-paste; catching a reword needs understanding what was said. Per his gate freeze that makes it a reasoning rule, now written as one: a cause is explained ONCE, never restated, never in better words.
   - **The rule names the pull too**, because that is what makes it recur: after a correction, re-explaining the cause feels like taking responsibility and a sharper sentence feels like an improvement. To him it is the same paragraph arriving twice.
   - Recorded in the gate itself as a dead end so the next session does not rediscover the theory and re-add the same useless check.
+- [x] Q40 **The done/not-done rule produced its own noise, so he had it edited rather than added to** `verified:` ~/.claude/REPLY_LAW.md:131. Owner: *"it's something about the claiming that it's finished in it. I get that we made a hook about that, but edit it so you don't tell me these shit."*
+  - **What went wrong with my own rule:** it made the CLAIM into a subject. Within hours I was writing *"Not claiming that one is fixed"* and *"I'm not asserting this landed"*, which is a paragraph about my posture, not about his thing. Third time today one of my rules manufactured the behaviour it was written to prevent.
+  - **The amendment:** never make the claim the subject. Say what is now TRUE, or what is still BROKEN. "Done" is legitimate as a label on a fact, never as an announcement about my confidence in it. Same information, no autobiography, and if there is nothing true to report the line is not needed at all.
+  - Edited in place rather than added below, which is what he asked for and also what keeps this file from growing a rule per complaint.
 - [ ] Q12 No answer given. I take my own recommendation and flag it: substantial = touches more than one file, or produces anything he will look at.
 - [ ] Q13 Park it, keep going, surface at the end. Plus:
   - [ ] Q13a A parked item must be WRITTEN INTO THE PLAN in the same turn
