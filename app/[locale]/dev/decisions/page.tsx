@@ -27,7 +27,11 @@ const OPEN_MARKER =
   /(OPEN,? owner-only|owner-only|BLOCKED on owner|OWNER DECISION NEEDED|owner decides|owner picks|awaiting owner|needs? an owner|PARKED|Open for you|waiting on you|your call)/i;
 
 /** Already answered, so it must not show up here. */
-const SETTLED = /(ANSWERED|RESOLVED|DECIDED|DROPPED|owner chose|owner picked|he picked|^- \[x\])/i;
+// `^- \[x\]` was anchored to column zero, so every INDENTED done item ("  - [x] P-c2b ...") slipped
+// through and a decision he had already settled sat on his page as though it were still waiting.
+// Found by looking at the rendered page, not by reading this line. The anchor is gone and a plain
+// "not done" box now also disqualifies, since an unticked checkbox is work, not a question.
+const SETTLED = /(ANSWERED|RESOLVED|DECIDED|DROPPED|owner chose|owner picked|he picked|\[x\]|\bDone by me\b|\bNOT fixed\b)/i;
 
 type Item = { plan: string; text: string; line: number };
 
@@ -75,9 +79,23 @@ function collect(): Item[] {
   return out;
 }
 
-export default function DecisionsPage() {
+export default async function DecisionsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ task?: string }>;
+}) {
   if (process.env.NODE_ENV === "production") notFound();
-  const items = collect();
+
+  // Q11a asked for a per-TASK question page beside this standing one. It is this page with a
+  // filter, not a second page: the collector, the anti-rot read-from-disk design and the mobile
+  // fixes are all here already, and a second copy would drift from this one within the week.
+  // `?task=SYSTEM_OVERHAUL_2026-08-07` narrows it to one plan.
+  const task = (await searchParams)?.task?.replace(/\.md$/i, "").trim() || "";
+
+  const all = collect();
+  const items = task
+    ? all.filter((it) => it.plan.toLowerCase() === task.toLowerCase())
+    : all;
   const byPlan = new Map<string, Item[]>();
   for (const it of items) {
     const list = byPlan.get(it.plan) ?? [];
@@ -92,9 +110,18 @@ export default function DecisionsPage() {
         Waiting on you
       </h1>
       <p className="mt-2 text-s-ink-2">
-        Every decision across the plans that only you can settle. Read from the files each time you
-        open this, so it cannot go stale. A line leaves when the plan says it is answered.
+        {task
+          ? "Just the decisions from this one job. Everything else is on the full list."
+          : "Every decision across the plans that only you can settle. Read from the files each time you open this, so it cannot go stale. A line leaves when the plan says it is answered."}
       </p>
+      {task ? (
+        <a
+          href="/de/dev/decisions"
+          className="mt-2 inline-block text-s-accent hover:underline"
+        >
+          Show everything instead
+        </a>
+      ) : null}
 
       <div className="mt-5 flex flex-wrap gap-2">
         <span className="rounded-full border border-s-border bg-white px-3 py-1.5 text-s-ink-2">
