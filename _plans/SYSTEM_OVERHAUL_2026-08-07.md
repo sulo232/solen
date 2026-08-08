@@ -390,6 +390,16 @@
 - [x] K0d2 **NOT half-armed**, which was the whole reason it sat pending for a turn: It needs nine exact edits to settings.json: register the aggregator, remove the eight individual registrations. Arming it while the members stay registered makes every complaint fire TWICE, which is worse than today. Recorded in [PENDING_ARM.md](PENDING_ARM.md) with the member list and the reason it is all-or-nothing. `verified:` sha 5932fb682, ~/.claude/settings.json:585.
 - [ ] K0e **The rest of the Stop chain is the same problem, unfixed:** 64 hooks, 23 of which blocked me in this session alone. The link family and this one are two families out of however many. LAW_SYSTEM 6.2 requires the consolidation and it has now been applied twice.
 
+### K0000. HIS SECOND IDEA, and it is better than the router: EDIT THE CHECKS SO THEY STOP CAUSING THE REPEAT
+
+**His words (2026-08-08):** *"what if you edit the checks so that it doesn't tell me? It doesn't repeat the fucking thing."*
+
+- [x] S1 **He found what I missed all day. The block messages were TEACHING the repeat.** In `reply-repeat-gate.py` the operative instruction, SEND ONLY WHAT CHANGED, was the LAST line, under five lines of case history. By the time it was read the reply was already being re-composed from scratch, which is precisely the behaviour it was asking me not to do. The gate that exists to stop the repeating was causing it.
+- [x] S2 **Measured, not assumed:** the four gates carrying a long stored message average **945 characters of story before the ask**. `repeat-claim-needs-repro-gate.py` ran three paragraphs of diagnosis before the instruction.
+- [x] S3 **Fixed on the two that fire at me most: the ASK goes first, the history becomes one line at the bottom.** `repeat-claim` 1026 chars to 501. `reply-repeat` now opens with "SEND ONLY WHAT CHANGED. Not the whole message again." Both self-tests still pass (11/11 and 9/9).
+- [ ] S4 The same shape applies to the rest of the estate's block messages. Two done, and the pattern is now in both files as a comment so the next one follows it.
+- **Why this beats the router, and it is his idea both times:** the router decides which checks to run, which is a judgment call and the thing that failed four times today. This changes what a check SAYS when it fires, which is objective, cheap, and cannot skip a check by mistake.
+
 ### K000. HIS ROUTER IDEA (owner 2026-08-08): think first, THEN pick which checks apply
 
 **His words:** *"what if we make a system that doesn't bring up all the checks at once, instead we have a whole system about it thinking, and then after it thinks, it checks for what check it should apply to this specific incident?"*
