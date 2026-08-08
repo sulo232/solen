@@ -1,0 +1,337 @@
+#!/usr/bin/env python3
+"""design-canon-gate , PreToolUse (Write|Edit|MultiEdit|Bash), plus a CLI audit mode.
+
+Owner decision Q8, 2026-08-07 (_plans/SYSTEM_DECISIONS_2026-08-07.md row 8):
+"One canon file per concern, everything else a pointer, dated reports archived."
+On enforcement, verbatim: "make it so it acc gets archived and evrth like acc gate
+for that so it forces."
+
+THE RULE, one sentence. The top level of `_design-system/` holds exactly the files
+listed in CANON below, plus the four sanctioned subdirectories. Anything else at
+that level is a record, machine output, evidence, or a product spec, and it lives
+in `archive/`, `reports/`, `research/` or `_plans/` instead.
+
+Why a membership test and not a cleverness test. Decision Q1 froze new gates except
+for things that are objective and cheap to check. Membership in a hardcoded list is
+both: no rendering, no network, no judgment about whether a file is "still useful".
+The gate never decides that a file is stale. It only decides that a file is not on
+the canon list, which is a fact.
+
+Three trigger points, one rule:
+  1. Write   , creating a new top-level file that is not on the list.
+  2. Edit    , modifying an existing top-level file that is not on the list.
+  3. Bash    , `git commit` that stages anything under `_design-system/` while the
+               top level still holds a file that is not on the list. This is the
+               half that FORCES the move: the next design-system commit cannot land
+               until the level is clean.
+
+Adding a canon file is legal and deliberate: add the basename to CANON with the
+concern it owns. That edit is visible in git and it forces you to name the concern,
+which is the whole point of "one canon file per concern". There is deliberately NO
+inline skip marker, because a marker would let any file declare itself canon.
+
+This gate lives in `.claude/hooks/` and not in `~/.claude/hooks/` on purpose: the
+canon list below IS the law, and `~/.claude` is not a git repo, so a list living
+there would be unversioned and unreviewable. The rule is Solen-specific anyway.
+
+Escape for a genuine emergency: touch .claude/design-canon-skip.flag (300s TTL).
+300s is enough here because the required action is a `git mv`, which takes seconds,
+unlike the mockup-build case where the same TTL was measured too short.
+
+Fail-open on any error. Never wedge a session.
+
+ARMING ORDER MATTERS: run the one-time sweep first, arm this second. A gate armed
+before the sweep would deny the sweep's own commit. Same order COPY_LAW.md section 8
+used for the register ratchet.
+
+CLI:  python3 design-canon-gate.py --audit [repo_root]
+      Prints every top-level file that is not on the list, with its destination.
+      Always exits 0. Safe for the weekly law pass.
+"""
+import json
+import os
+import re
+import subprocess
+import sys
+import time
+
+FLAG_TTL = 300
+
+
+def skip_flag_path():
+    root = os.environ.get("CLAUDE_PROJECT_DIR") or git_root() or os.getcwd()
+    return os.path.join(root, ".claude", "design-canon-skip.flag")
+
+# ---------------------------------------------------------------------------
+# THE CANON LIST: one file per concern. basename -> the concern it owns.
+# To add a file here you must name a concern no other row already owns.
+# ---------------------------------------------------------------------------
+CANON = {
+    "LOCKFILE.md":           "frozen literal values (hex, px, ms, prop signatures)",
+    "SOURCE.md":             "applied design law in prose (22 sections)",
+    "RATIONALE.md":          "the evidence behind the rules",
+    "TASTE_LOG.md":          "the owner's dated verdicts",
+    "MOTION.md":             "motion and timing",
+    "COPY_LAW.md":           "how strings are written, four locales",
+    "PSYCHOLOGY.md":         "behavioral law (conversion, retention, ethics lines)",
+    "CONTROL_ELEVATION.md":  "the elevation decision tree for controls",
+    "COMPONENT_REGISTRY.md": "the shared component index",
+    "REMOVED.md":            "the graveyard: deleted and rejected things",
+    "DRIFT_LEDGER.md":       "re-invented structure (keyword-injected by a hook)",
+    "REJECTED_TREATMENTS.json": "rejected visual treatments (machine-read)",
+    "QUESTIONS.md":          "the standing page of every open design decision",
+    "SUGGESTIONS.md":        "live design-improvement suggestions",
+    "PROCESS.md":            "how design work is scoped, briefed and graded",
+    "_rebuilt_routes.json":  "the drift checker's strict-scope allowlist (config)",
+}
+
+# Sanctioned subdirectories. Everything below them governs itself.
+SUBDIRS = {"archive", "reports", "research", "components"}
+
+# Files a script rewrites in place. These belong in reports/, not archive/.
+REPORT_OUTPUTS = {"_drift-report.md", "_pending-migration.md", "_geometry-report.md"}
+
+# Destination hints, all decidable from the file alone.
+# Trigger A, dated filename. A date in the name means the file is a snapshot.
+DATED_NAME = re.compile(r"(?:19|20)\d{2}-\d{2}(?:-\d{2})?")
+# Trigger B, machine-written. Anchored to the START of a line, so a sentence that
+# merely mentions another file's "auto-regenerated dump" does not match.
+MACHINE_HEADER = re.compile(r"^[\s_*>#\-]*generated\s*(?::|by\b)", re.IGNORECASE | re.MULTILINE)
+# Trigger C, the file's own header already calls it past tense.
+PAST_TENSE_BANNER = (
+    "historical record", "not current law", "folded into", "not a backlog",
+    "superseded", "tombstone", "read-only investigation", "report-only pass",
+    "status , executed", "status - executed", "status: executed",
+    "this is now a record",
+)
+# Soft signal D, a date in the header. Suggestive, not conclusive: reported as
+# "probable" so nobody moves a live file on the strength of a citation.
+DATE_IN_HEAD = re.compile(r"(?:19|20)\d{2}-\d{2}-\d{2}")
+
+GIT_COMMIT = re.compile(r"(?:^|[;&|\s])git\s+(?:-\S+\s+)*commit(?:\s|$)")
+
+
+# ---------------------------------------------------------------------------
+# helpers
+# ---------------------------------------------------------------------------
+def top_level_name(fp):
+    """Return the basename if fp is exactly _design-system/<name>, else None."""
+    p = (fp or "").replace("\\", "/")
+    m = re.search(r"/_design-system/([^/]+)$", p)
+    return m.group(1) if m else None
+
+
+AMBIGUOUS = ("no objective marker, so you pick: archive/ if it is a record, "
+             "research/ if it is evidence for a rule, _plans/ if it is a product "
+             "build spec")
+
+
+def destination(path_or_name, root=None):
+    """Where a non-canon top-level entry goes.
+
+    Returns (dest, why, confident). `dest` is None when nothing fires, which means
+    a human picks between archive/, research/ and _plans/. `confident` is False for
+    the soft date-in-header signal. The caller never prints a bare `git mv` unless
+    `confident` is True.
+    """
+    name = os.path.basename(path_or_name)
+    if name in REPORT_OUTPUTS:
+        return "_design-system/reports/", "a script rewrites this file in place", True
+    if DATED_NAME.search(name):
+        return ("_design-system/archive/",
+                "the filename carries a date, so it is a snapshot", True)
+    head = ""
+    if root:
+        full = os.path.join(root, "_design-system", name)
+        try:
+            if os.path.isdir(full):
+                return "_design-system/archive/", "a directory of past work, not law", True
+            with open(full, "r", encoding="utf-8", errors="ignore") as fh:
+                head = "".join([next(fh, "") for _ in range(15)])
+        except Exception:
+            head = ""
+    low = head.lower()
+    if MACHINE_HEADER.search(head):
+        return ("_design-system/reports/",
+                "a header line says it was generated by a tool", True)
+    for phrase in PAST_TENSE_BANNER:
+        if phrase in low:
+            return ("_design-system/archive/",
+                    'the header already calls it past ("%s")' % phrase, True)
+    m = DATE_IN_HEAD.search(head)
+    if m:
+        return ("_design-system/archive/",
+                "PROBABLE only: the header is dated %s, so it reads as a record. "
+                "Confirm before moving" % m.group(0), False)
+    return None, AMBIGUOUS, False
+
+
+def move_line(name, dest, confident):
+    if dest and confident:
+        return "  git mv _design-system/%s %s" % (name, dest)
+    if dest:
+        return ("  git mv _design-system/%s %s        # CONFIRM first, see note"
+                % (name, dest))
+    return ("  git mv _design-system/%s _design-system/archive/"
+            "        # or research/ or _plans/ , you pick" % name)
+
+
+def report_line(name, dest, why, confident):
+    arrow = dest if dest else "you pick"
+    if dest and not confident:
+        arrow = dest + " ?"
+    return "  %s\n      -> %s  (%s)" % (name, arrow, why)
+
+
+def offenders(root):
+    """Top-level entries of _design-system that are not on the canon list."""
+    d = os.path.join(root, "_design-system")
+    out = []
+    try:
+        for name in sorted(os.listdir(d)):
+            if name.startswith(".") or name in CANON or name in SUBDIRS:
+                continue
+            out.append(name)
+    except Exception:
+        return []
+    return out
+
+
+def canon_list_text():
+    return "\n".join("  %-26s %s" % (k, v) for k, v in CANON.items())
+
+
+def deny(reason):
+    print(json.dumps({"hookSpecificOutput": {
+        "hookEventName": "PreToolUse",
+        "permissionDecision": "deny",
+        "permissionDecisionReason": reason,
+    }}))
+    sys.exit(0)
+
+
+def git_root(start=None):
+    try:
+        r = subprocess.run(["git", "rev-parse", "--show-toplevel"],
+                           cwd=start or os.getcwd(), capture_output=True,
+                           text=True, timeout=5)
+        if r.returncode == 0:
+            return r.stdout.strip()
+    except Exception:
+        pass
+    return None
+
+
+# ---------------------------------------------------------------------------
+# the three checks
+# ---------------------------------------------------------------------------
+def check_file_write(data):
+    ti = data.get("tool_input") or {}
+    fp = ti.get("file_path") or ""
+    name = top_level_name(fp)
+    if not name or name in CANON or name in SUBDIRS:
+        return
+    root = git_root(os.path.dirname(fp) or None)
+    dest, why, confident = destination(name, root)
+    exists = os.path.exists(fp)
+    if exists:
+        action = ("The file already exists at the top level, so the move comes first:\n"
+                  + move_line(name, dest, confident))
+    else:
+        action = ("Write it at its destination instead:\n  %s%s"
+                  % (dest or "_design-system/archive/  (or research/ or _plans/)", name))
+    deny(
+        "DESIGN CANON (owner Q8, 2026-08-07: \"one canon file per concern, everything "
+        "else a pointer, dated reports archived\"): you are trying to %s "
+        "`_design-system/%s`, which is not on the canon list.\n\n"
+        "Where it goes: %s\nWhy: %s\n\n"
+        "%s\n\n"
+        "The canon list, one file per concern:\n%s\n\n"
+        "If this really is a new concern that no row above owns, add the basename to "
+        "CANON in .claude/hooks/design-canon-gate.py with the concern it owns, in "
+        "the same turn. If it is not, put the content in the canon file that owns its "
+        "concern and leave a pointer, or move the file to its destination with "
+        "`git mv`."
+        % ("edit" if exists else "create", name,
+           dest or "you pick", why, action, canon_list_text())
+    )
+
+
+def check_commit(data):
+    cmd = ((data.get("tool_input") or {}).get("command")) or ""
+    if not GIT_COMMIT.search(cmd):
+        return
+    root = git_root()
+    if not root:
+        return
+    try:
+        r = subprocess.run(["git", "diff", "--cached", "--name-only"],
+                           cwd=root, capture_output=True, text=True, timeout=10)
+        staged = r.stdout.splitlines()
+    except Exception:
+        return
+    if not any(s.startswith("_design-system/") for s in staged):
+        return
+    bad = offenders(root)
+    if not bad:
+        return
+    rows, moves = [], []
+    for name in bad:
+        dest, why, confident = destination(name, root)
+        rows.append(report_line(name, dest, why, confident))
+        moves.append(move_line(name, dest, confident))
+    deny(
+        "DESIGN CANON (owner Q8, 2026-08-07, verbatim: \"make it so it acc gets "
+        "archived and evrth like acc gate for that so it forces\"): this commit "
+        "touches `_design-system/`, and the top level still holds %d entr(ies) that "
+        "are not on the canon list. Move them in this commit:\n\n%s\n\n"
+        "  mkdir -p _design-system/archive _design-system/reports\n%s\n\n"
+        "An entry stays at the top level only if it is the ONE canon file for a "
+        "concern. If one of these is, add its basename to CANON in "
+        ".claude/hooks/design-canon-gate.py with the concern it owns. Emergency "
+        "escape: touch .claude/design-canon-skip.flag (5 minutes)."
+        % (len(bad), "\n".join(rows), "\n".join(moves))
+    )
+
+
+# ---------------------------------------------------------------------------
+def main():
+    if "--audit" in sys.argv:
+        root = None
+        for a in sys.argv[1:]:
+            if a != "--audit":
+                root = a
+        root = root or git_root() or os.getcwd()
+        bad = offenders(root)
+        if not bad:
+            print("design-canon: top level clean (%d canon files)" % len(CANON))
+            sys.exit(0)
+        print("design-canon: %d entr(ies) not on the canon list" % len(bad))
+        for name in bad:
+            dest, why, confident = destination(name, root)
+            print(report_line(name, dest, why, confident))
+        sys.exit(0)
+
+    try:
+        data = json.load(sys.stdin)
+    except Exception:
+        sys.exit(0)
+    try:
+        f = skip_flag_path()
+        if os.path.exists(f) and time.time() - os.path.getmtime(f) < FLAG_TTL:
+            sys.exit(0)
+    except Exception:
+        pass
+    try:
+        tool = data.get("tool_name") or ""
+        if tool in ("Write", "Edit", "MultiEdit"):
+            check_file_write(data)
+        elif tool == "Bash":
+            check_commit(data)
+    except Exception:
+        sys.exit(0)
+    sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()
