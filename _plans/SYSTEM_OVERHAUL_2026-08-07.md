@@ -324,6 +324,8 @@
   - [x] C1b No set/variant machinery in the mockup base law `verified:` `public/_mockups/_BASE.md` has no set/variant section
   - [x] C1c No set/variant machinery in any skill that applies to Solen routes `verified:` only huashu-design mentions variation, and its own SKILL.md excludes existing Solen routes
   - [x] C1d Variants today are hand-built one-offs `verified:` 32/120 suffixed mockup dirs, no shared spec file among them
+- [ ] PARKED 2026-08-08 · What is a "set"? A: one user FLOW end to end (all booking screens). B: N DIRECTIONS of the same screen to pick between. C: a page FAMILY that must stay consistent (all list pages, all empty states). D: all three, each with its own pipeline. · from: C2, question 1 of round 2, blocking the whole set pipeline
+- [ ] PARKED 2026-08-08 · Should the 8 mockup checks also watch real dev pages (`app/[locale]/dev/**`)? Since new mockups are real pages now, those checks currently see nothing. Widening them means they police product routes, which is a much bigger blast radius than a mockup file. · from: P-c2b
 - [ ] C2 Define what a "set" is. **BLOCKED on owner**, concrete fork below. This is question 1 of round 2.
   - [ ] C2a Fork A: a set = one user FLOW end to end (e.g. every booking screen)
   - [ ] C2b Fork B: a set = N design DIRECTIONS of the same screen, to choose between
