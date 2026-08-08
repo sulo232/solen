@@ -39,15 +39,29 @@ type Parsed = {
   index: { when: string; n: string }[];
   templates: Template[];
   shared: string[];
+  goesIn: string[];
+  staysOut: string[];
   missing: boolean;
 };
+
+/** Bullets under one bolded lead-in inside the in/out section. */
+function bullets(section: string, lead: string): string[] {
+  const start = section.indexOf(lead);
+  if (start === -1) return [];
+  const rest = section.slice(start + lead.length);
+  const end = rest.search(/\n\s*\n\*\*/);
+  return (end === -1 ? rest : rest.slice(0, end))
+    .split("\n")
+    .filter((l) => l.trim().startsWith("- "))
+    .map((l) => l.replace(/^\s*-\s*/, "").replace(/\*\*/g, "").replace(/\s+/g, " ").trim());
+}
 
 function parse(): Parsed {
   let raw = "";
   try {
     raw = fs.readFileSync(SOURCE, "utf8");
   } catch {
-    return { index: [], templates: [], shared: [], missing: true };
+    return { index: [], templates: [], shared: [], goesIn: [], staysOut: [], missing: true };
   }
 
   const index: { when: string; n: string }[] = [];
@@ -90,12 +104,22 @@ function parse(): Parsed {
         .map((l) => l.replace(/^\s*-\s*/, "").replace(/\*\*/g, "").replace(/\s+/g, " ").trim())
     : [];
 
-  return { index, templates, shared, missing: false };
+  const inOutSec = raw.split(/^## What goes in, and what never does$/m)[1] || "";
+  const inOut = inOutSec.split(/^## /m)[0];
+
+  return {
+    index,
+    templates,
+    shared,
+    goesIn: bullets(inOut, "**IN, because he can use it:**"),
+    staysOut: bullets(inOut, "**OUT, always, no exceptions:**"),
+    missing: false,
+  };
 }
 
 export default function ReplyTemplatesPage() {
   if (process.env.NODE_ENV === "production") notFound();
-  const { index, templates, shared, missing } = parse();
+  const { index, templates, shared, goesIn, staysOut, missing } = parse();
 
   return (
     <main className="min-h-dvh bg-s-bg-sunken">
@@ -165,6 +189,50 @@ export default function ReplyTemplatesPage() {
             </section>
           ))}
         </div>
+
+        {goesIn.length || staysOut.length ? (
+          <div className="mt-10">
+            <h2 className="font-display text-[22px] font-semibold leading-tight text-s-ink">
+              What goes in a reply
+            </h2>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <div className="overflow-hidden rounded-[24px] bg-white shadow-whisper">
+                <p className="px-4 pt-4 text-[15px] font-semibold text-s-ink">Goes in</p>
+                <div className="mt-2">
+                  {goesIn.map((l, i) => (
+                    <p
+                      key={l}
+                      className={`px-4 py-3 text-[14px] leading-[1.55] text-s-ink-2 ${
+                        i ? "border-t border-s-border" : ""
+                      }`}
+                    >
+                      {l}
+                    </p>
+                  ))}
+                </div>
+              </div>
+              <div className="overflow-hidden rounded-[24px] bg-white shadow-whisper">
+                <p className="px-4 pt-4 text-[15px] font-semibold text-s-ink">Never goes in</p>
+                <div className="mt-2">
+                  {staysOut.map((l, i) => (
+                    <p
+                      key={l}
+                      className={`px-4 py-3 text-[14px] leading-[1.55] text-s-ink-2 ${
+                        i ? "border-t border-s-border" : ""
+                      }`}
+                    >
+                      {l}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <p className="mt-4 text-[14px] leading-[1.55] text-s-ink-2">
+              The test when something sits on the line: could you do anything differently because of
+              that sentence? If not, it is mine to keep and not yours to read.
+            </p>
+          </div>
+        ) : null}
 
         {shared.length ? (
           <div className="mt-10 overflow-hidden rounded-[24px] bg-white shadow-whisper">
