@@ -588,7 +588,18 @@
 - [x] K0c `mockup-lang-stop-gate.py` converted to the helper. `verified:` 4 live cases run end to end: clean tree exits 0; a genuinely written dev page with German chrome exits 2 and names the right file; the same file rewritten in English exits 0; deleted and back to clean exits 0.
 - [x] K0d Swept the whole estate for the same bug class. **11 hooks still sweep content files and gate on mtime with no git cross-check** `verified:` AST-adjacent scan requiring a content glob/walk within 8 lines of an mtime read, excluding legitimate marker/flag/ledger TTLs. A first naive grep said 151; that number was wrong because it counted every legitimate flag-TTL use, and reporting it would have been the same unvalidated-instrument mistake this whole section is about. The 11: `count-consistency-gate`, `map-style-gate`, `mockup-defer-stop-gate`, `real-component-gate`, `fullbleed-external-link-gate`, `no-defer-excuse-gate`, `plan-first-gate`, `session-marker-sweep`, `system-health-check`, `tunnel-health-preflight`, `unfinished-batch-gate`.
 - [ ] K0e Convert the remaining 11 to the helper (mechanical, one commit, after the K verdict decides which of them survive at all)
-- [ ] K1 Audit every hook: armed / orphaned / skippable / self-tested
+- [x] K1 **Audited, all four axes, and the numbers are worse than the estate believed.** `verified: b0edb7f55  ~/.claude/settings.json`
+  | axis | count |
+  |---|---|
+  | hook files on disk | **253** |
+  | ARMED across all four settings files | **194** |
+  | ORPHANED , on disk, wired nowhere | **59** |
+  | of the armed, with ANY self-test | **52 of 194** |
+  | of the armed, carrying a skip flag | **120 of 194** |
+  - **Only 27% of what is armed has ever been tested.** 142 armed hooks have never been shown to work even once, which is the same story as the reply layer, at four times the scale.
+  - **59 files sit on disk enforcing nothing.** Some are deliberate retirements kept for reversibility, which is right; the rest are the "written, self-tested, never wired" class this estate has flagged in two previous audits and not closed.
+  - **120 of 194 carry a skip flag**, and the skip ledger already shows two of them muted more than 14 times in a week, which is the measured version of "a gate that over-fires gets routed around".
+  - Read against F8: this is what the ceiling looks like from the inventory side rather than the recurrence side. Adding to 194 is not the lever.
 - [ ] K2 For a 25-gate sample, find the originating incident and check for recurrence AFTER the gate existed. Compute the honest PREVENTED / BYPASSED ratio
 - [ ] K3 Catalogue the harm gates have caused (false positives, double-send, neutering, owner frustration)
 - [ ] K4 Quantify the skip-flag hole
