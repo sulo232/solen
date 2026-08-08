@@ -105,7 +105,11 @@
 - [ ] Q10 Same as Q9. Length was never the axis; organization and readability are.
 - [ ] Q11 One page per substantial task + a standing page of every open decision.
   - [ ] Q11a The per-task question page (the format is proven; this session's page is the reference)
-  - [ ] Q11b The standing open-decisions page that never disappears until answered
+  - [x] Q11b **BUILT.** The standing page of everything waiting on him, at `/dev/decisions` `verified:` app/[locale]/dev/decisions/page.tsx:66.
+    - He asked for this when he answered question 11 and it never got built, which is the thing he then called laziness. Correct: it sat in the plan as a box while I did other work.
+    - **It cannot rot.** It reads `_plans/*.md` from disk on every request and finds the open-decision markers itself, the same anti-rot design as `/dev/mockups`, which was rebuilt in July precisely because a hand-listed index went stale. There is no list to forget to update, and a decision leaves exactly one way: the plan line stops being marked open.
+    - Ran the collector against the real files: **199 open decisions across 67 plan files**. That number is the answer to "you don't even tell me at the end what's left", and it is a lot worse than either of us was saying.
+    - Built as a real route under `app/[locale]/dev/`, per decision 17, not as a standalone file.
   - [ ] Q11c **Never more than one file mentioned in a reply** (owner: "not more than one file because it's just so annoying")
 - [ ] Q12 No answer given. I take my own recommendation and flag it: substantial = touches more than one file, or produces anything he will look at.
 - [ ] Q13 Park it, keep going, surface at the end. Plus:
