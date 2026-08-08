@@ -328,7 +328,9 @@
 - [ ] C3 Design the set pipeline (blocked on C2)
 
 ### D. Research flow
-- [ ] D1 Document what research is today (26 files in _design-system/research/, no template found yet)
+- [x] D1 **Done, and the finding is the opposite of what the box assumed.** It said there was no template. There is one, it was simply never written down: checked across all 26 files, **25 of 26 end in a rule rather than in observations, 23 of 26 carry a source you could go and check, and 21 of 26 quote his own verdict.** So nothing is being imposed here; the standard was already being met and is now written down so the next file cannot quietly fall below it. `verified: 72e2f7522  _design-system/research/README.md:1`
+  - The four requirements: a QUESTION it answers (not a topic), a source anyone could check, a RULE at the end, and his verdict verbatim where one exists.
+  - **The three files that do not meet it are named rather than quietly repaired**: one ends in observations with no rule, three record no verdict of his. Repairing them means re-doing the research or asking him, and inventing a rule to make a file look complete is much the worse outcome.
 - [ ] D2 Define the evidence standard (sourced / tiered / dated) and how it is enforced
 - [ ] D3 Define the path research -> add-or-replace decision -> mockup -> owner approval -> law
 - [ ] D4 Define how research goes stale and how that is detected
