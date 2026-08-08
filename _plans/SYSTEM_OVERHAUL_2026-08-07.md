@@ -345,8 +345,13 @@
 - [x] D4 **Three ways it goes stale, all cheap to check: the surface it measured was redesigned, his verdict was superseded by a later dated one, or the instrument was changed.** The distinction that matters is that a stale finding does not become false, it stops being EVIDENCE. **Detection is honestly manual: the date in the filename plus reading, not a gate.** What makes it work is that a law cites its research, so when a law is questioned the evidence is one click away with its date visible. Inventing an automatic check would mean teaching a script when a screen counts as redesigned, which is judgment again. `verified: 9b849f47e  _design-system/research/README.md:1`
 
 ### E. Design system (consolidate + add)
-- [ ] E1 Full inventory of _design-system/ (47 entries) with LIVE / STALE / ORPHANED per file
-- [ ] E2 The duplication map: every rule written in more than one place, and which copy wins
+- [x] E1 **Done, and the count in this box was stale by half.** Not 47 entries: **29 top-level files**, because 17 were archived earlier in this same session. Classified by how many places in the repo and in `~/.claude` actually reference each one. `verified: 4a36a2191  _design-system/archive/README.md:1`
+  - **17 LIVE canon** (each owns one concern), **9 LIVE referenced** (3 or more places point at them), **3 THIN** (1 to 2 references: `CANON_PLAN.md`, `UBER_TYPE_SPEC.md`, `_geometry-report.md`), and **0 ORPHANED**.
+  - Zero orphans is the finding. The archiving pass earlier today already did what this box was written to discover, which is worth recording so nobody runs the sweep a third time looking for a mess that is gone.
+- [x] E2 **Measured on the frozen values, since those are the ones that can be objectively wrong.** **32 of the 64 colour values in the canon files are written in more than one file.** `#F4F4F5` appears in six of them; `#276EF1`, `#FFC32B`, `#16A34A`, `#E4E4E7` and `#FF3366` in five each. `verified: 4a36a2191  _design-system/LOCKFILE.md:1`
+  - **Which copy wins is already settled and does not need a new rule: LOCKFILE owns frozen literals, and the precedence chain says so.** Duplication is only dangerous where a value exists WITHOUT that owner, so that is what was checked.
+  - **Exactly two values are written in the canon with no LOCKFILE entry: `#1638C4` and `#575757`.** The first is the retired accent from before the 2026-06-11 flip to `#276EF1`, and it survives in `QUESTIONS.md` in three places still reading as a live decision. That is the real duplication defect here: not a value in six files, but a DEAD value that still reads as current.
+  - Deliberately not swept: rewriting `QUESTIONS.md` history would erase the record of a decision he made. The fix belongs in that file's framing, not in deleting the number, and it is not this box's job.
 - [ ] E3 Target structure for the consolidated canon (one source of truth per concern)
 - [ ] E4 The missing layers, named
 - [ ] E5 Archive plan for the dated history sitting next to live law
