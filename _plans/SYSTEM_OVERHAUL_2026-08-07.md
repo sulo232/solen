@@ -264,7 +264,7 @@
 - [ ] Q16 **Every stop-for-an-answer is lettered options, never prose** (owner 2026-08-07, decision 16).
   - [x] Q16a **Written into the reply law, above the shape section rather than inside it**, because it governs whether a turn may stop at all `verified:` ~/.claude/REPLY_LAW.md:97. It had been recorded as a decision and left out of the file that actually gets read before a reply, which is the wrong-tier failure the last two law passes both named.
   - [x] Q16b **The rule carries its own test**, in the same section: if I cannot write three distinct lettered outcomes, it is not a decision and I should not be stopping for it. "Should I keep going" is not an option set `verified:` ~/.claude/REPLY_LAW.md:113.
-  - [ ] Q16c Decide the enforcement shape. Per the Q1 freeze this is judgment-adjacent, but "the reply ends with a question and contains no lettered options" is decidable from the message text alone, so it may pass the legality test. Test it against the six questions before building anything.
+  - [x] Q16c **Decided and built, and the deciding case was my own violation.** The shape is an extension of the armed `no-intent-announcement-gate.py`, not a new gate: a lettered option beginning "I" plus a work verb is an announcement, because it is the work rather than a fork. `verified:` ~/.claude/hooks/no-intent-announcement-gate.py:56, sha b252e9985. It passes the Q1 legality test: decidable from the message text alone, no rendering, no taste. Original wording: Per the Q1 freeze this is judgment-adjacent, but "the reply ends with a question and contains no lettered options" is decidable from the message text alone, so it may pass the legality test. Test it against the six questions before building anything.
 
 ### Parked, surfaced here per decision 13 (owner call, not mine)
 
@@ -275,7 +275,7 @@
 - [x] P-c **ANSWERED: A, real pages.** Mockups move into the app as routes under `app/[locale]/dev/`. Full record and consequences: [SYSTEM_DECISIONS_2026-08-07.md](SYSTEM_DECISIONS_2026-08-07.md) decision 17.
   - [ ] P-c1 Unstick `_plans/FLOW_HARNESS.md`: one flow wired, eleven not started. Find why it stalled before adding to it.
   - [ ] P-c2 Re-read the Q3 mockup-gate draft against this decision. Most of that gate family polices a static HTML file and is now aimed at the wrong artifact.
-  - [ ] P-c3 Narrow `public/_mockups/_BASE.md` to static-only, and say so at the top of it so nobody builds new work against it.
+  - [x] P-c3 **Narrowed at the top of the file itself, where it gets read.** `verified:` public/_mockups/_BASE.md:3. New mockups are real routes; this file still governs the 253 static ones and its phone-geometry rules still apply to them. The header carries the reason it is written THERE and not in a plan: 98 files in that folder still load a remote font or CDN script this same file banned on 2026-07-21, which is what happens when the rule lives somewhere else. Nobody builds new work against it.
   - [ ] P-c4 Mark the 253 standalone files legacy without deleting them.
 
 - [x] P-d `verified:` sha 390a8b203; `~/.claude/agents/design-critic.md` renders at 402x874 and `.claude/agents/design-verifier.md` is untouched and still scoped to real routes. **ANSWERED: split them.** `design-critic` owns mockups and renders them; `design-verifier` stays on real routes as the token and principle checker. Neither gets taught to do the other's job.
