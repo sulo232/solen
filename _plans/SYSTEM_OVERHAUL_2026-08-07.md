@@ -89,9 +89,9 @@
   - [ ] Q8b Move dated reports to an archive folder
   - [ ] Q8c **Build the gate that FORCES archiving** (owner: "make it so it acc gets archived... acc gate for that so it forces")
 - [ ] Q9 **The reply itself.** Three bans plus a research task:
-  - [ ] Q9a Ban self-test scores in a reply ("5/5", "3 of 3 runs")
-  - [ ] Q9b Ban the file-touched list
-  - [ ] Q9c Ban gate jargon (gate names, hook names, exit codes)
+  - [x] Q9a **Self-test scores now blocked**, not just written down. Added to the already-armed jargon check rather than as a new file, per the gate freeze `verified:` ~/.claude/hooks/no-plumbing-in-reply-gate.py:38.
+  - [x] Q9b **File lists now blocked**, both the labelled form and three or more file paths scattered through a reply. Naming ONE file when that file is the answer stays legal, because he objected to the list and not to the fact `verified:` ~/.claude/hooks/no-plumbing-in-reply-gate.py:44.
+  - [x] Q9c **Already blocked before today** by the same check: hook paths, gate filenames, hook event names, skip-flag wording. It steps aside when HE is the one asking about the machinery `verified:` ~/.claude/hooks/no-plumbing-in-reply-gate.py:27.
   - [x] Q9d **RESEARCHED, then written.** `verified:` `~/.claude/REPLY_LAW.md`, 148 lines, plus a pointer as rule 21 in `~/.claude/CLAUDE.md` so it is reachable from the file that is always in context.
   - The measurement, and I checked its scope myself before believing it: **7,568** session transcripts exist across all 25 solen project dirs; the drafter said 7,574, a six-file difference explained by files written since its scan. Corpus is real.
   - The finding that matters: **a reply naming three or more files preceded a complaint 33% of the time and praise only 6%.** Five times more common ahead of a complaint. That is the sharpest split of any signal measured.
@@ -119,6 +119,10 @@
   - Honest cost, stated by the drafter and worth keeping: fan-out does not remove work, it moves it earlier. Six briefs need six things measured first, by me, serially. **A thin brief is worse than a serial agent**, because it fans the same wrong assumption out N-wide and faster.
   - [x] Q14c Memory updated so the superseded rule stops being re-injected. `verified:` `~/.claude/projects/-Users-sulo-Documents-solen/memory/feedback_no_parallel_agents_frontend.md` rewritten this turn: its description now says SUPERSEDED and carries his verbatim words. Kept the old rule's REASON (one vision must own the direction) and explained why the 2026-06-14 gift-card failure was caused by eight agents each DECIDING, not by parallelism, so the new shape fixes the cause instead of banning the tool.
 - [ ] Q15 Fix each instance first, then attack the shared cause.
+- [x] Q35 **He asked whether the better replies are only because he told me, or whether something is actually stopping me. Measured rather than guessed, and the honest answer was: partly.** `verified:` ~/.claude/settings.json:812.
+  - **Enforced before this turn:** length, dashes, repeating, and machinery jargon. Those four did the real work today; I was blocked by them repeatedly.
+  - **NOT enforced, so purely me remembering:** self-test scores, file lists, and plain English. The plain-English check he asked for BY NAME on 2026-07-31 has been sitting on disk armed nowhere ever since, so it has never once run.
+  - **Now enforced:** scores and file lists added to the armed jargon check, and the plain-English check armed. 7 existing cases plus 7 new ones hold, including the two that matter: naming ONE file when that file is the answer stays legal, and everything steps aside when he is asking about the machinery himself.
 - [x] Q34 **The evidence check kept re-reporting boxes that WERE evidenced, and the rule I built an hour ago is what stopped me patching it a third time.** `verified:` ~/.claude/hooks/checkbox-evidence-gate.py:243.
   - **The cause, measured not guessed:** it matches an offending box to an evidenced one by the normalised PREFIX of the box text, first 64 characters. I had been PREPENDING the evidence, which changes the prefix, so the match never landed and it re-reported a box that was already proven. Its own comment says the APPENDED case was fixed in July; prepending broke it the other way.
   - **This was my third attempt at this one gate today, so per decision 7 the method changed instead of the code.** Evidence now goes at the END of a box line, which is the format the gate already handles. 44 boxes moved.
