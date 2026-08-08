@@ -82,6 +82,10 @@ CANON = {
     "QUESTIONS.md":          "the standing page of every open design decision",
     "SUGGESTIONS.md":        "live design-improvement suggestions",
     "PROCESS.md":            "how design work is scoped, briefed and graded",
+    # Added 2026-08-08. MEASUREMENT_LAW section 1.2 has named this file and this exact path since
+    # it was written, and the file did not exist, so the law pointed at nothing. One row per
+    # instrument; the load-bearing column is what each one is BLIND to.
+    "INSTRUMENT_CALIBRATION.md": "what each measuring instrument has proved, and what it is blind to",
     "_rebuilt_routes.json":  "the drift checker's strict-scope allowlist (config)",
 }
 
