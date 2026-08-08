@@ -245,8 +245,8 @@
   - [x] Q18c `verified:` sha d507dc032, REPLY_LAW section 1.5 with its wrong/right pair. No mechanism narration at all. Not what a check caught, not what a file used to do, not before-and-after values, not what was found on the way.
   - [x] Q18d `verified:` sha d507dc032, the Left line is part of the required shape in REPLY_LAW section 1.5. He has never once been told what is LEFT across this whole session. That is the actual missing piece and it is now part of the required shape.
 - [ ] Q16 **Every stop-for-an-answer is lettered options, never prose** (owner 2026-08-07, decision 16).
-  - [ ] Q16a Write the rule into `~/.claude/REPLY_LAW.md` as part of the reply shape
-  - [ ] Q16b Define what counts as a real option: if I cannot write three distinct lettered outcomes, it is not a decision and I should not be stopping for it
+  - [x] Q16a **Written into the reply law, above the shape section rather than inside it**, because it governs whether a turn may stop at all `verified:` ~/.claude/REPLY_LAW.md:97. It had been recorded as a decision and left out of the file that actually gets read before a reply, which is the wrong-tier failure the last two law passes both named.
+  - [x] Q16b **The rule carries its own test**, in the same section: if I cannot write three distinct lettered outcomes, it is not a decision and I should not be stopping for it. "Should I keep going" is not an option set.
   - [ ] Q16c Decide the enforcement shape. Per the Q1 freeze this is judgment-adjacent, but "the reply ends with a question and contains no lettered options" is decidable from the message text alone, so it may pass the legality test. Test it against the six questions before building anything.
 
 ### Parked, surfaced here per decision 13 (owner call, not mine)
