@@ -360,7 +360,8 @@
   - **`research/README.md`**, what a research file must contain before it can become a rule. The standard turned out to already exist unwritten: 25 of 26 files end in a rule, 23 of 26 carry a checkable source.
 - [x] E5 **Done and executed, not planned.** 15 dated records moved out of the top level into `archive/`, with an index over them saying what the directory is for, marked frozen: nothing in there is law, and the current answer belongs in the canon file that owns the concern. `verified: 1d8455c41  _design-system/archive/README.md:1`
   - The result is measurable and was measured under E1: **29 files at the top level, zero orphaned.** The dated history is no longer sitting next to live law where a reader cannot tell them apart.
-- [ ] E6 Mockups for every design change the consolidation implies (owner: "and make mockups")
+- [x] E6 **Disposed honestly: the consolidation implied NO visual change, so there is nothing to mock up.** What it moved was documents: 15 dated records into an archive, a canon list into an enforced check, three missing law files created. Not one pixel of any customer screen changed. `verified: 2d3087412  _design-system/archive/README.md:1`
+  - His "and make mockups" stands for design changes, and it binds the moment the consolidation produces one. Building mockups of nothing to close a box would be the exact form of compliance-without-substance this whole batch exists to stop.
 
 ### F. Repetition
 - [x] F1 **Census built from the durable ledger, 14 themes across 53 flagged sessions since 07-10.** Ranked by how many separate sessions he had to raise it, with the number of hooks that mention that theme beside it. `verified: 2117ac256  ~/.claude/state/mistake-themes-global.json`
@@ -391,9 +392,14 @@
 
 ### G. Output system
 - [ ] G1 Map what governs reply shape today
-  - [ ] G1a REPORT_SYSTEM.md read in full and its mandates listed
+  - [x] G1a **Read in full, 188 lines, six sections.** What it mandates: a readback of every ask at turn START on a multi-ask message; QUIET mid-turn, no narration between tool calls; a summary template at turn END; **send the DELTA after a gate block, never the message again** (section 4.5, which is exactly the rule I broke three times today); special shapes for question batches, audits and autonomous runs; and an enforcement map. `verified: 2d3087412  ~/.claude/REPORT_SYSTEM.md:1`
   - [x] G1b Count the armed Stop gates that police the reply. **64 Stop hooks armed across 22 matcher groups** `verified:` parsed `~/.claude/settings.json`. Nine of them fired on one reply this session; at least five were false positives on a turn that fixed nothing and touched no mockup (animation-frames, fix-needs-before-after, no-regression-by-fix, repeat-claim-needs-repro, mockup-lang, visual-deliverable). This is direct evidence for the owner's thesis and belongs in the K verdict.
-  - [ ] G1c Which parts are enforced vs advice
+  - [x] G1c **Reconciled against `settings.json` line by line, and FOUR OF THE SEVEN ROWS IN ITS OWN ENFORCEMENT MAP WERE WRONG.** `verified: 2d3087412  ~/.claude/REPORT_SYSTEM.md:169`
+  - Verified armed: the quiet-mid-turn nudge, the unfinished-ask catcher, the finish-autonomously catcher.
+  - **Not registered but not false:** the link floor is a MEMBER of the link aggregator, which is armed, so the rule holds. The row was misleading rather than wrong.
+  - **Genuinely retired and still claimed live:** the padding check, the apology check (both unregistered today by his "okay A"), and the files-list check (retired earlier by his own decision, because it forced into every message the single strongest measured predictor of him disliking a reply).
+  - **A map that says a gate is live when it is not is worse than no map, because it gets read as evidence.** That is the same defect class as the compaction warning and the impossible number: a record of the world that stopped matching it and nobody re-derived.
+  - The genuinely BEHAVIOURAL half is named in the file already: about a dozen items (not-checked, sample-size, precision, entry-point, cost-reporting, discarded-finding, universal-claim-tier, measured-method, general-jargon) have no gate and are marked as advice, with the reasoning that a broad detector over-fires. Today's evidence supports that reasoning.
 - [ ] G2 Confirm the reply-blocking-Stop-gate ban and its exact failure mode (double-send)
 - [ ] G3 Define the reply contract the owner wants (opening, readback, recommendation, evidence, close)
 - [ ] G4 Pick enforcement mechanisms that are actually available given the ban
