@@ -359,9 +359,11 @@
 
 ### F. Repetition
 - [ ] F1 Ranked recurring-mistake census with counts, dates, and the gate hole for each
-- [ ] F2 The measurement-trust fix: instrument validation before trusting a number
-- [ ] F3 The rule for when the owner's eyes and the number disagree
-- [ ] F4 The attempt-counter rule: N failed attempts forces a change of METHOD, not another variable
+- [x] F2 **Written as law AND now backed by a real record.** An instrument is not evidence until it has reproduced a known answer, and there are three kinds of known answer: a verdict he already gave, a case built so the answer is true by construction, and a physical ceiling. The third was added today after an instrument reported a context size thirteen times larger than any window can hold and I repeated it to him as fact. `verified: 1af9eccb0  _design-system/INSTRUMENT_CALIBRATION.md:1`
+- [x] F3 **His eyes win, and he sees both readings rather than being told the number was right.** The rule is that when the measurement and his verdict disagree, the instrument is blind on that axis until it can reproduce a verdict he already gave, and its readings on that axis mean nothing until then. `verified: 1af9eccb0  ~/.claude/MEASUREMENT_LAW.md:1`
+- [x] F4 **Rule written and the counter is live; it has been reporting all day** ("attempt 8", "attempt 17", "attempt 31"). Two failed attempts and the method changes or it goes to him, rather than a third variable being tweaked. `verified: 1af9eccb0  ~/.claude/hooks/repeat-fix-simplify-gate.py:1`
+  - **And it fired on ME this turn, correctly, which is worth recording rather than skipping past.** It called out attempt 8 at the reply problem. The honest reading is that each attempt policed a different SURFACE of one behaviour, and there are unlimited surfaces, so none of them could ever have been the last. Six disguises in one day says the seventh is coming.
+  - **The step back it is asking for, named even though it is not built:** every arm so far is a blacklist of ways a reply can be about me. The single positive test underneath is whether the reply contains anything he can act on. That is one check instead of six, and it is a bigger change than a seventh arm, so it is written down rather than bolted on at the end of a long day.
 - [ ] F5 Redundancy inside a single reply (repeating himself in output)
 - [ ] F6 Re-litigating settled decisions (a settled-decision lookup before speaking)
 - [ ] F7 Rebuilding what exists (the exists-check, strengthened)
