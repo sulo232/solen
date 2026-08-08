@@ -400,9 +400,12 @@
 - [ ] U2 What "harden this" ACTUALLY does, step by step, and whether that is enough
 - [ ] U3 Recurring mistakes: hardening is not working. 10 to 18 rounds on one thing. Do we get a real fix the same day?
 - [ ] U4 The JSON in my output. Fix it.
-- [ ] U5 Context compaction: the principle exists and I stopped using it. When do I compact?
+- [x] U5 **Fixed, and I was WRONG about the cause in my last message.** I told him it was never switched on. It IS switched on, inside `plan-active-prompt.py`, and the real bug is worse than unwired: **it fired ONCE PER TIER PER SESSION.** It said CONTEXT RED at ~245k early today and then stayed silent for the entire rest of the session while the window kept filling. A one-shot warning on a line you can blow straight through is indistinguishable from not having one.
+  - `verified:` ~/.claude/hooks/plan-active-prompt.py:35 and :86. Past RED it now re-fires every 50k and carries the actual number ("~245k in context"). Below RED the once-per-tier behaviour is unchanged, because a working-tier nudge repeating would be noise.
+  - Measured over this session's real shape (155k, 199k, 245k, 299k, 310k, 355k): **5 nudges instead of 1.**
+  - 50k chosen from this session rather than picked round: it crossed RED at ~245k and ran past 300k in silence, so one nudge per 50k is about one per long working stretch.
 
-- [x] U-inv **Investigated all five before answering.**
+- [x] U-inv **Investigated all five before answering** `verified:` ~/.claude/commands/harden.md:11 (the six-question test) and ~/.claude/CONTEXT_SYSTEM.md:23 (the budget table), sha be29fac77.
   - **U1/U2:** `/harden` exists at `~/.claude/commands/harden.md` and already carries the six-question legality test added under his freeze this morning. Six steps: legality test, pin the mistake, choose the hook event, write it, register it, test it. It is NOT plain English: it is written for me, in estate jargon.
   - **U5, and this is the real finding: the compaction principle is NOT lost, it is UNARMED.** `~/.claude/CONTEXT_SYSTEM.md` has the full budget table (healthy under 70k, working 70-120k, heavy 120-150k, red over 150k) and three collapse triggers. But `context-budget` is registered **0** times in settings.json. The only thing injecting a tier is `plan-active-prompt.py`, as a side note on an unrelated hook. **The principle was never wired; it has been advice this whole time**, which is exactly the class he keeps naming.
 
