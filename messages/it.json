@@ -859,7 +859,10 @@
       "warning": "Completa almeno il profilo, gli orari di apertura e i servizi.",
       "live": "Il Suo salone è online!",
       "liveSubtitle": "I clienti possono ora prenotare",
-      "activate": "Attiva il salone"
+      "activate": "Attiva il salone",
+      "awaitingTitle": "In attesa di approvazione",
+      "awaitingBody": "Solen sta esaminando il Suo salone. Una volta approvato, potrà attivarlo.",
+      "rejectedTitle": "Salone non approvato"
     }
   },
   "salon": {
@@ -2296,6 +2299,11 @@
       "setUp": "Configura",
       "more": "+{n} altri"
     },
+    "approvalStatus": {
+      "pendingTitle": "In attesa di approvazione",
+      "pendingBody": "Solen sta esaminando il Suo salone. Non è ancora visibile pubblicamente.",
+      "rejectedTitle": "Salone non approvato"
+    },
     "promoManager": {
       "title": "Codici promo",
       "newCode": "Nuovo codice",
@@ -2725,7 +2733,30 @@
       "topStaff": "Top dipendenti",
       "noData": "Ancora nessun dato",
       "timesBooked": "{n}× prenotato",
-      "bookingsShort": "{n} appunt."
+      "bookingsShort": "{n} appunt.",
+      "adviceTitle": "Consigli",
+      "adviceWindow": "In base alle ultime {weeks} settimane",
+      "adviceSlotMorning": "{day} mattina",
+      "adviceSlotAfternoon": "{day} pomeriggio",
+      "adviceSlotEvening": "{day} sera",
+      "adviceEmptyTitle": "Fascia vuota: {slot}",
+      "adviceEmptyBody": "Nessun appuntamento. Le altre fasce ne hanno {average} in media.",
+      "adviceQuietTitle": "Fascia più tranquilla: {slot}",
+      "adviceQuietBody": "{count} appuntamenti, la sua media per fascia è {average}.",
+      "adviceBusyTitle": "Fascia più piena: {slot}",
+      "adviceBusyBody": "{count} appuntamenti, la sua media per fascia è {average}.",
+      "adviceCancelTitle": "{percent}% dei suoi appuntamenti salta",
+      "adviceCancelBody": "{count} su {total} annullati o mancati.",
+      "adviceActionOffpeak": "Sconto orari vuoti",
+      "adviceActionStaff": "Verifica il personale",
+      "adviceActionCancellation": "Verifica le regole di disdetta",
+      "adviceActionHours": "Inserisci gli orari",
+      "adviceNotEnoughTitle": "Storico ancora insufficiente",
+      "adviceNotEnoughBody": "{count} appuntamenti. I consigli partono da {min}.",
+      "adviceNoHoursTitle": "Orari mancanti",
+      "adviceNoHoursBody": "Senza orari di apertura non è possibile dire quali fasce sono tranquille.",
+      "adviceNothingTitle": "Niente di rilevante",
+      "adviceNothingBody": "{count} appuntamenti, nessuna fascia si scosta molto dalla sua media."
     },
     "platformAnalyticsPage": {
       "title": "Statistiche della piattaforma",
@@ -3870,6 +3901,7 @@
       "namePlaceholder": "es. Salon Lumière",
       "email": "E-mail *",
       "emailPlaceholder": "tuo@salone.ch",
+      "emailUse": "Utilizziamo questo indirizzo solo per contattarLa in merito al Suo salone.",
       "categories": "Categorie *",
       "quartier": "Quartiere *",
       "selectPlaceholder": "Seleziona…",

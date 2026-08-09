@@ -890,7 +890,10 @@
       "warning": "Please complete at least Profile, Opening Hours, and Services.",
       "live": "Your salon is live!",
       "liveSubtitle": "Customers can now book appointments",
-      "activate": "Go Live"
+      "activate": "Go Live",
+      "awaitingTitle": "Waiting for approval",
+      "awaitingBody": "Solen is reviewing your salon. Once it is approved, you can activate it.",
+      "rejectedTitle": "Salon not approved"
     }
   },
   "salon": {
@@ -2322,6 +2325,11 @@
       "setUp": "Set up",
       "more": "+{n} more"
     },
+    "approvalStatus": {
+      "pendingTitle": "Waiting for approval",
+      "pendingBody": "Solen is reviewing your salon. It is not publicly visible yet.",
+      "rejectedTitle": "Salon not approved"
+    },
     "promoManager": {
       "title": "Promo Codes",
       "newCode": "New Code",
@@ -2751,7 +2759,30 @@
       "topStaff": "Top staff",
       "noData": "No data yet",
       "timesBooked": "{n}× booked",
-      "bookingsShort": "{n} appt."
+      "bookingsShort": "{n} appt.",
+      "adviceTitle": "Recommendations",
+      "adviceWindow": "Based on the last {weeks} weeks",
+      "adviceSlotMorning": "{day} morning",
+      "adviceSlotAfternoon": "{day} afternoon",
+      "adviceSlotEvening": "{day} evening",
+      "adviceEmptyTitle": "{slot} is empty",
+      "adviceEmptyBody": "Not a single appointment. Other slots average {average}.",
+      "adviceQuietTitle": "{slot} is your quietest time",
+      "adviceQuietBody": "{count} appointments, your average per slot is {average}.",
+      "adviceBusyTitle": "{slot} is your busiest time",
+      "adviceBusyBody": "{count} appointments, your average per slot is {average}.",
+      "adviceCancelTitle": "{percent}% of your appointments fall through",
+      "adviceCancelBody": "{count} of {total} appointments cancelled or missed.",
+      "adviceActionOffpeak": "Off-peak discount",
+      "adviceActionStaff": "Check staffing",
+      "adviceActionCancellation": "Check cancellation rules",
+      "adviceActionHours": "Add opening hours",
+      "adviceNotEnoughTitle": "Not enough history yet",
+      "adviceNotEnoughBody": "{count} appointments. Recommendations start at {min}.",
+      "adviceNoHoursTitle": "Opening hours missing",
+      "adviceNoHoursBody": "Without opening hours on file we cannot say which times are quiet for you.",
+      "adviceNothingTitle": "Nothing stands out",
+      "adviceNothingBody": "{count} appointments, no time differs much from your average."
     },
     "platformAnalyticsPage": {
       "title": "Platform statistics",
@@ -3896,6 +3927,7 @@
       "namePlaceholder": "e.g. Salon Lumière",
       "email": "Email *",
       "emailPlaceholder": "your@salon.ch",
+      "emailUse": "We use this address only to contact you about your salon.",
       "categories": "Categories *",
       "quartier": "Neighbourhood *",
       "selectPlaceholder": "Please select…",

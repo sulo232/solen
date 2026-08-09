@@ -12,8 +12,10 @@ import ActivityFeed from "@/components-legacy/dashboard/ActivityFeed";
 import {
   DashPanel, DashStatusPill, DashRow, DashLineChart, DashBarChart,
 } from "@/app/[locale]/_components/dashboard/DashboardUI";
+import DashboardAdvicePanel from "@/app/[locale]/_components/dashboard/DashboardAdvice";
 import { cn } from "@/lib/utils";
 import type { Booking } from "@/lib/types";
+import type { DashboardAdvice } from "@/lib/dashboard-advice";
 
 interface DailyPoint { date: string; bookings: number; revenue: number; confirmed: number; cancelled: number }
 interface DashboardStats {
@@ -24,6 +26,8 @@ interface DashboardStats {
   trends_vs_prior?: { bookings: number; revenue: number; new_customers: number; rating: number };
   daily?: DailyPoint[];
   popular_services?: { id: string; name: string; count: number }[];
+  /** Only present because this page asks for it with &advice=1. */
+  advice?: DashboardAdvice;
 }
 interface EnrichedBooking extends Booking { customer_name: string; service_name: string }
 interface StaffStat { id: string; name: string; revenue?: number; bookings?: number }
@@ -120,7 +124,9 @@ export default function DashboardPage() {
         const sid = profile?.salon_id;
         setSalonId(sid);
         const todayBookings = sid ? fetch(`/api/bookings?salon_id=${sid}&date=${today}&limit=20`).then((r) => r.json()) : Promise.resolve(null);
-        const analytics = sid ? fetch(`/api/analytics/salon/${sid}?period=week`).then((r) => r.json()) : Promise.resolve(null);
+        // advice=1 rides on the analytics call this page already makes, so the panel
+        // costs no extra round trip from the browser.
+        const analytics = sid ? fetch(`/api/analytics/salon/${sid}?period=week&advice=1`).then((r) => r.json()) : Promise.resolve(null);
         const convos = sid ? fetch(`/api/conversations?salon_id=${sid}&unread=true`).then((r) => r.json()) : Promise.resolve(null);
         const staffStats = sid ? fetch(`/api/analytics/staff-comparison?salon_id=${sid}&period=month`).then((r) => r.json()) : Promise.resolve(null);
         return Promise.all([todayBookings, analytics, convos, staffStats]);
@@ -292,6 +298,12 @@ export default function DashboardPage() {
               <DashPanel title={t("activity")}><div className="p-4"><ActivityFeed salonId={salonId} /></div></DashPanel>
             </div>
           )}
+
+          {/* Advice (owner decision 9, 2026-08-09). Sits below today's list, because it is a
+              "then what" panel and not a "right now" one, and above the top-services and
+              top-team ranks it gives a reason to act on. Renders only when the server
+              actually returned the block; there is no client-side fallback advice. */}
+          {stats?.advice && <DashboardAdvicePanel advice={stats.advice} />}
 
           {/* Row 3 — top services + top team */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3.5">

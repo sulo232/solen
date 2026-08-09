@@ -877,7 +877,10 @@
       "warning": "Veuillez compléter au moins le profil, les horaires d'ouverture et les services.",
       "live": "Votre salon est en ligne !",
       "liveSubtitle": "Les clients peuvent désormais réserver",
-      "activate": "Mettre en ligne"
+      "activate": "Mettre en ligne",
+      "awaitingTitle": "En attente de validation",
+      "awaitingBody": "Solen examine votre salon. Dès qu'il est validé, vous pouvez l'activer.",
+      "rejectedTitle": "Salon non validé"
     }
   },
   "salon": {
@@ -2314,6 +2317,11 @@
       "setUp": "Configurer",
       "more": "+{n} de plus"
     },
+    "approvalStatus": {
+      "pendingTitle": "En attente de validation",
+      "pendingBody": "Solen examine votre salon. Il n'est pas encore visible publiquement.",
+      "rejectedTitle": "Salon non validé"
+    },
     "promoManager": {
       "title": "Codes promo",
       "newCode": "Nouveau code",
@@ -2743,7 +2751,30 @@
       "topStaff": "Top employés",
       "noData": "Pas encore de données",
       "timesBooked": "{n}× réservé",
-      "bookingsShort": "{n} rdv"
+      "bookingsShort": "{n} rdv",
+      "adviceTitle": "Recommandations",
+      "adviceWindow": "Sur les {weeks} dernières semaines",
+      "adviceSlotMorning": "{day} matin",
+      "adviceSlotAfternoon": "{day} après-midi",
+      "adviceSlotEvening": "{day} soir",
+      "adviceEmptyTitle": "Créneau vide : {slot}",
+      "adviceEmptyBody": "Aucun rendez-vous. Les autres créneaux en comptent {average} en moyenne.",
+      "adviceQuietTitle": "Créneau le plus calme : {slot}",
+      "adviceQuietBody": "{count} rendez-vous, votre moyenne par créneau est de {average}.",
+      "adviceBusyTitle": "Créneau le plus chargé : {slot}",
+      "adviceBusyBody": "{count} rendez-vous, votre moyenne par créneau est de {average}.",
+      "adviceCancelTitle": "{percent}% de vos rendez-vous ne se réalisent pas",
+      "adviceCancelBody": "{count} sur {total} annulés ou manqués.",
+      "adviceActionOffpeak": "Remise heures creuses",
+      "adviceActionStaff": "Vérifier les effectifs",
+      "adviceActionCancellation": "Vérifier les règles d'annulation",
+      "adviceActionHours": "Ajouter les horaires",
+      "adviceNotEnoughTitle": "Pas encore assez d'historique",
+      "adviceNotEnoughBody": "{count} rendez-vous. Les recommandations démarrent à {min}.",
+      "adviceNoHoursTitle": "Horaires manquants",
+      "adviceNoHoursBody": "Sans horaires enregistrés, impossible de dire quels créneaux sont calmes chez vous.",
+      "adviceNothingTitle": "Rien ne ressort",
+      "adviceNothingBody": "{count} rendez-vous, aucun créneau ne diffère nettement de votre moyenne."
     },
     "platformAnalyticsPage": {
       "title": "Statistiques de la plateforme",
@@ -3888,6 +3919,7 @@
       "namePlaceholder": "p. ex. Salon Lumière",
       "email": "E-mail *",
       "emailPlaceholder": "votre@salon.ch",
+      "emailUse": "Nous utilisons cette adresse uniquement pour vous contacter au sujet de votre salon.",
       "categories": "Catégories *",
       "quartier": "Quartier *",
       "selectPlaceholder": "Veuillez choisir…",
