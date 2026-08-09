@@ -520,8 +520,13 @@ prefer the version a user can see over the version that is safe to defend.
 
 **Decision 4 carries a real cost he accepted by choosing it**, stated once here so it is on the
 record: open ratings on a small salon list means one wave of fake ones moves the number people book
-on. The containment that does not cost the Google-Maps feel is a "Verified visit" mark on real
-appointments, which was option C; he did not pick it, so it is not being built unless he says so.
+on. I offered the containment twice, and he refused it twice. Asked again in a follow-up whether to
+add a "Verified visit" mark, the answer was verbatim: *"no no real visit check jst normal su bro"*.
+
+**So the rating is plain and open. No visit check, no verified mark, no gating of the score.**
+Anyone signed in can rate any salon, exactly like Google Maps, which is the reference he named. This
+line exists so a future session does not helpfully re-add the containment he has now rejected twice.
+Re-opening it needs him saying so by name.
 
 **Decision 7 supersedes the input-label row by his own instruction.** The field itself stays as
 locked on 2026-08-09 (white fill, grey resting line, nothing on tap). What changes is the LABEL
