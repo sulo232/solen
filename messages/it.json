@@ -5672,7 +5672,8 @@
     "bundlesBook": "Prenota",
     "bundlesSave": "risparmiati",
     "bundlesError": "Impossibile caricare i pacchetti.",
-    "minutesUnit": "min"
+    "minutesUnit": "min",
+    "alreadyReviewed": "Ha già valutato questo salone."
   },
   "comingSoon": {
     "title": "In arrivo",

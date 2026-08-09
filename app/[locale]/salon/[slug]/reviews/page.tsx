@@ -131,6 +131,8 @@ export default async function SalonReviewsPage({
   // booking the rater can always post; without one they can post unless they already left an
   // appointment-free rating for this salon.
   let canWriteReview = false;
+  // he has used up the one rating this salon allows without an appointment
+  let alreadyReviewed = false;
   if (userId) {
     if (unreviewedBookingId) {
       canWriteReview = true;
@@ -145,6 +147,7 @@ export default async function SalonReviewsPage({
         .limit(1)
         .maybeSingle();
       canWriteReview = !existingOpenReview;
+      alreadyReviewed = !!existingOpenReview;
     }
   }
 
@@ -191,6 +194,7 @@ export default async function SalonReviewsPage({
           salonSlug={slug}
           salonName={salon.name}
           canWriteReview={canWriteReview}
+          alreadyReviewed={alreadyReviewed}
           unreviewedBookingId={unreviewedBookingId}
           unreviewedBookingStaffName={unreviewedBookingStaffName}
           unreviewedBookingStaffMemberId={unreviewedBookingStaffMemberId ?? undefined}

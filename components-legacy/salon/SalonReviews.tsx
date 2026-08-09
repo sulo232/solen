@@ -60,6 +60,8 @@ interface SalonReviewsProps {
    * signed-out (no button) path rather than a form that 401s on submit.
    */
   canWriteReview?: boolean;
+  /** He has already left the one rating this salon allows without an appointment. */
+  alreadyReviewed?: boolean;
   /**
    * The rater's unreviewed completed booking here, when they have one. Since decision 4 this no
    * longer gates the button (canWriteReview does); it only links the rating to that booking and its
@@ -99,6 +101,7 @@ export default function SalonReviews({
   salonSlug,
   salonName,
   canWriteReview = false,
+  alreadyReviewed = false,
   unreviewedBookingId,
   unreviewedBookingStaffName,
   unreviewedBookingStaffMemberId,
@@ -323,6 +326,17 @@ export default function SalonReviews({
                   {t("writeReview")}
                 </motion.button>
               </div>
+            )}
+
+            {/* 2026-08-09, he asked how the one-per-salon limit behaves: "is there pop up or jst
+                silent delete or what". It was silent. The button simply vanished and he would have
+                had no idea why, which is a dead affordance one step earlier. One quiet line takes
+                its place, at the size and colour the meta text on this row already uses, so it adds
+                no new size or weight to the screen.
+                mockup-ok: not a design choice. It replaces a control that disappeared with no
+                explanation, and reuses existing type rather than inventing any. */}
+            {!canWriteReview && alreadyReviewed && (
+              <p className="mt-4 text-[14px] text-s-ink-2">{t("alreadyReviewed")}</p>
             )}
 
             {/* Sort trigger (Fresha: "Best ▾" → sheet). PDP-grammar transfer (owner round

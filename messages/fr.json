@@ -5683,7 +5683,8 @@
     "bundlesBook": "Réserver",
     "bundlesSave": "économisé",
     "bundlesError": "Impossible de charger les forfaits.",
-    "minutesUnit": "min"
+    "minutesUnit": "min",
+    "alreadyReviewed": "Vous avez déjà évalué ce salon."
   },
   "comingSoon": {
     "title": "Bientôt disponible",

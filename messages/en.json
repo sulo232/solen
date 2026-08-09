@@ -5691,7 +5691,8 @@
     "bundlesBook": "Book",
     "bundlesSave": "saved",
     "bundlesError": "Could not load bundles.",
-    "minutesUnit": "min"
+    "minutesUnit": "min",
+    "alreadyReviewed": "You have already rated this salon."
   },
   "comingSoon": {
     "title": "Coming Soon",
