@@ -40,12 +40,20 @@ const UBER_FILL = "bg-[#F6F6F6]"; // drift-ok: measured off auth.uber.com, their
 
 const STYLES: Style[] = [
   {
-    key: "Ours today",
-    who: "solen",
-    measured: "44 tall, 12 corner, grey fill, no line around it",
-    rest: "h-11 w-full rounded-[12px] bg-s-bg-sunken px-3 text-[16px] text-s-ink",
-    focus: "h-11 w-full rounded-[12px] bg-s-bg-sunken px-3 text-[16px] text-s-ink",
-    note: "Rest and tapped look identical here, which is the finding. The box has no line of its own, so three in a row read as one grey area rather than three things to fill in.",
+    key: "Ours, before today",
+    who: "solen, replaced",
+    measured: "48 tall, 12 corner, grey fill, no line around it",
+    rest: "h-12 w-full rounded-[12px] bg-s-bg-sunken px-3 text-[16px] text-s-ink",
+    focus: "h-12 w-full rounded-[12px] bg-s-bg-sunken px-3 text-[16px] text-s-ink",
+    note: "Rest and tapped looked identical, which was the finding. The box had no line of its own, so three in a row read as one grey area rather than three things to fill in.",
+  },
+  {
+    key: "Ours, live now",
+    who: "his call, 2026-08-09",
+    measured: "48 tall, 12 corner, white, thin grey line, no change when tapped",
+    rest: "h-12 w-full rounded-[12px] border border-s-border bg-white px-3 text-[16px] text-s-ink",
+    focus: "h-12 w-full rounded-[12px] border border-s-border bg-white px-3 text-[16px] text-s-ink",
+    note: "Airbnb's look at our height. Tapping in changes nothing, which is what he asked for. The trade is that nothing shows which field you are in when you move through a form with a keyboard.",
   },
   {
     key: "Airbnb",
@@ -118,8 +126,8 @@ export default function FieldStylePage() {
           The grey box, three ways
         </h1>
         <p className="mt-3 text-[14px] leading-[1.55] text-s-ink-2">
-          Every number here was measured on their live sites today, not remembered. Each one shows
-          the field at rest and the same field tapped into, because that is where ours differs most.
+          Every number here was measured on their live sites today, not remembered. The second row is
+          what every field in the app looks like as of now, after his call.
         </p>
 
         <div className="mt-8 space-y-4">
