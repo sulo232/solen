@@ -649,7 +649,20 @@
     4. **A gate's own instruction rots and nothing notices.** One told me for a whole session that a short reply was a legal exit, months after its own version removed that exit.
     **What replaces it, and it is not gate 251:** the evaluation layer. A check must now prove it fires on real messages, catches what he actually rejected, and leaves real good replies alone, before it counts as done. That is the one addition today's evidence supports, because it attacks reason 3 directly and makes reasons 2 and 4 visible.
     **The honest limit:** none of this shows gates make things worse, and several caught real defects today. It shows a gate does not END a theme, and that building the 195th is not the lever.
-- [ ] K7 Design the replacement: which narrow class still deserves a gate, and what everything else becomes
+  - [x] K7 **The replacement, designed from what actually worked and failed today rather than from theory.** `verified: e44faa4cc  ~/.claude/gate-eval.py + ~/.claude/commands/harden.md:96`
+    **WHICH NARROW CLASS STILL DESERVES A CHECK , all four conditions, not three:**
+    1. decidable from the artifact alone, with **one right answer** two readers would agree on;
+    2. **the correct behaviour is cheaper than the evasion** (if rewording is easier than fixing, it trains rewording);
+    3. it fires on something that **really happened**, not something imagined;
+    4. it has a **corpus of his real rejections** behind it, so it can be re-checked later by someone who was not there.
+    Conditions 3 and 4 are new today, and they are the whole difference: every check that failed this session passed 1 and 2.
+    **Worked examples of the class:** a number past a physical maximum, a part bigger than its whole, an unresolvable citation, a claim of a fix with no test run. All artifact-decidable, all with one right answer, none reachable by rewording.
+    **WHAT EVERYTHING ELSE BECOMES, in order of preference:**
+    - **A TEMPLATE**, picked before the first word, with a fixed line count. Shape chosen up front beats shape policed afterwards, because the second only ever changes wording. Seven of them replaced eight retired checks.
+    - **A POSITIVE TEST rather than a blacklist.** "Does this contain something he can act on" caught the sixth costume of a habit without ever having enumerated the first five. Five bans became one question.
+    - **DELETION.** Three of today's live findings were a check being retired, a no-op unwired, and a doc corrected. Removing beat adding every time it was available.
+    - **NOTHING, written down honestly.** Redundancy inside a single reply has no check and says so. An admitted gap is worth more than a check that fires on nothing.
+    **AND THE PART THAT IS NOT A CHECK AT ALL:** the evaluation layer. A check now has to prove it is relevant, enough and safe against real messages before it counts as done. That attacks the one failure mode a check can never attack in itself, which is that its author is also its only reviewer.
 
 ### L. Cross-session propagation
 - [ ] L1 Map every change type to its propagation mechanism and its leak point (hooks, settings.json, project law, memory, skills, agents, session-local state)
