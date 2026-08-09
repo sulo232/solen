@@ -16,13 +16,30 @@ Fail-open. Exit 2 = block.
 import os, sys, time, glob, json
 PDIR = os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()
 W = 900
+
+# 2026-08-09 (plan box K0e). mtime alone is not authorship: creating or syncing a git worktree
+# restamps every file, so this gate would have fired on files nobody touched for the first 15
+# minutes of every worktree session. The window still applies; git now has to agree the file was
+# actually written. Fails open to "nothing written", so a gate that cannot prove its trigger stays
+# silent rather than blocking on a guess.
+def _written():
+    try:
+        sys.path.insert(0, os.path.join(PDIR, "scripts", "hooks"))
+        from _session_files import files_written_this_session
+        return files_written_this_session(PDIR)
+    except Exception:
+        return None  # helper unavailable -> do not filter, old behaviour
+
 def recent(pats):
     out=[]
+    written=_written()
     for p in pats:
         try:
             for f in glob.glob(os.path.join(PDIR,p),recursive=True):
                 try:
-                    if time.time()-os.stat(f).st_mtime < W: out.append(f)
+                    if time.time()-os.stat(f).st_mtime >= W: continue
+                    if written is not None and os.path.relpath(f,PDIR) not in written: continue
+                    out.append(f)
                 except OSError: pass
         except OSError: pass
     return out

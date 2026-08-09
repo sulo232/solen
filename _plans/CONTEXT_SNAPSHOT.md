@@ -2,16 +2,16 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-08T15:41:53 (trigger: auto)
+- taken: 2026-08-09T12:52:24 (trigger: auto)
 - branch: claude/agent-flow-design-overhaul-2af2c2
 
 ## git
 ```
-8a79b3729 The compaction warning fired once and then went quiet for the whole session
-be29fac77 His five asks, and the compaction principle turns out to be unarmed
-906b8f438 Eight mockup gates will go silent when mockups become real routes
-128aa8a86 Narrowed the mockup base to static-only, and fixed the gate that blocked saying so
-4503e5c6f Evidence on the menu-loophole and block-message boxes
+405613578 What has to be committed and what has to be said, from what survived today
+5d0077fe0 He got the same thing three times, and the check for it switched itself off on the third
+f18e38ff4 The whole enforcement estate sits in one folder with no version control and no backup
+1eafccf90 Forms is written down now, so the design system covers all of it
+967b43128 The comparison page shows what actually shipped, not what it looked like this morning
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
@@ -49,28 +49,28 @@ Open boxes:
 - [ ] Q1 Freeze new gates. **DISPATCHED**, drafter running in wf_3bc05071-7ad.
 - [ ] Q3 Mockup-first is over-enforced. Three atomic fixes:
   - [ ] Q3c Collapse the mockup gate family into one aggregated deny. **STARTED, not finished.**
-    - [ ] Q3c3b Still open: removing the 9 remaining registrations for the three absorbed gates. Deferred ON PURPOSE this time, with a reason rather than a hold: the two duplicate-logic bugs found today both came from a mirror drifting from its original, so before deleting any registration I want to check each of the other absorbed gates the same way, rather than trusting that the aggregator's copy still matches.
 - [ ] Q4 Sets. Owner chose **start it now, in parallel**, not a later session. **DISPATCHED.**
-  - [ ] Q5d Not done: the calibration record `_design-system/INSTRUMENT_CALIBRATION.md`, the motion fixture, and the attempt-counter arm on `repeat-fix-simplify-gate.py`. The law names all three; none exists yet.
 - [ ] Q6 When measurement and his report disagree: **show him BOTH and let him decide.** Not "his eyes win". My recommendation was wrong. **DISPATCHED.**
 - [ ] Q8 One canon file per concern.
 - [ ] Q9 **The reply itself.** Three bans plus a research task:
-- [ ] Q11 One page per substantial task + a standing page of every open decision.
-  - [ ] Q11a The per-task question page (the format is proven; this session's page is the reference)
 - [ ] Q13 Park it, keep going, surface at the end. Plus:
   - [ ] Q13a A parked item must be WRITTEN INTO THE PLAN in the same turn
 - [ ] Q14 **I orchestrate design, I do not build it.** Two rules:
-  - [ ] Q25c4 **The council's finding 8, and it is the uncomfortable one.** My diagnosis in REPLY_LAW 0.9 (I treat gate blocks as editing notes) is correct but incomplete, and it got falsified in the other direction inside the same session: the identical pattern, patch the exact string that failed without re-deriving from the design or re-running the suite, produced findings 1 and 2 above, AFTER 0.9 was written. Still open: the remaining structural recommendations, a semantic rather than purely lexical check, and a rule that `--selftest` must exit 0 before a hook edit counts as done.
 - [ ] Q16 **Every stop-for-an-answer is lettered options, never prose** (owner 2026-08-07, decision 16).
-  - [ ] P-c1 Unstick `_plans/FLOW_HARNESS.md`: one flow wired, eleven not started. Find why it stalled before adding to it.
-    - [ ] P-c2b **NOT fixed, and this is a real decision rather than mechanical work**: teaching those 8 to match `app/[locale]/dev/**.tsx` widens what they police to actual product routes, which is a bigger blast radius than a mockup file. That is his call, and it is on the standing page. Original wording:ces a static HTML file and is now aimed at the wrong artifact.
-  - [ ] P-c4 Mark the 253 standalone files legacy without deleting them.
-- [ ] P-e **NOT DONE, and the tick was wrong.** He approved the direction, but the file has not been touched: `_design-system/AGENT_BRIEF_TEMPLATE.md` still points at the dead worktree and still tells the verifier to accept a focus ring an armed gate blocks. An owner approval is permission to do the work, not the work. Unticked. Shrink `_design-system/AGENT_BRIEF_TEMPLATE.md` to the one job it is good at (full route rebuilds against a captured reference), fix the dead worktree path at line 14 and the focus-ring instruction at line 155, and let the short fan-out brief cover everything else. Queued as a build item, not done yet.
-- [ ] B3 Design the replacement flow (blocked on the owner's gate decision in P6 and the set definition in C2)
-- [ ] C2 Define what a "set" is. **BLOCKED on owner**, concrete fork below. This is question 1 of round 2.
-  - [ ] C2a Fork A: a set = one user FLOW end to end (e.g. every booking screen)
-  - [ ] C2b Fork B: a set = N design DIRECTIONS of the same screen, to choose between
-...(+74 more open boxes)
+- [ ] B3 Design the replacement flow. **Re-scoped 2026-08-08:** the set-definition half is gone with C2. Still waiting on the gate decision in P6.
+- [ ] C3 Design the set pipeline. **Re-scoped 2026-08-08 after C2 was removed:** no longer waiting on a definition. It waits on the next real multi-screen job he names, and the pipeline for that shape gets used from `SETS.md`.
+- [ ] F5 **NOT built, and named honestly rather than ticked.** Redundancy INSIDE one reply (saying the same thing twice in one message) has no check. `reply-repeat-gate` was retired by his "replace, don't stack" decision, and it compared two SEPARATE messages anyway, so it never covered this. Today's word-overlap method would work within a message too, but it has not been done.
+- [ ] G1 Map what governs reply shape today
+- [ ] H1 Reconstruct the approved Taste Lab elicitation format precisely
+- [ ] I5 Define what happens to a NEW question that appears mid-loop (park or break)
+- [ ] J1 Ranked list of at most 8 candidates outside A-I, with evidence and cost-of-leaving-it
+- [ ] J2 Owner picks which ones enter scope
+- [ ] K0e **The rest of the Stop chain is the same problem, unfixed:** 64 hooks, 23 of which blocked me in this session alone. The link family and this one are two families out of however many. LAW_SYSTEM 6.2 requires the consolidation and it has now been applied twice.
+- [ ] R3 **THE OBJECTION, and it is the strongest one available, so it goes before the build.** A router IS a judgment call: "which checks apply here?" And this estate's routing decisions are exactly what failed today, every one of them made by hand and every one wrong:
+- [ ] R4 **So the design constraints, if we build it:** route CONSERVATIVELY (when unsure, include the check); make the routing VISIBLE (say which were selected and which were skipped, so a wrong route is catchable); and record every miss, so the routing improves instead of ossifying like the four above.
+- [ ] R5 Owner decision on this is R-PARKED below.
+- [ ] PARKED 2026-08-08 · Build the check ROUTER (think first, then select which checks apply to this incident) instead of running all 57 every time? · from: his 2026-08-08 proposal. My recommendation: YES, and it replaces the delete-or-consolidate question below rather than sitting beside it, because a router that skips irrelevant checks gets the same relief as deleting them without losing the check. Condition: it must route conservatively, name which checks it skipped, and log its misses, because every hand-made routing decision in this estate failed today by being too narrow.
+...(+20 more open boxes)
 
 ## COPY_VOICE_LAW.md
 Open boxes:

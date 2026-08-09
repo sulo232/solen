@@ -24,14 +24,28 @@ VIOL = [
 ]
 EXEMPT = re.compile(r"(map-style|_design-system/|\.claude/|node_modules)", re.I)
 
+# 2026-08-09 (plan box K0e). mtime alone is not authorship: creating or syncing a git worktree
+# restamps every file, so this gate would have fired on files nobody touched for the first
+# window of every worktree session. Git now has to agree the file was actually written.
+def _written():
+    try:
+        sys.path.insert(0, os.path.join(PDIR, "scripts", "hooks"))
+        from _session_files import files_written_this_session
+        return files_written_this_session(PDIR)
+    except Exception:
+        return None
+
 def recent():
     out = []
+    written = _written()
     for pat in ("app/**/*.ts", "app/**/*.tsx", "components/**/*.tsx", "components-legacy/**/*.tsx", "lib/**/*.ts"):
         try:
             for f in glob.glob(os.path.join(PDIR, pat), recursive=True):
                 if EXEMPT.search(f): continue
                 try:
-                    if time.time() - os.stat(f).st_mtime < W: out.append(f)
+                    if time.time() - os.stat(f).st_mtime >= W: continue
+                    if written is not None and os.path.relpath(f, PDIR) not in written: continue
+                    out.append(f)
                 except OSError: pass
         except OSError: pass
     return out

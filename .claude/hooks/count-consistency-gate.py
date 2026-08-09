@@ -17,12 +17,27 @@ ACCENT = r"(#276EF1|text-s-accent)"
 COUNT  = r"\(\s*\d[\d'’.,]*\s*\)"
 # accent within ~160 chars before a bare count, or a bare count within ~160 chars after accent
 VIOL = re.compile(ACCENT + r"[^<]{0,160}?" + COUNT + r"|" + COUNT + r"[^<]{0,60}?" + ACCENT)
+# 2026-08-09 (plan box K0e). mtime alone is not authorship: creating or syncing a git worktree
+# restamps every file, so this gate would have fired on files nobody touched for the first 15
+# minutes of every worktree session. Git now has to agree the file was actually written. Fails
+# open to no-filtering when the helper is unavailable.
+def _written():
+    try:
+        sys.path.insert(0, os.path.join(PDIR, "scripts", "hooks"))
+        from _session_files import files_written_this_session
+        return files_written_this_session(PDIR)
+    except Exception:
+        return None
+
 def recent():
     fs=[]
+    written=_written()
     for pat in ("public/_mockups/**/*.html","app/**/*.tsx","components/**/*.tsx"):
         try:
             for f in glob.glob(os.path.join(PDIR,pat),recursive=True):
-                if time.time()-os.stat(f).st_mtime < 900: fs.append(f)
+                if time.time()-os.stat(f).st_mtime >= 900: continue
+                if written is not None and os.path.relpath(f,PDIR) not in written: continue
+                fs.append(f)
         except OSError: pass
     return fs
 def flag_ok():

@@ -34,10 +34,23 @@ def last_assistant_text(tp):
                     txt=" ".join(p.get("text","") for p in c if isinstance(p,dict) and p.get("type")=="text")
     except OSError: return ""
     return txt
+# 2026-08-09 (plan box K0e). mtime alone is not authorship: creating or syncing a git worktree
+# restamps every file. Git now has to agree the mockup was actually written this session.
+def _written():
+    try:
+        sys.path.insert(0, os.path.join(PDIR, "scripts", "hooks"))
+        from _session_files import files_written_this_session
+        return files_written_this_session(PDIR)
+    except Exception:
+        return None
+
 def wrote_recent():
+    written=_written()
     try:
         for f in glob.glob(os.path.join(PDIR,"public","_mockups","**","*.htm*"),recursive=True):
-            if time.time()-os.stat(f).st_mtime < 600: return True
+            if time.time()-os.stat(f).st_mtime >= 600: continue
+            if written is not None and os.path.relpath(f,PDIR) not in written: continue
+            return True
     except OSError: pass
     return False
 def flag_ok():
