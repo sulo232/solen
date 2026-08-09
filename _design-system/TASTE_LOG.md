@@ -493,3 +493,36 @@ not `Salvi`) because Italian has no infinitive that works as a neutral label, th
 was applied as the default rather than parked, because the alternative had no defensible version and
 waiting would have blocked the sweep. **It is awaiting a yes or a no**; reversing it is 559 mechanical
 edits and §6b is the record of why it was not done.
+
+
+## 2026-08-09, the ten open decisions, answered in one message (owner verbatim)
+
+His words: *"1 A but is it legal 2 A 3A 4B like google maps 5A 6 C 7C 8A i approve for every salon
+9 a 10 A like short n if its too long tap to expand yk"*
+
+| # | decision | his answer | mine was |
+|---|---|---|---|
+| 1 | salon sign-up: keep the contact email and the Google listing it finds | **A, save both** (asked: is it legal) | A |
+| 2 | dashboard home revenue card: add a week/month switch | **A, stay weekly**, the Umsatz page keeps the switch | A |
+| 3 | search-as-you-type price under a salon | **A, price of the searched treatment**, none when nothing matched | A |
+| 4 | who can leave a star rating | **B, anyone signed in, like Google Maps** | A (visit-gated) , OVERRULED |
+| 5 | the small label above a section heading | **A, keep it, card-meta size** | A |
+| 6 | discount-code box on the payment screen | **C, only for salons with a live code** | C |
+| 7 | the small text above a form input | **C, drop the label, bigger black question above the box (Uber)** | A (keep as today) , OVERRULED |
+| 8 | does a new salon go live by itself | **A, he approves every salon**, verbatim *"i approve for every salon"* | A |
+| 9 | advice panel on the salon owner dashboard | **A, build it now** | C (park until real history) , OVERRULED |
+| 10 | service descriptions on the salon page | **A, tap to open**, verbatim *"short n if its too long tap to expand"* | C (salon page first) |
+
+**Three overrules, and they point the same way.** On 4, 7 and 9 I picked the cautious option and he
+picked the one that ships something. 4 and 9 I argued from a risk that has not happened yet (fake
+ratings, invented advice); 7 I argued from an existing lock. His pattern across all three is to
+prefer the version a user can see over the version that is safe to defend.
+
+**Decision 4 carries a real cost he accepted by choosing it**, stated once here so it is on the
+record: open ratings on a small salon list means one wave of fake ones moves the number people book
+on. The containment that does not cost the Google-Maps feel is a "Verified visit" mark on real
+appointments, which was option C; he did not pick it, so it is not being built unless he says so.
+
+**Decision 7 supersedes the input-label row by his own instruction.** The field itself stays as
+locked on 2026-08-09 (white fill, grey resting line, nothing on tap). What changes is the LABEL
+above it: gone, replaced by a larger ink question.
