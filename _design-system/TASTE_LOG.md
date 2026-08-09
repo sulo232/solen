@@ -531,3 +531,45 @@ Re-opening it needs him saying so by name.
 **Decision 7 supersedes the input-label row by his own instruction.** The field itself stays as
 locked on 2026-08-09 (white fill, grey resting line, nothing on tap). What changes is the LABEL
 above it: gone, replaced by a larger ink question.
+
+
+## 2026-08-09, decision 1 answered: yes it is legal, with two conditions
+
+He picked A (save both the salon's contact email and the Google listing) and asked *"but is it
+legal"*. Checked against the source rather than answered from memory:
+
+**The Google listing: storing the place ID is explicitly allowed, indefinitely.** Google's own
+Places policy says the place ID *"is exempt from the caching restrictions"* and *"you can therefore
+store place ID values indefinitely"*. Everything else from Places (the name, address, phone,
+rating) may only be cached about 30 days. So the rule for us is simple: **store the ID, never the
+copied details.** Anything else we show has to be fetched fresh or be our own data.
+
+**The contact email: ordinary business data, and lawful on the basis he is already on.** It is
+given by a salon to be contacted about their own listing, which is the contract they are entering.
+Under Swiss revDSG and GDPR that needs three things we control: say what it is for at the point they
+type it, do not use it for marketing without a separate opt-in, and delete it when the salon leaves.
+
+**Not legal advice, and the boundary is worth stating**: the Google term is quoted from Google's
+published policy and is checkable; the Swiss and EU part is the standard reading of a B2B contact
+field and is not a lawyer's sign-off.
+
+Sources: [Places API policies](https://developers.google.com/maps/documentation/places/web-service/policies) ,
+[Maps Platform service terms](https://cloud.google.com/maps-platform/terms/maps-service-terms)
+
+## 2026-08-09, his standing ask: stop re-asking what is already settled
+
+Verbatim: *"you actually, like, remember my preferences? It seems like you estimate every time,
+like, it becomes, like, a big exhausting."*
+
+**Measured, and part of it is a check of mine rather than forgetfulness.** `ask-before-loop-gate`
+demands a question before any fan-out, and it accepted exactly one proof: asking him again. It has
+forced a question **40 times across sessions, 7 in this one, twice in a single turn**. On anything
+already settled in writing, that converts "I looked it up" into "I made him answer it twice".
+
+**Changed the same turn: reading the record now satisfies it too.** Opening TASTE_LOG, PREFERENCES,
+the graveyard, LOCKFILE or the decisions record counts as having done the work. Asking is still
+correct for something genuinely unsettled; it is no longer the only way through.
+
+**Where his settled answers live, so a future session looks before it asks:** this file for taste
+and product decisions, `REMOVED.md` for things he has killed, `LOCKFILE.md` for frozen values,
+`PREFERENCES.md` for how he wants work done.

@@ -1,7 +1,7 @@
 # Press-tier animation checker
 
-Generated: 2026-07-26T16:52:39.140Z
-Files scanned: 608  Roots: app, components, components-legacy
+Generated: 2026-08-09T15:22:00.500Z
+Files scanned: 613  Roots: app, components, components-legacy
 
 Static source scan (no browser) for the class of press control whose active:scale- cannot
 actually animate because its own transition-property list doesn't include transform. See
@@ -121,7 +121,7 @@ none found
 - `app/[locale]/dev/map-v2/page.tsx:58` - dev-path - scale: active:scale-95 - transition: (none)
 - `app/[locale]/dev/map-v2/page.tsx:63` - dev-path - scale: active:scale-95 - transition: (none)
 - `app/[locale]/dev/map-zoom/page.tsx:136` - dev-path - scale: active:scale-95 - transition: (none)
-- `app/[locale]/dev/mockups/page.tsx:60` - dev-path - scale: active:scale-[0.99] - transition: (none)
+- `app/[locale]/dev/mockups/page.tsx:274` - dev-path - scale: active:scale-[0.99] - transition: (none)
 - `app/[locale]/dev/motion/_parts/BlurSpeedDemo.tsx:77` - dev-path - scale: active:scale-[0.94] - transition: transition-transform
 - `app/[locale]/dev/motion/_parts/BlurSpeedDemo.tsx:153` - dev-path - scale: active:scale-[0.94] - transition: transition-transform
 - `app/[locale]/dev/motion/_parts/DemoCard.tsx:52` - dev-path - scale: active:scale-[0.94] - transition: transition-transform
