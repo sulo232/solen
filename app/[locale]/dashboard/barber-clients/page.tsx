@@ -28,7 +28,7 @@ export default function BarberClientsPage() {
   return (
     <DashboardLayout salonName={salonName} salonCategories={salonCategories}>
       <div className="mb-8">
-        <p className="text-[12px] font-heading uppercase tracking-[.20em] text-s-ink/30 mb-1">{t("eyebrow")}</p>
+        <p className="text-[12px] font-heading tracking-[0.08em] text-s-ink/30 mb-1">{t("eyebrow")}</p>
         <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink leading-none">
           {t("title")}
         </h1>

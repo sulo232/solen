@@ -42,7 +42,13 @@ export default function PartnerPage() {
 
           {/* Left — Text + CTA */}
           <div className="text-center lg:text-left">
-            <p className="text-[12px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-3 mb-3">
+            {/* Section eyebrows on this page: size is already card-meta 12px (owner
+                decision 5A, 2026-08-09) and is left as-is. Sentence-cased per the
+                2026-06-18 owner law; tracking 0.16em (non-canonical, drift A8) →
+                0.08em, the locked Eyebrow value in LOCKFILE §2. Same edit on the 7
+                section eyebrows below. Source strings are already sentence case in
+                all four locales, so no i18n change was needed. */}
+            <p className="text-[12px] md:text-[12px] font-body font-bold tracking-[0.08em] text-s-ink-3 mb-3">
               {t("for_owners")}
             </p>
             <h1 className="font-heading text-[clamp(26px,7vw,30px)] md:text-[46px] font-semibold text-s-ink mb-4 leading-[1.0] tracking-[-0.03em]">
@@ -93,7 +99,7 @@ export default function PartnerPage() {
       {/* Features */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-16">
         <div className="text-center mb-10">
-          <p className="text-[12px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-2">
+          <p className="text-[12px] md:text-[12px] font-body font-bold tracking-[0.08em] text-s-ink-2 mb-2">
             {t("section_features")}
           </p>
           <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink mb-3">
@@ -125,7 +131,7 @@ export default function PartnerPage() {
       <div className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
-            <p className="text-[12px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-2">
+            <p className="text-[12px] md:text-[12px] font-body font-bold tracking-[0.08em] text-s-ink-2 mb-2">
               {t("section_categories")}
             </p>
             <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink mb-3">
@@ -158,7 +164,7 @@ export default function PartnerPage() {
       <div className="py-16 bg-s-bg-sunken">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
-            <p className="text-[12px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-2">
+            <p className="text-[12px] md:text-[12px] font-body font-bold tracking-[0.08em] text-s-ink-2 mb-2">
               {t("section_how_it_works")}
             </p>
             <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink mb-3">
@@ -246,7 +252,7 @@ export default function PartnerPage() {
       <div className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
-            <p className="text-[12px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-2">
+            <p className="text-[12px] md:text-[12px] font-body font-bold tracking-[0.08em] text-s-ink-2 mb-2">
               {t("section_testimonials")}
             </p>
             <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink mb-3">
@@ -281,7 +287,7 @@ export default function PartnerPage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           {/* Section header */}
           <div className="text-center mb-12">
-            <p className="text-[12px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-2">
+            <p className="text-[12px] md:text-[12px] font-body font-bold tracking-[0.08em] text-s-ink-2 mb-2">
               {t("section_pricing")}
             </p>
             <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink mb-3">
@@ -398,7 +404,7 @@ export default function PartnerPage() {
       <div className="py-16 bg-s-bg-sunken">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-8">
-            <p className="text-[12px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-2">
+            <p className="text-[12px] md:text-[12px] font-body font-bold tracking-[0.08em] text-s-ink-2 mb-2">
               {t("section_faq")}
             </p>
             <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink mb-3">
@@ -493,7 +499,7 @@ export default function PartnerPage() {
       {/* CTA */}
       <div className="py-20 bg-s-bg-sunken">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-          <p className="text-[12px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-2">
+          <p className="text-[12px] md:text-[12px] font-body font-bold tracking-[0.08em] text-s-ink-2 mb-2">
             {t("section_start")}
           </p>
           <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink mb-3">

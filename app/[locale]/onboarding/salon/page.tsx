@@ -38,7 +38,7 @@ function StepContainer({ title, subtitle, children }: { title: string; subtitle?
         style={{ boxShadow: "0 1px 3px rgba(26,18,9,.05), 0 4px 16px rgba(26,18,9,.06)" }}
         role="form">
         {subtitle && (
-          <p className="text-[12px] font-heading uppercase tracking-[.20em] text-s-ink-2 mb-1.5">
+          <p className="text-[12px] font-heading tracking-[0.08em] text-s-ink-2 mb-1.5">
             {subtitle}
           </p>
         )}

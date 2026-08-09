@@ -63,7 +63,11 @@ export function SectionMeta({ eyebrow }: { eyebrow: string }) {
     //   stays because this primitive renders the "FÜR SALONS" homepage divider —
     //   a magazine-style identity label that earns its eyebrow per §2.5
     //   "max 1 per surface, IF section needs identity label" carve-out.
-    <div className="mb-2 px-2 font-body text-[13px] font-semibold uppercase tracking-[0.08em]">
+    // mockup-ok: owner decision 5A (2026-08-09) , eyebrow at card-meta size (12px, was 13px).
+    //   `uppercase` dropped per the 2026-06-18 no-caps law. No callsite renders this today
+    //   (nothing imports SectionMeta or the SectionHeader composite), so nothing on screen
+    //   moves , the recipe is corrected so it cannot reintroduce the drift if it is used.
+    <div className="mb-2 px-2 font-body text-[12px] font-semibold tracking-[0.08em]">
       <span className="inline-flex items-center gap-2 whitespace-nowrap text-s-ink-3">
         {eyebrow}
       </span>

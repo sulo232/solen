@@ -118,6 +118,13 @@ export {
 
 export { SkipLink } from "./SkipLink";
 
+// The ONE tap-to-expand service row (booking service step + salon PDP service list).
+// Owner decision 10, 2026-08-09: "short n if its too long tap to expand yk".
+export {
+  ServiceDisclosureRow,
+  type ServiceDisclosureRowProps,
+} from "./ServiceDisclosureRow";
+
 export {
   CookieConsentProvider,
   useCookieConsent,

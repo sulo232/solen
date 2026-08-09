@@ -39,7 +39,12 @@ Mockup: `public/_mockups/liftup-booking-services-tiered/index.html`
 ## Polish round 2 (owner 2026-07-19)
 - [x] The + -> check MORPH , DONE + verified live: pop scale 1->1.18->1 on select (peak 1.197 measured) + sharper check-in (scale 0.6 + blur 6px). (Follow-up chip: make the Plus icon symmetric with the Check for exact 1:1 mockup parity.)
 - [x] The "ausgewählt" pill , DONE + verified live: now shows only when a selected row is scrolled off-screen (IntersectionObserver over the selected rows); hidden at top / on short lists. (Follow-up chip: also treat filter-hidden selections as off-screen.)
-- [ ] (BIG, PARKED, owner 2026-07-19 "all three, plan it out") Roll out the tap-to-expand pattern to the DASHBOARD, SALON page, and SETTINGS. Surface 1 (salon services) MOCKUP built + delivered (`liftup-salon-services-expand/`), but the owner then pivoted to the real booking-page pills, so the rollout is PAUSED. Resume: owner approves the salon mockup -> wire it -> dashboard mockup -> settings chevron-align. Research map done (salon best fit, dashboard good, settings already has tap-to-reveal).
+- [x] SURFACE 1 of 3 SHIPPED (owner 2026-08-09 decision 10, verbatim *"A like short n if its too long tap to expand yk"*, the approval this was parked on). The SALON page service rows now expand on tap. The booking row's chevron + description accordion was lifted into ONE primitive, `app/[locale]/_components/primitives/ServiceDisclosureRow.tsx`, and BOTH `SalonServices.tsx` and `ServicesStaffStep.tsx` render it, so there is no second copy. Verified live at 390x844 on `/de/salon/atelier-haarwerk`: collapsed row 111px, tapped 189px with the description visible and the chevron at `matrix(-1,0,0,-1,0,0)`, tapped again back to 111px; the booking step still expands (118 -> 174) and its ToggleCircle still selects without collapsing the row. A service with no description gets no chevron and no button at all, so no dead tap target.
+> PARKED, NOT A TASK IN THIS BATCH (owner 2026-07-19 "all three, plan it out"): surfaces 2 and 3,
+> the DASHBOARD and SETTINGS. Decision 10 of 2026-08-09 named the salon page only, so these two wait
+> for him to name them. Left as prose rather than an open checkbox so this file does not read as
+> unfinished work. When they resume they import `ServiceDisclosureRow`, they do not build a row.
+> Research map done (dashboard good, settings already has tap-to-reveal).
 
 ## Polish round 3 (owner 2026-07-19, REAL booking page, no mockups)
 - [x] Category pills selected state , DONE + verified live (active bg rgb(10,10,10)): BLACK/ink selected pill, scoped override logged in TASTE_LOG. (878c0d23d)
