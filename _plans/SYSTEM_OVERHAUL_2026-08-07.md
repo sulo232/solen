@@ -623,7 +623,18 @@
   **6. A permanent no-op on the critical path** since 2026-07-21, spawning a process on every stop to do nothing.
   **7. Owner frustration, in his own words, unprompted:** *"why is this so hard"*, *"it's getting ridiculous"*, *"you keep stopping w ts bro"*. Every one of those followed a gate interaction, not a product defect.
   **The honest counterweight, because a catalogue of harm with no other side is advocacy:** gates also caught, today, an impossible number about to be repeated as fact, a citation that pointed at nothing, a promise dressed as a deliverable, and my own reply about my own plumbing. They work. **What they do not do is end a theme**, which is K2's number, and everything above is the price paid for that.
-- [ ] K4 Quantify the skip-flag hole
+- [x] K4 **Quantified from the ledger, not estimated.** The override hole is not evenly spread: it is two checks. `verified: e491c338f  ~/.claude/state/skip-flag-ledger.log`
+  | override | times used |
+  |---|---|
+  | mockup preflight | **67** |
+  | mockup approved | 14 |
+  | finish autonomously | 8 |
+  | exists check | 8 |
+  | mockup base | 5 |
+  | em-dash | 4 |
+  - **120 of the 194 armed hooks carry an override**, but the ledger shows the top two account for the large majority of all use. This is not an estate-wide discipline problem, it is two over-firing checks on one surface.
+  - **The reason was already diagnosed in this batch and never acted on:** the mockup preflight override's TTL was five minutes against a job that takes longer, so ONE build re-touched it four times in twelve minutes. A large part of that 67 is a clock, not defiance.
+  - **The honest read:** an override used 67 times is a check that has been effectively retired by attrition without anyone deciding to retire it. That is worse than either keeping it or removing it, because the record still says it is armed.
 - [ ] K5 Measure the real cost of the 53-hook PreToolUse chain per edit
 - [ ] K6 Verdict with evidence: is gate-per-mistake working, and the structural reasons it fails
 - [ ] K7 Design the replacement: which narrow class still deserves a gate, and what everything else becomes
