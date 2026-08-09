@@ -110,7 +110,7 @@ Solen uses **the colors humans already recognize** from a lifetime of UI exposur
 | Error / Danger / Closed | Red | `s-error` | `#DC2626` | Toast error, FormFieldError border + text, "Geschlossen", critical alerts |
 | Warning / Caution | Amber | `s-warning` | `#F1AE27` | Toast warning, "Letzte Plätze" notices, validation that's not-blocking |
 | Interactive / Info | Blue | `s-accent` | `#276EF1` | Links, see-all/view-all, active tab/segment, ghost & secondary buttons, tappable rows, inline action labels, interactive icon tints; plus Toast info, focus rings, Spinner, input focus. OFF non-interactive text (eyebrows, body, prices, headings) |
-| Rating | Yellow | `s-star` | `#FFC32B` | Stars only, universal across review surfaces |
+| Rating | Yellow | `s-star` | `-> LOCKFILE` | Stars only, universal across review surfaces |
 | Save / Love | Hot pink | `--heart-active` | `#FF3366` | Saved-favorite heart fill only |
 | Urgency / Hot | Vermilion | `s-urgency` | `#C2410C` text on `#FFF1E6` bg (V3-D424; was #9A3412) | "Nur X heute" Flame badge only |
 | Disabled / Inactive | Muted grey | `s-ink-3` / `s-ink-disabled` | `#6B6B6B` / `#C5C8C4` | Disabled buttons, inactive tabs, low-importance text |
@@ -158,6 +158,14 @@ Speed-anchored copy ("Nur 1 heute", "Termin in 30 Sek."). Avoid sales-y exclamat
 
 All tokens come from `tailwind.config.js` `theme.extend.colors`. Always reference tokens via Tailwind classes (`bg-s-bg-sunken`, `text-s-ink`) — never inline hex.
 
+**Where the hex lives (single-sourced 2026-08-09).** A cell reading `-> LOCKFILE` means the value is
+owned by [LOCKFILE.md](LOCKFILE.md) §1 and is deliberately NOT repeated here. Measured before the
+change: 13 rows in this file restated a value LOCKFILE already froze. None of them disagreed yet,
+which is exactly when to remove the duplicate, because a second copy is only ever one edit away from
+becoming a second answer. What stays here is what LOCKFILE does not carry: the Tailwind class and
+the use. The precedence chain already made LOCKFILE the owner on a conflict; this makes it the owner
+on the page too.
+
 ### §2.1 · Live tokens (use freely)
 
 #### Accent — Royal Blue (V3-D192-fix, 2026-05-26)
@@ -167,8 +175,8 @@ All tokens come from `tailwind.config.js` `theme.extend.colors`. Always referenc
 | Token | Hex | Tailwind class | Use |
 |---|---|---|---|
 | `s-accent.DEFAULT` | `#276EF1` | `bg-s-accent` / `text-s-accent` / `border-s-accent` | Text links, see-all/view-all, active/selected tab text, ghost & secondary button text+border, tappable row affordances, inline action labels (Buchen/Wegbeschreibung/Verwalten), "NEW" pill bg, interactive icon tints. NOT eyebrows/bullets, NOT data-emphasis (non-interactive text stays ink) |
-| `s-accent.deep` | `#1E54B7` | `bg-s-accent-deep` / `text-s-accent-deep` | Link `:hover`, accent-on-bg `:hover` (DS-6 2026-06-11 re-activation; corrected 2026-07-12, was stale #0F2A99) |
-| `s-accent.pale` | `#EAEFFE` | `bg-s-accent-pale` | "Selected" row bg, focus-glow tint, NEW pill bg-light variant |
+| `s-accent.deep` | `-> LOCKFILE` | `bg-s-accent-deep` / `text-s-accent-deep` | Link `:hover`, accent-on-bg `:hover` (DS-6 2026-06-11 re-activation; corrected 2026-07-12, was stale #0F2A99) |
+| `s-accent.pale` | `-> LOCKFILE` | `bg-s-accent-pale` | "Selected" row bg, focus-glow tint, NEW pill bg-light variant |
 
 **Contrast vs white** (`text-s-accent #276EF1` on white) ≈ **3.7 : 1** — passes WCAG AA for LARGE text (≥18px / ≥14px bold) and UI components, but **FAILS AA for normal-size body**. So blue links/labels must be ≥18px or bold, or lean on the link's icon/position affordance; do NOT use #276EF1 for 11px metadata text. (The old #1638C4 was ~9.6:1 / AAA; v2's brighter #276EF1 trades contrast for vibrancy.)
 
@@ -186,7 +194,7 @@ All tokens come from `tailwind.config.js` `theme.extend.colors`. Always referenc
 
 | Token | Hex | Tailwind class | Use |
 |---|---|---|---|
-| `s-ink` | `#0A0A0A` | `bg-s-ink` / `text-s-ink` / `border-s-ink` | Default body, h1-h6, secondary buttons, focus-visible outline (Q5 ruled) |
+| `s-ink` | `-> LOCKFILE` | `bg-s-ink` / `text-s-ink` / `border-s-ink` | Default body, h1-h6, secondary buttons, focus-visible outline (Q5 ruled) |
 
 **Contrast vs white**:
 - `text-s-ink #0A0A0A` on white = ~19.6 : 1 → **AAA** (passes all text sizes).
@@ -196,7 +204,7 @@ All tokens come from `tailwind.config.js` `theme.extend.colors`. Always referenc
 
 | Token | Hex | Tailwind | Use |
 |---|---|---|---|
-| `s-ink` | `#0A0A0A` | `text-s-ink` | Default body, h1, h2, primary text |
+| `s-ink` | `-> LOCKFILE` | `text-s-ink` | Default body, h1, h2, primary text |
 | `s-ink-2` / `s-ink.secondary` | `#6B6B6B` | `text-s-ink-2` | Secondary text, metadata, captions |
 | `s-ink-3` | `#6B6B6B` (collapsed) | `text-s-ink-3` | Same as ink-2 in V3-D138. Tertiary text role. Still distinct semantically for future un-collapse. |
 | `s-ink.disabled` | `#C5C8C4` | `text-s-ink-disabled` | Disabled state text |
@@ -207,12 +215,12 @@ All tokens come from `tailwind.config.js` `theme.extend.colors`. Always referenc
 
 | Token | Hex | Tailwind | Use |
 |---|---|---|---|
-| `s-bg.base` | `#FFFFFF` | `bg-s-bg-base` | Page substrate |
-| `s-bg.surface` | `#FFFFFF` | `bg-s-bg-surface` | Card / modal bg |
-| `s-bg.raised` | `#FFFFFF` | `bg-s-bg-raised` | Tooltip / popover bg (same hex; semantic distinction reserved) |
-| `s-bg.sunken` | `#F4F4F5` | `bg-s-bg-sunken` | Hover bg, input-active bg, inert recessed surfaces — COOL light grey, NOT warm cream/stone (v2 rule 4; reverses the V3-D460 warm #F8F5F2) |
-| `s-bg.active` | `#F4F4F5` | `bg-s-bg-active` | Input typing state (same hex as sunken) |
-| `s-border` | `#E4E4E7` | `border-s-border` | Hairlines, dividers, card outlines — COOL neutral (v2; reverses the V3-D460 warm #E8E4DF) |
+| `s-bg.base` | `-> LOCKFILE` | `bg-s-bg-base` | Page substrate |
+| `s-bg.surface` | `-> LOCKFILE` | `bg-s-bg-surface` | Card / modal bg |
+| `s-bg.raised` | `-> LOCKFILE` | `bg-s-bg-raised` | Tooltip / popover bg (same hex; semantic distinction reserved) |
+| `s-bg.sunken` | `-> LOCKFILE` | `bg-s-bg-sunken` | Hover bg, input-active bg, inert recessed surfaces — COOL light grey, NOT warm cream/stone (v2 rule 4; reverses the V3-D460 warm #F8F5F2) |
+| `s-bg.active` | `-> LOCKFILE` | `bg-s-bg-active` | Input typing state (same hex as sunken) |
+| `s-border` | `-> LOCKFILE` | `border-s-border` | Hairlines, dividers, card outlines — COOL neutral (v2; reverses the V3-D460 warm #E8E4DF) |
 
 #### Semantic colors (off-budget — they're signals, not branding)
 
@@ -227,8 +235,8 @@ All tokens come from `tailwind.config.js` `theme.extend.colors`. Always referenc
 | `s-warning.bg` | `#FDF6E7` | Warning surface tint |
 | `s-error` DEFAULT | `#DC2626` | Errors |
 | `s-error.bg` | `#FFEBEE` | Error surface tint |
-| `s-closed` | `#DC2626` | "Geschlossen" / closure states — distinct from error |
-| **`s-star`** | **`#FFC32B`** | **Rating stars — universal yellow signal. V3-D189 (2026-05-26, Q1 resolved): yellow is the locked color. Supersedes V3-D95 "never yellow." Update tailwind.config.js `s-star: "#FFC32B"`.** |
+| `s-closed` | `-> LOCKFILE` | "Geschlossen" / closure states — distinct from error |
+| **`s-star`** | `-> LOCKFILE` | **Rating stars — universal yellow signal. V3-D189 (2026-05-26, Q1 resolved): yellow is the locked color. Supersedes V3-D95 "never yellow." Update tailwind.config.js `s-star: "#FFC32B"`.** |
 | **`--heart-active`** | **`#FF3366`** | **Saved-favorite heart fill (signal exception). V3-D103.** |
 
 #### Inline urgency (currently only used in one place — Flame badge "Nur X heute")
@@ -245,7 +253,7 @@ These tokens exist in `tailwind.config.js` for backwards compat with un-rebuilt 
 | `s-brand-mid` `s-brand-deep` `s-brand-pale` `s-brand-subtle` | `#15803D` `#14532D` `#DCFCE7` `#F0FDF4` | V3-D189 | Same — brand-green family retired together. |
 | `s-coral` family | `#3B7A57` etc. | V3-D139 | Pre-B&W pivot brand (V2-D70 Aurex era). Token name lies — value is forest emerald, not coral. |
 | `s-cool` | `#89B4CA` | V3-D138 | Dusty blue — pre-B&W. Reserved for future use per memory `project_palette_b_w_pivot.md`. |
-| `s-pop` | `#C03001` | V3-D138 | Vermilion — pre-B&W. **UN-RETIRED V3-D424 (2026-06-02): live urgency-badge token, see LOCKFILE §1** |
+| `s-pop` | `-> LOCKFILE` | V3-D138 | Vermilion — pre-B&W. **UN-RETIRED V3-D424 (2026-06-02): live urgency-badge token, see LOCKFILE §1** |
 | `s-wasabi` | `#F6EDE3` | V3-D138 | Cream section tint — pre-B&W |
 | `s-droplet` | `#E8F0F4` | V3-D138 | Pale dusty blue — pre-B&W |
 | `s-cream` | `#E9DFC8` | V3-D138 | Cream substrate — pre-B&W |
