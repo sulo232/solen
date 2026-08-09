@@ -816,7 +816,10 @@
   - **"You don't push back, you agree."** Standing complaint, in his words *"you keep forgetting me. You never push back to me"*. Evidence today that it still binds: the eleven-that-was-five was accepted from a scan without one instance being read.
   - **"You forget the order I gave."** *"i told you first we have to define design dystem bfr ths did you firget"*. Evidence: correct, the design system was named first and was pre-empted repeatedly.
   - **The single sentence underneath all four, which is what O2 is asking him to confirm or correct: he wants the WORK to change, and what he keeps receiving is a description of the work changing.** Every one of the four complaints is that same substitution in a different costume, and it is why he asked for output templates rather than another check.
-- [ ] O2 He confirms or corrects it, and that becomes the north star for A to N
+- [x] O2 **ANSWERED 2026-08-09, and he picked ALL FOUR.** Offered the four readings of his own model as lettered options, he selected every one: forgetting the order he gave, talking about myself instead of his product, describing instead of doing, and agreeing instead of pushing back.
+  - **So the north star for A to N is not one failure with three symptoms, which is what I had assumed and written.** O1 named 'describing instead of doing' as the single sentence underneath the other three and offered it as my pick. He did not choose between them. Four separate failures, all live.
+  - **The one he listed first was the order.** The design system was named first and was pushed aside all day for whatever complaint was in front of me, which is W2, and W2's design half is still not started. That is the item this answer promotes above the rest.
+  - **What this closes: every A-to-N item is now measured against four tests, not one.** A change that fixes the describing failure while still being about my own tooling has satisfied one of four and failed the other three, which is a fair description of most of today.
 
 ---
 
