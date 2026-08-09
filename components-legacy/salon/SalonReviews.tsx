@@ -253,14 +253,14 @@ export default function SalonReviews({
           (FooterGate.tsx already classifies /salon/[slug]/reviews as one), which per the
           single-global-back doctrine keeps its own local back, same as /dev/pdp/team-all
           and /dev/pdp/reviews-full. */}
+      {/* 2026-08-09. The local back is GONE. The comment above claimed this route counts as a
+          focused flow, and a focused flow keeps its own back precisely BECAUSE the global header
+          is hidden on it. The global header is not hidden here: measured on a phone, the page
+          renders the global bar (back arrow, bell, hamburger) and then this second back arrow
+          directly under it. Two backs and a hamburger on a detail page is what he was looking at.
+          The doctrine is one back per screen and the global header IS that back, so the page adds
+          none. mockup-ok: removing a duplicate control, no new design. */}
       <div className="flex items-center gap-3">
-        <Link
-          href={`/${locale}/salon/${salonSlug}#section-reviews`}
-          aria-label="Zurück"
-          className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border bg-white transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms] active:ease-glide"
-        >
-          <ArrowLeft size={20} strokeWidth={2.1} aria-hidden className="text-s-ink" />
-        </Link>
         <h2 className="font-display text-[30px] font-semibold tracking-[-0.02em] text-s-ink">
           {t("reviews")}
         </h2>
