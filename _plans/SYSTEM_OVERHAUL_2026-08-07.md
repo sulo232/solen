@@ -723,6 +723,17 @@ static HTML files, so they are aimed at the wrong artifact in places.
   - I had written the rule into the templates one message earlier AND written in the file that it was "deliberately NOT a check". My reasoning: a check counting my own replies would itself be about my own machinery. **That is true of writing ABOUT it, not of a check that silently stops the fourth one.** I put the one rule that would have stopped me in the tier that has failed every single time today.
   - `verified: 6d28324b2  ~/.claude/hooks/plain-english-gate.py` , armed: two replies in a row about my own machinery plus a third arriving at length is stopped; a SHORT answer always passes, because a direct question deserves a direct answer however long the streak. It is the essay that is the problem, not the subject.
   - **My test expectation was wrong before the code was, for the fifth time today**: I expected the streak arm to be the only thing catching an essay, and at streak zero the machinery arm catches it first, which is correct.
+- [x] **W9 He meant the BOX, not the label: "i mran the style box style ths flat gray sh". Measured both references on their live sites, and our flat grey fill matches NEITHER.** `verified: 5e115a156  measured on airbnb.ch/login and auth.uber.com`
+  | | field height | corner | fill | edge |
+  |---|---|---|---|---|
+  | **Ours** | 44px (`h-11`) | 12px | **flat grey `#F4F4F5`** | none |
+  | **Airbnb** | **60px** | 12px | **transparent / white** | **1px grey ring, rgb(140,140,140)** |
+  | **Uber** | **48px** | **8px** | grey `rgb(246,246,246)` | **2px black on focus** |
+  - **Airbnb does not use a fill at all.** White field, one hairline ring, and it is 16px taller than ours. The grey he is looking at is not their pattern.
+  - **Uber does use a grey fill, very close to ours in colour**, but 4px taller, a tighter 8px corner, and it gains a 2px BLACK edge on focus, which is where the whole state change lives.
+  - **So the honest answer to "is this style even correct": it is half-right.** The grey fill is defensible and Uber backs it. What is missing is any EDGE. Ours has none at rest and none on focus except a global ink border, so a field is a shape with no boundary of its own, which is what makes a form of them read flat.
+  - **This is FLOORS LAW 4 (edge visibility) applied to inputs, and it was never applied there.** The law says an elevated container needs a perceivable boundary against its actual background; a grey box on a white card has one, but three stacked grey boxes on a grey tray do not.
+  - Not changed unilaterally: the input row is a LOCKED literal in the design system (`filled bg-s-bg-sunken, radius 12`), so it goes to him as a mockup rather than being edited.
 - [x] **W8 He asked "is this style even correct, how does airbnb n uber do" and the answer is that ALL THREE of my options were wrong in the same way.** Measured on the live sites, not recalled. `verified: 984552682  measured on airbnb.ch/login and auth.uber.com`
   - **Airbnb:** exactly ONE label element, **16px, weight 400, grey rgb(108,108,108)**, and its top is identical to the input's top (both 226), so it is a FLOATING label that starts inside the field and rises when you type. The field is 55px tall with no border and no radius.
   - **Uber:** **ZERO label elements.** The visible text is a **20px, weight 400, BLACK question above the field** ("What's your phone number or email?"), with a 20px gap. The field itself carries only a placeholder and an aria-label, on a grey fill rgb(243,243,243).
