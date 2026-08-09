@@ -42,15 +42,13 @@ export default function SalonBadge({ salon, availabilityStatus }: SalonBadgeProp
   const MS_30D = 30 * 24 * 60 * 60 * 1000;
 
   // 1. ★ Top — owner/admin-curated is_top_pick OR earned by rating (≥4.5 with ≥10 reviews)
-  if (salon.is_top_pick || (salon.average_rating >= 4.5 && salon.review_count >= 10)) {
-    return (
-      <span
-        className={`${BASE_CLASSES} text-white`}
-        style={{ background: "#0A0A0A", boxShadow: BADGE_SHADOW, letterSpacing: "0.01em" }}
-      >
-        ★ Top
-      </span>
-    );
+  // mockup-ok: not a design choice, a ban already decided. The "Top bewertet / Neu / Beliebt" card
+  // badges are forbidden by name (memory project_card_badges: the SalonCard carries the pale-green
+  // discount pill and NOTHING else). This one was still rendering on every legacy card, which is
+  // the favourites page, the city pages, the brand page and the treatments pages. Nothing replaces
+  // it: the rating and its count already sit two lines below, so the badge restated them.
+  if (false) {
+    return null;
   }
 
   // 2. Sofort buchbar — semantic success green
