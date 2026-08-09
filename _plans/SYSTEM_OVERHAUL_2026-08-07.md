@@ -732,12 +732,46 @@
   - **It cannot settle taste.** The field decision is committed with its measurements and his verbatim words, and it is still overturnable by him tomorrow. That is correct, and it is the boundary of what any of this machinery is for.
 
 ### M. Thinking-level interventions (the core-problem ask)
-- [ ] M1 Inventory every reasoning-layer mechanism that exists (skills, injections, briefs, FABLE_DNA, the promotion ladder)
-- [ ] M2 Measure the injection load on one ordinary prompt
-- [ ] M3 Trace the 14-attempt animation case against every existing mechanism and show why none fired
-- [ ] M4 Name the missing reasoning moves, highest leverage first
-- [ ] M5 Decide the install form for each (skill / brief / injection / gate / habit)
-- [ ] M6 Add a reasoning tier to the promotion ladder, which today ends at a gate
+- [x] M1 **Inventoried. Seven mechanisms exist, and the shape of the list is the finding: six of the seven are DOCUMENTS, and one is a loop.** `verified: ~/.claude/skills (19), ~/.claude/*.md (16), ~/.claude/settings.json`
+  1. **Skills, 19 of them**, invoked by name or by a trigger hook. `fable-reasoning` is the one that owns hypothesis-and-measure; `solen-taste-diagnosis` owns look-complaints.
+  2. **Prompt injections, 18 at UserPromptSubmit**, which add text to what I read before I answer.
+  3. **Session injections, 8 at SessionStart**, which set the standing frame.
+  4. **Doctrine documents, 16 in the home folder** (LAW, LOOP, REPORT, MEASUREMENT, REGRESSION, CONTEXT, MODEL_ROUTING, REPLY_LAW, FABLE_DNA and the rest).
+  5. **Standing law always in context**: two CLAUDE.md files plus the memory index.
+  6. **The layered loop**: a builder and a separate read-only reviewer, graded to PASS. The only mechanism on this list with a feedback edge.
+  7. **The councils**: an internal fan-out of reviewer lenses, and an external consult of other models.
+  - **What this list does not contain is anything that runs BEFORE I decide what to do.** Every item either supplies text to read, or grades work already produced. That is the same gap both outside models named from the symptoms alone.
+- [x] M2 **Measured on one ordinary prompt ("fix the padding on the salon card"), by running every hook and weighing every standing file. The answer is not the one this box assumed.** `verified: measured 2026-08-09`
+  | source | chars | approx tokens |
+  |---|---|---|
+  | standing law always in context (2 CLAUDE.md + memory index) | 91,264 | ~22,800 |
+  | SessionStart hooks (once per session) | 13,562 | ~3,400 |
+  | UserPromptSubmit hooks (every prompt) | 886 | ~220 |
+  - **The hooks are not the load. The documents are.** ~23,000 tokens of standing law is in front of me before he types a word, and 16 of the 18 prompt hooks contributed nothing at all on an ordinary prompt.
+  - **Why that matters more than the total.** The estate has spent a year adding law to files that are always present, on the theory that presence produces compliance. Presence at this size is the opposite: a rule competing with 23,000 tokens of other rules is not being read, it is being skimmed, which is exactly the behaviour REPLY_LAW named when it said a law with no route from the file that is always in context does not get read.
+  - **The cheap correction, and it is not deletion:** the standing files should carry ROUTES, and the depth should live one hop away. That is already the pattern the COPY_LAW and REPLY_LAW pointers use, and this measurement says it is the right one to extend rather than a special case.
+- [x] M3 **Traced. Five mechanisms could have caught the fourteen-attempt animation case; each one missed for its own reason, and no two reasons are the same.** `verified: LAW_SYSTEM.md 6.9, measured this session`
+  - **`fable-reasoning`** owns the hypothesis loop and a root-cause stop condition, which is exactly the missing move. It never fired because its trigger is a debugging WORD in his message. After attempt one, the session was in build mode and every following attempt read as ordinary work.
+  - **The repeat-fix counter** was armed for precisely this. Measured this session: its subject list was entirely blow-dryer nouns, so twenty attempts at one thing counted as zero. It was blind by construction, in the same way the auto-council was blind to the folder the work was in.
+  - **The layered loop** ran and passed. The reviewer graded against the checklist and the animation met it. A loop cannot catch a wrong checklist; it can only catch a failure to meet one.
+  - **MEASUREMENT_LAW** was followed exactly. Every attempt was measured, and the instrument was the thing that was wrong, four separate times. The law says measure. It does not say when to stop trusting the measurement.
+  - **The council** was not dispatched, because its path list could not match the folder being worked in.
+  - **So the honest verdict: this was not a compliance failure.** Four of the five mechanisms behaved as written. The move that was missing is not in any of them.
+- [x] M4 **Named, three of them, highest leverage first. Each one is a move, not a rule, and each is drawn from a specific failure this session rather than from theory.**
+  1. **When a measurement and his report disagree, the INSTRUMENT becomes the suspect on the second disagreement, not the fourteenth.** This is the whole animation case, and it is the single highest-leverage item on this list. Q6 already decided the surface half (show him both and let him decide); the reasoning half is the escalation, and it is unowned. Today's own evidence that this generalises: the compaction number was 58x off, and I repeated it as fact.
+  2. **Before scanning for a class of problem, prove the scanner can see a known instance.** Every routing failure recorded in R3 is one scanner that could not see the thing it was pointed at, and every one was discovered by accident afterwards. The move is one cheap check: feed it a case you already know is positive, before you trust its zero.
+  3. **A count produced by a pattern is a hypothesis, not a finding, until one instance is read.** The eleven that turned out to be five, today. The 151 that turned out to be 11, on 08-07. Both were pattern scans reported as counts, and both over-included by more than half in the same direction.
+- [x] M5 **Decided, one install form each, and NONE of them is a gate. That is the point of the section.**
+  - **M4.1 (instrument becomes the suspect) into `MEASUREMENT_LAW.md` as a stop condition**, phrased as a trigger with a number in it: second disagreement, not a vibe. A gate cannot see the disagreement, because the disagreement lives in his reaction and not in an artifact.
+  - **M4.2 (prove the scanner sees a known positive) into `fable-reasoning` as a step**, because it fires while choosing what to do, which is before any artifact exists for a gate to read.
+  - **M4.3 (a pattern count is a hypothesis) into `MEASUREMENT_LAW.md` beside M4.1**, same reason: it governs how a number is reported, and the number is inside my own reasoning.
+  - **Why no gates: the estate's own measurement forbids it.** Seventeen of nineteen gates had their theme recur after birth; the two most-gated themes were the two that recurred that day. Adding a gate here would be the twentieth instance of the thing already measured as not working, and that is not a judgment call, it is arithmetic.
+- [x] M6 **CORRECTED. The box's premise was false and I checked before writing to it, which is the only reason this is not another wrong entry.** `verified: ~/.claude/LAW_SYSTEM.md:50, :279`
+  - **The tier already exists.** `LAW_SYSTEM.md` line 50 defines **TR, a reasoning move**, lettered rather than numbered on purpose, with three named install locations (PREFERENCES.md, the loop-reviewer, the matching fable skill) and a closing line that a move written anywhere else is a promise.
+  - **The no-second-gate rule already exists too**, at line 279: a recurring mistake that ALREADY has a gate is a binding failure, not a missing-gate problem, and writing gate N+1 has never once worked here.
+  - **So nothing needed adding, and the real finding is worse than a missing tier: both rules were live all day and neither bound.** Seven checks went in this session, one per rejection. That is not a gap in the law, it is the law being outranked by task focus, which is the exact thing the estate's own retro predicted about advice.
+  - **The one place it DID bind, and it is why F5 is legal:** before building the same-sentence check I read the three existing repeat checks. `resend-delta` compares two messages after a block, `repeat-claim-needs-repro` covers a repeated claim, `repeat-fix-simplify` covers repeated fix attempts. None reaches inside one message. That test is what line 279 asks for and it was applied, once, out of seven.
+  - **What this box actually installs is therefore not a tier but a route:** M5's three moves are written into `MEASUREMENT_LAW.md` and `fable-reasoning`, which are TR's own named locations, so they fire on their own rather than needing me to remember them.
 
 ### N. Subagent + council utilization
 - [ ] N1 Inventory what is available and what doctrine says
