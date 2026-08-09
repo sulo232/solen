@@ -344,12 +344,18 @@ export default function SalonReviews({
                 summary line above already renders that exact count once, so this row was
                 showing the same number twice in one header. */}
             <div className="mb-4 mt-6 flex items-center justify-end border-t border-s-border pt-5">
-              {/* mockup-ok: floating sort pill sizing (h-11 + shadow-whisper), matching the
-                  approved reviews-full page's pill. */}
+              {/* 2026-08-09, he asked "why does one use shadow" and whether there is a rule for
+                  it. There is, in the design contract's surface table: a control carrying
+                  elevation DROPS its border, never both. This pill had both, which is why it read
+                  as a different grammar from the filter pills sitting directly above it on the
+                  same screen. The shadow goes and the hairline stays, so the row matches them.
+                  Supersedes the note that used to sit here justifying h-11 + shadow-whisper by
+                  copying another page: that page has the same fault, so it was not authority.
+                  mockup-ok: applying a written rule, not choosing a look. */}
               <button
                 type="button"
                 onClick={() => setSortSheetOpen(true)}
-                className="flex h-11 items-center gap-1.5 rounded-full border border-s-border bg-white px-4 font-body text-[13px] font-semibold text-s-ink shadow-whisper transition active:scale-[0.98] active:duration-[80ms] active:ease-glide"
+                className="flex h-11 items-center gap-1.5 rounded-full border border-s-border bg-white px-4 font-body text-[13px] font-semibold text-s-ink transition active:scale-[0.98] active:duration-[80ms] active:ease-glide"
               >
                 {sortLabel}
                 <ChevronDown size={16} className="text-s-ink-2" />
