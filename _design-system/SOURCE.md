@@ -1386,4 +1386,68 @@ When tackling a new route class, raise these (extracted from SOLEN_PATTERNS Part
 
 ---
 
-*End of SOURCE.md. Last updated 2026-05-26 / V3-D183.*
+
+---
+
+## §23 · Forms
+
+The one layer this document did not have. Probed 2026-08-09 against the 22 layers a complete design
+system carries: 21 were specified somewhere, forms was not, and the product had filled the gap on
+its own with **111 labels in 8 different styles**. What follows is written from measurements of the
+live product and of the two references the owner named, not from preference.
+
+### 23.1 The field , LOCKED 2026-08-09 (owner decision, see TASTE_LOG)
+
+| property | value |
+|---|---|
+| height | **48** (`min-height: 48px`, the base rule in `globals.css`) |
+| corner | **12** |
+| fill | **white** |
+| line | **1px `#E4E4E7`**, always visible |
+| when tapped | **nothing changes** |
+| error | the same line turns `--color-error` (`.input-error`) |
+
+Owner verbatim: *"make like airbnb but without the focus line when tapped in"*, after being shown
+Airbnb measured at 60 tall / 12 corner / no fill / 1px grey, and Uber at 48 / 8 / grey fill / 2px
+black on focus. This supersedes the 2026-07-17 filled-grey-at-rest decision and the LOCKFILE §3.5
+depth note, both of which now describe history.
+
+**The known cost, recorded because it was raised before the decision and accepted:** with no change
+on focus there is no visible indicator of which field is active, which WCAG 2.4.7 asks for. On a
+phone the caret and keyboard cover it; on a laptop keyboard navigation has nothing. The smallest
+change that would satisfy both is the line darkening to `s-ink-2`, and it remains available.
+
+**One implementation fact that matters more than it looks:** the base rule in `globals.css`
+out-specifies Tailwind utilities on every input in the product. A field styled with classes on the
+element will silently render as the base rule instead. This was measured on 2026-08-09, when a
+comparison page built from real `<input>` elements rendered three "different" designs identically.
+Change the base rule, or the change does not happen.
+
+### 23.2 The label , OPEN, and the only thing in this section that is not settled
+
+**111 labels, 8 styles.** The three actually in use: `text-xs / font-medium / s-ink-2` (69 places),
+`text-[12px] / s-ink` (8), `text-[12px] / font-semibold / s-ink` (4). Seventeen more carry no
+explicit style at all.
+
+Both references reject the whole idiom: Airbnb floats a 16px grey label INSIDE the field, Uber uses
+no label and asks a 20px black question above it. The five options are rendered at
+`/dev/form-labels`. Until this is settled, **use the 69-place style** and do not invent a sixth.
+
+### 23.3 Everything else, and where it already lives
+
+Not repeated here, because a value written twice is a value that will disagree with itself:
+
+- helper text, validation, required marking, disabled , SOURCE §10 (state grammar)
+- select, checkbox, radio , COMPONENT_REGISTRY
+- multi-step progress , SOURCE §13.2 (stepper)
+- keyboard and autofill hints , `_rules/` i18n and a11y
+- copy inside a field (placeholder, helper, error wording) , COPY_LAW
+
+### 23.4 The rule this section exists to prevent
+
+A layer nobody writes down does not stay empty. It gets filled by whoever touches it next, once per
+touch. Eight label styles is not eight decisions; it is one decision nobody made, taken 111 times.
+
+---
+
+*End of SOURCE.md. Last updated 2026-08-09 , §23 Forms added (the one missing layer).*
