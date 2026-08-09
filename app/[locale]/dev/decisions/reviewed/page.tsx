@@ -34,6 +34,8 @@ type Row = {
   options?: string[];
   recommendation?: string;
   cost_if_ignored?: string;
+  checked?: "DONE" | "NOT_DONE" | "MOOT" | "UNCLEAR";
+  effort?: string;
 };
 
 function load(): { reviewed: string; rows: Row[] } {
@@ -123,6 +125,17 @@ export default function ReviewedDecisionsPage() {
               <p className="text-[15px] text-s-ink">{r.recommendation || r.reason}</p>
               {r.recommendation && r.reason ? (
                 <p className="mt-1.5 text-[13px] text-s-ink-2">{r.reason}</p>
+              ) : null}
+              {r.checked ? (
+                <p className="mt-2 text-[13px] text-s-ink-2">
+                  {r.checked === "DONE"
+                    ? "Already done in an earlier session."
+                    : r.checked === "MOOT"
+                      ? "No longer applies, that screen was rebuilt."
+                      : r.checked === "UNCLEAR"
+                        ? "Could not settle it by reading the code."
+                        : `Still to do${r.effort ? `, ${r.effort}` : ""}.`}
+                </p>
               ) : null}
             </li>
           ))}

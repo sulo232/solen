@@ -7,13 +7,21 @@
    "ref": "BUG_HUNT.md:58",
    "verdict": "MINE",
    "reason": "the \"TOP\" badge and the Zap icon are both already banned by name, so removing them is compliance, not a choice",
-   "recommendation": "I would swap the favourites grid to the same salon card the rest of the site uses (the converged card he approved on 2026-07-13), which deletes the badge and the icon in one move. Still live today at FavoritesList.tsx:12,103."
+   "recommendation": "I would swap the favourites grid to the same salon card the rest of the site uses (the converged card he approved on 2026-07-13), which deletes the badge and the icon in one move. Still live today at FavoritesList.tsx:12,103.",
+   "checked": "NOT_DONE",
+   "evidence": "app/[locale]/_components/profile/FavoritesList.tsx:12 still `import SalonCard from \"@/components-legacy/SalonCard\"` and :103 still renders `<SalonCard ... onFavoriteToggle={removeFavorite} />`. That legacy card renders the badge at components-legacy/SalonCard.tsx:165-170 (`<SalonBadge salon={salon} availabilityStatus={...} />`), and components-legacy/ui/SalonBadge.tsx:45-53 returns the literal `★ ",
+   "what_is_left": "either add a removal callback path to SalonResultCard/HeartButton before swapping FavoritesList onto it, or (smaller) strip the SalonBadge block + Zap import from components-legacy/SalonCard.tsx , but that legacy card is shared, so check its other call sites first",
+   "effort": "medium"
   },
   {
    "ref": "BUG_HUNT.md:75",
    "verdict": "MINE",
    "reason": "ALL-CAPS labels are already banned, so sentence-casing them needs no decision",
-   "recommendation": "I would change the salon sign-up form's field labels from ALL-CAPS to normal sentence case and drop the wide letter-spacing. Still live at onboarding/salon/page.tsx:41,83,94,106,114."
+   "recommendation": "I would change the salon sign-up form's field labels from ALL-CAPS to normal sentence case and drop the wide letter-spacing. Still live at onboarding/salon/page.tsx:41,83,94,106,114.",
+   "checked": "NOT_DONE",
+   "evidence": "app/[locale]/onboarding/salon/page.tsx still ships `uppercase tracking-[.14em]` on every field label: :83 (name), :94 (email), :106 (categories), :129 (Stadt), :145 (address), :229, :258, :272 , exactly the lines the 2026-07-01 park cited. It is wider than the park recorded: the step eyebrow at :41 uses `uppercase tracking-[.20em]`, the category pills at :114 use `uppercase tracking-[.06em]`, and ",
+   "what_is_left": "one mechanical pass over the 17 `uppercase tracking-[...]` occurrences in that single file, with a decision on whether the buttons (:614, :712, :721) are in scope or only the labels",
+   "effort": "small"
   },
   {
    "ref": "BUG_HUNT.md:104",
@@ -118,7 +126,11 @@
    "ref": "WORKLOG.md:188",
    "verdict": "MINE",
    "reason": "the badge half was resolved by investigation and you already rejected the rose tag on sight; the other two are doc contradictions I settle by the precedence chain",
-   "recommendation": "I make the LOCKFILE the single definition for the spring curve and delete the duplicate, and I keep the documented per-role icon stroke ladder while removing the stray line that claims stroke 2 everywhere."
+   "recommendation": "I make the LOCKFILE the single definition for the spring curve and delete the duplicate, and I keep the documented per-role icon stroke ladder while removing the stray line that claims stroke 2 everywhere.",
+   "checked": "NOT_DONE",
+   "evidence": "All three parked items were checked. (a) Badge half IS resolved , _plans/TASTE_RATIONALE.md:53 records the investigation (mobile green-by-price vs web rose = two surfaces, two treatments) and :54 records the owner rejecting the rose tag on sight. (b) Spring double-definition is STILL open and is worse than 'one duplicate': _design-system/RATIONALE.md:169 explicitly flags it unreconciled, and four ",
+   "what_is_left": "spring: pick the survivor and state whether bezier-vs-physics is two intentional mechanisms (RATIONALE.md:169 argues it is: bezier for fire-and-forget CSS, physics for interruptible gestures) rather than deleting one. icon stroke: make lib/icon-stroke.ts the single documented source and reconcile LOCKFILE:1291, LOCKFILE:1354, SOURCE:591-595 and MOTION:158 to it, not to the per-role ladder",
+   "effort": "medium"
   },
   {
    "ref": "WORKLOG.md:198",
@@ -130,7 +142,11 @@
    "ref": "HOME_SEARCH_INSPO.md:125",
    "verdict": "MINE",
    "reason": "a rule-conflict, not a taste fork: the 300ms ceiling is written for transitions while the heart save is a one-shot celebration your motion sheet already locks by name",
-   "recommendation": "I keep the heart pop as it is and write one line saying one-shot celebration animations sit outside the transition ceiling, same class as the booking success mark."
+   "recommendation": "I keep the heart pop as it is and write one line saying one-shot celebration animations sit outside the transition ceiling, same class as the booking success mark.",
+   "checked": "NOT_DONE",
+   "evidence": "No such line exists in the law. MOTION.md:197 still reads flatly 'Above 300ms is reserved for a FULL-SCREEN transition only' with no keyframe/one-shot carve-out, and the tier table at MOTION.md:193-195 has only press/snap/reveal. The heart pop is unchanged and still over the ceiling: app/globals.css:475-477 `.animate-heart-pop { animation: heart-pop 350ms ... }`, applied at app/[locale]/_component",
+   "what_is_left": "one line added to MOTION.md next to the tier table at :193-197, naming the closed set and the keyed-once condition; SOURCE.md:509 should point at it",
+   "effort": "small"
   },
   {
    "ref": "RANKED.md:146",
@@ -142,7 +158,11 @@
    "ref": "RANKED.md:208",
    "verdict": "MINE",
    "reason": "arithmetic settles it, the press ladder is already a constant-perceived-movement rule so the correct scale per control size is computed, not chosen",
-   "recommendation": "I measure the edge movement of each off-ladder value: normalise the ones that fall outside the 1.2 to 1.6px band (the 0.985 group moves 2.69px, clear drift) and formally add the two rungs at the very large and very small ends where the math lands in band."
+   "recommendation": "I measure the edge movement of each off-ladder value: normalise the ones that fall outside the 1.2 to 1.6px band (the 0.985 group moves 2.69px, clear drift) and formally add the two rungs at the very large and very small ends where the math lands in band.",
+   "checked": "NOT_DONE",
+   "evidence": "Ran it: `node scripts/check-press.mjs` today reports `DEAD=0 NO-TRANSITION=4 OFF-LADDER=42 UNCERTAIN=27 OK=338` , the same 42 the plan recorded, so nothing was normalised. The checker still hardcodes three rungs at scripts/check-press.mjs:112 `const LOCKED_RUNGS = [0.97, 0.98, 0.94];`, and the doc table at MOTION.md:124-126 still lists only those three. MOTION.md:138-142 still carries the unresolv",
+   "what_is_left": "compute edge movement per off-ladder site from real rendered boxes, normalise only the 0.985 group (6 uses, 2.69px), add the 0.99 and 0.92 rungs to both MOTION.md:124-126 and LOCKED_RUNGS at check-press.mjs:112, and fix the join-parser blind spot first or the sweep's clean result is not evidence",
+   "effort": "medium"
   },
   {
    "ref": "SEARCH_MORPH.md:30",
@@ -180,12 +200,19 @@
   {
    "ref": "SEARCH_MORPH.md:81",
    "verdict": "MINE",
-   "reason": "a small affordance gap I can settle: on the map a store row zooms to the pin, on the list the same-looking row opens the salon page, so I would add a small locate icon to the map variant only and show it to him in the next design pass rather than asking now"
+   "reason": "a small affordance gap I can settle: on the map a store row zooms to the pin, on the list the same-looking row opens the salon page, so I would add a small locate icon to the map variant only and show it to him in the next design pass rather than asking now",
+   "checked": "NOT_DONE",
+   "evidence": "app/[locale]/_components/search/SalonResultCard.tsx:300 — the `suggest` variant ends in an unconditional `<ArrowRight size={18} …>`, the same trailing glyph whether or not the row locates. The variant union at SalonResultCard.tsx:82 (\"grid\"|\"list\"|\"card\"|\"suggest\"|\"feed\") has no map/locate member and the import at SalonResultCard.tsx:4 pulls only Calendar/Store/MapPin/ArrowRight — no Crosshair/Loc",
+   "what_is_left": "Add an optional flag to SalonResultCard's suggest branch that swaps the trailing ArrowRight for a locate glyph; the caller already knows the context (onSalonLocate presence in SearchOverlay.tsx:630). Mockup-first still binds since it is a visual change on a shared component.",
+   "effort": "small"
   },
   {
    "ref": "SEARCH_MORPH.md:95",
    "verdict": "MINE",
-   "reason": "not answerable yet, and checking the data settles that: every seeded salon is in Basel, so I would leave the Basel default alone and revisit when a second city has real salons, preferring last-searched-city over asking the browser for location"
+   "reason": "not answerable yet, and checking the data settles that: every seeded salon is in Basel, so I would leave the Basel default alone and revisit when a second city has real salons, preferring last-searched-city over asking the browser for location",
+   "checked": "DONE",
+   "evidence": "The decision was to change nothing, and nothing changed. lib/cities.ts:273-276 still resolves DEFAULT_CITY_SLUG to \"basel\" (env-overridable), and its own doc comment at lib/cities.ts:269-271 records the same deferral (\"Real DETECTION (geolocation / last-searched city) is a deliberate follow-up\"). SearchTemplate.tsx:454 applies it as a real filter, scoped to the generic search surface only. Nothing",
+   "what_is_left": "Nothing in code. One caveat on the premise, not the verdict: I could not confirm \"every seeded salon is in Basel\" offline — _inventory/_db-snapshot.json is schema-only (keys: _note/schema/tables/capturedAt/rlsDisabled, no rows) and no dev server is up on :3000 or :3001. app/api/admin/seed-test-salons/route.ts:124 defaults its seeder to [\"basel\",\"zuerich\",\"bern\"], so the revisit trigger this item s"
   },
   {
    "ref": "SEARCH_MORPH.md:98",
@@ -246,7 +273,11 @@
    "ref": "SELF_AUDIT_2026-07-25.md:238",
    "verdict": "MINE",
    "reason": "six design suggestions, five of which are plain breaches of already-locked rules, so the lock settles them rather than him",
-   "recommendation": "Fix the four still-live ones: the nine uppercase labels on the partner page, the four odd dividers in the booking pay step, the one 36px search button under the 44px floor, and the booking-action page that renders zero tappable elements. The blue Mehr lesen is already done. Drop the haptics item: web vibration is Android-only, so it would buzz for some phones and not others."
+   "recommendation": "Fix the four still-live ones: the nine uppercase labels on the partner page, the four odd dividers in the booking pay step, the one 36px search button under the 44px floor, and the booking-action page that renders zero tappable elements. The blue Mehr lesen is already done. Drop the haptics item: web vibration is Android-only, so it would buzz for some phones and not others.",
+   "checked": "NOT_DONE",
+   "evidence": "Two of the four named fixes landed, two did not. STILL OPEN — (a) partner uppercase: app/[locale]/partner/page.tsx:45,59,96,128,161,249,284,401,496 each carry `uppercase tracking-[0.16em]`, exactly the 9 the item counts (line numbers drifted from the 47/483 cited in SUGGESTIONS.md:66, content unchanged); (b) booking-action: app/[locale]/booking-action/page.tsx is 77 lines with zero `<button>`, `<L",
+   "what_is_left": "Two of four: strip the 9 tracked-uppercase eyebrows on the partner page, and give booking-action a recovery action in all three terminal states. Plus a one-line MOTION.md:94 edit to record the haptics drop, otherwise it resurfaces on the next weekly gather.",
+   "effort": "medium"
   },
   {
    "ref": "SELF_AUDIT_2026-07-25.md:274",
@@ -257,7 +288,11 @@
    "ref": "SELF_AUDIT_2026-07-25.md:289",
    "verdict": "MINE",
    "reason": "correcting the colour list the drift checker uses is my job, but the fact under it is real: a permanently-killed colour token is still used 26 times in live code",
-   "recommendation": "Add the 16 verified live-token colours and the 7 retired token names to the checker, leave the 9 it blocks correctly alone, then sweep the killed s-amber and s-love usages out of the app."
+   "recommendation": "Add the 16 verified live-token colours and the 7 retired token names to the checker, leave the 9 it blocks correctly alone, then sweep the killed s-amber and s-love usages out of the app.",
+   "checked": "NOT_DONE",
+   "evidence": "Neither half was applied. AST-parsed .claude/skills/solen-drift-check/scripts/check.py:37 gives ALLOWED_HEX exactly 33 members — the same 33 the audit measured — and it contains none of the 16 named live-token hexes (#E4E4E7, #1F8900, #F1AE27, #FDF6E7, #B45309, #C2410C, #C03001, #C5C8C4, #9CA3AF, #D1D5DB, #DC2626, #FEE2E2, #E8F5E9, #EA580C, #FFEDD5, #EAEFFE). check.py:108-125 gives RETIRED_TOKENS ",
+   "what_is_left": "All of it: add the 16 live-token hexes to ALLOWED_HEX and the 7 retired names to RETIRED_TOKENS (leaving the 9 correct blocks alone), then sweep s-amber to s-warning/s-star and s-love to the heart/error tokens across the 13 files before arming the new RETIRED entries.",
+   "effort": "medium"
   },
   {
    "ref": "SELF_AUDIT_2026-08-01.md:279",
@@ -268,7 +303,11 @@
    "ref": "SELF_AUDIT_2026-08-01.md:337",
    "verdict": "MINE",
    "reason": "the third verbatim restatement of the drift-checker colour list; it recurs because I keep parking it, not because he owes an answer",
-   "recommendation": "Same as the 07-25 version: apply the colour-list correction and sweep the dead tokens out of the app, then stop reporting it."
+   "recommendation": "Same as the 07-25 version: apply the colour-list correction and sweep the dead tokens out of the app, then stop reporting it.",
+   "checked": "NOT_DONE",
+   "evidence": "Same finding, same code, one pass later and still unapplied — which is the point the entry itself makes. SELF_AUDIT_2026-08-01.md:320-334 restates the gaps and records the live counts (26 s-amber / 10 s-love); today check.py:37 still parses to 33 ALLOWED_HEX with no #E4E4E7, and check.py:108 to 14 RETIRED_TOKENS with no s-amber and no s-love, so no correction landed between 08-01 and now. Current ",
+   "what_is_left": "Nothing separate from the 07-25 item — these are one piece of work recorded twice. Fix it once and delete both entries so a fourth pass does not re-report it.",
+   "effort": "medium"
   },
   {
    "ref": "SELF_AUDIT_2026-08-01.md:361",
@@ -332,7 +371,10 @@
    "ref": "HOME_OVERHAUL.md:46",
    "verdict": "MINE",
    "recommendation": "He already answered this one with \"none of em\", so I finish the reference capture and come back with ONE grounded light-photo homepage hero on the real feed instead of another set of three invented options.",
-   "reason": "he rejected the three options; what is left is my research, not his pick"
+   "reason": "he rejected the three options; what is left is my research, not his pick",
+   "checked": "MOOT",
+   "evidence": "The light-photo homepage hero was killed by name after this item was written. `_design-system/REMOVED.md:99` graveyards \"home hero image homepage hero photo decorative static image baked in\" with the owner's THIRD rejection dated 2026-07-25 (\"no other company has just image hard coded baked into a random area... what we need to do is SHOW OFF THE STORES THAT WE HAVE\"). `CLAUDE.md:67` rewrote FLOOR",
+   "what_is_left": "Nothing on the hero. The other two halves of W5 were absorbed elsewhere: section rhythm by commit `0b1bbeba9` and the FeedZone edge-visibility fix by `0c5cfb01c`. The one genuine leftover is the dev preview route `app/[locale]/dev/home-fix/page.tsx`, which is a live dev route rendering a graveyarded pattern."
   },
   {
    "ref": "HOME_OVERHAUL.md:71",
@@ -348,7 +390,11 @@
    "ref": "LAW_IMPROVE_2026-07-27.md:72",
    "verdict": "MINE",
    "recommendation": "Fix it myself: the shrink-on-tap amount is 0.97 in 222 places and 0.985 in 6, and our own measurement says the 0.985 version moves an edge the most and looks like a mistake, so I normalise the 6 and correct the rulebook row.",
-   "reason": "a press animation nobody can see the difference of on a phone, and the measurement already decides it"
+   "reason": "a press animation nobody can see the difference of on a phone, and the measurement already decides it",
+   "checked": "NOT_DONE",
+   "evidence": "Nothing moved. Exactly 6 occurrences of the 0.985 press scale remain in app code, matching the plan's count precisely: `app/[locale]/rewards/RewardsView.tsx:239`, `components-legacy/refund/RefundCaseView.tsx:73`, `components-legacy/refund/ReportRefundEntry.tsx:85`, `:87`, `components-legacy/refund/UpchargeApproveView.tsx:88`, `:529`. The rulebook row is untouched: `_design-system/LOCKFILE.md:578` ",
+   "what_is_left": "Swap the 6 literals to 0.98 and correct the one LOCKFILE table cell at line 578, plus the MOTION.md paragraph at 141 that defers the call.",
+   "effort": "small"
   },
   {
    "ref": "LAW_IMPROVE_2026-08-03.md:38",
@@ -389,13 +435,21 @@
    "ref": "COPY_VOICE_LAW.md:254",
    "verdict": "MINE",
    "reason": "formal Sie is already the settled rule, so all that is left is merge order",
-   "recommendation": "Stop treating this as blocked. Formal address for German is locked in COPY_LAW.md, so the branch's 18 du-flips are simply wrong under current law regardless of what happens to the branch. That branch is 507 commits ahead of main and still active as of 2026-08-07, so it is not something to abandon. The fix is sequencing, not a fork: merge on whatever branch plan we are on, then re-run the formal-register pass over messages/de.json afterwards and re-check the 41 bare-imperative strings the pronoun-only sweep missed."
+   "recommendation": "Stop treating this as blocked. Formal address for German is locked in COPY_LAW.md, so the branch's 18 du-flips are simply wrong under current law regardless of what happens to the branch. That branch is 507 commits ahead of main and still active as of 2026-08-07, so it is not something to abandon. The fix is sequencing, not a fork: merge on whatever branch plan we are on, then re-run the formal-register pass over messages/de.json afterwards and re-check the 41 bare-imperative strings the pronoun-only sweep missed.",
+   "checked": "NOT_DONE",
+   "evidence": "The item has two halves and they landed differently. The half the WOULD DO called \"re-run the formal pass and re-check the 41 bare imperatives\" is already DONE, independent of any merge: commits `26c025cf5` (\"German round 2: the 41 invisible strings, and 45 more the re-derivation found\") and `c0ce6e64e` (\"German round 3: the last 39\") are both reachable from HEAD. A full walk of messages/de.json r",
+   "what_is_left": "Only the merge sequencing. Get D5 answered, then merge (or cherry-pick, per the recorded lean of taking the security migration and RESEARCH_METHOD.md only), then re-run the formal sweep over the merged de.json.",
+   "effort": "large"
   },
   {
    "ref": "COPY_VOICE_LAW.md:320",
    "verdict": "MINE",
    "reason": "deleting German text no user ever sees, and git undoes it, so it is not really irreversible",
-   "recommendation": "Do not bulk-delete on a static scan. All four locale files are git-tracked, so 'irreversible' is wrong, but the scan's own stated limit is real: a key built at runtime looks dead to it. I would leave the 1,518 alone for now and, if we do cut them, use only the namespace-aware list, skip any namespace that builds keys from template literals, and land it as one reviewable commit so a revert is one command."
+   "recommendation": "Do not bulk-delete on a static scan. All four locale files are git-tracked, so 'irreversible' is wrong, but the scan's own stated limit is real: a key built at runtime looks dead to it. I would leave the 1,518 alone for now and, if we do cut them, use only the namespace-aware list, skip any namespace that builds keys from template literals, and land it as one reviewable commit so a revert is one command.",
+   "checked": "NOT_DONE",
+   "evidence": "No keys were deleted, which is what the WOULD DO recommended. messages/de.json still parses to exactly 5,687 leaf keys — the identical number the plan quoted when it measured \"1,660 of 5,687 unreferenced\" — so the corpus is untouched; en/fr/it are likewise unchanged at 6,357/6,350/6,339 lines. Two things did change under the item, and both cut against acting on it now. First, both candidate lists ",
+   "what_is_left": "If this is ever resumed: rebuild the namespace-aware scan as a committed script rather than a one-off, since the /tmp evidence for the original run is unrecoverable, then land the cut as one commit.",
+   "effort": "medium"
   },
   {
    "ref": "DASHBOARD_OVERHAUL.md:66",
@@ -481,7 +535,11 @@
    "ref": "TASTE_AUDIT_SWEEP.md:66",
    "verdict": "MINE",
    "reason": "one real piece of open work, but you told me not to be asked about motion in words",
-   "recommendation": "The only live half is how a bottom sheet feels when you flick it away, and your own rule on motion is \"show me a visual, do not ask me\" , so I build drag-to-dismiss with a real release feel, record it, and put the video in front of you instead of a question. The doctrine file next to it stays unported because it describes checks that were never built, and the checkout scroll pill stays parked exactly where you parked it."
+   "recommendation": "The only live half is how a bottom sheet feels when you flick it away, and your own rule on motion is \"show me a visual, do not ask me\" , so I build drag-to-dismiss with a real release feel, record it, and put the video in front of you instead of a question. The doctrine file next to it stays unported because it describes checks that were never built, and the checkout scroll pill stays parked exactly where you parked it.",
+   "checked": "NOT_DONE",
+   "evidence": "The sheet still dismisses on position alone, and there is a contradiction between two plan files worth flagging. `app/[locale]/_components/primitives/Sheet.tsx:139-167` is the original §16.1 handler: line 160 is `if (dragDy.current > 90) onOpenChange?.(false);` with no velocity term anywhere in the file; line 150 is `Math.max(0, ev.clientY - dragStart.current)`, a hard stop with no rubber-band; an",
+   "what_is_left": "The physics does not need designing — it exists on `claude/context-compact-architecture-5d1ace` and matches the locked §16.5 formulas. What is left is porting it onto the current Sheet.tsx, then the real-browser Playwright video the item promises, which is also the one verification `_plans/APPLE_MOTION_ADOPT.md:34` records as still owed (\"BLOCKED by a sandbox connect() denial... Needs a real run o",
+   "effort": "medium"
   },
   {
    "ref": "TASTE_AUDIT_SWEEP.md:77",
@@ -543,13 +601,21 @@
    "ref": "SWEEP.md:29",
    "verdict": "MINE",
    "reason": "a code-tidiness refactor with no visible effect on any screen",
-   "recommendation": "I do it: pull the eight duplicated code checks into one shared validator so the payment path and the code-check path can never drift apart."
+   "recommendation": "I do it: pull the eight duplicated code checks into one shared validator so the payment path and the code-check path can never drift apart.",
+   "checked": "NOT_DONE",
+   "evidence": "No shared validator exists: there is no `lib/promo/` directory (only `app/api/promo/`), and `grep -rln promo lib/` returns only validations.ts, booking-state.ts, database.types.ts, booking-context.tsx, backup/export.ts — none is a validator. The 8 checks are still written twice: app/api/promo/validate/route.ts:41-104 (lookup .eq(code.toUpperCase())+.eq(is_active), valid_from :55, valid_until :59, ",
+   "what_is_left": "Create lib/promo/validate-code with the shared constraint evaluation, keeping max_uses as an explicit opt-in flag (preview: on, charge: off) and messages out of the core so the charge path stays message-free; then rewire both routes and re-verify a real code still matches and an expired/tier-gated one still fails.",
+   "effort": "medium"
   },
   {
    "ref": "SWEEP.md:30",
    "verdict": "MINE",
    "reason": "a German-only error string shown to French and Italian customers is a bug to fix, not a choice to make",
-   "recommendation": "I translate it into all four languages; the other half of this item (the time unit) is already locale-aware, so it is half done."
+   "recommendation": "I translate it into all four languages; the other half of this item (the time unit) is already locale-aware, so it is half done.",
+   "checked": "NOT_DONE",
+   "evidence": "Half A is untouched: the German-only error is still literal at app/api/stripe/booking-pay-intent/route.ts:116 — `error: \"Dieser Salon hat die Online-Zahlung noch nicht abgeschlossen. Bitte vor Ort bezahlen.\", code: \"NOT_CONNECTED\"` — with no next-intl lookup anywhere in the file (every other error in that route is English + a machine `code`, lines 56/73/81/87/91/100/102/132/175/181/320/358/507). H",
+   "what_is_left": "Move the message to the four messages/*.json files keyed on NOT_CONNECTED and have the client render by code, not by the server string. Note the guard only fires when NODE_ENV === 'production' (route.ts:114), so it is unreachable in dev.",
+   "effort": "small"
   },
   {
    "ref": "SWEEP.md:35",
@@ -560,13 +626,20 @@
    "ref": "SWEEP.md:52",
    "verdict": "MINE",
    "reason": "the bookings list already loads 100 at once, so a Load-more button changes nothing anyone can see today",
-   "recommendation": "I park it properly: leave it out, and build it only when someone could plausibly pass 100 bookings."
+   "recommendation": "I park it properly: leave it out, and build it only when someone could plausibly pass 100 bookings.",
+   "checked": "NOT_DONE",
+   "evidence": "The UI does not exist. components-legacy/booking/BookingsList.tsx:37 fetches `/api/bookings/user?tab=${tab}` with no page param, sets `setBookings(data.bookings || [])` at :42 (replace, not append), and holds no hasMore/page state — the only state at :22-31 is tab/bookings/loading/error/cancelTarget/cancelling/rescheduleTarget. No load-more key exists in the `bookingsList` or `bookingsListUi` name",
+   "what_is_left": "Nothing to build, and the item's own WOULD DO agrees — at PAGE_SIZE 100 on a pre-launch seed DB no user can reach page 2, so the deliverable is a one-line park note, not code. The route.ts:33 comment already is that note; the only gap is that SWEEP.md still lists it as pending work.",
+   "effort": "small"
   },
   {
    "ref": "SWEEP.md:53",
    "verdict": "MINE",
    "reason": "the Basel hardcode it names is already fixed; what is left is translating two leftover German strings",
-   "recommendation": "I fix the two German strings and drop the rest of this line, since the city is now derived from the salon's own postcode."
+   "recommendation": "I fix the two German strings and drop the rest of this line, since the city is now derived from the salon's own postcode.",
+   "checked": "MOOT",
+   "evidence": "All three named sub-parts are either fixed or unreachable. (1) The Basel hardcode IS fixed, as the item claims: app/[locale]/salon/[slug]/layout.tsx:52 `const city = salon.postal_code ? postalToCity(salon.postal_code) : null` feeding the title at :58-59, with the comment at :49-51 'real city derived from the salon's own postal_code'. (2) profile/live-state's German strings are on a route with ZERO",
+   "what_is_left": "Two corrections to the item rather than work: the item says 'two leftover German strings', but app/api/profile/live-state/route.ts alone has ~14 user-facing German strings (:89 'In {n} min', :92 'Termin', :93, :128 'Loyalty {n} mehr', :129 'Belohnung', :130 'Stempel sammeln', :165 'Last-Minute Heute', :166 'bei', :167 'Tippe fur freie Slots', :212 'Neue Antwort', :234 'Bereit?', :235 'Wieder buche"
   },
   {
    "ref": "SYSTEM_DECISIONS_2026-08-07.md:22",
@@ -669,7 +742,10 @@
   {
    "ref": "MOTION_LAW.md:132",
    "verdict": "MINE",
-   "reason": "the verdict is his but he cannot give it yet, because the side by side he asked to see does not exist; building it is my next action. What I would do: build the 420ms versus 280ms pair on a real booking step with the blur held identical, put it on one page as tap to compare, and hand him that. If he never picks, ship 280ms with the blur kept, because the research the law already cites says the blur is what makes an entrance perceptible and the extra 140ms is just waiting added to every booking step."
+   "reason": "the verdict is his but he cannot give it yet, because the side by side he asked to see does not exist; building it is my next action. What I would do: build the 420ms versus 280ms pair on a real booking step with the blur held identical, put it on one page as tap to compare, and hand him that. If he never picks, ship 280ms with the blur kept, because the research the law already cites says the blur is what makes an entrance perceptible and the extra 140ms is just waiting added to every booking step.",
+   "checked": "DONE",
+   "evidence": "The item's premise is stale on both counts. The side-by-side EXISTS: app/[locale]/dev/motion/_parts/BlurSpeedDemo.tsx:162-178 renders exactly the three columns described — `label=\"420ms (superseded ENTER RECIPE)\"` :162, `label=\"280ms (chosen, SPEED LAW reveal)\"` :170, `label=\"280ms, blur removed (control)\"` :178 — as tap-to-Play (page.tsx:63 'Tap any Play button to trigger a'). And the verdict was",
+   "what_is_left": "Nothing. Worth flagging for the record, per the mirror case: the fallback this item proposed if the owner never picked ('ship 280ms with the blur kept') is exactly what the owner independently chose on 2026-07-26, so the reasoning held — but the item text asserting the demo 'does not exist' and that 'building it is my next action' is wrong against the repo and should be struck from MOTION_LAW.md r"
   },
   {
    "ref": "ONBOARDING_BACKEND_AUDIT.md:28",
@@ -708,13 +784,20 @@
    "ref": "ACCOUNT_BUILD.md:73",
    "verdict": "MINE",
    "reason": "his own floors already say 46% dead space fails, and the fix is built but never ported",
-   "recommendation": "Port the fixed empty state into the live payment screen (it is still the old one) and show it to him in the same turn instead of asking first."
+   "recommendation": "Port the fixed empty state into the live payment screen (it is still the old one) and show it to him in the same turn instead of asking first.",
+   "checked": "NOT_DONE",
+   "evidence": "The fix exists only as a mockup, never ported. public/_mockups/sweep-payment-empty-fix/index.html:53-54 holds the fix ('min-height:calc(100vh - 120px);display:flex;flex-direction:column;...justify-content:center' + '// one vertically-centred unit: clean ink icon (no muted disc) + message + value line + CTA ~24px under'). The live screen is unchanged: app/[locale]/_components/profile/PaymentMethods",
+   "what_is_left": "Replace the generic EmptyState call at PaymentMethods.tsx:230 with the mockup's centred unit (ink icon, message, value line, CTA ~24px under, one flex-centred column filling the viewport minus chrome), which also means moving the CTA at :235-243 inside that unit for the empty case only, plus a min-height on the page wrapper at page.tsx:41.",
+   "effort": "small"
   },
   {
    "ref": "ACCOUNT_BUILD.md:82",
    "verdict": "MINE",
    "reason": "one part is dead, one is now built, and the rest is engineering work",
-   "recommendation": "(a) dead, he dropped Looks; (b) the payment screen shipped but there is still no way to remove or default a saved card, so I add that endpoint; (c) skip the 2FA screen until there are real accounts."
+   "recommendation": "(a) dead, he dropped Looks; (b) the payment screen shipped but there is still no way to remove or default a saved card, so I add that endpoint; (c) skip the 2FA screen until there are real accounts.",
+   "checked": "NOT_DONE",
+   "evidence": "Part (b), the remove/set-default endpoint, does not exist. app/api/stripe/payment-methods/route.ts has exactly two handlers, GET at :9 and POST at :48, and the file ends at :82 , no DELETE, no PATCH. A grep across app/ and lib/ for `paymentMethods.detach`, `invoice_settings`, `default_payment_method`, `set-default`, `is_default` returns exactly one hit, and it is a comment: app/[locale]/_component",
+   "effort": "medium"
   },
   {
    "ref": "ACTIVE.md:10",
@@ -829,7 +912,11 @@
    "verdict": "MINE",
    "recommendation": "I would fix it: check the write and alert when the money moved but the record did not follow, matching how the same file already handles its other steps",
    "reason": "a real live bug in the refund admin flow, but a code fix with no taste or money call in it",
-   "cost_if_ignored": "once live, a refund could go out at Stripe while the case sits stuck as unresolved with nobody warned"
+   "cost_if_ignored": "once live, a refund could go out at Stripe while the case sits stuck as unresolved with nobody warned",
+   "checked": "NOT_DONE",
+   "evidence": "Still unfixed, and the line moved because the neighbours were hardened without it. app/api/admin/booking-disputes/[id]/action/route.ts:316-322 is the admin_approve terminal write, after issueRefund has already moved real Stripe money: `await admin.from(\"booking_disputes\").update({status:\"refunded\", ...}).eq(\"id\", disputeId).eq(\"status\", \"admin_approved\");` , no `.select()`, no `.maybeSingle()`, no",
+   "what_is_left": "Add `.select(\"id\").maybeSingle()` to the update at route.ts:316-322, destructure data+error, and on either a DB error or a zero-row match log plus `alertAdmin` (money moved, status write failed) before continuing to writeCaseEvent.",
+   "effort": "small"
   },
   {
    "ref": "BOOKING_POLISH.md:53",
@@ -864,7 +951,11 @@
    "ref": "PAYMENTS_BACKEND_AUDIT.md:80",
    "verdict": "MINE",
    "reason": "Real and still half-open, but it is a webhook wiring job, not a choice for him.",
-   "recommendation": "I wire it. Option (b) partially landed: app/api/salon/earnings/route.ts now filters on the real 'transferred'/'recorded' values instead of the phantom 'paid'/'pending'. But nothing anywhere writes 'transferred' (grep across app + lib finds only that one route mentioning it), and the payout.paid handler in the Stripe webhook still only sends an email. So a salon's 'total earnings' is still permanently CHF 0 and every franc sits in 'pending' forever. Fix = in payout.paid, list the payout's balance transactions, match them back to salon_payouts by payment intent, flip those rows to 'transferred'. Pre-launch, so nobody is seeing a wrong number yet."
+   "recommendation": "I wire it. Option (b) partially landed: app/api/salon/earnings/route.ts now filters on the real 'transferred'/'recorded' values instead of the phantom 'paid'/'pending'. But nothing anywhere writes 'transferred' (grep across app + lib finds only that one route mentioning it), and the payout.paid handler in the Stripe webhook still only sends an email. So a salon's 'total earnings' is still permanently CHF 0 and every franc sits in 'pending' forever. Fix = in payout.paid, list the payout's balance transactions, match them back to salon_payouts by payment intent, flip those rows to 'transferred'. Pre-launch, so nobody is seeing a wrong number yet.",
+   "checked": "NOT_DONE",
+   "evidence": "The item's own read is exactly right on both halves. Option (b) landed: app/api/salon/earnings/route.ts:38-39 now filters `p.status === \"transferred\"` for total_earnings and `\"recorded\"` for pending_balance, with :33-37 explaining that the old 'paid'/'pending' values cannot exist in the column , and the DB agrees, supabase/migrations/20260601132922_salon_payouts.sql:32 is `status text NOT NULL DEF",
+   "what_is_left": "In the payout.paid case at webhook/route.ts:850, list the payout's balance transactions on the connected account, resolve each back to its payment intent, and update the matching salon_payouts rows from 'recorded' to 'transferred' (checked write, idempotent on re-delivery).",
+   "effort": "medium"
   },
   {
    "ref": "PDP_CONSISTENCY.md:25",
@@ -882,7 +973,11 @@
    "ref": "PDP_MAP_STAFF.md:7",
    "verdict": "MINE",
    "reason": "There are no real salons yet, so there is no real address for him to confirm the pin against.",
-   "recommendation": "I answer it. Every salon is seed data, so 'is the pin wrong' has no owner-side truth to check. What is checkable is whether each seeded salon's stored coordinates agree with its stored address, which I can run through the geocoder already wired for search and fix wherever it drifts. Also worth noting: the map on that screen was rebuilt on 2026-07-23 from a static image to a live render, because the static one was measuring blank at every zoom level, which is the most likely thing he was actually looking at when he said the map was not accurate."
+   "recommendation": "I answer it. Every salon is seed data, so 'is the pin wrong' has no owner-side truth to check. What is checkable is whether each seeded salon's stored coordinates agree with its stored address, which I can run through the geocoder already wired for search and fix wherever it drifts. Also worth noting: the map on that screen was rebuilt on 2026-07-23 from a static image to a live render, because the static one was measuring blank at every zoom level, which is the most likely thing he was actually looking at when he said the map was not accurate.",
+   "checked": "NOT_DONE",
+   "evidence": "The box is still open at PDP_MAP_STAFF.md:7 and nothing in the repo reconciles a salon's stored coordinates against its stored address: scripts/ contains no file mentioning 'latitude' at all, and app/api/search/geocode/route.ts:14-16 is a forward geocode of user-typed query text restricted to served cities for the search suggest list, not a salon audit. The columns are real and are what the pin pl",
+   "what_is_left": "Write the one-off reconciliation (forward-geocode each salon's stored address, compare against stored latitude/longitude, report drift beyond a threshold), and tell the owner plainly that with seed-only salons there is no owner-side truth for 'is the pin wrong' , plus that the map he was looking at has since been rebuilt from the blank static image to a live render.",
+   "effort": "medium"
   },
   {
    "ref": "PDP_MAP_STAFF.md:8",
@@ -936,7 +1031,12 @@
    "ref": "SEARCH_MAP_OVERHAUL.md:160",
    "verdict": "MINE",
    "reason": "Still present in the code, but it needs two taps inside one browser frame, which no human can do.",
-   "recommendation": "I leave it. Confirmed still live at ServicesStaffStep.tsx:235, where the cart is rebuilt from a value captured in the closure. Harmless in practice; I fold it into a functional-update refactor the next time that file is open for another reason, rather than opening the booking money path just for this."
+   "recommendation": "I leave it. Confirmed still live at ServicesStaffStep.tsx:235, where the cart is rebuilt from a value captured in the closure. Harmless in practice; I fold it into a functional-update refactor the next time that file is open for another reason, rather than opening the booking money path just for this.",
+   "checked": "NOT_DONE",
+   "evidence": "components-legacy/booking/ServicesStaffStep.tsx:237 still reads the cart out of the render closure: `const kept = formData.services.filter((s) => !clear.has(s.id));` inside `commitSheetSelection` (lines 218-253), then rebuilds totals from it at :248-249 and pushes the whole array via `updateFormData`. No ref and no functional update guards it. The same closure read repeats at :156, :163 and :257. ",
+   "what_is_left": "Nothing was done and nothing was supposed to be done; the plan line itself says \"parked, non-reachable\" and the WOULD DO was to leave it, so this is correctly still open rather than a missed item. Worth flagging if it is ever picked up: the cheap-looking fix, mirroring `formData.services` into a `useRef` synced in a `useEffect`, does NOT actually fix this, because the effect runs after commit and ",
+   "effort": "medium"
   }
- ]
+ ],
+ "checked_on": "2026-08-09"
 }
