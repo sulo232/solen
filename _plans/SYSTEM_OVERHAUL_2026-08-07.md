@@ -774,14 +774,41 @@
   - **What this box actually installs is therefore not a tier but a route:** M5's three moves are written into `MEASUREMENT_LAW.md` and `fable-reasoning`, which are TR's own named locations, so they fire on their own rather than needing me to remember them.
 
 ### N. Subagent + council utilization
-- [ ] N1 Inventory what is available and what doctrine says
-- [ ] N2 Measure actual usage frequency from the record
-- [ ] N3 Name the real friction that stops delegation
-- [ ] N4 Design the default-to-delegation system
-- [ ] N5 Make it VISIBLE to the owner (his complaint is partly that he cannot see it)
+- [x] N1 **Inventoried: 8 agent types in the home folder, 2 workflows, plus every agent type the harness supplies, and a doctrine that says use them.** `verified: ~/.claude/agents, ~/.claude/workflows, ~/.claude/LOOP_SYSTEM.md, MODEL_ROUTING.md`
+  - The house agents split cleanly by role: **builders** (`coder`, `mockup-builder`), **graders** (`loop-reviewer`, `design-critic`, `design-verifier`), and **council lenses** (correctness, dedup, hardcode, security).
+  - Doctrine is not ambiguous about it. Global rule 13 makes the layered loop the DEFAULT for substantial work, `MODEL_ROUTING.md` routes mechanical work to the cheapest tier, and a memory entry says bulk reading is a subagent's job and never the main thread's.
+  - **So availability is not the problem, and neither is doctrine. Both are in place and have been for weeks.** N3 is where the real answer has to be.
+- [x] N2 **Measured across 65 sessions and 40,740 tool calls, then measured again on this one session, and the gap between those two numbers IS the finding.** `verified: measured 2026-08-09 over ~/.claude/projects`
+  | scope | tool calls | delegated | share |
+  |---|---|---|---|
+  | all 65 sessions on disk | 40,740 | 1,848 | **4.5%** |
+  | this session | 2,004 | 16 | **0.8%** |
+  - Half of every tool call in the record is `Bash` (20,448 of 40,740). On this session it was 1,342 of 2,004, which is two thirds.
+  - **This session ran at a fifth of the estate's own already-low rate**, and it is the session where he twice said I was talking to myself and doing the work by hand. That is not a coincidence to be explained away: the delegation rate and his complaint moved together.
+  - **The honest read: delegation is not underused because it is unavailable. It collapses precisely when the work turns into many small edits**, which is when a single agent with a checklist would have been most useful and least visible to him.
+- [x] N3 **Named, three frictions, in the order they actually bite, and the first one is the whole answer.**
+  1. **A subagent needs a self-contained brief, and by the time I have written one I have usually done the work.** This is the real economics. Delegation is priced per-dispatch, and the estate's brief standard is deliberately heavy: root path, stack, spec verbatim, known deviations, exhaustive file list, output format. For a 3-line edit that brief costs more than the edit. So the rate collapses exactly where the work fragments, which is what N2 measured.
+  2. **A subagent cannot see the turn.** It gets what the brief says and nothing else, so anything discovered mid-turn has to be re-explained. Every re-explanation is a chance to leave out the thing that mattered, which is the same wrong-brief failure already recorded as my fault rather than the agent's.
+  3. **The results come back as text I then have to verify anyway.** This session found roughly 40 defects in four checks that had all passed their own self-tests, which is a fair reason for distrust and also a reason the verification cost gets counted twice.
+  - **What is NOT the friction, so it does not get proposed as the fix:** availability, doctrine, and model routing. All three are in place. N1 confirmed it.
+- [x] N4 **Designed, and it is deliberately one rule rather than a system, because the friction N3 measured is per-dispatch cost and a system would add to it.**
+  - **The rule: when the same KIND of edit is about to happen more than three times, that is a dispatch, not three more edits.** The trigger is repetition of shape, not size, because size is the thing I always guess wrong (I3 already established that).
+  - **The brief for that case is cheap by construction**, which is what makes the rule survivable: the shape is already known by the third instance, so the brief is the shape plus the list. Nothing needs restating.
+  - **Live case from this very session, and it cuts against me:** five checks needed the same six-line conversion. I did all five by hand, one at a time. By this rule the last two were a dispatch, and the brief would have been one sentence plus five paths.
+  - **What this rule deliberately does NOT do is raise the delegation rate as a target.** A percentage is the kind of number that gets optimised directly, and 4.5% is not wrong on its own; it is wrong in the specific case where the work fragments and I keep going by hand.
+- [x] N5 **Made visible, and the honest answer is that the mechanism already exists and the gap is that nothing surfaces it to HIM.** `verified: measured 2026-08-09`
+  - His complaint is partly that he cannot see it, and he is right: a dispatched agent runs silently, reports into my context, and he sees only the result. From his side there is no difference between me doing an hour of work and me commissioning it.
+  - **The number is now measurable per session** (tool calls, delegated, share) from the transcript on disk, which is what N2 just did. That makes it reportable rather than a feeling.
+  - **Where it goes is the standing decisions page, not a reply.** A number in a reply dies with the window, which is the same failure H4 was built to fix for questions. The page reads from disk on every load.
+  - **What it must NOT become is a scoreboard.** He does not care about my delegation rate, and he has said the equivalent about file lists and check counts. The one thing worth surfacing is the case N4 names: work I did by hand that should have been dispatched, listed after the fact, so the rule has evidence instead of my word.
 
 ### O. The articulation (ask 16)
-- [ ] O1 State his underlying model back to him in plain English, with the evidence for the reading
+- [x] O1 **His underlying model, stated back in his own terms, with the evidence for each reading. Correcting this is O2 and it is his.** `verified: this session's transcript`
+  - **"You find problems and don't fix them."** Said in several shapes, most directly *"you see how your just mentioning the problem and not fixing trccuring pattern fr"*. Evidence he is right: today's own count of seven checks added, each one a report converted into a mechanism rather than a behaviour that changed.
+  - **"You talk to yourself."** *"yu just taleked to yourself alot what now"*, and again in the same session. Evidence: 303 stops across 83 of his messages, 19 of them turning into an extra message he never asked for. The machinery became the subject.
+  - **"You don't push back, you agree."** Standing complaint, in his words *"you keep forgetting me. You never push back to me"*. Evidence today that it still binds: the eleven-that-was-five was accepted from a scan without one instance being read.
+  - **"You forget the order I gave."** *"i told you first we have to define design dystem bfr ths did you firget"*. Evidence: correct, the design system was named first and was pre-empted repeatedly.
+  - **The single sentence underneath all four, which is what O2 is asking him to confirm or correct: he wants the WORK to change, and what he keeps receiving is a description of the work changing.** Every one of the four complaints is that same substitution in a different costume, and it is why he asked for output templates rather than another check.
 - [ ] O2 He confirms or corrects it, and that becomes the north star for A to N
 
 ---
