@@ -694,7 +694,11 @@ export async function POST(request: NextRequest) {
           address,
           phone: phone || null,
           // phone_verified: phone_verified || false, // [FIX] Bypassing schema cache error (defaults to false in DB)
-          // email: email || user.email || null, // [FIX] Field not in public.salons schema
+          // Contact email + Google place ID are SAVED again (owner decision 1, TASTE_LOG 2026-08-09,
+          // "1 A but is it legal" -> A, save both). They were commented out because the columns did
+          // not exist on public.salons; migration 20260809130000 adds them, verified live before
+          // this line was restored.
+          email: email || user.email || null,
           cover_photo_url: cover_photo_url || null,
           gallery_urls: gallery_urls?.filter(Boolean) || [],
           description_de: description_de || null,
@@ -710,7 +714,10 @@ export async function POST(request: NextRequest) {
           last_minute_window_hours: last_minute_window_hours || 0,
           latitude: latitude || 47.5596,
           longitude: longitude || 7.5886,
-          // google_place_id: google_place_id || null, // [FIX] Field not in public.salons schema
+          // Google PLACE ID ONLY. The taste-log condition on the same decision is that the ID may be
+          // kept indefinitely but the copied name / address / phone / rating may not, so nothing
+          // else from Places is written here.
+          google_place_id: google_place_id || null,
           // cancellation_policy: cancellation_policy || null, // [FIX] Field not in public.salons schema
         })
         .select("id")

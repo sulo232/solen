@@ -106,9 +106,11 @@ export default async function SalonReviewsPage({
       : Promise.resolve({ data: [] as { id: string; staff_member_id: string | null }[] }),
   ]);
 
-  // Mirror GET /api/reviews/my-booking: of this user's completed bookings at this
-  // salon, find the first with no review yet → SalonReviews renders the
-  // "Write review" button. (Two-step exclusion, not a PostgREST subquery filter.)
+  // Mirror GET /api/reviews/my-booking: of this user's completed bookings at this salon, find the
+  // first with no review yet. Since owner decision 4 (2026-08-09) this no longer gates the
+  // "Write review" button , canWriteReview below does. It only supplies the booking and stylist the
+  // rating links to when the rater happens to have an appointment here.
+  // (Two-step exclusion, not a PostgREST subquery filter.)
   let unreviewedBookingId: string | null = null;
   let unreviewedBookingStaffMemberId: string | null = null;
   const completedBookings = (completedRes.data ?? []) as { id: string; staff_member_id: string | null }[];
@@ -121,6 +123,29 @@ export default async function SalonReviewsPage({
     const unreviewedBooking = completedBookings.find((b) => !reviewedIds.has(b.id)) ?? null;
     unreviewedBookingId = unreviewedBooking?.id ?? null;
     unreviewedBookingStaffMemberId = unreviewedBooking?.staff_member_id ?? null;
+  }
+
+  // Owner decision 4, 2026-08-09 ("4B like google maps"): anyone SIGNED IN can rate any salon, so
+  // the button is gated on being signed in, not on having been here. The one bound mirrors what
+  // POST /api/reviews enforces, so the button never opens a form that would 409: with an unreviewed
+  // booking the rater can always post; without one they can post unless they already left an
+  // appointment-free rating for this salon.
+  let canWriteReview = false;
+  if (userId) {
+    if (unreviewedBookingId) {
+      canWriteReview = true;
+    } else {
+      const { data: existingOpenReview } = await supabase
+        .from("reviews")
+        .select("id")
+        .eq("user_id", userId)
+        .eq("salon_id", salon.id)
+        .is("booking_id", null)
+        .is("walkin_queue_id", null)
+        .limit(1)
+        .maybeSingle();
+      canWriteReview = !existingOpenReview;
+    }
   }
 
   // If the unreviewed booking has a staff member, fetch their name + avatar for the
@@ -165,6 +190,7 @@ export default async function SalonReviewsPage({
           salonId={salon.id}
           salonSlug={slug}
           salonName={salon.name}
+          canWriteReview={canWriteReview}
           unreviewedBookingId={unreviewedBookingId}
           unreviewedBookingStaffName={unreviewedBookingStaffName}
           unreviewedBookingStaffMemberId={unreviewedBookingStaffMemberId ?? undefined}

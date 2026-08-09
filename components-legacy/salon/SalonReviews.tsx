@@ -53,6 +53,18 @@ interface SalonReviewsProps {
   salonId: string;
   salonSlug: string;
   salonName?: string;
+  /**
+   * Owner decision 4, 2026-08-09 ("4B like google maps"): shows the "Write review" button.
+   * Server-computed, and true for anyone SIGNED IN who has not already rated this salon , it does
+   * NOT ask whether they have been here. Defaults to false so a caller that omits it gets the
+   * signed-out (no button) path rather than a form that 401s on submit.
+   */
+  canWriteReview?: boolean;
+  /**
+   * The rater's unreviewed completed booking here, when they have one. Since decision 4 this no
+   * longer gates the button (canWriteReview does); it only links the rating to that booking and its
+   * stylist. null means the rating is filed against the salon alone.
+   */
   unreviewedBookingId: string | null;
   /** First name (or full name) of the staff member on the unreviewed booking. */
   unreviewedBookingStaffName?: string;
@@ -86,6 +98,7 @@ export default function SalonReviews({
   salonId,
   salonSlug,
   salonName,
+  canWriteReview = false,
   unreviewedBookingId,
   unreviewedBookingStaffName,
   unreviewedBookingStaffMemberId,
@@ -298,8 +311,8 @@ export default function SalonReviews({
               </div>
             </div>
 
-            {/* Write Review Button */}
-            {unreviewedBookingId && (
+            {/* Write Review Button , signed in is the whole gate (owner decision 4, 2026-08-09) */}
+            {canWriteReview && (
               <div className="mt-4">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
@@ -511,11 +524,11 @@ export default function SalonReviews({
 
       {/* Review form bottom sheet */}
       <AnimatePresence>
-        {showReviewForm && unreviewedBookingId && (
+        {showReviewForm && canWriteReview && (
           <ReviewForm
             salonId={salonId}
             salonName={salonName}
-            bookingId={unreviewedBookingId}
+            bookingId={unreviewedBookingId ?? undefined}
             staffName={unreviewedBookingStaffName}
             staffMemberId={unreviewedBookingStaffMemberId}
             staffPhotoUrl={unreviewedBookingStaffPhotoUrl}

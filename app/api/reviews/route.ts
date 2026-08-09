@@ -27,34 +27,73 @@ export async function POST(request: NextRequest) {
   const { data: validated, error: valError } = validateBody(createReviewSchema, body);
   if (valError) return NextResponse.json({ message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
 
-  const { booking_id, rating: rawRating, comment, staff_member_id, score_ergebnis, score_atmosphaere, score_preis_leistung, attributes } = validated;
+  const { booking_id, salon_id, rating: rawRating, comment, staff_member_id, score_ergebnis, score_atmosphaere, score_preis_leistung, attributes } = validated;
 
   // If all 3 sub-ratings provided, compute weighted overall rating (half-star granularity)
   const rating = (score_ergebnis && score_atmosphaere && score_preis_leistung)
     ? Math.round((score_ergebnis * 0.5 + score_atmosphaere * 0.25 + score_preis_leistung * 0.25) * 2) / 2
     : rawRating;
 
-  // Verify booking belongs to user and is completed
-  const { data: booking } = await supabase
-    .from("bookings")
-    .select("user_id, salon_id, status")
-    .eq("id", booking_id)
-    .single();
+  // Owner decision 4, 2026-08-09 ("4B like google maps"): signed-in is the ONLY requirement to
+  // rate. There is no visit check here and none left in RLS either (migration
+  // 20260809120000_reviews_open_rating_no_visit_check). Two shapes reach this point:
+  //   booking_id , a rating written off a real appointment. The booking must still belong to the
+  //                caller, otherwise anyone could attach their rating to a stranger's booking and
+  //                burn that booking's one review slot. Its STATUS is no longer checked: a caller
+  //                with no booking at all may now rate, so demanding "completed" from a caller who
+  //                does have one gated nothing and only produced a confusing 400.
+  //   salon_id   , a rating with no appointment. The salon must exist, so a rating cannot be filed
+  //                against a made-up id.
+  let resolvedSalonId: string;
 
-  if (!booking) return NextResponse.json({ message: "Booking not found", code: "NOT_FOUND" }, { status: 404 });
-  if (booking.user_id !== user.id) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 403 });
-  if (booking.status !== "completed") return NextResponse.json({ message: "Booking is not completed", code: "BOOKING_NOT_COMPLETED" }, { status: 400 });
+  if (booking_id) {
+    const { data: booking } = await supabase
+      .from("bookings")
+      .select("user_id, salon_id")
+      .eq("id", booking_id)
+      .single();
 
-  // Check no existing review
-  const { data: existing } = await supabase.from("reviews").select("id").eq("booking_id", booking_id).maybeSingle();
-  if (existing) return NextResponse.json({ message: "Already reviewed", code: "REVIEW_EXISTS" }, { status: 409 });
+    if (!booking) return NextResponse.json({ message: "Booking not found", code: "NOT_FOUND" }, { status: 404 });
+    if (booking.user_id !== user.id) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 403 });
+    resolvedSalonId = booking.salon_id;
+
+    // One review per booking (also enforced by the reviews_booking_id_key unique index).
+    const { data: existing } = await supabase.from("reviews").select("id").eq("booking_id", booking_id).maybeSingle();
+    if (existing) return NextResponse.json({ message: "Already reviewed", code: "REVIEW_EXISTS" }, { status: 409 });
+  } else {
+    const { data: salon } = await supabase
+      .from("salons")
+      .select("id")
+      .eq("id", salon_id!)
+      .maybeSingle();
+
+    if (!salon) return NextResponse.json({ message: "Salon not found", code: "NOT_FOUND" }, { status: 404 });
+    resolvedSalonId = salon.id;
+
+    // One appointment-free rating per person per salon. This is NOT a visit check: it never asks
+    // whether the caller has been here, and a rating from someone who never booked counts toward
+    // the score exactly like any other. It only stops ONE account from posting the same salon's
+    // rating over and over and owning its average alone. It is the same one-per-target bound the
+    // booking path has always had, re-keyed to the salon because there is no booking to key on,
+    // and the same bound Google Maps applies to the reference he named.
+    const { data: existingOpen } = await supabase
+      .from("reviews")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("salon_id", resolvedSalonId)
+      .is("booking_id", null)
+      .is("walkin_queue_id", null)
+      .limit(1)
+      .maybeSingle();
+    if (existingOpen) return NextResponse.json({ message: "Already reviewed", code: "REVIEW_EXISTS" }, { status: 409 });
+  }
 
   // Auto-moderation check
   const modResult = await checkReview({
     comment: comment ?? "",
     rating,
     user_id: user.id,
-    salon_id: booking.salon_id,
+    salon_id: resolvedSalonId,
   });
 
   // Phantom-column fix: score_ergebnis / score_atmosphaere / score_preis_leistung are declared
@@ -66,9 +105,9 @@ export async function POST(request: NextRequest) {
   const { data, error } = await supabase
     .from("reviews")
     .insert({
-      salon_id: booking.salon_id,
+      salon_id: resolvedSalonId,
       user_id: user.id,
-      booking_id,
+      booking_id: booking_id ?? null,
       rating,
       comment: comment ?? null,
       staff_member_id: staff_member_id ?? null,
@@ -89,8 +128,9 @@ export async function POST(request: NextRequest) {
   }
 
   // Auto-delete the review_prompt notification for this booking now that the review is in.
-  // Non-fatal: the review row stands either way. Uses admin client to bypass RLS.
-  {
+  // Non-fatal: the review row stands either way. Uses admin client to bypass RLS. Booking path
+  // only: the prompt is keyed by booking_id, so an appointment-free rating has no prompt to clear.
+  if (booking_id) {
     const admin = createAdminSupabaseClient();
     admin
       .from("notifications")
@@ -118,17 +158,19 @@ export async function POST(request: NextRequest) {
 
   if (data) {
     await trackServerEvent(user.id, "review_submitted", {
-      salon_id: booking.salon_id,
+      salon_id: resolvedSalonId,
       rating: rating,
       review_id: data.id,
     });
 
+    // Recomputed over ALL visible reviews for the salon. Appointment-free ratings are in this set
+    // and weigh exactly the same as booking-linked ones, per owner decision 4.
     try {
       const admin = createAdminSupabaseClient();
       const { data: stats } = await admin
         .from("reviews")
         .select("rating")
-        .eq("salon_id", booking.salon_id)
+        .eq("salon_id", resolvedSalonId)
         .eq("is_hidden", false);
 
       if (stats) {
@@ -139,7 +181,7 @@ export async function POST(request: NextRequest) {
             average_rating: avg !== null ? Math.round(avg * 100) / 100 : null,
             review_count: stats.length,
           })
-          .eq("id", booking.salon_id);
+          .eq("id", resolvedSalonId);
       }
     } catch (err) {
       console.error("Failed to recalculate average rating:", err);

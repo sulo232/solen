@@ -11,6 +11,7 @@ import InteractiveHoverButton from "@/components-legacy/ui/interactive-hover-but
 import { slideSwitch } from "@/lib/animations";
 import AddressAutocomplete from "@/components-legacy/ui/AddressAutocomplete";
 import ImageUpload from "@/components-legacy/ui/ImageUpload";
+import { FieldHelper } from "@/app/[locale]/_components/primitives";
 import type { SalonCategory } from "@/lib/types";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 
@@ -98,7 +99,12 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
             onChange={(e) => onChange({ ...data, email: e.target.value })}
             className={`w-full px-4 py-3 text-sm text-s-ink transition-[border-color,box-shadow] shadow-warm-sm ${errors.email ? "!border-s-accent" : ""}`}
             placeholder={t("step1.emailPlaceholder")}
+            aria-describedby="salon-email-use"
           />
+          {/* Purpose-at-point-of-entry line. The taste-log condition attached to owner decision 1
+              (2026-08-09) is that a stored contact email must say what it is used for where it is
+              typed. Locked FieldHelper primitive (COMPONENT_REGISTRY), default tone. */}
+          <FieldHelper id="salon-email-use" className="mt-1">{t("step1.emailUse")}</FieldHelper>
           {errors.email && <p className="text-xs text-s-error mt-0.5">{errors.email}</p>}
         </div>
 

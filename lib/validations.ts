@@ -85,8 +85,15 @@ export const createBookingSchema = z
     message: "Either slot_id or (salon_id + starts_at) is required",
   });
 
+// Owner decision 4, 2026-08-09 ("4B like google maps"): anyone signed in can rate any salon, so a
+// booking is no longer required to post. booking_id stays OPTIONAL rather than being deleted,
+// because a rating written off a real appointment still links to that booking (and inherits its
+// stylist for the "How was {name}?" variant). salon_id is what a rating with no appointment
+// targets. At least one of the two must arrive; the route derives salon_id from the booking when
+// booking_id is the one sent.
 export const createReviewSchema = z.object({
-  booking_id: uuid,
+  booking_id: uuid.optional(),
+  salon_id: uuid.optional(),
   rating: z.number().int().min(1).max(5),
   comment: z.string().max(500).optional(),
   staff_member_id: uuid.optional(),
@@ -103,6 +110,9 @@ export const createReviewSchema = z.object({
     )
     .max(12)
     .optional(),
+}).refine((v) => Boolean(v.booking_id) || Boolean(v.salon_id), {
+  message: "booking_id or salon_id is required",
+  path: ["salon_id"],
 });
 
 export const createMessageSchema = z.object({

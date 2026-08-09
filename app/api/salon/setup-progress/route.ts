@@ -22,7 +22,8 @@ export async function GET(req: NextRequest) {
     stripe_account_id: string | null;
     cancellation_fee_type: string | null;
     approved_at: string | null;
-  }>(supabase, user.id, "id, name, description_de, phone, cover_photo_url, opening_hours, stripe_account_id, cancellation_fee_type, approved_at");
+    rejection_reason: string | null;
+  }>(supabase, user.id, "id, name, description_de, phone, cover_photo_url, opening_hours, stripe_account_id, cancellation_fee_type, approved_at, rejection_reason");
 
   if (!salon) return NextResponse.json({ error: "No salon found" }, { status: 403 });
 
@@ -94,12 +95,24 @@ export async function GET(req: NextRequest) {
   const total = steps.length;
   const percentage = Math.round((completed / total) * 100);
 
+  // Owner decision 8 (TASTE_LOG 2026-08-09, "i approve for every salon"): approval is a gate the
+  // owner cannot clear himself, so the dashboard has to NAME it. Without this the go_live step just
+  // sat unchecked next to an "Einrichten" link pointing at a wizard that cannot help, which reads
+  // as silence. Derived from columns that already exist, nothing fabricated.
+  const approvalState = salon.approved_at
+    ? "approved"
+    : salon.rejection_reason
+      ? "rejected"
+      : "pending";
+
   return NextResponse.json({
     salon_id: salon.id,
     steps,
     completed,
     total,
     percentage,
+    approval_state: approvalState,
+    rejection_reason: salon.rejection_reason,
     is_live: percentage === 100,
   });
 }

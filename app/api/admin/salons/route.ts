@@ -26,7 +26,15 @@ export async function GET(req: NextRequest) {
     .order("created_at", { ascending: false });
 
   if (status === "pending") {
-    query = query.eq("registration_completed", true).eq("is_active", false).is("approved_at", null);
+    // Pending = submitted but not yet reviewed. Deliberately keyed off the APPROVAL columns only.
+    // This used to also require registration_completed=true, which made the queue permanently
+    // empty: nothing in the onboarding path writes that column (it defaults to false and is only
+    // set by app/api/admin/test-salon/route.ts). Measured live 2026-08-09 before the fix:
+    // 0 rows matched the old filter while 6 salons genuinely had is_active=false AND
+    // approved_at IS NULL, so every real signup was invisible to /dashboard/approvals.
+    // The salons row is inserted once, by POST /api/salons at the END of onboarding, so
+    // "row exists AND never approved" IS "waiting for review" (no half-built drafts land here).
+    query = query.eq("is_active", false).is("approved_at", null);
   } else if (status === "active") {
     query = query.eq("is_active", true);
   } else if (status === "frozen") {

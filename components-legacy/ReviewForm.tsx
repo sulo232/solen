@@ -30,7 +30,12 @@ import { Avatar } from "@/app/[locale]/_components/primitives/Avatar";
 
 export interface ReviewFormProps {
   salonId: string;
-  bookingId: string;
+  /**
+   * The rater's own booking, when they have one. OPTIONAL since owner decision 4, 2026-08-09
+   * ("4B like google maps"): anyone signed in can rate, so a rating with no appointment posts
+   * against salonId instead. When present it links the rating to that booking and its stylist.
+   */
+  bookingId?: string;
   salonName?: string;
   salonSlug?: string;
   /** Staff first name for the "How was {name}?" heading (stylist variant). */
@@ -82,7 +87,7 @@ const AMENITY_ITEMS: AmenityItem[] = [
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function ReviewForm({
-  salonId: _salonId,
+  salonId,
   bookingId,
   salonName,
   staffName,
@@ -113,12 +118,19 @@ export default function ReviewForm({
 
   const isSalon = variant === "salon";
 
-  // Title: salon variant uses salonName, stylist uses staffName
+  // Title: salon variant uses salonName, stylist uses staffName.
+  // The stylist variant only names a stylist when the rating is linked to a booking that had one.
+  // Without a booking (owner decision 4) there is no stylist AND no visit, so it falls through to
+  // the existing how_was_salon string rather than asking "how was your visit" of someone who may
+  // never have been. Existing key, all four locales, no new copy.
+  const namesStylist = !isSalon && Boolean(staffName);
   const title = isSalon
     ? t("how_was_salon", { name: salonName ?? "" })
-    : staffName
+    : namesStylist
       ? t("how_was_staff", { name: staffName })
-      : t("how_was_visit");
+      : salonName
+        ? t("how_was_salon", { name: salonName })
+        : t("how_was_visit");
 
   const ratingWords = [
     "",
@@ -129,8 +141,9 @@ export default function ReviewForm({
     t("rating_word_5"),
   ];
 
-  // Stylist variant shows salon name as subtitle; salon variant has no subtitle
-  const subtitle = isSalon ? "" : (salonName ?? "");
+  // Stylist variant shows salon name as subtitle; salon variant has no subtitle. Suppressed when
+  // the title itself is the salon name, so it is not printed twice.
+  const subtitle = namesStylist ? (salonName ?? "") : "";
 
   const handleRating = (v: number) => {
     setRating(v);
@@ -158,8 +171,10 @@ export default function ReviewForm({
     setError(null);
 
     try {
+      // Owner decision 4, 2026-08-09: a rating with no appointment posts against the salon.
+      // booking_id is sent only when the rater actually has one, so the review still links to it.
       const body: Record<string, unknown> = {
-        booking_id: bookingId,
+        ...(bookingId ? { booking_id: bookingId } : { salon_id: salonId }),
         rating,
         comment: comment.trim() || undefined,
       };
@@ -299,15 +314,18 @@ export default function ReviewForm({
           initial="hidden"
           animate="visible"
         >
-          {/* Staff avatar (stylist only) , the canonical Avatar primitive (photo-or-initials). */}
-          {!isSalon && (
+          {/* Staff avatar , the canonical Avatar primitive (photo-or-initials). Rendered only when
+              there IS a stylist to show. A rating with no appointment has none, and an initials
+              disc standing in for a person who is not part of that rating is a fabricated element
+              (taste rule 1) plus the grey-disc focal the never-again floors ban. */}
+          {namesStylist && (
             <motion.div variants={reducedItem} className="mb-4 mt-2">
               <Avatar src={staffPhotoUrl} name={staffName ?? "Stylist"} size={64} />
             </motion.div>
           )}
 
-          {/* Salon variant: extra top margin when no avatar */}
-          {isSalon && <div className="mt-4" />}
+          {/* No avatar above: keep the top margin the avatar used to provide */}
+          {!namesStylist && <div className="mt-4" />}
 
           {/* Title: 20px semibold */}
           <motion.h2

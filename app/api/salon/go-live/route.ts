@@ -12,7 +12,7 @@ export async function GET(_req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const salon = await getActiveSalon<{ id: string; is_active: boolean; stripe_account_id: string | null; cover_photo_url: string | null }>(supabase, user.id, "id, is_active, stripe_account_id, cover_photo_url");
+  const salon = await getActiveSalon<{ id: string; is_active: boolean; stripe_account_id: string | null; cover_photo_url: string | null; approved_at: string | null; rejection_reason: string | null }>(supabase, user.id, "id, is_active, stripe_account_id, cover_photo_url, approved_at, rejection_reason");
 
   if (!salon) return NextResponse.json({ error: "No salon found" }, { status: 403 });
 
@@ -25,7 +25,18 @@ export async function GET(_req: NextRequest) {
   const hasStripe = await isStripeReady(salon.stripe_account_id);
   const hasCoverPhoto = !!salon.cover_photo_url;
   const hasServices = (serviceCount ?? 0) >= 1;
-  const canGoLive = hasStripe && hasCoverPhoto && hasServices;
+  const isApproved = !!salon.approved_at;
+  // can_go_live now mirrors the POST gate EXACTLY, approval included. Before this it reported the
+  // three owner-side requirements only, so the wizard enabled the activate button for a salon that
+  // had never been approved and the POST answered 403 (owner decision 8, "i approve for every
+  // salon"). approval_state lets the UI say WHICH gate it is waiting on instead of showing one
+  // undifferentiated disabled button.
+  const canGoLive = isApproved && hasStripe && hasCoverPhoto && hasServices;
+  const approvalState = isApproved
+    ? "approved"
+    : salon.rejection_reason
+      ? "rejected"
+      : "pending";
 
   return NextResponse.json({
     salon_id: salon.id,
@@ -33,6 +44,9 @@ export async function GET(_req: NextRequest) {
     has_stripe: hasStripe,
     has_cover_photo: hasCoverPhoto,
     has_services: hasServices,
+    is_approved: isApproved,
+    approval_state: approvalState,
+    rejection_reason: salon.rejection_reason,
     can_go_live: canGoLive,
   });
 }
@@ -54,7 +68,9 @@ export async function POST(_req: NextRequest) {
   // already approved (salons.approved_at set by PATCH /api/admin/salons/[id]/approve).
   // Without this, an owner could set is_active=true directly with no admin review.
   if (!salon.approved_at) {
-    return NextResponse.json({ error: "Der Salon wartet noch auf die Freigabe durch einen Administrator." }, { status: 403 });
+    // `code` so the client can render this in the user's own locale (the literal below is the
+    // de-only fallback the other messages in this route also use); GoLiveStep maps the code.
+    return NextResponse.json({ code: "AWAITING_APPROVAL", error: "Der Salon wartet noch auf die Freigabe durch einen Administrator." }, { status: 403 });
   }
   if (!(await isStripeReady(salon.stripe_account_id))) {
     return NextResponse.json({ error: "Stripe Connect muss zuerst vollständig eingerichtet werden (KYC, Bankkonto)." }, { status: 400 });
