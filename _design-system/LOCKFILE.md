@@ -579,7 +579,7 @@ Alternate gray ↔ white down a page for rhythm. **Never** the whole app gray; n
 | **Primary button** | `bg-s-ink` + `elevation-2` + inset top-highlight | `elevation-3` + `translateY(-1px)` | `scale(.97)` + `pressed` shadow | n/a | `ring-2` s-accent, offset-2 | muted-grey fill, no shadow |
 | **Photo chip** | vibrant + `elevation-1` | `elevation-2` | `scale(.96)` | scrim `bg-s-ink/70` (option E) | `ring-2` s-accent | `opacity .45` |
 | **List row** | transparent | `bg-s-bg-sunken` | `bg-s-bg-sunken` | `bg-s-accent-bg` + accent text + check | inset ring | `opacity .5` |
-| **Input** | filled `bg-s-bg-sunken`, radius `input` (12px) | same | n/a | n/a | white bg + `ring-2` s-accent | `opacity .5` |
+| **Input** | **SUPERSEDED 2026-08-09 (see TASTE_LOG): white fill, 1px `#E4E4E7` line, radius 12, and NO focus change.** Was: filled `bg-s-bg-sunken`, radius `input` (12px) | same | n/a | n/a | white bg + `ring-2` s-accent | `opacity .5` |
 
 ### Loading + outcome confirmation (DS-1, video-audit 2026-06-11, owner-approved)
 

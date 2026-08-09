@@ -341,14 +341,22 @@
        no hairline border. This base rule is the real input primitive (it out-specifies
        Tailwind utilities), so the depth change lives here. Focus pops back to white below. */
     border-radius: 12px;
-    border: 1px solid transparent;
+    /* OWNER DECISION 2026-08-09, verbatim: "make like airbnb but without the focus line when
+       tapped in". Measured on airbnb.ch/login the same day: a white field with one hairline grey
+       line, no fill. Ours was a grey fill with `border: 1px solid transparent`, so the line was
+       already here and simply invisible; this is that same line given a colour, not a new one.
+       Height stays 48 rather than their 60, because he asked for the look and not the size, and
+       48 is already locked. */
+    border: 1px solid #E4E4E7;   /* drift-ok: s-border literal; no CSS var exists (only the legacy warm --border), same reason as the discovery-searchbar rule above */
     padding-left: 1rem;
     padding-right: 1rem;
     font-size: 1rem;       /* 16px — prevents iOS zoom-on-focus */
     /* 2026-05-31 (V3-D410): inputs use Inter (body). */
     font-family: var(--font-inter), "Inter", system-ui, -apple-system, sans-serif;
     color: var(--color-body);
-    background: #F4F4F5;
+    /* Was #F4F4F5. White, per the same 2026-08-09 decision: Airbnb has no fill at all, and a grey
+       fill plus a grey line reads as two competing boundaries rather than one. */
+    background: #ffffff;
     transition: border-color 200ms ease, background-color 200ms ease, box-shadow 200ms ease;
   }
 
@@ -1261,7 +1269,13 @@ select:focus-visible {
      element even unlayered, later in source, and at higher specificity, so the
      focus edge silently never rendered. The file's own GuidedSearch override
      below already had to reach for !important against the same wall. */
-  border-color: #0A0A0A !important;
+  /* 2026-08-09, owner: "without the focus line when tapped in". The ink line on focus is GONE by
+     his instruction. The line stays the resting grey, so tapping a field changes nothing visible.
+     THE COST, stated once and then his call: this removes the only visible focus indicator, so
+     anyone moving through a form with a keyboard cannot see where they are, and WCAG 2.4.7 asks
+     for one. On a phone the caret and keyboard cover it; on a laptop they do not. The smallest
+     thing that would satisfy both is the line darkening to ink-2 rather than jumping to black. */
+  border-color: #E4E4E7 !important;   /* drift-ok: s-border literal, same reason as the base rule */
   /* !important added 2026-07-17: the base input law's selector widened from a
      comma-list of `input[type="x"]` branches (each specificity 0,1,1, tied with
      this rule so source order settled it in the focus law's favor) to a single

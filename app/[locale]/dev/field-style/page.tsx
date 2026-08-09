@@ -42,28 +42,28 @@ const STYLES: Style[] = [
   {
     key: "Ours today",
     who: "solen",
-    measured: "44 tall, 12 corner, grey fill, no edge",
+    measured: "44 tall, 12 corner, grey fill, no line around it",
     rest: "h-11 w-full rounded-[12px] bg-s-bg-sunken px-3 text-[16px] text-s-ink",
     focus: "h-11 w-full rounded-[12px] bg-s-bg-sunken px-3 text-[16px] text-s-ink",
-    note: "Rest and tapped look identical here, which is the finding. The field has no boundary of its own, so a stack of them reads as one grey area rather than as separate things to fill.",
+    note: "Rest and tapped look identical here, which is the finding. The box has no line of its own, so three in a row read as one grey area rather than three things to fill in.",
   },
   {
     key: "Airbnb",
     who: "measured on their live login",
-    measured: "60 tall, 12 corner, no fill, 1px grey edge",
+    measured: "60 tall, 12 corner, no fill, thin grey line",
     rest:
       "h-[60px] w-full rounded-[12px] bg-white px-3 text-[16px] text-s-ink border " + AIRBNB_EDGE,
     focus:
       "h-[60px] w-full rounded-[12px] bg-white px-3 text-[16px] text-s-ink border-2 border-s-ink",
-    note: "No grey at all. White field, one hairline edge, and 16px taller than ours. The edge thickens to ink when you tap in, so the boundary does all the work.",
+    note: "No grey at all. A white box with one thin grey line around it, 16px taller than ours. The line goes black and thicker when you tap in, so it does all the work.",
   },
   {
     key: "Uber",
     who: "measured on their live sign-in",
-    measured: "48 tall, 8 corner, grey fill, 2px black on focus",
+    measured: "48 tall, 8 corner, grey fill, black line when tapped",
     rest: "h-12 w-full rounded-[8px] px-3 text-[16px] text-s-ink " + UBER_FILL,
     focus: "h-12 w-full rounded-[8px] px-3 text-[16px] text-s-ink border-2 border-s-ink " + UBER_FILL,
-    note: "Almost our grey, almost our shape, and then a solid black edge appears the moment you tap in. That edge is the entire state change, and it is the part we do not have.",
+    note: "Almost our grey, almost our shape, and then a black line appears around it the moment you tap in. That line is the whole difference, and it is the part we do not have.",
   },
 ];
 
@@ -132,7 +132,7 @@ export default function FieldStylePage() {
           <p className="text-[15px] font-semibold text-s-ink">Three of ours in a row</p>
           <p className="mt-1 text-[14px] leading-[1.55] text-s-ink-2">
             This is what a real form looks like today. The boxes run together, because nothing
-            separates them from each other or from the tray behind them.
+            separates them from each other or from the grey behind them.
           </p>
           <div className="mt-4 space-y-2 rounded-[16px] bg-s-bg-sunken p-3">
             <Box cls="h-11 w-full rounded-[12px] bg-s-bg-sunken px-3 text-[16px] text-s-ink">anna@example.ch</Box>
@@ -140,7 +140,7 @@ export default function FieldStylePage() {
             <Box cls="h-11 w-full rounded-[12px] bg-s-bg-sunken px-3 text-[16px] text-s-ink">Basel</Box>
           </div>
 
-          <p className="mt-5 text-[15px] font-semibold text-s-ink">The same three with an edge</p>
+          <p className="mt-5 text-[15px] font-semibold text-s-ink">The same three with a line around them</p>
           <div className="mt-3 space-y-2 rounded-[16px] bg-s-bg-sunken p-3">
             <Box cls="h-11 w-full rounded-[12px] border border-s-border bg-white px-3 text-[16px] text-s-ink">anna@example.ch</Box>
             <Box cls="h-11 w-full rounded-[12px] border border-s-border bg-white px-3 text-[16px] text-s-ink">+41 79 123 45 67</Box>
@@ -149,7 +149,7 @@ export default function FieldStylePage() {
         </div>
 
         <p className="mt-8 text-[14px] leading-[1.55] text-s-ink-2">
-          My pick is Uber&apos;s: keep the grey, add the black edge on tap. It is the smallest change
+          My pick is Uber&apos;s: keep the grey, add a black line when you tap in. It is the smallest change
           of the three, it keeps everything already built, and it fixes the part that is actually
           wrong, which is that tapping a field currently looks like nothing happened. Airbnb&apos;s
           white-with-an-edge is the better-looking one, and it means every field in the product gets

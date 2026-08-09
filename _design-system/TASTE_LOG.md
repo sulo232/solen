@@ -172,6 +172,40 @@ prior LOCKFILE conventions, scoped to filter sheets only:
   confirmed gray (`SheetChip` was already `bg-s-bg-sunken`, unchanged). i18n keys `ratingAndUp` /
   `ratingAria` added de/en/fr/it.
 
+## 2026-08-09 , input fields go white with a hairline, and the focus line is removed
+
+Owner verbatim, in order: *"is this style even correct how does airbnb n uber do"* , then, on being
+shown the measurements, *"make like airbnb but without the focus line when tapped in"*.
+
+**What was measured first, on the live sites the same day, before anything changed:**
+
+| | height | corner | fill | line |
+|---|---|---|---|---|
+| Solen, before | 48 | 12 | grey `#F4F4F5` | `1px solid transparent` |
+| Airbnb | 60 | 12 | none (white) | 1px grey `rgb(140,140,140)` |
+| Uber | 48 | 8 | grey `rgb(246,246,246)` | 2px black on focus only |
+
+**The decision, applied to the base input rule in `app/globals.css`:**
+
+- fill `#F4F4F5` to **white**, because Airbnb has no fill and a grey fill under a grey line reads as
+  two competing boundaries.
+- the resting line from `transparent` to **`#E4E4E7`**. It is worth naming that the line was ALREADY
+  THERE and invisible, so this is a colour change and not a new element.
+- height stays **48**, not their 60. He asked for the look, not the size, and 48 is locked.
+- **the ink focus line is REMOVED by his instruction.** Tapping a field now changes nothing visible.
+
+**The cost, stated once at the time and then his call (rule 3, and he decided after hearing it):**
+this removes the only visible focus indicator. On a phone the caret and keyboard cover it. On a
+laptop, anyone moving through a form with a keyboard cannot see where they are, and WCAG 2.4.7 asks
+for a visible focus indicator. The smallest thing that would satisfy both is the line darkening to
+`s-ink-2` instead of jumping to black, and that remains available if he wants it later.
+
+**Supersedes:** the 2026-07-17 input-fill decision (filled grey at rest, white on focus) and the
+LOCKFILE §3.5 depth note that describes inputs as filled-grey. Both are now history; this row wins.
+
+Verified live at 390 on `/de/booking/resend-link`: white fill, 1px `rgb(228,228,231)` line, and
+identical at rest and when tapped.
+
 ## 2026-07-06 , data-state filters: hide while empty (owner approved)
 - Decision: filter surfaces that point at data which cannot discriminate are HIDDEN, not shown-but-empty. Applied to the Angebote pill + FilterSheet group + deals sort + Angebote rail (while 0 listed salons carry a deal) and the Fuer-wen pill + group (while every active service is tagged for all genders). They reappear automatically when the data changes (cached availability check, ~5 min).
 - Why: a filter that always yields 0 results or never narrows is a dead control; showing it violates the no-fabricated-affordance principle (same family as taste rule 1). Seeding fake deals was rejected as data fabrication.
