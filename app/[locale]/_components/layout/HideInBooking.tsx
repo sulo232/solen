@@ -76,7 +76,17 @@ export default function HideInBooking({
     // /booking/lookup) so it doesn't double the back or crowd the flow with the city
     // bar + footer.
     /\/bookings\/[^/]+\/(report|refund|upcharge)\/?$/.test(pathname) ||
-    /\/onboarding(\/|$)/.test(pathname)
+    /\/onboarding(\/|$)/.test(pathname) ||
+    // 2026-08-09. The rest of the TASK screens, added after capturing what Airbnb and Uber Eats
+    // actually do at phone width (_design-system/references/chrome-by-page-type.md). Both strip
+    // the bar completely on a screen where someone is doing ONE job: Uber Eats leaves a single X
+    // and puts the action at the bottom, Airbnb hands the bottom bar to the commit button. The
+    // list above already had that instinct and was applied one route at a time by hand, which is
+    // why these seven were missed. Every one is a single job with its own commit button:
+    /\/(walk-in-join|walk-in-tip|confirmation|staff-invite)(\/|$)/.test(pathname) ||
+    /\/tip\/[^/]+\/?$/.test(pathname) ||
+    /\/vouchers\/buy\/?$/.test(pathname) ||
+    /\/gift-card\/?$/.test(pathname)
   ) {
     return null;
   }
