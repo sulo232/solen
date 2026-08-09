@@ -1,6 +1,6 @@
 # Press-tier animation checker
 
-Generated: 2026-08-09T15:22:00.500Z
+Generated: 2026-08-09T15:24:32.166Z
 Files scanned: 613  Roots: app, components, components-legacy
 
 Static source scan (no browser) for the class of press control whose active:scale- cannot

@@ -197,7 +197,11 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
 
       {isSalon ? (
         <div>
-          <label className="block text-[13px] font-medium text-s-ink-2 mb-1.5">
+          {/* owner 2026-08-09, decision 7 of ten, verbatim "7C": the small grey label above a
+              field is gone, replaced by a larger ink question. The Uber shape, picked from the
+              three he was shown on /dev/form-labels. The FIELD is untouched and stays as he locked
+              it the same day: white fill, grey resting line, nothing happens on tap. */}
+          <label className="block text-[15px] text-s-ink mb-2"> {/* mockup-ok: he picked C from the three variants on /dev/form-labels, TASTE_LOG 2026-08-09 */}
             {t("salonNameLabel")}
           </label>
           <input
@@ -211,7 +215,11 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
         </div>
       ) : (
         <div>
-          <label className="block text-[13px] font-medium text-s-ink-2 mb-1.5">
+          {/* owner 2026-08-09, decision 7 of ten, verbatim "7C": the small grey label above a
+              field is gone, replaced by a larger ink question. The Uber shape, picked from the
+              three he was shown on /dev/form-labels. The FIELD is untouched and stays as he locked
+              it the same day: white fill, grey resting line, nothing happens on tap. */}
+          <label className="block text-[15px] text-s-ink mb-2"> {/* mockup-ok: he picked C from the three variants on /dev/form-labels, TASTE_LOG 2026-08-09 */}
             {t("birthdayLabel")} <span className="text-s-ink/25">{t("birthdayHint")}</span>
           </label>
           <input
