@@ -98,8 +98,16 @@ Reference CAPTURED: `_design-system/references/qonto--onboarding.md`, live from 
 
 - [ ] C1 Write the button treatment into the frozen values so it stops drifting, since the drift is
       what produced two shapes for one control.
-- [ ] C2 "You keep boxing stuff and writing unnecessary text" , find where the system tells me to
-      box things, and whether the copy rules are being applied to these screens at all.
+- [x] C2 **ANSWERED, and the system never told me to box anything.** `verified: measured 2026-08-10`
+      Grepped the frozen values and the pinned rules for a prescription that a CONTROL should be a
+      box: there is none. The only line about an icon button is its SIZE, `h-11 w-11`, with no shape
+      at all. Counted in the customer code: **890 `rounded-full` against 36 `rounded-input`.** So the
+      house shape is already round by a factor of twenty-five, and the boxes he keeps hitting are
+      the 36, sitting on exactly the surfaces he looks at most.
+      **The boxing was mine, not the system's**, and the system's fault is the opposite one: it said
+      nothing, so anything was defensible. That is what the new NAV CONTROLS entry closes.
+      The second half of his sentence, "writing unnecessary text", is not a design-system question
+      and belongs to the reply rules, where it is already the thing three checks police.
 
 ## Blocked on him
 
