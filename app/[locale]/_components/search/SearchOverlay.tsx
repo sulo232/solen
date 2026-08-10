@@ -1204,7 +1204,46 @@ export function SearchOverlay({
     [reduce],
   );
   const collapse = React.useCallback(() => { if (listRef.current) listRef.current.scrollTop = 0; grow(0); }, [grow]);
-  const openStep = React.useCallback((s: Step) => { setActiveStep(s); setInputFocused(false); collapse(); }, [collapse]);
+  // OPENING A STEP NOW EXPANDS IT AND RAISES THE KEYBOARD, the same as the service step already
+  // did. Owner 2026-08-11: "i like how sh expands when clicked on search inside searchbar, but on
+  // location when u try to search it doesnt work like expand nor keyboard."
+  //
+  // He is describing exactly what the code did. `openStep` set the step and then explicitly did the
+  // OPPOSITE of expanding: `setInputFocused(false)` plus `collapse()`. The service step only feels
+  // right because it gets its own separate treatment in the open effect above
+  // (`setInputFocused(true); grow(1); requestAnimationFrame(focus)`), which nothing else ever got.
+  // So one of the three rows behaved and two did not, and the two silent ones are the ones you have
+  // to type into.
+  //
+  // Same three moves for every typing step now. `date` keeps the collapsed behaviour because it has
+  // no text input at all, it is a calendar, and raising a keyboard over a calendar would be wrong.
+  // The focus has to wait for React to COMMIT the new step. A requestAnimationFrame inside the
+  // click handler fires before that, and at that moment the location slot still carries
+  // `inert={activeStep !== "location"}`, so `.focus()` on the city input silently does nothing and
+  // the caret stays where it was. Measured exactly that: after tapping Wo?, document.activeElement
+  // was still the SERVICE input. So the request is recorded here and carried out in an effect below,
+  // which runs after the commit and after inert lifts.
+  const [pendingFocus, setPendingFocus] = React.useState<Step | null>(null);
+  React.useEffect(() => {
+    if (!pendingFocus) return;
+    const el = pendingFocus === "location" ? cityRef.current : serviceRef.current;
+    // preventScroll for the same reason the service step uses it: iOS otherwise scrolls the
+    // focused input into view and the sheet jumps.
+    el?.focus({ preventScroll: true });
+    setPendingFocus(null);
+  }, [pendingFocus, activeStep]);
+
+  const openStep = React.useCallback((s: Step) => {
+    setActiveStep(s);
+    if (s === "date") {
+      setInputFocused(false);
+      collapse();
+      return;
+    }
+    setInputFocused(true);
+    grow(1);
+    setPendingFocus(s);
+  }, [collapse, grow]);
   const advance = React.useCallback((s: Step) => {
     setInputFocused(false); collapse();
     const next = STEPS[STEPS.indexOf(s) + 1];
@@ -1880,7 +1919,15 @@ export function SearchOverlay({
           {/* R7 slot 2 of 3: WO?. `mx-3` is the same 12px inset `cardMx` rests at, so the three
               cards share one left/right edge in every state. */}
           <motion.div style={{ height: locH, paddingTop: rowGapTopReserve }} className="shrink-0 overflow-hidden"> {/* mockup-ok: SEARCH_MORPH.md STILL OPEN after H2 */}
-            <motion.div inert={rowsFolded} style={{ opacity: locSlotOp }} className="relative mx-3 h-full overflow-hidden rounded-[20px] bg-white shadow-[0_16px_48px_rgba(10,10,10,0.10)]"> {/* S7: whole slot folded away on focus */}
+            {/* `rowsFolded && activeStep !== "location"`, not bare `rowsFolded`. THE LAST
+                PIECE OF THE KEYBOARD BUG. `rowsFolded` flips true as soon as the sheet grows,
+                which is exactly what opening this step now does, so the slot inerted ITSELF
+                the moment it opened: the panel expanded and looked right, and the city input
+                could not take focus. Measured after tapping Wo?: the input had an [inert]
+                ancestor and document.activeElement was BODY, so no keyboard.
+                The fold is meant to take the OTHER rows out of the tab order, never the one
+                being used. */}
+            <motion.div inert={rowsFolded && activeStep !== "location"} style={{ opacity: locSlotOp }} className="relative mx-3 h-full overflow-hidden rounded-[20px] bg-white shadow-[0_16px_48px_rgba(10,10,10,0.10)]"> {/* S7: whole slot folded away on focus */}
               <motion.div inert={activeStep !== "location"} style={{ opacity: locT, pointerEvents: locBodyHit }} className="absolute inset-0 flex flex-col p-4"> {/* S7: city input + city rows out of the tab order when collapsed */}
                     {/* C7 (round 2, "does not expand or close"): root cause was that once a
                         step is active, its OWN heading had no click handler , the only way
@@ -1923,7 +1970,7 @@ export function SearchOverlay({
               (ROW_H * 2 + 20) carried, kept so the footer lands on exactly the same y as
               before this rewrite. */}
           <motion.div style={{ height: dateH, paddingTop: rowGapTopReserve, paddingBottom: rowGapBottomReserve }} className="shrink-0 overflow-hidden"> {/* mockup-ok: SEARCH_MORPH.md STILL OPEN after H2 */}
-            <motion.div inert={rowsFolded} style={{ opacity: dateSlotOp }} className="relative mx-3 h-full overflow-hidden rounded-[20px] bg-white shadow-[0_16px_48px_rgba(10,10,10,0.10)]"> {/* S7: whole slot folded away on focus */}
+            <motion.div inert={rowsFolded && activeStep !== "date"} style={{ opacity: dateSlotOp }} className="relative mx-3 h-full overflow-hidden rounded-[20px] bg-white shadow-[0_16px_48px_rgba(10,10,10,0.10)]"> {/* S7: whole slot folded away on focus */}
               <motion.div inert={activeStep !== "date"} style={{ opacity: dateT, pointerEvents: dateBodyHit }} className="absolute inset-0 flex flex-col px-4 pb-3 pt-4"> {/* S7: the 29-31 day cells out of the tab order when collapsed */}
                     {/* C7: same accordion-collapse as the location heading above. */}
                     <button type="button" onClick={() => openStep("service")}

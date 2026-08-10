@@ -223,7 +223,7 @@ export default function HomeSearchPill({
         // floating at rest, 44 and settled once he scrolls.
         style={shrunk ? undefined : { boxShadow: "0 6px 20px rgba(0,0,0,0.10)" }} // mockup-ok: variant B lift, measured off airbnb.ch live at 390 wide, 2026-08-10
         className={cn(
-          "flex w-full items-center justify-center gap-2 rounded-[40px] bg-white px-[19px]", // mockup-ok: owner pick, /dev/search-bar, 2026-08-10
+          "flex w-full items-center justify-center gap-2 rounded-[40px] bg-white overflow-hidden", // mockup-ok: padding moved onto the button so the whole bar is tappable, 2026-08-11
           // The morph. Height and weight are the only things that move.
           "transition-[height,box-shadow,border-color] duration-200 ease-glide", // mockup-ok
           "border border-s-border", // mockup-ok: the light grey hairline, their measured painted #DDDDDD, ours #E4E4E7
@@ -240,7 +240,17 @@ export default function HomeSearchPill({
           onClick={onActivate ?? openOverlay}
           aria-label={tChrome("editSearch")}
           aria-haspopup={onActivate ? undefined : "dialog"}
-          className="flex min-w-0 items-center justify-center gap-2"
+          // w-full and the outer flex-1. Owner 2026-08-11: "search bar i cant click on the side
+          // i have to rlly click on the search bar."
+          //
+          // MEASURED before the fix: the bar is 358 wide and only the middle 71px opened the
+          // search. 144px dead on each side, which is most of the control. Tapping 8px in from
+          // either end hit a plain div and did nothing.
+          //
+          // Cause, and it was mine: when the content was centred for the Airbnb look, this
+          // button stopped filling the bar and shrank to fit its own text. The centring is
+          // right; the button just has to be the whole bar and centre its contents INSIDE.
+          className="flex min-w-0 flex-1 items-center justify-center gap-2 self-stretch px-[19px]"
         >
           <Search size={12} strokeWidth={2.4} className="shrink-0 text-s-ink" aria-hidden />
           {/* mockup-ok: font-medium = 500, their measured label weight. Balance pass 2026-08-11. */}
@@ -292,7 +302,11 @@ export default function HomeSearchPill({
           locale={locale}
           originRect={originRect}
           // Same composer the results pill opens, so the two entry points are one surface.
-          showCategoryPills
+          // NO category pills inside the panel. Owner 2026-08-11: "remove category bar from
+          // search bar." The home page already carries that exact row directly under the
+          // search bar, so opening the panel showed him the same four categories a second
+          // time, one on top of the other. The results view keeps its own pills; this is the
+          // home entry point only.
         />
       )}
     </div>
