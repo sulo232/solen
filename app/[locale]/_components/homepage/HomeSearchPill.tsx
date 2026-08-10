@@ -178,7 +178,7 @@ export default function HomeSearchPill({
   // exactly, instead of the 20 it measured, so the vertical rhythm reads 16 / 32 rather than
   // 20 / 31.
   return (
-    <div className="mx-auto w-full max-w-[680px] px-4 pt-3 pb-1">
+    <div className="mx-auto w-full max-w-[680px] px-4 pt-3 pb-0">
       {/* B AT REST, C ONCE HE SCROLLS. Owner 2026-08-10, correcting my first read of his "c":
           "b normal state or scrolled up, c once scrolled down a bit, you know, gets smaller."
 

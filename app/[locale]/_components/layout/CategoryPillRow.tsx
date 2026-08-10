@@ -159,7 +159,14 @@ export default function CategoryPillRow() {
   return (
     <div
       className={cn(
-        "md:hidden mx-auto mt-3 max-w-[1280px] px-4",
+        // mt-0, not mt-3. Owner drew a box round the empty band under the search bar on
+        // 2026-08-11 and called the gap weird. Measured: 36px from the bar to the top of a
+        // pill, against 20 on airbnb.ch. The 36 was two spacings stacked without either
+        // knowing about the other: this wrapper's own 12, plus the search wrapper's 4, plus
+        // the row's 20 of internal padding added a turn later to give the pills air. Airbnb
+        // sits its row DIRECTLY under the bar and lets the row's own padding be the whole
+        // gap. Same here now: the padding below is the only thing between them.
+        "md:hidden mx-auto mt-0 max-w-[1280px] px-4",
         // This row is not a child of the sticky header (it never was, moved 2026-08-01), so there
         // is no ancestor pointer-events:none box to opt back into, but the menuOpen-hide behavior
         // it always had stays unchanged.
