@@ -2,19 +2,45 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-07-25T22:33:37 (trigger: auto)
-- branch: main
+- taken: 2026-08-01T00:10:10 (trigger: auto)
+- branch: claude/airbnb-animated-icons-ee4329
 
 ## git
 ```
-29a556ba4 B2B and auth: fix five live WCAG loops, four layout animations, one press value
-3a873ae06 Rank 1: fix the WCAG 2.2.2 failures that were unconditional
-03cf7dd9c Motion plan: cite sha b2542365a on D1
-b2542365a D1: merge the three motion audits into one ranked list
-34155b4ea Motion audit lands (508 elements) and the first hard-rule violations are fixed
+56ff3b9f4 Cite the sha and the exact line for the stale-frame guard
+cfa17d2ff Put the air back where he approved it, and stop the renderer eating stale frames
+6624bf282 Cite the shas, and close the constraint box that round 27 superseded
+d64a1a069 I fixed the teleport by deleting the air, and he caught it
+d3ca76765 Stop the air being cut, and name the constraint that limits it
+```
+```
+M public/_pixel-refs/solen-icons/frames/set-barber/026.png
+ M public/_pixel-refs/solen-icons/frames/set-barber/027.png
+ M public/_pixel-refs/solen-icons/frames/set-barber/028.png
+ M public/_pixel-refs/solen-icons/frames/set-barber/029.png
+ M public/_pixel-refs/solen-icons/frames/set-barber/030.png
+ M public/_pixel-refs/solen-icons/frames/set-barber/031.png
+ M public/_pixel-refs/solen-icons/frames/set-barber/032.png
+ M public/_pixel-refs/solen-icons/frames/set-barber/033.png
+ M public/_pixel-refs/solen-icons/frames/set-barber/034.png
+ M public/_pixel-refs/solen-icons/frames/set-barber/035.png
+ M public/_pixel-refs/solen-icons/frames/set-barber/036.png
+ M public/_pixel-refs/solen-icons/frames/set-barber/037.png
+ M public/_pixel-refs/solen-icons/frames/set-barber/038.png
+ M public/_pixel-refs/solen-icons/frames/set-barber/039.png
+ M public/_pixel-refs/solen-icons/frames/set-barber/040.png
+ M public/_pixel-refs/solen-icons/frames/set-barber/041.png
+ M public/_pixel-refs/solen-icons/frames/set-barber/042.png
+ M public/_pixel-refs/solen-icons/frames/set-barber/043.png
+ M public/_pixel-refs/solen-icons/frames/set-barber/044.png
+ M public/_pixel-refs/solen-icons/frames/set-barber/045.png
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
+45 | ANIMATED ICONS ROUND 2 , owner feedback on build 1 (2026-07-31: brighter lighting, the red is not vibrant, the chair does not face straight, and a coiffeur version that is NOT the same chair) | **ACTIVE** (2026-07-31)
+44 | AIRBNB ANIMATED ICONS , capture the real reference, then build a Solen animated icon (owner 2026-07-31 "go actually research", scoped by the owner mid-turn to research FIRST) | **ACTIVE** (2026-07-31)
+43 | COPY + VOICE LAW , how we write, in four languages (owner 2026-07-29 "research everything and make a whole principle about when you're writing something, how to do it") | **ACTIVE** (2026-07-29)
+42 | PRINCIPLE RESEARCH , deep-research every non-design principle we already have (backend, security, silent-no-op, psychology, i18n, motion, the rest of `_rules/*`) | **ACTIVE** (2026-07-29)
 40 | MOTION + SHADOW LAW (research-first, then build as a loop) | **ACTIVE** (2026-07-25)
 33 | PDP consistency + motion (dates, reviews system, buttons, portfolio +N, frosted scroll) | **ACTIVE** (2026-07-25)
 31 | Home page overhaul (owner 10-ask dictation) , PIVOTED to whiteness/emptiness fix | **ACTIVE** (2026-07-24)
@@ -40,36 +66,8 @@ b2542365a D1: merge the three motion audits into one ranked list
 36 | Mockup QUALITY system , stop shipping unchecked/unbalanced mockups (owner 2026-07-19, FURIOUS recurrence) | **ACTIVE** (2026-07-19)
 35 | Full frontend sweep , audit every surface vs the design system + mockup improvements (owner 2026-07-19, LOOP) | **ACTIVE** (2026-07-19)
 
-## MOTION_LAW.md
+## COPY_VOICE_LAW.md
 Open boxes:
-- [ ] D2. Fix the WCAG 2.2.2 exposures , Level A, so these lead the list. PARTIAL 2026-07-25: the two
-- [ ] D3. Resolve the 420ms ENTER RECIPE contradiction with a side-by-side the owner picks from.
-- [ ] D4. Document `thud` as the exit curve, zero new tokens.
-
-## PDP_CONSISTENCY.md
-Open boxes:
-- [ ] C2. Reviews SYSTEM: one review-row component + one summary grammar shared by the PDP section, the full reviews page, and the stylist profile page. Audit first, name every divergence, then unify.
-- [ ] C3. BUTTON audit: enumerate every book/select/choose variant in the customer surfaces, then ONE rule per job (mockup, owner picks).
-- [ ] C6. Motion pass beyond C5, kept simple.
-- [ ] C2a. Extract ONE review-row component + one summary grammar, used by all three.
-- [ ] M1. Owner confirms the two-tier speed.
-- [ ] M2. CORRECTION: the frosted condensed bar is missing the PICTURE. The X reference puts the profile
-- [ ] M3. Motion mockups across surfaces at the measured speed, incl. the Termin/Walk-in tab switch the
-- [ ] M4. Owner correction to honour throughout: the BOOK BUTTON IS ALWAYS PRESENT, never removed from any
-
-## HOME_OVERHAUL.md
-Open boxes:
-- [ ] W5. BLOCKED on owner: pick A / B / C (or combo) -> apply the hero imagery + section rhythm to the real Hero + feed, fix the review placeholder, verify + commit.
-- [ ] R2. Get real REFERENCES. BLOCKED (in progress, concrete): the Mobbin reference sweep is a RUNNING background subagent dispatched this turn; its results arrive via a task-notification that re-invokes me. An async agent cannot be force-completed inside this turn , the turn ends here and RESUMES on that notification to finish R2 + R3.
-- [ ] R3. Synthesize council + refs -> GROUNDED LIGHT-photo-hero proposal + re-mock. BLOCKED on R2 (needs the reference results before synthesizing).
-- [ ] 1f. Apply chosen direction to the real card (owner-gated , the mockup-first pause). Atomized:
-  - [ ] 1f-i. Owner picks A / B / C (or a mix) , BLOCKED on owner (the whole point of the phase-1 preview)
-  - [ ] 1f-ii. Apply the picked treatment to `Hero.tsx` wrapper + `SearchBar.tsx` collapsed card (radius + width + separation) , BLOCKED on 1f-i (cannot apply a direction that is not picked yet)
-  - [ ] 1f-iii. Drop the `SearchOverlay.tsx:767` scrim blur to plain dim + verify smoothness with a Playwright video , BLOCKED on 1f-i (ships together with the chosen card)
-  - [ ] 1f-iv. Commit the applied card + post a tunnel link for owner sign-off , BLOCKED on 1f-ii/iii being done
-- [ ] 2. In deiner Nähe , remove the map, keep near-you list + city (BLOCKED on: phase-1 approval, then its own mockup round)
-- [ ] 3. Nähe/section font , identify the drifted font vs the locked family, fix (BLOCKED on: item 2 scope)
-- [ ] 4. Reviews section , diagnose + mockup fix (BLOCKED on: phase-1 approval)
-- [ ] 5. Walk-in section , diagnose + mockup fix (BLOCKED on: phase-1 approval)
-- [ ] 6. Inspo section , diagnose + mockup fix (BLOCKED on: phase-1 approval)
-- [ ] 7. Logo , clarify what's wrong + mockup fix (BLOCKED on: phase-1 approval + owner detail on what's off)
+- [ ] D4 , the branch collision. **BLOCKED on OWNER DECISION D5**, which is what to do with
+- [ ] E2 , delete them. **BLOCKED on owner sign-off**, destructive and irreversible. (Checked this
+- [ ] F2 , **OWNER DECISION.** Pick one of the three closures above. My lean: option 1, a human read,

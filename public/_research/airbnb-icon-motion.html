@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<!--
+  REFERENCE CAPTURE REPORT, not a mockup. It proposes no change to any Solen surface and draws no
+  Solen screen, so it lives in public/_research/ rather than public/_mockups/. Anything Solen that
+  comes out of it goes through the normal mockup-first pipeline separately.
+
+  Grounded-in: public/_pixel-refs/airbnb/icons-motion/webm/house-twirl.webm
+  Grounded-in: public/_pixel-refs/airbnb/icons-motion/frame-metrics.json
+  Grounded-in: public/_pixel-refs/airbnb/icons-motion/motion-energy.json
+  Grounded-in: public/_pixel-refs/airbnb/icons-motion/live-page-manifest.json
+
+  Reference-checked: public/_pixel-refs/airbnb/icons-motion/webm/house-twirl.webm
+  Reference-checked: public/_pixel-refs/airbnb/icons-motion/frame-metrics.json
+  Reference-checked: public/_pixel-refs/airbnb/icons-motion/motion-energy.json
+  Reference-checked: public/_pixel-refs/airbnb/icons-motion/live-page-manifest.json
+  Reference-checked: public/_pixel-refs/airbnb/icons-motion/sheets/house-twirl.png
+  (9 real .webm files downloaded from a0.muscache.com on 2026-07-31, decoded to 411 RGBA frames with
+  ffmpeg, measured with PIL/NumPy. Nothing about Airbnb here comes from training memory.)
+
+  Exists-check: npm run exists "airbnb" -> 5 hits, all unrelated (4 page-section comments calling the
+  search bar "Airbnb-style", 1 REMOVED entry about black ink selected states on Solen pills). npm run
+  exists "animated icon" -> 0 hits. Solen has NO animated-icon system today: no Lottie, no WebM icons,
+  no icon motion primitive. _design-system/MOTION.md covers component motion (press, cascade, shimmer),
+  not icon assets. The genuinely new thing here is the captured Airbnb reference itself.
+
+  Depicts: every surface below is an EXTERNAL Airbnb asset captured 2026-07-31, not a Solen feature.
+  Depicts: the 9 playing icons -> public/_pixel-refs/airbnb/icons-motion/webm/*.webm
+  Depicts: the frame strips -> public/_pixel-refs/airbnb/icons-motion/sheets/*.png, built by sheets.py
+           from 411 frames decoded by ffmpeg into frames/
+  Depicts: the timing tables -> frame-metrics.json + motion-energy.json (analyze.py, energy.py)
+  Depicts: the format table -> ffprobe on the downloaded assets + live-page-manifest.json from
+           scripts/capture/harvest-lottie.mjs and the _abnb-probe*.mjs session probes
+  Depicts: the choreography table -> the play()/ended log from hooking HTMLMediaElement before page
+           load (scripts/capture/_abnb-probe5.mjs, _abnb-probe6.mjs)
+  Depicts: section 10 -> NET-NEW, nothing like it exists in Solen; stated as a proposal to react to.
+  Note: "twirl-selected" is Airbnb's own filename, not the REMOVED Solen selected-state treatment.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Airbnb animated icons: frame by frame</title>
+<style>
+  :root {
+    --ink: #0A0A0A;
+    --ink-2: #5A5A5F;
+    --ink-3: #9CA3AF;
+    --bg: #FFFFFF;
+    --sunken: #F4F4F5;
+    --line: #E4E4E7;
+    --accent: #276EF1;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 40px 20px 80px; }
+
+  h1 { font-family: "Inter Tight", Inter, sans-serif; font-size: 28px; line-height: 1.15; font-weight: 600; margin: 0 0 12px; letter-spacing: -0.02em; }
+  h2 { font-family: "Inter Tight", Inter, sans-serif; font-size: 18px; font-weight: 600; margin: 0 0 12px; letter-spacing: -0.01em; }
+  p { margin: 0 0 12px; max-width: 74ch; }
+  .meta { font-size: 12px; color: var(--ink-2); }
+  .sub { color: var(--ink-2); }
+  section { margin: 0 0 44px; }
+  hr { border: 0; border-top: 1px solid var(--line); margin: 36px 0; }
+  .kicker { font-size: 12px; color: var(--ink-2); margin: 0 0 6px; }
+
+  .tray { background: var(--sunken); border-radius: 24px; padding: 24px; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; }
+  .cell {
+    background: #FFFFFF; border-radius: 16px; padding: 16px 14px 12px; width: 172px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer;
+  }
+  .cell video { width: 96px; height: 86px; display: block; }
+  .cell .nm { font-size: 12px; color: var(--ink); text-align: center; }
+  .cell .dur { font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; text-align: center; }
+  .hint { font-size: 12px; color: var(--ink-2); margin: 12px 0 0; }
+
+  .strip { margin: 0 0 22px; }
+  .strip .cap { font-size: 12px; color: var(--ink-2); margin: 0 0 6px; font-variant-numeric: tabular-nums; }
+  .strip .cap b { color: var(--ink); font-weight: 600; }
+  .strip .scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 16px; }
+  .strip img { display: block; min-width: 1170px; width: 1170px; }
+
+  table { border-collapse: collapse; width: 100%; font-size: 12px; font-variant-numeric: tabular-nums; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--ink-2); font-weight: 400; }
+  td.n { font-variant-numeric: tabular-nums; }
+  .tbl-wrap { overflow-x: auto; }
+  /* pastel tint + ink text, per taste rule 6 (refined pastel, never a saturated block) */
+  .tag { display: inline-block; font-size: 12px; padding: 1px 7px; border-radius: 999px; background: var(--sunken); color: var(--ink); }
+  .tag.v { background: #DCFCE7; color: var(--ink); }
+  .tag.e { background: #FFEDD5; color: var(--ink); }
+  .tag.a { background: var(--sunken); color: var(--ink-2); }
+  code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 12px; background: var(--sunken); padding: 1px 5px; border-radius: 6px; }
+  ul { margin: 0 0 12px; padding-left: 18px; max-width: 74ch; }
+  li { margin: 0 0 6px; }
+  .lead { font-size: 18px; line-height: 1.5; max-width: 66ch; }
+  .note { background: var(--sunken); border-radius: 16px; padding: 16px 18px; max-width: 74ch; }
+  .timeline { overflow-x: auto; }
+  .tl { min-width: 660px; }
+  .tl .bar { height: 26px; border-radius: 6px; position: relative; background: var(--sunken); margin: 0 0 6px; }
+  .tl .seg { position: absolute; top: 0; bottom: 0; border-radius: 6px; }
+  .tl .lab { font-size: 12px; color: var(--ink-2); margin: 0 0 4px; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="kicker">Reference capture, 31 July 2026</p>
+  <h1>Airbnb's animated icons, measured frame by frame</h1>
+  <p class="lead sub">Nine real animation files pulled off Airbnb's CDN, decoded to 411 individual frames, and measured. No guessing from memory: every number below came out of the actual assets or out of the live page.</p>
+
+  <p class="meta">
+    Source: <code>a0.muscache.com/videos/search-bar-icons/</code>, linked from the search bar on
+    <a href="https://www.airbnb.com/">airbnb.com</a> (desktop web, 1440px).
+    Assets and frames live in <code>public/_pixel-refs/airbnb/icons-motion/</code>.
+  </p>
+
+  <hr>
+
+  <section>
+    <h2>1. The real thing. Click any icon to replay it.</h2>
+    <p class="sub">These are Airbnb's own files, served locally, playing at their native 30fps with their real transparent background. Nothing here is a recreation.</p>
+    <div class="tray">
+      <div class="row" id="stage"></div>
+    </div>
+    <p class="hint">Each file plays once and stops on its last frame. That last frame is the icon you see at rest on airbnb.com.</p>
+  </section>
+
+  <section>
+    <h2>2. What Airbnb actually ships (and what it is not)</h2>
+    <p>The internet says Airbnb invented a proprietary 3D icon format called "Lava". On the live web product today, that is not what is being served. The search-bar icons are ordinary video files with an alpha channel.</p>
+    <div class="tbl-wrap">
+    <table>
+      <tr><th style="width:200px">Property</th><th>Measured value</th><th style="width:88px">Tier</th></tr>
+      <tr><td>Container and codec</td><td><code>.webm</code>, VP9, with <code>alpha_mode=1</code> in the container, so real per-pixel transparency</td><td><span class="tag v">verified</span></td></tr>
+      <tr><td>Safari fallback</td><td><code>.mov</code>, HEVC with alpha, same 180x162 and same 51 frames, served from <code>/hevc/</code></td><td><span class="tag v">verified</span></td></tr>
+      <tr><td>Source resolution</td><td>180 x 162 px</td><td><span class="tag v">verified</span></td></tr>
+      <tr><td>Frame rate</td><td>30 fps, constant</td><td><span class="tag v">verified</span></td></tr>
+      <tr><td>Displayed size</td><td>72 x 72 CSS px, from a 36px layout box with <code>transform: scale(2)</code>, so the source is downscaled about 2.5x</td><td><span class="tag v">verified</span></td></tr>
+      <tr><td>File size</td><td>37 KB to 124 KB per clip. Nine clips, 604 KB for the whole set</td><td><span class="tag v">verified</span></td></tr>
+      <tr><td>Playback attributes</td><td><code>loop=false</code>, <code>autoplay=false</code>, <code>preload=auto</code>, started by a JS <code>play()</code> call</td><td><span class="tag v">verified</span></td></tr>
+      <tr><td>"Lava"</td><td>Present only as dormant experiment flags in the page payload (<code>media_web_homepage_enable_lava_search_icons</code> = control, <code>web_homepage_loads_lava_v2</code>, <code>pdp_rare_finds_lava_animation_v2</code>). Not the format served to this session.</td><td><span class="tag v">verified</span></td></tr>
+      <tr><td>The icons are 3D renders</td><td>Pre-rendered 3D, baked to frames. The turn shows real perspective and self-shadowing, which a 2D vector format could not produce.</td><td><span class="tag e">expect</span></td></tr>
+    </table>
+    </div>
+    <p class="meta" style="margin-top:10px"><span class="tag v">verified</span> I measured it. <span class="tag e">expect</span> inferred from the frames. <span class="tag a">assume</span> unchecked.</p>
+  </section>
+
+  <section>
+    <h2>3. Three clips per icon, not one</h2>
+    <p>This is the part that is easy to miss. Each icon is not one animation. It is a set of three, and the set is what makes the interaction feel alive.</p>
+    <div class="tbl-wrap">
+    <table>
+      <tr><th style="width:200px">Clip</th><th style="width:88px">Length</th><th>What it is and when it runs</th></tr>
+      <tr><td><code>house-twirl</code></td><td class="n">1.700 s</td><td>The inactive icon does one full turn. Fires once on page load. Parks on its final frame, which becomes the resting icon.</td></tr>
+      <tr><td><code>house-twirl-selected</code></td><td class="n">1.700 s</td><td>The same full turn, ending in the active pose. This is what the currently active tab plays on load.</td></tr>
+      <tr><td><code>house-selected</code></td><td class="n">0.767 s</td><td>A short settle. Fires when you click the tab. The object turns a few degrees toward you and stops. No spin.</td></tr>
+    </table>
+    </div>
+    <p class="sub" style="margin-top:12px">Every twirl in the set is exactly 1.700 s and 51 frames. The short clips are not equal length: house 0.767 s, balloon 1.533 s, concierge bell 1.033 s. The length follows the object, not a token.</p>
+  </section>
+
+  <section>
+    <h2>4. Frame by frame</h2>
+    <p class="sub">Every second frame, at real timestamps. This is the whole animation, nothing skipped or interpreted.</p>
+    <div id="strips"></div>
+  </section>
+
+  <section>
+    <h2>5. The timing inside one clip</h2>
+    <p>The clip is 1.700 s but the movement is not. Airbnb bakes a still hold into both ends of the file, so the animation has a beat before it starts and comes fully to rest before the file ends.</p>
+    <div class="timeline">
+      <div class="tl" id="tl"></div>
+    </div>
+    <div class="tbl-wrap" style="margin-top:18px">
+    <table>
+      <tr><th>Clip</th><th>Frames</th><th>Length</th><th>Still, start</th><th>Moving</th><th>Still, end</th><th>Peak movement</th></tr>
+      <tbody id="timing"></tbody>
+    </table>
+    </div>
+    <p class="sub" style="margin-top:12px">Movement is measured as per-frame pixel change inside the alpha mask, so it is not fooled by an object that spins without changing silhouette. The balloon and the bell both do exactly that.</p>
+  </section>
+
+  <section>
+    <h2>6. The choreography on the page</h2>
+    <div class="tbl-wrap">
+    <table>
+      <tr><th style="width:170px">Trigger</th><th>What happens</th></tr>
+      <tr><td>Page load</td><td>All three icons twirl once, staggered left to right. Measured gaps between the three <code>play()</code> calls across two independent sessions: 152 and 148 ms, then 158 and 142 ms. So the stagger is about <strong>150 ms</strong>.</td></tr>
+      <tr><td>Hover a tab</td><td><strong>Nothing.</strong> No play, no seek, no transform. Measured by hooking <code>HTMLMediaElement.play</code> and <code>currentTime</code> before page load, then hovering each tab for 1.4 s.</td></tr>
+      <tr><td>Click a tab</td><td>The short clip plays once from 0. The twirl videos are dropped from the DOM and the short clips are faded in by opacity.</td></tr>
+      <tr><td>At rest</td><td>Two <code>&lt;video&gt;</code> elements sit stacked at the same coordinates, one at <code>opacity: 1</code> and one at <code>0</code>, crossfaded by a CSS transition. The visible one is paused on its final frame.</td></tr>
+      <tr><td>Idle</td><td>No loop, no ambient wiggle, no replay on scroll. It plays once and is then a still picture until you act.</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>7. The easing, and why it is not what you would guess</h2>
+    <p>Normal UI motion is fast out, slow in. These icons are not that. I tracked the moving centroid of the short clip across all 23 frames and fitted it against the standard curves:</p>
+    <div class="tbl-wrap">
+    <table style="max-width:520px">
+      <tr><th>Curve</th><th>Fit error, lower is closer</th></tr>
+      <tr><td>linear</td><td class="n">0.040</td></tr>
+      <tr><td>ease-in-out <code>(.42,0,.58,1)</code></td><td class="n">0.066</td></tr>
+      <tr><td>ease-out <code>(0,0,.58,1)</code></td><td class="n">0.127</td></tr>
+      <tr><td>material standard <code>(.4,0,.2,1)</code></td><td class="n">0.162</td></tr>
+      <tr><td>ease-out-quart <code>(.25,1,.5,1)</code></td><td class="n">0.324</td></tr>
+    </table>
+    </div>
+    <p style="margin-top:12px">Nearly linear, with soft ends. That is the signature of an object with mass turning, not of a UI element snapping into place. It is why these read as physical rather than as interface.</p>
+  </section>
+
+  <section>
+    <h2>8. The philosophy, in six lines</h2>
+    <div class="note">
+      <ul style="margin:0">
+        <li>The icon is a small physical object, filmed. It is not a diagram that got a transition.</li>
+        <li>Motion is a greeting, not a state. It plays once on arrival and then holds perfectly still.</li>
+        <li>The rest frame is the last frame of the animation, so the movement never contradicts the icon.</li>
+        <li>The turn is near linear with soft ends, because things with mass do not ease out.</li>
+        <li>Clicking gets a smaller, shorter move than arriving does. Choosing is a nod, not a performance.</li>
+        <li>Clip length follows the object, not a global duration token. The balloon takes twice as long as the house.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>9. What I did not measure</h2>
+    <ul>
+      <li>The exact rotation angle per frame. The clips show a full turn, but I did not solve the camera, so any claim like "it rotates 90 degrees by frame 12" would be invented.</li>
+      <li>The iOS and Android app icons. This capture is desktop web only. The apps may well ship the Lava format those flags refer to.</li>
+      <li>The mobile web variant at 390px.</li>
+      <li>How the icons were authored (Blender, Cinema 4D, something else). Not knowable from the output.</li>
+      <li>The icon set sits behind an A/B test: 1 in 2 fresh sessions rendered a plain text tab bar with no icons at all. Everything above is the variant that has them.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>10. What this means for a Solen barber-chair icon</h2>
+    <p>Read as a recipe, this is buildable without any proprietary format. This section is a proposal to react to, not something that exists in Solen yet:</p>
+    <ul>
+      <li>Author in 3D, render a turn at 30fps on a transparent background, export a frame sequence.</li>
+      <li>Encode VP9 WebM with alpha, plus an HEVC <code>.mov</code> with alpha for Safari. Both at roughly 2.5x the display size.</li>
+      <li>Keep the clip under about 1.7 s and under about 120 KB.</li>
+      <li>Bake a still hold onto both ends of the clip, and make the final frame the resting icon.</li>
+      <li>Play once on mount, staggered about 150 ms when there is more than one. Never loop. Never play on hover.</li>
+      <li>Ship a second, shorter clip for the chosen state.</li>
+    </ul>
+    <p class="sub">One open question before anything gets built: a person sitting in a rotating salon chair is a different subject from a house or a balloon. A human figure raises a casting decision (skin tone, hair, gender read) that a house does not, and that call is yours, not mine.</p>
+  </section>
+
+  <hr>
+  <p class="meta">Captured with a headless Chromium session against the live site, decoded with ffmpeg (libvpx-vp9, RGBA), measured with PIL and NumPy. Every page load was guarded against error status, off-host redirect, error UI at status 200, and an unrendered body, so nothing here was measured off a broken page.</p>
+</div>
+
+<script>
+const CLIPS = [
+  { id: "house-twirl",              label: "Homes, twirl",              dur: "1.700 s" },
+  { id: "house-twirl-selected",     label: "Homes, twirl active",       dur: "1.700 s" },
+  { id: "house-selected",           label: "Homes, short clip",         dur: "0.767 s" },
+  { id: "balloon-twirl",            label: "Experiences, twirl",        dur: "1.700 s" },
+  { id: "balloon-twirl-selected",   label: "Experiences, twirl active", dur: "1.700 s" },
+  { id: "balloon-selected",         label: "Experiences, short clip",   dur: "1.533 s" },
+  { id: "consierge-twirl",          label: "Services, twirl",           dur: "1.700 s" },
+  { id: "consierge-twirl-selected", label: "Services, twirl active",    dur: "1.700 s" },
+  { id: "consierge-selected",       label: "Services, short clip",      dur: "1.033 s" }
+];
+const BASE = "/_pixel-refs/airbnb/icons-motion";
+
+const stage = document.getElementById("stage");
+CLIPS.forEach(function (c) {
+  const d = document.createElement("div");
+  d.className = "cell";
+  d.innerHTML = '<video muted playsinline preload="auto" src="' + BASE + '/webm/' + c.id + '.webm"></video>'
+    + '<div class="nm">' + c.label + '</div>'
+    + '<div class="dur">' + c.id + '.webm<br>' + c.dur + '</div>';
+  const v = d.querySelector("video");
+  d.addEventListener("click", function () { v.currentTime = 0; v.play(); });
+  stage.appendChild(d);
+});
+window.addEventListener("load", function () {
+  Array.prototype.slice.call(stage.querySelectorAll("video")).forEach(function (v, i) {
+    setTimeout(function () { v.play(); }, i * 150);
+  });
+});
+
+const strips = document.getElementById("strips");
+CLIPS.forEach(function (c) {
+  const d = document.createElement("div");
+  d.className = "strip";
+  d.innerHTML = '<p class="cap"><b>' + c.id + '.webm</b> ' + c.dur + ', every 2nd frame</p>'
+    + '<div class="scroll"><img src="' + BASE + '/sheets/' + c.id + '.png" alt="' + c.id + ' frame strip"></div>';
+  strips.appendChild(d);
+});
+
+const TIMING = [
+  ["house-twirl",              51, 1700, 200, 1267, 433, 733],
+  ["house-twirl-selected",     51, 1700, 200, 1100, 600, 600],
+  ["house-selected",           23,  767,  33,  733,  33, 133],
+  ["balloon-twirl",            51, 1700, 233, 1667,  33, 533],
+  ["balloon-twirl-selected",   51, 1700,  33, 1667,  33, 533],
+  ["balloon-selected",         46, 1533,  33, 1467,  67, 333],
+  ["consierge-twirl",          51, 1700, 200, 1600, 100, 667],
+  ["consierge-twirl-selected", 51, 1700,  33, 1600, 100, 600],
+  ["consierge-selected",       31, 1033,  33,  900, 133, 233]
+];
+const tb = document.getElementById("timing");
+TIMING.forEach(function (r) {
+  const tr = document.createElement("tr");
+  tr.innerHTML = '<td><code>' + r[0] + '</code></td><td class="n">' + r[1] + '</td><td class="n">' + r[2] + ' ms</td>'
+    + '<td class="n">' + r[3] + ' ms</td><td class="n">' + r[3] + ' to ' + r[4] + ' ms</td>'
+    + '<td class="n">' + r[5] + ' ms</td><td class="n">' + r[6] + ' ms</td>';
+  tb.appendChild(tr);
+});
+
+const total = 1700;
+function pct(v) { return (v / total * 100).toFixed(2) + "%"; }
+document.getElementById("tl").innerHTML =
+  '<p class="lab">house-twirl.webm, 1700 ms total</p>'
+  + '<div class="bar">'
+  + '<div class="seg" style="left:0;width:' + pct(200) + ';background:#E4E4E7"></div>'
+  + '<div class="seg" style="left:' + pct(200) + ';width:' + pct(1067) + ';background:#0A0A0A"></div>'
+  + '<div class="seg" style="left:' + pct(1267) + ';width:' + pct(433) + ';background:#E4E4E7"></div>'
+  + '</div>'
+  + '<p class="lab">0 to 200 ms still</p>'
+  + '<p class="lab">200 to 1267 ms turning</p>'
+  + '<p class="lab">1267 to 1700 ms still, holding the rest pose</p>';
+</script>
+</body>
+</html>

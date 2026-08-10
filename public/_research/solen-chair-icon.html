@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<!--
+  REFERENCE-BUILD COMPARISON, round 2. Not a product mockup: it changes no Solen surface and draws no
+  Solen screen, so it lives in public/_research/ rather than public/_mockups/.
+
+  Grounded-in: _design-system/references/airbnb--animated-icons.md
+  Grounded-in: public/_pixel-refs/solen-icons/out/barber-hero.webm
+  Grounded-in: public/_pixel-refs/solen-icons/out/coiffeur-hero.webm
+  Reference-checked: public/_pixel-refs/airbnb/icons-motion/frames/house-twirl/001.png
+  Reference-checked: public/_pixel-refs/solen-icons/barber-hero-sheet.png
+
+  Exists-check: npm run exists "animated icon" -> 0 hits, Solen has no animated-icon system.
+  Depicts: the Airbnb clips -> public/_pixel-refs/airbnb/icons-motion/webm/*.webm (captured 2026-07-31)
+  Depicts: the Solen clips -> public/_pixel-refs/solen-icons/out/*.webm (built by
+           scripts/capture/turntable-render.mjs + scripts/capture/encode-alpha-icon.sh)
+  Depicts: the frame strips -> public/_pixel-refs/solen-icons/*-sheet.png
+  Depicts: the category idea -> NET-NEW, no Solen icon system exists; stated as a proposal.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Solen icon set: barber chair and blow dryer</title>
+<style>
+  :root { --ink:#0A0A0A; --ink-2:#5A5A5F; --ink-3:#9CA3AF; --bg:#FFFFFF; --sunken:#F4F4F5; --line:#E4E4E7; --accent:#276EF1; }
+  * { box-sizing:border-box; }
+  html { -webkit-text-size-adjust:100%; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif; font-size:14px; line-height:1.55; }
+  .wrap { max-width:1000px; margin:0 auto; padding:36px 20px 72px; }
+  h1 { font-family:"Inter Tight",Inter,sans-serif; font-size:28px; line-height:1.15; font-weight:600; margin:0 0 12px; letter-spacing:-0.02em; }
+  h2 { font-family:"Inter Tight",Inter,sans-serif; font-size:18px; font-weight:600; margin:0 0 12px; }
+  p { margin:0 0 12px; max-width:70ch; }
+  .sub { color:var(--ink-2); }
+  .lead { font-size:18px; line-height:1.5; max-width:62ch; }
+  .meta { font-size:12px; color:var(--ink-2); }
+  section { margin:0 0 40px; }
+  .tray { background:var(--sunken); border-radius:24px; padding:24px; }
+  .row { display:flex; flex-wrap:wrap; gap:12px; }
+  .cell { background:#FFFFFF; border-radius:16px; padding:16px 14px 12px; width:180px; display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer; }
+  .cell video { width:112px; height:100px; display:block; }
+  .cell .nm { font-size:14px; font-weight:600; text-align:center; }
+  .cell .dur { font-size:12px; color:var(--ink-3); text-align:center; font-variant-numeric:tabular-nums; }
+  .tiny { display:flex; gap:24px; align-items:flex-end; flex-wrap:wrap; }
+  .tiny figure { margin:0; text-align:center; }
+  .tiny video { display:block; }
+  .tiny figcaption { font-size:12px; color:var(--ink-2); margin-top:6px; }
+  table { border-collapse:collapse; width:100%; font-size:12px; font-variant-numeric:tabular-nums; }
+  th,td { text-align:left; padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--ink-2); font-weight:400; }
+  .tbl-wrap { overflow-x:auto; }
+  .scroll { overflow-x:auto; border:1px solid var(--line); border-radius:16px; margin:0 0 16px; }
+  .scroll img { display:block; min-width:1560px; width:1560px; }
+  .cap { font-size:12px; color:var(--ink-2); margin:0 0 6px; }
+  .cap b { color:var(--ink); font-weight:600; }
+  code { font-family:"JetBrains Mono",ui-monospace,monospace; font-size:12px; background:var(--sunken); padding:1px 5px; border-radius:6px; }
+  ol,ul { margin:0 0 12px; padding-left:20px; max-width:70ch; }
+  li { margin:0 0 10px; }
+  .note { background:var(--sunken); border-radius:16px; padding:16px 18px; max-width:70ch; }
+  a { color:var(--accent); }
+  /* Measured at 390: the 180px cells fell to one per row, so six clips became a long scroll,
+     and the 44px pair broke apart onto separate lines, which is exactly the comparison it exists
+     to make. Two per row keeps every pair side by side. */
+  @media (max-width: 560px) {
+    .wrap { padding:28px 16px 56px; }
+    .tray { padding:14px; border-radius:20px; }
+    .row { gap:10px; }
+    .cell { width:calc(50% - 5px); padding:12px 8px 10px; }
+    .cell video { width:92px; height:82px; }
+    .tiny { display:grid; grid-template-columns:1fr 1fr; gap:16px 12px; justify-items:center; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta">Round 3, 31 July 2026</p>
+  <h1>Two objects, no people: the barber chair and the blow dryer</h1>
+  <p class="lead sub">The set as you called it: barber is the chair, salon is a blow dryer. No people in either, which is also how Airbnb's own set works. Click any icon to replay it.</p>
+    <div class="tray" style="margin-bottom:24px"><div class="row" id="set"></div></div>
+    <p class="sub">Below, the earlier versions and Airbnb's originals, kept for comparison.</p>
+
+  <section>
+    <div class="tray"><div class="row" id="stage"></div></div>
+  </section>
+
+  <section>
+    <h2>At the size they will actually be used</h2>
+    <p class="sub">72 pixels, which is what Airbnb ships. This is the only test that matters for whether the two categories read apart.</p>
+    <div class="tray"><div class="tiny" id="tiny"></div></div>
+  </section>
+
+  <section>
+    <h2>Your three notes, and what the numbers said</h2>
+    <div class="tbl-wrap">
+    <table>
+      <tr><th style="width:170px">Your note</th><th>Measured</th><th style="width:150px">Now</th></tr>
+      <tr><td>Airbnb's lighting is brighter</td><td>True and it was the biggest gap. Ours was the darkest icon of the whole set: brightness 0.31 against Airbnb's 0.48.</td><td>0.62, brighter than Airbnb</td></tr>
+      <tr><td>The red is not vibrant enough</td><td>The red was never dull, it was <strong>dark</strong>. Saturation was already 0.72 against their 0.78, but its brightness was 0.54 against their 0.72. Then the render's film tone curve was crushing the colour every time I turned the lights up.</td><td>saturation 0.81, brightness 0.91</td></tr>
+      <tr><td>The chair does not face straight</td><td>True, and worse than it looked. I scored all 51 frames for how much of the face and cape you can see: the frame it rested on showed 16.7 percent, the real front was 48.4. It was resting on its own back quarter.</td><td>rests on the front now</td></tr>
+    </table>
+    </div>
+    <p class="meta">Two of these needed a change in the render, which is free. The red needed a new source picture, because no amount of light pulls colour out of a dull texture.</p>
+    <p class="sub">Every figure on this page is measured on frame 1 of each clip at 180x162, with transparent pixels excluded, so the numbers describe the object and not the empty canvas around it.</p>
+    <div class="tbl-wrap" style="margin-top:12px">
+    <table>
+      <tr><th style="width:170px">Clip</th><th>Brightness</th><th>Colour strength</th><th>Red saturation</th><th>Red brightness</th></tr>
+      <tr><td>Airbnb, homes</td><td>0.480</td><td>0.271</td><td>0.928</td><td>0.679</td></tr>
+      <tr><td>Airbnb, experiences</td><td>0.413</td><td>0.731</td><td>0.783</td><td>0.722</td></tr>
+      <tr><td>ours, build 1</td><td>0.309</td><td>0.656</td><td>0.923</td><td>0.568</td></tr>
+      <tr><td>ours, barber bright</td><td>0.616</td><td>0.588</td><td>0.811</td><td>0.909</td></tr>
+      <tr><td>ours, barber calmer</td><td>0.562</td><td>0.599</td><td>0.818</td><td>0.839</td></tr>
+      <tr><td>ours, coiffeur</td><td>0.720</td><td>0.405</td><td>0.550</td><td>0.915</td></tr>
+    </table>
+    </div>
+    <p class="meta">Both barbers are on the page so you can pick. Brighter is further from Airbnb's own level but closer to what you asked for.</p>
+  </section>
+
+  <section>
+    <h2>How a coiffeur and a barber read apart, my recommendation</h2>
+    <p>The strongest evidence is in the reference itself: Airbnb's three icons are a house, a balloon and a bell. Three unrelated objects. They never tell two categories apart by changing one object slightly. So neither should we.</p>
+    <ol>
+      <li><strong>Different chair, not a different person.</strong> Barber is the heavy pedestal chair, round chrome base, thick arms, footrest bar. Coiffeur is the backwash basin chair, reclined, with a white bowl behind the head on a slim five point base. The two differ at the top and at the bottom, which is exactly where the eye reads shape first.</li>
+      <li><strong>A colour per category.</strong> Barber keeps scarlet and chrome, which the world already reads as barbershop. Coiffeur takes blush and brass. At small sizes colour is recognised before shape, so this is the cue that survives when everything blurs.</li>
+      <li><strong>Hair length last.</strong> You were right that it will not carry this on its own. At 72 pixels it is a handful of pixels. It works as a third cue riding on top of the other two, never as the first.</li>
+    </ol>
+    <div class="note">
+      <p style="margin:0">A side benefit worth naming: because the figure stays a smooth featureless clay person in both, we never cast a face, a skin tone or a gender into a permanent brand mark. The chair says which service it is. The person is just a person.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Safari, solved</h2>
+    <p>Safari cannot play a transparent WebM, and Apple's own answer, HEVC with an alpha channel, refuses to encode on this Mac: the hardware encoder returns error 12908 across four different flag combinations. Animated WebP would have been ideal at about 53 KB, but this machine has no libwebp encoder at all.</p>
+    <p>So every icon now also ships as an <strong>APNG</strong>, which carries real transparency, keeps the frame timing, plays once and stops on its last frame, and works in Safari, iOS, Chrome and Firefox alike. The images below are the APNGs, not the videos.</p>
+    <div class="tray"><div class="tiny" id="apng"></div></div>
+    <div class="tbl-wrap" style="margin-top:16px">
+    <table>
+      <tr><th style="width:190px">Format</th><th>Size</th><th>Safari</th><th>Verdict</th></tr>
+      <tr><td>WebM, VP9 with alpha</td><td>51 KB</td><td>no</td><td>what Airbnb ships, best size</td></tr>
+      <tr><td>APNG</td><td>182 KB</td><td>yes</td><td>shipping now as the Safari path</td></tr>
+      <tr><td>Animated WebP</td><td>53 KB (measured once)</td><td>yes</td><td>the best of both, needs <code>brew install webp</code> and then one command</td></tr>
+      <tr><td>HEVC with alpha</td><td>not produced</td><td>yes</td><td>encoder error 12908 on this Mac, four flag combinations tried</td></tr>
+      <tr><td>ProRes 4444</td><td>1,038 KB</td><td>no</td><td>works but twenty times too big and not a web format</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Every frame</h2>
+    <p class="cap"><b>barber</b> 1.700 s, every 4th frame</p>
+    <div class="scroll"><img src="/_pixel-refs/solen-icons/barber-hero-sheet.png" alt="barber turn, frame strip"></div>
+    <p class="cap"><b>coiffeur</b> 1.700 s, every 4th frame</p>
+    <div class="scroll"><img src="/_pixel-refs/solen-icons/coiffeur-hero-sheet.png" alt="coiffeur turn, frame strip"></div>
+  </section>
+
+  <section>
+    <h2>Still honest about what is not right</h2>
+    <ul>
+      <li>The coiffeur is still the brightest thing here at 0.72, because pink, cream and white all sit high to begin with. Pulling it down further starts greying the pink, so it stays until you say otherwise.</li>
+      <li>Colour balance is the real remaining problem and it is measurable. Airbnb's set is mostly <strong>neutral</strong>: their house is 65 percent neutral pixels and their bell 64 percent, with only the balloon loud at 2 percent. Ours is 14 percent neutral, so nearly the whole object is shouting. Ours also mixes red and blue, two opposite families, while every Airbnb icon stays inside one family. That is the fix for the next pass, not more brightness.</li>
+      <li>No Safari file for either. This Mac's encoder refuses transparent HEVC, so today they play in Chrome and Firefox only.</li>
+      <li>Each mesh is reconstructed from one picture, so the back of each chair is guessed and reads softer than the front. Feeding three views fixes it.</li>
+      <li>The coiffeur basin is a first attempt at the idea, not a settled design. If you like the direction, the next pass sharpens it.</li>
+      <li>Neither is wired into any Solen screen. That is a separate step and it goes through mockup approval first.</li>
+    </ul>
+  </section>
+
+</div>
+<script>
+const A = "/_pixel-refs/airbnb/icons-motion/webm";
+const S = "/_pixel-refs/solen-icons/out";
+const CLIPS = [
+  { src: A + "/house-twirl.webm", label: "Airbnb, homes" },
+  { src: A + "/balloon-twirl.webm", label: "Airbnb, experiences" },
+  { src: A + "/consierge-twirl.webm", label: "Airbnb, services" },
+  { src: S + "/barber-hero.webm", label: "Solen, barber bright" },
+  { src: S + "/barber-calm.webm", label: "Solen, barber calmer" },
+  { src: S + "/coiffeur-hero.webm", label: "Solen, coiffeur" }
+];
+const SET = [
+  { src: S + "/set-barber.webm", png: S + "/set-barber.apng", label: "Barber", sub: "the chair, empty" },
+  { src: S + "/set-dryer.webm", png: S + "/set-dryer.apng", label: "Salon", sub: "the blow dryer" }
+];
+const setEl = document.getElementById("set");
+SET.forEach(function (c) {
+  const d = document.createElement("div");
+  d.className = "cell";
+  d.innerHTML = '<video muted playsinline preload="auto" src="' + c.src + '"></video>'
+    + '<div class="nm">' + c.label + '</div><div class="dur">' + c.sub + '</div>';
+  const v = d.querySelector("video");
+  d.addEventListener("click", function () { v.currentTime = 0; v.play(); });
+  setEl.appendChild(d);
+});
+const stage = document.getElementById("stage");
+CLIPS.forEach(function (c) {
+  const d = document.createElement("div");
+  d.className = "cell";
+  d.innerHTML = '<video muted playsinline preload="auto" src="' + c.src + '"></video>'
+    + '<div class="nm">' + c.label + '</div><div class="dur">1.700 s</div>';
+  const v = d.querySelector("video");
+  d.addEventListener("click", function () { v.currentTime = 0; v.play(); });
+  stage.appendChild(d);
+});
+const apng = document.getElementById("apng");
+[["set-barber", "barber, APNG in any browser"], ["set-dryer", "salon, APNG in any browser"]].forEach(function (p) {
+  const f = document.createElement("figure");
+  f.style.cursor = "pointer";
+  f.innerHTML = '<img width="112" height="100" src="' + S + "/" + p[0] + '.apng" alt="' + p[0] + '">'
+    + '<figcaption>' + p[1] + '</figcaption>';
+  const img = f.querySelector("img");
+  f.addEventListener("click", function () { const b = img.src.split("?")[0]; img.src = b + "?r=" + (window.__r = (window.__r || 0) + 1); });
+  apng.appendChild(f);
+});
+const tiny = document.getElementById("tiny");
+[["set-barber", "barber, 72px"], ["set-dryer", "salon, 72px"],
+ ["set-barber", "barber, 44px"], ["set-dryer", "salon, 44px"]].forEach(function (p, i) {
+  const px = i < 2 ? 72 : 44;
+  const f = document.createElement("figure");
+  f.innerHTML = '<video muted playsinline preload="auto" width="' + px + '" height="' + Math.round(px * 0.9)
+    + '" src="' + S + "/" + p[0] + '.webm"></video><figcaption>' + p[1] + '</figcaption>';
+  const v = f.querySelector("video");
+  f.style.cursor = "pointer";
+  f.addEventListener("click", function () { v.currentTime = 0; v.play(); });
+  tiny.appendChild(f);
+});
+window.addEventListener("load", function () {
+  Array.prototype.slice.call(document.querySelectorAll("video")).forEach(function (v, i) {
+    setTimeout(function () { v.play(); }, i * 150);
+  });
+});
+</script>
+</body>
+</html>
