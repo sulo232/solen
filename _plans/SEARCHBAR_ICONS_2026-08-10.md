@@ -79,7 +79,7 @@ and already shipping on the map chip. One value changed, the blur, 4px to 20px, 
 the content behind reads as smear instead of glass. Saying that plainly beats claiming a capture I
 do not have.
 
-- [x] C6. CORRECTION, the ring is grey not black. Owner: "why is it black outline bro just make it
+- [x] C6. CORRECTION, the ring is grey not black. verified: commit d4ee7af12, HomeSearchPill.tsx:161 `border-s-ink-2`; measured live at 390 as 1px rgb(107,107,107) at scrollY 0. Owner: "why is it black outline bro just make it
       gray or something." verified: HomeSearchPill.tsx, rest state now `border-s-ink-2`; measured
       live at 390, scrollY 0 reads `1px rgb(107,107,107)` and scrollY 200 still reads
       `1px rgb(228,228,231)`, so the two states stay clearly different.
