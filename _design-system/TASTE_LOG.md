@@ -459,3 +459,41 @@ not `Salvi`) because Italian has no infinitive that works as a neutral label, th
 was applied as the default rather than parked, because the alternative had no defensible version and
 waiting would have blocked the sweep. **It is awaiting a yes or a no**; reversing it is 559 mechanical
 edits and §6b is the record of why it was not done.
+
+---
+
+## 2026-08-03 to 2026-08-10 , the account-hub week, recorded off UNMERGED branches
+
+Recorded 2026-08-10 by the weekly law pass. **extends** the 07-24/26 and 07-29/31 blocks; supersedes
+nothing in either.
+
+**Read the caveat before the table.** Every decision below was made by the owner, verbatim, and applied
+in real shipping components , and **none of it is on `main`.** It sits on five unmerged branches
+(`agent-flow-design-overhaul-2af2c2` 236 commits, `security-audit-principles-a877df` 72,
+`principles-security-audit-0ae738` 67, `preference-analysis-gates-620a8d` 29,
+`airbnb-animated-icons-ee4329` 25). So this block is a record of what he DECIDED, not a description of
+what the live site does. Anyone building on `main` today will find the old treatment still there and
+must not read that as permission to keep it. This is the third consecutive pass to flag stranded branch
+work (07-27 D5, 08-03 D5); it is now five branches instead of one, and it is why these decisions had to
+be harvested from commit messages rather than from any law file.
+
+The account hub is the spine of the week. Six of these are one screen, corrected six times.
+
+| Decision | Owner, verbatim | Where it lives | Record |
+|---|---|---|---|
+| **A destination page carries no browse chrome.** The notification bell and the hamburger are off the account hub. Its own rows ARE its navigation; a bell about something elsewhere belongs to a different screen's job. | *"why is the notification inside and the hamburger menu inside a fucking profile page? I told you like ten fucking times."* | This log. The cause was structural, not taste: `Header.tsx` exempted home, category, search and `/inspo`, and the account hub fell into the leftover "deep page" branch **by omission, never by decision**. | `9bc96089b`, 2026-08-03 |
+| **No box on an account hub, and never a box plus a per-row hairline.** | *"why the fuck is this still boxing?"* | Already law , `LOCKFILE.md` §17.2 names an account hub as a surface that gets NO container and says "never both". This row exists because the law was right and the code shipped both anyway for days. | `caad3e93e`, 2026-08-03 |
+| **The back control is a filled grey circle with NO border**, and the grey tile behind every row glyph is gone. | *"then fucking fix it."* | This log. Measured, not picked: the reference back control is 39.7pt filled `#F2F2F2` with no border; ours was a 44px rounded square with a hairline. The 44px hit box STAYS (the touch floor outranks matching 40 exactly); the visible circle sits inside it. The icon tiles were also the dead-grey FLOORS LAW 4 forbids. | `0e5e9e2c7`, 2026-08-03 |
+| **The pink `#FF3366` heart is out of the account hub nav row.** `#FF3366` remains the save-heart token everywhere it actually means "saved by you"; on a navigation row it was decoration wearing a semantic colour. | *"why is heart icon pink n how did u not flag it ever wtf."* | This log, alongside taste rule 4 (semantic colour is independent of the accent) , this is the boundary case that rule did not state: a semantic colour used where the semantics do not apply. | `fc07dccc8`, 2026-08-03 |
+| **Row glyphs 19 -> 22px; a subline that only restates its own label is cut.** Five sublines stay because they carry live data (next appointment, saved card, active vouchers, saved stores, stamps). | *"alot better but icon should be abit bigger and i dont think every settings needs explanation."* | This log + Copy economy rule 1 (delete each word, see whether the meaning survives). Grounded: the captured reference measures 17.3-22.7pt per glyph, so 19 sat at the bottom of the band. | `11de048e1`, 2026-08-05 |
+| **OVERHAUL MEANS STRUCTURE, not treatment.** Deciding which rows earn their place and in what order. Swapping the container, the divider, the icon and the label size is a treatment pass, and calling it an overhaul four rounds running is the failure this row exists to name. | *"I told you I want to overhaul it completely. But you didn't change any single fucking bit. You keep the structure. You keep everything."* | This log. It is a standing directive about a WORD, so it has no owning design file; it belongs beside `feedback_structure_vs_treatment`. Cause named honestly in the commit: treatment is the safe half, every change reverses, nothing can be wrong because nothing was invented. | `21b1357d8`, 2026-08-03 |
+| **1:1 against a reference means measuring both sides, then tabling the differences**, before any rebuild. | *"every single part of it does not look like the reference at all. I need you to actually make it one to one. Especially analyzing, understanding what we're doing differently."* | `_design-system/references/airbnb--profile-1to1-diff.md` (on branch). Restates NEVER-AGAIN floor 5 in the owner's own words, so floor 5 stays canonical and this is the dated confirmation. | `e6e629d3b`, 2026-08-03 |
+| **Top-bar controls are circles with a shadow** , back and close only. **The hamburger stays a SQUARE** and gets the shadow, not the shape. The border is KEPT alongside the shadow, not swapped for it: our controls sit on white, where a soft shadow alone is close to invisible. | *"and also, like, shadow"* (on keeping the border), then the correction *"keep the hamburger square"* | This log. Note the self-caught misread in `38e0f08ec`: "and the hamburger too" was read as "a circle too" and was not checked. | `b8df62383` + `38e0f08ec`, 2026-08-10 |
+| **A sheet open is three staged acts, not one fade.** Old content leaves (~150ms), an EMPTY container travels (~150ms), and only then does content fade up, staggered. Content must be ABSENT during the travel, not carried along. | *"it's all already over there instead of everything fading up."* | **NOWHERE , this is a motion law with no home.** `MOTION.md` has no staged-choreography entry. If a choreography section is ever added there, move this row and leave a pointer. | `b66d492bc`, 2026-08-03 |
+| **Every Lucide terminal is butt/miter, never round.** One rule in `globals.css` rather than 191 call sites; five hand-written inline SVGs squared by hand because CSS could not reach them. `beauty-icons.tsx` excluded by name. | no verbatim quote , the commit records "the three changes the owner approved" without quoting him. **Recorded as approved-but-unquoted; if this was never actually approved, say so and it comes out.** | This log. Measured: the reference runs butt/miter across 18+ instances with zero exceptions, we ran round across 117+ with zero exceptions, purely because it is a Lucide default nobody ever touched. | `c198042f1`, 2026-08-05 |
+| **The `Wo?` search field keeps white fill + hairline**; a proposed switch to grey fill was OVERRULED. | no verbatim quote , commit records only "He overruled my grey recommendation." | This log, so the grey fill is not re-proposed. | `db2a45ca8`, 2026-08-03 |
+
+**Standing rule extracted, and it is about this log rather than about a screen:** a decision that exists
+only in a commit message on an unmerged branch is not in the law, and the next session will contradict
+it. Six of the eleven rows above are the same screen corrected repeatedly, with *"I told you like ten
+fucking times"* attached to one of them. That is the cost, stated in his words.
