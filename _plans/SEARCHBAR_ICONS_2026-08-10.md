@@ -58,12 +58,12 @@ front of him. Hence this turn: measured, four variations, nothing applied.
 *"b normal state or scrolled up, c once scrolled down a bit, you know, gets smaller. Look how insta
 or any other social media does it with the bottom nav bar, liquid glass."*
 
-- [x] C4. Search bar: B at rest, C once scrolled. verified: HomeSearchPill.tsx, a scroll listener
+- [x] C4. Search bar: B at rest, C once scrolled. verified: commit d65674315, HomeSearchPill.tsx:115-137 (the scroll listener) and :150-160 (the two treatments). A scroll listener
       with hysteresis (shrink past 24px, restore under 8px, so it cannot flicker on the boundary).
       Measured live: scrollY 0 gives height 54 / border 1px rgb(0,0,0) / shadow 0 6px 20px at 10%;
       scrollY 200 gives height 44 / border 1px hairline / soft shadow. Anatomy is identical in both,
       only weight and height move, so it reads as one control settling rather than two swapping.
-- [x] C5. Bottom nav in liquid glass, floating. verified: BottomNav.tsx, measured live at 390 as
+- [x] C5. Bottom nav in liquid glass, floating. verified: commit d65674315, BottomNav.tsx:126-152. Measured live at 390 as
       inset 12px each side, 12px off the bottom, radius 9999px, `backdrop-filter: blur(20px)
       saturate(1.6)`, background rgba(255,255,255,0.8).
 
