@@ -24,7 +24,7 @@ import { Skeleton } from "@/app/[locale]/_components/primitives";
 const EASE = [0.32, 0.72, 0, 1] as const;
 const OPEN_T = { duration: 0.4, ease: EASE } as const;
 const MORPH_T = { duration: 0.34, ease: EASE } as const;
-const FLEX_DATES = ["Heute", "Morgen", "Diese Woche", "Wochenende", "Diesen Monat", "Flexibel"]; // 6 -> balanced 2x3 grid
+const FLEX_DATES = ["Today", "Tomorrow", "Diese Woche", "Wochenende", "Diesen Monat", "Flexibel"]; // 6 -> balanced 2x3 grid
 const WEEKDAYS = ["M", "D", "M", "D", "F", "S", "S"]; // Monday-first (de-CH)
 // selected-ok: the ONE primary commit CTA stays ink (bg-s-ink) per the design contract; every other selected state is gray/blue-border
 const COMMIT_BTN = "flex items-center gap-2 rounded-full bg-s-ink px-6 py-3 font-heading text-[15px] font-bold text-white active:scale-[0.98]";
@@ -186,7 +186,7 @@ export default function SearchMorphPreviewPage() {
           <SuggestRow key={sl.id} name={sl.name} Icon={Store} onClick={() => { setService(sl.name); advance("service"); }} />
         ))}
         <SectionLabel className="mt-3">Kategorien</SectionLabel>
-        <SuggestRow name="In der Nähe" sub="Aktueller Standort" Icon={Navigation} tint onClick={() => { setService("In der Nähe"); advance("service"); }} />
+        <SuggestRow name="Nearby" sub="Aktueller Standort" Icon={Navigation} tint onClick={() => { setService("Nearby"); advance("service"); }} />
         {CATEGORIES.map((c) => (
           <SuggestRow key={c.label} name={c.label} Icon={c.icon} onClick={() => { setService(c.label); setServiceQ(""); advance("service"); }} />
         ))}
@@ -220,7 +220,7 @@ export default function SearchMorphPreviewPage() {
     return (
       <div className="flex h-12 items-center gap-2.5 rounded-[16px] border border-s-border bg-white px-4">
         {inputFocused ? (
-          <button onClick={() => { setInputFocused(false); collapse(); }} aria-label="Zurück"
+          <button onClick={() => { setInputFocused(false); collapse(); }} aria-label="Back"
             className="grid h-6 w-6 shrink-0 place-items-center text-s-ink"><ArrowLeft size={20} strokeWidth={2} /></button>
         ) : (
           <span className="grid h-6 w-6 shrink-0 place-items-center"><Search size={19} strokeWidth={2} className="text-s-ink-2" /></span>

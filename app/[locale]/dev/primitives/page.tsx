@@ -253,7 +253,7 @@ function PrimitivesDevPageInner() {
           <Grid cols={3}>
             <Card tag="sm 40px 13px">
               <FieldLabel htmlFor="sz-sm">Filter-Suche</FieldLabel>
-              <TextInput id="sz-sm" type="search" size="sm" placeholder="Suchen…" />
+              <TextInput id="sz-sm" type="search" size="sm" placeholder="Search…" />
               <FieldHelper>Kompakte Filter-Reihen, Dropdowns in Listen-Items.</FieldHelper>
             </Card>
             <Card tag="md 56px 14px (default)">
@@ -426,7 +426,7 @@ function PrimitivesDevPageInner() {
           </h3>
           <Grid cols={2}>
             <Card tag={`Sort sheet "${sortBy}" selected`}>
-              <RadioGroup aria-label="Sortieren nach">
+              <RadioGroup aria-label="Sort by">
                 <Radio
                   name="sort"
                   value="distance"
@@ -532,14 +532,14 @@ function PrimitivesDevPageInner() {
                   checked={pushOn}
                   onCheckedChange={setPushOn}
                   label="Push-Benachrichtigungen"
-                  subLabel="Termin-Erinnerungen 24h vorher"
+                  subLabel="Appointment reminders 24h before"
                 />
                 <Switch
                   id="sw-news"
                   checked={emailNewsletterOn}
                   onCheckedChange={setEmailNewsletterOn}
                   label="E-Mail-Newsletter"
-                  subLabel="Neue Salons in deiner Stadt, max 1×/Woche"
+                  subLabel="New salons in your city, max 1x/week"
                 />
                 <Switch
                   id="sw-mkt"
@@ -553,7 +553,7 @@ function PrimitivesDevPageInner() {
                   checked
                   disabled
                   label="Solen Pro Beta"
-                  subLabel="Bald verfügbar"
+                  subLabel="Available soon"
                 />
               </div>
             </Card>
@@ -628,7 +628,7 @@ function PrimitivesDevPageInner() {
                 Login öffnen
               </button>
               <Modal isOpen={loginOpen} onOpenChange={setLoginOpen} size="md">
-                <ModalHeader title="Willkommen zurück" eyebrow="Anmelden" size="md" onClose={() => setLoginOpen(false)} />
+                <ModalHeader title="Welcome back" eyebrow="Anmelden" size="md" onClose={() => setLoginOpen(false)} />
                 <ModalBody size="md">
                   <p className="text-s-ink-2 mb-4">
                     Sign in with your email address to complete your booking.
@@ -672,7 +672,7 @@ function PrimitivesDevPageInner() {
                 Report-Modal öffnen
               </button>
               <Modal isOpen={reportOpen} onOpenChange={setReportOpen} size="lg">
-                <ModalHeader title="Was ist mit diesem Look?" eyebrow="Inhalt melden" size="lg" onClose={() => setReportOpen(false)} />
+                <ModalHeader title="What about this look?" eyebrow="Inhalt melden" size="lg" onClose={() => setReportOpen(false)} />
                 <ModalBody size="lg">
                   <p className="text-s-ink-2 mb-4">
                     Wähle einen Grund. Wir prüfen alle Meldungen innerhalb von 24 Stunden.
@@ -722,7 +722,7 @@ function PrimitivesDevPageInner() {
                 isDismissable={false}
                 keyboardDismissDisabled
               >
-                <ModalHeader title="Konto wirklich löschen?" size="sm" onClose={() => setDestructiveOpen(false)} />
+                <ModalHeader title="Really delete account?" size="sm" onClose={() => setDestructiveOpen(false)} />
                 <ModalBody size="sm">
                   <p className="text-s-ink-2">
                     This action cannot be undone. All bookings and favourites will be deleted.
@@ -767,9 +767,9 @@ function PrimitivesDevPageInner() {
                 Sort sheet öffnen
               </button>
               <Sheet isOpen={sortSheetOpen} onOpenChange={setSortSheetOpen} height="auto">
-                <SheetHeader title="Sortieren nach" onClose={() => setSortSheetOpen(false)} />
+                <SheetHeader title="Sort by" onClose={() => setSortSheetOpen(false)} />
                 <SheetBody>
-                  <RadioGroup aria-label="Sortieren nach">
+                  <RadioGroup aria-label="Sort by">
                     <Radio
                       name="sheet-sort"
                       value="distance"
@@ -840,7 +840,7 @@ function PrimitivesDevPageInner() {
                   </div>
                   <div className="mb-5">
                     <FieldLabel className="block mb-2.5">Preis</FieldLabel>
-                    <PillGroup mode="single" aria-label="Preis filter">
+                    <PillGroup mode="single" aria-label="Price filter">
                       <PillToggle>CHF 0-50</PillToggle>
                       <PillToggle active>CHF 50-100</PillToggle>
                       <PillToggle>CHF 100-200</PillToggle>
@@ -849,7 +849,7 @@ function PrimitivesDevPageInner() {
                   </div>
                   <div>
                     <FieldLabel className="block mb-2.5">Bewertung</FieldLabel>
-                    <PillGroup mode="single" aria-label="Bewertung filter">
+                    <PillGroup mode="single" aria-label="Rating filter">
                       <PillToggle>4.0+</PillToggle>
                       <PillToggle active>4.5+</PillToggle>
                       <PillToggle>4.8+</PillToggle>
@@ -884,7 +884,7 @@ function PrimitivesDevPageInner() {
                 Share sheet öffnen
               </button>
               <Sheet isOpen={shareSheetOpen} onOpenChange={setShareSheetOpen} height="auto">
-                <SheetHeader title="Salon teilen" onClose={() => setShareSheetOpen(false)} />
+                <SheetHeader title="Share salon" onClose={() => setShareSheetOpen(false)} />
                 <SheetBody>
                   <p className="text-s-ink-2 text-[14px] mb-3.5">Salon Maria Kleinbasel</p>
                   <PillGroup mode="multi" aria-label="Share targets">
@@ -1150,7 +1150,7 @@ function DateTimePickerDemo() {
 
       <Card tag="single-date no time slots">
         <p className="font-body text-[14px] text-s-ink-2 mb-4">
-          Used in search filter "verfügbar am" + B2B closed-day toggle.
+          Used in search filter "available on" + B2B closed-day toggle.
         </p>
         <DateTimePicker
           value={pickerValue}
@@ -1173,8 +1173,8 @@ function DateTimePickerDemo() {
           minDate={today(getLocalTimeZone())}
           dateLayout="strip"
           selectedTone="accent"
-          dateLabel="Datum wählen"
-          timeLabel="Zeit wählen"
+          dateLabel="Pick a date"
+          timeLabel="Pick a time"
         />
       </Card>
     </Grid>
@@ -1196,8 +1196,8 @@ function ToastDemo() {
             onClick={() =>
               toast.success({
                 title: "Look gespeichert",
-                description: "Long Bob mit Highlights ist jetzt in deinem Mein-Look-Board.",
-                action: "Anzeigen",
+                description: "Long Bob with highlights is now in your My Look board.",
+                action: "View",
                 onAction: () => alert("Navigate to Mein-Look-Board"),
               })
             }
@@ -1234,7 +1234,7 @@ function ToastDemo() {
             onClick={() =>
               toast.error({
                 title: "Booking failed",
-                description: "Der Termin wurde inzwischen gebucht. Wähle einen anderen Slot.",
+                description: "That slot has since been booked. Pick another one.",
                 action: "Erneut versuchen",
                 onAction: () => alert("Retry booking"),
               })
@@ -1268,7 +1268,7 @@ function ToastDemo() {
           <button
             type="button"
             onClick={() => {
-              toast.success({ title: "Mit Aktion", action: "Rückgängig", onAction: () => alert("Undone") });
+              toast.success({ title: "With action", action: "Rückgängig", onAction: () => alert("Undone") });
             }}
             className="font-body font-semibold text-[14px] px-4 py-2.5 rounded-full bg-s-bg-base text-s-ink border border-s-border hover:bg-s-bg-sunken transition-colors"
           >
