@@ -83,7 +83,7 @@ reproduce it.
 His words: *"no the search bar u nst made up rndm sh i told you to look back into the branch i have
 u i spent days for the search bar there."*
 
-- [x] CORRECTION: restore the search bar from his branch, verbatim.
+- [x] CORRECTION: restore the search bar from his branch. verified: commit 110a31fac; HomeSearchPill.tsx:120-121 back to `px-3.5 py-2.5` + `shadow-[0_2px_8px_0_rgba(0,0,0,0.07)]`, label back to 16px at :135; measured live on /de at 390 wide as padding 14/10, shadow rgba(0,0,0,0.07) 0 2px 8px, label 16px/500, top 4.
       verified: HomeSearchPill.tsx is now code-identical to
       `claude/security-audit-principles-a877df` except for the hamburger he ordered removed this
       session (diffed with comments stripped: the only differences are that removal). Measured live
