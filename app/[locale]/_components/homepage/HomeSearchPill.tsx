@@ -229,7 +229,7 @@ export default function HomeSearchPill({
           "border border-s-border", // mockup-ok: the light grey hairline, their measured painted #DDDDDD, ours #E4E4E7
           shrunk
             ? "h-[44px] shadow-elevation-2" // mockup-ok: C, scrolled, smaller and settled
-            : "h-[59px]", // mockup-ok: THEIR ASPECT at OUR width, see the note above, balance pass 2026-08-11
+            : "h-[64px]", // mockup-ok: thicker again on his call, 2026-08-11. Their aspect gave 59; he asked for more, so 64, a 4pt step, aspect 5.6:1
         )}
       >
         {/* R1: ONE tap handler for both callers. `/inspo` still passes its own `onActivate`

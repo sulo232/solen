@@ -206,7 +206,19 @@ export default function BottomNav({ locale }: { locale: string }) {
         // The condense. Margin, not transform, because the bar has to actually get NARROWER, and
         // a transform would only scale it and blur the glass with it.
         "transition-[margin,border-radius] duration-300 ease-glide",
-        condensed ? "mx-[26%]" : "mx-3",
+        // NOT a tiny capsule. Owner 2026-08-11: "bottom nav bar when it collapses too small,
+        // look how insta n all othr does for liquid glass."
+        //
+        // RESEARCHED ON MOBBIN AGAIN, this time on Instagram specifically, and it corrects my
+        // own last answer. Their bar is FULL WIDTH, edge to edge, five icons spread across the
+        // whole screen, no labels, and it NEVER narrows. Apple Store and Substack float theirs
+        // but still span nearly the full width. The narrow centred capsule I built (26% margins
+        // each side, half the screen) came from Cosmos and Savee, which are the outliers, not
+        // the pattern he named.
+        //
+        // So collapsing now means: lose the labels, lose some height, keep the width. 24px of
+        // margin instead of 12, which reads as a step in without turning it into a pill.
+        condensed ? "mx-6" : "mx-3",
       )}
       style={{ ...FROST_GLASS, backdropFilter: "blur(20px) saturate(1.6)", WebkitBackdropFilter: "blur(20px) saturate(1.6)", boxShadow: "0 6px 24px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.5)" }} // mockup-ok: FROST_GLASS with the blur raised for a band-sized surface, owner "liquid glass" 2026-08-10
     >
