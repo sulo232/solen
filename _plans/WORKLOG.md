@@ -1,3 +1,40 @@
+## 2026-08-10 , weekly design-law improvement pass (workstream #41 LAW, standing loop)
+
+**Auto-triggered.** Harvested 11 dated owner decisions, 3 new contradictions + 6 carried, 4 duplications,
+**3 safe fixes**, 9 owner decisions needed. Full report:
+[LAW_IMPROVE_2026-08-10.md](LAW_IMPROVE_2026-08-10.md). Page:
+[public/_reports/law-2026-08-10/](../public/_reports/law-2026-08-10/index.html).
+
+**The finding is about this pass itself, and it is the reason the last two runs looked quiet.** Its
+harvest step read only `main`. `main` took two commits in the window, both checkpoints. Five unmerged
+branches carried **428 commits holding eleven dated owner design decisions**, none of them in any law
+file. Six of the eleven are the SAME screen, the account hub, corrected six separate times, one of them
+carrying *"why is the notification inside and the hamburger menu inside a fucking profile page? I told
+you like ten fucking times."* Measured rather than asserted: the old harvest command returns 14 commits,
+the fixed one returns 428. All eleven are now in TASTE_LOG, each labelled **not live on main** so a
+record is never read as a description of the shipping site, and the two that carry no verbatim quote are
+labelled approved-but-unquoted rather than dressed up as his words.
+
+**Harden: fixed the existing check, no new gate.** The recurring mistake already had a check , this
+pass's own step 1 , and it was blind, which is a binding failure and not a missing-check problem. Step 1
+now requires `--all` plus a per-branch count and requires reading commit MESSAGE BODIES, because in this
+estate the owner's quotes live there. Self-tested both ways this turn. Nothing retired, because nothing
+was added.
+
+Also fixed: five more places still telling writers to use `du` eleven days after the reversal, the worst
+of them LOCKFILE §6 Brand voice, which is precedence tier 3 and whose own §10.8e claims LOCKFILE never
+goes stale; and RATIONALE still defending 420ms as a deliberate accessibility departure, twice, when the
+owner retimed it to 280ms on 07-26 and the departure is closed, not narrowed.
+
+Open for you: whether a SalonCard carries `shadow-whisper` or `shadow-elevation-2` (three files, three
+answers, and your only quote backs the shipped code); which green the open-status green is (`#22C55E`
+ships, `#1F8900` is what the comment directly above it and LOCKFILE both say you asked for); whether
+border-OR-shadow-never-both binds icon controls; and the five stranded branches, now flagged for the
+third pass running.
+
+---
+
+
 # WORKLOG , plain-English record of what got done, per session
 
 The newest entry is at the top. Every session that ships real work adds one entry here, in plain English (what + why), so a future session (or you, weeks later) can tell what happened without reading code or git. Surfaced automatically at the start of every session by `.claude/hooks/worklog.py`.
